@@ -1,0 +1,44 @@
+% pyFormex manual (we use the python manual class)
+%
+\documentclass[a4paper]{manual}
+%
+%% Dirty hack to make Python classes work together with hyperref
+\let\pyurl\url
+\let\url\relax
+%%
+\usepackage{hyperref}
+%\usepackage[latex2html]{hyperref}
+%\usepackage[latex2html,pdftex]{hyperref}
+\usepackage{html}
+\usepackage{xspace}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{verbatim}
+
+% Document identification
+\title{\pyformex manual}
+\author{Tim Neels and Benedict Verhegghe}
+\release{0.3}
+\setshortversion{0.3}
+
+% pyFormex and its website
+\newcommand{\pyformex}{pyFormex\xspace}
+\newcommand{\websiteURL}{http://pyformex.berlios.de\xspace}
+% code 
+%\newenvironment{CodePart}{\begin{verbatim}}{\end{verbatim}}
+%\newcommand{\CodeFile}[1]{\verbatiminput{#1}}
+
+
+\begin{document}
+\maketitle
+\input{intro}
+\input{tutorial}
+\input{refman}
+
+
+
+\end{document}
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

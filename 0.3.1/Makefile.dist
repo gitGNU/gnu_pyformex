@@ -1,0 +1,65 @@
+#  -*- Makefile -*-  for creating pyFormex releases
+# $Id: Makefile 53 2005-12-05 18:23:28Z bverheg $
+#
+
+include RELEASE
+
+PYFORMEXDIR= pyformex-${RELEASE}
+PROGRAM= pyformex
+PYSOURCE= ${addsuffix .py, ${PYMODULES}}
+SOURCE= ${PYSOURCE} pyformexrc
+ICONFILES= icons/*.xbm
+HTMLDIR= doc/html
+HTMLDOCS= ${addprefix ${HTMLDIR}/,${PYSOURCE:.py=.html}}
+STAMPFILES= README History Makefile FAQ
+NONSTAMPFILES= COPYING RELEASE ReleaseNotes-${VERSION}
+EXAMPLEFILES= ${addprefix examples/,${addsuffix .py, ${EXAMPLES} }}
+IMAGEFILES =  ${addprefix screenshots/,${addsuffix .png,${IMAGES}}}
+STAMP= Stamp 
+VERSIONSTRING= "pyFormex .*"
+NEWVERSIONSTRING= "pyFormex ${RELEASE}"
+PKG= ${PYFORMEXDIR}.tar.gz
+PKGDIR= releases
+
+.PHONY: dist release distdir modules distclean stamp dist.stamped manual
+
+############ Creating Distribution ##################
+
+dist: version ${PYFORMEXDIR}
+	tar czf ${PKGDIR}/${PKG} ${PYFORMEXDIR}
+
+${PYFORMEXDIR}: dist.stamped
+
+distclean:
+	rm -rf ${PYFORMEXDIR}
+	alldirs . "rm -f *~"
+
+pydoc: ${HTMLDIR}/index.html
+
+${HTMLDIR}/index.html: ${HTMLDOCS}
+	./make_doc_index	
+
+${HTMLDIR}/%.html: %.py
+	pydoc -w ./$< && mv $*.html ${HTMLDIR}
+
+manual:
+	make -C manual
+
+stamp: Stamp.template RELEASE
+	${STAMP} -tStamp.template version=${VERSION} -oStamp.stamp
+
+dist.stamped:  distclean stamp globaldata.py ${PROGRAM} ${SOURCE} ${EXAMPLEFILES} ${STAMPFILES} ${NONSTAMPFILES} examples/__init__.py ${ICONFILES} ${IMAGEFILES}  ${HTMLDOCS}
+	mkdir ${PYFORMEXDIR} ${PYFORMEXDIR}/icons ${PYFORMEXDIR}/examples ${PYFORMEXDIR}/images ${PYFORMEXDIR}/html
+	${STAMP} -tStamp.stamp -d${PYFORMEXDIR} ${PROGRAM} ${SOURCE}
+	${STAMP} -tStamp.stamp -d${PYFORMEXDIR}/examples ${EXAMPLEFILES}
+	${STAMP} -tStamp.stamp -d${PYFORMEXDIR} ${STAMPFILES}
+	cp ${NONSTAMPFILES} ${PYFORMEXDIR}
+	cp examples/__init__.py ${PYFORMEXDIR}/examples
+	cp ${ICONFILES}  ${PYFORMEXDIR}/icons
+	cp ${IMAGEFILES} ${PYFORMEXDIR}/images
+	cp ${HTMLDOCS} ${HTMLDIR}/index.html    ${PYFORMEXDIR}/html
+
+version: globaldata.py
+
+globaldata.py: RELEASE
+	replace -f '${VERSIONSTRING}' '${NEWVERSIONSTRING}' $@
