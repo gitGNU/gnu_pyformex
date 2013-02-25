@@ -976,14 +976,12 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             w,h = self.getSize()
             dx,dy = float(self.statex-x)/w, float(self.statey-y)/h
             for method,state,value,size in zip(self.state[2],[self.statex,self.statey],[x,y],[w,h]):
-                #pf.debug("%s %s %s %s" % (method,state,value,size))
                 if method == 'area':
                     d = float(state-value)/size
                     f = exp(4*d)
                     self.camera.zoomArea(f,area=asarray(self.state[1]).reshape(2,2))
                 elif method == 'dolly':
                     d = utils.stuur(value,[0,state,size],[5,1,0.2],1.2)
-                    #pf.debug(d)
                     self.camera.dist = d*self.state[0]
 
             self.update()
@@ -1287,14 +1285,14 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
     # Events not handled here could also be handled by the toplevel
     # event handler.
     def keyPressEvent (self,e):
-        # pf.GUI.signals.WAKEUP.emit()
-        # Done byt the top level (GUI) ??
+        pf.GUI.signals.WAKEUP.emit()
+        #or is this done by the top level (GUI) ??
         # Move all of these to GUI ??
         if e.key() == ESC:
-            self.emit(CANCEL,())
+            pf.GUI.signals.CANCEL.emit()
             e.accept()
         elif e.key() == ENTER or e.key() == RETURN:
-            self.emit(DONE,())
+            pf.GUI.signals.DONE.emit()
             e.accept()
         else:
             e.ignore()
