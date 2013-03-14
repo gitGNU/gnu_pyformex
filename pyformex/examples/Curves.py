@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -39,9 +39,10 @@ from plugins.curve import *
 from plugins.nurbs import *
 from odict import ODict
 
-ctype_color = [ 'red','green','blue','cyan','magenta','yellow','white' ] 
-point_color = [ 'black','white' ] 
-        
+
+ctype_color = [ 'red','green','blue','cyan','magenta','yellow','white' ]
+point_color = [ 'black','white' ]
+
 open_or_closed = { True:'A closed', False:'An open' }
 
 TA = None
@@ -56,7 +57,7 @@ curvetypes = [
 ]
 
 
-def drawCurve(ctype,dset,closed,degree,endcond,curl,ndiv,ntot,extend,spread,approx,cutWP=False,scale=None,directions=False):
+def drawCurve(ctype,dset,closed,degree,endcond,curl,ndiv,ntot,extend,spread,approx,cutWP=False,scale=None,frenet=False,avgdir=True,upvector=None):
     global S,TA
     P = dataset[dset]
     text = "%s %s with %s points" % (open_or_closed[closed],ctype.lower(),len(P))
@@ -104,15 +105,31 @@ def drawCurve(ctype,dset,closed,degree,endcond,curl,ndiv,ntot,extend,spread,appr
     else:
         draw(S,color=ctype_color[im],nolight=True)
 
-    
-    if directions:
-        t = arange(2*S.nparts+1)*0.5
-        ipts = S.pointsAt(t)
-        draw(ipts)
-        idir = S.directionsAt(t)
-        drawVectors(ipts,0.2*idir)
-        
-    
+
+    ## if directions:
+    ##     t = arange(2*S.nparts+1)*0.5
+    ##     ipts = S.pointsAt(t)
+    ##     draw(ipts)
+    ##     idir = S.directionsAt(t)
+    ##     drawVectors(ipts,0.2*idir)
+
+    if frenet and (ctype == 'PolyLine' or approx):
+        if approx:
+            C = PL
+        else:
+            C = S
+        T,N,B = C.movingFrenet(upvector=upvector,avgdir=avgdir)[:3]
+        drawVectors(C.coords,T,size=1.,nolight=True,color='red')
+        drawVectors(C.coords,N,size=1.,nolight=True,color='green')
+        drawVectors(C.coords,B,size=1.,nolight=True,color='blue')
+        if  C.closed:
+            T,N,B = C.movingFrenet(upvector=upvector,avgdir=avgdir,compensate=True)[:3]
+            drawVectors(C.coords,T,size=1.,nolight=True,color='magenta')
+            drawVectors(C.coords,N,size=1.,nolight=True,color='yellow')
+            drawVectors(C.coords,B,size=1.,nolight=True,color='cyan')
+        print(T,N,B)
+
+
 
 dataset = [
     Coords([[1., 0., 0.],[0., 1., 0.],[-1., 0., 0.],  [0., -1., 0.]]),
@@ -127,11 +144,11 @@ dataset = [
             [3., -3., 1.]]),
     Coords([[0., 1., 0.],[0., 0.1, 0.],[0.1, 0., 0.],  [1., 0., 0.]]),
     Coords([[0., 1., 0.],[0.,0.,0.],[0.,0.,0.],[1., 0., 0.]]),
-    #Coords([[0., 1., 0.],[1., 0., 0.]]),
+    Coords([[0.,0.,0.],[1.,0.,0.],[1.,1.,1.],[0.,1.,0.]]).scale(3),
     ]
 
 _items = [
-    _I('DataSet','0',choices=map(str,range(len(dataset)))), 
+    _I('DataSet','0',choices=map(str,range(len(dataset)))),
     _I('CurveType',choices=curvetypes),
     _I('Closed',False),
     _I('Degree',3,min=1,max=3),
@@ -147,13 +164,19 @@ _items = [
     _I('Scale',[1.0,1.0,1.0]),
 #    _I('DrawAs',None,'hradio',choices=['Curve','Polyline']),
     _I('Clear',True),
-    _I('ShowDirections',False),
+    _G('FrenetFrame',[
+        _I('AvgDirections',True),
+        _I('AutoUpVector',True),
+        _I('UpVector',[0.,0.,1.]),
+        ],checked=False),
     _I('CutWithPlane',False),
     ]
 
 _enablers = [
     ('CurveType','BezierSpline','Degree','Curl','EndCurvatureZero'),
     ('SpreadEvenly',True,'Ntot'),
+#    ('ShowFrenetFrame',True,'AvgDirections','AutoUpVector'),
+    ('AutoUpVector',False,'UpVector'),
     ]
 
 
@@ -179,8 +202,11 @@ def close():
 
 def show(all=False):
     dialog.acceptData()
-    globals().update(dialog.results)
-    export({'_Curves_data_':dialog.results})
+    res = dialog.results
+    if res['AutoUpVector']:
+        res['UpVector'] = None
+    globals().update(res)
+    export({'_Curves_data_':res})
     if Clear:
         clear()
     if all:
@@ -189,7 +215,7 @@ def show(all=False):
         Types = [CurveType]
     setDrawOptions({'bbox':'auto'})
     for Type in Types:
-        drawCurve(Type,int(DataSet),Closed,Degree,EndCurvatureZero,Curl,Ndiv,Ntot,[ExtendAtStart,ExtendAtEnd],SpreadEvenly,Approximation,CutWithPlane,Scale,ShowDirections)
+        drawCurve(Type,int(DataSet),Closed,Degree,EndCurvatureZero,Curl,Ndiv,Ntot,[ExtendAtStart,ExtendAtEnd],SpreadEvenly,Approximation,CutWithPlane,Scale,FrenetFrame,AvgDirections,UpVector)
         setDrawOptions({'bbox':None})
 
 def showAll():
@@ -199,7 +225,7 @@ def timeOut():
     showAll()
     wait()
     close()
-    
+
 
 def run():
     global dialog
@@ -216,7 +242,7 @@ def run():
 
     dialog.timeout = timeOut
     dialog.show()
-    # Block other scripts 
+    # Block other scripts
     scriptLock(__file__)
 
 

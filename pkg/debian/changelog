@@ -1,8 +1,14 @@
-pyformex (0.8.9r5-1) unstable; urgency=low
+pyformex (0.9.0~a3-2) unstable; urgency=low
 
-  * Interim release for Cujae
+  * Fix patch of pyformex script
 
- -- Benedict Verhegghe <benedict.verhegghe@ugent.be>  Tue, 13 Nov 2012 20:58:28 +0100
+ -- Benedict Verhegghe <benedict.verhegghe@ugent.be>  Thu, 14 Mar 2013 17:00:12 +0100
+
+pyformex (0.9.0~a3-1) unstable; urgency=low
+
+  * Test upcoming release
+
+ -- Benedict Verhegghe <benedict.verhegghe@ugent.be>  Thu, 14 Mar 2013 09:45:56 +0100
 
 pyformex (0.8.9-1) unstable; urgency=low
 
@@ -13,24 +19,24 @@ pyformex (0.8.9-1) unstable; urgency=low
 pyformex (0.8.6-4) unstable; urgency=low
 
   * Registered documentation with doc-base
-  
+
   * Made pyformex-lib depend on pyformex(=${source:Version})
-  
+
   * Restored corrupted changelog entries
 
  -- Benedict Verhegghe <benedict.verhegghe@ugent.be>  Wed, 18 Jan 2012 16:41:52 +0100
 
 pyformex (0.8.6-3) unstable; urgency=low
 
-  * Fixed building of architecture-dependent -lib package (Closes: #656294) 
+  * Fixed building of architecture-dependent -lib package (Closes: #656294)
 
  -- Benedict Verhegghe <benedict.verhegghe@ugent.be>  Wed, 18 Jan 2012 10:27:49 +0100
 
 pyformex (0.8.6-2) unstable; urgency=low
 
   * Replaced build-dependency on (python,python-dev) by python-all-dev
-  
-  * Moved html documentation to /usr/share/doc/pyformex/html and 
+
+  * Moved html documentation to /usr/share/doc/pyformex/html and
     linked to it from pyformex paths.
 
  -- Benedict Verhegghe <benedict.verhegghe@ugent.be>  Tue, 17 Jan 2012 10:23:22 +0100

@@ -538,18 +538,38 @@ def createMovieInteractive():
     pf.GUI.setBusy(False)
 
 
+def exportPGF():
+    """Export the current scene to PGF"""
+    from plugins.webgl import WebGL
+    types = utils.fileDescription(['pgf','all'])
+    fn = draw.askNewFilename(pf.cfg['workdir'],types)
+    if fn:
+        pf.GUI.setBusy()
+        pf.message("Exporting current scene to %s" % fn)
+        fn = os.path.basename(fn)
+        if not fn.endswith('.pgf'):
+            fn += '.pgf'
+        name = utils.projectName(fn)
+        W = WebGL(name)
+        W.addScene()
+        res = W.exportPGF(fn,sep='')
+        pf.message("Contents: %s" % res)
+        pf.GUI.setBusy(False)
+
+
 def exportWebGL():
     """Export the current scene to WebGL"""
     from plugins.webgl import WebGL
     types = [ utils.fileDescription('html') ]
     fn = draw.askNewFilename(pf.cfg['workdir'],types)
     if fn:
-        pf.message("Exporting surface model to %s" % fn)
+        pf.message("Exporting current scene to %s" % fn)
         pf.GUI.setBusy()
-        W = WebGL()
-        W.addScene()
         fn = os.path.basename(fn)
-        W.export(fn,'Two spheres and a cone',createdby=50)
+        name = utils.projectName(fn)
+        W = WebGL(name)
+        W.addScene()
+        fn = W.export(title="%s WebGL model"%name,createdby=50)
         pf.GUI.setBusy(False)
         if draw.ack("Show the scene in your browser?"):
             fn = os.path.join(os.getcwd(),fn)
@@ -636,7 +656,8 @@ MenuData = [
     (_('&Stop MultiSave'),stopMultiSave),
     (_('&Save as Icon'),saveIcon),
     (_('&Show Image'),showImage),
-    (_('&Create WebGL'),exportWebGL),
+    (_('&Export as PGF'),exportPGF),
+    (_('&Export as WebGL'),exportWebGL),
     (_('&Record Session'),[
         (_('&Start Recording'),recordSession),
         (_('&Stop Recording'),stopRecording),

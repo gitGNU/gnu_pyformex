@@ -1237,9 +1237,9 @@ Things that have to be done by the project manager
 
 Extra needed packages:
 
-- cvs, for the pyFormex website at Savannah
+- cvs, for the pyFormex website at Savannah::
 
-  apt-get install cvs
+    apt-get install cvs
 
 Make file(s) public
 -------------------
@@ -1331,7 +1331,7 @@ First, create the distribution and test it out locally: both the installation pr
 - Put the documentation on the web site ::
 
    make pubdoc
-   make listwww
+   ./publish
    # now add the missing files by hand : cvs add FILE
    make commit
 
@@ -1356,6 +1356,31 @@ First, create the distribution and test it out locally: both the installation pr
 Well, that was easy, uh? ~)_do build
 
 
+Change the pyFormex website
+---------------------------
+
+The top tree of the website (everything not under Documentation) has its
+source files in the `website` directory. It uses mostly rest and sphinx,
+just like the documentation. To create the website::
+
+  cd website
+  make html
+
+Look at the result under the _build subdirectory. Some links (notably to
+the documentation) will not work from the local files.
+If the result is ok, it can be published as follows::
+
+  make pub
+
+This moves the resulting files to the `www` subdirectory, which is a
+cvs mirror of the website. Upload the files just as for the documentation::
+
+   cd ..
+   ./publish
+   # now add the missing files by hand : cvs add FILE
+   make commit
+
+
 Creating (official) Debian packages
 -----------------------------------
 
@@ -1368,7 +1393,7 @@ They will need to be tuned for the release.
 
 - Install needed software packages for the build process::
 
-    apt-get install debhelper devscripts
+    apt-get install debhelper devscripts python-all-dev
 
   Furthermore you also need to have installed all dependencies for the build,
   as declared in the variables `Build-Depends` and `Build-Depends-Indep` in
@@ -1379,9 +1404,22 @@ They will need to be tuned for the release.
 - Go to the `pkg` directory. The `_do` procedure should always be executed
   from here.
 
-- Set new version::
+- Prepare the package creation. This will set an entry in the debian/changelog
+  file. If the package to be created is for a new pyFormex version/release,
+  use::
 
-    dch -i
+    _do prepare
+
+  If the new package is a fix for the previous package of the same pyFormex
+  release, use::
+
+    _do preparefix
+
+  Then carefully edit the changelog file, respecting all whitespace.
+
+  - Replace UNRELEASED with unstable.
+  - Add the reason for the new package next to the *
+  - Remove all entries below that have a ~a field in the release.
 
 - Unpack latest release::
 
@@ -1440,31 +1478,6 @@ In the pyformex pkg subdirectory, after creating the signed debian packages,
 do::
 
   reprepro -b /net/bumps/var/www/repos/debian include unstable pyformex_$VERSION_amd64.changes
-
-
-
-Using the local debian repository
-=================================
-
-.. note:: This belongs in the pyFormex install guide.
-
-Our local repository contains unofficial debian packages for intermediate releases and some extra packages that are not in the official Debian repositories.
-
-These packages are constructed with the same quality as the official packages.
-
-To access our local repository, add the following to your `/etc/apt/sources.list`::
-
-  deb http://bumps.ugent.be/repos/debian/ sid main
-
-Install the key that was used to sign the packages, you can do::
-
-  wget -O - http://bumps.ugent.be/repos/pyformex-pubkey.gpg | apt-key add -
-
-Then, to install all the latest pyformex packages, just do::
-
-   apt-get update
-   apt-get pyformex pyformex-lib pyformex-extra
-
 
 
 .. End

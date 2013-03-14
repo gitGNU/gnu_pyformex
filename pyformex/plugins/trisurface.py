@@ -41,7 +41,6 @@ import geomtools
 import inertia
 import fileread,filewrite
 import utils
-from gui.drawable import interpolateNormals
 
 import os,tempfile
 import tempfile
@@ -211,7 +210,7 @@ def curvature(coords,elems,edges,neighbours=1):
     # calculate unit length average normals at the nodes p
     # a weight 1/|gi-p| could be used (gi=center of the face fi)
     p = coords
-    n = interpolateNormals(coords,elems,atNodes=True)
+    n = geomtools.averageNormals(coords,elems,atNodes=True)
     # double-precision: this will allow us to check the sign of the angles
     p = p.astype(float64)
     n = n.astype(float64)
@@ -623,9 +622,11 @@ class TriSurface(Mesh):
                 data,color = fileread.read_stl_bin(fn)
                 S = TriSurface(data[:,1:])
                 if color:
-                    from gui.draw import colorindex
-                    p = colorindex(color)
-                    S.setProp(p)
+                    print(color)
+                    #from gui.draw import colorindex
+                    #p = colorindex(color)
+                    #S.setProp(p)
+                    S.color = color
                 return S
             except:
                 print("Could not read as binary stl, will try conversion")
@@ -682,7 +683,7 @@ class TriSurface(Mesh):
 
     def avgVertexNormals(self):
         """Compute the average normals at the vertices."""
-        return interpolateNormals(self.coords,self.elems,atNodes=True)
+        return geomtools.averageNormals(self.coords,self.elems,atNodes=True)
 
 
     def areaNormals(self):

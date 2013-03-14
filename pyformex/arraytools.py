@@ -853,7 +853,7 @@ def checkFloat(value,min=None,max=None):
             raise
         return a
     except:
-        raise ValueError,"Expected a float in the range(%s, %s), got: %s" % (value)
+        raise ValueError,"Expected a float in the range(%s, %s), got: %s" % (min,max,value)
 
 
 def checkArray(a,shape=None,kind=None,allow=None):
@@ -954,11 +954,21 @@ def readArray(file,dtype,shape,sep=' '):
 
     This uses :func:`numpy.fromfile` to read an array with known shape and
     data type from an open file.
-    The sep parameter can be specified as in fromfile.
+    The sep parameter can be specified as in `numpy.fromfile`.
+    If an empty string is given as separator, the data is read in
+    binary mode. In that case (only) an extra '\\n' after the data
+    will be stripped off.
     """
     shape = asarray(shape)
     size = shape.prod()
-    return fromfile(file=file,dtype=dtype,count=size,sep=sep).reshape(shape)
+    data = fromfile(file=file,dtype=dtype,count=size,sep=sep).reshape(shape)
+    if sep == '':
+        pos = file.tell()
+        byte = file.read(1)
+        if not ord(byte) == 10:
+            # not a newline: push back
+            file.seek(pos)
+    return data
 
 
 def writeArray(file,array,sep=' '):
@@ -1945,6 +1955,38 @@ def uniformParamValues(n,umin=0.0,umax=1.0):
         return array([0.5*(umax+umin)])
     else:
         return umin + arange(n+1) * (umax-umin) / n
+
+
+def nodalSum(val,elems,avg=False,return_all=True,direction_treshold=None):
+    """Compute the nodal sum of values defined on elements.
+
+    val is a (nelems,nplex,nval) array of values defined at points of elements.
+    elems is a (nelems,nplex) array with nodal ids of all points of elements.
+
+    The return value is a (nelems,nplex,nval) array where each value is
+    replaced with the sum of its value at that node.
+    If avg=True, the values are replaced with the average instead.
+    If return_all==True(default), returns an array with shape (nelems,nplex,3),
+    else, returns an array with shape (maxnodenr+1,3). In the latter case,
+    nodes not occurring in elems will have all zero values.
+
+    If a direction_tolerance is specified and nval > 1, values will only be
+    summed if their direction is close (projection of one onto the other is
+    higher than the specified tolerance).
+    """
+    from pyformex.lib import misc
+    if val.ndim != 3:
+        val.reshape(val.shape+(1,))
+    if elems.shape != val.shape[:2]:
+        raise RuntimeError,"shape of val and elems does not match"
+    val = val.astype(float32)
+    elems = elems.astype(int32)
+    if val.shape[2] > 1 and direction_treshold is not None:
+        #nodalSum2(val,elems,direction_treshold)
+        val = misc.nodalSum(val,elems,elems.max(),avg,return_all)
+    else:
+        val = misc.nodalSum(val,elems,elems.max(),avg,return_all)
+    return val
 
 
 def pprint(a,label=''):

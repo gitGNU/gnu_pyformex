@@ -247,6 +247,22 @@ class Mesh(Geometry):
         return self
 
 
+    def setNormals(self,normals=None):
+        """Set/Remove the normals of the mesh.
+
+        """
+        import geomtools as gt
+        if normals is None:
+            pass
+        elif normals == 'auto':
+            normals = gt.polygonNormals(self.coords[self.elems])
+        elif normals == 'avg':
+            normals = gt.averageNormals(self.coords,self.elems)
+        else:
+            normals = checkArray(normals,(self.nelems(),self.nplex(),3),'f')
+        self.normals = normals
+
+
     def __getitem__(self,i):
         """Return element i of the Mesh.
 
@@ -1116,7 +1132,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         """
         if level < 0:
             level = m1.elType().ndim + level
-            
+
         sel = self.elType().getEntities(level)
         hi,lo = self.elems.insertLevel(sel)
         hiinv = hi.inverse()
@@ -1128,14 +1144,14 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         enr =  unique(hiinv[hiinv >= 0])  # element number
         fnr=column_stack(where(hpos!=-1)) # face number
         return enr,fnr
-    
+
     def matchFaces(self,mesh):
         """_Match faces of mesh with faces of self.
 
         self and Mesh can be same eltype meshes or different eltype but of the
         same hierarchical type (i.e. hex8-quad4 or tet4 - tri3)
         and are both without duplicates.
-        
+
         eturns the indices array of the elems of self that matches
         the faces of mesh, and the matched face number
         """
@@ -1149,22 +1165,49 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         Returns a mesh where all nodes that are not used in any
         element have been removed, and the nodes are renumbered to
         a compacter scheme.
+
+        Example:
+
+          >>> x = Coords([[i] for i in arange(5)])
+          >>> M = Mesh(x,[[0,2],[1,4],[4,2]])
+          >>> M = M.compact()
+          >>> print(M.coords)
+          [[ 0.  0.  0.]
+           [ 1.  0.  0.]
+           [ 2.  0.  0.]
+           [ 4.  0.  0.]]
+          >>> print(M.elems)
+          [[0 2]
+           [1 3]
+           [3 2]]
+          >>> M = Mesh(x,[[0,2],[1,3],[3,2]])
+          >>> M = M.compact()
+          >>> print(M.coords)
+          [[ 0.  0.  0.]
+           [ 1.  0.  0.]
+           [ 2.  0.  0.]
+           [ 3.  0.  0.]]
+          >>> print(M.elems)
+          [[0 2]
+           [1 3]
+           [3 2]]
+
         """
-        nodes = unique(self.elems)
-        if nodes.size == 0:
+        if self.nelems() == 0:
             ret = self.__class__([],[],eltype=self.elType())
-
-        elif nodes.shape[0] < self.ncoords() or nodes[-1] >= nodes.size:
-            coords = self.coords[nodes]
-            if nodes[-1] >= nodes.size:
-                elems = inverseUniqueIndex(nodes)[self.elems]
-            else:
-                elems = self.elems
-            ret = self.__class__(coords,elems,prop=self.prop,eltype=self.elType())
-
         else:
-            ret = self
-
+            elems,nodes = self.elems.renumber()
+            if elems is self.elems:
+                # node numbering is compact
+                if self.coords.shape[0] > len(nodes):
+                    # remove extraneous nodes
+                    self.coords = self.coords[:len(nodes)]
+                # numbering has not been changed, safe to use same object
+                ret = self
+            else:
+                # numbering has been changed, return new object
+                coords = self.coords[nodes]
+                ret = self.__class__(coords,elems,prop=self.prop,eltype=self.elType())
         return ret
 
 
@@ -2508,8 +2551,10 @@ def unitAttractor(x,e0=0.,e1=0.):
 
     Example:
 
+
+    >>> set_printoptions(precision=4)
     >>> print(unitAttractor([0.,0.25,0.5,0.75,1.0],2.))
-    [ 0.          0.00390625  0.0625      0.31640625  1.        ]
+    [ 0.      0.0039  0.0625  0.3164  1.    ]
     """
     x = asarray(x)
     e0 = 2**e0
@@ -2536,8 +2581,9 @@ def seed(n,e0=0.,e1=0.):
 
     Example:
 
+    >>> set_printoptions(precision=4)
     >>> print(seed(5,2.,2.))
-    [ 0.          0.0639436   0.33624323  0.66375677  0.9360564   1.        ]
+    [ 0.      0.0639  0.3362  0.6638  0.9361  1.    ]
     """
     x = arange(n+1) * 1. / n
     return unitAttractor(x,e0,e1)

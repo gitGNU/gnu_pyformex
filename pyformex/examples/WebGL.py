@@ -65,24 +65,28 @@ def run():
     S.alpha = 0.7
     S.caption = 'A sphere'
     S.control = ['visible','opacity','color']
+    S.setNormals('avg')
 
     T.color = blue
     T.caption = 'A cone'
     T.alpha = 1.0
     T.control = ['visible','opacity','color']
+    #S.setNormals('auto')
 
     C.color = 'yellow'
     C.caption = 'A cylinder'
     C.alpha = 0.8
     C.control = ['visible','opacity','color']
+    #S.setNormals('auto')
 
     export({'sphere':S,'cone':T,'cylinder':C})
 
     draw([S,T,C])
     zoomAll()
     rotRight(30.)
+
     camera = pf.canvas.camera
-    print("Camera focus: %s; position %s" % (camera.focus, camera.getPosition()))
+    print("Camera focus: %s; eye: %s" % (camera.focus, camera.eye))
 
     if checkWorkdir():
         # Export everything to webgl

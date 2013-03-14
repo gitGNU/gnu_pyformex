@@ -45,9 +45,14 @@ class GeometryFile(object):
     """A class to handle files in the pyFormex Geometry File format.
 
     The pyFormex Geometry File format allows the storage of most of the
-    geometrical objects inside pyFormex, as well as some of their attributes.
+    geometrical objects in pyFormex, as well as some of their attributes,
+    to an external file and to read it back, even with other versions
+    of the program or with other software.
 
-    If `file` is a string, a file with that name is opened with the
+    See http://pyformex.org/documentation/file_format for a full description
+    of the file format.
+
+    If `fil` is a string, a file with that name is opened with the
     specified `mode`. If no mode is specified, 'r' will be used for
     existing files and 'w' for new files.
     Else, `file` should be an already open file.
@@ -56,7 +61,7 @@ class GeometryFile(object):
     Geometry classes can provide the facility
     """
 
-    _version_ = '1.6'
+    _version_ = '1.7'
 
     def __init__(self,fil,mode=None,sep=' ',ifmt=' ',ffmt=' '):
         """Create the GeometryFile object."""
@@ -139,6 +144,7 @@ class GeometryFile(object):
 
         `geom` is one of the Geometry data types of pyFormex or a list
         or dict of such objects.
+        It can also be a WebGL objdict.
         Currently exported geometry objects are
         :class:`Coords`, :class:`Formex`, :class:`Mesh`,
         :class:`PolyLine`, :class:`BezierSpline`.
@@ -152,7 +158,15 @@ class GeometryFile(object):
         elif isinstance(geom,list):
             if name is None:
                 for obj in geom:
-                    self.write(obj,None,sep)
+                    if hasattr(obj,'obj'):
+                        #This must be a WebGL object dict
+                        self.writeDict(obj,sep=sep)
+                    else:
+                        if hasattr(obj,'name'):
+                            objname = obj.name
+                        else:
+                            objname = None
+                        self.write(obj,objname,sep)
             else:
                 name = utils.NameSequence(name)
                 for obj in geom:
@@ -170,6 +184,7 @@ class GeometryFile(object):
                 writefunc(geom,name,sep)
             except:
                 warning("Error while writing objects of type %s to geometry file: skipping" % type(geom))
+                raise
 
 
     def writeFormex(self,F,name=None,sep=None):
@@ -191,6 +206,47 @@ class GeometryFile(object):
             self.writeData(F.prop,sep)
 
 
+    def writeDict(self,F,name=None,sep=None,objtype='Mesh'):
+        """Write a dict to a pyFormex geometry file.
+
+        This is equivalent to the Mesh write, but input
+        is a WebGL object dict
+        """
+        if objtype is None:
+            objtype = 'Mesh'
+        if sep is None:
+            sep = self.sep
+        color = ''
+        if hasattr(F,'color'):
+            Fc = F.color
+            print("HAS COLOR=%s" % str(Fc))
+            if isinstance(Fc,ndarray):
+                if Fc.shape == (3,):
+                    color = tuple(Fc)
+                elif Fc.shape == (F.nelems(),3):
+                    color = 'element'
+                elif Fc.shape == (F.nelems(),F.nplex(),3):
+                    color = 'vertex'
+                else:
+                    raise ValueError,"Incorrect color shape: %s" % Fc.shape
+        print("COLOR=%s" % str(color))
+
+        # Now take the object
+        F = F.obj
+        hasprop = F.prop is not None
+        hasnorm = hasattr(F,'normals') and isinstance(F.normals,ndarray) and F.normals.shape == (F.nelems(),F.nplex(),3)
+        head = "# objtype='%s'; ncoords=%s; nelems=%s; nplex=%s; props=%s; eltype='%s'; normals=%s; color=%s; sep='%s'" % (objtype,F.ncoords(),F.nelems(),F.nplex(),hasprop,F.elName(),hasnorm,repr(color),sep)
+        if name:
+            head += "; name='%s'" % name
+        self.fil.write(head+'\n')
+        self.writeData(F.coords,sep)
+        self.writeData(F.elems,sep)
+        if hasprop:
+            self.writeData(F.prop,sep)
+        if hasnorm:
+            self.writeData(F.normals,sep)
+
+
     def writeMesh(self,F,name=None,sep=None,objtype='Mesh'):
         """Write a Mesh to a pyFormex geometry file.
 
@@ -206,7 +262,23 @@ class GeometryFile(object):
         if sep is None:
             sep = self.sep
         hasprop = F.prop is not None
-        head = "# objtype='%s'; ncoords=%s; nelems=%s; nplex=%s; props=%s; eltype='%s'; sep='%s'" % (objtype,F.ncoords(),F.nelems(),F.nplex(),hasprop,F.elName(),sep)
+        hasnorm = hasattr(F,'normals') and isinstance(F.normals,ndarray) and F.normals.shape == (F.nelems(),F.nplex(),3)
+        color = ''
+        if hasattr(F,'color'):
+            Fc = F.color
+            #print("HAS COLOR=%s" % str(Fc))
+            if isinstance(Fc,ndarray):
+                if Fc.shape == (3,):
+                    color = str(Fc)
+                elif Fc.shape == (F.nelems(),3):
+                    color = 'element'
+                elif Fc.shape == (F.nelems(),F.nplex(),3):
+                    color = 'vertex'
+                else:
+                    raise ValueError,"Incorrect color shape: %s" % Fc.shape
+
+        #print("COLOR=%s" % color)
+        head = "# objtype='%s'; ncoords=%s; nelems=%s; nplex=%s; props=%s; eltype='%s'; normals=%s; color=%r; sep='%s'" % (objtype,F.ncoords(),F.nelems(),F.nplex(),hasprop,F.elName(),hasnorm,color,sep)
         if name:
             head += "; name='%s'" % name
         self.fil.write(head+'\n')
@@ -214,6 +286,8 @@ class GeometryFile(object):
         self.writeData(F.elems,sep)
         if hasprop:
             self.writeData(F.prop,sep)
+        if hasnorm:
+            self.writeData(F.normals,sep)
 
 
     def writeTriSurface(self,F,name=None,sep=None):
@@ -345,8 +419,12 @@ class GeometryFile(object):
         while True:
             objtype = 'Formex' # the default obj type
             obj = None
+            nelems = None
+            ncoords = None
             sep = self.sep
             name = None
+            normals = None
+            color = None
             s = self.fil.readline()
 
             if len(s) == 0:   # end of file
@@ -362,7 +440,14 @@ class GeometryFile(object):
             ###
             try:
                 exec(s[1:].strip())
+                print("READ COLOR: %s" % str(color))
             except:
+                nelems = ncoords = None
+
+            if nelems is None and ncoords is None:
+                # For historical reasons, this is a certain way to test
+                # that no geom data block is following
+                print("SKIPPING %s" % s)
                 continue  # not a legal header: skip
 
             debug("Reading object of type %s" % objtype,DEBUG.INFO)
@@ -371,7 +456,7 @@ class GeometryFile(object):
             if objtype == 'Formex':
                 obj = self.readFormex(nelems,nplex,props,eltype,sep)
             elif objtype in ['Mesh','TriSurface']:
-                obj = self.readMesh(ncoords,nelems,nplex,props,eltype,sep,objtype)
+                obj = self.readMesh(ncoords,nelems,nplex,props,eltype,normals,sep,objtype)
             elif objtype == 'PolyLine':
                 obj = self.readPolyLine(ncoords,closed,sep)
             elif objtype == 'BezierSpline':
@@ -393,6 +478,14 @@ class GeometryFile(object):
 
 
             if obj is not None:
+                try:
+                    color = checkArray(color,(3,),'f')
+                    print("SET OBJECT COLOR TO %s" % color)
+                    obj.color = color
+                except:
+                    print("NOT SETTING COLOR %s" % str(color))
+                    pass
+
                 if name is None:
                     name = self.objname.next()
                 self.results[name] = obj
@@ -422,7 +515,7 @@ class GeometryFile(object):
         return Formex(f,p,eltype)
 
 
-    def readMesh(self,ncoords,nelems,nplex,props,eltype,sep,objtype='Mesh'):
+    def readMesh(self,ncoords,nelems,nplex,props,eltype,normals,sep,objtype='Mesh'):
         """Read a Mesh from a pyFormex geometry file.
 
         The following arrays are read from the file:
@@ -438,7 +531,7 @@ class GeometryFile(object):
 
         ndim = 3
         x = readArray(self.fil,Float,(ncoords,ndim),sep=sep)
-        e = readArray(self.fil,Float,(nelems,nplex),sep=sep)
+        e = readArray(self.fil,Int,(nelems,nplex),sep=sep)
         if props:
             p = readArray(self.fil,Int,(nelems,),sep=sep)
         else:
@@ -450,6 +543,9 @@ class GeometryFile(object):
             except:
                 clas = globals()[objtype]
             M = clas(M)
+        if normals:
+            n = readArray(self.fil,Float,(nelems,nplex,ndim),sep=sep)
+            M.normals = n
         return M
 
 
