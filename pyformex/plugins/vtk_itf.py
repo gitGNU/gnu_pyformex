@@ -287,7 +287,7 @@ def convertTransform4x4ToVtk(trMat4x4):
     [[trMatVtk.GetMatrix().SetElement(r,c,trMatrix[r,c]) for c in range(4)] for r in range(4)]
     return trMatVtk
 
-def pfvtkTrasform(source,trMat4x4):
+def pfvtkTransform(source,trMat4x4):
     """ Apply a 4x4 transformation matrix array to source of Coords or any surface type
     Returns the transformed coordinates
     """
