@@ -1164,7 +1164,7 @@ Quality: %s .. %s
         nconn = Q.nodeConnections()[range(self.ncoords())]
         p=zeros(Q.nelems(), dtype=int)
         for i, conn in enumerate(nconn):
-            p[conn[conn>0]]=i
+            p[conn[conn>-1]]=i
         Q=Q.setProp(p)
         nodalAreas = asarray([Q.withProp(i).area() for i in range(len(Q.propSet()))])
         return Q, nodalAreas
