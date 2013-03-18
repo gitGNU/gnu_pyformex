@@ -1330,6 +1330,8 @@ def writeCloads(fil,prop):
     for p in prop:
         setname = nsetName(p)
         fil.write("*CLOAD")
+        if p.op is None:
+            fil.write(", OP=NEW")
         if p.op is not None:
             fil.write(", OP=%s" % p.op)
         if p.ampl is not None:
@@ -1356,6 +1358,8 @@ def writeDloads(fil,prop):
     for p in prop:
         setname = esetName(p)
         fil.write("*DLOAD")
+        if p.op is None:
+            fil.write(", OP=NEW")
         if p.op is not None:
             fil.write(", OP=%s" % p.op)
         if p.ampl is not None:
@@ -1378,6 +1382,8 @@ def writeDsloads(fil,prop):
     """
     for p in prop:
         fil.write("*DSLOAD")
+        if p.op is None:
+            fil.write(", OP=NEW")
         if p.op is not None:
             fil.write(", OP=%s" % p.op)
         if p.ampl is not None:
