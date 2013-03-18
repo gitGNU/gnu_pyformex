@@ -284,7 +284,7 @@ def convertTransform4x4ToVtk(trMat4x4):
     """
     from vtk import vtkTransform
     trMatVtk=vtkTransform()
-    [[trMatVtk.GetMatrix().SetElement(r,c,trMatrix[r,c]) for c in range(4)] for r in range(4)]
+    [[trMatVtk.GetMatrix().SetElement(r,c,trMat4x4[r,c]) for c in range(4)] for r in range(4)]
     return trMatVtk
 
 def pfvtkTransform(source,trMat4x4):
