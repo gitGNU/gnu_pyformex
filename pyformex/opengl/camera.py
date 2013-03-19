@@ -23,6 +23,47 @@ import OpenGL.GLU as GLU
 import pyformex as pf
 from matrix import Matrix4
 
+def perspective_matrix(left,right,bottom,top,near,far):
+    """Create a perspective Projection matrix.
+
+    """
+    m = Matrix4()
+    m[0,0] = 2 * near / (right-left)
+    m[1,1] = 2 * near / (top-bottom)
+    m[2,0] = (right+left) / (right-left)
+    m[2,0] = (top+bottom) / (top-bottom)
+    m[2,2] = - (far+near) / (far-near)
+    m[2,3] = -1.
+    m[3,2] = -2 * near * far / (far-near)
+    m[3,3] = 0.
+    return m
+
+
+def orthogonal_matrix(left,right,bottom,top,near,far):
+    """Create an orthogonal Projection matrix.
+
+    """
+    m = Matrix4()
+    m[0,0] = 2 / (right-left)
+    m[1,1] = 2 / (top-bottom)
+    m[2,2] = -2 / (far-near)
+    m[3,0] = - (right+left) / (right-left)
+    m[3,1] = - (top+bottom) / (top-bottom)
+    m[3,2] = - (far+near) / (far-near)
+    return m
+
+
+def pick_matrix(x,y,w,h,viewport):
+    """Create a pick Projection matrix
+
+    """
+    m = Matrix4()
+    m[0,0] = viewport[2] / w;
+    m[1,1] = viewport[3] / h;
+    m[3,0] = (viewport[2] + 2.0 * (viewport[0] - x)) / w;
+    m[3,1] = (viewport[3] + 2.0 * (viewport[1] - y)) / h;
+    return m
+
 
 built_in_views = {
     'front': (0.,0.,0.),
@@ -160,6 +201,7 @@ class Camera(object):
         """
         self.locked = False
         self._modelview = Matrix4()
+        self._projection = Matrix4()
         self.focus = focus
         self.dist = dist
         self.setModelView(angles=angles)
@@ -494,48 +536,6 @@ class Camera(object):
     ##     self.lensChanged = True
 
 
-    def loadProjection(self,force=False,pick=None,keepmode=False):
-        """Load the projection/perspective matrix.
-
-        The caller will have to setup the correct GL environment beforehand.
-        No need to set matrix mode though. This function will switch to
-        GL_PROJECTION mode before loading the matrix
-
-        If keepmode=True, does not switch back to GL_MODELVIEW mode.
-
-        A pick region can be defined to use the camera in picking mode.
-        pick defines the picking region center and size (x,y,w,h).
-
-        This function does it best at autodetecting changes in the lens
-        settings, and will only reload the matrix if such changes are
-        detected. You can optionally force loading the matrix.
-        """
-        GL.glMatrixMode(GL.GL_PROJECTION)
-        if self.lensChanged or force:
-            GL.glLoadIdentity()
-            if pick:
-                GLU.gluPickMatrix(*pick)
-
-            fv = at.tand(self.fovy*0.5)
-            if self.perspective:
-                fv *= self.near
-            else:
-                fv *= self.dist
-            fh = fv * self.aspect
-            x0,x1 = 2*self.area - 1.0
-            frustum = (fh*x0[0],fh*x1[0],fv*x0[1],fv*x1[1],self.near,self.far)
-            if self.perspective:
-                GL.glFrustum(*frustum)
-            else:
-                GL.glOrtho(*frustum)
-            try:
-                self.projection_callback(self)
-            except:
-                pass
-        if not keepmode:
-            GL.glMatrixMode(GL.GL_MODELVIEW)
-
-
     #### global manipulation ###################
 
     def set3DMatrices(self):
@@ -565,6 +565,139 @@ class Camera(object):
         else:
             self.tracking = False
 
+
+
+    # TODO
+    def translate(self,vx,vy,vz,local=True):
+        if not self.locked:
+            if local:
+                vx,vy,vz = self.toWorld([vx,vy,vz,1])
+            self.move(-vx,-vy,-vz)
+
+
+#################################################################
+##  Operations on modelview matrix  ##
+
+
+    ## def loadProjection(self,pick=None):
+    ##     """Load the projection/perspective matrix.
+
+    ##     The caller will have to setup the correct GL environment beforehand.
+    ##     No need to set matrix mode though. This function will switch to
+    ##     GL_PROJECTION mode before loading the matrix
+
+    ##     If keepmode=True, does not switch back to GL_MODELVIEW mode.
+
+    ##     A pick region can be defined to use the camera in picking mode.
+    ##     pick defines the picking region center and size (x,y,w,h).
+
+    ##     This function does it best at autodetecting changes in the lens
+    ##     settings, and will only reload the matrix if such changes are
+    ##     detected. You can optionally force loading the matrix.
+    ##     """
+    ##     GL.glMatrixMode(GL.GL_PROJECTION)
+    ##     if self.lensChanged:
+    ##         GL.glLoadIdentity()
+    ##         if pick:
+    ##             print("PICK",pick)
+    ##             GLU.gluPickMatrix(*pick)
+    ##             p = GL.glGetDoublev(GL.GL_PROJECTION_MATRIX)
+    ##             print("PICK PROJ",p)
+    ##             pp = pick_matrix(*pick)
+    ##             print("BV PICK",pp)
+
+    ##         fv = at.tand(self.fovy*0.5)
+    ##         if self.perspective:
+    ##             fv *= self.near
+    ##         else:
+    ##             fv *= self.dist
+    ##         fh = fv * self.aspect
+    ##         x0,x1 = 2*self.area - 1.0
+    ##         frustum = (fh*x0[0],fh*x1[0],fv*x0[1],fv*x1[1],self.near,self.far)
+    ##         if self.perspective:
+    ##             GL.glFrustum(*frustum)
+    ##         else:
+    ##             GL.glOrtho(*frustum)
+    ##         try:
+    ##             self.projection_callback(self)
+    ##         except:
+    ##             pass
+    ##     p = GL.glGetDoublev(GL.GL_PROJECTION_MATRIX)
+    ##     print("GL PROJ",p)
+    ##     if self.perspective:
+    ##         func = perspective_matrix
+    ##     else:
+    ##         func = orthogonal_matrix
+    ##     p = func(fh*x0[0],fh*x1[0],fv*x0[1],fv*x1[1],self.near,self.far)
+    ##     print("BV PROJ",p)
+    ##     if pick:
+    ##         print("BV PICK * PROJ",pp * p)
+    ##         print("BV PROJ * PICK",p * pp)
+    ##     GL.glMatrixMode(GL.GL_MODELVIEW)
+
+
+    def setProjection(self,pick=None):
+        """Load the projection/perspective matrix.
+
+        The caller will have to setup the correct GL environment beforehand.
+        No need to set matrix mode though. This function will switch to
+        GL_PROJECTION mode before loading the matrix
+
+        If keepmode=True, does not switch back to GL_MODELVIEW mode.
+
+        A pick region can be defined to use the camera in picking mode.
+        pick defines the picking region center and size (x,y,w,h).
+
+        This function does it best at autodetecting changes in the lens
+        settings, and will only reload the matrix if such changes are
+        detected. You can optionally force loading the matrix.
+        """
+        if self.locked:
+            return
+
+        fv = at.tand(self.fovy*0.5)
+        if self.perspective:
+            fv *= self.near
+        else:
+            fv *= self.dist
+        fh = fv * self.aspect
+        x0,x1 = 2*self.area - 1.0
+        frustum = (fh*x0[0],fh*x1[0],fv*x0[1],fv*x1[1],self.near,self.far)
+        if self.perspective:
+            func = perspective_matrix
+        else:
+            func = orthogonal_matrix
+        self.projection = func(fh*x0[0],fh*x1[0],fv*x0[1],fv*x1[1],self.near,self.far)
+        try:
+            self.projection_callback(self)
+        except:
+            pass
+
+
+    def loadProjection (self,pick=None):
+        """Load the Projection matrix.
+
+        If lens parameters of the camera have been changed, the current
+        Projection matrix is rebuild.
+        Then, the current Projection matrix of the camera is loaded into the
+        OpenGL engine.
+
+        A pick region can be specified to use the camera in picking mode.
+
+        - `pick`: a tuple (x,y,w,h,viewport) where x,y,w,h are floats
+          defining the picking region center (x,y) and size (w,h), and
+          viewport is a tuple of 4 int values (xmin,ymin,xmax,ymax) defining
+          the viewport.
+        """
+        if self.lensChanged:
+            self.setProjection()
+        m = self.projection
+        if pick:
+            m *= pick_matrix(*pick)
+
+        GL.glMatrixMode(GL.GL_PROJECTION)
+        GL.glLoadMatrixf(m.gl())
+        GL.glMatrixMode(GL.GL_MODELVIEW)
 
 
 #################################################################
@@ -646,77 +779,68 @@ class Camera(object):
         In all cases, if a modelview callback was set, it is called,
         and the viewChanged flag is cleared.
         """
-        if not self.locked:
-            if m is None and (self.viewChanged or angles is not None):
-                m = Matrix4()
-                m.translate([0,0,-self.dist])
-                if angles is None:
-                    m.rotate(self._modelview.rot)
-                else:
-                    long,lat,twist = angles
-                    m.rotate(-twist % 360, [0.0, 0.0, 1.0])
-                    m.rotate(lat % 360, [1.0, 0.0, 0.0])
-                    m.rotate(-long % 360, [0.0, 1.0, 0.0])
-                m.translate(-self.focus)
+        if self.locked:
+            return
 
-            if m is not None:
-                self._modelview = Matrix4(m)
+        if m is None and (self.viewChanged or angles is not None):
+            m = Matrix4()
+            m.translate([0,0,-self.dist])
+            if angles is None:
+                m.rotate(self._modelview.rot)
+            else:
+                long,lat,twist = angles
+                m.rotate(-twist % 360, [0.0, 0.0, 1.0])
+                m.rotate(lat % 360, [1.0, 0.0, 0.0])
+                m.rotate(-long % 360, [0.0, 1.0, 0.0])
+            m.translate(-self.focus)
 
-            try:
-                self.modelview_callback(self)
-            except:
-                pass
-            self.viewChanged = False
+        if m is not None:
+            self._modelview = Matrix4(m)
+
+        try:
+            self.modelview_callback(self)
+        except:
+            pass
+        self.viewChanged = False
 
 
     def loadModelView (self):
         """Load the ModelView matrix.
 
-        The current ModelView matrix of the camera is loaded into the
+        If camera positioning parameters have been changed, the current
+        ModelView matrix is rebuild.
+        Then, the current ModelView matrix of the camera is loaded into the
         OpenGL engine.
         """
         if self.viewChanged:
-            # need to update
             self.setModelView()
         GL.glMatrixMode(GL.GL_MODELVIEW)
         GL.glLoadMatrixf(self._modelview.gl())
 
 
-    # TO MATRIX4?
-    def translate(self,vx,vy,vz,local=True):
-        if not self.locked:
-            if local:
-                vx,vy,vz = self.toWorld([vx,vy,vz,1])
-            self.move(-vx,-vy,-vz)
+    def transform(self,x):
+        """Transform a vertex using the current Modelview matrix.
+
+        Transforms the point from world to camera coordinates.
+        """
+        x = at.checkArray(x,(3,),'f')
+        return x*self.modelview[:3,:3] + self.modelview[3,:3]
 
 
-    # TO MATRIX4?
-    def transform(self,v):
-        """Transform a vertex using the current Modelview matrix."""
-        if len(v) == 3:
-            v = v + [ 1. ]
-        v = (np.array(v) * self._modelview)[0]
-        return [ a/v[3] for a in v[0:3] ]
-
-
-    # TO MATRIX4?
-    def toWorld(self,v):
+    def toWorld(self,x):
         """Transform a vertex from camera to world coordinates.
 
         This multiplies
         The specified vector can have 3 or 4 (homogoneous) components.
         This uses the currently saved rotation matrix.
         """
-        v = at.checkArray(v,(3,),'f') + [0.,0.,self.dist]
-        return v*self.rot.T + self.focus
+        x = at.checkArray(x,(3,),'f') + [0.,0.,self.dist]
+        return x*self.rot.T + self.focus
 
 
 
 #################################
     # Compatibility: should be removed after complete conversion
-
-    def getPosition(self):
-        return self.eye
 
     def saveModelView(self):
         pass
