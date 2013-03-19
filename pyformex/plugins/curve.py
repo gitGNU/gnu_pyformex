@@ -1773,6 +1773,43 @@ class Arc(Curve):
         return Curve.approx(self,ndiv)
 
 
+def arc2points(x0,x1,R,pos='-'):
+    """Create an arc between two points
+
+    Given two points x0 and x1, this constructs an arc with radius R
+    through these points. The two points should have the same z-value.
+    The arc will be in a plane parallel with the x-y plane and wind
+    positively around the z-axis when moving along the arc from x0 to x1.
+
+    If pos == '-', the center of the arc will be at the left when going
+    along the chord from x0 to x1, creating an arc smaller than a half-circle.
+    If pos == '+', the center of the arc will be at the right when going
+    along the chord from x0 to x1, creating an arc larger than a half-circle.
+
+    If R is too small, an exception is raised.
+    """
+    if x0[2] != x1[2]:
+        raise ValueError,"The points should b in a plane // xy plane"
+    xm = (x0+x1) / 2  # center of points
+    xd = (x0-x1) / 2  # half length vector
+    do = normalize([xd[1],-xd[0],0])  # direction of center
+    xl = dot(xd,xd)    # square length
+    if R**2 < xl:
+        raise ValueError,"The radius should at least be %s" % sqrt(xl)
+    dd = sqrt(R**2 - xl)   # distance of center to xm
+    if pos == '+':
+        xc = xm - dd * do  # Center is to the left when going from x0 to x1
+    else:
+        xc = xm + dd * do
+
+    xx = [1.,0.,0.]
+    xz = [0.,0.,1.]
+    angles = rotationAngle([xx,xx],[x0-xc,x1-xc],m=[xz,xz])
+    if dir == '-':
+        angles = reversed(angles)
+    xc[2] = x0[2]
+    return Arc(center=xc,radius=R,angles=angles)
+
 
 class Spiral(Curve):
     """A class representing a spiral curve."""

@@ -266,7 +266,7 @@ Debian users should just have to install the packages ``python-numpy``, ``python
   apt-get install python-numpy python-opengl python-qt4-gl python-dev libglu1-mesa-dev
 
 Other optional packages that might be useful are ``admesh``, ``python-scipy``,
-``python-numpy-ext``, ``units``.
+ ``units``.
 
 
 .. _sec:downloading:
