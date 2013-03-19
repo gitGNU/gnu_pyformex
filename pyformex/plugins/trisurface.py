@@ -1125,13 +1125,18 @@ Quality: %s .. %s
         return TriSurface(coordsNew,self.getElems(),prop=self.prop)
 
 
-    def medianDualMesh(self):
-        """Return the median dual mesh (MDM).
+    def dualMesh(self, method='median'):
+        """Return the dual mesh (DM).
         
         It creates a new triangular mesh where all triangles with prop `p` 
-        represent the MDM region around the original surface node `p`. It returns 
-        the MDM and the node-based area of the original surface.
-        NB: the total node-based area is equal to the original surface area.
+        represent the DM region around the original surface node `p`.
+        
+        - `method`: 'median' or 'voronoi'
+        
+        If method is 'median' it returns the Median DM and also the area 
+        of the region around each node. The sum of the node-based areas 
+        is equal to the original surface area.
+        If method is 'voronoi' it returns the voronoi polyeders and a None.
         
         For info:
         http://users.led-inc.eu/~phk/mesh-dualmesh.html
@@ -1139,17 +1144,19 @@ Quality: %s .. %s
         Example:
         
         from elements import Quad4
+        from plugins.trisurface import Sphere
         view('front')
         smooth()
         S=Mesh(Quad4).convert('tri3-r').convert('quad4').convert('tri3-r')
-        S=S.fuse().compact()
-        S=TriSurface(S)
-        St=S.trl(0,-S.coords[:, 0].max()*1.5)
+        S=TriSurface(S.fuse().compact())+Sphere(1).scale(0.5).addNoise(0.1).trl([0., 2., 0.])
+        St=S.trl(0,-S.coords[:, 0].max()*2.)
         draw(St, mode='wireframe')
         drawNumbers(St.coords)
-        ##compute the dual and node beased areas
-        Q, nodalAreas=S.medianDualMesh()
-        draw(Q, mode='smooth')
+        draw(S, mode='wireframe')
+        drawNumbers(S.coords)
+        ##compute the dual and node based areas
+        Q, nodalAreas=S.dualMesh('median')
+        draw(Q)
         draw(Q.withProp([3]), linewidth=3, mode='wireframe', ontop=True)
         draw(S.coords[3:4].trl(2, 0.001), marksize=10, color='black', ontop=True, mode='flat')
         draw(S.coords, color='white', marksize=5)
@@ -1157,15 +1164,21 @@ Quality: %s .. %s
         drawNumbers(S.coords)
         print (nodalAreas)
         print (S.area())
-        print(nodalAreas.sum())#the total nodal-based area is equal to the total face-based area
+        if nodalAreas is not None:
+            print(nodalAreas.sum())#the total nodal-based area is equal to the total face-based area
         """
         
-        Q=self.convert('quad4')     
+        Q=self.convert('quad4')
+        if method == 'voronoi':
+            from geomtools import triangleCircumCircle
+            Q.coords[-self.nelems():]=triangleCircumCircle(self.coords[self.elems],bounding=False)[1]
         nconn = Q.nodeConnections()[range(self.ncoords())]
         p=zeros(Q.nelems(), dtype=int)
         for i, conn in enumerate(nconn):
-            p[conn[conn>0]]=i
+            p[conn[conn>-1]]=i
         Q=Q.setProp(p)
+        if method == 'voronoi':
+            return Q, None
         nodalAreas = asarray([Q.withProp(i).area() for i in range(len(Q.propSet()))])
         return Q, nodalAreas
     
@@ -2163,8 +2176,8 @@ Quality: %s .. %s
             from pyformex_gts import inside
             return inside(self,pts)
         elif method == 'vtk':
-            from vtk_itf import vtkPointInsideObject
-            return vtkPointInsideObject(self,pts,tol)
+            from vtk_itf import pfvtkPointInsideObject
+            return pfvtkPointInsideObject(self,pts,tol)
 
 
 ##########################################################################

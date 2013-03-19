@@ -67,7 +67,7 @@ def cleanVPD(vpd):
     return  cleaner.GetOutput()
     
 
-def convert2VPD(M,clean=False):
+def convert2VPD(M,clean=False,verbose=False):
     """Convert pyFormex data to vtkPolyData.
     
     Convert a pyFormex Mesh or Coords object into vtkPolyData.
@@ -85,9 +85,10 @@ def convert2VPD(M,clean=False):
     """
     from vtk import vtkPolyData,vtkPoints,vtkIdTypeArray,vtkCellArray
     
-    print('STARTING CONVERSION FOR DATA OF TYPE %s '%type(M))
+    if verbose:
+        print('STARTING CONVERSION FOR DATA OF TYPE %s '%type(M))
     
-    if type(M) == Coords:
+    if  isinstance(M,Coords):
         M = Mesh(M,arange(M.ncoords()))
     
     Nelems = M.nelems() # Number of elements
@@ -117,21 +118,24 @@ def convert2VPD(M,clean=False):
     datav.SetCells(Nelems,elms)
     if Ncxel == 1:
         try:
-            print("setting VERTS for data with %s maximum number of point for cell "%Ncxel)
+            if verbose:
+                print("setting VERTS for data with %s maximum number of point for cell "%Ncxel)
             vpd.SetVerts(datav)
         except:
             raise ValueError,"Error in saving  VERTS"
 
     elif Ncxel == 2:
         try:
-            print ("setting LINES for data with %s maximum number of point for cell "%Ncxel)
+            if verbose:
+                print ("setting LINES for data with %s maximum number of point for cell "%Ncxel)
             vpd.SetLines(datav)
         except:
             raise  ValueError,"Error in saving  LINES"
             
     else:
         try:
-            print ("setting POLYS for data with %s maximum number of point for cell "%Ncxel)
+            if verbose:
+                print ("setting POLYS for data with %s maximum number of point for cell "%Ncxel)
             vpd.SetPolys(datav)
         except:
             raise ValueError,"Error in saving  POLYS"
@@ -162,7 +166,7 @@ def convertVPD2Triangles(vpd):
     return triangles.GetOutput()
 
 
-def convertFromVPD(vpd):
+def convertFromVPD(vpd,verbose=False):
     """Convert a vtkPolyData into pyFormex objects.
     
     Convert a vtkPolyData into pyFormex objects.
@@ -180,33 +184,37 @@ def convertFromVPD(vpd):
     if  vpd.GetPoints().GetData().GetNumberOfTuples():
         ntype=gnat(vpd.GetPoints().GetDataType())
         pts = asarray(v2n(vpd.GetPoints().GetData()),dtype=ntype)
-        print('Saved points coordinates array')
+        if verbose:
+            print('Saved points coordinates array')
         
     # getting Polygons
     if  vpd.GetPolys().GetData().GetNumberOfTuples():
         ntype=gnat(vpd.GetPolys().GetData().GetDataType())
         Nplex = vpd.GetPolys().GetMaxCellSize()
         polys = asarray(v2n(vpd.GetPolys().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
-        print('Saved polys connectivity array')
+        if verbose:
+            print('Saved polys connectivity array')
         
     # getting Lines
     if  vpd.GetLines().GetData().GetNumberOfTuples():
         ntype=gnat(vpd.GetLines().GetData().GetDataType())
         Nplex = vpd.GetLines().GetMaxCellSize()
         lines = asarray(v2n(vpd.GetLines().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
-        print('Saved lines connectivity array')
+        if verbose:
+            print('Saved lines connectivity array')
         
     # getting Vertices
     if  vpd.GetVerts().GetData().GetNumberOfTuples():
         ntype=gnat(vpd.GetVerts().GetData().GetDataType())
         Nplex = vpd.GetVerts().GetMaxCellSize()
         verts = asarray(v2n(vpd.GetVerts().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
-        print('Saved verts connectivity array')
+        if verbose:
+            print('Saved verts connectivity array')
         
     return pts, polys, lines, verts
 
 
-def vtkPointInsideObject(S,P,tol=0.):
+def pfvtkPointInsideObject(S,P,tol=0.):
     """vtk function to test which of the points P are inside surface S"""
     
     from vtk import vtkSelectEnclosedPoints
@@ -230,7 +238,7 @@ def vtkPointInsideObject(S,P,tol=0.):
 
 
 
-def vtkIntersectWithSegment(surf,lines,tol=0.0):
+def pfvtkIntersectWithSegment(surf,lines,tol=0.0):
     """
     Computes the intersection of surf with lines.
     Returns a list of the intersection points lists and of the element number of surf where the point lies.
@@ -263,4 +271,34 @@ def vtkIntersectWithSegment(surf,lines,tol=0.0):
     del loc
     return pts,cellids
 
+
+def convertTransform4x4FromVtk(transform):
+    """ Convert a vtk transformation instance vtkTrasmorm into a 4x4 transformation matrix array
+        
+    """
+    trMat4x4 = [[ transform.GetMatrix().GetElement(r,c) for c in range(4)] for r in range(4)]
+    return asarray(trMat4x4)
+
+def convertTransform4x4ToVtk(trMat4x4):
+    """ Convert a 4x4 transformation matrix array into a vtkTransform instance
+    """
+    from vtk import vtkTransform
+    trMatVtk=vtkTransform()
+    [[trMatVtk.GetMatrix().SetElement(r,c,trMat4x4[r,c]) for c in range(4)] for r in range(4)]
+    return trMatVtk
+
+def pfvtkTransform(source,trMat4x4):
+    """ Apply a 4x4 transformation matrix array to source of Coords or any surface type
+    Returns the transformed coordinates
+    """
+    
+    from vtk import vtkTransformPolyDataFilter
+    
+    source=convert2VPD(source)
+    trMat4x4=convertTransform4x4ToVtk(trMat4x4)
+    transformFilter = vtkTransformPolyDataFilter()
+    transformFilter.SetInput(source)
+    transformFilter.SetTransform(trMat4x4)
+    transformFilter.Update()
+    return Coords(convertFromVPD(transformFilter.GetOutput())[0])
 # End
