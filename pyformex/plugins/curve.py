@@ -1804,7 +1804,7 @@ def arc2points(x0,x1,R,pos='-'):
 
     xx = [1.,0.,0.]
     xz = [0.,0.,1.]
-    angles = rotationAngle([xx,xx],[x0-xc,x1-xc],m=[xz,xz])
+    angles = gt.rotationAngle([xx,xx],[x0-xc,x1-xc],m=[xz,xz])
     if dir == '-':
         angles = reversed(angles)
     xc[2] = x0[2]
