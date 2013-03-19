@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -94,7 +94,7 @@ def drawNurbs(N):
         draw(N.knotPoints(),color=_options.color,marksize=_options.knotsize,nolight=True)
         if _options.knot_numbers:
             drawNumbers(N.knotPoints(),nolight=True)
-            
+
 
 # Override some functions for nurbs
 
@@ -111,11 +111,11 @@ def createNurbsCurve(N,name=None):
     if name is None:
         name = an.peek()
         res = askItems([
-            ('name',name,{'text':'Name for storing the object'}),
+            _I('name',name,text='Name for storing the object'),
             ])
         if not res:
             return None
-    
+
     name = res['name']
     if name == an.peek():
         an.next()
@@ -164,7 +164,7 @@ def fromPolyLine():
         C = named(n)
         N = NurbsCurve(C.coords,degree=1,blended=False)
         createNurbsCurve(N,name=None)
-    
+
 
 ################################## Menu #############################
 
@@ -216,7 +216,7 @@ def reload_menu():
 
 def test_menu():
     print("TEST2")
-    
+
 ####################################################################
 
 if __name__ == "draw":

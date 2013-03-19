@@ -257,10 +257,10 @@ def checkResultsOnServer(host=None,userdir=None):
     global the_host,the_userdir,the_jobnames
     if host is None or userdir is None:
         res = askItems(
-            [ ('host',None,'select',{'choices':['bumpfs','bumpfs2','other']}),
-              ('other','',{'text':'Other host name'}),
-              ('status',None,'select',{'choices':['results','running','custom']}),
-              ('userdir','bumper/results/',{'text':'Custom user directory'}),
+            [ _I('host',None,'select',choices=['bumpfs','bumpfs2','other']),
+              _I('other','',text='Other host name'),
+              _I('status',None,'select',choices=['results','running','custom']),
+              _I('userdir','bumper/results/',text='Custom user directory'),
             ], enablers=[
                 ('status','custom','userdir')
                 ]

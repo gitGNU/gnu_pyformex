@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -55,7 +55,7 @@ _preview = False
 def set_preview(onoff=True):
     global _preview
     _preview = onoff
-    
+
 
 def toggle_preview(onoff=None):
     global _preview
@@ -93,7 +93,7 @@ def drawnObject(points,mode='point'):
     if '_' in mode:
         mode,minor = mode.split('_')
     closed = minor=='closed'
-    
+
     if mode == 'point':
         return points
     elif mode == 'polyline':
@@ -120,7 +120,7 @@ def drawnObject(points,mode='point'):
             return circles
     else:
         return None
-    
+
 
 def highlightDrawing(points,mode):
     """Highlight a temporary drawing on the canvas.
@@ -147,7 +147,7 @@ def highlightDrawing(points,mode):
         pf.canvas.addHighlight(OA)
     pf.canvas.update()
 
-    
+
 def drawPoints2D(mode,npoints=-1,zvalue=0.,coords=None):
     """Draw a 2D opbject in the xy-plane with given z-value"""
     if mode not in draw_mode_2d:
@@ -155,7 +155,7 @@ def drawPoints2D(mode,npoints=-1,zvalue=0.,coords=None):
     x,y,z = pf.canvas.project(0.,0.,zvalue)
     return draw2D(mode,npoints=npoints,zplane=z,coords=coords)
 
-    
+
 def drawObject2D(mode,npoints=-1,zvalue=0.,coords=None):
     """Draw a 2D opbject in the xy-plane with given z-value"""
     points = drawPoints2D(mode,npoints=npoints,zvalue=zvalue,coords=coords)
@@ -173,7 +173,7 @@ def selectObject(mode=None):
 ###################################
 
 the_zvalue = 0.
-    
+
 def draw_object(mode,npoints=-1):
     print("z value = %s" % the_zvalue)
     points = drawPoints2D(mode,npoints=-1,zvalue=the_zvalue)
@@ -186,12 +186,12 @@ def draw_object(mode,npoints=-1):
         return
     print("OBJECT IS %s" % obj)
     res = askItems([
-        ('name',autoname[mode].peek(),{'text':'Name for storing the object'}),
-        ('color','blue','color',{'text':'Color for the object'}),
+        _I('name',autoname[mode].peek(),text='Name for storing the object'),
+        _I('color','blue','color',text='Color for the object'),
         ])
     if not res:
         return
-    
+
     name = res['name']
     color = res['color']
     if name == autoname[mode].peek():
@@ -205,7 +205,7 @@ def draw_object(mode,npoints=-1):
         print("DRAWING KNOTS")
         draw(obj.knotPoints(),color=color,marksize=5)
     return name
-    
+
 
 def draw_points(npoints=-1):
     return draw_object('point',npoints=npoints)
@@ -238,7 +238,7 @@ def objectName(actor):
             if named(name) is obj:
                 return name
     return None
-        
+
 
 def splitPolyLine(c):
     """Interactively split the specified polyline"""
@@ -255,8 +255,8 @@ def splitPolyLine(c):
         return c.split(at)
     else:
         return []
-    
-  
+
+
 def split_curve():
     k = pickActors(filter='single',oneshot=True)
     print(k)
@@ -272,34 +272,35 @@ def split_curve():
     if len(cs) == 2:
         draw(cs[0],color='red')
         draw(cs[1],color='green')
-    
+
 
 _grid_data = [
-    ['autosize',False],
-    ['dx',1.,{'text':'Horizontal distance between grid lines'}], 
-    ['dy',1.,{'text':'Vertical distance between grid lines'}], 
-    ['width',100.,{'text':'Horizontal grid size'}],
-    ['height',100.,{'text':'Vertical grid size'}],
-    ['point',[0.,0.,0.],{'text':'Point in grid plane'}],
-    ['normal',[0.,0.,1.],{'text':'Normal on the plane'}],
-    ['lcolor','black','color',{'text':'Line color'}],
-    ['lwidth',1.0,{'text':'Line width'}],
-    ['showplane',False,{'text':'Show backplane'}],
-    ['pcolor','white','color',{'text':'Backplane color'}],
-    ['alpha','0.3',{'text':'Alpha transparency'}],
+    _I('autosize',False),
+    _I('dx',1.,text='Horizontal distance between grid lines'),
+    _I('dy',1.,text='Vertical distance between grid lines'),
+    _I('width',100.,text='Horizontal grid size'),
+    _I('height',100.,text='Vertical grid size'),
+    _I('point',[0.,0.,0.],text='Point in grid plane'),
+    _I('normal',[0.,0.,1.],text='Normal on the plane'),
+    _I('lcolor','black','color',text='Line color'),
+    _I('lwidth',1.0,text='Line width'),
+    _I('showplane',False,text='Show backplane'),
+    _I('pcolor','white','color',text='Backplane color'),
+    _I('alpha','0.3',text='Alpha transparency'),
     ]
 
-        
+
 def create_grid():
     global dx,dy
+    dia = dialog(_grid_data)
     if hasattr(pf.canvas,'_grid'):
         if hasattr(pf.canvas,'_grid_data'):
-            updateData(_grid_data,pf.canvas._grid_data)
-    res = askItems(_grid_data)
+            dia.updateData(pf.canvas._grid_data)
+    res = dia.getResults()
     if res:
         pf.canvas._grid_data = res
         globals().update(res)
-        
+
         nx = int(ceil(width/dx))
         ny = int(ceil(height/dy))
         obj = None
@@ -309,12 +310,12 @@ def create_grid():
                 bb = bbox(obj)
                 nx = ny = 20
                 dx = dy = bb.sizes().max() / nx * 2.
-            
+
         ox = (-nx*dx/2.,-ny*dy/2.,0.)
         if obj:
             c = bbox(obj).center()
             ox = c + ox
-            
+
         grid = actors.CoordPlaneActor(nx=(nx,ny,0),ox=ox,dx=(dx,dy,0.),linewidth=lwidth,linecolor=lcolor,planes=showplane,planecolor=pcolor,alpha=0.3)
         remove_grid()
         drawActor(grid)
@@ -326,14 +327,5 @@ def remove_grid():
         undraw(pf.canvas._grid)
         pf.canvas._grid = None
 
-    
-def updateData(data,newdata):
-    """Update the input data fields with new data values"""
-    if newdata:
-        for d in data:
-            v = newdata.get(d[0],None)
-            if v is not None:
-                d[1] = v
-    
 
 # End

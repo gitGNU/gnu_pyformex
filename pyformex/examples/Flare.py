@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -50,14 +50,14 @@ def run():
 
     # Ask data from the user
     data = [
-        {'name':'m','value':36,'text':'number of cells in longest grid direction'},
-        {'name':'n','value':12,'text':'number of cells in shortes grid direction'},
-        {'name':'f0','value':True,'text':'add flares on rectangle'},
-        {'name':'f1','value':False,'text':'add flares on cylinder'},
-        {'name':'f2','value':False,'text':'add flares on torus'},
-        {'name':'geom','value':'cylinder','itemtype':'radio','choices':['rectangle','cylinder','torus'],'text':'geometry'},
-        {'name':'color0','value':'red','choices':color_choice},
-        {'name':'color1','value':'blue','choices':color_choice},
+        _I('m',36,text='number of cells in longest grid direction'),
+        _I('n',12,text='number of cells in shortes grid direction'),
+        _I('f0',True,text='add flares on rectangle'),
+        _I('f1',False,text='add flares on cylinder'),
+        _I('f2',False,text='add flares on torus'),
+        _I('geom','cylinder',itemtype='radio',choices=['rectangle','cylinder','torus'],text='geometry'),
+        _I('color0','red',choices=color_choice),
+        _I('color1','blue',choices=color_choice),
         ]
     res = askItems(data)
     if not res:
