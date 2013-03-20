@@ -12,16 +12,21 @@ the current OpenGL framework in pyFormex.
 """
 from __future__ import print_function
 
+from matrix import Matrix4
 import numpy as np
 import pyformex.arraytools as at
 
-
-import copy
 import OpenGL.GL as GL
 import OpenGL.GLU as GLU
 
-import pyformex as pf
-from matrix import Matrix4
+def GL_projection():
+    """Get the OpenGL projection matrix"""
+    return GL.glGetDoublev(GL.GL_PROJECTION_MATRIX)
+def GL_modelview():
+    """Get the OpenGL modelview matrix"""
+    return GL.glGetDoublev(GL.GL_MODELVIEW_MATRIX)
+
+
 
 def perspective_matrix(left,right,bottom,top,near,far):
     """Create a perspective Projection matrix.
@@ -31,7 +36,7 @@ def perspective_matrix(left,right,bottom,top,near,far):
     m[0,0] = 2 * near / (right-left)
     m[1,1] = 2 * near / (top-bottom)
     m[2,0] = (right+left) / (right-left)
-    m[2,0] = (top+bottom) / (top-bottom)
+    m[2,1] = (top+bottom) / (top-bottom)
     m[2,2] = - (far+near) / (far-near)
     m[2,3] = -1.
     m[3,2] = -2 * near * far / (far-near)
@@ -65,6 +70,8 @@ def pick_matrix(x,y,w,h,viewport):
     return m
 
 
+
+
 built_in_views = {
     'front': (0.,0.,0.),
     'back': (180.,0.,0.),
@@ -81,6 +88,11 @@ built_in_views = {
     'iso6': (-45.,225.,0.),
     'iso7': (-45.,315.,0.),
     }
+
+
+
+
+
 
 class ViewAngles(dict):
     """A dict to keep named camera angle settings.
@@ -202,6 +214,8 @@ class Camera(object):
         self.locked = False
         self._modelview = Matrix4()
         self._projection = Matrix4()
+        self.viewChanged = True
+        self.lensChanged = True
         self.focus = focus
         self.dist = dist
         self.setModelView(angles=angles)
@@ -211,18 +225,30 @@ class Camera(object):
         self.resetArea()
         self.keep_aspect = True
         self.setPerspective(True)
-        self.viewChanged = True
         self.tracking = False
         self.p = self.v = None
 
 
     @property
     def modelview(self):
+        if self.viewChanged:
+            self.setModelView()
         return self._modelview
 
     @modelview.setter
     def modelview(self,value):
         self._modelview = Matrix4(value)
+
+
+    @property
+    def projection(self):
+        if self.lensChanged:
+            self.setProjection()
+        return self._projection
+
+    @projection.setter
+    def projection(self,value):
+        self._projection = Matrix4(value)
 
 
     @property
@@ -501,7 +527,6 @@ class Camera(object):
         self.lensChanged = True
 
 
-
     def setClip(self,near,far):
         """Set the near and far clipping planes"""
         if near > 0 and near < far:
@@ -579,63 +604,6 @@ class Camera(object):
 ##  Operations on modelview matrix  ##
 
 
-    ## def loadProjection(self,pick=None):
-    ##     """Load the projection/perspective matrix.
-
-    ##     The caller will have to setup the correct GL environment beforehand.
-    ##     No need to set matrix mode though. This function will switch to
-    ##     GL_PROJECTION mode before loading the matrix
-
-    ##     If keepmode=True, does not switch back to GL_MODELVIEW mode.
-
-    ##     A pick region can be defined to use the camera in picking mode.
-    ##     pick defines the picking region center and size (x,y,w,h).
-
-    ##     This function does it best at autodetecting changes in the lens
-    ##     settings, and will only reload the matrix if such changes are
-    ##     detected. You can optionally force loading the matrix.
-    ##     """
-    ##     GL.glMatrixMode(GL.GL_PROJECTION)
-    ##     if self.lensChanged:
-    ##         GL.glLoadIdentity()
-    ##         if pick:
-    ##             print("PICK",pick)
-    ##             GLU.gluPickMatrix(*pick)
-    ##             p = GL.glGetDoublev(GL.GL_PROJECTION_MATRIX)
-    ##             print("PICK PROJ",p)
-    ##             pp = pick_matrix(*pick)
-    ##             print("BV PICK",pp)
-
-    ##         fv = at.tand(self.fovy*0.5)
-    ##         if self.perspective:
-    ##             fv *= self.near
-    ##         else:
-    ##             fv *= self.dist
-    ##         fh = fv * self.aspect
-    ##         x0,x1 = 2*self.area - 1.0
-    ##         frustum = (fh*x0[0],fh*x1[0],fv*x0[1],fv*x1[1],self.near,self.far)
-    ##         if self.perspective:
-    ##             GL.glFrustum(*frustum)
-    ##         else:
-    ##             GL.glOrtho(*frustum)
-    ##         try:
-    ##             self.projection_callback(self)
-    ##         except:
-    ##             pass
-    ##     p = GL.glGetDoublev(GL.GL_PROJECTION_MATRIX)
-    ##     print("GL PROJ",p)
-    ##     if self.perspective:
-    ##         func = perspective_matrix
-    ##     else:
-    ##         func = orthogonal_matrix
-    ##     p = func(fh*x0[0],fh*x1[0],fv*x0[1],fv*x1[1],self.near,self.far)
-    ##     print("BV PROJ",p)
-    ##     if pick:
-    ##         print("BV PICK * PROJ",pp * p)
-    ##         print("BV PROJ * PICK",p * pp)
-    ##     GL.glMatrixMode(GL.GL_MODELVIEW)
-
-
     def setProjection(self,pick=None):
         """Load the projection/perspective matrix.
 
@@ -667,7 +635,7 @@ class Camera(object):
             func = perspective_matrix
         else:
             func = orthogonal_matrix
-        self.projection = func(fh*x0[0],fh*x1[0],fv*x0[1],fv*x1[1],self.near,self.far)
+        self.projection = func(*frustum)
         try:
             self.projection_callback(self)
         except:
@@ -689,10 +657,8 @@ class Camera(object):
           viewport is a tuple of 4 int values (xmin,ymin,xmax,ymax) defining
           the viewport.
         """
-        if self.lensChanged:
-            self.setProjection()
         m = self.projection
-        if pick:
+        if pick is not None:
             m *= pick_matrix(*pick)
 
         GL.glMatrixMode(GL.GL_PROJECTION)
