@@ -76,7 +76,7 @@ def initialize():
 
         import gl2ps
 
-        _producer = pf.Version + ' (%s)' % pf.cfg.get('help/website','')
+        _producer = pf.Version() + ' (%s)' % pf.cfg.get('help/website','')
         _gl2ps_types = {
             'ps':gl2ps.GL2PS_PS,
             'eps':gl2ps.GL2PS_EPS,

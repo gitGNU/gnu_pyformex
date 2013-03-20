@@ -536,7 +536,7 @@ use for cmdlog cmdlog
 ; Aantal elementen:   %s
 ; Aantal materialen:     %s
 ; Aantal belastingsgevallen: %s
-"""% (pf.Version,jobname,header,nnodes,nelems,nmats,nsteps))
+"""% (pf.Version(),jobname,header,nnodes,nelems,nmats,nsteps))
     # Nodal coordinates
     fil.write(""";-----------------------------------------
 ; Knopen
