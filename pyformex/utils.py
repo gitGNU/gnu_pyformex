@@ -84,12 +84,12 @@ known_externals = {
 digits = re.compile(r'(\d+)')
 
 # versions of detected modules
-the_version = ODict({
+the_version = {
     'pyformex':pf.__version__,
     'python':sys.version.split()[0],
-    })
+    }
 # versions of detected external commands
-the_external = ODict({})
+the_external = {}
 
 def checkVersion(name,version,external=False):
     """Checks a version of a program/module.
@@ -295,14 +295,35 @@ def _congratulations(name,version,typ='module',fatal=False,quiet=False,severity=
 
 def Libraries():
     from lib import accelerated
-    acc = [ m.__name__ for m in accelerated ]
-    return ', '.join(acc)
+    return [ m.__name__ for m in accelerated ]
+
+
+def detectedSoftware(all=True):
+    """Return a dict with all detected helper software"""
+    if all:
+        checkAllModules()
+        checkExternal()
+
+    soft = {
+        'Installation': {
+            'pyFormex version' : pf.fullVersion(),
+            'pyFormex install type' : pf.installtype,
+            'pyFormex C libraries' : Libraries(),
+            'Python version' : sys.version,
+            'Operating system' : sys.platform,
+            },
+        'Modules' : the_version,
+        'Externals' : the_external,
+        }
+    return soft
+
 
 def reportDetected():
     notfound = '** Not Found **'
     s = "%s\n" % pf.fullVersion()
     s += "\nInstall type: %s\n" % pf.installtype
-    s += "\npyFormex C libraries: %s\n" % Libraries()
+    s += "\npyFormex C libraries: %s\n" % ', '.join(Libraries())
+
     s += "\nPython version: %s\n" % sys.version
     s += "\nOperating system: %s\n" % sys.platform
     s += "\nDetected Python Modules:\n"
@@ -1321,6 +1342,61 @@ def refreshDict(d,src):
 
 def inverseDict(d):
     return dict([(v,k) for k,v in d.items()])
+
+
+class DictDiff(object):
+    """A class to compute the difference between two dictionaries
+
+    Parameters:
+
+    - `current_dict`: dict
+    - `past_dict`: dict
+
+    The differences are reported as sets of keys:
+    - items added
+    - items removed
+    - keys same in both but changed values
+    - keys same in both and unchanged values
+    """
+    def __init__(self, current_dict, past_dict):
+        self.current_dict, self.past_dict = current_dict, past_dict
+        self.current_keys, self.past_keys = [
+            set(d.keys()) for d in (current_dict, past_dict)
+        ]
+        self.intersect = self.current_keys.intersection(self.past_keys)
+
+    def added(self):
+        """Return the keys in current_dict but not in past_dict"""
+        return self.current_keys - self.intersect
+
+    def removed(self):
+        """Return the keys in past_dict but not in current_dict"""
+        return self.past_keys - self.intersect
+
+    def changed(self):
+        """Return the keys for which the value has changed"""
+        return set(o for o in self.intersect
+                   if self.past_dict[o] != self.current_dict[o])
+
+    def unchanged(self):
+        """Return the keys with same value in both dicts"""
+        return set(o for o in self.intersect
+                   if self.past_dict[o] == self.current_dict[o])
+
+
+    def equal(self):
+        """Return True if both dicts are equivalent"""
+        return len(self.added() | self.removed() | self.changed()) == 0
+
+
+    def report(self):
+        return """Dict difference report:
+    (1) items added : %s
+    (2) items removed : %s
+    (3) keys same in both but changed values : %s
+    (4) keys same in both and unchanged values : %s
+""" % (', '.join(self.added()),', '.join(self.removed()),', '.join(self.changed()),', '.join(self.unchanged()))
+
 
 
 def sortedKeys(d):

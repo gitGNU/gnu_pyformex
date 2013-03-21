@@ -144,7 +144,7 @@ def refLookup(key):
 
 
 def prefLookup(key):
-    """Lookup a key in the reference configuration."""
+    """Lookup a key in the user's preferences configuration."""
     return pf.prefcfg[key]
 
 
