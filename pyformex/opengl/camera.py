@@ -12,20 +12,75 @@ the current OpenGL framework in pyFormex.
 """
 from __future__ import print_function
 
-from matrix import Matrix4
+from matrix import Matrix4,Vector4
 import numpy as np
 import pyformex.arraytools as at
 
-import OpenGL.GL as GL
-import OpenGL.GLU as GLU
+#
+# DEVS: collect all GL calls here, so we can easily move them somewhere else
+#
 
-def GL_projection():
+import OpenGL.GL as GL
+
+
+def gl_projection():
     """Get the OpenGL projection matrix"""
     return GL.glGetDoublev(GL.GL_PROJECTION_MATRIX)
-def GL_modelview():
+def gl_modelview():
     """Get the OpenGL modelview matrix"""
     return GL.glGetDoublev(GL.GL_MODELVIEW_MATRIX)
+def gl_viewport():
+    """Get the OpenGL modelview matrix"""
+    return GL.glGetIntegerv(GL.GL_VIEWPORT)
+def gl_loadmodelview(m):
+    """Set the OpenGL modelview matrix"""
+    GL.glMatrixMode(GL.GL_MODELVIEW)
+    GL.glLoadMatrixf(m)
+def gl_loadprojection(m):
+    """Set the OpenGL projection matrix"""
+    GL.glMatrixMode(GL.GL_PROJECTION)
+    GL.glLoadMatrixf(m)
+    # we reset OpenGL engine to default MODELVIEW
+    GL.glMatrixMode(GL.GL_MODELVIEW)
+def gl_depth(x,y):
+    """Read the depth value of the pixel at (x,y)"""
+    return GL.glReadPixels(x,y,1,1,GL.GL_DEPTH_COMPONENT,GL.GL_FLOAT)
 
+
+#
+# Normalize and denormalize should probably be moved to arraytools.
+#
+
+def normalize(x,w):
+    """Normalized coordinates inside a window.
+
+    x is an (np,nc) array with coordinates.
+    w is a (2,nc) array with minimal and width of the window that will
+      be mapped to the range -1..1.
+
+    Returns an array with the x values linearly remapped thus that values w[0]
+    become -1 and values w[0]+w[1] become +1.
+    """
+    x = at.checkArray(x,(-1,-1),'f')
+    np,nc = x.shape
+    w = at.checkArray(w,(2,nc),'f','i')
+    return (x-w[0]) * 2 / w[1] - 1
+
+
+def denormalize(x,w):
+    """Map normalized coordinates to fit a window
+
+    x is an (np,nc) array with normalized coordinates.
+    w is a (2,nc) array with minimal and width values of the window.
+
+    Returns an array with the x values linearly remapped thus that values -1
+    coincide with the minimum window values and +1 with the minimum+width
+    values.
+    """
+    x = at.checkArray(x,(-1,-1),'f')
+    np,nc = x.shape
+    w = at.checkArray(w,(2,nc),'f','i')
+    return w[0] + (1+x) * w[1] / 2
 
 
 def perspective_matrix(left,right,bottom,top,near,far):
@@ -123,14 +178,26 @@ view_angles = ViewAngles()
 
 
 class Camera(object):
-    """A camera for OpenGL rendering.
+    """A camera for 3D model rendering.
 
-    The Camera class holds all the camera related settings related to
-    the rendering of a scene in OpenGL. These include camera position,
-    the viewing direction of the camera, and the lens parameters (opening
-    angle, front and back clipping planes).
-    This class also provides convenient methods to change the settings so as
-    to get smooth camera manipulation.
+    The Camera class holds all the camera parameters related to the
+    rendering of a 3D scene onto a 2D canvas. These includes parameters
+    related to camera position and orientation, as well as lens related
+    parameters (opening angle, front and back clipping planes).
+    The class provides the required matrices to transform the 3D world
+    coordinates to 2D canvas coordinates, as well as a wealth of methods
+    to change the camera settings in a convenient way so as to simulate
+    smooth camera manipulation.
+
+    The basic theory of camera handling and 3D rendering can be found in
+    a lot of places on the internet, especially in OpenGL related places.
+    However, while the pyFormex rendering engine is based on OpenGL,
+    the way it stores and handles the camera parameters is more sophisticated
+    than what is usually found in popular tutorials on OpenGL rendering.
+    Therefore we give here a extensive description of how the pyFormex
+    camera handling and 3D to 2D coordinate transformation works.
+
+    .. note: The remainder below is obsolete and needs to be rewritten.
 
     Camera position and orientation:
 
@@ -158,7 +225,7 @@ class Camera(object):
         - `rot`: a 3x3 rotation matrix, rotating the global coordinate system
           thus that the z-direction is oriented from center to camera.
 
-        These values have influence on the ModelView matrix.
+        These values have influence on the Modelview matrix.
 
     Camera lens settings:
 
@@ -175,15 +242,15 @@ class Camera(object):
           shown on the canvas.
 
         Camera methods that change these values will not directly change
-        the ModelView matrix. The :meth:`loadModelView` method has to be called
+        the Modelview matrix. The :meth:`loadModelview` method has to be called
         explicitely to make the settings active.
 
         These values have influence on the Projection matrix.
 
     Methods that change the camera position, orientation or lens parameters
-    will not directly change the related ModelView or Projection matrix.
+    will not directly change the related Modelview or Projection matrix.
     They will just flag a change in the camera settings. The changes are
-    only activated by a call to the :meth:`loadModelView` or
+    only activated by a call to the :meth:`loadModelview` or
     :meth:`loadProjection` method, which will test the flags to see whether
     the corresponding matrix needs a rebuild.
 
@@ -194,14 +261,15 @@ class Camera(object):
 
     Properties:
 
-    - `modelview`: Matrix4: the OpenGL ModelView transformation matrix
+    - `modelview`: Matrix4: the OpenGL Modelview transformation matrix
+    - `projection`: Matrix4: the OpenGL Projection transformation matrix
 
     """
 
     # DEVELOPERS:
-    #    The camera class assumes that matrixmode is always ModelView on entry.
+    #    The camera class assumes that matrixmode is always Modelview on entry.
     #    For operations in other modes, an explicit switch before the operations
-    #    and afterwards back to ModelView should be performed.
+    #    and afterwards back to Modelview should be performed.
 
 
     def __init__(self,focus=[0.,0.,0.],angles=[0.,0.,0.],dist=1.):
@@ -212,42 +280,64 @@ class Camera(object):
         in the direction of the y-axis.
         """
         self.locked = False
+
         self._modelview = Matrix4()
-        self._projection = Matrix4()
-        self.viewChanged = True
-        self.lensChanged = True
         self.focus = focus
         self.dist = dist
-        self.setModelView(angles=angles)
+        self.viewChanged = True
+
+        self._projection = Matrix4()
+        self._perspective = True
+        self.lensChanged = True
+
+        self.setModelview(angles=angles)
         self.setLens(45.,4./3.)
         self.setClip(0.1,10.)
         self.area = None
         self.resetArea()
         self.keep_aspect = True
-        self.setPerspective(True)
         self.tracking = False
         self.p = self.v = None
 
 
     @property
     def modelview(self):
+        """Return the current modelview matrix.
+
+        This will recompute the modelview matrix if any camera position
+        parameters have changed.
+        """
         if self.viewChanged:
-            self.setModelView()
+            self.setModelview()
         return self._modelview
 
     @modelview.setter
     def modelview(self,value):
+        """Set the modelview matrix to the specified matrix.
+
+        value should be a proper modelview matrix
+        """
         self._modelview = Matrix4(value)
 
 
     @property
     def projection(self):
+        """Return the current projection matrix.
+
+        This will recompute the projection matrix if any camera lens
+        parameters have changed.
+        """
         if self.lensChanged:
             self.setProjection()
         return self._projection
 
+
     @projection.setter
     def projection(self,value):
+        """Set the projection matrix to the specified matrix.
+
+        value should be a proper projection matrix
+        """
         self._projection = Matrix4(value)
 
 
@@ -295,15 +385,39 @@ class Camera(object):
 
 
     @property
+    def perspective(self,on=True):
+        """Return the perspecive flag.
+
+        If the perspective flag is True, the camera uses a perspective
+        projection. If it is False, the camera uses orthogonal projection.
+        """
+        return self._perspective
+
+
+    @perspective.setter
+    def perspective(self,flag):
+        """Set the perspecive flag.
+
+        - `flag`: bool, the value to set the perspective flag to.
+
+        If changed, this forces the recalculation of the projection matrix.
+        """
+        if not self.locked:
+            if flag != self._perspective:
+                self._perspective = bool(flag)
+                self.lensChanged = True
+
+
+    @property
     def rot(self):
         """Return the camera rotation matrix."""
-        return self._modelview.rot
+        return self.modelview.rot
 
 
     @ property
     def upvector(self):
         """Return the camera up vector"""
-        return self._modelview.rot[:3,1].reshape((3,))
+        return self.modelview.rot[:3,1].reshape((3,))
 
 
     def setAngles(self,angles):
@@ -320,13 +434,14 @@ class Camera(object):
                 angles = view_angles.get(angles)
             if angles is None:
                 return
-            self.setModelView(angles=angles)
+            self.setModelview(angles=angles)
 
 
     @property
     def eye(self):
         """Return the position of the camera."""
         return self.toWorld([0.,0.,0.])
+
 
     @eye.setter
     def eye(self):
@@ -434,6 +549,14 @@ class Camera(object):
 ##            tr = multiply(tr, r)
 ##        self.move(*tr)
 ##        self.viewChanged = True
+
+
+    # TODO
+    def translate(self,vx,vy,vz,local=True):
+        if not self.locked:
+            if local:
+                vx,vy,vz = self.toWorld([vx,vy,vz,1])
+            self.move(-vx,-vy,-vz)
 
 
     def setLens(self,fovy=None,aspect=None):
@@ -544,11 +667,6 @@ class Camera(object):
     ##     else:
     ##         print("Error: Invalid Near/Far clipping values")
 
-    def setPerspective(self,on=True):
-        """Set perspective on or off"""
-        self.perspective = on
-        self.lensChanged = True
-
 
     ## def zoom(self,val=0.5):
     ##     """Zoom in/out by shrinking/enlarging the camera view angle.
@@ -563,41 +681,14 @@ class Camera(object):
 
     #### global manipulation ###################
 
-    def set3DMatrices(self):
-        self.loadProjection()
-        self.loadModelView()
-        self.p = GL.glGetDoublev(GL.GL_PROJECTION_MATRIX)
-        self.v = GL.glGetIntegerv(GL.GL_VIEWPORT)
-
-
-    def project(self,x,y,z):
-        "Map the object coordinates (x,y,z) to window coordinates."""
-        self.set3DMatrices()
-        return GLU.gluProject(x,y,z,self._modelview,self.p,self.v)
-
-
-    def unProject(self,x,y,z):
-        "Map the window coordinates (x,y,z) to object coordinates."""
-        self.set3DMatrices()
-        return GLU.gluUnProject(x,y,z,self._modelview,self.p,self.v)
-
 
     def setTracking(self,onoff=True):
         """Enable/disable coordinate tracking using the camera"""
         if onoff:
             self.tracking = True
-            self.set3DMatrices()
+            #self.set3DMatrices()
         else:
             self.tracking = False
-
-
-
-    # TODO
-    def translate(self,vx,vy,vz,local=True):
-        if not self.locked:
-            if local:
-                vx,vy,vz = self.toWorld([vx,vy,vz,1])
-            self.move(-vx,-vy,-vz)
 
 
 #################################################################
@@ -624,22 +715,24 @@ class Camera(object):
             return
 
         fv = at.tand(self.fovy*0.5)
-        if self.perspective:
+        if self._perspective:
             fv *= self.near
         else:
             fv *= self.dist
         fh = fv * self.aspect
         x0,x1 = 2*self.area - 1.0
         frustum = (fh*x0[0],fh*x1[0],fv*x0[1],fv*x1[1],self.near,self.far)
-        if self.perspective:
+        if self._perspective:
             func = perspective_matrix
         else:
             func = orthogonal_matrix
         self.projection = func(*frustum)
+
         try:
             self.projection_callback(self)
         except:
             pass
+        self.lensChanged = False
 
 
     def loadProjection (self,pick=None):
@@ -661,9 +754,32 @@ class Camera(object):
         if pick is not None:
             m *= pick_matrix(*pick)
 
-        GL.glMatrixMode(GL.GL_PROJECTION)
-        GL.glLoadMatrixf(m.gl())
-        GL.glMatrixMode(GL.GL_MODELVIEW)
+        gl_loadprojection(m.gl())
+
+
+    def eyeToClip(self,x):
+        """Transform a vertex from eye to clip coordinates.
+
+        This transforms the vertex using the current Projection matrix.
+
+        It is equivalent with multiplying the homogeneous
+        coordinates with the Projection matrix, but is done here
+        in an optimized way.
+        """
+        return self.projection.transform(x)
+
+
+    def clipToEye(self,x):
+        """Transform a vertex from clip to eye coordinates.
+
+        This transforms the vertex using the inverse of the
+        current Projection matrix.
+
+        It is equivalent with multiplying the homogeneous
+        coordinates with the inverse Projection matrix, but is done
+        here in an optimized way.
+        """
+        return self.projection.invtransform(x)
 
 
 #################################################################
@@ -671,9 +787,9 @@ class Camera(object):
 
 
     def lookAt(self,focus=None,eye=None,up=None):
-        """Set the ModelView matrix to look at specified point.
+        """Set the Modelview matrix to look at the specified focus point.
 
-        The ModelView matrix is set with the camera positioned at eye
+        The Modelview matrix is set with the camera positioned at eye
         and looking at the focus points, while the camera up vector is
         in the plane of the camera axis (focus-eye) and the specified
         up vector.
@@ -703,7 +819,7 @@ class Camera(object):
             m = Matrix4()
             m.rotate(np.column_stack([axis0,axis1,axis2]))
             m.translate(-eye)
-            self.setModelView(m)
+            self.setModelview(m)
 
 
     def rotate(self,val,vx,vy,vz):
@@ -715,32 +831,32 @@ class Camera(object):
             m.rotate(val % 360, [vx,vy,vz])
             m.rotate(rot)
             m.translate(-self.focus)
-            self.setModelView(m)
+            self.setModelview(m)
 
 
-    def setModelView (self,m=None,angles=None):
-        """Set the ModelView matrix.
+    def setModelview (self,m=None,angles=None):
+        """Set the Modelview matrix.
 
-        The ModelView matrix can be set from one of the following sources:
+        The Modelview matrix can be set from one of the following sources:
 
         - if `mat` is specified, it is a 4x4 matrix with a valuable
-          ModelView transformation. It will be set as the current camera
-          ModelView matrix.
+          Modelview transformation. It will be set as the current camera
+          Modelview matrix.
 
         - else, if `angles` is specified, it is a sequence of the three
           camera angles (latitude, longitude and twist). The camera
-          ModelView matrix is set from the current camera focus,
+          Modelview matrix is set from the current camera focus,
           the current camera distance, and the specified angles.
           This option is typically used to change the viewing direction
           of the camera, while keeping the focus point and camera distance.
 
-        - else, if the viewChanged flags is set, the camera ModelView
+        - else, if the viewChanged flags is set, the camera Modelview
           matrix is set from the current camera focus, the current camera
           distance, and the current camera rotation matrix.
           This option is typically used after changing the camera focus
           point and/or distance, while keeping the current viewing angles.
 
-        - else, the current ModelView matrix remains unchanged.
+        - else, the current Modelview matrix remains unchanged.
 
         In all cases, if a modelview callback was set, it is called,
         and the viewChanged flag is cleared.
@@ -761,7 +877,7 @@ class Camera(object):
             m.translate(-self.focus)
 
         if m is not None:
-            self._modelview = Matrix4(m)
+            self.modelview = m
 
         try:
             self.modelview_callback(self)
@@ -770,45 +886,106 @@ class Camera(object):
         self.viewChanged = False
 
 
-    def loadModelView (self):
-        """Load the ModelView matrix.
+    def loadModelview (self):
+        """Load the Modelview matrix.
 
         If camera positioning parameters have been changed, the current
-        ModelView matrix is rebuild.
-        Then, the current ModelView matrix of the camera is loaded into the
+        Modelview matrix is rebuild.
+        Then, the current Modelview matrix of the camera is loaded into the
         OpenGL engine.
         """
-        if self.viewChanged:
-            self.setModelView()
-        GL.glMatrixMode(GL.GL_MODELVIEW)
-        GL.glLoadMatrixf(self._modelview.gl())
+        gl_loadmodelview(self.modelview.gl())
 
 
-    def transform(self,x):
-        """Transform a vertex using the current Modelview matrix.
+    def toEye(self,x):
+        """Transform a vertex from world to eye coordinates.
 
-        Transforms the point from world to camera coordinates.
+        This transforms the vertex using the current Modelview matrix.
+
+        It is equivalent with multiplying the homogeneous
+        coordinates with the Modelview matrix, but is done here
+        in an optimized way.
         """
         x = at.checkArray(x,(3,),'f')
-        return x*self.modelview[:3,:3] + self.modelview[3,:3]
+        return np.dot(x,self.modelview[:3,:3]) + self.modelview[3,:3]
 
 
     def toWorld(self,x):
-        """Transform a vertex from camera to world coordinates.
+        """Transform a vertex from eye to world coordinates.
 
-        This multiplies
-        The specified vector can have 3 or 4 (homogoneous) components.
-        This uses the currently saved rotation matrix.
+        This transforms the vertex using the inverse of the
+        current Modelview matrix.
+
+        It is equivalent with multiplying the homogeneous
+        coordinates with the inverse Modelview matrix, but is done
+        here in an optimized way.
         """
         x = at.checkArray(x,(3,),'f') + [0.,0.,self.dist]
-        return x*self.rot.T + self.focus
+        return np.dot(x,self.rot.T) + self.focus
 
+
+#################################################################
+##  Transform vertices with modelview and projection matrix  ##
+
+
+    def toWindow(self,x):
+        """Convert normalized device coordinates to window coordinates"""
+        # This is only correct when glDepthRange(0.0, 1.0)
+        # We should not change the depth range
+        vp = gl_viewport()
+        return denormalize(x[:,:3],[[vp[0],vp[1],0],[vp[2],vp[3],1]])
+
+
+    def fromWindow(self,x):
+        """Convert window coordinates to  normalized device coordinates"""
+        # This is only correct when glDepthRange(0.0, 1.0)
+        # We should not change the depth range
+        vp = gl_viewport()
+        return normalize(x[:,:3],[[vp[0],vp[1],0],[vp[2],vp[3],1]])
+
+
+    def project(self,x):
+        "Map the world coordinates (x,y,z) to window coordinates."""
+        m = self.modelview*self.projection
+        # Modelview transform
+        e = Vector4(x)*self.modelview
+        #print("EYE COORDINATES:",e)
+        w = -e[:,2]
+        # Projection
+        x = e*self.projection
+        #print("CLIP COORDINATES:",x)
+        # Perspective division
+        if self._perspective:
+            ## if (w == 0.0):
+            ##     return [np.inf,np.inf,np.inf]
+            x = x/w
+        #print("NORMALIZED DEVICE COORDINATES:",x)
+        # Map to window
+        return self.toWindow(x)
+
+
+    def unProject(self,x):
+        "Map the window coordinates x to object coordinates."""
+        m = self.modelview*self.projection
+        #print("M*P",m)
+        m1 = np.linalg.inv(m)
+        #print("M*P -1",m1)
+        x = self.fromWindow(x)
+        #print("NORMALIZED DEVICE COORDINATES:",x)
+        x = Vector4(x)*m1
+        return x[:,:3] / x[:,3]
 
 
 #################################
     # Compatibility: should be removed after complete conversion
 
+    loadModelView = loadModelview
     def saveModelView(self):
         pass
+    def set3DMatrices(self):
+        self.loadProjection()
+        self.loadModelView()
+    def setPerspective(self,on=True):
+        self.perspective = on
 
 # End

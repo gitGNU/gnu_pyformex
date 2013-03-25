@@ -14,6 +14,23 @@ import numpy as np
 import pyformex.arraytools as at
 
 
+class Vector4(np.matrix):
+    """One or more homogeneous coordinates"""
+    def __new__(clas,data=None):
+        """Create a new Vector4 instance"""
+        data = np.asarray(data)
+        if data.ndim < 1 or data.ndim > 2:
+            raise ValueError,"Expected 1 or 2-dimensinal data"
+        if data.shape[-1] == 4:
+            pass
+        elif data.shape[-1] == 3:
+            data = at.growAxis(data,1,fill=1)
+        else:
+            raise ValueError,"Expected length 3 or 4 fro last axis"
+        ar = data.view(clas)
+        return ar
+
+
 class Matrix4(np.matrix):
     """A 4x4 transformation matrix for homogeneous coordinates.
 
@@ -209,5 +226,36 @@ class Matrix4(np.matrix):
         self[:,col2] = temp
         self._gl = None
 
+
+    def inverse(self):
+        """Return the inverse matrix"""
+        return np.linalg.inv(self)
+
+
+    def transform(self,x):
+        """Transform a vertex using this matrix.
+
+        - `x`: a (3,) or (4,) vector.
+
+        If the vector has length 4, it holds homogeneous coordinates, and
+        the result is the dot product of the vector with the Matrix:  x * M.
+        If the vector has length 3, the 4th homogeneous coordinate is
+        assumed to be 1, and the product is computed in an optimized way.
+        """
+        try:
+            x = at.checkArray(x,(3,),'f')
+            return np.dot(x,self[:3,:3]) + self[3,:3]
+        except:
+            x = at.checkArray(x,(4,),'f')
+            return np.dot(x,self)
+
+
+    def invtransform(self,x):
+        """Transform a vertex with the inverse of this matrix.
+
+        - `x`: a (3,) or (4,) vector.
+
+        """
+        return Vector4(x) * self.inverse()
 
 # End
