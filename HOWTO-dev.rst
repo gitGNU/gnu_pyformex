@@ -1283,7 +1283,7 @@ First, create the distribution and test it out locally: both the installation pr
 
 - Set the final version in RELEASE (RELEASE==VERSION) ::
 
-   edt RELEASE
+   edt RELEASE    # Remove the ~a tail
    make version
 
 - Stamp the files with the version ::
@@ -1299,6 +1299,15 @@ First, create the distribution and test it out locally: both the installation pr
 - Check in (creating the dist may modify some files) ::
 
    svn ci -m "Creating release ..."
+
+- Set the revision number in stats/pyformex-release.fdb. Compute it from the
+  latest and add the increment from the pyFormex version::
+
+    pyFormex 0.9.0 (0.8.9r5-247-ga162aca)
+                            ^^^
+  In this example we have 247 past release 0.8.9 (actually 0.8.9-r5, but this
+  had the same revision number as 0.8.9). Release 0.8.9 was revision 2557,
+  thus the new revision number is 2557 + 247 = 2804
 
 - Create a Tag ::
 

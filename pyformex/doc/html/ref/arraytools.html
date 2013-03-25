@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3. arraytools — A collection of numerical array utilities. &mdash; pyFormex 0.9.0-a1 documentation</title>
+    <title>3. arraytools — A collection of numerical array utilities. &mdash; pyFormex 0.9.0 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +43,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.0-a1',
+        VERSION:     '0.9.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +52,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 0.9.0-a1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 0.9.0 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="4. script — Basic pyFormex script functions" href="script.html" />
     <link rel="prev" title="2. formex — Formex algebra in Python" href="formex.html" />
@@ -83,7 +83,7 @@
         <li class="right" >
           <a href="formex.html" title="2. formex — Formex algebra in Python"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.0-a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 0.9.0 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -690,7 +690,10 @@ is raised. Else, the sorted list of unique values is returned.</p>
 <dd><p>Read an array from an open file.</p>
 <p>This uses <tt class="xref py py-func docutils literal"><span class="pre">numpy.fromfile()</span></tt> to read an array with known shape and
 data type from an open file.
-The sep parameter can be specified as in fromfile.</p>
+The sep parameter can be specified as in <cite>numpy.fromfile</cite>.
+If an empty string is given as separator, the data is read in
+binary mode. In that case (only) an extra &#8216;n&#8217; after the data
+will be stripped off.</p>
 </dd></dl>
 
 <dl class="function">
@@ -1399,6 +1402,23 @@ empty array is returned.</div></blockquote>
 </dd></dl>
 
 <dl class="function">
+<dt id="arraytools.nodalSum">
+<tt class="descclassname">arraytools.</tt><tt class="descname">nodalSum</tt><big>(</big><em>val</em>, <em>elems</em>, <em>avg=False</em>, <em>return_all=True</em>, <em>direction_treshold=None</em><big>)</big><a class="headerlink" href="#arraytools.nodalSum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the nodal sum of values defined on elements.</p>
+<p>val is a (nelems,nplex,nval) array of values defined at points of elements.
+elems is a (nelems,nplex) array with nodal ids of all points of elements.</p>
+<p>The return value is a (nelems,nplex,nval) array where each value is
+replaced with the sum of its value at that node.
+If avg=True, the values are replaced with the average instead.
+If return_all==True(default), returns an array with shape (nelems,nplex,3),
+else, returns an array with shape (maxnodenr+1,3). In the latter case,
+nodes not occurring in elems will have all zero values.</p>
+<p>If a direction_tolerance is specified and nval &gt; 1, values will only be
+summed if their direction is close (projection of one onto the other is
+higher than the specified tolerance).</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="arraytools.pprint">
 <tt class="descclassname">arraytools.</tt><tt class="descname">pprint</tt><big>(</big><em>a</em>, <em>label=''</em><big>)</big><a class="headerlink" href="#arraytools.pprint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pretty print an array with a label in front.</p>
@@ -1443,7 +1463,7 @@ that issue and prints the full array nicely aligned.</p>
         <li class="right" >
           <a href="formex.html" title="2. formex — Formex algebra in Python"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.0-a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 0.9.0 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -1451,7 +1471,7 @@ that issue and prints the full array nicely aligned.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Feb 19, 2013.
+      Last updated on Mar 25, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

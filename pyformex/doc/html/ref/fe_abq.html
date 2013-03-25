@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>40. fe_abq — Exporting finite element models in Abaqus™ input file format. &mdash; pyFormex 0.9.0-a1 documentation</title>
+    <title>40. fe_abq — Exporting finite element models in Abaqus™ input file format. &mdash; pyFormex 0.9.0 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +43,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.0-a1',
+        VERSION:     '0.9.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +52,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 0.9.0-a1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 0.9.0 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="41. fe_post — A postprocessor for ABAQUS output files." href="fe_post.html" />
     <link rel="prev" title="39. fe — Finite Element Models in pyFormex." href="fe.html" />
@@ -83,7 +83,7 @@
         <li class="right" >
           <a href="fe.html" title="39. fe — Finite Element Models in pyFormex."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.0-a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 0.9.0 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -570,6 +570,10 @@ from the len of the constants list</p>
 <dt id="fe_abq.fmtConnectorSection">
 <tt class="descclassname">fe_abq.</tt><tt class="descname">fmtConnectorSection</tt><big>(</big><em>el</em>, <em>setname</em><big>)</big><a class="headerlink" href="#fe_abq.fmtConnectorSection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a connector section.</p>
+<p>Required:</p>
+<ul class="simple">
+<li><cite>sectiontype</cite>: JOIN, HINGE, ...</li>
+</ul>
 <p>Optional data:</p>
 <ul class="simple">
 <li><cite>behavior</cite> : connector behavior name</li>
@@ -582,7 +586,7 @@ from the len of the constants list</p>
 <tt class="descclassname">fe_abq.</tt><tt class="descname">fmtConnectorBehavior</tt><big>(</big><em>prop</em><big>)</big><a class="headerlink" href="#fe_abq.fmtConnectorBehavior" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a connector behavior.
 Implemented: Elasticity,  Stop
-Examples: 
+Examples:
 Elasticity
 P.Prop(name=&#8217;connbehavior1&#8217;,ConnectorBehavior=&#8217;&#8216;,Elasticity=dict(
 component=[1,2,3,4,5,6],value=[1,1,1,1,1,1]))
@@ -670,7 +674,7 @@ different identifiers for the different elements in the surface. Thus:</p>
 1, S1
 2, S2,
 3, S1
-7, S3 </pre>
+7, S3</pre>
 </div>
 </dd></dl>
 
@@ -744,7 +748,7 @@ different identifiers for the different elements in the surface. Thus:</p>
 </ul>
 <p>Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">P</span><span class="o">.</span><span class="n">Prop</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;contact0&#39;</span><span class="p">,</span><span class="n">interaction</span><span class="o">=</span><span class="n">Interaction</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span><span class="s">&#39;contactprop&#39;</span><span class="p">,</span>
-<span class="go">surfacebehavior=True, pressureoverclosure=[&#39;hard&#39;,&#39;linear&#39;,0.0, 0.0, 0.001]), </span>
+<span class="go">surfacebehavior=True, pressureoverclosure=[&#39;hard&#39;,&#39;linear&#39;,0.0, 0.0, 0.001]),</span>
 <span class="go">master =&#39;quadtubeINTSURF1&#39;,  slave=&#39;hexstentEXTSURF&#39;, contacttype=&#39;NODE TO SURFACE&#39;)</span>
 </pre></div>
 </div>
@@ -764,8 +768,8 @@ different identifiers for the different elements in the surface. Thus:</p>
 -positiontolerance
 -no rotation</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">P</span><span class="o">.</span><span class="n">Prop</span><span class="p">(</span><span class="n">constraint</span><span class="o">=</span><span class="s">&#39;1&#39;</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;constr1&#39;</span><span class="p">,</span> <span class="n">adjust</span> <span class="o">=</span> <span class="s">&#39;no&#39;</span><span class="p">,</span> 
-<span class="go">master = &#39;hexstentbarSURF&#39;, slave = &#39;hexstentEXTSURF&#39;,type=&#39;NODE TO SURFACE&#39;)    </span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">P</span><span class="o">.</span><span class="n">Prop</span><span class="p">(</span><span class="n">constraint</span><span class="o">=</span><span class="s">&#39;1&#39;</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;constr1&#39;</span><span class="p">,</span> <span class="n">adjust</span> <span class="o">=</span> <span class="s">&#39;no&#39;</span><span class="p">,</span>
+<span class="go">master = &#39;hexstentbarSURF&#39;, slave = &#39;hexstentEXTSURF&#39;,type=&#39;NODE TO SURFACE&#39;)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -846,7 +850,7 @@ be equal.</p>
 <dt id="fe_abq.writeNodes">
 <tt class="descclassname">fe_abq.</tt><tt class="descname">writeNodes</tt><big>(</big><em>fil</em>, <em>nodes</em>, <em>name='Nall'</em>, <em>nofs=1</em><big>)</big><a class="headerlink" href="#fe_abq.writeNodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write nodal coordinates.</p>
-<p>The nodes are added to the named node set. 
+<p>The nodes are added to the named node set.
 If a name different from &#8216;Nall&#8217; is specified, the nodes will also
 be added to a set named &#8216;Nall&#8217;.
 The nofs specifies an offset for the node numbers.
@@ -858,7 +862,7 @@ The default is 1, because Abaqus numbering starts at 1.</p>
 <tt class="descclassname">fe_abq.</tt><tt class="descname">writeElems</tt><big>(</big><em>fil</em>, <em>elems</em>, <em>type</em>, <em>name='Eall'</em>, <em>eid=None</em>, <em>eofs=1</em>, <em>nofs=1</em><big>)</big><a class="headerlink" href="#fe_abq.writeElems" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write element group of given type.</p>
 <p>elems is the list with the element node numbers.
-The elements are added to the named element set. 
+The elements are added to the named element set.
 If a name different from &#8216;Eall&#8217; is specified, the elements will also
 be added to a set named &#8216;Eall&#8217;.
 The eofs and nofs specify offsets for element and node numbers.
@@ -897,7 +901,7 @@ This will also remove initial conditions!</p>
 
 <dl class="function">
 <dt id="fe_abq.writeCloads">
-<tt class="descclassname">fe_abq.</tt><tt class="descname">writeCloads</tt><big>(</big><em>fil</em>, <em>prop</em>, <em>op='NEW'</em><big>)</big><a class="headerlink" href="#fe_abq.writeCloads" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">fe_abq.</tt><tt class="descname">writeCloads</tt><big>(</big><em>fil</em>, <em>prop</em><big>)</big><a class="headerlink" href="#fe_abq.writeCloads" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write cloads.</p>
 <p>prop is a list of node property records that should be scanned for
 displ attributes to write.</p>
@@ -913,7 +917,7 @@ The user can set op=&#8217;MOD&#8217; to add the loads to already existing ones.
 
 <dl class="function">
 <dt id="fe_abq.writeDloads">
-<tt class="descclassname">fe_abq.</tt><tt class="descname">writeDloads</tt><big>(</big><em>fil</em>, <em>prop</em>, <em>op='NEW'</em><big>)</big><a class="headerlink" href="#fe_abq.writeDloads" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">fe_abq.</tt><tt class="descname">writeDloads</tt><big>(</big><em>fil</em>, <em>prop</em><big>)</big><a class="headerlink" href="#fe_abq.writeDloads" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write Dloads.</p>
 <p>prop is a list of elem property records having an attribute dload.</p>
 <p>By default, the loads are applied as new values in the current step.
@@ -922,7 +926,7 @@ The user can set op=&#8217;MOD&#8217; to add the loads to already existing ones.
 
 <dl class="function">
 <dt id="fe_abq.writeDsloads">
-<tt class="descclassname">fe_abq.</tt><tt class="descname">writeDsloads</tt><big>(</big><em>fil</em>, <em>prop</em>, <em>op='NEW'</em><big>)</big><a class="headerlink" href="#fe_abq.writeDsloads" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">fe_abq.</tt><tt class="descname">writeDsloads</tt><big>(</big><em>fil</em>, <em>prop</em><big>)</big><a class="headerlink" href="#fe_abq.writeDsloads" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write Dsloads.</p>
 <p>prop is a list property records having an attribute dsload</p>
 <p>By default, the loads are applied as new values in the current step.
@@ -1058,7 +1062,7 @@ This should be used to set a correct Abaqus element type matchin the mesh.</p>
         <li class="right" >
           <a href="fe.html" title="39. fe — Finite Element Models in pyFormex."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.0-a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 0.9.0 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -1066,7 +1070,7 @@ This should be used to set a correct Abaqus element type matchin the mesh.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Feb 19, 2013.
+      Last updated on Mar 25, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

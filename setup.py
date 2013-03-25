@@ -1,11 +1,11 @@
 # $Id$
 ##
-##  This file is part of pyFormex 0.8.9  (Fri Nov  9 10:49:51 CET 2012)
+##  This file is part of pyFormex 0.9.0  (Mon Mar 25 13:52:29 CET 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -160,7 +160,7 @@ def run_setup(with_cext):
         'sdist':sdist
         },
           name='pyformex',
-          version='0.9.0~a4',
+          version='0.9.0',
           description='program to create 3D geometry from Python scripts.',
           long_description="""
     pyFormex can be used to generate, transform and manipulate large
