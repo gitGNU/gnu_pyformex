@@ -1471,24 +1471,14 @@ They will need to be tuned for the release.
 
     _do clean unpack final | tee log
 
-- upload::
+- upload to Debian mentors::
 
-    dput mentors PYFVER.changes
+    _do upload
 
-- copy to bumper::
+- upload to local repository and make available::
 
-    rsync *VERSION[.-]* bumper:prj/pyformex/pkg -av
-
-
-Uploading to the local debian repository
-----------------------------------------
-You should be on a machine with access to /net/bumps/var. This is currently
-only bumper or bumpy (when at bioMMeda).
-
-In the pyformex pkg subdirectory, after creating the signed debian packages,
-do::
-
-  reprepro -b /net/bumps/var/www/repos/debian include unstable pyformex_$VERSION_amd64.changes
+    _do uploadlocal
+    _do publocal
 
 
 .. End

@@ -32,7 +32,7 @@ from __future__ import print_function
 # This is the very first thing that is executed when starting pyFormex
 # It is loaded even before main.
 
-__version__ = "0.9.0"
+__version__ = "0.9.0r1"
 __revision__ = __version__
 
 
