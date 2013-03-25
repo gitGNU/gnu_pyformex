@@ -114,7 +114,7 @@ def run():
     C = AnalogClock()
     C.draw()
     setDrawOptions({'bbox':None})
-    res = askItems([('runtime',15,{'text':'Run time (seconds)'})])
+    res = askItems([_I('runtime',15,text='Run time (seconds)')])
     if res and res['runtime'] > 0:
         C.drawNow()
         C.run()

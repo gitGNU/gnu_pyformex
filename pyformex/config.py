@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -58,11 +58,15 @@ def formatDict(d):
     """Format a dict in Python source representation.
 
     Each (key,value) pair is formatted on a line of the form::
-    
+
        key = value
-       
-    The resulting text is a legal Python script to define the items in the
-    dict.
+
+    If all the keys are strings containing only characters that are
+    allowed in Python variable names, he resulting text is a legal
+    Python script to define the items in the dict. It can be stored
+    on a file and executed.
+
+    This format is the storage format of the Config class.
     """
     s = ""
     if isinstance(d,dict):
@@ -84,9 +88,9 @@ class Config(Dict):
 
     The configuration object can be initialized from a multiline string or
     a text file (or any other object that allows iterating over strings).
-    
+
     The format of the config file/text is described hereafter.
-   
+
     All config lines should have the format: key = value, where key is a
     string and value is a Python expression The first '=' character on the
     line is the delimiter between key and value.  Blanks around both the
@@ -110,34 +114,34 @@ class Config(Dict):
 
     Whole dictionaries can be inserted at once in the config with the
     update() function.
-    
+
     All defined variables while reading config files remain available
     for use in the config file statements, even over multiple calls to
     the read() function. Variables inserted with addSection() will not
     be available as individual variables though, but can be access as
     ``self['name']``.
-    
+
     As an example, if your config file looks like::
-    
+
        aa = 'bb'
        bb = aa
        [cc]
        aa = 'aa'
        _n = 3
        rng = range(_n)
-       
+
     the resulting configuration dictionary is
     ``{'aa': 'bb', 'bb': 'bb', 'cc': {'aa': 'aa', 'rng': [0, 1, 2]}}``
 
     As far as the resulting Config contents is concerned, the following are
     equivalent::
-    
+
        C.update({'key':'value'})
        C.read("key='value'\\n")
 
     There is an important difference though: the second line will make a
     variable key (with value 'value') available in subsequent Config read()
-    method calls.   
+    method calls.
     """
 
     def __init__(self,data={},default=None):
@@ -184,7 +188,7 @@ class Config(Dict):
         else:
             Dict.update(self,data)
 
-    
+
     def _read_error(self,filename,lineno,line):
         if filename:
             where = 'config file %s,' % filename
@@ -196,7 +200,7 @@ class Config(Dict):
     def read(self,fil,debug=False):
         """Read a configuration from a file or text
 
-        `fil` is a sequence of strings. Any type that allows a loop like 
+        `fil` is a sequence of strings. Any type that allows a loop like
         ``for line in fil:``
         to iterate over its text lines will do. This could be a file type, or
         a multiline text after splitting on '\\n'.
@@ -207,7 +211,7 @@ class Config(Dict):
         Else, the string will be considered and a file with that name will
         be opened. It is an error if the file does not exist or can not be
         opened.
-        
+
         The function returns self, so that you can write: cfg = Config().
         """
         filename = None
@@ -230,22 +234,22 @@ class Config(Dict):
                 ls = ''
             else:
                 comments = ls[:3] == '"""'
-                
+
             if comments or len(ls)==0 or ls[0] == '#':
                 continue
-            
+
             if continuation:
                 s += ls
             else:
                 s = ls
-                
+
             continuation = s[-1] == '\\'
             if s[-1] == '\\':
                 s = s[:-1]
-              
+
             if continuation:
                 continue
-            
+
             if s[0] == '[':
                 if contents:
                     self.update(name=section,data=contents,removeLocals=True)
@@ -344,7 +348,7 @@ class Config(Dict):
         The configuration data will be written to the file with the given name
         in a text format that is both readable by humans and by the
         Config.read() method.
-        
+
         The header and trailer arguments are strings that will be added at
         the start and end of the outputfile. Make sure they are valid
         Python statements (or comments) and that they contain the needed
@@ -355,7 +359,7 @@ class Config(Dict):
         fil.write("%s" % self)
         fil.write(trailer)
         fil.close()
-        
+
 
     def keys(self,descend=True):
         """Return the keys in the config.
@@ -367,7 +371,7 @@ class Config(Dict):
             for k,v in self.iteritems():
                 if isinstance(v,Dict):
                     keys += ['%s/%s' % (k,ki) for ki in v.keys()]
-                
+
         return keys
 
 
@@ -380,7 +384,7 @@ if __name__ == '__main__':
             print("%s = %s" % (s,v))
         except:
             print("%s ! ERROR" % s)
-        
+
     C = Config("""# A simple config example
 aa = 'bb'
 bb = aa
@@ -432,9 +436,3 @@ rng = range(_n)
 
 
 # End
-   
-    
-    
-    
-    
-    

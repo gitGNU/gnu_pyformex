@@ -89,6 +89,7 @@ def detected():
 
 def about():
     """Display short information about pyFormex."""
+    version = pf.Version()
     draw.showInfo("""..
 
 %s
@@ -99,17 +100,19 @@ A tool for generating, manipulating and transforming 3D geometrical models by se
 %s
 
 Distributed under the GNU GPL version 3 or later
-""" % (pf.Version,'='*len(pf.Version),pf.Copyright))
+""" % (version,'='*len(version),pf.Copyright))
 
 # List of developers/contributors (current and past)
 _developers = [
     'Matthieu De Beule',
     'Gianluca De Santis',
     'Bart Desloovere',
+    'Wouter Devriendt',
     'Francesco Iannaccone',
     'Peter Mortier',
     'Tim Neels',
     'Tomas Praet',
+    'Tran Phuong Toan',
     'Sofie Van Cauter',
     'Benedict Verhegghe',
     'Zhou Wenxuan',
@@ -148,7 +151,7 @@ _cookies = [
     "In theory, theory and practice are the same. In practice, they're not. (Yoggi Berra)",
     "Most good programmers do programming not because they expect to get paid or get adulation by the public, but because it is fun to program. (Linus Torvalds)",
     "Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live. (Martin Golding)",
-    "If Microsoft had developed Internet, we could not ever see the source code of web pages. HTML might be a complied language then.",
+    "If Microsoft had developed Internet, we could not ever see the source code of web pages. HTML might be a compiled language then.",
     "What one programmer can do in one month, two programmers can do in two months.",
     "Windows 9x: n. 32 bit extensions and a graphical shell for a 16 bit patch to an 8 bit operating system originally coded for a 4 bit microprocessor, written by a 2 bit company that can't stand 1 bit of competition. (Cygwin FAQ)",
     "You know, when you have a program that does something really cool, and you wrote it from scratch, and it took a significant part of your life, you grow fond of it. When it's finished, it feels like some kind of amorphous sculpture that you've created. It has an abstract shape in your head that's completely independent of its actual purpose. Elegant, simple, beautiful.\nThen, only a year later, after making dozens of pragmatic alterations to suit the people who use it, not only has your Venus-de-Milo lost both arms, she also has a giraffe's head sticking out of her chest and a cherubic penis that squirts colored water into a plastic bucket. The romance has become so painful that each day you struggle with an overwhelming urge to smash the fucking thing to pieces with a hammer. (Nick Foster)",

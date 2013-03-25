@@ -34,11 +34,17 @@ from __future__ import print_function
 
 __version__ = "0.9.0~a4"
 __revision__ = __version__
-Version = 'pyFormex %s' % __version__
+
+
+def Version():
+    """Return a string with the pyFormex name and version"""
+    return 'pyFormex %s' % __version__
 
 
 def fullVersion():
-    return "%s (%s)" % (Version,__revision__)
+    """Return a string with the pyFormex name, version and revision"""
+    return "%s (%s)" % (Version(),__revision__)
+
 
 Copyright = 'Copyright (C) 2004-2013 Benedict Verhegghe'
 Url = 'http://pyformex.org'

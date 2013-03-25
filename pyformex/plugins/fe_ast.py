@@ -153,7 +153,7 @@ def fmtHeadingMesh(text=''):
 Code Aster mail file created by %s (%s)
 %s
 FINSF
-""" % (pf.Version,pf.Url,text)
+""" % (pf.Version(),pf.Url,text)
     return out
 
 
@@ -162,7 +162,7 @@ def fmtHeadingComm(text=''):
     out = """#
 # Code Aster command file created by %s (%s)
 # %s
-""" % (pf.Version,pf.Url,text)
+""" % (pf.Version(),pf.Url,text)
     return out
 
 

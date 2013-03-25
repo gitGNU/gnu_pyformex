@@ -50,7 +50,7 @@ class FeResult(object):
     def __init__(self,name=_name_,datasize={'U':3,'S':6,'COORD':3}):
         self.name = name
         self.datasize = datasize.copy()
-        self.about = {'creator':pf.Version,
+        self.about = {'creator':pf.Version(),
                       'created':pf.StartTime,
                       }
         self.modeldone = False

@@ -277,7 +277,7 @@ class Gui(QtGui.QMainWindow):
 
         # Create the message board
         self.board = Board()
-        #self.board.setPlainText(pf.Version+' started')
+        #self.board.setPlainText(pf.Version()+' started')
         # Put everything together
         self.splitter.addWidget(self.central)
         self.splitter.addWidget(self.board)
@@ -1071,7 +1071,7 @@ def findOldProcesses(max=16):
     Returns the next available main window name, and a list of
     running pyFormex GUI processes, if any.
     """
-    windowname = pf.Version
+    windowname = pf.Version()
     count = 0
     running = []
 
@@ -1088,7 +1088,7 @@ def findOldProcesses(max=16):
             if pid:
                 running.append((windowid,name,pid))
                 count += 1
-                windowname = '%s (%s)' % (pf.Version,count)
+                windowname = '%s (%s)' % (pf.Version(),count)
             else:
                 break
         else:
@@ -1258,7 +1258,7 @@ You should seriously consider to bail out now!!!
         splash = QtGui.QSplashScreen(splashimage)
         splash.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint|QtCore.Qt.SplashScreen)
         splash.setFont(QtGui.QFont("Helvetica",20))
-        splash.showMessage(pf.Version,QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop,QtCore.Qt.red)
+        splash.showMessage(pf.Version(),QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop,QtCore.Qt.red)
         splash.show()
 
     # create GUI, show it, run it

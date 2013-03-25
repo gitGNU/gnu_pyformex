@@ -170,7 +170,7 @@ def writeGTS(fn,coords,edges,faces):
     writeData(fil,coords,fmt='%f ')
     writeData(fil,edges+1,fmt='%i ')
     writeData(fil,faces+1,fmt='%i ')
-    fil.write("#GTS file written by %s\n" % pf.Version)
+    fil.write("#GTS file written by %s\n" % pf.Version())
     fil.close()
 
 

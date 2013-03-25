@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -42,9 +42,16 @@ def run():
     e1 = 30 # elevation of the major arcs
     e2 = 5  # elevation of the minor arcs
 
-    # Create a grid of beam elements
-    a1 = Formex('l:2').replic2(m+1,n,1,1,0,1) + \
-         Formex('l:1').replic2(m,n+1,1,1,0,1)
+    beam = False # Set True for using beam elements
+
+    if beam:
+        # Create a grid of beam elements
+        a1 = Formex('l:2').replic2(m+1,n,1,1,0,1) + \
+             Formex('l:1').replic2(m,n+1,1,1,0,1)
+    else:
+        # Create a grid of quad elements
+        a1 = Formex('4:0123').replic2(m,n,1,1,0,1)
+
     draw(a1,view='front')
     p = array(a1.center())
     p[2] = e1

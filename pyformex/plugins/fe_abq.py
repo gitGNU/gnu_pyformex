@@ -163,7 +163,7 @@ def fmtHeading(text=''):
 **
 *HEADING
 %s
-""" % (pf.Version,pf.Url,text)
+""" % (pf.Version(),pf.Url,text)
     return out
 
 def fmtPart(name='Part-1'):

@@ -14,7 +14,7 @@
 *.py[oc]
 *.1
 MANIFEST
-pyformex-DEV*
+pyformex-[A-Z]*
 HOWTO-dev.pdf
 
 # compiled docs

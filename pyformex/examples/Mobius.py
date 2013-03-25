@@ -38,17 +38,16 @@ def run():
     smoothwire()
 
     res = askItems([
-        ('w',2,{'text':'width'}),
-        ('l',30,{'text':'length'}),
-        ('n',1,{'text':'number of turns'}),
+        _I('w',2,text='width',tooltip='Number of unit squares along the width'),
+        _I('l',30,text='length',tooltip='Number of unit squares along the length'),
+        _I('n',1,text='number of turns',tooltip='Number of 180 degree turns to apply'),
         ])
     if not res:
         return
 
     globals().update(res)
 
-    C = Formex('l:1234')
-    cell = connect([C,C,C,C],bias=[0,1,2,3])
+    cell = Formex('4:0123')
     strip = cell.replic2(l,w,1.,1.).translate(1,-0.5*w)
     TA = draw(strip,color='orange',bkcolor='red')
 

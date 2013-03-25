@@ -144,7 +144,7 @@ def refLookup(key):
 
 
 def prefLookup(key):
-    """Lookup a key in the reference configuration."""
+    """Lookup a key in the user's preferences configuration."""
     return pf.prefcfg[key]
 
 
@@ -482,13 +482,18 @@ def run(argv=[]):
     if pf.options.debug and not pf.options.debuglevel:
         pf.options.debuglevel = pf.debugLevel(pf.options.debug.split(','))
 
-    # process options
+    # Check for invalid options
     if pf.options.nodefaultconfig and not pf.options.config:
         print("\nInvalid options: --nodefaultconfig but no --config option\nDo pyformex --help for help on options.\n")
         sys.exit()
 
-
     pf.debug("Options: %s" % pf.options,pf.DEBUG.ALL)
+
+    # Set future version for development branch
+    if pf.options.opengl2:
+        print("Chaning version")
+        pf.__version__ = "1.x~a1"
+
 
     ########## Process special options which will not start pyFormex #######
 
@@ -584,7 +589,11 @@ def run(argv=[]):
             if pf.options.listfiles:
                 print('\n'.join(files))
             else:
-                cmd = "grep %s '%s' %s" % (' '.join(opts),args[0],''.join([" '%s'" % f for f in files]))
+                search = args[0]
+                if "'" in search:
+                    search.replace("'","\'")
+                print("SEARCH = [%s]" % search)
+                cmd = 'grep %s "%s" %s' % (' '.join(opts),args[0],''.join([" '%s'" % f for f in files]))
                 #print(cmd)
                 os.system(cmd)
         return

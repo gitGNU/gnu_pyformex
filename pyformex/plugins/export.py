@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -29,13 +29,13 @@
 """
 from __future__ import print_function
 
-import pyformex
-    
+import pyformex as pf
+
 
 class ObjFile(object):
     def __init__(self,filename):
         self.file = open(filename,'w')
-        self.file.write("# .obj file written by %s\n" % pyformex.Version)
+        self.file.write("# .obj file written by %s\n" % pf.Version())
 
     def write(self,mesh,name=None):
         """Write a mesh to file in .obj format.
