@@ -513,6 +513,8 @@ class CanvasSettings(Dict):
                         raise
                 elif k == 'marktype':
                     pass
+                elif k == 'viewport':
+                    pass
                 else:
                     raise
                 ok[k] = v
