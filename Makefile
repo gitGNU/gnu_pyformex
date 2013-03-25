@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -203,9 +203,7 @@ Stamp.stamp: Stamp.template RELEASE
 	${STAMP} -t$< header="This file is part of pyFormex ${VERSION}  ($$(env LANG=C date))" -s$@
 
 stampall: Stamp.stamp
-	${STAMP} -t$< -i ${STAMPABLE}
-	chmod +x ${EXECUTABLE}
-# this should be fixed in stamp !
+	${STAMP} -p -t$< -i ${STAMPABLE}
 
 
 printstampable:
@@ -277,7 +275,7 @@ upload:
 
 # Tag the release in the git repository
 tag:
-	svn copy svn+ssh://svn.savannah.nongnu.org/pyformex/trunk svn+ssh://svn.savannah.nongnu.org/pyformex/tags/release-${RELEASE} -m "Tagging the ${RELEASE} release of the 'pyFormex' project."
+	git tag -s -a release${RELEASE} -m "This is the ${RELEASE} release of the 'pyFormex' project."
 
 
 

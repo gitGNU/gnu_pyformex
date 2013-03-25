@@ -1298,7 +1298,7 @@ First, create the distribution and test it out locally: both the installation pr
 
 - Check in (creating the dist may modify some files) ::
 
-   svn ci -m "Creating release ..."
+   git commit -a -m "Creating release ..."
 
 - Set the revision number in stats/pyformex-release.fdb. Compute it from the
   latest and add the increment from the pyFormex version::
