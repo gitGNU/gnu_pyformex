@@ -247,18 +247,26 @@ manpages:
 	make -C pyformex/extra manpages
 
 # Publish the distribution to our ftp server
-publocal: ${PKGDIR}/${LATEST} ${PKGDIR}/${PKGVER}.sig
+#
+# We should make a difference between official and interim releases!
+#
+publocal_int: ${PKGDIR}/${LATEST} ${PKGDIR}/${PKGVER}.sig
+	@echo "SHOULD REPLACE ~ with -"
 	rsync -ltv ${PKGDIR}/${PKGVER} ${PKGDIR}/${LATEST} ${PKGDIR}/${PKGVER}.sig ${FTPLOCAL}
+
+publocal_off: ${PUBDIR}/${LATEST} ${PUBDIR}/${PKGVER}.sig
+	rsync -ltv ${PUBDIR}/${PKGVER} ${PUBDIR}/${LATEST} ${PUBDIR}/${PKGVER}.sig ${FTPLOCAL}
 
 
 # Move the create tar.gz to the public directory
 pubrelease: ${PKGDIR}/${LATEST} ${PKGDIR}/${PKGVER}.sig
+	mkdir -p ${PUBDIR}
 	mv ${PKGDIR}/${PKGVER} ${PKGDIR}/${LATEST} ${PKGDIR}/${PKGVER}.sig ${PUBDIR}
 	ln -s pyformex/${LATEST} ${PKGDIR}
 
-# and sign the packages
-sign: ${PUBDIR}/${PKGVER}
-	cd ${PUBDIR}; gpg -b --use-agent ${PKGVER}
+# and sign the packages  (THIS IS NOW DONE BEFORE MOVING)
+#sign: ${PUBDIR}/${PKGVER}
+#	cd ${PUBDIR}; gpg -b --use-agent ${PKGVER}
 
 pubn: ${PUBDIR}/${PKGVER}.sig
 	rsync ${PUBDIR}/* ${FTPPUB} -rtlvn
@@ -275,8 +283,11 @@ upload:
 
 # Tag the release in the git repository
 tag:
-	git tag -s -a release${RELEASE} -m "This is the ${RELEASE} release of the 'pyFormex' project."
+	git tag -s -a release-${RELEASE} -m "This is the ${RELEASE} release of the 'pyFormex' project."
 
+# Push the release tag to origin
+pushtag:
+	git push origin release-${RELEASE}
 
 
 # Creates statistics

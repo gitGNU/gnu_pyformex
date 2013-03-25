@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -210,6 +210,7 @@ ${PUBDIR}/${PDF}.sig: ${PUBDIR}/${PDF}
 	cd ${PUBDIR}; gpg -b --use-agent ${PDF}
 
 ${PUBDIR}/${PDF}: ${THE_PDF}
+	mkdir -p ${PUBDIR}
 	cp ${THE_PDF} ${PUBDIR}
 
 

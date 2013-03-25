@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -327,15 +327,13 @@ def reportDetected():
     s += "\nPython version: %s\n" % sys.version
     s += "\nOperating system: %s\n" % sys.platform
     s += "\nDetected Python Modules:\n"
-    the_version.sort(sorted(the_version.keys()))
-    for k in the_version:
+    for k in sorted(the_version.keys()):
         v = the_version[k]
         if not v:
             v = notfound
         s += "%s (%s)\n" % ( k,v)
     s += "\nDetected External Programs:\n"
-    the_external.sort(sorted(the_external.keys()))
-    for k in the_external:
+    for k in sorted(the_external.keys()):
         v = the_external[k]
         if not v:
             v = notfound

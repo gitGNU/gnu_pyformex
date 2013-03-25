@@ -1303,25 +1303,29 @@ First, create the distribution and test it out locally: both the installation pr
 - Set the revision number in stats/pyformex-release.fdb. Compute it from the
   latest and add the increment from the pyFormex version::
 
-    pyFormex 0.9.0 (0.8.9r5-247-ga162aca)
+    pyFormex 0.9.0 (0.8.9r5-249-ga162aca)
                             ^^^
-  In this example we have 247 past release 0.8.9 (actually 0.8.9-r5, but this
+  In this example we have 249 past release 0.8.9 (actually 0.8.9-r5, but this
   had the same revision number as 0.8.9). Release 0.8.9 was revision 2557,
-  thus the new revision number is 2557 + 247 = 2804
+  thus the new revision number is 2557 + 249 = 2806.
 
 - Create a Tag ::
 
    make tag
+   make pushtag
 
-- Create a distribution ::
+- Push source to Savannah::
 
-   svn up
+   git push public master
+   git push public RELEASETAG
+
+- Create the distribution ::
+
    make dist
 
 - Put the release files on Savannah::
 
    make pubrelease
-   make sign
    make pubpdf
    make pubn
    make pub
@@ -1335,13 +1339,12 @@ First, create the distribution and test it out locally: both the installation pr
 
 - Put the files on our local FTP server ::
 
-   (NOT CORRECT) make publocal
+   make publocal_off
 
 - Put the documentation on the web site ::
 
    make pubdoc
    ./publish
-   # now add the missing files by hand : cvs add FILE
    make commit
 
 - Upload to the python package index ::
@@ -1386,7 +1389,6 @@ cvs mirror of the website. Upload the files just as for the documentation::
 
    cd ..
    ./publish
-   # now add the missing files by hand : cvs add FILE
    make commit
 
 
