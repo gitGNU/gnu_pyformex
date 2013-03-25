@@ -152,7 +152,7 @@ def setCanvasSize():
     res = draw.askItems([
         _I('w',pf.canvas.width()),
         _I('h',pf.canvas.height())
-        ],'Set Canvas Size'
+        ],caption='Set Canvas Size'
         )
     if res:
         draw.canvasSize(res['w'],res['h'])
