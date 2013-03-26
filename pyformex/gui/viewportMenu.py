@@ -194,6 +194,7 @@ def canvasSettings():
             res = utils.prefixDict(res,'canvas/')
             print(res)
             res['_save_'] = save
+            del res['viewport']
             prefMenu.updateSettings(res)
 
     def acceptAndSave():
