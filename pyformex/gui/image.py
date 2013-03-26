@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -478,6 +478,8 @@ def createMovie(files,encoder='ffmpeg',**kargs):
 
     """
     print("Encoding %s" % files)
+    if type(files) == list:
+        files = ' '.join(files)
 
     if encoder == 'convert':
         outfile = 'output.gif'

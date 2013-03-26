@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -32,7 +32,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
 _topics = ['mesh','illustration','surface']
-_techniques = ['color','random']
+_techniques = ['color','random','image','movie']
 
 from gui.draw import *
 from plugins import trisurface,surface_menu
@@ -114,10 +114,11 @@ def run():
         canvasSize(nx*200,ny*200)
         #canvasSize(720,576)
         print("running interactively")
-        n = 1#ask("How many?",['0','1000','100','10','1'])
+        n = ask("How many?",['0','1000','100','10','1'])
         n = int(n)
-        save = False#ack("Save images?")
+        save = ack("Save images?")
         if save:
+            from gui import image
             image.save(filename='Carpetry-000.jpg',window=False,multi=True,hotkey=False,autosave=False,border=False,rootcrop=False,format=None,quality=95,verbose=False)
 
         A = None
@@ -129,6 +130,14 @@ def run():
             A = B
             if save:
                 image.saveNext()
+
+        if save:
+            files = image.multisave[0].files()
+            print(files)
+            print("Creating movie 'output.gif' in")
+            pwdir()
+            image.createMovie(files,encoder='convert',delay=1,colors=256)
+
 
     else:
         import sys
