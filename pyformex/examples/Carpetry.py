@@ -133,11 +133,8 @@ def run():
 
         if save:
             files = image.multisave[0].files()
-            print(files)
-            print("Creating movie 'output.gif' in")
-            pwdir()
             image.createMovie(files,encoder='convert',delay=1,colors=256)
-
+            image.save()   # reset the multisave mode, disabling further saves
 
     else:
         import sys

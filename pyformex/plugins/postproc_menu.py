@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -794,7 +794,7 @@ def show_results(data):
                 val = norm2(val)
     if val is not None:
         txt += result_types.values()[resindex]
-    print("RESULT ELTYPE: %s" % [e.elName() for e in elems])
+    #print("RESULT ELTYPE: %s" % [e.eltype.name() for e in elems])
     showResults(nodes,elems,displ,txt,val,showref,dscale,count,sleeptime,symmetric_scale)
     return val
 
