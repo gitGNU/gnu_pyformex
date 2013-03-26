@@ -473,7 +473,7 @@ def autoSaveOn():
     return multisave and multisave[-2]
 
 
-def createMovie(files,encoder='ffmpeg',**kargs):
+def createMovie(files,encoder='ffmpeg',outfn='output',**kargs):
     """Create a movie from a saved sequence of images.
 
     """
@@ -482,13 +482,14 @@ def createMovie(files,encoder='ffmpeg',**kargs):
         files = ' '.join(files)
 
     if encoder == 'convert':
-        outfile = 'output.gif'
-        cmd = "convert -delay %s -colors %s %s %s" % (kargs['delay'],kargs['colors'],files,outfile)
+        outfile = outfn+'.gif'
+        cmd= "convert "+" ".join(["-%s %s"%k for k in kargs.items()])+" %s %s"%(files,outfile)
+        print(cmd)
     elif encoder == 'mencoder':
-        outfile = 'output.avi'
+        outfile =outfn+'.avi'
         cmd = "mencoder \"mf://%s\" -o %s -mf fps=%s -ovc lavc -lavcopts vcodec=msmpeg4v2:vbitrate=%s" % (files,outfile,kargs['fps'],kargs['vbirate'])
     else:
-        outfile = 'output.mp4'
+        outfile = outfn+'.mp4'
         cmd = "ffmpeg -qscale 1 -r 1 -i %s output.mp4" % files
     pf.debug(cmd,pf.DEBUG.IMAGE)
     utils.runCommand(cmd)
