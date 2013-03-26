@@ -322,7 +322,7 @@ def save_rect(x,y,w,h,filename,format,quality=-1):
 
 #### USER FUNCTIONS ################
 
-def save(filename=None,window=False,multi=False,hotkey=True,autosave=False,border=False,rootcrop=False,format=None,quality=-1,size=None,verbose=False):
+def save(filename=None,window=False,multi=False,hotkey=True,autosave=False,border=False,rootcrop=False,format=None,quality=-1,size=None,verbose=False,resetmulti=True):
     """Saves an image to file or Starts/stops multisave mode.
 
     With a filename and multi==False (default), the current viewport rendering
@@ -360,6 +360,9 @@ def save(filename=None,window=False,multi=False,hotkey=True,autosave=False,borde
     """
     #print "SAVE: quality=%s" % quality
     global multisave
+    
+    if resetmulti:
+        multisave=None
 
     # Leave multisave mode if no filename or starting new multisave mode
     if multisave and (filename is None or multi):
@@ -423,7 +426,7 @@ def saveNext():
     if multisave:
         names,format,quality,size,window,border,hotkey,autosave,rootcrop = multisave
         name = names.next()
-        save(name,window,False,hotkey,autosave,border,rootcrop,format,quality,size,False)
+        save(name,window,False,hotkey,autosave,border,rootcrop,format,quality,size,False,resetmulti=False)
 
 
 def changeBackgroundColorXPM(fn,color):
@@ -475,6 +478,8 @@ def autoSaveOn():
 
 def createMovie(files,encoder='ffmpeg',outfn='output',**kargs):
     """Create a movie from a saved sequence of images.
+        files is a list of file names or a str containing all the files name separated by space
+        outfn is the output file name without teh extension
 
     """
     print("Encoding %s" % files)
@@ -484,9 +489,8 @@ def createMovie(files,encoder='ffmpeg',outfn='output',**kargs):
     if encoder == 'convert':
         outfile = outfn+'.gif'
         cmd= "convert "+" ".join(["-%s %s"%k for k in kargs.items()])+" %s %s"%(files,outfile)
-        print(cmd)
     elif encoder == 'mencoder':
-        outfile =outfn+'.avi'
+        outfile =outfn + '.avi'
         cmd = "mencoder \"mf://%s\" -o %s -mf fps=%s -ovc lavc -lavcopts vcodec=msmpeg4v2:vbitrate=%s" % (files,outfile,kargs['fps'],kargs['vbirate'])
     else:
         outfile = outfn+'.mp4'
