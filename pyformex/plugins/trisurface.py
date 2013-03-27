@@ -1568,6 +1568,86 @@ Quality: %s .. %s
         return elemlist[p==prop]
 
 
+    def intersectionWithLines(self,q,m,q2=None,atol=1.e-6):
+        """Intersects a surface with lines.
+    
+        Intersects a surface with lines defined by point q and normal m.
+        
+        Parameters:
+        (lines)    
+        - `q`,`m`: (...,3) shaped arrays of points and vectors, defining
+          a set of lines.
+        (segments)
+        - `q`,`q2`: (...,3) shaped arrays of points, defining
+          a set of line segments.
+    
+        Returns:
+        - a fused set of intersection points (Coords)
+        - a (1,3) array with the indices of intersection point, line (segment) and triangle
+        NB: 
+        - in the current implementation if a line is laying on a triangle it will not generate intersection
+        - atol is used to take into account intersection points on the border (otherwise geomtools.insideTriangle() could fail)
+        """
+    
+        def closeLinesPoints(p,q,m,dtresh):
+            """Find points and lines which are closer than a treshold distance.
+        
+            Parameters:
+            - `p`: a set of points
+            - `q`,`m`: (...,3) shaped arrays of points and vectors, defining
+              a set of lines.
+            - `dtresh`: 1D array of len(p) float, treshold distances
+        
+            Returns:
+            - line index
+            - point index
+            
+            For each point finds the lines closer than the dtresh corresponding to that point. 
+            The distance point-line is calculated using Pitagora as it seems the fastest way.
+            NB:
+            - this function is inside intersectSurfaceWithLines because is not used anywhere else.
+            - this function is computationally expensive. In future, a faster implementation (e.g. using VTK) 
+              could replace this function.
+            """
+            cand=[]
+            m=normalize(m)
+            for i in range(q.shape[0]):
+                hy= p-q[i]
+                dpl=(abs(length(hy)**2.-dotpr(hy, m[i])**2.))**0.5
+                wd= dpl<=dtresh
+                cand.append([i,where(wd)[0]] )
+            il= concatenate([repeat(cand[i][0], cand[i][1].shape[0]) for i in range(len(cand))])
+            ip= concatenate([cand[i][1] for i in range(len(cand))])
+            return il, ip
+    
+        def insideSegment(v,v0,v1,atol):
+            """returns which points v are inside segments v0,v1
+            """        
+            return length(v-v0)+ length(v-v1)< length(v1-v0)+atol
+        
+        if (m==None) + (q2==None)!=1:
+            raise ValueError, 'give either m to define lines or q2 to define segments'
+        r,C,n = geomtools.triangleBoundingCircle(self.coords[self.elems])#triangles' bounding sphere
+        if q2!=None:
+            m = normalize(q2-q)
+        l, t=closeLinesPoints(C,q,m,r)#detects candidate lines/triangles (slow part)
+        p = geomtools.intersectionPointsLWP(q[l],m[l],C[t],self.areaNormals()[1][t],  mode='pair')#intersects candidate lines/triangles
+        prl=where(sum(isinf(p) + isnan(p), axis=1)>0)[0]#remove nan/inf (lines parallel to triangles)
+        i1 = complement(prl, len(p))
+        if len(i1)==0:
+            return [], []
+        xt = self.select(t).toFormex().shrink(1.+atol)[:]#atol: insideTriangle sometimes fails on border!!
+        xt, xp, xl = xt[i1], p[i1], l[i1]
+        i2 = geomtools.insideTriangle(xt,xp[newaxis,...]).reshape(-1)#remove intersections outside triangles
+        i=i1[i2]
+        if q2!=None:#remove intersections outside segments
+            xp, xl, xt=xp[i2], xl[i2], xt[i2]
+            i3=insideSegment(xp, q[xl], q2[xl], atol)
+            i=i[i3]
+        p, j=p[i].fuse()
+        return p, column_stack([j, l[i], t[i]])
+    
+    
     def intersectionWithPlane(self,p,n):
         """Return the intersection lines with plane (p,n).
 
@@ -2372,65 +2452,18 @@ def Sphere(level=4,verbose=False,filename=None):
 
 ####### Unsupported functions needing cleanup #######################
 
-def checkDistanceLinesPointsTreshold(p, q, m, dtresh):
-    """_p are np points, q m are nl lines, dtresh are np distances. It returns the indices of lines, points which are in a distance < dtresh. The distance point-line is calculated using Pitagora as it seems the fastest way."""
-    cand=[]
-    m=normalize(m)
-    for i in range(q.shape[0]):
-        hy= p-q[i]
-        dpl=(abs(length(hy)**2.-dotpr(hy, m[i])**2.))**0.5
-        wd= dpl<=dtresh
-        cand.append([i,where(wd)[0]] )
-    candwl= concatenate([repeat(cand[i][0], cand[i][1].shape[0]) for i in range(len(cand))])
-    candwt= concatenate([cand[i][1] for i in range(len(cand))])
-    return candwl, candwt
-
-
-
-@deprecation("intersectLineWithPlaneOne2One is deprecated: use geomtools.intersectionPointsLWP instead")
-def intersectLineWithPlaneOne2One(q,m,p,n):
-    """_it returns for each pair of line(q,m) and plane (p,n) the point of intersection. plane: (x-p)n=0, line: x=q+t m. It find the scalar t and returns the point."""
-    t=dotpr(n, (p-q))/dotpr(n, m)
-    return q+m*t[:, newaxis]
-
-#
-# Efficiency should be compared with geomtools.insideTriangle
-#
-@deprecation("checkPointInsideTriangleOne2One is deprecated: use geomtools.insideTriangle instead")
-def checkPointInsideTriangleOne2One(tpi, pi, atol=1.e-5):
-    """_return a 1D boolean with the same dimension of tpi and pi. The value [i] is True if the point pi[i] is inside the triangle tpi[i]. It uses areas to check it. """
-    print(tpi.shape, pi.shape)
-    tpi3= column_stack([tpi[:, 0], tpi[:, 1], pi, tpi[:, 0], pi, tpi[:, 2], pi, tpi[:, 1], tpi[:, 2]]).reshape(pi.shape[0]*3,  3, 3)
-    #areas
-    Atpi3=(length(cross(tpi3[:,1]-tpi3[:,0],tpi3[:,2]-tpi3[:,1]))*0.5).reshape(pi.shape[0], 3).sum(axis=1)#area and sum
-    Atpi=length(cross(tpi[:,1]-tpi[:,0],tpi[:,2]-tpi[:,1]))*0.5#area
-    return -(Atpi3>Atpi+atol)#True mean point inside triangle
-
-
+@deprecation("intersectSurfaceWithLines has been removed: use intersectionWithLines instead")
 def intersectSurfaceWithLines(ts, qli, mli, atol=1.e-5):
-    """_it takes a TriSurface ts and a set of lines ql,ml and intersect the lines with the TriSurface.
-    It returns the points of intersection and the indices of the intersected line and triangle.
-    TODO: the slowest part is computing the distances of lines from triangles, can it be faster? """
-    #find Bounding Sphere for each triangle
-    tsr,  tsc, tsn = geomtools.triangleBoundingCircle(ts.coords[ts.elems])
-    wl, wt=checkDistanceLinesPointsTreshold(tsc,qli, mli, tsr)#slow part
-    #find the intersection points xc only for the candidates wl,wt
-    npl= ts.areaNormals()[1]
-    xc= intersectLineWithPlaneOne2One(qli[wl],mli[wl],tsc[wt],npl[wt])
-    #check if each intersection is really inside the triangle
-    tsw=ts.select(wt)
-    tsw=tsw.coords[tsw.elems]
-    #xIn = checkPointInsideTriangleOne2One(tsw, xc, atol)
-    xIn = geomtools.insideTriangle(tsw,xc[newaxis,...]).reshape(-1)
-    #takes only intersections that fall inside the triangle
-    return xc[xIn], wl[xIn], wt[xIn]
-
+    pass
+##this function has been removed. You can get the same results using:
+##      P,X=intersectionWithLines(self, q, m, q2,atol=1.e-5)
+##      P,L,T = P[X[:, 0]], X[:, 1], X[:, 2]
+@deprecation("intersectSurfaceWithSegments has been removed: use intersectionWithLines instead")
 def intersectSurfaceWithSegments(s1, segm, atol=1.e-5):
-    """_it takes a TriSurface ts and a set of segments (-1,2,3) and intersect the segments with the TriSurface.
-    It returns the points of intersections and, for each point, the indices of the intersected segment and triangle"""
-    p, il, it=intersectSurfaceWithLines(s1, segm[:, 0], normalize(segm[:, 1]-segm[:, 0]),atol)
-    win= length(p-segm[:, 0][il])+ length(p-segm[:, 1][il])< length(segm[:, 1][il]-segm[:, 0][il])+atol
-    return p[win], il[win], it[win]
+    pass
+##this function has been removed. You can get the same results using:
+##      P,X=intersectionWithLines(self, q=segm[:, 0], m=None, q2=segm[:, 1],atol=1.e-5)
+##      P,L,T = P[X[:, 0]], X[:, 1], X[:, 2]
 
 
 import pyformex_gts
