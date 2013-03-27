@@ -142,15 +142,19 @@ def requireModule(name):
         if name in known_modules:
             # Get the correct name, if different from our alias
             try:
-                name = known_modules[name][0]
+                realname = known_modules[name][0]
+                if realname:
+                    name = realname
             except:
                 pass
             attr = 'required'
         else:
             attr = 'unknown'
+        print(name)
         errmsg = "Could not load %s module '%s'" % (attr,name)
         pf.error(errmsg)
-        sys.exit()
+        raise ValueError,errmsg
+        # sys.exit()
 
 
 
