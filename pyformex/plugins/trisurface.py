@@ -1568,24 +1568,21 @@ Quality: %s .. %s
         return elemlist[p==prop]
 
 
-    def intersectionWithLines(self,q,m,q2=None,atol=1.e-6):
+    def intersectionWithLines(self,q,q2, method='line',atol=1.e-6):
         """Intersects a surface with lines.
-    
-        Intersects a surface with lines defined by point q and normal m.
-        
+       
         Parameters:
-        (lines)    
-        - `q`,`m`: (...,3) shaped arrays of points and vectors, defining
-          a set of lines.
-        (segments)
         - `q`,`q2`: (...,3) shaped arrays of points, defining
-          a set of line segments.
+          a set of lines.
+        - `method`: a string (line, segment or ray) defining if the line
+          is either a full-line or a line-segment (q-q2) or a line-ray (q->q2)
     
         Returns:
         - a fused set of intersection points (Coords)
-        - a (1,3) array with the indices of intersection point, line (segment) and triangle
+        - a (1,3) array with the indices of intersection point, line and triangle
         NB: 
-        - in the current implementation if a line is laying on a triangle it will not generate intersection
+        - in the current implementation if a line is laying on a triangle it will not generate intersections.
+          In this case it may be interesting to only return the intersection of the line with 2 triangles edges using intersectionPointsLWL (TODO).
         - atol is used to take into account intersection points on the border (otherwise geomtools.insideTriangle() could fail)
         """
     
@@ -1605,7 +1602,7 @@ Quality: %s .. %s
             For each point finds the lines closer than the dtresh corresponding to that point. 
             The distance point-line is calculated using Pitagora as it seems the fastest way.
             NB:
-            - this function is inside intersectSurfaceWithLines because is not used anywhere else.
+            - this function is inside intersectionWithLines because is not used anywhere else.
             - this function is computationally expensive. In future, a faster implementation (e.g. using VTK) 
               could replace this function.
             """
@@ -1620,16 +1617,23 @@ Quality: %s .. %s
             ip= concatenate([cand[i][1] for i in range(len(cand))])
             return il, ip
     
-        def insideSegment(v,v0,v1,atol):
-            """returns which points v are inside segments v0,v1
-            """        
-            return length(v-v0)+ length(v-v1)< length(v1-v0)+atol
-        
-        if (m==None) + (q2==None)!=1:
-            raise ValueError, 'give either m to define lines or q2 to define segments'
+        def insideLine(v,v0,v1,atol, method='segment'):
+            """
+            Check points inside a segments or a ray
+            
+            if method=='segment' check points inside segments v0,v1
+            if method=='ray' check points inside ray v0->v1        
+            """
+            if method=='segment':
+                ir=length(v-v0)+ length(v-v1)< length(v1-v0)+atol
+            if method=='ray':
+                ir0 = dotpr(v-v0,normalize(v1-v0))>0#equivalent to ir0=length(normalize(v-v0)-m)<atol
+                ir1 = length(v-v0)<atol#point close to the ray's end
+                ir=ir0+ir1
+            return ir
+                
         r,C,n = geomtools.triangleBoundingCircle(self.coords[self.elems])#triangles' bounding sphere
-        if q2!=None:
-            m = normalize(q2-q)
+        m = normalize(q2-q)
         l, t=closeLinesPoints(C,q,m,r)#detects candidate lines/triangles (slow part)
         p = geomtools.intersectionPointsLWP(q[l],m[l],C[t],self.areaNormals()[1][t],  mode='pair')#intersects candidate lines/triangles
         prl=where(sum(isinf(p) + isnan(p), axis=1)>0)[0]#remove nan/inf (lines parallel to triangles)
@@ -1640,9 +1644,9 @@ Quality: %s .. %s
         xt, xp, xl = xt[i1], p[i1], l[i1]
         i2 = geomtools.insideTriangle(xt,xp[newaxis,...]).reshape(-1)#remove intersections outside triangles
         i=i1[i2]
-        if q2!=None:#remove intersections outside segments
-            xp, xl, xt=xp[i2], xl[i2], xt[i2]
-            i3=insideSegment(xp, q[xl], q2[xl], atol)
+        if method!='line':
+            xp, xl=xp[i2], xl[i2]
+            i3=insideLine(xp, q[xl], q2[xl],atol, method)
             i=i[i3]
         p, j=p[i].fuse()
         return p, column_stack([j, l[i], t[i]])
