@@ -1,13 +1,12 @@
 # $Id$
 ##
-##  This file is part of pyFormex 0.9.0  (Mon Mar 25 13:52:29 CET 2013)
+##  This file is part of pyFormex 0.9.1  (Wed Mar 27 15:37:25 CET 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
 ##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
-##
 ##
 ##  This program is free software: you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -94,6 +93,7 @@ NONSTAMPABLE= COPYING
 
 STAMPABLE= $(filter-out ${PYFORMEXDIR}/template.py,${SOURCE}) \
 	${EXECUTABLE} ${CSOURCE} ${EXAMPLES} ${DOCSOURCE} ${BINSOURCE} \
+	${LIBSOURCE} \
 	$(filter-out ${EXTDIR}/pygl2ps/gl2ps_wrap.c,${EXTSOURCE}) \
 	${OTHERSTAMPABLE}
 
@@ -112,7 +112,7 @@ STATICDIRS= pyformex/data/README pyformex/icons/README \
 	website/src/examples/README
 
 STAMP= stamp
-VERSIONSTRING= __version__ = .*
+VERSIONSTRING= __version__ = ".*"
 NEWVERSIONSTRING= __version__ = "${RELEASE}"
 
 PKGVER= ${PKGNAME}-${RELEASE}.tar.gz
@@ -185,7 +185,7 @@ bumprelease:
 revision:
 	sed -i "s|__revision__ = .*|__revision__ = '$$(git describe --always)'|" ${PYFORMEXDIR}/__init__.py
 
-version: ${PYFORMEXDIR}/__init__.py setup.py ${SPHINXDIR}/conf.py
+version: ${PYFORMEXDIR}/__init__.py setup.py ${SPHINXDIR}/conf.py ${LIBSOURCE}
 
 ${PYFORMEXDIR}/__init__.py: RELEASE
 	sed -i 's|${VERSIONSTRING}|${NEWVERSIONSTRING}|' $@
@@ -196,6 +196,9 @@ ${SPHINXDIR}/conf.py: RELEASE
 
 setup.py: RELEASE
 	sed -i "s|version='.*'|version='${RELEASE}'|" $@
+
+${LIBDIR}/%.c: RELEASE
+	sed -i 's|${VERSIONSTRING}|${NEWVERSIONSTRING}|' $@
 
 # Stamp files with the version/release date
 

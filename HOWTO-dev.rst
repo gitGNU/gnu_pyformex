@@ -291,6 +291,21 @@ Using the git repository
     git push public master
 
 
+Make another branch the master
+------------------------------
+You have a (public) branch 'new', which you want to become the master.
+The new branch has diverted a lot from master, but you still need to
+keep the changes from the master branch. The first merge the master
+into yout new branch::
+
+  git co new
+  git merge -s ours master
+  git co master
+  git merge new
+
+But you nee
+
+
 Structure of the pyFormex repository
 ====================================
 After you checked out the trunk, you will find the following in the top

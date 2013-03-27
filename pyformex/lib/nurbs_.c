@@ -1,13 +1,12 @@
 /* $Id$ */
 //
-//  This file is part of pyFormex 0.8.5  (Sun Dec  4 21:24:46 CET 2011)
+//  This file is part of pyFormex 0.9.1  (Wed Mar 27 15:37:25 CET 2013)
 //  pyFormex is a tool for generating, manipulating and transforming 3D
 //  geometrical models by sequences of mathematical operations.
 //  Home page: http://pyformex.org
 //  Project page:  http://savannah.nongnu.org/projects/pyformex/
-//  Copyright 2004-2011 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+//  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 //  Distributed under the GNU General Public License version 3 or later.
-//
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -24,7 +23,7 @@
 //
 
 //
-// This module is partly inspired by the Nurbs toolbox Python port by 
+// This module is partly inspired by the Nurbs toolbox Python port by
 // Runar Tenfjord (http://www.aria.uklinux.net/nurbs.php3)
 //
 
@@ -32,14 +31,18 @@
 #include "numpy/arrayobject.h"
 #include <math.h>
 
-static char __doc__[] = "nurbs_ module\n\
+
+/****************** LIBRARY VERSION AND DOCSTRING *******************/
+
+static char *__version__ = "0.9.1a1";
+static char *__doc__ = "nurbs_ module\n\
 \n\
 This module provides accelerated versions of the pyFormex NURBS\n\
 functions.\n\
 ";
 
 
-/****** INTERNAL FUNCTIONS (not callable from Python ********/
+/****** INTERNAL FUNCTIONS (not callable from Python) ********/
 
 int min(int a, int b)
 {
@@ -54,7 +57,7 @@ int max(int a, int b)
 }
 
 /* Dot product of two vectors of length n */
-/* ia and ib are the strides of the elements addressed starting from a, b */ 
+/* ia and ib are the strides of the elements addressed starting from a, b */
 static double dotprod(double *a, int ia, double *b, int ib, int n)
 {
   int i;
@@ -83,7 +86,7 @@ static double distance4d(double *a, double *b, int n)
   }
   return t;
 }
-  
+
 
 /* Turn an array into a matrix */
 /* An array here is a contiguous memory space of (nrows*ncols) doubles,
@@ -103,7 +106,7 @@ static double distance4d(double *a, double *b, int n)
 /*   return mat; */
 /* } */
 
-static double **newmatrix(int nrows, int ncols) 
+static double **newmatrix(int nrows, int ncols)
 {
   int row;
   double **mat;
@@ -111,7 +114,7 @@ static double **newmatrix(int nrows, int ncols)
   mat = (double**) malloc (nrows*sizeof(double*));
   mat[0] = (double*) malloc (nrows*ncols*sizeof(double));
   for (row = 1; row < nrows; row++)
-    mat[row] = mat[row-1] + ncols;  
+    mat[row] = mat[row-1] + ncols;
   return mat;
 }
 
@@ -127,7 +130,7 @@ static void print_mat(double *mat,int nrows,int ncols)
   for (i=0;  i<nrows; i++) {
     for (j=0; j<ncols; j++) printf(" %e",mat[i*ncols+j]);
     printf("\n");
-  } 
+  }
 }
 
 // Compute logarithm of the gamma function
@@ -153,7 +156,7 @@ static double _factln(int n)
 {
   static int ntop = 0;
   static double a[101];
-  
+
   if (n <= 1) return 0.0;
   while (n > ntop)
   {
@@ -212,7 +215,7 @@ Input:
 Returns:
 The value of the Bernstein polynomial B(i,n) at parameter value u.
 
-Algorithm A1.2 from 'The NURBS Book' p20. 
+Algorithm A1.2 from 'The NURBS Book' p20.
 */
 
 static double _bernstein(int i, int n, double u)
@@ -242,7 +245,7 @@ Output:
 - B: double(n+1), the value of all n-th degree Bernstein polynomials B(i,n)
 at parameter value u.
 
-Algorithm A1.3 from 'The NURBS Book' p20. 
+Algorithm A1.3 from 'The NURBS Book' p20.
 */
 
 static void all_bernstein(int n, double u, double *B)
@@ -283,7 +286,7 @@ static int find_multiplicity(double *U, double u, int r)
 
 /* find_span */
 /*
-Find the knot span index of the parametric point u. 
+Find the knot span index of the parametric point u.
 
 Input:
 
@@ -305,26 +308,26 @@ static int find_span(double *U, double u, int p, int n)
 
   // special case
   if (u == U[n+1]) return(n);
-    
+
   // do binary search
   low = p;
   high = n + 1;
   mid = (low + high) / 2;
   while (u < U[mid] || u >= U[mid+1]) {
-    if (u < U[mid]) 
+    if (u < U[mid])
       high = mid;
-    else 
+    else
       low = mid;
     mid = (low + high) / 2;
     cnt ++;
     if (cnt > 20) break;
-  }  
+  }
   return(mid);
 }
 
 /* basis_funs */
 /*
-Compute the nonvanishing B-spline basis functions for index span i. 
+Compute the nonvanishing B-spline basis functions for index span i.
 
 Input:
 
@@ -346,7 +349,7 @@ static void basis_funs(double *U, double u, int p, int i, double *N)
   // work space
   double *left  = (double*) malloc((p+1)*sizeof(double));
   double *right = (double*) malloc((p+1)*sizeof(double));
-  
+
   N[0] = 1.0;
   for (j = 1; j <= p; j++) {
     left[j]  = u - U[i+1-j];
@@ -356,7 +359,7 @@ static void basis_funs(double *U, double u, int p, int i, double *N)
       temp = N[r] / (right[r+1] + left[j-r]);
       N[r] = saved + right[r+1] * temp;
       saved = left[j-r] * temp;
-    } 
+    }
     N[j] = saved;
   }
 
@@ -366,7 +369,7 @@ static void basis_funs(double *U, double u, int p, int i, double *N)
 
 /* basis_derivs */
 /*
-Compute the nonvanishing B-spline basis functions and their derivatives. 
+Compute the nonvanishing B-spline basis functions and their derivatives.
 
 Input:
 
@@ -377,7 +380,7 @@ Input:
 - n: number of derivatives to compute (n <= p)
 
 Output:
-- dN: (n+1,p+1) values of the nonzero basis functions and their first n 
+- dN: (n+1,p+1) values of the nonzero basis functions and their first n
       derivatives at u
 
 Algorithm A2.3 from 'The NURBS Book' pg72.
@@ -441,7 +444,7 @@ static void basis_derivs(double *U, double u, int p, int i, int n, double *dN)
       j = s1; s1 = s2; s2 = j;
     }
   }
-  
+
   /* Multiply by the correct factors */
   r = p;
   for (k=1; k<=n; k++) {
@@ -463,7 +466,7 @@ static void basis_derivs(double *U, double u, int p, int i, int n, double *dN)
 
 /* curve_points */
 /*
-Compute points on a B-spline curve. 
+Compute points on a B-spline curve.
 
 Input:
 
@@ -483,7 +486,7 @@ Modified algorithm A3.1 from 'The NURBS Book' pg82.
 static void curve_points(double *P, int nc, int nd, double *U, int nk, double *u, int nu, double *pnt)
 {
   int i, j, p, s, t;
-  
+
   /* degree of the spline */
   p = nk - nc - 1;
 
@@ -503,12 +506,12 @@ static void curve_points(double *P, int nc, int nd, double *U, int nk, double *u
     }
   }
   free(N);
-} 
+}
 
 
 /* curve_derivs */
 /*
-Compute derivatives of a B-spline curve. 
+Compute derivatives of a B-spline curve.
 
 Input:
 
@@ -565,7 +568,7 @@ static void curve_derivs(int n, double *P, int nc, int nd, double *U, int nk, do
 
 /* curve_knot_refine */
 /*
-Refine curve knot vector. 
+Refine curve knot vector.
 
 Input:
 
@@ -596,7 +599,7 @@ static void curve_knot_refine(double *P, int nc, int nd, double *U, int nk, doub
   a = find_span(U,u[0],p,n);
   b = find_span(U,u[r],p,n) + 1;
 
-  for (j = 0; j < a-p; j++) 
+  for (j = 0; j < a-p; j++)
     for (q=0; q<nd; q++) newP[j*nd+q] = P[j*nd+q];
   for (j = b-1; j <= n; j++)
     for (q=0; q<nd; q++) newP[(j+r+1)*nd+q] = P[j*nd+q];
@@ -621,7 +624,7 @@ static void curve_knot_refine(double *P, int nc, int nd, double *U, int nk, doub
         for (q=0; q<nd; q++) newP[(ind-1)*nd+q] = newP[ind*nd+q];
       else {
         alfa /= (newU[k+l] - U[i-p+l]);
-        for (q=0; q<nd; q++) 
+        for (q=0; q<nd; q++)
 	  newP[(ind-1)*nd+q] = alfa*newP[(ind-1)*nd+q] + (1.0-alfa)*newP[ind*nd+q];
       }
     }
@@ -633,7 +636,7 @@ static void curve_knot_refine(double *P, int nc, int nd, double *U, int nk, doub
 
 /* curve_decompose */
 /*
-Decompose a Nurbs curve in Bezier segments. 
+Decompose a Nurbs curve in Bezier segments.
 
 Input:
 
@@ -646,11 +649,11 @@ Input:
 Output:
 
 - newP: (nb*p+1,nd) new control points
-- nb: number of Bezier segments 
+- nb: number of Bezier segments
 
 Modified algorithm A5.6 from 'The NURBS Book' pg173.
 */
-  
+
 
 static void curve_decompose(double *P, int nc, int nd, double *U, int nk, double *newP)
 {
@@ -666,7 +669,7 @@ static void curve_decompose(double *P, int nc, int nd, double *U, int nk, double
   a = p;
   b = p+1;
   nb = 0;
-  
+
   /* First bezier segment */
   for (i = 0; i < (p+1)*nd; i++) newP[i] = P[i];
 
@@ -674,14 +677,14 @@ static void curve_decompose(double *P, int nc, int nd, double *U, int nk, double
 
   // INITIALIZE r in case it would not happen below.
   // To AVOID COMPILER WARNING
-  // we should check THIS WITH THE nURBS BOOK 
+  // we should check THIS WITH THE nURBS BOOK
   r = 0;
 
   while (b < m) {
     i = b;
     while (b < m && U[b] == U[b+1]) b++;
     mult = b-i+1;
-    
+
     if (mult < p) {
       //printf("mult at %d is %d < %d\n",b,mult,p);
       /* compute alfas */
@@ -724,7 +727,7 @@ static void curve_decompose(double *P, int nc, int nd, double *U, int nk, double
       b++;
     }
   }
-  
+
   free(alfa);
 }
 
@@ -732,7 +735,7 @@ static void curve_decompose(double *P, int nc, int nd, double *U, int nk, double
 
 /* curve_knot_remove */
 /*
-Refine curve knot vector. 
+Refine curve knot vector.
 
 Input:
 
@@ -880,11 +883,11 @@ static int curve_knot_remove(double *P, int nc, int nd, double *U, int nk, doubl
 /*   { */
 /*     inv = 1.0 / _binomial(ph,i); */
 /*     mpi = min(p,i); */
-    
+
 /*     for (j = max(0,i-t); j <= mpi; j++) */
 /*       bezalfa[j][i] = inv * _binomial(p,j) * _binomial(t,i-j); */
 /*   }     */
-  
+
 /*   for (i = ph2+1; i <= ph-1; i++) */
 /*   { */
 /*     mpi = min(p, i); */
@@ -901,10 +904,10 @@ static int curve_knot_remove(double *P, int nc, int nd, double *U, int nk, doubl
 /*   ua = U[0]; */
 /*   for (ii = 0; ii < nd; ii++) */
 /*     newP[ii][0] = P[ii][0]; */
-  
+
 /*   for (i = 0; i <= ph; i++) */
 /*     newU[i] = ua; */
-    
+
 /*   // initialise first bezier seg */
 /*   for (i = 0; i <= p; i++) */
 /*     for (ii = 0; ii < nd; ii++) */
@@ -922,7 +925,7 @@ static int curve_knot_remove(double *P, int nc, int nd, double *U, int nk, doubl
 /*     ub = U[b]; */
 /*     oldr = r; */
 /*     r = p - mult; */
-    
+
 /*     // insert knot u(b) r times */
 /*     if (oldr > 0) */
 /*       lbz = (oldr+2) / 2; */
@@ -974,7 +977,7 @@ static int curve_knot_remove(double *P, int nc, int nd, double *U, int nk, doubl
 /*       last = kind; */
 /*       den = ub - ua; */
 /*       bet = (ub-newU[kind-1]) / den; */
-      
+
 /*       // knot removal loop */
 /*       for (tr = 1; tr < oldr; tr++) */
 /*       {         */
@@ -1009,13 +1012,13 @@ static int curve_knot_remove(double *P, int nc, int nd, double *U, int nk, doubl
 /*           j--; */
 /*           kj--; */
 /*         }       */
-        
+
 /*         first--; */
 /*         last++; */
 /*       }                     */
 /*     } */
 /*     // end of removing knot n=U[a] */
-                  
+
 /*     // load the knot ua */
 /*     if (a != p) */
 /*       for (i = 0; i < ph-oldr; i++) */
@@ -1031,7 +1034,7 @@ static int curve_knot_remove(double *P, int nc, int nd, double *U, int nk, doubl
 /*         newP[ii][cind] = ebpts[ii][j]; */
 /*       cind++; */
 /*     } */
-    
+
 /*     if (b < m) */
 /*     { */
 /*       // setup for next pass thru loop */
@@ -1051,7 +1054,7 @@ static int curve_knot_remove(double *P, int nc, int nd, double *U, int nk, doubl
 /*         newU[kind+i] = ub; */
 /*   }                   */
 /*   // end while loop    */
-  
+
 /*   *nh = mh - ph - 1; */
 
 /*   freematrix(bezalfa); */
@@ -1065,7 +1068,7 @@ static int curve_knot_remove(double *P, int nc, int nd, double *U, int nk, doubl
 
 /* curve_global_interp_mat */
 /*
-Compute the global curve interpolation matrix. 
+Compute the global curve interpolation matrix.
 
 Input:
 
@@ -1086,14 +1089,14 @@ Output:
 
 Modified algorithm A9.1 from 'The NURBS Book' pg369.
 */
-  
+
 static void curve_global_interp_mat(int p, double *Q, int nc, int nd, double *u, double *U, double *A)
 {
   int n,m,i,j,s;
 
   n = nc - 1;
   m = nc + p;
-  
+
   /* Compute the knot vector U by averaging (9.8) */
   for (i=0; i<m-p; ++i) U[i] = 0.0;
   for (i=m-p; i<=m; ++i) U[i] = 1.0;
@@ -1118,12 +1121,12 @@ static void curve_global_interp_mat(int p, double *Q, int nc, int nd, double *u,
 
 /* surface_points */
 /*
-Compute points on a B-spline surface. 
+Compute points on a B-spline surface.
 
 Input:
 
 - P: control points P(ns,nt,nd)
-- ns,nt: number of control points 
+- ns,nt: number of control points
 - nd: dimension of the points (3 or 4)
 - U: knot sequence: U[0] .. U[m]
 - nU: number of knot values U = m+1
@@ -1141,7 +1144,7 @@ static void surface_points(double *P, int ns, int nt, int nd, double *U, int nU,
 {
   int i, j, p, q, r, su, sv, iu, iv;
   double S;
-  
+
   /* degrees of the spline */
   p = nU - ns - 1;
   q = nV - nt - 1;
@@ -1178,7 +1181,7 @@ static void surface_points(double *P, int ns, int nt, int nd, double *U, int nU,
 
 /* surface_derivs */
 /*
-Compute derivatives of a B-spline surface. 
+Compute derivatives of a B-spline surface.
 
 Input:
 
@@ -1203,7 +1206,7 @@ static void surface_derivs(int mu, int mv, double *P,int ns, int nt, int nd, dou
 {
   int p,q,du,dv,su,sv,i,j,k,l,iu,iv,r;
   double S, *qnt;
-  
+
   /* degrees of the spline */
   p = nU - ns - 1;
   q = nV - nt - 1;
@@ -1252,7 +1255,7 @@ static void surface_derivs(int mu, int mv, double *P,int ns, int nt, int nd, dou
 	  qnt[j*nd+i] = S;
 	}
 	//print_mat(pnt,(mu+1)*(mv+1)*nu,nd);
-      }      
+      }
     }
   }
   free(Nu);
@@ -1262,7 +1265,7 @@ static void surface_derivs(int mu, int mv, double *P,int ns, int nt, int nd, dou
 
 /* surfaceDecompose */
 /*
-Decompose a Nurbs surface in Bezier patches. 
+Decompose a Nurbs surface in Bezier patches.
 
 Input:
 
@@ -1275,11 +1278,11 @@ Input:
 Output:
 
 - newP: (nb*p+1,nd) new control points
-- nb: number of Bezier segments 
+- nb: number of Bezier segments
 
 Modified algorithm A5.7 from 'The NURBS Book' pg177.
 */
-  
+
 
 /* static void surfaceDecompose(double *P, int nc, int nd, double *U, int nk, double *newP) */
 /* { */
@@ -1295,7 +1298,7 @@ Modified algorithm A5.7 from 'The NURBS Book' pg177.
 /*   a = p; */
 /*   b = p+1; */
 /*   nb = 0; */
-  
+
 /*   /\* First bezier segment *\/ */
 /*   for (i = 0; i < (p+1)*nd; i++) newP[i] = P[i]; */
 
@@ -1304,7 +1307,7 @@ Modified algorithm A5.7 from 'The NURBS Book' pg177.
 /*     i = b; */
 /*     while (b < m && U[b] == U[b+1]) b++; */
 /*     mult = b-i+1; */
-    
+
 /*     if (mult < p) { */
 /*       printf("mult at %d is %d < %d\n",b,mult,p); */
 /*       /\* compute alfas *\/ */
@@ -1346,7 +1349,7 @@ Modified algorithm A5.7 from 'The NURBS Book' pg177.
 /*       b++; */
 /*     } */
 /*   } */
-  
+
 /*   free(alfa); */
 /* } */
 
@@ -1792,7 +1795,7 @@ static PyObject * curveDecompose(PyObject *self, PyObject *args)
     }
     b++;
   }
- 
+
   /* Create the return arrays */
   dim[0] = nc+count;
   dim[1] = nd;
@@ -1861,7 +1864,7 @@ static PyObject * curveKnotRemove(PyObject *self, PyObject *args)
   /* Compute */
   t = curve_knot_remove(P, nc, nd, U, nk, u, num, tol);
   print_mat(P,nc-t,nd);
- 
+
   /* Create the return arrays */
   dim[0] = nc-t;
   dim[1] = nd;
@@ -2187,10 +2190,11 @@ PyMODINIT_FUNC initnurbs_(void)
 {
   PyObject* module;
   module = Py_InitModule3("nurbs_", _methods_, __doc__);
+  PyModule_AddStringConstant(module,"__version__",__version__);
   PyModule_AddIntConstant(module,"accelerated",1);
   import_array(); /* Get access to numpy array API */
 }
 
 /* End */
 
-	
+

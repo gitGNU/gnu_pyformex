@@ -1,13 +1,12 @@
 # $Id$
 ##
-##  This file is part of pyFormex 0.9.0  (Mon Mar 25 13:52:29 CET 2013)
+##  This file is part of pyFormex 0.9.1  (Wed Mar 27 15:37:25 CET 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
 ##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
-##
 ##
 ##  This program is free software: you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -308,40 +307,54 @@ def detectedSoftware(all=True):
         checkAllModules()
         checkExternal()
 
+    system,host,release,version,arch = os.uname()
     soft = {
-        'Installation': {
-            'pyFormex version' : pf.fullVersion(),
-            'pyFormex install type' : pf.installtype,
-            'pyFormex C libraries' : Libraries(),
-            'Python version' : sys.version,
-            'Operating system' : sys.platform,
-            },
+        'System': ODict([
+            ('pyFormex version', the_version['pyformex']),
+            ('pyFormex install type', pf.installtype),
+            ('pyFormex fullversion', pf.fullVersion()),
+            ('pyFormex C libraries', Libraries()),
+            ('Python version', the_version['python']),
+            ('Python fullversion', sys.version.replace('\n',' ')),
+            ('System', system),
+            ('Host', host),
+            ('Release', release),
+            ('Version', version),
+            ('Arch', arch),
+            ]),
         'Modules' : the_version,
         'Externals' : the_external,
         }
     return soft
 
 
-def reportDetected():
+def reportSoftware(soft=None,header=None):
     notfound = '** Not Found **'
-    s = "%s\n" % pf.fullVersion()
-    s += "\nInstall type: %s\n" % pf.installtype
-    s += "\npyFormex C libraries: %s\n" % ', '.join(Libraries())
+    def format_dict(d,sort=True):
+        s = ''
+        keys = d.keys()
+        if sort:
+            keys = sorted(keys)
+        for k in keys:
+            v = d[k]
+            if not v:
+                v = notfound
+            s += "  %s (%s)\n" % ( k,v)
+        return s
 
-    s += "\nPython version: %s\n" % sys.version
-    s += "\nOperating system: %s\n" % sys.platform
-    s += "\nDetected Python Modules:\n"
-    for k in sorted(the_version.keys()):
-        v = the_version[k]
-        if not v:
-            v = notfound
-        s += "%s (%s)\n" % ( k,v)
-    s += "\nDetected External Programs:\n"
-    for k in sorted(the_external.keys()):
-        v = the_external[k]
-        if not v:
-            v = notfound
-        s += "%s (%s)\n" % ( k,v)
+    if soft is None:
+        soft = detectedSoftware()
+    s = ""
+    if header:
+        header = str(header)
+        s += underlineHeader(header)
+    for key,desc,sort in [
+        ('System','Installed System',False),
+        ('Modules','Detected Python Modules',True),
+        ('Externals','Detected External Programs',True)
+        ]:
+        s += "\n%s:\n" % desc
+        s += format_dict(soft[key],sort=sort)
     return s
 
 

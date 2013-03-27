@@ -1,13 +1,12 @@
 # $Id$
 ##
-##  This file is part of pyFormex 0.9.0  (Mon Mar 25 13:52:29 CET 2013)
+##  This file is part of pyFormex 0.9.1  (Wed Mar 27 15:37:25 CET 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
-##
 ##
 ##  This program is free software: you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -37,10 +36,8 @@ import pyformex as pf
 from OpenGL import GL
 from numpy import *
 
+__version__ = pf.__version__
 accelerated = False
-
-def get_version():
-    return 0
 
 
 def glColor(color,alpha=1.0):
