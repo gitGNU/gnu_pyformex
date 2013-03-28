@@ -5,7 +5,7 @@
 //  geometrical models by sequences of mathematical operations.
 //  Home page: http://pyformex.org
 //  Project page:  http://savannah.nongnu.org/projects/pyformex/
-//  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+//  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 //  Distributed under the GNU General Public License version 3 or later.
 //
 //
@@ -78,11 +78,11 @@ static gboolean stop_number_verbose (gdouble cost, guint number, guint * max)
     mins1 = floor ((remaining - 3600.*hours1)/60.);
     secs1 = floor (remaining - 3600.*hours1 - 60.*mins1);
 
-    fprintf (stderr, 
+    fprintf (stderr,
 	     "\rEdges: %10u %3.0f%% %6.0f edges/s "
 	     "Elapsed: %02.0f:%02.0f:%02.0f "
 	     "Remaining: %02.0f:%02.0f:%02.0f ",
-	     number, 
+	     number,
 	     100.*(number - nmax)/(*max - nmax),
 	     (number - nold)/g_timer_elapsed (timer, NULL),
 	     hours, mins, secs,
@@ -200,11 +200,11 @@ int main (int argc, char * argv[])
       return 0; /* success */
       break;
     case '?': /* wrong options */
-      fprintf (stderr, "Try `gtsrefine --help' for more information.\n");
+      fprintf (stderr, "Try `gtsrefine -h' for more information.\n");
       return 1; /* failure */
     }
   }
-  
+
   /* read surface in */
   s = gts_surface_new (gts_surface_class (),
 		       gts_face_class (),
@@ -212,7 +212,7 @@ int main (int argc, char * argv[])
 		       gts_vertex_class ());
   fp = gts_file_new (stdin);
   if (gts_surface_read (s, fp)) {
-    fputs ("gtsrefine: the file on standard input is not a valid GTS file\n", 
+    fputs ("gtsrefine: the file on standard input is not a valid GTS file\n",
 	   stderr);
     fprintf (stderr, "stdin:%d:%d: %s\n", fp->line, fp->pos, fp->error);
     return 1; /* failure */
@@ -221,7 +221,7 @@ int main (int argc, char * argv[])
   /* if verbose on print stats */
   if (verbose) {
     gts_surface_print_stats (s, stderr);
-    fprintf (stderr, "# volume: %g area: %g\n", 
+    fprintf (stderr, "# volume: %g area: %g\n",
 	     gts_surface_volume (s), gts_surface_area (s));
   }
 
@@ -234,14 +234,14 @@ int main (int argc, char * argv[])
       if (verbose)
 	stop_func = (GtsStopFunc) stop_number_verbose;
       else
-	stop_func = (GtsStopFunc) stop_number; 
+	stop_func = (GtsStopFunc) stop_number;
       stop_data = &number;
       break;
     case COST:
       if (verbose)
 	stop_func = (GtsStopFunc) stop_cost_verbose;
       else
-	stop_func = (GtsStopFunc) stop_cost; 
+	stop_func = (GtsStopFunc) stop_cost;
       stop_data = &cmin;
       break;
     default:
@@ -249,16 +249,16 @@ int main (int argc, char * argv[])
     }
   }
 
-  gts_surface_refine (s, 
+  gts_surface_refine (s,
 		      refine_func, NULL,
-		      NULL, NULL, 
+		      NULL, NULL,
 		      stop_func, stop_data);
 
   /* if verbose on print stats */
   if (verbose) {
     fputc ('\n', stderr);
     gts_surface_print_stats (s, stderr);
-    fprintf (stderr, "# volume: %g area: %g\n", 
+    fprintf (stderr, "# volume: %g area: %g\n",
 	     gts_surface_volume (s), gts_surface_area (s));
   }
 

@@ -1,11 +1,11 @@
-// $Id$ 
+// $Id$
 //
 //  This file is part of pyFormex 0.9.0  (Mon Mar 25 13:52:29 CET 2013)
 //  pyFormex is a tool for generating, manipulating and transforming 3D
 //  geometrical models by sequences of mathematical operations.
 //  Home page: http://pyformex.org
 //  Project page:  http://savannah.nongnu.org/projects/pyformex/
-//  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+//  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 //  Distributed under the GNU General Public License version 3 or later.
 //
 //
@@ -24,7 +24,7 @@
 //
 
 /*
- * 
+ *
  * Determine whether points are inside a given closed surface or not.
  *
  */
@@ -66,7 +66,7 @@ int main (int argc, char * argv[])
       {"verbose", no_argument, NULL, 'v'}
     };
     int option_index = 0;
-    switch ((c = getopt_long (argc, argv, "shv", 
+    switch ((c = getopt_long (argc, argv, "shv",
 			      long_options, &option_index))) {
 #else /* not HAVE_GETOPT_LONG */
     switch ((c = getopt (argc, argv, "shv"))) {
@@ -89,13 +89,13 @@ int main (int argc, char * argv[])
       return 0; /* success */
       break;
     case '?': /* wrong options */
-      fprintf (stderr, "Try `gtsinside --help' for more information.\n");
+      fprintf (stderr, "Try `gtsinside -h' for more information.\n");
       return 1; /* failure */
     }
   }
 
   if (optind >= argc) { /* missing FILE1 */
-    fprintf (stderr, 
+    fprintf (stderr,
 	     "gtsinside: missing FILE1\n"
 	     "Try `inside --help' for more information.\n");
     return 1; /* failure */
@@ -103,7 +103,7 @@ int main (int argc, char * argv[])
   file1 = argv[optind++];
 
   if (optind >= argc) { /* missing FILE2 */
-    fprintf (stderr, 
+    fprintf (stderr,
 	     "gtsinside: missing FILE2\n"
 	     "Try `gtsinside --help' for more information.\n");
     return 1; /* failure */
@@ -119,7 +119,7 @@ int main (int argc, char * argv[])
   s1 = GTS_SURFACE (gts_object_new (GTS_OBJECT_CLASS (gts_surface_class ())));
   fp = gts_file_new (fptr);
   if (gts_surface_read (s1, fp)) {
-    fprintf (stderr, "gtsinside: `%s' is not a valid GTS surface file\n", 
+    fprintf (stderr, "gtsinside: `%s' is not a valid GTS surface file\n",
 	     file1);
     fprintf (stderr, "%s:%d:%d: %s\n", file1, fp->line, fp->pos, fp->error);
     return 1;

@@ -5,7 +5,7 @@
 //  geometrical models by sequences of mathematical operations.
 //  Home page: http://pyformex.org
 //  Project page:  http://savannah.nongnu.org/projects/pyformex/
-//  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+//  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 //  Distributed under the GNU General Public License version 3 or later.
 //
 //
@@ -82,7 +82,7 @@ int main (int argc, char * argv[])
       { NULL }
     };
     int option_index = 0;
-    switch ((c = getopt_long (argc, argv, "hvisb", 
+    switch ((c = getopt_long (argc, argv, "hvisb",
 			      long_options, &option_index))) {
 #else /* not HAVE_GETOPT_LONG */
     switch ((c = getopt (argc, argv, "hvisb"))) {
@@ -112,8 +112,8 @@ int main (int argc, char * argv[])
 	       "  -s      --self     checks that the surfaces are not self-intersecting\n"
 	       "                     if one of them is, the set of self-intersecting faces\n"
 	       "                     is written (as a GtsSurface) on standard output\n"
-           "  -b      --binary   write the output surface to binary format\n"
-           "  -v      --verbose  print statistics about the surface\n"
+               "  -b      --binary   write the output surface to binary format\n"
+               "  -v      --verbose  print statistics about the surface\n"
 	       "  -h      --help     display this help and exit\n"
 	       "\n"
 	       "Reports bugs to %s\n",
@@ -121,13 +121,13 @@ int main (int argc, char * argv[])
       return 0; /* success */
       break;
     case '?': /* wrong options */
-      fprintf (stderr, "Try `gtsset --help' for more information.\n");
+      fprintf (stderr, "Try `gtsset -h' for more information.\n");
       return 1; /* failure */
     }
   }
 
   if (optind >= argc) { /* missing OPERATION */
-    fprintf (stderr, 
+    fprintf (stderr,
 	     "gtsset: missing OPERATION\n"
 	     "Try `gtsset --help' for more information.\n");
     return 1; /* failure */
@@ -135,7 +135,7 @@ int main (int argc, char * argv[])
   operation = argv[optind++];
 
   if (optind >= argc) { /* missing FILE1 */
-    fprintf (stderr, 
+    fprintf (stderr,
 	     "gtsset: missing FILE1\n"
 	     "Try `gtsset --help' for more information.\n");
     return 1; /* failure */
@@ -143,7 +143,7 @@ int main (int argc, char * argv[])
   file1 = argv[optind++];
 
   if (optind >= argc) { /* missing FILE2 */
-    fprintf (stderr, 
+    fprintf (stderr,
 	     "gtsset: missing FILE2\n"
 	     "Try `gtsset --help' for more information.\n");
     return 1; /* failure */
@@ -159,7 +159,7 @@ int main (int argc, char * argv[])
   s1 = GTS_SURFACE (gts_object_new (GTS_OBJECT_CLASS (gts_surface_class ())));
   fp = gts_file_new (fptr);
   if (gts_surface_read (s1, fp)) {
-    fprintf (stderr, "gtsset: `%s' is not a valid GTS surface file\n", 
+    fprintf (stderr, "gtsset: `%s' is not a valid GTS surface file\n",
 	     file1);
     fprintf (stderr, "%s:%d:%d: %s\n", file1, fp->line, fp->pos, fp->error);
     return 1;
@@ -176,7 +176,7 @@ int main (int argc, char * argv[])
   s2 = GTS_SURFACE (gts_object_new (GTS_OBJECT_CLASS (gts_surface_class ())));
   fp = gts_file_new (fptr);
   if (gts_surface_read (s2, fp)) {
-    fprintf (stderr, "gtsset: `%s' is not a valid GTS surface file\n", 
+    fprintf (stderr, "gtsset: `%s' is not a valid GTS surface file\n",
 	     file2);
     fprintf (stderr, "%s:%d:%d: %s\n", file2, fp->line, fp->pos, fp->error);
     return 1;
@@ -247,7 +247,7 @@ int main (int argc, char * argv[])
   s3 = gts_surface_new (gts_surface_class (),
 			gts_face_class (),
 			gts_edge_class (),
-			gts_vertex_class ());  
+			gts_vertex_class ());
   if (!strcmp (operation, "union")) {
     gts_surface_inter_boolean (si, s3, GTS_1_OUT_2);
     gts_surface_inter_boolean (si, s3, GTS_2_OUT_1);
@@ -283,7 +283,7 @@ int main (int argc, char * argv[])
 			     gts_edge_class (),
 			     gts_vertex_class ());
     gts_surface_inter_boolean (si, s1out2, GTS_1_OUT_2);
-    gts_surface_inter_boolean (si, s1in2, GTS_1_IN_2);  
+    gts_surface_inter_boolean (si, s1in2, GTS_1_IN_2);
     gts_surface_inter_boolean (si, s2out1, GTS_2_OUT_1);
     gts_surface_inter_boolean (si, s2in1, GTS_2_IN_1);
     fp = fopen ("s1out2.gts", "w");
@@ -304,13 +304,13 @@ int main (int argc, char * argv[])
     gts_object_destroy (GTS_OBJECT (s2in1));
   }
   else {
-    fprintf (stderr, 
+    fprintf (stderr,
 	     "gtsset: operation `%s' unknown\n"
-	     "Try `gtsset --help' for more information.\n", 
+	     "Try `gtsset --help' for more information.\n",
 	     operation);
     return 1;
   }
-  
+
   /* check that the resulting surface is not self-intersecting */
   if (check_self_intersection) {
     GtsSurface * self_intersects;
@@ -347,7 +347,7 @@ int main (int argc, char * argv[])
 
   /* destroy bounding box trees (including bounding boxes) */
   gts_bb_tree_destroy (tree1, TRUE);
-  gts_bb_tree_destroy (tree2, TRUE);  
+  gts_bb_tree_destroy (tree2, TRUE);
 
   return 0;
 }

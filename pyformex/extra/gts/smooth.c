@@ -5,7 +5,7 @@
 //  geometrical models by sequences of mathematical operations.
 //  Home page: http://pyformex.org
 //  Project page:  http://savannah.nongnu.org/projects/pyformex/
-//  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+//  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 //  Distributed under the GNU General Public License version 3 or later.
 //
 //
@@ -51,7 +51,7 @@ static void smooth_vertex (GtsVertex * v, gpointer * data)
     GSList * i;
     GtsVector U0 = { 0., 0., 0.};
     guint n = 0;
-    
+
     i = vertices;
     while (i) {
       GtsPoint * p = i->data;
@@ -62,7 +62,7 @@ static void smooth_vertex (GtsVertex * v, gpointer * data)
       i = i->next;
     }
     g_slist_free (vertices);
-    
+
     if (n > 0) {
       GTS_POINT (v)->x += (*lambda)*(U0[0]/n - GTS_POINT (v)->x);
       GTS_POINT (v)->y += (*lambda)*(U0[1]/n - GTS_POINT (v)->y);
@@ -82,7 +82,7 @@ static void smooth_fold (GtsVertex * v, gpointer * data)
     if (GTS_IS_EDGE (i->data)) {
       GtsEdge * e = i->data;
 
-      if (gts_triangles_are_folded (e->triangles, 
+      if (gts_triangles_are_folded (e->triangles,
 				    GTS_SEGMENT (e)->v1,
 				    GTS_SEGMENT (e)->v2,
 				    *maxcosine2))
@@ -122,7 +122,7 @@ int main (int argc, char * argv[])
       { NULL }
     };
     int option_index = 0;
-    switch ((c = getopt_long (argc, argv, "hvf:", 
+    switch ((c = getopt_long (argc, argv, "hvf:",
 			      long_options, &option_index))) {
 #else /* not HAVE_GETOPT_LONG */
     switch ((c = getopt (argc, argv, "hvf:"))) {
@@ -150,13 +150,13 @@ int main (int argc, char * argv[])
       return 0; /* success */
       break;
     case '?': /* wrong options */
-      fprintf (stderr, "Try `smooth --help' for more information.\n");
+      fprintf (stderr, "Try `gtssmooth -h' for more information.\n");
       return 1; /* failure */
     }
   }
 
   if (optind >= argc) { /* missing lambda */
-    fprintf (stderr, 
+    fprintf (stderr,
 	     "gtssmooth: missing LAMBDA\n"
 	     "Try `gtssmooth --help' for more information.\n");
     return 1; /* failure */
@@ -164,7 +164,7 @@ int main (int argc, char * argv[])
   lambda = atof (argv[optind++]);
 
   if (optind >= argc) { /* missing niter */
-    fprintf (stderr, 
+    fprintf (stderr,
 	     "gtssmooth: missing NITER\n"
 	     "Try `gtssmooth --help' for more information.\n");
     return 1; /* failure */
@@ -177,7 +177,7 @@ int main (int argc, char * argv[])
 		       gts_vertex_class ());
   fp = gts_file_new (stdin);
   if (gts_surface_read (s, fp)) {
-    fputs ("gtssmooth: file on standard input is not a valid GTS file\n", 
+    fputs ("gtssmooth: file on standard input is not a valid GTS file\n",
 	   stderr);
     fprintf (stderr, "stdin:%d:%d: %s\n", fp->line, fp->pos, fp->error);
     return 1; /* failure */
