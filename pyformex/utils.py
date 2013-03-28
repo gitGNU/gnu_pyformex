@@ -435,8 +435,6 @@ def fileTypeFromExt(fname):
 
     >>> fileTypeFromExt('pyformex.pdf')
     'pdf'
-    >>> fileTypeFromExt('.pyformexrc')
-    ''
     >>> fileTypeFromExt('pyformex')
     ''
     >>> fileTypeFromExt('pyformex.pgf')
