@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -550,6 +550,10 @@ def printSysPath():
     print(sys.path)
 
 
+def printModules():
+    import sys
+    print(sorted(sys.modules.keys()))
+
 
 
 def createMenuData():
@@ -581,6 +585,7 @@ def createMenuData():
         (_('&Print Detected Software'),script.printdetected),
         (_('&Print Loaded Apps'),script.printLoadedApps),
         (_('&Print sys.path'),printSysPath),
+        (_('&Print loaded modules'),printModules),
         (_('&Print Used Memory'),script.printVMem),
         (_('&PrintBbox'),draw.printbbox),
         (_('&Print Viewport Settings'),draw.printviewportsettings),
