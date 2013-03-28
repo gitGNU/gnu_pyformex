@@ -34,6 +34,7 @@ moved here from utils.py.
 import pyformex as pf
 from odict import ODict
 from distutils.version import LooseVersion as SaneVersion
+import os
 import sys
 import re
 
