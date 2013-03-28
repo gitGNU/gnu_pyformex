@@ -63,7 +63,7 @@ def boolean(self,surf,op,check=False,verbose=False):
 
     Returns: a closed manifold TriSurface
     """
-    return self.gtsset(surf,op,filt = '| gts2stl',ext='.stl',check=check,verbose=verbose)
+    return self.gtsset(surf,op,filt = '',ext='.gts',check=check,verbose=verbose)
 
 
 def intersection(self,surf,check=False,verbose=False):

@@ -25,7 +25,7 @@
 
 /*
  * This is a modified version of the set example coming with the GTS library.
- * Copyright (C) 1999 Stéphane Popinet
+ * Copyright (C) 1999 StÃ©phane Popinet
  */
 
 #include <stdlib.h>
@@ -63,6 +63,7 @@ int main (int argc, char * argv[])
   gboolean verbose = FALSE;
   gboolean inter = FALSE;
   gboolean check_self_intersection = FALSE;
+  gboolean binary = FALSE;
   gchar * operation, * file1, * file2;
   gboolean closed = TRUE, is_open1, is_open2;
 
@@ -75,21 +76,25 @@ int main (int argc, char * argv[])
     static struct option long_options[] = {
       {"inter", no_argument, NULL, 'i'},
       {"self", no_argument, NULL, 's'},
+      {"binary", no_argument, NULL, 'b'},
       {"help", no_argument, NULL, 'h'},
       {"verbose", no_argument, NULL, 'v'},
       { NULL }
     };
     int option_index = 0;
-    switch ((c = getopt_long (argc, argv, "hvis", 
+    switch ((c = getopt_long (argc, argv, "hvisb", 
 			      long_options, &option_index))) {
 #else /* not HAVE_GETOPT_LONG */
-    switch ((c = getopt (argc, argv, "hvis"))) {
+    switch ((c = getopt (argc, argv, "hvisb"))) {
 #endif /* not HAVE_GETOPT_LONG */
     case 's': /* self */
       check_self_intersection = TRUE;
       break;
     case 'i': /* inter */
       inter = TRUE;
+      break;
+    case 'b': /* binary */
+      binary = TRUE;
       break;
     case 'v': /* verbose */
       verbose = TRUE;
@@ -107,7 +112,8 @@ int main (int argc, char * argv[])
 	       "  -s      --self     checks that the surfaces are not self-intersecting\n"
 	       "                     if one of them is, the set of self-intersecting faces\n"
 	       "                     is written (as a GtsSurface) on standard output\n"
-	       "  -v      --verbose  print statistics about the surface\n"
+           "  -b      --binary   write the output surface to binary format\n"
+           "  -v      --verbose  print statistics about the surface\n"
 	       "  -h      --help     display this help and exit\n"
 	       "\n"
 	       "Reports bugs to %s\n",
@@ -329,7 +335,7 @@ int main (int argc, char * argv[])
     printf ("}\n");
   }
   else {
-    GTS_POINT_CLASS (gts_vertex_class ())->binary = TRUE;
+    GTS_POINT_CLASS (gts_vertex_class ())->binary = binary;
     gts_surface_write (s3, stdout);
   }
 
