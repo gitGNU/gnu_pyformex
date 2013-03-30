@@ -43,14 +43,16 @@ if os.path.exists(os.path.join(pyformexdir,'.svn')):
 elif os.path.exists(os.path.join(os.path.dirname(pyformexdir),'.git')):
     pf.installtype = 'G'
 
+
+libraries = [ 'misc_','nurbs_','drawgl_' ]
+
 if pf.installtype in 'SG':
-    # Running from source tree: (re)build libraries?
+    # Running from source tree: check if compiled libraries are up-to-date
+    libdir = os.path.join(pyformexdir,'lib')
 
     def checkLibraries():
         #print "Checking pyFormex libraries"
         msg = ''
-        libdir = os.path.join(pyformexdir,'lib')
-        libraries = [ 'misc_','nurbs_','drawgl_' ]
         for lib in libraries:
             src = os.path.join(libdir,lib+'.c')
             obj = os.path.join(libdir,lib+'.so')
@@ -61,12 +63,14 @@ if pf.installtype in 'SG':
 
     msg = checkLibraries()
     if msg:
+        # Try rebyuilding
         print("Rebuilding pyFormex libraries, please wait")
         cmd = "cd %s/..; make lib" % pyformexdir
         os.system(cmd)
         msg = checkLibraries()
 
     if msg:
+        # No success
         msg += """
 
 I had a problem rebuilding the libraries in %s/lib.
@@ -74,6 +78,9 @@ You should probably exit pyFormex, fix the problem first and then restart pyForm
 """ % pyformexdir
     startup_warnings += msg
 
+
+# Load libraries (forcing a version check)
+import lib
 
 import utils
 
@@ -495,7 +502,7 @@ def run(argv=[]):
 
     # Set future version for development branch
     if pf.options.opengl2:
-        print("Chaning version")
+        print("Changing version")
         pf.__version__ = "1.x~a1"
 
 
