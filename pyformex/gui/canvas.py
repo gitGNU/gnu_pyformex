@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -44,6 +44,7 @@ if opengl2:
     from opengl import camera
 else:
     import camera
+import views
 import actors
 import decors
 import marks
@@ -618,7 +619,7 @@ class Canvas(object):
         self.setRenderMode(pf.cfg['draw/rendermode'])
         self.resetLighting()
         #print("INIT: %s, %s" %(self.rendermode,self.settings.fill))
-        self.view_angles = camera.view_angles
+        self.view_angles = views.ViewAngles()
         self.cursor = None
         self.focus = False
         pf.debug("Canvas Setting:\n%s"% self.settings,pf.DEBUG.DRAW)

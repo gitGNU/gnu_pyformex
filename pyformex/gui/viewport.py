@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -37,7 +37,17 @@ from gui import QtCore, QtGui, QtOpenGL
 from OpenGL import GL
 
 from collection import Collection
-import canvas
+
+
+try:
+    opengl2 = pf.options.opengl2
+except:
+    opengl2 = False
+if opengl2:
+    from opengl import canvas
+else:
+    import canvas
+
 import decors
 import image
 import utils

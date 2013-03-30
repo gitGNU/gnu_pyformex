@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -55,7 +55,7 @@ import script
 import draw
 import widgets
 import drawlock
-import camera
+import views
 
 import warnings
 
@@ -460,7 +460,7 @@ class Gui(QtGui.QMainWindow):
         if name not in self.viewbtns.names():
             iconpath = os.path.join(pf.cfg['icondir'],'userview')+pf.cfg['gui/icontype']
             self.viewbtns.add(name,iconpath)
-        camera.view_angles[name] = angles
+        views.view_angles[name] = angles
 
 
     def setView(self,view):
