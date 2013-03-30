@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -41,54 +41,10 @@ import copy
 import OpenGL.GL as GL
 import OpenGL.GLU as GLU
 
+from views import getAngles
 
 def printModelviewMatrix(s="%s"):
     print(s % GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX))
-
-built_in_views = {
-    'front': (0.,0.,0.),
-    'back': (180.,0.,0.),
-    'right': (90.,0.,0.),
-    'left': (270.,0.,0.),
-    'top': (0.,90.,0.),
-    'bottom': (0.,-90.,0.),
-    'iso0': (45.,45.,0.),
-    'iso1': (45.,135.,0.),
-    'iso2': (45.,225.,0.),
-    'iso3': (45.,315.,0.),
-    'iso4': (-45.,45.,0.),
-    'iso5': (-45.,135.,0.),
-    'iso6': (-45.,225.,0.),
-    'iso7': (-45.,315.,0.),
-    }
-
-class ViewAngles(dict):
-    """A dict to keep named camera angle settings.
-
-    This class keeps a dictionary of named angle settings. Each value is
-    a tuple of (longitude, latitude, twist) camera angles.
-    This is a static class which should not need to be instantiated.
-
-    There are seven predefined values: six for looking along global
-    coordinate axes, one isometric view.
-    """
-
-    def __init__(self,data = built_in_views):
-       dict.__init__(self,data)
-       self['iso'] = self['iso0']
-
-
-    def get(self,name):
-        """Get the angles for a named view.
-
-        Returns a tuple of angles (longitude, latitude, twist) if the
-        named view was defined, or None otherwise
-        """
-        return dict.get(self,name,None)
-
-
-view_angles = ViewAngles()
-
 
 class Camera(object):
     """A camera for OpenGL rendering.
@@ -256,12 +212,13 @@ class Camera(object):
         angles is either:
 
         - a tuple of angles (long,lat,twist)
-        - a named view corresponding to angles in view_angles
+        - a named view corresponding to one of the predefined
+          viewing directions in views.py
         - None
         """
         if not self.locked:
             if type(angles) is str:
-                angles = view_angles.get(angles)
+                angles = getAngles(angles)
             if angles is None:
                 return
             self.setRotation(*angles)
