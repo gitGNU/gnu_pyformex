@@ -36,14 +36,7 @@ from OpenGL import GL,GLU
 from formex import length
 from drawable import saneColor,glColor
 import colors
-try:
-    opengl2 = pf.options.opengl2
-except:
-    opengl2 = False
-if opengl2:
-    from opengl import camera
-else:
-    import camera
+from camera import Camera
 import views
 import actors
 import decors
@@ -826,7 +819,7 @@ class Canvas(object):
 
     def initCamera(self):
         self.makeCurrent()  # we need correct OpenGL context for camera
-        self.camera = camera.Camera()
+        self.camera = Camera()
         if pf.options.testcamera:
             self.camera.modelview_callback = print_camera
             self.camera.projection_callback = print_camera
