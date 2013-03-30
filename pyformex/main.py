@@ -78,10 +78,6 @@ You should probably exit pyFormex, fix the problem first and then restart pyForm
 """ % pyformexdir
     startup_warnings += msg
 
-
-# Load libraries (forcing a version check)
-import lib
-
 import utils
 
 # Set the proper revision number when running from svn sources
@@ -500,11 +496,6 @@ def run(argv=[]):
 
     pf.debug("Options: %s" % pf.options,pf.DEBUG.ALL)
 
-    # Set future version for development branch
-    if pf.options.opengl2:
-        print("Changing version")
-        pf.__version__ = "1.x~a1"
-
 
     ########## Process special options which will not start pyFormex #######
 
@@ -633,15 +624,12 @@ def run(argv=[]):
     if pf.options.redirect is not None:
         pf.cfg['gui/redirect'] = pf.options.redirect
     delattr(pf.options,'redirect') # avoid abuse
-    #print "REDIRECT",pf.cfg['gui/redirect']
+
+    if pf.options.uselib is not None:
+        pf.cfg['uselib'] = pf.options.uselib
+    delattr(pf.options,'uselib') # avoid abuse
 
     ###################################################################
-
-
-    # This should probably be changed to options overriding config
-    # Set option from config if it was not explicitely given
-    if pf.options.uselib is None:
-        pf.options.uselib = pf.cfg['uselib']
 
 
     # Set default --nogui if first remaining argument is a pyformex script.
@@ -650,6 +638,13 @@ def run(argv=[]):
 
     if pf.options.gui:
         pf.options.interactive = True
+
+    # Initialize the libraries
+    import lib
+
+    # Set future version for development branch
+    if pf.options.opengl2:
+        pf.__version__ = "1.x~a1"
 
     #  If we run from an source version, we should set the proper revision
     #  number and run the svnclean procedure.
@@ -736,10 +731,6 @@ pyFormex Warning
     # we put it back to a sane setting
     #
     utils.setSaneLocale()
-
-    # Initialize the libraries
-    #import lib
-    #lib.init_libs(pf.options.uselib,pf.options.gui)
 
     # Prepend the autorun script
     ar = pf.cfg.get('autorun','')

@@ -46,7 +46,7 @@ def checkVersion(lib):
 accelerate = gui = False
 if pf.options:
     # testing for not False makes other values than T/F (like None) pass
-    accelerate = pf.options.uselib is not False
+    accelerate = pf.cfg.uselib is not False
     gui = pf.options.gui
 
 
@@ -65,6 +65,8 @@ if accelerate:
         pf.debug("Error while loading the pyFormex compiled nurbs library",pf.DEBUG.LIB)
 
     if gui:
+        # !! We need to import GL before drawgl, to define the GL calls !
+        from OpenGL import GL
         try:
             import drawgl_ as drawgl
             checkVersion(drawgl)
