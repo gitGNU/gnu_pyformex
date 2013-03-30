@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>35. curve — Definition of curves in pyFormex. &mdash; pyFormex 0.9.0-a1 documentation</title>
+    <title>35. curve — Definition of curves in pyFormex. &mdash; pyFormex 0.9.0 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +43,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.0-a1',
+        VERSION:     '0.9.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +52,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 0.9.0-a1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 0.9.0 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="36. datareader — Numerical data reader" href="datareader.html" />
     <link rel="prev" title="34. cameratools — Camera tools" href="cameratools.html" />
@@ -83,7 +83,7 @@
         <li class="right" >
           <a href="cameratools.html" title="34. cameratools — Camera tools"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.0-a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 0.9.0 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -740,6 +740,31 @@ direction of the first, resp. last segment.</p>
 <p>Where two subsequent points are identical, the average directions
 are set equal to those of the segment ending in the first and the
 segment starting from the last.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.PolyLine.movingFrenet">
+<tt class="descname">movingFrenet</tt><big>(</big><em>firstnormal=None</em><big>)</big><a class="headerlink" href="#curve.PolyLine.movingFrenet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Frenet frame along the curve.</p>
+<p>The Frenet frame consists of a system of three orthogonal vectors:
+the tangent (T), the normal (N) and the binormal (B).
+These vectors define a coordinate system that re-orients while walking
+along the polyline.
+The movingFrenet method tries to minimize the twist angle.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>firstnormal</cite>: (3,) vector: a vector in the (tangent,normal) plane
+at the first point of the curve. If not specified, the vector is
+taken as the shortest direction through the set of 10 first
+points.</li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li><cite>T</cite>: normalized tangent vector to the curve at <cite>npts</cite> points</li>
+<li><cite>N</cite>: normalized normal vector to the curve at <cite>npts</cite> points</li>
+<li><cite>B</cite>: normalized binormal vector to the curve at <cite>npts</cite> points</li>
+</ul>
+<p>At the moment it works only with open PolyLines.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1702,6 +1727,31 @@ segment starting from the last.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.Line.movingFrenet">
+<tt class="descname">movingFrenet</tt><big>(</big><em>firstnormal=None</em><big>)</big><a class="headerlink" href="#curve.Line.movingFrenet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Frenet frame along the curve.</p>
+<p>The Frenet frame consists of a system of three orthogonal vectors:
+the tangent (T), the normal (N) and the binormal (B).
+These vectors define a coordinate system that re-orients while walking
+along the polyline.
+The movingFrenet method tries to minimize the twist angle.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>firstnormal</cite>: (3,) vector: a vector in the (tangent,normal) plane
+at the first point of the curve. If not specified, the vector is
+taken as the shortest direction through the set of 10 first
+points.</li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li><cite>T</cite>: normalized tangent vector to the curve at <cite>npts</cite> points</li>
+<li><cite>N</cite>: normalized normal vector to the curve at <cite>npts</cite> points</li>
+<li><cite>B</cite>: normalized binormal vector to the curve at <cite>npts</cite> points</li>
+</ul>
+<p>At the moment it works only with open PolyLines.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.Line.roll">
 <tt class="descname">roll</tt><big>(</big><em>n</em><big>)</big><a class="headerlink" href="#curve.Line.roll" title="Permalink to this definition">¶</a></dt>
 <dd><p>Roll the points of a closed PolyLine.</p>
@@ -1799,7 +1849,7 @@ In the two endpoints of an open curve however, this average
 direction can not be calculated: the two control points in these
 parts are set coincident.</p>
 </li>
-<li><p class="first"><cite>curl</cite> : float         
+<li><p class="first"><cite>curl</cite> : float
 The curl parameter can be set to influence the curliness of the curve
 in between two subsequent points. A value curl=0.0 results in
 straight segments. The higher the value, the more the curve becomes
@@ -2354,7 +2404,7 @@ If fil is a string, the file is closed prior to returning.</p>
 <p>Create a natural spline through the given points.</p>
 <p>The Cardinal Spline with given tension is a Bezier Spline with curl
 :math: <cite>curl = ( 1 - tension) / 3</cite>
-The separate class name is retained for compatibility and convenience. 
+The separate class name is retained for compatibility and convenience.
 See CardinalSpline2 for a direct implementation (it misses the end
 intervals of the point set).</p>
 <dl class="method">
@@ -5064,7 +5114,7 @@ with curl 0.375058 through 8 points.</p>
         <li class="right" >
           <a href="cameratools.html" title="34. cameratools — Camera tools"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.0-a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 0.9.0 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -5072,7 +5122,7 @@ with curl 0.375058 through 8 points.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Feb 19, 2013.
+      Last updated on Mar 25, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

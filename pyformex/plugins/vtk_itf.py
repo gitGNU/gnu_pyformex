@@ -1,11 +1,11 @@
 # $Id$
 ##
-##  This file is part of pyFormex 0.8.9  (Fri Nov  9 10:49:51 CET 2012)
+##  This file is part of pyFormex 0.9.0  (Mon Mar 25 13:52:29 CET 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -32,6 +32,10 @@ This module provides the basic interface to convert data structures between
 vtk and pyFormex.
 """
 
+from pyformex import utils
+
+utils.requireModule('vtk')
+
 from vtk.util.numpy_support import numpy_to_vtk as n2v
 from vtk.util.numpy_support import vtk_to_numpy as v2n
 from vtk.util.numpy_support import create_vtk_array as cva
@@ -47,13 +51,13 @@ import os
 
 def cleanVPD(vpd):
     """Clean the vtkPolydata
-    
+
     Clean the vtkPolydata, adjusting connectivity, removing duplicate elements
     and coords, renumbering the connectivity. This is often needed after
     setting the vtkPolydata, to make the vtkPolydata fit for use with other
     operations. Be aware that this operation will change the order and
     numbering of the original data.
-    
+
     Parameters:
 
     - `vpd`: a vtkPolydata
@@ -65,11 +69,11 @@ def cleanVPD(vpd):
     cleaner.SetInput(vpd)
     cleaner.Update()
     return  cleaner.GetOutput()
-    
+
 
 def convert2VPD(M,clean=False,verbose=False):
     """Convert pyFormex data to vtkPolyData.
-    
+
     Convert a pyFormex Mesh or Coords object into vtkPolyData.
     This is limited to vertices, lines, and polygons.
     Lines should already be ordered (with connectedLineElems for instance).
@@ -84,19 +88,19 @@ def convert2VPD(M,clean=False,verbose=False):
     Returns a vtkPolyData.
     """
     from vtk import vtkPolyData,vtkPoints,vtkIdTypeArray,vtkCellArray
-    
+
     if verbose:
         print('STARTING CONVERSION FOR DATA OF TYPE %s '%type(M))
-    
+
     if  isinstance(M,Coords):
         M = Mesh(M,arange(M.ncoords()))
-    
+
     Nelems = M.nelems() # Number of elements
     Ncxel = M.nplex() # # Number of nodes per element
-    
+
     # create a vtkPolyData variable
     vpd=vtkPolyData()
-    
+
     # creating  vtk coords
     pts = vtkPoints()
     ntype=gnat(pts.GetDataType())
@@ -104,8 +108,8 @@ def convert2VPD(M,clean=False,verbose=False):
     pts.SetNumberOfPoints(M.ncoords())
     pts.SetData(coordsv)
     vpd.SetPoints(pts)
-    
-    
+
+
     # create vtk connectivity
     elms = vtkIdTypeArray()
     ntype=gnat(vtkIdTypeArray().GetDataType())
@@ -131,7 +135,7 @@ def convert2VPD(M,clean=False,verbose=False):
             vpd.SetLines(datav)
         except:
             raise  ValueError,"Error in saving  LINES"
-            
+
     else:
         try:
             if verbose:
@@ -139,16 +143,16 @@ def convert2VPD(M,clean=False,verbose=False):
             vpd.SetPolys(datav)
         except:
             raise ValueError,"Error in saving  POLYS"
-            
+
     vpd.Update()
     if clean:
         vpd=cleanVPD(vpd)
     return vpd
-    
+
 
 def convertVPD2Triangles(vpd):
     """Convert a vtkPolyData to a vtk triangular surface.
-    
+
     Convert a vtkPolyData to a vtk triangular surface. This is convenient
     when vtkPolyData are non-triangular polygons.
 
@@ -159,7 +163,7 @@ def convertVPD2Triangles(vpd):
     Returns
     """
     from vtk import vtkTriangleFilter
-    
+
     triangles = vtkTriangleFilter()
     triangles.SetInput(vpd)
     triangles.Update()
@@ -168,7 +172,7 @@ def convertVPD2Triangles(vpd):
 
 def convertFromVPD(vpd,verbose=False):
     """Convert a vtkPolyData into pyFormex objects.
-    
+
     Convert a vtkPolyData into pyFormex objects.
 
     Parameters:
@@ -186,7 +190,7 @@ def convertFromVPD(vpd,verbose=False):
         pts = asarray(v2n(vpd.GetPoints().GetData()),dtype=ntype)
         if verbose:
             print('Saved points coordinates array')
-        
+
     # getting Polygons
     if  vpd.GetPolys().GetData().GetNumberOfTuples():
         ntype=gnat(vpd.GetPolys().GetData().GetDataType())
@@ -194,7 +198,7 @@ def convertFromVPD(vpd,verbose=False):
         polys = asarray(v2n(vpd.GetPolys().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
         if verbose:
             print('Saved polys connectivity array')
-        
+
     # getting Lines
     if  vpd.GetLines().GetData().GetNumberOfTuples():
         ntype=gnat(vpd.GetLines().GetData().GetDataType())
@@ -202,7 +206,7 @@ def convertFromVPD(vpd,verbose=False):
         lines = asarray(v2n(vpd.GetLines().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
         if verbose:
             print('Saved lines connectivity array')
-        
+
     # getting Vertices
     if  vpd.GetVerts().GetData().GetNumberOfTuples():
         ntype=gnat(vpd.GetVerts().GetData().GetDataType())
@@ -210,18 +214,18 @@ def convertFromVPD(vpd,verbose=False):
         verts = asarray(v2n(vpd.GetVerts().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
         if verbose:
             print('Saved verts connectivity array')
-        
+
     return pts, polys, lines, verts
 
 
 def pfvtkPointInsideObject(S,P,tol=0.):
     """vtk function to test which of the points P are inside surface S"""
-    
+
     from vtk import vtkSelectEnclosedPoints
-    
+
     vpp = convert2VPD(P)
     vps =convert2VPD(S,clean=False)
-    
+
     enclosed_pts = vtkSelectEnclosedPoints()
     enclosed_pts.SetInput(vpp)
     enclosed_pts.SetTolerance(tol)
@@ -244,14 +248,14 @@ def pfvtkIntersectWithSegment(surf,lines,tol=0.0):
     Returns a list of the intersection points lists and of the element number of surf where the point lies.
     The position in the list is equal to the line number. If there is no intersection with the correspondent
     lists are empty
-    
+
     Parameters:
         surf :  can be Formex, Mesh or TriSurface
         lines : a mesh of segments
 
     """
     from vtk import vtkOBBTree
-    
+
     surf = convert2VPD(surf,clean=False)
     loc = vtkOBBTree()
     loc.SetDataSet(vm)
@@ -274,7 +278,7 @@ def pfvtkIntersectWithSegment(surf,lines,tol=0.0):
 
 def convertTransform4x4FromVtk(transform):
     """ Convert a vtk transformation instance vtkTrasmorm into a 4x4 transformation matrix array
-        
+
     """
     trMat4x4 = [[ transform.GetMatrix().GetElement(r,c) for c in range(4)] for r in range(4)]
     return asarray(trMat4x4)
@@ -291,9 +295,9 @@ def pfvtkTransform(source,trMat4x4):
     """ Apply a 4x4 transformation matrix array to source of Coords or any surface type
     Returns the transformed coordinates
     """
-    
+
     from vtk import vtkTransformPolyDataFilter
-    
+
     source=convert2VPD(source)
     trMat4x4=convertTransform4x4ToVtk(trMat4x4)
     transformFilter = vtkTransformPolyDataFilter()

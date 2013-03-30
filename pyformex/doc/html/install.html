@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installing pyFormex &mdash; pyFormex 0.9.0-a1 documentation</title>
+    <title>Installing pyFormex &mdash; pyFormex 0.9.0 documentation</title>
 
     
     <link rel="stylesheet" href="_static/pyformex.css" type="text/css" />
@@ -43,7 +43,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.9.0-a1',
+        VERSION:     '0.9.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +52,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 0.9.0-a1 documentation" href="index.html" />
+    <link rel="top" title="pyFormex 0.9.0 documentation" href="index.html" />
     <link rel="next" title="pyFormex tutorial" href="tutorial.html" />
     <link rel="prev" title="Introduction to pyFormex" href="intro.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
@@ -82,7 +82,7 @@
         <li class="right" >
           <a href="intro.html" title="Introduction to pyFormex"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyFormex 0.9.0-a1 documentation</a> &gt;</li> 
+        <li><a href="index.html">pyFormex 0.9.0 documentation</a> &gt;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -211,12 +211,19 @@ all dependencies</li>
 </ul>
 </td>
 <td><ul class="first last simple">
-<li>Debian GNU/Linux required</li>
+<li>Debian GNU/Linux required <a class="footnote-reference" href="#debian" id="id2">[1]</a></li>
 <li>Root access required</li>
 <li>May be missing latest features</li>
 </ul>
 </td>
 </tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="debian" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[1]</a></td><td>Installing the Debian packages may also work on Debian derivatives
+like Ubuntu and Mint.</td></tr>
 </tbody>
 </table>
 <p><a class="reference internal" href="#sec-official-release"><em>Official release</em></a>:</p>
@@ -367,7 +374,7 @@ USB stick.</li>
 <p>If you are running Debian GNU/Linux, or have the opportunity to install
 it, then (by far) the most easy install method is to use the packages
 in the official Debian repositories. Currently pyFormex packages are available for Debian sid and wheezy releases. Be sure to also install the precompiled acceleration libraries:</p>
-<div class="highlight-python"><pre>apt-get install pyformex-lib</pre>
+<div class="highlight-python"><pre>apt-get install pyformex pyformex-lib</pre>
 </div>
 <p>This single command will install pyFormex and all its dependencies. Some extra
 functionalities may be installable from a separate package:</p>
@@ -379,8 +386,11 @@ To access our package repository from your normal package manager, add the follo
 <div class="highlight-python"><pre>deb http://bumps.ugent.be/repos/debian/ sid main
 deb-src http://bumps.ugent.be/repos/debian/ sid main</pre>
 </div>
-<p>and then do <tt class="docutils literal"><span class="pre">apt-get</span> <span class="pre">update</span></tt>. The public key used to sign the packages is
-available from <a class="reference external" href="http://bumps.ugent.be/repos/pyformex-pubkey.gpg">http://bumps.ugent.be/repos/pyformex-pubkey.gpg</a>.</p>
+<p>You can add the key used to sign the packages to the apt keyring with the following command:</p>
+<div class="highlight-python"><pre>wget -O - http://bumps.ugent.be/repos/pyformex-pubkey.gpg | apt-key add -</pre>
+</div>
+<p>Then do <tt class="docutils literal"><span class="pre">apt-get</span> <span class="pre">update</span></tt>. Now you can use the above commands to install
+the latest alpha release.</p>
 </div>
 <div class="section" id="official-release">
 <span id="sec-official-release"></span><h2>Official release<a class="headerlink" href="#official-release" title="Permalink to this headline">¶</a></h2>
@@ -427,8 +437,10 @@ Most probably you will want to visualize your structures and for that you need t
 <tt class="docutils literal"><span class="pre">python-dev</span></tt> and <tt class="docutils literal"><span class="pre">libglu1-mesa-dev</span></tt>. This command will do it all:</p>
 <div class="highlight-python"><pre>apt-get install python-numpy python-opengl python-qt4-gl python-dev libglu1-mesa-dev</pre>
 </div>
-<p>Other optional packages that might be useful are <tt class="docutils literal"><span class="pre">admesh</span></tt>, <tt class="docutils literal"><span class="pre">python-scipy</span></tt>,
-<tt class="docutils literal"><span class="pre">python-numpy-ext</span></tt>, <tt class="docutils literal"><span class="pre">units</span></tt>.</p>
+<dl class="docutils">
+<dt>Other optional packages that might be useful are <tt class="docutils literal"><span class="pre">admesh</span></tt>, <tt class="docutils literal"><span class="pre">python-scipy</span></tt>,</dt>
+<dd><tt class="docutils literal"><span class="pre">units</span></tt>.</dd>
+</dl>
 </div>
 </div>
 <div class="section" id="download-pyformex">
@@ -721,14 +733,14 @@ successful or not.</p>
         <li class="right" >
           <a href="intro.html" title="Introduction to pyFormex"
              >previous</a> |</li>
-        <li><a href="index.html">pyFormex 0.9.0-a1 documentation</a> &gt;</li> 
+        <li><a href="index.html">pyFormex 0.9.0 documentation</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Feb 19, 2013.
+      Last updated on Mar 25, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

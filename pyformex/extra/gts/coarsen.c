@@ -1,11 +1,11 @@
 // $Id$
 //
-//  This file is part of pyFormex 0.8.9  (Fri Nov  9 10:49:51 CET 2012)
+//  This file is part of pyFormex 0.9.0  (Mon Mar 25 13:52:29 CET 2013)
 //  pyFormex is a tool for generating, manipulating and transforming 3D
 //  geometrical models by sequences of mathematical operations.
 //  Home page: http://pyformex.org
 //  Project page:  http://savannah.nongnu.org/projects/pyformex/
-//  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+//  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 //  Distributed under the GNU General Public License version 3 or later.
 //
 //
@@ -24,7 +24,7 @@
 //
 
 /*
- * This is a modified version of the coarsen example coming with the 
+ * This is a modified version of the coarsen example coming with the
  * GTS library. Copyright (C) 1999 Stéphane Popinet
  */
 
@@ -81,11 +81,11 @@ static gboolean stop_number_verbose (gdouble cost, guint number, guint * min)
     mins1 = floor ((remaining - 3600.*hours1)/60.);
     secs1 = floor (remaining - 3600.*hours1 - 60.*mins1);
 
-    fprintf (stderr, 
+    fprintf (stderr,
 	     "\rEdges: %10u %3.0f%% %6.0f edges/s "
 	     "Elapsed: %02.0f:%02.0f:%02.0f "
 	     "Remaining: %02.0f:%02.0f:%02.0f ",
-	     number, 
+	     number,
 	     100.*(nmax - number)/(nmax - *min),
 	     (nold - number)/g_timer_elapsed (timer, NULL),
 	     hours, mins, secs,
@@ -250,11 +250,11 @@ int main (int argc, char * argv[])
       return 0; /* success */
       break;
     case '?': /* wrong options */
-      fprintf (stderr, "Try `gtscoarsen --help' for more information.\n");
+      fprintf (stderr, "Try `gtscoarsen -h' for more information.\n");
       return 1; /* failure */
     }
   }
-  
+
   /* read surface in */
   s = gts_surface_new (gts_surface_class (),
 		       gts_face_class (),
@@ -262,7 +262,7 @@ int main (int argc, char * argv[])
 		       gts_vertex_class ());
   fp = gts_file_new (stdin);
   if (gts_surface_read (s, fp)) {
-    fputs ("gtscoarsen: the file on standard input is not a valid GTS file\n", 
+    fputs ("gtscoarsen: the file on standard input is not a valid GTS file\n",
 	   stderr);
     fprintf (stderr, "stdin:%d:%d: %s\n", fp->line, fp->pos, fp->error);
     return 1; /* failure */
@@ -271,14 +271,14 @@ int main (int argc, char * argv[])
   /* if verbose on print stats */
   if (verbose) {
     gts_surface_print_stats (s, stderr);
-    fprintf (stderr, "# volume: %g area: %g\n", 
+    fprintf (stderr, "# volume: %g area: %g\n",
 	     gts_surface_volume (s), gts_surface_area (s));
   }
 
   /* select the right coarsening process */
   switch (cost) {
-  case COST_OPTIMIZED: 
-    cost_func = (GtsKeyFunc) gts_volume_optimized_cost; 
+  case COST_OPTIMIZED:
+    cost_func = (GtsKeyFunc) gts_volume_optimized_cost;
     cost_data = &params;
     break;
   case COST_LENGTH:
@@ -290,10 +290,10 @@ int main (int argc, char * argv[])
   }
   switch (mid) {
   case MIDVERTEX:
-    coarsen_func = NULL; 
+    coarsen_func = NULL;
     break;
   case OPTIMIZED:
-    coarsen_func = (GtsCoarsenFunc) gts_volume_optimized_vertex; 
+    coarsen_func = (GtsCoarsenFunc) gts_volume_optimized_vertex;
     coarsen_data = &params;
     break;
   default:
@@ -307,14 +307,14 @@ int main (int argc, char * argv[])
       if (verbose)
 	stop_func = (GtsStopFunc) stop_number_verbose;
       else
-	stop_func = (GtsStopFunc) gts_coarsen_stop_number; 
+	stop_func = (GtsStopFunc) gts_coarsen_stop_number;
       stop_data = &number;
       break;
     case COST:
       if (verbose)
 	stop_func = (GtsStopFunc) stop_cost_verbose;
       else
-	stop_func = (GtsStopFunc) gts_coarsen_stop_cost; 
+	stop_func = (GtsStopFunc) gts_coarsen_stop_cost;
       stop_data = &cmax;
       break;
     default:
@@ -326,19 +326,19 @@ int main (int argc, char * argv[])
 			   s, gts_split_class (),
 			   cost_func, cost_data,
 			   coarsen_func, coarsen_data,
-			   stop_func, stop_data, 
+			   stop_func, stop_data,
 			   fold);
   else
-    gts_surface_coarsen (s, 
-			 cost_func, cost_data, 
-			 coarsen_func, coarsen_data, 
+    gts_surface_coarsen (s,
+			 cost_func, cost_data,
+			 coarsen_func, coarsen_data,
 			 stop_func, stop_data, fold);
 
   /* if verbose on print stats */
   if (verbose) {
     fputc ('\n', stderr);
     gts_surface_print_stats (s, stderr);
-    fprintf (stderr, "# volume: %g area: %g\n", 
+    fprintf (stderr, "# volume: %g area: %g\n",
 	     gts_surface_volume (s), gts_surface_area (s));
   }
 

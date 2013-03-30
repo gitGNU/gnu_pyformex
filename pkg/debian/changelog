@@ -1,14 +1,8 @@
-pyformex (0.9.0~a3-2) unstable; urgency=low
+pyformex (0.9.0-1) unstable; urgency=low
 
-  * Fix patch of pyformex script
+  * New upstream release
 
- -- Benedict Verhegghe <benedict.verhegghe@ugent.be>  Thu, 14 Mar 2013 17:00:12 +0100
-
-pyformex (0.9.0~a3-1) unstable; urgency=low
-
-  * Test upcoming release
-
- -- Benedict Verhegghe <benedict.verhegghe@ugent.be>  Thu, 14 Mar 2013 09:45:56 +0100
+ -- Benedict Verhegghe <benedict.verhegghe@ugent.be>  Mon, 25 Mar 2013 20:09:04 +0100
 
 pyformex (0.8.9-1) unstable; urgency=low
 

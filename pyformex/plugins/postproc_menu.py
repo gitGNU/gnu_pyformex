@@ -1,6 +1,6 @@
 # $Id$
 ##
-##  This file is part of pyFormex 0.8.9  (Fri Nov  9 10:49:51 CET 2012)
+##  This file is part of pyFormex 0.9.0  (Mon Mar 25 13:52:29 CET 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
@@ -794,7 +794,7 @@ def show_results(data):
                 val = norm2(val)
     if val is not None:
         txt += result_types.values()[resindex]
-    print("RESULT ELTYPE: %s" % [e.elName() for e in elems])
+    #print("RESULT ELTYPE: %s" % [e.eltype.name() for e in elems])
     showResults(nodes,elems,displ,txt,val,showref,dscale,count,sleeptime,symmetric_scale)
     return val
 

@@ -1,13 +1,12 @@
 # $Id$
 ##
-##  This file is part of pyFormex 0.8.9  (Fri Nov  9 10:49:51 CET 2012)
+##  This file is part of pyFormex 0.9.1  (Wed Mar 27 15:37:25 CET 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
 ##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
-##
 ##
 ##  This program is free software: you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -317,28 +316,33 @@ def test_module(module):
 ###########################  app  ################################
 
 def run(argv=[]):
-    """This is a fairly generic main() function.
+    """The pyFormex main function.
 
-    It is responsible for reading the configuration file(s),
-    processing the command line options and starting the application.
-    The basic configuration file is 'pyformexrc' located in the pyformex
-    directory. It should always be present and be left unchanged.
-    You can copy this file to another location if you want to make changes.
-    By default, pyformex will try to read the following extra configuration
-    files (in this order:
-        default settings:     <pyformexdir>/pyformexrc
-        system-wide settings: /etc/pyformexrc
-        user settings:        $HOME/.pyformex/pyformexrc
+    After pyFormex launcher script has correctly set up the Python import
+    paths, this function is executed. It is responsible for reading the
+    configuration file(s), processing the command line options and starting
+    the application.
+
+    The basic configuration file is 'pyformex.conf' located in the pyFormex
+    main directory. It should always be present and be left unchanged.
+    If you want to make changes, copy (parts of) this file to another location
+    where you can change them. Then make sure pyFormex reads you modifications
+    file. By default, pyFormex will try to read the following extra
+    configuration files if they are present (and in this order):
+        default settings:     <pyformexdir>/pyformex.conf
+        system-wide settings: /etc/pyformex.conf
+        user settings:        <configdir>/pyformex/pyformex.conf
         local settings        $PWD/.pyformexrc
     Also, an extra config file can be specified in the command line.
     Config file settings always override previous ones.
-    On exit, the preferences that were changed are written to the last
-    read config file. Changed settings are those that differ from the settings
-    in all but the last one.
+
+    When pyFormex exits, the preferences that were changed are written to the
+    last read config file. Changed settings are those that differ from the
+    settings in all but the last one.
     """
     # Create a config instance
     pf.cfg = Config()
-    # Fill in the pyformexdir and homedir variables
+    # Fill in the pyformexdir, homedir variables
     # (use a read, not an update)
     if os.name == 'posix':
         homedir = os.environ['HOME']
@@ -348,7 +352,7 @@ def run(argv=[]):
     pf.cfg.read("homedir = '%s'\n" % homedir)
 
     # Read the defaults (before the options)
-    defaults = os.path.join(pyformexdir,"pyformexrc")
+    defaults = os.path.join(pyformexdir,"pyformex.conf")
     pf.cfg.read(defaults)
 
     # Process options
@@ -516,7 +520,7 @@ def run(argv=[]):
     if pf.options.detect:
         print("Detecting installed helper software")
         utils.checkExternal()
-        print(utils.reportDetected())
+        print(utils.reportSoftware())
 
     if pf.options.whereami or pf.options.detect :
         return
@@ -524,7 +528,22 @@ def run(argv=[]):
     ########### Read the config files  ####################
 
     # These values should not be changed
-    pf.cfg.userprefs = os.path.join(pf.cfg.userconfdir,'pyformexrc')
+    pf.cfg.userprefs = os.path.join(pf.cfg.userconfdir,'pyformex.conf')
+
+
+    # Migrate the user preferences to the new place under $HOME/.config
+    if not os.path.exists(pf.cfg.userprefs):
+        # Check old place
+        olduserprefs = os.path.join(homedir,'.pyformex','pyformexrc')
+        if os.path.exists(olduserprefs):
+            print("Migrating your user preferences\n  from %s\n  to %s" % (olduserprefs,pf.cfg.userprefs))
+            try:
+                import shutil
+                shutil.move(os.path.join(homedir,'.pyformex'),pf.cfg.userconfdir,)
+                shutil.move(os.path.join(pf.cfg.userconfdir,'pyformexrc'),pf.cfg.userprefs)
+            except:
+                raise RuntimeError,"Error while trying to migrate your user configuration\nTry moving the config files yourself."
+
 
     # Set the config files
     if pf.options.nodefaultconfig:
@@ -701,7 +720,7 @@ pyFormex Warning
 
     if pf.options.debuglevel & pf.DEBUG.INFO:
         # NOTE: inside an if to avoid computing the report when not printed
-        pf.debug(utils.reportDetected(),pf.DEBUG.INFO)
+        pf.debug(utils.reportSoftware(),pf.DEBUG.INFO)
 
     #
     # Qt4 may have changed the locale.

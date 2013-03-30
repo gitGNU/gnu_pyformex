@@ -1,13 +1,12 @@
 /* $Id$ */
 //
-//  This file is part of pyFormex 0.8.5  (Sun Dec  4 21:24:46 CET 2011)
+//  This file is part of pyFormex 0.9.1  (Wed Mar 27 16:13:07 CET 2013)
 //  pyFormex is a tool for generating, manipulating and transforming 3D
 //  geometrical models by sequences of mathematical operations.
 //  Home page: http://pyformex.org
 //  Project page:  http://savannah.nongnu.org/projects/pyformex/
-//  Copyright 2004-2011 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+//  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 //  Distributed under the GNU General Public License version 3 or later.
-//
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -25,7 +24,7 @@
 
 /*
   Low level drawing functions to speed up OpenGL calls on large arrays.
- 
+
   The callers should make sure that the arguments are correct.
   Nasty crashes may result if not!
 */
@@ -35,33 +34,18 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-static char __doc__[] = "drawgl_\n\
+
+/****************** LIBRARY VERSION AND DOCSTRING *******************/
+
+static char *__version__ = "0.9.1a1";
+static char *__doc__ = "drawgl_\n\
 \n\
 This module provides accelerated versions of the pyFormex basic\n\
 OpenGL drawing functions.\n\
 \n";
 
 
-/************************ LIBRARY VERSION *******************/
-/*
-  Whenever a change is made to this library that causes pyFormex
-  to be incompatible with the previous version, the version number
-  should be bumped, and the new version number should also be set
-  in the lib module initialization file __init__.py
-
- ## ACTUALLY NOT USED YET ##
-*/
-
-int version = 1;
-
-static PyObject *
-get_version(PyObject *dummy, PyObject *args) 
-{
-  return Py_BuildValue("i", version);
-}
-
-
-/****** INTERNAL FUNCTIONS (not callable from Python ********/
+/****** INTERNAL FUNCTIONS (not callable from Python) ********/
 
 /********************************************** gl_color ****/
 /* Set the OpenGL color, possibly with transparency. */
@@ -76,7 +60,7 @@ void gl_color(float *color, float alpha)
     glColor3fv(color);
   } else {
     glColor4f(color[0],color[1],color[2],alpha);
-  } 
+  }
   return;
 }
 
@@ -127,7 +111,7 @@ GLenum gl_map2_vertexmode(int ndim)
     t : float (nplex,2) or (nel,nplex,2) : texture coords
     alpha : float
     objtype : GL Object type (-1 = auto)
-*/  
+*/
 static PyObject *
 draw_polygons(PyObject *dummy, PyObject *args)
 {
@@ -149,25 +133,25 @@ draw_polygons(PyObject *dummy, PyObject *args)
   nplex = PyArray_DIMS(arr1)[1];
 
   arr2 = PyArray_FROM_OTF(arg2, NPY_FLOAT, NPY_IN_ARRAY);
-  if (arr2 != NULL) { 
+  if (arr2 != NULL) {
     ndn = PyArray_NDIM(arr2);
     n = (float *)PyArray_DATA(arr2);
   }
 
   arr3 = PyArray_FROM_OTF(arg3, NPY_FLOAT, NPY_IN_ARRAY);
-  if (arr3 != NULL) { 
+  if (arr3 != NULL) {
     ndc = PyArray_NDIM(arr3);
     c = (float *)PyArray_DATA(arr3);
   }
 
   arr4 = PyArray_FROM_OTF(arg4, NPY_FLOAT, NPY_IN_ARRAY);
-  if (arr4 != NULL) { 
+  if (arr4 != NULL) {
     ndt = PyArray_NDIM(arr4);
     t = (float *)PyArray_DATA(arr4);
   }
-  
+
   if (objtype < 0) objtype = gl_objtype(nplex);
-    
+
 #ifdef DEBUG
   printf("** nelems=%d, nplex=%d, ndn=%d, ndc=%d, ndt=%d, objtype=%d\n",nel,nplex,ndn,ndc,ndt,objtype);
 #endif
@@ -179,12 +163,12 @@ draw_polygons(PyObject *dummy, PyObject *args)
 
   if (ndc == 1)
     gl_color(c,alpha);
-  
+
   for (i=0; i<nel; i++) {
     if (!simple)
       glBegin(objtype);
 
-    if (ndc == 2) {  
+    if (ndc == 2) {
       gl_color(c,alpha);
       c += 3;
     }
@@ -202,7 +186,7 @@ draw_polygons(PyObject *dummy, PyObject *args)
 	c += 3;
       }
       if (ndt == 2) {
-	glTexCoord2fv(t+2*j); 
+	glTexCoord2fv(t+2*j);
       } else if (ndt == 3) {
 	glTexCoord2fv(t);
 	t += 2;
@@ -213,7 +197,7 @@ draw_polygons(PyObject *dummy, PyObject *args)
     if (!simple)
       glEnd();
   }
-  if (simple) 
+  if (simple)
     glEnd();
 
   /* cleanup: */
@@ -236,7 +220,7 @@ draw_polygons(PyObject *dummy, PyObject *args)
     t : float (nplex,2) or (nel,nplex,2) : texture coords
     alpha : float
     objtype : GL Object type (-1 = auto)
-*/  
+*/
 static PyObject *
 draw_polygon_elems(PyObject *dummy, PyObject *args)
 {
@@ -264,25 +248,25 @@ draw_polygon_elems(PyObject *dummy, PyObject *args)
   nplex = PyArray_DIMS(arr2)[1];
 
   arr3 = PyArray_FROM_OTF(arg3, NPY_FLOAT, NPY_IN_ARRAY);
-  if (arr3 != NULL) { 
+  if (arr3 != NULL) {
     ndn = PyArray_NDIM(arr3);
     n = (float *)PyArray_DATA(arr3);
   }
 
   arr4 = PyArray_FROM_OTF(arg4, NPY_FLOAT, NPY_IN_ARRAY);
-  if (arr4 != NULL) { 
+  if (arr4 != NULL) {
     ndc = PyArray_NDIM(arr4);
     c = (float *)PyArray_DATA(arr4);
   }
 
   arr5 = PyArray_FROM_OTF(arg5, NPY_FLOAT, NPY_IN_ARRAY);
-  if (arr5 != NULL) { 
+  if (arr5 != NULL) {
     ndt = PyArray_NDIM(arr5);
     t = (float *)PyArray_DATA(arr5);
   }
-  
+
   if (objtype < 0) objtype = gl_objtype(nplex);
-    
+
 #ifdef DEBUG
   npts = PyArray_DIMS(arr1)[0];
   printf("** npts = %d, nelems=%d, nplex=%d, ndn=%d, ndc=%d, ndt=%d, objtype=%d\n",npts,nel,nplex,ndn,ndc,ndt,objtype);
@@ -295,12 +279,12 @@ draw_polygon_elems(PyObject *dummy, PyObject *args)
 
   if (ndc == 1)
     gl_color(c,alpha);
-  
+
   for (i=0; i<nel; i++) {
     if (!simple)
       glBegin(objtype);
 
-    if (ndc == 2) {  
+    if (ndc == 2) {
       gl_color(c,alpha);
       c += 3;
     }
@@ -318,7 +302,7 @@ draw_polygon_elems(PyObject *dummy, PyObject *args)
 	c += 3;
       }
       if (ndt == 2) {
-	glTexCoord2fv(t+2*j); 
+	glTexCoord2fv(t+2*j);
       } else if (ndt == 3) {
 	glTexCoord2fv(t);
 	t += 2;
@@ -329,9 +313,9 @@ draw_polygon_elems(PyObject *dummy, PyObject *args)
     if (!simple)
       glEnd();
   }
-  if (simple) 
+  if (simple)
     glEnd();
-  
+
   /* cleanup: */
   Py_XDECREF(arr1);
   Py_XDECREF(arr2);
@@ -353,10 +337,10 @@ draw_polygon_elems(PyObject *dummy, PyObject *args)
 
 /********************************************** pick_polygons ****/
 /* Pick polygons */
-/* args: 
+/* args:
     x : float (nel,nplex,3) : coordinates
     objtype : GL Object type (-1 = auto)
-*/  
+*/
 static PyObject *
 pick_polygons(PyObject *dummy, PyObject *args)
 {
@@ -403,11 +387,11 @@ pick_polygons(PyObject *dummy, PyObject *args)
 
 /********************************************** pick_polygon_elems ****/
 /* Pick polygon elements */
-/* args: 
+/* args:
     x : float (npts,3) : coordinates
     e : int32 (nel,nplex) : element connectivity
     objtype : GL Object type (-1 = auto)
-*/  
+*/
 static PyObject *
 pick_polygon_elems(PyObject *dummy, PyObject *args)
 {
@@ -469,7 +453,7 @@ pick_polygon_elems(PyObject *dummy, PyObject *args)
     color:  c: None or (ndim) or (nsurf,ndim) or (nsurf,ns,nt,4) !!
     alpha: float
     sampling: float
-*/  
+*/
 static PyObject* draw_nurbs_surfaces(PyObject *dummy, PyObject *args)
 {
   PyObject *retval=NULL;
@@ -482,7 +466,7 @@ static PyObject* draw_nurbs_surfaces(PyObject *dummy, PyObject *args)
 #ifdef DEBUG
   printf("** draw_nurbs_surfaces\n");
 #endif
-  
+
   if (!PyArg_ParseTuple(args,"OOOOff",&arg1,&arg2,&arg3,&arg4,&alpha,&sampling)) return NULL;
 
   arr1 = PyArray_FROM_OTF(arg1,NPY_FLOAT,NPY_IN_ARRAY);
@@ -498,9 +482,9 @@ static PyObject* draw_nurbs_surfaces(PyObject *dummy, PyObject *args)
   printf("** nt = %d\n",nt);
   printf("** ndim = %d\n",ndim);
 #endif
-  
+
   arr2 = PyArray_FROM_OTF(arg2,NPY_FLOAT,NPY_IN_ARRAY);
-  if (arr2 == NULL) goto fail; 
+  if (arr2 == NULL) goto fail;
   s = (float *)PyArray_DATA(arr2);
   nds = PyArray_NDIM(arr2);
   nsknots = PyArray_DIMS(arr2)[nds-1];
@@ -509,9 +493,9 @@ static PyObject* draw_nurbs_surfaces(PyObject *dummy, PyObject *args)
   printf("** nds = %d\n",nds);
   printf("** nsknots = %d\n",nsknots);
 #endif
-  
+
   arr3 = PyArray_FROM_OTF(arg3,NPY_FLOAT,NPY_IN_ARRAY);
-  if (arr3 == NULL) goto fail; 
+  if (arr3 == NULL) goto fail;
   t = (float *)PyArray_DATA(arr3);
   ndt = PyArray_NDIM(arr3);
   ntknots = PyArray_DIMS(arr3)[ndt-1];
@@ -520,9 +504,9 @@ static PyObject* draw_nurbs_surfaces(PyObject *dummy, PyObject *args)
   printf("** ndt = %d\n",ndt);
   printf("** ntknots = %d\n",ntknots);
 #endif
-  
+
   arr4 = PyArray_FROM_OTF(arg4,NPY_FLOAT,NPY_IN_ARRAY);
-  if (arr4 != NULL) { 
+  if (arr4 != NULL) {
     ndc = PyArray_NDIM(arr4);
     if (ndc > 0) {
       ncdim = PyArray_DIMS(arr4)[ndc-1];
@@ -542,7 +526,7 @@ static PyObject* draw_nurbs_surfaces(PyObject *dummy, PyObject *args)
   gluNurbsProperty(nurb,GLU_SAMPLING_TOLERANCE,sampling);
 
   mode = gl_map2_vertexmode(ndim);
-  if (ndc == 4) 
+  if (ndc == 4)
     cmode = GL_MAP2_COLOR_4;
 
 #ifdef DEBUG
@@ -563,11 +547,11 @@ static PyObject* draw_nurbs_surfaces(PyObject *dummy, PyObject *args)
       gl_color(c,alpha);
       c += ncdim;
     }
-   
+
     gluBeginSurface(nurb);
     if (ndc == 4 && ncdim == 4) {     /* vertex color */
       gluNurbsSurface(nurb,ns,s,nt,t,ncdim,ns*ncdim,c,nsorder,ntorder,cmode);
-      c += ns*nt*ncdim; 
+      c += ns*nt*ncdim;
     }
     gluNurbsSurface(nurb,nsknots,s,ntknots,t,ndim,ns*ndim,x,nsorder,ntorder,mode);
     gluEndSurface(nurb);
@@ -594,7 +578,7 @@ static PyObject* draw_nurbs_surfaces(PyObject *dummy, PyObject *args)
 
 /***************** The methods defined in this module **************/
 static PyMethodDef _methods_[] = {
-    {"get_version", get_version, METH_VARARGS, "Return library version."},
+  //    {"get_version", get_version, METH_VARARGS, "Return library version."},
     {"draw_polygons", draw_polygons, METH_VARARGS, "Draw polygons."},
     {"pick_polygons", pick_polygons, METH_VARARGS, "Pick polygons."},
     {"draw_polygon_elems", draw_polygon_elems, METH_VARARGS, "Draw polygon elements."},
@@ -608,6 +592,7 @@ PyMODINIT_FUNC initdrawgl_(void)
 {
   PyObject* module;
   module = Py_InitModule3("drawgl_", _methods_, __doc__);
+  PyModule_AddStringConstant(module,"__version__",__version__);
   PyModule_AddIntConstant(module,"accelerated",1);
   import_array(); /* Get access to numpy array API */
 }

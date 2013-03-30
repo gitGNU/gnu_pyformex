@@ -1,13 +1,12 @@
 # $Id$
 ##
-##  This file is part of pyFormex 0.8.9  (Fri Nov  9 10:49:51 CET 2012)
+##  This file is part of pyFormex 0.9.1  (Wed Mar 27 15:37:25 CET 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
-##
 ##
 ##  This program is free software: you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -30,9 +29,11 @@ external functions in the compiled library.
 """
 from __future__ import print_function
 
-# There should be no other imports here than numpy
+# There should be no other imports here than numpy and pyformex
+import pyformex as pf
 import numpy as np
 
+__version__ = pf.__version__
 accelerated = False
 
 
@@ -64,7 +65,7 @@ def nodalSum(val,elems,work,avg):
 
     val   : (nelems,nplex,nval) values at points of elements.
     elems : (nelems,nplex) nodal ids of points of elements.
-    work  : (nnod,nval)  returns the summed values at the nodes 
+    work  : (nnod,nval)  returns the summed values at the nodes
 
     On return each value is replaced with the sum of values at that node.
     If avg=True, the values are replaced with the average instead.
@@ -448,7 +449,7 @@ def polygoniseCube(pos,val,level):
     # tells us which vertices are inside of the surface
 
     # print(pos,val)
-    
+
     cubeindex = 0
     for i in range(8):
         if val[i] < level:
@@ -458,7 +459,7 @@ def polygoniseCube(pos,val,level):
         return []
 
     vertlist = zeros((12,3))
-    
+
     # Find the vertices where the surface intersects the cube
     edge_table = [
         [0,1],
@@ -474,7 +475,7 @@ def polygoniseCube(pos,val,level):
         [2,6],
         [3,7],
         ]
-    
+
     for i,verts in enumerate(edge_table):
         if edgetable[cubeindex] & (1 << i):
             p1,p2 = pos[verts]
@@ -532,7 +533,7 @@ def isosurface(data,level):
     Returns an (ntr,3,3) array defining the triangles of the isosurface.
     The result may be empty (if level is outside the data range).
     """
-    triangles=[]   
+    triangles=[]
     def addTriangles(x,y,z):
         pos = grid + [x,y,z]
         val = data[pos[:,2],pos[:,1],pos[:,0]]
@@ -545,7 +546,7 @@ def isosurface(data,level):
           for x in range(data.shape[2]-1) ]
         for y in range(data.shape[1]-1) ]
       for z in range(data.shape[0]-1) ]
-    
+
     triangles = asarray(triangles).reshape(-1,3,3)
     return triangles
 

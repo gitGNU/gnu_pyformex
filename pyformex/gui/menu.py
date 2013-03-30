@@ -1,6 +1,6 @@
 # $Id$
 ##
-##  This file is part of pyFormex 0.8.9  (Fri Nov  9 10:49:51 CET 2012)
+##  This file is part of pyFormex 0.9.0  (Mon Mar 25 13:52:29 CET 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
@@ -550,6 +550,10 @@ def printSysPath():
     print(sys.path)
 
 
+def printModules():
+    import sys
+    print(sorted(sys.modules.keys()))
+
 
 
 def createMenuData():
@@ -581,6 +585,7 @@ def createMenuData():
         (_('&Print Detected Software'),script.printdetected),
         (_('&Print Loaded Apps'),script.printLoadedApps),
         (_('&Print sys.path'),printSysPath),
+        (_('&Print loaded modules'),printModules),
         (_('&Print Used Memory'),script.printVMem),
         (_('&PrintBbox'),draw.printbbox),
         (_('&Print Viewport Settings'),draw.printviewportsettings),

@@ -291,6 +291,21 @@ Using the git repository
     git push public master
 
 
+Make another branch the master
+------------------------------
+You have a (public) branch 'new', which you want to become the master.
+The new branch has diverted a lot from master, but you still need to
+keep the changes from the master branch. The first merge the master
+into yout new branch::
+
+  git co new
+  git merge -s ours master
+  git co master
+  git merge new
+
+But you nee
+
+
 Structure of the pyFormex repository
 ====================================
 After you checked out the trunk, you will find the following in the top
@@ -1283,7 +1298,7 @@ First, create the distribution and test it out locally: both the installation pr
 
 - Set the final version in RELEASE (RELEASE==VERSION) ::
 
-   edt RELEASE
+   edt RELEASE    # Remove the ~a tail
    make version
 
 - Stamp the files with the version ::
@@ -1298,21 +1313,34 @@ First, create the distribution and test it out locally: both the installation pr
 
 - Check in (creating the dist may modify some files) ::
 
-   svn ci -m "Creating release ..."
+   git commit -a -m "Creating release ..."
+
+- Set the revision number in stats/pyformex-release.fdb. Compute it from the
+  latest and add the increment from the pyFormex version::
+
+    pyFormex 0.9.0 (0.8.9r5-249-ga162aca)
+                            ^^^
+  In this example we have 249 past release 0.8.9 (actually 0.8.9-r5, but this
+  had the same revision number as 0.8.9). Release 0.8.9 was revision 2557,
+  thus the new revision number is 2557 + 249 = 2806.
 
 - Create a Tag ::
 
    make tag
+   make pushtag
 
-- Create a distribution ::
+- Push source to Savannah::
 
-   svn up
+   git push public master
+   git push public RELEASETAG
+
+- Create the distribution ::
+
    make dist
 
 - Put the release files on Savannah::
 
    make pubrelease
-   make sign
    make pubpdf
    make pubn
    make pub
@@ -1326,13 +1354,12 @@ First, create the distribution and test it out locally: both the installation pr
 
 - Put the files on our local FTP server ::
 
-   (NOT CORRECT) make publocal
+   make publocal_off
 
 - Put the documentation on the web site ::
 
    make pubdoc
    ./publish
-   # now add the missing files by hand : cvs add FILE
    make commit
 
 - Upload to the python package index ::
@@ -1377,7 +1404,6 @@ cvs mirror of the website. Upload the files just as for the documentation::
 
    cd ..
    ./publish
-   # now add the missing files by hand : cvs add FILE
    make commit
 
 
@@ -1460,24 +1486,14 @@ They will need to be tuned for the release.
 
     _do clean unpack final | tee log
 
-- upload::
+- upload to Debian mentors::
 
-    dput mentors PYFVER.changes
+    _do upload
 
-- copy to bumper::
+- upload to local repository and make available::
 
-    rsync *VERSION[.-]* bumper:prj/pyformex/pkg -av
-
-
-Uploading to the local debian repository
-----------------------------------------
-You should be on a machine with access to /net/bumps/var. This is currently
-only bumper or bumpy (when at bioMMeda).
-
-In the pyformex pkg subdirectory, after creating the signed debian packages,
-do::
-
-  reprepro -b /net/bumps/var/www/repos/debian include unstable pyformex_$VERSION_amd64.changes
+    _do uploadlocal
+    _do publocal
 
 
 .. End

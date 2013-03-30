@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 # $Id$
 ##
-##  This file is part of pyFormex 0.8.9  (Fri Nov  9 10:49:51 CET 2012)
+##  This file is part of pyFormex 0.9.1  (Wed Mar 27 15:37:25 CET 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
 ##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
-##
 ##
 ##  This program is free software: you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -85,7 +84,7 @@ def detected():
     """Display the detected software components."""
     utils.checkAllModules()
     utils.checkExternal()
-    draw.showText(utils.reportDetected())
+    draw.showText(utils.reportSoftware(header="Detected Software"))
 
 def about():
     """Display short information about pyFormex."""

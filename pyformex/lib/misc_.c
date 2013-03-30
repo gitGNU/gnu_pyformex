@@ -1,13 +1,12 @@
 /* $Id$ */
 //
-//  This file is part of pyFormex 0.8.5  (Sun Dec  4 21:24:46 CET 2011)
+//  This file is part of pyFormex 0.9.1  (Wed Mar 27 15:37:25 CET 2013)
 //  pyFormex is a tool for generating, manipulating and transforming 3D
 //  geometrical models by sequences of mathematical operations.
 //  Home page: http://pyformex.org
 //  Project page:  http://savannah.nongnu.org/projects/pyformex/
-//  Copyright 2004-2011 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+//  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 //  Distributed under the GNU General Public License version 3 or later.
-//
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -27,13 +26,20 @@
 #include <numpy/arrayobject.h>
 #include <math.h>
 
-static char __doc__[] = "misc_ module\n\
+
+/****************** LIBRARY VERSION AND DOCSTRING *******************/
+
+static char *__version__ = "0.9.1a1";
+static char *__doc__ = "misc_ module\n\
 \n\
 This module provides accelerated versions of miscellaneous pyFormex functions.\n\
 \n";
 
+
+/****** INTERNAL FUNCTIONS (not callable from Python) ********/
+
 /* Dot product of two vectors of length n */
-/* ia and ib are the strides of the elements addressed starting from a, b */ 
+/* ia and ib are the strides of the elements addressed starting from a, b */
 float dotprod(float *a, int ia, float *b, int ib, int n)
 {
   int i;
@@ -140,10 +146,10 @@ static PyObject * tofile_int32(PyObject *dummy, PyObject *args)
 /* Write an indexed array to file */
 /*
    Use:  tofile_ifloat32(ind,data,file,format)
-   This is like tofile_float32, but each row from data is preceded with an 
+   This is like tofile_float32, but each row from data is preceded with an
    index number from ind.
 */
-    
+
 
 static PyObject * tofile_ifloat32(PyObject *dummy, PyObject *args)
 {
@@ -198,10 +204,10 @@ static PyObject * tofile_ifloat32(PyObject *dummy, PyObject *args)
 /* Write an indexed array to file */
 /*
    Use:  tofile_iint32(ind,data,file,format)
-   This is like tofile_int32, but each row from data is preceded with an 
+   This is like tofile_int32, but each row from data is preceded with an
    index number from ind.
 */
-    
+
 
 static PyObject * tofile_iint32(PyObject *dummy, PyObject *args)
 {
@@ -260,9 +266,9 @@ static PyObject * tofile_iint32(PyObject *dummy, PyObject *args)
      val : (nnod) gives the point a code, such that only points with equal val
          are close. points in x are sorted according to val.
      flag: (nnod) initially 1, set to 0 if point is fused with another.
-     sel : (nnod) 
+     sel : (nnod)
      tol : tolerance for defining equality of coordinates
-*/  
+*/
 static PyObject * coords_fuse(PyObject *dummy, PyObject *args)
 {
   PyObject *arg1=NULL, *arg2=NULL, *arg3=NULL, *arg4=NULL;
@@ -339,9 +345,9 @@ static PyObject * coords_fuse(PyObject *dummy, PyObject *args)
     If avg=True, the values are replaced with the average instead.
     (CURRENTLY NOT IMPLEMENTED)
     The operations are can be done in-place by specifying the same array
-    for val and out. 
-*/  
-  
+    for val and out.
+*/
+
 
 void nodal_sum(float *val, int *elems, float *out, int nelems, int nplex, int nval, int maxnod, int avg, int all)
 {
@@ -368,7 +374,7 @@ void nodal_sum(float *val, int *elems, float *out, int nelems, int nplex, int nv
     for (n=0; n<=maxnod; n++)
       if (cnt[n] > 0)
   	for (k=0; k<nval; k++) work[n*nval+k] /= cnt[n];
-  
+
   /* Place back results */
   if (all)
     for (i=0; i<nelems*nplex; i++) {
@@ -404,7 +410,7 @@ static PyObject * nodalSum(PyObject *dummy, PyObject *args)
 
   val = (float *)PyArray_DATA(arr1);
   elems = (int *)PyArray_DATA(arr2);
- 
+
   /* create return  array */
   if (all)
     ret = PyArray_SimpleNew(3,dim, NPY_FLOAT);
@@ -437,13 +443,13 @@ static PyObject * nodalSum(PyObject *dummy, PyObject *args)
 
     The vectors are supposed to be normalized.
     The operations are done in-place. The return value is None.
-*/  
+*/
 
 void average_direction(float *vec, int nvec, int ndim, float tol)
 {
   int i,j,k, cnt, *par;
   float p;
-  
+
   par = (int *) malloc(nvec*sizeof(int));
 
   for (i=0; i<nvec; i++) par[i] = -1;
@@ -493,7 +499,7 @@ void average_direction_indexed(float *vec, int ndim, int*ind, int nvec, float to
 {
   int i,j,k, cnt, *par;
   float p;
-  
+
   par = (int *) malloc(nvec*sizeof(int));
 
   for (i=0; i<nvec; i++) par[i] = -1;
@@ -629,7 +635,7 @@ typedef union {
   XYZ p;
   FLOAT x[3];
 } POINT;
-  
+
 
 /*
    Linearly interpolate the position where an isosurface cuts
@@ -644,7 +650,7 @@ XYZ VertexInterp(XYZ p1, XYZ p2, FLOAT v1, FLOAT v2, FLOAT level)
 {
   FLOAT mu;
   XYZ p;
-  
+
   if (ABS(level-v1) < 0.00001) return(p1);
   if (ABS(level-v2) < 0.00001) return(p2);
   if (ABS(v1-v2) < 0.00001)    return(p1);
@@ -698,7 +704,7 @@ int Polygonise(FLOAT *triangles, XYZ *pos, FLOAT *val, FLOAT level)
     0x69c, 0x795, 0x49f, 0x596, 0x29a, 0x393, 0x99 , 0x190,
     0xf00, 0xe09, 0xd03, 0xc0a, 0xb06, 0xa0f, 0x905, 0x80c,
     0x70c, 0x605, 0x50f, 0x406, 0x30a, 0x203, 0x109, 0x0   };
-  
+
   int triTable[256][16] = {
     {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
     {0, 8, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
@@ -956,7 +962,7 @@ int Polygonise(FLOAT *triangles, XYZ *pos, FLOAT *val, FLOAT level)
     {0, 9, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
     {0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
     {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}};
-  
+
   /* Edge connections: 2 vertices per edge*/
   int edge_con[12][2] = {
     {0,1},
@@ -975,7 +981,7 @@ int Polygonise(FLOAT *triangles, XYZ *pos, FLOAT *val, FLOAT level)
   int i,j,k,ntriang;
   int cubeindex;
   POINT vertlist[12];
-  
+
   /*
     Determine the index into the edge table which
     tells us which vertices are inside of the surface
@@ -984,11 +990,11 @@ int Polygonise(FLOAT *triangles, XYZ *pos, FLOAT *val, FLOAT level)
   for (i=0; i<8; i++)
     if (val[i] < level)
       cubeindex |= 1 << i;
-  
+
   /* Cube is entirely in/out of the surface */
   if (edgeTable[cubeindex] == 0)
     return(0);
-  
+
   /* Find the vertices where the surface intersects the cube */
   for (i=0; i<12; i++)
     if (edgeTable[cubeindex] & (1 << i)) {
@@ -1041,10 +1047,10 @@ static PyObject * isosurface(PyObject *dummy, PyObject *args)
   ny = dims[1];
   nx = dims[2];
   data = (float *)PyArray_DATA(arr1);
- 
+
   /* allocate memory for triangles */
   int nitri = 2*nx*ny*nz; /* initial guess for number of triangles */
-  int ntri = 0;   /* size of storage available */ 
+  int ntri = 0;   /* size of storage available */
   int itri = 0;   /* size of storage filled */
   float *triangles = NULL; /* pointer to storage size */
 
@@ -1066,7 +1072,7 @@ static PyObject * isosurface(PyObject *dummy, PyObject *args)
   /* data offsets with respect to first vertex data */
   int i,ofs[8];
   //printf("Data offsets\n");
-  for (i=0; i<8; i++) { 
+  for (i=0; i<8; i++) {
     ofs[i] = ( grid[i][2]*ny + grid[i][1] )*nx + grid[i][0];
     //printf("%d\n",ofs[i]);
   }
@@ -1091,7 +1097,7 @@ static PyObject * isosurface(PyObject *dummy, PyObject *args)
 	  triangles = (float*) realloc(triangles,ntri*3*3*sizeof(float));
 	}
 	//printf("Values\n");
-	for (i=0; i<8; i++) { 
+	for (i=0; i<8; i++) {
 	  //printf("%f, %f, %f : %f\n",pos[i].x,pos[i].y,pos[i].z,val[i]);
 	}
 	mtri = Polygonise(triangles+itri*3*3,pos,val,level);
@@ -1136,6 +1142,7 @@ PyMODINIT_FUNC initmisc_(void)
 {
   PyObject* module;
   module = Py_InitModule3("misc_", _methods_, __doc__);
+  PyModule_AddStringConstant(module,"__version__",__version__);
   PyModule_AddIntConstant(module,"accelerated",1);
   import_array(); /* Get access to numpy array API */
 }

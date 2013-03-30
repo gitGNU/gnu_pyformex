@@ -1,6 +1,6 @@
 # $Id$
 ##
-##  This file is part of pyFormex 0.8.9  (Fri Nov  9 10:49:51 CET 2012)
+##  This file is part of pyFormex 0.9.0  (Mon Mar 25 13:52:29 CET 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
@@ -364,7 +364,8 @@ def save(filename=None,window=False,multi=False,hotkey=True,autosave=False,borde
     # Leave multisave mode if no filename or starting new multisave mode
     if multisave and (filename is None or multi):
         pf.message("Leave multisave mode")
-        pf.GUI.signals.SAVE.disconnect(saveNext)
+        if multisave[6]:
+            pf.GUI.signals.SAVE.disconnect(saveNext)
         multisave = None
 
     if filename is None:
@@ -473,24 +474,50 @@ def autoSaveOn():
     return multisave and multisave[-2]
 
 
-def createMovie(files,encoder='ffmpeg',**kargs):
+def createMovie(files,encoder='convert',outfn='output',**kargs):
     """Create a movie from a saved sequence of images.
 
+    Parameters:
+
+    - `files`: a list of filenames, or a string with one or more filenames
+      separated by whitespace. The filenames can also contain wildcards
+      interpreted by the shell.
+    - `encoder`: string: the external program to be used to create the movie.
+      This will also define the type of output file, and the extra parameters
+      that can be passed. The external program has to be installed on the
+      computer. The default is `convert`, which will create animated gif.
+      Other possible values are 'mencoder' and 'ffmeg', creating meg4
+      encode movies from jpeg input files.
+    - `outfn`: string: output file name (not including the extension).
+      Default is output.
+
+    Other parameters may be passed and may be needed, depending on the
+    converter program used. Thus, for the default 'convert' program,
+    each extra keyword parameter will be translated to an option
+    '-keyword value' for the command.
+
+    Example::
+
+      createMovie('images*.png',delay=1,colors=256)
+
+    will create an animated gif 'output.gif'.
     """
     print("Encoding %s" % files)
+    if type(files) == list:
+        files = ' '.join(files)
 
     if encoder == 'convert':
-        outfile = 'output.gif'
-        cmd = "convert -delay %s -colors %s %s %s" % (kargs['delay'],kargs['colors'],files,outfile)
+        outfile = outfn+'.gif'
+        cmd= "convert "+" ".join(["-%s %s"%k for k in kargs.items()])+" %s %s"%(files,outfile)
     elif encoder == 'mencoder':
-        outfile = 'output.avi'
+        outfile = outfn + '.avi'
         cmd = "mencoder \"mf://%s\" -o %s -mf fps=%s -ovc lavc -lavcopts vcodec=msmpeg4v2:vbitrate=%s" % (files,outfile,kargs['fps'],kargs['vbirate'])
     else:
-        outfile = 'output.mp4'
+        outfile = outfn+'.mp4'
         cmd = "ffmpeg -qscale 1 -r 1 -i %s output.mp4" % files
     pf.debug(cmd,pf.DEBUG.IMAGE)
     utils.runCommand(cmd)
-    print("Created file %s" % outfile)
+    print("Created file %s" % os.path.abspath(outfile))
 
 
 def saveMovie(filename,format,windowname=None):

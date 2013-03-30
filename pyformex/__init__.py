@@ -1,13 +1,12 @@
 # $Id$
 ##
-##  This file is part of pyFormex 0.8.9  (Fri Nov  9 10:49:51 CET 2012)
+##  This file is part of pyFormex 0.9.1  (Wed Mar 27 15:37:25 CET 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
 ##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
-##
 ##
 ##  This program is free software: you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -32,7 +31,7 @@ from __future__ import print_function
 # This is the very first thing that is executed when starting pyFormex
 # It is loaded even before main.
 
-__version__ = "0.9.0~a4"
+__version__ = "0.9.1a1"
 __revision__ = __version__
 
 
@@ -59,6 +58,14 @@ if sys.hexversion < 0x03000000:
 else:
     from compat_3k import *
 
+# Install type.
+# This can have the followig values:
+#     'R' : normal (source) release, i.e. tarball (default)
+#     'D' : Debian package of a relesed version
+#     'G' : unreleased version running from GIT sources
+#     'S' : unreleased version running from SVN sources (obsolete)
+#
+installtype = 'R'
 
 # The GUI parts
 app_started = False

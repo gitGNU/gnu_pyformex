@@ -1,13 +1,12 @@
 # $Id$
 ##
-##  This file is part of pyFormex 0.8.9  (Fri Nov  9 10:49:51 CET 2012)
+##  This file is part of pyFormex 0.9.1  (Wed Mar 27 15:37:25 CET 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
 ##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
-##
 ##
 ##  This program is free software: you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -94,6 +93,7 @@ NONSTAMPABLE= COPYING
 
 STAMPABLE= $(filter-out ${PYFORMEXDIR}/template.py,${SOURCE}) \
 	${EXECUTABLE} ${CSOURCE} ${EXAMPLES} ${DOCSOURCE} ${BINSOURCE} \
+	${LIBSOURCE} \
 	$(filter-out ${EXTDIR}/pygl2ps/gl2ps_wrap.c,${EXTSOURCE}) \
 	${OTHERSTAMPABLE}
 
@@ -112,7 +112,7 @@ STATICDIRS= pyformex/data/README pyformex/icons/README \
 	website/src/examples/README
 
 STAMP= stamp
-VERSIONSTRING= __version__ = .*
+VERSIONSTRING= __version__ = ".*"
 NEWVERSIONSTRING= __version__ = "${RELEASE}"
 
 PKGVER= ${PKGNAME}-${RELEASE}.tar.gz
@@ -185,7 +185,7 @@ bumprelease:
 revision:
 	sed -i "s|__revision__ = .*|__revision__ = '$$(git describe --always)'|" ${PYFORMEXDIR}/__init__.py
 
-version: ${PYFORMEXDIR}/__init__.py setup.py ${SPHINXDIR}/conf.py
+version: ${PYFORMEXDIR}/__init__.py setup.py ${SPHINXDIR}/conf.py ${LIBSOURCE}
 
 ${PYFORMEXDIR}/__init__.py: RELEASE
 	sed -i 's|${VERSIONSTRING}|${NEWVERSIONSTRING}|' $@
@@ -197,15 +197,16 @@ ${SPHINXDIR}/conf.py: RELEASE
 setup.py: RELEASE
 	sed -i "s|version='.*'|version='${RELEASE}'|" $@
 
+${LIBDIR}/%.c: RELEASE
+	sed -i 's|${VERSIONSTRING}|${NEWVERSIONSTRING}|' $@
+
 # Stamp files with the version/release date
 
 Stamp.stamp: Stamp.template RELEASE
 	${STAMP} -t$< header="This file is part of pyFormex ${VERSION}  ($$(env LANG=C date))" -s$@
 
 stampall: Stamp.stamp
-	${STAMP} -t$< -i ${STAMPABLE}
-	chmod +x ${EXECUTABLE}
-# this should be fixed in stamp !
+	${STAMP} -p -t$< -i ${STAMPABLE}
 
 
 printstampable:
@@ -249,18 +250,26 @@ manpages:
 	make -C pyformex/extra manpages
 
 # Publish the distribution to our ftp server
-publocal: ${PKGDIR}/${LATEST} ${PKGDIR}/${PKGVER}.sig
+#
+# We should make a difference between official and interim releases!
+#
+publocal_int: ${PKGDIR}/${LATEST} ${PKGDIR}/${PKGVER}.sig
+	@echo "SHOULD REPLACE ~ with -"
 	rsync -ltv ${PKGDIR}/${PKGVER} ${PKGDIR}/${LATEST} ${PKGDIR}/${PKGVER}.sig ${FTPLOCAL}
+
+publocal_off: ${PUBDIR}/${LATEST} ${PUBDIR}/${PKGVER}.sig
+	rsync -ltv ${PUBDIR}/${PKGVER} ${PUBDIR}/${LATEST} ${PUBDIR}/${PKGVER}.sig ${FTPLOCAL}
 
 
 # Move the create tar.gz to the public directory
 pubrelease: ${PKGDIR}/${LATEST} ${PKGDIR}/${PKGVER}.sig
+	mkdir -p ${PUBDIR}
 	mv ${PKGDIR}/${PKGVER} ${PKGDIR}/${LATEST} ${PKGDIR}/${PKGVER}.sig ${PUBDIR}
 	ln -s pyformex/${LATEST} ${PKGDIR}
 
-# and sign the packages
-sign: ${PUBDIR}/${PKGVER}
-	cd ${PUBDIR}; gpg -b --use-agent ${PKGVER}
+# and sign the packages  (THIS IS NOW DONE BEFORE MOVING)
+#sign: ${PUBDIR}/${PKGVER}
+#	cd ${PUBDIR}; gpg -b --use-agent ${PKGVER}
 
 pubn: ${PUBDIR}/${PKGVER}.sig
 	rsync ${PUBDIR}/* ${FTPPUB} -rtlvn
@@ -277,8 +286,11 @@ upload:
 
 # Tag the release in the git repository
 tag:
-	svn copy svn+ssh://svn.savannah.nongnu.org/pyformex/trunk svn+ssh://svn.savannah.nongnu.org/pyformex/tags/release-${RELEASE} -m "Tagging the ${RELEASE} release of the 'pyFormex' project."
+	git tag -s -a release-${RELEASE} -m "This is the ${RELEASE} release of the 'pyFormex' project."
 
+# Push the release tag to origin
+pushtag:
+	git push origin release-${RELEASE}
 
 
 # Creates statistics

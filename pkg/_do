@@ -91,7 +91,7 @@ buildlib() {
 
 
 install() {
-    sudo debi pyformex_${PKGVER}_amd64.changes
+    gksu debi pyformex_${PKGVER}_amd64.changes
 }
 
 pkglst() {
