@@ -29,7 +29,7 @@ from __future__ import print_function
 
 from gui.canvas import *
 from camera import Camera
-from shader import Shader
+from renderer import Renderer
 
 
 class Canvas(object):
@@ -65,7 +65,6 @@ class Canvas(object):
         self.cursor = None
         self.focus = False
         pf.debug("Canvas Setting:\n%s"% self.settings,pf.DEBUG.DRAW)
-        self.shader = Shader()
 
 
     def enable_lighting(self,state):
@@ -319,6 +318,7 @@ class Canvas(object):
         - self.rendermode: one of
         - self.lighting
         """
+        self.renderer = Renderer(self)
         self.setDefaults()
         self.setBackground(self.settings.bgcolor,self.settings.bgimage)
         self.clear()
@@ -346,6 +346,7 @@ class Canvas(object):
         """
         #pf.debugt("UPDATING CURRENT OPENGL CANVAS",pf.DEBUG.DRAW)
         self.makeCurrent()
+
         self.clear()
 
         # draw background decorations in 2D mode
@@ -379,6 +380,9 @@ class Canvas(object):
 
         # start 3D drawing
         self.camera.set3DMatrices()
+
+        # Draw the opengl2 actors
+        self.renderer.render()
 
         # draw the highlighted actors
         if self.highlights:
