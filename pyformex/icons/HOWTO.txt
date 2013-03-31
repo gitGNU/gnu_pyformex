@@ -1,0 +1,4 @@
+convert pyformex-logo-small.png -background transparent -gravity south -resize 284x124 -compose Copy -extent 284x124 pyformex-annotation.png
+
+convert pyformex-annotation.png  -gravity north -fill blue -pointsize 40 -draw 'text 0 0 "Created by"' pyformex-createdby.png
+
