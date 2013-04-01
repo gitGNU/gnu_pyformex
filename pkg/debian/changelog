@@ -1,3 +1,25 @@
+pyformex (0.9.0-2) unstable; urgency=low
+
+  * Closes bug #704458
+
+  * Added dependency on libdxflib-2.2.0.0 for package pyformex-extra
+
+  * Changed dependencies for package pyformex-extra from libgts-dev
+    to libgts-0.7-5 and libgts-bin
+
+  * Added missing information to changelog (the entries below)
+
+  * Added new binary package pyformex-extra containing some binary programs
+    used by pyFormex for extended functionalities. They are in a separate
+    package because they are optional and have more dependencies.
+
+  * Added build dependencies needed for pyformex-extra: libgts-dev,
+    libdxflib-dev, libglib2.0-dev
+
+  * Changed build process to using debhelper 9
+
+ -- Benedict Verhegghe <benedict.verhegghe@ugent.be>  Mon, 01 Apr 2013 16:19:01 +0200
+
 pyformex (0.9.0-1) unstable; urgency=low
 
   * New upstream release

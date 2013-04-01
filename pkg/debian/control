@@ -79,7 +79,9 @@ Package: pyformex-extra
 Architecture: any
 Depends: ${misc:Depends},
 	 ${shlibs:Depends},
-	 libgts-dev,
+	 libgts-0.7-5,
+	 libgts-bin,
+	 libdxflib-2.2.0.0,
 	 libglib2.0-0
 Description: program to create 3D geometry from Python scripts (extras)
  pyFormex can be used to generate, transform and manipulate large
