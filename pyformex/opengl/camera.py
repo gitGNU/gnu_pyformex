@@ -979,12 +979,27 @@ class Camera(object):
 #################################
     # Compatibility: should be removed after complete conversion
 
+    def getGLmodelview(self):
+        return Matrix4(GL.glGetDoublev(GL.GL_MODELVIEW_MATRIX))
+
+    def getGLprojection(self):
+        return Matrix4(GL.glGetDoublev(GL.GL_PROJECTION_MATRIX))
+
+
     loadModelView = loadModelview
     def saveModelView(self):
         pass
     def set3DMatrices(self):
         self.loadProjection()
         self.loadModelView()
+        #print("MODELVIEW",self.modelview)
+        #print("MODELVIEW",self.getGLmodelview())
+        #print("PROJECTION",self.projection)
+        #print("PROJECTION",self.getGLprojection())
+
+
+
+
     def setPerspective(self,on=True):
         self.perspective = on
 

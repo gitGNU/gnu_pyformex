@@ -12,80 +12,80 @@ the current OpenGL framework in pyFormex.
 
 import os
 import pyformex as pf
+from coords import bbox
 import numpy as np
 from OpenGL import GL
-from OpenGL.GL import shaders
-from OpenGL.arrays import vbo
-
-
-VertexShader = """
-#version 330
-layout(location = 0) in vec4 position;
-void main()
-{
-   gl_Position = position;
-}
-"""
-FragmentShader = """
-#version 330
-out vec4 outputColor;
-void main()
-{
-   outputColor = vec4(1.0f, 0.0f, 1.0f, 1.0f);
-}
-"""
-
-
-## _dirname = os.path.dirname(__file__)
-## _vertexshader_filename = os.path.join(_dirname,"vertex_shader_simple.c")
-## _fragmentshader_filename = os.path.join(_dirname,"fragment_shader_simple.c")
-
-
-
-triangle1 = np.array([
-    [ 0.75,  0.75, 0.0, 1.0],
-    [ 0.75, -0.75, 0.0, 1.0],
-    [-0.75, -0.75, 0.0, 1.0],
-    ],'f')
-
-triangle3 = np.array( [
-    [  0, 1, 0 ],
-    [ -1,-1, 0 ],
-    [  1,-1, 0 ],
-    [  2,-1, 0 ],
-    [  4,-1, 0 ],
-    [  4, 1, 0 ],
-    [  2,-1, 0 ],
-    [  4, 1, 0 ],
-    [  2, 1, 0 ],
-],'f')
+from shader import Shader
+from OpenGL.arrays.vbo import VBO
 
 
 class Renderer(object):
 
     def __init__(self,canvas=None):
         self.canvas = canvas
+        self.camera = canvas.camera
         self.canvas.makeCurrent()
-        vertex_shader = shaders.compileShader(VertexShader,GL.GL_VERTEX_SHADER)
-        fragment_shader = shaders.compileShader(FragmentShader,GL.GL_FRAGMENT_SHADER)
-        self.shader = shaders.compileProgram(vertex_shader,fragment_shader)
-        self.vbo = vbo.VBO(triangle1)
+
+        self.shader = Shader()
+        self._objects = []
+        self._vbo = {}
+        self._bbox = bbox([0.,0.,0.])
+
+
+    def clear(self):
+        self._objects = []
+        self._vbo = {}
+
+
+    def add(self,obj):
+        #if not isinstance
+        #obj = obj.toFormex()
+        if obj.nplex() != 3:
+            raise ValueError,"Can only add plex-3 objects"
+        self._objects.append(obj)
+        oid = id(obj)
+        self._vbo[oid] = VBO(obj.coords)
+        self._bbox = bbox([self._bbox,obj])
+        self.canvas.camera.focus = self._bbox.center()
+        print(self._bbox)
+
+
+    def renderObject(self,obj):
+        oid = id(obj)
+        vbo = self._vbo[oid]
+        vbo.bind()
+        try:
+            GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
+            GL.glVertexPointerf(vbo)
+            GL.glDrawArrays(GL.GL_TRIANGLES,0,vbo.size)
+        finally:
+            vbo.unbind()
+            GL.glDisableClientState(GL.GL_VERTEX_ARRAY)
 
 
     def render(self):
         """Render the geometry for the scene."""
-        shaders.glUseProgram(self.shader)
+        self.shader.bind()
+
+        # Get the current modelview*projection matrix
+        print("MODELVIEW",self.camera.modelview)
+        print("PROJECTION",self.camera.modelview)
+        pvmat = self.camera.modelview * self.camera.projection
+        print("PVM",pvmat)
+        # Propagate the matrices to the uniforms of the shader
+        loc = self.shader.uniform['perspective']
+        GL.glUniformMatrix4fv(loc,1,True,pvmat.gl())
+
         try:
-            self.vbo.bind()
-            try:
-                GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
-                GL.glVertexPointerf(self.vbo)
-                GL.glDrawArrays(GL.GL_TRIANGLES,0,3)
-            finally:
-                self.vbo.unbind()
-                GL.glDisableClientState(GL.GL_VERTEX_ARRAY)
+            for obj in self._objects:
+                if hasattr(obj,'objectColor'):
+                    # Propagate the color to the uniforms of the shader
+                    loc = self.shader.uniform['objectColor']
+                    GL.glUniformMatrix3x1fv(loc,1,False,obj.objectColor)
+
+                self.renderObject(obj)
         finally:
-            shaders.glUseProgram(0)
+            self.shader.unbind()
 
 
 # End
