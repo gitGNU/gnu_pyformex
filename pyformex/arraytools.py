@@ -1563,7 +1563,7 @@ def matchIndex(target,values):
     """
     target = target.reshape(-1,1)
     values = values.reshape(-1)
-    inv = inverseIndex(target)[:,0]
+    inv = inverseIndex(target)[:,-1]
     diff = values.max()-len(inv)+1
     if diff > 0:
         inv = concatenate([inv,-ones((diff,),dtype=Int)])
