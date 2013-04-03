@@ -2027,7 +2027,7 @@ Quality: %s .. %s
         return S
 
 
-    def check(self,matched=True):
+    def check(self,matched=True,verbose=False):
         """Check the surface using gtscheck.
 
         Uses `gtscheck` to check whether the surface is an orientable,
@@ -2052,13 +2052,17 @@ Quality: %s .. %s
         - the intersecting triangles in the case of a return code 3, else None.
           If matched==True, intersecting triangles are returned as element
           indices of self, otherwise as a separate TriSurface object.
+        
+        If verbose it True, it prints the connectivity and geometric statistics
         """
         tmp = tempfile.mktemp('.gts')
         self.write(tmp,'gts')
-
-        cmd = "gtscheck < %s" % tmp
-        sta,out = utils.runCommand(cmd)
-        os.remove(tmp)
+        
+        cmd = "gtscheck -v < %s" % tmp
+        sta,out,stat = utils.system(cmd)
+        if verbose:
+            print(stat)
+        os.remove(tmp)        
         if sta == 0:
             pf.message('The surface is an orientable non self-intersecting manifold')
             return sta, None
