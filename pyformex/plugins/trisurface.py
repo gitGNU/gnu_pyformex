@@ -1576,14 +1576,39 @@ Quality: %s .. %s
           a set of lines.
         - `method`: a string (line, segment or ray) defining if the line
           is either a full-line or a line-segment (q-q2) or a line-ray (q->q2)
+        - `atol` : detected intersection points on the border edges (otherwise geomtools.insideTriangle could fail)
     
         Returns:
         - a fused set of intersection points (Coords)
         - a (1,3) array with the indices of intersection point, line and triangle
-        NB: 
-        - in the current implementation if a line is laying on a triangle it will not generate intersections.
-          In this case it may be interesting to only return the intersection of the line with 2 triangles edges using intersectionPointsLWL (TODO).
-        - atol is used to take into account intersection points on the border (otherwise geomtools.insideTriangle() could fail)
+        
+        If a line is laying (parallel) on a triangle it will not generate intersections.
+        There is a similar function in geomtools.intersectionPointsLWT but this one seems faster.
+        Test performance before making changes using the following example:
+        
+        levelL = 49
+        levelS = 50
+        
+        from simple import sphere, regularGrid
+        S=sphere(levelS)
+        R=regularGrid([0., 0., 0.],[0., 1., 1.],[1, levelL, levelL])
+        L0=Coords(R.reshape(-1, 3)).scale([1., 2., 2.]).trl([-2., -1., -1.]).fuse()[0]
+        L1=L0.trl([1., 0., 0.])
+        from plugins.trisurface import intersectSurfaceWithLines
+        import timer
+        timesec = timer.Timer()      
+        P, X=S.intersectionWithLines(q=L0,q2=L1,method='line',  atol=1.e-5)
+        print('levelL %d, levelS %d'%(levelL, levelS))
+        print('seconds:     %s'%timesec.seconds(reset=True,rounded = False))
+        print('%d lines X %d triangle -> %d intersections'%(len(L0), S.nelems(), P.ncoords()))
+        
+        ##levelL 49, levelS 50
+        #seconds:     10.136684
+        #2500 lines X 50000 triangle -> 3752 intersections
+        
+        ##levelL 40, levelS 20
+        #seconds:     1.252834
+        #1681 lines X 8000 triangle -> 2490 intersections
         """
     
         def closeLinesPoints(p,q,m,dtresh):
@@ -1606,15 +1631,16 @@ Quality: %s .. %s
             - this function is computationally expensive. In future, a faster implementation (e.g. using VTK) 
               could replace this function.
             """
-            cand=[]
             m=normalize(m)
-            for i in range(q.shape[0]):
-                hy= p-q[i]
-                dpl=(abs(length(hy)**2.-dotpr(hy, m[i])**2.))**0.5
-                wd= dpl<=dtresh
-                cand.append([i,where(wd)[0]] )
-            il= concatenate([repeat(cand[i][0], cand[i][1].shape[0]) for i in range(len(cand))])
-            ip= concatenate([cand[i][1] for i in range(len(cand))])
+            def distancePFL(P, q, m):
+                """distance of MANY points from ONE single line.
+                NB: this is faster than:geomtools.distancesPFL(P,q,m,mode='pair')
+                """
+                pq = P-q
+                return (abs(length(pq)**2.-dotpr(pq, m)**2.))**0.5
+            cand= [where(distancePFL(p, q[i], m[i])<=dtresh)[0] for i in range(q.shape[0])]
+            il = concatenate([[i]*len(ca) for i, ca in enumerate(cand)]).astype(int)  
+            ip = concatenate(cand)
             return il, ip
     
         def insideLine(v,v0,v1,atol, method='segment'):
