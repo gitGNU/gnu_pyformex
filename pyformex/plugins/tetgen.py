@@ -449,7 +449,7 @@ def checkSelfIntersectionsWithTetgen(self,verbose=False):
     """
     from plugins.tetgen import writeSurface
     cmd = 'tetgen -d '
-    tmp = tempfile.mktemp('')
+    tmp = utils.tempfile.mktemp('')
     print(tmp)
     pf.message("Writing temp file %s" % tmp)
     writeSurface(tmp,self.coords, self.elems)
@@ -475,7 +475,7 @@ def checkSelfIntersectionsWithTetgen(self,verbose=False):
 
 def meshInsideSurface(self,quality=False):
     d = utils.tempDir()
-    fn = os.path.join(d,'surface.off')
+    fn = os.path.join(d,'surface.stl')
     self.write(fn)
     if quality:
         options='-q'
