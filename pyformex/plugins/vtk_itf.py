@@ -308,6 +308,7 @@ def pfvtkTransform(source,trMat4x4):
     transformFilter.SetTransform(trMat4x4)
     transformFilter.Update()
     return Coords(convertFromVPD(transformFilter.GetOutput())[0])
+    
 def pfvtkOctree(surf,tol=0.0,npts=1.):
     """
     Returns the octree structure of surf according to the maximum
