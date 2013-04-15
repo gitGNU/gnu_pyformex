@@ -638,22 +638,22 @@ class Connectivity(ndarray):
         return (r>=0).sum(axis=1)
 
 
-    def connectedTo(self,nodes,return_times=False):
+    def connectedTo(self,nodes,return_mult=False):
         """Check if the elements are connected to the specified nodes.
     
         `nodes`: a single node number or a list/array thereof
-        `return_times` : True or False (default)
+        `return_mult` : True or False (default)
     
-        If return_times is False (default) it returns an int array with 
+        If return_mult is False (default) it returns an int array with 
         the numbers of the elements that contain at least one of the 
-        specified nodes. If return_times is True it returns the number 
+        specified nodes. If return_mult is True it returns the number 
         of occurrences of nodes in each element.
     
         Example:
     
           >>> Connectivity([[0,1,2],[0,1,3],[0,3,2]]).connectedTo(2)
           array([0, 2])
-          >>> Connectivity([[0,1,2],[0,1,3],[0,3,2]]).connectedTo([0,1,2],return_times=True)
+          >>> Connectivity([[0,1,2],[0,1,3],[0,3,2]]).connectedTo([0,1,2],return_mult=True)
           array([3, 2, 2])
         """
         if type(nodes) == float:
@@ -663,7 +663,7 @@ class Connectivity(ndarray):
         nodes = nodes[nodes<=len(inv)]
         ad = inv[nodes]
         ad = ad[ad>=0]
-        if return_times==False:
+        if return_mult==False:
             return unique(ad)
         times=zeros(len(self), dtype=int)
         if len(ad)==0:

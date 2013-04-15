@@ -1365,26 +1365,26 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return self.withProp(ps[t==0])
 
 
-    def connectedTo(self,nodes, times=None):
+    def connectedTo(self,nodes, mult=None):
         """Return a Mesh with the elements connected to the specified node(s).
     
         `nodes`: int or array_like, int.
-        `times`: int, array_like int or None (default)
+        `mult`: int, array_like int or None (default)
     
-        If times is None (default) it returns a Mesh with all the elements 
+        If mult is None (default) it returns a Mesh with all the elements 
         from the original that contain at least one of the specified nodes.
-        If times is given it returns a Mesh with all the elements from the original 
-        that contain `times` times the specified nodes.
+        If mult is given it returns a Mesh with all the elements from the original 
+        that contain `mult` times the specified nodes.
         """
-        if times==None:
-            return self.select(self.elems.connectedTo(nodes, return_times=False))
-        t = self.elems.connectedTo(nodes, return_times=True)
-        times=asarray(times).reshape(-1)
-        times = times[(times>=min(t))  * (times<=max(t))]#remove the n not in t
-        if len(times)==0:
+        if mult==None:
+            return self.select(self.elems.connectedTo(nodes, return_mult=False))
+        t = self.elems.connectedTo(nodes, return_mult=True)
+        mult=asarray(mult).reshape(-1)
+        mult = mult[(mult>=min(t))  * (mult<=max(t))]#remove the n not in t
+        if len(mult)==0:
             T=[]
         else:
-            T=sum([t==i for i in times], axis=0, dtype=bool)
+            T=sum([t==i for i in mult], axis=0, dtype=bool)
         return self.select(T)
 
 
