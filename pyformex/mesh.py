@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -1365,30 +1365,18 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return self.withProp(ps[t==0])
 
 
-    def connectedTo(self,nodes, mult=None):
+    def connectedTo(self,nodes):
         """Return a Mesh with the elements connected to the specified node(s).
-    
+
         `nodes`: int or array_like, int.
-        `mult`: int, array_like int or None (default)
-    
-        If mult is None (default) it returns a Mesh with all the elements 
-        from the original that contain at least one of the specified nodes.
-        If mult is given it returns a Mesh with all the elements from the original 
-        that contain `mult` times the specified nodes.
+
+        Return a Mesh with all the elements from the original that contain at
+        least one of the specified nodes.
         """
-        if mult==None:
-            return self.select(self.elems.connectedTo(nodes, return_mult=False))
-        t = self.elems.connectedTo(nodes, return_mult=True)
-        mult=asarray(mult).reshape(-1)
-        mult = mult[(mult>=min(t))  * (mult<=max(t))]#remove the n not in t
-        if len(mult)==0:
-            T=[]
-        else:
-            T=sum([t==i for i in mult], axis=0, dtype=bool)
-        return self.select(T)
+        return self.select(self.elems.hits(nodes,1) > 0)
 
 
-    def notConnectedTo(self, nod):
+    def notConnectedTo(self,nodes):
         """Return a Mesh with the elements not connected to the given node(s).
 
         `nodes`: int or array_like, int.
@@ -1396,7 +1384,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         Returns a Mesh with all the elements from the original that do not
         contain any of the specified nodes.
         """
-        return self.select(self.elems.notConnectedTo(nod))
+        return self.select(self.elems.hits(nodes,1) == 0)
 
 
     def splitProp(self):
