@@ -321,7 +321,7 @@ def pfvtkOctree(surf,tol=0.0,npts=1.):
     from connectivity import Connectivity
     
     vm = convert2VPD(surf,clean=False)
-    loc=vtkOctreePointLocator()
+    loc = vtkOctreePointLocator()
     loc.SetDataSet(vm)
     loc.SetTolerance(tol)
     loc.SetMaximumPointsPerRegion(npts)
@@ -353,9 +353,9 @@ def pfvtkOctree(surf,tol=0.0,npts=1.):
     regions = Formex(regions).toMesh().setProp(asarray(ptsinregion,dtype=int32))
     
     pfrep = []
-    for level in range(loc.GetLevel()):
+    for level in range(loc.GetLevel()+1):
         loc.GenerateRepresentation(level,rep)
-        reptmp=convertFromVPD(rep)
+        reptmp = convertFromVPD(rep)
         reptmp[1] = reptmp[1].reshape(-1,6*4)[:,(0,1,2,3,9,8,11,10)]
         reptmp[0] = reptmp[0][Connectivity(reptmp[1]).renumber()[1]]
         
