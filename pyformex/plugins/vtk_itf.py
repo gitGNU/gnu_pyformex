@@ -312,10 +312,14 @@ def pfvtkTransform(source,trMat4x4):
 def pfvtkOctree(surf,tol=0.0,npts=1.):
     """
     Returns the octree structure of surf according to the maximum
-    tolerance tol and the maximum number of points npts in every octant.
-    It returns is a list of hexahedral meshes of each level of the octree with property
-    equal to the number of point of the in each region
+    tolerance tol and the maximum number of points npts in each octant.
+    It returns a list of hexahedral meshes of each level of the octree with property
+    equal to the number of point of the in each region.
     """
+    from vtk import vtkOctreePointLocator, vtkPolyData
+    from formex import Formex
+    from connectivity import Connectivity
+    
     vm = convert2VPD(surf,clean=False)
     loc=vtkOctreePointLocator()
     loc.SetDataSet(vm)
@@ -323,14 +327,14 @@ def pfvtkOctree(surf,tol=0.0,npts=1.):
     loc.SetMaximumPointsPerRegion(npts)
     
     loc.BuildLocator()
-    rep=vtkPolyData()
+    rep = vtkPolyData()
     loc.Update()   
     
-    regions=[]
-    ptsinregion=[]
+    regions = []
+    ptsinregion = []
     for lf in range(loc.GetNumberOfLeafNodes()):
-        region=[]
-        bounds=zeros(6)
+        region = []
+        bounds = zeros(6)
         loc.GetRegionBounds (lf, bounds)
         if (bounds!=zeros(6)).all():
             region.append(bounds[:,(0,2,4)])
@@ -356,8 +360,8 @@ def pfvtkOctree(surf,tol=0.0,npts=1.):
         reptmp[0] = reptmp[0][Connectivity(reptmp[1]).renumber()[1]]
         
         pfrep.append(Mesh(reptmp[0], reptmp[1]).setProp(0))
-        centroids=pfrep[-1].matchCentroids(regions)
-        pfrep[-1].prop[centroids[centroids>-1]]=regions.prop[centroids>-1]
+        centroids = pfrep[-1].matchCentroids(regions)
+        pfrep[-1].prop[centroids[centroids>-1]] = regions.prop[centroids>-1]
         
     loc.FreeSearchStructure()
     del loc
