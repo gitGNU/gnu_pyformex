@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -473,23 +473,39 @@ def checkSelfIntersectionsWithTetgen(self,verbose=False):
     return asarray( [int(l.split(' ')[0]) for l in out.split('acet #')[1:]]).reshape(-1, 2)-1
 
 
-def meshInsideSurface(self,quality=False):
-    d = utils.tempDir()
-    fn = os.path.join(d,'surface.stl')
-    self.write(fn)
+def tetMesh(surfacefile,quality=False,outputdir=None):
+    """Create a tetrahedral mesh inside a surface
+
+    - `surfacefile`: a file representing a surface. It can be an .off or
+      .stl file (or other?)
+    - `quality`: if True, the output will be a quality mesh
+      (should add other tetgen parameters?)
+    - `outputdir`: if specified, the results will be placed in this directory.
+      The default is to place the results in the same directory as the input
+      file.
+
+    If the creation of the tetrahedral model is succesful, the results are
+    read back using readTetgen and returned.
+    """
     if quality:
         options='-q'
     else:
         options=''
-    runTetgen(fn,options)
-    fn = os.path.join(d,'surface.1.ele')
+    if outputdir is None:
+        d = os.path.dirname(surfacefile)
+    tgt = os.path.join(d,os.path.basename(surfacefile))
+    print(surfacefile,tgt)
+    if not os.path.exists(tgt):
+        os.symlink(surfacefile,tgt)
+    runTetgen(tgt,options)
+    fn = utils.changeExt(tgt,'1.ele')
     res = readTetgen(fn)
-    utils.removeTree(d)
-    return res['tetgen.ele']
+    return res
+
 
 def install_more_trisurface_methods():
     from plugins.trisurface import TriSurface
-    TriSurface.tetmesh = meshInsideSurface
+    #TriSurface.tetmesh = meshInsideSurface
     TriSurface.checkSelfIntersectionsWithTetgen = checkSelfIntersectionsWithTetgen
 
 

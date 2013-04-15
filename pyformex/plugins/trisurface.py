@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -1127,22 +1127,22 @@ Quality: %s .. %s
 
     def dualMesh(self, method='median'):
         """Return the dual mesh (DM).
-        
-        It creates a new triangular mesh where all triangles with prop `p` 
+
+        It creates a new triangular mesh where all triangles with prop `p`
         represent the DM region around the original surface node `p`.
-        
+
         - `method`: 'median' or 'voronoi'
-        
-        If method is 'median' it returns the Median DM and also the area 
-        of the region around each node. The sum of the node-based areas 
+
+        If method is 'median' it returns the Median DM and also the area
+        of the region around each node. The sum of the node-based areas
         is equal to the original surface area.
         If method is 'voronoi' it returns the voronoi polyeders and a None.
-        
+
         For info:
         http://users.led-inc.eu/~phk/mesh-dualmesh.html
-        
+
         Example:
-        
+
         from elements import Quad4
         from plugins.trisurface import Sphere
         view('front')
@@ -1167,7 +1167,7 @@ Quality: %s .. %s
         if nodalAreas is not None:
             print(nodalAreas.sum())#the total nodal-based area is equal to the total face-based area
         """
-        
+
         Q=self.convert('quad4')
         if method == 'voronoi':
             from geomtools import triangleCircumCircle
@@ -1181,8 +1181,8 @@ Quality: %s .. %s
             return Q, None
         nodalAreas = asarray([Q.withProp(i).area() for i in range(len(Q.propSet()))])
         return Q, nodalAreas
-    
-    
+
+
     ## def reflect(self,*args,**kargs):
     ##     """Reflect the Surface in direction dir against plane at pos.
 
@@ -1570,25 +1570,25 @@ Quality: %s .. %s
 
     def intersectionWithLines(self,q,q2, method='line',atol=1.e-6):
         """Intersects a surface with lines.
-       
+
         Parameters:
         - `q`,`q2`: (...,3) shaped arrays of points, defining
           a set of lines.
         - `method`: a string (line, segment or ray) defining if the line
           is either a full-line or a line-segment (q-q2) or a line-ray (q->q2)
         - `atol` : detected intersection points on the border edges (otherwise geomtools.insideTriangle could fail)
-    
+
         Returns:
         - a fused set of intersection points (Coords)
         - a (1,3) array with the indices of intersection point, line and triangle
-        
+
         If a line is laying (parallel) on a triangle it will not generate intersections.
         There is a similar function in geomtools.intersectionPointsLWT but this one seems faster.
         Test performance before making changes using the following example:
-        
+
         levelL = 49
         levelS = 50
-        
+
         from simple import sphere, regularGrid
         S=sphere(levelS)
         R=regularGrid([0., 0., 0.],[0., 1., 1.],[1, levelL, levelL])
@@ -1596,39 +1596,39 @@ Quality: %s .. %s
         L1=L0.trl([1., 0., 0.])
         from plugins.trisurface import intersectSurfaceWithLines
         import timer
-        timesec = timer.Timer()      
+        timesec = timer.Timer()
         P, X=S.intersectionWithLines(q=L0,q2=L1,method='line',  atol=1.e-5)
         print('levelL %d, levelS %d'%(levelL, levelS))
         print('seconds:     %s'%timesec.seconds(reset=True,rounded = False))
         print('%d lines X %d triangle -> %d intersections'%(len(L0), S.nelems(), P.ncoords()))
-        
+
         ##levelL 49, levelS 50
         #seconds:     10.136684
         #2500 lines X 50000 triangle -> 3752 intersections
-        
+
         ##levelL 40, levelS 20
         #seconds:     1.252834
         #1681 lines X 8000 triangle -> 2490 intersections
         """
-    
+
         def closeLinesPoints(p,q,m,dtresh):
             """Find points and lines which are closer than a treshold distance.
-        
+
             Parameters:
             - `p`: a set of points
             - `q`,`m`: (...,3) shaped arrays of points and vectors, defining
               a set of lines.
             - `dtresh`: 1D array of len(p) float, treshold distances
-        
+
             Returns:
             - line index
             - point index
-            
-            For each point finds the lines closer than the dtresh corresponding to that point. 
+
+            For each point finds the lines closer than the dtresh corresponding to that point.
             The distance point-line is calculated using Pitagora as it seems the fastest way.
             NB:
             - this function is inside intersectionWithLines because is not used anywhere else.
-            - this function is computationally expensive. In future, a faster implementation (e.g. using VTK) 
+            - this function is computationally expensive. In future, a faster implementation (e.g. using VTK)
               could replace this function.
             """
             m=normalize(m)
@@ -1639,16 +1639,16 @@ Quality: %s .. %s
                 pq = P-q
                 return (abs(length(pq)**2.-dotpr(pq, m)**2.))**0.5
             cand= [where(distancePFL(p, q[i], m[i])<=dtresh)[0] for i in range(q.shape[0])]
-            il = concatenate([[i]*len(ca) for i, ca in enumerate(cand)]).astype(int)  
+            il = concatenate([[i]*len(ca) for i, ca in enumerate(cand)]).astype(int)
             ip = concatenate(cand)
             return il, ip
-    
+
         def insideLine(v,v0,v1,atol, method='segment'):
             """
             Check points inside a segments or a ray
-            
+
             if method=='segment' check points inside segments v0,v1
-            if method=='ray' check points inside ray v0->v1        
+            if method=='ray' check points inside ray v0->v1
             """
             if method=='segment':
                 ir=length(v-v0)+ length(v-v1)< length(v1-v0)+atol
@@ -1657,7 +1657,7 @@ Quality: %s .. %s
                 ir1 = length(v-v0)<atol#point close to the ray's end
                 ir=ir0+ir1
             return ir
-                
+
         r,C,n = geomtools.triangleBoundingCircle(self.coords[self.elems])#triangles' bounding sphere
         m = normalize(q2-q)
         l, t=closeLinesPoints(C,q,m,r)#detects candidate lines/triangles (slow part)
@@ -1676,8 +1676,8 @@ Quality: %s .. %s
             i=i[i3]
         p, j=p[i].fuse()
         return p, column_stack([j, l[i], t[i]])
-    
-    
+
+
     def intersectionWithPlane(self,p,n):
         """Return the intersection lines with plane (p,n).
 
@@ -2052,17 +2052,17 @@ Quality: %s .. %s
         - the intersecting triangles in the case of a return code 3, else None.
           If matched==True, intersecting triangles are returned as element
           indices of self, otherwise as a separate TriSurface object.
-        
+
         If verbose it True, it prints the connectivity and geometric statistics
         """
         tmp = tempfile.mktemp('.gts')
         self.write(tmp,'gts')
-        
+
         cmd = "gtscheck -v < %s" % tmp
         sta,out,stat = utils.system(cmd)
         if verbose:
             print(stat)
-        os.remove(tmp)        
+        os.remove(tmp)
         if sta == 0:
             pf.message('The surface is an orientable non self-intersecting manifold')
             return sta, None
@@ -2292,6 +2292,33 @@ Quality: %s .. %s
         elif method == 'vtk':
             from vtk_itf import pfvtkPointInsideObject
             return pfvtkPointInsideObject(self,pts,tol)
+
+
+    def tetgen(self,quality=True,filename=None,format='.off'):
+        """Create a tetrahedral mesh inside the surface
+
+        - `surfacefile`: a file representing a surface. It can be an .off or
+          .stl file (or other?)
+        - `quality`: if True, the output will be a quality mesh
+          (should add other tetgen parameters?)
+        - `outputdir`: if specified, the results surface model and the tet
+          model files will be placed in this directory. Else, a temporary
+          directory will be used.
+
+        If the creation of the tetrahedral model is succesful, the
+        resulting tetrahedral mesh is returned.
+        """
+        if filename is None:
+            outputdir = utils.tempDir()
+            fn = os.path.join(outputdir,'surface') + format
+        else:
+            fn = filename
+        self.write(fn)
+        res = tetgen.tetMesh(fn,quality)
+        if filename is None:
+            utils.removeTree(outputdir)
+        return res['tetgen.ele']
+
 
 
 ##########################################################################
