@@ -859,6 +859,7 @@ def fmtConstraint(prop):
     -type (surf2surf, node2surf)
     -positiontolerance
     -no rotation
+    -tiednset (it cannot be used in combination with positiontolerance)
 
     Example:
 
@@ -874,6 +875,8 @@ def fmtConstraint(prop):
             out+=", position tolerance = %s" % (float(p.positiontolerance))
         if p.norotation == True:
             out+=", NO ROTATION"
+        if p.tiednset is not None:
+            out+=",TIED NSET = %s" % p.tiednset
         out +="\n"
         out +="%s, %s\n" % (p.slave, p.master)
     return out
