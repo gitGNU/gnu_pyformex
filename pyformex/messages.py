@@ -122,4 +122,9 @@ depr_correctNegativeVolumes = "correctNegativeVolumes is deprecated. Use ficVolu
 depr_tabs = "widgets.Tabs is deprecated. Use InputDialog instead."
 depr_tabledialog = "widgets.TableDialog is deprecated. Use InputDialog with a 'table' inputitem instead."
 depr_getResult = "InputDialog.getResult is deprecated. Use getResults instead."
+
+PolyLine_distanceOfPoints = "PolyLine.distanceOfPoints is deprecated"
+PolyLine_distanceOfPolyline = "PolyLine.distanceOfPolyline is deprecated"
+
+
 # End

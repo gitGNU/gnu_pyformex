@@ -1218,39 +1218,9 @@ def deprecation(message):
             warn(message)
             # For some reason these messages are not auto-appended to
             # the filters for the currently running program
+            # Therefore we do it here explicitely
             filterWarning(str(message))
             return func(*_args,**_kargs)
-        return wrapper
-    return decorator
-
-
-def deprecated(replacement):
-    def decorator(func):
-        def wrapper(*_args,**_kargs):
-            """This function is deprecated."""
-            print("! Function '%s' is deprecated: use '%s.%s' instead" % (func.func_name,replacement.__module__,replacement.func_name))
-            return replacement(*_args,**_kargs)
-        return wrapper
-    decorator.__doc__ = replacement.__doc__
-    return decorator
-
-
-def functionWasRenamed(replacement,text=None):
-    def decorator(func):
-        def wrapper(*_args,**_kargs):
-            print("! Function '%s' is deprecated: use '%s' instead" % (func.func_name,replacement.func_name))
-            return replacement(*_args,**_kargs)
-        return wrapper
-    decorator.__doc__ = replacement.__doc__
-    return decorator
-
-
-def functionBecameMethod(replacement):
-    def decorator(func):
-        def wrapper(object,*args,**kargs):
-            print("! Function %s is deprecated: use method %s instead" % (func.func_name,replacement))
-            repfunc = getattr(object,replacement)
-            return repfunc(*args,**kargs)
         return wrapper
     return decorator
 

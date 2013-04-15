@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -2085,18 +2085,21 @@ def resetGUI():
     pf.GUI.enableButtons(pf.GUI.actions,['Continue','Stop'],False)
 
 
-#  deprecated alternative spellings
-from utils import deprecated,deprecation
-@deprecated(zoomAll)
-def zoomall(*args,**kargs):
-    pass
-@deprecated(drawText)
-def drawtext(*args,**kargs):
-    pass
+## REMOVED in 0.9.1
 
-@deprecation("`drawNormals` is deprecated: use `drawVectors` instead.\nNotice that the argument order is different!")
-def drawNormals(v,P,size=None,**drawOptions):
-    drawVectors(P,v,size=size,**drawOptions)
+#  deprecated alternative spellings
+## from utils import deprecated,deprecation
+## @deprecated(zoomAll)
+## def zoomall(*args,**kargs):
+##     pass
+## @deprecated(drawText)
+## def drawtext(*args,**kargs):
+##     pass
+
+
+## @utils.deprecation("`drawNormals` is deprecated: use `drawVectors` instead.\nNotice that the argument order is different!")
+## def drawNormals(v,P,size=None,**drawOptions):
+##     drawVectors(P,v,size=size,**drawOptions)
 
 
 ###########################################################################
