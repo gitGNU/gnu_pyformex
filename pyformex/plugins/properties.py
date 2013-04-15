@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -70,7 +70,7 @@ def setSectionDB(sec):
 
 class Database(Dict):
     """A class for storing properties in a database."""
-    
+
     def __init__(self,data={}):
         """Initialize a database.
 
@@ -78,7 +78,7 @@ class Database(Dict):
         """
         Dict.__init__(self,data)
 
-        
+
     def readDatabase(self,filename,*args,**kargs):
         """Import all records from a database file.
 
@@ -91,10 +91,10 @@ class Database(Dict):
         for k,v in mat.iteritems():
             self[k] = Dict(v)
 
-            
+
 class MaterialDB(Database):
     """A class for storing material properties."""
-    
+
     def __init__(self,data={}):
         """Initialize a materials database.
 
@@ -116,7 +116,7 @@ class MaterialDB(Database):
 
 class SectionDB(Database):
     """A class for storing section properties."""
-    
+
     def __init__(self,data={}):
         """Initialize a section database.
 
@@ -145,7 +145,7 @@ class ElemSection(CDict):
       the geometric properties of the section. This can be a dict
       or a string. If it is a string, its value is looked up in the global
       section database. The section dict should at least have a key
-      'sectiontype', defining the type of section. 
+      'sectiontype', defining the type of section.
 
       Currently the following sectiontype values are known by module
       :mod:`fe_abq` for export to Abaqus/Calculix:
@@ -160,10 +160,10 @@ class ElemSection(CDict):
         - 'rigid'   : a rigid body
 
       .. note: Currently only 'solid', 'general' and 'rigid' are allowed.
-        
+
       The other possible (useful) keys in the section dict depend on the
-      sectiontype. Again for :mod:`fe_abq`: 
-      
+      sectiontype. Again for :mod:`fe_abq`:
+
         - for sectiontype 'solid' : thickness
         - the sectiontype 'general': cross_section, moment_inertia_11,
           moment_inertia_12, moment_inertia_22, torsional_constant
@@ -175,7 +175,7 @@ class ElemSection(CDict):
       Currently known keys to fe_abq.py are: young_modulus,
       shear_modulus, density, poisson_ratio . (see fmtMaterial in fe_abq)
       It should not be specified for rigid sections.
-      
+
     orientation
       - a Dict, or
       - a list of 3 direction cosines of the first beam section axis.
@@ -194,7 +194,7 @@ class ElemSection(CDict):
             self.orientation = orientation
 
 
-    
+
     def addSection(self, section):
         """Create or replace the section properties of the element.
 
@@ -215,7 +215,7 @@ class ElemSection(CDict):
             self.section = _secDB[section['name']]
         elif section==None:
             self.section = section
-        else: 
+        else:
             raise ValueError,"Expected a string or a dict"
 
 
@@ -235,8 +235,8 @@ class ElemSection(CDict):
                             })
         else:
             raise ValueError,"Invalid sectiontype"
-        
-    
+
+
     def addMaterial(self, material):
         """Create or replace the material properties of the element.
 
@@ -246,7 +246,7 @@ class ElemSection(CDict):
         """
         if isinstance(material, str) :
             if material in _matDB:
-                self.material = _matDB[material] 
+                self.material = _matDB[material]
             else:
                 pf.warning("Material '%s'  is not in the database" % material)
         elif isinstance(material, dict):
@@ -263,7 +263,7 @@ class ElemLoad(CDict):
 
     def __init__(self,label=None,value=None,dir=None):
         """Create a new element load. Empty by default.
-        
+
         An element load can hold the following sub-properties:
 
         - label: the distributed load type label
@@ -283,12 +283,12 @@ class EdgeLoad(CDict):
 
     def __init__(self,edge=-1,label=None,value=None):
         """Create a new element edge load. Empty by default.
-        
+
         An element edgeload can hold the following sub-properties:
         - edge: the element edge number
         - label: the distributed load type label ('x','y','z').
         - value: the magnitude of the distibuted load.
-        """          
+        """
         Dict.__init__(self,{'edge':edge,'label':label,'value':value})
 
 
@@ -298,14 +298,14 @@ class CoordSystem(object):
     """A class for storing coordinate systems."""
 
     valid_csys = 'RSC'
-    
+
     def __init__(self,csys,cdata):
         """Create a new coordinate system.
 
         csys is one of 'Rectangular', 'Spherical', 'Cylindrical'. Case is
           ignored and the first letter suffices.
         cdata is a list of 6 coordinates specifying the two points that
-          determine the coordinate transformation 
+          determine the coordinate transformation
         """
         try:
             csys = csys[0].upper()
@@ -317,7 +317,7 @@ class CoordSystem(object):
         self.sys = csys
         self.data = cdata
 
-        
+
 class Amplitude(object):
     """A class for storing an amplitude.
 
@@ -329,11 +329,11 @@ class Amplitude(object):
     `smoothing` (optional) is a float (from 0. to 0.5, suggested value 0.05)
     representing the fraction of the time interval before and after each time
     point during which the piecewise linear time variation will be replaced by
-    a smooth quadratic time variation (avoiding infinite accelerations). 
+    a smooth quadratic time variation (avoiding infinite accelerations).
     Smoothing should be used in combination with TABULAR (set 0.05 as default
     value?)
     """
-    
+
     def __init__(self,data,definition='TABULAR',atime='STEP TIME', smoothing=None):
         """Create a new amplitude."""
         if definition in [ 'TABULAR', 'SMOOTH STEP' ]:
@@ -347,7 +347,7 @@ class Amplitude(object):
         else:
             raise ValueError,"Expected definition = 'TABULAR' or 'SMOOTH STEP'"
 
-            
+
 ###################################################
 ############ Utility routines #####################
 
@@ -370,11 +370,11 @@ def checkArrayOrIdValue(values):
     """Check that a variable is an list of values or (id,value) tuples
 
     This convenience function checks that the argument is either:
-    
+
     - a list of 6 float values (or convertible to it), or
     - a list of (id,value) tuples where id is convertible to an int,
       value to a float.
-    
+
     If ok, return the values as a list of (int,float) tuples.
     """
     ##print("VALUES IN: %s" % values)
@@ -406,7 +406,7 @@ def checkString(a,valid):
 # Create automatic names for node and element sets
 
 def autoName(base,*args):
-    return (base + '_%s' * len(args)) % args 
+    return (base + '_%s' * len(args)) % args
 
 # The following are not used by the PropertyDB class,
 # but may be convenient for the user in applications
@@ -449,7 +449,7 @@ def RemoveListItem(l,p):
     i = FindListItem(l,p)
     if i >= 0:
         del l[i]
-    
+
 
 class PropertyDB(Dict):
     """A database class for all properties.
@@ -458,7 +458,7 @@ class PropertyDB(Dict):
     geometrical model.
 
     This should allow for storing:
-    
+
     - materials
     - sections
     - any properties
@@ -482,11 +482,11 @@ class PropertyDB(Dict):
         self.nprop = []
         self.eprop = []
         #self.mprop = []
-        
+
     @staticmethod
     def matDB():
         return _matDB
-        
+
     @staticmethod
     def secDB():
         return _secDB
@@ -514,7 +514,7 @@ class PropertyDB(Dict):
         print("Element properties")
         for p in self.getProp('e'):
             print(p)
-        
+
 
     def Prop(self,kind='',tag=None,set=None,name=None,**kargs):
         """Create a new property, empty by default.
@@ -522,7 +522,7 @@ class PropertyDB(Dict):
         A property can hold almost anything, just like any Dict type.
         It has however four predefined keys that should not be used for
         anything else than explained hereafter:
-        
+
         - nr: a unique id, that never should be set/changed by the user.
         - tag: an identification tag used to group properties
         - name: the name to be used for this set. Default is to use an
@@ -563,7 +563,7 @@ class PropertyDB(Dict):
             if type(set) is int or type(set) is str:
                 set = [ set ]
             d.set = unique(set)
-        
+
         prop.append(d)
         return d
 
@@ -619,7 +619,7 @@ class PropertyDB(Dict):
         for p in plist:
             RemoveListItem(prop,p)
         self._sanitize(kind)
-        
+
 
     def _sanitize(self,kind):
         """Sanitize the record numbers after deletion"""
@@ -641,7 +641,7 @@ class PropertyDB(Dict):
         """Create a new node property, empty by default.
 
         A node property can contain any combination of the following fields:
-        
+
         - tag: an identification tag used to group properties (this is e.g.
           used to flag Step, increment, load case, ...)
         - set: a single number or a list of numbers identifying the node(s)
@@ -672,7 +672,8 @@ class PropertyDB(Dict):
                     d['bound'] = checkString(bound,self.bound_strings)
                 elif type(bound) == list:
                     if type(bound[0]) != tuple:
-                        d['bound'] = checkArray1D(bound,6,'i')
+                        bound = checkArray(bound,kind='i')
+                        d['bound'] = checkArraySize(bound,6)
                     else:
                         d['bound'] = bound # unchecked
             if csys is not None:
@@ -680,7 +681,7 @@ class PropertyDB(Dict):
                     d['csys'] = csys
                 else:
                     raise ValueError,"Invalid Coordinate System"
-            
+
             # Currently unchecked!
             if ampl is not None:
                 d['ampl'] = ampl
@@ -690,9 +691,9 @@ class PropertyDB(Dict):
             raise ValueError,"Invalid Node Property"
 
 
-    def elemProp(self,prop=None,grp=None,set=None,name=None,tag=None,section=None,eltype=None,dload=None,eload=None,ampl=None,**kargs): 
+    def elemProp(self,prop=None,grp=None,set=None,name=None,tag=None,section=None,eltype=None,dload=None,eload=None,ampl=None,**kargs):
         """Create a new element property, empty by default.
-        
+
         An elem property can contain any combination of the following fields:
 
         - tag: an identification tag used to group properties (this is e.g.
@@ -705,11 +706,11 @@ class PropertyDB(Dict):
           If not, elements are global and should match the global numbering
           according to the order in which element groups will be specified
           in the Model.
-        - eltype: the element type (currently in Abaqus terms). 
+        - eltype: the element type (currently in Abaqus terms).
         - section: an ElemSection specifying the element section properties.
         - dload: an ElemLoad specifying a distributed load on the element.
         - ampl: the name of an Amplitude
-        """    
+        """
         try:
             d = {}
             if eltype is not None:
@@ -724,12 +725,12 @@ class PropertyDB(Dict):
             if ampl is not None:
                 d['ampl'] = ampl
             d.update(kargs)
-            
+
 
             return self.Prop(kind='e',prop=prop,tag=tag,set=set,name=name,**d)
         except:
             raise ValueError,"Invalid Elem Property\n  tag=%s,set=%s,name=%s,eltype=%s,section=%s,dload=%s,eload=%s" % (tag,set,name,eltype,section,dload,eload)
-    
+
 
 ##################################### Test ###########################
 
@@ -739,20 +740,20 @@ if __name__ == "script" or  __name__ == "draw":
     if pf.GUI:
         chdir(__file__)
     print(os.getcwd())
-    
+
     P = PropertyDB()
 
     Stick = P.Prop(color='green',name='Stick',weight=25,comment='This could be anything: a gum, a frog, a usb-stick,...')
     print(Stick)
-    
+
     author = P.Prop(tag='author',alias='Alfred E Neuman',address=CDict({'street':'Krijgslaan', 'city':'Gent','country':'Belgium'}))
 
     print(P.getProp(tag='author')[0])
-    
+
     Stick.weight=30
     Stick.length=10
     print(Stick)
-    
+
     print(author.street)
     author.street='Voskenslaan'
     print(author.street)
@@ -808,7 +809,7 @@ if __name__ == "script" or  __name__ == "draw":
     P.Prop(amplitude=amp,name='amp1')
 
     P1 = [ 1.0,1.0,1.0, 0.0,0.0,0.0 ]
-    P2 = [ 0.0 ] * 3 + [ 1.0 ] * 3 
+    P2 = [ 0.0 ] * 3 + [ 1.0 ] * 3
     B1 = [ 1 ] + [ 0 ] * 5
     CYL = CoordSystem('cylindrical',[0,0,0,0,0,1])
     # node property on single node
@@ -827,11 +828,11 @@ if __name__ == "script" or  __name__ == "draw":
 
     print('all nodeproperties')
     print(P.getProp('n'))
-    
+
     print("properties 0 and 2")
     for p in P.getProp('n',rec=[0,2]):
         print(p)
-        
+
     print("tags 1 and step1")
     for p in P.getProp('n',tag=[1,'step1']):
         print(p)
@@ -839,7 +840,7 @@ if __name__ == "script" or  __name__ == "draw":
     print("cload attributes")
     for p in P.getProp('n',attr=['cload']):
         print(p)
-    
+
     vert = ElemSection('IPEA100', 'steel')
     hor = ElemSection({'name':'IPEM800','A':951247,'I':CDict({'Ix':1542,'Iy':6251,'Ixy':352})}, {'name':'S400','E':210,'fy':400})
     circ = ElemSection({'name':'circle','radius':10,'sectiontype':'circ'},'steel')
@@ -847,7 +848,7 @@ if __name__ == "script" or  __name__ == "draw":
     print("Materials")
     for m in Mat:
         print(Mat[m])
-        
+
     print("Sections")
     for s in Sec:
         print(Sec[s])
@@ -866,7 +867,7 @@ if __name__ == "script" or  __name__ == "draw":
     print('elemproperties')
     for p in P.eprop:
         print(p)
-    
+
     print("section properties")
     for p in P.getProp('e',attr=['section']):
         print(p.nr)

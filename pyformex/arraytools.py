@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -856,58 +856,58 @@ def checkFloat(value,min=None,max=None):
         raise ValueError,"Expected a float in the range(%s, %s), got: %s" % (min,max,value)
 
 
-def checkArray(a,shape=None,kind=None,allow=None):
-    """Check that an array a has the correct shape and type.
+def checkArray(a,shape=None,kind=None,allow=None,size=None):
+    """Check that an array a has the correct shape, type and/or size.
 
     The input `a` is anything that can be converted into a numpy array.
-    Either `shape` and/or `kind` can be specified. and will then be checked.
+    Either `shape` and/or `kind` and/or `type` can be specified and will
+    then be checked.
     The dimensions where `shape` contains a -1 value are not checked. The
     number of dimensions should match.
     If `kind` does not match, but the value is included in `allow`,
     conversion to the requested type is attempted.
+    If `size` is specified, the size should exactly match.
 
     Returns the array if valid; else, an error is raised.
     """
     try:
         a = asarray(a)
-        shape = asarray(shape)
-        w = where(shape >= 0)[0]
-        if (asarray(a.shape)[w] != shape[w]).any():
-            raise
+        if shape is not None:
+            shape = asarray(shape)
+            w = where(shape >= 0)[0]
+            if (asarray(a.shape)[w] != shape[w]).any():
+                raise
         if kind is not None:
             if allow is None and a.dtype.kind != kind:
                 raise
             if kind == 'f':
                 a = a.astype(Float)
+        if size is not None:
+            if (a.size != size):
+                raise
         return a
     except:
-        raise ValueError,"Expected shape %s, kind %s, got: %s, %s" % (shape,kind,a.shape,a.dtype.kind)
+        raise ValueError,"Expected shape %s, kind %s, size %s\n  Got: shape %s, kind %s, size %s" % (shape,kind,size,a.shape,a.dtype.kind,a.size)
 
 
 
-def checkArray1D(a,size=None,kind=None,allow=None):
-    """Check that an array a has the correct size and type.
+def checkArray1D(a,kind=None,allow=None,size=None):
+    """Check and force an array to be 1D.
 
-    Either size and or kind can be specified.
-    If kind does not match, but is included in allow, conversion to the
-    requested type is attempted.
-    Returns the array if valid.
-    Else, an error is raised.
+    Turns the first argument into a 1D array. Optionally checks the kind
+    of data (int/float) and the size of the array.
+
+    Returns the array if valid; else, an error is raised.
+
+    This is equivalent to calling checkArray with shape=None and then
+    ravel the result.
     """
-    try:
-        a = asarray(a)#.ravel() # seems sensible not to ravel!
-        if (size is not None and a.size != size):
-            raise
-        if kind is not None:
-            if allow is None and a.dtype.kind != kind:
-                raise
-            if kind == 'f':
-                a = a.astype(Float)
-        return a
-    except:
-        raise ValueError,"Expected size %s, kind %s, got: %s" % (size,kind,a)
+    return checkArray(a,kind=kind,allow=allow,size=size).ravel()
 
 
+#
+# TODO: this can be made part of checkArray
+#
 def checkArrayDim(a,ndim=-1):
     """Check that an array has the correct dimensionality.
 
@@ -1954,7 +1954,7 @@ def uniformParamValues(n,umin=0.0,umax=1.0):
     if n == 0:
         return array([0.5*(umax+umin)])
     else:
-        return umin + arange(n+1) * (umax-umin) / n
+        return umin + arange(n+1) * (umax-umin) / float(n)
 
 
 def nodalSum(val,elems,avg=False,return_all=True,direction_treshold=None):
