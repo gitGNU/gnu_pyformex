@@ -185,7 +185,7 @@ def convertFromVPD(vpd,verbose=False):
     pts=polys=lines=verts=None
     
     if vpd is None:
-        return pts, polys, lines, verts
+        return [pts, polys, lines, verts]
         
     # getting points coords
     if  vpd.GetPoints().GetData().GetNumberOfTuples():
@@ -218,7 +218,7 @@ def convertFromVPD(vpd,verbose=False):
         if verbose:
             print('Saved verts connectivity array')
 
-    return pts, polys, lines, verts
+    return [pts, polys, lines, verts]
 
 
 def pfvtkPointInsideObject(S,P,tol=0.):
@@ -308,4 +308,57 @@ def pfvtkTransform(source,trMat4x4):
     transformFilter.SetTransform(trMat4x4)
     transformFilter.Update()
     return Coords(convertFromVPD(transformFilter.GetOutput())[0])
+def pfvtkOctree(surf,tol=0.0,npts=1.):
+    """
+    Returns the octree structure of surf according to the maximum
+    tolerance tol and the maximum number of points npts in every octant.
+    It returns is a list of hexahedral meshes of each level of the octree with property
+    equal to the number of point of the in each region
+    """
+    vm = convert2VPD(surf,clean=False)
+    loc=vtkOctreePointLocator()
+    loc.SetDataSet(vm)
+    loc.SetTolerance(tol)
+    loc.SetMaximumPointsPerRegion(npts)
+    
+    loc.BuildLocator()
+    rep=vtkPolyData()
+    loc.Update()   
+    
+    regions=[]
+    ptsinregion=[]
+    for lf in range(loc.GetNumberOfLeafNodes()):
+        region=[]
+        bounds=zeros(6)
+        loc.GetRegionBounds (lf, bounds)
+        if (bounds!=zeros(6)).all():
+            region.append(bounds[:,(0,2,4)])
+            region.append(bounds[:,(1,2,4)])
+            region.append(bounds[:,(1,3,4)])
+            region.append(bounds[:,(0,3,4)])
+            
+            region.append(bounds[:,(0,2,5)])
+            region.append(bounds[:,(1,2,5)])
+            region.append(bounds[:,(1,3,5)])
+            region.append(bounds[:,(0,3,5)])
+            
+        ptsinregion.append(loc.GetPointsInRegion(lf).GetNumberOfTuples())
+        regions.append(Coords(region))
+    
+    regions = Formex(regions).toMesh().setProp(asarray(ptsinregion,dtype=int32))
+    
+    pfrep = []
+    for level in range(loc.GetLevel()):
+        loc.GenerateRepresentation(level,rep)
+        reptmp=convertFromVPD(rep)
+        reptmp[1] = reptmp[1].reshape(-1,6*4)[:,(0,1,2,3,9,8,11,10)]
+        reptmp[0] = reptmp[0][Connectivity(reptmp[1]).renumber()[1]]
+        
+        pfrep.append(Mesh(reptmp[0], reptmp[1]).setProp(0))
+        centroids=pfrep[-1].matchCentroids(regions)
+        pfrep[-1].prop[centroids[centroids>-1]]=regions.prop[centroids>-1]
+        
+    loc.FreeSearchStructure()
+    del loc
+    return pfrep
 # End
