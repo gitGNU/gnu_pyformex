@@ -183,7 +183,10 @@ def convertFromVPD(vpd,verbose=False):
     Returns None for the missing data.
     """
     pts=polys=lines=verts=None
-
+    
+    if vpd is None:
+        return pts, polys, lines, verts
+        
     # getting points coords
     if  vpd.GetPoints().GetData().GetNumberOfTuples():
         ntype=gnat(vpd.GetPoints().GetDataType())
