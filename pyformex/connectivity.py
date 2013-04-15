@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -395,7 +395,7 @@ class Connectivity(ndarray):
         will only find the duplicate rows that have matching values at
         every position.
 
-        This function returns a tuple with two arrays and optionally a dictionary:
+        Returns a tuple of two arrays and optionally a dictionary:
 
         - an index used to sort the elements
         - a flags array with the value True for indices of the unique elements
@@ -414,10 +414,12 @@ class Connectivity(ndarray):
            [0 2 1]
            [0 3 2]]
           >>> ind,ok,D = conn.testDuplicate(return_multiplicity=True)
-          >>> print(ind,ok,D)
-          [3 4 0 1 2 5] [ True False  True  True False False] {'1': array([0]), '3': array([1, 2, 5]), '2': array([3, 4])}
+          >>> print(ind,ok)
+          [3 4 0 1 2 5] [ True False  True  True False False]
           >>> print(ok.cumsum())
           [1 1 2 3 3 3]
+          >>> print(D)
+          {1: array([0]), 2: array([3, 4]), 3: array([1, 2, 5])}
 
         """
         if permutations:
@@ -436,9 +438,8 @@ class Connectivity(ndarray):
             D={}
             for m in unique(mult):
                 sel = where(mult==m)[0]
-                w=ind[in1d(cs,sel)]
-                D.update({'%d'%m:w})
-            return ind,ok, D
+                D[m] = ind[in1d(cs,sel)]
+            return ind,ok,D
         return ind,ok
 
 
@@ -638,39 +639,38 @@ class Connectivity(ndarray):
         return (r>=0).sum(axis=1)
 
 
-    def connectedTo(self,nodes,return_mult=False):
+    def connectedTo(self,nodes,return_multiplicity=False):
         """Check if the elements are connected to the specified nodes.
-    
+
         `nodes`: a single node number or a list/array thereof
-        `return_mult` : True or False (default)
-    
-        If return_mult is False (default) it returns an int array with 
-        the numbers of the elements that contain at least one of the 
-        specified nodes. If return_mult is True it returns the number 
-        of occurrences of nodes in each element.
-    
+        `return_multiplicity`: bool. If True, also the multiplicity of the
+          occurrence of the specified node(s) is rerturned.
+
+        Returns an int array with the numbers of the elements that contain
+        at least one of the specified nodes. If return_multiplicity is True
+        also returns an array with the number of elements in which each node
+        occurs.
+
         Example:
-    
-          >>> Connectivity([[0,1,2],[0,1,3],[0,3,2]]).connectedTo(2)
+
+          >>> A = Connectivity([[0,1,2],[0,1,3],[0,3,2]])
+          >>> A.connectedTo(2)
           array([0, 2])
-          >>> Connectivity([[0,1,2],[0,1,3],[0,3,2]]).connectedTo([0,1,2],return_mult=True)
-          array([3, 2, 2])
+          >>> A.connectedTo([0,1,2],return_multiplicity=True)
+          (array([0, 1, 2]), array([3, 2, 2]))
         """
-        if type(nodes) == float:
-            raise ValueError,"nodes should be a single node number (int) or a list/array thereof."
-        nodes = asarray(nodes).reshape(-1)
+        nodes = checkArray1D(nodes,kind='i')
         inv = self.inverse()
         nodes = nodes[nodes<=len(inv)]
         ad = inv[nodes]
         ad = ad[ad>=0]
-        if return_mult==False:
-            return unique(ad)
-        times=zeros(len(self), dtype=int)
-        if len(ad)==0:
-            return times
-        m,u = multiplicity(ad)
-        times[u]=m
-        return times
+        connected = unique(ad)
+        if return_multiplicity:
+            multi = zeros(len(self),dtype=int)
+            m,u = multiplicity(ad)
+            multi[u] = m
+            return connected,multi
+        return connected
 
 
     def notConnectedTo(self,nodes):
