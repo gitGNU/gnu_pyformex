@@ -1365,15 +1365,27 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return self.withProp(ps[t==0])
 
 
-    def connectedTo(self,nodes):
+    def connectedTo(self,nodes, times=None):
         """Return a Mesh with the elements connected to the specified node(s).
-
+    
         `nodes`: int or array_like, int.
-
-        Returns a Mesh with all the elements from the original that contain
-        at least one of the specified nodes.
+        `times`: int, array_like int or None (default)
+    
+        If times is None (default) it returns a Mesh with all the elements 
+        from the original that contain at least one of the specified nodes.
+        If times is given it returns a Mesh with all the elements from the original 
+        that contain `times` times the specified nodes.
         """
-        return self.select(self.elems.connectedTo(nodes))
+        if times==None:
+            return self.select(self.elems.connectedTo(nodes, return_times=False))
+        t = self.elems.connectedTo(nodes, return_times=True)
+        times=asarray(times).reshape(-1)
+        times = times[(times>=min(t))  * (times<=max(t))]#remove the n not in t
+        if len(times)==0:
+            T=[]
+        else:
+            T=sum([t==i for i in times], axis=0, dtype=bool)
+        return self.select(T)
 
 
     def notConnectedTo(self, nod):

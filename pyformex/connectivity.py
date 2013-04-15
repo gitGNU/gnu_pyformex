@@ -638,21 +638,39 @@ class Connectivity(ndarray):
         return (r>=0).sum(axis=1)
 
 
-    def connectedTo(self,nodes):
-        """Return a list of elements connected to the specified nodes.
-
+    def connectedTo(self,nodes,return_times=False):
+        """Check if the elements are connected to the specified nodes.
+    
         `nodes`: a single node number or a list/array thereof
-
-        Returns an int array with the numbers of the elements that
-        contain at least one of the specified nodes.
-
+        `return_times` : True or False (default)
+    
+        If return_times is False (default) it returns an int array with 
+        the numbers of the elements that contain at least one of the 
+        specified nodes. If return_times is True it returns the number 
+        of occurrences of nodes in each element.
+    
         Example:
-
+    
           >>> Connectivity([[0,1,2],[0,1,3],[0,3,2]]).connectedTo(2)
           array([0, 2])
+          >>> Connectivity([[0,1,2],[0,1,3],[0,3,2]]).connectedTo([0,1,2],return_times=True)
+          array([3, 2, 2])
         """
-        ad = self.inverse()[nodes]
-        return unique(ad[ad >= 0])
+        if type(nodes) == float:
+            raise ValueError,"nodes should be a single node number (int) or a list/array thereof."
+        nodes = asarray(nodes).reshape(-1)
+        inv = self.inverse()
+        nodes = nodes[nodes<=len(inv)]
+        ad = inv[nodes]
+        ad = ad[ad>=0]
+        if return_times==False:
+            return unique(ad)
+        times=zeros(len(self), dtype=int)
+        if len(ad)==0:
+            return times
+        m,u = multiplicity(ad)
+        times[u]=m
+        return times
 
 
     def notConnectedTo(self,nodes):
