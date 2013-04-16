@@ -9,6 +9,7 @@ the current OpenGL framework in pyFormex.
 (C) 2013 Benedict Verhegghe and the pyFormex project.
 
 """
+from __future__ import print_function
 
 import os
 import pyformex as pf
@@ -21,12 +22,14 @@ from OpenGL.arrays.vbo import VBO
 
 class Renderer(object):
 
-    def __init__(self,canvas=None):
+    def __init__(self,canvas,shader=None):
         self.canvas = canvas
         self.camera = canvas.camera
         self.canvas.makeCurrent()
 
-        self.shader = Shader()
+        if shader is None:
+            shader = Shader()
+        self.shader = shader
         self._objects = []
         self._vbo = {}
         self._bbox = bbox([0.,0.,0.])
@@ -68,21 +71,23 @@ class Renderer(object):
         self.shader.bind()
 
         # Get the current modelview*projection matrix
-        print("MODELVIEW",self.camera.modelview)
-        print("PROJECTION",self.camera.modelview)
-        pvmat = self.camera.modelview * self.camera.projection
-        print("PVM",pvmat)
+        modelview = self.camera.modelview
+        print("MODELVIEW-R",modelview)
+        projection = self.camera.projection
+        print("PROJECTION-R",projection)
         # Propagate the matrices to the uniforms of the shader
-        loc = self.shader.uniform['perspective']
-        GL.glUniformMatrix4fv(loc,1,True,pvmat.gl())
+        loc = self.shader.uniform['modelview']
+        GL.glUniformMatrix4fv(loc,1,False,modelview.gl())
+        loc = self.shader.uniform['projection']
+        GL.glUniformMatrix4fv(loc,1,False,projection.gl())
 
         try:
             for obj in self._objects:
-                if hasattr(obj,'objectColor'):
-                    # Propagate the color to the uniforms of the shader
-                    loc = self.shader.uniform['objectColor']
-                    GL.glUniformMatrix3x1fv(loc,1,False,obj.objectColor)
-
+                ## if hasattr(obj,'objectColor'):
+                ##     # Propagate the color to the uniforms of the shader
+                ##     loc = self.shader.uniform['objectColor']
+                ##     GL.glUniformMatrix3x1fv(loc,1,False,obj.objectColor)
+                print("RENDER OBJECT %s"%id(obj))
                 self.renderObject(obj)
         finally:
             self.shader.unbind()

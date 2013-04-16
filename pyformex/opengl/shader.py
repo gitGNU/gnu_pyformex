@@ -55,12 +55,16 @@ class Shader(object):
     - `uniforms`: the shaders' uniforms.
     """
 
-    def __init__(self):
+    def __init__(self,vshader=None,fshader=None):
         print("LOADING SHADER PROGRAMS")
-        with open(_vertexshader_filename) as f:
+        if vshader is None:
+            vshader = _vertexshader_filename
+        with open(vshader) as f:
             VertexShader = f.read()
 
-        with open(_fragmentshader_filename) as f:
+        if fshader is None:
+            fshader = _fragmentshader_filename
+        with open(fshader) as f:
             FragmentShader = f.read()
 
         attributes = [
@@ -72,7 +76,9 @@ class Shader(object):
         ]
 
         uniforms = [
-        'perspective',
+        'modelview',
+        'projection',
+        'modelviewprojection',
         'center',
         'objectTransform',
         'useObjectColor',
@@ -125,5 +131,9 @@ class Shader(object):
     def unbind(self):
         GL.shaders.glUseProgram(0)
 
+
+    # NOT SURE IF THIS IS A GOOD IDEA
+    def __del__(self):
+        self.unbind()
 
 # End

@@ -993,9 +993,9 @@ class Camera(object):
         self.loadProjection()
         self.loadModelView()
         #print("MODELVIEW",self.modelview)
-        #print("MODELVIEW",self.getGLmodelview())
+        print("MODELVIEW",self.getGLmodelview())
         #print("PROJECTION",self.projection)
-        #print("PROJECTION",self.getGLprojection())
+        print("PROJECTION",self.getGLprojection())
 
 
 
