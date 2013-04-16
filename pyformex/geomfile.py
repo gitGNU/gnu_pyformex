@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -136,7 +136,7 @@ class GeometryFile(object):
         kind = data.dtype.kind
         #if fmt is None:
         #    fmt = self.fmt[kind]
-        filewrite.writeData(self.fil,data,sep)
+        filewrite.writeData(self.fil,data,sep,end='\n')
 
 
     def write(self,geom,name=None,sep=None):
