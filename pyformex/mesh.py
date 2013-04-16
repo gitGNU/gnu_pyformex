@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -1370,13 +1370,13 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
         `nodes`: int or array_like, int.
 
-        Returns a Mesh with all the elements from the original that contain
-        at least one of the specified nodes.
+        Return a Mesh with all the elements from the original that contain at
+        least one of the specified nodes.
         """
-        return self.select(self.elems.connectedTo(nodes))
+        return self.select(self.elems.hits(nodes,1) > 0)
 
 
-    def notConnectedTo(self, nod):
+    def notConnectedTo(self,nodes):
         """Return a Mesh with the elements not connected to the given node(s).
 
         `nodes`: int or array_like, int.
@@ -1384,7 +1384,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         Returns a Mesh with all the elements from the original that do not
         contain any of the specified nodes.
         """
-        return self.select(self.elems.notConnectedTo(nod))
+        return self.select(self.elems.hits(nodes,1) == 0)
 
 
     def splitProp(self):

@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -138,23 +138,52 @@ class Curve(Geometry):
         raise NotImplementedError
 
 
-    def pointsAt(self,t):
-        """Return the points at parameter values t.
+    def localParam(self,t):
+        """Split global parameter value in part number and local parameter
 
         Parameter values are floating point values. Their integer part
         is interpreted as the curve segment number, and the decimal part
         goes from 0 to 1 over the segment.
+
+        Returns a tuple of arrays i,t, where i are the (integer) part
+        numbers and t the local parameter values (between 0 and 1).
         """
         # Do not use asarray here! We change it, so need a copy!
         t = array(t).ravel()
         ti = floor(t).clip(min=0,max=self.nparts-1)
         t -= ti
         i = ti.astype(Int)
+        return i,t
+
+
+    def pointsAt(self,t,normalized=False,return_position=False):
+        """Return the points at parameter values t.
+
+        Parameter values are floating point values. Their integer part
+        is interpreted as the curve segment number, and the decimal part
+        goes from 0 to 1 over the segment.
+
+        Returns a Coords with the coordinates of the points.
+
+        If normalized is True, the parameter values are give in a normalized
+        space where 0 is the start of the curve and 1 is the end.
+
+        If return_position is True, also returns the part numbers on which
+        the point are lying and the local parameter values.
+        """
+        t = array(t)
+        if normalized:
+            t *= float(self.nparts)
+        i,t = self.localParam(t)
         try:
             allX = self.sub_points_2(t,i)
         except:
             allX = concatenate([ self.sub_points(tj,ij) for tj,ij in zip(t,i)])
-        return Coords(allX)
+        X = Coords(allX)
+        if return_position:
+            return X,i,t
+        else:
+            return X
 
 
     def directionsAt(self,t):
@@ -164,10 +193,7 @@ class Curve(Geometry):
         is interpreted as the curve segment number, and the decimal part
         goes from 0 to 1 over the segment.
         """
-        t = array(t).ravel()
-        ti = floor(t).clip(min=0,max=self.nparts-1)
-        t -= ti
-        i = ti.astype(Int)
+        i,t = self.localParam(t)
         try:
             allX = self.sub_directions_2(t,i)
         except:
@@ -890,15 +916,63 @@ class PolyLine(Curve):
         return PolyLine(Coords.concatenate([self.coords,X]))
 
 
+    def insertPointsAt(self,t,normalized=False,return_indices=False):
+        """Insert new points at parameter values t.
+
+        Parameter values are floating point values. Their integer part
+        is interpreted as the curve segment number, and the decimal part
+        goes from 0 to 1 over the segment.
+
+        Returns a PolyLine with the new points inserted. Note that the
+        parameter values of the points will have changed.
+        If return_indices is True, also returns the indices of the
+        inserted points in the new PolyLine.
+        """
+        X,i,t = self.pointsAt(t,normalized=normalized,return_position=True)
+        #print(X.shape,i.shape,t.shape)
+        #print(X,i,t)
+        Xc = self.coords.copy()
+        if return_indices:
+            ind = -ones(len(Xc))
+        # Loop in descending order to avoid recomputing parameters
+        for j in argsort(i)[::-1]:
+            #print(X[j].shape)
+            Xi,ii = X[j].reshape(-1,3),i[j]+1
+            #print(Xi.shape)
+            #print("Insert point in segment %s" % (ii-1))
+            Xc = Coords.concatenate([Xc[:ii],Xi,Xc[ii:]])
+            if return_indices:
+                ind = concatenate([ind[:ii],[j],ind[ii:]])
+        PL = PolyLine(Xc,closed=self.closed)
+        if return_indices:
+            ind = ind.tolist()
+            ind = [ ind.index(i) for i in arange(len(i)) ]
+            return PL,ind
+        else:
+            return PL
+
+
+    def splitAt(self,t,normalized=False):
+        """Split a PolyLine at parametric values t
+
+        Parameter values are floating point values. Their integer part
+        is interpreted as the curve segment number, and the decimal part
+        goes from 0 to 1 over the segment.
+
+        Returns a list of open Polylines.
+        """
+        PL,t = self.insertPointsAt(t,normalized=normalized,return_indices=True)
+        return PL.split(t)
+
+
     # allow syntax PL1 + PL2
     __add__ = append
 
 
 
-
-
     # BV: I'm not sure what this does and if it belongs here
 
+    @utils.deprecation("PolyLine_distanceOfPoints")
     def distanceOfPoints(self,p,n,return_points=False):
         """_Find the distances of points p, perpendicular to the vectors n.
 
@@ -933,6 +1007,7 @@ class PolyLine(Curve):
 
     # BV: same remark: what is this distance?
 
+    @utils.deprecation("PolyLine_distanceOfPolyline")
     def distanceOfPolyLine(self,PL,ds,return_points=False):
         """_Find the distances of the PolyLine PL.
 

@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -387,7 +387,7 @@ class Connectivity(ndarray):
         return ML
 
 
-    def testDuplicate(self,permutations=True, return_multiplicity=False):
+    def testDuplicate(self,permutations=True,return_multiplicity=False):
         """Test the Connectivity list for duplicates.
 
         By default, duplicates are elements that consist of the same set of
@@ -395,12 +395,12 @@ class Connectivity(ndarray):
         will only find the duplicate rows that have matching values at
         every position.
 
-        This function returns a tuple with two arrays and optionally a dictionary:
+        Returns a tuple of two arrays and optionally a dictionary:
 
         - an index used to sort the elements
         - a flags array with the value True for indices of the unique elements
           and False for those of the duplicates.
-        - if return_multiplicity is True it returns also an extra dict with
+        - if return_multiplicity is True, returns also an extra dict with
           multiplicities as keys and a list of elements as value.
 
         Example:
@@ -414,10 +414,12 @@ class Connectivity(ndarray):
            [0 2 1]
            [0 3 2]]
           >>> ind,ok,D = conn.testDuplicate(return_multiplicity=True)
-          >>> print(ind,ok,D)
-          [3 4 0 1 2 5] [ True False  True  True False False] {'1': array([0]), '3': array([1, 2, 5]), '2': array([3, 4])}
+          >>> print(ind,ok)
+          [3 4 0 1 2 5] [ True False  True  True False False]
           >>> print(ok.cumsum())
           [1 1 2 3 3 3]
+          >>> print(D)
+          {1: array([0]), 2: array([3, 4]), 3: array([1, 2, 5])}
 
         """
         if permutations:
@@ -436,9 +438,8 @@ class Connectivity(ndarray):
             D={}
             for m in unique(mult):
                 sel = where(mult==m)[0]
-                w=ind[in1d(cs,sel)]
-                D.update({'%d'%m:w})
-            return ind,ok, D
+                D[m] = ind[in1d(cs,sel)]
+            return ind,ok,D
         return ind,ok
 
 
@@ -638,27 +639,59 @@ class Connectivity(ndarray):
         return (r>=0).sum(axis=1)
 
 
-    def connectedTo(self,nodes):
-        """Return a list of elements connected to the specified nodes.
+    def hits(self,nodes):
+        """Return the number of nodes from a list that are shared by elements.
 
         `nodes`: a single node number or a list/array thereof
 
-        Returns an int array with the numbers of the elements that
-        contain at least one of the specified nodes.
+        Returns an (nelems,) shaped int array with the number of nodes from
+        the list are contained in each of the elements.
 
         Example:
 
-          >>> Connectivity([[0,1,2],[0,1,3],[0,3,2]]).connectedTo(2)
-          array([0, 2])
+          >>> A = Connectivity([[0,1,2],[0,1,3],[0,3,2],[1,2,3]])
+          >>> A.hits(2)
+          array([1, 0, 1, 1])
+          >>> A.hits([0,1,3])
+          array([2, 3, 2, 2])
         """
-        ad = self.inverse()[nodes]
-        return unique(ad[ad >= 0])
+        nodes = checkArray1D(nodes,kind='i')
+        elems = self.copy()
+
+        def hit1(n):
+            elems[elems==n] = -1
+
+        map(hit1,nodes)
+        return (elems==-1).sum(axis=-1)
 
 
-    def notConnectedTo(self,nodes):
+    def connectedTo(self,nodes,hits=1):
+        """Check if the elements are connected to the specified nodes.
+
+        `nodes`: a single node number or a list/array thereof
+        `hits`: the number of nodes from the list that should be owned
+          by the element.
+
+        Returns an int array with the numbers of the elements that contain
+        at least `hits` of the specified nodes.
+
+        Example:
+
+          >>> A = Connectivity([[0,1,2],[0,1,3],[0,3,2],[1,2,3]])
+          >>> A.connectedTo(2)
+          array([0, 2, 3])
+          >>> A.connectedTo([0,1,3],2)
+          array([0, 1, 2, 3])
+        """
+        return where(self.hits(nodes) >= hits)[0]
+
+
+    def notConnectedTo(self,nodes,hits=1):
         """Return a list of elements not connected to the specified nodes.
 
         `nodes`: a single node number or a list/array thereof
+        `hits`: the number of nodes from the list that should not be owned
+          by the element.
 
         Returns an int array with the numbers of the elements that
         do not contain any of the specified nodes.
@@ -668,8 +701,7 @@ class Connectivity(ndarray):
           >>> Connectivity([[0,1,2],[0,1,3],[0,3,2]]).notConnectedTo(2)
           array([1])
         """
-        connected = self.connectedTo(nodes)
-        return complement(connected,self.nelems())
+        return where(self.hits(nodes) < hits)[0]
 
 
     def adjacency(self,kind='e',mask=None):

@@ -123,10 +123,10 @@ REPOHOST=bumps
 REPOPATH=/var/www/repos/debian
 REPO=${REPOHOST}:${REPOPATH}/incoming
 uploadlocal() {
-    rsync *_$RELEASE[.-]* $REPO -avn
+    rsync *_$RELEASE[.-]* $REPO --exclude *.upload -avn
     read -p "Do you want to upload these packages ?" ans
     if [ "$ans" = "y" -o "$ans" = "Y" ]; then
-	rsync *_$RELEASE[.-]* $REPO -av
+	rsync *_$RELEASE[.-]* $REPO --exclude *.upload -av
     fi
 }
 
@@ -177,8 +177,15 @@ _bump() {
     shift 2
 }
 
+[ "$1" = "-v" ] && {
+    VERSION="$2"
+    shift 2
+}
+
 setup
 [ -n "$1" ] || { echo "For help about usage: _do usage" ; exit; }
 for cmd in "$@"; do
     $cmd
 done
+
+# End
