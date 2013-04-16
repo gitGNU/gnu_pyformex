@@ -656,7 +656,13 @@ class Connectivity(ndarray):
           array([2, 3, 2, 2])
         """
         nodes = checkArray1D(nodes,kind='i')
-        return array([len(intersect1d(nodes,el)) for el in self])
+        elems = self.copy()
+
+        def hit1(n):
+            elems[elems==n] = -1
+
+        map(hit1,nodes)
+        return (elems==-1).sum(axis=-1)
 
 
     def connectedTo(self,nodes,hits=1):
