@@ -1731,7 +1731,10 @@ def multiplicity(a):
       (array([2, 3, 1, 1, 1, 1]), array([0, 1, 3, 4, 5, 7]))
     """
     bins = unique(a)
-    mult,b = histogram(a,bins=concatenate([bins,[max(a)+1]]))
+    if bins.size > 0:
+        mult,b = histogram(a,bins=concatenate([bins,[max(a)+1]]))
+    else:
+        mult = bins
     return mult,bins
 
 

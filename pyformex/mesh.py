@@ -1373,7 +1373,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         Return a Mesh with all the elements from the original that contain at
         least one of the specified nodes.
         """
-        return self.select(self.elems.hits(nodes,1) > 0)
+        return self.select(self.elems.connectedTo(nodes))
 
 
     def notConnectedTo(self,nodes):
@@ -1384,7 +1384,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         Returns a Mesh with all the elements from the original that do not
         contain any of the specified nodes.
         """
-        return self.select(self.elems.hits(nodes,1) == 0)
+        return self.cselect(self.elems.connectedTo(nodes))
 
 
     def splitProp(self):

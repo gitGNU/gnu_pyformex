@@ -639,13 +639,53 @@ class Connectivity(ndarray):
         return (r>=0).sum(axis=1)
 
 
+    def connectedTo(self,nodes,return_ncon=False):
+        """Check if the elements are connected to the specified nodes.
+
+        `nodes`: a single node number or a list/array thereof,
+        `return_ncon`: if True, also return the number of connections for
+          each element.
+
+        Returns an int array with the numbers of the elements that contain
+        at least one of the specified nodes.
+        If `return_ncon` is True, also returns an int array giving the number
+        of connections for each connected element.
+
+        Example:
+
+          >>> A = Connectivity([[0,1,2],[0,1,3],[0,3,2],[1,2,3]])
+          >>> A.connectedTo(2)
+          array([0, 2, 3])
+          >>> A.connectedTo([0,1,3],True)
+          (array([0, 1, 2, 3]), array([2, 3, 2, 2]))
+        """
+        nodes = checkArray1D(nodes,kind='i')
+        nodes = intersect1d(nodes, self) #remove unconnected nodes
+        inv = self.inverse()
+        ad = inv[nodes]
+        ad = ad[ad>=0]
+        # We now have a list of all individual attachements to any of the nodes,
+        # identified by the element number. We count them per element.
+        m,u = multiplicity(ad)
+        if return_ncon:
+            return u,m
+        else:
+            return u
+
+
     def hits(self,nodes):
-        """Return the number of nodes from a list that are shared by elements.
+        """Count the nodes from a list connected to the elements.
 
         `nodes`: a single node number or a list/array thereof
 
         Returns an (nelems,) shaped int array with the number of nodes from
-        the list are contained in each of the elements.
+        the list that are contained in each of the elements.
+
+        Note that this information can also be got from meth:`connectedTo`.
+        This method however exapnds the results to the full element set,
+        making it apt for use in selector expressions like::
+
+          self[self.hits(nodes) >= 2]
 
         Example:
 
@@ -655,53 +695,10 @@ class Connectivity(ndarray):
           >>> A.hits([0,1,3])
           array([2, 3, 2, 2])
         """
-        nodes = checkArray1D(nodes,kind='i')
-        elems = self.copy()
-
-        def hit1(n):
-            elems[elems==n] = -1
-
-        map(hit1,nodes)
-        return (elems==-1).sum(axis=-1)
-
-
-    def connectedTo(self,nodes,hits=1):
-        """Check if the elements are connected to the specified nodes.
-
-        `nodes`: a single node number or a list/array thereof
-        `hits`: the number of nodes from the list that should be owned
-          by the element.
-
-        Returns an int array with the numbers of the elements that contain
-        at least `hits` of the specified nodes.
-
-        Example:
-
-          >>> A = Connectivity([[0,1,2],[0,1,3],[0,3,2],[1,2,3]])
-          >>> A.connectedTo(2)
-          array([0, 2, 3])
-          >>> A.connectedTo([0,1,3],2)
-          array([0, 1, 2, 3])
-        """
-        return where(self.hits(nodes) >= hits)[0]
-
-
-    def notConnectedTo(self,nodes,hits=1):
-        """Return a list of elements not connected to the specified nodes.
-
-        `nodes`: a single node number or a list/array thereof
-        `hits`: the number of nodes from the list that should not be owned
-          by the element.
-
-        Returns an int array with the numbers of the elements that
-        do not contain any of the specified nodes.
-
-        Example:
-
-          >>> Connectivity([[0,1,2],[0,1,3],[0,3,2]]).notConnectedTo(2)
-          array([1])
-        """
-        return where(self.hits(nodes) < hits)[0]
+        u,m = self.connectedTo(nodes,True)
+        res = zeros(self.shape[0],dtype=m.dtype)
+        res[u] = m
+        return res
 
 
     def adjacency(self,kind='e',mask=None):
