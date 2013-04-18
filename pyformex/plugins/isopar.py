@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -44,7 +44,7 @@ def evaluate(atoms,x,y=0,z=0):
     aa = zeros((len(x),len(atoms)),Float)
     for k,a in enumerate(atoms):
         aa[:,k] = eval(a)
-    return aa   
+    return aa
 
 
 class Isopar(object):
@@ -86,9 +86,9 @@ class Isopar(object):
     #   'lag-2-2-3' : ('lagrangian',2,(2,3))
     #   'tri-2-2' : ('triangular',2,(2))
 
-    #   'lag-i-j-k' 
-    
-    
+    #   'lag-i-j-k'
+
+
     isodata = {
         'line2' : (1, ('1','x')),
         'line3' : (1, ('1','x','x*x')),
@@ -100,6 +100,9 @@ class Isopar(object):
         'quad8' : (2, ('1','x','y','x*x','y*y','x*y','x*x*y','x*y*y')),
         'quad9' : (2, ('1','x','y','x*x','y*y','x*y','x*x*y','x*y*y',
                        'x*x*y*y')),
+        'quad12': (2, ('1','x','y','x*x','x*y','y*y',
+                       'x*x*x','x*x*y','x*y*y','y*y*y',
+                       'x*x*x*y','x*y*y*y')),
         'quad13': (2, ('1','x','y','x*x','x*y','y*y',
                        'x*x*x','x*x*y','x*y*y','y*y*y',
                        'x*x*x*y','x*x*y*y','x*y*y*y')),
@@ -180,7 +183,7 @@ class Isopar(object):
                 X = Coords(X)
             except:
                 raise ValueError,"Expected a Coords object as argument"
-        
+
         ndim,atoms = Isopar.isodata[self.eltype]
         aa = evaluate(atoms,X.x().ravel(),X.y().ravel(),X.z().ravel())
         xx = dot(aa,self.trf).reshape(X.shape)

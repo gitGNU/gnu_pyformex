@@ -2033,7 +2033,7 @@ Quality: %s .. %s
         Uses `gtscheck` to check whether the surface is an orientable,
         non self-intersecting manifold.
 
-        This is a necessary condition the `gts` methods:
+        This is a necessary condition for using the `gts` methods:
         split, coarsen, refine, boolean. (Additionally, the surface should be
         closed, wich can be checked with :meth:`isClosedManifold`).
 
@@ -2042,6 +2042,7 @@ Quality: %s .. %s
         - an integer return code with the value:
 
           - 0: the surface is an orientable, non self-intersecting manifold.
+          - 1: the created GTS file is invalid: this should normally not occur.
           - 2: the surface is not an orientable manifold. This may be due to
             misoriented normals. The :meth:`fixNormals` and :meth:`reverse`
             methods may be used to help fixing the problem in such case.
@@ -2053,7 +2054,8 @@ Quality: %s .. %s
           If matched==True, intersecting triangles are returned as element
           indices of self, otherwise as a separate TriSurface object.
 
-        If verbose it True, it prints the connectivity and geometric statistics
+        If verbose is True, prints the statistics reported by the gtscheck
+        command.
         """
         tmp = tempfile.mktemp('.gts')
         self.write(tmp,'gts')
@@ -2061,7 +2063,7 @@ Quality: %s .. %s
         cmd = "gtscheck -v < %s" % tmp
         sta,out,stat = utils.system(cmd)
         if verbose:
-            print(stat)
+            pf.message(stat)
         os.remove(tmp)
         if sta == 0:
             pf.message('The surface is an orientable non self-intersecting manifold')
