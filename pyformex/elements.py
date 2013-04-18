@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -38,6 +38,8 @@ from connectivity import Connectivity
 from numpy import array,arange
 from odict import ODict
 
+
+e3 = 1./3.
 
 def _sanitize(ent):
     # input is Connectivity or (eltype,table)
@@ -356,6 +358,18 @@ Line3 = createElementType(
                  ],
     )
 
+
+Line4 = createElementType(
+    'line4',"A 4-node cubic line segment",
+    ndim = 1,
+    vertices = [ ( 0.0, 0.0, 0.0 ),
+                 ( e3, 0.0, 0.0 ),
+                 ( 2*e3, 0.0, 0.0 ),
+                 ( 1.0, 0.0, 0.0 ),
+                 ],
+    edges = ('line2', [ (0,2), (2,3), (3,1) ])
+    )
+
 ######### 2D ###################
 
 Tri3 = createElementType(
@@ -412,7 +426,7 @@ Quad6 = createElementType(
     )
 
 Quad8 = createElementType(
-    'quad8',"A 8-node quadrilateral",
+    'quad8',"A 8-node quadratic quadrilateral",
     ndim = 2,
     vertices = Coords.concatenate([
         Quad4.vertices,
@@ -430,7 +444,7 @@ Quad8 = createElementType(
 
 
 Quad9 = createElementType(
-    'quad9',"A 9-node quadrilateral",
+    'quad9',"A 9-node quadratic quadrilateral",
     ndim = 2,
     vertices = Coords.concatenate([
         Quad8.vertices,
@@ -441,6 +455,28 @@ Quad9 = createElementType(
 #    drawfaces = [('tri3', [(0,4,8),(4,1,8),(1,5,8),(5,2,8),(2,6,8),(6,3,8),(3,7,8),(7,0,8) ], )],
     drawfaces = [('quad4', [(0,4,8,7),(1,5,8,4),(2,6,8,5),(3,7,8,6) ], )],
     drawfaces2 = [('quad9', [(0,1,2,3,4,5,6,7,8)], )],
+    )
+
+
+Quad12 = createElementType(
+    'quad12',"A 12-node cubic quadrilateral",
+    ndim = 2,
+    vertices = Coords.concatenate([
+        Quad4.vertices,
+        [ (   e3,  0.0, 0.0 ),
+          ( 2*e3,  0.0, 0.0 ),
+          (  1.0,   e3, 0.0 ),
+          (  1.0, 2*e3, 0.0 ),
+          ( 2*e3,  1.0, 0.0 ),
+          (   e3,  1.0, 0.0 ),
+          (  0.0, 2*e3, 0.0 ),
+          (  0.0,   e3, 0.0 ),
+          ]]),
+    edges = ('line4',[ (0,4,5,1), (1,6,7,2), (2,8,9,3), (3,10,11,0), ]),
+    reversed = (3,2,1,0,9,8,7,6,5,4,11,10),
+    drawfaces = [('tri3', [(0,4,11),(1,6,5),(2,8,7),(3,10,9),
+                           (4,5,6),(6,7,8),(8,9,10),(10,11,4),
+                           (4,6,8),(8,10,4) ], )],
     )
 
 ######### 3D ###################
@@ -706,7 +742,7 @@ Line3.conversions = {
     'line2-2' : [ ('s', [ (0,1), (1,2) ]), ],
     }
 Tri3.conversions =  {
-    'tri3-3'  : [ ('a', [ (0,1,2), ]),
+    'tri3-3' : [ ('a', [ (0,1,2), ]),
                  ('s', [ (0,1,3),(1,2,3),(2,0,3) ]),
                  ],
     'tri3-4' : [ ('v', 'tri6'), ],
