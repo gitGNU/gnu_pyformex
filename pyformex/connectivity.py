@@ -701,40 +701,6 @@ class Connectivity(ndarray):
         return res
 
 
-    def hitsFaces(self, faces):
-        """Count the faces from a list connected to the elements.
-    
-        `faces`: a single face number or a list/array thereof. The 
-        face numbers corresponds to self.insertLevel(2)
-    
-        Returns an (nelems,) shaped int array with the number of faces from
-        the list that are contained in each of the elements.
-    
-        This method however can be used in selector expressions like::
-    
-          self[self.hits(faces) >= 0]
-        """    
-        elem_faces = self.insertLevel(2)[0]     
-        return elem_faces.hits(nodes=faces)
-    
-    
-    def hitsEdges(self, edges):
-        """Count the edges from a list connected to the elements.
-    
-        `edges`: a single edge number or a list/array thereof. The 
-        edge numbers corresponds to self.insertLevel(1)
-    
-        Returns an (nelems,) shaped int array with the number of edges from
-        the list that are contained in each of the elements.
-    
-        This method can be used in selector expressions like::
-    
-          self[self.hits(edges) >= 2]
-        """    
-        elem_edges = self.insertLevel(1)[0]
-        return elem_edges.hits(nodes=edges)
-
-
     def adjacency(self,kind='e',mask=None):
         """Return a table of adjacent items.
 
