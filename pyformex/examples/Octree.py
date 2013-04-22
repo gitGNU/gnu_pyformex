@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -24,34 +24,36 @@
 ##
 
 """Octree
+
 A sphere mesh is created and the octree octants are computed.
 
-Every level of the octree is repeatedly shown. The mesh properties of the octree
-correspond to the number of points in each octant. 
+Every level of the octree is repeatedly shown. The mesh properties of the
+octree correspond to the number of points in each octant.
 
-Finally the all the octants of the octree which includes at least one point are shown.
+Finally all the octants of the octree which includes at least one point are
+shown.
 
 """
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['Mesh','Geometry','Vtk']
-_techniques = ['Octree']
+_topics = ['Mesh','Geometry']
+_techniques = ['Octree','Vtk']
 
 from gui.draw import *
 from simple import sphere3
-from plugins.vtk_itf import *
+from plugins.vtk_itf import octree
 
 smoothwire()
 transparent()
 
 def run():
     clear()
-    
+
     sf = sphere3(50,50,bot=-90,top=90).scale(10).toMesh()
     print(sf)
-    
-    levels = pfvtkOctree(sf)
+
+    levels = octree(sf)
 
     A = draw(sf,color='yellow',)
     zoomAll()
@@ -60,7 +62,7 @@ def run():
         delay(1)
         wait()
         undraw(B)
-    
+
     draw([lev.withoutProp(0) for lev in levels])
 
 

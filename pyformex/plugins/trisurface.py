@@ -2290,8 +2290,8 @@ Quality: %s .. %s
             from pyformex_gts import inside
             return inside(self,pts)
         elif method == 'vtk':
-            from vtk_itf import pfvtkPointInsideObject
-            return pfvtkPointInsideObject(self,pts,tol)
+            from vtk_itf import pointInsideObject
+            return pointInsideObject(self,pts,tol)
 
 
     def tetgen(self,quality=True,filename=None,format='.off'):
