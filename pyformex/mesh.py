@@ -1387,6 +1387,23 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return self.cselect(self.elems.connectedTo(nodes))
 
 
+    def hits(self, entities, level):
+        """Count the lower entities from a list connected to the elements.
+    
+        `entities`: a single number or a list/array of entities
+        `level`: 0 or 1 or 2 if entities are nodes or edges or faces, respectively.
+    
+        The numbering of the entities corresponds to self.insertLevel(level).
+        Returns an (nelems,) shaped int array with the number of the
+        entities from the list that are contained in each of the elements.
+        This method can be used in selector expressions like::
+    
+          self.select(self.hits(entities,level) > 0)
+        """
+        hi = self.elems.insertLevel(level)[0]
+        return hi.hits(nodes=entities)
+
+
     def splitProp(self):
         """Partition a Mesh according to its prop values.
 
