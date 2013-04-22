@@ -15,6 +15,7 @@ import os
 import pyformex as pf
 from coords import bbox
 from formex import Formex
+from mesh import Mesh
 import numpy as np
 from OpenGL import GL
 from shader import Shader
@@ -38,33 +39,53 @@ class Renderer(object):
         if shader is None:
             shader = Shader()
         self.shader = shader
-        self._objects = []
-        self._vbo = {}
-        self._bbox = bbox([0.,0.,0.])
+        self.clear()
 
 
     def clear(self):
         self._objects = []
         self._vbo = {}
+        self._ibo = {}
+        self._bbox = bbox([0.,0.,0.])
 
 
     def add(self,obj):
-        if not isinstance(obj,Formex):
+        if not isinstance(obj,Mesh) and not isinstance(obj,Formex):
             try:
                 obj = obj.toFormex()
             except:
-                raise ValueError,"Can only render objects that can be converted to Formex"
+                raise ValueError,"Can only render Mesh, Formex and objects that can be converted to Formex"
         glmode = glObjType(obj.nplex())
         if glmode is None:
             raise ValueError,"Can only render plex-1/2/3 objects"
         obj.glmode = glmode
 
-        self._objects.append(obj)
         oid = id(obj)
         self._vbo[oid] = VBO(obj.coords)
+        if isinstance(obj,Mesh):
+            self._ibo[oid] = VBO(obj.elems,target=GL.GL_ELEMENT_ARRAY_BUFFER)
+        self._objects.append(obj)
         self._bbox = bbox([self._bbox,obj])
         self.canvas.camera.focus = self._bbox.center()
         print("NEW BBOX: %s" % self._bbox)
+
+
+    def setDefaults(self):
+        """Set all the uniforms to default values."""
+        self.shader.uniformInt('useObjectColor',True)
+        self.shader.uniformVec3('objectColor',self.canvas.settings.fgcolor)
+        GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
+        self.shader.uniformFloat('pointSize',5.0)
+
+
+    def setUniforms(self,obj):
+        """Set all the uniforms that may be object dependent."""
+        if hasattr(obj,'objectColor'):
+            self.shader.uniformInt('useObjectColor',True)
+            self.shader.uniformVec3('objectColor',obj.objectColor)
+        if hasattr(obj,'pointSize'):
+            print("POINTSIZE %s" % obj.pointSize)
+            self.shader.uniformFloat('pointSize',obj.pointSize)
 
 
     def renderObject(self,obj):
@@ -75,11 +96,17 @@ class Renderer(object):
         try:
             GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
             GL.glVertexPointerf(vbo)
-            GL.glDrawArrays(obj.glmode,0,vbo.size)
+            if oid in self._ibo:
+                ibo = self._ibo[oid]
+                ibo.bind()
+                GL.glDrawElementsui(obj.glmode,ibo)
+            else:
+                GL.glDrawArrays(obj.glmode,0,obj.npoints())
         finally:
             vbo.unbind()
+            if oid in self._ibo:
+                ibo.unbind()
             GL.glDisableClientState(GL.GL_VERTEX_ARRAY)
-
 
 
     def render(self):
@@ -93,19 +120,14 @@ class Renderer(object):
         #print("PROJECTION-R",projection)
 
         # Propagate the matrices to the uniforms of the shader
-        #self.shader.uniformMat4('modelview',modelview.gl())
-        #self.shader.uniformMat4('projection',projection.gl())
-        loc = self.shader.uniform['modelview']
-        GL.glUniformMatrix4fv(loc,1,False,modelview.gl())
-        loc = self.shader.uniform['projection']
-        GL.glUniformMatrix4fv(loc,1,False,projection.gl())
+        self.shader.uniformMat4('modelview',modelview.gl())
+        self.shader.uniformMat4('projection',projection.gl())
+        self.setDefaults()
 
         try:
             for obj in self._objects:
                 try:
-                    if hasattr(obj,'objectColor'):
-                        self.shader.uniformBool('useObjectColor',True)
-                        self.shader.uniformVec3('objectColor',obj.objectColor)
+                    self.setUniforms(obj)
                     self.renderObject(obj)
                 except:
                     pass

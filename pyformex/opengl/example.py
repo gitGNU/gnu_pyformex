@@ -28,7 +28,7 @@ clear()
 
 
 from simple import sphere
-A = Formex('3:012')
+A = Formex('3:012').replic2(2,1)
 A.objectColor = red
 
 B = Formex('l:127')
@@ -37,13 +37,24 @@ B.objectColor = blue
 C = Formex('1:012')
 C.objectColor = magenta
 
+D = A.trl([1.,1.,0.]).toMesh()
+D.objectColor = green
 
 print(A)
 print(B)
 print(C)
+print(D)
+
+print(A.npoints())
+print(D.npoints())
+
+E = Formex(D.points())
+E.pointSize = 20.
 
 draw(A)
 draw(B)
 draw(C)
+draw(D)
+draw(E)
 
 # End

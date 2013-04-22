@@ -125,10 +125,16 @@ class Shader(object):
         return dict([(k,func(self.shader,k)) for k in keys ])
 
 
-    def uniformBool(self,name,value):
-        """Load a uniform bool into the shader"""
+    def uniformInt(self,name,value):
+        """Load a uniform integer or boolean into the shader"""
         loc = self.uniform[name]
         GL.glUniform1i(loc,value)
+
+
+    def uniformFloat(self,name,value):
+        """Load a uniform float into the shader"""
+        loc = self.uniform[name]
+        GL.glUniform1f(loc,value)
 
 
     def uniformVec3(self,name,value):

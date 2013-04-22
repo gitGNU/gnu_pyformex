@@ -38,8 +38,11 @@ void main()
   if (useObjectColor) {
     fragmentColor = objectColor;
   } else {
-    fragmentColor = vec4(1.,1.,1.,1.);
+    // Default black opaque
+    fragmentColor = vec4(0.,0.,0.,1.);
   }
+  // setup vertex Point Size
+  gl_PointSize = pointSize;
   // Transforming The Vertex
   //gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
   gl_Position = projection * modelview * gl_Vertex;
