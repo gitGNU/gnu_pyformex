@@ -78,7 +78,7 @@ class Shader(object):
         uniforms = [
         'modelview',
         'projection',
-        'modelviewprojection',
+#        'modelviewprojection',
         'center',
         'objectTransform',
         'useObjectColor',
@@ -123,6 +123,24 @@ class Shader(object):
     def locations(self,func,keys):
         """Create a dict with the locations of the specified keys"""
         return dict([(k,func(self.shader,k)) for k in keys ])
+
+
+    def uniformBool(self,name,value):
+        """Load a uniform bool into the shader"""
+        loc = self.uniform[name]
+        GL.glUniform1i(loc,value)
+
+
+    def uniformVec3(self,name,value):
+        """Load a uniform vec3 into the shader"""
+        loc = self.uniform[name]
+        GL.glUniform3fv(loc,1,value)
+
+
+    def uniformMat4(self,name,value):
+        """Load a uniform mat4 into the shader"""
+        loc = self.uniform[name]
+        GL.glUniformMatrix4fv(loc,1,False,value)
 
 
     def bind(self):

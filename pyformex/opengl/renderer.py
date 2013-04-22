@@ -14,10 +14,18 @@ from __future__ import print_function
 import os
 import pyformex as pf
 from coords import bbox
+from formex import Formex
 import numpy as np
 from OpenGL import GL
 from shader import Shader
 from OpenGL.arrays.vbo import VBO
+
+
+def glObjType(nplex):
+    try:
+        return [GL.GL_POINTS,GL.GL_LINES,GL.GL_TRIANGLES][nplex-1]
+    except:
+        return None
 
 
 class Renderer(object):
@@ -41,29 +49,37 @@ class Renderer(object):
 
 
     def add(self,obj):
-        #if not isinstance
-        #obj = obj.toFormex()
-        if obj.nplex() != 3:
-            raise ValueError,"Can only add plex-3 objects"
+        if not isinstance(obj,Formex):
+            try:
+                obj = obj.toFormex()
+            except:
+                raise ValueError,"Can only render objects that can be converted to Formex"
+        glmode = glObjType(obj.nplex())
+        if glmode is None:
+            raise ValueError,"Can only render plex-1/2/3 objects"
+        obj.glmode = glmode
+
         self._objects.append(obj)
         oid = id(obj)
         self._vbo[oid] = VBO(obj.coords)
         self._bbox = bbox([self._bbox,obj])
         self.canvas.camera.focus = self._bbox.center()
-        print(self._bbox)
+        print("NEW BBOX: %s" % self._bbox)
 
 
     def renderObject(self,obj):
         oid = id(obj)
         vbo = self._vbo[oid]
         vbo.bind()
+
         try:
             GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
             GL.glVertexPointerf(vbo)
-            GL.glDrawArrays(GL.GL_TRIANGLES,0,vbo.size)
+            GL.glDrawArrays(obj.glmode,0,vbo.size)
         finally:
             vbo.unbind()
             GL.glDisableClientState(GL.GL_VERTEX_ARRAY)
+
 
 
     def render(self):
@@ -72,10 +88,13 @@ class Renderer(object):
 
         # Get the current modelview*projection matrix
         modelview = self.camera.modelview
-        print("MODELVIEW-R",modelview)
+        #print("MODELVIEW-R",modelview)
         projection = self.camera.projection
-        print("PROJECTION-R",projection)
+        #print("PROJECTION-R",projection)
+
         # Propagate the matrices to the uniforms of the shader
+        #self.shader.uniformMat4('modelview',modelview.gl())
+        #self.shader.uniformMat4('projection',projection.gl())
         loc = self.shader.uniform['modelview']
         GL.glUniformMatrix4fv(loc,1,False,modelview.gl())
         loc = self.shader.uniform['projection']
@@ -83,12 +102,13 @@ class Renderer(object):
 
         try:
             for obj in self._objects:
-                ## if hasattr(obj,'objectColor'):
-                ##     # Propagate the color to the uniforms of the shader
-                ##     loc = self.shader.uniform['objectColor']
-                ##     GL.glUniformMatrix3x1fv(loc,1,False,obj.objectColor)
-                print("RENDER OBJECT %s"%id(obj))
-                self.renderObject(obj)
+                try:
+                    if hasattr(obj,'objectColor'):
+                        self.shader.uniformBool('useObjectColor',True)
+                        self.shader.uniformVec3('objectColor',obj.objectColor)
+                    self.renderObject(obj)
+                except:
+                    pass
         finally:
             self.shader.unbind()
 

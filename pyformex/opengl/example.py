@@ -2,53 +2,48 @@
 #
 #
 
-vshader = ask("Vertex shader",["_simple","_new","default"])
-if vshader == "default":
-    vshader = ''
+## vshader = ask("Vertex shader",["_simple","_new","default"])
+## if vshader == "default":
+##     vshader = ''
 
 
+## from opengl.shader import Shader
+## from opengl.renderer import Renderer
+## vs = os.path.join(os.path.dirname(__file__),'vertex_shader%s.c'%vshader)
+## S = Shader(vs)
+## R = Renderer(pf.canvas,S)
+## pf.canvas.renderer = R
 
 
-from opengl.shader import Shader
-from opengl.renderer import Renderer
-vs = os.path.join(os.path.dirname(__file__),'vertex_shader%s.c'%vshader)
-S = Shader(vs)
-R = Renderer(pf.canvas,S)
-pf.canvas.renderer = R
+if pf.options.opengl2:
+    def draw(o):
+        pf.canvas.renderer.add(o)
+    _clear = clear
+    def clear():
+        pf.canvas.renderer.clear()
+        _clear()
 
 
-#R = pf.canvas.renderer
+clear()
 
-def clearAll():
-    clear()
-    R.clear()
 
-clearAll()
-A = Formex('3:.12')#.replic2(10,6)
+from simple import sphere
+A = Formex('3:012')
+A.objectColor = red
 
-B = Formex([[
-    [ 0.75,  0.75, 0.0],
-    [ 0.75, -0.75, 0.0],
-    [-0.75, -0.75, 0.0],
-    ]])
+B = Formex('l:127')
+B.objectColor = blue
 
-C = Formex([
-    [[  0, 1, 0 ],
-     [ -1,-1, 0 ],
-     [  1,-1, 0 ]],
-    [[  2,-1, 0 ],
-     [  4,-1, 0 ],
-     [  4, 1, 0 ]],
-    [[  2,-1, 0 ],
-     [  4, 1, 0 ],
-     [  2, 1, 0 ]],
-    ])
+C = Formex('1:012')
+C.objectColor = magenta
 
-#draw(A,color=green)
-draw(A.trl([0.01,0.01,0.01]),color=green)
 
-R.add(A)
-#R.add(B)
-#R.add(C)
+print(A)
+print(B)
+print(C)
 
-pf.canvas.update()
+draw(A)
+draw(B)
+draw(C)
+
+# End
