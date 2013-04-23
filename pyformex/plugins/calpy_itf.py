@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -108,7 +108,7 @@ else:
             We want to use the calpy interpolation facilities without
             having to set up a full model for calpy processing.
             This class just sets the necessary data to make the
-            interpolation mehtods (GP2NOdes, NodalAcc, NodalAvg) work.
+            interpolation methods (GP2NOdes, NodalAcc, NodalAvg) work.
 
             Parameters:
 

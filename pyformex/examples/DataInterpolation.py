@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -73,7 +73,7 @@ def run():
     M = Formex('4:0123').replic2(nx,ny).toMesh().convert('quad%s'%nplex,fuse=True)
     #draw(M,color=yellow)
 
-    # Create the Mesh interpolateor
+    # Create the Mesh interpolator
     gprule = (5,1) # integration rule: minimum (1,1),  maximum (5,5)
     Q = calpy_itf.QuadInterpolator(M.nelems(),M.nplex(),gprule)
 

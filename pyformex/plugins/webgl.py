@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -119,13 +119,15 @@ class WebGL(List):
         """Create a new (empty) WebGL model."""
         List.__init__(self)
         self._camera = None
+        #print(pf.cfg['webgl'])
         if pf.cfg['webgl/devel']:
             self.scripts = [
                 os.path.join(pf.cfg['webgl/devpath'],'lib/closure-library/closure/goog/base.js'),
                 os.path.join(pf.cfg['webgl/devpath'],'xtk-deps.js')
                 ]
         else:
-            self.scripts = [ pf.cfg['webgl/script'] ]
+            self.scripts = [ pf.cfg['webgl/xtkscript'], pf.cfg['webgl/guiscript'] ]
+        print("WebGL scripts: %s" % self.scripts)
         self.gui = []
         self.name = str(name)
 

@@ -1570,9 +1570,38 @@ def matchIndex(target,values):
     return inv[values]
 
 
+def groupPositions(gid,values):
+    """Compute the group positions.
+
+    Computes the positions per group in a set of group identifiers.
+
+    Parameters:
+
+    - `gid`: (nid,) shaped int array of group identifiers
+    - `values`: (nval,) shaped int array with unique group identifiers
+      for which to return the positions.
+
+    Returns:
+
+    - `pos`: list of int arrays giving the positions in `gid` of each group
+      identifier in `values`.
+
+    >>> gid = array([ 2, 1, 1, 6, 6, 1 ])
+    >>> values = array([ 1, 2, 6 ])
+    >>> print(groupPositions(gid,values))
+    [array([1, 2, 5]), array([0]), array([3, 4])]
+    """
+    srt = gid.argsort()
+    gid = gid[srt]
+    first = searchsorted(gid,values,side='left')
+    last = searchsorted(gid,values,side='right')
+    pos = [ srt[i:j] for i,j in zip(first,last) ]
+    return pos
+
+
 ## THIS IS A CANDIDATE FOR THE LIBRARY !!!
 def groupArgmin(val,gid):
-    """Compute the group minimum
+    """Compute the group minimum.
 
     Computes the minimum value per group of a set of values tagged with
     a group number.
@@ -1598,9 +1627,9 @@ def groupArgmin(val,gid):
     (array([1, 2, 6]), array([5, 0, 3]))
     """
     ugid = unique(gid)
-    minid = hstack([ val[gid == i].argmin() for i in ugid ])
-    rng = arange(val.size)
-    minpos = hstack([ rng[gid == i][j] for i,j in zip(ugid,minid) ])
+    pos = groupPositions(gid,ugid)
+    minid = hstack([ val[ind].argmin() for ind in pos ])
+    minpos = hstack([ ind[k] for ind,k in zip(pos,minid) ])
     return ugid,minpos
 
 
@@ -1731,7 +1760,10 @@ def multiplicity(a):
       (array([2, 3, 1, 1, 1, 1]), array([0, 1, 3, 4, 5, 7]))
     """
     bins = unique(a)
-    mult,b = histogram(a,bins=concatenate([bins,[max(a)+1]]))
+    if bins.size > 0:
+        mult,b = histogram(a,bins=concatenate([bins,[max(a)+1]]))
+    else:
+        mult = bins
     return mult,bins
 
 
