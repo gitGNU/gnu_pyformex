@@ -85,21 +85,86 @@ def centerline(self):
     return cl
 
 
-def remesh(self,edgelen=None):
+def centerline(self,seedselector='pickpoint',sourcepoints=[],
+               targetpoints=[],endpoints=False):
+    """Compute the centerline of a surface.
+
+    The centerline is computed using VMTK. This is very well suited for
+    computing the centerlines in vascular models.
+
+    Parameters:
+    
+    - `seedselector`: str: seed point selection method, one of
+      [`pickpoint`,`openprofiles`,`carotidprofiles`,`pointlist`]
+    - `sourcepoints`: list: source point coordinates for `pointlist` method
+    - `targetpoints`: list: target point coordinates for `pointlist` method
+    - `endpoints`: boolean: append source- and targetpoints to centerlines.
+
+    Returns a Coords with the points defining the centerline.
+    """
+    tmp = utils.tempFile(suffix='.stl').name
+    tmp1 = utils.tempFile(suffix='.dat').name
+    pf.message("Writing temp file %s" % tmp)
+    self.write(tmp,'stl')
+    pf.message("Computing centerline using VMTK")
+    cmd = 'vmtk vmtkcenterlines -seedselector %s -ifile %s -ofile %s'%(seedselector,tmp,tmp1)
+    if len(sourcepoints) != 0:
+        cmd += ' -sourcepoints'
+        for val in sourcepoints:
+            cmd += ' %s' % val
+    if len(targetpoints) != 0:   
+        cmd += ' -targetpoints'
+        for val in targetpoints:
+            cmd += ' %s' % val
+    if endpoints == True:
+        cmd += ' -endpoints 1'
+    sta,out = utils.runCommand(cmd)
+    os.remove(tmp)
+    if sta:
+        pf.message("An error occurred during the remeshing.")
+        pf.message(out)
+        return None
+    data, header = readVmtkCenterlineDat(tmp1)
+    print(header)
+    cl = Coords(data[:,:3])
+    os.remove(tmp1)
+    return cl
+
+
+def remesh(self,elementsizemode='edgelength',edgelength=None,
+           area=None,aspectratio=None):
     """Remesh a TriSurface.
 
-    edgelen is the suggested edge length
+    Parameters:
+
+    - `elementsizemode`: str: metric that is used for remeshing,
+      `edgelength` and `area` allow to specify a global target triangle
+      edgelength and area respectively.
+    - `edgelength`: float: global target triangle edgelength
+    - `area`: float: global target triangle area
+    - `aspectratio`: float: upper threshold for aspect ratio (default=1.2).
+    
+    Returns the remeshed TriSurface.
     """
-    if edgelen is None:
-       self.getElemEdges()
-       E = Mesh(self.coords,self.edges,eltype='line2')
-       edgelen =  E.lengths().mean()
     tmp = utils.tempFile(suffix='.stl').name
     tmp1 = utils.tempFile(suffix='.stl').name
     pf.message("Writing temp file %s" % tmp)
     self.write(tmp,'stl')
-    pf.message("Remeshing using VMTK (edge length = %s)" % edgelen)
-    cmd = "vmtk vmtksurfaceremeshing -ifile %s -ofile %s -edgelength %s" % (tmp,tmp1,edgelen)
+    cmd = 'vmtk vmtksurfaceremeshing -ifile %s -ofile %s'  % (tmp,tmp1)
+    if elementsizemode == 'edgelength':
+        if  edgelength is None:
+           self.getElemEdges()
+           E = Mesh(self.coords,self.edges,eltype='line2')
+           edgelength =  E.lengths().mean()
+        cmd += ' -elementsizemode edgelength -edgelength %s' % edgelength
+    elif elementsizemode == 'area':
+        if  area is None:
+            self.areaNormals()
+            area = self.areas.mean()
+        cmd += ' -elementsizemode area -area %s' % area
+    if aspectratio is not None:
+        cmd += ' -aspectratio %s' % aspectratio
+    pf.message("Remeshing with command\n %s" % cmd)
     sta,out = utils.runCommand(cmd)
     os.remove(tmp)
     if sta:
