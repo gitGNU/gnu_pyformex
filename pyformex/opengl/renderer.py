@@ -1,4 +1,26 @@
 # $Id$
+##
+##  This file is part of the pyFormex project.
+##  pyFormex is a tool for generating, manipulating and transforming 3D
+##  geometrical models by sequences of mathematical operations.
+##  Home page: http://pyformex.org
+##  Project page:  http://savannah.nongnu.org/projects/pyformex/
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
+##  Distributed under the GNU General Public License version 3 or later.
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see http://www.gnu.org/licenses/.
+##
 """opengl/renderer.py
 
 Python OpenGL framework for pyFormex
@@ -14,12 +36,9 @@ from __future__ import print_function
 import os
 import pyformex as pf
 from coords import bbox
-from formex import Formex
-from mesh import Mesh
 import numpy as np
 from OpenGL import GL
 from shader import Shader
-from OpenGL.arrays.vbo import VBO
 
 
 def glObjType(nplex):
@@ -28,6 +47,8 @@ def glObjType(nplex):
     except:
         return None
 
+
+from drawable import Drawable
 
 class Renderer(object):
 
@@ -44,27 +65,13 @@ class Renderer(object):
 
     def clear(self):
         self._objects = []
-        self._vbo = {}
-        self._ibo = {}
         self._bbox = bbox([0.,0.,0.])
 
 
     def add(self,obj):
-        if not isinstance(obj,Mesh) and not isinstance(obj,Formex):
-            try:
-                obj = obj.toFormex()
-            except:
-                raise ValueError,"Can only render Mesh, Formex and objects that can be converted to Formex"
-        glmode = glObjType(obj.nplex())
-        if glmode is None:
-            raise ValueError,"Can only render plex-1/2/3 objects"
-        obj.glmode = glmode
-
-        oid = id(obj)
-        self._vbo[oid] = VBO(obj.coords)
-        if isinstance(obj,Mesh):
-            self._ibo[oid] = VBO(obj.elems,target=GL.GL_ELEMENT_ARRAY_BUFFER)
-        self._objects.append(obj)
+        drawable = Drawable(obj)
+        drawable.prepare(self)
+        self._objects.append(drawable)
         self._bbox = bbox([self._bbox,obj])
         self.canvas.camera.focus = self._bbox.center()
         print("NEW BBOX: %s" % self._bbox)
@@ -73,7 +80,7 @@ class Renderer(object):
     def setDefaults(self):
         """Set all the uniforms to default values."""
         self.shader.uniformFloat('lighting',True) # self.canvas....
-        self.shader.uniformInt('useObjectColor',True)
+        self.shader.uniformInt('colormode',1)
         self.shader.uniformVec3('objectColor',self.canvas.settings.fgcolor)
         GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
         GL.glLineWidth(5.) #self.canvas.settings.linewidth)
@@ -82,40 +89,6 @@ class Renderer(object):
         self.shader.uniformFloat('ambient',0.3) # self.canvas....
         self.shader.uniformFloat('diffuse',0.8) # self.canvas....
         self.shader.uniformFloat('specular',0.2) # self.canvas....
-
-
-    def setUniforms(self,obj):
-        """Set all the uniforms that may be object dependent."""
-        if hasattr(obj,'lighting'):
-            self.shader.uniformInt('lighting',obj.lighting)
-        if hasattr(obj,'objectColor'):
-            self.shader.uniformInt('useObjectColor',True)
-            self.shader.uniformVec3('objectColor',obj.objectColor)
-        # Set float attributes
-        for a in ['pointsize','ambient','diffuse','specular']:
-            if hasattr(obj,a):
-                self.shader.uniformFloat(a,getattr(obj,a))
-
-
-    def renderObject(self,obj):
-        oid = id(obj)
-        vbo = self._vbo[oid]
-        vbo.bind()
-
-        try:
-            GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
-            GL.glVertexPointerf(vbo)
-            if oid in self._ibo:
-                ibo = self._ibo[oid]
-                ibo.bind()
-                GL.glDrawElementsui(obj.glmode,ibo)
-            else:
-                GL.glDrawArrays(obj.glmode,0,obj.npoints())
-        finally:
-            vbo.unbind()
-            if oid in self._ibo:
-                ibo.unbind()
-            GL.glDisableClientState(GL.GL_VERTEX_ARRAY)
 
 
     def render(self):
@@ -139,10 +112,10 @@ class Renderer(object):
                     # skip invisible object
                     continue
                 try:
-                    self.setUniforms(obj)
-                    self.renderObject(obj)
+                    obj.render(self)
                 except:
-                    pass
+                    raise
+                    #pass
         finally:
             self.shader.unbind()
 

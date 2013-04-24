@@ -10,9 +10,9 @@ attribute float vertexScalar;
 
 uniform mat4 modelview;     // xtk: view
 uniform mat4 projection;    // xtk: perspective
-uniform vec3 center;
+uniform int colormode;      // xtk useObjectColor;
+
 uniform mat4 objectTransform;
-uniform bool useObjectColor;
 uniform bool useScalars;
 uniform bool scalarsReplaceMode;
 uniform float scalarsMin;
@@ -36,7 +36,7 @@ varying vec3 fTransformedVertexNormal;
 void main()
 {
   // Set single color
-  if (useObjectColor) {
+  if (colormode == 1) {
     fragmentColor = objectColor;
   } else {
     // Default black opaque

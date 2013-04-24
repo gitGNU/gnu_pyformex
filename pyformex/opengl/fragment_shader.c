@@ -36,7 +36,7 @@ void main(void) {
   if (lighting) {
     gl_FragColor = vec4(fragmentColor * ambient +
 			fragmentColor * diffuse +
-			vec3(1.0, 0.0, 0.0) * specular,
+			vec3(0.2,0.2,0.2) * specular,
 			opacity);
   } else {
     gl_FragColor = vec4(fragmentColor, 1.0);
