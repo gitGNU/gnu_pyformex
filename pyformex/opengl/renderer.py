@@ -72,20 +72,29 @@ class Renderer(object):
 
     def setDefaults(self):
         """Set all the uniforms to default values."""
+        self.shader.uniformFloat('lighting',True) # self.canvas....
         self.shader.uniformInt('useObjectColor',True)
         self.shader.uniformVec3('objectColor',self.canvas.settings.fgcolor)
         GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
-        self.shader.uniformFloat('pointSize',5.0)
+        GL.glLineWidth(5.) #self.canvas.settings.linewidth)
+        # Should do pointsize with gl context?
+        self.shader.uniformFloat('pointsize',5.0)
+        self.shader.uniformFloat('ambient',0.3) # self.canvas....
+        self.shader.uniformFloat('diffuse',0.8) # self.canvas....
+        self.shader.uniformFloat('specular',0.2) # self.canvas....
 
 
     def setUniforms(self,obj):
         """Set all the uniforms that may be object dependent."""
+        if hasattr(obj,'lighting'):
+            self.shader.uniformInt('lighting',obj.lighting)
         if hasattr(obj,'objectColor'):
             self.shader.uniformInt('useObjectColor',True)
             self.shader.uniformVec3('objectColor',obj.objectColor)
-        if hasattr(obj,'pointSize'):
-            print("POINTSIZE %s" % obj.pointSize)
-            self.shader.uniformFloat('pointSize',obj.pointSize)
+        # Set float attributes
+        for a in ['pointsize','ambient','diffuse','specular']:
+            if hasattr(obj,a):
+                self.shader.uniformFloat(a,getattr(obj,a))
 
 
     def renderObject(self,obj):
@@ -126,6 +135,9 @@ class Renderer(object):
 
         try:
             for obj in self._objects:
+                if hasattr(obj,'visible') and not obj.visible:
+                    # skip invisible object
+                    continue
                 try:
                     self.setUniforms(obj)
                     self.renderObject(obj)

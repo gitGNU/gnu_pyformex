@@ -23,7 +23,8 @@ uniform float scalarsMinThreshold;
 uniform float scalarsMaxThreshold;
 uniform int scalarsInterpolation;
 uniform vec3 objectColor;
-uniform float pointSize;
+
+uniform float pointsize;
 
 varying float fDiscardNow;
 varying vec4 fVertexPosition;
@@ -42,7 +43,7 @@ void main()
     fragmentColor = vec4(0.,0.,0.,1.);
   }
   // setup vertex Point Size
-  gl_PointSize = pointSize;
+  gl_PointSize = pointsize;
   // Transforming The Vertex
   //gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
   gl_Position = projection * modelview * gl_Vertex;

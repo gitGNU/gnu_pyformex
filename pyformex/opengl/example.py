@@ -47,9 +47,19 @@ print(D)
 
 print(A.npoints())
 print(D.npoints())
-
 E = Formex(D.points())
-E.pointSize = 20.
+E.pointsize = 20.
+#E.invisible = True
+
+D.attrib(lighting=True,ambient=0.3,diffuse=0.2,color='orange')
+D.attrib(color='red')
+D.attrib(lighting=None)
+print(D._render)
+
+
+
+A.lighting = False
+E.lighting = False
 
 draw(A)
 draw(B)
