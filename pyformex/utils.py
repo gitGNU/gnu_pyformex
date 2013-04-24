@@ -1039,6 +1039,24 @@ def inverseDict(d):
     return dict([(v,k) for k,v in d.items()])
 
 
+def selectDictValues(d,values):
+    """Return the keys in a dict which have a specified value
+
+    - `d`: a dict where all the keys are strings.
+    - `values`: a list/set of values.
+
+    The return value is a list with all the keys from d whose value
+    is in keys.
+
+    Example:
+
+    >>> d = dict([(c,c*c) for c in range(6)])
+    >>> selectDictValues(d,range(10))
+    [0, 1, 2, 3]
+    """
+    return [ k for k in d if d[k] in values ]
+
+
 class DictDiff(object):
     """A class to compute the difference between two dictionaries
 
