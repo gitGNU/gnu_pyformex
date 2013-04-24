@@ -45,6 +45,7 @@ from formex import Formex
 from connectivity import Connectivity
 from elements import elementType
 from geometry import Geometry
+from attributes import Attributes
 from simple import regularGrid
 import utils
 
@@ -126,6 +127,7 @@ class Mesh(Geometry):
 
     def __init__(self,coords=None,elems=None,prop=None,eltype=None):
         """Initialize a new Mesh."""
+        self.attrib = Attributes()
         self.coords = self.elems = self.prop = None
         self.ndim = -1
         self.nodes = self.edges = self.faces = self.cells = None
@@ -1389,15 +1391,15 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
     def hits(self, entities, level):
         """Count the lower entities from a list connected to the elements.
-    
+
         `entities`: a single number or a list/array of entities
         `level`: 0 or 1 or 2 if entities are nodes or edges or faces, respectively.
-    
+
         The numbering of the entities corresponds to self.insertLevel(level).
         Returns an (nelems,) shaped int array with the number of the
         entities from the list that are contained in each of the elements.
         This method can be used in selector expressions like::
-    
+
           self.select(self.hits(entities,level) > 0)
         """
         hi = self.elems.insertLevel(level)[0]

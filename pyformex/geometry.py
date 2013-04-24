@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -47,18 +47,18 @@ class Geometry(object):
     the attribute `coords`, which should be a Coords object.
     Most of the transformation methods of the Coords class are thus exported
     through the Geometry class to its derived classes, and when called, will
-    get executed on the `coords` attribute. 
+    get executed on the `coords` attribute.
     The derived class constructor should make sure that the `coords` attribute
     exists, has the proper type and contains the coordinates of all the points
-    that should get transformed under a Coords transformation. 
+    that should get transformed under a Coords transformation.
 
     Derived classes can (and in most cases should) declare a method
     `_set_coords(coords)` returning an object that is identical to the
     original, except for its coords being replaced by new ones with the
     same array shape.
-    
+
     The Geometry class provides two possible default implementations:
-    
+
     - `_set_coords_inplace` sets the coords attribute to the provided new
       coords, thus changing the object itself, and returns itself,
     - `_set_coords_copy` creates a deep copy of the object before setting
@@ -94,7 +94,7 @@ class Geometry(object):
     :meth:`directionalWidth`,
     :meth:`directionalExtremes`,
     :meth:`__str__`.
-    
+
 
     The following :class:`Coords` transformation methods can be directly applied
     to a :class:`Geometry` object or a derived class object. The return value
@@ -102,7 +102,7 @@ class Geometry(object):
     which will have been transformed by the specified method.
     Refer to the correponding :class:`coords.Coords` method in for the precise
     arguments of these methods:
-    
+
     :meth:`scale`,
     :meth:`translate`,
     :meth:`centered`,
@@ -136,7 +136,7 @@ class Geometry(object):
     :meth:`rot`,
     :meth:`trl`.
     """
-    
+
     ########### Change the coords #################
 
     def _coords_transform(func):
@@ -146,10 +146,10 @@ class Geometry(object):
         """
         coords_func = getattr(Coords,func.__name__)
         def newf(self,*args,**kargs):
-            """Performs the Coords %s transformation on the coords attribute""" 
+            """Performs the Coords %s transformation on the coords attribute"""
             return self._set_coords(coords_func(self.coords,*args,**kargs))
         newf.__name__ = func.__name__
-        newf.__doc__ ="""Apply '%s' transformation to the Geometry object. 
+        newf.__doc__ ="""Apply '%s' transformation to the Geometry object.
 
         See :meth:`coords.Coords.%s` for details.
 """ % (func.__name__,func.__name__)
@@ -188,7 +188,7 @@ class Geometry(object):
 
 
     def points(self):
-        return self.coords.points()  
+        return self.coords.points()
     def x(self):
         return self.coords.x()
     def y(self):
@@ -243,7 +243,7 @@ class Geometry(object):
 
 
     ########### Coords transformations #################
- 
+
     @_coords_transform
     def scale(self,*args,**kargs):
         pass
@@ -368,7 +368,7 @@ class Geometry(object):
     rot = rotate
     trl = translate
 
-    
+
     def write(self,fil,sep=' ',mode='w'):
         """Write a Geometry to a .pgf file.
 

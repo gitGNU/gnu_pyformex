@@ -6,7 +6,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -71,7 +71,7 @@ class Dict(dict):
 
     :class:`Dict` is functionally nearly equivalent with the builtin Python
     :class:`dict`, but provides the following extras:
-    
+
     - Items can be accessed with attribute syntax as well as dictionary
       syntax. Thus, if ``C`` is a :class:`Dict`, ``C['foo']`` and ``C.foo``
       are equivalent.
@@ -85,27 +85,27 @@ class Dict(dict):
       None or some other default value.
 
     There are a few caveats though:
-    
+
     - Keys that are also attributes of the builtin dict type, can not be used
       with the attribute syntax to get values from the Dict. You should use
       the dictionary syntax to access these items. It is possible to set
       such keys as attributes. Thus the following will work::
-      
+
          C['get'] = 'foo'
          C.get = 'foo'
          print(C['get'])
-         
+
       but this will not::
-      
+
          print(C.get)
 
       This is done so because we want all the dict attributes to be available
       with their normal binding. Thus, ::
-      
+
          print(C.get('get'))
 
       will print ``foo``
-    
+
     To avoid name clashes with user defines, many Python internal names start
     and end with '__'. The user should avoid such names.
     The Python dict has the following attributes not enclosed between '__',
@@ -126,7 +126,7 @@ class Dict(dict):
         if default is None:
             default = raiseKeyError
         if not callable(default):
-            raise ValueError,"'default' should be a callable function" 
+            raise ValueError,"'default' should be a callable function"
         self.__dict__['_default_'] = default
 
 
@@ -198,12 +198,13 @@ class Dict(dict):
         self.__delitem__(key)
 
 
-    def update(self,data={}):
+    def update(self,data={},**kargs):
         """Add a dictionary to the Dict object.
 
-        The data can be a dict or Dict type object. 
+        The data can be a dict or Dict type object.
         """
         dict.update(self,data)
+        dict.update(self,kargs)
 
 
     def get(self, key, default):
@@ -304,7 +305,7 @@ class CDict(Dict):
         """
         return "CDict(%s)" % dict.__repr__(self)
 
-    
+
     def __str__(self):
         """Format a CDict into a string."""
         global _indent
@@ -366,13 +367,13 @@ if __name__ == '__main__':
         print(type(C))
         print(C._default_)
         f.close()
-        
+
 
     C = Dict({'x':Dict({'a':1,'y':Dict({'b':5,'c':6})}),'y':Dict({'c':3,'d':4}),'d':0})
     show()
     testpickle()
     show()
-    
+
     # now exec this to check if we get the same
     exec(Cr)
     show()
@@ -389,7 +390,7 @@ if __name__ == '__main__':
     print(val("C['e']"))
     print(val("C.a,C.b,C.c,C.d,C.x.c"))
     print(val("C.e"))
-    
+
 
     C = CDict({'a':'aa','d':{'a':'aaa','b':'bbb'}})
     print(C)

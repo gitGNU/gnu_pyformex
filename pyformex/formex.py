@@ -34,6 +34,7 @@ from __future__ import print_function
 from coords import *
 from utils import deprecation,deprec,warn
 from geometry import Geometry
+from attributes import Attributes
 import re
 
 
@@ -910,6 +911,7 @@ class Formex(Geometry):
 
     def __init__(self,data=[],prop=None,eltype=None):
         """Create a new Formex."""
+        self.attrib = Attributes()
         if isinstance(data,Formex):
             if prop is None:
                 prop = data.prop
