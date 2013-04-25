@@ -2296,13 +2296,15 @@ Quality: %s .. %s
             return pointInsideObject(self,pts,tol)
 
 
-    def tetgen(self,quality=True,filename=None,format='.off'):
+    def tetgen(self,quality=True,volume=None,filename=None,format='.off'):
         """Create a tetrahedral mesh inside the surface
 
         - `surfacefile`: a file representing a surface. It can be an .off or
           .stl file (or other?)
         - `quality`: if True, the output will be a quality mesh
-          (should add other tetgen parameters?)
+          The circumradius-to-shortest-edge ratio can be constrained by
+          specifying a float value for quality (default is 2.0)
+          - `volume`: float: applies a maximum tetrahedron volume constraint
         - `outputdir`: if specified, the results surface model and the tet
           model files will be placed in this directory. Else, a temporary
           directory will be used.
@@ -2316,7 +2318,7 @@ Quality: %s .. %s
         else:
             fn = filename
         self.write(fn)
-        res = tetgen.tetMesh(fn,quality)
+        res = tetgen.tetMesh(fn,quality,volume)
         if filename is None:
             utils.removeTree(outputdir)
         return res['tetgen.ele']

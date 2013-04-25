@@ -473,13 +473,15 @@ def checkSelfIntersectionsWithTetgen(self,verbose=False):
     return asarray( [int(l.split(' ')[0]) for l in out.split('acet #')[1:]]).reshape(-1, 2)-1
 
 
-def tetMesh(surfacefile,quality=False,outputdir=None):
+def tetMesh(surfacefile,quality=False,volume=None,outputdir=None):
     """Create a tetrahedral mesh inside a surface
 
     - `surfacefile`: a file representing a surface. It can be an .off or
       .stl file (or other?)
     - `quality`: if True, the output will be a quality mesh
-      (should add other tetgen parameters?)
+      The circumradius-to-shortest-edge ratio can be constrained by
+      specifying a float value for quality (default is 2.0)
+    - `volume`: float: applies a maximum tetrahedron volume constraint
     - `outputdir`: if specified, the results will be placed in this directory.
       The default is to place the results in the same directory as the input
       file.
@@ -487,10 +489,13 @@ def tetMesh(surfacefile,quality=False,outputdir=None):
     If the creation of the tetrahedral model is succesful, the results are
     read back using readTetgen and returned.
     """
-    if quality:
-        options='-q'
-    else:
-        options=''
+    options = ''
+    if quality is True:
+        options += 'q'
+    elif type(quality) == float:
+        options += 'q%f' % quality
+    if volume is not None:
+        options += 'a%f' % volume
     if outputdir is None:
         d = os.path.dirname(surfacefile)
     tgt = os.path.join(d,os.path.basename(surfacefile))
