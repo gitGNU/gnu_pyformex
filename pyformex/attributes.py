@@ -6,7 +6,7 @@ other objects without cluttering the name space.
 """
 from __future__ import print_function
 
-from mydict import Dict
+from mydict import Dict,returnNone
 import utils
 
 
@@ -19,7 +19,8 @@ class Attributes(Dict):
     The class has dict type and object/attribute type syntax.
     Furthermore, an instance can be called as a function to populate
     or update its contents.
-    Lastly, giving an attribute the value None removes it from the dict.
+    Giving an attribute the value None removes it from the dict.
+    Any non-existing attribute returns None.
 
     Example:
 
@@ -40,9 +41,8 @@ class Attributes(Dict):
     Dict({})
     """
 
-    def __init__(self,**kargs):
-        Dict.__init__(self,kargs)
-
+    def __init__(self,data={},default=returnNone):
+        Dict.__init__(self,data,default)
 
     def __call__(self,**kargs):
         self.update(kargs)
