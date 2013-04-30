@@ -40,7 +40,7 @@ void main()
     fragmentColor = objectColor;
   } else {
     // Default black opaque
-    fragmentColor = vec4(0.,0.,0.,1.);
+    fragmentColor = vec4(0.,0.,1.,1.);
   }
   // setup vertex Point Size
   gl_PointSize = pointsize;

@@ -77,7 +77,64 @@ class Shader(object):
     - `uniforms`: the shaders' uniforms.
     """
 
-    def __init__(self,vshader=None,fshader=None):
+    attributes = [
+    'vertexPosition',
+    'vertexNormal',
+    'vertexColor',
+    'vertexTexturePos',
+    'vertexScalar',
+    ]
+
+    # int and bool uniforms
+    uniforms_int = [
+        'colormode',
+        'lighting',
+        ]
+
+    uniforms_float = [
+        'pointsize',
+        'ambient',
+        'diffuse',
+        'specular',
+        ]
+
+    uniforms_vec3 = [
+        'objectColor',
+    ]
+
+    uniforms = uniforms_int + uniforms_float +  uniforms_vec3 + [
+        'modelview',
+        'projection',
+        'objectTransform',
+        'useScalars',
+        'scalarsReplaceMode',
+        'scalarsMin',
+        'scalarsMax',
+        'scalarsMinColor',
+        'scalarsMaxColor',
+        'scalarsMinThreshold',
+        'scalarsMaxThreshold',
+        'scalarsInterpolation',
+        'objectOpacity',
+        'normal',
+        'usePicking',
+        'useTexture',
+        'useLabelMapTexture',
+        'labelmapOpacity',
+        'textureSampler',
+        'textureSampler2',
+        'volumeLowerThreshold',
+        'volumeUpperThreshold',
+        'volumeScalarMin',
+        'volumeScalarMax',
+        'volumeScalarMinColor',
+        'volumeScalarMaxColor',
+        'volumeWindowLow',
+        'volumeWindowHigh',
+        'volumeTexture',
+    ]
+
+    def __init__(self,vshader=None,fshader=None,attributes=None,uniforms=None):
         print("LOADING SHADER PROGRAMS")
         if vshader is None:
             vshader = _vertexshader_filename
@@ -89,53 +146,11 @@ class Shader(object):
         with open(fshader) as f:
             FragmentShader = f.read()
 
-        attributes = [
-        'vertexPosition',
-        'vertexNormal',
-        'vertexColor',
-        'vertexTexturePos',
-        'vertexScalar',
-        ]
+        if attributes is None:
+            attributes = Shader.attributes
 
-        uniforms = [
-            'modelview',
-            'projection',
-            'objectTransform',
-            'colormode',
-            'objectColor',
-            'useScalars',
-            'scalarsReplaceMode',
-            'scalarsMin',
-            'scalarsMax',
-            'scalarsMinColor',
-            'scalarsMaxColor',
-            'scalarsMinThreshold',
-            'scalarsMaxThreshold',
-            'scalarsInterpolation',
-            'objectOpacity',
-            'normal',
-            'usePicking',
-            'useTexture',
-            'useLabelMapTexture',
-            'labelmapOpacity',
-            'textureSampler',
-            'textureSampler2',
-            'volumeLowerThreshold',
-            'volumeUpperThreshold',
-            'volumeScalarMin',
-            'volumeScalarMax',
-            'volumeScalarMinColor',
-            'volumeScalarMaxColor',
-            'volumeWindowLow',
-            'volumeWindowHigh',
-            'volumeTexture',
-
-            'pointsize',
-            'lighting',
-            'ambient',
-            'diffuse',
-            'specular',
-        ]
+        if uniforms is None:
+            uniforms = Shader.uniforms
 
         vertex_shader = GL.shaders.compileShader(VertexShader,GL.GL_VERTEX_SHADER)
         fragment_shader = GL.shaders.compileShader(FragmentShader,GL.GL_FRAGMENT_SHADER)
@@ -180,6 +195,18 @@ class Shader(object):
     def unbind(self):
         GL.shaders.glUseProgram(0)
 
+
+    def loadUniforms(self,D):
+        """Load the uniform attributes defined in D"""
+        for attribs,func in [
+            (self.uniforms_int,self.uniformInt),
+            (self.uniforms_float,self.uniformFloat),
+            (self.uniforms_vec3,self.uniformVec3),
+            ]:
+            for a in attribs:
+                v = D[a]
+                if v is not None:
+                    func(a,v)
 
     # NOT SURE IF THIS IS A GOOD IDEA
     def __del__(self):

@@ -29,7 +29,7 @@ from __future__ import print_function
 from gui.drawable import *
 from OpenGL import GL
 from OpenGL.arrays.vbo import VBO
-from mydict import Dict
+from attributes import Attributes
 from formex import Formex
 from mesh import Mesh
 
@@ -45,7 +45,7 @@ def glObjType(nplex):
         return None
 
 
-class Drawable(Dict):
+class Actor(Attributes):
     """Proposal for drawn objects
 
     __init__:  store all static values: attributes, geometry, vbo's
@@ -61,19 +61,26 @@ class Drawable(Dict):
     """
 
     def __init__(self,obj,**kargs):
-        Dict.__init__(self,kargs)
+        Attributes.__init__(self)
+
+        # Check it is something we can draw
         if not isinstance(obj,Mesh) and not isinstance(obj,Formex):
             try:
                 obj = obj.toFormex()
             except:
                 raise ValueError,"Can only render Mesh, Formex and objects that can be converted to Formex"
-        self.object = obj
-        self.update(obj.attrib)
         glmode = glObjType(obj.nplex())
+        self.object = obj
+
         if glmode is None:
             raise ValueError,"Can only render plex-1/2/3 objects"
         self.glmode = glmode
 
+        # Acknowledge all object attributes and passed parameters
+        self.update(obj.attrib)
+        self.update(kargs)
+
+        # Create the static data buffers
         self.vbo = VBO(obj.coords)
         if isinstance(obj,Mesh):
             self.ibo = VBO(obj.elems,target=GL.GL_ELEMENT_ARRAY_BUFFER)
@@ -82,32 +89,53 @@ class Drawable(Dict):
 
 
     def prepare(self,renderer):
+        print("PREPARE ACTOR")
         # colormode:
         # 0 = None
         # 1 = object
         # 2 = element
         # 3 = vertex
+        self.setColor(self.color,self.colormap)
+        self.setBkColor(self.bkcolor,self.bkcolormap)
+        self.setAlpha(self.alpha,self.bkalpha)
+        print(self.color)
+        if self.color is None:
+            self.colormode = 0
         self.colormode = 1
+        self.objectColor = red
         self.lighting = True
+        self.opacity = 1.0
+        self.ambient = 0.3
+        self.diffuse = 0.2
+        print(self)
 
 
-    def loadUniforms(self,shader):
-        """Load the uniform attributes into the shader"""
-        # int/bool attributes
-        for a in ['lighting','colormode']:
-            if hasattr(self,a):
-                shader.uniformInt(a,getattr(self,a))
-        # float attributes
-        for a in ['pointsize','ambient','diffuse','specular']:
-            if hasattr(self,a):
-                shader.uniformFloat(a,getattr(self,a))
-        # vec3 attributes
-        for a in ['objectColor']:
-            if hasattr(self,a):
-                shader.uniformVec3(a,getattr(self,a))
+    def setColor(self,color,colormap=None):
+        """Set the color of the Actor."""
+        self.color,self.colormap = saneColorSet(color,colormap,self.object.shape)
 
 
-    def renderGeom(self):
+    def setBkColor(self,color,colormap=None):
+        """Set the backside color of the Actor."""
+        self.bkcolor,self.bkcolormap = saneColorSet(color,colormap,self.object.shape)
+
+
+    def setAlpha(self,alpha,bkalpha):
+        """Set the Actors alpha value."""
+        try:
+            self.alpha = float(alpha)
+        except:
+            self.alpha = None
+        if bkalpha is None:
+            bkalpha = alpha
+        try:
+            self.bkalpha = float(bkalpha)
+        except:
+            self.bkalpha = None
+        self.opak = (self.alpha == 1.0) or (self.bkalpha == 1.0 )
+
+
+    def render(self):
         """Render the geometry of this object"""
         self.vbo.bind()
 
@@ -124,13 +152,6 @@ class Drawable(Dict):
             if self.ibo:
                 self.ibo.unbind()
             GL.glDisableClientState(GL.GL_VERTEX_ARRAY)
-
-
-    def render(self,renderer):
-        """Render the object."""
-        print(self)
-        self.loadUniforms(renderer.shader)
-        self.renderGeom()
 
 
 

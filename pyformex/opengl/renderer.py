@@ -48,7 +48,7 @@ def glObjType(nplex):
         return None
 
 
-from drawable import Drawable
+from drawable import Actor
 
 class Renderer(object):
 
@@ -69,9 +69,9 @@ class Renderer(object):
 
 
     def add(self,obj):
-        drawable = Drawable(obj)
-        drawable.prepare(self)
-        self._objects.append(drawable)
+        actor = Actor(obj)
+        actor.prepare(self)
+        self._objects.append(actor)
         self._bbox = bbox([self._bbox,obj])
         self.canvas.camera.focus = self._bbox.center()
         print("NEW BBOX: %s" % self._bbox)
@@ -108,11 +108,12 @@ class Renderer(object):
 
         try:
             for obj in self._objects:
-                if hasattr(obj,'visible') and not obj.visible:
+                if obj.visible is False:
                     # skip invisible object
                     continue
                 try:
-                    obj.render(self)
+                    self.shader.loadUniforms(obj)
+                    obj.render()
                 except:
                     raise
                     #pass
