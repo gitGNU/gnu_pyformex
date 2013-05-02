@@ -98,11 +98,13 @@ class Actor(Attributes):
         self.setColor(self.color,self.colormap)
         self.setBkColor(self.bkcolor,self.bkcolormap)
         self.setAlpha(self.alpha,self.bkalpha)
-        print(self.color)
+        print("COLOR=",self.color)
         if self.color is None:
             self.colormode = 0
-        self.colormode = 1
-        self.objectColor = red
+        else:
+            self.colormode = self.color.ndim
+        if self.colormode == 1:
+            self.objectColor = self.color
         self.lighting = True
         self.opacity = 1.0
         self.ambient = 0.3
@@ -135,18 +137,42 @@ class Actor(Attributes):
         self.opak = (self.alpha == 1.0) or (self.bkalpha == 1.0 )
 
 
-    def render(self):
+    def render(self,renderer):
         """Render the geometry of this object"""
-        self.vbo.bind()
 
-        try:
-            GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
-            GL.glVertexPointerf(self.vbo)
+        def render_geom():
             if self.ibo:
                 self.ibo.bind()
                 GL.glDrawElementsui(self.glmode,self.ibo)
             else:
                 GL.glDrawArrays(self.glmode,0,self.object.npoints())
+
+
+        self.vbo.bind()
+
+        try:
+            GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
+            GL.glVertexPointerf(self.vbo)
+
+            if self.bkcolor is not None:
+                # Enable drawing front and back with different colors
+                GL.glEnable(GL.GL_CULL_FACE)
+                GL.glCullFace(GL.GL_BACK)
+
+            render_geom()
+
+            if self.bkcolor is not None:
+                # Draw the back sides in another color
+                bk = Attributes()
+                bk.colormode = self.bkcolor.ndim
+                if bk.colormode == 1:
+                    bk.objectColor = self.bkcolor
+                renderer.shader.loadUniforms(bk)
+
+                GL.glCullFace(GL.GL_FRONT)
+                render_geom()
+                GL.glDisable(GL.GL_CULL_FACE)
+
         finally:
             self.vbo.unbind()
             if self.ibo:

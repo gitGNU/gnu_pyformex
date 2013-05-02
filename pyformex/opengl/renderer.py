@@ -79,6 +79,7 @@ class Renderer(object):
 
     def setDefaults(self):
         """Set all the uniforms to default values."""
+        print("DEFAULTS",self.canvas.settings)
         self.shader.uniformFloat('lighting',True) # self.canvas....
         self.shader.uniformInt('colormode',1)
         self.shader.uniformVec3('objectColor',self.canvas.settings.fgcolor)
@@ -89,6 +90,7 @@ class Renderer(object):
         self.shader.uniformFloat('ambient',0.3) # self.canvas....
         self.shader.uniformFloat('diffuse',0.8) # self.canvas....
         self.shader.uniformFloat('specular',0.2) # self.canvas....
+        #self.shader.loadUniforms(DEFAULTS)
 
 
     def render(self):
@@ -104,16 +106,16 @@ class Renderer(object):
         # Propagate the matrices to the uniforms of the shader
         self.shader.uniformMat4('modelview',modelview.gl())
         self.shader.uniformMat4('projection',projection.gl())
-        self.setDefaults()
 
         try:
             for obj in self._objects:
+                self.setDefaults()
                 if obj.visible is False:
                     # skip invisible object
                     continue
                 try:
                     self.shader.loadUniforms(obj)
-                    obj.render()
+                    obj.render(self)
                 except:
                     raise
                     #pass

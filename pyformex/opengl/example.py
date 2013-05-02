@@ -53,13 +53,13 @@ from simple import sphere
 A = Formex('3:012').replic2(2,1)
 A.attrib(color=red)
 B = Formex('l:127')
-B.attrib.objectColor = blue
+B.attrib(color=blue)
 
 C = Formex('1:012')
-C.attrib.objectColor = magenta
+C.attrib(color=yellow,pointsize=10)
 
 D = A.trl([1.,1.,0.]).toMesh()
-D.attrib(lighting=True,ambient=0.3,diffuse=0.2,objectColor=green)
+D.attrib(lighting=True,ambient=0.3,diffuse=0.2,color=green,bkcolor=blue)
 
 E = Formex(D.points())
 E.attrib(pointsize=20)

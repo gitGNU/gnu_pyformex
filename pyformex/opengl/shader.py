@@ -38,29 +38,6 @@ from OpenGL import GL
 from OpenGL.GL import shaders
 
 
-VertexShader = """
-#version 330
-layout(location = 0) in vec4 position;
-void main()
-{
-   gl_Position = position;
-}
-"""
-FragmentShader = """
-#version 330
-out vec4 outputColor;
-void main()
-{
-   outputColor = vec4(1.0f, 0.0f, 1.0f, 1.0f);
-}
-"""
-
-
-_dirname = os.path.dirname(__file__)
-_vertexshader_filename = os.path.join(_dirname,"vertex_shader.c")
-_fragmentshader_filename = os.path.join(_dirname,"fragment_shader.c")
-
-
 class Shader(object):
     """An OpenGL shader consisting of a vertex and a fragment shader pair.
 
@@ -77,6 +54,12 @@ class Shader(object):
     - `uniforms`: the shaders' uniforms.
     """
 
+    # Default shaders
+    _dirname = os.path.dirname(__file__)
+    _vertexshader_filename = os.path.join(_dirname,"vertex_shader.c")
+    _fragmentshader_filename = os.path.join(_dirname,"fragment_shader.c")
+
+    # Default attributes and uniforms
     attributes = [
     'vertexPosition',
     'vertexNormal',
@@ -137,12 +120,12 @@ class Shader(object):
     def __init__(self,vshader=None,fshader=None,attributes=None,uniforms=None):
         print("LOADING SHADER PROGRAMS")
         if vshader is None:
-            vshader = _vertexshader_filename
+            vshader = Shader._vertexshader_filename
         with open(vshader) as f:
             VertexShader = f.read()
 
         if fshader is None:
-            fshader = _fragmentshader_filename
+            fshader = Shader._fragmentshader_filename
         with open(fshader) as f:
             FragmentShader = f.read()
 
@@ -208,7 +191,7 @@ class Shader(object):
                 if v is not None:
                     func(a,v)
 
-    # NOT SURE IF THIS IS A GOOD IDEA
+
     def __del__(self):
         self.unbind()
 
