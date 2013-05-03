@@ -1665,7 +1665,7 @@ Quality: %s .. %s
         prl=where(sum(isinf(p) + isnan(p), axis=1)>0)[0]#remove nan/inf (lines parallel to triangles)
         i1 = complement(prl, len(p))
         if len(i1)==0:
-            return [], []
+            return Coords(), []
         xt = self.select(t).toFormex().shrink(1.+atol)[:]#atol: insideTriangle sometimes fails on border!!
         xt, xp, xl = xt[i1], p[i1], l[i1]
         i2 = geomtools.insideTriangle(xt,xp[newaxis,...]).reshape(-1)#remove intersections outside triangles
