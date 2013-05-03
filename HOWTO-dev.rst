@@ -143,11 +143,13 @@ have internet connection from your Linux system.
   `~/.gitconfig` file::
 
     [alias]
-	st = status
+        st = status -uno
+        su = status
 	co = checkout
 	ci = commit
 	br = branch
 	last = log -1 HEAD
+
 
 - If you want to work on the documentation (and as a developer you really
   sould), then you need `python-sphinx`::
@@ -259,6 +261,12 @@ Using the git repository
 - See a status of what has changed (use it often!)::
 
     git status
+
+  If you have installed the aliases as mentioned above, you can also use the
+  short form `git st`. This will give you the status report,without the
+  untracked files, which is handy if you tend to collect many files in your git
+  directory that should not be in the repository. If you want to see the
+  untracked files as well, use `git su` (or `git status`).
 
 - Pull in the changes from the remote repository (like `svn up`)::
 
