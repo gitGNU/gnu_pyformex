@@ -48,7 +48,7 @@ def glObjType(nplex):
         return None
 
 
-from drawable import Actor
+from drawable import GeomActor
 
 class Renderer(object):
 
@@ -69,7 +69,7 @@ class Renderer(object):
 
 
     def add(self,obj):
-        actor = Actor(obj)
+        actor = GeomActor(obj)
         actor.prepare(self)
         self._objects.append(actor)
         self._bbox = bbox([self._bbox,obj])
@@ -79,7 +79,7 @@ class Renderer(object):
 
     def setDefaults(self):
         """Set all the uniforms to default values."""
-        print("DEFAULTS",self.canvas.settings)
+        #print("DEFAULTS",self.canvas.settings)
         self.shader.uniformFloat('lighting',True) # self.canvas....
         self.shader.uniformInt('colormode',1)
         self.shader.uniformVec3('objectColor',self.canvas.settings.fgcolor)

@@ -38,6 +38,8 @@ void main()
   // Set single color
   if (colormode == 1) {
     fragmentColor = objectColor;
+  } else if (colormode == 3) {
+    fragmentColor = gl_Color;
   } else {
     // Default black opaque
     fragmentColor = vec4(0.,0.,1.,1.);

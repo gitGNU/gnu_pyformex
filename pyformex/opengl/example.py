@@ -36,22 +36,26 @@
 ## R = Renderer(pf.canvas,S)
 ## pf.canvas.renderer = R
 
+_clear = clear
+
+def clearall():
+    pf.canvas.renderer.clear()
+    _clear()
+
 
 if pf.options.opengl2:
     def draw(o):
         pf.canvas.renderer.add(o)
-    _clear = clear
-    def clear():
-        pf.canvas.renderer.clear()
-        _clear()
 
 
-clear()
+clearall()
 
 
 from simple import sphere
 A = Formex('3:012').replic2(2,1)
 A.attrib(color=red)
+A.attrib(color=[[red,green,blue],[cyan,magenta,yellow]])
+
 B = Formex('l:127')
 B.attrib(color=blue)
 
@@ -63,6 +67,7 @@ D.attrib(lighting=True,ambient=0.3,diffuse=0.2,color=green,bkcolor=blue)
 
 E = Formex(D.points())
 E.attrib(pointsize=20)
+D.attrib(color=[red,green,blue,magenta,yellow])
 
 draw(A)
 draw(B)
