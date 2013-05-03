@@ -39,6 +39,6 @@ void main(void) {
 			vec3(0.2,0.2,0.2) * specular,
 			opacity);
   } else {
-    gl_FragColor = vec4(fragmentColor, 1.0);
+    gl_FragColor = vec4(fragmentColor, opacity);
   }
 }
