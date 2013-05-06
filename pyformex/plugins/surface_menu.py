@@ -1310,7 +1310,12 @@ def createSphere():
 def check():
     S = selection.check(single=True)
     if S:
-        pf.message(S.check())
+        sta,out = S.check()
+        pf.message((sta,out))
+        if sta == 3:
+            clear()
+            draw(S.select(out),color='red')
+            draw(S,color='black')
 
 
 def split():
