@@ -51,7 +51,7 @@ def computeMeshNormals(obj,avg=False,tol=None):
     if avg:
         if tol is None:
             tol = pf.cfg['render/avgnormaltreshold']
-        return gt.averageNormals(obj.coords,obj,elems,tol)
+        return gt.averageNormals(obj.coords,obj.elems,False,tol)
 
     else:
         return computeFormexNormals(obj.toFormex())
