@@ -1,11 +1,11 @@
-# $Id$ *** pyformex app ***
+# $Id$
 ##
 ##  This file is part of pyFormex 0.9.0  (Mon Mar 25 13:52:29 CET 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -35,7 +35,7 @@ _techniques = ['']
 
 from gui.draw import *
 import simple
-        
+
 
 def hex_mesh():
     nx,ny,nz = 3,2,2
@@ -93,12 +93,12 @@ def showNonMan(M):
     if M.nelems()<100 and M.nnodes() < 100:
         drawNumbers(M.coords)
         drawNumbers(M,color=red)
-        
+
     nm = M.nonManifoldNodes()
     print(nm)
     if len(nm) > 0:
         draw(M.coords[nm],marksize=10,color=red)
-        
+
     nm = M.nonManifoldEdgeNodes()
     print(nm)
     if len(nm) > 0:
@@ -111,7 +111,7 @@ def showNonMan(M):
         print(ed)
         ME = Mesh(M.coords,ed,eltype='line2')
         draw(ME,color=cyan,linewidth=5)
-    
+
 def run():
     examples = [
         hex_mesh,

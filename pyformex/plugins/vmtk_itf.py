@@ -58,33 +58,6 @@ def readVmtkCenterlineDat(fn):
    return data, s
 
 
-def centerline(self):
-    """Compute the centerline of a surface.
-
-    The centerline is computed using VMTK. This is very well suited for
-    computing the centerlines in vascular models.
-
-    Return a Coords with the points defining the centerline.
-    """
-    tmp = utils.tempFile(suffix='.stl').name
-    tmp1 = utils.tempFile(suffix='.dat').name
-    pf.message("Writing temp file %s" % tmp)
-    self.write(tmp,'stl')
-    pf.message("Computing centerline using VMTK")
-    cmd = 'vmtk vmtkcenterlines -ifile %s -ofile %s'%(tmp,tmp1)
-    sta,out = utils.runCommand(cmd)
-    os.remove(tmp)
-    if sta:
-        pf.message("An error occurred during the remeshing.")
-        pf.message(out)
-        return None
-    data, header = readVmtkCenterlineDat(tmp1)
-    print(header)
-    cl = Coords(data[:,:3])
-    os.remove(tmp1)
-    return cl
-
-
 def centerline(self,seedselector='pickpoint',sourcepoints=[],
                targetpoints=[],endpoints=False):
     """Compute the centerline of a surface.
@@ -111,11 +84,11 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
     if len(sourcepoints) != 0:
         cmd += ' -sourcepoints'
         for val in sourcepoints:
-            cmd += ' %s' % val
+            cmd += ' %f' % val
     if len(targetpoints) != 0:   
         cmd += ' -targetpoints'
         for val in targetpoints:
-            cmd += ' %s' % val
+            cmd += ' %f' % val
     if endpoints == True:
         cmd += ' -endpoints 1'
     sta,out = utils.runCommand(cmd)
@@ -156,14 +129,14 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
            self.getElemEdges()
            E = Mesh(self.coords,self.edges,eltype='line2')
            edgelength =  E.lengths().mean()
-        cmd += ' -elementsizemode edgelength -edgelength %s' % edgelength
+        cmd += ' -elementsizemode edgelength -edgelength %f' % edgelength
     elif elementsizemode == 'area':
         if  area is None:
             self.areaNormals()
             area = self.areas.mean()
-        cmd += ' -elementsizemode area -area %s' % area
+        cmd += ' -elementsizemode area -area %f' % area
     if aspectratio is not None:
-        cmd += ' -aspectratio %s' % aspectratio
+        cmd += ' -aspectratio %f' % aspectratio
     pf.message("Remeshing with command\n %s" % cmd)
     sta,out = utils.runCommand(cmd)
     os.remove(tmp)

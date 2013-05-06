@@ -1665,7 +1665,7 @@ Quality: %s .. %s
         prl=where(sum(isinf(p) + isnan(p), axis=1)>0)[0]#remove nan/inf (lines parallel to triangles)
         i1 = complement(prl, len(p))
         if len(i1)==0:
-            return [], []
+            return Coords(), []
         xt = self.select(t).toFormex().shrink(1.+atol)[:]#atol: insideTriangle sometimes fails on border!!
         xt, xp, xl = xt[i1], p[i1], l[i1]
         i2 = geomtools.insideTriangle(xt,xp[newaxis,...]).reshape(-1)#remove intersections outside triangles
@@ -2296,13 +2296,15 @@ Quality: %s .. %s
             return pointInsideObject(self,pts,tol)
 
 
-    def tetgen(self,quality=True,filename=None,format='.off'):
+    def tetgen(self,quality=True,volume=None,filename=None,format='.off'):
         """Create a tetrahedral mesh inside the surface
 
         - `surfacefile`: a file representing a surface. It can be an .off or
           .stl file (or other?)
         - `quality`: if True, the output will be a quality mesh
-          (should add other tetgen parameters?)
+          The circumradius-to-shortest-edge ratio can be constrained by
+          specifying a float value for quality (default is 2.0)
+          - `volume`: float: applies a maximum tetrahedron volume constraint
         - `outputdir`: if specified, the results surface model and the tet
           model files will be placed in this directory. Else, a temporary
           directory will be used.
@@ -2316,7 +2318,7 @@ Quality: %s .. %s
         else:
             fn = filename
         self.write(fn)
-        res = tetgen.tetMesh(fn,quality)
+        res = tetgen.tetMesh(fn,quality,volume)
         if filename is None:
             utils.removeTree(outputdir)
         return res['tetgen.ele']
