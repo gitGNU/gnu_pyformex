@@ -35,7 +35,7 @@ from __future__ import print_function
 import pyformex as pf
 from coords import Coords
 from connectivity import Connectivity
-from numpy import array,arange
+from numpy import array,arange,concatenate
 from odict import ODict
 
 
@@ -419,7 +419,6 @@ Quad4 = createElementType(
                  (  0.0,  1.0, 0.0 ),
                  ],
     edges = ('line2', [ (0,1), (1,2), (2,3), (3,0) ], ),
-    drawgl2edges = [('line2', [ (0,1), (1,2), (2,3), (3,0) ])],
     drawgl2faces = [('tri3', [ (0,1,3),(1,2,3) ])],
     )
 
@@ -533,10 +532,11 @@ Tet10 = createElementType(
                  ( 0.5, 0.0, 0.5 ),
                  ],
     edges = ('line3', [ (0,4,1),(1,7,2),(2,5,0),(0,6,3),(1,9,3),(2,8,3) ],),
-    # BV: This needs further specification!
-    faces = Tet4.faces,
+    faces = ('tri3', array([(0,2,1,5,7,4),(0,1,3,4,9,6),(0,3,2,6,8,5),(1,2,3,2,7,8)])[:,[(0,3,5),(3,1,4),(4,2,5),(3,4,5)]].reshape(-1,3)),
     reversed = (0,1,3,2,4,6,5,9,8,7),
     )
+
+Tet10.drawgl2edges = [ Tet10.edges.selectNodes(i) for i in Line3.drawgl2edges ]
 
 
 Tet14 = createElementType(
@@ -550,10 +550,11 @@ Tet14 = createElementType(
           ( 1./3., 1./3., 1./3. ),
           ]]),
     edges = Tet10.edges,
-    # BV: This needs further specification!
-    faces = Tet4.faces,
+    faces = ('tri3', array([(0,2,1,5,7,4,10),(0,1,3,4,9,6,11),(0,3,2,6,8,5,12),(1,2,3,2,7,8,13)])[:,[(0,3,6),(3,1,6),(1,4,6),(4,2,6),(2,5,6),(5,0,6)]].reshape(-1,3)),
     reversed = (0,1,3,2,4,6,5,9,8,7,12,11,10,13),
     )
+
+Tet14.drawgl2edges = Tet10.drawgl2edges
 
 
 Tet15 = createElementType(
@@ -564,10 +565,11 @@ Tet15 = createElementType(
         [ ( 0.25, 0.25, 0.25 ),
           ]]),
     edges = Tet10.edges,
-    # BV: This needs further specification!
-    faces = Tet4.faces,
+    faces = Tet14.faces,
     reversed = (0,1,3,2,4,6,5,9,8,7,12,11,10,13,14),
     )
+
+Tet15.drawgl2edges = Tet10.drawgl2edges
 
 
 Wedge6 = createElementType(
@@ -583,8 +585,10 @@ Wedge6 = createElementType(
     faces = ('quad4', [ (0,2,1,1), (3,4,4,5), (0,1,4,3), (1,2,5,4), (0,3,5,2) ], ),
     reversed = (3,4,5,0,1,2),
     drawfaces = [ ('tri3', [ (0,2,1), (3,4,5)] ),
-                  ('quad4', [(0,1,4,3), (1,2,5,4), (0,3,5,2) ], )]
+                  ('quad4', [(0,1,4,3), (1,2,5,4), (0,3,5,2) ], )],
     )
+
+Wedge6.drawgl2faces = [ Wedge6.faces.selectNodes(i).removeDegenerate() for i in Quad4.drawgl2faces ]
 
 
 Hex8 = createElementType(
@@ -608,6 +612,7 @@ Hex8 = createElementType(
     reversed = (4,5,6,7,0,1,2,3),
     )
 
+Hex8.drawgl2faces = [ Hex8.faces.selectNodes(i) for i in Quad4.drawgl2faces ]
 
 
 Hex16 = createElementType(
@@ -632,8 +637,11 @@ Hex16 = createElementType(
                         (0,3,2,1,11,10,9,8), (4,5,6,7,12,13,14,15) ], ),
     reversed= (4,5,6,7,0,1,2,3,12,13,14,15,8,9,10,11),
     drawedges = [ Hex8.edges ],
-    drawfaces = [ Hex8.faces ]
+    drawfaces = [ Hex8.faces ],
     )
+
+Hex16.drawgl2edges = [ Hex16.edges.selectNodes(i).removeDegenerate() for i in Line3.drawgl2edges ]
+Hex16.drawgl2faces = [ Hex16.faces.selectNodes(i).removeDegenerate() for i in Quad8.drawgl2faces ]
 
 
 Hex20 = createElementType(
@@ -657,6 +665,9 @@ Hex20 = createElementType(
 
 Hex20.drawfaces = [ Hex20.faces.selectNodes(i) for i in Quad8.drawfaces ]
 Hex20.drawfaces2 = [ Hex20.faces ]
+Hex20.drawgl2edges = [ Hex20.edges.selectNodes(i) for i in Line3.drawgl2edges ]
+Hex20.drawgl2faces = [ Hex20.faces.selectNodes(i) for i in Quad8.drawgl2faces ]
+
 
 
 # THIS ELEMENT USES A REGULAR NODE NUMBERING!!
@@ -675,6 +686,8 @@ Hex27 = createElementType(
                        (0,6,8,2,3,7,5,1,4),(18,20,26,24,19,23,25,21,22), ],),
 )
 Hex27.drawfaces = [ Hex27.faces.selectNodes(i) for i in Quad9.drawfaces ]
+Hex27.drawgl2edges = [ Hex27.edges.selectNodes(i) for i in Line3.drawgl2edges ]
+Hex27.drawgl2faces = [ Hex27.faces.selectNodes(i) for i in Quad9.drawgl2faces ]
 
 ######################################################################
 ########## element type conversions ##################################
