@@ -364,7 +364,7 @@ Line3 = createElementType(
                  ( 0.5, 0.0, 0.0 ),
                  ( 1.0, 0.0, 0.0 ),
                  ],
-    drawgl2edges = [('line2', [ (0,1), (1,2) ])]
+    drawgl2edges = [('line2', [ (0,1), (1,2) ])],
     )
 
 
@@ -377,7 +377,7 @@ Line4 = createElementType(
                  ( 1.0, 0.0, 0.0 ),
                  ],
     edges = ('line2', [ (0,2), (2,3), (3,1) ]),
-    drawgl2edges = [('line2', [ (0,1), (1,2), (2,3) ])]
+    drawgl2edges = [('line2', [ (0,1), (1,2), (2,3) ])],
     )
 
 ######### 2D ###################
@@ -389,7 +389,7 @@ Tri3 = createElementType(
                  ( 1.0, 0.0, 0.0 ),
                  ( 0.0, 1.0, 0.0 ),
                  ],
-    edges = ('line2', [ (0,1), (1,2), (2,0) ])
+    edges = ('line2', [ (0,1), (1,2), (2,0) ]),
     )
 
 Tri6 = createElementType(
@@ -404,8 +404,11 @@ Tri6 = createElementType(
                  ],
     edges = ('line3', [ (0,3,1), (1,4,2), (2,5,0) ], ),
     reversed = (2,1,0,4,3,5),
-    drawfaces = [('tri3', [ (0,3,5),(3,1,4),(4,2,5),(3,4,5) ] )]
-)
+    drawfaces = [('tri3', [ (0,3,5),(3,1,4),(4,2,5),(3,4,5) ] )],
+    drawgl2faces = [('tri3', [ (0,3,5),(3,1,4),(4,2,5),(3,4,5) ])],
+    )
+
+Tri6.drawgl2edges = [ Tri6.edges.selectNodes(i) for i in Line3.drawgl2edges ]
 
 Quad4 = createElementType(
     'quad4',"A 4-node quadrilateral",
@@ -416,6 +419,8 @@ Quad4 = createElementType(
                  (  0.0,  1.0, 0.0 ),
                  ],
     edges = ('line2', [ (0,1), (1,2), (2,3), (3,0) ], ),
+    drawgl2edges = [('line2', [ (0,1), (1,2), (2,3), (3,0) ])],
+    drawgl2faces = [('tri3', [ (0,1,3),(1,2,3) ])],
     )
 
 Quad6 = createElementType(
@@ -431,8 +436,9 @@ Quad6 = createElementType(
     drawedges = [ ('line2', [(1,2), (3,0)]),
                   ('line3', [(0,4,1), (2,5,3)])
                   ],
-#    drawfaces = [('tri3',[(0,4,3),(4,5,3),(4,1,5),(1,2,5)])]
     drawfaces = [('quad4',[(0,4,5,3),(2,5,4,1)], )],
+    drawgl2edges = [('line2', [ (1,2), (3,0),(0,4),(4,1),(2,5),(5,3) ])],
+    drawgl2faces = [('tri3',[(0,4,3),(4,5,3),(4,1,5),(1,2,5) ])],
     )
 
 Quad8 = createElementType(
@@ -447,11 +453,12 @@ Quad8 = createElementType(
           ]]),
     edges = ('line3',[ (0,4,1), (1,5,2), (2,6,3), (3,7,0), ]),
     reversed = (3,2,1,0,6,5,4,7),
-#    drawfaces = [('tri3', [(0,4,7), (1,5,4), (2,6,5), (3,7,6), (4,5,6), (4,6,7) ], )],
     drawfaces = [('tri3', [(0,4,7), (1,5,4), (2,6,5), (3,7,6)]), ('quad4', [(4,5,6,7)], )],
     drawfaces2 = [('quad8', [(0,1,2,3,4,5,6,7)], )],
+    drawgl2faces = [('tri3', [(0,4,7), (1,5,4), (2,6,5), (3,7,6), (4,5,6), (4,6,7) ])],
     )
 
+Quad8.drawgl2edges = [ Quad8.edges.selectNodes(i) for i in Line3.drawgl2edges ]
 
 Quad9 = createElementType(
     'quad9',"A 9-node quadratic quadrilateral",
@@ -462,9 +469,10 @@ Quad9 = createElementType(
           ]]),
     edges = Quad8.edges,
     reversed = (3,2,1,0,6,5,4,7,8),
-#    drawfaces = [('tri3', [(0,4,8),(4,1,8),(1,5,8),(5,2,8),(2,6,8),(6,3,8),(3,7,8),(7,0,8) ], )],
     drawfaces = [('quad4', [(0,4,8,7),(1,5,8,4),(2,6,8,5),(3,7,8,6) ], )],
     drawfaces2 = [('quad9', [(0,1,2,3,4,5,6,7,8)], )],
+    drawgl2edges = Quad8.drawgl2edges,
+    drawgl2faces = [('tri3', [(0,4,8),(4,1,8),(1,5,8),(5,2,8),(2,6,8),(6,3,8),(3,7,8),(7,0,8) ])],
     )
 
 
@@ -487,7 +495,12 @@ Quad12 = createElementType(
     drawfaces = [('tri3', [(0,4,11),(1,6,5),(2,8,7),(3,10,9),
                            (4,5,6),(6,7,8),(8,9,10),(10,11,4),
                            (4,6,8),(8,10,4) ], )],
+    drawgl2faces = [('tri3', [(0,4,11),(1,6,5),(2,8,7),(3,10,9),
+                           (4,5,6),(6,7,8),(8,9,10),(10,11,4),
+                           (4,6,8),(8,10,4) ])],
     )
+
+Quad12.drawgl2edges = [ Quad12.edges.selectNodes(i) for i in Line4.drawgl2edges ]
 
 ######### 3D ###################
 
