@@ -32,7 +32,7 @@ should be done by the interface modules.
 """
 from __future__ import print_function
 
-import pyformex
+import pyformex as pf
 from coords import Coords
 from connectivity import Connectivity
 from numpy import array,arange
@@ -234,6 +234,10 @@ class ElementType(object):
 
     @classmethod
     def getDrawEdges(self,quadratic=False):
+        if pf.options.opengl2:
+            if not hasattr(self,'drawgl2edges'):
+                self.drawgl2edges = self.getEdges().reduceDegenerate()
+            return self.drawgl2edges
         if quadratic and hasattr(self,'drawedges2'):
             return self.drawedges2
         if not hasattr(self,'drawedges'):
@@ -244,6 +248,10 @@ class ElementType(object):
     @classmethod
     def getDrawFaces(self,quadratic=False):
         """Returns the local connectivity for drawing the element's faces"""
+        if pf.options.opengl2:
+            if not hasattr(self,'drawgl2faces'):
+                self.drawgl2faces = self.getFaces().reduceDegenerate()
+            return self.drawgl2faces
         if quadratic and hasattr(self,'drawfaces2'):
             return self.drawfaces2
         if not hasattr(self,'drawfaces'):
@@ -314,7 +322,7 @@ def createElementType(name,doc,ndim,vertices,edges=('',[]),faces=('',[]),**kargs
         faces = _sanitize(faces),
         )
 
-    for a in [ 'drawedges', 'drawedges2', 'drawfaces', 'drawfaces2']:
+    for a in [ 'drawedges', 'drawedges2', 'drawfaces', 'drawfaces2','drawgl2edges','drawgl2faces']:
         if a in kargs:
             D[a] = [ _sanitize(e) for e in kargs[a] ]
             del kargs[a]
@@ -356,6 +364,7 @@ Line3 = createElementType(
                  ( 0.5, 0.0, 0.0 ),
                  ( 1.0, 0.0, 0.0 ),
                  ],
+    drawgl2edges = [('line2', [ (0,1), (1,2) ])]
     )
 
 
@@ -367,7 +376,8 @@ Line4 = createElementType(
                  ( 2*e3, 0.0, 0.0 ),
                  ( 1.0, 0.0, 0.0 ),
                  ],
-    edges = ('line2', [ (0,2), (2,3), (3,1) ])
+    edges = ('line2', [ (0,2), (2,3), (3,1) ]),
+    drawgl2edges = [('line2', [ (0,1), (1,2), (2,3) ])]
     )
 
 ######### 2D ###################

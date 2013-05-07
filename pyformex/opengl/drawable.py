@@ -33,6 +33,7 @@ from OpenGL.arrays.vbo import VBO
 from attributes import Attributes
 from formex import Formex
 from mesh import Mesh
+from elements import elementType
 import geomtools as gt
 
 
@@ -100,11 +101,47 @@ class GeomActor(Attributes):
                 obj = obj.toFormex()
             except:
                 raise ValueError,"Can only render Mesh, Formex and objects that can be converted to Formex"
-        glmode = glObjType(obj.nplex())
         self.object = obj
+
+        if isinstance(obj,Mesh): # should we store coords, elems and eltype?
+            coords = obj.coords.astype(float32)
+            elems = obj.elems.astype(int32)
+            eltype = obj.elName()
+
+        elif isinstance(obj,Formex):
+            coords = obj.coords.astype(float32)
+            elems = None
+            eltype = obj.eltype
+
         if hasattr(obj,'normals'):
             self.normals = obj.normals
 
+        # Get the local connectivity for drawing the edges/faces
+        if eltype is None:
+            # should these objects be drawn as polygons or should
+            # a default element type based on the plexitude be used?
+            drawelems = None
+        else:
+            eltype = elementType(eltype)
+            if eltype.ndim == 0:
+                drawelems = None
+            elif eltype.ndim == 1:
+                drawelems = eltype.getDrawEdges()[0]
+            else:
+                drawelems = eltype.getDrawFaces()[0]
+
+        # get the coords, connectivity and plexitude
+        if drawelems is None:
+            nplex = obj.nplex()
+        elif elems is None:
+            coords = coords[:,drawelems,:]
+            nplex = coords.shape[2]
+        else:
+            elems = elems[:,drawelems]
+            nplex = elems.shape[2]
+
+        # get and check the primitive type
+        glmode = glObjType(nplex)
         if glmode is None:
             raise ValueError,"Can only render plex-1/2/3 objects"
         self.glmode = glmode
@@ -114,9 +151,10 @@ class GeomActor(Attributes):
         self.update(kargs)
 
         # Create the static data buffers
-        self.vbo = VBO(obj.coords)
-        if isinstance(obj,Mesh):
-            self.ibo = VBO(obj.elems,target=GL.GL_ELEMENT_ARRAY_BUFFER)
+        self.vbo = VBO(coords)
+        if elems is not None:
+            self.ibo = VBO(elems,target=GL.GL_ELEMENT_ARRAY_BUFFER)
+
         if self.normals:
             self.nbo = VBO(self.normals)
 
@@ -203,7 +241,7 @@ class GeomActor(Attributes):
             if self.ibo:
                 GL.glDrawElementsui(self.glmode,self.ibo)
             else:
-                GL.glDrawArrays(self.glmode,0,self.object.npoints())
+                GL.glDrawArrays(self.glmode,0,asarray(self.vbo.shape[:-1]).prod())
 
         self.vbo.bind()
         GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
