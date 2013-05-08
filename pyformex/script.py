@@ -320,17 +320,18 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
     #starttime = time.clock()
     try:
         try:
-            if pye:
-                if type(scr) is file:
-                     scr = scr.read() + '\n'
-                n = (len(scr)+1) // 2
-                scr = utils.mergeme(scr[:n],scr[n:])
 
             if pf.interpreter:
-                pf.interpreter.locals = g
-                pf.interpreter.runIt(scr.read(),filename,'exec')
+                pf.interpreter.locals.update(g)
+                pf.interpreter.runsource(scr.read(),filename,'exec')
 
             else:
+                if pye:
+                    if type(scr) is file:
+                         scr = scr.read() + '\n'
+                    n = (len(scr)+1) // 2
+                    scr = utils.mergeme(scr[:n],scr[n:])
+
                 exec scr in g
 
         except _Exit:

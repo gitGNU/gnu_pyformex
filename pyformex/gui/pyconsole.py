@@ -37,29 +37,29 @@ import atexit
 
 from gui import QtGui, QtCore
 from gui.guimain import Board
+import utils
+
+
+class HistoryConsole(code.InteractiveConsole):
+    def __init__(self,locals=None,filename="<console>",
+                 histfile=os.path.expanduser("~/.console-history")):
+        code.InteractiveConsole.__init__(self,locals,filename)
+        self.init_history(histfile)
+
+    def init_history(self, histfile):
+        readline.parse_and_bind("tab: complete")
+        if hasattr(readline,"read_history_file"):
+            try:
+                readline.read_history_file(histfile)
+            except IOError:
+                pass
+            atexit.register(self.save_history,histfile)
+
+    def save_history(self, histfile):
+        readline.write_history_file(histfile)
 
 
 class PyConsole(QtGui.QTextEdit):
-
-    class InteractiveInterpreter(code.InteractiveInterpreter):
-
-        def __init__(self,locals):
-            code.InteractiveInterpreter.__init__(self,locals)
-
-        def runIt(self,command,filename='',symbol='single'):
-            code.InteractiveInterpreter.runsource(self,command,filename,symbol)
-
-        def runItcode(self,command):
-            a = code.InteractiveInterpreter.runcode(self,command)
-
-
-        def compileit(self,source,filename,symbol):
-            return code.compile_command(source,filename,symbol)
-
-
-        def setLocals(self,newLocals):
-            self.locals = newLocals
-
 
     def __init__(self,parent=None):
 
@@ -87,7 +87,18 @@ class PyConsole(QtGui.QTextEdit):
 
 
         # initilize interpreter with self locals
-        self.initInterpreter(locals())
+        interpreterLocals = locals()
+        if interpreterLocals:
+            # when we pass in locals, we don't want it to be named "self"
+            # so we rename it with the name of the class that did the passing
+            # and reinsert the locals back into the interpreter dictionary
+            selfName = interpreterLocals['self'].__class__.__name__
+            interpreterLocalVars = interpreterLocals.pop('self')
+            self.interpreterLocals[selfName] = interpreterLocalVars
+        else:
+            self.interpreterLocals = interpreterLocals
+        self.interpreter = code.InteractiveInterpreter(self.interpreterLocals)
+
 
     def write(self,s,color=None):
         """Write a string to the message board.
@@ -159,18 +170,6 @@ class PyConsole(QtGui.QTextEdit):
         else:
             self.insertPlainText('>>> ')
 
-    def initInterpreter(self,interpreterLocals=None):
-        if interpreterLocals:
-            # when we pass in locals, we don't want it to be named "self"
-            # so we rename it with the name of the class that did the passing
-            # and reinsert the locals back into the interpreter dictionary
-            selfName = interpreterLocals['self'].__class__.__name__
-            interpreterLocalVars = interpreterLocals.pop('self')
-            self.interpreterLocals[selfName] = interpreterLocalVars
-        else:
-            self.interpreterLocals = interpreterLocals
-        self.interpreter = self.InteractiveInterpreter(self.interpreterLocals)
-
 
     def updateInterpreterLocals(self, newLocals):
         self.interpreter.locals = newLocals
@@ -229,7 +228,7 @@ class PyConsole(QtGui.QTextEdit):
 
         if event.key() == QtCore.Qt.Key_Escape:
             # proper exit
-            self.interpreter.runIt('exit()')
+            self.interpreter.runsource('exit()')
 
         if event.key() == QtCore.Qt.Key_Down:
             if self.historyIndex == len(self.history):
@@ -303,14 +302,14 @@ class PyConsole(QtGui.QTextEdit):
                 if self.haveLine and not self.multiLine: # one line command
                     self.command = line # line is the command
                     self.append('') # move down one line
-                    self.interpreter.runIt(self.command)
+                    self.interpreter.runsource(self.command)
                     self.command = '' # clear command
                     self.marker() # handle marker style
                     return None
 
                 if self.multiLine and not self.haveLine: # multi line done
                     self.append('') # move down one line
-                    self.interpreter.runIt(self.command)
+                    self.interpreter.runsource(self.command)
                     self.command = '' # clear command
                     self.multiLine = False # back to single line
                     self.marker() # handle marker style
@@ -325,5 +324,57 @@ class PyConsole(QtGui.QTextEdit):
         # allow all other key events
         super(PyConsole,self).keyPressEvent(event)
 
+
+
+if utils.hasModule('ipython-qt'):
+
+
+    from IPython.zmq.ipkernel import IPKernelApp
+    from IPython.lib.kernel import find_connection_file
+    from IPython.frontend.qt.kernelmanager import QtKernelManager
+    from IPython.frontend.qt.console.rich_ipython_widget import RichIPythonWidget
+    from IPython.utils.traitlets import TraitError
+    from gui import QtGui, QtCore
+
+    def event_loop(kernel):
+        kernel.timer = QtCore.QTimer()
+        kernel.timer.timeout.connect(kernel.do_one_iteration)
+        kernel.timer.start(1000*kernel._poll_interval)
+
+    def default_kernel_app():
+        app = IPKernelApp.instance()
+        app.initialize(['python', '--pylab=qt'])
+        app.kernel.eventloop = event_loop
+        return app
+
+    def default_manager(kernel):
+        connection_file = find_connection_file(kernel.connection_file)
+        manager = QtKernelManager(connection_file=connection_file)
+        manager.load_connection_file()
+        manager.start_channels()
+        atexit.register(manager.cleanup_connection_file)
+        return manager
+
+    def console_widget(manager):
+        widget = RichIPythonWidget()
+        widget.kernel_manager = manager
+        return widget
+
+    def terminal_widget(**kwargs):
+        kernel_app = default_kernel_app()
+        manager = default_manager(kernel_app)
+        widget = console_widget(manager)
+        #update namespace
+        kernel_app.shell.user_ns.update(kwargs)
+        kernel_app.start()
+        return widget
+
+
+    class mainWindow(QtGui.QMainWindow):
+        def __init__(self, parent=None):
+            super(mainWindow, self).__init__(parent)
+
+            self.console = terminal_widget(testing=123)
+            self.setCentralWidget(self.console)
 
 # End

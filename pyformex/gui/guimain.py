@@ -1395,9 +1395,12 @@ pyFormex comes with ABSOLUTELY NO WARRANTY. This is free software, and you are w
     # redirect standard output to board
     # TODO: this should disappear when we have buffered stdout
     # and moved this up into GUI init
-    pf.GUI.board.redirect(pf.cfg['gui/redirect'])
+    pf.debug("Redirection",pf.DEBUG.GUI)
+    if pf.cfg['gui/redirect']:
+        pf.GUI.board.redirect(True)
 
 
+    pf.debug("Update",pf.DEBUG.GUI)
     pf.GUI.update()
 
     if pf.cfg['gui/fortune']:
@@ -1406,6 +1409,7 @@ pyFormex comes with ABSOLUTELY NO WARRANTY. This is free software, and you are w
             draw.showInfo(out)
 
     #pf.app.setQuitOnLastWindowClosed(False)
+    pf.debug("ProcessEvents",pf.DEBUG.GUI)
     pf.app_started = True
     pf.GUI.processEvents()
 
@@ -1424,6 +1428,7 @@ pyFormex comes with ABSOLUTELY NO WARRANTY. This is free software, and you are w
                 #
                 pf.message("Could not load the current project %s" % fn)
     #
+    pf.debug("GUI Started",pf.DEBUG.GUI)
     return 0
 
 
