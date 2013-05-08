@@ -275,9 +275,16 @@ class Gui(QtGui.QMainWindow):
         self.centralgrid.addLayout(self.viewports,0,0)
         self.central.setLayout(self.centralgrid)
 
-        # Create the message board
-        self.board = Board()
-        #self.board.setPlainText(pf.Version()+' started')
+        # Create the message board / interpreter
+        if pf.cfg['gui/interpreter'] == 'Python':
+            try:
+                from pyinterp import PyInterp
+                self.board = PyInterp()
+            except:
+                self.board = Board()
+        else:
+            self.board = Board()
+
         # Put everything together
         self.splitter.addWidget(self.central)
         self.splitter.addWidget(self.board)
@@ -1286,6 +1293,7 @@ You should seriously consider to bail out now!!!
 
     # setup the message board
     pf.board = pf.GUI.board
+    pf.board.clear()
     pf.board.write("""%s   (C) Benedict Verhegghe
 
 pyFormex comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under the conditions of the GNU General Public License, version 3 or later. See Help->License or the file COPYING for details.

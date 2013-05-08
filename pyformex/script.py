@@ -325,7 +325,14 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
                      scr = scr.read() + '\n'
                 n = (len(scr)+1) // 2
                 scr = utils.mergeme(scr[:n],scr[n:])
-            exec scr in g
+
+            if pf.interpreter:
+                # EXPERIMENTAL ALTERNATE INTERPRETER
+                pf.interpreter.updateLocals(g)
+                pf.interpreter.run(scr.read(),filename,'exec')
+
+            else:
+                exec scr in g
 
         except _Exit:
             #print "EXIT FROM SCRIPT"

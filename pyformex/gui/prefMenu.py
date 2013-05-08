@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -147,6 +147,8 @@ def settings():
 
     bindings_choices = ['PyQt4','PySide']
     bindings_current =  bindings_choices[ 1 if pf.options.pyside else 0 ]
+    interpreter_choices = ['','Python'] # ,'IPython']
+    interpreter_current = pf.cfg['gui/interpreter']
     appearance = [
         _I('gui/style',pf.app.currentStyle(),choices=pf.app.getStyles()),
         _I('gui/font',pf.app.font().toString(),'font'),
@@ -223,6 +225,7 @@ def settings():
             _T('Startup',[
                 _I('_info_01_','The settings on this page will only become active after restarting pyFormex',itemtype='info'),
                 _I('gui/bindings',bindings_current,choices=bindings_choices,tooltip="The Python bindings for the Qt4 library"),
+                _I('gui/interpreter',interpreter_current,choices=interpreter_choices,tooltip="The Python interpreter to use for the message board"),
                 _I('gui/splash',text='Splash image',itemtype='button',func=changeSplash),
                 viewer,
                 ]),
@@ -566,10 +569,14 @@ def updateDrawWait():
 def updateQt4Bindings():
     pf.warning("You changed the Python Qt4 bindings setting to '%s'.\nThis setting will only become active after you restart pyFormex." % pf.cfg['gui/bindings'])
 
+def updateInterpreter():
+    pf.warning("You changed the interactive interpreter setting to '%s'.\nThis setting will only become active after you restart pyFormex." % pf.cfg['gui/interpreter'])
+
 
 # This sets the functions that should be called when a setting has changed
 _activate_settings = {
     'gui/bindings':updateQt4Bindings,
+    'gui/interpreter':updateInterpreter,
     'gui/coordsbox':coordsbox,
     'gui/timeoutbutton':timeoutbutton,
     'gui/showfocus':updateCanvas,
