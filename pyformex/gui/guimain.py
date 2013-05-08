@@ -277,11 +277,9 @@ class Gui(QtGui.QMainWindow):
 
         # Create the message board / interpreter
         if pf.cfg['gui/interpreter'] == 'Python':
-            try:
-                from pyinterp import PyInterp
-                self.board = PyInterp()
-            except:
-                self.board = Board()
+            from pyconsole import PyConsole
+            self.board = PyConsole()
+            pf.interpreter = self.board.interpreter
         else:
             self.board = Board()
 

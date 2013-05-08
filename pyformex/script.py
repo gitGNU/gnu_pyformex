@@ -327,9 +327,8 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
                 scr = utils.mergeme(scr[:n],scr[n:])
 
             if pf.interpreter:
-                # EXPERIMENTAL ALTERNATE INTERPRETER
-                pf.interpreter.updateLocals(g)
-                pf.interpreter.run(scr.read(),filename,'exec')
+                pf.interpreter.locals = g
+                pf.interpreter.runIt(scr.read(),filename,'exec')
 
             else:
                 exec scr in g
