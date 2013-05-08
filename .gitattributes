@@ -1,2 +1,4 @@
 *.py	filter=idexpansion
 *.c 	filter=idexpansion
+*.conf 	filter=idexpansion
+[^\.]* 	filter=idexpansion

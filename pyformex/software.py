@@ -54,6 +54,8 @@ known_modules = {
     'gdcm'      : ('','','GDCM_VERSION'),
     'gl2ps'     : ('','','GL2PS_VERSION'),
     'gnuplot'   : ('Gnuplot',),
+    'ipython'   : ('IPython',),
+    'ipython-qt': ('IPython.frontend.qt',),
     'matplotlib': (),
     'numpy'     : (),
     'pyopengl'  : ('OpenGL',),
