@@ -170,9 +170,9 @@ class Board(QtGui.QTextEdit):
                 return
             #self.buffer += '[%s:%s]' % (len(s),s)
             if len(s) > 0:
-                if s[-1] != '\n':
+                if not s.endswith("\n"):                   
                     s += '\n'
-                self.append(s)
+                self.insertPlainText(s)
                 textCursor = self.textCursor()
                 textCursor.movePosition(QtGui.QTextCursor.End)
                 self.setTextCursor(textCursor)
