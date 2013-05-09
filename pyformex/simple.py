@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -60,7 +60,7 @@ def shape(name):
     """
     return Formex(Pattern[name])
 
-    
+
 def regularGrid(x0,x1,nx):
     """Create a regular grid between points x0 and x1.
 
@@ -89,20 +89,20 @@ def regularGrid(x0,x1,nx):
 
 def point(x=0.,y=0.,z=0.):
     """Return a Formex which is a point, by default at the origin.
-    
+
     Each of the coordinates can be specified and is zero by default.
     """
     return Formex([[[x,y,z]]])
- 
+
 
 def line(p1=[0.,0.,0.],p2=[1.,0.,0.],n=1):
     """Return a Formex which is a line between two specified points.
-    
+
     p1: first point, p2: second point
     The line is split up in n segments.
     """
     return Formex([[p1,p2]]).divide(n)
- 
+
 
 def rect(p1=[0.,0.,0.],p2=[1.,0.,0.],nx=1,ny=1):
     """Return a Formex which is a the circumference of a rectangle.
@@ -152,7 +152,7 @@ def rectangle(nx=1,ny=1,b=None,h=None,bias=0.,diag=None):
     else:
         sy = float(h)/ny
     return base.replic2(nx,ny,bias=bias).scale([sx,sy,0.])
-   
+
 
 def circle(a1=2.,a2=0.,a3=360.,r=None,n=None,c=None,eltype='line2'):
     """A polygonal approximation of a circle or arc.
@@ -205,11 +205,11 @@ def circle(a1=2.,a2=0.,a3=360.,r=None,n=None,c=None,eltype='line2'):
 
 def polygon(n):
     """A regular polygon with n sides.
-    
+
     Creates the circumference of a regular polygon with $n$ sides,
     inscribed in a circle with radius 1 and center at the origin.
-    The first point lies on the axis 0. All points are in the (0,1) plane. 
-    The return value is a plex-2 Formex. 
+    The first point lies on the axis 0. All points are in the (0,1) plane.
+    The return value is a plex-2 Formex.
     This function is equivalent to circle(360./n).
     """
     return circle(360./n)
@@ -242,7 +242,7 @@ def quadraticCurve(x=None,n=8):
     H = column_stack([ hi(t) for hi in h ])
     return dot(H,x)
 
-        
+
 def sphere(ndiv=6):
     """Create a triangulated spherical surface.
 
@@ -252,7 +252,7 @@ def sphere(ndiv=6):
     then projected on a sphere with unit radius. The higher `ndiv` is taken,
     the better the approximation. `ndiv=1` results in an icosahedron.
 
-    Returns: 
+    Returns:
 
       A TriSurface, representing a triangulated approximation of a
       spherical surface with radius 1 and center at the origin.
@@ -265,7 +265,7 @@ def sphere(ndiv=6):
     M = M.projectOnSphere()
     return M
 
-        
+
 def sphere3(nx,ny,r=1,bot=-90,top=90):
     """Return a sphere consisting of surface triangles
 
@@ -291,7 +291,7 @@ def sphere2(nx,ny,r=1,bot=-90,top=90):
 
     A sphere with radius r is modeled by a regular grid of nx
     longitude circles, ny latitude circles and their diagonals.
-    
+
     The 3 sets of lines can be distinguished by their property number:
     1: diagonals, 2: meridionals, 3: horizontals.
 
@@ -311,7 +311,7 @@ def sphere2(nx,ny,r=1,bot=-90,top=90):
 # TODO: or polylines
 def connectCurves(curve1,curve2,n):
     """Connect two curves to form a surface.
-    
+
     curve1, curve2 are plex-2 Formices with the same number of elements.
     The two curves are connected by a surface of quadrilaterals, with n
     elements in the direction between the curves.
@@ -334,7 +334,7 @@ def sector(r,t,nr,nt,h=0.,diag=None):
     top at the origin and the base circle of the cone at z=h.
     The default is for all points to be in the (x,y) plane.
 
-    
+
     By default, a plex-4 Formex results. The central quads will collapse
     into triangles.
     If diag='up' or diag = 'down', all quads are divided by an up directed
