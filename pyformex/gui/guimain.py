@@ -876,8 +876,8 @@ class Gui(QtGui.QMainWindow):
         self.enableButtons(self.actions,['Play','Step','Continue','Stop'],True)
         # by default, we run the script in the current GUI viewport
         pf.canvas = pf.GUI.viewports.current
-        if pf.console:
-            pf.console.interpreter.resetbuffer()
+        if pf.GUI.board == pf.GUI.console:
+            pf.GUI.console.boardmode = True
         pf.app.processEvents()
 
 
@@ -894,9 +894,8 @@ class Gui(QtGui.QMainWindow):
         self.enableButtons(self.actions,['Step','Continue','Stop'],False)
         # acknowledge viewport switching
         pf.canvas = pf.GUI.viewports.current
-        #if pf.console:
-        #    pf.console.interpreter.interact()
-        #    pf.console.prompt()
+        if pf.GUI.board == pf.GUI.console:
+            pf.GUI.console.boardmode = False
         pf.app.processEvents()
 
 

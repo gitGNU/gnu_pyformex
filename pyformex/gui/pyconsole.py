@@ -30,7 +30,6 @@ from __future__ import print_function
 import os
 import re
 import sys
-import code
 import readline
 import atexit
 import traceback
@@ -41,118 +40,21 @@ from gui.guimain import Board
 import utils
 
 
-class HistoryConsole(code.InteractiveConsole):
-    def __init__(self,locals=None,filename="<console>",
-                 histfile=os.path.expanduser("~/.console-history"),
-                 parent=None):
-        code.InteractiveConsole.__init__(self,locals,filename)
-        self.init_history(histfile)
-        self.parent = parent
-
-    def init_history(self, histfile):
-        readline.parse_and_bind("tab: complete")
-        if hasattr(readline,"read_history_file"):
-            try:
-                readline.read_history_file(histfile)
-            except IOError:
-                pass
-            atexit.register(self.save_history,histfile)
-
-    def save_history(self, histfile):
-        readline.write_history_file(histfile)
-
-    def write(self,s):
-        self.parent.write(s,color='magenta')
-
-
-InteractiveInterpreter = code.InteractiveInterpreter
-InteractiveInterpreter = HistoryConsole
-
-##########################################################################
-
-class PyConsole(Board):
-
-    def __init__(self,parent=None):
-
-        super(PyConsole,self).__init__(parent)
-        self.setReadOnly(False)
-        self.interpreter = InteractiveInterpreter(locals(),parent=self)
-        self.multiLine = False # code spans more than one line
-
-
-    def showPrompt(self):
-        if self.multiLine:
-            self.insertPlainText('... ')
-        else:
-            self.insertPlainText('>>> ')
-
-
-    def keyPressEvent(self,e):
-
-        if e.key() in [QtCore.Qt.Key_Return,QtCore.Qt.Key_Enter]:
-            # set cursor to end of line to avoid line splitting
-            textCursor = self.textCursor()
-            position = len(self.document().toPlainText())
-            textCursor.setPosition(position)
-            self.setTextCursor(textCursor)
-
-            line = str(self.document().lastBlock().text())[4:] # remove prompt
-            line.rstrip()
-            self.historyIndex = -1
-            print(line)
-
-            try:
-                line[-1]
-                self.haveLine = True
-                if line[-1] == ':':
-                    self.multiLine = True
-                self.history.insert(0,line)
-            except:
-                self.haveLine = False
-
-            if self.haveLine and self.multiLine:
-                print("# multi line command")
-                self.command += line + '\n' # + command and line
-                self.append('') # move down one line
-                self.prompt() # handle prompt style
-                e.accept()
-
-            if self.haveLine and not self.multiLine: # one line command
-                self.command = line # line is the command
-                self.append('') # move down one line
-                self.interpreter.runsource(self.command)
-                self.command = '' # clear command
-                self.prompt() # handle prompt style
-                e.accept()
-
-            if self.multiLine and not self.haveLine: # multi line done
-                self.append('') # move down one line
-                self.interpreter.runsource(self.command)
-                self.command = '' # clear command
-                self.multiLine = False # back to single line
-                self.prompt() # handle prompt style
-                e.accept()
-
-            if not self.haveLine and not self.multiLine: # just enter
-                self.append('')
-                self.prompt()
-                e.accept()
-
-            e.ignore()
-
-        super(PyConsole,self).keyPressEvent(e)
-
-
 ##########################################################################
 
 class PyConsole(QtGui.QPlainTextEdit):
-    def __init__(self,prompt='>>> ',startup_message='pyFormex interactive Python console (EXPERIMENTAL!)', parent=None):
+    def __init__(self,interpreter=None,prompt='>>> ',startup_message='pyFormex interactive Python console (EXPERIMENTAL!)',parent=None):
         super(PyConsole,self).__init__(parent)
         self.prompt = prompt
         self.history = []
         self.construct = []
-        ## self.namespace={}
-        self.interpreter = InteractiveInterpreter(locals(),parent=self)
+        if interpreter is None:
+            import code
+            import script
+            interpreter = code.InteractiveInterpreter(script.Globals())
+        self.interpreter = interpreter
+
+        self.boardmode = False
 
         #self.setGeometry(50, 75, 600, 400)
         self.setWordWrapMode(QtGui.QTextOption.WrapAnywhere)
@@ -160,9 +62,6 @@ class PyConsole(QtGui.QPlainTextEdit):
         self.document().setDefaultFont(QtGui.QFont("monospace", 10, QtGui.QFont.Normal))
         self.showMessage(startup_message)
 
-
-    ## def updateNamespace(self, namespace):
-    ##     self.namespace.update(namespace)
 
 
     def write(self,s,color=None):
@@ -303,7 +202,6 @@ class PyConsole(QtGui.QPlainTextEdit):
         res = self.interpreter.runsource(command,'<console>','single')
 
 
-
     def runCommand(self):
         command = self.getCommand()
         self.addToHistory(command)
@@ -340,6 +238,8 @@ class PyConsole(QtGui.QPlainTextEdit):
         self.showPrompt()
 
     def keyPressEvent(self, event):
+        if self.boardmode:
+            return
         if event.key() in (QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return):
             self.runCommand()
             return
