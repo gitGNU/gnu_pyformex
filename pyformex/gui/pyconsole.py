@@ -33,6 +33,7 @@ import sys
 import code
 import readline
 import atexit
+import traceback
 
 
 from gui import QtGui, QtCore
@@ -42,9 +43,11 @@ import utils
 
 class HistoryConsole(code.InteractiveConsole):
     def __init__(self,locals=None,filename="<console>",
-                 histfile=os.path.expanduser("~/.console-history")):
+                 histfile=os.path.expanduser("~/.console-history"),
+                 parent=None):
         code.InteractiveConsole.__init__(self,locals,filename)
         self.init_history(histfile)
+        self.parent = parent
 
     def init_history(self, histfile):
         readline.parse_and_bind("tab: complete")
@@ -58,81 +61,113 @@ class HistoryConsole(code.InteractiveConsole):
     def save_history(self, histfile):
         readline.write_history_file(histfile)
 
+    def write(self,s):
+        self.parent.write(s,color='magenta')
 
-class PyConsole(QtGui.QTextEdit):
+
+InteractiveInterpreter = code.InteractiveInterpreter
+InteractiveInterpreter = HistoryConsole
+
+##########################################################################
+
+class PyConsole(Board):
 
     def __init__(self,parent=None):
 
         super(PyConsole,self).__init__(parent)
-
-        #sys.stdout = self
-        #sys.stderr = self
-        self.refreshMarker = False # to change back to >>> from ...
+        self.setReadOnly(False)
+        self.interpreter = InteractiveInterpreter(locals(),parent=self)
         self.multiLine = False # code spans more than one line
-        self.command = '' # command to be ran
-        self.history = [] # list of commands entered
-        self.historyIndex = -1
-        self.interpreterLocals = {}
-
-        self.setAcceptRichText(False)
-        self.setFrameStyle(QtGui.QFrame.StyledPanel | QtGui.QFrame.Sunken)
-        self.setMinimumSize(24,24)
-        self.setSizePolicy(QtGui.QSizePolicy.MinimumExpanding,QtGui.QSizePolicy.MinimumExpanding)
-
-        #self.buffer = ''
-        font = QtGui.QFont("DejaVu Sans Mono")
-        #font.setStyle(QtGui.QFont.StyleNormal)
-        self.setFont(font)
-        self.stdout = self.stderr = None # redirected streams
 
 
-        # initilize interpreter with self locals
-        interpreterLocals = locals()
-        if interpreterLocals:
-            # when we pass in locals, we don't want it to be named "self"
-            # so we rename it with the name of the class that did the passing
-            # and reinsert the locals back into the interpreter dictionary
-            selfName = interpreterLocals['self'].__class__.__name__
-            interpreterLocalVars = interpreterLocals.pop('self')
-            self.interpreterLocals[selfName] = interpreterLocalVars
+    def showPrompt(self):
+        if self.multiLine:
+            self.insertPlainText('... ')
         else:
-            self.interpreterLocals = interpreterLocals
-        self.interpreter = code.InteractiveInterpreter(self.interpreterLocals)
+            self.insertPlainText('>>> ')
+
+
+    def keyPressEvent(self,e):
+
+        if e.key() in [QtCore.Qt.Key_Return,QtCore.Qt.Key_Enter]:
+            # set cursor to end of line to avoid line splitting
+            textCursor = self.textCursor()
+            position = len(self.document().toPlainText())
+            textCursor.setPosition(position)
+            self.setTextCursor(textCursor)
+
+            line = str(self.document().lastBlock().text())[4:] # remove prompt
+            line.rstrip()
+            self.historyIndex = -1
+            print(line)
+
+            try:
+                line[-1]
+                self.haveLine = True
+                if line[-1] == ':':
+                    self.multiLine = True
+                self.history.insert(0,line)
+            except:
+                self.haveLine = False
+
+            if self.haveLine and self.multiLine:
+                print("# multi line command")
+                self.command += line + '\n' # + command and line
+                self.append('') # move down one line
+                self.prompt() # handle prompt style
+                e.accept()
+
+            if self.haveLine and not self.multiLine: # one line command
+                self.command = line # line is the command
+                self.append('') # move down one line
+                self.interpreter.runsource(self.command)
+                self.command = '' # clear command
+                self.prompt() # handle prompt style
+                e.accept()
+
+            if self.multiLine and not self.haveLine: # multi line done
+                self.append('') # move down one line
+                self.interpreter.runsource(self.command)
+                self.command = '' # clear command
+                self.multiLine = False # back to single line
+                self.prompt() # handle prompt style
+                e.accept()
+
+            if not self.haveLine and not self.multiLine: # just enter
+                self.append('')
+                self.prompt()
+                e.accept()
+
+            e.ignore()
+
+        super(PyConsole,self).keyPressEvent(e)
+
+
+##########################################################################
+
+class PyConsole(QtGui.QPlainTextEdit):
+    def __init__(self,prompt='>>> ',startup_message='pyFormex interactive Python console (EXPERIMENTAL!)', parent=None):
+        super(PyConsole,self).__init__(parent)
+        self.prompt = prompt
+        self.history = []
+        self.construct = []
+        ## self.namespace={}
+        self.interpreter = InteractiveInterpreter(locals(),parent=self)
+
+        #self.setGeometry(50, 75, 600, 400)
+        self.setWordWrapMode(QtGui.QTextOption.WrapAnywhere)
+        self.setUndoRedoEnabled(False)
+        self.document().setDefaultFont(QtGui.QFont("monospace", 10, QtGui.QFont.Normal))
+        self.showMessage(startup_message)
+
+
+    ## def updateNamespace(self, namespace):
+    ##     self.namespace.update(namespace)
 
 
     def write(self,s,color=None):
-        """Write a string to the message board.
-
-        If a color is specified, the text is shown in the specified
-        color, but the default board color remains unchanged.
-        """
-        if color:
-            savecolor = self.textColor()
-            self.setTextColor(QtGui.QColor(color))
-        else:
-            savecolor = None
-        # A single blank character seems to be generated by a print
-        # instruction containing a comma: skip it
-        if s == ' ':
-            return
-        #self.buffer += '[%s:%s]' % (len(s),s)
-        if len(s) > 0:
-            if not s.endswith('\n'):
-                s += '\n'
-            self.insertPlainText(s)
-            textCursor = self.textCursor()
-            textCursor.movePosition(QtGui.QTextCursor.End)
-            self.setTextCursor(textCursor)
-        if savecolor:
-            self.setTextColor(savecolor)
-        self.ensureCursorVisible()
-
-
-    def save(self,filename):
-        """Save the contents of the board to a file"""
-        fil = open(filename,'w')
-        fil.write(self.toPlainText())
-        fil.close()
+        self.appendPlainText(s+'\n')
+        #self.showMessage(s)
 
 
     def flush(self):
@@ -157,6 +192,234 @@ class PyConsole(QtGui.QTextEdit):
             self.stdout = None
 
 
+    def showMessage(self, message):
+        self.appendPlainText(message)
+        self.showPrompt()
+
+
+    def showPrompt(self):
+        if self.construct:
+            prompt = '.'*(len(self.prompt)-1) + ' '
+        else:
+            prompt = self.prompt
+        self.appendPlainText(prompt)
+        self.moveCursor(QtGui.QTextCursor.End)
+
+
+    def getCommand(self):
+        doc = self.document()
+        curr_line = unicode(doc.findBlockByLineNumber(doc.lineCount() - 1).text())
+        curr_line = curr_line.rstrip()
+        curr_line = curr_line[len(self.prompt):]
+        return curr_line
+
+
+    def setCommand(self, command):
+        if self.getCommand() == command:
+            return
+        self.moveCursor(QtGui.QTextCursor.End)
+        self.moveCursor(QtGui.QTextCursor.StartOfLine, QtGui.QTextCursor.KeepAnchor)
+        for i in range(len(self.prompt)):
+            self.moveCursor(QtGui.QTextCursor.Right, QtGui.QTextCursor.KeepAnchor)
+        self.textCursor().removeSelectedText()
+        self.textCursor().insertText(command)
+        self.moveCursor(QtGui.QTextCursor.End)
+
+
+    def getConstruct(self, command):
+        if self.construct:
+            prev_command = self.construct[-1]
+            self.construct.append(command)
+            if not prev_command and not command:
+                ret_val = '\n'.join(self.construct)
+                self.construct = []
+                return ret_val
+            else:
+                return ''
+        else:
+            if command and command[-1] == (':'):
+                self.construct.append(command)
+                return ''
+            else:
+                return command
+
+    def getHistory(self):
+        return self.history
+
+    def setHisory(self, history):
+        self.history = history
+
+    def addToHistory(self, command):
+        if command and (not self.history or self.history[-1] != command):
+            self.history.append(command)
+        self.history_index = len(self.history)
+
+    def getPrevHistoryEntry(self):
+        if self.history:
+            self.history_index = max(0, self.history_index - 1)
+            return self.history[self.history_index]
+        return ''
+
+    def getNextHistoryEntry(self):
+        if self.history:
+            hist_len = len(self.history)
+            self.history_index = min(hist_len, self.history_index + 1)
+            if self.history_index < hist_len:
+                return self.history[self.history_index]
+        return ''
+
+    def getCursorPosition(self):
+        return self.textCursor().columnNumber() - len(self.prompt)
+
+    def setCursorPosition(self, position):
+        self.moveCursor(QtGui.QTextCursor.StartOfLine)
+        for i in range(len(self.prompt) + position):
+            self.moveCursor(QtGui.QTextCursor.Right)
+
+
+    ## def runSource(self,command):
+    ##     try:
+    ##         print("EVAL")
+    ##         result = eval(command, self.namespace, self.namespace)
+    ##         if result != None:
+    ##             self.appendPlainText(repr(result))
+    ##     except SyntaxError:
+    ##         print("EXEC")
+    ##         exec command in self.namespace
+
+
+    ## def runSource(self,command):
+    ##     try:
+    ##         print("EVAL")
+    ##         res = self.interpreter.runsource(command,'<console>','eval')
+    ##         print("RES=%s" % res)
+    ##     except SyntaxError:
+    ##         print("EXEC")
+    ##         res = self.interpreter.runsource(command,'<console>','single')
+    ##         print("RES=%s" % res)
+
+
+    def runSource(self,command):
+        res = self.interpreter.runsource(command,'<console>','single')
+
+
+
+    def runCommand(self):
+        command = self.getCommand()
+        self.addToHistory(command)
+
+        command = self.getConstruct(command)
+
+        if command:
+            tmp_stdout = sys.stdout
+
+            class stdoutProxy():
+                def __init__(self, write_func):
+                    self.write_func = write_func
+                    self.skip = False
+
+                def write(self, text):
+                    if not self.skip:
+                        stripped_text = text.rstrip('\n')
+                        self.write_func(stripped_text)
+                        QtCore.QCoreApplication.processEvents()
+                    self.skip = not self.skip
+
+            sys.stdout = stdoutProxy(self.appendPlainText)
+            try:
+                self.runSource(command)
+            except SystemExit:
+                self.close()
+            except:
+                traceback_lines = traceback.format_exc().split('\n')
+                # Remove traceback mentioning this file, and a linebreak
+                for i in (3,2,1,-1):
+                    traceback_lines.pop(i)
+                self.appendPlainText('\n'.join(traceback_lines))
+            sys.stdout = tmp_stdout
+        self.showPrompt()
+
+    def keyPressEvent(self, event):
+        if event.key() in (QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return):
+            self.runCommand()
+            return
+        if event.key() == QtCore.Qt.Key_Home:
+            self.setCursorPosition(0)
+            return
+        if event.key() == QtCore.Qt.Key_PageUp:
+            return
+        elif event.key() in (QtCore.Qt.Key_Left, QtCore.Qt.Key_Backspace):
+            if self.getCursorPosition() == 0:
+                return
+        elif event.key() == QtCore.Qt.Key_Up:
+            self.setCommand(self.getPrevHistoryEntry())
+            return
+        elif event.key() == QtCore.Qt.Key_Down:
+            self.setCommand(self.getNextHistoryEntry())
+            return
+        elif event.key() == QtCore.Qt.Key_D and event.modifiers() == QtCore.Qt.ControlModifier:
+            self.close()
+        super(PyConsole, self).keyPressEvent(event)
+
+
+##########################################################################
+
+
+
+class OtherPyConsole(Board):
+
+    def __init__(self,parent=None):
+
+        super(PyConsole,self).__init__(parent)
+        self.setReadOnly(False)
+
+        self.refreshMarker = False # to change back to >>> from ...
+        self.multiLine = False # code spans more than one line
+        self.command = '' # command to be ran
+        self.history = [] # list of commands entered
+        self.historyIndex = -1
+        self.interpreterLocals = {}
+
+        # initialize interpreter with self locals
+        interpreterLocals = locals()
+        if interpreterLocals:
+            # when we pass in locals, we don't want it to be named "self"
+            # so we rename it with the name of the class that did the passing
+            # and reinsert the locals back into the interpreter dictionary
+            selfName = interpreterLocals['self'].__class__.__name__
+            interpreterLocalVars = interpreterLocals.pop('self')
+            self.interpreterLocals[selfName] = interpreterLocalVars
+        else:
+            self.interpreterLocals = interpreterLocals
+        self.interpreter = InteractiveInterpreter(self.interpreterLocals)
+
+
+    def write(self,s,color=None):
+        """Write a string to the message board.
+
+        If a color is specified, the text is shown in the specified
+        color, but the default board color remains unchanged.
+        """
+        if color:
+            savecolor = self.textColor()
+            self.setTextColor(QtGui.QColor(color))
+        else:
+            savecolor = None
+        # A single blank character seems to be generated by a print
+        # instruction containing a comma: skip it
+        if s == ' ':
+            return
+        #self.buffer += '[%s:%s]' % (len(s),s)
+        if len(s) > 0:
+            if not s.endswith('\n'):
+                s += '\n'
+            self.insertPlainText(s)
+            self.cursor.movePosition(QtGui.QTextCursor.End)
+        if savecolor:
+            self.setTextColor(savecolor)
+        self.ensureCursorVisible()
+
+
     def printBanner(self):
         self.write(sys.version)
         self.write(' on ' + sys.platform + '\n')
@@ -169,10 +432,6 @@ class PyConsole(QtGui.QTextEdit):
             self.insertPlainText('... ')
         else:
             self.insertPlainText('>>> ')
-
-
-    def updateInterpreterLocals(self, newLocals):
-        self.interpreter.locals = newLocals
 
 
     def clearCurrentBlock(self):
@@ -198,7 +457,7 @@ class PyConsole(QtGui.QTextEdit):
             self.append('') # move down one line
             # vars that are in the command are prefixed with ____CC and deleted
             # once the command is done so they don't show up in dir()
-            backup = self.interpreterLocals.copy()
+            backup = self.interpreter.locals.copy()
             history = self.history[:]
             history.reverse()
             for i,x in enumerate(history):
@@ -206,11 +465,11 @@ class PyConsole(QtGui.QTextEdit):
                 delta = len(str(len(history))) - iSize
                 line = line = ' ' * delta + '%i: %s' % (i,x) + '\n'
                 self.write(line)
-            self.updateInterpreterLocals(backup)
+            self.interpreter.locals = backup
             return True
         import re
         if re.match('!hist\(\d+\)',command): # recall command from history
-            backup = self.interpreterLocals.copy()
+            backup = self.interpreter.locals.copy()
             history = self.history[:]
             history.reverse()
             index = int(command[6:-1])
@@ -219,7 +478,7 @@ class PyConsole(QtGui.QTextEdit):
             if command[-1] == ':':
                 self.multiLine = True
             self.write(command)
-            self.updateInterpreterLocals(backup)
+            self.interpreter.locals = backup
             return True
 
         return False
@@ -230,29 +489,29 @@ class PyConsole(QtGui.QTextEdit):
             # proper exit
             self.interpreter.runsource('exit()')
 
-        if event.key() == QtCore.Qt.Key_Down:
-            if self.historyIndex == len(self.history):
-                self.historyIndex -= 1
-            try:
-                if self.historyIndex > -1:
-                    self.historyIndex -= 1
-                    self.recallHistory()
-                else:
-                    self.clearCurrentBlock()
-            except:
-                pass
-            return None
+        ## if event.key() == QtCore.Qt.Key_Down:
+        ##     if self.historyIndex == len(self.history):
+        ##         self.historyIndex -= 1
+        ##     try:
+        ##         if self.historyIndex > -1:
+        ##             self.historyIndex -= 1
+        ##             self.recallHistory()
+        ##         else:
+        ##             self.clearCurrentBlock()
+        ##     except:
+        ##         pass
+        ##     return None
 
-        if event.key() == QtCore.Qt.Key_Up:
-            try:
-                if len(self.history) - 1 > self.historyIndex:
-                    self.historyIndex += 1
-                    self.recallHistory()
-                else:
-                    self.historyIndex = len(self.history)
-            except:
-                pass
-            return None
+        ## if event.key() == QtCore.Qt.Key_Up:
+        ##     try:
+        ##         if len(self.history) - 1 > self.historyIndex:
+        ##             self.historyIndex += 1
+        ##             self.recallHistory()
+        ##         else:
+        ##             self.historyIndex = len(self.history)
+        ##     except:
+        ##         pass
+        ##     return None
 
         if event.key() == QtCore.Qt.Key_Home:
             # set cursor to position 4 in current block. 4 because that's where
@@ -323,58 +582,5 @@ class PyConsole(QtGui.QTextEdit):
 
         # allow all other key events
         super(PyConsole,self).keyPressEvent(event)
-
-
-
-if utils.hasModule('ipython-qt'):
-
-
-    from IPython.zmq.ipkernel import IPKernelApp
-    from IPython.lib.kernel import find_connection_file
-    from IPython.frontend.qt.kernelmanager import QtKernelManager
-    from IPython.frontend.qt.console.rich_ipython_widget import RichIPythonWidget
-    from IPython.utils.traitlets import TraitError
-    from gui import QtGui, QtCore
-
-    def event_loop(kernel):
-        kernel.timer = QtCore.QTimer()
-        kernel.timer.timeout.connect(kernel.do_one_iteration)
-        kernel.timer.start(1000*kernel._poll_interval)
-
-    def default_kernel_app():
-        app = IPKernelApp.instance()
-        app.initialize(['python', '--pylab=qt'])
-        app.kernel.eventloop = event_loop
-        return app
-
-    def default_manager(kernel):
-        connection_file = find_connection_file(kernel.connection_file)
-        manager = QtKernelManager(connection_file=connection_file)
-        manager.load_connection_file()
-        manager.start_channels()
-        atexit.register(manager.cleanup_connection_file)
-        return manager
-
-    def console_widget(manager):
-        widget = RichIPythonWidget()
-        widget.kernel_manager = manager
-        return widget
-
-    def terminal_widget(**kwargs):
-        kernel_app = default_kernel_app()
-        manager = default_manager(kernel_app)
-        widget = console_widget(manager)
-        #update namespace
-        kernel_app.shell.user_ns.update(kwargs)
-        kernel_app.start()
-        return widget
-
-
-    class mainWindow(QtGui.QMainWindow):
-        def __init__(self, parent=None):
-            super(mainWindow, self).__init__(parent)
-
-            self.console = terminal_widget(testing=123)
-            self.setCentralWidget(self.console)
 
 # End

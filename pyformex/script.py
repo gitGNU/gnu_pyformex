@@ -100,6 +100,12 @@ def Globals():
         from gui import draw
         g.update(draw.__dict__)
     g.update(formex.__dict__)
+    # Set module correct
+    if pf.GUI:
+        modname = 'draw'
+    else:
+        modname = 'script'
+    g['__name__'] = modname
     return g
 
 
@@ -299,11 +305,6 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
 
     # Get the globals
     g = Globals()
-    if pf.GUI:
-        modname = 'draw'
-    else:
-        modname = 'script'
-    g.update({'__name__':modname})
     if filename:
         g.update({'__file__':filename})
     g.update({'argv':argv})
@@ -321,9 +322,10 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
     try:
         try:
 
-            if pf.interpreter:
-                pf.interpreter.locals.update(g)
-                pf.interpreter.runsource(scr.read(),filename,'exec')
+            if pf.console:
+                pf.debug("Executing script in pf.console",pf.DEBUG.SCRIPT)
+                pf.console.interpreter.locals.update(g)
+                pf.console.interpreter.runsource(scr.read(),filename,'exec')
 
             else:
                 if pye:
@@ -477,7 +479,7 @@ def runScript(fn,argv=[]):
     msg = "Running script (%s)" % fn
     if pf.GUI:
         pf.GUI.scripthistory.add(fn)
-        pf.board.write(msg,color='red')
+        pf.GUI.board.write(msg,color='red')
     else:
         message(msg)
     pf.debug("  Executing with arguments: %s" % argv,pf.DEBUG.SCRIPT)
@@ -493,7 +495,7 @@ def runScript(fn,argv=[]):
     pf.debug("  Arguments left after execution: %s" % argv,pf.DEBUG.SCRIPT)
     msg = "Finished script %s in %s seconds" % (fn,t.seconds())
     if pf.GUI:
-        pf.board.write(msg,color='red')
+        pf.GUI.board.write(msg,color='red')
     else:
         message(msg)
     return res
@@ -545,7 +547,7 @@ def runApp(appname,argv=[],refresh=False):
     if pf.GUI:
         pf.GUI.startRun()
         pf.GUI.apphistory.add(appname)
-        pf.board.write(msg,color='green')
+        pf.GUI.board.write(msg,color='green')
     else:
         message(msg)
     pf.debug("  Passing arguments: %s" % argv,pf.DEBUG.SCRIPT)
@@ -573,7 +575,7 @@ def runApp(appname,argv=[],refresh=False):
     pf.debug("  Arguments left after execution: %s" % argv,pf.DEBUG.SCRIPT)
     msg = "Finished %s in %s seconds" % (appname,t.seconds())
     if pf.GUI:
-        pf.board.write(msg,color='green')
+        pf.GUI.board.write(msg,color='green')
     else:
         message(msg)
     pf.debug("Memory: %s" % vmSize(),pf.DEBUG.MEM)

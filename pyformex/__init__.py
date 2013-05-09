@@ -73,8 +73,8 @@ interactive = False
 app = None         # the Qapplication
 GUI = None         # the GUI QMainWindow
 canvas = None      # the OpenGL Drawing widget controlled by the running script
-#board = None       # the message board
-interpreter = None  # alternate interpreter to execute scripts
+#board = None      # the message board
+console = None     # alternate Python console
 
 # set start date/time
 import time,datetime
