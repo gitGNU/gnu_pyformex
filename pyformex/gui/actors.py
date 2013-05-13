@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -389,6 +389,47 @@ class PlaneActor(Actor):
             if self.planes:
                 glColor(self.planecolor,self.alpha)
                 drawGridPlanes(self.x0,self.x1,nx)
+
+
+
+class Text3DActor(Actor):
+    """A text as a 3D object.
+
+    This class provides an Actor representing a text as an object
+    in 3D space.
+    """
+    def __init__(self,text,font,facesize,color):
+        Actor.__init__(self)
+        self.text = text
+        self.font = font
+        self.setFaceSize(*facesize)
+        self.setColor(color)
+
+    def setFaceSize(self,a,b):
+        self.font.FaceSize(a,b)
+
+    def setColor(self,color):
+        from gui.drawable import saneColor
+        self.color = saneColor(color)
+
+    def bbox(self):
+        bb = self.font.BBox(self.text)
+        return [bb[:3],bb[3:]]
+
+    def drawGL(self,*args,**kargs):
+        glColor(self.color)
+        self.font.Render(self.text)
+        # Because of the way font.Render works, we need an update here
+        pf.canvas.update()
+
+    def draw(self,*args,**kargs):
+        #
+        # TODO:
+        # set modelview matrix to keep text parallel to canvas
+        #
+        #
+        Actor.draw(self,*args,**kargs)
+
 
 
 ###########################################################################

@@ -46,7 +46,6 @@ try:
 except ImportError:
     warning("You do not have FTGL and its Python bindings (pyftgl).\nSee the pyformex/extra/pyftgl directory in the pyFormex source tree for instructions.")
 
-from gui import QtCore, QtGui, QtOpenGL
 from gui import colors,image
 import odict
 
@@ -69,45 +68,17 @@ fonttypes = odict.ODict([
 #    ('buffer',FTGL.BufferFont),
     ])
 
-from gui.actors import Actor
-from OpenGL import GL,GLU
-
-class Text3DActor(Actor):
-
-    def __init__(self,text,font,facesize,color):
-        Actor.__init__(self)
-        self.text = text
-        self.font = font
-        self.setFaceSize(*facesize)
-        self.setColor(color)
-
-    def setFaceSize(self,a,b):
-        self.font.FaceSize(a,b)
-
-    def setColor(self,color):
-        if type(color) is str and color[0] in '([':
-            color = eval(color)
-        color = colors.GLcolor(color)
-        fgcolor(color)
-
-    def bbox(self):
-        bb = self.font.BBox(self.text)
-        return [bb[:3],bb[3:]]
-
-    # Use draw, not drawGL: it seems not to work
-    def draw(self,*args,**kargs):
-        self.font.Render(self.text)
-
-
 def showSquare():
     F = Formex(pattern('1234'))
     draw(F)
 
-def showText(text,font,fonttype,facesize,color):
+
+def showText(text,font,fonttype,facesize,color,pos):
+    from gui.actors import Text3DActor,TranslatedActor
     font = fonttypes[fonttype](font)
     t = Text3DActor(text,font,facesize,color)
-    pf.canvas.addActor(t)
-    pf.canvas.update()
+    t = TranslatedActor(t,pos)
+    drawAny(t)
     return t
 
 def rotate():
@@ -129,6 +100,7 @@ _items = [
     _I('fonttype',choices=fonttypes.keys()),
     _I('facesize',(24,36)),
     _I('color',colors.pyformex_pink),
+    _I('pos',(0.,0.,0.)),
     ]
 
 dialog = None
@@ -187,6 +159,7 @@ if __name__ == 'draw':
     chdir(__file__)
     clear()
     reset()
+    #view('iso')
     smooth()
     lights(False)
     run()
