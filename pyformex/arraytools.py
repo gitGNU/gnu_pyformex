@@ -2006,7 +2006,7 @@ def nodalSum(val,elems,avg=False,return_all=True,direction_treshold=None):
     summed if their direction is close (projection of one onto the other is
     higher than the specified tolerance).
     """
-    from pyformex.lib import misc
+    from lib import misc
     if val.ndim != 3:
         val.reshape(val.shape+(1,))
     if elems.shape != val.shape[:2]:
