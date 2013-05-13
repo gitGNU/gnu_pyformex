@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -66,12 +66,11 @@ SRC= $(wildcard *.c)
 PRG= $(addprefix gts, $(SRC:.c=))
 MAN= $(addsuffix .1, $(PRG))
 
-# This avoids warnings during creation of Debian packages, but may
-# not work on other systems
-#FLAGS= `PKG_CONFIG_PATH=. pkg-config --cflags --libs glib-2.0 gts`
-#FLAGS= `pkg-config --cflags --libs glib-2.0 gts`
+# This will detect the flags needed for compilation
+FLAGS= `pkg-config --cflags --libs glib-2.0 gts`
 
-FLAGS= -pthread -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -Wl,--export-dynamic -lgts -lm -lgmodule-2.0 -lrt -lglib-2.0
+# If pkg-config does not work on your system, you can try these flags
+#FLAGS = -pthread -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include  -pthread -Wl,--export-dynamic -lgts -lm -lgthread-2.0 -lgmodule-2.0 -lrt -lglib-2.0
 
 .PHONY: all build install clean
 
@@ -80,10 +79,10 @@ build: $(PRG)
 all: install clean
 
 gts%: %.c
-	$(CC) $(FLAGS) $< -o $@
+	$(CC) $< $(FLAGS) -o $@
 
 install: $(PRG) $(MAN)
-	$(INSTALLDIR) $(BINDIR)
+	$(INSTALLDIR) $(BINDIR) $(MANDIR)
 	$(INSTALLBIN) $(PRG) $(BINDIR)
 	$(INSTALLDATA) $(MAN) $(MANDIR)
 

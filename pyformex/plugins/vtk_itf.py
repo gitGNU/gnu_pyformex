@@ -254,11 +254,11 @@ def intersectWithSegment(surf,lines,tol=0.0):
     The position in the list is equal to the line number. If there is no
     intersection with the correspondent lists are empty
     """
-    from vtk import vtkOBBTree
+    from vtk import vtkOBBTree,vtkPoints,vtkIdList
 
-    surf = convert2VPD(surf,clean=False)
+    vsurf = convert2VPD(surf,clean=False)
     loc = vtkOBBTree()
-    loc.SetDataSet(vm)
+    loc.SetDataSet(vsurf)
     loc.SetTolerance(tol)
     loc.BuildLocator()
     loc.Update()

@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -49,7 +49,7 @@ def icon_smooth():
     drawActor(F)
     smooth()
     zoom(0.8)
-    
+
 
 def icon_clock():
     from examples.Clock import AnalogClock
@@ -135,13 +135,13 @@ def run():
     resetAll()
     flat()
     bgcolor('white') # Make sure we have a one color background
-    
+
 
     res = askItems([
         _I('icon',text='Icon Name',choices=_avail_icons),
         _I('save',False,text='Save Icon'),
         ])
-    
+
     if not res:
         return
 
@@ -154,10 +154,10 @@ def run():
 
     if save:
         saveIcon(icon)
-        
+
 
 _avail_icons = available_icons()
-       
+
 
 if __name__ == 'draw':
     run()
