@@ -76,10 +76,10 @@ def showSquare():
 def showText(text,font,fonttype,facesize,color,pos):
     from gui.actors import Text3DActor,TranslatedActor
     font = fonttypes[fonttype](font)
-    t = Text3DActor(text,font,facesize,color)
-    t = TranslatedActor(t,pos)
+    t = Text3DActor(text,font,facesize,color,pos)
     t.nolight=True
     drawAny(t)
+    zoomAll()  #  !! Removing this may cause errors
     return t
 
 

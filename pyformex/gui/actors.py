@@ -28,6 +28,7 @@
 from __future__ import print_function
 
 import pyformex as pf
+import arraytools as at
 import sys
 from OpenGL import GL
 
@@ -398,12 +399,13 @@ class Text3DActor(Actor):
     This class provides an Actor representing a text as an object
     in 3D space.
     """
-    def __init__(self,text,font,facesize,color):
+    def __init__(self,text,font,facesize,color,trl):
         Actor.__init__(self)
         self.text = text
         self.font = font
         self.setFaceSize(*facesize)
         self.setColor(color)
+        self.trl = at.checkArray(trl,(3,),'f')
 
     def setFaceSize(self,a,b):
         self.font.FaceSize(a,b)
@@ -417,8 +419,13 @@ class Text3DActor(Actor):
         return [bb[:3],bb[3:]]
 
     def drawGL(self,*args,**kargs):
+        GL.glMatrixMode(GL.GL_MODELVIEW)
+        GL.glPushMatrix()
+        GL.glTranslate(*self.trl)
         glColor(self.color)
         self.font.Render(self.text)
+        GL.glMatrixMode(GL.GL_MODELVIEW)
+        GL.glPopMatrix()
         # Because of the way font.Render works, we need an update here
         pf.canvas.update()
 
