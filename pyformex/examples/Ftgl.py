@@ -54,7 +54,7 @@ extra_fonts = [
     getcfg('datadir')+"/blippok.ttf",
     ]
 
-fonts = [ f for f in utils.listFontFiles() if f .endswith('.ttf') ]
+fonts = [ f for f in utils.listFontFiles() if f.endswith('.ttf') ]
 fonts += [ f for f in extra_fonts if os.path.exists(f) ]
 fonts.sort()
 print("Number of available fonts: %s" % len(fonts))
@@ -78,8 +78,10 @@ def showText(text,font,fonttype,facesize,color,pos):
     font = fonttypes[fonttype](font)
     t = Text3DActor(text,font,facesize,color)
     t = TranslatedActor(t,pos)
+    t.nolight=True
     drawAny(t)
     return t
+
 
 def rotate():
     sleeptime = 0.1
