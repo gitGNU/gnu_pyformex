@@ -93,11 +93,20 @@ if pf.installtype=='S':
         pass
 
 # Set the proper revision number when running from git sources
+branch = None
 if pf.installtype=='G':
     try:
         sta,out,err = utils.system('cd %s && git describe --always' % pyformexdir)
         if sta == 0:
             pf.__revision__ = out.split('\n')[0].strip()
+    except:
+        pass
+
+    # Set branch name if we are in a git repository
+    try:
+        sta,out,err = utils.system('cd %s && git symbolic-ref --short -q HEAD' % pyformexdir)
+        if sta == 0:
+            branch = out.split('\n')[0]
     except:
         pass
 
@@ -343,13 +352,6 @@ def run(argv=[]):
     last read config file. Changed settings are those that differ from the
     settings in all but the last one.
     """
-
-    # Set branch name if we are in a git repository
-    if pf.installtype == 'G':
-        sta,out,err = utils.system('git symbolic-ref --short -q HEAD')
-        branch = out.split('\n')[0]
-    else:
-        branch = None
 
     # Create a config instance
     pf.cfg = Config()
