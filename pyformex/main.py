@@ -343,6 +343,14 @@ def run(argv=[]):
     last read config file. Changed settings are those that differ from the
     settings in all but the last one.
     """
+
+    # Set branch name if we are in a git repository
+    if pf.installtype == 'G':
+        sta,out,err = utils.system('git symbolic-ref --short -q HEAD')
+        branch = out.split('\n')[0]
+    else:
+        branch = None
+
     # Create a config instance
     pf.cfg = Config()
     # Fill in the pyformexdir, homedir variables
@@ -361,129 +369,139 @@ def run(argv=[]):
     # Process options
     import optparse
     from optparse import make_option as MO
+    option_list=[
+    MO("--gui",
+       action="store_true", dest="gui", default=None,
+       help="Start the GUI (this is the default when no scriptname argument is given)",
+       ),
+    MO("--nogui",
+       action="store_false", dest="gui", default=None,
+       help="Do not start the GUI (this is the default when a scriptname argument is given)",
+       ),
+    MO("--interactive",
+       action="store_true", dest="interactive", default=False,
+       help="Go into interactive mode after processing the command line parameters. This is implied by the --gui option.",
+       ),
+    MO("--dri",
+       action="store_true", dest="dri", default=None,
+       help="Use Direct Rendering Infrastructure. By default, direct rendering will be used if available.",
+       ),
+    MO("--nodri",
+       action="store_false", dest="dri", default=None,
+       help="Do not use the Direct Rendering Infrastructure. This may be used to turn off the direc rendering, e.g. to allow better capturing of images and movies.",
+       ),
+    MO("--uselib",
+       action="store_true", dest="uselib", default=None,
+       help="Use the pyFormex C lib if available. This is the default.",
+       ),
+    MO("--nouselib",
+       action="store_false", dest="uselib", default=None,
+       help="Do not use the pyFormex C-lib.",
+       ),
+    MO("--commands",
+       action="store_true", dest="commands", default=False,
+       help="Use the commands module to execute external commands. Default is to use the subprocess module.",
+       ),
+    MO("--config",
+       action="store", dest="config", default=None,
+       help="Use file CONFIG for settings",
+       ),
+    MO("--nodefaultconfig",
+       action="store_true", dest="nodefaultconfig", default=False,
+       help="Skip the default site and user config files. This option can only be used in conjunction with the --config option.",
+       ),
+    MO("--redirect",
+       action="store_true", dest="redirect", default=None,
+       help="Redirect standard output to the message board (ignored with --nogui)",
+       ),
+    MO("--noredirect",
+       action="store_false", dest="redirect",
+       help="Do not redirect standard output to the message board.",
+       ),
+    MO("--debug",
+       action="store", dest="debug", default='',
+       help="Display debugging information to sys.stdout. The value is a comma-separated list of (case-insensitive) strings corresponding with the attributes of the DebugLevels class. The individual values are OR-ed together to produce a final debug value. The special value 'all' can be used to switch on all debug info.",
+       ),
+    MO("--debuglevel",
+       action="store", dest="debuglevel", type="int", default=0,
+       help="Display debugging info to sys.stdout. The value is an int with the bits of the requested debug levels set. A value of -1 switches on all debug info. If this option is used, it overrides the --debug option.",
+       ),
+    MO("--newviewports",
+       action="store_true", dest="newviewports", default=False,
+       help="Use the new multiple viewport canvas implementation. This is an experimental feature only intended for developers.",
+       ),
+    MO("--testmodule",
+       action="store", dest="testmodule", default=None,
+       help="Run the docstring tests for module TESTMODULE. TESTMODULE is the name of the module, using . as path separator.",
+       ),
+    MO("--testcamera",
+       action="store_true", dest="testcamera", default=False,
+       help="Print camera settings whenever they change.",
+       ),
+    MO("--testexecutor",
+       action="store_true", dest="executor", default=False,
+       help="Test alternate executor: only for developers!",
+       ),
+    MO("--memtrack",
+       action="store_true", dest="memtrack", default=False,
+       help="Track memory for leaks. This is only for developers.",
+       ),
+    MO("--fastnurbs",
+       action="store_true", dest="fastnurbs", default=False,
+       help="Test C library nurbs drawing: only for developers!",
+       ),
+    MO("--pyside",
+       action="store_true", dest="pyside", default=None,
+       help="Use the PySide bindings for QT4 libraries",
+       ),
+    MO("--pyqt4",
+       action="store_false", dest="pyside", default=None,
+       help="Use the PyQt4 bindings for QT4 libraries",
+       ),
+    MO("--listfiles",
+       action="store_true", dest="listfiles", default=False,
+       help="List the pyformex Python source files.",
+       ),
+    MO("--search",
+       action="store_true", dest="search", default=False,
+       help="Search the pyformex source for a specified pattern and exit. This can optionally be followed by -- followed by options for the grep command and/or '-a' to search all files in the extended search path. The final argument is the pattern to search. '-e' before the pattern will interprete this as an extended regular expression. '-l' option only lists the names of the matching files.",
+       ),
+    MO("--remove",
+       action="store_true", dest="remove", default=False,
+       help="Remove the pyFormex installation and exit. This option only works when pyFormex was installed from a tarball release using the supplied install procedure. If you install from a distribution package (e.g. Debian), you should use your distribution's package tools to remove pyFormex. If you run pyFormex directly from SVN sources, you should just remove the whole checked out source tree.",
+       ),
+    MO("--whereami",
+       action="store_true", dest="whereami", default=False,
+       help="Show where the pyformex package is installed and exit",
+       ),
+    MO("--detect",
+       action="store_true", dest="detect", default=False,
+       help="Show detected helper software and exit",
+       ),
+    ]
+
     parser = optparse.OptionParser(
-        # THE Qapp options are removed, because it does not seem to work !!!
-        # SEE the comments in the gui.startGUI function
         usage = "usage: %prog [<options>] [ [ scriptname [scriptargs] ] ...]",
         version = pf.fullVersion(),
         description = pf.Description,
         formatter = optparse.TitledHelpFormatter(),
-        option_list=[
-        MO("--gui",
-           action="store_true", dest="gui", default=None,
-           help="Start the GUI (this is the default when no scriptname argument is given)",
-           ),
-        MO("--nogui",
-           action="store_false", dest="gui", default=None,
-           help="Do not start the GUI (this is the default when a scriptname argument is given)",
-           ),
-        MO("--interactive",
-           action="store_true", dest="interactive", default=False,
-           help="Go into interactive mode after processing the command line parameters. This is implied by the --gui option.",
-           ),
-        MO("--dri",
-           action="store_true", dest="dri", default=None,
-           help="Use Direct Rendering Infrastructure. By default, direct rendering will be used if available.",
-           ),
-        MO("--nodri",
-           action="store_false", dest="dri", default=None,
-           help="Do not use the Direct Rendering Infrastructure. This may be used to turn off the direc rendering, e.g. to allow better capturing of images and movies.",
-           ),
-        MO("--uselib",
-           action="store_true", dest="uselib", default=None,
-           help="Use the pyFormex C lib if available. This is the default.",
-           ),
-        MO("--nouselib",
-           action="store_false", dest="uselib", default=None,
-           help="Do not use the pyFormex C-lib.",
-           ),
-        MO("--commands",
-           action="store_true", dest="commands", default=False,
-           help="Use the commands module to execute external commands. Default is to use the subprocess module.",
-           ),
-        MO("--config",
-           action="store", dest="config", default=None,
-           help="Use file CONFIG for settings",
-           ),
-        MO("--nodefaultconfig",
-           action="store_true", dest="nodefaultconfig", default=False,
-           help="Skip the default site and user config files. This option can only be used in conjunction with the --config option.",
-           ),
-        MO("--redirect",
-           action="store_true", dest="redirect", default=None,
-           help="Redirect standard output to the message board (ignored with --nogui)",
-           ),
-        MO("--noredirect",
-           action="store_false", dest="redirect",
-           help="Do not redirect standard output to the message board.",
-           ),
-        MO("--debug",
-           action="store", dest="debug", default='',
-           help="Display debugging information to sys.stdout. The value is a comma-separated list of (case-insensitive) strings corresponding with the attributes of the DebugLevels class. The individual values are OR-ed together to produce a final debug value. The special value 'all' can be used to switch on all debug info.",
-           ),
-        MO("--debuglevel",
-           action="store", dest="debuglevel", type="int", default=0,
-           help="Display debugging info to sys.stdout. The value is an int with the bits of the requested debug levels set. A value of -1 switches on all debug info. If this option is used, it overrides the --debug option.",
-           ),
-        MO("--newviewports",
-           action="store_true", dest="newviewports", default=False,
-           help="Use the new multiple viewport canvas implementation. This is an experimental feature only intended for developers.",
-           ),
-        MO("--testmodule",
-           action="store", dest="testmodule", default=None,
-           help="Run the docstring tests for module TESTMODULE. TESTMODULE is the name of the module, using . as path separator.",
-           ),
-        MO("--testcamera",
-           action="store_true", dest="testcamera", default=False,
-           help="Print camera settings whenever they change.",
-           ),
-        MO("--testexecutor",
-           action="store_true", dest="executor", default=False,
-           help="Test alternate executor: only for developers!",
-           ),
-        MO("--memtrack",
-           action="store_true", dest="memtrack", default=False,
-           help="Track memory for leaks. This is only for developers.",
-           ),
-        MO("--fastnurbs",
-           action="store_true", dest="fastnurbs", default=False,
-           help="Test C library nurbs drawing: only for developers!",
-           ),
-        MO("--pyside",
-           action="store_true", dest="pyside", default=None,
-           help="Use the PySide bindings for QT4 libraries",
-           ),
-        MO("--pyqt4",
-           action="store_false", dest="pyside", default=None,
-           help="Use the PyQt4 bindings for QT4 libraries",
-           ),
-        MO("--opengl2",
-           action="store_true", dest="opengl2", default=False,
-           help="Use the new OpenGL rendering engine. This is an experimental feature only intended for developers.",
-           ),
-        MO("--listfiles",
-           action="store_true", dest="listfiles", default=False,
-           help="List the pyformex Python source files.",
-           ),
-        MO("--search",
-           action="store_true", dest="search", default=False,
-           help="Search the pyformex source for a specified pattern and exit. This can optionally be followed by -- followed by options for the grep command and/or '-a' to search all files in the extended search path. The final argument is the pattern to search. '-e' before the pattern will interprete this as an extended regular expression. '-l' option only lists the names of the matching files.",
-           ),
-        MO("--remove",
-           action="store_true", dest="remove", default=False,
-           help="Remove the pyFormex installation and exit. This option only works when pyFormex was installed from a tarball release using the supplied install procedure. If you install from a distribution package (e.g. Debian), you should use your distribution's package tools to remove pyFormex. If you run pyFormex directly from SVN sources, you should just remove the whole checked out source tree.",
-           ),
-        MO("--whereami",
-           action="store_true", dest="whereami", default=False,
-           help="Show where the pyformex package is installed and exit",
-           ),
-        MO("--detect",
-           action="store_true", dest="detect", default=False,
-           help="Show detected helper software and exit",
-           ),
-        ])
+        option_list=option_list)
+    del option_list
+
+    # Add branch dependent options
+    if branch == 'opengl':
+        parser.add_option(
+            "--gl1",
+            action="store_false", dest="opengl2", default=True,
+            help="Use the old OpenGL rendering engine. This old engine is the standard in the master branch. The opengl branch uses the new engine by default.",
+            )
+
     pf.options, args = parser.parse_args(argv)
     pf.print_help = parser.print_help
+
+    if not hasattr(pf.options,'opengl2'):
+        setattr(pf.options,'opengl2',False)
+
 
     # Set debug level
     if pf.options.debug and not pf.options.debuglevel:
@@ -652,13 +670,6 @@ def run(argv=[]):
                 utils.system(source_clean)
             except:
                 print("Error while executing %s, we ignore it and continue" % source_clean)
-
-    # Set branch name if we are in a git repository
-    if pf.installtype == 'G':
-        sta,out,err = utils.system('git symbolic-ref --short -q HEAD')
-        branch = out.split('\n')[0]
-    else:
-        branch = None
 
     # Set future version for development branch
     if pf.options.opengl2:
