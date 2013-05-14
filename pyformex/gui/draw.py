@@ -1694,15 +1694,14 @@ def zoomRectangle():
 
 def zoomBbox(bb):
     """Zoom thus that the specified bbox becomes visible."""
-    #pf.canvas.setBbox(bb)
     pf.canvas.setCamera(bbox=bb)
     pf.canvas.update()
 
 
 def zoomAll():
     """Zoom thus that all actors become visible."""
-    if pf.canvas.actors:
-        zoomBbox(bbox(pf.canvas.actors))
+    zoomBbox(pf.canvas.sceneBbox())
+
 
 # Can this be replaced with zoomIn/Out?
 def zoom(f):
