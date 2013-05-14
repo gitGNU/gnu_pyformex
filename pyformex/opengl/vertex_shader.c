@@ -35,6 +35,7 @@ varying vec3 fTransformedVertexNormal;
 
 void main()
 {
+  // Pass color to fragment shader
   // Set single color
   if (colormode == 1) {
     fragmentColor = objectColor;
@@ -44,9 +45,20 @@ void main()
     // Default black opaque
     fragmentColor = vec4(0.,0.,1.,1.);
   }
+
+  /* TODO:
+
+     ALL gl_ variables should be changed to corresponding
+     uploaded attributes.
+  */
+
+
+  // Pass normal to fragment shader
+  fVertexNormal = gl_Normal;
+  fTransformedVertexNormal = modelview * vec4(gl_Normal,1.);
+
   // setup vertex Point Size
   gl_PointSize = pointsize;
   // Transforming The Vertex
-  //gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
   gl_Position = projection * modelview * gl_Vertex;
 }

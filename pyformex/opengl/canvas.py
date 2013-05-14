@@ -52,8 +52,8 @@ class Canvas(object):
         self.camera = None
         self.triade = None
         self.background = None
-        self.bbox = None
-        self.setBbox()
+        self._bbox = None
+        self.setBbox([[0.,0.,0.],[1.,1.,1.]])
         self.settings = CanvasSettings(**settings)
         self.mode2D = False
         self.rendermode = pf.cfg['draw/rendermode']
@@ -480,23 +480,32 @@ class Canvas(object):
             self.mode2D = False
 
 
-    def setBbox(self,bbox=None):
+    def sceneBbox(self):
+        """Return the bbox of all actors in the scene"""
+        return self.renderer.bbox
+
+
+    def setBbox(self,bb=None):
         """Set the bounding box of the scene you want to be visible.
 
-        bbox is a (2,3) shaped array specifying a bounding box.
+        bb is a (2,3) shaped array specifying a bounding box.
         If no bbox is given, the bounding box of all the actors in the
         scene is used, or if the scene is empty, a default unit bounding box.
         """
-        if bbox is None:
-            if len(self.actors) > 0:
-                bbox = self.actors[-1].bbox()
-            else:
-                bbox = [[-1.,-1.,-1.],[1.,1.,1.]]
-        bbox = asarray(bbox)
+        if bb is None:
+            bb = self.renderer.bbox
+        else:
+            bb = coords.Coords(bb)
+        # make sure we have no nan's in the bbox
         try:
-            self.bbox = nan_to_num(bbox)
+            bb = nan_to_num(bb)
         except:
-            pf.message("Invalid Bbox: %s" % bbox)
+            pf.message("Invalid Bbox: %s" % bb)
+        # make sure bbox size is nonzero in all directions
+        sz = bb[1]-bb[0]
+        bb[1,sz==0.0] += 1.
+        # Set bbox
+        self._bbox = bb
 
 
     def addActor(self,itemlist):
@@ -641,10 +650,10 @@ class Canvas(object):
 
         # set scene center
         if bbox is not None:
-            pf.debug("SETTING BBOX: %s" % self.bbox,pf.DEBUG.DRAW)
+            pf.debug("SETTING BBOX: %s" % bbox,pf.DEBUG.DRAW)
             self.setBbox(bbox)
 
-            X0,X1 = self.bbox
+            X0,X1 = self._bbox
             self.camera.focus = 0.5*(X0+X1)
 
         # set camera angles

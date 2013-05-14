@@ -436,7 +436,7 @@ class Camera(object):
         return self.modelview.rot
 
 
-    @ property
+    @property
     def upvector(self):
         """Return the camera up vector"""
         return self.modelview.rot[:3,1].reshape((3,))

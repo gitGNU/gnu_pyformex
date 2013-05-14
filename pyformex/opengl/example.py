@@ -36,6 +36,7 @@
 ## R = Renderer(pf.canvas,S)
 ## pf.canvas.renderer = R
 
+
 _clear = clear
 
 def clearall():
@@ -67,7 +68,7 @@ D.attrib(lighting=True,ambient=0.3,diffuse=0.2,color=green,bkcolor=blue)
 
 E = Formex(D.points())
 E.attrib(pointsize=20)
-D.attrib(color=[red,green,blue,magenta,yellow])
+#D.attrib(color=[red,green,blue,magenta,yellow])
 
 draw(A)
 draw(B)

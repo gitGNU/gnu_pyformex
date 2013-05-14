@@ -65,16 +65,26 @@ class Renderer(object):
 
     def clear(self):
         self._objects = []
-        self._bbox = bbox([0.,0.,0.])
+        self._bbox = None
+
+
+    @property
+    def bbox(self):
+        """Return the bbox of all objects in the renderer"""
+        print("OBJECTS",self._objects)
+        if self._bbox is None:
+            print("OBJECTS",)
+            self._bbox = bbox([o.object.bbox() for o in self._objects])
+        return self._bbox
 
 
     def add(self,obj):
         actor = GeomActor(obj)
         actor.prepare(self)
         self._objects.append(actor)
-        self._bbox = bbox([self._bbox,obj])
-        self.canvas.camera.focus = self._bbox.center()
-        print("NEW BBOX: %s" % self._bbox)
+        self._bbox = None
+        self.canvas.camera.focus = self.bbox.center()
+        print("NEW BBOX: %s" % self.bbox)
 
 
     def setDefaults(self):

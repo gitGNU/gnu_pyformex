@@ -256,7 +256,7 @@ class GeomActor(Attributes):
             GL.glNormalPointerf(self.nbo)
 
         if self.cbo:
-            print("BIND VERTEX COLOR %s" % str(self.cbo.shape))
+            #print("BIND VERTEX COLOR %s" % str(self.cbo.shape))
             self.cbo.bind()
             GL.glEnableClientState(GL.GL_COLOR_ARRAY)
             GL.glColorPointerf(self.cbo)
