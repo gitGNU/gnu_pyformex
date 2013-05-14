@@ -642,20 +642,31 @@ def run(argv=[]):
     # Initialize the libraries
     import lib
 
-    # Set future version for development branch
-    if pf.options.opengl2:
-        pf.__version__ = "1.x~a1"
-
-    #  If we run from an source version, we should set the proper revision
-    #  number and run the svnclean procedure.
+    # If we run from a checked out source repository, we should
+    # run the source_clean procedure.
 
     if pf.installtype in 'SG':
-        svnclean = os.path.join(pyformexdir,'svnclean')
-        if os.path.exists(svnclean):
+        source_clean = os.path.join(pyformexdir,'source_clean')
+        if os.path.exists(source_clean):
             try:
-                utils.system(svnclean)
+                utils.system(source_clean)
             except:
-                print("Error while executing %s, we ignore it and continue" % svnclean)
+                print("Error while executing %s, we ignore it and continue" % source_clean)
+
+    # Set branch name if we are in a git repository
+    if pf.installtype == 'G':
+        sta,out,err = utils.system('git symbolic-ref --short -q HEAD')
+        branch = out.split('\n')[0]
+    else:
+        branch = None
+
+    # Set future version for development branch
+    if pf.options.opengl2:
+        if branch == 'opengl':
+            pf.__version__ = "1.x~a1"
+        else:
+            pf.error("\nYou are starting pyFormex from the %s branch!\nThe --opengl2 option is only working in the opengl branch.\n" % branch)
+            return
 
 
     ###### We have the config and options all set up ############

@@ -37,6 +37,7 @@ from __future__ import print_function
 
 import re
 import numpy as np
+from coords import concatenate
 #from pyformex.arraytools import *
 
 re_eltypeB = re.compile("^(?P<type>B)(?P<ndim>[23])(?P<degree>\d)?(?P<mod>(OS)?H*)$")
