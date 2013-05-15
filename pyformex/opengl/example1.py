@@ -45,41 +45,5 @@ A.attrib(lighting=True,ambient=0.0,diffuse=0.5,color=red)
 B.attrib(lighting=True,ambient=0.0,diffuse=1.0,color=red)
 draw(A)
 draw(B)
-exit()
-
-## from simple import sphere
-
-## S = sphere(4)
-## print(S.npoints())
-## col = [red,red]*81
-## print(len(col))
-## S.attrib(lighting=True,ambient=0,diffuse=0,color=red)
-## draw(S)
-## zoomAll()
-## exit()
-
-
-A = Formex('3:012').replic2(2,1)
-A.attrib(color=red)
-A.attrib(color=[[red,green,blue],[cyan,magenta,yellow]])
-
-B = Formex('l:127')
-B.attrib(color=blue)
-
-C = Formex('1:012')
-C.attrib(color=yellow,pointsize=10)
-
-D = A.trl([1.,1.,0.]).toMesh()
-D.attrib(lighting=True,ambient=0.9,diffuse=0.9,color=green,bkcolor=blue)
-
-E = Formex(D.points())
-E.attrib(pointsize=20)
-#D.attrib(color=[red,green,blue,magenta,yellow])
-
-draw(A)
-draw(B)
-draw(C)
-draw(D)
-draw(E)
 
 # End

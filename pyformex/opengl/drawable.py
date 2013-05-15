@@ -185,10 +185,6 @@ class GeomActor(Attributes):
         elif self.colormode == 3:
             self.vertexColor = self.color
 
-        self.lighting = True
-        self.opacity = 1.0
-        self.ambient = 0.3
-        self.diffuse = 0.2
         print("PREPARED",self)
 
         if renderer.canvas.rendermode.startswith('smooth'):
