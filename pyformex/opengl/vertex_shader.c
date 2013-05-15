@@ -48,7 +48,7 @@ void main()
   if (colormode == 1) {
     fragmentColor = objectColor;
   } else if (colormode == 3) {
-    fragmentColor = gl_Color;
+    fragmentColor = vertexColor;
   } else {
     // Default black
     fragmentColor = vec3(0.,0.,0.);
@@ -57,8 +57,8 @@ void main()
 
   if (lighting) {
     // Pass normal to fragment shader
-    fVertexNormal = gl_Normal;
-    fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * gl_Normal;
+    fVertexNormal = vertexNormal;
+    fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * vertexNormal;
 
     // compute lighted color
     vec3 nNormal = normalize(fTransformedVertexNormal);
@@ -89,18 +89,11 @@ void main()
     //fragmentColor = vec3(0.,0.,1.);
   }
 
-
   // Final color including opacity
   fragColor = vec4(fragmentColor,opacity);
-
-  /* TODO:
-
-     ALL gl_ variables should be changed to corresponding
-     uploaded attributes.
-  */
 
   // setup vertex Point Size
   gl_PointSize = pointsize;
   // Transforming The Vertex
-  gl_Position = projection * modelview * gl_Vertex;
+  gl_Position = projection * modelview * vec4(vertexPosition,1.0);
 }

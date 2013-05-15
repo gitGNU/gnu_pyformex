@@ -243,22 +243,23 @@ class GeomActor(Attributes):
                 GL.glDrawArrays(self.glmode,0,asarray(self.vbo.shape[:-1]).prod())
 
         self.vbo.bind()
-        GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
-        GL.glVertexPointerf(self.vbo)
+        GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
+        GL.glVertexAttribPointer(renderer.shader.attribute['vertexPosition'],3, GL.GL_FLOAT,False,0,self.vbo)
 
         if self.ibo:
             self.ibo.bind()
 
         if self.nbo:
             self.nbo.bind()
-            GL.glEnableClientState(GL.GL_NORMAL_ARRAY)
-            GL.glNormalPointerf(self.nbo)
+            GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
+            GL.glVertexAttribPointer(renderer.shader.attribute['vertexNormal'],3, GL.GL_FLOAT,False,0,self.nbo)
 
         if self.cbo:
             #print("BIND VERTEX COLOR %s" % str(self.cbo.shape))
             self.cbo.bind()
-            GL.glEnableClientState(GL.GL_COLOR_ARRAY)
-            GL.glColorPointerf(self.cbo)
+            GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexColor'])
+            GL.glVertexAttribPointer(renderer.shader.attribute['vertexColor'],3, GL.GL_FLOAT,False,0,self.cbo)
+
 
         if self.bkcolor is not None:
             # Enable drawing front and back with different colors
@@ -283,12 +284,12 @@ class GeomActor(Attributes):
             self.ibo.unbind()
         if self.cbo:
             self.cbo.unbind()
-            GL.glDisableClientState(GL.GL_COLOR_ARRAY)
+            GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexColor'])
         if self.nbo:
             self.nbo.unbind()
-            GL.glDisableClientState(GL.GL_NORMAL_ARRAY)
+            GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
         self.vbo.unbind()
-        GL.glDisableClientState(GL.GL_VERTEX_ARRAY)
+        GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
 
 
 
