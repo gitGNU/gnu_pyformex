@@ -93,6 +93,7 @@ class Renderer(object):
         self.shader.uniformFloat('lighting',True) # self.canvas....
         self.shader.uniformInt('colormode',1)
         self.shader.uniformVec3('objectColor',self.canvas.settings.fgcolor)
+        self.shader.uniformFloat('alpha',0.5)
         GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
         GL.glLineWidth(5.) #self.canvas.settings.linewidth)
         # Should do pointsize with gl context?
@@ -100,6 +101,8 @@ class Renderer(object):
         self.shader.uniformFloat('ambient',0.3) # self.canvas....
         self.shader.uniformFloat('diffuse',0.8) # self.canvas....
         self.shader.uniformFloat('specular',0.2) # self.canvas....
+        self.shader.uniformVec3('light',(0.,0.,1.))
+        self.shader.uniformVec3('specmat',(0.,0.,0.))
         #self.shader.loadUniforms(DEFAULTS)
 
 
@@ -112,6 +115,9 @@ class Renderer(object):
         #print("MODELVIEW-R",modelview)
         projection = self.camera.projection
         #print("PROJECTION-R",projection)
+
+        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+
 
         # Propagate the matrices to the uniforms of the shader
         self.shader.uniformMat4('modelview',modelview.gl())

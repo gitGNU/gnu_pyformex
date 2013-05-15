@@ -79,10 +79,13 @@ class Shader(object):
         'ambient',
         'diffuse',
         'specular',
+        'alpha',
         ]
 
     uniforms_vec3 = [
         'objectColor',
+        'light',
+        'specmat',
     ]
 
     uniforms = uniforms_int + uniforms_float +  uniforms_vec3 + [
@@ -98,7 +101,6 @@ class Shader(object):
         'scalarsMinThreshold',
         'scalarsMaxThreshold',
         'scalarsInterpolation',
-        'objectOpacity',
         'normal',
         'usePicking',
         'useTexture',

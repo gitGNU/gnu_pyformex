@@ -30,67 +30,57 @@ uniform bool lighting;
 uniform float ambient;
 uniform float diffuse;
 uniform float specular;
+uniform vec3 specmat;
 uniform float shininess;
-uniform float opacity;
+uniform float alpha;
+uniform vec3 light; // Currently 1 light: need multiple
+
 
 varying float fDiscardNow;
 varying vec4 fVertexPosition;
 varying vec4 fragColor;        // Final fragment color, including opacity
 varying vec3 fragmentColor;
 varying vec2 fragmentTexturePos;
-varying vec3 fVertexNormal;
 varying vec3 fTransformedVertexNormal;
+
 
 void main()
 {
-  // Pass color to fragment shader
-  // Set single color
   if (colormode == 1) {
+    // Single color
     fragmentColor = objectColor;
   } else if (colormode == 3) {
+    // Vertex color
     fragmentColor = vertexColor;
   } else {
     // Default black
     fragmentColor = vec3(0.,0.,0.);
   }
 
-
+  // Add in lighting
   if (lighting) {
-    // Pass normal to fragment shader
-    fVertexNormal = vertexNormal;
     fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * vertexNormal;
 
-    // compute lighted color
     vec3 nNormal = normalize(fTransformedVertexNormal);
-    if (fVertexNormal == vec3(0.0,0.0,0.0)) {
-      // ignore the lighting if the normals are 0,0,0
-      fragmentColor = vec3(1.,1.,0.);
-    } else {
-      vec3 light = vec3(0.0, 0.0, 1.0);
-      light = normalize(light);
-      /* // t2 += ' vec3 lightDirection = vec3(-10.0, 4.0, -20.0); */
-      /* // I liked the following better */
-      /* vec3 lightDirection = vec3(0,0,-10); */
-      /* lightDirection = normalize(lightDirection); */
-      /* vec3 eyeDirection = normalize(-fVertexPosition.xyz); */
-      /* vec3 reflectionDirection = reflect(-lightDirection, nNormal); */
-      /* // t2 += ' vec3 reflectionDirection = nNormal; <-- to disable reflection */
-      /* // configure specular (10.0 is material property), diffuse and ambient */
-      /* float specular = pow(max(dot(reflectionDirection, eyeDirection), 0.0), 10.0); */
-      float ndiffuse = diffuse * max(dot(nNormal,light),0.0);
-////      ndiffuse = diffuse * abs(dot(nNormal,light));
-      //float ndiffuse = diffuse * max(dot(fVertexNormal,light),0.0);
-      // .. and now setup the fragment color using these three values and the
-      // opacity
-      fragmentColor = vec3(fragmentColor * ambient +
-			   fragmentColor * ndiffuse +
-			   vec3(0.0,0.0,0.0) * specular);
-    }
-    //fragmentColor = vec3(0.,0.,1.);
-  }
+    vec3 nlight = normalize(light);
 
-  // Final color including opacity
-  fragColor = vec4(fragmentColor,opacity);
+    /* // t2 += ' vec3 lightDirection = vec3(-10.0, 4.0, -20.0); */
+    /* // I liked the following better */
+    /* vec3 lightDirection = vec3(0,0,-10); */
+    /* lightDirection = normalize(lightDirection); */
+    /* vec3 eyeDirection = normalize(-fVertexPosition.xyz); */
+    /* vec3 reflectionDirection = reflect(-lightDirection, nNormal); */
+    /* // t2 += ' vec3 reflectionDirection = nNormal; <-- to disable reflection */
+    /* // configure specular (10.0 is material property), diffuse and ambient */
+    /* float specular = pow(max(dot(reflectionDirection, eyeDirection), 0.0), 10.0); */
+    float ndiffuse = diffuse * max(dot(nNormal,nlight),0.0);
+
+    // total color is sum of ambient, diffuse and specular
+    vec3 fcolor = fragmentColor;
+    fragmentColor = vec3(fcolor * ambient +
+			 fcolor * ndiffuse +
+			 specmat * specular);
+  }
 
   // setup vertex Point Size
   gl_PointSize = pointsize;

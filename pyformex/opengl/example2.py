@@ -39,6 +39,8 @@ if pf.options.opengl2:
 clearall()
 
 
+transparent()
+
 from simple import sphere
 
 S = sphere(6)
@@ -46,8 +48,13 @@ S = S.toSurface().fixNormals().toFormex()
 print(S.npoints())
 col = [red,red]*81
 print(len(col))
-S.attrib(lighting=True,ambient=0,diffuse=0.5,color=red)
+S.attrib(lighting=True,ambient=0.0,diffuse=1.0,color=red,opacity=0.0,light=(0.,1.,1.))
 draw(S)
+
+T = Formex('4:0123').replic2(2,3).toMesh().align('-00')
+T.attrib(lighting=True,ambient=0.5,diffuse=0.5,color=blue,opacity=1.0)
+draw(T)
+
 zoomAll()
 exit()
 
