@@ -58,7 +58,7 @@ void main()
   if (lighting) {
     // Pass normal to fragment shader
     fVertexNormal = gl_Normal;
-    fTransformedVertexNormal = modelview * vec4(gl_Normal,1.);
+    fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * gl_Normal;
 
     // compute lighted color
     vec3 nNormal = normalize(fTransformedVertexNormal);
@@ -66,7 +66,8 @@ void main()
       // ignore the lighting if the normals are 0,0,0
       fragmentColor = vec3(1.,1.,0.);
     } else {
-      vec3 light = vec3(1.0, 1.0, 1.0);
+      vec3 light = vec3(0.0, 0.0, 1.0);
+      light = normalize(light);
       /* // t2 += ' vec3 lightDirection = vec3(-10.0, 4.0, -20.0); */
       /* // I liked the following better */
       /* vec3 lightDirection = vec3(0,0,-10); */
@@ -77,12 +78,12 @@ void main()
       /* // configure specular (10.0 is material property), diffuse and ambient */
       /* float specular = pow(max(dot(reflectionDirection, eyeDirection), 0.0), 10.0); */
       float ndiffuse = diffuse * max(dot(nNormal,light),0.0);
-      ndiffuse = diffuse * abs(dot(nNormal,light));
+////      ndiffuse = diffuse * abs(dot(nNormal,light));
       //float ndiffuse = diffuse * max(dot(fVertexNormal,light),0.0);
       // .. and now setup the fragment color using these three values and the
       // opacity
       fragmentColor = vec3(fragmentColor * ambient +
-			   fragmentColor * diffuse +
+			   fragmentColor * ndiffuse +
 			   vec3(0.0,0.0,0.0) * specular);
     }
     //fragmentColor = vec3(0.,0.,1.);

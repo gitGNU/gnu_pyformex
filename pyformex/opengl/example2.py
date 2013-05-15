@@ -42,6 +42,7 @@ clearall()
 from simple import sphere
 
 S = sphere(6)
+S = S.toSurface().fixNormals().toFormex()
 print(S.npoints())
 col = [red,red]*81
 print(len(col))
