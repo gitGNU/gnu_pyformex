@@ -71,7 +71,7 @@ def cleanVPD(vpd):
     return  cleaner.GetOutput()
 
 
-def convert2VPD(M,clean=False,verbose=False):
+def convert2VPD(M,clean=False,lineopt='line',verbose=False):
     """Convert pyFormex data to vtkPolyData.
 
     Convert a pyFormex Mesh or Coords object into vtkPolyData.
@@ -84,6 +84,10 @@ def convert2VPD(M,clean=False,verbose=False):
       VERTS. Else...
     - `clean`: if True, the resulting vtkdata will be cleaned by calling
       cleanVPD.
+    - `lineopt`: can have 2 options for handling a line conversion
+        'line' will save the entire line
+        'segments' will save the line as segments
+    
 
     Returns a vtkPolyData.
     """
@@ -97,6 +101,13 @@ def convert2VPD(M,clean=False,verbose=False):
 
     Nelems = M.nelems() # Number of elements
     Ncxel = M.nplex() # # Number of nodes per element
+    
+    elems=M.elems
+    if Ncxel==2: 
+        if lineopt=='line':
+            Nelems=1
+            Ncxel=M.ncoords()
+            elems=arange(M.ncoords()).reshape(1,-1)
 
     # create a vtkPolyData variable
     vpd=vtkPolyData()
@@ -113,14 +124,14 @@ def convert2VPD(M,clean=False,verbose=False):
     # create vtk connectivity
     elms = vtkIdTypeArray()
     ntype=gnat(vtkIdTypeArray().GetDataType())
-    elmsv = concatenate([Ncxel*ones(Nelems).reshape(-1,1),M.elems],axis=1)
+    elmsv = concatenate([Ncxel*ones(Nelems).reshape(-1,1),elems],axis=1)
     elmsv = n2v(asarray(elmsv,order='C',dtype=ntype),deep=1) #.copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
     elms.DeepCopy(elmsv)
 
     # set vtk Cell data
     datav = vtkCellArray()
     datav.SetCells(Nelems,elms)
-    if Ncxel == 1:
+    if M.nplex() == 1:
         try:
             if verbose:
                 print("setting VERTS for data with %s maximum number of point for cell "%Ncxel)
@@ -128,7 +139,7 @@ def convert2VPD(M,clean=False,verbose=False):
         except:
             raise ValueError,"Error in saving  VERTS"
 
-    elif Ncxel == 2:
+    elif M.nplex() == 2:
         try:
             if verbose:
                 print ("setting LINES for data with %s maximum number of point for cell "%Ncxel)
@@ -274,7 +285,6 @@ def intersectWithSegment(surf,lines,tol=0.0):
     loc.FreeSearchStructure()
     del loc
     return pts,cellids
-
 
 def convertTransform4x4FromVtk(transform):
     """Convert a VTK transform to numpy array
