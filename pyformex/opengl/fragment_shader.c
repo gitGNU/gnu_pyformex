@@ -9,8 +9,5 @@ uniform float alpha;
 
 void main(void) {
 
-  // Add in opacity
-  fragColor = vec4(fragmentColor,0.3);
-
   gl_FragColor = fragColor;
 }

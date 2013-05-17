@@ -82,6 +82,9 @@ void main()
 			 specmat * specular);
   }
 
+  // Add in opacity
+  fragColor = vec4(fragmentColor,alpha);
+
   // setup vertex Point Size
   gl_PointSize = pointsize;
   // Transforming The Vertex

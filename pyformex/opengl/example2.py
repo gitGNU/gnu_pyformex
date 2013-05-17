@@ -27,19 +27,21 @@
 _clear = clear
 
 def clearall():
-    pf.canvas.renderer.clear()
+    if pf.options.opengl2:
+        pf.canvas.renderer.clear()
     _clear()
 
 
 if pf.options.opengl2:
-    def draw(o):
+    def draw(o,**kargs):
+        o.attrib(**kargs)
         pf.canvas.renderer.add(o)
 
 
 clearall()
 
 
-transparent()
+#transparent()
 
 from simple import sphere
 
@@ -48,12 +50,11 @@ S = S.toSurface().fixNormals().toFormex()
 print(S.npoints())
 col = [red,red]*81
 print(len(col))
-S.attrib(lighting=True,ambient=0.0,diffuse=1.0,color=red,opacity=0.0,light=(0.,1.,1.))
-draw(S)
+draw(S,lighting=True,ambient=0.0,diffuse=1.0,color=red,opacity=0.7,light=(0.,1.,1.))
+
 
 T = Formex('4:0123').replic2(2,3).toMesh().align('-00')
-T.attrib(lighting=True,ambient=0.5,diffuse=0.5,color=blue,opacity=1.0)
-draw(T)
+draw(T,lighting=False,ambient=0.5,diffuse=0.5,specular=0.0,color=blue,opacity=1.0)
 
 zoomAll()
 exit()

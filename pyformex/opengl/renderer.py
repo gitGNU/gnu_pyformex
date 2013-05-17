@@ -71,9 +71,7 @@ class Renderer(object):
     @property
     def bbox(self):
         """Return the bbox of all objects in the renderer"""
-        print("OBJECTS",self._objects)
         if self._bbox is None:
-            print("OBJECTS",)
             self._bbox = bbox([o.object.bbox() for o in self._objects])
         return self._bbox
 
@@ -106,35 +104,58 @@ class Renderer(object):
         #self.shader.loadUniforms(DEFAULTS)
 
 
+    def renderObjects(self,objects):
+        """Render a list of objects"""
+        for obj in objects:
+            self.setDefaults()
+            try:
+                self.shader.loadUniforms(obj)
+                obj.render(self)
+            except:
+                raise
+
+
     def render(self):
         """Render the geometry for the scene."""
         self.shader.bind()
-
-        # Get the current modelview*projection matrix
-        modelview = self.camera.modelview
-        #print("MODELVIEW-R",modelview)
-        projection = self.camera.projection
-        #print("PROJECTION-R",projection)
-
-        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-
-
-        # Propagate the matrices to the uniforms of the shader
-        self.shader.uniformMat4('modelview',modelview.gl())
-        self.shader.uniformMat4('projection',projection.gl())
-
         try:
-            for obj in self._objects:
-                self.setDefaults()
-                if obj.visible is False:
-                    # skip invisible object
-                    continue
-                try:
-                    self.shader.loadUniforms(obj)
-                    obj.render(self)
-                except:
-                    raise
-                    #pass
+
+            # Get the current modelview*projection matrix
+            modelview = self.camera.modelview
+            #print("MODELVIEW-R",modelview)
+            projection = self.camera.projection
+            #print("PROJECTION-R",projection)
+
+            # Propagate the matrices to the uniforms of the shader
+            self.shader.uniformMat4('modelview',modelview.gl())
+            self.shader.uniformMat4('projection',projection.gl())
+
+            # Make compatible with older code
+            self.actors = [ o for o in self._objects if o.visible is not False ]
+            self.annotations = []
+
+            # draw the scene actors and annotations
+            sorted_actors = [ a for a in self.annotations if not a.ontop ] + \
+                            [ a for a in self.actors if not a.ontop ] + \
+                            [ a for a in self.actors if a.ontop ] + \
+                            [ a for a in self.annotations if a.ontop ]
+            if self.canvas.settings.alphablend:
+                opaque = [ a for a in sorted_actors if a.opak ]
+                transp = [ a for a in sorted_actors if not a.opak ]
+                self.renderObjects(opaque)
+                GL.glEnable (GL.GL_BLEND)
+                GL.glDepthMask (GL.GL_FALSE)
+                if pf.cfg['draw/disable_depth_test']:
+                    GL.glDisable(GL.GL_DEPTH_TEST)
+                GL.glBlendFunc (GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+                self.renderObjects(transp)
+                GL.glEnable(GL.GL_DEPTH_TEST)
+                GL.glDepthMask (GL.GL_TRUE)
+                GL.glDisable (GL.GL_BLEND)
+            else:
+                self.renderObjects(sorted_actors)
+
+
         finally:
             self.shader.unbind()
 

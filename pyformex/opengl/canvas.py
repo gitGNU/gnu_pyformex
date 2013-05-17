@@ -389,32 +389,32 @@ class Canvas(object):
                 self.setDefaults()
                 actor.draw(canvas=self)
 
-        # draw the scene actors and annotations
-        sorted_actors = [ a for a in self.annotations if not a.ontop ] + \
-                        [ a for a in self.actors if not a.ontop ] + \
-                        [ a for a in self.actors if a.ontop ] + \
-                        [ a for a in self.annotations if a.ontop ]
-        if self.settings.alphablend:
-            opaque = [ a for a in sorted_actors if a.opak ]
-            transp = [ a for a in sorted_actors if not a.opak ]
-            for actor in opaque:
-                self.setDefaults()
-                actor.draw(canvas=self)
-            GL.glEnable (GL.GL_BLEND)
-            GL.glDepthMask (GL.GL_FALSE)
-            if pf.cfg['draw/disable_depth_test']:
-                GL.glDisable(GL.GL_DEPTH_TEST)
-            GL.glBlendFunc (GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-            for actor in transp:
-                self.setDefaults()
-                actor.draw(canvas=self)
-            GL.glEnable(GL.GL_DEPTH_TEST)
-            GL.glDepthMask (GL.GL_TRUE)
-            GL.glDisable (GL.GL_BLEND)
-        else:
-            for actor in sorted_actors:
-                self.setDefaults()
-                actor.draw(canvas=self)
+        ## # draw the scene actors and annotations
+        ## sorted_actors = [ a for a in self.annotations if not a.ontop ] + \
+        ##                 [ a for a in self.actors if not a.ontop ] + \
+        ##                 [ a for a in self.actors if a.ontop ] + \
+        ##                 [ a for a in self.annotations if a.ontop ]
+        ## if self.settings.alphablend:
+        ##     opaque = [ a for a in sorted_actors if a.opak ]
+        ##     transp = [ a for a in sorted_actors if not a.opak ]
+        ##     for actor in opaque:
+        ##         self.setDefaults()
+        ##         actor.draw(canvas=self)
+        ##     GL.glEnable (GL.GL_BLEND)
+        ##     GL.glDepthMask (GL.GL_FALSE)
+        ##     if pf.cfg['draw/disable_depth_test']:
+        ##         GL.glDisable(GL.GL_DEPTH_TEST)
+        ##     GL.glBlendFunc (GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+        ##     for actor in transp:
+        ##         self.setDefaults()
+        ##         actor.draw(canvas=self)
+        ##     GL.glEnable(GL.GL_DEPTH_TEST)
+        ##     GL.glDepthMask (GL.GL_TRUE)
+        ##     GL.glDisable (GL.GL_BLEND)
+        ## else:
+        ##     for actor in sorted_actors:
+        ##         self.setDefaults()
+        ##         actor.draw(canvas=self)
 
         ## # annotations are decorations drawn in 3D space
         ## for actor in self.annotations:

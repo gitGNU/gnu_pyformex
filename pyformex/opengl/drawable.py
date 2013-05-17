@@ -198,9 +198,9 @@ class GeomActor(Attributes):
 
     def setColor(self,color,colormap=None):
         """Set the color of the Actor."""
-        print("OBJECT COLOR= %s" % str(color))
-        print("OBJECT COLORMAP= %s" % str(colormap))
-        print("OBJECT SHAPE= %s" % str(self.object.shape))
+        #print("OBJECT COLOR= %s" % str(color))
+        #print("OBJECT COLORMAP= %s" % str(colormap))
+        #print("OBJECT SHAPE= %s" % str(self.object.shape))
         self.color,self.colormap = saneColorSet(color,colormap,self.object.coords.shape)
 
 
