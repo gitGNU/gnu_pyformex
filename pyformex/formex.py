@@ -38,721 +38,6 @@ from attributes import Attributes
 import re
 
 
-def lpattern(s,connect=True):
-    """Return a line segment pattern created from a string.
-
-    This function creates a list of line segments where all points lie on
-    a regular grid with unit step.
-    The first point of the list is [0,0,0]. Each character from the input
-    string is interpreted as a code specifying how to move to the next point.
-    Currently defined are the following codes:
-    1..8 move in the x,y plane
-    9 remains at the same place
-    0 = goto origin [0,0,0]
-    + = go back to origin without creating a line segment
-    When looking at the plane with the x-axis to the right,
-    1 = East, 2 = North, 3 = West, 4 = South, 5 = NE, 6 = NW, 7 = SW, 8 = SE.
-    Adding 16 to the ordinal of the character causes an extra move of +1 in
-    the z-direction. Adding 48 causes an extra move of -1. This means that
-    'ABCDEFGHI', resp. 'abcdefghi', correspond with '123456789' with an extra
-    z +/-= 1. This gives the following schema::
-
-                 z+=1             z unchanged            z -= 1
-
-             F    B    E          6    2    5         f    b    e
-                  |                    |                   |
-                  |                    |                   |
-             C----I----A          3----9----1         c----i----a
-                  |                    |                   |
-                  |                    |                   |
-             G    D    H          7    4    8         g    d    h
-
-    The special character '/' can be put before any character to make the
-    move without inserting an element.
-    The effect of any other character is undefined.
-
-    The resulting list is directly suited to initialize a Formex.
-    """
-    # We do not allow the '+' anymore
-    s = s.replace('+','/0')
-
-    x = y = z = 0
-    l = []
-    insert = True
-    for c in s:
-        if c == "/":
-            insert = False
-            continue
-        ## if c == "+":
-        ##     x = y = z = 0
-        ##     continue
-        pos = [x,y,z]
-        if c == "0":
-            x = y = z = 0
-        else:
-            i = ord(c)
-            d = i/16
-            if d == 3:
-                pass
-            elif d == 4:
-                z += 1
-            elif d == 6:
-                z -= 1
-            else:
-                raise RuntimeError,"Unknown pattern character %c ignored" % c
-            i %= 16
-            if i == 1:
-                x += 1
-            elif i == 2:
-                y += 1
-            elif i == 3:
-                x -= 1
-            elif i == 4:
-                y -= 1
-            elif i == 5:
-                x += 1
-                y += 1
-            elif i == 6:
-                x -= 1
-                y += 1
-            elif i == 7:
-                x -= 1
-                y -= 1
-            elif i == 8:
-                x += 1
-                y -= 1
-            elif i == 9:
-                pass
-            else:
-                raise RuntimeError,"Unknown pattern character %c ignored" % c
-        if insert:
-            if connect:
-                element = [pos,[x,y,z]]
-            else:
-                element = [[x,y,z]]
-            l.append(element)
-        insert = True
-    return l
-
-
-@deprecation('depr_mpattern')
-def mpattern(s):
-    """This is like pattern, but allowing lists with more than 2 points.
-
-    Subsequent points are included in the same list until a '-' occurs.
-    A '+' or '-' character splits lists. After a '-', the list starts at the
-    last point of the previous list. After a '+', the list starts again
-    at the origin.
-    All lists should have equal length if you want to use the resulting
-    list to initialize a Formex.
-    """
-    x = y = z = 0
-    li = [[x,y,z]]
-    l = []
-    connect=True
-    for c in s:
-        if c == '/':
-            connect = False
-            continue
-        elif c == '+':
-            l.append(li)
-            li = []
-            x = y = z = 0
-        elif c == '-':
-            l.append(li)
-            li = []
-        elif c == '0':
-            x = y = z = 0
-        else:
-            i = ord(c)
-            d = i/16
-            if d == 3:
-                pass
-            elif d == 4:
-                z += 1
-            elif d == 6:
-                z -= 1
-            else:
-                raise RuntimeError,"Unknown pattern character %c ignored" % c
-            i %= 16
-            if i == 1:
-                x += 1
-            elif i == 2:
-                y += 1
-            elif i == 3:
-                x -= 1
-            elif i == 4:
-                y -= 1
-            elif i == 5:
-                x += 1
-                y += 1
-            elif i == 6:
-                x -= 1
-                y += 1
-            elif i == 7:
-                x -= 1
-                y -= 1
-            elif i == 8:
-                x += 1
-                y -= 1
-            elif i == 9:
-                pass
-            else:
-                raise RuntimeError,"Unknown pattern character %c ignored" % c
-        if connect:
-            li.append([x,y,z])
-    l.append(li)
-    return l
-
-# Intersection functions
-
-# REMOVED in 0.9
-
-## @deprecation("\nUse Formex.intersectionWithPlane() or geomtools functions instead.")
-## def intersectionWithPlane(F,p,n):
-##     """Return the intersection of a Formex F with the plane (p,n).
-
-##     The Formex should have plexitude 2.
-##     p is a point specified by 3 coordinates.
-##     n is the normal vector to a plane, specified by 3 components.
-
-##     The return value is a [n] shaped array of parameter values t,
-##     such that for each segment L the intersection point is given
-##     by (1-t)*L[0]+ t*L[1].
-##     """
-##     f = F.coords
-##     if f.shape[1] != 2:
-##         raise RuntimeError,"Formex should have plexitude 2."
-##     p = asarray(p).reshape((3))
-##     n = asarray(n).reshape((3))
-##     n = normalize(n)
-##     t = (inner(p,n) - inner(f[:,0,:],n)) / inner((f[:,1,:]-f[:,0,:]),n)
-##     return t
-
-
-def pointsAt(F,t):
-    """Return the points of a plex-2 Formex at times t.
-
-    F is a plex 2 Formex and t is an array with F.nelems() float values which
-    are interpreted as local parameters along the edges of the Formex, such
-    that the first node has value 0.0 and the last has value 1.0.
-    The return value is a :class:`coords.Coords` array with the points at values t.
-    """
-    f = F.coords
-    t = t[:,newaxis]
-    return Coords((1.-t) * f[:,0,:] + t * f[:,1,:])
-
-# REMOVED in 0.9
-
-## @deprecation("\nUse Formex.intersectionWithPlane() or geomtools functions instead.")
-## def intersectionPointsWithPlane(F,p,n):
-##     """Return the intersection points of a Formex with plane p,n.
-
-##     The Formex should have plexitude 2.
-##     p is a point specified by 3 coordinates.
-##     n is the normal vector to a plane, specified by 3 components.
-
-##     The result is a plex-1 Formex with the same number of elements as the
-##     original. Some of the points may be NaN's.
-##     """
-##     f = F.coords
-##     t = intersectionWithPlane(F,p,n).reshape((-1,1))
-##     #print t.shape
-##     from geomtools import intersectionTimesSWP
-##     t = intersectionTimesSWP(f,p,n,mode='pair').reshape((-1,1))
-##     #print t.shape
-##     return Formex((1.-t) * f[:,0,:] + t * f[:,1,:])
-
-
-
-def intersectionLinesWithPlane(F,p,n,atol=1.e-4):
-    """Return the intersection lines of a plex-3 Formex with plane (p,n).
-
-    F is a Formex of plexitude 3.
-    p is a point specified by 3 coordinates.
-    n is the normal vector to a plane, specified by 3 components.
-    atol is a tolerance factor defining whether an edge is intersected by the plane.
-    """
-    n = asarray(n)
-    p = asarray(p)
-    F = F.cclip(F.test('all',n,p)) # remove elements at the negative side
-    if F.nelems() == 0:
-        return Formex(empty((0,2,3,),dtype=float))
-    F = F.cclip(F.test('all',-n,p)) # select elements that will be cut by plane
-    if F.nelems() == 0:
-        return Formex(empty((0,2,3,),dtype=float))
-    F1 = F21 = F22 = F31 = F32 = F41 = F42= F43 = Formex(empty((0,2,3,),dtype=float))
-    # Create a Formex with the edges
-    C = Formex.concatenate([ F.selectNodes(e) for e in [[0,1],[1,2],[2,0]] ])
-    t = C.intersectionWithPlane(p,n)
-    P = pointsAt(C,t)
-    t = t.reshape(3,-1).transpose()
-    Pb = P.reshape(3,-1,3).swapaxes(0,1)
-    Pf = F.coords
-    Ps = roll(F.coords,-1,axis=1)
-    t1 = t >= 0.+atol
-    t2 = t <= 1.-atol
-    t3 = t >= 0.-atol
-    t4 = t <= 1.+atol
-    Tb = t1 * t2
-    Tf = (1-t1).astype(bool)*t3
-    Ts = (1-t2).astype(bool)*t4
-    Nb = Tb.sum(axis=-1)
-    Nf = Tf.sum(axis=-1)
-    Ns = Ts.sum(axis=-1)
-    # Get the triangles with 2 edge intersections
-    w1 = where(Nb==2)[0]
-    if w1.size > 0:
-        P = Pb[w1][Tb[w1]].reshape(-1,2,3)
-        F1 = Formex(P)
-    # Get the triangles with 1 edge intersection and 1 vertex intersection
-    w21 = where( (Nb==1) * (Nf==1) * (Ns==0) )[0]
-    if w21.size > 0:
-        P1 = Pb[w21][Tb[w21]].reshape(-1,1,3)
-        P2 = Pf[w21][Tf[w21]].reshape(-1,1,3)
-        P = column_stack([P1,P2])
-        F21 = Formex(P)
-    w22 = where( (Nb==1) * (Nf==0) * (Ns==1) )[0]
-    if w22.size > 0:
-        P1 = Pb[w22][Tb[w22]].reshape(-1,1,3)
-        P2 = Ps[w22][Ts[w22]].reshape(-1,1,3)
-        P = column_stack([P1,P2])
-        F22 = Formex(P)
-    # Get the triangles with 1 edge intersection and 2 vertex intersections
-    w3 = where( (Nb==1) * (Nf==1) * (Ns==1) )[0]
-    if w3.size > 0:
-        Tb3 = Tb[w3]
-        Tf3 = Tf[w3]
-        Ts3 = Ts[w3]
-        Pb3 = Pb[w3]
-        Pf3 = Pf[w3]
-        Ps3 = Ps[w3]
-        i = where(Ts3)[1] - where(Tf3)[1]
-        w31 = where((i == 1)+(i==-2))[0] # different vertices
-        if w31.size > 0:
-            P1 = Pf3[w31][Tf3[w31]].reshape(-1,1,3)
-            P2 = Ps3[w31][Ts3[w31]].reshape(-1,1,3)
-            P = column_stack([P1,P2])
-            F32 = Formex(P)
-        w32 = where((i == -1)+(i==2))[0] # equal vertices
-        if w32.size > 0:
-            P1 = Pb3[w32][Tb3[w32]].reshape(-1,1,3)
-            P2 = Pf3[w32][Tf3[w32]].reshape(-1,1,3)
-            P = column_stack([P1,P2])
-            F31 = Formex(P)
-    # Get the triangles with 0 edge intersections and 2 or 3 vertex intersections
-    w41 = where( (Nb==0) * (Nf==2) )[0]
-    if w41.size > 0:
-        P = Pf[w41][Tf[w41]].reshape(-1,2,3)
-        F41 = Formex(P)
-    w42 = where( (Nb==0) * (Ns==2) )[0]
-    if w42.size > 0:
-        P = Ps[w42][Ts[w42]].reshape(-1,2,3)
-        F42 = Formex(P)
-    w43 = where( (Nb==0) * (Nf==1) * (Ns==1) )[0]
-    if w43.size > 0:
-        Tf43 = Tf[w43]
-        Ts43= Ts[w43]
-        Pf43 = Pf[w43]
-        Ps43 = Ps[w43]
-        i = where(Ts43)[1] - where(Tf43)[1]
-        w43 = where((i == 1)+(i==-2))[0] # different vertices
-        if w43.size > 0:
-            P1 = Pf43[w43][Tf43[w43]].reshape(-1,1,3)
-            P2 = Ps43[w43][Ts43[w43]].reshape(-1,1,3)
-            P = column_stack([P1,P2])
-            F43 = Formex(P)
-    # join all the pieces
-    Ft = F1 + F21 + F22 + F31 + F32 + F41 + F42+ F43
-    return Ft
-
-
-def _sane_side(side):
-    """_Allow some old variants of arguments_"""
-    if type(side) == str:
-        if side.startswith('pos'):
-            side = '+'
-        if side.startswith('neg'):
-            side = '-'
-    if not (side == '+' or side == '-'):
-        side = ''
-    return side
-
-def _select_side(side,alist):
-    """_Return selected parts dependent on side_"""
-    if side == '+':
-        return alist[0]
-    elif side == '-':
-        return alist[1]
-    else:
-        return alist
-
-
-def cut2AtPlane(F,p,n,side='',atol=None,newprops=None):
-    """Returns all elements of the Formex cut at plane.
-
-    F is a Formex of plexitude 2.
-    p is a point specified by 3 coordinates.
-    n is the normal vector to a plane, specified by 3 components.
-
-    The return value is:
-
-    - with side = '+' or '-' or 'positive'or 'negative' :
-      a Formex of the same plexitude with all elements
-      located completely at the positive/negative side of the plane(s) (p,n)
-      retained, all elements lying completely at the negative/positive side
-      removed and the elements intersecting the plane(s) replaced by new
-      elements filling up the parts at the positive/negative side.
-    - with side = '': two Formices of the same plexitude, one representing
-      the positive side and one representing the negative side.
-
-    To avoid roundoff errors and creation of very small elements,
-    a tolerance can be specified. Points lying within the tolerance
-    distance will be considered lying in the plane, and no cutting near
-    these points.
-    """
-    side = _sane_side(side)
-    dist = F.distanceFromPlane(p,n)
-    if atol is None:
-        atol = 1.e-5*dist.max()
-    above = sum(dist>atol,-1)
-    below = sum(dist<-atol,-1)
-    A = F.clip(below==0)
-    B = F.clip(above==0)
-    cutting = (above>0)*(below>0)
-    if newprops:
-       A.setProp(newprops[0])
-       B.setProp(newprops[1])
-    ## print("Elements in F: %s" % F.nelems())
-    ## print("Elements in A: %s" % A.nelems())
-    ## print("Elements in B: %s" % B.nelems())
-
-    if cutting.any():
-        G = F.clip(cutting)
-        H = G.copy()
-
-
-        g = G.intersectionWithPlane(p,n)
-        dist = dist[cutting]
-        i0 = dist[:,0] < 0.
-        i1 = dist[:,1] < 0.
-        G[i0,0,:] = H[i0,1,:] = g[i0].reshape(-1,3)
-        G[i1,1,:] = H[i1,0,:] = g[i1].reshape(-1,3)
-        if newprops:
-           G.setProp(newprops[2])
-           H.setProp(newprops[3])
-        A += G
-        B += H
-
-        ## print("Elements in G: %s" % G.nelems())
-        ## print("Elements in A: %s" % A.nelems())
-        ## print("Elements in B: %s" % B.nelems())
-    return _select_side(side,[ A,B ])
-
-
-def cut3AtPlane(F,p,n,side='',atol=None,newprops=None):
-    """Returns all elements of the Formex cut at plane(s).
-
-    F is a Formex of plexitude 3.
-    p is a point or a list of points.
-    n is the normal vector to a plane or a list of normal vectors.
-    Both p and n have shape (3) or (npoints,3).
-
-    The return value is:
-
-    - with side='+' or '-' or 'positive'or 'negative' :
-      a Formex of the same plexitude with all elements
-      located completely at the positive/negative side of the plane(s) (p,n)
-      retained, all elements lying completely at the negative/positive side
-      removed and the elements intersecting the plane(s) replaced by new
-      elements filling up the parts at the positive/negative side.
-    - with side='': two Formices of the same plexitude, one representing
-      the positive side and one representing the negative side.
-
-    Let :math:`dist` be the signed distance of the vertices to a plane.
-    The elements located completely at the positive or negative side of
-    a plane have three vertices for which :math:`|dist|>atol`.
-    The elements intersecting a plane can have one or more vertices for which
-    :math:`|dist|<atol`.
-    These vertices are projected on the plane so that their distance is zero.
-
-    If the Formex has a property set, the new elements will get the property
-    numbers defined in newprops. This is a list of 7 property numbers flagging
-    elements with following properties:
-
-    0) no vertices with :math:`|dist|<atol`, triangle after cut
-    1) no vertices with :math:`|dist|<atol`, triangle 1 from quad after cut
-    2) no vertices with :math:`|dist|<atol`, triangle 2 from quad after cut
-    3) one vertex with :math:`|dist|<atol`, two vertices at pos. or neg. side
-    4) one vertex with :math:`|dist|<atol`, one vertex at pos. side, one at neg.
-    5) two vertices with :math:`|dist|<atol`, one vertex at pos. or neg. side
-    6) three vertices with :math:`|dist|<atol`
-    """
-    if atol is None:
-        atol = 1.e-5*F.dsize()
-    # make sure we have sane newprops
-    if newprops is None:
-        newprops = [None,]*7
-    else:
-        try:
-            newprops = newprops[:7]
-            for prop in newprops:
-                if not (prop is None or type(prop) is int):
-                    raise
-        except:
-            newprops = range(7)
-    side = _sane_side(side)
-
-    p = asarray(p).reshape(-1,3)
-    n = asarray(n).reshape(-1,3)
-    nplanes = len(p)
-    test = [F.test('any',n[i], p[i],atol=atol) for i in range(nplanes)] # elements at positive side of plane i
-    Test= asarray(test).prod(0) # elements at positive side of all planes
-    F_pos = F.clip(Test) # save elements at positive side of all planes
-    if side in '-': # Dirty trick: this also includes side='' !
-        F_neg = F.cclip(Test) # save elements completely at negative side of one of the planes
-    else:
-        F_neg = None
-    if F_pos.nelems() != 0:
-        test = [F_pos.test('all',n[i],p[i],atol=-atol) for i in range(nplanes)] # elements completely at positive side of plane i
-        Test = asarray(test).prod(0) # elements completely at positive side of all planes
-        F_cut = F_pos.cclip(Test) # save elements that will be cut by one of the planes
-        F_pos = F_pos.clip(Test)  # save elements completely at positive side of all planes
-        if F_cut.nelems() != 0:
-            if nplanes == 1:
-                if side == '+':
-                    F_pos += cutElements3AtPlane(F_cut,p[i],n[i],newprops,side,atol)
-                elif side == '-':
-                    F_neg += cutElements3AtPlane(F_cut,p[i],n[i],newprops,side,atol)
-                elif side == '':
-                    cut_pos, cut_neg = cutElements3AtPlane(F_cut,p[i],n[i],newprops,side,atol)
-                    F_pos += cut_pos
-                    F_neg += cut_neg
-            elif nplanes > 1:
-                S = F_cut
-                for i in range(nplanes):
-                    if i > 0:
-                        # due to the projection of vertices with |distance| < atol on plane i-1, some elements can be completely at negative side of plane i instead of cut by plane i
-                        t = S.test('any',n[i],p[i],atol=atol)
-                        if side in '-':
-                            F_neg += S.cclip(t) # save elements completely at negative side of plane i
-                        S = S.clip(t) # save elements at positive side of plane i
-                    t = S.test('all',n[i],p[i],atol=-atol)
-                    R = S.clip(t) # save elements completely at positive side of plane i
-                    S = S.cclip(t) # save elements that will be cut by plane i
-                    if side == '+':
-                        cut_pos = cutElements3AtPlane(S,p[i],n[i],newprops,'+',atol)
-                    elif side in '-':
-                        cut_pos, cut_neg = cutElements3AtPlane(S,p[i],n[i],newprops,'',atol)
-                        F_neg += cut_neg
-                    S = R + cut_pos
-                F_pos += S
-
-    return _select_side(side,[ F_pos, F_neg ])
-
-
-def cutElements3AtPlane(F,p,n,newprops=None,side='',atol=0.):
-    """This function needs documentation.
-
-    Should it be called by the user? or only via cut3AtPlane?
-    For now, lets suppose the last, so no need to check arguments here.
-
-    newprops should be a list of 7 values: each an integer or None
-    side is either '+', '-' or ''
-    """
-    if atol is None:
-        atol = 1.e-5*F.dsize()
-
-    def get_new_prop(p,ind,newp):
-        """Determines the value of the new props for a subset.
-
-        p are the original props (possibly None)
-        ind is the list of elements to treat
-        newp is the new property value.
-
-        The return value is determined as follows:
-
-        - If p is None: return None (no property set)
-        - If p is set, but newp is None: return p[ind] : keep original
-        - if p is set, and newp is set: return newp (single value)
-        """
-        if p is None:
-            return None
-        elif newp is None:
-            return p[ind]
-        else:
-            return newp
-
-    from geomtools import intersectionSWP
-    C = [connect([F,F],nodid=ax) for ax in [[0,1],[1,2],[2,0]]]
-    errh = seterr(divide='ignore',invalid='ignore')
-    res = [intersectionSWP(Ci.coords,p,n,mode='pair',return_all=True) for Ci in C]
-    seterr(**errh)
-    t = column_stack([r[0] for r in res])
-    P = stack([r[1] for r in res],axis=1)
-    del res
-    T = (t >= 0.)*(t <= 1.)
-    d = F.coords.distanceFromPlane(p,n)
-    U = abs(d) < atol
-    V = U.sum(axis=-1) # number of vertices with |distance| < atol
-    F1_pos = F2_pos = F3_pos = F4_pos = F5_pos = F6_pos = F7_pos = F1_neg = F2_neg = F3_neg = F4_neg = F5_neg = F6_neg = F7_neg = Formex()
-    # No vertices with |distance| < atol => triangles with 2 intersections
-    w1 = where(V==0)[0]
-    if w1.size > 0:
-        T1 = T[w1]
-        P1 = P[w1][T1].reshape(-1,2,3)
-        F1 = F[w1]
-        d1 = d[w1]
-        if F.prop is None:
-            p1 = None
-        else:
-            p1 = F.prop[w1]
-        # split problem in two cases
-        w11 = where(d1[:,0]*d1[:,1]*d1[:,2] > 0.)[0] # case 1: triangle at positive side after cut
-        w12 = where(d1[:,0]*d1[:,1]*d1[:,2] < 0.)[0] # case 2: quadrilateral at positive side after cut
-        # case 1: triangle at positive side after cut
-        if w11.size > 0:
-            T11 = T1[w11]
-            P11 = P1[w11]
-            F11 = F1[w11]
-            if side in '+':
-                v1 = where(T11[:,0]*T11[:,2] == 1,0,where(T11[:,0]*T11[:,1] == 1,1,2))
-                K1 = asarray([F11[j,v1[j]] for j in range(shape(F11)[0])]).reshape(-1,1,3)
-                E1_pos = column_stack([P11,K1])
-                F1_pos = Formex(E1_pos,get_new_prop(p1,w11,newprops[0]))
-            if side in '-': #quadrilateral at negative side after cut
-                v2 = where(T11[:,0]*T11[:,2] == 1,2,where(T11[:,0]*T11[:,1] == 1,2,0))
-                v3 = where(T11[:,0]*T11[:,2] == 1,1,where(T11[:,0]*T11[:,1] == 1,0,1))
-                K2 = asarray([F11[j,v2[j]] for j in range(shape(F11)[0])]).reshape(-1,1,3)
-                K3 = asarray([F11[j,v3[j]] for j in range(shape(F11)[0])]).reshape(-1,1,3)
-                E2_neg = column_stack([P11,K2])
-                F2_neg = Formex(E2_neg,get_new_prop(p1,w11,newprops[1]))
-                E3_neg = column_stack([P11[:,0].reshape(-1,1,3),K2,K3])
-                F3_neg = Formex(E3_neg,get_new_prop(p1,w11,newprops[2]))
-        # case 2: quadrilateral at positive side after cut
-        if w12.size > 0:
-            T12 = T1[w12]
-            P12 = P1[w12]
-            F12 = F1[w12]
-            if side in '+':
-                v2 = where(T12[:,0]*T12[:,2] == 1,2,where(T12[:,0]*T12[:,1] == 1,2,0))
-                v3 = where(T12[:,0]*T12[:,2] == 1,1,where(T12[:,0]*T12[:,1] == 1,0,1))
-                K2 = asarray([F12[j,v2[j]] for j in range(shape(F12)[0])]).reshape(-1,1,3)
-                K3 = asarray([F12[j,v3[j]] for j in range(shape(F12)[0])]).reshape(-1,1,3)
-                E2_pos = column_stack([P12,K2])
-                F2_pos = Formex(E2_pos,get_new_prop(p1,w12,newprops[1]))
-                E3_pos = column_stack([P12[:,0].reshape(-1,1,3),K2,K3])
-                F3_pos = Formex(E3_pos,get_new_prop(p1,w12,newprops[2]))
-            if side in '-': # triangle at negative side after cut
-                v1 = where(T12[:,0]*T12[:,2] == 1,0,where(T12[:,0]*T12[:,1] == 1,1,2))
-                K1 = asarray([F12[j,v1[j]] for j in range(shape(F12)[0])]).reshape(-1,1,3)
-                E1_neg = column_stack([P12,K1])
-                F1_neg = Formex(E1_neg,get_new_prop(p1,w12,newprops[0]))
-    # One vertex with |distance| < atol
-    w2 = where(V==1)[0]
-    if w2.size > 0:
-        F2 = F[w2]
-        d2 = d[w2]
-        U2 = U[w2]
-        if F.prop is None:
-            p2 = None
-        else:
-            p2 = F.prop[w2]
-        # split problem in three cases
-        W = (d2 > atol).sum(axis=-1)
-        w21 = where(W == 2)[0] # case 1: two vertices at positive side
-        w22 = where(W == 1)[0] # case 2: one vertex at positive side
-        w23 = where(W == 0)[0] # case 3: no vertices at positive side
-        # case 1: two vertices at positive side
-        if w21.size > 0 and side in '+':
-            F21 = F2[w21]
-            U21 = U2[w21]
-            K1 = F21[U21] # vertices with |distance| < atol
-            n = normalize(n)
-            K1 = (K1 - n*d2[w21][U21].reshape(-1,1)).reshape(-1,1,3) # project vertices on plane (p,n)
-            K2 = F21[d2[w21]>atol].reshape(-1,2,3) # vertices with distance > atol
-            E4_pos = column_stack([K1,K2])
-            F4_pos = Formex(E4_pos,get_new_prop(p2,w21,newprops[3]))
-        # case 2: one vertex at positive side
-        if w22.size > 0:
-            F22 = F2[w22]
-            U22 = U2[w22]
-            K1 = F22[U22] # vertices with |distance| < atol
-            K1 = (K1 - n*d2[w22][U22].reshape(-1,1)).reshape(-1,1,3) # project vertices on plane (p,n)
-            P22 = P[w2][w22][roll(U22,1,axis=-1)].reshape(-1,1,3) # intersection points
-            if side in '+':
-                K2 = F22[d2[w22]>atol].reshape(-1,1,3) # vertices with distance > atol
-                E5_pos = column_stack([P22,K1,K2])
-                F5_pos = Formex(E5_pos,get_new_prop(p2,w22,newprops[4]))
-            if side in '-':
-                K3 = F22[d2[w22]<-atol].reshape(-1,1,3) # vertices with distance < - atol
-                E5_neg = column_stack([P22,K1,K3])
-                F5_neg = Formex(E5_neg,get_new_prop(p2,w22,newprops[4]))
-        # case 3: no vertices at positive side
-        if w23.size > 0 and side in '-':
-            F23 = F2[w23]
-            U23 = U2[w23]
-            K1 = F23[U23] # vertices with |distance| < atol
-            K1 = (K1 - n*d2[w23][U23].reshape(-1,1)).reshape(-1,1,3) # project vertices on plane (p,n)
-            K2 = F23[d2[w23]<-atol].reshape(-1,2,3) # vertices with distance < - atol
-            E4_neg = column_stack([K1,K2])
-            F4_neg = Formex(E4_neg,get_new_prop(p2,w23,newprops[3]))
-    # Two vertices with |distance| < atol
-    w3 = where(V==2)[0]
-    if w3.size > 0:
-        F3 = F[w3]
-        d3 = d[w3]
-        U3 = U[w3]
-        # split problem in two cases
-        W = (d3 > atol).sum(axis=-1)
-        w31 = where(W == 1)[0] # case 1: one vertex at positive side
-        w32 = where(W == 0)[0] # case 2: no vertices at positive side
-        # case 1: one vertex at positive side
-        if w31.size > 0 and side in '+':
-            F31 = F3[w31]
-            U31 = U3[w31]
-            K1 = F31[U31] # vertices with |distance| < atol
-            K1 = (K1 - n*d3[w31][U31].reshape(-1,1)).reshape(-1,2,3) # project vertices on plane (p,n)
-            K2 = F31[d3[w31]>atol].reshape(-1,1,3) # vertices with distance > atol
-            E6_pos = column_stack([K1,K2])
-            F6_pos = Formex(E6_pos,get_new_prop(F.prop,w31,newprops[5]))
-        # case 2: no vertices at positive side
-        if w32.size > 0 and side in '-':
-            F32 = F3[w32]
-            U32 = U3[w32]
-            K1 = F32[U32] # vertices with |distance| < atol
-            K1 = (K1 - n*d3[w32][U32].reshape(-1,1)).reshape(-1,2,3) # project vertices on plane (p,n)
-            K2 = F32[d3[w32]<-atol].reshape(-1,1,3) # vertices with distance < - atol
-            E6_neg = column_stack([K1,K2])
-            F6_neg = Formex(E6_neg,get_new_prop(F.prop,w32,newprops[5]))
-    # Three vertices with |distance| < atol
-    w4 = where(V==3)[0]
-    if w4.size > 0:
-        F4 = F[w4]
-        d4 = d[w4]
-        U4 = U[w4]
-        if side in '+':
-            K1 = F4[U4] # vertices with |distance| < atol
-            K1 = (K1 - n*d4[U4].reshape(-1,1)).reshape(-1,3,3) # project vertices on plane (p,n)
-            E7_pos = K1
-            F7_pos = Formex(E7_pos,get_new_prop(F.prop,w4,newprops[6]))
-        if side in '-':
-            E7_neg = K1
-            F7_neg = Formex(E7_neg,get_new_prop(F.prop,w4,newprops[6]))
-    # join all the pieces
-    if side in '+':
-        cut_pos = F1_pos+F2_pos+F3_pos+F4_pos+F5_pos+F6_pos+F7_pos
-    if side in '-':
-        cut_neg = F1_neg+F2_neg+F3_neg+F4_neg+F5_neg+F6_neg+F7_neg
-
-    if side == '+':
-        return cut_pos
-    elif side == '-':
-        return cut_neg
-    else:
-        return [ cut_pos, cut_neg ]
-
-
 ###########################################################################
 ##
 ##   Formex class
@@ -2213,6 +1498,722 @@ def interpolate(F,G,div,swap=False,concat=True):
     if swap:
         r = r.swapaxes(0,1)
     return Formex(r.reshape((-1,) + r.shape[-2:]))
+
+
+def lpattern(s,connect=True):
+    """Return a line segment pattern created from a string.
+
+    This function creates a list of line segments where all points lie on
+    a regular grid with unit step.
+    The first point of the list is [0,0,0]. Each character from the input
+    string is interpreted as a code specifying how to move to the next point.
+    Currently defined are the following codes:
+    1..8 move in the x,y plane
+    9 remains at the same place
+    0 = goto origin [0,0,0]
+    + = go back to origin without creating a line segment
+    When looking at the plane with the x-axis to the right,
+    1 = East, 2 = North, 3 = West, 4 = South, 5 = NE, 6 = NW, 7 = SW, 8 = SE.
+    Adding 16 to the ordinal of the character causes an extra move of +1 in
+    the z-direction. Adding 48 causes an extra move of -1. This means that
+    'ABCDEFGHI', resp. 'abcdefghi', correspond with '123456789' with an extra
+    z +/-= 1. This gives the following schema::
+
+                 z+=1             z unchanged            z -= 1
+
+             F    B    E          6    2    5         f    b    e
+                  |                    |                   |
+                  |                    |                   |
+             C----I----A          3----9----1         c----i----a
+                  |                    |                   |
+                  |                    |                   |
+             G    D    H          7    4    8         g    d    h
+
+    The special character '/' can be put before any character to make the
+    move without inserting an element.
+    The effect of any other character is undefined.
+
+    The resulting list is directly suited to initialize a Formex.
+    """
+    # We do not allow the '+' anymore
+    s = s.replace('+','/0')
+
+    x = y = z = 0
+    l = []
+    insert = True
+    for c in s:
+        if c == "/":
+            insert = False
+            continue
+        ## if c == "+":
+        ##     x = y = z = 0
+        ##     continue
+        pos = [x,y,z]
+        if c == "0":
+            x = y = z = 0
+        else:
+            i = ord(c)
+            d = i/16
+            if d == 3:
+                pass
+            elif d == 4:
+                z += 1
+            elif d == 6:
+                z -= 1
+            else:
+                raise RuntimeError,"Unknown pattern character %c ignored" % c
+            i %= 16
+            if i == 1:
+                x += 1
+            elif i == 2:
+                y += 1
+            elif i == 3:
+                x -= 1
+            elif i == 4:
+                y -= 1
+            elif i == 5:
+                x += 1
+                y += 1
+            elif i == 6:
+                x -= 1
+                y += 1
+            elif i == 7:
+                x -= 1
+                y -= 1
+            elif i == 8:
+                x += 1
+                y -= 1
+            elif i == 9:
+                pass
+            else:
+                raise RuntimeError,"Unknown pattern character %c ignored" % c
+        if insert:
+            if connect:
+                element = [pos,[x,y,z]]
+            else:
+                element = [[x,y,z]]
+            l.append(element)
+        insert = True
+    return l
+
+
+@deprecation('depr_mpattern')
+def mpattern(s):
+    """This is like pattern, but allowing lists with more than 2 points.
+
+    Subsequent points are included in the same list until a '-' occurs.
+    A '+' or '-' character splits lists. After a '-', the list starts at the
+    last point of the previous list. After a '+', the list starts again
+    at the origin.
+    All lists should have equal length if you want to use the resulting
+    list to initialize a Formex.
+    """
+    x = y = z = 0
+    li = [[x,y,z]]
+    l = []
+    connect=True
+    for c in s:
+        if c == '/':
+            connect = False
+            continue
+        elif c == '+':
+            l.append(li)
+            li = []
+            x = y = z = 0
+        elif c == '-':
+            l.append(li)
+            li = []
+        elif c == '0':
+            x = y = z = 0
+        else:
+            i = ord(c)
+            d = i/16
+            if d == 3:
+                pass
+            elif d == 4:
+                z += 1
+            elif d == 6:
+                z -= 1
+            else:
+                raise RuntimeError,"Unknown pattern character %c ignored" % c
+            i %= 16
+            if i == 1:
+                x += 1
+            elif i == 2:
+                y += 1
+            elif i == 3:
+                x -= 1
+            elif i == 4:
+                y -= 1
+            elif i == 5:
+                x += 1
+                y += 1
+            elif i == 6:
+                x -= 1
+                y += 1
+            elif i == 7:
+                x -= 1
+                y -= 1
+            elif i == 8:
+                x += 1
+                y -= 1
+            elif i == 9:
+                pass
+            else:
+                raise RuntimeError,"Unknown pattern character %c ignored" % c
+        if connect:
+            li.append([x,y,z])
+    l.append(li)
+    return l
+
+# Intersection functions
+
+
+# REMOVED in 0.9
+
+## @deprecation("\nUse Formex.intersectionWithPlane() or geomtools functions instead.")
+## def intersectionWithPlane(F,p,n):
+##     """Return the intersection of a Formex F with the plane (p,n).
+
+##     The Formex should have plexitude 2.
+##     p is a point specified by 3 coordinates.
+##     n is the normal vector to a plane, specified by 3 components.
+
+##     The return value is a [n] shaped array of parameter values t,
+##     such that for each segment L the intersection point is given
+##     by (1-t)*L[0]+ t*L[1].
+##     """
+##     f = F.coords
+##     if f.shape[1] != 2:
+##         raise RuntimeError,"Formex should have plexitude 2."
+##     p = asarray(p).reshape((3))
+##     n = asarray(n).reshape((3))
+##     n = normalize(n)
+##     t = (inner(p,n) - inner(f[:,0,:],n)) / inner((f[:,1,:]-f[:,0,:]),n)
+##     return t
+
+
+def pointsAt(F,t):
+    """Return the points of a plex-2 Formex at times t.
+
+    F is a plex 2 Formex and t is an array with F.nelems() float values which
+    are interpreted as local parameters along the edges of the Formex, such
+    that the first node has value 0.0 and the last has value 1.0.
+    The return value is a :class:`coords.Coords` array with the points at values t.
+    """
+    f = F.coords
+    t = t[:,newaxis]
+    return Coords((1.-t) * f[:,0,:] + t * f[:,1,:])
+
+# REMOVED in 0.9
+
+## @deprecation("\nUse Formex.intersectionWithPlane() or geomtools functions instead.")
+## def intersectionPointsWithPlane(F,p,n):
+##     """Return the intersection points of a Formex with plane p,n.
+
+##     The Formex should have plexitude 2.
+##     p is a point specified by 3 coordinates.
+##     n is the normal vector to a plane, specified by 3 components.
+
+##     The result is a plex-1 Formex with the same number of elements as the
+##     original. Some of the points may be NaN's.
+##     """
+##     f = F.coords
+##     t = intersectionWithPlane(F,p,n).reshape((-1,1))
+##     #print t.shape
+##     from geomtools import intersectionTimesSWP
+##     t = intersectionTimesSWP(f,p,n,mode='pair').reshape((-1,1))
+##     #print t.shape
+##     return Formex((1.-t) * f[:,0,:] + t * f[:,1,:])
+
+
+
+def intersectionLinesWithPlane(F,p,n,atol=1.e-4):
+    """Return the intersection lines of a plex-3 Formex with plane (p,n).
+
+    F is a Formex of plexitude 3.
+    p is a point specified by 3 coordinates.
+    n is the normal vector to a plane, specified by 3 components.
+    atol is a tolerance factor defining whether an edge is intersected by the plane.
+    """
+    n = asarray(n)
+    p = asarray(p)
+    F = F.cclip(F.test('all',n,p)) # remove elements at the negative side
+    if F.nelems() == 0:
+        return Formex(empty((0,2,3,),dtype=float))
+    F = F.cclip(F.test('all',-n,p)) # select elements that will be cut by plane
+    if F.nelems() == 0:
+        return Formex(empty((0,2,3,),dtype=float))
+    F1 = F21 = F22 = F31 = F32 = F41 = F42= F43 = Formex(empty((0,2,3,),dtype=float))
+    # Create a Formex with the edges
+    C = Formex.concatenate([ F.selectNodes(e) for e in [[0,1],[1,2],[2,0]] ])
+    t = C.intersectionWithPlane(p,n)
+    P = pointsAt(C,t)
+    t = t.reshape(3,-1).transpose()
+    Pb = P.reshape(3,-1,3).swapaxes(0,1)
+    Pf = F.coords
+    Ps = roll(F.coords,-1,axis=1)
+    t1 = t >= 0.+atol
+    t2 = t <= 1.-atol
+    t3 = t >= 0.-atol
+    t4 = t <= 1.+atol
+    Tb = t1 * t2
+    Tf = (1-t1).astype(bool)*t3
+    Ts = (1-t2).astype(bool)*t4
+    Nb = Tb.sum(axis=-1)
+    Nf = Tf.sum(axis=-1)
+    Ns = Ts.sum(axis=-1)
+    # Get the triangles with 2 edge intersections
+    w1 = where(Nb==2)[0]
+    if w1.size > 0:
+        P = Pb[w1][Tb[w1]].reshape(-1,2,3)
+        F1 = Formex(P)
+    # Get the triangles with 1 edge intersection and 1 vertex intersection
+    w21 = where( (Nb==1) * (Nf==1) * (Ns==0) )[0]
+    if w21.size > 0:
+        P1 = Pb[w21][Tb[w21]].reshape(-1,1,3)
+        P2 = Pf[w21][Tf[w21]].reshape(-1,1,3)
+        P = column_stack([P1,P2])
+        F21 = Formex(P)
+    w22 = where( (Nb==1) * (Nf==0) * (Ns==1) )[0]
+    if w22.size > 0:
+        P1 = Pb[w22][Tb[w22]].reshape(-1,1,3)
+        P2 = Ps[w22][Ts[w22]].reshape(-1,1,3)
+        P = column_stack([P1,P2])
+        F22 = Formex(P)
+    # Get the triangles with 1 edge intersection and 2 vertex intersections
+    w3 = where( (Nb==1) * (Nf==1) * (Ns==1) )[0]
+    if w3.size > 0:
+        Tb3 = Tb[w3]
+        Tf3 = Tf[w3]
+        Ts3 = Ts[w3]
+        Pb3 = Pb[w3]
+        Pf3 = Pf[w3]
+        Ps3 = Ps[w3]
+        i = where(Ts3)[1] - where(Tf3)[1]
+        w31 = where((i == 1)+(i==-2))[0] # different vertices
+        if w31.size > 0:
+            P1 = Pf3[w31][Tf3[w31]].reshape(-1,1,3)
+            P2 = Ps3[w31][Ts3[w31]].reshape(-1,1,3)
+            P = column_stack([P1,P2])
+            F32 = Formex(P)
+        w32 = where((i == -1)+(i==2))[0] # equal vertices
+        if w32.size > 0:
+            P1 = Pb3[w32][Tb3[w32]].reshape(-1,1,3)
+            P2 = Pf3[w32][Tf3[w32]].reshape(-1,1,3)
+            P = column_stack([P1,P2])
+            F31 = Formex(P)
+    # Get the triangles with 0 edge intersections and 2 or 3 vertex intersections
+    w41 = where( (Nb==0) * (Nf==2) )[0]
+    if w41.size > 0:
+        P = Pf[w41][Tf[w41]].reshape(-1,2,3)
+        F41 = Formex(P)
+    w42 = where( (Nb==0) * (Ns==2) )[0]
+    if w42.size > 0:
+        P = Ps[w42][Ts[w42]].reshape(-1,2,3)
+        F42 = Formex(P)
+    w43 = where( (Nb==0) * (Nf==1) * (Ns==1) )[0]
+    if w43.size > 0:
+        Tf43 = Tf[w43]
+        Ts43= Ts[w43]
+        Pf43 = Pf[w43]
+        Ps43 = Ps[w43]
+        i = where(Ts43)[1] - where(Tf43)[1]
+        w43 = where((i == 1)+(i==-2))[0] # different vertices
+        if w43.size > 0:
+            P1 = Pf43[w43][Tf43[w43]].reshape(-1,1,3)
+            P2 = Ps43[w43][Ts43[w43]].reshape(-1,1,3)
+            P = column_stack([P1,P2])
+            F43 = Formex(P)
+    # join all the pieces
+    Ft = F1 + F21 + F22 + F31 + F32 + F41 + F42+ F43
+    return Ft
+
+
+def _sane_side(side):
+    """_Allow some old variants of arguments_"""
+    if type(side) == str:
+        if side.startswith('pos'):
+            side = '+'
+        if side.startswith('neg'):
+            side = '-'
+    if not (side == '+' or side == '-'):
+        side = ''
+    return side
+
+def _select_side(side,alist):
+    """_Return selected parts dependent on side_"""
+    if side == '+':
+        return alist[0]
+    elif side == '-':
+        return alist[1]
+    else:
+        return alist
+
+
+def cut2AtPlane(F,p,n,side='',atol=None,newprops=None):
+    """Returns all elements of the Formex cut at plane.
+
+    F is a Formex of plexitude 2.
+    p is a point specified by 3 coordinates.
+    n is the normal vector to a plane, specified by 3 components.
+
+    The return value is:
+
+    - with side = '+' or '-' or 'positive'or 'negative' :
+      a Formex of the same plexitude with all elements
+      located completely at the positive/negative side of the plane(s) (p,n)
+      retained, all elements lying completely at the negative/positive side
+      removed and the elements intersecting the plane(s) replaced by new
+      elements filling up the parts at the positive/negative side.
+    - with side = '': two Formices of the same plexitude, one representing
+      the positive side and one representing the negative side.
+
+    To avoid roundoff errors and creation of very small elements,
+    a tolerance can be specified. Points lying within the tolerance
+    distance will be considered lying in the plane, and no cutting near
+    these points.
+    """
+    side = _sane_side(side)
+    dist = F.distanceFromPlane(p,n)
+    if atol is None:
+        atol = 1.e-5*dist.max()
+    above = sum(dist>atol,-1)
+    below = sum(dist<-atol,-1)
+    A = F.clip(below==0)
+    B = F.clip(above==0)
+    cutting = (above>0)*(below>0)
+    if newprops:
+       A.setProp(newprops[0])
+       B.setProp(newprops[1])
+    ## print("Elements in F: %s" % F.nelems())
+    ## print("Elements in A: %s" % A.nelems())
+    ## print("Elements in B: %s" % B.nelems())
+
+    if cutting.any():
+        G = F.clip(cutting)
+        H = G.copy()
+
+
+        g = G.intersectionWithPlane(p,n)
+        dist = dist[cutting]
+        i0 = dist[:,0] < 0.
+        i1 = dist[:,1] < 0.
+        G[i0,0,:] = H[i0,1,:] = g[i0].reshape(-1,3)
+        G[i1,1,:] = H[i1,0,:] = g[i1].reshape(-1,3)
+        if newprops:
+           G.setProp(newprops[2])
+           H.setProp(newprops[3])
+        A += G
+        B += H
+
+        ## print("Elements in G: %s" % G.nelems())
+        ## print("Elements in A: %s" % A.nelems())
+        ## print("Elements in B: %s" % B.nelems())
+    return _select_side(side,[ A,B ])
+
+
+def cut3AtPlane(F,p,n,side='',atol=None,newprops=None):
+    """Returns all elements of the Formex cut at plane(s).
+
+    F is a Formex of plexitude 3.
+    p is a point or a list of points.
+    n is the normal vector to a plane or a list of normal vectors.
+    Both p and n have shape (3) or (npoints,3).
+
+    The return value is:
+
+    - with side='+' or '-' or 'positive'or 'negative' :
+      a Formex of the same plexitude with all elements
+      located completely at the positive/negative side of the plane(s) (p,n)
+      retained, all elements lying completely at the negative/positive side
+      removed and the elements intersecting the plane(s) replaced by new
+      elements filling up the parts at the positive/negative side.
+    - with side='': two Formices of the same plexitude, one representing
+      the positive side and one representing the negative side.
+
+    Let :math:`dist` be the signed distance of the vertices to a plane.
+    The elements located completely at the positive or negative side of
+    a plane have three vertices for which :math:`|dist|>atol`.
+    The elements intersecting a plane can have one or more vertices for which
+    :math:`|dist|<atol`.
+    These vertices are projected on the plane so that their distance is zero.
+
+    If the Formex has a property set, the new elements will get the property
+    numbers defined in newprops. This is a list of 7 property numbers flagging
+    elements with following properties:
+
+    0) no vertices with :math:`|dist|<atol`, triangle after cut
+    1) no vertices with :math:`|dist|<atol`, triangle 1 from quad after cut
+    2) no vertices with :math:`|dist|<atol`, triangle 2 from quad after cut
+    3) one vertex with :math:`|dist|<atol`, two vertices at pos. or neg. side
+    4) one vertex with :math:`|dist|<atol`, one vertex at pos. side, one at neg.
+    5) two vertices with :math:`|dist|<atol`, one vertex at pos. or neg. side
+    6) three vertices with :math:`|dist|<atol`
+    """
+    if atol is None:
+        atol = 1.e-5*F.dsize()
+    # make sure we have sane newprops
+    if newprops is None:
+        newprops = [None,]*7
+    else:
+        try:
+            newprops = newprops[:7]
+            for prop in newprops:
+                if not (prop is None or type(prop) is int):
+                    raise
+        except:
+            newprops = range(7)
+    side = _sane_side(side)
+
+    p = asarray(p).reshape(-1,3)
+    n = asarray(n).reshape(-1,3)
+    nplanes = len(p)
+    test = [F.test('any',n[i], p[i],atol=atol) for i in range(nplanes)] # elements at positive side of plane i
+    Test= asarray(test).prod(0) # elements at positive side of all planes
+    F_pos = F.clip(Test) # save elements at positive side of all planes
+    if side in '-': # Dirty trick: this also includes side='' !
+        F_neg = F.cclip(Test) # save elements completely at negative side of one of the planes
+    else:
+        F_neg = None
+    if F_pos.nelems() != 0:
+        test = [F_pos.test('all',n[i],p[i],atol=-atol) for i in range(nplanes)] # elements completely at positive side of plane i
+        Test = asarray(test).prod(0) # elements completely at positive side of all planes
+        F_cut = F_pos.cclip(Test) # save elements that will be cut by one of the planes
+        F_pos = F_pos.clip(Test)  # save elements completely at positive side of all planes
+        if F_cut.nelems() != 0:
+            if nplanes == 1:
+                if side == '+':
+                    F_pos += cutElements3AtPlane(F_cut,p[i],n[i],newprops,side,atol)
+                elif side == '-':
+                    F_neg += cutElements3AtPlane(F_cut,p[i],n[i],newprops,side,atol)
+                elif side == '':
+                    cut_pos, cut_neg = cutElements3AtPlane(F_cut,p[i],n[i],newprops,side,atol)
+                    F_pos += cut_pos
+                    F_neg += cut_neg
+            elif nplanes > 1:
+                S = F_cut
+                for i in range(nplanes):
+                    if i > 0:
+                        # due to the projection of vertices with |distance| < atol on plane i-1, some elements can be completely at negative side of plane i instead of cut by plane i
+                        t = S.test('any',n[i],p[i],atol=atol)
+                        if side in '-':
+                            F_neg += S.cclip(t) # save elements completely at negative side of plane i
+                        S = S.clip(t) # save elements at positive side of plane i
+                    t = S.test('all',n[i],p[i],atol=-atol)
+                    R = S.clip(t) # save elements completely at positive side of plane i
+                    S = S.cclip(t) # save elements that will be cut by plane i
+                    if side == '+':
+                        cut_pos = cutElements3AtPlane(S,p[i],n[i],newprops,'+',atol)
+                    elif side in '-':
+                        cut_pos, cut_neg = cutElements3AtPlane(S,p[i],n[i],newprops,'',atol)
+                        F_neg += cut_neg
+                    S = R + cut_pos
+                F_pos += S
+
+    return _select_side(side,[ F_pos, F_neg ])
+
+
+def cutElements3AtPlane(F,p,n,newprops=None,side='',atol=0.):
+    """This function needs documentation.
+
+    Should it be called by the user? or only via cut3AtPlane?
+    For now, lets suppose the last, so no need to check arguments here.
+
+    newprops should be a list of 7 values: each an integer or None
+    side is either '+', '-' or ''
+    """
+    if atol is None:
+        atol = 1.e-5*F.dsize()
+
+    def get_new_prop(p,ind,newp):
+        """Determines the value of the new props for a subset.
+
+        p are the original props (possibly None)
+        ind is the list of elements to treat
+        newp is the new property value.
+
+        The return value is determined as follows:
+
+        - If p is None: return None (no property set)
+        - If p is set, but newp is None: return p[ind] : keep original
+        - if p is set, and newp is set: return newp (single value)
+        """
+        if p is None:
+            return None
+        elif newp is None:
+            return p[ind]
+        else:
+            return newp
+
+    from geomtools import intersectionSWP
+    C = [connect([F,F],nodid=ax) for ax in [[0,1],[1,2],[2,0]]]
+    errh = seterr(divide='ignore',invalid='ignore')
+    res = [intersectionSWP(Ci.coords,p,n,mode='pair',return_all=True) for Ci in C]
+    seterr(**errh)
+    t = column_stack([r[0] for r in res])
+    P = stack([r[1] for r in res],axis=1)
+    del res
+    T = (t >= 0.)*(t <= 1.)
+    d = F.coords.distanceFromPlane(p,n)
+    U = abs(d) < atol
+    V = U.sum(axis=-1) # number of vertices with |distance| < atol
+    F1_pos = F2_pos = F3_pos = F4_pos = F5_pos = F6_pos = F7_pos = F1_neg = F2_neg = F3_neg = F4_neg = F5_neg = F6_neg = F7_neg = Formex()
+    # No vertices with |distance| < atol => triangles with 2 intersections
+    w1 = where(V==0)[0]
+    if w1.size > 0:
+        T1 = T[w1]
+        P1 = P[w1][T1].reshape(-1,2,3)
+        F1 = F[w1]
+        d1 = d[w1]
+        if F.prop is None:
+            p1 = None
+        else:
+            p1 = F.prop[w1]
+        # split problem in two cases
+        w11 = where(d1[:,0]*d1[:,1]*d1[:,2] > 0.)[0] # case 1: triangle at positive side after cut
+        w12 = where(d1[:,0]*d1[:,1]*d1[:,2] < 0.)[0] # case 2: quadrilateral at positive side after cut
+        # case 1: triangle at positive side after cut
+        if w11.size > 0:
+            T11 = T1[w11]
+            P11 = P1[w11]
+            F11 = F1[w11]
+            if side in '+':
+                v1 = where(T11[:,0]*T11[:,2] == 1,0,where(T11[:,0]*T11[:,1] == 1,1,2))
+                K1 = asarray([F11[j,v1[j]] for j in range(shape(F11)[0])]).reshape(-1,1,3)
+                E1_pos = column_stack([P11,K1])
+                F1_pos = Formex(E1_pos,get_new_prop(p1,w11,newprops[0]))
+            if side in '-': #quadrilateral at negative side after cut
+                v2 = where(T11[:,0]*T11[:,2] == 1,2,where(T11[:,0]*T11[:,1] == 1,2,0))
+                v3 = where(T11[:,0]*T11[:,2] == 1,1,where(T11[:,0]*T11[:,1] == 1,0,1))
+                K2 = asarray([F11[j,v2[j]] for j in range(shape(F11)[0])]).reshape(-1,1,3)
+                K3 = asarray([F11[j,v3[j]] for j in range(shape(F11)[0])]).reshape(-1,1,3)
+                E2_neg = column_stack([P11,K2])
+                F2_neg = Formex(E2_neg,get_new_prop(p1,w11,newprops[1]))
+                E3_neg = column_stack([P11[:,0].reshape(-1,1,3),K2,K3])
+                F3_neg = Formex(E3_neg,get_new_prop(p1,w11,newprops[2]))
+        # case 2: quadrilateral at positive side after cut
+        if w12.size > 0:
+            T12 = T1[w12]
+            P12 = P1[w12]
+            F12 = F1[w12]
+            if side in '+':
+                v2 = where(T12[:,0]*T12[:,2] == 1,2,where(T12[:,0]*T12[:,1] == 1,2,0))
+                v3 = where(T12[:,0]*T12[:,2] == 1,1,where(T12[:,0]*T12[:,1] == 1,0,1))
+                K2 = asarray([F12[j,v2[j]] for j in range(shape(F12)[0])]).reshape(-1,1,3)
+                K3 = asarray([F12[j,v3[j]] for j in range(shape(F12)[0])]).reshape(-1,1,3)
+                E2_pos = column_stack([P12,K2])
+                F2_pos = Formex(E2_pos,get_new_prop(p1,w12,newprops[1]))
+                E3_pos = column_stack([P12[:,0].reshape(-1,1,3),K2,K3])
+                F3_pos = Formex(E3_pos,get_new_prop(p1,w12,newprops[2]))
+            if side in '-': # triangle at negative side after cut
+                v1 = where(T12[:,0]*T12[:,2] == 1,0,where(T12[:,0]*T12[:,1] == 1,1,2))
+                K1 = asarray([F12[j,v1[j]] for j in range(shape(F12)[0])]).reshape(-1,1,3)
+                E1_neg = column_stack([P12,K1])
+                F1_neg = Formex(E1_neg,get_new_prop(p1,w12,newprops[0]))
+    # One vertex with |distance| < atol
+    w2 = where(V==1)[0]
+    if w2.size > 0:
+        F2 = F[w2]
+        d2 = d[w2]
+        U2 = U[w2]
+        if F.prop is None:
+            p2 = None
+        else:
+            p2 = F.prop[w2]
+        # split problem in three cases
+        W = (d2 > atol).sum(axis=-1)
+        w21 = where(W == 2)[0] # case 1: two vertices at positive side
+        w22 = where(W == 1)[0] # case 2: one vertex at positive side
+        w23 = where(W == 0)[0] # case 3: no vertices at positive side
+        # case 1: two vertices at positive side
+        if w21.size > 0 and side in '+':
+            F21 = F2[w21]
+            U21 = U2[w21]
+            K1 = F21[U21] # vertices with |distance| < atol
+            n = normalize(n)
+            K1 = (K1 - n*d2[w21][U21].reshape(-1,1)).reshape(-1,1,3) # project vertices on plane (p,n)
+            K2 = F21[d2[w21]>atol].reshape(-1,2,3) # vertices with distance > atol
+            E4_pos = column_stack([K1,K2])
+            F4_pos = Formex(E4_pos,get_new_prop(p2,w21,newprops[3]))
+        # case 2: one vertex at positive side
+        if w22.size > 0:
+            F22 = F2[w22]
+            U22 = U2[w22]
+            K1 = F22[U22] # vertices with |distance| < atol
+            K1 = (K1 - n*d2[w22][U22].reshape(-1,1)).reshape(-1,1,3) # project vertices on plane (p,n)
+            P22 = P[w2][w22][roll(U22,1,axis=-1)].reshape(-1,1,3) # intersection points
+            if side in '+':
+                K2 = F22[d2[w22]>atol].reshape(-1,1,3) # vertices with distance > atol
+                E5_pos = column_stack([P22,K1,K2])
+                F5_pos = Formex(E5_pos,get_new_prop(p2,w22,newprops[4]))
+            if side in '-':
+                K3 = F22[d2[w22]<-atol].reshape(-1,1,3) # vertices with distance < - atol
+                E5_neg = column_stack([P22,K1,K3])
+                F5_neg = Formex(E5_neg,get_new_prop(p2,w22,newprops[4]))
+        # case 3: no vertices at positive side
+        if w23.size > 0 and side in '-':
+            F23 = F2[w23]
+            U23 = U2[w23]
+            K1 = F23[U23] # vertices with |distance| < atol
+            K1 = (K1 - n*d2[w23][U23].reshape(-1,1)).reshape(-1,1,3) # project vertices on plane (p,n)
+            K2 = F23[d2[w23]<-atol].reshape(-1,2,3) # vertices with distance < - atol
+            E4_neg = column_stack([K1,K2])
+            F4_neg = Formex(E4_neg,get_new_prop(p2,w23,newprops[3]))
+    # Two vertices with |distance| < atol
+    w3 = where(V==2)[0]
+    if w3.size > 0:
+        F3 = F[w3]
+        d3 = d[w3]
+        U3 = U[w3]
+        # split problem in two cases
+        W = (d3 > atol).sum(axis=-1)
+        w31 = where(W == 1)[0] # case 1: one vertex at positive side
+        w32 = where(W == 0)[0] # case 2: no vertices at positive side
+        # case 1: one vertex at positive side
+        if w31.size > 0 and side in '+':
+            F31 = F3[w31]
+            U31 = U3[w31]
+            K1 = F31[U31] # vertices with |distance| < atol
+            K1 = (K1 - n*d3[w31][U31].reshape(-1,1)).reshape(-1,2,3) # project vertices on plane (p,n)
+            K2 = F31[d3[w31]>atol].reshape(-1,1,3) # vertices with distance > atol
+            E6_pos = column_stack([K1,K2])
+            F6_pos = Formex(E6_pos,get_new_prop(F.prop,w31,newprops[5]))
+        # case 2: no vertices at positive side
+        if w32.size > 0 and side in '-':
+            F32 = F3[w32]
+            U32 = U3[w32]
+            K1 = F32[U32] # vertices with |distance| < atol
+            K1 = (K1 - n*d3[w32][U32].reshape(-1,1)).reshape(-1,2,3) # project vertices on plane (p,n)
+            K2 = F32[d3[w32]<-atol].reshape(-1,1,3) # vertices with distance < - atol
+            E6_neg = column_stack([K1,K2])
+            F6_neg = Formex(E6_neg,get_new_prop(F.prop,w32,newprops[5]))
+    # Three vertices with |distance| < atol
+    w4 = where(V==3)[0]
+    if w4.size > 0:
+        F4 = F[w4]
+        d4 = d[w4]
+        U4 = U[w4]
+        if side in '+':
+            K1 = F4[U4] # vertices with |distance| < atol
+            K1 = (K1 - n*d4[U4].reshape(-1,1)).reshape(-1,3,3) # project vertices on plane (p,n)
+            E7_pos = K1
+            F7_pos = Formex(E7_pos,get_new_prop(F.prop,w4,newprops[6]))
+        if side in '-':
+            E7_neg = K1
+            F7_neg = Formex(E7_neg,get_new_prop(F.prop,w4,newprops[6]))
+    # join all the pieces
+    if side in '+':
+        cut_pos = F1_pos+F2_pos+F3_pos+F4_pos+F5_pos+F6_pos+F7_pos
+    if side in '-':
+        cut_neg = F1_neg+F2_neg+F3_neg+F4_neg+F5_neg+F6_neg+F7_neg
+
+    if side == '+':
+        return cut_pos
+    elif side == '-':
+        return cut_neg
+    else:
+        return [ cut_pos, cut_neg ]
 
 
 ##############################################################################

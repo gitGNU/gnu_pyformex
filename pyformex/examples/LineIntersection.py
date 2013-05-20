@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -22,9 +22,9 @@
 ##  You should have received a copy of the GNU General Public License
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
-"""IntersectionLines
+"""LineIntersection
 
-Find the intersetion points of Polylines
+Find the intersection points of polylines
 """
 from __future__ import print_function
 _status = 'checked'
@@ -38,41 +38,65 @@ from geomtools import *
 from simple import circle
 
 
+def intersection(F1,F2):
+    """Return the intersection of two Formices.
 
-def run():
-    clear()
+    Currently this only works for plex-2 Formices.
 
-    line1 = PolyLine(circle().coords[:,0].trl(1,0.2))
-    line2 = PolyLine(circle().coords[:,0].trl(1,-0.2))
+    Returns a tuple:
 
-    draw([line1,line2])
+    - `X`: Coords with the intersection points
+    - `w1`: index of the intersection elements in F1
+    - `w2`: index of the intersection elements in F2
+    """
+    if F1.nplex() != 2 or F2.nplex() != 2:
+        raise ValueError,"Can only interesect plex-2 Formices"
 
-    q1 = line1.pointsOn()[:-1]
-    m1 = line1.vectors()
-    q2 = line2.pointsOn()[:-1]
-    m2 = line2.vectors()
-    
-    # computes the intersections all the possible intersections between all the vectors
+    from geomtools import intersectionTimesLWL
+
+    errh = seterr(divide='ignore',invalid='ignore') # ignore division errors
+    q1 = F1[:,0]
+    m1 = F1[:,1]-F1[:,0]
+    q2 = F2[:,0]
+    m2 = F2[:,1]-F2[:,0]
+
+    # Compute all intersection points of the lines
     t1,t2 = intersectionTimesLWL(q1,m1,q2,m2,mode='all')
     X1 = pointsAtLines(q1[:,newaxis],m1[:,newaxis],t1)
     X2 = pointsAtLines(q2,m2,t2)
-    
-    # check which intersections are inside the segments boundaries
+    seterr(**errh) # reactivate division errors
+
+    # Keep intersecting segments
     inside = (t1>=0.0)*(t1<=1.0)*(t2>=0.0)*(t2<=1.0)
-    wl1,wl2 = where(inside)
-    
-    # find the intersctions points and the intersecting elements
+    w1,w2 = where(inside)
+
+    # Find coinciding intersection points and the intersecting segments
     X1,X2 = X1[inside],X2[inside]
     matches = X2.match(X1)
-    coinc = matches!=-1
-    wl1,wl2 = wl1[coinc],wl2[coinc]
+    ok = matches!=-1
 
-    
-    drawVectors(q1[wl1],m1[wl1],color='red',linewidth=3)
-    drawVectors(q2[wl2],m2[wl2],color='green',linewidth=3)
-    draw(X1[coinc],color=yellow,marksize=10)
-    draw(X2[coinc],color=yellow,marksize=10)
-    zoomAll()
+    return X1[ok],w1[ok],w2[ok]
+
+
+def run():
+
+    reset()
+    clear()
+    flat()
+
+    line1 = circle(30.)
+    line2 = line1.trl(0,0.4)
+
+    # Find the intersection of the segments
+    X,w1,w2 = intersection(line1,line2)
+
+    # Change the color of the intersecting segments
+    line1.setProp(1).prop[w1] = 5
+    line2.setProp(3).prop[w2] = 4
+
+    draw([line1,line2],linewidth=3)
+    draw(X,marksize=10,ontop=True)
+
 
 if __name__ == 'draw':
     run()

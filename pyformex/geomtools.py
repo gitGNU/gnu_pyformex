@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -532,9 +532,13 @@ def pointsAtSegments(S,t):
 
 
 def intersectionTimesLWL(q1,m1,q2,m2,mode='all'):
-    """Return the intersection of lines (q1,m1) and lines (q2,m2)
+    """Find the common perpendicular of lines (q1,m1) and lines (q2,m2)
 
-    with the perpendiculars between them.
+    For non-intersecting lines, the base points of the common perpendicular
+    are found.
+    For intersecting lines, the common point of intersection is found.
+
+    Lines are defined by a point (q) and a vector (m).
 
     Parameters:
 
