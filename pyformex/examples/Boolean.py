@@ -37,35 +37,33 @@ from simple import cylinder
 from connectivity import connectedLineElems
 from plugins.trisurface import TriSurface,fillBorder
 
-
-
-def run():
-    global F,G
-    clear()
-    smooth()
-    view('iso')
-    F = cylinder(L=8.,D=2.,nt=36,nl=20,diag='u').centered()
-    F = TriSurface(F).setProp(3).close(method='planar').fixNormals()
-    G = F.rotate(90.,0).trl(0,1.).setProp(1)
-    export({'F':F,'G':G})
-    draw([F,G])
-
-    res = askItems(
-        [ _I('op',text='Operation',choices=[
-            '+ (Union)',
-            '- (Difference)',
-            '* Intersection',
-            'Intersection Curve',
-            ],itemtype='vradio'),
-          _I('verbose',False,text='Show stats'),
-        ])
+def splitAlongPath(path,mesh,atol=0.0):
+    '''
+    Given split mesh into opposite regions along a closed path matching coords of mesh
+    '''
+    mesh = mesh.fuse(atol = atol).compact() # with atol = 0 removes repeted nodes which may results after boolean operation
+    cpath= mesh.matchCoords(path)
     
-    if not res:
-        return
+    mpath = mesh.connectedTo(cpath) 
+    msplit = mesh.notConnectedTo(cpath).splitByConnection()
+    for im,m in enumerate(msplit):
+        for brd in m.getBorderMesh().splitByConnection():
+            mbrd = mpath.matchCoords(brd)
+            if mbrd.shape != 0:
+                msplit[im] += mpath.connectedTo(mbrd).setProp(im)
+    return msplit
+
+def drawResults(**res):
+    
     op = res['op'][0]
     verbose = res['verbose']
+    split = res['split']
+    path = None
     if op in '+-*':
         I = F.boolean(G,op,verbose=verbose)
+        if split:
+            path = F.intersection(G,verbose=verbose)
+            I = splitAlongPath(path.toMesh(),I)
     else:
         I = F.intersection(G,verbose=verbose)
     clear()
@@ -84,6 +82,62 @@ def run():
             S = fillBorder(I,method='planar')
             draw(S)
 
+
+    
+    
+def close():
+    global dialog
+    if dialog:
+        dialog.close()
+        dialog = None
+    # Release script lock
+    scriptRelease(__file__)
+
+def show():
+    dialog.acceptData()
+    res = dialog.results
+    drawResults(**res)
+
+def timeOut():
+    show()
+    wait()
+    close()
+
+def run():
+    global dialog,F,G
+    clear()
+    smooth()
+    view('iso')
+    F = cylinder(L=8.,D=2.,nt=36,nl=20,diag='u').centered()
+    F = TriSurface(F).setProp(3).close(method='planar').fixNormals().fuse().compact()
+    G = F.rotate(90.,0).trl(0,1.).setProp(1)
+    export({'F':F,'G':G})
+    draw([F,G])
+    
+    _items=\
+        [ _I('op',text='Operation',choices=[
+            '+ (Union)',
+            '- (Difference)',
+            '* Intersection',
+            'Intersection Curve',
+            ]),
+          _I('split',False,text='Split along intersection'),
+          _I('verbose',False,text='Show stats'),
+        ]
+    _enablers= [('op','+ (Union)','split'),
+        ('op','- (Difference)','split'),
+        ('op','* Intersection','split'),]
+    
+    dialog = Dialog(
+        items=_items,
+        enablers=_enablers,
+        actions=[('Close',close),('Show',show)],
+        default='Show')
+
+    dialog.timeout=timeOut
+    dialog.show()
+
+    exit()
 
 if __name__ == 'draw':
     run()
