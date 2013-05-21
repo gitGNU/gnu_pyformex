@@ -707,7 +707,9 @@ class PolyLine(Curve):
         - `N`: normalized normal vector to the curve at `npts` points
         - `B`: normalized binormal vector to the curve at `npts` points
         """
-        if avgdir:
+        if isinstance(avgdir,ndarray):
+            T=avgdir
+        elif avgdir:
             T = self.avgDirections()
         else:
             T = self.directions()
