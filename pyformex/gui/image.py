@@ -166,9 +166,7 @@ def save_canvas(canvas,fn,fmt='png',quality=-1,size=None):
             w,h = size
         except:
             w,h = wc,hc
-        if True: #(w,h) == (wc,hc):
-            # Always, because other way does not work reliably
-            # Save directly from current rendering
+        if (w,h) == (wc,hc) or not pf.cfg['gui/image_virtual']:
             pf.debug("Saving image from canvas with size %sx%s" % (w,h),pf.DEBUG.IMAGE)
             if (w,h) != (wc,hc):
                 canvas.resize(w,h)
