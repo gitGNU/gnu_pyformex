@@ -26,29 +26,15 @@
 
 from opengl.drawable import *
 
+
 if not pf.options.opengl2:
     warning("This example only runs with the new opengl2 engine!")
-    exit()
 
-
-_clear = clear
-
-def clearall():
-    pf.canvas.renderer.clear()
-    _clear()
-
-
-def draw(o,**kargs):
-    pf.canvas.renderer.add(o,**kargs)
-def drawActor(o):
-    pf.canvas.renderer.addActor(o)
+clearall()
 
 
 def modified(obj):
     pf.canvas.renderer.shader.loadUniforms(obj)
-
-
-clearall()
 
 
 #transparent()

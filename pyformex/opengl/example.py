@@ -24,18 +24,6 @@
 #
 #
 
-_clear = clear
-
-def clearall():
-    pf.canvas.renderer.clear()
-    _clear()
-
-
-if pf.options.opengl2:
-    def draw(o):
-        pf.canvas.renderer.add(o)
-
-
 clearall()
 
 
@@ -61,5 +49,7 @@ draw(B)
 draw(C)
 draw(D)
 draw(E)
+
+zoomAll()
 
 # End

@@ -21,10 +21,35 @@
 ##  You should have received a copy of the GNU General Public License
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
-"""pyFormex application directory.
+"""Initialization of the pyFormex opengl module.
 
-Do not remove this file. It is used by pyFormex to flag the parent
-directory as a pyFormex application path. 
+The opengl module contains everything related to the new OpenGL2 engine
+of pyFormex. The initialization can make changes to the other
+pyFormex modules in order to keep them working with the new engine.
 """
 from __future__ import print_function
+
+import pyformex as pf
+import gui
+
+
+def clearall():
+    pf.canvas.renderer.clear()
+    gui.draw.clear()
+
+
+def draw(o,**kargs):
+    """New draw function for OpenGL2"""
+    pf.canvas.renderer.add(o,**kargs)
+
+
+def drawActor(o):
+    pf.canvas.renderer.addActor(o)
+
+## # Override the normal drawing functions
+## gui.draw.draw = draw
+## gui.draw.drawActor = drawActor
+
+
+
 # End
