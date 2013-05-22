@@ -201,6 +201,7 @@ path, these modules are in no way different from other pyFormex modules.
    ref/isopar
    ref/lima
    ref/mesh_ext
+   ref/neu_exp
    ref/nurbs
    ref/objects
    ref/plot2d
