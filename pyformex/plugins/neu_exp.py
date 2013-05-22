@@ -1,11 +1,11 @@
-# $Id$      *** pyformex ***
+# $Id$
 ##
 ##  This file is part of pyFormex 0.9.0  (Mon Mar 25 13:52:29 CET 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -41,6 +41,7 @@ nofs, eofs=1, 1
 
 def writeHeading(fil, nodes, elems, heading=''):
     """Write the heading of the Gambit neutral file.
+
     """
     fil.write("        CONTROL INFO 2.4.6\n")
     fil.write("** GAMBIT NEUTRAL FILE\n")
@@ -53,6 +54,7 @@ def writeHeading(fil, nodes, elems, heading=''):
 
 def writeNodes(fil, nodes):
     """Write nodal coordinates.
+
     """
     fil.write('   NODAL COORDINATES 2.4.6\n')
     for i,n in enumerate(nodes):
@@ -61,10 +63,11 @@ def writeNodes(fil, nodes):
 
 def writeElems(fil, elems):
     """Write element connectivity.
+
     """
     shape = elems.shape[1]
     # Library to define the gambit element type number
-    gamb_el_library = {#'line2':1, #Edge 
+    gamb_el_library = {#'line2':1, #Edge
                         'quad4':2,  #Quadrilateral
                         'tri3':3,  #Triangle
                         'hex8':4,  #Brick
@@ -90,7 +93,7 @@ def writeElems(fil, elems):
     for i in range(shape%7):
         els += '%8d'
     els+='\n'
-    
+
     fil.write('      ELEMENTS/CELLS 2.4.6\n')
     for i,e in enumerate(elems+nofs):
         fil.write(('%8d %2d %2d '+els) % ((i+eofs,gamb_shape,shape)+tuple(e)))
@@ -99,6 +102,7 @@ def writeElems(fil, elems):
 
 def writeGroup(fil, elems):
     """Write group of elements.
+
     """
     fil.write('       ELEMENT GROUP 2.4.6\n')
     fil.write('GROUP:%11d ELEMENTS:%11d MATERIAL:%11d NFLAGS:%11d\n' % (1,shape(elems)[0],2,1))
@@ -129,7 +133,7 @@ def read_tetgen(filename):
 
 def write_neu(fil, mesh, heading='generated with pyFormex'):
     """Export a mesh as .neu file (For use in Gambit/Fluent)
-    
+
     fil: file name
     mesh: pyFormex Mesh
     heading: heading text to be shown in the gambit header
@@ -148,15 +152,14 @@ def write_neu(fil, mesh, heading='generated with pyFormex'):
 
 
 def testConverts():
-    """_This debug function generates a .neu file for each element type
-    """
-    
+    """_This debug function generates a .neu file for each element type"""
+
     chdir('~')
     testdir = 'f2fluTests'
     if not os.path.exists(testdir):
         os.makedirs(testdir)
     chdir(testdir)
-    
+
     from simple import cuboid
     mesh = Formex([0., 0., 0.]).extrude(3, dir=0).toMesh().extrude(3, dir=1)
     write_neu('test-quad4.neu', mesh)
@@ -169,7 +172,7 @@ def testConverts():
     write_neu('test-tet4.neu', mesh)
 
 # This is special for pyFormex scripts !
-if __name__ == 'draw': 
+if __name__ == 'draw':
     testConverts()
 
 
