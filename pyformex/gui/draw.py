@@ -2102,6 +2102,12 @@ def resetGUI():
 
 
 ###########################################################################
+# import opengl2 overrides for public functions
+#
+if pf.options.opengl2:
+    from opengl import *
+
+###########################################################################
 # Make _I, _G and _T be included when doing 'from gui.draw import *'
 #
 

@@ -257,7 +257,8 @@ def viewportLayout():
          _I('Viewport layout direction',current,choices=directions),
          _I('Number of viewports per row/column',pf.GUI.viewports.ncols),
          ],
-        'Config Dialog')
+        caption='Config Dialog')
+        
     if res:
         pf.debug(res)
         nvps = res['Number of viewports']

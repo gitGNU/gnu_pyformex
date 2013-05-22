@@ -2185,7 +2185,7 @@ def align(L,align,offset=[0.,0.,0.]):
     return r
 
 
-def sweepCoords(self,path,origin=[0.,0.,0.],normal=0,upvector=2,avgdir=False,enddir=None,scalex=None,scaley=None):
+def sweepCoords(self,path,origin=[0.,0.,0.],normal=0,upvector=2,avgdir=False,enddir=None,scalex=None,scaley=None,scalez=None):
     """ Sweep a Coords object along a path, returning a series of copies.
 
     origin and normal define the local path position and direction on the mesh.
@@ -2252,10 +2252,16 @@ def sweepCoords(self,path,origin=[0.,0.,0.],normal=0,upvector=2,avgdir=False,end
             raise ValueError,"The number of scale values in y-direction differs from the number of copies that will be created."
     else:
         scaley = ones(points.shape[0])
+        
+    if scalez is not None:
+        if len(scalez) != points.shape[0]:
+            raise ValueError,"The number of scale values in y-direction differs from the number of copies that will be created."
+    else:
+        scalez = ones(points.shape[0])
 
     base = self.translate(-Coords(origin))
-    sequence = [ base.scale([scx,scy,1.]).rotate(vectorRotation(normal,d,upvector)).translate(p)
-                 for scx,scy,d,p in zip(scalex,scaley,directions,points)
+    sequence = [ base.scale([scx,scy,scz]).rotate(vectorRotation(normal,d,upvector)).translate(p)
+                 for scx,scy,scz,d,p in zip(scalex,scaley,scalez,directions,points)
                  ]
 
     return sequence

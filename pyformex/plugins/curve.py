@@ -32,10 +32,6 @@ but special cases may be created for handling plane curves.
 """
 from __future__ import print_function
 
-# I wrote this software in my free time, for my joy, not as a commissioned task.
-# Any copyright claims made by my employer should therefore be considered void.
-# Acknowledgements: Gianluca De Santis
-
 import pyformex as pf
 from coords import *
 from geometry import Geometry
@@ -325,10 +321,13 @@ class Curve(Geometry):
           plane at the first point of the curve. It defines the binormal at
           the first point. If not specified it is set to the shorted distance
           through the set of 10 first points.
-        - `avgdir`: bool: if True (default), the tangential vector is set to
+        - `avgdir`: bool or array.
+          If True (default), the tangential vector is set to
           the average direction of the two segments ending at a node.
           If False, the tangent vectors will be those of the line segment
           starting at the points.
+          The tangential vector can also be set by the user by specifying
+          an array with the matching number of vectors.
         - `compensate`: bool: If True, adds a compensation algorithm if the
           curve is closed. For a closed curve the moving Frenet
           algorithm can be continued back to the first point. If the resulting
@@ -343,7 +342,7 @@ class Curve(Geometry):
 
         Returns:
 
-        - `P`: a Coords with `npts` points on the curve
+        - `X`: a Coords with `npts` points on the curve
         - `T`: normalized tangent vector to the curve at `npts` points
         - `N`: normalized normal vector to the curve at `npts` points
         - `B`: normalized binormal vector to the curve at `npts` points
@@ -673,6 +672,9 @@ class PolyLine(Curve):
     def _movingFrenet(self,upvector=None,avgdir=True,compensate=False):
         """Return a Frenet frame along the curve.
 
+        ..note : The recommended way to use this method is through the
+                 :meth:`frenet` method.
+
         The Frenet frame consists of a system of three orthogonal vectors:
         the tangent (T), the normal (N) and the binormal (B).
         These vectors define a coordinate system that re-orients while walking
@@ -685,10 +687,13 @@ class PolyLine(Curve):
           plane at the first point of the curve. It defines the binormal at
           the first point. If not specified it is set to the shorted distance
           through the set of 10 first points.
-        - `avgdir`: bool: if True (default), the tangential vector is set to
+        - `avgdir`: bool or array.
+          If True (default), the tangential vector is set to
           the average direction of the two segments ending at a node.
           If False, the tangent vectors will be those of the line segment
           starting at the points.
+          The tangential vector can also be set by the user by specifying
+          an array with the matching number of vectors.
         - `compensate`: bool: If True, adds a compensation algorithm if the
           curve is closed. For a closed curve the moving Frenet
           algorithm can be continued back to the first point. If the resulting
@@ -707,7 +712,9 @@ class PolyLine(Curve):
         - `N`: normalized normal vector to the curve at `npts` points
         - `B`: normalized binormal vector to the curve at `npts` points
         """
-        if avgdir:
+        if isinstance(avgdir,ndarray):
+            T = checkArray(T,(self.ncoords(),3),'f')
+        elif avgdir:
             T = self.avgDirections()
         else:
             T = self.directions()
