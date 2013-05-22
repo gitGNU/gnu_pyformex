@@ -134,7 +134,7 @@ class Canvas(object):
         if self.camera:
             self.rendermode = mode
             self.settings.lighting = lighting
-            self.glinit()
+            self.reset()
 
 
     def setToggle(self,attr,state):
@@ -268,9 +268,10 @@ class Canvas(object):
     def initCamera(self):
         self.makeCurrent()  # we need correct OpenGL context for camera
         self.camera = Camera()
-        if pf.options.testcamera:
-            self.camera.modelview_callback = print_camera
-            self.camera.projection_callback = print_camera
+        ## if pf.options.testcamera:
+        ##     self.camera.modelview_callback = print_camera
+        ##     self.camera.projection_callback = print_camera
+        self.renderer = Renderer(self)
 
 
     def clear(self):
@@ -310,14 +311,13 @@ class Canvas(object):
         CanvasSettings.glOverride(settings,self.settings)
 
 
-    def glinit(self):
-        """Initialize the rendering machine.
+    def reset(self):
+        """Reset the rendering engine.
 
         The rendering machine is initialized according to self.settings:
         - self.rendermode: one of
         - self.lighting
         """
-        self.renderer = Renderer(self)
         self.setDefaults()
         self.setBackground(self.settings.bgcolor,self.settings.bgimage)
         self.clear()
@@ -330,6 +330,14 @@ class Canvas(object):
             GL.glPolygonOffset(1.0,1.0)
         else:
             GL.glDisable(GL.GL_POLYGON_OFFSET_FILL)
+
+
+    def glinit(self):
+        """Initialize the rendering engine.
+
+        """
+        print("INITIALIZE RENDERING ENGINE")
+        self.reset()
 
 
     def glupdate(self):

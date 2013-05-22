@@ -29,9 +29,9 @@ uniform float pointsize;
 uniform bool lighting;
 uniform float ambient;
 uniform float diffuse;
-uniform float specular;
-uniform vec3 specmat;
-uniform float shininess;
+uniform float specular;    // Intensity of reflection
+uniform float shininess;   // Surface shininess
+uniform vec3 speccolor;    // Color of reflected light
 uniform float alpha;
 uniform vec3 light; // Currently 1 light: need multiple
 
@@ -63,23 +63,17 @@ void main()
 
     vec3 nNormal = normalize(fTransformedVertexNormal);
     vec3 nlight = normalize(light);
-
-    /* // t2 += ' vec3 lightDirection = vec3(-10.0, 4.0, -20.0); */
-    /* // I liked the following better */
-    /* vec3 lightDirection = vec3(0,0,-10); */
-    /* lightDirection = normalize(lightDirection); */
-    /* vec3 eyeDirection = normalize(-fVertexPosition.xyz); */
-    /* vec3 reflectionDirection = reflect(-lightDirection, nNormal); */
-    /* // t2 += ' vec3 reflectionDirection = nNormal; <-- to disable reflection */
-    /* // configure specular (10.0 is material property), diffuse and ambient */
-    /* float specular = pow(max(dot(reflectionDirection, eyeDirection), 0.0), 10.0); */
+    //vec3 eyeDirection = normalize(-vertexPosition);
+    vec3 eyeDirection = normalize(vec3(0.,0.,1.));
+    vec3 reflectionDirection = reflect(-nlight, nNormal);
+    float nspecular = specular*pow(max(dot(reflectionDirection,eyeDirection), 0.0), shininess);
     float ndiffuse = diffuse * max(dot(nNormal,nlight),0.0);
 
     // total color is sum of ambient, diffuse and specular
     vec3 fcolor = fragmentColor;
     fragmentColor = vec3(fcolor * ambient +
 			 fcolor * ndiffuse +
-			 specmat * specular);
+			 speccolor * nspecular);
   }
 
   // Add in opacity

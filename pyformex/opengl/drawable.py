@@ -77,6 +77,100 @@ def computeNormals(obj,avg=False,tol=None):
         return computeMeshNormals(obj,avg,tol)
 
 
+class Drawable(Attributes):
+    """Proposal for drawn objects
+
+    __init__:  store all static values: attributes, geometry, vbo's
+    prepare: creates sanitized and derived attributes/data
+    render: push values to shader and render the object
+
+    __init__ is only dependent on input attributes and geometry
+
+    prepare may depend on current canvas settings:
+      mode, transparent, avgnormals
+
+    render depends on canvas and renderer
+
+    This is the basic drawable object. It can not have extras nor
+    children. The geometry is initialized by a coords,elems
+    tuple. This class is normally not added directly to renderer,
+    but through one of the *Actor classes.
+    The passed parameters should at least contain vbo.
+    """
+
+    def __init__(self,**kargs):
+        Attributes.__init__(self,kargs)
+
+        # get and check the primitive type
+        glmode = glObjType(self.nplex)
+        if glmode is None:
+            raise ValueError,"Can only render plex-1/2/3 objects"
+        self.glmode = glmode
+
+
+    @property
+    def nplex(self):
+        if self.elems is None:
+            return self.coords.shape[2]
+        else:
+            return self.elems.shape[2]
+
+
+    def render(self,renderer):
+        """Render the geometry of this object"""
+
+        def render_geom():
+            if self.ibo:
+                GL.glDrawElementsui(self.glmode,self.ibo)
+            else:
+                GL.glDrawArrays(self.glmode,0,asarray(self.vbo.shape[:-1]).prod())
+
+        self.vbo.bind()
+        GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
+        GL.glVertexAttribPointer(renderer.shader.attribute['vertexPosition'],3, GL.GL_FLOAT,False,0,self.vbo)
+
+        if self.ibo:
+            self.ibo.bind()
+
+        if self.nbo:
+            self.nbo.bind()
+            GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
+            GL.glVertexAttribPointer(renderer.shader.attribute['vertexNormal'],3, GL.GL_FLOAT,False,0,self.nbo)
+
+        if self.cbo:
+            #print("BIND VERTEX COLOR %s" % str(self.cbo.shape))
+            self.cbo.bind()
+            GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexColor'])
+            GL.glVertexAttribPointer(renderer.shader.attribute['vertexColor'],3, GL.GL_FLOAT,False,0,self.cbo)
+
+
+        if self.frontface:
+            # Draw front faces
+            GL.glEnable(GL.GL_CULL_FACE)
+            GL.glCullFace(GL.GL_BACK)
+        elif self.backface:
+            # Draw back faces
+            GL.glEnable(GL.GL_CULL_FACE)
+            GL.glCullFace(GL.GL_FRONT)
+
+        renderer.shader.loadUniforms(self)
+        render_geom()
+
+        GL.glDisable(GL.GL_CULL_FACE)
+
+        if self.ibo:
+            self.ibo.unbind()
+        if self.cbo:
+            self.cbo.unbind()
+            GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexColor'])
+        if self.nbo:
+            self.nbo.unbind()
+            GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
+        self.vbo.unbind()
+        GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
+
+
+
 class GeomActor(Attributes):
     """Proposal for drawn objects
 
@@ -87,7 +181,7 @@ class GeomActor(Attributes):
     __init__ is only dependent on input attributes and geometry
 
     prepare may depend on current canvas settings:
-      mode, transparent,
+      mode, transparent, avgnormals
 
     render depends on canvas and renderer
     """
@@ -140,11 +234,24 @@ class GeomActor(Attributes):
             elems = elems[:,drawelems]
             nplex = elems.shape[2]
 
+
+        # Store coords,elems:: NEEDED ???
+        # not sure, currently only for Drawable.nplex
+        self.coords = coords
+        self.elems = elems
+
+
         # get and check the primitive type
         glmode = glObjType(nplex)
         if glmode is None:
             raise ValueError,"Can only render plex-1/2/3 objects"
         self.glmode = glmode
+
+        self._edges = None # The edges in *wire modes
+
+        self.drawable = []
+
+        self.children = []
 
         # Acknowledge all object attributes and passed parameters
         self.update(obj.attrib)
@@ -157,6 +264,7 @@ class GeomActor(Attributes):
 
         if self.normals:
             self.nbo = VBO(self.normals)
+
 
 
     def prepare(self,renderer):
@@ -185,8 +293,7 @@ class GeomActor(Attributes):
         elif self.colormode == 3:
             self.vertexColor = self.color
 
-        print("PREPARED",self)
-
+        # Prepare the buffer objects for this actor
         if renderer.canvas.rendermode.startswith('smooth'):
             if self.nbo is None:
                 normals = computeNormals(self.object,renderer.canvas.settings.avgnormals)
@@ -194,6 +301,26 @@ class GeomActor(Attributes):
 
         if self.vertexColor is not None:
             self.cbo = VBO(self.vertexColor)
+
+
+        if self.bkcolor is not None:
+            # Draw both sides separately
+            # First, front sides
+            self.drawable.append(Drawable(frontface=True,**self))
+            # Make copy for back sides
+            bk = Attributes(self)
+            bk.colormode = self.bkcolor.ndim
+            if bk.colormode == 1:
+                bk.objectColor = self.bkcolor
+            self.drawable.append(Drawable(backface=True,**bk))
+        else:
+            # Just draw both sides at once
+            self.drawable.append(Drawable(**self))
+
+        print("PREPARED",self)
+
+        for child in self.children:
+            child.prepare(renderer)
 
 
     def setColor(self,color,colormap=None):
@@ -236,61 +363,68 @@ class GeomActor(Attributes):
     def render(self,renderer):
         """Render the geometry of this object"""
 
-        def render_geom():
-            if self.ibo:
-                GL.glDrawElementsui(self.glmode,self.ibo)
-            else:
-                GL.glDrawArrays(self.glmode,0,asarray(self.vbo.shape[:-1]).prod())
+        ## def render_geom():
+        ##     if self.ibo:
+        ##         GL.glDrawElementsui(self.glmode,self.ibo)
+        ##     else:
+        ##         GL.glDrawArrays(self.glmode,0,asarray(self.vbo.shape[:-1]).prod())
 
-        self.vbo.bind()
-        GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
-        GL.glVertexAttribPointer(renderer.shader.attribute['vertexPosition'],3, GL.GL_FLOAT,False,0,self.vbo)
+        ## self.vbo.bind()
+        ## GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
+        ## GL.glVertexAttribPointer(renderer.shader.attribute['vertexPosition'],3, GL.GL_FLOAT,False,0,self.vbo)
 
-        if self.ibo:
-            self.ibo.bind()
+        ## if self.ibo:
+        ##     self.ibo.bind()
 
-        if self.nbo:
-            self.nbo.bind()
-            GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
-            GL.glVertexAttribPointer(renderer.shader.attribute['vertexNormal'],3, GL.GL_FLOAT,False,0,self.nbo)
+        ## if self.nbo:
+        ##     self.nbo.bind()
+        ##     GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
+        ##     GL.glVertexAttribPointer(renderer.shader.attribute['vertexNormal'],3, GL.GL_FLOAT,False,0,self.nbo)
 
-        if self.cbo:
-            #print("BIND VERTEX COLOR %s" % str(self.cbo.shape))
-            self.cbo.bind()
-            GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexColor'])
-            GL.glVertexAttribPointer(renderer.shader.attribute['vertexColor'],3, GL.GL_FLOAT,False,0,self.cbo)
+        ## if self.cbo:
+        ##     #print("BIND VERTEX COLOR %s" % str(self.cbo.shape))
+        ##     self.cbo.bind()
+        ##     GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexColor'])
+        ##     GL.glVertexAttribPointer(renderer.shader.attribute['vertexColor'],3, GL.GL_FLOAT,False,0,self.cbo)
 
 
-        if self.bkcolor is not None:
-            # Enable drawing front and back with different colors
-            GL.glEnable(GL.GL_CULL_FACE)
-            GL.glCullFace(GL.GL_BACK)
+        ## ## if self.bkcolor is not None:
+        ## ##     # Enable drawing front and back with different colors
+        ## ##     GL.glEnable(GL.GL_CULL_FACE)
+        ## ##     GL.glCullFace(GL.GL_BACK)
 
-        render_geom()
+        ## renderer.shader.loadUniforms(self)
+        ## render_geom()
 
-        if self.bkcolor is not None:
-            # Draw the back sides in another color
-            bk = Attributes()
-            bk.colormode = self.bkcolor.ndim
-            if bk.colormode == 1:
-                bk.objectColor = self.bkcolor
-            renderer.shader.loadUniforms(bk)
+        ## ## if self.bkcolor is not None:
+        ## ##     # Draw the back sides in another color
+        ## ##     bk = Attributes()
+        ## ##     bk.colormode = self.bkcolor.ndim
+        ## ##     if bk.colormode == 1:
+        ## ##         bk.objectColor = self.bkcolor
+        ## ##     renderer.shader.loadUniforms(bk)
 
-            GL.glCullFace(GL.GL_FRONT)
-            render_geom()
-            GL.glDisable(GL.GL_CULL_FACE)
+        ## ##     GL.glCullFace(GL.GL_FRONT)
+        ## ##     render_geom()
+        ## ##     GL.glDisable(GL.GL_CULL_FACE)
 
-        if self.ibo:
-            self.ibo.unbind()
-        if self.cbo:
-            self.cbo.unbind()
-            GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexColor'])
-        if self.nbo:
-            self.nbo.unbind()
-            GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
-        self.vbo.unbind()
-        GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
+        ## if self.ibo:
+        ##     self.ibo.unbind()
+        ## if self.cbo:
+        ##     self.cbo.unbind()
+        ##     GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexColor'])
+        ## if self.nbo:
+        ##     self.nbo.unbind()
+        ##     GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
+        ## self.vbo.unbind()
+        ## GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
 
+        for child in self.drawable:
+            #print("RENDER",child.objectColor)
+            child.render(renderer)
+
+        for child in self.children:
+            child.render(renderer)
 
 
 ### End

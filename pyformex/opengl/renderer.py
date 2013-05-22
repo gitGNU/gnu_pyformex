@@ -76,8 +76,12 @@ class Renderer(object):
         return self._bbox
 
 
-    def add(self,obj):
-        actor = GeomActor(obj)
+    def add(self,obj,**kargs):
+        actor = GeomActor(obj,**kargs)
+        self.addActor(actor)
+
+
+    def addActor(self,actor):
         actor.prepare(self)
         self._objects.append(actor)
         self._bbox = None
@@ -87,8 +91,9 @@ class Renderer(object):
 
     def setDefaults(self):
         """Set all the uniforms to default values."""
+        #self.shader.loadUniforms(self.canvas.settings)
         #print("DEFAULTS",self.canvas.settings)
-        self.shader.uniformFloat('lighting',True) # self.canvas....
+        self.shader.uniformFloat('lighting',self.canvas.settings.lighting)
         self.shader.uniformInt('colormode',1)
         self.shader.uniformVec3('objectColor',self.canvas.settings.fgcolor)
         self.shader.uniformFloat('alpha',0.5)
@@ -98,9 +103,10 @@ class Renderer(object):
         self.shader.uniformFloat('pointsize',5.0)
         self.shader.uniformFloat('ambient',0.3) # self.canvas....
         self.shader.uniformFloat('diffuse',0.8) # self.canvas....
-        self.shader.uniformFloat('specular',0.2) # self.canvas....
+        self.shader.uniformFloat('specular',1.0) # self.canvas....
+        self.shader.uniformFloat('shininess',10.) # self.canvas....
         self.shader.uniformVec3('light',(0.,0.,1.))
-        self.shader.uniformVec3('specmat',(0.,0.,0.))
+        self.shader.uniformVec3('speccolor',(1.,1.,0.8))
         #self.shader.loadUniforms(DEFAULTS)
 
 
@@ -108,8 +114,8 @@ class Renderer(object):
         """Render a list of objects"""
         for obj in objects:
             self.setDefaults()
+
             try:
-                self.shader.loadUniforms(obj)
                 obj.render(self)
             except:
                 raise
@@ -140,19 +146,22 @@ class Renderer(object):
                             [ a for a in self.actors if a.ontop ] + \
                             [ a for a in self.annotations if a.ontop ]
             if self.canvas.settings.alphablend:
+                print('ALPHABLEND')
                 opaque = [ a for a in sorted_actors if a.opak ]
                 transp = [ a for a in sorted_actors if not a.opak ]
                 self.renderObjects(opaque)
                 GL.glEnable (GL.GL_BLEND)
                 GL.glDepthMask (GL.GL_FALSE)
-                if pf.cfg['draw/disable_depth_test']:
-                    GL.glDisable(GL.GL_DEPTH_TEST)
+                ## if pf.cfg['draw/disable_depth_test']:
+                ##     GL.glDisable(GL.GL_DEPTH_TEST)
+                GL.glEnable(GL.GL_DEPTH_TEST)
                 GL.glBlendFunc (GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
                 self.renderObjects(transp)
                 GL.glEnable(GL.GL_DEPTH_TEST)
                 GL.glDepthMask (GL.GL_TRUE)
                 GL.glDisable (GL.GL_BLEND)
             else:
+                print("NO ALPHABLEND")
                 self.renderObjects(sorted_actors)
 
 

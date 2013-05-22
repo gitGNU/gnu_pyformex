@@ -79,13 +79,14 @@ class Shader(object):
         'ambient',
         'diffuse',
         'specular',
+        'shininess',
         'alpha',
         ]
 
     uniforms_vec3 = [
         'objectColor',
         'light',
-        'specmat',
+        'speccolor',
     ]
 
     uniforms = uniforms_int + uniforms_float +  uniforms_vec3 + [

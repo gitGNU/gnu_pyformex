@@ -24,18 +24,28 @@
 #
 #
 
+from opengl.drawable import *
+
+if not pf.options.opengl2:
+    warning("This example only runs with the new opengl2 engine!")
+    exit()
+
+
 _clear = clear
 
 def clearall():
-    if pf.options.opengl2:
-        pf.canvas.renderer.clear()
+    pf.canvas.renderer.clear()
     _clear()
 
 
-if pf.options.opengl2:
-    def draw(o,**kargs):
-        o.attrib(**kargs)
-        pf.canvas.renderer.add(o)
+def draw(o,**kargs):
+    pf.canvas.renderer.add(o,**kargs)
+def drawActor(o):
+    pf.canvas.renderer.addActor(o)
+
+
+def modified(obj):
+    pf.canvas.renderer.shader.loadUniforms(obj)
 
 
 clearall()
@@ -46,17 +56,26 @@ clearall()
 from simple import sphere
 
 S = sphere(6)
-S = S.toSurface().fixNormals().toFormex()
+S = S.toSurface().fixNormals()#.toFormex()
 print(S.npoints())
 col = [red,red]*81
 print(len(col))
-draw(S,lighting=True,ambient=0.0,diffuse=1.0,color=red,opacity=0.7,light=(0.,1.,1.))
-
+SA = GeomActor(S,ambient=0.5,diffuse=1,specular=0.5,color=red,alpha=0.7,light=(0.,1.,1.),shininess=20)
 
 T = Formex('4:0123').replic2(2,3).toMesh().align('-00')
-draw(T,lighting=False,ambient=0.5,diffuse=0.5,specular=0.0,color=blue,opacity=1.0)
+TA = GeomActor(T,ambient=0.5,diffuse=0.5,color=blue,bkcolor=green,alpha=0.9,light=(0.,1.,1.))
+
+SA.children.append(TA)
+
+drawActor(SA)
 
 zoomAll()
-exit()
+
+## n = 10
+## for x in arange(n+1) / float(n):
+##     print(x)
+##     TA.objColor = red + x * green
+##     modified(TA)
+##     sleep(1)
 
 # End
