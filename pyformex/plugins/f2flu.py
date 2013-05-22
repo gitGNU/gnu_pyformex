@@ -22,72 +22,85 @@
 ##  You should have received a copy of the GNU General Public License
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
-"""Formex to Fluent translator.
+"""Mesh to *.neu translator.
 
-This module contains some functions that can aid in exporting
-pyFormex models to Fluent.
+This module contains some functions to export
+pyFormex mesh models to Gambit neutral files.
 
-This script should be executed with the command
-   pyformex --nogui f2flu.py  <stl_model>
 """
 from __future__ import print_function
 
 import sys
 from plugins import tetgen
-from elements import Tet4 
 from time import strftime, gmtime
 from numpy import *
 
-def writeHeading(fil, nodes, elems, text=''):
-    """Write the heading of the Gambit neutral file.""" #currently only for hexahedral mesh
-    fil.write("        CONTROL INFO 2.2.30\n")
+# Gambit starts counting at 1 for elements and nodes
+# this defines the offset for nodes (nofs) and elements (eofs)
+nofs, eofs=1, 1
+
+def writeHeading(fil, nodes, elems, heading=''):
+    """Write the heading of the Gambit neutral file.
+    """
+    fil.write("        CONTROL INFO 2.4.6\n")
     fil.write("** GAMBIT NEUTRAL FILE\n")
-    fil.write('%s\n' %text)
-    fil.write('PROGRAM:                Gambit     VERSION:  2.2.30\n')
+    fil.write('%s\n' %heading)
+    fil.write('PROGRAM:                Gambit     VERSION:  2.4.6\n')
     fil.write(strftime('%d %b %Y    %H:%M:%S\n', gmtime()))
     fil.write('     NUMNP     NELEM     NGRPS    NBSETS     NDFCD     NDFVL\n')
     fil.write('%10i%10i%10i%10i%10i%10i\n' % (shape(nodes)[0],shape(elems)[0],1,0,3,3))
     fil.write('ENDOFSECTION\n')
 
-def writeNodes(fil, nodes, nofs=1):
+def writeNodes(fil, nodes):
     """Write nodal coordinates.
-
-    The nofs specifies an offset for the node numbers.
-    The default is 1, because Gambit numbering starts at 1.  
     """
-    fil.write('   NODAL COORDINATES 2.2.30\n')
+    fil.write('   NODAL COORDINATES 2.4.6\n')
     for i,n in enumerate(nodes):
         fil.write("%10d%20.11e%20.11e%20.11e\n" % ((i+nofs,)+tuple(n)))
     fil.write('ENDOFSECTION\n')
 
-def writeElems(fil, elems1, eofs=1, nofs=1):
+def writeElems(fil, elems):
     """Write element connectivity.
-
-    The eofs and nofs specify offsets for element and node numbers.
-    The default is 1, because Gambit numbering starts at 1.  
     """
-    #pyFormex uses the same convention for hexahedral elements as ABAQUS
-    #Gambit uses a different convention
-    #function currently only for hexahedral mesh
-    elems = elems1.copy()
-    elems[:,2] = elems1[:,3]
-    elems[:,3] = elems1[:,2]
+    shape = elems.shape[1]
+    # Library to define the gambit element type number
+    gamb_el_library = {#'line2':1, #Edge 
+                        'quad4':2,  #Quadrilateral
+                        'tri3':3,  #Triangle
+                        'hex8':4,  #Brick
+                        'wedge6':5,  # Wedge (Prism)
+                        'tet4':6,  #Tetrahedron
+                        #'pyr5':7,  #Pyramid
+                        }
+    try:
+        gamb_shape = gamb_el_library[elems.eltype.name()]
+    except KeyError:
+        raise TypeError("Mesh element type '%s' not convertable"%(elems.eltype.name()))
 
-    elems[:,6] = elems1[:,7]
-    elems[:,7] = elems1[:,6]
+    #Gambit uses a different convention for the numbering of hex-8 elements
+    if gamb_shape==4:  # hex-8
+        elems = elems[:, (0, 1, 3, 2, 4, 5, 7, 6)]
+
+    # definition of element string
+    els = ''
+    for i in range(shape/7):
+        for j in range(7):
+            els += '%8d '
+        els+='\n               '
+    for i in range(shape%7):
+        els += '%8d'
+    els+='\n'
     
-    fil.write('      ELEMENTS/CELLS 2.2.30\n')
+    fil.write('      ELEMENTS/CELLS 2.4.6\n')
     for i,e in enumerate(elems+nofs):
-        fil.write('%8d %2d %2d %8d%8d%8d%8d%8d%8d%8d\n               %8d\n' % ((i+eofs,4,8)+tuple(e)))
+        fil.write(('%8d %2d %2d '+els) % ((i+eofs,gamb_shape,shape)+tuple(e)))
     fil.write('ENDOFSECTION\n')
-    
+
+
 def writeGroup(fil, elems):
     """Write group of elements.
-
-    The eofs and nofs specify offsets for element and node numbers.
-    The default is 1, because Gambit numbering starts at 1.  
     """
-    fil.write('       ELEMENT GROUP 2.2.30\n')
+    fil.write('       ELEMENT GROUP 2.4.6\n')
     fil.write('GROUP:%11d ELEMENTS:%11d MATERIAL:%11d NFLAGS:%11d\n' % (1,shape(elems)[0],2,1))
     fil.write('%32s\n' %'fluid')
     fil.write('%8d\n' %0)
@@ -99,6 +112,7 @@ def writeGroup(fil, elems):
     fil.write('\n')
     fil.write('ENDOFSECTION\n')
 
+
 def read_tetgen(filename):
     """Read a tetgen tetraeder model.
 
@@ -106,116 +120,57 @@ def read_tetgen(filename):
     For a filename 'proj', nodes are expected in 'proj.1.node'  and
     elems are in file 'proj.1.ele'.
     """
-    nodes = tetgen.readNodes(filename+'.1.node')
-    print("Read %d nodes" % nodes.shape[0])
-    elems = tetgen.readElems(filename+'.1.ele')
+    nodes = tetgen.readNodeFile(filename+'.1.node')[0]
+    print("Read %d nodes" % nodes[0].shape[0])
+    elems = tetgen.readEleFile(filename+'.1.ele')[0]
     print("Read %d tetraeders" % elems.shape[0])
     return nodes,elems
 
 
-def encode(i,j,k,n):
-    return n*(n*i+j)+k
-
-def decode(code,n):
-    q,k = code/n, code%n
-    i,j = q/n, q%n
-    return i,j,k
-
-def write_neu_hex(fil, mesh, eofs=1, nofs=1):
-    """Write a hexahedral mesh to a .neu file (For use in Gambit)
+def write_neu(fil, mesh, heading='generated with pyFormex'):
+    """Export a mesh as .neu file (For use in Gambit/Fluent)
     
     fil: file name
     mesh: pyFormex Mesh
-    eofs, nofs: offsets for element and node numbers.
+    heading: heading text to be shown in the gambit header
     """
     if not fil.endswith('.neu'):
         fil += '.neu'
     f = open(fil, 'w')
-    writeHeading(f, mesh.coords, mesh.elems)
+    writeHeading(f, mesh.coords, mesh.elems, heading=heading)
     print('Writing %s nodes to .neu file'% len(mesh.coords))
-    writeNodes(f, mesh.coords,  nofs=nofs)
-    print('Writing %s elements to .neu file'%len(mesh.elems))
-    writeElems(f, mesh.elems, eofs=eofs, nofs=nofs)
+    writeNodes(f, mesh.coords)
+    print("Writing %s elements of type '%s' to .neu file"%(len(mesh.elems), mesh.elems.eltype.name()))
+    writeElems(f, mesh.elems)
+    writeGroup(f, mesh.elems)
     f.close()
-    print('Hexahedral mesh exported to  \"%s\"'%fil)
+    print("Mesh exported to  '%s'"%fil)
 
-def output_fluent(fil,nodes,elems):
-    """Write a tetraeder mesh in Fluent format to fil.
 
-    The tetraeder mesh consists of an array of nodal coordinates
-    and an array of element connectivity.
+def testConverts():
+    """This debug function generates a .neu file for each element type
     """
-    print("Nodal coordinates")
-    print(nodes)
-    print("Element connectivity")
-    print(elems)
-    faces = array(Tet4.faces[1])   # Turning faces into an array is important !
-    print("Tetraeder faces")
-    print(faces)
-    elf = elems.take(faces,axis=1)
-    # Remark: the shorter syntax elems[faces] takes its elements along the
-    #         axis 0. Then we would need to transpose() first (and probably
-    #         swap axes again later)
-    print("The faces of the elements:")
-    print(elf)
-    # We need a copy to sort the nodes (sorting is done in-place)
-    elfs = elf.copy()
-    elfs.sort(axis=2) 
-    print("The faces with sorted nodes:")
-    print(elfs)
-    magic = elems.max()+1
-    print("Magic number = %d" % magic)
-    code = encode(elfs[:,:,0],elfs[:,:,1],elfs[:,:,2],magic)
-    # Remark how nice the encode function works on the whole array
-    print("Encoded faces:")
-    print(code)
-    code = code.ravel()
-    print(code)
-    print("Just A Check:")
-    print("Element 5 face 2 is %s " % elf[5,2])
-    print("Element 5 face 2 is %s " % list(decode(code[4*5+2],magic)))
-    srt = code.argsort()
-    print(srt)
-    print(code[srt])
-    # Now shipout the faces in this order, removing the doubles
-    j = -1 
-    for i in srt:
-        if j < 0: # no predecessor (or predecessor already shipped)
-            j = i
-        else:
-            e1,f1 = j/4, j%4
-            if code[i] == code[j]:
-                e2,f2 = i/4, i%4
-                j = -1
-            else:
-                e2 = -1
-                j = i
-            print("Face %s belongs to el %s and el %s" % ( elf[e1,f1], e2, e1 ))
-
     
-def tetgen2fluent(filename):
-    """Convert a tetgen tetraeder model to fluent.
-
-    filename is the base path of the tetgen input files.
-    This will create a Fluent model in filename+'.flu'
-    """
-    nodes,elems = read_tetgen(filename)
-    if nodes is None or elems is None:
-        print("Error while reading model %s" % filename)
-        return
-    fil = open(filename+'.flu','w')
-    if fil:
-        output_fluent(fil,nodes,elems)
-        fil.close()
+    chdir('~')
+    testdir = 'f2fluTests'
+    if not os.path.exists(testdir):
+        os.makedirs(testdir)
+    chdir(testdir)
+    
+    from simple import cuboid
+    mesh = Formex([0., 0., 0.]).extrude(3, dir=0).toMesh().extrude(3, dir=1)
+    write_neu('test-quad4.neu', mesh)
+    write_neu('test-tri3.neu', mesh.convert('tri3'))
+    mesh = cuboid().toMesh().convert('hex8-8')
+    write_neu('test-hex8.neu', mesh)
+    mesh = Mesh([[0., 0., 0.], [1., 0., 0.], [0., 1., 0.], [0., 0., 1.], [1., 0., 1.], [0., 1., 1.]], [[0, 1, 2, 3, 4, 5]])
+    write_neu('test-wed6.neu', mesh)
+    mesh = Mesh([[0., 0., 0.], [1., 0., 0.], [0., 1., 0.], [0., 0., 1.]], [[0, 1, 2, 3]], eltype='tet4')
+    write_neu('test-tet4.neu', mesh)
 
 # This is special for pyFormex scripts !
-if __name__ == "script": 
-
-    for arg in argv:
-        print("Converting model %s" % arg)
-        tetgen2fluent(arg)
-
-    argv = [ 'hallo' ]
+if __name__ == 'draw': 
+    testConverts()
 
 
 # End

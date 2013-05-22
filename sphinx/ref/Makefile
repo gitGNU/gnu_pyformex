@@ -40,7 +40,7 @@ GUIMODULES= actors camera canvas colors colorscale decors draw gluttext \
   image imageViewer imagearray marks menu\
   appMenu toolbar viewport widgets
 PLUGINMODULES= calpy_itf cameratools curve datareader dxf export \
-  fe fe_abq fe_post flavia \
+  f2flu fe fe_abq fe_post flavia \
   inertia isopar lima mesh_ext nurbs objects plot2d polygon \
   postproc properties pyformex_gts section2d sectionize \
   tetgen tools trisurface turtle units
