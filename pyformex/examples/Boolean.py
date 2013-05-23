@@ -29,7 +29,7 @@ Perform boolean operations on surfaces
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['surface']
+_topics = ['surface','gts']
 _techniques = ['boolean','intersection']
 
 from gui.draw import *
@@ -41,16 +41,10 @@ def splitAlongPath(path,mesh,atol=0.0):
     '''
     Given split mesh into opposite regions along a closed path matching coords of mesh
     '''
-    mesh = mesh.fuse(atol = atol).compact() # with atol = 0 removes repeted nodes which may results after boolean operation
-    cpath= mesh.matchCoords(path)
-    
-    mpath = mesh.connectedTo(cpath) 
-    msplit = mesh.notConnectedTo(cpath).splitByConnection()
-    for im,m in enumerate(msplit):
-        for brd in m.getBorderMesh().splitByConnection():
-            mbrd = mpath.matchCoords(brd)
-            if mbrd.shape != 0:
-                msplit[im] += mpath.connectedTo(mbrd).setProp(im)
+    cpath= Mesh(mesh.coords,mesh.getEdges()).matchCentroids(path)
+    mask=complement(cpath,mesh.getEdges().shape[0])
+    p=mesh.maskedEdgeFrontWalk(mask=mask,frontinc=0)
+    msplit=mesh.setProp(p)
     return msplit
 
 def drawResults(**res):
@@ -63,7 +57,7 @@ def drawResults(**res):
         I = F.boolean(G,op,verbose=verbose)
         if split:
             path = F.intersection(G,verbose=verbose)
-            I = splitAlongPath(path.toMesh(),I)
+            I = splitAlongPath(path.toMesh(),I.fuse(atol=0).compact()) # with atol = 0 removes repeted nodes which may results after boolean operation
     else:
         I = F.intersection(G,verbose=verbose)
     clear()
@@ -114,7 +108,7 @@ def run():
     export({'F':F,'G':G})
     draw([F,G])
     
-    _items=\
+    _items =\
         [ _I('op',text='Operation',choices=[
             '+ (Union)',
             '- (Difference)',
@@ -124,7 +118,7 @@ def run():
           _I('split',False,text='Split along intersection'),
           _I('verbose',False,text='Show stats'),
         ]
-    _enablers= [('op','+ (Union)','split'),
+    _enablers = [('op','+ (Union)','split'),
         ('op','- (Difference)','split'),
         ('op','* Intersection','split'),]
     
