@@ -86,27 +86,30 @@ def exponents(n,layout='lag'):
         raise RuntimeError,"Expected a 1..3 length tuple"
 
     layout = layout[:3]
-    if layout == 'tri':
+    if layout in ['tri','ser']:
         if not (n == n[0]).all():
-            raise RuntimeError,"For triangular grids, all axes should have the same number of points"
+            raise RuntimeError,"For triangular and serendipity grids, all axes should have the same number of points"
 
 
     # First create the full lagrangian set
     exp = indices(n+1).reshape(ndim,-1).transpose()
 
-    if layout == 'lag':
-        # We're done
-        pass
-    elif layout == 'tri':
-        # Select by total maximal degree
-        deg = n[0]-1
-        ok = exp.sum(axis=-1) <= deg
+    if layout != 'lag':
+        if layout == 'tri':
+            # Select by total maximal degree
+            ok = exp.sum(axis=-1) <= n[0]
+        elif layout == 'bor':
+            # Select if any value is not higher than 1
+            ok = (exp <= 1).any(axis=-1)
+        elif layout == 'ser':
+            if len(n) > 2:
+                raise RuntimeError,"Serendipy layout for 3D not yet implemented"
+            deg = n[0]-1
+            #print(exp.sum(axis=-1))
+            ok = exp.sum(axis=-1) <= n[0] + len(n) - 1
+        else:
+            raise RuntimeError,"Unknown layout %s" % layout
         exp = exp[ok]
-    elif layout == 'bor':
-        # Select if any value is not higher than 1
-        ok = (exp <= 1).any(axis=-1)
-        exp = exp[ok]
-
     return exp
 
 
@@ -161,10 +164,7 @@ class Isopar(object):
     # TODO: The monomials need to be replaced with use of the exponents
     #
     isodata = {
-        # Serendipity still needs to be done
-        'quad13': (2, ('1','x','y','x*x','x*y','y*y',
-                       'x*x*x','x*x*y','x*y*y','y*y*y',
-                       'x*x*x*y','x*x*y*y','x*y*y*y')),
+        # 3D Serendipity still needs to be done
         'hex20' : (3, ('1','x','y','z','x*x','y*y','z*z','x*y','x*z','y*z',
                        'x*x*y','x*x*z','x*y*y','y*y*z','x*z*z','y*z*z','x*y*z',
                        'x*x*y*z','x*y*y*z','x*y*z*z')),
@@ -182,6 +182,7 @@ class Isopar(object):
         'quad16': 'lag-3-3',
         'quad8' : 'bor-2-2',
         'quad12': 'bor-3-3',
+        'quad13': 'ser-3-3',
         'tet4'  : 'tri-1-1-1',
         'tet10' : 'tri-2-2-2',
         'hex8'  : 'lag-1-1-1',
