@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -87,7 +87,7 @@ def run():
         tol = 0.01
         d = x1.distanceFromPoint(x1[0])
         w = where((d > 0.5+tol) * (d < 1.0 - tol))[0]
-        # avoid error messages during projection 
+        # avoid error messages during projection
         errh = seterr(all='ignore')
         x1[w] = x1.projectOnSphere(0.5)[w]
         w = where(d > 1.+tol)[0]
@@ -108,7 +108,7 @@ def run():
 
     for i in range(sdim,tdim):
         F = F.trl(i,0.5)
-        
+
     transparent()
     message('This is the initial Formex')
     FA=draw(F)

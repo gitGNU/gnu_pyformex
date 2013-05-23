@@ -56,8 +56,9 @@ def exponents(n,layout='lag'):
 
     Parameters:
 
-    - `n`: a tuple of 1 to 3 integers, specifying the number of points in
-      the x up to z directions.
+    - `n`: a tuple of 1 to 3 integers, specifying the degree of the polynomials
+      in the x up to z directions. For a lagrangian layout, this is one less
+      than the number of points in each direction.
     - `layout`: string, specifying the layout of grid and the selection of
       monomials to be used. Should be one of 'lagrangian', 'triangular',
       'serendipity' or 'border'. The string can be abbreviated to its
@@ -91,7 +92,7 @@ def exponents(n,layout='lag'):
 
 
     # First create the full lagrangian set
-    exp = indices(n).reshape(ndim,-1).transpose()
+    exp = indices(n+1).reshape(ndim,-1).transpose()
 
     if layout == 'lag':
         # We're done
@@ -153,50 +154,13 @@ class Isopar(object):
 
     # REM: We started to create some more general functions to generate
     # interpolation polynomials (see above)
-    # As a result, the comments below is somewhat obsolete
-
-    # LAGRANGIAN : 1,2,3 dim (LINE, QUAD, HEX)
-    # TRIANGLE : 2,3 dim (TRI,TET)
-    # SERENDIPITY : list ???
-
-    # lagrangian(nx,ny,nz)
-    #                type   ndim   degree+1
-    #  'line2': ('lagrangian',1,(1))
-    #  'quad9': ('lagrangian',2,(2,2))
-    #  'quad6': ('lagrangian',2,(3,2))
-    #  'quad6': 'lag-2-3-2'
-    #  'quad8' : ('direct', 2, ('1','x','y','x*x','y*y','x*y','x*x*y','x*y*y')),
     #
-    # generic name:
+    # The static list of string monomials has now been replaced with
+    # on-demand generation for most element types
     #
-    #   'lag-2-2-3' : ('lagrangian',2,(2,3))
-    #   'tri-2-2' : ('triangular',2,(2))
-
-    #   'lag-i-j-k'
-
-
-    #
-    # Currently, we still use a static list of string monomials
-    # This will be replaced later
+    # TODO: The monomials need to be replaced with use of the exponents
     #
     isodata = {
-        'line2' : monomials((2,)),
-        'line3' : monomials((3,)),
-        'line4' : monomials((4,)),
-        'tri3'  : monomials((2,2),'tri'),
-        'tri6'  : monomials((3,3),'tri'),
-        'tri10' : monomials((4,4),'tri'),
-        'quad4' : monomials((2,2)),
-        'quad9' : monomials((3,3)),
-        'quad16': monomials((4,4)),
-        'quad8' : monomials((3,3),'bor'),
-        'quad12': monomials((4,4),'bor'),
-        'tet4'  : monomials((2,2,2),'tri'),
-        'tet10' : monomials((3,3,3),'tri'),
-        'hex8'  : monomials((2,2,2)),
-        'hex27' : monomials((3,3,3)),
-        'hex36' : monomials((3,3,4)),
-        'hex64' : monomials((4,4,4)),
         # Serendipity still needs to be done
         'quad13': (2, ('1','x','y','x*x','x*y','y*y',
                        'x*x*x','x*x*y','x*y*y','y*y*y',
@@ -206,11 +170,44 @@ class Isopar(object):
                        'x*x*y*z','x*y*y*z','x*y*z*z')),
         }
 
+    isodata_alias = {
+        'line2' : 'lag-1',
+        'line3' : 'lag-2',
+        'line4' : 'lag-3',
+        'tri3'  : 'tri-1-1',
+        'tri6'  : 'tri-2-2',
+        'tri10' : 'tri-3-3',
+        'quad4' : 'lag-1-1',
+        'quad9' : 'lag-2-2',
+        'quad16': 'lag-3-3',
+        'quad8' : 'bor-2-2',
+        'quad12': 'bor-3-3',
+        'tet4'  : 'tri-1-1-1',
+        'tet10' : 'tri-2-2-2',
+        'hex8'  : 'lag-1-1-1',
+        'hex27' : 'lag-2-2-2',
+        'hex36' : 'lag-2-2-3',
+        'hex64' : 'lag-3-3-3',
+        }
 
     def __init__(self,eltype,coords,oldcoords):
         """Create an isoparametric transformation.
 
+        `eltype`: string: either one of the keys in the isodata dictionary,
+          or a string in the following format: layout-nx-ny-nz
+
         """
+        if eltype not in Isopar.isodata:
+            if eltype in Isopar.isodata_alias:
+                eltype = Isopar.isodata_alias[eltype]
+        if eltype not in Isopar.isodata:
+            s = eltype.split('-')
+            if s[0] in [ 'lag', 'tri', 'bor', 'ser' ]:
+                n = map(int,s[1:])
+                Isopar.isodata[eltype] = monomials(n,s[0])
+            else:
+                raise RuntimeError,"Unknown eltype %s"
+
         ndim,atoms = Isopar.isodata[eltype]
         coords = coords.view().reshape(-1,3)
         oldcoords = oldcoords.view().reshape(-1,3)
