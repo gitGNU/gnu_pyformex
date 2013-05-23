@@ -2018,6 +2018,10 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
           The nodes of these elements will not take part to the smoothing.
           If exclnod and exclelem are used at the same time the union of them
           will be exluded from smoothing.
+        
+        -`weight` : it is a string  that can assume 2 values `inversedistance` and 
+          `distance`. It allows to specify the weight of the adjancent points according
+          to their distance to the point
         """
         if iterations < 1:
             return self
