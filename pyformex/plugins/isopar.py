@@ -77,7 +77,10 @@ def exponents(n,layout='lag'):
       removed. For ndim=2, we have npoints = 2 * sum(n) - 4. For ndim=3 we
       have npoints = 2 * sum(nx*ny+ny*nz+nz*nx) - 4 * sum(n) + 8.
       Thus n=(3,3,3) will yield 2*3*3*3 - 4*(3+3+3) + 8 = 26
-    - serendipity:
+    - serendipity: tries to use only the corner and edge nodes, but uses
+      a convex domain of the monomials. This may require some nodes inside
+      the faces or the volume. Currently works up to (4,4) in 2D or (3,3,3)
+      in 3D.
 
     """
     n = checkArray(n,(-1,),'i')
@@ -103,10 +106,22 @@ def exponents(n,layout='lag'):
             ok = (exp <= 1).any(axis=-1)
         elif layout == 'ser':
             if len(n) > 2:
-                raise RuntimeError,"Serendipy layout for 3D not yet implemented"
-            deg = n[0]-1
-            #print(exp.sum(axis=-1))
-            ok = exp.sum(axis=-1) <= n[0] + len(n) - 1
+                #print(exp.sum(axis=-1))
+                #print(n[0] + len(n) - 1)
+                np = 8 + 12*(n[0] - 1) # minimal number of points
+                sdeg = n[0] + 1
+                ok = exp.sum(axis=-1) <= sdeg
+                if ok.sum() < np:
+                    #print("Need at least %s" % np)
+                    sdeg += 1
+                    ok = exp.sum(axis=-1) <= sdeg
+                    ok1 = (exp == n[0]).sum(axis=-1) <= 1
+                    ok = ok*ok1
+            else:
+                np = 4 + 4*(n[0] - 1) # minimal number of points
+                ok = exp.sum(axis=-1) <= n[0] + 1
+            if ok.sum() < np:
+                raise ValueError,"No solution for eltype %s %s" % (layout,n)
         else:
             raise RuntimeError,"Unknown layout %s" % layout
         exp = exp[ok]
@@ -164,10 +179,6 @@ class Isopar(object):
     # TODO: The monomials need to be replaced with use of the exponents
     #
     isodata = {
-        # 3D Serendipity still needs to be done
-        'hex20' : (3, ('1','x','y','z','x*x','y*y','z*z','x*y','x*z','y*z',
-                       'x*x*y','x*x*z','x*y*y','y*y*z','x*z*z','y*z*z','x*y*z',
-                       'x*x*y*z','x*y*y*z','x*y*z*z')),
         }
 
     isodata_alias = {
@@ -186,6 +197,7 @@ class Isopar(object):
         'tet4'  : 'tri-1-1-1',
         'tet10' : 'tri-2-2-2',
         'hex8'  : 'lag-1-1-1',
+        'hex20' : 'ser-2-2-2',
         'hex27' : 'lag-2-2-2',
         'hex36' : 'lag-2-2-3',
         'hex64' : 'lag-3-3-3',
