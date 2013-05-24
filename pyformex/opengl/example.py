@@ -38,17 +38,17 @@ C = Formex('1:012')
 C.attrib(color=yellow,pointsize=10)
 
 D = A.trl([1.,1.,0.]).toMesh()
-D.attrib(lighting=True,ambient=0.3,diffuse=0.3,color=green,bkcolor=blue)
+D.attrib(ambient=0.3,diffuse=0.3,color=green)#,bkcolor=blue)
 
 E = Formex(D.points())
 E.attrib(pointsize=20)
 #D.attrib(color=[red,green,blue,magenta,yellow])
 
-draw(A)
-draw(B)
-draw(C)
+#draw(A)
+#draw(B)
+#draw(C)
 draw(D)
-draw(E)
+#draw(E)
 
 zoomAll()
 

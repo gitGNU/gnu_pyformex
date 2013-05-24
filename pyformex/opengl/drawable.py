@@ -30,21 +30,24 @@ import pyformex as pf
 from gui.drawable import *
 from OpenGL import GL
 from OpenGL.arrays.vbo import VBO
+from shader import Shader
 from attributes import Attributes
 from formex import Formex
 from mesh import Mesh
 from elements import elementType
 import geomtools as gt
+import utils
 
 
 ### Drawable Objects ###############################################
 
 
 def glObjType(nplex):
-    try:
+    if nplex <= 3:
         return [GL.GL_POINTS,GL.GL_LINES,GL.GL_TRIANGLES][nplex-1]
-    except:
-        return None
+    else:
+        # everything higher is a polygon
+        return GL.GL_TRIANGLE_FAN
 
 
 def computeMeshNormals(obj,avg=False,tol=None):
@@ -77,6 +80,9 @@ def computeNormals(obj,avg=False,tol=None):
         return computeMeshNormals(obj,avg,tol)
 
 
+
+
+
 class Drawable(Attributes):
     """Proposal for drawn objects
 
@@ -98,22 +104,18 @@ class Drawable(Attributes):
     The passed parameters should at least contain vbo.
     """
 
+    # A list of acceptable attributes in the drawable
+    attributes = Shader.uniforms + [
+        'glmode', 'vbo', 'ibo', 'nbo', 'cbo',
+        ]
+
     def __init__(self,**kargs):
+        """Create a new drawable."""
+
+        print("DRAWABLE MODE %s" % kargs['glmode'])
+        kargs = utils.selectDict(kargs,Drawable.attributes)
+
         Attributes.__init__(self,kargs)
-
-        # get and check the primitive type
-        glmode = glObjType(self.nplex)
-        if glmode is None:
-            raise ValueError,"Can only render plex-1/2/3 objects"
-        self.glmode = glmode
-
-
-    @property
-    def nplex(self):
-        if self.elems is None:
-            return self.coords.shape[2]
-        else:
-            return self.elems.shape[2]
 
 
     def render(self,renderer):
@@ -184,9 +186,20 @@ class GeomActor(Attributes):
       mode, transparent, avgnormals
 
     render depends on canvas and renderer
+
+    If the actor does not have a name, it will be given a
+    default one.
     """
 
+    # default names for the actors
+    defaultname = utils.NameSequence('object-0')
+
+
     def __init__(self,obj,**kargs):
+
+        if 'name' not in kargs:
+            kargs['name'] = GeomActor.defaultname.next()
+
         Attributes.__init__(self)
 
         # Check it is something we can draw
@@ -198,7 +211,7 @@ class GeomActor(Attributes):
         self.object = obj
 
         if isinstance(obj,Mesh): # should we store coords, elems and eltype?
-            coords = obj.coords.astype(float32)
+            coords = obj.coords
             elems = obj.elems.astype(int32)
             eltype = obj.elName()
 
@@ -207,15 +220,12 @@ class GeomActor(Attributes):
             elems = None
             eltype = obj.eltype
 
-        if hasattr(obj,'normals'):
-            self.normals = obj.normals
+        # Externally specified normals
+        ## if hasattr(obj,'normals'):
+        ##     self.normals = obj.normals
 
         # Get the local connectivity for drawing the edges/faces
-        if eltype is None:
-            # should these objects be drawn as polygons or should
-            # a default element type based on the plexitude be used?
-            drawelems = None
-        else:
+        if eltype is not None:
             eltype = elementType(eltype)
             if eltype.ndim == 0:
                 drawelems = None
@@ -224,32 +234,23 @@ class GeomActor(Attributes):
             else:
                 drawelems = eltype.getDrawFaces()[0]
 
-        # get the coords, connectivity and plexitude
-        if drawelems is None:
-            nplex = obj.nplex()
-        elif elems is None:
-            coords = coords[:,drawelems,:]
-            nplex = coords.shape[2]
+            if drawelems is not None:
+                if elems is None:
+                    elems = arange(coords.npoints())
+                elems = elems[:,drawelems]
+
+
+        # Set drawing plexitude (may be different from object plexitude)
+        if elems is None:
+            self.nplex = coords.shape[1]
         else:
-            elems = elems[:,drawelems]
-            nplex = elems.shape[2]
+            self.nplex = elems.shape[-1]
 
-
-        # Store coords,elems:: NEEDED ???
-        # not sure, currently only for Drawable.nplex
-        self.coords = coords
-        self.elems = elems
-
-
-        # get and check the primitive type
-        glmode = glObjType(nplex)
-        if glmode is None:
-            raise ValueError,"Can only render plex-1/2/3 objects"
-        self.glmode = glmode
+        # set the basic primitive type
+        self.glmode = glObjType(self.nplex)
 
         self._edges = None # The edges in *wire modes
 
-        self.drawable = []
 
         self.children = []
 
@@ -258,18 +259,23 @@ class GeomActor(Attributes):
         self.update(kargs)
 
         # Create the static data buffers
-        self.vbo = VBO(coords)
+        self.vbo = VBO(coords.astype(float32))
         if elems is not None:
-            self.ibo = VBO(elems,target=GL.GL_ELEMENT_ARRAY_BUFFER)
+            self.ibo = VBO(elems.astype(int32),target=GL.GL_ELEMENT_ARRAY_BUFFER)
 
-        if self.normals:
-            self.nbo = VBO(self.normals)
-
+        ## if self.normals:
+        ##     self.nbo = VBO(normals.astype(float32))
 
 
     def prepare(self,renderer):
-        # set proper attributes
+        """Prepare the attributes for the renderer.
+
+        This sanitizes and completes the attributes for the renderer.
+        Since the attributes may be dependent on the rendering mode,
+        this method is called on each mode change.
+        """
         print("PREPARE ACTOR")
+        self.drawable = []
         self.setColor(self.color,self.colormap)
         self.setBkColor(self.bkcolor,self.bkcolormap)
         self.setAlpha(self.alpha,self.bkalpha)
@@ -294,7 +300,7 @@ class GeomActor(Attributes):
             self.vertexColor = self.color
 
         # Prepare the buffer objects for this actor
-        if renderer.canvas.rendermode.startswith('smooth'):
+        if renderer.mode.startswith('smooth'):
             if self.nbo is None:
                 normals = computeNormals(self.object,renderer.canvas.settings.avgnormals)
                 self.nbo = VBO(normals)
@@ -302,25 +308,66 @@ class GeomActor(Attributes):
         if self.vertexColor is not None:
             self.cbo = VBO(self.vertexColor)
 
-
+        #### BACK COLOR ####
         if self.bkcolor is not None:
             # Draw both sides separately
             # First, front sides
             self.drawable.append(Drawable(frontface=True,**self))
             # Make copy for back sides
-            bk = Attributes(self)
-            bk.colormode = self.bkcolor.ndim
-            if bk.colormode == 1:
-                bk.objectColor = self.bkcolor
-            self.drawable.append(Drawable(backface=True,**bk))
+            extra = Attributes(self)
+            extra.colormode = self.bkcolor.ndim
+            if extra.colormode == 1:
+                extra.objectColor = self.bkcolor
+            self.drawable.append(Drawable(backface=True,**extra))
         else:
             # Just draw both sides at once
             self.drawable.append(Drawable(**self))
 
-        print("PREPARED",self)
 
+        #### MODE DEPENDENT MODIFICATIONS ####
+        self.changeMode(renderer)
+
+        #### CHILDREN ####
         for child in self.children:
             child.prepare(renderer)
+
+
+    def changeMode(self,renderer):
+        """Modify the actor according to the specified mode"""
+        print("CHANGE TO MODE %s"%renderer.mode)
+        self.switchEdges(renderer.mode.endswith('wire'))
+
+
+        print("PREPARED %s DRAWABLES" % len(self.drawable))
+        for i,d in enumerate(self.drawable):
+            print(i,d)
+
+
+    def switchEdges(self,on):
+        """Add or remove the edges depending on rendering mode"""
+        if on:
+            # Create a drawable for the edges
+            if self.nplex > 1 and isinstance(self.object,Mesh):
+                if self._edges is None:
+                    edges = self.object.getEdges()
+                    if len(edges) > 0:
+                        extra = Attributes(self)
+                        extra.colormode = 1
+                        extra.objectColor = black
+                        extra.opak = True
+                        extra.lighting = False
+                        extra.elems = edges
+                        extra.glmode = glObjType(2)
+                        # store, so we can switch on/off
+                        self._edges = Drawable(**extra)
+                        print("CREATED EDGES")
+            if self._edges:
+                print("ADDING EDGES")
+                self.drawable.append(self._edges)
+        else:
+            if self._edges and self._edges in self.drawable:
+                print("REMOVING EDGES")
+                self.drawable.remove(self._edges)
 
 
     def setColor(self,color,colormap=None):
@@ -363,64 +410,7 @@ class GeomActor(Attributes):
     def render(self,renderer):
         """Render the geometry of this object"""
 
-        ## def render_geom():
-        ##     if self.ibo:
-        ##         GL.glDrawElementsui(self.glmode,self.ibo)
-        ##     else:
-        ##         GL.glDrawArrays(self.glmode,0,asarray(self.vbo.shape[:-1]).prod())
-
-        ## self.vbo.bind()
-        ## GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
-        ## GL.glVertexAttribPointer(renderer.shader.attribute['vertexPosition'],3, GL.GL_FLOAT,False,0,self.vbo)
-
-        ## if self.ibo:
-        ##     self.ibo.bind()
-
-        ## if self.nbo:
-        ##     self.nbo.bind()
-        ##     GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
-        ##     GL.glVertexAttribPointer(renderer.shader.attribute['vertexNormal'],3, GL.GL_FLOAT,False,0,self.nbo)
-
-        ## if self.cbo:
-        ##     #print("BIND VERTEX COLOR %s" % str(self.cbo.shape))
-        ##     self.cbo.bind()
-        ##     GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexColor'])
-        ##     GL.glVertexAttribPointer(renderer.shader.attribute['vertexColor'],3, GL.GL_FLOAT,False,0,self.cbo)
-
-
-        ## ## if self.bkcolor is not None:
-        ## ##     # Enable drawing front and back with different colors
-        ## ##     GL.glEnable(GL.GL_CULL_FACE)
-        ## ##     GL.glCullFace(GL.GL_BACK)
-
-        ## renderer.shader.loadUniforms(self)
-        ## render_geom()
-
-        ## ## if self.bkcolor is not None:
-        ## ##     # Draw the back sides in another color
-        ## ##     bk = Attributes()
-        ## ##     bk.colormode = self.bkcolor.ndim
-        ## ##     if bk.colormode == 1:
-        ## ##         bk.objectColor = self.bkcolor
-        ## ##     renderer.shader.loadUniforms(bk)
-
-        ## ##     GL.glCullFace(GL.GL_FRONT)
-        ## ##     render_geom()
-        ## ##     GL.glDisable(GL.GL_CULL_FACE)
-
-        ## if self.ibo:
-        ##     self.ibo.unbind()
-        ## if self.cbo:
-        ##     self.cbo.unbind()
-        ##     GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexColor'])
-        ## if self.nbo:
-        ##     self.nbo.unbind()
-        ##     GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
-        ## self.vbo.unbind()
-        ## GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
-
         for child in self.drawable:
-            #print("RENDER",child.objectColor)
             child.render(renderer)
 
         for child in self.children:

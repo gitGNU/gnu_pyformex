@@ -116,7 +116,7 @@ class Canvas(object):
         If the canvas has not been initialized, this merely sets the
         attributes self.rendermode and self.settings.lighting.
         If the canvas was already initialized (it has a camera), and one of
-        the specified settings is fdifferent from the existing, the new mode
+        the specified settings is different from the existing, the new mode
         is set, the canvas is re-initialized according to the newly set mode,
         and everything is redrawn with the new mode.
         """
@@ -129,9 +129,11 @@ class Canvas(object):
         if lighting is None:
             lighting = self.settings.lighting
 
-        #if mode != self.rendermode or lighting != self.settings.lighting:
-        #print("SWITCHING MODE")
         if self.camera:
+            if mode != self.rendermode or lighting != self.settings.lighting:
+                print("SWITCHING MODE")
+                self.renderer.changeMode(mode)
+
             self.rendermode = mode
             self.settings.lighting = lighting
             self.reset()

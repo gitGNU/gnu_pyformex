@@ -40,14 +40,6 @@ import numpy as np
 from OpenGL import GL
 from shader import Shader
 
-
-def glObjType(nplex):
-    try:
-        return [GL.GL_POINTS,GL.GL_LINES,GL.GL_TRIANGLES][nplex-1]
-    except:
-        return None
-
-
 from drawable import GeomActor
 
 class Renderer(object):
@@ -56,6 +48,7 @@ class Renderer(object):
         self.canvas = canvas
         self.camera = canvas.camera
         self.canvas.makeCurrent()
+        self.mode = canvas.rendermode
 
         if shader is None:
             shader = Shader()
@@ -87,6 +80,17 @@ class Renderer(object):
         self._bbox = None
         self.canvas.camera.focus = self.bbox.center()
         print("NEW BBOX: %s" % self.bbox)
+
+
+    def changeMode(self,mode):
+        """This function is called when the rendering mode is changed
+
+        This method should be called to update the actors on a rendering
+        mode change.
+        """
+        self.mode = mode
+        for actor in self._objects:
+            actor.changeMode(self)
 
 
     def setDefaults(self):
@@ -146,7 +150,7 @@ class Renderer(object):
                             [ a for a in self.actors if a.ontop ] + \
                             [ a for a in self.annotations if a.ontop ]
             if self.canvas.settings.alphablend:
-                print('ALPHABLEND')
+                #print('ALPHABLEND')
                 opaque = [ a for a in sorted_actors if a.opak ]
                 transp = [ a for a in sorted_actors if not a.opak ]
                 self.renderObjects(opaque)
@@ -161,7 +165,7 @@ class Renderer(object):
                 GL.glDepthMask (GL.GL_TRUE)
                 GL.glDisable (GL.GL_BLEND)
             else:
-                print("NO ALPHABLEND")
+                #print("NO ALPHABLEND")
                 self.renderObjects(sorted_actors)
 
 
