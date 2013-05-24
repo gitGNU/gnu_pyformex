@@ -116,10 +116,11 @@ def read_gts(fn):
     header = fil.readline().split()
     ncoords,nedges,nfaces = map(int,header[:3])
     if len(header) >= 7 and header[6].endswith('Binary'):
+        raise RuntimeError,"We can not read binary GTS format yet. See https://savannah.nongnu.org/bugs/index.php?38608. Maybe you should recompile the extra/gts commands."
         sep=''
     else:
         sep=' '
-    coords = fromfile(fil,dtype=Float,count=3*ncoords,sep=' ').reshape(-1,3)
+    coords = fromfile(fil,dtype=Float,count=3*ncoords,sep=sep).reshape(-1,3)
     edges = fromfile(fil,dtype=int32,count=2*nedges,sep=' ').reshape(-1,2) - 1
     faces = fromfile(fil,dtype=int32,count=3*nfaces,sep=' ').reshape(-1,3) - 1
     pf.message("Read %d coords, %d edges, %d faces" % (ncoords,nedges,nfaces))
