@@ -59,7 +59,7 @@ def readVmtkCenterlineDat(fn):
 
 
 def centerline(self,seedselector='pickpoint',sourcepoints=[],
-               targetpoints=[],endpoints=False):
+               targetpoints=[],endpoints=False,return_data=True,groupcl=False):
     """Compute the centerline of a surface.
 
     The centerline is computed using VMTK. This is very well suited for
@@ -68,40 +68,76 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
     Parameters:
     
     - `seedselector`: str: seed point selection method, one of
-      [`pickpoint`,`openprofiles`,`carotidprofiles`,`pointlist`]
-    - `sourcepoints`: list: source point coordinates for `pointlist` method
-    - `targetpoints`: list: target point coordinates for `pointlist` method
-    - `endpoints`: boolean: append source- and targetpoints to centerlines.
+      [`pickpoint`,`openprofiles`,`carotidprofiles`,`pointlist`,`idlist`]
+    - `sourcepoints`: list: flattened source point coordinates for `pointlist` method
+      or a list of point ids for `idlist` method
+    - `targetpoints`: list: flattened target point coordinates for `pointlist` method
+      or a list of point ids for `idlist` method
+    - `endpoints`: boolean: append source- and targetpoints to centerlines
+    - `groupcl`: boolean: if True the points of the centerlines are merged and
+      grouped to avoid repeated points and separate different branches
+    - `return_data`: boolean: if True returns a tuple containing a list of the 
+      additional information per each point (such as maximum inscribed sphere 
+      used for the centerline computation, local coordinate system
+      and various integers values to group the centerline points according to 
+      the branching) and the array cointaing all these values (check the vmtk 
+      website for specific informations).
+          
+      Note that when seedselector is `idlist`, the surface must be clenead converting
+      it to a vtkPolyData using the function convert2VPD with flag clean=True and then
+      converted back using convertFromVPD implemented in the vtk_itf plugin to avoid
+      wrong point selection of the vmtk function.
+.
+    Returns a Coords with the points defining the centerline
 
-    Returns a Coords with the points defining the centerline.
+    If return_data is True tuple cointaing the list of the names of the additional infomations
+    per each point and an array cointaing all these values .
     """
+
     tmp = utils.tempFile(suffix='.stl').name
-    tmp1 = utils.tempFile(suffix='.dat').name
+    tmp1 = utils.tempFile(suffix='.vtp').name
+    tmp2 = utils.tempFile(suffix='.dat').name
     pf.message("Writing temp file %s" % tmp)
     self.write(tmp,'stl')
     pf.message("Computing centerline using VMTK")
+    cmds=[]
     cmd = 'vmtk vmtkcenterlines -seedselector %s -ifile %s -ofile %s'%(seedselector,tmp,tmp1)
-    if len(sourcepoints) != 0:
-        cmd += ' -sourcepoints'
-        for val in sourcepoints:
-            cmd += ' %f' % val
-    if len(targetpoints) != 0:   
-        cmd += ' -targetpoints'
-        for val in targetpoints:
-            cmd += ' %f' % val
-    if endpoints == True:
-        cmd += ' -endpoints 1'
-    sta,out = utils.runCommand(cmd)
-    os.remove(tmp)
-    if sta:
-        pf.message("An error occurred during the remeshing.")
-        pf.message(out)
-        return None
-    data, header = readVmtkCenterlineDat(tmp1)
-    print(header)
+    if seedselector in ['pointlist','idlist']:
+        if not(len(sourcepoints)) or not(len(targetpoints)):
+            raise ValueError,'sourcepoints and targetpoints cannot be an empty list when using seedselector= \'%s\''%seedselector
+        if seedselector=='pointlist':
+            fmt=' %f'
+        if seedselector=='idlist':
+            fmt=' %i'
+    
+        cmd += ' -source%ss'%seedselector[:-4]
+        cmd += fmt*len(sourcepoints)%tuple(sourcepoints)
+        cmd += ' -target%ss'%seedselector[:-4]
+        cmd += fmt*len(targetpoints)%tuple(targetpoints)
+    
+    cmd += ' -endpoints %i'%endpoints
+    
+    cmds.append(cmd)
+    if groupcl:
+        cmds.append('vmtk vmtkcenterlineattributes -ifile %s --pipe vmtkbranchextractor -radiusarray@ MaximumInscribedSphereRadius \
+        --pipe vmtkbifurcationreferencesystems --pipe vmtkcenterlineoffsetattributes -referencegroupid 0 -ofile %s\n'%(tmp1,tmp1))
+        cmds.append('vmtk vmtkcenterlinemerge -ifile %s -ofile %s -radiusarray MaximumInscribedSphereRadius -groupidsarray GroupIds -centerlineidsarray CenterlineIds -tractidsarray TractIds -blankingarray Blanking -mergeblanked 1'%(tmp1,tmp1))
+    cmds.append('vmtk vmtksurfacecelldatatopointdata -ifile %s -ofile %s'%(tmp1,tmp2))
+    
+    for c in cmds:
+        sta,out = utils.runCommand(c)
+        if sta:
+            pf.message("An error occurred during the centerline computing")
+            pf.message(out)
+            return None
+    data, header = readVmtkCenterlineDat(tmp2)
     cl = Coords(data[:,:3])
-    os.remove(tmp1)
-    return cl
+    if return_data:
+        print('Returning Array data with values:')
+        print(' %s'*len(header[3:])%tuple(header[3:]))
+        return cl,(header[3:],data[:,3:])
+    else:
+        return cl
 
 
 def remesh(self,elementsizemode='edgelength',edgelength=None,
