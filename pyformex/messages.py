@@ -115,6 +115,7 @@ depr_mesh_getlowerentities_unique = "The use of the unique argument is deprecate
 
 depr_adjacencyArrays = "adjacencyArrays is deprecated. Use Adjacency.frontWalk() instead."
 mesh_removed_eltype = "The 'eltype' attribute of the Mesh class has been removed. The eltype is now stored solely in the elems attibute. To get the element type from the Mesh, use Mesh.elType() or Mesh.elName(). To set the element type of a Mesh, use Mesh.setType(eltype)."
+
 depr_pathextension = "patchextension is deprecated. Use border().extrude() instead."
 depr_vertices = "vertices is deprecated. Use points() instead."
 depr_correctNegativeVolumes = "correctNegativeVolumes is deprecated. Use ficVolume() instead."
@@ -122,6 +123,7 @@ depr_correctNegativeVolumes = "correctNegativeVolumes is deprecated. Use ficVolu
 depr_tabs = "widgets.Tabs is deprecated. Use InputDialog instead."
 depr_tabledialog = "widgets.TableDialog is deprecated. Use InputDialog with a 'table' inputitem instead."
 depr_getResult = "InputDialog.getResult is deprecated. Use getResults instead."
+depr_checkarraydim = "checkArrayDim is deprecated. Use checkArray with ndim argument."
 
 PolyLine_distanceOfPoints = "PolyLine.distanceOfPoints is deprecated"
 PolyLine_distanceOfPolyline = "PolyLine.distanceOfPolyline is deprecated"

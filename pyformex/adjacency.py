@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -114,7 +114,7 @@ def reduceAdjacency(adj):
              [-1, -1,  0]])
 
     """
-    adj = checkArrayDim(adj,2)
+    adj = checkArray(adj,ndim=2)
     n = adj.shape[0]
     adj[adj == arange(n).reshape(n,-1)] = -1 # remove the item i
     adj = sortAdjacency(adj)
@@ -161,16 +161,16 @@ class Adjacency(ndarray):
     should contain a value higher than the maximum row index.
 
     A new Adjacency table is created with the following syntax ::
-    
+
       Adjacency(data=[],dtyp=None,copy=False,ncon=0,normalize=True)
 
     Parameters:
-    
+
     - `data`: should be compatible with an integer array with shape
       `(nelems,ncon)`, where `nelems` is the number of elements and
-      `ncon` is the maximum number of connections per element. 
+      `ncon` is the maximum number of connections per element.
     - `dtyp`: can be specified to force an integer type but is set by
-      default from the passed `data`. 
+      default from the passed `data`.
     - `copy`: can be set True to force copying the data. By default, the
       specified data will be used without copying, if possible.
     - `ncon`: can be specified to force a check on the plexitude of the
@@ -202,7 +202,7 @@ class Adjacency(ndarray):
     #  BV: WE SHOULD ADD A CONSISTENCY CHECK THAT WE HAVE BIDIRECTIONAL
     #      CONNECTIONS: if row a has a value b, row b should have a value a
     #
-    
+
     #
     # :DEV
     # Because we have a __new__ constructor here and no __init__,
@@ -210,7 +210,7 @@ class Adjacency(ndarray):
     #
     def __new__(clas,data=[],dtyp=None,copy=False,ncon=0,normalize=True,allow_self=False,bidirectional=False):
         """Create a new Adjacency table."""
-        
+
         # Turn the data into an array, and copy if requested
         ar = array(data, dtype=dtyp, copy=copy)
         if ar.ndim < 2:
@@ -218,14 +218,14 @@ class Adjacency(ndarray):
                 ar = ar.reshape(-1,ncon)
             else:
                 ar = ar.reshape(-1,1)
-                
+
         elif ar.ndim > 2:
             raise ValueError,"Expected 2-dim data"
 
         # Make sure dtype is an int type
         if ar.dtype.kind != 'i':
             ar = ar.astype(Int)
- 
+
         # Check values
         if ar.size > 0:
             maxval = ar.max()
@@ -236,7 +236,7 @@ class Adjacency(ndarray):
         else:
             maxval = -1
             ar = ar.reshape(0,ncon)
-            
+
         # Transform 'subarr' from an ndarray to our new subclass.
         ar = ar.view(clas)
 
@@ -303,7 +303,7 @@ class Adjacency(ndarray):
                  [-1, -1,  0]])
         """
         return Adjacency(self)
-    
+
 
     ### operations ###
 
@@ -317,8 +317,8 @@ class Adjacency(ndarray):
         p = [ [[i,j] for j in k if j >= 0] for i,k in enumerate(self[:-1]) if max(k) >= 0]
         p = row_stack(p)
         return p[p[:,1] > p[:,0]]
-  
-  
+
+
     def symdiff(self,adj):
         """Return the symmetric difference of two adjacency tables.
 
@@ -354,7 +354,7 @@ class Adjacency(ndarray):
         On the initial call, all values are -1, except for the elements
         in the initial front, which get a value 0. At each call a new front
         is created with all the elements that are connected to any of the
-        current front and which have not yet been visited. The new front 
+        current front and which have not yet been visited. The new front
         elements get a value equal to the last front's value plus the
         `frontinc`. If the front becomes empty and a new starting front is
         created, the front value is extra incremented with `partinc`.

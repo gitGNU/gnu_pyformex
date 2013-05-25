@@ -531,38 +531,6 @@ def system1(cmd):
     import commands
     return commands.getstatusoutput(cmd)
 
-
-## def timedWait(proc, timeout, waitToKill = 1.):
-##     """It is an implementation of the wait() but with a timeout check.
-
-##     - `timeout`: if a project is not completed before the timeout (float, seconds) it will be terminated.
-##     - `waitToKill` is the delay between proc.terminate() and proc.kill().
-##     """
-##     import timer
-##     t = timer.Timer(0)
-##     while proc.poll() is None and t.seconds(rounded=False) < timeout:#check if proc is completed or timed out
-##         pass
-##     if proc.poll() is not None:
-##         sta = proc.poll() # returncode
-##         out = proc.communicate()[0] # get the stdout
-##     elif t.seconds(rounded=False) > timeout:
-##         proc.terminate()
-##         try:
-##             out = proc.stdout.read()
-##         except:#the stdout was not yet generated
-##             out = ''
-##         try:
-##             time.sleep(waitToKill)
-##             #proc.kill()
-##             killProcesses([proc.pid+1],signal=15)#VMTK use pid+1, is it general?
-##         except:
-##             pass
-##         sta = -20#time out code (to be decided)
-##     else:
-##         raise ValueError,"This really should not happen!"
-##     return sta, out
-
-
 _TIMEOUT_EXITCODE = -1015
 _TIMEOUT_KILLCODE = -1009
 
@@ -746,28 +714,7 @@ def is_app(appname):
     return not is_script(appname)
 
 is_pyFormex = is_script
-## def is_pyFormex(filename):
-##     """Checks whether a file is a pyFormex script.
 
-##     A file is considered to be a pyFormex script if its name ends in '.py'
-##     and the first line of the file contains the substring 'pyformex'.
-##     Typically, a pyFormex script starts with a line::
-
-##        # *** pyformex ***
-##     """
-##     filename = str(filename) # force it into a string
-##     if filename.endswith(".pye"):
-##         return True
-
-##     ok = filename.endswith(".py")
-##     if ok:
-##         try:
-##             f = open(filename,'r')
-##             ok = f.readline().find('pyformex') >= 0
-##             f.close()
-##         except IOError:
-##             ok = False
-##     return ok
 
 def getDocString(scriptfile):
     """Return the docstring from a script file.
@@ -1202,7 +1149,6 @@ def memory_report(keys=None):
         res = selectDict(res,keys)
     return res
 
-
 _warn_category = { 'U': UserWarning, 'D':DeprecationWarning }
 
 def saveWarningFilter(message,module='',category=UserWarning):
@@ -1225,15 +1171,14 @@ def warn(message,level=UserWarning,stacklevel=3):
     warnings.warn(message,level,stacklevel)
 
 
-# BEWARE: Do not use yet: DeprecationWarnings are not shown by default
-def deprec(message,stacklevel=3):
+def deprec(message,stacklevel=4):
     warn(message,level=DeprecationWarning,stacklevel=stacklevel)
 
 
 def deprecation(message):
     def decorator(func):
         def wrapper(*_args,**_kargs):
-            warn(message)
+            deprec(message)
             # For some reason these messages are not auto-appended to
             # the filters for the currently running program
             # Therefore we do it here explicitely

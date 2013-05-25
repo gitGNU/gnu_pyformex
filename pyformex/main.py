@@ -708,9 +708,14 @@ pyFormex Warning
         return message
 
 
+    import warnings
+    if pf.cfg['warnings/deprec']:
+        # activate DeprecationWarning (since 2.7 default is ignore)
+        warnings.simplefilter('default', DeprecationWarning)
+
     if pf.cfg['warnings/nice']:
-        import warnings
         warnings.formatwarning = _format_warning
+
 
     utils.checkModule('numpy',fatal=True)
 
