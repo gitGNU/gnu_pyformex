@@ -59,7 +59,7 @@ def readVmtkCenterlineDat(fn):
 
 
 def centerline(self,seedselector='pickpoint',sourcepoints=[],
-               targetpoints=[],endpoints=False,return_data=True,groupcl=False):
+               targetpoints=[],endpoints=False,return_data=False,groupcl=False):
     """Compute the centerline of a surface.
 
     The centerline is computed using VMTK. This is very well suited for
