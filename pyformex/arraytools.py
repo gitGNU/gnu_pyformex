@@ -123,6 +123,14 @@ def isInt(obj):
     return isinstance(obj,(int,integer))
 
 
+def powers(x,n):
+    """Compute all the powers of x from zero up to n
+
+    Returns a list of arrays with same shape as x
+    """
+    return [ x ** i for i in range(n+1) ]
+
+
 ###########################################################################
 ##
 ##   some math functions
@@ -1884,7 +1892,8 @@ def movingAverage(a,n,m0=None,m1=None):
 
     Returns:
 
-      An array with the moving average over n data sets along the first axis of a.
+      An array with the moving average over n data sets along the first axis
+      of a.
       The array has the same shape as a, except possibly for the length of the
       first axis.
       If neither m0 nor m1 are set, the first axis will have a length of
@@ -1903,11 +1912,11 @@ def movingAverage(a,n,m0=None,m1=None):
        [ 4.  5.]
        [ 6.  7.]]
       >>> print(movingAverage(x,3,2))
-      [[ 0.          1.        ]
-       [ 0.66666667  1.66666667]
-       [ 2.          3.        ]
-       [ 4.          5.        ]
-       [ 6.          7.        ]]
+      [[ 0.    1.  ]
+       [ 0.67  1.67]
+       [ 2.    3.  ]
+       [ 4.    5.  ]
+       [ 6.    7.  ]]
     """
     if m0 is None and m1 is None:
         ae = a
