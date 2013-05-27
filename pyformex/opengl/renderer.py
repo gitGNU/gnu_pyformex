@@ -97,6 +97,7 @@ class Renderer(object):
         """Set all the uniforms to default values."""
         #self.shader.loadUniforms(self.canvas.settings)
         #print("DEFAULTS",self.canvas.settings)
+        self.shader.uniformInt('builtin',1)
         self.shader.uniformFloat('lighting',self.canvas.settings.lighting)
         self.shader.uniformInt('colormode',1)
         self.shader.uniformVec3('objectColor',self.canvas.settings.fgcolor)

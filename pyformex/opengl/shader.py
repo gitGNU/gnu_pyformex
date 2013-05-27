@@ -92,6 +92,7 @@ class Shader(object):
     uniforms = uniforms_int + uniforms_float +  uniforms_vec3 + [
         'modelview',
         'projection',
+        'builtin',
     ]
 
     def __init__(self,vshader=None,fshader=None,attributes=None,uniforms=None):
@@ -118,6 +119,7 @@ class Shader(object):
 
         self.attribute = self.locations(GL.glGetAttribLocation,attributes)
         self.uniform = self.locations(GL.glGetUniformLocation,uniforms)
+        self.builtin = 1  # Default use builtin attributes
 
 
     def locations(self,func,keys):
@@ -151,6 +153,8 @@ class Shader(object):
 
     def bind(self):
         GL.shaders.glUseProgram(self.shader)
+        self.uniformInt('builtin',self.builtin)
+
 
     def unbind(self):
         GL.shaders.glUseProgram(0)

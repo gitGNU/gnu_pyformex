@@ -128,22 +128,33 @@ class Drawable(Attributes):
                 GL.glDrawArrays(self.glmode,0,asarray(self.vbo.shape[:-1]).prod())
 
         self.vbo.bind()
-        GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
-        GL.glVertexAttribPointer(renderer.shader.attribute['vertexPosition'],3, GL.GL_FLOAT,False,0,self.vbo)
+        if self.builtin:
+            GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
+            GL.glVertexPointerf(self.vbo)
+        else:
+            GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
+            GL.glVertexAttribPointer(renderer.shader.attribute['vertexPosition'],3, GL.GL_FLOAT,False,0,self.vbo)
 
         if self.ibo:
             self.ibo.bind()
 
         if self.nbo:
             self.nbo.bind()
-            GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
-            GL.glVertexAttribPointer(renderer.shader.attribute['vertexNormal'],3, GL.GL_FLOAT,False,0,self.nbo)
+            if self.builtin:
+                GL.glEnableClientState(GL.GL_NORMAL_ARRAY)
+                GL.glNormalPointerf(self.nbo)
+            else:
+                GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
+                GL.glVertexAttribPointer(renderer.shader.attribute['vertexNormal'],3, GL.GL_FLOAT,False,0,self.nbo)
 
         if self.cbo:
-            #print("BIND VERTEX COLOR %s" % str(self.cbo.shape))
             self.cbo.bind()
-            GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexColor'])
-            GL.glVertexAttribPointer(renderer.shader.attribute['vertexColor'],3, GL.GL_FLOAT,False,0,self.cbo)
+            if self.builtin:
+                GL.glEnableClientState(GL.GL_COLOR_ARRAY)
+                GL.glColorPointerf(self.cbo)
+            else:
+                GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexColor'])
+                GL.glVertexAttribPointer(renderer.shader.attribute['vertexColor'],3, GL.GL_FLOAT,False,0,self.cbo)
 
 
         if self.frontface:
@@ -155,7 +166,9 @@ class Drawable(Attributes):
             GL.glEnable(GL.GL_CULL_FACE)
             GL.glCullFace(GL.GL_FRONT)
 
+        self.builtin = renderer.shader.builtin
         renderer.shader.loadUniforms(self)
+        #renderer.shader.uniformInt('builtin',True)
         render_geom()
 
         GL.glDisable(GL.GL_CULL_FACE)
@@ -164,12 +177,21 @@ class Drawable(Attributes):
             self.ibo.unbind()
         if self.cbo:
             self.cbo.unbind()
-            GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexColor'])
+            if self.builtin:
+                GL.glDisableClientState(GL.GL_COLOR_ARRAY)
+            else:
+                GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexColor'])
         if self.nbo:
             self.nbo.unbind()
-            GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
+            if self.builtin:
+                GL.glDisableClientState(GL.GL_NORMAL_ARRAY)
+            else:
+                GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
         self.vbo.unbind()
-        GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
+        if self.builtin:
+            GL.glDisableClientState(GL.GL_VERTEX_ARRAY)
+        else:
+            GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
 
 
 
@@ -410,11 +432,11 @@ class GeomActor(Attributes):
     def render(self,renderer):
         """Render the geometry of this object"""
 
-        for child in self.drawable:
-            child.render(renderer)
+        for obj in self.drawable:
+            obj.render(renderer)
 
-        for child in self.children:
-            child.render(renderer)
+        for obj in self.children:
+            obj.render(renderer)
 
 
 ### End

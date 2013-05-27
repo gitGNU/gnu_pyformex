@@ -26,6 +26,7 @@ uniform vec3 objectColor;
 
 uniform float pointsize;
 
+uniform bool builtin;
 uniform bool lighting;
 uniform float ambient;
 uniform float diffuse;
@@ -37,7 +38,8 @@ uniform vec3 light; // Currently 1 light: need multiple
 
 
 varying float fDiscardNow;
-varying vec4 fVertexPosition;
+varying vec4 fvertexPosition;
+varying vec3 fvertexNormal;
 varying vec4 fragColor;        // Final fragment color, including opacity
 varying vec3 fragmentColor;
 varying vec2 fragmentTexturePos;
@@ -51,7 +53,11 @@ void main()
     fragmentColor = objectColor;
   } else if (colormode == 3) {
     // Vertex color
-    fragmentColor = vertexColor;
+    if (builtin) {
+      fragmentColor = gl_Color;
+    } else {
+      fragmentColor = vertexColor;
+    }
   } else {
     // Default black
     fragmentColor = vec3(0.,0.,0.);
@@ -59,6 +65,11 @@ void main()
 
   // Add in lighting
   if (lighting) {
+    if (builtin) {
+      fvertexNormal = gl_Normal;
+    } else {
+      fvertexNormal = vertexNormal;
+    }
     fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * vertexNormal;
 
     vec3 nNormal = normalize(fTransformedVertexNormal);
@@ -82,5 +93,10 @@ void main()
   // setup vertex Point Size
   gl_PointSize = pointsize;
   // Transforming The Vertex
-  gl_Position = projection * modelview * vec4(vertexPosition,1.0);
+  if (builtin) {
+    fvertexPosition = gl_Vertex;
+  } else {
+    fvertexPosition = vec4(vertexPosition,1.0);
+  }
+  gl_Position = projection * modelview * fvertexPosition;
 }
