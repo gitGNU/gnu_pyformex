@@ -106,7 +106,7 @@ class Drawable(Attributes):
 
     # A list of acceptable attributes in the drawable
     attributes = Shader.uniforms + [
-        'glmode', 'vbo', 'ibo', 'nbo', 'cbo',
+        'glmode', 'frontface', 'backface', 'vbo', 'ibo', 'nbo', 'cbo',
         ]
 
     def __init__(self,**kargs):
@@ -168,7 +168,6 @@ class Drawable(Attributes):
 
         self.builtin = renderer.shader.builtin
         renderer.shader.loadUniforms(self)
-        #renderer.shader.uniformInt('builtin',True)
         render_geom()
 
         GL.glDisable(GL.GL_CULL_FACE)
@@ -372,6 +371,7 @@ class GeomActor(Attributes):
             if self.nplex > 1 and isinstance(self.object,Mesh):
                 if self._edges is None:
                     edges = self.object.getEdges()
+                    print(edges)
                     if len(edges) > 0:
                         extra = Attributes(self)
                         extra.colormode = 1
@@ -380,6 +380,7 @@ class GeomActor(Attributes):
                         extra.lighting = False
                         extra.elems = edges
                         extra.glmode = glObjType(2)
+                        extra.ibo = VBO(edges.astype(int32),target=GL.GL_ELEMENT_ARRAY_BUFFER)
                         # store, so we can switch on/off
                         self._edges = Drawable(**extra)
                         print("CREATED EDGES")
