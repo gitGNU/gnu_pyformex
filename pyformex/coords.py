@@ -233,7 +233,7 @@ class Coords(ndarray):
         Example:
 
           >>> X = Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]])
-          >>> print X.bbox()
+          >>> print(X.bbox())
           [[ 0.  0.  0.]
            [ 3.  3.  0.]]
         """
@@ -272,7 +272,7 @@ class Coords(ndarray):
         Example:
 
           >>> X = Coords([[[0.,0.,0.],[1.,1.,1.]]])
-          >>> print X.apt('-0+')
+          >>> print(X.apt('-0+'))
           [ 0.   0.5  1. ]
         """
         bb = self.bbox()
@@ -293,7 +293,7 @@ class Coords(ndarray):
         Example:
 
           >>> X = Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]])
-          >>> print X.center()
+          >>> print(X.center())
           [ 1.5  1.5  0. ]
 
         See also: :meth:`centroid`
@@ -321,14 +321,14 @@ class Coords(ndarray):
 
           >>> X = Coords([[[0.,0.,0.],[1.,0.,0.],[2.,0.,0.]], \
                   [[4.,0.,0.],[5.,0.,0.],[6.,0.,0.]]])
-          >>> print X.average()
+          >>> print(X.average())
           [[ 2.  0.  0.]
            [ 3.  0.  0.]
            [ 4.  0.  0.]]
-          >>> print X.average(axis=1)
+          >>> print(X.average(axis=1))
           [[ 1.  0.  0.]
            [ 5.  0.  0.]]
-          >>> print X.average(wts=[0.5,0.25,0.25],axis=1)
+          >>> print(X.average(wts=[0.5,0.25,0.25],axis=1))
           [[ 0.75  0.    0.  ]
            [ 4.75  0.    0.  ]]
         """
@@ -344,7 +344,7 @@ class Coords(ndarray):
 
         Example:
 
-          >>> print Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]]).centroid()
+          >>> print(Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]]).centroid())
           [ 1.  1.  0.]
 
         See also: :meth:`center`
@@ -363,7 +363,7 @@ class Coords(ndarray):
 
         Example:
 
-          >>> print Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]]).sizes()
+          >>> print(Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]]).sizes())
           [ 3.  3.  0.]
 
         """
@@ -378,7 +378,7 @@ class Coords(ndarray):
 
         Example:
 
-          >>> print Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]]).dsize()
+          >>> print(Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]]).dsize())
           4.24264
 
         """
@@ -395,7 +395,7 @@ class Coords(ndarray):
 
         Example:
 
-          >>> print Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]]).bsphere()
+          >>> print(Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]]).bsphere())
           2.12132024765
 
         """
@@ -446,7 +446,7 @@ class Coords(ndarray):
         Example:
 
           >>> X = Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]])
-          >>> print X.distanceFromPlane([0.,0.,0.],[1.,0.,0.])
+          >>> print(X.distanceFromPlane([0.,0.,0.],[1.,0.,0.]))
           [[ 0.  3.  0.]]
 
         """
@@ -474,7 +474,7 @@ class Coords(ndarray):
         Example:
 
           >>> X = Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]])
-          >>> print X.distanceFromLine([0.,0.,0.],[1.,0.,0.])
+          >>> print(X.distanceFromLine([0.,0.,0.],[1.,0.,0.]))
           [[ 0.  0.  3.]]
 
         """
@@ -497,7 +497,7 @@ class Coords(ndarray):
         Example:
 
           >>> X = Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]])
-          >>> print X.distanceFromPoint([0.,0.,0.])
+          >>> print(X.distanceFromPoint([0.,0.,0.]))
           [[ 0.  3.  3.]]
 
         """
@@ -606,12 +606,12 @@ class Coords(ndarray):
         Example:
 
         >>> x = Coords([[0.,0.],[1.,0.],[0.,1.],[0.,2.]])
-        >>> print x.test(min=0.5)
+        >>> print(x.test(min=0.5))
         [False  True False False]
         >>> t = x.test(dir=1,min=0.5,max=1.5)
-        >>> print x[t]
+        >>> print(x[t])
         [[ 0.  1.  0.]]
-        >>> print x[~t]
+        >>> print(x[~t])
         [[ 0.  0.  0.]
          [ 1.  0.  0.]
          [ 0.  2.  0.]]
@@ -695,9 +695,9 @@ class Coords(ndarray):
 
         Example:
 
-          >>> print Coords([1.,1.,1.]).scale(2)
+          >>> print(Coords([1.,1.,1.]).scale(2))
           [ 2.  2.  2.]
-          >>> print Coords([1.,1.,1.]).scale([2,3,4])
+          >>> print(Coords([1.,1.,1.]).scale([2,3,4]))
           [ 2.  3.  4.]
 
         """
@@ -739,13 +739,13 @@ class Coords(ndarray):
         Example:
 
           >>> x = Coords([1.,1.,1.])
-          >>> print x.translate(1)
+          >>> print(x.translate(1))
           [ 1.  2.  1.]
-          >>> print x.translate(1,1.)
+          >>> print(x.translate(1,1.))
           [ 1.  2.  1.]
-          >>> print x.translate([0,1,0])
+          >>> print(x.translate([0,1,0]))
           [ 1.  2.  1.]
-          >>> print x.translate([0,2,0],0.5)
+          >>> print(x.translate([0,2,0],0.5))
           [ 1.  2.  1.]
 
         """
@@ -1182,7 +1182,7 @@ class Coords(ndarray):
 
         Example:
 
-          >>> print Coords([[1.,1.,1.]]).map(lambda x,y,z: [2*x,3*y,4*z])
+          >>> print(Coords([[1.,1.,1.]]).map(lambda x,y,z: [2*x,3*y,4*z]))
           [[ 2.  3.  4.]]
 
         """
@@ -1798,17 +1798,17 @@ class Coords(ndarray):
 
         >>> X = Coords([1.,1.,0.])
         >>> Y = Coords([[2.,2.,0.],[3.,3.,0.]])
-        >>> print Coords.concatenate([X,Y])
+        >>> print(Coords.concatenate([X,Y]))
         [[ 1.  1.  0.]
          [ 2.  2.  0.]
          [ 3.  3.  0.]]
-        >>> print Coords.concatenate([X,X])
+        >>> print(Coords.concatenate([X,X]))
         [[ 1.  1.  0.]
          [ 1.  1.  0.]]
-        >>> print Coords.concatenate([Y])
+        >>> print(Coords.concatenate([Y]))
         [[ 2.  2.  0.]
          [ 3.  3.  0.]]
-        >>> print Coords.concatenate([X])
+        >>> print(Coords.concatenate([X]))
         [[ 1.  1.  0.]]
         """
         L2 = atleast_2d(*L)
@@ -2061,7 +2061,7 @@ def pattern(s,aslist=False):
 
     Example:
 
-    >>> print pattern('0123')
+    >>> print(pattern('0123'))
     [[ 0.  0.  0.]
      [ 1.  0.  0.]
      [ 1.  1.  0.]
@@ -2134,7 +2134,7 @@ def xpattern(s,nplex=1):
 
     Example:
 
-    >>> print xpattern('.12.34',3)
+    >>> print(xpattern('.12.34',3))
     [[[ 0.  0.  0.]
       [ 1.  0.  0.]
       [ 1.  1.  0.]]
@@ -2252,7 +2252,7 @@ def sweepCoords(self,path,origin=[0.,0.,0.],normal=0,upvector=2,avgdir=False,end
             raise ValueError,"The number of scale values in y-direction differs from the number of copies that will be created."
     else:
         scaley = ones(points.shape[0])
-        
+
     if scalez is not None:
         if len(scalez) != points.shape[0]:
             raise ValueError,"The number of scale values in y-direction differs from the number of copies that will be created."

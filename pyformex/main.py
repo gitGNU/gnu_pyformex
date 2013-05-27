@@ -392,6 +392,10 @@ def run(argv=[]):
        action="store_false", dest="dri", default=None,
        help="Do not use the Direct Rendering Infrastructure. This may be used to turn off the direc rendering, e.g. to allow better capturing of images and movies.",
        ),
+    MO("--opengl",
+       action="store", dest="opengl", default='1.0',
+       help="Force the usage of an OpenGL version. The version should be specified as a string 'a.b'. The default is 1.0",
+       ),
     MO("--uselib",
        action="store_true", dest="uselib", default=None,
        help="Use the pyFormex C lib if available. This is the default.",
@@ -708,9 +712,14 @@ pyFormex Warning
         return message
 
 
+    import warnings
+    if pf.cfg['warnings/deprec']:
+        # activate DeprecationWarning (since 2.7 default is ignore)
+        warnings.simplefilter('default', DeprecationWarning)
+
     if pf.cfg['warnings/nice']:
-        import warnings
         warnings.formatwarning = _format_warning
+
 
     utils.checkModule('numpy',fatal=True)
 

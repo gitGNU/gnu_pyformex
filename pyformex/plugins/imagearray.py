@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -208,23 +208,36 @@ def gray2qimage(gray):
 
 
 def rgb2qimage(rgb):
-        """Convert the 3D numpy array `rgb` into a 32-bit QImage.  `rgb` must
-        have three dimensions with the vertical, horizontal and RGB image axes."""
+        """Convert the 3D numpy array into a 32-bit QImage.
+
+        Parameters:
+
+        - `rgb` : (height,width,nchannels) integer array specifying the
+          pixels of an image. There can be 3 (RGB) or 4 (RGBA) channels.
+
+        Returns a QImage with size (height,width) in the format
+        RGB32 (3channel) or ARGB32 (4channel).
+        """
         if len(rgb.shape) != 3:
                 raise ValueError("rgb2QImage expects the first (or last) dimension to contain exactly three (R,G,B) channels")
         if rgb.shape[2] != 3:
                 raise ValueError("rgb2QImage can only convert 3D arrays")
 
-        h, w, channels = rgb.shape
+        h,w,channels = rgb.shape
 
         # Qt expects 32bit BGRA data for color images:
-        bgra = np.empty((h, w, 4), np.uint8, 'C')
+        bgra = np.empty((h,w,4),np.uint8,'C')
         bgra[...,0] = rgb[...,2]
         bgra[...,1] = rgb[...,1]
         bgra[...,2] = rgb[...,0]
-        bgra[...,3].fill(255)
 
-        result = QImage(bgra.data, w, h, QImage.Format_RGB32)
+        if channels == 4:
+            bgra[...,3] = rgb[...,3]
+            fmt = QImage.Format_ARGB32
+        else:
+            fmt = QImage.Format_RGB32
+
+        result = QImage(bgra.data,w,h,fmt)
         result.ndarray = bgra
         return result
 

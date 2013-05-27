@@ -123,6 +123,14 @@ def isInt(obj):
     return isinstance(obj,(int,integer))
 
 
+def powers(x,n):
+    """Compute all the powers of x from zero up to n
+
+    Returns a list of arrays with same shape as x
+    """
+    return [ x ** i for i in range(n+1) ]
+
+
 ###########################################################################
 ##
 ##   some math functions
@@ -856,7 +864,7 @@ def checkFloat(value,min=None,max=None):
         raise ValueError,"Expected a float in the range(%s, %s), got: %s" % (min,max,value)
 
 
-def checkArray(a,shape=None,kind=None,allow=None,size=None):
+def checkArray(a,shape=None,kind=None,allow=None,size=None,ndim=None):
     """Check that an array a has the correct shape, type and/or size.
 
     The input `a` is anything that can be converted into a numpy array.
@@ -867,6 +875,7 @@ def checkArray(a,shape=None,kind=None,allow=None,size=None):
     If `kind` does not match, but the value is included in `allow`,
     conversion to the requested type is attempted.
     If `size` is specified, the size should exactly match.
+    If 'ndim' is specified, the array should have precisely ndim dimensions.
 
     Returns the array if valid; else, an error is raised.
     """
@@ -883,11 +892,14 @@ def checkArray(a,shape=None,kind=None,allow=None,size=None):
             if kind == 'f':
                 a = a.astype(Float)
         if size is not None:
-            if (a.size != size):
+            if a.size != size:
+                raise
+        if ndim is not None:
+            if a.ndim != ndim:
                 raise
         return a
     except:
-        raise ValueError,"Expected shape %s, kind %s, size %s\n  Got: shape %s, kind %s, size %s" % (shape,kind,size,a.shape,a.dtype.kind,a.size)
+        raise ValueError,"Expected shape %s, kind %s, size %s, ndim %s\n  Got: shape %s, kind %s, size %s, ndim %s" % (shape,kind,size,ndim,a.shape,a.dtype.kind,a.size,a.ndim)
 
 
 
@@ -905,22 +917,13 @@ def checkArray1D(a,kind=None,allow=None,size=None):
     return checkArray(a,kind=kind,allow=allow,size=size).ravel()
 
 
-#
-# TODO: this can be made part of checkArray
-#
+# DEPRECATED IN 0.9.1
 def checkArrayDim(a,ndim=-1):
-    """Check that an array has the correct dimensionality.
-
-    Returns asarray(a) if ndim < 0 or a.ndim == ndim
-    Else, an error is raised.
-    """
-    try:
-        aa = asarray(a)
-        if (ndim >= 0 and aa.ndim != ndim):
-            raise
-        return aa
-    except:
-        raise ValueError,"Expected an array with %s dimensions" % ndim
+    import utils
+    utils.deprec("depr_checkarraydim")
+    if ndim < 0:
+        ndim = None
+    return checkArray(a,ndim=ndim)
 
 
 def checkUniqueNumbers(nrs,nmin=0,nmax=None):
@@ -1372,7 +1375,7 @@ def sortByColumns(a):
       array([0, 3, 1, 4, 2])
 
     """
-    A = checkArrayDim(a,2)
+    A = checkArray(a,ndim=2)
     keys = [A[:,i] for i in range(A.shape[1]-1,-1,-1)]
     return lexsort(keys)
 
@@ -1889,7 +1892,8 @@ def movingAverage(a,n,m0=None,m1=None):
 
     Returns:
 
-      An array with the moving average over n data sets along the first axis of a.
+      An array with the moving average over n data sets along the first axis
+      of a.
       The array has the same shape as a, except possibly for the length of the
       first axis.
       If neither m0 nor m1 are set, the first axis will have a length of
@@ -1908,11 +1912,11 @@ def movingAverage(a,n,m0=None,m1=None):
        [ 4.  5.]
        [ 6.  7.]]
       >>> print(movingAverage(x,3,2))
-      [[ 0.          1.        ]
-       [ 0.66666667  1.66666667]
-       [ 2.          3.        ]
-       [ 4.          5.        ]
-       [ 6.          7.        ]]
+      [[ 0.    1.  ]
+       [ 0.67  1.67]
+       [ 2.    3.  ]
+       [ 4.    5.  ]
+       [ 6.    7.  ]]
     """
     if m0 is None and m1 is None:
         ae = a

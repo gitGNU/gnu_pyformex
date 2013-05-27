@@ -29,8 +29,12 @@
 from __future__ import print_function
 
 from coords import *
+from polynomial import *
 
 
+#
+# This should probably be moved to polynomial
+#
 def evaluate(atoms,x,y=0,z=0):
     """Build a matrix of functions of coords.
 
@@ -128,26 +132,16 @@ def exponents(n,layout='lag'):
     return exp
 
 
-def monomial(exp,symbol='xyz'):
-    """Compute the monomials for the given exponents
+def interpoly(n,layout='lag'):
+    """Create an interpolation polynomial
 
-    exp is a tuple of 1 to 3 exponents
-    """
-    factor = lambda sym,exp: '1' if exp == 0 else sym if exp == 1 else sym+'**'+str(exp)
-    factors = [ factor(symbol[i],j) for i,j in enumerate(exp) ]
-    # Join and sanitize (note we do not have '**1')
-    return '*'.join(factors).replace('1*','').replace('*1','')
+    parameters are like for exponents.
 
-
-def monomials(n,layout='lag'):
-    """Create the list of monomials for an element
-
-    Returns a tuple (ndim,list of monomials), like the values in
-    isodata below
+    Returns a Polynomial that can be used for interpolation over
+    the element.
     """
     exp = exponents(n,layout)
-    mon = map(monomial,exp)
-    return (len(n),mon)
+    return Polynomial(exp)
 
 
 class Isopar(object):
@@ -169,15 +163,8 @@ class Isopar(object):
        G = isopar(F,eltype,coords,oldcoords)
 
     """
-
-    # REM: We started to create some more general functions to generate
-    # interpolation polynomials (see above)
-    #
-    # The static list of string monomials has now been replaced with
-    # on-demand generation for most element types
-    #
-    # TODO: The monomials need to be replaced with use of the exponents
-    #
+    # Store the interpolation polynomials corresponding with
+    # some element
     isodata = {
         }
 
@@ -217,23 +204,18 @@ class Isopar(object):
             s = eltype.split('-')
             if s[0] in [ 'lag', 'tri', 'bor', 'ser' ]:
                 n = map(int,s[1:])
-                Isopar.isodata[eltype] = monomials(n,s[0])
+                #
+                # It might be better to just store (ndim,atoms)
+                # if we use string atoms to evaluate
+                #
+                Isopar.isodata[eltype] = interpoly(n,s[0])
             else:
                 raise RuntimeError,"Unknown eltype %s"
 
-        ndim,atoms = Isopar.isodata[eltype]
+        poly = Isopar.isodata[eltype]
         coords = coords.view().reshape(-1,3)
         oldcoords = oldcoords.view().reshape(-1,3)
-        x = oldcoords[:,0]
-        if ndim > 1:
-            y = oldcoords[:,1]
-        else:
-            y = 0
-        if ndim > 2:
-            z = oldcoords[:,2]
-        else:
-            z = 0
-        aa = evaluate(atoms,x,y,z)
+        aa = poly.evalAtoms(oldcoords[:,:poly.ndim])
         ab = linalg.solve(aa,coords)
         self.eltype = eltype
         self.trf = ab
@@ -250,8 +232,9 @@ class Isopar(object):
             except:
                 raise ValueError,"Expected a Coords object as argument"
 
-        ndim,atoms = Isopar.isodata[self.eltype]
-        aa = evaluate(atoms,X.x().ravel(),X.y().ravel(),X.z().ravel())
+        poly = Isopar.isodata[self.eltype]
+        ndim = poly.ndim
+        aa = poly.evalAtoms(X.reshape(-1,3)[:,:ndim])
         xx = dot(aa,self.trf).reshape(X.shape)
         if ndim < 3:
             xx[...,ndim:] += X[...,ndim:]

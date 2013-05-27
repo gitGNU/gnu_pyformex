@@ -166,7 +166,7 @@ def save_canvas(canvas,fn,fmt='png',quality=-1,size=None):
             w,h = size
         except:
             w,h = wc,hc
-        if (w,h) == (wc,hc) or not pf.cfg['gui/image_virtual']:
+        if (w,h) == (wc,hc):
             pf.debug("Saving image from canvas with size %sx%s" % (w,h),pf.DEBUG.IMAGE)
             if (w,h) != (wc,hc):
                 canvas.resize(w,h)
@@ -182,6 +182,13 @@ def save_canvas(canvas,fn,fmt='png',quality=-1,size=None):
             canvas.display()
             GL.glFlush()
             qim = vcanvas.toImage()
+            ### REMOVE THE ALPHA CHANNEL (see bug #36995)
+            ### Since we did not find a way to do this directly on
+            ### the QImage, we got through an numpy array
+            from plugins.imagearray import image2numpy,rgb2qimage
+            ar,cm = image2numpy(qim,flip=False)
+            qim = rgb2qimage(ar[...,:3])
+            ####
             vcanvas.release()
             canvas.resize(wc,hc)
             GL.glFlush()
