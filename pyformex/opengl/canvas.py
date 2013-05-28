@@ -520,7 +520,10 @@ class Canvas(object):
 
     def addActor(self,itemlist):
         """Add a 3D actor or a list thereof to the 3D scene."""
-        self.actors.add(itemlist)
+        #self.actors.add(itemlist)
+        # itemlist should be a new style GeomActor
+        self.renderer.addActor(itemlist)
+
 
     def addHighlight(self,itemlist):
         """Add a highlight or a list thereof to the 3D scene."""

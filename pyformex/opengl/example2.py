@@ -30,7 +30,7 @@ from opengl.drawable import *
 if not pf.options.opengl2:
     warning("This example only runs with the new opengl2 engine!")
 
-clearall()
+clear()
 
 
 def modified(obj):

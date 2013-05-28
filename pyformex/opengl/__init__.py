@@ -33,23 +33,175 @@ import pyformex as pf
 import gui
 
 
-def clearall():
+#### Definitions to be imported in gui.draw #####
+
+def clear_canvas():
     pf.canvas.renderer.clear()
-    gui.draw.clear()
+    pf.canvas.clear()
 
 
-def draw(o,**kargs):
+## def draw(o,**kargs):
+##     """New draw function for OpenGL2"""
+##     pf.canvas.renderer.add(o,**kargs)
+
+
+def draw(F,
+         ## color='prop',colormap=None,alpha=None,
+         ## bkcolor=None,bkcolormap=None,bkalpha=None,
+         ## mode=None,linewidth=None,linestipple=None,
+         ## marksize=None,nolight=False,ontop=False,
+         ## view=None,bbox=None,shrink=None,clear=None,
+         ## wait=True,allviews=False,highlight=False,silent=True,
+         **kargs):
     """New draw function for OpenGL2"""
-    pf.canvas.renderer.add(o,**kargs)
+
+    # For simplicity of the code, put objects to draw always in a list
+    if isinstance(F,list):
+        FL = F
+    else:
+        FL = [ F ]
+
+    # Flatten the list, replacing named objects with their value
+    FL = gui.draw.flatten(FL)
+    ntot = len(FL)
+
+    # Transform to list of drawable objects
+    FL = gui.draw.drawable(FL)
+    nres = len(FL)
+
+    if nres < ntot and not silent:
+        raise ValueError,"Data contains undrawable objects (%s/%s)" % (ntot-nres,ntot)
+
+    # Extract non-object attributes
+    view = kargs.get('view',None)
+    bbox = kargs.get('bbox',None)
+    highlight = kargs.get('highlight',False)
+
+    ## # Fill in the remaining defaults
+
+    ## if bbox is None:
+    ##     bbox = pf.canvas.options.get('bbox','auto')
+
+    ## if shrink is None:
+    ##     shrink = pf.canvas.options.get('shrink',None)
+
+    ## ## if marksize is None:
+    ## ##     marksize = pf.canvas.options.get('marksize',pf.cfg.get('marksize',5.0))
+
+    ## # Shrink the objects if requested
+    ## if shrink:
+    ##     FL = [ _shrink(F,pf.canvas.options.get('shrink_factor',0.8)) for F in FL ]
+
+    ## # Execute the drawlock wait before doing first canvas change
+    ## pf.GUI.drawlock.wait()
+
+    ## if clear is None:
+    ##     clear = pf.canvas.options.get('clear',False)
+    ## if clear:
+    ##     clear_canvas()
+
+    if view is not None and view != 'last':
+        pf.debug("SETTING VIEW to %s" % view,pf.DEBUG.DRAW)
+        gui.draw.setView(view)
+
+    pf.GUI.setBusy()
+    pf.app.processEvents()
+
+    try:
+
+        actors = []
+
+        # loop over the objects
+        for F in FL:
+
+            ## # Treat special case colors
+            ## if hasattr(F,'color'):
+            ##     color = F.color
+            ## if hasattr(F,'alpha'):
+            ##     alpha = F.alpha
+            ## if type(color) is str:
+            ##     if color == 'prop':
+            ##         try:
+            ##             Fcolor = F.prop
+            ##         except:
+            ##             Fcolor = colors.black
+            ##     elif color == 'random':
+            ##         # create random colors
+            ##         Fcolor = numpy.random.rand(F.nelems(),3)
+            ##     else:
+            ##         Fcolor = color
+            ## else:
+            ##     Fcolor = asarray(color)
+
+            #print "COLOR OUT",Fcolor
+            # Create the actor
+            actor = F.actor(
+#                color=Fcolor,colormap=colormap,alpha=alpha,
+#                bkcolor=bkcolor,bkcolormap=bkcolormap,bkalpha=bkalpha,
+#                mode=mode,linewidth=linewidth,linestipple=linestipple,
+#                marksize=marksize,nolight=nolight,ontop=ontop,
+                **kargs)
+
+            actors.append(actor)
+
+            if actor is not None:
+                # Show the actor
+                if highlight:
+                    pf.canvas.addHighlight(actor)
+                else:
+                    pf.canvas.addActor(actor)
+
+        # Adjust the camera
+        if view is not None or bbox not in [None,'last']:
+            if view == 'last':
+                view = pf.canvas.options['view']
+            if bbox == 'auto':
+                bbox = coords.bbox(FL)
+            if bbox == 'last':
+                bbox = None
+            pf.canvas.setCamera(bbox,view)
+
+        pf.canvas.update()
+        pf.app.processEvents()
+        #pf.debug("AUTOSAVE %s" % image.autoSaveOn())
+        ## if image.autoSaveOn():
+        ##     image.saveNext()
+        ## if wait: # make sure next drawing operation is retarded
+        ##     pf.GUI.drawlock.lock()
+    finally:
+        pf.GUI.setBusy(False)
+
+    if type(F) is list or len(actors) != 1:
+        return actors
+    else:
+        return actors[0]
 
 
 def drawActor(o):
     pf.canvas.renderer.addActor(o)
 
-## # Override the normal drawing functions
-## gui.draw.draw = draw
-## gui.draw.drawActor = drawActor
+#### Other definitions should start with _ ####
 
+
+#### Set the Formex and Mesh actor method ####
+
+def _set_actors():
+    def actor(self,**kargs):
+
+        if self.nelems() == 0:
+            return None
+
+        from opengl.drawable import GeomActor
+
+        return GeomActor(self,**kargs)
+
+    import formex
+    formex.Formex.actor = actor
+    import mesh
+    mesh.Mesh.actor = actor
+
+
+_set_actors()
 
 
 # End

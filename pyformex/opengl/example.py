@@ -24,7 +24,7 @@
 #
 #
 
-clearall()
+clear()
 
 pf.canvas.renderer.shader.builtin = True  # Set to 0 to not use builtin attributes
 
@@ -47,14 +47,19 @@ E = Formex(D.points())
 E.attrib(pointsize=20)
 #D.attrib(color=[red,green,blue,magenta,yellow])
 
-#draw(A)
+
+#print(draw.__doc__)
+#print(gui.draw.draw.__doc__)
+
+
+draw(A)
 #draw(B)
 #draw(C)
 draw(D)
 #draw(E)
 
 zoomAll()
-pf.app.processEvents()
+#pf.app.processEvents()
 
 
 

@@ -228,7 +228,7 @@ class GeomActor(Attributes):
             try:
                 obj = obj.toFormex()
             except:
-                raise ValueError,"Can only render Mesh, Formex and objects that can be converted to Formex"
+                raise ValueError,"Object is of type %s.\nCan only render Mesh, Formex and objects that can be converted to Formex" % type(obj)
         self.object = obj
 
         if isinstance(obj,Mesh): # should we store coords, elems and eltype?
