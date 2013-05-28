@@ -78,7 +78,8 @@ def catchAndDisplay(expression):
 
 def opengl():
     """Display the OpenGL format description."""
-    draw.showText(viewport.OpenGLFormat())
+    s = viewport.OpenGLFormat(pf.canvas.format())
+    draw.showText(viewport.OpenGLFormat(pf.canvas.format()))
 
 def detected():
     """Display the detected software components."""

@@ -130,40 +130,32 @@ def setOpenGLFormat():
 
        --dri   : use the Direct Rendering Infrastructure, if available
        --nodri : do not use the DRI
-       --alpha : enable the alpha buffer
+       --opengl : set the opengl version
     """
     global opengl_format
     pf.debug("Get OpenGL Format",pf.DEBUG.OPENGL)
     fmt = QtOpenGL.QGLFormat.defaultFormat()
-    pf.debug("Got OpenGL Format",pf.DEBUG.OPENGL)
-    ## print fmt
-    ## print "hallo"
-    ## print "OpenGL: %s" % fmt.hasOpenGL(),
-    ## print "OpenGL Version: %s" % int(fmt.openGLVersionFlags()),
-    ## print "OpenGLOverlays: %s" % fmt.hasOpenGLOverlays(),
-    ## print "Double Buffer: %s" % fmt.doubleBuffer(),
-    ## print "Depth Buffer: %s" % fmt.depth(),
-    ## print "RGBA: %s" % fmt.rgba(),
-    ## print "Alpha Channel: %s" % fmt.alpha(),
-    ## print "Accumulation Buffer: %s" % fmt.accum(),
-    ## print "Stencil Buffer: %s" % fmt.stencil(),
-    ## print "Stereo: %s" % fmt.stereo(),
-    ## print "Direct Rendering: %s" % fmt.directRendering(),
-    ## print "Overlay: %s" % fmt.hasOverlay(),
-    ## print "Plane: %s" % fmt.plane(),
-    ## print "Multisample Buffers: %s" % fmt.sampleBuffers(),
-    pf.debug(OpenGLFormat(fmt),pf.DEBUG.OPENGL)
+    if pf.options.debuglevel & pf.DEBUG.OPENGL:
+        pf.debug("Got OpenGL Format",pf.DEBUG.OPENGL)
+        pf.debug(OpenGLFormat(fmt),pf.DEBUG.OPENGL)
     if pf.options.dri is not None:
         fmt.setDirectRendering(pf.options.dri)
-##     if pf.options.alpha:
-##         fmt.setAlpha(True)
-    pf.debug("Set OpenGL Format",pf.DEBUG.OPENGL)
-    pf.debug(OpenGLFormat(fmt),pf.DEBUG.OPENGL)
+    if pf.options.opengl:
+        try:
+            major,minor = map(int,pf.options.opengl.split('.'))
+            fmt.setVersion(major,minor)
+        except:
+            pass
+
+    if pf.options.debuglevel & pf.DEBUG.OPENGL:
+        pf.debug("Set OpenGL Format",pf.DEBUG.OPENGL)
+        pf.debug(OpenGLFormat(fmt),pf.DEBUG.OPENGL)
     QtOpenGL.QGLFormat.setDefaultFormat(fmt)
     #QtOpenGL.QGLFormat.setOverlayFormat(fmt)
     #fmt.setDirectRendering(False)
     opengl_format = fmt
-    pf.debug(OpenGLFormat(fmt),pf.DEBUG.OPENGL)
+    if pf.options.debuglevel & pf.DEBUG.OPENGL:
+        pf.debug(OpenGLFormat(fmt),pf.DEBUG.OPENGL)
     return fmt
 
 def getOpenGLContext():
@@ -172,13 +164,31 @@ def getOpenGLContext():
         printOpenGLContext(ctxt)
     return ctxt
 
+def OpenGLSupportedVersions(flags):
+    """Return the supported OpenGL version.
+
+    flags is the return value of QGLFormat.OpenGLVersionFlag()
+
+    Returns a list with tuple (k,v) where k is a string describing an Opengl
+    version and v is True or False.
+    """
+    flag = QtOpenGL.QGLFormat.OpenGLVersionFlag
+    keys = [ k for k in dir(flag) if k.startswith('OpenGL') and not k.endswith('None')]
+    return [ (k,bool(int(flags) & int(getattr(flag,k)))) for k in keys ]
+
+
 def OpenGLFormat(fmt=None):
     """Some information about the OpenGL format."""
     if fmt is None:
         fmt = opengl_format
-    s = '\n'.join([
-        "OpenGL: %s" % fmt.hasOpenGL(),
-        "OpenGL Version: %s" % int(fmt.openGLVersionFlags()),
+    flags = fmt.openGLVersionFlags()
+    s = [ "OpenGL: %s" % fmt.hasOpenGL() ]
+    try:
+        s.append("OpenGl Version: %s.%s (%x)" % (fmt.majorVersion(),fmt.minorVersion(),flags))
+    except:
+        s.append("OpenGL Version: %0x" % flags)
+        pass
+    s.extend([
         "OpenGLOverlays: %s" % fmt.hasOpenGLOverlays(),
         "Double Buffer: %s" % fmt.doubleBuffer(),
         "Depth Buffer: %s" % fmt.depth(),
@@ -193,7 +203,10 @@ def OpenGLFormat(fmt=None):
         "Multisample Buffers: %s" % fmt.sampleBuffers(),
         ''
         ])
-    return s
+    s.append("\nSupported OpenGL versions:")
+    for k,v in OpenGLSupportedVersions(flags):
+        s.append("  %s: %s" % (k,v))
+    return '\n'.join(s)
 
 
 def printOpenGLContext(ctxt):
