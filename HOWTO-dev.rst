@@ -203,7 +203,7 @@ you do not have an account on the bump* servers yet, ask one: mailto:benedict.ve
 
 Then copy your ssh key to the bumps server::
 
-  ssh-copy-id username@bumps.ugen.be
+  ssh-copy-id username@bumps.ugent.be
 
 Note that your username at bumps may be different from that at Savannah
 

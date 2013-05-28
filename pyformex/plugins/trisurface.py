@@ -428,7 +428,7 @@ class TriSurface(Mesh):
             del self.edglen
 
         if len(args) == 0:
-            Mesh.__init__(self)
+            Mesh.__init__(self, [], [], None, 'tri3')
             return  # an empty surface
 
         if len(args) == 1:
