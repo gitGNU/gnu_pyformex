@@ -257,7 +257,7 @@ class GeomActor(Attributes):
 
             if drawelems is not None:
                 if elems is None:
-                    elems = arange(coords.npoints())
+                    elems = arange(coords.npoints()).reshape(coords.shape[:-1])
                 elems = elems[:,drawelems]
 
 
