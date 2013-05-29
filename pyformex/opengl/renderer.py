@@ -93,6 +93,18 @@ class Renderer(object):
             actor.changeMode(self)
 
 
+    def changeNormals(self,avg):
+        """This function is called when the normals mode is changed
+
+        This method should be called to update the actors on a normals
+        mode change.
+        """
+        for actor in self._objects:
+            actor.setNormals(self)
+            actor.createDrawables()
+            actor.changeMode(self)
+
+
     def setDefaults(self):
         """Set all the uniforms to default values."""
         #self.shader.loadUniforms(self.canvas.settings)

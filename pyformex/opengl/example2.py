@@ -43,19 +43,30 @@ from simple import sphere
 
 S = sphere(6)
 S = S.toSurface().fixNormals()#.toFormex()
+draw(S,color=red)
+
+zoomAll()
+pf.app.processEvents()
+
+exit()
+
 print(S.npoints())
 col = [red,red]*81
 print(len(col))
-SA = GeomActor(S,ambient=0.5,diffuse=1,specular=0.5,color=red,alpha=0.7,light=(0.,1.,1.),shininess=20)
+SA = GeomActor(S,ambient=0.0,diffuse=1.0,specular=0.0,color=red,alpha=0.7,light=(0.,1.,1.),shininess=20)
 
 T = Formex('4:0123').replic2(2,3).toMesh().align('-00')
 TA = GeomActor(T,ambient=0.5,diffuse=0.5,color=blue,bkcolor=green,alpha=0.9,light=(0.,1.,1.))
 
-SA.children.append(TA)
+#SA.children.append(TA)
 
-drawActor(SA)
+#drawActor(SA)
+
+draw(S,color=red)
+draw(T,color=blue,bkcolor=green,lighting=False)
 
 zoomAll()
+#pf.app.processEvents()
 
 ## n = 10
 ## for x in arange(n+1) / float(n):

@@ -169,14 +169,13 @@ class Canvas(object):
 
 
     def do_avgnormals(self,state,oldstate):
-        #print("Toggling avgnormals",self.rendermode,state,oldstate)
+        print("Toggling avgnormals: %s, %s -> %s" % (self.rendermode,state,oldstate))
         if state!=oldstate and self.rendermode.startswith('smooth'):
-            if self.settings.avgnormals:
-                self.rendermode = 'smooth_avg'
-            else:
-                self.rendermode = 'smooth'
-            #print("REDRAW")
-            self.actors.redraw()
+            ## if self.settings.avgnormals:
+            ##     self.rendermode = 'smooth_avg'
+            ## else:
+            ##     self.rendermode = 'smooth'
+            self.renderer.changeNormals(self)
             self.display()
 
 

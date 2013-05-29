@@ -50,37 +50,51 @@ def glObjType(nplex):
         return GL.GL_TRIANGLE_FAN
 
 
-def computeMeshNormals(obj,avg=False,tol=None):
-    """Compute the normals of a Mesh object"""
-    if avg:
-        if tol is None:
-            tol = pf.cfg['render/avgnormaltreshold']
-        return gt.averageNormals(obj.coords,obj.elems,False,tol)
+## def computeMeshNormals(obj,avg=False,tol=None):
+##     """Compute the normals of a Mesh object"""
+##     if avg:
+##         if tol is None:
+##             tol = pf.cfg['render/avgnormaltreshold']
+##         return gt.averageNormals(obj.coords,obj.elems,False,tol)
 
-    else:
-        return computeFormexNormals(obj.toFormex())
-
-
-def computeFormexNormals(obj,avg=False,tol=None):
-    """Compute the normals of a Formex"""
-    if avg:
-        if tol is None:
-            tol = pf.cfg['render/avgnormaltreshold']
-        return computeMeshNormals(obj.toMesh(),avg,tol)
-
-    else:
-       return gt.polygonNormals(obj.coords)
+##     else:
+##         return computeFormexNormals(obj.toFormex())
 
 
-def computeNormals(obj,avg=False,tol=None):
-    """Compute the normals of the object to draw"""
-    if isinstance(obj,Formex):
-        return computeFormexNormals(obj,avg,tol)
-    elif isinstance(obj,Mesh):
-        return computeMeshNormals(obj,avg,tol)
+## def computeFormexNormals(obj,avg=False,tol=None):
+##     """Compute the normals of a Formex"""
+##     if avg:
+##         if tol is None:
+##             tol = pf.cfg['render/avgnormaltreshold']
+##         return computeMeshNormals(obj.toMesh(),avg,tol)
+
+##     else:
+##        return gt.polygonNormals(obj.coords)
+
+
+## def computeNormals(obj,avg=False,tol=None):
+##     """Compute the normals of the object to draw"""
+##     if isinstance(obj,Formex):
+##         return computeFormexNormals(obj,avg,tol)
+##     elif isinstance(obj,Mesh):
+##         return computeMeshNormals(obj,avg,tol)
 
 
 
+## def computeNormals(coords,elems,avg=True,tol=None):
+##     """Compute the normals of the object to draw
+
+##     """
+##     #avg = True  # Force average
+##     print("COMPUTE NORMALS: COORDS %s, ELEMS %s" % (coords.shape,elems.shape))
+##     if avg:
+##         if tol is None:
+##             tol = pf.cfg['render/avgnormaltreshold']
+##         normals = gt.averageNormals(coords,elems,True,tol)
+##     else:
+##         normals = gt.polygonNormals(coords)
+##     print("NORMALS: %s" % str(normals.shape))
+##     return normals
 
 
 class Drawable(Attributes):
@@ -114,7 +128,6 @@ class Drawable(Attributes):
 
         print("DRAWABLE MODE %s" % kargs['glmode'])
         kargs = utils.selectDict(kargs,Drawable.attributes)
-
         Attributes.__init__(self,kargs)
 
 
@@ -139,6 +152,7 @@ class Drawable(Attributes):
             self.ibo.bind()
 
         if self.nbo:
+            print("HAS NORMALS")
             self.nbo.bind()
             if self.builtin:
                 GL.glEnableClientState(GL.GL_NORMAL_ARRAY)
@@ -194,6 +208,15 @@ class Drawable(Attributes):
 
 
 
+        def changeNormals(nbo):
+            print("CHANGE NORMALS IN DRAWABLE")
+            if self.nbo:
+                print("UNBIND")
+                self.nbo.unbind()
+            self.nbo = nbo
+            print("REPLACED NBO")
+
+
 class GeomActor(Attributes):
     """Proposal for drawn objects
 
@@ -210,6 +233,9 @@ class GeomActor(Attributes):
 
     If the actor does not have a name, it will be given a
     default one.
+
+    The actor has the following attributes, initialized or computed on demand
+
     """
 
     # default names for the actors
@@ -225,14 +251,14 @@ class GeomActor(Attributes):
 
         # Check it is something we can draw
         if not isinstance(obj,Mesh) and not isinstance(obj,Formex):
-            try:
-                obj = obj.toFormex()
-            except:
+            ## try:
+            ##     obj = obj.toFormex()
+            ## except:
                 raise ValueError,"Object is of type %s.\nCan only render Mesh, Formex and objects that can be converted to Formex" % type(obj)
         self.object = obj
 
         if isinstance(obj,Mesh): # should we store coords, elems and eltype?
-            coords = obj.coords
+            coords = obj.coords.astype(float32)
             elems = obj.elems.astype(int32)
             eltype = obj.elName()
 
@@ -248,16 +274,14 @@ class GeomActor(Attributes):
         # Get the local connectivity for drawing the edges/faces
         if eltype is not None:
             eltype = elementType(eltype)
-            if eltype.ndim == 0:
-                drawelems = None
-            elif eltype.ndim == 1:
-                drawelems = eltype.getDrawEdges()[0]
-            else:
-                drawelems = eltype.getDrawFaces()[0]
+            if eltype.ndim > 0 and eltype.name() not in [ 'point', 'line2', 'tri3', 'polygon' ]:
+                if eltype.ndim == 1:
+                    drawelems = eltype.getDrawEdges()[0]
+                else:
+                    drawelems = eltype.getDrawFaces()[0]
 
-            if drawelems is not None:
                 if elems is None:
-                    elems = arange(coords.npoints()).reshape(coords.shape[:-1])
+                    elems = arange(coords.npoints()).reshape(coords.shape[:2])
                 elems = elems[:,drawelems]
 
 
@@ -270,22 +294,73 @@ class GeomActor(Attributes):
         # set the basic primitive type
         self.glmode = glObjType(self.nplex)
 
-        self._edges = None # The edges in *wire modes
-
-
         self.children = []
 
         # Acknowledge all object attributes and passed parameters
         self.update(obj.attrib)
         self.update(kargs)
 
+
         # Create the static data buffers
-        self.vbo = VBO(coords.astype(float32))
-        if elems is not None:
-            self.ibo = VBO(elems.astype(int32),target=GL.GL_ELEMENT_ARRAY_BUFFER)
+        coords = coords.astype(float32)
+        if elems is None:
+            self._fcoords = coords
+        else:
+            self._coords = coords
+            self._elems = elems.astype(int32)
+
+        # Currently do everything in Formex model
+        self.vbo = VBO(self.fcoords)
+        #self.ibo = VBO(self.elems,target=GL.GL_ELEMENT_ARRAY_BUFFER)
 
         ## if self.normals:
         ##     self.nbo = VBO(normals.astype(float32))
+
+
+    @property
+    def coords(self):
+        if self._coords is None:
+            if self._fcoords is None:
+                raise ValueError,"Object has neither _coords nor _fcoords"
+            self._coords,self._elems = self._fcoords.fuse()
+        return self._coords
+
+
+    @property
+    def elems(self):
+        if self._elems is None:
+            if self._fcoords is None:
+                raise ValueError,"Object has neither _coords nor _fcoords"
+            self._coords,self._elems = self._fcoords.fuse()
+        return self._elems
+
+
+    @property
+    def fcoords(self):
+        if self._fcoords is None:
+            if self._coords is None or self._elems is None:
+                raise ValueError,"Object has neither _coords nor _fcoords"
+            self._fcoords = self._coords[self._elems]
+        return self._fcoords
+
+
+    @property
+    def normals(self):
+        """Return indiviual normals at all vertices of all elements"""
+        if self._normals is None:
+            self._normals = gt.polygonNormals(self.fcoords).astype(float32)
+            print("COMPUTE NORMALS: %s" % str(self._normals.shape))
+        return self._normals
+
+
+    @property
+    def avgnormals(self):
+        """Return averaged normals at the vertices"""
+        if self._avgnormals is None:
+            tol = pf.cfg['render/avgnormaltreshold']
+            self._avgnormals = gt.averageNormals(self.coords,self.elems,False,tol).astype(float32)
+            print("COMPUTE AVGNORMALS: %s" % str(self._avgnormals.shape))
+        return self._avgnormals
 
 
     def prepare(self,renderer):
@@ -296,7 +371,6 @@ class GeomActor(Attributes):
         this method is called on each mode change.
         """
         print("PREPARE ACTOR")
-        self.drawable = []
         self.setColor(self.color,self.colormap)
         self.setBkColor(self.bkcolor,self.bkcolormap)
         self.setAlpha(self.alpha,self.bkalpha)
@@ -320,15 +394,20 @@ class GeomActor(Attributes):
         elif self.colormode == 3:
             self.vertexColor = self.color
 
-        # Prepare the buffer objects for this actor
-        if renderer.mode.startswith('smooth'):
-            if self.nbo is None:
-                normals = computeNormals(self.object,renderer.canvas.settings.avgnormals)
-                self.nbo = VBO(normals)
-
         if self.vertexColor is not None:
-            self.cbo = VBO(self.vertexColor)
+            self.cbo = VBO(self.vertexColor.astype(int32))
 
+        self.setNormals(renderer)
+        self.createDrawables()
+        self.changeMode(renderer)
+
+        #### CHILDREN ####
+        for child in self.children:
+            child.prepare(renderer)
+
+
+    def createDrawables(self):
+        self.drawable = []
         #### BACK COLOR ####
         if self.bkcolor is not None:
             # Draw both sides separately
@@ -345,23 +424,31 @@ class GeomActor(Attributes):
             self.drawable.append(Drawable(**self))
 
 
-        #### MODE DEPENDENT MODIFICATIONS ####
-        self.changeMode(renderer)
-
-        #### CHILDREN ####
-        for child in self.children:
-            child.prepare(renderer)
+    def setNormals(self,renderer):
+        # Prepare the normals buffer objects for this actor
+        if renderer.mode.startswith('smooth'):
+            if renderer.canvas.settings.avgnormals:
+                normals = self.avgnormals
+                print("AVG NORMALS %s" % str(normals.shape))
+            else:
+               normals = self.normals
+               print("IND NORMALS %s" % str(normals.shape))
+            self.nbo = VBO(normals)
+        else:
+            del self.nbo
+        print("NBO:%s" % self.nbo)
 
 
     def changeMode(self,renderer):
         """Modify the actor according to the specified mode"""
+
         print("CHANGE TO MODE %s"%renderer.mode)
         self.switchEdges(renderer.mode.endswith('wire'))
-
 
         print("PREPARED %s DRAWABLES" % len(self.drawable))
         for i,d in enumerate(self.drawable):
             print(i,d)
+
 
 
     def switchEdges(self,on):
