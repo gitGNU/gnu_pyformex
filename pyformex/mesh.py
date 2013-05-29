@@ -2358,7 +2358,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
 
     def area(self):
-        """Return the total volume of a Mesh.
+        """Return the total area of a Mesh.
 
         Returns the sum of self.areas(), or 0.0 if the self.areas()
         returned None.
@@ -2372,16 +2372,18 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
     def volume(self):
         """Return the total volume of a Mesh.
 
-        Returns the sum of self.volumes(), or 0.0 if the self.volumes()
-        returned None.
+        For a Mesh of level < 3, a value 0.0 is returned.
+        For a Mesh of level 3, the volume is computed by converting its
+        border to a surface and taking the volume inside that surface.
+        It is equivalent with ::
 
-        Note that even if self.volumes() is computed, a value 0.0 may be
-        returned, and even negative values are possible, if the
-        node numbering of the elements is reversed.
+            self.toSurface().volume()
+
+        This is far more efficient than `self.volumes().sum()`.
         """
-        try:
-            return self.volumes().sum()
-        except:
+        if self.level() == 3:
+            return self.toSurface().volume()
+        else:
             return 0.0
 
 

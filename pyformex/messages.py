@@ -128,5 +128,5 @@ depr_checkarraydim = "checkArrayDim is deprecated. Use checkArray with ndim argu
 PolyLine_distanceOfPoints = "PolyLine.distanceOfPoints is deprecated"
 PolyLine_distanceOfPolyline = "PolyLine.distanceOfPolyline is deprecated"
 
-
+depr_facetarea = "TriSurface.facetArea is deprecated: use TriSurface.areas instead"
 # End

@@ -481,7 +481,7 @@ def deleteTriangles():
 SelectableStatsValues = odict.ODict([
     ('Quality', (TriSurface.quality,False)),
     ('Aspect ratio', (TriSurface.aspectRatio,False)),
-    ('Facet Area', (TriSurface.facetArea,False)),
+    ('Facet Area', (TriSurface.areas,False)),
     ('Facet Perimeter', (TriSurface.perimeters,False)),
     ('Smallest altitude', (TriSurface.smallestAltitude,False)),
     ('Longest edge', (TriSurface.longestEdge,False)),

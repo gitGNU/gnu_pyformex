@@ -422,7 +422,7 @@ class TriSurface(Mesh):
 
     def __init__(self,*args,**kargs):
         """Create a new surface."""
-        self.areas = self._fnormals = None
+        self._areas = self._fnormals = None
         self.adj = None
         if hasattr(self,'edglen'):
             del self.edglen
@@ -695,20 +695,22 @@ class TriSurface(Mesh):
 
         The values are returned and saved in the object.
         """
-        if self.areas is None or self._fnormals is None:
-            self.areas,self._fnormals = geomtools.areaNormals(self.coords[self.elems])
-        return self.areas,self._fnormals
+        if self._areas is None or self._fnormals is None:
+            self._areas,self._fnormals = geomtools.areaNormals(self.coords[self.elems])
+        return self._areas,self._fnormals
 
 
-    def facetArea(self):
-        """Return the area of the surface triangles."""
+
+
+    def areas(self):
+        """Return the areas of all facets"""
         return self.areaNormals()[0]
 
 
-    def area(self):
-        """Return the area of the surface"""
-        area = self.areaNormals()[0]
-        return area.sum()
+    ## def area(self):
+    ##     """Return the total area of the surface"""
+    ##     area = self.areaNormals()[0]
+    ##     return area.sum()
 
 
     def volume(self):
@@ -744,7 +746,7 @@ class TriSurface(Mesh):
         Returns a tuple with the center of gravity, the principal axes of
         inertia, the principal moments of inertia and the inertia tensor.
         """
-        return self.centroids().inertia(mass=self.facetArea())
+        return self.centroids().inertia(mass=self.areas())
 
 
     def surfaceType(self):
@@ -935,10 +937,10 @@ class TriSurface(Mesh):
         peri = facedg.sum(axis=-1)
         edgmin = facedg.min(axis=-1)
         edgmax = facedg.max(axis=-1)
-        altmin = 2*self.areas / edgmax
+        altmin = 2*self._areas / edgmax
         aspect = edgmax/altmin
         _qual_equi = sqrt(sqrt(3.)) / 6.
-        qual = sqrt(self.areas) / peri / _qual_equi
+        qual = sqrt(self._areas) / peri / _qual_equi
         self.edglen,self.facedg,self.peri,self.edgmin,self.edgmax,self.altmin,self.aspect,self.qual = edglen,facedg,peri,edgmin,edgmax,altmin,aspect,qual
 
 
@@ -1011,7 +1013,7 @@ Quality: %s .. %s
         bbox[0],bbox[1],
         mincon,maxcon,
         {True:'',False:' not'}[manifold],{True:' closed',False:''}[closed],
-        self.areas.min(),self.areas.mean(),self.areas.max(),
+        self._areas.min(),self._areas.mean(),self._areas.max(),
         self.edglen.min(),self.edglen.mean(),self.edglen.max(),
         self.altmin.min(),self.aspect.max(),
         qual.min(), qual.max(),
@@ -1815,64 +1817,6 @@ Quality: %s .. %s
         return [ self.intersectionWithPlane(p,dir) for p in P ]
 
 
-    @deprecation("depr_patchextension")
-    def patchextension(self,p,step,dir=None,makecircular=False,div=1.):
-        """Extrude a nearly-planar patch of a surface.
-
-        - `self` is a surface with propery numbers
-        - `p` is the property number of the patch to extrude. It can also be
-          a list of property numbers.
-        - `div` is the number of elements along the extrusion. If None,
-          the triangle size is taken from the patch's border
-        - `step` is the length of the extrusion. If step is a string (e.g. '2.'),
-          the length is given as number of average 'diameters'
-        - `dir` is the axis of the extrusion. if dir is None, dir is
-          the average normal of patch p
-        - `makecircular` if True makes the circular the extended section.
-
-        This is a convenient function to elongate tubular structures
-        such as arteries.
-
-
-
-        """
-        if type(p)==list:
-            for i in p:
-                self= self.patchextension(i,step,dir,makecircular,div)
-            return self
-
-        if type(p)!=int:
-            raise ValueError,"Expected one single integer as property number, got %s"%p
-
-
-        s1 = self.withProp(p)
-        a1, n1 = s1.areaNormals()
-        n1 = normalize(n1.sum(axis=0))
-        r1 = (a1.sum()/math.pi)**0.5
-        if type(step) == str:
-            step = 2.*r1*float(step)
-
-        if dir == None:
-            dir = n1
-
-        s1x = s1.translate(dir, step)
-
-        if makecircular:
-            c = s1x.compact().center()
-            s1x.coords = c + normalize(s1x.coords-c)*r1
-
-        b = s1.border()[0]
-        if div == None:
-            from plugins.curve import PolyLine
-            bb = PolyLine(coords = b[:, 0], closed=True)
-            avglen = bb.length()/(bb.nparts)
-            div = int(ceil(step/avglen))
-
-        bx = s1x.border()[0]
-        x = b.connect(bx, div=div).convert('tri3').setProp(self.maxProp()+1)
-        return self.withoutProp(p) + x + s1x
-
-
 ##################  Smooth a surface #############################
 
 
@@ -2324,6 +2268,65 @@ Quality: %s .. %s
             utils.removeTree(outputdir)
         return res['tetgen.ele']
 
+
+    @deprecation("depr_facetarea")
+    def facetArea(self):
+        return self.areas()
+
+
+    @deprecation("depr_patchextension")
+    def patchextension(self,p,step,dir=None,makecircular=False,div=1.):
+        """_Extrude a nearly-planar patch of a surface.
+
+        - `self` is a surface with propery numbers
+        - `p` is the property number of the patch to extrude. It can also be
+          a list of property numbers.
+        - `div` is the number of elements along the extrusion. If None,
+          the triangle size is taken from the patch's border
+        - `step` is the length of the extrusion. If step is a string (e.g. '2.'),
+          the length is given as number of average 'diameters'
+        - `dir` is the axis of the extrusion. if dir is None, dir is
+          the average normal of patch p
+        - `makecircular` if True makes the circular the extended section.
+
+        This is a convenient function to elongate tubular structures
+        such as arteries.
+        """
+        if type(p)==list:
+            for i in p:
+                self= self.patchextension(i,step,dir,makecircular,div)
+            return self
+
+        if type(p)!=int:
+            raise ValueError,"Expected one single integer as property number, got %s"%p
+
+
+        s1 = self.withProp(p)
+        a1, n1 = s1.areaNormals()
+        n1 = normalize(n1.sum(axis=0))
+        r1 = (a1.sum()/math.pi)**0.5
+        if type(step) == str:
+            step = 2.*r1*float(step)
+
+        if dir == None:
+            dir = n1
+
+        s1x = s1.translate(dir, step)
+
+        if makecircular:
+            c = s1x.compact().center()
+            s1x.coords = c + normalize(s1x.coords-c)*r1
+
+        b = s1.border()[0]
+        if div == None:
+            from plugins.curve import PolyLine
+            bb = PolyLine(coords = b[:, 0], closed=True)
+            avglen = bb.length()/(bb.nparts)
+            div = int(ceil(step/avglen))
+
+        bx = s1x.border()[0]
+        x = b.connect(bx, div=div).convert('tri3').setProp(self.maxProp()+1)
+        return self.withoutProp(p) + x + s1x
 
 
 ##########################################################################
