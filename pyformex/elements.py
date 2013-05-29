@@ -258,6 +258,7 @@ class ElementType(object):
             self.drawfaces = self.getFaces().reduceDegenerate()
         return self.drawfaces
 
+
     @classmethod
     def toMesh(self):
         """Convert the element type to a Mesh.

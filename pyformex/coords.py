@@ -1655,12 +1655,16 @@ class Coords(ndarray):
         """Find (almost) identical nodes and return a compressed set.
 
         This method finds the points that are very close and replaces them
-        with a single point. The return value is a tuple of two arrays:
+        with a single point.
 
-        - the unique points as a :class:`Coords` object with shape (npoints,3)
-        - an integer (nnod) array holding an index in the unique
-          coordinates array for each of the original nodes. This index will
-          have the same shape as the pshape() of the coords array.
+        Returns a tuple of two arrays:
+
+        - `coords`: the unique points as a :class:`Coords` object with shape
+          (npoints,3),
+        - `elems`: an int array holding an index in the unique
+          coordinates array for each of the original nodes. The shape of
+          the index array is equal to the shape of the input coords array
+          minus the last dimension (also given by self.pshape()).
 
         The procedure works by first dividing the 3D space in a number of
         equally sized boxes, with a mean population of ppb.

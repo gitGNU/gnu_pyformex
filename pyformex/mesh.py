@@ -2018,8 +2018,8 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
           The nodes of these elements will not take part to the smoothing.
           If exclnod and exclelem are used at the same time the union of them
           will be exluded from smoothing.
-        
-        -`weight` : it is a string  that can assume 2 values `inversedistance` and 
+
+        -`weight` : it is a string  that can assume 2 values `inversedistance` and
           `distance`. It allows to specify the weight of the adjancent points according
           to their distance to the point
         """
@@ -2288,6 +2288,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
         return V
 
+
     def lengths(self):
         """Return the length of all elements in a level-1 Mesh.
 
@@ -2311,7 +2312,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
         For a Mesh with eltype 'tri3', the areas are exact. For other
         eltypes, a conversion to 'tri3' is done before computing the areas.
-        This may produce an exact result, an approximated result or no result
+        This may produce an exact result, an approximate result or no result
         (if the conversion fails).
 
         If succesful, returns an (nelems,) float array with the areas.
