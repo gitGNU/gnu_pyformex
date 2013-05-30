@@ -40,6 +40,7 @@ It also contains some useful functions to create such models.
 """
 from __future__ import print_function
 
+from arraytools import groupPositions
 from coords import *
 from formex import Formex
 from connectivity import Connectivity
@@ -2284,8 +2285,8 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
         V = levelVolumes(M.coords[M.elems])
         if V is not None and M != self:
-            V = array([ V[where(M.prop==i)[0]].sum() for i in arange(self.nelems()) ])
-
+            index = groupPositions(M.prop,arange(self.nelems()))
+            V = array([ V[ind].sum() for ind in index ])
         return V
 
 
