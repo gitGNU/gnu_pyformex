@@ -50,53 +50,6 @@ def glObjType(nplex):
         return GL.GL_TRIANGLE_FAN
 
 
-## def computeMeshNormals(obj,avg=False,tol=None):
-##     """Compute the normals of a Mesh object"""
-##     if avg:
-##         if tol is None:
-##             tol = pf.cfg['render/avgnormaltreshold']
-##         return gt.averageNormals(obj.coords,obj.elems,False,tol)
-
-##     else:
-##         return computeFormexNormals(obj.toFormex())
-
-
-## def computeFormexNormals(obj,avg=False,tol=None):
-##     """Compute the normals of a Formex"""
-##     if avg:
-##         if tol is None:
-##             tol = pf.cfg['render/avgnormaltreshold']
-##         return computeMeshNormals(obj.toMesh(),avg,tol)
-
-##     else:
-##        return gt.polygonNormals(obj.coords)
-
-
-## def computeNormals(obj,avg=False,tol=None):
-##     """Compute the normals of the object to draw"""
-##     if isinstance(obj,Formex):
-##         return computeFormexNormals(obj,avg,tol)
-##     elif isinstance(obj,Mesh):
-##         return computeMeshNormals(obj,avg,tol)
-
-
-
-## def computeNormals(coords,elems,avg=True,tol=None):
-##     """Compute the normals of the object to draw
-
-##     """
-##     #avg = True  # Force average
-##     print("COMPUTE NORMALS: COORDS %s, ELEMS %s" % (coords.shape,elems.shape))
-##     if avg:
-##         if tol is None:
-##             tol = pf.cfg['render/avgnormaltreshold']
-##         normals = gt.averageNormals(coords,elems,True,tol)
-##     else:
-##         normals = gt.polygonNormals(coords)
-##     print("NORMALS: %s" % str(normals.shape))
-##     return normals
-
-
 class Drawable(Attributes):
     """Proposal for drawn objects
 
@@ -123,13 +76,12 @@ class Drawable(Attributes):
         'glmode', 'frontface', 'backface', 'vbo', 'ibo', 'nbo', 'cbo',
         ]
 
-    def __init__(self,**kargs):
+    def __init__(self,parent,**kargs):
         """Create a new drawable."""
 
-        print("DRAWABLE MODE %s" % kargs['glmode'])
         kargs = utils.selectDict(kargs,Drawable.attributes)
-        Attributes.__init__(self,kargs)
-
+        Attributes.__init__(self,kargs,default=parent)
+        print("ATTRIBUTES STORED IN DRAWABLE",self)
 
     def render(self,renderer):
         """Render the geometry of this object"""
@@ -181,6 +133,7 @@ class Drawable(Attributes):
             GL.glCullFace(GL.GL_FRONT)
 
         self.builtin = renderer.shader.builtin
+        print("Drawable.render: %s" % self.alpha)
         renderer.shader.loadUniforms(self)
         render_geom()
 
@@ -217,6 +170,7 @@ class Drawable(Attributes):
             print("REPLACED NBO")
 
 
+
 class GeomActor(Attributes):
     """Proposal for drawn objects
 
@@ -251,10 +205,7 @@ class GeomActor(Attributes):
 
         # Check it is something we can draw
         if not isinstance(obj,Mesh) and not isinstance(obj,Formex):
-            ## try:
-            ##     obj = obj.toFormex()
-            ## except:
-                raise ValueError,"Object is of type %s.\nCan only render Mesh, Formex and objects that can be converted to Formex" % type(obj)
+            raise ValueError,"Object is of type %s.\nCan only render Mesh, Formex and objects that can be converted to Formex" % type(obj)
         self.object = obj
 
         if isinstance(obj,Mesh): # should we store coords, elems and eltype?
@@ -267,9 +218,6 @@ class GeomActor(Attributes):
             elems = None
             eltype = obj.eltype
 
-        # Externally specified normals
-        ## if hasattr(obj,'normals'):
-        ##     self.normals = obj.normals
 
         # Get the local connectivity for drawing the edges/faces
         if eltype is not None:
@@ -345,16 +293,16 @@ class GeomActor(Attributes):
 
 
     @property
-    def normals(self):
+    def b_normals(self):
         """Return indiviual normals at all vertices of all elements"""
         if self._normals is None:
             self._normals = gt.polygonNormals(self.fcoords).astype(float32)
-            print("COMPUTE NORMALS: %s" % str(self._normals.shape))
+            print("COMPUTED NORMALS: %s" % str(self._normals.shape))
         return self._normals
 
 
     @property
-    def avgnormals(self):
+    def b_avgnormals(self):
         """Return averaged normals at the vertices"""
         if self._avgnormals is None:
             tol = pf.cfg['render/avgnormaltreshold']
@@ -412,27 +360,27 @@ class GeomActor(Attributes):
         if self.bkcolor is not None:
             # Draw both sides separately
             # First, front sides
-            self.drawable.append(Drawable(frontface=True,**self))
+            self.drawable.append(Drawable(self,frontface=True))
             # Make copy for back sides
             extra = Attributes(self)
             extra.colormode = self.bkcolor.ndim
             if extra.colormode == 1:
                 extra.objectColor = self.bkcolor
-            self.drawable.append(Drawable(backface=True,**extra))
+            self.drawable.append(Drawable(self,backface=True,**extra))
         else:
             # Just draw both sides at once
-            self.drawable.append(Drawable(**self))
+            self.drawable.append(Drawable(self))
 
 
     def setNormals(self,renderer):
         # Prepare the normals buffer objects for this actor
         if renderer.mode.startswith('smooth'):
             if renderer.canvas.settings.avgnormals:
-                normals = self.avgnormals
+                normals = self.b_avgnormals
                 print("AVG NORMALS %s" % str(normals.shape))
             else:
-               normals = self.normals
-               print("IND NORMALS %s" % str(normals.shape))
+                normals = self.b_normals
+                print("IND NORMALS %s" % str(normals.shape))
             self.nbo = VBO(normals)
         else:
             del self.nbo
@@ -493,18 +441,18 @@ class GeomActor(Attributes):
         self.bkcolor,self.bkcolormap = saneColorSet(color,colormap,self.object.shape)
 
 
-    def setAlpha(self,alpha,bkalpha):
+    def setAlpha(self,alpha,bkalpha=None):
         """Set the Actors alpha value."""
         try:
             self.alpha = float(alpha)
         except:
-            self.alpha = None
+            del self.alpha
         if bkalpha is None:
             bkalpha = alpha
         try:
             self.bkalpha = float(bkalpha)
         except:
-            self.bkalpha = None
+            del self.alpha
         self.opak = (self.alpha == 1.0) or (self.bkalpha == 1.0 )
 
 
@@ -519,6 +467,11 @@ class GeomActor(Attributes):
 
     def render(self,renderer):
         """Render the geometry of this object"""
+
+        if self.modified:
+            print("GeomActor.render: %s" % self.alpha)
+            renderer.shader.loadUniforms(self)
+            self.modified = False
 
         for obj in self.drawable:
             obj.render(renderer)

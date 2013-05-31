@@ -24,6 +24,18 @@
 #
 #
 
+from mydict import Dict
+class Test(Dict):
+    def __init__(self,*args,**kargs):
+        Dict.__init__(self,*args,**kargs)
+
+    __call__ = Dict.__getitem__
+
+
+print(callable(Test))
+
+exit()
+
 from opengl.drawable import *
 
 
