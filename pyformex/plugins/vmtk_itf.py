@@ -93,7 +93,6 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
     If return_data is True tuple cointaing the list of the names of the additional infomations
     per each point and an array cointaing all these values .
     """
-
     tmp = utils.tempFile(suffix='.stl').name
     tmp1 = utils.tempFile(suffix='.vtp').name
     tmp2 = utils.tempFile(suffix='.dat').name
@@ -131,6 +130,9 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
             pf.message(out)
             return None
     data, header = readVmtkCenterlineDat(tmp2)
+    os.remove(tmp)
+    os.remove(tmp1)
+    os.remove(tmp2)
     cl = Coords(data[:,:3])
     if return_data:
         print('Returning Array data with values:')
@@ -183,6 +185,48 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
     S = TriSurface.read(tmp1)
     os.remove(tmp1)
     return S
+
+
+def vmtkDistanceOfSurface(self,S):
+    """Find the distances of TriSurface S to the TriSurface self.
+
+    Retuns a tuple of vector and signed scalar distances for all points of S.
+    The signed distance is positive if the distance vector and the surface
+    normal have negative dot product, i.e. if S is outer with respect to self.
+    """
+    tmp = utils.tempFile(suffix='.stl').name
+    tmp1 = utils.tempFile(suffix='.stl').name
+    tmp2 = utils.tempFile(suffix='.dat').name
+    S.write(tmp,'stl')
+    self.write(tmp1,'stl')
+    cmd = 'vmtk vmtksurfacedistance -ifile %s -rfile %s -distancevectorsarray vec -signeddistancearray dist -ofile %s' % (tmp,tmp1,tmp2)
+    sta,out = utils.runCommand(cmd)
+    os.remove(tmp)
+    os.remove(tmp1)
+    if sta:
+        pf.message("An error occurred during the distance calculation.")
+        pf.message(out)
+        return None
+    data,header = readVmtkCenterlineDat(tmp2)
+    os.remove(tmp2)
+    X,vdist,sdist = Coords(data[:,:3]),data[:,3:6],data[:,6] # disordered points
+    reorderindex = X.match(S.coords)
+    vdist = vdist[reorderindex]
+    sdist = sdist[reorderindex]
+    return vdist,sdist
+
+
+def vmtkDistanceOfPoints(self,X):
+    """Find the distances of points X to the TriSurface self.
+
+    X is a (nX,3) shaped array of points.
+
+    Retuns a tuple of vector and signed scalar distances for all points.
+    The signed distance is positive if the distance vector and the surface
+    normal have negative dot product, i.e. if X is outer with respect to self.
+    """
+    S = TriSurface(X,arange(X.shape[0]).reshape(-1,1)*ones(3,dtype=int).reshape(1,-1))
+    return vmtkDistanceOfSurface(self,S)
 
 
 def install_trisurface_methods():
