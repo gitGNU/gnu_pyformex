@@ -30,7 +30,7 @@ import pyformex as pf
 
 import os,re,sys,tempfile,time
 
-from config import formatDict
+from mydict import formatDict
 
 # Software detection has been moved to software.py
 # We currently import everything from software here, for compatibility

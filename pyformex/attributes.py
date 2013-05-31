@@ -22,26 +22,40 @@ class Attributes(Dict):
     Giving an attribute the value None removes it from the dict.
     Any non-existing attribute returns None.
 
+
+
     Example:
 
     >>> A = Attributes()
     >>> print(A)
-    Dict({})
+    {}
     >>> A(color='red',alpha=0.7,ontop=True)
     >>> print(A)
-    Dict({'color': 'red', 'alpha': 0.7, 'ontop': True})
-    >>> A.alpha = None
-    >>> A.ontop=False
+    {'color': 'red', 'alpha': 0.7, 'ontop': True}
+    >>> A.ontop = None
+    >>> A.alpha = 0.8
     >>> print(A)
-    Dict({'color': 'red', 'ontop': False})
-    >>> print(A.color)
-    red
+    {'color': 'red', 'alpha': 0.8}
+    >>> B = Attributes({'color':'green'},default=A)
+    >>> print(B)
+    {'color': 'green'}
+    >>> print(B.color,B.alpha)
+    green 0.8
     >>> A.clear()
     >>> print(A)
-    Dict({})
+    {}
+    >>> print(B.color,B.alpha)
+    green None
     """
 
-    def __init__(self,data={},default=returnNone):
+    def __init__(self,data={},default=None):
+        """Create a new Attributes dict"""
+        if isinstance(default,Attributes):
+            self._default_dict_ = default
+            default = self._return_default_
+        else:
+            default = returnNone
+
         Dict.__init__(self,data,default)
 
     def __call__(self,**kargs):
@@ -55,5 +69,13 @@ class Attributes(Dict):
         else:
             self.__setitem__(key,value)
 
+
+    def _return_default_(self,key):
+        return self._default_dict_[key]
+
+
+    def __str__(self):
+        from utils import removeDict
+        return dict.__str__(removeDict(self,['_default_dict_']))
 
 # End
