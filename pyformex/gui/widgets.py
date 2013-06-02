@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -528,6 +528,13 @@ class InputBool(InputItem):
     if value evaluates to True. (Does not use the label)
     The value is either True or False,depending on the setting
     of the checkbox.
+
+    Options:
+
+    - `func`: an optional function to be called whenever the value is
+      changed. The function receives the input field as argument. With
+      this argument, the fields attributes like name, value, text, can
+      be retrieved.
     """
 
     def __init__(self,name,value,*args,**kargs):
@@ -541,7 +548,9 @@ class InputBool(InputItem):
         InputItem.__init__(self,name,*args,**kargs)
         self.setValue(value)
         self.layout().insertWidget(1,self.input)
-
+        self.func = kargs.get('func',None)
+        if 'func' in kargs:
+            self.input.stateChanged.connect(self.on_value_change)
 
     def text(self):
         """Return the displayed text."""
@@ -557,6 +566,10 @@ class InputBool(InputItem):
             self.input.setCheckState(QtCore.Qt.Checked)
         else:
             self.input.setCheckState(QtCore.Qt.Unchecked)
+
+    def on_value_change(self,val):
+        if self.func:
+            self.func(self)
 
 
 class InputList(InputItem):
@@ -1022,7 +1035,7 @@ class InputFSlider(InputFloat):
     - `ticks`: step for the tick marks (default range length / 10)
     - `func`: an optional function to be called whenever the value is
       changed. The function receives the input field as argument. With
-      this argument, the fields attirbutes like name, value, text, can
+      this argument, the fields attributes like name, value, text, can
       be retrieved.
     """
 
@@ -1151,6 +1164,13 @@ class InputColor(InputItem):
     The color input field is a button displaying the current color.
     Clicking on the button opens a color dialog, and the returned
     value is set in the button.
+
+    Options:
+
+    - `func`: an optional function to be called whenever the value is
+      changed. The function receives the input field as argument. With
+      this argument, the fields attributes like name, value, text, can
+      be retrieved.
     """
 
     def __init__(self,name,value,*args,**kargs):
@@ -1163,12 +1183,21 @@ class InputColor(InputItem):
         self.setValue(color)
         self.input.clicked.connect(self.setColor)
         self.layout().insertWidget(1,self.input)
+        self.func = kargs.get('func',None)
 
 
     def setColor(self):
-        color = getColor(self.input.text())
-        if color:
-            self.setValue(color)
+        dia = QtGui.QColorDialog(self.input.text(),self)
+        if self.func:
+            dia.currentColorChanged.connect(self.set_value)
+        dia.open(self,'set_value')
+
+
+    def set_value(self,val):
+        color = colors.colorName(val)
+        self.setValue(color)
+        if self.func:
+            self.func(self)
 
 
     def setValue(self,value):
