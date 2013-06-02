@@ -105,22 +105,41 @@ def run():
         CA.modified = True
         print(CA.alpha)
         pf.canvas.update()
-        sleep(0.2)
+        sleep(0.1)
+
+    CA.visible = False
+    pf.canvas.update()
+    sleep(0.5)
+    CA.visible = True
+    pf.canvas.update()
+    sleep(0.5)
+    print(CA.objectColor)
 
 
     def set_attr(field):
         actor = field.data
         key = field.text()
         val = field.value()
-        print(actor,key,val)
+        if key == 'objectColor':
+            print("VALUE %s" % val)
+            val = GLcolor(val)
+        print("%s: %s = %s" % (actor.name,key,val))
         setattr(actor,key,val)
         pf.canvas.update()
 
+    def obj_dialog(obj):
+        items = [
+            _I('name',obj.name),
+            _I('visible',True,func=set_attr,data=obj),
+            ]
+        if 'objectColor' in obj:
+            items.append(_I('objectColor',CA.objectColor,itemtype='color',min=0.0,max=100.0,scale=0.01,func=set_attr,data=CA))
+        if 'alpha' in obj:
+            items.append(_I('alpha',CA.alpha,itemtype='fslider',min=0.0,max=100.0,scale=0.01,func=set_attr,data=CA))
+        return Dialog(items)
 
-    dia = Dialog([
-        _I('alpha',CA.alpha,itemtype='fslider',min=0.0,max=100.0,scale=0.01,func=set_attr,data=CA),
-        ]
-    )
+
+    dia = obj_dialog(CA)
     dia.show()
 
     ## if checkWorkdir():

@@ -104,7 +104,6 @@ class Drawable(Attributes):
             self.ibo.bind()
 
         if self.nbo:
-            print("HAS NORMALS")
             self.nbo.bind()
             if self.builtin:
                 GL.glEnableClientState(GL.GL_NORMAL_ARRAY)
@@ -133,7 +132,6 @@ class Drawable(Attributes):
             GL.glCullFace(GL.GL_FRONT)
 
         self.builtin = renderer.shader.builtin
-        print("Drawable.render: %s" % self.alpha)
         renderer.shader.loadUniforms(self)
         render_geom()
 
@@ -469,7 +467,7 @@ class GeomActor(Attributes):
         """Render the geometry of this object"""
 
         if self.modified:
-            print("GeomActor.render: %s" % self.alpha)
+            #print("GeomActor.render: %s" % self.alpha)
             renderer.shader.loadUniforms(self)
             self.modified = False
 

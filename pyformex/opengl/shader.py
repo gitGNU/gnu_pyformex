@@ -169,11 +169,7 @@ class Shader(object):
             ]:
             for a in attribs:
                 v = D[a]
-                if a == 'alpha':
-                    print("Loading alpha=%s"%v)
                 if v is not None:
-                    if a == 'alpha':
-                        print("%s %s=%s"%(func,a,v))
                     func(a,v)
 
 
