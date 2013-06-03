@@ -695,13 +695,12 @@ def intersectionSWP(S,p,n,mode='all',return_all=False):
         if mode == 'all':
             wl,wt = where(ok)
         elif mode == 'pair':
+            S = S[ok]
             wl = wt = where(ok)[0]
 
     if len(t) > 0:
         if mode == 'all':
             S = S[:,newaxis]
-        elif mode == 'pair':
-            S = S[ok]
         x = pointsAtSegments(S,t)
         if x.ndim == 1:
             x = x.reshape(1,3)
