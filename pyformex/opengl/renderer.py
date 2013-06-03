@@ -130,6 +130,7 @@ class Renderer(object):
     def renderObjects(self,objects):
         """Render a list of objects"""
         for obj in objects:
+            GL.glDepthFunc(GL.GL_LESS)
             self.setDefaults()
 
             try:
