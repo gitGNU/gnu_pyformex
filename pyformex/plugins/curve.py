@@ -1090,11 +1090,9 @@ class BezierSpline(Curve):
       `control` argument.
     - `deriv` : array_like (npoints,3) or (2,3) or a list of 2 values
       one of which can be None and the other is a shape(3,) arraylike.
-        If specified, it gives the direction of the curve at all points or at
-      the endpoints only for a shape (2,3) array or only at one of the endpoints for a
-      list of shape(3,) arraylike and a None type.
-      In the latter case one direction is a shape(3,) arraylike while the other can be 
-      set to None.
+      If specified, it gives the direction of the curve at all points or at
+      the endpoints only for a shape (2,3) array or only at one of the 
+      endpoints for a list of shape(3,) arraylike and a None type.
       For points where the direction is left unspecified or where the
       specified direction contains a `NaN` value, the direction
       is calculated as the average direction of the two
