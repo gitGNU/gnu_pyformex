@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -126,7 +126,7 @@ def colorName(color):
     """Return a string designation for the color.
 
     color can be anything that is accepted by GLcolor.
-    In the current ijmplementation, the returned color name is the
+    In the current implementation, the returned color name is the
     WEBcolor (hexadecimal string).
 
     Examples:
@@ -138,6 +138,29 @@ def colorName(color):
     '#ff0080'
     """
     return WEBcolor(color)
+
+
+def luminance(color):
+    """Compute the luminance of a color.
+
+    This value can be use to compare contrast of colors to be used
+    as background and foreground for text.
+    """
+    lum = lambda c: ((c+0.055)/1.055) ** 2.4 if c > 0.03928 else c/12.92
+    R,G,B = map(lum,GLcolor(color))
+    return 0.2126 * R + 0.7152 * G + 0.0722 * B
+
+
+def rgbLuminance(color):
+    """Determine the luminance of a color
+
+    Returns a integer value representing the luminance of the color
+    for the human eye. This can be used to derive a good contrasting color.
+    For example, value lower than 128 contrast well with white, larger value
+    contrast better with black.
+    """
+    R,G,B = RGBcolor(color)
+    return ((R*299)+(G*587)+(B*114))/1000
 
 
 def createColorDict():
@@ -156,17 +179,6 @@ def RGBA(rgb,alpha=1.0):
     return GLcolor(rgb)+(alpha,)
 
 
-black   = (0.0, 0.0, 0.0)
-red     = (1.0, 0.0, 0.0)
-green   = (0.0, 1.0, 0.0)
-blue    = (0.0, 0.0, 1.0)
-cyan    = (0.0, 1.0, 1.0)
-magenta = (1.0, 0.0, 1.0)
-yellow  = (1.0, 1.0, 0.0)
-white   = (1.0, 1.0, 1.0)
-pyformex_pink = (1.0,0.2,0.4)
-
-
 def GREY(val,alpha=1.0):
     """Returns a grey OpenGL color of given intensity (0..1)"""
     return (val,val,val,1.0)
@@ -174,9 +186,29 @@ def GREY(val,alpha=1.0):
 def grey(i):
     return (i,i,i)
 
+black       = (0.0, 0.0, 0.0)
+red         = (1.0, 0.0, 0.0)
+green       = (0.0, 1.0, 0.0)
+blue        = (0.0, 0.0, 1.0)
+cyan        = (0.0, 1.0, 1.0)
+magenta     = (1.0, 0.0, 1.0)
+yellow      = (1.0, 1.0, 0.0)
+white       = (1.0, 1.0, 1.0)
+darkred     = (0.5, 0.0, 0.0)
+darkgreen   = (0.0, 0.5, 0.0)
+darkblue    = (0.0, 0.0, 0.5)
+darkcyan    = (0.0, 0.5, 0.5)
+darkmagenta = (0.5, 0.0, 0.5)
+darkyellow  = (0.5, 0.5, 0.0)
+
+pyformex_pink = (1.0,0.2,0.4)
+
 lightlightgrey = grey(0.9)
 lightgrey = grey(0.8)
 mediumgrey = grey(0.7)
 darkgrey = grey(0.5)
+
+palette = [ black,red,green,blue,cyan,magenta,yellow,white,
+            darkgrey,darkred,darkgreen,darkblue,darkcyan,darkmagenta,darkyellow,lightgrey ]
 
 # End

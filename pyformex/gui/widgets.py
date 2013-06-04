@@ -38,7 +38,7 @@ import colors
 import odict,mydict,olist
 import utils
 import warnings
-from arraytools import isInt
+import arraytools as at
 
 
 
@@ -1202,8 +1202,16 @@ class InputColor(InputItem):
 
     def setValue(self,value):
         """Change the widget's value."""
-        rgb = QtGui.QColor(value).getRgb()
-        self.input.setStyleSheet("* { background-color: rgb(%s,%s,%s) }" % rgb[:3])
+        col = QtGui.QColor(value)
+        col = colors.RGBcolor(col)
+        lc = colors.rgbLuminance(col)
+        if lc < 128:
+            tcol = colors.white
+        else:
+            tcol = colors.black
+        self.input.setStyleSheet(
+            "* { background-color: rgb(%s,%s,%s); color: rgb(%s,%s,%s) }" %
+            (tuple(col)+tuple(tcol)))
         self.input.setText(str(value))
 
 
@@ -1737,7 +1745,7 @@ class InputDialog(QtGui.QDialog):
 
             if itemtype == 'slider':
                 value = item['value']
-                if isInt(value):
+                if at.isInt(value):
                     pass
                 elif type(value) == float:
                     item['itemtype'] = 'fslider'
@@ -3193,7 +3201,7 @@ def addEffect(w,color=None):
 
 def addStyle(w,bgcolor=None):
     if bgcolor is not None:
-        w.setStyleSheet("background-color:%s;" % bgcolor)
+        w.setStyleSheet("* { background-color: rgb(%s,%s,%s); }" % bgcolor)
 
 
 class ButtonBox(QtGui.QWidget):
