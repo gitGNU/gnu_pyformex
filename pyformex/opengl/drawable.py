@@ -73,7 +73,7 @@ class Drawable(Attributes):
 
     # A list of acceptable attributes in the drawable
     attributes = Shader.uniforms + [
-        'glmode', 'frontface', 'backface', 'vbo', 'ibo', 'nbo', 'cbo',
+        'glmode', 'frontface', 'backface', 'vbo', 'ibo', 'nbo', 'cbo'
         ]
 
     def __init__(self,parent,**kargs):
@@ -91,6 +91,9 @@ class Drawable(Attributes):
                 GL.glDrawElementsui(self.glmode,self.ibo)
             else:
                 GL.glDrawArrays(self.glmode,0,asarray(self.vbo.shape[:-1]).prod())
+
+        self.builtin = renderer.shader.builtin
+        renderer.shader.loadUniforms(self)
 
         self.vbo.bind()
         if self.builtin:
@@ -131,8 +134,6 @@ class Drawable(Attributes):
             GL.glEnable(GL.GL_CULL_FACE)
             GL.glCullFace(GL.GL_FRONT)
 
-        self.builtin = renderer.shader.builtin
-        renderer.shader.loadUniforms(self)
         render_geom()
 
         GL.glDisable(GL.GL_CULL_FACE)
@@ -400,7 +401,9 @@ class GeomActor(Attributes):
         """Modify the actor according to the specified mode"""
 
         print("CHANGE TO MODE %s"%renderer.mode)
-        self.switchEdges(renderer.mode.endswith('wire'))
+        if renderer.mode == 'wireframe':
+            self.drawable = []
+        self.switchEdges('wire' in renderer.mode)
 
         print("PREPARED %s DRAWABLES" % len(self.drawable))
         for i,d in enumerate(self.drawable):

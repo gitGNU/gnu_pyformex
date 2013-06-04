@@ -90,6 +90,8 @@ class Renderer(object):
         """
         self.mode = mode
         for actor in self._objects:
+            actor.setNormals(self)
+            actor.createDrawables()            
             actor.changeMode(self)
 
 
