@@ -70,7 +70,7 @@ void main()
     } else {
       fvertexNormal = vertexNormal;
     }
-    fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * vertexNormal;
+    fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * fvertexNormal;
 
     vec3 nNormal = normalize(fTransformedVertexNormal);
     vec3 nlight = normalize(light);
