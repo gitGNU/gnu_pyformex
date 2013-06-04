@@ -216,20 +216,25 @@ class GeomActor(Attributes):
             elems = None
             eltype = obj.eltype
 
+        edges = None
 
         # Get the local connectivity for drawing the edges/faces
         if eltype is not None:
             eltype = elementType(eltype)
-            if eltype.ndim > 0 and eltype.name() not in [ 'point', 'line2', 'tri3', 'polygon' ]:
-                if eltype.ndim == 1:
-                    drawelems = eltype.getDrawEdges()[0]
-                else:
-                    drawelems = eltype.getDrawFaces()[0]
+            
+            if eltype.ndim > 1:
+                drawedges = eltype.getDrawEdges()[0]
+                drawelems = eltype.getDrawFaces()[0]
+                if elems is None:
+                    elems = arange(coords.npoints()).reshape(coords.shape[:2])
+                edges = elems[:,drawedges]
+                elems = elems[:,drawelems]
 
+            elif eltype.ndim > 0 and eltype.name() not in [ 'point', 'line2', 'polygon' ]:
+                drawelems = eltype.getDrawEdges()[0]
                 if elems is None:
                     elems = arange(coords.npoints()).reshape(coords.shape[:2])
                 elems = elems[:,drawelems]
-
 
         # Set drawing plexitude (may be different from object plexitude)
         if elems is None:
@@ -252,8 +257,9 @@ class GeomActor(Attributes):
         if elems is None:
             self._fcoords = coords
         else:
-            self._coords = coords
+            self._coords = coords.reshape(-1,3)
             self._elems = elems.astype(int32)
+        self._edges = edges
 
         # Currently do everything in Formex model
         self.vbo = VBO(self.fcoords)
@@ -291,10 +297,15 @@ class GeomActor(Attributes):
 
 
     @property
+    def edges(self):
+        return self._edges
+
+
+    @property
     def b_normals(self):
         """Return indiviual normals at all vertices of all elements"""
         if self._normals is None:
-            self._normals = gt.polygonNormals(self.fcoords).astype(float32)
+            self._normals = gt.polygonNormals(self.fcoords.reshape(-1,self.nplex,3)).astype(float32)
             print("COMPUTED NORMALS: %s" % str(self._normals.shape))
         return self._normals
 
@@ -401,29 +412,26 @@ class GeomActor(Attributes):
         """Add or remove the edges depending on rendering mode"""
         if on:
             # Create a drawable for the edges
-            if self.nplex > 1 and isinstance(self.object,Mesh):
-                if self._edges is None:
-                    edges = self.object.getEdges()
-                    print(edges)
-                    if len(edges) > 0:
-                        extra = Attributes(self)
-                        extra.colormode = 1
-                        extra.objectColor = black
-                        extra.opak = True
-                        extra.lighting = False
-                        extra.elems = edges
-                        extra.glmode = glObjType(2)
-                        extra.ibo = VBO(edges.astype(int32),target=GL.GL_ELEMENT_ARRAY_BUFFER)
-                        # store, so we can switch on/off
-                        self._edges = Drawable(**extra)
-                        print("CREATED EDGES")
-            if self._edges:
+            if self.edges is not None and self._wire is None:
+                extra = Attributes(self)
+                extra.colormode = 1
+                extra.objectColor = black
+                extra.opak = True
+                extra.lighting = False
+                extra.elems = self.edges
+                extra.glmode = glObjType(2)
+                extra.vbo = VBO(self.coords)
+                extra.ibo = VBO(self.edges.astype(int32),target=GL.GL_ELEMENT_ARRAY_BUFFER)
+                # store, so we can switch on/off
+                self._wire = Drawable(extra)
+                print("CREATED EDGES")
+            if self._wire:
                 print("ADDING EDGES")
-                self.drawable.append(self._edges)
+                self.drawable.append(self._wire)
         else:
-            if self._edges and self._edges in self.drawable:
+            if self._wire and self._wire in self.drawable:
                 print("REMOVING EDGES")
-                self.drawable.remove(self._edges)
+                self.drawable.remove(self._wire)
 
 
     def setColor(self,color,colormap=None):
