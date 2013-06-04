@@ -227,14 +227,16 @@ class GeomActor(Attributes):
                 drawedges = eltype.getDrawEdges()[0]
                 drawelems = eltype.getDrawFaces()[0]
                 if elems is None:
-                    elems = arange(coords.npoints()).reshape(coords.shape[:2])
+                    coords,elems = coords.fuse()
+##                    elems = arange(coords.npoints()).reshape(coords.shape[:2])
                 edges = elems[:,drawedges]
                 elems = elems[:,drawelems]
 
             elif eltype.ndim > 0 and eltype.name() not in [ 'point', 'line2', 'polygon' ]:
                 drawelems = eltype.getDrawEdges()[0]
                 if elems is None:
-                    elems = arange(coords.npoints()).reshape(coords.shape[:2])
+                    coords,elems = coords.fuse()
+##                    elems = arange(coords.npoints()).reshape(coords.shape[:2])
                 elems = elems[:,drawelems]
 
         # Set drawing plexitude (may be different from object plexitude)
@@ -316,7 +318,7 @@ class GeomActor(Attributes):
         """Return averaged normals at the vertices"""
         if self._avgnormals is None:
             tol = pf.cfg['render/avgnormaltreshold']
-            self._avgnormals = gt.averageNormals(self.coords,self.elems,False,tol).astype(float32)
+            self._avgnormals = gt.averageNormals(self.coords,self.elems.reshape(-1,self.nplex),False,tol).astype(float32)
             print("COMPUTE AVGNORMALS: %s" % str(self._avgnormals.shape))
         return self._avgnormals
 
