@@ -5,7 +5,7 @@
 
 
 [ -d "www/CVS" ] || {
-    echo "This script is intended for the project manaager only!"
+    echo "This script is intended for the project manager only!"
     exit
 }
 cd www
@@ -27,4 +27,3 @@ cvs -qn update
 
 cd ..
 rm -f update.log update.out update.del update.add
-

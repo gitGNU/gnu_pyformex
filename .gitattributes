@@ -1,3 +1,4 @@
 *.py	filter=idexpansion
 *.c 	filter=idexpansion
 *.conf 	filter=idexpansion
+*.rst   filter=idexpansion

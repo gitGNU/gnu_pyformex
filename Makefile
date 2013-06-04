@@ -195,7 +195,7 @@ ${SPHINXDIR}/conf.py: RELEASE
 	sed -i "s|^version =.*|version = '${VERSION}'|;s|^release =.*|release = '${RELEASE}'|" $@
 
 setup.py: RELEASE
-	sed -i "s|version='.*'|version='${RELEASE}'|" $@
+	sed -i "s|__RELEASE__ = '.*'|__RELEASE__ = '${RELEASE}'|" $@
 
 ${LIBDIR}/%.c: RELEASE
 	sed -i 's|${VERSIONSTRING}|${NEWVERSIONSTRING}|' $@
@@ -225,7 +225,10 @@ stampstaticdirs: Stamp.staticdir
 	${STAMP} -t$< -i ${STATICDIRS}
 
 # Create the distribution
-dist: manpages ${PKGDIR}/${LATEST} clean
+cleandist:
+	rm ${PKGDIR}/${PKGVER}
+
+dist: cleandist manpages ${PKGDIR}/${LATEST} clean
 
 # Sign the distribution
 signdist: ${PKGDIR}/${PKGVER}.sig

@@ -53,6 +53,9 @@ elif sys.version_info >= (3, 0):
 # define the things to include
 from manifest import *
 
+# pyFormex release
+__RELEASE__ = '0.9.1a1'
+
 # The acceleration libraries
 LIB_MODULES = [ 'drawgl_', 'misc_', 'nurbs_' ]
 
@@ -141,6 +144,9 @@ def run_setup(with_cext):
     import numpy
     INCLUDE.append(numpy.get_include()),
 
+    with open('Description') as file:
+        long_description = file.read()
+
     PKG_DATA = [
         'pyformexrc',
         'icons/README',
@@ -159,25 +165,13 @@ def run_setup(with_cext):
         'sdist':sdist
         },
           name='pyformex',
-          version='0.9.1a1',
-          description='program to create 3D geometry from Python scripts.',
-          long_description="""
-    pyFormex can be used to generate, transform and manipulate large
-    geometrical models of 3D structures by sequences of mathematical operations.
-    Unlike traditional CAD systems, pyFormex provides a powerful (Python based)
-    scripting language as the basic user input, making it very well suited
-    for automated and repeated (parametric) design procedures.
-    It provides a wide range of operations on meshes, like STL type triangulated
-    surfaces and FEA or CFD grids. Nurbs curves and surfaces are under
-    development.
-    pyFormex is often used to create models from medical scan images, or as a
-    pre- and post-processor for Finite Element analysis programs. But it could
-    just as well be used to just create some nice 3D renderings.
-    """,
+          version=__RELEASE__,
+          description='program to create 3D geometry from Python scripts',
+          long_description=long_description,
           author='Benedict Verhegghe',
           author_email='benedict.verhegghe@ugent.be',
           url='http://pyformex.org',
-          download_url='http://download.savannah.gnu.org/releases/pyformex/',
+          download_url='http://download.savannah.gnu.org/releases/pyformex/pyformex-%s.tar.gz' % __RELEASE__,
           license='GNU General Public License (GPL)',
           packages=[
               'pyformex',
@@ -208,7 +202,7 @@ def run_setup(with_cext):
               'Topic :: Scientific/Engineering :: Visualization',
               'Topic :: Scientific/Engineering :: Physics',
               ],
-          requires=['numpy','OpenGL','PyQt4'],
+#          requires=['numpy','OpenGL','PyQt4 | PySide'],
           include_dirs=INCLUDE,
           **kargs
           )
