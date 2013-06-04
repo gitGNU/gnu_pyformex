@@ -231,7 +231,7 @@ def createMenuData():
     if pf.installtype in 'SG':
         pyformexdir = pf.cfg['pyformexdir']
         devtodo = os.path.join(pyformexdir,"..","TODO")
-        devhowto = os.path.join(pyformexdir,"..","HOWTO-dev.rst")
+        devhowto = os.path.join(pyformexdir,"..","HOWTO.dev")
         devapp = os.path.join(pyformexdir,"..","scripts-apps.rst")
         devextra = os.path.join(pyformexdir,"..","install-extra.rst")
         #print pf.refcfg.help['developer']

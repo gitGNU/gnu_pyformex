@@ -29,6 +29,8 @@
   This document is written in ReST. To see a nicely formatted PDF version
   you can compile this document with the rst2pdf command.
 
+.. _`homepage`: http://pyformex.nongnu.org
+.. _`install guide`: http://pyformex.nongnu.org/doc/install.html
 
 =============================
 HOWTO for pyFormex developers
@@ -101,11 +103,11 @@ have internet connection from your Linux system.
 .. note:: We should describe alternative linux systems here
 
 - In order to run pyFormex, you need to have some other software packages
-  installed on your computer. See the :doc:`install` guide in the documentation
+  installed on your computer. See the `install guide`_ in the documentation
   for a full list of the prerequisites. On a Debian system you can install these
   with::
 
-  apt-get install python-dev python-numpy python-opengl python-qt4-gl
+    apt-get install python-dev python-numpy python-opengl python-qt4-gl
 
 - You certainly need to (learn to) use a decent text editor. pyFormex
   code, documentation, website, tools: everything is based on source text
@@ -130,7 +132,7 @@ have internet connection from your Linux system.
   by pyFormex. And the graphical tool `gitk` may also be helpful.
   To install on Debian GNU/Linux::
 
-  apt-get install git gitk
+    apt-get install git gitk
 
 - Configure git by setting your user name and email address::
 
@@ -560,145 +562,6 @@ version::
 
   git co -- pyformex/plugins/trisurface.py
 
-Using the subversion repository
-===============================
-
-.. warning: This is deprecated and retained here only for reference.
-
-Developer access
-----------------
-
-Checking out a Subversion repository means creating a local copy on your
-machine, where you can work on and make change and test them out. When you
-are satisfied, you can then commit (checkin) your changes back to the repository
-so that other users can enjoy your work too.
-
-To checkout the latest revision of the pyFormex repository, use the following
-command, replacing *USER* with you username on Savannah::
-
-  svn co svn+ssh://USER@svn.savannah.nongnu.org/pyformex/trunk pyformex
-
-This will checkout the subdirectory *trunk* of the pyFormex repository and put
-it in a subdirectory *pyformex* of your current path. Most users put this under
-their home directory. You can use any other target directory name if you wish.
-
-The above command will always checkout the latest version, but sometimes you
-may need to have an older revision, e.g. to diagnose a bug in that particular
-revision or to run a script that only works with that version. Just specify the
-requested revision number in the command. We recommend to use a target
-directory name reflecting that value::
-
-  svn co svn+ssh://USER@svn.savannah.nongnu.org/pyformex/trunk -r NUMBER pyformex-rNUMBER
-
-The trunk is only part of the pyFormex repository, but it is the part where all current development takes place. Other parts are *tags* and *branches*. In *tags* you can find every released version. The following command checks out the version of the pyFormex release 0.8.4::
-
-  svn co svn+ssh://USER@svn.savannah.nongnu.org/pyformex/tags/0.8.4 pyformex-0.8.4
-
-*branches* is used for temporary experiments and for non-compatible development paths. We will show further how to create a new branch. Their use should be restricted though, because merging changes between branches is quite complicated.
-
-The commands shown here give you full developer access (read and write) to the repository.
-You should be aware though that anybody (including developers) can checkout
-the whole pyFormex repository by anonymous access (see below).
-This means that everything that you commit (checkin) to the repository, constitues an immediate worldwide distribution.
-
-.. warning:: Never put anything in the repository that is not meant to be distributed worldwide!
-
-
-After you have created a checkout, you can start working in your local
-version, make changes, contribute these changes back to the central
-repository and/or import the changes made by others. While we refer
-to the Subversion manual for full details, we describe here some of the
-most used and useful commands. These commands should normally be executed
-in the top level directory of your checkout.
-
-- Update your local copy to the latest revision::
-
-    svn up
-
-  This will import the changes made to the repository by other developers
-  (or by you from another checkout). You can also use this command to revert
-  your tree to any previous version, by adding the revision number::
-
-    svn up -r NUMBER
-
-- After you have made some changes and are convinced that they form a
-  working improvement, you can check your modifications back into the
-  repository using::
-
-    svn ci
-
-  You will be asked to enter a message to describe the changes you've made.
-  This uses a default or configured editor (can be set in `.ssh/config`).
-  See `Subversion commit messages`_ below for suggestions on how
-  to construct the message. After you finished the message, your changes
-  are uploaded to the repository.
-
-- Adding a new file ::
-
-    svn add FILENAME
-
-- Create a branch *MYBRANCH* of the current subversion archive (do not do this lightly: merging changes between branches can be a tidious work) ::
-
-   svn copy svn+ssh://USER@svn.savannah.nongnu.org/pyformex/trunk \
-     svn+ssh://USER@svn.savannah.nongnu.org/pyformex/branches/MYBRANCH \
-     -m "Creating a branch for some purpose"
-
-- See what you have changed::
-
-    svn diff
-
-- If you do not want to go ahead with the changes you've made to a file, you
-  can revert them::
-
-    svn revert FILENAME
-
-- Change your local directory to another branch ::
-
-   svn switch svn+ssh://USER@svn.savannah.nongnu.org/pyformex/branches/mybranch
-
-- Show information about your local copy::
-
-    svn info
-
-- Convert your local tree to reflect a change in repository server (the *OLDURL* can be found from the *svn info* command ::
-
-   svn switch --relocate OLDURL NEWURL
-
-
-Dealing with problems
----------------------
-Some possible problems during ``svn up`` operation:
-
-- Conflict::
-
-    Conflict discovered in 'SOME_FILE'.
-    Select: (p) postpone, (df) diff-full, (e) edit,
-            (mc) mine-conflict, (tc) theirs-conflict,
-            (s) show all options: tc
-
-  If your version of SOME_FILE contains changes you have made (and
-  want to keep), the best thing is to postpone (p) and resolve the conflicts
-  after the update operation has finished. You may use 'df' first to see if
-  your changes are worthwile keeping.
-
-  If you know however that your changes are not important, you can just use
-  'tc' to remove your version and get the changes from the repository.
-
-- Blocked by unversioned file::
-
-    svn: Failed to add file 'SOME_FILE': an unversioned file of the same
-    name already exists.
-
-  If your version of SOME_FILE contains changes you have made (and
-  want to keep), move the file away to some other name. Then repeat
-  the ``svn up`` command. When the ``svn up`` ended successfully,
-  merge your changes back into SOME_FILE.
-
-  If the file didn't contain any important changes you want to keep,
-  just remove the file and ``svn up`` again.
-
-
-
 
 
 Using the *make* command
@@ -981,7 +844,7 @@ users that want a stable system and are not doing development work.
 
 Distribution of pyFormex is done in the form of a 'tarball' (.tar.gz) archive.
 You need to have `python-svn` and `python-docutils` installed to create the
-distribution tarball. Also, you need to create a subdirectory `dist' in
+distribution tarball. Also, you need to create a subdirectory `dist` in
 your pyFormex source tree.
 
 Before creating an official distribution, checkin your last modifications and
@@ -1328,6 +1191,7 @@ First, create the distribution and test it out locally: both the installation pr
 
     pyFormex 0.9.0 (0.8.9r5-249-ga162aca)
                             ^^^
+
   In this example we have 249 past release 0.8.9 (actually 0.8.9-r5, but this
   had the same revision number as 0.8.9). Release 0.8.9 was revision 2557,
   thus the new revision number is 2557 + 249 = 2806.
