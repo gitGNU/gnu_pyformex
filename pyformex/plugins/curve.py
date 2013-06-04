@@ -1088,9 +1088,11 @@ class BezierSpline(Curve):
       for a closed curve, npoints = nparts.
       If not specified, the on-curve points should be included in the
       `control` argument.
-    - `deriv` : array_like (npoints,3) or (2,3)
+    - `deriv` : array_like (npoints,3) or a list of 2 arraylike of shape (3,)
+      one of which can be None.
       If specified, it gives the direction of the curve at all points or at
-      the endpoints only for a shape (2,3) array.
+      the endpoints only for a shape (2,3) array or only at one of the endpoints for a
+      list of shape(3,) arraylike and a None type.
       For points where the direction is left unspecified or where the
       specified direction contains a `NaN` value, the direction
       is calculated as the average direction of the two
@@ -1231,11 +1233,14 @@ class BezierSpline(Curve):
                     if deriv is None:
                         deriv = array([[nan,nan,nan]]*ncoords)
                     else:
+                        for id,d in enumerate(deriv):
+                            if d is None:
+                                deriv[id] = [nan,nan,nan]
                         deriv = Coords(deriv)
                         nderiv = deriv.shape[0]
                         if nderiv < ncoords:
-                            if nderiv != 2:
-                                raise ValueError,"Either all or 2 directions expected (got %s)" % nderiv
+                            if nderiv !=2 :
+                                raise ValueError,"Either all or at least the initial and/or the final directions expected (got %s)" % nderiv
                             deriv = concatenate([
                                 deriv[:1],
                                 [[nan,nan,nan]]*(ncoords-2),
