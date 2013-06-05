@@ -145,7 +145,7 @@ class Canvas(object):
         Furthermore, if a Canvas method do_ATTR is defined, it will be called
         with the old and new toggle state as a parameter.
         """
-        #print("Toggling %s = %s"%(attr,state),pf.DEBUG.CANVAS)
+        #print("CANVAS.setTogggle %s = %s"%(attr,state))
         oldstate = self.settings[attr]
         if state not in [True,False]:
             state = not oldstate
@@ -169,12 +169,8 @@ class Canvas(object):
 
 
     def do_avgnormals(self,state,oldstate):
-        print("Toggling avgnormals: %s, %s -> %s" % (self.rendermode,state,oldstate))
-        if state!=oldstate and self.rendermode.startswith('smooth'):
-            ## if self.settings.avgnormals:
-            ##     self.rendermode = 'smooth_avg'
-            ## else:
-            ##     self.rendermode = 'smooth'
+        print("CANVAS.do_avgnormals: %s, %s -> %s" % (self.rendermode,state,oldstate))
+        if state!=oldstate and self.settings.lighting:
             self.renderer.changeNormals(self)
             self.display()
 

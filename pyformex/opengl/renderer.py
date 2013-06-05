@@ -88,10 +88,11 @@ class Renderer(object):
         This method should be called to update the actors on a rendering
         mode change.
         """
+        print("RENDERER.changeMode")
         self.mode = mode
         for actor in self._objects:
             actor.setNormals(self)
-            actor.createDrawables()            
+            actor.createDrawables()
             actor.changeMode(self)
 
 
@@ -101,6 +102,7 @@ class Renderer(object):
         This method should be called to update the actors on a normals
         mode change.
         """
+        print("RENDERER.changeNormals")
         for actor in self._objects:
             actor.setNormals(self)
             actor.createDrawables()

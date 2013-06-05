@@ -222,7 +222,7 @@ class GeomActor(Attributes):
         # Get the local connectivity for drawing the edges/faces
         if eltype is not None:
             eltype = elementType(eltype)
-            
+
             if eltype.ndim > 1:
                 drawedges = eltype.getDrawEdges()[0]
                 drawelems = eltype.getDrawFaces()[0]
@@ -386,16 +386,18 @@ class GeomActor(Attributes):
 
     def setNormals(self,renderer):
         # Prepare the normals buffer objects for this actor
-        if renderer.mode.startswith('smooth'):
+        #if renderer.mode.startswith('smooth'):
+        print("DRAWABLE.setNormals")
+        if renderer.canvas.settings.lighting:
             if renderer.canvas.settings.avgnormals:
                 normals = self.b_avgnormals
-                print("AVG NORMALS %s" % str(normals.shape))
+                #print("AVG NORMALS %s" % str(normals.shape))
             else:
                 normals = self.b_normals
-                print("IND NORMALS %s" % str(normals.shape))
+                #print("IND NORMALS %s" % str(normals.shape))
             self.nbo = VBO(normals)
-        else:
-            del self.nbo
+#        else:
+#            del self.nbo
         print("NBO:%s" % self.nbo)
 
 
