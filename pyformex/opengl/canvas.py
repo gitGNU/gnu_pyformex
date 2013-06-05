@@ -161,17 +161,26 @@ class Canvas(object):
         self.setToggle('lighting',onoff)
 
 
+    def do_alphablend(self,state,oldstate=None):
+        """Toggle alphablend on/off."""
+        if state != oldstate:
+            self.renderer.changeMode()
+            self.display()
+
+
     def do_lighting(self,state,oldstate=None):
         """Toggle lights on/off."""
         #print("TOGGLING LIGHTING %s %s"%(state,oldstate))
         if state != oldstate:
             self.enable_lighting(state)
+            self.renderer.changeMode()
+            self.display()
 
 
     def do_avgnormals(self,state,oldstate):
         print("CANVAS.do_avgnormals: %s, %s -> %s" % (self.rendermode,state,oldstate))
         if state!=oldstate and self.settings.lighting:
-            self.renderer.changeNormals(self)
+            self.renderer.changeMode()
             self.display()
 
 

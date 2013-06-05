@@ -92,30 +92,16 @@ class Renderer(object):
         print("NEW BBOX: %s" % self.bbox)
 
 
-    def changeMode(self,mode):
+    def changeMode(self,mode=None):
         """This function is called when the rendering mode is changed
 
         This method should be called to update the actors on a rendering
         mode change.
         """
         print("RENDERER.changeMode")
-        self.mode = mode
+        if mode:
+            self.mode = mode
         for actor in self._objects:
-            actor.setNormals(self)
-            actor.createDrawables()
-            actor.changeMode(self)
-
-
-    def changeNormals(self,avg):
-        """This function is called when the normals mode is changed
-
-        This method should be called to update the actors on a normals
-        mode change.
-        """
-        print("RENDERER.changeNormals")
-        for actor in self._objects:
-            actor.setNormals(self)
-            actor.createDrawables()
             actor.changeMode(self)
 
 

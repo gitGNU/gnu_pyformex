@@ -73,7 +73,8 @@ class Drawable(Attributes):
 
     # A list of acceptable attributes in the drawable
     attributes = Shader.uniforms + [
-        'glmode', 'frontface', 'backface', 'vbo', 'ibo', 'nbo', 'cbo'
+        'glmode', 'frontface', 'backface', 'vbo', 'ibo', 'nbo', 'cbo',
+        'color',
         ]
 
     def __init__(self,parent,**kargs):
@@ -82,6 +83,32 @@ class Drawable(Attributes):
         kargs = utils.selectDict(kargs,Drawable.attributes)
         Attributes.__init__(self,kargs,default=parent)
         print("ATTRIBUTES STORED IN DRAWABLE",self)
+        self.prepareColor()
+
+
+    def prepareColor(self):
+        """Prepare the colors for the shader."""
+        # Set derived uniforms for shader
+        # colormode:
+        # 0 = None
+        # 1 = object
+        # 2 = element
+        # 3 = vertex
+        if self.color is None:
+            self.colormode = 0
+        else:
+            self.colormode = self.color.ndim
+        if self.colormode == 1:
+            self.objectColor = self.color
+        elif self.colormode == 2:
+            self.elemColor = self.color
+        elif self.colormode == 3:
+            self.vertexColor = self.color
+
+        if self.vertexColor is not None:
+            self.cbo = VBO(self.vertexColor.astype(int32))
+        print("SELF.COLORMODE = %s %s" % (self.colormode,self.color))
+
 
     def render(self,renderer):
         """Render the geometry of this object"""
@@ -339,28 +366,6 @@ class GeomActor(Attributes):
         self.setLineWidth(self.linewidth)
         self.setLineStipple(self.linestipple)
 
-        # Set derived uniforms for shader
-        # colormode:
-        # 0 = None
-        # 1 = object
-        # 2 = element
-        # 3 = vertex
-        if self.color is None:
-            self.colormode = 0
-        else:
-            self.colormode = self.color.ndim
-        if self.colormode == 1:
-            self.objectColor = self.color
-        elif self.colormode == 2:
-            self.elemColor = self.color
-        elif self.colormode == 3:
-            self.vertexColor = self.color
-
-        if self.vertexColor is not None:
-            self.cbo = VBO(self.vertexColor.astype(int32))
-
-        self.setNormals(renderer)
-        self.createDrawables(renderer)
         self.changeMode(renderer)
 
         #### CHILDREN ####
@@ -368,10 +373,26 @@ class GeomActor(Attributes):
             child.prepare(renderer)
 
 
-    def createDrawables(self,renderer):
+    def _prepareNormals(self,renderer):
+        """Prepare the normals buffer object for the actor.
+
+        The normals buffer object depends on the renderer settings:
+        lighting, avgnormals
+        """
+        if renderer.canvas.settings.lighting:
+            if renderer.canvas.settings.avgnormals:
+                normals = self.b_avgnormals
+            else:
+                normals = self.b_normals
+            self.nbo = VBO(normals)
+
+
+    def _createDrawables(self,renderer):
         self.drawable = []
         #### BACK COLOR ####
-        if self.bkcolor is not None or self.bkalpha is not None or renderer.canvas.settings.alphablend > 0.0:
+        if ( self.bkcolor is not None or
+             self.bkalpha is not None or
+             renderer.canvas.settings.alphablend ):
             # Draw both sides separately
             # First, front sides
             self.drawable.append(Drawable(self,frontface=True))
@@ -380,44 +401,22 @@ class GeomActor(Attributes):
             if self.bkalpha is not None:
                 extra.alpha = self.alpha
             if self.bkcolor is not None:
-                extra.colormode = self.bkcolor.ndim
-                if extra.colormode == 1:
-                    extra.objectColor = self.bkcolor
+                extra.color = self.bkcolor
+            # !! What about colormap?
             self.drawable.append(Drawable(self,backface=True,**extra))
         else:
             # Just draw both sides at once
             self.drawable.append(Drawable(self))
 
 
-    def setNormals(self,renderer):
-        # Prepare the normals buffer objects for this actor
-        #if renderer.mode.startswith('smooth'):
-        print("DRAWABLE.setNormals")
-        if renderer.canvas.settings.lighting:
-            if renderer.canvas.settings.avgnormals:
-                normals = self.b_avgnormals
-                #print("AVG NORMALS %s" % str(normals.shape))
-            else:
-                normals = self.b_normals
-                #print("IND NORMALS %s" % str(normals.shape))
-            self.nbo = VBO(normals)
-#        else:
-#            del self.nbo
-        print("NBO:%s" % self.nbo)
-
-
     def changeMode(self,renderer):
         """Modify the actor according to the specified mode"""
-
-        #print("CHANGE TO MODE %s"%renderer.mode)
-        if renderer.mode == 'wireframe':
-            self.drawable = []
+        print("DRAWABLE.changeMode")
+        self._prepareNormals(renderer)
+        self._createDrawables(renderer)
+        #if renderer.mode == 'wireframe':
+        #    self.drawable = []
         self.switchEdges('wire' in renderer.mode)
-
-        #print("PREPARED %s DRAWABLES" % len(self.drawable))
-        #for i,d in enumerate(self.drawable):
-        #    print(i,d)
-
 
 
     def switchEdges(self,on):
@@ -425,17 +424,15 @@ class GeomActor(Attributes):
         if on:
             # Create a drawable for the edges
             if self.edges is not None and self._wire is None:
-                extra = Attributes(self)
-                extra.colormode = 1
-                extra.objectColor = black
+                extra = Attributes()
+                extra.color = array(black)
                 extra.opak = True
                 extra.lighting = False
-                extra.elems = self.edges
                 extra.glmode = glObjType(2)
                 extra.vbo = VBO(self.coords)
                 extra.ibo = VBO(self.edges.astype(int32),target=GL.GL_ELEMENT_ARRAY_BUFFER)
                 # store, so we can switch on/off
-                self._wire = Drawable(extra)
+                self._wire = Drawable(self,**extra)
                 print("CREATED EDGES")
             if self._wire:
                 print("ADDING EDGES")
@@ -448,16 +445,12 @@ class GeomActor(Attributes):
 
     def setColor(self,color,colormap=None):
         """Set the color of the Actor."""
-        #print("OBJECT COLOR= %s" % str(color))
-        #print("OBJECT COLORMAP= %s" % str(colormap))
-        #print("OBJECT SHAPE= %s" % str(self.object.shape))
         self.color,self.colormap = saneColorSet(color,colormap,self.object.coords.shape)
 
 
     def setBkColor(self,color,colormap=None):
         """Set the backside color of the Actor."""
         self.bkcolor,self.bkcolormap = saneColorSet(color,colormap,self.object.shape)
-        print("BACK COLOR",self.bkcolor)
 
 
     def setAlpha(self,alpha,bkalpha=None):
