@@ -1209,6 +1209,7 @@ class InputColor(InputItem):
             tcol = colors.white
         else:
             tcol = colors.black
+        tcol = colors.RGBcolor(tcol)
         self.input.setStyleSheet(
             "* { background-color: rgb(%s,%s,%s); color: rgb(%s,%s,%s) }" %
             (tuple(col)+tuple(tcol)))
