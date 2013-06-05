@@ -39,6 +39,7 @@ from coords import bbox
 import numpy as np
 from OpenGL import GL
 from shader import Shader
+from attributes import Attributes
 
 from drawable import GeomActor
 
@@ -49,6 +50,15 @@ class Renderer(object):
         self.camera = canvas.camera
         self.canvas.makeCurrent()
         self.mode = canvas.rendermode
+        # collect settings that are not in self.canvas.settings (yet)
+        self.settings = Attributes({
+            'ambient': 0.3,
+            'diffuse': 0.8,
+            'specular': 0.3,
+            'shininess': 10.0,
+            'light': (0.,1.,1.),
+            'speccolor': (1.,1.,0.8),
+            })
 
         if shader is None:
             shader = Shader()
@@ -110,25 +120,30 @@ class Renderer(object):
 
 
     def setDefaults(self):
-        """Set all the uniforms to default values."""
-        #self.shader.loadUniforms(self.canvas.settings)
+        """Set the GL context and the shader uniforms to default values."""
+        # FIRST, the context
+        GL.glLineWidth(self.canvas.settings.linewidth)
+        # Enable setting pointsize in the shader
+        # Maybe we should do pointsize with gl context?
+        GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
+        # NEXT, the shader uniforms
+        # When all attribute names are correct, this could be done with a
+        # single statement like
+        #   self.shader.loadUniforms(self.canvas.settings)
         #print("DEFAULTS",self.canvas.settings)
         self.shader.uniformInt('builtin',1)
         self.shader.uniformFloat('lighting',self.canvas.settings.lighting)
         self.shader.uniformInt('colormode',1)
         self.shader.uniformVec3('objectColor',self.canvas.settings.fgcolor)
-        self.shader.uniformFloat('alpha',0.5)
-        GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
-        GL.glLineWidth(5.) #self.canvas.settings.linewidth)
-        # Should do pointsize with gl context?
-        self.shader.uniformFloat('pointsize',5.0)
-        self.shader.uniformFloat('ambient',0.3) # self.canvas....
-        self.shader.uniformFloat('diffuse',0.8) # self.canvas....
-        self.shader.uniformFloat('specular',0.3) # self.canvas....
-        self.shader.uniformFloat('shininess',10.) # self.canvas....
-        self.shader.uniformVec3('light',(0.,1.,1.))
-        self.shader.uniformVec3('speccolor',(1.,1.,0.8))
-        #self.shader.loadUniforms(DEFAULTS)
+        self.shader.uniformFloat('alpha',self.canvas.settings.transparency)
+        self.shader.uniformFloat('pointsize',self.canvas.settings.pointsize)
+        self.shader.loadUniforms(self.settings)
+        ## self.shader.uniformFloat('ambient',0.3) self.canvas....
+        ## self.shader.uniformFloat('diffuse',0.8) self.canvas....
+        ## self.shader.uniformFloat('specular',0.3) self.canvas....
+        ## self.shader.uniformFloat('shininess',10.) self.canvas....
+        ## self.shader.uniformVec3('light',(0.,1.,1.))
+        ## self.shader.uniformVec3('speccolor',(1.,1.,0.8))
 
 
     def renderObjects(self,objects):
@@ -173,9 +188,9 @@ class Renderer(object):
                 transp = [ a for a in sorted_actors if not a.opak ]
                 self.renderObjects(opaque)
                 GL.glEnable (GL.GL_BLEND)
-                GL.glDepthMask (GL.GL_FALSE)
-                ## if pf.cfg['draw/disable_depth_test']:
-                ##     GL.glDisable(GL.GL_DEPTH_TEST)
+                #GL.glDepthMask (GL.GL_FALSE)
+                #if pf.cfg['draw/disable_depth_test']:
+                #    GL.glDisable(GL.GL_DEPTH_TEST)
                 GL.glEnable(GL.GL_DEPTH_TEST)
                 GL.glBlendFunc (GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
                 self.renderObjects(transp)

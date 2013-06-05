@@ -133,6 +133,8 @@ class Drawable(Attributes):
             # Draw back faces
             GL.glEnable(GL.GL_CULL_FACE)
             GL.glCullFace(GL.GL_FRONT)
+        else:
+            GL.glDisable(GL.GL_CULL_FACE)
 
         render_geom()
 
@@ -306,7 +308,7 @@ class GeomActor(Attributes):
 
     @property
     def b_normals(self):
-        """Return indiviual normals at all vertices of all elements"""
+        """Return individual normals at all vertices of all elements"""
         if self._normals is None:
             self._normals = gt.polygonNormals(self.fcoords.reshape(-1,self.nplex,3)).astype(float32)
             print("COMPUTED NORMALS: %s" % str(self._normals.shape))
@@ -358,7 +360,7 @@ class GeomActor(Attributes):
             self.cbo = VBO(self.vertexColor.astype(int32))
 
         self.setNormals(renderer)
-        self.createDrawables()
+        self.createDrawables(renderer)
         self.changeMode(renderer)
 
         #### CHILDREN ####
@@ -366,18 +368,21 @@ class GeomActor(Attributes):
             child.prepare(renderer)
 
 
-    def createDrawables(self):
+    def createDrawables(self,renderer):
         self.drawable = []
         #### BACK COLOR ####
-        if self.bkcolor is not None:
+        if self.bkcolor is not None or self.bkalpha is not None or renderer.canvas.settings.alphablend > 0.0:
             # Draw both sides separately
             # First, front sides
             self.drawable.append(Drawable(self,frontface=True))
-            # Make copy for back sides
-            extra = Attributes(self)
-            extra.colormode = self.bkcolor.ndim
-            if extra.colormode == 1:
-                extra.objectColor = self.bkcolor
+            # Then back sides
+            extra = Attributes()
+            if self.bkalpha is not None:
+                extra.alpha = self.alpha
+            if self.bkcolor is not None:
+                extra.colormode = self.bkcolor.ndim
+                if extra.colormode == 1:
+                    extra.objectColor = self.bkcolor
             self.drawable.append(Drawable(self,backface=True,**extra))
         else:
             # Just draw both sides at once
@@ -404,14 +409,14 @@ class GeomActor(Attributes):
     def changeMode(self,renderer):
         """Modify the actor according to the specified mode"""
 
-        print("CHANGE TO MODE %s"%renderer.mode)
+        #print("CHANGE TO MODE %s"%renderer.mode)
         if renderer.mode == 'wireframe':
             self.drawable = []
         self.switchEdges('wire' in renderer.mode)
 
-        print("PREPARED %s DRAWABLES" % len(self.drawable))
-        for i,d in enumerate(self.drawable):
-            print(i,d)
+        #print("PREPARED %s DRAWABLES" % len(self.drawable))
+        #for i,d in enumerate(self.drawable):
+        #    print(i,d)
 
 
 
@@ -452,6 +457,7 @@ class GeomActor(Attributes):
     def setBkColor(self,color,colormap=None):
         """Set the backside color of the Actor."""
         self.bkcolor,self.bkcolormap = saneColorSet(color,colormap,self.object.shape)
+        print("BACK COLOR",self.bkcolor)
 
 
     def setAlpha(self,alpha,bkalpha=None):
@@ -460,12 +466,10 @@ class GeomActor(Attributes):
             self.alpha = float(alpha)
         except:
             del self.alpha
-        if bkalpha is None:
-            bkalpha = alpha
         try:
             self.bkalpha = float(bkalpha)
         except:
-            del self.alpha
+            del self.bkalpha
         self.opak = (self.alpha == 1.0) or (self.bkalpha == 1.0 )
 
 
