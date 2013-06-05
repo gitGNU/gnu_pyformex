@@ -6,7 +6,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -35,7 +35,6 @@ def prefixFiles(prefix,files):
     """Prepend a prefix to a list of filenames."""
     return [ os.path.join(prefix,f) for f in files ]
 
-
 def matchMany(regexps,target):
     """Return multiple regular expression matches of the same target string."""
     return [re.match(r,target) for r in regexps]
@@ -44,7 +43,7 @@ def matchMany(regexps,target):
 def matchCount(regexps,target):
     """Return the number of matches of target to  regexps."""
     return len(filter(None,matchMany(regexps,target)))
-                  
+
 
 def matchAny(regexps,target):
     """Check whether target matches any of the regular expressions."""
@@ -62,7 +61,7 @@ def listTree(path,listdirs=True,topdown=True,sorted=False,excludedirs=[],exclude
     If ``dirs==False``, directories are not listed.
     By default the tree is listed top down and entries in the same directory
     are unsorted.
-    
+
     `exludedirs` and `excludefiles` are lists of regular expressions with
     dirnames, resp. filenames to exclude from the result.
 
@@ -113,6 +112,7 @@ DOC_FILES = listTree(
     excludedirs=['.svn','dutch','html'],
     includefiles=[
         'README',
+        'Description',
         'COPYING',
         'ReleaseNotes',
         ],
@@ -189,6 +189,7 @@ OTHER_DATA = [
 DIST_FILES = [
     'README',
     'COPYING',
+    'Description',
     'ReleaseNotes',
     #'pre-install',
     #'post-install',
@@ -239,7 +240,7 @@ if __name__ == '__main__':
    todo = sys.argv[1:]
    if not todo:
       todo = ['doc','data','dist']
-      
+
    for a in todo:
       if a == 'doc':
          print "=========DOC_FILES========="
@@ -256,4 +257,3 @@ if __name__ == '__main__':
          print '\n'.join(DIST_FILES)
 
 # End
-

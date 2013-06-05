@@ -1747,6 +1747,39 @@ def vectorPairAngle(v1,v2):
     return arccos(vectorPairCosAngle(v1,v2))
 
 
+def percentile(values,perc=[25.,50.,75.],wts=None):
+    """Return the `perc` percentile(s) of `values`.
+
+    Parameters:
+    
+    - `values`: a one-dimensional array of values for which to compute
+      the percentile(s);
+    - `perc`: an integer, float or array specifying which percentile(s) to
+      compute; by default, the quartiles are returned;
+    - `wts`: a one-dimensional array of weights assiged to `values`.
+
+    Returns the value(s) that is/are greater or equal than `perc` percent
+    of `values`. If the result lies between two items of `values`, it is
+    obtained by interpolation.
+    """
+    perc = array(perc).reshape(-1)
+    if perc.min() < 0. or perc.max() > 100.:
+        raise ValueError, "Percentiles should be between 0 and 100, got %s." % perc
+    if wts is not None and wts.min() <= 0.:
+        raise ValueError, "Weights should be positive, got %s." % wts.min()
+    ind = values.argsort()
+    values = values[ind]
+    if wts is None:
+        wts = resize(1.,values.shape)
+    else:
+        wts = wts[ind]
+    wts = wts.cumsum()
+    w = perc /100. * (wts[-1])
+    ind = wts.searchsorted(w)
+    val = where(ind>0,values[ind-1]+(w-wts[ind-1])/(wts[ind]-wts[ind-1])*(values[ind]-values[ind-1]),values[0])
+    return val
+
+
 def multiplicity(a):
     """Return the multiplicity of the numbers in a
 

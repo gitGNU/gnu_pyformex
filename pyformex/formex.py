@@ -1217,7 +1217,12 @@ maxprop  = %s
             from geomtools import intersectionSWP
             return Formex(intersectionSWP(self.coords,p,n,mode='pair')[1])
         elif self.nplex() == 3:
-            return Formex(intersectionLinesWithPlane(self,p,n))
+            m = self.toSurface().intersectionWithPlane(p,n)
+            if m.nelems() > 0:
+                return m.toFormex()
+            else:
+                return Formex(array([],dtype=Float).reshape(0,2,3))
+            #return Formex(intersectionLinesWithPlane(self,p,n))
         else:
             # OTHER PLEXITUDES NEED TO BE IMPLEMENTED
             raise ValueError,"Formex should be plex-2 or plex-3"
