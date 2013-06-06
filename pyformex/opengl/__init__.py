@@ -31,6 +31,7 @@ from __future__ import print_function
 
 import pyformex as pf
 import gui
+import coords
 
 
 #### Definitions to be imported in gui.draw #####
@@ -79,8 +80,8 @@ def draw(F,
 
     ## # Fill in the remaining defaults
 
-    ## if bbox is None:
-    ##     bbox = pf.canvas.options.get('bbox','auto')
+    if bbox is None:
+        bbox = pf.canvas.options.get('bbox','auto')
 
     ## if shrink is None:
     ##     shrink = pf.canvas.options.get('shrink',None)
@@ -114,11 +115,6 @@ def draw(F,
         # loop over the objects
         for F in FL:
 
-            ## # Treat special case colors
-            ## if hasattr(F,'color'):
-            ##     color = F.color
-            ## if hasattr(F,'alpha'):
-            ##     alpha = F.alpha
             ## if type(color) is str:
             ##     if color == 'prop':
             ##         try:
@@ -159,6 +155,7 @@ def draw(F,
                 bbox = coords.bbox(FL)
             if bbox == 'last':
                 bbox = None
+
             pf.canvas.setCamera(bbox,view)
 
         pf.canvas.update()

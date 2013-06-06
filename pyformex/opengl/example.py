@@ -29,10 +29,24 @@ clear()
 pf.canvas.renderer.shader.builtin = True  # Set to 0 to not use builtin attributes
 
 A = Formex('3:012').replic2(2,1)
+A = A.setProp(1+arange(A.nelems()))
+A.attrib(color='prop')
+
+
+AA = Formex('4:0123').trl([0.,1.,0.]).replic2(2,1)#.toMesh()
+AA = AA.setProp(4+arange(AA.nelems()))
+AA.attrib(color='prop')
+
+draw([AA])
+exit()
+
 A.attrib(color=red)
 
 
 A.attrib(lighting=True,ambient=0.5,diffuse=0.5,specular=0.5,color=[[red,green,blue],[cyan,magenta,yellow]])
+
+A.attrib(color=[[0,1,2],[3,4,5]])
+A.attrib(color=[1,2])
 
 B = Formex('l:127')
 B.attrib(color=blue)
@@ -55,7 +69,7 @@ E.attrib(pointsize=20)
 draw(A)
 #draw(B)
 #draw(C)
-draw(D)
+#draw(D)
 #draw(E)
 
 zoomAll()

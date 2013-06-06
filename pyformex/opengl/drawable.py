@@ -28,6 +28,7 @@ from __future__ import print_function
 
 import pyformex as pf
 from gui.drawable import *
+from gui import colors
 from OpenGL import GL
 from OpenGL.arrays.vbo import VBO
 from shader import Shader
@@ -36,10 +37,14 @@ from formex import Formex
 from mesh import Mesh
 from elements import elementType
 import geomtools as gt
+import arraytools as at
+import numpy as np
 import utils
 
 
 ### Drawable Objects ###############################################
+
+
 
 
 def glObjType(nplex):
@@ -47,7 +52,12 @@ def glObjType(nplex):
         return [GL.GL_POINTS,GL.GL_LINES,GL.GL_TRIANGLES][nplex-1]
     else:
         # everything higher is a polygon
-        return GL.GL_TRIANGLE_FAN
+        #
+        #  THIS IS BAD: CAN ONLY DRAW A SINGLE POLYGON, NOT MULTIPLE!!!
+        #
+        #return GL.GL_TRIANGLE_FAN
+
+        raise ValueError,"Can only draw plexitude <= 3!"
 
 
 class Drawable(Attributes):
@@ -101,12 +111,12 @@ class Drawable(Attributes):
         if self.colormode == 1:
             self.objectColor = self.color
         elif self.colormode == 2:
-            self.elemColor = self.color
+            raise ValueError,"color mode 2 not implemented!"
         elif self.colormode == 3:
             self.vertexColor = self.color
 
         if self.vertexColor is not None:
-            self.cbo = VBO(self.vertexColor.astype(int32))
+            self.cbo = VBO(self.vertexColor.astype(float32))
         print("SELF.COLORMODE = %s %s" % (self.colormode,self.color))
 
 
@@ -245,6 +255,11 @@ class GeomActor(Attributes):
             coords = obj.coords.astype(float32)
             elems = None
             eltype = obj.eltype
+            #
+            # Temporary kludge to make quad drawing work on Formex
+            #
+            if eltype is None and obj.nplex() == 4:
+                eltype = 'quad4'
 
         edges = None
 
@@ -255,6 +270,8 @@ class GeomActor(Attributes):
             if eltype.ndim > 1:
                 drawedges = eltype.getDrawEdges()[0]
                 drawelems = eltype.getDrawFaces()[0]
+                self.elems_multi = len(drawelems)
+                self.edges_multi = len(drawedges)
                 if elems is None:
                     coords,elems = coords.fuse()
 ##                    elems = arange(coords.npoints()).reshape(coords.shape[:2])
@@ -276,6 +293,12 @@ class GeomActor(Attributes):
 
         # set the basic primitive type
         self.glmode = glObjType(self.nplex)
+
+        if self.nplex > 3:
+            self.elems_multi = 1
+            self.edges_multi = self.nplex
+
+
 
         self.children = []
 
@@ -445,7 +468,35 @@ class GeomActor(Attributes):
 
     def setColor(self,color,colormap=None):
         """Set the color of the Actor."""
-        self.color,self.colormap = saneColorSet(color,colormap,self.object.coords.shape)
+        if type(color) is str:
+            if color == 'prop' and hasattr(self.object,'prop'):
+                color = self.object.prop
+            elif color == 'random':
+                # create random colors
+                color = np.random.rand(F.nelems(),3)
+
+        color,colormap = saneColorSet(color,colormap,self.object.coords.shape)
+
+
+        if color is not None:
+            if color.dtype.kind == 'i':
+                # We have a color index
+                if colormap is None:
+                    colormap = array(colors.palette)
+                print("PALETTE:%s"%colormap)
+                color = colormap[color]
+
+            if color.ndim == 2:
+                # We have element color
+                print("PLEX %s" % self.nplex)
+                print("Old color shape %s" % str(color.shape))
+                color = at.multiplex(color,self.nplex*self.elems_multi)
+                print("New color shape %s" % str(color.shape))
+
+            print("VERTEX SHAPE = %s" % str(self.fcoords.shape))
+            print("COLOR SHAPE = %s" % str(color.shape))
+
+        self.color = color
 
 
     def setBkColor(self,color,colormap=None):
