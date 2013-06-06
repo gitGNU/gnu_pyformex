@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -367,7 +367,7 @@ def drawQuadraticCurves(x,e=None,color=None,alpha=1.0):
     if color is not None:
         if color.ndim == 2:
             pf.debug("COLOR SHAPE BEFORE MULTIPLEXING %s" % str(color.shape),pf.DEBUG.DRAW)
-            color = color_multiplex(color,nfaces)
+            color = multiplex(color,nfaces)
             pf.debug("COLOR SHAPE AFTER  MULTIPLEXING %s" % str(color.shape),pf.DEBUG.DRAW)
         if color.ndim > 2:
             color = color.reshape((nelems*nfaces,) + color.shape[-2:]).squeeze()
@@ -555,7 +555,7 @@ def drawQuadraticSurfaces(x,e,color=None):
         pf.debug('Color shape: %s' % str(color.shape),pf.DEBUG.DRAW)
         if color.ndim == 2:
             pf.debug("COLOR SHAPE BEFORE MULTIPLEXING %s" % str(color.shape),pf.DEBUG.DRAW)
-            color = color_multiplex(color,nfaces)
+            color = multiplex(color,nfaces)
             pf.debug("COLOR SHAPE AFTER  MULTIPLEXING %s" % str(color.shape),pf.DEBUG.DRAW)
         if color.ndim > 2:
             # BV REMOVED squeeze: may break some things
@@ -601,19 +601,6 @@ def drawQuadraticSurfaces(x,e,color=None):
     print("drawQuadraticSurfaces: %s seconds" % t.seconds())
 
 
-def color_multiplex(color,nparts):
-    """Multiplex a color array over nparts of the elements.
-
-    This function will repeat the colors in an array a number of times
-    so that all parts of the same element are colored the same.
-    """
-    s = list(color.shape)
-    s[1:1] = [1]
-    color = color.reshape(*s).repeat(nparts,axis=1)
-    s[1] = nparts # THIS APPEARS NOT TO BE DOING ANYTHING ?
-    return color.reshape(-1,3)
-
-
 def draw_faces(x,e,color=None,alpha=1.0,texture=None,texc=None,normals=None,lighting=False,avgnormals=False,objtype=-1):
     """Draw a collection of faces.
 
@@ -641,7 +628,7 @@ def draw_faces(x,e,color=None,alpha=1.0,texture=None,texc=None,normals=None,ligh
     if color is not None:
         if color.ndim == 2:
             pf.debug("COLOR SHAPE BEFORE MULTIPLEXING %s" % str(color.shape),pf.DEBUG.DRAW)
-            color = color_multiplex(color,nfaces)
+            color = multiplex(color,nfaces)
             pf.debug("COLOR SHAPE AFTER  MULTIPLEXING %s" % str(color.shape),pf.DEBUG.DRAW)
         if color.ndim > 2:
             color = color.reshape((nelems*nfaces,) + color.shape[-2:]).squeeze()
