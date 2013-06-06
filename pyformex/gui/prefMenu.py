@@ -538,6 +538,15 @@ def setOptions():
                 pf.GUI.board.redirect(pf.options.redirect)
 
 
+def resetDefaults():
+    if draw.warning('This will reset all the current pyFormex settings to your stored defaults.',actions=['Cancel','OK']) == 'OK':
+        pf.cfg.clear()
+
+
+def resetFactory():
+    if draw.warning('Beware! This will throw away all your personalized pyFormex settings and return to the shipped default settings.\nSome settings may only become active after you restart pyFormex.',actions=['Cancel','OK']) == 'OK':
+        pf.cfg.clear()
+        pf.prefcfg.clear()
 
 # Functions defined to delay binding
 
@@ -608,6 +617,8 @@ MenuData = [
         (_('&Options'),setOptions),
         (_('&Draw Wait'),setDrawWait),
         (_('&Rendering Params'),setRendering),
+        (_('&Reset to My Defaults'),resetDefaults),
+        (_('&Reset to Factory Defaults'),resetFactory),
         ('---',None),
         (_('&Save Preferences Now'),savePreferences),
 #        (_('&Make current settings the defaults'),savePreferences),
