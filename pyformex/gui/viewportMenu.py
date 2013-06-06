@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -56,8 +56,10 @@ def setTriade():
 
 def setBgColor():
     """Interactively set the viewport background colors."""
+    global bgcolor_dialog
     from gui.drawable import saneColorArray
     from numpy import resize
+    from gui import colors
     import os
     bgmodes = pf.canvas.settings.bgcolormodes
     mode = pf.canvas.settings.bgmode
@@ -68,22 +70,30 @@ def setBgColor():
     if not showimage:
         cur = pf.cfg['gui/splash']
     viewer = widgets.ImageView(cur,maxheight=200)
+
+    def changeColor(field):
+        bgcolor_dialog.acceptData()
+        res = bgcolor_dialog.results
+        if res:
+            setBackground(**res)
+
     def changeImage(fn):
         fn = draw.askImageFile(fn)
         if fn:
             viewer.showImage(fn)
         return fn
-    dialog = widgets.InputDialog(
+
+    bgcolor_dialog = widgets.InputDialog(
         [
             _I('mode',mode,choices=bgmodes),
-            _I('color1',color[0],itemtype='color',text='Background color 1 (Bottom Left)'),
-            _I('color2',color[1],itemtype='color',text='Background color 2 (Bottom Right)'),
-            _I('color3',color[2],itemtype='color',text='Background color 3 (Top Right)'),
-            _I('color4',color[3],itemtype='color',text='Background color 4 (Top Left'),
+            _I('color1',color[0],itemtype='color',func=changeColor,text='Background color 1 (Bottom Left)'),
+            _I('color2',color[1],itemtype='color',func=changeColor,text='Background color 2 (Bottom Right)'),
+            _I('color3',color[2],itemtype='color',func=changeColor,text='Background color 3 (Top Right)'),
+            _I('color4',color[3],itemtype='color',func=changeColor,text='Background color 4 (Top Left'),
             _I('showimage',showimage,text='Show background image'),
             _I('image',cur,text='Background image',itemtype='button',func=changeImage),
             viewer,
-            _I('_save_',True,text='Save as default'),
+            _I('_save_',False,text='Save as default'),
             ],
         caption='Config Dialog',
         enablers=[
@@ -93,8 +103,7 @@ def setBgColor():
             ('showimage',True,'image'),
             ]
         )
-    res = dialog.getResults()
-    pf.debug(res)
+    res = bgcolor_dialog.getResults()
     if res:
         setBackground(**res)
 
@@ -258,7 +267,7 @@ def viewportLayout():
          _I('Number of viewports per row/column',pf.GUI.viewports.ncols),
          ],
         caption='Config Dialog')
-        
+
     if res:
         pf.debug(res)
         nvps = res['Number of viewports']
