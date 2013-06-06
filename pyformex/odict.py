@@ -6,7 +6,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -36,7 +36,7 @@ from __future__ import print_function
 ## else:
 ##     from collections import OrderedDict
 
-    
+
 import olist
 
 
@@ -62,19 +62,19 @@ class ODict(dict):
         if isinstance(data,ODict):
             # keep order
             self._order = data._order
-            
+
         elif type(data) is list or type(data) is tuple:
             # preserve the order
             self._order = []
             self._add_keys([i[0] for i in data])
-            
+
         elif type(data) is dict:
             # order is undefined
             self._order = data.keys()
 
         else:
             raise ValueError,"Unexpected initialization value for ODict"
-  
+
 
     def _add_keys(self,keys):
         """Add a list of keys to the ordered list, removing existing keys."""
@@ -82,14 +82,14 @@ class ODict(dict):
             if k in self._order:
                 self._order.remove(k)
         self._order += keys
-        
-        
+
+
     def update(self,data={}):
         """Add a dictionary to the ODict object.
 
         The new keys will be appended to the existing, but the order of the
         added keys is undetemined if data is a dict object. If data is an ODict
-        its order will be respected.. 
+        its order will be respected..
         """
         dict.update(self,data)
         self._add_keys(ODict(data)._order)
@@ -153,11 +153,17 @@ class ODict(dict):
     def values(self):
         """Return the values in order of the keys."""
         return [self[k] for k in self._order]
-    
+
 
     def items(self):
         """Return the key,value pairs in order of the keys."""
         return [(k,self[k]) for k in self._order]
+
+
+    def iteritems(self):
+        """Return the key,value pairs in order of the keys."""
+        for k in self:
+            yield k,self[k]
 
 
     def pos(self,key):
@@ -168,7 +174,7 @@ class ODict(dict):
             return self._order.index(key)
         except ValueError:
             return None
-        
+
 
     def __reduce__(self):
         state = (dict(self), self.__dict__)
@@ -194,7 +200,7 @@ class KeyedList(ODict):
     identify the item, but is also part of the information (value) of the
     item.
     """
-    
+
     def __init__(self,alist=[]):
         """Create a new KeyedList, possibly filling it with data.
 
@@ -207,7 +213,7 @@ class KeyedList(ODict):
             raise ValueEror,"All items in the data should have length >= 2"
         ODict.__init__(self,[[i[0],i[1:]] for i in alist])
         print(self)
-    
+
 
     def items(self):
         """Return the key+value lists in order of the keys."""
@@ -262,5 +268,5 @@ if __name__ == "__main__":
     print(D.items())
 
     print("DONE")
-    
+
 # End

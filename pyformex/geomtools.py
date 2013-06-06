@@ -182,6 +182,8 @@ def projectedArea(x,dir):
         return 0.0
     if type(dir) is int:
         dir = unitVector(dir)
+    else:
+        dir = normalize(dir)
     x1 = roll(x,-1,axis=0)
     area = vectorTripleProduct(Coords(dir),x,x1)
     return 0.5 * area.sum()

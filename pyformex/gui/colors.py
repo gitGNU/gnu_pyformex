@@ -22,13 +22,40 @@
 ##  You should have received a copy of the GNU General Public License
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
-"""Definition of some RGB colors and color conversion functions
+"""Playing with colors.
+
+This module defines some colors and color conversion functions.
+It also defines a default palette of colors.
+
+The following table shows the colors of the default palette, with their name,
+RGB values in 0..1 range and luminance.
+
+>>> for k,v in palette.iteritems():
+...     print("%12s = %s -> %0.3f" % (k,v,luminance(v)))
+       black = (0.0, 0.0, 0.0) -> 0.000
+         red = (1.0, 0.0, 0.0) -> 0.213
+       green = (0.0, 1.0, 0.0) -> 0.715
+        blue = (0.0, 0.0, 1.0) -> 0.072
+        cyan = (0.0, 1.0, 1.0) -> 0.787
+     magenta = (1.0, 0.0, 1.0) -> 0.285
+      yellow = (1.0, 1.0, 0.0) -> 0.928
+       white = (1.0, 1.0, 1.0) -> 1.000
+    darkgrey = (0.5, 0.5, 0.5) -> 0.214
+     darkred = (0.5, 0.0, 0.0) -> 0.046
+   darkgreen = (0.0, 0.5, 0.0) -> 0.153
+    darkblue = (0.0, 0.0, 0.5) -> 0.015
+    darkcyan = (0.0, 0.5, 0.5) -> 0.169
+ darkmagenta = (0.5, 0.0, 0.5) -> 0.061
+  darkyellow = (0.5, 0.5, 0.0) -> 0.199
+   lightgrey = (0.8, 0.8, 0.8) -> 0.604
 
 """
 from __future__ import print_function
 
+import pyformex as pf
 from gui import QtCore,QtGui
 from arraytools import array,isInt,Int,concatenate
+from odict import ODict
 
 
 def GLcolor(color):
@@ -62,6 +89,10 @@ def GLcolor(color):
     # as of Qt4.5, QtGui.Qcolor no longer raises an error if given
     # erroneous input. Therefore, we check it ourselves
 
+    # Check if it is a palette color name
+    if type(col) is str and col in palette:
+        col = palette[col]
+
     # str or QtCore.Globalcolor: convert to QColor
     if ( type(col) is str or
          isinstance(col,QtCore.Qt.GlobalColor) ):
@@ -90,7 +121,7 @@ def GLcolor(color):
     # No success: raise an error
     raise ValueError,"GLcolor: unexpected input of type %s: %s" % (type(color),color)
 
-
+# TODO: Should convert result to Int8 ?
 def RGBcolor(color):
     """Return an RGB (0-255) tuple for a color
 
@@ -140,27 +171,42 @@ def colorName(color):
     return WEBcolor(color)
 
 
-def luminance(color):
+def luminance(color,gamma=True):
     """Compute the luminance of a color.
 
-    This value can be use to compare contrast of colors to be used
-    as background and foreground for text.
+    Returns a floating point value in the range 0..1 representing the
+    luminance of the color. The higher the value, the brighter the color
+    appears to the human eye.
+
+    This can be for example be used to derive a good contrasting
+    foreground color to display text on a colored background.
+    Values lower than 0.5 contrast well with white, larger value
+    contrast better with black.
+
+    Example:
+
+    >>> print([ "%0.2f" % luminance(c) for c in palette])
     """
-    lum = lambda c: ((c+0.055)/1.055) ** 2.4 if c > 0.03928 else c/12.92
-    R,G,B = map(lum,GLcolor(color))
+    lum = lambda c: ((c+0.055)/1.055) ** 2.4 if c > 0.04045 else c/12.92
+    color = GLcolor(color)
+    if gamma:
+        R,G,B = map(lum,color)
+    else:
+        R,G,B = color
     return 0.2126 * R + 0.7152 * G + 0.0722 * B
 
 
-def rgbLuminance(color):
-    """Determine the luminance of a color
+## def rgbLuminance(color):
+##     """Determine the luminance of a color
 
-    Returns a integer value representing the luminance of the color
-    for the human eye. This can be used to derive a good contrasting color.
-    For example, value lower than 128 contrast well with white, larger value
-    contrast better with black.
-    """
-    R,G,B = RGBcolor(color)
-    return ((R*299)+(G*587)+(B*114))/1000
+##     Returns a integer value representing the luminance of the color
+##     for the human eye. This can be used to derive a good contrasting color.
+##     For example, value lower than 128 contrast well with white, larger value
+##     contrast better with black.
+##     """
+##     R,G,B = RGBcolor(color)
+##     #return ((R*299)+(G*587)+(B*114))/1000
+##     return (2126 * R + 7152 * G + 722 * B) / 10000
 
 
 def createColorDict():
@@ -186,6 +232,7 @@ def GREY(val,alpha=1.0):
 def grey(i):
     return (i,i,i)
 
+
 black       = (0.0, 0.0, 0.0)
 red         = (1.0, 0.0, 0.0)
 green       = (0.0, 1.0, 0.0)
@@ -208,7 +255,7 @@ lightgrey = grey(0.8)
 mediumgrey = grey(0.7)
 darkgrey = grey(0.5)
 
-palette = [ black,red,green,blue,cyan,magenta,yellow,white,
-            darkgrey,darkred,darkgreen,darkblue,darkcyan,darkmagenta,darkyellow,lightgrey ]
+palette = ODict([ (k,globals()[k]) for k in pf.cfg['canvas/colormap'] ])
+
 
 # End
