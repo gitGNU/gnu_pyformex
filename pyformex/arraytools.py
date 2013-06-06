@@ -757,6 +757,47 @@ def addAxis(a,axis=0):
     return a.reshape(s)
 
 
+def multiplex(a,n,axis=-1):
+    """Multiplex an array over a length n in direction of a new axis.
+
+    Inserts a new axis before the specified axis and repeats the data of the
+    array n times in the direction of the new axis.
+
+    Returns an array with n times the original data in the direction of the
+    specified axis (if positive) or the specified axis minus one (if negative).
+
+    Note that you can not use a negative number to multiplex if the new
+    axis is the last one. To multiplex on the last dimension, use axis=a.ndim.
+
+    Example:
+
+        >>> a = arange(6).reshape(2,3)
+        >>> for i in range(-a.ndim,a.ndim+1):
+        ...     c = multiplex(a,4,i)
+        ...     print("%s: %s" % (i,c.shape))
+        -2: (4, 2, 3)
+        -1: (2, 4, 3)
+        0: (4, 2, 3)
+        1: (2, 4, 3)
+        2: (2, 3, 4)
+        >>> print(multiplex(a,4))
+        [[[0 1 2]
+          [0 1 2]
+          [0 1 2]
+          [0 1 2]]
+        <BLANKLINE>
+         [[3 4 5]
+          [3 4 5]
+          [3 4 5]
+          [3 4 5]]]
+    """
+    a = addAxis(a,axis)
+    if axis < 0:
+        # distance of axis from end has increased with 1
+        axis -= 1
+    return a.repeat(n,axis=axis)
+
+
 def stack(al,axis=0):
     """Stack a list of arrays along a new axis.
 
@@ -1751,7 +1792,7 @@ def percentile(values,perc=[25.,50.,75.],wts=None):
     """Return the `perc` percentile(s) of `values`.
 
     Parameters:
-    
+
     - `values`: a one-dimensional array of values for which to compute
       the percentile(s);
     - `perc`: an integer, float or array specifying which percentile(s) to
