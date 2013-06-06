@@ -40,9 +40,8 @@ def run():
     flat()
     palette = pf.canvas.settings.colormap
     ncolors = len(palette)
-    for k in
     F = Formex('4:0123').replic2(ncolors+1,ncolors-1).setProp(range(ncolors))
-    draw(F)
+    draw(F,color='prop')
 
 
 if __name__ == 'draw':
