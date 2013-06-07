@@ -367,7 +367,7 @@ def drawQuadraticCurves(x,e=None,color=None,alpha=1.0):
     if color is not None:
         if color.ndim == 2:
             pf.debug("COLOR SHAPE BEFORE MULTIPLEXING %s" % str(color.shape),pf.DEBUG.DRAW)
-            color = multiplex(color,nfaces)
+            color = multiplex(color,nfaces).reshpae(-1,3)
             pf.debug("COLOR SHAPE AFTER  MULTIPLEXING %s" % str(color.shape),pf.DEBUG.DRAW)
         if color.ndim > 2:
             color = color.reshape((nelems*nfaces,) + color.shape[-2:]).squeeze()
@@ -555,7 +555,7 @@ def drawQuadraticSurfaces(x,e,color=None):
         pf.debug('Color shape: %s' % str(color.shape),pf.DEBUG.DRAW)
         if color.ndim == 2:
             pf.debug("COLOR SHAPE BEFORE MULTIPLEXING %s" % str(color.shape),pf.DEBUG.DRAW)
-            color = multiplex(color,nfaces)
+            color = multiplex(color,nfaces).reshape(-1,3)
             pf.debug("COLOR SHAPE AFTER  MULTIPLEXING %s" % str(color.shape),pf.DEBUG.DRAW)
         if color.ndim > 2:
             # BV REMOVED squeeze: may break some things
@@ -628,7 +628,7 @@ def draw_faces(x,e,color=None,alpha=1.0,texture=None,texc=None,normals=None,ligh
     if color is not None:
         if color.ndim == 2:
             pf.debug("COLOR SHAPE BEFORE MULTIPLEXING %s" % str(color.shape),pf.DEBUG.DRAW)
-            color = multiplex(color,nfaces)
+            color = multiplex(color,nfaces).reshape(-1,3)
             pf.debug("COLOR SHAPE AFTER  MULTIPLEXING %s" % str(color.shape),pf.DEBUG.DRAW)
         if color.ndim > 2:
             color = color.reshape((nelems*nfaces,) + color.shape[-2:]).squeeze()
