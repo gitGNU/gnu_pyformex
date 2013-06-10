@@ -688,7 +688,7 @@ def intersectionSWP(S,p,n,mode='all',return_all=False):
     n = asanyarray(n).reshape(-1,3)
     # Find intersection parameters
     t = intersectionTimesSWP(S,p,n,mode)
-    print("S.shape: %s; p.shape: %s; n.shape: %s; t.shape: %s" % (S.shape,p.shape,n.shape,t.shape))
+    #~ print("S.shape: %s; p.shape: %s; n.shape: %s; t.shape: %s" % (S.shape,p.shape,n.shape,t.shape))
 
     if not return_all:
         # Find points inside segments
