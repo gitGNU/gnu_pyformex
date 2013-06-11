@@ -354,6 +354,8 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
                 pf.debug('Error while calling script exit function',pf.DEBUG.SCRIPT)
 
         if pf.cfg['autoglobals']:
+            if pf.console:
+                g = pf.console.interpreter.locals
             exportNames.extend(listAll(clas=Geometry,dic=g))
         pf.PF.update([(k,g[k]) for k in exportNames])
 

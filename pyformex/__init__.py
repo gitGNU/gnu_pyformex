@@ -56,7 +56,7 @@ import sys
 if sys.hexversion < 0x03000000:
     from compat_2k import *
 else:
-    from compat_3k import *
+    from p2to3.compat_3k import *
 
 # Install type.
 # This can have the followig values:
@@ -122,7 +122,12 @@ class DebugLevels(object):
           PROJECT, MULTI = \
           [ 2 ** i for i in range(21) ]
 
-delattr(DebugLevels,'i')
+try:
+    # Python2 stores the local variable 'i'
+    delattr(DebugLevels,'i')
+except:
+    # Python3 seems not to store it
+    pass
 
 DEBUG = DebugLevels
 
