@@ -499,6 +499,9 @@ class TriSurface(Mesh):
         This allows to read back old pyFormex Project files where the
         Surface class did not set an element type.
         """
+        if 'areas' in state:
+            state['_areas'] = state['areas']
+            del state['areas']
         self.__dict__.update(state)
         self.setType('tri3')
 
