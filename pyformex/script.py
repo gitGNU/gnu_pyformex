@@ -321,17 +321,20 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
     #starttime = time.clock()
     try:
         try:
-     
-            if pye:
+
+            if pf.console:
+                pf.debug("Executing script in pf.console",pf.DEBUG.SCRIPT)
+                pf.console.interpreter.locals.update(g)
+                pf.console.interpreter.runsource(scr.read(),filename,'exec')
+
+            else:
+                if pye:
                     if type(scr) is file:
                          scr = scr.read() + '\n'
                     n = (len(scr)+1) // 2
                     scr = utils.mergeme(scr[:n],scr[n:])
 
-            exec scr in g
-                
-            
-                
+                exec scr in g
 
         except _Exit:
             #print "EXIT FROM SCRIPT"
@@ -357,12 +360,6 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
         scriptRelease('__auto__') # release the lock
         if pf.GUI:
             pf.GUI.stopRun()
-                       
-        if pf.console:
-                pf.debug("Updating locals to pf.console",pf.DEBUG.SCRIPT)
-                pf.console.interpreter.locals.update(g)                
-            
-            
 
     pf.debug("MemUsed = %s; vmSize = %s" % (memUsed(),vmSize()),pf.DEBUG.MEM)
     pf.debug("Diff MemUsed = %s; diff vmSize = %s" % (memUsed()-memu,vmSize()-vmsiz),pf.DEBUG.MEM)
