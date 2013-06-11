@@ -106,6 +106,8 @@ def settings():
     dia = None
     _actionbuttons = [ 'play', 'rerun', 'step', 'continue', 'stop', 'edit', 'info' ]
 
+    gui_console_options = { 'b':'Message board only','c':'Console only', 'bc':'Message board and Console' }
+
     def close():
         dia.close()
 
@@ -114,6 +116,7 @@ def settings():
         res = dia.results
         res['_save_'] = save
         ok_plugins = utils.subDict(res,'_plugins/')
+        res['gui/console'] = utils.inverseDict(gui_console_options)[res['gui/console']]
         res['gui/plugins'] = [ p for p in ok_plugins if ok_plugins[p]]
         res['gui/actionbuttons'] = [ t for t in _actionbuttons if res['_gui/%sbutton'%t ] ]
         if res['webgl/script'] == 'custom':
@@ -201,6 +204,7 @@ def settings():
         ('webgl/devel',True,'webgl/devpath'),
         ])
 
+
     dia = widgets.InputDialog(
         caption='pyFormex Settings',
         store=pf.cfg,
@@ -232,7 +236,7 @@ def settings():
             _T('GUI',[
                 _G('Appearance',appearance),
                 _G('Components',toolbars+actionbuttons+[
-                    _I('gui/console',pf.cfg['gui/console']),
+                    _I('gui/console',gui_console_options[pf.cfg['gui/console']],itemtype='hradio',choices=gui_console_options.values()),
                     _I('gui/coordsbox'),
                     _I('gui/showfocus',pf.cfg['gui/showfocus']),
                     _I('gui/runalloption',pf.cfg['gui/runalloption']),
