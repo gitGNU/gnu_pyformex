@@ -1203,8 +1203,8 @@ maxprop  = %s
 
 
     # TODO: returned Formex could inherit properties of parent
-    def intersectionWithPlane(self,p,n):
-        """Return the intersection of a Formex with the plane (p,n).
+    def intersectionWithPlane(self,p,n,atol=0):
+        """Return the intersection of a Formex with the plane (p,n) within tolerance atol.
 
         Currently this only works for plex-2 and plex-3 Formices.
 
@@ -1215,7 +1215,7 @@ maxprop  = %s
         """
         if self.nplex() == 2:
             from geomtools import intersectionSWP
-            return Formex(intersectionSWP(self.coords,p,n,mode='pair')[1])
+            return Formex(intersectionSWP(self.coords,p,n,mode='pair',atol=atol)[1])
         elif self.nplex() == 3:
             m = self.toSurface().intersectionWithPlane(p,n)
             if m.nelems() > 0:
@@ -2054,7 +2054,7 @@ def cutElements3AtPlane(F,p,n,newprops=None,side='',atol=0.):
     from geomtools import intersectionSWP
     C = [connect([F,F],nodid=ax) for ax in [[0,1],[1,2],[2,0]]]
     errh = seterr(divide='ignore',invalid='ignore')
-    res = [intersectionSWP(Ci.coords,p,n,mode='pair',return_all=True) for Ci in C]
+    res = [intersectionSWP(Ci.coords,p,n,mode='pair',return_all=True,atol=atol) for Ci in C]
     seterr(**errh)
     t = column_stack([r[0] for r in res])
     P = stack([r[1] for r in res],axis=1)

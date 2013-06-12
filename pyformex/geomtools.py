@@ -654,7 +654,7 @@ def intersectionTimesSWP(S,p,n,mode='all'):
     return intersectionTimesLWP(q0,q1-q0,p,n,mode)
 
 
-def intersectionSWP(S,p,n,mode='all',return_all=False):
+def intersectionSWP(S,p,n,mode='all',return_all=False,atol=0.):
     """Return the intersection points of line segments S with planes (p,n).
 
     Parameters:
@@ -668,6 +668,8 @@ def intersectionSWP(S,p,n,mode='all',return_all=False):
     - `return_all`: if True, all intersection points of the lines along the
       segments are returned. Default is to return only the points that lie
       on the segments.
+    - `atol`: float tolerance of the points inside the line segments.
+    
 
     Return values if `return_all==True`:
 
@@ -692,7 +694,7 @@ def intersectionSWP(S,p,n,mode='all',return_all=False):
 
     if not return_all:
         # Find points inside segments
-        ok = (t >= 0.0) * (t <= 1.0)
+        ok = (t >= 0.0-atol) * (t <= 1.0+atol)
         t = t[ok]
         if mode == 'all':
             wl,wt = where(ok)
@@ -718,15 +720,15 @@ def intersectionSWP(S,p,n,mode='all',return_all=False):
         return t,x,wl,wt
 
 
-def intersectionPointsSWP(S,p,n,mode='all',return_all=False):
-    """Return the intersection points of line segments S with planes (p,n).
+def intersectionPointsSWP(S,p,n,mode='all',return_all=False,atol=0.):
+    """Return the intersection points of line segments S with planes (p,n) within tolerance atol.
 
     This is like :func:`intersectionSWP` but does not return the parameter
     values. It is equivalent to::
 
       intersectionSWP(S,p,n,mode,return_all)[1:]
     """
-    res = intersectionSWP(S,p,n,mode,return_all)
+    res = intersectionSWP(S,p,n,mode,return_all,atol)
     if return_all:
         return res[1]
     else:
