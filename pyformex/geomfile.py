@@ -440,14 +440,14 @@ class GeometryFile(object):
             ###
             try:
                 exec(s[1:].strip())
-                debug("READ COLOR: %s" % str(color))
+                debug("READ COLOR: %s" % str(color),DEBUG.INFO)
             except:
                 nelems = ncoords = None
 
             if nelems is None and ncoords is None:
                 # For historical reasons, this is a certain way to test
                 # that no geom data block is following
-                debug("SKIPPING %s" % s)
+                debug("SKIPPING %s" % s,DEBUG.INFO)
                 continue  # not a legal header: skip
 
             debug("Reading object of type %s" % objtype,DEBUG.INFO)
@@ -480,10 +480,10 @@ class GeometryFile(object):
             if obj is not None:
                 try:
                     color = checkArray(color,(3,),'f')
-                    debug("SET OBJECT COLOR TO %s" % color)
+                    debug("SET OBJECT COLOR TO %s" % color,DEBUG.INFO)
                     obj.color = color
                 except:
-                    debug("NOT SETTING COLOR %s" % str(color))
+                    debug("NOT SETTING COLOR %s" % str(color),DEBUG.INFO)
                     pass
 
                 if name is None:
