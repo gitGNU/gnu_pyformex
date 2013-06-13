@@ -1824,7 +1824,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
     # Connection, Extrusion, Sweep, Revolution
     #
 
-    def connect(self,coordslist,div=1,degree=1,loop=False,eltype=None):
+    def connect(self,coordslist,div=1,degree=1,loop=False,eltype=None,layerprop=None):
         """Connect a sequence of toplogically congruent Meshes into a hypermesh.
 
         Parameters:
@@ -1879,7 +1879,9 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
           Coords item back at the end of the list.
 
         - `div`: Either an integer, or a sequence of float numbers (usually
-          in the range ]0.0..1.0]). This should only be used for degree==1.
+          in the range ]0.0..1.0]) or a sequence containing either float sequences 
+          or integers of the same length of the connecting list of coordinates.
+          This should only be used for degree==1.
 
           With this parameter the generated elements  can be further
           subdivided along the connection direction.
@@ -1894,10 +1896,15 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
           this is set automatically from the base element type and the
           connection degree. If a different element type is specified,
           a final conversion to the requested element type is attempted.
+          
+         - `layerprop`: can assume value None or a the string `auto`. When it is
+           None the connected Mesh will have the properties of self. If it is set to 'auto'
+           it will return different properties for every connecting layer in coordlist
         """
         if type(coordslist) is list:
             if type(coordslist[0]) == Mesh:
-                if sum([c.elType() != self.elType() for c in coordslist]):                          raise ValueError,"All Meshes in the list should have same element type"
+                if sum([c.elType() != self.elType() for c in coordslist]):                    
+                    raise ValueError,"All Meshes in the list should have same element type"
                 clist = [ c.coords for c in coordslist ]
             else:
                 clist = coordslist
@@ -1923,8 +1930,15 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
         # set divisions
         ## div = unitDivisor(degree*div,start=1)
-        div = unitDivisor(div,start=1)
-
+        if isinstance(div,int):
+            div=[div]
+        if len(div)==1:
+            div = [unitDivisor(div,start=1)]*((len(clist)-1)/degree)
+        else:
+            if len(div)!=(len(clist)-1)/degree:
+                raise ValueError,"div must be a integer,a single list of float or a list of divisions of length (len(clist)-1)/degree)"
+            div = [unitDivisor(d,start=1) for d in div]
+        
         # For higher order non-lagrangian elements the procedure could be
         # optimized by first compacting the coords and elems.
         # Instead we opted for the simpler method of adding the maximum
@@ -1932,7 +1946,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         # A final compact() throws out the unused points.
 
         # Concatenate the coordinates
-        x = [ Coords.interpolate(xi,xj,div).reshape(-1,3) for xi,xj in zip(clist[:-1:degree],clist[degree::degree]) ]
+        x = [ Coords.interpolate(xi,xj,d).reshape(-1,3) for xi,xj,d in zip(clist[:-1:degree],clist[degree::degree],div) ]
         x = Coords.concatenate(clist[:1] + x)
 
         # Create the connectivity table
@@ -1941,8 +1955,16 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         e = extrudeConnectivity(self.elems,nnod,degree)
         e = replicConnectivity(e,nrep,nnod*degree)
 
+         
+        if layerprop is None:
+            props = self.prop
+        elif layerprop== 'auto':
+            props = ones(e.shape[0])
+            nelprops = concatenate([[0],[self.nelems()*len(nd) for nd in div]]).cumsum()
+            props = concatenate([props[nelprops[i-1]:nelprops[i]]*(i-1) for i in range(1,len(nelprops))])
+        
         # Create the Mesh
-        M = Mesh(x,e).setProp(self.prop)
+        M = Mesh(x,e).setProp(props)
         # convert to proper eltype
         if eltype:
             M = M.convert(eltype)
