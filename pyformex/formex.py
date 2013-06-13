@@ -1217,7 +1217,7 @@ maxprop  = %s
             from geomtools import intersectionSWP
             return Formex(intersectionSWP(self.coords,p,n,mode='pair',atol=atol)[1])
         elif self.nplex() == 3:
-            m = self.toSurface().intersectionWithPlane(p,n)
+            m = self.toSurface().intersectionWithPlane(p,n,atol=atol)
             if m.nelems() > 0:
                 return m.toFormex()
             else:
