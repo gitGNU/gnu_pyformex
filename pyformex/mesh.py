@@ -1879,8 +1879,10 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
           Coords item back at the end of the list.
 
         - `div`: Either an integer, or a sequence of float numbers (usually
-          in the range ]0.0..1.0]) or a sequence containing either float sequences 
-          or integers of the same length of the connecting list of coordinates.
+          in the range ]0.0..1.0]) or a list of sequences of the same length of the 
+          connecting list of coordinates. In the latter case every sequence inside the
+          list can either be a float sequence (usually in the range ]0.0..1.0]) 
+          or it contains one integer (e.g [[4],[0.3,1]]).
           This should only be used for degree==1.
 
           With this parameter the generated elements  can be further
@@ -1890,7 +1892,10 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
           sequence of float numbers is given, the numbers specify the relative
           distance along the connection direction where the elements should
           end. If the last value in the sequence is not equal to 1.0, there
-          will be a gap between the consecutive connections.
+          will be a gap between the consecutive connections. If a list of sequences
+          is given, every consecutive element of the coordinate list is connected
+          using the corresponding sequence in the list(1-length integer of float sequence
+          specified as before).
 
         - `eltype`: the element type of the constructed hypermesh. Normally,
           this is set automatically from the base element type and the
@@ -1930,13 +1935,14 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
         # set divisions
         ## div = unitDivisor(degree*div,start=1)
-        if isinstance(div,int):
+        if isinstance(div,int): 
             div=[div]
-        if len(div)==1:
-            div = [unitDivisor(div,start=1)]*((len(clist)-1)/degree)
+            
+        if not isinstance(div[0],list): # handle int and single float sequence
+            div = [unitDivisor(div,start=1)]*((len(clist)-1)/degree) 
         else:
             if len(div)!=(len(clist)-1)/degree:
-                raise ValueError,"div must be a integer,a single list of float or a list of divisions of length (len(clist)-1)/degree)"
+                raise ValueError,"div must be a integer,a single list of float or a list of division sequence of length (len(clist)-1)/degree)"
             div = [unitDivisor(d,start=1) for d in div]
         
         # For higher order non-lagrangian elements the procedure could be
