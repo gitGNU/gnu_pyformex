@@ -26,19 +26,9 @@
 
 clear()
 
+A = Formex('3:012').replic2(2,1)#.toMesh()
+
 pf.canvas.renderer.shader.builtin = True  # Set to 0 to not use builtin attributes
-
-A = Formex('3:012').replic2(2,1)
-A = A.setProp(1+arange(A.nelems()))
-A.attrib(color='prop')
-
-
-AA = Formex('4:0123').trl([0.,1.,0.]).replic2(2,1)#.toMesh()
-AA = AA.setProp(4+arange(AA.nelems()))
-AA.attrib(color='prop')
-
-draw([AA])
-exit()
 
 A.attrib(color=red)
 

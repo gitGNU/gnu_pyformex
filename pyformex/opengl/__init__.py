@@ -34,6 +34,12 @@ import gui
 import coords
 
 
+
+### Override some configration settings
+
+pf.cfg['canvas/linewidth'] = 4
+
+
 #### Definitions to be imported in gui.draw #####
 
 def clear_canvas():

@@ -35,7 +35,7 @@ from shader import Shader
 from attributes import Attributes
 from formex import Formex
 from mesh import Mesh
-from elements import elementType
+from elements import elementType,_default_eltype
 import geomtools as gt
 import arraytools as at
 import numpy as np
@@ -82,9 +82,13 @@ class Drawable(Attributes):
     """
 
     # A list of acceptable attributes in the drawable
-    attributes = Shader.uniforms + [
-        'glmode', 'frontface', 'backface', 'vbo', 'ibo', 'nbo', 'cbo',
-        'color',
+    ## attributes = Shader.uniforms + [
+    ##     'glmode', 'frontface', 'backface', 'vbo', 'ibo', 'nbo', 'cbo',
+    ##     'color',
+    ##     ]
+    attributes = [
+        'frontface', 'backface', 'subelems', 'color',
+        'vbo', 'nbo'
         ]
 
     def __init__(self,parent,**kargs):
@@ -92,12 +96,24 @@ class Drawable(Attributes):
 
         kargs = utils.selectDict(kargs,Drawable.attributes)
         Attributes.__init__(self,kargs,default=parent)
-        print("ATTRIBUTES STORED IN DRAWABLE",self)
+        #print("ATTRIBUTES STORED IN DRAWABLE",self)
+        #print("ATTRIBUTES STORED IN PARENT",parent)
+
+        # The final plexitude of the drawn objects
+        if self.subelems is not None:
+            self.nplex = self.subelems.shape[-1]
+        else:
+            self.nplex = self._fcoords.shape[-2]
+        self.glmode = glObjType(self.nplex)
+
         self.prepareColor()
+        #self.prepareNormals()  # The normals are currently always vertex
+        self.prepareSubelems()
 
 
     def prepareColor(self):
         """Prepare the colors for the shader."""
+        print("PREPARECOLOR")
         # Set derived uniforms for shader
         # colormode:
         # 0 = None
@@ -108,16 +124,29 @@ class Drawable(Attributes):
             self.colormode = 0
         else:
             self.colormode = self.color.ndim
+
         if self.colormode == 1:
             self.objectColor = self.color
         elif self.colormode == 2:
-            raise ValueError,"color mode 2 not implemented!"
+            self.vertexColor = at.multiplex(self.color,self.object.nplex())
+            print ("Multiplexing colors: %s -> %s " % (self.color.shape,self.vertexColor.shape))
+            self.colormode = 3
         elif self.colormode == 3:
             self.vertexColor = self.color
 
         if self.vertexColor is not None:
             self.cbo = VBO(self.vertexColor.astype(float32))
-        print("SELF.COLORMODE = %s %s" % (self.colormode,self.color))
+        print("SELF.COLORMODE = %s" % (self.colormode))
+
+
+    def prepareSubelems(self):
+        """Create an index buffer to draw subelements
+
+        This is always used for nplex > 3, but also to draw the edges
+        for nplex=3.
+        """
+        if self.subelems is not None:
+            self.ibo = VBO(self.subelems.astype(int32),target=GL.GL_ELEMENT_ARRAY_BUFFER)
 
 
     def render(self,renderer):
@@ -198,15 +227,17 @@ class Drawable(Attributes):
             GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
 
 
+def polygonFaceIndex(n):
+    i0 = (n-1) * ones(n-1)
+    i1 = arange(n-1)
+    i2 = i1+1
+    return column_stack([i0,i1,i2])
 
-        def changeNormals(nbo):
-            print("CHANGE NORMALS IN DRAWABLE")
-            if self.nbo:
-                print("UNBIND")
-                self.nbo.unbind()
-            self.nbo = nbo
-            print("REPLACED NBO")
 
+def polygonEdgeIndex(n):
+    i1 = arange(n)
+    i2 = roll(i1,i)
+    return column_stack([i0,i1])
 
 
 class GeomActor(Attributes):
@@ -256,49 +287,14 @@ class GeomActor(Attributes):
             elems = None
             eltype = obj.eltype
             #
-            # Temporary kludge to make quad drawing work on Formex
+            # We always want an eltype for drawing
             #
-            if eltype is None and obj.nplex() == 4:
-                eltype = 'quad4'
+            if eltype is None and obj.nplex() <= 4:
+                # Set default eltype
+                eltype = _default_eltype[obj.nplex()]
 
-        edges = None
-
-        # Get the local connectivity for drawing the edges/faces
-        if eltype is not None:
-            eltype = elementType(eltype)
-
-            if eltype.ndim > 1:
-                drawedges = eltype.getDrawEdges()[0]
-                drawelems = eltype.getDrawFaces()[0]
-                self.elems_multi = len(drawelems)
-                self.edges_multi = len(drawedges)
-                if elems is None:
-                    coords,elems = coords.fuse()
-##                    elems = arange(coords.npoints()).reshape(coords.shape[:2])
-                edges = elems[:,drawedges]
-                elems = elems[:,drawelems]
-
-            elif eltype.ndim > 0 and eltype.name() not in [ 'point', 'line2', 'polygon' ]:
-                drawelems = eltype.getDrawEdges()[0]
-                if elems is None:
-                    coords,elems = coords.fuse()
-##                    elems = arange(coords.npoints()).reshape(coords.shape[:2])
-                elems = elems[:,drawelems]
-
-        # Set drawing plexitude (may be different from object plexitude)
-        if elems is None:
-            self.nplex = coords.shape[1]
-        else:
-            self.nplex = elems.shape[-1]
-
-        # set the basic primitive type
-        self.glmode = glObjType(self.nplex)
-
-        if self.nplex > 3:
-            self.elems_multi = 1
-            self.edges_multi = self.nplex
-
-
+        self.eltype = elementType(eltype)
+        print("ELTYPE %s" % self.eltype)
 
         self.children = []
 
@@ -306,26 +302,22 @@ class GeomActor(Attributes):
         self.update(obj.attrib)
         self.update(kargs)
 
-
-        # Create the static data buffers
+        # Store minimal data
         coords = coords.astype(float32)
         if elems is None:
             self._fcoords = coords
         else:
             self._coords = coords.reshape(-1,3)
             self._elems = elems.astype(int32)
-        self._edges = edges
 
         # Currently do everything in Formex model
+        # And we always need this one
         self.vbo = VBO(self.fcoords)
-        #self.ibo = VBO(self.elems,target=GL.GL_ELEMENT_ARRAY_BUFFER)
-
-        ## if self.normals:
-        ##     self.nbo = VBO(normals.astype(float32))
 
 
     @property
     def coords(self):
+        """Return the fused coordinates of the object"""
         if self._coords is None:
             if self._fcoords is None:
                 raise ValueError,"Object has neither _coords nor _fcoords"
@@ -335,6 +327,7 @@ class GeomActor(Attributes):
 
     @property
     def elems(self):
+        """Return the original elems of the object"""
         if self._elems is None:
             if self._fcoords is None:
                 raise ValueError,"Object has neither _coords nor _fcoords"
@@ -344,6 +337,7 @@ class GeomActor(Attributes):
 
     @property
     def fcoords(self):
+        """Return the full coordinate set of the object"""
         if self._fcoords is None:
             if self._coords is None or self._elems is None:
                 raise ValueError,"Object has neither _coords nor _fcoords"
@@ -352,7 +346,36 @@ class GeomActor(Attributes):
 
 
     @property
+    def faces(self):
+        """Return the elems of the object as they will be drawn
+
+        This returns a 2D index in a single element. All elements
+        should have compatible node numberings.
+        """
+        if self._faces is None:
+            if self.eltype is not None:
+                self._faces = self.eltype.getDrawFaces()[0]
+            else:
+                if self.object.nplex() > 3:
+                    # It is a polygon. We should create polygon elementtype!!
+                    self._faces = polygonFaceIndex(self.object.nplex())
+        return self._faces
+
+
+    @property
     def edges(self):
+        """Return the edges of the object as they will be drawn
+
+        This returns a 2D index in a single element. All elements
+        should have compatible node numberings.
+        """
+        if self._edges is None:
+            if self.eltype is not None:
+                self._edges = self.eltype.getDrawEdges()[0]
+            else:
+                if self.object.nplex() > 3:
+                    # It is a polygon. We should create polygon elementtype!!
+                    self._edges = polygonEdgeIndex(self.object.nplex())
         return self._edges
 
 
@@ -360,7 +383,7 @@ class GeomActor(Attributes):
     def b_normals(self):
         """Return individual normals at all vertices of all elements"""
         if self._normals is None:
-            self._normals = gt.polygonNormals(self.fcoords.reshape(-1,self.nplex,3)).astype(float32)
+            self._normals = gt.polygonNormals(self.fcoords.astype(float32))
             print("COMPUTED NORMALS: %s" % str(self._normals.shape))
         return self._normals
 
@@ -370,7 +393,7 @@ class GeomActor(Attributes):
         """Return averaged normals at the vertices"""
         if self._avgnormals is None:
             tol = pf.cfg['render/avgnormaltreshold']
-            self._avgnormals = gt.averageNormals(self.coords,self.elems.reshape(-1,self.nplex),False,tol).astype(float32)
+            self._avgnormals = gt.averageNormals(self.coords,self.elems,False,tol).astype(float32)
             print("COMPUTE AVGNORMALS: %s" % str(self._avgnormals.shape))
         return self._avgnormals
 
@@ -383,6 +406,7 @@ class GeomActor(Attributes):
         this method is called on each mode change.
         """
         print("PREPARE ACTOR")
+
         self.setColor(self.color,self.colormap)
         self.setBkColor(self.bkcolor,self.bkcolormap)
         self.setAlpha(self.alpha,self.bkalpha)
@@ -396,6 +420,20 @@ class GeomActor(Attributes):
             child.prepare(renderer)
 
 
+    def changeMode(self,renderer):
+        """Modify the actor according to the specified mode"""
+        print("GEOMACTOR.changeMode")
+        self.drawable = []
+        self._prepareNormals(renderer)
+        # Draw the colored faces/edges
+        if renderer.mode == 'wireframe' and self.object.nplex() >= 3:
+            self._addEdges(renderer)
+        else:
+            self._addFaces(renderer)
+        # Overlay the black edges (or not)
+        self._addWires(renderer)
+
+
     def _prepareNormals(self,renderer):
         """Prepare the normals buffer object for the actor.
 
@@ -407,18 +445,41 @@ class GeomActor(Attributes):
                 normals = self.b_avgnormals
             else:
                 normals = self.b_normals
+            # Normals are always full fcoords size
+            print("SIZE OF NORMALS: %s; COORDS: %s" % (normals.size,self.fcoords.size))
             self.nbo = VBO(normals)
 
 
-    def _createDrawables(self,renderer):
-        self.drawable = []
-        #### BACK COLOR ####
+    def subElems(self,selector):
+        """Create an index for the drawable subelems
+
+        This index always refers to the full coords (fcoords).
+        The selector is 2D (nsubelems, nsubplex)
+        If selector is None, returns None
+        """
+        if selector is None:
+            return None
+        else:
+            # The elems index defining the original elements
+            # based on the full fcoords
+            nelems,nplex = self.fcoords.shape[:2]
+            elems = arange(nelems*nplex).reshape(nelems,nplex)
+            print("ELEMS",elems.shape,elems)
+            return elems[:,selector].reshape(-1,selector.shape[-1])
+
+
+    def _addFaces(self,renderer):
+        """Draw the elems"""
+        print("ADDFACES %s" % self.faces)
+        elems = self.subElems(self.faces)
+        if elems is not None:
+            print("ADDFACES SIZE %s" % (elems.shape,))
         if ( self.bkcolor is not None or
              self.bkalpha is not None or
              renderer.canvas.settings.alphablend ):
             # Draw both sides separately
             # First, front sides
-            self.drawable.append(Drawable(self,frontface=True))
+            self.drawable.append(Drawable(self,subelems=elems,frontface=True))
             # Then back sides
             extra = Attributes()
             if self.bkalpha is not None:
@@ -426,43 +487,36 @@ class GeomActor(Attributes):
             if self.bkcolor is not None:
                 extra.color = self.bkcolor
             # !! What about colormap?
-            self.drawable.append(Drawable(self,backface=True,**extra))
+            self.drawable.append(Drawable(self,subelems=elems,backface=True,**extra))
         else:
             # Just draw both sides at once
-            self.drawable.append(Drawable(self))
+            self.drawable.append(Drawable(self,subelems=elems))
 
 
-    def changeMode(self,renderer):
-        """Modify the actor according to the specified mode"""
-        print("DRAWABLE.changeMode")
-        self._prepareNormals(renderer)
-        self._createDrawables(renderer)
-        #if renderer.mode == 'wireframe':
-        #    self.drawable = []
-        self.switchEdges('wire' in renderer.mode)
+    def _addEdges(self,renderer):
+        """Draw the edges"""
+        print("ADDEDGES %s" % self.edges)
+        if self.edges is not None:
+            elems = self.subElems(self.edges)
+            if elems is not None:
+                print("ADDEDGES SIZE %s" % (elems.shape,))
+            self.drawable.append(Drawable(self,subelems=elems))
 
 
-    def switchEdges(self,on):
+    def _addWires(self,renderer):
         """Add or remove the edges depending on rendering mode"""
-        if on:
+        print("ADDWIRES %s" % self.edges)
+        if renderer.mode.endswith('wire'):
             # Create a drawable for the edges
             if self.edges is not None and self._wire is None:
-                extra = Attributes()
-                extra.color = array(black)
-                extra.opak = True
-                extra.lighting = False
-                extra.glmode = glObjType(2)
-                extra.vbo = VBO(self.coords)
-                extra.ibo = VBO(self.edges.astype(int32),target=GL.GL_ELEMENT_ARRAY_BUFFER)
+                elems = self.subElems(self.edges)
+                print("ADDWIRES SIZE %s" % (elems.shape,))
                 # store, so we can switch on/off
-                self._wire = Drawable(self,**extra)
-                print("CREATED EDGES")
+                self._wire = Drawable(self,subelems=elems,lighting=False,color = array(black),opak=True)
             if self._wire:
-                print("ADDING EDGES")
                 self.drawable.append(self._wire)
         else:
             if self._wire and self._wire in self.drawable:
-                print("REMOVING EDGES")
                 self.drawable.remove(self._wire)
 
 
@@ -486,15 +540,8 @@ class GeomActor(Attributes):
                 print("PALETTE:%s"%colormap)
                 color = colormap[color]
 
-            if color.ndim == 2:
-                # We have element color
-                print("PLEX %s" % self.nplex)
-                print("Old color shape %s" % str(color.shape))
-                color = at.multiplex(color,self.nplex*self.elems_multi)
-                print("New color shape %s" % str(color.shape))
-
-            print("VERTEX SHAPE = %s" % str(self.fcoords.shape))
-            print("COLOR SHAPE = %s" % str(color.shape))
+            print("VERTEX SHAPE = %s" % (self.fcoords.shape,))
+            print("COLOR SHAPE = %s" % (color.shape,))
 
         self.color = color
 
