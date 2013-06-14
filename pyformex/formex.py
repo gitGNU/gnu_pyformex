@@ -595,23 +595,23 @@ maxprop  = %s
 #
 ##############################################################################
 
-    def setProp(self,p=None):
-        """Create or destroy the property array for the Formex.
+    ## def setProp(self,p=None):
+    ##     """Create or destroy the property array for the Formex.
 
-        A property array is a rank-1 integer array with dimension equal
-        to the number of elements in the Formex (first dimension of data).
-        You can specify a single value or a list/array of integer values.
-        If the number of passed values is less than the number of elements,
-        they wil be repeated. If you give more, they will be ignored.
+    ##     A property array is a rank-1 integer array with dimension equal
+    ##     to the number of elements in the Formex (first dimension of data).
+    ##     You can specify a single value or a list/array of integer values.
+    ##     If the number of passed values is less than the number of elements,
+    ##     they wil be repeated. If you give more, they will be ignored.
 
-        If a value None is given, the properties are removed from the Formex.
-        """
-        if p is None:
-            self.prop = None
-        else:
-            p = array(p).astype(Int)
-            self.prop = resize(p,self.coords.shape[:1])
-        return self
+    ##     If a value None is given, the properties are removed from the Formex.
+    ##     """
+    ##     if p is None:
+    ##         self.prop = None
+    ##     else:
+    ##         p = array(p).astype(Int)
+    ##         self.prop = resize(p,self.coords.shape[:1])
+    ##     return self
 
 
     def append(self,F):
@@ -1203,8 +1203,8 @@ maxprop  = %s
 
 
     # TODO: returned Formex could inherit properties of parent
-    def intersectionWithPlane(self,p,n):
-        """Return the intersection of a Formex with the plane (p,n).
+    def intersectionWithPlane(self,p,n,atol=0):
+        """Return the intersection of a Formex with the plane (p,n) within tolerance atol.
 
         Currently this only works for plex-2 and plex-3 Formices.
 
@@ -1215,9 +1215,9 @@ maxprop  = %s
         """
         if self.nplex() == 2:
             from geomtools import intersectionSWP
-            return Formex(intersectionSWP(self.coords,p,n,mode='pair')[1])
+            return Formex(intersectionSWP(self.coords,p,n,mode='pair',atol=atol)[1])
         elif self.nplex() == 3:
-            m = self.toSurface().intersectionWithPlane(p,n)
+            m = self.toSurface().intersectionWithPlane(p,n,atol=atol)
             if m.nelems() > 0:
                 return m.toFormex()
             else:
@@ -2054,7 +2054,7 @@ def cutElements3AtPlane(F,p,n,newprops=None,side='',atol=0.):
     from geomtools import intersectionSWP
     C = [connect([F,F],nodid=ax) for ax in [[0,1],[1,2],[2,0]]]
     errh = seterr(divide='ignore',invalid='ignore')
-    res = [intersectionSWP(Ci.coords,p,n,mode='pair',return_all=True) for Ci in C]
+    res = [intersectionSWP(Ci.coords,p,n,mode='pair',return_all=True,atol=atol) for Ci in C]
     seterr(**errh)
     t = column_stack([r[0] for r in res])
     P = stack([r[1] for r in res],axis=1)

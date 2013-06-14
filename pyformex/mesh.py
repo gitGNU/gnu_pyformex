@@ -231,23 +231,23 @@ class Mesh(Geometry):
         return self.elType().name()
 
 
-    def setProp(self,prop=None):
-        """Create or destroy the property array for the Mesh.
+    ## def setProp(self,prop=None):
+    ##     """Create or destroy the property array for the Mesh.
 
-        A property array is a rank-1 integer array with dimension equal
-        to the number of elements in the Mesh.
-        You can specify a single value or a list/array of integer values.
-        If the number of passed values is less than the number of elements,
-        they wil be repeated. If you give more, they will be ignored.
+    ##     A property array is a rank-1 integer array with dimension equal
+    ##     to the number of elements in the Mesh.
+    ##     You can specify a single value or a list/array of integer values.
+    ##     If the number of passed values is less than the number of elements,
+    ##     they wil be repeated. If you give more, they will be ignored.
 
-        If a value None is given, the properties are removed from the Mesh.
-        """
-        if prop is None:
-            self.prop = None
-        else:
-            prop = array(prop).astype(Int)
-            self.prop = resize(prop,(self.nelems(),))
-        return self
+    ##     If a value None is given, the properties are removed from the Mesh.
+    ##     """
+    ##     if prop is None:
+    ##         self.prop = None
+    ##     else:
+    ##         prop = array(prop).astype(Int)
+    ##         self.prop = resize(prop,(self.nelems(),))
+    ##     return self
 
 
     def setNormals(self,normals=None):
@@ -1879,7 +1879,11 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
           Coords item back at the end of the list.
 
         - `div`: Either an integer, or a sequence of float numbers (usually
-          in the range ]0.0..1.0]). This should only be used for degree==1.
+          in the range ]0.0..1.0]) or a list of sequences of the same length of the
+          connecting list of coordinates. In the latter case every sequence inside the
+          list can either be a float sequence (usually in the range ]0.0..1.0])
+          or it contains one integer (e.g [[4],[0.3,1]]).
+          This should only be used for degree==1.
 
           With this parameter the generated elements  can be further
           subdivided along the connection direction.
@@ -1888,7 +1892,10 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
           sequence of float numbers is given, the numbers specify the relative
           distance along the connection direction where the elements should
           end. If the last value in the sequence is not equal to 1.0, there
-          will be a gap between the consecutive connections.
+          will be a gap between the consecutive connections. If a list of sequences
+          is given, every consecutive element of the coordinate list is connected
+          using the corresponding sequence in the list(1-length integer of float sequence
+          specified as before).
 
         - `eltype`: the element type of the constructed hypermesh. Normally,
           this is set automatically from the base element type and the
@@ -1897,7 +1904,8 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         """
         if type(coordslist) is list:
             if type(coordslist[0]) == Mesh:
-                if sum([c.elType() != self.elType() for c in coordslist]):                          raise ValueError,"All Meshes in the list should have same element type"
+                if sum([c.elType() != self.elType() for c in coordslist]):
+                    raise ValueError,"All Meshes in the list should have same element type"
                 clist = [ c.coords for c in coordslist ]
             else:
                 clist = coordslist
@@ -1922,8 +1930,15 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
             raise ValueError,"Invalid length of coordslist (%s) for degree %s." % (len(clist),degree)
 
         # set divisions
-        ## div = unitDivisor(degree*div,start=1)
-        div = unitDivisor(div,start=1)
+        if isinstance(div,int):
+            div=[div]
+
+        if not isinstance(div[0],list): # handle int and single float sequence
+            div = [unitDivisor(div,start=1)]*((len(clist)-1)/degree)
+        else:
+            if len(div)!=(len(clist)-1)/degree:
+                raise ValueError,"div must be a integer,a single list of float or a list of division sequence of length (len(clist)-1)/degree)"
+            div = [unitDivisor(d,start=1) for d in div]
 
         # For higher order non-lagrangian elements the procedure could be
         # optimized by first compacting the coords and elems.
@@ -1932,7 +1947,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         # A final compact() throws out the unused points.
 
         # Concatenate the coordinates
-        x = [ Coords.interpolate(xi,xj,div).reshape(-1,3) for xi,xj in zip(clist[:-1:degree],clist[degree::degree]) ]
+        x = [ Coords.interpolate(xi,xj,d).reshape(-1,3) for xi,xj,d in zip(clist[:-1:degree],clist[degree::degree],div) ]
         x = Coords.concatenate(clist[:1] + x)
 
         # Create the connectivity table

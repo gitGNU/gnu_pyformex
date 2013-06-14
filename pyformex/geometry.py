@@ -30,7 +30,8 @@ Coords class to the derived classes.
 """
 from __future__ import print_function
 
-from coords import Coords
+from coords import Coords,Int
+import numpy as np
 
 
 class Geometry(object):
@@ -174,6 +175,40 @@ class Geometry(object):
         return self.copy()._set_coords_inplace(coords)
 
     _set_coords = _set_coords_copy
+
+
+    def nelems(self):
+        """Return the number of elements in the Geometry.
+
+        This method should be re-implemented by the derived classes.
+        For the (empty) Geometry class it always returns 0.
+        """
+        return 0
+
+
+    def setProp(self,prop=None):
+        """Create or destroy the property array for the Geometry.
+
+        A property array is a rank-1 integer array with dimension equal
+        to the number of elements in the Geometry.
+        You can specify a single value or a list/array of integer values.
+        If the number of passed values is less than the number of elements,
+        they wil be repeated. If you give more, they will be ignored.
+
+        If prop=='range', properties are set equal to the element number.
+
+        If a value None is given, the properties are removed from the Mesh.
+        """
+        if prop is None:
+            self.prop = None
+        else:
+            if prop == 'range':
+                prop = np.arange(self.nelems())
+            else:
+                prop = np.array(prop)
+            self.prop = np.resize(prop,(self.nelems(),)).astype(Int)
+        return self
+
 
     ########### Return information about the coords #################
 

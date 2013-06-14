@@ -1279,7 +1279,7 @@ Quality: %s .. %s
 
     # This may replace CutWithPlane after it has been proved stable
     # and has been expanded to multiple planes
-    def cutWithPlane1(self,p,n,side='',return_intersection=False):
+    def cutWithPlane1(self,p,n,side='',return_intersection=False,atol=0.):
         """Cut a surface with a plane.
 
         Cuts the surface with a plane defined by a point p and normal n.
@@ -1385,7 +1385,7 @@ Quality: %s .. %s
 
         # Compute the intersection points
         M = Mesh(S.coords,edg[cutedg])
-        x = geomtools.intersectionPointsSWP(M.toFormex().coords,p,n,mode='pair',return_all=True).reshape(-1,3)
+        x = geomtools.intersectionPointsSWP(M.toFormex().coords,p,n,mode='pair',return_all=True,atol=atol).reshape(-1,3)
         # Create inverse index to lookup the point using the edge number
         rev = inverseUniqueIndex(ind) + coords.shape[0]
         # Concatenate the coords arrays
@@ -1684,7 +1684,7 @@ Quality: %s .. %s
         return p, column_stack([j, l[i], t[i]])
 
 
-    def intersectionWithPlane(self,p,n):
+    def intersectionWithPlane(self,p,n,atol=0.):
         """Return the intersection lines with plane (p,n).
 
         Returns a plex-2 mesh with the line segments obtained by cutting
@@ -1736,7 +1736,7 @@ Quality: %s .. %s
         if ind.size != 0:
             rev = inverseUniqueIndex(ind)
             M = Mesh(S.coords,edg[w])
-            x = geomtools.intersectionPointsSWP(M.toFormex().coords,p,n,mode='pair',return_all=True).reshape(-1,3)
+            x = geomtools.intersectionPointsSWP(M.toFormex().coords,p,n,mode='pair',return_all=True,atol=atol).reshape(-1,3)
 
         # For each triangle, compute the number of cutting edges
         cut = w[fac]
