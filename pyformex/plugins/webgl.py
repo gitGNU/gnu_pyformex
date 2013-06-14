@@ -247,7 +247,7 @@ class WebGL(List):
           be positioned at that place, and be looking at the origin.
           This should be set to a proper distance from the scene to get
           a decent result on first display.
-        - `upvector=': specify a list of 3 components of a vector indicating
+        - `upvector=`: specify a list of 3 components of a vector indicating
           the upwards direction of the camera. The default is [0.,1.,0.].
         """
         self._camera = Dict(kargs)

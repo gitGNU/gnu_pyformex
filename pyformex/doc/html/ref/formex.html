@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>2. formex — Formex algebra in Python &mdash; pyFormex 0.9.0 documentation</title>
+    <title>2. formex — Formex algebra in Python &mdash; pyFormex 0.9.1a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +43,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.0',
+        VERSION:     '0.9.1a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +52,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 0.9.0 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 0.9.1a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="3. arraytools — A collection of numerical array utilities." href="arraytools.html" />
     <link rel="prev" title="1. coords — A structured collection of 3D coordinates." href="coords.html" />
@@ -83,7 +83,7 @@
         <li class="right" >
           <a href="coords.html" title="1. coords — A structured collection of 3D coordinates."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.0 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 0.9.1a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -492,18 +492,6 @@ Formex.setPrintFunction(Formex.asArray).</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="formex.Formex.setProp">
-<tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#formex.Formex.setProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create or destroy the property array for the Formex.</p>
-<p>A property array is a rank-1 integer array with dimension equal
-to the number of elements in the Formex (first dimension of data).
-You can specify a single value or a list/array of integer values.
-If the number of passed values is less than the number of elements,
-they wil be repeated. If you give more, they will be ignored.</p>
-<p>If a value None is given, the properties are removed from the Formex.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="formex.Formex.append">
 <tt class="descname">append</tt><big>(</big><em>F</em><big>)</big><a class="headerlink" href="#formex.Formex.append" title="Permalink to this definition">¶</a></dt>
 <dd><p>Append the members of Formex F to this one.</p>
@@ -851,8 +839,8 @@ number of divisions for the interval [0..1].</p>
 
 <dl class="method">
 <dt id="formex.Formex.intersectionWithPlane">
-<tt class="descname">intersectionWithPlane</tt><big>(</big><em>p</em>, <em>n</em><big>)</big><a class="headerlink" href="#formex.Formex.intersectionWithPlane" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the intersection of a Formex with the plane (p,n).</p>
+<tt class="descname">intersectionWithPlane</tt><big>(</big><em>p</em>, <em>n</em>, <em>atol=0</em><big>)</big><a class="headerlink" href="#formex.Formex.intersectionWithPlane" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the intersection of a Formex with the plane (p,n) within tolerance atol.</p>
 <p>Currently this only works for plex-2 and plex-3 Formices.</p>
 <p>The intersection of the Formex with a plane specified by a point p
 and normal n is returned. For a plex-2 Formex (lines), the returned
@@ -892,6 +880,87 @@ plane will be cut and split up into multiple parts.</p>
 <p>When side = &#8216;+&#8217; or &#8216;-&#8216; (or &#8216;positive&#8217;or &#8216;negative&#8217;), only one
 of the sides is returned.</p>
 </div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.split">
+<tt class="descname">split</tt><big>(</big><em>n=1</em><big>)</big><a class="headerlink" href="#formex.Formex.split" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split a Formex in subFormices containing n elements.</p>
+<p>The number of elements in the Formex should be a multiple of n.
+Returns a list of Formices each comprising n elements.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.lengths">
+<tt class="descname">lengths</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.lengths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the length of all elements of a 2-plex Formex.</p>
+<p>The length of an element is the distance between its two points.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.areas">
+<tt class="descname">areas</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.areas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the areas of all elements of a 3-plex Formex.</p>
+<p>The area of an element is the aread of the triangle formed by its
+three points.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.volumes">
+<tt class="descname">volumes</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.volumes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the volume of all elements of a 4-plex Formex.</p>
+<p>The volume of an element is the volume of the tetraeder formed
+by its points.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.write">
+<tt class="descname">write</tt><big>(</big><em>fil</em>, <em>sep=' '</em>, <em>mode='w'</em><big>)</big><a class="headerlink" href="#formex.Formex.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a Formex to file.</p>
+<p>If fil is a string, a file with that name is opened. Else fil should
+be an open file.
+The Formex is then written to that file in a native format, using
+sep as separator between the coordinates.
+If fil is a string, the file is closed prior to returning.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="formex.Formex.read">
+<em class="property">classmethod </em><tt class="descname">read</tt><big>(</big><em>clas</em>, <em>fil</em>, <em>sep=' '</em><big>)</big><a class="headerlink" href="#formex.Formex.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a Formex from file.</p>
+<p>fil is a filename or a file object.
+If the file is in a valid Formex file format, the Formex is read and
+returned. Otherwise, None is returned.
+Valid Formex file formats are described in the manual.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="formex.Formex.fromstring">
+<em class="property">classmethod </em><tt class="descname">fromstring</tt><big>(</big><em>clas</em>, <em>fil</em>, <em>sep=' '</em>, <em>nplex=1</em>, <em>ndim=3</em>, <em>count=-1</em><big>)</big><a class="headerlink" href="#formex.Formex.fromstring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a <a class="reference internal" href="#formex.Formex" title="formex.Formex"><tt class="xref py py-class docutils literal"><span class="pre">Formex</span></tt></a> from coodinates in a string.</p>
+<p>This uses the <tt class="xref py py-meth docutils literal"><span class="pre">Coords.fromstring()</span></tt> method to read coordinates
+from a string and restructures them into a Formex of the specified
+plexitude.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>fil</cite>: a string containing a single sequence of float numbers separated
+by whitespace and a possible separator string.</li>
+<li><cite>sep</cite>: the separator used between the coordinates. If not a space,
+all extra whitespace is ignored.</li>
+<li><cite>ndim</cite>: number of coordinates per point. Should be 1, 2 or 3 (default).
+If 1, resp. 2, the coordinate string only holds x, resp. x,y values.</li>
+<li><cite>count</cite>: total number of coordinates to read. This should be a multiple
+of 3. The default is to read all the coordinates in the string.
+<tt class="docutils literal"><span class="pre">count</span></tt> can be used to force an error condition if the string
+does not contain the expected number of values.</li>
+</ul>
+<p>The return value is a <tt class="xref py py-class docutils literal"><span class="pre">Coords</span></tt> object.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="formex.Formex.fromfile">
+<em class="property">classmethod </em><tt class="descname">fromfile</tt><big>(</big><em>clas</em>, <em>fil</em>, <em>sep=' '</em>, <em>nplex=1</em><big>)</big><a class="headerlink" href="#formex.Formex.fromfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the coordinates of a Formex from a file</p>
 </dd></dl>
 
 <dl class="method">
@@ -1133,6 +1202,27 @@ of the sides is returned.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="formex.Formex.setProp">
+<tt class="descname">setProp</tt><big>(</big><em>prop=None</em>, <em>blocks=None</em><big>)</big><a class="headerlink" href="#formex.Formex.setProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create or destroy the property array for the Geometry.</p>
+<p>A property array is a rank-1 integer array with dimension equal
+to the number of elements in the Geometry.</p>
+<p>Parameters:</p>
+<blockquote>
+<div><p>-&#8216;prop&#8217; : single value or a list/array of integer values.
+If the number of passed values is less than the number of elements,
+they wil be repeated. If you give more, they will be ignored.</p>
+<p>If prop==&#8217;range&#8217;, properties are set equal to the element number.</p>
+<p>If a value None is given, the properties are removed from the Mesh.</p>
+<p>-&#8216;blocks&#8217; : single value or a list/array of integer values.
+If the number of passed values is less than the number of prop,
+they wil be repeated. If you give more, they will be ignored.
+Every prop will be repetead for every group of elements according
+to the corresponding number of blocks.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
 <dt id="formex.Formex.getCoords">
 <tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.getCoords" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the coords data.</p>
@@ -1159,87 +1249,6 @@ the maximum size are not rescaled.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="formex.Formex.split">
-<tt class="descname">split</tt><big>(</big><em>n=1</em><big>)</big><a class="headerlink" href="#formex.Formex.split" title="Permalink to this definition">¶</a></dt>
-<dd><p>Split a Formex in subFormices containing n elements.</p>
-<p>The number of elements in the Formex should be a multiple of n.
-Returns a list of Formices each comprising n elements.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.lengths">
-<tt class="descname">lengths</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.lengths" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the length of all elements of a 2-plex Formex.</p>
-<p>The length of an element is the distance between its two points.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.areas">
-<tt class="descname">areas</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.areas" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the areas of all elements of a 3-plex Formex.</p>
-<p>The area of an element is the aread of the triangle formed by its
-three points.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.volumes">
-<tt class="descname">volumes</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.volumes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the volume of all elements of a 4-plex Formex.</p>
-<p>The volume of an element is the volume of the tetraeder formed
-by its points.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.write">
-<tt class="descname">write</tt><big>(</big><em>fil</em>, <em>sep=' '</em>, <em>mode='w'</em><big>)</big><a class="headerlink" href="#formex.Formex.write" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write a Formex to file.</p>
-<p>If fil is a string, a file with that name is opened. Else fil should
-be an open file.
-The Formex is then written to that file in a native format, using
-sep as separator between the coordinates.
-If fil is a string, the file is closed prior to returning.</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="formex.Formex.read">
-<em class="property">classmethod </em><tt class="descname">read</tt><big>(</big><em>clas</em>, <em>fil</em>, <em>sep=' '</em><big>)</big><a class="headerlink" href="#formex.Formex.read" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read a Formex from file.</p>
-<p>fil is a filename or a file object.
-If the file is in a valid Formex file format, the Formex is read and
-returned. Otherwise, None is returned.
-Valid Formex file formats are described in the manual.</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="formex.Formex.fromstring">
-<em class="property">classmethod </em><tt class="descname">fromstring</tt><big>(</big><em>clas</em>, <em>fil</em>, <em>sep=' '</em>, <em>nplex=1</em>, <em>ndim=3</em>, <em>count=-1</em><big>)</big><a class="headerlink" href="#formex.Formex.fromstring" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a <a class="reference internal" href="#formex.Formex" title="formex.Formex"><tt class="xref py py-class docutils literal"><span class="pre">Formex</span></tt></a> from coodinates in a string.</p>
-<p>This uses the <tt class="xref py py-meth docutils literal"><span class="pre">Coords.fromstring()</span></tt> method to read coordinates
-from a string and restructures them into a Formex of the specified
-plexitude.</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>fil</cite>: a string containing a single sequence of float numbers separated
-by whitespace and a possible separator string.</li>
-<li><cite>sep</cite>: the separator used between the coordinates. If not a space,
-all extra whitespace is ignored.</li>
-<li><cite>ndim</cite>: number of coordinates per point. Should be 1, 2 or 3 (default).
-If 1, resp. 2, the coordinate string only holds x, resp. x,y values.</li>
-<li><cite>count</cite>: total number of coordinates to read. This should be a multiple
-of 3. The default is to read all the coordinates in the string.
-<tt class="docutils literal"><span class="pre">count</span></tt> can be used to force an error condition if the string
-does not contain the expected number of values.</li>
-</ul>
-<p>The return value is a <tt class="xref py py-class docutils literal"><span class="pre">Coords</span></tt> object.</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="formex.Formex.fromfile">
-<em class="property">classmethod </em><tt class="descname">fromfile</tt><big>(</big><em>clas</em>, <em>fil</em>, <em>sep=' '</em>, <em>nplex=1</em><big>)</big><a class="headerlink" href="#formex.Formex.fromfile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read the coordinates of a Formex from a file</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="formex.Formex.nnodes">
 <tt class="descname">nnodes</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.nnodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the number of points in the formex.</p>
@@ -1250,6 +1259,49 @@ with the number of nodes per element.</p>
 </dd></dl>
 
 <p><tt class="docutils literal"><span class="pre">Functions</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">formex</span></tt></p>
+<dl class="function">
+<dt id="formex.connect">
+<tt class="descclassname">formex.</tt><tt class="descname">connect</tt><big>(</big><em>Flist</em>, <em>nodid=None</em>, <em>bias=None</em>, <em>loop=False</em><big>)</big><a class="headerlink" href="#formex.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Formex which connects the Formices in list.</p>
+<p>Flist is a list of formices, nodid is an optional list of nod ids and
+bias is an optional list of element bias values. All lists should have
+the same length.
+The returned Formex has a plexitude equal to the number of
+formices in list. Each element of the Formex consist of a node from
+the corresponding element of each of the formices in list. By default
+this will be the first node of that element, but a nodid list may be
+given to specify the node id to be used for each of the formices.
+Finally, a list of bias values may be given to specify an offset in
+element number for the subsequent formices.
+If loop==False, the order of the Formex will be the minimum order of
+the formices in Flist, each minus its respective bias. By setting
+loop=True however, each Formex will loop around if its end is
+encountered, and the order of the result is the maximum order in Flist.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="formex.interpolate">
+<tt class="descclassname">formex.</tt><tt class="descname">interpolate</tt><big>(</big><em>F</em>, <em>G</em>, <em>div</em>, <em>swap=False</em>, <em>concat=True</em><big>)</big><a class="headerlink" href="#formex.interpolate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create interpolations between two formices.</p>
+<p>F and G are two Formices with the same shape.
+div is a list of floating point values.
+The result is the concatenation of the interpolations of F and G at all
+the values in div.
+An interpolation of F and G at value v is a Formex H where each coordinate
+Hijk is obtained from:  Hijk = Fijk + v * (Gijk-Fijk).
+Thus, a Formex interpolate(F,G,[0.,0.5,1.0]) will contain all elements
+of F and G and all elements with mean coordinates between those of F and G.</p>
+<p>As a convenience, if an integer is specified for div, it is taken as a
+number of divisions for the interval [0..1].
+Thus, interpolate(F,G,n) is equivalent with
+interpolate(F,G,arange(0,n+1)/float(n))</p>
+<p>The swap argument sets the order of the elements in the resulting Formex.
+By default, if n interpolations are created of an m-element Formex, the
+element order is in-Formex first (n sequences of m elements).
+If swap==True, the order is swapped and you get m sequences of n
+interpolations.</p>
+</dd></dl>
+
 <dl class="function">
 <dt id="formex.lpattern">
 <tt class="descclassname">formex.</tt><tt class="descname">lpattern</tt><big>(</big><em>s</em>, <em>connect=True</em><big>)</big><a class="headerlink" href="#formex.lpattern" title="Permalink to this definition">¶</a></dt>
@@ -1378,49 +1430,6 @@ For now, lets suppose the last, so no need to check arguments here.</p>
 side is either &#8216;+&#8217;, &#8216;-&#8216; or &#8216;&#8217;</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="formex.connect">
-<tt class="descclassname">formex.</tt><tt class="descname">connect</tt><big>(</big><em>Flist</em>, <em>nodid=None</em>, <em>bias=None</em>, <em>loop=False</em><big>)</big><a class="headerlink" href="#formex.connect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Formex which connects the Formices in list.</p>
-<p>Flist is a list of formices, nodid is an optional list of nod ids and
-bias is an optional list of element bias values. All lists should have
-the same length.
-The returned Formex has a plexitude equal to the number of
-formices in list. Each element of the Formex consist of a node from
-the corresponding element of each of the formices in list. By default
-this will be the first node of that element, but a nodid list may be
-given to specify the node id to be used for each of the formices.
-Finally, a list of bias values may be given to specify an offset in
-element number for the subsequent formices.
-If loop==False, the order of the Formex will be the minimum order of
-the formices in Flist, each minus its respective bias. By setting
-loop=True however, each Formex will loop around if its end is
-encountered, and the order of the result is the maximum order in Flist.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="formex.interpolate">
-<tt class="descclassname">formex.</tt><tt class="descname">interpolate</tt><big>(</big><em>F</em>, <em>G</em>, <em>div</em>, <em>swap=False</em>, <em>concat=True</em><big>)</big><a class="headerlink" href="#formex.interpolate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create interpolations between two formices.</p>
-<p>F and G are two Formices with the same shape.
-div is a list of floating point values.
-The result is the concatenation of the interpolations of F and G at all
-the values in div.
-An interpolation of F and G at value v is a Formex H where each coordinate
-Hijk is obtained from:  Hijk = Fijk + v * (Gijk-Fijk).
-Thus, a Formex interpolate(F,G,[0.,0.5,1.0]) will contain all elements
-of F and G and all elements with mean coordinates between those of F and G.</p>
-<p>As a convenience, if an integer is specified for div, it is taken as a
-number of divisions for the interval [0..1].
-Thus, interpolate(F,G,n) is equivalent with
-interpolate(F,G,arange(0,n+1)/float(n))</p>
-<p>The swap argument sets the order of the elements in the resulting Formex.
-By default, if n interpolations are created of an m-element Formex, the
-element order is in-Formex first (n sequences of m elements).
-If swap==True, the order is swapped and you get m sequences of n
-interpolations.</p>
-</dd></dl>
-
 </div>
 
 
@@ -1444,7 +1453,7 @@ interpolations.</p>
         <li class="right" >
           <a href="coords.html" title="1. coords — A structured collection of 3D coordinates."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.0 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 0.9.1a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -1452,7 +1461,7 @@ interpolations.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Mar 25, 2013.
+      Last updated on Jun 14, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>9. mesh — Finite element meshes in pyFormex. &mdash; pyFormex 0.9.0 documentation</title>
+    <title>11. mesh — Finite element meshes in pyFormex. &mdash; pyFormex 0.9.1a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +43,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.0',
+        VERSION:     '0.9.1a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,10 +52,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 0.9.0 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 0.9.1a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="10. simple — Predefined geometries with a simple shape." href="simple.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="elements.html" />
+    <link rel="next" title="12. simple — Predefined geometries with a simple shape." href="simple.html" />
+    <link rel="prev" title="10. elements — Definition of elements." href="elements.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -78,12 +78,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="simple.html" title="10. simple — Predefined geometries with a simple shape."
+          <a href="simple.html" title="12. simple — Predefined geometries with a simple shape."
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="elements.html" title="&lt;no title&gt;"
+          <a href="elements.html" title="10. elements — Definition of elements."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.0 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 0.9.1a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -103,10 +103,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="elements.html"
-                        title="previous chapter">&lt;no title&gt;</a></p>
+                        title="previous chapter">10. <tt class="docutils literal docutils literal docutils literal"><span class="pre">elements</span></tt> &#8212; Definition of elements.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="simple.html"
-                        title="next chapter">10. <tt class="docutils literal"><span class="pre">simple</span></tt> &#8212; Predefined geometries with a simple shape.</a></p>
+                        title="next chapter">12. <tt class="docutils literal"><span class="pre">simple</span></tt> &#8212; Predefined geometries with a simple shape.</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -141,7 +141,7 @@
           <div class="body">
             
   <div class="section" id="module-mesh">
-<span id="mesh-finite-element-meshes-in-pyformex"></span><span id="sec-ref-mesh"></span><h1>9. <a class="reference internal" href="#module-mesh" title="mesh: Finite element meshes in pyFormex."><tt class="xref py py-mod docutils literal"><span class="pre">mesh</span></tt></a> &#8212; Finite element meshes in pyFormex.<a class="headerlink" href="#module-mesh" title="Permalink to this headline">¶</a></h1>
+<span id="mesh-finite-element-meshes-in-pyformex"></span><span id="sec-ref-mesh"></span><h1>11. <a class="reference internal" href="#module-mesh" title="mesh: Finite element meshes in pyFormex."><tt class="xref py py-mod docutils literal"><span class="pre">mesh</span></tt></a> &#8212; Finite element meshes in pyFormex.<a class="headerlink" href="#module-mesh" title="Permalink to this headline">¶</a></h1>
 <p>This module defines the Mesh class, which can be used to describe discrete
 geometrical models like those used in Finite Element models.
 It also contains some useful functions to create such models.</p>
@@ -178,7 +178,7 @@ range 0 &lt;= value &lt; ncoords.</li>
 of an Element type, or None (default).
 If eltype is None, the eltype of the elems Connectivity table is used,
 and if that is missing, a default eltype is derived from the plexitude,
-by a call to <tt class="xref py py-func docutils literal"><span class="pre">elements.elementType()</span></tt>.
+by a call to <a class="reference internal" href="elements.html#elements.elementType" title="elements.elementType"><tt class="xref py py-func docutils literal"><span class="pre">elements.elementType()</span></tt></a>.
 In most cases the eltype can be set automatically.
 The user can override the default value, but an error will occur if
 the element type does not exist or does not match the plexitude.</li>
@@ -209,18 +209,6 @@ normally set the element type at creation time.</p>
 <dt id="mesh.Mesh.elName">
 <tt class="descname">elName</tt><big>(</big><big>)</big><a class="headerlink" href="#mesh.Mesh.elName" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the element name of the Mesh.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="mesh.Mesh.setProp">
-<tt class="descname">setProp</tt><big>(</big><em>prop=None</em><big>)</big><a class="headerlink" href="#mesh.Mesh.setProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create or destroy the property array for the Mesh.</p>
-<p>A property array is a rank-1 integer array with dimension equal
-to the number of elements in the Mesh.
-You can specify a single value or a list/array of integer values.
-If the number of passed values is less than the number of elements,
-they wil be repeated. If you give more, they will be ignored.</p>
-<p>If a value None is given, the properties are removed from the Mesh.</p>
 </dd></dl>
 
 <dl class="method">
@@ -347,7 +335,7 @@ Note that this may contain points that are not used in the mesh.
 <dt id="mesh.Mesh.getLowerEntities">
 <tt class="descname">getLowerEntities</tt><big>(</big><em>level=-1</em>, <em>unique=False</em><big>)</big><a class="headerlink" href="#mesh.Mesh.getLowerEntities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the entities of a lower dimensionality.</p>
-<p>If the element type is defined in the <tt class="xref py py-mod docutils literal"><span class="pre">elements</span></tt> module,
+<p>If the element type is defined in the <a class="reference internal" href="elements.html#module-elements" title="elements: Definition of elements."><tt class="xref py py-mod docutils literal"><span class="pre">elements</span></tt></a> module,
 this returns a Connectivity table with the entities of a lower
 dimensionality. The full list of entities with increasing
 dimensionality  0,1,2,3 is:</p>
@@ -921,17 +909,32 @@ The returned Mesh inherits the matching properties.</p>
 <tt class="descname">connectedTo</tt><big>(</big><em>nodes</em><big>)</big><a class="headerlink" href="#mesh.Mesh.connectedTo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a Mesh with the elements connected to the specified node(s).</p>
 <p><cite>nodes</cite>: int or array_like, int.</p>
-<p>Returns a Mesh with all the elements from the original that contain
-at least one of the specified nodes.</p>
+<p>Return a Mesh with all the elements from the original that contain at
+least one of the specified nodes.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="mesh.Mesh.notConnectedTo">
-<tt class="descname">notConnectedTo</tt><big>(</big><em>nod</em><big>)</big><a class="headerlink" href="#mesh.Mesh.notConnectedTo" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">notConnectedTo</tt><big>(</big><em>nodes</em><big>)</big><a class="headerlink" href="#mesh.Mesh.notConnectedTo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a Mesh with the elements not connected to the given node(s).</p>
 <p><cite>nodes</cite>: int or array_like, int.</p>
 <p>Returns a Mesh with all the elements from the original that do not
 contain any of the specified nodes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesh.Mesh.hits">
+<tt class="descname">hits</tt><big>(</big><em>entities</em>, <em>level</em><big>)</big><a class="headerlink" href="#mesh.Mesh.hits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Count the lower entities from a list connected to the elements.</p>
+<p><cite>entities</cite>: a single number or a list/array of entities
+<cite>level</cite>: 0 or 1 or 2 if entities are nodes or edges or faces, respectively.</p>
+<p>The numbering of the entities corresponds to self.insertLevel(level).
+Returns an (nelems,) shaped int array with the number of the
+entities from the list that are contained in each of the elements.
+This method can be used in selector expressions like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hits</span><span class="p">(</span><span class="n">entities</span><span class="p">,</span><span class="n">level</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -1212,7 +1215,11 @@ connect back to the first. This is accomplished by adding the first
 Coords item back at the end of the list.</p>
 </li>
 <li><p class="first"><cite>div</cite>: Either an integer, or a sequence of float numbers (usually
-in the range ]0.0..1.0]). This should only be used for degree==1.</p>
+in the range ]0.0..1.0]) or a list of sequences of the same length of the
+connecting list of coordinates. In the latter case every sequence inside the
+list can either be a float sequence (usually in the range ]0.0..1.0])
+or it contains one integer (e.g [[4],[0.3,1]]).
+This should only be used for degree==1.</p>
 <p>With this parameter the generated elements  can be further
 subdivided along the connection direction.
 If an int is given, the connected elements will be divided
@@ -1220,7 +1227,10 @@ into this number of elements along the connection direction. If a
 sequence of float numbers is given, the numbers specify the relative
 distance along the connection direction where the elements should
 end. If the last value in the sequence is not equal to 1.0, there
-will be a gap between the consecutive connections.</p>
+will be a gap between the consecutive connections. If a list of sequences
+is given, every consecutive element of the coordinate list is connected
+using the corresponding sequence in the list(1-length integer of float sequence
+specified as before).</p>
 </li>
 <li><p class="first"><cite>eltype</cite>: the element type of the constructed hypermesh. Normally,
 this is set automatically from the base element type and the
@@ -1288,6 +1298,11 @@ The nodes of these elements will not take part to the smoothing.
 If exclnod and exclelem are used at the same time the union of them
 will be exluded from smoothing.</li>
 </ul>
+<dl class="docutils">
+<dt>-<cite>weight</cite> <span class="classifier-delimiter">:</span> <span class="classifier">it is a string  that can assume 2 values <cite>inversedistance</cite> and</span></dt>
+<dd><cite>distance</cite>. It allows to specify the weight of the adjancent points according
+to their distance to the point</dd>
+</dl>
 </dd></dl>
 
 <dl class="classmethod">
@@ -1403,7 +1418,7 @@ does not succeed.</p>
 <dd><p>Return the area of all elements in a level-2 Mesh.</p>
 <p>For a Mesh with eltype &#8216;tri3&#8217;, the areas are exact. For other
 eltypes, a conversion to &#8216;tri3&#8217; is done before computing the areas.
-This may produce an exact result, an approximated result or no result
+This may produce an exact result, an approximate result or no result
 (if the conversion fails).</p>
 <p>If succesful, returns an (nelems,) float array with the areas.
 Returns None if the Mesh level is not 2, or the conversion to &#8216;tri3&#8217;
@@ -1435,7 +1450,7 @@ returned None.</p>
 <dl class="method">
 <dt id="mesh.Mesh.area">
 <tt class="descname">area</tt><big>(</big><big>)</big><a class="headerlink" href="#mesh.Mesh.area" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the total volume of a Mesh.</p>
+<dd><p>Return the total area of a Mesh.</p>
 <p>Returns the sum of self.areas(), or 0.0 if the self.areas()
 returned None.</p>
 </dd></dl>
@@ -1444,11 +1459,14 @@ returned None.</p>
 <dt id="mesh.Mesh.volume">
 <tt class="descname">volume</tt><big>(</big><big>)</big><a class="headerlink" href="#mesh.Mesh.volume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the total volume of a Mesh.</p>
-<p>Returns the sum of self.volumes(), or 0.0 if the self.volumes()
-returned None.</p>
-<p>Note that even if self.volumes() is computed, a value 0.0 may be
-returned, and even negative values are possible, if the
-node numbering of the elements is reversed.</p>
+<p>For a Mesh of level &lt; 3, a value 0.0 is returned.
+For a Mesh of level 3, the volume is computed by converting its
+border to a surface and taking the volume inside that surface.
+It is equivalent with</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">toSurface</span><span class="p">()</span><span class="o">.</span><span class="n">volume</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This is far more efficient than <cite>self.volumes().sum()</cite>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1693,6 +1711,27 @@ elements can be computed.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="mesh.Mesh.setProp">
+<tt class="descname">setProp</tt><big>(</big><em>prop=None</em>, <em>blocks=None</em><big>)</big><a class="headerlink" href="#mesh.Mesh.setProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create or destroy the property array for the Geometry.</p>
+<p>A property array is a rank-1 integer array with dimension equal
+to the number of elements in the Geometry.</p>
+<p>Parameters:</p>
+<blockquote>
+<div><p>-&#8216;prop&#8217; : single value or a list/array of integer values.
+If the number of passed values is less than the number of elements,
+they wil be repeated. If you give more, they will be ignored.</p>
+<p>If prop==&#8217;range&#8217;, properties are set equal to the element number.</p>
+<p>If a value None is given, the properties are removed from the Mesh.</p>
+<p>-&#8216;blocks&#8217; : single value or a list/array of integer values.
+If the number of passed values is less than the number of prop,
+they wil be repeated. If you give more, they will be ignored.
+Every prop will be repetead for every group of elements according
+to the corresponding number of blocks.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
 <dt id="mesh.Mesh.copy">
 <tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#mesh.Mesh.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a deep copy of the object.</p>
@@ -1838,12 +1877,12 @@ leading to a unit square grid.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="simple.html" title="10. simple — Predefined geometries with a simple shape."
+          <a href="simple.html" title="12. simple — Predefined geometries with a simple shape."
              >next</a> |</li>
         <li class="right" >
-          <a href="elements.html" title="&lt;no title&gt;"
+          <a href="elements.html" title="10. elements — Definition of elements."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.0 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 0.9.1a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -1851,7 +1890,7 @@ leading to a unit square grid.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Mar 25, 2013.
+      Last updated on Jun 14, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

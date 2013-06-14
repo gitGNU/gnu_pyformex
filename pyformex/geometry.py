@@ -190,25 +190,32 @@ class Geometry(object):
         """Create or destroy the property array for the Geometry.
 
         A property array is a rank-1 integer array with dimension equal
-        to the number of elements in the Geometry.
-        
+        to the number of elements in the Geometry. Each element thus has its
+        own property number. These numbers can be used for any purpose.
+        They play an import role when creating new geometry: new elements
+        inherit the property number of their parent element.
+        Properties are also preserved on most geometrical transformations.
+
+        Because elements with different property numbers can be drawn in
+        different colors, the property numbers are also often used to impose
+        color.
+
         Parameters:
-        
-          -'prop' : single value or a list/array of integer values.
+
+        - `prop`: a single integer value or a list/array of integer values.
           If the number of passed values is less than the number of elements,
           they wil be repeated. If you give more, they will be ignored.
-          
-          If prop=='range', properties are set equal to the element number.
-          
-          If a value None is given, the properties are removed from the Mesh.
-          
-          -'blocks' : single value or a list/array of integer values.
-          If the number of passed values is less than the number of prop,
+
+          The special value 'range' will set the property numbers
+          equal to the element number.
+
+          A value None (default) removes the properties from the Geometry.
+
+        - `blocks`: a single integer value or a list/array of integer values.
+          If the number of passed values is less than the length of `prop`,
           they wil be repeated. If you give more, they will be ignored.
-          Every prop will be repetead for every group of elements according
-          to the corresponding number of blocks.
-          
-        
+          Every prop will be repeated the corresponding number of times
+          specified in blocks.
         """
         if prop is None:
             self.prop = None
@@ -217,13 +224,13 @@ class Geometry(object):
                 prop = np.arange(self.nelems())
             else:
                 prop = np.array(prop)
-            
+
             if blocks is not None:
                 if isinstance(blocks,int):
                     blocks = [blocks]
                 blocks = np.resize(blocks,prop.ravel().shape)
                 prop = np.concatenate([np.resize(p,b) for p,b in zip(prop,blocks)]).astype(Int)
-                    
+
             self.prop = np.resize(prop,(self.nelems(),)).astype(Int)
         return self
 

@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -39,11 +39,12 @@ COREMODULES= adjacency arraytools collection config connectivity coords \
 GUIMODULES= actors camera canvas colors colorscale decors draw gluttext \
   image imageViewer imagearray marks menu\
   appMenu toolbar viewport widgets
-PLUGINMODULES= calpy_itf cameratools curve datareader dxf export \
+PLUGINMODULES= calpy_itf cameratools ccxdat ccxinp curve datareader dxf export \
   fe fe_abq fe_post flavia \
-  inertia isopar lima mesh_ext neu_exp nurbs objects plot2d polygon \
+  inertia isopar isosurface lima neu_exp nurbs objects \
+  partition plot2d polygon polynomial \
   postproc properties pyformex_gts section2d sectionize \
-  tetgen tools trisurface turtle units
+  tetgen tools trisurface turtle units vascularsweepingmesher webgl
 #AUTOREF= $(COREMODULES) $(addprefix gui., $(GUIMODULES)) $(addprefix plugins., $(PLUGINMODULES))
 AUTOREF= $(COREMODULES) $(GUIMODULES) $(PLUGINMODULES)
 AUTOSRC= $(addsuffix .rst, ${AUTOREF})
