@@ -186,18 +186,29 @@ class Geometry(object):
         return 0
 
 
-    def setProp(self,prop=None):
+    def setProp(self,prop=None,blocks=None):
         """Create or destroy the property array for the Geometry.
 
         A property array is a rank-1 integer array with dimension equal
         to the number of elements in the Geometry.
-        You can specify a single value or a list/array of integer values.
-        If the number of passed values is less than the number of elements,
-        they wil be repeated. If you give more, they will be ignored.
-
-        If prop=='range', properties are set equal to the element number.
-
-        If a value None is given, the properties are removed from the Mesh.
+        
+        Parameters:
+        
+          -'prop' : single value or a list/array of integer values.
+          If the number of passed values is less than the number of elements,
+          they wil be repeated. If you give more, they will be ignored.
+          
+          If prop=='range', properties are set equal to the element number.
+          
+          If a value None is given, the properties are removed from the Mesh.
+          
+          -'blocks' : single value or a list/array of integer values.
+          If the number of passed values is less than the number of prop,
+          they wil be repeated. If you give more, they will be ignored.
+          Every prop will be repetead for every group of elements according
+          to the corresponding number of blocks.
+          
+        
         """
         if prop is None:
             self.prop = None
@@ -206,8 +217,16 @@ class Geometry(object):
                 prop = np.arange(self.nelems())
             else:
                 prop = np.array(prop)
+            
+            if blocks is not None:
+                if isinstance(blocks,int):
+                    blocks = [blocks]
+                blocks = np.resize(blocks,prop.ravel().shape)
+                prop = np.concatenate([np.resize(p,b) for p,b in zip(prop,blocks)]).astype(Int)
+                    
             self.prop = np.resize(prop,(self.nelems(),)).astype(Int)
         return self
+
 
 
     ########### Return information about the coords #################
