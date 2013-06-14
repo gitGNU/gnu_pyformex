@@ -595,23 +595,23 @@ maxprop  = %s
 #
 ##############################################################################
 
-    def setProp(self,p=None):
-        """Create or destroy the property array for the Formex.
+    ## def setProp(self,p=None):
+    ##     """Create or destroy the property array for the Formex.
 
-        A property array is a rank-1 integer array with dimension equal
-        to the number of elements in the Formex (first dimension of data).
-        You can specify a single value or a list/array of integer values.
-        If the number of passed values is less than the number of elements,
-        they wil be repeated. If you give more, they will be ignored.
+    ##     A property array is a rank-1 integer array with dimension equal
+    ##     to the number of elements in the Formex (first dimension of data).
+    ##     You can specify a single value or a list/array of integer values.
+    ##     If the number of passed values is less than the number of elements,
+    ##     they wil be repeated. If you give more, they will be ignored.
 
-        If a value None is given, the properties are removed from the Formex.
-        """
-        if p is None:
-            self.prop = None
-        else:
-            p = array(p).astype(Int)
-            self.prop = resize(p,self.coords.shape[:1])
-        return self
+    ##     If a value None is given, the properties are removed from the Formex.
+    ##     """
+    ##     if p is None:
+    ##         self.prop = None
+    ##     else:
+    ##         p = array(p).astype(Int)
+    ##         self.prop = resize(p,self.coords.shape[:1])
+    ##     return self
 
 
     def append(self,F):
