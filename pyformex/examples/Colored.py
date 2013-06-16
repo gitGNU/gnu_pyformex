@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -61,6 +61,7 @@ def run():
                 renderMode(mode)
                 FA = GeomActor(F,color=c)
                 drawActor(FA)
+                ### For some modes, draw(F,color=c) does not work!!
                 zoomAll()
                 for light in Lights:
                     lights(light)

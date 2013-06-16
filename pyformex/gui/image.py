@@ -467,6 +467,7 @@ def saveIcon(fn,size=32,transparent=True):
     if not fn.endswith('.xpm'):
         fn += '.xpm'
     save_canvas(pf.canvas,fn,fmt='xpm',size=(size,size))
+    print("Saved icon to file %s in %s" % (fn,os.getcwd()))
     if transparent:
         changeBackgroundColorXPM(fn,'None')
 

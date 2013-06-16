@@ -325,7 +325,9 @@ class Gui(QtGui.QMainWindow):
             modes,guifunc.renderMode,menu=mmenu,toolbar=self.modebar)
 
         # Add the toggle type buttons
-        if self.modebar:
+        if self.modebar and pf.cfg['gui/wirebutton']:
+            toolbar.addWireButton(self.modebar)
+        if self.modebar and pf.cfg['gui/transbutton']:
             toolbar.addTransparencyButton(self.modebar)
         if self.modebar and pf.cfg['gui/lightbutton']:
             toolbar.addLightButton(self.modebar)

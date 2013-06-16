@@ -447,8 +447,8 @@ class CanvasSettings(Dict):
             'avgnormals': False,
             }),
         }
-    bgcolormodes = [ 'solid', 'vertical', 'horizontal', 'full' ]
-    edge_options = [ 'none','feature','all' ]
+    bgcolor_modes = [ 'solid', 'vertical', 'horizontal', 'full' ]
+    edge_modes = [ 'none','feature','all' ]
 
     def __init__(self,**kargs):
         """Create a new set of CanvasSettings."""
@@ -499,11 +499,11 @@ class CanvasSettings(Dict):
                     v = max(min(float(v),1.0),0.0)
                 elif k == 'bgmode':
                     v = str(v).lower()
-                    if not v in clas.bgcolormodes:
+                    if not v in clas.bgcolor_modes:
                         raise
                 elif k == 'edges':
                     v = str(v).lower()
-                    if not v in clas.edge_options:
+                    if not v in clas.edge_modes:
                         raise
                 elif k == 'marktype':
                     pass
@@ -687,6 +687,24 @@ class Canvas(object):
             self.rendermode = mode
             self.settings.lighting = lighting
             self.glinit()
+
+
+    def setEdgesMode(self,value):
+        """Set the edges mode.
+
+        This toggels the drawing of edges on top of 2D and 3D geometry.
+        Value should be one of 'none', 'feature', 'all'.
+
+        Currently only the options 'none' and 'all' are implemented.
+        """
+        if value is 'none':
+            if self.rendermode.endswith('wire'):
+                mode = self.rendermode[:-4]
+                self.setRenderMode(mode)
+        elif value is 'all':
+            if self.rendermode in ['smooth','flat']:
+                mode = self.rendermode+'wire'
+                self.setRenderMode(mode)
 
 
     def setToggle(self,attr,state):

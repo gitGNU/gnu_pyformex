@@ -61,7 +61,7 @@ def setBgColor():
     from numpy import resize
     from gui import colors
     import os
-    bgmodes = pf.canvas.settings.bgcolormodes
+    bgmodes = pf.canvas.settings.bgcolor_modes
     mode = pf.canvas.settings.bgmode
     color = saneColorArray(pf.canvas.settings.bgcolor,(4,))
     color = resize(color,(4,3))

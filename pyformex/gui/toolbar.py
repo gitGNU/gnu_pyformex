@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -198,15 +198,12 @@ def toggleButton(attr,state=None):
     vp.update()
     pf.GUI.processEvents()
 
-count = 0
-
 def updateButton(button,attr):
     """Update the button to correct state."""
-    global count
-    count += 1
-    vp = pf.GUI.viewports.current
-    button.setChecked(vp.settings[attr])
-    pf.GUI.processEvents()
+    if button:
+        vp = pf.GUI.viewports.current
+        button.setChecked(vp.settings[attr])
+        pf.GUI.processEvents()
 
 
 def updateViewportButtons(vp):
@@ -214,9 +211,49 @@ def updateViewportButtons(vp):
     ##     print "viewport %s is not current" % pf.GUI.viewports.viewIndex(vp)
     if vp.focus:
         #print "viewport %s has focus" % pf.GUI.viewports.viewIndex(vp)
-        updateButton(transparency_button,'alphablend')
-        updateButton(light_button,'lighting')
-        updateButton(normals_button,'avgnormals')
+        updateWireButton()
+        updateTransparencyButton()
+        updateLightButton()
+        updateNormalsButton()
+
+
+#
+# BEWARE: The toggle functions are currently not passed the state!
+#         It should be got from
+#
+
+################# Wire Button ###############
+
+wire_button = None # the toggle wire button
+
+def addWireButton(toolbar):
+    global wire_button
+    wire_button = addButton(toolbar,'Toggle Wire Mode',
+                            'wire',toggleWire,icon0='nowire',
+                            toggle=True)
+
+def toggleWire(state=None):
+    vp = pf.GUI.viewports.current
+    state = wire_button.isChecked()
+    # TODO:
+    # WELL, it looks like we get here BEFORE the button is updated,
+    # so we need to change the state.
+    # WE should really connect this to a signal that is raised
+    # AFTER the button state is update
+    state = not state
+    if state:
+        vp.setEdgesMode('all')
+    else:
+        vp.setEdgesMode('none')
+    vp.update()
+    pf.GUI.processEvents()
+
+def updateWireButton():
+    """Update the wire button to correct state."""
+    if wire_button:
+        vp = pf.GUI.viewports.current
+        wire_button.setChecked(vp.settings['edges']=='all')
+        pf.GUI.processEvents()
 
 
 ################# Transparency Button ###############
