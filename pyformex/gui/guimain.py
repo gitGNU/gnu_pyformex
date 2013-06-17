@@ -323,7 +323,7 @@ class Gui(QtGui.QMainWindow):
         pmenu.insertMenu(pmenu.item('background color'),mmenu)
 
         mmenu = QtGui.QMenu('Wire Mode')
-        modes = [ 'none', 'border', 'feature', 'all' ]
+        modes = [ 'none', 'all', 'border', 'feature' ]
         self.wmodebtns = menu.ActionList(
             modes,guifunc.wireMode,menu=mmenu,toolbar=None)
         pmenu.insertMenu(pmenu.item('background color'),mmenu)

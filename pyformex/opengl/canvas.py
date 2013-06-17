@@ -139,6 +139,31 @@ class Canvas(object):
             self.reset()
 
 
+    def setWireMode(self,state,mode=None):
+        """Set the wire mode.
+
+        This toggles the drawing of edges on top of 2D and 3D geometry.
+        State is either True or False, mode is 1, 2 or 3 to switch:
+
+        1: all edges
+        2: feature edges
+        3: border edges
+
+        If no mode is specified, the current wiremode is used. A negative
+        value inverses the state.
+        """
+        print("CANVAS.setWireMode %s %s" % (state,mode))
+        oldstate = self.settings.wiremode
+        if mode is None:
+            mode = abs(oldstate)
+        if state is False:
+            state = -mode
+        else:
+            state = mode
+        self.settings.wiremode = state
+        self.do_wiremode(state,oldstate)
+
+
     def setToggle(self,attr,state):
         """Set or toggle a boolean settings attribute
 
@@ -161,16 +186,27 @@ class Canvas(object):
         self.setToggle('lighting',onoff)
 
 
-    def do_alphablend(self,state,oldstate=None):
+    def do_wiremode(self,state,oldstate):
+        """Change the wiremode"""
+        print("CANVAS.do_wiremode: %s -> %s"%(oldstate,state))
+        if state != oldstate and (state>0 or oldstate>0):
+            # switching between two <= modes does not change anything
+            print("Changemode %s" % self.renderer.canvas.settings.wiremode)
+            self.renderer.changeMode()
+            self.display()
+
+
+    def do_alphablend(self,state,oldstate):
         """Toggle alphablend on/off."""
+        #print("CANVAS.do_alphablend: %s -> %s"%(state,oldstate))
         if state != oldstate:
             self.renderer.changeMode()
             self.display()
 
 
-    def do_lighting(self,state,oldstate=None):
+    def do_lighting(self,state,oldstate):
         """Toggle lights on/off."""
-        #print("TOGGLING LIGHTING %s %s"%(state,oldstate))
+        #print("CANVAS.do_lighting: %s -> %s"%(state,oldstate))
         if state != oldstate:
             self.enable_lighting(state)
             self.renderer.changeMode()
@@ -178,7 +214,7 @@ class Canvas(object):
 
 
     def do_avgnormals(self,state,oldstate):
-        print("CANVAS.do_avgnormals: %s, %s -> %s" % (self.rendermode,state,oldstate))
+        print("CANVAS.do_avgnormals: %s -> %s" % (state,oldstate))
         if state!=oldstate and self.settings.lighting:
             self.renderer.changeMode()
             self.display()
@@ -330,12 +366,10 @@ class Canvas(object):
         GL.glClearDepth(1.0)	       # Enables Clearing Of The Depth Buffer
         GL.glEnable(GL.GL_DEPTH_TEST)	       # Enables Depth Testing
         #GL.glEnable(GL.GL_CULL_FACE)
-
-        if self.rendermode.endswith('wire'):
-            GL.glEnable(GL.GL_POLYGON_OFFSET_FILL)
-            GL.glPolygonOffset(1.0,1.0)
+        if self.rendermode == 'wireframe':
+            glPolygonOffset(0.0)
         else:
-            GL.glDisable(GL.GL_POLYGON_OFFSET_FILL)
+            glPolygonOffset(1.0)
 
 
     def glinit(self):

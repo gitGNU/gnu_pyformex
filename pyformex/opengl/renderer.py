@@ -98,7 +98,7 @@ class Renderer(object):
         This method should be called to update the actors on a rendering
         mode change.
         """
-        print("RENDERER.changeMode")
+        print("RENDERER.changeMode %s to %s" % (self.mode,mode))
         if mode:
             self.mode = mode
         for actor in self._objects:

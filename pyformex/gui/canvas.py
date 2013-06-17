@@ -171,6 +171,14 @@ def glShadeModel(model):
             glFlat()
 
 
+def glPolygonOffset(value):
+    if value <= 0.0:
+        GL.glDisable(GL.GL_POLYGON_OFFSET_FILL)
+    else:
+        GL.glEnable(GL.GL_POLYGON_OFFSET_FILL)
+        GL.glPolygonOffset(value,value)
+
+
 class ActorList(list):
     """A list of drawn objects of the same kind.
 
@@ -379,7 +387,7 @@ class CanvasSettings(Dict):
     - culling: boolean
     - transparency: float (0.0..1.0)
     - avgnormals: boolean
-    - edges: 'none', 'feature' or 'all'
+    - wiremode: integer -3..3
     - pointsize: the default size for drawing points
     - marksize: the default size for drawing markers
     - linewidth: the default width for drawing lines
@@ -398,7 +406,7 @@ class CanvasSettings(Dict):
             'lighting': False,
 #            'alphablend': False,
             'transparency': 1.0,
-            'edges': 'none',
+            'wiremode': -1,
             'avgnormals': False,
             }),
         'smooth': Dict({
@@ -407,7 +415,7 @@ class CanvasSettings(Dict):
             'lighting': True,
 #            'alphablend': False,
             'transparency': 0.5,
-            'edges': 'none',
+            'wiremode': -1,
             'avgnormals': False,
             }),
         'smooth_avg': Dict({
@@ -416,7 +424,7 @@ class CanvasSettings(Dict):
             'lighting': True,
             'alphablend': False,
             'transparency': 0.5,
-            'edges': 'none',
+            'wiremode': -1,
             'avgnormals': True,
             }),
         'smoothwire': Dict({
@@ -425,7 +433,6 @@ class CanvasSettings(Dict):
             'lighting': True,
 #            'alphablend': False,
             'transparency': 0.5,
-            'edges': 'all',
             'avgnormals': False,
             }),
         'flat': Dict({
@@ -434,7 +441,7 @@ class CanvasSettings(Dict):
             'lighting': False,
             'alphablend': False,
             'transparency': 0.5,
-            'edges': 'none',
+            'wiremode': -1,
             'avgnormals': False,
             }),
         'flatwire': Dict({
@@ -443,7 +450,7 @@ class CanvasSettings(Dict):
             'lighting': False,
 #            'alphablend': False,
             'transparency': 0.5,
-            'edges': 'all',
+            'wiremode': -1,
             'avgnormals': False,
             }),
         }
@@ -493,6 +500,8 @@ class CanvasSettings(Dict):
                     v = bool(v)
                 elif k in ['linewidth', 'pointsize', 'marksize']:
                     v = float(v)
+                elif k in ['wiremode']:
+                    v = int(v)
                 elif k == 'linestipple':
                     v = map(int,v)
                 elif k == 'transparency':
@@ -500,10 +509,6 @@ class CanvasSettings(Dict):
                 elif k == 'bgmode':
                     v = str(v).lower()
                     if not v in clas.bgcolor_modes:
-                        raise
-                elif k == 'edges':
-                    v = str(v).lower()
-                    if not v in clas.edge_modes:
                         raise
                 elif k == 'marktype':
                     pass
@@ -672,17 +677,13 @@ class Canvas(object):
         is set, the canvas is re-initialized according to the newly set mode,
         and everything is redrawn with the new mode.
         """
-        #print("Setting rendermode to %s" % mode)
         if mode not in CanvasSettings.RenderProfiles:
             raise ValueError,"Invalid render mode %s" % mode
 
         self.settings.update(CanvasSettings.RenderProfiles[mode])
-        #print(self.settings)
         if lighting is None:
             lighting = self.settings.lighting
 
-        #if mode != self.rendermode or lighting != self.settings.lighting:
-        #print("SWITCHING MODE")
         if self.camera:
             self.rendermode = mode
             self.settings.lighting = lighting
@@ -690,25 +691,20 @@ class Canvas(object):
 
 
     def setWireMode(self,value):
-        """Set the edges mode.
+        """Set the wire mode.
 
-        This toggels the drawing of edges on top of 2D and 3D geometry.
-        Value should be one of 'none', 'feature', 'all'.
-
-        Currently only the options 'none' and 'all' are implemented.
+        This toggles the drawing of edges on top of 2D and 3D geometry.
+        Value is an integer. If positive, edges are shown, else not.
         """
-        #print("SETWIREMODE %s %s" % (value,self.rendermode))
         mode = None
-        if value == 'none':
-            #print("SWITCH OFF")
+        if value <= 0:
+            # switch off
             if self.rendermode in ['smoothwire','flatwire']:
-                #print("YES")
                 mode = self.rendermode[:-4]
-        elif value == 'all':
+        elif value > 0:
             if self.rendermode in ['smooth','flat']:
                 mode = self.rendermode+'wire'
         if mode is not None:
-            #print("SET RENDERMODE %s" % mode)
             self.setRenderMode(mode)
 
 
@@ -898,12 +894,10 @@ class Canvas(object):
         GL.glClearDepth(1.0)	       # Enables Clearing Of The Depth Buffer
         GL.glEnable(GL.GL_DEPTH_TEST)	       # Enables Depth Testing
         #GL.glEnable(GL.GL_CULL_FACE)
-
-        if self.settings.edges == 'none':
-            GL.glDisable(GL.GL_POLYGON_OFFSET_FILL)
+        if self.settings.wiremode > 0:
+            glPolygonOffset(1.0)
         else:
-            GL.glEnable(GL.GL_POLYGON_OFFSET_FILL)
-            GL.glPolygonOffset(1.0,1.0)
+            glPolygonOffset(0.0)
 
 
     def glupdate(self):

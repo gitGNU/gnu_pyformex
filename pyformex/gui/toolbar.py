@@ -241,18 +241,16 @@ def toggleWire(state=None):
     # WE should really connect this to a signal that is raised
     # AFTER the button state is update
     state = not state
-    if state:
-        vp.setWireMode('all')
-    else:
-        vp.setWireMode('none')
+    vp.setWireMode(state)
     vp.update()
     pf.GUI.processEvents()
+
 
 def updateWireButton():
     """Update the wire button to correct state."""
     if wire_button:
         vp = pf.GUI.viewports.current
-        wire_button.setChecked(vp.settings['edges']=='all')
+        wire_button.setChecked(vp.settings['wiremode'] > 0)
         pf.GUI.processEvents()
 
 

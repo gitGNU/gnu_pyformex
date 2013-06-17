@@ -113,7 +113,7 @@ class Drawable(Attributes):
 
     def prepareColor(self):
         """Prepare the colors for the shader."""
-        print("PREPARECOLOR")
+        #print("PREPARECOLOR")
         # Set derived uniforms for shader
         # colormode:
         # 0 = None
@@ -136,7 +136,7 @@ class Drawable(Attributes):
 
         if self.vertexColor is not None:
             self.cbo = VBO(self.vertexColor.astype(float32))
-        print("SELF.COLORMODE = %s" % (self.colormode))
+        #print("SELF.COLORMODE = %s" % (self.colormode))
 
 
     def prepareSubelems(self):
@@ -294,7 +294,7 @@ class GeomActor(Attributes):
                 eltype = _default_eltype[obj.nplex()]
 
         self.eltype = elementType(eltype)
-        print("ELTYPE %s" % self.eltype)
+        #print("ELTYPE %s" % self.eltype)
 
         self.children = []
 
@@ -405,7 +405,7 @@ class GeomActor(Attributes):
         Since the attributes may be dependent on the rendering mode,
         this method is called on each mode change.
         """
-        print("PREPARE ACTOR")
+        #print("PREPARE ACTOR")
 
         self.setColor(self.color,self.colormap)
         self.setBkColor(self.bkcolor,self.bkcolormap)
@@ -422,7 +422,7 @@ class GeomActor(Attributes):
 
     def changeMode(self,renderer):
         """Modify the actor according to the specified mode"""
-        print("GEOMACTOR.changeMode")
+        #print("GEOMACTOR.changeMode")
         self.drawable = []
         self._prepareNormals(renderer)
         # Draw the colored faces/edges
@@ -450,6 +450,13 @@ class GeomActor(Attributes):
             self.nbo = VBO(normals)
 
 
+
+    def fullElems(self):
+        """Return an elems index for the full coords set"""
+        nelems,nplex = self.fcoords.shape[:2]
+        return arange(nelems*nplex).reshape(nelems,nplex)
+
+
     def subElems(self,selector):
         """Create an index for the drawable subelems
 
@@ -462,18 +469,17 @@ class GeomActor(Attributes):
         else:
             # The elems index defining the original elements
             # based on the full fcoords
-            nelems,nplex = self.fcoords.shape[:2]
-            elems = arange(nelems*nplex).reshape(nelems,nplex)
-            print("ELEMS",elems.shape,elems)
+            elems = self.fullElems()
+            #print("FULL ELEMS",elems.shape,elems)
             return elems[:,selector].reshape(-1,selector.shape[-1])
 
 
     def _addFaces(self,renderer):
         """Draw the elems"""
-        print("ADDFACES %s" % self.faces)
+        #print("ADDFACES %s" % self.faces)
         elems = self.subElems(self.faces)
-        if elems is not None:
-            print("ADDFACES SIZE %s" % (elems.shape,))
+        #if elems is not None:
+            #print("ADDFACES SIZE %s" % (elems.shape,))
         if ( self.bkcolor is not None or
              self.bkalpha is not None or
              renderer.canvas.settings.alphablend ):
@@ -495,29 +501,40 @@ class GeomActor(Attributes):
 
     def _addEdges(self,renderer):
         """Draw the edges"""
-        print("ADDEDGES %s" % self.edges)
+        #print("ADDEDGES %s" % self.edges)
         if self.edges is not None:
             elems = self.subElems(self.edges)
-            if elems is not None:
-                print("ADDEDGES SIZE %s" % (elems.shape,))
+            #if elems is not None:
+                #print("ADDEDGES SIZE %s" % (elems.shape,))
             self.drawable.append(Drawable(self,subelems=elems))
 
 
     def _addWires(self,renderer):
         """Add or remove the edges depending on rendering mode"""
-        print("ADDWIRES %s" % self.edges)
-        if renderer.mode.endswith('wire'):
-            # Create a drawable for the edges
-            if self.edges is not None and self._wire is None:
+        wiremode = renderer.canvas.settings.wiremode
+        elems = None
+        if wiremode > 0 and self.edges is not None:
+            if wiremode == 1:
+                # all edges:
+                #print("ADDWIRES %s" % self.edges)
                 elems = self.subElems(self.edges)
-                print("ADDWIRES SIZE %s" % (elems.shape,))
-                # store, so we can switch on/off
-                self._wire = Drawable(self,subelems=elems,lighting=False,color = array(black),opak=True)
-            if self._wire:
-                self.drawable.append(self._wire)
-        else:
-            if self._wire and self._wire in self.drawable:
-                self.drawable.remove(self._wire)
+            elif wiremode == 2:
+                # border edges
+                #print("SELF.ELEMS",self.elems)
+                inv = at.inverseIndex(self.elems.reshape(-1,1))[:,-1]
+                #print("INVERSE",inv)
+                M = Mesh(self.coords,self.elems)
+                elems = M.getFreeEntities(level=1)
+                elems = inv[elems]
+                #print("ELEMS",elems)
+            elif wiremode == 3:
+                # feature edges
+                print("FEATURE EDGES NOT YET IMPLEMENTED")
+
+
+        if elems is not None:
+            #print("ADDWIRES SIZE %s" % (elems.shape,))
+            self.drawable.append(Drawable(self,subelems=elems,lighting=False,color = array(black),opak=True))
 
 
     def setColor(self,color,colormap=None):
