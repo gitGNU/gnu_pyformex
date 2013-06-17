@@ -1330,9 +1330,10 @@ def renderMode(mode,light=None):
     # ERROR The following redraws twice !!!
     pf.canvas.setRenderMode(mode,light)
     pf.canvas.update()
-    toolbar.updateNormalsButton()
-    toolbar.updateTransparencyButton()
-    toolbar.updateLightButton()
+    toolbar.updateViewportButtons(pf.canvas)
+    #toolbar.updateNormalsButton()
+    #toolbar.updateTransparencyButton()
+    #toolbar.updateLightButton()
     pf.GUI.processEvents()
 
 

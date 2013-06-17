@@ -601,23 +601,33 @@ class GeomActor(Actor):
                 canvas = kargs.get('canvas',pf.canvas)
                 mode = canvas.rendermode
 
-        #print("DRAW MODE %s" % mode)
-        if mode.endswith('wire'):
-            #print("WIRE MODE")
+#        if mode.endswith('wire'):
+        if canvas.settings.edges == 'none':
+            # Remove the wires
+            if hasattr(self,'wire') and self.wire in self.extra:
+                self.extra.remove(self.wire)
+
+        else:
+            # Try to create wires and remember wiremode
             try:
                 if self.level() > 1:
 
-                    if not hasattr(self,'wire'):
+                    if not hasattr(self,'wire') or self.wire.wiremode != canvas.settings.edges:
+                        # Remove old wire mode
+                        if hasattr(self,'wire') and self.wire in self.extra:
+                            self.extra.remove(self.wire)
+                        # Create new wires
                         import copy
                         wire = copy.copy(self)
                         wire.mode = 'wireframe' # Lock the mode
                         wire.nolight = True
                         wire.ontop = False # True will make objects transparent for edges
                         wire.list = None
+                        wire.wiremode = canvas.settings.edges
                         Drawable.prepare_list(wire,color=asarray(black))
                         self.wire = wire
 
-                    # Add the existing wire to the extra list, and then draw w/o wire
+                    # Switch wires drawing on
                     if self.wire not in self.extra:
                         self.extra.append(self.wire)
                         # AVOID RECURSION
@@ -631,10 +641,6 @@ class GeomActor(Actor):
                 pass
 
             mode = mode[:-4]
-
-        else:
-            if hasattr(self,'wire') and self.wire in self.extra:
-                self.extra.remove(self.wire)
 
         if self.list is None or mode != self.listmode:
             kargs['mode'] = mode

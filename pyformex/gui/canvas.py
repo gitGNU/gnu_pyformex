@@ -701,7 +701,7 @@ class Canvas(object):
         mode = None
         if value == 'none':
             #print("SWITCH OFF")
-            if self.rendermode.endswith('wire'):
+            if self.rendermode in ['smoothwire','flatwire']:
                 #print("YES")
                 mode = self.rendermode[:-4]
         elif value == 'all':
@@ -899,11 +899,11 @@ class Canvas(object):
         GL.glEnable(GL.GL_DEPTH_TEST)	       # Enables Depth Testing
         #GL.glEnable(GL.GL_CULL_FACE)
 
-        if self.rendermode.endswith('wire'):
+        if self.settings.edges == 'none':
+            GL.glDisable(GL.GL_POLYGON_OFFSET_FILL)
+        else:
             GL.glEnable(GL.GL_POLYGON_OFFSET_FILL)
             GL.glPolygonOffset(1.0,1.0)
-        else:
-            GL.glDisable(GL.GL_POLYGON_OFFSET_FILL)
 
 
     def glupdate(self):
