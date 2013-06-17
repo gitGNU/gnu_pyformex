@@ -1343,8 +1343,16 @@ def wireMode(mode):
     Currently the following modes are defined: 'none', 'border',
     'feature','all'
     """
-    #print("WIREMODE %s" % mode)
-    pf.canvas.setWireMode(mode)
+    modes = [ 'all', 'border', 'feature' ]
+    if mode in modes:
+        state = True
+        mode = 1 + modes.index(mode)
+    elif mode == 'none':
+        state = False
+        mode = None
+    else:
+        return
+    pf.canvas.setWireMode(state,mode)
     pf.canvas.update()
     pf.GUI.processEvents()
 
