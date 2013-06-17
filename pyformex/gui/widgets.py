@@ -80,6 +80,15 @@ def standardIcon(label):
         return label
 
 
+def pyformexIcon(icon):
+    """Create a pyFormex icon.
+
+    Returns a QIcon with an image taken from the pyFormex icons
+    directory. `icon` is the basename of the image file (.xpm or .png).
+    """
+    return QtGui.QIcon(QtGui.QPixmap(utils.findIcon(icon)))
+
+
 def objSize(object):
     """Return the width and height of an object.
 
@@ -141,6 +150,7 @@ def setExpanding(w):
 def hspacer():
     spacer = QtGui.QSpacerItem(0,0,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum )
     return spacer
+
 
 #####################################################################
 ########### General Input Dialog ####################################
@@ -264,7 +274,7 @@ class InputItem(QtGui.QWidget):
             text = self.key
         if text:
             self.label = QtGui.QLabel()
-            text = standardIcon(text)
+            #text = standardIcon(text)
             if isinstance(text,QtGui.QPixmap):
                 self.label.setPixmap(text)
             else:
@@ -833,7 +843,7 @@ class InputPush(InputItem):
     If direction == 'v', the options are in a vbox.
     """
 
-    def __init__(self,name,value=None,choices=[],direction='h',*args,**kargs):
+    def __init__(self,name,value=None,choices=[],direction='h',icon=None,*args,**kargs):
         """Initialize the input item."""
         if value is None:
             value = choices[0]
@@ -849,40 +859,44 @@ class InputPush(InputItem):
             self.hbox = QtGui.QHBoxLayout()
             self.hbox.setContentsMargins(10,5,10,5)
         self.hbox.setSpacing(0)
-        self.hbox.setMargin(0)
+        #self.hbox.setMargin(0)
 
-        self.rb = []
-        for v in choices:
-            rb = QtGui.QPushButton(v)
-            self.hbox.addWidget(rb)
-            self.rb.append(rb)
+        self.bg = QtGui.QButtonGroup()
+        for i,v in enumerate(choices):
+            if icon:
+                b = QtGui.QToolButton()
+                b.setText(v)
+                b.setIcon(pyformexIcon(icon[i]))
+                b.setUsesTextLabel(False)
+                b.setFlat(True)
+            else:
+                b = QtGui.QPushButton(v)
+            b.setCheckable(True)
+            if v == value:
+                b.setChecked(True)
+            self.bg.addButton(b,i)
+            self.hbox.addWidget(b)
 
-        self.rb[choices.index(value)].setDown(True)
         self.input.setLayout(self.hbox)
         self.layout().insertWidget(1,self.input)
 
     def setText(self,text,index=0):
         """Change the text on button index."""
-        self.rb[index].setText(text)
+        self.bg.button(index).setText(text)
 
     def setIcon(self,icon,index=0):
         """Change the icon on button index."""
-        self.rb[index].setIcon(icon)
+        self.bg.button(index).setIcon(pyformexIcon(icon))
 
     def value(self):
         """Return the widget's value."""
-        for rb in self.rb:
-#            if rb.isChecked():
-            if rb.isDown():
-                return str(rb.text())
-        return ''
+        return self.bg.checkedButton().text()
 
     def setValue(self,val):
         """Change the widget's value."""
         val = str(val)
-        for rb in self.rb:
-            rb.setChecked(rb.text() == val)
-            rb.setDown(rb.text() == val)
+        for b in self.bg.buttons():
+            b.setChecked(b.text() == val)
 
 
 class InputInteger(InputItem):
@@ -3165,7 +3179,7 @@ def addActionButtons(layout,actions=[('Cancel',),('OK',)],default=None,
         else:
             if len(a) > 2:
                 icon = a[2]
-                icon = QtGui.QIcon(QtGui.QPixmap(utils.findIcon(icon)))
+                icon = pyformexIcon(icon)
                 b = QtGui.QPushButton(icon,'',parent)
             else:
                 b = QtGui.QPushButton(name,parent)

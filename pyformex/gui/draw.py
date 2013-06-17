@@ -1336,6 +1336,18 @@ def renderMode(mode,light=None):
     pf.GUI.processEvents()
 
 
+def wireMode(mode):
+    """Change the wire rendering mode.
+
+    Currently the following modes are defined: 'none', 'border',
+    'feature','all'
+    """
+    #print("WIREMODE %s" % mode)
+    pf.canvas.setWireMode(mode)
+    pf.canvas.update()
+    pf.GUI.processEvents()
+
+
 def wireframe():
     renderMode("wireframe")
 

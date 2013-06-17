@@ -314,15 +314,20 @@ class Gui(QtGui.QMainWindow):
             toolbar.addPerspectiveButton(self.camerabar)
 
         ###############  RENDERMODE menu and toolbar #############
-        modes = [ 'wireframe', 'smooth', 'smoothwire', 'flat', 'flatwire' ]
-        if pf.cfg['gui/modemenu']:
-            mmenu = QtGui.QMenu('Render Mode')
-        else:
-            mmenu = None
+        pmenu = self.menu.item('viewport')
 
-        #menutext = '&' + name.capitalize()
+        mmenu = QtGui.QMenu('Render Mode')
+        modes = [ 'wireframe', 'smooth', 'smoothwire', 'flat', 'flatwire' ]
         self.modebtns = menu.ActionList(
             modes,guifunc.renderMode,menu=mmenu,toolbar=self.modebar)
+        pmenu.insertMenu(pmenu.item('background color'),mmenu)
+
+        mmenu = QtGui.QMenu('Wire Mode')
+        modes = [ 'none', 'border', 'feature', 'all' ]
+        self.wmodebtns = menu.ActionList(
+            modes,guifunc.wireMode,menu=mmenu,toolbar=None)
+        pmenu.insertMenu(pmenu.item('background color'),mmenu)
+
 
         # Add the toggle type buttons
         if self.modebar and pf.cfg['gui/wirebutton']:
@@ -335,11 +340,6 @@ class Gui(QtGui.QMainWindow):
             toolbar.addNormalsButton(self.modebar)
         if self.modebar and pf.cfg['gui/shrinkbutton']:
             toolbar.addShrinkButton(self.modebar)
-
-        if mmenu:
-            # insert the mode menu in the viewport menu
-            pmenu = self.menu.item('viewport')
-            pmenu.insertMenu(pmenu.item('background color'),mmenu)
 
         ###############  VIEWS menu ################
         if pf.cfg['gui/viewmenu']:

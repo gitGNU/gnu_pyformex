@@ -689,7 +689,7 @@ class Canvas(object):
             self.glinit()
 
 
-    def setEdgesMode(self,value):
+    def setWireMode(self,value):
         """Set the edges mode.
 
         This toggels the drawing of edges on top of 2D and 3D geometry.
@@ -697,14 +697,19 @@ class Canvas(object):
 
         Currently only the options 'none' and 'all' are implemented.
         """
-        if value is 'none':
+        #print("SETWIREMODE %s %s" % (value,self.rendermode))
+        mode = None
+        if value == 'none':
+            #print("SWITCH OFF")
             if self.rendermode.endswith('wire'):
+                #print("YES")
                 mode = self.rendermode[:-4]
-                self.setRenderMode(mode)
-        elif value is 'all':
+        elif value == 'all':
             if self.rendermode in ['smooth','flat']:
                 mode = self.rendermode+'wire'
-                self.setRenderMode(mode)
+        if mode is not None:
+            #print("SET RENDERMODE %s" % mode)
+            self.setRenderMode(mode)
 
 
     def setToggle(self,attr,state):

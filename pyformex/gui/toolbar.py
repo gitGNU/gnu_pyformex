@@ -55,7 +55,7 @@ def addActionButtons(toolbar):
     show_buttons = pf.cfg['gui/actionbuttons']
     buttons = [ b for b in avail_buttons if b[0].lower() in show_buttons ]
     for b in buttons:
-        icon = QtGui.QIcon(QtGui.QPixmap(utils.findIcon(b[1])))
+        icon = widgets.pyformexIcon(b[1])
         a = toolbar.addAction(icon,b[0],b[2])
         a.setEnabled(b[3])
         action[b[0]] = a
@@ -135,7 +135,7 @@ def addCameraButtons(toolbar):
                 [ "Zoom All", "zoomall", cameraMenu.zoomAll, False ],
                 ]
     for but in buttons:
-        icon = QtGui.QIcon(QtGui.QPixmap(utils.findIcon(but[1])))
+        icon = widgets.pyformexIcon(but[1])
         a = toolbar.addAction(icon,but[0],but[2])
         b = toolbar.children()[-1] # Get the QToolButton for the last action
         if len(but) < 4 or but[3]:
@@ -229,7 +229,7 @@ wire_button = None # the toggle wire button
 def addWireButton(toolbar):
     global wire_button
     wire_button = addButton(toolbar,'Toggle Wire Mode',
-                            'wire',toggleWire,icon0='nowire',
+                            'wireall',toggleWire,icon0='wirenone',
                             toggle=True)
 
 def toggleWire(state=None):
@@ -242,9 +242,9 @@ def toggleWire(state=None):
     # AFTER the button state is update
     state = not state
     if state:
-        vp.setEdgesMode('all')
+        vp.setWireMode('all')
     else:
-        vp.setEdgesMode('none')
+        vp.setWireMode('none')
     vp.update()
     pf.GUI.processEvents()
 

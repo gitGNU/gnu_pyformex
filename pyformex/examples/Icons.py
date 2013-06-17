@@ -51,14 +51,23 @@ def icon_smooth():
     zoom(0.8)
 
 
-def icon_nowire():
+def icon_wirenone():
     view('front')
     F = rectangle(2,2)
     draw(F,color=red)
     smooth()
 
 
-def icon_wire():
+def icon_wireborder():
+    view('front')
+    F = rectangle(2,2)
+    draw(F,color=red)
+    smooth()
+    B = F.toMesh().getBorderMesh()
+    draw(B,color=black,linewidth=2,ontop=True,opak=True,nolight=True)
+
+
+def icon_wireall():
     view('front')
     F = rectangle(2,2)
     draw(F,color=red,linewidth=2)
