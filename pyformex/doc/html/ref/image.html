@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>28. image — Saving OpenGL renderings to image files. &mdash; pyFormex 0.9.0 documentation</title>
+    <title>28. image — Saving OpenGL renderings to image files. &mdash; pyFormex 0.9.1a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +43,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.0',
+        VERSION:     '0.9.1a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +52,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 0.9.0 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 0.9.1a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="29. imagearray — Convert bitmap images into numpy arrays." href="imagearray.html" />
     <link rel="prev" title="27. camera — OpenGL camera handling" href="camera.html" />
@@ -83,7 +83,7 @@
         <li class="right" >
           <a href="camera.html" title="27. camera — OpenGL camera handling"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.0 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 0.9.1a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -311,8 +311,31 @@ The current background color is selected from the lower left pixel.</p>
 
 <dl class="function">
 <dt id="image.createMovie">
-<tt class="descclassname">image.</tt><tt class="descname">createMovie</tt><big>(</big><em>files</em>, <em>encoder='ffmpeg'</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#image.createMovie" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">image.</tt><tt class="descname">createMovie</tt><big>(</big><em>files</em>, <em>encoder='convert'</em>, <em>outfn='output'</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#image.createMovie" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a movie from a saved sequence of images.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>files</cite>: a list of filenames, or a string with one or more filenames
+separated by whitespace. The filenames can also contain wildcards
+interpreted by the shell.</li>
+<li><cite>encoder</cite>: string: the external program to be used to create the movie.
+This will also define the type of output file, and the extra parameters
+that can be passed. The external program has to be installed on the
+computer. The default is <cite>convert</cite>, which will create animated gif.
+Other possible values are &#8216;mencoder&#8217; and &#8216;ffmeg&#8217;, creating meg4
+encode movies from jpeg input files.</li>
+<li><cite>outfn</cite>: string: output file name (not including the extension).
+Default is output.</li>
+</ul>
+<p>Other parameters may be passed and may be needed, depending on the
+converter program used. Thus, for the default &#8216;convert&#8217; program,
+each extra keyword parameter will be translated to an option
+&#8216;-keyword value&#8217; for the command.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">createMovie</span><span class="p">(</span><span class="s">&#39;images*.png&#39;</span><span class="p">,</span><span class="n">delay</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">colors</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>will create an animated gif &#8216;output.gif&#8217;.</p>
 </dd></dl>
 
 <dl class="function">
@@ -344,7 +367,7 @@ The current background color is selected from the lower left pixel.</p>
         <li class="right" >
           <a href="camera.html" title="27. camera — OpenGL camera handling"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.0 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 0.9.1a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -352,7 +375,7 @@ The current background color is selected from the lower left pixel.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Mar 25, 2013.
+      Last updated on Jun 14, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

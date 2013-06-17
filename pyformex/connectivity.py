@@ -642,8 +642,8 @@ class Connectivity(ndarray):
     def connectedTo(self,nodes,return_ncon=False):
         """Check if the elements are connected to the specified nodes.
 
-        `nodes`: a single node number or a list/array thereof,
-        `return_ncon`: if True, also return the number of connections for
+        - `nodes`: a single node number or a list/array thereof,
+        - `return_ncon`: if True, also return the number of connections for
           each element.
 
         Returns an int array with the numbers of the elements that contain

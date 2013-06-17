@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>50. polygon — Polygonal facets. &mdash; pyFormex 0.9.0 documentation</title>
+    <title>54. polygon — Polygonal facets. &mdash; pyFormex 0.9.1a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +43,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.0',
+        VERSION:     '0.9.1a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,10 +52,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 0.9.0 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 0.9.1a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="51. postproc — Postprocessing functions" href="postproc.html" />
-    <link rel="prev" title="49. plot2d — plot2d.py" href="plot2d.html" />
+    <link rel="next" title="55. polynomial — Polynomials" href="polynomial.html" />
+    <link rel="prev" title="53. plot2d — plot2d.py" href="plot2d.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -78,12 +78,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="postproc.html" title="51. postproc — Postprocessing functions"
+          <a href="polynomial.html" title="55. polynomial — Polynomials"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="plot2d.html" title="49. plot2d — plot2d.py"
+          <a href="plot2d.html" title="53. plot2d — plot2d.py"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.0 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 0.9.1a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -103,10 +103,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="plot2d.html"
-                        title="previous chapter">49. <tt class="docutils literal docutils literal docutils literal"><span class="pre">plot2d</span></tt> &#8212; plot2d.py</a></p>
+                        title="previous chapter">53. <tt class="docutils literal docutils literal docutils literal"><span class="pre">plot2d</span></tt> &#8212; plot2d.py</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="postproc.html"
-                        title="next chapter">51. <tt class="docutils literal"><span class="pre">postproc</span></tt> &#8212; Postprocessing functions</a></p>
+  <p class="topless"><a href="polynomial.html"
+                        title="next chapter">55. <tt class="docutils literal"><span class="pre">polynomial</span></tt> &#8212; Polynomials</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -141,7 +141,7 @@
           <div class="body">
             
   <div class="section" id="module-polygon">
-<span id="polygon-polygonal-facets"></span><span id="sec-ref-polygon"></span><h1>50. <a class="reference internal" href="#module-polygon" title="polygon: Polygonal facets."><tt class="xref py py-mod docutils literal"><span class="pre">polygon</span></tt></a> &#8212; Polygonal facets.<a class="headerlink" href="#module-polygon" title="Permalink to this headline">¶</a></h1>
+<span id="polygon-polygonal-facets"></span><span id="sec-ref-polygon"></span><h1>54. <a class="reference internal" href="#module-polygon" title="polygon: Polygonal facets."><tt class="xref py py-mod docutils literal"><span class="pre">polygon</span></tt></a> &#8212; Polygonal facets.<a class="headerlink" href="#module-polygon" title="Permalink to this headline">¶</a></h1>
 <p><tt class="docutils literal"><span class="pre">Classes</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">polygon</span></tt></p>
 <dl class="class">
 <dt id="polygon.Polygon">
@@ -459,6 +459,35 @@ These angles are the complement of the</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="polygon.Polygon.nelems">
+<tt class="descname">nelems</tt><big>(</big><big>)</big><a class="headerlink" href="#polygon.Polygon.nelems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of elements in the Geometry.</p>
+<p>This method should be re-implemented by the derived classes.
+For the (empty) Geometry class it always returns 0.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="polygon.Polygon.setProp">
+<tt class="descname">setProp</tt><big>(</big><em>prop=None</em>, <em>blocks=None</em><big>)</big><a class="headerlink" href="#polygon.Polygon.setProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create or destroy the property array for the Geometry.</p>
+<p>A property array is a rank-1 integer array with dimension equal
+to the number of elements in the Geometry.</p>
+<p>Parameters:</p>
+<blockquote>
+<div><p>-&#8216;prop&#8217; : single value or a list/array of integer values.
+If the number of passed values is less than the number of elements,
+they wil be repeated. If you give more, they will be ignored.</p>
+<p>If prop==&#8217;range&#8217;, properties are set equal to the element number.</p>
+<p>If a value None is given, the properties are removed from the Mesh.</p>
+<p>-&#8216;blocks&#8217; : single value or a list/array of integer values.
+If the number of passed values is less than the number of prop,
+they wil be repeated. If you give more, they will be ignored.
+Every prop will be repetead for every group of elements according
+to the corresponding number of blocks.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
 <dt id="polygon.Polygon.getCoords">
 <tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#polygon.Polygon.getCoords" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the coords data.</p>
@@ -538,12 +567,12 @@ The last coordinate will however (approximately) be zero.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="postproc.html" title="51. postproc — Postprocessing functions"
+          <a href="polynomial.html" title="55. polynomial — Polynomials"
              >next</a> |</li>
         <li class="right" >
-          <a href="plot2d.html" title="49. plot2d — plot2d.py"
+          <a href="plot2d.html" title="53. plot2d — plot2d.py"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.0 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 0.9.1a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -551,7 +580,7 @@ The last coordinate will however (approximately) be zero.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Mar 25, 2013.
+      Last updated on Jun 14, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

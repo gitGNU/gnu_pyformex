@@ -6,7 +6,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -68,8 +68,14 @@ def function_key(i):
     return i[1].func_code.co_firstlineno
 
 def class_key(i):
-    methods = inspect.getmembers(i[1],inspect.ismethod)
-    return inspect.getsourcelines(i[1])[1]
+    obj = i[1]
+    try:
+        key = inspect.getsourcelines(obj)[1]
+    except:
+        # occasionally, inspect does not find the source code
+        # return a large number then
+        key = 999999
+    return key
 
 
 def do_class(name,obj):

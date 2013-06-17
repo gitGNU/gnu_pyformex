@@ -41,7 +41,7 @@ from gui.draw import *
 from gui.actors import CubeActor
 from gui.image import saveIcon
 from plugins.curve import *
-
+from simple import rectangle
 
 def icon_smooth():
     view('iso')
@@ -49,6 +49,29 @@ def icon_smooth():
     drawActor(F)
     smooth()
     zoom(0.8)
+
+
+def icon_wirenone():
+    view('front')
+    F = rectangle(2,2)
+    draw(F,color=red)
+    smooth()
+
+
+def icon_wireborder():
+    view('front')
+    F = rectangle(2,2)
+    draw(F,color=red)
+    smooth()
+    B = F.toMesh().getBorderMesh()
+    draw(B,color=black,linewidth=2,ontop=True,opak=True,nolight=True)
+
+
+def icon_wireall():
+    view('front')
+    F = rectangle(2,2)
+    draw(F,color=red,linewidth=2)
+    smoothwire()
 
 
 def icon_clock():

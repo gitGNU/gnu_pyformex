@@ -703,17 +703,9 @@ class TriSurface(Mesh):
         return self._areas,self._fnormals
 
 
-
-
     def areas(self):
         """Return the areas of all facets"""
         return self.areaNormals()[0]
-
-
-    ## def area(self):
-    ##     """Return the total area of the surface"""
-    ##     area = self.areaNormals()[0]
-    ##     return area.sum()
 
 
     def volume(self):
@@ -1132,79 +1124,34 @@ Quality: %s .. %s
 
 
     def dualMesh(self, method='median'):
-        """Return the dual mesh (DM).
+        """Return the dual mesh of a triangulated surface.
 
         It creates a new triangular mesh where all triangles with prop `p`
-        represent the DM region around the original surface node `p`.
+        represent the dual mesh region around the original surface node `p`.
+        For more info, see http://users.led-inc.eu/~phk/mesh-dualmesh.html.
 
-        - `method`: 'median' or 'voronoi'
+        - `method`: 'median' or 'voronoi'.
 
-        If method is 'median' it returns the Median DM and also the area
-        of the region around each node. The sum of the node-based areas
-        is equal to the original surface area.
-        If method is 'voronoi' it returns the voronoi polyeders and a None.
+        Returns:
 
-        For info:
-        http://users.led-inc.eu/~phk/mesh-dualmesh.html
-
-        Example:
-
-        from elements import Quad4
-        from plugins.trisurface import Sphere
-        view('front')
-        smooth()
-        S=Mesh(Quad4).convert('tri3-r').convert('quad4').convert('tri3-r')
-        S=TriSurface(S.fuse().compact())+Sphere(1).scale(0.5).addNoise(0.1).trl([0., 2., 0.])
-        St=S.trl(0,-S.coords[:, 0].max()*2.)
-        draw(St, mode='wireframe')
-        drawNumbers(St.coords)
-        draw(S, mode='wireframe')
-        drawNumbers(S.coords)
-        ##compute the dual and node based areas
-        Q, nodalAreas=S.dualMesh('median')
-        draw(Q)
-        draw(Q.withProp([3]), linewidth=3, mode='wireframe', ontop=True)
-        draw(S.coords[3:4].trl(2, 0.001), marksize=10, color='black', ontop=True, mode='flat')
-        draw(S.coords, color='white', marksize=5)
-        zoomAll()
-        drawNumbers(S.coords)
-        print (nodalAreas)
-        print (S.area())
-        if nodalAreas is not None:
-            print(nodalAreas.sum())#the total nodal-based area is equal to the total face-based area
+        - `method` = 'median': the Median dual mesh and the area of the region
+          around each node. The sum of the node-based areas is equal to the
+          original surface area.
+        - `method` = 'voronoi': the Voronoi polyeders and a None.
         """
-
-        Q=self.convert('quad4')
+        Q = self.convert('quad4')
         if method == 'voronoi':
             from geomtools import triangleCircumCircle
-            Q.coords[-self.nelems():]=triangleCircumCircle(self.coords[self.elems],bounding=False)[1]
+            Q.coords[-self.nelems():] = triangleCircumCircle(self.coords[self.elems],bounding=False)[1]
         nconn = Q.nodeConnections()[range(self.ncoords())]
-        p=zeros(Q.nelems(), dtype=int)
+        p = zeros(Q.nelems(), dtype=int)
         for i, conn in enumerate(nconn):
             p[conn[conn>-1]]=i
-        Q=Q.setProp(p)
+        Q = Q.setProp(p)
         if method == 'voronoi':
             return Q, None
         nodalAreas = asarray([Q.withProp(i).area() for i in range(len(Q.propSet()))])
         return Q, nodalAreas
-
-
-    ## def reflect(self,*args,**kargs):
-    ##     """Reflect the Surface in direction dir against plane at pos.
-
-    ##     Parameters:
-
-    ##     - `dir`: int: direction of the reflection (default 0)
-    ##     - `pos`: float: offset of the mirror plane from origin (default 0.0)
-    ##     - `inplace`: boolean: change the coordinates inplace (default False)
-    ##     - `reverse`: boolean: revert the normals of the triangles
-    ##       (default True).
-    ##       Reflection of the coordinates of a 2D Mesh reverses the surface
-    ##       sides. Setting this parameter True will cause an extra
-    ##       reversion. This is what is expected in most surface mirroring
-    ##       operations.
-    ##     """
-    ##     return Mesh.reflect(self,*args,**kargs)
 
 
 ##################  Partitioning a surface  #############################
@@ -1574,22 +1521,32 @@ Quality: %s .. %s
         return elemlist[p==prop]
 
 
+    ## UNDOCUMENTED! BECAUSE OF BAD FORMATTING
+    ##
+    ## LARGE CODE EXAMPLES SHOULD NOT GO IN THE DOCSTRINGS
+    ## BUT IN AN EXAMPLE
+    ##
     def intersectionWithLines(self,q,q2, method='line',atol=1.e-6):
-        """Intersects a surface with lines.
+        """_Intersects a surface with lines.
 
         Parameters:
+
         - `q`,`q2`: (...,3) shaped arrays of points, defining
           a set of lines.
         - `method`: a string (line, segment or ray) defining if the line
           is either a full-line or a line-segment (q-q2) or a line-ray (q->q2)
-        - `atol` : detected intersection points on the border edges (otherwise geomtools.insideTriangle could fail)
+        - `atol` : detected intersection points on the border edges (otherwise
+          geomtools.insideTriangle could fail)
 
         Returns:
         - a fused set of intersection points (Coords)
-        - a (1,3) array with the indices of intersection point, line and triangle
+        - a (1,3) array with the indices of intersection point, line and
+          triangle
 
-        If a line is laying (parallel) on a triangle it will not generate intersections.
-        There is a similar function in geomtools.intersectionPointsLWT but this one seems faster.
+        If a line is laying (parallel) on a triangle it will not generate
+        intersections.
+        There is a similar function in geomtools.intersectionPointsLWT but
+        this one seems faster.
         Test performance before making changes using the following example:
 
         levelL = 49

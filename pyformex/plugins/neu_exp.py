@@ -22,7 +22,7 @@
 ##  You should have received a copy of the GNU General Public License
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
-"""Mesh to *.neu translator.
+"""Gambit neutral file exporter.
 
 This module contains some functions to export
 pyFormex mesh models to Gambit neutral files.
@@ -134,9 +134,9 @@ def read_tetgen(filename):
 def write_neu(fil, mesh, heading='generated with pyFormex'):
     """Export a mesh as .neu file (For use in Gambit/Fluent)
 
-    fil: file name
-    mesh: pyFormex Mesh
-    heading: heading text to be shown in the gambit header
+    - `fil`: file name
+    - `mesh`: pyFormex Mesh
+    - `heading`: heading text to be shown in the gambit header
     """
     if not fil.endswith('.neu'):
         fil += '.neu'

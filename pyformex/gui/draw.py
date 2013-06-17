@@ -1330,9 +1330,22 @@ def renderMode(mode,light=None):
     # ERROR The following redraws twice !!!
     pf.canvas.setRenderMode(mode,light)
     pf.canvas.update()
-    toolbar.updateNormalsButton()
-    toolbar.updateTransparencyButton()
-    toolbar.updateLightButton()
+    toolbar.updateViewportButtons(pf.canvas)
+    #toolbar.updateNormalsButton()
+    #toolbar.updateTransparencyButton()
+    #toolbar.updateLightButton()
+    pf.GUI.processEvents()
+
+
+def wireMode(mode):
+    """Change the wire rendering mode.
+
+    Currently the following modes are defined: 'none', 'border',
+    'feature','all'
+    """
+    #print("WIREMODE %s" % mode)
+    pf.canvas.setWireMode(mode)
+    pf.canvas.update()
     pf.GUI.processEvents()
 
 
@@ -2104,8 +2117,11 @@ def resetGUI():
 ###########################################################################
 # import opengl2 overrides for public functions
 #
-if pf.options.opengl2:
-    from opengl import *
+try:
+    if pf.options.opengl2:
+        from opengl import *
+except:
+    pass
 
 ###########################################################################
 # Make _I, _G and _T be included when doing 'from gui.draw import *'

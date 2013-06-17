@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>58. trisurface — Operations on triangulated surfaces. &mdash; pyFormex 0.9.0 documentation</title>
+    <title>63. trisurface — Operations on triangulated surfaces. &mdash; pyFormex 0.9.1a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +43,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.0',
+        VERSION:     '0.9.1a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,10 +52,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 0.9.0 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 0.9.1a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="59. turtle — Turtle graphics for pyFormex" href="turtle.html" />
-    <link rel="prev" title="57. tools — tools.py" href="tools.html" />
+    <link rel="next" title="64. turtle — Turtle graphics for pyFormex" href="turtle.html" />
+    <link rel="prev" title="62. tools — tools.py" href="tools.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -78,12 +78,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="turtle.html" title="59. turtle — Turtle graphics for pyFormex"
+          <a href="turtle.html" title="64. turtle — Turtle graphics for pyFormex"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="tools.html" title="57. tools — tools.py"
+          <a href="tools.html" title="62. tools — tools.py"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.0 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 0.9.1a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -103,10 +103,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="tools.html"
-                        title="previous chapter">57. <tt class="docutils literal docutils literal docutils literal"><span class="pre">tools</span></tt> &#8212; tools.py</a></p>
+                        title="previous chapter">62. <tt class="docutils literal docutils literal docutils literal"><span class="pre">tools</span></tt> &#8212; tools.py</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="turtle.html"
-                        title="next chapter">59. <tt class="docutils literal"><span class="pre">turtle</span></tt> &#8212; Turtle graphics for pyFormex</a></p>
+                        title="next chapter">64. <tt class="docutils literal"><span class="pre">turtle</span></tt> &#8212; Turtle graphics for pyFormex</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -141,7 +141,7 @@
           <div class="body">
             
   <div class="section" id="module-trisurface">
-<span id="trisurface-operations-on-triangulated-surfaces"></span><span id="sec-ref-trisurface"></span><h1>58. <a class="reference internal" href="#module-trisurface" title="trisurface: Operations on triangulated surfaces."><tt class="xref py py-mod docutils literal"><span class="pre">trisurface</span></tt></a> &#8212; Operations on triangulated surfaces.<a class="headerlink" href="#module-trisurface" title="Permalink to this headline">¶</a></h1>
+<span id="trisurface-operations-on-triangulated-surfaces"></span><span id="sec-ref-trisurface"></span><h1>63. <a class="reference internal" href="#module-trisurface" title="trisurface: Operations on triangulated surfaces."><tt class="xref py py-mod docutils literal"><span class="pre">trisurface</span></tt></a> &#8212; Operations on triangulated surfaces.<a class="headerlink" href="#module-trisurface" title="Permalink to this headline">¶</a></h1>
 <p>A triangulated surface is a surface consisting solely of triangles.
 Any surface in space, no matter how complex, can be approximated with
 a triangulated surface.</p>
@@ -164,19 +164,6 @@ an (ntri,3) integer array of edges numbers.</li>
 </ul>
 <p>Additionally, a keyword argument prop= may be specified to
 set property values.</p>
-<dl class="method">
-<dt id="trisurface.TriSurface.areas">
-<tt class="descname">areas</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.areas" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the area of all elements in a level-2 Mesh.</p>
-<p>For a Mesh with eltype &#8216;tri3&#8217;, the areas are exact. For other
-eltypes, a conversion to &#8216;tri3&#8217; is done before computing the areas.
-This may produce an exact result, an approximated result or no result
-(if the conversion fails).</p>
-<p>If succesful, returns an (nelems,) float array with the areas.
-Returns None if the Mesh level is not 2, or the conversion to &#8216;tri3&#8217;
-does not succeed.</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="trisurface.TriSurface.nedges">
 <tt class="descname">nedges</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.nedges" title="Permalink to this definition">¶</a></dt>
@@ -281,15 +268,9 @@ The area is always positive.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="trisurface.TriSurface.facetArea">
-<tt class="descname">facetArea</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.facetArea" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the area of the surface triangles.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="trisurface.TriSurface.area">
-<tt class="descname">area</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.area" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the area of the surface</p>
+<dt id="trisurface.TriSurface.areas">
+<tt class="descname">areas</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.areas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the areas of all facets</p>
 </dd></dl>
 
 <dl class="method">
@@ -521,43 +502,20 @@ along their normal vector.</p>
 <dl class="method">
 <dt id="trisurface.TriSurface.dualMesh">
 <tt class="descname">dualMesh</tt><big>(</big><em>method='median'</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.dualMesh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the dual mesh (DM).</p>
-<p>It creates a new triangular mesh where all triangles with prop <cite>p</cite> 
-represent the DM region around the original surface node <cite>p</cite>.</p>
+<dd><p>Return the dual mesh of a triangulated surface.</p>
+<p>It creates a new triangular mesh where all triangles with prop <cite>p</cite>
+represent the dual mesh region around the original surface node <cite>p</cite>.
+For more info, see <a class="reference external" href="http://users.led-inc.eu/~phk/mesh-dualmesh.html">http://users.led-inc.eu/~phk/mesh-dualmesh.html</a>.</p>
 <ul class="simple">
-<li><cite>method</cite>: &#8216;median&#8217; or &#8216;voronoi&#8217;</li>
+<li><cite>method</cite>: &#8216;median&#8217; or &#8216;voronoi&#8217;.</li>
 </ul>
-<p>If method is &#8216;median&#8217; it returns the Median DM and also the area 
-of the region around each node. The sum of the node-based areas 
-is equal to the original surface area.
-If method is &#8216;voronoi&#8217; it returns the voronoi polyeders and a None.</p>
-<p>For info:
-<a class="reference external" href="http://users.led-inc.eu/~phk/mesh-dualmesh.html">http://users.led-inc.eu/~phk/mesh-dualmesh.html</a></p>
-<p>Example:</p>
-<p>from elements import Quad4
-from plugins.trisurface import Sphere
-view(&#8216;front&#8217;)
-smooth()
-S=Mesh(Quad4).convert(&#8216;tri3-r&#8217;).convert(&#8216;quad4&#8217;).convert(&#8216;tri3-r&#8217;)
-S=TriSurface(S.fuse().compact())+Sphere(1).scale(0.5).addNoise(0.1).trl([0., 2., 0.])
-St=S.trl(0,-S.coords[:, 0].max()*2.)
-draw(St, mode=&#8217;wireframe&#8217;)
-drawNumbers(St.coords)
-draw(S, mode=&#8217;wireframe&#8217;)
-drawNumbers(S.coords)
-##compute the dual and node based areas
-Q, nodalAreas=S.dualMesh(&#8216;median&#8217;)
-draw(Q)
-draw(Q.withProp([3]), linewidth=3, mode=&#8217;wireframe&#8217;, ontop=True)
-draw(S.coords[3:4].trl(2, 0.001), marksize=10, color=&#8217;black&#8217;, ontop=True, mode=&#8217;flat&#8217;)
-draw(S.coords, color=&#8217;white&#8217;, marksize=5)
-zoomAll()
-drawNumbers(S.coords)
-print (nodalAreas)
-print (S.area())
-if nodalAreas is not None:</p>
-<blockquote>
-<div>print(nodalAreas.sum())#the total nodal-based area is equal to the total face-based area</div></blockquote>
+<p>Returns:</p>
+<ul class="simple">
+<li><cite>method</cite> = &#8216;median&#8217;: the Median dual mesh and the area of the region
+around each node. The sum of the node-based areas is equal to the
+original surface area.</li>
+<li><cite>method</cite> = &#8216;voronoi&#8217;: the Voronoi polyeders and a None.</li>
+</ul>
 </dd></dl>
 
 <dl class="method">
@@ -610,7 +568,7 @@ method first to remove those elements.</p>
 
 <dl class="method">
 <dt id="trisurface.TriSurface.cutWithPlane1">
-<tt class="descname">cutWithPlane1</tt><big>(</big><em>p</em>, <em>n</em>, <em>side=''</em>, <em>return_intersection=False</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.cutWithPlane1" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">cutWithPlane1</tt><big>(</big><em>p</em>, <em>n</em>, <em>side=''</em>, <em>return_intersection=False</em>, <em>atol=0.0</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.cutWithPlane1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cut a surface with a plane.</p>
 <p>Cuts the surface with a plane defined by a point p and normal n.</p>
 <p>Parameters:</p>
@@ -655,7 +613,7 @@ The returned surface will have its normals fixed wherever possible.</p>
 
 <dl class="method">
 <dt id="trisurface.TriSurface.intersectionWithPlane">
-<tt class="descname">intersectionWithPlane</tt><big>(</big><em>p</em>, <em>n</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.intersectionWithPlane" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">intersectionWithPlane</tt><big>(</big><em>p</em>, <em>n</em>, <em>atol=0.0</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.intersectionWithPlane" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the intersection lines with plane (p,n).</p>
 <p>Returns a plex-2 mesh with the line segments obtained by cutting
 all triangles of the surface with the plane (p,n)
@@ -763,17 +721,18 @@ test and the (possible) reversal of the normals.</li>
 
 <dl class="method">
 <dt id="trisurface.TriSurface.check">
-<tt class="descname">check</tt><big>(</big><em>matched=True</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.check" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">check</tt><big>(</big><em>matched=True</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.check" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check the surface using gtscheck.</p>
 <p>Uses <cite>gtscheck</cite> to check whether the surface is an orientable,
 non self-intersecting manifold.</p>
-<p>This is a necessary condition the <cite>gts</cite> methods:
+<p>This is a necessary condition for using the <cite>gts</cite> methods:
 split, coarsen, refine, boolean. (Additionally, the surface should be
 closed, wich can be checked with <a class="reference internal" href="#trisurface.TriSurface.isClosedManifold" title="trisurface.TriSurface.isClosedManifold"><tt class="xref py py-meth docutils literal"><span class="pre">isClosedManifold()</span></tt></a>).</p>
 <p>Returns a tuple of:</p>
 <ul class="simple">
 <li>an integer return code with the value:<ul>
 <li>0: the surface is an orientable, non self-intersecting manifold.</li>
+<li>1: the created GTS file is invalid: this should normally not occur.</li>
 <li>2: the surface is not an orientable manifold. This may be due to
 misoriented normals. The <a class="reference internal" href="#trisurface.TriSurface.fixNormals" title="trisurface.TriSurface.fixNormals"><tt class="xref py py-meth docutils literal"><span class="pre">fixNormals()</span></tt></a> and <a class="reference internal" href="#trisurface.TriSurface.reverse" title="trisurface.TriSurface.reverse"><tt class="xref py py-meth docutils literal"><span class="pre">reverse()</span></tt></a>
 methods may be used to help fixing the problem in such case.</li>
@@ -786,6 +745,8 @@ the second return value.</li>
 If matched==True, intersecting triangles are returned as element
 indices of self, otherwise as a separate TriSurface object.</li>
 </ul>
+<p>If verbose is True, prints the statistics reported by the gtscheck
+command.</p>
 </dd></dl>
 
 <dl class="method">
@@ -885,6 +846,25 @@ the software you have installed the following are possible:<ul>
 <p>Returns an integer array with the indices of the points that are
 inside the surface. The indices refer to the onedimensional list
 of points as obtained from pts.points().</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trisurface.TriSurface.tetgen">
+<tt class="descname">tetgen</tt><big>(</big><em>quality=True</em>, <em>volume=None</em>, <em>filename=None</em>, <em>format='.off'</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.tetgen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a tetrahedral mesh inside the surface</p>
+<ul class="simple">
+<li><cite>surfacefile</cite>: a file representing a surface. It can be an .off or
+.stl file (or other?)</li>
+<li><cite>quality</cite>: if True, the output will be a quality mesh
+The circumradius-to-shortest-edge ratio can be constrained by
+specifying a float value for quality (default is 2.0)
+- <cite>volume</cite>: float: applies a maximum tetrahedron volume constraint</li>
+<li><cite>outputdir</cite>: if specified, the results surface model and the tet
+model files will be placed in this directory. Else, a temporary
+directory will be used.</li>
+</ul>
+<p>If the creation of the tetrahedral model is succesful, the
+resulting tetrahedral mesh is returned.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1176,6 +1156,39 @@ volumes and can be fixed with the  correctNegativeVolumes.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="trisurface.TriSurface.setProp">
+<tt class="descname">setProp</tt><big>(</big><em>prop=None</em>, <em>blocks=None</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.setProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create or destroy the property array for the Geometry.</p>
+<p>A property array is a rank-1 integer array with dimension equal
+to the number of elements in the Geometry. Each element thus has its
+own property number. These numbers can be used for any purpose.
+They play an import role when creating new geometry: new elements
+inherit the property number of their parent element.
+Properties are also preserved on most geometrical transformations.</p>
+<p>Because elements with different property numbers can be drawn in
+different colors, the property numbers are also often used to impose
+color.</p>
+<p>Parameters:</p>
+<blockquote>
+<div><ul>
+<li><p class="first"><cite>prop</cite>: a single integer value or a list/array of integer values.
+If the number of passed values is less than the number of elements,
+they wil be repeated. If you give more, they will be ignored.</p>
+<p>The special value <a href="#id1"><span class="problematic" id="id2">`</span></a>prop`=&#8217;range&#8217; will set the property numbers
+equal to the element number.</p>
+<p>A value None (default) removes the properties from the Geometry.</p>
+</li>
+<li><p class="first"><cite>blocks</cite>: a single integer value or a list/array of integer values.
+If the number of passed values is less than the length of <cite>prop</cite>,
+they wil be repeated. If you give more, they will be ignored.
+Every prop will be repeated the corresponding number of times
+specified in blocks.</p>
+</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
 <dt id="trisurface.TriSurface.setType">
 <tt class="descname">setType</tt><big>(</big><em>eltype=None</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.setType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the eltype from a character string.</p>
@@ -1200,27 +1213,15 @@ normally set the element type at creation time.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="trisurface.TriSurface.setProp">
-<tt class="descname">setProp</tt><big>(</big><em>prop=None</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.setProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create or destroy the property array for the Mesh.</p>
-<p>A property array is a rank-1 integer array with dimension equal
-to the number of elements in the Mesh.
-You can specify a single value or a list/array of integer values.
-If the number of passed values is less than the number of elements,
-they wil be repeated. If you give more, they will be ignored.</p>
-<p>If a value None is given, the properties are removed from the Mesh.</p>
+<dt id="trisurface.TriSurface.setNormals">
+<tt class="descname">setNormals</tt><big>(</big><em>normals=None</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.setNormals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set/Remove the normals of the mesh.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="trisurface.TriSurface.copy">
 <tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a deep copy of the object.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="trisurface.TriSurface.setNormals">
-<tt class="descname">setNormals</tt><big>(</big><em>normals=None</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.setNormals" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set/Remove the normals of the mesh.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1354,7 +1355,7 @@ Note that this may contain points that are not used in the mesh.
 <dt id="trisurface.TriSurface.getLowerEntities">
 <tt class="descname">getLowerEntities</tt><big>(</big><em>level=-1</em>, <em>unique=False</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.getLowerEntities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the entities of a lower dimensionality.</p>
-<p>If the element type is defined in the <tt class="xref py py-mod docutils literal"><span class="pre">elements</span></tt> module,
+<p>If the element type is defined in the <a class="reference internal" href="elements.html#module-elements" title="elements: Definition of elements."><tt class="xref py py-mod docutils literal"><span class="pre">elements</span></tt></a> module,
 this returns a Connectivity table with the entities of a lower
 dimensionality. The full list of entities with increasing
 dimensionality  0,1,2,3 is:</p>
@@ -1887,17 +1888,32 @@ The returned Mesh inherits the matching properties.</p>
 <tt class="descname">connectedTo</tt><big>(</big><em>nodes</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.connectedTo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a Mesh with the elements connected to the specified node(s).</p>
 <p><cite>nodes</cite>: int or array_like, int.</p>
-<p>Returns a Mesh with all the elements from the original that contain
-at least one of the specified nodes.</p>
+<p>Return a Mesh with all the elements from the original that contain at
+least one of the specified nodes.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="trisurface.TriSurface.notConnectedTo">
-<tt class="descname">notConnectedTo</tt><big>(</big><em>nod</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.notConnectedTo" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">notConnectedTo</tt><big>(</big><em>nodes</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.notConnectedTo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a Mesh with the elements not connected to the given node(s).</p>
 <p><cite>nodes</cite>: int or array_like, int.</p>
 <p>Returns a Mesh with all the elements from the original that do not
 contain any of the specified nodes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trisurface.TriSurface.hits">
+<tt class="descname">hits</tt><big>(</big><em>entities</em>, <em>level</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.hits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Count the lower entities from a list connected to the elements.</p>
+<p><cite>entities</cite>: a single number or a list/array of entities
+<cite>level</cite>: 0 or 1 or 2 if entities are nodes or edges or faces, respectively.</p>
+<p>The numbering of the entities corresponds to self.insertLevel(level).
+Returns an (nelems,) shaped int array with the number of the
+entities from the list that are contained in each of the elements.
+This method can be used in selector expressions like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hits</span><span class="p">(</span><span class="n">entities</span><span class="p">,</span><span class="n">level</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -2171,7 +2187,11 @@ connect back to the first. This is accomplished by adding the first
 Coords item back at the end of the list.</p>
 </li>
 <li><p class="first"><cite>div</cite>: Either an integer, or a sequence of float numbers (usually
-in the range ]0.0..1.0]). This should only be used for degree==1.</p>
+in the range ]0.0..1.0]) or a list of sequences of the same length of the
+connecting list of coordinates. In the latter case every sequence inside the
+list can either be a float sequence (usually in the range ]0.0..1.0])
+or it contains one integer (e.g [[4],[0.3,1]]).
+This should only be used for degree==1.</p>
 <p>With this parameter the generated elements  can be further
 subdivided along the connection direction.
 If an int is given, the connected elements will be divided
@@ -2179,7 +2199,10 @@ into this number of elements along the connection direction. If a
 sequence of float numbers is given, the numbers specify the relative
 distance along the connection direction where the elements should
 end. If the last value in the sequence is not equal to 1.0, there
-will be a gap between the consecutive connections.</p>
+will be a gap between the consecutive connections. If a list of sequences
+is given, every consecutive element of the coordinate list is connected
+using the corresponding sequence in the list(1-length integer of float sequence
+specified as before).</p>
 </li>
 <li><p class="first"><cite>eltype</cite>: the element type of the constructed hypermesh. Normally,
 this is set automatically from the base element type and the
@@ -2352,6 +2375,14 @@ value is None.</p>
 <tt class="descname">length</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the total length of a Mesh.</p>
 <p>Returns the sum of self.lengths(), or 0.0 if the self.lengths()
+returned None.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trisurface.TriSurface.area">
+<tt class="descname">area</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.area" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the total area of a Mesh.</p>
+<p>Returns the sum of self.areas(), or 0.0 if the self.areas()
 returned None.</p>
 </dd></dl>
 
@@ -2586,12 +2617,12 @@ Each face of the cube is represented by two triangles.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="turtle.html" title="59. turtle — Turtle graphics for pyFormex"
+          <a href="turtle.html" title="64. turtle — Turtle graphics for pyFormex"
              >next</a> |</li>
         <li class="right" >
-          <a href="tools.html" title="57. tools — tools.py"
+          <a href="tools.html" title="62. tools — tools.py"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.0 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 0.9.1a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -2599,7 +2630,7 @@ Each face of the cube is represented by two triangles.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Mar 25, 2013.
+      Last updated on Jun 14, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

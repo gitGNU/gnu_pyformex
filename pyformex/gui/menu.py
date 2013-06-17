@@ -474,6 +474,13 @@ class ActionList(object):
         return [ i[0] for i in self.actions ]
 
 
+    def toolbar(self,name):
+        """Create a new toolbar corresponding to the menu."""
+        tb = QtGui.QToolBar(name)
+        for n,a in self.actions:
+            self.toolbar.addAction(a)
+
+
 ###########################################################################
 
 # pyFormex main menus

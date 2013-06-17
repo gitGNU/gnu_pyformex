@@ -185,7 +185,8 @@ def luminance(color,gamma=True):
 
     Example:
 
-    >>> print([ "%0.2f" % luminance(c) for c in palette])
+    >>> print([ "%0.2f" % luminance(c) for c in ['black','red','green','blue']])
+    ['0.00', '0.21', '0.72', '0.07']
     """
     lum = lambda c: ((c+0.055)/1.055) ** 2.4 if c > 0.04045 else c/12.92
     color = GLcolor(color)
@@ -194,19 +195,6 @@ def luminance(color,gamma=True):
     else:
         R,G,B = color
     return 0.2126 * R + 0.7152 * G + 0.0722 * B
-
-
-## def rgbLuminance(color):
-##     """Determine the luminance of a color
-
-##     Returns a integer value representing the luminance of the color
-##     for the human eye. This can be used to derive a good contrasting color.
-##     For example, value lower than 128 contrast well with white, larger value
-##     contrast better with black.
-##     """
-##     R,G,B = RGBcolor(color)
-##     #return ((R*299)+(G*587)+(B*114))/1000
-##     return (2126 * R + 7152 * G + 722 * B) / 10000
 
 
 def createColorDict():
@@ -255,7 +243,14 @@ lightgrey = grey(0.8)
 mediumgrey = grey(0.7)
 darkgrey = grey(0.5)
 
-palette = ODict([ (k,globals()[k]) for k in pf.cfg['canvas/colormap'] ])
 
+def setPalette(colors):
+    global palette
+    palette = ODict([ (k,GLcolor(k)) for k in colors ])
+
+
+# Set default palette
+# !! THIS IS CURRENTLY NOT USED YET
+palette = ODict([ (k,globals()[k]) for k in ['black','red','green','blue','cyan','magenta','yellow','white','darkgrey','darkred','darkgreen','darkblue','darkcyan','darkmagenta','darkyellow','lightgrey'] ])
 
 # End
