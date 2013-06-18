@@ -1609,11 +1609,11 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
           - 'quad4': ndiv is a sequence of two int values nx,ny, specifying
             the number of divisions along the first, resp. second
-            parametric direction of the element`
+            parametric direction of the element
 
-          - 'hex8': ndiv is a sequence of two int values nx,ny,nz specifying
+          - 'hex8': ndiv is a sequence of three int values nx,ny,nz specifying
             the number of divisions along the first, resp. second and the third
-            parametric direction of the element`
+            parametric direction of the element
 
         - `fuse`: bool, if True (default), the resulting Mesh is completely
           fused. If False, the Mesh is only fused over each individual
@@ -2704,7 +2704,7 @@ def quadgrid(seed0,seed1):
     M = Mesh(U,e,eltype=E.elType())
     return M.fuse()
 
-
+# FI this can be generalized to be used also for quad4
 def hex8_wts(nx,ny,nz):
     """ Create weights for hex8 subdivision.
     """
@@ -2718,8 +2718,9 @@ def hex8_wts(nx,ny,nz):
     pts = dstack([dstack([outer(pts[:,:,ipts],zz) for ipts in range(pts.shape[2])]) for zz in [z0,z1] ]).reshape(-1,8)
     return pts / float(nx*ny*nz)
 
+
 def hex8_els(nx,ny,nz):
-    """ Create connectivity table for hex8 subdivion 
+    """ Create connectivity table for hex8 subdivision.
     """
     n = nz+1
     els = [row_stack([row_stack([asarray([array([0,1,n+1,n]) + k for k in range(nz) ])+i * n for i  in range(nx) ])]) +j * (n*(nx+1)) for j in range(ny+1)]
