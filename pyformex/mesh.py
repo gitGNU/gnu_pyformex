@@ -1593,7 +1593,6 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
 
     ## TODO:
-    ## - We should add prop inheritance here
     ## - mesh_wts and mesh_els functions should be moved to elements.py
     def subdivide(self,*ndiv,**kargs):
         """Subdivide the elements of a Mesh.
@@ -1633,11 +1632,12 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
             raise ValueError,"Can not subdivide element of type '%s'" % elname
 
         wts = mesh_wts(*ndiv)
-        els = mesh_els(*ndiv)
+        lndiv = [nd if isinstance(nd,int) else len(nd)-1 for nd in ndiv]
+        els = mesh_els(*lndiv)
         X = self.coords[self.elems]
         U = dot(wts,X).transpose([1,0,2]).reshape(-1,3)
         e = concatenate([els+i*wts.shape[0] for i in range(self.nelems())])
-        M = self.__class__(U,e,eltype=self.elType()).setProp(self.prop,blocks=[prod(ndiv)])
+        M = self.__class__(U,e,eltype=self.elType()).setProp(self.prop,blocks=[prod(lndiv)])
         if kargs.get('fuse',True):
             M = M.fuse()
         return M
@@ -2655,26 +2655,65 @@ def tri3_els(ndiv):
 
     return elems
 
-# TODO: can be removed, this is equivalent to gridpoints(seed(nx),seed(ny))
-def quad4_wts(nx,ny):
-    x1 = arange(nx+1)
-    y1 = arange(ny+1)
-    x0 = nx-x1
-    y0 = ny-y1
-    pts = dstack([outer(y0,x0),outer(y0,x1),outer(y1,x1),outer(y1,x0)]).reshape(-1,4)
-    return pts / float(nx*ny)
-
 def gridpoints(seed0,seed1=None,seed2=None):
-    if seed1 is None:
+    """Create weigths for linear lines, quadrilateral and hexahedral elements coordinates
+        
+        Parameters:
+        
+        - 'seed0' : int or list of floats . It specifies divisions along the 
+          first parametric direction of the element
+        
+        - 'seed1' : int or list of floats . It specifies divisions along 
+          the second parametric direction of the element
+
+        - 'seed2' : int or list of floats . It specifies divisions along
+          the t parametric direction of the element
+        
+        
+        If these parametes are integer values the divisions will be equally spaced between  0 and 1
+        
+    """
+    if seed0 is not None:
+        if isinstance(seed0,int):
+            seed0 = seed(seed0)
+        sh=1
         pts = seed0
-    elif seed2 is None:
+    if seed1 is not None:
+        if isinstance(seed1,int):
+            seed1 = seed(seed1)
+        sh=4
         x1 = seed0
         y1 = seed1
         x0 = 1.-x1
         y0 = 1.-y1
-        pts = dstack([outer(y0,x0),outer(y0,x1),outer(y1,x1),outer(y1,x0)]).reshape(-1,4)
-    return pts
+        pts = dstack([outer(y0,x0),outer(y0,x1),outer(y1,x1),outer(y1,x0)])
+    if seed2 is not None:
+        if isinstance(seed2,int):
+            seed2 = seed(seed2)
+        sh=8
+        z1=seed2
+        z0=1-z1
+        pts = dstack([dstack([outer(pts[:,:,ipts],zz) for ipts in range(pts.shape[2])]) for zz in [z0,z1] ])
+    return pts.reshape(-1,sh).squeeze()
 
+
+# TODO: can be removed, this is equivalent to gridpoints(seed(nx),seed(ny))
+def quad4_wts(seed0,seed1):
+    """ Create weights for quad4 subdivision.
+    
+        Parameters:
+        
+        - 'seed0' : int or list of floats . It specifies divisions along the 
+          first parametric direction of the element
+        
+        - 'seed1' : int or list of floats . It specifies divisions along 
+          the second parametric direction of the element
+
+        If these parametes are integer values the divisions will be equally spaced between  0 and 1
+
+    """
+    return gridpoints(seed0,seed1)
+    
 def quad4_els(nx,ny):
     n = nx+1
     els = [ row_stack([ array([0,1,n+1,n]) + i for i in range(nx) ]) + j * n for j in range(ny) ]
@@ -2704,19 +2743,28 @@ def quadgrid(seed0,seed1):
     M = Mesh(U,e,eltype=E.elType())
     return M.fuse()
 
-# FI this can be generalized to be used also for quad4
-def hex8_wts(nx,ny,nz):
+
+def hex8_wts(seed0,seed1,seed2):
     """ Create weights for hex8 subdivision.
+        
+        Parameters:
+        
+        - 'seed0' : int or list of floats . It specifies divisions along the 
+          first parametric direction of the element
+        
+        - 'seed1' : int or list of floats . It specifies divisions along 
+          the second parametric direction of the element
+
+        - 'seed2' : int or list of floats . It specifies divisions along
+          the t parametric direction of the element
+        
+        
+        If these parametes are integer values the divisions will be equally spaced between  0 and 1
+    
+    
     """
-    x1 = arange(nx+1)
-    y1 = arange(ny+1)
-    z1 = arange(nz+1)
-    x0 = nx-x1
-    y0 = ny-y1
-    z0 = nz-z1
-    pts = dstack([outer(y0,x0),outer(y0,x1),outer(y1,x1),outer(y1,x0)])
-    pts = dstack([dstack([outer(pts[:,:,ipts],zz) for ipts in range(pts.shape[2])]) for zz in [z0,z1] ]).reshape(-1,8)
-    return pts / float(nx*ny*nz)
+    return gridpoints(seed0,seed1,seed2)
+     
 
 
 def hex8_els(nx,ny,nz):
