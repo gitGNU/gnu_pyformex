@@ -56,15 +56,21 @@ def icon_wirenone():
     F = rectangle(2,2)
     draw(F,color=red)
     smooth()
+    zoomAll()
+    zoomIn()
+    zoomIn()
 
 
 def icon_wireborder():
     view('front')
     F = rectangle(2,2)
     draw(F,color=red)
-    smooth()
     B = F.toMesh().getBorderMesh()
     draw(B,color=black,linewidth=2,ontop=True,opak=True,nolight=True)
+    smooth()
+    zoomAll()
+    zoomIn()
+    zoomIn()
 
 
 def icon_wireall():
@@ -72,6 +78,9 @@ def icon_wireall():
     F = rectangle(2,2)
     draw(F,color=red,linewidth=2)
     smoothwire()
+    zoomAll()
+    zoomIn()
+    zoomIn()
 
 
 def icon_clock():
