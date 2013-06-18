@@ -439,7 +439,7 @@ class PolyLine(Curve):
             coords = control
         if isinstance(coords,Formex):
             if coords.nplex() == 1:
-                coords = coords.coords
+                coords = coords.points()
             elif coords.nplex() == 2:
                 coords = Coords.concatenate([coords.coords[:,0,:],coords.coords[-1,1,:]])
             else:
