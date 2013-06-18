@@ -1609,7 +1609,11 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
           - 'quad4': ndiv is a sequence of two int values nx,ny, specifying
             the number of divisions along the first, resp. second
-            parametric direction of the element
+            parametric direction of the element`
+
+          - 'hex8': ndiv is a sequence of two int values nx,ny,nz specifying
+            the number of divisions along the first, resp. second and the third
+            parametric direction of the element`
 
         - `fuse`: bool, if True (default), the resulting Mesh is completely
           fused. If False, the Mesh is only fused over each individual
@@ -1619,7 +1623,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         smaller elements of the same type.
 
         .. note:: This is currently only implemented for Meshes of type 'tri3'
-          and 'quad4' and for the derived class 'TriSurface'.
+          and 'quad4' and 'hex8' and for the derived class 'TriSurface'.
         """
         elname = self.elName()
         try:
@@ -1633,7 +1637,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         X = self.coords[self.elems]
         U = dot(wts,X).transpose([1,0,2]).reshape(-1,3)
         e = concatenate([els+i*wts.shape[0] for i in range(self.nelems())])
-        M = self.__class__(U,e,eltype=self.elType())
+        M = self.__class__(U,e,eltype=self.elType()).setProp(self.prop,blocks=[prod(ndiv)])
         if kargs.get('fuse',True):
             M = M.fuse()
         return M
@@ -2699,6 +2703,28 @@ def quadgrid(seed0,seed1):
     e = concatenate([els+i*wts.shape[0] for i in range(E.nelems())])
     M = Mesh(U,e,eltype=E.elType())
     return M.fuse()
+
+
+def hex8_wts(nx,ny,nz):
+    """ Create weights for hex8 subdivision.
+    """
+    x1 = arange(nx+1)
+    y1 = arange(ny+1)
+    z1 = arange(nz+1)
+    x0 = nx-x1
+    y0 = ny-y1
+    z0 = nz-z1
+    pts = dstack([outer(y0,x0),outer(y0,x1),outer(y1,x1),outer(y1,x0)])
+    pts = dstack([dstack([outer(pts[:,:,ipts],zz) for ipts in range(pts.shape[2])]) for zz in [z0,z1] ]).reshape(-1,8)
+    return pts / float(nx*ny*nz)
+
+def hex8_els(nx,ny,nz):
+    """ Create connectivity table for hex8 subdivion 
+    """
+    n = nz+1
+    els = [row_stack([row_stack([asarray([array([0,1,n+1,n]) + k for k in range(nz) ])+i * n for i  in range(nx) ])]) +j * (n*(nx+1)) for j in range(ny+1)]
+    els = concatenate([row_stack(els[:-1]),row_stack(els[1:])],axis=1)
+    return els
 
 
 
