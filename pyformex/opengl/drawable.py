@@ -546,8 +546,7 @@ class GeomActor(Attributes):
                 # create random colors
                 color = np.random.rand(F.nelems(),3)
 
-        color,colormap = saneColorSet(color,colormap,self.object.coords.shape)
-
+        color,colormap = saneColorSet(color,colormap,self.fcoords.shape)
 
         if color is not None:
             if color.dtype.kind == 'i':
@@ -565,7 +564,7 @@ class GeomActor(Attributes):
 
     def setBkColor(self,color,colormap=None):
         """Set the backside color of the Actor."""
-        self.bkcolor,self.bkcolormap = saneColorSet(color,colormap,self.object.shape)
+        self.bkcolor,self.bkcolormap = saneColorSet(color,colormap,self.fcoords.shape)
 
 
     def setAlpha(self,alpha,bkalpha=None):
