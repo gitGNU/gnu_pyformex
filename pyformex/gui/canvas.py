@@ -33,6 +33,12 @@ import coords
 from numpy import *
 from OpenGL import GL,GLU
 
+# TODO
+# BV: UGLY! WE SHOULD GET RID OF THIS
+if pf.X11:
+    from ctypes import cdll
+    libGL = cdll.LoadLibrary("libGL.so.1")
+
 from formex import length
 from drawable import saneColor,glColor
 import colors
