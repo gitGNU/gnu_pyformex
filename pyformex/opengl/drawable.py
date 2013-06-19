@@ -228,15 +228,15 @@ class Drawable(Attributes):
 
 
 def polygonFaceIndex(n):
-    i0 = (n-1) * ones(n-1)
-    i1 = arange(n-1)
+    i0 = (n-1) * ones(n-2,dtype=int)
+    i1 = arange(n-2)
     i2 = i1+1
     return column_stack([i0,i1,i2])
 
 
 def polygonEdgeIndex(n):
-    i1 = arange(n)
-    i2 = roll(i1,i)
+    i0 = arange(n)
+    i1 = roll(i0,-1)
     return column_stack([i0,i1])
 
 
@@ -425,13 +425,20 @@ class GeomActor(Attributes):
         #print("GEOMACTOR.changeMode")
         self.drawable = []
         self._prepareNormals(renderer)
-        # Draw the colored faces/edges
-        if renderer.mode == 'wireframe' and self.object.nplex() >= 3:
-            self._addEdges(renderer)
+        # ndim >= 2
+        if (self.eltype is not None and self.eltype.ndim >= 2) or (self.eltype is None and self.object.nplex() >= 3):
+            if renderer.mode == 'wireframe':
+                # Draw the colored edges
+                self._addEdges(renderer)
+            else:
+                # Draw the colored faces
+                self._addFaces(renderer)
+                # Overlay the black edges (or not)
+                self._addWires(renderer)
+        # ndim < 2
         else:
+            # Draw the colored faces
             self._addFaces(renderer)
-        # Overlay the black edges (or not)
-        self._addWires(renderer)
 
 
     def _prepareNormals(self,renderer):
@@ -464,7 +471,7 @@ class GeomActor(Attributes):
         The selector is 2D (nsubelems, nsubplex)
         If selector is None, returns None
         """
-        if selector is None:
+        if selector is None or selector.size == 0:
             return None
         else:
             # The elems index defining the original elements

@@ -1918,9 +1918,8 @@ class Coords(ndarray):
         if self.npoints() == 0:
             return None
 
-        from gui.actors import GeomActor
         from formex import Formex
-        return GeomActor(Formex(self.reshape(-1,3)),**kargs)
+        return Formex(self.reshape(-1,3)).actor(**kargs)
 
 
 
