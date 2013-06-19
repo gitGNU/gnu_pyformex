@@ -433,6 +433,7 @@ class CanvasSettings(Dict):
             'lighting': True,
 #            'alphablend': False,
             'transparency': 0.5,
+            'wiremode': 1,
             'avgnormals': False,
             }),
         'flat': Dict({
@@ -450,7 +451,7 @@ class CanvasSettings(Dict):
             'lighting': False,
 #            'alphablend': False,
             'transparency': 0.5,
-            'wiremode': -1,
+            'wiremode': 1,
             'avgnormals': False,
             }),
         }
@@ -690,18 +691,19 @@ class Canvas(object):
             self.glinit()
 
 
-    def setWireMode(self,value):
+    def setWireMode(self,state,mode=None):
         """Set the wire mode.
 
         This toggles the drawing of edges on top of 2D and 3D geometry.
         Value is an integer. If positive, edges are shown, else not.
         """
-        mode = None
-        if value <= 0:
+        mode=None
+        if state is False:
             # switch off
             if self.rendermode in ['smoothwire','flatwire']:
                 mode = self.rendermode[:-4]
-        elif value > 0:
+        else:
+            # switch on
             if self.rendermode in ['smooth','flat']:
                 mode = self.rendermode+'wire'
         if mode is not None:

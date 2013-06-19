@@ -843,13 +843,14 @@ class InputPush(InputItem):
     If direction == 'v', the options are in a vbox.
     """
 
-    def __init__(self,name,value=None,choices=[],direction='h',icon=None,*args,**kargs):
+    def __init__(self,name,value=None,choices=[],direction='h',icon=None,iconsonly=False,*args,**kargs):
         """Initialize the input item."""
         if value is None:
             value = choices[0]
         elif value not in choices:
             choices[0:0] = [ value ]
         self.input = QtGui.QGroupBox()
+        self.input.setStyleSheet("QGroupBox { border: 0px;}")
         InputItem.__init__(self,name,*args,**kargs)
         self.input.setFlat(True)
         if direction == 'v':
@@ -857,20 +858,22 @@ class InputPush(InputItem):
             self.hbox.setContentsMargins(0,10,0,10)
         else:
             self.hbox = QtGui.QHBoxLayout()
-            self.hbox.setContentsMargins(10,5,10,5)
+            self.hbox.setContentsMargins(5,0,5,0)
         self.hbox.setSpacing(0)
-        #self.hbox.setMargin(0)
 
         self.bg = QtGui.QButtonGroup()
         for i,v in enumerate(choices):
-            if icon:
+            if icon and iconsonly:
                 b = QtGui.QToolButton()
+                b.setContentsMargins(0,0,0,0)
+                b.setStyleSheet("* { margin: 0px; padding: 0px; }")
                 b.setText(v)
                 b.setIcon(pyformexIcon(icon[i]))
                 b.setUsesTextLabel(False)
-                b.setFlat(True)
             else:
                 b = QtGui.QPushButton(v)
+                if icon:
+                    b.setIcon(pyformexIcon(icon[i]))
             b.setCheckable(True)
             if v == value:
                 b.setChecked(True)
@@ -890,7 +893,7 @@ class InputPush(InputItem):
 
     def value(self):
         """Return the widget's value."""
-        return self.bg.checkedButton().text()
+        return str(self.bg.checkedButton().text())
 
     def setValue(self,val):
         """Change the widget's value."""

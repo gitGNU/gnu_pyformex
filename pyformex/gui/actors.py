@@ -602,7 +602,7 @@ class GeomActor(Actor):
                 mode = canvas.rendermode
 
 #        if mode.endswith('wire'):
-        if canvas.settings.edges == 'none':
+        if canvas.settings.wiremode <= 0:
             # Remove the wires
             if hasattr(self,'wire') and self.wire in self.extra:
                 self.extra.remove(self.wire)
@@ -612,7 +612,7 @@ class GeomActor(Actor):
             try:
                 if self.level() > 1:
 
-                    if not hasattr(self,'wire') or self.wire.wiremode != canvas.settings.edges:
+                    if not hasattr(self,'wire') or self.wire.wiremode != canvas.settings.wiremode:
                         # Remove old wire mode
                         if hasattr(self,'wire') and self.wire in self.extra:
                             self.extra.remove(self.wire)
@@ -623,7 +623,7 @@ class GeomActor(Actor):
                         wire.nolight = True
                         wire.ontop = False # True will make objects transparent for edges
                         wire.list = None
-                        wire.wiremode = canvas.settings.edges
+                        wire.wiremode = canvas.settings.wiremode
                         Drawable.prepare_list(wire,color=asarray(black))
                         self.wire = wire
 
