@@ -72,9 +72,8 @@ class BoundVectors(Coords):
 
     def actor(self,**kargs):
         """_This allows a BoundVectors object to be drawn directly."""
-        from gui.actors import GeomActor
         from formex import connect
-        return GeomActor(connect([self.origins(),self.heads()]),**kargs)
+        return connect([self.origins(),self.heads()]).actor(**kargs)
 
 
 # End
