@@ -365,7 +365,7 @@ Line3 = createElementType(
                  ( 0.5, 0.0, 0.0 ),
                  ( 1.0, 0.0, 0.0 ),
                  ],
-    drawgl2edges = [('line2', [ (0,1), (1,2) ])],
+    drawgl2faces = [('line2', [ (0,1), (1,2) ])],
     )
 
 
@@ -378,7 +378,7 @@ Line4 = createElementType(
                  ( 1.0, 0.0, 0.0 ),
                  ],
     edges = ('line2', [ (0,2), (2,3), (3,1) ]),
-    drawgl2edges = [('line2', [ (0,1), (1,2), (2,3) ])],
+    drawgl2faces = [('line2', [ (0,1), (1,2), (2,3) ])],
     )
 
 ######### 2D ###################
@@ -409,7 +409,7 @@ Tri6 = createElementType(
     drawgl2faces = [('tri3', [ (0,3,5),(3,1,4),(4,2,5),(3,4,5) ])],
     )
 
-Tri6.drawgl2edges = [ Tri6.edges.selectNodes(i) for i in Line3.drawgl2edges ]
+Tri6.drawgl2edges = [ Tri6.edges.selectNodes(i) for i in Line3.drawgl2faces ]
 
 Quad4 = createElementType(
     'quad4',"A 4-node quadrilateral",
@@ -458,7 +458,7 @@ Quad8 = createElementType(
     drawgl2faces = [('tri3', [(0,4,7), (1,5,4), (2,6,5), (3,7,6), (4,5,6), (4,6,7) ])],
     )
 
-Quad8.drawgl2edges = [ Quad8.edges.selectNodes(i) for i in Line3.drawgl2edges ]
+Quad8.drawgl2edges = [ Quad8.edges.selectNodes(i) for i in Line3.drawgl2faces ]
 
 Quad9 = createElementType(
     'quad9',"A 9-node quadratic quadrilateral",
@@ -500,7 +500,7 @@ Quad12 = createElementType(
                            (4,6,8),(8,10,4) ])],
     )
 
-Quad12.drawgl2edges = [ Quad12.edges.selectNodes(i) for i in Line4.drawgl2edges ]
+Quad12.drawgl2edges = [ Quad12.edges.selectNodes(i) for i in Line4.drawgl2faces ]
 
 ######### 3D ###################
 
@@ -537,7 +537,7 @@ Tet10 = createElementType(
     reversed = (0,1,3,2,4,6,5,9,8,7),
     )
 
-Tet10.drawgl2edges = [ Tet10.edges.selectNodes(i) for i in Line3.drawgl2edges ]
+Tet10.drawgl2edges = [ Tet10.edges.selectNodes(i) for i in Line3.drawgl2faces ]
 
 
 Tet14 = createElementType(
@@ -641,7 +641,7 @@ Hex16 = createElementType(
     drawfaces = [ Hex8.faces ],
     )
 
-Hex16.drawgl2edges = [ Hex16.edges.selectNodes(i).removeDegenerate() for i in Line3.drawgl2edges ]
+Hex16.drawgl2edges = [ Hex16.edges.selectNodes(i).removeDegenerate() for i in Line3.drawgl2faces ]
 Hex16.drawgl2faces = [ Hex16.faces.selectNodes(i).removeDegenerate() for i in Quad8.drawgl2faces ]
 
 
@@ -666,7 +666,7 @@ Hex20 = createElementType(
 
 Hex20.drawfaces = [ Hex20.faces.selectNodes(i) for i in Quad8.drawfaces ]
 Hex20.drawfaces2 = [ Hex20.faces ]
-Hex20.drawgl2edges = [ Hex20.edges.selectNodes(i) for i in Line3.drawgl2edges ]
+Hex20.drawgl2edges = [ Hex20.edges.selectNodes(i) for i in Line3.drawgl2faces ]
 Hex20.drawgl2faces = [ Hex20.faces.selectNodes(i) for i in Quad8.drawgl2faces ]
 
 
@@ -687,7 +687,7 @@ Hex27 = createElementType(
                        (0,6,8,2,3,7,5,1,4),(18,20,26,24,19,23,25,21,22), ],),
 )
 Hex27.drawfaces = [ Hex27.faces.selectNodes(i) for i in Quad9.drawfaces ]
-Hex27.drawgl2edges = [ Hex27.edges.selectNodes(i) for i in Line3.drawgl2edges ]
+Hex27.drawgl2edges = [ Hex27.edges.selectNodes(i) for i in Line3.drawgl2faces ]
 Hex27.drawgl2faces = [ Hex27.faces.selectNodes(i) for i in Quad9.drawgl2faces ]
 
 ######################################################################
