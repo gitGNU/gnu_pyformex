@@ -532,7 +532,7 @@ class GeomActor(Attributes):
                 print("FEATURE EDGES NOT YET IMPLEMENTED")
 
 
-        if elems is not None:
+        if elems is not None and elems.size > 0:
             #print("ADDWIRES SIZE %s" % (elems.shape,))
             self.drawable.append(Drawable(self,subelems=elems,lighting=False,color = array(black),opak=True))
 
