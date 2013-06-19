@@ -228,6 +228,21 @@ def vmtkDistanceOfPoints(self,X):
     S = TriSurface(X,arange(X.shape[0]).reshape(-1,1)*ones(3,dtype=int).reshape(1,-1))
     return vmtkDistanceOfSurface(self,S)
 
+def vmtkDistancePointsToSegments(X,L):
+    """Find the shortest distances from points X to segments L.
+    
+    X is a (nX,3) shaped array of points.
+    L is a line2 Mesh.
+
+    Retuns a tuple of vector and scalar distances for all points.    
+    Points and lines are first converted into degenerate triangles
+    which are then used by vmtkDistanceOfSurface.
+    """
+    SX = TriSurface(X,arange(X.shape[0]).reshape(-1,1)*ones(3,dtype=int).reshape(1,-1))
+    SL = TriSurface(L.convert('line3').setType('tri3'))#from line2 to degenerate tri3 by adding the centroids.
+    vdist, dist = vmtkDistanceOfSurface(SL ,SX)
+    return vdist, abs(dist)
+
 
 def install_trisurface_methods():
     """Install extra TriSurface methods
