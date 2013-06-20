@@ -201,6 +201,10 @@ class Drawable(Attributes):
             GL.glCullFace(GL.GL_FRONT)
         else:
             GL.glDisable(GL.GL_CULL_FACE)
+        
+        # Specifiy the depth comparison function
+        if self.ontop:
+            GL.glDepthFunc(GL.GL_ALWAYS)
 
         render_geom()
 
