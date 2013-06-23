@@ -594,11 +594,11 @@ class GeomActor(Actor):
     def draw(self,**kargs):
         #print(self.__dict__.keys())
         mode = self.mode
+        canvas = kargs.get('canvas',pf.canvas)
         if mode is None:
             if 'mode' in kargs:
                 mode = kargs['mode']
             else:
-                canvas = kargs.get('canvas',pf.canvas)
                 mode = canvas.rendermode
 
 #        if mode.endswith('wire'):
