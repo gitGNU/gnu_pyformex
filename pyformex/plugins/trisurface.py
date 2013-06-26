@@ -2235,19 +2235,19 @@ Quality: %s .. %s
 
 
     @deprecation("depr_patchextension")
-    def patchextension(self,p,step,dir=None,makecircular=False,div=1.):
+    def patchextension(self,p,step,dir=None,makecircular=False,div=1):
         """_Extrude a nearly-planar patch of a surface.
 
         - `self` is a surface with propery numbers
         - `p` is the property number of the patch to extrude. It can also be
           a list of property numbers.
-        - `div` is the number of elements along the extrusion. If None,
-          the triangle size is taken from the patch's border
+        - `div` is the integer number of elements (or sequence of float) along the extrusion. If None,
+          the triangle size is taken from the patch's border. See Mesh.connect().
         - `step` is the length of the extrusion. If step is a string (e.g. '2.'),
           the length is given as number of average 'diameters'
         - `dir` is the axis of the extrusion. if dir is None, dir is
           the average normal of patch p
-        - `makecircular` if True makes the circular the extended section.
+        - `makecircular` if True makes circular the border-line of the extended patch, keeping the patch area.
 
         This is a convenient function to elongate tubular structures
         such as arteries.
@@ -2275,7 +2275,8 @@ Quality: %s .. %s
 
         if makecircular:
             c = s1x.compact().center()
-            s1x.coords = c + normalize(s1x.coords-c)*r1
+            brdn = s1x.getBorderNodes()
+            s1x.coords[brdn] = c + normalize(s1x.coords[brdn]-c)*r1
 
         b = s1.border()[0]
         if div == None:
