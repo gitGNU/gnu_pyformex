@@ -594,11 +594,11 @@ class GeomActor(Actor):
     def draw(self,**kargs):
         #print(self.__dict__.keys())
         mode = self.mode
+        canvas = kargs.get('canvas',pf.canvas)
         if mode is None:
             if 'mode' in kargs:
                 mode = kargs['mode']
             else:
-                canvas = kargs.get('canvas',pf.canvas)
                 mode = canvas.rendermode
 
 #        if mode.endswith('wire'):
@@ -611,11 +611,14 @@ class GeomActor(Actor):
             # Try to create wires and remember wiremode
             try:
                 if self.level() > 1:
+                    # Remove old wire mode
+                    if hasattr(self,'wire'):
+                        if self.wire.wiremode != canvas.settings.wiremode:
+                            if self.wire in self.extra:
+                                self.extra.remove(self.wire)
+                            del self['wire']
 
-                    if not hasattr(self,'wire') or self.wire.wiremode != canvas.settings.wiremode:
-                        # Remove old wire mode
-                        if hasattr(self,'wire') and self.wire in self.extra:
-                            self.extra.remove(self.wire)
+                    if not hasattr(self,'wire'): #or self.wire.wiremode != canvas.settings.wiremode:
                         # Create new wires
                         import copy
                         wire = copy.copy(self)
@@ -626,21 +629,22 @@ class GeomActor(Actor):
                         wire.wiremode = canvas.settings.wiremode
                         Drawable.prepare_list(wire,color=asarray(black))
                         self.wire = wire
+                        print('handled non att')
 
                     # Switch wires drawing on
                     if self.wire not in self.extra:
                         self.extra.append(self.wire)
                         # AVOID RECURSION
                         self.wire.extra = []
+                    
+                #~ mode = mode[:-4]
 
             except:
                 # AVOID error (which should not occur)
-                #print("GEOMACTOR.draw: %s" % type(self.object))
-                #print self.object.level()
+                #~ print("GEOMACTOR.draw: %s" % type(self.object))
+                #~ print(self.object.level())
                 raise
                 pass
-
-            mode = mode[:-4]
 
         if self.list is None or mode != self.listmode:
             kargs['mode'] = mode
