@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -395,7 +395,7 @@ def grow_selection():
     if res:
         growCollection(selection,**res)
     print(selection)
-    highlightElements(selection)
+    pf.canvas.highlightElements(selection)
 
 
 def partition_selection():
@@ -411,7 +411,7 @@ def partition_selection():
             warning("Currently I can only partition TriSurfaces." )
             return
     partitionCollection(selection)
-    highlightPartitions(selection)
+    pf.canvas.highlightPartitions(selection)
 
 
 def get_partition():
@@ -427,7 +427,7 @@ def get_partition():
     if res:
         prop = res['property']
         getPartition(selection,prop)
-        highlightPartitions(selection)
+        pf.canvas.highlightPartitions(selection)
 
 
 def export_selection():

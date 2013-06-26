@@ -27,11 +27,11 @@
 """
 from __future__ import print_function
 
-import pyformex as pf
-import coords
 
 from numpy import *
 from OpenGL import GL,GLU
+
+import pyformex as pf
 
 # TODO
 # BV: UGLY! WE SHOULD GET RID OF THIS
@@ -39,7 +39,8 @@ if pf.X11:
     from ctypes import cdll
     libGL = cdll.LoadLibrary("libGL.so.1")
 
-from formex import length
+import coords
+from formex import Formex
 from drawable import saneColor,glColor
 import colors
 from camera import Camera
@@ -1394,6 +1395,9 @@ class Canvas(object):
 
 
 
+    ######### Picking ###############
+
+
     def pick_actors(self):
         """Set the list of actors inside the pick_window."""
         self.camera.loadProjection(pick=self.pick_window)
@@ -1522,5 +1526,110 @@ class Canvas(object):
         self.picked = [0,1,2,3]
         if self.numbers:
             self.picked = self.numbers.drawpick()
+
+    ######### Highlighting ###############
+
+    def highlightActor(self,actor):
+        """Highlight an actor in the scene."""
+        if pf.options.debuglevel & pf.DEBUG.DRAW:
+            print("  Highlighting actor %s/%s" % (i,len(self.actors)))
+        FA = actors.GeomActor(actor,color=self.settings.slcolor)
+        self.addHighlight(FA)
+
+
+    def highlightActors(self,K):
+        """Highlight a selection of actors on the canvas.
+
+        K is Collection of actors as returned by the pick() method.
+        colormap is a list of two colors, for the actors not in, resp. in
+        the Collection K.
+        """
+        self.removeHighlight()
+        actors = [ self.actors[i] for i in K.get(-1,[]) ]
+        [ self.highlightActor(a) for a in actors ]
+        self.update()
+
+
+    def highlightElements(self,K):
+        """Highlight a selection of actor elements on the canvas.
+
+        K is Collection of actor elements as returned by the pick() method.
+        colormap is a list of two colors, for the elements not in, resp. in
+        the Collection K.
+        """
+        self.removeHighlight()
+        for i in K.keys():
+            pf.debug("Actor %s: Selection %s" % (i,K[i]),pf.DEBUG.DRAW)
+            actor = self.actors[i]
+            FA = actors.GeomActor(actor.select(K[i]),color=self.settings.slcolor,linewidth=3)
+            self.addHighlight(FA)
+        self.update()
+
+
+    def highlightEdges(self,K):
+        """Highlight a selection of actor edges on the canvas.
+
+        K is Collection of TriSurface actor edges as returned by the pick() method.
+        colormap is a list of two colors, for the edges not in, resp. in
+        the Collection K.
+        """
+        self.removeHighlight()
+        for i in K.keys():
+            pf.debug("Actor %s: Selection %s" % (i,K[i]),pf.DEBUG.DRAW)
+            actor = self.actors[i]
+            FA = actors.GeomActor(Formex(actor.coords[actor.object.getEdges()[K[i]]]),color=self.settings.slcolor,linewidth=3)
+            self.addHighlight(FA)
+
+        self.update()
+
+
+    def highlightPoints(self,K):
+        """Highlight a selection of actor elements on the canvas.
+
+        K is Collection of actor elements as returned by the pick() method.
+        """
+        self.removeHighlight()
+        for i in K.keys():
+            pf.debug("Actor %s: Selection %s" % (i,K[i]),pf.DEBUG.DRAW)
+            actor = self.actors[i]
+            FA = actors.GeomActor(Formex(actor.points()[K[i]]),color=self.settings.slcolor,marksize=10)
+            self.addHighlight(FA)
+        self.update()
+
+
+    def highlightPartitions(K):
+        """Highlight a selection of partitions on the canvas.
+
+        K is a Collection of actor elements, where each actor element is
+        connected to a collection of property numbers, as returned by the
+        partitionCollection() method.
+        """
+        self.removeHighlight()
+        for i in K.keys():
+            pf.debug("Actor %s: Partitions %s" % (i,K[i][0]),pf.DEBUG.DRAW)
+            actor = self.actors[i]
+            for j in K[i][0].keys():
+                FA = actors.GeomActor(actor.select(K[i][0][j]),color=j*numpy.ones(len(K[i][0][j]),dtype=int))
+                self.addHighlight(FA)
+        self.update()
+
+
+    highlight_funcs = { 'actor': highlightActors,
+                        'element': highlightElements,
+                        'point': highlightPoints,
+                        'edge': highlightEdges,
+                        }
+
+
+    def highlight(self,K,mode):
+        """Highlight a Collection of actor/elements.
+
+        K is usually the return value of a pick operation, but might also
+        be set by the user.
+        mode is one of the pick modes.
+        """
+        func = self.highlight_funcs.get(mode,None)
+        if func:
+            func(K)
 
 ### End

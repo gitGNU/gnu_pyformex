@@ -1839,104 +1839,22 @@ def updateGUI():
 
 
 ######### Highlighting ###############
-
-def highlightActor(i):
-    """Highlight the i-th actor in the scene."""
-    if pf.options.debuglevel & pf.DEBUG.DRAW:
-        print("  Highlighting actor %s/%s" % (i,len(pf.canvas.actors)))
-    actor = pf.canvas.actors[i]
-    FA = actors.GeomActor(actor,color=pf.canvas.settings.slcolor)
-    pf.canvas.addHighlight(FA)
+#
+# Most highlight functions have been moved to canvas.py
+# They are retained here for compatibility, but should be deprecated
+#
 
 
-def highlightActors(K):
-    """Highlight a selection of actors on the canvas.
-
-    K is Collection of actors as returned by the pick() method.
-    colormap is a list of two colors, for the actors not in, resp. in
-    the Collection K.
-    """
-    pf.canvas.removeHighlight()
-    [ highlightActor(i) for i in K.get(-1,[]) ]
+def highlightActor(actor):
+    """Highlight an actor in the scene."""
+    pf.canvas.highlightActor(actor)
     pf.canvas.update()
-
-
-def highlightElements(K):
-    """Highlight a selection of actor elements on the canvas.
-
-    K is Collection of actor elements as returned by the pick() method.
-    colormap is a list of two colors, for the elements not in, resp. in
-    the Collection K.
-    """
-    pf.canvas.removeHighlight()
-    for i in K.keys():
-        pf.debug("Actor %s: Selection %s" % (i,K[i]),pf.DEBUG.DRAW)
-        actor = pf.canvas.actors[i]
-        FA = actors.GeomActor(actor.select(K[i]),color=pf.canvas.settings.slcolor,linewidth=3)
-        pf.canvas.addHighlight(FA)
-    pf.canvas.update()
-
-
-def highlightEdges(K):
-    """Highlight a selection of actor edges on the canvas.
-
-    K is Collection of TriSurface actor edges as returned by the pick() method.
-    colormap is a list of two colors, for the edges not in, resp. in
-    the Collection K.
-    """
-    pf.canvas.removeHighlight()
-    for i in K.keys():
-        pf.debug("Actor %s: Selection %s" % (i,K[i]),pf.DEBUG.DRAW)
-        actor = pf.canvas.actors[i]
-        FA = actors.GeomActor(Formex(actor.coords[actor.object.getEdges()[K[i]]]),color=pf.canvas.settings.slcolor,linewidth=3)
-        pf.canvas.addHighlight(FA)
-
-    pf.canvas.update()
-
-
-def highlightPoints(K):
-    """Highlight a selection of actor elements on the canvas.
-
-    K is Collection of actor elements as returned by the pick() method.
-    """
-    pf.canvas.removeHighlight()
-    for i in K.keys():
-        pf.debug("Actor %s: Selection %s" % (i,K[i]),pf.DEBUG.DRAW)
-        actor = pf.canvas.actors[i]
-        FA = actors.GeomActor(Formex(actor.points()[K[i]]),color=pf.canvas.settings.slcolor,marksize=10)
-        pf.canvas.addHighlight(FA)
-    pf.canvas.update()
-
-
-def highlightPartitions(K):
-    """Highlight a selection of partitions on the canvas.
-
-    K is a Collection of actor elements, where each actor element is
-    connected to a collection of property numbers, as returned by the
-    partitionCollection() method.
-    """
-    pf.canvas.removeHighlight()
-    for i in K.keys():
-        pf.debug("Actor %s: Partitions %s" % (i,K[i][0]),pf.DEBUG.DRAW)
-        actor = pf.canvas.actors[i]
-        for j in K[i][0].keys():
-            FA = actors.GeomActor(actor.select(K[i][0][j]),color=j*numpy.ones(len(K[i][0][j]),dtype=int))
-            pf.canvas.addHighlight(FA)
-    pf.canvas.update()
-
-
-highlight_funcs = { 'actor': highlightActors,
-                    'element': highlightElements,
-                    'point': highlightPoints,
-                    'edge': highlightEdges,
-                    }
 
 
 def removeHighlight():
     """Remove the highlights from the current viewport"""
     pf.canvas.removeHighlight()
     pf.canvas.update()
-
 
 
 
@@ -1986,7 +1904,7 @@ def pick(mode='actor',filter=None,oneshot=False,func=None):
         filter_combo.setValue(filter)
 
     if func is None:
-        func = highlight_funcs.get(mode,None)
+        func = pf.canvas.highlight_funcs.get(mode,None)
     pf.message("Select %s %s" % (filter,mode))
 
     pf.GUI.statusbar.addWidget(pick_buttons)
@@ -2018,18 +1936,6 @@ def pickNumbers(marks=None):
     if marks:
         pf.canvas.numbers = marks
     return pf.canvas.pickNumbers()
-
-
-def highlight(K,mode):
-    """Highlight a Collection of actor/elements.
-
-    K is usually the return value of a pick operation, but might also
-    be set by the user.
-    mode is one of the pick modes.
-    """
-    func = highlight_funcs.get(mode,None)
-    if func:
-        func(K)
 
 
 LineDrawing = None
