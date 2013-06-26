@@ -417,8 +417,6 @@ class GeomActor(Attributes):
         self.setLineWidth(self.linewidth)
         self.setLineStipple(self.linestipple)
 
-        self.changeMode(renderer)
-
         #### CHILDREN ####
         for child in self.children:
             child.prepare(renderer)
@@ -443,6 +441,10 @@ class GeomActor(Attributes):
         else:
             # Draw the colored faces
             self._addFaces(renderer)
+
+        #### CHILDREN ####
+        for child in self.children:
+            child.changeMode(renderer)
 
 
     def _prepareNormals(self,renderer):

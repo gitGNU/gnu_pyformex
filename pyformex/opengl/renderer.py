@@ -86,6 +86,7 @@ class Renderer(object):
 
     def addActor(self,actor):
         actor.prepare(self)
+        actor.changeMode(self)
         self._objects.append(actor)
         self._bbox = None
         self.canvas.camera.focus = self.bbox.center()
@@ -118,6 +119,7 @@ class Renderer(object):
         #   self.shader.loadUniforms(self.canvas.settings)
         #print("DEFAULTS",self.canvas.settings)
         self.shader.uniformInt('builtin',1)
+        self.shader.uniformInt('highlight',0)
         self.shader.uniformFloat('lighting',self.canvas.settings.lighting)
         self.shader.uniformInt('colormode',1)
         self.shader.uniformVec3('objectColor',self.canvas.settings.fgcolor)
@@ -137,14 +139,20 @@ class Renderer(object):
         for obj in objects:
             GL.glDepthFunc(GL.GL_LESS)
             self.setDefaults()
-
-            try:
-                obj.render(self)
-            except:
-                raise
+            obj.render(self)
 
 
-    def render(self):
+    def pickObjects(self,objects):
+        """Draw a list of objects in picking mode"""
+        for i,obj in enumerate(objects):
+            print("PUSH %s" % i)
+            GL.glPushName(i)
+            obj.render(self)
+            print("POP %s" % i)
+            GL.glPopName()
+
+
+    def render(self,picking=False):
         """Render the geometry for the scene."""
         self.shader.bind()
         try:
@@ -168,8 +176,16 @@ class Renderer(object):
                             [ a for a in self.actors if not a.ontop ] + \
                             [ a for a in self.actors if a.ontop ] + \
                             [ a for a in self.annotations if a.ontop ]
-            if self.canvas.settings.alphablend:
-                #print('ALPHABLEND')
+            if picking:
+                # PICK MODE
+                self.pickObjects(sorted_actors)
+
+            elif not self.canvas.settings.alphablend:
+                # NO ALPHABLEND
+                self.renderObjects(sorted_actors)
+
+            else:
+                # ALPHABLEND
                 opaque = [ a for a in sorted_actors if a.opak ]
                 transp = [ a for a in sorted_actors if not a.opak ]
                 self.renderObjects(opaque)
@@ -183,13 +199,27 @@ class Renderer(object):
                 GL.glEnable(GL.GL_DEPTH_TEST)
                 GL.glDepthMask (GL.GL_TRUE)
                 GL.glDisable (GL.GL_BLEND)
-            else:
-                #print("NO ALPHABLEND")
-                self.renderObjects(sorted_actors)
 
 
         finally:
             self.shader.unbind()
+
+
+    def highlight(self,objects):
+        """Highlight the objects in the list."""
+        for obj in objects:
+            obj.highlight = 1
+
+
+    def removeHighlight(self,objects=None):
+        """Remove the highlight from the objects in the list.
+
+        If no objects, all the highlights are removed
+        """
+        if objects is None:
+            objects = self._objects
+        for obj in objects:
+            obj.highlight = None
 
 
 # End

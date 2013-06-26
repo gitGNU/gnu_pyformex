@@ -70,6 +70,7 @@ class Shader(object):
 
     # int and bool uniforms
     uniforms_int = [
+        'highlight',
         'colormode',
         'lighting',
         ]
