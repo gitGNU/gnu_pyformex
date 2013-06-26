@@ -1597,7 +1597,7 @@ class Canvas(object):
         self.update()
 
 
-    def highlightPartitions(K):
+    def highlightPartitions(self,K):
         """Highlight a selection of partitions on the canvas.
 
         K is a Collection of actor elements, where each actor element is
