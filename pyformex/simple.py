@@ -388,6 +388,34 @@ def cylinder(D,L,nt,nl,D1=None,angle=360.,bias=0.,diag=None):
     return C.cylindrical(dir=[2,1,0])
 
 
+def boxes(x):
+    """Create a set of rectangular boxes.
+
+    `x`: Coords with shape (nelems,2,3), usually with x[:,0,:] < x[:,1,:]
+
+    Returns a Formex with shape (nelems,8,3) and of type 'hex8',
+    where each element is the rectangular box which has x[:,0,:]
+    as its minimum coordinates and x[:,1,:] as the maximum ones.
+    Note that the elements may be degenerate or reverted if the minimum
+    coordinates are not smaller than the maximum ones.
+
+    This function can be used to visualize the bboxes() of a geometry.
+    """
+    x = Coords(x).reshape(-1,2,3)
+    i = [ [0,0,0],
+          [1,0,0],
+          [1,1,0],
+          [0,1,0],
+          [0,0,1],
+          [1,0,1],
+          [1,1,1],
+          [0,1,1]]
+
+    j = [ 0,1,2 ]
+
+    return Formex(x[:,i,j],eltype='hex8')
+
+
 def cuboid(xmin=[0.,0.,0.],xmax=[1.,1.,1.]):
     """Create a rectangular prism
 
@@ -396,18 +424,7 @@ def cuboid(xmin=[0.,0.,0.],xmax=[1.,1.,1.]):
 
     Returns a single element Formex with eltype 'hex8'.
     """
-    x0,y0,z0 = xmin
-    x1,y1,z1 = xmax
-    x = Coords([[
-        [x0,y0,z0],
-        [x1,y0,z0],
-        [x1,y1,z0],
-        [x0,y1,z0],
-        [x0,y0,z1],
-        [x1,y0,z1],
-        [x1,y1,z1],
-        [x0,y1,z1],
-        ]])
-    return Formex(x,eltype='hex8')
+    return boxes([xmin,xmax])
+
 
 # End

@@ -629,14 +629,14 @@ class GeomActor(Actor):
                         wire.wiremode = canvas.settings.wiremode
                         Drawable.prepare_list(wire,color=asarray(black))
                         self.wire = wire
-                        print('handled non att')
+                        #print('handled non att')
 
                     # Switch wires drawing on
                     if self.wire not in self.extra:
                         self.extra.append(self.wire)
                         # AVOID RECURSION
                         self.wire.extra = []
-                    
+
                 #~ mode = mode[:-4]
 
             except:
