@@ -38,9 +38,10 @@ attribute vec3 vertexColor;
 attribute vec2 vertexTexturePos;
 attribute float vertexScalar;
 
-uniform mat4 modelview;     // xtk: view
-uniform mat4 projection;    // xtk: perspective
-uniform int colormode;      // xtk useObjectColor;
+uniform mat4 modelview;
+uniform mat4 projection;
+uniform mat4 pickmat;
+uniform int colormode;
 uniform bool highlight;
 
 uniform mat4 objectTransform;
@@ -147,7 +148,7 @@ void main()
   }
 
   if (picking) {
-    gl_Position = fvertexPosition;
+    gl_Position = pickmat * projection * modelview * fvertexPosition;
   } else {
     gl_Position = projection * modelview * fvertexPosition;
   }

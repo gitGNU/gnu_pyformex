@@ -93,6 +93,7 @@ class Shader(object):
     uniforms = uniforms_int + uniforms_float +  uniforms_vec3 + [
         'modelview',
         'projection',
+        'pickmat',
         'builtin',
         'picking',
     ]

@@ -160,18 +160,16 @@ class Renderer(object):
             # Get the current modelview*projection matrix
             modelview = self.camera.modelview
             #print("MODELVIEW-R",modelview)
-            if pick:
-                projection = self.camera.pickMatrix(pick)
-                import camera
-                camera.gl_loadmodelview(modelview)
-                camera.gl_loadprojection(projection)
-            else:
-                projection = self.camera.projection
+            projection = self.camera.projection
             #print("PROJECTION-R",projection)
 
             # Propagate the matrices to the uniforms of the shader
             self.shader.uniformMat4('modelview',modelview.gl())
             self.shader.uniformMat4('projection',projection.gl())
+            if pick:
+                import camera
+                pickmat = camera.pick_matrix(*pick)
+                self.shader.uniformMat4('pickmat',pickmat.gl())
 
             # Make compatible with older code
             self.actors = [ o for o in self._objects if o.visible is not False ]
