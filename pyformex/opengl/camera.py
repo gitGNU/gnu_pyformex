@@ -37,6 +37,7 @@ from __future__ import print_function
 from matrix import Matrix4,Vector4
 import numpy as np
 import pyformex.arraytools as at
+from plugins.nurbs import Coords4
 
 #
 # DEVS: collect all GL calls here, so we can easily move them somewhere else
@@ -779,48 +780,7 @@ class Camera(object):
           the viewport.
 
         """
-        P = self.projection
-        p = pick_matrix(*pick)
-        #print("PROJECTION",P)
-        #print("PICK",p)
-        print("P*p",P*p)
-        #print("p*P",p*P)
-        #print("p*PT",p*P.T)
-        #print("Pt*p",P.T*p)
-        A = P*p
-        B = self.OLDpickMatrix(pick)
-        print("NEW-OLD",A-B)
-        return P*p
-
-
-    def OLDpickMatrix(self,pick):
-        from OpenGL import GLU
-        GL.glMatrixMode(GL.GL_PROJECTION)
-        #print("OLD PROJECTION",self.getGLprojection())
-        GL.glPushMatrix()
-        GL.glLoadIdentity()
-        GLU.gluPickMatrix(*pick)
-        #print("OLD PICK",self.getGLprojection())
-
-        fv = at.tand(self.fovy*0.5)
-        if self.perspective:
-            fv *= self.near
-        else:
-            fv *= self.dist
-        fh = fv * self.aspect
-        x0,x1 = 2*self.area - 1.0
-        frustum = (fh*x0[0],fh*x1[0],fv*x0[1],fv*x1[1],self.near,self.far)
-        if self.perspective:
-            GL.glFrustum(*frustum)
-        else:
-            GL.glOrtho(*frustum)
-
-        OLD = self.getGLprojection()
-        #print("OLD P*p",self.getGLprojection())
-        GL.glPopMatrix()
-        GL.glMatrixMode(GL.GL_MODELVIEW)
-
-        return OLD
+        return pick_matrix(*pick)
 
 
     def eyeToClip(self,x):
@@ -1008,6 +968,23 @@ class Camera(object):
         # We should not change the depth range
         vp = gl_viewport()
         return normalize(x[:,:3],[[vp[0],vp[1],0],[vp[2],vp[3],1]])
+
+
+    def toNDC(self,x,pick_window=None):
+        """Convert world coordinates to normalized device coordinates.
+
+        This is equivalent to project(), except that the result is
+        in the range -1,1. Also, this function accepts a set of
+        coords.
+        """
+        m = self.modelview*self.projection
+        if pick_window is not None:
+            m = m*self.pickMatrix(pick_window)
+        x = Coords4(x)
+        x = Coords4(np.dot(x,m))
+        x = x.toCoords() # This performs the perspective divide
+        # This is not tested yet with orthogonal projection !!!
+        return x
 
 
     def project(self,x):

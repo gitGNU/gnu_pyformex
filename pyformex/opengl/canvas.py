@@ -880,34 +880,23 @@ class Canvas(object):
 
     def pick_actors(self):
         """Set the list of actors inside the pick_window."""
-        #self.camera.loadProjection(pick=self.pick_window)
-        #self.camera.loadModelView()
-        print("PICK WINDOW",self.pick_window)
         stackdepth = 1
         npickable = len(self.actors)
-        print("PICKABLE OBJECTS: %s" % npickable)
-        for a in self.actors:
-            print(a.name)
         selbuf = GL.glSelectBuffer(npickable*(3+stackdepth))
         GL.glRenderMode(GL.GL_SELECT)
         GL.glInitNames()
         self.renderer.render(pick=self.pick_window)
-        ## for i,a in enumerate(self.actors):
-        ##     print("PUSH %s" % i)
-        ##     GL.glPushName(i)
-        ##     a.render(self.renderer)
-        ##     GL.glPopName()
+        # Store pick window for debugging
+        pf.PF['pick_window'] = self.pick_window
         libGL.glRenderMode(GL.GL_RENDER)
         # Read the selection buffer
         store_closest = self.selection_filter == 'single' or \
                         self.selection_filter == 'closest'
         self.picked = []
-        print("GOT selbuf %s " % selbuf)
         if selbuf[0] > 0:
             buf = asarray(selbuf).reshape(-1,3+selbuf[0])
             buf = buf[buf[:,0] > 0]
             self.picked = buf[:,3]
-            print(self.picked)
             if store_closest:
                 w = buf[:,1].argmin()
                 self.closest_pick = (self.picked[w], buf[w,1])
