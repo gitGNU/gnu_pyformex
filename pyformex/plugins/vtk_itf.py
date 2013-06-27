@@ -41,6 +41,7 @@ from vtk.util.numpy_support import vtk_to_numpy as v2n
 from vtk.util.numpy_support import create_vtk_array as cva
 from vtk.util.numpy_support import get_numpy_array_type as gnat
 from vtk.util.numpy_support import get_vtk_array_type as gvat
+from vtk import vtkXMLPolyDataReader, vtkXMLPolyDataWriter, vtkIntArray, vtkDoubleArray
 from numpy import *
 
 from mesh import Mesh
@@ -229,6 +230,66 @@ def convertFromVPD(vpd,verbose=False):
 
     return [pts, polys, lines, verts]
 
+def writeVTP(fn, mesh, arDict={}):
+    """
+    Write a pyFormex mesh in .vtp file format.
+    
+    `fn` is a file with .vtp extension.
+    `mesh` is a pyFormex mesh
+    `arDict` is a dictionary of arrays associated to the mesh elements (e.g. scalars, vectors...).
+    
+    If mesh has property numbers, they are stored in a vtk array named prop.
+    Additional arrays (nelems, ...) can be added and will be written as type double. 
+    The .vtp file can be viewed in paraview.
+    
+    VTP format can contain
+    -polys (polygons: triangles, quads, etc.)
+    -lines
+    -points
+    """
+    lvtk=convert2VPD(mesh,clean=True,lineopt='segment')#also clean=False?
+    if mesh.prop is not None:#convert prop numbers into vtk array
+        ntype=gnat(vtkIntArray().GetDataType())
+        vtkprop = n2v(asarray(mesh.prop,order='C',dtype=ntype),deep=1)
+        vtkprop.SetName('prop')
+        lvtk.GetCellData().AddArray(vtkprop)
+    for k in arDict.keys():#arrays. Maybe should be of same size of mesh.elems
+        ntype=gnat(vtkDoubleArray().GetDataType())
+        if arDict[k].shape[0]!=mesh.nelems():
+            print (arDict[k].shape, mesh.nelems())
+            warning('the number of array elements should be equal to the number of elements')
+        vtkprop = n2v(asarray(arDict[k],order='C',dtype=ntype),deep=1)
+        vtkprop.SetName(k)
+        lvtk.GetCellData().AddArray(vtkprop)
+    writer=vtkXMLPolyDataWriter()
+    writer.SetInput(lvtk)
+    writer.SetFileName(fn)
+    writer.Write()
+
+def readVTP(fn):
+    """
+    Read a .vtp file and return a coords, list of elems, and a dictionary of arrays.
+    
+    `fn` is a file with .vtp extension.
+    
+    The list of elements includes three sets: Polys (polygons: tri and quad), Lines and Points.
+    The dictionary of arrays can include the elements ids (e.g. properties).
+    For example, to read a triangular surface with id array 'prop':
+    coords, E, arDict = readVTP('fn.vtp')
+    T = TriSurface(coords, E[0]).setProp(arDict['prop'])    
+    """
+    reader=vtkXMLPolyDataReader()
+    reader.SetFileName(fn)
+    reader.Update()
+    vpd=reader.GetOutput()#vtk polydata object
+    coords, Epolygon,  Eline,  Epoint = convertFromVPD(vpd,verbose=False)
+    celldata=vpd.GetCellData()
+    arraynm = [celldata.GetArrayName(i) for i in range(celldata.GetNumberOfArrays())]
+    print ('VTP file %s includes these arrays: '%(fn)+(''.join(['%s, '%nm for nm in arraynm])))
+    vtkarrayval = [celldata.GetArray(an) for an in arraynm]
+    nparrayval = [v2n(ar) for ar in vtkarrayval]
+    arDict={an:aval for an, aval in zip(arraynm, nparrayval)}#dictionary of array names
+    return coords, [Epolygon,  Eline,  Epoint], arDict
 
 def pointInsideObject(S,P,tol=0.):
     """vtk function to test which of the points P are inside surface S"""
