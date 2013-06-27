@@ -201,7 +201,7 @@ class Drawable(Attributes):
             GL.glCullFace(GL.GL_FRONT)
         else:
             GL.glDisable(GL.GL_CULL_FACE)
-        
+
         # Specifiy the depth comparison function
         if self.ontop:
             GL.glDepthFunc(GL.GL_ALWAYS)
@@ -224,6 +224,59 @@ class Drawable(Attributes):
                 GL.glDisableClientState(GL.GL_NORMAL_ARRAY)
             else:
                 GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
+        self.vbo.unbind()
+        if self.builtin:
+            GL.glDisableClientState(GL.GL_VERTEX_ARRAY)
+        else:
+            GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
+
+
+
+    def pick(self,renderer):
+        """Pick the geometry of this object"""
+
+        def render_geom():
+            if self.ibo:
+                GL.glDrawElementsui(self.glmode,self.ibo)
+            else:
+                GL.glDrawArrays(self.glmode,0,asarray(self.vbo.shape[:-1]).prod())
+
+        self.builtin = renderer.shader.builtin
+        renderer.shader.loadUniforms(self)
+
+        self.vbo.bind()
+        if self.builtin:
+            GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
+            GL.glVertexPointerf(self.vbo)
+        else:
+            GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
+            GL.glVertexAttribPointer(renderer.shader.attribute['vertexPosition'],3, GL.GL_FLOAT,False,0,self.vbo)
+
+        if self.ibo:
+            self.ibo.bind()
+
+
+        if self.frontface:
+            # Draw front faces
+            GL.glEnable(GL.GL_CULL_FACE)
+            GL.glCullFace(GL.GL_BACK)
+        elif self.backface:
+            # Draw back faces
+            GL.glEnable(GL.GL_CULL_FACE)
+            GL.glCullFace(GL.GL_FRONT)
+        else:
+            GL.glDisable(GL.GL_CULL_FACE)
+
+        # Specifiy the depth comparison function
+        if self.ontop:
+            GL.glDepthFunc(GL.GL_ALWAYS)
+
+        render_geom()
+
+        GL.glDisable(GL.GL_CULL_FACE)
+
+        if self.ibo:
+            self.ibo.unbind()
         self.vbo.unbind()
         if self.builtin:
             GL.glDisableClientState(GL.GL_VERTEX_ARRAY)

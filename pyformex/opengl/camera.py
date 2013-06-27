@@ -717,21 +717,20 @@ class Camera(object):
 ##  Operations on modelview matrix  ##
 
 
-    def setProjection(self,pick=None):
-        """Load the projection/perspective matrix.
+    def setProjection(self):
+        """Set the projection matrix.
 
-        The caller will have to setup the correct GL environment beforehand.
-        No need to set matrix mode though. This function will switch to
-        GL_PROJECTION mode before loading the matrix
+        This computes and sets the camera's projection matrix, depending
+        on the current camera settings. The projection can either be
+        an orthogonal or a perspective one.
 
-        If keepmode=True, does not switch back to GL_MODELVIEW mode.
+        The computed matrix is saved as the camera's projection matrix,
+        and the lensChanged attribute is set to False.
 
-        A pick region can be defined to use the camera in picking mode.
-        pick defines the picking region center and size (x,y,w,h).
+        The matrix can be retrieved from the projection attribute,
+        and can be loaded in the GL context with loadProjection().
 
-        This function does it best at autodetecting changes in the lens
-        settings, and will only reload the matrix if such changes are
-        detected. You can optionally force loading the matrix.
+        This function does nothing if the camera is locked.
         """
         if self.locked:
             return
@@ -757,13 +756,20 @@ class Camera(object):
         self.lensChanged = False
 
 
-    def loadProjection (self,pick=None):
+    def loadProjection(self):
         """Load the Projection matrix.
 
         If lens parameters of the camera have been changed, the current
         Projection matrix is rebuild.
         Then, the current Projection matrix of the camera is loaded into the
         OpenGL engine.
+        """
+        gl_loadprojection(self.projection.gl())
+
+
+
+    def pickMatrix(self,pick):
+        """Return a projection matrix for picking.
 
         A pick region can be specified to use the camera in picking mode.
 
@@ -771,12 +777,16 @@ class Camera(object):
           defining the picking region center (x,y) and size (w,h), and
           viewport is a tuple of 4 int values (xmin,ymin,xmax,ymax) defining
           the viewport.
-        """
-        m = self.projection
-        if pick is not None:
-            m *= pick_matrix(*pick)
 
-        gl_loadprojection(m.gl())
+        """
+        P = self.projection
+        p = pick_matrix(*pick)
+        #print("PROJECTION",P)
+        #print("PICK",p)
+        #print("P*p",P*p)
+        #print("p*P",p*P)
+
+        return p*P
 
 
     def eyeToClip(self,x):

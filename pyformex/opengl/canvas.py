@@ -880,15 +880,16 @@ class Canvas(object):
 
     def pick_actors(self):
         """Set the list of actors inside the pick_window."""
-        self.camera.loadProjection(pick=self.pick_window)
-        self.camera.loadModelView()
+        #self.camera.loadProjection(pick=self.pick_window)
+        #self.camera.loadModelView()
+        print("PICK WINDOW",self.pick_window)
         stackdepth = 1
         npickable = len(self.actors)
         print("PICKABLE OBJECTS: %s" % npickable)
         selbuf = GL.glSelectBuffer(npickable*(3+stackdepth))
         GL.glRenderMode(GL.GL_SELECT)
         GL.glInitNames()
-        self.renderer.render(picking=True)
+        self.renderer.render(pick=self.pick_window)
         ## for i,a in enumerate(self.actors):
         ##     print("PUSH %s" % i)
         ##     GL.glPushName(i)

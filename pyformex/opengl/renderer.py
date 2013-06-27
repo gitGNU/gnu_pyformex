@@ -152,7 +152,7 @@ class Renderer(object):
             GL.glPopName()
 
 
-    def render(self,picking=False):
+    def render(self,pick=None):
         """Render the geometry for the scene."""
         self.shader.bind()
         try:
@@ -160,7 +160,10 @@ class Renderer(object):
             # Get the current modelview*projection matrix
             modelview = self.camera.modelview
             #print("MODELVIEW-R",modelview)
-            projection = self.camera.projection
+            if pick:
+                projection = self.camera.pickMatrix(pick)
+            else:
+                projection = self.camera.projection
             #print("PROJECTION-R",projection)
 
             # Propagate the matrices to the uniforms of the shader
@@ -176,7 +179,7 @@ class Renderer(object):
                             [ a for a in self.actors if not a.ontop ] + \
                             [ a for a in self.actors if a.ontop ] + \
                             [ a for a in self.annotations if a.ontop ]
-            if picking:
+            if pick:
                 # PICK MODE
                 self.pickObjects(sorted_actors)
 
