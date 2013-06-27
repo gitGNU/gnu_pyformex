@@ -402,6 +402,16 @@ class Coords(ndarray):
         return self.distanceFromPoint(self.center()).max()
 
 
+    def bboxes(self):
+        """Returns the bboxes of all elements in the coords array.
+
+        The returned array has shape (...,2,3). Along the -2 axis
+        are stored the minimal and maximal values of the Coords
+        along that axis.
+        """
+        return minmax(self,axis=1)
+
+
     # Inertia
 
     def inertia(self,mass=None):

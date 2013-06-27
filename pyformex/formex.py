@@ -854,18 +854,16 @@ maxprop  = %s
             return [ self.withProp(p) for p in self.propSet() ]
 
 
+    #
+    # TODO: this can be deprecated? Use bboxes() instead
+    #
     def elbbox(self):
         """Return a Formex where each element is replaced by its bbox.
 
-        The returned Formex has two points for each element: two corners
-        of the bbox.
+        The returned Formex has two points for each element: the two corners
+        of the bbox with the minimal and maximal coordinates.
         """
-        ## Obviously, in the case of plexitude 1 and 2,
-        ## there are shorter ways to perform this
-        return Formex( [ [
-            [ self.coords[j,:,i].min() for i in range(self.coords.shape[2])],
-            [ self.coords[j,:,i].max() for i in range(self.coords.shape[2])] ]
-                        for j in range(self.coords.shape[0]) ] )
+        return Formex(self.bboxes())
 
 
     def removeDuplicate(self,permutations=True,rtol=1.e-4,atol=1.e-6):
