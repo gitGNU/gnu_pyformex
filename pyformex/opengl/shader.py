@@ -94,6 +94,7 @@ class Shader(object):
         'modelview',
         'projection',
         'builtin',
+        'picking',
     ]
 
     def __init__(self,vshader=None,fshader=None,attributes=None,uniforms=None):
@@ -121,6 +122,7 @@ class Shader(object):
         self.attribute = self.locations(GL.glGetAttribLocation,attributes)
         self.uniform = self.locations(GL.glGetUniformLocation,uniforms)
         self.builtin = 1  # Default use builtin attributes
+        self.picking = 0  # Default render mode
 
 
     def locations(self,func,keys):
@@ -152,9 +154,10 @@ class Shader(object):
         GL.glUniformMatrix4fv(loc,1,False,value)
 
 
-    def bind(self):
+    def bind(self,picking=False):
         GL.shaders.glUseProgram(self.shader)
         self.uniformInt('builtin',self.builtin)
+        self.uniformInt('picking',picking)
 
 
     def unbind(self):

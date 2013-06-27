@@ -781,12 +781,44 @@ class Camera(object):
         """
         P = self.projection
         p = pick_matrix(*pick)
-        #print("PROJECTION",P)
-        #print("PICK",p)
-        #print("P*p",P*p)
-        #print("p*P",p*P)
+        print("PROJECTION",P)
+        print("PICK",p)
+        print("P*p",P*p)
+        print("p*P",p*P)
+        print("p*PT",p*P.T)
+        print("Pt*p",P.T*p)
+        self.OLDpickMatrix(pick)
 
-        return p*P
+        return P*p
+
+
+    def OLDpickMatrix(self,pick):
+        from OpenGL import GLU
+        GL.glMatrixMode(GL.GL_PROJECTION)
+        print("OLD PROJECTION",self.getGLprojection())
+        GL.glPushMatrix()
+        GL.glLoadIdentity()
+        GLU.gluPickMatrix(*pick)
+        print("OLD PICK",self.getGLprojection())
+
+        fv = at.tand(self.fovy*0.5)
+        if self.perspective:
+            fv *= self.near
+        else:
+            fv *= self.dist
+        fh = fv * self.aspect
+        x0,x1 = 2*self.area - 1.0
+        frustum = (fh*x0[0],fh*x1[0],fv*x0[1],fv*x1[1],self.near,self.far)
+        if self.perspective:
+            GL.glFrustum(*frustum)
+        else:
+            GL.glOrtho(*frustum)
+
+        print("OLD p*P",self.getGLprojection())
+        GL.glPopMatrix()
+        GL.glMatrixMode(GL.GL_MODELVIEW)
+
+        return self.getGLprojection()
 
 
     def eyeToClip(self,x):

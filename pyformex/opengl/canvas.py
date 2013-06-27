@@ -886,6 +886,8 @@ class Canvas(object):
         stackdepth = 1
         npickable = len(self.actors)
         print("PICKABLE OBJECTS: %s" % npickable)
+        for a in self.actors:
+            print(a.name)
         selbuf = GL.glSelectBuffer(npickable*(3+stackdepth))
         GL.glRenderMode(GL.GL_SELECT)
         GL.glInitNames()

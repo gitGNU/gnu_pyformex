@@ -58,6 +58,7 @@ uniform vec3 objectColor;
 uniform float pointsize;
 
 uniform bool builtin;
+uniform bool picking;
 
 uniform bool lighting;
 uniform float ambient;
@@ -80,58 +81,74 @@ varying vec3 fTransformedVertexNormal;
 
 void main()
 {
-  if (highlight) {
-    // Highlight color, currently hardwirded yellow
-    fragmentColor = vec3(1.,1.,0.);
-  } else if (colormode == 1) {
-    // Single color
-    fragmentColor = objectColor;
-  } else if (colormode == 3) {
-    // Vertex color
-    if (builtin) {
-      fragmentColor = gl_Color;
-    } else {
-      fragmentColor = vertexColor;
-    }
-  } else {
-    // Default black
+  // Set color
+  if (picking) {
     fragmentColor = vec3(0.,0.,0.);
-  }
 
-  // Add in lighting
-  if (lighting) {
-    if (builtin) {
-      fvertexNormal = gl_Normal;
+  } else {
+
+    if (highlight) {
+      // Highlight color, currently hardwirded yellow
+      fragmentColor = vec3(1.,1.,0.);
+    } else if (colormode == 1) {
+      // Single color
+      fragmentColor = objectColor;
+    } else if (colormode == 3) {
+      // Vertex color
+      if (builtin) {
+	fragmentColor = gl_Color;
+      } else {
+	fragmentColor = vertexColor;
+      }
     } else {
-      fvertexNormal = vertexNormal;
+      // Default black
+      fragmentColor = vec3(0.,0.,0.);
     }
-    fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * fvertexNormal;
 
-    vec3 nNormal = normalize(fTransformedVertexNormal);
-    vec3 nlight = normalize(light);
-    //vec3 eyeDirection = normalize(-vertexPosition);
-    vec3 eyeDirection = normalize(vec3(0.,0.,1.));
-    vec3 reflectionDirection = reflect(-nlight, nNormal);
-    float nspecular = specular*pow(max(dot(reflectionDirection,eyeDirection), 0.0), shininess);
-    float ndiffuse = diffuse * max(dot(nNormal,nlight),0.0);
+    // Add in lighting
+    if (highlight) {
+    } else {
+      if (lighting) {
+	if (builtin) {
+	  fvertexNormal = gl_Normal;
+	} else {
+	  fvertexNormal = vertexNormal;
+	}
+	fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * fvertexNormal;
 
-    // total color is sum of ambient, diffuse and specular
-    vec3 fcolor = fragmentColor;
-    fragmentColor = vec3(fcolor * ambient +
-			 fcolor * ndiffuse +
-			 speccolor * nspecular);
+	vec3 nNormal = normalize(fTransformedVertexNormal);
+	vec3 nlight = normalize(light);
+	//vec3 eyeDirection = normalize(-vertexPosition);
+	vec3 eyeDirection = normalize(vec3(0.,0.,1.));
+	vec3 reflectionDirection = reflect(-nlight, nNormal);
+	float nspecular = specular*pow(max(dot(reflectionDirection,eyeDirection), 0.0), shininess);
+	float ndiffuse = diffuse * max(dot(nNormal,nlight),0.0);
+
+	// total color is sum of ambient, diffuse and specular
+	vec3 fcolor = fragmentColor;
+	fragmentColor = vec3(fcolor * ambient +
+			     fcolor * ndiffuse +
+			     speccolor * nspecular);
+      }
+    }
+    // Add in opacity
+    fragColor = vec4(fragmentColor,alpha);
+
+    // setup vertex Point Size
+    gl_PointSize = pointsize;
+
   }
 
-  // Add in opacity
-  fragColor = vec4(fragmentColor,alpha);
-
-  // setup vertex Point Size
-  gl_PointSize = pointsize;
-  // Transforming The Vertex
+  // Transforming the vertex coordinates
   if (builtin) {
     fvertexPosition = gl_Vertex;
   } else {
     fvertexPosition = vec4(vertexPosition,1.0);
   }
-  gl_Position = projection * modelview * fvertexPosition;
+
+  if (picking) {
+    gl_Position = fvertexPosition;
+  } else {
+    gl_Position = projection * modelview * fvertexPosition;
+  }
 }

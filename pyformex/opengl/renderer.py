@@ -145,16 +145,16 @@ class Renderer(object):
     def pickObjects(self,objects):
         """Draw a list of objects in picking mode"""
         for i,obj in enumerate(objects):
-            print("PUSH %s" % i)
+            #print("PUSH %s" % i)
             GL.glPushName(i)
             obj.render(self)
-            print("POP %s" % i)
+            #print("POP %s" % i)
             GL.glPopName()
 
 
     def render(self,pick=None):
         """Render the geometry for the scene."""
-        self.shader.bind()
+        self.shader.bind(picking=bool(pick))
         try:
 
             # Get the current modelview*projection matrix
@@ -162,6 +162,9 @@ class Renderer(object):
             #print("MODELVIEW-R",modelview)
             if pick:
                 projection = self.camera.pickMatrix(pick)
+                import camera
+                camera.gl_loadmodelview(modelview)
+                camera.gl_loadprojection(projection)
             else:
                 projection = self.camera.projection
             #print("PROJECTION-R",projection)
