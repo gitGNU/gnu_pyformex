@@ -143,7 +143,7 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
 
 
 def remesh(self,elementsizemode='edgelength',edgelength=None,
-           area=None,aspectratio=None):
+           area=None,aspectratio=None, preserveboundary=False):
     """Remesh a TriSurface.
 
     Parameters:
@@ -153,14 +153,18 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
       edgelength and area respectively.
     - `edgelength`: float: global target triangle edgelength
     - `area`: float: global target triangle area
-    - `aspectratio`: float: upper threshold for aspect ratio (default=1.2).
+    - `aspectratio`: float: upper threshold for aspect ratio (default=1.2)
+    - `preserveboundary`: ??.
     
-    Returns the remeshed TriSurface.
+    Returns the remeshed TriSurface. If the TriSurface has property numbers
+    the interface between the property numbers will be preserved and the property
+    numbers will be inherited by the remeshed surface.
     """
-    tmp = utils.tempFile(suffix='.stl').name
-    tmp1 = utils.tempFile(suffix='.stl').name
+    from plugins.vtk_itf import readVTP, writeVTP
+    tmp = utils.tempFile(suffix='.vtp').name
+    tmp1 = utils.tempFile(suffix='.vtp').name
     pf.message("Writing temp file %s" % tmp)
-    self.write(tmp,'stl')
+    writeVTP(mesh=self, fn=tmp)
     cmd = 'vmtk vmtksurfaceremeshing -ifile %s -ofile %s'  % (tmp,tmp1)
     if elementsizemode == 'edgelength':
         if  edgelength is None:
@@ -175,6 +179,11 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
         cmd += ' -elementsizemode area -area %f' % area
     if aspectratio is not None:
         cmd += ' -aspectratio %f' % aspectratio
+    if preserveboundary:
+        cmd += ' -preserveboundary 1'
+    if self.prop is not None:
+        cmd += ' -entityidsarray prop'
+        
     pf.message("Remeshing with command\n %s" % cmd)
     sta,out = utils.runCommand(cmd)
     os.remove(tmp)
@@ -182,7 +191,10 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
         pf.message("An error occurred during the remeshing.")
         pf.message(out)
         return None
-    S = TriSurface.read(tmp1)
+    coords, E, arDict=readVTP(tmp1)
+    S = TriSurface(coords, E[0])
+    if self.prop is not None:
+        S=S.setProp(arDict['prop'])
     os.remove(tmp1)
     return S
 

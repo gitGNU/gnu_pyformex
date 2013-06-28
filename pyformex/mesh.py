@@ -495,6 +495,16 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return self.coords[self.elems].mean(axis=1)
 
 
+    def bboxes(self):
+        """Returns the bboxes of all elements in the Mesh.
+
+        Returns a coords with shape (nelems,2,3). Along the axis 1
+        are stored the minimal and maximal values of the Coords
+        in each of the elements of the Mesh.
+        """
+        return self.coords[self.elems].bboxes()
+
+
     def getCoords(self):
         """Get the coords data.
 
@@ -2657,21 +2667,21 @@ def tri3_els(ndiv):
 
 def gridpoints(seed0,seed1=None,seed2=None):
     """Create weigths for linear lines, quadrilateral and hexahedral elements coordinates
-        
+
         Parameters:
-        
-        - 'seed0' : int or list of floats . It specifies divisions along the 
+
+        - 'seed0' : int or list of floats . It specifies divisions along the
           first parametric direction of the element
-        
-        - 'seed1' : int or list of floats . It specifies divisions along 
+
+        - 'seed1' : int or list of floats . It specifies divisions along
           the second parametric direction of the element
 
         - 'seed2' : int or list of floats . It specifies divisions along
           the t parametric direction of the element
-        
-        
+
+
         If these parametes are integer values the divisions will be equally spaced between  0 and 1
-        
+
     """
     if seed0 is not None:
         if isinstance(seed0,int):
@@ -2700,20 +2710,20 @@ def gridpoints(seed0,seed1=None,seed2=None):
 # TODO: can be removed, this is equivalent to gridpoints(seed(nx),seed(ny))
 def quad4_wts(seed0,seed1):
     """ Create weights for quad4 subdivision.
-    
+
         Parameters:
-        
-        - 'seed0' : int or list of floats . It specifies divisions along the 
+
+        - 'seed0' : int or list of floats . It specifies divisions along the
           first parametric direction of the element
-        
-        - 'seed1' : int or list of floats . It specifies divisions along 
+
+        - 'seed1' : int or list of floats . It specifies divisions along
           the second parametric direction of the element
 
         If these parametes are integer values the divisions will be equally spaced between  0 and 1
 
     """
     return gridpoints(seed0,seed1)
-    
+
 def quad4_els(nx,ny):
     n = nx+1
     els = [ row_stack([ array([0,1,n+1,n]) + i for i in range(nx) ]) + j * n for j in range(ny) ]
@@ -2746,25 +2756,25 @@ def quadgrid(seed0,seed1):
 
 def hex8_wts(seed0,seed1,seed2):
     """ Create weights for hex8 subdivision.
-        
+
         Parameters:
-        
-        - 'seed0' : int or list of floats . It specifies divisions along the 
+
+        - 'seed0' : int or list of floats . It specifies divisions along the
           first parametric direction of the element
-        
-        - 'seed1' : int or list of floats . It specifies divisions along 
+
+        - 'seed1' : int or list of floats . It specifies divisions along
           the second parametric direction of the element
 
         - 'seed2' : int or list of floats . It specifies divisions along
           the t parametric direction of the element
-        
-        
+
+
         If these parametes are integer values the divisions will be equally spaced between  0 and 1
-    
-    
+
+
     """
     return gridpoints(seed0,seed1,seed2)
-     
+
 
 
 def hex8_els(nx,ny,nz):

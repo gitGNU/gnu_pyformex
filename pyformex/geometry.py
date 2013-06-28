@@ -270,6 +270,8 @@ class Geometry(object):
         return self.coords.dsize()
     def bsphere(self):
         return self.coords.bsphere()
+    def bboxes(self):
+        return self.coords.bboxes()
     def inertia(self,*args,**kargs):
         return self.coords.inertia(*args,**kargs)
 

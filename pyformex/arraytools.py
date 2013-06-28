@@ -817,6 +817,29 @@ def concat(al,axis=0):
         return []
 
 
+def minmax(a,axis=-1):
+    """Compute the minimum and maximum along an axis.
+
+    a is an array.
+    Returns an array of the same type as the input array, and with the
+    same shape, except for the specified axis, which will have length 2.
+    Along this axis are stored the minimum and maximum values along
+    that axis in the input array.
+
+    Example:
+
+      >>> a = array([[ [1.,0.,0.], [0.,1.,0.] ],
+      ...            [ [2.,0.,0.], [0.,2.,0.] ] ])
+      >>> print(minmax(a,axis=1))
+      [[[ 0.  0.  0.]
+        [ 1.  1.  0.]]
+      <BLANKLINE>
+       [[ 0.  0.  0.]
+        [ 2.  2.  0.]]]
+    """
+    return stack([a.min(axis=axis),a.max(axis=axis)],axis=axis)
+
+
 def splitrange(n,nblk):
     """Split the range of integers 0..n in nblk almost equal sized slices.
 
