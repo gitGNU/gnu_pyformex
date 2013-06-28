@@ -1465,7 +1465,7 @@ class Canvas(object):
             buf = asarray(selbuf).reshape(-1,3+selbuf[0])
             buf = buf[buf[:,0] > 0]
             self.picked = buf[:,3:]
-            #pf.debug("PICKBUFFER: %s" % self.picked)
+            pf.debug("PICKBUFFER: %s" % self.picked,pf.DEBUG.DRAW)
             if store_closest and len(buf) > 0:
                 w = buf[:,1].argmin()
                 self.closest_pick = (self.picked[w], buf[w,1])
