@@ -172,7 +172,11 @@ class Renderer(object):
                 self.shader.uniformMat4('pickmat',pickmat.gl())
 
             # Make compatible with older code
-            self.actors = [ o for o in self._objects if o.visible is not False ]
+            actors = [ o for o in self._objects if o.visible is not False ]
+            ## print([o.name for o in actors])
+            ## actors = sorted(actors,key='highlight')
+            ## print([o.name for o in actors])
+            self.actors = actors
             self.annotations = []
 
             # draw the scene actors and annotations

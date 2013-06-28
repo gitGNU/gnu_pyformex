@@ -82,12 +82,9 @@ class Drawable(Attributes):
     """
 
     # A list of acceptable attributes in the drawable
-    ## attributes = Shader.uniforms + [
-    ##     'glmode', 'frontface', 'backface', 'vbo', 'ibo', 'nbo', 'cbo',
-    ##     'color',
-    ##     ]
+    # These are the parent attributes that can be overridden
     attributes = [
-        'frontface', 'backface', 'subelems', 'color',
+        'frontface', 'backface', 'subelems', 'color', 'name', 'highlight',
         'vbo', 'nbo'
         ]
 
@@ -96,7 +93,7 @@ class Drawable(Attributes):
 
         kargs = utils.selectDict(kargs,Drawable.attributes)
         Attributes.__init__(self,kargs,default=parent)
-        #print("ATTRIBUTES STORED IN DRAWABLE",self)
+        print("ATTRIBUTES STORED IN DRAWABLE",self)
         #print("ATTRIBUTES STORED IN PARENT",parent)
 
         # The final plexitude of the drawn objects
@@ -105,6 +102,7 @@ class Drawable(Attributes):
         else:
             self.nplex = self._fcoords.shape[-2]
         self.glmode = glObjType(self.nplex)
+
 
         self.prepareColor()
         #self.prepareNormals()  # The normals are currently always vertex
@@ -120,23 +118,34 @@ class Drawable(Attributes):
         # 1 = object
         # 2 = element
         # 3 = vertex
-        if self.color is None:
-            self.colormode = 0
+        if self.highlight:
+            print("HIIGHLIGHT!!!")
+            # we set single highlight color in shader
+            # Currently do everything in Formex model
+            # And we always need this one
+            print(self.fcoords)
+            self.avbo = VBO(self.fcoords)
+            self.colormode = 1
+            self.objectColor = array(red)
+
         else:
-            self.colormode = self.color.ndim
+            if self.color is None:
+                self.colormode = 0
+            else:
+                self.colormode = self.color.ndim
 
-        if self.colormode == 1:
-            self.objectColor = self.color
-        elif self.colormode == 2:
-            self.vertexColor = at.multiplex(self.color,self.object.nplex())
-            print ("Multiplexing colors: %s -> %s " % (self.color.shape,self.vertexColor.shape))
-            self.colormode = 3
-        elif self.colormode == 3:
-            self.vertexColor = self.color
+            if self.colormode == 1:
+                self.objectColor = self.color
+            elif self.colormode == 2:
+                self.vertexColor = at.multiplex(self.color,self.object.nplex())
+                print ("Multiplexing colors: %s -> %s " % (self.color.shape,self.vertexColor.shape))
+                self.colormode = 3
+            elif self.colormode == 3:
+                self.vertexColor = self.color
 
-        if self.vertexColor is not None:
-            self.cbo = VBO(self.vertexColor.astype(float32))
-        #print("SELF.COLORMODE = %s" % (self.colormode))
+            if self.vertexColor is not None:
+                self.cbo = VBO(self.vertexColor.astype(float32))
+            #print("SELF.COLORMODE = %s" % (self.colormode))
 
 
     def prepareSubelems(self):
@@ -152,17 +161,19 @@ class Drawable(Attributes):
     def render(self,renderer):
         """Render the geometry of this object"""
 
+        print("RENDER %s" % self.name)
+        print(self)
+
         def render_geom():
             if self.ibo:
                 GL.glDrawElementsui(self.glmode,self.ibo)
             else:
                 GL.glDrawArrays(self.glmode,0,asarray(self.vbo.shape[:-1]).prod())
 
-        self.builtin = renderer.shader.builtin
         renderer.shader.loadUniforms(self)
 
         self.vbo.bind()
-        if self.builtin:
+        if renderer.shader.builtin:
             GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
             GL.glVertexPointerf(self.vbo)
         else:
@@ -174,7 +185,7 @@ class Drawable(Attributes):
 
         if self.nbo:
             self.nbo.bind()
-            if self.builtin:
+            if renderer.shader.builtin:
                 GL.glEnableClientState(GL.GL_NORMAL_ARRAY)
                 GL.glNormalPointerf(self.nbo)
             else:
@@ -183,7 +194,7 @@ class Drawable(Attributes):
 
         if self.cbo:
             self.cbo.bind()
-            if self.builtin:
+            if renderer.shader.builtin:
                 GL.glEnableClientState(GL.GL_COLOR_ARRAY)
                 GL.glColorPointerf(self.cbo)
             else:
@@ -214,18 +225,18 @@ class Drawable(Attributes):
             self.ibo.unbind()
         if self.cbo:
             self.cbo.unbind()
-            if self.builtin:
+            if renderer.shader.builtin:
                 GL.glDisableClientState(GL.GL_COLOR_ARRAY)
             else:
                 GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexColor'])
         if self.nbo:
             self.nbo.unbind()
-            if self.builtin:
+            if renderer.shader.builtin:
                 GL.glDisableClientState(GL.GL_NORMAL_ARRAY)
             else:
                 GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
         self.vbo.unbind()
-        if self.builtin:
+        if renderer.shader.builtin:
             GL.glDisableClientState(GL.GL_VERTEX_ARRAY)
         else:
             GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
@@ -241,11 +252,10 @@ class Drawable(Attributes):
             else:
                 GL.glDrawArrays(self.glmode,0,asarray(self.vbo.shape[:-1]).prod())
 
-        self.builtin = renderer.shader.builtin
         renderer.shader.loadUniforms(self)
 
         self.vbo.bind()
-        if self.builtin:
+        if renderer.shader.builtin:
             GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
             GL.glVertexPointerf(self.vbo)
         else:
@@ -278,7 +288,7 @@ class Drawable(Attributes):
         if self.ibo:
             self.ibo.unbind()
         self.vbo.unbind()
-        if self.builtin:
+        if renderer.shader.builtin:
             GL.glDisableClientState(GL.GL_VERTEX_ARRAY)
         else:
             GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
@@ -353,6 +363,7 @@ class GeomActor(Attributes):
         self.eltype = elementType(eltype)
         #print("ELTYPE %s" % self.eltype)
 
+        self.drawable = []
         self.children = []
 
         # Acknowledge all object attributes and passed parameters
@@ -477,7 +488,7 @@ class GeomActor(Attributes):
 
     def changeMode(self,renderer):
         """Modify the actor according to the specified mode"""
-        #print("GEOMACTOR.changeMode")
+        print("GEOMACTOR.changeMode")
         self.drawable = []
         self._prepareNormals(renderer)
         # ndim >= 2
@@ -523,21 +534,30 @@ class GeomActor(Attributes):
         return arange(nelems*nplex).reshape(nelems,nplex)
 
 
-    def subElems(self,selector):
+    def subElems(self,nsel=None,esel=None):
         """Create an index for the drawable subelems
 
         This index always refers to the full coords (fcoords).
-        The selector is 2D (nsubelems, nsubplex)
-        If selector is None, returns None
+
+        The esel selects the elements to be used (default all).
+
+        The nsel selects (psossibly multiple) parts from eacht element.
+        The selector is 2D (nsubelems, nsubplex). It is applied on all
+        selected elements
+
+        If both esel and esel are None, returns None
         """
-        if selector is None or selector.size == 0:
+        if (nsel is None or nsel.size==0) and (esel is None or esel.size==0):
             return None
         else:
             # The elems index defining the original elements
             # based on the full fcoords
             elems = self.fullElems()
-            #print("FULL ELEMS",elems.shape,elems)
-            return elems[:,selector].reshape(-1,selector.shape[-1])
+            if esel is not None:
+                elems = elems[esel]
+            if nsel is not None:
+                elems = elems[:,nsel].reshape(-1,nsel.shape[-1])
+            return elems
 
 
     def _addFaces(self,renderer):
@@ -600,7 +620,23 @@ class GeomActor(Attributes):
 
         if elems is not None and elems.size > 0:
             #print("ADDWIRES SIZE %s" % (elems.shape,))
-            self.drawable.append(Drawable(self,subelems=elems,lighting=False,color = array(black),opak=True))
+            wires = Drawable(self,subelems=elems,lighting=False,color=array(black),opak=True,name=self.name+"_wires",)
+            # Put at the front to make visible
+            # ontop will not help, because we only sort actors
+            self.drawable.insert(0,wires)
+
+
+
+    def addHighlightElements(self,sel=None):
+        """Add a highlight for the selected elements. Default is all."""
+        if self._highlight:
+            if self._highlight in self.drawable:
+                self.drawable.remove(self._highlight)
+            self._highlight = None
+        elems = self.subElems(esel=sel)
+        self._highlight = Drawable(self,subelems=elems,name=self.name+"_highlight",linewidth=10,lighting=False,color=array(yellow),opak=True)
+        # Put at the front to make visible
+        self.drawable.insert(0,self._highlight)
 
 
     def setColor(self,color,colormap=None):
@@ -663,11 +699,29 @@ class GeomActor(Attributes):
             renderer.shader.loadUniforms(self)
             self.modified = False
 
+        pf.debug("Render %s drawables for %s" % (len(self.drawable),self.name),pf.DEBUG.DRAW)
         for obj in self.drawable:
+            pf.debug("Render %s" % obj.name,pf.DEBUG.DRAW)
             obj.render(renderer)
 
         for obj in self.children:
             obj.render(renderer)
+
+
+    def inside(self,camera,rect=None,sel='any'):
+        """Find the elems whose coords fall inside rect of camera
+
+        """
+        ins = camera.inside(self.coords,rect)
+        ins = ins[self.elems]
+        if sel == 'all':
+            ok = ins.all(axis=-1)
+        elif sel == 'any':
+            ok = ins.any(axis=-1)
+        else:
+            # Useful?
+            ok = ins[sel].all(axis=-1)
+        return where(ok)[0]
 
 
 ### End

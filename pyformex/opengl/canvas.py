@@ -29,6 +29,7 @@ from __future__ import print_function
 from gui.canvas import *
 from camera import Camera
 from renderer import Renderer
+from collection import Collection
 
 
 class Canvas(object):
@@ -902,12 +903,11 @@ class Canvas(object):
                 self.closest_pick = (self.picked[w], buf[w,1])
 
 
-    def pick_parts(self,obj_type,max_objects,store_closest=False):
+    def pick_parts(self,obj_type,store_closest=False):
         """Set the list of actor parts inside the pick_window.
 
         obj_type can be 'element', 'face', 'edge' or 'point'.
         'face' and 'edge' are only available for Mesh type geometry.
-        max_objects specifies the maximum number of objects
 
         The picked object numbers are stored in self.picked.
         If store_closest==True, the closest picked object is stored in as a
@@ -917,43 +917,28 @@ class Canvas(object):
         If so, the resulting keys are indices in this list.
         By default, the full actor list is used.
         """
-        self.picked = []
-        pf.debug('PICK_PARTS %s %s %s' % (obj_type,max_objects,store_closest),pf.DEBUG.DRAW)
-        if max_objects <= 0:
-            pf.message("No such objects to be picked!")
-            return
-        self.camera.loadProjection(pick=self.pick_window)
-        self.camera.loadModelView()
-        stackdepth = 2
-        selbuf = GL.glSelectBuffer(max_objects*(3+stackdepth))
-        GL.glRenderMode(GL.GL_SELECT)
-        GL.glInitNames()
+        pf.debug('PICK_PARTS %s %s' % (obj_type,store_closest),pf.DEBUG.DRAW)
+
         if self.pickable is None:
             pickable = self.actors
         else:
             pickable = self.pickable
+
+        self.picked = Collection(self.selection_mode)
         for i,a in enumerate(pickable):
-            GL.glPushName(i)
-            a.pickGL(obj_type)  # this will push the number of the part
-            GL.glPopName()
-        self.picked = []
-        libGL.glRenderMode(GL.GL_RENDER)
-        if selbuf[0] > 0:
-            buf = asarray(selbuf).reshape(-1,3+selbuf[0])
-            buf = buf[buf[:,0] > 0]
-            self.picked = buf[:,3:]
-            #pf.debug("PICKBUFFER: %s" % self.picked)
-            if store_closest and len(buf) > 0:
-                w = buf[:,1].argmin()
-                self.closest_pick = (self.picked[w], buf[w,1])
+            picked = a.inside(self.camera,rect=self.pick_window[:4],sel='any')
+            print("PICKBUFFER: %s" % picked)
+            self.picked.add(picked,key=i)
+
+        pf.debug("PICKBUFFER: %s" % self.picked,pf.DEBUG.DRAW)
+        ## if store_closest and len(buf) > 0:
+        ##     w = buf[:,1].argmin()
+        ##     self.closest_pick = (self.picked[w], buf[w,1])
 
 
     def pick_elements(self):
         """Set the list of actor elements inside the pick_window."""
-        npickable = 0
-        for a in self.actors:
-            npickable += a.nelems()
-        self.pick_parts('element',npickable,store_closest=\
+        self.pick_parts('element',store_closest=\
                         self.selection_filter == 'single' or\
                         self.selection_filter == 'closest' or\
                         self.selection_filter == 'connected'
@@ -1016,11 +1001,15 @@ class Canvas(object):
         self.renderer.removeHighlight()
         for i in K.get(-1,[]):
             self.renderer._objects[i].highlight = True
-        #self.update()
+
 
     def highlightElements(self,K):
         print("HIGHLIGHT_ELEMENTS",K)
-        pass
+        self.renderer.removeHighlight()
+        for i in K.keys():
+            pf.debug("Actor %s: Selection %s" % (i,K[i]),pf.DEBUG.DRAW)
+            self.actors[i].addHighlightElements(K[i])
+
     def highlightPoints(self,K):
         pass
     def highlightEdges(self,K):

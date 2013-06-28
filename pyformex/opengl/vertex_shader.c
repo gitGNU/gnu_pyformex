@@ -89,7 +89,7 @@ void main()
   } else {
 
     if (highlight) {
-      // Highlight color, currently hardwirded yellow
+      // Highlight color, currently hardwired yellow
       fragmentColor = vec3(1.,1.,0.);
     } else if (colormode == 1) {
       // Single color
@@ -103,7 +103,7 @@ void main()
       }
     } else {
       // Default black
-      fragmentColor = vec3(0.,0.,0.);
+      fragmentColor = vec3(0.5,0.5,0.5);
     }
 
     // Add in lighting

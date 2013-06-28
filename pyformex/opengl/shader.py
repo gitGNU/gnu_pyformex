@@ -174,6 +174,7 @@ class Shader(object):
             ]:
             for a in attribs:
                 v = D[a]
+                print("LOAD %s = %s" % (a,v))
                 if v is not None:
                     func(a,v)
 

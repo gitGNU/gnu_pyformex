@@ -37,6 +37,7 @@ from __future__ import print_function
 from matrix import Matrix4,Vector4
 import numpy as np
 import pyformex.arraytools as at
+from coords import Coords
 from plugins.nurbs import Coords4
 
 #
@@ -53,14 +54,14 @@ def gl_modelview():
     """Get the OpenGL modelview matrix"""
     return GL.glGetDoublev(GL.GL_MODELVIEW_MATRIX)
 def gl_viewport():
-    """Get the OpenGL modelview matrix"""
+    """Get the OpenGL viewport"""
     return GL.glGetIntegerv(GL.GL_VIEWPORT)
 def gl_loadmodelview(m):
-    """Set the OpenGL modelview matrix"""
+    """Load the OpenGL modelview matrix"""
     GL.glMatrixMode(GL.GL_MODELVIEW)
     GL.glLoadMatrixf(m)
 def gl_loadprojection(m):
-    """Set the OpenGL projection matrix"""
+    """Load the OpenGL projection matrix"""
     GL.glMatrixMode(GL.GL_PROJECTION)
     GL.glLoadMatrixf(m)
     # we reset OpenGL engine to default MODELVIEW
@@ -362,6 +363,16 @@ class Camera(object):
         value should be a proper projection matrix
         """
         self._projection = Matrix4(value)
+
+
+    @property
+    def viewport(self):
+        """Return the camera viewport.
+
+        This property can not be changed directly.
+        It should be changed by resizing the parent canvas.
+        """
+        return gl_viewport()
 
 
     @property
@@ -769,18 +780,25 @@ class Camera(object):
 
 
 
-    def pickMatrix(self,pick):
-        """Return a projection matrix for picking.
+    def pickMatrix(self,rect,viewport=None):
+        """Return a picking matrix.
 
-        A pick region can be specified to use the camera in picking mode.
+        The picking matrix confines the scope of the normalized device
+        coordinates to a rectangular subregion of the camera viewport.
+        This means that values in the range -1 to +1 are inside the
+        rectangle.
 
-        - `pick`: a tuple (x,y,w,h,viewport) where x,y,w,h are floats
-          defining the picking region center (x,y) and size (w,h), and
-          viewport is a tuple of 4 int values (xmin,ymin,xmax,ymax) defining
-          the viewport.
+        Parameters:
 
+        - `rect`: a tuple of 4 floats (x,y,w,h) defining the picking region
+          center (x,y) and size (w,h)
+        - `viewport`: a tuple of 4 int values (xmin,ymin,xmax,ymax) defining
+          the size of the viewport. This is normally left unspecified and
+          set to the camera viewport.
         """
-        return pick_matrix(*pick)
+        if viewport is None:
+            viewport = self.viewport
+        return pick_matrix(rect[0],rect[1],rect[2],rect[3],viewport)
 
 
     def eyeToClip(self,x):
@@ -970,25 +988,39 @@ class Camera(object):
         return normalize(x[:,:3],[[vp[0],vp[1],0],[vp[2],vp[3],1]])
 
 
-    def toNDC(self,x,pick_window=None):
+    def toNDC(self,x,rect=None):
         """Convert world coordinates to normalized device coordinates.
 
-        This is equivalent to project(), except that the result is
-        in the range -1,1. Also, this function accepts a set of
-        coords.
+        The normalized device coordinates (NDC) have x and y values
+        in the range -1 to +1 for points that are falling within the
+        visible region of the camera.
+
+        Parameters:
+
+        - `x`: Coords with the world coordinates to be converted
+        - `rect`: optional, a tuple of 4 values (x,y,w,h) specifying
+          a rectangular subregion of the camera's viewport. The default
+          is the full camera viewport.
+
+        The return value is a Coords. The z-coordinate provides
+        depth information.
         """
         m = self.modelview*self.projection
-        if pick_window is not None:
-            m = m*self.pickMatrix(pick_window)
+        if rect is not None:
+            m = m*self.pickMatrix(rect)
         x = Coords4(x)
         x = Coords4(np.dot(x,m))
-        x = x.toCoords() # This performs the perspective divide
-        # This is not tested yet with orthogonal projection !!!
+        if self._perspective:
+            x = x.toCoords() # This performs the perspective divide
+        else:
+            # Orthogonal projection
+            # This is not tested yet!!!
+            x = Coords(x[:,:3])
         return x
 
 
     def project(self,x):
-        "Map the world coordinates (x,y,z) to window coordinates."""
+        """Map the world coordinates (x,y,z) to window coordinates."""
         m = self.modelview*self.projection
         # Modelview transform
         e = Vector4(x)*self.modelview
@@ -1008,7 +1040,7 @@ class Camera(object):
 
 
     def unProject(self,x):
-        "Map the window coordinates x to object coordinates."""
+        """Map the window coordinates x to object coordinates."""
         m = self.modelview*self.projection
         #print("M*P",m)
         m1 = np.linalg.inv(m)
@@ -1017,6 +1049,29 @@ class Camera(object):
         #print("NORMALIZED DEVICE COORDINATES:",x)
         x = Vector4(x)*m1
         return x[:,:3] / x[:,3]
+
+
+    def inside(self,x,rect=None,return_depth=False):
+        """Test if points are visible inside camera.
+
+        Parameters:
+
+        - `rect`: optional, a tuple of 4 values (x,y,w,h) specifying
+          a rectangular subregion of the camera's viewport. The default
+          is the full camera viewport.
+
+        Returns a boolean array with value 1 (True) for the points that
+        are projected inside the rectangular are of the camera.
+        """
+        ndc = self.toNDC(x,rect)
+        if return_depth:
+            depth = ndc[:,2].min(axis=-1)
+        ndc = abs(ndc[:,:2])
+        inside = ( ndc >= -1 ).all(axis=-1) * ( ndc <= 1 ).all(axis=-1)
+        if return_depth:
+            return inside,depth
+        else:
+            return inside
 
 
 #################################

@@ -186,6 +186,10 @@ def drawActor(o):
 #### Other definitions should start with _ ####
 
 
+
+#### Override viewport function ####
+
+
 #### Set the Formex and Mesh actor method ####
 
 def _set_actors():
