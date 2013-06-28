@@ -115,7 +115,7 @@ def convert2VPD(M,clean=False,lineopt='line',verbose=False):
 
     # creating  vtk coords
     pts = vtkPoints()
-    ntype=gnat(pts.GetDataType())
+    ntype = gnat(pts.GetDataType())
     coordsv = n2v(asarray(M.coords,order='C',dtype=ntype),deep=1) #.copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
     pts.SetNumberOfPoints(M.ncoords())
     pts.SetData(coordsv)
@@ -124,7 +124,7 @@ def convert2VPD(M,clean=False,lineopt='line',verbose=False):
 
     # create vtk connectivity
     elms = vtkIdTypeArray()
-    ntype=gnat(vtkIdTypeArray().GetDataType())
+    ntype = gnat(vtkIdTypeArray().GetDataType())
     elmsv = concatenate([Ncxel*ones(Nelems).reshape(-1,1),elems],axis=1)
     elmsv = n2v(asarray(elmsv,order='C',dtype=ntype),deep=1) #.copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
     elms.DeepCopy(elmsv)
@@ -199,14 +199,14 @@ def convertFromVPD(vpd,verbose=False):
 
     # getting points coords
     if  vpd.GetPoints().GetData().GetNumberOfTuples():
-        ntype=gnat(vpd.GetPoints().GetDataType())
+        ntype = gnat(vpd.GetPoints().GetDataType())
         pts = asarray(v2n(vpd.GetPoints().GetData()),dtype=ntype)
         if verbose:
             print('Saved points coordinates array')
 
     # getting Polygons
     if  vpd.GetPolys().GetData().GetNumberOfTuples():
-        ntype=gnat(vpd.GetPolys().GetData().GetDataType())
+        ntype = gnat(vpd.GetPolys().GetData().GetDataType())
         Nplex = vpd.GetPolys().GetMaxCellSize()
         polys = asarray(v2n(vpd.GetPolys().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
         if verbose:
@@ -214,7 +214,7 @@ def convertFromVPD(vpd,verbose=False):
 
     # getting Lines
     if  vpd.GetLines().GetData().GetNumberOfTuples():
-        ntype=gnat(vpd.GetLines().GetData().GetDataType())
+        ntype = gnat(vpd.GetLines().GetData().GetDataType())
         Nplex = vpd.GetLines().GetMaxCellSize()
         lines = asarray(v2n(vpd.GetLines().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
         if verbose:
@@ -222,7 +222,7 @@ def convertFromVPD(vpd,verbose=False):
 
     # getting Vertices
     if  vpd.GetVerts().GetData().GetNumberOfTuples():
-        ntype=gnat(vpd.GetVerts().GetData().GetDataType())
+        ntype = gnat(vpd.GetVerts().GetData().GetDataType())
         Nplex = vpd.GetVerts().GetMaxCellSize()
         verts = asarray(v2n(vpd.GetVerts().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
         if verbose:
@@ -247,14 +247,14 @@ def writeVTP(fn, mesh, arDict={}):
     -lines
     -points
     """
-    lvtk=convert2VPD(mesh,clean=True,lineopt='segment')#also clean=False?
+    lvtk=convert2VPD(mesh,lineopt='segment')
     if mesh.prop is not None:#convert prop numbers into vtk array
-        ntype=gnat(vtkIntArray().GetDataType())
+        ntype = gnat(vtkIntArray().GetDataType())
         vtkprop = n2v(asarray(mesh.prop,order='C',dtype=ntype),deep=1)
         vtkprop.SetName('prop')
         lvtk.GetCellData().AddArray(vtkprop)
     for k in arDict.keys():#arrays. Maybe should be of same size of mesh.elems
-        ntype=gnat(vtkDoubleArray().GetDataType())
+        ntype = gnat(vtkDoubleArray().GetDataType())
         if arDict[k].shape[0]!=mesh.nelems():
             print (arDict[k].shape, mesh.nelems())
             warning('the number of array elements should be equal to the number of elements')
