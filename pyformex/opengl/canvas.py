@@ -926,7 +926,7 @@ class Canvas(object):
 
         self.picked = Collection(self.selection_mode)
         for i,a in enumerate(pickable):
-            picked = a.inside(self.camera,rect=self.pick_window[:4],sel='any')
+            picked = a.inside(self.camera,rect=self.pick_window[:4],mode=self.selection_mode,sel='any')
             print("PICKBUFFER: %s" % picked)
             self.picked.add(picked,key=i)
 
@@ -947,11 +947,7 @@ class Canvas(object):
 
     def pick_points(self):
         """Set the list of actor points inside the pick_window."""
-        npickable = 0
-        for a in self.actors:
-            pf.debug("ADDING %s pickable points"%a.npoints(),pf.DEBUG.DRAW)
-            npickable += a.npoints()
-        self.pick_parts('point',npickable,store_closest=\
+        self.pick_parts('point',store_closest=\
                         self.selection_filter == 'single' or\
                         self.selection_filter == 'closest',
                         )
@@ -959,11 +955,7 @@ class Canvas(object):
 
     def pick_edges(self):
         """Set the list of actor edges inside the pick_window."""
-        npickable = 0
-        for a in self.actors:
-            if hasattr(a,'nedges'):
-                npickable += a.nedges()
-        self.pick_parts('edge',npickable,store_closest=\
+        self.pick_parts('edge',store_closest=\
                         self.selection_filter == 'single' or\
                         self.selection_filter == 'closest',
                         )
@@ -971,11 +963,7 @@ class Canvas(object):
 
     def pick_faces(self):
         """Set the list of actor faces inside the pick_window."""
-        npickable = 0
-        for a in self.actors:
-            if hasattr(a,'nfaces'):
-                npickable += a.nfaces()
-        self.pick_parts('face',npickable,store_closest=\
+        self.pick_parts('face',store_closest=\
                         self.selection_filter == 'single' or\
                         self.selection_filter == 'closest',
                         )
@@ -1010,8 +998,15 @@ class Canvas(object):
             pf.debug("Actor %s: Selection %s" % (i,K[i]),pf.DEBUG.DRAW)
             self.actors[i].addHighlightElements(K[i])
 
+
     def highlightPoints(self,K):
-        pass
+        print("HIGHLIGHT_POINTS",K)
+        self.renderer.removeHighlight()
+        for i in K.keys():
+            pf.debug("Actor %s: Selection %s" % (i,K[i]),pf.DEBUG.DRAW)
+            self.actors[i].addHighlightPoints(K[i])
+
+
     def highlightEdges(self,K):
         pass
 

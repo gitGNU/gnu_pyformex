@@ -85,12 +85,13 @@ class Drawable(Attributes):
     # These are the parent attributes that can be overridden
     attributes = [
         'frontface', 'backface', 'subelems', 'color', 'name', 'highlight',
-        'vbo', 'nbo'
+        'linewidth', 'pointsize', 'lighting', 'offset', 'vbo', 'nbo',
         ]
 
     def __init__(self,parent,**kargs):
         """Create a new drawable."""
 
+        # Should we really restrict this????
         kargs = utils.selectDict(kargs,Drawable.attributes)
         Attributes.__init__(self,kargs,default=parent)
         print("ATTRIBUTES STORED IN DRAWABLE",self)
@@ -119,11 +120,11 @@ class Drawable(Attributes):
         # 2 = element
         # 3 = vertex
         if self.highlight:
-            print("HIIGHLIGHT!!!")
+            #print("HIIGHLIGHT!!!")
             # we set single highlight color in shader
             # Currently do everything in Formex model
             # And we always need this one
-            print(self.fcoords)
+            #print(self.fcoords)
             self.avbo = VBO(self.fcoords)
             self.colormode = 1
             self.objectColor = array(red)
@@ -161,8 +162,8 @@ class Drawable(Attributes):
     def render(self,renderer):
         """Render the geometry of this object"""
 
-        print("RENDER %s" % self.name)
-        print(self)
+        #print("RENDER %s" % self.name)
+        #print(self)
 
         def render_geom():
             if self.ibo:
@@ -170,6 +171,13 @@ class Drawable(Attributes):
             else:
                 GL.glDrawArrays(self.glmode,0,asarray(self.vbo.shape[:-1]).prod())
 
+
+        if self.offset:
+            print("POLYGON OFFSET")
+            GL.glPolygonOffset(1.0,1.0)
+
+        print("LOAD DRAWABLE uniforms (AGAIN)")
+        print(self.keys())
         renderer.shader.loadUniforms(self)
 
         self.vbo.bind()
@@ -240,6 +248,9 @@ class Drawable(Attributes):
             GL.glDisableClientState(GL.GL_VERTEX_ARRAY)
         else:
             GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
+        if self.offset:
+            print("POLYGON OFFSET RESET")
+            GL.glPolygonOffset(0.0,0.0)
 
 
 
@@ -452,7 +463,7 @@ class GeomActor(Attributes):
         """Return individual normals at all vertices of all elements"""
         if self._normals is None:
             self._normals = gt.polygonNormals(self.fcoords.astype(float32))
-            print("COMPUTED NORMALS: %s" % str(self._normals.shape))
+            #print("COMPUTED NORMALS: %s" % str(self._normals.shape))
         return self._normals
 
 
@@ -462,7 +473,7 @@ class GeomActor(Attributes):
         if self._avgnormals is None:
             tol = pf.cfg['render/avgnormaltreshold']
             self._avgnormals = gt.averageNormals(self.coords,self.elems,False,tol).astype(float32)
-            print("COMPUTE AVGNORMALS: %s" % str(self._avgnormals.shape))
+            #print("COMPUTE AVGNORMALS: %s" % str(self._avgnormals.shape))
         return self._avgnormals
 
 
@@ -488,7 +499,7 @@ class GeomActor(Attributes):
 
     def changeMode(self,renderer):
         """Modify the actor according to the specified mode"""
-        print("GEOMACTOR.changeMode")
+        #print("GEOMACTOR.changeMode")
         self.drawable = []
         self._prepareNormals(renderer)
         # ndim >= 2
@@ -523,7 +534,7 @@ class GeomActor(Attributes):
             else:
                 normals = self.b_normals
             # Normals are always full fcoords size
-            print("SIZE OF NORMALS: %s; COORDS: %s" % (normals.size,self.fcoords.size))
+            #print("SIZE OF NORMALS: %s; COORDS: %s" % (normals.size,self.fcoords.size))
             self.nbo = VBO(normals)
 
 
@@ -626,7 +637,6 @@ class GeomActor(Attributes):
             self.drawable.insert(0,wires)
 
 
-
     def addHighlightElements(self,sel=None):
         """Add a highlight for the selected elements. Default is all."""
         if self._highlight:
@@ -635,6 +645,18 @@ class GeomActor(Attributes):
             self._highlight = None
         elems = self.subElems(esel=sel)
         self._highlight = Drawable(self,subelems=elems,name=self.name+"_highlight",linewidth=10,lighting=False,color=array(yellow),opak=True)
+        # Put at the front to make visible
+        self.drawable.insert(0,self._highlight)
+
+
+    def addHighlightPoints(self,sel=None):
+        """Add a highlight for the selected points. Default is all."""
+        if self._highlight:
+            if self._highlight in self.drawable:
+                self.drawable.remove(self._highlight)
+            self._highlight = None
+        vbo = VBO(self.coords)
+        self._highlight = Drawable(self,vbo=vbo,subelems=sel.reshape(-1,1),name=self.name+"_highlight",linewidth=10,lighting=False,color=array(yellow),opak=True,pointsize=10,offset=1.0)
         # Put at the front to make visible
         self.drawable.insert(0,self._highlight)
 
@@ -655,11 +677,11 @@ class GeomActor(Attributes):
                 # We have a color index
                 if colormap is None:
                     colormap = array(colors.palette)
-                print("PALETTE:%s"%colormap)
+                #print("PALETTE:%s"%colormap)
                 color = colormap[color]
 
-            print("VERTEX SHAPE = %s" % (self.fcoords.shape,))
-            print("COLOR SHAPE = %s" % (color.shape,))
+            #print("VERTEX SHAPE = %s" % (self.fcoords.shape,))
+            #print("COLOR SHAPE = %s" % (color.shape,))
 
         self.color = color
 
@@ -694,34 +716,56 @@ class GeomActor(Attributes):
     def render(self,renderer):
         """Render the geometry of this object"""
 
-        if self.modified:
-            #print("GeomActor.render: %s" % self.alpha)
-            renderer.shader.loadUniforms(self)
-            self.modified = False
+        ## if self.modified:
+        ##     print("LOAD GEOMACTOR uniforms")
+        ##     renderer.shader.loadUniforms(self)
+        ##     self.modified = False
 
         pf.debug("Render %s drawables for %s" % (len(self.drawable),self.name),pf.DEBUG.DRAW)
         for obj in self.drawable:
             pf.debug("Render %s" % obj.name,pf.DEBUG.DRAW)
+            #print("LOAD DRAWABLE uniforms")
+            #print(obj.keys())
+            #renderer.shader.loadUniforms(obj)
+            renderer.setDefaults()
+            renderer.shader.loadUniforms(self)
             obj.render(renderer)
 
         for obj in self.children:
+            renderer.setDefaults()
             obj.render(renderer)
 
 
-    def inside(self,camera,rect=None,sel='any'):
+    def inside(self,camera,rect=None,mode='actor',sel='any'):
         """Find the elems whose coords fall inside rect of camera
 
         """
         ins = camera.inside(self.coords,rect)
-        ins = ins[self.elems]
+        if mode == 'point':
+            return where(ins)[0]
+
+        if mode == 'element':
+            ins = ins[self.elems]
+        elif mode == 'edge':
+            # TODO: add edges selector
+            raise ValueError,"Edge picking is not implemented yet"
+
         if sel == 'all':
             ok = ins.all(axis=-1)
         elif sel == 'any':
             ok = ins.any(axis=-1)
         else:
             # Useful?
-            ok = ins[sel].all(axis=-1)
-        return where(ok)[0]
+            ok = ins[:,sel].all(axis=-1)
+            return where(ok)[0]
+
+        if mode == 'actor':
+            return ok
+
+        else:
+            return where(ok)[0]
+
+
 
 
 ### End

@@ -99,7 +99,7 @@ class Shader(object):
     ]
 
     def __init__(self,vshader=None,fshader=None,attributes=None,uniforms=None):
-        print("LOADING SHADER PROGRAMS")
+        #print("LOADING SHADER PROGRAMS")
         if vshader is None:
             vshader = Shader._vertexshader_filename
         with open(vshader) as f:
@@ -174,7 +174,7 @@ class Shader(object):
             ]:
             for a in attribs:
                 v = D[a]
-                print("LOAD %s = %s" % (a,v))
+                #print("LOAD %s = %s" % (a,v))
                 if v is not None:
                     func(a,v)
 
