@@ -622,7 +622,7 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             if not self.selection_canceled:
                 # selection by mouse_picking
                 self.pick_func[self.selection_mode]()
-                if self.picked:
+                if len(self.picked) != 0:
                     if self.selection_filter is None:
                         if self.mod == NONE:
                             self.selection.set(self.picked)

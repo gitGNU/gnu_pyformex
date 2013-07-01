@@ -48,6 +48,10 @@ class Collection(object):
         self.obj_type = object_type
 
 
+    def __len__(self):
+        return len(self.d)
+
+
     def setType(self,obj_type):
         self.obj_type = obj_type
 
