@@ -416,6 +416,29 @@ class Mesh(Geometry):
         return TriSurface(obj)
 
 
+    def toCurve(self):
+        """Convert a Mesh to a Curve.
+
+        If the element type is one of 'line*' types, the Mesh is converted
+        to a Curve. The type of the returned Curve is dependent on the
+        element type of the Mesh:
+
+        - 'line2': PolyLine,
+        - 'line3': BezierSpline (degree 2),
+        - 'line4': BezierSpline (degree 3)
+
+        This is equivalent with ::
+
+          self.toFormex().toCurve()
+
+        Any other type will raise an exception.
+        """
+        if self.elName() in ['line2','line3','line4']:
+            return self.toFormex().toCurve()
+        else:
+            raise ValueError,"Can not convert a Mesh of type '%s' to a curve" % self.elName()
+
+
     def ndim(self):
         return 3
     def level(self):
