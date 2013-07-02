@@ -72,7 +72,7 @@ def cleanVPD(vpd):
     return  cleaner.GetOutput()
 
 
-def convert2VPD(M,clean=False,lineopt='line',verbose=False):
+def convert2VPD(M,clean=False,lineopt='segment',verbose=False):
     """Convert pyFormex data to vtkPolyData.
 
     Convert a pyFormex Mesh or Coords object into vtkPolyData.
