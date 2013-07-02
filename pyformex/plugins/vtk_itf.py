@@ -230,13 +230,14 @@ def convertFromVPD(vpd,verbose=False):
 
     return [pts, polys, lines, verts]
 
-def writeVTP(fn, mesh, arDict={}):
+def writeVTP(fn, mesh, arDict={}, clean=True):
     """
     Write a pyFormex mesh in .vtp file format.
     
     `fn` is a file with .vtp extension.
     `mesh` is a pyFormex mesh
     `arDict` is a dictionary of arrays associated to the mesh elements (e.g. scalars, vectors...).
+    `clean` see convert2VPD. If False it may raise segmentation fault error.
     
     If mesh has property numbers, they are stored in a vtk array named prop.
     Additional arrays (nelems, ...) can be added and will be written as type double. 
@@ -247,7 +248,7 @@ def writeVTP(fn, mesh, arDict={}):
     -lines
     -points
     """
-    lvtk=convert2VPD(mesh,lineopt='segment')
+    lvtk=convert2VPD(mesh,clean=clean,lineopt='segment')#if clean=False it may crushes: 'segmentation fault'
     if mesh.prop is not None:#convert prop numbers into vtk array
         ntype = gnat(vtkIntArray().GetDataType())
         vtkprop = n2v(asarray(mesh.prop,order='C',dtype=ntype),deep=1)
