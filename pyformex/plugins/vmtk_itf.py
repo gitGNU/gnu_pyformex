@@ -143,7 +143,7 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
 
 
 def remesh(self,elementsizemode='edgelength',edgelength=None,
-           area=None,aspectratio=None, preserveboundary=False):
+           area=None,aspectratio=None, excludeprop=None, preserveboundary=False):
     """Remesh a TriSurface.
 
     Parameters:
@@ -154,6 +154,8 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
     - `edgelength`: float: global target triangle edgelength
     - `area`: float: global target triangle area
     - `aspectratio`: float: upper threshold for aspect ratio (default=1.2)
+    - `excludeprop`: either a single integer, or a list/array of integers. 
+        The regions with these property number(s) will not be remeshed. 
     - `preserveboundary`: ??.
     
     Returns the remeshed TriSurface. If the TriSurface has property numbers
@@ -179,6 +181,8 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
         cmd += ' -elementsizemode area -area %f' % area
     if aspectratio is not None:
         cmd += ' -aspectratio %f' % aspectratio
+    if excludeprop:
+        cmd += ' -exclude '+' '.join(['%d'%i for i in checkArray1D(excludeprop,kind='i',allow=None)])
     if preserveboundary:
         cmd += ' -preserveboundary 1'
     if self.prop is not None:
