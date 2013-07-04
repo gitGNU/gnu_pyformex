@@ -434,7 +434,8 @@ class Mesh(Geometry):
         Any other type will raise an exception.
         """
         if self.elName() in ['line2','line3','line4']:
-            return self.toFormex().toCurve()
+            closed = self.elems[-1,-1] == self.elems[0,0]
+            return self.toFormex().toCurve(closed=closed)
         else:
             raise ValueError,"Can not convert a Mesh of type '%s' to a curve" % self.elName()
 

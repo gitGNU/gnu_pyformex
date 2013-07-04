@@ -1921,7 +1921,10 @@ def convertFormexToCurve(self,closed=False):
     - plex 3 : to BezierSpline with degree=2
     - plex 4 : to BezierSpline
     """
-    points = Coords.concatenate([self.coords[:,0,:],self.coords[-1:,-1,:]],axis=0)
+    if closed:
+        points = self.coords[:,0,:]
+    else:
+        points = Coords.concatenate([self.coords[:,0,:],self.coords[-1:,-1,:]],axis=0)
     if self.nplex() == 2:
         curve = PolyLine(points,closed=closed)
     elif self.nplex() == 3:
