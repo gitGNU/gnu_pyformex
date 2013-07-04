@@ -1641,7 +1641,7 @@ Quality: %s .. %s
         return p, column_stack([j, l[i], t[i]])
 
 
-    def intersectionWithPlane(self,p,n,atol=0.):
+    def intersectionWithPlane(self,p,n,atol=0.,sort='number'):
         """Return the intersection lines with plane (p,n).
 
         Returns a plex-2 mesh with the line segments obtained by cutting
@@ -1653,6 +1653,12 @@ Quality: %s .. %s
         the intersection are sorted to form continuous lines. The Mesh has
         property numbers such that all segments forming a single continuous
         part have the same property value.
+
+        By default the parts are assigned property numbers in decreasing
+        order of the number of line segments in the part. Setting the sort
+        argument to 'distance' will sort the parts according to increasing
+        distance from the point p.
+
         The splitProp() method can be used to get a list of Meshes.
         """
         n = asarray(n)
@@ -1752,9 +1758,13 @@ Quality: %s .. %s
 
             # Split in connected loops
             parts = connectedLineElems(M.elems)
-            prop = concatenate([ [i]*p.nelems() for i,p in enumerate(parts)])
+            prop = concatenate([ [i]*part.nelems() for i,part in enumerate(parts)])
             elems = concatenate(parts,axis=0)
-
+            if sort == 'distance':
+                d = array([ M.coords[part].distanceFromPoint(p).min() for part in parts ])
+                srt = argsort(d)
+                inv = inverseUniqueIndex(srt)
+                prop = inv[prop]
             return Mesh(M.coords,elems,prop=prop)
 
 
