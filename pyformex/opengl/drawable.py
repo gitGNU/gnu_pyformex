@@ -340,7 +340,7 @@ class GeomActor(Attributes):
     """
 
     # default names for the actors
-    defaultname = utils.NameSequence('object-0')
+    defaultname = utils.NameSequence('object_0')
 
 
     def __init__(self,obj,**kargs):
