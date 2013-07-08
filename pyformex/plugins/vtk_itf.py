@@ -47,6 +47,7 @@ from numpy import *
 from mesh import Mesh
 from coords import Coords
 from plugins.trisurface import TriSurface
+from gui.draw import warning
 
 import os
 
@@ -71,6 +72,20 @@ def cleanVPD(vpd):
     cleaner.Update()
     return  cleaner.GetOutput()
 
+def checkClean(mesh):
+    """Check if the mesh is fused, compacted and renumbered.
+    
+    If mesh is not clean (fused, compacted and renumbered),
+    vtkCleanPolyData() will clean it before writing a vtp file.
+    This should be avoided because the pyformex points and arrays
+    may no longer correspond to the vtk points.
+    """
+    m1 = mesh.fuse().compact().renumber()
+    if any(m1.coords!=mesh.coords):
+        return False
+    if any(m1.elems!=mesh.elems):
+        return False
+    return True
 
 def convert2VPD(M,clean=False,lineopt='segment',verbose=False):
     """Convert pyFormex data to vtkPolyData.
@@ -230,17 +245,24 @@ def convertFromVPD(vpd,verbose=False):
 
     return [pts, polys, lines, verts]
 
-def writeVTP(fn, mesh, arDict={}, clean=True):
+def writeVTP(fn, mesh, fieldAr={}, cellAr={}, pointAr={}, checkMesh=True ):
     """
-    Write a pyFormex mesh in .vtp file format.
+    Write a Mesh in .vtp file format.
     
     `fn` is a file with .vtp extension.
-    `mesh` is a pyFormex mesh
-    `arDict` is a dictionary of arrays associated to the mesh elements (e.g. scalars, vectors...).
-    `clean` see convert2VPD. If False it may raise segmentation fault error.
+    `mesh` is a pyFormex mesh (volume meshes are not supported)
+    `fieldAr` is a dictionary of arrays associated to the fields (?).
+    `cellAr` is a dictionary of arrays associated to the elements.
+    `pointAr` is a dictionary of arrays associated to the points (renumbered).
+    `checkMesh` raises a warning if mesh is not clean.
     
     If mesh has property numbers, they are stored in a vtk array named prop.
-    Additional arrays (nelems, ...) can be added and will be written as type double. 
+    Additional arrays can be added and will be written as type double.
+    
+    The user should take care that the mesh is already fused, compacted and renumbered.
+    If not, these operations will be done by vtkCleanPolyData() and the points
+    may no longer correspond to the point data arrays.
+    
     The .vtp file can be viewed in paraview.
     
     VTP format can contain
@@ -248,20 +270,39 @@ def writeVTP(fn, mesh, arDict={}, clean=True):
     -lines
     -points
     """
-    lvtk=convert2VPD(mesh,clean=clean,lineopt='segment')#if clean=False it may crushes: 'segmentation fault'
+    if checkMesh:
+        if not checkClean(mesh):
+            warning('Mesh is not clean: vtk will alter the nodes. To clean: mesh.fuse().compact().renumber()')
+    lvtk=convert2VPD(mesh,clean=True,lineopt='segment')#also clean=False?
     if mesh.prop is not None:#convert prop numbers into vtk array
-        ntype = gnat(vtkIntArray().GetDataType())
+        ntype=gnat(vtkIntArray().GetDataType())
         vtkprop = n2v(asarray(mesh.prop,order='C',dtype=ntype),deep=1)
         vtkprop.SetName('prop')
         lvtk.GetCellData().AddArray(vtkprop)
-    for k in arDict.keys():#arrays. Maybe should be of same size of mesh.elems
-        ntype = gnat(vtkDoubleArray().GetDataType())
-        if arDict[k].shape[0]!=mesh.nelems():
-            print (arDict[k].shape, mesh.nelems())
+    for k in fieldAr.keys():#same numbering of mesh.elems??
+        ntype=gnat(vtkDoubleArray().GetDataType())
+        if fieldAr[k].shape[0]!=mesh.nelems():
+            print (fieldAr[k].shape,)
+        fieldAr = n2v(asarray(fieldAr[k],order='C',dtype=ntype),deep=1)
+        fieldAr.SetName(k)
+        lvtk.GetFieldData().AddArray(fieldAr)
+    for k in cellAr.keys():#same numbering of mesh.coords
+        ntype=gnat(vtkDoubleArray().GetDataType())
+        if cellAr[k].shape[0]!=mesh.nelems():
+            print (cellAr[k].shape, mesh.ncoords())
+            warning('the number of array elements should be equal to the number of points')
+        cellAr = n2v(asarray(cellAr[k],order='C',dtype=ntype),deep=1)
+        cellAr.SetName(k)
+        lvtk.GetCellData().AddArray(cellAr)
+    for k in pointAr.keys():#same numbering of mesh.elems
+        ntype=gnat(vtkDoubleArray().GetDataType())
+        if pointAr[k].shape[0]!=mesh.ncoords():#mesh should be clean!!
+            print (pointAr[k].shape, mesh.nelems())
             warning('the number of array elements should be equal to the number of elements')
-        vtkprop = n2v(asarray(arDict[k],order='C',dtype=ntype),deep=1)
-        vtkprop.SetName(k)
-        lvtk.GetCellData().AddArray(vtkprop)
+        pointAr = n2v(asarray(pointAr[k],order='C',dtype=ntype),deep=1)
+        pointAr.SetName(k)
+        lvtk.GetPointData().AddArray(pointAr)
+    print ('************lvtk', lvtk)
     writer=vtkXMLPolyDataWriter()
     writer.SetInput(lvtk)
     writer.SetFileName(fn)
@@ -276,21 +317,34 @@ def readVTP(fn):
     The list of elements includes three sets: Polys (polygons: tri and quad), Lines and Points.
     The dictionary of arrays can include the elements ids (e.g. properties).
     For example, to read a triangular surface with id array 'prop':
-    coords, E, arDict = readVTP('fn.vtp')
-    T = TriSurface(coords, E[0]).setProp(arDict['prop'])    
+    coords, E, fieldAr, cellAr, pointAr = readVTP('fn.vtp')
+    T = TriSurface(coords, E[0]).setProp(cellAr['prop'])    
     """
     reader=vtkXMLPolyDataReader()
     reader.SetFileName(fn)
     reader.Update()
     vpd=reader.GetOutput()#vtk polydata object
     coords, Epolygon,  Eline,  Epoint = convertFromVPD(vpd,verbose=False)
-    celldata=vpd.GetCellData()
+    print ('************vpd', vpd)
+    fielddata=vpd.GetFieldData()#get field arrays
+    arraynm = [fielddata.GetArrayName(i) for i in range(fielddata.GetNumberOfArrays())]
+    print ('VTP file %s includes these Field Data Arrays: '%(fn)+(''.join(['%s, '%nm for nm in arraynm])))
+    vtkarrayval = [fielddata.GetArray(an) for an in arraynm]
+    nparrayval = [v2n(ar) for ar in vtkarrayval]
+    fieldAr={an:aval for an, aval in zip(arraynm, nparrayval)}#dictionary of array names
+    celldata=vpd.GetCellData()#get cell arrays
     arraynm = [celldata.GetArrayName(i) for i in range(celldata.GetNumberOfArrays())]
-    print ('VTP file %s includes these arrays: '%(fn)+(''.join(['%s, '%nm for nm in arraynm])))
+    print ('VTP file %s includes these Cell Data Arrays: '%(fn)+(''.join(['%s, '%nm for nm in arraynm])))
     vtkarrayval = [celldata.GetArray(an) for an in arraynm]
     nparrayval = [v2n(ar) for ar in vtkarrayval]
-    arDict={an:aval for an, aval in zip(arraynm, nparrayval)}#dictionary of array names
-    return coords, [Epolygon,  Eline,  Epoint], arDict
+    cellAr={an:aval for an, aval in zip(arraynm, nparrayval)}#dictionary of array names
+    pointdata=vpd.GetPointData()#get point arrays
+    arraynm = [pointdata.GetArrayName(i) for i in range(pointdata.GetNumberOfArrays())]
+    print ('VTP file %s includes these Point Data Arrays: '%(fn)+(''.join(['%s, '%nm for nm in arraynm])))
+    vtkarrayval = [pointdata.GetArray(an) for an in arraynm]
+    nparrayval = [v2n(ar) for ar in vtkarrayval]
+    pointAr={an:aval for an, aval in zip(arraynm, nparrayval)}#dictionary of array names
+    return coords, [Epolygon,  Eline,  Epoint], fieldAr, cellAr, pointAr
 
 def pointInsideObject(S,P,tol=0.):
     """vtk function to test which of the points P are inside surface S"""
@@ -311,8 +365,6 @@ def pointInsideObject(S,P,tol=0.):
     enclosed_pts.Complete()
     del enclosed_pts
     return asarray(v2n(inside_arr),'bool')
-
-
 
 def intersectWithSegment(surf,lines,tol=0.0):
     """Compute the intersection of surf with lines.
