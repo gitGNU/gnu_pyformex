@@ -143,7 +143,7 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
 
 
 def remesh(self,elementsizemode='edgelength',edgelength=None,
-           area=None, areaarray=None, aspectratio=None, excludeprop=None, preserveboundary=False):
+           area=None, areaarray=None, aspectratio=None, excludeprop=None, preserveboundary=False, conformalBorder=False):
     """Remesh a TriSurface.
 
     Parameters:
@@ -158,11 +158,19 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
     - `excludeprop`: either a single integer, or a list/array of integers. 
         The regions with these property number(s) will not be remeshed. 
     - `preserveboundary`: ??.
+    - `conformalboundary`: in case of open surface, the border line is preserved in the new mesh (both points and connectivity)
     
     Returns the remeshed TriSurface. If the TriSurface has property numbers
     the interface between the property numbers will be preserved and the property
     numbers will be inherited by the remeshed surface.
     """
+    if conformalBorder:
+        if self.isClosedManifold()==False:
+            s1 = self+TriSurface(self.getBorderMesh().convert('line3').setType('tri3')).setProp(-1)#add triangles on the border
+            s1 = s1.fuse().compact().renumber()
+            return remesh(s1,elementsizemode=elementsizemode,edgelength=edgelength,
+               area=area, areaarray=areaarray, aspectratio=aspectratio, excludeprop=-1, 
+               preserveboundary=preserveboundary, conformalBorder=False).compact()
     from plugins.vtk_itf import readVTP, writeVTP
     tmp = utils.tempFile(suffix='.vtp').name
     tmp1 = utils.tempFile(suffix='.vtp').name
