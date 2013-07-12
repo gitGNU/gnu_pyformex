@@ -94,7 +94,7 @@ class Drawable(Attributes):
         # Should we really restrict this????
         kargs = utils.selectDict(kargs,Drawable.attributes)
         Attributes.__init__(self,kargs,default=parent)
-        print("ATTRIBUTES STORED IN DRAWABLE",self)
+        #print("ATTRIBUTES STORED IN DRAWABLE",self)
         #print("ATTRIBUTES STORED IN PARENT",parent)
 
         # The final plexitude of the drawn objects
@@ -176,8 +176,8 @@ class Drawable(Attributes):
             print("POLYGON OFFSET")
             GL.glPolygonOffset(1.0,1.0)
 
-        print("LOAD DRAWABLE uniforms (AGAIN)")
-        print(self.keys())
+        #print("LOAD DRAWABLE uniforms (AGAIN)")
+        #print(self.keys())
         renderer.shader.loadUniforms(self)
 
         self.vbo.bind()
@@ -208,7 +208,6 @@ class Drawable(Attributes):
             else:
                 GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexColor'])
                 GL.glVertexAttribPointer(renderer.shader.attribute['vertexColor'],3, GL.GL_FLOAT,False,0,self.cbo)
-
 
         if self.frontface:
             # Draw front faces
@@ -571,29 +570,49 @@ class GeomActor(Attributes):
             return elems
 
 
+##    def _addFaces(self,renderer):
+##        """Draw the elems"""
+##        #print("ADDFACES %s" % self.faces)
+##        elems = self.subElems(self.faces)
+##        #if elems is not None:
+##            #print("ADDFACES SIZE %s" % (elems.shape,))
+##        if ( self.bkcolor is not None or
+##             self.bkalpha is not None or
+##             renderer.canvas.settings.alphablend ):
+##            # Draw both sides separately
+##            # First, front sides
+##            self.drawable.append(Drawable(self,subelems=elems,frontface=True))
+##            # Then back sides
+##            extra = Attributes()
+##            if self.bkalpha is not None:
+##                extra.alpha = self.alpha
+##            if self.bkcolor is not None:
+##                extra.color = self.bkcolor
+##            # !! What about colormap?
+##            self.drawable.append(Drawable(self,subelems=elems,backface=True,**extra))
+##        else:
+##            # Just draw both sides at once
+##            self.drawable.append(Drawable(self,subelems=elems))
+
+
     def _addFaces(self,renderer):
         """Draw the elems"""
         #print("ADDFACES %s" % self.faces)
         elems = self.subElems(self.faces)
         #if elems is not None:
-            #print("ADDFACES SIZE %s" % (elems.shape,))
-        if ( self.bkcolor is not None or
-             self.bkalpha is not None or
-             renderer.canvas.settings.alphablend ):
-            # Draw both sides separately
-            # First, front sides
-            self.drawable.append(Drawable(self,subelems=elems,frontface=True))
-            # Then back sides
-            extra = Attributes()
-            if self.bkalpha is not None:
-                extra.alpha = self.alpha
-            if self.bkcolor is not None:
-                extra.color = self.bkcolor
-            # !! What about colormap?
-            self.drawable.append(Drawable(self,subelems=elems,backface=True,**extra))
-        else:
-            # Just draw both sides at once
-            self.drawable.append(Drawable(self,subelems=elems))
+        #print("ADDFACES SIZE %s" % (elems.shape,))
+        # Draw both sides separately    
+        # First, back sides with inverted normals
+        extra = Attributes()
+        if self.bkalpha is not None:
+            extra.alpha = self.alpha
+        if self.bkcolor is not None:
+            extra.color = self.bkcolor
+        # !! What about colormap?
+        extra.nbo = VBO(-array(self.nbo))
+        self.drawable.append(Drawable(self,subelems=elems,backface=True,**extra))
+        # Then, front sides
+        self.drawable.append(Drawable(self,subelems=elems,frontface=True))
 
 
     def _addEdges(self,renderer):
