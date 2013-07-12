@@ -84,22 +84,31 @@ def _add_extra_Mesh_methods():
 
 
 
-    def scaledJacobian(self, scaled=True):
+    def scaledJacobian(self, scaled=True, blksize=100000):
         """
         Returns a quality measure for volume meshes.
 
-        If scaled if False, it returns the Jacobian at the corners of each element.
-        If scaled is True, it returns a quality metrics, being
-        the minumum value of the scaled Jacobian in each element (at one corner,
-        the Jacobian divided by the volume of a perfect brick).
-        Each tet or hex element gives a value between -1 and 1.
+
+        - `blksize`: split in groups to reduce memory requirements for large meshes.
+           If negative, the full mesh will be processed at once.
+
+        - `scaled`: if False returns the Jacobian at the corners of each element.
+        If scaled True, it returns a quality metrics, being the minumum value of the 
+        scaled Jacobian in each element (at one corner, the Jacobian divided by the volume of a perfect brick).
+        
+        If scaled is True each tet or hex element gets a value between -1 and 1.
         Acceptable elements have a positive scaled Jacobian. However, good
-        quality requires a minimum of 0.2.
-        Quadratic meshes are first converted to linear.
+        quality requires a minimum of 0.2. Quadratic meshes are first converted to linear.
         If the mesh contain mainly negative Jacobians, it probably has negative
         volumes and can be fixed with the  correctNegativeVolumes.
+        
+        To reduce the memory required for large meshes, the blksize parameter can be used
+        specify how many elements will be processed per time. Default 100000.
         """
         ne = self.nelems()
+        if blksize>0 and ne>blksize:
+            slices=splitrange(n=self.nelems(),nblk=self.nelems()/blksize)
+            return concatenate([self.select(range(slices[i], slices[i+1])).scaledJacobian(scaled=scaled, blksize=-1) for i in range(len(slices)-1)])
         if self.elName()=='hex20':
             self = self.convert('hex8')
         if self.elName()=='tet10':
