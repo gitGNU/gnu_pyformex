@@ -36,12 +36,13 @@ from time import strftime, gmtime
 from numpy import *
 
 # Gambit starts counting at 1 for elements and nodes
-# this defines the offset for nodes (nofs) and elements (eofs)
-nofs, eofs=1, 1
+# this defines the offset for nodes (nofs), elements (eofs) and faces (fofs
+nofs, eofs, fofs=1, 1, 1
 
-def writeHeading(fil, nodes, elems, heading=''):
+def writeHeading(fil, nodes, elems, nbsets=0, heading=''):
     """Write the heading of the Gambit neutral file.
-
+    
+    `nbsets`: number of boundary condition sets (border patches).
     """
     fil.write("        CONTROL INFO 2.4.6\n")
     fil.write("** GAMBIT NEUTRAL FILE\n")
@@ -49,7 +50,7 @@ def writeHeading(fil, nodes, elems, heading=''):
     fil.write('PROGRAM:                Gambit     VERSION:  2.4.6\n')
     fil.write(strftime('%d %b %Y    %H:%M:%S\n', gmtime()))
     fil.write('     NUMNP     NELEM     NGRPS    NBSETS     NDFCD     NDFVL\n')
-    fil.write('%10i%10i%10i%10i%10i%10i\n' % (shape(nodes)[0],shape(elems)[0],1,0,3,3))
+    fil.write('%10i%10i%10i%10i%10i%10i\n' % (shape(nodes)[0],shape(elems)[0],1,  nbsets  ,3,3))
     fil.write('ENDOFSECTION\n')
 
 def writeNodes(fil, nodes):
@@ -117,6 +118,49 @@ def writeGroup(fil, elems):
     fil.write('ENDOFSECTION\n')
 
 
+def writeBCsets(fil, bcsets, elgeotype):
+    """ Write boundary condition sets of faces.
+    
+    - `bcsets`: dictionary of 2D arrays: {'name1': brdfaces1, ...}
+    - `elgeotype`: element geometry type is 4 or 6 for hexahedrons
+        and tetrahedrons, respectively.
+    
+    A set of brdfaces is a group of border faces on the border defined as 2D in array of
+    element number and face number. Thus, brdfaces1 = [[enr1,fnr1],...].
+    
+    There are 2 ways to convert to define the border as enr,fnr:
+    1) find border both as mesh and enr/fnr and keep correspondence:
+    
+        brde, brdfaces = M.getFreeEntities(level=-1,return_indices=True)#border elems, enr/fnr
+        brd = Mesh(M.coords, brde)
+       
+    2) matchFaces
+        Given a volume mesh M and some border surface meshes S1, S2, ... the brdfaces can be obtained as 
+    
+        brdfaces1=M.matchFaces(S1)[1]
+        brdfaces2=M.matchFaces(S2)[1]
+        ...
+    bcsets = {'name1':brdfaces1, 'name2':brdfaces2, ...}
+    
+    The neu file syntax is described on 
+    http://combust.hit.edu.cn:8080/fluent/Gambit13_help/modeling_guide/mg0b.htm#mg0b01
+    """  
+    py2neuHF = asarray([3,1,0,2,4,5])#hex faces numbering conversion (pyformex to gambit neu)
+    if bcsets is not None:
+        for k in bcsets.keys():
+            print ('Writing BC set : %s\n'%k)
+            fil.write('BOUNDARY CONDITIONS 2.4.6\n')
+            val = bcsets[k]
+            if elgeotype==4: 
+                val[:, 1]=py2neuHF[val[:, 1]]
+            val+=fofs#faces are counted starting from 1                               
+            fil.write('%s  1   %d 0\n'%(k, len(val)))#patchname, 0/1 is node/face, nr of faces, 0
+            for v in val:
+                txt='%d %d %d\n'%(v[0], elgeotype, v[1])#elem nr, el type (4 is hex, 6 is tet), face nr
+                fil.write(txt)
+            fil.write('ENDOFSECTION\n')
+
+
 def read_tetgen(filename):
     """Read a tetgen tetraeder model.
 
@@ -131,22 +175,33 @@ def read_tetgen(filename):
     return nodes,elems
 
 
-def write_neu(fil, mesh, heading='generated with pyFormex'):
+def write_neu(fil, mesh, bcsets=None, heading='generated with pyFormex'):
     """Export a mesh as .neu file (For use in Gambit/Fluent)
 
     - `fil`: file name
     - `mesh`: pyFormex Mesh
     - `heading`: heading text to be shown in the gambit header
+    - `bcsets`: dictionary of 2D arrays: {'name1': brdfaces1, ...}, see writeBCsets
     """
     if not fil.endswith('.neu'):
         fil += '.neu'
     f = open(fil, 'w')
-    writeHeading(f, mesh.coords, mesh.elems, heading=heading)
+    if bcsets == None:
+        nbsets =0
+    else:
+        nbsets=len(bcsets.keys())
+    print ('Writing %d BC sets'%nbsets)
+    writeHeading(f, mesh.coords, mesh.elems, nbsets=nbsets, heading=heading)
     print('Writing %s nodes to .neu file'% len(mesh.coords))
     writeNodes(f, mesh.coords)
     print("Writing %s elements of type '%s' to .neu file"%(len(mesh.elems), mesh.elems.eltype.name()))
     writeElems(f, mesh.elems)
     writeGroup(f, mesh.elems)
+    if mesh.elName()=='hex8':
+        elgeotype=4
+    if mesh.elName()=='tet4':
+        elgeotype=6        
+    writeBCsets(f, bcsets, elgeotype)
     f.close()
     print("Mesh exported to  '%s'"%fil)
 
