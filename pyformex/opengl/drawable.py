@@ -592,8 +592,7 @@ class GeomActor(Attributes):
             self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_frontfaces",frontface=True))
         # ndim < 2
         else:
-            # Just draw both sides at once
-            self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_faces"))
+            self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_faces",lighting=False))
 
 
     def _addEdges(self,renderer):
@@ -603,7 +602,7 @@ class GeomActor(Attributes):
             elems = self.subElems(self.edges)
             #if elems is not None:
                 #print("ADDEDGES SIZE %s" % (elems.shape,))
-            self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_edges"))
+            self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_edges",lighting=False))
 
 
     def _addWires(self,renderer):
