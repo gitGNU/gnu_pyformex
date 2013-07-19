@@ -570,49 +570,30 @@ class GeomActor(Attributes):
             return elems
 
 
-##    def _addFaces(self,renderer):
-##        """Draw the elems"""
-##        #print("ADDFACES %s" % self.faces)
-##        elems = self.subElems(self.faces)
-##        #if elems is not None:
-##            #print("ADDFACES SIZE %s" % (elems.shape,))
-##        if ( self.bkcolor is not None or
-##             self.bkalpha is not None or
-##             renderer.canvas.settings.alphablend ):
-##            # Draw both sides separately
-##            # First, front sides
-##            self.drawable.append(Drawable(self,subelems=elems,frontface=True))
-##            # Then back sides
-##            extra = Attributes()
-##            if self.bkalpha is not None:
-##                extra.alpha = self.alpha
-##            if self.bkcolor is not None:
-##                extra.color = self.bkcolor
-##            # !! What about colormap?
-##            self.drawable.append(Drawable(self,subelems=elems,backface=True,**extra))
-##        else:
-##            # Just draw both sides at once
-##            self.drawable.append(Drawable(self,subelems=elems))
-
-
     def _addFaces(self,renderer):
         """Draw the elems"""
         #print("ADDFACES %s" % self.faces)
         elems = self.subElems(self.faces)
         #if elems is not None:
         #print("ADDFACES SIZE %s" % (elems.shape,))
-        # Draw both sides separately    
-        # First, back sides with inverted normals
-        extra = Attributes()
-        if self.bkalpha is not None:
-            extra.alpha = self.alpha
-        if self.bkcolor is not None:
-            extra.color = self.bkcolor
-        # !! What about colormap?
-        extra.nbo = VBO(-array(self.nbo))
-        self.drawable.append(Drawable(self,subelems=elems,backface=True,**extra))
-        # Then, front sides
-        self.drawable.append(Drawable(self,subelems=elems,frontface=True))
+        # ndim >= 2
+        if (self.eltype is not None and self.eltype.ndim >= 2) or (self.eltype is None and self.object.nplex() >= 3):
+            # Draw both sides separately
+            # First, back sides with inverted normals
+            extra = Attributes()
+            if self.bkalpha is not None:
+                extra.alpha = self.alpha
+            if self.bkcolor is not None:
+                extra.color = self.bkcolor
+            # !! What about colormap?
+            extra.nbo = VBO(-array(self.nbo))
+            self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_backfaces",backface=True,**extra))
+            # Then, front sides
+            self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_frontfaces",frontface=True))
+        # ndim < 2
+        else:
+            # Just draw both sides at once
+            self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_faces"))
 
 
     def _addEdges(self,renderer):
@@ -622,7 +603,7 @@ class GeomActor(Attributes):
             elems = self.subElems(self.edges)
             #if elems is not None:
                 #print("ADDEDGES SIZE %s" % (elems.shape,))
-            self.drawable.append(Drawable(self,subelems=elems))
+            self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_edges"))
 
 
     def _addWires(self,renderer):
@@ -650,7 +631,7 @@ class GeomActor(Attributes):
 
         if elems is not None and elems.size > 0:
             #print("ADDWIRES SIZE %s" % (elems.shape,))
-            wires = Drawable(self,subelems=elems,lighting=False,color=array(black),opak=True,name=self.name+"_wires",)
+            wires = Drawable(self,subelems=elems,lighting=False,color=array(black),opak=True,name=self.name+"_wires")
             # Put at the front to make visible
             # ontop will not help, because we only sort actors
             self.drawable.insert(0,wires)
