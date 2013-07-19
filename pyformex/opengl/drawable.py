@@ -84,7 +84,7 @@ class Drawable(Attributes):
     # A list of acceptable attributes in the drawable
     # These are the parent attributes that can be overridden
     attributes = [
-        'frontface', 'backface', 'subelems', 'color', 'name', 'highlight',
+        'cullface', 'subelems', 'color', 'name', 'highlight',
         'linewidth', 'pointsize', 'lighting', 'offset', 'vbo', 'nbo',
         ]
 
@@ -209,14 +209,14 @@ class Drawable(Attributes):
                 GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexColor'])
                 GL.glVertexAttribPointer(renderer.shader.attribute['vertexColor'],3, GL.GL_FLOAT,False,0,self.cbo)
 
-        if self.frontface:
+        if self.cullface == 'front':
+            # Draw back faces
+            GL.glEnable(GL.GL_CULL_FACE)            
+            GL.glCullFace(GL.GL_FRONT)
+        elif self.cullface == 'back':
             # Draw front faces
             GL.glEnable(GL.GL_CULL_FACE)
             GL.glCullFace(GL.GL_BACK)
-        elif self.backface:
-            # Draw back faces
-            GL.glEnable(GL.GL_CULL_FACE)
-            GL.glCullFace(GL.GL_FRONT)
         else:
             GL.glDisable(GL.GL_CULL_FACE)
 
@@ -225,8 +225,6 @@ class Drawable(Attributes):
             GL.glDepthFunc(GL.GL_ALWAYS)
 
         render_geom()
-
-        GL.glDisable(GL.GL_CULL_FACE)
 
         if self.ibo:
             self.ibo.unbind()
@@ -275,15 +273,14 @@ class Drawable(Attributes):
         if self.ibo:
             self.ibo.bind()
 
-
-        if self.frontface:
+        if self.cullface == 'front':
+            # Draw back faces
+            GL.glEnable(GL.GL_CULL_FACE)            
+            GL.glCullFace(GL.GL_FRONT)
+        elif self.cullface == 'back':
             # Draw front faces
             GL.glEnable(GL.GL_CULL_FACE)
             GL.glCullFace(GL.GL_BACK)
-        elif self.backface:
-            # Draw back faces
-            GL.glEnable(GL.GL_CULL_FACE)
-            GL.glCullFace(GL.GL_FRONT)
         else:
             GL.glDisable(GL.GL_CULL_FACE)
 
@@ -292,8 +289,6 @@ class Drawable(Attributes):
             GL.glDepthFunc(GL.GL_ALWAYS)
 
         render_geom()
-
-        GL.glDisable(GL.GL_CULL_FACE)
 
         if self.ibo:
             self.ibo.unbind()
@@ -587,9 +582,9 @@ class GeomActor(Attributes):
                 extra.color = self.bkcolor
             # !! What about colormap?
             extra.nbo = VBO(-array(self.nbo))
-            self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_backfaces",backface=True,**extra))
+            self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_backfaces",cullface='front',**extra))
             # Then, front sides
-            self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_frontfaces",frontface=True))
+            self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_frontfaces",cullface='back'))
         # ndim < 2
         else:
             self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_faces",lighting=False))
