@@ -41,7 +41,9 @@ import utils
 from olist import List, intersection
 from mydict import Dict
 import os
+from numpy import asarray,arange,int32
 from arraytools import checkFloat,checkArray,checkInt
+from mesh import Mesh
 
 
 # Formatting a controller for an attribute
@@ -119,7 +121,6 @@ class WebGL(List):
         """Create a new (empty) WebGL model."""
         List.__init__(self)
         self._camera = None
-        #print(pf.cfg['webgl'])
         if pf.cfg['webgl/devel']:
             self.scripts = [
                 os.path.join(pf.cfg['webgl/devpath'],'lib/closure-library/closure/goog/base.js'),
@@ -143,7 +144,7 @@ class WebGL(List):
             obj = [ o for o in obj if isinstance(o,clas) ]
         print("OBJDICT: %s" % len(obj))
         print([type(o) for o in obj])
-        print(obj)
+#        print(obj)
         return obj
 
 
@@ -157,83 +158,48 @@ class WebGL(List):
         print("Exporting %s actors from current scene" % len(cv.actors))
         for i,a in enumerate(cv.actors):
             o = a.object
-            #print("OBJDICT = %s" % sorted(dir(o)))
             atype = type(a).__name__
             otype = type(o).__name__
             print("Actor %s: %s %s Shape=(%s,%s) Color=%s"% (i,atype,otype,o.nelems(),o.nplex(),a.color))
-            kargs = a
-            print("  Exporting with settings %s" % kargs)
-            self.add(obj=o,**kargs)
+            self.addActor(a)
         ca = cv.camera
-        self.camera(focus=[0.,0.,0.],position=ca.eye-ca.focus,up=ca.upvector)
+##        self.camera(focus=[0.,0.,0.],position=ca.eye-ca.focus,up=ca.upvector)
+        self.camera(focus=ca.focus,position=ca.eye,up=ca.upvector)
 
 
-    def add(self,**kargs):
-        """Add a geometry object to the model.
-
-        Currently, two types of objects can be added: pyFormex Geometry
-        objects and file names. Geometry objects should be convertible
-        to TriSurface (using their toSurface method). Geometry files
-        should be in STL format.
-
-        The following keyword parameters are available and all optional:
-
-        - `obj=`: specify a pyFormex Geometry object
-        - `file=`: specify a geometry data file (STL). If no `obj` is
-          specified, the file should exist. If an `obj` file is specified,
-          this is the name that will be used to export the object.
-        - `name=`: specify a name for the object. The name will be used
-          as a variable in the Javascript script and as filename for for
-          export if an `obj` was specified but no `file` was given.
-          It should only contain alphanumeric characters and not start with
-          a digit.
-        - `caption=`: specify a caption to be used as a tooltip when the
-          mouse hovers over the object.
-        - `color=`: specify a color to be sued for the object. The color
-          should be a list of 3 values in the range 0..1 (OpenGL color).
-        - `opacity=`: specify a value for the opacity of the object (the
-          'alpha' value in pyFormex terms).
-        - `magicmode=`: specify True or False. If magicmode is True, colors
-          will be set from the normals of the object. This is incompatible
-          with `color=`.
-        - `control=`: a list of attributes that get a gui controller
+    def addActor(self,actor):
+        """Add an actor to the model.
+        
+        The actor's drawable objects are added to the WebGL model
+        as a list.
         """
-        if not 'name' in kargs:
-            kargs['name'] = 'm%s' % len(self)
-        if 'obj' in kargs:
-            # A pyFormex object.
-            try:
-                obj = kargs['obj']
-                obj = obj.toMesh()
-                print("LEVEL:%s" % obj.level())
-                if obj.level() == 3:
-                    print("TAKING BORDER")
-                    obj = obj.getBorderMesh()
-                obj = obj.toSurface()
-            except:
-                print("Not added because not convertible to TriSurface : %s",obj)
-                return
-            if obj:
-                if not 'file' in kargs:
-                    kargs['file'] = '%s_%s.stl' % (self.name,kargs['name'])
-                obj.write(kargs['file'],'stlb')
-        elif 'file' in kargs:
-            # The name of an STL file
-            fn = kargs['file']
-            if fn.endswith('.stl') and os.path.exists(fn):
-                # We should copy to current directory!
-                pass
+        from attributes import Attributes
+        self.append([])
+        for i,d in enumerate(actor.drawable):
+            attrib = Attributes(d,default=actor)
+            coords = asarray(attrib.vbo)
+            if attrib.ibo is not None:
+                elems = asarray(attrib.ibo)
             else:
-                return
-        # OK, we can add it
-        self.append(Dict(kargs))
-        if 'control' in kargs:
-            # Move the 'control' parameters to gui
-            self.gui.append((kargs['name'],kargs.get('caption',''),kargs['control']))
-            del kargs['control']
-        elif pf.cfg['webgl/autogui']:
-            # Add autogui
-            self.gui.append((kargs['name'],kargs.get('caption',''),controller_format.keys()))
+                nelems,nplex = coords.shape[:2]
+                elems = arange(nelems*nplex).reshape(nelems,nplex).astype(int32)
+            coords = coords.reshape(-1,3)
+            obj = Mesh(coords,elems)
+            if attrib.nbo is not None:
+                normals = asarray(attrib.nbo).reshape(-1,3)
+                obj.setNormals(normals[elems])
+            attrib.file = '%s_%s.pgf' % (self.name,attrib.name)
+            from geometry import Geometry
+            Geometry.write(obj,attrib.file,'')
+            # OK, we can add it
+            self[-1].append(attrib)
+##            if attrib.control is not None:
+##                # Move the 'control' parameters to gui
+##                self.gui.append((attrib.name,attrib.get('caption',''),attrib.control))
+##                del attrib['control']
+##            elif pf.cfg['webgl/autogui']:
+##                # Add autogui
+##                self.gui.append((attrib.name,attrib.get('caption',''),controller_format.keys()))
 
 
     def camera(self,**kargs):
@@ -251,24 +217,29 @@ class WebGL(List):
         self._camera = Dict(kargs)
 
 
-    def format_object(self,obj):
-        """Export an object in XTK Javascript format"""
-        if hasattr(obj,'name'):
-            name = obj.name
-            s = "var %s = new X.mesh();\n" % name
-        else:
-            return ''
-        if hasattr(obj,'file'):
-            s += "%s.file = '%s';\n" % (name,obj.file)
-        if hasattr(obj,'caption'):
-            s += "%s.caption = '%s';\n" % (name,obj.caption)
-        if hasattr(obj,'color'):
-            s += "%s.color = %s;\n" % (name,list(obj.color))
-        if hasattr(obj,'alpha'):
-            s += "%s.opacity = %s;\n" % (name,obj.alpha)
-        if hasattr(obj,'magicmode'):
-            s += "%s.magicmode = '%s';\n" % (name,str(bool(obj.magicmode)))
-        s += "r.add(%s);\n" % name
+    def format_actor(self,actor):
+        """Export an actor in XTK Javascript format."""
+        s = ""
+        for attrib in actor:
+            name = attrib.name
+            s += "var %s = new X.mesh();\n" % name
+            if attrib.file is not None:
+                s += "%s.file = '%s';\n" % (name,attrib.file)
+            if attrib.caption is not None:
+                s += "%s.caption = '%s';\n" % (name,attrib.caption)
+            if attrib.color is not None:
+                s += "%s.color = %s;\n" % (name,list(attrib.color))
+            if attrib.alpha is not None:
+                s += "%s.opacity = %s;\n" % (name,attrib.alpha)
+            if attrib.lighting is not None:
+                s += "%s.lighting = %s;\n" % (name,str(bool(attrib.lighting)).lower())
+            else:
+                s += "%s.lighting = %s;\n" % (name,str(bool(pf.canvas.settings.lighting)).lower())
+            if attrib.cullface is not None:
+                s += "%s.cullface = '%s';\n" % (name,attrib.cullface)
+            if attrib.magicmode is not None:
+                s += "%s.magicmode = '%s';\n" % (name,str(bool(attrib.magicmode)).lower())
+            s += "r.add(%s);\n\n" % name
         return s
 
 
@@ -305,7 +276,7 @@ var %s_reset = %s.add(r.camera,'reset');
 """.replace('%s',guiname)
 
 
-        s += "}\n\n"
+        s += "}\n"
         return s
 
 
@@ -345,13 +316,15 @@ var %s_reset = %s.add(r.camera,'reset');
 
 window.onload = function() {
 var r = new X.renderer3D();
+r.config.ORDERING_ENABLED = false;
 r.init();
 
 """ % pf.fullVersion()
-        s += '\n'.join([self.format_object(o) for o in self ])
+        s += '\n'.join([self.format_actor(a) for a in self ])
         if self.gui:
             s += self.format_gui()
         if self._camera:
+            s += '\n'
             if 'position' in self._camera:
                 s +=  "r.camera.position = %s;\n" % list(self._camera.position)
             if 'focus' in self._camera:
