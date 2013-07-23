@@ -1204,10 +1204,9 @@ class InputColor(InputItem):
 
 
     def setColor(self):
-        dia = QtGui.QColorDialog(self.input.text(),self)
-        if self.func:
-            dia.currentColorChanged.connect(self.set_value)
-        dia.open(self,'set_value')
+        dia = QtGui.QColorDialog(QtGui.QColor(self.input.text()),self)
+        dia.currentColorChanged.connect(self.set_value)
+        dia.open()
 
 
     def set_value(self,val):
