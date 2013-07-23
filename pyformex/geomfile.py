@@ -252,8 +252,9 @@ class GeometryFile(object):
 
         This writes a header line with these attributes and arguments:
         objtype, ncoords, nelems, nplex, props(True/False),
-        eltype, name, sep.
-        This is followed by the array data for: coords, elems, prop
+        eltype, normals(True/False), color, sep, name.
+        This is followed by the array data for: coords, elems, prop,
+        normals, color
 
         The objtype can/should be overridden for subclasses.
         """
@@ -288,6 +289,8 @@ class GeometryFile(object):
             self.writeData(F.prop,sep)
         if hasnorm:
             self.writeData(F.normals,sep)
+        if color == 'element' or color == 'vertex':
+            self.writeData(F.color,sep)
 
 
     def writeTriSurface(self,F,name=None,sep=None):
