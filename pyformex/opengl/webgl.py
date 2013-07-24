@@ -160,7 +160,7 @@ class WebGL(List):
             o = a.object
             atype = type(a).__name__
             otype = type(o).__name__
-            print("Actor %s: %s %s Shape=(%s,%s) Color=%s"% (i,atype,otype,o.nelems(),o.nplex(),a.color))
+            #print("Actor %s: %s %s Shape=(%s,%s) Color=%s"% (i,atype,otype,o.nelems(),o.nplex(),a.color))
             self.addActor(a)
         ca = cv.camera
 ##        self.camera(focus=[0.,0.,0.],position=ca.eye-ca.focus,up=ca.upvector)
@@ -172,9 +172,12 @@ class WebGL(List):
         
         The actor's drawable objects are added to the WebGL model
         as a list.
+        The actor's controller attributes are added to the controller gui.
         """
         from attributes import Attributes
-        self.append([])
+        drawables = []
+        controllers = []
+        # add drawables
         for i,d in enumerate(actor.drawable):
             attrib = Attributes(d,default=actor)
             coords = asarray(attrib.vbo)
@@ -188,18 +191,34 @@ class WebGL(List):
             if attrib.nbo is not None:
                 normals = asarray(attrib.nbo).reshape(-1,3)
                 obj.setNormals(normals[elems])
+            if attrib.cbo is not None:
+                colors = asarray(attrib.cbo).reshape(-1,3)
+                obj.color = colors[elems]
             attrib.file = '%s_%s.pgf' % (self.name,attrib.name)
             from geometry import Geometry
             Geometry.write(obj,attrib.file,'')
-            # OK, we can add it
-            self[-1].append(attrib)
-##            if attrib.control is not None:
-##                # Move the 'control' parameters to gui
-##                self.gui.append((attrib.name,attrib.get('caption',''),attrib.control))
-##                del attrib['control']
-##            elif pf.cfg['webgl/autogui']:
-##                # Add autogui
-##                self.gui.append((attrib.name,attrib.get('caption',''),controller_format.keys()))
+            drawables.append(attrib)
+        self.append(drawables)
+        # add controllers
+        if actor.control is not None:
+            control = actor.control
+        elif pf.cfg['webgl/autogui']:
+            # Add autogui
+##            control = controller_format.keys()
+            control = []
+            for name in ['frontfaces','backfaces','faces','edges','wires'] :
+                control.extend(['show '+name,name[:-1]+' opacity',name[:-1]+' color'])
+        if len(control) > 0:
+            for attrib in drawables:
+                name = attrib.name.split('_')[-1]
+                if 'show ' + name in control:
+                    controllers.append((attrib.name,'show ' + name,'visible'))
+                if name[:-1] + ' opacity' in control:
+                    controllers.append((attrib.name,name[:-1] + ' opacity','opacity'))
+                if name[:-1] + ' color' in control and attrib.colormode < 2:
+                    controllers.append((attrib.name,name[:-1] + ' color','color'))
+        if len(controllers) > 0:
+            self.gui.append((actor.name,actor.caption,controllers))
 
 
     def camera(self,**kargs):
@@ -227,10 +246,15 @@ class WebGL(List):
                 s += "%s.file = '%s';\n" % (name,attrib.file)
             if attrib.caption is not None:
                 s += "%s.caption = '%s';\n" % (name,attrib.caption)
-            if attrib.color is not None:
-                s += "%s.color = %s;\n" % (name,list(attrib.color))
+            if attrib.colormode < 2:
+                if attrib.color is not None:
+                    s += "%s.color = %s;\n" % (name,list(attrib.color))
+                else:
+                    s += "%s.color = %s;\n" % (name,list(pf.canvas.settings.fgcolor))
             if attrib.alpha is not None:
                 s += "%s.opacity = %s;\n" % (name,attrib.alpha)
+            else:
+                s += "%s.opacity = %s;\n" % (name,pf.canvas.settings.transparency)
             if attrib.lighting is not None:
                 s += "%s.lighting = %s;\n" % (name,str(bool(attrib.lighting)).lower())
             else:
@@ -262,9 +286,9 @@ var gui = new dat.GUI();
             if not caption:
                 caption = name
             s += "var %s = gui.addFolder('%s');\n" % (guiname,caption)
-            for attr in attrs:
-                cname = "%s_%s" % (guiname,attr)
-                s += "var %s = %s.%s;\n" % (cname,guiname,self.format_gui_controller(name,attr))
+            for objname,name,attr in attrs:
+                cname = "%s_%s" % (guiname,"".join(name.split()))
+                s += "var %s = %s.%s.name('%s');\n" % (cname,guiname,self.format_gui_controller(objname,attr),name)
             #s += "%s.open();\n" % guiname
 
 
