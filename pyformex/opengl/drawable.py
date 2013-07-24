@@ -339,9 +339,6 @@ class GeomActor(Attributes):
 
     def __init__(self,obj,**kargs):
 
-        if 'name' not in kargs:
-            kargs['name'] = GeomActor.defaultname.next()
-
         Attributes.__init__(self)
 
         # Check it is something we can draw
@@ -374,6 +371,8 @@ class GeomActor(Attributes):
         # Acknowledge all object attributes and passed parameters
         self.update(obj.attrib)
         self.update(kargs)
+        if self.name is None:
+            self.name = GeomActor.defaultname.next()
 
         # Store minimal data
         coords = coords.astype(float32)
@@ -581,7 +580,8 @@ class GeomActor(Attributes):
             if self.bkcolor is not None:
                 extra.color = self.bkcolor
             # !! What about colormap?
-            extra.nbo = VBO(-array(self.nbo))
+            if self.nbo is not None:
+                extra.nbo = VBO(-array(self.nbo))
             self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_backfaces",cullface='front',**extra))
             # Then, front sides
             self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_frontfaces",cullface='back'))
