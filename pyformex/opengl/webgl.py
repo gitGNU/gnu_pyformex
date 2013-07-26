@@ -56,6 +56,9 @@ controller_format = {
     'color': "addColor(%N,'%A')"
 }
 
+default_control = ['visible','show faces','face opacity','face color',
+    'show edges','edge opacity','edge color',
+    'show wires','wire opacity','wire color']
 
 def saneSettings(k):
     """Sanitize sloppy settings for JavaScript output"""
@@ -177,6 +180,7 @@ class WebGL(List):
         from attributes import Attributes
         drawables = []
         controllers = []
+        
         # add drawables
         for i,d in enumerate(actor.drawable):
             attrib = Attributes(d,default=actor)
@@ -198,16 +202,13 @@ class WebGL(List):
             from geometry import Geometry
             Geometry.write(obj,attrib.file,'')
             drawables.append(attrib)
-        self.append(drawables)
+        
         # add controllers
         if actor.control is not None:
             control = actor.control
         elif pf.cfg['webgl/autogui']:
             # Add autogui
-##            control = controller_format.keys()
-            control = []
-            for name in ['frontfaces','backfaces','faces','edges','wires'] :
-                control.extend(['show '+name,name[:-1]+' opacity',name[:-1]+' color'])
+            control = default_control
         if len(control) > 0:
             for attrib in drawables:
                 name = attrib.name.split('_')[-1]
@@ -217,6 +218,37 @@ class WebGL(List):
                     controllers.append((attrib.name,name[:-1] + ' opacity','opacity'))
                 if name[:-1] + ' color' in control and attrib.colormode < 2:
                     controllers.append((attrib.name,name[:-1] + ' color','color'))
+
+        # add faces if there are drawables for the front and back faces
+        names = [ attrib.name for attrib in drawables ]
+        if actor.name+'_frontfaces' in names and actor.name+'_backfaces' in names:
+            attrib = Attributes(dict(name=actor.name+'_faces',children=[actor.name+'_frontfaces',actor.name+'_backfaces']))
+            contr = []
+            if 'show faces' in control:
+                contr.append((attrib.name,'show faces','visible'))
+            if 'face opacity' in control:
+                contr.append((attrib.name,'face opacity','opacity'))
+                attrib.alpha = drawables[names.index(actor.name+'_frontfaces')].alpha
+            if 'face color' in control and drawables[names.index(actor.name+'_frontfaces')].colormode < 2:
+                contr.append((attrib.name,'face color','color'))
+                # use frontface color
+                attrib.colormode = drawables[names.index(actor.name+'_frontfaces')].colormode
+                attrib.color = drawables[names.index(actor.name+'_frontfaces')].color
+            drawables.append(attrib)
+            controllers = contr + controllers
+            names.remove(actor.name+'_frontfaces')
+            names.remove(actor.name+'_backfaces')
+            names.append(actor.name+'_faces')
+
+        # add actor
+        attrib = Attributes(dict(name=actor.name,children=names))
+        contr = []
+        if 'visible' in control:
+            contr.append((attrib.name,'visible','visible'))
+        drawables.append(attrib)
+        controllers = contr + controllers
+
+        self.append(drawables)
         if len(controllers) > 0:
             self.gui.append((actor.name,actor.caption,controllers))
 
@@ -242,6 +274,10 @@ class WebGL(List):
         for attrib in actor:
             name = attrib.name
             s += "var %s = new X.mesh();\n" % name
+            if len(attrib.children) > 0:
+                s += "%s.children = new Array();\n" % name
+                for child in attrib.children:
+                    s += "%s.children.push(%s);\n" % (name,child)
             if attrib.file is not None:
                 s += "%s.file = '%s';\n" % (name,attrib.file)
             if attrib.caption is not None:
@@ -249,21 +285,23 @@ class WebGL(List):
             if attrib.colormode < 2:
                 if attrib.color is not None:
                     s += "%s.color = %s;\n" % (name,list(attrib.color))
-                else:
+                elif len(attrib.children) == 0:
                     s += "%s.color = %s;\n" % (name,list(pf.canvas.settings.fgcolor))
             if attrib.alpha is not None:
                 s += "%s.opacity = %s;\n" % (name,attrib.alpha)
-            else:
+            elif len(attrib.children) == 0:
                 s += "%s.opacity = %s;\n" % (name,pf.canvas.settings.transparency)
             if attrib.lighting is not None:
                 s += "%s.lighting = %s;\n" % (name,str(bool(attrib.lighting)).lower())
-            else:
+            elif len(attrib.children) == 0:
                 s += "%s.lighting = %s;\n" % (name,str(bool(pf.canvas.settings.lighting)).lower())
             if attrib.cullface is not None:
                 s += "%s.cullface = '%s';\n" % (name,attrib.cullface)
             if attrib.magicmode is not None:
                 s += "%s.magicmode = '%s';\n" % (name,str(bool(attrib.magicmode)).lower())
-            s += "r.add(%s);\n\n" % name
+            if len(attrib.children) == 0:
+                s += "r.add(%s);\n" % name
+            s += "\n"
         return s
 
 
