@@ -84,8 +84,8 @@ class Drawable(Attributes):
     # A list of acceptable attributes in the drawable
     # These are the parent attributes that can be overridden
     attributes = [
-        'cullface', 'subelems', 'color', 'name', 'highlight',
-        'linewidth', 'pointsize', 'lighting', 'offset', 'vbo', 'nbo',
+        'cullface', 'subelems', 'color', 'name', 'highlight','opak',
+        'linewidth', 'pointsize', 'lighting', 'offset', 'vbo', 'nbo','alpha'
         ]
 
     def __init__(self,parent,**kargs):
@@ -576,7 +576,7 @@ class GeomActor(Attributes):
             # First, back sides with inverted normals
             extra = Attributes()
             if self.bkalpha is not None:
-                extra.alpha = self.alpha
+                extra.alpha = self.bkalpha
             if self.bkcolor is not None:
                 extra.color = self.bkcolor
             # !! What about colormap?
