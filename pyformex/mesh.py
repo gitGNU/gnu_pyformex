@@ -877,7 +877,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
           connections on the upper level.
 
         The remainder of the parameters are like in
-        :meth:`Connectivity.frontWalk`.
+        :meth:`Adjacency.frontWalk`.
 
         Returns an array of integers specifying for each element in which step
         the element was reached by the walker.
@@ -898,9 +898,12 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
           all nodes are considered connections.
 
         The remainder of the parameters are like in
-        :meth:`Connectivity.frontWalk`.
+        :meth:`Adjacency.frontWalk`.
         """
-        hi,lo = self.elems.insertLevel(1)
+        if self.level() != 1:
+            hi,lo = self.elems.insertLevel(1)
+        else:
+            hi = self.elems
         adj = hi.adjacency(mask=mask)
         return adj.frontWalk(startat=startat,frontinc=frontinc,partinc=partinc,maxval=maxval)
 
