@@ -205,7 +205,8 @@ class WebGL(List):
             # add missing attributes
             if attrib.lighting is None:
                 attrib.lighting = pf.canvas.settings.lighting
-            if attrib.colormode < 2 and attrib.color is None:
+            if attrib.useObjectColor is None:
+                attrib.useObjectColor = 1
                 attrib.color = pf.canvas.settings.fgcolor
             if attrib.alpha is None:
                 attrib.alpha = pf.canvas.settings.transparency            
@@ -224,7 +225,7 @@ class WebGL(List):
                     controllers.append((attrib.name,'show ' + name,'visible'))
                 if name[:-1] + ' opacity' in control:
                     controllers.append((attrib.name,name[:-1] + ' opacity','opacity'))
-                if name[:-1] + ' color' in control and attrib.colormode < 2:
+                if name[:-1] + ' color' in control and attrib.useObjectColor:
                     controllers.append((attrib.name,name[:-1] + ' color','color'))
 
         # add faces if there are drawables for the front and back faces
@@ -237,10 +238,10 @@ class WebGL(List):
             if 'face opacity' in control:
                 contr.append((attrib.name,'face opacity','opacity'))
                 attrib.alpha = drawables[names.index(actor.name+'_frontfaces')].alpha
-            if 'face color' in control and drawables[names.index(actor.name+'_frontfaces')].colormode < 2:
+            if 'face color' in control and drawables[names.index(actor.name+'_frontfaces')].useObjectColor:
                 contr.append((attrib.name,'face color','color'))
                 # use frontface color
-                attrib.colormode = drawables[names.index(actor.name+'_frontfaces')].colormode
+                attrib.useObjectColor = drawables[names.index(actor.name+'_frontfaces')].useObjectColor
                 attrib.color = drawables[names.index(actor.name+'_frontfaces')].color
             drawables.append(attrib)
             controllers = contr + controllers
@@ -290,7 +291,7 @@ class WebGL(List):
                 s += "%s.file = '%s';\n" % (name,attrib.file)
             if attrib.caption is not None:
                 s += "%s.caption = '%s';\n" % (name,attrib.caption)
-            if attrib.colormode < 2 and attrib.color is not None:
+            if attrib.useObjectColor and attrib.color is not None:
                s += "%s.color = %s;\n" % (name,list(attrib.color))
             if attrib.alpha is not None:
                 s += "%s.opacity = %s;\n" % (name,attrib.alpha)

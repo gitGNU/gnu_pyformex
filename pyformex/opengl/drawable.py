@@ -113,12 +113,6 @@ class Drawable(Attributes):
     def prepareColor(self):
         """Prepare the colors for the shader."""
         #print("PREPARECOLOR")
-        # Set derived uniforms for shader
-        # colormode:
-        # 0 = None
-        # 1 = object
-        # 2 = element
-        # 3 = vertex
         if self.highlight:
             #print("HIIGHLIGHT!!!")
             # we set single highlight color in shader
@@ -126,27 +120,24 @@ class Drawable(Attributes):
             # And we always need this one
             #print(self.fcoords)
             self.avbo = VBO(self.fcoords)
-            self.colormode = 1
+            self.useObjectColor = 1
             self.objectColor = array(red)
 
-        else:
-            if self.color is None:
-                self.colormode = 0
-            else:
-                self.colormode = self.color.ndim
-
-            if self.colormode == 1:
+        elif self.color is not None:
+            if self.color.ndim == 1:
+                self.useObjectColor = 1
                 self.objectColor = self.color
-            elif self.colormode == 2:
+            elif self.color.ndim == 2:
+                self.useObjectColor = 0
                 self.vertexColor = at.multiplex(self.color,self.object.nplex())
                 print ("Multiplexing colors: %s -> %s " % (self.color.shape,self.vertexColor.shape))
-                self.colormode = 3
-            elif self.colormode == 3:
+            elif self.color.ndim == 3:
+                self.useObjectColor = 0
                 self.vertexColor = self.color
 
             if self.vertexColor is not None:
                 self.cbo = VBO(self.vertexColor.astype(float32))
-            #print("SELF.COLORMODE = %s" % (self.colormode))
+            #print("SELF.USEOBJECTCOLOR = %s" % (self.useObjectColor))
 
 
     def prepareSubelems(self):

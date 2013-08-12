@@ -41,7 +41,7 @@ attribute float vertexScalar;
 uniform mat4 modelview;
 uniform mat4 projection;
 uniform mat4 pickmat;
-uniform int colormode;
+uniform bool useObjectColor;
 uniform bool highlight;
 
 uniform mat4 objectTransform;
@@ -91,19 +91,16 @@ void main()
     if (highlight) {
       // Highlight color, currently hardwired yellow
       fragmentColor = vec3(1.,1.,0.);
-    } else if (colormode == 1) {
+    } else if (useObjectColor) {
       // Single color
       fragmentColor = objectColor;
-    } else if (colormode == 3) {
+    } else {
       // Vertex color
       if (builtin) {
 	fragmentColor = gl_Color;
       } else {
 	fragmentColor = vertexColor;
       }
-    } else {
-      // Default black
-      fragmentColor = vec3(0.5,0.5,0.5);
     }
 
     // Add in lighting
