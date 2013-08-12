@@ -424,5 +424,14 @@ def surface2webgl(S,name,caption=None):
     W.view(position=[0.,0.,s])
     W.export(name,caption)
 
+###########################################################################
+
+# import opengl2 overrides
+#
+try:
+    if pf.options.opengl2:
+        from opengl.webgl import *
+except:
+    pass
 
 # End

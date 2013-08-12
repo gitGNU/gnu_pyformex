@@ -184,6 +184,7 @@ class WebGL(List):
         # add drawables
         for i,d in enumerate(actor.drawable):
             attrib = Attributes(d,default=actor)
+            # write the object to a .pgf file
             coords = asarray(attrib.vbo)
             if attrib.ibo is not None:
                 elems = asarray(attrib.ibo)
@@ -201,8 +202,15 @@ class WebGL(List):
             attrib.file = '%s_%s.pgf' % (self.name,attrib.name)
             from geometry import Geometry
             Geometry.write(obj,attrib.file,'')
+            # add missing attributes
+            if attrib.lighting is None:
+                attrib.lighting = pf.canvas.settings.lighting
+            if attrib.colormode < 2 and attrib.color is None:
+                attrib.color = pf.canvas.settings.fgcolor
+            if attrib.alpha is None:
+                attrib.alpha = pf.canvas.settings.transparency            
             drawables.append(attrib)
-        
+            
         # add controllers
         if actor.control is not None:
             control = actor.control
@@ -282,19 +290,12 @@ class WebGL(List):
                 s += "%s.file = '%s';\n" % (name,attrib.file)
             if attrib.caption is not None:
                 s += "%s.caption = '%s';\n" % (name,attrib.caption)
-            if attrib.colormode < 2:
-                if attrib.color is not None:
-                    s += "%s.color = %s;\n" % (name,list(attrib.color))
-                elif len(attrib.children) == 0:
-                    s += "%s.color = %s;\n" % (name,list(pf.canvas.settings.fgcolor))
+            if attrib.colormode < 2 and attrib.color is not None:
+               s += "%s.color = %s;\n" % (name,list(attrib.color))
             if attrib.alpha is not None:
                 s += "%s.opacity = %s;\n" % (name,attrib.alpha)
-            elif len(attrib.children) == 0:
-                s += "%s.opacity = %s;\n" % (name,pf.canvas.settings.transparency)
             if attrib.lighting is not None:
                 s += "%s.lighting = %s;\n" % (name,str(bool(attrib.lighting)).lower())
-            elif len(attrib.children) == 0:
-                s += "%s.lighting = %s;\n" % (name,str(bool(pf.canvas.settings.lighting)).lower())
             if attrib.cullface is not None:
                 s += "%s.cullface = '%s';\n" % (name,attrib.cullface)
             if attrib.magicmode is not None:
