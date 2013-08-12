@@ -512,7 +512,8 @@ class GeomActor(Attributes):
         The normals buffer object depends on the renderer settings:
         lighting, avgnormals
         """
-        if renderer.canvas.settings.lighting:
+        #if renderer.canvas.settings.lighting:
+        if True:
             if renderer.canvas.settings.avgnormals:
                 normals = self.b_avgnormals
             else:
