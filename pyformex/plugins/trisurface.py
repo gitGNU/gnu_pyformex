@@ -1046,11 +1046,9 @@ Quality: %s .. %s
         from timer import Timer
         t = Timer()
         # distance from vertices
-        Vp = self.coords
-        res = geomtools.vertexDistance(X,Vp,return_points) # OKdist, (OKpoints)
-        dist = res[0]
+        ind,dist = geomtools.closest(X,self.coords)
         if return_points:
-            points = res[1]
+            points = self.coords[ind]
         print("Vertex distance: %s seconds" % t.seconds(True))
         #print dist
 

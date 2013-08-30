@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -42,7 +42,7 @@ from plugins.curve import BezierSpline,PolyLine
 from simple import connectCurves
 from plugins.trisurface import fillBorder
 from plugins.polygon import Polygon,delaunay
-from geomtools import closestPoint,intersectionSWP
+from geomtools import closestPair,intersectionSWP
 import utils
 import os,sys
 
@@ -162,7 +162,7 @@ def charContours(fontfile,character):
 def connect2curves(c0,c1):
     x0 = c0.coords
     x1 = c1.coords
-    i,j,d = closestPoint(x0,x1)
+    i,j,d = closestPair(x0,x1)
     x = concatenate([roll(x0,-i,axis=0),roll(x1,-j,axis=0)])
     return BezierSpline(control=x,degree=2,closed=True)
 
