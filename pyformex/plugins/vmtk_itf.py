@@ -163,6 +163,8 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
     Returns the remeshed TriSurface. If the TriSurface has property numbers
     the interface between the property numbers will be preserved and the property
     numbers will be inherited by the remeshed surface.
+    
+    Bug: when coarsening an open surface with both multiple property numbers and conformalBorder some gaps may appear.
     """
     if conformalBorder:
         if self.isClosedManifold()==False:
