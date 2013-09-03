@@ -187,7 +187,7 @@ def settings():
         _I('mail/server',pf.cfg.get('mail/server','localhost'),text="Outgoing mail server")
         ]
 
-    xtkscripts = ["http://feops.ugent.be/pub/xtk/xtk.js", "http://get.goXTK.com/xtk_edge.js", "http://get.goXTK.com/xtk_release_10.js", 'custom']
+    xtkscripts = ["http://feops.ugent.be/pub/xtk/feops_xtk.js", "http://feops.ugent.be/pub/xtk/xtk.js", "http://get.goXTK.com/xtk_edge.js", "http://get.goXTK.com/xtk_release_10.js", 'custom']
     guiscripts = ["http://get.goXTK.com/xtk_xdat.gui.js", 'custom']
     webgl_settings = [
         _I('webgl/xtkscript',pf.cfg['webgl/xtkscript'],text='XTK base script',choices=xtkscripts),

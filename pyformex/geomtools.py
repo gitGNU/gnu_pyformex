@@ -137,26 +137,60 @@ def smallestDirection(x,method='inertia',return_size=False):
         return N
 
 
-def closestPoint(P0,P1):
-    """Find the smallest distance between any two points from P0 and P1.
+def distance(X,Y):
+    """Returns the distance of all points of X to those of Y.
 
-    P0 and P1 are Coords arrays. Any point of P0 is compared with any point
-    of P1, and the couple with the closest distance is returned.
+    Parameters:
 
-    Returns a tuple (i,j,d) where i,j are the indices in P0,P1 identifying
+    - `X`: (nX,3) shaped array of points.
+    - `Y`: (nY,3) shaped array of points.
+
+    Returns an (nX,nT) shaped array with the distances between all points of
+    X and Y.
+    """
+    return length(X[:,newaxis]-Y)
+
+
+def closest(X,Y,return_dist=True):
+    """Find the point of Y closest to points of X.
+
+    Parameters:
+
+    - `X`: (nX,3) shaped array of points
+    - `Y`: (nY,3) shaped array of points
+    - `return_dist`: bool. If False, only the index of the closest point
+      is returned. If True (default), the distance are also returned.
+
+    Returns:
+
+    - `ind`: (nX,) int array with the index of the closest point in Y to the
+      points of X
+    - `dist`: (nX,) float array with the distance of the closest point. This
+      is equal to length(X-Y[ind]). It is only returned if return_dist is True.
+    """
+    dist = distance(X,Y)    # Compute all distances
+    ind = dist.argmin(-1)   # Locate the smallest distances
+    if return_dist:
+        return ind, dist[arange(dist.shape[0]),ind]
+    else:
+        return ind
+
+
+def closestPair(X,Y):
+    """Find the closest pair of points from X and Y.
+
+    Parameters:
+
+    - `X`: (nX,3) shaped array of points
+    - `Y`: (nY,3) shaped array of points
+
+    Returns a tuple (i,j,d) where i,j are the indices in X,Y identifying
     the closest points, and d is the distance between them.
     """
-    P0 = P0.reshape(-1,3)
-    P1 = P1.reshape(-1,3)
-    if P0.shape[0] == 1:
-        d = P1.distanceFromPoint(P0[0])
-        j = d.argmin()
-        return 0,j,d[j]
-    else:
-        di = [ closestPoint(x,P1)[1:] for x in P0 ]
-        i = array([d[1] for d in di]).argmin()
-        j,d = di[i]
-    return i,j,d
+    dist = distance(X,Y)    # Compute all distances
+    ind = dist.argmin()     # Locate the smallest distances
+    i,j = divmod(ind,Y.shape[0])
+    return i,j,dist[i,j]
 
 
 def projectedArea(x,dir):
@@ -669,7 +703,7 @@ def intersectionSWP(S,p,n,mode='all',return_all=False,atol=0.):
       segments are returned. Default is to return only the points that lie
       on the segments.
     - `atol`: float tolerance of the points inside the line segments.
-    
+
 
     Return values if `return_all==True`:
 
@@ -1246,5 +1280,14 @@ def insideSimplex(BC,bound=True):
     else:
         return (BC > 0.).all(0)
 
+
+
+if __name__ == "__main__":
+
+    X = random.rand(6,3)
+    Y = random.rand(4,3)
+    print("DISTANCE",distance(X,Y))
+    print("SMALLEST DISTANCE",closest(X,Y))
+    print("CLOSEST PAIR",closestPair(X,Y))
 
 # End

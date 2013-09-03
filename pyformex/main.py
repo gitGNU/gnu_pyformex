@@ -295,6 +295,7 @@ def apply_config_changes(cfg):
         ('history','gui/scripthistory'),
         ('gui/history','gui/scripthistory'),
         ('raiseapploadexc','showapploaderrors'),
+        ('webgl/xtkscript','webgl/script'),
         ]:
         if old in cfg.keys():
             if new not in cfg.keys():

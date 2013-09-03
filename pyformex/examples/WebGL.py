@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -45,6 +45,7 @@ from gui.draw import *
 from simple import sphere,sector,cylinder
 from mydict import Dict
 from plugins.webgl import WebGL
+#from gui.helpMenu import help
 
 def run():
     reset()
@@ -92,7 +93,13 @@ def run():
         # Export everything to webgl
         W = WebGL()
         W.addScene()
-        W.export('Scene1','Two spheres and a cone',createdby=True)
+        fn = W.export('Scene1','Two spheres and a cone',createdby=True)
+        print(fn)
+
+        if fn and ack('Show the exported WebGL model in your browser?'):
+            browser = pf.cfg['viewer']
+            pid = utils.spawn(' '.join([browser,fn]))
+
 
 if __name__ == 'draw':
     run()

@@ -126,7 +126,7 @@ class WebGL(List):
                 os.path.join(pf.cfg['webgl/devpath'],'xtk-deps.js')
                 ]
         else:
-            self.scripts = [ pf.cfg['webgl/xtkscript'], pf.cfg['webgl/guiscript'] ]
+            self.scripts = [ pf.cfg['webgl/script'], pf.cfg['webgl/guiscript'] ]
         print("WebGL scripts: %s" % self.scripts)
         self.gui = []
         self.name = str(name)
@@ -408,7 +408,7 @@ r.render();
             htmlfile.write(s)
         print("Exported WebGL model to %s" % os.path.abspath(htmlname))
 
-        return htmlname
+        return os.path.abspath(htmlname)
 
 
 def surface2webgl(S,name,caption=None):

@@ -416,6 +416,30 @@ class Mesh(Geometry):
         return TriSurface(obj)
 
 
+    def toCurve(self):
+        """Convert a Mesh to a Curve.
+
+        If the element type is one of 'line*' types, the Mesh is converted
+        to a Curve. The type of the returned Curve is dependent on the
+        element type of the Mesh:
+
+        - 'line2': PolyLine,
+        - 'line3': BezierSpline (degree 2),
+        - 'line4': BezierSpline (degree 3)
+
+        This is equivalent with ::
+
+          self.toFormex().toCurve()
+
+        Any other type will raise an exception.
+        """
+        if self.elName() in ['line2','line3','line4']:
+            closed = self.elems[-1,-1] == self.elems[0,0]
+            return self.toFormex().toCurve(closed=closed)
+        else:
+            raise ValueError,"Can not convert a Mesh of type '%s' to a curve" % self.elName()
+
+
     def ndim(self):
         return 3
     def level(self):
@@ -853,7 +877,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
           connections on the upper level.
 
         The remainder of the parameters are like in
-        :meth:`Connectivity.frontWalk`.
+        :meth:`Adjacency.frontWalk`.
 
         Returns an array of integers specifying for each element in which step
         the element was reached by the walker.
@@ -874,9 +898,12 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
           all nodes are considered connections.
 
         The remainder of the parameters are like in
-        :meth:`Connectivity.frontWalk`.
+        :meth:`Adjacency.frontWalk`.
         """
-        hi,lo = self.elems.insertLevel(1)
+        if self.level() != 1:
+            hi,lo = self.elems.insertLevel(1)
+        else:
+            hi = self.elems
         adj = hi.adjacency(mask=mask)
         return adj.frontWalk(startat=startat,frontinc=frontinc,partinc=partinc,maxval=maxval)
 

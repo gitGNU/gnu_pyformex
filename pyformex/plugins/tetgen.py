@@ -438,6 +438,37 @@ def readTetgen(fn):
 
     return res
 
+def tetgenConvexHull(pts):
+    """Tetralize the convex hull of some points.
+    
+    Finds the convex hull some points and returns
+    a tet mesh of the convex hull and the convex hull (tri3 mesh).
+    
+    If all points are on the same plane there is no convex hull.
+    
+    This could be made an example:
+    
+    from simple import regularGrid
+    X = Coords(regularGrid([0., 0., 0.], [1., 1., 1.], [10, 10, 10]).reshape(-1, 3)).addNoise(rsize=0.05,asize=0.5)
+    draw(X)
+    from plugins.tetgen import tetgenConvexHull
+    tch, ch =tetgenConvexHull( X)
+    draw(ch, color='red', marksize=10)
+    """
+    tmp = utils.tempfile.mktemp('')
+    writeNodes(fn=tmp+'.node',coords=pts,offset=0)
+    sta,out = utils.runCommand('tetgen %s'%(tmp+'.node'))
+    if sta:
+        pf.message(out)
+    tetconvhull = readTetgen(tmp+'.1.ele').values()[0]
+    try:
+        os.remove(tmp+'.node')
+        os.remove(tmp+'.1.face')
+        os.remove(tmp+'.1.node')
+        os.remove(tmp+'.1.ele')
+    except:
+        pass
+    return tetconvhull, tetconvhull.getBorderMesh()
 
 #################################################################
 ## Extra TriSurface Methods ##

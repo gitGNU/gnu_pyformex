@@ -143,28 +143,40 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
 
 
 def remesh(self,elementsizemode='edgelength',edgelength=None,
-           area=None,aspectratio=None, preserveboundary=False):
+           area=None, areaarray=None, aspectratio=None, excludeprop=None, preserveboundary=False, conformalBorder=False):
     """Remesh a TriSurface.
 
     Parameters:
 
     - `elementsizemode`: str: metric that is used for remeshing,
-      `edgelength` and `area` allow to specify a global target triangle
-      edgelength and area respectively.
+      `edgelength`, `area` and `areaarray` allow to specify a global target triangle
+      edgelength, area and areaarray (area at each node) respectively.
     - `edgelength`: float: global target triangle edgelength
     - `area`: float: global target triangle area
+    - `areaarray`: array of float: nodal target triangle area
     - `aspectratio`: float: upper threshold for aspect ratio (default=1.2)
+    - `excludeprop`: either a single integer, or a list/array of integers. 
+        The regions with these property number(s) will not be remeshed. 
     - `preserveboundary`: ??.
+    - `conformalboundary`: in case of open surface, the border line is preserved in the new mesh (both points and connectivity)
     
     Returns the remeshed TriSurface. If the TriSurface has property numbers
     the interface between the property numbers will be preserved and the property
     numbers will be inherited by the remeshed surface.
+    
+    Bug: when coarsening an open surface with both multiple property numbers and conformalBorder some gaps may appear.
     """
+    if conformalBorder:
+        if self.isClosedManifold()==False:
+            s1 = self+TriSurface(self.getBorderMesh().convert('line3').setType('tri3')).setProp(-1)#add triangles on the border
+            s1 = s1.fuse().compact().renumber()
+            return remesh(s1,elementsizemode=elementsizemode,edgelength=edgelength,
+               area=area, areaarray=areaarray, aspectratio=aspectratio, excludeprop=-1, 
+               preserveboundary=preserveboundary, conformalBorder=False).compact()
     from plugins.vtk_itf import readVTP, writeVTP
     tmp = utils.tempFile(suffix='.vtp').name
     tmp1 = utils.tempFile(suffix='.vtp').name
-    pf.message("Writing temp file %s" % tmp)
-    writeVTP(mesh=self, fn=tmp)
+    fieldAr, cellAr, pointAr = {},{},{}
     cmd = 'vmtk vmtksurfaceremeshing -ifile %s -ofile %s'  % (tmp,tmp1)
     if elementsizemode == 'edgelength':
         if  edgelength is None:
@@ -177,13 +189,20 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
             self.areaNormals()
             area = self.areas.mean()
         cmd += ' -elementsizemode area -area %f' % area
+    elif elementsizemode == 'areaarray':
+        cmd += ' -elementsizemode areaarray '
+        cmd += ' -areaarray nodalareas ' 
+        pointAr['nodalareas'] = areaarray
     if aspectratio is not None:
         cmd += ' -aspectratio %f' % aspectratio
+    if excludeprop:
+        cmd += ' -exclude '+' '.join(['%d'%i for i in checkArray1D(excludeprop,kind='i',allow=None)])
     if preserveboundary:
         cmd += ' -preserveboundary 1'
     if self.prop is not None:
         cmd += ' -entityidsarray prop'
-        
+    pf.message("Writing temp file %s" % tmp)
+    writeVTP(mesh=self, fn=tmp, pointAr=pointAr)
     pf.message("Remeshing with command\n %s" % cmd)
     sta,out = utils.runCommand(cmd)
     os.remove(tmp)
@@ -191,10 +210,10 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
         pf.message("An error occurred during the remeshing.")
         pf.message(out)
         return None
-    coords, E, arDict=readVTP(tmp1)
+    coords, E, fieldAr, cellAr, pointAr=readVTP(tmp1)
     S = TriSurface(coords, E[0])
     if self.prop is not None:
-        S=S.setProp(arDict['prop'])
+        S=S.setProp(cellAr['prop'])
     os.remove(tmp1)
     return S
 

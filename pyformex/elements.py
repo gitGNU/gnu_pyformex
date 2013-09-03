@@ -98,7 +98,7 @@ class ElementType(object):
     >>> printElementTypes()
     Available Element Types:
       0-dimensional elements: ['Point']
-      1-dimensional elements: ['Line2', 'Line3']
+      1-dimensional elements: ['Line2', 'Line3', 'Line4']
       2-dimensional elements: ['Tri3', 'Tri6', 'Quad4', 'Quad6', 'Quad8', 'Quad9']
       3-dimensional elements: ['Tet4', 'Tet10', 'Tet14', 'Tet15', 'Wedge6', 'Hex8', 'Hex16', 'Hex20', 'Hex27', 'Icosa']
 
