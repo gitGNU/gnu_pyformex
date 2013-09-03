@@ -62,22 +62,28 @@ def run():
     # Draw the geometry with given colors/opacity
     # Settings colors and opacity in this way makes the model
     # directly ready to export as WebGL
-    S.color = red
-    S.alpha = 0.7
-    S.caption = 'A sphere'
-    S.control = ['visible','opacity','color']
-    S.setNormals('avg')
 
-    T.color = blue
-    T.caption = 'A cone'
-    T.alpha = 1.0
-    T.control = ['visible','opacity','color']
+    # Style 1: using function call
+    S.attrib(color=red,
+             alpha=0.7,
+             caption='A sphere',
+             control=['visible','opacity','color'],
+             )
+    #S.setNormals('avg')
+
+    # Style 2: setting attributes of the .attrib attribute
+    Ta = T.attrib
+    Ta.color = blue
+    Ta.caption = 'A cone'
+    Ta.alpha = 1.0
+    Ta.control = ['visible','opacity','color']
     #S.setNormals('auto')
 
-    C.color = 'yellow'
-    C.caption = 'A cylinder'
-    C.alpha = 0.8
-    C.control = ['visible','opacity','color']
+    Ca = C.attrib
+    Ca.color = 'yellow'
+    Ca.caption = 'A cylinder'
+    Ca.alpha = 0.8
+    Ca.control = ['visible','opacity','color']
     #S.setNormals('auto')
 
     export({'sphere':S,'cone':T,'cylinder':C})
@@ -94,7 +100,6 @@ def run():
         W = WebGL()
         W.addScene()
         fn = W.export('Scene1','Two spheres and a cone',createdby=True)
-        print(fn)
 
         if fn and ack('Show the exported WebGL model in your browser?'):
             browser = pf.cfg['viewer']

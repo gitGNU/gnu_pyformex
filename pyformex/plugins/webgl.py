@@ -94,7 +94,6 @@ def properties(o):
     return utils.selectDict(o.__dict__,keys)
 
 
-
 class WebGL(List):
     """A 3D geometry model for export to WebGL.
 
@@ -161,7 +160,8 @@ class WebGL(List):
             atype = type(a).__name__
             otype = type(o).__name__
             print("Actor %s: %s %s Shape=(%s,%s) Color=%s"% (i,atype,otype,o.nelems(),o.nplex(),a.color))
-            kargs = properties(o)
+            ## kargs = properties(o)
+            kargs = o.attrib
             kargs.update(properties(a))
             kargs = saneSettings(kargs)
             print("  Exporting with settings %s" % kargs)

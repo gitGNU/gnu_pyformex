@@ -1054,7 +1054,7 @@ def saneColorArray(color,shape):
     return color
 
 
-def saneColorSet(color=None,colormap=None,shape=(1,),canvas=None):
+def saneColorSet(color=None,colormap=None,shape=(1,)):
     """Return a sane set of colors.
 
     A sane set of colors is one that guarantees correct use by the
@@ -1074,11 +1074,7 @@ def saneColorSet(color=None,colormap=None,shape=(1,),canvas=None):
         if color.dtype.kind == 'i':
             ncolors = color.max()+1
             if colormap is None:
-                if canvas:
-                    colormap = canvas.settings.colormap
-                else:
-                    colormap = pf.canvas.settings.colormap
-                    #cfg['canvas/colormap']
+                colormap = pf.canvas.settings.colormap
             colormap = saneColor(colormap)
             colormap = saneColorArray(colormap,(ncolors,))
         else:

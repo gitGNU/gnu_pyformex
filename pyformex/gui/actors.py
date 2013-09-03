@@ -486,6 +486,15 @@ class GeomActor(Actor):
 
         # Store a reference to the drawn object
         self.object = data
+        # Copy special attributes
+        # This is a future feature
+        if hasattr(data,'attrib'):
+           attr = data.attrib
+           if attr.color is not None:
+               color = attr.color
+           if attr.alpha is not None:
+               alpha = attr.alpha
+
         self.normals = None
 
         if isinstance(data,GeomActor):
