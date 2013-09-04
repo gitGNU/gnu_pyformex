@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -391,6 +391,8 @@ class AppMenu(menu.Menu):
     def addRunAllMenu(self):
         if self.runall and pf.cfg['gui/runalloption']:
             self.insert_sep()
+            self.create_insert_action('Run next app',self.runNextApp)
+            self.create_insert_action('Run all next',self.runAllNext)
             self.create_insert_action('Run all apps',self.runAllApps)
 
 
@@ -463,14 +465,14 @@ class AppMenu(menu.Menu):
             script.runAny(appname)
 
 
-    def runAll(self,first=0,last=None,random=True,count=-1,recursive=True):
+    def runAll(self,first=0,last=None,random=False,count=-1,recursive=True):
         """Run all apps in the range [first,last].
 
         Runs the apps in the range first:last.
         If last is None, the length of the file list is used.
         If count is positive, at most count scripts per submenu are executed.
         Notice that the range is Python style.
-        If rand is True, the files are shuffled before running.
+        If random is True, the files are shuffled before running.
         If recursive is True, also the files in submenu are played.
         The first and last arguments do not apply to the submenus.
 
@@ -523,14 +525,16 @@ class AppMenu(menu.Menu):
         return tcount
 
 
-    def runNext(self,count=-1):
-        """Run the current app and the following ones.
+    def runAllNext(self,offset=1,count=-1):
+        """Run a sequence of apps, starting with the current plus offset.
 
         If a positive count is specified, at most count scripts
         will be run.
+        A nonzero offset may be specified to not start with the current
+        script.
         """
         try:
-            i = self.files.index(self.current) + 1
+            i = self.files.index(self.current) + offset
         except ValueError:
             i = 0
         self.runAll(first=i,count=count)
@@ -538,7 +542,12 @@ class AppMenu(menu.Menu):
 
     def runCurrent(self):
         """Run the current app, or the first if none was played yet."""
-        self.runNext(1)
+        self.runAllNext(offset=0,count=1)
+
+
+    def runNextApp(self):
+        """Run the next app, or the first if none was played yet."""
+        self.runAllNext(offset=1,count=1)
 
 
     def runRandom(self):
