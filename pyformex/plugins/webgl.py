@@ -56,7 +56,7 @@ controller_format = {
     'color': "addColor(%N,'%A')"
 }
 
-default_control = ['visible','show faces','face opacity','face color',
+default_control = ['visible','opacity','color','face opacity','face color',
     'show edges','edge opacity','edge color',
     'show wires','wire opacity','wire color']
 
@@ -137,6 +137,7 @@ class WebGL(List):
         print("WebGL scripts: %s" % self.scripts)
         self.gui = []
         self.name = str(name)
+        self.bgcolor = 'white'
 
 
     def objdict(self,clas=None):
@@ -161,6 +162,7 @@ class WebGL(List):
         the WebGL model.
         """
         cv = pf.canvas
+        self.bgcolor = cv.settings.bgcolor
         print("Exporting %s actors from current scene" % len(cv.actors))
         for i,a in enumerate(cv.actors):
             o = a.object
@@ -279,8 +281,8 @@ class WebGL(List):
                 normals = asarray(attrib.nbo).reshape(-1,3)
                 obj.setNormals(normals[elems])
             if attrib.cbo is not None:
-                colors = asarray(attrib.cbo).reshape(-1,3)
-                obj.color = colors[elems]
+                color = asarray(attrib.cbo).reshape(-1,3)
+                obj.color = color[elems]
             attrib.file = '%s_%s.pgf' % (self.name,attrib.name)
             from geometry import Geometry
             Geometry.write(obj,attrib.file,'')
@@ -537,7 +539,7 @@ r.render();
 
         s += """
 </head>
-<body>"""
+<body bgcolor='%s'>""" % colors.WEBcolor(self.bgcolor)
         if createdby:
             if type(createdby) is int:
                 width = ' width="%s%%"' % createdby
