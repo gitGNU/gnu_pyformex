@@ -97,7 +97,7 @@ STAMPABLE= $(filter-out ${PYFORMEXDIR}/template.py,${SOURCE}) \
 	$(filter-out ${EXTDIR}/pygl2ps/gl2ps_wrap.c,${EXTSOURCE}) \
 	${OTHERSTAMPABLE}
 
-STATICSTAMPABLE= Description History HOWTO-dev.rst MANIFEST.py add_Id \
+STATICSTAMPABLE= Description History HOWTO-dev.rst add_Id \
 	create_revision_graph install-pyformex-svn-desktop-link \
 	pyformex-viewer searchpy sloc.py slocstats.awk \
 	user/Makefile $(wildcard user/*.rst) \
@@ -226,7 +226,7 @@ stampstaticdirs: Stamp.staticdir
 
 # Create the distribution
 cleandist:
-	rm ${PKGDIR}/${PKGVER}
+	rm -f ${PKGDIR}/${PKGVER}
 
 dist: cleandist manpages ${PKGDIR}/${LATEST} clean
 
