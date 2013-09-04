@@ -45,13 +45,13 @@ from gui.draw import *
 from simple import sphere,sector,cylinder
 from mydict import Dict
 from plugins.webgl import WebGL
-#from gui.helpMenu import help
 
 def run():
     reset()
     clear()
     smooth()
     transparent()
+    bgcolor(green)
     view('right')
 
     # Create some geometry
@@ -65,9 +65,9 @@ def run():
 
     # Style 1: using function call
     S.attrib(color=red,
-             alpha=0.7,
+             alpha=0.5,
              caption='A sphere',
-             control=['visible','opacity','color'],
+#             control=['visible','opacity','color'],
              )
     #S.setNormals('avg')
 
@@ -76,14 +76,14 @@ def run():
     Ta.color = blue
     Ta.caption = 'A cone'
     Ta.alpha = 1.0
-    Ta.control = ['visible','opacity','color']
+#    Ta.control = ['visible','opacity','color']
     #S.setNormals('auto')
 
     Ca = C.attrib
     Ca.color = 'yellow'
     Ca.caption = 'A cylinder'
-    Ca.alpha = 0.8
-    Ca.control = ['visible','opacity','color']
+    Ca.alpha = 1.0
+#    Ca.control = ['visible','opacity','color']
     #S.setNormals('auto')
 
     export({'sphere':S,'cone':T,'cylinder':C})
