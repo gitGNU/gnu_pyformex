@@ -540,6 +540,10 @@ def runApp(appname,argv=[],refresh=False):
 
         return
 
+    if pf.options.opengl2 and hasattr(app,'_opengl2') and not app._opengl2:
+        pf.warning("This Example can not yet be run under the pyFormex opengl2 engine.\n You can run it when you start pyFormex with the '--gl1' command line options.")
+        return
+
     if hasattr(app,'_status') and app._status == 'unchecked':
         pf.warning("This looks like an Example script that has been automatically converted to the pyFormex Application model, but has not been checked yet as to whether it is working correctly in App mode.\nYou can help here by running and rerunning the example, checking that it works correctly, and where needed fixing it (or reporting the failure to us). If the example runs well, you can change its status to 'checked'")
 
