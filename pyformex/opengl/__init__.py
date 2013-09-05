@@ -35,9 +35,9 @@ import coords
 
 
 
-### Override some configration settings
+### Override some configuration settings
 
-pf.cfg['canvas/linewidth'] = 4
+#pf.cfg['canvas/linewidth'] = 2
 
 
 #### Definitions to be imported in gui.draw #####
