@@ -73,6 +73,7 @@ class Shader(object):
         'highlight',
         'useObjectColor',
         'lighting',
+        'nlights',
         ]
 
     uniforms_float = [
@@ -87,6 +88,7 @@ class Shader(object):
     uniforms_vec3 = [
         'objectColor',
         'light',
+        'lightdir',
         'speccolor',
     ]
 
@@ -143,10 +145,17 @@ class Shader(object):
         GL.glUniform1f(loc,value)
 
 
+    ## def uniformVec3(self,name,value):
+    ##     """Load a uniform vec3 into the shader"""
+    ##     loc = self.uniform[name]
+    ##     GL.glUniform3fv(loc,1,value)
+
+
     def uniformVec3(self,name,value):
-        """Load a uniform vec3 into the shader"""
+        """Load a uniform vec3[n] into the shader"""
         loc = self.uniform[name]
-        GL.glUniform3fv(loc,1,value)
+        n = len(value) // 3
+        GL.glUniform3fv(loc,n,value)
 
 
     def uniformMat4(self,name,value):

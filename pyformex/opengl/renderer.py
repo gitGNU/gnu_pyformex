@@ -56,8 +56,13 @@ class Renderer(object):
             'diffuse': 0.8,
             'specular': 0.3,
             'shininess': 10.0,
-            'light': (0.,1.,2.),
-            'speccolor': (1.,1.,0.8),
+            'nlights': 1,
+            'lightdir': [ 0.,1.,2.,
+                          1.,0.,2.,
+                          0.,-2.,2.,
+                          -2.,0.,2. ],
+            'speccolor': [ 1.,1.,1.,
+                           1.,1.,0. ],
             })
 
         if shader is None:

@@ -28,7 +28,9 @@ If you add a uniform value to the shader, you should also add it
 in shader.py, in order to allow setting the uniform value.
  */
 
-#ifdef GL_ES
+#define MAX_LIGHTS 4
+
+#ifdef GL_ES                   // This is True in WebGL shader
 precision mediump float;
 #endif
 
@@ -38,6 +40,7 @@ attribute vec3 vertexColor;
 attribute vec2 vertexTexturePos;
 attribute float vertexScalar;
 
+uniform bool pyformex;              // Is the shader being used in pyFormex
 uniform mat4 modelview;
 uniform mat4 projection;
 uniform mat4 pickmat;
@@ -61,14 +64,18 @@ uniform float pointsize;
 uniform bool builtin;
 uniform bool picking;
 
-uniform bool lighting;
+uniform bool lighting;     // Are the lights on?
+uniform vec3 light;        // Single light direction
+uniform int nlights;       // How many lights?  <= MAX_LIGHTS
+uniform vec3 lightdir[MAX_LIGHTS];     // light directions
+// should be changed to vec4 positions?
+uniform vec3 speccolor[MAX_LIGHTS];    // Color of reflected light
+
 uniform float ambient;
 uniform float diffuse;
 uniform float specular;    // Intensity of reflection
 uniform float shininess;   // Surface shininess
-uniform vec3 speccolor;    // Color of reflected light
 uniform float alpha;
-uniform vec3 light; // Currently 1 light: need multiple
 
 
 varying float fDiscardNow;
@@ -113,20 +120,24 @@ void main()
 	  fvertexNormal = vertexNormal;
 	}
 	fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * fvertexNormal;
-
 	vec3 nNormal = normalize(fTransformedVertexNormal);
-	vec3 nlight = normalize(light);
-	//vec3 eyeDirection = normalize(-vertexPosition);
-	vec3 eyeDirection = normalize(vec3(0.,0.,1.));
-	vec3 reflectionDirection = reflect(-nlight, nNormal);
-	float nspecular = specular*pow(max(dot(reflectionDirection,eyeDirection), 0.0), shininess);
-	float ndiffuse = diffuse * max(dot(nNormal,nlight),0.0);
-
-	// total color is sum of ambient, diffuse and specular
 	vec3 fcolor = fragmentColor;
-	fragmentColor = vec3(fcolor * ambient +
-			     fcolor * ndiffuse +
-			     speccolor * nspecular);
+
+	// ambient
+	fragmentColor = fcolor * ambient;
+
+	// add diffuse and specular for each light
+	//fragmentColor = vec3(0.3,0.,0.);
+	for (int i=0; i<nlights; ++i) {
+	  vec3 nlight = normalize(lightdir[i]);
+	  //vec3 eyeDirection = normalize(-vertexPosition);
+	  vec3 eyeDirection = normalize(vec3(0.,0.,1.));
+	  vec3 reflectionDirection = reflect(-nlight, nNormal);
+	  float nspecular = specular*pow(max(dot(reflectionDirection,eyeDirection), 0.0), shininess);
+	  float ndiffuse = diffuse * max(dot(nNormal,nlight),0.0);
+	  fragmentColor += fcolor * ndiffuse + speccolor[i] * nspecular;
+	  //fragmentColor *= (i+1);
+	}
       }
     }
     // Add in opacity
