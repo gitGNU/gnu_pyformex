@@ -46,6 +46,8 @@ from arraytools import checkFloat,checkArray,checkInt
 from mesh import Mesh
 
 
+exported_webgl = None
+
 # Formatting a controller for an attribute
 #   %N will be replaced with name of object,
 #   %A will be replaced with name of attribute,
@@ -480,6 +482,8 @@ var %s_reset = %s.add(r.camera,'reset');
 
         Returns the name of the exported htmlfile.
         """
+        global exported_webgl
+
         if name is None:
             name = self.name
         if title is None:
@@ -554,9 +558,9 @@ r.render();
         htmlname = utils.changeExt(jsname,'.html')
         with open(htmlname,'w') as htmlfile:
             htmlfile.write(s)
-        print("Exported WebGL model to %s" % os.path.abspath(htmlname))
-
-        return os.path.abspath(htmlname)
+        exported_webgl = os.path.abspath(htmlname)
+        print("Exported WebGL model to %s" % exported_webgl)
+        return exported_webgl
 
 
 def surface2webgl(S,name,caption=None):
