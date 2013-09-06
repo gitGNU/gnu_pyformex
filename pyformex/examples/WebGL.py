@@ -51,11 +51,11 @@ def run():
     clear()
     smooth()
     transparent()
-    bgcolor(green)
+    bgcolor(white)
     view('right')
 
     # Create some geometry
-    S = sphere()
+    S = sphere().scale(1.2)
     T = sector(1.0,360.,6,36,h=1.0,diag='u').toSurface().scale(1.5).reverse()
     C = cylinder(1.2,1.5,24,4,diag='u').toSurface().trl([0.5,0.5,0.5]).reverse()
 
@@ -90,7 +90,7 @@ def run():
 
     draw([S,T,C])
     zoomAll()
-    rotRight(30.)
+    #rotRight(30.)
 
     camera = pf.canvas.camera
     print("Camera focus: %s; eye: %s" % (camera.focus, camera.eye))
