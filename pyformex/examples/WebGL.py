@@ -65,7 +65,7 @@ def run():
 
     # Style 1: using function call
     S.attrib(color=red,
-             alpha=1,
+             alpha=0.5,
              caption='A sphere',
 #             control=['visible','opacity','color'],
              )

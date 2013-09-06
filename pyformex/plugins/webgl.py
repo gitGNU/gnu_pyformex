@@ -133,7 +133,7 @@ class WebGL(List):
             self.scripts = [ pf.cfg['webgl/script'], pf.cfg['webgl/guiscript'] ]
         if pf.options.opengl2:
             # Force the FEops xtk script
-            self.scripts[0] = 'http://feops.ugent.be/pub/xtk/feops_xtk.js'
+            self.scripts[0] = 'file://' + os.path.join(pf.cfg['pyformexdir'],'opengl','xtk.js')
         print("WebGL scripts: %s" % self.scripts)
         self.gui = []
         self.name = str(name)
@@ -493,7 +493,7 @@ var %s_reset = %s.add(r.camera,'reset');
 
 window.onload = function() {
 var r = new X.renderer3D();
-r.config.ORDERING_ENABLED = false;
+//r.config.ORDERING_ENABLED = false;
 r.init();
 
 """ % pf.fullVersion()
