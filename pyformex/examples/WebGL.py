@@ -97,13 +97,7 @@ def run():
 
     if checkWorkdir():
         # Export everything to webgl
-        W = WebGL()
-        W.addScene()
-        fn = W.export('Scene1','Two spheres and a cone',createdby=True)
-
-        if fn and ack('Show the exported WebGL model in your browser?'):
-            browser = pf.cfg['viewer']
-            pid = utils.spawn(' '.join([browser,fn]))
+        exportWebGL('Scene1',title='Two spheres and a cone')
 
 
 if __name__ == 'draw':
