@@ -164,7 +164,8 @@ class WebGL(List):
         cv = pf.canvas
         self.bgcolor = cv.settings.bgcolor
         print("Exporting %s actors from current scene" % len(cv.actors))
-        for i,a in enumerate(cv.actors):
+        sorted_actors = [ a for a in cv.actors if a.opak ] + [ a for a in cv.actors if not a.opak ]
+        for i,a in enumerate(sorted_actors):
             o = a.object
             atype = type(a).__name__
             otype = type(o).__name__
