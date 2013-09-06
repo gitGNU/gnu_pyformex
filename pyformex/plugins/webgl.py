@@ -493,7 +493,7 @@ var %s_reset = %s.add(r.camera,'reset');
 
 window.onload = function() {
 var r = new X.renderer3D();
-//r.config.ORDERING_ENABLED = false;
+r.config.ORDERING_ENABLED = false;
 r.init();
 
 """ % pf.fullVersion()
