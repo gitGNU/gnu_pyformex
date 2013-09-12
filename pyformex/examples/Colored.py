@@ -30,12 +30,20 @@ _status = 'checked'
 _level = 'beginner'
 _topics = ['surface']
 _techniques = ['color']
-
+_opengl2 = True
+_opengl2_comments = """
+- Lighted models are darker (no front light)
+"""
 from gui.draw import *
-from gui.actors import *
+
+if pf.options.opengl2:
+    from opengl.drawable import GeomActor
+else:
+    from gui.actors import *
 
 
 def run():
+    reset()
     smooth()
     lights(False)
 
@@ -67,7 +75,7 @@ def run():
                     lights(light)
                     print("%s: color %s, mode %s, lights %s" % (i,str(c),mode,light))
                     i += 1
-                    sleep(1)
+                    pause()
 
 
 if __name__ == 'draw':
