@@ -143,36 +143,50 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
 
 
 def remesh(self,elementsizemode='edgelength',edgelength=None,
-           area=None, areaarray=None, aspectratio=None, excludeprop=None, preserveboundary=False, conformalBorder=False):
+           area=None, areaarray=None, aspectratio=None, excludeprop=None, preserveboundary=False, conformal='border'):
     """Remesh a TriSurface.
-
+    
+    Returns the remeshed TriSurface. If the TriSurface has property numbers
+    the property numbers will be inherited by the remeshed surface.
+    
     Parameters:
 
-    - `elementsizemode`: str: metric that is used for remeshing,
-      `edgelength`, `area` and `areaarray` allow to specify a global target triangle
-      edgelength, area and areaarray (area at each node) respectively.
+    - `elementsizemode`: str: metric that is used for remeshing.
+      `edgelength`, `area` and `areaarray` allow to specify a global 
+      target edgelength, area and areaarray (area at each node), respectively.
     - `edgelength`: float: global target triangle edgelength
     - `area`: float: global target triangle area
     - `areaarray`: array of float: nodal target triangle area
     - `aspectratio`: float: upper threshold for aspect ratio (default=1.2)
     - `excludeprop`: either a single integer, or a list/array of integers. 
-        The regions with these property number(s) will not be remeshed. 
-    - `preserveboundary`: ??.
-    - `conformalboundary`: in case of open surface, the border line is preserved in the new mesh (both points and connectivity)
-    
-    Returns the remeshed TriSurface. If the TriSurface has property numbers
-    the interface between the property numbers will be preserved and the property
-    numbers will be inherited by the remeshed surface.
-    
-    Bug: when coarsening an open surface with both multiple property numbers and conformalBorder some gaps may appear.
+      The regions with these property number(s) will not be remeshed. 
+    - `preserveboundary`: if True vmtk tries to keep the shape of the border.
+    - `conformal`: None, `border` or `regionsborder`. 
+      If there is a border (ie. the surface is open) conformal=`border` 
+      preserves the border line (both points and connectivity); conformal=`regionsborder` 
+      preserves both border line and lines between regions with different property numbers.
     """
-    if conformalBorder:
+
+    if conformal == 'border' or conformal == 'regionsborder':
+        if elementsizemode=='areaarray':
+            raise ValueError,'conformal (regions)border and areaarray cannot be used together (yet)!'#conformalBorder alters the node list. Afterwards, the nodes do not correspond with pointAr.
         if self.isClosedManifold()==False:
-            s1 = self+TriSurface(self.getBorderMesh().convert('line3').setType('tri3')).setProp(-1)#add triangles on the border
-            s1 = s1.fuse().compact().renumber()
+            if conformal == 'regionsborder':
+                if self.propSet() is not None:
+                    if len(self.propSet())>1: 
+                        return TriSurface.concatenate([remesh(s2,elementsizemode=elementsizemode,edgelength=edgelength,
+                        area=area, areaarray=None, aspectratio=aspectratio, 
+                        excludeprop=excludeprop, preserveboundary=preserveboundary, conformal='border') for s2 in self.splitProp()])
+            added =TriSurface(self.getBorderMesh().convert('line3').setType('tri3'))
+            s1 = self+added.setProp(-1)+added.setProp(-2)#add triangles on the border
+            s1 = s1.fuse().compact().renumber()#this would mix up the areaarray!!
+            excludeprop1 = array([-1, -2])
+            if excludeprop is not None:
+                excludeprop1 = append(excludeprop1, asarray(excludeprop).reshape(-1))
             return remesh(s1,elementsizemode=elementsizemode,edgelength=edgelength,
-               area=area, areaarray=areaarray, aspectratio=aspectratio, excludeprop=-1, 
-               preserveboundary=preserveboundary, conformalBorder=False).compact()
+               area=area, areaarray=None, aspectratio=aspectratio, excludeprop=excludeprop1, 
+               preserveboundary=preserveboundary, conformal=None).withoutProp([-1,-2]).compact()
+
     from plugins.vtk_itf import readVTP, writeVTP
     tmp = utils.tempFile(suffix='.vtp').name
     tmp1 = utils.tempFile(suffix='.vtp').name
@@ -186,16 +200,14 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
         cmd += ' -elementsizemode edgelength -edgelength %f' % edgelength
     elif elementsizemode == 'area':
         if  area is None:
-            self.areaNormals()
-            area = self.areas.mean()
+            area = self.areas().mean()
         cmd += ' -elementsizemode area -area %f' % area
     elif elementsizemode == 'areaarray':
-        cmd += ' -elementsizemode areaarray '
-        cmd += ' -areaarray nodalareas ' 
+        cmd += ' -elementsizemode areaarray -areaarray nodalareas ' 
         pointAr['nodalareas'] = areaarray
     if aspectratio is not None:
         cmd += ' -aspectratio %f' % aspectratio
-    if excludeprop:
+    if excludeprop is not None:
         cmd += ' -exclude '+' '.join(['%d'%i for i in checkArray1D(excludeprop,kind='i',allow=None)])
     if preserveboundary:
         cmd += ' -preserveboundary 1'

@@ -283,25 +283,25 @@ def writeVTP(fn, mesh, fieldAr={}, cellAr={}, pointAr={}, checkMesh=True ):
         ntype=gnat(vtkDoubleArray().GetDataType())
         if fieldAr[k].shape[0]!=mesh.nelems():
             print (fieldAr[k].shape,)
-        fieldAr = n2v(asarray(fieldAr[k],order='C',dtype=ntype),deep=1)
-        fieldAr.SetName(k)
-        lvtk.GetFieldData().AddArray(fieldAr)
-    for k in cellAr.keys():#same numbering of mesh.coords
+        fieldar = n2v(asarray(fieldAr[k],order='C',dtype=ntype),deep=1)
+        fieldar.SetName(k)
+        lvtk.GetFieldData().AddArray(fieldar)
+    for k in cellAr.keys():#same numbering of mesh.elems
         ntype=gnat(vtkDoubleArray().GetDataType())
         if cellAr[k].shape[0]!=mesh.nelems():
-            print (cellAr[k].shape, mesh.ncoords())
-            warning('the number of array elements should be equal to the number of points')
-        cellAr = n2v(asarray(cellAr[k],order='C',dtype=ntype),deep=1)
-        cellAr.SetName(k)
-        lvtk.GetCellData().AddArray(cellAr)
-    for k in pointAr.keys():#same numbering of mesh.elems
+            print (cellAr[k].shape, mesh.nelems())
+            warning('the number of array cells should be equal to the number of elements')
+        cellar = n2v(asarray(cellAr[k],order='C',dtype=ntype),deep=1)
+        cellar.SetName(k)
+        lvtk.GetCellData().AddArray(cellar)
+    for k in pointAr.keys():#same numbering of mesh.coords
         ntype=gnat(vtkDoubleArray().GetDataType())
         if pointAr[k].shape[0]!=mesh.ncoords():#mesh should be clean!!
-            print (pointAr[k].shape, mesh.nelems())
-            warning('the number of array elements should be equal to the number of elements')
-        pointAr = n2v(asarray(pointAr[k],order='C',dtype=ntype),deep=1)
-        pointAr.SetName(k)
-        lvtk.GetPointData().AddArray(pointAr)
+            print (pointAr[k].shape, mesh.ncoords())
+            warning('the number of array points should be equal to the number of points')
+        pointar = n2v(asarray(pointAr[k],order='C',dtype=ntype),deep=1)
+        pointar.SetName(k)
+        lvtk.GetPointData().AddArray(pointar)
     print ('************lvtk', lvtk)
     writer=vtkXMLPolyDataWriter()
     writer.SetInput(lvtk)
