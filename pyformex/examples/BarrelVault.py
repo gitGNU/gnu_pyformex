@@ -33,8 +33,7 @@ _topics = ['frame']
 _techniques = ['dialog']
 _opengl2 = True
 _opengl2_comments = """
-- Lines are thicker: intentionally
-- Lines are black
+- Lines are black (propcolor)
 """
 
 from gui.draw import *
