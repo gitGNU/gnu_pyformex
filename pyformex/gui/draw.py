@@ -1985,6 +1985,45 @@ def showLineDrawing(L):
         decorate(LineDrawing)
 
 
+def exportWebGL(fn,title=None,description=None,keywords=None,author=None,createdby=50):
+    """Export the current scene to WebGL.
+
+    fn is the (relative or absolute) pathname of the .html and .js files to be
+    created.
+
+    Returns the absolute pathname of the generated .html file.
+    """
+    from plugins.webgl import WebGL
+    pf.message("Exporting current scene to %s.html" % fn)
+    pf.GUI.setBusy()
+    fn = os.path.basename(fn)
+    name = utils.projectName(fn)
+    if title is None:
+        title="%s WebGL model"%name
+    W = WebGL(name)
+    W.addScene()
+    fn = W.export(title=title,description=description,keywords=keywords,author=author,createdby=createdby)
+    pf.GUI.setBusy(False)
+    return fn
+
+
+def showURL(url):
+    """Show an URL in the browser
+
+    - `url`: url to load
+    """
+    from gui.helpMenu import help
+    help(url)
+
+
+def showHTML(fn):
+    """Show a local .html file in the browser
+
+    - `fn`: name of a local .html file
+    """
+    showURL('file:%s' % fn)
+
+
 ################################
 
 def setLocalAxes(mode=True):

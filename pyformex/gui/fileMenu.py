@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -558,24 +558,18 @@ def exportPGF():
 
 
 def exportWebGL():
-    """Export the current scene to WebGL"""
+    """Export the current scene to WebGL
+
+    The user is asked for a file name to store the exported model,
+    and after export, whether to load the model in the browser.
+    """
     from plugins.webgl import WebGL
     types = [ utils.fileDescription('html') ]
     fn = draw.askNewFilename(pf.cfg['workdir'],types)
     if fn:
-        pf.message("Exporting current scene to %s" % fn)
-        pf.GUI.setBusy()
-        fn = os.path.basename(fn)
-        name = utils.projectName(fn)
-        W = WebGL(name)
-        W.addScene()
-        fn = W.export(title="%s WebGL model"%name,createdby=50)
-        pf.GUI.setBusy(False)
+        fn = draw.exportWebGL(fn)
         if draw.ack("Show the scene in your browser?"):
-            fn = os.path.join(os.getcwd(),fn)
-            print(fn)
-            from gui.helpMenu import help
-            help('file:%s' % fn)
+            draw.showHTML(fn)
 
 
 _recording_pid = 0

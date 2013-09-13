@@ -237,13 +237,12 @@ For all of these information is widely available on the internet.
 
 
 Using the git repository
-========================
+------------------------
 
-.. note: Git allows for workflows that are very different from what we
-   were used to with Subversion. However, until we gather more
-   experience, you can follow you traditional workflow by the
-   following simple translation of svn commands to more or less
-   corresponding git commands.
+Read http://sitaramc.github.com/gcs/index.html for definition of some git terms.
+
+Quick overview
+..............
 
 - Clone the pyFormex developer repository into a directory `pyformex` (using
   your at the bump* servers)::
@@ -289,31 +288,72 @@ Using the git repository
 
     git push
 
-- Once you get sufficiently comfortable with using git, you can also add
-  the public repository as a remote (using your Savannah username)::
 
-    git remote add public USERNAME@git.sv.gnu.org:/srv/git/pyformex.git
 
-- Then, according to the project policy, you may push your changes to the
-  public repository as well. Here you have to specify the repository name
-  and branch::
+Working with multiple branches
+..............................
+
+.. note: This needs to be added
+
+
+Working with multiple repos
+...........................
+
+Once you get sufficiently comfortable with using git, you can also add
+the public repository as a remote (using your Savannah username)::
+
+  git remote add public USERNAME@git.sv.gnu.org:/srv/git/pyformex.git
+
+Now the command ::
+
+  git remote -v
+
+will give you something like (replace the user names)::
+
+  origin	bene@bumps.ugent.be:/srv/git/pyformex.git (fetch)
+  origin	bene@bumps.ugent.be:/srv/git/pyformex.git (push)
+  public	bverheg@git.sv.gnu.org:/srv/git/pyformex.git (fetch)
+  public	bverheg@git.sv.gnu.org:/srv/git/pyformex.git (push)
+
+The default remote is 'origin' (the one you initially cloned from).
+The 'public' is where you can push changes to make them available to
+the general public.
+
+To push your changes to the public repository, you have to specify both the
+repository name and branch::
 
     git push public master
 
+.. warning: Current project policy is that only the project manager pushes
+   to the public repository. Other developers should (for now) only push to
+   the local remote at bumps.ugent.be.
 
-Make another branch the master
-------------------------------
-You have a (public) branch 'new', which you want to become the master.
+
+
+Switch the master branch
+........................
+
+You have a (public) branch 'new', which you want to become the master, while
+the current master branch should be kept under the name 'old'. We suppose
+that both the 'new' and 'master' branches are already in the remote
+repository, while 'old' is not.
+
 The new branch has diverted a lot from master, but you still need to
-keep the changes from the master branch. The first merge the master
-into yout new branch::
+keep the changes from the master branch. Then first merge the master
+into your new branch::
 
+  git br old
+  git push -u origin old
   git co new
   git merge -s ours master
   git co master
   git merge new
 
-But you nee
+If you want to add extra info in the commit message, perform step 4 in two
+steps::
+
+  git merge --strategy=ours --no-commit master
+  git commit          # add information to the template merge message
 
 
 Structure of the pyFormex repository
@@ -918,7 +958,7 @@ General guidelines
 
 
 - The ``$Id$`` will be sustituted by Subversion on your next updates. Never
-  edit this ``$Id:...$`` field directly.
+  edit this ``$Id$`` field directly.
 
 - End your source and text files with a line::
 
@@ -1366,6 +1406,8 @@ They will need to be tuned for the release.
 
     _do uploadlocal
     _do publocal
+
+
 
 
 .. End
