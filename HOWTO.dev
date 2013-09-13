@@ -239,14 +239,10 @@ For all of these information is widely available on the internet.
 Using the git repository
 ========================
 
-Quick introduction
-..................
+Read http://sitaramc.github.com/gcs/index.html for definition of some git terms.
 
-.. note: Git allows for workflows that are very different from what we
-   were used to with Subversion. However, until we gather more
-   experience, you can follow you traditional workflow by the
-   following simple translation of svn commands to more or less
-   corresponding git commands.
+Quick overview
+..............
 
 - Clone the pyFormex developer repository into a directory `pyformex` (using
   your at the bump* servers)::
@@ -353,7 +349,11 @@ into your new branch::
   git co master
   git merge new
 
+If you want to add extra info in the commit message, perform step 4 in two
+steps::
 
+  git merge --strategy=ours --no-commit master
+  git commit          # add information to the template merge message
 
 
 Structure of the pyFormex repository
