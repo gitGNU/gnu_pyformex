@@ -231,16 +231,18 @@ def createMenuData():
     if pf.installtype in 'SG':
         pyformexdir = pf.cfg['pyformexdir']
         devtodo = os.path.join(pyformexdir,"..","TODO")
-        devhowto = os.path.join(pyformexdir,"..","HOWTO.dev")
+        devhowto = os.path.join(pyformexdir,"..","HOWTO-dev.rst")
         devapp = os.path.join(pyformexdir,"..","scripts-apps.rst")
         devextra = os.path.join(pyformexdir,"..","install-extra.rst")
+        devopengl = os.path.join(pyformexdir,"..","OPENGL-dev.rst")
         #print pf.refcfg.help['developer']
         developer = [
             ('Developer HOWTO',devhowto),
+            ('Switch to new OPENGL engine',devopengl),
             ('Scripts versus Apps',devapp),
             ('pyFormex TODO list',devtodo),
             ('Installation of extra software',devextra),
-           ('Numpy documentation guidelines','http://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt'),
+            ('Numpy documentation guidelines','http://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt'),
             ('re-structured text (reST)','http://docutils.sourceforge.net/rst.html')
             ]
 

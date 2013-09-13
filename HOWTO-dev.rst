@@ -237,7 +237,7 @@ For all of these information is widely available on the internet.
 
 
 Using the git repository
-========================
+------------------------
 
 Read http://sitaramc.github.com/gcs/index.html for definition of some git terms.
 
@@ -958,7 +958,7 @@ General guidelines
 
 
 - The ``$Id$`` will be sustituted by Subversion on your next updates. Never
-  edit this ``$Id:...$`` field directly.
+  edit this ``$Id$`` field directly.
 
 - End your source and text files with a line::
 
@@ -1406,6 +1406,8 @@ They will need to be tuned for the release.
 
     _do uploadlocal
     _do publocal
+
+
 
 
 .. End
