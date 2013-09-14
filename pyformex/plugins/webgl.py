@@ -364,58 +364,25 @@ class WebGL(List):
         self._camera = Dict(kargs)
 
 
-    if pf.options.opengl2:
-
-        def format_actor(self,actor):
-            """Export an actor in XTK Javascript format."""
-            s = ""
-            for attr in actor:
-                name = attr.name
-                s += "var %s = new X.mesh();\n" % name
-                if len(attr.children) > 0:
-                    s += "%s.children = new Array();\n" % name
-                    for child in attr.children:
-                        s += "%s.children.push(%s);\n" % (name,child)
-                if attr.file is not None:
-                    s += "%s.file = '%s';\n" % (name,attr.file)
-                if attr.caption is not None:
-                    s += "%s.caption = '%s';\n" % (name,attr.caption)
-                if attr.useObjectColor and attr.color is not None:
-                   s += "%s.color = %s;\n" % (name,list(attr.color))
-                if attr.alpha is not None:
-                    s += "%s.opacity = %s;\n" % (name,attr.alpha)
-                if attr.lighting is not None:
-                    s += "%s.lighting = %s;\n" % (name,str(bool(attr.lighting)).lower())
-                if attr.cullface is not None:
-                    s += "%s.cullface = '%s';\n" % (name,attr.cullface)
-                if attr.magicmode is not None:
-                    s += "%s.magicmode = '%s';\n" % (name,str(bool(attr.magicmode)).lower())
-                if len(attr.children) == 0:
-                    s += "r.add(%s);\n" % name
-                s += "\n"
-            return s
-
-    else:
-
-        def format_actor(self,obj):
-            """Export an object in XTK Javascript format"""
-            if hasattr(obj,'name'):
-                name = obj.name
-                s = "var %s = new X.mesh();\n" % name
-            else:
-                return ''
-            if hasattr(obj,'file'):
-                s += "%s.file = '%s';\n" % (name,obj.file)
-            if hasattr(obj,'caption'):
-                s += "%s.caption = '%s';\n" % (name,obj.caption)
-            if hasattr(obj,'color'):
-                s += "%s.color = %s;\n" % (name,list(obj.color))
-            if hasattr(obj,'alpha'):
-                s += "%s.opacity = %s;\n" % (name,obj.alpha)
-            if hasattr(obj,'magicmode'):
-                s += "%s.magicmode = '%s';\n" % (name,str(bool(obj.magicmode)))
-            s += "r.add(%s);\n" % name
-            return s
+    def format_actor(self,obj):
+        """Export an object in XTK Javascript format"""
+        if hasattr(obj,'name'):
+            name = obj.name
+            s = "var %s = new X.mesh();\n" % name
+        else:
+            return ''
+        if hasattr(obj,'file'):
+            s += "%s.file = '%s';\n" % (name,obj.file)
+        if hasattr(obj,'caption'):
+            s += "%s.caption = '%s';\n" % (name,obj.caption)
+        if hasattr(obj,'color'):
+            s += "%s.color = %s;\n" % (name,list(obj.color))
+        if hasattr(obj,'alpha'):
+            s += "%s.opacity = %s;\n" % (name,obj.alpha)
+        if hasattr(obj,'magicmode'):
+            s += "%s.magicmode = '%s';\n" % (name,str(bool(obj.magicmode)))
+        s += "r.add(%s);\n" % name
+        return s
 
 
     def format_gui_controller(self,name,attr):

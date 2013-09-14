@@ -333,27 +333,32 @@ repository name and branch::
 Switch the master branch
 ........................
 
-You have a (public) branch 'new', which you want to become the master, while
-the current master branch should be kept under the name 'old'. We suppose
-that both the 'new' and 'master' branches are already in the remote
-repository, while 'old' is not.
+You have a (public) branch NEW, which you want to become the master, while
+the current master branch should be kept under the name OLD. We suppose
+that both the NEW and master branches are already (updated) in the remote
+repository, while OLD is non-existing in the remote.
 
-The new branch has diverted a lot from master, but you still need to
-keep the changes from the master branch. Then first merge the master
-into your new branch::
+First make a copy of the current master under the name OLD and save
+it to the remote::
 
-  git br old
-  git push -u origin old
-  git co new
-  git merge -s ours master
-  git co master
-  git merge new
+  git br OLD
+  git push -u origin OLD
 
-If you want to add extra info in the commit message, perform step 4 in two
-steps::
+The NEW branch has diverted a lot from master, but you still need to
+keep the changes from the master branch. So first merge the master
+into your NEW branch::
 
+  git co NEW
   git merge --strategy=ours --no-commit master
   git commit          # add information to the template merge message
+
+.. note: If you do not want to provide a commit message, you can do the
+   last two commands at once: git merge -s ours master
+
+Finally, got to the master and merge the NEW branch in it::
+
+  git co master
+  git merge new
 
 
 Structure of the pyFormex repository
