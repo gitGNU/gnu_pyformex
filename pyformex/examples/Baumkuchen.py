@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -30,6 +30,8 @@ _status = 'checked'
 _level = 'beginner'
 _topics = ['structure']
 _techniques = ['color','bump']
+_opengl2 = True
+_opengl2_comment = "Not enough light"
 
 from gui.draw import *
 

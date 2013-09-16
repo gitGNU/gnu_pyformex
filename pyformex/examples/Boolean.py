@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -31,6 +31,11 @@ _status = 'checked'
 _level = 'normal'
 _topics = ['surface','gts']
 _techniques = ['boolean','intersection']
+_opengl2 = True
+_opengl2_comments = """
+- No color
+- Not enough light
+"""
 
 from gui.draw import *
 from simple import cylinder
@@ -48,7 +53,7 @@ def splitAlongPath(path,mesh,atol=0.0):
     return msplit
 
 def drawResults(**res):
-    
+
     op = res['op'][0]
     verbose = res['verbose']
     split = res['split']
@@ -77,8 +82,8 @@ def drawResults(**res):
             draw(S)
 
 
-    
-    
+
+
 def close():
     global dialog
     if dialog:
@@ -107,7 +112,7 @@ def run():
     G = F.rotate(90.,0).trl(0,1.).setProp(1)
     export({'F':F,'G':G})
     draw([F,G])
-    
+
     _items =\
         [ _I('op',text='Operation',choices=[
             '+ (Union)',
@@ -121,7 +126,7 @@ def run():
     _enablers = [('op','+ (Union)','split'),
         ('op','- (Difference)','split'),
         ('op','* Intersection','split'),]
-    
+
     dialog = Dialog(
         items=_items,
         enablers=_enablers,

@@ -6,7 +6,7 @@ Read http://sitaramc.github.com/gcs/index.html for definition of some git terms.
 Apply the configuration described in HOWTO-dev.rst.
 
 
-Clone the remote repository:: 
+Clone the remote repository::
 
   git clone USER@bumps.ugent.be:/srv/git/pyformex.git
 
@@ -17,16 +17,16 @@ in `pyformex/.git` and a checked out working directory in `pyformex`::
   ls
   ls -a .git
 
-.. note: Difference with Subversion: Each user has a full clone of the 
-   repository. Checking in (commit) will happen first with respect to 
+.. note: Difference with Subversion: Each user has a full clone of the
+   repository. Checking in (commit) will happen first with respect to
    your own copy. Afterwards, you can push commits to the remote repository.
 
    Another difference is that git only creates a *.git* hidden subdirecotory
    in the top checkout path, while Subversion created *.svn* subdirectories
-   on all lower levels. 
+   on all lower levels.
 
    If you only want to checkout a repository to run the
-   source, and have no intention to do any development nor update in this path, 
+   source, and have no intention to do any development nor update in this path,
    you can safely remove *.git*
 
 You can *fetch* from and *push* to multiple remote repositories. You can see which ones are currently configured with ::
@@ -41,10 +41,10 @@ A repository may contain multiple branches. To show them all (local and remote):
    git br -a
 
 Branches will become important in future. The old branches in the repository
-will be removed. We may introduce a 'development' branch. There will 
+will be removed. We may introduce a 'development' branch. There will
 certainly be a branching when reaching version 1.0. Another branch will
 be introduced for the new OpenGl rendering engine in pyFormex. Your local
-repository may follow any branch, but for now, we will limit us to the 
+repository may follow any branch, but for now, we will limit us to the
 default *master* branch.
 
 You can also create local branches, and you are encouraged to do so. By creating
@@ -53,10 +53,10 @@ do some other work (e.g. fixing a bug), commit that work, and then go back to
 your first branch to continue that work (which will not be included in the commit).
 
 Another reason to create a local branch, is if you want to add code that you do
-not want to share (yet), or want to share only with a limited number of users. 
+not want to share (yet), or want to share only with a limited number of users.
 This code should then not be pushed to the public repository.
 
-We will deal with the use of branches later, let's first do some work in the master branch.  
+We will deal with the use of branches later, let's first do some work in the master branch.
 
 A branch can also contain a number of tags, pointing to a particular interesting commit. Currently we have a tag for each released version::
 
@@ -90,18 +90,18 @@ produces ::
 These can be used to go back to a certain commit of the past. You can create
 as many tags as you want on you local branches, but you should normally not
 push up your tags to the repository: another user may want to use his own set
- of tags. The release manager however will push up the tags created to point to 
-official releases. Occasionally, tags for other important commits may get 
-pushed. 
+ of tags. The release manager however will push up the tags created to point to
+official releases. Occasionally, tags for other important commits may get
+pushed.
 
 Of course you can also restore the situation of any other past commit (those
  without a tag). But then you have to use the corresponding SHA hash.
 
-.. note: Difference with Subversion: in subversion, all commits are done to 
+.. note: Difference with Subversion: in subversion, all commits are done to
    a signle repository and are numbered consecutively (the revision number).
    In git, there is no such number, because there is no single repository.
 
-In git, individual commits are identified by a unique SHA hash number. 
+In git, individual commits are identified by a unique SHA hash number.
 The following commands show the last commits::
 
   git log
@@ -162,7 +162,7 @@ This shows you have modified `HOWTO-dev.rst` (which is already tracked) and
 you have a new untracked file `git-examples.rst`. Suppose you want to get these
 changes in the repo (my local one!). First you should add the changes::
 
-  git add HOWTO-dev.rst 
+  git add HOWTO-dev.rst
   git add git-examples.rst
   git status
 
@@ -178,12 +178,12 @@ Now the changes are ready to be committed to the repo::
 
   git commit
 
-Like in subversion, an editor will show up where you should enter a commit message. We recommend (maybe we should enforce?) to enter detailed commit messages, consisting of a single short (max 50 chars) header line, a blank line and 
+Like in subversion, an editor will show up where you should enter a commit message. We recommend (maybe we should enforce?) to enter detailed commit messages, consisting of a single short (max 50 chars) header line, a blank line and
 multiple detail lines (by preference not longer than 72 characters). ::
 
   Added to developer documentation
 
-  Added new file git-examples.rst, with an overview of git usage for 
+  Added new file git-examples.rst, with an overview of git usage for
   pyFormex.
   Unimportant change in HOWTO-dev.rst
 
@@ -201,7 +201,7 @@ a single command::
   git commit -a
 
 This only works for files that are already tracked. New files always need to
-be added first. 
+be added first.
 
 Remember that all the commits that you make, are only to your local copy of the
 repository. This can also be seen from the status command::
@@ -271,33 +271,6 @@ After that the status became::
   #	USER.txt
   #	pyformex/data/work/
   no changes added to commit (use "git add" and/or "git commit -a")
-
-
-Working with multiple branches
-------------------------------
-
-.. note: This needs to be added
-
-Working with multiple repos
----------------------------
-
-Add another remote repo::
-
-  git remote add public	bverheg@git.sv.gnu.org:/srv/git/pyformex.git
-
-Now the command ::
-
-  git remote -v
-
-gives::
-
-  origin	bene@bumps.ugent.be:/srv/git/pyformex.git (fetch)
-  origin	bene@bumps.ugent.be:/srv/git/pyformex.git (push)
-  public	bverheg@git.sv.gnu.org:/srv/git/pyformex.git (fetch)
-  public	bverheg@git.sv.gnu.org:/srv/git/pyformex.git (push)
-
-The default used is origin (the one I cloned from). The public is where I
-push changes to make them available to the general public.
 
 
 Git tools
