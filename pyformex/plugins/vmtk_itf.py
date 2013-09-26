@@ -187,7 +187,7 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
                area=area, areaarray=None, aspectratio=aspectratio, excludeprop=excludeprop1, 
                preserveboundary=preserveboundary, conformal=None).withoutProp([-1,-2]).compact()
 
-    from plugins.vtk_itf import readVTP, writeVTP
+    from plugins.vtk_itf import readVTP, writeVTP, checkClean
     tmp = utils.tempFile(suffix='.vtp').name
     tmp1 = utils.tempFile(suffix='.vtp').name
     fieldAr, cellAr, pointAr = {},{},{}
@@ -203,6 +203,8 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
             area = self.areas().mean()
         cmd += ' -elementsizemode area -area %f' % area
     elif elementsizemode == 'areaarray':
+        if not checkClean(self):
+            raise ValueError, "Mesh is not clean: vtk will alter the node numbering and the areaarray will not correspond to the node numbering. To clean: mesh.fuse().compact().renumber()"
         cmd += ' -elementsizemode areaarray -areaarray nodalareas ' 
         pointAr['nodalareas'] = areaarray
     if aspectratio is not None:

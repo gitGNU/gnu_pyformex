@@ -1,7 +1,7 @@
 set terminal png size 640,480
 set output "pyformex-stats.png"
 set datafile missing '*'
-set title "pyFormex history (http://pyformex.org)\nCreated 2013-02-27 08:55:55"
+set title "pyFormex history (http://pyformex.org)\nCreated 2013-09-16 11:15:32"
 set key top left
 #set offsets 0,0.1,0,0
 set xdata time
