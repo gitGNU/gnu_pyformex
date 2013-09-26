@@ -297,7 +297,7 @@ class DxfExporter(object):
                 self.out(10*(i+1)+j,x[j][i])
 
 
-    def arc(self,C,R,a1,a2,layer=0):
+    def arc(self,C,R,a,layer=0):
         """Export an arc.
 
         """
@@ -308,8 +308,8 @@ class DxfExporter(object):
             (20,C[1]),
             (30,C[2]),
             (40,R),
-            (51,a1),
-            (52,a2),
+            (50,a[0]),
+            (51,a[1]),
             ]:
             self.out(k,v)
 
@@ -343,8 +343,7 @@ def exportDxf(filename,coll):
         if isinstance(ent,curve.Line):
             dxf.line(ent.coords)
         elif isinstance(ent,curve.Arc):
-            pass
-            #dxf.arc(ent.getCenter(),ent.radius,*ent.getAngles())
+            dxf.arc(ent.getCenter(),ent.radius,ent.getAngles())
         else:
             utils.warn("Objects of type '%s' can not be exported to DXF file" % type(ent))
 
