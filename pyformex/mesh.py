@@ -2037,17 +2037,15 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         Returns a new Mesh obtained by sweeping the given Mesh
         over a path.
         The returned Mesh has double plexitude of the original.
-        The operation is similar to the extrude() method, but the path
+
+        This method accepts all the parameters of :func:`coords.sweepCoords`,
+        with the same meaning. Usually, you will need to at least set the
+        `normal` parameter.
+        The `eltype` parameter can be used to set the element type on the
+        returned Meshes.
+
+        This operation is similar to the extrude() method, but the path
         can be any 3D curve.
-
-        This function is usually used to extrude points into lines,
-        lines into surfaces and surfaces into volumes.
-        By default it will try to fix the connectivity ordering where
-        appropriate. If autofix is switched off, the connectivities
-        are merely stacked, and the user may have to fix it himself.
-
-        Currently, this function produces the correct element type, but
-        the geometry .
         """
         seq = sweepCoords(self.coords,path,**kargs)
         return self.connect(seq,eltype=eltype)

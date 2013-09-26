@@ -154,12 +154,16 @@ have internet connection from your Linux system.
 
 
 - If you want to work on the documentation (and as a developer you really
-  sould), then you need `python-sphinx`::
+  should), then you need `python-sphinx`::
 
     apt-get install python-sphinx
 
   The installed version of sphinx needs to be patched however. See further
   for how to do this.
+
+- If you want to create source distributions (.tar.gz), you also need::
+
+    apt-get install python-git
 
 
 Get access to the repositories

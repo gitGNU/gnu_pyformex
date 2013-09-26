@@ -1,0 +1,85 @@
+Creating filelist for 2to3
+Have a non-directory at the top, so creating directory top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/CONTENTS to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/COPYING to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/Description to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/HOWTO-dev.rst to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/History to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/LICENSE to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/Makefile to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/README to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/RELEASE to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/ReleaseNotes to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/Stamp.stamp to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/Stamp.static to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/Stamp.staticdir to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/Stamp.template to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/TODO to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/add_Id to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/git-examples.rst to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/id_clean to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/id_smudge to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/install-extra.rst to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/install-pyformex-dev-desktop-link to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/install_filters to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/manifest.py to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/manifest_check.py to top_dir
+Creating filelist for pkg
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/publish to top_dir
+Creating filelist for pyformex
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/pyformex-url.png to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/pyformex-viewer to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/pyformex.desktop to top_dir
+Creating filelist for screenshots
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/scripts-apps.rst to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/setup.cfg to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/setup.py to top_dir
+Adding /home/bene/prj/pyformex/stats/_sloccount_/pyformex/sparse_checkout to top_dir
+Creating filelist for sphinx
+Creating filelist for stats
+Creating filelist for user
+Creating filelist for website
+Categorizing files.
+Finding a working MD5 command....
+Found a working MD5 command.
+WARNING! File /home/bene/prj/pyformex/stats/_sloccount_/pyformex/pyformex/examples/FeAbq.post has unknown start: #!/usr/bin/env pyformex
+Computing results.
+
+
+SLOC	Directory	SLOC-by-Language (Sorted)
+51355   pyformex        python=43283,ansic=7712,sh=163,awk=136,cpp=61
+453     sphinx          python=327,pascal=124,sh=2
+441     top_dir         python=353,sh=88
+129     pkg             sh=129
+125     stats           python=101,sh=17,awk=7
+109     website         python=87,pascal=22
+4       2to3            python=3,sh=1
+0       screenshots     (none)
+0       user            (none)
+
+
+Totals grouped by language (dominant language first):
+python:       44154 (83.92%)
+ansic:         7712 (14.66%)
+sh:             400 (0.76%)
+pascal:         146 (0.28%)
+awk:            143 (0.27%)
+cpp:             61 (0.12%)
+
+
+
+
+Total Physical Source Lines of Code (SLOC)                = 52,616
+Development Effort Estimate, Person-Years (Person-Months) = 12.83 (153.95)
+ (Basic COCOMO model, Person-Months = 2.4 * (KSLOC**1.05))
+Schedule Estimate, Years (Months)                         = 1.41 (16.95)
+ (Basic COCOMO model, Months = 2.5 * (person-months**0.38))
+Estimated Average Number of Developers (Effort/Schedule)  = 9.08
+Total Estimated Cost to Develop                           = $ 1,733,067
+ (average salary = $56,286/year, overhead = 2.40).
+SLOCCount, Copyright (C) 2001-2004 David A. Wheeler
+SLOCCount is Open Source Software/Free Software, licensed under the GNU GPL.
+SLOCCount comes with ABSOLUTELY NO WARRANTY, and you are welcome to
+redistribute it under certain conditions as specified by the GNU GPL license;
+see the documentation for details.
+Please credit this data as "generated using David A. Wheeler's 'SLOCCount'."

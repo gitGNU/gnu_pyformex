@@ -140,6 +140,28 @@ def _add_extra_Mesh_methods():
             return Jscaled.min(axis=1)
 
 
+    def elementToNodal(self, val):
+        """Compute nodal values from element values.
+        
+        Given scalar values defined on elements, finds the average values at the nodes.
+        Returns the average values at the (maxnodenr+1) nodes. Nodes not occurring in elems 
+        will have all zero values.
+        NB. It now works with scalar. It could be extended to vectors.
+        """
+        eval = val.reshape(-1,1,1)
+        eval = column_stack(repeat([eval], self.nplex(), 0))#assign this area to all nodes of the elem
+        nval = nodalSum(val=eval,elems=self.elems,avg=True,return_all=False)
+        return nval.reshape(-1)
+    
+    
+    def nodalToElement(self, val):
+        """Compute element values from nodal values.
+        
+        Given scalar values defined on nodes, finds the average values at elements.
+        NB. It now works with scalar. It could be extended to vectors.
+        """
+        return val[self.elems].mean(axis=1)
+
 
     # BV: name is way too complex
     # should not be a mesh method, but of some MeshValue class? Field?
@@ -204,7 +226,8 @@ def _add_extra_Mesh_methods():
     Mesh.rings = rings
     #Mesh.correctNegativeVolumes = correctNegativeVolumes
     Mesh.scaledJacobian = scaledJacobian
-    Mesh.scaledJacobian = scaledJacobian
+    Mesh.elementToNodal = elementToNodal
+    Mesh.nodalToElement = nodalToElement
     Mesh.avgNodalScalarOnAdjacentNodes = avgNodalScalarOnAdjacentNodes
 
 
