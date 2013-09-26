@@ -285,6 +285,17 @@ class DxfExporter(object):
         self.out(8,layer)
 
 
+    def vertex(self,x,layer=0):
+        """Export a vertex.
+
+        x is a (3,) shaped array
+        """
+        self.out(0,'VERTEX')
+        self.out(8,layer)
+        for i in range(3):
+            self.out(10*(i+1),x[i])
+
+
     def line(self,x,layer=0):
         """Export a line.
 
@@ -295,6 +306,18 @@ class DxfExporter(object):
         for j in range(2):
             for i in range(3):
                 self.out(10*(i+1)+j,x[j][i])
+
+
+    def polyline(self,x,layer=0):
+        """Export a polyline.
+
+        x is a (nvertices,3) shaped array
+        """
+        self.out(0,'POLYLINE')
+        self.out(8,layer)
+        for xi in x:
+            self.vertex(xi,layer)
+        self.out(0,'SEQEND')
 
 
     def arc(self,C,R,a,layer=0):
@@ -344,6 +367,8 @@ def exportDxf(filename,coll):
             dxf.line(ent.coords)
         elif isinstance(ent,curve.Arc):
             dxf.arc(ent.getCenter(),ent.radius,ent.getAngles())
+        elif isinstance(ent,curve.PolyLine):
+            dxf.polyline(ent.coords)
         else:
             utils.warn("Objects of type '%s' can not be exported to DXF file" % type(ent))
 
