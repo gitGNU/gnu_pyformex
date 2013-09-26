@@ -31,6 +31,7 @@ from __future__ import print_function
 
 from formex import *
 from plugins import curve
+import utils
 
 
 def importDXF(filename):
@@ -72,7 +73,6 @@ def readDXF(filename):
     with the pyFormex distribution. It currently recognizes entities of
     type 'Arc', 'Line', 'Polyline', 'Vertex'.
     """
-    import utils,commands
     print(filename)
     if utils.hasExternal('dxfparser'):
         cmd = 'pyformex-dxfparser %s 2>/dev/null' % filename
@@ -311,7 +311,7 @@ class DxfExporter(object):
             (51,a1),
             (52,a2),
             ]:
-            self.out(k,v))
+            self.out(k,v)
 
 
 def exportDXF(filename,F):
@@ -325,6 +325,29 @@ def exportDXF(filename,F):
     dxf.entities()
     for i in F:
         dxf.line(i)
+    dxf.endSection()
+    dxf.close()
+
+
+def exportDxf(filename,coll):
+    """Export a collection of dxf parts a DXF file
+
+    coll is a list of dxf objects
+
+    Currently, only dxf objects of type 'Line' and 'Arc' can be exported.
+    """
+    dxf = DxfExporter(filename)
+    dxf.entities()
+    for ent in coll:
+        print(type(ent),ent)
+        if isinstance(ent,curve.Line):
+            dxf.line(ent.coords)
+        elif isinstance(ent,curve.Arc):
+            pass
+            #dxf.arc(ent.getCenter(),ent.radius,*ent.getAngles())
+        else:
+            utils.warn("Objects of type '%s' can not be exported to DXF file" % type(ent))
+
     dxf.endSection()
     dxf.close()
 
