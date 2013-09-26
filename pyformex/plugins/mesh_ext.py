@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -25,20 +25,89 @@
 
 """Extended functionality of the Mesh class.
 
-This module defines extended Mesh functionality which is considered to be
-experimental, maybe incomplete or even buggy.
+This module defines extended Mesh functionality.
 
-The functions in this module can be called as functions operating on a
-Mesh object, but are also available as Mesh methods.
+It adds some extra methods to the Mesh class. These may be experimental or
+not well tested methods.
+
+Furthermore it defines some functions that generate simple and often used
+standard meshes, mostly in 2D.
 """
 from __future__ import print_function
 
-from mesh import Mesh
-from formex import *
+from mesh import *
+from formex import Formex,interpolate
+import simple
 import utils
 
 
 ##############################################################################
+
+
+def smartSeed(n):
+    if isInt(n):
+        return seed(n)
+    elif isinstance(n,tuple):
+        return seed(*n)
+    elif isinstance(n,list):
+        return n
+    else:
+        raise ValueError,"Expected an integer, tuple or list"
+
+
+def rectangle(L,W,nl,nw):
+    """Create a plane rectangular mesh of quad4 elements
+
+    Parameters:
+
+    - L,W: length,width of the rectangle
+    - nl,nw: seeds for the elements along the length, width of the rectangle.
+      They should one of the following:
+
+      - an integer number, specifying the number of equally sized elements
+        along that direction,
+      - a tuple (n,) or (n,e0) or (n,e0,e1), to be used as parameters in the
+        :func:`mesh.seed` function,
+      - a list of float values in the range 0.0 to 1.0, specifying the relative
+        position of the seeds. The values should be ordered and the first and
+        last values should be 0.0 and 1.0.
+
+    """
+    sl = smartSeed(nl)
+    sw = smartSeed(nw)
+    return quadgrid(sl,sw).resized([L,W,1.0])
+
+
+def rectangle_with_hole(L,W,r,nr,nt,e0=0.0,eltype='quad4'):
+    """Create a quarter of rectangle with a central circular hole.
+
+    Parameters:
+
+    - L,W: length,width of the (quarter) rectangle
+    - r: radius of the hole
+    - nr,nt: number of elements over radial,tangential direction
+    - e0: concentration factor for elements in the radial direction
+
+    Returns a Mesh
+    """
+    L = W
+    import elements
+    base = elements.Quad9.vertices.scale([L,W,1.])
+    F0 = Formex([[[r,0.,0.]]]).rosette(5,90./4)
+    F2 = Formex([[[L,0.]],[[L,W/2]],[[L,W]],[[L/2,W]],[[0,W]]])
+    F1 = interpolate(F0,F2,div=[0.5])
+    FL = [F0,F1,F2]
+    X0,X1,X2 = [ F.coords.reshape(-1,3) for F in FL ]
+    trf0 = Coords([X0[0],X2[0],X2[2],X0[2],X1[0],X2[1],X1[2],X0[1],X1[1]])
+    trf1 = Coords([X0[2],X2[2],X2[4],X0[4],X1[2],X2[3],X1[4],X0[3],X1[3]])
+
+    seed0 = seed(nr,e0)
+    seed1 = seed(nt)
+    grid = quadgrid(seed0,seed1).resized([L,W,1.0])
+
+    grid0 = grid.isopar('quad9',trf0,base)
+    grid1 = grid.isopar('quad9',trf1,base)
+    return (grid0+grid1).fuse()
 
 
 def _add_extra_Mesh_methods():
@@ -93,15 +162,15 @@ def _add_extra_Mesh_methods():
            If negative, the full mesh will be processed at once.
 
         - `scaled`: if False returns the Jacobian at the corners of each element.
-        If scaled True, it returns a quality metrics, being the minumum value of the 
+        If scaled True, it returns a quality metrics, being the minumum value of the
         scaled Jacobian in each element (at one corner, the Jacobian divided by the volume of a perfect brick).
-        
+
         If scaled is True each tet or hex element gets a value between -1 and 1.
         Acceptable elements have a positive scaled Jacobian. However, good
         quality requires a minimum of 0.2. Quadratic meshes are first converted to linear.
         If the mesh contain mainly negative Jacobians, it probably has negative
         volumes and can be fixed with the  correctNegativeVolumes.
-        
+
         To reduce the memory required for large meshes, the blksize parameter can be used
         specify how many elements will be processed per time. Default 100000.
         """
@@ -142,9 +211,9 @@ def _add_extra_Mesh_methods():
 
     def elementToNodal(self, val):
         """Compute nodal values from element values.
-        
+
         Given scalar values defined on elements, finds the average values at the nodes.
-        Returns the average values at the (maxnodenr+1) nodes. Nodes not occurring in elems 
+        Returns the average values at the (maxnodenr+1) nodes. Nodes not occurring in elems
         will have all zero values.
         NB. It now works with scalar. It could be extended to vectors.
         """
@@ -152,11 +221,11 @@ def _add_extra_Mesh_methods():
         eval = column_stack(repeat([eval], self.nplex(), 0))#assign this area to all nodes of the elem
         nval = nodalSum(val=eval,elems=self.elems,avg=True,return_all=False)
         return nval.reshape(-1)
-    
-    
+
+
     def nodalToElement(self, val):
         """Compute element values from nodal values.
-        
+
         Given scalar values defined on nodes, finds the average values at elements.
         NB. It now works with scalar. It could be extended to vectors.
         """

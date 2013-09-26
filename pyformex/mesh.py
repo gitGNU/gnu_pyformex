@@ -2758,7 +2758,7 @@ def quad4_els(nx,ny):
 def quadgrid(seed0,seed1):
     """Create a quadrilateral mesh of unit size with the specified seeds.
 
-    The seeds are a monotuoudsly increasing series of parametric values
+    The seeds are a monotonously increasing series of parametric values
     in the range 0..1. They define the positions of the nodes in the
     parametric directions 0, resp. 1.
     Normally, the first and last values of the seeds are 0., resp. 1.,
