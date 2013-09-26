@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -42,7 +42,7 @@ def importDXF(filename):
 
     `filename`: name of a DXF file.
     The return value is a list of pyFormex objects.
-    
+
     Importing a DXF file is done in two steps:
 
     - First the DXF file is scanned and the recognized entities are
@@ -67,7 +67,7 @@ def readDXF(filename):
 
     Returns a multiline string with one line for each recognized entity,
     in a format that can directly be used by :func:`convertDXF`.
-    
+
     This function requires the external program `dxfparser` which comes
     with the pyFormex distribution. It currently recognizes entities of
     type 'Arc', 'Line', 'Polyline', 'Vertex'.
@@ -126,11 +126,11 @@ def convertDXF(text):
 
     No object is returned for the `Vertex` function: they define the
     vertices of a PolyLine.
-      
+
     """
     import types
     global Entities,Vertices
-    
+
     Entities = []
     Vertices = []
 
@@ -181,7 +181,7 @@ def convertDXF(text):
     def Vertex(x,y,z):
         global Entities,Vertices
         Vertices.append([x,y,z])
-        
+
 
     l = {'Line':Line, 'Arc':Arc, 'Circle':Circle, 'Polyline':Polyline, 'EndPolyline':EndPolyline, 'Vertex':Vertex}
     exec text in l
@@ -209,14 +209,14 @@ def toLines(coll,chordal=0.01,arcdiv=None):
     them in a single Formex.
     The chordal and arcdiv parameters are passed to :meth:`Arc.approx` to set
     the accuracy for the approximation of the Arc by line segments.
-    """ 
+    """
     Lines = []
     for k,v in coll.items():
         if k in [ 'Line', 'PolyLine' ]:
             Lines.extend([ a.toFormex() for a in v ] )
         elif k == 'Arc':
             Lines.extend([ a.toFormex(chordal=chordal,ndiv=arcdiv) for a in v ])
-    return Formex.concatenate(Lines) 
+    return Formex.concatenate(Lines)
 
 
 class DxfExporter(object):
@@ -246,7 +246,7 @@ class DxfExporter(object):
         The string does not include the line terminator.
         """
         self.fil.write(s+self.term)
-        
+
 
     def out(self,code,data):
         """Output a string data item to the dxf file.
@@ -257,13 +257,13 @@ class DxfExporter(object):
         self.write('%3s' % code)
         self.write('%s' % data)
 
-        
+
     def close(self):
         """Finalize and close the DXF file"""
         self.out(0,'EOF')
         self.fil.close()
-        
-        
+
+
     def section(self,name):
         """Start a new section"""
         self.out(0,'SECTION')
@@ -273,7 +273,7 @@ class DxfExporter(object):
     def endSection(self):
         """End the current section"""
         self.out(0,'ENDSEC')
-        
+
 
     def entities(self):
         """Start the ENTITIES section"""
@@ -295,6 +295,23 @@ class DxfExporter(object):
         for j in range(2):
             for i in range(3):
                 self.out(10*(i+1)+j,x[j][i])
+
+
+    def arc(self,C,R,a1,a2,layer=0):
+        """Export an arc.
+
+        """
+        self.out(0,'ARC')
+        self.out(8,layer)
+        for k,v in [
+            (10,C[0]),
+            (20,C[1]),
+            (30,C[2]),
+            (40,R),
+            (51,a1),
+            (52,a2),
+            ]:
+            self.out(k,v))
 
 
 def exportDXF(filename,F):
