@@ -209,14 +209,10 @@ def exportDxf():
     """
     parts = named('_dxf_sel_')
     if parts:
-        #utils.warn("warn_dxf_export")
-        #convertToFormex()
-        #exportLines()
         types = utils.fileDescription(['dxf'])
         cur = pf.cfg['workdir']
         fn = askFilename(cur=cur,filter=types,exist=False)
         if fn:
-            print(parts)
             dxf.exportDxf(fn,parts)
 
 
