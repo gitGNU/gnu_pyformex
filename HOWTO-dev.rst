@@ -729,209 +729,6 @@ you will be able to just do ::
     pysea PATTERN
 
 
-Creating pyFormex documentation
-===============================
-
-The pyFormex documentation (as well as the website) are created by the
-**Sphinx** system from source files written in ReST (ReStructuredText).
-The source files are in the ``sphinx`` directory of your svn tree and
-have an extension ``.rst``.
-
-Install Sphinx
---------------
-You need a (slightly) patched version of Sphinx. The patch adds a small
-functionality leaving normal operation intact.
-Therefore, if you have root
-access, we advise to just patch a normally installed version of Sphinx.
-
-- First, install the required packages. On Debian GNU/Linux do ::
-
-    apt-get install dvipng python-sphinx
-
-- Then patch the sphinx installation. Find out where the installed Sphinx
-  package resides. On Debian this is ``/usr/share/pyshared/sphinx``.
-  The pyformex source tree contains the required patch in a file
-  ``sphinx/sphinx-1.1.3-bv.diff``. It was created for Sphinx 1.1.3 but will
-  probably work for slightly older or newer versions as well.
-  Do the following as root::
-
-    cd /usr/share/pyshared/sphinx
-    patch -p1 --dry-run < TOPDIR/sphinx/sphinx-1.1.3-bv.diff
-
-  This will only test the patching. If all hunks succeed, run the
-  command again without the '--dry-run'::
-
-    patch -p1 < ???/pyformex/sphinx/sphinx-1.1.3-bv.diff
-
-The patched version allows you to specify a negative number for the
-`:numbered:` option in a toctree. See the following extract from `refman.rst`
-for an example::
-
-  .. toctree::
-     :maxdepth: 1
-     :numbered: -1
-
-This means that the modules listed thereafter will be descended 1 level deep
-and be numbered one level deep. But unlike the default working of sphinx (with
-positive value), the modules in different toctrees in the same document are
-numbered globally over the document, instead of restarting at 1 for every
-toctree.
-
-
-Writing documentation source files
-----------------------------------
-Documentation is written in ReST (ReStructuredText). The source files are
-in the ``sphinx`` directory of your svn tree and have an extension ``.rst``.
-
-When you create a new .rst files with the following header::
-
-  .. $Id$
-  .. pyformex documentation --- chaptername
-  ..
-  .. include:: defines.inc
-  .. include:: links.inc
-  ..
-  .. _cha:partname:
-
-Replace in this header chaptername with the documentation chapter name.
-
-See also the following links for more information:
-
-- guidelines for documenting Python: http://docs.python.org/documenting/index.html
-- Sphinx documentation: http://sphinx.pocoo.org/
-- ReStructuredText page of the docutils project: http://docutils.sourceforge.net/rst.html
-
-When refering to pyFormex as the name of the software or project,
-always use the upper case 'F'. When refering to the command to run
-the program, or a directory path name, use all lower case: ``pyformex``.
-
-The source .rst files in the ``sphinx/ref`` directory are automatically
-generated with the ``py2rst.py`` script. They will generate the pyFormex
-reference manual automatically from the docstrings in the Python
-source files of pyFormex. Never add or change any of the .rst files in
-``sphinx/ref`` directly. Also, these files should *not* be added to the
-svn repository.
-
-
-Adding image files
-------------------
-
-- Put original images in the subdirectory ``images``.
-
-- Create images with a transparent or white background.
-
-- Use PNG images whenever possible.
-
-- Create the reasonable size for inclusion on a web page. Use a minimal canvas size and maximal zooming.
-
-- Give related images identical size (set canvas size and use autozoom).
-
-- Make composite images to combine multiple small images in a single large one.
-  If you have ``ImageMagick``, the following command create a horizontal
-  composition ``result.png``  of three images::
-
-     convert +append image-000.png image-001.png image-003.png result.png
-
-
-Create the pyFormex manual
---------------------------
-
-The pyFormex documentation is normally generated in HTML format, allowing it
-to be published on the website. This is also the format that is included in
-the pyFormex distributions. Alternative formats (like PDF) may also be
-generated and made available online, but are not distributed with pyFormex.
-
-The ``make`` commands to generate the documentation are normally executed
-from the ``sphinx`` directory (though some work from the ``TOPDIR`` as well).
-
-- Create the html documentation ::
-
-   make html
-
-  This will generate the documentation in `sphinx/_build/html`, but
-  these files are *not* in the svn tree and will not be used in the
-  pyFormex **Help** system, nor can they be made available to the public
-  directly.
-  Check the correctness of the generated files by pointing your
-  browser to `sphinx/_build/html/index.html`.
-
-- The make procedure often produces a long list of warnings and errors.
-  You may therefore prefer to use the following command instead ::
-
-    make html 2>&1 | tee > errors
-
-  This will log the stdout and stderr to a file ``errors``, where you
-  can check afterwards what needs to be fixed.
-
-- When the generated documentation seems ok, include the files into
-  the pyFormex SVN tree (under ``pyformex/doc/html``) and thus into
-  the **Help** system of pyFormex ::
-
-   make incdoc
-
-  Note: If you created any *new* files, do not forget to ``svn add`` them.
-
-- A PDF version of the full manual can be created with ::
-
-   make latexpdf
-
-  This will put the PDF manual in ``sphinx/_build/latex``.
-
-The newly generated documentation is not automatically published on the
-pyFormex website. Currently, only the project manager can do that. After you
-have made substantial improvements (and checked them in), you should contact
-the project manager and ask him to publish the new docs.
-
-
-Create a distribution
-=====================
-
-A distribution (or package) is a full set of all pyFormex files
-needed to install and run it on a system, packaged in a single archive
-together with an install procedure. This is primarily targeted at normal
-users that want a stable system and are not doing development work.
-
-Distribution of pyFormex is done in the form of a 'tarball' (.tar.gz) archive.
-You need to have `python-svn` and `python-docutils` installed to create the
-distribution tarball. Also, you need to create a subdirectory `dist` in
-your pyFormex source tree.
-
-Before creating an official distribution, checkin your last modifications and
-update your tree, so that your current svn version corresponds to a single
-unchanged revision version in the repository.
-In the top directory of your svn tree do ::
-
-  svn ci
-  svn up
-  make bumprelease
-  make dist
-
-This will create the package file `pyformex-${VERSION}.tar.gz` in
-`dist/`.  The version is read from the `RELEASE` file in the top
-directory. Do not change the *VERSION* or *RELEASE* settings in this
-file by hand: we have make commands to do this (see below). Make sure
-that the *RELEASE* contains a trailing field (*rNUMBER*).
-This means that it is an intermediate, unsupported release.
-Official, supported releases do not have the trailer.
-
-Any developer can create intermediate release tarballs and distribute them.
-However, *currently only the project manager is allowed
-to create and distribute official releases!*
-
-After you have tested that pyFormex installation and operation from the
-resulting works fine, you can distribute the package to other users, e.g.
-by passing them the package file explicitely (make sure they understand the
-alpha status) or by uploading the file to our local file server.
-Once the package file has been distributed by any means, you should immediately
-bump the version, so that the next created distribution will have a higher number::
-
-  make bumpversion
-  svn ci -M "Bumping version after creating distribution"
-
-.. note:: There is a (rather small) risk here that two developers might
-  independently create a release with the same number.
-
-
 Style guidelines for source and text files
 ==========================================
 
@@ -1167,6 +964,204 @@ Docstrings
   example.
 
 
+Creating pyFormex documentation
+===============================
+
+The pyFormex documentation (as well as the website) are created by the
+**Sphinx** system from source files written in ReST (ReStructuredText).
+The source files are in the ``sphinx`` directory of your svn tree and
+have an extension ``.rst``.
+
+Install Sphinx
+--------------
+You need a (slightly) patched version of Sphinx. The patch adds a small
+functionality leaving normal operation intact.
+Therefore, if you have root
+access, we advise to just patch a normally installed version of Sphinx.
+
+- First, install the required packages. On Debian GNU/Linux do ::
+
+    apt-get install dvipng python-sphinx
+
+- Then patch the sphinx installation. Find out where the installed Sphinx
+  package resides. On Debian this is ``/usr/share/pyshared/sphinx``.
+  The pyformex source tree contains the required patch in a file
+  ``sphinx/sphinx-1.1.3-bv.diff``. It was created for Sphinx 1.1.3 but will
+  probably work for slightly older or newer versions as well.
+  Do the following as root::
+
+    cd /usr/share/pyshared/sphinx
+    patch -p1 --dry-run < TOPDIR/sphinx/sphinx-1.1.3-bv.diff
+
+  This will only test the patching. If all hunks succeed, run the
+  command again without the '--dry-run'::
+
+    patch -p1 < ???/pyformex/sphinx/sphinx-1.1.3-bv.diff
+
+The patched version allows you to specify a negative number for the
+`:numbered:` option in a toctree. See the following extract from `refman.rst`
+for an example::
+
+  .. toctree::
+     :maxdepth: 1
+     :numbered: -1
+
+This means that the modules listed thereafter will be descended 1 level deep
+and be numbered one level deep. But unlike the default working of sphinx (with
+positive value), the modules in different toctrees in the same document are
+numbered globally over the document, instead of restarting at 1 for every
+toctree.
+
+
+Writing documentation source files
+----------------------------------
+Documentation is written in ReST (ReStructuredText). The source files are
+in the ``sphinx`` directory of your svn tree and have an extension ``.rst``.
+
+When you create a new .rst files with the following header::
+
+  .. $Id$
+  .. pyformex documentation --- chaptername
+  ..
+  .. include:: defines.inc
+  .. include:: links.inc
+  ..
+  .. _cha:partname:
+
+Replace in this header chaptername with the documentation chapter name.
+
+See also the following links for more information:
+
+- guidelines for documenting Python: http://docs.python.org/documenting/index.html
+- Sphinx documentation: http://sphinx.pocoo.org/
+- ReStructuredText page of the docutils project: http://docutils.sourceforge.net/rst.html
+
+When refering to pyFormex as the name of the software or project,
+always use the upper case 'F'. When refering to the command to run
+the program, or a directory path name, use all lower case: ``pyformex``.
+
+The source .rst files in the ``sphinx/ref`` directory are automatically
+generated with the ``py2rst.py`` script. They will generate the pyFormex
+reference manual automatically from the docstrings in the Python
+source files of pyFormex. Never add or change any of the .rst files in
+``sphinx/ref`` directly. Also, these files should *not* be added to the
+svn repository.
+
+
+Adding image files
+------------------
+
+- Put original images in the subdirectory ``images``.
+
+- Create images with a transparent or white background.
+
+- Use PNG images whenever possible.
+
+- Create the reasonable size for inclusion on a web page. Use a minimal canvas size and maximal zooming.
+
+- Give related images identical size (set canvas size and use autozoom).
+
+- Make composite images to combine multiple small images in a single large one.
+  If you have ``ImageMagick``, the following command create a horizontal
+  composition ``result.png``  of three images::
+
+     convert +append image-000.png image-001.png image-003.png result.png
+
+
+Create the pyFormex manual
+--------------------------
+
+The pyFormex documentation is normally generated in HTML format, allowing it
+to be published on the website. This is also the format that is included in
+the pyFormex distributions. Alternative formats (like PDF) may also be
+generated and made available online, but are not distributed with pyFormex.
+
+The ``make`` commands to generate the documentation are normally executed
+from the ``sphinx`` directory (though some work from the ``TOPDIR`` as well).
+
+- Create the html documentation ::
+
+   make html
+
+  This will generate the documentation in `sphinx/_build/html`, but
+  these files are *not* in the svn tree and will not be used in the
+  pyFormex **Help** system, nor can they be made available to the public
+  directly.
+  Check the correctness of the generated files by pointing your
+  browser to `sphinx/_build/html/index.html`.
+
+- The make procedure often produces a long list of warnings and errors.
+  You may therefore prefer to use the following command instead ::
+
+    make html 2>&1 | tee > errors
+
+  This will log the stdout and stderr to a file ``errors``, where you
+  can check afterwards what needs to be fixed.
+
+- When the generated documentation seems ok, include the files into
+  the pyFormex SVN tree (under ``pyformex/doc/html``) and thus into
+  the **Help** system of pyFormex ::
+
+   make incdoc
+
+  Note: If you created any *new* files, do not forget to ``svn add`` them.
+
+- A PDF version of the full manual can be created with ::
+
+   make latexpdf
+
+  This will put the PDF manual in ``sphinx/_build/latex``.
+
+The newly generated documentation is not automatically published on the
+pyFormex website. Currently, only the project manager can do that. After you
+have made substantial improvements (and checked them in), you should contact
+the project manager and ask him to publish the new docs.
+
+
+Create a distribution
+=====================
+
+A distribution (or package) is a full set of all pyFormex files
+needed to install and run it on a system, packaged in a single archive
+together with an install procedure. This is primarily targeted at normal
+users that want a stable system and are not doing development work.
+
+Distribution of pyFormex is done in the form of a 'tarball' (.tar.gz) archive.
+You need to have `python-git` and `python-docutils` installed to create the
+distribution tarball. Also, you need to create a subdirectory `dist` in
+your pyFormex source tree.
+
+Before creating an official distribution, update your tree and commit your
+last modifications. Then, in the top directory of your git repo, do ::
+
+  make dist
+
+This will create the package file `pyformex-${VERSION}.tar.gz` in
+`dist/`. The version is read from the `RELEASE` file in the top
+directory. Do not change the *VERSION* or *RELEASE* settings in this
+file by hand: we have `make` commands to do this (see below). Make sure
+that the *RELEASE* contains a trailing field (*aNUMBER*).
+This means that it is an (alpha) intermediate, unsupported release.
+Official, supported releases do not have the trailer.
+
+Any developer can create intermediate release tarballs and distribute them.
+However, *currently only the project manager is allowed
+to create and distribute official releases!*
+
+After you have tested that pyFormex installation and operation from the
+resulting works fine, you can distribute the package to other users, e.g.
+by passing them the package file explicitely (make sure they understand the
+alpha status) or by uploading the file to our local file server.
+Once the package file has been distributed by any means, you should immediately
+bump the version, so that the next created distribution will have a higher number::
+
+  make bumpversion
+  git ci -m "Bump version after creating distribution file"
+
+.. note:: There is a (rather small) risk here that two developers might
+  independently create a release with the same number.
+
+
 Things that have to be done by the project manager
 ==================================================
 
@@ -1214,11 +1209,13 @@ Publish the documentation
 Release a distribution to the general public
 --------------------------------------------
 
-First, create the distribution and test it out locally: both the installation procedure and the operation of the installed program. A working SVN program is not enough. Proceed only when everything works fine.
+First, create the distribution and test it out locally: both the installation
+procedure and the operation of the installed program. A working development
+version is not enough. Proceed only when everything works fine.
 
 - Set the final version in RELEASE (RELEASE==VERSION) ::
 
-   edt RELEASE    # Remove the ~a tail
+   edt RELEASE    # Remove the a* tail
    make version
 
 - Stamp the files with the version ::

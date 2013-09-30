@@ -940,11 +940,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         of elements.
         """
         p = self.partitionByConnection(level=level,startat=startat,sort=sort)
-        split = self.setProp(p).splitProp()
-        if split:
-            return split
-        else:
-            return [ self ]
+        return self.splitProp(p)
 
 
     def largestByConnection(self,level=0):
@@ -1254,9 +1250,15 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
     def select(self,selected,compact=True):
         """Return a Mesh only holding the selected elements.
 
+        Parameters:
+
         - `selected`: an object that can be used as an index in the
-          `elems` array, e.g. a list of (integer) element numbers,
-          or a boolean array with the same length as the `elems` array.
+          `elems` array, such as
+
+          - a single element number
+          - a list, or array, of element numbers
+          - a bool array of length self.nelems(), where True values flag the
+            elements to be selected
 
         - `compact`: boolean. If True (default), the returned Mesh will be
           compacted, i.e. the unused nodes are removed and the nodes are
@@ -1265,7 +1267,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
         Returns a Mesh (or subclass) with only the selected elements.
 
-        See `cselect` for the complementary operation.
+        See :meth:`cselect` for the complementary operation.
         """
         M = self.__class__(self.coords,self.elems[selected],eltype=self.elType())
         if self.prop is not None:
@@ -1278,9 +1280,15 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
     def cselect(self,selected,compact=True):
         """Return a mesh without the selected elements.
 
+        Parameters:
+
         - `selected`: an object that can be used as an index in the
-          `elems` array, e.g. a list of (integer) element numbers,
-          or a boolean array with the same length as the `elems` array.
+          `elems` array, such as
+
+          - a single element number
+          - a list, or array, of element numbers
+          - a bool array of length self.nelems(), where True values flag the
+            elements to be selected
 
         - `compact`: boolean. If True (default), the returned Mesh will be
           compacted, i.e. the unused nodes are removed and the nodes are
@@ -1289,7 +1297,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
         Returns a Mesh with all but the selected elements.
 
-        This is the complimentary operation of `select`.
+        This is the complimentary operation of :meth:`select`.
         """
         return self.select(complement(selected,self.nelems()),compact=compact)
 
@@ -1397,7 +1405,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
         If the Mesh has no properties, a copy with all elements is returned.
         """
-        ps=self.propSet()
+        ps = self.propSet()
         if type(val)==int:
             t=ps==val
         else:
@@ -1442,22 +1450,6 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         """
         hi = self.elems.insertLevel(level)[0]
         return hi.hits(nodes=entities)
-
-
-    def splitProp(self):
-        """Partition a Mesh according to its prop values.
-
-        Returns a list of Meshes. Each Mesh contains all the elements with
-        property number equal to one of the unique values in the property set.
-        The Meshes in the list are given in order of ascending property
-        number. Each Mesh has this value set as property number for all its
-        elements
-        It the Mesh has no props, an empty list is returned.
-        """
-        if self.prop is None:
-            return []
-        else:
-            return [ self.withProp(p) for p in self.propSet() ]
 
 
     def splitRandom(self,n,compact=True):
