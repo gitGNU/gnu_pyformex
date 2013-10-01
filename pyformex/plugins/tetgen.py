@@ -368,7 +368,7 @@ def writeSmesh(fn,facets,coords=None,holes=None,regions=None):
 
 def writeTmesh(fn,elems,offset=0):
     """Write a tetgen .ele file.
-    
+
     Writes elements of a tet4 mesh.
     """
     elems = asarray(elems).reshape((-1,4))
@@ -394,8 +394,8 @@ def writeTetMesh(fn,coords,elems):
 
     The provided file name is the .node or the .ele filename.
     """
-    writeNodes(fn+'.node',coords)
-    writeTmesh(fn+'.ele',elems)
+    writeNodes(utils.changeExt(fn,'.node'),coords)
+    writeTmesh(utils.changeExt(fn,'.ele'),elems)
 
 
 def nextFilename(fn):
@@ -462,14 +462,14 @@ def readTetgen(fn):
 
 def tetgenConvexHull(pts):
     """Tetralize the convex hull of some points.
-    
+
     Finds the convex hull some points and returns
     a tet mesh of the convex hull and the convex hull (tri3 mesh).
-    
+
     If all points are on the same plane there is no convex hull.
-    
+
     This could be made an example:
-    
+
     from simple import regularGrid
     X = Coords(regularGrid([0., 0., 0.], [1., 1., 1.], [10, 10, 10]).reshape(-1, 3)).addNoise(rsize=0.05,asize=0.5)
     draw(X)
