@@ -383,19 +383,23 @@ def writeTmesh(fn,elems,offset=0):
 def writeSurface(fn,coords,elems):
     """Write a tetgen surface model to .node and .smesh files.
 
-    The provided file name is the .node or the .smesh filename.
+    The provided file name is either the .node or the .smesh filename,
+    or else it is the basename where .node and .smesh extensions will
+    be appended.
     """
-    writeNodes(utils.changeExt(fn,'.node'),coords)
-    writeSmesh(utils.changeExt(fn,'.smesh'),elems)
+    writeNodes(utils.changeExt(fn,'.node',accept_ext=['.node','.smesh']),coords)
+    writeSmesh(utils.changeExt(fn,'.smesh',accept_ext=['.node','.smesh']),elems)
 
 
 def writeTetMesh(fn,coords,elems):
     """Write a tetgen tetrahedral mesh model to .node and .ele files.
 
-    The provided file name is the .node or the .ele filename.
+    The provided file name is either the .node or the .smesh filename,
+    or else it is the basename where .node and .ele extensions will
+    be appended.
     """
-    writeNodes(utils.changeExt(fn,'.node'),coords)
-    writeTmesh(utils.changeExt(fn,'.ele'),elems)
+    writeNodes(utils.changeExt(fn,'.node',accept_ext=['.node','.ele']),coords)
+    writeTmesh(utils.changeExt(fn,'.ele',accept_ext=['.node','.ele']),elems)
 
 
 def nextFilename(fn):
