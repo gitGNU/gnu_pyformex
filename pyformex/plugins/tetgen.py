@@ -394,8 +394,8 @@ def writeTetMesh(fn,coords,elems):
 
     The provided file name is the .node or the .ele filename.
     """
-    writeNodes(utils.changeExt(fn,'.node'),coords)
-    writeTmesh(utils.changeExt(fn,'.ele'),elems)
+    writeNodes(fn+'.node',coords)
+    writeTmesh(fn+'.ele',elems)
 
 
 def nextFilename(fn):
