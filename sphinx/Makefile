@@ -180,7 +180,7 @@ doctest:
 prereq: ref pyformex.help
 
 ref:
-	make -s -C ref
+	make -s -C ref # We should add logging here
 
 pyformex.help: ../pyformex/pyformex
 	../pyformex/pyformex --help > $@

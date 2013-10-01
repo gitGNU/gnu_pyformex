@@ -141,8 +141,8 @@ These modules are located under pyformex/gui.
    ref/viewport
    ref/camera
    ref/image
-   ref/imagearray
    ref/imageViewer
+   ref/imagearray
    ref/appMenu
    ref/toolbar
 

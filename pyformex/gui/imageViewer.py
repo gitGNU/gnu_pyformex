@@ -6,7 +6,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -39,7 +39,20 @@ def tr(s):
 
 
 class ImageViewer(QtGui.QMainWindow):
+    """pyFormex image viewer
 
+    The pyFormex image viewer was shaped after the Image Viewer from the
+    TrollTech Qt documentation.
+
+    It can be use as stand alone application, as well as from inside
+    pyFormex. The viewer allows browsing through directories, selecting
+    an image to be displayed. The image can be resized to fit a window.
+
+    Parameters:
+
+    - `parent`: The parent Qt4 widget (the Qt4 app in the stand alone case).
+    - `path`: string: the full path to the image to be initially displayed.
+    """
 
     def __init__(self,parent=None,path=None):
         QtGui.QMainWindow.__init__(self)

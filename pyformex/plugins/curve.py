@@ -52,24 +52,24 @@ class Curve(Geometry):
 
     Attributes:
 
-    :coords: coordinates of points defining the curve
-    :parts:  number of parts (e.g. straight segments of a polyline)
-    :closed: is the curve closed or not
-    :range: [min,max] : range of the parameter: default 0..1
+    - `coords`: coordinates of points defining the curve
+    - `parts`:  number of parts (e.g. straight segments of a polyline)
+    - `closed`: is the curve closed or not
+    - `range`: [min,max], range of the parameter: default 0..1
 
     Methods:
 
-    :sub_points(t,j): returns points at parameter value t,j
-    :sub_directions(t,j): returns direction at parameter value t,j
-    :pointsOn(): the defining points placed on the curve
-    :pointsOff(): the defining points placeded off the curve (control points)
-    :parts(j,k):
-    :approx(ndiv,ntot):
+    - `sub_points(t,j)`: returns points at parameter value t,j
+    - `sub_directions(t,j)`: returns direction at parameter value t,j
+    - `pointsOn()`: the defining points placed on the curve
+    - `pointsOff()`: the defining points placeded off the curve (control points)
+    - `parts(j,k)`:
+    - `approx(ndiv,ntot)`:
 
     Furthermore it may define, for efficiency reasons, the following methods:
 
-    :sub_points_2:
-    :sub_directions_2:
+    - `sub_points_2`
+    - `sub_directions_2`
 
     """
 

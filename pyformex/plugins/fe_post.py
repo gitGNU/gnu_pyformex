@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -23,14 +23,8 @@
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
 
-"""A postprocessor for ABAQUS output files.
+"""A class for holding results from Finite Element simulations.
 
-The ABAQUS .fil output file can be scanned and translated into a pyFormex
-script with the 'postabq' command. Use it as follows::
-
-   postabq job.fil > job.py
-
-Then execute the created script from inside pyFormex.
 """
 from __future__ import print_function
 
@@ -42,6 +36,45 @@ from odict import ODict
 import re
 
 class FeResult(object):
+    """Finite Element Results Database.
+
+    This class can hold a collection of results from a Finite Element
+    simulation. While the class was designed for the post-processing
+    of Abaqus (tm) results, it can be used more generally to store
+    results from any program performing simulations over a mesh.
+
+    pyFormex comes with an included program `postabq` that scans an
+    Abaqus .fil output file and translates it into a pyFormex script.
+    Use it as follows::
+
+      postabq job.fil > job.py
+
+    Then execute the created script `job.py` from inside pyFormex. This
+    will create an FeResult instance with all the recognized results.
+
+    The structure of the FeResult class very closely follows that
+    of the Abaqus results database. There are some attributes
+    with general info and with the geometry (mesh) of the domain.
+    The simulation results are divided in 'steps' and inside each step
+    in 'increments'. Increments are usually connected to incremental time
+    and so are often the steps, though it is up to the user to interprete
+    the time. Steps could just as well be different unrelated simulations
+    performed over the same geometry.
+
+    In each step/increment result block, individual values can be accessed
+    by result codes. The naming mostly follows the result codes in Abaqus,
+    but components of vector/tensor values are number starting from 0, as
+    in Python and pyFormex.
+
+    Result codes:
+
+    - `U`: displacement vector
+    - `U0`, `U1`, `U2` : x, y, resp. z-component of displacement
+    - `S`: stress tensor
+    - `S0` .. `S5`: components of the (symmetric) stress tensor:
+       0..2 : x, y, z normal stress
+       3..5 : xy, yz, zx shear stress
+    """
 
     _name_ = '__FePost__'
     re_Skey = re.compile("S[0-5]")
@@ -97,7 +130,7 @@ class FeResult(object):
         self.displ = self.dofs[self.dofs[:6] > 0]
         if self.displ.max() > 3:
             self.datasize['U'] = 6
-        
+
     def Heading(self,head):
         self.about.update({'heading':head})
 
@@ -136,7 +169,7 @@ class FeResult(object):
         self.res = ODict()
         self.step = None
         self.inc = None
- 
+
     def Increment(self,step,inc,**kargs):
         """Add a new step/increment to the database.
 
@@ -159,7 +192,7 @@ class FeResult(object):
                 res[inc] = {}
             self.inc = inc
         self.R = self.res[self.step][self.inc]
-        
+
     def EndIncrement(self):
         if not self.modeldone:
             self.Finalize()
@@ -240,12 +273,12 @@ class FeResult(object):
         """Return all the incs for given step."""
         if step in self.res:
             return self.res[step].keys()
-        
+
     def nextStep(self):
         """Skips to the start of the next step."""
         if self.step < self.getSteps()[-1]:
             self.setStepInc(self.step+1)
-        
+
     def nextInc(self):
         """Skips to the next increment.
 
@@ -256,12 +289,12 @@ class FeResult(object):
             self.setStepInc(self.step,self.inc+1)
         else:
             self.nextStep()
-        
+
     def prevStep(self):
         """Skips to the start of the previous step."""
         if self.step > 1:
             self.setStepInc(self.step-1)
-        
+
     def prevInc(self):
         """Skips to the previous increment.
 
@@ -275,7 +308,7 @@ class FeResult(object):
                 step = self.step-1
                 inc = self.getIncs(step)[-1]
             self.setStepInc(step,inc)
-     
+
 
     def getres(self,key,domain='nodes'):
         """Return the results of the current step/inc for given key.
@@ -306,7 +339,7 @@ class FeResult(object):
         else:
             return None
 
-        
+
     def printSteps(self):
         """Print the steps/increments/resultcodes for which we have results."""
         if self.res is not None:
