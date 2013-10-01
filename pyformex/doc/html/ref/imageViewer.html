@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>30. imageViewer — A general image viewer &mdash; pyFormex 0.9.1a1 documentation</title>
+    <title>29. imageViewer — A general image viewer &mdash; pyFormex 0.9.1a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -54,8 +54,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="pyFormex 0.9.1a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="31. appMenu — Menu with pyFormex apps." href="appMenu.html" />
-    <link rel="prev" title="29. imagearray — Convert bitmap images into numpy arrays." href="imagearray.html" />
+    <link rel="next" title="30. imagearray — Convert bitmap images into numpy arrays." href="imagearray.html" />
+    <link rel="prev" title="28. image — Saving OpenGL renderings to image files." href="image.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -78,10 +78,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="appMenu.html" title="31. appMenu — Menu with pyFormex apps."
+          <a href="imagearray.html" title="30. imagearray — Convert bitmap images into numpy arrays."
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="imagearray.html" title="29. imagearray — Convert bitmap images into numpy arrays."
+          <a href="image.html" title="28. image — Saving OpenGL renderings to image files."
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">pyFormex 0.9.1a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
@@ -102,11 +102,11 @@
    
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="imagearray.html"
-                        title="previous chapter">29. <tt class="docutils literal docutils literal"><span class="pre">imagearray</span></tt> &#8212; Convert bitmap images into numpy arrays.</a></p>
+  <p class="topless"><a href="image.html"
+                        title="previous chapter">28. <tt class="docutils literal docutils literal docutils literal"><span class="pre">image</span></tt> &#8212; Saving OpenGL renderings to image files.</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="appMenu.html"
-                        title="next chapter">31. <tt class="docutils literal docutils literal"><span class="pre">appMenu</span></tt> &#8212; Menu with pyFormex apps.</a></p>
+  <p class="topless"><a href="imagearray.html"
+                        title="next chapter">30. <tt class="docutils literal docutils literal"><span class="pre">imagearray</span></tt> &#8212; Convert bitmap images into numpy arrays.</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -141,9 +141,25 @@
           <div class="body">
             
   <div class="section" id="module-imageViewer">
-<span id="imageviewer-a-general-image-viewer"></span><span id="sec-ref-imageviewer"></span><h1>30. <a class="reference internal" href="#module-imageViewer" title="imageViewer: A general image viewer"><tt class="xref py py-mod docutils literal"><span class="pre">imageViewer</span></tt></a> &#8212; A general image viewer<a class="headerlink" href="#module-imageViewer" title="Permalink to this headline">¶</a></h1>
+<span id="imageviewer-a-general-image-viewer"></span><span id="sec-ref-imageviewer"></span><h1>29. <a class="reference internal" href="#module-imageViewer" title="imageViewer: A general image viewer"><tt class="xref py py-mod docutils literal"><span class="pre">imageViewer</span></tt></a> &#8212; A general image viewer<a class="headerlink" href="#module-imageViewer" title="Permalink to this headline">¶</a></h1>
 <p>Part of this code was borrowed from the TrollTech Qt examples.</p>
 <p><tt class="docutils literal"><span class="pre">Classes</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">imageViewer</span></tt></p>
+<dl class="class">
+<dt id="imageViewer.ImageViewer">
+<em class="property">class </em><tt class="descclassname">imageViewer.</tt><tt class="descname">ImageViewer</tt><big>(</big><em>parent=None</em>, <em>path=None</em><big>)</big><a class="headerlink" href="#imageViewer.ImageViewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>pyFormex image viewer</p>
+<p>The pyFormex image viewer was shaped after the Image Viewer from the
+TrollTech Qt documentation.</p>
+<p>It can be use as stand alone application, as well as from inside
+pyFormex. The viewer allows browsing through directories, selecting
+an image to be displayed. The image can be resized to fit a window.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>parent</cite>: The parent Qt4 widget (the Qt4 app in the stand alone case).</li>
+<li><cite>path</cite>: string: the full path to the image to be initially displayed.</li>
+</ul>
+</dd></dl>
+
 <p><tt class="docutils literal"><span class="pre">Functions</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">imageViewer</span></tt></p>
 </div>
 
@@ -163,10 +179,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="appMenu.html" title="31. appMenu — Menu with pyFormex apps."
+          <a href="imagearray.html" title="30. imagearray — Convert bitmap images into numpy arrays."
              >next</a> |</li>
         <li class="right" >
-          <a href="imagearray.html" title="29. imagearray — Convert bitmap images into numpy arrays."
+          <a href="image.html" title="28. image — Saving OpenGL renderings to image files."
              >previous</a> |</li>
         <li><a href="../index.html">pyFormex 0.9.1a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
@@ -176,7 +192,7 @@
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Jun 14, 2013.
+      Last updated on Oct 01, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

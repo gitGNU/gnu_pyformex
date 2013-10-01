@@ -476,12 +476,11 @@ to split all all nodes.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Arc.getCoords">
-<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc.getCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coords data.</p>
-<p>Returns the full array of coordinates stored in the Geometry object.
-Note that subclasses may store more points in this array than are used
-to define the geometry.</p>
+<dt id="curve.Arc.toProp">
+<tt class="descname">toProp</tt><big>(</big><em>prop</em><big>)</big><a class="headerlink" href="#curve.Arc.toProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the argument into a legal set of properties for the object.</p>
+<p>The conversion involves resizing the argument to a 1D array of
+length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
@@ -493,9 +492,12 @@ method.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Arc.level">
-<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc.level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
+<dt id="curve.Arc.getCoords">
+<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc.getCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the coords data.</p>
+<p>Returns the full array of coordinates stored in the Geometry object.
+Note that subclasses may store more points in this array than are used
+to define the geometry.</p>
 </dd></dl>
 
 <dl class="method">
@@ -520,20 +522,9 @@ completely in future.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Arc.copy">
-<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a deep copy of the object.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.Arc.resized">
-<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.Arc.resized" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a copy of the Geometry scaled to the given size.</p>
-<p>size can be a single value or a list of three values for the
-three coordinate directions. If it is a single value, all directions
-are scaled to the same size.
-Directions for which the geometry has a size smaller than tol times
-the maximum size are not rescaled.</p>
+<dt id="curve.Arc.level">
+<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
 </dd></dl>
 
 <dl class="method">
@@ -547,6 +538,14 @@ their own drawing routines.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.Arc.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a deep copy of the Geometry  object.</p>
+<p>The returned object is an exact copy of the input, but has
+all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.Arc.setProp">
 <tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.Arc.setProp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create or destroy the property array for the Formex.</p>
@@ -556,6 +555,35 @@ You can specify a single value or a list/array of integer values.
 If the number of passed values is less than the number of elements,
 they wil be repeated. If you give more, they will be ignored.</p>
 <p>If a value None is given, the properties are removed from the Formex.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Arc.splitProp">
+<tt class="descname">splitProp</tt><big>(</big><em>prop=None</em><big>)</big><a class="headerlink" href="#curve.Arc.splitProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition a Geometry (Formex/Mesh) according to the values in prop.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>prop</cite>: an int array with length self.nelems(), or None. If None,
+the <cite>prop</cite> attribute of the Geometry is used.</li>
+</ul>
+<p>Returns a list of Geometry objects of the same type as the input.
+Each object contains all the elements having the same value of <cite>prop</cite>.
+The number of objects in the list is equal to the number of unique
+values in <cite>prop</cite>. The list is sorted in ascending order of their
+<cite>prop</cite> value.</p>
+<p>It <cite>prop</cite> is None and the the object has no <cite>prop</cite> attribute, an empty
+list is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Arc.resized">
+<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.Arc.resized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the Geometry scaled to the given size.</p>
+<p>size can be a single value or a list of three values for the
+three coordinate directions. If it is a single value, all directions
+are scaled to the same size.
+Directions for which the geometry has a size smaller than tol times
+the maximum size are not rescaled.</p>
 </dd></dl>
 
 <dl class="method">
@@ -915,12 +943,11 @@ to split all all nodes.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Arc3.getCoords">
-<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc3.getCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coords data.</p>
-<p>Returns the full array of coordinates stored in the Geometry object.
-Note that subclasses may store more points in this array than are used
-to define the geometry.</p>
+<dt id="curve.Arc3.toProp">
+<tt class="descname">toProp</tt><big>(</big><em>prop</em><big>)</big><a class="headerlink" href="#curve.Arc3.toProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the argument into a legal set of properties for the object.</p>
+<p>The conversion involves resizing the argument to a 1D array of
+length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
@@ -932,6 +959,15 @@ method.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.Arc3.getCoords">
+<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc3.getCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the coords data.</p>
+<p>Returns the full array of coordinates stored in the Geometry object.
+Note that subclasses may store more points in this array than are used
+to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.Arc3.approx">
 <tt class="descname">approx</tt><big>(</big><em>ndiv=None</em>, <em>ntot=None</em><big>)</big><a class="headerlink" href="#curve.Arc3.approx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a PolyLine approximation of the curve</p>
@@ -940,12 +976,6 @@ straight segments over each part of the curve.
 If <cite>ntot</cite> is given, the curve is approximated by <cite>ntot</cite>
 straight segments over the total curve. This is based on a
 first approximation with ndiv segments over each part.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.Arc3.level">
-<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc3.level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
 </dd></dl>
 
 <dl class="method">
@@ -970,20 +1000,9 @@ completely in future.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Arc3.copy">
-<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc3.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a deep copy of the object.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.Arc3.resized">
-<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.Arc3.resized" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a copy of the Geometry scaled to the given size.</p>
-<p>size can be a single value or a list of three values for the
-three coordinate directions. If it is a single value, all directions
-are scaled to the same size.
-Directions for which the geometry has a size smaller than tol times
-the maximum size are not rescaled.</p>
+<dt id="curve.Arc3.level">
+<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc3.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
 </dd></dl>
 
 <dl class="method">
@@ -997,6 +1016,14 @@ their own drawing routines.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.Arc3.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc3.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a deep copy of the Geometry  object.</p>
+<p>The returned object is an exact copy of the input, but has
+all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.Arc3.setProp">
 <tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.Arc3.setProp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create or destroy the property array for the Formex.</p>
@@ -1006,6 +1033,35 @@ You can specify a single value or a list/array of integer values.
 If the number of passed values is less than the number of elements,
 they wil be repeated. If you give more, they will be ignored.</p>
 <p>If a value None is given, the properties are removed from the Formex.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Arc3.splitProp">
+<tt class="descname">splitProp</tt><big>(</big><em>prop=None</em><big>)</big><a class="headerlink" href="#curve.Arc3.splitProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition a Geometry (Formex/Mesh) according to the values in prop.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>prop</cite>: an int array with length self.nelems(), or None. If None,
+the <cite>prop</cite> attribute of the Geometry is used.</li>
+</ul>
+<p>Returns a list of Geometry objects of the same type as the input.
+Each object contains all the elements having the same value of <cite>prop</cite>.
+The number of objects in the list is equal to the number of unique
+values in <cite>prop</cite>. The list is sorted in ascending order of their
+<cite>prop</cite> value.</p>
+<p>It <cite>prop</cite> is None and the the object has no <cite>prop</cite> attribute, an empty
+list is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Arc3.resized">
+<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.Arc3.resized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the Geometry scaled to the given size.</p>
+<p>size can be a single value or a list of three values for the
+three coordinate directions. If it is a single value, all directions
+are scaled to the same size.
+Directions for which the geometry has a size smaller than tol times
+the maximum size are not rescaled.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1413,12 +1469,11 @@ to split all all nodes.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.BezierSpline.getCoords">
-<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.BezierSpline.getCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coords data.</p>
-<p>Returns the full array of coordinates stored in the Geometry object.
-Note that subclasses may store more points in this array than are used
-to define the geometry.</p>
+<dt id="curve.BezierSpline.toProp">
+<tt class="descname">toProp</tt><big>(</big><em>prop</em><big>)</big><a class="headerlink" href="#curve.BezierSpline.toProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the argument into a legal set of properties for the object.</p>
+<p>The conversion involves resizing the argument to a 1D array of
+length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1430,6 +1485,15 @@ method.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.BezierSpline.getCoords">
+<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.BezierSpline.getCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the coords data.</p>
+<p>Returns the full array of coordinates stored in the Geometry object.
+Note that subclasses may store more points in this array than are used
+to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.BezierSpline.approx">
 <tt class="descname">approx</tt><big>(</big><em>ndiv=None</em>, <em>ntot=None</em><big>)</big><a class="headerlink" href="#curve.BezierSpline.approx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a PolyLine approximation of the curve</p>
@@ -1438,12 +1502,6 @@ straight segments over each part of the curve.
 If <cite>ntot</cite> is given, the curve is approximated by <cite>ntot</cite>
 straight segments over the total curve. This is based on a
 first approximation with ndiv segments over each part.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.BezierSpline.level">
-<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.BezierSpline.level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
 </dd></dl>
 
 <dl class="method">
@@ -1468,20 +1526,9 @@ completely in future.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.BezierSpline.copy">
-<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.BezierSpline.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a deep copy of the object.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.BezierSpline.resized">
-<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.BezierSpline.resized" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a copy of the Geometry scaled to the given size.</p>
-<p>size can be a single value or a list of three values for the
-three coordinate directions. If it is a single value, all directions
-are scaled to the same size.
-Directions for which the geometry has a size smaller than tol times
-the maximum size are not rescaled.</p>
+<dt id="curve.BezierSpline.level">
+<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.BezierSpline.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
 </dd></dl>
 
 <dl class="method">
@@ -1495,6 +1542,14 @@ their own drawing routines.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.BezierSpline.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.BezierSpline.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a deep copy of the Geometry  object.</p>
+<p>The returned object is an exact copy of the input, but has
+all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.BezierSpline.setProp">
 <tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.BezierSpline.setProp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create or destroy the property array for the Formex.</p>
@@ -1504,6 +1559,35 @@ You can specify a single value or a list/array of integer values.
 If the number of passed values is less than the number of elements,
 they wil be repeated. If you give more, they will be ignored.</p>
 <p>If a value None is given, the properties are removed from the Formex.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.BezierSpline.splitProp">
+<tt class="descname">splitProp</tt><big>(</big><em>prop=None</em><big>)</big><a class="headerlink" href="#curve.BezierSpline.splitProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition a Geometry (Formex/Mesh) according to the values in prop.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>prop</cite>: an int array with length self.nelems(), or None. If None,
+the <cite>prop</cite> attribute of the Geometry is used.</li>
+</ul>
+<p>Returns a list of Geometry objects of the same type as the input.
+Each object contains all the elements having the same value of <cite>prop</cite>.
+The number of objects in the list is equal to the number of unique
+values in <cite>prop</cite>. The list is sorted in ascending order of their
+<cite>prop</cite> value.</p>
+<p>It <cite>prop</cite> is None and the the object has no <cite>prop</cite> attribute, an empty
+list is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.BezierSpline.resized">
+<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.BezierSpline.resized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the Geometry scaled to the given size.</p>
+<p>size can be a single value or a list of three values for the
+three coordinate directions. If it is a single value, all directions
+are scaled to the same size.
+Directions for which the geometry has a size smaller than tol times
+the maximum size are not rescaled.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1945,12 +2029,11 @@ to split all all nodes.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.CardinalSpline.getCoords">
-<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline.getCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coords data.</p>
-<p>Returns the full array of coordinates stored in the Geometry object.
-Note that subclasses may store more points in this array than are used
-to define the geometry.</p>
+<dt id="curve.CardinalSpline.toProp">
+<tt class="descname">toProp</tt><big>(</big><em>prop</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline.toProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the argument into a legal set of properties for the object.</p>
+<p>The conversion involves resizing the argument to a 1D array of
+length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1962,6 +2045,15 @@ method.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.CardinalSpline.getCoords">
+<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline.getCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the coords data.</p>
+<p>Returns the full array of coordinates stored in the Geometry object.
+Note that subclasses may store more points in this array than are used
+to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.CardinalSpline.approx">
 <tt class="descname">approx</tt><big>(</big><em>ndiv=None</em>, <em>ntot=None</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline.approx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a PolyLine approximation of the curve</p>
@@ -1970,12 +2062,6 @@ straight segments over each part of the curve.
 If <cite>ntot</cite> is given, the curve is approximated by <cite>ntot</cite>
 straight segments over the total curve. This is based on a
 first approximation with ndiv segments over each part.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.CardinalSpline.level">
-<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline.level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
 </dd></dl>
 
 <dl class="method">
@@ -2000,20 +2086,9 @@ completely in future.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.CardinalSpline.copy">
-<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a deep copy of the object.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.CardinalSpline.resized">
-<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline.resized" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a copy of the Geometry scaled to the given size.</p>
-<p>size can be a single value or a list of three values for the
-three coordinate directions. If it is a single value, all directions
-are scaled to the same size.
-Directions for which the geometry has a size smaller than tol times
-the maximum size are not rescaled.</p>
+<dt id="curve.CardinalSpline.level">
+<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
 </dd></dl>
 
 <dl class="method">
@@ -2027,6 +2102,14 @@ their own drawing routines.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.CardinalSpline.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a deep copy of the Geometry  object.</p>
+<p>The returned object is an exact copy of the input, but has
+all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.CardinalSpline.setProp">
 <tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline.setProp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create or destroy the property array for the Formex.</p>
@@ -2036,6 +2119,35 @@ You can specify a single value or a list/array of integer values.
 If the number of passed values is less than the number of elements,
 they wil be repeated. If you give more, they will be ignored.</p>
 <p>If a value None is given, the properties are removed from the Formex.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.CardinalSpline.splitProp">
+<tt class="descname">splitProp</tt><big>(</big><em>prop=None</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline.splitProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition a Geometry (Formex/Mesh) according to the values in prop.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>prop</cite>: an int array with length self.nelems(), or None. If None,
+the <cite>prop</cite> attribute of the Geometry is used.</li>
+</ul>
+<p>Returns a list of Geometry objects of the same type as the input.
+Each object contains all the elements having the same value of <cite>prop</cite>.
+The number of objects in the list is equal to the number of unique
+values in <cite>prop</cite>. The list is sorted in ascending order of their
+<cite>prop</cite> value.</p>
+<p>It <cite>prop</cite> is None and the the object has no <cite>prop</cite> attribute, an empty
+list is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.CardinalSpline.resized">
+<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline.resized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the Geometry scaled to the given size.</p>
+<p>size can be a single value or a list of three values for the
+three coordinate directions. If it is a single value, all directions
+are scaled to the same size.
+Directions for which the geometry has a size smaller than tol times
+the maximum size are not rescaled.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2478,12 +2590,11 @@ to split all all nodes.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.CardinalSpline2.getCoords">
-<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.getCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coords data.</p>
-<p>Returns the full array of coordinates stored in the Geometry object.
-Note that subclasses may store more points in this array than are used
-to define the geometry.</p>
+<dt id="curve.CardinalSpline2.toProp">
+<tt class="descname">toProp</tt><big>(</big><em>prop</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.toProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the argument into a legal set of properties for the object.</p>
+<p>The conversion involves resizing the argument to a 1D array of
+length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2495,6 +2606,15 @@ method.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.CardinalSpline2.getCoords">
+<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.getCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the coords data.</p>
+<p>Returns the full array of coordinates stored in the Geometry object.
+Note that subclasses may store more points in this array than are used
+to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.CardinalSpline2.approx">
 <tt class="descname">approx</tt><big>(</big><em>ndiv=None</em>, <em>ntot=None</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.approx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a PolyLine approximation of the curve</p>
@@ -2503,12 +2623,6 @@ straight segments over each part of the curve.
 If <cite>ntot</cite> is given, the curve is approximated by <cite>ntot</cite>
 straight segments over the total curve. This is based on a
 first approximation with ndiv segments over each part.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.CardinalSpline2.level">
-<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
 </dd></dl>
 
 <dl class="method">
@@ -2533,20 +2647,9 @@ completely in future.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.CardinalSpline2.copy">
-<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a deep copy of the object.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.CardinalSpline2.resized">
-<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.resized" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a copy of the Geometry scaled to the given size.</p>
-<p>size can be a single value or a list of three values for the
-three coordinate directions. If it is a single value, all directions
-are scaled to the same size.
-Directions for which the geometry has a size smaller than tol times
-the maximum size are not rescaled.</p>
+<dt id="curve.CardinalSpline2.level">
+<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
 </dd></dl>
 
 <dl class="method">
@@ -2560,6 +2663,14 @@ their own drawing routines.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.CardinalSpline2.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a deep copy of the Geometry  object.</p>
+<p>The returned object is an exact copy of the input, but has
+all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.CardinalSpline2.setProp">
 <tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.setProp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create or destroy the property array for the Formex.</p>
@@ -2569,6 +2680,35 @@ You can specify a single value or a list/array of integer values.
 If the number of passed values is less than the number of elements,
 they wil be repeated. If you give more, they will be ignored.</p>
 <p>If a value None is given, the properties are removed from the Formex.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.CardinalSpline2.splitProp">
+<tt class="descname">splitProp</tt><big>(</big><em>prop=None</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.splitProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition a Geometry (Formex/Mesh) according to the values in prop.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>prop</cite>: an int array with length self.nelems(), or None. If None,
+the <cite>prop</cite> attribute of the Geometry is used.</li>
+</ul>
+<p>Returns a list of Geometry objects of the same type as the input.
+Each object contains all the elements having the same value of <cite>prop</cite>.
+The number of objects in the list is equal to the number of unique
+values in <cite>prop</cite>. The list is sorted in ascending order of their
+<cite>prop</cite> value.</p>
+<p>It <cite>prop</cite> is None and the the object has no <cite>prop</cite> attribute, an empty
+list is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.CardinalSpline2.resized">
+<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.resized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the Geometry scaled to the given size.</p>
+<p>size can be a single value or a list of three values for the
+three coordinate directions. If it is a single value, all directions
+are scaled to the same size.
+Directions for which the geometry has a size smaller than tol times
+the maximum size are not rescaled.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2974,12 +3114,11 @@ to split all all nodes.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Curve.getCoords">
-<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Curve.getCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coords data.</p>
-<p>Returns the full array of coordinates stored in the Geometry object.
-Note that subclasses may store more points in this array than are used
-to define the geometry.</p>
+<dt id="curve.Curve.toProp">
+<tt class="descname">toProp</tt><big>(</big><em>prop</em><big>)</big><a class="headerlink" href="#curve.Curve.toProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the argument into a legal set of properties for the object.</p>
+<p>The conversion involves resizing the argument to a 1D array of
+length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2991,6 +3130,15 @@ method.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.Curve.getCoords">
+<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Curve.getCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the coords data.</p>
+<p>Returns the full array of coordinates stored in the Geometry object.
+Note that subclasses may store more points in this array than are used
+to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.Curve.approx">
 <tt class="descname">approx</tt><big>(</big><em>ndiv=None</em>, <em>ntot=None</em><big>)</big><a class="headerlink" href="#curve.Curve.approx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a PolyLine approximation of the curve</p>
@@ -2999,12 +3147,6 @@ straight segments over each part of the curve.
 If <cite>ntot</cite> is given, the curve is approximated by <cite>ntot</cite>
 straight segments over the total curve. This is based on a
 first approximation with ndiv segments over each part.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.Curve.level">
-<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Curve.level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
 </dd></dl>
 
 <dl class="method">
@@ -3029,20 +3171,9 @@ completely in future.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Curve.copy">
-<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Curve.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a deep copy of the object.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.Curve.resized">
-<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.Curve.resized" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a copy of the Geometry scaled to the given size.</p>
-<p>size can be a single value or a list of three values for the
-three coordinate directions. If it is a single value, all directions
-are scaled to the same size.
-Directions for which the geometry has a size smaller than tol times
-the maximum size are not rescaled.</p>
+<dt id="curve.Curve.level">
+<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Curve.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
 </dd></dl>
 
 <dl class="method">
@@ -3056,6 +3187,14 @@ their own drawing routines.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.Curve.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Curve.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a deep copy of the Geometry  object.</p>
+<p>The returned object is an exact copy of the input, but has
+all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.Curve.setProp">
 <tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.Curve.setProp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create or destroy the property array for the Formex.</p>
@@ -3065,6 +3204,35 @@ You can specify a single value or a list/array of integer values.
 If the number of passed values is less than the number of elements,
 they wil be repeated. If you give more, they will be ignored.</p>
 <p>If a value None is given, the properties are removed from the Formex.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Curve.splitProp">
+<tt class="descname">splitProp</tt><big>(</big><em>prop=None</em><big>)</big><a class="headerlink" href="#curve.Curve.splitProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition a Geometry (Formex/Mesh) according to the values in prop.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>prop</cite>: an int array with length self.nelems(), or None. If None,
+the <cite>prop</cite> attribute of the Geometry is used.</li>
+</ul>
+<p>Returns a list of Geometry objects of the same type as the input.
+Each object contains all the elements having the same value of <cite>prop</cite>.
+The number of objects in the list is equal to the number of unique
+values in <cite>prop</cite>. The list is sorted in ascending order of their
+<cite>prop</cite> value.</p>
+<p>It <cite>prop</cite> is None and the the object has no <cite>prop</cite> attribute, an empty
+list is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Curve.resized">
+<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.Curve.resized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the Geometry scaled to the given size.</p>
+<p>size can be a single value or a list of three values for the
+three coordinate directions. If it is a single value, all directions
+are scaled to the same size.
+Directions for which the geometry has a size smaller than tol times
+the maximum size are not rescaled.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3392,12 +3560,11 @@ to split all all nodes.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Line.getCoords">
-<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Line.getCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coords data.</p>
-<p>Returns the full array of coordinates stored in the Geometry object.
-Note that subclasses may store more points in this array than are used
-to define the geometry.</p>
+<dt id="curve.Line.toProp">
+<tt class="descname">toProp</tt><big>(</big><em>prop</em><big>)</big><a class="headerlink" href="#curve.Line.toProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the argument into a legal set of properties for the object.</p>
+<p>The conversion involves resizing the argument to a 1D array of
+length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3409,6 +3576,15 @@ method.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.Line.getCoords">
+<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Line.getCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the coords data.</p>
+<p>Returns the full array of coordinates stored in the Geometry object.
+Note that subclasses may store more points in this array than are used
+to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.Line.approx">
 <tt class="descname">approx</tt><big>(</big><em>ndiv=None</em>, <em>ntot=None</em><big>)</big><a class="headerlink" href="#curve.Line.approx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a PolyLine approximation of the curve</p>
@@ -3417,12 +3593,6 @@ straight segments over each part of the curve.
 If <cite>ntot</cite> is given, the curve is approximated by <cite>ntot</cite>
 straight segments over the total curve. This is based on a
 first approximation with ndiv segments over each part.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.Line.level">
-<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Line.level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
 </dd></dl>
 
 <dl class="method">
@@ -3447,20 +3617,17 @@ completely in future.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Line.copy">
-<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Line.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a deep copy of the object.</p>
+<dt id="curve.Line.level">
+<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Line.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Line.resized">
-<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.Line.resized" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a copy of the Geometry scaled to the given size.</p>
-<p>size can be a single value or a list of three values for the
-three coordinate directions. If it is a single value, all directions
-are scaled to the same size.
-Directions for which the geometry has a size smaller than tol times
-the maximum size are not rescaled.</p>
+<dt id="curve.Line.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Line.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a deep copy of the Geometry  object.</p>
+<p>The returned object is an exact copy of the input, but has
+all of its data independent of the former.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3473,6 +3640,35 @@ You can specify a single value or a list/array of integer values.
 If the number of passed values is less than the number of elements,
 they wil be repeated. If you give more, they will be ignored.</p>
 <p>If a value None is given, the properties are removed from the Formex.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Line.splitProp">
+<tt class="descname">splitProp</tt><big>(</big><em>prop=None</em><big>)</big><a class="headerlink" href="#curve.Line.splitProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition a Geometry (Formex/Mesh) according to the values in prop.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>prop</cite>: an int array with length self.nelems(), or None. If None,
+the <cite>prop</cite> attribute of the Geometry is used.</li>
+</ul>
+<p>Returns a list of Geometry objects of the same type as the input.
+Each object contains all the elements having the same value of <cite>prop</cite>.
+The number of objects in the list is equal to the number of unique
+values in <cite>prop</cite>. The list is sorted in ascending order of their
+<cite>prop</cite> value.</p>
+<p>It <cite>prop</cite> is None and the the object has no <cite>prop</cite> attribute, an empty
+list is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Line.resized">
+<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.Line.resized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the Geometry scaled to the given size.</p>
+<p>size can be a single value or a list of three values for the
+three coordinate directions. If it is a single value, all directions
+are scaled to the same size.
+Directions for which the geometry has a size smaller than tol times
+the maximum size are not rescaled.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3516,17 +3712,6 @@ a segment.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Line.write">
-<tt class="descname">write</tt><big>(</big><em>fil</em>, <em>sep=' '</em>, <em>mode='w'</em><big>)</big><a class="headerlink" href="#curve.Line.write" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write a Geometry to a .pgf file.</p>
-<p>If fil is a string, a file with that name is opened. Else fil should
-be an open file.
-The Geometry is then written to that file in a native format, using
-sep as separator between the coordinates.
-If fil is a string, the file is closed prior to returning.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="curve.Line.sub_points">
 <tt class="descname">sub_points</tt><big>(</big><em>t</em>, <em>j</em><big>)</big><a class="headerlink" href="#curve.Line.sub_points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the points at values t in part j</p>
@@ -3551,6 +3736,17 @@ If fil is a string, the file is closed prior to returning.</p>
 <p>The vectors are returned as a Coords object.
 If the curve is not closed, the number of vectors returned is
 one less than the number of points.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Line.write">
+<tt class="descname">write</tt><big>(</big><em>fil</em>, <em>sep=' '</em>, <em>mode='w'</em><big>)</big><a class="headerlink" href="#curve.Line.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a Geometry to a .pgf file.</p>
+<p>If fil is a string, a file with that name is opened. Else fil should
+be an open file.
+The Geometry is then written to that file in a native format, using
+sep as separator between the coordinates.
+If fil is a string, the file is closed prior to returning.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3996,12 +4192,11 @@ to split all all nodes.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.NaturalSpline.getCoords">
-<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.NaturalSpline.getCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coords data.</p>
-<p>Returns the full array of coordinates stored in the Geometry object.
-Note that subclasses may store more points in this array than are used
-to define the geometry.</p>
+<dt id="curve.NaturalSpline.toProp">
+<tt class="descname">toProp</tt><big>(</big><em>prop</em><big>)</big><a class="headerlink" href="#curve.NaturalSpline.toProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the argument into a legal set of properties for the object.</p>
+<p>The conversion involves resizing the argument to a 1D array of
+length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
@@ -4013,6 +4208,15 @@ method.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.NaturalSpline.getCoords">
+<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.NaturalSpline.getCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the coords data.</p>
+<p>Returns the full array of coordinates stored in the Geometry object.
+Note that subclasses may store more points in this array than are used
+to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.NaturalSpline.approx">
 <tt class="descname">approx</tt><big>(</big><em>ndiv=None</em>, <em>ntot=None</em><big>)</big><a class="headerlink" href="#curve.NaturalSpline.approx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a PolyLine approximation of the curve</p>
@@ -4021,12 +4225,6 @@ straight segments over each part of the curve.
 If <cite>ntot</cite> is given, the curve is approximated by <cite>ntot</cite>
 straight segments over the total curve. This is based on a
 first approximation with ndiv segments over each part.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.NaturalSpline.level">
-<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.NaturalSpline.level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
 </dd></dl>
 
 <dl class="method">
@@ -4051,20 +4249,9 @@ completely in future.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.NaturalSpline.copy">
-<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.NaturalSpline.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a deep copy of the object.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.NaturalSpline.resized">
-<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.NaturalSpline.resized" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a copy of the Geometry scaled to the given size.</p>
-<p>size can be a single value or a list of three values for the
-three coordinate directions. If it is a single value, all directions
-are scaled to the same size.
-Directions for which the geometry has a size smaller than tol times
-the maximum size are not rescaled.</p>
+<dt id="curve.NaturalSpline.level">
+<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.NaturalSpline.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
 </dd></dl>
 
 <dl class="method">
@@ -4078,6 +4265,14 @@ their own drawing routines.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.NaturalSpline.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.NaturalSpline.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a deep copy of the Geometry  object.</p>
+<p>The returned object is an exact copy of the input, but has
+all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.NaturalSpline.setProp">
 <tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.NaturalSpline.setProp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create or destroy the property array for the Formex.</p>
@@ -4087,6 +4282,35 @@ You can specify a single value or a list/array of integer values.
 If the number of passed values is less than the number of elements,
 they wil be repeated. If you give more, they will be ignored.</p>
 <p>If a value None is given, the properties are removed from the Formex.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.NaturalSpline.splitProp">
+<tt class="descname">splitProp</tt><big>(</big><em>prop=None</em><big>)</big><a class="headerlink" href="#curve.NaturalSpline.splitProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition a Geometry (Formex/Mesh) according to the values in prop.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>prop</cite>: an int array with length self.nelems(), or None. If None,
+the <cite>prop</cite> attribute of the Geometry is used.</li>
+</ul>
+<p>Returns a list of Geometry objects of the same type as the input.
+Each object contains all the elements having the same value of <cite>prop</cite>.
+The number of objects in the list is equal to the number of unique
+values in <cite>prop</cite>. The list is sorted in ascending order of their
+<cite>prop</cite> value.</p>
+<p>It <cite>prop</cite> is None and the the object has no <cite>prop</cite> attribute, an empty
+list is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.NaturalSpline.resized">
+<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.NaturalSpline.resized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the Geometry scaled to the given size.</p>
+<p>size can be a single value or a list of three values for the
+three coordinate directions. If it is a single value, all directions
+are scaled to the same size.
+Directions for which the geometry has a size smaller than tol times
+the maximum size are not rescaled.</p>
 </dd></dl>
 
 <dl class="method">
@@ -4417,12 +4641,11 @@ to split all all nodes.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.PolyLine.getCoords">
-<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.PolyLine.getCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coords data.</p>
-<p>Returns the full array of coordinates stored in the Geometry object.
-Note that subclasses may store more points in this array than are used
-to define the geometry.</p>
+<dt id="curve.PolyLine.toProp">
+<tt class="descname">toProp</tt><big>(</big><em>prop</em><big>)</big><a class="headerlink" href="#curve.PolyLine.toProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the argument into a legal set of properties for the object.</p>
+<p>The conversion involves resizing the argument to a 1D array of
+length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
@@ -4434,6 +4657,15 @@ method.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.PolyLine.getCoords">
+<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.PolyLine.getCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the coords data.</p>
+<p>Returns the full array of coordinates stored in the Geometry object.
+Note that subclasses may store more points in this array than are used
+to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.PolyLine.approx">
 <tt class="descname">approx</tt><big>(</big><em>ndiv=None</em>, <em>ntot=None</em><big>)</big><a class="headerlink" href="#curve.PolyLine.approx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a PolyLine approximation of the curve</p>
@@ -4442,12 +4674,6 @@ straight segments over each part of the curve.
 If <cite>ntot</cite> is given, the curve is approximated by <cite>ntot</cite>
 straight segments over the total curve. This is based on a
 first approximation with ndiv segments over each part.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.PolyLine.level">
-<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.PolyLine.level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
 </dd></dl>
 
 <dl class="method">
@@ -4472,20 +4698,17 @@ completely in future.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.PolyLine.copy">
-<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.PolyLine.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a deep copy of the object.</p>
+<dt id="curve.PolyLine.level">
+<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.PolyLine.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.PolyLine.resized">
-<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.PolyLine.resized" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a copy of the Geometry scaled to the given size.</p>
-<p>size can be a single value or a list of three values for the
-three coordinate directions. If it is a single value, all directions
-are scaled to the same size.
-Directions for which the geometry has a size smaller than tol times
-the maximum size are not rescaled.</p>
+<dt id="curve.PolyLine.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.PolyLine.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a deep copy of the Geometry  object.</p>
+<p>The returned object is an exact copy of the input, but has
+all of its data independent of the former.</p>
 </dd></dl>
 
 <dl class="method">
@@ -4498,6 +4721,35 @@ You can specify a single value or a list/array of integer values.
 If the number of passed values is less than the number of elements,
 they wil be repeated. If you give more, they will be ignored.</p>
 <p>If a value None is given, the properties are removed from the Formex.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.PolyLine.splitProp">
+<tt class="descname">splitProp</tt><big>(</big><em>prop=None</em><big>)</big><a class="headerlink" href="#curve.PolyLine.splitProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition a Geometry (Formex/Mesh) according to the values in prop.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>prop</cite>: an int array with length self.nelems(), or None. If None,
+the <cite>prop</cite> attribute of the Geometry is used.</li>
+</ul>
+<p>Returns a list of Geometry objects of the same type as the input.
+Each object contains all the elements having the same value of <cite>prop</cite>.
+The number of objects in the list is equal to the number of unique
+values in <cite>prop</cite>. The list is sorted in ascending order of their
+<cite>prop</cite> value.</p>
+<p>It <cite>prop</cite> is None and the the object has no <cite>prop</cite> attribute, an empty
+list is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.PolyLine.resized">
+<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.PolyLine.resized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the Geometry scaled to the given size.</p>
+<p>size can be a single value or a list of three values for the
+three coordinate directions. If it is a single value, all directions
+are scaled to the same size.
+Directions for which the geometry has a size smaller than tol times
+the maximum size are not rescaled.</p>
 </dd></dl>
 
 <dl class="method">
@@ -4541,17 +4793,6 @@ a segment.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.PolyLine.write">
-<tt class="descname">write</tt><big>(</big><em>fil</em>, <em>sep=' '</em>, <em>mode='w'</em><big>)</big><a class="headerlink" href="#curve.PolyLine.write" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write a Geometry to a .pgf file.</p>
-<p>If fil is a string, a file with that name is opened. Else fil should
-be an open file.
-The Geometry is then written to that file in a native format, using
-sep as separator between the coordinates.
-If fil is a string, the file is closed prior to returning.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="curve.PolyLine.sub_points">
 <tt class="descname">sub_points</tt><big>(</big><em>t</em>, <em>j</em><big>)</big><a class="headerlink" href="#curve.PolyLine.sub_points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the points at values t in part j</p>
@@ -4576,6 +4817,17 @@ If fil is a string, the file is closed prior to returning.</p>
 <p>The vectors are returned as a Coords object.
 If the curve is not closed, the number of vectors returned is
 one less than the number of points.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.PolyLine.write">
+<tt class="descname">write</tt><big>(</big><em>fil</em>, <em>sep=' '</em>, <em>mode='w'</em><big>)</big><a class="headerlink" href="#curve.PolyLine.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a Geometry to a .pgf file.</p>
+<p>If fil is a string, a file with that name is opened. Else fil should
+be an open file.
+The Geometry is then written to that file in a native format, using
+sep as separator between the coordinates.
+If fil is a string, the file is closed prior to returning.</p>
 </dd></dl>
 
 <dl class="method">
@@ -5028,12 +5280,11 @@ to split all all nodes.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Spiral.getCoords">
-<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Spiral.getCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coords data.</p>
-<p>Returns the full array of coordinates stored in the Geometry object.
-Note that subclasses may store more points in this array than are used
-to define the geometry.</p>
+<dt id="curve.Spiral.toProp">
+<tt class="descname">toProp</tt><big>(</big><em>prop</em><big>)</big><a class="headerlink" href="#curve.Spiral.toProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the argument into a legal set of properties for the object.</p>
+<p>The conversion involves resizing the argument to a 1D array of
+length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
@@ -5045,6 +5296,15 @@ method.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.Spiral.getCoords">
+<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Spiral.getCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the coords data.</p>
+<p>Returns the full array of coordinates stored in the Geometry object.
+Note that subclasses may store more points in this array than are used
+to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.Spiral.approx">
 <tt class="descname">approx</tt><big>(</big><em>ndiv=None</em>, <em>ntot=None</em><big>)</big><a class="headerlink" href="#curve.Spiral.approx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a PolyLine approximation of the curve</p>
@@ -5053,12 +5313,6 @@ straight segments over each part of the curve.
 If <cite>ntot</cite> is given, the curve is approximated by <cite>ntot</cite>
 straight segments over the total curve. This is based on a
 first approximation with ndiv segments over each part.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.Spiral.level">
-<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Spiral.level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
 </dd></dl>
 
 <dl class="method">
@@ -5083,20 +5337,9 @@ completely in future.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Spiral.copy">
-<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Spiral.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a deep copy of the object.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.Spiral.resized">
-<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.Spiral.resized" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a copy of the Geometry scaled to the given size.</p>
-<p>size can be a single value or a list of three values for the
-three coordinate directions. If it is a single value, all directions
-are scaled to the same size.
-Directions for which the geometry has a size smaller than tol times
-the maximum size are not rescaled.</p>
+<dt id="curve.Spiral.level">
+<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Spiral.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
 </dd></dl>
 
 <dl class="method">
@@ -5110,6 +5353,14 @@ their own drawing routines.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.Spiral.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Spiral.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a deep copy of the Geometry  object.</p>
+<p>The returned object is an exact copy of the input, but has
+all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.Spiral.setProp">
 <tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.Spiral.setProp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create or destroy the property array for the Formex.</p>
@@ -5119,6 +5370,35 @@ You can specify a single value or a list/array of integer values.
 If the number of passed values is less than the number of elements,
 they wil be repeated. If you give more, they will be ignored.</p>
 <p>If a value None is given, the properties are removed from the Formex.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Spiral.splitProp">
+<tt class="descname">splitProp</tt><big>(</big><em>prop=None</em><big>)</big><a class="headerlink" href="#curve.Spiral.splitProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition a Geometry (Formex/Mesh) according to the values in prop.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>prop</cite>: an int array with length self.nelems(), or None. If None,
+the <cite>prop</cite> attribute of the Geometry is used.</li>
+</ul>
+<p>Returns a list of Geometry objects of the same type as the input.
+Each object contains all the elements having the same value of <cite>prop</cite>.
+The number of objects in the list is equal to the number of unique
+values in <cite>prop</cite>. The list is sorted in ascending order of their
+<cite>prop</cite> value.</p>
+<p>It <cite>prop</cite> is None and the the object has no <cite>prop</cite> attribute, an empty
+list is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Spiral.resized">
+<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.Spiral.resized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the Geometry scaled to the given size.</p>
+<p>size can be a single value or a list of three values for the
+three coordinate directions. If it is a single value, all directions
+are scaled to the same size.
+Directions for which the geometry has a size smaller than tol times
+the maximum size are not rescaled.</p>
 </dd></dl>
 
 <dl class="method">
@@ -5186,7 +5466,7 @@ with curl 0.375058 through 8 points.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Jun 14, 2013.
+      Last updated on Oct 01, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

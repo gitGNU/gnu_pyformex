@@ -907,6 +907,14 @@ color to sea the image unaltered.</li>
 </dd></dl>
 
 <dl class="function">
+<dt id="draw.wireMode">
+<tt class="descclassname">draw.</tt><tt class="descname">wireMode</tt><big>(</big><em>mode</em><big>)</big><a class="headerlink" href="#draw.wireMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the wire rendering mode.</p>
+<p>Currently the following modes are defined: &#8216;none&#8217;, &#8216;border&#8217;,
+&#8216;feature&#8217;,&#8217;all&#8217;</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="draw.lights">
 <tt class="descclassname">draw.</tt><tt class="descname">lights</tt><big>(</big><em>state=True</em><big>)</big><a class="headerlink" href="#draw.lights" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the lights on or off</p>
@@ -1124,51 +1132,8 @@ or is one of the viewport objects in pyformex.GUI.viewports</p>
 
 <dl class="function">
 <dt id="draw.highlightActor">
-<tt class="descclassname">draw.</tt><tt class="descname">highlightActor</tt><big>(</big><em>i</em><big>)</big><a class="headerlink" href="#draw.highlightActor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Highlight the i-th actor in the scene.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="draw.highlightActors">
-<tt class="descclassname">draw.</tt><tt class="descname">highlightActors</tt><big>(</big><em>K</em><big>)</big><a class="headerlink" href="#draw.highlightActors" title="Permalink to this definition">¶</a></dt>
-<dd><p>Highlight a selection of actors on the canvas.</p>
-<p>K is Collection of actors as returned by the pick() method.
-colormap is a list of two colors, for the actors not in, resp. in
-the Collection K.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="draw.highlightElements">
-<tt class="descclassname">draw.</tt><tt class="descname">highlightElements</tt><big>(</big><em>K</em><big>)</big><a class="headerlink" href="#draw.highlightElements" title="Permalink to this definition">¶</a></dt>
-<dd><p>Highlight a selection of actor elements on the canvas.</p>
-<p>K is Collection of actor elements as returned by the pick() method.
-colormap is a list of two colors, for the elements not in, resp. in
-the Collection K.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="draw.highlightEdges">
-<tt class="descclassname">draw.</tt><tt class="descname">highlightEdges</tt><big>(</big><em>K</em><big>)</big><a class="headerlink" href="#draw.highlightEdges" title="Permalink to this definition">¶</a></dt>
-<dd><p>Highlight a selection of actor edges on the canvas.</p>
-<p>K is Collection of TriSurface actor edges as returned by the pick() method.
-colormap is a list of two colors, for the edges not in, resp. in
-the Collection K.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="draw.highlightPoints">
-<tt class="descclassname">draw.</tt><tt class="descname">highlightPoints</tt><big>(</big><em>K</em><big>)</big><a class="headerlink" href="#draw.highlightPoints" title="Permalink to this definition">¶</a></dt>
-<dd><p>Highlight a selection of actor elements on the canvas.</p>
-<p>K is Collection of actor elements as returned by the pick() method.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="draw.highlightPartitions">
-<tt class="descclassname">draw.</tt><tt class="descname">highlightPartitions</tt><big>(</big><em>K</em><big>)</big><a class="headerlink" href="#draw.highlightPartitions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Highlight a selection of partitions on the canvas.</p>
-<p>K is a Collection of actor elements, where each actor element is
-connected to a collection of property numbers, as returned by the
-partitionCollection() method.</p>
+<tt class="descclassname">draw.</tt><tt class="descname">highlightActor</tt><big>(</big><em>actor</em><big>)</big><a class="headerlink" href="#draw.highlightActor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Highlight an actor in the scene.</p>
 </dd></dl>
 
 <dl class="function">
@@ -1194,15 +1159,6 @@ presented in a combobox.</li>
 </dd></dl>
 
 <dl class="function">
-<dt id="draw.highlight">
-<tt class="descclassname">draw.</tt><tt class="descname">highlight</tt><big>(</big><em>K</em>, <em>mode</em><big>)</big><a class="headerlink" href="#draw.highlight" title="Permalink to this definition">¶</a></dt>
-<dd><p>Highlight a Collection of actor/elements.</p>
-<p>K is usually the return value of a pick operation, but might also
-be set by the user.
-mode is one of the pick modes.</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="draw.set_edit_mode">
 <tt class="descclassname">draw.</tt><tt class="descname">set_edit_mode</tt><big>(</big><em>s</em><big>)</big><a class="headerlink" href="#draw.set_edit_mode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the drawing edit mode.</p>
@@ -1225,6 +1181,33 @@ are presented in a combobox.</p>
 <dd><p>Show a line drawing.</p>
 <p>L is usually the return value of an interactive draw operation, but
 might also be set by the user.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="draw.exportWebGL">
+<tt class="descclassname">draw.</tt><tt class="descname">exportWebGL</tt><big>(</big><em>fn</em>, <em>title=None</em>, <em>description=None</em>, <em>keywords=None</em>, <em>author=None</em>, <em>createdby=50</em><big>)</big><a class="headerlink" href="#draw.exportWebGL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export the current scene to WebGL.</p>
+<p>fn is the (relative or absolute) pathname of the .html and .js files to be
+created.</p>
+<p>Returns the absolute pathname of the generated .html file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="draw.showURL">
+<tt class="descclassname">draw.</tt><tt class="descname">showURL</tt><big>(</big><em>url</em><big>)</big><a class="headerlink" href="#draw.showURL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show an URL in the browser</p>
+<ul class="simple">
+<li><cite>url</cite>: url to load</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="draw.showHTML">
+<tt class="descclassname">draw.</tt><tt class="descname">showHTML</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#draw.showHTML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show a local .html file in the browser</p>
+<ul class="simple">
+<li><cite>fn</cite>: name of a local .html file</li>
+</ul>
 </dd></dl>
 
 <dl class="function">
@@ -1268,7 +1251,7 @@ to their default operating mode.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Jun 14, 2013.
+      Last updated on Oct 01, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

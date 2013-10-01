@@ -626,6 +626,28 @@ and is the first axis by default.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="arraytools.minmax">
+<tt class="descclassname">arraytools.</tt><tt class="descname">minmax</tt><big>(</big><em>a</em>, <em>axis=-1</em><big>)</big><a class="headerlink" href="#arraytools.minmax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the minimum and maximum along an axis.</p>
+<p>a is an array.
+Returns an array of the same type as the input array, and with the
+same shape, except for the specified axis, which will have length 2.
+Along this axis are stored the minimum and maximum values along
+that axis in the input array.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]</span> <span class="p">],</span>
+<span class="gp">... </span>           <span class="p">[</span> <span class="p">[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]</span> <span class="p">]</span> <span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">minmax</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="go">[[[ 0.  0.  0.]</span>
+<span class="go">  [ 1.  1.  0.]]</span>
+
+<span class="go"> [[ 0.  0.  0.]</span>
+<span class="go">  [ 2.  2.  0.]]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="arraytools.splitrange">
 <tt class="descclassname">arraytools.</tt><tt class="descname">splitrange</tt><big>(</big><em>n</em>, <em>nblk</em><big>)</big><a class="headerlink" href="#arraytools.splitrange" title="Permalink to this definition">¶</a></dt>
 <dd><p>Split the range of integers 0..n in nblk almost equal sized slices.</p>
@@ -1549,7 +1571,7 @@ that issue and prints the full array nicely aligned.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Jun 14, 2013.
+      Last updated on Oct 01, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

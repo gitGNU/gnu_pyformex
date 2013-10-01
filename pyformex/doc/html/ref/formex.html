@@ -533,18 +533,29 @@ would interfere with NumPy&#8217;s own concatenate function.</p>
 <dl class="method">
 <dt id="formex.Formex.select">
 <tt class="descname">select</tt><big>(</big><em>idx</em><big>)</big><a class="headerlink" href="#formex.Formex.select" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Formex which holds only element with numbers in ids.</p>
-<p>idx can be a single element number or a list of numbers or
-any other index mechanism accepted by numpy&#8217;s ndarray</p>
+<dd><p>Return a Formex with only the elements selected by the parameter.</p>
+<p>The parameter <cite>idx</cite> can be</p>
+<ul class="simple">
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool array of length self.nelems(), where True values flag the
+elements to be selected</li>
+</ul>
+<p>See <a class="reference internal" href="#formex.Formex.cselect" title="formex.Formex.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="formex.Formex.cselect">
 <tt class="descname">cselect</tt><big>(</big><em>idx</em><big>)</big><a class="headerlink" href="#formex.Formex.cselect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Formex without the elements with numbers in ids.</p>
-<p>idx can be a single element number or a list of numbers or
-any other index mechanism accepted by numpy&#8217;s ndarray</p>
-<p>This is the complementary operation of select</p>
+<dd><p>Return a Formex without the elements selected by the parameter.</p>
+<p>The parameter <cite>idx</cite> can be</p>
+<ul class="simple">
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool array of length self.nelems(), where True values flag the
+elements to be selected</li>
+</ul>
+<p>This is the complementary operation of <a class="reference internal" href="#formex.Formex.select" title="formex.Formex.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a></p>
 </dd></dl>
 
 <dl class="method">
@@ -604,23 +615,11 @@ The returned Formex inherits the matching properties.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="formex.Formex.splitProp">
-<tt class="descname">splitProp</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.splitProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Partition a Formex according to its prop values.</p>
-<p>Returns a list of Formices. Each Formex contains all the elements with
-property number equal to one of the unique values in the property set.
-The Formices in the list are given in order of ascending property
-number. Each Formex has this value set as property number for all its
-elements
-It the Formex has no props, an empty list is returned.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="formex.Formex.elbbox">
 <tt class="descname">elbbox</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.elbbox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a Formex where each element is replaced by its bbox.</p>
-<p>The returned Formex has two points for each element: two corners
-of the bbox.</p>
+<p>The returned Formex has two points for each element: the two corners
+of the bbox with the minimal and maximal coordinates.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1206,20 +1205,38 @@ does not contain the expected number of values.</li>
 <tt class="descname">setProp</tt><big>(</big><em>prop=None</em>, <em>blocks=None</em><big>)</big><a class="headerlink" href="#formex.Formex.setProp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create or destroy the property array for the Geometry.</p>
 <p>A property array is a rank-1 integer array with dimension equal
-to the number of elements in the Geometry.</p>
+to the number of elements in the Geometry. Each element thus has its
+own property number. These numbers can be used for any purpose.
+They play an import role when creating new geometry: new elements
+inherit the property number of their parent element.
+Properties are also preserved on most geometrical transformations.</p>
+<p>Because elements with different property numbers can be drawn in
+different colors, the property numbers are also often used to impose
+color.</p>
 <p>Parameters:</p>
-<blockquote>
-<div><p>-&#8216;prop&#8217; : single value or a list/array of integer values.
+<ul>
+<li><p class="first"><cite>prop</cite>: a single integer value or a list/array of integer values.
 If the number of passed values is less than the number of elements,
 they wil be repeated. If you give more, they will be ignored.</p>
-<p>If prop==&#8217;range&#8217;, properties are set equal to the element number.</p>
-<p>If a value None is given, the properties are removed from the Mesh.</p>
-<p>-&#8216;blocks&#8217; : single value or a list/array of integer values.
-If the number of passed values is less than the number of prop,
+<p>The special value &#8216;range&#8217; will set the property numbers
+equal to the element number.</p>
+<p>A value None (default) removes the properties from the Geometry.</p>
+</li>
+<li><p class="first"><cite>blocks</cite>: a single integer value or a list/array of integer values.
+If the number of passed values is less than the length of <cite>prop</cite>,
 they wil be repeated. If you give more, they will be ignored.
-Every prop will be repetead for every group of elements according
-to the corresponding number of blocks.</p>
-</div></blockquote>
+Every prop will be repeated the corresponding number of times
+specified in blocks.</p>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.toProp">
+<tt class="descname">toProp</tt><big>(</big><em>prop</em><big>)</big><a class="headerlink" href="#formex.Formex.toProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the argument into a legal set of properties for the object.</p>
+<p>The conversion involves resizing the argument to a 1D array of
+length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1234,7 +1251,35 @@ to define the geometry.</p>
 <dl class="method">
 <dt id="formex.Formex.copy">
 <tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a deep copy of the object.</p>
+<dd><p>Return a deep copy of the Geometry  object.</p>
+<p>The returned object is an exact copy of the input, but has
+all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.splitProp">
+<tt class="descname">splitProp</tt><big>(</big><em>prop=None</em><big>)</big><a class="headerlink" href="#formex.Formex.splitProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition a Geometry (Formex/Mesh) according to the values in prop.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>prop</cite>: an int array with length self.nelems(), or None. If None,
+the <cite>prop</cite> attribute of the Geometry is used.</li>
+</ul>
+<p>Returns a list of Geometry objects of the same type as the input.
+Each object contains all the elements having the same value of <cite>prop</cite>.
+The number of objects in the list is equal to the number of unique
+values in <cite>prop</cite>. The list is sorted in ascending order of their
+<cite>prop</cite> value.</p>
+<p>It <cite>prop</cite> is None and the the object has no <cite>prop</cite> attribute, an empty
+list is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.nnodes">
+<tt class="descname">nnodes</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.nnodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of points in the formex.</p>
+<p>This is the product of the number of elements in the formex
+with the number of nodes per element.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1246,14 +1291,6 @@ three coordinate directions. If it is a single value, all directions
 are scaled to the same size.
 Directions for which the geometry has a size smaller than tol times
 the maximum size are not rescaled.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.nnodes">
-<tt class="descname">nnodes</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.nnodes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the number of points in the formex.</p>
-<p>This is the product of the number of elements in the formex
-with the number of nodes per element.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1461,7 +1498,7 @@ side is either &#8216;+&#8217;, &#8216;-&#8216; or &#8216;&#8217;</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Jun 14, 2013.
+      Last updated on Oct 01, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>
