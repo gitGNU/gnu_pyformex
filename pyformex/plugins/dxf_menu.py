@@ -1,11 +1,11 @@
-# $Id$ 
+# $Id$
 ##
 ##  This file is part of pyFormex 0.9.0  (Mon Mar 25 13:52:29 CET 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -45,7 +45,7 @@ from gui import menu
 from connectivity import Connectivity
 
 _name_ = 'dxf_menu'
-    
+
 def importDxf(convert=False,keep=False):
     """Import a DXF file.
 
@@ -82,12 +82,12 @@ def importSaveDxf():
     """Import a DXF file and save the intermediate .dxftext."""
     importDxf(keep=True)
 
-    
+
 def convertDxf():
     """Read a DXF file and convert to dxftext."""
     importDxf(convert=True)
 
-    
+
 def importDxfText(text=None):
     """Import a dxftext script or file.
 
@@ -109,7 +109,7 @@ def importDxfText(text=None):
         text = open(fn).read()
     elif '\n' not in text:
         text = open(text).read()
-        
+
     pf.GUI.setBusy()
     parts = dxf.convertDXF(text)
     print("Imported %s entities" % len(parts))
@@ -121,7 +121,7 @@ def importDxfText(text=None):
     wireframe()
     drawDxf(zoom=True)
     return parts
-   
+
 
 def pickParts(filter=None):
     """Interactively pick a list of parts"""
@@ -137,7 +137,7 @@ def pickParts(filter=None):
         return selection
     except:
         return None
-    
+
 
 def pickSelection():
     """Replace the parts by the picked selection"""
@@ -209,21 +209,23 @@ def exportDxf():
     """
     parts = named('_dxf_sel_')
     if parts:
-        utils.warn("warn_dxf_export")
-        convertToFormex()
-        exportLines()
-
-
-def exportLines():
-    """Export the lines as a .dxf file."""
-    F = named("_lines_")
-    if F:
         types = utils.fileDescription(['dxf'])
         cur = pf.cfg['workdir']
         fn = askFilename(cur=cur,filter=types,exist=False)
         if fn:
-            dxf.exportDxf(fn,F)
-            print("Wrote .dxf file %s" % fn)
+            dxf.exportDxf(fn,parts)
+
+
+## def exportLines():
+##     """Export the lines as a .dxf file."""
+##     F = named("_lines_")
+##     if F:
+##         types = utils.fileDescription(['dxf'])
+##         cur = pf.cfg['workdir']
+##         fn = askFilename(cur=cur,filter=types,exist=False)
+##         if fn:
+##             dxf.exportDXF(fn,F)
+##             print("Wrote .dxf file %s" % fn)
 
 
 def editArc(p):
@@ -248,7 +250,7 @@ def editLine(p):
         ])
     if res:
         return Line([x0,x1]).setProp(p.prop)
-        
+
 
 def editParts():
     """Edit the picked selection"""
@@ -268,7 +270,7 @@ def editParts():
         if newp:
             print("Replacing part %s" % p.prop)
             parts[i] = newp
-                
+
 
 def splitArcs():
     """Split the picked Arcs"""
@@ -290,7 +292,7 @@ def splitArcs():
                 _I('radius',p.radius,readonly=True),
                 _I('start_angle',a[0],readonly=True),
                 _I('end_angle',a[1],readonly=True),
-                _I('split_angle',(a[0]+a[1])/2)])      
+                _I('split_angle',(a[0]+a[1])/2)])
             if res:
                 asp = res['split_angle']
                 newp = [ Arc(center=p._center,radius=p.radius,angles=ap).setProp(p.prop) for ap in [ (a[0],asp), (asp,a[1]) ] ]
@@ -298,7 +300,7 @@ def splitArcs():
                 parts[i:i+1] = newp
         print("# of parts: %s" % len(parts))
     drawCell()
-                
+
 
 def splitLines():
     """Split the picked Lines"""
@@ -318,7 +320,7 @@ def splitLines():
                 _I('part_number',p.prop,readonly=True),
                 _I('point 0',x0,itemtype='point'),
                 _I('point 1',x1,itemtype='point'),
-                _I('split parameter value',0.5)])      
+                _I('split parameter value',0.5)])
             if res:
                 asp = res['split parameter value']
                 xm = (1.0-asp) * x0 + asp * x1
@@ -341,7 +343,7 @@ def convertToFormex():
     """Convert all dxf parts to a plex-2 Formex
 
     This uses the :func:`dxf.toLines` function to transform all Lines, Arcs
-    and PolyLines to a plex-2 Formex. 
+    and PolyLines to a plex-2 Formex.
     The parameters chordal and arcdiv used to set the precision of the
     Arc approximation are asked from the user..
     """
@@ -366,14 +368,15 @@ def convertToFormex():
             ndiv = res['ndiv']
 
         coll = dxf.collectByType(parts)
-        lines = dxf.toLines(chordal=chordal,arcdiv=ndiv)
-        print("Number of lines: %s" % _lines.nelems())
+        print(coll)
+        lines = dxf.toLines(coll,chordal=chordal,arcdiv=ndiv)
+        print("Number of lines: %s" % lines.nelems())
         export({'_dxf_lines_':lines})
 
         clear()
         draw(lines)
 
- 
+
 ##########################################################################
 ######## Drawing #########
 
@@ -384,7 +387,7 @@ _show_dirs = True
 _show_endpoints = True
 _show_freepoints = True
 _show_bif = True
-    
+
 
 
 
@@ -433,13 +436,13 @@ def drawParts(zoom=True,showpoints=None,shownumbers=None,showbif=None):
                 p = parts[i]
                 draw(p,color=red,linewidth=3)
 
-           
+
 def drawDxf():
     """Draw the imported dxf model"""
     dxf_parts = named('_dxf_import_')
     if dxf_parts:
         draw(dxf_parts,color='black',nolight=True)
- 
+
 def drawDxf(zoom=True):
     drawParts(zoom=zoom,showpoints=False,shownumbers=False,)
 
@@ -456,12 +459,12 @@ def drawDirs():
     x = Formex([p.pointsAt([0.5])[0] for p in parts])
     v = Formex([p.directionsAt([0.5])[0] for p in parts])
     drawVectors(x,v,color=red)
-            
+
 
 ##########################################################################
 ######### Create a menu with interactive tasks #############
-        
- 
+
+
 _menu = 'Dxf'
 
 def create_menu():
@@ -472,16 +475,16 @@ def create_menu():
         ("&Convert DXF to DXFTEXT",convertDxf,dict(tooltip="Parse a .dxf file and output a .dxftext script.")),
         ("&Read DXF without saving the DXFTEXT",importDxf),
         ("---",None),
+        ("&Write DXF file",exportDxf),
+        ("&Write DXFTEXT file",exportDxfText),
+         ("---",None),
         ("&Pick DXF selection",pickSelection),
+        ("&Convert to Formex",convertToFormex),
         ("&Renumber DXF entities",renumberDxf),
         ("&Edit DXF entities",editParts),
         ("&Split Arcs",splitArcs),
         ("&Split Lines",splitLines),
-        ("---",None),
-        ("&Write DXFTEXT file",exportDxfText),
-        ("&Convert to Formex",convertToFormex),
-        ("&Write DXF file",exportDxf),
-        #("&Clip by property",clipByProp),
+       #("&Clip by property",clipByProp),
         #("&Partition by connection",partition),
         ("---",None),
         ("&Print DXF selection",printSelection),
@@ -493,7 +496,7 @@ def create_menu():
         ]
     return menu.Menu(_menu,items=MenuData,parent=pf.GUI.menu,before='help')
 
- 
+
 def show_menu():
     """Show the menu."""
     if not pf.GUI.menu.item('Dxf'):
@@ -520,6 +523,6 @@ def run():
 
 if __name__ == 'draw':
     run()
-    
+
 # End
 

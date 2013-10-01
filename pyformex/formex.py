@@ -721,10 +721,16 @@ maxprop  = %s
 
 
     def select(self,idx):
-        """Return a Formex which holds only element with numbers in ids.
+        """Return a Formex with only the elements selected by the parameter.
 
-        idx can be a single element number or a list of numbers or
-        any other index mechanism accepted by numpy's ndarray
+        The parameter `idx` can be
+
+        - a single element number
+        - a list, or array, of element numbers
+        - a bool array of length self.nelems(), where True values flag the
+          elements to be selected
+
+        See :meth:`cselect` for the complementary operation.
         """
         if self.prop is None:
             return Formex(self.coords[idx],eltype=self.eltype)
@@ -734,12 +740,16 @@ maxprop  = %s
 
 
     def cselect(self,idx):
-        """Return a Formex without the elements with numbers in ids.
+        """Return a Formex without the elements selected by the parameter.
 
-        idx can be a single element number or a list of numbers or
-        any other index mechanism accepted by numpy's ndarray
+        The parameter `idx` can be
 
-        This is the complementary operation of select
+        - a single element number
+        - a list, or array, of element numbers
+        - a bool array of length self.nelems(), where True values flag the
+          elements to be selected
+
+        This is the complementary operation of :meth:`select`
         """
         return self.select(complement(idx,self.nelems()))
 
@@ -836,22 +846,6 @@ maxprop  = %s
             for v in asarray(val).flat:
                 t += (self.prop == v)
             return Formex(self.coords[t],self.prop[t],self.eltype)
-
-
-    def splitProp(self):
-        """Partition a Formex according to its prop values.
-
-        Returns a list of Formices. Each Formex contains all the elements with
-        property number equal to one of the unique values in the property set.
-        The Formices in the list are given in order of ascending property
-        number. Each Formex has this value set as property number for all its
-        elements
-        It the Formex has no props, an empty list is returned.
-        """
-        if self.prop is None:
-            return []
-        else:
-            return [ self.withProp(p) for p in self.propSet() ]
 
 
     #

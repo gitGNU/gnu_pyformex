@@ -231,9 +231,17 @@ class Geometry(object):
                 blocks = np.resize(blocks,prop.ravel().shape)
                 prop = np.concatenate([np.resize(p,b) for p,b in zip(prop,blocks)]).astype(Int)
 
-            self.prop = np.resize(prop,(self.nelems(),)).astype(Int)
+            self.prop = self.toProp(prop)
         return self
 
+
+    def toProp(self,prop):
+        """Converts the argument into a legal set of properties for the object.
+
+        The conversion involves resizing the argument to a 1D array of
+        length self.nelems(), and converting the data type to integer.
+        """
+        return np.resize(prop,(self.nelems(),)).astype(Int)
 
 
     ########### Return information about the coords #################
@@ -297,12 +305,43 @@ class Geometry(object):
     def __str__(self):
         return self.coords.__str__()
 
-    ########### Return a copy #################
+    ########### Return a copy or selection #################
 
     def copy(self):
-        """Return a deep copy of the object."""
+        """Return a deep copy of the Geometry  object.
+
+        The returned object is an exact copy of the input, but has
+        all of its data independent of the former.
+        """
         from copy import deepcopy
         return deepcopy(self)
+
+
+    def splitProp(self,prop=None):
+        """Partition a Geometry (Formex/Mesh) according to the values in prop.
+
+        Parameters:
+
+        - `prop`: an int array with length self.nelems(), or None. If None,
+          the `prop` attribute of the Geometry is used.
+
+        Returns a list of Geometry objects of the same type as the input.
+        Each object contains all the elements having the same value of `prop`.
+        The number of objects in the list is equal to the number of unique
+        values in `prop`. The list is sorted in ascending order of their
+        `prop` value.
+
+        It `prop` is None and the the object has no `prop` attribute, an empty
+        list is returned.
+        """
+        if prop is None:
+            prop = self.prop
+        else:
+            prop = self.toProp(prop)
+        if prop is None:
+            return []
+        else:
+            return [ self.select(prop==p) for p in np.unique(prop) ]
 
 
     ########### Coords transformations #################

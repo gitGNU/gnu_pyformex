@@ -85,7 +85,7 @@ EXECUTABLE= ${PYFORMEXDIR}/pyformex ${PYFORMEXDIR}/sendmail.py \
 
 OTHERSTAMPABLE= README Makefile ReleaseNotes \
 	manifest.py setup.py \
-	${PYFORMEXDIR}/pyformexrc \
+	${PYFORMEXDIR}/pyformex.conf \
 	${EXAMPLEDATA} \
 	$(wildcard ${DOCDIR}/*.rst)
 
@@ -125,7 +125,7 @@ FTPLOCAL= bumps:/var/ftp/pub/pyformex
 # ftp server on Savannah
 FTPPUB= bverheg@dl.sv.nongnu.org:/releases/pyformex/
 
-.PHONY: dist sdist signdist pub clean html latexpdf pubdoc minutes website dist.stamped version tag register bumprelease bumpversion stampall stampstatic stampstaticdirs pubrelease
+.PHONY: dist sdist signdist cleandist pub clean distclean html latexpdf pubdoc minutes website dist.stamped version tag register bumprelease bumpversion stampall stampstatic stampstaticdirs pubrelease
 
 ##############################
 
@@ -145,17 +145,6 @@ lib:
 	find build -name '*.so' -exec mv {} pyformex/lib \;
 	rm -rf build
 
-# Create the C library with debug option
-#libdebug: ${LIBDIR}/Makefile
-#	make -C ${LIBDIR} debug
-
-# Create the C library without debug option
-#libnodebug: ${LIBDIR}/Makefile
-#	make -C ${LIBDIR} nodebug
-
-# Clean C library
-#libreset: ${LIBDIR}/Makefile
-#	make -C ${LIBDIR} reset
 
 # Create the minutes of the user meeting
 minutes:
@@ -223,6 +212,7 @@ Stamp.staticdir: Stamp.template
 
 stampstaticdirs: Stamp.staticdir
 	${STAMP} -t$< -i ${STATICDIRS}
+
 
 # Create the distribution
 cleandist:
