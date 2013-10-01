@@ -2804,6 +2804,73 @@ def hex8_els(nx,ny,nz):
 
 
 
+def smartSeed(n):
+    if isInt(n):
+        return seed(n)
+    elif isinstance(n,tuple):
+        return seed(*n)
+    elif isinstance(n,list):
+        return n
+    else:
+        raise ValueError,"Expected an integer, tuple or list"
+
+
+def rectangle(L,W,nl,nw):
+    """Create a plane rectangular mesh of quad4 elements
+
+    Parameters:
+
+    - L,W: length,width of the rectangle
+    - nl,nw: seeds for the elements along the length, width of the rectangle.
+      They should one of the following:
+
+      - an integer number, specifying the number of equally sized elements
+        along that direction,
+      - a tuple (n,) or (n,e0) or (n,e0,e1), to be used as parameters in the
+        :func:`mesh.seed` function,
+      - a list of float values in the range 0.0 to 1.0, specifying the relative
+        position of the seeds. The values should be ordered and the first and
+        last values should be 0.0 and 1.0.
+
+    """
+    sl = smartSeed(nl)
+    sw = smartSeed(nw)
+    return quadgrid(sl,sw).resized([L,W,1.0])
+
+
+def rectangle_with_hole(L,W,r,nr,nt,e0=0.0,eltype='quad4'):
+    """Create a quarter of rectangle with a central circular hole.
+
+    Parameters:
+
+    - L,W: length,width of the (quarter) rectangle
+    - r: radius of the hole
+    - nr,nt: number of elements over radial,tangential direction
+    - e0: concentration factor for elements in the radial direction
+
+    Returns a Mesh
+    """
+    L = W
+    import elements
+    from formex import interpolate
+    base = elements.Quad9.vertices.scale([L,W,1.])
+    F0 = Formex([[[r,0.,0.]]]).rosette(5,90./4)
+    F2 = Formex([[[L,0.]],[[L,W/2]],[[L,W]],[[L/2,W]],[[0,W]]])
+    F1 = interpolate(F0,F2,div=[0.5])
+    FL = [F0,F1,F2]
+    X0,X1,X2 = [ F.coords.reshape(-1,3) for F in FL ]
+    trf0 = Coords([X0[0],X2[0],X2[2],X0[2],X1[0],X2[1],X1[2],X0[1],X1[1]])
+    trf1 = Coords([X0[2],X2[2],X2[4],X0[4],X1[2],X2[3],X1[4],X0[3],X1[3]])
+
+    seed0 = seed(nr,e0)
+    seed1 = seed(nt)
+    grid = quadgrid(seed0,seed1).resized([L,W,1.0])
+
+    grid0 = grid.isopar('quad9',trf0,base)
+    grid1 = grid.isopar('quad9',trf1,base)
+    return (grid0+grid1).fuse()
+
+
 ########### Deprecated #####################
 
 

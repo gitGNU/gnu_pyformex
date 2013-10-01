@@ -2256,9 +2256,9 @@ Quality: %s .. %s
         - `dir` is the axis of the extrusion. if dir is None, dir is
           the average normal of patch p
         - `makecircular` if True makes circular the border-line of the extended patch, keeping the patch area.
-        - `circulardiameter`: it set the diameter of the circularized end. 
-           If `circulardiameter` is `area` (default) the area of the circularized is equal to the the area of the patch. 
-           This option is active only if `makecircular` is True. 
+        - `circulardiameter`: it set the diameter of the circularized end.
+           If `circulardiameter` is `area` (default) the area of the circularized is equal to the the area of the patch.
+           This option is active only if `makecircular` is True.
 
         This is a convenient function to elongate tubular structures
         such as arteries.

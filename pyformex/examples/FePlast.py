@@ -43,8 +43,8 @@ from plugins.properties import *
 from plugins.fe_abq import Step,Output,Result,AbqData
 from plugins import ccxdat
 from plugins import postproc_menu
+from mesh import *
 
-from plugins.mesh_ext import *
 
 def run():
     reset()
@@ -77,16 +77,6 @@ def run():
 
     if not res:
         return
-
-    cmd = None
-    if res['run']:
-        cmd = {'CalculiX':'ccx','Abaqus':'abaqus'}[res['format']]
-        if not utils.hasExternal(res['format'].lower()):
-            ans = pf.warning("I did not find the command '%s' on your system.\nIf you continue, I can prepare the model and write the input file,but not run the simulation" % cmd,actions=['Cancel','Continue'])
-            if ans == 'Continue':
-                cmd = None
-            else:
-                return
 
 
     # Create geometry
@@ -231,7 +221,19 @@ def run():
     data = AbqData(FEM,prop=P,steps=simsteps,res=result,bound=['init'])
 
     fn = askNewFilename(pf.cfg['workdir']+'/feplast.inp',filter='*.inp')
+
+
     if fn:
+        cmd = None
+        if res['run']:
+            cmd = {'CalculiX':'ccx','Abaqus':'abaqus'}[res['format']]
+            if not utils.hasExternal(res['format'].lower()):
+                ans = pf.warning("I did not find the command '%s' on your system.\nIf you continue, I can prepare the model and write the input file,but not run the simulation" % cmd,actions=['Cancel','Continue'])
+                if ans == 'Continue':
+                    cmd = None
+                else:
+                    return
+
         data.write(jobname=fn,group_by_group=True)
 
         if cmd:
