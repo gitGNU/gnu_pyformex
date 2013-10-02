@@ -199,10 +199,30 @@ data holds the data</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="dxf.DxfExporter.vertex">
+<tt class="descname">vertex</tt><big>(</big><em>x</em>, <em>layer=0</em><big>)</big><a class="headerlink" href="#dxf.DxfExporter.vertex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export a vertex.</p>
+<p>x is a (3,) shaped array</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="dxf.DxfExporter.line">
 <tt class="descname">line</tt><big>(</big><em>x</em>, <em>layer=0</em><big>)</big><a class="headerlink" href="#dxf.DxfExporter.line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export a line.</p>
 <p>x is a (2,3) shaped array</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dxf.DxfExporter.polyline">
+<tt class="descname">polyline</tt><big>(</big><em>x</em>, <em>layer=0</em><big>)</big><a class="headerlink" href="#dxf.DxfExporter.polyline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export a polyline.</p>
+<p>x is a (nvertices,3) shaped array</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dxf.DxfExporter.arc">
+<tt class="descname">arc</tt><big>(</big><em>C</em>, <em>R</em>, <em>a</em>, <em>layer=0</em><big>)</big><a class="headerlink" href="#dxf.DxfExporter.arc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export an arc.</p>
 </dd></dl>
 
 </dd></dl>
@@ -320,6 +340,14 @@ the accuracy for the approximation of the Arc by line segments.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="dxf.exportDxf">
+<tt class="descclassname">dxf.</tt><tt class="descname">exportDxf</tt><big>(</big><em>filename</em>, <em>coll</em><big>)</big><a class="headerlink" href="#dxf.exportDxf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export a collection of dxf parts a DXF file</p>
+<p>coll is a list of dxf objects</p>
+<p>Currently, only dxf objects of type &#8216;Line&#8217; and &#8216;Arc&#8217; can be exported.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="dxf.exportDxfText">
 <tt class="descclassname">dxf.</tt><tt class="descname">exportDxfText</tt><big>(</big><em>filename</em>, <em>parts</em><big>)</big><a class="headerlink" href="#dxf.exportDxfText" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export a set of dxf entities to a .dxftext file.</p>
@@ -356,7 +384,7 @@ the accuracy for the approximation of the Arc by line segments.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Jun 14, 2013.
+      Last updated on Oct 01, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

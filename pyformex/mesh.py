@@ -940,11 +940,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         of elements.
         """
         p = self.partitionByConnection(level=level,startat=startat,sort=sort)
-        split = self.setProp(p).splitProp()
-        if split:
-            return split
-        else:
-            return [ self ]
+        return self.splitProp(p)
 
 
     def largestByConnection(self,level=0):
@@ -1254,9 +1250,15 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
     def select(self,selected,compact=True):
         """Return a Mesh only holding the selected elements.
 
+        Parameters:
+
         - `selected`: an object that can be used as an index in the
-          `elems` array, e.g. a list of (integer) element numbers,
-          or a boolean array with the same length as the `elems` array.
+          `elems` array, such as
+
+          - a single element number
+          - a list, or array, of element numbers
+          - a bool array of length self.nelems(), where True values flag the
+            elements to be selected
 
         - `compact`: boolean. If True (default), the returned Mesh will be
           compacted, i.e. the unused nodes are removed and the nodes are
@@ -1265,7 +1267,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
         Returns a Mesh (or subclass) with only the selected elements.
 
-        See `cselect` for the complementary operation.
+        See :meth:`cselect` for the complementary operation.
         """
         M = self.__class__(self.coords,self.elems[selected],eltype=self.elType())
         if self.prop is not None:
@@ -1278,9 +1280,15 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
     def cselect(self,selected,compact=True):
         """Return a mesh without the selected elements.
 
+        Parameters:
+
         - `selected`: an object that can be used as an index in the
-          `elems` array, e.g. a list of (integer) element numbers,
-          or a boolean array with the same length as the `elems` array.
+          `elems` array, such as
+
+          - a single element number
+          - a list, or array, of element numbers
+          - a bool array of length self.nelems(), where True values flag the
+            elements to be selected
 
         - `compact`: boolean. If True (default), the returned Mesh will be
           compacted, i.e. the unused nodes are removed and the nodes are
@@ -1289,7 +1297,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
         Returns a Mesh with all but the selected elements.
 
-        This is the complimentary operation of `select`.
+        This is the complimentary operation of :meth:`select`.
         """
         return self.select(complement(selected,self.nelems()),compact=compact)
 
@@ -1397,7 +1405,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
         If the Mesh has no properties, a copy with all elements is returned.
         """
-        ps=self.propSet()
+        ps = self.propSet()
         if type(val)==int:
             t=ps==val
         else:
@@ -1442,22 +1450,6 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         """
         hi = self.elems.insertLevel(level)[0]
         return hi.hits(nodes=entities)
-
-
-    def splitProp(self):
-        """Partition a Mesh according to its prop values.
-
-        Returns a list of Meshes. Each Mesh contains all the elements with
-        property number equal to one of the unique values in the property set.
-        The Meshes in the list are given in order of ascending property
-        number. Each Mesh has this value set as property number for all its
-        elements
-        It the Mesh has no props, an empty list is returned.
-        """
-        if self.prop is None:
-            return []
-        else:
-            return [ self.withProp(p) for p in self.propSet() ]
 
 
     def splitRandom(self,n,compact=True):
@@ -2758,7 +2750,7 @@ def quad4_els(nx,ny):
 def quadgrid(seed0,seed1):
     """Create a quadrilateral mesh of unit size with the specified seeds.
 
-    The seeds are a monotuoudsly increasing series of parametric values
+    The seeds are a monotonously increasing series of parametric values
     in the range 0..1. They define the positions of the nodes in the
     parametric directions 0, resp. 1.
     Normally, the first and last values of the seeds are 0., resp. 1.,
@@ -2810,6 +2802,73 @@ def hex8_els(nx,ny,nz):
     els = concatenate([row_stack(els[:-1]),row_stack(els[1:])],axis=1)
     return els
 
+
+
+def smartSeed(n):
+    if isInt(n):
+        return seed(n)
+    elif isinstance(n,tuple):
+        return seed(*n)
+    elif isinstance(n,list):
+        return n
+    else:
+        raise ValueError,"Expected an integer, tuple or list"
+
+
+def rectangle(L,W,nl,nw):
+    """Create a plane rectangular mesh of quad4 elements
+
+    Parameters:
+
+    - L,W: length,width of the rectangle
+    - nl,nw: seeds for the elements along the length, width of the rectangle.
+      They should one of the following:
+
+      - an integer number, specifying the number of equally sized elements
+        along that direction,
+      - a tuple (n,) or (n,e0) or (n,e0,e1), to be used as parameters in the
+        :func:`mesh.seed` function,
+      - a list of float values in the range 0.0 to 1.0, specifying the relative
+        position of the seeds. The values should be ordered and the first and
+        last values should be 0.0 and 1.0.
+
+    """
+    sl = smartSeed(nl)
+    sw = smartSeed(nw)
+    return quadgrid(sl,sw).resized([L,W,1.0])
+
+
+def rectangle_with_hole(L,W,r,nr,nt,e0=0.0,eltype='quad4'):
+    """Create a quarter of rectangle with a central circular hole.
+
+    Parameters:
+
+    - L,W: length,width of the (quarter) rectangle
+    - r: radius of the hole
+    - nr,nt: number of elements over radial,tangential direction
+    - e0: concentration factor for elements in the radial direction
+
+    Returns a Mesh
+    """
+    L = W
+    import elements
+    from formex import interpolate
+    base = elements.Quad9.vertices.scale([L,W,1.])
+    F0 = Formex([[[r,0.,0.]]]).rosette(5,90./4)
+    F2 = Formex([[[L,0.]],[[L,W/2]],[[L,W]],[[L/2,W]],[[0,W]]])
+    F1 = interpolate(F0,F2,div=[0.5])
+    FL = [F0,F1,F2]
+    X0,X1,X2 = [ F.coords.reshape(-1,3) for F in FL ]
+    trf0 = Coords([X0[0],X2[0],X2[2],X0[2],X1[0],X2[1],X1[2],X0[1],X1[1]])
+    trf1 = Coords([X0[2],X2[2],X2[4],X0[4],X1[2],X2[3],X1[4],X0[3],X1[3]])
+
+    seed0 = seed(nr,e0)
+    seed1 = seed(nt)
+    grid = quadgrid(seed0,seed1).resized([L,W,1.0])
+
+    grid0 = grid.isopar('quad9',trf0,base)
+    grid1 = grid.isopar('quad9',trf1,base)
+    return (grid0+grid1).fuse()
 
 
 ########### Deprecated #####################

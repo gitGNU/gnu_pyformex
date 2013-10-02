@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -43,42 +43,8 @@ from plugins.properties import *
 from plugins.fe_abq import Step,Output,Result,AbqData
 from plugins import ccxdat
 from plugins import postproc_menu
-
-import simple
-
-
-def rectangle_with_hole(L,W,r,nl,nb,e0=0.0,eltype='quad4'):
-    """Create a quarter of rectangle with a central circular hole.
-
-    Parameters:
-
-    - L,W: length,width of the (quarter) rectangle
-    - r: radius of the hole
-    - nl,nb: number of elements over length,width
-
-    Returns a Mesh
-    """
-    L = W
-    import elements
-    base = elements.Quad9.vertices.scale([L,W,1.])
-    F0 = Formex([[[r,0.,0.]]]).rosette(5,90./4)
-    F2 = Formex([[[L,0.]],[[L,W/2]],[[L,W]],[[L/2,W]],[[0,W]]])
-    F1 = interpolate(F0,F2,div=[0.5])
-    FL = [F0,F1,F2]
-    X0,X1,X2 = [ F.coords.reshape(-1,3) for F in FL ]
-    trf0 = Coords([X0[0],X2[0],X2[2],X0[2],X1[0],X2[1],X1[2],X0[1],X1[1]])
-    trf1 = Coords([X0[2],X2[2],X2[4],X0[4],X1[2],X2[3],X1[4],X0[3],X1[3]])
-
-    seed0 = seed(nb,e0)
-    seed1 = seed(nl)
-    grid = quadgrid(seed0,seed1).resized([L,W,1.0])
-
-    grid0 = grid.isopar('quad9',trf0,base)
-    grid1 = grid.isopar('quad9',trf1,base)
-    return (grid0+grid1).fuse()
-
-
 from mesh import *
+
 
 def run():
     reset()
@@ -94,8 +60,7 @@ def run():
     B = 100. # width of the plate (mm)
     th = 10. # thickness of the plate (mm)
     L2,B2 = L/2, B/2  # dimensions of the quarter plate
-    nl,nb = 10,16     # number of elements along length, width
-    nl,nb = 2,2     # number of elements along length, width
+    nl,nb = 16,10     # number of elements along length, width
     D = 20.
     r = D/2
     e0 = 0.3
@@ -113,20 +78,10 @@ def run():
     if not res:
         return
 
-    cmd = None
-    if res['run']:
-        cmd = {'CalculiX':'ccx','Abaqus':'abaqus'}[res['format']]
-        if not utils.hasExternal(res['format'].lower()):
-            ans = pf.warning("I did not find the command '%s' on your system.\nIf you continue, I can prepare the model and write the input file,but not run the simulation" % cmd,actions=['Cancel','Continue'])
-            if ans == 'Continue':
-                cmd = None
-            else:
-                return
-
 
     # Create geometry
     if res['geometry'] == 'Rectangle':
-        plate = simple.rectangle(nl,nb,L2,B2).toMesh()
+        plate = rectangle(L2,B2,nl,nb)
     else:
         plate = rectangle_with_hole(L2,B2,r,nl,nb,e0)
 
@@ -266,7 +221,19 @@ def run():
     data = AbqData(FEM,prop=P,steps=simsteps,res=result,bound=['init'])
 
     fn = askNewFilename(pf.cfg['workdir']+'/feplast.inp',filter='*.inp')
+
+
     if fn:
+        cmd = None
+        if res['run']:
+            cmd = {'CalculiX':'ccx','Abaqus':'abaqus'}[res['format']]
+            if not utils.hasExternal(res['format'].lower()):
+                ans = pf.warning("I did not find the command '%s' on your system.\nIf you continue, I can prepare the model and write the input file,but not run the simulation" % cmd,actions=['Cancel','Continue'])
+                if ans == 'Continue':
+                    cmd = None
+                else:
+                    return
+
         data.write(jobname=fn,group_by_group=True)
 
         if cmd:

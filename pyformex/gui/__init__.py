@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -83,5 +83,6 @@ except:
     print("WARNING: THIS IS NOT AN X11 WINDOW SYSTEM!")
     print("SOME THINGS MAY NOT WORK PROPERLY!")
     pf.X11 = False
+
 
 # End

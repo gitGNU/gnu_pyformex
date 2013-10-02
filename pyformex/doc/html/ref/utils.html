@@ -195,7 +195,7 @@ UNIX-like shell command to select all the generated file names.</p>
 
 <dl class="method">
 <dt id="utils.NameSequence.files">
-<tt class="descname">files</tt><big>(</big><em>sort=&lt;function hsorted at 0x410c320&gt;</em><big>)</big><a class="headerlink" href="#utils.NameSequence.files" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">files</tt><big>(</big><em>sort=&lt;function hsorted at 0x44922a8&gt;</em><big>)</big><a class="headerlink" href="#utils.NameSequence.files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a (sorted) list of files matching the name pattern.</p>
 <p>A function may be specified to sort/filter the list of file names.
 The function should take a list of filenames as input. The output
@@ -252,6 +252,202 @@ the filenames in a human order.</p>
 </dd></dl>
 
 <p><tt class="docutils literal"><span class="pre">Functions</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">utils</span></tt></p>
+<dl class="function">
+<dt id="utils.splitFilename">
+<tt class="descclassname">utils.</tt><tt class="descname">splitFilename</tt><big>(</big><em>filename</em>, <em>accept_ext=None</em>, <em>reject_ext=None</em><big>)</big><a class="headerlink" href="#utils.splitFilename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split a file name in dir,base,ext tuple.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>filename</cite>: a filename, possibly including a directory path</li>
+<li><cite>accept_ext</cite>: optional list of acceptable extension strings.
+If specified, only extensions appearing in this list will be
+recognized as such, while other ones will be made part of the
+base name.</li>
+<li><cite>reject_ext</cite>: optional list of unacceptable extension strings.
+If specified, extensions appearing in this list will not be
+recognized as such, and be made part of the base name.</li>
+</ul>
+<p>Returns a tuple dir,base,ext:</p>
+<ul class="simple">
+<li><cite>dir</cite>: the directory path, not including the final path separator (unless
+it is the only one). If the filename starts with a single path separator,
+<cite>dir</cite> will consist of that single separator. If the filename does not
+contain a path separator, <cite>dir</cite> will be an empty string.</li>
+<li><cite>base</cite>: filename without the extension. It can only be empty if the
+input is an empty string.</li>
+<li><cite>ext</cite>: file extension: This is the part of the filename starting from
+the last &#8216;.&#8217; character that is not the first character of the filename.
+If the filename does not contain a &#8216;.&#8217; character or the only &#8216;.&#8217;
+character is also the first character of the filename (after the last
+path separator), the extension is an empty string. If not empty, it
+always starts with a &#8216;.&#8217;. A filename with</li>
+</ul>
+<p>Examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">splitFilename</span><span class="p">(</span><span class="s">&quot;cc/dd/aa.bb&quot;</span><span class="p">)</span>
+<span class="go">(&#39;cc/dd&#39;, &#39;aa&#39;, &#39;.bb&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">splitFilename</span><span class="p">(</span><span class="s">&quot;cc/dd/aa.&quot;</span><span class="p">)</span>
+<span class="go">(&#39;cc/dd&#39;, &#39;aa&#39;, &#39;.&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">splitFilename</span><span class="p">(</span><span class="s">&quot;..//aa.bb&quot;</span><span class="p">)</span>
+<span class="go">(&#39;..&#39;, &#39;aa&#39;, &#39;.bb&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">splitFilename</span><span class="p">(</span><span class="s">&quot;aa.bb&quot;</span><span class="p">)</span>
+<span class="go">(&#39;&#39;, &#39;aa&#39;, &#39;.bb&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">splitFilename</span><span class="p">(</span><span class="s">&quot;aa/bb&quot;</span><span class="p">)</span>
+<span class="go">(&#39;aa&#39;, &#39;bb&#39;, &#39;&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">splitFilename</span><span class="p">(</span><span class="s">&quot;aa/bb/&quot;</span><span class="p">)</span>
+<span class="go">(&#39;aa/bb&#39;, &#39;&#39;, &#39;&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">splitFilename</span><span class="p">(</span><span class="s">&quot;/aa/bb&quot;</span><span class="p">)</span>
+<span class="go">(&#39;/aa&#39;, &#39;bb&#39;, &#39;&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">splitFilename</span><span class="p">(</span><span class="s">&quot;.bb&quot;</span><span class="p">)</span>
+<span class="go">(&#39;&#39;, &#39;.bb&#39;, &#39;&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">splitFilename</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+<span class="go">(&#39;/&#39;, &#39;&#39;, &#39;&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">splitFilename</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">)</span>
+<span class="go">(&#39;&#39;, &#39;.&#39;, &#39;&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">splitFilename</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="go">(&#39;&#39;, &#39;&#39;, &#39;&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">splitFilename</span><span class="p">(</span><span class="s">&quot;cc/dd/aa.bb&quot;</span><span class="p">,</span><span class="n">accept_ext</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;.aa&#39;</span><span class="p">,</span><span class="s">&#39;.cc&#39;</span><span class="p">])</span>
+<span class="go">(&#39;cc/dd&#39;, &#39;aa.bb&#39;, &#39;&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">splitFilename</span><span class="p">(</span><span class="s">&quot;cc/dd/aa.bb&quot;</span><span class="p">,</span><span class="n">reject_ext</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;.bb&#39;</span><span class="p">])</span>
+<span class="go">(&#39;cc/dd&#39;, &#39;aa.bb&#39;, &#39;&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.buildFilename">
+<tt class="descclassname">utils.</tt><tt class="descname">buildFilename</tt><big>(</big><em>dirname</em>, <em>basename</em>, <em>ext=''</em><big>)</big><a class="headerlink" href="#utils.buildFilename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a filename from a directory path, filename and optional extension.</p>
+<p>The dirname and basename are joined using the system path separator,
+and the extension is added at the end. Note that no &#8216;.&#8217; is added between
+the basename and the extension. While the extension will normally
+start with a &#8216;.&#8217;, this function can also be used to add another tail
+to the filename.</p>
+<p>This is a convenience function equivalent with:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span><span class="n">basename</span><span class="p">)</span> <span class="o">+</span> <span class="n">ext</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.changeExt">
+<tt class="descclassname">utils.</tt><tt class="descname">changeExt</tt><big>(</big><em>filename</em>, <em>ext</em>, <em>accept_ext=None</em>, <em>reject_ext=None</em><big>)</big><a class="headerlink" href="#utils.changeExt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the extension of a file name.</p>
+<p>This function splits the specified file name in a base name and an
+extension, replaces the extension with the specified one, and returns
+the reassembled file name.
+If the filename has no extension part, the specified extension is just
+appended.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>fn</cite>: file name, possibly including a directory path and extension</li>
+<li><cite>ext</cite>: string: required extension of the output file name. The string
+should start with a &#8216;.&#8217;.</li>
+<li><cite>accept_ext</cite>, <cite>reject_ext</cite>: lists of strings starting with a &#8216;.&#8217;.
+These have the same meaning as in <a class="reference internal" href="#utils.splitFilename" title="utils.splitFilename"><tt class="xref py py-func docutils literal"><span class="pre">splitFilename()</span></tt></a>.</li>
+</ul>
+<p>Returns a file name with the specified extension.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">changeExt</span><span class="p">(</span><span class="s">&#39;image.png&#39;</span><span class="p">,</span><span class="s">&#39;.jpg&#39;</span><span class="p">)</span>
+<span class="go">&#39;image.jpg&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">changeExt</span><span class="p">(</span><span class="s">&#39;image&#39;</span><span class="p">,</span><span class="s">&#39;.jpg&#39;</span><span class="p">)</span>
+<span class="go">&#39;image.jpg&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">changeExt</span><span class="p">(</span><span class="s">&#39;image&#39;</span><span class="p">,</span><span class="s">&#39;jpg&#39;</span><span class="p">)</span> <span class="c"># Deprecated</span>
+<span class="go">&#39;image.jpg&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">changeExt</span><span class="p">(</span><span class="s">&#39;image.1&#39;</span><span class="p">,</span><span class="s">&#39;.jpg&#39;</span><span class="p">)</span>
+<span class="go">&#39;image.jpg&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">changeExt</span><span class="p">(</span><span class="s">&#39;image.1&#39;</span><span class="p">,</span><span class="s">&#39;.jpg&#39;</span><span class="p">,</span><span class="n">reject_ext</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;.1&#39;</span><span class="p">])</span>
+<span class="go">&#39;image.1.jpg&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.projectName">
+<tt class="descclassname">utils.</tt><tt class="descname">projectName</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#utils.projectName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Derive a project name from a file name.
+`
+The project name is the basename of the file without the extension.
+It is equivalent with splitFilename(fn)[1]</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.tildeExpand">
+<tt class="descclassname">utils.</tt><tt class="descname">tildeExpand</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#utils.tildeExpand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform tilde expansion on a filename.</p>
+<p>Bash, the most used command shell in Linux, expands a &#8216;~&#8217; in arguments
+to the users home direction.
+This function can be used to do the same for strings that did not receive
+the bash tilde expansion, such as strings in the configuration file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.all_image_extensions">
+<tt class="descclassname">utils.</tt><tt class="descname">all_image_extensions</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.all_image_extensions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with all known image extensions.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.fileDescription">
+<tt class="descclassname">utils.</tt><tt class="descname">fileDescription</tt><big>(</big><em>ftype</em><big>)</big><a class="headerlink" href="#utils.fileDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a description of the specified file type.</p>
+<p>The description of known types are listed in a dict file_description.
+If the type is unknown, the returned string has the form
+<tt class="docutils literal"><span class="pre">TYPE</span> <span class="pre">files</span> <span class="pre">(*.type)</span></tt></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.fileType">
+<tt class="descclassname">utils.</tt><tt class="descname">fileType</tt><big>(</big><em>ftype</em><big>)</big><a class="headerlink" href="#utils.fileType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize a filetype string.</p>
+<p>The string is converted to lower case and a leading dot is removed.
+This makes it fit for use with a filename extension.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fileType</span><span class="p">(</span><span class="s">&#39;pdf&#39;</span><span class="p">)</span>
+<span class="go">&#39;pdf&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fileType</span><span class="p">(</span><span class="s">&#39;.pdf&#39;</span><span class="p">)</span>
+<span class="go">&#39;pdf&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fileType</span><span class="p">(</span><span class="s">&#39;PDF&#39;</span><span class="p">)</span>
+<span class="go">&#39;pdf&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fileType</span><span class="p">(</span><span class="s">&#39;.PDF&#39;</span><span class="p">)</span>
+<span class="go">&#39;pdf&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.fileTypeFromExt">
+<tt class="descclassname">utils.</tt><tt class="descname">fileTypeFromExt</tt><big>(</big><em>fname</em><big>)</big><a class="headerlink" href="#utils.fileTypeFromExt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Derive the file type from the file name.</p>
+<p>The derived file type is the file extension part in lower case and
+without the leading dot.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fileTypeFromExt</span><span class="p">(</span><span class="s">&#39;pyformex.pdf&#39;</span><span class="p">)</span>
+<span class="go">&#39;pdf&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fileTypeFromExt</span><span class="p">(</span><span class="s">&#39;pyformex&#39;</span><span class="p">)</span>
+<span class="go">&#39;&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fileTypeFromExt</span><span class="p">(</span><span class="s">&#39;pyformex.pgf&#39;</span><span class="p">)</span>
+<span class="go">&#39;pgf&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fileTypeFromExt</span><span class="p">(</span><span class="s">&#39;pyformex.pgf.gz&#39;</span><span class="p">)</span>
+<span class="go">&#39;pgf.gz&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fileTypeFromExt</span><span class="p">(</span><span class="s">&#39;pyformex.gz&#39;</span><span class="p">)</span>
+<span class="go">&#39;gz&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.fileSize">
+<tt class="descclassname">utils.</tt><tt class="descname">fileSize</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#utils.fileSize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the size in bytes of the file fn</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.findIcon">
+<tt class="descclassname">utils.</tt><tt class="descname">findIcon</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#utils.findIcon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the file name for an icon with given name.</p>
+<p>If no icon file is found, returns the question mark icon.</p>
+</dd></dl>
+
 <dl class="function">
 <dt id="utils.prefixFiles">
 <tt class="descclassname">utils.</tt><tt class="descname">prefixFiles</tt><big>(</big><em>prefix</em>, <em>files</em><big>)</big><a class="headerlink" href="#utils.prefixFiles" title="Permalink to this definition">¶</a></dt>
@@ -425,81 +621,6 @@ decompressing to a temporary file.</li>
 </dd></dl>
 
 <dl class="function">
-<dt id="utils.all_image_extensions">
-<tt class="descclassname">utils.</tt><tt class="descname">all_image_extensions</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.all_image_extensions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a list with all known image extensions.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.fileDescription">
-<tt class="descclassname">utils.</tt><tt class="descname">fileDescription</tt><big>(</big><em>ftype</em><big>)</big><a class="headerlink" href="#utils.fileDescription" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a description of the specified file type.</p>
-<p>The description of known types are listed in a dict file_description.
-If the type is unknown, the returned string has the form
-<tt class="docutils literal"><span class="pre">TYPE</span> <span class="pre">files</span> <span class="pre">(*.type)</span></tt></p>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.fileType">
-<tt class="descclassname">utils.</tt><tt class="descname">fileType</tt><big>(</big><em>ftype</em><big>)</big><a class="headerlink" href="#utils.fileType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Normalize a filetype string.</p>
-<p>The string is converted to lower case and a leading dot is removed.
-This makes it fit for use with a filename extension.</p>
-<p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fileType</span><span class="p">(</span><span class="s">&#39;pdf&#39;</span><span class="p">)</span>
-<span class="go">&#39;pdf&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fileType</span><span class="p">(</span><span class="s">&#39;.pdf&#39;</span><span class="p">)</span>
-<span class="go">&#39;pdf&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fileType</span><span class="p">(</span><span class="s">&#39;PDF&#39;</span><span class="p">)</span>
-<span class="go">&#39;pdf&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fileType</span><span class="p">(</span><span class="s">&#39;.PDF&#39;</span><span class="p">)</span>
-<span class="go">&#39;pdf&#39;</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.fileTypeFromExt">
-<tt class="descclassname">utils.</tt><tt class="descname">fileTypeFromExt</tt><big>(</big><em>fname</em><big>)</big><a class="headerlink" href="#utils.fileTypeFromExt" title="Permalink to this definition">¶</a></dt>
-<dd><p>Derive the file type from the file name.</p>
-<p>The derived file type is the file extension part in lower case and
-without the leading dot.</p>
-<p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fileTypeFromExt</span><span class="p">(</span><span class="s">&#39;pyformex.pdf&#39;</span><span class="p">)</span>
-<span class="go">&#39;pdf&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fileTypeFromExt</span><span class="p">(</span><span class="s">&#39;pyformex&#39;</span><span class="p">)</span>
-<span class="go">&#39;&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fileTypeFromExt</span><span class="p">(</span><span class="s">&#39;pyformex.pgf&#39;</span><span class="p">)</span>
-<span class="go">&#39;pgf&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fileTypeFromExt</span><span class="p">(</span><span class="s">&#39;pyformex.pgf.gz&#39;</span><span class="p">)</span>
-<span class="go">&#39;pgf.gz&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fileTypeFromExt</span><span class="p">(</span><span class="s">&#39;pyformex.gz&#39;</span><span class="p">)</span>
-<span class="go">&#39;gz&#39;</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.fileSize">
-<tt class="descclassname">utils.</tt><tt class="descname">fileSize</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#utils.fileSize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the size in bytes of the file fn</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.findIcon">
-<tt class="descclassname">utils.</tt><tt class="descname">findIcon</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#utils.findIcon" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the file name for an icon with given name.</p>
-<p>If no icon file is found, returns the question mark icon.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.projectName">
-<tt class="descclassname">utils.</tt><tt class="descname">projectName</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#utils.projectName" title="Permalink to this definition">¶</a></dt>
-<dd><p>Derive a project name from a file name.</p>
-<p>The project name is the basename f the file without the extension.</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="utils.mtime">
 <tt class="descclassname">utils.</tt><tt class="descname">mtime</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#utils.mtime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the (UNIX) time of last change of file fn.</p>
@@ -601,34 +722,6 @@ print (sta,out)</p>
 <li><cite>signal</cite>: the signal to send to the processes. The default (15) will
 try to terminate the process. See &#8216;man kill&#8217; for more values.</li>
 </ul>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.changeExt">
-<tt class="descclassname">utils.</tt><tt class="descname">changeExt</tt><big>(</big><em>fn</em>, <em>ext</em><big>)</big><a class="headerlink" href="#utils.changeExt" title="Permalink to this definition">¶</a></dt>
-<dd><p>Change the extension of a file name.</p>
-<p>The extension is the minimal trailing part of the filename starting
-with a &#8216;.&#8217;. If the filename has no &#8216;.&#8217;, the extension will be appended.
-If the given extension does not start with a dot, one is prepended.</p>
-<p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">changeExt</span><span class="p">(</span><span class="s">&#39;image.png&#39;</span><span class="p">,</span><span class="s">&#39;.jpg&#39;</span><span class="p">)</span>
-<span class="go">&#39;image.jpg&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">changeExt</span><span class="p">(</span><span class="s">&#39;image&#39;</span><span class="p">,</span><span class="s">&#39;.jpg&#39;</span><span class="p">)</span>
-<span class="go">&#39;image.jpg&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">changeExt</span><span class="p">(</span><span class="s">&#39;image&#39;</span><span class="p">,</span><span class="s">&#39;jpg&#39;</span><span class="p">)</span>
-<span class="go">&#39;image.jpg&#39;</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.tildeExpand">
-<tt class="descclassname">utils.</tt><tt class="descname">tildeExpand</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#utils.tildeExpand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform tilde expansion on a filename.</p>
-<p>Bash, the most used command shell in Linux, expands a &#8216;~&#8217; in arguments
-to the users home direction.
-This function can be used to do the same for strings that did not receive
-the bash tilde expansion, such as strings in the configuration file.</p>
 </dd></dl>
 
 <dl class="function">
@@ -908,7 +1001,7 @@ To search other containers, add handlers to iterate over their contents:</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Jun 14, 2013.
+      Last updated on Oct 01, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

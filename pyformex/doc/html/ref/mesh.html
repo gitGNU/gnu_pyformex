@@ -278,6 +278,25 @@ If the Mesh can not be converted to a TriSurface, an error is raised.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="mesh.Mesh.toCurve">
+<tt class="descname">toCurve</tt><big>(</big><big>)</big><a class="headerlink" href="#mesh.Mesh.toCurve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a Mesh to a Curve.</p>
+<p>If the element type is one of &#8216;line*&#8217; types, the Mesh is converted
+to a Curve. The type of the returned Curve is dependent on the
+element type of the Mesh:</p>
+<ul class="simple">
+<li>&#8216;line2&#8217;: PolyLine,</li>
+<li>&#8216;line3&#8217;: BezierSpline (degree 2),</li>
+<li>&#8216;line4&#8217;: BezierSpline (degree 3)</li>
+</ul>
+<p>This is equivalent with</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">toFormex</span><span class="p">()</span><span class="o">.</span><span class="n">toCurve</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Any other type will raise an exception.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="mesh.Mesh.nedges">
 <tt class="descname">nedges</tt><big>(</big><big>)</big><a class="headerlink" href="#mesh.Mesh.nedges" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the number of edges.</p>
@@ -313,6 +332,15 @@ output).</p>
 <p>The centroid of an element is the point whose coordinates
 are the mean values of all points of the element.
 The return value is a Coords object with nelems points.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesh.Mesh.bboxes">
+<tt class="descname">bboxes</tt><big>(</big><big>)</big><a class="headerlink" href="#mesh.Mesh.bboxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the bboxes of all elements in the Mesh.</p>
+<p>Returns a coords with shape (nelems,2,3). Along the axis 1
+are stored the minimal and maximal values of the Coords
+in each of the elements of the Mesh.</p>
 </dd></dl>
 
 <dl class="method">
@@ -560,7 +588,7 @@ the elements of the Mesh itself make sense. There are no
 connections on the upper level.</li>
 </ul>
 <p>The remainder of the parameters are like in
-<tt class="xref py py-meth docutils literal"><span class="pre">Connectivity.frontWalk()</span></tt>.</p>
+<tt class="xref py py-meth docutils literal"><span class="pre">Adjacency.frontWalk()</span></tt>.</p>
 <p>Returns an array of integers specifying for each element in which step
 the element was reached by the walker.</p>
 </dd></dl>
@@ -578,7 +606,7 @@ which are to be considered connectors between elements. If None,
 all nodes are considered connections.</li>
 </ul>
 <p>The remainder of the parameters are like in
-<tt class="xref py py-meth docutils literal"><span class="pre">Connectivity.frontWalk()</span></tt>.</p>
+<tt class="xref py py-meth docutils literal"><span class="pre">Adjacency.frontWalk()</span></tt>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -798,34 +826,46 @@ a compacter scheme.</p>
 <dt id="mesh.Mesh.select">
 <tt class="descname">select</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#mesh.Mesh.select" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a Mesh only holding the selected elements.</p>
+<p>Parameters:</p>
 <ul class="simple">
 <li><cite>selected</cite>: an object that can be used as an index in the
-<cite>elems</cite> array, e.g. a list of (integer) element numbers,
-or a boolean array with the same length as the <cite>elems</cite> array.</li>
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool array of length self.nelems(), where True values flag the
+elements to be selected</li>
+</ul>
+</li>
 <li><cite>compact</cite>: boolean. If True (default), the returned Mesh will be
 compacted, i.e. the unused nodes are removed and the nodes are
 renumbered from zero. If False, returns the node set and numbers
 unchanged.</li>
 </ul>
 <p>Returns a Mesh (or subclass) with only the selected elements.</p>
-<p>See <cite>cselect</cite> for the complementary operation.</p>
+<p>See <a class="reference internal" href="#mesh.Mesh.cselect" title="mesh.Mesh.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="mesh.Mesh.cselect">
 <tt class="descname">cselect</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#mesh.Mesh.cselect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a mesh without the selected elements.</p>
+<p>Parameters:</p>
 <ul class="simple">
 <li><cite>selected</cite>: an object that can be used as an index in the
-<cite>elems</cite> array, e.g. a list of (integer) element numbers,
-or a boolean array with the same length as the <cite>elems</cite> array.</li>
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool array of length self.nelems(), where True values flag the
+elements to be selected</li>
+</ul>
+</li>
 <li><cite>compact</cite>: boolean. If True (default), the returned Mesh will be
 compacted, i.e. the unused nodes are removed and the nodes are
 renumbered from zero. If False, returns the node set and numbers
 unchanged.</li>
 </ul>
 <p>Returns a Mesh with all but the selected elements.</p>
-<p>This is the complimentary operation of <cite>select</cite>.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#mesh.Mesh.select" title="mesh.Mesh.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -938,18 +978,6 @@ This method can be used in selector expressions like:</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="mesh.Mesh.splitProp">
-<tt class="descname">splitProp</tt><big>(</big><big>)</big><a class="headerlink" href="#mesh.Mesh.splitProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Partition a Mesh according to its prop values.</p>
-<p>Returns a list of Meshes. Each Mesh contains all the elements with
-property number equal to one of the unique values in the property set.
-The Meshes in the list are given in order of ascending property
-number. Each Mesh has this value set as property number for all its
-elements
-It the Mesh has no props, an empty list is returned.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="mesh.Mesh.splitRandom">
 <tt class="descname">splitRandom</tt><big>(</big><em>n</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#mesh.Mesh.splitRandom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Split a Mesh in n parts, distributing the elements randomly.</p>
@@ -1042,6 +1070,9 @@ divisions (of equal size) for each edge.</li>
 <li>&#8216;quad4&#8217;: ndiv is a sequence of two int values nx,ny, specifying
 the number of divisions along the first, resp. second
 parametric direction of the element</li>
+<li>&#8216;hex8&#8217;: ndiv is a sequence of three int values nx,ny,nz specifying
+the number of divisions along the first, resp. second and the third
+parametric direction of the element</li>
 </ul>
 </li>
 <li><cite>fuse</cite>: bool, if True (default), the resulting Mesh is completely
@@ -1053,7 +1084,7 @@ smaller elements of the same type.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">This is currently only implemented for Meshes of type &#8216;tri3&#8217;
-and &#8216;quad4&#8217; and for the derived class &#8216;TriSurface&#8217;.</p>
+and &#8216;quad4&#8217; and &#8216;hex8&#8217; and for the derived class &#8216;TriSurface&#8217;.</p>
 </div>
 </dd></dl>
 
@@ -1265,16 +1296,14 @@ into volumes.</p>
 <dd><p>Sweep a mesh along a path, creating an extrusion</p>
 <p>Returns a new Mesh obtained by sweeping the given Mesh
 over a path.
-The returned Mesh has double plexitude of the original.
-The operation is similar to the extrude() method, but the path
+The returned Mesh has double plexitude of the original.</p>
+<p>This method accepts all the parameters of <a class="reference internal" href="coords.html#coords.sweepCoords" title="coords.sweepCoords"><tt class="xref py py-func docutils literal"><span class="pre">coords.sweepCoords()</span></tt></a>,
+with the same meaning. Usually, you will need to at least set the
+<cite>normal</cite> parameter.
+The <cite>eltype</cite> parameter can be used to set the element type on the
+returned Meshes.</p>
+<p>This operation is similar to the extrude() method, but the path
 can be any 3D curve.</p>
-<p>This function is usually used to extrude points into lines,
-lines into surfaces and surfaces into volumes.
-By default it will try to fix the connectivity ordering where
-appropriate. If autofix is switched off, the connectivities
-are merely stacked, and the user may have to fix it himself.</p>
-<p>Currently, this function produces the correct element type, but
-the geometry .</p>
 </dd></dl>
 
 <dl class="method">
@@ -1715,26 +1744,64 @@ elements can be computed.</p>
 <tt class="descname">setProp</tt><big>(</big><em>prop=None</em>, <em>blocks=None</em><big>)</big><a class="headerlink" href="#mesh.Mesh.setProp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create or destroy the property array for the Geometry.</p>
 <p>A property array is a rank-1 integer array with dimension equal
-to the number of elements in the Geometry.</p>
+to the number of elements in the Geometry. Each element thus has its
+own property number. These numbers can be used for any purpose.
+They play an import role when creating new geometry: new elements
+inherit the property number of their parent element.
+Properties are also preserved on most geometrical transformations.</p>
+<p>Because elements with different property numbers can be drawn in
+different colors, the property numbers are also often used to impose
+color.</p>
 <p>Parameters:</p>
-<blockquote>
-<div><p>-&#8216;prop&#8217; : single value or a list/array of integer values.
+<ul>
+<li><p class="first"><cite>prop</cite>: a single integer value or a list/array of integer values.
 If the number of passed values is less than the number of elements,
 they wil be repeated. If you give more, they will be ignored.</p>
-<p>If prop==&#8217;range&#8217;, properties are set equal to the element number.</p>
-<p>If a value None is given, the properties are removed from the Mesh.</p>
-<p>-&#8216;blocks&#8217; : single value or a list/array of integer values.
-If the number of passed values is less than the number of prop,
+<p>The special value &#8216;range&#8217; will set the property numbers
+equal to the element number.</p>
+<p>A value None (default) removes the properties from the Geometry.</p>
+</li>
+<li><p class="first"><cite>blocks</cite>: a single integer value or a list/array of integer values.
+If the number of passed values is less than the length of <cite>prop</cite>,
 they wil be repeated. If you give more, they will be ignored.
-Every prop will be repetead for every group of elements according
-to the corresponding number of blocks.</p>
-</div></blockquote>
+Every prop will be repeated the corresponding number of times
+specified in blocks.</p>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesh.Mesh.toProp">
+<tt class="descname">toProp</tt><big>(</big><em>prop</em><big>)</big><a class="headerlink" href="#mesh.Mesh.toProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the argument into a legal set of properties for the object.</p>
+<p>The conversion involves resizing the argument to a 1D array of
+length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="mesh.Mesh.copy">
 <tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#mesh.Mesh.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a deep copy of the object.</p>
+<dd><p>Return a deep copy of the Geometry  object.</p>
+<p>The returned object is an exact copy of the input, but has
+all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesh.Mesh.splitProp">
+<tt class="descname">splitProp</tt><big>(</big><em>prop=None</em><big>)</big><a class="headerlink" href="#mesh.Mesh.splitProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition a Geometry (Formex/Mesh) according to the values in prop.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>prop</cite>: an int array with length self.nelems(), or None. If None,
+the <cite>prop</cite> attribute of the Geometry is used.</li>
+</ul>
+<p>Returns a list of Geometry objects of the same type as the input.
+Each object contains all the elements having the same value of <cite>prop</cite>.
+The number of objects in the list is equal to the number of unique
+values in <cite>prop</cite>. The list is sorted in ascending order of their
+<cite>prop</cite> value.</p>
+<p>It <cite>prop</cite> is None and the the object has no <cite>prop</cite> attribute, an empty
+list is returned.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1848,15 +1915,102 @@ will become sparsely populated.</li>
 </dd></dl>
 
 <dl class="function">
+<dt id="mesh.gridpoints">
+<tt class="descclassname">mesh.</tt><tt class="descname">gridpoints</tt><big>(</big><em>seed0</em>, <em>seed1=None</em>, <em>seed2=None</em><big>)</big><a class="headerlink" href="#mesh.gridpoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create weigths for linear lines, quadrilateral and hexahedral elements coordinates</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li>&#8216;seed0&#8217; : int or list of floats . It specifies divisions along the
+first parametric direction of the element</li>
+<li>&#8216;seed1&#8217; : int or list of floats . It specifies divisions along
+the second parametric direction of the element</li>
+<li>&#8216;seed2&#8217; : int or list of floats . It specifies divisions along
+the t parametric direction of the element</li>
+</ul>
+<p>If these parametes are integer values the divisions will be equally spaced between  0 and 1</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="mesh.quad4_wts">
+<tt class="descclassname">mesh.</tt><tt class="descname">quad4_wts</tt><big>(</big><em>seed0</em>, <em>seed1</em><big>)</big><a class="headerlink" href="#mesh.quad4_wts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create weights for quad4 subdivision.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li>&#8216;seed0&#8217; : int or list of floats . It specifies divisions along the
+first parametric direction of the element</li>
+<li>&#8216;seed1&#8217; : int or list of floats . It specifies divisions along
+the second parametric direction of the element</li>
+</ul>
+<p>If these parametes are integer values the divisions will be equally spaced between  0 and 1</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="mesh.quadgrid">
 <tt class="descclassname">mesh.</tt><tt class="descname">quadgrid</tt><big>(</big><em>seed0</em>, <em>seed1</em><big>)</big><a class="headerlink" href="#mesh.quadgrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a quadrilateral mesh of unit size with the specified seeds.</p>
-<p>The seeds are a monotuoudsly increasing series of parametric values
+<p>The seeds are a monotonously increasing series of parametric values
 in the range 0..1. They define the positions of the nodes in the
 parametric directions 0, resp. 1.
 Normally, the first and last values of the seeds are 0., resp. 1.,
 leading to a unit square grid.</p>
 <p>The seeds are usually generated with the seed() function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="mesh.hex8_wts">
+<tt class="descclassname">mesh.</tt><tt class="descname">hex8_wts</tt><big>(</big><em>seed0</em>, <em>seed1</em>, <em>seed2</em><big>)</big><a class="headerlink" href="#mesh.hex8_wts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create weights for hex8 subdivision.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li>&#8216;seed0&#8217; : int or list of floats . It specifies divisions along the
+first parametric direction of the element</li>
+<li>&#8216;seed1&#8217; : int or list of floats . It specifies divisions along
+the second parametric direction of the element</li>
+<li>&#8216;seed2&#8217; : int or list of floats . It specifies divisions along
+the t parametric direction of the element</li>
+</ul>
+<p>If these parametes are integer values the divisions will be equally spaced between  0 and 1</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="mesh.hex8_els">
+<tt class="descclassname">mesh.</tt><tt class="descname">hex8_els</tt><big>(</big><em>nx</em>, <em>ny</em>, <em>nz</em><big>)</big><a class="headerlink" href="#mesh.hex8_els" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create connectivity table for hex8 subdivision.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="mesh.rectangle">
+<tt class="descclassname">mesh.</tt><tt class="descname">rectangle</tt><big>(</big><em>L</em>, <em>W</em>, <em>nl</em>, <em>nw</em><big>)</big><a class="headerlink" href="#mesh.rectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a plane rectangular mesh of quad4 elements</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li>L,W: length,width of the rectangle</li>
+<li>nl,nw: seeds for the elements along the length, width of the rectangle.
+They should one of the following:<ul>
+<li>an integer number, specifying the number of equally sized elements
+along that direction,</li>
+<li>a tuple (n,) or (n,e0) or (n,e0,e1), to be used as parameters in the
+<a class="reference internal" href="#mesh.seed" title="mesh.seed"><tt class="xref py py-func docutils literal"><span class="pre">mesh.seed()</span></tt></a> function,</li>
+<li>a list of float values in the range 0.0 to 1.0, specifying the relative
+position of the seeds. The values should be ordered and the first and
+last values should be 0.0 and 1.0.</li>
+</ul>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="mesh.rectangle_with_hole">
+<tt class="descclassname">mesh.</tt><tt class="descname">rectangle_with_hole</tt><big>(</big><em>L</em>, <em>W</em>, <em>r</em>, <em>nr</em>, <em>nt</em>, <em>e0=0.0</em>, <em>eltype='quad4'</em><big>)</big><a class="headerlink" href="#mesh.rectangle_with_hole" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a quarter of rectangle with a central circular hole.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li>L,W: length,width of the (quarter) rectangle</li>
+<li>r: radius of the hole</li>
+<li>nr,nt: number of elements over radial,tangential direction</li>
+<li>e0: concentration factor for elements in the radial direction</li>
+</ul>
+<p>Returns a Mesh</p>
 </dd></dl>
 
 </div>
@@ -1890,7 +2044,7 @@ leading to a unit square grid.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Jun 14, 2013.
+      Last updated on Oct 01, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

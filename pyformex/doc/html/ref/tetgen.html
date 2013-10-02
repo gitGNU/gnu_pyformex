@@ -295,10 +295,28 @@ Coords should be written independently to a .node file.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="tetgen.writeTmesh">
+<tt class="descclassname">tetgen.</tt><tt class="descname">writeTmesh</tt><big>(</big><em>fn</em>, <em>elems</em>, <em>offset=0</em><big>)</big><a class="headerlink" href="#tetgen.writeTmesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a tetgen .ele file.</p>
+<p>Writes elements of a tet4 mesh.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="tetgen.writeSurface">
 <tt class="descclassname">tetgen.</tt><tt class="descname">writeSurface</tt><big>(</big><em>fn</em>, <em>coords</em>, <em>elems</em><big>)</big><a class="headerlink" href="#tetgen.writeSurface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a tetgen surface model to .node and .smesh files.</p>
-<p>The provided file name is the .node or the .smesh filename.</p>
+<p>The provided file name is either the .node or the .smesh filename,
+or else it is the basename where .node and .smesh extensions will
+be appended.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tetgen.writeTetMesh">
+<tt class="descclassname">tetgen.</tt><tt class="descname">writeTetMesh</tt><big>(</big><em>fn</em>, <em>coords</em>, <em>elems</em><big>)</big><a class="headerlink" href="#tetgen.writeTetMesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a tetgen tetrahedral mesh model to .node and .ele files.</p>
+<p>The provided file name is either the .node or the .smesh filename,
+or else it is the basename where .node and .ele extensions will
+be appended.</p>
 </dd></dl>
 
 <dl class="function">
@@ -321,6 +339,22 @@ and create a new approximation of the surface as a by-product.</p>
 <tt class="descclassname">tetgen.</tt><tt class="descname">readTetgen</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#tetgen.readTetgen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read and draw a tetgen file.</p>
 <p>This is an experimental function for the geometry import menu.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tetgen.tetgenConvexHull">
+<tt class="descclassname">tetgen.</tt><tt class="descname">tetgenConvexHull</tt><big>(</big><em>pts</em><big>)</big><a class="headerlink" href="#tetgen.tetgenConvexHull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tetralize the convex hull of some points.</p>
+<p>Finds the convex hull some points and returns
+a tet mesh of the convex hull and the convex hull (tri3 mesh).</p>
+<p>If all points are on the same plane there is no convex hull.</p>
+<p>This could be made an example:</p>
+<p>from simple import regularGrid
+X = Coords(regularGrid([0., 0., 0.], [1., 1., 1.], [10, 10, 10]).reshape(-1, 3)).addNoise(rsize=0.05,asize=0.5)
+draw(X)
+from plugins.tetgen import tetgenConvexHull
+tch, ch =tetgenConvexHull( X)
+draw(ch, color=&#8217;red&#8217;, marksize=10)</p>
 </dd></dl>
 
 <dl class="function">
@@ -380,7 +414,7 @@ read back using readTetgen and returned.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Jun 14, 2013.
+      Last updated on Oct 01, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

@@ -41,7 +41,7 @@ nofs, eofs, fofs=1, 1, 1
 
 def writeHeading(fil, nodes, elems, nbsets=0, heading=''):
     """Write the heading of the Gambit neutral file.
-    
+
     `nbsets`: number of boundary condition sets (border patches).
     """
     fil.write("        CONTROL INFO 2.4.6\n")
@@ -119,41 +119,45 @@ def writeGroup(fil, elems):
 
 
 def writeBCsets(fil, bcsets, elgeotype):
-    """ Write boundary condition sets of faces.
-    
-    - `bcsets`: dictionary of 2D arrays: {'name1': brdfaces1, ...}
-    - `elgeotype`: element geometry type is 4 or 6 for hexahedrons
-        and tetrahedrons, respectively.
-    
-    A set of brdfaces is a group of border faces on the border defined as 2D in array of
-    element number and face number. Thus, brdfaces1 = [[enr1,fnr1],...].
-    
-    There are 2 ways to convert to define the border as enr,fnr:
-    1) find border both as mesh and enr/fnr and keep correspondence:
-    
-        brde, brdfaces = M.getFreeEntities(level=-1,return_indices=True)#border elems, enr/fnr
+    """Write boundary condition sets of faces.
+
+    Parameters:
+
+    - `bcsets`: a dict where the values are BorderFace arrays (see below).
+    - `elgeotype`: element geometry type: 4 for hexahedrons, 6 for
+      tetrahedrons.
+
+    BorderFace array: A set of border faces defined as a (n,2) shaped int
+    array: echo row contains an element number (enr) and face number (fnr).
+
+    There are 2 ways to construct the BorderFace arrays:
+
+    # find border both as mesh and enr/fnr and keep correspondence::
+
+        brde, brdfaces = M.getFreeEntities(level=-1,return_indices=True)
         brd = Mesh(M.coords, brde)
-       
-    2) matchFaces
-        Given a volume mesh M and some border surface meshes S1, S2, ... the brdfaces can be obtained as 
-    
-        brdfaces1=M.matchFaces(S1)[1]
-        brdfaces2=M.matchFaces(S2)[1]
-        ...
-    bcsets = {'name1':brdfaces1, 'name2':brdfaces2, ...}
-    
-    The neu file syntax is described on 
+
+      .. note: This needs further explanation. Gianluca?
+
+    # matchFaces: Given a volume mesh M and a surface meshes S, being
+      (part of) the border of M, BorderFace array for the surface S can
+      be obtained from::
+
+        bf = M.matchFaces(S)[1]
+
+    See also
     http://combust.hit.edu.cn:8080/fluent/Gambit13_help/modeling_guide/mg0b.htm#mg0b01
-    """  
+    for the description of the neu file syntax.
+    """
     py2neuHF = asarray([3,1,0,2,4,5])#hex faces numbering conversion (pyformex to gambit neu)
     if bcsets is not None:
         for k in bcsets.keys():
             print ('Writing BC set : %s\n'%k)
             fil.write('BOUNDARY CONDITIONS 2.4.6\n')
             val = bcsets[k]
-            if elgeotype==4: 
+            if elgeotype==4:
                 val[:, 1]=py2neuHF[val[:, 1]]
-            val+=fofs#faces are counted starting from 1                               
+            val+=fofs#faces are counted starting from 1
             fil.write('%s  1   %d 0\n'%(k, len(val)))#patchname, 0/1 is node/face, nr of faces, 0
             for v in val:
                 txt='%d %d %d\n'%(v[0], elgeotype, v[1])#elem nr, el type (4 is hex, 6 is tet), face nr
@@ -200,7 +204,7 @@ def write_neu(fil, mesh, bcsets=None, heading='generated with pyFormex'):
     if mesh.elName()=='hex8':
         elgeotype=4
     if mesh.elName()=='tet4':
-        elgeotype=6        
+        elgeotype=6
     writeBCsets(f, bcsets, elgeotype)
     f.close()
     print("Mesh exported to  '%s'"%fil)

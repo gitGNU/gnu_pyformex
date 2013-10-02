@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -79,6 +79,13 @@ def setFar(fld):
 
 
 def showCameraTool():
+    """Show the camera settings dialog.
+
+    This function pops up a dialog where the user can interactively
+    adjust the current camera settings.
+
+    The function can also be called from the ``Camera->Settings`` menu.
+    """
     global dialog
     cam = pf.canvas.camera
     settings = getCameraSettings(cam)

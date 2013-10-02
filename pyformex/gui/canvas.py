@@ -33,12 +33,6 @@ from OpenGL import GL,GLU
 
 import pyformex as pf
 
-# TODO
-# BV: UGLY! WE SHOULD GET RID OF THIS
-if pf.X11:
-    from ctypes import cdll
-    libGL = cdll.LoadLibrary("libGL.so.1")
-
 import coords
 from formex import Formex
 from drawable import saneColor,glColor
@@ -51,6 +45,15 @@ import marks
 import utils
 from mydict import Dict
 
+libGL = None
+
+def loadLibGL():
+    # TODO
+    # BV: UGLY! WE SHOULD GET RID OF THIS
+    global libGL
+    if libGL is None and pf.X11:
+        from ctypes import cdll
+        libGL = cdll.LoadLibrary("libGL.so.1")
 
 
 def gl_pickbuffer():
@@ -610,6 +613,7 @@ class Canvas(object):
 
     def __init__(self,settings={}):
         """Initialize an empty canvas with default settings."""
+        loadLibGL()
         self.actors = ActorList(self)
         self.highlights = ActorList(self)
         self.annotations = ActorList(self)

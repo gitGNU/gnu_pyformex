@@ -238,6 +238,7 @@ defined in PYTHONFILE.""",
     options, args = parser.parse_args(argv)
 
     for source in args:
+        print("==== %s =====\n" % source)
         do_module(source)
 
 

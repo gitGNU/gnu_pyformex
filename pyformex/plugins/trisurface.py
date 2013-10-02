@@ -2243,7 +2243,7 @@ Quality: %s .. %s
 
 
     @deprecation("depr_patchextension")
-    def patchextension(self,p,step,dir=None,makecircular=False,div=1):
+    def patchextension(self,p,step,dir=None,makecircular=False,div=1, circulardiameter='area'):
         """_Extrude a nearly-planar patch of a surface.
 
         - `self` is a surface with propery numbers
@@ -2256,13 +2256,16 @@ Quality: %s .. %s
         - `dir` is the axis of the extrusion. if dir is None, dir is
           the average normal of patch p
         - `makecircular` if True makes circular the border-line of the extended patch, keeping the patch area.
+        - `circulardiameter`: it set the diameter of the circularized end.
+           If `circulardiameter` is `area` (default) the area of the circularized is equal to the the area of the patch.
+           This option is active only if `makecircular` is True.
 
         This is a convenient function to elongate tubular structures
         such as arteries.
         """
         if type(p)==list:
             for i in p:
-                self= self.patchextension(i,step,dir,makecircular,div)
+                self= self.patchextension(i,step,dir,makecircular,div,circulardiameter)
             return self
 
         if type(p)!=int:
@@ -2284,7 +2287,10 @@ Quality: %s .. %s
         if makecircular:
             c = s1x.compact().center()
             brdn = s1x.getBorderNodes()
-            s1x.coords[brdn] = c + normalize(s1x.coords[brdn]-c)*r1
+            if circulardiameter=='area':
+                s1x.coords[brdn] = c + normalize(s1x.coords[brdn]-c)*r1
+            else:
+                s1x.coords[brdn] = c + normalize(s1x.coords[brdn]-c)*circulardiameter*0.5
 
         b = s1.border()[0]
         if div == None:

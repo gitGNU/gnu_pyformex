@@ -1124,6 +1124,11 @@ class Drawable(object):
         self.ontop = ontop
         self.extra = [] # list of dependent Drawables
 
+
+    def __del__(self):
+        self.delete_list()
+
+
     def drawGL(self,**kargs):
         """Perform the OpenGL drawing functions to display the actor."""
         pass
@@ -1164,6 +1169,7 @@ class Drawable(object):
 
     def create_list(self,**kargs):
         displist = GL.glGenLists(1)
+        pf.debug("CREATE LIST %s" % displist,pf.DEBUG.OPENGL)
         GL.glNewList(displist,GL.GL_COMPILE)
         ok = False
         try:
@@ -1182,8 +1188,12 @@ class Drawable(object):
         return displist
 
     def delete_list(self):
+        pf.debug("DELETE LIST %s" % self.list,pf.DEBUG.OPENGL)
         if self.list:
             GL.glDeleteLists(self.list,1)
+            pf.debug("REALLY DELETED",pf.DEBUG.OPENGL)
+        else:
+            pf.debug("NOT REALLY DELETED",pf.DEBUG.OPENGL)
         self.list = None
 
 

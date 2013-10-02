@@ -40,12 +40,279 @@ from software import *
 # Some regular expressions
 digits = re.compile(r'(\d+)')
 
-def procInfo(title):
-    print(title)
-    print('module name: %s' %  __name__)
-    print('parent process: %s' % os.getppid())
-    print('process id: %s' % os.getpid())
 
+##########################################################################
+## Filenames ##
+###############
+
+
+def splitFilename(filename,accept_ext=None,reject_ext=None):
+    """Split a file name in dir,base,ext tuple.
+
+    Parameters:
+
+    - `filename`: a filename, possibly including a directory path
+    - `accept_ext`: optional list of acceptable extension strings.
+      If specified, only extensions appearing in this list will be
+      recognized as such, while other ones will be made part of the
+      base name.
+    - `reject_ext`: optional list of unacceptable extension strings.
+      If specified, extensions appearing in this list will not be
+      recognized as such, and be made part of the base name.
+
+    Returns a tuple dir,base,ext:
+
+    - `dir`: the directory path, not including the final path separator (unless
+      it is the only one). If the filename starts with a single path separator,
+      `dir` will consist of that single separator. If the filename does not
+      contain a path separator, `dir` will be an empty string.
+    - `base`: filename without the extension. It can only be empty if the
+      input is an empty string.
+    - `ext`: file extension: This is the part of the filename starting from
+      the last '.' character that is not the first character of the filename.
+      If the filename does not contain a '.' character or the only '.'
+      character is also the first character of the filename (after the last
+      path separator), the extension is an empty string. If not empty, it
+      always starts with a '.'. A filename with
+
+    Examples:
+
+      >>> splitFilename("cc/dd/aa.bb")
+      ('cc/dd', 'aa', '.bb')
+      >>> splitFilename("cc/dd/aa.")
+      ('cc/dd', 'aa', '.')
+      >>> splitFilename("..//aa.bb")
+      ('..', 'aa', '.bb')
+      >>> splitFilename("aa.bb")
+      ('', 'aa', '.bb')
+      >>> splitFilename("aa/bb")
+      ('aa', 'bb', '')
+      >>> splitFilename("aa/bb/")
+      ('aa/bb', '', '')
+      >>> splitFilename("/aa/bb")
+      ('/aa', 'bb', '')
+      >>> splitFilename(".bb")
+      ('', '.bb', '')
+      >>> splitFilename("/")
+      ('/', '', '')
+      >>> splitFilename(".")
+      ('', '.', '')
+      >>> splitFilename("")
+      ('', '', '')
+      >>> splitFilename("cc/dd/aa.bb",accept_ext=['.aa','.cc'])
+      ('cc/dd', 'aa.bb', '')
+      >>> splitFilename("cc/dd/aa.bb",reject_ext=['.bb'])
+      ('cc/dd', 'aa.bb', '')
+    """
+    dirname,basename = os.path.split(filename)
+    basename,ext = os.path.splitext(basename)
+    if accept_ext and ext not in accept_ext or \
+       reject_ext and ext in reject_ext:
+        basename,ext = basename+ext,''
+    return dirname,basename,ext
+
+
+def buildFilename(dirname,basename,ext=''):
+    """Build a filename from a directory path, filename and optional extension.
+
+    The dirname and basename are joined using the system path separator,
+    and the extension is added at the end. Note that no '.' is added between
+    the basename and the extension. While the extension will normally
+    start with a '.', this function can also be used to add another tail
+    to the filename.
+
+    This is a convenience function equivalent with::
+
+      os.path.join(dirname,basename) + ext
+
+    """
+    return os.path.join(dirname,basename) + ext
+
+
+def changeExt(filename,ext,accept_ext=None,reject_ext=None):
+    """Change the extension of a file name.
+
+    This function splits the specified file name in a base name and an
+    extension, replaces the extension with the specified one, and returns
+    the reassembled file name.
+    If the filename has no extension part, the specified extension is just
+    appended.
+
+    Parameters:
+
+    - `fn`: file name, possibly including a directory path and extension
+    - `ext`: string: required extension of the output file name. The string
+      should start with a '.'.
+    - `accept_ext`, `reject_ext`: lists of strings starting with a '.'.
+      These have the same meaning as in :func:`splitFilename`.
+
+    Returns a file name with the specified extension.
+
+    .. note: If the specified extension does not start with a '.', a dot
+       is prepended. This feature is retained for compatibility reasons
+       but may be removed in future. New code should only use extensions
+       starting with a dot.
+
+    Example:
+
+    >>> changeExt('image.png','.jpg')
+    'image.jpg'
+    >>> changeExt('image','.jpg')
+    'image.jpg'
+    >>> changeExt('image','jpg') # Deprecated
+    'image.jpg'
+    >>> changeExt('image.1','.jpg')
+    'image.jpg'
+    >>> changeExt('image.1','.jpg',reject_ext=['.1'])
+    'image.1.jpg'
+    """
+    if not ext.startswith('.'):
+        ext = ".%s" % ext
+    dirname,basename,oldext = splitFilename(filename,accept_ext,reject_ext)
+    return buildFilename(dirname,basename,ext)
+
+
+def projectName(fn):
+    """Derive a project name from a file name.
+`
+    The project name is the basename of the file without the extension.
+    It is equivalent with splitFilename(fn)[1]
+    """
+    return os.path.splitext(os.path.basename(fn))[0]
+
+
+def tildeExpand(fn):
+    """Perform tilde expansion on a filename.
+
+    Bash, the most used command shell in Linux, expands a '~' in arguments
+    to the users home direction.
+    This function can be used to do the same for strings that did not receive
+    the bash tilde expansion, such as strings in the configuration file.
+    """
+    return fn.replace('~',os.environ['HOME'])
+
+
+##########################################################################
+## File types ##
+################
+
+def all_image_extensions():
+    """Return a list with all known image extensions."""
+    imgfmt = []
+
+
+file_description = {
+    'all': 'All files (*)',
+    'ccx': 'CalCuliX files (*.dat *.inp)',
+    'dxf': 'AutoCAD .dxf files (*.dxf)',
+    'dxfall': 'AutoCAD .dxf or converted(*.dxf *.dxftext)',
+    'dxftext': 'Converted AutoCAD files (*.dxftext)',
+    'flavia' : 'flavia results (*.flavia.msh *.flavia.res)',
+    'gts': 'GTS files (*.gts)',
+    'html': 'Web pages (*.html)',
+    'icon': 'Icons (*.xpm)',
+    'img': 'Images (*.png *.jpg *.eps *.gif *.bmp)',
+    'inp': 'Abaqus or CalCuliX input files (*.inp)',
+    'neu': 'Gambit Neutral files (*.neu)',
+    'off': 'OFF files (*.off)',
+    'pgf': 'pyFormex geometry files (*.pgf)',
+    'png': 'PNG images (*.png)',
+    'postproc': 'Postproc scripts (*_post.py *.post)',
+    'pyformex': 'pyFormex scripts (*.py *.pye)',
+    'pyf': 'pyFormex projects (*.pyf)',
+    'smesh': 'Tetgen surface mesh files (*.smesh)',
+    'stl': 'STL files (*.stl)',
+    'stlb': 'Binary STL files (*.stl)',  # Use only for output
+    'surface': 'Surface model (*.off *.gts *.stl *.off.gz *.gts.gz *.stl.gz *.neu *.smesh)',
+    'tetgen': 'Tetgen file (*.poly *.smesh *.ele *.face *.edge *.node *.neigh)',
+}
+
+
+def fileDescription(ftype):
+    """Return a description of the specified file type.
+
+    The description of known types are listed in a dict file_description.
+    If the type is unknown, the returned string has the form
+    ``TYPE files (*.type)``
+    """
+    if type(ftype) is list:
+        return map(fileDescription,ftype)
+    ftype = ftype.lower()
+    return file_description.get(ftype,"%s files (*.%s)" % (ftype.upper(),ftype))
+
+
+def fileType(ftype):
+    """Normalize a filetype string.
+
+    The string is converted to lower case and a leading dot is removed.
+    This makes it fit for use with a filename extension.
+
+    Example:
+
+    >>> fileType('pdf')
+    'pdf'
+    >>> fileType('.pdf')
+    'pdf'
+    >>> fileType('PDF')
+    'pdf'
+    >>> fileType('.PDF')
+    'pdf'
+
+    """
+    ftype = ftype.lower()
+    if len(ftype) > 0 and ftype[0] == '.':
+        ftype = ftype[1:]
+    return ftype
+
+
+def fileTypeFromExt(fname):
+    """Derive the file type from the file name.
+
+    The derived file type is the file extension part in lower case and
+    without the leading dot.
+
+    Example:
+
+    >>> fileTypeFromExt('pyformex.pdf')
+    'pdf'
+    >>> fileTypeFromExt('pyformex')
+    ''
+    >>> fileTypeFromExt('pyformex.pgf')
+    'pgf'
+    >>> fileTypeFromExt('pyformex.pgf.gz')
+    'pgf.gz'
+    >>> fileTypeFromExt('pyformex.gz')
+    'gz'
+    """
+    name,ext = os.path.splitext(fname)
+    ext = fileType(ext)
+    if ext == 'gz':
+        ext1 = fileTypeFromExt(name)
+        if ext1:
+            ext = '.'.join([ext1,ext])
+    return ext
+
+
+def fileSize(fn):
+    """Return the size in bytes of the file fn"""
+    return os.path.getsize(fn)
+
+
+def findIcon(name):
+    """Return the file name for an icon with given name.
+
+    If no icon file is found, returns the question mark icon.
+    """
+    fname = buildFilename(pf.cfg['icondir'],name,pf.cfg['gui/icontype'])
+    if not os.path.exists(fname):
+        fname = buildFilename(pf.cfg['icondir'],'question',pf.cfg['gui/icontype'])
+
+    return fname
+
+
+##########################################################################
+## File lists ##
+################
 
 def prefixFiles(prefix,files):
     """Prepend a prefix to a list of filenames."""
@@ -352,135 +619,9 @@ def gunzip(filename,unzipped=None,remove=True):
     return unzipped
 
 
-##########################################################################
-## File names and formats ##
-############################
-
-def all_image_extensions():
-    """Return a list with all known image extensions."""
-    imgfmt = []
-
-
-file_description = {
-    'all': 'All files (*)',
-    'ccx': 'CalCuliX files (*.dat *.inp)',
-    'dxf': 'AutoCAD .dxf files (*.dxf)',
-    'dxfall': 'AutoCAD .dxf or converted(*.dxf *.dxftext)',
-    'dxftext': 'Converted AutoCAD files (*.dxftext)',
-    'flavia' : 'flavia results (*.flavia.msh *.flavia.res)',
-    'gts': 'GTS files (*.gts)',
-    'html': 'Web pages (*.html)',
-    'icon': 'Icons (*.xpm)',
-    'img': 'Images (*.png *.jpg *.eps *.gif *.bmp)',
-    'inp': 'Abaqus or CalCuliX input files (*.inp)',
-    'neu': 'Gambit Neutral files (*.neu)',
-    'off': 'OFF files (*.off)',
-    'pgf': 'pyFormex geometry files (*.pgf)',
-    'png': 'PNG images (*.png)',
-    'postproc': 'Postproc scripts (*_post.py *.post)',
-    'pyformex': 'pyFormex scripts (*.py *.pye)',
-    'pyf': 'pyFormex projects (*.pyf)',
-    'smesh': 'Tetgen surface mesh files (*.smesh)',
-    'stl': 'STL files (*.stl)',
-    'stlb': 'Binary STL files (*.stl)',  # Use only for output
-    'surface': 'Surface model (*.off *.gts *.stl *.off.gz *.gts.gz *.stl.gz *.neu *.smesh)',
-    'tetgen': 'Tetgen file (*.poly *.smesh *.ele *.face *.edge *.node *.neigh)',
-}
-
-
-def fileDescription(ftype):
-    """Return a description of the specified file type.
-
-    The description of known types are listed in a dict file_description.
-    If the type is unknown, the returned string has the form
-    ``TYPE files (*.type)``
-    """
-    if type(ftype) is list:
-        return map(fileDescription,ftype)
-    ftype = ftype.lower()
-    return file_description.get(ftype,"%s files (*.%s)" % (ftype.upper(),ftype))
-
-
-def fileType(ftype):
-    """Normalize a filetype string.
-
-    The string is converted to lower case and a leading dot is removed.
-    This makes it fit for use with a filename extension.
-
-    Example:
-
-    >>> fileType('pdf')
-    'pdf'
-    >>> fileType('.pdf')
-    'pdf'
-    >>> fileType('PDF')
-    'pdf'
-    >>> fileType('.PDF')
-    'pdf'
-
-    """
-    ftype = ftype.lower()
-    if len(ftype) > 0 and ftype[0] == '.':
-        ftype = ftype[1:]
-    return ftype
-
-
-def fileTypeFromExt(fname):
-    """Derive the file type from the file name.
-
-    The derived file type is the file extension part in lower case and
-    without the leading dot.
-
-    Example:
-
-    >>> fileTypeFromExt('pyformex.pdf')
-    'pdf'
-    >>> fileTypeFromExt('pyformex')
-    ''
-    >>> fileTypeFromExt('pyformex.pgf')
-    'pgf'
-    >>> fileTypeFromExt('pyformex.pgf.gz')
-    'pgf.gz'
-    >>> fileTypeFromExt('pyformex.gz')
-    'gz'
-    """
-    name,ext = os.path.splitext(fname)
-    ext = fileType(ext)
-    if ext == 'gz':
-        ext1 = fileTypeFromExt(name)
-        if ext1:
-            ext = '.'.join([ext1,ext])
-    return ext
-
-
-def fileSize(fn):
-    """Return the size in bytes of the file fn"""
-    return os.path.getsize(fn)
-
-
-def findIcon(name):
-    """Return the file name for an icon with given name.
-
-    If no icon file is found, returns the question mark icon.
-    """
-    fname = os.path.join(pf.cfg['icondir'],name) + pf.cfg['gui/icontype']
-    if os.path.exists(fname):
-        return fname
-    return os.path.join(pf.cfg['icondir'],'question') + pf.cfg['gui/icontype']
-
-
-def projectName(fn):
-    """Derive a project name from a file name.
-
-    The project name is the basename f the file without the extension.
-    """
-    return os.path.splitext(os.path.basename(fn))[0]
-
-
+# These two functions are undocumented for a reason. Believe me! BV
 def splitme(s):
     return s[::2],s[1::2]
-
-
 def mergeme(s1,s2):
     return ''.join([a+b for a,b in zip(s1,s2)])
 
@@ -663,38 +804,6 @@ def killProcesses(pids,signal=15):
             os.kill(pid,signal)
         except:
             pf.debug("Error in killing of process '%s'" % pid,pf.DEBUG.INFO)
-
-
-def changeExt(fn,ext):
-    """Change the extension of a file name.
-
-    The extension is the minimal trailing part of the filename starting
-    with a '.'. If the filename has no '.', the extension will be appended.
-    If the given extension does not start with a dot, one is prepended.
-
-    Example:
-
-    >>> changeExt('image.png','.jpg')
-    'image.jpg'
-    >>> changeExt('image','.jpg')
-    'image.jpg'
-    >>> changeExt('image','jpg')
-    'image.jpg'
-    """
-    if not ext.startswith('.'):
-        ext = ".%s" % ext
-    return os.path.splitext(fn)[0] + ext
-
-
-def tildeExpand(fn):
-    """Perform tilde expansion on a filename.
-
-    Bash, the most used command shell in Linux, expands a '~' in arguments
-    to the users home direction.
-    This function can be used to do the same for strings that did not receive
-    the bash tilde expansion, such as strings in the configuration file.
-    """
-    return fn.replace('~',os.environ['HOME'])
 
 
 def userName():
@@ -1109,6 +1218,13 @@ def listFontFiles():
 
 
 ###########################################################################
+
+
+def procInfo(title):
+    print(title)
+    print('module name: %s' %  __name__)
+    print('parent process: %s' % os.getppid())
+    print('process id: %s' % os.getpid())
 
 
 def interrogate(item):

@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -25,16 +25,19 @@
 
 """Extended functionality of the Mesh class.
 
-This module defines extended Mesh functionality which is considered to be
-experimental, maybe incomplete or even buggy.
+This module defines extended Mesh functionality.
 
-The functions in this module can be called as functions operating on a
-Mesh object, but are also available as Mesh methods.
+It adds some extra methods to the Mesh class. These may be experimental or
+not well tested methods.
+
+Furthermore it defines some functions that generate simple and often used
+standard meshes, mostly in 2D.
 """
 from __future__ import print_function
 
-from mesh import Mesh
-from formex import *
+from mesh import *
+from formex import Formex
+import simple
 import utils
 
 
@@ -84,34 +87,36 @@ def _add_extra_Mesh_methods():
 
 
 
-    def scaledJacobian(self, scaled=True, blksize=100000):
+    def scaledJacobian(self,scaled=True,blksize=100000):
         """
-        Returns a quality measure for volume meshes.
+        Compute a quality measure for volume meshes.
 
+        Parameters:
 
-        - `blksize`: split in groups to reduce memory requirements for large meshes.
-           If negative, the full mesh will be processed at once.
+        - `scaled`: if False returns the Jacobian at the corners of each
+          element. If True, returns a quality metrics, being the
+          minimum value of the scaled Jacobian in each element (at one corner,
+          the Jacobian divided by the volume of a perfect brick).
 
-        - `scaled`: if False returns the Jacobian at the corners of each element.
-        If scaled True, it returns a quality metrics, being the minumum value of the 
-        scaled Jacobian in each element (at one corner, the Jacobian divided by the volume of a perfect brick).
-        
-        If scaled is True each tet or hex element gets a value between -1 and 1.
+        - `blksize`: int: to reduce the memory required for large meshes, the
+          Mesh is split in blocks with this number of elements.
+          If not positive, all elements are handled at once.
+
+        If `scaled` is True each tet or hex element gets a value between
+        -1 and 1.
         Acceptable elements have a positive scaled Jacobian. However, good
-        quality requires a minimum of 0.2. Quadratic meshes are first converted to linear.
+        quality requires a minimum of 0.2.
+        Quadratic meshes are first converted to linear.
         If the mesh contain mainly negative Jacobians, it probably has negative
-        volumes and can be fixed with the  correctNegativeVolumes.
-        
-        To reduce the memory required for large meshes, the blksize parameter can be used
-        specify how many elements will be processed per time. Default 100000.
+        volumes and can be fixed with the correctNegativeVolumes.
         """
         ne = self.nelems()
         if blksize>0 and ne>blksize:
-            slices=splitrange(n=self.nelems(),nblk=self.nelems()/blksize)
+            slices = splitrange(n=self.nelems(),nblk=self.nelems()/blksize)
             return concatenate([self.select(range(slices[i], slices[i+1])).scaledJacobian(scaled=scaled, blksize=-1) for i in range(len(slices)-1)])
         if self.elName()=='hex20':
             self = self.convert('hex8')
-        if self.elName()=='tet10':
+        elif self.elName()=='tet10':
             self = self.convert('tet4')
         if self.elName()=='tet4':
             iacre=array([
@@ -120,7 +125,7 @@ def _add_extra_Mesh_methods():
             [[0, 3], [1, 3],[2, 3],[3, 0]],
             ], dtype=int)
             nc = 4
-        if self.elName()=='hex8':
+        elif self.elName()=='hex8':
             iacre=array([
             [[0, 4], [1, 5],[2, 6],[3, 7], [4, 7], [5, 4],[6, 5],[7, 6]],
             [[0, 1], [1, 2],[2, 3],[3, 0], [4, 5], [5, 6],[6, 7],[7, 4]],
@@ -130,34 +135,44 @@ def _add_extra_Mesh_methods():
         acre = self.coords[self.elems][:, iacre]
         vacre = acre[:, :,:,1]-acre[:, :,:,0]
         cvacre = concatenate(vacre, axis=1)
-
-        J = vectorTripleProduct(*cvacre).reshape(ne, nc)
+        J = vectorTripleProduct(*cvacre).reshape(ne,nc)
         if not scaled:
             return J
         else:
-            normvol = prod(length(cvacre), axis=0).reshape(ne, nc)#volume of 3 nprmal edges
+            # volume of 3 normal edges
+            normvol = prod(length(cvacre),axis=0).reshape(ne,nc)
             Jscaled = J/normvol
             return Jscaled.min(axis=1)
 
 
+    # BV: What is a value defined on an element? a constant for the element,
+    # a value at the center (what is the center?)
+    # Usually, values are defined at one or more integration points,
+    # and nodal values could be derived from using the correct
+    # interpolation formulas.
+
     def elementToNodal(self, val):
         """Compute nodal values from element values.
-        
-        Given scalar values defined on elements, finds the average values at the nodes.
-        Returns the average values at the (maxnodenr+1) nodes. Nodes not occurring in elems 
-        will have all zero values.
+
+        Given scalar values defined on elements, finds the average values at
+        the nodes.
+        Returns the average values at the (maxnodenr+1) nodes.
+        Nodes not occurring in elems will have all zero values.
         NB. It now works with scalar. It could be extended to vectors.
         """
         eval = val.reshape(-1,1,1)
+        #
+        # Do we really need to duplicate all th
         eval = column_stack(repeat([eval], self.nplex(), 0))#assign this area to all nodes of the elem
         nval = nodalSum(val=eval,elems=self.elems,avg=True,return_all=False)
         return nval.reshape(-1)
-    
-    
+
+
     def nodalToElement(self, val):
         """Compute element values from nodal values.
-        
-        Given scalar values defined on nodes, finds the average values at elements.
+
+        Given scalar values defined on nodes,
+        finds the average values at elements.
         NB. It now works with scalar. It could be extended to vectors.
         """
         return val[self.elems].mean(axis=1)

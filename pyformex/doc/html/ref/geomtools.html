@@ -197,12 +197,48 @@ else, only return the direction vector.</li>
 </dd></dl>
 
 <dl class="function">
-<dt id="geomtools.closestPoint">
-<tt class="descclassname">geomtools.</tt><tt class="descname">closestPoint</tt><big>(</big><em>P0</em>, <em>P1</em><big>)</big><a class="headerlink" href="#geomtools.closestPoint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find the smallest distance between any two points from P0 and P1.</p>
-<p>P0 and P1 are Coords arrays. Any point of P0 is compared with any point
-of P1, and the couple with the closest distance is returned.</p>
-<p>Returns a tuple (i,j,d) where i,j are the indices in P0,P1 identifying
+<dt id="geomtools.distance">
+<tt class="descclassname">geomtools.</tt><tt class="descname">distance</tt><big>(</big><em>X</em>, <em>Y</em><big>)</big><a class="headerlink" href="#geomtools.distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the distance of all points of X to those of Y.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>X</cite>: (nX,3) shaped array of points.</li>
+<li><cite>Y</cite>: (nY,3) shaped array of points.</li>
+</ul>
+<p>Returns an (nX,nT) shaped array with the distances between all points of
+X and Y.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="geomtools.closest">
+<tt class="descclassname">geomtools.</tt><tt class="descname">closest</tt><big>(</big><em>X</em>, <em>Y</em>, <em>return_dist=True</em><big>)</big><a class="headerlink" href="#geomtools.closest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the point of Y closest to points of X.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>X</cite>: (nX,3) shaped array of points</li>
+<li><cite>Y</cite>: (nY,3) shaped array of points</li>
+<li><cite>return_dist</cite>: bool. If False, only the index of the closest point
+is returned. If True (default), the distance are also returned.</li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li><cite>ind</cite>: (nX,) int array with the index of the closest point in Y to the
+points of X</li>
+<li><cite>dist</cite>: (nX,) float array with the distance of the closest point. This
+is equal to length(X-Y[ind]). It is only returned if return_dist is True.</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="geomtools.closestPair">
+<tt class="descclassname">geomtools.</tt><tt class="descname">closestPair</tt><big>(</big><em>X</em>, <em>Y</em><big>)</big><a class="headerlink" href="#geomtools.closestPair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the closest pair of points from X and Y.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>X</cite>: (nX,3) shaped array of points</li>
+<li><cite>Y</cite>: (nY,3) shaped array of points</li>
+</ul>
+<p>Returns a tuple (i,j,d) where i,j are the indices in X,Y identifying
 the closest points, and d is the distance between them.</p>
 </dd></dl>
 
@@ -854,7 +890,7 @@ be inside the simplex.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Jun 14, 2013.
+      Last updated on Oct 01, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

@@ -610,7 +610,7 @@ If direction == &#8216;v&#8217;, the options are in a vbox.</p>
 
 <dl class="class">
 <dt id="widgets.InputPush">
-<em class="property">class </em><tt class="descclassname">widgets.</tt><tt class="descname">InputPush</tt><big>(</big><em>name</em>, <em>value=None</em>, <em>choices=</em><span class="optional">[</span><span class="optional">]</span>, <em>direction='h'</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#widgets.InputPush" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">widgets.</tt><tt class="descname">InputPush</tt><big>(</big><em>name</em>, <em>value=None</em>, <em>choices=</em><span class="optional">[</span><span class="optional">]</span>, <em>direction='h'</em>, <em>icon=None</em>, <em>iconsonly=False</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#widgets.InputPush" title="Permalink to this definition">¶</a></dt>
 <dd><p>A pushbuttons InputItem.</p>
 <p>Creates pushbuttons for the selection of a value from a list.</p>
 <p>choices is a list/tuple of possible values.
@@ -1924,6 +1924,14 @@ gui.image.image_formats_qtr provides a list.</p>
 
 <p><tt class="docutils literal"><span class="pre">Functions</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">widgets</span></tt></p>
 <dl class="function">
+<dt id="widgets.pyformexIcon">
+<tt class="descclassname">widgets.</tt><tt class="descname">pyformexIcon</tt><big>(</big><em>icon</em><big>)</big><a class="headerlink" href="#widgets.pyformexIcon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a pyFormex icon.</p>
+<p>Returns a QIcon with an image taken from the pyFormex icons
+directory. <cite>icon</cite> is the basename of the image file (.xpm or .png).</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="widgets.objSize">
 <tt class="descclassname">widgets.</tt><tt class="descname">objSize</tt><big>(</big><em>object</em><big>)</big><a class="headerlink" href="#widgets.objSize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the width and height of an object.</p>
@@ -2120,7 +2128,7 @@ is given, it is set to the LAST button.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Jun 14, 2013.
+      Last updated on Oct 01, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>
