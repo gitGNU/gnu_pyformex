@@ -95,7 +95,7 @@ class Renderer(object):
         self._objects.append(actor)
         self._bbox = None
         self.canvas.camera.focus = self.bbox.center()
-        print("NEW BBOX: %s" % self.bbox)
+        #print("NEW BBOX: %s" % self.bbox)
 
 
     def changeMode(self,mode=None):
