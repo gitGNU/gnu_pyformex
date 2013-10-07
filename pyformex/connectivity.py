@@ -824,7 +824,7 @@ class Connectivity(ndarray):
     # BV: should we add a 'unique=False' option to create tables of
     # all intermediate entities without uniqifying?
     #
-    def insertLevel(self,selector):
+    def insertLevel(self,selector,permutations=True):
         """Insert an extra hierarchical level in a Connectivity table.
 
         A Connectivity table identifies higher hierarchical entities in
@@ -842,6 +842,9 @@ class Connectivity(ndarray):
           of such tuples all having the same length.
           Each row of `selector` holds a list of the local node numbers that
           should be retained in the new Connectivity table.
+        - `permutations`: `bool` . If True, rows which are permutations of 
+          the same data are considered equal. 
+
 
           If the Connectivity has an element type, selector can also be a
           single integer specifying one of the hierarchical levels of element
@@ -859,7 +862,7 @@ class Connectivity(ndarray):
 
         All intermediate level items that consist of the same set of nodes
         in any permutation order and with any multiplicity, are considered
-        identical and are collapsed into single items.
+        identical and are collapsed into single items if permutations is `True`.
         The resulting node numbering of the created intermediate entities
         (the `lo` return value) respects the numbering order of the original
         elements and applied the selector, but it is undefined which of the
@@ -907,7 +910,7 @@ class Connectivity(ndarray):
                 LO[LO[:,:-1] == LO[:,1:]] = -1
             else:
                 LO = lo
-            uniq,uniqid = uniqueRows(LO,permutations=True)
+            uniq,uniqid = uniqueRows(LO,permutations=permutations)
             hi = Connectivity(uniqid.reshape(-1,sel.nelems()))
             lo = lo[uniq]
         else:
