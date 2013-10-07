@@ -1197,7 +1197,8 @@ Publish the documentation
 - Put the html documention on the website ::
 
    make pubdoc
-   make listwww
+   ./publish # This should currently be done by the project manager
+             # on his laptop!
    # now add the missing files by hand : cvs add FILE
    make commit
 

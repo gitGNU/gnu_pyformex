@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -27,7 +27,7 @@ m = 36 # number of cells along helix
 n = 10 # number of cells along circular cross section
 reset()
 setDrawOptions({'clear':True})
-F = Formex(pattern("l:164"),[1,2,3]); draw(F)
+F = Formex('l:164'),[1,2,3]); draw(F)
 F = F.replic(m,1.,0); draw(F)
 F = F.replic(n,1.,1); draw(F)
 F = F.translate(2,1.); draw(F,view='iso')
