@@ -503,20 +503,9 @@ def run(argv=[]):
         option_list=option_list)
     del option_list
 
-    ## # Add branch dependent options
-    ## if branch == 'opengl':
-    ##     parser.add_option(
-    ##         "--gl1",
-    ##         action="store_false", dest="opengl2", default=True,
-    ##         help="Use the old OpenGL rendering engine. This old engine is the standard in the master branch. The opengl branch uses the new engine by default.",
-    ##         )
 
     pf.options, args = parser.parse_args(argv)
     pf.print_help = parser.print_help
-
-    ## if not hasattr(pf.options,'opengl2'):
-    ##     setattr(pf.options,'opengl2',False)
-
 
     # Set debug level
     if pf.options.debug and not pf.options.debuglevel:
