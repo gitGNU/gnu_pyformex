@@ -26,40 +26,30 @@
 
 
 
-pyFormex 0.9.0  Releasenotes
+pyFormex 0.9.1  Releasenotes
 ============================
 
-This is a collection of the most prominent changes in pyFormex 0.9.0
-compared to release 0.8.8. The 0.8.9 release was nearly identical to
-0.8.8 (mostly fixing some bugs).
+This is a collection of the most prominent changes in pyFormex 0.9.1
+compared to release 0.9.0.
 
 Most important new things:
-
-- pyFormex source is now in a git repository
-- WebGL export
-- PySide as Python bindings for Qt4
-- DICOM images can be imported
-- marching cubes algorithm
-- VTK, VMTK interfaces
-- fullscreen mode
 
 
 Installation
 ------------
-- installation of development version using git::
 
-    git clone git://git.savannah.nongnu.org/pyformex.git
+Configuration
+-------------
 
-- pyFormex now also works with PySide as alternative for PyQt4.
-  PySide is another set of Python bindings for Qt4
+The default user configuration file is now `.config/pyformex/pyformex.conf`.
+If the user does not have such file, but has it on the old location
+`.pyformex/pyformexrc`, the latter is move to the new location and symlinks
+are installed on the old location, to enable old versions to still find the
+configuration.
 
 
 Gui
 ---
-
-- Pressing F5 activates fullscreen mode, showing only the OpenGL canvas
-  on the full screen. In fullscreen mode, mouse manipulations of the model
-  remain possible. Another F5 press switch back to normal (window) mode.
 
 
 Command line
@@ -68,31 +58,29 @@ Command line
 
 Core
 ----
-- GeomFile: pyFormex pgf format now allows binary format
-- Mesh.peel: peels element from the border
-- arraytools: checkFloat, checkInt, pprint
-- direct export/import of binary STL files
-- export/import STL files with color
-- some external commands can be run parallel
-
+- Formex/Mesh splitProp retains the propery numbers
+- formex.py: removed mpattern: use xpattern or Formex string initialisation
+  with modifier character intead.
+- new module attributes and class Attributes: a general class to hold
+  attributes.
+- an important memory leak was fixed, making pyFormex able to handle
+  larger models during longer sessions
+- arraytools: new functions: powers, multiplex, minmax, groupPositions,
+  percentile;
+  extended functionality: checkArray, checkArray1D
+- collection.Collection: allow adding to/removing from the collection
+- geomtools: new: distance, closest; renamed closestPoint to closestPair;
 
 Drawing
 -------
-- Camera: provide correct camera position
-- Geometric objects can get attributes set that will be honored on drawing.
-  Currently: caption, color, opacity, visible
 
 
 Scripting
 ---------
-- pause and sleep functions improved
-- new mkdir and pwdir functions, changed chdir
 
 
 Widgets
 -------
-- new input items: InputFile, InputTable
-- Array and Table widgets can be edited
 
 
 Plugin menus
@@ -101,15 +89,7 @@ Plugin menus
 
 Plugins
 -------
-- imagearray: now also reads (stacks of) DICOM images
-- isosurface: construct 3D surface from 2D images, including marching cubes
-  algorithm
-- WebGL: new plugin allowing to create and export WebGL models directly
-  from pyFormex. WebGL models can directly be viewed in 3D with a browser
-  supporting WebGL (firefox, chrome).
-- ccxinp: input of Calculix and Abaqus .inp files
-- curve: PolyLine.movingFrenet computes Frenet frame along curve.
-- vtk_itf and vmtk_itf: interfaces with vtk and vmtk
+
 
 Extra
 -----
@@ -117,7 +97,6 @@ Extra
 
 Examples
 --------
-- WebGL example
 
 
 Data

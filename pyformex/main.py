@@ -562,11 +562,24 @@ def run(argv=[]):
             print("Migrating your user preferences\n  from %s\n  to %s" % (olduserprefs,pf.cfg.userprefs))
             try:
                 import shutil
-                shutil.move(os.path.join(homedir,'.pyformex'),pf.cfg.userconfdir,)
-                shutil.move(os.path.join(pf.cfg.userconfdir,'pyformexrc'),pf.cfg.userprefs)
-            except:
-                raise RuntimeError,"Error while trying to migrate your user configuration\nTry moving the config files yourself."
+                olddir = os.path.dirname(olduserprefs)
+                newdir = pf.cfg.userconfdir
+                # Move old user conf file to new and link back
+                oldfile = os.path.join(olddir,'pyformexrc')
+                newfile = os.path.join(olddir,'pyformex.conf')
+                print("Moving %s to %s" % (oldfile,newfile))
+                shutil.move(oldfile,newfile)
+                newfile = 'pyformex.conf'
+                print("Symlinking %s to %s" % (newfile,oldfile))
+                os.symlink(newfile,oldfile)
+                # Move old config dir to new and link back to old
+                print("Moving %s to %s" % (olddir,newdir))
+                shutil.move(olddir,newdir)
+                print("Symlinking %s to %s" % (newdir,olddir))
+                os.symlink(newdir,olddir)
 
+            except:
+                raise RuntimeError,"Error while trying to migrate your user configuration\nTry moving the config files yourself.\nYou may also remove the config directories %s\n and %s alltogether\s to get a fresh start with default config." % (olddir,newdir)
 
     # Set the config files
     if pf.options.nodefaultconfig:

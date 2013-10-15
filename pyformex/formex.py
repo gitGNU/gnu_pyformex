@@ -209,8 +209,9 @@ class Formex(Geometry):
                 base,data = d['base'],d['data']
                 if base is None or base == 'l':
                     data = lpattern(data)
-                elif base == 'm':
-                    data = mpattern(data)
+                ## removed in 0.9.1
+                ## elif base == 'm':
+                ##     data = mpattern(data)
                 else:
                     try:
                         nplex = int(base)
@@ -1220,17 +1221,6 @@ maxprop  = %s
             raise ValueError,"Formex should be plex-2 or plex-3"
 
 
-    # Removed in 0.8.7
-
-    ## @deprecation("\nUse Formex.intersectionWithPlane() instead.")
-    ## def intersectionPointsWithPlane(self,p,n):
-    ##     return self.intersectionWithPlane(p,n)
-
-    ## @deprecation("\nUse Formex.intersectionWithPlane() instead.")
-    ## def intersectionLinesWithPlane(self,p,n):
-    ##     return self.intersectionWithPlane(p,n)
-
-
     def cutWithPlane(self,p,n,side='',atol=None,newprops=None):
         """Cut a Formex with the plane(s) (p,n).
 
@@ -1594,100 +1584,76 @@ def lpattern(s,connect=True):
     return l
 
 
-@deprecation('depr_mpattern')
-def mpattern(s):
-    """This is like pattern, but allowing lists with more than 2 points.
+# REMOVED in 0.9.1
 
-    Subsequent points are included in the same list until a '-' occurs.
-    A '+' or '-' character splits lists. After a '-', the list starts at the
-    last point of the previous list. After a '+', the list starts again
-    at the origin.
-    All lists should have equal length if you want to use the resulting
-    list to initialize a Formex.
-    """
-    x = y = z = 0
-    li = [[x,y,z]]
-    l = []
-    connect=True
-    for c in s:
-        if c == '/':
-            connect = False
-            continue
-        elif c == '+':
-            l.append(li)
-            li = []
-            x = y = z = 0
-        elif c == '-':
-            l.append(li)
-            li = []
-        elif c == '0':
-            x = y = z = 0
-        else:
-            i = ord(c)
-            d = i/16
-            if d == 3:
-                pass
-            elif d == 4:
-                z += 1
-            elif d == 6:
-                z -= 1
-            else:
-                raise RuntimeError,"Unknown pattern character %c ignored" % c
-            i %= 16
-            if i == 1:
-                x += 1
-            elif i == 2:
-                y += 1
-            elif i == 3:
-                x -= 1
-            elif i == 4:
-                y -= 1
-            elif i == 5:
-                x += 1
-                y += 1
-            elif i == 6:
-                x -= 1
-                y += 1
-            elif i == 7:
-                x -= 1
-                y -= 1
-            elif i == 8:
-                x += 1
-                y -= 1
-            elif i == 9:
-                pass
-            else:
-                raise RuntimeError,"Unknown pattern character %c ignored" % c
-        if connect:
-            li.append([x,y,z])
-    l.append(li)
-    return l
+## @deprecation('depr_mpattern')
+## def mpattern(s):
+##     """This is like pattern, but allowing lists with more than 2 points.
 
-# Intersection functions
-
-
-# REMOVED in 0.9
-
-## @deprecation("\nUse Formex.intersectionWithPlane() or geomtools functions instead.")
-## def intersectionWithPlane(F,p,n):
-##     """Return the intersection of a Formex F with the plane (p,n).
-
-##     The Formex should have plexitude 2.
-##     p is a point specified by 3 coordinates.
-##     n is the normal vector to a plane, specified by 3 components.
-
-##     The return value is a [n] shaped array of parameter values t,
-##     such that for each segment L the intersection point is given
-##     by (1-t)*L[0]+ t*L[1].
+##     Subsequent points are included in the same list until a '-' occurs.
+##     A '+' or '-' character splits lists. After a '-', the list starts at the
+##     last point of the previous list. After a '+', the list starts again
+##     at the origin.
+##     All lists should have equal length if you want to use the resulting
+##     list to initialize a Formex.
 ##     """
-##     f = F.coords
-##     if f.shape[1] != 2:
-##         raise RuntimeError,"Formex should have plexitude 2."
-##     p = asarray(p).reshape((3))
-##     n = asarray(n).reshape((3))
-##     n = normalize(n)
-##     t = (inner(p,n) - inner(f[:,0,:],n)) / inner((f[:,1,:]-f[:,0,:]),n)
-##     return t
+##     x = y = z = 0
+##     li = [[x,y,z]]
+##     l = []
+##     connect=True
+##     for c in s:
+##         if c == '/':
+##             connect = False
+##             continue
+##         elif c == '+':
+##             l.append(li)
+##             li = []
+##             x = y = z = 0
+##         elif c == '-':
+##             l.append(li)
+##             li = []
+##         elif c == '0':
+##             x = y = z = 0
+##         else:
+##             i = ord(c)
+##             d = i/16
+##             if d == 3:
+##                 pass
+##             elif d == 4:
+##                 z += 1
+##             elif d == 6:
+##                 z -= 1
+##             else:
+##                 raise RuntimeError,"Unknown pattern character %c ignored" % c
+##             i %= 16
+##             if i == 1:
+##                 x += 1
+##             elif i == 2:
+##                 y += 1
+##             elif i == 3:
+##                 x -= 1
+##             elif i == 4:
+##                 y -= 1
+##             elif i == 5:
+##                 x += 1
+##                 y += 1
+##             elif i == 6:
+##                 x -= 1
+##                 y += 1
+##             elif i == 7:
+##                 x -= 1
+##                 y -= 1
+##             elif i == 8:
+##                 x += 1
+##                 y -= 1
+##             elif i == 9:
+##                 pass
+##             else:
+##                 raise RuntimeError,"Unknown pattern character %c ignored" % c
+##         if connect:
+##             li.append([x,y,z])
+##     l.append(li)
+##     return l
 
 
 def pointsAt(F,t):
@@ -1701,28 +1667,6 @@ def pointsAt(F,t):
     f = F.coords
     t = t[:,newaxis]
     return Coords((1.-t) * f[:,0,:] + t * f[:,1,:])
-
-# REMOVED in 0.9
-
-## @deprecation("\nUse Formex.intersectionWithPlane() or geomtools functions instead.")
-## def intersectionPointsWithPlane(F,p,n):
-##     """Return the intersection points of a Formex with plane p,n.
-
-##     The Formex should have plexitude 2.
-##     p is a point specified by 3 coordinates.
-##     n is the normal vector to a plane, specified by 3 components.
-
-##     The result is a plex-1 Formex with the same number of elements as the
-##     original. Some of the points may be NaN's.
-##     """
-##     f = F.coords
-##     t = intersectionWithPlane(F,p,n).reshape((-1,1))
-##     #print t.shape
-##     from geomtools import intersectionTimesSWP
-##     t = intersectionTimesSWP(f,p,n,mode='pair').reshape((-1,1))
-##     #print t.shape
-##     return Formex((1.-t) * f[:,0,:] + t * f[:,1,:])
-
 
 
 def intersectionLinesWithPlane(F,p,n,atol=1.e-4):
