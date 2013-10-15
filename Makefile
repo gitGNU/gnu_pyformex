@@ -159,7 +159,7 @@ website:
 bumpversion:
 	@OLD=$$(expr "${VERSION}" : '.*\([0-9])*\)$$'); \
 	 NEW=$$(expr $$OLD + 1); \
-	 sed -i "/^VERSION=/s|$$OLD$$|$$NEW|;/^RELEASE=/s|}.*|}|" RELEASE
+	 sed -i "/^VERSION=/s|$$OLD$$|$$NEW|;/^RELEASE=/s|}.*|}~a1|" RELEASE
 	make version
 	@echo "Bumped Version to $$(grep VERSION= RELEASE), $$(grep RELEASE= RELEASE)"
 

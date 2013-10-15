@@ -1290,7 +1290,7 @@ version is not enough. Proceed only when everything works fine.
 
 - Create statistics ::
 
-   make stats   # currently gives an error
+   make stats   # needs more work to get git commit count
 
 - Bump the RELEASE and VERSION variables in the file RELEASE, then ::
 
