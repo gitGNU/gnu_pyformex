@@ -194,12 +194,11 @@ DIST_FILES = [
     'manifest.py',
     'setup.py',
     'setup.cfg',
-    'pyformex.conf',
     ] + \
     listTree('pyformex',listdirs=False,sorted=True,
              excludedirs=['.svn'],
              includedirs=['gui','plugins'],
-             includefiles=['.*\.py$','pyformex(rc)?$'],
+             includefiles=['.*\.py$','pyformex(rc)?$','pyformex.conf$'],
              excludefiles=['core.py','curvetools.py','backports.py'],
              ) + \
     listTree('pyformex/icons',listdirs=False,sorted=True,

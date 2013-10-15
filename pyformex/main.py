@@ -521,7 +521,6 @@ def run(argv=[]):
 
     pf.debug("Options: %s" % pf.options,pf.DEBUG.ALL)
 
-
     ########## Process special options which will not start pyFormex #######
 
     if pf.options.testmodule:
@@ -536,14 +535,15 @@ def run(argv=[]):
     if pf.options.whereami: # or pf.options.detect :
         pf.options.debuglevel |= pf.DEBUG.INFO
 
-    pf.debug("pyformex script started from %s" % pf.bindir,pf.DEBUG.INFO)
-    pf.debug("I found pyFormex installed in %s " %  pyformexdir,pf.DEBUG.INFO)
-    pf.debug("Current Python sys.path: %s" % sys.path,pf.DEBUG.INFO)
-
     if pf.options.detect:
         print("Detecting installed helper software")
         utils.checkExternal()
         print(utils.reportSoftware())
+
+    pf.debug("pyformex script started from %s" % pf.bindir,pf.DEBUG.INFO)
+    pf.debug("I found pyFormex installed in %s " %  pyformexdir,pf.DEBUG.INFO)
+    pf.debug("Current Python sys.path: %s" % sys.path,pf.DEBUG.INFO)
+    #sys.exit()
 
     if pf.options.whereami or pf.options.detect :
         return
