@@ -9,7 +9,6 @@
   Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
   Distributed under the GNU General Public License version 3 or later.
 
-
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
@@ -1186,7 +1185,7 @@ for the full procedure to make and publish an official release tarball.
 
 - Bump the pyFormex version. While any developer can bump the version,
   it really should only be done after publishing a release (official
-  or interim) or when there is anothr good reason to change the
+  or interim) or when there is another good reason to change the
   version number. Therefore it is included here with the manager's
   tasks. ::
 
