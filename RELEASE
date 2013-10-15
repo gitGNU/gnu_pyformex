@@ -1,6 +1,6 @@
 # pyFormex version
-VERSION=0.9.1
+VERSION=1.0.0
 # Unless you are creating an official release, a tail should be added
 # to the ${VERSION}, starting with a ~ character !!!!!!!!!!!!!!!
-RELEASE=${VERSION}
+RELEASE=${VERSION}~a1
 
