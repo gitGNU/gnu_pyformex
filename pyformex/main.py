@@ -465,6 +465,14 @@ def run(argv=[]):
        action="store_false", dest="pyside", default=None,
        help="Use the PyQt4 bindings for QT4 libraries",
        ),
+    MO("--gl1",
+       action="store_false", dest="opengl2", default=False,
+       help="Use the old OpenGL rendering engine. This is almost identical to the engine in the old 0.9 branch, but does not provide some new and advanced features of the new enging. To ease the transition after the branch switching, the old engine is currently the default.",
+       ),
+    MO("--gl2",
+       action="store_true", dest="opengl2", default=False,
+       help="Use the new OpenGL rendering engine. This will become the default when it becomes fully functional.",
+       ),
     MO("--listfiles",
        action="store_true", dest="listfiles", default=False,
        help="List the pyformex Python source files.",
@@ -495,19 +503,19 @@ def run(argv=[]):
         option_list=option_list)
     del option_list
 
-    # Add branch dependent options
-    if branch == 'opengl':
-        parser.add_option(
-            "--gl1",
-            action="store_false", dest="opengl2", default=True,
-            help="Use the old OpenGL rendering engine. This old engine is the standard in the master branch. The opengl branch uses the new engine by default.",
-            )
+    ## # Add branch dependent options
+    ## if branch == 'opengl':
+    ##     parser.add_option(
+    ##         "--gl1",
+    ##         action="store_false", dest="opengl2", default=True,
+    ##         help="Use the old OpenGL rendering engine. This old engine is the standard in the master branch. The opengl branch uses the new engine by default.",
+    ##         )
 
     pf.options, args = parser.parse_args(argv)
     pf.print_help = parser.print_help
 
-    if not hasattr(pf.options,'opengl2'):
-        setattr(pf.options,'opengl2',False)
+    ## if not hasattr(pf.options,'opengl2'):
+    ##     setattr(pf.options,'opengl2',False)
 
 
     # Set debug level
@@ -693,17 +701,11 @@ def run(argv=[]):
 
     # Set future version for development branch
     if pf.options.opengl2:
-        if branch == 'opengl':
-            pf.__version__ = "1.x~a1"
-        else:
-            pf.error("\nYou are starting pyFormex from the %s branch!\nThe --opengl2 option is only working in the opengl branch.\n" % branch)
-            return
+        pf.__version__ += " (GL2)"
 
 
     ###### We have the config and options all set up ############
     filterWarnings()
-
-
 
     def _format_warning(message,category,filename,lineno,line=None):
         """Replace the default warnings.formatwarning
