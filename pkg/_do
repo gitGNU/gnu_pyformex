@@ -91,7 +91,7 @@ buildlib() {
 
 
 install() {
-    gksu debi pyformex_${PKGVER}_amd64.changes
+    sudo debi pyformex_${PKGVER}_amd64.changes
 }
 
 pkglst() {
@@ -123,12 +123,13 @@ REPOHOST=bumps
 REPOPATH=/var/www/repos/debian
 REPO=${REPOHOST}:${REPOPATH}/incoming
 uploadlocal() {
-    rsync *_$RELEASE[.-]* $REPO --exclude *.upload -avn
+    rsync *_$RELEASE[.-]* --exclude '*.upload' $REPO -avn
     read -p "Do you want to upload these packages ?" ans
     if [ "$ans" = "y" -o "$ans" = "Y" ]; then
-	rsync *_$RELEASE[.-]* $REPO --exclude *.upload -av
+	rsync *_$RELEASE[.-]* --exclude '*.upload' $REPO -av
     fi
 }
+
 
 publocal() {
     CHANGES=$(getchanges)
