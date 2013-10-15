@@ -240,8 +240,8 @@ pyformex_pink = (1.0,0.2,0.4)
 
 lightlightgrey = grey(0.9)
 lightgrey = grey(0.8)
-mediumgrey = grey(0.7)
-darkgrey = grey(0.5)
+mediumgrey = grey(0.6)
+darkgrey = grey(0.4)
 
 
 def setPalette(colors):
@@ -251,6 +251,6 @@ def setPalette(colors):
 
 # Set default palette
 # !! THIS IS CURRENTLY NOT USED YET
-palette = ODict([ (k,globals()[k]) for k in ['black','red','green','blue','cyan','magenta','yellow','white','darkgrey','darkred','darkgreen','darkblue','darkcyan','darkmagenta','darkyellow','lightgrey'] ])
+palette = ODict([ (k,globals()[k]) for k in ['darkgrey','red','green','blue','cyan','magenta','yellow','white','black','darkred','darkgreen','darkblue','darkcyan','darkmagenta','darkyellow','lightgrey'] ])
 
 # End

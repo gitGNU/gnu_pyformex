@@ -31,7 +31,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'beginner'
 _topics = ['color']
-_techniques = ['palette']
+_techniques = ['palette','align']
 
 from gui.draw import *
 
@@ -40,8 +40,9 @@ def run():
     flat()
     palette = pf.canvas.settings.colormap
     ncolors = len(palette)
-    F = Formex('4:0123').replic2(ncolors+1,ncolors-1).setProp(range(ncolors))
-    draw(F,color='prop')
+    F = Formex('4:0123').replic2(ncolors/2,2).setProp(range(ncolors))
+    G = Formex('4:0123').replic2(ncolors+1,ncolors-1).setProp(range(ncolors))
+    draw(align([F,G],'|00',offset=[1.,0.,0.]),color='prop')
 
 
 if __name__ == 'draw':

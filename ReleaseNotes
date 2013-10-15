@@ -38,6 +38,8 @@ Most important new things:
 Installation
 ------------
 
+Installation procedure now works with PySide or PyQt4.
+
 Configuration
 -------------
 
@@ -51,7 +53,6 @@ configuration.
 Gui
 ---
 
-
 Command line
 ------------
 
@@ -61,6 +62,8 @@ Core
 - Formex/Mesh splitProp retains the propery numbers
 - formex.py: removed mpattern: use xpattern or Formex string initialisation
   with modifier character intead.
+- mesh.py: new methods Mesh.toCurve, Mesh.bboxes; new functions smartSeed,
+  rectangle, rectangle_with_hole
 - new module attributes and class Attributes: a general class to hold
   attributes.
 - an important memory leak was fixed, making pyFormex able to handle
@@ -70,9 +73,19 @@ Core
   extended functionality: checkArray, checkArray1D
 - collection.Collection: allow adding to/removing from the collection
 - geomtools: new: distance, closest; renamed closestPoint to closestPair;
+- simple: new: boxes
+- new module software.py: contains the functions for software detection,
+  moved from utils.py; contains more software detectections, and tools
+  to register and check the used versions of these softwares.
+- utils.py: software detection moved to software.py; new tools to split
+  and build filenames;
+
 
 Drawing
 -------
+- The default color map now contains 16 colors: the usual 8 plus 8 darker
+  versions. The first color (0) is changed to dark grey instead of black,
+  which now has position 8 (the darker version of darkgrey).
 
 
 Scripting
