@@ -1,4 +1,4 @@
-# $Id$ *** pyformex app ***
+# $Id$
 ##
 ##  This file is part of pyFormex
 ##  pyFormex is a tool for generating, manipulating and transforming 3D

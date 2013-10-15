@@ -52,6 +52,18 @@ configuration.
 
 Gui
 ---
+- Added an experimental interactive console (pyconsole.py): Python and
+  pyFormex code can be directly executed in it.
+  Can be activated from the settings dialog under the GUI section.
+- Added a menu option to reset the user preferences to defaults or to
+  factory defaults.
+- Added a toolbar button to switch drawing of edges on/off.
+- Help->OpenGL format now displays the supported OpenGL versions
+  on your system
+- Viewport Menu-> Background color can now realtime change the background
+  color.
+- Moved the views related code from canvas to a separate module views.py
+
 
 Command line
 ------------
@@ -79,7 +91,7 @@ Core
   to register and check the used versions of these softwares.
 - utils.py: software detection moved to software.py; new tools to split
   and build filenames;
-
+- image.py: creating movies can now also use ImageMagick's convert
 
 Drawing
 -------
@@ -90,7 +102,13 @@ Drawing
 
 Scripting
 ---------
+- New functions in the GUI version:
 
+  - exportWebGL: export a model to WebGL, to make it viewable by a browser
+  - showURL: load an URL in the browser
+  - showHTML: load a local .html file in the browser
+
+- removed deprecated alternate spellings: zoomall, drawtext
 
 Widgets
 -------
@@ -102,15 +120,24 @@ Plugin menus
 
 Plugins
 -------
+- curve: PolyLine allows insertion/removal of points
+- dxf: DXF exporter now also exports PolyLines and Arcs
+- neu_exp: more Gambit export functionality
+- imagearray: now supports transparency
+- polynomial: new module with representation of multivariate polynomials
+- tetgen: new function tetgenConvexHull
+- vtk_itf and vmtk_itf provide many new interfaces with vtk/vmtk functions
 
 
 Extra
 -----
+- gtsset: now supports export in binary .gts format
+- pyftgl: add installation instructions
 
 
 Examples
 --------
-
+New examples: Ftgl, LineIntersection, Octree, Palette, RectangularMesh
 
 Data
 ----
