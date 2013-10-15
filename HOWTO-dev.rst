@@ -9,7 +9,6 @@
   Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
   Distributed under the GNU General Public License version 3 or later.
 
-
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
@@ -1186,7 +1185,7 @@ for the full procedure to make and publish an official release tarball.
 
 - Bump the pyFormex version. While any developer can bump the version,
   it really should only be done after publishing a release (official
-  or interim) or when there is anothr good reason to change the
+  or interim) or when there is another good reason to change the
   version number. Therefore it is included here with the manager's
   tasks. ::
 
@@ -1197,7 +1196,8 @@ Publish the documentation
 - Put the html documention on the website ::
 
    make pubdoc
-   make listwww
+   ./publish # This should currently be done by the project manager
+             # on his laptop!
    # now add the missing files by hand : cvs add FILE
    make commit
 
@@ -1290,7 +1290,7 @@ version is not enough. Proceed only when everything works fine.
 
 - Create statistics ::
 
-   make stats   # currently gives an error
+   make stats   # needs more work to get git commit count
 
 - Bump the RELEASE and VERSION variables in the file RELEASE, then ::
 

@@ -14,6 +14,7 @@ usage() {
     cat << EOF
 Usage: $(basename $0) [ -r RELEASE ]  CMD...
 Where CMD is one of:
+prepare : change the changelog file to register the new package
   clean : clean the current unpack directories to allow new build
  unpack : Unpacks the current .tar.gz release from dist
   build : test-build the Debian packages for the current release
@@ -60,6 +61,7 @@ setup() {
 # Prepare for a new release
 prepare() {
     dch -v $RELEASE-1
+    sed -i '0,s|UNRELEASED|unstable|' $PYFDIR/debian/changelog
 }
 # Prepare for a package fix
 preparefix() {
@@ -91,7 +93,7 @@ buildlib() {
 
 
 install() {
-    gksu debi pyformex_${PKGVER}_amd64.changes
+    sudo debi pyformex_${PKGVER}_amd64.changes
 }
 
 pkglst() {
@@ -123,12 +125,13 @@ REPOHOST=bumps
 REPOPATH=/var/www/repos/debian
 REPO=${REPOHOST}:${REPOPATH}/incoming
 uploadlocal() {
-    rsync *_$RELEASE[.-]* $REPO --exclude *.upload -avn
+    rsync *_$RELEASE[.-]* --exclude '*.upload' $REPO -avn
     read -p "Do you want to upload these packages ?" ans
     if [ "$ans" = "y" -o "$ans" = "Y" ]; then
-	rsync *_$RELEASE[.-]* $REPO --exclude *.upload -av
+	rsync *_$RELEASE[.-]* --exclude '*.upload' $REPO -av
     fi
 }
+
 
 publocal() {
     CHANGES=$(getchanges)

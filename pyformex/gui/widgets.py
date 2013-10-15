@@ -1,13 +1,12 @@
 # $Id$
 ##
-##  This file is part of pyFormex 0.9.0  (Mon Mar 25 13:52:29 CET 2013)
+##  This file is part of pyFormex 0.9.1  (Tue Oct 15 21:05:25 CEST 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
+##  Copyright 2004-2013 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
-##
 ##
 ##  This program is free software: you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -1425,33 +1424,6 @@ def tabInputItem(name,items=[],**kargs):
     kargs['itemtype'] = 'tab'
     return kargs
 
-# BV: removed in 0.9.0
-
-## def compatInputItem(name,value,itemtype=None,kargs={}):
-##     """A convenience function to create an InputItem dictionary
-
-##     This function accepts InputItem data in the old format::
-
-##       ( name, value, [ itemtype, [ optionsdict ] ] )
-
-##     and turns them into a dictionary as required by the new
-##     InputItem format.
-##     """
-##     utils.deprec("depr_compat_input")
-##     # Create a new dict item!
-##     # We cannot change kargs directly like in simpleInputItem,
-##     # that would permanently change the value of the empty dict!
-##     item = {}
-##     if isinstance(itemtype,dict):
-##         # in case the itemtype was missing
-##         kargs = itemtype
-##         itemtype = None
-##     item.update(kargs)
-##     item['name'] = name
-##     item['value'] = value
-##     item['itemtype'] = itemtype
-##     return item
-
 
 def convertInputItem(item):
     """Convert InputItem item to a dict or a widget.
@@ -2792,14 +2764,6 @@ class ListSelection(InputDialog):
             return None
 
 
-# BV: removed in 0.9.0
-
-## class Selection(ListSelection):
-##     def __init__(self,slist=[],title='Selection Dialog',mode=None,sort=False,selected=[]):
-##         """Create the SelectionList dialog."""
-##         utils.deprec("depr_widgets_selection")
-##         ListSelection.__init__(self,caption=title,choices=slist,default=selected,single=mode=='single',sort=sort)
-
 
 
 # !! The QtGui.QColorDialog can not be instantiated or subclassed.
@@ -2869,41 +2833,43 @@ class GenericDialog(QtGui.QDialog):
 
 
 # Deprecated in 0.9.0
-class Tabs(QtGui.QTabWidget):
-    """_Present a list of widgets as a single tabbed widget.
+# Removed in 0.9.1
+## class Tabs(QtGui.QTabWidget):
+##     """_Present a list of widgets as a single tabbed widget.
 
-    - `items`: a list of (header,widget) tuples.
-    - `caption`:
-    - `parent`:
-    """
-    def __init__(self,items,parent=None):
-        """Create the TabWidget."""
-        utils.deprec("depr_tabs")
-        QtGui.QTabWidget.__init__(self,parent)
-        for header,widget in items:
-            self.addTab(widget,header)
+##     - `items`: a list of (header,widget) tuples.
+##     - `caption`:
+##     - `parent`:
+##     """
+##     def __init__(self,items,parent=None):
+##         """Create the TabWidget."""
+##         utils.deprec("depr_tabs")
+##         QtGui.QTabWidget.__init__(self,parent)
+##         for header,widget in items:
+##             self.addTab(widget,header)
 
 
 # Deprecated in 0.9.0
-class TableDialog(GenericDialog):
-    """_A dialog widget to show/edit a two-dimensional array of items.
+# Removed in 0.9.1
+## class TableDialog(GenericDialog):
+##     """_A dialog widget to show/edit a two-dimensional array of items.
 
-    A convenience class representing a Table within a dialog.
-    """
+##     A convenience class representing a Table within a dialog.
+##     """
 
-    def __init__(self,data,chead=None,rhead=None,title=None,parent=None,actions=[('OK',)],default='OK',edit=False):
-        """Create the Table dialog.
+##     def __init__(self,data,chead=None,rhead=None,title=None,parent=None,actions=[('OK',)],default='OK',edit=False):
+##         """Create the Table dialog.
 
-        - data is a 2-D array of items, with nrow rows and ncol columns.
-        - chead is an optional list of ncol column headers.
-        - rhead is an optional list of nrow row headers.
-        """
-        utils.deprec("depr_tabledialog")
-        self.table = Table(data,chead=chead,rhead=rhead,edit=edit)
-        GenericDialog.__init__(self,
-                               [self.table],
-                               title=title, parent=parent,
-                               actions=actions,default=default)
+##         - data is a 2-D array of items, with nrow rows and ncol columns.
+##         - chead is an optional list of ncol column headers.
+##         - rhead is an optional list of nrow row headers.
+##         """
+##         utils.deprec("depr_tabledialog")
+##         self.table = Table(data,chead=chead,rhead=rhead,edit=edit)
+##         GenericDialog.__init__(self,
+##                                [self.table],
+##                                title=title, parent=parent,
+##                                actions=actions,default=default)
 
 
 

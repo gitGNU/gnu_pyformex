@@ -1,4 +1,10 @@
-# $Id$
+# pyFormex release database, used to create the stats
+
+release
+  tag = 0.9.1
+  date = 2013-10-15
+  size = 3392888
+  rev = 3079
 
 release
   tag = 0.9.0

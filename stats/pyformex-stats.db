@@ -183,6 +183,19 @@ release
   size=3278969
 
 release
+  sh=396
+  python=45945
+  dollars=1795095
+  rev=3079
+  manyears=13.29
+  years=1.43
+  tag=0.9.1
+  sloc=54408
+  date=2013-10-15
+  ansic=7717
+  size=3392888
+
+release
   sh=281
   python=42025
   dollars=1639982

@@ -1,11 +1,11 @@
 # $Id$
 ##
-##  This file is part of pyFormex 0.9.1  (Wed Mar 27 15:37:25 CET 2013)
+##  This file is part of pyFormex 0.9.1  (Tue Oct 15 21:05:25 CEST 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
+##  Copyright 2004-2013 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##  This program is free software: you can redistribute it and/or modify
@@ -521,7 +521,6 @@ def run(argv=[]):
 
     pf.debug("Options: %s" % pf.options,pf.DEBUG.ALL)
 
-
     ########## Process special options which will not start pyFormex #######
 
     if pf.options.testmodule:
@@ -536,14 +535,15 @@ def run(argv=[]):
     if pf.options.whereami: # or pf.options.detect :
         pf.options.debuglevel |= pf.DEBUG.INFO
 
-    pf.debug("pyformex script started from %s" % pf.bindir,pf.DEBUG.INFO)
-    pf.debug("I found pyFormex installed in %s " %  pyformexdir,pf.DEBUG.INFO)
-    pf.debug("Current Python sys.path: %s" % sys.path,pf.DEBUG.INFO)
-
     if pf.options.detect:
         print("Detecting installed helper software")
         utils.checkExternal()
         print(utils.reportSoftware())
+
+    pf.debug("pyformex script started from %s" % pf.bindir,pf.DEBUG.INFO)
+    pf.debug("I found pyFormex installed in %s " %  pyformexdir,pf.DEBUG.INFO)
+    pf.debug("Current Python sys.path: %s" % sys.path,pf.DEBUG.INFO)
+    #sys.exit()
 
     if pf.options.whereami or pf.options.detect :
         return
@@ -562,11 +562,24 @@ def run(argv=[]):
             print("Migrating your user preferences\n  from %s\n  to %s" % (olduserprefs,pf.cfg.userprefs))
             try:
                 import shutil
-                shutil.move(os.path.join(homedir,'.pyformex'),pf.cfg.userconfdir,)
-                shutil.move(os.path.join(pf.cfg.userconfdir,'pyformexrc'),pf.cfg.userprefs)
-            except:
-                raise RuntimeError,"Error while trying to migrate your user configuration\nTry moving the config files yourself."
+                olddir = os.path.dirname(olduserprefs)
+                newdir = pf.cfg.userconfdir
+                # Move old user conf file to new and link back
+                oldfile = os.path.join(olddir,'pyformexrc')
+                newfile = os.path.join(olddir,'pyformex.conf')
+                print("Moving %s to %s" % (oldfile,newfile))
+                shutil.move(oldfile,newfile)
+                newfile = 'pyformex.conf'
+                print("Symlinking %s to %s" % (newfile,oldfile))
+                os.symlink(newfile,oldfile)
+                # Move old config dir to new and link back to old
+                print("Moving %s to %s" % (olddir,newdir))
+                shutil.move(olddir,newdir)
+                print("Symlinking %s to %s" % (newdir,olddir))
+                os.symlink(newdir,olddir)
 
+            except:
+                raise RuntimeError,"Error while trying to migrate your user configuration\nTry moving the config files yourself.\nYou may also remove the config directories %s\n and %s alltogether\s to get a fresh start with default config." % (olddir,newdir)
 
     # Set the config files
     if pf.options.nodefaultconfig:
