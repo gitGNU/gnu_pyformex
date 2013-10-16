@@ -32,6 +32,7 @@ _status = 'checked'
 _level = 'normal'
 _topics = ['mesh','illustration','surface']
 _techniques = ['color','random','image','movie']
+_opengl2 = True
 
 from gui.draw import *
 from plugins import trisurface,surface_menu

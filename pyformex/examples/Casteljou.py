@@ -50,6 +50,7 @@ _status = 'checked'
 _level = 'normal'
 _topics = ['geometry', 'curve']
 _techniques = ['pattern','delay']
+_opengl2 = True
 
 from gui.draw import *
 from plugins.curve import PolyLine
@@ -74,7 +75,7 @@ custom = ''       # The custom pattern
 value = 0.5   # Parametric value of the point to construct
 
 def run():
-    
+
     res = askItems([
         dict(name='pattern',value=pattern,choices=predefined),
         dict(name='custom',value=custom),
@@ -103,7 +104,7 @@ def run():
     draw(C,bbox='auto',view='front')
     draw(C.coords)
     drawNumbers(C.coords)
-    
+
     setDrawOptions({'bbox':None})
 
     # Compute and show the deCasteljou construction
@@ -120,7 +121,7 @@ def run():
     u = arange(n+1)*1.0/n
     P = nurbs.pointsOnBezierCurve(C.coords,u)
     draw(Coords(P))
-    
+
 if __name__ == 'draw':
     run()
 # End

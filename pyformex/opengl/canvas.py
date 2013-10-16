@@ -390,6 +390,37 @@ class Canvas(object):
         GL.glFlush()
 
 
+    def draw_sorted_actors(self,actors,alphablend):
+        """Draw a list of sorted actors.
+
+        If alphablend is True, actors are separated in opaque
+        and transparent ones, and the opaque are drawn first.
+        Inside each group, ordering is preserved.
+        Else, the actors are drawn in the order submitted.
+        """
+        if alphablend:
+            opaque = [ a for a in actors if a.opak ]
+            transp = [ a for a in actors if not a.opak ]
+            for actor in opaque:
+                self.setDefaults()
+                actor.draw(canvas=self)
+            GL.glEnable (GL.GL_BLEND)
+            GL.glDepthMask (GL.GL_FALSE)
+            if pf.cfg['draw/disable_depth_test']:
+                GL.glDisable(GL.GL_DEPTH_TEST)
+            GL.glBlendFunc (GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+            for actor in transp:
+
+                self.setDefaults()
+                actor.draw(canvas=self)
+            GL.glEnable(GL.GL_DEPTH_TEST)
+            GL.glDepthMask (GL.GL_TRUE)
+            GL.glDisable (GL.GL_BLEND)
+        else:
+            for actor in actors:
+                self.setDefaults()
+                actor.draw(canvas=self)
+
     def display(self):
         """(Re)display all the actors in the scene.
 
@@ -412,6 +443,7 @@ class Canvas(object):
             self.background.draw(mode='smooth')
 
         # background decorations
+        pf.debug("background decorations",pf.DEBUG.DRAW)
         back_decors = [ d for d in self.decorations if not d.ontop ]
         for actor in back_decors:
             self.setDefaults()
@@ -433,49 +465,35 @@ class Canvas(object):
         # start 3D drawing
         self.camera.set3DMatrices()
 
-        # Draw the opengl2 actors
-        self.renderer.render()
-
         # draw the highlighted actors
+        pf.debug("draw highlights",pf.DEBUG.DRAW)
         if self.highlights:
             for actor in self.highlights:
                 self.setDefaults()
                 actor.draw(canvas=self)
 
-        ## # draw the scene actors and annotations
-        ## sorted_actors = [ a for a in self.annotations if not a.ontop ] + \
-        ##                 [ a for a in self.actors if not a.ontop ] + \
-        ##                 [ a for a in self.actors if a.ontop ] + \
-        ##                 [ a for a in self.annotations if a.ontop ]
-        ## if self.settings.alphablend:
-        ##     opaque = [ a for a in sorted_actors if a.opak ]
-        ##     transp = [ a for a in sorted_actors if not a.opak ]
-        ##     for actor in opaque:
-        ##         self.setDefaults()
-        ##         actor.draw(canvas=self)
-        ##     GL.glEnable (GL.GL_BLEND)
-        ##     GL.glDepthMask (GL.GL_FALSE)
-        ##     if pf.cfg['draw/disable_depth_test']:
-        ##         GL.glDisable(GL.GL_DEPTH_TEST)
-        ##     GL.glBlendFunc (GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-        ##     for actor in transp:
-        ##         self.setDefaults()
-        ##         actor.draw(canvas=self)
-        ##     GL.glEnable(GL.GL_DEPTH_TEST)
-        ##     GL.glDepthMask (GL.GL_TRUE)
-        ##     GL.glDisable (GL.GL_BLEND)
-        ## else:
-        ##     for actor in sorted_actors:
-        ##         self.setDefaults()
-        ##         actor.draw(canvas=self)
+        # draw the scene actors and annotations
+        pf.debug("draw annotations",pf.DEBUG.DRAW)
+        ann_bot = [ a for a in self.annotations if not a.ontop ]
+        ann_top = [ a for a in self.annotations if a.ontop ]
+        act_bot = [ a for a in self.actors if not a.ontop ]
+        act_top = [ a for a in self.actors if a.ontop ]
 
-        ## # annotations are decorations drawn in 3D space
-        ## for actor in self.annotations:
-        ##     self.setDefaults()
-        ##     actor.draw(canvas=self)
+        self.draw_sorted_actors(ann_bot,self.settings.alphablend)
+
+        # Draw the opengl2 actors
+        pf.debug("opengl2 shader rendering",pf.DEBUG.DRAW)
+        self.renderer.render()
+
+        self.draw_sorted_actors(ann_top,self.settings.alphablend)
+
+        # annotations are decorations drawn in 3D space
+        for actor in self.annotations:
+            self.setDefaults()
+            actor.draw(canvas=self)
 
 
-        # draw foreground decorations in 2D mode
+        pf.debug("draw foreground decorations in 2D mode",pf.DEBUG.DRAW)
         self.begin_2D_drawing()
         decors = [ d for d in self.decorations if d.ontop ]
         for actor in decors:

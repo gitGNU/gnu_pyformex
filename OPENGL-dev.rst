@@ -37,66 +37,45 @@ For pyFormex 1.0 we are developing a new OpenGL rendering engine, that will
 make use of shader programs. These can be loaded on a Graphics Processing Unit
 (GPU) allowing a speedup on machines with high end graphics cards.
 
-The new engine is under development in the branch 'opengl' and can already be
-used for most basic drawing tasks. While things (like text and texture
-rendering) are still missing, we feel that the time has come to put the new 
-engine at the disposal of all developers for testing.
+The new engine is under development in the 'master' branch in a subdirectory
+'opengl' and can already be used for most basic drawing tasks.
+Some things (like texture rendering) are still missing though.
 
-While developers could already follow the new branch now, most are probably
-still using the old master branch. Developments made in the master branch
-where then merged regularly into the opengl branch. Also, some changes for
-the opengl branch were merged back into the master. 
+Currently, both the old and the new engine are available from the master
+branch, and will remain so for quite some time. The engine is selectable
+by a --gl1 or --gl2 option on the command line.
+New features will likely only appear in the new gl2 engine, and some things
+in gl1 might get broken over time and not be fixed anymore. So you are invited
+to gradually switch over to the new engine as it becomes fully functional.
+For now, the old engine remains the default, but at some point the default will
+be switched to the new engine.
 
-Because this two way merging is becoming to much of a burden, we decided to
-very soon give up on the old master branch, and make the opengl branch the
-new master. The old branch will be kept in the repository under the name
-pyformex_0. It will be kept for maintenance on the old pyFormex 0.x series,
-but no new developments will be added in that branch. If you are not developing
-but using pyFormex 0.x in a productive environment, you may choose to 
-check out that branch instead of staying on the master.
+If you have an old script that does no longer run with any of the --gl options, you can consider running an older version. By preference you do this from an installed release package (either tar.gz of .deb).
+But if you need to fix some old source, you can still checkout the old branch (git co 0.9). However, *no future development work* should be done on that branch ,only Problem fixing.
 
-Once the new master branch is place (and you have checked it out), you can
-still run the old engine, by using the --gl1 option on the pyformex command
-line. This enables us to run both versions from the same working tree.
+Also, no new commits should be pushed on the opengl branch: all gl2 development should now be done in the master branch.
 
-The old engine should function almost exactly like in the current (old)
-master branch. It will be kept in the new master branch until we have had
-the time to implement and check the working of all parts of the new engine. 
-We will not do large efforts however to keep it
-exactly like the engine in the old master branch, nor like the new engine.
+You can help speed up the development of the new engine by testing your code and/or some of the examples in both engines, and report any differences and malfunctioning. With this in mind we have added the possibility of two global variables
+in the examples: _opengl2 and _opengl2_comments. The first one should be set True if the example runs, False if it doesn't. The second can be used in case there remain some issues with a running example. The value is a (multiline) string with any comments describing the issue. General issues, occurring for many examples, should be listed below in this file. Should first check here before adding to the example itself.
 
-What to do after the master branch has been switched?
------------------------------------------------------
+To help in testing both engines, you can create two desktop starters.
+The install-pyformex-dev-desktop-link script has been extended with some features: you can now directly add the command line options.
 
-- If you want to keep using the old pyFormex 0.x tree for a long time, check out
-  the pyformex_0 branch::
+Thus you could create the following two start buttons::
 
-    git fetch
-    git co pyformex_0
+  ./install-pyformex-dev-desktop-link GL1 --gl1 --redirect
+  ./install-pyformex-dev-desktop-link GL2 --gl2 --redirect --config=~/.config/pyformex/pyformex-GL2.conf
 
-- If you want to follow the new master branch::
+Notice that the `--redirect` option is not added automatically.
+The addition of a `--config` option in the second keeps a separate configuration file for the GL2 engine. In this way, on a large enough screen, you can run both versions next to each other, e.g. one on the left half and one on the right half of the screen. You can then run the same code in both versions and compare the results. Anything not identical should be fixed or reported, unless there is some reason for it to be different (e.g. an improvement in the new engine).
 
-    git pull
 
-  Now you can run the old engine::
-    pyformex --gl1
+OpenGL2 issues
+==============
 
-  or the new::
-    pyformex --gl2
-
-  Note the the new engine is the default in the new master branch.
-  If you prefer a desktop menu item or button to start the old engine,
-  you can create one as follows::
-
-    ./install-pyformex-dev-desktop-link GL1
-
-  On startup pyFormex will only check for an already running instance of the
-  same version. Thus you can easily run both versions next to each other on
-  the screen, execute the same script, and see if any behavior is different.
-    
-  You are invited to do so, and to report the differences. This will help us
-  with speeding up the development of the new engine.
-
+- In lighted scenes, there is generally not enough light.
+- Texture drawing is not implemented yet (can/should we re-activate some
+  old actor drawing to enable this?)
 
 
 ..
