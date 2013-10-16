@@ -32,7 +32,7 @@ from __future__ import print_function
 
 import pyformex as pf
 from arraytools import splitar
-from multiprocessing import Pool,cpu_count
+from multiprocessing import Pool,cpu_count,Process,Queue
 
 
 def dofunc(arg):
@@ -89,7 +89,7 @@ def worker(input, output):
         result = func(*args)
         output.put(result)
 
-
+    
 def multitask2(tasks,nproc=-1):
     """Perform tasks in parallel.
 

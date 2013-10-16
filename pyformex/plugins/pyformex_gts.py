@@ -139,7 +139,7 @@ def gtsinside(self,pts,dir=0):
     This is not intended to be used directly. Use inside instead
     """
     import os
-    print(os.environ)
+    #print(os.environ)
     S = self.rollAxes(dir)
     P = pts.rollAxes(dir)
     tmp = utils.tempFile(suffix='.gts').name
@@ -165,7 +165,7 @@ def gtsinside(self,pts,dir=0):
     return ind
 
 
-def inside(self,pts):
+def inside(self,pts,atol='auto'):
     """Test which of the points pts are inside the surface.
 
     Parameters:
@@ -181,7 +181,10 @@ def inside(self,pts):
     if not isinstance(pts,Formex):
         pts = Formex(pts)
     pts = Formex(pts)#.asPoints()
-    print(type(pts))
+    #print(type(pts))
+
+    if atol == 'auto':
+        atol = pts.dsize()*0.00001
 
     # determine bbox of common space of surface and points
     bb = bboxIntersection(self,pts)
@@ -192,7 +195,7 @@ def inside(self,pts):
     # Limit the points to the common part
     # Add point numbers as property, to allow return of original numbers
     pts.setProp(arange(pts.nelems()))
-    pts = pts.clip(testBbox(pts,bb))
+    pts = pts.clip(testBbox(pts,bb,atol=atol))
 
     # Apply the gtsinside shooting algorithm in three directions
     ins = zeros((pts.nelems(),3),dtype=bool)

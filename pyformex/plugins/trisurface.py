@@ -2191,9 +2191,9 @@ Quality: %s .. %s
           the software you have installed the following are possible:
 
           - 'gts': provided by pyformex-extra
-          - 'vtk': provided by python-vtk
+          - 'vtk': provided by python-vtk (slower)
 
-        - `tol`: only available for method 'vtk'
+        - `tol`: tolerance on equality of floating point values
 
         Returns an integer array with the indices of the points that are
         inside the surface. The indices refer to the onedimensional list
@@ -2202,10 +2202,10 @@ Quality: %s .. %s
         pts = Coords(pts)
         if method == 'gts':
             from pyformex_gts import inside
-            return inside(self,pts)
+            return inside(self,pts,tol)
         elif method == 'vtk':
             from vtk_itf import pointInsideObject
-            return pointInsideObject(self,pts,tol)
+            return where(pointInsideObject(self,pts.points(),tol))[0]
 
 
     def tetgen(self,quality=True,volume=None,filename=None,format='.off'):

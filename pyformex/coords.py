@@ -1994,7 +1994,7 @@ def bboxIntersection(A,B):
 # TODO: this could be merged with the test method by allowing a list for
 #       the parameters dir, min, max
 #
-def testBbox(A,bb,dirs=[0,1,2],nodes='any'):
+def testBbox(A,bb,dirs=[0,1,2],nodes='any',atol=0.):
     """Test which part of A is inside a given bbox, applied in directions dirs.
 
     Parameters:
@@ -2007,7 +2007,7 @@ def testBbox(A,bb,dirs=[0,1,2],nodes='any'):
     The result is a bool array flagging the elements that are inside the given
     bounding box.
     """
-    test = [ A.test(nodes=nodes,dir=i,min=bb[0][i],max=bb[1][i]) for i in dirs ]
+    test = [ A.test(nodes=nodes,dir=i,min=bb[0][i],max=bb[1][i],atol=atol) for i in dirs ]
     return stack(test).prod(axis=0).astype(bool)
 
 

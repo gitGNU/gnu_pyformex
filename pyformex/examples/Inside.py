@@ -36,6 +36,31 @@ from gui.draw import *
 import simple
 import timer
 
+from multi import *
+def multitask(tasks,nproc=-1):
+    """Perform tasks in parallel.
+
+    Runs a number of tasks in parallel over a number of subprocesses.
+
+    Parameters:
+
+    - `tasks` : a list of (function,args) tuples, where function is a
+      callable and args is a tuple with the arguments to be passed to the
+      function.
+    - ` nproc`: the number of subprocesses to be started. This may be
+      different from the number of tasks to run: processes finishing a
+      task will pick up a next one. There is no benefit in starting more
+      processes than the number of tasks or the number of processing units
+      available. The default will set `nproc` to the minimum of these two
+      values.
+    """
+    if nproc < 0:
+        nproc = min(len(tasks),cpu_count())
+
+    pf.debug("Multiprocessing using %s processors" % nproc,pf.DEBUG.MULTI)
+    pool = Pool(nproc)
+    res = pool.map(dofunc,tasks)
+    return res
 
 filename = os.path.join(getcfg('datadir'),'horse.off')
 
@@ -47,7 +72,7 @@ def selectSurfaceFile(fn):
 
 def getData():
     """Ask input data from the user."""
-    res = askItems(
+    dia = Dialog(
         [ _G('Surface', [
             _I('surface','file',choices=['file','sphere']),
             _I('filename',filename,text='Image file',itemtype='button',func=selectSurfaceFile),
@@ -61,14 +86,19 @@ def getData():
               _I('trl',[0.,0.,0.],itemptype='point'),
               ]),
             _I('method',choices=['gts','vtk']),
+            _I('nproc',1,),
           ],
         enablers = [
             ( 'surface','file','filename', ),
             ( 'surface','sphere','grade', ),
             ],
         )
+    if 'Inside_data' in pf.PF:
+        dia.updateData(pf.PF['Inside_data'])
+    res = dia.getResults()
     if res:
         globals().update(res)
+        pf.PF['Inside_data'] = res
 
     return res
 
@@ -109,13 +139,14 @@ def create():
     return S,P
 
 
-def testInside(S,P,method):
+def testInside(S,P,method,nproc=1):
     """Test which of the points P are inside surface S"""
 
     print("Testing %s points against %s faces" % (P.nelems(),S.nelems()))
 
     bb = bboxIntersection(S,P)
     drawBbox(bb,color=array(red),linewidth=2)
+    P = Coords(P).points()
 
     t = timer.Timer()
 
@@ -123,9 +154,25 @@ def testInside(S,P,method):
         warn("You need to install python-vtk!")
         return
 
-    ind = S.inside(P,method=method)
+    if nproc == 1:
+        ind = S.inside(P,method=method)
 
-    print("%sinside: %s points / %s faces: found %s inside points in %s seconds" % (method,P.nelems(),S.nelems(),len(ind),t.seconds()))
+    else:
+        datablocks = splitar(P,nproc)
+        datalen = [0] + [d.shape[0] for d in datablocks]
+        #print(datalen)
+        shift = array(datalen[:-1]).cumsum()
+        #print(shift)
+        ind = [S.inside(d) for d in datablocks]
+        indlen = array([len(i) for i in ind])
+        #print(indlen,indlen.sum())
+        ind = concatenate([ i+s for i,s in zip(ind,shift)])
+        #print(len(ind))
+        #tasks = [(S.inside,(d)) for d in datablocks]
+        #ind = multitask2(tasks,nproc)
+        #ind = concatenate([ i+s for i,s in zip(ind,shift)])
+ 
+    print("%sinside: %s points / %s faces: found %s inside points in %s seconds" % (method,P.shape[0],S.nelems(),len(ind),t.seconds()))
 
     if len(ind) > 0:
         draw(P[ind],color=green,marksize=3,ontop=True,nolight=True,bbox='last')
@@ -139,7 +186,7 @@ def run():
     if getData():
         S,P = create()
         if S:
-            testInside(S,P,method)
+            testInside(S,P,method,nproc)
 
 
 if __name__ == 'draw':
