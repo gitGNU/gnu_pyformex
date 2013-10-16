@@ -37,30 +37,6 @@ import simple
 import timer
 
 from multi import *
-def multitask(tasks,nproc=-1):
-    """Perform tasks in parallel.
-
-    Runs a number of tasks in parallel over a number of subprocesses.
-
-    Parameters:
-
-    - `tasks` : a list of (function,args) tuples, where function is a
-      callable and args is a tuple with the arguments to be passed to the
-      function.
-    - ` nproc`: the number of subprocesses to be started. This may be
-      different from the number of tasks to run: processes finishing a
-      task will pick up a next one. There is no benefit in starting more
-      processes than the number of tasks or the number of processing units
-      available. The default will set `nproc` to the minimum of these two
-      values.
-    """
-    if nproc < 0:
-        nproc = min(len(tasks),cpu_count())
-
-    pf.debug("Multiprocessing using %s processors" % nproc,pf.DEBUG.MULTI)
-    pool = Pool(nproc)
-    res = pool.map(dofunc,tasks)
-    return res
 
 filename = os.path.join(getcfg('datadir'),'horse.off')
 
@@ -86,6 +62,7 @@ def getData():
               _I('trl',[0.,0.,0.],itemptype='point'),
               ]),
             _I('method',choices=['gts','vtk']),
+            _I('atol',0.001),
             _I('nproc',1,),
           ],
         enablers = [
@@ -139,7 +116,11 @@ def create():
     return S,P
 
 
-def testInside(S,P,method,nproc=1):
+def inside(S,P,method,atol):
+    return S.inside(P,method=method,tol=atol)
+
+
+def testInside(S,P,method,nproc,atol):
     """Test which of the points P are inside surface S"""
 
     print("Testing %s points against %s faces" % (P.nelems(),S.nelems()))
@@ -155,23 +136,17 @@ def testInside(S,P,method,nproc=1):
         return
 
     if nproc == 1:
-        ind = S.inside(P,method=method)
+        ind = inside(S,P,method,atol)
 
     else:
         datablocks = splitar(P,nproc)
         datalen = [0] + [d.shape[0] for d in datablocks]
-        #print(datalen)
         shift = array(datalen[:-1]).cumsum()
-        #print(shift)
-        ind = [S.inside(d) for d in datablocks]
-        indlen = array([len(i) for i in ind])
-        #print(indlen,indlen.sum())
+        print("METH %s" % method)
+        tasks = [(inside,(S,d,method,atol)) for d in datablocks]
+        ind = multitask(tasks,nproc)
         ind = concatenate([ i+s for i,s in zip(ind,shift)])
-        #print(len(ind))
-        #tasks = [(S.inside,(d)) for d in datablocks]
-        #ind = multitask2(tasks,nproc)
-        #ind = concatenate([ i+s for i,s in zip(ind,shift)])
- 
+
     print("%sinside: %s points / %s faces: found %s inside points in %s seconds" % (method,P.shape[0],S.nelems(),len(ind),t.seconds()))
 
     if len(ind) > 0:
@@ -186,7 +161,8 @@ def run():
     if getData():
         S,P = create()
         if S:
-            testInside(S,P,method,nproc)
+            print(method)
+            testInside(S,P,method,nproc,atol)
 
 
 if __name__ == 'draw':

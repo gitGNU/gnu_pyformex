@@ -145,22 +145,22 @@ def gtsinside(self,pts,dir=0):
     tmp = utils.tempFile(suffix='.gts').name
     tmp1 = utils.tempFile(suffix='.dta').name
     tmp2 = utils.tempFile(suffix='.out').name
-    pf.message("Writing temp file %s" % tmp)
+    #print("Writing temp file %s" % tmp)
     S.write(tmp,'gts')
-    pf.message("Writing temp file %s" % tmp1)
-    f = open(tmp1,'w')
-    P.coords.tofile(f,sep=' ')
-    f.write('\n')
-    f.close()
-    pf.message("Performing inside testing")
+    #print("Writing temp file %s" % tmp1)
+    with open(tmp1,'w') as f:
+        P.coords.tofile(f,sep=' ')
+        f.write('\n')
+
+    #print("Performing inside testing")
     cmd = "gtsinside %s %s > %s" % (tmp,tmp1,tmp2)
     sta,out = utils.runCommand(cmd)
     os.remove(tmp)
     os.remove(tmp1)
     if sta:
-        pf.message("An error occurred during the testing.\nSee file %s for more details." % tmp2)
+        #pf.message("An error occurred during the testing.\nSee file %s for more details." % tmp2)
         return None
-    pf.message("Reading results from %s" % tmp2)
+    #print("Reading results from %s" % tmp2)
     ind = fromfile(tmp2,sep=' ',dtype=Int)
     return ind
 
@@ -181,10 +181,11 @@ def inside(self,pts,atol='auto'):
     if not isinstance(pts,Formex):
         pts = Formex(pts)
     pts = Formex(pts)#.asPoints()
-    #print(type(pts))
 
+    print("atol = %s" % atol)
     if atol == 'auto':
-        atol = pts.dsize()*0.00001
+        atol = pts.dsize()*0.001
+    print("atol = %s" % atol)
 
     # determine bbox of common space of surface and points
     bb = bboxIntersection(self,pts)
@@ -202,7 +203,7 @@ def inside(self,pts,atol='auto'):
     for i in range(3):
         dirs = roll(arange(3),-i)[1:]
         # clip the surface perpendicular to the shooting direction
-        S = self.clip(testBbox(self,bb,dirs))
+        S = self.clip(testBbox(self,bb,dirs=dirs,atol=atol))
         # find inside points shooting in direction i
         ok = gtsinside(S,pts,dir=i)
         ins[ok,i] = True

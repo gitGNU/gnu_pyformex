@@ -662,12 +662,12 @@ class TriSurface(Mesh):
         else:
             ftype = ftype.strip('.').lower()
 
-        pf.message("Writing surface to file %s (%s)" % (fname,ftype))
+        print("Writing surface to file %s (%s)" % (fname,ftype))
         if ftype == 'pgf':
             Geometry.write(self,fname)
         elif ftype == 'gts':
             filewrite.writeGTS(fname,self.coords,self.getEdges(),self.getElemEdges())
-            pf.message("Wrote %s vertices, %s edges, %s faces" % self.shape())
+            print("Wrote %s vertices, %s edges, %s faces" % self.shape())
         elif ftype in ['stl','stla','stlb','off','smesh']:
             if ftype in ['stl','stla']:
                 filewrite.writeSTL(fname,self.coords[self.elems],binary=False)
@@ -677,7 +677,7 @@ class TriSurface(Mesh):
                 filewrite.writeOFF(fname,self.coords,self.elems)
             elif ftype == 'smesh':
                 tetgen.writeSurface(fname,self.coords,self.elems)
-            pf.message("Wrote %s vertices, %s elems" % (self.ncoords(),self.nelems()))
+            print("Wrote %s vertices, %s elems" % (self.ncoords(),self.nelems()))
         else:
             print("Cannot save TriSurface as file %s" % fname)
 
@@ -2199,13 +2199,12 @@ Quality: %s .. %s
         inside the surface. The indices refer to the onedimensional list
         of points as obtained from pts.points().
         """
-        pts = Coords(pts)
+        pts = Coords(pts).points()
         if method == 'gts':
             from pyformex_gts import inside
-            return inside(self,pts,tol)
         elif method == 'vtk':
-            from vtk_itf import pointInsideObject
-            return where(pointInsideObject(self,pts.points(),tol))[0]
+            from vtk_itf import inside
+        return inside(self,pts,tol)
 
 
     def tetgen(self,quality=True,volume=None,filename=None,format='.off'):
