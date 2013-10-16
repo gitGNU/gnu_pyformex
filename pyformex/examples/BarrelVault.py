@@ -31,9 +31,6 @@ _level = 'beginner'
 _topics = ['frame']
 _techniques = ['dialog']
 _opengl2 = True
-_opengl2_comments = """
-- Lines are black (propcolor)
-"""
 
 from gui.draw import *
 
@@ -63,7 +60,7 @@ def run():
     # Create barrel
     barrel = (d+h+e).rotate(90,1).translate(0,r).scale([1.,a/(2*n),l/(2*m)]).cylindrical()
 
-    draw(barrel)
+    draw(barrel,color='prop')
 
 if __name__ == 'draw':
     run()

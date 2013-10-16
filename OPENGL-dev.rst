@@ -74,9 +74,13 @@ OpenGL2 issues
 ==============
 
 - In lighted scenes, there is generally not enough light.
+- Automatic coloring according to property does not (always?) work.
+  You need to add the following to the draw statement::
+
+    color='prop'
+
 - Texture drawing is not implemented yet (can/should we re-activate some
   old actor drawing to enable this?)
-
 
 ..
 

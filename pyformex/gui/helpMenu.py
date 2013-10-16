@@ -238,7 +238,7 @@ def createMenuData():
         #print pf.refcfg.help['developer']
         developer = [
             ('Developer HOWTO',devhowto),
-            ('Switch to new OPENGL engine',devopengl),
+            ('New OPENGL engine',devopengl),
             ('Scripts versus Apps',devapp),
             ('pyFormex TODO list',devtodo),
             ('Installation of extra software',devextra),
