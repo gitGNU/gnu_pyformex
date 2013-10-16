@@ -411,7 +411,7 @@ def run(argv=[]):
        ),
     MO("--config",
        action="store", dest="config", default=None,
-       help="Use file CONFIG for settings",
+       help="Use file CONFIG for settings. This file is loaded in addition to the normal configuration files and overwrites their settings. Any changes will be saved to this file.",
        ),
     MO("--nodefaultconfig",
        action="store_true", dest="nodefaultconfig", default=False,
@@ -589,7 +589,7 @@ def run(argv=[]):
             userprefs.append(pf.cfg.localprefs)
 
     if pf.options.config:
-        userprefs.append(pf.options.config)
+        userprefs.append(utils.tildeExpand(pf.options.config))
 
     if len(userprefs) == 0:
         # We should always have a place to store the user preferences

@@ -381,7 +381,7 @@ class Canvas(object):
         """Initialize the rendering engine.
 
         """
-        print("INITIALIZE RENDERING ENGINE")
+        #print("INITIALIZE RENDERING ENGINE")
         self.reset()
 
 
@@ -660,7 +660,7 @@ class Canvas(object):
 
     def redrawAll(self):
         """Redraw all actors in the scene."""
-        print("REDRAW CANVAS DOES NOT DO ANYTHING")
+        pf.debug("REDRAW CANVAS DOES NOT DO ANYTHING",pf.DEBUG.OPENGL2)
         pass
         ## self.actors.redraw()
         ## self.highlights.redraw()
