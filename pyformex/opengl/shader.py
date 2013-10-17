@@ -87,9 +87,10 @@ class Shader(object):
 
     uniforms_vec3 = [
         'objectColor',
-        'light',
-        'lightdir',
+        'ambicolor',
+        'diffcolor',
         'speccolor',
+        'lightdir',
     ]
 
     uniforms = uniforms_int + uniforms_float +  uniforms_vec3 + [

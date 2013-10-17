@@ -100,17 +100,24 @@ class Renderer(object):
 
     def loadLightProfile(self):
         lightprof = self.canvas.lightprof
-        nlights = len(lightprof.lights)
-        light0 = lightprof.lights[0]
-        #print("LIGHT0 STORED IN CANVAS: % s" % light0)
+        mat = self.canvas.material
+        #print(lightprof)
+        lights = [ light for light in lightprof.lights if light.enabled ]
+        nlights = len(lights)
+        ambient = lightprof.ambient * np.ones(3)
+        for light in lights:
+            ambient += light.ambient
+        ambient = np.clip(ambient,0.,1.) # clip, OpenGL does anyways
         settings = Attributes({
-            'ambient': lightprof.ambient,
             'nlights': nlights,
-            'diffuse': light0.diffuse[0],
-            'specular': light0.specular[0],
-            'shininess': 2.0,
+            'ambicolor': ambient,
             'lightdir': np.array([ l.position[:3] for l in lightprof.lights ]),
             'speccolor': np.array(pf.canvas.settings.colormap[:nlights]),
+            'ambient': mat.ambient,
+            'diffuse': mat.diffuse,
+            'specular': mat.specular,
+            'shininess': mat.shininess,
+            'alpha':self.canvas.settings.transparency,
             })
         #print("LIGHT PROFILE to shader: %s" % settings)
         self.shader.loadUniforms(settings)
@@ -133,7 +140,6 @@ class Renderer(object):
         self.shader.uniformFloat('lighting',self.canvas.settings.lighting)
         self.shader.uniformInt('useObjectColor',1)
         self.shader.uniformVec3('objectColor',self.canvas.settings.fgcolor)
-        self.shader.uniformFloat('alpha',self.canvas.settings.transparency)
         self.shader.uniformFloat('pointsize',self.canvas.settings.pointsize)
         self.loadLightProfile()
 

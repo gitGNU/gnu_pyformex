@@ -65,17 +65,17 @@ uniform bool builtin;
 uniform bool picking;
 
 uniform bool lighting;     // Are the lights on?
-//uniform vec3 light;        // Single light direction
-uniform float ambient;
-uniform int nlights;       // How many lights?  <= MAX_LIGHTS
-uniform vec3 lightdir[MAX_LIGHTS];     // light directions
-// should be changed to vec4 positions?
-uniform vec3 speccolor[MAX_LIGHTS];    // Color of reflected light
+uniform int nlights;       // Number of lights?  <= MAX_LIGHTS
+uniform vec3 ambicolor;                // Total ambient color
+uniform vec3 diffcolor[MAX_LIGHTS];    // Colors of diffuse light
+uniform vec3 speccolor[MAX_LIGHTS];    // Colors of reflected light
+uniform vec3 lightdir[MAX_LIGHTS];     // Light directions
 
-uniform float diffuse;
-uniform float specular;    // Intensity of reflection
-uniform float shininess;   // Surface shininess
-uniform float alpha;
+uniform float ambient;     // Material ambient value
+uniform float diffuse;     // Material diffuse value
+uniform float specular;    // Material Intensity of reflection
+uniform float shininess;   // Material surface shininess
+uniform float alpha;       // Material opacity
 
 
 varying float fDiscardNow;
@@ -124,7 +124,7 @@ void main()
 	vec3 fcolor = fragmentColor;
 
 	// ambient
-	fragmentColor = fcolor * ambient;
+	fragmentColor = fcolor * ambicolor * ambient;
 
 	// add diffuse and specular for each light
 	//fragmentColor = vec3(0.3,0.,0.);

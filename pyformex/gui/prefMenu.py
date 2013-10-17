@@ -390,7 +390,7 @@ def setRendering():
             _I('render/ambient',vp.lightprof.ambient,itemtype='slider',min=0,max=100,scale=0.01,func=set_render_value,text='Global Ambient Lighting'),
             _I('render/material',vp.material.name,text='Material',choices=matnames,onselect=updateLightParams),
             _G('material',text='Material Parameters',items=[
-                _I(a,text=a,value=getattr(mat,a),itemtype='slider',min=0,max=100,scale=0.01,func=set_mat_value) for a in [ 'diffuse', 'specular', 'emission'] ] + [
+                _I(a,text=a,value=getattr(mat,a),itemtype='slider',min=0,max=100,scale=0.01,func=set_mat_value) for a in [ 'ambient', 'diffuse', 'specular', 'emission'] ] + [
                 _I(a,text=a,value=getattr(mat,a),itemtype='slider',min=1,max=128,scale=1.,func=set_mat_value) for a in ['shininess']
                 ]),
             ]

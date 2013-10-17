@@ -306,19 +306,19 @@ class Light(object):
             self.position = at.checkArray(position,(4,),'f')
 
     def enable(self,onoff=True):
-        self.enabled = bool(False)
+        self.enabled = bool(onoff)
 
     def disable(self):
         self.enable(False)
 
 
-    def __str__(self):
-        return """LIGHT (enabled: %s):
+    def __str__(self,name=''):
+        return """LIGHT%s (enabled: %s):
     ambient color:  %s
     diffuse color:  %s
     specular color: %s
     position: %s
-""" % (self.enabled,self.ambient,self.diffuse,self.specular,self.position)
+""" % (name,self.enabled,self.ambient,self.diffuse,self.specular,self.position)
 
 
 class LightProfile(object):
@@ -332,6 +332,15 @@ class LightProfile(object):
     def __init__(self,ambient,lights):
         self.ambient = ambient
         self.lights = lights
+
+
+    def __str__(self):
+        s = """LIGHTPROFILE:
+    global ambient:  %s
+    """ % self.ambient
+        for i,l in enumerate(self.lights):
+            s += '  ' + l.__str__(i)
+        return s
 
 
 ##################################################################
