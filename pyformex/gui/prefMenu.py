@@ -235,7 +235,8 @@ def settings():
             _T('GUI',[
                 _G('Appearance',appearance),
                 _G('Components',toolbars+actionbuttons+[
-                    _I('gui/console',gui_console_options[pf.cfg['gui/console']],itemtype='hradio',choices=gui_console_options.values()),
+                    _I('gui/console',gui_console_options[pf.cfg['gui/console']],itemtype='hradio',choices=gui_console_options.values(),text="Board"),
+                    _I('gui/redirect',pf.cfg['gui/redirect']),
                     _I('gui/coordsbox'),
                     _I('gui/showfocus',pf.cfg['gui/showfocus']),
                     _I('gui/runalloption',pf.cfg['gui/runalloption']),
@@ -312,31 +313,8 @@ def set_mat_value(field):
     mat = vp.material
     mat.setValues(**{key:val})
     #print vp.material
+    #vp.resetLighting()
     vp.update()
-
-def set_light_value(field):
-    light = field.data
-    key = field.text()
-    val = field.value()
-    #print light,key,val
-    draw.set_light_value(light,key,val)
-
-
-def createLightDialogItems(light=0,enabled=True):
-    keys = [ 'ambient', 'diffuse', 'specular', 'position' ]
-    tgt = 'render/light%s'%light
-    val = pf.cfg[tgt]
-    print("LIGHT %s" % light)
-    print("CFG %s " % val)
-
-    items = [
-        _I('enabled',enabled),
-        ] + [
-        _I(k,val[k],itemtype='slider',min=0,max=100,scale=0.01,func=set_light_value,data=light)  for k in [ 'ambient', 'diffuse',  'specular' ]
-        ] + [
-        _I('position',val['position']),
-        ]
-    return items
 
 
 def setRendering():
@@ -344,6 +322,15 @@ def setRendering():
 
     vp = pf.GUI.viewports.current
     dia = None
+
+
+    def set_render_value(field):
+        key = field.name()
+        val = field.value()
+        updateSettings({key:val},save=False)
+        vp = pf.GUI.viewports.current
+        vp.resetLighting()
+        vp.update()
 
     def enableLightParams(mode):
         if dia is None:
@@ -379,7 +366,7 @@ def setRendering():
         res['_save_'] = save
         print("RES",res)
         updateSettings(res)
-        print(pf.cfg)
+        #print(pf.cfg)
         vp = pf.GUI.viewports.current
         vp.resetLighting()
         #if pf.cfg['render/mode'] != vp.rendermode:
@@ -396,17 +383,15 @@ def setRendering():
     def createDialog():
         matnames = pf.GUI.materials.keys()
         mat = vp.material
-        mat_items = [
-            _I(a,text=a,value=getattr(mat,a),itemtype='slider',min=0,max=100,scale=0.01,func=set_mat_value) for a in [ 'ambient', 'diffuse', 'specular', 'emission']
-            ] + [
-            _I(a,text=a,value=getattr(mat,a),itemtype='slider',min=1,max=128,scale=1.,func=set_mat_value) for a in ['shininess']
-            ]
         items = [
             _I('render/mode',vp.rendermode,text='Rendering Mode',itemtype='select',choices=draw.renderModes()),#,onselect=enableLightParams),
             _I('render/lighting',vp.settings.lighting,text='Use Lighting'),
-            _I('render/ambient',vp.lightprof.ambient,text='Global Ambient Lighting'),
+            _I('render/ambient',vp.lightprof.ambient,itemtype='slider',min=0,max=100,scale=0.01,func=set_render_value,text='Global Ambient Lighting'),
             _I('render/material',vp.material.name,text='Material',choices=matnames,onselect=updateLightParams),
-            _G('material',text='Material Parameters',items=mat_items),
+            _G('material',text='Material Parameters',items=[
+                _I(a,text=a,value=getattr(mat,a),itemtype='slider',min=0,max=100,scale=0.01,func=set_mat_value) for a in [ 'diffuse', 'specular', 'emission'] ] + [
+                _I(a,text=a,value=getattr(mat,a),itemtype='slider',min=1,max=128,scale=1.,func=set_mat_value) for a in ['shininess']
+                ]),
             ]
 
         enablers = [
