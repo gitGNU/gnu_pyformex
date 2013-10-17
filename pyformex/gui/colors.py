@@ -31,7 +31,7 @@ RGB values in 0..1 range and luminance.
 
 >>> for k,v in palette.iteritems():
 ...     print("%12s = %s -> %0.3f" % (k,v,luminance(v)))
-       black = (0.0, 0.0, 0.0) -> 0.000
+    darkgrey = (0.4, 0.4, 0.4) -> 0.133
          red = (1.0, 0.0, 0.0) -> 0.213
        green = (0.0, 1.0, 0.0) -> 0.715
         blue = (0.0, 0.0, 1.0) -> 0.072
@@ -39,7 +39,7 @@ RGB values in 0..1 range and luminance.
      magenta = (1.0, 0.0, 1.0) -> 0.285
       yellow = (1.0, 1.0, 0.0) -> 0.928
        white = (1.0, 1.0, 1.0) -> 1.000
-    darkgrey = (0.5, 0.5, 0.5) -> 0.214
+       black = (0.0, 0.0, 0.0) -> 0.000
      darkred = (0.5, 0.0, 0.0) -> 0.046
    darkgreen = (0.0, 0.5, 0.0) -> 0.153
     darkblue = (0.0, 0.0, 0.5) -> 0.015
@@ -82,6 +82,8 @@ def GLcolor(color):
     (0.7843137254901961, 0.7843137254901961, 1.0)
     >>> GLcolor([1.,1.,1.])
     (1.0, 1.0, 1.0)
+    >>> GLcolor(0.6)
+    (0.6, 0.6, 0.6)
     """
     col = color
 
@@ -114,6 +116,14 @@ def GLcolor(color):
             col = map(float,col)
             # SUCCESS !
             return tuple(col)
+    except:
+        pass
+
+    # A single float value in the range 0..1 is converted to a grey value
+    try:
+        col = float(col)
+        if col >= 0.0 and col <= 1.0:
+            return grey(col)
     except:
         pass
 
