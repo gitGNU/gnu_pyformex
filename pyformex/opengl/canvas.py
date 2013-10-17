@@ -26,10 +26,561 @@
 """
 from __future__ import print_function
 
-from gui.canvas import *
+from numpy import *
+from OpenGL import GL,GLU
+
+import pyformex as pf
+
+import coords
+from formex import Formex
+from drawable import saneColor,glColor
+import arraytools as at
+import utils
+from mydict import Dict
+from gui import colors
+from gui import views
+from gui import decors
+from gui import marks
+
 from camera import Camera
 from renderer import Renderer
 from collection import Collection
+
+libGL = None
+
+def loadLibGL():
+    # TODO
+    # BV: UGLY! WE SHOULD GET RID OF THIS
+    global libGL
+    if libGL is None and pf.X11:
+        from ctypes import cdll
+        libGL = cdll.LoadLibrary("libGL.so.1")
+
+
+def gl_pickbuffer():
+    "Return a list of the 2nd numbers in the openGL pick buffer."
+    buf = GL.glRenderMode(GL.GL_RENDER)
+    return asarray([ r[2] for r in buf ])
+
+
+from OpenGL.GL import glLineWidth as glLinewidth, glPointSize as glPointsize
+
+fill_modes = [ GL.GL_FRONT_AND_BACK, GL.GL_FRONT, GL.GL_BACK ]
+fill_mode = GL.GL_FRONT_AND_BACK
+
+def glFillMode(mode):
+    global fill_mode
+    if mode in fill_modes:
+        fill_mode = mode
+def glFrontFill():
+    glFillMode(GL.GL_FRONT)
+def glBackFill():
+    glFillMode(GL.GL_BACK)
+def glBothFill():
+    glFillMode(GL.GL_FRONT_AND_BACK)
+
+def glFill(fill=True):
+    if fill:
+        GL.glPolygonMode(fill_mode,GL.GL_FILL)
+    else:
+        GL.glPolygonMode(GL.GL_FRONT_AND_BACK,GL.GL_LINE)
+
+def glLineSmooth(onoff):
+    if onoff is True:
+        GL.glEnable(GL.GL_LINE_SMOOTH)
+        GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
+    elif onoff is False:
+        GL.glDisable(GL.GL_LINE_SMOOTH)
+
+
+def glLineStipple(factor,pattern):
+    """Set the line stipple pattern.
+
+    When drawing lines, OpenGl can use a stipple pattern. The stipple
+    is defined by two values: a pattern (on/off) of maximum 16 bits,
+    used on the pixel level, and a multiplier factor for each bit.
+
+    If factor <= 0, the stippling is disabled.
+    """
+    if factor > 0:
+        GL.glLineStipple(factor,pattern)
+        GL.glEnable(GL.GL_LINE_STIPPLE)
+    else:
+        GL.glDisable(GL.GL_LINE_STIPPLE)
+
+def glSmooth(smooth=True):
+    """Enable smooth shading"""
+    if smooth:
+        GL.glShadeModel(GL.GL_SMOOTH)
+    else:
+        GL.glShadeModel(GL.GL_FLAT)
+
+def glFlat():
+    """Disable smooth shading"""
+    glSmooth(False)
+
+
+def onOff(onoff):
+    """Convert On/Off strings to a boolean"""
+    if type(onoff) is str:
+        return (onoff.lower() == 'on')
+    else:
+        if onoff:
+            return True
+        else:
+            return False
+
+
+def glEnable(facility,onoff):
+    """Enable/Disable an OpenGL facility, depending on onoff value
+
+    facility is an OpenGL facility.
+    onoff can be True or False to enable, resp. disable the facility, or
+    None to leave it unchanged.
+    """
+    #pf.debug("%s: %s" % (facility,onoff),pf.DEBUG.DRAW)
+    if onOff(onoff):
+        #pf.debug("ENABLE",pf.DEBUG.DRAW)
+        GL.glEnable(facility)
+    else:
+        #pf.debug("DISABLE",pf.DEBUG.DRAW)
+        GL.glDisable(facility)
+
+
+def glCulling(onoff=True):
+    glEnable(GL.GL_CULL_FACE,onoff)
+def glNoCulling():
+    glCulling(False)
+
+def glLighting(onoff):
+    glEnable(GL.GL_LIGHTING,onoff)
+
+
+def glPolygonFillMode(mode):
+    if type(mode) is str:
+        mode = mode.lower()
+        if mode == 'Front and Back':
+            glBothFill()
+        elif mode == 'Front':
+            glFrontFill()
+        elif mode == 'Back':
+            glBackFill()
+
+
+def glPolygonMode(mode):
+    if type(mode) is str:
+        mode = mode.lower()
+        glFill(mode == 'fill')
+
+
+def glShadeModel(model):
+    if type(model) is str:
+        model = model.lower()
+        if model == 'smooth':
+            glSmooth()
+        elif model == 'flat':
+            glFlat()
+
+
+def glPolygonOffset(value):
+    if value <= 0.0:
+        GL.glDisable(GL.GL_POLYGON_OFFSET_FILL)
+    else:
+        GL.glEnable(GL.GL_POLYGON_OFFSET_FILL)
+        GL.glPolygonOffset(value,value)
+
+
+class ActorList(list):
+    """A list of drawn objects of the same kind.
+
+    This is used to collect the Actors, Decorations and Annotations
+    in a scene.
+    Currently the implementation does not check that the objects are of
+    the proper type.
+    """
+
+    def __init__(self,canvas):
+        self.canvas = canvas
+        list.__init__(self)
+
+    def add(self,actor):
+        """Add an actor or a list thereof to a ActorList."""
+        if type(actor) is list:
+            self.extend(actor)
+        else:
+            self.append(actor)
+
+    def delete(self,actor):
+        """Remove an actor or a list thereof from an ActorList."""
+        if not type(actor) in (list,tuple):
+            actor = [ actor ]
+        for a in actor:
+            if a in self:
+                self.remove(a)
+
+    def redraw(self):
+        """Redraw all actors in the list.
+
+        This redraws the specified actors (recreating their display list).
+        This could e.g. be used after changing an actor's properties.
+        """
+        for actor in self:
+            actor.redraw()
+
+
+
+############### OpenGL Lighting #################################
+
+class Material(object):
+    def __init__(self,name,ambient=0.2,diffuse=0.2,specular=0.9,emission=0.1,shininess=2.0):
+        self.name = str(name)
+        self.ambient = float(ambient)
+        self.diffuse = float(diffuse)
+        self.specular = float(specular)
+        self.emission = float(emission)
+        self.shininess = float(shininess)
+
+
+    def setValues(self,**kargs):
+        #print "setValues",kargs
+        for k in kargs:
+            #print k,kargs[k]
+            if hasattr(self,k):
+                #print getattr(self,k)
+                setattr(self,k,float(kargs[k]))
+                #print getattr(self,k)
+
+
+    def dict(self):
+        """Return the material light parameters as a dict"""
+        return dict([(k,getattr(self,k)) for k in ['ambient','diffuse','specular','emission','shininess']])
+
+
+    def __str__(self):
+        return """MATERIAL: %s
+    ambient:  %s
+    diffuse:  %s
+    specular: %s
+    emission: %s
+    shininess: %s
+""" % (self.name,self.ambient,self.diffuse,self.specular,self.emission,self.shininess)
+
+
+
+def getMaterials():
+    mats = pf.refcfg['material']
+    mats.update(pf.prefcfg['material'])
+    mats.update(pf.cfg['material'])
+    return mats
+
+
+def createMaterials():
+    mats = getMaterials()
+    matdb = {}
+    for m in mats:
+        matdb[m] = Material(m,**mats[m])
+    return matdb
+
+
+class Light(object):
+    """A class representing an OpenGL light.
+
+    The light can emit 3 types of light: ambient, diffuse and specular,
+    which can have different color and are all off by default.
+
+
+    """
+
+    def __init__(self,ambient=0.0,diffuse=0.0,specular=0.0,position=[0.,0.,1.,0.],enabled=True):
+        self.setValues(ambient,diffuse,specular,position)
+        self.enable(enabled)
+
+    def setValues(self,ambient=None,diffuse=None,specular=None,position=None):
+        if ambient is not None:
+            self.ambient = colors.GLcolor(ambient)
+        if diffuse is not None:
+            self.diffuse = colors.GLcolor(diffuse)
+        if specular is not None:
+            self.specular = colors.GLcolor(specular)
+        if position is not None:
+            self.position = at.checkArray(position,(4,),'f')
+
+    def enable(self,onoff=True):
+        self.enabled = bool(False)
+
+    def disable(self):
+        self.enable(False)
+
+
+    def __str__(self):
+        return """LIGHT (enabled: %s):
+    ambient color:  %s
+    diffuse color:  %s
+    specular color: %s
+    position: %s
+""" % (self.enabled,self.ambient,self.diffuse,self.specular,self.position)
+
+
+class LightProfile(object):
+    """A lightprofile contains all the lighting parameters.
+
+    Currently this consists off:
+    - `ambient`: the global ambient lighting (currently a float)
+    - `lights`: a list of 1 to 4 Lights
+    """
+
+    def __init__(self,ambient,lights):
+        self.ambient = ambient
+        self.lights = lights
+
+
+##################################################################
+#
+#  The Canvas Settings
+#
+
+
+class CanvasSettings(Dict):
+    """A collection of settings for an OpenGL Canvas.
+
+    The canvas settings are a collection of settings and default values
+    affecting the rendering in an individual viewport. There are two type of
+    settings:
+
+    - mode settings are set during the initialization of the canvas and
+      can/should not be changed during the drawing of actors and decorations;
+    - default settings can be used as default values but may be changed during
+      the drawing of actors/decorations: they are reset before each individual
+      draw instruction.
+
+    Currently the following mode settings are defined:
+
+    - bgmode: the viewport background color mode
+    - bgcolor: the viewport background color: a single color or a list of
+      colors (max. 4 are used).
+    - bgimage: background image filename
+    - slcolor: the highlight color
+    - alphablend: boolean (transparency on/off)
+
+    The list of default settings includes:
+
+    - fgcolor: the default drawing color
+    - bkcolor: the default backface color
+    - colormap: the default color map to be used if color is an index
+    - bklormap: the default color map to be used if bkcolor is an index
+    - smooth: boolean (smooth/flat shading)
+    - lighting: boolean (lights on/off)
+    - culling: boolean
+    - transparency: float (0.0..1.0)
+    - avgnormals: boolean
+    - wiremode: integer -3..3
+    - pointsize: the default size for drawing points
+    - marksize: the default size for drawing markers
+    - linewidth: the default width for drawing lines
+
+    Any of these values can be set in the constructor using a keyword argument.
+    All items that are not set, will get their value from the configuration
+    file(s).
+    """
+
+    # A collection of default rendering profiles.
+    # These contain the values different from the overall defaults
+    RenderProfiles = {
+        'wireframe': Dict({
+            'smooth': False,
+            'fill': False,
+            'lighting': False,
+#            'alphablend': False,
+            'transparency': 1.0,
+            'wiremode': -1,
+            'avgnormals': False,
+            }),
+        'smooth': Dict({
+            'smooth': True,
+            'fill': True,
+            'lighting': True,
+#            'alphablend': False,
+            'transparency': 0.5,
+            'wiremode': -1,
+            'avgnormals': False,
+            }),
+        'smooth_avg': Dict({
+            'smooth': True,
+            'fill': True,
+            'lighting': True,
+            'alphablend': False,
+            'transparency': 0.5,
+            'wiremode': -1,
+            'avgnormals': True,
+            }),
+        'smoothwire': Dict({
+            'smooth': True,
+            'fill': True,
+            'lighting': True,
+#            'alphablend': False,
+            'transparency': 0.5,
+            'wiremode': 1,
+            'avgnormals': False,
+            }),
+        'flat': Dict({
+            'smooth': False,
+            'fill': True,
+            'lighting': False,
+            'alphablend': False,
+            'transparency': 0.5,
+            'wiremode': -1,
+            'avgnormals': False,
+            }),
+        'flatwire': Dict({
+            'smooth': False,
+            'fill': True,
+            'lighting': False,
+#            'alphablend': False,
+            'transparency': 0.5,
+            'wiremode': 1,
+            'avgnormals': False,
+            }),
+        }
+    bgcolor_modes = [ 'solid', 'vertical', 'horizontal', 'full' ]
+    edge_modes = [ 'none','feature','all' ]
+
+    def __init__(self,**kargs):
+        """Create a new set of CanvasSettings."""
+        Dict.__init__(self)
+        self.reset(kargs)
+
+    def reset(self,d={}):
+        """Reset the CanvasSettings to its defaults.
+
+        The default values are taken from the configuration files.
+        An optional dictionary may be specified to override (some of) these defaults.
+        """
+        self.update(pf.refcfg['canvas'])
+        self.update(self.RenderProfiles[pf.prefcfg['draw/rendermode']])
+        self.update(pf.prefcfg['canvas'])
+        self.update(pf.cfg['canvas'])
+        if d:
+            self.update(d)
+
+    def update(self,d,strict=True):
+        """Update current values with the specified settings
+
+        Returns the sanitized update values.
+        """
+        ok = self.checkDict(d,strict)
+        Dict.update(self,ok)
+
+    @classmethod
+    def checkDict(clas,dict,strict=True):
+        """Transform a dict to acceptable settings."""
+        ok = {}
+        for k,v in dict.items():
+            try:
+                if k in [ 'bgcolor', 'fgcolor', 'bkcolor', 'slcolor',
+                          'colormap','bkcolormap' ]:
+                    if v is not None:
+                        v = saneColor(v)
+                elif k in ['bgimage']:
+                    v = str(v)
+                elif k in ['smooth', 'fill', 'lighting', 'culling',
+                           'alphablend', 'avgnormals',]:
+                    v = bool(v)
+                elif k in ['linewidth', 'pointsize', 'marksize']:
+                    v = float(v)
+                elif k in ['wiremode']:
+                    v = int(v)
+                elif k == 'linestipple':
+                    v = map(int,v)
+                elif k == 'transparency':
+                    v = max(min(float(v),1.0),0.0)
+                elif k == 'bgmode':
+                    v = str(v).lower()
+                    if not v in clas.bgcolor_modes:
+                        raise
+                elif k == 'marktype':
+                    pass
+                else:
+                    raise
+                ok[k] = v
+            except:
+                if strict:
+                    raise ValueError,"Invalid key/value for CanvasSettings: %s = %s" % (k,v)
+        return ok
+
+    def __str__(self):
+        return utils.formatDict(self)
+
+
+    def setMode(self):
+        """Activate the mode canvas settings in the GL machine."""
+        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+        if self.bgcolor.ndim > 1:
+            color = self.bgcolor[0]
+        else:
+            color = self.bgcolor
+        GL.glClearColor(*colors.RGBA(color))
+
+
+    def activate(self):
+        """Activate the default canvas settings in the GL machine."""
+        self.glOverride(self,self)
+
+
+    @staticmethod
+    def glOverride(settings,default):
+        #if settings != default:
+        #print("OVERRIDE CANVAS SETINGS %s" % settings['fill'])
+        for k in settings:
+            if k in ['fgcolor','transparency']:
+                c = settings.get('fgcolor',default.fgcolor)
+                t = settings.get('transparency',default.transparency)
+                glColor(c,t)
+            elif k == 'linestipple':
+                glLineStipple(*settings[k])
+            elif k in ['smooth','fill','lighting','linewidth','pointsize']:
+                func = globals()['gl'+k.capitalize()]
+                func(settings[k])
+            ## else:
+            ##     print("CAN NOT SET %s" % k)
+
+
+### OLD: to be rmoved (still used in viewport)
+def glSettings(settings):
+    pf.debug("GL SETTINGS: %s" % settings,pf.DEBUG.DRAW)
+    glShadeModel(settings.get('Shading',None))
+    glCulling(settings.get('Culling',None))
+    glLighting(settings.get('Lighting',None))
+    glLineSmooth(onOff(settings.get('Line Smoothing',None)))
+    glPolygonFillMode(settings.get('Polygon Fill',None))
+    glPolygonMode(settings.get('Polygon Mode',None))
+    pf.canvas.update()
+
+
+
+def extractCanvasSettings(d):
+    """Split a dict in canvas settings and other items.
+
+    Returns a tuple of two dicts: the first one contains the items
+    that are canvas settings, the second one the rest.
+    """
+    return utils.select(d,pf.refcfg['canvas']),utils.remove(d,pf.refcfg['canvas'])
+
+
+##################################################################
+#
+#  The Canvas
+#
+
+def print_camera(self):
+    print(self.report())
+
+
+def print_lighting(s):
+    try:
+        settings = pf.GUI.viewports.current.settings
+        print("%s: LIGTHING %s (%s)" %(s,settings.lighting,id(settings)))
+    except:
+        print("No settings yet")
 
 
 class Canvas(object):
@@ -72,14 +623,10 @@ class Canvas(object):
 
 
     def enable_lighting(self,state):
-        """Toggle lights on/off."""
+        """Toggle OpenGL lighting on/off."""
         if state:
-            self.lightprof.activate()
-            self.material.activate()
-            #print("ENABLE LIGHT")
             GL.glEnable(GL.GL_LIGHTING)
         else:
-            #print("DISABLE LIGHT")
             GL.glDisable(GL.GL_LIGHTING)
 
 
@@ -108,8 +655,8 @@ class Canvas(object):
         self.lightmodel = pf.cfg['render/lightmodel']
         self.setMaterial(pf.cfg['render/material'])
         self.lightset = pf.cfg['render/lights']
-        lights = [ Light(int(light[-1:]),**pf.cfg['light/%s' % light]) for light in self.lightset ]
-        self.lightprof = LightProfile(self.lightmodel,pf.cfg['render/ambient'],lights)
+        lights = [ Light(**pf.cfg['light/%s' % light]) for light in self.lightset ]
+        self.lightprof = LightProfile(pf.cfg['render/ambient'],lights)
 
 
     def setRenderMode(self,mode,lighting=None):
@@ -142,6 +689,7 @@ class Canvas(object):
             self.rendermode = mode
             self.settings.lighting = lighting
             self.reset()
+
 
 
     def setWireMode(self,state,mode=None):

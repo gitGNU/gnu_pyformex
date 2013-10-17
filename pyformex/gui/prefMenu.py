@@ -383,6 +383,7 @@ def setRendering():
     def createDialog():
         matnames = pf.GUI.materials.keys()
         mat = vp.material
+        print("createDialog: %s" % vp.settings.lighting)
         items = [
             _I('render/mode',vp.rendermode,text='Rendering Mode',itemtype='select',choices=draw.renderModes()),#,onselect=enableLightParams),
             _I('render/lighting',vp.settings.lighting,text='Use Lighting'),

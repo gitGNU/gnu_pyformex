@@ -65,13 +65,13 @@ uniform bool builtin;
 uniform bool picking;
 
 uniform bool lighting;     // Are the lights on?
-uniform vec3 light;        // Single light direction
+//uniform vec3 light;        // Single light direction
+uniform float ambient;
 uniform int nlights;       // How many lights?  <= MAX_LIGHTS
 uniform vec3 lightdir[MAX_LIGHTS];     // light directions
 // should be changed to vec4 positions?
 uniform vec3 speccolor[MAX_LIGHTS];    // Color of reflected light
 
-uniform float ambient;
 uniform float diffuse;
 uniform float specular;    // Intensity of reflection
 uniform float shininess;   // Surface shininess
@@ -135,8 +135,7 @@ void main()
 	  vec3 reflectionDirection = reflect(-nlight, nNormal);
 	  float nspecular = specular*pow(max(dot(reflectionDirection,eyeDirection), 0.0), shininess);
 	  float ndiffuse = diffuse * max(dot(nNormal,nlight),0.0);
-	  fragmentColor += fcolor * ndiffuse + speccolor[i] * nspecular;
-	  //fragmentColor *= (i+1);
+	  //fragmentColor = fcolor *diffuse;// * ndiffuse + speccolor[i] * nspecular;
 	}
       }
     }

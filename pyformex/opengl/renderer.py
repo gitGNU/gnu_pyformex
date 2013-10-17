@@ -50,25 +50,12 @@ class Renderer(object):
         self.camera = canvas.camera
         self.canvas.makeCurrent()
         self.mode = canvas.rendermode
-        # collect settings that are not in self.canvas.settings (yet)
-        self.settings = Attributes({
-            'ambient': 0.3,
-            'diffuse': 0.8,
-            'specular': 0.3,
-            'shininess': 10.0,
-            'nlights': 1,
-            'lightdir': [ 0.,1.,2.,
-                          1.,0.,2.,
-                          0.,-2.,2.,
-                          -2.,0.,2. ],
-            'speccolor': [ 1.,1.,1.,
-                           1.,1.,0. ],
-            })
 
         if shader is None:
             shader = Shader()
         self.shader = shader
         self.clear()
+
 
 
     def clear(self):
@@ -111,6 +98,24 @@ class Renderer(object):
             actor.changeMode(self)
 
 
+    def loadLightProfile(self):
+        lightprof = self.canvas.lightprof
+        nlights = len(lightprof.lights)
+        light0 = lightprof.lights[0]
+        #print("LIGHT0 STORED IN CANVAS: % s" % light0)
+        settings = Attributes({
+            'ambient': lightprof.ambient,
+            'nlights': nlights,
+            'diffuse': light0.diffuse[0],
+            'specular': light0.specular[0],
+            'shininess': 2.0,
+            'lightdir': np.array([ l.position[:3] for l in lightprof.lights ]),
+            'speccolor': np.array(pf.canvas.settings.colormap[:nlights]),
+            })
+        #print("LIGHT PROFILE to shader: %s" % settings)
+        self.shader.loadUniforms(settings)
+
+
     def setDefaults(self):
         """Set the GL context and the shader uniforms to default values."""
         # FIRST, the context
@@ -130,13 +135,7 @@ class Renderer(object):
         self.shader.uniformVec3('objectColor',self.canvas.settings.fgcolor)
         self.shader.uniformFloat('alpha',self.canvas.settings.transparency)
         self.shader.uniformFloat('pointsize',self.canvas.settings.pointsize)
-        self.shader.loadUniforms(self.settings)
-        ## self.shader.uniformFloat('ambient',0.3) self.canvas....
-        ## self.shader.uniformFloat('diffuse',0.8) self.canvas....
-        ## self.shader.uniformFloat('specular',0.3) self.canvas....
-        ## self.shader.uniformFloat('shininess',10.) self.canvas....
-        ## self.shader.uniformVec3('light',(0.,1.,1.))
-        ## self.shader.uniformVec3('speccolor',(1.,1.,0.8))
+        self.loadLightProfile()
 
 
     def renderObjects(self,objects):
