@@ -56,6 +56,7 @@ def _add_extra_Mesh_methods():
     #
     # What is a ring
     # What is returned?
+    @utils.deprecation("`rings` is deprecated: use `connectionSteps` instead.")
     def rings(self, sources=0, nrings=-1):
         """_
         It finds rings of elements connected to sources by a node.
@@ -83,7 +84,55 @@ def _add_extra_Mesh_methods():
         r=self.frontWalk(startat=sources,maxval=nrings-1, frontinc=1)
         ar, rr= arange(len(r)), range(r.max()+1)
         return [ar[r==i] for i in rr ]
+       
+       
+    def connectionSteps(self, nodesource=[], elemsource=[], maxstep=1):
+        """Return the elems connected to some sources via multiple nodal steps.
+        
+        - 'nsources' : are node sources,
+        - 'esource' : are elem sources,
+        - 'maxstep' : is the max number of walked elements.
+        
+        Returns a list of elem indices at each nodal connection step:
+        elemATstep1 are elem connected to esource or nsource via a node;
+        elemATstep2 are elem connected to elemATstep1
+        elemATstep3 are elem connected to elemATstep2
+        ...
+        The last member of the list is either the connection after walking `maxstep` edges
+        or the last possible connection (meaning that one more step would 
+        not find any connected elem)
+        
+        Todo: 
+        -add a connection 'level' to extend to edge and face connections
+        -add a edgesource and facesource.
 
+
+        ##EXAMPLE##
+        from simple import sphere
+        S=sphere(20)
+        draw(S, mode='wireframe')
+        x = S.connectionSteps(nodesource=[2, 1900], elemsource=[6, 700], maxstep=10)   
+        from gui.colorscale import ColorScale
+        val=-ones(S.nelems())
+        for i, ex in enumerate(x):
+            val[ex]=i
+        from gui.colorscale import ColorScale  
+        CS = ColorScale('RGB',0,val.max())
+        cval = array(map(CS.color,val))#this change a scalar array into a color array
+        draw(S.select(val>-1), color=cval[val>-1], mode='flat')
+        """
+        L = []
+        ns = unique(concatenate([self.elems[elemsource].ravel(), nodesource]))
+        for i in range(maxstep):
+            xsource = self.elems.connectedTo(ns)
+            mult, bins = multiplicity(concatenate([xsource, elemsource]))
+            newring = bins[mult==1]
+            if len(newring)==0:
+                return L
+            L.append(newring)
+            elemsource = xsource
+            ns = unique(self.elems[elemsource]) 
+        return L
 
 
     def scaledJacobian(self,scaled=True,blksize=100000):
@@ -238,6 +287,7 @@ def _add_extra_Mesh_methods():
     # Install
     #
     Mesh.rings = rings
+    Mesh.connectionSteps = connectionSteps
     #Mesh.correctNegativeVolumes = correctNegativeVolumes
     Mesh.scaledJacobian = scaledJacobian
     Mesh.elementToNodal = elementToNodal
