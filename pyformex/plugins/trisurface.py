@@ -1216,7 +1216,7 @@ Quality: %s .. %s
         if sort == 'number':
             p = sortSubsets(p)
         elif sort == 'area':
-            p = sortSubsets(p,self.areaNormals()[0])[::-1]
+            p = sortSubsets(p,self.areaNormals()[0])
 
         return p
 
