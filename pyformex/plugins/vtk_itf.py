@@ -46,7 +46,6 @@ from numpy import *
 from mesh import Mesh
 from coords import Coords
 from plugins.trisurface import TriSurface
-from gui.draw import warning
 
 import os
 
@@ -272,7 +271,7 @@ def writeVTP(fn, mesh, fieldAr={}, cellAr={}, pointAr={}, checkMesh=True ):
     """
     if checkMesh:
         if not checkClean(mesh):
-            warning('Mesh is not clean: vtk will alter the nodes. To clean: mesh.fuse().compact().renumber()')
+            utils.warn('Mesh is not clean: vtk will alter the nodes. To clean: mesh.fuse().compact().renumber()')
     lvtk = convert2VPD(mesh,clean=True,lineopt='segment') # also clean=False?
     if mesh.prop is not None: # convert prop numbers into vtk array
         ntype = gnat(vtkIntArray().GetDataType())
@@ -290,7 +289,7 @@ def writeVTP(fn, mesh, fieldAr={}, cellAr={}, pointAr={}, checkMesh=True ):
         ntype = gnat(vtkDoubleArray().GetDataType())
         if cellAr[k].shape[0]!=mesh.nelems():
             print (cellAr[k].shape, mesh.nelems())
-            warning('the number of array cells should be equal to the number of elements')
+            utils.warn('the number of array cells should be equal to the number of elements')
         cellar = n2v(asarray(cellAr[k],order='C',dtype=ntype),deep=1)
         cellar.SetName(k)
         lvtk.GetCellData().AddArray(cellar)
@@ -298,7 +297,7 @@ def writeVTP(fn, mesh, fieldAr={}, cellAr={}, pointAr={}, checkMesh=True ):
         ntype = gnat(vtkDoubleArray().GetDataType())
         if pointAr[k].shape[0]!=mesh.ncoords(): # mesh should be clean!!
             print (pointAr[k].shape, mesh.ncoords())
-            warning('the number of array points should be equal to the number of points')
+            utils.warn('the number of array points should be equal to the number of points')
         pointar = n2v(asarray(pointAr[k],order='C',dtype=ntype),deep=1)
         pointar.SetName(k)
         lvtk.GetPointData().AddArray(pointar)

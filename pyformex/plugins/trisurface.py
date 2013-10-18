@@ -639,6 +639,12 @@ class TriSurface(Mesh):
             data = fileread.read_gambit_neutral(fn)
         elif ftype == 'smesh':
             data = tetgen.readSurface(fn)
+        elif ftype == 'vtp':
+            coords, E, fieldAr, cellAr, pointAr = vtk_itf.readVTP(fn)
+            S = TriSurface(coords, E[0])
+            if 'prop' in cellAr.keys():
+                S=S.setProp(cellAr['prop'])
+            return S 
         else:
             raise "Unknown TriSurface type, cannot read file %s" % fn
         if gzip:
@@ -668,7 +674,7 @@ class TriSurface(Mesh):
         elif ftype == 'gts':
             filewrite.writeGTS(fname,self.coords,self.getEdges(),self.getElemEdges())
             print("Wrote %s vertices, %s edges, %s faces" % self.shape())
-        elif ftype in ['stl','stla','stlb','off','smesh']:
+        elif ftype in ['stl','stla','stlb','off','smesh','vtp']:
             if ftype in ['stl','stla']:
                 filewrite.writeSTL(fname,self.coords[self.elems],binary=False)
             elif ftype == 'stlb':
@@ -677,6 +683,8 @@ class TriSurface(Mesh):
                 filewrite.writeOFF(fname,self.coords,self.elems)
             elif ftype == 'smesh':
                 tetgen.writeSurface(fname,self.coords,self.elems)
+            elif ftype == 'vtp':
+                vtk_itf.writeVTP(fname,self,checkMesh=False)
             print("Wrote %s vertices, %s elems" % (self.ncoords(),self.nelems()))
         else:
             print("Cannot save TriSurface as file %s" % fname)
@@ -2517,6 +2525,9 @@ tetgen.install_more_trisurface_methods()
 
 
 import vmtk_itf
+
+
+import vtk_itf
 
 
 import webgl
