@@ -72,8 +72,10 @@ known_externals = {
     'calix': ('calix --version','CALIX-(\S+)'),
     'calpy': ('calpy --version','Calpy (\S+)'),
     'dxfparser': ('pyformex-dxfparser --version','dxfparser (\S+)'),
-    'ffmpeg': ('ffmpeg -version','FFmpeg version (\S+)'),
+    'ffmpeg': ('ffmpeg -version','[fF][fF]mpeg version (\S+)'),
     'gts': ('gtsset -h','Usage(:) '),
+    'gts-bin': ('gts2stl -h','Usage(:) '),
+    'gts-extra': ('gtsinside -h','Usage(:) '),
     'imagemagick': ('import -version','Version: ImageMagick (\S+)'),
     'postabq': ('pyformex-postabq -V','postabq (\S+).*'),
     'python': ('python --version','Python (\\S+)'),
@@ -150,21 +152,17 @@ def requireModule(name):
             attr = 'required'
         else:
             attr = 'unknown'
-        print(name)
         errmsg = "Could not load %s module '%s'" % (attr,name)
         pf.error(errmsg)
         raise ValueError,errmsg
-        # sys.exit()
-
 
 
 def checkAllModules():
     """Check the existence of all known modules.
 
-    This also sorts the modules alphabetically
     """
+    print("CHECKING ALL MODULES")
     [ checkModule(n,quiet=True) for n in known_modules ]
-    return
 
 
 def checkModule(name,ver=(),fatal=False,quiet=False):
@@ -239,7 +237,40 @@ def hasExternal(name,force=False):
         return checkExternal(name)
 
 
-def checkExternal(name=None,command=None,answer=None,quiet=False):
+def requireExternal(name):
+    """Ensure that the named external program is available.
+
+    If the module is not available, an error is raised.
+    """
+    if not hasExternal(name):
+        if name in known_externals:
+            # Get the correct name, if different from our alias
+            try:
+                realname = known_modules[name][0]
+                if realname:
+                    name = realname
+            except:
+                pass
+            attr = 'required'
+        else:
+            attr = 'unknown'
+        errmsg = "Could not find %s external program '%s'" % (attr,name)
+        pf.error(errmsg)
+        raise ValueError,errmsg
+
+
+def checkAllExternals():
+    """Check the existence of all known externals.
+
+    Returns a dict with all the known externals, detected or not.
+    The detected ones have a non-zero value, usually the version number.
+    """
+    print("CHECKING ALL EXTERNALS")
+    [ checkExternal(n,quiet=True) for n in known_externals.keys() ]
+    return the_external
+
+
+def checkExternal(name,command=None,answer=None,quiet=False):
     """Check if the named external command is available on the system.
 
     name is the generic command name,
@@ -256,13 +287,10 @@ def checkExternal(name=None,command=None,answer=None,quiet=False):
 
     As a convenience, we provide a list of predeclared external commands,
     that can be checked by their name alone.
-    If no name is given, all commands in that list are checked, and no
-    value is returned.
     """
     import utils
-    if name is None:
-        [ checkExternal(n,quiet=True) for n in known_externals.keys() ]
-        return
+
+    print("CHECKING %s" % name)
 
     if command is None or answer is None:
         cmd,ans = known_externals.get(name,(name,'(.+)\n'))
@@ -272,15 +300,17 @@ def checkExternal(name=None,command=None,answer=None,quiet=False):
             answer = ans
 
     pf.debug("Check %s\n%s" % (name,command),pf.DEBUG.DETECT)
-    out = utils.system(command)[1]
-    pf.debug("Output:\n%s" % (out),pf.DEBUG.DETECT)
-    m = re.match(answer,out)
-    if m:
-        version = m.group(1)
-    else:
-        version = ''
+    sta,out,err = utils.system(command)
+    pf.debug("Status:\n%s\nStdout:\n%s\nStderr:\n%s" % (sta,out,err),pf.DEBUG.DETECT)
+    version = ''
+    if sta == 0:
+        # Beware: some programs write their version to stderr, others to stdout
+        m = re.match(answer,out)
+        if not m:
+            m = re.match(answer,err)
+        if m:
+            version = m.group(1)
     _congratulations(name,version,'program',quiet=quiet)
-    #if version:
     the_external[name] = version
     return version
 
@@ -307,7 +337,7 @@ def detectedSoftware(all=True):
     """Return a dict with all detected helper software"""
     if all:
         checkAllModules()
-        checkExternal()
+        checkAllExternals()
 
     system,host,release,version,arch = os.uname()
     soft = {

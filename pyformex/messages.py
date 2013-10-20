@@ -129,4 +129,7 @@ PolyLine_distanceOfPoints = "PolyLine.distanceOfPoints is deprecated"
 PolyLine_distanceOfPolyline = "PolyLine.distanceOfPolyline is deprecated"
 
 depr_facetarea = "TriSurface.facetArea is deprecated: use TriSurface.areas instead"
+
+depr_abqdata_outres = "The use of the `res` and `out` arguments in AbqData is deprecated. Set them inside your Steps instead."
+
 # End

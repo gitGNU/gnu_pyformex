@@ -93,10 +93,12 @@ try:
 except TypeError:
     from numpy import unique1d as unique
 
+print(unique([1],True)[0][0])
 if unique([1],True)[0][0] == 0:
     # We have the old numy version
-    import warnings
-    warnings.warn("BEWARE: OLD VERSION OF NUMPY!!!! We advise you to upgrade NumPy!")
+    import utils   # We are early on startup: utils not loaded yet
+    utils.warn("BEWARE: OLD VERSION OF NUMPY!!!! We advise you to upgrade NumPy!")
+
     def unique(a,return_indices=False):
         """Replacement for numpy's unique1d"""
         import numpy

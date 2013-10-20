@@ -177,7 +177,7 @@ class Mesh(Geometry):
     def __getattribute__(self,name):
         """This is temporarily here to warn people about the eltype removal"""
         if name == 'eltype':
-            warn("mesh_removed_eltype")
+            utils.warn("mesh_removed_eltype")
 
         # Default behaviour
         return object.__getattribute__(self, name)
@@ -587,7 +587,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         ent = self.elems.selectNodes(sel)
         ent.eltype = sel.eltype
         if unique:
-            warn("depr_mesh_getlowerentities_unique")
+            utils.warn("depr_mesh_getlowerentities_unique")
             ent = ent.removeDuplicate()
 
         return ent
@@ -991,7 +991,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         if self.elName() == 'quad4':
             p = p.reshape(-1,2)
             if not (p[:,0] == p[:,1]).all():
-                warn("The partitioning may be incorrect due to nonplanar 'quad4' elements")
+                utils.warn("The partitioning may be incorrect due to nonplanar 'quad4' elements")
             return p[:,0]
 
 
@@ -1486,7 +1486,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
         -`sel`: a selector (index or True/False array)
         """
-        utils.warn('warn_mesh_reverse')
+        utils.utils.warn('warn_mesh_reverse')
         # TODO: These can be merged
         if sel is None:
             if hasattr(self.elType(),'reversed'):

@@ -534,7 +534,6 @@ def run(argv=[]):
 
     if pf.options.detect:
         print("Detecting installed helper software")
-        utils.checkExternal()
         print(utils.reportSoftware())
 
     pf.debug("pyformex script started from %s" % pf.bindir,pf.DEBUG.INFO)

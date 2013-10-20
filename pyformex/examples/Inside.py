@@ -132,7 +132,7 @@ def testInside(S,P,method,nproc,atol):
     t = timer.Timer()
 
     if method == 'vtk' and not utils.hasModule('vtk'):
-        warn("You need to install python-vtk!")
+        warning("You need to install python-vtk!")
         return
 
     if nproc == 1:

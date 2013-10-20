@@ -33,11 +33,16 @@ import utils
 import os
 from plugins.trisurface import TriSurface,read_gts_intersectioncurve
 
-utils.hasExternal('gts')
+if not utils.hasExternal('gts-bin'):
+    utils.warn("I am missing the gts binary programs on your system.\nTherefore, some surface operations will not be available or fail.\n\nOn Debian, you can install the missing programs with `apt-get install libgts-bin`.\n")
+if not utils.hasExternal('gts-extra'):
+    utils.warn("I am missing the gts binary programs on your system.\nTherefore, some surface operations will not be available or fail.\n\nOn Debian, you can install the missing programs with `apt-get install pyformex-extra`.\n")
+
+
 #
 # gts commands used:
 #   in Debian package: stl2gts gts2stl gtscheck
-#   not in Debian package: gtssplit gtscoarsen gtsrefine gtssmooth
+#   not in Debian package: gtssplit gtscoarsen gtsrefine gtssmooth gtsinside
 #
 
 def boolean(self,surf,op,check=False,verbose=False):
@@ -55,12 +60,16 @@ def boolean(self,surf,op,check=False,verbose=False):
 
     - `surf`: a closed manifold surface
     - `op`: boolean operation: one of '+', '-' or '*'.
+    - `filt`: a filter command to be executed on the gtsset output
+    - `ext`: extension of the result file
     - `check`: boolean: check that the surfaces are not self-intersecting;
       if one of them is, the set of self-intersecting faces is written
       (as a GtsSurface) on standard output
     - `verbose`: boolean: print statistics about the surface
 
     Returns: a closed manifold TriSurface
+
+    .. note: This uses the external command 'gtsset'
     """
     return self.gtsset(surf,op,filt = '',ext='.gts',check=check,verbose=verbose)
 
@@ -92,8 +101,6 @@ def gtsset(self,surf,op,filt='',ext='.tmp',curve=False,check=False,verbose=False
     See the boolean/intersection methods for more info.
     Parameters not explained there:
 
-    - filt: a filter command to be executed on the gtsset output
-    - ext: extension of the result file
     - curve: if True, an intersection curve is computed, else the surface.
 
     Returns the name of the (temporary) results file.
@@ -222,15 +229,6 @@ def install_more_trisurface_methods():
     TriSurface.boolean = boolean
     TriSurface.intersection = intersection
     TriSurface.gtsset = gtsset
-#    TriSurface.inside = inside
-
-
-#utils.requireModule('pygts')
-## try:
-##     import gts
-##     print "You have pygts installed: pyFormex will try to use it instead of gts commands"
-## except:
-##     print "Oops, looks like something went wrong in pyformex_gts"
 
 
 # End

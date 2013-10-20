@@ -53,7 +53,7 @@ from mydict import Dict,CDict
 import pyformex as pf
 from datetime import datetime
 import os,sys
-from utils import deprecation,removeDict
+import utils
 from arraytools import isInt
 
 ##################################################
@@ -634,7 +634,7 @@ def fmtSolidSection(el,setname,matname):
         out += "*SECTION CONTROLS, NAME=%s" % el.controls.name
         if el.controls.options is not None:
             out += ", "+str(el.controls.options)
-        out += fmtOptions(removeDict(el.controls,['name','options','data']))
+        out += fmtOptions(utils.removeDict(el.controls,['name','options','data']))
         out += '\n'
 
         if el.controls.data is not None:
@@ -1605,7 +1605,7 @@ def writeModelProps(fil,prop):
                 for l in p.extra:
                     l=CDict(l) # to avoid keyerrors if l.data is not a key
                     cmd+='*%s'%l['keyword']
-                    cmd+=fmtOptions(removeDict(l,['keyword','data']))
+                    cmd+=fmtOptions(utils.removeDict(l,['keyword','data']))
                     cmd+='\n'
                     if l.data is not None:
                         cmd+=fmtData(l.data)
@@ -1620,7 +1620,7 @@ def writeStepExtra(fil,extra):
         for l in extra:
             l=CDict(l) # to avoid keyerrors if l.data is not a key
             cmd+='*%s'%l['keyword']
-            cmd+=fmtOptions(removeDict(l,['keyword','data']))
+            cmd+=fmtOptions(utils.removeDict(l,['keyword','data']))
             cmd+='\n'
             if l.data is not None:
                 cmd+=fmtData(l.data)
@@ -1999,7 +1999,7 @@ class AbqData(object):
             raise ValueError,"Invalid arguments: expected Model and PropertyDB, got %s and %s" % (type(model),type(prop))
 
         if res or out:
-            warn("The use of the `res` and `out` arguments in AbqData is deprecated. Set them inside your Steps instead.")
+            utils.warn("depr_abqdata_outres")
         self.model = model
         self.prop = prop
         self.nprop = nprop

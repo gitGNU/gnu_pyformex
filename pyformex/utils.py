@@ -34,7 +34,7 @@ from mydict import formatDict
 
 # Software detection has been moved to software.py
 # We currently import everything from software here, for compatibility
-# This should be removed later on.
+# TODO: This should be removed later on.
 from software import *
 
 # Some regular expressions

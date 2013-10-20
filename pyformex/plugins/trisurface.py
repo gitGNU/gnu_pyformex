@@ -46,6 +46,12 @@ import tempfile
 
 from utils import deprecation
 
+#
+# gts commands used:
+#   in Debian package: stl2gts gts2stl gtscheck
+#   not in Debian package: gtssplit gtscoarsen gtsrefine gtssmooth gtsinside
+#
+
 # Conversion of surface file formats
 
 read_off = fileread.read_off
@@ -625,7 +631,7 @@ class TriSurface(Mesh):
                 data,color = fileread.read_stl_bin(fn)
                 S = TriSurface(data[:,1:])
                 if color:
-                    print(color)
+                    #print(color)
                     #from gui.draw import colorindex
                     #p = colorindex(color)
                     #S.setProp(p)
@@ -640,16 +646,16 @@ class TriSurface(Mesh):
         elif ftype == 'smesh':
             data = tetgen.readSurface(fn)
         elif ftype == 'vtp':
-            coords, E, fieldAr, cellAr, pointAr = vtk_itf.readVTP(fn)
-            S = TriSurface(coords, E[0])
+            from vtk_itf import readVTP
+            coords, E, fieldAr, cellAr, pointAr = readVTP(fn)
+            data = (coords, E[0])
             if 'prop' in cellAr.keys():
-                S=S.setProp(cellAr['prop'])
-            return S 
+                kargs = {'prop':celllAr['prop']}
         else:
             raise "Unknown TriSurface type, cannot read file %s" % fn
         if gzip:
             utils.removeFile(fn)
-        return TriSurface(*data)
+        return TriSurface(*data,**kargs)
 
 
     def write(self,fname,ftype=None,color=None):
@@ -684,6 +690,7 @@ class TriSurface(Mesh):
             elif ftype == 'smesh':
                 tetgen.writeSurface(fname,self.coords,self.elems)
             elif ftype == 'vtp':
+                import vtk_itf
                 vtk_itf.writeVTP(fname,self,checkMesh=False)
             print("Wrote %s vertices, %s elems" % (self.ncoords(),self.nelems()))
         else:
@@ -2524,10 +2531,10 @@ import tetgen
 tetgen.install_more_trisurface_methods()
 
 
-import vmtk_itf
+#import vmtk_itf
 
 
-import vtk_itf
+#import vtk_itf
 
 
 import webgl

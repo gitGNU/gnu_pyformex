@@ -83,8 +83,6 @@ def opengl():
 
 def detected():
     """Display the detected software components."""
-    utils.checkAllModules()
-    utils.checkExternal()
     draw.showText(utils.reportSoftware(header="Detected Software"))
 
 def about():
@@ -105,6 +103,7 @@ Distributed under the GNU GPL version 3 or later
 # List of developers/contributors (current and past)
 _developers = [
     'Matthieu De Beule',
+    'Nic Debusschere',
     'Gianluca De Santis',
     'Bart Desloovere',
     'Wouter Devriendt',
@@ -170,8 +169,9 @@ def cookie():
 def showURL(link):
     """Show a html document in the browser.
 
-    `link` is an URL of a html document. If it does not start with `http://`, this will
-    be prepended. The resulting URL is passed to the user's default or configured browser.
+    `link` is an URL of a html document. If it does not start with
+    `http://`, the latter will be prepended.
+    The resulting URL is passed to the user's default or configured browser.
     """
     if not link.startswith('http://'):
         link = 'http://'+link
