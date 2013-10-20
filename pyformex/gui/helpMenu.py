@@ -173,7 +173,7 @@ def showURL(link):
     `http://`, the latter will be prepended.
     The resulting URL is passed to the user's default or configured browser.
     """
-    if not link.startswith('http://'):
+    if not link.startswith('http://') and not link.startswith('file://'):
         link = 'http://'+link
     help(link)
 
@@ -182,18 +182,23 @@ def showFileOrURL(link):
     """Show a html document or a text file.
 
     `link` is either a file name or an URL of a html document.
-    If `link` starts with `http://`, it is interpreted as an URL and the
-    corresponding document is shown in the user's browser.
+    If `link` starts with `http://` or `file://`, it is interpreted as
+    an URL and the corresponding document is shown in the user's browser.
     Else, `link` is interpreted as a filename and if the file exists, it
     is shown in a pyFormex text window.
     """
-    if link.startswith('http://'):
+    if link.startswith('http://') or link.startswith('file://'):
         showURL(link)
     else:
         draw.showFile(link,mono=not link.endswith('.rst'))
 
 
 def searchText():
+    """Search text in pyFormex source files.
+
+    Asks a pattern from the user and searches for it through all
+    the pyFormex source files.
+    """
     from widgets import simpleInputItem as _I
     res = draw.askItems([
         _I('pattern','',text='String to grep'),
@@ -205,6 +210,21 @@ def searchText():
         draw.showText(out,mono=True,modal=False)
 
 
+def searchIndex():
+    """Search text in pyFormex refman index.
+
+    Asks a pattern from the user and searches for it the index of the
+    local pyFormex documentation. Displays the results in the browser.
+    """
+    from widgets import simpleInputItem as _I
+    res = draw.askItems([
+        _I('text','',text='String to search'),
+        ])
+
+    if res:
+        print("file://%s/doc/html/search.html?q=%s&check_keywords=yes&area=default" % (pf.cfg['pyformexdir'],res['text']))
+        showURL("file://%s/doc/html/search.html?q=%s&check_keywords=yes&area=default" % (pf.cfg['pyformexdir'],res['text']))
+
 
 def createMenuData():
     """Returns the help menu data"""
@@ -213,8 +233,12 @@ def createMenuData():
     LinksMenuData = [(k,showURL,{'data':v}) for k,v in pf.cfg['help/links']]
 
     try:
-        MenuData = DocsMenuData + [
-            (_('&Search text in source'),searchText),
+        MenuData = [
+            DocsMenuData[0],
+            ('---',None),
+            ] + DocsMenuData[1:] + [
+            (_('&Search in index'),searchIndex),
+            (_('&Search in source'),searchText),
             (_('&Current Application'),draw.showDoc),
             ('---',None),
             ] + Docs2MenuData + [
