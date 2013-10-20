@@ -805,7 +805,8 @@ class Coords(ndarray):
         A string ``'000'`` will center the object around the origin, just like
         the (slightly faster) :meth:`centered` method.
 
-        See also the :func:`coords.align` function.
+        See also the :func:`coords.align` function for aligning objects
+        with respect to each other.
         """
         trl = asarray(point).reshape(3)
         bb = self.bbox()

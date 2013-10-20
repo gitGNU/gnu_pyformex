@@ -45,7 +45,11 @@ from plugins.trisurface import TriSurface
 
 ########################
 
-import threading,os,copy,re,time
+import threading
+import os
+import copy
+import re
+import time
 
 ############### DEBUGGING MEMORY LEAKS
 #try:
@@ -320,29 +324,29 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
 
     #starttime = time.clock()
     try:
-        try:
 
-            if pf.console:
-                pf.debug("Executing script in pf.console",pf.DEBUG.SCRIPT)
-                pf.console.interpreter.locals.update(g)
-                pf.console.interpreter.runsource(scr.read(),filename,'exec')
+        if pf.console:
+            pf.debug("Executing script in pf.console",pf.DEBUG.SCRIPT)
+            pf.console.interpreter.locals.update(g)
+            pf.console.interpreter.runsource(scr.read(),filename,'exec')
 
-            else:
-                if pye:
-                    if type(scr) is file:
-                         scr = scr.read() + '\n'
-                    n = (len(scr)+1) // 2
-                    scr = utils.mergeme(scr[:n],scr[n:])
+        else:
+            if pye:
+                if type(scr) is file:
+                     scr = scr.read() + '\n'
+                n = (len(scr)+1) // 2
+                scr = utils.mergeme(scr[:n],scr[n:])
 
-                exec scr in g
+            exec scr in g
 
-        except _Exit:
-            #print "EXIT FROM SCRIPT"
-            pass
-        except _ExitAll:
-            exitall = True
-        except:
-            raise
+    except _Exit:
+        pass
+    except _ExitAll:
+        exitall = True
+    except:
+        raise
+    else:
+        pass
 
     finally:
         # honour the exit function
@@ -639,7 +643,7 @@ def exit(all=False):
         if all:
             raise _ExitAll # ask exit from pyformex
         else:
-            #print "RAISE _EXIT"
+            #print("RAISE _EXIT")
             raise _Exit # ask exit from script only
 
 

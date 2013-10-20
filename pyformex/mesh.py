@@ -1486,7 +1486,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
         -`sel`: a selector (index or True/False array)
         """
-        utils.utils.warn('warn_mesh_reverse')
+        utils.warn('warn_mesh_reverse')
         # TODO: These can be merged
         if sel is None:
             if hasattr(self.elType(),'reversed'):

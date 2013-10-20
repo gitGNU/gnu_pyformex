@@ -244,7 +244,7 @@ def convertFromVPD(vpd,verbose=False):
     return [pts, polys, lines, verts]
 
 
-def writeVTP(fn, mesh, fieldAr={}, cellAr={}, pointAr={}, checkMesh=True ):
+def writeVTP(fn,mesh,fieldAr={},cellAr={},pointAr={},checkMesh=True ):
     """Write a Mesh in .vtp file format.
 
     - `fn`: a filename with .vtp extension.
