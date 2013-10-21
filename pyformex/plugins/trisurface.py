@@ -616,6 +616,7 @@ class TriSurface(Mesh):
         uncompressed on the fly during the reading and the uncompressed
         versions are deleted after reading.
         """
+        kargs=dict()
         ftype = utils.fileTypeFromExt(fn)
         gzip = ftype.endswith('.gz')
         if gzip:
