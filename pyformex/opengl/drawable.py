@@ -398,7 +398,11 @@ class GeomActor(Attributes):
 
 
     def bbox(self):
-        return self._coords.bbox()
+        try:
+            return self.object.bbox()
+        except:
+            print("No bbox because no _coords for object of type %s" % type(self.object))
+            return np.zeros(6).reshape(2,3)
 
 
     @property

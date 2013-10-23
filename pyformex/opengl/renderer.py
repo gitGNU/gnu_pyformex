@@ -61,16 +61,24 @@ class Renderer(object):
         mat = self.canvas.material
         #print(lightprof)
         lights = [ light for light in lightprof.lights if light.enabled ]
+        #for light in lights:
+        #    print(light)
         nlights = len(lights)
-        ambient = lightprof.ambient * np.ones(3)
+        ambient = lightprof.ambient * np.ones(3) # global ambient
         for light in lights:
             ambient += light.ambient
         ambient = np.clip(ambient,0.,1.) # clip, OpenGL does anyways
+        diffuse = np.array([ light.diffuse for light in lights ]).ravel()
+        specular = np.array([ light.specular for light in lights ]).ravel()
+        position = np.array([ light.position[:3] for light in lights ]).ravel()
+        #print("diffcolor = %s" % diffuse)
+        #print("lightdir = %s" % position)
         settings = Attributes({
             'nlights': nlights,
             'ambicolor': ambient,
-            'lightdir': np.array([ l.position[:3] for l in lightprof.lights ]),
-            'speccolor': np.array(pf.canvas.settings.colormap[:nlights]),
+            'diffcolor': diffuse,
+            'speccolor': specular,
+            'lightdir': position,
             'ambient': mat.ambient,
             'diffuse': mat.diffuse,
             'specular': mat.specular,

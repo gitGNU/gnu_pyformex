@@ -153,7 +153,10 @@ class Shader(object):
 
 
     def uniformVec3(self,name,value):
-        """Load a uniform vec3[n] into the shader"""
+        """Load a uniform vec3[n] into the shader
+
+        The value should be a 1D array or list.
+        """
         loc = self.uniform[name]
         n = len(value) // 3
         GL.glUniform3fv(loc,n,value)
