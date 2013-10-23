@@ -59,6 +59,8 @@ import time
 #    _memtracker = None
 ################
 
+
+
 ######################### Exceptions #########################################
 
 class _Exit(Exception):
@@ -265,7 +267,7 @@ def scriptLock(id):
         pf.scriptMode = 'script'
     elif id == '__auto/app__':
         pf.scriptMode = 'app'
-    
+
     pf.debug("Setting script lock %s" %id,pf.DEBUG.SCRIPT)
     pf.scriptlock |= set([id])
 
@@ -281,14 +283,14 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
     There is a lock to prevent multiple scripts from being executed at the
     same time. This implies that pyFormex scripts can currently not be
     recurrent.
-    If a name is specified, set the global variable pyformex.scriptName to it
+    If name is specified, set the global variable pyformex.scriptName to it
     when the script is started.
-    If a filename is specified, set the global variable __file__ to it.
+    If filename is specified, set the global variable __file__ to it.
     """
     utils.warn('print_function')
     global exportNames,starttime
     global exitrequested
-    
+
     # (We only allow one script executing at a time!)
     # and scripts are non-reentrant
     if len(pf.scriptlock) > 0:
@@ -302,11 +304,22 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
     if pf.GUI:
         pf.GUI.startRun()
 
+    # Read the script, if a file was specified
+    if type(scr) is file:
+        if filename is None:
+            filename = scr.name
+        scr = scr.read() + '\n'
+
     # Get the globals
     g = Globals()
     if filename:
         g.update({'__file__':filename})
     g.update({'argv':argv})
+
+    # BV: Should we continue support for this?
+    if pye:
+        n = (len(scr)+1) // 2
+        scr = utils.mergeme(scr[:n],scr[n:])
 
     # Now we can execute the script using these collected globals
     exportNames = []
@@ -317,31 +330,17 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
     vmsiz = vmSize()
     pf.debug("MemUsed = %s; vmSize = %s" % (memu,vmsiz),pf.DEBUG.MEM)
 
+    if filename is None:
+        filename = '<string>'
+
+    # Execute the code
     #starttime = time.clock()
     try:
+        pf.interpreter.locals.update(g)
+        pf.interpreter.runsource(scr,filename,'exec')
 
-        if pf.console:
-            pf.debug("Executing script in pf.console",pf.DEBUG.SCRIPT)
-            pf.console.interpreter.locals.update(g)
-            pf.console.interpreter.runsource(scr.read(),filename,'exec')
-
-        else:
-            if pye:
-                if type(scr) is file:
-                     scr = scr.read() + '\n'
-                n = (len(scr)+1) // 2
-                scr = utils.mergeme(scr[:n],scr[n:])
-
-            exec scr in g
-
-    except _Exit:
-        pass
-    except _ExitAll:
-        exitall = True
-    except:
-        raise
-    else:
-        pass
+    except SystemExit:
+        print ("EXIT FROM SCRIPT")
 
     finally:
         # honour the exit function
@@ -391,10 +390,10 @@ def breakpt(msg=None):
 
 
 def raiseExit():
-    pf.debug("RAISING _Exit",pf.DEBUG.SCRIPT)
+    pf.debug("RAISING SystemExit",pf.DEBUG.SCRIPT)
     if pf.GUI:
         pf.GUI.drawlock.release()
-    raise _Exit,"EXIT REQUESTED FROM SCRIPT"
+    raise SystemExit,"EXIT REQUESTED FROM SCRIPT"
 
 
 def enableBreak(mode=True):
@@ -629,7 +628,7 @@ def runAny(appname=None,argv=[],step=False,refresh=False):
 ##             break
 ##     pf.GUI.enableButtons(pf.GUI.actions,['Stop'],False)
 
-    
+
 
 def exit(all=False):
     """Exit from the current script or from pyformex if no script running."""
@@ -637,10 +636,14 @@ def exit(all=False):
     #print(pf.scriptlock)
     if len(pf.scriptlock) > 0:
         if all:
-            raise _ExitAll # ask exit from pyformex
+            utils.warn("exit(all=True) is no longer supported.")
+            pass
+            #raise _ExitAll # ask exit from pyformex
         else:
             #print("RAISE _EXIT")
-            raise _Exit # ask exit from script only
+            raise SystemExit
+
+            #raise _Exit # ask exit from script only
 
 
 def quit():
@@ -938,5 +941,10 @@ def readGeomFile(filename):
         utils.removeFile(filename)
     return objects
 
+
+# Always create an interpreter
+
+import code
+pf.interpreter = code.InteractiveInterpreter(Globals())
 
 #### End

@@ -440,7 +440,7 @@ class Gui(QtGui.QMainWindow):
             if self.console is None:
                 print("ADDING EXPERIMENTAL CONSOLE")
                 import pyconsole
-                self.console = pyconsole.PyConsole()
+                self.console = pyconsole.PyConsole(pf.interpreter)
                 self.console.interpreter.globals = draw.Globals()
                 self.splitter.addWidget(self.console)
         if 'b' not in config:
