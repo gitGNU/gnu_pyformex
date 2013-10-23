@@ -223,8 +223,9 @@ file_description = {
     'smesh': 'Tetgen surface mesh files (*.smesh)',
     'stl': 'STL files (*.stl)',
     'stlb': 'Binary STL files (*.stl)',  # Use only for output
-    'surface': 'Surface model (*.off *.gts *.stl *.off.gz *.gts.gz *.stl.gz *.neu *.smesh)',
+    'surface': 'Surface model (*.off *.gts *.stl *.off.gz *.gts.gz *.stl.gz *.neu *.smesh *.vtp)',
     'tetgen': 'Tetgen file (*.poly *.smesh *.ele *.face *.edge *.node *.neigh)',
+    'vtp': 'vtkPolyData file (*.vtp)',
 }
 
 

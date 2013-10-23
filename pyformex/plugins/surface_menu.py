@@ -336,7 +336,7 @@ def merge():
     selection.draw()
 
 
-def export_surface(types=['surface','gts','stl','off','neu','smesh']):
+def export_surface(types=['surface','gts','stl','off','neu','smesh','vtp']):
     F = selection.check(single=True)
     if F:
         if type(types) == str:

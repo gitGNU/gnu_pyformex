@@ -651,7 +651,7 @@ class TriSurface(Mesh):
             coords, E, fieldAr, cellAr, pointAr = readVTP(fn)
             data = (coords, E[0])
             if 'prop' in cellAr.keys():
-                kargs = {'prop':celllAr['prop']}
+                kargs = {'prop':cellAr['prop']}
         else:
             raise "Unknown TriSurface type, cannot read file %s" % fn
         if gzip:
