@@ -110,6 +110,11 @@ class Drawable(Attributes):
         self.prepareSubelems()
 
 
+    def bbox(self):
+        print("WHY DO YOU NEED MY BBOX?")
+        return self._coords.bbox()
+
+
     ## def __del__(self):
     ##     for buf in 'vbo', 'ibo', 'nbo', 'cbo':
     ##         if self[buf] is not None:

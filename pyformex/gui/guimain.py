@@ -28,6 +28,7 @@ and starting the pyFormex GUI.
 """
 from __future__ import print_function
 
+
 import pyformex as pf
 from pyformex.gui import signals
 
@@ -1531,6 +1532,5 @@ def runGUI():
 
 def classify_examples():
     m = pf.GUI.menu.item('Examples')
-
 
 #### End

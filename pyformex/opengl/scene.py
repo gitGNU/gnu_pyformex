@@ -131,6 +131,9 @@ class Scene(object):
         recomputing the bbox from all Actors.
         """
         if self._bbox is None:
+            print(self.actors)
+            print([type(a) for a in self.actors])
+            print([a.bbox() for a in self.actors])
             self._bbox = sane_bbox(coords.bbox(self.actors))
         return self._bbox
 

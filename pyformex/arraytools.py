@@ -93,7 +93,6 @@ try:
 except TypeError:
     from numpy import unique1d as unique
 
-print(unique([1],True)[0][0])
 if unique([1],True)[0][0] == 0:
     # We have the old numy version
     import utils   # We are early on startup: utils not loaded yet
