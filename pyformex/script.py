@@ -255,24 +255,24 @@ def system(cmdline,result='output'):
 
 ########################### PLAYING SCRIPTS ##############################
 
-scriptThread = None
 exitrequested = False
 starttime = 0.0
-
 scriptInit = None # can be set to execute something before each script
 
-# BV: do we need this??
-#pye = False
-
 def scriptLock(id):
+    global _run_mode
+    if id == '__auto/script__':
+        pf.scriptMode = 'script'
+    elif id == '__auto/app__':
+        pf.scriptMode = 'app'
+    
     pf.debug("Setting script lock %s" %id,pf.DEBUG.SCRIPT)
     pf.scriptlock |= set([id])
-    #print(pf.scriptlock)
 
 def scriptRelease(id):
     pf.debug("Releasing script lock %s" %id,pf.DEBUG.SCRIPT)
     pf.scriptlock -= set([id])
-    #print(pf.scriptlock)
+    pf.scriptMode = None
 
 
 def playScript(scr,name=None,filename=None,argv=[],pye=False):
@@ -288,20 +288,15 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
     utils.warn('print_function')
     global exportNames,starttime
     global exitrequested
+    
     # (We only allow one script executing at a time!)
     # and scripts are non-reentrant
-    global scriptThread
-    if scriptThread is not None and scriptThread.isAlive():
-        pf.message("Not executing this script because another one is already running")
-        return
-
-
     if len(pf.scriptlock) > 0:
         pf.message("!!Not executing because a script lock has been set: %s" % pf.scriptlock)
         #print(pf.scriptlock)
         return
 
-    scriptLock('__auto__')
+    scriptLock('__auto/script__')
     exitrequested = False
 
     if pf.GUI:
@@ -363,7 +358,7 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
             exportNames.extend(listAll(clas=Geometry,dic=g))
         pf.PF.update([(k,g[k]) for k in exportNames])
 
-        scriptRelease('__auto__') # release the lock
+        scriptRelease('__auto/script__') # release the lock
         if pf.GUI:
             pf.GUI.stopRun()
 
@@ -551,7 +546,7 @@ def runApp(appname,argv=[],refresh=False):
     if hasattr(app,'_status') and app._status == 'unchecked':
         pf.warning("This looks like an Example script that has been automatically converted to the pyFormex Application model, but has not been checked yet as to whether it is working correctly in App mode.\nYou can help here by running and rerunning the example, checking that it works correctly, and where needed fixing it (or reporting the failure to us). If the example runs well, you can change its status to 'checked'")
 
-    scriptLock('__auto__')
+    scriptLock('__auto/app__')
     msg = "Running application '%s' from %s" % (appname,app.__file__)
     pf.scriptName = appname
     if pf.GUI:
@@ -578,7 +573,7 @@ def runApp(appname,argv=[],refresh=False):
             g = app.__dict__
             exportNames = listAll(clas=Geometry,dic=g)
             pf.PF.update([(k,g[k]) for k in exportNames])
-        scriptRelease('__auto__') # release the lock
+        scriptRelease('__auto/app__') # release the lock
         if pf.GUI:
             pf.GUI.stopRun()
 
@@ -634,6 +629,7 @@ def runAny(appname=None,argv=[],step=False,refresh=False):
 ##             break
 ##     pf.GUI.enableButtons(pf.GUI.actions,['Stop'],False)
 
+    
 
 def exit(all=False):
     """Exit from the current script or from pyformex if no script running."""
