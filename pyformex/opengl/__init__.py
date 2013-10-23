@@ -42,14 +42,14 @@ import coords
 
 #### Definitions to be imported in gui.draw #####
 
+
 def clear_canvas():
-    pf.canvas.renderer.clear()
+    """Clear the canvas.
+
+    This is a low level function not intended for the user.
+    """
+    pf.canvas.scene.clear()
     pf.canvas.clear()
-
-
-## def draw(o,**kargs):
-##     """New draw function for OpenGL2"""
-##     pf.canvas.renderer.add(o,**kargs)
 
 
 def draw(F,

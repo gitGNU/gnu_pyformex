@@ -110,6 +110,13 @@ class Drawable(Attributes):
         self.prepareSubelems()
 
 
+    ## def __del__(self):
+    ##     for buf in 'vbo', 'ibo', 'nbo', 'cbo':
+    ##         if self[buf] is not None:
+    ##             self[buf].unbind()
+    ##             self[buf] = None
+
+
     def prepareColor(self):
         """Prepare the colors for the shader."""
         #print("PREPARECOLOR")
@@ -152,9 +159,6 @@ class Drawable(Attributes):
 
     def render(self,renderer):
         """Render the geometry of this object"""
-
-        #print("RENDER %s" % self.name)
-        #print(self)
 
         def render_geom():
             if self.ibo:
@@ -202,7 +206,7 @@ class Drawable(Attributes):
 
         if self.cullface == 'front':
             # Draw back faces
-            GL.glEnable(GL.GL_CULL_FACE)            
+            GL.glEnable(GL.GL_CULL_FACE)
             GL.glCullFace(GL.GL_FRONT)
         elif self.cullface == 'back':
             # Draw front faces
@@ -266,7 +270,7 @@ class Drawable(Attributes):
 
         if self.cullface == 'front':
             # Draw back faces
-            GL.glEnable(GL.GL_CULL_FACE)            
+            GL.glEnable(GL.GL_CULL_FACE)
             GL.glCullFace(GL.GL_FRONT)
         elif self.cullface == 'back':
             # Draw front faces
@@ -388,6 +392,10 @@ class GeomActor(Attributes):
         return self._coords
 
 
+    def bbox(self):
+        return self._coords.bbox()
+
+
     @property
     def elems(self):
         """Return the original elems of the object"""
@@ -461,7 +469,7 @@ class GeomActor(Attributes):
         return self._avgnormals
 
 
-    def prepare(self,renderer):
+    def prepare(self,canvas):
         """Prepare the attributes for the renderer.
 
         This sanitizes and completes the attributes for the renderer.
@@ -478,35 +486,37 @@ class GeomActor(Attributes):
 
         #### CHILDREN ####
         for child in self.children:
-            child.prepare(renderer)
+            child.prepare(canvas)
 
 
-    def changeMode(self,renderer):
+    def changeMode(self,canvas):
         """Modify the actor according to the specified mode"""
-        #print("GEOMACTOR.changeMode")
+        pf.debug("GEOMACTOR.changeMode",pf.DEBUG.DRAW)
         self.drawable = []
-        self._prepareNormals(renderer)
+        self._prepareNormals(canvas)
         # ndim >= 2
         if (self.eltype is not None and self.eltype.ndim >= 2) or (self.eltype is None and self.object.nplex() >= 3):
-            if renderer.mode == 'wireframe':
+            if canvas.renderer.mode == 'wireframe':
                 # Draw the colored edges
-                self._addEdges(renderer)
+                self._addEdges(canvas.renderer)
             else:
                 # Draw the colored faces
-                self._addFaces(renderer)
+                self._addFaces(canvas.renderer)
                 # Overlay the black edges (or not)
-                self._addWires(renderer)
+                self._addWires(canvas.renderer)
         # ndim < 2
         else:
             # Draw the colored faces
-            self._addFaces(renderer)
+            self._addFaces(canvas.renderer)
 
         #### CHILDREN ####
         for child in self.children:
-            child.changeMode(renderer)
+            child.changeMode(canvas)
+
+        pf.debug("GEOMACTOR.changeMode create %s drawables" % len(self.drawable),pf.DEBUG.DRAW)
 
 
-    def _prepareNormals(self,renderer):
+    def _prepareNormals(self,canvas):
         """Prepare the normals buffer object for the actor.
 
         The normals buffer object depends on the renderer settings:
@@ -514,7 +524,7 @@ class GeomActor(Attributes):
         """
         #if renderer.canvas.settings.lighting:
         if True:
-            if renderer.canvas.settings.avgnormals:
+            if canvas.settings.avgnormals:
                 normals = self.b_avgnormals
             else:
                 normals = self.b_normals
@@ -693,6 +703,7 @@ class GeomActor(Attributes):
     def setLineWidth(self,linewidth):
         """Set the linewidth of the Drawable."""
         self.linewidth = saneLineWidth(linewidth)
+
 
     def setLineStipple(self,linestipple):
         """Set the linewidth of the Drawable."""

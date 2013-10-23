@@ -161,7 +161,7 @@ def checkAllModules():
     """Check the existence of all known modules.
 
     """
-    print("CHECKING ALL MODULES")
+    #print("CHECKING ALL MODULES")
     [ checkModule(n,quiet=True) for n in known_modules ]
 
 
@@ -265,7 +265,7 @@ def checkAllExternals():
     Returns a dict with all the known externals, detected or not.
     The detected ones have a non-zero value, usually the version number.
     """
-    print("CHECKING ALL EXTERNALS")
+    #print("CHECKING ALL EXTERNALS")
     [ checkExternal(n,quiet=True) for n in known_externals.keys() ]
     return the_external
 
@@ -289,8 +289,6 @@ def checkExternal(name,command=None,answer=None,quiet=False):
     that can be checked by their name alone.
     """
     import utils
-
-    print("CHECKING %s" % name)
 
     if command is None or answer is None:
         cmd,ans = known_externals.get(name,(name,'(.+)\n'))

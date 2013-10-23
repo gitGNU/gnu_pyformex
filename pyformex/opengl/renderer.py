@@ -54,48 +54,6 @@ class Renderer(object):
         if shader is None:
             shader = Shader()
         self.shader = shader
-        self.clear()
-
-
-
-    def clear(self):
-        self._objects = []
-        self._bbox = None
-
-
-    @property
-    def bbox(self):
-        """Return the bbox of all objects in the renderer"""
-        if self._bbox is None:
-            self._bbox = bbox([o.object.bbox() for o in self._objects])
-        return self._bbox
-
-
-    def add(self,obj,**kargs):
-        actor = GeomActor(obj,**kargs)
-        self.addActor(actor)
-
-
-    def addActor(self,actor):
-        actor.prepare(self)
-        actor.changeMode(self)
-        self._objects.append(actor)
-        self._bbox = None
-        self.canvas.camera.focus = self.bbox.center()
-        #print("NEW BBOX: %s" % self.bbox)
-
-
-    def changeMode(self,mode=None):
-        """This function is called when the rendering mode is changed
-
-        This method should be called to update the actors on a rendering
-        mode change.
-        """
-        print("RENDERER.changeMode %s to %s" % (self.mode,mode))
-        if mode:
-            self.mode = mode
-        for actor in self._objects:
-            actor.changeMode(self)
 
 
     def loadLightProfile(self):
@@ -162,8 +120,9 @@ class Renderer(object):
             GL.glPopName()
 
 
-    def render(self,pick=None):
+    def render(self,scene,pick=None):
         """Render the geometry for the scene."""
+        #scene.printTotals()
         self.shader.bind(picking=bool(pick))
         try:
 
@@ -181,31 +140,21 @@ class Renderer(object):
                 pickmat = camera.pick_matrix(*pick)
                 self.shader.uniformMat4('pickmat',pickmat.gl())
 
-            # Make compatible with older code
-            actors = [ o for o in self._objects if o.visible is not False ]
-            ## print([o.name for o in actors])
-            ## actors = sorted(actors,key='highlight')
-            ## print([o.name for o in actors])
-            self.actors = actors
-            self.annotations = []
-
-            # draw the scene actors and annotations
-            sorted_actors = [ a for a in self.annotations if not a.ontop ] + \
-                            [ a for a in self.actors if not a.ontop ] + \
-                            [ a for a in self.actors if a.ontop ] + \
-                            [ a for a in self.annotations if a.ontop ]
+            # draw the scene actors (sorted)
+            actors = scene.back_actors() + scene.front_actors()
+            actors =  [ o for o in actors if o.visible is not False ]
             if pick:
                 # PICK MODE
-                self.pickObjects(sorted_actors)
+                self.pickObjects(actors)
 
             elif not self.canvas.settings.alphablend:
                 # NO ALPHABLEND
-                self.renderObjects(sorted_actors)
+                self.renderObjects(actors)
 
             else:
                 # ALPHABLEND
-                opaque = [ a for a in sorted_actors if a.opak ]
-                transp = [ a for a in sorted_actors if not a.opak ]
+                opaque = [ a for a in actors if a.opak ]
+                transp = [ a for a in actors if not a.opak ]
                 self.renderObjects(opaque)
                 GL.glEnable (GL.GL_BLEND)
                 #GL.glDepthMask (GL.GL_FALSE)
@@ -217,7 +166,6 @@ class Renderer(object):
                 GL.glEnable(GL.GL_DEPTH_TEST)
                 GL.glDepthMask (GL.GL_TRUE)
                 GL.glDisable (GL.GL_BLEND)
-
 
         finally:
             self.shader.unbind()

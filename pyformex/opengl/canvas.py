@@ -45,6 +45,7 @@ from gui import marks
 from camera import Camera
 from renderer import Renderer
 from collection import Collection
+from scene import Scene, ActorList
 
 libGL = None
 
@@ -188,44 +189,6 @@ def glPolygonOffset(value):
     else:
         GL.glEnable(GL.GL_POLYGON_OFFSET_FILL)
         GL.glPolygonOffset(value,value)
-
-
-class ActorList(list):
-    """A list of drawn objects of the same kind.
-
-    This is used to collect the Actors, Decorations and Annotations
-    in a scene.
-    Currently the implementation does not check that the objects are of
-    the proper type.
-    """
-
-    def __init__(self,canvas):
-        self.canvas = canvas
-        list.__init__(self)
-
-    def add(self,actor):
-        """Add an actor or a list thereof to a ActorList."""
-        if type(actor) is list:
-            self.extend(actor)
-        else:
-            self.append(actor)
-
-    def delete(self,actor):
-        """Remove an actor or a list thereof from an ActorList."""
-        if not type(actor) in (list,tuple):
-            actor = [ actor ]
-        for a in actor:
-            if a in self:
-                self.remove(a)
-
-    def redraw(self):
-        """Redraw all actors in the list.
-
-        This redraws the specified actors (recreating their display list).
-        This could e.g. be used after changing an actor's properties.
-        """
-        for actor in self:
-            actor.redraw()
 
 
 
@@ -606,14 +569,11 @@ class Canvas(object):
 
     def __init__(self,settings={}):
         """Initialize an empty canvas with default settings."""
+        self.scene = Scene(self)
         self.highlights = ActorList(self)
-        self.annotations = ActorList(self)
-        self.decorations = ActorList(self)
         self.camera = None
         self.triade = None
         self.background = None
-        self._bbox = None
-        self.setBbox([[0.,0.,0.],[1.,1.,1.]])
         self.settings = CanvasSettings(**settings)
         self.mode2D = False
         self.rendermode = pf.cfg['draw/rendermode']
@@ -628,7 +588,17 @@ class Canvas(object):
 
     @property
     def actors(self):
-        return self.renderer._objects
+        return self.scene.actors
+
+    @property
+    def bbox(self):
+        return self.scene.bbox
+
+    def sceneBbox(self):
+        """Return the bbox of all actors in the scene"""
+        from coords import bbox
+        return self.scene.bbox
+        return bbox(self.scene.actors)
 
 
     def enable_lighting(self,state):
@@ -681,7 +651,7 @@ class Canvas(object):
         is set, the canvas is re-initialized according to the newly set mode,
         and everything is redrawn with the new mode.
         """
-        #print("Setting rendermode to %s" % mode)
+        print("Setting rendermode to %s" % mode)
         if mode not in CanvasSettings.RenderProfiles:
             raise ValueError,"Invalid render mode %s" % mode
 
@@ -693,12 +663,11 @@ class Canvas(object):
         if self.camera:
             if mode != self.rendermode or lighting != self.settings.lighting:
                 print("SWITCHING MODE")
-                self.renderer.changeMode(mode)
+                self.scene.changeMode(self,mode)
 
             self.rendermode = mode
             self.settings.lighting = lighting
             self.reset()
-
 
 
     def setWireMode(self,state,mode=None):
@@ -753,8 +722,8 @@ class Canvas(object):
         print("CANVAS.do_wiremode: %s -> %s"%(oldstate,state))
         if state != oldstate and (state>0 or oldstate>0):
             # switching between two <= modes does not change anything
-            print("Changemode %s" % self.renderer.canvas.settings.wiremode)
-            self.renderer.changeMode()
+            print("Changemode %s" % self.settings.wiremode)
+            self.scene.changeMode(self)
             self.display()
 
 
@@ -762,7 +731,7 @@ class Canvas(object):
         """Toggle alphablend on/off."""
         #print("CANVAS.do_alphablend: %s -> %s"%(state,oldstate))
         if state != oldstate:
-            self.renderer.changeMode()
+            self.scene.changeMode(self)
             self.display()
 
 
@@ -771,14 +740,14 @@ class Canvas(object):
         #print("CANVAS.do_lighting: %s -> %s"%(state,oldstate))
         if state != oldstate:
             self.enable_lighting(state)
-            self.renderer.changeMode()
+            self.scene.changeMode(self)
             self.display()
 
 
     def do_avgnormals(self,state,oldstate):
         print("CANVAS.do_avgnormals: %s -> %s" % (state,oldstate))
         if state!=oldstate and self.settings.lighting:
-            self.renderer.changeMode()
+            self.scene.changeMode(self)
             self.display()
 
 
@@ -878,6 +847,9 @@ class Canvas(object):
         self.renderer = Renderer(self)
 
 
+
+    # TODO: This is a misnamer: should be clearbg or something like that
+    # clear() should also clear the scene
     def clear(self):
         """Clear the canvas to the background color."""
         self.settings.setMode()
@@ -947,36 +919,36 @@ class Canvas(object):
         GL.glFlush()
 
 
-    def draw_sorted_actors(self,actors,alphablend):
-        """Draw a list of sorted actors.
+    def draw_sorted_objects(self,objects,alphablend):
+        """Draw a list of sorted objects.
 
-        If alphablend is True, actors are separated in opaque
+        If alphablend is True, objects are separated in opaque
         and transparent ones, and the opaque are drawn first.
         Inside each group, ordering is preserved.
-        Else, the actors are drawn in the order submitted.
+        Else, the objects are drawn in the order submitted.
         """
         if alphablend:
-            opaque = [ a for a in actors if a.opak ]
-            transp = [ a for a in actors if not a.opak ]
-            for actor in opaque:
+            opaque = [ a for a in objects if a.opak ]
+            transp = [ a for a in objects if not a.opak ]
+            for obj in opaque:
                 self.setDefaults()
-                actor.draw(canvas=self)
+                obj.draw(canvas=self)
             GL.glEnable (GL.GL_BLEND)
             GL.glDepthMask (GL.GL_FALSE)
             if pf.cfg['draw/disable_depth_test']:
                 GL.glDisable(GL.GL_DEPTH_TEST)
             GL.glBlendFunc (GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-            for actor in transp:
-
+            for obj in transp:
                 self.setDefaults()
-                actor.draw(canvas=self)
+                obj.draw(canvas=self)
             GL.glEnable(GL.GL_DEPTH_TEST)
             GL.glDepthMask (GL.GL_TRUE)
             GL.glDisable (GL.GL_BLEND)
         else:
-            for actor in actors:
+            for obj in objects:
                 self.setDefaults()
-                actor.draw(canvas=self)
+                obj.draw(canvas=self)
+
 
     def display(self):
         """(Re)display all the actors in the scene.
@@ -992,17 +964,20 @@ class Canvas(object):
         # draw background decorations in 2D mode
         self.begin_2D_drawing()
 
-        if self.background:
+        background = self.scene.background
+        if background is None:
+            background = self.background
+
+        if background:
             #pf.debug("Displaying background",pf.DEBUG.DRAW)
             # If we have a shaded background, we need smooth/fill anyhow
             glSmooth()
             glFill()
-            self.background.draw(mode='smooth')
+            background.draw(mode='smooth')
 
         # background decorations
         pf.debug("background decorations",pf.DEBUG.DRAW)
-        back_decors = [ d for d in self.decorations if not d.ontop ]
-        for actor in back_decors:
+        for actor in self.scene.back_decors():
             self.setDefaults()
             ## if hasattr(actor,'zoom'):
             ##     self.zoom_2D(actor.zoom)
@@ -1029,31 +1004,25 @@ class Canvas(object):
                 self.setDefaults()
                 actor.draw(canvas=self)
 
-        # draw the scene actors and annotations
-        pf.debug("draw annotations",pf.DEBUG.DRAW)
-        ann_bot = [ a for a in self.annotations if not a.ontop ]
-        ann_top = [ a for a in self.annotations if a.ontop ]
-        act_bot = [ a for a in self.actors if not a.ontop ]
-        act_top = [ a for a in self.actors if a.ontop ]
+        # draw the back annotations
+        pf.debug("draw back annotations",pf.DEBUG.DRAW)
+        self.draw_sorted_objects(self.scene.back_annot(),self.settings.alphablend)
 
-        self.draw_sorted_actors(ann_bot,self.settings.alphablend)
+        # Draw the opengl1 actors
+        pf.debug("opengl1 rendering of old actors",pf.DEBUG.DRAW)
+        self.draw_sorted_objects(self.scene.oldactors,self.settings.alphablend)
 
         # Draw the opengl2 actors
         pf.debug("opengl2 shader rendering",pf.DEBUG.DRAW)
-        self.renderer.render()
+        self.renderer.render(self.scene)
 
-        self.draw_sorted_actors(ann_top,self.settings.alphablend)
-
-        # annotations are decorations drawn in 3D space
-        for actor in self.annotations:
-            self.setDefaults()
-            actor.draw(canvas=self)
-
+        # draw the front annotations
+        pf.debug("draw front annotations",pf.DEBUG.DRAW)
+        self.draw_sorted_objects(self.scene.front_annot(),self.settings.alphablend)
 
         pf.debug("draw foreground decorations in 2D mode",pf.DEBUG.DRAW)
         self.begin_2D_drawing()
-        decors = [ d for d in self.decorations if d.ontop ]
-        for actor in decors:
+        for actor in self.scene.front_decors():
             self.setDefaults()
             ## if hasattr(actor,'zoom'):
             ##     self.zoom_2D(actor.zoom)
@@ -1108,81 +1077,9 @@ class Canvas(object):
             self.mode2D = False
 
 
-    def sceneBbox(self):
-        """Return the bbox of all actors in the scene"""
-        return self.renderer.bbox
-
-
-    def setBbox(self,bb=None):
-        """Set the bounding box of the scene you want to be visible.
-
-        bb is a (2,3) shaped array specifying a bounding box.
-        If no bbox is given, the bounding box of all the actors in the
-        scene is used, or if the scene is empty, a default unit bounding box.
-        """
-        if bb is None:
-            bb = self.renderer.bbox
-        else:
-            bb = coords.Coords(bb)
-        # make sure we have no nan's in the bbox
-        try:
-            bb = nan_to_num(bb)
-        except:
-            pf.message("Invalid Bbox: %s" % bb)
-        # make sure bbox size is nonzero in all directions
-        sz = bb[1]-bb[0]
-        bb[1,sz==0.0] += 1.
-        # Set bbox
-        self._bbox = bb
-
-
-    def addActor(self,itemlist):
-        """Add a 3D actor or a list thereof to the 3D scene."""
-        #self.actors.add(itemlist)
-        # itemlist should be a new style GeomActor
-        self.renderer.addActor(itemlist)
-
-
     def addHighlight(self,itemlist):
         """Add a highlight or a list thereof to the 3D scene."""
         self.highlights.add(itemlist)
-
-    def addAnnotation(self,itemlist):
-        """Add an annotation or a list thereof to the 3D scene."""
-        self.annotations.add(itemlist)
-
-    def addDecoration(self,itemlist):
-        """Add a 2D decoration or a list thereof to the canvas."""
-        self.decorations.add(itemlist)
-
-    def addAny(self,itemlist=None):
-        """Add any  item or list.
-
-        This will add any actor/annotation/decoration item or a list
-        of any such items  to the canvas. This is the prefered method to add
-        an item to the canvas, because it makes sure that each item is added
-        to the proper list. It can however not be used to add highlights.
-
-        If you have a long list of a single type, it is more efficient to
-        use one of the type specific add methods.
-        """
-        if type(itemlist) not in (tuple,list):
-            itemlist = [ itemlist ]
-        self.addActor([ i for i in itemlist if isinstance(i,actors.Actor)])
-        self.addAnnotation([ i for i in itemlist if isinstance(i,marks.Mark)])
-        self.addDecoration([ i for i in itemlist if isinstance(i,decors.Decoration)])
-
-
-    def removeActor(self,itemlist=None):
-        """Remove a 3D actor or a list thereof from the 3D scene.
-
-        Without argument, removes all actors from the scene.
-        This also resets the bounding box for the canvas autozoom.
-        """
-        if itemlist == None:
-            itemlist = self.actors[:]
-        self.actors.delete(itemlist)
-        self.setBbox()
 
     def removeHighlight(self,itemlist=None):
         """Remove a highlight or a list thereof from the 3D scene.
@@ -1193,55 +1090,24 @@ class Canvas(object):
             itemlist = self.highlights[:]
         self.highlights.delete(itemlist)
 
-    def removeAnnotation(self,itemlist=None):
-        """Remove an annotation or a list thereof from the 3D scene.
+    def addAny(self,itemlist):
+        self.scene.addAny(itemlist)
 
-        Without argument, removes all annotations from the scene.
-        """
-        if itemlist == None:
-            itemlist = self.annotations[:]
-        #
-        # TODO: check whether the removal of the following code
-        # does not have implications
-        #
-        ## if self.triade in itemlist:
-        ##     pf.debug("REMOVING TRIADE",pf.DEBUG.DRAW)
-        ##     self.triade = None
-        self.annotations.delete(itemlist)
+    addActor = addAnnotation = addDecoration = addAny
 
-    def removeDecoration(self,itemlist=None):
-        """Remove a 2D decoration or a list thereof from the canvas.
+    def removeAny(self,itemlist):
+        self.scene.removeAny(itemlist)
 
-        Without argument, removes all decorations from the scene.
-        """
-        if itemlist == None:
-            itemlist = self.decorations[:]
-        self.decorations.delete(itemlist)
+    removeActor = removeAnnotation = removeDecoration = removeAny
 
 
-    def removeAny(self,itemlist=None):
-        """Remove a list of any actor/highlights/annotation/decoration items.
-
-        This will remove the items from any of the canvas lists in which the
-        item appears.
-        itemlist can also be a single item instead of a list.
-        If None is specified, all items from all lists will be removed.
-        """
-        self.removeActor(itemlist)
-        self.removeHighlight(itemlist)
-        self.removeAnnotation(itemlist)
-        self.removeDecoration(itemlist)
-
-
-    def redrawAll(self):
-        """Redraw all actors in the scene."""
-        pf.debug("REDRAW CANVAS DOES NOT DO ANYTHING",pf.DEBUG.OPENGL2)
+    def dummy(self):
         pass
-        ## self.actors.redraw()
-        ## self.highlights.redraw()
-        ## self.annotations.redraw()
-        ## self.decorations.redraw()
-        ## self.display()
+
+    redrawAll = dummy
+
+    def setBbox(self,bbox):
+        self.scene.bbox = bbox
 
 
     def setCamera(self,bbox=None,angles=None):
@@ -1286,7 +1152,7 @@ class Canvas(object):
             pf.debug("SETTING BBOX: %s" % bbox,pf.DEBUG.DRAW)
             self.setBbox(bbox)
 
-            X0,X1 = self._bbox
+            X0,X1 = self.scene.bbox
             self.camera.focus = 0.5*(X0+X1)
 
         # set camera angles

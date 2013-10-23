@@ -794,7 +794,6 @@ pyFormex Warning
         #from script import playScript
         #playScript(sys.stdin)
 
-
     # after processing all args, go into interactive mode
     if pf.options.gui and pf.app:
         res = guimain.runGUI()
