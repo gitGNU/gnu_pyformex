@@ -185,7 +185,8 @@ def toggleAppScript():
     import apps
     appname = pf.cfg['curfile']
     if utils.is_script(appname):
-        appdir = apps.findAppDir(os.path.dirname(appname))
+        path = os.path.dirname(appname)
+        appdir = apps.findAppDir(path)
         if appdir:
             appname = os.path.basename(appname)
             if appname.endswith('.py'):
@@ -194,7 +195,11 @@ def toggleAppScript():
             appname = "%s.%s" % (pkgname,appname)
             pf.GUI.setcurfile(appname)
         else:
-            pf.warning("This script is not in an application directory.\n\nYou should add the directory path '%s' to the application paths before you can run this file as an application.")
+            if pf.warning("This script is not in an application directory.\n\nYou should add the directory path '%s' to the application paths before you can run this file as an application." % path,actions=['Not this time','Add this directory now']).startswith('Add'):
+                #print("Adding directory %s" % path)
+                from prefMenu import addAppdir
+                addAppdir(path,dircfg='appdirs')
+                draw.showInfo('Added the path %s' % path)
 
     else:
         fn = apps.findAppSource(appname)

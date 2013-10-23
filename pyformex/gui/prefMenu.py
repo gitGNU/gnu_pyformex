@@ -436,6 +436,22 @@ def setDirs(dircfg):
         appMenu.reloadMenu(mode=dircfg[:-4])
 
 
+def addAppdir(path,name=None,dircfg='appdirs'):
+    """Add a path to the appdirs"""
+    import appMenu
+    if os.path.isdir(path):
+        p = path
+    else:
+        p = os.path.dirname(path)
+    if not os.path.isdir(p):
+        print("Invalid path: %s" % path)
+        return
+    if name is None:
+        name = os.path.basename(p).capitalize()
+    pf.prefcfg[dircfg].append((name,p))
+    appMenu.reloadMenu(mode=dircfg[:-4])
+
+
 def createDirsDialog(dircfg):
     """Create a Dialog to set a list of paths.
 
