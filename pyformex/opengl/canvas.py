@@ -254,7 +254,7 @@ class Light(object):
 
     """
 
-    def __init__(self,ambient=0.0,diffuse=0.0,specular=0.0,position=[0.,0.,1.,0.],enabled=True):
+    def __init__(self,ambient=0.0,diffuse=0.0,specular=0.0,position=[0.,0.,1.],enabled=True):
         self.setValues(ambient,diffuse,specular,position)
         self.enable(enabled)
 
@@ -266,7 +266,7 @@ class Light(object):
         if specular is not None:
             self.specular = colors.GLcolor(specular)
         if position is not None:
-            self.position = at.checkArray(position,(4,),'f')
+            self.position = at.checkArray(position,(3,),'f')
 
     def enable(self,onoff=True):
         self.enabled = bool(onoff)

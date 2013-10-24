@@ -318,6 +318,9 @@ def set_mat_value(field):
 
 
 def setRendering():
+    """Interactively change the render parameters.
+
+    """
     import canvas
 
     vp = pf.GUI.viewports.current
@@ -361,6 +364,10 @@ def setRendering():
             # Currently, set both in cfg and Material db
             pf.cfg['material/%s' % matname] = matdata
             pf.GUI.materials[matname] = canvas.Material(matname,**matdata)
+
+            for i in range(4):
+                key = 'light/light%s' % i
+                res[key] = utils.subDict(dia.results,key+'/',strip=True)
         else:
             res = utils.selectDict(dia.results,['render/mode','render/lighting'])
         res['_save_'] = save
@@ -384,10 +391,27 @@ def setRendering():
         matnames = pf.GUI.materials.keys()
         mat = vp.material
         print("createDialog: %s" % vp.settings.lighting)
+
+        light0 = {'enabled':True,'ambient':0.0,'diffuse':0.6,'specular':0.4,'position':(1.,1.,2.,0.)}
+        light_items = []
+        for i in range(4):
+            name = 'light%s' % i
+            light = pf.cfg['light/%s'%name]
+            items = _T(name,[
+                _I("enabled",text="Enabled",value=light['enabled']),
+                _I("ambient",text="Ambient",value=light['ambient'],itemtype='color'),
+                _I("diffuse",text="Diffuse",value=light['diffuse'],itemtype='color'),
+                _I("specular",text="Specular",value=light['specular'],itemtype='color'),
+                _I("position",text="Position",value=light['position'][:3],itemtype='point'),
+                ])
+            light_items.append(items)
+
         items = [
             _I('render/mode',vp.rendermode,text='Rendering Mode',itemtype='select',choices=draw.renderModes()),#,onselect=enableLightParams),
             _I('render/lighting',vp.settings.lighting,text='Use Lighting'),
             _I('render/ambient',vp.lightprof.ambient,itemtype='slider',min=0,max=100,scale=0.01,func=set_render_value,text='Global Ambient Lighting'),
+
+            _G('light',text='Lights',items=light_items),
             _I('render/material',vp.material.name,text='Material',choices=matnames,onselect=updateLightParams),
             _G('material',text='Material Parameters',items=[
                 _I(a,text=a,value=getattr(mat,a),itemtype='slider',min=0,max=100,scale=0.01,func=set_mat_value) for a in [ 'ambient', 'diffuse', 'specular', 'emission'] ] + [

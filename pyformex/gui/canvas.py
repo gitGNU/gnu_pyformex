@@ -304,7 +304,7 @@ class Light(object):
 
     def set_value(self,key,value):
         if key in [ 'ambient','diffuse','specular' ]:
-            value = colors.GREY(value)
+            value = colors.GLcolor(value)
         setattr(self,key,value)
 
     def enable(self):
