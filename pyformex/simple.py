@@ -129,7 +129,7 @@ def rect(p1=[0.,0.,0.],p2=[1.,0.,0.],nx=1,ny=1):
 
 
 def rectangle(nx=1,ny=1,b=None,h=None,bias=0.,diag=None):
-    """Return a Formex representing a rectangluar surface.
+    """Return a Formex representing a rectangular surface.
 
     The rectangle has a size(b,h) divided into (nx,ny) cells.
 

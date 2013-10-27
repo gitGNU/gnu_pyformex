@@ -49,7 +49,7 @@ def run():
     degree = 2           # create quadratic extrusions, change to 1 for linear
     serendipity = False
     show3Dbyborder = False
-    noise = 0.0          # set nonzero to add some noise to the coordinates 
+    noise = 0.0          # set nonzero to add some noise to the coordinates
     sleep = 0
     central = nx//2 + ny//2 * nx + nz//2 * ny * nx
 
@@ -63,7 +63,7 @@ def run():
 
     delay(sleep)
 
-    b = a.extrude(nx,1.,0,degree=degree)  # point extruded to quadratic line 
+    b = a.extrude(nx,1.,0,degree=degree)  # point extruded to quadratic line
     print(b.elName())
     draw(b.coords,wait=False)
     draw(b,color='red')
@@ -74,6 +74,7 @@ def run():
     print(c.elName())
     draw(c.coords,wait=False)
     draw(c,color='blue')
+    return
 
     #c1 = c.trl(2,1.)
     #d = c.connect(c1,degree=2)
@@ -116,7 +117,7 @@ def run():
     clear()
     draw(d)
     export({'ExtrudeMesh':d})
-     
+
 if __name__ == 'draw':
     run()
 # End

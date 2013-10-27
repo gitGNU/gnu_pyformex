@@ -117,10 +117,20 @@ def isInt(obj):
     """Test if an object is an integer number
 
     Returns True if the object is a single integer number, else False.
-    The type of the object can be either a Python integer (int) or a
-    numpy integer.
+    The type of the object can be either a Python int or a
+    numpy integer type.
     """
     return isinstance(obj,(int,integer))
+
+
+def isFloat(obj):
+    """Test if an object is a floating point number
+
+    Returns True if the object is a single floating point number, else False.
+    The type of the object can be either a Python float or a
+    numpy floating type.
+    """
+    return isinstance(obj,(float,floating))
 
 
 def powers(x,n):

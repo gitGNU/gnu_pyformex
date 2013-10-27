@@ -1910,12 +1910,13 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
           connect back to the first. This is accomplished by adding the first
           Coords item back at the end of the list.
 
-        - `div`: Either an integer, or a sequence of float numbers (usually
-          in the range ]0.0..1.0]) or a list of sequences of the same length of the
-          connecting list of coordinates. In the latter case every sequence inside the
+        - `div`: This should only be used for degree==1.
+
+          Either an integer, or a sequence of float numbers (usually
+          in the range ]0.0..1.0]) or a list of sequences of the same length
+          as `coordslist`. In the latter case every sequence inside the
           list can either be a float sequence (usually in the range ]0.0..1.0])
           or it contains one integer (e.g [[4],[0.3,1]]).
-          This should only be used for degree==1.
 
           With this parameter the generated elements  can be further
           subdivided along the connection direction.
@@ -1962,15 +1963,37 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
             raise ValueError,"Invalid length of coordslist (%s) for degree %s." % (len(clist),degree)
 
         # set divisions
-        if isinstance(div,int):
+
+        ## import copy
+        ## olddiv = copy.deepcopy(div)
+        ## if isinstance(olddiv,int):
+        ##     olddiv=[olddiv]
+
+        ## if not isinstance(olddiv[0],list): # handle int and single float sequence
+        ##     olddiv = [unitDivisor(olddiv,start=1)]*((len(clist)-1)/degree)
+        ## else:
+        ##     if len(olddiv)!=(len(clist)-1)/degree:
+        ##         raise ValueError,"incorrect list length"
+        ##     olddiv = [unitDivisor(d,start=1) for d in olddiv]
+        ## print("OLDDIVISOR %s" % olddiv)
+
+        # set divisions NEW STYLE
+        if degree > 1:
+            div = 1
+        if not isinstance(div,list) or isFloat(div[0]):
             div=[div]
 
-        if not isinstance(div[0],list): # handle int and single float sequence
-            div = [unitDivisor(div,start=1)]*((len(clist)-1)/degree)
-        else:
-            if len(div)!=(len(clist)-1)/degree:
-                raise ValueError,"div must be a integer,a single list of float or a list of division sequence of length (len(clist)-1)/degree)"
-            div = [unitDivisor(d,start=1) for d in div]
+        # now we should have list of: ints, tuples or floatlists
+        div = [ smartSeed(divi,start=1) for divi in div ]
+        # check length
+        nsteps = (len(clist)-1)/degree
+        if len(div) == 1:
+            div = div * nsteps
+        elif len(div)!=nsteps:
+            raise ValueError,"A list of div seeds must have a length equal to (len(clist)-1)/degree) = %s" % nsteps
+
+        ## print("nsteps %s" % nsteps)
+        ## print("DIVISOR %s" % div)
 
         # For higher order non-lagrangian elements the procedure could be
         # optimized by first compacting the coords and elems.
@@ -1979,12 +2002,16 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         # A final compact() throws out the unused points.
 
         # Concatenate the coordinates
-        x = [ Coords.interpolate(xi,xj,d).reshape(-1,3) for xi,xj,d in zip(clist[:-1:degree],clist[degree::degree],div) ]
-        x = Coords.concatenate(clist[:1] + x)
+        if degree == 1:
+            # We do not have a 2nd degree interpolation yet
+            x = [ Coords.interpolate(xi,xj,d).reshape(-1,3) for xi,xj,d in zip(clist[:-1],clist[1:],div) ]
+            clist = clist[:1] + x
+        x = Coords.concatenate(clist)
 
         # Create the connectivity table
         nnod = self.ncoords()
         nrep = (x.shape[0]//nnod - 1) // degree
+        ## print("NREP %s" % nrep)
         e = extrudeConnectivity(self.elems,nnod,degree)
         e = replicConnectivity(e,nrep,nnod*degree)
 
@@ -1996,16 +2023,26 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return M
 
 
-    def extrude(self,n,step=1.,dir=0,degree=1,eltype=None):
+    def extrude(self,div,dir=0,length=1.0,degree=1,eltype=None):
         """Extrude a Mesh in one of the axes directions.
 
         Returns a new Mesh obtained by extruding the given Mesh
         over `n` steps of length `step` in direction of axis `dir`.
 
         """
-        print("Extrusion over %s steps of length %s" % (n,step))
-        x = [ self.coords.trl(dir,i*n*step/degree) for i in range(1,degree+1) ]
-        return self.connect([self.coords] + x,n*degree,degree=degree,eltype=eltype)
+        utils.warn("BEWARE! Mesh.extrude has changed. The step parameter has been removed and there is now a (total) length parameter.")
+        print("Extrusion in direction %s over length %s" % (dir,length))
+        t = smartSeed(div)
+        #print("SEED %s" % t)
+        if degree > 1:
+            t2 = 0.5 * (t[:-1] + t[1:])
+            t = concatenate([t[:1], column_stack([t2,t[1:]]).ravel()])
+            #print("Quadratic SEED %s" % t)
+        x0 = self.coords
+        x1 = x0.trl(dir,length)
+        dx = x1-x0
+        x = [x0 + ti*dx for ti in t ]
+        return self.connect(x,degree=degree,eltype=eltype)
 
 
     def revolve(self,n,axis=0,angle=360.,around=None,loop=False,eltype=None):
@@ -2453,60 +2490,6 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return GeomActor(self,**kargs)
 
 
-
-    #
-    #  NEEDS CLEANUP BEFORE BEING REINSTATED
-    #  =====================================
-    #
-
-    # BV: Should be made dependent on getFaces
-    # or become a function??
-    # ?? DOES THIS WORK FOR *ANY* MESH ??
-    # What with a mesh of points, lines, ...
-    # Also, el.faces can contain items of different plexitude
-    # Maybe define this for 2D meshes only?
-    # Formulas for both linear and quadratic edges
-    # For quadratic: Option to select tangential or chordal directions
-    #
-    #### Currently reinstated in trisurface.py !
-
-    ## def getAngles(self, angle_spec=DEG):
-    ##     """_Returns the angles in DEG or RAD between the edges of a mesh.
-
-    ##     The returned angles are shaped  as (nelems, n1faces, n1vertices),
-    ##     where n1faces are the number of faces in 1 element and the number
-    ##     of vertices in 1 face.
-    ##     """
-    ##     #mf = self.coords[self.getFaces()]
-    ##     mf = self.coords[self.getLowerEntities(2,unique=False)]
-    ##     v = mf - roll(mf,-1,axis=1)
-    ##     v=normalize(v)
-    ##     v1=-roll(v,+1,axis=1)
-    ##     angfac= arccos( clip(dotpr(v, v1), -1., 1. ))/angle_spec
-    ##     el = self.elType()
-    ##     return angfac.reshape(self.nelems(),len(el.faces), len(el.faces[0]))
-
-
-    ## This is dependent on removed getAngles
-    ## # ?? IS THIS DEFINED FOR *ANY* MESH ??
-    ## #this is define for every linear surface or linear volume mesh.
-    ## def equiAngleSkew(self):
-    ##     """Returns the equiAngleSkew of the elements, a mesh quality parameter .
-
-    ##   It quantifies the skewness of the elements: normalize difference between
-    ##   the worst angle in each element and the ideal angle (angle in the face
-    ##   of an equiangular element, qe).
-    ##   """
-    ##     eang=self.getAngles(DEG)
-    ##     eangsh= eang.shape
-    ##     eang= eang.reshape(eangsh[0], eangsh[1]*eangsh[2])
-    ##     eangMax, eangmin=eang.max(axis=1), eang.min(axis=1)
-    ##     f= self.elType().faces[1]
-    ##     nedginface=len( array(f[ f.keys()[0] ], int)[0] )
-    ##     qe=180.*(nedginface-2.)/nedginface
-    ##     extremeAngles= [ (eangMax-qe)/(180.-qe), (qe-eangmin)/qe ]
-    ##     return array(extremeAngles).max(axis=0)
-
 ######################## Functions #####################
 
 # BV: THESE SHOULD GO TO connectivity MODULE
@@ -2637,7 +2620,7 @@ def unitAttractor(x,e0=0.,e1=0.):
 
 
 def seed(n,e0=0.,e1=0.):
-    """Create one-dimensional element seeds in a unit interval
+    """Create one-dimensional element seeds in a unit interval.
 
     Returns parametric values along the unit interval in order to
     divide it in n elements, possibly of unequal length.
@@ -2681,33 +2664,33 @@ def tri3_els(ndiv):
 
     return elems
 
+
 def gridpoints(seed0,seed1=None,seed2=None):
-    """Create weigths for linear lines, quadrilateral and hexahedral elements coordinates
+    """Create weigths for 1D, 2D or 3D element coordinates.
 
-        Parameters:
+    Parameters:
 
-        - 'seed0' : int or list of floats . It specifies divisions along the
-          first parametric direction of the element
+    - 'seed0' : int or list of floats . It specifies divisions along
+      the first parametric direction of the element
 
-        - 'seed1' : int or list of floats . It specifies divisions along
-          the second parametric direction of the element
+    - 'seed1' : int or list of floats . It specifies divisions along
+      the second parametric direction of the element
 
-        - 'seed2' : int or list of floats . It specifies divisions along
-          the t parametric direction of the element
+    - 'seed2' : int or list of floats . It specifies divisions along
+      the t parametric direction of the element
 
-
-        If these parametes are integer values the divisions will be equally spaced between  0 and 1
-
+    If these parametes are integer values the divisions will be equally
+    spaced between 0 and 1.
     """
     if seed0 is not None:
         if isinstance(seed0,int):
             seed0 = seed(seed0)
-        sh=1
+        sh = 1
         pts = seed0
     if seed1 is not None:
         if isinstance(seed1,int):
             seed1 = seed(seed1)
-        sh=4
+        sh = 4
         x1 = seed0
         y1 = seed1
         x0 = 1.-x1
@@ -2716,9 +2699,9 @@ def gridpoints(seed0,seed1=None,seed2=None):
     if seed2 is not None:
         if isinstance(seed2,int):
             seed2 = seed(seed2)
-        sh=8
-        z1=seed2
-        z0=1-z1
+        sh = 8
+        z1 = seed2
+        z0 = 1.-z1
         pts = dstack([dstack([outer(pts[:,:,ipts],zz) for ipts in range(pts.shape[2])]) for zz in [z0,z1] ])
     return pts.reshape(-1,sh).squeeze()
 
@@ -2739,6 +2722,7 @@ def quad4_wts(seed0,seed1):
 
     """
     return gridpoints(seed0,seed1)
+
 
 def quad4_els(nx,ny):
     n = nx+1
@@ -2773,21 +2757,20 @@ def quadgrid(seed0,seed1):
 def hex8_wts(seed0,seed1,seed2):
     """ Create weights for hex8 subdivision.
 
-        Parameters:
+    Parameters:
 
-        - 'seed0' : int or list of floats . It specifies divisions along the
-          first parametric direction of the element
+    - 'seed0' : int or list of floats . It specifies divisions along the
+      first parametric direction of the element
 
-        - 'seed1' : int or list of floats . It specifies divisions along
-          the second parametric direction of the element
+    - 'seed1' : int or list of floats . It specifies divisions along
+      the second parametric direction of the element
 
-        - 'seed2' : int or list of floats . It specifies divisions along
-          the t parametric direction of the element
-
-
-        If these parametes are integer values the divisions will be equally spaced between  0 and 1
+    - 'seed2' : int or list of floats . It specifies divisions along
+      the t parametric direction of the element
 
 
+    If these parametes are integer values the divisions will be equally
+    spaced between  0 and 1
     """
     return gridpoints(seed0,seed1,seed2)
 
@@ -2795,6 +2778,7 @@ def hex8_wts(seed0,seed1,seed2):
 
 def hex8_els(nx,ny,nz):
     """ Create connectivity table for hex8 subdivision.
+
     """
     n = nz+1
     els = [row_stack([row_stack([asarray([array([0,1,n+1,n]) + k for k in range(nz) ])+i * n for i  in range(nx) ])]) +j * (n*(nx+1)) for j in range(ny+1)]
@@ -2802,24 +2786,22 @@ def hex8_els(nx,ny,nz):
     return els
 
 
-
-def smartSeed(n):
+def smartSeed(n,start=0):
     if isInt(n):
-        return seed(n)
+        return seed(n)[start:]
     elif isinstance(n,tuple):
-        return seed(*n)
-    elif isinstance(n,list):
+        return seed(*n)[start:]
+    elif isinstance(n,(list,ndarray)):
         return n
     else:
-        raise ValueError,"Expected an integer, tuple or list"
+        raise ValueError,"Expected an integer, tuple or list; got %s = %s" % (type(n),n)
 
 
 def rectangle(L,W,nl,nw):
-    """Create a plane rectangular mesh of quad4 elements
+    """Create a plane rectangular mesh of quad4 elements.
 
     Parameters:
 
-    - L,W: length,width of the rectangle
     - nl,nw: seeds for the elements along the length, width of the rectangle.
       They should one of the following:
 
@@ -2830,11 +2812,66 @@ def rectangle(L,W,nl,nw):
       - a list of float values in the range 0.0 to 1.0, specifying the relative
         position of the seeds. The values should be ordered and the first and
         last values should be 0.0 and 1.0.
+    - L,W: length,width of the rectangle.
 
     """
     sl = smartSeed(nl)
     sw = smartSeed(nw)
     return quadgrid(sl,sw).resized([L,W,1.0])
+
+
+def quadrilateral(x,n1,n2):
+    """Create a quadrilateral mesh
+
+    Parameters:
+
+    - `x`: Coords(4,3): Four corners of the mesh, in anti-clockwise order.
+    - `n1`: number of elements along sides x0-x1 and x2-x3
+    - `n2`: number of elements along sides x1-x2 and x3-x4
+
+    Returns a Mesh of quads filling the quadrilateral defined  by the four
+    points `x`.
+    """
+    from elements import Quad4
+    from plugins import isopar
+    x = checkArray(x,(4,3),'f')
+    M = rectangle(1.,1.,nl,nw).isopar('quad4',x,Quad4.vertices)
+    return M
+
+
+def quarter_circle(n1,n2):
+    """Create a mesh of quadrilaterals filling a quarter circle.
+
+    Parameters:
+
+    - `n1`: number of elements along sides x0-x1 and x2-x3
+    - `n2`: number of elements along sides x1-x2 and x3-x4
+
+    Returns a Mesh representing a quarter circle with radius 1 and
+    center at the origin.
+
+    The quarter circle mesh has a kernel of n1*n1 cells, and two
+    border meshes of n1*n2 cells. The resulting mesh has n1+n2 cells
+    in radial direction and 2*n1 cells in tangential direction (in the
+    border mesh).
+
+    """
+    r = float(n1)/(n1+n2)  # radius of the kernel
+    P0,P1 = Coords([[0.,0.,0.],[r ,0.,0.]])
+    P2 = P1.rot(45.)
+    P3 = P1.rot(90.)
+    # Kernel is a quadrilateral
+    C0 = PolyLine([P0,P1]).approx(n1).toMesh()
+    C1 = PolyLine([P3,P2]).approx(n1).toMesh()
+    M0 = C0.connect(C1,div=n1)
+    # Border meshes
+    C0 = Arc(center=P0,radius=1.,angles=(0.,45.)).approx(n1).toMesh()
+    C1 = PolyLine([P1,P2]).approx(n1).toMesh()
+    M1 = C0.connect(C1,div=n2)
+    C0 = Arc(center=P0,radius=1.,angles=(45.,90.)).approx(n1).toMesh()
+    C1 = PolyLine([P2,P3]).approx(n1).toMesh()
+    M2 = C0.connect(C1,div=n2)
+    return M0+M1+M2
 
 
 def rectangle_with_hole(L,W,r,nr,nt,e0=0.0,eltype='quad4'):
