@@ -1,8 +1,14 @@
-pyformex (0.9.1~a1-1) unstable; urgency=low
+pyformex (0.9.1-2) unstable; urgency=low
 
-  * New upstream release
+  * Upgrade to standards 3.9.4 
 
- -- Benedict Verhegghe <benedict.verhegghe@ugent.be>  Tue, 15 Oct 2013 20:03:24 +0200
+ -- Benedict Verhegghe <benedict.verhegghe@ugent.be>  Fri, 25 Oct 2013 10:56:06 +0200
+
+pyformex (0.9.1-1) unstable; urgency=low
+
+  * New upstream release 
+
+ -- Benedict Verhegghe <benedict.verhegghe@ugent.be>  Thu, 24 Oct 2013 23:26:41 +0200
 
 pyformex (0.9.0-2) unstable; urgency=low
 
