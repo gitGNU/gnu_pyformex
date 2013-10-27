@@ -15,6 +15,7 @@ usage() {
 Usage: $(basename $0) [ -r RELEASE ]  CMD...
 Where CMD is one of:
 prepare : change the changelog file to register the new package
+prepfix : change the changelog file to minor fix to a package
   clean : clean the current unpack directories to allow new build
  unpack : Unpacks the current .tar.gz release from dist
   build : test-build the Debian packages for the current release
@@ -61,11 +62,12 @@ setup() {
 # Prepare for a new release
 prepare() {
     dch -v $RELEASE-1
-    sed -i '0,s|UNRELEASED|unstable|' $PYFDIR/debian/changelog
+    sed -i '0,/UNRELEASED/s//unstable/' debian/changelog
 }
 # Prepare for a package fix
-preparefix() {
+prepfix() {
     dch -i
+    sed -i '0,/UNRELEASED/s//unstable/' debian/changelog
 }
 
 unpack() {
