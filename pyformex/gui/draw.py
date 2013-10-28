@@ -960,7 +960,7 @@ def drawPropNumbers(F,**kargs):
     If the object F thus not have property numbers, -1 values are drawn.
     """
     if F.prop is None:
-        nrs = [ -1 ] * self.nelems()
+        nrs = -ones(F.nelems(),dtype=Int)
     else:
         nrs = F.prop
     drawNumbers(F,nrs,**kargs)
