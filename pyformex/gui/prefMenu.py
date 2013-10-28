@@ -379,13 +379,16 @@ def setRendering():
         #if pf.cfg['render/mode'] != vp.rendermode:
         print("SETMODE %s %s" % (pf.cfg['render/mode'],pf.cfg['render/lighting']))
         vp.setRenderMode(pf.cfg['render/mode'],pf.cfg['render/lighting'])
-        print(vp.rendermode,vp.settings.lighting)
+        #print(vp.rendermode,vp.settings.lighting)
         vp.update()
         toolbar.updateLightButton()
 
-
     def acceptAndSave():
         accept(save=True)
+
+    def changeLight(field):
+        print(field)
+        accept()
 
     def createDialog():
         matnames = pf.GUI.materials.keys()
@@ -399,9 +402,9 @@ def setRendering():
             light = pf.cfg['light/%s'%name]
             items = _T(name,[
                 _I("enabled",text="Enabled",value=light['enabled']),
-                _I("ambient",text="Ambient",value=light['ambient'],itemtype='color'),
-                _I("diffuse",text="Diffuse",value=light['diffuse'],itemtype='color'),
-                _I("specular",text="Specular",value=light['specular'],itemtype='color'),
+                _I("ambient",text="Ambient",value=light['ambient'],itemtype='color',func=changeLight),
+                _I("diffuse",text="Diffuse",value=light['diffuse'],itemtype='color',func=changeLight),
+                _I("specular",text="Specular",value=light['specular'],itemtype='color',func=changeLight),
                 _I("position",text="Position",value=light['position'][:3],itemtype='point'),
                 ])
             light_items.append(items)
