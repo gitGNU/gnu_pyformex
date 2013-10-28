@@ -51,47 +51,15 @@ def _add_extra_Mesh_methods():
     This function is called when the module is loaded, so the functions
     installed here will always be available as Mesh methods just by
     importing the mesh_ext module.
-    """
-
-    #
-    # What is a ring
-    # What is returned?
-    @utils.deprecation("`rings` is deprecated: use `connectionSteps` instead.")
-    def rings(self, sources=0, nrings=-1):
-        """_
-        It finds rings of elements connected to sources by a node.
-
-        Sources can be a single element index (integer) or a list of element indices.
-        A list of rings is returned, from zero (ie. the sources) to nrings.
-        If nrings is negative (default), all rings are returned.
-        """
-    #
-    # TODO: this should be made an example
-    #
-        ## Example:
-
-        ## S=Sphere(2)
-        ## smooth()
-        ## draw(S, mode='wireframe')
-        ## drawNumbers(S, ontop=True, color='white')
-        ## r=S.rings(sources=[2, 6], nrings=2)
-        ## print(r)
-        ## for i, ri in enumerate(r):
-        ##     draw(S.select(ri).setProp(i), mode='smooth')
-
-        if nrings == 0:
-            return [array(sources)]
-        r=self.frontWalk(startat=sources,maxval=nrings-1, frontinc=1)
-        ar, rr= arange(len(r)), range(r.max()+1)
-        return [ar[r==i] for i in rr ]
+    """       
        
-       
-    def connectionSteps(self, nodesource=[], elemsource=[], maxstep=1):
+    def connectionSteps(self, nodesource=[], elemsource=[], maxstep=-1):
         """Return the elems connected to some sources via multiple nodal steps.
         
         - 'nsources' : are node sources,
         - 'esource' : are elem sources,
-        - 'maxstep' : is the max number of walked elements.
+        - 'maxstep' : is the max number of walked elements. If negative (default), 
+         all rings are returned.
         
         Returns a list of elem indices at each nodal connection step:
         elemATstep1 are elem connected to esource or nsource via a node;
@@ -100,7 +68,9 @@ def _add_extra_Mesh_methods():
         ...
         The last member of the list is either the connection after walking `maxstep` edges
         or the last possible connection (meaning that one more step would 
-        not find any connected elem)
+        not find any connected elem).
+        If the user would like elemsource as first list's item:
+        [checkArray1D(elemsource)]+self.connectionSteps(nodesource, elemsource, maxstep)
         
         Todo: 
         -add a connection 'level' to extend to edge and face connections
@@ -111,7 +81,10 @@ def _add_extra_Mesh_methods():
         from simple import sphere
         S=sphere(20)
         draw(S, mode='wireframe')
-        x = S.connectionSteps(nodesource=[2, 1900], elemsource=[6, 700], maxstep=10)   
+        nodesource = [2, 1900]
+        elemsource = [6, 700]
+        x = S.connectionSteps(nodesource=nodesource, elemsource=elemsource, maxstep=-1)
+        x = [checkArray1D(elemsource)]+x #append elemsource to list
         from gui.colorscale import ColorScale
         val=-ones(S.nelems())
         for i, ex in enumerate(x):
@@ -120,9 +93,15 @@ def _add_extra_Mesh_methods():
         CS = ColorScale('RGB',0,val.max())
         cval = array(map(CS.color,val))#this change a scalar array into a color array
         draw(S.select(val>-1), color=cval[val>-1], mode='flat')
+        draw(S.select(elemsource), mode='wireframe', linewidth=7, color='white')
+        draw(S.coords[nodesource], marksize=10, color='white')
+        drawMarks(S.coords[nodesource],['nodesource']*len(nodesource),color='black',leader='',ontop=True)
+        drawMarks(S.select(elemsource).centroids(),['elemsource']*len(elemsource),color='black',leader='',ontop=True)
         """
         L = []
         ns = unique(concatenate([self.elems[elemsource].ravel(), nodesource]))
+        if maxstep<0:
+            maxstep = self.nelems()
         for i in range(maxstep):
             xsource = self.elems.connectedTo(ns)
             mult, bins = multiplicity(concatenate([xsource, elemsource]))
@@ -286,7 +265,6 @@ def _add_extra_Mesh_methods():
     #
     # Install
     #
-    Mesh.rings = rings
     Mesh.connectionSteps = connectionSteps
     #Mesh.correctNegativeVolumes = correctNegativeVolumes
     Mesh.scaledJacobian = scaledJacobian
