@@ -86,7 +86,7 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
       it to a vtkPolyData using the function convert2VPD with flag clean=True and then
       converted back using convertFromVPD implemented in the vtk_itf plugin to avoid
       wrong point selection of the vmtk function.
-.
+
     Returns a Coords with the points defining the centerline
 
     If return_data is True tuple cointaing the list of the names of the additional infomations
@@ -142,7 +142,7 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
 
 
 def remesh(self,elementsizemode='edgelength',edgelength=None,
-           area=None, areaarray=None, aspectratio=None, excludeprop=None, preserveboundary=False, conformal='border'):
+           area=None, areaarray=None, aspectratio=None, excludeprop=None, includeprop=None, preserveboundary=False, conformal='border'):
     """Remesh a TriSurface.
     
     Returns the remeshed TriSurface. If the TriSurface has property numbers
@@ -157,15 +157,25 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
     - `area`: float: global target triangle area
     - `areaarray`: array of float: nodal target triangle area
     - `aspectratio`: float: upper threshold for aspect ratio (default=1.2)
+    - `includeprop`: either a single integer, or a list/array of integers. 
+      Only the regions with these property number(s) will be remeshed.
+      This option is not compatible with `exludeprop`.
     - `excludeprop`: either a single integer, or a list/array of integers. 
-      The regions with these property number(s) will not be remeshed. 
+      The regions with these property number(s) will not be remeshed.
+      This option is not compatible with `includeprop`.
     - `preserveboundary`: if True vmtk tries to keep the shape of the border.
     - `conformal`: None, `border` or `regionsborder`. 
       If there is a border (ie. the surface is open) conformal=`border` 
       preserves the border line (both points and connectivity); conformal=`regionsborder` 
       preserves both border line and lines between regions with different property numbers.
-    """
-
+    """        
+    if includeprop is not None:
+        if excludeprop is not None:
+            raise ValueError, 'you cannot use both excludeprop and includeprop'
+        else:
+            ps = self.propSet()
+            mask = in1d(ar1=ps, ar2=checkArray1D(includeprop))
+            excludeprop = ps[~mask]
     if conformal == 'border' or conformal == 'regionsborder':
         if elementsizemode=='areaarray':
             raise ValueError,'conformal (regions)border and areaarray cannot be used together (yet)!'#conformalBorder alters the node list. Afterwards, the nodes do not correspond with pointAr.
@@ -234,16 +244,18 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
 def vmtkDistanceOfSurface(self,S):
     """Find the distances of TriSurface S to the TriSurface self.
 
-    Retuns a tuple of vector and signed scalar distances for all points of S.
+    Retuns a tuple of vector and signed scalar distances for all nodes of S.
     The signed distance is positive if the distance vector and the surface
-    normal have negative dot product, i.e. if S is outer with respect to self.
+    normal have negative dot product, i.e. if nodes of S is outer with respect to self.
+    It is advisable to use a surface S which is clean (fused, compacted and renumbered). 
+    If not vmtk cleans the mesh and the nodes of S are re-matched.
     """
-    tmp = utils.tempFile(suffix='.stl').name
-    tmp1 = utils.tempFile(suffix='.stl').name
-    tmp2 = utils.tempFile(suffix='.dat').name
-    S.write(tmp,'stl')
-    self.write(tmp1,'stl')
-    cmd = 'vmtk vmtksurfacedistance -ifile %s -rfile %s -distancevectorsarray vec -signeddistancearray dist -ofile %s' % (tmp,tmp1,tmp2)
+    tmp = utils.tempFile(suffix='.vtp').name
+    tmp1 = utils.tempFile(suffix='.vtp').name
+    tmp2 = utils.tempFile(suffix='.vtp').name
+    S.write(tmp,'vtp')
+    self.write(tmp1,'vtp')
+    cmd = 'vmtk vmtksurfacedistance -ifile %s -rfile %s -distancevectorsarray vdist -signeddistancearray sdist -ofile %s' % (tmp,tmp1,tmp2)
     sta,out = utils.runCommand(cmd)
     os.remove(tmp)
     os.remove(tmp1)
@@ -251,12 +263,16 @@ def vmtkDistanceOfSurface(self,S):
         pf.message("An error occurred during the distance calculation.")
         pf.message(out)
         return None
-    data,header = readVmtkCenterlineDat(tmp2)
+    from plugins.vtk_itf import readVTP
+    coords, E, fieldAr, cellAr, pointAr=readVTP(tmp2)
+    vdist, sdist = pointAr['vdist'], pointAr['sdist']
     os.remove(tmp2)
-    X,vdist,sdist = Coords(data[:,:3]),data[:,3:6],data[:,6] # disordered points
-    reorderindex = X.match(S.coords)
-    vdist = vdist[reorderindex]
-    sdist = sdist[reorderindex]
+    from plugins.vtk_itf import checkClean
+    if not checkClean(S):
+        print('nodes need to be re-matched because surface was not clean')
+        reorderindex = Coords(coords).match(S.coords)
+        vdist = vdist[reorderindex]
+        sdist = sdist[reorderindex]
     return vdist,sdist
 
 
