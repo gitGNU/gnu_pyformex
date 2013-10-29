@@ -279,7 +279,11 @@ def vmtkDistanceOfSurface(self,S):
 def vmtkDistanceOfPoints(self,X,nproc=1):
     """Find the distances of points X to the TriSurface self.
 
-    X is a (nX,3) shaped array of points.
+    - `X` is a (nX,3) shaped array of points.
+    - `nproc`: number of parallel processes to use. On multiprocessor machines
+      this may be used to speed up the processing. If <= 0 , the number of
+      processes will be set equal to the number of processors, to achieve
+      a maximal speedup.
 
     Retuns a tuple of vector and signed scalar distances for all points.
     The signed distance is positive if the distance vector and the surface
