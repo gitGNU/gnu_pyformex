@@ -80,6 +80,7 @@ application in 'app' mode. Multiprocessing runs fine in 'app' mode.
         
     pool = Pool(nproc)
     res = pool.map(dofunc,tasks)
+    pool.close()
     return res
 
 
