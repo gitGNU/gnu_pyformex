@@ -35,7 +35,7 @@ from mesh import Mesh
 from plugins.trisurface import TriSurface
 import utils
 import os
-
+from multi import multitask,cpu_count,splitar
 
 def readVmtkCenterlineDat(fn):
    """Read a .dat file containing the centerlines generated with vmtk.
@@ -276,7 +276,7 @@ def vmtkDistanceOfSurface(self,S):
     return vdist,sdist
 
 
-def vmtkDistanceOfPoints(self,X):
+def vmtkDistanceOfPoints(self,X,nproc=1):
     """Find the distances of points X to the TriSurface self.
 
     X is a (nX,3) shaped array of points.
@@ -285,8 +285,18 @@ def vmtkDistanceOfPoints(self,X):
     The signed distance is positive if the distance vector and the surface
     normal have negative dot product, i.e. if X is outer with respect to self.
     """
-    S = TriSurface(X,arange(X.shape[0]).reshape(-1,1)*ones(3,dtype=int).reshape(1,-1))
-    return vmtkDistanceOfSurface(self,S)
+    if nproc < 1:
+        nproc = cpu_count()
+    if nproc==1:
+        S = TriSurface(X,arange(X.shape[0]).reshape(-1,1)*ones(3,dtype=int).reshape(1,-1))
+        return vmtkDistanceOfSurface(self,S)
+    else:
+        datablocks = splitar(X,nproc,close=False)
+        print ('-----distance of %d points from %d triangles with %d proc'%(len(X), self.nelems(), nproc)) 
+        tasks = [(vmtkDistanceOfPoints,(self,d,1)) for d in datablocks]
+        ind = multitask(tasks,nproc)
+        vdist,sdist=zip(*ind)
+        return concatenate(vdist), concatenate(sdist)
 
 def vmtkDistancePointsToSegments(X,L):
     """Find the shortest distances from points X to segments L.
