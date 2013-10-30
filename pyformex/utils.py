@@ -1251,6 +1251,8 @@ def interrogate(item):
 
 def memory_report(keys=None):
     """Return info about memory usage"""
+    import gc
+    gc.collect()
     sta,out,err = system('cat /proc/meminfo')
     res = {}
     for line in out.split('\n'):
@@ -1266,6 +1268,21 @@ def memory_report(keys=None):
         res = selectDict(res,keys)
     return res
 
+
+def memory_diff(mem0,mem1,tag=None):
+    m0 = mem0['MemUsed']/1024.
+    m1 = mem1['MemUsed']/1024.
+    m2 = m1 - m0
+    m3 = mem1['MemFree']/1024.
+    print("%s; Before: %.1f MB; After: %.1f MB; Used: %.1f MB; Free: %.1f MB" % (tag,m0,m1,m2,m3))
+
+_mem_state = None
+def memory_track(tag=None):
+    global _mem_state
+    new_mem_state = memory_report()
+    if tag and _mem_state is not None:
+        memory_diff(_mem_state,new_mem_state,tag)
+    _mem_state = new_mem_state
 
 
 def totalMemSize(o, handlers={}, verbose=False):
