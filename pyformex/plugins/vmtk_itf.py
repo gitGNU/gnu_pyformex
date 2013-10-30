@@ -175,6 +175,9 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
         else:
             ps = self.propSet()
             mask = in1d(ar1=ps, ar2=checkArray1D(includeprop))
+            if sum(mask)==0:
+                utils.warn('inlcudeprop %s are in the property set %s. Remesh will not have any effect.'%(includeprop, ps))
+                return self
             excludeprop = ps[~mask]
     if conformal == 'border' or conformal == 'regionsborder':
         if elementsizemode=='areaarray':
