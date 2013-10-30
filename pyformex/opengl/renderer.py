@@ -40,6 +40,7 @@ import numpy as np
 from OpenGL import GL
 from shader import Shader
 from attributes import Attributes
+#import utils
 
 from drawable import GeomActor
 
@@ -101,7 +102,7 @@ class Renderer(object):
         # single statement like
         #   self.shader.loadUniforms(self.canvas.settings)
         #print("DEFAULTS",self.canvas.settings)
-        self.shader.uniformInt('builtin',1)
+        self.shader.uniformInt('builtin',0)
         self.shader.uniformInt('highlight',0)
         self.shader.uniformFloat('lighting',self.canvas.settings.lighting)
         self.shader.uniformInt('useObjectColor',1)
@@ -130,7 +131,6 @@ class Renderer(object):
 
     def render(self,scene,pick=None):
         """Render the geometry for the scene."""
-        #scene.printTotals()
         self.shader.bind(picking=bool(pick))
         try:
 
@@ -177,23 +177,6 @@ class Renderer(object):
 
         finally:
             self.shader.unbind()
-
-
-    def highlight(self,objects):
-        """Highlight the objects in the list."""
-        for obj in objects:
-            obj.highlight = 1
-
-
-    def removeHighlight(self,objects=None):
-        """Remove the highlight from the objects in the list.
-
-        If no objects, all the highlights are removed
-        """
-        if objects is None:
-            objects = self._objects
-        for obj in objects:
-            obj.highlight = None
 
 
 # End

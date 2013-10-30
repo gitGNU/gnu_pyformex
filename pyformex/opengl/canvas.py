@@ -569,6 +569,7 @@ class Canvas(object):
 
     def __init__(self,settings={}):
         """Initialize an empty canvas with default settings."""
+        loadLibGL()
         self.scene = Scene(self)
         self.highlights = ActorList(self)
         self.camera = None
@@ -1093,6 +1094,7 @@ class Canvas(object):
     def addAny(self,itemlist):
         self.scene.addAny(itemlist)
 
+
     addActor = addAnnotation = addDecoration = addAny
 
     def removeAny(self,itemlist):
@@ -1327,7 +1329,7 @@ class Canvas(object):
         selbuf = GL.glSelectBuffer(npickable*(3+stackdepth))
         GL.glRenderMode(GL.GL_SELECT)
         GL.glInitNames()
-        self.renderer.render(pick=self.pick_window)
+        self.renderer.render(self.scene,pick=self.pick_window)
         # Store pick window for debugging
         pf.PF['pick_window'] = self.pick_window
         libGL.glRenderMode(GL.GL_RENDER)
@@ -1427,14 +1429,14 @@ class Canvas(object):
         the Collection K.
         """
         print("HIGHLIGHT_ACTORS",K)
-        self.renderer.removeHighlight()
+        self.scene.removeHighlight()
         for i in K.get(-1,[]):
-            self.renderer._objects[i].highlight = True
+            self.scene.actors[i].highlight = True
 
 
     def highlightElements(self,K):
         print("HIGHLIGHT_ELEMENTS",K)
-        self.renderer.removeHighlight()
+        self.scene.removeHighlight()
         for i in K.keys():
             pf.debug("Actor %s: Selection %s" % (i,K[i]),pf.DEBUG.DRAW)
             self.actors[i].addHighlightElements(K[i])
@@ -1442,7 +1444,7 @@ class Canvas(object):
 
     def highlightPoints(self,K):
         print("HIGHLIGHT_POINTS",K)
-        self.renderer.removeHighlight()
+        self.scene.removeHighlight()
         for i in K.keys():
             pf.debug("Actor %s: Selection %s" % (i,K[i]),pf.DEBUG.DRAW)
             self.actors[i].addHighlightPoints(K[i])
@@ -1456,7 +1458,7 @@ class Canvas(object):
 
         Without argument, removes all highlights from the scene.
         """
-        self.renderer.removeHighlight()
+        self.scene.removeHighlight()
 
 
     highlight_funcs = { 'actor': highlightActors,

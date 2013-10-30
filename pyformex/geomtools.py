@@ -243,7 +243,6 @@ def polygonNormals(x):
     v1 = x-x[:,nj]
     v2 = x[:,nk]-x
     n = vectorPairNormals(v1.reshape(-1,3),v2.reshape(-1,3)).reshape(x.shape)
-    #print "NANs: %s" % isnan(n).sum()
     return n
 
 

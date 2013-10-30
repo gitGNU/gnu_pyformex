@@ -48,6 +48,7 @@ import drawable
 from gui import actors
 from gui import decors
 from gui import marks
+import utils
 
 
 class ActorList(list):
@@ -77,6 +78,7 @@ class ActorList(list):
         for a in actor:
             if a in self:
                 self.remove(a)
+                #a.__del__()
 
     def clear(self):
         """Clear the list"""
@@ -251,6 +253,23 @@ class Scene(object):
         self.decorations.clear()
 
 
+    def highlight(self,actors):
+        """Highlight the actors in the list."""
+        for obj in actors:
+            obj.highlight = 1
+
+
+    def removeHighlight(self,actors=None):
+        """Remove the highlight from the actors in the list.
+
+        If no actors list is specified, all the highlights are removed.
+        """
+        if actors is None:
+            actors = self.actors
+        for obj in actors:
+            obj.highlight = None
+
+
     def printTotals(self):
         print("SCENE: %s actors, %s oldactors, %s annotations, %s decorations" % (len(self.actors),len(self.oldactors),len(self.annotations),len(self.decorations)))
 
@@ -282,6 +301,5 @@ def sane_bbox(bb):
     bb[0,sz==0.0] -= ds
     bb[1,sz==0.0] += ds
     return coords.Coords(bb)
-
 
 ### End
