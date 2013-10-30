@@ -63,10 +63,10 @@ class Plane(object):
 
     def normal(self):
         return self.n
-    
+
     def size(self):
         return self.s
-    
+
     def bbox(self):
         return self.P.bbox()
 
@@ -86,7 +86,6 @@ class Plane(object):
 
 def report(K):
     if K is not None and hasattr(K,'obj_type'):
-        print(K.obj_type)
         if K.obj_type == 'actor':
             return reportActors(K)
         elif K.obj_type == 'element':
@@ -135,7 +134,7 @@ def reportPoints(K):
         s += "Actor %s (type %s); Points %s\n" % (k,A.getType(),v)
         x = A.points()
         for p in v:
-            s += "  Point %s: %s\n" % (p,x[p]) 
+            s += "  Point %s: %s\n" % (p,x[p])
     return s
 
 
@@ -147,7 +146,7 @@ def reportEdges(K):
         s += "Actor %s (type %s); Edges %s\n" % (k,A.getType(),v)
         e = A.edges()
         for p in v:
-            s += "  Edge %s: %s\n" % (p,e[p]) 
+            s += "  Edge %s: %s\n" % (p,e[p])
 
 
 def reportPartitions(K):
@@ -201,14 +200,14 @@ def reportAngles(K):
             raise TypeError,"Angle measurement only possible with Formex or Mesh"
     return s
 
-    
+
 def getObjectItems(obj,items,mode):
     """Get the specified items from object."""
     if mode == 'actor':
         return [ obj[i].object for i in items if hasattr(obj[i],'object') ]
     elif mode in ['element','partition']:
         if hasattr(obj,'object') and hasattr(obj.object,'select'):
-            return obj.object.select(items)        
+            return obj.object.select(items)
     elif mode == 'point':
         if hasattr(obj,'points'):
             return obj.points()[items]
@@ -226,7 +225,7 @@ def getCollection(K):
     else:
         return None
 
-   
+
 def growCollection(K,**kargs):
     """Grow the collection with n frontal rings.
 
@@ -242,7 +241,7 @@ def growCollection(K,**kargs):
 
 def partitionCollection(K):
     """Partition the collection according to node adjacency.
-    
+
     The actor numbers will be connected to a collection of property numbers,
     e.g. 0 [1 [4,12] 2 [6,20]], where 0 is the actor number, 1 and 2 are the
     property numbers and 4, 12, 6 and 20 are the element numbers.
@@ -289,5 +288,23 @@ def exportObjects(obj,name,single=False):
     else:
         export({name:obj})
 
-                
+
+def actorDialog(actorids):
+    """Create an actor dialog for the specified actors (by index)
+
+    """
+    from gui.draw import _T,_G,_I,askItems
+    print("actorDialog %s" % actorids)
+    actors = [ pf.canvas.actors[i] for i in actorids ]
+    items = [ _T("actor_%s" % i, [
+        _I('name',str(a.name)),
+        _I('type',str(a.getType()),readonly=True),
+        _I('visible',bool(a.visible)),
+        _I('alpha',float(a.alpha)),
+        _I('objcolor',str(a.objcolor),itemtype='color'),
+        ]) for i,a in zip(actorids,actors) ]
+    res = askItems(items)
+    print(res)
+
+
 # End

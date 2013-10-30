@@ -35,7 +35,6 @@ from geometry_menu import autoName
 import utils
 from formex import *
 from gui.draw import *
-from gui.widgets import simpleInputItem as _I
 from plugins import objects
 from plugins.tools import *
 from plugins.trisurface import TriSurface
@@ -255,6 +254,8 @@ def set_selection(obj_type):
     global selection
     selection = None
     selection = pick(obj_type)
+    print(selection)
+
 
 def query(mode):
     set_selection(mode)
@@ -293,7 +294,6 @@ def report_selection():
     if selection is None:
         warning("You need to pick something first.")
         return
-    print(selection)
     print(report(selection))
 
 
@@ -454,6 +454,19 @@ def export_selection():
             export(dict([ (name+"-%s"%i,v) for i,v in enumerate(sel)]))
 
 
+def actor_dialog():
+    print("actor_dialog")
+    if selection is None or not selection.obj_type == 'actor':
+        warning("You need to pick some actors first.")
+        return
+
+    actors = [ pf.canvas.actors[i] for i in selection.get(-1,[]) ]
+    print("Creating actor dialog for %s actors" % len(actors))
+    actorDialog(selection.get(-1,[]))
+
+
+###############################################################
+
 def sendMail():
     import sendmail
     sender = pf.cfg['mail/sender']
@@ -609,17 +622,17 @@ def create_menu():
             ("&Points",pick_points),
             ("&Edges",pick_edges),
             ]),
-        ('&Edit Points',edit_points),
-        ("&Remove Highlights",removeHighlight),
-        ("---",None),
-        ('&Selection',[
+        ('&With picked',[
             ('&Create Report',report_selection),
             ('&Set Property',setprop_selection),
             ('&Grow',grow_selection),
             ('&Partition',partition_selection),
             ('&Get Partition',get_partition),
             ('&Export',export_selection),
+            ('&Actor dialog',actor_dialog),
             ]),
+        ('&Edit Points',edit_points),
+        ("&Remove Highlights",removeHighlight),
         ("---",None),
         ('&Query',[
             ('&Actors',query_actors),
