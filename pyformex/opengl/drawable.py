@@ -312,6 +312,8 @@ def polygonEdgeIndex(n):
     return column_stack([i0,i1])
 
 
+########################################################################
+
 class GeomActor(Attributes):
     """Proposal for drawn objects
 
@@ -385,6 +387,10 @@ class GeomActor(Attributes):
         # Currently do everything in Formex model
         # And we always need this one
         self.vbo = VBO(self.fcoords)
+
+
+    def getType(self):
+        return self.object.__class__
 
 
     @property
