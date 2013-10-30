@@ -646,7 +646,7 @@ class TriSurface(Mesh):
             data = fileread.read_gambit_neutral(fn)
         elif ftype == 'smesh':
             data = tetgen.readSurface(fn)
-        elif ftype == 'vtp':
+        elif ftype == 'vtp' or ftype == 'vtk':
             from vtk_itf import readVTP
             coords, E, fieldAr, cellAr, pointAr = readVTP(fn)
             data = (coords, E[0])
@@ -681,7 +681,7 @@ class TriSurface(Mesh):
         elif ftype == 'gts':
             filewrite.writeGTS(fname,self.coords,self.getEdges(),self.getElemEdges())
             print("Wrote %s vertices, %s edges, %s faces" % self.shape())
-        elif ftype in ['stl','stla','stlb','off','smesh','vtp']:
+        elif ftype in ['stl','stla','stlb','off','smesh','vtp','vtk']:
             if ftype in ['stl','stla']:
                 filewrite.writeSTL(fname,self.coords[self.elems],binary=False)
             elif ftype == 'stlb':
@@ -690,7 +690,7 @@ class TriSurface(Mesh):
                 filewrite.writeOFF(fname,self.coords,self.elems)
             elif ftype == 'smesh':
                 tetgen.writeSurface(fname,self.coords,self.elems)
-            elif ftype == 'vtp':
+            elif ftype == 'vtp' or ftype == 'vtk':
                 import vtk_itf
                 vtk_itf.writeVTP(fname,self,checkMesh=False)
             print("Wrote %s vertices, %s elems" % (self.ncoords(),self.nelems()))
