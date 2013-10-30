@@ -1274,15 +1274,19 @@ def memory_diff(mem0,mem1,tag=None):
     m1 = mem1['MemUsed']/1024.
     m2 = m1 - m0
     m3 = mem1['MemFree']/1024.
-    print("%s; Before: %.1f MB; After: %.1f MB; Used: %.1f MB; Free: %.1f MB" % (tag,m0,m1,m2,m3))
+    print("%10.1f MB before; %10.1f MB after; %10.1f MB used; %10.1f MB free; %s" % (m0,m1,m2,m3,tag))
+
 
 _mem_state = None
-def memory_track(tag=None):
+def memory_track(tag=None,since=None):
     global _mem_state
+    if since is None:
+        since = _mem_state
     new_mem_state = memory_report()
     if tag and _mem_state is not None:
-        memory_diff(_mem_state,new_mem_state,tag)
+        memory_diff(since,new_mem_state,tag)
     _mem_state = new_mem_state
+    return _mem_state
 
 
 def totalMemSize(o, handlers={}, verbose=False):
