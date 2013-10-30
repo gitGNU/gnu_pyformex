@@ -467,7 +467,11 @@ def rotationAngle(A,B,m=None,angle_spec=DEG):
         n = cross(A,B) # vectors perpendicular to A and B
         t = length(n) == 0.
         if t.any(): # some vectors A and B are parallel
-            n[t] = anyPerpendicularVector(A[t])
+            if A.shape[0] >=  B.shape[0]:
+                temp = A[t]
+            else:
+                temp = B[t]
+            n[t] = anyPerpendicularVector(temp)
         n = normalize(n)
         c = dotpr(A,B)
         angle = arccosd(c.clip(min=-1.,max=1.),angle_spec)
@@ -494,7 +498,7 @@ def anyPerpendicularVector(A):
     The returned vector is always a vector in the x,y plane. If the original
     is the z-axis, the result is the x-axis.
     """
-    A = asarray(A)
+    A = asarray(A).reshape(-1,3)
     x,y,z = hsplit(A,[1,2])
     n = zeros(x.shape,dtype=Float)
     i = ones(x.shape,dtype=Float)
