@@ -198,6 +198,9 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
             return remesh(s1,elementsizemode=elementsizemode,edgelength=edgelength,
                area=area, areaarray=None, aspectratio=aspectratio, excludeprop=excludeprop1, 
                preserveboundary=preserveboundary, conformal=None).withoutProp([-1,-2]).compact()
+    else:
+        if conformal is not None:
+            raise ValueError, 'conformal should be either None, border or regionsborder'
 
     from plugins.vtk_itf import readVTP, writeVTP, checkClean
     tmp = utils.tempFile(suffix='.vtp').name
