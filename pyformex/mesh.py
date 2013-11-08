@@ -1372,46 +1372,16 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return Mesh(self.coords,elems,prop=prop,eltype=eltype)
 
 
+    @utils.deprecation("Mesh.withProp is deprecated. Use Geometry.selectProp instead.")
     def withProp(self,val):
-        """Return a Mesh which holds only the elements with property val.
-
-        val is either a single integer, or a list/array of integers.
-        The return value is a Mesh holding all the elements that
-        have the property val, resp. one of the values in val.
-        The returned Mesh inherits the matching properties.
-
-        If the Mesh has no properties, a copy with all elements is returned.
-        """
-        if self.prop is None:
-            return self.__class__(self.coords,self.elems,eltype=self.elType())
-        elif array(val).size == 1:
-            return self.__class__(self.coords,self.elems[self.prop==val],prop=val,eltype=self.elType())
-        else:
-            t = zeros(self.prop.shape,dtype=bool)
-            for v in asarray(val).flat:
-                t += (self.prop == v)
-            return self.__class__(self.coords,self.elems[t],prop=self.prop[t],eltype=self.elType())
+        return self.selectProp(val)
 
 
-    def withoutProp(self, val):
-        """Return a Mesh without the elements with property `val`.
-
-        This is the complementary method of Mesh.withProp().
-        val is either a single integer, or a list/array of integers.
-        The return value is a Mesh holding all the elements that do not
-        have the property val, resp. one of the values in val.
-        The returned Mesh inherits the matching properties.
-
-        If the Mesh has no properties, a copy with all elements is returned.
-        """
-        ps = self.propSet()
-        if type(val)==int:
-            t=ps==val
-        else:
-            t=sum([ps==v for v in val], axis=0)
-        return self.withProp(ps[t==0])
-
-
+    @utils.deprecation("Mesh.withoutProp is deprecated. Use Geometry.cselectProp instead.")
+    def withoutProp(self,val):
+        return self.cselectProp(val)
+        
+        
     def connectedTo(self,nodes):
         """Return a Mesh with the elements connected to the specified node(s).
 

@@ -243,6 +243,53 @@ class Geometry(object):
         return np.resize(prop,(self.nelems(),)).astype(Int)
 
 
+    def whereProp(self,val):
+        """Return the numbers of the elements with property val.
+
+        val is either a single integer, or a list/array of integers.
+        The return value is an array holding all the numbers of all the
+        elements that have the property val, resp. one of the values in val.
+
+        If the object has no properties, a empty array is returned.
+        """ 
+        if self.prop is not None and np.array(val).size > 0:
+            return np.concatenate([np.where(self.prop==v)[0] for v in np.unique(np.array(val))])
+        return np.array([],dtype=Int)
+
+
+    def selectProp(self,val):
+        """Return an object which holds only the elements with property val.
+
+        val is either a single integer, or a list/array of integers.
+        The return value is a object holding all the elements that
+        have the property val, resp. one of the values in val.
+        The returned object inherits the matching properties.
+
+        If the object has no properties, a copy with all elements is returned.
+        """
+        if self.prop is None:
+            return self.copy()
+        else:
+            return self.select(self.whereProp(val))
+
+
+    def cselectProp(self, val):
+        """Return a object without the elements with property `val`.
+
+        This is the complementary method of selectProp.
+        val is either a single integer, or a list/array of integers.
+        The return value is a object holding all the elements that do not
+        have the property val, resp. one of the values in val.
+        The returned object inherits the matching properties.
+
+        If the object has no properties, a copy with all elements is returned.
+        """
+        if self.prop is None:
+            return self.copy()
+        else:
+            return self.cselect(self.whereProp(val))
+
+
     ########### Return information about the coords #################
 
     def getCoords(self):

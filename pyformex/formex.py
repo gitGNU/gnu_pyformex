@@ -809,45 +809,10 @@ maxprop  = %s
             p = self.prop[flag>0]
         return Formex(self.coords[flag>0],p,self.eltype)
 
-
-    def whereProp(self,val):
-        """Return the numbers of the elements with property val.
-
-        val is either a single integer, or a list/array of integers.
-        The return value is an array holding all the numbers of all the
-        elements that have the property val, resp. one of the values in val.
-
-        If the Formex has no properties, a empty array is returned.
-        """
-        if self.prop is not None:
-            if array(val).size == 1:
-                return where(self.prop==val)[0]
-            else:
-                return unique(concatenate([where(self.prop==v)[0] for v in val]))
-        return array([],dtype=Int)
-
-
+    @deprecation("Formex.withProp is deprecated. Use Geometry.selectProp instead.")
     def withProp(self,val):
-        """Return a Formex which holds only the elements with property val.
-
-        val is either a single integer, or a list/array of integers.
-        The return value is a Formex holding all the elements that
-        have the property val, resp. one of the values in val.
-        The returned Formex inherits the matching properties.
-
-        If the Formex has no properties, a copy with all elements is returned.
-        """
-        if self.prop is None:
-            return Formex(self.coords,eltype=self.eltype)
-        elif array(val).size == 1:
-            return Formex(self.coords[self.prop==val],val,self.eltype)
-        else:
-            t = zeros(self.prop.shape,dtype=bool)
-            for v in asarray(val).flat:
-                t += (self.prop == v)
-            return Formex(self.coords[t],self.prop[t],self.eltype)
-
-
+        return self.selectProp(val)
+        
     #
     # TODO: this can be deprecated? Use bboxes() instead
     #
