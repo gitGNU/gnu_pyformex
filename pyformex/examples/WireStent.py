@@ -113,7 +113,7 @@ class DoubleHelixStent(object):
         """
         import connectivity
         M = self.F.toMesh()
-        ML = [ M.withProp(i) for i in [1,3] ]
+        ML = [ M.selectProp(i) for i in [1,3] ]
         wires = [ connectivity.connectedLineElems(Mi.elems) for Mi in ML ]
         wireaxes = [ [ Formex(M.coords[wi]).toCurve() for wi in wiresi ] for wiresi in wires ]
         return wireaxes

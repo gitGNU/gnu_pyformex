@@ -819,7 +819,7 @@ maxprop  = %s
             p = self.prop[flag>0]
         return Formex(self.coords[flag>0],p,self.eltype)
 
-    @deprecation("Formex.withProp is deprecated. Use Geometry.selectProp instead.")
+    @deprecation("Formex.withProp is deprecated. Use selectProp instead.")
     def withProp(self,val):
         return self.selectProp(val)
         
@@ -2174,7 +2174,7 @@ if __name__ == "__main__":
         H = Formex.concatenate([F1,F3,F2,F3])
         print("F1+F3+F2+F3 =",H)
         print("elbbox:",G.elbbox())
-        print("met prop 1:",G.withProp(1))
+        print("met prop 1:",G.selectProp(1))
         print("unique:",G.unique())
         print("asPoints:",G.asPoints())
         print("points:",G.points())

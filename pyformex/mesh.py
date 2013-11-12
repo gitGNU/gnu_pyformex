@@ -950,7 +950,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
           self.splitByConnection(level)[0]
         """
         p = self.partitionByConnection(level=level)
-        return self.setProp(p).withProp(0)
+        return self.select(p==0)
 
 
     def growSelection(self,sel,mode='node',nsteps=1):
@@ -1373,7 +1373,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return Mesh(self.coords,elems,prop=prop,eltype=eltype)
 
 
-    @utils.deprecation("Mesh.withProp is deprecated. Use Geometry.selectProp instead.")
+    @utils.deprecation("Mesh.withProp is deprecated. Use selectProp instead.")
     def withProp(self,val):
         return self.selectProp(val)
 

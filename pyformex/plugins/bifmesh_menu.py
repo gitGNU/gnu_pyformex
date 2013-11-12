@@ -123,7 +123,7 @@ def largestSubMesh(M):
     p = M.propSet()
     n = array([ (M.prop==i).sum() for i in p ])
     i = n.argmax()
-    return M.withProp(p[i])
+    return M.selectProp(p[i])
 
 
 def selectPart(M,x0,x1):

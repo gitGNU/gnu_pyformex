@@ -31,7 +31,7 @@ stiffeners.
 The example defines a function to create a Schwedler dome with hardwired
 parameters.
 This function is called creating a dome with diagonals (g).
-The 'withProp method' is then used to create a copy without the diagonals (h).
+The 'selectProp method' is then used to create a copy without the diagonals (h).
 Both are drawn at the same time, juxtaposed by the align function.
 """
 from __future__ import print_function
@@ -62,7 +62,7 @@ def run():
     clear()
     wireframe()
     g = schwedler()
-    h = g.withProp([0,3]) # only horizontals and meridionals
+    h = g.selectProp([0,3]) # only horizontals and meridionals
     draw(align([g,h],'|0-'))
 
 if __name__ == 'draw':

@@ -1163,7 +1163,7 @@ Quality: %s .. %s
         Q = Q.setProp(p)
         if method == 'voronoi':
             return Q, None
-        nodalAreas = asarray([Q.withProp(i).area() for i in range(len(Q.propSet()))])
+        nodalAreas = asarray([Q.selectProp(i).area() for i in range(len(Q.propSet()))])
         return Q, nodalAreas
 
 
@@ -2286,7 +2286,7 @@ Quality: %s .. %s
             raise ValueError,"Expected one single integer as property number, got %s"%p
 
 
-        s1 = self.withProp(p)
+        s1 = self.selectProp(p)
         a1, n1 = s1.areaNormals()
         n1 = normalize(n1.sum(axis=0))
         r1 = (a1.sum()/math.pi)**0.5

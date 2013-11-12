@@ -95,7 +95,7 @@ def splitProp(F,name):
     if F.prop is None:
         d = { name:F }
     else:
-        d = dict([['%s-%s' % (name,p),F.withProp(p)] for p in F.propSet()])
+        d = dict([['%s-%s' % (name,p),F.selectProp(p)] for p in F.propSet()])
     export(d)
     return d
 
