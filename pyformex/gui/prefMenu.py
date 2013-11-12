@@ -158,7 +158,7 @@ def settings():
 
     toolbartip = "Currently, changing the toolbar position will only be in effect when you restart pyFormex"
     toolbars = [
-        _I('gui/%s'%t,pf.cfg['gui/%s'%t],text=getattr(pf.GUI,t).windowTitle(),choices=['left','right','top','bottom'],tooltip=toolbartip) for t in [ 'camerabar','modebar','viewbar' ]
+        _I('gui/%s'%t,pf.cfg['gui/%s'%t],text=getattr(pf.GUI,t).windowTitle(),choices=['left','right','top','bottom'],itemtype='radio',tooltip=toolbartip) for t in [ 'camerabar','modebar','viewbar' ]
         ]
     # Use _ to avoid adding these items in the config
     actionbuttons = [
