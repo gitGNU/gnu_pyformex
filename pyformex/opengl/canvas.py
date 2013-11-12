@@ -664,9 +664,9 @@ class Canvas(object):
         if self.camera:
             if mode != self.rendermode or lighting != self.settings.lighting:
                 print("SWITCHING MODE")
+                self.rendermode = mode
                 self.scene.changeMode(self,mode)
 
-            self.rendermode = mode
             self.settings.lighting = lighting
             self.reset()
 
