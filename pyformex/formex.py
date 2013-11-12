@@ -720,38 +720,48 @@ maxprop  = %s
         return Formex(f,prop,Flist[0].eltype)
 
 
-    def select(self,idx):
-        """Return a Formex with only the elements selected by the parameter.
+    def select(self,selected):
+        """Return a Formex only holding the selected elements.
 
-        The parameter `idx` can be
+        Parameters:
 
-        - a single element number
-        - a list, or array, of element numbers
-        - a bool array of length self.nelems(), where True values flag the
-          elements to be selected
+        - `selected`: an object that can be used as an index in the
+          `elems` array, such as
+
+          - a single element number
+          - a list, or array, of element numbers
+          - a bool list, or array, of length self.nelems(), where True values flag the
+            elements to be selected
+
+        Returns a Formex (or subclass) with only the selected elements.
 
         See :meth:`cselect` for the complementary operation.
         """
+        selected = checkArray1D(selected)
         if self.prop is None:
-            return Formex(self.coords[idx],eltype=self.eltype)
+            return Formex(self.coords[selected],eltype=self.eltype)
         else:
-            idx = asarray(idx)
-            return Formex(self.coords[idx],self.prop[idx],self.eltype)
+            return Formex(self.coords[selected],self.prop[selected],self.eltype)
 
 
-    def cselect(self,idx):
-        """Return a Formex without the elements selected by the parameter.
+    def cselect(self,selected):
+        """Return a Formex without the selected elements.
 
-        The parameter `idx` can be
+        Parameters:
 
-        - a single element number
-        - a list, or array, of element numbers
-        - a bool array of length self.nelems(), where True values flag the
-          elements to be selected
+        - `selected`: an object that can be used as an index in the
+          `elems` array, such as
 
-        This is the complementary operation of :meth:`select`
+          - a single element number
+          - a list, or array, of element numbers
+          - a bool list, or array, of length self.nelems(), where True values flag the
+            elements to be selected
+
+        Returns a Formex with all but the selected elements.
+
+        This is the complimentary operation of :meth:`select`.
         """
-        return self.select(complement(idx,self.nelems()))
+        return self.select(complement(selected,self.nelems()))
 
 
     def selectNodes(self,idx):

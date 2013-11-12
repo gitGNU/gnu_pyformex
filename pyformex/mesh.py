@@ -1256,7 +1256,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
           - a single element number
           - a list, or array, of element numbers
-          - a bool array of length self.nelems(), where True values flag the
+          - a bool list, or array, of length self.nelems(), where True values flag the
             elements to be selected
 
         - `compact`: boolean. If True (default), the returned Mesh will be
@@ -1268,6 +1268,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
         See :meth:`cselect` for the complementary operation.
         """
+        selected = checkArray1D(selected)
         M = self.__class__(self.coords,self.elems[selected],eltype=self.elType())
         if self.prop is not None:
             M.setProp(self.prop[selected])
@@ -1277,7 +1278,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
 
     def cselect(self,selected,compact=True):
-        """Return a mesh without the selected elements.
+        """Return a Mesh without the selected elements.
 
         Parameters:
 
@@ -1286,7 +1287,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
           - a single element number
           - a list, or array, of element numbers
-          - a bool array of length self.nelems(), where True values flag the
+          - a bool list, or array, of length self.nelems(), where True values flag the
             elements to be selected
 
         - `compact`: boolean. If True (default), the returned Mesh will be
