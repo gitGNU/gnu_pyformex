@@ -289,8 +289,8 @@ def drawOptions(d={}):
     A dictionary may be specified to override the current defaults.
     """
     draw.setDrawOptions(d)
-    print(pf.canvas.options)
-    res = draw.askItems(store=pf.canvas.options,items=[
+    print(pf.canvas.drawoptions)
+    res = draw.askItems(store=pf.canvas.drawoptions,items=[
         _I('view',choices=['None']+pf.canvas.view_angles.keys(),tooltip="Camera viewing direction"),
         _I('bbox',choices=['auto','last'],tooltip="Automatically focus/zoom on the last drawn object(s)"),
         _I('clear',tooltip="Clear the canvas on each drawing action"),

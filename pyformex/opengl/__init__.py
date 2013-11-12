@@ -32,6 +32,7 @@ from __future__ import print_function
 import pyformex as pf
 import gui
 import coords
+from attributes import Attributes
 
 
 
@@ -83,27 +84,33 @@ def draw(F,
     view = kargs.get('view',None)
     bbox = kargs.get('bbox',None)
     highlight = kargs.get('highlight',False)
+    color = kargs.get('color',None)
 
+    attr = Attributes(kargs,default=pf.canvas.drawoptions)
+    print(attr)
+    print(pf.canvas.drawoptions)
+    print(attr['color'])
+    
     ## # Fill in the remaining defaults
 
     if bbox is None:
-        bbox = pf.canvas.options.get('bbox','auto')
+        bbox = pf.canvas.drawoptions.get('bbox','auto')
 
     ## if shrink is None:
-    ##     shrink = pf.canvas.options.get('shrink',None)
+    ##     shrink = pf.canvas.drawoptions.get('shrink',None)
 
     ## ## if marksize is None:
-    ## ##     marksize = pf.canvas.options.get('marksize',pf.cfg.get('marksize',5.0))
+    ## ##     marksize = pf.canvas.drawoptions.get('marksize',pf.cfg.get('marksize',5.0))
 
     ## # Shrink the objects if requested
     ## if shrink:
-    ##     FL = [ _shrink(F,pf.canvas.options.get('shrink_factor',0.8)) for F in FL ]
+    ##     FL = [ _shrink(F,pf.canvas.drawoptions.get('shrink_factor',0.8)) for F in FL ]
 
     ## # Execute the drawlock wait before doing first canvas change
     ## pf.GUI.drawlock.wait()
 
     ## if clear is None:
-    ##     clear = pf.canvas.options.get('clear',False)
+    ##     clear = pf.canvas.drawoptions.get('clear',False)
     ## if clear:
     ##     clear_canvas()
 
@@ -142,7 +149,7 @@ def draw(F,
 #                bkcolor=bkcolor,bkcolormap=bkcolormap,bkalpha=bkalpha,
 #                mode=mode,linewidth=linewidth,linestipple=linestipple,
 #                marksize=marksize,nolight=nolight,ontop=ontop,
-                **kargs)
+                **attr)
 
             actors.append(actor)
 
@@ -156,7 +163,7 @@ def draw(F,
         # Adjust the camera
         if view is not None or bbox not in [None,'last']:
             if view == 'last':
-                view = pf.canvas.options['view']
+                view = pf.canvas.drawoptions['view']
             if bbox == 'auto':
                 bbox = coords.bbox(FL)
             if bbox == 'last':

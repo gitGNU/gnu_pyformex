@@ -388,22 +388,6 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
         return self.pick_func.keys()
 
 
-    def resetOptions(self):
-        """Reset the Drawing options to some defaults"""
-        self.options = dict(
-            view = None,       # Keep the current camera angles
-            bbox = 'auto',     # Automatically zoom on the drawed object
-            clear = False,     # Clear on each drawing action
-            shrink = False,
-            shrink_factor = 0.8,
-            marksize = 5.0,
-            )
-
-    def setOptions(self,d):
-        """Set the Drawing options to some values"""
-        self.options.update(d)
-
-
     def setCursorShape(self,shape):
         """Set the cursor shape to shape"""
         if shape not in QtCanvas.cursor_shape.keys():

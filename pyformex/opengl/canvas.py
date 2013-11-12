@@ -639,6 +639,23 @@ class Canvas(object):
         self.lightprof = LightProfile(pf.cfg['render/ambient'],lights)
 
 
+    def resetOptions(self):
+        """Reset the Drawing options to some defaults"""
+        self.drawoptions = dict(
+            view = None,       # Keep the current camera angles
+            bbox = 'auto',     # Automatically zoom on the drawed object
+            clear = False,     # Clear on each drawing action
+            shrink = False,
+            shrink_factor = 0.8,
+            marksize = 5.0,
+            color = 'prop',
+            )
+
+    def setOptions(self,d):
+        """Set the Drawing options to some values"""
+        self.drawoptions.update(d)
+
+
     def setRenderMode(self,mode,lighting=None):
         """Set the rendering mode.
 

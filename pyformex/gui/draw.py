@@ -696,23 +696,23 @@ def draw(F,
     # Fill in the remaining defaults
 
     if bbox is None:
-        bbox = pf.canvas.options.get('bbox','auto')
+        bbox = pf.canvas.drawoptions.get('bbox','auto')
 
     if shrink is None:
-        shrink = pf.canvas.options.get('shrink',None)
+        shrink = pf.canvas.drawoptions.get('shrink',None)
 
     ## if marksize is None:
-    ##     marksize = pf.canvas.options.get('marksize',pf.cfg.get('marksize',5.0))
+    ##     marksize = pf.canvas.drawoptions.get('marksize',pf.cfg.get('marksize',5.0))
 
     # Shrink the objects if requested
     if shrink:
-        FL = [ _shrink(F,pf.canvas.options.get('shrink_factor',0.8)) for F in FL ]
+        FL = [ _shrink(F,pf.canvas.drawoptions.get('shrink_factor',0.8)) for F in FL ]
 
     # Execute the drawlock wait before doing first canvas change
     pf.GUI.drawlock.wait()
 
     if clear is None:
-        clear = pf.canvas.options.get('clear',False)
+        clear = pf.canvas.drawoptions.get('clear',False)
     if clear:
         clear_canvas()
 
@@ -767,7 +767,7 @@ def draw(F,
         #print "VIEW = %s; BBOX = %s" % (view,bbox)
         if view is not None or bbox not in [None,'last']:
             if view == 'last':
-                view = pf.canvas.options['view']
+                view = pf.canvas.drawoptions['view']
             if bbox == 'auto':
                 bbox = coords.bbox(FL)
             if bbox == 'last':
@@ -796,7 +796,7 @@ def _setFocus(object,bbox,view):
     """Set focus after a draw operation"""
     if view is not None or bbox not in [None,'last']:
         if view == 'last':
-            view = pf.canvas.options['view']
+            view = pf.canvas.drawoptions['view']
         if bbox == 'auto':
             bbox = coords.bbox(object)
         pf.canvas.setCamera(bbox,view)
@@ -832,7 +832,7 @@ def setDrawOptions(kargs0={},**kargs):
 
 
 def showDrawOptions():
-    pf.message("Current Drawing Options: %s" % pf.canvas.options)
+    pf.message("Current Drawing Options: %s" % pf.canvas.drawoptions)
     pf.message("Current Viewport Settings: %s" % pf.canvas.settings)
 
 
