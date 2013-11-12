@@ -44,7 +44,13 @@ class Attributes(Dict):
     Giving an attribute the value None removes it from the dict.
     Any non-existing attribute returns None.
 
+    Parameters:
 
+    - `data`: a dict or any other object that can be used to initialize a
+      :class:`Dict`. This provides the data stored in the Attributes.
+    - `default`: either another Attributes instance, or None. If another
+      Attributes is specified, keys not existing in `self` will be looked up
+      in `default` and that value will be returned.
 
     Example:
 
@@ -75,8 +81,10 @@ class Attributes(Dict):
         if isinstance(default,Attributes):
             self._default_dict_ = default
             default = self._return_default_
-        else:
+        elif default is None:
             default = returnNone
+        else:
+            raise ValueError,"The 'default' argument should be an Attributes instance or None; got %s:" % type(default)
 
         Dict.__init__(self,data,default)
 
