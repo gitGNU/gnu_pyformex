@@ -136,7 +136,11 @@ void main()
 	  float nspecular = specular*pow(max(dot(reflectionDirection,eyeDirection), 0.0), shininess);
 	  float ndiffuse = diffuse * max(dot(nNormal,nlight),0.0);
 	  vec3 diffcol = vec3(1.,1.,0.);
-	  fragmentColor += fcolor * (diffcolor[i] * ndiffuse + speccolor[i] * nspecular);
+	  //fragmentColor += fcolor * (diffcolor[i] * ndiffuse + speccolor[i] * nspecular);
+	  //fragmentColor += (fcolor + diffcolor[i]) * ndiffuse / 2;
+	  //fragmentColor += (fcolor + speccolor[i]) * nspecular / 2;
+	  fragmentColor += (fcolor + diffcolor[i])/2 * ndiffuse;
+	  fragmentColor += (fcolor + speccolor[i])/2 * nspecular;
 	}
       }
     }
