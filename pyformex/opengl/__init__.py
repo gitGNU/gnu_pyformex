@@ -80,43 +80,23 @@ def draw(F,
     if nres < ntot and not silent:
         raise ValueError,"Data contains undrawable objects (%s/%s)" % (ntot-nres,ntot)
 
-    # Extract non-object attributes
-    view = kargs.get('view',None)
-    bbox = kargs.get('bbox',None)
-    highlight = kargs.get('highlight',False)
-    color = kargs.get('color',None)
+    # Get default drawing options and overwrite with specified values
+    attr = Attributes(pf.canvas.drawoptions)
+    attr.update(kargs)
 
-    attr = Attributes(kargs,default=pf.canvas.drawoptions)
-    print(attr)
-    print(pf.canvas.drawoptions)
-    print(attr['color'])
-    
-    ## # Fill in the remaining defaults
-
-    if bbox is None:
-        bbox = pf.canvas.drawoptions.get('bbox','auto')
-
-    ## if shrink is None:
-    ##     shrink = pf.canvas.drawoptions.get('shrink',None)
-
-    ## ## if marksize is None:
-    ## ##     marksize = pf.canvas.drawoptions.get('marksize',pf.cfg.get('marksize',5.0))
-
-    ## # Shrink the objects if requested
-    ## if shrink:
-    ##     FL = [ _shrink(F,pf.canvas.drawoptions.get('shrink_factor',0.8)) for F in FL ]
+    # Shrink the objects if requested
+    if attr.shrink:
+        FL = [ _shrink(F,attr.shrink_factor) for F in FL ]
 
     ## # Execute the drawlock wait before doing first canvas change
-    ## pf.GUI.drawlock.wait()
+    pf.GUI.drawlock.wait()
 
-    ## if clear is None:
-    ##     clear = pf.canvas.drawoptions.get('clear',False)
-    ## if clear:
-    ##     clear_canvas()
-
-    if view is not None and view != 'last':
-        pf.debug("SETTING VIEW to %s" % view,pf.DEBUG.DRAW)
-        gui.draw.setView(view)
+    if attr.clear_:
+        clear_canvas()
+    
+    if attr.view is not None and attr.view != 'last':
+        pf.debug("SETTING VIEW to %s" % attr.view,pf.DEBUG.DRAW)
+        gui.draw.setView(attr.view)
 
     pf.GUI.setBusy()
     pf.app.processEvents()
@@ -142,7 +122,6 @@ def draw(F,
             ## else:
             ##     Fcolor = asarray(color)
 
-            #print "COLOR OUT",Fcolor
             # Create the actor
             actor = F.actor(
 #                color=Fcolor,colormap=colormap,alpha=alpha,
@@ -155,11 +134,14 @@ def draw(F,
 
             if actor is not None:
                 # Show the actor
-                if highlight:
+                if attr.highlight:
                     pf.canvas.addHighlight(actor)
                 else:
                     pf.canvas.addActor(actor)
 
+        view = attr.view
+        bbox = attr.bbox
+        
         # Adjust the camera
         if view is not None or bbox not in [None,'last']:
             if view == 'last':
@@ -171,13 +153,19 @@ def draw(F,
 
             pf.canvas.setCamera(bbox,view)
 
+        # Update the rendering
         pf.canvas.update()
         pf.app.processEvents()
-        #pf.debug("AUTOSAVE %s" % image.autoSaveOn())
-        ## if image.autoSaveOn():
-        ##     image.saveNext()
-        ## if wait: # make sure next drawing operation is retarded
-        ##     pf.GUI.drawlock.lock()
+
+        # Save the rendering if autosave on
+        pf.debug("AUTOSAVE %s" % gui.image.autoSaveOn())
+        if gui.image.autoSaveOn():
+            gui.image.saveNext()
+
+        # Make sure next drawing operation is retarded
+        if attr.wait: 
+            pf.GUI.drawlock.lock()
+            
     finally:
         pf.GUI.setBusy(False)
 

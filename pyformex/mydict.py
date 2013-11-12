@@ -135,7 +135,7 @@ class Dict(dict):
     so these are the ones to watch out for:
     'clear', 'copy', 'fromkeys', 'get', 'has_key', 'items', 'iteritems',
     'iterkeys', 'itervalues', 'keys', 'pop', 'popitem', 'setdefault',
-    'update', 'values'.
+    'update', 'values', viewitems, viewkeys, viewvalues.
     """
 
     def __init__(self,data={},default=None):

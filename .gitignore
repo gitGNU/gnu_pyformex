@@ -16,6 +16,7 @@
 MANIFEST
 pyformex-[A-Z]*
 HOWTO-dev.pdf
+pyformex/extra/gts/gts[^.]*
 
 # compiled docs
 ###############
@@ -27,9 +28,10 @@ sphinx/*.help
 ###################
 pkg/pyformex*
 
-# foreign directories
-#####################
+# foreign and temp directories
+##############################
 dist/
 build/
 www/
 test/
+stats/_sloccount_

@@ -37,6 +37,7 @@ from drawable import saneColor,glColor
 import arraytools as at
 import utils
 from mydict import Dict
+from attributes import Attributes
 from gui import colors
 from gui import views
 from gui import decors
@@ -644,15 +645,25 @@ class Canvas(object):
         self.drawoptions = dict(
             view = None,       # Keep the current camera angles
             bbox = 'auto',     # Automatically zoom on the drawed object
-            clear = False,     # Clear on each drawing action
+            clear_ = False,     # Clear on each drawing action
             shrink = False,
             shrink_factor = 0.8,
             marksize = 5.0,
             color = 'prop',
+            wait = True,
             )
 
     def setOptions(self,d):
         """Set the Drawing options to some values"""
+
+        # BEWARE
+        # We rename the 'clear' to 'clear_', because we use a Dict
+        # to store these (in __init__.draw) and Dict does not allow
+        # a 'clear' key.
+        
+        if 'clear' in d:
+            d['clear_'] = d['clear']
+            del d['clear']
         self.drawoptions.update(d)
 
 
