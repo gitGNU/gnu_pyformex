@@ -50,7 +50,6 @@ class Renderer(object):
         self.canvas = canvas
         self.camera = canvas.camera
         self.canvas.makeCurrent()
-        self.mode = canvas.rendermode
 
         if shader is None:
             shader = Shader()

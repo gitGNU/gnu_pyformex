@@ -511,7 +511,7 @@ class GeomActor(Attributes):
         self._prepareNormals(canvas)
         # ndim >= 2
         if (self.eltype is not None and self.eltype.ndim >= 2) or (self.eltype is None and self.object.nplex() >= 3):
-            if canvas.renderer.mode == 'wireframe':
+            if canvas.rendermode == 'wireframe':
                 # Draw the colored edges
                 self._addEdges(canvas.renderer)
             else:
