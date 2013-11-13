@@ -735,7 +735,7 @@ def system(cmd,timeout=None,gracetime=2.0,shell=False):
         t = None
 
     # Start the process and wait for it to finish
-    P.wait()
+    out,err = P.communicate()
 
     if t:
         # Cancel the timer if one was started
@@ -746,7 +746,7 @@ def system(cmd,timeout=None,gracetime=2.0,shell=False):
     # TODO: We could better just return P
     #       (or a customized subclass containing the string results)
     #
-    return P.returncode,P.stdout.read(),P.stderr.read()
+    return P.returncode,out,err
 
 
 def runCommand(cmd,timeout=None,verbose=True):
