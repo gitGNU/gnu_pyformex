@@ -502,9 +502,9 @@ def runScript(fn,argv=[]):
     return res
 
 
-def runApp(appname,argv=[],refresh=False):
+def runApp(appname,argv=[],refresh=False,lock=True,check=True):
     global exitrequested
-    if len(pf.scriptlock) > 0:
+    if check and len(pf.scriptlock) > 0:
         pf.message("!!Not executing because a script lock has been set: %s" % pf.scriptlock)
         #print(pf.scriptlock)
         return
@@ -546,7 +546,8 @@ def runApp(appname,argv=[],refresh=False):
     if hasattr(app,'_status') and app._status == 'unchecked':
         pf.warning("This looks like an Example script that has been automatically converted to the pyFormex Application model, but has not been checked yet as to whether it is working correctly in App mode.\nYou can help here by running and rerunning the example, checking that it works correctly, and where needed fixing it (or reporting the failure to us). If the example runs well, you can change its status to 'checked'")
 
-    scriptLock('__auto/app__')
+    if lock:
+        scriptLock('__auto/app__')
     msg = "Running application '%s' from %s" % (appname,app.__file__)
     pf.scriptName = appname
     if pf.GUI:
@@ -573,7 +574,8 @@ def runApp(appname,argv=[],refresh=False):
             g = app.__dict__
             exportNames = listAll(clas=Geometry,dic=g)
             pf.PF.update([(k,g[k]) for k in exportNames])
-        scriptRelease('__auto/app__') # release the lock
+        if lock:
+            scriptRelease('__auto/app__') # release the lock
         if pf.GUI:
             pf.GUI.stopRun()
 

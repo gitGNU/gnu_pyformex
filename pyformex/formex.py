@@ -822,7 +822,7 @@ maxprop  = %s
     @deprecation("Formex.withProp is deprecated. Use selectProp instead.")
     def withProp(self,val):
         return self.selectProp(val)
-        
+
     #
     # TODO: this can be deprecated? Use bboxes() instead
     #
@@ -854,15 +854,6 @@ maxprop  = %s
 
 
     unique = removeDuplicate
-
-
-    ## def nonzero(self):
-    ##     """Return a Formex which holds only the nonzero elements.
-
-    ##     A zero element is an element where all nodes are equal."""
-    ##     # NOT IMPLEMENTED YET !!! FOR NOW, RETURNS A COPY
-    ##     return Formex(self.coords,self.prop,self.eltype)
-
 
 
 #############################

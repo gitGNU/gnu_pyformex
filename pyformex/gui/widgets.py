@@ -1816,7 +1816,7 @@ class InputDialog(QtGui.QDialog):
         """
         self.results = odict.ODict()
         self.results.update([ (fld.name(),fld.value()) for fld in self.fields ])
-        print(self.results)
+        #print(self.results)
         ## if self.report_pos:
         ##     self.results.update({'__pos__':self.pos()})
         if result == TIMEOUT:
