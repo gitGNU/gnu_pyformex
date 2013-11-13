@@ -60,7 +60,7 @@ def run():
     # Create barrel
     barrel = (d+h+e).rotate(90,1).translate(0,r).scale([1.,a/(2*n),l/(2*m)]).cylindrical()
 
-    #draw(barrel)
+    draw(barrel)
 
 if __name__ == 'draw':
     run()
