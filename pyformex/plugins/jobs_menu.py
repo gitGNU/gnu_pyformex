@@ -60,7 +60,6 @@ access to the host system.
 
 def configure():
     from gui.prefMenu import updateSettings
-    from gui.widgets import simpleInputItem as I, groupInputItem as G, tabInputItem as T
 
     dia = None
 

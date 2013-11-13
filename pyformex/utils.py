@@ -676,7 +676,7 @@ def system1(cmd):
 _TIMEOUT_EXITCODE = -1015
 _TIMEOUT_KILLCODE = -1009
 
-def system(cmd,timeout=None,gracetime=2.0,shell=True):
+def system(cmd,timeout=None,gracetime=2.0,shell=False):
     """Execute an external command.
 
     Parameters:
@@ -700,13 +700,22 @@ def system(cmd,timeout=None,gracetime=2.0,shell=True):
     """
     from subprocess import PIPE,Popen
     from threading import Timer
+    import shlex
+
+    shell = bool(shell)
+    if shell is False:
+        # Tokenize the command line
+        #
+        # Note: input cmd is always a string !
+        #
+        cmd = shlex.split(cmd)
 
     def terminate(p):
         """Terminate a subprocess when it times out"""
         if p.poll() is None:
+            # Process is not terminated yet
             print("Subprocess terminated due to timeout (%ss)" % timeout)
             p.terminate()
-            p.returncode = _TIMEOUT_EXITCODE
             time.sleep(0.1)
             if p.poll() is None:
                 # Give the process 2 seconds to terminate, then kill it
@@ -714,25 +723,30 @@ def system(cmd,timeout=None,gracetime=2.0,shell=True):
                 if p.poll() is None:
                     print("Subprocess killed")
                     p.kill()
-                    p.returncode = _TIMEOUT_KILLCODE
+            p.returncode = _TIMEOUT_KILLCODE
 
-    P = Popen(cmd,shell=True,stdout=PIPE,stderr=PIPE)
+    P = Popen(cmd,shell=shell,stdout=PIPE,stderr=PIPE)
+
     if timeout > 0.0:
-        # Start a timer
+        # Start a timer to terminate the subprocess
         t = Timer(timeout,terminate,[P])
         t.start()
     else:
         t = None
 
-    # start the process and wait for it to finish
-    out,err = P.communicate() # get the stdout and stderr
-    sta = P.returncode
+    # Start the process and wait for it to finish
+    P.wait()
 
     if t:
-        # cancel the timer if one was started
+        # Cancel the timer if one was started
         t.cancel()
 
-    return sta,out,err
+    # Return the return code, stdout and stderr
+    #
+    # TODO: We could better just return P
+    #       (or a customized subclass containing the string results)
+    #
+    return P.returncode,P.stdout.read(),P.stderr.read()
 
 
 def runCommand(cmd,timeout=None,verbose=True):

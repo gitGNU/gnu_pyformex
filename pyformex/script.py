@@ -326,9 +326,10 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
     pf.scriptName = name
     exitall = False
 
-    memu = memUsed()
-    vmsiz = vmSize()
-    pf.debug("MemUsed = %s; vmSize = %s" % (memu,vmsiz),pf.DEBUG.MEM)
+    if pf.DEBUG.MEM:
+        memu = memUsed()
+        vmsiz = vmSize()
+        pf.debug("MemUsed = %s; vmSize = %s" % (memu,vmsiz),pf.DEBUG.MEM)
 
     if filename is None:
         filename = '<string>'
