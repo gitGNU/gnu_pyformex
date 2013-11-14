@@ -135,7 +135,6 @@ def run():
     dialog.timeout=timeOut
     dialog.show()
 
-    exit()
 
 if __name__ == 'draw':
     run()
