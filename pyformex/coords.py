@@ -1749,7 +1749,7 @@ class Coords(ndarray):
         return (x,s.reshape(self.shape[:-1]))
 
 
-    def match(self,coords,**kargs):
+    def match(self,coords,clean=False,**kargs):
         """Match points form another Coords object.
 
         This method finds the points from `coords` that coincide with
@@ -1758,6 +1758,7 @@ class Coords(ndarray):
         Parameters:
 
         - `coords`: a Coords object
+        - `clean` :  boolean to return only matching indices
         - `**kargs`: keyword arguments that you want to pass to the
           :meth:`fuse` method.
 
@@ -1766,19 +1767,18 @@ class Coords(ndarray):
 
         Returns:
 
-        - `matches`: an Int array with shape (nmatches,2)
-        - `coords`: a Coords with the fused coordinate set
-        - `index`: an index with the position of each of the serialized
-          points of the concatenation in the fused coordinate set. To find
-          the index of the points of the orginal coordinate sets, split
-          this index at the position self.npoints() and reshape the resulting
-          parts to `self.pshape()`, resp. `coords.pshape()`.
+        - `matches`: an Int array with shape (coords.shape[0]) if clean is False
+            where non matching positions have value -1 or an Int array 
+            with shape (nmatches) if clean is True 
+
 
         """
         x = Coords.concatenate([self.points(),coords.points()])
         c,e = x.fuse(**kargs)
         e0,e1 = e[:self.npoints()],e[self.npoints():]
         matches = matchIndex(e0,e1)
+        if clean:
+            matches=matches[matches>-1]
         return matches
 
 
