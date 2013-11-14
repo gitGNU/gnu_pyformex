@@ -1989,32 +1989,32 @@ Quality: %s .. %s
         self.write(tmp,'gts')
 
         cmd = "gtscheck -v < %s" % tmp
-        sta,out,stat = utils.system(cmd)
+        P = utils.system(cmd)
         if verbose:
-            pf.message(stat)
+            pf.message(P.sta)
         os.remove(tmp)
-        if sta == 0:
+        if P.sta == 0:
             pf.message('The surface is an orientable non self-intersecting manifold')
-            return sta, None
-        if sta==2:
+            return P.sta, None
+        if P.sta==2:
             pf.message('The surface is not an orientable manifold (this may be due to badly oriented normals)')
-            return sta, None
-        if sta==3:
+            return P.sta, None
+        if P.sta==3:
             pf.message('The surface is an orientable manifold but is self-intersecting')
             tmp = tempfile.mktemp('.gts')
             pf.message("Writing temp file %s" % tmp)
             fil = open(tmp,'w')
-            fil.write(out)
+            fil.write(P.out)
             fil.close()
             Si = TriSurface.read(tmp)
             os.remove(tmp)
             if matched:
-                return sta, self.matchCentroids(Si)
+                return P.sta, self.matchCentroids(Si)
             else:
-                return sta, Si
+                return P.sta, Si
         else:
             pf.message('Status of gtscheck not understood')
-            return sta, None
+            return P.sta, None
 
 
     def split(self,base,verbose=False):

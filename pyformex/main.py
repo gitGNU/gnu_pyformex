@@ -38,11 +38,8 @@ startup_messages = ''
 
 pyformexdir = sys.path[0]
 
-if os.path.exists(os.path.join(pyformexdir,'.svn')):
-    pf.installtype = 'S'
-elif os.path.exists(os.path.join(os.path.dirname(pyformexdir),'.git')):
+if os.path.exists(os.path.join(os.path.dirname(pyformexdir),'.git')):
     pf.installtype = 'G'
-
 
 libraries = [ 'misc_','nurbs_','drawgl_' ]
 
@@ -80,34 +77,24 @@ You should probably exit pyFormex, fix the problem first and then restart pyForm
 
 import utils
 
-# Set the proper revision number when running from svn sources
-if pf.installtype=='S':
-    try:
-        sta,out,err = utils.system('cd %s && svnversion' % pyformexdir)
-        if sta == 0 and not out.startswith('exported'):
-            pf.__revision__ = out.strip()
-    except:
-        # The above may fail when a checked-out svn version is moved to
-        # a system without subversion installed.
-        # Therefore, silently ignore
-        pass
-
 # Set the proper revision number when running from git sources
 branch = None
 if pf.installtype=='G':
     try:
-        sta,out,err = utils.system('cd %s && git describe --always' % pyformexdir)
-        if sta == 0:
-            pf.__revision__ = out.split('\n')[0].strip()
+        P = utils.system('cd %s && git describe --always' % pyformexdir,shell=True)
+        if P.sta == 0:
+            pf.__revision__ = P.out.split('\n')[0].strip()
     except:
+        print("Could not set revision number")
         pass
 
     # Set branch name if we are in a git repository
     try:
-        sta,out,err = utils.system('cd %s && git symbolic-ref --short -q HEAD' % pyformexdir)
-        if sta == 0:
-            branch = out.split('\n')[0]
+        P = utils.system('cd %s && git symbolic-ref --short -q HEAD' % pyformexdir,shell=True)
+        if P.sta == 0:
+            branch = P.out.split('\n')[0]
     except:
+        print("Could not set branch name")
         pass
 
 # intended Python version
@@ -129,7 +116,6 @@ if utils.SaneVersion(found_version[:3]) > utils.SaneVersion(target_version):
     startup_warnings += """
 Your Python version is %s, but pyFormex has only been tested with Python <= %s. We expect pyFormex to run correctly with your Python version, but if you encounter problems, please contact the developers at http://pyformex.org.
 """ % (found_version,target_version,)
-
 
 
 from config import Config

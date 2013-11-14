@@ -28,7 +28,14 @@ from __future__ import print_function
 
 import pyformex as pf
 
-import os,re,sys,tempfile,time
+import os
+import re
+import sys
+import tempfile
+import time
+import subprocess
+import threading
+import shlex
 
 from mydict import formatDict
 
@@ -39,6 +46,46 @@ from software import *
 
 # Some regular expressions
 digits = re.compile(r'(\d+)')
+
+######### WARNINGS ##############
+
+_warn_category = { 'U': UserWarning, 'D':DeprecationWarning }
+
+def saveWarningFilter(message,module='',category=UserWarning):
+    cat = inverseDict(_warn_category).get(category,'U')
+    oldfilters = pf.prefcfg['warnings/filters']
+    newfilters = oldfilters + [(str(message),'',cat)]
+    pf.prefcfg.update({'filters':newfilters},name='warnings')
+    pf.debug("Future warning filters: %s" % pf.prefcfg['warnings/filters'],pf.DEBUG.WARNING)
+
+
+def filterWarning(message,module='',cat='U',action='ignore'):
+    import warnings
+    pf.debug("Filter Warning '%s' from module '%s' cat '%s'" % (message,module,cat),pf.DEBUG.WARNING)
+    category = _warn_category.get(cat,Warning)
+    warnings.filterwarnings(action,message,category,module)
+
+
+def warn(message,level=UserWarning,stacklevel=3):
+    import warnings
+    warnings.warn(message,level,stacklevel)
+
+
+def deprec(message,stacklevel=4):
+    warn(message,level=DeprecationWarning,stacklevel=stacklevel)
+
+
+def deprecation(message):
+    def decorator(func):
+        def wrapper(*_args,**_kargs):
+            deprec(message)
+            # For some reason these messages are not auto-appended to
+            # the filters for the currently running program
+            # Therefore we do it here explicitely
+            filterWarning(str(message))
+            return func(*_args,**_kargs)
+        return wrapper
+    return decorator
 
 
 ##########################################################################
@@ -668,6 +715,7 @@ def countLines(fn):
 
 # DEPRECATED, KEPT FOR EMERGENCIES
 # currently activated by --commands option
+@deprecation("system1 is deprecated: use system instead")
 def system1(cmd):
     """Execute an external command."""
     import commands
@@ -676,7 +724,41 @@ def system1(cmd):
 _TIMEOUT_EXITCODE = -1015
 _TIMEOUT_KILLCODE = -1009
 
-def system(cmd,timeout=None,gracetime=2.0,shell=False):
+
+class Process(subprocess.Popen):
+    """A subprocess for running an external command.
+
+    This class is like Python's subprocess.Popen class, but provides some
+    extra functionality:
+
+    - If a string is passed as command and shell is False, the string is
+      automatically tokenized into an args list.
+
+    - stdout and stderr default to subprocess.PIPE instead of None.
+
+    - After the command has terminated, the Process instance has three
+      attributes sta, out and err, providing the return code, standard
+      output and standard error of the command.
+    """
+    def __init__(self,cmd,shell=False,stdout=subprocess.PIPE,stderr=subprocess.PIPE,**kargs):
+
+        shell = bool(shell)
+        if type(cmd) is str and shell is False:
+            # Tokenize the command line
+            cmd = shlex.split(cmd)
+
+        subprocess.Popen.__init__(self,cmd,shell=shell,stdout=stdout,stderr=stderr,**kargs)
+        self.out = self.err = None
+
+    @property
+    def sta(self):
+        return self.returncode
+
+    def run(self):
+        self.out,self.err = self.communicate()
+
+
+def system(cmd,timeout=None,gracetime=2.0,**kargs):
     """Execute an external command.
 
     Parameters:
@@ -686,7 +768,16 @@ def system(cmd,timeout=None,gracetime=2.0,shell=False):
       and be killed after the specified number of seconds.
     - `gracetime`: float. The time to wait after the terminate signal was
       sent in case of a timeout, before a forced kill is done.
-    - `shell`: if True (default) the command is run in a new shell
+
+    Additional parameters can be specified and will be passed to the Popen
+    constructor. See the Python documentation for full info.
+    Some typical examples:
+
+    - `shell`: bool: default False. If True, the command is run in a new shell.
+      The `cmd` should then be specified exactly as it would be entered in a
+      shell.
+    - `stdout`: an open file object. The standard output of the command will
+      be written to the file.
 
     Returns:
 
@@ -698,17 +789,6 @@ def system(cmd,timeout=None,gracetime=2.0,shell=False):
     - `err`: stderr produced by the command
 
     """
-    from subprocess import PIPE,Popen
-    from threading import Timer
-    import shlex
-
-    shell = bool(shell)
-    if shell is False:
-        # Tokenize the command line
-        #
-        # Note: input cmd is always a string !
-        #
-        cmd = shlex.split(cmd)
 
     def terminate(p):
         """Terminate a subprocess when it times out"""
@@ -725,31 +805,27 @@ def system(cmd,timeout=None,gracetime=2.0,shell=False):
                     p.kill()
             p.returncode = _TIMEOUT_KILLCODE
 
-    P = Popen(cmd,shell=shell,stdout=PIPE,stderr=PIPE)
+    P = Process(cmd,**kargs)
 
     if timeout > 0.0:
         # Start a timer to terminate the subprocess
-        t = Timer(timeout,terminate,[P])
+        t = threading.Timer(timeout,terminate,[P])
         t.start()
     else:
         t = None
 
     # Start the process and wait for it to finish
-    out,err = P.communicate()
+    P.run()
 
     if t:
         # Cancel the timer if one was started
         t.cancel()
 
-    # Return the return code, stdout and stderr
-    #
-    # TODO: We could better just return P
-    #       (or a customized subclass containing the string results)
-    #
-    return P.returncode,out,err
+    # Return the Process to provide access to return code, stdout and stderr
+    return P
 
 
-def runCommand(cmd,timeout=None,verbose=True):
+def runCommand(cmd,timeout=None,verbose=True,shell=False):
     """Run an external command in a user friendly way.
 
     This uses the :func:`system` function to run an external command,
@@ -785,18 +861,18 @@ def runCommand(cmd,timeout=None,verbose=True):
         print("Running command: %s" % cmd)
     pf.debug("Command: %s" % cmd,pf.DEBUG.INFO)
 
-    sta,out,err = system(cmd,timeout)
+    P = system(cmd,timeout,shell=shell)
 
-    if sta != 0:
-        if timeout > 0.0 and sta in [ _TIMEOUT_EXITCODE,  _TIMEOUT_KILLCODE ]:
+    if P.sta != 0:
+        if timeout > 0.0 and P.sta in [ _TIMEOUT_EXITCODE,  _TIMEOUT_KILLCODE ]:
             pass
         else:
             if verbose:
-                print(out)
-                print("Command exited with an error (exitcode %s)" % sta)
-                print(err)
+                print(P.out)
+                print("Command exited with an error (exitcode %s)" % P.sta)
+                print(P.err)
                 raise RuntimeError, "Error while executing command:\n  %s" % cmd
-    return sta,out.rstrip('\n')
+    return P.sta,P.out.rstrip('\n')
 
 
 def spawn(cmd):
@@ -1267,9 +1343,9 @@ def memory_report(keys=None):
     """Return info about memory usage"""
     import gc
     gc.collect()
-    sta,out,err = system('cat /proc/meminfo')
+    P = system('cat /proc/meminfo')
     res = {}
-    for line in out.split('\n'):
+    for line in P.out.split('\n'):
         try:
             k,v = line.split(':')
             k = k.strip()
@@ -1354,46 +1430,6 @@ def totalMemSize(o, handlers={}, verbose=False):
         return s
 
     return sizeof(o)
-
-######### WARNINGS ##############
-
-_warn_category = { 'U': UserWarning, 'D':DeprecationWarning }
-
-def saveWarningFilter(message,module='',category=UserWarning):
-    cat = inverseDict(_warn_category).get(category,'U')
-    oldfilters = pf.prefcfg['warnings/filters']
-    newfilters = oldfilters + [(str(message),'',cat)]
-    pf.prefcfg.update({'filters':newfilters},name='warnings')
-    pf.debug("Future warning filters: %s" % pf.prefcfg['warnings/filters'],pf.DEBUG.WARNING)
-
-
-def filterWarning(message,module='',cat='U',action='ignore'):
-    import warnings
-    pf.debug("Filter Warning '%s' from module '%s' cat '%s'" % (message,module,cat),pf.DEBUG.WARNING)
-    category = _warn_category.get(cat,Warning)
-    warnings.filterwarnings(action,message,category,module)
-
-
-def warn(message,level=UserWarning,stacklevel=3):
-    import warnings
-    warnings.warn(message,level,stacklevel)
-
-
-def deprec(message,stacklevel=4):
-    warn(message,level=DeprecationWarning,stacklevel=stacklevel)
-
-
-def deprecation(message):
-    def decorator(func):
-        def wrapper(*_args,**_kargs):
-            deprec(message)
-            # For some reason these messages are not auto-appended to
-            # the filters for the currently running program
-            # Therefore we do it here explicitely
-            filterWarning(str(message))
-            return func(*_args,**_kargs)
-        return wrapper
-    return decorator
 
 
 ### End

@@ -60,7 +60,6 @@ import time
 ################
 
 
-
 ######################### Exceptions #########################################
 
 class _Exit(Exception):
@@ -239,20 +238,22 @@ def showInfo(message):
 
 message = pf.message
 
-def system(cmdline,result='output'):
-    """Run a command and return its output.
+system = utils.system
 
-    If result == 'status', the exit status of the command is returned.
-    If result == 'output', the output of the command is returned.
-    If result == 'both', a tuple of status and output is returned.
-    """
-    sta,out,err = utils.system(cmdline)
-    if result == 'status':
-        return sta
-    elif result == 'output':
-        return out
-    elif result == 'both':
-        return sta,out
+## def system(cmdline,result='output'):
+##     """Run a command and return its output.
+
+##     If result == 'status', the exit status of the command is returned.
+##     If result == 'output', the output of the command is returned.
+##     If result == 'both', a tuple of status and output is returned.
+##     """
+##     P = utils.system(cmdline)
+##     if result == 'status':
+##         return P.sta
+##     elif result == 'output':
+##         return out
+##     elif result == 'both':
+##         return sta,out
 
 
 ########################### PLAYING SCRIPTS ##############################

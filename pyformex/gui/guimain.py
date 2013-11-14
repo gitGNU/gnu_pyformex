@@ -1050,10 +1050,10 @@ def xwininfo(windowid=None,name=None):
     else:
         raise ValueError,"Either windowid or name have to be specified"
 
-    sta,out,err = utils.system(cmd % args)
+    P = utils.system(cmd % args)
     res = {}
-    if not sta:
-        for line in out.split('\n'):
+    if not P.sta:
+        for line in P.out.split('\n'):
             s = line.split(':')
             if len(s) < 2:
                 s = s[0].strip().split(' ')

@@ -37,8 +37,7 @@ from __future__ import print_function
 from pyformex import utils
 #utils.hasExternal('units')
 
-import string
-    
+
 def convertUnits(From,To):
     """Converts between conformable units.
 
@@ -49,10 +48,10 @@ def convertUnits(From,To):
     This function is merely a wrapper around the GNU 'units' command, which
     should be installed for this function to work.
     """
-    status,output = utils.system('units \"%s\" \"%s\"' % (From,To))
-    if status:
-        raise RuntimeError, 'Could not convert units from \"%s\" to \"%s\"' % (From,To) 
-    return string.split(output)[1]
+    P = utils.system('units \"%s\" \"%s\"' % (From,To))
+    if P.sta:
+        raise RuntimeError, 'Could not convert units from \"%s\" to \"%s\"' % (From,To)
+    return P.out.split()[1]
 
 
 class UnitsSystem(object):
@@ -76,7 +75,7 @@ class UnitsSystem(object):
     'problem' : defines the unit system to be used in the problem.
     Defaults are: model='m', problem='international'.
     """
-    
+
     def __init__(self,system='international'):
         self.units = self.Predefined(system)
         self.units['model'] = 'm'
@@ -98,7 +97,7 @@ class UnitsSystem(object):
             return {}
         else:
             raise RuntimeError,"Undefined Units system '%s'" % system
-        
+
 
     def International(self):
         """Returns the international units system."""
@@ -116,7 +115,7 @@ class UnitsSystem(object):
 
     def Read(self,filename):
         """Read units from file with specified name.
-        
+
         The units file is an ascii file where each line contains a couple of
         words separated by a colon and a blank. The first word is the type of
         quantity, the second is the unit to be used for this quantity.
@@ -129,13 +128,13 @@ class UnitsSystem(object):
         for line in fil:
             if line[0] == '#':
                 continue
-            s = string.split(line)
+            s = line.split()
             if len(s) == 2:
                 key,val = s
-                key = string.lower(string.rstrip(key,':'))
+                key = key.rstrip(':').lower()
                 self.units[key] = val
                 if key == 'problem':
-                    self.Add(self.Predefined(string.lower(val)))
+                    self.Add(self.Predefined(val.lower()))
             else:
                 print("Ignoring line : %s" % line)
         fil.close()
@@ -147,7 +146,7 @@ class UnitsSystem(object):
         ent exists in the current system or else returns ent unchanged.
         If ent is a list of entities, returns a list of corresponding units.
         Example: with the default units system::
-        
+
           Un = UnitsSystem()
           Un.Get(['length','mass','float'])
 
@@ -160,7 +159,7 @@ class UnitsSystem(object):
                 return self.units[ent]
             else:
                 return ent
-            
+
 
 if __name__ == '__main__':
 

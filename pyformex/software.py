@@ -298,14 +298,14 @@ def checkExternal(name,command=None,answer=None,quiet=False):
             answer = ans
 
     pf.debug("Check %s\n%s" % (name,command),pf.DEBUG.DETECT)
-    sta,out,err = utils.system(command)
-    pf.debug("Status:\n%s\nStdout:\n%s\nStderr:\n%s" % (sta,out,err),pf.DEBUG.DETECT)
+    P = utils.system(command)
+    pf.debug("Status:\n%s\nStdout:\n%s\nStderr:\n%s" % (P.sta,P.out,P.err),pf.DEBUG.DETECT)
     version = ''
-    if sta == 0:
+    if P.sta == 0:
         # Beware: some programs write their version to stderr, others to stdout
-        m = re.match(answer,out)
+        m = re.match(answer,P.out)
         if not m:
-            m = re.match(answer,err)
+            m = re.match(answer,P.err)
         if m:
             version = m.group(1)
     _congratulations(name,version,'program',quiet=quiet)

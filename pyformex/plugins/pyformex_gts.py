@@ -121,12 +121,12 @@ def gtsset(self,surf,op,filt='',ext='.tmp',curve=False,check=False,verbose=False
     pf.message("Writing temp file %s" % tmp1)
     surf.write(tmp1,'gts')
     pf.message("Performing boolean operation")
-    cmd = "gtsset %s %s %s %s %s > %s" % (options,op,tmp,tmp1,filt,tmp2)
-    sta,out = utils.runCommand(cmd)
+    cmd = "gtsset %s %s %s %s %s" % (options,op,tmp,tmp1,filt)
+    P = utils.system(cmd,stdout=open(tmp2,'w'))
     os.remove(tmp)
     os.remove(tmp1)
-    if sta or verbose:
-        pf.message(out)
+    if P.sta or verbose:
+        pf.message(P.out)
     pf.message("Reading result from %s" % tmp2)
     if curve:
         res = read_gts_intersectioncurve(tmp2)
@@ -160,15 +160,17 @@ def gtsinside(self,pts,dir=0):
         f.write('\n')
 
     #print("Performing inside testing")
-    cmd = "gtsinside %s %s > %s" % (tmp,tmp1,tmp2)
-    sta,out = utils.runCommand(cmd)
+    cmd = "gtsinside %s %s" % (tmp,tmp1)
+    P = utils.system(cmd,stdout=open(tmp2,'w'))
     os.remove(tmp)
     os.remove(tmp1)
-    if sta:
+    if P.sta:
         #pf.message("An error occurred during the testing.\nSee file %s for more details." % tmp2)
+        pf.message(P.out)
         return None
     #print("Reading results from %s" % tmp2)
     ind = fromfile(tmp2,sep=' ',dtype=Int)
+    os.remove(tmp2)
     return ind
 
 
