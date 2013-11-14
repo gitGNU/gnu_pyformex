@@ -391,13 +391,14 @@ def pointInsideObject(S,P,tol=0.):
     return asarray(v2n(inside_arr),'bool')
 
 
-def inside(surf,pts):
+def inside(surf,pts,tol=0.):
     """Test which of the points pts are inside the surface surf.
 
     Parameters:
 
     - `surf`: a TriSurface specifying a closed surface
     - `pts`: a Coords (npts,3) specifying npts points
+    - `tol`: a tolerance applied on matching float values
 
     Returns an integer array with the indices of the points that are
     inside the surface.
@@ -405,7 +406,7 @@ def inside(surf,pts):
     See also :meth:`pyformex_gts.inside` for an equivalent and faster
     alternative.
     """
-    return where(pointInsideObject(surf,pts,tol=0.))[0]
+    return where(pointInsideObject(surf,pts,tol))[0]
 
 
 def intersectWithSegment(surf,lines,tol=0.0):

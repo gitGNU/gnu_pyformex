@@ -2197,7 +2197,7 @@ Quality: %s .. %s
         return S
 
 
-    def inside(self,pts,method='gts',tol='auto'):
+    def inside(self,pts,method='gts',tol=0.):
         """Test which of the points pts are inside the surface.
 
         Parameters:
@@ -2209,8 +2209,7 @@ Quality: %s .. %s
           - 'gts': provided by pyformex-extra
           - 'vtk': provided by python-vtk (slower)
 
-        - `tol`: tolerance on equality of floating point values, 
-          only used if method is gts.
+        - `tol`: tolerance on equality of floating point values
 
         Returns an integer array with the indices of the points that are
         inside the surface. The indices refer to the onedimensional list
@@ -2219,10 +2218,9 @@ Quality: %s .. %s
         pts = Coords(pts).points()
         if method == 'gts':
             from pyformex_gts import inside
-            return inside(self,pts,tol)
         elif method == 'vtk':
             from vtk_itf import inside
-            return inside(self,pts)
+        return inside(self,pts,tol)
 
 
     def tetgen(self,quality=True,volume=None,filename=None,format='.off'):
