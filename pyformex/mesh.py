@@ -1128,15 +1128,20 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
 
     def matchCoords(self,mesh,**kargs):
-        """Match nodes of Mesh with nodes of self.
-
+        """Match nodes of mesh with nodes of self.
+        
+        mesh can be a Coords or a Mesh object 
         This is a convenience function equivalent to::
 
            self.coords.match(mesh.coords,**kargs)
-
+           or 
+           self.coords.match(coords,**kargs)
+        
         See also :meth:`Coords.match`
         """
-        return self.coords.match(mesh.coords,**kargs)
+        if not(isinstance(mesh,Coords)):
+            coords=mesh.coords
+        return self.coords.match(coords,**kargs)
 
 
     def matchCentroids(self, mesh,**kargs):
