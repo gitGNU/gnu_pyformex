@@ -1127,10 +1127,10 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return self.__class__(coords,index[self.elems],prop=self.prop,eltype=self.elType())
 
 
-    def matchCoords(self,mesh,**kargs):
-        """Match nodes of mesh with nodes of self.
+    def matchCoords(self,coords,**kargs):
+        """Match nodes of coords with nodes of self.
         
-        mesh can be a Coords or a Mesh object 
+        coords can be a Coords or a Mesh object 
         This is a convenience function equivalent to::
 
            self.coords.match(mesh.coords,**kargs)
@@ -1139,8 +1139,8 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         
         See also :meth:`Coords.match`
         """
-        if not(isinstance(mesh,Coords)):
-            coords=mesh.coords
+        if not(isinstance(coords,Coords)):
+            coords=coords.coords
         return self.coords.match(coords,**kargs)
 
 
