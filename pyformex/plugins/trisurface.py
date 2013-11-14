@@ -2197,7 +2197,7 @@ Quality: %s .. %s
         return S
 
 
-    def inside(self,pts,method='gts',tol=0.):
+    def inside(self,pts,method='gts',tol='auto'):
         """Test which of the points pts are inside the surface.
 
         Parameters:

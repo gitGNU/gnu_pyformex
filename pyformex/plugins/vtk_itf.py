@@ -391,7 +391,7 @@ def pointInsideObject(S,P,tol=0.):
     return asarray(v2n(inside_arr),'bool')
 
 
-def inside(surf,pts,tol=0.):
+def inside(surf,pts,tol='auto'):
     """Test which of the points pts are inside the surface surf.
 
     Parameters:
@@ -406,6 +406,8 @@ def inside(surf,pts,tol=0.):
     See also :meth:`pyformex_gts.inside` for an equivalent and faster
     alternative.
     """
+    if tol == 'auto':
+        tol = 0.
     return where(pointInsideObject(surf,pts,tol))[0]
 
 
