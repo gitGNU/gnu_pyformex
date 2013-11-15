@@ -721,9 +721,6 @@ def system1(cmd):
     import commands
     return commands.getstatusoutput(cmd)
 
-_TIMEOUT_EXITCODE = -1015
-_TIMEOUT_KILLCODE = -1009
-
 
 class Process(subprocess.Popen):
     """A subprocess for running an external command.
@@ -740,6 +737,11 @@ class Process(subprocess.Popen):
       attributes sta, out and err, providing the return code, standard
       output and standard error of the command.
     """
+
+    _TIMEOUT_EXITCODE = -1015
+    _TIMEOUT_KILLCODE = -1009
+    _TIMEOUT_GRACETIME = 2
+
     def __init__(self,cmd,shell=False,stdout=subprocess.PIPE,stderr=subprocess.PIPE,**kargs):
 
         shell = bool(shell)
@@ -756,6 +758,46 @@ class Process(subprocess.Popen):
 
     def run(self):
         self.out,self.err = self.communicate()
+
+    def terminate_or_kill(self,verbose=True):
+        """Terminate or kill a Process"""
+        #print("TERMINATE OR KILL")
+        ret = self.poll()
+        #print("RET %s %s" % (ret,self.returncode))
+        if ret is None:
+            # Process is still running: terminate it
+            #print("  TERMINATE")
+            self.terminate()
+            # Wait a bit before checking
+            time.sleep(0.3)
+            ret = self.poll()
+            #print("  RET %s %s" % (ret,self.returncode))
+            if ret is None:
+                # Give the process some more time to terminate
+                #print("    GRACE")
+                time.sleep(gracetime)
+                ret = self.poll()
+                #print("    RET %s %s" % (ret,self.returncode))
+                if ret is None:
+                    # Kill the unwilling process
+                    #print("      KILL")
+                    self.kill()
+                    ret = self.poll()
+                    #print("      RET %s %s" % (ret,self.returncode))
+                    self.returncode = Process._TIMEOUT_KILLCODE
+                    #print("      RET %s %s" % (ret,self.returncode))
+                else:
+                    self.returncode = Process._TIMEOUT_EXITCODE
+                    #print("    RET %s %s" % (ret,self.returncode))
+            else:
+                self.returncode = Process._TIMEOUT_EXITCODE
+                #print("  RET %s %s" % (ret,self.returncode))
+
+        else:
+            pass
+            #print("ALREADY TERMINATED")
+
+        #print("RETCODE %s %s" % (self.returncode,self.sta))
 
 
 def system(cmd,timeout=None,gracetime=2.0,**kargs):
@@ -790,32 +832,11 @@ def system(cmd,timeout=None,gracetime=2.0,**kargs):
 
     """
 
-    def terminate(p):
-        """Terminate a subprocess when it times out"""
-        if p.poll() is None:
-            # Process is still running: terminate it
-            print("Subprocess terminated due to timeout (%ss)" % timeout)
-            p.terminate()
-            # Wait a bit before checking
-            time.sleep(0.1)
-            if p.poll() is None:
-                # Give the process some more time to terminate
-                time.sleep(gracetime)
-                if p.poll() is None:
-                    # Kill the unwilling process
-                    print("Subprocess killed")
-                    p.kill()
-                    p.returncode = _TIMEOUT_KILLCODE
-                else:
-                    p.returncode = _TIMEOUT_EXITCODE
-            else:
-                p.returncode = _TIMEOUT_EXITCODE
-
     P = Process(cmd,**kargs)
 
     if timeout > 0.0:
         # Start a timer to terminate the subprocess
-        t = threading.Timer(timeout,terminate,[P])
+        t = threading.Timer(timeout,Process.terminate_or_kill,[P])
         t.start()
     else:
         t = None
@@ -828,6 +849,7 @@ def system(cmd,timeout=None,gracetime=2.0,**kargs):
         t.cancel()
 
     # Return the Process to provide access to return code, stdout and stderr
+    time.sleep(0.3)
     return P
 
 
@@ -870,8 +892,8 @@ def runCommand(cmd,timeout=None,verbose=True,shell=False):
     P = system(cmd,timeout,shell=shell)
 
     if P.sta != 0:
-        if timeout > 0.0 and P.sta in [ _TIMEOUT_EXITCODE,  _TIMEOUT_KILLCODE ]:
-            pass
+        if timeout > 0.0 and P.sta in [ Process._TIMEOUT_EXITCODE, Process._TIMEOUT_KILLCODE ]:
+            print("Subprocess terminated due to timeout (%ss)" % timeout)
         else:
             if verbose:
                 print(P.out)
