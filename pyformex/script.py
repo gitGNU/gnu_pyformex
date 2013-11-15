@@ -239,6 +239,7 @@ def showInfo(message):
 message = pf.message
 
 system = utils.system
+command = utils.command
 
 ## def system(cmdline,result='output'):
 ##     """Run a command and return its output.
