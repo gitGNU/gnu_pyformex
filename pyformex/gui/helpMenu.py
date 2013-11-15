@@ -207,7 +207,7 @@ def searchText():
         ])
 
     if res:
-        out = utils.grepSource(relative=False,quiet=True,**res)
+        out = utils.grepSource(relative=False,**res)
         draw.showText(out,mono=True,modal=False)
 
 
@@ -280,16 +280,16 @@ def createMenuData():
 
         def install_external(pkgdir,prgname):
             extdir = os.path.join(pf.cfg['pyformexdir'],'extra',pkgdir)
-            sta,out = utils.runCommand("cd %s; make && gksu make install" % extdir)
-            if sta:
-                info = out
+            P = utils.system("cd %s; make && gksu make install" % extdir,shell=True)
+            if P.sta:
+                info = P.out
             else:
                 if utils.hasExternal(prgname,force=True):
                     info = "Succesfully installed %s" % pkgdir
                 else:
                     info ="You should now restart pyFormex!"
             draw.showInfo(info)
-            return sta
+            return P.sta
 
         def install_dxfparser():
             install_external('dxfparser','pyformex-dxfparser')

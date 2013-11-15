@@ -122,7 +122,7 @@ def convertInp(fn):
     dirname = os.path.dirname(fn)
     basename = os.path.basename(fn)
     cmd = 'cd %s;%s %s' % (dirname,converter,basename)
-    sta,out = utils.runCommand(cmd)
+    utils.command(cmd,shell=True)
 
 
 def readInpFile(filename):
@@ -222,7 +222,7 @@ def read_gambit_neutral(fn):
     Returns a nodes,elems tuple.
     """
     scr = os.path.join(pf.cfg['bindir'],'gambit-neu ')
-    utils.runCommand("%s '%s'" % (scr,fn))
+    utils.command("%s '%s'" % (scr,fn))
     nodesf = utils.changeExt(fn,'.nodes')
     elemsf = utils.changeExt(fn,'.elems')
     nodes = fromfile(nodesf,sep=' ',dtype=Float).reshape((-1,3))
@@ -238,7 +238,7 @@ def read_gambit_neutral_hex(fn):
     """
     scr = os.path.join(pf.cfg['bindir'],'gambit-neu-hex ')
     pf.message("%s '%s'" % (scr,fn))
-    utils.runCommand("%s '%s'" % (scr,fn))
+    utils.command("%s '%s'" % (scr,fn))
     nodesf = utils.changeExt(fn,'.nodes')
     elemsf = utils.changeExt(fn,'.elems')
     nodes = fromfile(nodesf,sep=' ',dtype=Float).reshape((-1,3))

@@ -631,7 +631,6 @@ def run(argv=[]):
                     search.replace("'","\'")
                 print("SEARCH = [%s]" % search)
                 cmd = 'grep %s "%s" %s' % (' '.join(opts),args[0],''.join([" '%s'" % f for f in files]))
-                #print(cmd)
                 os.system(cmd)
         return
 

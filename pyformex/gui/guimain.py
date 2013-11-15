@@ -1050,7 +1050,7 @@ def xwininfo(windowid=None,name=None):
     else:
         raise ValueError,"Either windowid or name have to be specified"
 
-    P = utils.system(cmd % args,shell=True)
+    P = utils.system(cmd % args)
     res = {}
     if not P.sta:
         for line in P.out.split('\n'):
@@ -1083,11 +1083,10 @@ def pidofxwin(windowid):
     a normal desktop configuration.
     """
     import re
-    sta,out = utils.runCommand('xprop -id %s _NET_WM_PID' % windowid,verbose=False)
-    m = re.match("_NET_WM_PID\(.*\)\s*=\s*(?P<pid>\d+)",out)
+    P = utils.system('xprop -id %s _NET_WM_PID' % windowid)
+    m = re.match("_NET_WM_PID\(.*\)\s*=\s*(?P<pid>\d+)",P.out)
     if m:
         pid = m.group('pid')
-        #print "Found PID %s" % pid
         return int(pid)
 
     return None
@@ -1450,9 +1449,9 @@ pyFormex comes with ABSOLUTELY NO WARRANTY. This is free software, and you are w
     pf.GUI.update()
 
     if pf.cfg['gui/fortune']:
-        sta,out = utils.runCommand(pf.cfg['fortune'])
-        if sta == 0:
-            draw.showInfo(out)
+       P = utils.system(pf.cfg['fortune'])
+        if P.sta == 0:
+            draw.showInfo(P.out)
 
     #pf.app.setQuitOnLastWindowClosed(False)
     pf.debug("ProcessEvents",pf.DEBUG.GUI)

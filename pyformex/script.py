@@ -241,21 +241,6 @@ message = pf.message
 system = utils.system
 command = utils.command
 
-## def system(cmdline,result='output'):
-##     """Run a command and return its output.
-
-##     If result == 'status', the exit status of the command is returned.
-##     If result == 'output', the output of the command is returned.
-##     If result == 'both', a tuple of status and output is returned.
-##     """
-##     P = utils.system(cmdline)
-##     if result == 'status':
-##         return P.sta
-##     elif result == 'output':
-##         return out
-##     elif result == 'both':
-##         return sta,out
-
 
 ########################### PLAYING SCRIPTS ##############################
 
@@ -412,11 +397,11 @@ def stopatbreakpt():
 
 def convertPrintSyntax(filename):
     """Convert a script to using the print function"""
-    sta,out = utils.runCommand("2to3 -f print -wn %s" % filename)
-    if sta:
+    P = utils.system("2to3 -f print -wn %s" % filename)
+    if P.sta:
         # Conversion error: show what is going on
-        print(out)
-    return sta == 0
+        print(P.out)
+    return P.sta == 0
 
 
 def checkPrintSyntax(filename):

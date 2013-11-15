@@ -723,7 +723,7 @@ stop
         # Run the analysis
         outfile = utils.changeExt(filnam,'res')
         cmd = "calix %s %s" % (filnam,outfile)
-        utils.runCommand(cmd)
+        utils.command(cmd)
         showFile(outfile,mono=True)
 
         if ack("Shall I read the results for postprocessing?"):

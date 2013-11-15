@@ -242,8 +242,8 @@ def run():
                 cmd = "ccx -i %s" % job
             elif cmd == 'abaqus':
                 cmd == "abaqus job=%s" % job
-            sta,out = utils.runCommand("ccx -i %s" % job)
-            print(out)
+            P = utils.command("ccx -i %s" % job)
+            print(P.out)
 
             if ack('Create the result database?'):
                 DB = ccxdat.createResultDB(FEM)

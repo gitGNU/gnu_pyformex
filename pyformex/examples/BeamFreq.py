@@ -166,11 +166,11 @@ stop
     if os.path.exists('test.out'):
         os.remove('test.out')
 
-    sta,out = utils.runCommand(cmd)
+    P = utils.command(cmd)
 
     if verbose:
         # show calix output
-        showText(out)
+        showText(P.out)
         showFile('temp.res')
         showFile('test.out')
 

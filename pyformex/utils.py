@@ -475,7 +475,7 @@ def sourceFiles(relative=False,symlinks=True,extended=False):
     return files
 
 
-def grepSource(pattern,options='',relative=True,quiet=False):
+def grepSource(pattern,options='',relative=True):
     """Finds pattern in the pyFormex source .py files.
 
     Uses the `grep` program to find all occurrences of some specified
@@ -494,8 +494,9 @@ def grepSource(pattern,options='',relative=True,quiet=False):
         extended = False
     files = sourceFiles(relative=relative,extended=extended,symlinks=False)
     cmd = "grep %s '%s' %s" % (options,pattern,' '.join(files))
-    sta,out = runCommand(cmd,verbose=not quiet)
-    return out
+    P = system(cmd,verbose=True)
+    if not P.sta:
+        return P.out
 
 
 ###################### locale ###################
@@ -586,19 +587,14 @@ def underlineHeader(s,char='-'):
 
 ###################### file conversion ###################
 
-def dos2unix(infile,outfile=None):
-    if outfile is None:
-        cmd = "sed -i 's|\\r||' %s" % infile
-    else:
-        cmd = "sed -i 's|\\r||' %s > %s" % (infile,outfile)
-    return runCommand(cmd)
+
+def dos2unix(infile):
+    """Convert a text file to unix line endings."""
+    return system("sed -i 's|$|\\r|' %s" % infile)
 
 def unix2dos(infile,outfile=None):
-    if outfile is None:
-        cmd = "sed -i 's|$|\\r|' %s" % infile
-    else:
-        cmd = "sed -i 's|$|\\r|' %s > %s" % (infile,outfile)
-    return runCommand(cmd)
+    """Convert a text file to dos line endings."""
+    return system("sed -i 's|\\r||' %s" % infile)
 
 
 def gzip(filename,gzipped=None,remove=True,level=5):
@@ -701,9 +697,9 @@ def timeEval(s,glob=None):
 
 def countLines(fn):
     """Return the number of lines in a text file."""
-    sta,out = runCommand("wc %s" % fn)
-    if sta == 0:
-        return int(out.split()[0])
+    P = system(["wc",fn])
+    if P.sta == 0:
+        return int(P.out.split()[0])
     else:
         return 0
 
@@ -880,7 +876,6 @@ def system(cmd,timeout=None,verbose=False,raise_error=False,**kargs):
     its info, like the exit code, stdout and stderr, and whether the command
     timed out or not. See :class:`Process` for more info.
     """
-    pf.debug("Command: %s" % cmd,pf.DEBUG.INFO)
     if verbose:
         print("Running command: %s" % cmd)
     P = Process(cmd,**kargs)
@@ -909,6 +904,7 @@ def command(cmd,timeout=None,verbose=True,raise_error=True,**kargs):
     This is equivalent with the utils.system function but with
     verbose=True and raise_error=True by default.
     """
+    pf.debug("Command: %s" % cmd,pf.DEBUG.INFO)
     return system(cmd,timeout,verbose,raise_error,**kargs)
 
 
@@ -1340,11 +1336,11 @@ def listFontFiles():
     Returns a list of path names to all the font files found on the system.
     """
     cmd = "fc-list : file | sed 's|.*file=||;s|:||'"
-    sta,out = runCommand(cmd)
-    if sta:
+    P = system(cmd,shell=True)
+    if P.sta:
         warning("fc-list could not find your font files.\nMaybe you do not have fontconfig installed?")
     else:
-        return [ f.strip() for f in out.split('\n') ]
+        return [ f.strip() for f in P.out.split('\n') ]
 
 
 ###########################################################################
