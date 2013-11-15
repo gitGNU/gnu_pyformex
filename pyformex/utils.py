@@ -793,18 +793,23 @@ def system(cmd,timeout=None,gracetime=2.0,**kargs):
     def terminate(p):
         """Terminate a subprocess when it times out"""
         if p.poll() is None:
-            # Process is not terminated yet
+            # Process is still running: terminate it
             print("Subprocess terminated due to timeout (%ss)" % timeout)
             p.terminate()
-            p.returncode = _TIMEOUT_EXITCODE
+            # Wait a bit before checking
             time.sleep(0.1)
             if p.poll() is None:
-                # Give the process 2 seconds to terminate, then kill it
+                # Give the process some more time to terminate
                 time.sleep(gracetime)
                 if p.poll() is None:
+                    # Kill the unwilling process
                     print("Subprocess killed")
                     p.kill()
-            p.returncode = _TIMEOUT_KILLCODE
+                    p.returncode = _TIMEOUT_KILLCODE
+                else:
+                    p.returncode = _TIMEOUT_EXITCODE
+            else:
+                p.returncode = _TIMEOUT_EXITCODE
 
     P = Process(cmd,**kargs)
 
