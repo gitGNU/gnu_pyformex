@@ -796,6 +796,7 @@ def system(cmd,timeout=None,gracetime=2.0,**kargs):
             # Process is not terminated yet
             print("Subprocess terminated due to timeout (%ss)" % timeout)
             p.terminate()
+            p.returncode = _TIMEOUT_EXITCODE
             time.sleep(0.1)
             if p.poll() is None:
                 # Give the process 2 seconds to terminate, then kill it
@@ -852,8 +853,8 @@ def runCommand(cmd,timeout=None,verbose=True,shell=False):
     - `out`: stdout produced by the command, with the last newline removed
 
     Example:
-    cmd = 'sleep 2'
-    sta,out=runCommand3(cmd,quiet=False, timeout=5.)
+    cmd = 'sleep 5'
+    sta,out=runCommand(cmd,quiet=False, timeout=2.)
     print (sta,out)
 
     """
