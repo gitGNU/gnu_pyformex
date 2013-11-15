@@ -777,7 +777,7 @@ def system(cmd,timeout=None,gracetime=2.0,**kargs):
       The `cmd` should then be specified exactly as it would be entered in a
       shell.
     - `stdout`: an open file object. The standard output of the command will
-      be written to the file.
+      be written to that file.
 
     Returns:
 
@@ -879,14 +879,6 @@ def runCommand(cmd,timeout=None,verbose=True,shell=False):
                 print(P.err)
                 raise RuntimeError, "Error while executing command:\n  %s" % cmd
     return P.sta,P.out.rstrip('\n')
-
-
-def spawn(cmd):
-    """Spawn a child process."""
-    cmd = cmd.split()
-    pid = os.spawnvp(os.P_NOWAIT,cmd[0],cmd)
-    pf.debug("Spawned child process %s for command '%s'" % (pid,cmd),pf.DEBUG.INFO)
-    return pid
 
 
 def killProcesses(pids,signal=15):

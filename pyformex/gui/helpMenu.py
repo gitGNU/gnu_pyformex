@@ -53,7 +53,8 @@ def help(page=None):
         browser = pf.cfg['browser']
     else:
         browser = pf.cfg['viewer']
-    pid = utils.spawn(' '.join([browser,page]))
+    print([browser,page])
+    utils.system([browser,page])
 
 
 def catchAndDisplay(expression):

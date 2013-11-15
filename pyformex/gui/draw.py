@@ -243,7 +243,6 @@ def showDoc(obj=None,rst=True,modal=False):
             pass
 
 
-
 def editFile(fn,exist=False):
     """Load a file into the editor.
 
@@ -264,8 +263,7 @@ def editFile(fn,exist=False):
     if pf.cfg['editor']:
         if exist and not os.path.exists(fn):
             return
-        pid = utils.spawn('%s %s' % (pf.cfg['editor'],fn))
-        print(pid)
+        utils.system('%s %s' % (pf.cfg['editor'],fn))
     else:
         warning('No known editor was found or configured')
 
