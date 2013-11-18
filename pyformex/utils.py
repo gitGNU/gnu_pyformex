@@ -729,6 +729,9 @@ class Process(subprocess.Popen):
 
     - stdout and stderr default to subprocess.PIPE instead of None.
 
+    - stdin, stdout and stderr can be file names. They will be replaced
+      with the opened files (in mode 'r' for stdin, 'w' for the others).
+
     - After the command has terminated, the Process instance has three
       attributes sta, out and err, providing the return code, standard
       output and standard error of the command.
@@ -752,16 +755,25 @@ class Process(subprocess.Popen):
 
     gracetime = 2
 
-    def __init__(self,cmd,shell=False,stdout=subprocess.PIPE,stderr=subprocess.PIPE,**kargs):
+    def __init__(self,cmd,shell=False,**kargs):
 
-        shell = bool(shell)
-        if type(cmd) is str and shell is False:
+        if type(cmd) is str and bool(shell) is False:
             # Tokenize the command line
             cmd = shlex.split(cmd)
 
+        for f in [ 'stdin', 'stdout', 'stderr' ]:
+            if f not in kargs or kargs[f] is None:
+                kargs[f] = subprocess.PIPE
+            elif f in kargs and type(kargs[f]) is str:
+                if f.endswith('in'):
+                    mode = 'r'
+                else:
+                    mode = 'w'
+                kargs[f] = open(kargs[f],mode)
+
         try:
             self.failed = False
-            subprocess.Popen.__init__(self,cmd,shell=shell,stdout=stdout,stderr=stderr,**kargs)
+            subprocess.Popen.__init__(self,cmd,shell=shell,**kargs)
         except:
             self.failed = True
             # Set a return code to mark the process finished
@@ -871,6 +883,8 @@ def system(cmd,timeout=None,verbose=False,raise_error=False,**kargs):
       shell.
     - `stdout`: an open file object. The standard output of the command will
       be written to that file.
+    - `stdin`: an open file object. The standard input of the command will
+      be read from that file.
 
     Returns the Process used to run the command. This gives access to all
     its info, like the exit code, stdout and stderr, and whether the command

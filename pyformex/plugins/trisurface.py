@@ -2087,11 +2087,10 @@ Quality: %s .. %s
         pf.message("Writing temp file %s" % tmp)
         self.write(tmp,'gts')
         pf.message("Coarsening with command\n %s" % cmd)
-        cmd += ' < %s > %s' % (tmp,tmp1)
-        sta,out = utils.runCommand(cmd)
+        P = utils.command(cmd,stdin=tmp,stdout=tmp1)
         os.remove(tmp)
-        if sta or verbose:
-            pf.message(out)
+        if P.sta or verbose:
+            pf.message(P.out)
         pf.message("Reading coarsened model from %s" % tmp1)
         S = TriSurface.read(tmp1)
         os.remove(tmp1)
@@ -2134,11 +2133,10 @@ Quality: %s .. %s
         pf.message("Writing temp file %s" % tmp)
         self.write(tmp,'gts')
         pf.message("Refining with command\n %s" % cmd)
-        cmd += ' < %s > %s' % (tmp,tmp1)
-        sta,out = utils.runCommand(cmd)
+        P = utils.command(cmd,stdin=tmp,stdout=tmp1)
         os.remove(tmp)
-        if sta or verbose:
-            pf.message(out)
+        if P.sta or verbose:
+            pf.message(P.out)
         pf.message("Reading refined model from %s" % tmp1)
         S = TriSurface.read(tmp1)
         os.remove(tmp1)
