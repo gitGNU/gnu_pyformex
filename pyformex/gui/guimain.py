@@ -1449,7 +1449,7 @@ pyFormex comes with ABSOLUTELY NO WARRANTY. This is free software, and you are w
     pf.GUI.update()
 
     if pf.cfg['gui/fortune']:
-       P = utils.system(pf.cfg['fortune'])
+        P = utils.system(pf.cfg['fortune'])
         if P.sta == 0:
             draw.showInfo(P.out)
 
