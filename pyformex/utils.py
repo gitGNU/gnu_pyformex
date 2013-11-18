@@ -922,6 +922,7 @@ def command(cmd,timeout=None,verbose=True,raise_error=True,**kargs):
     return system(cmd,timeout,verbose,raise_error,**kargs)
 
 
+@deprecation("utils.runCommand is deprecated: use utils.command instead. Add 'shell=True' to start the command in a new shell.")
 def runCommand(cmd,timeout=None,shell=True,**kargs):
     """Run an external command in a user friendly way.
 

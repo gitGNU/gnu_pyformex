@@ -108,10 +108,10 @@ def getRemoteDirs(host,userdir):
     The userdir is relative to the user's home dir.
     """
     cmd = "ssh %s 'cd %s;ls -F|egrep \".*/\"'" % (host,userdir)
-    sta,out = utils.runCommand(cmd)
-    if sta:
-        out = ''
-    dirs = out.split('\n')
+    P = utils.command(cmd,shell=True)
+    if P.sta:
+        P.out = ''
+    dirs = P.out.split('\n')
     dirs = [ j.strip('/') for j in dirs ]
     return dirs
 
@@ -123,10 +123,10 @@ def getRemoteDirs(host,userdir):
 ##     The userdir is relative to the user's home dir.
 ##     """
 ##     cmd = "ssh %s 'cd %s;ls -F'" % (host,userdir)
-##     sta,out = utils.runCommand(cmd)
-##     if sta:
-##         out = ''
-##     dirs = out.split('\n')
+##     P = utils.command(cmd,shell=True)
+##     if P.sta:
+##         P.out = ''
+##     dirs = P.out.split('\n')
 ##     dirs = [ j.strip('/') for j in dirs ]
 ##     return dirs
 
@@ -138,8 +138,8 @@ def transferFiles(host,userdir,files,targetdir):
     """
     files = [ '%s:%s/%s' % (host,userdir.rstrip('/'),f) for f in files ]
     cmd = "scp %s %s" % (' '.join(files),targetdir)
-    sta,out = utils.runCommand(cmd)
-    return sta==0
+    P = utils.command(cmd)
+    return P.sta
 
 
 def remoteCommand(host=None,command=None):
@@ -165,8 +165,9 @@ def remoteCommand(host=None,command=None):
 
     if host and command:
         cmd = "ssh %s '%s'" % (host,command)
-        sta,out = utils.runCommand(cmd)
-        message(out)
+        P = utils.command(cmd)
+        message(P.out)
+        return P.sta
 
 
 def runLocalProcessor(filename='',processor='abaqus'):
@@ -189,8 +190,8 @@ def runLocalProcessor(filename='',processor='abaqus'):
         cmd = cmd.replace('$C',cpus)
         cmd = "cd %s;%s" % (dirname,cmd)
         print(cmd)
-        sta,out = utils.runCommand(cmd)
-        print(out)
+        P = utils.command(cmd,shell=True)
+        print(P.out)
 
 
 def runLocalAbaqus(filename=''):
@@ -332,7 +333,7 @@ def getResultsFromServer(jobname=None,targetdir=None,ext=['.fil']):
         files = [ '%s%s' % (jobname,e) for e in ext ]
         userdir = "%s/%s" % (userdir,jobname)
         pf.GUI.setBusy(True)
-        if transferFiles(host,userdir,files,targetdir):
+        if transferFiles(host,userdir,files,targetdir) == 0:
             the_jobname = jobname
             pf.message("Files succesfully transfered")
         pf.GUI.setBusy(False)

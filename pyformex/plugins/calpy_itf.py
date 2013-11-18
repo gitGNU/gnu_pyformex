@@ -52,9 +52,9 @@ def detect(trypaths=None):
     path = ''
     calpy = calpy.split('-')[0]  # trim the version trailer
     if utils.checkVersion('calpy','0.3.4-rev3',external=True) >= 0:
-        sta,out = utils.runCommand('calpy --whereami')
-        if not sta:
-            path = out
+        P = utils.command('calpy --whereami')
+        if not P.sta:
+            path = P.out
             pf.debug("I found calpy in %s" % path)
     if not path:
         if trypaths is None:

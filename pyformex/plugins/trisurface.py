@@ -106,8 +106,8 @@ def stlConvert(stlname,outname=None,binary=False,options='-d'):
     else:
         return outname,1,"Can not convert file '%s' to '%s'" % (stlname,outname)
 
-    sta,out = utils.runCommand(cmd)
-    return outname,sta,out
+    P = utils.command(cmd,shell=True)
+    return outname,P.sta,P.out
 
 # Input of surface file formats
 
@@ -2022,12 +2022,12 @@ Quality: %s .. %s
         self.write(tmp,'gts')
         pf.message("Splitting with command\n %s" % cmd)
         cmd += ' < %s' % tmp
-        sta,out = utils.runCommand(cmd)
+        P = utils.command(cmd,shell=True)
         os.remove(tmp)
-        if sta or verbose:
-            pf.message(out)
+        if P.sta or verbose:
+            pf.message(P.out)
         #
-        # WE SHOULD READ THIS FILES BACK !!!
+        # TODO: WE SHOULD READ THIS FILES BACK !!!
         #
 
 
@@ -2170,11 +2170,10 @@ Quality: %s .. %s
         pf.message("Writing temp file %s" % tmp)
         self.write(tmp,'gts')
         pf.message("Smoothing with command\n %s" % cmd)
-        cmd += ' < %s > %s' % (tmp,tmp1)
-        sta,out = utils.runCommand(cmd)
+        P = utils.command(cmd,stdin=tmp,stdout=tmp1)
         os.remove(tmp)
-        if sta or verbose:
-            pf.message(out)
+        if P.sta or verbose:
+            pf.message(P.out)
         pf.message("Reading smoothed model from %s" % tmp1)
         S = TriSurface.read(tmp1)
         os.remove(tmp1)
@@ -2366,11 +2365,11 @@ def read_ascii_large(fn,dtype=Float):
     This is an alternative for read_ascii, which is a lot faster on large
     STL models.
     It requires the 'awk' command though, so is probably only useful on
-    Linux/UNIX. It works by first transforming  the input file to a
+    Linux/UNIX. It works by first transforming the input file to a
     .nodes file and then reading it through numpy's fromfile() function.
     """
     tmp = '%s.nodes' % fn
-    utils.runCommand("awk '/^[ ]*vertex[ ]+/{print $2,$3,$4}' '%s' | d2u > '%s'" % (fn,tmp))
+    utils.command("awk '/^[ ]*vertex[ ]+/{print $2,$3,$4}' '%s' | d2u > '%s'" % (fn,tmp),shell=True)
     nodes = fromfile(tmp,sep=' ',dtype=dtype).reshape((-1,3,3))
     return nodes
 

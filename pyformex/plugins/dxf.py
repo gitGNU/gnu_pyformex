@@ -76,9 +76,9 @@ def readDXF(filename):
     if utils.hasExternal('dxfparser'):
         cmd = 'pyformex-dxfparser %s 2>/dev/null' % filename
         print(cmd)
-        sta,out = utils.runCommand(cmd)
-        if sta==0:
-            return out
+        P = utils.command(cmd,shell=True)
+        if P.sta==0:
+            return P.out
         else:
             return ''
     else:

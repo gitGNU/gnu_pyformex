@@ -427,7 +427,8 @@ tetgen is a quality tetrahedral mesh generator and a 3D Delaunay triangulator. S
         return
 
     if os.path.exists(fn) and utils.hasExternal('tetgen'):
-        sta,out = utils.runCommand('tetgen -z%s %s' % (options,fn))
+        P = utils.command('tetgen -z%s %s' % (options,fn))
+        return P.sta
 
 
 def readTetgen(fn):
@@ -482,9 +483,9 @@ def tetgenConvexHull(pts):
     """
     tmp = utils.tempfile.mktemp('')
     writeNodes(fn=tmp+'.node',coords=pts,offset=0)
-    sta,out = utils.runCommand('tetgen %s'%(tmp+'.node'))
-    if sta:
-        pf.message(out)
+    P = utils.command('tetgen %s'%(tmp+'.node'))
+    if P.sta:
+        pf.message(P.out)
     tetconvhull = readTetgen(tmp+'.1.ele').values()[0]
     try:
         os.remove(tmp+'.node')
@@ -501,22 +502,21 @@ def tetgenConvexHull(pts):
 def checkSelfIntersectionsWithTetgen(self,verbose=False):
     """check self intersections using tetgen
 
-    Returns couples of intersecting triangles
+    Returns pairs of intersecting triangles
     """
     from plugins.tetgen import writeSurface
     cmd = 'tetgen -d '
     tmp = utils.tempfile.mktemp('')
-    print(tmp)
     pf.message("Writing temp file %s" % tmp)
     writeSurface(tmp,self.coords, self.elems)
     if verbose:
         cmd += '-V '
     cmd=cmd+ tmp
     pf.message("Checking with command\n %s" % cmd)
-    sta,out = utils.runCommand(cmd)
-    if sta:
+    P = utils.command(cmd)
+    if P.sta:
         pf.message('Tetgen got an error')
-        return sta
+        return P.sta
     try:
         os.remove(tmp+'.node')
         os.remove(tmp+'.smesh')
@@ -524,8 +524,8 @@ def checkSelfIntersectionsWithTetgen(self,verbose=False):
         os.remove(tmp+'.1.node')
     except:
         pass
-    if sta or verbose:
-        pf.message(out)
+    if P.sta or verbose:
+        pf.message(P.out)
     return asarray( [int(l.split(' ')[0]) for l in out.split('acet #')[1:]]).reshape(-1, 2)-1
 
 

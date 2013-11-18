@@ -213,7 +213,7 @@ def save_canvas(canvas,fn,fmt='png',quality=-1,size=None):
             cmd = 'pstopnm -portrait -stdout %s' % fneps
             if fmt != 'ppm':
                 cmd += '| pnmto%s > %s' % (fmt,fn)
-            utils.runCommand(cmd)
+            utils.command(cmd,shell=True)
             if delete:
                 os.remove(fneps)
 
@@ -292,8 +292,8 @@ def save_window(filename,format,quality=-1,windowname=None):
     pf.canvas.update()
     pf.app.processEvents()
     cmd = 'import -window "%s" %s:%s' % (windowname,format,filename)
-    sta,out = utils.runCommand(cmd)
-    return sta
+    P = utils.command(cmd)
+    return P.sta
 
 
 def save_main_window(filename,format,quality=-1,border=False):
@@ -320,8 +320,8 @@ def save_main_window(filename,format,quality=-1,border=False):
 def save_rect(x,y,w,h,filename,format,quality=-1):
     """Save a rectangular part of the screen to a an image file."""
     cmd = 'import -window root -crop "%sx%s+%s+%s" %s:%s' % (w,h,x,y,format,filename)
-    sta,out = utils.runCommand(cmd)
-    return sta
+    P = utils.command(cmd)
+    return P.sta
 
 
 #### USER FUNCTIONS ################
@@ -521,8 +521,9 @@ def createMovie(files,encoder='convert',outfn='output',**kargs):
         outfile = outfn+'.mp4'
         cmd = "ffmpeg -qscale 1 -r 1 -i %s output.mp4" % files
     pf.debug(cmd,pf.DEBUG.IMAGE)
-    utils.runCommand(cmd)
+    P = utils.command(cmd)
     print("Created file %s" % os.path.abspath(outfile))
+    return P.sta
 
 
 def saveMovie(filename,format,windowname=None):
@@ -540,8 +541,8 @@ def saveMovie(filename,format,windowname=None):
     windowid = windowname
     cmd = "xvidcap --fps 5 --window %s --file %s" % (windowid,filename)
     pf.debug(cmd,pf.DEBUG.IMAGE)
-    #sta,out = utils.runCommand(cmd)
-    return sta
+    P = utils.command(cmd)
+    return P.sta
 
 
 initialize()

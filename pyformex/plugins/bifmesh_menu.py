@@ -42,7 +42,6 @@ from connectivity import connectedLineElems
 from plugins.trisurface import fillBorder
 from plugins.curve import *
 from gui import menu
-from utils import runCommand
 import olist
 
 

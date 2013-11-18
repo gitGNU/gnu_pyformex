@@ -34,13 +34,14 @@ import pyformex as pf
 import os
 from numpy import *
 from plugins import trisurface,tetgen
-from utils import runCommand
-import coords,connectivity
+import utils
+import coords
+import connectivity
 
 
 def det3(f):
     """Calculate the determinant of each of the 3 by 3 arrays.
-    
+
     f is a (n,3,3) array.
     The output is 1d array containing the n corresponding determinants.
     """
@@ -50,7 +51,7 @@ def det3(f):
 
 def det4(f):
     """Calculate the determinant of each of the 4 by 4 arrays.
-    
+
     f is a (n,4,4) array.
     The output is 1d array containing the n corresponding determinants.
     """
@@ -61,15 +62,15 @@ def det4(f):
 def encode2(i,j,n):
     return n*i+j
 
-    
+
 def decode2(code,n):
     i,j = code/n, code%n
     return i,j
 
-    
+
 def circumcenter(nodes,elems):
     """Calculate the circumcenters of a list of tetrahedrons.
-    
+
     For a description of the method: http://mathworld.wolfram.com/Circumsphere.html
     The output are the circumcenters and the corresponding radii.
     """
@@ -97,7 +98,7 @@ def circumcenter(nodes,elems):
 
 def voronoi(fn):
     """Determine the voronoi diagram corresponding with a triangulated surface.
-    
+
     fn is the file name of a surface, including the extension (.off, .stl, .gts, .neu or .smesh)
     The voronoi diagram is determined by Tetgen.
     The output are the voronoi nodes and the corresponding radii of the voronoi spheres.
@@ -107,7 +108,7 @@ def voronoi(fn):
     ftype = ftype.strip('.').lower()
     if ftype != 'smesh':
         S.write('%s.smesh' %fn)
-    sta,out = runCommand('tetgen -zpv %s.smesh' %fn)
+    P = utils.command('tetgen -zpv %s.smesh' %fn)
     #information tetrahedra
     elems = tetgen.readElems('%s.1.ele' %fn)[0]
     nodes = tetgen.readNodes('%s.1.node' %fn)[0]
@@ -121,7 +122,7 @@ def voronoi(fn):
 
 def voronoiInner(fn):
     """Determine the inner voronoi diagram corresponding with a triangulated surface.
-    
+
     fn is the file name of a surface, including the extension (.off, .stl, .gts, .neu or .smesh)
     The output are the voronoi nodes and the corresponding radii of the voronoi spheres.
     """
@@ -130,7 +131,7 @@ def voronoiInner(fn):
     ftype = ftype.strip('.').lower()
     if ftype != 'smesh':
         S.write('%s.smesh' %fn)
-    sta,out = runCommand('tetgen -zp %s.smesh' %fn)
+    P = utils.command('tetgen -zp %s.smesh' %fn)
     #information tetrahedra
     elems = tetgen.readElems('%s.1.ele' %fn)[0]
     nodes = tetgen.readNodes('%s.1.node' %fn)[0].astype(float64)
@@ -153,10 +154,10 @@ def voronoiInner(fn):
     radii = sqrt((vec*vec).sum(axis=-1))
     return nodesVorInner,radii
 
-    
+
 def selectMaxVor(nodesVor,radii,r1=1.,r2=2.,q=0.7,maxruns=-1):
     """Select the local maxima of the voronoi spheres.
-    
+
     Description of the procedure:
     1) The largest voronoi sphere in the record is selected (voronoi node N and radius R).
     2) All the voronoi nodes laying within a cube all deleted from the record.
@@ -170,8 +171,8 @@ def selectMaxVor(nodesVor,radii,r1=1.,r2=2.,q=0.7,maxruns=-1):
         b) the edge length which is 2*r2*R.
     4) These three operations are repeated until all nodes are deleted.
     """
-    nodesCent = array([])   
-    radCent = array([]) 
+    nodesCent = array([])
+    radCent = array([])
     run = 0
     while nodesVor.shape[0] and (maxruns < 0 or run < maxruns):
         #find maximum voronoi sphere in the record
@@ -201,7 +202,7 @@ def selectMaxVor(nodesVor,radii,r1=1.,r2=2.,q=0.7,maxruns=-1):
 
 def removeDoubles(elems):
     """Remove the double lines from the centerline.
-    
+
     This is a clean-up function for the centerline.
     Lines appearing twice in the centerline are removed by this function.
     Both input and output are the connectivity of the centerline.
@@ -216,7 +217,7 @@ def removeDoubles(elems):
 
 def connectVorNodes(nodes,radii):
     """Create connections between the voronoi nodes.
-    
+
     Each of the nodes is connected with its closest neighbours.
     The input is an array of n nodes and an array of n corresponding radii.
     Two voronoi nodes are connected if the distance between these two nodes
@@ -245,7 +246,7 @@ def connectVorNodes(nodes,radii):
 
 def removeTriangles(elems):
     """Remove the triangles from the centerline.
-    
+
     This is a clean-up function for the centerline.
     Triangles appearing in the centerline are removed by this function.
     Both input and output are the connectivity of the centerline.
@@ -265,11 +266,11 @@ def removeTriangles(elems):
                 elems[t] = -1
     w2 = where(elems[:,0] != -1)[0]
     return elems[w2]
-    
+
 
 def centerline(fn):
     """Determine an approximated centerline corresponding with a triangulated surface.
-    
+
     fn is the file name of a surface, including the extension (.off, .stl, .gts, .neu or .smesh)
     The output are the centerline nodes, an array containing the connectivity information
     and radii of the voronoi spheres.

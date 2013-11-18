@@ -43,9 +43,9 @@ def readVmtkCenterlineDat(fn):
    The first line may contain a header.
    All other lines ('nlines') contain  'nf' floats.
    All data are seperated by blanks.
-   
+
    The return value is a tuple of
-   
+
    - a float array (nlines,nf) with the data
    - a list with the identifiers from the first line
    """
@@ -65,7 +65,7 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
     computing the centerlines in vascular models.
 
     Parameters:
-    
+
     - `seedselector`: str: seed point selection method, one of
       [`pickpoint`,`openprofiles`,`carotidprofiles`,`pointlist`,`idlist`]
     - `sourcepoints`: list: flattened source point coordinates for `pointlist` method
@@ -75,13 +75,13 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
     - `endpoints`: boolean: append source- and targetpoints to centerlines
     - `groupcl`: boolean: if True the points of the centerlines are merged and
       grouped to avoid repeated points and separate different branches
-    - `return_data`: boolean: if True returns a tuple containing a list of the 
-      additional information per each point (such as maximum inscribed sphere 
+    - `return_data`: boolean: if True returns a tuple containing a list of the
+      additional information per each point (such as maximum inscribed sphere
       used for the centerline computation, local coordinate system
-      and various integers values to group the centerline points according to 
-      the branching) and the array cointaing all these values (check the vmtk 
+      and various integers values to group the centerline points according to
+      the branching) and the array cointaing all these values (check the vmtk
       website for specific informations).
-          
+
       Note that when seedselector is `idlist`, the surface must be clenead converting
       it to a vtkPolyData using the function convert2VPD with flag clean=True and then
       converted back using convertFromVPD implemented in the vtk_itf plugin to avoid
@@ -107,26 +107,26 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
             fmt=' %f'
         if seedselector=='idlist':
             fmt=' %i'
-    
+
         cmd += ' -source%ss'%seedselector[:-4]
         cmd += fmt*len(sourcepoints)%tuple(sourcepoints)
         cmd += ' -target%ss'%seedselector[:-4]
         cmd += fmt*len(targetpoints)%tuple(targetpoints)
-    
+
     cmd += ' -endpoints %i'%endpoints
-    
+
     cmds.append(cmd)
     if groupcl:
         cmds.append('vmtk vmtkcenterlineattributes -ifile %s --pipe vmtkbranchextractor -radiusarray@ MaximumInscribedSphereRadius \
         --pipe vmtkbifurcationreferencesystems --pipe vmtkcenterlineoffsetattributes -referencegroupid 0 -ofile %s\n'%(tmp1,tmp1))
         cmds.append('vmtk vmtkcenterlinemerge -ifile %s -ofile %s -radiusarray MaximumInscribedSphereRadius -groupidsarray GroupIds -centerlineidsarray CenterlineIds -tractidsarray TractIds -blankingarray Blanking -mergeblanked 1'%(tmp1,tmp1))
     cmds.append('vmtk vmtksurfacecelldatatopointdata -ifile %s -ofile %s'%(tmp1,tmp2))
-    
+
     for c in cmds:
-        sta,out = utils.runCommand(c)
-        if sta:
+        P = utils.command(c)
+        if P.sta:
             pf.message("An error occurred during the centerline computing")
-            pf.message(out)
+            pf.message(P.out)
             return None
     data, header = readVmtkCenterlineDat(tmp2)
     os.remove(tmp)
@@ -144,31 +144,31 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
 def remesh(self,elementsizemode='edgelength',edgelength=None,
            area=None, areaarray=None, aspectratio=None, excludeprop=None, includeprop=None, preserveboundary=False, conformal='border'):
     """Remesh a TriSurface.
-    
+
     Returns the remeshed TriSurface. If the TriSurface has property numbers
     the property numbers will be inherited by the remeshed surface.
-    
+
     Parameters:
 
     - `elementsizemode`: str: metric that is used for remeshing.
-      `edgelength`, `area` and `areaarray` allow to specify a global 
+      `edgelength`, `area` and `areaarray` allow to specify a global
       target edgelength, area and areaarray (area at each node), respectively.
     - `edgelength`: float: global target triangle edgelength
     - `area`: float: global target triangle area
     - `areaarray`: array of float: nodal target triangle area
     - `aspectratio`: float: upper threshold for aspect ratio (default=1.2)
-    - `includeprop`: either a single integer, or a list/array of integers. 
+    - `includeprop`: either a single integer, or a list/array of integers.
       Only the regions with these property number(s) will be remeshed.
       This option is not compatible with `exludeprop`.
-    - `excludeprop`: either a single integer, or a list/array of integers. 
+    - `excludeprop`: either a single integer, or a list/array of integers.
       The regions with these property number(s) will not be remeshed.
       This option is not compatible with `includeprop`.
     - `preserveboundary`: if True vmtk tries to keep the shape of the border.
-    - `conformal`: None, `border` or `regionsborder`. 
-      If there is a border (ie. the surface is open) conformal=`border` 
-      preserves the border line (both points and connectivity); conformal=`regionsborder` 
+    - `conformal`: None, `border` or `regionsborder`.
+      If there is a border (ie. the surface is open) conformal=`border`
+      preserves the border line (both points and connectivity); conformal=`regionsborder`
       preserves both border line and lines between regions with different property numbers.
-    """        
+    """
     if includeprop is not None:
         if excludeprop is not None:
             raise ValueError, 'you cannot use both excludeprop and includeprop'
@@ -185,9 +185,9 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
         if self.isClosedManifold()==False:
             if conformal == 'regionsborder':
                 if self.propSet() is not None:
-                    if len(self.propSet())>1: 
+                    if len(self.propSet())>1:
                         return TriSurface.concatenate([remesh(s2,elementsizemode=elementsizemode,edgelength=edgelength,
-                        area=area, areaarray=None, aspectratio=aspectratio, 
+                        area=area, areaarray=None, aspectratio=aspectratio,
                         excludeprop=excludeprop, preserveboundary=preserveboundary, conformal='border') for s2 in self.splitProp()])
             added =TriSurface(self.getBorderMesh().convert('line3').setType('tri3'))
             s1 = self+added.setProp(-1)+added.setProp(-2)#add triangles on the border
@@ -196,7 +196,7 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
             if excludeprop is not None:
                 excludeprop1 = append(excludeprop1, asarray(excludeprop).reshape(-1))
             return remesh(s1,elementsizemode=elementsizemode,edgelength=edgelength,
-               area=area, areaarray=None, aspectratio=aspectratio, excludeprop=excludeprop1, 
+               area=area, areaarray=None, aspectratio=aspectratio, excludeprop=excludeprop1,
                preserveboundary=preserveboundary, conformal=None).withoutProp([-1,-2]).compact()
     else:
         if conformal is not None:
@@ -220,7 +220,7 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
     elif elementsizemode == 'areaarray':
         if not checkClean(self):
             raise ValueError, "Mesh is not clean: vtk will alter the node numbering and the areaarray will not correspond to the node numbering. To clean: mesh.fuse().compact().renumber()"
-        cmd += ' -elementsizemode areaarray -areaarray nodalareas ' 
+        cmd += ' -elementsizemode areaarray -areaarray nodalareas '
         pointAr['nodalareas'] = areaarray
     if aspectratio is not None:
         cmd += ' -aspectratio %f' % aspectratio
@@ -233,11 +233,11 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
     pf.message("Writing temp file %s" % tmp)
     writeVTP(mesh=self, fn=tmp, pointAr=pointAr)
     pf.message("Remeshing with command\n %s" % cmd)
-    sta,out = utils.runCommand(cmd)
+    P = utils.command(cmd)
     os.remove(tmp)
-    if sta:
+    if P.sta:
         pf.message("An error occurred during the remeshing.")
-        pf.message(out)
+        pf.message(P.out)
         return None
     coords, E, fieldAr, cellAr, pointAr=readVTP(tmp1)
     S = TriSurface(coords, E[0])
@@ -253,7 +253,7 @@ def vmtkDistanceOfSurface(self,S):
     Retuns a tuple of vector and signed scalar distances for all nodes of S.
     The signed distance is positive if the distance vector and the surface
     normal have negative dot product, i.e. if nodes of S is outer with respect to self.
-    It is advisable to use a surface S which is clean (fused, compacted and renumbered). 
+    It is advisable to use a surface S which is clean (fused, compacted and renumbered).
     If not vmtk cleans the mesh and the nodes of S are re-matched.
     """
     tmp = utils.tempFile(suffix='.vtp').name
@@ -262,12 +262,12 @@ def vmtkDistanceOfSurface(self,S):
     S.write(tmp,'vtp')
     self.write(tmp1,'vtp')
     cmd = 'vmtk vmtksurfacedistance -ifile %s -rfile %s -distancevectorsarray vdist -signeddistancearray sdist -ofile %s' % (tmp,tmp1,tmp2)
-    sta,out = utils.runCommand(cmd)
+    P = utils.command(cmd)
     os.remove(tmp)
     os.remove(tmp1)
-    if sta:
+    if P.sta:
         pf.message("An error occurred during the distance calculation.")
-        pf.message(out)
+        pf.message(P.out)
         return None
     from plugins.vtk_itf import readVTP
     coords, E, fieldAr, cellAr, pointAr=readVTP(tmp2)
@@ -302,7 +302,7 @@ def vmtkDistanceOfPoints(self,X,nproc=1):
         return vmtkDistanceOfSurface(self,S)
     else:
         datablocks = splitar(X,nproc,close=False)
-        print ('-----distance of %d points from %d triangles with %d proc'%(len(X), self.nelems(), nproc)) 
+        print ('-----distance of %d points from %d triangles with %d proc'%(len(X), self.nelems(), nproc))
         tasks = [(vmtkDistanceOfPoints,(self,d,1)) for d in datablocks]
         ind = multitask(tasks,nproc)
         vdist,sdist=zip(*ind)
@@ -310,11 +310,11 @@ def vmtkDistanceOfPoints(self,X,nproc=1):
 
 def vmtkDistancePointsToSegments(X,L):
     """Find the shortest distances from points X to segments L.
-    
+
     X is a (nX,3) shaped array of points.
     L is a line2 Mesh.
 
-    Retuns a tuple of vector and scalar distances for all points.    
+    Retuns a tuple of vector and scalar distances for all points.
     Points and lines are first converted into degenerate triangles
     which are then used by vmtkDistanceOfSurface.
     """
