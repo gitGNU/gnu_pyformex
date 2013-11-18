@@ -31,7 +31,7 @@ import pyformex as pf
 from coords import *
 import utils
 import os
-from plugins.trisurface import TriSurface,read_gts_intersectioncurve
+from plugins.trisurface import TriSurface
 
 if not utils.hasExternal('gts-bin'):
     utils.warn("I am missing the gts binary programs on your system.\nTherefore, some surface operations will not be available or fail.\n\nOn Debian, you can install the missing programs with `apt-get install libgts-bin`.\n")
@@ -44,6 +44,22 @@ if not utils.hasExternal('gts-extra'):
 #   in Debian package: stl2gts gts2stl gtscheck
 #   not in Debian package: gtssplit gtscoarsen gtsrefine gtssmooth gtsinside
 #
+
+
+def read_gts_intersectioncurve(fn):
+    import re
+    from formex import Formex
+    RE = re.compile("^VECT 1 2 0 2 0 (?P<data>.*)$")
+    r = []
+    for line in open(fn,'r'):
+        m = RE.match(line)
+        if m:
+            r.append(m.group('data'))
+    nelems = len(r)
+    x = fromstring('\n'.join(r),sep=' ').reshape(-1,2,3)
+    F = Formex(x)
+    return F
+
 
 def boolean(self,surf,op,check=False,verbose=False):
     """Perform a boolean operation with another surface.
@@ -103,7 +119,8 @@ def gtsset(self,surf,op,filt='',ext='.tmp',curve=False,check=False,verbose=False
 
     - curve: if True, an intersection curve is computed, else the surface.
 
-    Returns the name of the (temporary) results file.
+    Returns the resulting TriSurface (curve=False), or a plex-2 Formex
+    (curve=True), or None if the input surfaces do not intersect.
     """
     op = {'+':'union', '-':'diff', '*':'inter'}[op]
     options = ''
@@ -127,11 +144,9 @@ def gtsset(self,surf,op,filt='',ext='.tmp',curve=False,check=False,verbose=False
     os.remove(tmp1)
     if P.sta or verbose:
         pf.message(P.out)
-    err=[l for l in P.err.split('\n') if l[0:1]!='#' and l!='']#remove empty and commented lines from P.err
-    if len(err)>0:#here some specific errors could be screened from P.err
-        if err[0]=='gtsset: the intersection of `%s\' and `%s\' is not a closed curve'%(tmp, tmp1):
-            pf.message(err[0])
-            return 'notAClosedCurve'
+    if P.sta:
+        pf.message(P.err)
+        return None
     pf.message("Reading result from %s" % tmp2)
     if curve:
         res = read_gts_intersectioncurve(tmp2)

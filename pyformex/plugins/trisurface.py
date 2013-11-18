@@ -159,20 +159,6 @@ def read_stl(fn,intermediate=None):
         return read_off(ofn)
 
 
-def read_gts_intersectioncurve(fn):
-    import re
-    RE = re.compile("^VECT 1 2 0 2 0 (?P<data>.*)$")
-    r = []
-    for line in open(fn,'r'):
-        m = RE.match(line)
-        if m:
-            r.append(m.group('data'))
-    nelems = len(r)
-    x = fromstring('\n'.join(r),sep=' ').reshape(-1,2,3)
-    F = Formex(x)
-    return F
-
-
 
 # Surface characteristics
 
