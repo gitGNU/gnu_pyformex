@@ -127,6 +127,11 @@ def gtsset(self,surf,op,filt='',ext='.tmp',curve=False,check=False,verbose=False
     os.remove(tmp1)
     if P.sta or verbose:
         pf.message(P.out)
+    err=[l for l in P.err.split('\n') if l[0:1]!='#' and l!='']#remove empty and commented lines from P.err
+    if len(err)>0:#here some specific errors could be screened from P.err
+        if err[0]=='gtsset: the intersection of `%s\' and `%s\' is not a closed curve'%(tmp, tmp1):
+            pf.message(err[0])
+            return 'notAClosedCurve'
     pf.message("Reading result from %s" % tmp2)
     if curve:
         res = read_gts_intersectioncurve(tmp2)
