@@ -390,15 +390,15 @@ def reportSoftware(soft=None,header=None):
 
 
 def checkItem(has,want):
-    import utils
     if has == want:
         return 'Matching'
     if not has:
         return 'Missing'
     if has and not want:
         return 'Unwanted'
-    has = utils.SaneVersion(has)
-    want = utils.SaneVersion(want)
+    has = SaneVersion(has)
+    want = SaneVersion(want)
+    print("HAS %s; WANT %s" % (has,want))
     if has == want:
         return 'Matching'
     if has < want:
@@ -418,7 +418,7 @@ def checkSoftware(req):
     comp = []
     for k in req:
         comp.extend(checkDict(soft[k],req[k]))
-    print(utils.underlineHeader("%30s %15s %15s %10s" % ("Item","Required","Found","OK")))
+    print(utils.underlineHeader("%30s %15s %15s %10s" % ("Item","Found","Required","OK")))
     for item in comp:
         print("%30s %15s %15s %10s" % item)
 

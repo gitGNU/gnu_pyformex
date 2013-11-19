@@ -861,7 +861,7 @@ def checkRevision(rev,comp='>='):
 def requireRevision(rev,comp='>='):
     """Require a specified pyFormex revision number.
 
-    The arguments are like checkRevision. Ho9wever, this function will
+    The arguments are like checkRevision. However, this function will
     raise an error if the requirement fails.
     """
     if not checkRevision(rev,comp):

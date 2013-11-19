@@ -29,7 +29,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'advanced'
 _topics = ['FEA']
-_techniques = ['persistence', 'dialog', 'color'] 
+_techniques = ['persistence', 'dialog', 'color']
 
 from gui.draw import *
 
@@ -82,10 +82,11 @@ def drawFEModel(M,nodes=True,elems=True,nodenrs=True,elemnrs=True):
             [ drawNumbers(i,color=red) for i in meshes ]
     zoomAll()
 
+
 def run():
     global parts,M,F
-    
-    na,ma = 4,3  # Size of domain A   
+
+    na,ma = 4,3  # Size of domain A
     nb,mb = 3,4  # size of domain B
     # Make sure the property numbers never clash!
     pa,pb,pc = 3,4,5 # Properties corresponding to domains A,B,C
@@ -109,7 +110,7 @@ def run():
     C = A.rotate(90).setProp(pc)
     parts = [A,B,C]
     draw(parts)
-    
+
     # First convert parts to Meshes
     parts = [ p.toMesh() for p in parts ]
     if ans == 2:
@@ -136,19 +137,19 @@ def run():
         'poisson_ratio': 0.3,
         'density': 0.1, # Not Used, but Abaqus does not like a material without
         }
-    thin_plate = { 
+    thin_plate = {
         'name': 'thin_plate',
         'sectiontype': 'solid',
         'thickness': 0.01,
         'material': 'steel',
         }
-    medium_plate = { 
+    medium_plate = {
         'name': 'thin_plate',
         'sectiontype': 'solid',
         'thickness': 0.015,
         'material': 'steel',
         }
-    thick_plate = { 
+    thick_plate = {
         'name': 'thick_plate',
         'sectiontype': 'solid',
         'thickness': 0.02,
@@ -159,8 +160,7 @@ def run():
     print(thick_plate)
 
     # Create element sets according to the properties pa,pb,pb1,pc:
-    esets = {}
-    esets.update([(v,where(elemprops==v)[0]) for v in [pa,pb,pb1,pc]])
+    esets = dict([(v,where(elemprops==v)[0]) for v in [pa,pb,pb1,pc]])
 
     # Set the element properties
     ea,eb,ec = [ abq_eltype(p.nplex()) for p in parts ]
@@ -244,6 +244,7 @@ def run():
         if fn:
             data.write(jobname=fn,group_by_group=True)
 
+
 # Initialize
 smoothwire()
 lights(False)
@@ -252,5 +253,5 @@ clear()
 
 if __name__ == 'draw':
     run()
-    
+
 # End

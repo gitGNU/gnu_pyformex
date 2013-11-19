@@ -36,8 +36,6 @@ from formex import *
 from gui.draw import *
 from gui.colors import *
 
-from subprocess import call
-
 
 def about():
     showInfo("""Jobs.py
@@ -71,7 +69,10 @@ def configure():
         res = dia.results
         res['_save_'] = save
         if res['_addhost_']:
-            res['jobs/hosts'] = pf.cfg['jobs/hosts'] + [ res['_addhost_'] ]
+            hosts = pf.cfg['jobs/hosts']
+            if res['_addhost_'] not in hosts:
+                hosts.append(res['_addhost_'])
+            res['jobs/hosts'] = sorted(hosts)
             res['jobs/host'] = res['_addhost_']
         pf.debug(res)
         updateSettings(res)
@@ -110,9 +111,9 @@ def getRemoteDirs(host,userdir):
     cmd = "ssh %s 'cd %s;ls -F|egrep \".*/\"'" % (host,userdir)
     P = utils.command(cmd,shell=True)
     if P.sta:
-        P.out = ''
-    dirs = P.out.split('\n')
-    dirs = [ j.strip('/') for j in dirs ]
+        dirs = []
+    else:
+        dirs = [ j.strip('/') for j in P.out.split('\n') ]
     return dirs
 
 
@@ -164,9 +165,8 @@ def remoteCommand(host=None,command=None):
         command = res['command']
 
     if host and command:
-        cmd = "ssh %s '%s'" % (host,command)
-        P = utils.command(cmd)
-        message(P.out)
+        P = utils.command(['ssh',host,command])
+        print(P.out)
         return P.sta
 
 
@@ -189,7 +189,6 @@ def runLocalProcessor(filename='',processor='abaqus'):
         cmd = cmd.replace('$F',jobname)
         cmd = cmd.replace('$C',cpus)
         cmd = "cd %s;%s" % (dirname,cmd)
-        print(cmd)
         P = utils.command(cmd,shell=True)
         print(P.out)
 
@@ -222,10 +221,9 @@ def submitToCluster(filename=None):
             host = pf.cfg.get('jobs/host','bumpfs')
             reqdir = pf.cfg.get('jobs/inputdir','bumper/requests')
             cmd = "scp %s %s:%s" % (filename,host,reqdir)
-            ret = call(['scp',filename,'%s:%s' % (host,reqdir)])
-            print(ret)
-            ret = call(['ssh',host,"echo '%s' > %s/%s.request" % (reqtxt,reqdir,jobname)])
-            print(ret)
+            utils.command(cmd)
+            cmd = ['ssh',host,"echo '%s' > %s/%s.request" % (reqtxt,reqdir,jobname)]
+            utils.command(cmd)
 
 
 def killClusterJob(jobname=None):
@@ -238,8 +236,8 @@ def killClusterJob(jobname=None):
         cmd = "touch %s/%s.kill" % (reqdir,jobname)
         print(host)
         print(cmd)
-        ret = call(['ssh',host,"%s" % cmd])
-        print(ret)
+        P = utils.command(['ssh',host,"%s" % cmd])
+        print(P.out)
 
 
 the_host = None
@@ -284,7 +282,7 @@ def checkResultsOnServer(host=None,userdir=None):
         the_host = None
         the_userdir = None
         the_jobnames = None
-    pf.message(the_jobnames)
+    print(the_jobnames)
 
 
 def changeTargetDir(fn):
@@ -335,7 +333,7 @@ def getResultsFromServer(jobname=None,targetdir=None,ext=['.fil']):
         pf.GUI.setBusy(True)
         if transferFiles(host,userdir,files,targetdir) == 0:
             the_jobname = jobname
-            pf.message("Files succesfully transfered")
+            print("Files succesfully transfered")
         pf.GUI.setBusy(False)
 
 
