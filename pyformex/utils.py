@@ -363,8 +363,29 @@ def findIcon(name):
 ################
 
 def prefixFiles(prefix,files):
-    """Prepend a prefix to a list of filenames."""
+    """Prepend a prefix path to a list of filenames."""
     return [ os.path.join(prefix,f) for f in files ]
+
+
+def unPrefixFiles(prefix,files):
+    """Remove a prefix path from a list of filenames.
+
+    The given prefix path is removed from all filenames that start with
+    the prefix. Other filenames are untouched.
+    Only full path components are removed.
+    The changed files are guaranteed not to start with a '/'.
+
+    Returns the modified list.
+
+    Examples:
+
+    >>> unPrefixFiles('/home',['/home/user1','/home//user2','/home2/user','/root'])
+    ['user1', 'user2', '/home2/user', '/root']
+    """
+    if not prefix.endswith('/'):
+        prefix += '/'
+    n = len(prefix)
+    return [ s[n:].lstrip('/') if s.startswith(prefix) else s for s in files ]
 
 
 def matchMany(regexps,target):
