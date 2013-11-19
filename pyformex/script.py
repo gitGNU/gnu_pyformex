@@ -60,6 +60,13 @@ import time
 ################
 
 
+######################### Exceptions #########################################
+
+class _Exit(Exception):
+    """Exception raised to exit from a running script."""
+    pass
+
+
 ############################# Globals for scripts ############################
 
 
@@ -363,7 +370,7 @@ def raiseExit():
     pf.debug("RAISING SystemExit",pf.DEBUG.SCRIPT)
     if pf.GUI:
         pf.GUI.drawlock.release()
-    raise SystemExit,"EXIT REQUESTED FROM SCRIPT"
+    raise _Exit,"EXIT REQUESTED FROM SCRIPT"
 
 
 def enableBreak(mode=True):
@@ -531,6 +538,7 @@ def runApp(appname,argv=[],refresh=False,lock=True,check=True):
         try:
             res = app.run()
         except SystemExit:
+            print ("EXIT FROM APP")
             pass
         except:
             raise

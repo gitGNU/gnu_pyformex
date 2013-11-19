@@ -36,36 +36,12 @@ import draw
 import utils
 
 
-################### Script action toolbar ###########
-def addActionButtons(toolbar):
-    """Add the script action buttons to the toolbar."""
-    import fileMenu
-    action = {}
-    avail_buttons = [
-        ( "Play", "next", draw.play, False ),
-        ( "ReRun", "rerun", draw.replay, False ),
-        ## ( "Step", "nextstop", draw.step, False ),
-        ( "Continue", "ff", draw.fforward, False ),
-        ( "Stop", "stop", draw.raiseExit, False ),
-        ( "Edit", "pencil", fileMenu.editApp, False ),
-        ( "Info", "info", draw.showDoc, False ),
-        ]
-    # Filter configured buttons
-    show_buttons = pf.cfg['gui/actionbuttons']
-    buttons = [ b for b in avail_buttons if b[0].lower() in show_buttons ]
-    for b in buttons:
-        icon = widgets.pyformexIcon(b[1])
-        a = toolbar.addAction(icon,b[0],b[2])
-        a.setEnabled(b[3])
-        action[b[0]] = a
-    return action
-
 ################### General Button Functions ###########
 
-def addButton(toolbar,tooltip,icon,func,repeat=False,toggle=False,checked=False,icon0=None):
+def addButton(toolbar,tooltip,icon,func,repeat=False,toggle=False,checked=False,icon0=None,enabled=True):
     """Add a button to a toolbar.
 
-    - `toolbar`:  the toolbar where the button will be added
+    - `toolbar`: the toolbar where the button will be added
     - `tooltip`: the text to appears as tooltip
     - `icon`: name of the icon to be displayed on the button,
     - `func`: function to be called when the button is pressed,
@@ -84,6 +60,8 @@ def addButton(toolbar,tooltip,icon,func,repeat=False,toggle=False,checked=False,
         iconset.addPixmap(icon_off,QtGui.QIcon.Normal,QtGui.QIcon.Off)
 
     a = toolbar.addAction(iconset,tooltip,func)
+    a.setEnabled(enabled)
+
     b = toolbar.widgetForAction(a)
 
     if repeat:
@@ -104,6 +82,30 @@ def addButton(toolbar,tooltip,icon,func,repeat=False,toggle=False,checked=False,
 def removeButton(toolbar,button):
     """Remove a button from a toolbar."""
     toolbar.removeAction(button)
+
+
+################### Script action toolbar ###########
+
+
+def addActionButtons(toolbar):
+    """Add the script action buttons to the toolbar."""
+    import fileMenu
+    action = {}
+    avail_buttons = [
+        ( "Play", "next", draw.play, False ),
+        ( "ReRun", "rerun", draw.replay, False ),
+        ## ( "Step", "nextstop", draw.step, False ),
+        ( "Continue", "ff", draw.fforward, False ),
+        ( "Stop", "stop", draw.raiseExit, False ),
+        ( "Edit", "pencil", fileMenu.editApp, False ),
+        ( "Info", "info", draw.showDoc, False ),
+        ]
+    # Filter configured buttons
+    show_buttons = pf.cfg['gui/actionbuttons']
+    show_buttons = [ b for b in avail_buttons if b[0].lower() in show_buttons ]
+    for name,icon,func,enabled in show_buttons:
+        action[name] = addButton(toolbar,'',icon,func,enabled=enabled)
+    return action
 
 
 ################# Camera action toolbar ###############

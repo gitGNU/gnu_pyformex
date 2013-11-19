@@ -209,6 +209,11 @@ def toggleAppScript():
             pf.warning("I can not find the source file for this application.")
 
 
+#########################################################################
+## The GUI ##
+#############
+
+
 class Gui(QtGui.QMainWindow):
     """Implements a GUI for pyformex."""
 
@@ -870,6 +875,12 @@ class Gui(QtGui.QMainWindow):
         for b in buttons:
             if b in toolbar:
                 toolbar[b].setEnabled(enable)
+
+
+    def reloadActionButtons(self):
+        for b in self.actions:
+            self.toolbar.removeAction(self.actions[b].defaultAction())
+        self.actions = toolbar.addActionButtons(self.toolbar)
 
 
     def startRun(self):

@@ -49,6 +49,8 @@ def updateSettings(res,save=None):
     and its value is True, the preferences will also be saved to the
     user's preference file.
     Else, the user will be asked whether he wants to save the changes.
+    Add '_save_:False' to res or use save=False to not save and not
+    being asked.
     """
     pf.debug("\nACCEPTED SETTINGS\n%s"% res,pf.DEBUG.CONFIG)
     if save is None:
