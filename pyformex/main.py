@@ -301,7 +301,7 @@ def apply_config_changes(cfg):
 
 
 def test_module(module):
-    """Run the doctests in the modules docstrings."""
+    """Run the doctests in the module's docstrings."""
     import doctest
     # Note that a non-empty fromlist is needed to make the
     # __import__ function always return the imported module
@@ -339,21 +339,6 @@ def run(argv=[]):
     last read config file. Changed settings are those that differ from the
     settings in all but the last one.
     """
-
-    # Create a config instance
-    pf.cfg = Config()
-    # Fill in the pyformexdir, homedir variables
-    # (use a read, not an update)
-    if os.name == 'posix':
-        homedir = os.environ['HOME']
-    elif os.name == 'nt':
-        homedir = os.environ['HOMEDRIVE']+os.environ['HOMEPATH']
-    pf.cfg.read("pyformexdir = '%s'\n" % pyformexdir)
-    pf.cfg.read("homedir = '%s'\n" % homedir)
-
-    # Read the defaults (before the options)
-    defaults = os.path.join(pyformexdir,"pyformex.conf")
-    pf.cfg.read(defaults)
 
     # Process options
     import optparse
@@ -504,7 +489,27 @@ def run(argv=[]):
 
     pf.debug("Options: %s" % pf.options,pf.DEBUG.ALL)
 
-    ########## Process special options which will not start pyFormex #######
+    ########## Load default configuration ##################################
+
+    # Create a config instance
+    pf.cfg = Config()
+    # Fill in the pyformexdir, homedir variables
+    # (use a read, not an update)
+    if os.name == 'posix':
+        homedir = os.environ['HOME']
+    elif os.name == 'nt':
+        homedir = os.environ['HOMEDRIVE']+os.environ['HOMEPATH']
+    pf.cfg.read("pyformexdir = '%s'\n" % pyformexdir)
+    pf.cfg.read("homedir = '%s'\n" % homedir)
+
+    # Read the defaults (before the options)
+    defaults = os.path.join(pyformexdir,"pyformex.conf")
+    pf.cfg.read(defaults)
+
+    # These values should not be changed
+    pf.cfg.userprefs = os.path.join(pf.cfg.userconfdir,'pyformex.conf')
+
+    ########## Process special options which do not start pyFormex #######
 
     if pf.options.testmodule:
         for a in pf.options.testmodule.split(','):
@@ -530,11 +535,7 @@ def run(argv=[]):
     if pf.options.whereami or pf.options.detect :
         return
 
-    ########### Read the config files  ####################
-
-    # These values should not be changed
-    pf.cfg.userprefs = os.path.join(pf.cfg.userconfdir,'pyformex.conf')
-
+    ########### Migrate the user configuration files ####################
 
     # Migrate the user preferences to the new place under $HOME/.config
     if not os.path.exists(pf.cfg.userprefs):
@@ -562,6 +563,9 @@ def run(argv=[]):
 
             except:
                 raise RuntimeError,"Error while trying to migrate your user configuration\nTry moving the config files yourself.\nYou may also remove the config directories %s\n and %s alltogether\s to get a fresh start with default config." % (olddir,newdir)
+
+
+    ########### Load the user configuration  ####################
 
     # Set the config files
     if pf.options.nodefaultconfig:
