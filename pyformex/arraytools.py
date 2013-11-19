@@ -96,7 +96,7 @@ except TypeError:
 if unique([1],True)[0][0] == 0:
     # We have the old numy version
     import utils   # We are early on startup: utils not loaded yet
-    utils.warn("BEWARE: OLD VERSION OF NUMPY!!!! We advise you to upgrade NumPy!")
+    utils.warn("warn_old_numpy")
 
     def unique(a,return_indices=False):
         """Replacement for numpy's unique1d"""

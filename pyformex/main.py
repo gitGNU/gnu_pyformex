@@ -506,7 +506,7 @@ def run(argv=[]):
     defaults = os.path.join(pyformexdir,"pyformex.conf")
     pf.cfg.read(defaults)
 
-    # These values should not be changed
+    # The default user config path (do not change!)
     pf.cfg.userprefs = os.path.join(pf.cfg.userconfdir,'pyformex.conf')
 
     ########## Process special options which do not start pyFormex #######
@@ -563,7 +563,6 @@ def run(argv=[]):
 
             except:
                 raise RuntimeError,"Error while trying to migrate your user configuration\nTry moving the config files yourself.\nYou may also remove the config directories %s\n and %s alltogether\s to get a fresh start with default config." % (olddir,newdir)
-
 
     ########### Load the user configuration  ####################
 

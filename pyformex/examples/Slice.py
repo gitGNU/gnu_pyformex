@@ -70,6 +70,7 @@ def run():
     t = -0.3
     bb[0] = (1.0-t)*bb[0] + t*bb[1]
     draw(S,bbox=bb,view='front')
+    return
 
     try:
         P,n,t = askSlices(S.bbox())
@@ -89,14 +90,14 @@ def run():
         F1,F = F.cutWithPlane(p,-n)
         if F1.nelems() > 0:
             F1.setProp(i)
-        G = [ g.rot(a,around=p) for g in G ] 
+        G = [ g.rot(a,around=p) for g in G ]
         G.append(F1)
         #clear()
         B = draw([F,G])
         if A:
             undraw(A)
         A = B
-            
+
     seterr(**old)
 
     x = pf.canvas.width()/2

@@ -642,6 +642,13 @@ _activate_settings = {
 def setDrawWait():
     askConfigPreferences(['draw/wait'])
 
+def editPreferences():
+    draw.editFile(pf.preffile)
+
+def reloadPreferences():
+    pf.prefcfg.read(pf.preffile)
+
+
 MenuData = [
     (_('&Settings'),[
         (_('&Settings Dialog'),settings),
@@ -653,8 +660,8 @@ MenuData = [
         (_('&Reset to Factory Defaults'),resetFactory),
         ('---',None),
         (_('&Save Preferences Now'),savePreferences),
-#        (_('&Make current settings the defaults'),savePreferences),
-#        (_('&Reset current settings to the saved defaults'),savePreferences),
+        (_('&Edit Preferences File'),editPreferences),
+        (_('&Reload Preferences'),reloadPreferences),
         ]),
     ]
 

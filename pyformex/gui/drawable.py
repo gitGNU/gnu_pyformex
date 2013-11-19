@@ -271,7 +271,7 @@ def drawNurbsCurves(x,knots,color=None,alpha=1.0,samplingTolerance=5.0):
     nknots = asarray(knots).shape[-1]
     order = nknots-nctrl
     if  order > 8:
-        utils.warn('Nurbs curves of degree > 7 can currently not be drawn! You can create some approximation by evaluating the curve at some points.')
+        utils.warn("warn_nurbs_curve")
         return
 
     if x.ndim == 2:
@@ -421,7 +421,7 @@ def drawNurbsSurfaces(x,sknots,tknots,color=None,alpha=1.0,normals='auto',sampli
     sorder = nsk-ns
     torder = ntk-nt
     if sorder > 8 or torder > 8:
-        utils.warn('Nurbs surfaces of degree > 7 can currently not be drawn! You can approximate the surface by a lower order surface.')
+        utils.warn("warn_nurb_surface")
         return
 
     if x.ndim == 3:
@@ -924,7 +924,7 @@ def pickPolygons(x,e=None,objtype=-1):
 
 
 def pickPolygonEdges(x,e,edg):
-    utils.warn("pickPolygonEdges IS NOT IMPLEMENTED YET!")
+    utils.warn("warn_pickPolygonEdges")
 
 
 def pickPoints(x):

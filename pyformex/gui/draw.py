@@ -1216,7 +1216,7 @@ def createView(name,angles,addtogui=False):
 
     The angles are (longitude, latitude, twist).
     By default, the view is local to the script's viewport.
-    If gui is True, it is also added to the GUI.
+    If addtogui is True, a view button to set this view is added to the GUI.
     """
     pf.canvas.view_angles[name] = angles
     if addtogui:

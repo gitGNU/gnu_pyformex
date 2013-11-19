@@ -177,7 +177,7 @@ class Mesh(Geometry):
     def __getattribute__(self,name):
         """This is temporarily here to warn people about the eltype removal"""
         if name == 'eltype':
-            utils.warn("mesh_removed_eltype")
+            utils.warn("warn_mesh_removed_eltype")
 
         # Default behaviour
         return object.__getattribute__(self, name)
@@ -991,7 +991,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         if self.elName() == 'quad4':
             p = p.reshape(-1,2)
             if not (p[:,0] == p[:,1]).all():
-                utils.warn("The partitioning may be incorrect due to nonplanar 'quad4' elements")
+                utils.warn("warn_mesh_partitionbyangle")
             return p[:,0]
 
 
@@ -1129,14 +1129,14 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
     def matchCoords(self,coords,**kargs):
         """Match nodes of coords with nodes of self.
-        
-        coords can be a Coords or a Mesh object 
+
+        coords can be a Coords or a Mesh object
         This is a convenience function equivalent to::
 
            self.coords.match(mesh.coords,**kargs)
-           or 
+           or
            self.coords.match(coords,**kargs)
-        
+
         See also :meth:`Coords.match`
         """
         if not(isinstance(coords,Coords)):
@@ -1386,8 +1386,8 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
     @utils.deprecation("Mesh.withoutProp is deprecated. Use Geometry.cselectProp instead.")
     def withoutProp(self,val):
         return self.cselectProp(val)
-        
-        
+
+
     def connectedTo(self,nodes):
         """Return a Mesh with the elements connected to the specified node(s).
 
@@ -1493,10 +1493,6 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
           the desired effect. If not however, the user can set this to False
           to skip the element reversal.
         """
-        if 'autofix' in kargs:
-            utils.warn("The `autofix` parameter of Mesh.reflect has been renamed to `reverse`.")
-            reverse = kargs['autofix']
-
         if reverse is None:
             reverse = True
             utils.warn("warn_mesh_reflect")
@@ -2006,7 +2002,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         over `n` steps of length `step` in direction of axis `dir`.
 
         """
-        utils.warn("BEWARE! Mesh.extrude has changed. The step parameter has been removed and there is now a (total) length parameter.")
+        utils.warn("warn_mesh_extrude")
         print("Extrusion in direction %s over length %s" % (dir,length))
         t = smartSeed(div)
         #print("SEED %s" % t)
@@ -2796,61 +2792,7 @@ def rectangle(L,W,nl,nw):
     return quadgrid(sl,sw).resized([L,W,1.0])
 
 
-def quadrilateral(x,n1,n2):
-    """Create a quadrilateral mesh
-
-    Parameters:
-
-    - `x`: Coords(4,3): Four corners of the mesh, in anti-clockwise order.
-    - `n1`: number of elements along sides x0-x1 and x2-x3
-    - `n2`: number of elements along sides x1-x2 and x3-x4
-
-    Returns a Mesh of quads filling the quadrilateral defined  by the four
-    points `x`.
-    """
-    from elements import Quad4
-    from plugins import isopar
-    x = checkArray(x,(4,3),'f')
-    M = rectangle(1.,1.,nl,nw).isopar('quad4',x,Quad4.vertices)
-    return M
-
-
-def quarter_circle(n1,n2):
-    """Create a mesh of quadrilaterals filling a quarter circle.
-
-    Parameters:
-
-    - `n1`: number of elements along sides x0-x1 and x2-x3
-    - `n2`: number of elements along sides x1-x2 and x3-x4
-
-    Returns a Mesh representing a quarter circle with radius 1 and
-    center at the origin.
-
-    The quarter circle mesh has a kernel of n1*n1 cells, and two
-    border meshes of n1*n2 cells. The resulting mesh has n1+n2 cells
-    in radial direction and 2*n1 cells in tangential direction (in the
-    border mesh).
-
-    """
-    r = float(n1)/(n1+n2)  # radius of the kernel
-    P0,P1 = Coords([[0.,0.,0.],[r ,0.,0.]])
-    P2 = P1.rot(45.)
-    P3 = P1.rot(90.)
-    # Kernel is a quadrilateral
-    C0 = PolyLine([P0,P1]).approx(n1).toMesh()
-    C1 = PolyLine([P3,P2]).approx(n1).toMesh()
-    M0 = C0.connect(C1,div=n1)
-    # Border meshes
-    C0 = Arc(center=P0,radius=1.,angles=(0.,45.)).approx(n1).toMesh()
-    C1 = PolyLine([P1,P2]).approx(n1).toMesh()
-    M1 = C0.connect(C1,div=n2)
-    C0 = Arc(center=P0,radius=1.,angles=(45.,90.)).approx(n1).toMesh()
-    C1 = PolyLine([P2,P3]).approx(n1).toMesh()
-    M2 = C0.connect(C1,div=n2)
-    return M0+M1+M2
-
-
-def rectangle_with_hole(L,W,r,nr,nt,e0=0.0,eltype='quad4'):
+def rectangleWithHole(L,W,r,nr,nt,e0=0.0,eltype='quad4'):
     """Create a quarter of rectangle with a central circular hole.
 
     Parameters:
@@ -2881,6 +2823,61 @@ def rectangle_with_hole(L,W,r,nr,nt,e0=0.0,eltype='quad4'):
     grid0 = grid.isopar('quad9',trf0,base)
     grid1 = grid.isopar('quad9',trf1,base)
     return (grid0+grid1).fuse()
+
+
+def quadrilateral(x,n1,n2):
+    """Create a quadrilateral mesh
+
+    Parameters:
+
+    - `x`: Coords(4,3): Four corners of the mesh, in anti-clockwise order.
+    - `n1`: number of elements along sides x0-x1 and x2-x3
+    - `n2`: number of elements along sides x1-x2 and x3-x4
+
+    Returns a Mesh of quads filling the quadrilateral defined  by the four
+    points `x`.
+    """
+    from elements import Quad4
+    from plugins import isopar
+    x = checkArray(x,(4,3),'f')
+    M = rectangle(1.,1.,nl,nw).isopar('quad4',x,Quad4.vertices)
+    return M
+
+
+def quarterCircle(n1,n2):
+    """Create a mesh of quadrilaterals filling a quarter circle.
+
+    Parameters:
+
+    - `n1`: number of elements along sides x0-x1 and x2-x3
+    - `n2`: number of elements along sides x1-x2 and x3-x4
+
+    Returns a Mesh representing a quarter circle with radius 1 and
+    center at the origin.
+
+    The quarter circle mesh has a kernel of n1*n1 cells, and two
+    border meshes of n1*n2 cells. The resulting mesh has n1+n2 cells
+    in radial direction and 2*n1 cells in tangential direction (in the
+    border mesh).
+
+    """
+    from plugins.curve import Arc,PolyLine
+    r = float(n1)/(n1+n2)  # radius of the kernel
+    P0,P1 = Coords([[0.,0.,0.],[r ,0.,0.]])
+    P2 = P1.rot(45.)
+    P3 = P1.rot(90.)
+    # Kernel is a quadrilateral
+    C0 = PolyLine([P0,P1]).approx(n1).toMesh()
+    C1 = PolyLine([P3,P2]).approx(n1).toMesh()
+    M0 = C0.connect(C1,div=n1)
+    # Border meshes
+    C0 = Arc(center=P0,radius=1.,angles=(0.,45.)).approx(n1).toMesh()
+    C1 = PolyLine([P1,P2]).approx(n1).toMesh()
+    M1 = C0.connect(C1,div=n2)
+    C0 = Arc(center=P0,radius=1.,angles=(45.,90.)).approx(n1).toMesh()
+    C1 = PolyLine([P2,P3]).approx(n1).toMesh()
+    M2 = C0.connect(C1,div=n2)
+    return M0+M1+M2
 
 
 ########### Deprecated #####################

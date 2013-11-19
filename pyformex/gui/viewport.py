@@ -1382,8 +1382,7 @@ Viewport %s;  Current:%s;  Settings:
         if vp in range(nvps) and to in range(nvps) and vp != to:
             to = self.all[to]
             oldvp = self.all[vp]
-            import warnings
-            warnings.warn('warn_viewport_linking')
+            utils.warn('warn_viewport_linking')
             newvp = self.newView(to)
             self.all[vp] = newvp
             self.removeWidget(oldvp)
@@ -1636,8 +1635,7 @@ Viewport %s;  Current:%s;  Settings:
         if vp in range(nvps) and to in range(nvps) and vp != to:
             to = self.all[to]
             oldvp = self.all[vp]
-            import warnings
-            warnings.warn('warn_viewport_linking')
+            utils.warn('warn_viewport_linking')
             newvp = self.newView(to)
             self.all[vp] = newvp
             self.removeWidget(oldvp)

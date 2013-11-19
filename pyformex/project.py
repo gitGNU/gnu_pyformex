@@ -198,9 +198,9 @@ class Project(TrackedDict):
     def __init__(self,filename=None,access='wr',convert=True,signature=_signature_,compression=5,binary=True,data={},**kargs):
         """Create a new project."""
         if 'create' in kargs:
-            utils.warn("The create=True argument should be replaced with access='w'")
+            utils.warn("warn_project_create")
         if 'legacy' in kargs:
-            utils.warn("The legacy=True argument has become superfluous")
+            utils.warn("warn_project_legacy")
 
         self.filename = filename
         self.access = access
@@ -401,7 +401,7 @@ class Project(TrackedDict):
                 print("Uncompressed %s to %s" % (self.filename,fn))
 
             else:
-                utils.warn("The contents of the file does not appear to be compressed.")
+                utils.warn("warn_project_compression")
             f.close()
 
 

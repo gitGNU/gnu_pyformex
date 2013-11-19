@@ -83,6 +83,8 @@ def draw(F,
     # Get default drawing options and overwrite with specified values
     attr = Attributes(pf.canvas.drawoptions)
     attr.update(kargs)
+    print(pf.canvas.drawoptions)
+    print(attr)
 
     # Shrink the objects if requested
     if attr.shrink:
@@ -93,7 +95,7 @@ def draw(F,
 
     if attr.clear_:
         clear_canvas()
-    
+
     if attr.view is not None and attr.view != 'last':
         pf.debug("SETTING VIEW to %s" % attr.view,pf.DEBUG.DRAW)
         gui.draw.setView(attr.view)
@@ -141,7 +143,11 @@ def draw(F,
 
         view = attr.view
         bbox = attr.bbox
-        
+        print(pf.canvas.drawoptions)
+        print(attr)
+        print(view)
+        print(bbox)
+
         # Adjust the camera
         if view is not None or bbox not in [None,'last']:
             if view == 'last':
@@ -163,9 +169,9 @@ def draw(F,
             gui.image.saveNext()
 
         # Make sure next drawing operation is retarded
-        if attr.wait: 
+        if attr.wait:
             pf.GUI.drawlock.lock()
-            
+
     finally:
         pf.GUI.setBusy(False)
 

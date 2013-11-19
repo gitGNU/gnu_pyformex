@@ -36,7 +36,6 @@ import pyformex as pf
 import colors
 import odict,mydict,olist
 import utils
-import warnings
 import arraytools as at
 
 
@@ -1457,7 +1456,7 @@ def enableItem(self,*args):
         ok = any([ src.value() == val for src,val in self.enabled_by ])
         self.setEnabled(ok)
     except:
-        warnings.warn("Error in a dialog item enabler. This should not happen!")
+        utils.warn("error_widgets_enableitem")
         pass
 
 
@@ -1977,7 +1976,7 @@ def updateDialogItems(data,newdata):
 
 def updateOldDialogItems(data,newdata):
     """_Update the input data fields with new data values."""
-    warnings.warn("warn_widgets_updatedialogitems")
+    utils.warn("warn_widgets_updatedialogitems")
     if newdata:
         if type(data) is dict:
             for d in data:

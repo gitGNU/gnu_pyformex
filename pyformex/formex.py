@@ -253,7 +253,7 @@ class Formex(Geometry):
             self.eltype = eltype.lower()
         except:
             if eltype is not None:
-                utils.warn("Formex eltype currently needs to be a string!")
+                utils.warn("warn_formex_eltype")
             self.eltype = None
 
 

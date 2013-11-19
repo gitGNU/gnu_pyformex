@@ -547,7 +547,7 @@ class PropertyDB(Dict):
             d.tag = str(tag)
         if name is None and 'setname' in kargs:
             # allow for backwards compatibility
-            pf.utils.warn("!! 'setname' is deprecated, please use 'name'")
+            pf.utils.warn("warn_properties_setname")
             name = setname
         if name is None and type(set) is str:
             ### convenience to allow set='name' as alias for name='name'

@@ -60,25 +60,6 @@ import time
 ################
 
 
-######################### Exceptions #########################################
-
-class _Exit(Exception):
-    """Exception raised to exit from a running script."""
-    pass
-
-class _ExitAll(Exception):
-    """Exception raised to exit pyFormex from a script."""
-    pass
-
-class _ExitSeq(Exception):
-    """Exception raised to exit from a sequence of scripts."""
-    pass
-
-class _TimeOut(Exception):
-    """Exception raised to timeout from a dialog widget."""
-    pass
-
-
 ############################# Globals for scripts ############################
 
 
@@ -248,6 +229,7 @@ exitrequested = False
 starttime = 0.0
 scriptInit = None # can be set to execute something before each script
 
+
 def scriptLock(id):
     global _run_mode
     if id == '__auto/script__':
@@ -374,7 +356,7 @@ def breakpt(msg=None):
         if msg is not None:
             pf.message(msg)
         exitrequested = False # reset for next time
-        raise _Exit
+        raise SystemExit
 
 
 def raiseExit():
@@ -548,10 +530,8 @@ def runApp(appname,argv=[],refresh=False,lock=True,check=True):
     try:
         try:
             res = app.run()
-        except _Exit:
+        except SystemExit:
             pass
-        except _ExitSeq:
-            exitrequested = True
         except:
             raise
     finally:
@@ -622,18 +602,14 @@ def runAny(appname=None,argv=[],step=False,refresh=False):
 
 def exit(all=False):
     """Exit from the current script or from pyformex if no script running."""
-    #print("DRAW.EXIT")
-    #print(pf.scriptlock)
     if len(pf.scriptlock) > 0:
         if all:
-            utils.warn("exit(all=True) is no longer supported.")
+            utils.warn("warn_exit_all")
             pass
-            #raise _ExitAll # ask exit from pyformex
         else:
-            #print("RAISE _EXIT")
+            # This is the only exception we can use in script mode
+            # to stop the execution
             raise SystemExit
-
-            #raise _Exit # ask exit from script only
 
 
 def quit():

@@ -82,7 +82,7 @@ def readDXF(filename):
         else:
             return ''
     else:
-        utils.warn('warn_no_dxfparser')
+        utils.warn('warn_dxf_noparser')
         return ''
 
 
@@ -369,7 +369,7 @@ def exportDxf(filename,coll):
         elif isinstance(ent,curve.PolyLine):
             dxf.polyline(ent.coords)
         else:
-            utils.warn("Objects of type '%s' can not be exported to DXF file" % type(ent))
+            utils.warn('warn_dxf_export',data=type(ent))
 
     dxf.endSection()
     dxf.close()

@@ -712,7 +712,7 @@ def globalInterpolationCurve(Q,degree=3,strategy=0.5):
     # chord length
     d = PolyLine(Q).lengths()
     if (d==0.0).any():
-        utils.warn("Your point set appears to contain double points. Currently I cannot handle that. I will skip the doubles and try to go ahead.")
+        utils.warn("warn_nurbs_gic")
         Q = concatenate([Q[d!=0.0],Q[-1:]],axis=0)
         d = PolyLine(Q).lengths()
         if (d==0.0).any():

@@ -82,7 +82,7 @@ def run():
     if res['geometry'] == 'Rectangle':
         plate = rectangle(L2,B2,nl,nb)
     else:
-        plate = rectangle_with_hole(L2,B2,r,nl,nb,e0)
+        plate = rectangleWithHole(L2,B2,r,nl,nb,e0)
 
 
     if res['eltype'].startswith('hex'):

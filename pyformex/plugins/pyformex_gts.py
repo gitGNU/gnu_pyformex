@@ -34,9 +34,9 @@ import os
 from plugins.trisurface import TriSurface
 
 if not utils.hasExternal('gts-bin'):
-    utils.warn("I am missing the gts binary programs on your system.\nTherefore, some surface operations will not be available or fail.\n\nOn Debian, you can install the missing programs with `apt-get install libgts-bin`.\n")
+    utils.warn("error_no_gts_bin")
 if not utils.hasExternal('gts-extra'):
-    utils.warn("I am missing the gts binary programs on your system.\nTherefore, some surface operations will not be available or fail.\n\nOn Debian, you can install the missing programs with `apt-get install pyformex-extra`.\n")
+    utils.warn("error_no_gts_extra")
 
 
 #

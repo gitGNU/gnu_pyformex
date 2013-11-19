@@ -66,13 +66,16 @@ def filterWarning(message,module='',cat='U',action='ignore'):
     warnings.filterwarnings(action,message,category,module)
 
 
-def warn(message,level=UserWarning,stacklevel=3):
+def warn(message,level=UserWarning,stacklevel=3,data=None):
     import warnings
+    import messages
+    # pass the data into the message
+    messages._message_data = data
     warnings.warn(message,level,stacklevel)
 
 
-def deprec(message,stacklevel=4):
-    warn(message,level=DeprecationWarning,stacklevel=stacklevel)
+def deprec(message,stacklevel=4,data=None):
+    warn(message,level=DeprecationWarning,stacklevel=stacklevel,data=data)
 
 
 def deprecation(message):
