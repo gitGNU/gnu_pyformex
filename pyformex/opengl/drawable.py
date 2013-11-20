@@ -341,7 +341,7 @@ class GeomActor(Attributes):
 
     def __init__(self,obj,**kargs):
 
-        Attributes.__init__(self)
+        Attributes.__init__(self,pf.canvas.drawoptions)
 
         # Check it is something we can draw
         if not isinstance(obj,Mesh) and not isinstance(obj,Formex):

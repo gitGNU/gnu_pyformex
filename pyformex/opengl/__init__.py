@@ -130,7 +130,7 @@ def draw(F,
 #                bkcolor=bkcolor,bkcolormap=bkcolormap,bkalpha=bkalpha,
 #                mode=mode,linewidth=linewidth,linestipple=linestipple,
 #                marksize=marksize,nolight=nolight,ontop=ontop,
-                **attr)
+                **kargs)
 
             actors.append(actor)
 
