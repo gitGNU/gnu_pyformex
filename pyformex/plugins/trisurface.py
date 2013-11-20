@@ -2298,7 +2298,7 @@ Quality: %s .. %s
 
         bx = s1x.border()[0]
         x = b.connect(bx, div=div).convert('tri3').setProp(self.maxProp()+1)
-        return self.withoutProp(p) + x + s1x
+        return self.cselectProp(p) + x + s1x
 
 
 ##########################################################################
