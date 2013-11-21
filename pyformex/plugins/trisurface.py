@@ -2240,6 +2240,15 @@ Quality: %s .. %s
 
 
     @deprecation("depr_patchextension")
+    #
+    # BV: This function does way too much at once.
+    #     It uses too low level techniques
+    #     The application is too specific.
+    #
+    #     The user should use Mesh.selectProp, Mesh.getBorderMesh,
+    #     translate, Mesh.connect. And circulize could be a method of
+    #     a closed PolyLine.
+    #
     def patchextension(self,p,step,dir=None,makecircular=False,div=1, circulardiameter='area'):
         """_Extrude a nearly-planar patch of a surface.
 
