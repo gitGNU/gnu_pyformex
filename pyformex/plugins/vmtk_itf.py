@@ -197,7 +197,7 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
                 excludeprop1 = append(excludeprop1, asarray(excludeprop).reshape(-1))
             return remesh(s1,elementsizemode=elementsizemode,edgelength=edgelength,
                area=area, areaarray=None, aspectratio=aspectratio, excludeprop=excludeprop1,
-               preserveboundary=preserveboundary, conformal=None).withoutProp([-1,-2]).compact()
+               preserveboundary=preserveboundary, conformal=None).cselectProp([-1,-2]).compact()
     else:
         if conformal is not None:
             raise ValueError, 'conformal should be either None, border or regionsborder'
