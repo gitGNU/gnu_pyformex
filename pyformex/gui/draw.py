@@ -1993,6 +1993,8 @@ def exportWebGL(fn,title=None,description=None,keywords=None,author=None,created
     from plugins.webgl import WebGL
     pf.message("Exporting current scene to %s.html" % fn)
     pf.GUI.setBusy()
+    if os.path.isabs(fn):
+        chdir(os.path.dirname(fn))
     fn = os.path.basename(fn)
     name = utils.projectName(fn)
     if title is None:
