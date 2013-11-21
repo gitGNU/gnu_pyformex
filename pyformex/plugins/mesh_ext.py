@@ -24,256 +24,223 @@
 
 """Extended functionality of the Mesh class.
 
-This module defines extended Mesh functionality.
-
-It adds some extra methods to the Mesh class. These may be experimental or
-not well tested methods.
-
-Furthermore it defines some functions that generate simple and often used
-standard meshes, mostly in 2D.
+The Mesh methods in this module are either deprecated or need some further
+work before they get added to the regular mesh.py module.
 """
 from __future__ import print_function
 
 from mesh import *
-from formex import Formex
-import simple
 import utils
 
 
 ##############################################################################
 
 
-def _add_extra_Mesh_methods():
-    """_Add some extra Mesh methods
+# TODO: Cleanup or deprecate
+#
+#    Is this different from using a frontWalk ??
+#    If so, can it achieved by frontWalk and related functions?
+#    docstring is not clean
+#    Need an example
 
-    Calling this function will install some of the mesh functions
-    defined in this modules as Mesh methods.
-    This function is called when the module is loaded, so the functions
-    installed here will always be available as Mesh methods just by
-    importing the mesh_ext module.
-    """       
-       
-    def connectionSteps(self, nodesource=[], elemsource=[], maxstep=-1):
-        """Return the elems connected to some sources via multiple nodal steps.
-        
-        - 'nsources' : are node sources,
-        - 'esource' : are elem sources,
-        - 'maxstep' : is the max number of walked elements. If negative (default), 
-         all rings are returned.
-        
-        Returns a list of elem indices at each nodal connection step:
-        elemATstep1 are elem connected to esource or nsource via a node;
-        elemATstep2 are elem connected to elemATstep1
-        elemATstep3 are elem connected to elemATstep2
-        ...
-        The last member of the list is either the connection after walking `maxstep` edges
-        or the last possible connection (meaning that one more step would 
-        not find any connected elem).
-        If the user would like elemsource as first list's item:
-        [checkArray1D(elemsource)]+self.connectionSteps(nodesource, elemsource, maxstep)
-        
-        Todo: 
-        -add a connection 'level' to extend to edge and face connections
-        -add a edgesource and facesource.
+@utils.deprecation("depr_connectionSteps")
+def connectionSteps(self, nodesource=[], elemsource=[], maxstep=-1):
+    """_Return the elems connected to some sources via multiple nodal steps.
+
+    - 'nsources' : are node sources,
+    - 'esource' : are elem sources,
+    - 'maxstep' : is the max number of walked elements. If negative (default),
+     all rings are returned.
+
+    Returns a list of elem indices at each nodal connection step:
+    elemATstep1 are elem connected to esource or nsource via a node;
+    elemATstep2 are elem connected to elemATstep1
+    elemATstep3 are elem connected to elemATstep2
+    ...
+    The last member of the list is either the connection after walking `maxstep` edges
+    or the last possible connection (meaning that one more step would
+    not find any connected elem).
+    If the user would like elemsource as first list's item:
+    [checkArray1D(elemsource)]+self.connectionSteps(nodesource, elemsource, maxstep)
+
+    Todo:
+    -add a connection 'level' to extend to edge and face connections
+    -add a edgesource and facesource.
 
 
-        ##EXAMPLE##
-        from simple import sphere
-        S=sphere(20)
-        draw(S, mode='wireframe')
-        nodesource = [2, 1900]
-        elemsource = [6, 700]
-        x = S.connectionSteps(nodesource=nodesource, elemsource=elemsource, maxstep=-1)
-        x = [checkArray1D(elemsource)]+x #append elemsource to list
-        from gui.colorscale import ColorScale
-        val=-ones(S.nelems())
-        for i, ex in enumerate(x):
-            val[ex]=i
-        from gui.colorscale import ColorScale  
-        CS = ColorScale('RGB',0,val.max())
-        cval = array(map(CS.color,val))#this change a scalar array into a color array
-        draw(S.select(val>-1), color=cval[val>-1], mode='flat')
-        draw(S.select(elemsource), mode='wireframe', linewidth=7, color='white')
-        draw(S.coords[nodesource], marksize=10, color='white')
-        drawMarks(S.coords[nodesource],['nodesource']*len(nodesource),color='black',leader='',ontop=True)
-        drawMarks(S.select(elemsource).centroids(),['elemsource']*len(elemsource),color='black',leader='',ontop=True)
-        """
-        L = []
-        ns = unique(concatenate([self.elems[elemsource].ravel(), nodesource]))
-        if maxstep<0:
-            maxstep = self.nelems()
-        for i in range(maxstep):
-            xsource = self.elems.connectedTo(ns)
-            mult, bins = multiplicity(concatenate([xsource, elemsource]))
-            newring = bins[mult==1]
-            if len(newring)==0:
-                return L
-            L.append(newring)
-            elemsource = xsource
-            ns = unique(self.elems[elemsource]) 
-        return L
+    """
+    L = []
+    ns = unique(concatenate([self.elems[elemsource].ravel(), nodesource]))
+    if maxstep<0:
+        maxstep = self.nelems()
+    for i in range(maxstep):
+        xsource = self.elems.connectedTo(ns)
+        mult, bins = multiplicity(concatenate([xsource, elemsource]))
+        newring = bins[mult==1]
+        if len(newring)==0:
+            return L
+        L.append(newring)
+        elemsource = xsource
+        ns = unique(self.elems[elemsource])
+    return L
 
 
-    def scaledJacobian(self,scaled=True,blksize=100000):
-        """
-        Compute a quality measure for volume meshes.
+#
+# TODO: what with other element types ?
+#       can this be generalized to 2D meshes?
+#       can the listed numerica data not be found from elements.py?
+#
 
-        Parameters:
+def scaledJacobian(self,scaled=True,blksize=100000):
+    """
+    Compute a quality measure for volume meshes.
 
-        - `scaled`: if False returns the Jacobian at the corners of each
-          element. If True, returns a quality metrics, being the
-          minimum value of the scaled Jacobian in each element (at one corner,
-          the Jacobian divided by the volume of a perfect brick).
+    Parameters:
 
-        - `blksize`: int: to reduce the memory required for large meshes, the
-          Mesh is split in blocks with this number of elements.
-          If not positive, all elements are handled at once.
+    - `scaled`: if False returns the Jacobian at the corners of each
+      element. If True, returns a quality metrics, being the
+      minimum value of the scaled Jacobian in each element (at one corner,
+      the Jacobian divided by the volume of a perfect brick).
 
-        If `scaled` is True each tet or hex element gets a value between
-        -1 and 1.
-        Acceptable elements have a positive scaled Jacobian. However, good
-        quality requires a minimum of 0.2.
-        Quadratic meshes are first converted to linear.
-        If the mesh contain mainly negative Jacobians, it probably has negative
-        volumes and can be fixed with the correctNegativeVolumes.
-        """
-        ne = self.nelems()
-        if blksize>0 and ne>blksize:
-            slices = splitrange(n=self.nelems(),nblk=self.nelems()/blksize)
-            return concatenate([self.select(range(slices[i], slices[i+1])).scaledJacobian(scaled=scaled, blksize=-1) for i in range(len(slices)-1)])
-        if self.elName()=='hex20':
-            self = self.convert('hex8')
-        elif self.elName()=='tet10':
-            self = self.convert('tet4')
-        if self.elName()=='tet4':
-            iacre=array([
-            [[0, 1], [1, 2],[2, 0],[3, 2]],
-            [[0, 2], [1, 0],[2, 1],[3, 1]],
-            [[0, 3], [1, 3],[2, 3],[3, 0]],
-            ], dtype=int)
-            nc = 4
-        elif self.elName()=='hex8':
-            iacre=array([
-            [[0, 4], [1, 5],[2, 6],[3, 7], [4, 7], [5, 4],[6, 5],[7, 6]],
-            [[0, 1], [1, 2],[2, 3],[3, 0], [4, 5], [5, 6],[6, 7],[7, 4]],
-            [[0, 3], [1, 0],[2, 1],[3, 2], [4, 0], [5, 1],[6, 2],[7, 3]],
-            ], dtype=int)
-            nc = 8
-        acre = self.coords[self.elems][:, iacre]
-        vacre = acre[:, :,:,1]-acre[:, :,:,0]
-        cvacre = concatenate(vacre, axis=1)
-        J = vectorTripleProduct(*cvacre).reshape(ne,nc)
-        if not scaled:
-            return J
-        else:
-            # volume of 3 normal edges
-            normvol = prod(length(cvacre),axis=0).reshape(ne,nc)
-            Jscaled = J/normvol
-            return Jscaled.min(axis=1)
+    - `blksize`: int: to reduce the memory required for large meshes, the
+      Mesh is split in blocks with this number of elements.
+      If not positive, all elements are handled at once.
 
-
-    # BV: What is a value defined on an element? a constant for the element,
-    # a value at the center (what is the center?)
-    # Usually, values are defined at one or more integration points,
-    # and nodal values could be derived from using the correct
-    # interpolation formulas.
-
-    def elementToNodal(self, val):
-        """Compute nodal values from element values.
-
-        Given scalar values defined on elements, finds the average values at
-        the nodes.
-        Returns the average values at the (maxnodenr+1) nodes.
-        Nodes not occurring in elems will have all zero values.
-        NB. It now works with scalar. It could be extended to vectors.
-        """
-        eval = val.reshape(-1,1,1)
-        #
-        # Do we really need to duplicate all th
-        eval = column_stack(repeat([eval], self.nplex(), 0))#assign this area to all nodes of the elem
-        nval = nodalSum(val=eval,elems=self.elems,avg=True,return_all=False)
-        return nval.reshape(-1)
+    If `scaled` is True each tet or hex element gets a value between
+    -1 and 1.
+    Acceptable elements have a positive scaled Jacobian. However, good
+    quality requires a minimum of 0.2.
+    Quadratic meshes are first converted to linear.
+    If the mesh contain mainly negative Jacobians, it probably has negative
+    volumes and can be fixed with the correctNegativeVolumes.
+    """
+    ne = self.nelems()
+    if blksize>0 and ne>blksize:
+        slices = splitrange(n=self.nelems(),nblk=self.nelems()/blksize)
+        return concatenate([self.select(range(slices[i], slices[i+1])).scaledJacobian(scaled=scaled, blksize=-1) for i in range(len(slices)-1)])
+    if self.elName()=='hex20':
+        self = self.convert('hex8')
+    elif self.elName()=='tet10':
+        self = self.convert('tet4')
+    if self.elName()=='tet4':
+        iacre=array([
+        [[0, 1], [1, 2],[2, 0],[3, 2]],
+        [[0, 2], [1, 0],[2, 1],[3, 1]],
+        [[0, 3], [1, 3],[2, 3],[3, 0]],
+        ], dtype=int)
+        nc = 4
+    elif self.elName()=='hex8':
+        iacre=array([
+        [[0, 4], [1, 5],[2, 6],[3, 7], [4, 7], [5, 4],[6, 5],[7, 6]],
+        [[0, 1], [1, 2],[2, 3],[3, 0], [4, 5], [5, 6],[6, 7],[7, 4]],
+        [[0, 3], [1, 0],[2, 1],[3, 2], [4, 0], [5, 1],[6, 2],[7, 3]],
+        ], dtype=int)
+        nc = 8
+    acre = self.coords[self.elems][:, iacre]
+    vacre = acre[:, :,:,1]-acre[:, :,:,0]
+    cvacre = concatenate(vacre, axis=1)
+    J = vectorTripleProduct(*cvacre).reshape(ne,nc)
+    if not scaled:
+        return J
+    else:
+        # volume of 3 normal edges
+        normvol = prod(length(cvacre),axis=0).reshape(ne,nc)
+        Jscaled = J/normvol
+        return Jscaled.min(axis=1)
 
 
-    def nodalToElement(self, val):
-        """Compute element values from nodal values.
+# BV: What is a value defined on an element? a constant for the element,
+# a value at the center (what is the center?)
+# Usually, values are defined at one or more integration points,
+# and nodal values could be derived from using the correct
+# interpolation formulas.
 
-        Given scalar values defined on nodes,
-        finds the average values at elements.
-        NB. It now works with scalar. It could be extended to vectors.
-        """
-        return val[self.elems].mean(axis=1)
+def elementToNodal(self, val):
+    """Compute nodal values from element values.
 
-
-    # BV: name is way too complex
-    # should not be a mesh method, but of some MeshValue class? Field?
-    # should be generalized: not only adjacency over edges
-    # should be merged with smooth method
-    # needs an example
-    def avgNodalScalarOnAdjacentNodes(self, val, iter=1, ival=None,includeself=False):
-        """_Smooth nodal scalar values by averaging over adjacent nodes iter times.
-
-        Nodal scalar values (val is a 1D array of self.ncoords() scalar values )
-        are averaged over adjacent nodes an number of time (iter)
-        in order to provide a smoothed mapping.
-
-        Parameters:
-
-            -'ival' : boolean of shape (self.coords(), 1 ) to select the nodes on which to average.
-            The default value ivar=None selects all the nodes
-
-            -'includeself' : include also the scalar value on the node to be average
-
-        """
-
-        if iter==0: return val
-        nadj = self.getEdges().adjacency(kind='n')
-        if includeself:
-            nadj = concatenate([nadj,arange(alen(nadj)).reshape(-1,1)],axis=1)
-
-        inadj = nadj>=0
-        lnadj = inadj.sum(axis=1)
-        avgval = val
-
-        for j in range(iter):
-            avgval = sum(avgval[nadj]*inadj, axis=1)/lnadj # multiplying by inadj set to zero the values where nadj==-1
-            if ival!=None:
-                avgval[where(ival!=True)] = val[where(ival!=True)]
-        return avgval
-
-
-    @utils.deprecation("depr_correctNegativeVolumes")
-    def correctNegativeVolumes(self):
-        """_Modify the connectivity of negative-volume elements to make
-        positive-volume elements.
-
-        Negative-volume elements (hex or tet with inconsistent face orientation)
-        may appear by error during geometrical trnasformations
-        (e.g. reflect, sweep, extrude, revolve).
-        This function fixes those elements.
-        Currently it only works with linear tet and hex.
-        """
-        vol=self.volumes()<0.
-        if self.elName()=='tet4':
-            self.elems[vol]=self.elems[vol][:,  [0, 2, 1, 3]]
-        if self.elName()=='hex8':
-            self.elems[vol]=self.elems[vol][:,  [4, 5, 6, 7, 0, 1, 2, 3]]
-        return self
-
-
-    #####################################################
+    Given scalar values defined on elements, finds the average values at
+    the nodes.
+    Returns the average values at the (maxnodenr+1) nodes.
+    Nodes not occurring in elems will have all zero values.
+    NB. It now works with scalar. It could be extended to vectors.
+    """
+    eval = val.reshape(-1,1,1)
     #
-    # Install
-    #
-    Mesh.connectionSteps = connectionSteps
-    #Mesh.correctNegativeVolumes = correctNegativeVolumes
-    Mesh.scaledJacobian = scaledJacobian
-    Mesh.elementToNodal = elementToNodal
-    Mesh.nodalToElement = nodalToElement
-    Mesh.avgNodalScalarOnAdjacentNodes = avgNodalScalarOnAdjacentNodes
+    # Do we really need to duplicate all th
+    eval = column_stack(repeat([eval], self.nplex(), 0))#assign this area to all nodes of the elem
+    nval = nodalSum(val=eval,elems=self.elems,avg=True,return_all=False)
+    return nval.reshape(-1)
 
 
-_add_extra_Mesh_methods()
+# BV: name is way too complex
+# docstring is not clean
+# should not be a mesh method, but of some MeshValue class? Field?
+# should be generalized: not only adjacency over edges
+# should be merged with smooth method
+# needs an example
+
+@utils.deprecation("depr_avgNodalScalarOnAdjacentNodes")
+def avgNodalScalarOnAdjacentNodes(self, val, iter=1, ival=None,includeself=False):
+    """_Smooth nodal scalar values by averaging over adjacent nodes iter times.
+
+    Nodal scalar values (val is a 1D array of self.ncoords() scalar values )
+    are averaged over adjacent nodes an number of time (iter)
+    in order to provide a smoothed mapping.
+
+    Parameters:
+
+        -'ival' : boolean of shape (self.coords(), 1 ) to select the nodes on which to average.
+        The default value ivar=None selects all the nodes
+
+        -'includeself' : include also the scalar value on the node to be average
+
+    """
+
+    if iter==0: return val
+    nadj = self.getEdges().adjacency(kind='n')
+    if includeself:
+        nadj = concatenate([nadj,arange(alen(nadj)).reshape(-1,1)],axis=1)
+
+    inadj = nadj>=0
+    lnadj = inadj.sum(axis=1)
+    avgval = val
+
+    for j in range(iter):
+        avgval = sum(avgval[nadj]*inadj, axis=1)/lnadj # multiplying by inadj set to zero the values where nadj==-1
+        if ival!=None:
+            avgval[where(ival!=True)] = val[where(ival!=True)]
+    return avgval
+
+
+# BV: REMOVED in 1.0.0
+## @utils.deprecation("depr_correctNegativeVolumes")
+## def correctNegativeVolumes(self):
+##     """_Modify the connectivity of negative-volume elements to make
+##     positive-volume elements.
+
+##     Negative-volume elements (hex or tet with inconsistent face orientation)
+##     may appear by error during geometrical trnasformations
+##     (e.g. reflect, sweep, extrude, revolve).
+##     This function fixes those elements.
+##     Currently it only works with linear tet and hex.
+##     """
+##     vol=self.volumes()<0.
+##     if self.elName()=='tet4':
+##         self.elems[vol]=self.elems[vol][:,  [0, 2, 1, 3]]
+##     if self.elName()=='hex8':
+##         self.elems[vol]=self.elems[vol][:,  [4, 5, 6, 7, 0, 1, 2, 3]]
+##     return self
+
+
+#####################################################
+#
+# Install
+#
+Mesh.connectionSteps = connectionSteps
+Mesh.scaledJacobian = scaledJacobian
+Mesh.elementToNodal = elementToNodal
+Mesh.avgNodalScalarOnAdjacentNodes = avgNodalScalarOnAdjacentNodes
+
 
 
 # End

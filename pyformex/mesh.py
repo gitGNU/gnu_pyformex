@@ -2439,6 +2439,20 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return self.reverse(self.volumes() < 0.)
 
 
+##########################################
+    ## Field values ##
+
+    def nodalToElement(self,val):
+        """Compute element values from nodal values.
+
+        Given scalar values defined on nodes,
+        finds the average values at elements.
+        NB. It now works with scalar. It could be extended to vectors.
+        """
+        return val[self.elems].mean(axis=1)
+
+
+
     def actor(self,**kargs):
 
         if self.nelems() == 0:

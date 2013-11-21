@@ -123,7 +123,6 @@ error_no_gts_bin = "I am missing the gts binary programs on your system.\nTheref
 error_no_gts_extra = "I am missing the gts binary programs on your system.\nTherefore, some surface operations will not be available or fail.\n\nOn Debian, you can install the missing programs with `apt-get install pyformex-extra`.\n"
 
 depr_adjacencyArrays = "adjacencyArrays is deprecated. Use Adjacency.frontWalk() instead."
-depr_correctNegativeVolumes = "correctNegativeVolumes is deprecated. Use ficVolume() instead."
 depr_image2numpy_arg = "The use of the `expand` parameter in image2numpy is deprecated. Use the `indexed` parameter instead."
 depr_mesh_getlowerentities_unique = "The use of the unique argument is deprecated. Use Mesh.insertLevel() instead."
 depr_pathextension = "patchextension is deprecated. Use border().extrude() instead."
@@ -142,5 +141,6 @@ PolyLine_distanceOfPolyline = "PolyLine.distanceOfPolyline is deprecated"
 depr_facetarea = "TriSurface.facetArea is deprecated: use TriSurface.areas instead"
 
 depr_abqdata_outres = "The use of the `res` and `out` arguments in AbqData is deprecated. Set them inside your Steps instead."
-
+depr_avgNodalScalarOnAdjacentNodes = "avgNodalScalarOnAdjacentNodes is deprecated. It may be removed in future, unless someone can prove its virtue, generalize, cleanup and document the code and provide an example. See the source code for more comments."
+depr_depr_connectionSteps = "connectionSteps is deprecated. It may be removed in future, unless someone can prove its virtue, generalize, cleanup and document the code and provide an example. See the source code for more comments."
 # End
