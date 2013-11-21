@@ -917,7 +917,7 @@ def checkInt(value,min=None,max=None):
             raise
         return a
     except:
-        raise ValueError,"Expected an int in the range(%s, %s), got: %s" % (value)
+        raise ValueError,"Expected an int in the range(%s, %s), got: %s" % (min, max, value)
 
 
 def checkFloat(value,min=None,max=None):
