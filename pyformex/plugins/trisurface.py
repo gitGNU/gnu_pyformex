@@ -2239,7 +2239,6 @@ Quality: %s .. %s
         return self.areas()
 
 
-    @deprecation("depr_patchextension")
     #
     # BV: This function does way too much at once.
     #     It uses too low level techniques
@@ -2252,17 +2251,18 @@ Quality: %s .. %s
     # GDS: patchextension has been simplified with improved functionality.
     #      circularSectionParam and circularizeSurface have been added.
     #
+    @deprecation("depr_patchextension")
     def circularSectionParam(self, method='area'):
         """Return circular parameters of a nearly planar surface.
-    
+
         It returns:
-    
+
           - the center of gravity: shape (3,)
           - a diameter based on method ('area','perimeter','hydraulic').
             The hydraulic diameter is 4*area/perimeter.
           - the average surface normal: shape (3,)
-        """ 
-        import plugins.inertia 
+        """
+        import plugins.inertia
         c = inertia.center(self.centroids(),mass=self.areas().reshape(-1, 1))
         if method=='area':
             d = 2.*(self.area()/math.pi)**0.5
@@ -2274,33 +2274,35 @@ Quality: %s .. %s
             raise ValueError,"method %s not yet implemented"%(method)
         n = geomtools.averageNormals(self.coords, self.elems,atNodes=True).mean(axis=0)
         return c, d, n
-    
+
+    @deprecation("depr_patchextension")
     def circularizeSurface(self, d, c, iter=None):
         """Transform a surface into a circular surface.
-        
+
         Parameters:
         - `d`: diameter, either a float or a string ('area','perimeter','hydraulic')
         - `c`: center of the circular border
-        - `iter`: number of smoothing iteration. When circularizing the border of the surface 
-           some inner nodes can fall outside the border in case of highly non-circular surfaces. 
-           In this case applying some smoothing iterations to the inner nodes can repair 
+        - `iter`: number of smoothing iteration. When circularizing the border of the surface
+           some inner nodes can fall outside the border in case of highly non-circular surfaces.
+           In this case applying some smoothing iterations to the inner nodes can repair
            the circularized surface.
-        
+
         The returned surface has the same connectivity of the original surface, only the
         nodes are changes. The original surface should be nearly planar with a nearly-circular boundary.
         """
         if type(d) == str:
             d = circularSectionParam(s)[1]
         brdn = self.getBorderNodes()
-        self.coords[brdn] = c + normalize(self.coords[brdn]-c)*(d*0.5)   
+        self.coords[brdn] = c + normalize(self.coords[brdn]-c)*(d*0.5)
         if iter is not None:
             s=Mesh.smooth(s,iterations=iter,  exclnod='border', weight='inversedistance')
         return self
-    
-        
+
+
+    @deprecation("depr_patchextension")
     def patchextension(self,p,step,dir=None,makecircular=False,div=1, circulardiameter='area', iter=None):
         """Extrude a nearly-planar patch of a surface.
-    
+
         - `self` is a surface with propery numbers.
         - `p` is the property number/list/array of the patches to extrude.
         - `div` is the integer number of elements (or sequence of float) along the extrusion. If None,
@@ -2313,9 +2315,9 @@ Quality: %s .. %s
         - `circulardiameter`: it set the diameter of the circularized end.
            If `circulardiameter` is `area` (default) the area of the circularized is equal to the the area of the patch.
            This option is active only if `makecircular` is True.
-        - `iter`: number of smoothing iteration. When circularizing the border of the patch 
+        - `iter`: number of smoothing iteration. When circularizing the border of the patch
            some inner nodes can fall outside the border in case of highly non-circular patches. In this case
-           applying some smoothing iterations to the inner nodes can repair the circularized patch. 
+           applying some smoothing iterations to the inner nodes can repair the circularized patch.
            This option is active only if `makecircular` is True.
         """
         p=checkArray1D(p,kind='i',allow=None,size=None)

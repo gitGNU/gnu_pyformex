@@ -251,13 +251,73 @@ class Geometry(object):
         elements that have the property val, resp. one of the values in val.
 
         If the object has no properties, a empty array is returned.
-        """ 
+        """
         if self.prop is not None and np.array(val).size > 0:
             return np.concatenate([np.where(self.prop==v)[0] for v in np.unique(np.array(val))])
         return np.array([],dtype=Int)
 
 
-    def selectProp(self,val):
+    def select(self,selected,compact=True):
+        """Return a Geometry only containing the selected elements.
+
+        Parameters:
+
+        - `selected`: an object that can be used as an index in an array:
+
+          - a single element number
+          - a list, or array, of element numbers
+          - a bool list, or array, of length self.nelems(), where True values
+            flag the elements to be selected
+
+        - `compact`: boolean. Only useful for Mesh type Geometries.
+          If True (default), the returned Mesh will be compacted, i.e.
+          the unused nodes are removed and the nodes are renumbered from
+          zero. If False, returns the node set and numbers unchanged.
+
+        Returns a Geometry (or subclass) with only the selected elements.
+
+        See :meth:`cselect` for the complementary operation.
+        """
+        return self._select(selected,compact=compact)
+
+
+    def cselect(self,selected,compact=True):
+        """Return a Geometry with the selected elements removed.
+
+        Parameters:
+
+        - `selected`: an object that can be used as an index in an array:
+
+          - a single element number
+          - a list, or array, of element numbers
+          - a bool list, or array, of length self.nelems(), where True values
+            flag the elements to be selected
+
+        - `compact`: boolean. Only useful for Mesh type Geometries.
+          If True (default), the returned Mesh will be compacted, i.e.
+          the unused nodes are removed and the nodes are renumbered from
+          zero. If False, returns the node set and numbers unchanged.
+        - `selected`: an object that can be used as an index in the
+          `elems` array, such as
+
+          - a single element number
+          - a list, or array, of element numbers
+          - a bool list, or array, of length self.nelems(), where True values
+            flag the elements to be selected
+
+        - `compact`: boolean. Only useful for Mesh type Geometries.
+          If True (default), the returned Mesh will be compacted, i.e.
+          the unused nodes are removed and the nodes are renumbered from
+          zero. If False, returns the node set and numbers unchanged.
+
+        Returns a Geometry (or subclass) with all but the selected elements.
+
+        This is the complimentary operation of :meth:`select`.
+        """
+        return self._select(complement(selected,self.nelems()),compact=compact)
+
+
+    def selectProp(self,val,compact=True):
         """Return an object which holds only the elements with property val.
 
         val is either a single integer, or a list/array of integers.
@@ -270,11 +330,11 @@ class Geometry(object):
         if self.prop is None:
             return self.copy()
         else:
-            return self.select(self.whereProp(val))
+            return self._select(self.whereProp(val),compact=compact)
 
 
-    def cselectProp(self, val):
-        """Return a object without the elements with property `val`.
+    def cselectProp(self, val,compact=True):
+        """Return an object without the elements with property `val`.
 
         This is the complementary method of selectProp.
         val is either a single integer, or a list/array of integers.
@@ -287,7 +347,7 @@ class Geometry(object):
         if self.prop is None:
             return self.copy()
         else:
-            return self.cselect(self.whereProp(val))
+            return self.cselect(self.whereProp(val),compact=compact)
 
 
     ########### Return information about the coords #################

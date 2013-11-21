@@ -720,48 +720,17 @@ maxprop  = %s
         return Formex(f,prop,Flist[0].eltype)
 
 
-    def select(self,selected):
-        """Return a Formex only holding the selected elements.
+    def _select(self,selected,**kargs):
+        """_Return a Formex only holding the selected elements.
 
-        Parameters:
-
-        - `selected`: an object that can be used as an index in the
-          `elems` array, such as
-
-          - a single element number
-          - a list, or array, of element numbers
-          - a bool list, or array, of length self.nelems(), where True values flag the
-            elements to be selected
-
-        Returns a Formex (or subclass) with only the selected elements.
-
-        See :meth:`cselect` for the complementary operation.
+        This is the low level select method. The normal user interface
+        is via the Geometry.select method.
         """
         selected = checkArray1D(selected)
         if self.prop is None:
             return Formex(self.coords[selected],eltype=self.eltype)
         else:
             return Formex(self.coords[selected],self.prop[selected],self.eltype)
-
-
-    def cselect(self,selected):
-        """Return a Formex without the selected elements.
-
-        Parameters:
-
-        - `selected`: an object that can be used as an index in the
-          `elems` array, such as
-
-          - a single element number
-          - a list, or array, of element numbers
-          - a bool list, or array, of length self.nelems(), where True values flag the
-            elements to be selected
-
-        Returns a Formex with all but the selected elements.
-
-        This is the complimentary operation of :meth:`select`.
-        """
-        return self.select(complement(selected,self.nelems()))
 
 
     def selectNodes(self,idx):

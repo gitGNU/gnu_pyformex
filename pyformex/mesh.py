@@ -1251,27 +1251,11 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return ret
 
 
-    def select(self,selected,compact=True):
-        """Return a Mesh only holding the selected elements.
+    def _select(self,selected,compact=True):
+        """_Return a Mesh only holding the selected elements.
 
-        Parameters:
-
-        - `selected`: an object that can be used as an index in the
-          `elems` array, such as
-
-          - a single element number
-          - a list, or array, of element numbers
-          - a bool list, or array, of length self.nelems(), where True values flag the
-            elements to be selected
-
-        - `compact`: boolean. If True (default), the returned Mesh will be
-          compacted, i.e. the unused nodes are removed and the nodes are
-          renumbered from zero. If False, returns the node set and numbers
-          unchanged.
-
-        Returns a Mesh (or subclass) with only the selected elements.
-
-        See :meth:`cselect` for the complementary operation.
+        This is the low level select method. The normal user interface
+        is via the Geometry.select method.
         """
         selected = checkArray1D(selected)
         M = self.__class__(self.coords,self.elems[selected],eltype=self.elType())
@@ -1280,31 +1264,6 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         if compact:
             M = M.compact()
         return M
-
-
-    def cselect(self,selected,compact=True):
-        """Return a Mesh without the selected elements.
-
-        Parameters:
-
-        - `selected`: an object that can be used as an index in the
-          `elems` array, such as
-
-          - a single element number
-          - a list, or array, of element numbers
-          - a bool list, or array, of length self.nelems(), where True values flag the
-            elements to be selected
-
-        - `compact`: boolean. If True (default), the returned Mesh will be
-          compacted, i.e. the unused nodes are removed and the nodes are
-          renumbered from zero. If False, returns the node set and numbers
-          unchanged.
-
-        Returns a Mesh with all but the selected elements.
-
-        This is the complimentary operation of :meth:`select`.
-        """
-        return self.select(complement(selected,self.nelems()),compact=compact)
 
 
     def avgNodes(self,nodsel,wts=None):
