@@ -31,7 +31,7 @@ from __future__ import print_function
 
 from coords import Coords,Int
 import numpy as np
-
+from arraytools import complement
 
 class Geometry(object):
     """A generic geometry object allowing transformation of coords sets.
