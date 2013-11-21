@@ -561,6 +561,9 @@ def printModules():
     print(sorted(sys.modules.keys()))
 
 
+def printLastCommand():
+    print(utils.lastCommandReport())
+
 
 def createMenuData():
     """Returns the default pyFormex GUI menu data."""
@@ -585,9 +588,10 @@ def createMenuData():
         (_('&Save Message Board'),saveBoard),
         (_('&Open Log File'),openLogFile),
         (_('&Close Log File'),closeLogFile),
-        (_('&PrintGlobalNames'),script.printglobalnames),
-        (_('&PrintGlobals'),script.printglobals),
-        (_('&PrintConfig'),script.printconfig),
+        (_('&Print Global Names'),script.printglobalnames),
+        (_('&Print Globals'),script.printglobals),
+        (_('&Print Config'),script.printconfig),
+        (_('&Print Last Command'),printLastCommand),
         (_('&Print Detected Software'),script.printdetected),
         (_('&Print Loaded Apps'),script.printLoadedApps),
         (_('&Print sys.path'),printSysPath),

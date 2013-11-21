@@ -92,6 +92,298 @@ def deprecation(message):
 
 
 ##########################################################################
+## Running external commands ##
+###############################
+
+
+class Process(subprocess.Popen):
+    """A subprocess for running an external command.
+
+    This is a subclass of Python's :class`subprocess.Popen` class, providing
+    some extra functionality:
+
+    - It stores the specified command
+
+    - If a string is passed as command and shell is False, the string is
+      automatically tokenized into an args list.
+
+    - stdout and stderr default to subprocess.PIPE instead of None.
+
+    - stdin, stdout and stderr can be file names. They will be replaced
+      with the opened files (in mode 'r' for stdin, 'w' for the others).
+
+    - After the command has terminated, the Process instance has three
+      attributes sta, out and err, providing the return code, standard
+      output and standard error of the command.
+
+    Parameters:
+
+    - `cmd`: string or args list. If a string, it is the command as it should
+      entered in a shell. If an args list, args[0] is the executable to run
+      and the remainder are the arguments to be passed.
+    - `shell`: bool. Default False. If True, the command will be run in a
+      new shell. This may cause problems with killing the command and also
+      poses a security risk.
+    - `stdout`,`stderr`: Standard output and error output. See Python docs
+      for subprocess.Popen. Here, they default to PIPE, allowing the caller
+      to grab the output of the command. Set them to an open file object to
+      redirect output to that file.
+    - Any other parameters accepted by :class`subprocess.Popen` can also be
+      specified.
+
+    """
+
+    gracetime = 2
+
+    def __init__(self,cmd,**kargs):
+
+        self.cmd = cmd
+
+        shell = kargs.get('shell',False)
+        if type(cmd) is str and shell is False:
+            # Tokenize the command line
+            cmd = shlex.split(cmd)
+
+        for f in [ 'stdin', 'stdout', 'stderr' ]:
+            if f not in kargs or kargs[f] is None:
+                kargs[f] = subprocess.PIPE
+            elif f in kargs and type(kargs[f]) is str:
+                if f.endswith('in'):
+                    mode = 'r'
+                else:
+                    mode = 'w'
+                kargs[f] = open(kargs[f],mode)
+        self.kargs = kargs
+
+        try:
+            self.failed = False
+            subprocess.Popen.__init__(self,cmd,**kargs)
+        except:
+            self.failed = True
+            # Set a return code to mark the process finished
+            self.returncode = 127
+            # This is also the bash shell exit code on nonexistent executable
+
+        self.out = self.err = None
+        self.timeout = self.timedout = False
+
+
+    @property
+    def sta(self):
+        return self.returncode
+
+
+    def run(self,timeout=None):
+        """Run a Process, optionally with timeout.
+
+        Parameters:
+
+        - `timeout`: float. If > 0.0, the subprocess will be terminated
+          or killed after this number of seconds have passed.
+
+        On return, the following attributes of the Process are set:
+
+        - `sta`: alias for the Popen.returncode (0 for normal exit, -15
+          for terminated, -9 for killed).
+        - `out`,`err`: the stdout and stderr as returned by the
+          Popen.communicate method.
+        - `timedout`: True if a timeout was specified and the process timed
+          out, otherwise False.
+        """
+        self.timeout = timeout
+        self.timedout = False
+        if timeout > 0.0:
+            # Start a timer to terminate the subprocess
+            t = threading.Timer(timeout,Process.terminate_on_timeout,[self])
+            t.start()
+        else:
+            t = None
+
+        # Start the process and wait for it to finish
+        self.out,self.err = self.communicate()
+
+        if t:
+            # Cancel the timer if one was started
+            t.cancel()
+
+
+    def terminate_on_timeout(self):
+        """Terminate or kill a Process, and set the timeout flag
+
+        This method is primarily intended to be called by the timeout
+        mechanism. It sets the timedout attribute of the Process to True,
+        and then calls its terminate_or_kill method.
+        """
+        self.timedout = True
+        self.terminate_or_kill()
+
+
+    def terminate_or_kill(self):
+        """Terminate or kill a Process
+
+        This is like Popen.terminate, but adds a check to see if the
+        process really terminated, and if not kills it.
+
+        Sets the returncode of the process to -15(terminate) or -9(kill).
+
+        This does not do anything if the process was already stopped.
+        """
+        if self.poll() is None:
+            # Process is still running: terminate it
+            self.terminate()
+            # Wait a bit before checking
+            time.sleep(0.1)
+            if self.poll() is None:
+                # Give the process some more time to terminate
+                time.sleep(Process.gracetime)
+                if self.poll() is None:
+                    # Kill the unwilling process
+                    self.kill()
+
+
+# The process of the last run command
+last_command = None
+
+
+def system(cmd,timeout=None,verbose=False,raise_error=False,**kargs):
+    """Execute an external command.
+
+    This (and the more user oriented :func:`utils.command`) are the
+    prefered way to execute external commands from inside pyFormex.
+
+    Parameters:
+
+    - `cmd`: a string with the command to be executed
+    - `timeout`: float. If specified and > 0.0, the command will time out
+      and be terminated or killed after the specified number of seconds.
+    - `verbose`: bool. If True, some extra informative message are printed:
+      - the command that will be run
+      - an occurring timeout condition,
+      - in case of a nonzero exit, the full stdout, exit status and stderr
+
+    - `raise_error`: bool. If True, and verbose is True, and the command
+      fails to execute or returns with a nonzero return code other than
+      one cause by a timeout, an error is raised.
+
+    Additional parameters can be specified and will be passed to the Popen
+    constructor. See the Python documentation for full info.
+    Some typical examples:
+
+    - `shell`: bool: default False. If True, the command is run in a new shell.
+      The `cmd` should then be specified exactly as it would be entered in a
+      shell.
+    - `stdout`: an open file object. The standard output of the command will
+      be written to that file.
+    - `stdin`: an open file object. The standard input of the command will
+      be read from that file.
+
+    Returns the Process used to run the command. This gives access to all
+    its info, like the exit code, stdout and stderr, and whether the command
+    timed out or not. See :class:`Process` for more info.
+    This Process is also saved as the global variable
+    :var:`utils.last_command` to allow checking the outcome of the command
+    from other places but the caller.
+    """
+    global last_command
+    if verbose:
+        print("Running command: %s" % cmd)
+    last_command = P = Process(cmd,**kargs)
+    P.run(timeout)
+    if verbose:
+        if P.timedout:
+            print("Command terminated due to timeout (%ss)" % timeout)
+
+        elif P.failed:
+            print("The subprocess failed to start, probably because the executable does not exist or is not in your current PATH.")
+            if raise_error:
+                raise RuntimeError, "Error while executing command:\n  %s" % cmd
+
+        elif P.sta != 0:
+            print(P.out)
+            print("Command exited with an error (exitcode %s)" % P.sta)
+            print(P.err)
+            if raise_error:
+                raise RuntimeError, "Error while executing command:\n  %s" % cmd
+    return P
+
+
+def command(cmd,timeout=None,verbose=True,raise_error=True,**kargs):
+    """Run an external command in a user friendly way.
+
+    This is equivalent with the utils.system function but with
+    verbose=True and raise_error=True by default.
+    """
+    pf.debug("Command: %s" % cmd,pf.DEBUG.INFO)
+    return system(cmd,timeout,verbose,raise_error,**kargs)
+
+
+def lastCommandReport():
+    P = last_command
+    if P is None:
+        return 'No external command has been run yet'
+    s = "=" * 8 + " LAST COMMAND REPORT "
+    s += "=" * (50-len(s)) + "\n"
+    s += "%8s: %s\n" % ('cmd',P.cmd)
+    shell = P.kargs.get('shell',False)
+    if shell:
+        s += "%8s: %s\n" % ('shell',shell)
+    s += "%8s: %s\n" % ('status',P.sta)
+    for p in [ 'stdin', 'stdout', 'stderr' ]:
+        a = P.kargs.get(p,None)
+        name = a.name if type(a) is file else ''
+        txt = None
+        if p[3:] in ['out','err']:
+            txt = getattr(P,p[3:])
+            if txt is None and type(a) is file:
+                try:
+                    txt = open(a.name,'r').read(2000)
+                except:
+                    pass
+        if name or txt:
+            s += "%8s: %s\n" % (p,name)
+            if txt:
+                s += txt
+    if P.timeout:
+        s += "%8s: %s (timedout: %s)\n" % ('timeout',P.timeout,P.timedout)
+    s += "=" * 50 + "\n"
+    return s
+
+
+@deprecation("utils.runCommand is deprecated: use utils.command instead. Add 'shell=True' to start the command in a new shell.")
+def runCommand(cmd,timeout=None,shell=True,**kargs):
+    """Run an external command in a user friendly way.
+
+    This is like with the utils.command, but with shell=True by default,
+    and the return value is a tuple (P.sta,P.out) instead of the Process P.
+    """
+    P = command(cmd,timeout,shell=shell,**kargs)
+    return P.sta,P.out.rstrip('\n')
+
+
+# DEPRECATED, REMOVED in 1.0.0
+# currently activated by --commands option
+## @deprecation("system1 is deprecated: use system instead")
+## def system1(cmd):
+##     """Execute an external command."""
+##     import commands
+##     return commands.getstatusoutput(cmd)
+
+
+def killProcesses(pids,signal=15):
+    """Send the specified signal to the processes in list
+
+    - `pids`: a list of process ids.
+    - `signal`: the signal to send to the processes. The default (15) will
+      try to terminate the process. See 'man kill' for more values.
+    """
+    for pid in pids:
+        try:
+            os.kill(pid,signal)
+        except:
+            pf.debug("Error in killing of process '%s'" % pid,pf.DEBUG.INFO)
+
+
+##########################################################################
 ## Filenames ##
 ###############
 
@@ -715,7 +1007,7 @@ def timeEval(s,glob=None):
     start = time.time()
     res = eval(s,glob)
     stop = time.time()
-    pf.message("Timed evaluation: %s seconds" % (stop-start))
+    print("Timed evaluation: %s seconds" % (stop-start))
     return res
 
 
@@ -728,255 +1020,16 @@ def countLines(fn):
         return 0
 
 
+
 ##########################################################################
-## Running external commands ##
+##  Miscellaneous            ##
 ###############################
-
-
-# DEPRECATED, KEPT FOR EMERGENCIES
-# currently activated by --commands option
-@deprecation("system1 is deprecated: use system instead")
-def system1(cmd):
-    """Execute an external command."""
-    import commands
-    return commands.getstatusoutput(cmd)
-
-
-class Process(subprocess.Popen):
-    """A subprocess for running an external command.
-
-    This is a subclass of Python's :class`subprocess.Popen` class, providing
-    some extra functionality:
-
-    - If a string is passed as command and shell is False, the string is
-      automatically tokenized into an args list.
-
-    - stdout and stderr default to subprocess.PIPE instead of None.
-
-    - stdin, stdout and stderr can be file names. They will be replaced
-      with the opened files (in mode 'r' for stdin, 'w' for the others).
-
-    - After the command has terminated, the Process instance has three
-      attributes sta, out and err, providing the return code, standard
-      output and standard error of the command.
-
-    Parameters:
-
-    - `cmd`: string or args list. If a string, it is the command as it should
-      entered in a shell. If an args list, args[0] is the executable to run
-      and the remainder are the arguments to be passed.
-    - `shell`: bool. Default False. If True, the command will be run in a
-      new shell. This may cause problems with killing the command and also
-      poses a security risk.
-    - `stdout`,`stderr`: Standard output and error output. See Python docs
-      for subprocess.Popen. Here, they default to PIPE, allowing the caller
-      to grab the output of the command. Set them to an open file object to
-      redirect output to that file.
-    - Any other parameters accepted by :class`subprocess.Popen` can also be
-      specified.
-
-    """
-
-    gracetime = 2
-
-    def __init__(self,cmd,shell=False,**kargs):
-
-        if type(cmd) is str and bool(shell) is False:
-            # Tokenize the command line
-            cmd = shlex.split(cmd)
-
-        for f in [ 'stdin', 'stdout', 'stderr' ]:
-            if f not in kargs or kargs[f] is None:
-                kargs[f] = subprocess.PIPE
-            elif f in kargs and type(kargs[f]) is str:
-                if f.endswith('in'):
-                    mode = 'r'
-                else:
-                    mode = 'w'
-                kargs[f] = open(kargs[f],mode)
-
-        try:
-            self.failed = False
-            subprocess.Popen.__init__(self,cmd,shell=shell,**kargs)
-        except:
-            self.failed = True
-            # Set a return code to mark the process finished
-            self.returncode = 127
-            # This is also the bash shell exit code on nonexistent executable
-
-        self.out = self.err = None
-        self.timeout = False
-
-
-    @property
-    def sta(self):
-        return self.returncode
-
-
-    def run(self,timeout=None):
-        """Run a Process, optionally with timeout.
-
-        Parameters:
-
-        - `timeout`: float. If > 0.0, the subprocess will be terminated
-          or killed after this number of seconds have passed.
-
-        On return, the following attributes of the Process are set:
-
-        - `sta`: alias for the Popen.returncode (0 for normal exit, -15
-          for terminated, -9 for killed).
-        - `out`,`err`: the stdout and stderr as returned by the
-          Popen.communicate method.
-        - `timedout`: True if a timeout was specified and the process timed
-          out, otherwise False.
-        """
-        self.timedout = False
-        if timeout > 0.0:
-            # Start a timer to terminate the subprocess
-            t = threading.Timer(timeout,Process.timeout,[self])
-            t.start()
-        else:
-            t = None
-
-        # Start the process and wait for it to finish
-        self.out,self.err = self.communicate()
-
-        if t:
-            # Cancel the timer if one was started
-            t.cancel()
-
-
-    def timeout(self):
-        """Terminate or kill a Process, and set the timeout flag
-
-        This method is primarily intended to be called by the timeout
-        mechanism. It sets the timedout attribute of the Process to True,
-        and then calls its terminate_or_kill method.
-        """
-        self.timedout = True
-        self.terminate_or_kill()
-
-
-    def terminate_or_kill(self):
-        """Terminate or kill a Process
-
-        This is like Popen.terminate, but adds a check to see if the
-        process really terminated, and if not kills it.
-
-        Sets the returncode of the process to -15(terminate) or -9(kill).
-
-        This does not do anything if the process was already stopped.
-        """
-        if self.poll() is None:
-            # Process is still running: terminate it
-            self.terminate()
-            # Wait a bit before checking
-            time.sleep(0.1)
-            if self.poll() is None:
-                # Give the process some more time to terminate
-                time.sleep(Process.gracetime)
-                if self.poll() is None:
-                    # Kill the unwilling process
-                    self.kill()
-
-
-def system(cmd,timeout=None,verbose=False,raise_error=False,**kargs):
-    """Execute an external command.
-
-    Parameters:
-
-    - `cmd`: a string with the command to be executed
-    - `timeout`: float. If specified and > 0.0, the command will time out
-      and be terminated or killed after the specified number of seconds.
-    - `verbose`: bool. If True, some extra informative message are printed:
-
-      - the command that will be run
-      - an occurring timeout condition,
-      - in case of a nonzero exit, the full stdout, exit status and stderr
-
-    - `raise_error`: bool. If True, and verbose is True, and the command
-      fails to execute or returns with a nonzero return code other than
-      one cause by a timeout, an error is raised.
-
-    Additional parameters can be specified and will be passed to the Popen
-    constructor. See the Python documentation for full info.
-    Some typical examples:
-
-    - `shell`: bool: default False. If True, the command is run in a new shell.
-      The `cmd` should then be specified exactly as it would be entered in a
-      shell.
-    - `stdout`: an open file object. The standard output of the command will
-      be written to that file.
-    - `stdin`: an open file object. The standard input of the command will
-      be read from that file.
-
-    Returns the Process used to run the command. This gives access to all
-    its info, like the exit code, stdout and stderr, and whether the command
-    timed out or not. See :class:`Process` for more info.
-    """
-    if verbose:
-        print("Running command: %s" % cmd)
-    P = Process(cmd,**kargs)
-    P.run(timeout)
-    if verbose:
-        if P.timedout:
-            print("Command terminated due to timeout (%ss)" % timeout)
-
-        elif P.failed:
-            print("The subprocess failed to start, probably because the executable does not exist or is not in your current PATH.")
-            if raise_error:
-                raise RuntimeError, "Error while executing command:\n  %s" % cmd
-
-        elif P.sta != 0:
-            print(P.out)
-            print("Command exited with an error (exitcode %s)" % P.sta)
-            print(P.err)
-            if raise_error:
-                raise RuntimeError, "Error while executing command:\n  %s" % cmd
-    return P
-
-
-def command(cmd,timeout=None,verbose=True,raise_error=True,**kargs):
-    """Run an external command in a user friendly way.
-
-    This is equivalent with the utils.system function but with
-    verbose=True and raise_error=True by default.
-    """
-    pf.debug("Command: %s" % cmd,pf.DEBUG.INFO)
-    return system(cmd,timeout,verbose,raise_error,**kargs)
-
-
-@deprecation("utils.runCommand is deprecated: use utils.command instead. Add 'shell=True' to start the command in a new shell.")
-def runCommand(cmd,timeout=None,shell=True,**kargs):
-    """Run an external command in a user friendly way.
-
-    This is like with the utils.command, but with shell=True by default,
-    and the return value is a tuple (P.sta,P.out) instead of the Process P.
-    """
-    P = command(cmd,timeout,shell=shell,**kargs)
-    return P.sta,P.out.rstrip('\n')
-
-
-def killProcesses(pids,signal=15):
-    """Send the specified signal to the processes in list
-
-    - `pids`: a list of process ids.
-    - `signal`: the signal to send to the processes. The default (15) will
-      try to terminate the process. See 'man kill' for more values.
-    """
-    for pid in pids:
-        try:
-            os.kill(pid,signal)
-        except:
-            pf.debug("Error in killing of process '%s'" % pid,pf.DEBUG.INFO)
 
 
 def userName():
     """Find the name of the user."""
-    try:
-        return os.environ['LOGNAME']
-    except:
-        return 'NOBODY'
+    P = system('id -un')
+    return P.out
 
 
 def is_script(appname):
