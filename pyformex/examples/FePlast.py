@@ -33,7 +33,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'advanced'
 _topics = ['FEA']
-_techniques = ['properties', 'export']
+_techniques = ['properties', 'export', 'extrude']
 
 from gui.draw import *
 
@@ -86,7 +86,7 @@ def run():
 
 
     if res['eltype'].startswith('hex'):
-        plate = plate.extrude(1,step=1.0,dir=2)
+        plate = plate.extrude(1,dir=2,length=1.0)
 
     plate = plate.convert(res['eltype'])
 

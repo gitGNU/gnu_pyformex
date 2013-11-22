@@ -32,7 +32,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
 _topics = ['geometry','surface']
-_techniques = ['color','sweep']
+_techniques = ['color','sweep','extrude','connect','revolve']
 
 from gui.draw import *
 from plugins import curve
@@ -41,7 +41,7 @@ import simple
 def run():
     # GEOMETRICAL PARAMETERS FOR HE200B wide flange beam
     h = 200. #beam height
-    b = 200. #flange width 
+    b = 200. #flange width
     tf = 15. #flange thickness
     tw = 9.  #body thickness
     l = 400. #beam length
@@ -71,7 +71,6 @@ def run():
 
     clear()
     draw(Section,color=red)
-    #return
 
     #pause()
 
@@ -90,11 +89,11 @@ def run():
         Beam = Section.connect(Section1,el)
 
     elif method == 'Extrude':
-        Beam = Section.extrude(el,step=l/el,dir=2)
+        Beam = Section.extrude(el,dir=2,length=l)
 
     elif method == 'ExtrudeQuadratic':
         Section = Section.convert('quad9')
-        Beam = Section.extrude(el,step=l/el,dir=2,degree=2)
+        Beam = Section.extrude(el,dir=2,length=l,degree=2)
 
     elif method == 'Revolve':
         Beam = Section.revolve(el,axis=1,angle=60.,around=[-l,0.,0.])

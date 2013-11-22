@@ -31,7 +31,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
 _topics = ['mesh','illustration','surface']
-_techniques = ['color','random','image','movie']
+_techniques = ['color','random','image','movie','extrude']
 _opengl2 = True
 
 from gui.draw import *
@@ -61,8 +61,9 @@ def run():
     view('front')
     smoothwire()
     transparent()
+    linewidth(1)
 
-    M = Formex(origin()).extrude(nx,1.,0).extrude(ny,1.,1).toMesh().setProp(1)
+    M = Formex(origin()).extrude(nx,0).extrude(ny,1).toMesh().setProp(1)
 
     V = surface_menu.SelectableStatsValues
     possible_keys = [ k for k in V.keys() if not V[k][1] ][:-1]

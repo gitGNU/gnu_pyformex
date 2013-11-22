@@ -29,7 +29,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
 _topics = ['curve']
-_techniques = ['function']
+_techniques = ['function','extrude']
 _opengl2 = False
 
 
@@ -183,7 +183,7 @@ def run():
     clear()
     y0=80
     C = Curve(Cycloid,(0,2*pi),(),True,4,20)
-    M = C.approx(20).toMesh().extrude(10,dir=2)
+    M = C.approx(20).toMesh().extrude(10,dir=2,length=1.0)
     smoothwire()
     draw(M,color=red)
 

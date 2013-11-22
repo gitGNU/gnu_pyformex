@@ -49,15 +49,15 @@ def run():
     draw(a,color='black')
 
 
-    b = a.extrude(8,1.,0)
+    b = a.extrude(8,0)
     draw(b,color='red')
 
 
-    c = b.extrude(8,1.,1)
+    c = b.extrude(8,1)
     draw(c,color='blue')
 
 
-    d = c.extrude(7,-1.,2)
+    d = c.extrude(7,2,-1.)
     draw(d,color='yellow')
 
 if __name__ == 'draw':

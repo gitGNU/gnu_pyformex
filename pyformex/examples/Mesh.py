@@ -39,7 +39,7 @@ element numbers included:
 - the unique faces,
 - the border (in the 3D case, this is a set of faces, in the 2D case it is a
   set of lines.
-  
+
 At each step the number of elements is printed.
 
 Remark
@@ -55,7 +55,7 @@ and the 3D cases.
 
 Exercises
 .........
-1. Make this script also work for the 1D case. 
+1. Make this script also work for the 1D case.
 
 """
 from __future__ import print_function
@@ -68,7 +68,7 @@ from gui.draw import *
 def atExit():
     #print "THIS IS THE EXIT FUNC"
     pf.GUI.setBusy(False)
-    
+
 
 def run():
     clear()
@@ -86,7 +86,7 @@ def run():
         return
 
     showInfo("At each step, press Play/Step to continue")
-    
+
     ndim = int(res[0])
 
     if ndim == 2:
@@ -95,7 +95,7 @@ def run():
         view('iso')
 
     for i in range(ndim):
-        a = a.extrude(n[i],1.,i)
+        a = a.extrude(n[i],i)
 
     draw(a)
     drawNumbers(a)

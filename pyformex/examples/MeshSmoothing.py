@@ -38,14 +38,14 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
 _topics = ['geometry','mesh']
-_techniques = ['dialog','smooth','noise','convert']
+_techniques = ['dialog','smooth','noise','convert','extrude']
 
 from gui.draw import *
 
 eltype = 'quad4'
 n = 6            # Number of elements in each direction (should be even)
 noise = 0.05     # Amount of noise added to the coordinates
-niter = 5        # Number of smoothing iterations 
+niter = 5        # Number of smoothing iterations
 
 
 def createMesh(eltype,n):
@@ -75,7 +75,7 @@ def noiseSmooth(M,noise,niter):
     M2 = M1.smooth(niter).trl(0,M.dsize()).setProp(3)
     draw([M,M1,M2])
 
-    
+
 def run():
     clear()
 
@@ -93,5 +93,6 @@ def run():
 
 
 if __name__ == 'draw':
+    view('front')
     run()
 # End

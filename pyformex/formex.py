@@ -1085,21 +1085,35 @@ maxprop  = %s
 #   Transformations that change the plexitude
 #
 
-    def extrude(self,n,step=1.,dir=0):
-        """Extrude a Formex in one of the axis directions.
+    def extrude(self,div,dir=0,length=1.):
+        """Extrude a Formex along a straight line.
 
-        Returns a Formex with doubled plexitude.
+        The Formex is extruded over a given length in the given direction.
 
-        First the original Formex is translated over n steps of length step in
-        direction dir. Then each pair of subsequent Formices is connected to
-        form a higher plexitude structure.
+        Parameters:
 
-        Currently, this function correctly transforms: point1 to line2,
-        line2 to quad4, tri3 to wedge6, quad4 to hex8.
+        - `div`: a value accepted as input by the :func:`mesh.smartSeed`
+          function.
+          It specifies how the extruded direction will be subdivided in
+          elements.
+        - `dir`: the direction of the extrusion: either a global axis
+          number or a direction vector.
+        - `length`: the length of the extrusion, measured along the direction
+          `dir`.
 
-        See the 'connect' function for a more versatile tool.
+        Returns the Formex obtained by extruding the input Formex over the
+        given `length` in direction `dir`, subdividing this length according
+        to the seeds specified by `dir`. The plexitude of the result will be
+        double that of the input.
+
+        This method works by converting the Formex to a :class:`Mesh`,
+        using the :func:`Mesh.extrude` and then converting the result
+        back to a Formex.
+
+        See the :func:`connect` function for a more general tool to create
+        new Formices out of existing ones.
         """
-        return self.toMesh().extrude(n,step,dir).toFormex()
+        return self.toMesh().extrude(div,dir,length).toFormex()
 
 
 ##############################################################################

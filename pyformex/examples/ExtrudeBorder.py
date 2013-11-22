@@ -56,7 +56,7 @@ def run():
     SA = draw(S)
 
     p = 0
-    for P,N,L,ndiv in [
+    for P,N,L,div in [
         #
         # Each line contains a point, a normal, an extrusion length
         # and the number of elements along this length
@@ -67,7 +67,7 @@ def run():
         B,S = cutBorderClose(S,P,N)
         draw(B)
         p += 1
-        E = B.extrude(ndiv,length=L,dir=normalize(N),eltype='tri3').setProp(p)
+        E = B.extrude(div,dir=normalize(N),length=L,eltype='tri3').setProp(p)
         draw(E)
 
     draw(S)

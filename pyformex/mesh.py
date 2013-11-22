@@ -887,7 +887,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
             else:
                 elems,lo = self.elems.insertLevel(level)
             return elems.frontWalk(startat=startat,frontinc=frontinc,partinc=partinc,maxval=maxval)
-        
+
         else:
             # TODO:
             # Might use more memory
@@ -1942,25 +1942,33 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return M
 
 
-    def extrude(self,div,dir=0,length=1.0,degree=1,eltype=None):
-        """Extrude a Mesh in one of the axes directions.
+    def extrude(self,div,dir=0,length=1.,degree=1,eltype=None):
+        """Extrude a Mesh along a straight line.
+
+        The Mesh is extruded over a given length in the given direction.
 
         Parameters:
 
         - `div`: a value accepted as input by the :func:`smartSeed` function.
-          It specified how the extruded direction will be subdivided in
+          It specifies how the extruded direction will be subdivided in
           elements.
         - `dir`: the direction of the extrusion: either a global axis
           number or a direction vector.
         - `length`: the length of the extrusion, measured along the direction
           `dir`.
 
-        Returns a new Mesh obtained by extruding the given Mesh over the
+        Returns the Mesh obtained by extruding the input Mesh over the
         given `length` in direction `dir`, subdividing this length according
         to the seeds specified by `dir`.
         """
         utils.warn("warn_mesh_extrude")
-        print("Extrusion in direction %s over length %s" % (dir,length))
+        if type(dir) is float:
+            import pyformex as pf
+            pf.warning("""Extrusion in direction %s over length %s
+
+Remember: the arguments of extrude have changed!
+The signature is now  extrude(div,dir,length).
+The dir,length are in the same order as in the translate method.""" % (dir,length))
         t = smartSeed(div)
         #print("SEED %s" % t)
         if degree > 1:

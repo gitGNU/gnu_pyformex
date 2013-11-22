@@ -63,12 +63,12 @@ def run():
 
     delay(sleep)
 
-    b = a.extrude(nx,1.,0,degree=degree)  # point extruded to quadratic line
+    b = a.extrude(nx,0,degree=degree)  # point extruded to quadratic line
     print(b.elName())
     draw(b.coords,wait=False)
     draw(b,color='red')
 
-    c = b.extrude(ny,1.,1,degree=degree)  # line extruded to quadratic surface
+    c = b.extrude(ny,1,degree=degree)  # line extruded to quadratic surface
     if serendipity:
         c = c.convert('quad8')#.compact()
     print(c.elName())
@@ -80,13 +80,9 @@ def run():
     #d = c.connect(c1,degree=2)
 
     #d = d.convert('hex20')
-    d = c.extrude(nz,1.,2,degree=degree)  # surface extruded to quadratic volume
+    d = c.extrude(nz,2,degree=degree)  # surface extruded to quadratic volume
     d = d.compact()
     print(d.elName())
-    #d = d.reverse()
-    if show3Dbyborder:
-        d = d.getBorderMesh()
-    print("Shown as %s" % d.elName())
     clear()
     draw(d.coords,wait=False)
     #drawNumbers(d.coords)
