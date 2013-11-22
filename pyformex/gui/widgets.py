@@ -2298,7 +2298,9 @@ class ArrayModel(QtCore.QAbstractTableModel):
                 if k == 'f':
                     value,ok = value.toDouble()
                 elif k == 'i':
-                    value,ok = value.toInt()
+                    #value,ok = value.toInt()
+                    print(type(value))
+                    value,ok = int(value),True
                 else:
                     ok = False
                 if not ok:
