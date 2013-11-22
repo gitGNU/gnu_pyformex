@@ -859,7 +859,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return elems.adjacency()
 
 
-    def frontWalk(self,level=0,startat=0,frontinc=1,partinc=1,maxval=-1):
+    def frontWalk(self,level=0,startat=0,frontinc=1,partinc=1,maxval=-1,optim_mem=False):
         """Visit all elements using a frontal walk.
 
         In a frontal walk a forward step is executed simultanuously from all
@@ -881,7 +881,19 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         Returns an array of integers specifying for each element in which step
         the element was reached by the walker.
         """
-        return self.adjacency(level).frontWalk(startat=startat,frontinc=frontinc,partinc=partinc,maxval=maxval)
+        if optim_mem:
+            if level == 0:
+                elems = self.elems
+            else:
+                elems,lo = self.elems.insertLevel(level)
+            return elems.frontWalk(startat=startat,frontinc=frontinc,partinc=partinc,maxval=maxval)
+        
+        else:
+            # TODO:
+            # Might use more memory
+            # Might be faster ????
+            # Needs checking !!
+            return self.adjacency(level).frontWalk(startat=startat,frontinc=frontinc,partinc=partinc,maxval=maxval)
 
 
     def maskedEdgeFrontWalk(self,mask=None,startat=0,frontinc=1,partinc=1,maxval=-1):

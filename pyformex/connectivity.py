@@ -778,6 +778,107 @@ class Connectivity(ndarray):
         return Adjacency(adj)
 
 
+    ### frontal methods ###
+
+    def frontFactory(self,startat=0,frontinc=1,partinc=1):
+        """Generator function returning the frontal elements.
+
+        This is a generator function and is normally not used directly,
+        but via the :meth:`frontWalk` method.
+
+        It returns an int array with a value for each element.
+        On the initial call, all values are -1, except for the elements
+        in the initial front, which get a value 0. At each call a new front
+        is created with all the elements that are connected to any of the
+        current front and which have not yet been visited. The new front
+        elements get a value equal to the last front's value plus the
+        `frontinc`. If the front becomes empty and a new starting front is
+        created, the front value is extra incremented with `partinc`.
+
+        Parameters: see :meth:`frontWalk`.
+
+        Example:
+
+        >>> A = Adjacency([[1,2,-1],
+        ...                  [3,2,0],
+        ...                  [1,-1,3],
+        ...                  [1,2,-1],
+        ...                  [-1,-1,-1]])
+        >>> for p in A.frontFactory(): print p
+        [ 0 -1 -1 -1 -1]
+        [ 0  1  1 -1 -1]
+        [ 0  1  1  2 -1]
+        [0 1 1 2 4]
+        """
+        p = -ones((self.nelems()),dtype=Int)
+        if self.nelems() <= 0:
+            return
+
+        # Remember current elements front
+        elems = clip(asarray(startat),0,self.nelems())
+        prop = 0
+        while elems.size > 0:
+            # Store prop value for current elems
+            p[elems] = prop
+            yield p
+
+            prop += frontinc
+
+            # Determine adjacent elements
+            nodes = unique(asarray(self[elems]))
+            elems = setdiff1d(self.connectedTo(nodes),where(p>=0)[0])
+            if elems.size > 0:
+                continue
+
+            # No more elements in this part: start a new one
+            elems = where(p<0)[0]
+            if elems.size > 0:
+                # Start a new part
+                elems = elems[[0]]
+                prop += partinc
+
+
+    def frontWalk(self,startat=0,frontinc=1,partinc=1,maxval=-1):
+        """Walks through the elements by their node front.
+
+        A frontal walk is executed starting from the given element(s).
+        A number of steps is executed, each step advancing the front
+        over a given number of single pass increments. The step number at
+        which an element is reached is recorded and returned.
+
+        Parameters:
+
+        - `startat`: initial element numbers in the front. It can be a single
+          element number or a list of numbers.
+        - `frontinc`: increment for the front number on each frontal step.
+        - `partinc`: increment for the front number when the front
+        - `maxval`: maximum frontal value. If negative (default) the walk will
+          continue until all elements have been reached. If non-negative,
+          walking will stop as soon as the frontal value reaches this
+          maximum.
+
+        Returns: an array of integers specifying for each element in which step
+        the element was reached by the walker.
+
+        Example:
+
+          >>> A = Adjacency([
+          ...       [-1,  1,  2,  3],
+          ...       [-1,  0,  2,  3],
+          ...       [ 0,  1,  4,  5],
+          ...       [-1, -1,  0,  1],
+          ...       [-1, -1,  2,  5],
+          ...       [-1, -1,  2,  4]])
+          >>> print A.frontWalk()
+          [0 1 1 1 2 2]
+        """
+        for p in self.frontFactory(startat=startat,frontinc=frontinc,partinc=partinc):
+            if maxval >= 0:
+                if p.max() > maxval:
+                    break
+        return p
+
+
 ######### Creating intermediate levels ###################
 
     def selectNodes(self,selector):

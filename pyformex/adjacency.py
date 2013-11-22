@@ -373,7 +373,7 @@ class Adjacency(ndarray):
         [ 0  1  1  2 -1]
         [0 1 1 2 4]
         """
-        p = -ones((self.nelems()),dtype=int)
+        p = -ones((self.nelems()),dtype=Int)
         if self.nelems() <= 0:
             return
 
