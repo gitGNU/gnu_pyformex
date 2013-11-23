@@ -1578,7 +1578,7 @@ def inverseIndex(index,maxcon=4):
     """
     ind = asarray(index)
     if len(ind.shape) != 2 or ind.dtype.kind != 'i':
-        raise ValueError,"nndex should be an integer array with dimension 2"
+        raise ValueError,"index should be an integer array with dimension 2"
     nr,nc = ind.shape
     mr = ind.max() + 1
     mc = maxcon*nc
