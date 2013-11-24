@@ -113,11 +113,29 @@ class Varray(object):
     - `width`: the maximum row length
     - `size`: the total number of entries in the table
 
+    A Varray is by default printed in user-friendly format:
+
+    >>> Va = Varray([[0],[1,2],[0,2,4],[0,2]])
+    >>> print(Va)
+    Varray (4,3)
+      [0]
+      [1 2]
+      [0 2 4]
+      [0 2]
+    <BLANKLINE>
+
     Indexing: The data for any row can be obtained by simple indexing:
 
-    >>> Va = Varray([[0],[1,2],[0,2,4]])
     >>> print(Va[1])
     [1 2]
+
+    Indexing with an iterable of integers returns a new Varray:
+
+    >>> print(Va[[1,3]])
+    Varray (2,2)
+      [1 2]
+      [0 2]
+    <BLANKLINE>
 
     Iterator: A Varray provides its own iterator:
 
@@ -126,6 +144,7 @@ class Varray(object):
     [0]
     [1 2]
     [0 2 4]
+    [0 2]
 
     """
     def __init__(self,data=[],ind=[]):
@@ -192,11 +211,23 @@ class Varray(object):
 
 
     def __getitem__(self,i):
-        """Return the data for the row i
+        """Return the data for the row or rows i.
 
-        Returns a 1D integer array with the values of row i.
+        Parameters:
+
+        - `i`: the index of the requested row(s).
+
+        Returns:
+
+        - if `i` is a single integer: a 1D integer array with the values of
+          row i,
+        - if `i` is an iterable of integers: a Varray only containing the rows
+          whose index occurs in `i`.
         """
-        return self.data[self.ind[i]:self.ind[i+1]]
+        if isInt(i):
+            return self.data[self.ind[i]:self.ind[i+1]]
+        else:
+            return Varray([ self[j] for j in i ])
         # Shall we also add a tuple as index?
         # to allow self[i,j] instead of i[i][j]
 
@@ -208,7 +239,7 @@ class Varray(object):
 
 
     def next(self):
-        """Return the next row of the Varray"""
+        """_Return the next row of the Varray"""
         if self.row >= self.nrows:
             raise StopIteration
         row = self[self.row]
@@ -306,6 +337,44 @@ class Varray(object):
         return [ r.tolist() for r in self ]
 
 
+    def inverse(self):
+        """Return the inverse of a Varray.
+
+        The inverse of a Varray is again a Varray. Values k on a row i will
+        become values i on row k. The number of data in both Varrays is thus
+        the same.
+
+        The inverse of the inverse is equal to the original. Two Varrays are
+        equal if they have the same number of rows and all rows contain the
+        same numbers, independent of their order.
+
+        Example:
+
+        >>> a = Varray([[0,1],[2,0],[1,2],[4]])
+        >>> b = a.inverse()
+        >>> c = b.inverse()
+        >>> print(a,b,c)
+        Varray (4,2)
+          [0 1]
+          [2 0]
+          [1 2]
+          [4]
+         Varray (5,2)
+          [0 1]
+          [0 2]
+          [1 2]
+          []
+          [3]
+         Varray (4,2)
+          [0 1]
+          [0 2]
+          [1 2]
+          [4]
+        <BLANKLINE>
+        """
+        return inverseIndex(self)
+
+
     def __str__(self):
         """Nicely print the Varray"""
         s = "Varray (%s,%s)\n" % (self.nrows,self.width)
@@ -314,16 +383,36 @@ class Varray(object):
         return s
 
 
-def inverseIndex(a,sort=False):
+def inverseIndex(a,sort=False,expand=False):
     """Create the inverse of a 2D index array.
 
-    A 2D index array is a 2D integer array with only nonnegative values.
-    While in most cases all values in a row are unique, this is not a
-    requirement. Degenerate elements may have the same node number
-    appearing multiple times in the same row.
+    Parameters:
 
-    Returns the inverse index as a Varray, by default not sorted.
+    - `a`: a Varray or a 2D index array. A 2D index array is a 2D integer
+      array where only nonnegative values are significant and negative
+      values are silently ignored.
+      While in most cases all values in a row are unique, this is not a
+      requirement. Degenerate elements may have the same node number
+      appearing multiple times in the same row.
+
+    -
+
+    Returns the inverse index, as a Varray (default) or as an ndarray (if
+    expand is True). If sort is True, rows are sorted.
+
+    Example:
+
+      >>> a = inverseIndex([[0,1],[0,2],[1,2],[0,3]])
+      >>> print(a)
+      Varray (4,3)
+        [0 1 3]
+        [0 2]
+        [1 2]
+        [3]
+      <BLANKLINE>
     """
+    if isinstance(a,Varray):
+        a = a.toArray()
     a = checkArray(a,ndim=2,kind='i')
     b = resize(arange(a.shape[0]),a.shape[::-1])
     c = stack([a,b.transpose()]).reshape(2,-1)
@@ -331,9 +420,15 @@ def inverseIndex(a,sort=False):
     t = c[0][s]
     u = c[1][s]
     v = t.searchsorted(arange(t.max()+1))
+    if v[0] > 0:
+        # There were negative numbers: remove them
+        u = u[v[0]:]
+        v -= v[0]
     Va = Varray(u,v)
     if sort:
         Va.sort()
+    if expand:
+        return Va.toArray()
     return Va
 
 

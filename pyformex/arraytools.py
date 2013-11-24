@@ -1532,11 +1532,35 @@ def nearestValue(values,target):
     """
     return values[argNearestValue(values,target)]
 
-#
-# BV: This is a candidate for the C-library
-#
 
-def inverseIndex(index,maxcon=4):
+def inverseIndex(a,sort=True,expand=True):
+    """Create the inverse of a 2D index array.
+
+    A 2D index array is a 2D integer array with only nonnegative values.
+    While in most cases all values in a row are unique, this is not a
+    requirement. Degenerate elements may have the same node number
+    appearing multiple times in the same row.
+
+    This function is a wrapper around :func:`varray.inverseIndex` with
+    other default values for the optional arguments.
+
+    Returns the inverse index, by default sorted and converted to a
+    2D index array. See :func:`varray.inverseIndex` for the meaning
+    of the parameters.
+
+    Example::
+
+      >>> inverseIndex([[0,1],[0,2],[1,2],[0,3]])
+      array([[ 0,  1,  3],
+             [-1,  0,  2],
+             [-1,  1,  2],
+             [-1, -1,  3]], dtype=int32)
+    """
+    import varray
+    return varray.inverseIndex(a,sort=sort,expand=expand)
+
+
+def inverseIndexOld(index,maxcon=4):
     """Return an inverse index.
 
     An index is an array pointing at other items by their position.
@@ -1569,11 +1593,17 @@ def inverseIndex(index,maxcon=4):
 
     Example::
 
-      >>> inverseIndex([[0,1],[0,2],[1,2],[0,3]])
-      array([[ 0,  1,  3],
-             [-1,  0,  2],
-             [-1,  1,  2],
-             [-1, -1,  3]])
+      >>> a = inverseIndexOld([[0,1],[0,2],[1,2],[0,3]])
+      >>> print(a)
+      [[ 0  1  3]
+       [-1  0  2]
+       [-1  1  2]
+       [-1 -1  3]]
+      >>> print(inverseIndexOld(a))
+      [[0 1]
+       [0 2]
+       [1 2]
+       [0 3]]
 
     """
     ind = asarray(index)
@@ -1636,7 +1666,7 @@ def matchIndex(target,values):
       >>> A = array([1,3,4,5,7,8,9])
       >>> B = array([0,6,7,1,2])
       >>> matchIndex(A,B)
-      array([-1, -1,  4,  0, -1])
+      array([-1, -1,  4,  0, -1], dtype=int32)
     """
     target = target.reshape(-1,1)
     values = values.reshape(-1)
