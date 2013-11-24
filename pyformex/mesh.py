@@ -1351,23 +1351,28 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
     @utils.deprecation("Mesh.withProp is deprecated. Use selectProp instead.")
     def withProp(self,val):
-        return self.selectProp(val)
+        return self.selectProp(val,compact=False)
 
 
     @utils.deprecation("Mesh.withoutProp is deprecated. Use Geometry.cselectProp instead.")
     def withoutProp(self,val):
-        return self.cselectProp(val)
+        return self.cselectProp(val,compact=False)
 
 
-    def connectedTo(self,nodes):
-        """Return a Mesh with the elements connected to the specified node(s).
+    def connectedTo(self,entities,level=0):
+        """Select the elements connected to specific lower entities.
 
-        `nodes`: int or array_like, int.
+        `entities`: int or array_like, int. Entity selector.
+        `level`: int. Entity level. Default 0 (nodes).
 
-        Return a Mesh with all the elements from the original that contain at
-        least one of the specified nodes.
+        Returns a Mesh with all the elements from the original that contain at
+        least one of the specified lower entities.
         """
-        return self.select(self.elems.connectedTo(nodes))
+        if level == 0:
+            elems = self.elems
+        else:
+            elems,lo = self.elems.insertLevel(level)
+        return self.select(self.elems.connectedTo(entities),compact=False)
 
 
     def notConnectedTo(self,nodes):

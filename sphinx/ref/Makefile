@@ -34,7 +34,7 @@
 COREMODULES= adjacency arraytools collection config connectivity coords \
   elements fileread filewrite \
   flatkeydb formex geometry geomtools mesh mydict odict olist project \
-  script sendmail simple timer utils
+  script sendmail simple timer utils varray
 GUIMODULES= actors camera canvas colors colorscale decors draw gluttext \
   image imageViewer imagearray marks menu\
   appMenu toolbar viewport widgets

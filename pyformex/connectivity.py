@@ -780,7 +780,7 @@ class Connectivity(ndarray):
 
     ### frontal methods ###
 
-    def frontFactory(self,startat=0,frontinc=1,partinc=1):
+    def front(self,startat=0,frontinc=1,partinc=1):
         """Generator function returning the frontal elements.
 
         This is a generator function and is normally not used directly,
@@ -804,7 +804,7 @@ class Connectivity(ndarray):
         ...                  [1,-1,3],
         ...                  [1,2,-1],
         ...                  [-1,-1,-1]])
-        >>> for p in A.frontFactory(): print p
+        >>> for p in A.front(): print p
         [ 0 -1 -1 -1 -1]
         [ 0  1  1 -1 -1]
         [ 0  1  1  2 -1]
@@ -872,7 +872,7 @@ class Connectivity(ndarray):
           >>> print A.frontWalk()
           [0 1 1 1 2 2]
         """
-        for p in self.frontFactory(startat=startat,frontinc=frontinc,partinc=partinc):
+        for p in self.front(startat=startat,frontinc=frontinc,partinc=partinc):
             if maxval >= 0:
                 if p.max() > maxval:
                     break
@@ -942,8 +942,8 @@ class Connectivity(ndarray):
           of such tuples all having the same length.
           Each row of `selector` holds a list of the local node numbers that
           should be retained in the new Connectivity table.
-        - `permutations`: `bool` . If True, rows which are permutations of 
-          the same data are considered equal. 
+        - `permutations`: `bool` . If True, rows which are permutations of
+          the same data are considered equal.
 
 
           If the Connectivity has an element type, selector can also be a
