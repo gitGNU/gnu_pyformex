@@ -304,9 +304,7 @@ def convertFromVPD(vpd,verbose=False):
     
     # getting Fields
     if vpd.GetFieldData().GetNumberOfArrays():
-        fielddata = vpd.Getfields() # get field arrays
-        ntype = gnat(fielddata.GetDataType())
-        print('fielddata',ntype)
+        fielddata = vpd.GetFieldData() # get field arrays
         arraynm = [fielddata.GetArrayName(i) for i in range(fielddata.GetNumberOfArrays())]
         ntypes = [gnat(fielddata.GetArray(an).GetDataType()) for an in arraynm]
         fielddata = [asarray(v2n(fielddata.GetArray(an)),dtype=ntype) for ntype,an in zip(ntypes,arraynm)]
