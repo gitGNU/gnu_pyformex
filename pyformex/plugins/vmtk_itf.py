@@ -181,7 +181,7 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
             excludeprop = ps[~mask]
     if conformal == 'border' or conformal == 'regionsborder':
         if elementsizemode=='areaarray':
-            raise ValueError,'conformal (regions)border and areaarray cannot be used together (yet)!'#conformalBorder alters the node list. Afterwards, the nodes do not correspond with pointAr.
+            raise ValueError,'conformal (regions)border and areaarray cannot be used together (yet)!'#conformalBorder alters the node list. Afterwards, the nodes do not correspond with pointdata.
         if self.isClosedManifold()==False:
             if conformal == 'regionsborder':
                 if self.propSet() is not None:
@@ -202,10 +202,10 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
         if conformal is not None:
             raise ValueError, 'conformal should be either None, border or regionsborder'
 
-    from plugins.vtk_itf import readVTP, writeVTP, checkClean
+    from plugins.vtk_itf import writeVTP, checkClean, readVTKObject
     tmp = utils.tempFile(suffix='.vtp').name
     tmp1 = utils.tempFile(suffix='.vtp').name
-    fieldAr, cellAr, pointAr = {},{},{}
+    fielddata, celldata, pointdata = {},{},{}
     cmd = 'vmtk vmtksurfaceremeshing -ifile %s -ofile %s'  % (tmp,tmp1)
     if elementsizemode == 'edgelength':
         if  edgelength is None:
@@ -221,7 +221,7 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
         if not checkClean(self):
             raise ValueError, "Mesh is not clean: vtk will alter the node numbering and the areaarray will not correspond to the node numbering. To clean: mesh.fuse().compact().renumber()"
         cmd += ' -elementsizemode areaarray -areaarray nodalareas '
-        pointAr['nodalareas'] = areaarray
+        pointdata['nodalareas'] = areaarray
     if aspectratio is not None:
         cmd += ' -aspectratio %f' % aspectratio
     if excludeprop is not None:
@@ -231,7 +231,7 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
     if self.prop is not None:
         cmd += ' -entityidsarray prop'
     pf.message("Writing temp file %s" % tmp)
-    writeVTP(mesh=self, fn=tmp, pointAr=pointAr)
+    writeVTP(mesh=self, fn=tmp, pointdata=pointdata)
     pf.message("Remeshing with command\n %s" % cmd)
     P = utils.command(cmd)
     os.remove(tmp)
@@ -239,10 +239,10 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
         pf.message("An error occurred during the remeshing.")
         pf.message(P.out)
         return None
-    coords, E, fieldAr, cellAr, pointAr=readVTP(tmp1)
-    S = TriSurface(coords, E[0])
+    [coords, cells, polys, lines, verts],fielddata,celldata,pointdata = readVTKObject(tmp1)
+    S = TriSurface(coords, polys)
     if self.prop is not None:
-        S=S.setProp(cellAr['prop'])
+        S=S.setProp(celldata['prop'])
     os.remove(tmp1)
     return S
 
@@ -269,9 +269,9 @@ def vmtkDistanceOfSurface(self,S):
         pf.message("An error occurred during the distance calculation.")
         pf.message(P.out)
         return None
-    from plugins.vtk_itf import readVTP
-    coords, E, fieldAr, cellAr, pointAr=readVTP(tmp2)
-    vdist, sdist = pointAr['vdist'], pointAr['sdist']
+    from plugins.vtk_itf import readVTKObject
+    [coords, cells, polys, lines, verts],fielddata, celldata, pointdata = readVTKObject(tmp2)
+    vdist, sdist = pointdata['vdist'], pointdata['sdist']
     os.remove(tmp2)
     from plugins.vtk_itf import checkClean
     if not checkClean(S):

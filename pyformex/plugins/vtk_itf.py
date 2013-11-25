@@ -340,14 +340,14 @@ def convertFromVPD(vpd,verbose=False):
     return [coords, cells, polys, lines, verts],fielddata,celldata,pointdata
 
 
-def writeVTP(fn,mesh,fieldAr={},cellAr={},pointAr={},checkMesh=True):
+def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
     """Write a Mesh in .vtp or .vtk file format.
 
     - `fn`: a filename with .vtp or .vtk extension.
     - `mesh`: a Mesh of level 0, 1 or 2 (i.e. not a volume Mesh)
-    - `fieldAr`: dictionary of arrays associated to the fields (?).
-    - `cellAr`: dictionary of arrays associated to the elements.
-    - `pointAr`: dictionary of arrays associated to the points (renumbered).
+    - `fielddata`: dictionary of arrays associated to the fields (?).
+    - `celldata`: dictionary of arrays associated to the elements.
+    - `pointdata`: dictionary of arrays associated to the points (renumbered).
     - `checkMesh`: bool: if True, raises a warning if mesh is not clean.
 
     If the Mesh has property numbers, they are stored in a vtk array named prop.
@@ -374,29 +374,29 @@ def writeVTP(fn,mesh,fieldAr={},cellAr={},pointAr={},checkMesh=True):
         vtkprop = n2v(asarray(mesh.prop,order='C',dtype=ntype),deep=1)
         vtkprop.SetName('prop')
         lvtk.GetCellData().AddArray(vtkprop)
-    for k in fieldAr.keys(): # same numbering of mesh.elems??
+    for k in fielddata.keys(): # same numbering of mesh.elems??
         ntype = gnat(vtkDoubleArray().GetDataType())
-        if fieldAr[k].shape[0]!=mesh.nelems():
-            print (fieldAr[k].shape,)
-        fieldar = n2v(asarray(fieldAr[k],order='C',dtype=ntype),deep=1)
+        if fielddata[k].shape[0]!=mesh.nelems():
+            print (fielddata[k].shape,)
+        fielddata = n2v(asarray(fielddata[k],order='C',dtype=ntype),deep=1)
         fieldar.SetName(k)
-        lvtk.GetFieldData().AddArray(fieldar)
-    for k in cellAr.keys(): # same numbering of mesh.elems
+        lvtk.GetFieldData().AddArray(fielddata)
+    for k in celldata.keys(): # same numbering of mesh.elems
         ntype = gnat(vtkDoubleArray().GetDataType())
-        if cellAr[k].shape[0]!=mesh.nelems():
-            print (cellAr[k].shape, mesh.nelems())
+        if celldata[k].shape[0]!=mesh.nelems():
+            print (celldata[k].shape, mesh.nelems())
             utils.warn("warn_writevtp_shape")
-        cellar = n2v(asarray(cellAr[k],order='C',dtype=ntype),deep=1)
-        cellar.SetName(k)
-        lvtk.GetCellData().AddArray(cellar)
-    for k in pointAr.keys(): # same numbering of mesh.coords
+        celldata = n2v(asarray(celldata[k],order='C',dtype=ntype),deep=1)
+        celldata.SetName(k)
+        lvtk.GetCellData().AddArray(celldata)
+    for k in pointdata.keys(): # same numbering of mesh.coords
         ntype = gnat(vtkDoubleArray().GetDataType())
-        if pointAr[k].shape[0]!=mesh.ncoords(): # mesh should be clean!!
-            print (pointAr[k].shape, mesh.ncoords())
+        if pointdata[k].shape[0]!=mesh.ncoords(): # mesh should be clean!!
+            print (pointdata[k].shape, mesh.ncoords())
             utils.warn("warn_writevtp_shape2")
-        pointar = n2v(asarray(pointAr[k],order='C',dtype=ntype),deep=1)
-        pointar.SetName(k)
-        lvtk.GetPointData().AddArray(pointar)
+        pointdata = n2v(asarray(pointdata[k],order='C',dtype=ntype),deep=1)
+        pointdata.SetName(k)
+        lvtk.GetPointData().AddArray(pointdata)
     print ('************lvtk', lvtk)
     ftype = os.path.splitext(fn)[1]
     ftype = ftype.strip('.').lower()
@@ -434,10 +434,6 @@ def readVTKObject(fn):
 
     Returns None for the missing data.
     The dictionary of arrays can include the elements ids (e.g. properties).
-    For example, to read a triangular surface with id array 'prop'::
-
-      mesh_obj, fieldAr, cellAr, pointAr = readVTP('fn.vtp')
-      T = TriSurface(mesh_obj[0], mesh_obj[1]).setProp(cellAr['prop'])
     """
     ftype = utils.fileTypeFromExt(fn)
     if ftype=='vtp':
