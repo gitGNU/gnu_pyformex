@@ -243,6 +243,34 @@ class Coords(ndarray):
             o = origin()
             bb = [o,o]
         return Coords(bb)
+    
+    def obbox(self,ctr,rot):
+        """Returns an oriented bounding box of a set of points.
+
+        Parameters:
+        
+        -`ctr` : array_like (3,) . Center of the the bounding box
+        -`rot` : array_like (3,3) . Rotation matrix of the the bounding box
+
+        Returns a single hexahedral Formex object.
+
+        """
+        from simple import cuboid
+        X = self.trl(-ctr).rot(rot)  # rotate data to align with axes
+        bb = cuboid(*X.bbox())  # get the bbox and make a hex8
+        bb = bb.rot(rot.transpose()).trl(ctr) # transform back to global coordinates
+        return bb
+
+
+    def pobbox(self):
+        """Returns an oriented bounding box of a set of points oriented
+            along the inertia principal axis.
+
+        Returns a single hexahedral Formex object.
+
+        """
+        ctr,rot = self.inertia()[:2]  # get the center and principal axes
+        return self.obbox(ctr,rot)
 
 
     # THIS COULD BE MADE AN OPTION OF THE bbox METHOD
