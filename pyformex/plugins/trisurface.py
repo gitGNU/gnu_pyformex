@@ -633,11 +633,11 @@ class TriSurface(Mesh):
         elif ftype == 'smesh':
             data = tetgen.readSurface(fn)
         elif ftype == 'vtp' or ftype == 'vtk':
-            from vtk_itf import readVTP
-            coords, E, fieldAr, cellAr, pointAr = readVTP(fn)
-            data = (coords, E[0])
-            if 'prop' in cellAr.keys():
-                kargs = {'prop':cellAr['prop']}
+            from vtk_itf import readVTKObject
+            [coords, cells, polys, lines, verts],fielddata,celldata,pointdata = readVTKObject(fn)
+            data = (coords, polys)
+            if 'prop' in celldata.keys():
+                kargs = {'prop':celldata['prop']}
         else:
             raise "Unknown TriSurface type, cannot read file %s" % fn
         if gzip:

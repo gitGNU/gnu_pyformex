@@ -256,7 +256,7 @@ def convertFromVPD(vpd,verbose=False):
     fielddata = celldata = pointdata = None
 
     if vpd is None:
-        return [coords, polys, lines, verts]
+        return [coords, cells, polys, lines, verts],fielddata,celldata,pointdata
 
     # getting points coords
     if  vpd.GetPoints().GetData().GetNumberOfTuples():
@@ -265,16 +265,18 @@ def convertFromVPD(vpd,verbose=False):
         if verbose:
             print('Saved points coordinates array')
 
-    # getting Polygons
-    if  vpd.GetCells().GetData().GetNumberOfTuples():
-        ntype = gnat(vpd.GetCells().GetData().GetDataType())
-        Nplex = vpd.GetCells().GetMaxCellSize()
-        cells = asarray(v2n(vpd.GetCells().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
-        if verbose:
-            print('Saved polys connectivity array')
+    vtkdtype = vpd.GetDataObjectType()
+    # getting Cells
+    if vtkdtype not in [0]: # this list need to be updated according to the data type
+        if  vpd.GetCells().GetData().GetNumberOfTuples():
+            ntype = gnat(vpd.GetCells().GetData().GetDataType())
+            Nplex = vpd.GetCells().GetMaxCellSize()
+            cells = asarray(v2n(vpd.GetCells().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
+            if verbose:
+                print('Saved polys connectivity array')
 
     # getting Polygons
-    if vpd.GetDataObjectType() not in [4]: # this list need to be updated according to the data type
+    if vtkdtype not in [4]: # this list need to be updated according to the data type
         if  vpd.GetPolys().GetData().GetNumberOfTuples():
             ntype = gnat(vpd.GetPolys().GetData().GetDataType())
             Nplex = vpd.GetPolys().GetMaxCellSize()
@@ -283,7 +285,7 @@ def convertFromVPD(vpd,verbose=False):
                 print('Saved polys connectivity array')
 
     # getting Lines
-    if vpd.GetDataObjectType() not in [4]: # this list need to be updated according to the data type
+    if vtkdtype not in [4]: # this list need to be updated according to the data type
         if  vpd.GetLines().GetData().GetNumberOfTuples():
             ntype = gnat(vpd.GetLines().GetData().GetDataType())
             Nplex = vpd.GetLines().GetMaxCellSize()
@@ -292,7 +294,7 @@ def convertFromVPD(vpd,verbose=False):
                 print('Saved lines connectivity array')
 
     # getting Vertices
-    if vpd.GetDataObjectType() not in [4]: # this list need to be updated acoorind to the data type
+    if vtkdtype not in [4]: # this list need to be updated acoorind to the data type
         if  vpd.GetVerts().GetData().GetNumberOfTuples():
             ntype = gnat(vpd.GetVerts().GetData().GetDataType())
             Nplex = vpd.GetVerts().GetMaxCellSize()
