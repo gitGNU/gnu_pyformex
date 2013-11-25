@@ -32,6 +32,7 @@ vtk and pyFormex.
 """
 
 from pyformex import utils
+from utils import deprecation
 
 utils.requireModule('vtk')
 
@@ -48,6 +49,44 @@ from coords import Coords
 from plugins.trisurface import TriSurface
 
 import os
+
+# List of vtk data types
+#~ VTK_POLY_DATA 0
+#~ VTK_STRUCTURED_POINTS 1
+#~ VTK_STRUCTURED_GRID 2
+#~ VTK_RECTILINEAR_GRID 3
+#~ VTK_UNSTRUCTURED_GRID 4
+#~ VTK_PIECEWISE_FUNCTION 5
+#~ VTK_IMAGE_DATA 6
+#~ VTK_DATA_OBJECT 7
+#~ VTK_DATA_SET 8
+#~ VTK_POINT_SET 9
+#~ VTK_UNIFORM_GRID 10
+#~ VTK_COMPOSITE_DATA_SET 11
+#~ VTK_MULTIGROUP_DATA_SET 12
+#~ VTK_MULTIBLOCK_DATA_SET 13
+#~ VTK_HIERARCHICAL_DATA_SET 14
+#~ VTK_HIERARCHICAL_BOX_DATA_SET 15
+#~ VTK_GENERIC_DATA_SET 16
+#~ VTK_HYPER_OCTREE 17
+#~ VTK_TEMPORAL_DATA_SET 18
+#~ VTK_TABLE 19
+#~ VTK_GRAPH 20
+#~ VTK_TREE 21
+#~ VTK_SELECTION 22
+#~ VTK_DIRECTED_GRAPH 23
+#~ VTK_UNDIRECTED_GRAPH 24
+#~ VTK_MULTIPIECE_DATA_SET 25
+#~ VTK_DIRECTED_ACYCLIC_GRAPH 26
+#~ VTK_ARRAY_DATA 27
+#~ VTK_REEB_GRAPH 28
+#~ VTK_UNIFORM_GRID_AMR 29
+#~ VTK_NON_OVERLAPPING_AMR 30
+#~ VTK_OVERLAPPING_AMR 31
+#~ VTK_HYPER_TREE_GRID 32
+#~ VTK_MOLECULE 33
+#~ VTK_PISTON_DATA_OBJECT 34
+#~ VTK_PATH 35
 
 def cleanVPD(vpd):
     """Clean the vtkPolydata
@@ -202,46 +241,89 @@ def convertFromVPD(vpd,verbose=False):
 
     - `vpd`: a vtkPolyData
 
-    Returns a tuple with points, polygons, lines, vertices numpy arrays.
+
+    Returns:
+    
+        - a list with points, polygons, lines, vertices numpy arrays
+        - `fielddata` : a dict of {name:fielddata_numpy_array}
+        - `celldata` : a dict of {name:celldata_numpy_array}
+        - `pointdata` : a dict of {name:pointdata_numpy_array}
+
+
     Returns None for the missing data.
     """
-    pts = polys = lines = verts = None
+    coords = polys = lines = verts = None
+    fielddata = celldata = pointdata = None
 
     if vpd is None:
-        return [pts, polys, lines, verts]
+        return [coords, polys, lines, verts]
 
     # getting points coords
     if  vpd.GetPoints().GetData().GetNumberOfTuples():
         ntype = gnat(vpd.GetPoints().GetDataType())
-        pts = asarray(v2n(vpd.GetPoints().GetData()),dtype=ntype)
+        coords = asarray(v2n(vpd.GetPoints().GetData()),dtype=ntype)
         if verbose:
             print('Saved points coordinates array')
 
     # getting Polygons
-    if  vpd.GetPolys().GetData().GetNumberOfTuples():
-        ntype = gnat(vpd.GetPolys().GetData().GetDataType())
-        Nplex = vpd.GetPolys().GetMaxCellSize()
-        polys = asarray(v2n(vpd.GetPolys().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
-        if verbose:
-            print('Saved polys connectivity array')
+    if vpd.GetDataObjectType() not in [4]: # this list need to be updated according to the data type
+        if  vpd.GetPolys().GetData().GetNumberOfTuples():
+            ntype = gnat(vpd.GetPolys().GetData().GetDataType())
+            Nplex = vpd.GetPolys().GetMaxCellSize()
+            polys = asarray(v2n(vpd.GetPolys().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
+            if verbose:
+                print('Saved polys connectivity array')
 
     # getting Lines
-    if  vpd.GetLines().GetData().GetNumberOfTuples():
-        ntype = gnat(vpd.GetLines().GetData().GetDataType())
-        Nplex = vpd.GetLines().GetMaxCellSize()
-        lines = asarray(v2n(vpd.GetLines().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
-        if verbose:
-            print('Saved lines connectivity array')
+    if vpd.GetDataObjectType() not in [4]: # this list need to be updated according to the data type
+        if  vpd.GetLines().GetData().GetNumberOfTuples():
+            ntype = gnat(vpd.GetLines().GetData().GetDataType())
+            Nplex = vpd.GetLines().GetMaxCellSize()
+            lines = asarray(v2n(vpd.GetLines().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
+            if verbose:
+                print('Saved lines connectivity array')
 
     # getting Vertices
-    if  vpd.GetVerts().GetData().GetNumberOfTuples():
-        ntype = gnat(vpd.GetVerts().GetData().GetDataType())
-        Nplex = vpd.GetVerts().GetMaxCellSize()
-        verts = asarray(v2n(vpd.GetVerts().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
+    if vpd.GetDataObjectType() not in [4]: # this list need to be updated acoorind to the data type
+        if  vpd.GetVerts().GetData().GetNumberOfTuples():
+            ntype = gnat(vpd.GetVerts().GetData().GetDataType())
+            Nplex = vpd.GetVerts().GetMaxCellSize()
+            verts = asarray(v2n(vpd.GetVerts().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
+            if verbose:
+                print('Saved verts connectivity array')
+    
+    # getting Fields
+    if vpd.GetFieldData().GetNumberOfArrays():
+        fielddata = vpd.Getfields() # get field arrays
+        ntype = gnat(fielddata.GetDataType())
+        arraynm = [fielddata.GetArrayName(i) for i in range(fielddata.GetNumberOfArrays())]
+        fielddata = [v2n(fielddata.GetArray(an)) for an in arraynm]
+        fielddata = dict(zip(arraynm, fielddata)) # dictionary of array names
         if verbose:
-            print('Saved verts connectivity array')
+            print('Field Data Arrays: '+''.join(['%s, '%nm for nm in arraynm]))
+    
+    
+    # getting cells data
+    if vpd.GetCellData().GetNumberOfArrays():
+        celldata = vpd.GetCellData() # get cell arrays
+        arraynm = [celldata.GetArrayName(i) for i in range(celldata.GetNumberOfArrays())]
+        celldata = [v2n(celldata.GetArray(an)) for an in arraynm]
+        celldata = dict(zip(arraynm, celldata)) # dictionary of array names
+        if verbose:
+            print('Cell Data Arrays: '+''.join(['%s, '%nm for nm in arraynm]))
+    
+    
+    # getting points data
+    if vpd.GetPointData().GetNumberOfArrays():
+        pointdata = vpd.GetPointData() # get point arrays
+        arraynm = [pointdata.GetArrayName(i) for i in range(pointdata.GetNumberOfArrays())]
+        pointdata = [v2n(pointdata.GetArray(an)) for an in arraynm]
+        pointdata = dict(zip(arraynm, pointdata)) # dictionary of array names
+        if verbose:
+            print('Point Data Arrays: '+''.join(['%s, '%nm for nm in arraynm]))
+    
 
-    return [pts, polys, lines, verts]
+    return [coords, polys, lines, verts],fielddata,celldata,pointdata
 
 
 def writeVTP(fn,mesh,fieldAr={},cellAr={},pointAr={},checkMesh=True):
@@ -313,20 +395,35 @@ def writeVTP(fn,mesh,fieldAr={},cellAr={},pointAr={},checkMesh=True):
     writer.Write()
 
 
+@deprecation("readVTP is deprecated. Use readVTKObject instead.")
 def readVTP(fn):
+    return readVTKObject(fn)
+
+
+def readVTKObject(fn):
     """Read a .vtp file
 
     Read a .vtp file and return coords, list of elems, and a dict of arrays.
+    
+    Parameters
+    
+    - `fn`: a filename with any vtk object extension (vtp or vtk for the moment).
+    
+    
+    Returns the same output of convertFomVPD:
+    
+        - a list with coords, polygons, lines, vertices numpy arrays
+        - `fielddata` : a dict of {name:fielddata_numpy_array}
+        - `celldata` : a dict of {name:celldata_numpy_array}
+        - `pointdata` : a dict of {name:pointdata_numpy_array}
 
-    - `fn`: a filename with .vtp extension.
 
-    The list of elements includes three sets: Polys (polygons: tri and quad),
-    Lines and Points.
+    Returns None for the missing data.
     The dictionary of arrays can include the elements ids (e.g. properties).
     For example, to read a triangular surface with id array 'prop'::
 
-      coords, E, fieldAr, cellAr, pointAr = readVTP('fn.vtp')
-      T = TriSurface(coords, E[0]).setProp(cellAr['prop'])
+      mesh_obj, fieldAr, cellAr, pointAr = readVTP('fn.vtp')
+      T = TriSurface(mesh_obj[0], mesh_obj[1]).setProp(cellAr['prop'])
     """
     ftype = utils.fileTypeFromExt(fn)
     if ftype=='vtp':
@@ -336,27 +433,8 @@ def readVTP(fn):
     reader.SetFileName(fn)
     reader.Update()
     vpd = reader.GetOutput() # vtk polydata object
-    coords, Epolygon,  Eline,  Epoint = convertFromVPD(vpd,verbose=False)
-    print ('************vpd', vpd)
-    fielddata = vpd.GetFieldData() # get field arrays
-    arraynm = [fielddata.GetArrayName(i) for i in range(fielddata.GetNumberOfArrays())]
-    print ('VTP file %s includes these Field Data Arrays: '%(fn)+(''.join(['%s, '%nm for nm in arraynm])))
-    vtkarrayval = [fielddata.GetArray(an) for an in arraynm]
-    nparrayval = [v2n(ar) for ar in vtkarrayval]
-    fieldAr = dict(zip(arraynm, nparrayval)) # dictionary of array names
-    celldata = vpd.GetCellData() # get cell arrays
-    arraynm = [celldata.GetArrayName(i) for i in range(celldata.GetNumberOfArrays())]
-    print ('VTP file %s includes these Cell Data Arrays: '%(fn)+(''.join(['%s, '%nm for nm in arraynm])))
-    vtkarrayval = [celldata.GetArray(an) for an in arraynm]
-    nparrayval = [v2n(ar) for ar in vtkarrayval]
-    cellAr = dict(zip(arraynm, nparrayval)) # dictionary of array names
-    pointdata = vpd.GetPointData() # get point arrays
-    arraynm = [pointdata.GetArrayName(i) for i in range(pointdata.GetNumberOfArrays())]
-    print ('VTP file %s includes these Point Data Arrays: '%(fn)+(''.join(['%s, '%nm for nm in arraynm])))
-    vtkarrayval = [pointdata.GetArray(an) for an in arraynm]
-    nparrayval = [v2n(ar) for ar in vtkarrayval]
-    pointAr = dict(zip(arraynm, nparrayval)) # dictionary of array names
-    return coords, [Epolygon,  Eline,  Epoint], fieldAr, cellAr, pointAr
+    return convertFromVPD(vpd)
+    
 
 
 def pointInsideObject(S,P,tol=0.):
