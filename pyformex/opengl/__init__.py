@@ -182,7 +182,7 @@ def draw(F,
 
 
 def drawActor(o):
-    pf.canvas.renderer.addActor(o)
+    pf.canvas.addActor(o)
 
 #### Other definitions should start with _ ####
 

@@ -372,6 +372,10 @@ class Geometry(object):
         return self.coords.z()
     def bbox(self):
         return self.coords.bbox()
+    def obbox(self,*args,**kargs):
+        return self.coords.bbox()
+    def pobbox(self,*args,**kargs):
+        return self.coords.pobbox()
     def apt(self,*args,**kargs):
         return self.coords.apt(*args,**kargs)
     def center(self):
