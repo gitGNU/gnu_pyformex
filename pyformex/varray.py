@@ -391,7 +391,7 @@ class Varray(object):
 
     def __str__(self):
         """Nicely print the Varray"""
-        s = "Varray (%s,%s)\n" % (self.nrows,self.width)
+        s = "%s (%s,%s)\n" % (self.__class__.__name__,self.nrows,self.width)
         for row in self:
             s += '  ' + row.__str__() + '\n'
         return s

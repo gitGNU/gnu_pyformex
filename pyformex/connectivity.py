@@ -612,7 +612,7 @@ class Connectivity(ndarray):
                  [-1,  0,  1],
                  [-1,  0,  2],
                  [-1, -1, -1],
-                 [-1,  1,  2]])
+                 [-1,  1,  2]], dtype=int32)
         """
         if self.inv is None:
             if self.size > 0:
@@ -653,10 +653,10 @@ class Connectivity(ndarray):
         Example:
 
           >>> A = Connectivity([[0,1,2],[0,1,3],[0,3,2],[1,2,3]])
-          >>> A.connectedTo(2)
-          array([0, 2, 3])
+          >>> print(A.connectedTo(2))
+          [0 2 3]
           >>> A.connectedTo([0,1,3],True)
-          (array([0, 1, 2, 3]), array([2, 3, 2, 2]))
+          (array([0, 1, 2, 3], dtype=int32), array([2, 3, 2, 2]))
         """
         nodes = checkArray1D(nodes,kind='i')
         nodes = intersect1d(nodes, self) #remove unconnected nodes
@@ -737,12 +737,12 @@ class Connectivity(ndarray):
           Adjacency([[ 1,  2,  3],
                  [-1,  0,  3],
                  [-1, -1,  0],
-                 [-1,  0,  1]])
+                 [-1,  0,  1]], dtype=int32)
           >>> Connectivity([[0,1],[0,2],[1,3],[0,5]]).adjacency('e',mask=[1,2,3,5])
           Adjacency([[ 2],
                  [-1],
                  [ 0],
-                 [-1]])
+                 [-1]], dtype=int32)
           >>> Connectivity([[0,1],[0,2],[1,3],[0,5]]).adjacency('n')
           Adjacency([[ 1,  2,  5],
                  [-1,  0,  3],
@@ -804,7 +804,7 @@ class Connectivity(ndarray):
         ...                  [1,-1,3],
         ...                  [1,2,-1],
         ...                  [-1,-1,-1]])
-        >>> for p in A.frontGenerator(): print p
+        >>> for p in A.frontGenerator(): print(p)
         [ 0 -1 -1 -1 -1]
         [ 0  1  1 -1 -1]
         [ 0  1  1  2 -1]
@@ -869,7 +869,7 @@ class Connectivity(ndarray):
           ...       [-1, -1,  0,  1],
           ...       [-1, -1,  2,  5],
           ...       [-1, -1,  2,  4]])
-          >>> print A.frontWalk()
+          >>> print(A.frontWalk())
           [0 1 1 1 2 2]
         """
         for p in self.frontGenerator(startat=startat,frontinc=frontinc,partinc=partinc):

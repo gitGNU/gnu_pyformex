@@ -186,11 +186,11 @@ class Adjacency(ndarray):
 
     Example:
 
-    >>> print Adjacency([[1,2,-1],
+    >>> print(Adjacency([[1,2,-1],
     ...                  [3,2,0],
     ...                  [1,-1,3],
     ...                  [1,2,-1],
-    ...                  [-1,-1,-1]])
+    ...                  [-1,-1,-1]]))
     [[-1  1  2]
      [ 0  2  3]
      [-1  1  3]
@@ -312,6 +312,11 @@ class Adjacency(ndarray):
         Returns an integer array with two columns, where each row contains
         a pair of adjacent elements. The element number in the first columne
         is always the smaller of the two element numbers.
+
+        >>> Adjacency([[-1,1],[0,2],[-1,0]]).pairs()
+        array([[0, 1],
+               [1, 2]])
+
         """
         p = [ [[i,j] for j in k if j >= 0] for i,k in enumerate(self[:-1]) if max(k) >= 0]
         p = row_stack(p)
@@ -367,7 +372,7 @@ class Adjacency(ndarray):
         ...                  [1,-1,3],
         ...                  [1,2,-1],
         ...                  [-1,-1,-1]])
-        >>> for p in A.frontGenerator(): print p
+        >>> for p in A.frontGenerator(): print(p)
         [ 0 -1 -1 -1 -1]
         [ 0  1  1 -1 -1]
         [ 0  1  1  2 -1]
@@ -433,7 +438,7 @@ class Adjacency(ndarray):
           ...       [-1, -1,  0,  1],
           ...       [-1, -1,  2,  5],
           ...       [-1, -1,  2,  4]])
-          >>> print A.frontWalk()
+          >>> print(A.frontWalk())
           [0 1 1 1 2 2]
         """
         for p in self.frontGenerator(startat=startat,frontinc=frontinc,partinc=partinc):
