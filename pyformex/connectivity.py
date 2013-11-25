@@ -780,7 +780,7 @@ class Connectivity(ndarray):
 
     ### frontal methods ###
 
-    def front(self,startat=0,frontinc=1,partinc=1):
+    def frontGenerator(self,startat=0,frontinc=1,partinc=1):
         """Generator function returning the frontal elements.
 
         This is a generator function and is normally not used directly,
@@ -877,6 +877,35 @@ class Connectivity(ndarray):
                 if p.max() > maxval:
                     break
         return p
+
+
+    def front(self,startat=0,add=False):
+        """Returns the elements of the first node front.
+
+        Parameters:
+
+        - `startat`: an element number or a list of element numbers.
+        - `add`: if True, the `startat` elements wil be included in the
+          return value. The default (false) will only return the elements
+          in the next front line.
+
+        Returns a list of the elements that are connected to any of the nodes
+        that are part of the startat elements.
+
+        Note that this is equivalent to the first step of a :func:`frontWalk`
+        with the same startat elements, and could thus also be obtained from::
+
+          where(self.frontWalk(startat,maxval=1) == 1)[0]
+
+        Here another implementation is used, which is more efficient for very
+        large models: it avoids the creation of the large array as returned
+        by frontWalk.
+        """
+        nodes = unique(asarray(self[startat]))
+        front = self.connectedTo(nodes)
+        if not add:
+            front = setdiff1d(front,startat)
+        return front
 
 
 ######### Creating intermediate levels ###################
