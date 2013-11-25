@@ -296,8 +296,10 @@ def convertFromVPD(vpd,verbose=False):
     if vpd.GetFieldData().GetNumberOfArrays():
         fielddata = vpd.Getfields() # get field arrays
         ntype = gnat(fielddata.GetDataType())
+        print('fielddata',ntype)
         arraynm = [fielddata.GetArrayName(i) for i in range(fielddata.GetNumberOfArrays())]
-        fielddata = [v2n(fielddata.GetArray(an)) for an in arraynm]
+        ntypes = [gnat(fielddata.GetArray(an).GetDataType()) for an in arraynm]
+        fielddata = [asarray(v2n(fielddata.GetArray(an)),dtype=ntype) for ntype,an in zip(ntypes,arraynm)]
         fielddata = dict(zip(arraynm, fielddata)) # dictionary of array names
         if verbose:
             print('Field Data Arrays: '+''.join(['%s, '%nm for nm in arraynm]))
@@ -307,7 +309,8 @@ def convertFromVPD(vpd,verbose=False):
     if vpd.GetCellData().GetNumberOfArrays():
         celldata = vpd.GetCellData() # get cell arrays
         arraynm = [celldata.GetArrayName(i) for i in range(celldata.GetNumberOfArrays())]
-        celldata = [v2n(celldata.GetArray(an)) for an in arraynm]
+        ntypes = [gnat(celldata.GetArray(an).GetDataType()) for an in arraynm]
+        celldata = [asarray(v2n(celldata.GetArray(an)),dtype=ntype) for ntype,an in zip(ntypes,arraynm)]
         celldata = dict(zip(arraynm, celldata)) # dictionary of array names
         if verbose:
             print('Cell Data Arrays: '+''.join(['%s, '%nm for nm in arraynm]))
@@ -317,7 +320,8 @@ def convertFromVPD(vpd,verbose=False):
     if vpd.GetPointData().GetNumberOfArrays():
         pointdata = vpd.GetPointData() # get point arrays
         arraynm = [pointdata.GetArrayName(i) for i in range(pointdata.GetNumberOfArrays())]
-        pointdata = [v2n(pointdata.GetArray(an)) for an in arraynm]
+        ntypes = [gnat(pointdata.GetArray(an).GetDataType()) for an in arraynm]
+        pointdata = [asarray(v2n(pointdata.GetArray(an)),dtype=ntype) for ntype,an in zip(ntypes,arraynm)]
         pointdata = dict(zip(arraynm, pointdata)) # dictionary of array names
         if verbose:
             print('Point Data Arrays: '+''.join(['%s, '%nm for nm in arraynm]))
