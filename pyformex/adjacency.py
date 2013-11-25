@@ -367,7 +367,7 @@ class Adjacency(ndarray):
         ...                  [1,-1,3],
         ...                  [1,2,-1],
         ...                  [-1,-1,-1]])
-        >>> for p in A.front(): print p
+        >>> for p in A.frontGenerator(): print p
         [ 0 -1 -1 -1 -1]
         [ 0  1  1 -1 -1]
         [ 0  1  1  2 -1]
@@ -436,7 +436,7 @@ class Adjacency(ndarray):
           >>> print A.frontWalk()
           [0 1 1 1 2 2]
         """
-        for p in self.front(startat=startat,frontinc=frontinc,partinc=partinc):
+        for p in self.frontGenerator(startat=startat,frontinc=frontinc,partinc=partinc):
             if maxval >= 0:
                 if p.max() > maxval:
                     break
@@ -467,7 +467,7 @@ class Adjacency(ndarray):
         """
         front = unique(asarray(self[startat]))
         if not add:
-            front = setdiff1d(front,startat)
+            front = setdiff1d(front,asarray(startat))
         return front
 
 
