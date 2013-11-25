@@ -244,7 +244,7 @@ def convertFromVPD(vpd,verbose=False):
 
     Returns:
     
-        - a list with points, polygons, lines, vertices numpy arrays
+        - a list with points, cells, polygons, lines, vertices numpy arrays
         - `fielddata` : a dict of {name:fielddata_numpy_array}
         - `celldata` : a dict of {name:celldata_numpy_array}
         - `pointdata` : a dict of {name:pointdata_numpy_array}
@@ -252,7 +252,7 @@ def convertFromVPD(vpd,verbose=False):
 
     Returns None for the missing data.
     """
-    coords = polys = lines = verts = None
+    coords = cells = polys = lines = verts = None
     fielddata = celldata = pointdata = None
 
     if vpd is None:
@@ -264,6 +264,14 @@ def convertFromVPD(vpd,verbose=False):
         coords = asarray(v2n(vpd.GetPoints().GetData()),dtype=ntype)
         if verbose:
             print('Saved points coordinates array')
+
+    # getting Polygons
+    if  vpd.GetCells().GetData().GetNumberOfTuples():
+        ntype = gnat(vpd.GetCells().GetData().GetDataType())
+        Nplex = vpd.GetCells().GetMaxCellSize()
+        cells = asarray(v2n(vpd.GetCells().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
+        if verbose:
+            print('Saved polys connectivity array')
 
     # getting Polygons
     if vpd.GetDataObjectType() not in [4]: # this list need to be updated according to the data type
@@ -327,7 +335,7 @@ def convertFromVPD(vpd,verbose=False):
             print('Point Data Arrays: '+''.join(['%s, '%nm for nm in arraynm]))
     
 
-    return [coords, polys, lines, verts],fielddata,celldata,pointdata
+    return [coords, cells, polys, lines, verts],fielddata,celldata,pointdata
 
 
 def writeVTP(fn,mesh,fieldAr={},cellAr={},pointAr={},checkMesh=True):
@@ -416,7 +424,7 @@ def readVTKObject(fn):
     
     Returns the same output of convertFomVPD:
     
-        - a list with coords, polygons, lines, vertices numpy arrays
+        - a list with coords, cells, polygons, lines, vertices numpy arrays
         - `fielddata` : a dict of {name:fielddata_numpy_array}
         - `celldata` : a dict of {name:celldata_numpy_array}
         - `pointdata` : a dict of {name:pointdata_numpy_array}
