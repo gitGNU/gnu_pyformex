@@ -150,6 +150,11 @@ class Varray(object):
     def __init__(self,data=[],ind=[]):
         """Initialize the Varray. See the class docstring."""
 
+        # If data is a Varray, just use its data
+        if isinstance(data,Varray):
+            self.replace_data(data)
+            return
+
         # If data is an array, convert to list of lists
         try:
             data = checkArray(data,kind='i',ndim=2)
@@ -184,6 +189,15 @@ class Varray(object):
         # We also store the width because it is often needed and
         # expensive to compute
         self.width = max(self.lengths)
+
+
+    def replace_data(self,va):
+        """Replace the current data with data from another Varray"""
+        if not isinstance(va,Varray):
+            raise ValueError,"Expected a Varray as argument"
+        self.data = va.data
+        self.ind = va.ind
+        self.width = va.width
 
 
     # Attributes computed ad hoc, because cheap(er)
