@@ -49,7 +49,7 @@ from gui import actors
 from gui import menu
 from gui.draw import *
 
-from plugins import objects,trisurface,inertia,partition,sectionize,dxf,tetgen,surface_menu
+from plugins import objects,trisurface,inertia,partition,sectionize,dxf,surface_menu
 
 import commands, os, timer
 
@@ -125,6 +125,20 @@ def shrink():
     selection.draw()
 
 
+
+def draw_convex_hull(n):
+    """Draw the convex hull of a Geometry.
+
+    """
+    pf.PF['_convex_hull_'] = H = named(n).convexHull()
+    draw(H,color='red')
+
+# add a toggle for drawing the convex hull
+def toggleConvexHull(self,onoff=None):
+    self.toggleAnnotation(draw_convex_hull,onoff)
+
+objects.DrawableObjects.toggleConvexHull = toggleConvexHull
+
 ##################### read and write ##########################
 
 
@@ -151,38 +165,41 @@ def readGeometry(filename,filetype=None):
     'tetgen':
     """
     pf.GUI.setBusy(True)
-    res = {}
-    if filetype is None:
-        filetype = utils.fileTypeFromExt(filename)
-
-    print("Reading file of type %s" % filetype)
-
-    if filetype == 'pgf' or filetype == 'pgf.gz':
-        res = GeometryFile(filename).read()
-
-    elif filetype in ['surface','stl','off','gts','neu']:
-        surf = TriSurface.read(filename)
-        name = autoName(TriSurface).next()
-        res = {name:surf}
-
-    elif filetype == 'inp':
-        parts = fileread.readInpFile(filename)
+    try:
         res = {}
-        color_by_part = len(parts.keys()) > 1
-        j = 0
-        for name,part in parts.items():
-            for i,mesh in enumerate(part.meshes()):
-                p = j if color_by_part else i
-                print("Color %s" % p)
-                res["%s-%s" % (name,i)] = mesh.setProp(p)
-            j += 1
+        if filetype is None:
+            filetype = utils.fileTypeFromExt(filename)
 
-    elif filetype in tetgen.filetypes:
-        res = tetgen.readTetgen(filename)
+        print("Reading file of type %s" % filetype)
 
-    else:
-        error("Can not import from file %s of type %s" % (filename,filetype))
-    pf.GUI.setBusy(False)
+        if filetype == 'pgf' or filetype == 'pgf.gz':
+            res = GeometryFile(filename).read()
+
+        elif filetype in ['surface','stl','off','gts','neu']:
+            surf = TriSurface.read(filename)
+            name = autoName(TriSurface).next()
+            res = {name:surf}
+
+        elif filetype == 'inp':
+            parts = fileread.readInpFile(filename)
+            res = {}
+            color_by_part = len(parts.keys()) > 1
+            j = 0
+            for name,part in parts.items():
+                for i,mesh in enumerate(part.meshes()):
+                    p = j if color_by_part else i
+                    print("Color %s" % p)
+                    res["%s-%s" % (name,i)] = mesh.setProp(p)
+                j += 1
+
+        elif filetype in utils.fileExtensions('tetgen'):
+            import tetgen
+            res = tetgen.readTetgen(filename)
+
+        else:
+            error("Can not import from file %s of type %s" % (filename,filetype))
+    finally:
+        pf.GUI.setBusy(False)
 
     return res
 
@@ -1100,6 +1117,7 @@ def create_menu():
             ("&Free Edges",selection.toggleFreeEdges,dict(checkable=True,checked=selection.hasFreeEdges())),
             ("&Node Marks",selection.toggleNodes,dict(checkable=True,checked=selection.hasNodeMarks())),
             ('&Toggle Bbox',selection.toggleBbox,dict(checkable=True)),
+            ('&Toggle Convex Hull',selection.toggleConvexHull,dict(checkable=True)),
             ('&Toggle Shrink Mode',shrink,dict(checkable=True)),
             ("&Toggle Numbers On Top",toggleNumbersOntop),
             ]),
@@ -1144,9 +1162,11 @@ def create_menu():
         ##   ]),
         ## ("&Undo Last Changes",selection.undoChanges),
         ("---",None),
-        ("Show &Principal Axes",showPrincipal),
-        ("Rotate to &Principal Axes",rotatePrincipal),
-        ("Transform to &Principal Axes",transformPrincipal),
+        ("Principal",[
+            ("Show &Principal Axes",showPrincipal),
+            ("Rotate to &Principal Axes",rotatePrincipal),
+            ("Transform to &Principal Axes",transformPrincipal),
+            ]),
         ## ("---",None),
         ## ("&Concatenate Selection",concatenateSelection),
         ## ("&Partition Selection",partitionSelection),

@@ -631,6 +631,7 @@ class TriSurface(Mesh):
         elif ftype == 'neu':
             data = fileread.read_gambit_neutral(fn)
         elif ftype == 'smesh':
+            import tetgen
             data = tetgen.readSurface(fn)
         elif ftype == 'vtp' or ftype == 'vtk':
             from vtk_itf import readVTKObject
@@ -675,6 +676,7 @@ class TriSurface(Mesh):
             elif ftype == 'off':
                 filewrite.writeOFF(fname,self.coords,self.elems)
             elif ftype == 'smesh':
+                import tetgen
                 tetgen.writeSurface(fname,self.coords,self.elems)
             elif ftype == 'vtp' or ftype == 'vtk':
                 import vtk_itf
@@ -2222,6 +2224,7 @@ Quality: %s .. %s
         If the creation of the tetrahedral model is succesful, the
         resulting tetrahedral mesh is returned.
         """
+        import tetgen
         if filename is None:
             outputdir = utils.tempDir()
             fn = os.path.join(outputdir,'surface') + format
@@ -2312,11 +2315,11 @@ def read_ascii_large(fn,dtype=Float):
     return nodes
 
 
-def off_to_tet(fn):
-    """Transform an .off model to tetgen (.node/.smesh) format."""
-    pf.message("Transforming .OFF model %s to tetgen .smesh" % fn)
-    nodes,elems = read_off(fn)
-    write_node_smesh(utils.changeExt(fn,'.smesh'),nodes,elems)
+## def off_to_tet(fn):
+##     """Transform an .off model to tetgen (.node/.smesh) format."""
+##     pf.message("Transforming .OFF model %s to tetgen .smesh" % fn)
+##     nodes,elems = read_off(fn)
+##     write_node_smesh(utils.changeExt(fn,'.smesh'),nodes,elems)
 
 
 def find_row(mat,row,nmatch=None):
@@ -2449,8 +2452,8 @@ import pyformex_gts
 pyformex_gts.install_more_trisurface_methods()
 
 
-import tetgen
-tetgen.install_more_trisurface_methods()
+#import tetgen
+#tetgen.install_more_trisurface_methods()
 
 
 #import vmtk_itf

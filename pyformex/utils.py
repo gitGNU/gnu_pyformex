@@ -45,7 +45,7 @@ from mydict import formatDict
 from software import *
 
 # Some regular expressions
-digits = re.compile(r'(\d+)')
+RE_digits = re.compile(r'(\d+)')
 
 ######### WARNINGS ##############
 
@@ -565,10 +565,24 @@ file_description = {
     'smesh': 'Tetgen surface mesh files (*.smesh)',
     'stl': 'STL files (*.stl)',
     'stlb': 'Binary STL files (*.stl)',  # Use only for output
-    'surface': 'Surface model (*.off *.gts *.stl *.off.gz *.gts.gz *.stl.gz *.neu *.smesh *.vtp *.vtk)',
-    'tetgen': 'Tetgen file (*.poly *.smesh *.ele *.face *.edge *.node *.neigh)',
+    'surface': 'Surface models (*.off *.gts *.stl *.off.gz *.gts.gz *.stl.gz *.neu *.smesh *.vtp *.vtk)',
+    'tetgen': 'Tetgen files (*.poly *.smesh *.ele *.face *.edge *.node *.neigh)',
+    'vtk': 'All VTK types (*.vtk *.vtp)',
     'vtp': 'vtkPolyData file (*.vtp)',
 }
+
+
+def fileExtensions(ftype):
+    """Return the list of file extensions from a given type.
+
+    ftype is one of the keys in :var:`utils.file_description`.
+
+    Returns a list of strings starting with a '.'.
+    """
+    import re
+    ext = file_description.get(ftype,[])
+    ext = re.compile('[()]').split(ext)[1]
+    return [ e.lstrip('*.') for e in ext.split(' ') ]
 
 
 def fileDescription(ftype):
@@ -1083,7 +1097,7 @@ def numsplit(s):
     >>> print(numsplit("aa11.22"))
     ['aa', '11', '.', '22', '']
     """
-    return digits.split(s)
+    return RE_digits.split(s)
 
 
 def hsorted(l):
@@ -1100,7 +1114,7 @@ def hsorted(l):
     ['a1', 'a1.1b', 'a1b', 'a2b', 'a11b']
     """
     def human(s):
-        s = digits.split(s)+['0']
+        s = RE_digits.split(s)+['0']
         return zip(s[0::2], map(int, s[1::2]))
     return sorted(l,key=human)
 

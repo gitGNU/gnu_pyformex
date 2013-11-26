@@ -61,6 +61,7 @@ known_modules = {
     'pyqt4'     : ('PyQt4.QtCore','PyQt4','QtCore','QT_VERSION_STR'),
     'pyqt4gl'   : ('PyQt4.QtOpenGL','PyQt4','QtCore','QT_VERSION_STR'),
     'pyside'    : ('PySide',),
+    'scipy'     : (),
     'vtk'       : ('','','VTK_VERSION'),
      }
 
@@ -135,10 +136,15 @@ def hasModule(name,check=False):
         return checkModule(name)
 
 
-def requireModule(name):
-    """Ensure that the named Python module is available.
+def requireModule(name,version=None):
+    """Ensure that the named Python module/version is available.
 
-    If the module is not available, an error is raised.
+    Checks that the specified module is available, and that its version
+    number is not lower than the specified version.
+    If no version is specified, any version is ok.
+
+    Returns if the required module/version could be loaded, else an
+    error is raised.
     """
     if not hasModule(name):
         if name in known_modules:
@@ -153,8 +159,33 @@ def requireModule(name):
         else:
             attr = 'unknown'
         errmsg = "Could not load %s module '%s'" % (attr,name)
+        errmsg = """..
+
+**Module %s not found!**
+
+You activated some functionality requiring
+the Python module '%s'.
+However, the module '%s' could not be loaded.
+Probably it is not installed on your system.
+""" % (name,name,name)
         pf.error(errmsg)
         raise ValueError,errmsg
+
+    else:
+        if version is not None:
+            if checkVersion(name,version) < 0:
+                # Version too old
+                errmsg = """..
+
+**Module %s is too old!**
+
+You activated some functionality requiring
+the Python module '%s'.
+However, the module '%s' could not be loaded.
+Probably it is not installed on your system.
+""" % (name,name,name)
+                pf.error(errmsg)
+                raise ValueError,errmsg
 
 
 def checkAllModules():
@@ -254,7 +285,14 @@ def requireExternal(name):
             attr = 'required'
         else:
             attr = 'unknown'
-        errmsg = "Could not find %s external program '%s'" % (attr,name)
+        errmsg = """..
+
+**Program %s not found!**
+
+You activated some functionality requiring
+the external program '%s'.
+However, '%s' was not found on your system.
+""" % (name,name,name)
         pf.error(errmsg)
         raise ValueError,errmsg
 

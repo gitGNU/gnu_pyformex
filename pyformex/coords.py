@@ -1942,6 +1942,20 @@ class Coords(ndarray):
         return self + outer(div,X-self).reshape((-1,)+self.shape)
 
 
+    def convexHull(self):
+        """Return the convex hull of a Coords
+
+        Returns a Connectivity containing the indices of the points
+        that constitute the convex hull of the Coords.
+
+        This requires SciPy version 0.12.0 or higher.
+        """
+        from software import requireModule
+        requireModule('scipy','0.12.0')
+        from scipy import spatial
+        return spatial.ConvexHull(self).simplices
+
+
     # Convenient shorter notations
     rot = rotate
     trl = translate

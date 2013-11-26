@@ -30,6 +30,10 @@ tetgen is a quality tetrahedral mesh generator and a 3D Delaunay triangulator.
 See http://tetgen.org
 """
 from __future__ import print_function
+import software
+software.requireExternal('tetgen')
+
+
 from coords import *
 from connectivity import Connectivity
 from mesh import Mesh
@@ -37,8 +41,6 @@ from filewrite import *
 import utils
 
 import os
-
-filetypes = [ 'poly', 'smesh', 'ele', 'face', 'node' ]
 
 def readNodeFile(fn):
     """Read a tetgen .node file.
@@ -464,8 +466,13 @@ def readTetgen(fn):
 
     return res
 
+
+#
+#  TODO: This should just be merged with tetMesh
+#
+
 def tetgenConvexHull(pts):
-    """Tetralize the convex hull of some points.
+    """_Tetralize the convex hull of some points.
 
     Finds the convex hull some points and returns
     a tet mesh of the convex hull and the convex hull (tri3 mesh).

@@ -393,6 +393,20 @@ class Geometry(object):
     def principalBbox(self):
         return self.coords.principalBbox()
 
+    def convexHull(self,compact=True):
+        """Return the convex hull of the geometry.
+
+        The convex hull is a closed TriSurface enclosing all points
+        of the geometry.
+        """
+        from plugins.trisurface import TriSurface
+        X = self.coords
+        hull = TriSurface(X,X.convexHull())
+        if compact:
+            hull = hull.compact()
+        return hull
+
+
     def info(self):
         return "Geometry: coords shape = %s; level = %s" % (self.coords.shape,self.level())
     def level(self):
