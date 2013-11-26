@@ -66,6 +66,10 @@ known_modules = {
      }
 
 known_externals = {
+# BEWARE ! Because utils.system now does not use a new shell by default,
+# commands that require a shell should spawn the shell with the command
+# as a -c parameter (see e.g. tetgen)
+
 #  NOTE: abaqus command may hang longtime on checking the license server
 #    'abaqus': ('abaqus info=sys|head -n2|tail -n1', 'Abaqus (\S+)'),
     'admesh': ('admesh --version', 'ADMesh - version (\S+)'),
@@ -81,7 +85,7 @@ known_externals = {
     'postabq': ('pyformex-postabq -V','postabq (\S+).*'),
     'python': ('python --version','Python (\\S+)'),
     'recordmydesktop': ('recordmydesktop --version','recordMyDesktop v(\S+)'),
-    'tetgen': ('tetgen -h |fgrep Version','Version (\S+)'),
+    'tetgen': ("sh -c 'tetgen -h |fgrep Version'",'Version (\S+)'),
     'units': ('units --version','GNU Units version (\S+)'),
     'vmtk': ('vmtk --help','Usage: 	vmtk(\S+).*'),
     }
@@ -339,13 +343,14 @@ def checkExternal(name,command=None,answer=None,quiet=False):
     P = utils.system(command)
     pf.debug("Status:\n%s\nStdout:\n%s\nStderr:\n%s" % (P.sta,P.out,P.err),pf.DEBUG.DETECT)
     version = ''
-    if P.sta == 0:
-        # Beware: some programs write their version to stderr, others to stdout
+    # Beware: some programs write their version to stderr, others to stdout
+    m = None
+    if P.out:
         m = re.match(answer,P.out)
-        if not m:
-            m = re.match(answer,P.err)
-        if m:
-            version = m.group(1)
+    if m is None and P.err:
+        m = re.match(answer,P.err)
+    if m:
+        version = m.group(1)
     _congratulations(name,version,'program',quiet=quiet)
     the_external[name] = version
     return version
