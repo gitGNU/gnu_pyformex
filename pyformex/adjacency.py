@@ -469,11 +469,27 @@ class Adjacency(ndarray):
         Here another implementation is used, which is more efficient for very
         large models: it avoids the creation of the large array as returned
         by frontWalk.
+
+        Example:
+
+          >>> a = Adjacency([[ 0,  0,  0,  1,  2,  5],
+          ...                [-1,  0,  1, -1,  1,  3],
+          ...                [-1, -1,  0, -1, -1,  2],
+          ...                [-1, -1,  1, -1, -1,  3],
+          ...                [-1, -1, -1, -1, -1, -1],
+          ...                [-1, -1,  0, -1, -1,  5]])
+          >>> print(a.front())
+          [1 2 5]
+          >>> print(a.front([0,1]))
+          [2 3 5]
+
+
         """
-        front = unique(asarray(self[startat]))
+        elems = unique(asarray(self[startat]))
         if not add:
-            front = setdiff1d(front,asarray(startat))
-        return front
+            elems = setdiff1d(elems,asarray(startat))
+        elems = elems[elems >= 0]
+        return elems
 
 
 # End
