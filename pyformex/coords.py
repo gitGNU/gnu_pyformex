@@ -243,72 +243,6 @@ class Coords(ndarray):
             o = origin()
             bb = [o,o]
         return Coords(bb)
-    
-    def obbox(self,ctr,rot):
-        """Returns an oriented bounding box of a set of points.
-
-        Parameters:
-        
-        -`ctr` : array_like (3,) . Center of the the bounding box
-        -`rot` : array_like (3,3) . Rotation matrix of the the bounding box
-
-        Returns a single hexahedral Formex object.
-
-        """
-        from simple import cuboid
-        X = self.trl(-ctr).rot(rot)  # rotate data to align with axes
-        bb = cuboid(*X.bbox())  # get the bbox and make a hex8
-        bb = bb.rot(rot.transpose()).trl(ctr) # transform back to global coordinates
-        return bb
-
-
-    def pobbox(self):
-        """Returns an oriented bounding box of a set of points oriented
-            along the inertia principal axis.
-
-        Returns a single hexahedral Formex object.
-
-        """
-        ctr,rot = self.inertia()[:2]  # get the center and principal axes
-        return self.obbox(ctr,rot)
-
-
-    # THIS COULD BE MADE AN OPTION OF THE bbox METHOD
-    def apt(self,align):
-        """Returns an alignment point of a Coords.
-
-        Alignment point are points whose coordinates are either the minimal
-        value, the maximal value or the middle value for the Coords.
-        Combining the three values with the three dimensions, a Coords
-        has in 27 (3**3) alignment points. The corner points of the
-        bounding box are a subset of these.
-
-        The 27 points are addressed by an alignment string of three
-        characters, one for each direction. Each character should be
-        one of the following
-
-        - '-': use the minimal value for that coordinate,
-        - '+': use the minimal value for that coordinate,
-        - '0': use the middle value for that coordinate.
-
-        Any other character will set the corresponding coordinate to zero.
-
-        A string '000' is equivalent with center(). The values '---' and
-        '+++' give the points of the bounding box.
-
-        Example:
-
-          >>> X = Coords([[[0.,0.,0.],[1.,1.,1.]]])
-          >>> print(X.apt('-0+'))
-          [ 0.   0.5  1. ]
-        """
-        bb = self.bbox()
-        al = { '-': bb[0], '+': bb[1], '0': 0.5*(bb[0]+bb[1]) }
-        pt = zeros(3)
-        for i,c in enumerate(align):
-            if c in al:
-                pt[i] = al[c][i]
-        return Coords(pt)
 
 
     def center(self):
@@ -327,6 +261,46 @@ class Coords(ndarray):
         """
         X0,X1 = self.bbox()
         return 0.5 * (X0+X1)
+
+
+    def bboxPoint(self,position):
+        """Returns a bounding box point of a Coords.
+
+        Bounding box points are points whose coordinates are either
+        the minimal value, the maximal value or the middle value
+        for the Coords.
+        Combining the three values in three dimensions results in
+        3*3 = 27 alignment points. The corner points of the
+        bounding box are a subset of these.
+
+        The 27 points are addressed by a position string of three
+        characters, one for each direction. Each character should be
+        one of the following
+
+        - '-': use the minimal value for that coordinate,
+        - '+': use the minimal value for that coordinate,
+        - '0': use the middle value for that coordinate.
+
+        Any other character will set the corresponding coordinate to zero.
+
+        A string '000' is equivalent with center(). The values '---' and
+        '+++' give the points of the bounding box.
+
+        Example:
+
+          >>> X = Coords([[[0.,0.,0.],[1.,1.,1.]]])
+          >>> print(X.bboxPoint('-0+'))
+          [ 0.   0.5  1. ]
+
+        See also :func:`align`.
+        """
+        bb = self.bbox()
+        al = { '-': bb[0], '+': bb[1], '0': 0.5*(bb[0]+bb[1]) }
+        pt = zeros(3)
+        for i,c in enumerate(position):
+            if c in al:
+                pt[i] = al[c][i]
+        return Coords(pt)
 
 
     def average(self,wts=None,axis=0):
@@ -423,7 +397,7 @@ class Coords(ndarray):
         Example:
 
           >>> print(Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]]).bsphere())
-          2.12132024765
+          2.12132
 
         """
         return self.distanceFromPoint(self.center()).max()
@@ -463,6 +437,35 @@ class Coords(ndarray):
         ctr,I = inertia.inertia(self.points(),mass)
         Iprin,Iaxes = inertia.principal(I,sort=True,right_handed=True)
         return (ctr,Iaxes,Iprin,I)
+
+
+    def orientedBbox(self,ctr,rot):
+        """Returns an oriented bounding box of a set of points.
+
+        Parameters:
+
+        - `ctr` : array_like (3,). Center of the the bounding box
+        - `rot` : array_like (3,3). Rotation matrix of the the bounding box
+
+        Returns a single hexahedral Formex object.
+        """
+        from simple import cuboid
+        X = self.trl(-ctr).rot(rot)  # rotate data to align with axes
+        bb = cuboid(*X.bbox())  # get the bbox and make a hex8
+        bb = bb.rot(rot.transpose()).trl(ctr) # transform back to global coordinates
+        return bb
+
+
+    def principalBbox(self):
+        """Returns a bounding box aligned with the inertia principal axes.
+
+        Computes the orientedBbox aligned with the principal axes of the
+        set of points, as obtained from :func:`inertia`.
+
+        Returns a single hexahedral Formex object.
+        """
+        ctr,rot = self.inertia()[:2]  # get the center and principal axes
+        return self.orientedBbox(ctr,rot)
 
 
     #  Distance
@@ -817,7 +820,11 @@ class Coords(ndarray):
 
         Alignment involves a translation such that the bounding box
         of the Coords object becomes aligned with a given point.
-        By default this is the origin of the global axes.
+        By default this point is the origin of the global axes.
+        The bounding box alignment is done by a translation of one
+        of the bounding box points (see :func:`bboxPoint`) to the
+        target point.
+
         The requested alignment is determined by a string of three characters,
         one for each of the coordinate axes. The character determines how
         the structure is aligned in the corresponding direction:
@@ -836,16 +843,7 @@ class Coords(ndarray):
         See also the :func:`coords.align` function for aligning objects
         with respect to each other.
         """
-        trl = asarray(point).reshape(3)
-        bb = self.bbox()
-        al = { '-': bb[0],
-               '+': bb[1],
-               '0': 0.5*(bb[0]+bb[1])
-               }
-        for i,c in enumerate(alignment):
-            if c in al:
-                trl[i] -= al[c][i]
-        return self.translate(trl)
+        return self.translate(point-self.bboxPoint(alignment))
 
 
     def rotate(self,angle,axis=2,around=None):
@@ -1796,8 +1794,8 @@ class Coords(ndarray):
         Returns:
 
         - `matches`: an Int array with shape (coords.shape[0]) if clean is False
-            where non matching positions have value -1 or an Int array 
-            with shape (nmatches) if clean is True 
+            where non matching positions have value -1 or an Int array
+            with shape (nmatches) if clean is True
 
 
         """
@@ -2222,7 +2220,7 @@ def align(L,align,offset=[0.,0.,0.]):
             al += align[i]
             am += align[i]
     for o in L[1:]:
-        r.append(o.align(al,r[-1].apt(am)+offset))
+        r.append(o.align(al,r[-1].bboxPoint(am)+offset))
     return r
 
 
@@ -2235,12 +2233,13 @@ def sweepCoords(self,path,origin=[0.,0.,0.],normal=0,upvector=2,avgdir=False,end
     its origin in the curve's point, and its normal along the curve's direction.
     In case of a PolyLine, directions are pointing to the next point by default.
     If avgdir==True, average directions are taken at the intermediate points
-    avgdir can also be an array like sequence of shape (N,3) to explicitely set the
+    avgdir can also be an array like sequence of shape (N,3) to explicitely set
     the directions for ALL the points of the path
 
     Missing end directions can explicitely be set by enddir, and are by default
     taken along the last segment.
-    enddir is a list of 2 array like values of shape (3). one of the two can also be an empty list
+    enddir is a list of 2 array like values of shape (3). one of the two can
+    also be an empty list.
     If the curve is closed, endpoints are treated as any intermediate point,
     and the user should normally not specify enddir.
 

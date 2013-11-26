@@ -372,14 +372,10 @@ class Geometry(object):
         return self.coords.z()
     def bbox(self):
         return self.coords.bbox()
-    def obbox(self,*args,**kargs):
-        return self.coords.bbox()
-    def pobbox(self,*args,**kargs):
-        return self.coords.pobbox()
-    def apt(self,*args,**kargs):
-        return self.coords.apt(*args,**kargs)
     def center(self):
         return self.coords.center()
+    def bboxPoint(self,*args,**kargs):
+        return self.coords.bboxPoint(*args,**kargs)
     def centroid(self):
         return self.coords.centroid()
     def sizes(self):
@@ -392,6 +388,10 @@ class Geometry(object):
         return self.coords.bboxes()
     def inertia(self,*args,**kargs):
         return self.coords.inertia(*args,**kargs)
+    def orientedBbox(self,*args,**kargs):
+        return self.coords.orientedBbox()
+    def principalBbox(self):
+        return self.coords.principalBbox()
 
     def info(self):
         return "Geometry: coords shape = %s; level = %s" % (self.coords.shape,self.level())
