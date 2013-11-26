@@ -80,8 +80,6 @@ def draw(F,
     # Get default drawing options and overwrite with specified values
     attr = Attributes(pf.canvas.drawoptions)
     attr.update(kargs)
-    print(pf.canvas.drawoptions)
-    print(attr)
     
     if nres < ntot and not attr.silent:
         raise ValueError,"Data contains undrawable objects (%s/%s)" % (ntot-nres,ntot)
@@ -143,11 +141,11 @@ def draw(F,
 
         view = attr.view
         bbox = attr.bbox
-        print(pf.canvas.drawoptions)
-        print(attr)
-        print(view)
-        print(bbox)
-
+        pf.debug(pf.canvas.drawoptions,pf.DEBUG.OPENGL)
+        pf.debug(attr,pf.DEBUG.OPENGL)
+        pf.debug(view,pf.DEBUG.OPENGL)
+        pf.debug(bbox,pf.DEBUG.OPENGL)
+        
         # Adjust the camera
         if view is not None or bbox not in [None,'last']:
             if view == 'last':
