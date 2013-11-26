@@ -651,6 +651,7 @@ class Canvas(object):
             marksize = 5.0,
             color = 'prop',
             wait = True,
+            silent = True
             )
 
     def setOptions(self,d):

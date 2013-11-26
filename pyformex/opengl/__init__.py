@@ -76,15 +76,15 @@ def draw(F,
     # Transform to list of drawable objects
     FL = gui.draw.drawable(FL)
     nres = len(FL)
-
-    if nres < ntot and not silent:
-        raise ValueError,"Data contains undrawable objects (%s/%s)" % (ntot-nres,ntot)
-
+    
     # Get default drawing options and overwrite with specified values
     attr = Attributes(pf.canvas.drawoptions)
     attr.update(kargs)
     print(pf.canvas.drawoptions)
     print(attr)
+    
+    if nres < ntot and not attr.silent:
+        raise ValueError,"Data contains undrawable objects (%s/%s)" % (ntot-nres,ntot)
 
     # Shrink the objects if requested
     if attr.shrink:
