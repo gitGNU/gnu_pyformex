@@ -631,6 +631,21 @@ def octree(surf,tol=0.0,npts=1.):
     loc.FreeSearchStructure()
     del loc
     return pfrep
+    
+def convexHull(object):
+    """Compute a tetralihzed convex hull of any pyFormex class.
+
+    Returns a Mesh object of tet4.
+
+    """
+    from vtk import vtkDelaunay3D
+    chull=vtkDelaunay3D()
+    chull.SetInput(convert2VPD(object))
+    chull.Update()
+    chull=convertFromVPD(chull.GetOutput())
+    return Mesh(chull[0][0],chull[0][1],eltype='tet4')
+    
+    
 
 
 # End
