@@ -889,7 +889,7 @@ maxprop  = %s
             T = (1-T.any(1)).astype(bool)
         else:
             T = T.all(1)
-        return T
+        return asarray(T)
 
 
     def clip(self,t):
