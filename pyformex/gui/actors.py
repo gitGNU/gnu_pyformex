@@ -193,8 +193,8 @@ class BboxActor(Actor):
     def __init__(self,bbox,color=None,linewidth=None,**kargs):
         from elements import Hex8
         Actor.__init__(self,**kargs)
-        self.color = color
-        self.linewidth = linewidth
+        self.color = saneColor(color)
+        self.linewidth = saneLineWidth(linewidth)
         self.bb = bbox
         self.vertices = Hex8.vertices * (bbox[1]-bbox[0]) + bbox[0]
         self.edges = Hex8.edges
