@@ -181,16 +181,16 @@ def gtsinside(self,pts,dir=0):
 
     #print("Performing inside testing")
     cmd = "gtsinside %s %s" % (tmp,tmp1)
-    P = utils.system(cmd,stdout=open(tmp2,'w'))
-    os.remove(tmp)
-    os.remove(tmp1)
+    P = utils.command(cmd,stdout=open(tmp2,'w'))
+    #os.remove(tmp)
+    #os.remove(tmp1)
     if P.sta:
         #pf.message("An error occurred during the testing.\nSee file %s for more details." % tmp2)
         pf.message(P.out)
         return None
     #print("Reading results from %s" % tmp2)
     ind = fromfile(tmp2,sep=' ',dtype=Int)
-    os.remove(tmp2)
+    #os.remove(tmp2)
     return ind
 
 
@@ -211,10 +211,10 @@ def inside(self,pts,atol='auto'):
         pts = Formex(pts)
     pts = Formex(pts)#.asPoints()
 
-    print("atol = %s" % atol)
+    #print("atol = %s" % atol)
     if atol == 'auto':
         atol = pts.dsize()*0.001
-    print("atol = %s" % atol)
+    #print("atol = %s" % atol)
 
     # determine bbox of common space of surface and points
     bb = bboxIntersection(self,pts)
@@ -229,13 +229,21 @@ def inside(self,pts,atol='auto'):
 
     # Apply the gtsinside shooting algorithm in three directions
     ins = zeros((pts.nelems(),3),dtype=bool)
+    #print(ins.transpose())
+    #from gui import draw
     for i in range(3):
         dirs = roll(arange(3),-i)[1:]
+        #print("Directions %s" % dirs)
         # clip the surface perpendicular to the shooting direction
-        S = self.clip(testBbox(self,bb,dirs=dirs,atol=atol))
+        S = self#.clip(testBbox(self,bb,dirs=dirs,atol=atol),compact=False)
+        #draw.clear()
+        #draw.draw(S)
+        #draw.draw(pts)
         # find inside points shooting in direction i
         ok = gtsinside(S,pts,dir=i)
         ins[ok,i] = True
+        #print(ins.transpose())
+        #draw.pause()
 
     ok = where(ins.sum(axis=-1) > 1)[0]
     return pts.prop[ok]
