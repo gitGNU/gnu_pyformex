@@ -860,12 +860,13 @@ maxprop  = %s
             raise ValueError,"At least one of min or max have to be specified."
 
         if type(nodes)==str:
-            nod = range(f.shape[1])
+            nod = range(self.nplex())
         else:
             nod = nodes
 
         # Perform the test on the selected nodes
-        T = self.coords[:,nod].test(dir=0,min=None,max=None,atol=0.)
+        X = self.coords[:,nod]
+        T = X.test(dir=dir,min=min,max=max,atol=atol)
 
         if len(T.shape) > 1:
             # We have results for more than 1 node per element
