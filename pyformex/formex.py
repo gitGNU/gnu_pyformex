@@ -858,37 +858,24 @@ maxprop  = %s
         """
         if min is None and max is None:
             raise ValueError,"At least one of min or max have to be specified."
-        f = self.coords
+
         if type(nodes)==str:
             nod = range(f.shape[1])
         else:
             nod = nodes
 
-        if array(dir).size == 1:
-            if min is not None:
-                T1 = f[:,nod,dir] > (min - atol)
-            if max is not None:
-                T2 = f[:,nod,dir] < (max + atol)
-        else:
-            if min is not None:
-                T1 = f.distanceFromPlane(min,dir) > (-atol)
-            if max is not None:
-                T2 = f.distanceFromPlane(max,dir) < (atol)
+        # Perform the test on the selected nodes
+        T = self.coords[:,nod].test(dir=0,min=None,max=None,atol=0.)
 
-        if min is None:
-            T = T2
-        elif max is None:
-            T = T1
-        else:
-            T = T1 * T2
-        if len(T.shape) == 1:
-            return T
-        if nodes == 'any':
-            T = T.any(1)
-        elif nodes == 'none':
-            T = (1-T.any(1)).astype(bool)
-        else:
-            T = T.all(1)
+        if len(T.shape) > 1:
+            # We have results for more than 1 node per element
+            if nodes == 'any':
+                T = T.any(axis=1)
+            elif nodes == 'none':
+                T = ~T.any(axis=1)
+            else:
+                T = T.all(axis=1)
+
         return asarray(T)
 
 
@@ -2109,23 +2096,11 @@ def cutElements3AtPlane(F,p,n,newprops=None,side='',atol=0.):
 #
 #  Testing
 #
-#  Some of the docstrings above hold test examples. They should be carefully
-#  crafted to test the functionality of the Formex class.
-#
-#  Ad hoc test examples during development can be added to the test() function
-#  below.
-#
-#  python formex.py
-#    will execute the docstring examples silently.
-#  python formex.py -v
-#    will execute the docstring examples verbosely.
-#  In both cases, the ad hoc tests are only run if the docstring tests
-#  are passed.
-#
+
 
 if __name__ == "__main__":
 
-    def test():
+    def test_module():
         """Run some additional examples.
 
         This is intended for tests during development. This can be changed
@@ -2175,9 +2150,6 @@ if __name__ == "__main__":
         F.fprint(fmt="%10.4f %10.5f %10.6f")
         print(type(F))
 
-    f = 0
-    (f,t) = _test()
-    if f == 0:
-        test()
+    test_module()
 
 # End

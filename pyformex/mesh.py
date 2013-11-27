@@ -2198,29 +2198,14 @@ The dir,length are in the same order as in the translate method.""" % (dir,lengt
         if min is None and max is None:
             raise ValueError,"At least one of min or max have to be specified."
 
-        f = self.coords[self.elems]
         if type(nodes)==str:
             nod = range(f.shape[1])
         else:
             nod = nodes
 
-        if array(dir).size == 1:
-            if not min is None:
-                T1 = f[:,nod,dir] > min
-            if not max is None:
-                T2 = f[:,nod,dir] < max
-        else:
-            if min is not None:
-                T1 = f.distanceFromPlane(min,dir) > -atol
-            if max is not None:
-                T2 = f.distanceFromPlane(max,dir) < atol
-
-        if min is None:
-            T = T2
-        elif max is None:
-            T = T1
-        else:
-            T = T1 * T2
+        # Perform the test on the selected nodes
+        X = self.coords[self.elems][:,nod]
+        T = X.test(dir=0,min=None,max=None,atol=0.)
 
         if len(T.shape) > 1:
             # We have results for more than 1 node per element

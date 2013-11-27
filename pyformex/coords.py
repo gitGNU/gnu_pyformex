@@ -661,14 +661,14 @@ class Coords(ndarray):
             raise ValueError,"At least one of min or max have to be specified."
 
         if array(dir).size == 1:
-            if not min is None:
-                T1 = self[...,dir] > min - atol
-            if not max is None:
-                T2 = self[...,dir] < max + atol
+            if min is not None:
+                T1 = self[...,dir] > (min - atol)
+            if max is not None:
+                T2 = self[...,dir] < (max + atol)
         else:
-            if not min is None:
+            if min is not None:
                 T1 = self.distanceFromPlane(min,dir) > - atol
-            if not max is None:
+            if max is not None:
                 T2 = self.distanceFromPlane(max,dir) < atol
 
         if min is None:
@@ -2325,19 +2325,6 @@ def sweepCoords(self,path,origin=[0.,0.,0.],normal=0,upvector=2,avgdir=False,end
 #
 #  Testing
 #
-#  Some of the docstrings above hold test examples. They should be careflly
-#  crafted to test the functionality of the Formex class.
-#
-#  Ad hoc test examples during development can be added to the test() function
-#  below.
-#
-#  python formex.py
-#    will execute the docstring examples silently.
-#  python formex.py -v
-#    will execute the docstring examples verbosely.
-#  In both cases, the ad hoc tests are only run if the docstring tests
-#  are passed.
-#
 
 if __name__ == "__main__":
 
@@ -2393,10 +2380,11 @@ if __name__ == "__main__":
         prt("Z",Z)
         G = Coords.concatenate([X,Z,Y,Z],axis=0)
         prt("X+Z+Y+Z",G)
+        prt("Points with y > 4.5",where(G.test(dir=1,min=4.5))[0])
         return
 
 
-    def test():
+    def test_module():
         """Run the tests.
 
         This is intended for tests during development and can be
@@ -2413,13 +2401,6 @@ if __name__ == "__main__":
         return
 
 
-
-    f = 0
-
-    #import doctest, formex
-    #f,t = doctest.testmod(formex)
-
-    if f == 0:
-        test()
+    test_module()
 
 ### End
