@@ -418,6 +418,8 @@ class GeomActor(Attributes):
             if self._fcoords is None:
                 raise ValueError,"Object has neither _coords nor _fcoords"
             self._coords,self._elems = self._fcoords.fuse()
+        if self._elems.ndim!=2:
+            self._elems=self._elems.reshape(self._elems.shape+(1,))
         return self._elems
 
 
