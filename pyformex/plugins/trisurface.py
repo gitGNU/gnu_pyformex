@@ -2182,7 +2182,7 @@ Quality: %s .. %s
         return S
 
 
-    def inside(self,pts,method='gts',tol='auto'):
+    def inside(self,pts,method='gts',tol='auto',multi=False):
         """Test which of the points pts are inside the surface.
 
         Parameters:
@@ -2203,9 +2203,10 @@ Quality: %s .. %s
         pts = Coords(pts).points()
         if method == 'gts':
             from pyformex_gts import inside
+            return inside(self,pts,tol,multi=multi)
         elif method == 'vtk':
             from vtk_itf import inside
-        return inside(self,pts,tol)
+            return inside(self,pts,tol)
 
 
     def tetgen(self,quality=True,volume=None,filename=None,format='.off'):

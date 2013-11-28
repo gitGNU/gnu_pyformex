@@ -117,7 +117,7 @@ def create():
 
 
 def inside(S,P,method,atol):
-    return S.inside(P,method=method,tol=atol)
+    return S.inside(P,method=method,tol=atol,multi=False)
 
 
 def testInside(S,P,method,nproc,atol):

@@ -32,6 +32,7 @@ from coords import *
 import utils
 import os
 from plugins.trisurface import TriSurface
+from multi import multitask
 
 if not utils.hasExternal('gts-bin'):
     utils.warn("error_no_gts_bin")
@@ -166,7 +167,6 @@ def gtsinside(self,pts,dir=0):
     This is not intended to be used directly. Use inside instead
     """
     import os
-    #print(os.environ)
     S = self.rollAxes(dir)
     P = pts.rollAxes(dir)
     tmp = utils.tempFile(suffix='.gts').name
@@ -182,19 +182,19 @@ def gtsinside(self,pts,dir=0):
     #print("Performing inside testing")
     cmd = "gtsinside %s %s" % (tmp,tmp1)
     P = utils.command(cmd,stdout=open(tmp2,'w'))
-    #os.remove(tmp)
-    #os.remove(tmp1)
+    os.remove(tmp)
+    os.remove(tmp1)
     if P.sta:
         #pf.message("An error occurred during the testing.\nSee file %s for more details." % tmp2)
         pf.message(P.out)
         return None
     #print("Reading results from %s" % tmp2)
     ind = fromfile(tmp2,sep=' ',dtype=Int)
-    #os.remove(tmp2)
+    os.remove(tmp2)
     return ind
 
 
-def inside(self,pts,atol='auto'):
+def inside(self,pts,atol='auto',multi=False):
     """Test which of the points pts are inside the surface.
 
     Parameters:
@@ -211,10 +211,8 @@ def inside(self,pts,atol='auto'):
         pts = Formex(pts)
     pts = Formex(pts)#.asPoints()
 
-    #print("atol = %s" % atol)
     if atol == 'auto':
         atol = pts.dsize()*0.001
-    #print("atol = %s" % atol)
 
     # determine bbox of common space of surface and points
     bb = bboxIntersection(self,pts)
@@ -227,25 +225,23 @@ def inside(self,pts,atol='auto'):
     pts.setProp(arange(pts.nelems()))
     pts = pts.clip(testBbox(pts,bb,atol=atol))
 
-    # Apply the gtsinside shooting algorithm in three directions
-    ins = zeros((pts.nelems(),3),dtype=bool)
-    #print(ins.transpose())
-    #from gui import draw
-    for i in range(3):
-        dirs = roll(arange(3),-i)[1:]
-        #print("Directions %s" % dirs)
-        # clip the surface perpendicular to the shooting direction
-        S = self#.clip(testBbox(self,bb,dirs=dirs,atol=atol),compact=False)
-        #draw.clear()
-        #draw.draw(S)
-        #draw.draw(pts)
-        # find inside points shooting in direction i
-        ok = gtsinside(S,pts,dir=i)
-        ins[ok,i] = True
-        #print(ins.transpose())
-        #draw.pause()
+    ins = zeros((3,pts.nelems()),dtype=bool)
+    if pf.scriptMode == 'script' or not multi:
+        for i in range(3):
+            dirs = roll(arange(3),-i)[1:]
+            # clip the surface perpendicular to the shooting direction
+            # !! gtsinside seems to fail sometimes when using clipping
+            S = self#.clip(testBbox(self,bb,dirs=dirs,atol=atol),compact=False)
+            # find inside points shooting in direction i
+            ok = gtsinside(S,pts,dir=i)
+            ins[i,ok] = True
+    else:
+        tasks = [(gtsinside,(self,pts,i)) for i in range(3)]
+        ind = multitask(tasks,3)
+        for i in range(3):
+            ins[i,ind[i]] = True
 
-    ok = where(ins.sum(axis=-1) > 1)[0]
+    ok = where(ins.sum(axis=0) > 1)[0]
     return pts.prop[ok]
 
 
