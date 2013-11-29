@@ -655,26 +655,19 @@ def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True, verbose=Fal
     
     This function has been adapted from VMTK: vmtkScripts/vmtksurfacedecimation.py
     """
-    applyTriangleFilter = True#keep this additional functions as done in vmtk
-    applyCleaner = True#keep this additional functions as done in vmtk
-    vpd = convert2VPD(self)#convert pyFormex surface to vpd
-    if applyTriangleFilter:#convert input polygons (tri3,quad4) and strips to triangles
-        triangleFilter = vtk.vtkTriangleFilter()
-        triangleFilter.SetInput(vpd)
-        triangleFilter.Update()
-        vpd = triangleFilter.GetOutput()
-    decimationFilter = vtk.vtkDecimatePro()#decimate the surface
+    from vtk import vtkDecimatePro
+    
+    vpd = convert2VPD(self,clean=True)#convert pyFormex surface to vpd
+    vpd = convertVPD2Triangles(vpd)
+    vpd = cleanVPD(vpd)
+    decimationFilter = vtkDecimatePro()#decimate the surface
     decimationFilter.SetInput(vpd)
     decimationFilter.SetTargetReduction(targetReduction)
     decimationFilter.SetBoundaryVertexDeletion(boundaryVertexDeletion)
     decimationFilter.PreserveTopologyOn()
     decimationFilter.Update()
     vpd = decimationFilter.GetOutput()
-    if applyCleaner:#clean the decimated surface (remove duplicate etc..)
-        cleaner = vtk.vtkCleanPolyData()
-        cleaner.SetInput(vpd)
-        cleaner.Update()
-        vpd = cleaner.GetOutput()
+    vpd=cleanVPD(vpd)
     [coords, cells, polys, lines, verts],fielddata,celldata,pointdata=convertFromVPD(vpd)#convert vpd to pyFormex surface
     if verbose:
         print ('%d faces decimated into %d triangles'%(self.nelems(), len(polys)))
