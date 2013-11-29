@@ -443,7 +443,7 @@ class Adjacency(ndarray):
         """
         for p in self.frontGenerator(startat=startat,frontinc=frontinc,partinc=partinc):
             if maxval >= 0:
-                if p.max() > maxval:
+                if p.max() >= maxval:
                     break
         return p
 
