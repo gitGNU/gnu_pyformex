@@ -76,11 +76,11 @@ def draw(F,
     # Transform to list of drawable objects
     FL = gui.draw.drawable(FL)
     nres = len(FL)
-    
+
     # Get default drawing options and overwrite with specified values
     attr = Attributes(pf.canvas.drawoptions)
     attr.update(kargs)
-    
+
     if nres < ntot and not attr.silent:
         raise ValueError,"Data contains undrawable objects (%s/%s)" % (ntot-nres,ntot)
 
@@ -145,7 +145,7 @@ def draw(F,
         pf.debug(attr,pf.DEBUG.OPENGL)
         pf.debug(view,pf.DEBUG.OPENGL)
         pf.debug(bbox,pf.DEBUG.OPENGL)
-        
+
         # Adjust the camera
         if view is not None or bbox not in [None,'last']:
             if view == 'last':
@@ -179,11 +179,7 @@ def draw(F,
         return actors[0]
 
 
-def drawActor(o):
-    pf.canvas.addActor(o)
-
 #### Other definitions should start with _ ####
-
 
 
 #### Override viewport function ####
