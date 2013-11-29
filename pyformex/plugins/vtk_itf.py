@@ -250,10 +250,10 @@ def convertFromVPD(vpd,verbose=False):
         - `pointdata` : a dict of {name:pointdata_numpy_array}
 
 
-    Returns None for the missing data.
+    Returns None for the missing arrays, empty dict for empty data.
     """
     coords = cells = polys = lines = verts = None
-    fielddata = celldata = pointdata = None
+    fielddata = celldata = pointdata = dict()
 
     if vpd is None:
         return [coords, cells, polys, lines, verts],fielddata,celldata,pointdata
