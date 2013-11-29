@@ -393,13 +393,19 @@ class GeomActor(Attributes):
         return self.object.__class__
 
 
+    def _fcoords_fuse(self):
+        self._coords,self._elems = self._fcoords.fuse()
+        if self._elems.ndim != 2:
+            self._elems = self._elems[:,newaxis]
+
+
     @property
     def coords(self):
         """Return the fused coordinates of the object"""
         if self._coords is None:
             if self._fcoords is None:
                 raise ValueError,"Object has neither _coords nor _fcoords"
-            self._coords,self._elems = self._fcoords.fuse()
+            self._fcoords_fuse()
         return self._coords
 
 
@@ -417,9 +423,7 @@ class GeomActor(Attributes):
         if self._elems is None:
             if self._fcoords is None:
                 raise ValueError,"Object has neither _coords nor _fcoords"
-            self._coords,self._elems = self._fcoords.fuse()
-        if self._elems.ndim!=2:
-            self._elems=self._elems.reshape(self._elems.shape+(1,))
+            self._fcoords_fuse()
         return self._elems
 
 
