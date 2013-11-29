@@ -1386,6 +1386,19 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return self.cselect(self.elems.connectedTo(nodes))
 
 
+    def adjacentTo(self,elements,level=0):
+        """Select the elements adjacent to the specified elements.
+
+        `elements`: int or array_like, int. Element selector.
+        `level`: int. Entity level used to define adjacency. Default 0 (nodes).
+
+        Returns a list of all the elements in the Mesh adjacent
+        to any of the specified elements. The adjacency is defined
+        over nodes, edges or faces, depending on the `level`.
+        """
+        return where(self.frontWalk(startat=elements,level=level,maxval=1,optim_mem=True) == 1)[0]
+
+
     def hits(self, entities, level):
         """Count the lower entities from a list connected to the elements.
 
