@@ -60,10 +60,11 @@ def classify(appdir,pkg,nmax=0):
         _status = 'failed'
 
     all_apps = sorted(apps.detect(appdir))
-    kat = ['status','level','topics','techniques','all']
+    kat = ['all','status','level','topics','techniques']
     cat = dict([ (k,set()) for k in kat])
     cat['status'] = [ 'failed', 'checked', 'unchecked' ]
     cat['level'] = [ 'beginner', 'normal', 'advanced' ]
+    print(cat)
     col = {}
 
     if nmax > 9: # Do not exagerate!
@@ -314,9 +315,9 @@ class AppMenu(menu.Menu):
                         lbl = i.capitalize()
                     ki = '%s/%s' % (k,i)
                     mi = AppMenu(lbl,dir=self.dir,files=col.get(ki,[]),mode=self.mode,recursive=False,toplevel=False,autoplay=self.autoplay,parent=mk,runall=self.runall)
-                    mi.addRunAllMenu()
+                    ## mi.addRunAllMenu()
 
-                mk.addRunAllMenu()
+                ## mk.addRunAllMenu()
 
             #self.addRunAllMenu()
             self.files = []
@@ -387,12 +388,12 @@ class AppMenu(menu.Menu):
         self.current = ""
 
 
-    def addRunAllMenu(self):
-        if self.runall and pf.cfg['gui/runalloption']:
-            self.insert_sep()
-            self.create_insert_action('Run next app',self.runNextApp)
-            self.create_insert_action('Run all next',self.runAllNext)
-            self.create_insert_action('Run all apps',self.runAllApps)
+    ## def addRunAllMenu(self):
+    ##     if self.runall and pf.cfg['gui/runalloption']:
+    ##         self.insert_sep()
+    ##         self.create_insert_action('Run next app',self.runNextApp)
+    ##         self.create_insert_action('Run all next',self.runAllNext)
+    ##         self.create_insert_action('Run all apps',self.runAllApps)
 
 
     def load(self):
