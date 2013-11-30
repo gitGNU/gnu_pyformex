@@ -346,7 +346,7 @@ class OtherPyConsole(Board):
     def recallHistory(self):
         # used when using the arrow keys to scroll through history
         self.clearCurrentBlock()
-        if self.historyIndex <> -1:
+        if self.historyIndex != -1:
             self.insertPlainText(self.history[self.historyIndex])
         return True
 

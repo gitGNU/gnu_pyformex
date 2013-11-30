@@ -53,7 +53,4 @@ if sys.hexversion &  0xFFFF0000:  # Checks for Python 3.1
     __builtin__.callable = callable
 
 
-def execFile(f,*args):
-    return exec(compile(open(f).read(), f, 'exec'),*args)
-
 # End

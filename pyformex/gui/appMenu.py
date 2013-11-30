@@ -329,9 +329,9 @@ class AppMenu(menu.Menu):
         if not dirs:
             dirs = os.listdir(self.dir)
         filtr = lambda s:os.path.isdir(os.path.join(self.dir,s))
-        dirs = filter(filtr,dirs)
+        dirs = [ d for d in dirs if filtr(d) ]
         filtr = lambda s: s[0]!='.' and s[0]!='_'
-        dirs = filter(filtr,dirs)
+        dirs = [ d for d in dirs if filtr(d) ]
         dirs.sort()
         for d in dirs:
             m = AppMenu(d,os.path.join(self.dir,d),mode=self.mode,ext=self.ext,autoplay=self.autoplay,recursive=self.recursive,parent=self,runall=self.runall)
@@ -341,12 +341,11 @@ class AppMenu(menu.Menu):
         """Get a list of scripts in self.dir"""
         files = os.listdir(self.dir)
         filtr = lambda s: s[0]!='.' and s[0]!='_'
-        files = filter(filtr,files)
+        files = [ f for f in files if filtr(f) ]
         if self.ext:
             filtr = lambda s: s.endswith(self.ext)
-            files = filter(filtr,files)
             n = len(self.ext)
-            files = [ f[:-n] for f in files ]
+            files = [ f[:-n] for f in files if filtr(f) ]
 
         files = self.filterFiles(files)
         files.sort()
@@ -356,7 +355,7 @@ class AppMenu(menu.Menu):
     def filterFiles(self,files):
         """Filter a list of scripts"""
         filtr = lambda s:utils.is_pyFormex(self.fileName(s))
-        files = filter(filtr,files)
+        files = [ f for f in files if filtr(f) ]
 
         if self.max > 0 and len(files) > self.max:
             files = files[:self.max]

@@ -383,6 +383,19 @@ def killProcesses(pids,signal=15):
             pf.debug("Error in killing of process '%s'" % pid,pf.DEBUG.INFO)
 
 
+
+def execSource(script,glob={}):
+    """Execute Python code in another thread.
+
+    - `script`: a string with executable Python code
+    - `glob`: an optional gloabls dict specifying the environment in
+      which the source code is executed.
+    """
+    pf.interpreter.locals = glob
+    pf.interpreter.runsource(script,'<input>','exec')
+
+
+
 ##########################################################################
 ## Filenames ##
 ###############
@@ -704,7 +717,7 @@ def matchMany(regexps,target):
 
 def matchCount(regexps,target):
     """Return the number of matches of target to  regexps."""
-    return len(filter(None,matchMany(regexps,target)))
+    return len([_f for _f in matchMany(regexps,target) if _f])
 
 
 def matchAny(regexps,target):

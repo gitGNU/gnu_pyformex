@@ -16,15 +16,15 @@ implemented another solution.
 = callable: no need: we have added callable to Python 3.1
 ? dict
 - except
-= exec: should be done with our own function in compat*
-= execfile: should be done with our own function in compat*
-? exitfunc
+- exec:
+- execfile:
+- exitfunc
 - print
 - raise
-? filter
-? funcattrs
-? future
-? getcwdu
+- filter
+- funcattrs
+= future: We need to keep future for python2 version
+- getcwdu
 ? has_key
 ? idioms
 ? import
@@ -35,11 +35,11 @@ implemented another solution.
 ? isinstance
 ? itertools_imports
 ? itertools
-? long
+- long
 ? map
 ? metaclass
 ? methodattrs
-? ne
+- ne
 ? next
 ? nonzero
 ? numliterals

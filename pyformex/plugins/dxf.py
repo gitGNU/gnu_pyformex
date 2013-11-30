@@ -33,6 +33,11 @@ from plugins import curve
 import utils
 
 
+# Avoid compilation problems
+def execSource(s,g):
+    exec(s,g)
+
+
 def importDXF(filename):
     """Import (parts of) a DXF file into pyFormex.
 
@@ -183,7 +188,7 @@ def convertDXF(text):
 
 
     l = {'Line':Line, 'Arc':Arc, 'Circle':Circle, 'Polyline':Polyline, 'EndPolyline':EndPolyline, 'Vertex':Vertex}
-    exec text in l
+    execSource(text,l)
     EndEntity()
     return Entities
 
