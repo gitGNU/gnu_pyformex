@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#!/usr/bin/python
 # $Id$
 ##
 ##  This file is part of pyFormex 0.9.1  (Tue Oct 15 21:05:25 CEST 2013)
@@ -92,9 +92,9 @@ if len(sys.argv) > 1:
 if TEST:
     for m in sys.modules:
         try:
-            print "MODULE %s: %s" % (m,sys.modules[m].__path__)
+            print("MODULE %s: %s" % (m,sys.modules[m].__path__))
         except:
-            print "MODULE %s: " % (m)
+            print("MODULE %s: " % (m))
     sys.exit()
 
 if __name__ == "__main__":
