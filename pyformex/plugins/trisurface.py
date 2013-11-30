@@ -121,7 +121,7 @@ def read_gts(fn):
     header = fil.readline().split()
     ncoords,nedges,nfaces = map(int,header[:3])
     if len(header) >= 7 and header[6].endswith('Binary'):
-        raise RuntimeError,"We can not read binary GTS format yet. See https://savannah.nongnu.org/bugs/index.php?38608. Maybe you should recompile the extra/gts commands."
+        raise RuntimeError("We can not read binary GTS format yet. See https://savannah.nongnu.org/bugs/index.php?38608. Maybe you should recompile the extra/gts commands.")
         sep=''
     else:
         sep=' '
@@ -323,14 +323,14 @@ def fillBorder(border,method='radial',dir=None):
         coords = border.reshape(-1,3)
         elems = None
     else:
-        raise ValueError,"Expected a 2-plex Mesh, a PolyLine or a Coords array as first argument"
+        raise ValueError("Expected a 2-plex Mesh, a PolyLine or a Coords array as first argument")
 
     if elems is None:
         elems = arange(coords.shape[0])
 
     n = elems.shape[0]
     if n < 3:
-        raise ValueError,"Expected at least 3 points."
+        raise ValueError("Expected at least 3 points.")
 
     if method == 'radial':
         coords = Coords.concatenate([coords,coords.center()])
@@ -384,7 +384,7 @@ def fillBorder(border,method='radial',dir=None):
         elems = elems[e]
 
     else:
-        raise ValueError,"Strategy should be either 'radial', 'border' or 'planar'"
+        raise ValueError("Strategy should be either 'radial', 'border' or 'planar'")
 
     return TriSurface(coords,elems)
 
@@ -429,7 +429,7 @@ class TriSurface(Mesh):
 
             if isinstance(a,Mesh):
                 if a.nplex() != 3 or a.elName() != 'tri3':
-                    raise ValueError,"Only meshes with plexitude 3 and eltype 'tri3' can be converted to TriSurface!"
+                    raise ValueError("Only meshes with plexitude 3 and eltype 'tri3' can be converted to TriSurface!")
                 Mesh.__init__(self,a.coords,a.elems,a.prop,'tri3')
 
             else:
@@ -438,10 +438,10 @@ class TriSurface(Mesh):
                     try:
                         a = Formex(a)
                     except:
-                        raise ValueError,"Can not convert objects of type %s to TriSurface!" % type(a)
+                        raise ValueError("Can not convert objects of type %s to TriSurface!" % type(a))
 
                 if a.nplex() != 3:
-                    raise ValueError,"Expected an object with plexitude 3!"
+                    raise ValueError("Expected an object with plexitude 3!")
 
                 coords,elems = a.fuse()
                 Mesh.__init__(self,coords,elems,a.prop,'tri3')
@@ -450,7 +450,7 @@ class TriSurface(Mesh):
             # arguments are (coords,elems) or (coords,edges,faces)
             coords = Coords(args[0])
             if len(coords.shape) != 2:
-                raise ValueError,"Expected a 2-dim coordinates array"
+                raise ValueError("Expected a 2-dim coordinates array")
 
             if len(args) == 2:
                 # arguments are (coords,elems)
@@ -463,12 +463,12 @@ class TriSurface(Mesh):
                 edges = Connectivity(args[1],nplex=2)
 
                 if edges.size > 0 and edges.max() >= coords.shape[0]:
-                    raise ValueError,"Some vertex number is too high"
+                    raise ValueError("Some vertex number is too high")
 
                 faces = Connectivity(args[2],nplex=3)
 
                 if faces.max() >= edges.shape[0]:
-                    raise ValueError,"Some edge number is too high"
+                    raise ValueError("Some edge number is too high")
 
                 elems = faces.combine(edges)
                 Mesh.__init__(self,coords,elems,None,'tri3')
@@ -478,7 +478,7 @@ class TriSurface(Mesh):
                 self.elem_edges = faces
 
             else:
-                raise RuntimeError,"Too many positional arguments"
+                raise RuntimeError("Too many positional arguments")
 
         if 'prop' in kargs:
             self.setProp(kargs['prop'])
@@ -897,7 +897,7 @@ class TriSurface(Mesh):
         ##     print "getElemEdges.inverse",conn
         # Bail out if some edge has more than two connected faces
         if conn.shape[1] > 2:
-            raise RuntimeError,"The TriSurface is not a manifold"
+            raise RuntimeError("The TriSurface is not a manifold")
         # get normals on all faces
         n = self.areaNormals()[1]
         # Flag edges that connect two faces
@@ -1274,7 +1274,7 @@ Quality: %s .. %s
             p = array(p).reshape(3)
             n = array(n).reshape(3)
         except:
-            raise ValueError,"Expected a (3) shaped float array for both `p` and `n`"
+            raise ValueError("Expected a (3) shaped float array for both `p` and `n`")
 
         # Make sure we inherit element number
         save_prop = self.prop
@@ -1329,7 +1329,7 @@ Quality: %s .. %s
         cutedg = edg_1_up * edg_1_do
         ind = where(cutedg)[0]
         if ind.size == 0:
-            raise ValueError,"This really should not happen!"
+            raise ValueError("This really should not happen!")
 
         # Compute the intersection points
         M = Mesh(S.coords,edg[cutedg])
@@ -1347,7 +1347,7 @@ Quality: %s .. %s
         if (ncut < 1).any() or (ncut > 2).any():
             # Maybe we should issue a warning and ignore these cases?
             print("NCUT: ",ncut)
-            raise ValueError, "I expected all triangles to be cut along 1 or 2 edges. I do not know how to proceed now."
+            raise ValueError("I expected all triangles to be cut along 1 or 2 edges. I do not know how to proceed now.")
 
         if return_intersection:
             I = Mesh(eltype='line2')
@@ -2249,7 +2249,7 @@ Quality: %s .. %s
 
 def read_error(cnt,line):
     """Raise an error on reading the stl file."""
-    raise RuntimeError,"Invalid .stl format while reading line %s\n%s" % (cnt,line)
+    raise RuntimeError("Invalid .stl format while reading line %s\n%s" % (cnt,line))
 
 
 def read_stla(fn,dtype=Float,large=False,guess=True):
@@ -2298,7 +2298,7 @@ def read_stla(fn,dtype=Float,large=False,guess=True):
         f.close()
     if finished:
         return a[:i]
-    raise RuntimeError,"Incorrect stl file: read %d lines, %d facets" % (cnt,i)
+    raise RuntimeError("Incorrect stl file: read %d lines, %d facets" % (cnt,i))
 
 
 def read_ascii_large(fn,dtype=Float):

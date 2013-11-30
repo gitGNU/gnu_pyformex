@@ -312,7 +312,7 @@ def do_ELEMENT(opts,data):
         if skip_unknown_eltype:
             return
         else:
-            raise ValueError,"Element type '%s' can not yet be imported" % opts['TYPE']
+            raise ValueError("Element type '%s' can not yet be imported" % opts['TYPE'])
     nplex = d['nplex']
     nelems = len(data)
     print("Read %s elements of type %s, plexitude %s" % (nelems,eltype,nplex))

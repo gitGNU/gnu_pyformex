@@ -477,7 +477,7 @@ class CanvasSettings(Dict):
                 ok[k] = v
             except:
                 if strict:
-                    raise ValueError,"Invalid key/value for CanvasSettings: %s = %s" % (k,v)
+                    raise ValueError("Invalid key/value for CanvasSettings: %s = %s" % (k,v))
         return ok
 
     def __str__(self):
@@ -683,7 +683,7 @@ class Canvas(object):
         """
         print("Setting rendermode to %s" % mode)
         if mode not in CanvasSettings.RenderProfiles:
-            raise ValueError,"Invalid render mode %s" % mode
+            raise ValueError("Invalid render mode %s" % mode)
 
         self.settings.update(CanvasSettings.RenderProfiles[mode])
         #print(self.settings)
@@ -1193,7 +1193,7 @@ class Canvas(object):
             try:
                 self.camera.setAngles(angles)
             except:
-                raise ValueError,'Invalid view angles specified'
+                raise ValueError('Invalid view angles specified')
 
         # set camera distance and clipping planes
         if bbox is not None:

@@ -405,7 +405,7 @@ or div=4. If closed =='closed' the last point has to be coincident to the 1st on
         At= Pts.atLength(div)
         if closed=='closed':return Pts.pointsAt(At) [:-1]
         return Pts.pointsAt(At)
-    else:  raise ValueError,"wrong type for div"
+    else:  raise ValueError("wrong type for div")
 
 
 def seeding3zones(nseeds=[10, 10],zonesizes=[0.3, 0.3]):
@@ -515,7 +515,7 @@ def seedLongSplines (H, at,  curvedSection=True, nPushedSections=6, napproxlong=
 
     def nearestPoints2D(pt0, pt1):
         """P0 and P1 and 2D arryas. It takes the closest point of 2 arrays of points and finds the 2 closest points. It returns the 2 indices."""
-        if pt0.shape[1]!=2:raise ValueError,"only for 2D arras (no z)"
+        if pt0.shape[1]!=2:raise ValueError("only for 2D arras (no z)")
         np= (pt0.reshape(-1, 1, 2)-pt1.reshape(1, -1, 2))#create a matrix!!!
         npl=(np[:,:,  0]**2+np[:,:,  1]**2)**0.5
         nearest= where(npl==npl.min())

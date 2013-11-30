@@ -102,7 +102,7 @@ class MarkList(Mark):
         its items to be formatted as a string.
         """
         if len(val) < len(pos):
-            raise ValueError,"Not enough values for positions"
+            raise ValueError("Not enough values for positions")
         Mark.__init__(self,pos,**kargs)
         self.val = val
         self.color = saneColor(color)

@@ -50,11 +50,11 @@ class AppDir(object):
             try:
                 path = AppDir.known_dirs[name.lower()]
             except:
-                raise ValueError,"Expected a path to initialize AppDir"
+                raise ValueError("Expected a path to initialize AppDir")
 
         self.path = checkAppdir(path)
         if self.path is None:
-            raise ValueError,"Invalid application path %s" % path
+            raise ValueError("Invalid application path %s" % path)
 
         # Add the parent path to sys.path if it is not there
         parent = os.path.dirname(self.path)

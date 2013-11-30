@@ -342,7 +342,7 @@ def exportDXF(filename,F):
     Currently, only plex-2 Formices can be exported to DXF.
     """
     if F.nplex() != 2:
-        raise ValueError,"Can only export plex-2 Formices to DXF"
+        raise ValueError("Can only export plex-2 Formices to DXF")
     dxf = DxfExporter(filename)
     dxf.entities()
     for i in F:

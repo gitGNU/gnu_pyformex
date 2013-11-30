@@ -296,14 +296,14 @@ def system(cmd,timeout=None,verbose=False,raise_error=False,**kargs):
         elif P.failed:
             print("The subprocess failed to start, probably because the executable does not exist or is not in your current PATH.")
             if raise_error:
-                raise RuntimeError, "Error while executing command:\n  %s" % cmd
+                raise RuntimeError("Error while executing command:\n  %s" % cmd)
 
         elif P.sta != 0:
             print(P.out)
             print("Command exited with an error (exitcode %s)" % P.sta)
             print(P.err)
             if raise_error:
-                raise RuntimeError, "Error while executing command:\n  %s" % cmd
+                raise RuntimeError("Error while executing command:\n  %s" % cmd)
     return P
 
 

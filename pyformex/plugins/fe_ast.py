@@ -52,7 +52,7 @@ def astInputNames(job,extension='mail'):
     if extension in ['mail','comm']:
         filename += '.%s' % extension
     else:
-        raise ValueError,"Extension should be mail or comm"
+        raise ValueError("Extension should be mail or comm")
     return jobname,filename
 
 
@@ -78,7 +78,7 @@ def writeNodes(fil,nodes,type,name=None):
     Type can be 2D or 3D.
     """
     if not type in ['2D','3D']:
-        raise ValueError,"Type should be 2D or 3D"
+        raise ValueError("Type should be 2D or 3D")
     out = 'COOR_%s' % type
     if name is not None:
         out += ' nom = %s' % name
@@ -138,7 +138,7 @@ def writeSet(fil,type,name,set):
         fil.write('GROUP_MA nom = %s\n' % name)
         cap = 'M'
     else:
-        raise ValueError,"Type should be NSET or ELSET"
+        raise ValueError("Type should be NSET or ELSET")
             
     for i in set:
         fil.write('%s%d\n' % (cap,i))
@@ -299,7 +299,7 @@ def fmtMaterial(mat):
     if mat.plastic is not None:
         mat.plastic = asarray(mat.plastic)
         if mat.plastic.ndim != 2:
-            raise ValueError,"Plastic data should be 2-dim array"
+            raise ValueError("Plastic data should be 2-dim array")
         out1 = 'SIGMF=DEFI_FONCTION(\n'
         out1 += '    NOM_PARA=\'EPSI\',\n'
         out1 += '    VALE=(\n'
@@ -383,7 +383,7 @@ class AstData(object):
     def __init__(self,model,prop,nprop=None,eprop=None,steps=[],res=[],out=[],bound=None,type='3D'):
         """Create new AstData."""
         if not isinstance(model,Model) or not isinstance(prop,PropertyDB):
-            raise ValueError,"Invalid arguments: expected Model and PropertyDB, got %s and %s" % (type(model),type(prop))
+            raise ValueError("Invalid arguments: expected Model and PropertyDB, got %s and %s" % (type(model),type(prop)))
         
         self.model = model
         self.prop = prop
@@ -431,7 +431,7 @@ Script: %s
             elif p.prop is not None:
                 # element set is specified by eprop nrs
                 if self.eprop is None:
-                    raise ValueError,"elemProp has a 'prop' field but no 'eprop' was specified"
+                    raise ValueError("elemProp has a 'prop' field but no 'eprop' was specified")
                 set = where(self.eprop == p.prop)[0]
             else:
                 # default is all elements
@@ -470,7 +470,7 @@ Script: %s
             elif p.prop is not None:
                 # set is specified by nprop nrs
                 if self.nprop is None:
-                    raise ValueError,"nodeProp has a 'prop' field but no 'nprop' was specified"
+                    raise ValueError("nodeProp has a 'prop' field but no 'nprop' was specified")
                 set = where(self.nprop == p.prop)[0]
             else:
                 # default is all nodes
@@ -489,7 +489,7 @@ Script: %s
             ## elif p.prop is not None:
                 ## # element set is specified by eprop nrs
                 ## if self.eprop is None:
-                    ## raise ValueError,"elemProp has a 'prop' field but no 'eprop' was specified"
+                    ## raise ValueError("elemProp has a 'prop' field but no 'eprop' was specified"
                 ## set = where(self.eprop == p.prop)[0]
             ## else:
                 ## # default is all elements

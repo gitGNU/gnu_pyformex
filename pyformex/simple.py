@@ -73,9 +73,9 @@ def regularGrid(x0,x1,nx):
     x1 = asarray(x1).ravel()
     nx = asarray(nx).ravel()
     if x0.size != x1.size or nx.size != x0.size:
-        raise ValueError,"Expected equally sized 1D arrays x0,x1,nx"
+        raise ValueError("Expected equally sized 1D arrays x0,x1,nx")
     if any(nx < 0):
-        raise ValueError,"nx values should be >= 0"
+        raise ValueError("nx values should be >= 0")
     n = x0.size
     ind = indices(nx+1).reshape((n,-1))
     shape = append(tuple(nx+1),n)
@@ -234,7 +234,7 @@ def quadraticCurve(x=None,n=8):
     in n segments.
     """
     #if x.shape != (3,3):
-    #    raise ValueError,"Expected a (3,3) shaped array."
+    #    raise ValueError("Expected a (3,3) shaped array."
     # Interpolation functions in normalized coordinates (-1..1)
     h = [ lambda x: x*(x-1)/2, lambda x: (1+x)*(1-x), lambda x: x*(1+x)/2 ]
     t = arange(-n,n+1) / float(n)
@@ -316,7 +316,7 @@ def connectCurves(curve1,curve2,n):
     elements in the direction between the curves.
     """
     if curve1.nelems() != curve2.nelems():
-        raise ValueError,"Both curves should have same number of elements"
+        raise ValueError("Both curves should have same number of elements")
     # Create the interpolations
     curves = interpolate(curve1,curve2,n).split(curve1.nelems())
     quads = [ connect([c1,c1,c2,c2],nodid=[0,1,1,0]) for c1,c2 in zip(curves[:-1],curves[1:]) ]

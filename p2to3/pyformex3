@@ -7,6 +7,6 @@
 # Output is also logged there.
 #
 DIR=$(dirname $(readlink -f $0))
-python3 $DIR/../pyformex/pyformex --config=$DIR/pyformex.conf --noredirect 2>&1 |tee $DIR/2to3.out
+python3 $DIR/../pyformex/pyformex --config=$DIR/pyformex3.conf --noredirect 2>&1 |tee $DIR/2to3.out
 
 # End

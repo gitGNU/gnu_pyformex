@@ -152,7 +152,7 @@ class Mark(Decoration):
         self.x = x
         self.y = y
         if not mark in _marks_:
-            raise ValueError,"Unknown mark: %s" % mark
+            raise ValueError("Unknown mark: %s" % mark)
         self.mark = mark
         self.color = saneColor(color)
         self.linewidth = saneLineWidth(linewidth)

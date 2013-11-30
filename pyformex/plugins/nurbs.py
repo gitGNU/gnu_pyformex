@@ -113,7 +113,7 @@ class Coords4(ndarray):
             # allow empty coords objects
             ar = ar.reshape(0,3)
         else:
-            raise ValueError,"Expected a length 1,2,3 or 4 for last array axis"
+            raise ValueError("Expected a length 1,2,3 or 4 for last array axis")
 
         # Make sure dtype is a float type
         if ar.dtype.kind != 'f':
@@ -298,7 +298,7 @@ class NurbsCurve(Geometry4):
             else:
                 degree = len(knots) - nctrl -1
                 if degree <= 0:
-                    raise ValueError,"Length of knot vector (%s) must be at least number of control points (%s) plus 2" % (len(knots),nctrl)
+                    raise ValueError("Length of knot vector (%s) must be at least number of control points (%s) plus 2" % (len(knots),nctrl))
 
         order = degree+1
         control = Coords4(control)
@@ -319,7 +319,7 @@ class NurbsCurve(Geometry4):
         nctrl = control.shape[0]
 
         if nctrl < order:
-            raise ValueError,"Number of control points (%s) must not be smaller than order (%s)" % (nctrl,order)
+            raise ValueError("Number of control points (%s) must not be smaller than order (%s)" % (nctrl,order))
 
         if knots is None:
             knots = knotVector(nctrl,degree,blended=blended,closed=closed)
@@ -330,7 +330,7 @@ class NurbsCurve(Geometry4):
         nknots = knots.shape[0]
 
         if nknots != nctrl+order:
-            raise ValueError,"Length of knot vector (%s) must be equal to number of control points (%s) plus order (%s)" % (nknots,nctrl,order)
+            raise ValueError("Length of knot vector (%s) must be equal to number of control points (%s) plus order (%s)" % (nknots,nctrl,order))
 
 
         self.coords = control
@@ -379,7 +379,7 @@ class NurbsCurve(Geometry4):
                 print("We got a NaN")
                 raise RuntimeError
         except:
-            raise RuntimeError,"Some error occurred during the evaluation of the Nurbs curve"
+            raise RuntimeError("Some error occurred during the evaluation of the Nurbs curve")
 
         if pts.shape[-1] == 4:
             pts = Coords4(pts).toCoords()
@@ -408,7 +408,7 @@ class NurbsCurve(Geometry4):
                 print(pts)
                 raise RuntimeError
         except:
-            raise RuntimeError,"Some error occurred during the evaluation of the Nurbs curve"
+            raise RuntimeError("Some error occurred during the evaluation of the Nurbs curve")
 
         if pts.shape[-1] == 4:
             pts = Coords4(pts)
@@ -445,7 +445,7 @@ class NurbsCurve(Geometry4):
         points adapted.
         """
         if self.closed:
-            raise ValueError,"insertKnots currently does not work on closed curves"
+            raise ValueError("insertKnots currently does not work on closed curves")
         newP,newU = nurbs.curveKnotRefine(self.coords,self.knots,u)
         return NurbsCurve(newP,degree=self.degree,knots=newU,closed=self.closed)
 
@@ -472,7 +472,7 @@ class NurbsCurve(Geometry4):
         points adapted.
         """
         if self.closed:
-            raise ValueError,"insertKnots currently does not work on closed curves"
+            raise ValueError("insertKnots currently does not work on closed curves")
         newP,newU = nurbs.curveKnotRemove(self.coords,self.knots,u)
         return NurbsCurve(newP,degree=self.degree,knots=newU,closed=self.closed)
 
@@ -553,7 +553,7 @@ class NurbsSurface(Geometry4):
                 else:
                     deg = len(kn) - nctrl -1
                     if deg <= 0:
-                        raise ValueError,"Length of knot vector (%s) must be at least number of control points (%s) plus 2" % (len(knots),nctrl)
+                        raise ValueError("Length of knot vector (%s) must be at least number of control points (%s) plus 2" % (len(knots),nctrl))
                 # make degree changeable
                 degree = list(degree)
                 degree[d] = deg
@@ -561,7 +561,7 @@ class NurbsSurface(Geometry4):
             order = deg+1
 
             if nctrl < order:
-                raise ValueError,"Number of control points (%s) must not be smaller than order (%s)" % (nctrl,order)
+                raise ValueError("Number of control points (%s) must not be smaller than order (%s)" % (nctrl,order))
 
             if kn is None:
                 kn = knotVector(nctrl,deg,blended=bl,closed=cl)
@@ -571,7 +571,7 @@ class NurbsSurface(Geometry4):
             nknots = kn.shape[0]
 
             if nknots != nctrl+order:
-                raise ValueError,"Length of knot vector (%s) must be equal to number of control points (%s) plus order (%s)" % (nknots,nctrl,order)
+                raise ValueError("Length of knot vector (%s) must be equal to number of control points (%s) plus order (%s)" % (nknots,nctrl,order))
 
             if d == 0:
                 self.uknots = kn
@@ -617,7 +617,7 @@ class NurbsSurface(Geometry4):
                 print("We got a NaN")
                 raise RuntimeError
         except:
-            raise RuntimeError,"Some error occurred during the evaluation of the Nurbs curve"
+            raise RuntimeError("Some error occurred during the evaluation of the Nurbs curve")
 
         if pts.shape[-1] == 4:
             pts = Coords4(pts).toCoords()
@@ -658,7 +658,7 @@ class NurbsSurface(Geometry4):
                 print("We got a NaN")
                 raise RuntimeError
         except:
-            raise RuntimeError,"Some error occurred during the evaluation of the Nurbs surface"
+            raise RuntimeError("Some error occurred during the evaluation of the Nurbs surface")
 
         if pts.shape[-1] == 4:
             pts = Coords4(pts)
@@ -716,7 +716,7 @@ def globalInterpolationCurve(Q,degree=3,strategy=0.5):
         Q = concatenate([Q[d!=0.0],Q[-1:]],axis=0)
         d = PolyLine(Q).lengths()
         if (d==0.0).any():
-            raise ValueError,"Double points in the data set are not allowed"
+            raise ValueError("Double points in the data set are not allowed")
     # apply strategy
     d = d ** strategy
     d = d.cumsum()
@@ -814,7 +814,7 @@ def knotVector(nctrl,degree,blended=True,closed=False):
         else:
             nparts = (nctrl-1) / degree
             if nparts*degree+1 != nctrl:
-                raise ValueError,"Discrete knot vectors can only be used if the number of control points is a multiple of the degree, plus one."
+                raise ValueError("Discrete knot vectors can only be used if the number of control points is a multiple of the degree, plus one.")
             knots = [0.] + [ [float(i)]*degree for i in range(nparts+1) ] + [float(nparts)]
             knots = olist.flatten(knots)
 

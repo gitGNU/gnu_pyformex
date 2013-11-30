@@ -216,7 +216,7 @@ class Formex(Geometry):
                         nplex = int(base)
                         data = xpattern(data,nplex)
                     except:
-                        raise ValueError,"Invalid string data for Formex"
+                        raise ValueError("Invalid string data for Formex")
 
             data = asarray(data).astype(Float)
 
@@ -231,13 +231,13 @@ class Formex(Geometry):
             else:
                 # check dimensions of data
                 if not len(data.shape) in [1,2,3]:
-                    raise RuntimeError,"Formex init: needs a 1-, 2- or 3-dim. data array, got shape %s" % str(data.shape)
+                    raise RuntimeError("Formex init: needs a 1-, 2- or 3-dim. data array, got shape %s" % str(data.shape))
                 if len(data.shape) == 1:
                     data = data.reshape(1,1,data.shape[0])
                 elif len(data.shape) == 2:
                     data = data.reshape(data.shape[0],1,data.shape[1])
                 if not data.shape[-1] in [1,2,3]:
-                    raise RuntimeError,"Formex init: last axis dimension of data array should be 1, 2 or 3, got shape %s" % str(data.shape)
+                    raise RuntimeError("Formex init: last axis dimension of data array should be 1, 2 or 3, got shape %s" % str(data.shape))
                 # add 3-rd dimension if data are 1-d or 2-d
                 # this will be done by Coords
                 pass
@@ -265,7 +265,7 @@ class Formex(Geometry):
         if coords.shape == self.coords.shape:
             return Formex(coords,self.prop,self.eltype)
         else:
-            raise ValueError,"Invalid reinitialization of Formex coords"
+            raise ValueError("Invalid reinitialization of Formex coords")
 
 
     def __getitem__(self,i):
@@ -857,7 +857,7 @@ maxprop  = %s
         may be left unspecified.
         """
         if min is None and max is None:
-            raise ValueError,"At least one of min or max have to be specified."
+            raise ValueError("At least one of min or max have to be specified.")
 
         if type(nodes)==str:
             nod = range(self.nplex())
@@ -1124,7 +1124,7 @@ maxprop  = %s
         This function only works on plex-2 Formices (line segments).
         """
         if self.nplex() != 2:
-            raise RuntimeError,"Can only divide plex-2 Formices"
+            raise RuntimeError("Can only divide plex-2 Formices")
         div = unitDivisor(div)
         A = interpolate(self.selectNodes([0]),self.selectNodes([1]),div[:-1],swap=True)
         B = interpolate(self.selectNodes([0]),self.selectNodes([1]),div[1:],swap=True)
@@ -1154,7 +1154,7 @@ maxprop  = %s
             #return Formex(intersectionLinesWithPlane(self,p,n))
         else:
             # OTHER PLEXITUDES NEED TO BE IMPLEMENTED
-            raise ValueError,"Formex should be plex-2 or plex-3"
+            raise ValueError("Formex should be plex-2 or plex-3")
 
 
     def cutWithPlane(self,p,n,side='',atol=None,newprops=None):
@@ -1197,7 +1197,7 @@ maxprop  = %s
             return cut3AtPlane(self,p,n,side,atol,newprops)
         else:
             # OTHER PLEXITUDES NEED TO BE IMPLEMENTED
-            raise ValueError,"Formex should be plex-2 or plex-3"
+            raise ValueError("Formex should be plex-2 or plex-3")
 
 
 #################### Misc Operations #########################################
@@ -1209,7 +1209,7 @@ maxprop  = %s
         Returns a list of Formices each comprising n elements.
         """
         if self.nelems() % n != 0:
-            raise RuntimeError,"Number of elements should be integer multiple of n"
+            raise RuntimeError("Number of elements should be integer multiple of n")
         m = self.nelems()/n
         if self.prop is None:
             return [ Formex(self.coords[n*i:n*(i+1)],self.eltype) for i in range(m) ]
@@ -1223,7 +1223,7 @@ maxprop  = %s
         The length of an element is the distance between its two points.
         """
         if self.nplex() != 2:
-            raise ValueError,"Expected a 2-plex Formex, got %s" % self.nplex()
+            raise ValueError("Expected a 2-plex Formex, got %s" % self.nplex())
         from geomtools import levelVolumes
         return levelVolumes(self.coords)
 
@@ -1235,7 +1235,7 @@ maxprop  = %s
         three points.
         """
         if self.nplex() != 3:
-            raise ValueError,"Expected a 3-plex Formex, got %s" % self.nplex()
+            raise ValueError("Expected a 3-plex Formex, got %s" % self.nplex())
         from geomtools import levelVolumes
         return levelVolumes(self.coords)
 
@@ -1247,7 +1247,7 @@ maxprop  = %s
         by its points.
         """
         if self.nplex() != 4:
-            raise ValueError,"Expected a 4-plex Formex, got %s" % self.nplex()
+            raise ValueError("Expected a 4-plex Formex, got %s" % self.nplex())
         from geomtools import levelVolumes
         return levelVolumes(self.coords)
 
@@ -1311,7 +1311,7 @@ maxprop  = %s
         """
         x = Coords.fromstring(fil,sep=sep,ndim=ndim,count=count)
         if x.shape[0] % nplex != 0:
-            raise RuntimeError,"Number of points read: %s, expected a multiple of %s!" % (x.shape[0],nplex)
+            raise RuntimeError("Number of points read: %s, expected a multiple of %s!" % (x.shape[0],nplex))
         return Formex(x.reshape(-1,nplex,3))
 
 
@@ -1320,7 +1320,7 @@ maxprop  = %s
         """Read the coordinates of a Formex from a file"""
         x = Coords.fromfile(fil,sep=sep)
         if x.shape[0] % nplex != 0:
-            raise RuntimeError,"Number of points read: %s, should be multiple of %s!" % (x.shape[0],nplex)
+            raise RuntimeError("Number of points read: %s, should be multiple of %s!" % (x.shape[0],nplex))
         return Formex(x.reshape(-1,nplex,3))
 
 
@@ -1374,7 +1374,7 @@ def connect(Flist,nodid=None,bias=None,loop=False):
             else:
                 raise TypeError
     except TypeError:
-        raise TypeError,'connect(): first argument should be a list of formices'
+        raise TypeError('connect(): first argument should be a list of formices')
 
     if not nodid:
         nodid = [ 0 for i in range(m) ]
@@ -1484,7 +1484,7 @@ def lpattern(s,connect=True):
             elif d == 6:
                 z -= 1
             else:
-                raise RuntimeError,"Unknown pattern character %c ignored" % c
+                raise RuntimeError("Unknown pattern character %c ignored" % c)
             i %= 16
             if i == 1:
                 x += 1
@@ -1509,7 +1509,7 @@ def lpattern(s,connect=True):
             elif i == 9:
                 pass
             else:
-                raise RuntimeError,"Unknown pattern character %c ignored" % c
+                raise RuntimeError("Unknown pattern character %c ignored" % c)
         if insert:
             if connect:
                 element = [pos,[x,y,z]]
@@ -1560,7 +1560,7 @@ def lpattern(s,connect=True):
 ##             elif d == 6:
 ##                 z -= 1
 ##             else:
-##                 raise RuntimeError,"Unknown pattern character %c ignored" % c
+##                 raise RuntimeError("Unknown pattern character %c ignored" % c
 ##             i %= 16
 ##             if i == 1:
 ##                 x += 1
@@ -1585,7 +1585,7 @@ def lpattern(s,connect=True):
 ##             elif i == 9:
 ##                 pass
 ##             else:
-##                 raise RuntimeError,"Unknown pattern character %c ignored" % c
+##                 raise RuntimeError("Unknown pattern character %c ignored" % c
 ##         if connect:
 ##             li.append([x,y,z])
 ##     l.append(li)

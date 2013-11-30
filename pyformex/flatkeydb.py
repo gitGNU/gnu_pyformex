@@ -176,7 +176,7 @@ class FlatDB(dict):
         self.check_func = check_func
         self.error_msg = ''
         if self.check_func and not callable(check_func):
-            raise TypeError, "FlatDB: check_func should be callable"
+            raise TypeError("FlatDB: check_func should be callable")
 
 
     def newRecord(self):
@@ -218,7 +218,7 @@ class FlatDB(dict):
         Default is to raise a runtime error.
         This method can safely be overriden in subclasses.
         """
-        raise ValueError, "FlatDB: invalid record : %s" % record
+        raise ValueError("FlatDB: invalid record : %s" % record)
     
 
     def key_error_handler(self,key):
@@ -227,7 +227,7 @@ class FlatDB(dict):
         Default is to raise a runtime error.
         This method can safely be overriden in subclasses.
         """
-        raise ValueError, "FlatDB: duplicate key : '%s'" % key
+        raise ValueError("FlatDB: duplicate key : '%s'" % key)
 
         
     def __setitem__(self, key, record):
@@ -357,7 +357,7 @@ class FlatDB(dict):
         for line in lines:
             linenr += 1
             if self.parseLine(line) != 0 and not ignore:
-                raise RuntimeError, "FlatDB: error while reading line %d of database (File: %s)\n%s" % (linenr,filename,self.error_msg)
+                raise RuntimeError("FlatDB: error while reading line %d of database (File: %s)\n%s" % (linenr,filename,self.error_msg))
                 break
                 
 

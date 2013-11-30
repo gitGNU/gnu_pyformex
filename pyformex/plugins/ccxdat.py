@@ -37,7 +37,7 @@ from mesh import Mesh
 def skipBlankLine(fil):
     line = fil.next().strip()
     if len(line) > 0:
-        raise ValueError,"Expected a blank line"
+        raise ValueError("Expected a blank line")
 
 #
 # REMARK: this could be speed up as done in tetgen.py

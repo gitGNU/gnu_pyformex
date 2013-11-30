@@ -442,13 +442,13 @@ class PolyLine(Curve):
             elif coords.nplex() == 2:
                 coords = Coords.concatenate([coords.coords[:,0,:],coords.coords[-1,1,:]])
             else:
-                raise ValueError,"Only Formices with plexitude 1 or 2 can be converted to PolyLine"
+                raise ValueError("Only Formices with plexitude 1 or 2 can be converted to PolyLine")
 
         else:
             coords = Coords(coords)
 
         if coords.ndim != 2 or coords.shape[1] != 3 or coords.shape[0] < 2:
-            raise ValueError,"Expected an (npoints,3) shaped coordinate array with npoints >= 2, got shape " + str(coords.shape)
+            raise ValueError("Expected an (npoints,3) shaped coordinate array with npoints >= 2, got shape " + str(coords.shape))
         self.coords = coords
         self.nparts = self.coords.shape[0]
         if not closed:
@@ -792,7 +792,7 @@ class PolyLine(Curve):
         if self.closed:
             return PolyLine(roll(self.coords,n,axis=0),closed=True)
         else:
-            raise ValueError,"""Can only roll a closed PolyLine"""
+            raise ValueError("""Can only roll a closed PolyLine""")
 
 
     def lengths(self):
@@ -909,7 +909,7 @@ class PolyLine(Curve):
         cannot be concatenated.
         """
         if self.closed or PL.closed:
-            raise RuntimeError,"Closed PolyLines cannot be concatenated."
+            raise RuntimeError("Closed PolyLines cannot be concatenated.")
         X = PL.coords
         if fuse:
             x = Coords.concatenate([self.coords[-1],X[0]])
@@ -1050,7 +1050,7 @@ class Line(PolyLine):
         """Initialize the Line."""
         PolyLine.__init__(self,coords)
         if self.coords.shape[0] != 2:
-            raise ValueError, "Expected exactly two points, got %s" % coords.shape[0]
+            raise ValueError("Expected exactly two points, got %s" % coords.shape[0])
 
 
     def dxftext(self):
@@ -1164,7 +1164,7 @@ class BezierSpline(Curve):
         Curve.__init__(self)
 
         if not degree > 0:
-            raise ValueError,"Degree of BezierSpline should be >= 0!"
+            raise ValueError("Degree of BezierSpline should be >= 0!")
 
         if endzerocurv in [False,True]:
             endzerocurv = (endzerocurv,endzerocurv)
@@ -1173,7 +1173,7 @@ class BezierSpline(Curve):
             # All control points are given, in a single array
             control = Coords(control)
             if len(control.shape) != 2 or control.shape[-1] != 3:
-                raise ValueError,"If no coords argument given, the control parameter should have shape (ncontrol,3), but got %s" % str(control.shape)
+                raise ValueError("If no coords argument given, the control parameter should have shape (ncontrol,3), but got %s" % str(control.shape))
 
             if closed:
                 control = Coords.concatenate([control,control[:1]])
@@ -1191,12 +1191,12 @@ class BezierSpline(Curve):
             # Oncurve points are specified separately
 
             if degree > 3:
-                raise ValueError,"BezierSpline of degree > 3 can only be specified by a full set of control points"
+                raise ValueError("BezierSpline of degree > 3 can only be specified by a full set of control points")
 
             coords = Coords(coords)
             ncoords = nparts = coords.shape[0]
             if ncoords < 2:
-                raise ValueError,"Need at least two points to define a curve"
+                raise ValueError("Need at least two points to define a curve")
             if not closed:
                 nparts -= 1
 
@@ -1239,7 +1239,7 @@ class BezierSpline(Curve):
                         nderiv = deriv.shape[0]
                         if nderiv < ncoords:
                             if nderiv !=2 :
-                                raise ValueError,"Either all or at least the initial and/or the final directions expected (got %s)" % nderiv
+                                raise ValueError("Either all or at least the initial and/or the final directions expected (got %s)" % nderiv)
                             deriv = concatenate([
                                 deriv[:1],
                                 [[nan,nan,nan]]*(ncoords-2),
@@ -1285,7 +1285,7 @@ class BezierSpline(Curve):
                 except:
                     print("coords array has shape %s" % str(coords.shape))
                     print("control array has shape %s" % str(control.shape))
-                    raise ValueError,"Invalid control points for BezierSpline of degree %s" % degree
+                    raise ValueError("Invalid control points for BezierSpline of degree %s" % degree)
 
                 # Join the coords and controls in a single array
                 control = Coords.concatenate([coords[:nparts,newaxis,:],control],axis=1).reshape(-1,3)
@@ -1721,7 +1721,7 @@ class Arc3(Curve):
         C = self.copy()
         C._set_coords_inplace(coords)
         if self.coords.shape != (3,3):
-            raise ValueError,"Expected 3 points"
+            raise ValueError("Expected 3 points")
 
         r,C,n = gt.triangleCircumCircle(self.coords.reshape(-1,3,3))
         self.radius,self.center,self.normal = r[0],C[0],n[0]
@@ -1758,7 +1758,7 @@ class Arc(Curve):
         if coords is not None:
             self.coords = Coords(coords)
             if self.coords.shape != (3,3):
-                raise ValueError,"Expected 3 points"
+                raise ValueError("Expected 3 points")
 
             self._center = self.coords[1]
             v = self.coords-self._center
@@ -1806,7 +1806,7 @@ class Arc(Curve):
         if isinstance(coords,Coords) and coords.shape == self.coords.shape:
             return self.__class__(coords)
         else:
-            raise ValueError,"Invalid reinitialization of %s coords" % self.__class__
+            raise ValueError("Invalid reinitialization of %s coords" % self.__class__)
 
 
     def __str__(self):
@@ -1875,13 +1875,13 @@ def arc2points(x0,x1,R,pos='-'):
     If R is too small, an exception is raised.
     """
     if x0[2] != x1[2]:
-        raise ValueError,"The points should b in a plane // xy plane"
+        raise ValueError("The points should b in a plane // xy plane")
     xm = (x0+x1) / 2  # center of points
     xd = (x0-x1) / 2  # half length vector
     do = normalize([xd[1],-xd[0],0])  # direction of center
     xl = dot(xd,xd)    # square length
     if R**2 < xl:
-        raise ValueError,"The radius should at least be %s" % sqrt(xl)
+        raise ValueError("The radius should at least be %s" % sqrt(xl))
     dd = sqrt(R**2 - xl)   # distance of center to xm
     if pos == '+':
         xc = xm - dd * do  # Center is to the left when going from x0 to x1
@@ -1933,7 +1933,7 @@ def convertFormexToCurve(self,closed=False):
         control = self.coords[:,1:3,:]
         curve = BezierSpline(points,control=control,closed=closed)
     else:
-        raise ValueError,"Can not convert %s-plex Formex to a Curve" % self.nplex()
+        raise ValueError("Can not convert %s-plex Formex to a Curve" % self.nplex())
     return curve
 
 Formex.toCurve = convertFormexToCurve

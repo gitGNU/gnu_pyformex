@@ -106,7 +106,7 @@ class GeometryFile(object):
 
     def checkWritable(self):
         if not self.writing:
-            raise RuntimeError,"File is not opened for writing"
+            raise RuntimeError("File is not opened for writing")
 
 
     def writeHeader(self):
@@ -131,7 +131,7 @@ class GeometryFile(object):
         If fmt is specified, each
         """
         if not self.writing:
-            raise RuntimeError,"File is not opened for writing"
+            raise RuntimeError("File is not opened for writing")
         kind = data.dtype.kind
         #if fmt is None:
         #    fmt = self.fmt[kind]
@@ -227,7 +227,7 @@ class GeometryFile(object):
                 elif Fc.shape == (F.nelems(),F.nplex(),3):
                     color = 'vertex'
                 else:
-                    raise ValueError,"Incorrect color shape: %s" % Fc.shape
+                    raise ValueError("Incorrect color shape: %s" % Fc.shape)
         print("COLOR=%s" % str(color))
 
         # Now take the object
@@ -275,7 +275,7 @@ class GeometryFile(object):
                 elif Fc.shape == (F.nelems(),F.nplex(),3):
                     color = 'vertex'
                 else:
-                    raise ValueError,"Incorrect color shape: %s" % Fc.shape
+                    raise ValueError("Incorrect color shape: %s" % Fc.shape)
 
         #print("COLOR=%s" % color)
         head = "# objtype='%s'; ncoords=%s; nelems=%s; nplex=%s; props=%s; eltype='%s'; normals=%s; color=%r; sep='%s'" % (objtype,F.ncoords(),F.nelems(),F.nplex(),hasprop,F.elName(),hasnorm,color,sep)
@@ -393,7 +393,7 @@ class GeometryFile(object):
             exec(s[pos+1:].strip())
         else:
             version = None
-            raise RuntimeError,"This does not look like a pyFormex geometry file, or it is a very old version."
+            raise RuntimeError("This does not look like a pyFormex geometry file, or it is a very old version.")
 
         self._version_ = version
         self.sep = sep

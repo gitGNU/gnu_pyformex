@@ -266,7 +266,7 @@ def fmtMaterial(mat):
             else:
                 order=len(mat.constants)/3.
             if order%3!=0 :
-                raise ValueError,"Wrong number of parameters"
+                raise ValueError("Wrong number of parameters")
 
         if mat.type.lower() == 'polynomial':
             ord=(-5. + (25.+8.*len(mat.constants))**0.5)/2. # Nparameters = ((N+1)*(N+2))/2 + N-1 --> Inverse to find order N
@@ -275,7 +275,7 @@ def fmtMaterial(mat):
             else:
                 order=ord
             if int(ord)!=order:
-                    raise ValueError,"Wrong number of parameters"
+                    raise ValueError("Wrong number of parameters")
 
         if mat.type.lower() == 'reduced polynomial':
             if 'order' in mat:
@@ -283,7 +283,7 @@ def fmtMaterial(mat):
             else:
                 order=len(mat.constants)/2.
             if len(mat.constants)%2!=0:
-                raise ValueError,"Wrong number of parameters"
+                raise ValueError("Wrong number of parameters")
 
         out += ", N=%i\n" %order
         out += fmtData(mat.constants)
@@ -305,9 +305,9 @@ def fmtMaterial(mat):
         out += "*PLASTIC\n"
         mat.plastic = asarray(mat.plastic)
         if mat.plastic.ndim != 2:
-            raise ValueError,"Plastic data should be 2-dim array"
+            raise ValueError("Plastic data should be 2-dim array")
         ## if mat.plastic.shape[1] > 8:
-        ##     raise ValueError,"Plastic data array should have max. 8 columns"
+        ##     raise ValueError("Plastic data array should have max. 8 columns"
         out += fmtData(mat.plastic)
 
     if mat.damping is not None:
@@ -925,7 +925,7 @@ def fmtOrientation(prop):
                 data += tuple(p.b)
             out += fmtData(data)
         else:
-            raise ValueError,"Orientation needs at least point a"
+            raise ValueError("Orientation needs at least point a")
     return out
 
 def fmtEquation(prop):
@@ -1740,7 +1740,7 @@ class Step(Dict):
 
         self.name = name
         if not self.analysis in Step.analysis_types:
-            raise ValueError,'analysis should be one of %s' % analysis_types
+            raise ValueError('analysis should be one of %s' % analysis_types)
         if type(time) == float:
             time = [ 0., time, 0., 0. ]
         self.time = time
@@ -1996,7 +1996,7 @@ class AbqData(object):
     def __init__(self,model,prop,nprop=None,eprop=None,steps=[],res=[],out=[],bound=None):
         """Create new AbqData."""
         if not isinstance(model,Model) or not isinstance(prop,PropertyDB):
-            raise ValueError,"Invalid arguments: expected Model and PropertyDB, got %s and %s" % (type(model),type(prop))
+            raise ValueError("Invalid arguments: expected Model and PropertyDB, got %s and %s" % (type(model),type(prop)))
 
         if res or out:
             utils.warn("depr_abqdata_outres")
@@ -2052,7 +2052,7 @@ Script: %s
                 # set is specified by nprop nrs
                 if self.nprop is None:
                     print(p)
-                    raise ValueError,"nodeProp has a 'prop' field but no 'nprop'was specified"
+                    raise ValueError("nodeProp has a 'prop' field but no 'nprop'was specified")
                 set = where(self.nprop == p.prop)[0]
             else:
                 # default is all nodes
@@ -2076,7 +2076,7 @@ Script: %s
                 # element set is specified by eprop nrs
                 if self.eprop is None:
                     print(p)
-                    raise ValueError,"elemProp has a 'prop' field but no 'eprop'was specified"
+                    raise ValueError("elemProp has a 'prop' field but no 'eprop'was specified")
                 set = where(self.eprop == p.prop)[0]
             else:
                 # default is all elements

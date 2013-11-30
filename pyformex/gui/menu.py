@@ -196,7 +196,7 @@ class BaseMenu(object):
     def create_insert_action(self,name,val,before=None):
         """Create and insert an action."""
         if before:
-            raise RuntimeError,"THIS CAN NOT WORK"
+            raise RuntimeError("THIS CAN NOT WORK")
             return self.insertAction(before,name,val)
         else:
             return self.addAction(name,val)
@@ -273,7 +273,7 @@ class BaseMenu(object):
                     if debug:
                         print("INSERTING QAction %s" % txt)
                     if before is not None:
-                        raise RuntimeError,"I can not insert a QAction menu item before an existing one."
+                        raise RuntimeError("I can not insert a QAction menu item before an existing one.")
                     a = self.create_insert_action(txt,val,before)
                 for k,v in options.items():
                     if k == 'icon':
@@ -455,7 +455,7 @@ class ActionList(object):
             if os.path.exists(icon):
                 icon = QtGui.QIcon(QtGui.QPixmap(icon))
             else:
-                raise RuntimeError,'Icons not installed properly'
+                raise RuntimeError('Icons not installed properly')
         if text is None:
             text = name
         a = DAction(text,icon,name)

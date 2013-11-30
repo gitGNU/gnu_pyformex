@@ -87,7 +87,7 @@ if len(sys.argv) > 1:
         from pyformex.main import run
         TEST=1
     elif sys.argv[1] == "--testnopyf":
-        from main import run
+        from .main import run
         TEST=2
 if TEST:
     for m in sys.modules:

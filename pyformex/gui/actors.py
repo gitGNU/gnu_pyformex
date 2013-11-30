@@ -76,7 +76,7 @@ class Actor(Drawable):
         try:
             return self.coords.bbox()
         except:
-            raise ValueError,"No bbox() defined and no coords attribute"
+            raise ValueError("No bbox() defined and no coords attribute")
 
     def npoints(self):
         return 0
@@ -709,7 +709,7 @@ class GeomActor(Actor):
             #
             # NOT SURE IF WE STILL NEED THIS !   YES!!!
             #
-            #raise ValueError,"THIS ERROR SHOULD NOT OCCUR: Contact mainitainers"
+            #raise ValueError("THIS ERROR SHOULD NOT OCCUR: Contact mainitainers"
             color,colormap = saneColor(color),None
             bkcolor, bkcolormap = None,None
 

@@ -177,7 +177,7 @@ class ColorLegend(object):
     def overflow(self,oflow=None):
         """Raise a runtime error if oflow == None, else return oflow."""
         if oflow==None:
-            raise RuntimeError, "Value outside colorscale range"
+            raise RuntimeError("Value outside colorscale range")
         else:
             return oflow
 

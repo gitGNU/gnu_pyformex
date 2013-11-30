@@ -289,18 +289,18 @@ def drawNurbsCurves(x,knots,color=None,alpha=1.0,samplingTolerance=5.0):
         elif color.shape == x.shape[:-1] + (3,):
             pf.debug('Vertex color: %s colors' % str(color.shape[:-1]),pf.DEBUG.DRAW)
         else:
-            raise ValueError,"Number of colors (%s) should equal 1 or the number of curves(%s) or the number of curves * number of vertices" % (color.shape[0],x.shape[0])
+            raise ValueError("Number of colors (%s) should equal 1 or the number of curves(%s) or the number of curves * number of vertices" % (color.shape[0],x.shape[0]))
 
         pf.debug("Color shape = %s" % str(color.shape),pf.DEBUG.DRAW)
         if color.shape[-1] not in (3,4):
-            raise ValueError,"Expected 3 or 4 color components"
+            raise ValueError("Expected 3 or 4 color components")
 
     if color is not None:
         pf.debug("Final Color shape = %s" % str(color.shape),pf.DEBUG.DRAW)
 
     nurb = GLU.gluNewNurbsRenderer()
     if not nurb:
-        raise RuntimeError,"Could not create a new NURBS renderer"
+        raise RuntimeError("Could not create a new NURBS renderer")
 
     GLU.gluNurbsProperty(nurb,GLU.GLU_SAMPLING_TOLERANCE,samplingTolerance)
 
@@ -361,7 +361,7 @@ def drawQuadraticCurves(x,e=None,color=None,alpha=1.0):
             nelems,nplex = e.shape
             nfaces = 1
         else:
-            raise ValueError,"Can not handle elems with shape: %s" % str(e.shape)
+            raise ValueError("Can not handle elems with shape: %s" % str(e.shape))
 
     if color is not None:
         if color.ndim == 2:
@@ -439,11 +439,11 @@ def drawNurbsSurfaces(x,sknots,tknots,color=None,alpha=1.0,normals='auto',sampli
         elif color.shape == x.shape[:-1] + (3,):
             pf.debug('Vertex color: %s' % str(color.shape[:-1]),pf.DEBUG.DRAW)
         else:
-            raise ValueError,"Number of colors (%s) should equal 1 or the number of faces(%s) or the number of faces * number of vertices" % (color.shape[0],x.shape[0])
+            raise ValueError("Number of colors (%s) should equal 1 or the number of faces(%s) or the number of faces * number of vertices" % (color.shape[0],x.shape[0]))
 
         pf.debug("Color shape = %s" % str(color.shape),pf.DEBUG.DRAW)
         if color.shape[-1] not in (3,4):
-            raise ValueError,"Expected 3 or 4 color components"
+            raise ValueError("Expected 3 or 4 color components")
 
     if normals == 'auto':
         GL.glEnable(GL.GL_AUTO_NORMAL)
@@ -474,7 +474,7 @@ def drawNurbsSurfaces(x,sknots,tknots,color=None,alpha=1.0,normals='auto',sampli
     else:
         nurb = GLU.gluNewNurbsRenderer()
         if not nurb:
-            raise RuntimeError,"Could not create a new NURBS renderer"
+            raise RuntimeError("Could not create a new NURBS renderer")
 
         GLU.gluNurbsProperty(nurb,GLU.GLU_SAMPLING_TOLERANCE,samplingTolerance)
 
@@ -771,7 +771,7 @@ def averageDirection(a,tol=0.5):
     This changes a inplace!
     """
     if a.ndim != 2:
-        raise ValueError,"array should be 2-dimensional!"
+        raise ValueError("array should be 2-dimensional!")
     nrow = a.shape[0]
     cnt = zeros(nrow,dtype=int32)
     while cnt.min() == 0:

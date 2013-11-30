@@ -85,7 +85,7 @@ def readData(s,type,strict=False):
     out = []
     data = string.split(s,',')
     if strict and len(data) != len(type):
-        raise RuntimeError, "Data do not match type specifier %s\nData: '%s'" % (type,s)
+        raise RuntimeError("Data do not match type specifier %s\nData: '%s'" % (type,s))
     for t,d in zip(type,data):
         #print(t,d)
         if len(d) == 0:

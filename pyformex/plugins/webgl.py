@@ -389,7 +389,7 @@ class WebGL(List):
         if attr in controller_format:
             return controller_format[attr].replace('%N',name).replace('%A',attr)
         else:
-            raise ValueError,"Controller for attribute '%s' not implemented"
+            raise ValueError("Controller for attribute '%s' not implemented")
 
 
     def format_gui(self):

@@ -218,7 +218,7 @@ def showDoc(obj=None,rst=True,modal=False):
         text = obj.__doc__
 
     if text is None:
-        raise ValueError,"No documentation found for object %s" % obj
+        raise ValueError("No documentation found for object %s" % obj)
 
     text = utils.forceReST(text,underline=True)
     if pf.GUI.doc_dialog is None:
@@ -689,7 +689,7 @@ def draw(F,
     nres = len(FL)
 
     if nres < ntot and not silent:
-        raise ValueError,"Data contains undrawable objects (%s/%s)" % (ntot-nres,ntot)
+        raise ValueError("Data contains undrawable objects (%s/%s)" % (ntot-nres,ntot))
 
     # Fill in the remaining defaults
 
@@ -1746,7 +1746,7 @@ def flyAlong(path,upvector=[0.,1.,0.],sleeptime=None):
         if not path.nplex() in (2,3):
             raise ValueError
     except:
-        raise ValueError,"The camera path should be (convertible to) a plex-2 or plex-3 Formex!"
+        raise ValueError("The camera path should be (convertible to) a plex-2 or plex-3 Formex!")
 
     nplex = path.nplex()
     if sleeptime is None:

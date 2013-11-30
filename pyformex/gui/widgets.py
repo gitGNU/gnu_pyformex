@@ -137,7 +137,7 @@ def addTimeOut(widget,timeout=None,timeoutfunc=None):
             pf.debug("TIMER STARTED")
     except:
         raise
-        #raise ValueError,"Could not start the timeout timer"
+        #raise ValueError("Could not start the timeout timer"
 
 
 def setExpanding(w):
@@ -608,7 +608,7 @@ class InputList(InputItem):
     def __init__(self,name,default=[],choices=[],sort=False,single=False,check=False,fast_sel=False,maxh=-1,*args,**kargs):
         """Initialize the input item."""
         if len(choices) == 0:
-            raise ValueError,"List input expected choices!"
+            raise ValueError("List input expected choices!")
         self._choices_ = [ str(s) for s in choices ]
         self.input = ListWidget(maxh=maxh)
 
@@ -725,7 +725,7 @@ class InputCombo(InputItem):
     def __init__(self,name,value,choices=[],onselect=None,func=None,*args,**kargs):
         """Initialize the input item."""
         if len(choices) == 0:
-            raise ValueError,"Selection expected choices!"
+            raise ValueError("Selection expected choices!")
         if value is None:
             value = choices[0]
         if value not in choices:
@@ -1447,7 +1447,7 @@ def convertInputItem(item):
             return simpleInputItem(*item)
         except:
             pass
-    raise ValueError,"Invalid InputItem item: %s" % str(item)
+    raise ValueError("Invalid InputItem item: %s" % str(item))
 
 
 # define a function to have the same enabling name as for InputItem
@@ -1622,7 +1622,7 @@ class InputDialog(QtGui.QDialog):
                         elif isinstance(src,InputGroup):
                             signal = src.input.clicked[bool]
                         else:
-                            raise ValueError,"Can not enable from a %s input field" % type(src.input)
+                            raise ValueError("Can not enable from a %s input field" % type(src.input))
 
 
                         if signal:
@@ -1664,7 +1664,7 @@ class InputDialog(QtGui.QDialog):
                 form.last = None
 
             else:
-                raise ValueError,"Invalid input item (type %s). Expected a dict or a QWidget." % type(item)
+                raise ValueError("Invalid input item (type %s). Expected a dict or a QWidget." % type(item))
 
 
     def add_tab(self,form,prefix,name,items,**extra):
@@ -1714,7 +1714,7 @@ class InputDialog(QtGui.QDialog):
 
         # we should have a value now, or we can't continue!
         if not 'value' in item:
-            raise ValueError,"No value specified for item '%s'" % item['name']
+            raise ValueError("No value specified for item '%s'" % item['name'])
 
         if not 'itemtype' in item or item['itemtype'] is None:
             item['itemtype'] = defaultItemType(item)
@@ -1738,7 +1738,7 @@ class InputDialog(QtGui.QDialog):
                 elif type(value) == float:
                     item['itemtype'] = 'fslider'
                 else:
-                    raise ValueError,"Invalid value type for slider: %s" % value
+                    raise ValueError("Invalid value type for slider: %s" % value)
 
         item['parent'] = self
 
@@ -1753,7 +1753,7 @@ class InputDialog(QtGui.QDialog):
         if len(items) > 0:
             return items[0]
         else:
-            raise ValueError,"No input field named: %s" % name
+            raise ValueError("No input field named: %s" % name)
             #return self.groups.get(name,None)
 
 
@@ -3297,7 +3297,7 @@ class ImageView(QtGui.QLabel):
             filename = str(image)
             image = QtGui.QImage(filename)
             if image.isNull():
-                raise ValueError,"Cannot load image file %s" % filename
+                raise ValueError("Cannot load image file %s" % filename)
             if maxheight:
                 image = image.scaledToHeight(maxheight)
         #print("Size %sx%s" % (image.width(),image.height()))

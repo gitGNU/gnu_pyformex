@@ -66,7 +66,7 @@ class PlaneSection(object):
         elif F.nplex() == 2:
             self.F = F
         else:
-            raise ValueError,"Expected a plex-1 or plex-2 Formex"
+            raise ValueError("Expected a plex-1 or plex-2 Formex")
 
     def sectionChar(self):
         return sectionChar(self.F)
@@ -95,7 +95,7 @@ def sectionChar(F):
     - `Ixy` : product moment of area around global x,y-axes
     """
     if F.nplex() != 2:
-        raise ValueError, "Expected a plex-2 Formex!"
+        raise ValueError("Expected a plex-2 Formex!")
     #pf.debug("The circumference has %d segments" % F.nelems())
     x = F.x()
     y = F.y()

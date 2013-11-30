@@ -169,7 +169,7 @@ class Config(Dict):
             where = 'config file %s,' % filename
         else:
             where = ''
-        raise RuntimeError,'Error in %s line %d:\n%s' % (where,lineno,line)
+        raise RuntimeError('Error in %s line %d:\n%s' % (where,lineno,line))
 
 
     def read(self,fil,debug=False):

@@ -88,7 +88,7 @@ def levelVolumes(x):
     elif nplex == 4:
         return vectorTripleProduct(x[:,1]-x[:,0], x[:,2]-x[:,1], x[:,3]-x[:,0]) / 6
     else:
-        raise ValueError,"Plexitude should be one of 2, 3 or 4; got %s" % nplex
+        raise ValueError("Plexitude should be one of 2, 3 or 4; got %s" % nplex)
 
 
 def smallestDirection(x,method='inertia',return_size=False):
@@ -232,7 +232,7 @@ def polygonNormals(x):
     two edges ending in each point.
     """
     if x.shape[1] < 3:
-        #raise ValueError,"Cannot compute normals for plex-2 elements"
+        #raise ValueError("Cannot compute normals for plex-2 elements"
         n = zeros_like(x)
         n[:,:,2] = -1.
         return n
@@ -1043,7 +1043,7 @@ def intersectionSphereSphere(R,r,d):
     tuple x,y.
     """
     if d > R+r:
-        raise ValueError,"d (%s) should not be larger than R+r (%s)" % (d,R+r)
+        raise ValueError("d (%s) should not be larger than R+r (%s)" % (d,R+r))
     dd = R**2-r**2+d**2
     d2 = 2*d
     x = dd/d2
@@ -1134,7 +1134,7 @@ def faceDistance(X,Fp,return_points=False):
       and is only returned if return_points = True.
     """
     if not Fp.shape[1] == 3:
-        raise ValueError, "Currently this function only works for triangular faces."
+        raise ValueError("Currently this function only works for triangular faces.")
     # Compute normals on the faces
     Fn = cross(Fp[:,1]-Fp[:,0],Fp[:,2]-Fp[:,1])
     # Compute intersection points of perpendiculars from X on facets F
@@ -1244,11 +1244,11 @@ def baryCoords(S,P):
     The return value is a (nplex,npts,nel) shaped array of barycentric coordinates.
     """
     if S.ndim != 3:
-        raise ValueError,"S should be a 3-dim array, got shape %s" % str(S.shape)
+        raise ValueError("S should be a 3-dim array, got shape %s" % str(S.shape))
     if P.ndim == 2:
         P = P.reshape(-1,1,3)
     elif P.shape[1] != S.shape[0] and P.shape[1] != 1:
-        raise ValueError,"Second dimension of P should be first dimension of S or 1."
+        raise ValueError("Second dimension of P should be first dimension of S or 1.")
     S = S.transpose(1,0,2) # (nplex,nel,3)
     vp = P - S[0]
     vs = S[1:] - S[:1]

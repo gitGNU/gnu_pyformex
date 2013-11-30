@@ -65,6 +65,7 @@ else:
     ##  Python2 version.                                               ##
     #####################################################################
     """)
+
     print("3K: IMPORTING COMPAT MODULE")
     from compat_3k import *
 

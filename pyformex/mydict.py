@@ -86,7 +86,7 @@ def returnNone(key):
 
 def raiseKeyError(key):
     """Raise a KeyError."""
-    raise KeyError,"Not found: %s" % key
+    raise KeyError("Not found: %s" % key)
 
 
 class Dict(dict):
@@ -104,7 +104,7 @@ class Dict(dict):
     - Lookup of a nonexisting key/attribute does not automatically raise an
       error, but calls a ``_default_`` lookup method which can be set by
       the user.
-      The default is to raise a KeyError, but an alternative is to return
+      The default is to raise a KeyError( but an alternative is to return
       None or some other default value.
 
     There are a few caveats though:
@@ -149,7 +149,7 @@ class Dict(dict):
         if default is None:
             default = raiseKeyError
         if not callable(default):
-            raise ValueError,"'default' should be a callable function"
+            raise ValueError("'default' should be a callable function")
         self.__dict__['_default_'] = default
 
 
@@ -440,7 +440,7 @@ if __name__ == '__main__':
     print(C['d'])
     try:
         print(C['b'])
-        print("This should provoke a KeyError, so you should not see this text")
+        print("This should provoke a KeyError( so you should not see this text")
     except:
         print("Correctly received the intended KeyError")
 

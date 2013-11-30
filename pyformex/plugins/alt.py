@@ -50,7 +50,7 @@ class BoundVectors(Coords):
             if origins is not None:
                 coords += origins[...,newaxis,:]
         elif coords.shape[-2:] != (2,3):
-            raise ValueError,"Expected shape (2,3) for last two array axes."
+            raise ValueError("Expected shape (2,3) for last two array axes.")
         return Coords.__new__(clas,coords)
 
 

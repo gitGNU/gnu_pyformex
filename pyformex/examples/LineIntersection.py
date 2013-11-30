@@ -49,7 +49,7 @@ def intersection(F1,F2):
     - `w2`: index of the intersection elements in F2
     """
     if F1.nplex() != 2 or F2.nplex() != 2:
-        raise ValueError,"Can only interesect plex-2 Formices"
+        raise ValueError("Can only interesect plex-2 Formices")
 
     from geomtools import intersectionTimesLWL
 

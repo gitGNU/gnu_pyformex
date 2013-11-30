@@ -72,7 +72,7 @@ class ODict(dict):
             self._order = data.keys()
 
         else:
-            raise ValueError,"Unexpected initialization value for ODict"
+            raise ValueError("Unexpected initialization value for ODict")
 
 
     def _add_keys(self,keys):
@@ -140,7 +140,7 @@ class ODict(dict):
         keys should be a list containing exactly all the keys from self.
         """
         if olist.difference(keys,dict.keys(self)) != []:
-            raise ValueError,"List of keys does not match current object's keys"
+            raise ValueError("List of keys does not match current object's keys")
         self._order = keys
 
 
@@ -209,7 +209,7 @@ class KeyedList(ODict):
         """
         L = map(len,alist)
         if min(L) < 2:
-            raise ValueEror,"All items in the data should have length >= 2"
+            raise ValueEror("All items in the data should have length >= 2")
         ODict.__init__(self,[[i[0],i[1:]] for i in alist])
         print(self)
 

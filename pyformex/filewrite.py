@@ -89,7 +89,7 @@ def writeData(fil,data,sep='',fmt=None,end=''):
         elif kind == 'f':
             misc.tofile_float32(val.astype(np.float32),fil,fmt)
         else:
-            raise ValueError,"Can not write data fo type %s" % data.dtype
+            raise ValueError("Can not write data fo type %s" % data.dtype)
     if end:
         fil.write(end)
 
@@ -108,7 +108,7 @@ def writeIData(data,fil,fmt,ind=1):
     else:
         ind = ind.reshape(-1)
         if ind.shape[0] != nrows:
-            raise ValueError,"Index should have same length as data"
+            raise ValueError("Index should have same length as data")
 
     if kind == 'i':
         raise ImplementationError
@@ -116,7 +116,7 @@ def writeIData(data,fil,fmt,ind=1):
     elif kind == 'f':
         misc.tofile_ifloat32(ind.astype(np.int32),val.astype(np.float32),fil,fmt)
     else:
-        raise ValueError,"Can not write data fo type %s" % data.dtype
+        raise ValueError("Can not write data fo type %s" % data.dtype)
 
 
 # Output of mesh file formats
@@ -133,7 +133,7 @@ def writeOFF(fn,coords,elems):
       `nelems` polygon elements.
     """
     if coords.dtype.kind != 'f' or coords.ndim != 2 or coords.shape[1] != 3 or elems.dtype.kind != 'i' or elems.ndim != 2:
-        raise runtimeError, "Invalid type or shape of argument(s)"
+        raise runtimeError("Invalid type or shape of argument(s)")
 
     fil = open(fn,'w')
     fil.write("OFF\n")
@@ -162,7 +162,7 @@ def writeGTS(fn,coords,edges,faces):
       `nfaces` triangles in function of the edge indices
     """
     if coords.dtype.kind != 'f' or coords.ndim != 2 or coords.shape[1] != 3 or edges.dtype.kind != 'i' or edges.ndim != 2 or edges.shape[1] != 2 or faces.dtype.kind != 'i' or faces.ndim != 2 or faces.shape[1] != 3:
-        raise runtimeError, "Invalid type or shape of argument(s)"
+        raise runtimeError("Invalid type or shape of argument(s)")
 
     fil = open(fn,'w')
     fil.write("%d %d %d\n" % (coords.shape[0],edges.shape[0],faces.shape[0]))
@@ -192,7 +192,7 @@ def writeSTL(f,x,n=None,binary=False,color=None):
       stpored in the header.
     """
     if not x.shape[1:] == (3,3):
-        raise ValueError,"Expected an (ntri,3,3) array, got %s" % x.shape
+        raise ValueError("Expected an (ntri,3,3) array, got %s" % x.shape)
 
     if n is None:
         import geomtools
@@ -259,7 +259,7 @@ def write_stl_asc(fn,x):
       triangles
     """
     if not x.shape[1:] == (4,3):
-        raise ValueError,"Expected an (ntri,4,3) array, got %s" % x.shape
+        raise ValueError("Expected an (ntri,4,3) array, got %s" % x.shape)
 
     pf.message("Writing ascii STL %s" % fn)
     with open(fn,'wb') as fil:

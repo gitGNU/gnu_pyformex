@@ -349,7 +349,7 @@ def setpropCollection(K,prop):
             ## print 'From actor: %s' % id(o)
             ## print 'From name: %s' % id(O)
             ## if id(o) != id(O):
-            ##     raise RuntimeError,"The id of the drawn object does not match the selection"
+            ##     raise RuntimeError("The id of the drawn object does not match the selection"
             if prop is None:
                 o.setProp(prop)
             elif hasattr(o,'setProp'):

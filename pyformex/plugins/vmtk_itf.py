@@ -102,7 +102,7 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
     cmd = 'vmtk vmtkcenterlines -seedselector %s -ifile %s -ofile %s'%(seedselector,tmp,tmp1)
     if seedselector in ['pointlist','idlist']:
         if not(len(sourcepoints)) or not(len(targetpoints)):
-            raise ValueError,'sourcepoints and targetpoints cannot be an empty list when using seedselector= \'%s\''%seedselector
+            raise ValueError('sourcepoints and targetpoints cannot be an empty list when using seedselector= \'%s\''%seedselector)
         if seedselector=='pointlist':
             fmt=' %f'
         if seedselector=='idlist':
@@ -171,7 +171,7 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
     """
     if includeprop is not None:
         if excludeprop is not None:
-            raise ValueError, 'you cannot use both excludeprop and includeprop'
+            raise ValueError('you cannot use both excludeprop and includeprop')
         else:
             ps = self.propSet()
             mask = in1d(ar1=ps, ar2=checkArray1D(includeprop))
@@ -181,7 +181,7 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
             excludeprop = ps[~mask]
     if conformal == 'border' or conformal == 'regionsborder':
         if elementsizemode=='areaarray':
-            raise ValueError,'conformal (regions)border and areaarray cannot be used together (yet)!'#conformalBorder alters the node list. Afterwards, the nodes do not correspond with pointdata.
+            raise ValueError('conformal (regions)border and areaarray cannot be used together (yet)!')#conformalBorder alters the node list. Afterwards, the nodes do not correspond with pointdata.
         if self.isClosedManifold()==False:
             if conformal == 'regionsborder':
                 if self.propSet() is not None:
@@ -200,7 +200,7 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
                preserveboundary=preserveboundary, conformal=None).cselectProp([-1,-2]).compact()
     else:
         if conformal is not None:
-            raise ValueError, 'conformal should be either None, border or regionsborder'
+            raise ValueError('conformal should be either None, border or regionsborder')
 
     from plugins.vtk_itf import writeVTP, checkClean, readVTKObject
     tmp = utils.tempFile(suffix='.vtp').name
@@ -219,7 +219,7 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
         cmd += ' -elementsizemode area -area %f' % area
     elif elementsizemode == 'areaarray':
         if not checkClean(self):
-            raise ValueError, "Mesh is not clean: vtk will alter the node numbering and the areaarray will not correspond to the node numbering. To clean: mesh.fuse().compact().renumber()"
+            raise ValueError("Mesh is not clean: vtk will alter the node numbering and the areaarray will not correspond to the node numbering. To clean: mesh.fuse().compact().renumber()")
         cmd += ' -elementsizemode areaarray -areaarray nodalareas '
         pointdata['nodalareas'] = areaarray
     if aspectratio is not None:

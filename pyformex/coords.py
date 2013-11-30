@@ -127,7 +127,7 @@ class Coords(ndarray):
         # can be either a vector or an axis number)
         #
         if ar.ndim == 0:
-            raise ValueError,"Expected array data, not a scalar"
+            raise ValueError("Expected array data, not a scalar")
 
         if ar.shape[-1] == 3:
             pass
@@ -138,7 +138,7 @@ class Coords(ndarray):
             # allow empty coords objects
             ar = ar.reshape(0,3)
         else:
-            raise ValueError,"Expected a length 1,2 or 3 for last array axis"
+            raise ValueError("Expected a length 1,2 or 3 for last array axis")
 
         # Make sure dtype is a float type
         if ar.dtype.kind != 'f':
@@ -658,7 +658,7 @@ class Coords(ndarray):
 
        """
         if min is None and max is None:
-            raise ValueError,"At least one of min or max have to be specified."
+            raise ValueError("At least one of min or max have to be specified.")
 
         if array(dir).size == 1:
             if min is not None:
@@ -865,7 +865,7 @@ class Coords(ndarray):
         if mat.size == 1:
             mat = rotationMatrix(angle,axis)
         if mat.shape != (3,3):
-            raise ValueError,"Rotation matrix should be 3x3"
+            raise ValueError("Rotation matrix should be 3x3")
         if around is not None:
             around = asarray(around)
             out = self.translate(-around)
@@ -1475,7 +1475,7 @@ class Coords(ndarray):
         cuts = Coords.concatenate(cuts)
 
         if cuts.size == 0:
-            raise ValueError,"The projection does not intersect with the surface"
+            raise ValueError("The projection does not intersect with the surface")
         if cuts.shape[0] < x.shape[0]:
             # fill in missing values or raise error
             if type(missing) is float:
@@ -1493,7 +1493,7 @@ class Coords(ndarray):
                 x = x.trl(d*dir)
                 x[cutid] = cuts
             else:
-                raise ValueError,"The projection of some point(s) in the specified direction does not cut the surface"
+                raise ValueError("The projection of some point(s) in the specified direction does not cut the surface")
         else:
             x = cuts
 
@@ -1596,7 +1596,7 @@ class Coords(ndarray):
         Raises an error if self.ndim < 2.
         """
         if self.ndim < 2:
-            raise ValueError,"Can only split arrays with dim >= 2"
+            raise ValueError("Can only split arrays with dim >= 2")
         return [ self[i] for i in range(self.shape[0]) ]
 
 
@@ -1623,7 +1623,7 @@ class Coords(ndarray):
         n = self.shape[0]
         nmax = iinfo('int64').max # max integer, a bit above 2 million
         if n > nmax:
-            raise ValueError,"I can only sort %s points" % nmax
+            raise ValueError("I can only sort %s points" % nmax)
         s0,s1,s2 = [ argsort(self[:,i]) for i in range(3) ]
         i0,i1,i2 = [ inverseUniqueIndex(i) for i in [s0,s1,s2] ]
         val = i2 + n * (i1 + n * i0)
@@ -1888,9 +1888,9 @@ class Coords(ndarray):
         """
         x = fromstring(fil,dtype=Float,sep=sep,count=count)
         if count > 0 and x.size != count :
-            raise RuntimeError,"Number of coordinates read: %s, expected %s!" % (x.size,count)
+            raise RuntimeError("Number of coordinates read: %s, expected %s!" % (x.size,count))
         if x.size % ndim != 0 :
-            raise RuntimeError,"Number of coordinates read: %s, expected a multiple of %s!" % (x.size,ndim)
+            raise RuntimeError("Number of coordinates read: %s, expected a multiple of %s!" % (x.size,ndim))
         return Coords(x.reshape(-1,ndim))
 
 
@@ -1906,7 +1906,7 @@ class Coords(ndarray):
         """
         x = fromfile(fil,dtype=Float,**kargs)
         if x.size % 3 != 0 :
-            raise RuntimeError,"Number of coordinates read: %s, should be multiple of 3!" % x.size
+            raise RuntimeError("Number of coordinates read: %s, should be multiple of 3!" % x.size)
         return Coords(x.reshape(-1,3))
 
 
@@ -1937,7 +1937,7 @@ class Coords(ndarray):
         F.interpolate(G,arange(0,n+1)/float(n))
         """
         if self.shape != X.shape:
-            raise RuntimeError,"`X` should have same shape as `self`"
+            raise RuntimeError("`X` should have same shape as `self`")
         div = unitDivisor(div)
         return self + outer(div,X-self).reshape((-1,)+self.shape)
 
@@ -2141,7 +2141,7 @@ def pattern(s,aslist=False):
             elif j == 6:
                 z -= 1
             else:
-                raise RuntimeError,"Unknown character '%c' in pattern input" % c
+                raise RuntimeError("Unknown character '%c' in pattern input" % c)
             if i == 1:
                 x += 1
             elif i == 2:
@@ -2165,7 +2165,7 @@ def pattern(s,aslist=False):
             elif i == 9:
                 pass
             else:
-                raise RuntimeError,"Unknown character '%c' in pattern input" % c
+                raise RuntimeError("Unknown character '%c' in pattern input" % c)
         if insert:
             l.append((x,y,z))
         insert = True
@@ -2200,7 +2200,7 @@ def xpattern(s,nplex=1):
     try:
         return x.reshape(-1,nplex,3)
     except:
-        raise ValueError,"Could not reshape points list to plexitude %s" % nplex
+        raise ValueError("Could not reshape points list to plexitude %s" % nplex)
 
 
 def align(L,align,offset=[0.,0.,0.]):
@@ -2297,19 +2297,19 @@ def sweepCoords(self,path,origin=[0.,0.,0.],normal=0,upvector=2,avgdir=False,end
 
     if scalex is not None:
         if len(scalex) != points.shape[0]:
-            raise ValueError,"The number of scale values in x-direction differs from the number of copies that will be created."
+            raise ValueError("The number of scale values in x-direction differs from the number of copies that will be created.")
     else:
         scalex = ones(points.shape[0])
 
     if scaley is not None:
         if len(scaley) != points.shape[0]:
-            raise ValueError,"The number of scale values in y-direction differs from the number of copies that will be created."
+            raise ValueError("The number of scale values in y-direction differs from the number of copies that will be created.")
     else:
         scaley = ones(points.shape[0])
 
     if scalez is not None:
         if len(scalez) != points.shape[0]:
-            raise ValueError,"The number of scale values in y-direction differs from the number of copies that will be created."
+            raise ValueError("The number of scale values in y-direction differs from the number of copies that will be created.")
     else:
         scalez = ones(points.shape[0])
 

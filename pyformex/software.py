@@ -173,7 +173,7 @@ However, the module '%s' could not be loaded.
 Probably it is not installed on your system.
 """ % (name,name,name)
         pf.error(errmsg)
-        raise ValueError,errmsg
+        raise ValueError(errmsg)
 
     else:
         if version is not None:
@@ -189,7 +189,7 @@ However, the module '%s' could not be loaded.
 Probably it is not installed on your system.
 """ % (name,name,name)
                 pf.error(errmsg)
-                raise ValueError,errmsg
+                raise ValueError(errmsg)
 
 
 def checkAllModules():
@@ -298,7 +298,7 @@ the external program '%s'.
 However, '%s' was not found on your system.
 """ % (name,name,name)
         pf.error(errmsg)
-        raise ValueError,errmsg
+        raise ValueError(errmsg)
 
 
 def checkAllExternals():

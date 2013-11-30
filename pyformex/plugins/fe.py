@@ -63,7 +63,7 @@ class Model(Geometry):
         """
         if meshes is not None:
             if coords is not None or elems is not None:
-                raise ValueError,"You can not use nodes/elems together with meshes"
+                raise ValueError("You can not use nodes/elems together with meshes")
             for M in meshes:
                 if M.prop is None:
                     M.setProp(0)
@@ -227,7 +227,7 @@ class FEModel(Geometry):
 
         for m in meshes:
             if not isinstance(m,Mesh):
-                raise ValueError,"Expected a Mesh or a list thereof."
+                raise ValueError("Expected a Mesh or a list thereof.")
 
         nnodes = [ m.nnodes() for m in meshes ]
         nelems = [ m.nelems() for m in meshes ]

@@ -128,7 +128,7 @@ def GLcolor(color):
         pass
 
     # No success: raise an error
-    raise ValueError,"GLcolor: unexpected input of type %s: %s" % (type(color),color)
+    raise ValueError("GLcolor: unexpected input of type %s: %s" % (type(color),color))
 
 # TODO: Should convert result to Int8 ?
 def RGBcolor(color):

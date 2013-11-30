@@ -82,7 +82,7 @@ def draw(F,
     attr.update(kargs)
 
     if nres < ntot and not attr.silent:
-        raise ValueError,"Data contains undrawable objects (%s/%s)" % (ntot-nres,ntot)
+        raise ValueError("Data contains undrawable objects (%s/%s)" % (ntot-nres,ntot))
 
     # Shrink the objects if requested
     if attr.shrink:

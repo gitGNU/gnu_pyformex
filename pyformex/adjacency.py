@@ -219,7 +219,7 @@ class Adjacency(ndarray):
                 ar = ar.reshape(-1,1)
 
         elif ar.ndim > 2:
-            raise ValueError,"Expected 2-dim data"
+            raise ValueError("Expected 2-dim data")
 
         # Make sure dtype is an int type
         if ar.dtype.kind != 'i':
@@ -229,9 +229,9 @@ class Adjacency(ndarray):
         if ar.size > 0:
             maxval = ar.max()
             if maxval > ar.shape[0]-1:
-                raise ValueError,"Too large element number (%s) for number of rows(%s)" % (maxval,ar.shape[0])
+                raise ValueError("Too large element number (%s) for number of rows(%s)" % (maxval,ar.shape[0]))
             if ncon > 0 and ar.shape[1] != ncon:
-                raise ValueError,"Expected data with %s columns" % ncon
+                raise ValueError("Expected data with %s columns" % ncon)
         else:
             maxval = -1
             ar = ar.reshape(0,ncon)
@@ -335,7 +335,7 @@ class Adjacency(ndarray):
         rows of self and adj, except those that occur in both.
         """
         if adj.nelems() != self.nelems():
-            raise ValueError,"`adj` should have same number of rows as `self`"
+            raise ValueError("`adj` should have same number of rows as `self`")
         adj = concatenate([self,adj],axis=-1)
         adj = sortAdjacency(adj)
         dup = adj[:,:-1] == adj[:,1:] # duplicate items

@@ -272,7 +272,7 @@ class AppMenu(menu.Menu):
         self.dir = dir
         self.files = files
         if self.dir is None and self.files is None:
-            raise ValueError,"At least one of 'dir' or 'files' must be set."
+            raise ValueError("At least one of 'dir' or 'files' must be set.")
         self.mode = mode
         if ext is None and self.mode != 'app':
             if self.dir is None:

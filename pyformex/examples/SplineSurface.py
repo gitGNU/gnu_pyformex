@@ -92,7 +92,7 @@ def rollCurvePoints(curve,n=1):
         curve.coords[:-1] = roll(curve.coords[:-1],-mult*n,axis=0)
         curve.coords[-1] = curve.coords[0]
     else:
-        raise ValueError,"Expected a closed PolyLine or BezierSpline."
+        raise ValueError("Expected a closed PolyLine or BezierSpline.")
     
 
 def alignCurvePoints(curve,axis=1,max=True):
@@ -105,7 +105,7 @@ def alignCurvePoints(curve,axis=1,max=True):
     The function returns nothing: the points are rolled inplace.
     """
     if not curve.closed:
-        raise ValueError,"Expected a closed curve."
+        raise ValueError("Expected a closed curve.")
     if max:
         ind = curve.pointsOn()[:,axis].argmax()
     else:
@@ -131,7 +131,7 @@ class SplineSurface(Geometry):
         self.uclosed = sum(closed) > 0
         errors = [ c.closed != self.uclosed for c in self.curves ]
         if sum(errors) > 0:
-            raise ValueError,"Either ALL or NONE of the curves should be closed."
+            raise ValueError("Either ALL or NONE of the curves should be closed.")
         if nu <= 0:
             nu = len(curves)-1
         self.grid = self.createGrid(nu)

@@ -89,12 +89,12 @@ def exponents(n,layout='lag'):
     n = checkArray(n,(-1,),'i')
     ndim = n.shape[0]
     if ndim < 1 or ndim > 3:
-        raise RuntimeError,"Expected a 1..3 length tuple"
+        raise RuntimeError("Expected a 1..3 length tuple")
 
     layout = layout[:3]
     if layout in ['tri','ser']:
         if not (n == n[0]).all():
-            raise RuntimeError,"For triangular and serendipity grids, all axes should have the same number of points"
+            raise RuntimeError("For triangular and serendipity grids, all axes should have the same number of points")
 
 
     # First create the full lagrangian set
@@ -124,9 +124,9 @@ def exponents(n,layout='lag'):
                 np = 4 + 4*(n[0] - 1) # minimal number of points
                 ok = exp.sum(axis=-1) <= n[0] + 1
             if ok.sum() < np:
-                raise ValueError,"No solution for eltype %s %s" % (layout,n)
+                raise ValueError("No solution for eltype %s %s" % (layout,n))
         else:
-            raise RuntimeError,"Unknown layout %s" % layout
+            raise RuntimeError("Unknown layout %s" % layout)
         exp = exp[ok]
     return exp
 
@@ -209,7 +209,7 @@ class Isopar(object):
                 #
                 Isopar.isodata[eltype] = interpoly(n,s[0])
             else:
-                raise RuntimeError,"Unknown eltype %s"
+                raise RuntimeError("Unknown eltype %s")
 
         poly = Isopar.isodata[eltype]
         coords = coords.view().reshape(-1,3)
@@ -229,7 +229,7 @@ class Isopar(object):
             try:
                 X = Coords(X)
             except:
-                raise ValueError,"Expected a Coords object as argument"
+                raise ValueError("Expected a Coords object as argument")
 
         poly = Isopar.isodata[self.eltype]
         ndim = poly.ndim

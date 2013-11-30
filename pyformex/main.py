@@ -563,7 +563,7 @@ def run(argv=[]):
                 os.symlink(newdir,olddir)
 
             except:
-                raise RuntimeError,"Error while trying to migrate your user configuration\nTry moving the config files yourself.\nYou may also remove the config directories %s\n and %s alltogether\s to get a fresh start with default config." % (olddir,newdir)
+                raise RuntimeError("Error while trying to migrate your user configuration\nTry moving the config files yourself.\nYou may also remove the config directories %s\n and %s alltogether\s to get a fresh start with default config." % (olddir,newdir))
 
     ########### Load the user configuration  ####################
 

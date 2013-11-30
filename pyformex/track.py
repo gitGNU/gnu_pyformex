@@ -101,7 +101,7 @@ def track_class_factory(cls,methods= track_methods):
     """
     new_dct = cls.__dict__.copy()
     if 'hits' in new_dct:
-        raise ValueError,"The input class should not have an attribute 'hits'"
+        raise ValueError("The input class should not have an attribute 'hits'")
     
     for key, value in new_dct.items():
         if key in track_methods:

@@ -45,12 +45,12 @@ class Plane(object):
             P = pts
             n = Coords(normal)
             if n.shape != (3,):
-                raise ValueError,"normal does not have correct shape"
+                raise ValueError("normal does not have correct shape")
         elif pts.shape == (3,3,):
             P = pts.centroid()
             n = cross(pts[1]-pts[0],pts[2]-pts[0])
         else:
-            raise ValueError,"points has incorrect shape (%s)" % str(pts.shape)
+            raise ValueError("points has incorrect shape (%s)" % str(pts.shape))
         size = asarray(size)
         s = Coords([insert(size[0],0,0.,-1),insert(size[1],0,0.,-1)])
         self.P = P
@@ -189,7 +189,7 @@ def reportAngles(K):
         if isinstance(F,Formex):
             x = F.coords
             if len(x)!=2:
-                raise ValueError,"You didn't select 2 elements"
+                raise ValueError("You didn't select 2 elements")
             v = x[:,1,:] - x[:,0,:]
             v = normalize(v)
             cosa = dotpr(v[0],v[1])
@@ -197,7 +197,7 @@ def reportAngles(K):
             a = arccosd(cosa)
             s += "  a = %s" % a
         else:
-            raise TypeError,"Angle measurement only possible with Formex or Mesh"
+            raise TypeError("Angle measurement only possible with Formex or Mesh")
     return s
 
 

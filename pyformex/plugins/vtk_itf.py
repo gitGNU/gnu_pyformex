@@ -191,7 +191,7 @@ def convert2VPD(M,clean=False,lineopt='segment',verbose=False):
                 print("setting VERTS for data with %s maximum number of point for cell "%Ncxel)
             vpd.SetVerts(datav)
         except:
-            raise ValueError,"Error in saving  VERTS"
+            raise ValueError("Error in saving  VERTS")
 
     elif M.nplex() == 2:
         try:
@@ -199,7 +199,7 @@ def convert2VPD(M,clean=False,lineopt='segment',verbose=False):
                 print ("setting LINES for data with %s maximum number of point for cell "%Ncxel)
             vpd.SetLines(datav)
         except:
-            raise  ValueError,"Error in saving  LINES"
+            raise  ValueError("Error in saving  LINES")
 
     else:
         try:
@@ -207,7 +207,7 @@ def convert2VPD(M,clean=False,lineopt='segment',verbose=False):
                 print ("setting POLYS for data with %s maximum number of point for cell "%Ncxel)
             vpd.SetPolys(datav)
         except:
-            raise ValueError,"Error in saving  POLYS"
+            raise ValueError("Error in saving  POLYS")
 
     vpd.Update()
     if clean:

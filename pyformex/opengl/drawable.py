@@ -57,7 +57,7 @@ def glObjType(nplex):
         #
         #return GL.GL_TRIANGLE_FAN
 
-        raise ValueError,"Can only draw plexitude <= 3!"
+        raise ValueError("Can only draw plexitude <= 3!")
 
 
 class Drawable(Attributes):
@@ -345,7 +345,7 @@ class GeomActor(Attributes):
 
         # Check it is something we can draw
         if not isinstance(obj,Mesh) and not isinstance(obj,Formex):
-            raise ValueError,"Object is of type %s.\nCan only render Mesh, Formex and objects that can be converted to Formex" % type(obj)
+            raise ValueError("Object is of type %s.\nCan only render Mesh, Formex and objects that can be converted to Formex" % type(obj))
         self.object = obj
 
         if isinstance(obj,Mesh): # should we store coords, elems and eltype?
@@ -404,7 +404,7 @@ class GeomActor(Attributes):
         """Return the fused coordinates of the object"""
         if self._coords is None:
             if self._fcoords is None:
-                raise ValueError,"Object has neither _coords nor _fcoords"
+                raise ValueError("Object has neither _coords nor _fcoords")
             self._fcoords_fuse()
         return self._coords
 
@@ -422,7 +422,7 @@ class GeomActor(Attributes):
         """Return the original elems of the object"""
         if self._elems is None:
             if self._fcoords is None:
-                raise ValueError,"Object has neither _coords nor _fcoords"
+                raise ValueError("Object has neither _coords nor _fcoords")
             self._fcoords_fuse()
         return self._elems
 
@@ -432,7 +432,7 @@ class GeomActor(Attributes):
         """Return the full coordinate set of the object"""
         if self._fcoords is None:
             if self._coords is None or self._elems is None:
-                raise ValueError,"Object has neither _coords nor _fcoords"
+                raise ValueError("Object has neither _coords nor _fcoords")
             self._fcoords = self._coords[self._elems]
         return self._fcoords
 
@@ -766,7 +766,7 @@ class GeomActor(Attributes):
             ins = ins[self.elems]
         elif mode == 'edge':
             # TODO: add edges selector
-            raise ValueError,"Edge picking is not implemented yet"
+            raise ValueError("Edge picking is not implemented yet")
 
         if sel == 'all':
             ok = ins.all(axis=-1)

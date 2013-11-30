@@ -66,7 +66,7 @@ else:
         sip.setapi('QTime', 2)
         sip.setapi('QUrl', 2)
         sip.setapi('QVariant', 2)
-    except ValueError, e:
+    except ValueError as e:
         raise RuntimeError('Could not set PyQt4 API version (%s)' % e)
 
     utils.requireModule('pyqt4')

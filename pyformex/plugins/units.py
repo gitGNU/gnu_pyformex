@@ -50,7 +50,7 @@ def convertUnits(From,To):
     """
     P = utils.system('units \"%s\" \"%s\"' % (From,To))
     if P.sta:
-        raise RuntimeError, 'Could not convert units from \"%s\" to \"%s\"' % (From,To)
+        raise RuntimeError('Could not convert units from \"%s\" to \"%s\"' % (From,To))
     return P.out.split()[1]
 
 
@@ -96,7 +96,7 @@ class UnitsSystem(object):
         elif system == 'user-defined':
             return {}
         else:
-            raise RuntimeError,"Undefined Units system '%s'" % system
+            raise RuntimeError("Undefined Units system '%s'" % system)
 
 
     def International(self):

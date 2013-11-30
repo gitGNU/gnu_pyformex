@@ -1059,7 +1059,7 @@ def xwininfo(windowid=None,name=None):
     elif name is not None:
         args = " -name '%s'" % name
     else:
-        raise ValueError,"Either windowid or name have to be specified"
+        raise ValueError("Either windowid or name have to be specified")
 
     P = utils.system(cmd % args)
     res = {}

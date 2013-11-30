@@ -181,7 +181,7 @@ class Varray(object):
             if ind[-1] != len(data):
                 ind = concatenate([ind,[len(data)]])
         except:
-            raise ValueError,"Invalid input data for Varray"
+            raise ValueError("Invalid input data for Varray")
 
         # Store the data
         self.data = data
@@ -194,7 +194,7 @@ class Varray(object):
     def replace_data(self,va):
         """Replace the current data with data from another Varray"""
         if not isinstance(va,Varray):
-            raise ValueError,"Expected a Varray as argument"
+            raise ValueError("Expected a Varray as argument")
         self.data = va.data
         self.ind = va.ind
         self.width = va.width
@@ -316,7 +316,7 @@ class Varray(object):
         if j >= 0 and j < self.length(i):
             return self.ind[i]+j
         else:
-            raise IndexError,"Index out of bounds"
+            raise IndexError("Index out of bounds")
 
 
     def sorted(self):

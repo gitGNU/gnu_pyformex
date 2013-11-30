@@ -317,7 +317,7 @@ def normalize(A,axis=-1):
     shape[axis] = 1
     Al = length(A,axis).reshape(shape)
 #    if (Al == 0.).any():
-#        raise ValueError,"Normalization of zero vector."
+#        raise ValueError("Normalization of zero vector."
     return A/Al
 
 
@@ -330,7 +330,7 @@ def projection(A,B,axis=-1):
     d = dotpr(A,B,axis)
     Bl = length(B,axis)
     if (Bl == 0.).any():
-        raise ValueError,"Projection on zero vector."
+        raise ValueError("Projection on zero vector.")
     return d/Bl
 
 
@@ -405,7 +405,7 @@ def solveMany(A,b,direct=True):
     """
     ndof,nrhs,nsys = b.shape
     if A.shape[:2] != (ndof,ndof):
-        raise ValueError,"A(%s) and b(%s) have incompatible shape" % (A.shape,b.shape)
+        raise ValueError("A(%s) and b(%s) have incompatible shape" % (A.shape,b.shape))
 
     if ndof < 4 and direct:
         A = addAxis(A,2)
@@ -475,7 +475,7 @@ def unitVector(v):
         u = asarray(v,dtype=Float).reshape((3))
         ul = length(u)
         if ul <= 0.0:
-            raise ValueError,"Zero length vector %s" % v
+            raise ValueError("Zero length vector %s" % v)
         u = u/ul
     return u
 
@@ -683,7 +683,7 @@ def growAxis(a,add,axis=-1,fill=0):
     """
     a = asarray(a)
     if axis >= len(a.shape):
-        raise ValueError,"No such axis number!"
+        raise ValueError("No such axis number!")
     if add <= 0:
         return a
     else:
@@ -917,7 +917,7 @@ def checkInt(value,min=None,max=None):
             raise
         return a
     except:
-        raise ValueError,"Expected an int in the range(%s, %s), got: %s" % (min, max, value)
+        raise ValueError("Expected an int in the range(%s, %s), got: %s" % (min, max, value))
 
 
 def checkFloat(value,min=None,max=None):
@@ -935,7 +935,7 @@ def checkFloat(value,min=None,max=None):
             raise
         return a
     except:
-        raise ValueError,"Expected a float in the range(%s, %s), got: %s" % (min,max,value)
+        raise ValueError("Expected a float in the range(%s, %s), got: %s" % (min,max,value))
 
 
 def checkArray(a,shape=None,kind=None,allow=None,size=None,ndim=None):
@@ -973,7 +973,7 @@ def checkArray(a,shape=None,kind=None,allow=None,size=None,ndim=None):
                 raise
         return a
     except:
-        raise ValueError,"Expected shape %s, kind %s, size %s, ndim %s\n  Got: shape %s, kind %s, size %s, ndim %s" % (shape,kind,size,ndim,a.shape,a.dtype.kind,a.size,a.ndim)
+        raise ValueError("Expected shape %s, kind %s, size %s, ndim %s\n  Got: shape %s, kind %s, size %s, ndim %s" % (shape,kind,size,ndim,a.shape,a.dtype.kind,a.size,a.ndim))
 
 
 
@@ -1022,7 +1022,7 @@ def checkUniqueNumbers(nrs,nmin=0,nmax=None):
     if uniq.size != nrs.size or \
            (nmin is not None and uniq.min() < nmin) or \
            (nmax is not None and uniq.max() > nmax):
-        raise ValueError,"Values not unique or not in range"
+        raise ValueError("Values not unique or not in range")
     return uniq
 
 
@@ -1098,7 +1098,7 @@ def cubicEquation(a,b,c,d):
     # BV: We should return the solution of a second degree equation if a==0
     #
     if a == 0.0:
-        raise ValueError,"Coeeficient a of cubiq equation should not be 0"
+        raise ValueError("Coeeficient a of cubiq equation should not be 0")
 
     e3 = 1./3.
     pie = pi*2.*e3
@@ -1608,7 +1608,7 @@ def inverseIndexOld(index,maxcon=4):
     """
     ind = asarray(index)
     if len(ind.shape) != 2 or ind.dtype.kind != 'i':
-        raise ValueError,"index should be an integer array with dimension 2"
+        raise ValueError("index should be an integer array with dimension 2")
     nr,nc = ind.shape
     mr = ind.max() + 1
     mc = maxcon*nc
@@ -1868,9 +1868,9 @@ def percentile(values,perc=[25.,50.,75.],wts=None):
     """
     perc = array(perc).reshape(-1)
     if perc.min() < 0. or perc.max() > 100.:
-        raise ValueError, "Percentiles should be between 0 and 100, got %s." % perc
+        raise ValueError("Percentiles should be between 0 and 100, got %s." % perc)
     if wts is not None and wts.min() <= 0.:
-        raise ValueError, "Weights should be positive, got %s." % wts.min()
+        raise ValueError("Weights should be positive, got %s." % wts.min())
     ind = values.argsort()
     values = values[ind]
     if wts is None:
@@ -2007,9 +2007,9 @@ def movingView(a, size):
     """
     from numpy.lib import stride_tricks
     if size < 1:
-        raise ValueError, "`size` must be at least 1."
+        raise ValueError("`size` must be at least 1.")
     if size > a.shape[0]:
-        raise ValueError, "`size` is too long."
+        raise ValueError("`size` is too long.")
     shape = (size, a.shape[0] - size + 1) + a.shape[1:]
     strides = (a.strides[0],) + a.strides
     return stride_tricks.as_strided(a, shape=shape, strides=strides)
@@ -2151,7 +2151,7 @@ def nodalSum(val,elems,avg=False,return_all=True,direction_treshold=None):
     if val.ndim != 3:
         val.reshape(val.shape+(1,))
     if elems.shape != val.shape[:2]:
-        raise RuntimeError,"shape of val and elems does not match"
+        raise RuntimeError("shape of val and elems does not match")
     val = val.astype(float32)
     elems = elems.astype(int32)
     if val.shape[2] > 1 and direction_treshold is not None:

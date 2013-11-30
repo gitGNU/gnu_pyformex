@@ -80,7 +80,7 @@ def autoName(clas):
             try:
                 name = clas.__class__.__name__
             except:
-                raise ValueError,"Expected an instance, class or string"
+                raise ValueError("Expected an instance, class or string")
     name = name.lower()
     if not name in _autoname:
         _autoname[name] = utils.NameSequence(name)

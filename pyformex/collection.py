@@ -82,7 +82,7 @@ class Collection(object):
                 return
                 return
             else:
-                raise ValueError,"Cannot add Collections with different object type"
+                raise ValueError("Cannot add Collections with different object type")
 
         if len(data) == 0:
             return
@@ -118,7 +118,7 @@ class Collection(object):
                     self.remove(data.d[k],k)
                 return
             else:
-                raise ValueError,"Cannot remove Collections with different object type"
+                raise ValueError("Cannot remove Collections with different object type")
 
         data = asarray(data)
         if data.ndim == 2:

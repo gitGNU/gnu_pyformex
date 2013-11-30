@@ -362,13 +362,13 @@ if utils.checkModule('gdcm'):
             fmt = image.GetPixelFormat()
 
             if fmt.GetScalarType() not in get_gdcm_to_numpy_typemap().keys():
-                raise ValueError,"Unsupported Pixel Format\n%s"%fmt
+                raise ValueError("Unsupported Pixel Format\n%s"%fmt)
 
             shape = (image.GetDimension(0),image.GetDimension(1))
             if image.GetNumberOfDimensions() == 3:
               shape = shape + (image.GetDimension(2),)
             if fmt.GetSamplesPerPixel() != 1:
-                raise ValueError,"Can not read images with multiple samples per pixel."
+                raise ValueError("Can not read images with multiple samples per pixel.")
 
             dtype = get_numpy_array_type(fmt.GetScalarType())
             gdcm_array = image.GetBuffer()
@@ -381,7 +381,7 @@ if utils.checkModule('gdcm'):
         r = gdcm.ImageReader()
         r.SetFileName(filename)
         if not r.Read():
-            raise ValueError,"Could not read image file '%s'" % filename
+            raise ValueError("Could not read image file '%s'" % filename)
         pix,_dicom_spacing = gdcm_to_numpy(r.GetImage())
         return pix
 

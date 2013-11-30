@@ -155,17 +155,17 @@ class Mesh(Geometry):
                     M = coords.toMesh()
                 coords,elems = M.coords,M.elems
             except:
-                raise ValueError,"No `elems` specified and the first argument can not be converted to a Mesh."
+                raise ValueError("No `elems` specified and the first argument can not be converted to a Mesh.")
 
         try:
             self.coords = Coords(coords)
             if self.coords.ndim != 2:
-                raise ValueError,"\nExpected 2D coordinate array, got %s" % self.coords.ndim
+                raise ValueError("\nExpected 2D coordinate array, got %s" % self.coords.ndim)
             self.elems = Connectivity(elems)
             if self.elems.size > 0 and (
                 self.elems.max() >= self.coords.shape[0] or
                 self.elems.min() < 0):
-                raise ValueError,"\nInvalid connectivity data: some node number(s) not in coords array (min=%s, max=%s, ncoords=%s)" % (self.elems.min(),self.elems.max(),self.coords.shape[0])
+                raise ValueError("\nInvalid connectivity data: some node number(s) not in coords array (min=%s, max=%s, ncoords=%s)" % (self.elems.min(),self.elems.max(),self.coords.shape[0]))
         except:
             raise
 
@@ -192,7 +192,7 @@ class Mesh(Geometry):
         if isinstance(coords,Coords) and coords.shape == self.coords.shape:
             return self.__class__(coords,self.elems,prop=self.prop,eltype=self.elType())
         else:
-            raise ValueError,"Invalid reinitialization of %s coords" % self.__class__
+            raise ValueError("Invalid reinitialization of %s coords" % self.__class__)
 
 
     def setType(self,eltype=None):
@@ -212,7 +212,7 @@ class Mesh(Geometry):
             eltype = self.elems.eltype
         self.elems.eltype = elementType(eltype,self.nplex())
         if self.elems.eltype is None:
-            raise ValueError,"No element type set for Mesh/Connectivity"
+            raise ValueError("No element type set for Mesh/Connectivity")
         return self
 
 
@@ -332,7 +332,7 @@ class Mesh(Geometry):
                 try:
                     elems.eltype = elementType(nplex=elems.nplex())
                 except:
-                    raise ValueError,"I can not restore a Mesh without eltype"
+                    raise ValueError("I can not restore a Mesh without eltype")
         self.__dict__.update(state)
 
 
@@ -409,7 +409,7 @@ class Mesh(Geometry):
         elif self.level() == 2:
             obj = self
         else:
-            raise ValueError,"Can not convert a Mesh of level %s to a Surface" % self.level()
+            raise ValueError("Can not convert a Mesh of level %s to a Surface" % self.level())
 
         obj = obj.convert('tri3')
         return TriSurface(obj)
@@ -436,7 +436,7 @@ class Mesh(Geometry):
             closed = self.elems[-1,-1] == self.elems[0,0]
             return self.toFormex().toCurve(closed=closed)
         else:
-            raise ValueError,"Can not convert a Mesh of type '%s' to a curve" % self.elName()
+            raise ValueError("Can not convert a Mesh of type '%s' to a curve" % self.elName())
 
 
     def ndim(self):
@@ -695,7 +695,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         brd = lo[isbrd]
         #
         if brd.eltype is None:
-            raise ValueError,"THIS ERROR SHOULD NOT OCCUR! CONTACT MAINTAINERS!"
+            raise ValueError("THIS ERROR SHOULD NOT OCCUR! CONTACT MAINTAINERS!")
         if not return_indices:
             return brd
 
@@ -1028,7 +1028,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         """
         from plugins.trisurface import TriSurface
         if self.elName() not in [ 'tri3', 'quad4' ]:
-            raise ValueError, "partitionByAngle currently only works for 'tri3' and 'quad4' type Meshes."
+            raise ValueError("partitionByAngle currently only works for 'tri3' and 'quad4' type Meshes.")
 
         S = TriSurface(self.convert('tri3'))
         p = S.partitionByAngle(**arg)
@@ -1525,7 +1525,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
             strategy = self.elType().conversions.get(strategy,None)
 
             if strategy is None:
-                raise ValueError,"Don't know how to convert %s -> %s" % (self.elName(),totype)
+                raise ValueError("Don't know how to convert %s -> %s" % (self.elName(),totype))
 
         # 'r' and 'v' steps can only be the first and only step
         steptype,stepdata = strategy[0]
@@ -1548,7 +1548,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
                 mesh = mesh.selectNodes(stepdata,totype)
 
             else:
-                raise ValueError,"Unknown conversion step type '%s'" % steptype
+                raise ValueError("Unknown conversion step type '%s'" % steptype)
 
         if fuse:
             mesh = mesh.fuse()
@@ -1570,7 +1570,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         elems = concatenate([m.elems for m in ml],axis=0)
         eltype = set([m.elName() for m in ml])
         if len(eltype) > 1:
-            raise RuntimeError,"Invalid choices for random conversions"
+            raise RuntimeError("Invalid choices for random conversions")
         eltype = eltype.pop()
         return Mesh(self.coords,elems,prop,eltype)
 
@@ -1612,7 +1612,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
             mesh_wts = globals()[elname+'_wts']
             mesh_els = globals()[elname+'_els']
         except:
-            raise ValueError,"Can not subdivide element of type '%s'" % elname
+            raise ValueError("Can not subdivide element of type '%s'" % elname)
 
         wts = mesh_wts(*ndiv)
         lndiv = [nd if isinstance(nd,int) else len(nd)-1 for nd in ndiv]
@@ -1887,29 +1887,29 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         if type(coordslist) is list:
             if type(coordslist[0]) == Mesh:
                 if sum([c.elType() != self.elType() for c in coordslist]):
-                    raise ValueError,"All Meshes in the list should have same element type"
+                    raise ValueError("All Meshes in the list should have same element type")
                 clist = [ c.coords for c in coordslist ]
             else:
                 clist = coordslist
         elif isinstance(coordslist,Mesh):
             clist = [ self.coords, coordslist.coords ]
             if degree == 2:
-                raise ValueError,"This only works for linear connection"
+                raise ValueError("This only works for linear connection")
             ## BV: Any reason why this would not work??
             ##     xm = 0.5 * (clist[0]+clist[1])
             ##     clist.insert(1, xm)
         else:
-            raise ValueError,"Invalid coordslist argument"
+            raise ValueError("Invalid coordslist argument")
 
         if sum([c.shape != self.coords.shape for c in clist]):
-            raise ValueError,"Incompatible shape  in coordslist"
+            raise ValueError("Incompatible shape  in coordslist")
 
         # implement loop parameter
         if loop:
             clist.append(clist[0])
 
         if (len(clist)-1) % degree != 0:
-            raise ValueError,"Invalid length of coordslist (%s) for degree %s." % (len(clist),degree)
+            raise ValueError("Invalid length of coordslist (%s) for degree %s." % (len(clist),degree))
 
         # set divisions
         if degree > 1:
@@ -1924,7 +1924,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         if len(div) == 1:
             div = div * nsteps
         elif len(div)!=nsteps:
-            raise ValueError,"A list of div seeds must have a length equal to (len(clist)-1)/degree) = %s" % nsteps
+            raise ValueError("A list of div seeds must have a length equal to (len(clist)-1)/degree) = %s" % nsteps)
 
         # For higher order non-lagrangian elements the procedure could be
         # optimized by first compacting the coords and elems.
@@ -2059,7 +2059,7 @@ The dir,length are in the same order as in the translate method.""" % (dir,lengt
             return self
 
         if lamb*k == 1:
-            raise ValueError,"Cannot assign values of lamb and k which result in lamb*k==1"
+            raise ValueError("Cannot assign values of lamb and k which result in lamb*k==1")
 
         mu = -lamb/(1-k*lamb)
         adj = self.getEdges().adjacency(kind='n')
@@ -2150,10 +2150,10 @@ The dir,length are in the same order as in the translate method.""" % (dir,lengt
         meshes = [ m for m in meshes if m.nplex() > 0 ]
         nplex = set([ m.nplex() for m in meshes ])
         if len(nplex) > 1:
-            raise ValueError,"Cannot concatenate meshes with different plexitude: %s" % str(nplex)
+            raise ValueError("Cannot concatenate meshes with different plexitude: %s" % str(nplex))
         eltype = set([ m.elType() for m in meshes ])
         if len(eltype) > 1:
-            raise ValueError,"Cannot concatenate meshes with different eltype: %s" % [ m.elName() for m in meshes ]
+            raise ValueError("Cannot concatenate meshes with different eltype: %s" % [ m.elName() for m in meshes ])
 
         # Keep the available props
         prop = [m.prop for m in meshes if m.prop is not None]
@@ -2203,7 +2203,7 @@ The dir,length are in the same order as in the translate method.""" % (dir,lengt
         may be left unspecified.
         """
         if min is None and max is None:
-            raise ValueError,"At least one of min or max have to be specified."
+            raise ValueError("At least one of min or max have to be specified.")
 
         if type(nodes)==str:
             nod = range(self.nplex())
@@ -2462,7 +2462,7 @@ def extrudeConnectivity(e,nnod,degree):
             eltype = e.eltype.name()
         except:
             eltype = None
-        raise ValueError,"I don't know how to extrude a Connectivity of eltype '%s' in degree %s" % (eltype,degree)
+        raise ValueError("I don't know how to extrude a Connectivity of eltype '%s' in degree %s" % (eltype,degree))
     # create hypermesh Connectivity
     e = concatenate([e+i*nnod for i in range(degree+1)],axis=-1)
     # Reorder nodes if necessary
@@ -2634,7 +2634,7 @@ def smartSeed(n,start=0):
     elif isinstance(n,(list,ndarray)):
         return n
     else:
-        raise ValueError,"Expected an integer, tuple or list; got %s = %s" % (type(n),n)
+        raise ValueError("Expected an integer, tuple or list; got %s = %s" % (type(n),n))
 
 #
 # Local utilities: move these to elements.py ??

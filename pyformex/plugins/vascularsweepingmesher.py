@@ -110,7 +110,7 @@ def cpBoundaryLayer(BS,  centr, issection0=False,  bl_rel=0.2):
     """it takes n points of a nearly circular section (for the isop transformation, n should be 24, 48 etc) and find the control points needed for the boundary layer. The center of the section has to be given separately.
     -issection0 needs to be True only for the section-0 of each branch of a bifurcation, which has to share the control points with the other branches. So it must be False for all other sections and single vessels.
     This implementation for the bl (separated from the inner lumen) is needed to ensure an optimal mesh quality at the boundary layer in terms of angular skewness, needed for WSS calculation."""
-    if BS.shape[0]%2!=0:raise ValueError,"BE CAREFUL: the number of points along each circular section need to be even to split a vessel in 2 halves with the same connectivity!"
+    if BS.shape[0]%2!=0:raise ValueError("BE CAREFUL: the number of points along each circular section need to be even to split a vessel in 2 halves with the same connectivity!")
     bllength=length(BS-centr).reshape(-1, 1)*bl_rel
     blvecn=findBisectrixUsingPlanes(BS, centr)#unit vectors similar to bisectrix but obtained as intersection of planes
     #draw(Formex(centr))
@@ -219,7 +219,7 @@ def cpOneSection(hc, oc=None,isBranchingSection=False, verbos=False ):
 
     ##split the inner lumen in quarters and check if the isop can be applied
     sectype= hlum.shape[0]/24.
-    if sectype!=float(int(sectype)): raise ValueError,"BE CAREFUL: the number of points along each circular section need to be 24*int in order to allow mapping!"
+    if sectype!=float(int(sectype)): raise ValueError("BE CAREFUL: the number of points along each circular section need to be 24*int in order to allow mapping!")
     else:
         if verbos:print("----the number of points on 1 slice is suitable for ISOP MESHING----")
     npq= sectype*6

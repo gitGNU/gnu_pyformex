@@ -110,7 +110,7 @@ class MaterialDB(Database):
         elif type(data) == dict:
             self.update(data)
         else:
-            raise ValueError,"Expected a filename or a dict."
+            raise ValueError("Expected a filename or a dict.")
 
 
 class SectionDB(Database):
@@ -132,7 +132,7 @@ class SectionDB(Database):
         elif type(data) == dict:
             self.update(data)
         else:
-            raise ValueError,"Expected a filename or a dict."
+            raise ValueError("Expected a filename or a dict.")
 
 
 class ElemSection(CDict):
@@ -215,7 +215,7 @@ class ElemSection(CDict):
         elif section==None:
             self.section = section
         else:
-            raise ValueError,"Expected a string or a dict"
+            raise ValueError("Expected a string or a dict")
 
 
     def computeSection(self,section):
@@ -233,7 +233,7 @@ class ElemSection(CDict):
                             'torsional_constant':2*I,
                             })
         else:
-            raise ValueError,"Invalid sectiontype"
+            raise ValueError("Invalid sectiontype")
 
 
     def addMaterial(self, material):
@@ -254,7 +254,7 @@ class ElemSection(CDict):
         elif material==None:
             self.material=material
         else:
-            raise ValueError,"Expected a string or a dict"
+            raise ValueError("Expected a string or a dict")
 
 
 class ElemLoad(CDict):
@@ -312,7 +312,7 @@ class CoordSystem(object):
                 raise
             cdata = asarray(cdata).reshape(2,3)
         except:
-            raise ValueError,"Invalid initialization data for CoordSystem"
+            raise ValueError("Invalid initialization data for CoordSystem")
         self.sys = csys
         self.data = cdata
 
@@ -344,7 +344,7 @@ class Amplitude(object):
                     if smoothing is not None :
                         self.type += ', SMOOTHING=%s'%smoothing
         else:
-            raise ValueError,"Expected definition = 'TABULAR' or 'SMOOTH STEP'"
+            raise ValueError("Expected definition = 'TABULAR' or 'SMOOTH STEP'")
 
 
 ###################################################
@@ -362,7 +362,7 @@ def checkIdValue(values):
         if min(l) == 2 and max(l) == 2:
             return [ (int(i),float(v)) for i,v in values ]
     except:
-        raise ValueError,"Expected a list of (int,float) tuples"
+        raise ValueError("Expected a list of (int,float) tuples")
 
 
 def checkArrayOrIdValue(values):
@@ -556,7 +556,7 @@ class PropertyDB(Dict):
         if name is None:
             name = self.autoName(kind,d.nr)
         elif type(name) is not str:
-            raise ValueError,"Property name should be a string"
+            raise ValueError("Property name should be a string")
         d.name = name
         if set is not None:
             if type(set) is int or type(set) is str:
@@ -678,7 +678,7 @@ class PropertyDB(Dict):
                 if isinstance(csys,CoordSystem):
                     d['csys'] = csys
                 else:
-                    raise ValueError,"Invalid Coordinate System"
+                    raise ValueError("Invalid Coordinate System")
 
             # Currently unchecked!
             if ampl is not None:
@@ -686,7 +686,7 @@ class PropertyDB(Dict):
             return self.Prop(kind='n',prop=prop,tag=tag,set=set,name=name,**d)
         except:
             print("tag=%s,set=%s,name=%s,cload=%s,bound=%s,displ=%s,csys=%s" % (tag,set,name,cload,bound,displ,csys))
-            raise ValueError,"Invalid Node Property"
+            raise ValueError("Invalid Node Property")
 
 
     def elemProp(self,prop=None,grp=None,set=None,name=None,tag=None,section=None,eltype=None,dload=None,eload=None,ampl=None,**kargs):
@@ -727,7 +727,7 @@ class PropertyDB(Dict):
 
             return self.Prop(kind='e',prop=prop,tag=tag,set=set,name=name,**d)
         except:
-            raise ValueError,"Invalid Elem Property\n  tag=%s,set=%s,name=%s,eltype=%s,section=%s,dload=%s,eload=%s" % (tag,set,name,eltype,section,dload,eload)
+            raise ValueError("Invalid Elem Property\n  tag=%s,set=%s,name=%s,eltype=%s,section=%s,dload=%s,eload=%s" % (tag,set,name,eltype,section,dload,eload))
 
 
 ##################################### Test ###########################

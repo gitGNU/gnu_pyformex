@@ -42,13 +42,13 @@ class Vector4(np.matrix):
         """Create a new Vector4 instance"""
         data = np.asarray(data)
         if data.ndim < 1 or data.ndim > 2:
-            raise ValueError,"Expected 1 or 2-dimensinal data"
+            raise ValueError("Expected 1 or 2-dimensinal data")
         if data.shape[-1] == 4:
             pass
         elif data.shape[-1] == 3:
             data = at.growAxis(data,1,fill=1)
         else:
-            raise ValueError,"Expected length 3 or 4 fro last axis"
+            raise ValueError("Expected length 3 or 4 fro last axis")
         ar = data.view(clas)
         return ar
 

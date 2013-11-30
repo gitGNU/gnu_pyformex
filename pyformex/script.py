@@ -167,7 +167,7 @@ def named(name):
     if name in pf.PF:
         dic = pf.PF
     else:
-        raise NameError,"Name %s is not in pyformex.PF" % name
+        raise NameError("Name %s is not in pyformex.PF" % name)
     return dic[name]
 
 
@@ -370,7 +370,7 @@ def raiseExit():
     pf.debug("RAISING SystemExit",pf.DEBUG.SCRIPT)
     if pf.GUI:
         pf.GUI.drawlock.release()
-    raise _Exit,"EXIT REQUESTED FROM SCRIPT"
+    raise _Exit("EXIT REQUESTED FROM SCRIPT")
 
 
 def enableBreak(mode=True):
@@ -762,7 +762,7 @@ def chdir(path,create=False):
             path = os.path.dirname(os.path.abspath(path))
     else:
         if not create or not mkdir(path):
-            raise ValueError,"The path %s does not exist" % path
+            raise ValueError("The path %s does not exist" % path)
     os.chdir(path)
     setPrefs({'workdir':path},save=True)
     if pf.GUI:
@@ -793,7 +793,7 @@ def mkdir(path):
     if not path or os.path.exists(path) and os.path.isdir(path):
         return True
     if os.path.exists(path):
-        raise ValueError,"The path %s does exists already" % path
+        raise ValueError("The path %s does exists already" % path)
     mkdir(os.path.dirname(path))
     os.mkdir(path)
     return os.path.exists(path)
@@ -849,7 +849,7 @@ def requireRevision(rev,comp='>='):
     raise an error if the requirement fails.
     """
     if not checkRevision(rev,comp):
-        raise RuntimeError,"Your current pyFormex revision (%s) does not pass the test %s %s" % (pf.__revision__,comp,rev)
+        raise RuntimeError("Your current pyFormex revision (%s) does not pass the test %s %s" % (pf.__revision__,comp,rev))
 
 
 

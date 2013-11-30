@@ -258,7 +258,7 @@ def readElemsBlock(fil,nelems,nplex,nattr):
     elif nplex == 10:
         eltype= 'tet10'
     else:
-        raise ValueError,"Unknown tetgen .ele plexitude %s" % nplex
+        raise ValueError("Unknown tetgen .ele plexitude %s" % nplex)
     return Connectivity(elems,eltype=eltype),nrs,attr
 
 
@@ -306,7 +306,7 @@ def readSmeshFacetsBlock(fil,nfacets,nbmark):
                 # bmark currently not read
                 addElem(elems,nrs,e,i,nplex)
             else:
-                raise ValueError,"Invalid data line:\n%s" % line
+                raise ValueError("Invalid data line:\n%s" % line)
 
     for np in elems:
         if np == 3:

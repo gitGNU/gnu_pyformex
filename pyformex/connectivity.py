@@ -130,7 +130,7 @@ class Connectivity(ndarray):
                 ar = ar.reshape(-1,1)
 
         elif ar.ndim > 2:
-            raise ValueError,"Expected 2-dim data"
+            raise ValueError("Expected 2-dim data")
 
         # Make sure dtype is an int type
         if ar.dtype.kind != 'i':
@@ -140,9 +140,9 @@ class Connectivity(ndarray):
         if ar.size > 0:
             maxval = ar.max()
             if maxval > 2**31-1 or (ar.min() < 0 and not allow_negative):
-                raise ValueError,"Negative or too large positive value in data"
+                raise ValueError("Negative or too large positive value in data")
             if nplex > 0 and ar.shape[1] != nplex:
-                raise ValueError,"Expected data of plexitude %s" % nplex
+                raise ValueError("Expected data of plexitude %s" % nplex)
         else:
             maxval = -1
             ar = ar.reshape(0,nplex)
@@ -550,7 +550,7 @@ class Connectivity(ndarray):
             order = asarray(order)
             if not (order.dtype.kind == 'i' and \
                     (sort(order) == arange(order.size)).all()):
-                raise ValueError,"order should be a permutation of range(%s)" % self.nelems()
+                raise ValueError("order should be a permutation of range(%s)" % self.nelems())
         return order
 
 
@@ -774,7 +774,7 @@ class Connectivity(ndarray):
         elif kind == 'n':
             adj = concatenate([where(inv>=0,self[:,i][inv],inv) for i in range(self.nplex())],axis=1)
         else:
-            raise ValueError,"kind should be 'e' or 'n', got %s" % str(kind)
+            raise ValueError("kind should be 'e' or 'n', got %s" % str(kind))
         return Adjacency(adj)
 
 
@@ -1028,7 +1028,7 @@ class Connectivity(ndarray):
             if hasattr(self,'eltype'):
                 sel = self.eltype.getEntities(selector)
             else:
-                raise ValueError,"Specified an int as selector, but no eltype was defined"
+                raise ValueError("Specified an int as selector, but no eltype was defined")
         else:
             sel = Connectivity(selector)
         lo = self.selectNodes(sel)
@@ -1083,7 +1083,7 @@ class Connectivity(ndarray):
         """
         lo = Connectivity(lo)
         if self.shape[1] < 2 or lo.shape[1] != 2:
-            raise ValueError,"Can only combine plex>=2 with plex==2"
+            raise ValueError("Can only combine plex>=2 with plex==2")
         elems = lo[self]
         elems1 = roll(elems,-1,axis=1)
         for i in range(elems.shape[1]):
@@ -1246,7 +1246,7 @@ class Connectivity(ndarray):
                 else:
                     raise TypeError
         except TypeError:
-            raise TypeError,'Connectivity.connect(): first argument should be a list of Connectivities'
+            raise TypeError('Connectivity.connect(): first argument should be a list of Connectivities')
 
         if not nodid:
             nodid = [ 0 for i in range(m) ]
@@ -1677,10 +1677,10 @@ def enmagic2(cols,magic=0):
     """
     cmax = cols.max()
     if cmax >= 2**31 or cols.min() < 0:
-        raise ValueError,"Integer value too high (>= 2**31) in enmagic2"
+        raise ValueError("Integer value too high (>= 2**31) in enmagic2")
 
     if cols.ndim != 2 or cols.shape[1] != 2:
-        raise ValueError,"Invalid array (type %s, shape %s) in enmagic2" % (cols.dtype,cols.shape)
+        raise ValueError("Invalid array (type %s, shape %s) in enmagic2" % (cols.dtype,cols.shape))
 
     if magic < 0:
         magic = -1
@@ -1748,9 +1748,9 @@ def adjacencyArrays(elems,nsteps=1):
     #utils.warn("depr_adjacencyArrays")
     elems = Connectivity(elems)
     if len(elems.shape) != 2 or elems.shape[1] != 2:
-        raise ValueError,"""Expected a set of 2-node elements."""
+        raise ValueError("""Expected a set of 2-node elements.""")
     if nsteps < 1:
-        raise ValueError, """The shortest path should be at least 1."""
+        raise ValueError("""The shortest path should be at least 1.""")
     # Construct table of nodes connected to each node
     adj1 = elems.adjacency('n')
     m = adj1.shape[0]

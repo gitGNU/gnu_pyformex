@@ -164,7 +164,7 @@ class Geometry(object):
             self.coords = coords
             return self
         else:
-            raise ValueError,"Invalid reinitialization of Geometry coords"
+            raise ValueError("Invalid reinitialization of Geometry coords")
 
 
     def _set_coords_copy(self,coords):

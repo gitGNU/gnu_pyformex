@@ -47,7 +47,7 @@ def _sanitize(ent):
         if hasattr(ent,'eltype'):
             return ent
         else:
-            raise ValueError,"Conectivity should have an element type"
+            raise ValueError("Conectivity should have an element type")
     else:
         return Connectivity(ent[1],eltype=ent[0])
 
@@ -310,7 +310,7 @@ _registered_element_types = ODict()
 def createElementType(name,doc,ndim,vertices,edges=('',[]),faces=('',[]),**kargs):
     name = name.capitalize()
     if name in _registered_element_types:
-        raise ValueError,"Element type %s already exists" % name
+        raise ValueError("Element type %s already exists" % name)
 
     #print "\n CREATING ELEMENT TYPE %s\n" % name
 
@@ -333,7 +333,7 @@ def createElementType(name,doc,ndim,vertices,edges=('',[]),faces=('',[]),**kargs
 
         ## # add the element to the collection
         ## if self._name in Element.collection:
-        ##     raise ValueError,"Can not create duplicate element names"
+        ##     raise ValueError("Can not create duplicate element names"
         ## Element.collection[self._name] = self
 
     C = type(name,(ElementType,),D)
@@ -1083,7 +1083,7 @@ def elementType(name=None,nplex=-1):
     except:
         pass
 
-    #raise ValueError,"No such element type: %s" % name
+    #raise ValueError("No such element type: %s" % name
     return None
 
 

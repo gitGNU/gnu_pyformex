@@ -77,7 +77,7 @@ def nodalSum(val,elems,work,avg):
         wi = where(elems==i)
         vi = val[wi]
         if avg:
-            raise RuntimeError,"THIS DOES NOT WORK!!!!"
+            raise RuntimeError("THIS DOES NOT WORK!!!!")
             vi = vi.sum(axis=0)/vi.shape[0]
         else:
             vi = vi.sum(axis=0)
