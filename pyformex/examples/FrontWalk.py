@@ -52,7 +52,7 @@ def run():
 
     # Walk 1: start at nodes 1834 and 2000
     n0 = [1444,2020]
-    e1 = M.elems.connectedTo(n0)
+    e1 = M.connectedTo(n0)
     p1 = M.frontWalk(startat=e1)
 
     # Walk 2: start at elements and nodes

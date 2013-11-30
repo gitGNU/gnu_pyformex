@@ -77,8 +77,8 @@ def run():
     sleep(4)
     clear()
     draw(M.coords[n0],marksize=10,bbox='last',ontop=True)
-    M = M.connectedTo(n0)
-    M1 = M1.connectedTo(n1)
+    M = M.select(M.connectedTo(n0))
+    M1 = M.select(M1.connectedTo(n1))
     draw([M,M1])
 
 if __name__ == 'draw':

@@ -801,7 +801,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
           self.cselect(self.getBorderElems())
         """
         if nodal:
-            brd=self.elems.connectedTo(self.getBorderNodes())
+            brd=self.connectedTo(self.getBorderNodes())
         else:
             brd=self.getBorderElems()
         return self.cselect(brd)
@@ -825,6 +825,40 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         """
         return self.getFreeEntitiesMesh(level=1,compact=compact)
 
+
+    @utils.deprecation("mesh_connectedTo")
+    def connectedTo(self,entities,level=0):
+        """Select the elements connected to specific lower entities.
+
+        `entities`: int or array_like, int. Entity selector.
+        `level`: int. Entity level. Default 0 (nodes).
+
+        Returns a list of the numbers of the elements that contain at
+        least one of the specified lower entities.
+        """
+        if level == 0:
+            elems = self.elems
+        else:
+            elems,lo = self.elems.insertLevel(level)
+        return self.elems.connectedTo(entities)
+
+
+    @utils.deprecation("mesh_notConnectedTo")
+    def notConnectedTo(self,nodes):
+        pass
+
+
+    def adjacentTo(self,elements,level=0):
+        """Select the elements adjacent to the specified elements.
+
+        `elements`: int or array_like, int. Element selector.
+        `level`: int. Entity level used to define adjacency. Default 0 (nodes).
+
+        Returns a list of all the elements in the Mesh adjacent
+        to any of the specified elements. The adjacency is defined
+        over nodes, edges or faces, depending on the `level`.
+        """
+        return where(self.frontWalk(startat=elements,level=level,maxval=1,optim_mem=True) == 1)[0]
 
 #############################################################################
     # Adjacency #
@@ -1357,46 +1391,6 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
     @utils.deprecation("Mesh.withoutProp is deprecated. Use Geometry.cselectProp instead.")
     def withoutProp(self,val):
         return self.cselectProp(val,compact=False)
-
-
-    def connectedTo(self,entities,level=0):
-        """Select the elements connected to specific lower entities.
-
-        `entities`: int or array_like, int. Entity selector.
-        `level`: int. Entity level. Default 0 (nodes).
-
-        Returns a Mesh with all the elements from the original that contain at
-        least one of the specified lower entities.
-        """
-        if level == 0:
-            elems = self.elems
-        else:
-            elems,lo = self.elems.insertLevel(level)
-        return self.select(self.elems.connectedTo(entities),compact=False)
-
-
-    def notConnectedTo(self,nodes):
-        """Return a Mesh with the elements not connected to the given node(s).
-
-        `nodes`: int or array_like, int.
-
-        Returns a Mesh with all the elements from the original that do not
-        contain any of the specified nodes.
-        """
-        return self.cselect(self.elems.connectedTo(nodes))
-
-
-    def adjacentTo(self,elements,level=0):
-        """Select the elements adjacent to the specified elements.
-
-        `elements`: int or array_like, int. Element selector.
-        `level`: int. Entity level used to define adjacency. Default 0 (nodes).
-
-        Returns a list of all the elements in the Mesh adjacent
-        to any of the specified elements. The adjacency is defined
-        over nodes, edges or faces, depending on the `level`.
-        """
-        return where(self.frontWalk(startat=elements,level=level,maxval=1,optim_mem=True) == 1)[0]
 
 
     def hits(self, entities, level):
