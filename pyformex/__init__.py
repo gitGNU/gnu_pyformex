@@ -56,17 +56,6 @@ import sys
 if sys.hexversion < 0x03000000:
     from compat_2k import *
 else:
-
-    print("""
-    #####################################################################
-    ##  Warning! This is an experimental Python3 version of pyFormex.  ##
-    ##  It is only meant for development and debugging purposes.       ##
-    ##  It is not functional yet. For production purposes, use the     ##
-    ##  Python2 version.                                               ##
-    #####################################################################
-    """)
-
-    print("3K: IMPORTING COMPAT MODULE")
     from compat_3k import *
 
 # Install type.

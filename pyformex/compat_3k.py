@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2011 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright 2004-2011 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -33,8 +33,26 @@ the Python version inside that module. The differences between the
 versions might cause compilation to fail.
 """
 from __future__ import print_function
-        
-    
+
+print("""
+#####################################################################
+##  Warning! This is an experimental Python3 version of pyFormex.  ##
+##  It is only meant for development and debugging purposes.       ##
+##  It is not functional yet. For production purposes, use the     ##
+##  Python2 version.                                               ##
+#####################################################################
+""")
+
+import sys
+if sys.hexversion &  0xFFFF0000:  # Checks for Python 3.1
+
+    # Python 3.1 has no callable(), let's define it here
+    import collections
+    def callable(f):
+        return isinstance(f,collections.Callable)
+    __builtin__.callable = callable
+
+
 def execFile(f,*args):
     return exec(compile(open(f).read(), f, 'exec'),*args)
 

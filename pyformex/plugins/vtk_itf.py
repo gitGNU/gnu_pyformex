@@ -148,7 +148,7 @@ def convert2VPD(M,clean=False,lineopt='segment',verbose=False):
     from vtk import vtkPolyData,vtkPoints,vtkIdTypeArray,vtkCellArray
 
     if verbose:
-        print('STARTING CONVERSION FOR DATA OF TYPE %s '%type(M))
+        print(('STARTING CONVERSION FOR DATA OF TYPE %s '%type(M)))
 
     if  isinstance(M,Coords):
         M = Mesh(M,arange(M.ncoords()))
@@ -188,7 +188,7 @@ def convert2VPD(M,clean=False,lineopt='segment',verbose=False):
     if M.nplex() == 1:
         try:
             if verbose:
-                print("setting VERTS for data with %s maximum number of point for cell "%Ncxel)
+                print(("setting VERTS for data with %s maximum number of point for cell "%Ncxel))
             vpd.SetVerts(datav)
         except:
             raise ValueError("Error in saving  VERTS")
@@ -196,7 +196,7 @@ def convert2VPD(M,clean=False,lineopt='segment',verbose=False):
     elif M.nplex() == 2:
         try:
             if verbose:
-                print ("setting LINES for data with %s maximum number of point for cell "%Ncxel)
+                print(("setting LINES for data with %s maximum number of point for cell "%Ncxel))
             vpd.SetLines(datav)
         except:
             raise  ValueError("Error in saving  LINES")
@@ -204,7 +204,7 @@ def convert2VPD(M,clean=False,lineopt='segment',verbose=False):
     else:
         try:
             if verbose:
-                print ("setting POLYS for data with %s maximum number of point for cell "%Ncxel)
+                print(("setting POLYS for data with %s maximum number of point for cell "%Ncxel))
             vpd.SetPolys(datav)
         except:
             raise ValueError("Error in saving  POLYS")
@@ -311,7 +311,7 @@ def convertFromVPD(vpd,verbose=False):
         fielddata = [asarray(v2n(fielddata.GetArray(an)),dtype=ntype) for ntype,an in zip(ntypes,arraynm)]
         fielddata = dict(zip(arraynm, fielddata)) # dictionary of array names
         if verbose:
-            print('Field Data Arrays: '+''.join(['%s, '%nm for nm in arraynm]))
+            print(('Field Data Arrays: '+''.join(['%s, '%nm for nm in arraynm])))
     
     
     # getting cells data
@@ -322,7 +322,7 @@ def convertFromVPD(vpd,verbose=False):
         celldata = [asarray(v2n(celldata.GetArray(an)),dtype=ntype) for ntype,an in zip(ntypes,arraynm)]
         celldata = dict(zip(arraynm, celldata)) # dictionary of array names
         if verbose:
-            print('Cell Data Arrays: '+''.join(['%s, '%nm for nm in arraynm]))
+            print(('Cell Data Arrays: '+''.join(['%s, '%nm for nm in arraynm])))
     
     
     # getting points data
@@ -333,7 +333,7 @@ def convertFromVPD(vpd,verbose=False):
         pointdata = [asarray(v2n(pointdata.GetArray(an)),dtype=ntype) for ntype,an in zip(ntypes,arraynm)]
         pointdata = dict(zip(arraynm, pointdata)) # dictionary of array names
         if verbose:
-            print('Point Data Arrays: '+''.join(['%s, '%nm for nm in arraynm]))
+            print(('Point Data Arrays: '+''.join(['%s, '%nm for nm in arraynm])))
     
 
     return [coords, cells, polys, lines, verts],fielddata,celldata,pointdata
@@ -376,14 +376,14 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
     for k in fielddata.keys(): # same numbering of mesh.elems??
         ntype = gnat(vtkDoubleArray().GetDataType())
         if fielddata[k].shape[0]!=mesh.nelems():
-            print (fielddata[k].shape,)
+            print((fielddata[k].shape,))
         fielddata = n2v(asarray(fielddata[k],order='C',dtype=ntype),deep=1)
         fieldar.SetName(k)
         lvtk.GetFieldData().AddArray(fielddata)
     for k in celldata.keys(): # same numbering of mesh.elems
         ntype = gnat(vtkDoubleArray().GetDataType())
         if celldata[k].shape[0]!=mesh.nelems():
-            print (celldata[k].shape, mesh.nelems())
+            print((celldata[k].shape, mesh.nelems()))
             utils.warn("warn_writevtp_shape")
         celldata = n2v(asarray(celldata[k],order='C',dtype=ntype),deep=1)
         celldata.SetName(k)
@@ -391,12 +391,12 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
     for k in pointdata.keys(): # same numbering of mesh.coords
         ntype = gnat(vtkDoubleArray().GetDataType())
         if pointdata[k].shape[0]!=mesh.ncoords(): # mesh should be clean!!
-            print (pointdata[k].shape, mesh.ncoords())
+            print((pointdata[k].shape, mesh.ncoords()))
             utils.warn("warn_writevtp_shape2")
         pointdata = n2v(asarray(pointdata[k],order='C',dtype=ntype),deep=1)
         pointdata.SetName(k)
         lvtk.GetPointData().AddArray(pointdata)
-    print ('************lvtk', lvtk)
+    print(('************lvtk', lvtk))
     ftype = os.path.splitext(fn)[1]
     ftype = ftype.strip('.').lower()
     if ftype=='vtp':
@@ -670,7 +670,7 @@ def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True, verbose=Fal
     vpd=cleanVPD(vpd)
     [coords, cells, polys, lines, verts],fielddata,celldata,pointdata=convertFromVPD(vpd)#convert vpd to pyFormex surface
     if verbose:
-        print ('%d faces decimated into %d triangles'%(self.nelems(), len(polys)))
+        print(('%d faces decimated into %d triangles'%(self.nelems(), len(polys))))
     return TriSurface(coords, polys)
 
 

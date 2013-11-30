@@ -441,7 +441,7 @@ def checkItem(has,want):
         return 'Unwanted'
     has = SaneVersion(has)
     want = SaneVersion(want)
-    print("HAS %s; WANT %s" % (has,want))
+    print(("HAS %s; WANT %s" % (has,want)))
     if has == want:
         return 'Matching'
     if has < want:
@@ -461,9 +461,9 @@ def checkSoftware(req):
     comp = []
     for k in req:
         comp.extend(checkDict(soft[k],req[k]))
-    print(utils.underlineHeader("%30s %15s %15s %10s" % ("Item","Found","Required","OK")))
+    print((utils.underlineHeader("%30s %15s %15s %10s" % ("Item","Found","Required","OK"))))
     for item in comp:
-        print("%30s %15s %15s %10s" % item)
+        print(("%30s %15s %15s %10s" % item))
 
 
 def registerSoftware(req):
@@ -504,7 +504,7 @@ def storeSoftware(soft,fn,mode='python'):
         conf.write(fn)
     elif mode == 'pickle':
         import cPickle as pickle
-        print("PICKLING",soft)
+        print(("PICKLING",soft))
         pickle.dump(soft,open(fn,'w'))
 
 
@@ -516,7 +516,7 @@ def readSoftware(fn,mode='python'):
     - `mode` = 'pickle': binary
     """
     if mode == 'python':
-        print(os.path.abspath(fn))
+        print((os.path.abspath(fn)))
         with open(fn,'r') as fil:
             exec(fil.read())
     elif mode == 'config':
@@ -547,9 +547,9 @@ if __name__ == "draw":
         }
 
     soft = detectedSoftware()
-    print(reportSoftware(header="Found Software"))
+    print((reportSoftware(header="Found Software")))
     print('\n ')
-    print(reportSoftware(Required,header="Required Software"))
+    print((reportSoftware(Required,header="Required Software")))
     print('\n ')
 
     checkSoftware(Required)

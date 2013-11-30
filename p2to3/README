@@ -1,4 +1,79 @@
-# 
-# This directory is intended for development purposes 
+#
+# This directory is intended for development purposes
 # on the Python3 version of pyFormex.
 #
+
+Conversion is done byt the 2to3 fixers:
+See http://docs.python.org/2/library/2to3.html#fixers
+
+A - in the first column means that the fixer has been applied, ? means that
+it still needs to be done, an = that there is no need to fix it, as we have
+implemented another solution.
+
+- apply
+- basestring
+- buffer
+= callable: no need: we have added callable to Python 3.1
+? dict
+- except
+= exec: should be done with our own function in compat*
+= execfile: should be done with our own function in compat*
+? exitfunc
+- print
+- raise
+? filter
+? funcattrs
+? future
+? getcwdu
+? has_key
+? idioms
+? import
+? imports
+? imports2
+? input
+? intern
+? isinstance
+? itertools_imports
+? itertools
+? long
+? map
+? metaclass
+? methodattrs
+? ne
+? next
+? nonzero
+? numliterals
+? paren
+- print
+- raise
+? raw_input
+? reduce
+? renames
+? repr
+? set_literal
+? standard_error
+? sys_exc
+? throw
+? tuple_params
+? types
+? unicode
+? urllib
+? ws_comma
+? xrange
+? xreadlines
+? zip
+
+
+
+
+To convert the code for s specific fixer::
+
+  2to3 -f fixer pyformex
+
+To write back the converted files::
+
+  2to3 -f fixer -w pyformex
+
+To avoid creating backup files::
+
+  2to3 -f fixer -w -n pyformex

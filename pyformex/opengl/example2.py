@@ -58,9 +58,9 @@ pf.app.processEvents()
 
 exit()
 
-print(S.npoints())
+print((S.npoints()))
 col = [red,red]*81
-print(len(col))
+print((len(col)))
 SA = GeomActor(S,ambient=0.0,diffuse=1.0,specular=0.0,color=red,alpha=0.7,light=(0.,1.,1.),shininess=20)
 
 TA = GeomActor(T,ambient=0.5,diffuse=0.5,color=blue,bkcolor=green,alpha=0.9,light=(0.,1.,1.))

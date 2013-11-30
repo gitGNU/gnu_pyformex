@@ -281,7 +281,7 @@ def system(cmd,timeout=None,verbose=False,raise_error=False,**kargs):
     its info, like the exit code, stdout and stderr, and whether the command
     timed out or not. See :class:`Process` for more info.
     This Process is also saved as the global variable
-    :var:`utils.last_command` to allow checking the outcome of the command
+    :attr:`utils.last_command` to allow checking the outcome of the command
     from other places but the caller.
     """
     global last_command
@@ -575,7 +575,7 @@ file_description = {
 def fileExtensions(ftype):
     """Return the list of file extensions from a given type.
 
-    ftype is one of the keys in :var:`utils.file_description`.
+    ftype is one of the keys in :attr:`utils.file_description`.
 
     Returns a list of strings starting with a '.'.
     """
