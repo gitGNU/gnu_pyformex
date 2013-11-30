@@ -1,5 +1,5 @@
 .. $Id$
-  
+
 ..
   This file is part of pyFormex 0.9.1  (Tue Oct 15 21:05:25 CEST 2013)
   pyFormex is a tool for generating, manipulating and transforming 3D
@@ -8,31 +8,6 @@
   Project page:  http://savannah.nongnu.org/projects/pyformex/
   Copyright 2004-2013 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
   Distributed under the GNU General Public License version 3 or later.
-  
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-  
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-  
-  You should have received a copy of the GNU General Public License
-  along with this program.  If not, see http://www.gnu.org/licenses/.
-  
-  
-
-..
-  This file is part of pyFormex 0.9.0  (Mon Mar 25 13:52:29 CET 2013)
-  pyFormex is a tool for generating, manipulating and transforming 3D
-  geometrical models by sequences of mathematical operations.
-  Home page: http://pyformex.org
-  Project page:  http://savannah.nongnu.org/projects/pyformex/
-  Copyright 2004-2012 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
-  Distributed under the GNU General Public License version 3 or later.
-
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1174,10 +1149,28 @@ helical frame structure:
 
 Yet the geometry of this complex structure was built from the very
 simple pyFormex script shown below (Use :menuselection:`File --> Edit
-script` to load it in your editor.
+script` to load it in your editor. Leaving out the comments and docstring,
+the relevant part of the script looks like this:
 
-.. literalinclude:: static/scripts/Helix.py
+.. code-block:: python
    :linenos:
+
+    """Helix example from pyFormex"""
+    m = 36 # number of cells along helix
+    n = 10 # number of cells along circular cross section
+    reset()
+    setDrawOptions({'clear':True})
+    F = Formex('l:164'),[1,2,3]);draw(F)
+    F = F.replic(m,1.,0); draw(F)
+    F = F.replic(n,1.,1); draw(F)
+    F = F.translate(2,1.); draw(F,view='iso')
+    F = F.cylindrical([2,1,0],[1.,360./n,1.]); draw(F)
+    F = F.replic(5,m*1.,2); draw(F)
+    F = F.rotate(-10.,0); draw(F)
+    F = F.translate(0,5.); draw(F)
+    F = F.cylindrical([0,2,1],[1.,360./m,1.]); draw(F)
+    draw(F,view='right')
+
 
 The script shows all steps in the building of the helical structure.
 We will explain and illustrate them one by one.
@@ -1188,16 +1181,16 @@ Wait Time`. Or alternatively, you can start the script with the
 |button-step| button: pyFormex will then halt before each ``draw``
 function and wait until you push the |button-step| again.
 
-The script starts (lines 26-27) with setting the two parameters ``m`` and ``n``. It is
+The script starts with setting the two parameters ``m`` and ``n``. It is
 always a good idea to put constants in a variable. That makes it easy to
 change the values in a single place when you want to create another
 structure:
 `your model has become a parametric model.`
 
-Lines 28 resets the drawing options to the defaults. It is not essential in this script but it is often a good idea to restore the defaults, in case they would have been changed by a script that was run previously.
-Setting the ``clear=True`` option in line 29 makes sure the subsequent drawing instructions will remove the previous step from the canvas.
+Lines 3 resets the drawing options to the defaults. It is not essential in this script but it is often a good idea to restore the defaults, in case they would have been changed by a script that was run previously.
+Setting the ``clear=True`` option in line 4 makes sure the subsequent drawing instructions will remove the previous step from the canvas.
 
-In line 30 we create the basic geometrical entity for this structure: a triangle consisting of three lines, which we give the properties 1, 2 and 3, so that the three lines are shown in a different color::
+In line 5 we create the basic geometrical entity for this structure: a triangle consisting of three lines, which we give the properties 1, 2 and 3, so that the three lines are shown in a different color::
 
     F = Formex('l:164',[1,2,3])
 
