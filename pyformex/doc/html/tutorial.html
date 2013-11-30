@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyFormex tutorial &mdash; pyFormex 0.9.1 documentation</title>
+    <title>pyFormex tutorial &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="_static/pyformex.css" type="text/css" />
@@ -43,7 +43,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.9.1',
+        VERSION:     '1.0.0~a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +52,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 0.9.1 documentation" href="index.html" />
+    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="index.html" />
     <link rel="next" title="pyFormex user guide" href="user-guide.html" />
     <link rel="prev" title="Installing pyFormex" href="install.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
@@ -82,7 +82,7 @@
         <li class="right" >
           <a href="install.html" title="Installing pyFormex"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyFormex 0.9.1 documentation</a> &gt;</li> 
+        <li><a href="index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -536,21 +536,23 @@ continue with this tutorial.</p>
 26
 27
 28
-29</pre></div></td><td class="code"><div class="highlight"><pre><span class="c">#!/usr/bin/env python</span>
+29
+30</pre></div></td><td class="code"><div class="highlight"><pre><span class="c">#!/usr/bin/env python</span>
 <span class="sd">&quot;&quot;&quot;Python intro</span>
 
 <span class="sd">A short introduction to some aspects of the Python programming language</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
 <span class="k">for</span> <span class="n">light</span> <span class="ow">in</span> <span class="p">[</span> <span class="s">&#39;green&#39;</span><span class="p">,</span><span class="s">&#39;yellow&#39;</span><span class="p">,</span><span class="s">&#39;red&#39;</span><span class="p">,</span><span class="s">&#39;black&#39;</span><span class="p">,</span><span class="bp">None</span><span class="p">]:</span>
     <span class="k">if</span> <span class="n">light</span> <span class="o">==</span> <span class="s">&#39;red&#39;</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s">&#39;stop&#39;</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;stop&#39;</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">light</span> <span class="o">==</span> <span class="s">&#39;yellow&#39;</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s">&#39;brake&#39;</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;brake&#39;</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">light</span> <span class="o">==</span> <span class="s">&#39;green&#39;</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s">&#39;drive&#39;</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;drive&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s">&#39;THE LIGHT IS BROKEN!&#39;</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;THE LIGHT IS BROKEN!&#39;</span><span class="p">)</span>
 
 <span class="n">appreciation</span> <span class="o">=</span> <span class="p">{</span>
     <span class="mi">0</span><span class="p">:</span> <span class="s">&#39;not driving&#39;</span><span class="p">,</span>
@@ -562,7 +564,7 @@ continue with this tutorial.</p>
 
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
     <span class="n">speed</span> <span class="o">=</span> <span class="mi">30</span><span class="o">*</span><span class="n">i</span>
-    <span class="k">print</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">. Driving at speed </span><span class="si">%s</span><span class="s"> is </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">speed</span><span class="p">,</span><span class="n">appreciation</span><span class="p">[</span><span class="n">speed</span><span class="p">])</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">. Driving at speed </span><span class="si">%s</span><span class="s"> is </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">speed</span><span class="p">,</span><span class="n">appreciation</span><span class="p">[</span><span class="n">speed</span><span class="p">]))</span>
 
 <span class="c"># End</span>
 </pre></div>
@@ -1364,47 +1366,39 @@ helical frame structure:</p>
 </div>
 <p>Yet the geometry of this complex structure was built from the very
 simple pyFormex script shown below (Use <em class="menuselection">File ‣ Edit
-script</em> to load it in your editor.</p>
-<div class="highlight-python"><pre># $Id: 4560b6c on Wed Oct 2 17:10:50 2013 +0200 by Benedict Verhegghe $   *** pyformex ***
-##
-##  This file is part of pyFormex 0.9.1  (Tue Oct 15 21:05:25 CEST 2013)
-##  pyFormex is a tool for generating, manipulating and transforming 3D
-##  geometrical models by sequences of mathematical operations.
-##  Home page: http://pyformex.org
-##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright 2004-2013 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
-##  Distributed under the GNU General Public License version 3 or later.
-##
-##  This program is free software: you can redistribute it and/or modify
-##  it under the terms of the GNU General Public License as published by
-##  the Free Software Foundation, either version 3 of the License, or
-##  (at your option) any later version.
-##
-##  This program is distributed in the hope that it will be useful,
-##  but WITHOUT ANY WARRANTY; without even the implied warranty of
-##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##  GNU General Public License for more details.
-##
-##  You should have received a copy of the GNU General Public License
-##  along with this program.  If not, see http://www.gnu.org/licenses/.
-##
-"""Helix example from pyFormex"""
-m = 36 # number of cells along helix
-n = 10 # number of cells along circular cross section
-reset()
-setDrawOptions({'clear':True})
-F = Formex('l:164'),[1,2,3]); draw(F)
-F = F.replic(m,1.,0); draw(F)
-F = F.replic(n,1.,1); draw(F)
-F = F.translate(2,1.); draw(F,view='iso')
-F = F.cylindrical([2,1,0],[1.,360./n,1.]); draw(F)
-F = F.replic(5,m*1.,2); draw(F)
-F = F.rotate(-10.,0); draw(F)
-F = F.translate(0,5.); draw(F)
-F = F.cylindrical([0,2,1],[1.,360./m,1.]); draw(F)
-draw(F,view='right')
-</pre>
-</div>
+script</em> to load it in your editor. Leaving out the comments and docstring,
+the relevant part of the script looks like this:</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre> <span class="sd">&quot;&quot;&quot;Helix example from pyFormex&quot;&quot;&quot;</span>
+ <span class="n">m</span> <span class="o">=</span> <span class="mi">36</span> <span class="c"># number of cells along helix</span>
+ <span class="n">n</span> <span class="o">=</span> <span class="mi">10</span> <span class="c"># number of cells along circular cross section</span>
+ <span class="n">reset</span><span class="p">()</span>
+ <span class="n">setDrawOptions</span><span class="p">({</span><span class="s">&#39;clear&#39;</span><span class="p">:</span><span class="bp">True</span><span class="p">})</span>
+ <span class="n">F</span> <span class="o">=</span> <span class="n">Formex</span><span class="p">(</span><span class="s">&#39;l:164&#39;</span><span class="p">),[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]);</span><span class="n">draw</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+ <span class="n">F</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">replic</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span> <span class="n">draw</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+ <span class="n">F</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">replic</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span> <span class="n">draw</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+ <span class="n">F</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mf">1.</span><span class="p">);</span> <span class="n">draw</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="n">view</span><span class="o">=</span><span class="s">&#39;iso&#39;</span><span class="p">)</span>
+ <span class="n">F</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cylindrical</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">360.</span><span class="o">/</span><span class="n">n</span><span class="p">,</span><span class="mf">1.</span><span class="p">]);</span> <span class="n">draw</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+ <span class="n">F</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">replic</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="n">m</span><span class="o">*</span><span class="mf">1.</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span> <span class="n">draw</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+ <span class="n">F</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mf">10.</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span> <span class="n">draw</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+ <span class="n">F</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">5.</span><span class="p">);</span> <span class="n">draw</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+ <span class="n">F</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cylindrical</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">360.</span><span class="o">/</span><span class="n">m</span><span class="p">,</span><span class="mf">1.</span><span class="p">]);</span> <span class="n">draw</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+ <span class="n">draw</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="n">view</span><span class="o">=</span><span class="s">&#39;right&#39;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
 <p>The script shows all steps in the building of the helical structure.
 We will explain and illustrate them one by one.
 If you want to see the intermediate results in pyFormex during
@@ -1413,14 +1407,14 @@ subsequent drawing operations with <em class="menuselection">Settings ‣ Draw
 Wait Time</em>. Or alternatively, you can start the script with the
 <img alt="button-step" src="_images/step.png" /> button: pyFormex will then halt before each <tt class="docutils literal"><span class="pre">draw</span></tt>
 function and wait until you push the <img alt="button-step" src="_images/step.png" /> again.</p>
-<p>The script starts (lines 26-27) with setting the two parameters <tt class="docutils literal"><span class="pre">m</span></tt> and <tt class="docutils literal"><span class="pre">n</span></tt>. It is
+<p>The script starts with setting the two parameters <tt class="docutils literal"><span class="pre">m</span></tt> and <tt class="docutils literal"><span class="pre">n</span></tt>. It is
 always a good idea to put constants in a variable. That makes it easy to
 change the values in a single place when you want to create another
 structure:
 <cite>your model has become a parametric model.</cite></p>
-<p>Lines 28 resets the drawing options to the defaults. It is not essential in this script but it is often a good idea to restore the defaults, in case they would have been changed by a script that was run previously.
-Setting the <tt class="docutils literal"><span class="pre">clear=True</span></tt> option in line 29 makes sure the subsequent drawing instructions will remove the previous step from the canvas.</p>
-<p>In line 30 we create the basic geometrical entity for this structure: a triangle consisting of three lines, which we give the properties 1, 2 and 3, so that the three lines are shown in a different color:</p>
+<p>Lines 3 resets the drawing options to the defaults. It is not essential in this script but it is often a good idea to restore the defaults, in case they would have been changed by a script that was run previously.
+Setting the <tt class="docutils literal"><span class="pre">clear=True</span></tt> option in line 4 makes sure the subsequent drawing instructions will remove the previous step from the canvas.</p>
+<p>In line 5 we create the basic geometrical entity for this structure: a triangle consisting of three lines, which we give the properties 1, 2 and 3, so that the three lines are shown in a different color:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">F</span> <span class="o">=</span> <span class="n">Formex</span><span class="p">(</span><span class="s">&#39;l:164&#39;</span><span class="p">,[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -1568,14 +1562,14 @@ arrays are the same, within a small tolerance.</p>
         <li class="right" >
           <a href="install.html" title="Installing pyFormex"
              >previous</a> |</li>
-        <li><a href="index.html">pyFormex 0.9.1 documentation</a> &gt;</li> 
+        <li><a href="index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Oct 15, 2013.
+      Last updated on Nov 30, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

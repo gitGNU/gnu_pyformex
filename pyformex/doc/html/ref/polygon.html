@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>54. polygon — Polygonal facets. &mdash; pyFormex 0.9.1 documentation</title>
+    <title>55. polygon — Polygonal facets. &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +43,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.1',
+        VERSION:     '1.0.0~a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,10 +52,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 0.9.1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="55. polynomial — Polynomials" href="polynomial.html" />
-    <link rel="prev" title="53. plot2d — plot2d.py" href="plot2d.html" />
+    <link rel="next" title="56. polynomial — Polynomials" href="polynomial.html" />
+    <link rel="prev" title="54. plot2d — plot2d.py" href="plot2d.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -78,12 +78,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="polynomial.html" title="55. polynomial — Polynomials"
+          <a href="polynomial.html" title="56. polynomial — Polynomials"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="plot2d.html" title="53. plot2d — plot2d.py"
+          <a href="plot2d.html" title="54. plot2d — plot2d.py"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -103,10 +103,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="plot2d.html"
-                        title="previous chapter">53. <tt class="docutils literal docutils literal docutils literal"><span class="pre">plot2d</span></tt> &#8212; plot2d.py</a></p>
+                        title="previous chapter">54. <tt class="docutils literal docutils literal docutils literal"><span class="pre">plot2d</span></tt> &#8212; plot2d.py</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="polynomial.html"
-                        title="next chapter">55. <tt class="docutils literal"><span class="pre">polynomial</span></tt> &#8212; Polynomials</a></p>
+                        title="next chapter">56. <tt class="docutils literal"><span class="pre">polynomial</span></tt> &#8212; Polynomials</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -141,7 +141,7 @@
           <div class="body">
             
   <div class="section" id="module-polygon">
-<span id="polygon-polygonal-facets"></span><span id="sec-ref-polygon"></span><h1>54. <a class="reference internal" href="#module-polygon" title="polygon: Polygonal facets."><tt class="xref py py-mod docutils literal"><span class="pre">polygon</span></tt></a> &#8212; Polygonal facets.<a class="headerlink" href="#module-polygon" title="Permalink to this headline">¶</a></h1>
+<span id="polygon-polygonal-facets"></span><span id="sec-ref-polygon"></span><h1>55. <a class="reference internal" href="#module-polygon" title="polygon: Polygonal facets."><tt class="xref py py-mod docutils literal"><span class="pre">polygon</span></tt></a> &#8212; Polygonal facets.<a class="headerlink" href="#module-polygon" title="Permalink to this headline">¶</a></h1>
 <p><tt class="docutils literal"><span class="pre">Classes</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">polygon</span></tt></p>
 <dl class="class">
 <dt id="polygon.Polygon">
@@ -498,12 +498,117 @@ specified in blocks.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="polygon.Polygon.toProp">
+<tt class="descname">toProp</tt><big>(</big><em>prop</em><big>)</big><a class="headerlink" href="#polygon.Polygon.toProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the argument into a legal set of properties for the object.</p>
+<p>The conversion involves resizing the argument to a 1D array of
+length self.nelems(), and converting the data type to integer.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="polygon.Polygon.whereProp">
+<tt class="descname">whereProp</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#polygon.Polygon.whereProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the numbers of the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is an array holding all the numbers of all the
+elements that have the property val, resp. one of the values in val.</p>
+<p>If the object has no properties, a empty array is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="polygon.Polygon.select">
+<tt class="descname">select</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#polygon.Polygon.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#polygon.Polygon.cselect" title="polygon.Polygon.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="polygon.Polygon.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#polygon.Polygon.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>selected</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#polygon.Polygon.select" title="polygon.Polygon.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="polygon.Polygon.selectProp">
+<tt class="descname">selectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#polygon.Polygon.selectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object which holds only the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="polygon.Polygon.cselectProp">
+<tt class="descname">cselectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#polygon.Polygon.cselectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object without the elements with property <cite>val</cite>.</p>
+<p>This is the complementary method of selectProp.
+val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that do not
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="polygon.Polygon.getCoords">
 <tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#polygon.Polygon.getCoords" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the coords data.</p>
 <p>Returns the full array of coordinates stored in the Geometry object.
 Note that subclasses may store more points in this array than are used
 to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="polygon.Polygon.convexHull">
+<tt class="descname">convexHull</tt><big>(</big><em>compact=True</em><big>)</big><a class="headerlink" href="#polygon.Polygon.convexHull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the convex hull of the geometry.</p>
+<p>The convex hull is a closed TriSurface enclosing all points
+of the geometry.</p>
 </dd></dl>
 
 <dl class="method">
@@ -518,6 +623,24 @@ to define the geometry.</p>
 <dd><p>Return a deep copy of the Geometry  object.</p>
 <p>The returned object is an exact copy of the input, but has
 all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="polygon.Polygon.splitProp">
+<tt class="descname">splitProp</tt><big>(</big><em>prop=None</em><big>)</big><a class="headerlink" href="#polygon.Polygon.splitProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition a Geometry (Formex/Mesh) according to the values in prop.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>prop</cite>: an int array with length self.nelems(), or None. If None,
+the <cite>prop</cite> attribute of the Geometry is used.</li>
+</ul>
+<p>Returns a list of Geometry objects of the same type as the input.
+Each object contains all the elements having the same value of <cite>prop</cite>.
+The number of objects in the list is equal to the number of unique
+values in <cite>prop</cite>. The list is sorted in ascending order of their
+<cite>prop</cite> value.</p>
+<p>It <cite>prop</cite> is None and the the object has no <cite>prop</cite> attribute, an empty
+list is returned.</p>
 </dd></dl>
 
 <dl class="method">
@@ -579,12 +702,12 @@ The last coordinate will however (approximately) be zero.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="polynomial.html" title="55. polynomial — Polynomials"
+          <a href="polynomial.html" title="56. polynomial — Polynomials"
              >next</a> |</li>
         <li class="right" >
-          <a href="plot2d.html" title="53. plot2d — plot2d.py"
+          <a href="plot2d.html" title="54. plot2d — plot2d.py"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -592,7 +715,7 @@ The last coordinate will however (approximately) be zero.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Oct 15, 2013.
+      Last updated on Nov 30, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

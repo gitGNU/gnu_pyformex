@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>37. curve — Definition of curves in pyFormex. &mdash; pyFormex 0.9.1 documentation</title>
+    <title>38. curve — Definition of curves in pyFormex. &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +43,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.1',
+        VERSION:     '1.0.0~a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,10 +52,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 0.9.1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="38. datareader — Numerical data reader" href="datareader.html" />
-    <link rel="prev" title="36. ccxinp —" href="ccxinp.html" />
+    <link rel="next" title="39. datareader — Numerical data reader" href="datareader.html" />
+    <link rel="prev" title="37. ccxinp —" href="ccxinp.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -78,12 +78,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="datareader.html" title="38. datareader — Numerical data reader"
+          <a href="datareader.html" title="39. datareader — Numerical data reader"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="ccxinp.html" title="36. ccxinp —"
+          <a href="ccxinp.html" title="37. ccxinp —"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -103,10 +103,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="ccxinp.html"
-                        title="previous chapter">36. <tt class="docutils literal docutils literal docutils literal"><span class="pre">ccxinp</span></tt> &#8212;</a></p>
+                        title="previous chapter">37. <tt class="docutils literal docutils literal docutils literal"><span class="pre">ccxinp</span></tt> &#8212;</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="datareader.html"
-                        title="next chapter">38. <tt class="docutils literal"><span class="pre">datareader</span></tt> &#8212; Numerical data reader</a></p>
+                        title="next chapter">39. <tt class="docutils literal"><span class="pre">datareader</span></tt> &#8212; Numerical data reader</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -141,7 +141,7 @@
           <div class="body">
             
   <div class="section" id="module-curve">
-<span id="curve-definition-of-curves-in-pyformex"></span><span id="sec-ref-curve"></span><h1>37. <a class="reference internal" href="#module-curve" title="curve: Definition of curves in pyFormex."><tt class="xref py py-mod docutils literal"><span class="pre">curve</span></tt></a> &#8212; Definition of curves in pyFormex.<a class="headerlink" href="#module-curve" title="Permalink to this headline">¶</a></h1>
+<span id="curve-definition-of-curves-in-pyformex"></span><span id="sec-ref-curve"></span><h1>38. <a class="reference internal" href="#module-curve" title="curve: Definition of curves in pyFormex."><tt class="xref py py-mod docutils literal"><span class="pre">curve</span></tt></a> &#8212; Definition of curves in pyFormex.<a class="headerlink" href="#module-curve" title="Permalink to this headline">¶</a></h1>
 <p>This module defines classes and functions specialized for handling
 one-dimensional geometry in pyFormex. These may be straight lines, polylines,
 higher order curves and collections thereof. In general, the curves are 3D,
@@ -650,12 +650,109 @@ length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.Curve.whereProp">
+<tt class="descname">whereProp</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#curve.Curve.whereProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the numbers of the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is an array holding all the numbers of all the
+elements that have the property val, resp. one of the values in val.</p>
+<p>If the object has no properties, a empty array is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Curve.select">
+<tt class="descname">select</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Curve.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#curve.Curve.cselect" title="curve.Curve.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Curve.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Curve.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>selected</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#curve.Curve.select" title="curve.Curve.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Curve.selectProp">
+<tt class="descname">selectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Curve.selectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object which holds only the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Curve.cselectProp">
+<tt class="descname">cselectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Curve.cselectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object without the elements with property <cite>val</cite>.</p>
+<p>This is the complementary method of selectProp.
+val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that do not
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.Curve.getCoords">
 <tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Curve.getCoords" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the coords data.</p>
 <p>Returns the full array of coordinates stored in the Geometry object.
 Note that subclasses may store more points in this array than are used
 to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Curve.convexHull">
+<tt class="descname">convexHull</tt><big>(</big><em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Curve.convexHull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the convex hull of the geometry.</p>
+<p>The convex hull is a closed TriSurface enclosing all points
+of the geometry.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1239,12 +1336,13 @@ length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.PolyLine.getCoords">
-<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.PolyLine.getCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coords data.</p>
-<p>Returns the full array of coordinates stored in the Geometry object.
-Note that subclasses may store more points in this array than are used
-to define the geometry.</p>
+<dt id="curve.PolyLine.whereProp">
+<tt class="descname">whereProp</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#curve.PolyLine.whereProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the numbers of the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is an array holding all the numbers of all the
+elements that have the property val, resp. one of the values in val.</p>
+<p>If the object has no properties, a empty array is returned.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1256,6 +1354,28 @@ where the curve is to be split. As a convenience, a single int may
 be given if the curve is to be split at a single node, or None
 to split all all nodes.</p>
 <p>Returns a list of open curves of the same type as the original.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.PolyLine.select">
+<tt class="descname">select</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.PolyLine.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#curve.PolyLine.cselect" title="curve.PolyLine.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1288,9 +1408,37 @@ not be on the approximating Polyline.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.PolyLine.level">
-<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.PolyLine.level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
+<dt id="curve.PolyLine.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.PolyLine.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>selected</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#curve.PolyLine.select" title="curve.PolyLine.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1339,6 +1487,64 @@ ending binormal.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.PolyLine.selectProp">
+<tt class="descname">selectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.PolyLine.selectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object which holds only the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.PolyLine.cselectProp">
+<tt class="descname">cselectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.PolyLine.cselectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object without the elements with property <cite>val</cite>.</p>
+<p>This is the complementary method of selectProp.
+val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that do not
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.PolyLine.getCoords">
+<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.PolyLine.getCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the coords data.</p>
+<p>Returns the full array of coordinates stored in the Geometry object.
+Note that subclasses may store more points in this array than are used
+to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.PolyLine.convexHull">
+<tt class="descname">convexHull</tt><big>(</big><em>compact=True</em><big>)</big><a class="headerlink" href="#curve.PolyLine.convexHull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the convex hull of the geometry.</p>
+<p>The convex hull is a closed TriSurface enclosing all points
+of the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.PolyLine.setProp">
+<tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.PolyLine.setProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create or destroy the property array for the Formex.</p>
+<p>A property array is a rank-1 integer array with dimension equal
+to the number of elements in the Formex (first dimension of data).
+You can specify a single value or a list/array of integer values.
+If the number of passed values is less than the number of elements,
+they wil be repeated. If you give more, they will be ignored.</p>
+<p>If a value None is given, the properties are removed from the Formex.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.PolyLine.level">
+<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.PolyLine.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.PolyLine.copy">
 <tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.PolyLine.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a deep copy of the Geometry  object.</p>
@@ -1373,18 +1579,6 @@ three coordinate directions. If it is a single value, all directions
 are scaled to the same size.
 Directions for which the geometry has a size smaller than tol times
 the maximum size are not rescaled.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.PolyLine.setProp">
-<tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.PolyLine.setProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create or destroy the property array for the Formex.</p>
-<p>A property array is a rank-1 integer array with dimension equal
-to the number of elements in the Formex (first dimension of data).
-You can specify a single value or a list/array of integer values.
-If the number of passed values is less than the number of elements,
-they wil be repeated. If you give more, they will be ignored.</p>
-<p>If a value None is given, the properties are removed from the Formex.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1725,12 +1919,13 @@ length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Line.getCoords">
-<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Line.getCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coords data.</p>
-<p>Returns the full array of coordinates stored in the Geometry object.
-Note that subclasses may store more points in this array than are used
-to define the geometry.</p>
+<dt id="curve.Line.whereProp">
+<tt class="descname">whereProp</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#curve.Line.whereProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the numbers of the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is an array holding all the numbers of all the
+elements that have the property val, resp. one of the values in val.</p>
+<p>If the object has no properties, a empty array is returned.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1742,6 +1937,28 @@ where the curve is to be split. As a convenience, a single int may
 be given if the curve is to be split at a single node, or None
 to split all all nodes.</p>
 <p>Returns a list of open curves of the same type as the original.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Line.select">
+<tt class="descname">select</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Line.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#curve.Line.cselect" title="curve.Line.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1774,9 +1991,37 @@ not be on the approximating Polyline.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Line.level">
-<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Line.level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
+<dt id="curve.Line.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Line.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>selected</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#curve.Line.select" title="curve.Line.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1825,6 +2070,64 @@ ending binormal.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.Line.selectProp">
+<tt class="descname">selectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Line.selectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object which holds only the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Line.cselectProp">
+<tt class="descname">cselectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Line.cselectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object without the elements with property <cite>val</cite>.</p>
+<p>This is the complementary method of selectProp.
+val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that do not
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Line.getCoords">
+<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Line.getCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the coords data.</p>
+<p>Returns the full array of coordinates stored in the Geometry object.
+Note that subclasses may store more points in this array than are used
+to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Line.convexHull">
+<tt class="descname">convexHull</tt><big>(</big><em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Line.convexHull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the convex hull of the geometry.</p>
+<p>The convex hull is a closed TriSurface enclosing all points
+of the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Line.setProp">
+<tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.Line.setProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create or destroy the property array for the Formex.</p>
+<p>A property array is a rank-1 integer array with dimension equal
+to the number of elements in the Formex (first dimension of data).
+You can specify a single value or a list/array of integer values.
+If the number of passed values is less than the number of elements,
+they wil be repeated. If you give more, they will be ignored.</p>
+<p>If a value None is given, the properties are removed from the Formex.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Line.level">
+<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Line.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.Line.copy">
 <tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Line.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a deep copy of the Geometry  object.</p>
@@ -1848,29 +2151,6 @@ values in <cite>prop</cite>. The list is sorted in ascending order of their
 <cite>prop</cite> value.</p>
 <p>It <cite>prop</cite> is None and the the object has no <cite>prop</cite> attribute, an empty
 list is returned.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.Line.resized">
-<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.Line.resized" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a copy of the Geometry scaled to the given size.</p>
-<p>size can be a single value or a list of three values for the
-three coordinate directions. If it is a single value, all directions
-are scaled to the same size.
-Directions for which the geometry has a size smaller than tol times
-the maximum size are not rescaled.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.Line.setProp">
-<tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.Line.setProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create or destroy the property array for the Formex.</p>
-<p>A property array is a rank-1 integer array with dimension equal
-to the number of elements in the Formex (first dimension of data).
-You can specify a single value or a list/array of integer values.
-If the number of passed values is less than the number of elements,
-they wil be repeated. If you give more, they will be ignored.</p>
-<p>If a value None is given, the properties are removed from the Formex.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1901,14 +2181,14 @@ a segment.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Line.write">
-<tt class="descname">write</tt><big>(</big><em>fil</em>, <em>sep=' '</em>, <em>mode='w'</em><big>)</big><a class="headerlink" href="#curve.Line.write" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write a Geometry to a .pgf file.</p>
-<p>If fil is a string, a file with that name is opened. Else fil should
-be an open file.
-The Geometry is then written to that file in a native format, using
-sep as separator between the coordinates.
-If fil is a string, the file is closed prior to returning.</p>
+<dt id="curve.Line.resized">
+<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#curve.Line.resized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the Geometry scaled to the given size.</p>
+<p>size can be a single value or a list of three values for the
+three coordinate directions. If it is a single value, all directions
+are scaled to the same size.
+Directions for which the geometry has a size smaller than tol times
+the maximum size are not rescaled.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1978,6 +2258,17 @@ direction of the first, resp. last segment.</p>
 <p>Where two subsequent points are identical, the average directions
 are set equal to those of the segment ending in the first and the
 segment starting from the last.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Line.write">
+<tt class="descname">write</tt><big>(</big><em>fil</em>, <em>sep=' '</em>, <em>mode='w'</em><big>)</big><a class="headerlink" href="#curve.Line.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a Geometry to a .pgf file.</p>
+<p>If fil is a string, a file with that name is opened. Else fil should
+be an open file.
+The Geometry is then written to that file in a native format, using
+sep as separator between the coordinates.
+If fil is a string, the file is closed prior to returning.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2587,12 +2878,13 @@ length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.BezierSpline.getCoords">
-<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.BezierSpline.getCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coords data.</p>
-<p>Returns the full array of coordinates stored in the Geometry object.
-Note that subclasses may store more points in this array than are used
-to define the geometry.</p>
+<dt id="curve.BezierSpline.whereProp">
+<tt class="descname">whereProp</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#curve.BezierSpline.whereProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the numbers of the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is an array holding all the numbers of all the
+elements that have the property val, resp. one of the values in val.</p>
+<p>If the object has no properties, a empty array is returned.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2604,6 +2896,28 @@ where the curve is to be split. As a convenience, a single int may
 be given if the curve is to be split at a single node, or None
 to split all all nodes.</p>
 <p>Returns a list of open curves of the same type as the original.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.BezierSpline.select">
+<tt class="descname">select</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.BezierSpline.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#curve.BezierSpline.cselect" title="curve.BezierSpline.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2636,9 +2950,37 @@ not be on the approximating Polyline.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.BezierSpline.level">
-<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.BezierSpline.level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
+<dt id="curve.BezierSpline.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.BezierSpline.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>selected</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#curve.BezierSpline.select" title="curve.BezierSpline.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2687,6 +3029,95 @@ ending binormal.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.BezierSpline.selectProp">
+<tt class="descname">selectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.BezierSpline.selectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object which holds only the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.BezierSpline.cselectProp">
+<tt class="descname">cselectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.BezierSpline.cselectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object without the elements with property <cite>val</cite>.</p>
+<p>This is the complementary method of selectProp.
+val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that do not
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.BezierSpline.approximate">
+<tt class="descname">approximate</tt><big>(</big><em>nseg</em>, <em>equidistant=True</em>, <em>npre=100</em><big>)</big><a class="headerlink" href="#curve.BezierSpline.approximate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: number of straight segments of the resulting PolyLine</li>
+<li><cite>equidistant</cite>: if True (default) the points are spaced almost
+equidistantly over the curve. If False, the points are spread
+equally over the parameter space.</li>
+<li><cite>npre</cite>: only used when <cite>equidistant</cite> is True: number of segments
+per part of the curve used in the pre-approximation. This pre-
+approximation is currently required to compute curve lengths.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This is an alternative for Curve.approx, and may replace it
+in future.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.BezierSpline.getCoords">
+<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.BezierSpline.getCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the coords data.</p>
+<p>Returns the full array of coordinates stored in the Geometry object.
+Note that subclasses may store more points in this array than are used
+to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.BezierSpline.toFormex">
+<tt class="descname">toFormex</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#curve.BezierSpline.toFormex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a curve to a Formex.</p>
+<p>This creates a polyline approximation as a plex-2 Formex.
+This is mainly used for drawing curves that do not implement
+their own drawing routines.</p>
+<p>The method can be passed the same arguments as the <cite>approx</cite> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.BezierSpline.convexHull">
+<tt class="descname">convexHull</tt><big>(</big><em>compact=True</em><big>)</big><a class="headerlink" href="#curve.BezierSpline.convexHull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the convex hull of the geometry.</p>
+<p>The convex hull is a closed TriSurface enclosing all points
+of the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.BezierSpline.setProp">
+<tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.BezierSpline.setProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create or destroy the property array for the Formex.</p>
+<p>A property array is a rank-1 integer array with dimension equal
+to the number of elements in the Formex (first dimension of data).
+You can specify a single value or a list/array of integer values.
+If the number of passed values is less than the number of elements,
+they wil be repeated. If you give more, they will be ignored.</p>
+<p>If a value None is given, the properties are removed from the Formex.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.BezierSpline.level">
+<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.BezierSpline.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.BezierSpline.copy">
 <tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.BezierSpline.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a deep copy of the Geometry  object.</p>
@@ -2721,49 +3152,6 @@ three coordinate directions. If it is a single value, all directions
 are scaled to the same size.
 Directions for which the geometry has a size smaller than tol times
 the maximum size are not rescaled.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.BezierSpline.approximate">
-<tt class="descname">approximate</tt><big>(</big><em>nseg</em>, <em>equidistant=True</em>, <em>npre=100</em><big>)</big><a class="headerlink" href="#curve.BezierSpline.approximate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Approximate a Curve with a PolyLine of n segments</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>nseg</cite>: number of straight segments of the resulting PolyLine</li>
-<li><cite>equidistant</cite>: if True (default) the points are spaced almost
-equidistantly over the curve. If False, the points are spread
-equally over the parameter space.</li>
-<li><cite>npre</cite>: only used when <cite>equidistant</cite> is True: number of segments
-per part of the curve used in the pre-approximation. This pre-
-approximation is currently required to compute curve lengths.</li>
-</ul>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This is an alternative for Curve.approx, and may replace it
-in future.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.BezierSpline.toFormex">
-<tt class="descname">toFormex</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#curve.BezierSpline.toFormex" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a curve to a Formex.</p>
-<p>This creates a polyline approximation as a plex-2 Formex.
-This is mainly used for drawing curves that do not implement
-their own drawing routines.</p>
-<p>The method can be passed the same arguments as the <cite>approx</cite> method.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.BezierSpline.setProp">
-<tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.BezierSpline.setProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create or destroy the property array for the Formex.</p>
-<p>A property array is a rank-1 integer array with dimension equal
-to the number of elements in the Formex (first dimension of data).
-You can specify a single value or a list/array of integer values.
-If the number of passed values is less than the number of elements,
-they wil be repeated. If you give more, they will be ignored.</p>
-<p>If a value None is given, the properties are removed from the Formex.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3121,12 +3509,13 @@ length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.CardinalSpline.getCoords">
-<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline.getCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coords data.</p>
-<p>Returns the full array of coordinates stored in the Geometry object.
-Note that subclasses may store more points in this array than are used
-to define the geometry.</p>
+<dt id="curve.CardinalSpline.whereProp">
+<tt class="descname">whereProp</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline.whereProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the numbers of the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is an array holding all the numbers of all the
+elements that have the property val, resp. one of the values in val.</p>
+<p>If the object has no properties, a empty array is returned.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3138,6 +3527,28 @@ where the curve is to be split. As a convenience, a single int may
 be given if the curve is to be split at a single node, or None
 to split all all nodes.</p>
 <p>Returns a list of open curves of the same type as the original.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.CardinalSpline.select">
+<tt class="descname">select</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#curve.CardinalSpline.cselect" title="curve.CardinalSpline.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3170,9 +3581,37 @@ not be on the approximating Polyline.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.CardinalSpline.level">
-<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline.level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
+<dt id="curve.CardinalSpline.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>selected</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#curve.CardinalSpline.select" title="curve.CardinalSpline.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3221,6 +3660,95 @@ ending binormal.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.CardinalSpline.selectProp">
+<tt class="descname">selectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline.selectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object which holds only the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.CardinalSpline.cselectProp">
+<tt class="descname">cselectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline.cselectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object without the elements with property <cite>val</cite>.</p>
+<p>This is the complementary method of selectProp.
+val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that do not
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.CardinalSpline.approximate">
+<tt class="descname">approximate</tt><big>(</big><em>nseg</em>, <em>equidistant=True</em>, <em>npre=100</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline.approximate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: number of straight segments of the resulting PolyLine</li>
+<li><cite>equidistant</cite>: if True (default) the points are spaced almost
+equidistantly over the curve. If False, the points are spread
+equally over the parameter space.</li>
+<li><cite>npre</cite>: only used when <cite>equidistant</cite> is True: number of segments
+per part of the curve used in the pre-approximation. This pre-
+approximation is currently required to compute curve lengths.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This is an alternative for Curve.approx, and may replace it
+in future.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.CardinalSpline.getCoords">
+<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline.getCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the coords data.</p>
+<p>Returns the full array of coordinates stored in the Geometry object.
+Note that subclasses may store more points in this array than are used
+to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.CardinalSpline.toFormex">
+<tt class="descname">toFormex</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline.toFormex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a curve to a Formex.</p>
+<p>This creates a polyline approximation as a plex-2 Formex.
+This is mainly used for drawing curves that do not implement
+their own drawing routines.</p>
+<p>The method can be passed the same arguments as the <cite>approx</cite> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.CardinalSpline.convexHull">
+<tt class="descname">convexHull</tt><big>(</big><em>compact=True</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline.convexHull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the convex hull of the geometry.</p>
+<p>The convex hull is a closed TriSurface enclosing all points
+of the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.CardinalSpline.setProp">
+<tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline.setProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create or destroy the property array for the Formex.</p>
+<p>A property array is a rank-1 integer array with dimension equal
+to the number of elements in the Formex (first dimension of data).
+You can specify a single value or a list/array of integer values.
+If the number of passed values is less than the number of elements,
+they wil be repeated. If you give more, they will be ignored.</p>
+<p>If a value None is given, the properties are removed from the Formex.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.CardinalSpline.level">
+<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.CardinalSpline.copy">
 <tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a deep copy of the Geometry  object.</p>
@@ -3255,49 +3783,6 @@ three coordinate directions. If it is a single value, all directions
 are scaled to the same size.
 Directions for which the geometry has a size smaller than tol times
 the maximum size are not rescaled.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.CardinalSpline.approximate">
-<tt class="descname">approximate</tt><big>(</big><em>nseg</em>, <em>equidistant=True</em>, <em>npre=100</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline.approximate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Approximate a Curve with a PolyLine of n segments</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>nseg</cite>: number of straight segments of the resulting PolyLine</li>
-<li><cite>equidistant</cite>: if True (default) the points are spaced almost
-equidistantly over the curve. If False, the points are spread
-equally over the parameter space.</li>
-<li><cite>npre</cite>: only used when <cite>equidistant</cite> is True: number of segments
-per part of the curve used in the pre-approximation. This pre-
-approximation is currently required to compute curve lengths.</li>
-</ul>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This is an alternative for Curve.approx, and may replace it
-in future.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.CardinalSpline.toFormex">
-<tt class="descname">toFormex</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline.toFormex" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a curve to a Formex.</p>
-<p>This creates a polyline approximation as a plex-2 Formex.
-This is mainly used for drawing curves that do not implement
-their own drawing routines.</p>
-<p>The method can be passed the same arguments as the <cite>approx</cite> method.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.CardinalSpline.setProp">
-<tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline.setProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create or destroy the property array for the Formex.</p>
-<p>A property array is a rank-1 integer array with dimension equal
-to the number of elements in the Formex (first dimension of data).
-You can specify a single value or a list/array of integer values.
-If the number of passed values is less than the number of elements,
-they wil be repeated. If you give more, they will be ignored.</p>
-<p>If a value None is given, the properties are removed from the Formex.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3753,12 +4238,13 @@ length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.CardinalSpline2.getCoords">
-<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.getCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coords data.</p>
-<p>Returns the full array of coordinates stored in the Geometry object.
-Note that subclasses may store more points in this array than are used
-to define the geometry.</p>
+<dt id="curve.CardinalSpline2.whereProp">
+<tt class="descname">whereProp</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.whereProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the numbers of the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is an array holding all the numbers of all the
+elements that have the property val, resp. one of the values in val.</p>
+<p>If the object has no properties, a empty array is returned.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3770,6 +4256,28 @@ where the curve is to be split. As a convenience, a single int may
 be given if the curve is to be split at a single node, or None
 to split all all nodes.</p>
 <p>Returns a list of open curves of the same type as the original.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.CardinalSpline2.select">
+<tt class="descname">select</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#curve.CardinalSpline2.cselect" title="curve.CardinalSpline2.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3802,9 +4310,37 @@ not be on the approximating Polyline.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.CardinalSpline2.level">
-<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
+<dt id="curve.CardinalSpline2.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>selected</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#curve.CardinalSpline2.select" title="curve.CardinalSpline2.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3853,6 +4389,95 @@ ending binormal.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.CardinalSpline2.selectProp">
+<tt class="descname">selectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.selectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object which holds only the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.CardinalSpline2.cselectProp">
+<tt class="descname">cselectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.cselectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object without the elements with property <cite>val</cite>.</p>
+<p>This is the complementary method of selectProp.
+val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that do not
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.CardinalSpline2.approximate">
+<tt class="descname">approximate</tt><big>(</big><em>nseg</em>, <em>equidistant=True</em>, <em>npre=100</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.approximate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: number of straight segments of the resulting PolyLine</li>
+<li><cite>equidistant</cite>: if True (default) the points are spaced almost
+equidistantly over the curve. If False, the points are spread
+equally over the parameter space.</li>
+<li><cite>npre</cite>: only used when <cite>equidistant</cite> is True: number of segments
+per part of the curve used in the pre-approximation. This pre-
+approximation is currently required to compute curve lengths.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This is an alternative for Curve.approx, and may replace it
+in future.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.CardinalSpline2.getCoords">
+<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.getCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the coords data.</p>
+<p>Returns the full array of coordinates stored in the Geometry object.
+Note that subclasses may store more points in this array than are used
+to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.CardinalSpline2.toFormex">
+<tt class="descname">toFormex</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.toFormex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a curve to a Formex.</p>
+<p>This creates a polyline approximation as a plex-2 Formex.
+This is mainly used for drawing curves that do not implement
+their own drawing routines.</p>
+<p>The method can be passed the same arguments as the <cite>approx</cite> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.CardinalSpline2.convexHull">
+<tt class="descname">convexHull</tt><big>(</big><em>compact=True</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.convexHull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the convex hull of the geometry.</p>
+<p>The convex hull is a closed TriSurface enclosing all points
+of the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.CardinalSpline2.setProp">
+<tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.setProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create or destroy the property array for the Formex.</p>
+<p>A property array is a rank-1 integer array with dimension equal
+to the number of elements in the Formex (first dimension of data).
+You can specify a single value or a list/array of integer values.
+If the number of passed values is less than the number of elements,
+they wil be repeated. If you give more, they will be ignored.</p>
+<p>If a value None is given, the properties are removed from the Formex.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.CardinalSpline2.level">
+<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.CardinalSpline2.copy">
 <tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a deep copy of the Geometry  object.</p>
@@ -3887,49 +4512,6 @@ three coordinate directions. If it is a single value, all directions
 are scaled to the same size.
 Directions for which the geometry has a size smaller than tol times
 the maximum size are not rescaled.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.CardinalSpline2.approximate">
-<tt class="descname">approximate</tt><big>(</big><em>nseg</em>, <em>equidistant=True</em>, <em>npre=100</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.approximate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Approximate a Curve with a PolyLine of n segments</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>nseg</cite>: number of straight segments of the resulting PolyLine</li>
-<li><cite>equidistant</cite>: if True (default) the points are spaced almost
-equidistantly over the curve. If False, the points are spread
-equally over the parameter space.</li>
-<li><cite>npre</cite>: only used when <cite>equidistant</cite> is True: number of segments
-per part of the curve used in the pre-approximation. This pre-
-approximation is currently required to compute curve lengths.</li>
-</ul>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This is an alternative for Curve.approx, and may replace it
-in future.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.CardinalSpline2.toFormex">
-<tt class="descname">toFormex</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.toFormex" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a curve to a Formex.</p>
-<p>This creates a polyline approximation as a plex-2 Formex.
-This is mainly used for drawing curves that do not implement
-their own drawing routines.</p>
-<p>The method can be passed the same arguments as the <cite>approx</cite> method.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.CardinalSpline2.setProp">
-<tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.CardinalSpline2.setProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create or destroy the property array for the Formex.</p>
-<p>A property array is a rank-1 integer array with dimension equal
-to the number of elements in the Formex (first dimension of data).
-You can specify a single value or a list/array of integer values.
-If the number of passed values is less than the number of elements,
-they wil be repeated. If you give more, they will be ignored.</p>
-<p>If a value None is given, the properties are removed from the Formex.</p>
 </dd></dl>
 
 <dl class="method">
@@ -4288,12 +4870,13 @@ length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.NaturalSpline.getCoords">
-<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.NaturalSpline.getCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coords data.</p>
-<p>Returns the full array of coordinates stored in the Geometry object.
-Note that subclasses may store more points in this array than are used
-to define the geometry.</p>
+<dt id="curve.NaturalSpline.whereProp">
+<tt class="descname">whereProp</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#curve.NaturalSpline.whereProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the numbers of the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is an array holding all the numbers of all the
+elements that have the property val, resp. one of the values in val.</p>
+<p>If the object has no properties, a empty array is returned.</p>
 </dd></dl>
 
 <dl class="method">
@@ -4305,6 +4888,28 @@ where the curve is to be split. As a convenience, a single int may
 be given if the curve is to be split at a single node, or None
 to split all all nodes.</p>
 <p>Returns a list of open curves of the same type as the original.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.NaturalSpline.select">
+<tt class="descname">select</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.NaturalSpline.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#curve.NaturalSpline.cselect" title="curve.NaturalSpline.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -4337,9 +4942,37 @@ not be on the approximating Polyline.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.NaturalSpline.level">
-<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.NaturalSpline.level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
+<dt id="curve.NaturalSpline.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.NaturalSpline.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>selected</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#curve.NaturalSpline.select" title="curve.NaturalSpline.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -4388,6 +5021,95 @@ ending binormal.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.NaturalSpline.selectProp">
+<tt class="descname">selectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.NaturalSpline.selectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object which holds only the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.NaturalSpline.cselectProp">
+<tt class="descname">cselectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.NaturalSpline.cselectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object without the elements with property <cite>val</cite>.</p>
+<p>This is the complementary method of selectProp.
+val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that do not
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.NaturalSpline.approximate">
+<tt class="descname">approximate</tt><big>(</big><em>nseg</em>, <em>equidistant=True</em>, <em>npre=100</em><big>)</big><a class="headerlink" href="#curve.NaturalSpline.approximate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: number of straight segments of the resulting PolyLine</li>
+<li><cite>equidistant</cite>: if True (default) the points are spaced almost
+equidistantly over the curve. If False, the points are spread
+equally over the parameter space.</li>
+<li><cite>npre</cite>: only used when <cite>equidistant</cite> is True: number of segments
+per part of the curve used in the pre-approximation. This pre-
+approximation is currently required to compute curve lengths.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This is an alternative for Curve.approx, and may replace it
+in future.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.NaturalSpline.getCoords">
+<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.NaturalSpline.getCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the coords data.</p>
+<p>Returns the full array of coordinates stored in the Geometry object.
+Note that subclasses may store more points in this array than are used
+to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.NaturalSpline.toFormex">
+<tt class="descname">toFormex</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#curve.NaturalSpline.toFormex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a curve to a Formex.</p>
+<p>This creates a polyline approximation as a plex-2 Formex.
+This is mainly used for drawing curves that do not implement
+their own drawing routines.</p>
+<p>The method can be passed the same arguments as the <cite>approx</cite> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.NaturalSpline.convexHull">
+<tt class="descname">convexHull</tt><big>(</big><em>compact=True</em><big>)</big><a class="headerlink" href="#curve.NaturalSpline.convexHull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the convex hull of the geometry.</p>
+<p>The convex hull is a closed TriSurface enclosing all points
+of the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.NaturalSpline.setProp">
+<tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.NaturalSpline.setProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create or destroy the property array for the Formex.</p>
+<p>A property array is a rank-1 integer array with dimension equal
+to the number of elements in the Formex (first dimension of data).
+You can specify a single value or a list/array of integer values.
+If the number of passed values is less than the number of elements,
+they wil be repeated. If you give more, they will be ignored.</p>
+<p>If a value None is given, the properties are removed from the Formex.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.NaturalSpline.level">
+<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.NaturalSpline.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.NaturalSpline.copy">
 <tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.NaturalSpline.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a deep copy of the Geometry  object.</p>
@@ -4422,49 +5144,6 @@ three coordinate directions. If it is a single value, all directions
 are scaled to the same size.
 Directions for which the geometry has a size smaller than tol times
 the maximum size are not rescaled.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.NaturalSpline.approximate">
-<tt class="descname">approximate</tt><big>(</big><em>nseg</em>, <em>equidistant=True</em>, <em>npre=100</em><big>)</big><a class="headerlink" href="#curve.NaturalSpline.approximate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Approximate a Curve with a PolyLine of n segments</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>nseg</cite>: number of straight segments of the resulting PolyLine</li>
-<li><cite>equidistant</cite>: if True (default) the points are spaced almost
-equidistantly over the curve. If False, the points are spread
-equally over the parameter space.</li>
-<li><cite>npre</cite>: only used when <cite>equidistant</cite> is True: number of segments
-per part of the curve used in the pre-approximation. This pre-
-approximation is currently required to compute curve lengths.</li>
-</ul>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This is an alternative for Curve.approx, and may replace it
-in future.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.NaturalSpline.toFormex">
-<tt class="descname">toFormex</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#curve.NaturalSpline.toFormex" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a curve to a Formex.</p>
-<p>This creates a polyline approximation as a plex-2 Formex.
-This is mainly used for drawing curves that do not implement
-their own drawing routines.</p>
-<p>The method can be passed the same arguments as the <cite>approx</cite> method.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.NaturalSpline.setProp">
-<tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.NaturalSpline.setProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create or destroy the property array for the Formex.</p>
-<p>A property array is a rank-1 integer array with dimension equal
-to the number of elements in the Formex (first dimension of data).
-You can specify a single value or a list/array of integer values.
-If the number of passed values is less than the number of elements,
-they wil be repeated. If you give more, they will be ignored.</p>
-<p>If a value None is given, the properties are removed from the Formex.</p>
 </dd></dl>
 
 <dl class="method">
@@ -4823,12 +5502,13 @@ length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Arc3.getCoords">
-<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc3.getCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coords data.</p>
-<p>Returns the full array of coordinates stored in the Geometry object.
-Note that subclasses may store more points in this array than are used
-to define the geometry.</p>
+<dt id="curve.Arc3.whereProp">
+<tt class="descname">whereProp</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#curve.Arc3.whereProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the numbers of the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is an array holding all the numbers of all the
+elements that have the property val, resp. one of the values in val.</p>
+<p>If the object has no properties, a empty array is returned.</p>
 </dd></dl>
 
 <dl class="method">
@@ -4840,6 +5520,28 @@ where the curve is to be split. As a convenience, a single int may
 be given if the curve is to be split at a single node, or None
 to split all all nodes.</p>
 <p>Returns a list of open curves of the same type as the original.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Arc3.select">
+<tt class="descname">select</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Arc3.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#curve.Arc3.cselect" title="curve.Arc3.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -4872,9 +5574,37 @@ not be on the approximating Polyline.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Arc3.level">
-<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc3.level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
+<dt id="curve.Arc3.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Arc3.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>selected</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#curve.Arc3.select" title="curve.Arc3.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -4923,6 +5653,95 @@ ending binormal.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.Arc3.selectProp">
+<tt class="descname">selectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Arc3.selectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object which holds only the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Arc3.cselectProp">
+<tt class="descname">cselectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Arc3.cselectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object without the elements with property <cite>val</cite>.</p>
+<p>This is the complementary method of selectProp.
+val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that do not
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Arc3.approximate">
+<tt class="descname">approximate</tt><big>(</big><em>nseg</em>, <em>equidistant=True</em>, <em>npre=100</em><big>)</big><a class="headerlink" href="#curve.Arc3.approximate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: number of straight segments of the resulting PolyLine</li>
+<li><cite>equidistant</cite>: if True (default) the points are spaced almost
+equidistantly over the curve. If False, the points are spread
+equally over the parameter space.</li>
+<li><cite>npre</cite>: only used when <cite>equidistant</cite> is True: number of segments
+per part of the curve used in the pre-approximation. This pre-
+approximation is currently required to compute curve lengths.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This is an alternative for Curve.approx, and may replace it
+in future.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Arc3.getCoords">
+<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc3.getCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the coords data.</p>
+<p>Returns the full array of coordinates stored in the Geometry object.
+Note that subclasses may store more points in this array than are used
+to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Arc3.toFormex">
+<tt class="descname">toFormex</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#curve.Arc3.toFormex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a curve to a Formex.</p>
+<p>This creates a polyline approximation as a plex-2 Formex.
+This is mainly used for drawing curves that do not implement
+their own drawing routines.</p>
+<p>The method can be passed the same arguments as the <cite>approx</cite> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Arc3.convexHull">
+<tt class="descname">convexHull</tt><big>(</big><em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Arc3.convexHull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the convex hull of the geometry.</p>
+<p>The convex hull is a closed TriSurface enclosing all points
+of the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Arc3.setProp">
+<tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.Arc3.setProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create or destroy the property array for the Formex.</p>
+<p>A property array is a rank-1 integer array with dimension equal
+to the number of elements in the Formex (first dimension of data).
+You can specify a single value or a list/array of integer values.
+If the number of passed values is less than the number of elements,
+they wil be repeated. If you give more, they will be ignored.</p>
+<p>If a value None is given, the properties are removed from the Formex.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Arc3.level">
+<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc3.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.Arc3.copy">
 <tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc3.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a deep copy of the Geometry  object.</p>
@@ -4957,49 +5776,6 @@ three coordinate directions. If it is a single value, all directions
 are scaled to the same size.
 Directions for which the geometry has a size smaller than tol times
 the maximum size are not rescaled.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.Arc3.approximate">
-<tt class="descname">approximate</tt><big>(</big><em>nseg</em>, <em>equidistant=True</em>, <em>npre=100</em><big>)</big><a class="headerlink" href="#curve.Arc3.approximate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Approximate a Curve with a PolyLine of n segments</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>nseg</cite>: number of straight segments of the resulting PolyLine</li>
-<li><cite>equidistant</cite>: if True (default) the points are spaced almost
-equidistantly over the curve. If False, the points are spread
-equally over the parameter space.</li>
-<li><cite>npre</cite>: only used when <cite>equidistant</cite> is True: number of segments
-per part of the curve used in the pre-approximation. This pre-
-approximation is currently required to compute curve lengths.</li>
-</ul>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This is an alternative for Curve.approx, and may replace it
-in future.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.Arc3.toFormex">
-<tt class="descname">toFormex</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#curve.Arc3.toFormex" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a curve to a Formex.</p>
-<p>This creates a polyline approximation as a plex-2 Formex.
-This is mainly used for drawing curves that do not implement
-their own drawing routines.</p>
-<p>The method can be passed the same arguments as the <cite>approx</cite> method.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.Arc3.setProp">
-<tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.Arc3.setProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create or destroy the property array for the Formex.</p>
-<p>A property array is a rank-1 integer array with dimension equal
-to the number of elements in the Formex (first dimension of data).
-You can specify a single value or a list/array of integer values.
-If the number of passed values is less than the number of elements,
-they wil be repeated. If you give more, they will be ignored.</p>
-<p>If a value None is given, the properties are removed from the Formex.</p>
 </dd></dl>
 
 <dl class="method">
@@ -5357,12 +6133,13 @@ length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Arc.getCoords">
-<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc.getCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coords data.</p>
-<p>Returns the full array of coordinates stored in the Geometry object.
-Note that subclasses may store more points in this array than are used
-to define the geometry.</p>
+<dt id="curve.Arc.whereProp">
+<tt class="descname">whereProp</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#curve.Arc.whereProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the numbers of the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is an array holding all the numbers of all the
+elements that have the property val, resp. one of the values in val.</p>
+<p>If the object has no properties, a empty array is returned.</p>
 </dd></dl>
 
 <dl class="method">
@@ -5377,6 +6154,28 @@ to split all all nodes.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.Arc.select">
+<tt class="descname">select</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Arc.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#curve.Arc.cselect" title="curve.Arc.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.Arc.length">
 <tt class="descname">length</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc.length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the total length of the curve.</p>
@@ -5385,9 +6184,37 @@ method.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Arc.level">
-<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc.level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
+<dt id="curve.Arc.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Arc.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>selected</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#curve.Arc.select" title="curve.Arc.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -5436,6 +6263,95 @@ ending binormal.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.Arc.selectProp">
+<tt class="descname">selectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Arc.selectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object which holds only the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Arc.cselectProp">
+<tt class="descname">cselectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Arc.cselectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object without the elements with property <cite>val</cite>.</p>
+<p>This is the complementary method of selectProp.
+val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that do not
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Arc.approximate">
+<tt class="descname">approximate</tt><big>(</big><em>nseg</em>, <em>equidistant=True</em>, <em>npre=100</em><big>)</big><a class="headerlink" href="#curve.Arc.approximate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: number of straight segments of the resulting PolyLine</li>
+<li><cite>equidistant</cite>: if True (default) the points are spaced almost
+equidistantly over the curve. If False, the points are spread
+equally over the parameter space.</li>
+<li><cite>npre</cite>: only used when <cite>equidistant</cite> is True: number of segments
+per part of the curve used in the pre-approximation. This pre-
+approximation is currently required to compute curve lengths.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This is an alternative for Curve.approx, and may replace it
+in future.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Arc.getCoords">
+<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc.getCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the coords data.</p>
+<p>Returns the full array of coordinates stored in the Geometry object.
+Note that subclasses may store more points in this array than are used
+to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Arc.toFormex">
+<tt class="descname">toFormex</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#curve.Arc.toFormex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a curve to a Formex.</p>
+<p>This creates a polyline approximation as a plex-2 Formex.
+This is mainly used for drawing curves that do not implement
+their own drawing routines.</p>
+<p>The method can be passed the same arguments as the <cite>approx</cite> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Arc.convexHull">
+<tt class="descname">convexHull</tt><big>(</big><em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Arc.convexHull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the convex hull of the geometry.</p>
+<p>The convex hull is a closed TriSurface enclosing all points
+of the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Arc.setProp">
+<tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.Arc.setProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create or destroy the property array for the Formex.</p>
+<p>A property array is a rank-1 integer array with dimension equal
+to the number of elements in the Formex (first dimension of data).
+You can specify a single value or a list/array of integer values.
+If the number of passed values is less than the number of elements,
+they wil be repeated. If you give more, they will be ignored.</p>
+<p>If a value None is given, the properties are removed from the Formex.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Arc.level">
+<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.Arc.copy">
 <tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Arc.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a deep copy of the Geometry  object.</p>
@@ -5470,49 +6386,6 @@ three coordinate directions. If it is a single value, all directions
 are scaled to the same size.
 Directions for which the geometry has a size smaller than tol times
 the maximum size are not rescaled.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.Arc.approximate">
-<tt class="descname">approximate</tt><big>(</big><em>nseg</em>, <em>equidistant=True</em>, <em>npre=100</em><big>)</big><a class="headerlink" href="#curve.Arc.approximate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Approximate a Curve with a PolyLine of n segments</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>nseg</cite>: number of straight segments of the resulting PolyLine</li>
-<li><cite>equidistant</cite>: if True (default) the points are spaced almost
-equidistantly over the curve. If False, the points are spread
-equally over the parameter space.</li>
-<li><cite>npre</cite>: only used when <cite>equidistant</cite> is True: number of segments
-per part of the curve used in the pre-approximation. This pre-
-approximation is currently required to compute curve lengths.</li>
-</ul>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This is an alternative for Curve.approx, and may replace it
-in future.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.Arc.toFormex">
-<tt class="descname">toFormex</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#curve.Arc.toFormex" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a curve to a Formex.</p>
-<p>This creates a polyline approximation as a plex-2 Formex.
-This is mainly used for drawing curves that do not implement
-their own drawing routines.</p>
-<p>The method can be passed the same arguments as the <cite>approx</cite> method.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.Arc.setProp">
-<tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.Arc.setProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create or destroy the property array for the Formex.</p>
-<p>A property array is a rank-1 integer array with dimension equal
-to the number of elements in the Formex (first dimension of data).
-You can specify a single value or a list/array of integer values.
-If the number of passed values is less than the number of elements,
-they wil be repeated. If you give more, they will be ignored.</p>
-<p>If a value None is given, the properties are removed from the Formex.</p>
 </dd></dl>
 
 <dl class="method">
@@ -5892,12 +6765,13 @@ length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Spiral.getCoords">
-<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Spiral.getCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coords data.</p>
-<p>Returns the full array of coordinates stored in the Geometry object.
-Note that subclasses may store more points in this array than are used
-to define the geometry.</p>
+<dt id="curve.Spiral.whereProp">
+<tt class="descname">whereProp</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#curve.Spiral.whereProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the numbers of the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is an array holding all the numbers of all the
+elements that have the property val, resp. one of the values in val.</p>
+<p>If the object has no properties, a empty array is returned.</p>
 </dd></dl>
 
 <dl class="method">
@@ -5909,6 +6783,28 @@ where the curve is to be split. As a convenience, a single int may
 be given if the curve is to be split at a single node, or None
 to split all all nodes.</p>
 <p>Returns a list of open curves of the same type as the original.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Spiral.select">
+<tt class="descname">select</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Spiral.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#curve.Spiral.cselect" title="curve.Spiral.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -5941,9 +6837,37 @@ not be on the approximating Polyline.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="curve.Spiral.level">
-<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Spiral.level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
+<dt id="curve.Spiral.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Spiral.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>selected</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#curve.Spiral.select" title="curve.Spiral.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -5992,6 +6916,95 @@ ending binormal.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="curve.Spiral.selectProp">
+<tt class="descname">selectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Spiral.selectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object which holds only the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Spiral.cselectProp">
+<tt class="descname">cselectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Spiral.cselectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object without the elements with property <cite>val</cite>.</p>
+<p>This is the complementary method of selectProp.
+val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that do not
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Spiral.approximate">
+<tt class="descname">approximate</tt><big>(</big><em>nseg</em>, <em>equidistant=True</em>, <em>npre=100</em><big>)</big><a class="headerlink" href="#curve.Spiral.approximate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: number of straight segments of the resulting PolyLine</li>
+<li><cite>equidistant</cite>: if True (default) the points are spaced almost
+equidistantly over the curve. If False, the points are spread
+equally over the parameter space.</li>
+<li><cite>npre</cite>: only used when <cite>equidistant</cite> is True: number of segments
+per part of the curve used in the pre-approximation. This pre-
+approximation is currently required to compute curve lengths.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This is an alternative for Curve.approx, and may replace it
+in future.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Spiral.getCoords">
+<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Spiral.getCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the coords data.</p>
+<p>Returns the full array of coordinates stored in the Geometry object.
+Note that subclasses may store more points in this array than are used
+to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Spiral.toFormex">
+<tt class="descname">toFormex</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#curve.Spiral.toFormex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a curve to a Formex.</p>
+<p>This creates a polyline approximation as a plex-2 Formex.
+This is mainly used for drawing curves that do not implement
+their own drawing routines.</p>
+<p>The method can be passed the same arguments as the <cite>approx</cite> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Spiral.convexHull">
+<tt class="descname">convexHull</tt><big>(</big><em>compact=True</em><big>)</big><a class="headerlink" href="#curve.Spiral.convexHull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the convex hull of the geometry.</p>
+<p>The convex hull is a closed TriSurface enclosing all points
+of the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Spiral.setProp">
+<tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.Spiral.setProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create or destroy the property array for the Formex.</p>
+<p>A property array is a rank-1 integer array with dimension equal
+to the number of elements in the Formex (first dimension of data).
+You can specify a single value or a list/array of integer values.
+If the number of passed values is less than the number of elements,
+they wil be repeated. If you give more, they will be ignored.</p>
+<p>If a value None is given, the properties are removed from the Formex.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="curve.Spiral.level">
+<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Spiral.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dimensionality of the Geometry, or -1 if unknown</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="curve.Spiral.copy">
 <tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#curve.Spiral.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a deep copy of the Geometry  object.</p>
@@ -6026,49 +7039,6 @@ three coordinate directions. If it is a single value, all directions
 are scaled to the same size.
 Directions for which the geometry has a size smaller than tol times
 the maximum size are not rescaled.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.Spiral.approximate">
-<tt class="descname">approximate</tt><big>(</big><em>nseg</em>, <em>equidistant=True</em>, <em>npre=100</em><big>)</big><a class="headerlink" href="#curve.Spiral.approximate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Approximate a Curve with a PolyLine of n segments</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>nseg</cite>: number of straight segments of the resulting PolyLine</li>
-<li><cite>equidistant</cite>: if True (default) the points are spaced almost
-equidistantly over the curve. If False, the points are spread
-equally over the parameter space.</li>
-<li><cite>npre</cite>: only used when <cite>equidistant</cite> is True: number of segments
-per part of the curve used in the pre-approximation. This pre-
-approximation is currently required to compute curve lengths.</li>
-</ul>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This is an alternative for Curve.approx, and may replace it
-in future.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.Spiral.toFormex">
-<tt class="descname">toFormex</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#curve.Spiral.toFormex" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a curve to a Formex.</p>
-<p>This creates a polyline approximation as a plex-2 Formex.
-This is mainly used for drawing curves that do not implement
-their own drawing routines.</p>
-<p>The method can be passed the same arguments as the <cite>approx</cite> method.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="curve.Spiral.setProp">
-<tt class="descname">setProp</tt><big>(</big><em>p=None</em><big>)</big><a class="headerlink" href="#curve.Spiral.setProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create or destroy the property array for the Formex.</p>
-<p>A property array is a rank-1 integer array with dimension equal
-to the number of elements in the Formex (first dimension of data).
-You can specify a single value or a list/array of integer values.
-If the number of passed values is less than the number of elements,
-they wil be repeated. If you give more, they will be ignored.</p>
-<p>If a value None is given, the properties are removed from the Formex.</p>
 </dd></dl>
 
 <dl class="method">
@@ -6138,12 +7108,12 @@ along the chord from x0 to x1, creating an arc larger than a half-circle.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="datareader.html" title="38. datareader — Numerical data reader"
+          <a href="datareader.html" title="39. datareader — Numerical data reader"
              >next</a> |</li>
         <li class="right" >
-          <a href="ccxinp.html" title="36. ccxinp —"
+          <a href="ccxinp.html" title="37. ccxinp —"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -6151,7 +7121,7 @@ along the chord from x0 to x1, creating an arc larger than a half-circle.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Oct 15, 2013.
+      Last updated on Nov 30, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

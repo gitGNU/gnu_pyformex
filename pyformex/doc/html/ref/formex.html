@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>2. formex — Formex algebra in Python &mdash; pyFormex 0.9.1 documentation</title>
+    <title>2. formex — Formex algebra in Python &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +43,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.1',
+        VERSION:     '1.0.0~a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +52,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 0.9.1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="3. arraytools — A collection of numerical array utilities." href="arraytools.html" />
     <link rel="prev" title="1. coords — A structured collection of 3D coordinates." href="coords.html" />
@@ -83,7 +83,7 @@
         <li class="right" >
           <a href="coords.html" title="1. coords — A structured collection of 3D coordinates."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -531,34 +531,6 @@ would interfere with NumPy&#8217;s own concatenate function.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="formex.Formex.select">
-<tt class="descname">select</tt><big>(</big><em>idx</em><big>)</big><a class="headerlink" href="#formex.Formex.select" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Formex with only the elements selected by the parameter.</p>
-<p>The parameter <cite>idx</cite> can be</p>
-<ul class="simple">
-<li>a single element number</li>
-<li>a list, or array, of element numbers</li>
-<li>a bool array of length self.nelems(), where True values flag the
-elements to be selected</li>
-</ul>
-<p>See <a class="reference internal" href="#formex.Formex.cselect" title="formex.Formex.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.cselect">
-<tt class="descname">cselect</tt><big>(</big><em>idx</em><big>)</big><a class="headerlink" href="#formex.Formex.cselect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Formex without the elements selected by the parameter.</p>
-<p>The parameter <cite>idx</cite> can be</p>
-<ul class="simple">
-<li>a single element number</li>
-<li>a list, or array, of element numbers</li>
-<li>a bool array of length self.nelems(), where True values flag the
-elements to be selected</li>
-</ul>
-<p>This is the complementary operation of <a class="reference internal" href="#formex.Formex.select" title="formex.Formex.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a></p>
-</dd></dl>
-
-<dl class="method">
 <dt id="formex.Formex.selectNodes">
 <tt class="descname">selectNodes</tt><big>(</big><em>idx</em><big>)</big><a class="headerlink" href="#formex.Formex.selectNodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a Formex which holds only some nodes of the parent.</p>
@@ -591,27 +563,6 @@ with a simple list of points.</p>
 Elements are only removed if they have the same nodes in the same
 order. This is a slow operation: for large structures, you should
 avoid it where possible.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.whereProp">
-<tt class="descname">whereProp</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#formex.Formex.whereProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the numbers of the elements with property val.</p>
-<p>val is either a single integer, or a list/array of integers.
-The return value is an array holding all the numbers of all the
-elements that have the property val, resp. one of the values in val.</p>
-<p>If the Formex has no properties, a empty array is returned.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.withProp">
-<tt class="descname">withProp</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#formex.Formex.withProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Formex which holds only the elements with property val.</p>
-<p>val is either a single integer, or a list/array of integers.
-The return value is a Formex holding all the elements that
-have the property val, resp. one of the values in val.
-The returned Formex inherits the matching properties.</p>
-<p>If the Formex has no properties, a copy with all elements is returned.</p>
 </dd></dl>
 
 <dl class="method">
@@ -813,15 +764,29 @@ to translate in calculated directions.</p>
 
 <dl class="method">
 <dt id="formex.Formex.extrude">
-<tt class="descname">extrude</tt><big>(</big><em>n</em>, <em>step=1.0</em>, <em>dir=0</em><big>)</big><a class="headerlink" href="#formex.Formex.extrude" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extrude a Formex in one of the axis directions.</p>
-<p>Returns a Formex with doubled plexitude.</p>
-<p>First the original Formex is translated over n steps of length step in
-direction dir. Then each pair of subsequent Formices is connected to
-form a higher plexitude structure.</p>
-<p>Currently, this function correctly transforms: point1 to line2,
-line2 to quad4, tri3 to wedge6, quad4 to hex8.</p>
-<p>See the &#8216;connect&#8217; function for a more versatile tool.</p>
+<tt class="descname">extrude</tt><big>(</big><em>div</em>, <em>dir=0</em>, <em>length=1.0</em><big>)</big><a class="headerlink" href="#formex.Formex.extrude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extrude a Formex along a straight line.</p>
+<p>The Formex is extruded over a given length in the given direction.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>div</cite>: a value accepted as input by the <a class="reference internal" href="mesh.html#mesh.smartSeed" title="mesh.smartSeed"><tt class="xref py py-func docutils literal"><span class="pre">mesh.smartSeed()</span></tt></a>
+function.
+It specifies how the extruded direction will be subdivided in
+elements.</li>
+<li><cite>dir</cite>: the direction of the extrusion: either a global axis
+number or a direction vector.</li>
+<li><cite>length</cite>: the length of the extrusion, measured along the direction
+<cite>dir</cite>.</li>
+</ul>
+<p>Returns the Formex obtained by extruding the input Formex over the
+given <cite>length</cite> in direction <cite>dir</cite>, subdividing this length according
+to the seeds specified by <cite>dir</cite>. The plexitude of the result will be
+double that of the input.</p>
+<p>This method works by converting the Formex to a <tt class="xref py py-class docutils literal"><span class="pre">Mesh</span></tt>,
+using the <tt class="xref py py-func docutils literal"><span class="pre">Mesh.extrude()</span></tt> and then converting the result
+back to a Formex.</p>
+<p>See the <a class="reference internal" href="#formex.connect" title="formex.connect"><tt class="xref py py-func docutils literal"><span class="pre">connect()</span></tt></a> function for a more general tool to create
+new Formices out of existing ones.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1240,12 +1205,109 @@ length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="formex.Formex.whereProp">
+<tt class="descname">whereProp</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#formex.Formex.whereProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the numbers of the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is an array holding all the numbers of all the
+elements that have the property val, resp. one of the values in val.</p>
+<p>If the object has no properties, a empty array is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.select">
+<tt class="descname">select</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#formex.Formex.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#formex.Formex.cselect" title="formex.Formex.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#formex.Formex.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>selected</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#formex.Formex.select" title="formex.Formex.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.selectProp">
+<tt class="descname">selectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#formex.Formex.selectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object which holds only the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.cselectProp">
+<tt class="descname">cselectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#formex.Formex.cselectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object without the elements with property <cite>val</cite>.</p>
+<p>This is the complementary method of selectProp.
+val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that do not
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="formex.Formex.getCoords">
 <tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.getCoords" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the coords data.</p>
 <p>Returns the full array of coordinates stored in the Geometry object.
 Note that subclasses may store more points in this array than are used
 to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.convexHull">
+<tt class="descname">convexHull</tt><big>(</big><em>compact=True</em><big>)</big><a class="headerlink" href="#formex.Formex.convexHull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the convex hull of the geometry.</p>
+<p>The convex hull is a closed TriSurface enclosing all points
+of the geometry.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1275,14 +1337,6 @@ list is returned.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="formex.Formex.nnodes">
-<tt class="descname">nnodes</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.nnodes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the number of points in the formex.</p>
-<p>This is the product of the number of elements in the formex
-with the number of nodes per element.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="formex.Formex.resized">
 <tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#formex.Formex.resized" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a copy of the Geometry scaled to the given size.</p>
@@ -1291,6 +1345,14 @@ three coordinate directions. If it is a single value, all directions
 are scaled to the same size.
 Directions for which the geometry has a size smaller than tol times
 the maximum size are not rescaled.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.nnodes">
+<tt class="descname">nnodes</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.nnodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of points in the formex.</p>
+<p>This is the product of the number of elements in the formex
+with the number of nodes per element.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1490,7 +1552,7 @@ side is either &#8216;+&#8217;, &#8216;-&#8216; or &#8216;&#8217;</p>
         <li class="right" >
           <a href="coords.html" title="1. coords — A structured collection of 3D coordinates."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -1498,7 +1560,7 @@ side is either &#8216;+&#8217;, &#8216;-&#8216; or &#8216;&#8217;</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Oct 15, 2013.
+      Last updated on Nov 30, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

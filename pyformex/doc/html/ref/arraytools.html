@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3. arraytools — A collection of numerical array utilities. &mdash; pyFormex 0.9.1 documentation</title>
+    <title>3. arraytools — A collection of numerical array utilities. &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +43,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.1',
+        VERSION:     '1.0.0~a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +52,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 0.9.1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="4. script — Basic pyFormex script functions" href="script.html" />
     <link rel="prev" title="2. formex — Formex algebra in Python" href="formex.html" />
@@ -83,7 +83,7 @@
         <li class="right" >
           <a href="formex.html" title="2. formex — Formex algebra in Python"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -155,8 +155,17 @@ everything from this module:</p>
 <tt class="descclassname">arraytools.</tt><tt class="descname">isInt</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#arraytools.isInt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test if an object is an integer number</p>
 <p>Returns True if the object is a single integer number, else False.
-The type of the object can be either a Python integer (int) or a
-numpy integer.</p>
+The type of the object can be either a Python int or a
+numpy integer type.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="arraytools.isFloat">
+<tt class="descclassname">arraytools.</tt><tt class="descname">isFloat</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#arraytools.isFloat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if an object is a floating point number</p>
+<p>Returns True if the object is a single floating point number, else False.
+The type of the object can be either a Python float or a
+numpy floating type.</p>
 </dd></dl>
 
 <dl class="function">
@@ -1073,7 +1082,30 @@ nearest to <tt class="docutils literal"><span class="pre">target</span></tt>.</p
 
 <dl class="function">
 <dt id="arraytools.inverseIndex">
-<tt class="descclassname">arraytools.</tt><tt class="descname">inverseIndex</tt><big>(</big><em>index</em>, <em>maxcon=4</em><big>)</big><a class="headerlink" href="#arraytools.inverseIndex" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">arraytools.</tt><tt class="descname">inverseIndex</tt><big>(</big><em>a</em>, <em>sort=True</em>, <em>expand=True</em><big>)</big><a class="headerlink" href="#arraytools.inverseIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the inverse of a 2D index array.</p>
+<p>A 2D index array is a 2D integer array with only nonnegative values.
+While in most cases all values in a row are unique, this is not a
+requirement. Degenerate elements may have the same node number
+appearing multiple times in the same row.</p>
+<p>This function is a wrapper around <a class="reference internal" href="varray.html#varray.inverseIndex" title="varray.inverseIndex"><tt class="xref py py-func docutils literal"><span class="pre">varray.inverseIndex()</span></tt></a> with
+other default values for the optional arguments.</p>
+<p>Returns the inverse index, by default sorted and converted to a
+2D index array. See <a class="reference internal" href="varray.html#varray.inverseIndex" title="varray.inverseIndex"><tt class="xref py py-func docutils literal"><span class="pre">varray.inverseIndex()</span></tt></a> for the meaning
+of the parameters.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">inverseIndex</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span>
+<span class="go">array([[ 0,  1,  3],</span>
+<span class="go">       [-1,  0,  2],</span>
+<span class="go">       [-1,  1,  2],</span>
+<span class="go">       [-1, -1,  3]], dtype=int32)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="arraytools.inverseIndexOld">
+<tt class="descclassname">arraytools.</tt><tt class="descname">inverseIndexOld</tt><big>(</big><em>index</em>, <em>maxcon=4</em><big>)</big><a class="headerlink" href="#arraytools.inverseIndexOld" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an inverse index.</p>
 <p>An index is an array pointing at other items by their position.
 The inverse index is a collection of the reverse pointers.
@@ -1103,11 +1135,17 @@ any single number. Shorter rows are padded with -1 values to flag
 non-existing entries.</p>
 </div></blockquote>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">inverseIndex</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span>
-<span class="go">array([[ 0,  1,  3],</span>
-<span class="go">       [-1,  0,  2],</span>
-<span class="go">       [-1,  1,  2],</span>
-<span class="go">       [-1, -1,  3]])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">inverseIndexOld</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">[[ 0  1  3]</span>
+<span class="go"> [-1  0  2]</span>
+<span class="go"> [-1  1  2]</span>
+<span class="go"> [-1 -1  3]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">inverseIndexOld</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="go">[[0 1]</span>
+<span class="go"> [0 2]</span>
+<span class="go"> [1 2]</span>
+<span class="go"> [0 3]]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1138,7 +1176,7 @@ currently undefined which of those positions is returned.</div></blockquote>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">matchIndex</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
-<span class="go">array([-1, -1,  4,  0, -1])</span>
+<span class="go">array([-1, -1,  4,  0, -1], dtype=int32)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1563,7 +1601,7 @@ that issue and prints the full array nicely aligned.</p>
         <li class="right" >
           <a href="formex.html" title="2. formex — Formex algebra in Python"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -1571,7 +1609,7 @@ that issue and prints the full array nicely aligned.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Oct 15, 2013.
+      Last updated on Nov 30, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

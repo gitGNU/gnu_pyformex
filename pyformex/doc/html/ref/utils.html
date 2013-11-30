@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>14. utils — A collection of miscellaneous utility functions. &mdash; pyFormex 0.9.1 documentation</title>
+    <title>15. utils — A collection of miscellaneous utility functions. &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +43,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.1',
+        VERSION:     '1.0.0~a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,10 +52,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 0.9.1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="15. geomtools — Basic geometrical operations." href="geomtools.html" />
-    <link rel="prev" title="13. project — project.py" href="project.html" />
+    <link rel="next" title="16. geomtools — Basic geometrical operations." href="geomtools.html" />
+    <link rel="prev" title="14. project — project.py" href="project.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -78,12 +78,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="geomtools.html" title="15. geomtools — Basic geometrical operations."
+          <a href="geomtools.html" title="16. geomtools — Basic geometrical operations."
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="project.html" title="13. project — project.py"
+          <a href="project.html" title="14. project — project.py"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -103,10 +103,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="project.html"
-                        title="previous chapter">13. <tt class="docutils literal docutils literal docutils literal"><span class="pre">project</span></tt> &#8212; project.py</a></p>
+                        title="previous chapter">14. <tt class="docutils literal docutils literal docutils literal"><span class="pre">project</span></tt> &#8212; project.py</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="geomtools.html"
-                        title="next chapter">15. <tt class="docutils literal docutils literal docutils literal"><span class="pre">geomtools</span></tt> &#8212; Basic geometrical operations.</a></p>
+                        title="next chapter">16. <tt class="docutils literal docutils literal docutils literal"><span class="pre">geomtools</span></tt> &#8212; Basic geometrical operations.</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -141,8 +141,123 @@
           <div class="body">
             
   <div class="section" id="module-utils">
-<span id="utils-a-collection-of-miscellaneous-utility-functions"></span><span id="sec-ref-utils"></span><h1>14. <a class="reference internal" href="#module-utils" title="utils: A collection of miscellaneous utility functions."><tt class="xref py py-mod docutils literal"><span class="pre">utils</span></tt></a> &#8212; A collection of miscellaneous utility functions.<a class="headerlink" href="#module-utils" title="Permalink to this headline">¶</a></h1>
+<span id="utils-a-collection-of-miscellaneous-utility-functions"></span><span id="sec-ref-utils"></span><h1>15. <a class="reference internal" href="#module-utils" title="utils: A collection of miscellaneous utility functions."><tt class="xref py py-mod docutils literal"><span class="pre">utils</span></tt></a> &#8212; A collection of miscellaneous utility functions.<a class="headerlink" href="#module-utils" title="Permalink to this headline">¶</a></h1>
 <p><tt class="docutils literal"><span class="pre">Classes</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">utils</span></tt></p>
+<dl class="class">
+<dt id="utils.Process">
+<em class="property">class </em><tt class="descclassname">utils.</tt><tt class="descname">Process</tt><big>(</big><em>cmd</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#utils.Process" title="Permalink to this definition">¶</a></dt>
+<dd><p>A subprocess for running an external command.</p>
+<p>This is a subclass of Python&#8217;s :class`subprocess.Popen` class, providing
+some extra functionality:</p>
+<ul class="simple">
+<li>It stores the specified command</li>
+<li>If a string is passed as command and shell is False, the string is
+automatically tokenized into an args list.</li>
+<li>stdout and stderr default to subprocess.PIPE instead of None.</li>
+<li>stdin, stdout and stderr can be file names. They will be replaced
+with the opened files (in mode &#8216;r&#8217; for stdin, &#8216;w&#8217; for the others).</li>
+<li>After the command has terminated, the Process instance has three
+attributes sta, out and err, providing the return code, standard
+output and standard error of the command.</li>
+</ul>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>cmd</cite>: string or args list. If a string, it is the command as it should
+entered in a shell. If an args list, args[0] is the executable to run
+and the remainder are the arguments to be passed.</li>
+<li><cite>shell</cite>: bool. Default False. If True, the command will be run in a
+new shell. This may cause problems with killing the command and also
+poses a security risk.</li>
+<li><cite>stdout</cite>,`stderr`: Standard output and error output. See Python docs
+for subprocess.Popen. Here, they default to PIPE, allowing the caller
+to grab the output of the command. Set them to an open file object to
+redirect output to that file.</li>
+<li>Any other parameters accepted by :class`subprocess.Popen` can also be
+specified.</li>
+</ul>
+<dl class="method">
+<dt id="utils.Process.run">
+<tt class="descname">run</tt><big>(</big><em>timeout=None</em><big>)</big><a class="headerlink" href="#utils.Process.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a Process, optionally with timeout.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>timeout</cite>: float. If &gt; 0.0, the subprocess will be terminated
+or killed after this number of seconds have passed.</li>
+</ul>
+<p>On return, the following attributes of the Process are set:</p>
+<ul class="simple">
+<li><cite>sta</cite>: alias for the Popen.returncode (0 for normal exit, -15
+for terminated, -9 for killed).</li>
+<li><cite>out</cite>,`err`: the stdout and stderr as returned by the
+Popen.communicate method.</li>
+<li><cite>timedout</cite>: True if a timeout was specified and the process timed
+out, otherwise False.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.Process.terminate_on_timeout">
+<tt class="descname">terminate_on_timeout</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.Process.terminate_on_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Terminate or kill a Process, and set the timeout flag</p>
+<p>This method is primarily intended to be called by the timeout
+mechanism. It sets the timedout attribute of the Process to True,
+and then calls its terminate_or_kill method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.Process.terminate_or_kill">
+<tt class="descname">terminate_or_kill</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.Process.terminate_or_kill" title="Permalink to this definition">¶</a></dt>
+<dd><p>Terminate or kill a Process</p>
+<p>This is like Popen.terminate, but adds a check to see if the
+process really terminated, and if not kills it.</p>
+<p>Sets the returncode of the process to -15(terminate) or -9(kill).</p>
+<p>This does not do anything if the process was already stopped.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.Process.communicate">
+<tt class="descname">communicate</tt><big>(</big><em>input=None</em><big>)</big><a class="headerlink" href="#utils.Process.communicate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interact with process: Send data to stdin.  Read data from
+stdout and stderr, until end-of-file is reached.  Wait for
+process to terminate.  The optional input argument should be a
+string to be sent to the child process, or None, if no data
+should be sent to the child.</p>
+<p>communicate() returns a tuple (stdout, stderr).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.Process.pipe_cloexec">
+<tt class="descname">pipe_cloexec</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.Process.pipe_cloexec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a pipe with FDs set CLOEXEC.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.Process.wait">
+<tt class="descname">wait</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.Process.wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for child process to terminate.  Returns returncode
+attribute.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.Process.send_signal">
+<tt class="descname">send_signal</tt><big>(</big><em>sig</em><big>)</big><a class="headerlink" href="#utils.Process.send_signal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a signal to the process</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.Process.terminate">
+<tt class="descname">terminate</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.Process.terminate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Terminate the process with SIGTERM</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.Process.kill">
+<tt class="descname">kill</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.Process.kill" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kill the process with SIGKILL</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="class">
 <dt id="utils.NameSequence">
 <em class="property">class </em><tt class="descclassname">utils.</tt><tt class="descname">NameSequence</tt><big>(</big><em>name</em>, <em>ext=''</em><big>)</big><a class="headerlink" href="#utils.NameSequence" title="Permalink to this definition">¶</a></dt>
@@ -195,7 +310,7 @@ UNIX-like shell command to select all the generated file names.</p>
 
 <dl class="method">
 <dt id="utils.NameSequence.files">
-<tt class="descname">files</tt><big>(</big><em>sort=&lt;function hsorted at 0x4f48d70&gt;</em><big>)</big><a class="headerlink" href="#utils.NameSequence.files" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">files</tt><big>(</big><em>sort=&lt;function hsorted at 0x2aadaa0&gt;</em><big>)</big><a class="headerlink" href="#utils.NameSequence.files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a (sorted) list of files matching the name pattern.</p>
 <p>A function may be specified to sort/filter the list of file names.
 The function should take a list of filenames as input. The output
@@ -252,6 +367,64 @@ the filenames in a human order.</p>
 </dd></dl>
 
 <p><tt class="docutils literal"><span class="pre">Functions</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">utils</span></tt></p>
+<dl class="function">
+<dt id="utils.system">
+<tt class="descclassname">utils.</tt><tt class="descname">system</tt><big>(</big><em>cmd</em>, <em>timeout=None</em>, <em>verbose=False</em>, <em>raise_error=False</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#utils.system" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute an external command.</p>
+<p>This (and the more user oriented <a class="reference internal" href="#utils.command" title="utils.command"><tt class="xref py py-func docutils literal"><span class="pre">utils.command()</span></tt></a>) are the
+prefered way to execute external commands from inside pyFormex.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>cmd</cite>: a string with the command to be executed</li>
+<li><cite>timeout</cite>: float. If specified and &gt; 0.0, the command will time out
+and be terminated or killed after the specified number of seconds.</li>
+<li><cite>verbose</cite>: bool. If True, some extra informative message are printed:
+- the command that will be run
+- an occurring timeout condition,
+- in case of a nonzero exit, the full stdout, exit status and stderr</li>
+<li><cite>raise_error</cite>: bool. If True, and verbose is True, and the command
+fails to execute or returns with a nonzero return code other than
+one cause by a timeout, an error is raised.</li>
+</ul>
+<p>Additional parameters can be specified and will be passed to the Popen
+constructor. See the Python documentation for full info.
+Some typical examples:</p>
+<ul class="simple">
+<li><cite>shell</cite>: bool: default False. If True, the command is run in a new shell.
+The <cite>cmd</cite> should then be specified exactly as it would be entered in a
+shell.</li>
+<li><cite>stdout</cite>: an open file object. The standard output of the command will
+be written to that file.</li>
+<li><cite>stdin</cite>: an open file object. The standard input of the command will
+be read from that file.</li>
+</ul>
+<p>Returns the Process used to run the command. This gives access to all
+its info, like the exit code, stdout and stderr, and whether the command
+timed out or not. See <a class="reference internal" href="#utils.Process" title="utils.Process"><tt class="xref py py-class docutils literal"><span class="pre">Process</span></tt></a> for more info.
+This Process is also saved as the global variable
+<tt class="xref py py-attr docutils literal"><span class="pre">utils.last_command</span></tt> to allow checking the outcome of the command
+from other places but the caller.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.command">
+<tt class="descclassname">utils.</tt><tt class="descname">command</tt><big>(</big><em>cmd</em>, <em>timeout=None</em>, <em>verbose=True</em>, <em>raise_error=True</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#utils.command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run an external command in a user friendly way.</p>
+<p>This is equivalent with the utils.system function but with
+verbose=True and raise_error=True by default.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.killProcesses">
+<tt class="descclassname">utils.</tt><tt class="descname">killProcesses</tt><big>(</big><em>pids</em>, <em>signal=15</em><big>)</big><a class="headerlink" href="#utils.killProcesses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send the specified signal to the processes in list</p>
+<ul class="simple">
+<li><cite>pids</cite>: a list of process ids.</li>
+<li><cite>signal</cite>: the signal to send to the processes. The default (15) will
+try to terminate the process. See &#8216;man kill&#8217; for more values.</li>
+</ul>
+</dd></dl>
+
 <dl class="function">
 <dt id="utils.splitFilename">
 <tt class="descclassname">utils.</tt><tt class="descname">splitFilename</tt><big>(</big><em>filename</em>, <em>accept_ext=None</em>, <em>reject_ext=None</em><big>)</big><a class="headerlink" href="#utils.splitFilename" title="Permalink to this definition">¶</a></dt>
@@ -387,6 +560,14 @@ the bash tilde expansion, such as strings in the configuration file.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="utils.fileExtensions">
+<tt class="descclassname">utils.</tt><tt class="descname">fileExtensions</tt><big>(</big><em>ftype</em><big>)</big><a class="headerlink" href="#utils.fileExtensions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the list of file extensions from a given type.</p>
+<p>ftype is one of the keys in <tt class="xref py py-attr docutils literal"><span class="pre">utils.file_description</span></tt>.</p>
+<p>Returns a list of strings starting with a &#8216;.&#8217;.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="utils.fileDescription">
 <tt class="descclassname">utils.</tt><tt class="descname">fileDescription</tt><big>(</big><em>ftype</em><big>)</big><a class="headerlink" href="#utils.fileDescription" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a description of the specified file type.</p>
@@ -451,7 +632,23 @@ without the leading dot.</p>
 <dl class="function">
 <dt id="utils.prefixFiles">
 <tt class="descclassname">utils.</tt><tt class="descname">prefixFiles</tt><big>(</big><em>prefix</em>, <em>files</em><big>)</big><a class="headerlink" href="#utils.prefixFiles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prepend a prefix to a list of filenames.</p>
+<dd><p>Prepend a prefix path to a list of filenames.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.unPrefixFiles">
+<tt class="descclassname">utils.</tt><tt class="descname">unPrefixFiles</tt><big>(</big><em>prefix</em>, <em>files</em><big>)</big><a class="headerlink" href="#utils.unPrefixFiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a prefix path from a list of filenames.</p>
+<p>The given prefix path is removed from all filenames that start with
+the prefix. Other filenames are untouched.
+Only full path components are removed.
+The changed files are guaranteed not to start with a &#8216;/&#8217;.</p>
+<p>Returns the modified list.</p>
+<p>Examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">unPrefixFiles</span><span class="p">(</span><span class="s">&#39;/home&#39;</span><span class="p">,[</span><span class="s">&#39;/home/user1&#39;</span><span class="p">,</span><span class="s">&#39;/home//user2&#39;</span><span class="p">,</span><span class="s">&#39;/home2/user&#39;</span><span class="p">,</span><span class="s">&#39;/root&#39;</span><span class="p">])</span>
+<span class="go">[&#39;user1&#39;, &#39;user2&#39;, &#39;/home2/user&#39;, &#39;/root&#39;]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -525,7 +722,7 @@ appdirs and scriptdirs are also added.</li>
 
 <dl class="function">
 <dt id="utils.grepSource">
-<tt class="descclassname">utils.</tt><tt class="descname">grepSource</tt><big>(</big><em>pattern</em>, <em>options=''</em>, <em>relative=True</em>, <em>quiet=False</em><big>)</big><a class="headerlink" href="#utils.grepSource" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">utils.</tt><tt class="descname">grepSource</tt><big>(</big><em>pattern</em>, <em>options=''</em>, <em>relative=True</em><big>)</big><a class="headerlink" href="#utils.grepSource" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds pattern in the pyFormex source .py files.</p>
 <p>Uses the <cite>grep</cite> program to find all occurrences of some specified
 pattern text in the pyFormex source .py files (including the examples).
@@ -578,6 +775,18 @@ will be underlined to make it appear as a header.</p>
 <p>Adds a new line of text below the first line of s. The new line
 has the same length as the first, but all characters are equal to
 the specified char.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.dos2unix">
+<tt class="descclassname">utils.</tt><tt class="descname">dos2unix</tt><big>(</big><em>infile</em><big>)</big><a class="headerlink" href="#utils.dos2unix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a text file to unix line endings.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.unix2dos">
+<tt class="descclassname">utils.</tt><tt class="descname">unix2dos</tt><big>(</big><em>infile</em>, <em>outfile=None</em><big>)</big><a class="headerlink" href="#utils.unix2dos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a text file to dos line endings.</p>
 </dd></dl>
 
 <dl class="function">
@@ -644,84 +853,6 @@ microlevel execution time.</p>
 <dt id="utils.countLines">
 <tt class="descclassname">utils.</tt><tt class="descname">countLines</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#utils.countLines" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the number of lines in a text file.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.system1">
-<tt class="descclassname">utils.</tt><tt class="descname">system1</tt><big>(</big><em>cmd</em><big>)</big><a class="headerlink" href="#utils.system1" title="Permalink to this definition">¶</a></dt>
-<dd><p>Execute an external command.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.system">
-<tt class="descclassname">utils.</tt><tt class="descname">system</tt><big>(</big><em>cmd</em>, <em>timeout=None</em>, <em>gracetime=2.0</em>, <em>shell=True</em><big>)</big><a class="headerlink" href="#utils.system" title="Permalink to this definition">¶</a></dt>
-<dd><p>Execute an external command.</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>cmd</cite>: a string with the command to be executed</li>
-<li><cite>timeout</cite>: float. If specified and &gt; 0.0, the command will time out
-and be killed after the specified number of seconds.</li>
-<li><cite>gracetime</cite>: float. The time to wait after the terminate signal was
-sent in case of a timeout, before a forced kill is done.</li>
-<li><cite>shell</cite>: if True (default) the command is run in a new shell</li>
-</ul>
-<p>Returns:</p>
-<ul class="simple">
-<li><cite>sta</cite>: exit code of the command. In case of a timeout this will be
-<cite>utils._TIMEOUT_EXITCODE</cite>, or <cite>utils._TIMEOUT_KILLCODE</cite> if the command
-had to be forcedly killed. Otherwise, the exitcode of the command
-itself is returned.</li>
-<li><cite>out</cite>: stdout produced by the command</li>
-<li><cite>err</cite>: stderr produced by the command</li>
-</ul>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.runCommand">
-<tt class="descclassname">utils.</tt><tt class="descname">runCommand</tt><big>(</big><em>cmd</em>, <em>timeout=None</em>, <em>verbose=True</em><big>)</big><a class="headerlink" href="#utils.runCommand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run an external command in a user friendly way.</p>
-<p>This uses the <a class="reference internal" href="#utils.system" title="utils.system"><tt class="xref py py-func docutils literal"><span class="pre">system()</span></tt></a> function to run an external command,
-adding some extra user notifications of what is happening.
-If no error occurs, the (sta,out) obtained form the <a class="reference internal" href="#utils.system" title="utils.system"><tt class="xref py py-func docutils literal"><span class="pre">system()</span></tt></a>
-function are returned. The value sta will be zero, unless a timeout
-condition has occurred, in which case sta will be -15 or -9.
-If the <a class="reference internal" href="#utils.system" title="utils.system"><tt class="xref py py-func docutils literal"><span class="pre">system()</span></tt></a> call returns with an error that is not a timeout,</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>cmd</cite>: a string with the command to be executed</li>
-<li><cite>timeout</cite>: float. If specified and &gt; 0.0, the command will time out
-and be killed after the specified number of seconds.</li>
-<li><cite>verbose</cite>: boolean. If True (default), a message including the command
-is printed before it is run and in case of a nonzero exit, the full
-stdout, exit status and stderr are printed (in that order).</li>
-</ul>
-<p>If no error occurs in the execution of the command by the <a class="reference internal" href="#utils.system" title="utils.system"><tt class="xref py py-func docutils literal"><span class="pre">system()</span></tt></a>
-function, returns a tuple</p>
-<ul class="simple">
-<li><cite>sta</cite>: 0, or a negative value in case of a timeout condition</li>
-<li><cite>out</cite>: stdout produced by the command, with the last newline removed</li>
-</ul>
-<p>Example:
-cmd = &#8216;sleep 2&#8217;
-sta,out=runCommand3(cmd,quiet=False, timeout=5.)
-print (sta,out)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.spawn">
-<tt class="descclassname">utils.</tt><tt class="descname">spawn</tt><big>(</big><em>cmd</em><big>)</big><a class="headerlink" href="#utils.spawn" title="Permalink to this definition">¶</a></dt>
-<dd><p>Spawn a child process.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.killProcesses">
-<tt class="descclassname">utils.</tt><tt class="descname">killProcesses</tt><big>(</big><em>pids</em>, <em>signal=15</em><big>)</big><a class="headerlink" href="#utils.killProcesses" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send the specified signal to the processes in list</p>
-<ul class="simple">
-<li><cite>pids</cite>: a list of process ids.</li>
-<li><cite>signal</cite>: the signal to send to the processes. The default (15) will
-try to terminate the process. See &#8216;man kill&#8217; for more values.</li>
-</ul>
 </dd></dl>
 
 <dl class="function">
@@ -988,12 +1119,12 @@ To search other containers, add handlers to iterate over their contents:</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="geomtools.html" title="15. geomtools — Basic geometrical operations."
+          <a href="geomtools.html" title="16. geomtools — Basic geometrical operations."
              >next</a> |</li>
         <li class="right" >
-          <a href="project.html" title="13. project — project.py"
+          <a href="project.html" title="14. project — project.py"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -1001,7 +1132,7 @@ To search other containers, add handlers to iterate over their contents:</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Oct 15, 2013.
+      Last updated on Nov 30, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Running pyFormex &mdash; pyFormex 0.9.1 documentation</title>
+    <title>Running pyFormex &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="_static/pyformex.css" type="text/css" />
@@ -43,7 +43,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.9.1',
+        VERSION:     '1.0.0~a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +52,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 0.9.1 documentation" href="index.html" />
+    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="index.html" />
     <link rel="up" title="pyFormex user guide" href="user-guide.html" />
     <link rel="next" title="The Graphical User Interface" href="gui.html" />
     <link rel="prev" title="pyFormex user guide" href="user-guide.html" />
@@ -83,7 +83,7 @@
         <li class="right" >
           <a href="user-guide.html" title="pyFormex user guide"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="user-guide.html" accesskey="U">pyFormex user guide</a> &gt;</li> 
       </ul>
     </div>
@@ -204,9 +204,10 @@ Options
 --uselib                Use the pyFormex C lib if available. This is the
                         default.
 --nouselib              Do not use the pyFormex C-lib.
---commands              Use the commands module to execute external commands.
-                        Default is to use the subprocess module.
---config=CONFIG         Use file CONFIG for settings
+--config=CONFIG         Use file CONFIG for settings. This file is loaded in
+                        addition to the normal configuration files and
+                        overwrites their settings. Any changes will be saved
+                        to this file.
 --nodefaultconfig       Skip the default site and user config files. This
                         option can only be used in conjunction with the
                         --config option.
@@ -237,6 +238,13 @@ Options
 --fastnurbs             Test C library nurbs drawing: only for developers!
 --pyside                Use the PySide bindings for QT4 libraries
 --pyqt4                 Use the PyQt4 bindings for QT4 libraries
+--gl1                   Use the old OpenGL rendering engine. This is almost
+                        identical to the engine in the old 0.9 branch, but
+                        does not provide some new and advanced features of the
+                        new enging. To ease the transition after the branch
+                        switching, the old engine is currently the default.
+--gl2                   Use the new OpenGL rendering engine. This will become
+                        the default when it becomes fully functional.
 --listfiles             List the pyformex Python source files.
 --search                Search the pyformex source for a specified pattern and
                         exit. This can optionally be followed by -- followed
@@ -297,7 +305,7 @@ argument should again be a script.</p>
         <li class="right" >
           <a href="user-guide.html" title="pyFormex user guide"
              >previous</a> |</li>
-        <li><a href="index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="user-guide.html" >pyFormex user guide</a> &gt;</li> 
       </ul>
     </div>
@@ -305,7 +313,7 @@ argument should again be a script.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Oct 15, 2013.
+      Last updated on Nov 30, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

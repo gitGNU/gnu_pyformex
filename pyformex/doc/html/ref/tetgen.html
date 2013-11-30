@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>61. tetgen — Interface with tetgen &mdash; pyFormex 0.9.1 documentation</title>
+    <title>62. tetgen — Interface with tetgen &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +43,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.1',
+        VERSION:     '1.0.0~a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,10 +52,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 0.9.1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="62. tools — tools.py" href="tools.html" />
-    <link rel="prev" title="60. sectionize — sectionize.py" href="sectionize.html" />
+    <link rel="next" title="63. tools — tools.py" href="tools.html" />
+    <link rel="prev" title="61. sectionize — sectionize.py" href="sectionize.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -78,12 +78,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="tools.html" title="62. tools — tools.py"
+          <a href="tools.html" title="63. tools — tools.py"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="sectionize.html" title="60. sectionize — sectionize.py"
+          <a href="sectionize.html" title="61. sectionize — sectionize.py"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -103,10 +103,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="sectionize.html"
-                        title="previous chapter">60. <tt class="docutils literal docutils literal docutils literal"><span class="pre">sectionize</span></tt> &#8212; sectionize.py</a></p>
+                        title="previous chapter">61. <tt class="docutils literal docutils literal docutils literal"><span class="pre">sectionize</span></tt> &#8212; sectionize.py</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="tools.html"
-                        title="next chapter">62. <tt class="docutils literal"><span class="pre">tools</span></tt> &#8212; tools.py</a></p>
+                        title="next chapter">63. <tt class="docutils literal"><span class="pre">tools</span></tt> &#8212; tools.py</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -141,7 +141,7 @@
           <div class="body">
             
   <div class="section" id="module-tetgen">
-<span id="tetgen-interface-with-tetgen"></span><span id="sec-ref-tetgen"></span><h1>61. <a class="reference internal" href="#module-tetgen" title="tetgen: Interface with tetgen"><tt class="xref py py-mod docutils literal"><span class="pre">tetgen</span></tt></a> &#8212; Interface with tetgen<a class="headerlink" href="#module-tetgen" title="Permalink to this headline">¶</a></h1>
+<span id="tetgen-interface-with-tetgen"></span><span id="sec-ref-tetgen"></span><h1>62. <a class="reference internal" href="#module-tetgen" title="tetgen: Interface with tetgen"><tt class="xref py py-mod docutils literal"><span class="pre">tetgen</span></tt></a> &#8212; Interface with tetgen<a class="headerlink" href="#module-tetgen" title="Permalink to this headline">¶</a></h1>
 <p>A collection of functions to read/write tetgen files and to run the
 tetgen program</p>
 <p>tetgen is a quality tetrahedral mesh generator and a 3D Delaunay triangulator.
@@ -342,26 +342,10 @@ and create a new approximation of the surface as a by-product.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="tetgen.tetgenConvexHull">
-<tt class="descclassname">tetgen.</tt><tt class="descname">tetgenConvexHull</tt><big>(</big><em>pts</em><big>)</big><a class="headerlink" href="#tetgen.tetgenConvexHull" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tetralize the convex hull of some points.</p>
-<p>Finds the convex hull some points and returns
-a tet mesh of the convex hull and the convex hull (tri3 mesh).</p>
-<p>If all points are on the same plane there is no convex hull.</p>
-<p>This could be made an example:</p>
-<p>from simple import regularGrid
-X = Coords(regularGrid([0., 0., 0.], [1., 1., 1.], [10, 10, 10]).reshape(-1, 3)).addNoise(rsize=0.05,asize=0.5)
-draw(X)
-from plugins.tetgen import tetgenConvexHull
-tch, ch =tetgenConvexHull( X)
-draw(ch, color=&#8217;red&#8217;, marksize=10)</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="tetgen.checkSelfIntersectionsWithTetgen">
 <tt class="descclassname">tetgen.</tt><tt class="descname">checkSelfIntersectionsWithTetgen</tt><big>(</big><em>self</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#tetgen.checkSelfIntersectionsWithTetgen" title="Permalink to this definition">¶</a></dt>
 <dd><p>check self intersections using tetgen</p>
-<p>Returns couples of intersecting triangles</p>
+<p>Returns pairs of intersecting triangles</p>
 </dd></dl>
 
 <dl class="function">
@@ -401,12 +385,12 @@ read back using readTetgen and returned.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="tools.html" title="62. tools — tools.py"
+          <a href="tools.html" title="63. tools — tools.py"
              >next</a> |</li>
         <li class="right" >
-          <a href="sectionize.html" title="60. sectionize — sectionize.py"
+          <a href="sectionize.html" title="61. sectionize — sectionize.py"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -414,7 +398,7 @@ read back using readTetgen and returned.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Oct 15, 2013.
+      Last updated on Nov 30, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

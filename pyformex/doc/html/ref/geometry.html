@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7. geometry — A generic interface to the Coords transformation methods &mdash; pyFormex 0.9.1 documentation</title>
+    <title>7. geometry — A generic interface to the Coords transformation methods &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +43,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.1',
+        VERSION:     '1.0.0~a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,9 +52,9 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 0.9.1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="8. connectivity — A class and functions for handling nodal connectivity." href="connectivity.html" />
+    <link rel="next" title="8. mesh — Finite element meshes in pyFormex." href="mesh.html" />
     <link rel="prev" title="6. colors — Playing with colors." href="colors.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
@@ -78,12 +78,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="connectivity.html" title="8. connectivity — A class and functions for handling nodal connectivity."
+          <a href="mesh.html" title="8. mesh — Finite element meshes in pyFormex."
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="colors.html" title="6. colors — Playing with colors."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -105,8 +105,8 @@
   <p class="topless"><a href="colors.html"
                         title="previous chapter">6. <tt class="docutils literal docutils literal docutils literal"><span class="pre">colors</span></tt> &#8212; Playing with colors.</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="connectivity.html"
-                        title="next chapter">8. <tt class="docutils literal docutils literal docutils literal"><span class="pre">connectivity</span></tt> &#8212; A class and functions for handling nodal connectivity.</a></p>
+  <p class="topless"><a href="mesh.html"
+                        title="next chapter">8. <tt class="docutils literal docutils literal"><span class="pre">mesh</span></tt> &#8212; Finite element meshes in pyFormex.</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -289,12 +289,109 @@ length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="geometry.Geometry.whereProp">
+<tt class="descname">whereProp</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#geometry.Geometry.whereProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the numbers of the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is an array holding all the numbers of all the
+elements that have the property val, resp. one of the values in val.</p>
+<p>If the object has no properties, a empty array is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="geometry.Geometry.select">
+<tt class="descname">select</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#geometry.Geometry.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#geometry.Geometry.cselect" title="geometry.Geometry.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="geometry.Geometry.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#geometry.Geometry.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>selected</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#geometry.Geometry.select" title="geometry.Geometry.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="geometry.Geometry.selectProp">
+<tt class="descname">selectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#geometry.Geometry.selectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object which holds only the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="geometry.Geometry.cselectProp">
+<tt class="descname">cselectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#geometry.Geometry.cselectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object without the elements with property <cite>val</cite>.</p>
+<p>This is the complementary method of selectProp.
+val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that do not
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="geometry.Geometry.getCoords">
 <tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#geometry.Geometry.getCoords" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the coords data.</p>
 <p>Returns the full array of coordinates stored in the Geometry object.
 Note that subclasses may store more points in this array than are used
 to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="geometry.Geometry.convexHull">
+<tt class="descname">convexHull</tt><big>(</big><em>compact=True</em><big>)</big><a class="headerlink" href="#geometry.Geometry.convexHull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the convex hull of the geometry.</p>
+<p>The convex hull is a closed TriSurface enclosing all points
+of the geometry.</p>
 </dd></dl>
 
 <dl class="method">
@@ -610,12 +707,12 @@ If fil is a string, the file is closed prior to returning.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="connectivity.html" title="8. connectivity — A class and functions for handling nodal connectivity."
+          <a href="mesh.html" title="8. mesh — Finite element meshes in pyFormex."
              >next</a> |</li>
         <li class="right" >
           <a href="colors.html" title="6. colors — Playing with colors."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -623,7 +720,7 @@ If fil is a string, the file is closed prior to returning.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Oct 15, 2013.
+      Last updated on Nov 30, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

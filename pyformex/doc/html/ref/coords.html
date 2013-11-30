@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>1. coords — A structured collection of 3D coordinates. &mdash; pyFormex 0.9.1 documentation</title>
+    <title>1. coords — A structured collection of 3D coordinates. &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +43,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.1',
+        VERSION:     '1.0.0~a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +52,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 0.9.1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="2. formex — Formex algebra in Python" href="formex.html" />
     <link rel="prev" title="pyFormex reference manual" href="../refman.html" />
@@ -83,7 +83,7 @@
         <li class="right" >
           <a href="../refman.html" title="pyFormex reference manual"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -281,34 +281,6 @@ minimal coordinates, the second has the maximal ones.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="coords.Coords.apt">
-<tt class="descname">apt</tt><big>(</big><em>align</em><big>)</big><a class="headerlink" href="#coords.Coords.apt" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns an alignment point of a Coords.</p>
-<p>Alignment point are points whose coordinates are either the minimal
-value, the maximal value or the middle value for the Coords.
-Combining the three values with the three dimensions, a Coords
-has in 27 (3**3) alignment points. The corner points of the
-bounding box are a subset of these.</p>
-<p>The 27 points are addressed by an alignment string of three
-characters, one for each direction. Each character should be
-one of the following</p>
-<ul class="simple">
-<li>&#8216;-&#8216;: use the minimal value for that coordinate,</li>
-<li>&#8216;+&#8217;: use the minimal value for that coordinate,</li>
-<li>&#8216;0&#8217;: use the middle value for that coordinate.</li>
-</ul>
-<p>Any other character will set the corresponding coordinate to zero.</p>
-<p>A string &#8216;000&#8217; is equivalent with center(). The values &#8216;&#8212;&#8217; and
-&#8216;+++&#8217; give the points of the bounding box.</p>
-<p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([[[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">]]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">apt</span><span class="p">(</span><span class="s">&#39;-0+&#39;</span><span class="p">))</span>
-<span class="go">[ 0.   0.5  1. ]</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
 <dt id="coords.Coords.center">
 <tt class="descname">center</tt><big>(</big><big>)</big><a class="headerlink" href="#coords.Coords.center" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the center of the <a class="reference internal" href="#coords.Coords" title="coords.Coords"><tt class="xref py py-class docutils literal"><span class="pre">Coords</span></tt></a>.</p>
@@ -321,6 +293,36 @@ The return value is a (3,) shaped <a class="reference internal" href="#coords.Co
 </pre></div>
 </div>
 <p>See also: <a class="reference internal" href="#coords.Coords.centroid" title="coords.Coords.centroid"><tt class="xref py py-meth docutils literal"><span class="pre">centroid()</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="coords.Coords.bboxPoint">
+<tt class="descname">bboxPoint</tt><big>(</big><em>position</em><big>)</big><a class="headerlink" href="#coords.Coords.bboxPoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a bounding box point of a Coords.</p>
+<p>Bounding box points are points whose coordinates are either
+the minimal value, the maximal value or the middle value
+for the Coords.
+Combining the three values in three dimensions results in
+3*3 = 27 alignment points. The corner points of the
+bounding box are a subset of these.</p>
+<p>The 27 points are addressed by a position string of three
+characters, one for each direction. Each character should be
+one of the following</p>
+<ul class="simple">
+<li>&#8216;-&#8216;: use the minimal value for that coordinate,</li>
+<li>&#8216;+&#8217;: use the minimal value for that coordinate,</li>
+<li>&#8216;0&#8217;: use the middle value for that coordinate.</li>
+</ul>
+<p>Any other character will set the corresponding coordinate to zero.</p>
+<p>A string &#8216;000&#8217; is equivalent with center(). The values &#8216;&#8212;&#8217; and
+&#8216;+++&#8217; give the points of the bounding box.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([[[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">]]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">bboxPoint</span><span class="p">(</span><span class="s">&#39;-0+&#39;</span><span class="p">))</span>
+<span class="go">[ 0.   0.5  1. ]</span>
+</pre></div>
+</div>
+<p>See also <a class="reference internal" href="#coords.align" title="coords.align"><tt class="xref py py-func docutils literal"><span class="pre">align()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -402,7 +404,7 @@ center() of the <a class="reference internal" href="#coords.Coords" title="coord
 <a class="reference internal" href="#coords.Coords" title="coords.Coords"><tt class="xref py py-class docutils literal"><span class="pre">Coords</span></tt></a> are lying outside the sphere.</p>
 <p>Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">Coords</span><span class="p">([[[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]]])</span><span class="o">.</span><span class="n">bsphere</span><span class="p">())</span>
-<span class="go">2.12132024765</span>
+<span class="go">2.12132</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -432,6 +434,27 @@ attribute a weight 1.0 to each point.</li>
 <li><cite>principal</cite>: the (prinicipal) moments of inertia: shape (3,)</li>
 <li><cite>tensor</cite>: the full inertia tensor in the global axes: shape (3,3)</li>
 </ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="coords.Coords.orientedBbox">
+<tt class="descname">orientedBbox</tt><big>(</big><em>ctr</em>, <em>rot</em><big>)</big><a class="headerlink" href="#coords.Coords.orientedBbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an oriented bounding box of a set of points.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>ctr</cite> : array_like (3,). Center of the the bounding box</li>
+<li><cite>rot</cite> : array_like (3,3). Rotation matrix of the the bounding box</li>
+</ul>
+<p>Returns a single hexahedral Formex object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="coords.Coords.principalBbox">
+<tt class="descname">principalBbox</tt><big>(</big><big>)</big><a class="headerlink" href="#coords.Coords.principalBbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a bounding box aligned with the inertia principal axes.</p>
+<p>Computes the orientedBbox aligned with the principal axes of the
+set of points, as obtained from <a class="reference internal" href="inertia.html#module-inertia" title="inertia: inertia.py"><tt class="xref py py-func docutils literal"><span class="pre">inertia()</span></tt></a>.</p>
+<p>Returns a single hexahedral Formex object.</p>
 </dd></dl>
 
 <dl class="method">
@@ -666,8 +689,11 @@ This is equivalent with:</p>
 <dd><p>Align a Coords on a given point.</p>
 <p>Alignment involves a translation such that the bounding box
 of the Coords object becomes aligned with a given point.
-By default this is the origin of the global axes.
-The requested alignment is determined by a string of three characters,
+By default this point is the origin of the global axes.
+The bounding box alignment is done by a translation of one
+of the bounding box points (see <a class="reference internal" href="#coords.Coords.bboxPoint" title="coords.Coords.bboxPoint"><tt class="xref py py-func docutils literal"><span class="pre">bboxPoint()</span></tt></a>) to the
+target point.</p>
+<p>The requested alignment is determined by a string of three characters,
 one for each of the coordinate axes. The character determines how
 the structure is aligned in the corresponding direction:</p>
 <ul class="simple">
@@ -680,7 +706,8 @@ the structure is aligned in the corresponding direction:</p>
 puts all the points in the octant with all positive coordinate values.
 A string <tt class="docutils literal"><span class="pre">'000'</span></tt> will center the object around the origin, just like
 the (slightly faster) <a class="reference internal" href="#coords.Coords.centered" title="coords.Coords.centered"><tt class="xref py py-meth docutils literal"><span class="pre">centered()</span></tt></a> method.</p>
-<p>See also the <a class="reference internal" href="#coords.align" title="coords.align"><tt class="xref py py-func docutils literal"><span class="pre">coords.align()</span></tt></a> function.</p>
+<p>See also the <a class="reference internal" href="#coords.align" title="coords.align"><tt class="xref py py-func docutils literal"><span class="pre">coords.align()</span></tt></a> function for aligning objects
+with respect to each other.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1203,27 +1230,28 @@ Specifying repeat=True will automatically do this.</p>
 
 <dl class="method">
 <dt id="coords.Coords.match">
-<tt class="descname">match</tt><big>(</big><em>coords</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#coords.Coords.match" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">match</tt><big>(</big><em>coords</em>, <em>clean=False</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#coords.Coords.match" title="Permalink to this definition">¶</a></dt>
 <dd><p>Match points form another Coords object.</p>
 <p>This method finds the points from <cite>coords</cite> that coincide with
 (or are very close to) points of <cite>self</cite>.</p>
 <p>Parameters:</p>
 <ul class="simple">
 <li><cite>coords</cite>: a Coords object</li>
+<li><cite>clean</cite> :  boolean to return only matching indices</li>
 <li><cite>**kargs</cite>: keyword arguments that you want to pass to the
 <a class="reference internal" href="#coords.Coords.fuse" title="coords.Coords.fuse"><tt class="xref py py-meth docutils literal"><span class="pre">fuse()</span></tt></a> method.</li>
 </ul>
 <p>This method works by concatenating the serialized point sets of
 both Coords and then fusing them.</p>
 <p>Returns:</p>
-<ul class="simple">
-<li><cite>matches</cite>: an Int array with shape (nmatches,2)</li>
-<li><cite>coords</cite>: a Coords with the fused coordinate set</li>
-<li><cite>index</cite>: an index with the position of each of the serialized
-points of the concatenation in the fused coordinate set. To find
-the index of the points of the orginal coordinate sets, split
-this index at the position self.npoints() and reshape the resulting
-parts to <cite>self.pshape()</cite>, resp. <cite>coords.pshape()</cite>.</li>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>matches</cite>: an Int array with shape (coords.shape[0]) if clean is False</dt>
+<dd><p class="first last">where non matching positions have value -1 or an Int array
+with shape (nmatches) if clean is True</p>
+</dd>
+</dl>
+</li>
 </ul>
 </dd></dl>
 
@@ -1326,6 +1354,15 @@ Thus, X.interpolate(Y,[0.,0.5,1.0]) will contain all points of
 X and Y and all points with mean coordinates between those of X and Y.</p>
 <p>F.interpolate(G,n) is equivalent with
 F.interpolate(G,arange(0,n+1)/float(n))</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="coords.Coords.convexHull">
+<tt class="descname">convexHull</tt><big>(</big><big>)</big><a class="headerlink" href="#coords.Coords.convexHull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the convex hull of a Coords</p>
+<p>Returns a Connectivity containing the indices of the points
+that constitute the convex hull of the Coords.</p>
+<p>This requires SciPy version 0.12.0 or higher.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1432,7 +1469,7 @@ bounding boxes is returned in boox format.</p>
 
 <dl class="function">
 <dt id="coords.testBbox">
-<tt class="descclassname">coords.</tt><tt class="descname">testBbox</tt><big>(</big><em>A, bb, dirs=[0, 1, 2], nodes='any'</em><big>)</big><a class="headerlink" href="#coords.testBbox" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">coords.</tt><tt class="descname">testBbox</tt><big>(</big><em>A, bb, dirs=[0, 1, 2], nodes='any', atol=0.0</em><big>)</big><a class="headerlink" href="#coords.testBbox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test which part of A is inside a given bbox, applied in directions dirs.</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -1562,11 +1599,12 @@ of juxtaposing them.</p>
 its origin in the curve&#8217;s point, and its normal along the curve&#8217;s direction.
 In case of a PolyLine, directions are pointing to the next point by default.
 If avgdir==True, average directions are taken at the intermediate points
-avgdir can also be an array like sequence of shape (N,3) to explicitely set the
+avgdir can also be an array like sequence of shape (N,3) to explicitely set
 the directions for ALL the points of the path</p>
 <p>Missing end directions can explicitely be set by enddir, and are by default
 taken along the last segment.
-enddir is a list of 2 array like values of shape (3). one of the two can also be an empty list
+enddir is a list of 2 array like values of shape (3). one of the two can
+also be an empty list.
 If the curve is closed, endpoints are treated as any intermediate point,
 and the user should normally not specify enddir.</p>
 <p>At each point of the curve, the original Coords object can be scaled in x
@@ -1599,7 +1637,7 @@ the curve.</p>
         <li class="right" >
           <a href="../refman.html" title="pyFormex reference manual"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -1607,7 +1645,7 @@ the curve.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Oct 15, 2013.
+      Last updated on Nov 30, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4. script — Basic pyFormex script functions &mdash; pyFormex 0.9.1 documentation</title>
+    <title>4. script — Basic pyFormex script functions &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +43,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.1',
+        VERSION:     '1.0.0~a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +52,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 0.9.1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="5. draw — Create 3D graphical representations." href="draw.html" />
     <link rel="prev" title="3. arraytools — A collection of numerical array utilities." href="arraytools.html" />
@@ -83,7 +83,7 @@
         <li class="right" >
           <a href="arraytools.html" title="3. arraytools — A collection of numerical array utilities."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -248,24 +248,15 @@ in the choices list. Thus, ask(&#8216;Do you agree&#8217;,[&#8216;Y&#8217;,&#821
 </dd></dl>
 
 <dl class="function">
-<dt id="script.system">
-<tt class="descclassname">script.</tt><tt class="descname">system</tt><big>(</big><em>cmdline</em>, <em>result='output'</em><big>)</big><a class="headerlink" href="#script.system" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run a command and return its output.</p>
-<p>If result == &#8216;status&#8217;, the exit status of the command is returned.
-If result == &#8216;output&#8217;, the output of the command is returned.
-If result == &#8216;both&#8217;, a tuple of status and output is returned.</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="script.playScript">
 <tt class="descclassname">script.</tt><tt class="descname">playScript</tt><big>(</big><em>scr</em>, <em>name=None</em>, <em>filename=None</em>, <em>argv=</em><span class="optional">[</span><span class="optional">]</span>, <em>pye=False</em><big>)</big><a class="headerlink" href="#script.playScript" title="Permalink to this definition">¶</a></dt>
 <dd><p>Play a pyformex script scr. scr should be a valid Python text.</p>
 <p>There is a lock to prevent multiple scripts from being executed at the
 same time. This implies that pyFormex scripts can currently not be
 recurrent.
-If a name is specified, set the global variable pyformex.scriptName to it
+If name is specified, set the global variable pyformex.scriptName to it
 when the script is started.
-If a filename is specified, set the global variable __file__ to it.</p>
+If filename is specified, set the global variable __file__ to it.</p>
 </dd></dl>
 
 <dl class="function">
@@ -445,7 +436,7 @@ case on very old versions) the test returns False.</p>
 <dt id="script.requireRevision">
 <tt class="descclassname">script.</tt><tt class="descname">requireRevision</tt><big>(</big><em>rev</em>, <em>comp='&gt;='</em><big>)</big><a class="headerlink" href="#script.requireRevision" title="Permalink to this definition">¶</a></dt>
 <dd><p>Require a specified pyFormex revision number.</p>
-<p>The arguments are like checkRevision. Ho9wever, this function will
+<p>The arguments are like checkRevision. However, this function will
 raise an error if the requirement fails.</p>
 </dd></dl>
 
@@ -514,7 +505,7 @@ Else, default names will be provided.</p>
         <li class="right" >
           <a href="arraytools.html" title="3. arraytools — A collection of numerical array utilities."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -522,7 +513,7 @@ Else, default names will be provided.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Oct 15, 2013.
+      Last updated on Nov 30, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>11. mesh — Finite element meshes in pyFormex. &mdash; pyFormex 0.9.1 documentation</title>
+    <title>8. mesh — Finite element meshes in pyFormex. &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +43,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.1',
+        VERSION:     '1.0.0~a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,10 +52,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 0.9.1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="12. simple — Predefined geometries with a simple shape." href="simple.html" />
-    <link rel="prev" title="10. elements — Definition of elements." href="elements.html" />
+    <link rel="next" title="9. connectivity — A class and functions for handling nodal connectivity." href="connectivity.html" />
+    <link rel="prev" title="7. geometry — A generic interface to the Coords transformation methods" href="geometry.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -78,12 +78,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="simple.html" title="12. simple — Predefined geometries with a simple shape."
+          <a href="connectivity.html" title="9. connectivity — A class and functions for handling nodal connectivity."
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="elements.html" title="10. elements — Definition of elements."
+          <a href="geometry.html" title="7. geometry — A generic interface to the Coords transformation methods"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -102,11 +102,11 @@
    
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="elements.html"
-                        title="previous chapter">10. <tt class="docutils literal docutils literal docutils literal"><span class="pre">elements</span></tt> &#8212; Definition of elements.</a></p>
+  <p class="topless"><a href="geometry.html"
+                        title="previous chapter">7. <tt class="docutils literal docutils literal docutils literal"><span class="pre">geometry</span></tt> &#8212; A generic interface to the Coords transformation methods</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="simple.html"
-                        title="next chapter">12. <tt class="docutils literal"><span class="pre">simple</span></tt> &#8212; Predefined geometries with a simple shape.</a></p>
+  <p class="topless"><a href="connectivity.html"
+                        title="next chapter">9. <tt class="docutils literal docutils literal"><span class="pre">connectivity</span></tt> &#8212; A class and functions for handling nodal connectivity.</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -141,7 +141,7 @@
           <div class="body">
             
   <div class="section" id="module-mesh">
-<span id="mesh-finite-element-meshes-in-pyformex"></span><span id="sec-ref-mesh"></span><h1>11. <a class="reference internal" href="#module-mesh" title="mesh: Finite element meshes in pyFormex."><tt class="xref py py-mod docutils literal"><span class="pre">mesh</span></tt></a> &#8212; Finite element meshes in pyFormex.<a class="headerlink" href="#module-mesh" title="Permalink to this headline">¶</a></h1>
+<span id="mesh-finite-element-meshes-in-pyformex"></span><span id="sec-ref-mesh"></span><h1>8. <a class="reference internal" href="#module-mesh" title="mesh: Finite element meshes in pyFormex."><tt class="xref py py-mod docutils literal"><span class="pre">mesh</span></tt></a> &#8212; Finite element meshes in pyFormex.<a class="headerlink" href="#module-mesh" title="Permalink to this headline">¶</a></h1>
 <p>This module defines the Mesh class, which can be used to describe discrete
 geometrical models like those used in Finite Element models.
 It also contains some useful functions to create such models.</p>
@@ -551,6 +551,17 @@ switched off by setting <cite>compact=False</cite>.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="mesh.Mesh.adjacentTo">
+<tt class="descname">adjacentTo</tt><big>(</big><em>elements</em>, <em>level=0</em><big>)</big><a class="headerlink" href="#mesh.Mesh.adjacentTo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select the elements adjacent to the specified elements.</p>
+<p><cite>elements</cite>: int or array_like, int. Element selector.
+<cite>level</cite>: int. Entity level used to define adjacency. Default 0 (nodes).</p>
+<p>Returns a list of all the elements in the Mesh adjacent
+to any of the specified elements. The adjacency is defined
+over nodes, edges or faces, depending on the <cite>level</cite>.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="mesh.Mesh.adjacency">
 <tt class="descname">adjacency</tt><big>(</big><em>level=0</em>, <em>diflevel=-1</em><big>)</big><a class="headerlink" href="#mesh.Mesh.adjacency" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an element adjacency table.</p>
@@ -573,7 +584,7 @@ its neighbours connected by the specified geometrical subitems.</p>
 
 <dl class="method">
 <dt id="mesh.Mesh.frontWalk">
-<tt class="descname">frontWalk</tt><big>(</big><em>level=0</em>, <em>startat=0</em>, <em>frontinc=1</em>, <em>partinc=1</em>, <em>maxval=-1</em><big>)</big><a class="headerlink" href="#mesh.Mesh.frontWalk" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">frontWalk</tt><big>(</big><em>level=0</em>, <em>startat=0</em>, <em>frontinc=1</em>, <em>partinc=1</em>, <em>maxval=-1</em>, <em>optim_mem=False</em><big>)</big><a class="headerlink" href="#mesh.Mesh.frontWalk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Visit all elements using a frontal walk.</p>
 <p>In a frontal walk a forward step is executed simultanuously from all
 the elements in the current front. The elements thus reached become
@@ -769,11 +780,13 @@ that will be passed to <tt class="xref py py-meth docutils literal"><span class=
 
 <dl class="method">
 <dt id="mesh.Mesh.matchCoords">
-<tt class="descname">matchCoords</tt><big>(</big><em>mesh</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#mesh.Mesh.matchCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Match nodes of Mesh with nodes of self.</p>
-<p>This is a convenience function equivalent to:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">coords</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">coords</span><span class="p">,</span><span class="o">**</span><span class="n">kargs</span><span class="p">)</span>
-</pre></div>
+<tt class="descname">matchCoords</tt><big>(</big><em>coords</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#mesh.Mesh.matchCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Match nodes of coords with nodes of self.</p>
+<p>coords can be a Coords or a Mesh object
+This is a convenience function equivalent to:</p>
+<div class="highlight-python"><pre>self.coords.match(mesh.coords,**kargs)
+or
+self.coords.match(coords,**kargs)</pre>
 </div>
 <p>See also <tt class="xref py py-meth docutils literal"><span class="pre">Coords.match()</span></tt></p>
 </dd></dl>
@@ -820,52 +833,6 @@ a compacter scheme.</p>
 <span class="go"> [3 2]]</span>
 </pre></div>
 </div>
-</dd></dl>
-
-<dl class="method">
-<dt id="mesh.Mesh.select">
-<tt class="descname">select</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#mesh.Mesh.select" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Mesh only holding the selected elements.</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>selected</cite>: an object that can be used as an index in the
-<cite>elems</cite> array, such as<ul>
-<li>a single element number</li>
-<li>a list, or array, of element numbers</li>
-<li>a bool array of length self.nelems(), where True values flag the
-elements to be selected</li>
-</ul>
-</li>
-<li><cite>compact</cite>: boolean. If True (default), the returned Mesh will be
-compacted, i.e. the unused nodes are removed and the nodes are
-renumbered from zero. If False, returns the node set and numbers
-unchanged.</li>
-</ul>
-<p>Returns a Mesh (or subclass) with only the selected elements.</p>
-<p>See <a class="reference internal" href="#mesh.Mesh.cselect" title="mesh.Mesh.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="mesh.Mesh.cselect">
-<tt class="descname">cselect</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#mesh.Mesh.cselect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a mesh without the selected elements.</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>selected</cite>: an object that can be used as an index in the
-<cite>elems</cite> array, such as<ul>
-<li>a single element number</li>
-<li>a list, or array, of element numbers</li>
-<li>a bool array of length self.nelems(), where True values flag the
-elements to be selected</li>
-</ul>
-</li>
-<li><cite>compact</cite>: boolean. If True (default), the returned Mesh will be
-compacted, i.e. the unused nodes are removed and the nodes are
-renumbered from zero. If False, returns the node set and numbers
-unchanged.</li>
-</ul>
-<p>Returns a Mesh with all but the selected elements.</p>
-<p>This is the complimentary operation of <a class="reference internal" href="#mesh.Mesh.select" title="mesh.Mesh.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -919,47 +886,6 @@ array. Examples are a tuple of local node numbers, or a list
 of such tuples all having the same length.
 Each row of <cite>nodsel</cite> holds a list of local node numbers that
 should be retained in the new connectivity table.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="mesh.Mesh.withProp">
-<tt class="descname">withProp</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#mesh.Mesh.withProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Mesh which holds only the elements with property val.</p>
-<p>val is either a single integer, or a list/array of integers.
-The return value is a Mesh holding all the elements that
-have the property val, resp. one of the values in val.
-The returned Mesh inherits the matching properties.</p>
-<p>If the Mesh has no properties, a copy with all elements is returned.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="mesh.Mesh.withoutProp">
-<tt class="descname">withoutProp</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#mesh.Mesh.withoutProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Mesh without the elements with property <cite>val</cite>.</p>
-<p>This is the complementary method of Mesh.withProp().
-val is either a single integer, or a list/array of integers.
-The return value is a Mesh holding all the elements that do not
-have the property val, resp. one of the values in val.
-The returned Mesh inherits the matching properties.</p>
-<p>If the Mesh has no properties, a copy with all elements is returned.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="mesh.Mesh.connectedTo">
-<tt class="descname">connectedTo</tt><big>(</big><em>nodes</em><big>)</big><a class="headerlink" href="#mesh.Mesh.connectedTo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Mesh with the elements connected to the specified node(s).</p>
-<p><cite>nodes</cite>: int or array_like, int.</p>
-<p>Return a Mesh with all the elements from the original that contain at
-least one of the specified nodes.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="mesh.Mesh.notConnectedTo">
-<tt class="descname">notConnectedTo</tt><big>(</big><em>nodes</em><big>)</big><a class="headerlink" href="#mesh.Mesh.notConnectedTo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Mesh with the elements not connected to the given node(s).</p>
-<p><cite>nodes</cite>: int or array_like, int.</p>
-<p>Returns a Mesh with all the elements from the original that do not
-contain any of the specified nodes.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1245,23 +1171,18 @@ as a single Mesh.</p>
 connect back to the first. This is accomplished by adding the first
 Coords item back at the end of the list.</p>
 </li>
-<li><p class="first"><cite>div</cite>: Either an integer, or a sequence of float numbers (usually
-in the range ]0.0..1.0]) or a list of sequences of the same length of the
-connecting list of coordinates. In the latter case every sequence inside the
-list can either be a float sequence (usually in the range ]0.0..1.0])
-or it contains one integer (e.g [[4],[0.3,1]]).
-This should only be used for degree==1.</p>
-<p>With this parameter the generated elements  can be further
-subdivided along the connection direction.
-If an int is given, the connected elements will be divided
-into this number of elements along the connection direction. If a
-sequence of float numbers is given, the numbers specify the relative
-distance along the connection direction where the elements should
-end. If the last value in the sequence is not equal to 1.0, there
-will be a gap between the consecutive connections. If a list of sequences
-is given, every consecutive element of the coordinate list is connected
-using the corresponding sequence in the list(1-length integer of float sequence
-specified as before).</p>
+<li><p class="first"><cite>div</cite>: This should only be used for degree==1.</p>
+<p>With this parameter the generated connections can be further
+subdivided along the connection direction. <cite>div</cite> is either a
+single input for the <a class="reference internal" href="#mesh.smartSeed" title="mesh.smartSeed"><tt class="xref py py-func docutils literal"><span class="pre">smartSeed()</span></tt></a> function, or a list thereof.
+In the latter case, the length of the list should be one less
+than the length of the <cite>coordslist</cite>. Each pair of consecutive
+items from the coordinate list will be connected using the
+seeds generated by the corresponding value from <cite>div</cite>, passed to
+<a class="reference internal" href="#mesh.smartSeed" title="mesh.smartSeed"><tt class="xref py py-func docutils literal"><span class="pre">smartSeed()</span></tt></a> with <cite>start=1</cite> parameter. Notice that if seed
+values are specified directly as a list of floats, the list
+should not contain the first value (0.0), while the final value
+should be 1.0.</p>
 </li>
 <li><p class="first"><cite>eltype</cite>: the element type of the constructed hypermesh. Normally,
 this is set automatically from the base element type and the
@@ -1273,10 +1194,22 @@ a final conversion to the requested element type is attempted.</p>
 
 <dl class="method">
 <dt id="mesh.Mesh.extrude">
-<tt class="descname">extrude</tt><big>(</big><em>n</em>, <em>step=1.0</em>, <em>dir=0</em>, <em>degree=1</em>, <em>eltype=None</em><big>)</big><a class="headerlink" href="#mesh.Mesh.extrude" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extrude a Mesh in one of the axes directions.</p>
-<p>Returns a new Mesh obtained by extruding the given Mesh
-over <cite>n</cite> steps of length <cite>step</cite> in direction of axis <cite>dir</cite>.</p>
+<tt class="descname">extrude</tt><big>(</big><em>div</em>, <em>dir=0</em>, <em>length=1.0</em>, <em>degree=1</em>, <em>eltype=None</em><big>)</big><a class="headerlink" href="#mesh.Mesh.extrude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extrude a Mesh along a straight line.</p>
+<p>The Mesh is extruded over a given length in the given direction.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>div</cite>: a value accepted as input by the <a class="reference internal" href="#mesh.smartSeed" title="mesh.smartSeed"><tt class="xref py py-func docutils literal"><span class="pre">smartSeed()</span></tt></a> function.
+It specifies how the extruded direction will be subdivided in
+elements.</li>
+<li><cite>dir</cite>: the direction of the extrusion: either a global axis
+number or a direction vector.</li>
+<li><cite>length</cite>: the length of the extrusion, measured along the direction
+<cite>dir</cite>.</li>
+</ul>
+<p>Returns the Mesh obtained by extruding the input Mesh over the
+given <cite>length</cite> in direction <cite>dir</cite>, subdividing this length according
+to the seeds specified by <cite>dir</cite>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1506,6 +1439,15 @@ It is equivalent with</p>
 local node numbering. This method will reverse all elements
 in a Mesh of dimensionality 3, provide the volumes of these
 elements can be computed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesh.Mesh.nodalToElement">
+<tt class="descname">nodalToElement</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#mesh.Mesh.nodalToElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute element values from nodal values.</p>
+<p>Given scalar values defined on nodes,
+finds the average values at elements.
+NB. It now works with scalar. It could be extended to vectors.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1779,6 +1721,103 @@ length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="mesh.Mesh.whereProp">
+<tt class="descname">whereProp</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#mesh.Mesh.whereProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the numbers of the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is an array holding all the numbers of all the
+elements that have the property val, resp. one of the values in val.</p>
+<p>If the object has no properties, a empty array is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesh.Mesh.select">
+<tt class="descname">select</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#mesh.Mesh.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#mesh.Mesh.cselect" title="mesh.Mesh.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesh.Mesh.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#mesh.Mesh.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>selected</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#mesh.Mesh.select" title="mesh.Mesh.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesh.Mesh.selectProp">
+<tt class="descname">selectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#mesh.Mesh.selectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object which holds only the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesh.Mesh.cselectProp">
+<tt class="descname">cselectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#mesh.Mesh.cselectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object without the elements with property <cite>val</cite>.</p>
+<p>This is the complementary method of selectProp.
+val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that do not
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesh.Mesh.convexHull">
+<tt class="descname">convexHull</tt><big>(</big><em>compact=True</em><big>)</big><a class="headerlink" href="#mesh.Mesh.convexHull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the convex hull of the geometry.</p>
+<p>The convex hull is a closed TriSurface enclosing all points
+of the geometry.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="mesh.Mesh.copy">
 <tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#mesh.Mesh.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a deep copy of the Geometry  object.</p>
@@ -1894,18 +1933,28 @@ will become sparsely populated.</li>
 <dl class="function">
 <dt id="mesh.seed">
 <tt class="descclassname">mesh.</tt><tt class="descname">seed</tt><big>(</big><em>n</em>, <em>e0=0.0</em>, <em>e1=0.0</em><big>)</big><a class="headerlink" href="#mesh.seed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create one-dimensional element seeds in a unit interval</p>
-<p>Returns parametric values along the unit interval in order to
-divide it in n elements, possibly of unequal length.</p>
+<dd><p>Create a list of seed values.</p>
+<p>A seed list is a list of float values in the range 0.0 to 1.0.
+It can be used to subdivide a line segment or to seed nodes
+along lines for meshing purposes.</p>
+<p>This function divides the unit interval in <cite>n</cite> parts, resulting
+in <cite>n+1</cite> seed values. While the intervals are by default of equal
+length, the <cite>e0</cite> and <cite>e1</cite> can be used to create unevenly spaced
+seed values.</p>
 <p>Parameters:</p>
 <ul class="simple">
-<li><cite>n</cite>: number of elements (yielding n+1 parameter values).</li>
+<li><cite>n</cite>: positive integer: the number of elements (yielding <cite>n+1</cite>
+parameter values).</li>
 <li><cite>e0</cite>, <cite>e1</cite>: attractor parameters for the start, resp. the end of the
 range. A value larger than zero will attract the points closer to the
 corresponding endpoint, while a negative value will repulse them.
 If two positive values are given, the middle part of the interval
 will become sparsely populated.</li>
 </ul>
+<p>Returns a list of <cite>n+1</cite> float values in the range 0.0 to 1.0.
+The values are in ascending order, starting with 0.0 and ending with 1.0.</p>
+<p>See also :func: <cite>smartSeed</cite> for an analogue function accepting a variety
+of input.</p>
 <p>Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">seed</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">2.</span><span class="p">))</span>
@@ -1915,19 +1964,43 @@ will become sparsely populated.</li>
 </dd></dl>
 
 <dl class="function">
-<dt id="mesh.gridpoints">
-<tt class="descclassname">mesh.</tt><tt class="descname">gridpoints</tt><big>(</big><em>seed0</em>, <em>seed1=None</em>, <em>seed2=None</em><big>)</big><a class="headerlink" href="#mesh.gridpoints" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create weigths for linear lines, quadrilateral and hexahedral elements coordinates</p>
+<dt id="mesh.smartSeed">
+<tt class="descclassname">mesh.</tt><tt class="descname">smartSeed</tt><big>(</big><em>n</em>, <em>start=0</em><big>)</big><a class="headerlink" href="#mesh.smartSeed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a list of seed values.</p>
+<p>Like the <a class="reference internal" href="#mesh.seed" title="mesh.seed"><tt class="xref py py-func docutils literal"><span class="pre">seed()</span></tt></a> function, this function creates a list of float
+values in the range 0.0 to 1.0. It accepts however a variety of inputs,
+making it the prefered choice when it is not known in advance how the
+user wants to control the seeds: automatically created or self specified.</p>
 <p>Parameters:</p>
 <ul class="simple">
-<li>&#8216;seed0&#8217; : int or list of floats . It specifies divisions along the
-first parametric direction of the element</li>
+<li><cite>n</cite>: can be one of the following:<ul>
+<li>a positive integer: returns <cite>seed(n)</cite>,</li>
+<li>a tuple (n,), (n,e0) or (n,e0,e1): returns <cite>seed(*n)</cite>,</li>
+<li>a list or array of floats: returns the input parameter as is.</li>
+</ul>
+</li>
+<li><cite>start</cite>: 0 or 1: The default (0) makes the full list created by
+<cite>seed()</cite> to be returned. If 1, the first value (0.0) is omitted:
+this can be useful when creating seeds over multiple adjacent
+intervals.</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="mesh.gridpoints">
+<tt class="descclassname">mesh.</tt><tt class="descname">gridpoints</tt><big>(</big><em>seed0</em>, <em>seed1=None</em>, <em>seed2=None</em><big>)</big><a class="headerlink" href="#mesh.gridpoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create weigths for 1D, 2D or 3D element coordinates.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li>&#8216;seed0&#8217; : int or list of floats . It specifies divisions along
+the first parametric direction of the element</li>
 <li>&#8216;seed1&#8217; : int or list of floats . It specifies divisions along
 the second parametric direction of the element</li>
 <li>&#8216;seed2&#8217; : int or list of floats . It specifies divisions along
 the t parametric direction of the element</li>
 </ul>
-<p>If these parametes are integer values the divisions will be equally spaced between  0 and 1</p>
+<p>If these parametes are integer values the divisions will be equally
+spaced between 0 and 1.</p>
 </dd></dl>
 
 <dl class="function">
@@ -1969,7 +2042,8 @@ the second parametric direction of the element</li>
 <li>&#8216;seed2&#8217; : int or list of floats . It specifies divisions along
 the t parametric direction of the element</li>
 </ul>
-<p>If these parametes are integer values the divisions will be equally spaced between  0 and 1</p>
+<p>If these parametes are integer values the divisions will be equally
+spaced between  0 and 1</p>
 </dd></dl>
 
 <dl class="function">
@@ -1981,10 +2055,9 @@ the t parametric direction of the element</li>
 <dl class="function">
 <dt id="mesh.rectangle">
 <tt class="descclassname">mesh.</tt><tt class="descname">rectangle</tt><big>(</big><em>L</em>, <em>W</em>, <em>nl</em>, <em>nw</em><big>)</big><a class="headerlink" href="#mesh.rectangle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a plane rectangular mesh of quad4 elements</p>
+<dd><p>Create a plane rectangular mesh of quad4 elements.</p>
 <p>Parameters:</p>
 <ul class="simple">
-<li>L,W: length,width of the rectangle</li>
 <li>nl,nw: seeds for the elements along the length, width of the rectangle.
 They should one of the following:<ul>
 <li>an integer number, specifying the number of equally sized elements
@@ -1996,12 +2069,13 @@ position of the seeds. The values should be ordered and the first and
 last values should be 0.0 and 1.0.</li>
 </ul>
 </li>
+<li>L,W: length,width of the rectangle.</li>
 </ul>
 </dd></dl>
 
 <dl class="function">
-<dt id="mesh.rectangle_with_hole">
-<tt class="descclassname">mesh.</tt><tt class="descname">rectangle_with_hole</tt><big>(</big><em>L</em>, <em>W</em>, <em>r</em>, <em>nr</em>, <em>nt</em>, <em>e0=0.0</em>, <em>eltype='quad4'</em><big>)</big><a class="headerlink" href="#mesh.rectangle_with_hole" title="Permalink to this definition">¶</a></dt>
+<dt id="mesh.rectangleWithHole">
+<tt class="descclassname">mesh.</tt><tt class="descname">rectangleWithHole</tt><big>(</big><em>L</em>, <em>W</em>, <em>r</em>, <em>nr</em>, <em>nt</em>, <em>e0=0.0</em>, <em>eltype='quad4'</em><big>)</big><a class="headerlink" href="#mesh.rectangleWithHole" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a quarter of rectangle with a central circular hole.</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -2011,6 +2085,37 @@ last values should be 0.0 and 1.0.</li>
 <li>e0: concentration factor for elements in the radial direction</li>
 </ul>
 <p>Returns a Mesh</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="mesh.quadrilateral">
+<tt class="descclassname">mesh.</tt><tt class="descname">quadrilateral</tt><big>(</big><em>x</em>, <em>n1</em>, <em>n2</em><big>)</big><a class="headerlink" href="#mesh.quadrilateral" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a quadrilateral mesh</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>x</cite>: Coords(4,3): Four corners of the mesh, in anti-clockwise order.</li>
+<li><cite>n1</cite>: number of elements along sides x0-x1 and x2-x3</li>
+<li><cite>n2</cite>: number of elements along sides x1-x2 and x3-x4</li>
+</ul>
+<p>Returns a Mesh of quads filling the quadrilateral defined  by the four
+points <cite>x</cite>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="mesh.quarterCircle">
+<tt class="descclassname">mesh.</tt><tt class="descname">quarterCircle</tt><big>(</big><em>n1</em>, <em>n2</em><big>)</big><a class="headerlink" href="#mesh.quarterCircle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a mesh of quadrilaterals filling a quarter circle.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>n1</cite>: number of elements along sides x0-x1 and x2-x3</li>
+<li><cite>n2</cite>: number of elements along sides x1-x2 and x3-x4</li>
+</ul>
+<p>Returns a Mesh representing a quarter circle with radius 1 and
+center at the origin.</p>
+<p>The quarter circle mesh has a kernel of n1*n1 cells, and two
+border meshes of n1*n2 cells. The resulting mesh has n1+n2 cells
+in radial direction and 2*n1 cells in tangential direction (in the
+border mesh).</p>
 </dd></dl>
 
 </div>
@@ -2031,12 +2136,12 @@ last values should be 0.0 and 1.0.</li>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="simple.html" title="12. simple — Predefined geometries with a simple shape."
+          <a href="connectivity.html" title="9. connectivity — A class and functions for handling nodal connectivity."
              >next</a> |</li>
         <li class="right" >
-          <a href="elements.html" title="10. elements — Definition of elements."
+          <a href="geometry.html" title="7. geometry — A generic interface to the Coords transformation methods"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 0.9.1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -2044,7 +2149,7 @@ last values should be 0.0 and 1.0.</li>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Oct 15, 2013.
+      Last updated on Nov 30, 2013.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>
