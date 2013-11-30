@@ -50,7 +50,7 @@ if sys.hexversion &  0xFFFF0000:  # Checks for Python 3.1
     import collections
     def callable(f):
         return isinstance(f,collections.Callable)
-    __builtin__.callable = callable
+    __builtins__['callable'] = callable
 
 
 # End
