@@ -196,7 +196,7 @@ def convertDXF(text):
 def collectByType(entities):
     """Collect the dxf entities by type."""
     coll = {}
-    types = set([ type(i) for i in entities ])
+    types = { type(i) for i in entities }
     print("DXF collection:")
     for t in types:
         n = t.__name__

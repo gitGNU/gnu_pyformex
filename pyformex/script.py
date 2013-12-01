@@ -245,11 +245,11 @@ def scriptLock(id):
         pf.scriptMode = 'app'
 
     pf.debug("Setting script lock %s" %id,pf.DEBUG.SCRIPT)
-    pf.scriptlock |= set([id])
+    pf.scriptlock |= {id}
 
 def scriptRelease(id):
     pf.debug("Releasing script lock %s" %id,pf.DEBUG.SCRIPT)
-    pf.scriptlock -= set([id])
+    pf.scriptlock -= {id}
     pf.scriptMode = None
 
 

@@ -1568,7 +1568,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         if prop is not None:
             prop = concatenate([m.prop for m in ml])
         elems = concatenate([m.elems for m in ml],axis=0)
-        eltype = set([m.elName() for m in ml])
+        eltype = {m.elName() for m in ml}
         if len(eltype) > 1:
             raise RuntimeError("Invalid choices for random conversions")
         eltype = eltype.pop()
@@ -2148,10 +2148,10 @@ The dir,length are in the same order as in the translate method.""" % (dir,lengt
                 return m.prop
 
         meshes = [ m for m in meshes if m.nplex() > 0 ]
-        nplex = set([ m.nplex() for m in meshes ])
+        nplex = { m.nplex() for m in meshes }
         if len(nplex) > 1:
             raise ValueError("Cannot concatenate meshes with different plexitude: %s" % str(nplex))
-        eltype = set([ m.elType() for m in meshes ])
+        eltype = { m.elType() for m in meshes }
         if len(eltype) > 1:
             raise ValueError("Cannot concatenate meshes with different eltype: %s" % [ m.elName() for m in meshes ])
 

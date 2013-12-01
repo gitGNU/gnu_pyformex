@@ -910,7 +910,7 @@ def subdivideMesh():
         return
 
     meshes = [ named(n) for n in selection.names ]
-    eltypes = set([ m.elName() for m in meshes])
+    eltypes = { m.elName() for m in meshes}
     print("eltypes in selected meshes: %s" % eltypes)
     if len(eltypes) > 1:
         warning("I can only subdivide meshes with the same element type\nPlease narrow your selection before trying conversion.")
@@ -953,7 +953,7 @@ def convertMesh():
         return
 
     meshes = [ named(n) for n in selection.names ]
-    eltypes = set([ m.elName() for m in meshes])
+    eltypes = { m.elName() for m in meshes}
     print("eltypes in selected meshes: %s" % eltypes)
     if len(eltypes) > 1:
         warning("I can only convert meshes with the same element type\nPlease narrow your selection before trying conversion.")

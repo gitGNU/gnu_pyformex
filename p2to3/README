@@ -30,9 +30,9 @@ implemented another solution.
 ? import
 ? imports
 ? imports2
-? input
-? intern
-? isinstance
+- input
+- intern
+- isinstance
 ? itertools_imports
 ? itertools
 - long
@@ -47,9 +47,9 @@ implemented another solution.
 - print
 - raise
 ? raw_input
-? reduce
-? renames
-? repr
+- reduce
+- renames
+- repr
 ? set_literal
 ? standard_error
 ? sys_exc
@@ -77,3 +77,5 @@ To write back the converted files::
 To avoid creating backup files::
 
   2to3 -f fixer -w -n pyformex
+
+It is a good practice to first run without -w, check the output to see what would be changed, and when ok to run with -n -w options. If not all changes are ok, you can run the command with the files that should be changed.
