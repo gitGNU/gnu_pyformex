@@ -26,6 +26,7 @@
 
 """
 from __future__ import print_function
+from future_builtins import zip
 
 import pyformex as pf
 
@@ -145,6 +146,6 @@ depr_facetarea = "TriSurface.facetArea is deprecated: use TriSurface.areas inste
 depr_abqdata_outres = "The use of the `res` and `out` arguments in AbqData is deprecated. Set them inside your Steps instead."
 depr_avgNodalScalarOnAdjacentNodes = "avgNodalScalarOnAdjacentNodes is deprecated. It may be removed in future, unless someone can prove its virtue, generalize, cleanup and document the code and provide an example. See the source code for more comments."
 depr_connectionSteps1 = "connectionSteps is deprecated and has been removed. Use frontWalk instead. See the FrontWalk example: walk 3 gives an equivalent result, though you might prefer the simpler solution of walk 2."
-
+depr_vtk_readVTP = "readVTP is deprecated. Use readVTKObject instead."
 
 # End

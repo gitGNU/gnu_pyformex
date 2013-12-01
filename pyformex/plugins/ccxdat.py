@@ -27,6 +27,8 @@ Interface with Calculix FE result files (.dat).
 
 """
 from __future__ import print_function
+from future_builtins import zip
+
 from plugins.fe_post import FeResult
 from arraytools import *
 from mesh import Mesh
@@ -99,7 +101,7 @@ def readResults(fn, DB, nnodes, nelems, ngp):
             addFeResult(DB, step, time, result)
             result = {}
             step += 1
-            
+
     return result
 
 
@@ -113,7 +115,7 @@ def createResultDB(model):
     DB.nelems = model.celems[-1]
     DB.Finalize()
     return DB
-    
+
 
 def addFeResult(DB, step, time, result):
     """Add an FeResult for a time step to the result DB

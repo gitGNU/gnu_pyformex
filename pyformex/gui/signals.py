@@ -27,8 +27,9 @@ Signals are treated by the normal QT4 machine. They can be emitted from
 anywhere, causing attached functions to be executed.
 """
 from __future__ import print_function
-import pyformex as pf
+from future_builtins import zip
 
+import pyformex as pf
 from gui import QtCore
 
 # These have to disappear

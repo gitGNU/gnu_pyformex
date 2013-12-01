@@ -25,8 +25,9 @@
 
 """
 from __future__ import print_function
-import pyformex as pf
+from future_builtins import zip
 
+import pyformex as pf
 import threading
 import time
 

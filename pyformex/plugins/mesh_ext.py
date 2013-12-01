@@ -28,6 +28,7 @@ The Mesh methods in this module are either deprecated or need some further
 work before they get added to the regular mesh.py module.
 """
 from __future__ import print_function
+from future_builtins import zip
 
 from mesh import *
 import utils

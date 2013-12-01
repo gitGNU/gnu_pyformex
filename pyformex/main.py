@@ -30,8 +30,9 @@ This module contains the main function of pyFormex, which is run by the
 startup script.
 """
 from __future__ import print_function
-import pyformex as pf
+from future_builtins import zip
 
+import pyformex as pf
 import sys, os
 startup_warnings = ''
 startup_messages = ''

@@ -31,6 +31,8 @@ Make sure you have version 1.5-a8 or higher.
 
 """
 from __future__ import print_function
+from future_builtins import zip
+
 _status = 'checked'
 _level = 'normal'
 _topics = ['FEA', 'curve', 'drawing']

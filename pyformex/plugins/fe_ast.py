@@ -26,6 +26,7 @@
 
 """
 from __future__ import print_function
+from future_builtins import zip
 
 from plugins.fe_abq import fmtData
 from plugins.properties import *

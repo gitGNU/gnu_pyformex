@@ -28,6 +28,7 @@ The functions in this module should be exact emulations of the
 external functions in the compiled library.
 """
 from __future__ import print_function
+from future_builtins import zip
 
 # There should be no other imports here but numpy
 from math import factorial

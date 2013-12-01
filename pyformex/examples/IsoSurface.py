@@ -28,6 +28,8 @@ This example illustrates the use of the isosurface plugin to construct
 isosurface through a set of data
 """
 from __future__ import print_function
+from future_builtins import zip
+
 _status = 'checked'
 _level = 'beginner'
 _topics = ['surface']

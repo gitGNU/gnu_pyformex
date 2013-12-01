@@ -42,6 +42,8 @@ around when its end is reached, and the number of multiplex elements is thus
 always equal to the number of points.
 """
 from __future__ import print_function
+from future_builtins import zip
+
 _status = 'checked'
 _level = 'beginner'
 _topics = ['formex']

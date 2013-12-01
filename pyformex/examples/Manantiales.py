@@ -27,6 +27,8 @@ A building with a scallop dome roof, inspired by the shape of
 Los Manantiales by Felix Candela.
 """
 from __future__ import print_function
+from future_builtins import zip
+
 _status = 'checked'
 _level = 'normal'
 _topics = ['geometry', 'surface', 'domes']

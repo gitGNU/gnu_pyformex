@@ -28,6 +28,7 @@ of pyFormex. The initialization can make changes to the other
 pyFormex modules in order to keep them working with the new engine.
 """
 from __future__ import print_function
+from future_builtins import zip
 
 import pyformex as pf
 import gui

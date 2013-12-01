@@ -32,6 +32,8 @@ The pyFormex source repository contains a directory pyformex/extra/pyftgl
 containing a Makefile to install the libraries.
 """
 from __future__ import print_function
+from future_builtins import zip
+
 _status = 'checked'
 _level = 'advanced'
 _topics = ['text']

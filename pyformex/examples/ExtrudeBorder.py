@@ -30,6 +30,8 @@ then extruded over a gioven length in the direction of the plane's positive
 normal.
 """
 from __future__ import print_function
+from future_builtins import zip
+
 _status = 'checked'
 _level = 'normal'
 _topics = ['surface']

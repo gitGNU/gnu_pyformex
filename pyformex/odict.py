@@ -27,6 +27,7 @@
 
 """
 from __future__ import print_function
+from future_builtins import zip
 
 ## import utils
 ## have_version = utils.hasModule('python')
@@ -219,52 +220,52 @@ class KeyedList(ODict):
         return [(k,)+self[k] for k in self._order]
 
 
-if __name__ == "__main__":
+## if __name__ == "__main__":
 
-    d = ODict({'a':1,'b':2,'c':3,'a':3})
-    print(d)
-    d.sort(['a', 'b', 'c'])
-    print(d)
-    d = ODict([('a', 1), ('b', 2), ('c', 3), ('a', 3)])
-    print(d)
-    d['d'] = 4
-    d['e'] = 5
-    d['f'] = 6
-    print(d)
-    del d['c']
-    print(d)
-    D = ODict(d)
-    print(D)
-    D['d'] = 26
-    print(D)
-    print(D['b'])
-    D = ODict(zip(range(5), range(6, 10)))
-    print(D)
-    print(D.keys())
-    print(D.values())
-    print(D.items())
-    del D[1]
-    del D[2]
-    D[4] = 4
-    D[3] = 3
-    D[2] = 2
-    D[1] = 1
-    print(D)
-    print(D.keys())
-    print(D.values())
-    print(D.items())
-    k = sorted(D.keys())
-    D.sort(k)
-    print(D)
-    print(D.keys())
-    print(D.values())
-    print(D.items())
+##     d = ODict({'a':1,'b':2,'c':3,'a':3})
+##     print(d)
+##     d.sort(['a', 'b', 'c'])
+##     print(d)
+##     d = ODict([('a', 1), ('b', 2), ('c', 3), ('a', 3)])
+##     print(d)
+##     d['d'] = 4
+##     d['e'] = 5
+##     d['f'] = 6
+##     print(d)
+##     del d['c']
+##     print(d)
+##     D = ODict(d)
+##     print(D)
+##     D['d'] = 26
+##     print(D)
+##     print(D['b'])
+##     D = ODict(zip(range(5), range(6, 10)))
+##     print(D)
+##     print(D.keys())
+##     print(D.values())
+##     print(D.items())
+##     del D[1]
+##     del D[2]
+##     D[4] = 4
+##     D[3] = 3
+##     D[2] = 2
+##     D[1] = 1
+##     print(D)
+##     print(D.keys())
+##     print(D.values())
+##     print(D.items())
+##     k = sorted(D.keys())
+##     D.sort(k)
+##     print(D)
+##     print(D.keys())
+##     print(D.values())
+##     print(D.items())
 
-    D[1] += 7
-    D[3] += 8
+##     D[1] += 7
+##     D[3] += 8
 
-    print(D.items())
+##     print(D.items())
 
-    print("DONE")
+##     print("DONE")
 
 # End

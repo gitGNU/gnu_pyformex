@@ -35,6 +35,8 @@ file. Finally, the GUi also allows to replay the whole set of saved
 structures.
 """
 from __future__ import print_function
+from future_builtins import zip
+
 _status = 'checked'
 _level = 'advanced'
 _topic = ['geometry']

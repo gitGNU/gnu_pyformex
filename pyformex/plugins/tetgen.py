@@ -30,6 +30,8 @@ tetgen is a quality tetrahedral mesh generator and a 3D Delaunay triangulator.
 See http://tetgen.org
 """
 from __future__ import print_function
+from future_builtins import zip
+
 import software
 software.requireExternal('tetgen')
 

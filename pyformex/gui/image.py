@@ -29,7 +29,7 @@ provisions for automatic saving to a series of files and creating
 a movie from these images.
 """
 from __future__ import print_function
-
+from future_builtins import zip
 
 import pyformex as pf
 

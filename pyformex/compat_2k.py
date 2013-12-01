@@ -32,6 +32,7 @@ the Python version inside that module. The differences between the
 versions might cause compilation to fail.
 """
 from __future__ import print_function
+from future_builtins import zip
 
 import sys
 if (sys.hexversion & 0xFFFF0000) < 0x02070000:

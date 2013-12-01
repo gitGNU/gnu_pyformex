@@ -28,6 +28,7 @@
 Some extra tools to handle the camera.
 """
 from __future__ import print_function
+from future_builtins import zip
 
 import pyformex as pf
 from gui.widgets import simpleInputItem as _I, InputDialog as Dialog

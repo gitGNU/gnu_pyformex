@@ -29,6 +29,7 @@ result differs from using Python builtin Sets in that they preserve the
 order of the items in the lists.
 """
 from __future__ import print_function
+from future_builtins import zip
 
 def roll(a,n=1):
     """Roll the elements of a list n positions forward (backward if n < 0)"""

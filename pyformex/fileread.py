@@ -32,6 +32,7 @@ in the pyFormex C-library) and allow to easily create new exporters for
 other formats.
 """
 from __future__ import print_function
+from future_builtins import zip
 
 import pyformex as pf
 from mesh import *
@@ -44,7 +45,7 @@ def getParams(line):
     """Strip the parameters from a comment line"""
     s = line.split()
     d = {'mode': s.pop(0),'filename': s.pop(0)}
-    d.update(dict(zip(s[::2], s[1::2])))
+    d.update(zip(s[::2], s[1::2]))
     return d
 
 

@@ -37,6 +37,7 @@ While the user will mostly use the higher level classes, he might occasionally
 find good reason to use the :class:`Coords` class directly as well.
 """
 from __future__ import print_function
+from future_builtins import zip
 
 from arraytools import *
 from lib import misc

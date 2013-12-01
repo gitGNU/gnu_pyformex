@@ -27,6 +27,8 @@ Shows a spatial frame structure consisting of two layers of horizontal
 bars (in red and green) connected by diagonals (blue).
 """
 from __future__ import print_function
+from future_builtins import zip
+
 _status = 'checked'
 _level = 'beginner'
 _topics = ['structure']

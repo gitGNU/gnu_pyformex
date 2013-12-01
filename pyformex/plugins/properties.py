@@ -27,6 +27,7 @@ Properties can really be just about any Python object.
 Properties can be attributed to a set of geometrical elements.
 """
 from __future__ import print_function
+from future_builtins import zip
 
 import pyformex as pf
 from flatkeydb import FlatDB

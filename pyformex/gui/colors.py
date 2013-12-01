@@ -50,6 +50,7 @@ RGB values in 0..1 range and luminance.
 
 """
 from __future__ import print_function
+from future_builtins import zip
 
 import pyformex as pf
 from gui import QtCore, QtGui

@@ -30,6 +30,7 @@ The geometry menu is intended to become the major interactive geometry menu
 in pyFormex.
 """
 from __future__ import print_function
+from future_builtins import zip
 
 import pyformex as pf
 import utils
@@ -277,7 +278,7 @@ def importModel(fn=None):
         export({modelname:d})
         M = fileread.extractMeshes(d)
         names = [ "%s-%d"%(modelname, i) for i in range(len(M)) ]
-        export(dict(zip(names, M)))
+        export2(names, M)
     pf.GUI.setBusy(False)
 
 

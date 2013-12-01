@@ -25,6 +25,8 @@
 
 """
 from __future__ import print_function
+from future_builtins import zip
+
 import pyformex as pf
 from gui import menu
 
@@ -62,7 +64,7 @@ class AttributeModel(QtCore.QAbstractTableModel):
         isdict = [ isinstance(self.obj, dict) for k in keys ]
         has_dict = [ hasattr(self.obj, '__dict__') for k in keys ]
         has_class = [ getattr(self.obj, '__class__') for k in keys ]
-        self.items = zip(keys, vals, isdict, has_dict, has_class)
+        self.items = list(zip(keys, vals, isdict, has_dict, has_class))
 
 
     def rowCount(self, parent):
@@ -95,7 +97,7 @@ class DictModel(QtCore.QAbstractTableModel):
         keys = dic.keys()
         vals = dic.values()
         typs = [ str(type(v)) for v in vals ]
-        self.items = zip(keys, typs, vals)
+        self.items = list(zip(keys, typs, vals))
         #print(self.items)
 
     def rowCount(self, parent):

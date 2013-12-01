@@ -30,6 +30,8 @@ Create an icon file from a pyFormex model rendering.
 This application was used to create some of the toolbar icons for pyFormex
 """
 from __future__ import print_function
+from future_builtins import zip
+
 _status = 'checked'
 _level = 'normal'
 _topics = ['geometry']

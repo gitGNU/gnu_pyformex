@@ -26,6 +26,8 @@
 Example for testing the low level drawing functions
 """
 from __future__ import print_function
+from future_builtins import zip
+
 _status = 'checked'
 _level = 'normal'
 _topics = ['geometry', 'mesh', 'drawing']

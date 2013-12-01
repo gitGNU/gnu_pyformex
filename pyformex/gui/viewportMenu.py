@@ -26,6 +26,7 @@
 This module defines the functions of the Viewport menu.
 """
 from __future__ import print_function
+from future_builtins import zip
 
 import pyformex as pf
 import canvas

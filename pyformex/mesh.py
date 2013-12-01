@@ -38,6 +38,7 @@ geometrical models like those used in Finite Element models.
 It also contains some useful functions to create such models.
 """
 from __future__ import print_function
+from future_builtins import zip
 
 from arraytools import groupPositions
 from coords import *

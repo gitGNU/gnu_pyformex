@@ -25,7 +25,7 @@
 """Formian compatibility functions
 
 This module defines some Formex methods which perform the same functionality
-as the corresponding functions in `Formian`. 
+as the corresponding functions in `Formian`.
 
 The author of formex/formian had an incredible preference for newspeak:
 for every concept or function, a new name was invented. While this may
@@ -51,11 +51,11 @@ Translate formian code to python
 
 No change ::
 
-  + - * / 
+  + - * /
   sign (defined further)
-  abs 
+  abs
   sqrt,sin,cos,tan,asin,acos,atan,exp (from math)
-  
+
   ln -> log (from math)
   ric -> int(round())
   tic -> int()
@@ -68,6 +68,7 @@ No change ::
 
 """
 from __future__ import print_function
+from future_builtins import zip
 
 from formex import Formex
 
@@ -129,7 +130,7 @@ def ros(self, i, j, x, y, n, angle):
 def tranic(self,*args,**kargs):
     n = len(args)/2
     d = [ i-1 for i in args[:n] ]
-    return self.translatem(*zip(d, args[n:]))
+    return self.translatem(*list(zip(d, args[n:])))
 @formex_method
 def tranid(self, t1, t2):
     return self.translate([t1, t2, 0])

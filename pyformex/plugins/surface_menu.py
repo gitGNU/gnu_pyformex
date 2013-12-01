@@ -27,6 +27,7 @@
 Surface operations plugin menu for pyFormex.
 """
 from __future__ import print_function
+from future_builtins import zip
 
 import pyformex as pf
 from gui import actors, colors, decors, widgets, menu
@@ -129,7 +130,7 @@ def readSelection(select=True,draw=True,multi=True):
             for i, S in enumerate(surfaces):
                 S.setProp(i)
         pf.GUI.setBusy(False)
-        export(dict(zip(names, surfaces)))
+        export2(names, surfaces)
         if select:
             pf.message("Set selection to %s" % str(names))
             selection.set(names)

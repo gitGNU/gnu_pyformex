@@ -40,6 +40,8 @@ superimposed, in black and red respectively. Transparency is set on.
 After the pause, the original structure is removed, and transparency is set off.
 """
 from __future__ import print_function
+from future_builtins import zip
+
 _status = 'checked'
 _level = 'normal'
 _topics = ['geometry']

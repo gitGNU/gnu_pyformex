@@ -27,12 +27,12 @@ Finite element models are geometrical models that consist of a unique
 set of nodal coordinates and one of more sets of elements.
 """
 from __future__ import print_function
-import pyformex as pf
+from future_builtins import zip
 
+import pyformex as pf
 from coords import *
 from connectivity import *
 from geometry import Geometry
-#from numpy import *
 from mesh import Mesh, mergeMeshes
 from utils import deprecation
 import warnings
@@ -42,15 +42,15 @@ import warnings
 
 class Model(Geometry):
     """Contains all FE model data."""
-    
+
     _set_coords = Geometry._set_coords_inplace
-    
+
     def __init__(self,coords=None,elems=None,meshes=None,fuse=True):
         """Create new model data.
 
         coords is an array with nodal coordinates
         elems is either a single element connectivity array, or a list of such.
-        In a simple case, coords and elems can be the arrays obtained by 
+        In a simple case, coords and elems can be the arrays obtained by
         ``coords, elems = F.feModel()``.
         This is however limited to a model where all elements have the same
         number of nodes. Then you can use the list of elems arrays. The 'fe'
@@ -136,14 +136,14 @@ class Model(Geometry):
             elems = range(len(self.elems[group]))
         return self.celems[group] + elems
 
- 
+
     def getElems(self, sets):
         """Return the definitions of the elements in sets.
 
         sets should be a list of element sets with length equal to the
         number of element groups. Each set contains element numbers local
         to that group.
-        
+
         As the elements can be grouped according to plexitude,
         this function returns a list of element arrays matching
         the element groups in self.elems. Some of these arrays may
@@ -153,8 +153,8 @@ class Model(Geometry):
         had to be calculated anyway.
         """
         return [ e[s] for e, s in zip(self.elems, sets) ]
-        
- 
+
+
     def renumber(self,old=None,new=None):
         """Renumber a set of nodes.
 
@@ -214,14 +214,14 @@ class FEModel(Geometry):
     model as the old Model class. But the Meshes may also use different
     coords blocks, allowing to accomodate better to versatile applications.
 
-    
+
     """
-    
+
     _set_coords = Geometry._set_coords_inplace
-    
+
     def __init__(self, meshes):
         """Create a new FEModel."""
-        
+
         if not isinstance(meshes, list):
             meshes = [ meshes ]
 
@@ -243,7 +243,7 @@ class FEModel(Geometry):
         pf.message("Number of elements per group: %s" % nelems)
         pf.message("Plexitude of each group: %s" % nplex)
 
-        
+
 def mergedModel(meshes,**kargs):
     """Returns the fe Model obtained from merging individual meshes.
 

@@ -25,6 +25,7 @@
 
 """
 from __future__ import print_function
+from future_builtins import zip
 
 import pyformex as pf
 from gui import decors, colors

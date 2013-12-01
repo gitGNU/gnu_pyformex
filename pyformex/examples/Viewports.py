@@ -26,6 +26,8 @@
 Demonstrate multiple viewports.
 """
 from __future__ import print_function
+from future_builtins import zip
+
 _status = 'checked'
 _level = 'advanced'
 _topics = ['surface']

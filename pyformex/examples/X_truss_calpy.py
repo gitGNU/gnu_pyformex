@@ -25,16 +25,18 @@
 
 """
 from __future__ import print_function
+from future_builtins import zip
+
 _status = 'unchecked'
 _level = 'advanced'
 _topics = ['FEA']
-_techniques = ['color', 'persistence'] 
+_techniques = ['color', 'persistence']
 
 from gui.draw import *
 from examples.X_truss import X_truss
 
 ############################
-# Load the needed calpy modules    
+# Load the needed calpy modules
 
 from plugins import calpy_itf
 #calpy_itf.check()
@@ -74,7 +76,7 @@ def run():
     truss.dia1.setProp(1)
     truss.dia2.setProp(1)
     for p in [ truss.bot.prop, truss.top.prop ]:
-        p[0] = p[n-1] = 3 
+        p[0] = p[n-1] = 3
 
     # define member properties
     materials={ 'steel' : { 'E' : 207000, 'nu' : 0.3 } }
@@ -158,7 +160,7 @@ def run():
     # In this case there is only one resultant force per element (the
     # normal force), and only load case; we still need to select the
     # scalar element result values from the array into a onedimensional
-    # vector val. 
+    # vector val.
     val = frc[:, 0, 0]
     # create a colorscale
     CS = cs.ColorScale([blue, yellow, red], val.min(), val.max(), 0., 2., 2.)
@@ -171,7 +173,7 @@ def run():
     linewidth(3)
     drawText('Normal force in the truss members', 400, 100, size=12)
     CL = cs.ColorLegend(CS, 256)
-    CLA = decors.ColorLegend(CL, 10, 10, 30, 200) 
+    CLA = decors.ColorLegend(CL, 10, 10, 30, 200)
     decorate(CLA)
 
     # and a deformed plot
@@ -194,5 +196,5 @@ def run():
 
 if __name__ == 'draw':
     run()
-    
+
 # End

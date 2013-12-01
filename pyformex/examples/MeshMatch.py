@@ -33,6 +33,8 @@ Then, after a pause, the parts of both meshes that are connected to the
 common nodes are drawn.
 """
 from __future__ import print_function
+from future_builtins import zip
+
 _status = 'checked'
 _level = 'normal'
 _topics = ['mesh']

@@ -30,6 +30,7 @@ that conversions may be necessary. Conversions to/from external programs
 should be done by the interface modules.
 """
 from __future__ import print_function
+from future_builtins import zip
 
 import pyformex as pf
 from coords import Coords

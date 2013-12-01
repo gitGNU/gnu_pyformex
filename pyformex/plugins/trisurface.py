@@ -28,6 +28,7 @@ Any surface in space, no matter how complex, can be approximated with
 a triangulated surface.
 """
 from __future__ import print_function
+from future_builtins import zip
 
 import pyformex as pf
 

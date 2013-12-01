@@ -27,6 +27,8 @@ This example illustrates the creation of spiral curves and the sweeping
 of a plane cross section along thay curve.
 """
 from __future__ import print_function
+from future_builtins import zip
+
 _status = 'checked'
 _level = 'normal'
 _topics = ['geometry', 'curve', 'mesh']

@@ -33,6 +33,7 @@ the Python version inside that module. The differences between the
 versions might cause compilation to fail.
 """
 from __future__ import print_function
+from future_builtins import zip
 
 print("""
 #####################################################################
@@ -53,8 +54,8 @@ if (sys.hexversion & 0xFFFF0000) == 0x03010000:
     __builtins__['callable'] = callable
 
 
- def execFile(f,*args,**kargs):
-    return exec(compile(open(f,*args,**kargs).read(), f,*args,**kargs, 'exec'))
+def execFile(f,*args,**kargs):
+    return exec(compile(open(f,*args,**kargs).read(), f, 'exec'),*args,**kargs)
 
 
 def userInput(*args,**kargs):

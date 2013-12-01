@@ -31,6 +31,8 @@ a rectangle (blue). Finally, an extrusion in the z-direction gives a
 cuboid (yellow).
 """
 from __future__ import print_function
+from future_builtins import zip
+
 _status = 'checked'
 _level = 'beginner'
 _topics = ['formex']

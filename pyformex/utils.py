@@ -25,6 +25,7 @@
 
 """
 from __future__ import print_function
+from future_builtins import zip
 
 import pyformex as pf
 
@@ -1128,7 +1129,7 @@ def hsorted(l):
     """
     def human(s):
         s = RE_digits.split(s)+['0']
-        return zip(s[0::2], map(int, s[1::2]))
+        return list(zip(s[0::2], map(int, s[1::2])))
     return sorted(l, key=human)
 
 

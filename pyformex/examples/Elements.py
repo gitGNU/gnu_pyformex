@@ -28,6 +28,8 @@ This example is intended for testing the drawing functions for each of the
 implemented element types.
 """
 from __future__ import print_function
+from future_builtins import zip
+
 _status = 'checked'
 _level = 'normal'
 _topics = ['geometry', 'mesh']

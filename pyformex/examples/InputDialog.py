@@ -24,10 +24,12 @@
 
 """InputDialog
 
-Example showing the use of input dialogs. 
+Example showing the use of input dialogs.
 
 """
 from __future__ import print_function
+from future_builtins import zip
+
 _status = 'failed'
 _level = 'normal'
 _topics = []
@@ -148,7 +150,7 @@ def run():
     # Show the dialog and let the user have fun
     dialog.show()
 
-    # Block other scripts 
+    # Block other scripts
     scriptLock(__file__)
 
 if __name__ == 'draw':

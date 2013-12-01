@@ -27,6 +27,7 @@
 Part of this code was borrowed from the TrollTech Qt examples.
 """
 from __future__ import print_function
+from future_builtins import zip
 
 caption = "pyFormex Image Viewer"
 

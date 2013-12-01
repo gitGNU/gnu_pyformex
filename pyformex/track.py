@@ -29,6 +29,7 @@ This can e.g. be use to detect if the contents of a list or dict
 has been changed.
 """
 from __future__ import print_function
+from future_builtins import zip
 
 # List of methods to track. These are the methods that can possibly
 # change the object. Objects of type 'list' and 'dict' are covered.

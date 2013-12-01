@@ -29,9 +29,10 @@ PhD research by Gianluca De Santis at bioMMeda (Ghent University).
 
 """
 from __future__ import print_function
-from gui.draw import *
+from future_builtins import zip
 
 import pyformex as pf
+from gui.draw import *
 import plugins.vascularsweepingmesher as vsm
 import plugins.geometry_menu as gm
 import plugins.surface_menu as sm
@@ -559,7 +560,7 @@ def seedLongSplines (H, at,  curvedSection=True, nPushedSections=6, napproxlong=
     B=[swapaxes(b, 0, 1) for b in B]
     cent012=[(b[:, 0]+b[:, -1])*0.5 for b in [B[0], B[2], B[4]] ]
     lum012=[ concatenate([ B[i][:, ::-1], B[i+1][:, 1:-1] ], axis=1) for i in [0, 2, 4] ]
-    return zip( lum012, cent012 )
+    return list(zip( lum012, cent012 ))
 
 
 def seedLongitudinalSplines():

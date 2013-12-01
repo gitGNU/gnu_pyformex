@@ -28,6 +28,8 @@ but only diagonal bars spiraling downwards from the top ring to the bottom
 ring.
 """
 from __future__ import print_function
+from future_builtins import zip
+
 _status = 'checked'
 _level = 'beginner'
 _topics = ['geometry', 'domes']

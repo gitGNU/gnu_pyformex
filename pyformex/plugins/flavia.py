@@ -28,6 +28,8 @@ Interface with flavia FE result files.
 (C) 2010 Benedict Verhegghe.
 """
 from __future__ import print_function
+from future_builtins import zip
+
 from arraytools import *
 from mesh import Mesh, mergeMeshes
 from plugins.fe_post import FeResult
@@ -86,7 +88,7 @@ def readMesh(fn):
     maxnod = max([ e.max() for e in elems])
     coords = coords[:maxnod+1]
     return coords, elems, props, ndim
-            
+
 
 def readCoords(fil, ndim):
     """Read a set of coordinates from a flavia file"""
@@ -103,7 +105,7 @@ def readCoords(fil, ndim):
                 coords = growAxis(coords, ncoords, axis=0, fill=0.0)
                 ncoords = coords.shape[0]
             coords[i-1, :ndim] = x
-    return coords       
+    return coords
 
 
 def readElems(fil, nplex):
@@ -213,7 +215,7 @@ def readFlavia(meshfile, resfile):
     DB = createFeResult(M, R)
     DB.printSteps()
     return DB
-   
+
 
 if __name__ == "draw":
     chdir('/home/bene/prj/pyformex')
@@ -237,8 +239,8 @@ if __name__ == "draw":
         if v is not None:
             print("%s: %s" % (key, v.shape))
 
-    
 
-    
+
+
 # End
 

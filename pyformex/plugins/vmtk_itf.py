@@ -28,6 +28,7 @@ Documentation for VMTK can be found on http://www.vmtk.org/Main/Tutorials/
 and http://www.vmtk.org/VmtkScripts/vmtkscripts/
 """
 from __future__ import print_function
+from future_builtins import zip
 
 import pyformex as pf
 from coords import *
@@ -305,7 +306,7 @@ def vmtkDistanceOfPoints(self,X,nproc=1):
         print ('-----distance of %d points from %d triangles with %d proc'%(len(X), self.nelems(), nproc))
         tasks = [(vmtkDistanceOfPoints, (self, d, 1)) for d in datablocks]
         ind = multitask(tasks, nproc)
-        vdist, sdist=zip(*ind)
+        vdist, sdist = list(zip(*ind))
         return concatenate(vdist), concatenate(sdist)
 
 def vmtkDistancePointsToSegments(X, L):

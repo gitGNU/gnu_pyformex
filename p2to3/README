@@ -17,7 +17,7 @@ implemented another solution.
 ? dict
 - except
 - exec:
-- execfile:
+= execfile: dealt with in compat_?k.py
 - exitfunc
 - print
 - raise
@@ -46,7 +46,7 @@ implemented another solution.
 - paren
 - print
 - raise
-- raw_input
+= raw_input : dealt with in compat_?k.py
 - reduce
 - renames
 - repr
@@ -61,7 +61,7 @@ implemented another solution.
 - ws_comma
 ? xrange
 - xreadlines
-? zip
+- zip
 
 
 

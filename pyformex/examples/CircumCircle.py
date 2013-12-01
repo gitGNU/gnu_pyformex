@@ -25,6 +25,8 @@
 
 """
 from __future__ import print_function
+from future_builtins import zip
+
 _status = 'checked'
 _level = 'beginner'
 _topics = ['geometry']
@@ -46,7 +48,7 @@ def drawCircles(F,func,color=red):
     r, c, n = func(F.coords)
     draw(c, color=color)
     draw_circles(zip(r, c, n), color=color)
-    
+
 
 def run():
     layout(2)
@@ -61,10 +63,10 @@ def run():
     draw(F)
 
     drawCircles(F, triangleCircumCircle, color=red)
-    zoomAll()   
+    zoomAll()
     drawCircles(F, triangleInCircle, color=blue)
     drawCircles(F, triangleBoundingCircle, color=black)
-    zoomAll()   
+    zoomAll()
 
 
     # draw in viewport 1
@@ -74,7 +76,7 @@ def run():
     F, c = cube_tri()
     draw(F)
     drawCircles(F, triangleInCircle)
-    zoomAll()   
+    zoomAll()
 
     if not ack("Keep both viewports ?"):
         print("Removing a viewport")

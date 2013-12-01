@@ -46,6 +46,7 @@ and write them to the Abaqus input file and some data classes to organize all
 the data involved with the finite element model.
 """
 from __future__ import print_function
+from future_builtins import zip
 
 from plugins.properties import *
 from plugins.fe import *

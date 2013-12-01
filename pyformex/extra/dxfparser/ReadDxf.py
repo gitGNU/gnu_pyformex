@@ -35,6 +35,8 @@ composed of a short first line, then a blank line and
 one or more lines explaining the intention of the script.
 """
 from __future__ import print_function
+from future_builtins import zip
+
 clear()
 wireframe()
 from pyformex.plugins.geomtools import anyPerpendicularVector as av
@@ -71,7 +73,7 @@ class LineDrawing(object):
 
     def report(self):
         print("LineDrawing: %s Lines, %s PolyLines, %s Arcs" % (len(self.lines), len(self.polylines), len(self.arcs)))
- 
+
 
     def assembleCurves(self):
         print(len(self.all))
@@ -89,7 +91,7 @@ class LineDrawing(object):
             print(a, p)
             a.setProp(p)
 
-        
+
 
 if ack('Custom file?'):
     fn = askFilename(filter=utils.fileDescription('dxf'))

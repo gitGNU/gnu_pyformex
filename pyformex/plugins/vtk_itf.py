@@ -30,10 +30,10 @@ Documentation for VTK can be found on http://www.vtk.org/
 This module provides the basic interface to convert data structures between
 vtk and pyFormex.
 """
+from __future__ import print_function
+from future_builtins import zip
 
 from pyformex import utils
-from utils import deprecation
-
 utils.requireModule('vtk')
 
 import vtk
@@ -244,7 +244,7 @@ def convertFromVPD(vpd,verbose=False):
 
 
     Returns:
-    
+
         - a list with points, cells, polygons, lines, vertices numpy arrays
         - `fielddata` : a dict of {name:fielddata_numpy_array}
         - `celldata` : a dict of {name:celldata_numpy_array}
@@ -302,7 +302,7 @@ def convertFromVPD(vpd,verbose=False):
             verts = asarray(v2n(vpd.GetVerts().GetData()), dtype=ntype).reshape(-1, Nplex+1)[:, 1:]
             if verbose:
                 print('Saved verts connectivity array')
-    
+
     # getting Fields
     if vpd.GetFieldData().GetNumberOfArrays():
         fielddata = vpd.GetFieldData() # get field arrays
@@ -312,8 +312,8 @@ def convertFromVPD(vpd,verbose=False):
         fielddata = dict(zip(arraynm, fielddata)) # dictionary of array names
         if verbose:
             print(('Field Data Arrays: '+''.join(['%s, '%nm for nm in arraynm])))
-    
-    
+
+
     # getting cells data
     if vpd.GetCellData().GetNumberOfArrays():
         celldata = vpd.GetCellData() # get cell arrays
@@ -323,8 +323,8 @@ def convertFromVPD(vpd,verbose=False):
         celldata = dict(zip(arraynm, celldata)) # dictionary of array names
         if verbose:
             print(('Cell Data Arrays: '+''.join(['%s, '%nm for nm in arraynm])))
-    
-    
+
+
     # getting points data
     if vpd.GetPointData().GetNumberOfArrays():
         pointdata = vpd.GetPointData() # get point arrays
@@ -334,7 +334,7 @@ def convertFromVPD(vpd,verbose=False):
         pointdata = dict(zip(arraynm, pointdata)) # dictionary of array names
         if verbose:
             print(('Point Data Arrays: '+''.join(['%s, '%nm for nm in arraynm])))
-    
+
 
     return [coords, cells, polys, lines, verts], fielddata, celldata, pointdata
 
@@ -408,7 +408,7 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
     writer.Write()
 
 
-@deprecation("readVTP is deprecated. Use readVTKObject instead.")
+@utils.deprecation("depr_vtk_readVTP")
 def readVTP(fn):
     return readVTKObject(fn)
 
@@ -417,14 +417,14 @@ def readVTKObject(fn):
     """Read a .vtp file
 
     Read a .vtp file and return coords, list of elems, and a dict of arrays.
-    
+
     Parameters
-    
+
     - `fn`: a filename with any vtk object extension (vtp or vtk for the moment).
-    
-    
+
+
     Returns the same output of convertFomVPD:
-    
+
         - a list with coords, cells, polygons, lines, vertices numpy arrays
         - `fielddata` : a dict of {name:fielddata_numpy_array}
         - `celldata` : a dict of {name:celldata_numpy_array}
@@ -443,7 +443,7 @@ def readVTKObject(fn):
     reader.Update()
     vpd = reader.GetOutput() # vtk polydata object
     return convertFromVPD(vpd)
-    
+
 
 
 def pointInsideObject(S,P,tol=0.):
@@ -632,7 +632,7 @@ def octree(surf,tol=0.0,npts=1.):
     loc.FreeSearchStructure()
     del loc
     return pfrep
-    
+
 def convexHull(object):
     """Compute a tetralihzed convex hull of any pyFormex class.
 
@@ -648,15 +648,15 @@ def convexHull(object):
 
 def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True, verbose=False):
     """decimate a surface (both tri3 or quad4) and returns a trisurface
-    
+
     - `self` : is a tri3 or quad4 surface
     - `targetReduction` : float (from 0.0 to 1.0) : desired number of triangles relative to input number of triangles
     - `boundaryVertexDeletion` : bool : if True it allows boundary point deletion
-    
+
     This function has been adapted from VMTK: vmtkScripts/vmtksurfacedecimation.py
     """
     from vtk import vtkDecimatePro
-    
+
     vpd = convert2VPD(self, clean=True)#convert pyFormex surface to vpd
     vpd = convertVPD2Triangles(vpd)
     vpd = cleanVPD(vpd)

@@ -29,6 +29,7 @@ interactive widgets to his scripts. Of course he can also use all the
 Qt widgets directly.
 """
 from __future__ import print_function
+from future_builtins import zip
 
 import os, types
 from gui import QtCore, QtGui, Slot

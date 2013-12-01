@@ -29,6 +29,7 @@ applications, without the need to explicitely importing the :mod:`script`
 module.
 """
 from __future__ import print_function
+from future_builtins import zip
 
 import pyformex as pf
 import formex
@@ -109,7 +110,7 @@ def export(dic):
 
 def export2(names, values):
     """Export a list of names and values."""
-    export(dict(zip(names, values)))
+    export(zip(names, values))
 
 
 def forget(names):
