@@ -1,4 +1,4 @@
-.. -*- rst -*-
+.. $Id$
 
 ..
   This file is part of the pyFormex project.
