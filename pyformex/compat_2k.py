@@ -37,6 +37,8 @@ import sys
 if (sys.hexversion & 0xFFFF0000) < 0x02070000:
 
     # Need at least Python 2.7
+    # Note that the second line in the frame below is longer.
+    # That is intentionally !!
     print("""
 ##################################################################
 ##  Requirement Error! This is Python %s.%s, however as of        ##
@@ -47,7 +49,6 @@ if (sys.hexversion & 0xFFFF0000) < 0x02070000:
 ##################################################################
 """ % (sys.version_info.major, sys.version_info.minor))
     sys.exit()
-
 
 from future_builtins import zip
 # Force future_builtins zip on all modules

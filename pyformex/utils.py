@@ -929,6 +929,42 @@ def underlineHeader(s,char='-'):
     return s[:i] + '\n' + char*i + s[i:]
 
 
+def framedText(text,padding=[0,2,0,2],border=[1,2,1,2],margin=[0,0,0,0],
+                 borderchar='####', cornerchar=None,width=None,adjust='l'):
+    """Create a text with a frame around it.
+
+    - `adjust`: 'l', 'c' or 'r': makes the text lines be adjusted to the
+      left, center or right.
+    """
+    lines = text.splitlines()
+    maxlen = max([len(l) for l in lines])
+    if adjust == 'c':
+        lines = [l.center(maxlen) for l in lines]
+    elif adjust == 'r':
+        lines = [l.rjust(maxlen) for l in lines]
+    else:
+        lines = [l.ljust(maxlen) for l in lines]
+    prefix = ' '*margin[3] + borderchar[3]*border[3] + ' '*padding[3]
+    suffix = ' '*padding[1] + borderchar[1]*border[1] + ' '*margin[1]
+    width = len(prefix)+maxlen+len(suffix)
+    s = []
+    for i in range(margin[0]):
+        s.append('')
+    for i in range(border[0]):
+        s.append(borderchar[0]*width)
+    for i in range(padding[0]):
+        s.append(prefix+' '*maxlen+suffix)
+    for l in lines:
+        s.append(prefix+("%"+str(maxlen)+"s") % l+suffix)
+    for i in range(padding[2]):
+        s.append(prefix+' '*maxlen+suffix)
+    for i in range(border[2]):
+        s.append(borderchar[2]*width)
+    for i in range( margin[2]):
+        s.append('')
+    return '\n'.join(s)
+
+
 ###################### file conversion ###################
 
 
