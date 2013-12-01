@@ -106,7 +106,7 @@ class PyConsole(QtGui.QPlainTextEdit):
 
     def getCommand(self):
         doc = self.document()
-        curr_line = unicode(doc.findBlockByLineNumber(doc.lineCount() - 1).text())
+        curr_line = str(doc.findBlockByLineNumber(doc.lineCount() - 1).text())
         curr_line = curr_line.rstrip()
         curr_line = curr_line[len(self.prompt):]
         return curr_line

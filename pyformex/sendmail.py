@@ -29,7 +29,7 @@
 I wrote this software in my free time, for my joy, not as a commissioned task.
 Any copyright claims made by my employer should therefore be considered void.
 
-Distributed under the GNU General Public License, version 3 or later 
+Distributed under the GNU General Public License, version 3 or later
 """
 from __future__ import print_function
 
@@ -44,9 +44,17 @@ mail = os.environ.get('MAIL', "%s@%s" % (user, host))
 
 ################### mail access ##################################
 
-    
+
 import smtplib
 import email.Message
+import sys
+
+def userInput(*args,**kargs):
+    """Input wrapper to deal with different Python versions"""
+    if sys.hexversion < 0x03000000:
+        return raw_input(*args,**kargs)
+    else:
+        return input(*args,**kargs)
 
 
 def message(sender='',to='',cc='',subject='',text=''):
@@ -99,7 +107,7 @@ def input_message(prompt=True):
     sender = ''
     while True:
         try:
-            s = raw_input()
+            s = userInput()
             slower = s[:5].lower()
             if slower.startswith('to:'):
                 to.append(s[3:])
@@ -111,7 +119,7 @@ def input_message(prompt=True):
                 sender = s[5:]
             else:
                 msg += s+'\n'
-            
+
         except EOFError:
             break
     return to, cc, subj, msg, sender
@@ -127,12 +135,12 @@ if __name__ == '__main__':
         msg = message(sender, to, cc, subj, msg)
         print("\n\n    Email message:")
         print(msg)
-        if raw_input('\n    Shall I send the email now? (y/n)') == 'y':
+        if userInput('\n    Shall I send the email now? (y/n)') == 'y':
             sendmail(msg, sender, to)
             print("Mail has been sent!")
         else:
             print("Mail not sent!")
     else:
         print("Message can not be sent because of missing fields!")
-        
+
 # End

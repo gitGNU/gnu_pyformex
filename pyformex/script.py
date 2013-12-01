@@ -195,7 +195,7 @@ def ask(question,choices=None,default=''):
         question += " (%s) " % ', '.join(choices)
         choices = [ c.lower() for c in choices ]
     while True:
-        res = raw_input(question)
+        res = pf.userInput(question)
         if res == '' and default:
             res = default
         if not choices:

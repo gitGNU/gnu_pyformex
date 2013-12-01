@@ -53,4 +53,11 @@ if (sys.hexversion & 0xFFFF0000) == 0x03010000:
     __builtins__['callable'] = callable
 
 
+ def execFile(f,*args,**kargs):
+    return exec(compile(open(f,*args,**kargs).read(), f,*args,**kargs, 'exec'))
+
+
+def userInput(*args,**kargs):
+    return input(*args,**kargs)
+
 # End

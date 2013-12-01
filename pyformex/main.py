@@ -173,7 +173,7 @@ The pyFormex installation is in: %s
 The pyFormex executable script is in: %s
 You will need proper permissions to actually delete the files.
 """ % (pyformexdir, bindir))
-    s = raw_input("Are you sure you want to remove pyFormex? yes/NO: ")
+    s = pf.userInput("Are you sure you want to remove pyFormex? yes/NO: ")
     if s == 'yes':
         import glob
         print("Removing %s" % pyformexdir)

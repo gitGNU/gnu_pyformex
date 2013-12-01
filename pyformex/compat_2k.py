@@ -49,7 +49,12 @@ if (sys.hexversion & 0xFFFF0000) < 0x02070000:
     sys.exit()
 
 
-def execFile(f,*args):
-    return execfile(f,*args)
+def execFile(f,*args,**kargs):
+    return execfile(f,*args,**kargs)
+
+
+def userInput(*args,**kargs):
+    return raw_input(*args,**kargs)
+
 
 # End
