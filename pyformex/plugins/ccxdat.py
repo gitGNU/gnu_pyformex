@@ -52,7 +52,7 @@ def readDispl(fil, nnodes, nres):
             break
         s = line.split()
         i = int(s[0])
-        x = map(float, s[1:])
+        x = [float(f) for f in s[1:]]
         values[i-1] = x
     return values
 
@@ -64,8 +64,8 @@ def readStress(fil, nelems, ngp, nres):
         if len(line.strip()) == 0:
             break
         s = line.split()
-        i, j = map(int, s[:2])
-        x = map(float, s[2:])
+        i, j = [int(v) for v in s[:2]]
+        x = [float(v) for v in s[2:]]
         values[i-1, j-1] = x
     return values
 

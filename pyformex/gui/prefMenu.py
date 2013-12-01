@@ -461,7 +461,7 @@ def setDirs(dircfg):
         import appMenu
         #print(dia.results)
         data = dia.results[dircfg]
-        pf.prefcfg[dircfg] = pf.cfg[dircfg] = map(tuple, data)
+        pf.prefcfg[dircfg] = pf.cfg[dircfg] = [tuple(d) for d in data]
         #print("SET %s to %s" % (dircfg,pf.prefcfg[dircfg]))
         appMenu.reloadMenu(mode=dircfg[:-4])
 
@@ -523,7 +523,7 @@ def createDirsDialog(dircfg):
         import appMenu
         appMenu.reloadMenu(mode=mode)
 
-    data = map(list, pf.cfg[dircfg])
+    data = [list(c) for c in pf.cfg[dircfg]]
     _dia = widgets.InputDialog(
         items = [
             _I(dircfg, data, itemtype='table', chead = ['Label', 'Path']),

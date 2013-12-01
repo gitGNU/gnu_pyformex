@@ -595,7 +595,7 @@ class PropertyDB(Dict):
         if tag is not None:
             if not isinstance(tag, list):
                 tag = [ tag ]
-            tag = map(str, tag)   # tags are always converted to strings!
+            tag = [str(t) for t in tag]  # tags are always converted to strings
             prop = [ p for p in prop if 'tag' in p and p['tag'] in tag ]
         for a in attr:
             prop = [ p for p in prop if a in p and p[a] is not None ]

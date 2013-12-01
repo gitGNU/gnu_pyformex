@@ -59,7 +59,7 @@ class ColorScale(object):
     The ColorLegend class provides a way to make the ColorScale visible
     on the canvas.
     """
-    
+
     def __init__(self,palet='RAINBOW',minval=0.,maxval=1.,midval=None,exp=1.0,exp2=None):
         """Create a colorscale to map a range of values into colors.
 
@@ -68,7 +68,7 @@ class ColorScale(object):
         A midval may be specified to set the value corresponding to
         the midle of the color scale. It defaults to the middle value
         of the range. It is especially useful if the range extends over
-        negative and positive values to set 0.0 as the middle value. 
+        negative and positive values to set 0.0 as the middle value.
 
         The palet is a list of 3 colors, corresponding to the minval,
         midval and maxval respectively. The middle color may be given
@@ -81,7 +81,7 @@ class ColorScale(object):
         The mapping function between numerical and color values is by
         default linear. Nonlinear mappings can be obtained by specifying
         an exponent 'exp' different from 1.0. Mapping is done with the
-        'stuur' function from the 'utils' module. 
+        'stuur' function from the 'utils' module.
         If 2 exponents are given, mapping is done independently with exp
         in the range minval..midval and with exp2 in the range midval..maxval.
         """
@@ -148,7 +148,7 @@ class ColorLegend(object):
 
     - `colorscale`: a :class:`ColorScale` instance
     - `n`: a positive integer
-    
+
     For a :class:`ColorScale` without ``midval``, the full range is divided
     in ``n`` subranges; for a scale with ``midval``, each of the two ranges
     is divided in ``n/2`` subranges. In each case the legend has ``n``
@@ -169,8 +169,8 @@ class ColorLegend(object):
             vals += [ self.cs.x0 ]
         vals += val2
         midvals = [ (vals[i] + vals[i+1])/2 for i in range(n) ]
-        self.limits = vals 
-        self.colors = map(self.cs.color, midvals)
+        self.limits = vals
+        self.colors = [self.cs.color(v) for v in midvals]
         self.underflowcolor = None
         self.overflowcolor = None
 
@@ -204,7 +204,7 @@ class ColorLegend(object):
         if i==0:
             return self.overflow(self.underflowcolor)
         return self.colors[i-1]
-        
+
 
 if __name__ == "__main__":
 
@@ -212,7 +212,7 @@ if __name__ == "__main__":
         CS = ColorScale(palet, -50., 250.)
         for x in [ -50+10.*i for i in range(31) ]:
             print(x, ": ", CS.color(x))
-    
+
     CS = ColorScale('RGB', -50., 250., 0.)
     CL = ColorLegend(CS, 5)
     print(CL.limits)

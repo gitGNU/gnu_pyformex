@@ -203,7 +203,7 @@ class Isopar(object):
         if eltype not in Isopar.isodata:
             s = eltype.split('-')
             if s[0] in [ 'lag', 'tri', 'bor', 'ser' ]:
-                n = map(int, s[1:])
+                n = [int(v) for v in s[1:]]
                 #
                 # It might be better to just store (ndim,atoms)
                 # if we use string atoms to evaluate

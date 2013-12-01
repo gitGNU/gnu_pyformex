@@ -302,7 +302,7 @@ def showResults(nodes,elems,displ,text,val,showref=False,dscale=100.,
             #print("MULTIPLIER %s" % multiplier)
 
         CS = ColorScale('RAINBOW', vmin, vmax, vmid, 1., 1.)
-        cval = array(map(CS.color, val))
+        cval = array([CS.color(v) for v in val])
         CL = ColorLegend(CS, 100)
         CLA = decors.ColorLegend(CL, 20, 20, 30, 200, scale=multiplier)
         pf.canvas.addDecoration(CLA)

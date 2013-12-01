@@ -76,7 +76,7 @@ def removeBbox():
 
 
 ################### Perform operations on Formex #######################
-    
+
 
 def scaleSelection():
     """Scale the selection."""
@@ -89,7 +89,7 @@ def scaleSelection():
             selection.changeValues([ F.scale(scale) for F in FL ])
             selection.drawChanges()
 
-            
+
 def scale3Selection():
     """Scale the selection with 3 scale values."""
     FL = selection.check()
@@ -97,7 +97,7 @@ def scale3Selection():
         res = askItems([['x-scale', 1.0], ['y-scale', 1.0], ['z-scale', 1.0]],
                        caption = 'Scaling Factors')
         if res:
-            scale = map(float, [res['%c-scale'%c] for c in 'xyz'])
+            scale = [float(res['%c-scale'%c]) for c in 'xyz']
             selection.changeValues([ F.scale(scale) for F in FL ])
             selection.drawChanges()
 
@@ -155,8 +155,8 @@ def rollAxes():
     if FL:
         selection.changeValues([ F.rollAxes() for F in FL ])
         selection.drawChanges()
-            
-        
+
+
 def clipSelection():
     """Clip the selection."""
     FL = selection.check()
@@ -172,7 +172,7 @@ def clipSelection():
             xc2 = xmi + float(res['end']) * dx
             selection.changeValues([ F.clip(F.test(nodes=res['nodes'], dir=axis, min=xc1, max=xc2)) for F in FL ])
             selection.drawChanges()
-        
+
 
 def cutSelection():
     """Cut the selection with a plane."""
@@ -181,13 +181,13 @@ def cutSelection():
     if FLnot:
         warning("Currently I can only cut Formices with plexitude 2 or 3.\nPlease change your selection.")
         return
-    
+
     dsize = bbox(FL).dsize()
     if dsize > 0.:
         esize = 10 ** (niceLogSize(dsize)-5)
     else:
         esize = 1.e-5
-    
+
     res = askItems([['Point', (0.0, 0.0, 0.0)],
                     ['Normal', (1.0, 0.0, 0.0)],
                     ['New props', [1, 2, 2, 3, 4, 5, 6]],
@@ -228,7 +228,7 @@ def concatenateSelection():
                 selection.draw()
         else:
             warning('You can only concatenate Formices with the same plexitude!')
-    
+
 
 def partitionSelection():
     """Partition the selection."""
@@ -248,7 +248,7 @@ def partitionSelection():
             fil = open(fn, 'w')
             fil.write("%s\n" % cuts)
             fil.close()
-    
+
 
 def createParts():
     """Create parts of the current selection, based on property values."""
@@ -271,7 +271,7 @@ def sectionizeSelection():
     ns, th, segments = sectionize.createSegments(F)
     if not ns:
         return
-    
+
     sections, ctr, diam = sectionize.sectionize(F, segments, th)
     #pf.message("Centers: %s" % ctr)
     #pf.message("Diameters: %s" % diam)
@@ -347,7 +347,7 @@ def create_menu():
         ]
     return menu.Menu(_menu, items=MenuData, parent=pf.GUI.menu, before='help')
 
-    
+
 def show_menu():
     """Show the Tools menu."""
     if not pf.GUI.menu.item(_menu):
@@ -359,7 +359,7 @@ def close_menu():
     m = pf.GUI.menu.item(_menu)
     if m :
         m.remove()
-      
+
 
 def reload_menu():
     """Reload the Postproc menu."""

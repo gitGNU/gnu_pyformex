@@ -100,7 +100,7 @@ def readCoords(fil, ndim):
         else:
             s = line.split()
             i = int(s[0])
-            x = map(float, s[1:])
+            x = [float(v) for v in s[1:]]
             while i >= ncoords:
                 coords = growAxis(coords, ncoords, axis=0, fill=0.0)
                 ncoords = coords.shape[0]
@@ -119,7 +119,7 @@ def readElems(fil, nplex):
         else:
             s = line.split()
             i = int(s[0])
-            e = map(int, s[1:nplex+1])
+            e = [int(v) for v in s[1:nplex+1]]
             p = int(s[nplex+1])
             while i >= nelems:
                 elems = growAxis(elems, nelems, axis=0, fill=0)
@@ -172,7 +172,7 @@ def readResult(fil, nvalues, nres):
         else:
             s = line.split()
             i = int(s[0])
-            x = map(float, s[1:])
+            x = [float(v) for v in s[1:]]
             values[i-1] = x
     return values
 

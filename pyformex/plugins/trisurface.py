@@ -120,7 +120,7 @@ def read_gts(fn):
     pf.message("Reading GTS file %s" % fn)
     fil = open(fn, 'r')
     header = fil.readline().split()
-    ncoords, nedges, nfaces = map(int, header[:3])
+    ncoords, nedges, nfaces = [int(i) for i in header[:3]]
     if len(header) >= 7 and header[6].endswith('Binary'):
         raise RuntimeError("We can not read binary GTS format yet. See https://savannah.nongnu.org/bugs/index.php?38608. Maybe you should recompile the extra/gts commands.")
         sep=''
@@ -2278,7 +2278,7 @@ def read_stla(fn,dtype=Float,large=False,guess=True):
         if s[0] == 'vertex':
             if j >= 3:
                 read_error(cnt, line)
-            x[j] = map(float, s[1:4])
+            x[j] = [float(_s) for _s in s[1:4]]
             j += 1
         elif s[0] == 'outer':
             j = 0

@@ -136,7 +136,7 @@ def setOpenGLFormat():
         fmt.setDirectRendering(pf.options.dri)
     if pf.options.opengl:
         try:
-            major, minor = map(int, pf.options.opengl.split('.'))
+            major, minor = [int(o) for o in pf.options.opengl.split('.')]
             fmt.setVersion(major, minor)
         except:
             pass
@@ -629,7 +629,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
                     elif self.selection_filter == 'connected':
                         if self.selection_front is None or self.mod == NONE or len(self.selection.keys()) == 0:
                             self.selection_front = self.closest_pick
-                            closest_actor, closest_elem = map(int, self.selection_front[0])
+                            closest_actor, closest_elem = [int(i) for i in self.selection_front[0]]
                         elif self.mod == SHIFT:
                             closest_elem = self.selection.get(closest_actor)[0]
                         if self.mod == NONE:

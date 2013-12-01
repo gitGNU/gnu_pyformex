@@ -149,7 +149,7 @@ dataset = [
     ]
 
 _items = [
-    _I('DataSet', '0', choices=map(str, range(len(dataset)))),
+    _I('DataSet', '0', choices=[str(i) for i in range(len(dataset))]),
     _I('CurveType', choices=curvetypes),
     _I('Closed', False),
     _I('Degree', 3, min=1, max=3),

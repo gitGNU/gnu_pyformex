@@ -54,7 +54,7 @@ def cone(r0,r1,h,t=360.,nr=1,nt=24,diag=None):
 
     The cone is modeled by nr elements in height direction and nt elements in
     circumferential direction.
-    
+
     By default, the result is a 4-plex Formex whose elements are quadrilaterals
     (some of which may collapse into triangles).
     If diag='up' or diag = 'down', all quads are divided by an up directed
@@ -82,16 +82,16 @@ def cone1(r0,r1,h,t=360.,nr=1,nt=24,diag=None):
 
     The cone is modeled by nr elements in height direction and nt elements in
     circumferential direction.
-    
+
     By default, the result is a 4-plex Formex whose elements are quadrilaterals
     (some of which may collapse into triangles).
     If diag='up' or diag = 'down', all quads are divided by an up directed
     diagonal and a plex-3 Formex results.
     """
-    r0, r1, h, t = map(float, (r0, r1, h, t))
+    r0, r1, h, t = [float(f) for f in (r0, r1, h, t)]
     p = Formex(simple.regularGrid([r0, 0., 0.], [r1, h, 0.], [0, nr, 0]).reshape(-1, 3))
     #draw(p,color=red)
-    a = (r1-r0)/h 
+    a = (r1-r0)/h
     if a != 0.:
         p = p.shear(0, 1, a)
     #draw(p)
@@ -143,7 +143,7 @@ def run():
         clear()
         draw(H)
         return
-    
+
 #return
 
 if __name__ == 'draw':

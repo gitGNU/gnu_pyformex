@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # $Id$
 ##
 ##  This file is part of pyFormex 0.9.1  (Tue Oct 15 21:05:25 CEST 2013)
@@ -78,7 +77,7 @@ def ignore_error(dummy):
     """This function can be used to override the default error handlers.
 
     The effect will be to ignore the error (duplicate key, invalid record)
-    and to not add the affected data to the database. 
+    and to not add the affected data to the database.
     """
     pass
 
@@ -91,10 +90,10 @@ class FlatDB(dict):
     The field names (keys) can be different for each record, but there is at
     least one field that exists for all records and will be used as the
     primary key. This field should have unique values for all records.
-    
+
     The database itself is also a dictionary, with the value of the primary
     key as key and the full record as value.
-    
+
     On constructing the database a list of keys must be specified that will be
     required for each record. The first key in this list will be used as the
     primary key. Obviously, the list must at least have one required key.
@@ -111,12 +110,12 @@ class FlatDB(dict):
     as record delimiter if endrec is empty)
 
     Thus, with the initialization::
-    
+
        FlatDB(req_keys=['key1'], comment = 'com', key_sep = '=',
        beginrec = 'rec', endrec = '')
 
     the following is a legal database::
-    
+
        com This is a comment
        com
        rec key1=val1
@@ -147,7 +146,7 @@ class FlatDB(dict):
     that it has all the required keys.
 
     Two error handlers may be overridden by the user:
-    
+
     - record_error_handler(record) is called when the record does not pass the
       checks;
     - key_error_handler(key) is called when a dunplicat key is encountered.
@@ -164,9 +163,9 @@ class FlatDB(dict):
         """Initialize a new (empty) database.
 
         Make sure that the arguments are legal."""
-        
+
         dict.__init__(self)
-        self.req_keys = map(str, list(req_keys))
+        self.req_keys = [str(s) for s in req_keys]
         self.key = self.req_keys[0]
         self.comment = str(comment)
         self.key_sep = str(key_sep)
@@ -181,7 +180,7 @@ class FlatDB(dict):
 
     def newRecord(self):
         """Returns a new (empty) record.
-        
+
         The new record is a temporary storage. It should be added to the
         database by calling append(record).
         This method can be overriden in subclasses.
@@ -191,10 +190,9 @@ class FlatDB(dict):
 
     def checkKeys(self, record):
         """Check that record has the required keys."""
-        import functools
-        return functools.reduce(int.__and__, map(record.has_key, self.req_keys), True)
-    
-    
+        return all([record.has_key(k) for k in self.req_keys])
+
+
     def checkRecord(self, record):
         """Check a record.
 
@@ -210,7 +208,7 @@ class FlatDB(dict):
         if not OK:
             self.record_error_handler(record)
         return OK
-    
+
 
     def record_error_handler(self, record):
         """Error handler called when a check error on record is discovered.
@@ -219,7 +217,7 @@ class FlatDB(dict):
         This method can safely be overriden in subclasses.
         """
         raise ValueError("FlatDB: invalid record : %s" % record)
-    
+
 
     def key_error_handler(self, key):
         """Error handler called when a duplicate key is found.
@@ -229,7 +227,7 @@ class FlatDB(dict):
         """
         raise ValueError("FlatDB: duplicate key : '%s'" % key)
 
-        
+
     def __setitem__(self, key, record):
         """Sets the record with specified primary key (if record is valid).
 
@@ -280,7 +278,7 @@ class FlatDB(dict):
         if self.strip_quotes:
             value = unQuote(value)
         return (key, value)
-            
+
 
     def parseLine(self, line):
         """Parse a line of the flat database file.
@@ -340,7 +338,7 @@ class FlatDB(dict):
             self.record[key] = value
             return 0
         return 0
-                
+
 
     def parse(self, lines, ignore=False, filename=None):
         """Read a database from text.
@@ -359,11 +357,11 @@ class FlatDB(dict):
             if self.parseLine(line) != 0 and not ignore:
                 raise RuntimeError("FlatDB: error while reading line %d of database (File: %s)\n%s" % (linenr, filename, self.error_msg))
                 break
-                
+
 
     def readFile(self, filename, ignore=False):
         """Read a database from file.
-        
+
         Lines starting with a comment string are ignored.
         Every record is delimited by a (beginrec,endrec) pair.
         If ignore is True, all lines that are not between a (beginrec,endrec)
@@ -378,14 +376,14 @@ class FlatDB(dict):
                 infile.close()
 
         self.parse(lines, ignore, filename)
-        
+
 
     def writeFile(self,filename,mode='w',header=None):
         """Write the database to a text file.
 
         Default mode is 'w'. Use 'a' to append to the file.
         The header is written at the start of the database. Make sure to start
-        each line with a comment marker if you want to read it back! 
+        each line with a comment marker if you want to read it back!
         """
         outfile = open(filename, mode)
         if isinstance(header, str):
@@ -406,7 +404,7 @@ class FlatDB(dict):
         This returns a list of primary keys of the matching records.
         """
         return [ i for i in self.iterkeys() if key in self[i] and
-                 self[i][key] == value ]  
+                 self[i][key] == value ]
 
 
 
@@ -420,7 +418,7 @@ if __name__ == '__main__':
     db[1] = { 'aa':'dd'}
     print(db)
     print(len(db))
-    
+
     mat = FlatDB(['name'], beginrec='material', endrec='endmaterial')
     mat.readFile('data/materials.db')
     mat.append({'name':'concrete', 'junk':''})

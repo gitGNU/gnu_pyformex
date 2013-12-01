@@ -436,7 +436,7 @@ class ActionList(object):
         self.toolbar = toolbar
         if icons is None:
             icons = actions
-        icons = map(utils.findIcon, icons)
+        icons = [utils.findIcon(i) for i in icons]
         if text is None:
             text = actions
         for name, icon, txt in zip(actions, icons, text):

@@ -40,7 +40,7 @@ def gradColor(n):
     """Create gradually varying colors for n values"""
     from gui.colorscale import ColorScale
     CS = ColorScale('RGB', 0, float(n))
-    return array(map(CS.color, 1.*arange(n+1)))
+    return array([CS.color(i) for i in 1.*arange(n+1)])
 
 def run():
     from mesh import rectangle

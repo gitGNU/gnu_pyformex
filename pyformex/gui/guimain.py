@@ -1198,7 +1198,7 @@ class Application(QtGui.QApplication):
 
 
     def getStyles(self):
-        return map(str, QtGui.QStyleFactory().keys())
+        return [str(k) for k in QtGui.QStyleFactory().keys()]
 
 
 def startGUI(args):

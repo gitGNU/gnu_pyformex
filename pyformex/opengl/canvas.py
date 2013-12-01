@@ -464,7 +464,7 @@ class CanvasSettings(Dict):
                 elif k in ['wiremode']:
                     v = int(v)
                 elif k == 'linestipple':
-                    v = map(int, v)
+                    v = [int(vi) for vi in v]
                 elif k == 'transparency':
                     v = max(min(float(v), 1.0), 0.0)
                 elif k == 'bgmode':
@@ -662,7 +662,7 @@ class Canvas(object):
         # We rename the 'clear' to 'clear_', because we use a Dict
         # to store these (in __init__.draw) and Dict does not allow
         # a 'clear' key.
-        
+
         if 'clear' in d:
             d['clear_'] = d['clear']
             del d['clear']

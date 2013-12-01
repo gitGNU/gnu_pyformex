@@ -607,7 +607,7 @@ def fileDescription(ftype):
     ``TYPE files (*.type)``
     """
     if isinstance(ftype, list):
-        return map(fileDescription, ftype)
+        return [fileDescription(f) for f in ftype]
     ftype = ftype.lower()
     return file_description.get(ftype, "%s files (*.%s)" % (ftype.upper(), ftype))
 
@@ -1129,7 +1129,7 @@ def hsorted(l):
     """
     def human(s):
         s = RE_digits.split(s)+['0']
-        return list(zip(s[0::2], map(int, s[1::2])))
+        return list(zip(s[0::2], [int(i) for i in s[1::2]]))
     return sorted(l, key=human)
 
 
@@ -1568,7 +1568,7 @@ def totalMemSize(o, handlers={}, verbose=False):
 
         for typ, handler in all_handlers.items():
             if isinstance(o, typ):
-                s += sum(map(sizeof, handler(o)))
+                s += sum([sizeof(i) for i in handler(o)])
                 break
         return s
 

@@ -208,7 +208,7 @@ class KeyedList(ODict):
         least 2 elements.
         The (string value of the) first is used as the key.
         """
-        L = map(len, alist)
+        L = [len(al) for al in alist]
         if min(L) < 2:
             raise ValueEror("All items in the data should have length >= 2")
         ODict.__init__(self, [[i[0], i[1:]] for i in alist])

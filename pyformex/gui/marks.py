@@ -134,7 +134,7 @@ class MarkList(Mark):
         buf = GL.glRenderMode(GL.GL_RENDER)
         numbers =[]
         for r in buf:
-            numbers += map(int, r[2])
+            numbers += [int(i) for i in r[2]]
         return numbers
 
 

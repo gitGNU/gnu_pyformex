@@ -70,7 +70,7 @@ def readEsets(fil):
     for line in fil:
         s = line.strip('\n').split()
         if len(s) == 4:
-            data.append(s[:1]+map(int, s[1:]))
+            data.append(s[:1]+ [int(i) for i in s[1:]])
     return data
 
 
@@ -174,7 +174,7 @@ def read_off(fn):
     if head != "OFF":
         pf.message("%s is not an OFF file!" % fn)
         return None, None
-    nnodes, nelems, nedges = map(int, fil.readline().split())
+    nnodes, nelems, nedges = [int(i) for i in fil.readline().split()]
     nodes = fromfile(file=fil, dtype=Float, count=3*nnodes, sep=' ')
     # elems have number of vertices + 3 vertex numbers
     elems = fromfile(file=fil, dtype=int32, count=4*nelems, sep=' ')

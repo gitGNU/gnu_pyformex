@@ -194,7 +194,7 @@ def getInts(line, nint):
     Returns a list of nint integers. The trailing ones are set to zero
     if the strings contains less values.
     """
-    s = map(int, line.split())
+    s = [int(i) for i in line.split()]
     if len(s) < nint:
         s.extend([0]*(nint-len(s)))
     return s
@@ -329,8 +329,7 @@ def readNeigh(fn):
     """
     fil = open(fn, 'r')
     line = fil.readline()
-    s = line.strip('\n').split()
-    nelems, nneigh = map(int, s)
+    nelems, nneigh = [int(i) for i in line.strip('\n').split()]
     elems = fromfile(fil, sep=' ', dtype=int32).reshape((nelems, nneigh+1))
     return elems[:, 1:]
 

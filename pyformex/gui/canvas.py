@@ -513,7 +513,7 @@ class CanvasSettings(Dict):
                 elif k in ['wiremode']:
                     v = int(v)
                 elif k == 'linestipple':
-                    v = map(int, v)
+                    v = [int(vi) for vi in v]
                 elif k == 'transparency':
                     v = max(min(float(v), 1.0), 0.0)
                 elif k == 'bgmode':

@@ -117,13 +117,13 @@ def readSelection(select=True,draw=True,multi=True):
     If select is True (default), this becomes the current selection.
     If select and draw are True (default), the selection is drawn.
     """
-    types = map(utils.fileDescription, ['surface', 'all'])
+    types = [utils.fileDescription(e) for e in ['surface', 'all']]
     fn = askFilename(pf.cfg['workdir'], types, multi=multi)
     if fn:
         if not multi:
             fn = [ fn ]
         chdir(fn[0])
-        names = map(utils.projectName, fn)
+        names = [utils.projectName(_fn) for _fn in fn]
         pf.GUI.setBusy()
         surfaces = [ read_Surface(f, False) for f in fn ]
         if len(surfaces) > 1:
@@ -345,7 +345,7 @@ def export_surface(types=['surface', 'gts', 'stl', 'off', 'neu', 'smesh', 'vtp',
             types = [ types ]
         else:
             ftype = None
-        types = map(utils.fileDescription, types)
+        types = [utils.fileDescription(e) for e in types]
         print(types)
         fn = askNewFilename(pf.cfg['workdir'], types)
         if fn:
@@ -387,7 +387,7 @@ def export_stl():
 def export_webgl():
     F = selection.check(single=True)
     if F:
-        types = map(utils.fileDescription, ['stl'])
+        types = [utils.fileDescription(e) for e in ['stl']]
         fn = askNewFilename(pf.cfg['workdir'], types)
         if fn:
             pf.message("Exporting surface model to %s" % fn)
@@ -633,7 +633,7 @@ def showSurfaceValue(S, txt, val, onEdges):
         dec = 2
     # create a colorscale and draw the colorlegend
     CS = ColorScale('RAINBOW', mi, ma, 0.5*(mi+ma), 1.)
-    cval = array(map(CS.color, ravel(val)))
+    cval = array([CS.color(v) for v in ravel(val)])
     cval = cval.reshape(append(val.shape, cval.shape[-1]))
     if onEdges:
         F = Formex(S.coords[S.getEdges()])
@@ -975,7 +975,7 @@ def cutSelectionByPlanes():
                          _I('Side', 'both', itemtype='radio', choices=['positive', 'negative', 'both']),
                          ], caption = 'Cutting parameters')
         if res2:
-            planes = map(named, res1)
+            planes = [named(r) for r in res1]
             p = [plane.P for plane in planes]
             n = [plane.n for plane in planes]
             atol = res2['Tolerance']

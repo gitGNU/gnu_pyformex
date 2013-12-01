@@ -672,12 +672,10 @@ class InputList(InputItem):
                 i.setCheckState(qtflag)
 
     def getSelected(self):
-        res = [i.text() for i in self.input.selectedItems()]
-        return map(str, res)
+        return [str(i.text()) for i in self.input.selectedItems()]
 
     def getChecked(self):
-        res = [ i.text() for i in self.input.allItems() if i.checkState()==QtCore.Qt.Checked ]
-        return map(str, res)
+        return [str(i.text()) for i in self.input.allItems() if i.checkState()==QtCore.Qt.Checked ]
 
     def value(self):
         """Return the widget's value."""
@@ -2550,8 +2548,7 @@ class FileSelection(QtGui.QFileDialog):
 
     def value(self):
         """Return the selected value"""
-        # TODO: since API2, this mapping may be left out?
-        ret = map(str, self.selectedFiles())
+        ret = self.selectedFiles()
         if self.fileMode() != QtGui.QFileDialog.ExistingFiles:
             # not multiple selection
             ret = ret[0]
@@ -2584,7 +2581,7 @@ class ProjectSelection(FileSelection):
         if path is None:
             path = pf.cfg['workdir']
         if pattern is None:
-            pattern = map(utils.fileDescription, ['pyf'])
+            pattern = [ utils.fileDescription('pyf') ]
         FileSelection.__init__(self, path, pattern, exist)
         grid = self.layout()
         nr, nc = grid.rowCount(), grid.columnCount()
@@ -2647,7 +2644,7 @@ class SaveImageDialog(FileSelection):
         if path is None:
             path = pf.cfg['workdir']
         if pattern is None:
-            pattern = map(utils.fileDescription, ['img', 'icon', 'all'])
+            pattern = [utils.fileDescription(e) for e in ['img', 'icon', 'all']]
         FileSelection.__init__(self, path, pattern, exist)
         grid = self.layout()
         nr, nc = grid.rowCount(), grid.columnCount()
@@ -3259,7 +3256,7 @@ class CoordsBox(QtGui.QWidget):
 
     def setValues(self, values):
         """Set the three values of the widget."""
-        for v, val in zip(self.values, map(float, values)):
+        for v, val in zip(self.values, [float(v) for v in values]):
             v.setText(str(val))
 
 

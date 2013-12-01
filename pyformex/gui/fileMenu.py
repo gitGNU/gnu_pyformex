@@ -442,7 +442,7 @@ def saveImage(multi=False):
      - start the multisave/autosave mode
      - do nothing
     """
-    pat = map(utils.fileDescription, ['img', 'icon', 'all'])
+    pat = [utils.fileDescription(e) for e in ['img', 'icon', 'all']]
     dia = widgets.SaveImageDialog(pf.cfg['workdir'], pat, multi=multi)
     opt = dia.getResult()
     if opt:

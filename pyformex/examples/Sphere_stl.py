@@ -59,7 +59,7 @@ def run():
             G[1].append(connect([F[i], f], bias=[0, 0]))
             if i > 0:
                 G[2].append(connect([F[i], f], bias=[0, 1]))
-        G = map(Formex.concatenate, G)
+        G = [Formex.concatenate(Gi) for Gi in G]
         for i, f in enumerate(G):
             f.setProp(i)
         G = Formex.concatenate(G)
@@ -78,7 +78,7 @@ def run():
            G[0].append(connect([F[i], f, f], bias=[0, 1, 0]))
            if i > 0:
                G[1].append(connect([F[i], F[i], f], bias=[0, 1, 1]))
-        G = map(Formex.concatenate, G)
+        G = [Formex.concatenate(Gi) for Gi in G]
         for i, f in enumerate(G):
            f.setProp(i+1)
         G = Formex.concatenate(G)

@@ -964,7 +964,7 @@ def saneLineStipple(stipple):
     factor is a multiplier for each bit.
     """
     try:
-        stipple = map(int, stipple)
+        stipple = [int(i) for i in stipple]
     except:
         stipple = None
     return stipple
@@ -1014,7 +1014,7 @@ def saneColor(color=None):
     except ValueError:
 
         try:
-            color = map(GLcolor, color)
+            color = [GLcolor(c) for c in color]
         except ValueError:
             pass
 

@@ -271,7 +271,7 @@ def niceNumber(f,below=False):
     """
     fa = abs(f)
     s = "%.0e" % fa
-    m, n = map(int, s.split('e'))
+    m, n = [int(n) for n in s.split('e')]
     if not below:
         m = m+1
     return m*10.**n

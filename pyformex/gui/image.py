@@ -66,8 +66,8 @@ def initialize():
     utils.hasExternal('imagemagick')
     # Set some globals
     pf.debug("Loading Image Formats", pf.DEBUG.IMAGE)
-    image_formats_qt = map(str, QtGui.QImageWriter.supportedImageFormats())
-    image_formats_qtr = map(str, QtGui.QImageReader.supportedImageFormats())
+    image_formats_qt = [str(f) for f in QtGui.QImageWriter.supportedImageFormats()]
+    image_formats_qtr = [str(f) for f in QtGui.QImageReader.supportedImageFormats()]
     ## if pf.cfg.get('imagesfromeps',False):
     ##     pf.image_formats_qt = []
 

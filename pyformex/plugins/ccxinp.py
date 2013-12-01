@@ -259,13 +259,13 @@ def do_SYSTEM(opts, data):
         return
 
     s = data[0].split(',')
-    A = map(float, s[:3])
+    A = [float(v) for v in s[:3]]
     try:
-        B = map(float, s[3:])
+        B = [float(v) for v in s[3:]]
     except:
         B, C = None, None
     if len(data) > 1:
-        C = map(float, data[1].split(''))
+        C = [float(v) for v in data[1].split('')]
     else:
         B[2] = 0.
         C = [ -B[1], B[0], 0. ]

@@ -114,7 +114,7 @@ def GLcolor(color):
             if isInt(col[0]):
                 # convert int values to float
                 col = [ c/255. for c in col ]
-            col = map(float, col)
+            col = [float(c) for c in col]
             # SUCCESS !
             return tuple(col)
     except:
@@ -201,7 +201,7 @@ def luminance(color,gamma=True):
     lum = lambda c: ((c+0.055)/1.055) ** 2.4 if c > 0.04045 else c/12.92
     color = GLcolor(color)
     if gamma:
-        R, G, B = map(lum, color)
+        R, G, B = [lum(c) for c in color]
     else:
         R, G, B = color
     return 0.2126 * R + 0.7152 * G + 0.0722 * B

@@ -164,7 +164,7 @@ def run():
     val = frc[:, 0, 0]
     # create a colorscale
     CS = cs.ColorScale([blue, yellow, red], val.min(), val.max(), 0., 2., 2.)
-    cval = array(map(CS.color, val))
+    cval = array([CS.color(v) for v in val])
     #aprint(cval,header=['Red','Green','Blue'])
     clear()
     draw(results, color=cval)

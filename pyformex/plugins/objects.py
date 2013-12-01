@@ -84,7 +84,7 @@ class Objects(object):
         if isinstance(names, str):
             names = [ names ]
         self.names = [ s for s in names if isinstance(s, str) ]
-        self.values = map(named, self.names)
+        self.values = [named(s) for s in self.names]
 
 
     def append(self,name,value=None):
@@ -130,9 +130,9 @@ class Objects(object):
         If copy==True, the values are copied, so that the variables' current
         values can be changed inplace without affecting the remembered values.
         """
-        self.values = map(named, self.names)
+        self.values = [named(n) for n in self.names]
         if copy:
-            self.values = map(deepcopy, self.values)
+            self.values = [deepcopy(n) for n in self.values]
 
 
     def changeValues(self, newvalues):
@@ -173,7 +173,7 @@ class Objects(object):
         if single:
             return named(self.names[0])
         else:
-            return map(named, self.names)
+            return [named(n) for n in self.names]
 
 
     def odict(self):

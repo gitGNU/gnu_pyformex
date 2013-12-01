@@ -411,7 +411,7 @@ def askDirname(path=None,change=True,byfile=False):
 def askImageFile(fn=None):
     if not fn:
         fn = pf.cfg['pyformexdir']
-    filt = map(utils.fileDescription, ['img', 'all'])
+    filt = [utils.fileDescription(e) for e in ['img', 'all']]
     return askFilename(fn, filter=filt, multi=False, exist=True)
 
 
