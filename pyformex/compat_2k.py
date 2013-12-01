@@ -32,7 +32,6 @@ the Python version inside that module. The differences between the
 versions might cause compilation to fail.
 """
 from __future__ import print_function
-from future_builtins import zip
 
 import sys
 if (sys.hexversion & 0xFFFF0000) < 0x02070000:
@@ -50,12 +49,17 @@ if (sys.hexversion & 0xFFFF0000) < 0x02070000:
     sys.exit()
 
 
+from future_builtins import zip
+# Force future_builtins zip on all modules
+__builtins__['zip'] = zip
+
 def execFile(f,*args,**kargs):
     return execfile(f,*args,**kargs)
 
 
 def userInput(*args,**kargs):
     return raw_input(*args,**kargs)
+
 
 
 # End

@@ -1180,7 +1180,7 @@ def splitDigits(s,pos=-1):
         return s, '', ''
 
 
-# BV: We could turn this into a factory
+# BV: We could turn this into a generator
 class NameSequence(object):
     """A class for autogenerating sequences of names.
 

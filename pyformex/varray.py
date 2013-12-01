@@ -69,6 +69,7 @@ by default, but provides the methods to sort them when needed.
 """
 
 from arraytools import *
+import sys
 
 class Varray(object):
     """A variable width 2D integer array
@@ -252,7 +253,7 @@ class Varray(object):
         return self
 
 
-    def next(self):
+    def __next__(self):
         """_Return the next row of the Varray"""
         if self.row >= self.nrows:
             raise StopIteration
@@ -260,6 +261,9 @@ class Varray(object):
         self.row += 1
         return row
 
+    if (sys.hexversion) < 0x03000000:
+        # In Python2 the next method is used instead of __next__
+        next = __next__
 
     def index(self, sel):
         """Convert a selector to an index

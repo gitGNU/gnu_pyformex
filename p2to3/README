@@ -34,13 +34,13 @@ implemented another solution.
 - intern
 - isinstance
 - itertools_imports
-? itertools
+- itertools
 - long
-? map
++ map: converted everything to []. Should add future import????
 - metaclass
 - methodattrs
 - ne
-? next
+= next: NameSequence next can stay for now, varray has been changed
 - nonzero
 - numliterals
 - paren
@@ -79,3 +79,6 @@ To avoid creating backup files::
   2to3 -f fixer -w -n pyformex
 
 It is a good practice to first run without -w, check the output to see what would be changed, and when ok to run with -n -w options. If not all changes are ok, you can run the command with the files that should be changed.
+
+
+Future code should avoid the use of filter, map, reduce
