@@ -118,7 +118,7 @@ def scaledJacobian(self,scaled=True,blksize=100000):
     """
     ne = self.nelems()
     if blksize>0 and ne>blksize:
-        slices = splitrange(n=self.nelems(),nblk=self.nelems()/blksize)
+        slices = splitrange(n=self.nelems(), nblk=self.nelems()/blksize)
         return concatenate([self.select(range(slices[i], slices[i+1])).scaledJacobian(scaled=scaled, blksize=-1) for i in range(len(slices)-1)])
     if self.elName()=='hex20':
         self = self.convert('hex8')
@@ -126,27 +126,27 @@ def scaledJacobian(self,scaled=True,blksize=100000):
         self = self.convert('tet4')
     if self.elName()=='tet4':
         iacre=array([
-        [[0, 1], [1, 2],[2, 0],[3, 2]],
-        [[0, 2], [1, 0],[2, 1],[3, 1]],
-        [[0, 3], [1, 3],[2, 3],[3, 0]],
+        [[0, 1], [1, 2], [2, 0], [3, 2]],
+        [[0, 2], [1, 0], [2, 1], [3, 1]],
+        [[0, 3], [1, 3], [2, 3], [3, 0]],
         ], dtype=int)
         nc = 4
     elif self.elName()=='hex8':
         iacre=array([
-        [[0, 4], [1, 5],[2, 6],[3, 7], [4, 7], [5, 4],[6, 5],[7, 6]],
-        [[0, 1], [1, 2],[2, 3],[3, 0], [4, 5], [5, 6],[6, 7],[7, 4]],
-        [[0, 3], [1, 0],[2, 1],[3, 2], [4, 0], [5, 1],[6, 2],[7, 3]],
+        [[0, 4], [1, 5], [2, 6], [3, 7], [4, 7], [5, 4], [6, 5], [7, 6]],
+        [[0, 1], [1, 2], [2, 3], [3, 0], [4, 5], [5, 6], [6, 7], [7, 4]],
+        [[0, 3], [1, 0], [2, 1], [3, 2], [4, 0], [5, 1], [6, 2], [7, 3]],
         ], dtype=int)
         nc = 8
     acre = self.coords[self.elems][:, iacre]
-    vacre = acre[:, :,:,1]-acre[:, :,:,0]
+    vacre = acre[:,:,:, 1]-acre[:,:,:, 0]
     cvacre = concatenate(vacre, axis=1)
-    J = vectorTripleProduct(*cvacre).reshape(ne,nc)
+    J = vectorTripleProduct(*cvacre).reshape(ne, nc)
     if not scaled:
         return J
     else:
         # volume of 3 normal edges
-        normvol = prod(length(cvacre),axis=0).reshape(ne,nc)
+        normvol = prod(length(cvacre), axis=0).reshape(ne, nc)
         Jscaled = J/normvol
         return Jscaled.min(axis=1)
 
@@ -166,11 +166,11 @@ def elementToNodal(self, val):
     Nodes not occurring in elems will have all zero values.
     NB. It now works with scalar. It could be extended to vectors.
     """
-    eval = val.reshape(-1,1,1)
+    eval = val.reshape(-1, 1, 1)
     #
     # Do we really need to duplicate all th
     eval = column_stack(repeat([eval], self.nplex(), 0))#assign this area to all nodes of the elem
-    nval = nodalSum(val=eval,elems=self.elems,avg=True,return_all=False)
+    nval = nodalSum(val=eval, elems=self.elems, avg=True, return_all=False)
     return nval.reshape(-1)
 
 
@@ -201,7 +201,7 @@ def avgNodalScalarOnAdjacentNodes(self, val, iter=1, ival=None,includeself=False
     if iter==0: return val
     nadj = self.getEdges().adjacency(kind='n')
     if includeself:
-        nadj = concatenate([nadj,arange(alen(nadj)).reshape(-1,1)],axis=1)
+        nadj = concatenate([nadj, arange(alen(nadj)).reshape(-1, 1)], axis=1)
 
     inadj = nadj>=0
     lnadj = inadj.sum(axis=1)

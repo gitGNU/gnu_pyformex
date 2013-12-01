@@ -109,7 +109,7 @@ class Connectivity(ndarray):
     #
     def __new__(self,data=[],dtyp=None,copy=False,nplex=0,eltype=None,allow_negative=False):
         """Create a new Connectivity object."""
-        if isinstance(data,Connectivity):
+        if isinstance(data, Connectivity):
             if nplex == 0:
                 nplex = data.nplex()
             if eltype is None:
@@ -125,9 +125,9 @@ class Connectivity(ndarray):
         ar = array(data, dtype=dtyp, copy=copy)
         if ar.ndim < 2:
             if nplex > 0:
-                ar = ar.reshape(-1,nplex)
+                ar = ar.reshape(-1, nplex)
             else:
-                ar = ar.reshape(-1,1)
+                ar = ar.reshape(-1, 1)
 
         elif ar.ndim > 2:
             raise ValueError("Expected 2-dim data")
@@ -145,7 +145,7 @@ class Connectivity(ndarray):
                 raise ValueError("Expected data of plexitude %s" % nplex)
         else:
             maxval = -1
-            ar = ar.reshape(0,nplex)
+            ar = ar.reshape(0, nplex)
 
         # Transform 'subarr' from an ndarray to our new subclass.
         ar = ar.view(self)
@@ -156,7 +156,7 @@ class Connectivity(ndarray):
         return ar
 
 
-    def __array_finalize__(self,obj):
+    def __array_finalize__(self, obj):
         # reset the attributes from passed original object
         # all extra attributes added in __new__ should be reset here
         self.eltype = getattr(obj, 'eltype', None)
@@ -168,25 +168,25 @@ class Connectivity(ndarray):
         # Get the pickled ndarray state (as a list, so we can change it)
         object_state = list(ndarray.__reduce__(self))
         # Define our own state with the extra attributes we added
-        subclass_state = (self.eltype,None)
+        subclass_state = (self.eltype, None)
         # Store both in place of the original ndarray state
-        object_state[2] = (object_state[2],subclass_state)
+        object_state[2] = (object_state[2], subclass_state)
         return tuple(object_state)
 
 
-    def __setstate__(self,state):
+    def __setstate__(self, state):
         """Restore from pickled state"""
         # In __reduce__, we replaced ndarray's state with a tuple
         # of itself and our own state
         try:
             nd_state, own_state = state
-            ndarray.__setstate__(self,nd_state)
-            self.eltype,self.inv = own_state
+            ndarray.__setstate__(self, nd_state)
+            self.eltype, self.inv = own_state
         except:
             try:
                 # try to read legacy pickle format, which did not save
                 # the element type (rev < 2360)
-                ndarray.__setstate__(self,state)
+                ndarray.__setstate__(self, state)
                 print("WARNING: Connectivity was restored without element type!")
             except:
                 print("I could not unpickle the Connectivity, neither in old not new format")
@@ -233,7 +233,7 @@ class Connectivity(ndarray):
 
     def report(self):
         """Format a Connectivity table"""
-        s = "Conn %s, eltype=%s" % (self.shape,self.eltype)
+        s = "Conn %s, eltype=%s" % (self.shape, self.eltype)
         return s + '\n' + ndarray.__str__(self)
 
 ############### Detecting degenerates and duplicates ##############
@@ -256,7 +256,7 @@ class Connectivity(ndarray):
         """
         srt = asarray(self.copy())
         srt.sort(axis=1)
-        return (srt[:,:-1] == srt[:,1:]).any(axis=1)
+        return (srt[:, :-1] == srt[:, 1:]).any(axis=1)
 
 
     def listDegenerate(self):
@@ -338,7 +338,7 @@ class Connectivity(ndarray):
            return [ self ]
 
         eltype = elementType(self.eltype)
-        if not hasattr(eltype,'degenerate'):
+        if not hasattr(eltype, 'degenerate'):
             return [ self ]
 
         # get all reductions for this eltype
@@ -346,7 +346,7 @@ class Connectivity(ndarray):
 
         # if target, keep only those leading to target
         if target is not None:
-            s = strategies.get(target,[])
+            s = strategies.get(target, [])
             if s:
                 strategies = {target:s}
             else:
@@ -362,12 +362,12 @@ class Connectivity(ndarray):
         for totype in strategies:
 
             elems = []
-            for conditions,selector in strategies[totype]:
+            for conditions, selector in strategies[totype]:
                 cond = array(conditions)
-                w = (e[:,cond[:,0]] == e[:,cond[:,1]]).all(axis=1)
+                w = (e[:, cond[:, 0]] == e[:, cond[:, 1]]).all(axis=1)
                 sel = where(w)[0]
                 if len(sel) > 0:
-                    elems.append(e[sel][:,selector])
+                    elems.append(e[sel][:, selector])
                     # remove the reduced elems from m
                     e = e[~w]
 
@@ -376,7 +376,7 @@ class Connectivity(ndarray):
 
             if elems:
                 elems = concatenate(elems)
-                ML.append(Connectivity(elems,eltype=totype))
+                ML.append(Connectivity(elems, eltype=totype))
 
             if e.nelems() == 0:
                 break
@@ -427,8 +427,8 @@ class Connectivity(ndarray):
         else:
             C = self
         ind = sortByColumns(C)
-        C = C.take(ind,axis=0)
-        ok = (C != roll(C,1,axis=0)).any(axis=1)
+        C = C.take(ind, axis=0)
+        ok = (C != roll(C, 1, axis=0)).any(axis=1)
         if not ok[0]: # all duplicates -> should result in one unique element
             ok[0] = True
         if return_multiplicity:
@@ -437,9 +437,9 @@ class Connectivity(ndarray):
             D={}
             for m in unique(mult):
                 sel = where(mult==m)[0]
-                D[m] = ind[in1d(cs,sel)]
-            return ind,ok,D
-        return ind,ok
+                D[m] = ind[in1d(cs, sel)]
+            return ind, ok, D
+        return ind, ok
 
 
     def listUnique(self,permutations=True):
@@ -451,7 +451,7 @@ class Connectivity(ndarray):
           array([0, 2])
 
         """
-        ind,ok = self.testDuplicate(permutations)
+        ind, ok = self.testDuplicate(permutations)
         return ind[ok]
 
 
@@ -464,7 +464,7 @@ class Connectivity(ndarray):
           array([1])
 
         """
-        ind,ok = self.testDuplicate(permutations)
+        ind, ok = self.testDuplicate(permutations)
         return ind[~ok]
 
 
@@ -484,7 +484,7 @@ class Connectivity(ndarray):
           Connectivity([[0, 1, 2],
                  [0, 3, 2]])
         """
-        ind,ok = self.testDuplicate(permutations)
+        ind, ok = self.testDuplicate(permutations)
         return self[ind[ok]]
 
 
@@ -540,10 +540,10 @@ class Connectivity(ndarray):
 
         """
         if order == 'nodes':
-            a = sort(self,axis=-1)  # first sort rows
+            a = sort(self, axis=-1)  # first sort rows
             order = sortByColumns(a)
         elif order == 'reverse':
-            order = arange(self.nelems()-1,-1,-1)
+            order = arange(self.nelems()-1, -1, -1)
         elif order == 'random':
             order = random.permutation(self.nelems())
         else:
@@ -594,9 +594,9 @@ class Connectivity(ndarray):
             else:
                 # need to renumber
                 elems = inverseUniqueIndex(nodes)[self] + start
-                elems = Connectivity(elems,eltype=self.eltype)
+                elems = Connectivity(elems, eltype=self.eltype)
 
-        return elems,nodes
+        return elems, nodes
 
 
     def inverse(self):
@@ -658,21 +658,21 @@ class Connectivity(ndarray):
           >>> A.connectedTo([0,1,3],True)
           (array([0, 1, 2, 3], dtype=int32), array([2, 3, 2, 2]))
         """
-        nodes = checkArray1D(nodes,kind='i')
+        nodes = checkArray1D(nodes, kind='i')
         nodes = intersect1d(nodes, self) #remove unconnected nodes
         inv = self.inverse()
         ad = inv[nodes]
         ad = ad[ad>=0]
         # We now have a list of all individual attachements to any of the nodes,
         # identified by the element number. We count them per element.
-        m,u = multiplicity(ad)
+        m, u = multiplicity(ad)
         if return_ncon:
-            return u,m
+            return u, m
         else:
             return u
 
 
-    def hits(self,nodes):
+    def hits(self, nodes):
         """Count the nodes from a list connected to the elements.
 
         `nodes`: a single node number or a list/array thereof
@@ -694,8 +694,8 @@ class Connectivity(ndarray):
           >>> A.hits([0,1,3])
           array([2, 3, 2, 2])
         """
-        u,m = self.connectedTo(nodes,True)
-        res = zeros(self.shape[0],dtype=m.dtype)
+        u, m = self.connectedTo(nodes, True)
+        res = zeros(self.shape[0], dtype=m.dtype)
         res[u] = m
         return res
 
@@ -768,11 +768,11 @@ class Connectivity(ndarray):
         inv = self.inverse()
         if kind == 'e':
             if mask is not None:
-                mask = complement(mask,inv.shape[0])
+                mask = complement(mask, inv.shape[0])
                 inv[mask] = -1
-            adj = inv[self].reshape((self.nelems(),-1))
+            adj = inv[self].reshape((self.nelems(), -1))
         elif kind == 'n':
-            adj = concatenate([where(inv>=0,self[:,i][inv],inv) for i in range(self.nplex())],axis=1)
+            adj = concatenate([where(inv>=0, self[:, i][inv], inv) for i in range(self.nplex())], axis=1)
         else:
             raise ValueError("kind should be 'e' or 'n', got %s" % str(kind))
         return Adjacency(adj)
@@ -810,12 +810,12 @@ class Connectivity(ndarray):
         [ 0  1  1  2 -1]
         [0 1 1 2 4]
         """
-        p = -ones((self.nelems()),dtype=Int)
+        p = -ones((self.nelems()), dtype=Int)
         if self.nelems() <= 0:
             return
 
         # Remember current elements front
-        elems = clip(asarray(startat),0,self.nelems())
+        elems = clip(asarray(startat), 0, self.nelems())
         prop = 0
         while elems.size > 0:
             # Store prop value for current elems
@@ -826,7 +826,7 @@ class Connectivity(ndarray):
 
             # Determine adjacent elements
             nodes = unique(asarray(self[elems]))
-            elems = setdiff1d(self.connectedTo(nodes),where(p>=0)[0])
+            elems = setdiff1d(self.connectedTo(nodes), where(p>=0)[0])
             if elems.size > 0:
                 continue
 
@@ -872,7 +872,7 @@ class Connectivity(ndarray):
           >>> print(A.frontWalk())
           [0 1 1 1 2 2]
         """
-        for p in self.frontGenerator(startat=startat,frontinc=frontinc,partinc=partinc):
+        for p in self.frontGenerator(startat=startat, frontinc=frontinc, partinc=partinc):
             if maxval >= 0:
                 if p.max() >= maxval:
                     break
@@ -904,13 +904,13 @@ class Connectivity(ndarray):
         nodes = unique(asarray(self[startat]))
         front = self.connectedTo(nodes)
         if not add:
-            front = setdiff1d(front,startat)
+            front = setdiff1d(front, startat)
         return front
 
 
 ######### Creating intermediate levels ###################
 
-    def selectNodes(self,selector):
+    def selectNodes(self, selector):
         """Return a :class:`Connectivity` containing subsets of the nodes.
 
         Parameters:
@@ -945,7 +945,7 @@ class Connectivity(ndarray):
         except:
             eltype = None
         if sel.size > 0:
-            return Connectivity(self[:,sel].reshape(-1,sel.nplex()),eltype=eltype)
+            return Connectivity(self[:, sel].reshape(-1, sel.nplex()), eltype=eltype)
         else:
             return Connectivity()
 
@@ -1025,7 +1025,7 @@ class Connectivity(ndarray):
         from elements import elementType
 
         if isInt(selector):
-            if hasattr(self,'eltype'):
+            if hasattr(self, 'eltype'):
                 sel = self.eltype.getEntities(selector)
             else:
                 raise ValueError("Specified an int as selector, but no eltype was defined")
@@ -1036,22 +1036,22 @@ class Connectivity(ndarray):
             if sel.testDegenerate().any():
                 LO = lo.copy()
                 # change the double entries to -1
-                LO[LO[:,:-1] == LO[:,1:]] = -1
+                LO[LO[:, :-1] == LO[:, 1:]] = -1
             else:
                 LO = lo
-            uniq,uniqid = uniqueRows(LO,permutations=permutations)
-            hi = Connectivity(uniqid.reshape(-1,sel.nelems()))
+            uniq, uniqid = uniqueRows(LO, permutations=permutations)
+            hi = Connectivity(uniqid.reshape(-1, sel.nelems()))
             lo = lo[uniq]
         else:
             hi = lo = Connectivity()
-        if hasattr(sel,'eltype'):
+        if hasattr(sel, 'eltype'):
             lo.eltype = elementType(sel.eltype)
-        return hi,lo
+        return hi, lo
 
 
     # TODO: This is currently far from general!!!
     # should probably be moved to Mesh/TriSurface if needed there
-    def combine(self,lo):
+    def combine(self, lo):
         """Combine two hierarchical Connectivity levels to a single one.
 
         self and lo are two hierarchical Connectivity tables, representing
@@ -1085,11 +1085,11 @@ class Connectivity(ndarray):
         if self.shape[1] < 2 or lo.shape[1] != 2:
             raise ValueError("Can only combine plex>=2 with plex==2")
         elems = lo[self]
-        elems1 = roll(elems,-1,axis=1)
+        elems1 = roll(elems, -1, axis=1)
         for i in range(elems.shape[1]):
-            flags = (elems[:,i,1] != elems1[:,i,0]) * (elems[:,i,1] != elems1[:,i,1])
-            elems[flags,i] = roll(elems[flags,i],1,axis=1)
-        return Connectivity(elems[:,:,0])
+            flags = (elems[:, i, 1] != elems1[:, i, 0]) * (elems[:, i, 1] != elems1[:, i, 1])
+            elems[flags, i] = roll(elems[flags, i], 1, axis=1)
+        return Connectivity(elems[:,:, 0])
 
 
     def resolve(self):
@@ -1116,8 +1116,8 @@ class Connectivity(ndarray):
                  [2, 3]])
 
         """
-        ind = [ i for i in combinations(range(self.nplex()),2) ]
-        hi,lo = self.insertLevel(ind)
+        ind = [ i for i in combinations(range(self.nplex()), 2) ]
+        hi, lo = self.insertLevel(ind)
         lo.sort(axis=1)
         ind = sortByColumns(lo)
         return lo[ind]
@@ -1170,13 +1170,13 @@ class Connectivity(ndarray):
                 print('trl = %s' % trl)
                 elems = self[trl]
                 if not reverse:
-                    delattr(self,'eltype')
+                    delattr(self, 'eltype')
                 return elems
 
         return self
 
 
-    def sharedNodes(self,elist):
+    def sharedNodes(self, elist):
         """Return the list of nodes shared by all elements in elist
 
         Parameters:
@@ -1187,7 +1187,7 @@ class Connectivity(ndarray):
         common to all elements in the specified list. This array may be
         empty.
         """
-        m,u = multiplicity(self[elist].ravel())
+        m, u = multiplicity(self[elist].ravel())
         return u[m==len(elist)]
 
 
@@ -1239,9 +1239,9 @@ class Connectivity(ndarray):
         try:
             m = len(clist)
             for i in range(m):
-                if isinstance(clist[i],Connectivity):
+                if isinstance(clist[i], Connectivity):
                     pass
-                elif isinstance(clist[i],ndarray):
+                elif isinstance(clist[i], ndarray):
                     clist[i] = Connectivity(clist[i])
                 else:
                     raise TypeError
@@ -1256,12 +1256,12 @@ class Connectivity(ndarray):
             n = max([ clist[i].nelems() for i in range(m) ])
         else:
             n = min([ clist[i].nelems() - bias[i] for i in range(m) ])
-        f = zeros((n,m),dtype=Int)
-        for i,j,k in zip(range(m),nodid,bias):
-            v = clist[i][k:k+n,j]
+        f = zeros((n, m), dtype=Int)
+        for i, j, k in zip(range(m), nodid, bias):
+            v = clist[i][k:k+n, j]
             if loop and k > 0:
-                v = concatenate([v,clist[i][:k,j]])
-            f[:,i] = resize(v,(n))
+                v = concatenate([v, clist[i][:k, j]])
+            f[:, i] = resize(v, (n))
         return Connectivity(f)
 
 
@@ -1498,7 +1498,7 @@ def findConnectedLineElems(elems):
     #     That would avoid the need to make a copy in connectedLineElems
     #
 
-    if not isinstance(elems,Connectivity):
+    if not isinstance(elems, Connectivity):
         elems = Connectivity(elems)
     #
     # srt will store the sorted connectivity
@@ -1510,8 +1510,8 @@ def findConnectedLineElems(elems):
     #    but we compute it always for simplicity of the code
     #
     srt = zeros_like(elems) - 1
-    ind = zeros((elems.shape[0],2),dtype=Int)
-    ind[:,0] = -1
+    ind = zeros((elems.shape[0], 2), dtype=Int)
+    ind[:, 0] = -1
     ie = 0
     je = 0
     rev = False
@@ -1519,7 +1519,7 @@ def findConnectedLineElems(elems):
     while True:
         # Store an element that has been found ok
         if rev:
-            srt[ie] = elems[je,::-1]
+            srt[ie] = elems[je, ::-1]
             ind[ie] = ( je, -1 )
         else:
             srt[ie] = elems[je]
@@ -1531,24 +1531,24 @@ def findConnectedLineElems(elems):
         ie += 1
 
         # Look for the next connected element (only thru first or last node!)
-        w = where(elems[:,[0,-1]] == j)
+        w = where(elems[:, [0, -1]] == j)
         #print(w)
         if w[0].size == 0:
             # Try reversing
-            w = where(elems[:,[0,-1]] == k)
+            w = where(elems[:, [0, -1]] == k)
             #print(w)
             if w[0].size == 0:
                 break
             else:
-                j,k = k,j
+                j, k = k, j
                 # reverse the table (colums and rows)
-                srt[:ie] = srt[ie-1::-1,::-1].copy()  # copy needed!!
+                srt[:ie] = srt[ie-1::-1, ::-1].copy()  # copy needed!!
                 ind[:ie] = ind[ie-1::-1].copy() # rows only
-                ind[:ie,1] *= -1 # change sign of 2nd column
+                ind[:ie, 1] *= -1 # change sign of 2nd column
         je = w[0][0]
         rev = w[-1][0] > 0 #check if the target node is the first or last
 
-    return srt,ind
+    return srt, ind
 
 
 # BV: this could become a Connectivity function splitByConnection
@@ -1618,8 +1618,8 @@ def connectedLineElems(elems,return_indices=False):
     parts = []
     chains = []
     while elems.size != 0:
-        loop,ind = findConnectedLineElems(elems)
-        ind[:,0] = elnrs[ind[:,0]]
+        loop, ind = findConnectedLineElems(elems)
+        ind[:, 0] = elnrs[ind[:, 0]]
         parts.append(loop[(loop!=-1).any(axis=1)])
         chains.append(ind[(loop!=-1).any(axis=1)])
         todo = (elems!=-1).any(axis=1)
@@ -1631,7 +1631,7 @@ def connectedLineElems(elems,return_indices=False):
     parts = [ parts[i] for i in srt ]
     chains = [ chains[i] for i in srt ]
     if return_indices:
-        return parts,chains
+        return parts, chains
     else:
         return parts
 
@@ -1644,7 +1644,7 @@ def connectedLineElems(elems,return_indices=False):
 
 
 @deprecation(_future_deprecation)
-def connected(index,i):
+def connected(index, i):
     """Return the list of elements connected to element i.
 
     index is a (nr,nc) shaped integer array.
@@ -1680,21 +1680,21 @@ def enmagic2(cols,magic=0):
         raise ValueError("Integer value too high (>= 2**31) in enmagic2")
 
     if cols.ndim != 2 or cols.shape[1] != 2:
-        raise ValueError("Invalid array (type %s, shape %s) in enmagic2" % (cols.dtype,cols.shape))
+        raise ValueError("Invalid array (type %s, shape %s) in enmagic2" % (cols.dtype, cols.shape))
 
     if magic < 0:
         magic = -1
-        cols = array(cols,copy=True,dtype=int32,order='C')
+        cols = array(cols, copy=True, dtype=int32, order='C')
         codes = cols.view(int64)
     else:
         if magic <= cmax:
             magic = cmax + 1
-        codes = cols[:,0].astype(int64) * magic + cols[:,1]
-    return codes,magic
+        codes = cols[:, 0].astype(int64) * magic + cols[:, 1]
+    return codes, magic
 
 
 @deprecation(_future_deprecation)
-def demagic2(codes,magic):
+def demagic2(codes, magic):
     """Decode an integer number into two integers.
 
     The arguments `codes` and `magic` are the result of an enmagic2() operation.
@@ -1705,9 +1705,9 @@ def demagic2(codes,magic):
     *The use of this function is deprecated.*
     """
     if magic < 0:
-        cols = codes.view(int32).reshape(-1,2)
+        cols = codes.view(int32).reshape(-1, 2)
     else:
-        cols = column_stack([codes/magic,codes%magic]).astype(int32)
+        cols = column_stack([codes/magic, codes%magic]).astype(int32)
     return cols
 
 
@@ -1754,7 +1754,7 @@ def adjacencyArrays(elems,nsteps=1):
     # Construct table of nodes connected to each node
     adj1 = elems.adjacency('n')
     m = adj1.shape[0]
-    adj = [ arange(m).reshape(-1,1), adj1 ]
+    adj = [ arange(m).reshape(-1, 1), adj1 ]
     nodes = adj1
     step = 2
     while step <= nsteps and nodes.size > 0:
@@ -1762,11 +1762,11 @@ def adjacencyArrays(elems,nsteps=1):
         t = nodes < 0
         nodes = adj1[nodes]
         nodes[t] = -1
-        nodes = nodes.reshape((m,-1))
+        nodes = nodes.reshape((m, -1))
         nodes = reduceAdjacency(nodes)
         # Remove nodes of lower adjacency
-        ladj = concatenate(adj[-2:],-1)
-        t = [ in1d(n,l,assume_unique=True) for n,l in zip (nodes,ladj) ]
+        ladj = concatenate(adj[-2:], -1)
+        t = [ in1d(n, l, assume_unique=True) for n, l in zip (nodes, ladj) ]
         t = asarray(t)
         nodes[t] = -1
         nodes = sortAdjacency(nodes)
@@ -1778,7 +1778,7 @@ def adjacencyArrays(elems,nsteps=1):
 
 if __name__ == "__main__":
 
-    C = Connectivity([[0,1],[2,3]],eltype='line2')
+    C = Connectivity([[0, 1], [2, 3]], eltype='line2')
     print(C)
     print(C.eltype)
     print(C.report())
@@ -1788,5 +1788,5 @@ if __name__ == "__main__":
 
     print(Connectivity().report())
 
-    print(connectedLineElems([[0,1],[0,2],[0,3],[4,5]]))
+    print(connectedLineElems([[0, 1], [0, 2], [0, 3], [4, 5]]))
 # End

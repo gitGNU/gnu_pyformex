@@ -75,7 +75,7 @@ def run():
     clear()
     smooth()
 
-    createView('myview',angles=(0,-15,0),addtogui=True)
+    createView('myview', angles=(0, -15, 0), addtogui=True)
     view('myview')
 
     #############################
@@ -83,10 +83,10 @@ def run():
     #############################
 
     # size of the control point grid
-    nx,ny = 6,4
+    nx, ny = 6, 4
 
     # degree of the NURBS surface
-    px,py = 3,2
+    px, py = 3, 2
 
     # To create a 3D surface, we add z-elevation to some points of the grid
     # The list contains tuples of grid position (x,y) and z-value of peaks
@@ -96,13 +96,13 @@ def run():
         ]
 
     # number of isoparametric curves (-1) to draw on the surface
-    kx,ky = 10,4  
+    kx, ky = 10, 4  
 
     # number of random points
     nP = 100
 
     # what to draw
-    options = askItems(store=globals(),items=[
+    options = askItems(store=globals(), items=[
         ('draw_points',),
         ('draw_surf',),
         ('draw_curves',),
@@ -123,25 +123,25 @@ def run():
     ###########################
 
     # create the grid of control points
-    X = Formex(origin()).replic2(nx,ny).coords.reshape(ny,nx,3)
-    for x,y,v in peaks:
-        X[x,y,2] = v
+    X = Formex(origin()).replic2(nx, ny).coords.reshape(ny, nx, 3)
+    for x, y, v in peaks:
+        X[x, y, 2] = v
 
     if draw_points:
         # draw the numbered control points
-        draw(X,nolight=True)
-        drawNumbers(X.reshape(-1,3),trl=[0.05,0.05,0.0])
+        draw(X, nolight=True)
+        drawNumbers(X.reshape(-1, 3), trl=[0.05, 0.05, 0.0])
 
     ###########################
     ####   NURBS SURFACE
     ###########################
 
     # create the Nurbs surface
-    S = NurbsSurface(X,degree=(px,py))
+    S = NurbsSurface(X, degree=(px, py))
     if draw_surf:
         # draw the Nurbs surface, with random colors
         colors = 0.5*random.rand(*S.coords.shape)
-        draw(S,color=colors[...,:3])
+        draw(S, color=colors[..., :3])
 
     ###########################
     ####   ISOPARAMETRIC CURVES
@@ -152,53 +152,53 @@ def run():
     v = uniformParamValues(ky) 
 
     # create Nurbs curves through 1-d sets of control points, in both directions
-    Cu = [NurbsCurve(X[i],degree=px,knots=S.uknots) for i in range(ny)]
-    Cv = [NurbsCurve(X[:,i],degree=py,knots=S.vknots) for i in range(nx)]
+    Cu = [NurbsCurve(X[i], degree=px, knots=S.uknots) for i in range(ny)]
+    Cv = [NurbsCurve(X[:, i], degree=py, knots=S.vknots) for i in range(nx)]
     if draw_curves:
         # draw the Nurbs curves
-        draw(Cu,color=red,nolight=True,ontop=True)
-        draw(Cv,color=blue,nolight=True,ontop=True)
+        draw(Cu, color=red, nolight=True, ontop=True)
+        draw(Cv, color=blue, nolight=True, ontop=True)
 
     # get points on the Nurbs curves at isoparametric values
-    CuP = Coords.concatenate([ Ci.pointsAt(u) for Ci in Cu ]).reshape(ny,kx+1,3)
-    CvP = Coords.concatenate([ Ci.pointsAt(v) for Ci in Cv ]).reshape(nx,ky+1,3)
+    CuP = Coords.concatenate([ Ci.pointsAt(u) for Ci in Cu ]).reshape(ny, kx+1, 3)
+    CvP = Coords.concatenate([ Ci.pointsAt(v) for Ci in Cv ]).reshape(nx, ky+1, 3)
     if draw_curvepoints:
         # draw the isoparametric points
-        draw(CuP,marksize=10,ontop=True,nolight=True,color=red)
-        drawNumbers(CuP,color=red)
-        draw(CvP,marksize=10,ontop=True,nolight=True,color=blue)
-        drawNumbers(CvP,color=blue)
+        draw(CuP, marksize=10, ontop=True, nolight=True, color=red)
+        drawNumbers(CuP, color=red)
+        draw(CvP, marksize=10, ontop=True, nolight=True, color=blue)
+        drawNumbers(CvP, color=blue)
 
     # Create the isocurves: they are Nurbs curves using the isoparametric points
     # in the cross direction as control points
     # First swap the isoparametric point grids, then create curves
-    PuC = CuP.swapaxes(0,1)
-    PvC = CvP.swapaxes(0,1)
-    Vc = [NurbsCurve(PuC[i],degree=py,knots=S.vknots) for i in range(kx+1)] 
-    Uc = [NurbsCurve(PvC[i],degree=px,knots=S.uknots) for i in range(ky+1)]
+    PuC = CuP.swapaxes(0, 1)
+    PvC = CvP.swapaxes(0, 1)
+    Vc = [NurbsCurve(PuC[i], degree=py, knots=S.vknots) for i in range(kx+1)] 
+    Uc = [NurbsCurve(PvC[i], degree=px, knots=S.uknots) for i in range(ky+1)]
     if draw_isocurves:
         # draw the isocurves
-        draw(Vc,color=red,linewidth=2,nolight=True)#,ontop=True)
-        color = 0.5*random.rand(Uc[0].coords.shape[0],3)
+        draw(Vc, color=red, linewidth=2, nolight=True)#,ontop=True)
+        color = 0.5*random.rand(Uc[0].coords.shape[0], 3)
         print(color.shape)
         print(color)
-        draw(Uc,color=[red,yellow,green,cyan,blue,magenta],linewidth=3,nolight=True)#,ontop=True)
+        draw(Uc, color=[red, yellow, green, cyan, blue, magenta], linewidth=3, nolight=True)#,ontop=True)
 
     ###########################
     ####   POINTS and TANGENTS
     ###########################
 
     if draw_tangents:
-        uv = zeros((len(u),len(v),2))
-        uv[...,0] = u.reshape(-1,1)
-        uv[:,:,1] = v
-        uv = uv.reshape(-1,2)
-        D = S.derivs(uv,(1,1))
-        P = D[0,0]
-        U = D[1,0]
-        V = D[0,1]
-        drawVectors(P,U,size=1,color=red,ontop=True)
-        drawVectors(P,V,size=1,color=blue,ontop=True)
+        uv = zeros((len(u), len(v), 2))
+        uv[..., 0] = u.reshape(-1, 1)
+        uv[:,:, 1] = v
+        uv = uv.reshape(-1, 2)
+        D = S.derivs(uv, (1, 1))
+        P = D[0, 0]
+        U = D[1, 0]
+        V = D[0, 1]
+        drawVectors(P, U, size=1, color=red, ontop=True)
+        drawVectors(P, V, size=1, color=blue, ontop=True)
     
 
     ###########################
@@ -206,11 +206,11 @@ def run():
     ###########################
 
     # create random parametric values and compute points on the surface
-    u = random.random(2*nP).reshape(-1,2)
+    u = random.random(2*nP).reshape(-1, 2)
     P = S.pointsAt(u)
     if draw_randompoints:
         # draw the random points
-        draw(P,color=black,nolight=True,ontop=True)
+        draw(P, color=black, nolight=True, ontop=True)
 
 
 if __name__ == 'draw':

@@ -43,25 +43,25 @@ class BoundVectors(Coords):
     def __new__(clas,coords=None,origins=None,vectors=None):
         """Initialize the BoundVectors."""
         if coords is None:
-            coords = eye(2,3,-1)
+            coords = eye(2, 3, -1)
             if vectors is not None:
-                coords = resize(coords,vectors.shape[:-1]+(2,3))
-                coords[...,1,:] = vectors
+                coords = resize(coords, vectors.shape[:-1]+(2, 3))
+                coords[..., 1,:] = vectors
             if origins is not None:
-                coords += origins[...,newaxis,:]
-        elif coords.shape[-2:] != (2,3):
+                coords += origins[..., newaxis,:]
+        elif coords.shape[-2:] != (2, 3):
             raise ValueError("Expected shape (2,3) for last two array axes.")
-        return Coords.__new__(clas,coords)
+        return Coords.__new__(clas, coords)
 
 
     def origins(self):
         """Return the initial points of the BoundVectors."""
-        return Coords(self[...,0,:])
+        return Coords(self[..., 0,:])
 
 
     def heads(self):
         """Return the endpoints of the BoundVectors."""
-        return Coords(self[...,1,:])
+        return Coords(self[..., 1,:])
 
 
     def vectors(self):
@@ -72,7 +72,7 @@ class BoundVectors(Coords):
     def actor(self,**kargs):
         """_This allows a BoundVectors object to be drawn directly."""
         from formex import connect
-        return connect([self.origins(),self.heads()]).actor(**kargs)
+        return connect([self.origins(), self.heads()]).actor(**kargs)
 
 
 # End

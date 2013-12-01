@@ -44,7 +44,7 @@ from gui.draw import *
 def run():
     clear()
 
-    nx,ny,nz = 5,3,4
+    nx, ny, nz = 5, 3, 4
     #nx,ny,nz = 3,2,2
     degree = 2           # create quadratic extrusions, change to 1 for linear
     serendipity = False
@@ -57,41 +57,41 @@ def run():
     view('iso')
     delay(0)
 
-    a = Formex([0.,0.,0.]).toMesh()   # a point at the origin
+    a = Formex([0., 0., 0.]).toMesh()   # a point at the origin
     print(a.elName())
-    draw(a,color='black')
+    draw(a, color='black')
 
     delay(sleep)
 
-    b = a.extrude(nx,0,degree=degree)  # point extruded to quadratic line
+    b = a.extrude(nx, 0, degree=degree)  # point extruded to quadratic line
     print(b.elName())
-    draw(b.coords,wait=False)
-    draw(b,color='red')
+    draw(b.coords, wait=False)
+    draw(b, color='red')
 
-    c = b.extrude(ny,1,degree=degree)  # line extruded to quadratic surface
+    c = b.extrude(ny, 1, degree=degree)  # line extruded to quadratic surface
     if serendipity:
         c = c.convert('quad8')#.compact()
     print(c.elName())
-    draw(c.coords,wait=False)
-    draw(c,color='blue')
+    draw(c.coords, wait=False)
+    draw(c, color='blue')
     return
 
     #c1 = c.trl(2,1.)
     #d = c.connect(c1,degree=2)
 
     #d = d.convert('hex20')
-    d = c.extrude(nz,2,degree=degree)  # surface extruded to quadratic volume
+    d = c.extrude(nz, 2, degree=degree)  # surface extruded to quadratic volume
     d = d.compact()
     print(d.elName())
     clear()
-    draw(d.coords,wait=False)
+    draw(d.coords, wait=False)
     #drawNumbers(d.coords)
-    draw(d,color='yellow',bkcolor='black')
+    draw(d, color='yellow', bkcolor='black')
 
     if noise:
         e = d.addNoise(noise)
-        draw(e.coords,wait=False,clear=True)
-        draw(e,color=cyan)
+        draw(e.coords, wait=False, clear=True)
+        draw(e, color=cyan)
 
     drawNumbers(d)
     print("central = %s" % central)

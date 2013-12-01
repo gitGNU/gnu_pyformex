@@ -38,7 +38,7 @@ def getMessage(msg):
     If no matching message was defined, the original is returned.
     """
     msg = str(msg) # allows for msg being a Warning
-    msg = globals().get(msg,msg)
+    msg = globals().get(msg, msg)
     if _message_data is not None:
         msg = msg % _message_data
     return msg

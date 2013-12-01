@@ -31,7 +31,7 @@ syntax.
 from __future__ import print_function
 
 from coords import *
-from utils import deprecation,deprec,warn
+from utils import deprecation, deprec, warn
 from geometry import Geometry
 from attributes import Attributes
 import re
@@ -196,7 +196,7 @@ class Formex(Geometry):
     def __init__(self,data=[],prop=None,eltype=None):
         """Create a new Formex."""
         self.attrib = Attributes()
-        if isinstance(data,Formex):
+        if isinstance(data, Formex):
             if prop is None:
                 prop = data.prop
             if eltype is None:
@@ -205,7 +205,7 @@ class Formex(Geometry):
         else:
             if isinstance(data, str):
                 d = re.compile("(((?P<base>[^:]*):)?(?P<data>.*))").match(data).groupdict()
-                base,data = d['base'],d['data']
+                base, data = d['base'], d['data']
                 if base is None or base == 'l':
                     data = lpattern(data)
                 ## removed in 0.9.1
@@ -214,7 +214,7 @@ class Formex(Geometry):
                 else:
                     try:
                         nplex = int(base)
-                        data = xpattern(data,nplex)
+                        data = xpattern(data, nplex)
                     except:
                         raise ValueError("Invalid string data for Formex")
 
@@ -227,23 +227,23 @@ class Formex(Geometry):
                     nplex = 1
                 else:
                     nplex = 0
-                data = data.reshape(0,nplex,3) # An empty Formex
+                data = data.reshape(0, nplex, 3) # An empty Formex
             else:
                 # check dimensions of data
-                if not len(data.shape) in [1,2,3]:
+                if not len(data.shape) in [1, 2, 3]:
                     raise RuntimeError("Formex init: needs a 1-, 2- or 3-dim. data array, got shape %s" % str(data.shape))
                 if len(data.shape) == 1:
-                    data = data.reshape(1,1,data.shape[0])
+                    data = data.reshape(1, 1, data.shape[0])
                 elif len(data.shape) == 2:
-                    data = data.reshape(data.shape[0],1,data.shape[1])
-                if not data.shape[-1] in [1,2,3]:
+                    data = data.reshape(data.shape[0], 1, data.shape[1])
+                if not data.shape[-1] in [1, 2, 3]:
                     raise RuntimeError("Formex init: last axis dimension of data array should be 1, 2 or 3, got shape %s" % str(data.shape))
                 # add 3-rd dimension if data are 1-d or 2-d
                 # this will be done by Coords
                 pass
                 if data.shape[-1] == 2:
-                    z = zeros((data.shape[0],data.shape[1],1),dtype=Float)
-                    data = concatenate([data,z],axis=-1)
+                    z = zeros((data.shape[0], data.shape[1], 1), dtype=Float)
+                    data = concatenate([data, z], axis=-1)
 
         # data should be OK now
         self.coords = Coords(data)    # make sure coordinates are a Coords object
@@ -257,25 +257,25 @@ class Formex(Geometry):
             self.eltype = None
 
 
-    def _set_coords(self,coords):
+    def _set_coords(self, coords):
         """Replace the current coords with new ones.
 
         """
         coords = Coords(coords)
         if coords.shape == self.coords.shape:
-            return Formex(coords,self.prop,self.eltype)
+            return Formex(coords, self.prop, self.eltype)
         else:
             raise ValueError("Invalid reinitialization of Formex coords")
 
 
-    def __getitem__(self,i):
+    def __getitem__(self, i):
         """Return element i of the Formex.
 
         This allows addressing element i of Formex F as F[i].
         """
         return self.coords[i]
 
-    def __setitem__(self,i,val):
+    def __setitem__(self, i, val):
         """Change element i of the Formex.
 
         This allows writing expressions as F[i] = [[1,2,3]].
@@ -283,7 +283,7 @@ class Formex(Geometry):
         self.coords[i] = val
 
 
-    def __setstate__(self,state):
+    def __setstate__(self, state):
         """Set the object from serialized state.
 
         This allows to read back old pyFormex Project files where the Formex
@@ -298,17 +298,17 @@ class Formex(Geometry):
         self.__dict__.update(state)
 
 
-    def element(self,i):
+    def element(self, i):
         """Return element i of the Formex"""
         return self.coords[i]
 
-    def point(self,i,j):
+    def point(self, i, j):
         """Return point j of element i"""
-        return self.coords[i,j]
+        return self.coords[i, j]
 
-    def coord(self,i,j,k):
+    def coord(self, i, j, k):
         """Return coord k of point j of element i"""
-        return self.coords[i,j,k]
+        return self.coords[i, j, k]
 
 ###########################################################################
 #
@@ -460,10 +460,10 @@ class Formex(Geometry):
         """
         if atol is None:
             atol = rtol * self.dsize()
-        coords = reshape(self.coords,(self.nnodes(),3))
-        coords,index = coords.fuse(ppb,0.5,rtol=rtol,atol=atol,repeat=repeat)
+        coords = reshape(self.coords, (self.nnodes(), 3))
+        coords, index = coords.fuse(ppb, 0.5, rtol=rtol, atol=atol, repeat=repeat)
         index = index.reshape(self.coords.shape[:2])
-        return coords,index
+        return coords, index
 
 
     def toMesh(self,*args,**kargs):
@@ -475,8 +475,8 @@ class Formex(Geometry):
         connectivity table with integers pointing to the corresponding vertex.
         """
         from mesh import Mesh
-        x,e = self.fuse(*args,**kargs)
-        return Mesh(x,e,prop=self.prop,eltype=self.eltype)
+        x, e = self.fuse(*args,**kargs)
+        return Mesh(x, e, prop=self.prop, eltype=self.eltype)
 
 
     def toSurface(self):
@@ -505,14 +505,14 @@ bbox[lo] = %s
 bbox[hi] = %s
 center   = %s
 maxprop  = %s
-""" % (self.shape,bb[0],bb[1],self.center(),self.maxProp())
+""" % (self.shape, bb[0], bb[1], self.center(), self.maxProp())
 
 ##############################################################################
 # Create string representations of a Formex
 #
 
     @classmethod
-    def point2str(clas,point):
+    def point2str(clas, point):
         """Return a string representation of a point"""
         s = ""
         if len(point)>0:
@@ -523,7 +523,7 @@ maxprop  = %s
         return s
 
     @classmethod
-    def element2str(clas,elem):
+    def element2str(clas, elem):
         """Return a string representation of an element"""
         s = "["
         if len(elem) > 0:
@@ -559,7 +559,7 @@ maxprop  = %s
         the words "with prop" and a list of the properties.
         """
         s = self.asFormex()
-        if isinstance(self.prop,ndarray):
+        if isinstance(self.prop, ndarray):
             s += " with prop " + self.prop.__str__()
         else:
             s += " no prop "
@@ -573,7 +573,7 @@ maxprop  = %s
     __str__ = asFormex
 
     @classmethod
-    def setPrintFunction (clas,func):
+    def setPrintFunction (clas, func):
         """Choose the default formatting for printing formices.
 
         This sets how formices will be formatted by a print statement.
@@ -614,7 +614,7 @@ maxprop  = %s
     ##     return self
 
 
-    def append(self,F):
+    def append(self, F):
         """Append the members of Formex F to this one.
 
         This function changes the original one! Use __add__ if you want to
@@ -632,18 +632,18 @@ maxprop  = %s
             self.prop = F.prop
             return self
 
-        self.coords = Coords(concatenate((self.coords,F.coords)))
+        self.coords = Coords(concatenate((self.coords, F.coords)))
         ## What to do if one of the formices has properties, the other one not?
         ## The current policy is to use zero property values for the Formex
         ## without props
         if self.prop is not None or F.prop is not None:
             if self.prop is None:
-                self.prop = zeros(shape=self.coords.shape[:1],dtype=Int)
+                self.prop = zeros(shape=self.coords.shape[:1], dtype=Int)
             if F.prop is None:
-                p = zeros(shape=F.coords.shape[:1],dtype=Int)
+                p = zeros(shape=F.coords.shape[:1], dtype=Int)
             else:
                 p = F.prop
-            self.prop = concatenate((self.prop,p))
+            self.prop = concatenate((self.prop, p))
         return self
 
 
@@ -664,7 +664,7 @@ maxprop  = %s
 # Create copies, concatenations, subtractions, connections, ...
 #
 
-    def __add__(self,other):
+    def __add__(self, other):
         """Return the sum of two formices.
 
         This returns a Formex with all elements of self and other.
@@ -676,7 +676,7 @@ maxprop  = %s
     #
 
     @classmethod
-    def concatenate(clas,Flist):
+    def concatenate(clas, Flist):
         """Concatenate all Formices in Flist.
 
         All the Formices in the list should have the same plexitude,
@@ -702,7 +702,7 @@ maxprop  = %s
         """
         def _force_prop(m):
             if m.prop is None:
-                return zeros(m.nelems(),dtype=Int)
+                return zeros(m.nelems(), dtype=Int)
             else:
                 return m.prop
 
@@ -717,7 +717,7 @@ maxprop  = %s
         else:
             prop = concatenate(prop)
 
-        return Formex(f,prop,Flist[0].eltype)
+        return Formex(f, prop, Flist[0].eltype)
 
 
     def _select(self,selected,**kargs):
@@ -728,12 +728,12 @@ maxprop  = %s
         """
         selected = checkArray1D(selected)
         if self.prop is None:
-            return Formex(self.coords[selected],eltype=self.eltype)
+            return Formex(self.coords[selected], eltype=self.eltype)
         else:
-            return Formex(self.coords[selected],self.prop[selected],self.eltype)
+            return Formex(self.coords[selected], self.prop[selected], self.eltype)
 
 
-    def selectNodes(self,idx):
+    def selectNodes(self, idx):
         """Return a Formex which holds only some nodes of the parent.
 
         idx is a list of node numbers to select.
@@ -742,7 +742,7 @@ maxprop  = %s
         F.selectNodes([0,1]) + F.selectNodes([1,2]) + F.selectNodes([2,0])
         The returned Formex inherits the property of its parent.
         """
-        return Formex(self.coords[:,idx,:],self.prop,self.eltype)
+        return Formex(self.coords[:, idx,:], self.prop, self.eltype)
 
 
     def asPoints(self):
@@ -758,7 +758,7 @@ maxprop  = %s
         The points() method returns the same data, but as a Coords object
         with a simple list of points.
         """
-        return Formex(self.coords.reshape((-1,1,3)))
+        return Formex(self.coords.reshape((-1, 1, 3)))
 
 
     # retained for compatibility, deprecated
@@ -767,7 +767,7 @@ maxprop  = %s
         return self.points()
 
 
-    def remove(self,F):
+    def remove(self, F):
         """Return a Formex where the elements in F have been removed.
 
         This is also the subtraction of the current Formex with F.
@@ -778,7 +778,7 @@ maxprop  = %s
         flag = ones((self.coords.shape[0],))
         for i in range(self.coords.shape[0]):
             for j in range(F.coords.shape[0]):
-                if allclose(self.coords[i],F.coords[j]):
+                if allclose(self.coords[i], F.coords[j]):
                     # element i is same as element j of F
                     flag[i] = 0
                     break
@@ -786,10 +786,10 @@ maxprop  = %s
             p = None
         else:
             p = self.prop[flag>0]
-        return Formex(self.coords[flag>0],p,self.eltype)
+        return Formex(self.coords[flag>0], p, self.eltype)
 
     @deprecation("Formex.withProp is deprecated. Use selectProp instead.")
-    def withProp(self,val):
+    def withProp(self, val):
         return self.selectProp(val)
 
     #
@@ -817,8 +817,8 @@ maxprop  = %s
         If permutations is set False, two elements are not considered equal
         if one's points are a permutation of the other's.
         """
-        M = self.toMesh(rtol=rtol,atol=atol)
-        ind,ok = M.elems.testDuplicate()
+        M = self.toMesh(rtol=rtol, atol=atol)
+        ind, ok = M.elems.testDuplicate()
         return self.select(ind[ok])
 
 
@@ -865,8 +865,8 @@ maxprop  = %s
             nod = nodes
 
         # Perform the test on the selected nodes
-        X = self.coords[:,nod]
-        T = X.test(dir=dir,min=min,max=max,atol=atol)
+        X = self.coords[:, nod]
+        T = X.test(dir=dir, min=min, max=max, atol=atol)
 
         if len(T.shape) > 1:
             # We have results for more than 1 node per element
@@ -880,7 +880,7 @@ maxprop  = %s
         return asarray(T)
 
 
-    def clip(self,t):
+    def clip(self, t):
         """Return a Formex with all the elements where t>0.
 
         t should be a 1-D integer array with length equal to the number
@@ -892,7 +892,7 @@ maxprop  = %s
         return self.select(t>0)
 
 
-    def cclip(self,t):
+    def cclip(self, t):
         """This is the complement of clip, returning a Formex where t<=0.
         """
         return self.select(t<=0)
@@ -904,7 +904,7 @@ maxprop  = %s
 #
 
 
-    def circulize(self,angle):
+    def circulize(self, angle):
         """Transform a linear sector into a circular one.
 
         A sector of the (0,1) plane with given angle, starting from the 0 axis,
@@ -914,8 +914,8 @@ maxprop  = %s
         the line through the point and perpendicular to the bisector of the
         angle. See Diamatic example."""
         e = tand(0.5*angle)
-        errh = seterr(divide='ignore',invalid='ignore') # ignore division errors
-        res = self.map(lambda x,y,z:[where(y==0,x,(x*x+x*y*e)/sqrt(x*x+y*y)),where(x==0,y,(x*y+y*y*e)/sqrt(x*x+y*y)),0])
+        errh = seterr(divide='ignore', invalid='ignore') # ignore division errors
+        res = self.map(lambda x, y, z:[where(y==0, x, (x*x+x*y*e)/sqrt(x*x+y*y)), where(x==0, y, (x*y+y*y*e)/sqrt(x*x+y*y)), 0])
         seterr(**errh) # reactivate division errors
         return res
 
@@ -929,13 +929,13 @@ maxprop  = %s
         This function is especially suited to create circular domains where
         all bars have nearly same length. See the Diamatic example.
         """
-        errh = seterr(divide='ignore',invalid='ignore') # ignore division errors
-        res =self.map(lambda x,y,z:[where(x>0,x-y*y/(x+x),0),where(x>0,y*sqrt(4*x*x-y*y)/(x+x),y),0])
+        errh = seterr(divide='ignore', invalid='ignore') # ignore division errors
+        res =self.map(lambda x, y, z:[where(x>0, x-y*y/(x+x), 0), where(x>0, y*sqrt(4*x*x-y*y)/(x+x), y), 0])
         seterr(**errh) # reactivate division errors
         return res
 
 
-    def shrink(self,factor):
+    def shrink(self, factor):
         """Shrinks each element with respect to its own center.
 
         Each element is scaled with the given factor in a local coordinate
@@ -945,8 +945,8 @@ maxprop  = %s
         wireframe draw mode to show all elements disconnected. A factor above
         1.0 will grow the elements.
         """
-        c = self.coords.mean(1).reshape((self.coords.shape[0],1,self.coords.shape[2]))
-        return Formex(factor*(self.coords-c)+c,self.prop,self.eltype)
+        c = self.coords.mean(1).reshape((self.coords.shape[0], 1, self.coords.shape[2]))
+        return Formex(factor*(self.coords-c)+c, self.prop, self.eltype)
 
 
 ##############################################################################
@@ -962,7 +962,7 @@ maxprop  = %s
 
           self.selectNodes(arange(self.nplex()-1,-1,-1))
         """
-        return Formex(self.coords[:,::-1],self.prop,self.eltype)
+        return Formex(self.coords[:, ::-1], self.prop, self.eltype)
 
 
     def mirror(self,dir=2,pos=0,keep_orig=True):
@@ -973,9 +973,9 @@ maxprop  = %s
         like reflect().
         """
         if keep_orig:
-            return self+self.reflect(dir,pos)
+            return self+self.reflect(dir, pos)
         else:
-            return self.reflect(dir,pos)
+            return self.reflect(dir, pos)
 
 
     def replicate(self,n,dir=0,step=1.0):
@@ -986,10 +986,10 @@ maxprop  = %s
         `dir` and `step` are interpreted just like in the :meth:`translate`
         method. The first of the copies is equal to the original.
         """
-        f = self.coords.replicate(n,dir,step=step)
-        f.shape = (f.shape[0]*f.shape[1],f.shape[2],f.shape[3])
+        f = self.coords.replicate(n, dir, step=step)
+        f.shape = (f.shape[0]*f.shape[1], f.shape[2], f.shape[3])
         ## the replication of the properties is automatic!
-        return Formex(f,self.prop,self.eltype)
+        return Formex(f, self.prop, self.eltype)
 
 
     def rep(self,n,dir=None,step=None):
@@ -1003,8 +1003,8 @@ maxprop  = %s
             dir = range(len(n))
         if step is None:
             step = [1.]*len(n)
-        for ni,diri,stepi in zip(n,dir,step):
-            F = F.replicate(ni,diri,stepi)
+        for ni, diri, stepi in zip(n, dir, step):
+            F = F.replicate(ni, diri, stepi)
         return F
 
 
@@ -1015,11 +1015,11 @@ maxprop  = %s
         """
         n = int(n)
         f = array( [ self.coords for i in range(n) ] )
-        for i in range(1,n):
-            f[i,:,:,dir] += i*step
-        f.shape = (f.shape[0]*f.shape[1],f.shape[2],f.shape[3])
+        for i in range(1, n):
+            f[i,:,:, dir] += i*step
+        f.shape = (f.shape[0]*f.shape[1], f.shape[2], f.shape[3])
         ## the replication of the properties is automatic!
-        return Formex(f,self.prop,self.eltype)
+        return Formex(f, self.prop, self.eltype)
 
 
     def replic2(self,n1,n2,t1=1.0,t2=1.0,d1=0,d2=1,bias=0,taper=0):
@@ -1029,7 +1029,7 @@ maxprop  = %s
         bias, taper : extra step and extra number of generations in direction
         d1 for each generation in direction d2
         """
-        P = [ self.translatem((d1,i*bias),(d2,i*t2)).replic(n1+i*taper,t1,d1)
+        P = [ self.translatem((d1, i*bias), (d2, i*t2)).replic(n1+i*taper, t1, d1)
               for i in range(n2) ]
         ## We should replace the Formex concatenation here by
         ## separate data and prop concatenations, because we are
@@ -1037,7 +1037,7 @@ maxprop  = %s
         return Formex.concatenate(P)
 
 
-    def rosette(self,n,angle,axis=2,point=[0.,0.,0.]):
+    def rosette(self,n,angle,axis=2,point=[0., 0., 0.]):
         """Return a Formex with n rotational replications with angular
         step angle around an axis parallel with one of the coordinate axes
         going through the given point. axis is the number of the axis (0,1,2).
@@ -1046,11 +1046,11 @@ maxprop  = %s
         """
         f = self.coords - point
         f = array( [ f for i in range(n) ] )
-        for i in range(1,n):
-            m = array(rotationMatrix(i*angle,axis))
-            f[i] = dot(f[i],m)
-        f.shape = (f.shape[0]*f.shape[1],f.shape[2],f.shape[3])
-        return Formex(f + point,self.prop,self.eltype)
+        for i in range(1, n):
+            m = array(rotationMatrix(i*angle, axis))
+            f[i] = dot(f[i], m)
+        f.shape = (f.shape[0]*f.shape[1], f.shape[2], f.shape[3])
+        return Formex(f + point, self.prop, self.eltype)
 
     ros = rosette
 
@@ -1062,8 +1062,8 @@ maxprop  = %s
         translate([x,y,z]). This function is especially conveniant
         to translate in calculated directions.
         """
-        tr = [0.,0.,0.]
-        for d,t in args:
+        tr = [0., 0., 0.]
+        for d, t in args:
             tr[d] += t
         return self.translate(tr)
 
@@ -1101,7 +1101,7 @@ maxprop  = %s
         See the :func:`connect` function for a more general tool to create
         new Formices out of existing ones.
         """
-        return self.toMesh().extrude(div,dir,length).toFormex()
+        return self.toMesh().extrude(div, dir, length).toFormex()
 
 
 ##############################################################################
@@ -1111,7 +1111,7 @@ maxprop  = %s
 # !! It is not clear if they really belong here, or should go to a subclass
 
 
-    def divide(self,div):
+    def divide(self, div):
         """Divide a plex-2 Formex at the values in div.
 
         Replaces each member of the Formex by a sequence of members obtained
@@ -1126,9 +1126,9 @@ maxprop  = %s
         if self.nplex() != 2:
             raise RuntimeError("Can only divide plex-2 Formices")
         div = unitDivisor(div)
-        A = interpolate(self.selectNodes([0]),self.selectNodes([1]),div[:-1],swap=True)
-        B = interpolate(self.selectNodes([0]),self.selectNodes([1]),div[1:],swap=True)
-        return connect([A,B])
+        A = interpolate(self.selectNodes([0]), self.selectNodes([1]), div[:-1], swap=True)
+        B = interpolate(self.selectNodes([0]), self.selectNodes([1]), div[1:], swap=True)
+        return connect([A, B])
 
 
     # TODO: returned Formex could inherit properties of parent
@@ -1144,13 +1144,13 @@ maxprop  = %s
         """
         if self.nplex() == 2:
             from geomtools import intersectionSWP
-            return Formex(intersectionSWP(self.coords,p,n,mode='pair',atol=atol)[1])
+            return Formex(intersectionSWP(self.coords, p, n, mode='pair', atol=atol)[1])
         elif self.nplex() == 3:
-            m = self.toSurface().intersectionWithPlane(p,n,atol=atol)
+            m = self.toSurface().intersectionWithPlane(p, n, atol=atol)
             if m.nelems() > 0:
                 return m.toFormex()
             else:
-                return Formex(array([],dtype=Float).reshape(0,2,3))
+                return Formex(array([], dtype=Float).reshape(0, 2, 3))
             #return Formex(intersectionLinesWithPlane(self,p,n))
         else:
             # OTHER PLEXITUDES NEED TO BE IMPLEMENTED
@@ -1192,9 +1192,9 @@ maxprop  = %s
         if atol is None:
             atol = 1.e-5*self.dsize()
         if self.nplex() == 2:
-            return cut2AtPlane(self,p,n,side,atol,newprops)
+            return cut2AtPlane(self, p, n, side, atol, newprops)
         elif self.nplex() == 3:
-            return cut3AtPlane(self,p,n,side,atol,newprops)
+            return cut3AtPlane(self, p, n, side, atol, newprops)
         else:
             # OTHER PLEXITUDES NEED TO BE IMPLEMENTED
             raise ValueError("Formex should be plex-2 or plex-3")
@@ -1212,9 +1212,9 @@ maxprop  = %s
             raise RuntimeError("Number of elements should be integer multiple of n")
         m = self.nelems()/n
         if self.prop is None:
-            return [ Formex(self.coords[n*i:n*(i+1)],self.eltype) for i in range(m) ]
+            return [ Formex(self.coords[n*i:n*(i+1)], self.eltype) for i in range(m) ]
         else:
-            return [ Formex(self.coords[n*i:n*(i+1)],self.prop[n*i:n*(i+1)],self.eltype) for i in range(m) ]
+            return [ Formex(self.coords[n*i:n*(i+1)], self.prop[n*i:n*(i+1)], self.eltype) for i in range(m) ]
 
 
     def lengths(self):
@@ -1265,7 +1265,7 @@ maxprop  = %s
         If fil is a string, the file is closed prior to returning.
         """
         from geomfile import GeometryFile
-        f = GeometryFile(fil,mode='w',sep=sep)
+        f = GeometryFile(fil, mode='w', sep=sep)
         f.write(self)
         if f.isname and mode[0]=='w':
             f.close()
@@ -1281,7 +1281,7 @@ maxprop  = %s
         Valid Formex file formats are described in the manual.
         """
         from geomfile import GeometryFile
-        f = GeometryFile(fil,mode='r',sep=sep)
+        f = GeometryFile(fil, mode='r', sep=sep)
         res = f.read(count=1)
         return res.values()[0]
 
@@ -1309,19 +1309,19 @@ maxprop  = %s
 
         The return value is a :class:`Coords` object.
         """
-        x = Coords.fromstring(fil,sep=sep,ndim=ndim,count=count)
+        x = Coords.fromstring(fil, sep=sep, ndim=ndim, count=count)
         if x.shape[0] % nplex != 0:
-            raise RuntimeError("Number of points read: %s, expected a multiple of %s!" % (x.shape[0],nplex))
-        return Formex(x.reshape(-1,nplex,3))
+            raise RuntimeError("Number of points read: %s, expected a multiple of %s!" % (x.shape[0], nplex))
+        return Formex(x.reshape(-1, nplex, 3))
 
 
     @classmethod
     def fromfile(clas,fil,sep=' ',nplex=1):
         """Read the coordinates of a Formex from a file"""
-        x = Coords.fromfile(fil,sep=sep)
+        x = Coords.fromfile(fil, sep=sep)
         if x.shape[0] % nplex != 0:
-            raise RuntimeError("Number of points read: %s, should be multiple of %s!" % (x.shape[0],nplex))
-        return Formex(x.reshape(-1,nplex,3))
+            raise RuntimeError("Number of points read: %s, should be multiple of %s!" % (x.shape[0], nplex))
+        return Formex(x.reshape(-1, nplex, 3))
 
 
     def actor(self,**kargs):
@@ -1367,9 +1367,9 @@ def connect(Flist,nodid=None,bias=None,loop=False):
     try:
         m = len(Flist)
         for i in range(m):
-            if isinstance(Flist[i],Formex):
+            if isinstance(Flist[i], Formex):
                 pass
-            elif isinstance(Flist[i],ndarray):
+            elif isinstance(Flist[i], ndarray):
                 Flist[i] = Formex(Flist[i])
             else:
                 raise TypeError
@@ -1384,12 +1384,12 @@ def connect(Flist,nodid=None,bias=None,loop=False):
         n = max([ Flist[i].nelems() for i in range(m) ])
     else:
         n = min([ Flist[i].nelems() - bias[i] for i in range(m) ])
-    f = zeros((n,m,3),dtype=Float)
-    for i,j,k in zip(range(m),nodid,bias):
-        v = Flist[i].coords[k:k+n,j,:]
+    f = zeros((n, m, 3), dtype=Float)
+    for i, j, k in zip(range(m), nodid, bias):
+        v = Flist[i].coords[k:k+n, j,:]
         if loop and k > 0:
-            v = concatenate([v,Flist[i].coords[:k,j,:]])
-        f[:,i,:] = resize(v,(n,3))
+            v = concatenate([v, Flist[i].coords[:k, j,:]])
+        f[:, i,:] = resize(v, (n, 3))
     return Formex(f)
 
 
@@ -1416,10 +1416,10 @@ def interpolate(F,G,div,swap=False,concat=True):
     If swap==True, the order is swapped and you get m sequences of n
     interpolations.
     """
-    r = F.coords.interpolate(G.coords,div)
+    r = F.coords.interpolate(G.coords, div)
     # r is a 4-dim array
     if swap:
-        r = r.swapaxes(0,1)
+        r = r.swapaxes(0, 1)
     return Formex(r.reshape((-1,) + r.shape[-2:]))
 
 
@@ -1459,7 +1459,7 @@ def lpattern(s,connect=True):
     The resulting list is directly suited to initialize a Formex.
     """
     # We do not allow the '+' anymore
-    s = s.replace('+','/0')
+    s = s.replace('+', '/0')
 
     x = y = z = 0
     l = []
@@ -1471,7 +1471,7 @@ def lpattern(s,connect=True):
         ## if c == "+":
         ##     x = y = z = 0
         ##     continue
-        pos = [x,y,z]
+        pos = [x, y, z]
         if c == "0":
             x = y = z = 0
         else:
@@ -1512,9 +1512,9 @@ def lpattern(s,connect=True):
                 raise RuntimeError("Unknown pattern character %c ignored" % c)
         if insert:
             if connect:
-                element = [pos,[x,y,z]]
+                element = [pos, [x, y, z]]
             else:
-                element = [[x,y,z]]
+                element = [[x, y, z]]
             l.append(element)
         insert = True
     return l
@@ -1592,7 +1592,7 @@ def lpattern(s,connect=True):
 ##     return l
 
 
-def pointsAt(F,t):
+def pointsAt(F, t):
     """Return the points of a plex-2 Formex at times t.
 
     F is a plex 2 Formex and t is an array with F.nelems() float values which
@@ -1601,8 +1601,8 @@ def pointsAt(F,t):
     The return value is a :class:`coords.Coords` array with the points at values t.
     """
     f = F.coords
-    t = t[:,newaxis]
-    return Coords((1.-t) * f[:,0,:] + t * f[:,1,:])
+    t = t[:, newaxis]
+    return Coords((1.-t) * f[:, 0,:] + t * f[:, 1,:])
 
 
 def intersectionLinesWithPlane(F,p,n,atol=1.e-4):
@@ -1615,21 +1615,21 @@ def intersectionLinesWithPlane(F,p,n,atol=1.e-4):
     """
     n = asarray(n)
     p = asarray(p)
-    F = F.cclip(F.test('all',n,p)) # remove elements at the negative side
+    F = F.cclip(F.test('all', n, p)) # remove elements at the negative side
     if F.nelems() == 0:
-        return Formex(empty((0,2,3,),dtype=float))
-    F = F.cclip(F.test('all',-n,p)) # select elements that will be cut by plane
+        return Formex(empty((0, 2, 3,), dtype=float))
+    F = F.cclip(F.test('all', -n, p)) # select elements that will be cut by plane
     if F.nelems() == 0:
-        return Formex(empty((0,2,3,),dtype=float))
-    F1 = F21 = F22 = F31 = F32 = F41 = F42= F43 = Formex(empty((0,2,3,),dtype=float))
+        return Formex(empty((0, 2, 3,), dtype=float))
+    F1 = F21 = F22 = F31 = F32 = F41 = F42= F43 = Formex(empty((0, 2, 3,), dtype=float))
     # Create a Formex with the edges
-    C = Formex.concatenate([ F.selectNodes(e) for e in [[0,1],[1,2],[2,0]] ])
-    t = C.intersectionWithPlane(p,n)
-    P = pointsAt(C,t)
-    t = t.reshape(3,-1).transpose()
-    Pb = P.reshape(3,-1,3).swapaxes(0,1)
+    C = Formex.concatenate([ F.selectNodes(e) for e in [[0, 1], [1, 2], [2, 0]] ])
+    t = C.intersectionWithPlane(p, n)
+    P = pointsAt(C, t)
+    t = t.reshape(3, -1).transpose()
+    Pb = P.reshape(3, -1, 3).swapaxes(0, 1)
     Pf = F.coords
-    Ps = roll(F.coords,-1,axis=1)
+    Ps = roll(F.coords, -1, axis=1)
     t1 = t >= 0.+atol
     t2 = t <= 1.-atol
     t3 = t >= 0.-atol
@@ -1643,20 +1643,20 @@ def intersectionLinesWithPlane(F,p,n,atol=1.e-4):
     # Get the triangles with 2 edge intersections
     w1 = where(Nb==2)[0]
     if w1.size > 0:
-        P = Pb[w1][Tb[w1]].reshape(-1,2,3)
+        P = Pb[w1][Tb[w1]].reshape(-1, 2, 3)
         F1 = Formex(P)
     # Get the triangles with 1 edge intersection and 1 vertex intersection
     w21 = where( (Nb==1) * (Nf==1) * (Ns==0) )[0]
     if w21.size > 0:
-        P1 = Pb[w21][Tb[w21]].reshape(-1,1,3)
-        P2 = Pf[w21][Tf[w21]].reshape(-1,1,3)
-        P = column_stack([P1,P2])
+        P1 = Pb[w21][Tb[w21]].reshape(-1, 1, 3)
+        P2 = Pf[w21][Tf[w21]].reshape(-1, 1, 3)
+        P = column_stack([P1, P2])
         F21 = Formex(P)
     w22 = where( (Nb==1) * (Nf==0) * (Ns==1) )[0]
     if w22.size > 0:
-        P1 = Pb[w22][Tb[w22]].reshape(-1,1,3)
-        P2 = Ps[w22][Ts[w22]].reshape(-1,1,3)
-        P = column_stack([P1,P2])
+        P1 = Pb[w22][Tb[w22]].reshape(-1, 1, 3)
+        P2 = Ps[w22][Ts[w22]].reshape(-1, 1, 3)
+        P = column_stack([P1, P2])
         F22 = Formex(P)
     # Get the triangles with 1 edge intersection and 2 vertex intersections
     w3 = where( (Nb==1) * (Nf==1) * (Ns==1) )[0]
@@ -1670,24 +1670,24 @@ def intersectionLinesWithPlane(F,p,n,atol=1.e-4):
         i = where(Ts3)[1] - where(Tf3)[1]
         w31 = where((i == 1)+(i==-2))[0] # different vertices
         if w31.size > 0:
-            P1 = Pf3[w31][Tf3[w31]].reshape(-1,1,3)
-            P2 = Ps3[w31][Ts3[w31]].reshape(-1,1,3)
-            P = column_stack([P1,P2])
+            P1 = Pf3[w31][Tf3[w31]].reshape(-1, 1, 3)
+            P2 = Ps3[w31][Ts3[w31]].reshape(-1, 1, 3)
+            P = column_stack([P1, P2])
             F32 = Formex(P)
         w32 = where((i == -1)+(i==2))[0] # equal vertices
         if w32.size > 0:
-            P1 = Pb3[w32][Tb3[w32]].reshape(-1,1,3)
-            P2 = Pf3[w32][Tf3[w32]].reshape(-1,1,3)
-            P = column_stack([P1,P2])
+            P1 = Pb3[w32][Tb3[w32]].reshape(-1, 1, 3)
+            P2 = Pf3[w32][Tf3[w32]].reshape(-1, 1, 3)
+            P = column_stack([P1, P2])
             F31 = Formex(P)
     # Get the triangles with 0 edge intersections and 2 or 3 vertex intersections
     w41 = where( (Nb==0) * (Nf==2) )[0]
     if w41.size > 0:
-        P = Pf[w41][Tf[w41]].reshape(-1,2,3)
+        P = Pf[w41][Tf[w41]].reshape(-1, 2, 3)
         F41 = Formex(P)
     w42 = where( (Nb==0) * (Ns==2) )[0]
     if w42.size > 0:
-        P = Ps[w42][Ts[w42]].reshape(-1,2,3)
+        P = Ps[w42][Ts[w42]].reshape(-1, 2, 3)
         F42 = Formex(P)
     w43 = where( (Nb==0) * (Nf==1) * (Ns==1) )[0]
     if w43.size > 0:
@@ -1698,9 +1698,9 @@ def intersectionLinesWithPlane(F,p,n,atol=1.e-4):
         i = where(Ts43)[1] - where(Tf43)[1]
         w43 = where((i == 1)+(i==-2))[0] # different vertices
         if w43.size > 0:
-            P1 = Pf43[w43][Tf43[w43]].reshape(-1,1,3)
-            P2 = Ps43[w43][Ts43[w43]].reshape(-1,1,3)
-            P = column_stack([P1,P2])
+            P1 = Pf43[w43][Tf43[w43]].reshape(-1, 1, 3)
+            P2 = Ps43[w43][Ts43[w43]].reshape(-1, 1, 3)
+            P = column_stack([P1, P2])
             F43 = Formex(P)
     # join all the pieces
     Ft = F1 + F21 + F22 + F31 + F32 + F41 + F42+ F43
@@ -1718,7 +1718,7 @@ def _sane_side(side):
         side = ''
     return side
 
-def _select_side(side,alist):
+def _select_side(side, alist):
     """_Return selected parts dependent on side_"""
     if side == '+':
         return alist[0]
@@ -1752,11 +1752,11 @@ def cut2AtPlane(F,p,n,side='',atol=None,newprops=None):
     these points.
     """
     side = _sane_side(side)
-    dist = F.distanceFromPlane(p,n)
+    dist = F.distanceFromPlane(p, n)
     if atol is None:
         atol = 1.e-5*dist.max()
-    above = sum(dist>atol,-1)
-    below = sum(dist<-atol,-1)
+    above = sum(dist>atol, -1)
+    below = sum(dist<-atol, -1)
     A = F.clip(below==0)
     B = F.clip(above==0)
     cutting = (above>0)*(below>0)
@@ -1772,12 +1772,12 @@ def cut2AtPlane(F,p,n,side='',atol=None,newprops=None):
         H = G.copy()
 
 
-        g = G.intersectionWithPlane(p,n)
+        g = G.intersectionWithPlane(p, n)
         dist = dist[cutting]
-        i0 = dist[:,0] < 0.
-        i1 = dist[:,1] < 0.
-        G[i0,0,:] = H[i0,1,:] = g[i0].reshape(-1,3)
-        G[i1,1,:] = H[i1,0,:] = g[i1].reshape(-1,3)
+        i0 = dist[:, 0] < 0.
+        i1 = dist[:, 1] < 0.
+        G[i0, 0,:] = H[i0, 1,:] = g[i0].reshape(-1, 3)
+        G[i1, 1,:] = H[i1, 0,:] = g[i1].reshape(-1, 3)
         if newprops:
            G.setProp(newprops[2])
            H.setProp(newprops[3])
@@ -1787,7 +1787,7 @@ def cut2AtPlane(F,p,n,side='',atol=None,newprops=None):
         ## print("Elements in G: %s" % G.nelems())
         ## print("Elements in A: %s" % A.nelems())
         ## print("Elements in B: %s" % B.nelems())
-    return _select_side(side,[ A,B ])
+    return _select_side(side, [ A, B ])
 
 
 def cut3AtPlane(F,p,n,side='',atol=None,newprops=None):
@@ -1843,10 +1843,10 @@ def cut3AtPlane(F,p,n,side='',atol=None,newprops=None):
             newprops = range(7)
     side = _sane_side(side)
 
-    p = asarray(p).reshape(-1,3)
-    n = asarray(n).reshape(-1,3)
+    p = asarray(p).reshape(-1, 3)
+    n = asarray(n).reshape(-1, 3)
     nplanes = len(p)
-    test = [F.test('any',n[i], p[i],atol=atol) for i in range(nplanes)] # elements at positive side of plane i
+    test = [F.test('any', n[i], p[i], atol=atol) for i in range(nplanes)] # elements at positive side of plane i
     Test= asarray(test).prod(0) # elements at positive side of all planes
     F_pos = F.clip(Test) # save elements at positive side of all planes
     if side in '-': # Dirty trick: this also includes side='' !
@@ -1854,18 +1854,18 @@ def cut3AtPlane(F,p,n,side='',atol=None,newprops=None):
     else:
         F_neg = None
     if F_pos.nelems() != 0:
-        test = [F_pos.test('all',n[i],p[i],atol=-atol) for i in range(nplanes)] # elements completely at positive side of plane i
+        test = [F_pos.test('all', n[i], p[i], atol=-atol) for i in range(nplanes)] # elements completely at positive side of plane i
         Test = asarray(test).prod(0) # elements completely at positive side of all planes
         F_cut = F_pos.cclip(Test) # save elements that will be cut by one of the planes
         F_pos = F_pos.clip(Test)  # save elements completely at positive side of all planes
         if F_cut.nelems() != 0:
             if nplanes == 1:
                 if side == '+':
-                    F_pos += cutElements3AtPlane(F_cut,p[i],n[i],newprops,side,atol)
+                    F_pos += cutElements3AtPlane(F_cut, p[i], n[i], newprops, side, atol)
                 elif side == '-':
-                    F_neg += cutElements3AtPlane(F_cut,p[i],n[i],newprops,side,atol)
+                    F_neg += cutElements3AtPlane(F_cut, p[i], n[i], newprops, side, atol)
                 elif side == '':
-                    cut_pos, cut_neg = cutElements3AtPlane(F_cut,p[i],n[i],newprops,side,atol)
+                    cut_pos, cut_neg = cutElements3AtPlane(F_cut, p[i], n[i], newprops, side, atol)
                     F_pos += cut_pos
                     F_neg += cut_neg
             elif nplanes > 1:
@@ -1873,22 +1873,22 @@ def cut3AtPlane(F,p,n,side='',atol=None,newprops=None):
                 for i in range(nplanes):
                     if i > 0:
                         # due to the projection of vertices with |distance| < atol on plane i-1, some elements can be completely at negative side of plane i instead of cut by plane i
-                        t = S.test('any',n[i],p[i],atol=atol)
+                        t = S.test('any', n[i], p[i], atol=atol)
                         if side in '-':
                             F_neg += S.cclip(t) # save elements completely at negative side of plane i
                         S = S.clip(t) # save elements at positive side of plane i
-                    t = S.test('all',n[i],p[i],atol=-atol)
+                    t = S.test('all', n[i], p[i], atol=-atol)
                     R = S.clip(t) # save elements completely at positive side of plane i
                     S = S.cclip(t) # save elements that will be cut by plane i
                     if side == '+':
-                        cut_pos = cutElements3AtPlane(S,p[i],n[i],newprops,'+',atol)
+                        cut_pos = cutElements3AtPlane(S, p[i], n[i], newprops, '+', atol)
                     elif side in '-':
-                        cut_pos, cut_neg = cutElements3AtPlane(S,p[i],n[i],newprops,'',atol)
+                        cut_pos, cut_neg = cutElements3AtPlane(S, p[i], n[i], newprops, '', atol)
                         F_neg += cut_neg
                     S = R + cut_pos
                 F_pos += S
 
-    return _select_side(side,[ F_pos, F_neg ])
+    return _select_side(side, [ F_pos, F_neg ])
 
 
 def cutElements3AtPlane(F,p,n,newprops=None,side='',atol=0.):
@@ -1903,7 +1903,7 @@ def cutElements3AtPlane(F,p,n,newprops=None,side='',atol=0.):
     if atol is None:
         atol = 1.e-5*F.dsize()
 
-    def get_new_prop(p,ind,newp):
+    def get_new_prop(p, ind, newp):
         """Determines the value of the new props for a subset.
 
         p are the original props (possibly None)
@@ -1924,15 +1924,15 @@ def cutElements3AtPlane(F,p,n,newprops=None,side='',atol=0.):
             return newp
 
     from geomtools import intersectionSWP
-    C = [connect([F,F],nodid=ax) for ax in [[0,1],[1,2],[2,0]]]
-    errh = seterr(divide='ignore',invalid='ignore')
-    res = [intersectionSWP(Ci.coords,p,n,mode='pair',return_all=True,atol=atol) for Ci in C]
+    C = [connect([F, F], nodid=ax) for ax in [[0, 1], [1, 2], [2, 0]]]
+    errh = seterr(divide='ignore', invalid='ignore')
+    res = [intersectionSWP(Ci.coords, p, n, mode='pair', return_all=True, atol=atol) for Ci in C]
     seterr(**errh)
     t = column_stack([r[0] for r in res])
-    P = stack([r[1] for r in res],axis=1)
+    P = stack([r[1] for r in res], axis=1)
     del res
     T = (t >= 0.)*(t <= 1.)
-    d = F.coords.distanceFromPlane(p,n)
+    d = F.coords.distanceFromPlane(p, n)
     U = abs(d) < atol
     V = U.sum(axis=-1) # number of vertices with |distance| < atol
     F1_pos = F2_pos = F3_pos = F4_pos = F5_pos = F6_pos = F7_pos = F1_neg = F2_neg = F3_neg = F4_neg = F5_neg = F6_neg = F7_neg = Formex()
@@ -1940,7 +1940,7 @@ def cutElements3AtPlane(F,p,n,newprops=None,side='',atol=0.):
     w1 = where(V==0)[0]
     if w1.size > 0:
         T1 = T[w1]
-        P1 = P[w1][T1].reshape(-1,2,3)
+        P1 = P[w1][T1].reshape(-1, 2, 3)
         F1 = F[w1]
         d1 = d[w1]
         if F.prop is None:
@@ -1948,46 +1948,46 @@ def cutElements3AtPlane(F,p,n,newprops=None,side='',atol=0.):
         else:
             p1 = F.prop[w1]
         # split problem in two cases
-        w11 = where(d1[:,0]*d1[:,1]*d1[:,2] > 0.)[0] # case 1: triangle at positive side after cut
-        w12 = where(d1[:,0]*d1[:,1]*d1[:,2] < 0.)[0] # case 2: quadrilateral at positive side after cut
+        w11 = where(d1[:, 0]*d1[:, 1]*d1[:, 2] > 0.)[0] # case 1: triangle at positive side after cut
+        w12 = where(d1[:, 0]*d1[:, 1]*d1[:, 2] < 0.)[0] # case 2: quadrilateral at positive side after cut
         # case 1: triangle at positive side after cut
         if w11.size > 0:
             T11 = T1[w11]
             P11 = P1[w11]
             F11 = F1[w11]
             if side in '+':
-                v1 = where(T11[:,0]*T11[:,2] == 1,0,where(T11[:,0]*T11[:,1] == 1,1,2))
-                K1 = asarray([F11[j,v1[j]] for j in range(shape(F11)[0])]).reshape(-1,1,3)
-                E1_pos = column_stack([P11,K1])
-                F1_pos = Formex(E1_pos,get_new_prop(p1,w11,newprops[0]))
+                v1 = where(T11[:, 0]*T11[:, 2] == 1, 0, where(T11[:, 0]*T11[:, 1] == 1, 1, 2))
+                K1 = asarray([F11[j, v1[j]] for j in range(shape(F11)[0])]).reshape(-1, 1, 3)
+                E1_pos = column_stack([P11, K1])
+                F1_pos = Formex(E1_pos, get_new_prop(p1, w11, newprops[0]))
             if side in '-': #quadrilateral at negative side after cut
-                v2 = where(T11[:,0]*T11[:,2] == 1,2,where(T11[:,0]*T11[:,1] == 1,2,0))
-                v3 = where(T11[:,0]*T11[:,2] == 1,1,where(T11[:,0]*T11[:,1] == 1,0,1))
-                K2 = asarray([F11[j,v2[j]] for j in range(shape(F11)[0])]).reshape(-1,1,3)
-                K3 = asarray([F11[j,v3[j]] for j in range(shape(F11)[0])]).reshape(-1,1,3)
-                E2_neg = column_stack([P11,K2])
-                F2_neg = Formex(E2_neg,get_new_prop(p1,w11,newprops[1]))
-                E3_neg = column_stack([P11[:,0].reshape(-1,1,3),K2,K3])
-                F3_neg = Formex(E3_neg,get_new_prop(p1,w11,newprops[2]))
+                v2 = where(T11[:, 0]*T11[:, 2] == 1, 2, where(T11[:, 0]*T11[:, 1] == 1, 2, 0))
+                v3 = where(T11[:, 0]*T11[:, 2] == 1, 1, where(T11[:, 0]*T11[:, 1] == 1, 0, 1))
+                K2 = asarray([F11[j, v2[j]] for j in range(shape(F11)[0])]).reshape(-1, 1, 3)
+                K3 = asarray([F11[j, v3[j]] for j in range(shape(F11)[0])]).reshape(-1, 1, 3)
+                E2_neg = column_stack([P11, K2])
+                F2_neg = Formex(E2_neg, get_new_prop(p1, w11, newprops[1]))
+                E3_neg = column_stack([P11[:, 0].reshape(-1, 1, 3), K2, K3])
+                F3_neg = Formex(E3_neg, get_new_prop(p1, w11, newprops[2]))
         # case 2: quadrilateral at positive side after cut
         if w12.size > 0:
             T12 = T1[w12]
             P12 = P1[w12]
             F12 = F1[w12]
             if side in '+':
-                v2 = where(T12[:,0]*T12[:,2] == 1,2,where(T12[:,0]*T12[:,1] == 1,2,0))
-                v3 = where(T12[:,0]*T12[:,2] == 1,1,where(T12[:,0]*T12[:,1] == 1,0,1))
-                K2 = asarray([F12[j,v2[j]] for j in range(shape(F12)[0])]).reshape(-1,1,3)
-                K3 = asarray([F12[j,v3[j]] for j in range(shape(F12)[0])]).reshape(-1,1,3)
-                E2_pos = column_stack([P12,K2])
-                F2_pos = Formex(E2_pos,get_new_prop(p1,w12,newprops[1]))
-                E3_pos = column_stack([P12[:,0].reshape(-1,1,3),K2,K3])
-                F3_pos = Formex(E3_pos,get_new_prop(p1,w12,newprops[2]))
+                v2 = where(T12[:, 0]*T12[:, 2] == 1, 2, where(T12[:, 0]*T12[:, 1] == 1, 2, 0))
+                v3 = where(T12[:, 0]*T12[:, 2] == 1, 1, where(T12[:, 0]*T12[:, 1] == 1, 0, 1))
+                K2 = asarray([F12[j, v2[j]] for j in range(shape(F12)[0])]).reshape(-1, 1, 3)
+                K3 = asarray([F12[j, v3[j]] for j in range(shape(F12)[0])]).reshape(-1, 1, 3)
+                E2_pos = column_stack([P12, K2])
+                F2_pos = Formex(E2_pos, get_new_prop(p1, w12, newprops[1]))
+                E3_pos = column_stack([P12[:, 0].reshape(-1, 1, 3), K2, K3])
+                F3_pos = Formex(E3_pos, get_new_prop(p1, w12, newprops[2]))
             if side in '-': # triangle at negative side after cut
-                v1 = where(T12[:,0]*T12[:,2] == 1,0,where(T12[:,0]*T12[:,1] == 1,1,2))
-                K1 = asarray([F12[j,v1[j]] for j in range(shape(F12)[0])]).reshape(-1,1,3)
-                E1_neg = column_stack([P12,K1])
-                F1_neg = Formex(E1_neg,get_new_prop(p1,w12,newprops[0]))
+                v1 = where(T12[:, 0]*T12[:, 2] == 1, 0, where(T12[:, 0]*T12[:, 1] == 1, 1, 2))
+                K1 = asarray([F12[j, v1[j]] for j in range(shape(F12)[0])]).reshape(-1, 1, 3)
+                E1_neg = column_stack([P12, K1])
+                F1_neg = Formex(E1_neg, get_new_prop(p1, w12, newprops[0]))
     # One vertex with |distance| < atol
     w2 = where(V==1)[0]
     if w2.size > 0:
@@ -2009,34 +2009,34 @@ def cutElements3AtPlane(F,p,n,newprops=None,side='',atol=0.):
             U21 = U2[w21]
             K1 = F21[U21] # vertices with |distance| < atol
             n = normalize(n)
-            K1 = (K1 - n*d2[w21][U21].reshape(-1,1)).reshape(-1,1,3) # project vertices on plane (p,n)
-            K2 = F21[d2[w21]>atol].reshape(-1,2,3) # vertices with distance > atol
-            E4_pos = column_stack([K1,K2])
-            F4_pos = Formex(E4_pos,get_new_prop(p2,w21,newprops[3]))
+            K1 = (K1 - n*d2[w21][U21].reshape(-1, 1)).reshape(-1, 1, 3) # project vertices on plane (p,n)
+            K2 = F21[d2[w21]>atol].reshape(-1, 2, 3) # vertices with distance > atol
+            E4_pos = column_stack([K1, K2])
+            F4_pos = Formex(E4_pos, get_new_prop(p2, w21, newprops[3]))
         # case 2: one vertex at positive side
         if w22.size > 0:
             F22 = F2[w22]
             U22 = U2[w22]
             K1 = F22[U22] # vertices with |distance| < atol
-            K1 = (K1 - n*d2[w22][U22].reshape(-1,1)).reshape(-1,1,3) # project vertices on plane (p,n)
-            P22 = P[w2][w22][roll(U22,1,axis=-1)].reshape(-1,1,3) # intersection points
+            K1 = (K1 - n*d2[w22][U22].reshape(-1, 1)).reshape(-1, 1, 3) # project vertices on plane (p,n)
+            P22 = P[w2][w22][roll(U22, 1, axis=-1)].reshape(-1, 1, 3) # intersection points
             if side in '+':
-                K2 = F22[d2[w22]>atol].reshape(-1,1,3) # vertices with distance > atol
-                E5_pos = column_stack([P22,K1,K2])
-                F5_pos = Formex(E5_pos,get_new_prop(p2,w22,newprops[4]))
+                K2 = F22[d2[w22]>atol].reshape(-1, 1, 3) # vertices with distance > atol
+                E5_pos = column_stack([P22, K1, K2])
+                F5_pos = Formex(E5_pos, get_new_prop(p2, w22, newprops[4]))
             if side in '-':
-                K3 = F22[d2[w22]<-atol].reshape(-1,1,3) # vertices with distance < - atol
-                E5_neg = column_stack([P22,K1,K3])
-                F5_neg = Formex(E5_neg,get_new_prop(p2,w22,newprops[4]))
+                K3 = F22[d2[w22]<-atol].reshape(-1, 1, 3) # vertices with distance < - atol
+                E5_neg = column_stack([P22, K1, K3])
+                F5_neg = Formex(E5_neg, get_new_prop(p2, w22, newprops[4]))
         # case 3: no vertices at positive side
         if w23.size > 0 and side in '-':
             F23 = F2[w23]
             U23 = U2[w23]
             K1 = F23[U23] # vertices with |distance| < atol
-            K1 = (K1 - n*d2[w23][U23].reshape(-1,1)).reshape(-1,1,3) # project vertices on plane (p,n)
-            K2 = F23[d2[w23]<-atol].reshape(-1,2,3) # vertices with distance < - atol
-            E4_neg = column_stack([K1,K2])
-            F4_neg = Formex(E4_neg,get_new_prop(p2,w23,newprops[3]))
+            K1 = (K1 - n*d2[w23][U23].reshape(-1, 1)).reshape(-1, 1, 3) # project vertices on plane (p,n)
+            K2 = F23[d2[w23]<-atol].reshape(-1, 2, 3) # vertices with distance < - atol
+            E4_neg = column_stack([K1, K2])
+            F4_neg = Formex(E4_neg, get_new_prop(p2, w23, newprops[3]))
     # Two vertices with |distance| < atol
     w3 = where(V==2)[0]
     if w3.size > 0:
@@ -2052,19 +2052,19 @@ def cutElements3AtPlane(F,p,n,newprops=None,side='',atol=0.):
             F31 = F3[w31]
             U31 = U3[w31]
             K1 = F31[U31] # vertices with |distance| < atol
-            K1 = (K1 - n*d3[w31][U31].reshape(-1,1)).reshape(-1,2,3) # project vertices on plane (p,n)
-            K2 = F31[d3[w31]>atol].reshape(-1,1,3) # vertices with distance > atol
-            E6_pos = column_stack([K1,K2])
-            F6_pos = Formex(E6_pos,get_new_prop(F.prop,w31,newprops[5]))
+            K1 = (K1 - n*d3[w31][U31].reshape(-1, 1)).reshape(-1, 2, 3) # project vertices on plane (p,n)
+            K2 = F31[d3[w31]>atol].reshape(-1, 1, 3) # vertices with distance > atol
+            E6_pos = column_stack([K1, K2])
+            F6_pos = Formex(E6_pos, get_new_prop(F.prop, w31, newprops[5]))
         # case 2: no vertices at positive side
         if w32.size > 0 and side in '-':
             F32 = F3[w32]
             U32 = U3[w32]
             K1 = F32[U32] # vertices with |distance| < atol
-            K1 = (K1 - n*d3[w32][U32].reshape(-1,1)).reshape(-1,2,3) # project vertices on plane (p,n)
-            K2 = F32[d3[w32]<-atol].reshape(-1,1,3) # vertices with distance < - atol
-            E6_neg = column_stack([K1,K2])
-            F6_neg = Formex(E6_neg,get_new_prop(F.prop,w32,newprops[5]))
+            K1 = (K1 - n*d3[w32][U32].reshape(-1, 1)).reshape(-1, 2, 3) # project vertices on plane (p,n)
+            K2 = F32[d3[w32]<-atol].reshape(-1, 1, 3) # vertices with distance < - atol
+            E6_neg = column_stack([K1, K2])
+            F6_neg = Formex(E6_neg, get_new_prop(F.prop, w32, newprops[5]))
     # Three vertices with |distance| < atol
     w4 = where(V==3)[0]
     if w4.size > 0:
@@ -2073,12 +2073,12 @@ def cutElements3AtPlane(F,p,n,newprops=None,side='',atol=0.):
         U4 = U[w4]
         if side in '+':
             K1 = F4[U4] # vertices with |distance| < atol
-            K1 = (K1 - n*d4[U4].reshape(-1,1)).reshape(-1,3,3) # project vertices on plane (p,n)
+            K1 = (K1 - n*d4[U4].reshape(-1, 1)).reshape(-1, 3, 3) # project vertices on plane (p,n)
             E7_pos = K1
-            F7_pos = Formex(E7_pos,get_new_prop(F.prop,w4,newprops[6]))
+            F7_pos = Formex(E7_pos, get_new_prop(F.prop, w4, newprops[6]))
         if side in '-':
             E7_neg = K1
-            F7_neg = Formex(E7_neg,get_new_prop(F.prop,w4,newprops[6]))
+            F7_neg = Formex(E7_neg, get_new_prop(F.prop, w4, newprops[6]))
     # join all the pieces
     if side in '+':
         cut_pos = F1_pos+F2_pos+F3_pos+F4_pos+F5_pos+F6_pos+F7_pos
@@ -2109,39 +2109,39 @@ if __name__ == "__main__":
         """
         Formex.setPrintFunction(Formex.asFormexWithProp)
         A = Formex()
-        print("An empty formex",A)
-        F = Formex([[[1,0],[0,1]],[[0,1],[1,2]]])
-        print("F =",F)
-        F1 = F.translate(0,6)
+        print("An empty formex", A)
+        F = Formex([[[1, 0], [0, 1]], [[0, 1], [1, 2]]])
+        print("F =", F)
+        F1 = F.translate(0, 6)
         F1.setProp(5)
-        print("F1 =",F1)
-        F2 = F.reflect(0,2.)
-        print("F2 =",F2)
-        F3 = F.reflect(0,1.5).translate(1,2)
-        F3.setProp([1,2])
+        print("F1 =", F1)
+        F2 = F.reflect(0, 2.)
+        print("F2 =", F2)
+        F3 = F.reflect(0, 1.5).translate(1, 2)
+        F3.setProp([1, 2])
         G = F1+F3+F2+F3
-        print("F1+F3+F2+F3 =",G)
-        H = Formex.concatenate([F1,F3,F2,F3])
-        print("F1+F3+F2+F3 =",H)
-        print("elbbox:",G.elbbox())
-        print("met prop 1:",G.selectProp(1))
-        print("unique:",G.unique())
-        print("asPoints:",G.asPoints())
-        print("points:",G.points())
-        print("unique points:",G.points().unique())
-        print("diagonal size:",G.dsize())
-        F = Formex([[[0,0]],[[1,0]],[[1,1]],[[0,1]]])
-        G = connect([F,F],bias=[0,1])
+        print("F1+F3+F2+F3 =", G)
+        H = Formex.concatenate([F1, F3, F2, F3])
+        print("F1+F3+F2+F3 =", H)
+        print("elbbox:", G.elbbox())
+        print("met prop 1:", G.selectProp(1))
+        print("unique:", G.unique())
+        print("asPoints:", G.asPoints())
+        print("points:", G.points())
+        print("unique points:", G.points().unique())
+        print("diagonal size:", G.dsize())
+        F = Formex([[[0, 0]], [[1, 0]], [[1, 1]], [[0, 1]]])
+        G = connect([F, F], bias=[0, 1])
         print(G)
-        G = connect([F,F],bias=[0,1],loop=True)
+        G = connect([F, F], bias=[0, 1], loop=True)
         print(G)
         print(G[1])
         print(G.feModel())
         print(F)
         print(F.bbox())
-        print(F.center(),F.centroid())
+        print(F.center(), F.centroid())
         print(F.bsphere())
-        F = Formex([[[0,0],[1,0],[0,1]],[[1,0],[1,1],[0,1]]])
+        F = Formex([[[0, 0], [1, 0], [0, 1]], [[1, 0], [1, 1], [0, 1]]])
         print(F)
         print(F.reverse())
         Formex.setPrintFunction(Formex.asArray)

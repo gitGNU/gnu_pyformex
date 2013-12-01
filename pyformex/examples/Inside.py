@@ -29,7 +29,7 @@ This example shows how to find out if points are inside a closed surface.
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['surface','vtk']
+_topics = ['surface', 'vtk']
 _techniques = ['inside']
 
 from gui.draw import *
@@ -38,11 +38,11 @@ import timer
 
 from multi import *
 
-filename = os.path.join(getcfg('datadir'),'horse.off')
+filename = os.path.join(getcfg('datadir'), 'horse.off')
 
 
 def selectSurfaceFile(fn):
-    fn = askFilename(fn,filter=utils.fileDescription('surface'))
+    fn = askFilename(fn, filter=utils.fileDescription('surface'))
     return fn
 
 
@@ -50,24 +50,24 @@ def getData():
     """Ask input data from the user."""
     dia = Dialog(
         [ _G('Surface', [
-            _I('surface','file',choices=['file','sphere']),
-            _I('filename',filename,text='Image file',itemtype='button',func=selectSurfaceFile),
-            _I('grade',8),
-            _I('refine',0),
+            _I('surface', 'file', choices=['file', 'sphere']),
+            _I('filename', filename, text='Image file', itemtype='button', func=selectSurfaceFile),
+            _I('grade', 8),
+            _I('refine', 0),
             ]),
           _G('Points', [
-              _I('points','grid',choices=['grid','random']),
-              _I('npts',[30,30,30],itemtype='ivector'),
-              _I('scale',[1.,1.,1.],itemptype='point'),
-              _I('trl',[0.,0.,0.],itemptype='point'),
+              _I('points', 'grid', choices=['grid', 'random']),
+              _I('npts', [30, 30, 30], itemtype='ivector'),
+              _I('scale', [1., 1., 1.], itemptype='point'),
+              _I('trl', [0., 0., 0.], itemptype='point'),
               ]),
-            _I('method',choices=['gts','vtk']),
-            _I('atol',0.001),
-            _I('nproc',1,),
+            _I('method', choices=['gts', 'vtk']),
+            _I('atol', 0.001),
+            _I('nproc', 1,),
           ],
         enablers = [
-            ( 'surface','file','filename', ),
-            ( 'surface','sphere','grade', ),
+            ( 'surface', 'file', 'filename', ),
+            ( 'surface', 'sphere', 'grade', ),
             ],
         )
     if 'Inside_data' in pf.PF:
@@ -82,7 +82,7 @@ def getData():
 
 def create():
     """Create a closed surface and a set of points."""
-    nx,ny,nz = npts
+    nx, ny, nz = npts
 
     # Create surface
     if surface == 'file':
@@ -97,12 +97,12 @@ def create():
 
     if not S.isClosedManifold():
         warning("This is not a closed manifold surface. Try another.")
-        return None,None
+        return None, None
 
     # Create points
 
     if points == 'grid':
-        P = simple.regularGrid([-1.,-1.,-1.],[1., 1., 1.],[nx-1,ny-1,nz-1])
+        P = simple.regularGrid([-1., -1., -1.], [1., 1., 1.], [nx-1, ny-1, nz-1])
     else:
         P = random.rand(nx*ny*nz*3)
 
@@ -113,20 +113,20 @@ def create():
     draw(P, marksize=1, color='black')
     zoomAll()
 
-    return S,P
+    return S, P
 
 
-def inside(S,P,method,atol):
-    return S.inside(P,method=method,tol=atol,multi=False)
+def inside(S, P, method, atol):
+    return S.inside(P, method=method, tol=atol, multi=False)
 
 
-def testInside(S,P,method,nproc,atol):
+def testInside(S, P, method, nproc, atol):
     """Test which of the points P are inside surface S"""
 
-    print("Testing %s points against %s faces" % (P.nelems(),S.nelems()))
+    print("Testing %s points against %s faces" % (P.nelems(), S.nelems()))
 
-    bb = bboxIntersection(S,P)
-    drawBbox(bb,color=array(red),linewidth=2)
+    bb = bboxIntersection(S, P)
+    drawBbox(bb, color=array(red), linewidth=2)
     P = Coords(P).points()
 
     t = timer.Timer()
@@ -136,21 +136,21 @@ def testInside(S,P,method,nproc,atol):
         return
 
     if nproc == 1:
-        ind = inside(S,P,method,atol)
+        ind = inside(S, P, method, atol)
 
     else:
-        datablocks = splitar(P,nproc)
+        datablocks = splitar(P, nproc)
         datalen = [0] + [d.shape[0] for d in datablocks]
         shift = array(datalen[:-1]).cumsum()
         print("METH %s" % method)
-        tasks = [(inside,(S,d,method,atol)) for d in datablocks]
-        ind = multitask(tasks,nproc)
-        ind = concatenate([ i+s for i,s in zip(ind,shift)])
+        tasks = [(inside, (S, d, method, atol)) for d in datablocks]
+        ind = multitask(tasks, nproc)
+        ind = concatenate([ i+s for i, s in zip(ind, shift)])
 
-    print("%sinside: %s points / %s faces: found %s inside points in %s seconds" % (method,P.shape[0],S.nelems(),len(ind),t.seconds()))
+    print("%sinside: %s points / %s faces: found %s inside points in %s seconds" % (method, P.shape[0], S.nelems(), len(ind), t.seconds()))
 
     if len(ind) > 0:
-        draw(P[ind],color=green,marksize=3,ontop=True,nolight=True,bbox='last')
+        draw(P[ind], color=green, marksize=3, ontop=True, nolight=True, bbox='last')
 
 
 def run():
@@ -159,10 +159,10 @@ def run():
     smooth()
 
     if getData():
-        S,P = create()
+        S, P = create()
         if S:
             print(method)
-            testInside(S,P,method,nproc,atol)
+            testInside(S, P, method, nproc, atol)
 
 
 if __name__ == 'draw':

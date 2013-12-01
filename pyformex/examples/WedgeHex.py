@@ -38,7 +38,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
 _topics = ['mesh']
-_techniques = ['revolve','degenerate'] 
+_techniques = ['revolve', 'degenerate'] 
 
 from gui.draw import *
 import simple
@@ -51,15 +51,15 @@ def run():
     view('iso')
 
     # create a 2D xy mesh
-    nx,ny = 6,2
-    G = simple.rectangle(1,1,1.,1.).replic2(nx,ny)
+    nx, ny = 6, 2
+    G = simple.rectangle(1, 1, 1., 1.).replic2(nx, ny)
     M = G.toMesh()
     draw(M, color='red')
 
     # create a 3D axial-symmetric mesh by REVOLVING
-    n,a = 8,45.
-    R = M.revolve(n,angle=a,axis=1,around=[1.,0.,0.])
-    draw(R,color='yellow')
+    n, a = 8, 45.
+    R = M.revolve(n, angle=a, axis=1, around=[1., 0., 0.])
+    draw(R, color='yellow')
 
     # reduce the degenerate elements to WEDGE6
     clear()
@@ -68,8 +68,8 @@ def run():
     ML = [ m for m in ML if m.nelems() > 0 ]
     print("After splitting: %s meshes:" % len(ML))
     for m in ML:
-        print("  %s elements of type %s" % (m.nelems(),m.elName()))
-    ML = [ Mi.setProp(i+4) for i,Mi in enumerate(ML) ]
+        print("  %s elements of type %s" % (m.nelems(), m.elName()))
+    ML = [ Mi.setProp(i+4) for i, Mi in enumerate(ML) ]
     draw(ML)
 
 if __name__ == 'draw':

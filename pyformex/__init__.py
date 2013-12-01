@@ -42,7 +42,7 @@ def Version():
 
 def fullVersion():
     """Return a string with the pyFormex name, version and revision"""
-    return "%s (%s)" % (Version(),__revision__)
+    return "%s (%s)" % (Version(), __revision__)
 
 
 Copyright = 'Copyright (C) 2004-2013 Benedict Verhegghe'
@@ -77,7 +77,7 @@ canvas = None      # the OpenGL Drawing widget controlled by the running script
 console = None     # alternate Python console
 
 # set start date/time
-import time,datetime
+import time, datetime
 StartTime = datetime.datetime.now()
 
 # initialize some global variables used for communication between modules
@@ -125,7 +125,7 @@ class DebugLevels(object):
 
 try:
     # Python2 stores the local variable 'i'
-    delattr(DebugLevels,'i')
+    delattr(DebugLevels, 'i')
 except:
     # Python3 seems not to store it
     pass
@@ -136,7 +136,7 @@ def debugLevel(sl):
     lev = 0
     for l in sl:
         try:
-            lev |= getattr(DEBUG,l.upper())
+            lev |= getattr(DEBUG, l.upper())
         except:
             pass
     return lev
@@ -149,11 +149,11 @@ def debug(s,level=DEBUG.ALL):
             raise
         pass
     except:
-        print("DEBUG(%s): %s" % (level,str(s)))
+        print("DEBUG(%s): %s" % (level, str(s)))
 
-def debugt(s,level):
+def debugt(s, level):
     """Print a debug message with timer"""
-    debug("%s: %s" % (time.time(),s))
+    debug("%s: %s" % (time.time(), s))
 
 
 

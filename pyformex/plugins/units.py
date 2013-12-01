@@ -38,7 +38,7 @@ from pyformex import utils
 #utils.hasExternal('units')
 
 
-def convertUnits(From,To):
+def convertUnits(From, To):
     """Converts between conformable units.
 
     This function converts the units 'From' to units 'To'. The units should
@@ -48,9 +48,9 @@ def convertUnits(From,To):
     This function is merely a wrapper around the GNU 'units' command, which
     should be installed for this function to work.
     """
-    P = utils.system('units \"%s\" \"%s\"' % (From,To))
+    P = utils.system('units \"%s\" \"%s\"' % (From, To))
     if P.sta:
-        raise RuntimeError('Could not convert units from \"%s\" to \"%s\"' % (From,To))
+        raise RuntimeError('Could not convert units from \"%s\" to \"%s\"' % (From, To))
     return P.out.split()[1]
 
 
@@ -82,12 +82,12 @@ class UnitsSystem(object):
         self.units['problem'] = 'international'
 
 
-    def Add(self,un):
+    def Add(self, un):
         """Add the units from dictionary un to the units system"""
-        for key,val in un.items():
+        for key, val in un.items():
             self.units[key] = val
 
-    def Predefined(self,system):
+    def Predefined(self, system):
         """Returns the predefined units for the specified system"""
         if system == 'international':
             return self.International()
@@ -113,7 +113,7 @@ class UnitsSystem(object):
                 'temperature': 'tempC', 'degrees': 'K'}
 
 
-    def Read(self,filename):
+    def Read(self, filename):
         """Read units from file with specified name.
 
         The units file is an ascii file where each line contains a couple of
@@ -123,14 +123,14 @@ class UnitsSystem(object):
         A 'problem: system' line sets all units to the corresponding value of
         the specified units system.
         """
-        fil = open(filename,'r')
+        fil = open(filename, 'r')
         self.units = {}
         for line in fil:
             if line[0] == '#':
                 continue
             s = line.split()
             if len(s) == 2:
-                key,val = s
+                key, val = s
                 key = key.rstrip(':').lower()
                 self.units[key] = val
                 if key == 'problem':
@@ -139,7 +139,7 @@ class UnitsSystem(object):
                 print("Ignoring line : %s" % line)
         fil.close()
 
-    def Get(self,ent):
+    def Get(self, ent):
         """Get units list for the specified entitities.
 
         If ent is a single entity, returns the corresponding unit if an entry
@@ -152,7 +152,7 @@ class UnitsSystem(object):
 
         returns: ``['m', 'kg', 'float']``
         """
-        if isinstance(ent,list):
+        if isinstance(ent, list):
             return [ self.Get(e) for e in ent ]
         else:
             if ent in self.units:
@@ -163,11 +163,11 @@ class UnitsSystem(object):
 
 if __name__ == '__main__':
 
-    test = (('21cm','in'),
-            ('31e6mg','kg'),
-            ('1 lightyear','km'),
+    test = (('21cm', 'in'),
+            ('31e6mg', 'kg'),
+            ('1 lightyear', 'km'),
             )
-    for f,t in test:
-        print("%s = %s %s" % (f,convertUnits(f,t),t))
+    for f, t in test:
+        print("%s = %s %s" % (f, convertUnits(f, t), t))
 
 ### End

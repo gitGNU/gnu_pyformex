@@ -34,7 +34,7 @@ the current OpenGL framework in pyFormex.
 """
 from __future__ import print_function
 
-from matrix import Matrix4,Vector4
+from matrix import Matrix4, Vector4
 import numpy as np
 import pyformex.arraytools as at
 from coords import Coords
@@ -66,16 +66,16 @@ def gl_loadprojection(m):
     GL.glLoadMatrixf(m)
     # we reset OpenGL engine to default MODELVIEW
     GL.glMatrixMode(GL.GL_MODELVIEW)
-def gl_depth(x,y):
+def gl_depth(x, y):
     """Read the depth value of the pixel at (x,y)"""
-    return GL.glReadPixels(x,y,1,1,GL.GL_DEPTH_COMPONENT,GL.GL_FLOAT)
+    return GL.glReadPixels(x, y, 1, 1, GL.GL_DEPTH_COMPONENT, GL.GL_FLOAT)
 
 
 #
 # Normalize and denormalize should probably be moved to arraytools.
 #
 
-def normalize(x,w):
+def normalize(x, w):
     """Normalized coordinates inside a window.
 
     x is an (np,nc) array with coordinates.
@@ -85,13 +85,13 @@ def normalize(x,w):
     Returns an array with the x values linearly remapped thus that values w[0]
     become -1 and values w[0]+w[1] become +1.
     """
-    x = at.checkArray(x,(-1,-1),'f')
-    np,nc = x.shape
-    w = at.checkArray(w,(2,nc),'f','i')
+    x = at.checkArray(x, (-1, -1), 'f')
+    np, nc = x.shape
+    w = at.checkArray(w, (2, nc), 'f', 'i')
     return (x-w[0]) * 2 / w[1] - 1
 
 
-def denormalize(x,w):
+def denormalize(x, w):
     """Map normalized coordinates to fit a window
 
     x is an (np,nc) array with normalized coordinates.
@@ -101,71 +101,71 @@ def denormalize(x,w):
     coincide with the minimum window values and +1 with the minimum+width
     values.
     """
-    x = at.checkArray(x,(-1,-1),'f')
-    np,nc = x.shape
-    w = at.checkArray(w,(2,nc),'f','i')
+    x = at.checkArray(x, (-1, -1), 'f')
+    np, nc = x.shape
+    w = at.checkArray(w, (2, nc), 'f', 'i')
     return w[0] + (1+x) * w[1] / 2
 
 
-def perspective_matrix(left,right,bottom,top,near,far):
+def perspective_matrix(left, right, bottom, top, near, far):
     """Create a perspective Projection matrix.
 
     """
     m = Matrix4()
-    m[0,0] = 2 * near / (right-left)
-    m[1,1] = 2 * near / (top-bottom)
-    m[2,0] = (right+left) / (right-left)
-    m[2,1] = (top+bottom) / (top-bottom)
-    m[2,2] = - (far+near) / (far-near)
-    m[2,3] = -1.
-    m[3,2] = -2 * near * far / (far-near)
-    m[3,3] = 0.
+    m[0, 0] = 2 * near / (right-left)
+    m[1, 1] = 2 * near / (top-bottom)
+    m[2, 0] = (right+left) / (right-left)
+    m[2, 1] = (top+bottom) / (top-bottom)
+    m[2, 2] = - (far+near) / (far-near)
+    m[2, 3] = -1.
+    m[3, 2] = -2 * near * far / (far-near)
+    m[3, 3] = 0.
     return m
 
 
-def orthogonal_matrix(left,right,bottom,top,near,far):
+def orthogonal_matrix(left, right, bottom, top, near, far):
     """Create an orthogonal Projection matrix.
 
     """
     m = Matrix4()
-    m[0,0] = 2 / (right-left)
-    m[1,1] = 2 / (top-bottom)
-    m[2,2] = -2 / (far-near)
-    m[3,0] = - (right+left) / (right-left)
-    m[3,1] = - (top+bottom) / (top-bottom)
-    m[3,2] = - (far+near) / (far-near)
+    m[0, 0] = 2 / (right-left)
+    m[1, 1] = 2 / (top-bottom)
+    m[2, 2] = -2 / (far-near)
+    m[3, 0] = - (right+left) / (right-left)
+    m[3, 1] = - (top+bottom) / (top-bottom)
+    m[3, 2] = - (far+near) / (far-near)
     return m
 
 
-def pick_matrix(x,y,w,h,viewport):
+def pick_matrix(x, y, w, h, viewport):
     """Create a pick Projection matrix
 
     """
     m = Matrix4()
-    m[0,0] = viewport[2] / w;
-    m[1,1] = viewport[3] / h;
-    m[3,0] = (viewport[2] + 2.0 * (viewport[0] - x)) / w;
-    m[3,1] = (viewport[3] + 2.0 * (viewport[1] - y)) / h;
+    m[0, 0] = viewport[2] / w;
+    m[1, 1] = viewport[3] / h;
+    m[3, 0] = (viewport[2] + 2.0 * (viewport[0] - x)) / w;
+    m[3, 1] = (viewport[3] + 2.0 * (viewport[1] - y)) / h;
     return m
 
 
 
 
 built_in_views = {
-    'front': (0.,0.,0.),
-    'back': (180.,0.,0.),
-    'right': (90.,0.,0.),
-    'left': (270.,0.,0.),
-    'top': (0.,90.,0.),
-    'bottom': (0.,-90.,0.),
-    'iso0': (45.,45.,0.),
-    'iso1': (45.,135.,0.),
-    'iso2': (45.,225.,0.),
-    'iso3': (45.,315.,0.),
-    'iso4': (-45.,45.,0.),
-    'iso5': (-45.,135.,0.),
-    'iso6': (-45.,225.,0.),
-    'iso7': (-45.,315.,0.),
+    'front': (0., 0., 0.),
+    'back': (180., 0., 0.),
+    'right': (90., 0., 0.),
+    'left': (270., 0., 0.),
+    'top': (0., 90., 0.),
+    'bottom': (0., -90., 0.),
+    'iso0': (45., 45., 0.),
+    'iso1': (45., 135., 0.),
+    'iso2': (45., 225., 0.),
+    'iso3': (45., 315., 0.),
+    'iso4': (-45., 45., 0.),
+    'iso5': (-45., 135., 0.),
+    'iso6': (-45., 225., 0.),
+    'iso7': (-45., 315., 0.),
     }
 
 
@@ -185,17 +185,17 @@ class ViewAngles(dict):
     """
 
     def __init__(self,data = built_in_views):
-       dict.__init__(self,data)
+       dict.__init__(self, data)
        self['iso'] = self['iso0']
 
 
-    def get(self,name):
+    def get(self, name):
         """Get the angles for a named view.
 
         Returns a tuple of angles (longitude, latitude, twist) if the
         named view was defined, or None otherwise
         """
-        return dict.get(self,name,None)
+        return dict.get(self, name, None)
 
 
 view_angles = ViewAngles()
@@ -296,7 +296,7 @@ class Camera(object):
     #    and afterwards back to Modelview should be performed.
 
 
-    def __init__(self,focus=[0.,0.,0.],angles=[0.,0.,0.],dist=1.):
+    def __init__(self,focus=[0., 0., 0.],angles=[0., 0., 0.],dist=1.):
         """Create a new camera.
 
         The default camera is positioned at (0.,0.,1.) looking along the -z
@@ -315,8 +315,8 @@ class Camera(object):
         self.lensChanged = True
 
         self.setModelview(angles=angles)
-        self.setLens(45.,4./3.)
-        self.setClip(0.1,10.)
+        self.setLens(45., 4./3.)
+        self.setClip(0.1, 10.)
         self.area = None
         self.resetArea()
         self.keep_aspect = True
@@ -336,7 +336,7 @@ class Camera(object):
         return self._modelview
 
     @modelview.setter
-    def modelview(self,value):
+    def modelview(self, value):
         """Set the modelview matrix to the specified matrix.
 
         value should be a proper modelview matrix
@@ -357,7 +357,7 @@ class Camera(object):
 
 
     @projection.setter
-    def projection(self,value):
+    def projection(self, value):
         """Set the projection matrix to the specified matrix.
 
         value should be a proper projection matrix
@@ -381,7 +381,7 @@ class Camera(object):
         return self._focus
 
     @focus.setter
-    def focus(self,vector):
+    def focus(self, vector):
         """Set the camera reference point (the focus point).
 
         The focus is the point the camer is looking at. It is a point on
@@ -391,7 +391,7 @@ class Camera(object):
 
         """
         if not self.locked:
-            self._focus = at.checkArray(vector,(3,),'f')
+            self._focus = at.checkArray(vector, (3,), 'f')
             self.viewChanged = True
 
 
@@ -406,7 +406,7 @@ class Camera(object):
 
 
     @dist.setter
-    def dist(self,dist):
+    def dist(self, dist):
         """Set the camera distance.
 
         - `dist`: a strictly positive float value. Invalid values are
@@ -429,7 +429,7 @@ class Camera(object):
 
 
     @perspective.setter
-    def perspective(self,flag):
+    def perspective(self, flag):
         """Set the perspecive flag.
 
         - `flag`: bool, the value to set the perspective flag to.
@@ -451,10 +451,10 @@ class Camera(object):
     @property
     def upvector(self):
         """Return the camera up vector"""
-        return self.modelview.rot[:3,1].reshape((3,))
+        return self.modelview.rot[:3, 1].reshape((3,))
 
 
-    def setAngles(self,angles):
+    def setAngles(self, angles):
         """Set the rotation angles.
 
         angles is either:
@@ -474,13 +474,13 @@ class Camera(object):
     @property
     def eye(self):
         """Return the position of the camera."""
-        return self.toWorld([0.,0.,0.])
+        return self.toWorld([0., 0., 0.])
 
 
     @eye.setter
     def eye(self):
         """Set the position of the camera."""
-        return self.toWorld([0.,0.,0.])
+        return self.toWorld([0., 0., 0.])
 
 
     def lock(self,onoff=True):
@@ -505,10 +505,10 @@ class Camera(object):
   Aspect Ratio: %s
   Area: %s, %s
   Near/Far Clip: %s, %s
-""" % (self.focus,self.dist,self.rot,self.fovy,self.aspect,self.area[0],self.area[1],self.near,self.far)
+""" % (self.focus, self.dist, self.rot, self.fovy, self.aspect, self.area[0], self.area[1], self.near, self.far)
 
 
-    def dolly(self,val):
+    def dolly(self, val):
         """Move the camera eye towards/away from the scene center.
 
         This has the effect of zooming. A value > 1 zooms out,
@@ -537,13 +537,13 @@ class Camera(object):
             if axis==0 or axis ==1:
                 pos = self.eye
                 self.eye[axis] = (self.eye[axis] + val) % 360
-                self.focus = diff(pos,sphericalToCartesian(self.eye))
+                self.focus = diff(pos, sphericalToCartesian(self.eye))
             elif axis==2:
                 self.twist = (self.twist + val) % 360
             self.viewChanged = True
 
 
-    def tilt(self,val):
+    def tilt(self, val):
         """Rotate the camera up/down around its own horizontal axis.
 
         The camera is rotated around and perpendicular to the plane of the
@@ -552,19 +552,19 @@ class Camera(object):
         The value is specified in degrees.
         """
         if not self.locked:
-            self.pan(val,1)
+            self.pan(val, 1)
             self.viewChanged = True
 
 
-    def move(self,dx,dy,dz):
+    def move(self, dx, dy, dz):
         """Move the camera over translation (dx,dy,dz) in global coordinates.
 
         The focus of the camera is moved over the specified translation
         vector. This has the effect of moving the scene in opposite direction.
         """
         if not self.locked:
-            x,y,z = self.ctr
-            self.focus += [dx,dy,dz]
+            x, y, z = self.ctr
+            self.focus += [dx, dy, dz]
 
 ##    def truck(self,dx,dy,dz):
 ##        """Move the camera translation vector in local coordinates.
@@ -589,8 +589,8 @@ class Camera(object):
     def translate(self,vx,vy,vz,local=True):
         if not self.locked:
             if local:
-                vx,vy,vz = self.toWorld([vx,vy,vz,1])
-            self.move(-vx,-vy,-vz)
+                vx, vy, vz = self.toWorld([vx, vy, vz, 1])
+            self.move(-vx, -vy, -vz)
 
 
     def setLens(self,fovy=None,aspect=None):
@@ -601,7 +601,7 @@ class Camera(object):
         A parameter that is not specified is left unchanged.
         """
         if fovy:
-            self.fovy = min(abs(fovy),180)
+            self.fovy = min(abs(fovy), 180)
         if aspect:
             self.aspect = abs(aspect)
         self.lensChanged = True
@@ -613,16 +613,16 @@ class Camera(object):
         Resets the camera window area to its maximum values corresponding
         to the fovy setting, symmetrical about the camera axes.
         """
-        self.setArea(0.,0.,1.,1.,False)
+        self.setArea(0., 0., 1., 1., False)
 
 
     def setArea(self,hmin,vmin,hmax,vmax,relative=True,focus=False,clip=True):
         """Set the viewable area of the camera."""
-        area = np.array([hmin,vmin,hmax,vmax])
+        area = np.array([hmin, vmin, hmax, vmax])
         if clip:
-            area = area.clip(0.,1.)
+            area = area.clip(0., 1.)
         if area[0] < area[2] and area[1] < area[3]:
-            area = area.reshape(2,2)
+            area = area.reshape(2, 2)
             mean = (area[1]+area[0]) * 0.5
             diff = (area[1]-area[0]) * 0.5
 
@@ -670,7 +670,7 @@ class Camera(object):
             self.lensChanged = True
 
 
-    def transArea(self,dx,dy):
+    def transArea(self, dx, dy):
         """Pan by moving the vamera area.
 
         dx and dy are relative movements in fractions of the
@@ -678,16 +678,16 @@ class Camera(object):
         """
         #print("TRANSAREA %s,%s" % (dx,dy))
         area = self.area
-        diff = (area[1]-area[0]) * np.array([dx,dy])
+        diff = (area[1]-area[0]) * np.array([dx, dy])
         area += diff
         self.area = area
         self.lensChanged = True
 
 
-    def setClip(self,near,far):
+    def setClip(self, near, far):
         """Set the near and far clipping planes"""
         if near > 0 and near < far:
-            self.near,self.far = near,far
+            self.near, self.far = near, far
             self.lensChanged = True
         else:
             print("Error: Invalid Near/Far clipping values")
@@ -753,8 +753,8 @@ class Camera(object):
         else:
             fv *= self.dist
         fh = fv * self.aspect
-        x0,x1 = 2*self.area - 1.0
-        frustum = (fh*x0[0],fh*x1[0],fv*x0[1],fv*x1[1],self.near,self.far)
+        x0, x1 = 2*self.area - 1.0
+        frustum = (fh*x0[0], fh*x1[0], fv*x0[1], fv*x1[1], self.near, self.far)
         if self._perspective:
             func = perspective_matrix
         else:
@@ -798,10 +798,10 @@ class Camera(object):
         """
         if viewport is None:
             viewport = self.viewport
-        return pick_matrix(rect[0],rect[1],rect[2],rect[3],viewport)
+        return pick_matrix(rect[0], rect[1], rect[2], rect[3], viewport)
 
 
-    def eyeToClip(self,x):
+    def eyeToClip(self, x):
         """Transform a vertex from eye to clip coordinates.
 
         This transforms the vertex using the current Projection matrix.
@@ -813,7 +813,7 @@ class Camera(object):
         return self.projection.transform(x)
 
 
-    def clipToEye(self,x):
+    def clipToEye(self, x):
         """Transform a vertex from clip to eye coordinates.
 
         This transforms the vertex using the inverse of the
@@ -845,34 +845,34 @@ class Camera(object):
             if focus is None:
                 focus = self.focus
             else:
-                focus = at.checkArray(focus,(3,),'f')
+                focus = at.checkArray(focus, (3,), 'f')
             if eye is None:
                 eye = self.eye
             else:
-                eye = at.checkArray(eye,(3,),'f')
+                eye = at.checkArray(eye, (3,), 'f')
             if up is None:
                 up = self.up
             else:
-                up = at.normalize(at.checkArray(up,(3,),'f'))
+                up = at.normalize(at.checkArray(up, (3,), 'f'))
             vector = eye-focus
             self.focus = focus
             self.dist = at.length(vector)
             axis2 = at.normalize(vector)
-            axis0 = at.normalize(np.cross(up,axis2))
-            axis1 = at.normalize(np.cross(axis2,axis0))
+            axis0 = at.normalize(np.cross(up, axis2))
+            axis1 = at.normalize(np.cross(axis2, axis0))
             m = Matrix4()
-            m.rotate(np.column_stack([axis0,axis1,axis2]))
+            m.rotate(np.column_stack([axis0, axis1, axis2]))
             m.translate(-eye)
             self.setModelview(m)
 
 
-    def rotate(self,val,vx,vy,vz):
+    def rotate(self, val, vx, vy, vz):
         """Rotate the camera around current camera axes."""
         if not self.locked:
             rot = self._modelview.rot
             m = Matrix4()
-            m.translate([0,0,-self.dist])
-            m.rotate(val % 360, [vx,vy,vz])
+            m.translate([0, 0, -self.dist])
+            m.rotate(val % 360, [vx, vy, vz])
             m.rotate(rot)
             m.translate(-self.focus)
             self.setModelview(m)
@@ -910,11 +910,11 @@ class Camera(object):
 
         if m is None and (self.viewChanged or angles is not None):
             m = Matrix4()
-            m.translate([0,0,-self.dist])
+            m.translate([0, 0, -self.dist])
             if angles is None:
                 m.rotate(self._modelview.rot)
             else:
-                long,lat,twist = angles
+                long, lat, twist = angles
                 m.rotate(-twist % 360, [0.0, 0.0, 1.0])
                 m.rotate(lat % 360, [1.0, 0.0, 0.0])
                 m.rotate(-long % 360, [0.0, 1.0, 0.0])
@@ -941,7 +941,7 @@ class Camera(object):
         gl_loadmodelview(self.modelview.gl())
 
 
-    def toEye(self,x):
+    def toEye(self, x):
         """Transform a vertex from world to eye coordinates.
 
         This transforms the vertex using the current Modelview matrix.
@@ -950,11 +950,11 @@ class Camera(object):
         coordinates with the Modelview matrix, but is done here
         in an optimized way.
         """
-        x = at.checkArray(x,(3,),'f')
-        return np.dot(x,self.modelview[:3,:3]) + self.modelview[3,:3]
+        x = at.checkArray(x, (3,), 'f')
+        return np.dot(x, self.modelview[:3, :3]) + self.modelview[3, :3]
 
 
-    def toWorld(self,x):
+    def toWorld(self, x):
         """Transform a vertex from eye to world coordinates.
 
         This transforms the vertex using the inverse of the
@@ -964,28 +964,28 @@ class Camera(object):
         coordinates with the inverse Modelview matrix, but is done
         here in an optimized way.
         """
-        x = at.checkArray(x,(3,),'f') + [0.,0.,self.dist]
-        return np.dot(x,self.rot.T) + self.focus
+        x = at.checkArray(x, (3,), 'f') + [0., 0., self.dist]
+        return np.dot(x, self.rot.T) + self.focus
 
 
 #################################################################
 ##  Transform vertices with modelview and projection matrix  ##
 
 
-    def toWindow(self,x):
+    def toWindow(self, x):
         """Convert normalized device coordinates to window coordinates"""
         # This is only correct when glDepthRange(0.0, 1.0)
         # We should not change the depth range
         vp = gl_viewport()
-        return denormalize(x[:,:3],[[vp[0],vp[1],0],[vp[2],vp[3],1]])
+        return denormalize(x[:, :3], [[vp[0], vp[1], 0], [vp[2], vp[3], 1]])
 
 
-    def fromWindow(self,x):
+    def fromWindow(self, x):
         """Convert window coordinates to  normalized device coordinates"""
         # This is only correct when glDepthRange(0.0, 1.0)
         # We should not change the depth range
         vp = gl_viewport()
-        return normalize(x[:,:3],[[vp[0],vp[1],0],[vp[2],vp[3],1]])
+        return normalize(x[:, :3], [[vp[0], vp[1], 0], [vp[2], vp[3], 1]])
 
 
     def toNDC(self,x,rect=None):
@@ -1009,23 +1009,23 @@ class Camera(object):
         if rect is not None:
             m = m*self.pickMatrix(rect)
         x = Coords4(x)
-        x = Coords4(np.dot(x,m))
+        x = Coords4(np.dot(x, m))
         if self._perspective:
             x = x.toCoords() # This performs the perspective divide
         else:
             # Orthogonal projection
             # This is not tested yet!!!
-            x = Coords(x[:,:3])
+            x = Coords(x[:, :3])
         return x
 
 
-    def project(self,x):
+    def project(self, x):
         """Map the world coordinates (x,y,z) to window coordinates."""
         m = self.modelview*self.projection
         # Modelview transform
         e = Vector4(x)*self.modelview
         #print("EYE COORDINATES:",e)
-        w = -e[:,2]
+        w = -e[:, 2]
         # Projection
         x = e*self.projection
         #print("CLIP COORDINATES:",x)
@@ -1039,7 +1039,7 @@ class Camera(object):
         return self.toWindow(x)
 
 
-    def unProject(self,x):
+    def unProject(self, x):
         """Map the window coordinates x to object coordinates."""
         m = self.modelview*self.projection
         #print("M*P",m)
@@ -1048,7 +1048,7 @@ class Camera(object):
         x = self.fromWindow(x)
         #print("NORMALIZED DEVICE COORDINATES:",x)
         x = Vector4(x)*m1
-        return x[:,:3] / x[:,3]
+        return x[:, :3] / x[:, 3]
 
 
     def inside(self,x,rect=None,return_depth=False):
@@ -1063,13 +1063,13 @@ class Camera(object):
         Returns a boolean array with value 1 (True) for the points that
         are projected inside the rectangular are of the camera.
         """
-        ndc = self.toNDC(x,rect)
+        ndc = self.toNDC(x, rect)
         if return_depth:
-            depth = ndc[:,2].min(axis=-1)
-        ndc = abs(ndc[:,:2])
+            depth = ndc[:, 2].min(axis=-1)
+        ndc = abs(ndc[:, :2])
         inside = ( ndc >= -1 ).all(axis=-1) * ( ndc <= 1 ).all(axis=-1)
         if return_depth:
-            return inside,depth
+            return inside, depth
         else:
             return inside
 

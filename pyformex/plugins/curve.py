@@ -34,7 +34,7 @@ from __future__ import print_function
 import pyformex as pf
 from coords import *
 from geometry import Geometry
-from formex import Formex,connect
+from formex import Formex, connect
 from mesh import Mesh
 import geomtools as gt
 import utils
@@ -99,30 +99,30 @@ class Curve(Geometry):
             #return self.coords[[0,0]]
             return None
         else:
-            return self.coords[[0,-1]]
+            return self.coords[[0, -1]]
 
-    def sub_points(self,t,j):
+    def sub_points(self, t, j):
         """Return the points at values t in part j
 
         t can be an array of parameter values, j is a single segment number.
         """
         raise NotImplementedError
 
-    def sub_points_2(self,t,j):
+    def sub_points_2(self, t, j):
         """Return the points at values,parts given by zip(t,j)
 
         t and j can both be arrays, but should have the same length.
         """
         raise NotImplementedError
 
-    def sub_directions(self,t,j):
+    def sub_directions(self, t, j):
         """Return the directions at values t in part j
 
         t can be an array of parameter values, j is a single segment number.
         """
         raise NotImplementedError
 
-    def sub_directions_2(self,t,j):
+    def sub_directions_2(self, t, j):
         """Return the directions at values,parts given by zip(t,j)
 
         t and j can both be arrays, but should have the same length.
@@ -133,7 +133,7 @@ class Curve(Geometry):
         raise NotImplementedError
 
 
-    def localParam(self,t):
+    def localParam(self, t):
         """Split global parameter value in part number and local parameter
 
         Parameter values are floating point values. Their integer part
@@ -145,10 +145,10 @@ class Curve(Geometry):
         """
         # Do not use asarray here! We change it, so need a copy!
         t = array(t).ravel()
-        ti = floor(t).clip(min=0,max=self.nparts-1)
+        ti = floor(t).clip(min=0, max=self.nparts-1)
         t -= ti
         i = ti.astype(Int)
-        return i,t
+        return i, t
 
 
     def pointsAt(self,t,normalized=False,return_position=False):
@@ -169,30 +169,30 @@ class Curve(Geometry):
         t = array(t)
         if normalized:
             t *= float(self.nparts)
-        i,t = self.localParam(t)
+        i, t = self.localParam(t)
         try:
-            allX = self.sub_points_2(t,i)
+            allX = self.sub_points_2(t, i)
         except:
-            allX = concatenate([ self.sub_points(tj,ij) for tj,ij in zip(t,i)])
+            allX = concatenate([ self.sub_points(tj, ij) for tj, ij in zip(t, i)])
         X = Coords(allX)
         if return_position:
-            return X,i,t
+            return X, i, t
         else:
             return X
 
 
-    def directionsAt(self,t):
+    def directionsAt(self, t):
         """Return the directions at parameter values t.
 
         Parameter values are floating point values. Their integer part
         is interpreted as the curve segment number, and the decimal part
         goes from 0 to 1 over the segment.
         """
-        i,t = self.localParam(t)
+        i, t = self.localParam(t)
         try:
-            allX = self.sub_directions_2(t,i)
+            allX = self.sub_directions_2(t, i)
         except:
-            allX = concatenate([ self.sub_directions(tj,ij) for tj,ij in zip(t,i)])
+            allX = concatenate([ self.sub_directions(tj, ij) for tj, ij in zip(t, i)])
         return Coords(allX)
 
 
@@ -224,15 +224,15 @@ class Curve(Geometry):
             u = array(div).ravel()
             div = len(u)
 
-        parts = [ self.sub_points(u,j) for j in range(self.nparts) ]
+        parts = [ self.sub_points(u, j) for j in range(self.nparts) ]
 
         if not self.closed:
-            nstart,nend = round_(asarray(extend)*div,0).astype(Int)
+            nstart, nend = round_(asarray(extend)*div, 0).astype(Int)
 
             # Extend at start
             if nstart > 0:
                 u = arange(-nstart, 0) * extend[0] / nstart
-                parts.insert(0,self.sub_points(u,0))
+                parts.insert(0, self.sub_points(u, 0))
 
             # Extend at end
             if nend > 0:
@@ -240,9 +240,9 @@ class Curve(Geometry):
             else:
                 # Always extend at end to include last point
                 u = array([1.])
-            parts.append(self.sub_points(u,self.nparts-1))
+            parts.append(self.sub_points(u, self.nparts-1))
 
-        X = concatenate(parts,axis=0)
+        X = concatenate(parts, axis=0)
         return Coords(X)
 
 
@@ -257,12 +257,12 @@ class Curve(Geometry):
         Returns a list of open curves of the same type as the original.
         """
         if split is None:
-            split = range(1,self.nparts)
+            split = range(1, self.nparts)
         elif isinstance(split, int):
             split = [split]
         start = [0] + split
         end = split + [self.nparts]
-        return [ self.parts(j,k) for j,k in zip(start,end) ]
+        return [ self.parts(j, k) for j, k in zip(start, end) ]
 
 
     def length(self):
@@ -295,13 +295,13 @@ class Curve(Geometry):
         """
         if ndiv is None:
             ndiv = self.N_approx
-        PL = PolyLine(self.subPoints(ndiv),closed=self.closed)
+        PL = PolyLine(self.subPoints(ndiv), closed=self.closed)
         if ntot is not None:
             at = PL.atLength(ntot)
             if self.closed:
                 at = at[:-1]
             X = PL.pointsAt(at)
-            PL = PolyLine(X,closed=PL.closed)
+            PL = PolyLine(X, closed=PL.closed)
         return PL.setProp(self.prop)
 
 
@@ -346,10 +346,10 @@ class Curve(Geometry):
         - `N`: normalized normal vector to the curve at `npts` points
         - `B`: normalized binormal vector to the curve at `npts` points
         """
-        PL = self.approx(ndiv,ntot)
+        PL = self.approx(ndiv, ntot)
         X = PL.coords
-        T,N,B = PL._movingFrenet(upvector=upvector,avgdir=avgdir,compensate=compensate)
-        return X,T,N,B
+        T, N, B = PL._movingFrenet(upvector=upvector, avgdir=avgdir, compensate=compensate)
+        return X, T, N, B
 
 
     def approximate(self,nseg,equidistant=True,npre=100):
@@ -369,7 +369,7 @@ class Curve(Geometry):
            in future.
         """
         if equidistant:
-            S = self.approximate(npre,equidistant=False)
+            S = self.approximate(npre, equidistant=False)
             at = S.atLength(nseg)
         else:
             S = self
@@ -377,7 +377,7 @@ class Curve(Geometry):
         if self.closed:
             at = at[:-1]
         X = S.pointsAt(at)
-        PL = PolyLine(X,closed=S.closed)
+        PL = PolyLine(X, closed=S.closed)
         return PL.setProp(self.prop)
 
 
@@ -436,11 +436,11 @@ class PolyLine(Curve):
 
         if control is not None:
             coords = control
-        if isinstance(coords,Formex):
+        if isinstance(coords, Formex):
             if coords.nplex() == 1:
                 coords = coords.points()
             elif coords.nplex() == 2:
-                coords = Coords.concatenate([coords.coords[:,0,:],coords.coords[-1,1,:]])
+                coords = Coords.concatenate([coords.coords[:, 0,:], coords.coords[-1, 1,:]])
             else:
                 raise ValueError("Only Formices with plexitude 1 or 2 can be converted to PolyLine")
 
@@ -493,7 +493,7 @@ class PolyLine(Curve):
     def toFormex(self):
         """Return the polyline as a Formex."""
         x = self.coords
-        F = connect([x,x],bias=[0,1],loop=self.closed)
+        F = connect([x, x], bias=[0, 1], loop=self.closed)
         return F.setProp(self.prop)
 
 
@@ -503,16 +503,16 @@ class PolyLine(Curve):
         The returned Mesh is equivalent with the PolyLine.
         """
         e1 = arange(self.ncoords())
-        elems = column_stack([e1,roll(e1,-1)])
+        elems = column_stack([e1, roll(e1, -1)])
         if not self.closed:
             elems = elems[:-1]
-        return Mesh(self.coords,elems,eltype='line2').setProp(self.prop)
+        return Mesh(self.coords, elems, eltype='line2').setProp(self.prop)
 
 
-    def sub_points(self,t,j):
+    def sub_points(self, t, j):
         """Return the points at values t in part j"""
         j = int(j)
-        t = asarray(t).reshape(-1,1)
+        t = asarray(t).reshape(-1, 1)
         n = self.coords.shape[0]
         X0 = self.coords[j % n]
         X1 = self.coords[(j+1) % n]
@@ -520,10 +520,10 @@ class PolyLine(Curve):
         return X
 
 
-    def sub_points_2(self,t,j):
+    def sub_points_2(self, t, j):
         """Return the points at value,part pairs (t,j)"""
         j = int(j)
-        t = asarray(t).reshape(-1,1)
+        t = asarray(t).reshape(-1, 1)
         n = self.coords.shape[0]
         X0 = self.coords[j % n]
         X1 = self.coords[(j+1) % n]
@@ -531,11 +531,11 @@ class PolyLine(Curve):
         return X
 
 
-    def sub_directions(self,t,j):
+    def sub_directions(self, t, j):
         """Return the unit direction vectors at values t in part j."""
         j = int(j)
-        t = asarray(t).reshape(-1,1)
-        return self.directions()[j].reshape(len(t),3)
+        t = asarray(t).reshape(-1, 1)
+        return self.directions()[j].reshape(len(t), 3)
 
 
     def vectors(self):
@@ -548,7 +548,7 @@ class PolyLine(Curve):
         x = self.coords
         if self.closed:
             x1 = x
-            x2 = roll(x,-1,axis=0) # NEXT POINT
+            x2 = roll(x, -1, axis=0) # NEXT POINT
         else:
             x1 = x[:-1]
             x2 = x[1:]
@@ -575,9 +575,9 @@ class PolyLine(Curve):
         w = where(isnan(d).any(axis=-1))[0]
         d[w] = d[w-1]
         if not self.closed:
-            d = concatenate([d,d[-1:]],axis=0)
+            d = concatenate([d, d[-1:]], axis=0)
         if return_doubles:
-            return d,w
+            return d, w
         else:
             return d
 
@@ -596,16 +596,16 @@ class PolyLine(Curve):
         are set equal to those of the segment ending in the first and the
         segment starting from the last.
         """
-        d,w = self.directions(True)
+        d, w = self.directions(True)
         d1 = d
-        d2 = roll(d,1,axis=0) # PREVIOUS DIRECTION
-        w = concatenate([w,w+1])
+        d2 = roll(d, 1, axis=0) # PREVIOUS DIRECTION
+        w = concatenate([w, w+1])
         if not self.closed:
-            w = concatenate([[0,self.npoints()-1],w])
-        w = setdiff1d(arange(self.npoints()),w)
+            w = concatenate([[0, self.npoints()-1], w])
+        w = setdiff1d(arange(self.npoints()), w)
         d[w] = 0.5 * (d1[w]+d2[w])
         if return_doubles:
-            return d,w
+            return d, w
         else:
             return d
 
@@ -627,7 +627,7 @@ class PolyLine(Curve):
            in future.
         """
         if equidistant:
-            S = self.approximate(npre,equidistant=False)
+            S = self.approximate(npre, equidistant=False)
             at = S.atLength(nseg)
         else:
             S = self
@@ -636,7 +636,7 @@ class PolyLine(Curve):
             at = at[:-1]
         print("AT VALUES: %s" % at)
         X = S.pointsAt(at)
-        PL = PolyLine(X,closed=S.closed)
+        PL = PolyLine(X, closed=S.closed)
         return PL.setProp(self.prop)
 
 
@@ -647,24 +647,24 @@ class PolyLine(Curve):
         the curve where no sharp angle occur with cosangle < 0.5
         """
         v = self.vectors()
-        print("VECTORS",v)
-        cosa = vectorPairCosAngle(roll(v,1,axis=0),v)
-        print("COSA",cosa)
+        print("VECTORS", v)
+        cosa = vectorPairCosAngle(roll(v, 1, axis=0), v)
+        print("COSA", cosa)
         L = self.lengths()
         if end < 0:
             L = L[::-1]
-            cosa = roll(cosa,-1)[::-1]
-        print(len(L),L)
-        for i in range(1,len(L)):
+            cosa = roll(cosa, -1)[::-1]
+        print(len(L), L)
+        for i in range(1, len(L)):
             if cosa[i] <= cosangle:
                 break
         print("HOLDING AT i=%s" % i)
         L = L[:i]
-        print(len(L),L)
+        print(len(L), L)
         L = L[::-1].cumsum()
         comp = L / L[-1]
         comp = comp[::-1]
-        print("COMP",comp)
+        print("COMP", comp)
         return comp
 
 
@@ -711,8 +711,8 @@ class PolyLine(Curve):
         - `N`: normalized normal vector to the curve at `npts` points
         - `B`: normalized binormal vector to the curve at `npts` points
         """
-        if isinstance(avgdir,ndarray):
-            T = checkArray(avgdir,(self.ncoords(),3),'f')
+        if isinstance(avgdir, ndarray):
+            T = checkArray(avgdir, (self.ncoords(), 3), 'f')
         elif avgdir:
             T = self.avgDirections()
         else:
@@ -722,7 +722,7 @@ class PolyLine(Curve):
             upvector = gt.smallestDirection(self.coords[:10])
 
         B[-1] = normalize(upvector)
-        for i,t in enumerate(T):
+        for i, t in enumerate(T):
             B[i] = cross(t, cross(B[i-1], t))
             if isnan(B[i]).any():
                 # if we can not compute binormal, keep previous
@@ -735,23 +735,23 @@ class PolyLine(Curve):
             import arraytools as at
             from gui.draw import drawVectors
             print(len(T))
-            print(T[0],B[0])
-            print(T[-1],B[-1])
+            print(T[0], B[0])
+            print(T[-1], B[-1])
             P0 = self.coords[0]
             if avgdir:
                 T0 = T[0]
             else:
                 T0 = T[-1]
             B0 = cross(T0, cross(B[-1], T0))
-            N0 = cross(B0,T0)
-            drawVectors(P0,T0,size=2.,nolight=True,color='magenta')
-            drawVectors(P0,N0,size=2.,nolight=True,color='yellow')
-            drawVectors(P0,B0,size=2.,nolight=True,color='cyan')
-            print("DIFF",B[0],B0)
-            if length(cross(B[0],B0)) < 1.e-5:
+            N0 = cross(B0, T0)
+            drawVectors(P0, T0, size=2., nolight=True, color='magenta')
+            drawVectors(P0, N0, size=2., nolight=True, color='yellow')
+            drawVectors(P0, B0, size=2., nolight=True, color='cyan')
+            print("DIFF", B[0], B0)
+            if length(cross(B[0], B0)) < 1.e-5:
                 print("NO NEED FOR COMPENSATION")
             else:
-                PM,BM = gt.intersectionLinesPWP(P0,T[0],P0,T0,mode='pair')
+                PM, BM = gt.intersectionLinesPWP(P0, T[0], P0, T0, mode='pair')
                 PM = PM[0]
                 MB = BM[0]
                 if length(BM) < 1.e-5:
@@ -760,37 +760,37 @@ class PolyLine(Curve):
 
                 print("COMPENSATED B0: %s" % BM)
                 print("Compensate at start")
-                print(BM,B[0])
-                a = at.vectorPairAngle(B[0],BM) / DEG
+                print(BM, B[0])
+                a = at.vectorPairAngle(B[0], BM) / DEG
                 print("ANGLE to compensate: %s" % a)
-                sa = sign(at.projection(cross(B[0],BM),T[0]))
+                sa = sign(at.projection(cross(B[0], BM), T[0]))
                 print("Sign of angle: %s" % sa)
                 a *= sa
                 torsion = a * self._compensate(0)
-                print("COMPENSATION ANGLE",torsion)
+                print("COMPENSATION ANGLE", torsion)
                 for i in range(len(torsion)):
-                    B[i] = Coords(B[i]).rotate(torsion[i],axis=T[i])
+                    B[i] = Coords(B[i]).rotate(torsion[i], axis=T[i])
 
                 print("Compensate at end")
-                print(BM,B0)
-                a = at.vectorPairAngle(B0,BM) / DEG
+                print(BM, B0)
+                a = at.vectorPairAngle(B0, BM) / DEG
                 print("ANGLE to compensate: %s" % a)
-                sa = sign(at.projection(cross(BM,B0),T[-1]))
+                sa = sign(at.projection(cross(BM, B0), T[-1]))
                 print("Sign of angle: %s" % sa)
                 a *= sa
                 torsion = a * self._compensate(-1)
-                print("COMPENSATION ANGLE",torsion)
+                print("COMPENSATION ANGLE", torsion)
                 for i in range(len(torsion)):
-                    B[-i] = Coords(B[-i]).rotate(torsion[i],axis=T[-i])
+                    B[-i] = Coords(B[-i]).rotate(torsion[i], axis=T[-i])
 
-        N = cross(B,T)
-        return T,N,B
+        N = cross(B, T)
+        return T, N, B
 
 
-    def roll(self,n):
+    def roll(self, n):
         """Roll the points of a closed PolyLine."""
         if self.closed:
-            return PolyLine(roll(self.coords,n,axis=0),closed=True)
+            return PolyLine(roll(self.coords, n, axis=0), closed=True)
         else:
             raise ValueError("""Can only roll a closed PolyLine""")
 
@@ -829,17 +829,17 @@ class PolyLine(Curve):
 
     def reverse(self):
         """Return the same curve with the parameter direction reversed."""
-        return PolyLine(reverseAxis(self.coords,axis=0),closed=self.closed)
+        return PolyLine(reverseAxis(self.coords, axis=0), closed=self.closed)
 
 
-    def parts(self,j,k):
+    def parts(self, j, k):
         """Return a PolyLine containing only segments j to k (k not included).
 
         The resulting PolyLine is always open.
         """
         start = j
         end = k + 1
-        return PolyLine(control=self.coords[start:end],closed=False)
+        return PolyLine(control=self.coords[start:end], closed=False)
 
 
     def cutWithPlane(self,p,n,side=''):
@@ -857,14 +857,14 @@ class PolyLine(Curve):
         n = asarray(n)
         p = asarray(p)
 
-        d = self.coords.distanceFromPlane(p,n)
+        d = self.coords.distanceFromPlane(p, n)
         t = d > 0.0
-        cut = t != roll(t,-1)
+        cut = t != roll(t, -1)
         if not self.closed:
             cut = cut[:-1]
         w = where(cut)[0]
 
-        res = [[],[]]
+        res = [[], []]
         i = 0
         if t[0]:
             sid = 0
@@ -874,21 +874,21 @@ class PolyLine(Curve):
 
         for j in w:
             #print "%s -- %s" % (i,j)
-            P = gt.intersectionPointsSWP(self.coords[j:j+2],p,n,mode='pair')[0]
+            P = gt.intersectionPointsSWP(self.coords[j:j+2], p, n, mode='pair')[0]
             #print "%s -- %s cuts at %s" % (j,j+1,P)
-            x = Coords.concatenate([Q,self.coords[i:j+1],P])
+            x = Coords.concatenate([Q, self.coords[i:j+1], P])
             #print "%s + %s + %s = %s" % (Q.shape[0],j-i,P.shape[0],x.shape[0])
             res[sid].append(PolyLine(x))
             sid = 1-sid
             i = j+1
             Q = P
 
-        x = Coords.concatenate([Q,self.coords[i:]])
+        x = Coords.concatenate([Q, self.coords[i:]])
         #print "%s + %s = %s" % (Q.shape[0],j-i,x.shape[0])
         res[sid].append(PolyLine(x))
         if self.closed:
             if len(res[sid]) > 1:
-                x = Coords.concatenate([res[sid][-1].coords,res[sid][0].coords])
+                x = Coords.concatenate([res[sid][-1].coords, res[sid][0].coords])
                 res[sid] = res[sid][1:-1]
                 res[sid].append(PolyLine(x))
             #print [len(r) for r in res]
@@ -896,7 +896,7 @@ class PolyLine(Curve):
                 res[sid][0].closed = True
 
         # Do not use side in '+-', because '' in '+-' returns True
-        if side in ['+','-']:
+        if side in ['+', '-']:
             return res['+-'.index(side)]
         else:
             return res
@@ -912,14 +912,14 @@ class PolyLine(Curve):
             raise RuntimeError("Closed PolyLines cannot be concatenated.")
         X = PL.coords
         if fuse:
-            x = Coords.concatenate([self.coords[-1],X[0]])
+            x = Coords.concatenate([self.coords[-1], X[0]])
             #print("NR points:%s" % len(x))
             #print(x)
-            x,e = x.fuse(ppb=3) # !!! YES ! > 2 !!!
+            x, e = x.fuse(ppb=3) # !!! YES ! > 2 !!!
             #print(x,e)
             if e[0] == e[1]:
                 X = X[1:]
-        return PolyLine(Coords.concatenate([self.coords,X]))
+        return PolyLine(Coords.concatenate([self.coords, X]))
 
 
     def insertPointsAt(self,t,normalized=False,return_indices=False):
@@ -934,7 +934,7 @@ class PolyLine(Curve):
         If return_indices is True, also returns the indices of the
         inserted points in the new PolyLine.
         """
-        X,i,t = self.pointsAt(t,normalized=normalized,return_position=True)
+        X, i, t = self.pointsAt(t, normalized=normalized, return_position=True)
         #print(X.shape,i.shape,t.shape)
         #print(X,i,t)
         Xc = self.coords.copy()
@@ -943,17 +943,17 @@ class PolyLine(Curve):
         # Loop in descending order to avoid recomputing parameters
         for j in argsort(i)[::-1]:
             #print(X[j].shape)
-            Xi,ii = X[j].reshape(-1,3),i[j]+1
+            Xi, ii = X[j].reshape(-1, 3), i[j]+1
             #print(Xi.shape)
             #print("Insert point in segment %s" % (ii-1))
-            Xc = Coords.concatenate([Xc[:ii],Xi,Xc[ii:]])
+            Xc = Coords.concatenate([Xc[:ii], Xi, Xc[ii:]])
             if return_indices:
-                ind = concatenate([ind[:ii],[j],ind[ii:]])
-        PL = PolyLine(Xc,closed=self.closed)
+                ind = concatenate([ind[:ii], [j], ind[ii:]])
+        PL = PolyLine(Xc, closed=self.closed)
         if return_indices:
             ind = ind.tolist()
             ind = [ ind.index(i) for i in arange(len(i)) ]
-            return PL,ind
+            return PL, ind
         else:
             return PL
 
@@ -967,7 +967,7 @@ class PolyLine(Curve):
 
         Returns a list of open Polylines.
         """
-        PL,t = self.insertPointsAt(t,normalized=normalized,return_indices=True)
+        PL, t = self.insertPointsAt(t, normalized=normalized, return_indices=True)
         return PL.split(t)
 
 
@@ -995,9 +995,9 @@ class PolyLine(Curve):
         if not self.closed:
             q = q[:-1]
         m = self.vectors()
-        t = gt.intersectionTimesLWP(q,m,p,n)
-        t = t.transpose((1,0))
-        x = q[newaxis,:] + t[:,:,newaxis] * m[newaxis,:]
+        t = gt.intersectionTimesLWP(q, m, p, n)
+        t = t.transpose((1, 0))
+        x = q[newaxis,:] + t[:,:, newaxis] * m[newaxis,:]
         inside = (t >= 0.) * (t <= 1.)
         pid = where(inside)[0]
         p = p[pid]
@@ -1007,9 +1007,9 @@ class PolyLine(Curve):
         OKdist = array([ dist[pid == i].min() for i in OKpid ])
         if return_points:
             minid = array([ dist[pid == i].argmin() for i in OKpid ])
-            OKpoints = array([ x[pid == i][j] for i,j in zip(OKpid,minid) ]).reshape(-1,3)
-            return OKpid,OKdist,OKpoints
-        return OKpid,OKdist
+            OKpoints = array([ x[pid == i][j] for i, j in zip(OKpid, minid) ]).reshape(-1, 3)
+            return OKpid, OKdist, OKpoints
+        return OKpid, OKdist
 
     # BV: same remark: what is this distance?
 
@@ -1028,9 +1028,9 @@ class PolyLine(Curve):
         t = PL.atLength(ntot)
         p = PL.pointsAt(t)
         n = PL.directionsAt(t)
-        res = self.distanceOfPoints(p,n,return_points)
+        res = self.distanceOfPoints(p, n, return_points)
         if return_points:
-            return res[1],p[res[0]],res[2]
+            return res[1], p[res[0]], res[2]
         return res[1]
 
 
@@ -1046,9 +1046,9 @@ class Line(PolyLine):
 
     """
 
-    def __init__(self,coords):
+    def __init__(self, coords):
         """Initialize the Line."""
-        PolyLine.__init__(self,coords)
+        PolyLine.__init__(self, coords)
         if self.coords.shape[0] != 2:
             raise ValueError("Expected exactly two points, got %s" % coords.shape[0])
 
@@ -1153,8 +1153,8 @@ class BezierSpline(Curve):
         4: matrix([
             [ 1.,  0.,  0.,  0.,  0.],
             [-4.,  4.,  0.,  0.,  0.],
-            [ 6.,-12.,  6.,  0.,  0.],
-            [-4., 12.,-12.,  4.,  0.],
+            [ 6., -12.,  6.,  0.,  0.],
+            [-4., 12., -12.,  4.,  0.],
             [ 1., -4.,  6., -4.,  1.],
             ]),
         }
@@ -1166,8 +1166,8 @@ class BezierSpline(Curve):
         if not degree > 0:
             raise ValueError("Degree of BezierSpline should be >= 0!")
 
-        if endzerocurv in [False,True]:
-            endzerocurv = (endzerocurv,endzerocurv)
+        if endzerocurv in [False, True]:
+            endzerocurv = (endzerocurv, endzerocurv)
 
         if coords is None:
             # All control points are given, in a single array
@@ -1176,7 +1176,7 @@ class BezierSpline(Curve):
                 raise ValueError("If no coords argument given, the control parameter should have shape (ncontrol,3), but got %s" % str(control.shape))
 
             if closed:
-                control = Coords.concatenate([control,control[:1]])
+                control = Coords.concatenate([control, control[:1]])
 
             ncontrol = control.shape[0]
             nextra = (ncontrol-1) % degree
@@ -1209,14 +1209,14 @@ class BezierSpline(Curve):
                     if ncoords < 3:
                         control = 0.5*(coords[:1] + coords[-1:])
                         if closed:
-                            control =  Coords.concatenate([control,control])
+                            control =  Coords.concatenate([control, control])
                     else:
                         if closed:
-                            P0 = 0.5 * (roll(coords,1,axis=0) + roll(coords,-1,axis=0))
+                            P0 = 0.5 * (roll(coords, 1, axis=0) + roll(coords, -1, axis=0))
                             P1 = 2*coords - P0
-                            Q0 = 0.5*(roll(coords,1,axis=0) + P1)
-                            Q1 = 0.5*(roll(coords,-1,axis=0) + P1)
-                            Q = 0.5*(roll(Q0,-1,axis=0)+Q1)
+                            Q0 = 0.5*(roll(coords, 1, axis=0) + P1)
+                            Q1 = 0.5*(roll(coords, -1, axis=0) + P1)
+                            Q = 0.5*(roll(Q0, -1, axis=0)+Q1)
                             control = Q
                         else:
                             P0 = 0.5 * (coords[:-2] + coords[2:])
@@ -1224,17 +1224,17 @@ class BezierSpline(Curve):
                             Q0 = 0.5*(coords[:-2] + P1)
                             Q1 = 0.5*(coords[2:] + P1)
                             Q = 0.5*(Q0[1:]+Q1[:-1])
-                            control = Coords.concatenate([Q0[:1],Q,Q1[-1:]],axis=0)
+                            control = Coords.concatenate([Q0[:1], Q, Q1[-1:]], axis=0)
 
                 elif degree == 3:
-                    P = PolyLine(coords,closed=closed)
-                    ampl = P.lengths().reshape(-1,1)
+                    P = PolyLine(coords, closed=closed)
+                    ampl = P.lengths().reshape(-1, 1)
                     if deriv is None:
-                        deriv = array([[nan,nan,nan]]*ncoords)
+                        deriv = array([[nan, nan, nan]]*ncoords)
                     else:
-                        for id,d in enumerate(deriv):
+                        for id, d in enumerate(deriv):
                             if d is None:
-                                deriv[id] = [nan,nan,nan]
+                                deriv[id] = [nan, nan, nan]
                         deriv = Coords(deriv)
                         nderiv = deriv.shape[0]
                         if nderiv < ncoords:
@@ -1242,7 +1242,7 @@ class BezierSpline(Curve):
                                 raise ValueError("Either all or at least the initial and/or the final directions expected (got %s)" % nderiv)
                             deriv = concatenate([
                                 deriv[:1],
-                                [[nan,nan,nan]]*(ncoords-2),
+                                [[nan, nan, nan]]*(ncoords-2),
                                 deriv[-1:]])
 
                     undefined = isnan(deriv).any(axis=-1)
@@ -1251,21 +1251,21 @@ class BezierSpline(Curve):
 
                     if closed:
                         p1 = coords + deriv*curl*ampl
-                        p2 = coords - deriv*curl*roll(ampl,1,axis=0)
-                        p2 = roll(p2,-1,axis=0)
+                        p2 = coords - deriv*curl*roll(ampl, 1, axis=0)
+                        p2 = roll(p2, -1, axis=0)
                     else:
                         # Fix the first and last derivs if they were autoset
                         if undefined[0]:
                             if endzerocurv[0]:
                                 # option curvature 0:
-                                deriv[0] =  [nan,nan,nan]
+                                deriv[0] =  [nan, nan, nan]
                             else:
                                 # option max. continuity
                                 deriv[0] = 2.*deriv[0] - deriv[1]
                         if undefined[-1]:
                             if endzerocurv[1]:
                                 # option curvature 0:
-                                deriv[-1] =  [nan,nan,nan]
+                                deriv[-1] =  [nan, nan, nan]
                             else:
                                 # option max. continuity
                                 deriv[-1] = 2.*deriv[-1] - deriv[-2]
@@ -1276,11 +1276,11 @@ class BezierSpline(Curve):
                             p1[0] = p2[0]
                         if isnan(p2[-1]).any():
                             p2[-1] = p1[-1]
-                    control = concatenate([p1,p2],axis=1)
+                    control = concatenate([p1, p2], axis=1)
 
             if control is not None and degree > 1:
                 try:
-                    control = asarray(control).reshape(nparts,degree-1,3)
+                    control = asarray(control).reshape(nparts, degree-1, 3)
                     control = Coords(control)
                 except:
                     print("coords array has shape %s" % str(coords.shape))
@@ -1288,7 +1288,7 @@ class BezierSpline(Curve):
                     raise ValueError("Invalid control points for BezierSpline of degree %s" % degree)
 
                 # Join the coords and controls in a single array
-                control = Coords.concatenate([coords[:nparts,newaxis,:],control],axis=1).reshape(-1,3)
+                control = Coords.concatenate([coords[:nparts, newaxis,:], control], axis=1).reshape(-1, 3)
 
             if control is not None:
                 # We now have a multiple of degree coordinates, add the last:
@@ -1296,7 +1296,7 @@ class BezierSpline(Curve):
                     last = 0
                 else:
                     last = -1
-                control = Coords.concatenate([control,coords[last]])
+                control = Coords.concatenate([control, coords[last]])
 
         self.degree = degree
         self.coeffs = BezierSpline.coeffs[degree]
@@ -1309,7 +1309,7 @@ class BezierSpline(Curve):
         return """BezierSpline: degree=%s; nparts=%s, ncoords=%s
   Control points:
 %s
-""" % (self.degree,self.nparts,self.coords.shape[0],self.coords)
+""" % (self.degree, self.nparts, self.coords.shape[0], self.coords)
 
 
     __repr__ = report
@@ -1331,60 +1331,60 @@ class BezierSpline(Curve):
         an empty Coords if degree <= 1.
         """
         if self.degree > 1:
-            return self.coords[:-1].reshape(-1,self.degree,3)[:,1:]
+            return self.coords[:-1].reshape(-1, self.degree, 3)[:, 1:]
         else:
             return Coords()
 
 
-    def part(self,j):
+    def part(self, j):
         """Returns the points defining part j of the curve."""
         start = self.degree * j
         end = start + self.degree + 1
         return self.coords[start:end]
 
 
-    def sub_points(self,t,j):
+    def sub_points(self, t, j):
         """Return the points at values t in part j."""
         P = self.part(j)
         C = self.coeffs * P
-        U = [ t**d for d in range(0,self.degree+1) ]
+        U = [ t**d for d in range(0, self.degree+1) ]
         U = column_stack(U)
-        X = dot(U,C)
+        X = dot(U, C)
         return X
 
 
-    def sub_directions(self,t,j):
+    def sub_directions(self, t, j):
         """Return the unit direction vectors at values t in part j."""
         P = self.part(j)
         C = self.coeffs * P
-        U = [ d*(t**(d-1)) if d >= 1 else zeros_like(t) for d in range(0,self.degree+1) ]
+        U = [ d*(t**(d-1)) if d >= 1 else zeros_like(t) for d in range(0, self.degree+1) ]
         U = column_stack(U)
-        T = dot(U,C)
+        T = dot(U, C)
         T = normalize(T)
         return T
 
 
-    def sub_curvature(self,t,j):
+    def sub_curvature(self, t, j):
         """Return the curvature at values t in part j."""
         P = self.part(j)
         C = self.coeffs * P
-        U1 = [ d*(t**(d-1)) if d >= 1 else zeros_like(t) for d in range(0,self.degree+1) ]
+        U1 = [ d*(t**(d-1)) if d >= 1 else zeros_like(t) for d in range(0, self.degree+1) ]
         U1 = column_stack(U1)
-        T1 = dot(U1,C)
-        U2 = [ d*(d-1)*(t**(d-2)) if d >=2 else zeros_like(t) for d in range(0,self.degree+1) ]
+        T1 = dot(U1, C)
+        U2 = [ d*(d-1)*(t**(d-2)) if d >=2 else zeros_like(t) for d in range(0, self.degree+1) ]
         U2 = column_stack(U2)
-        T2 = dot(U2,C)
-        K = length(cross(T1,T2))/(length(T1)**3)
+        T2 = dot(U2, C)
+        K = length(cross(T1, T2))/(length(T1)**3)
         return K
 
 
-    def length_intgrnd(self,t,j):
+    def length_intgrnd(self, t, j):
         """Return the arc length integrand at value t in part j."""
         P = self.part(j)
         C = self.coeffs * P
-        U = [ d*(t**(d-1)) if d >= 1 else 0. for d in range(0,self.degree+1) ]
+        U = [ d*(t**(d-1)) if d >= 1 else 0. for d in range(0, self.degree+1) ]
         U = array(U)
-        T = dot(U,C)
+        T = dot(U, C)
         T = array(T).reshape(3)
         return length(T)
 
@@ -1399,18 +1399,18 @@ class BezierSpline(Curve):
 **The **lengths** function is not available.
 Most likely because 'python-scipy' is not installed on your system.""")
             return
-        L = [ quad(self.length_intgrnd,0.,1.,args=(j,))[0] for j in range(self.nparts) ]
+        L = [ quad(self.length_intgrnd, 0., 1., args=(j,))[0] for j in range(self.nparts) ]
         return array(L)
 
 
-    def parts(self,j,k):
+    def parts(self, j, k):
         """Return a curve containing only parts j to k (k not included).
 
         The resulting curve is always open.
         """
         start = self.degree * j
         end = self.degree * k + 1
-        return BezierSpline(control=self.coords[start:end],degree=self.degree,closed=False)
+        return BezierSpline(control=self.coords[start:end], degree=self.degree, closed=False)
 
 
     def toMesh(self):
@@ -1427,10 +1427,10 @@ Most likely because 'python-scipy' is not installed on your system.""")
         else:
             coords = self.subPoints(2)
             e1 = 2*arange(len(coords)/2)
-            elems = column_stack([e1,e1+1,e1+2])
+            elems = column_stack([e1, e1+1, e1+2])
             if self.closed:
                 elems = elems[-1][-1] = 0
-            return Mesh(coords,elems,eltype='line3')
+            return Mesh(coords, elems, eltype='line3')
 
 
         # This is not activated (yet) because it would be called for
@@ -1460,14 +1460,14 @@ Most likely because 'python-scipy' is not installed on your system.""")
         """
         # get the control points (nparts,degree+1,3)
         P = array([ self.part(j) for j in range(self.nparts) ])
-        T = resize(True,self.nparts)
+        T = resize(True, self.nparts)
         while T.any():
-            EP = P[T][:,[0,-1]] # end points (...,2,3)
-            IP = P[T][:,1:-1] # intermediate points (...,degree-1,3)
+            EP = P[T][:, [0, -1]] # end points (...,2,3)
+            IP = P[T][:, 1:-1] # intermediate points (...,degree-1,3)
             # compute maximum orthogonal distance of IP from line EP
-            q,m = EP[:,0].reshape(-1,1,3),(EP[:,1]-EP[:,0]).reshape(-1,1,3)
-            t = (dotpr(IP,m) - dotpr(q,m)) / dotpr(m,m)
-            X = q + t[:,:,newaxis] * m
+            q, m = EP[:, 0].reshape(-1, 1, 3), (EP[:, 1]-EP[:, 0]).reshape(-1, 1, 3)
+            t = (dotpr(IP, m) - dotpr(q, m)) / dotpr(m, m)
+            X = q + t[:,:, newaxis] * m
             d = length(X-IP).max(axis=1)
             # subdivide parts for which distance is larger than tol
             T[T] *= d > tol
@@ -1475,25 +1475,25 @@ Most likely because 'python-scipy' is not installed on your system.""")
                 # apply de Casteljau's algorithm for t = 0.5
                 M = [ P[T] ]
                 for i in range(self.degree):
-                    M.append( (M[-1][:,:-1]+M[-1][:,1:])/2 )
+                    M.append( (M[-1][:, :-1]+M[-1][:, 1:])/2 )
                 # compute new control points
-                Q1 = stack([ Mi[:,0] for Mi in M ],axis=1)
-                Q2 = stack([ Mi[:,-1] for Mi in M[::-1] ],axis=1)
+                Q1 = stack([ Mi[:, 0] for Mi in M ], axis=1)
+                Q2 = stack([ Mi[:, -1] for Mi in M[::-1] ], axis=1)
                 # concatenate the parts
                 P = P[~T]
                 indQ = T.cumsum()-1
                 indP = (1-T).cumsum()-1
-                P = [ [Q1[i],Q2[i]] if Ti else [P[j]] for i,j,Ti in zip(indQ,indP,T) ]
-                P = Coords(concatenate(P,axis=0))
-                T = [ [Ti,Ti] if Ti else [Ti] for Ti in T ]
-                T = concatenate(T,axis=0)
+                P = [ [Q1[i], Q2[i]] if Ti else [P[j]] for i, j, Ti in zip(indQ, indP, T) ]
+                P = Coords(concatenate(P, axis=0))
+                T = [ [Ti, Ti] if Ti else [Ti] for Ti in T ]
+                T = concatenate(T, axis=0)
         # create PolyLine through end points
-        P = Coords.concatenate([P[:,0],P[-1,-1]],axis=0)
-        PL = PolyLine(P,closed=self.closed)
+        P = Coords.concatenate([P[:, 0], P[-1, -1]], axis=0)
+        PL = PolyLine(P, closed=self.closed)
         return PL
 
 
-    def extend(self,extend=[1.,1.]):
+    def extend(self,extend=[1., 1.]):
         """Extend the curve beyond its endpoints.
 
         This function will add a Bezier curve before the first part and/or
@@ -1510,8 +1510,8 @@ Most likely because 'python-scipy' is not installed on your system.""")
             for i in range(self.degree):
                 M.append( (1.-t)*M[-1][:-1] + t*M[-1][1:] )
             # compute control points
-            Q = stack([ Mi[0] for Mi in M[::-1] ],axis=0)
-            self.coords = Coords.concatenate([Q[:-1],self.coords])
+            Q = stack([ Mi[0] for Mi in M[::-1] ], axis=0)
+            self.coords = Coords.concatenate([Q[:-1], self.coords])
             self.nparts += 1
         if extend[1] > 0.:
             # get the control points
@@ -1522,15 +1522,15 @@ Most likely because 'python-scipy' is not installed on your system.""")
             for i in range(self.degree):
                 M.append( (1.-t)*M[-1][:-1] + t*M[-1][1:] )
             # compute control points
-            Q = stack([ Mi[-1] for Mi in M ],axis=0)
-            self.coords = Coords.concatenate([self.coords,Q[1:]])
+            Q = stack([ Mi[-1] for Mi in M ], axis=0)
+            self.coords = Coords.concatenate([self.coords, Q[1:]])
             self.nparts += 1
 
 
     def reverse(self):
         """Return the same curve with the parameter direction reversed."""
-        control = reverseAxis(self.coords,axis=0)
-        return BezierSpline(control=control,closed=self.closed,degree=self.degree)
+        control = reverseAxis(self.coords, axis=0)
+        return BezierSpline(control=control, closed=self.closed, degree=self.degree)
 
 
 ##############################################################################
@@ -1550,7 +1550,7 @@ class CardinalSpline(BezierSpline):
     def __init__(self,coords,tension=0.0,closed=False,endzerocurv=False):
         """Create a natural spline through the given points."""
         curl = (1.-tension)/3.
-        BezierSpline.__init__(self,coords,curl=(1.-tension)/3.,closed=closed,endzerocurv=endzerocurv)
+        BezierSpline.__init__(self, coords, curl=(1.-tension)/3., closed=closed, endzerocurv=endzerocurv)
 
 
 ##############################################################################
@@ -1577,13 +1577,13 @@ class CardinalSpline2(Curve):
         self.coeffs = matrix([[-s, 2-s, s-2., s], [2*s, s-3., 3.-2*s, -s], [-s, 0., s, 0.], [0., 1., 0., 0.]])#pag.429 of open GL
 
 
-    def sub_points(self,t,j):
+    def sub_points(self, t, j):
         n = self.coords.shape[0]
         i = (j + arange(4)) % n
         P = self.coords[i]
         C = self.coeffs * P
         U = column_stack([t**3., t**2., t, ones_like(t)])
-        X = dot(U,C)
+        X = dot(U, C)
         return X
 
 
@@ -1610,19 +1610,19 @@ class NaturalSpline(Curve):
         Curve.__init__(self)
         coords = Coords(coords)
         if closed:
-            coords = Coords.concatenate([coords,coords[:1]])
+            coords = Coords.concatenate([coords, coords[:1]])
         self.nparts = coords.shape[0] - 1
         self.closed = closed
         if not closed:
-            if endzerocurv in [False,True]:
-                self.endzerocurv = (endzerocurv,endzerocurv)
+            if endzerocurv in [False, True]:
+                self.endzerocurv = (endzerocurv, endzerocurv)
             else:
                 self.endzerocurv = endzerocurv
         self.coords = coords
         self.compute_coefficients()
 
 
-    def _set_coords(self,coords):
+    def _set_coords(self, coords):
         C = self.copy()
         C._set_coords_inplace(coords)
         C.compute_coefficients()
@@ -1638,17 +1638,17 @@ class NaturalSpline(Curve):
         # constant submatrix
         m = array([[0., 0., 0., 1., 0., 0., 0., 0.],
                    [1., 1., 1., 1., 0., 0., 0., 0.],
-                   [3., 2., 1., 0., 0., 0.,-1., 0.],
-                   [6., 2., 0., 0., 0.,-2., 0., 0.]])
+                   [3., 2., 1., 0., 0., 0., -1., 0.],
+                   [6., 2., 0., 0., 0., -2., 0., 0.]])
 
         for i in range(n-1):
             f = 4*i
-            M[f:f+4,f:f+8] = m
+            M[f:f+4, f:f+8] = m
             B[f:f+2] = self.coords[i:i+2]
 
         # the last spline passes through the last 2 points
         f = 4*(n-1)
-        M[f:f+2, f:f+4] = m[:2,:4]
+        M[f:f+2, f:f+4] = m[:2, :4]
         B[f:f+2] = self.coords[-2:]
 
         #add the appropriate end constrains
@@ -1666,24 +1666,24 @@ class NaturalSpline(Curve):
                 M[f+2, 0:4] = m[3, 4:]
             else:
                 # third derivative is the same between the first 2 splines
-                M[f+2,  [0, 4]] = array([6.,-6.])
+                M[f+2,  [0, 4]] = array([6., -6.])
 
             if self.endzerocurv[1]:
                 # second derivatives at end is zero
                 M[f+3, f:f+4] = m[3, :4]
             else:
                 # third derivative is the same between the last 2 splines
-                M[f+3, [f-4, f]] = array([6.,-6.])
+                M[f+3, [f-4, f]] = array([6., -6.])
 
         #calculate the coefficients
-        C = linalg.solve(M,B)
-        self.coeffs = array(C).reshape(-1,4,3)
+        C = linalg.solve(M, B)
+        self.coeffs = array(C).reshape(-1, 4, 3)
 
 
-    def sub_points(self,t,j):
+    def sub_points(self, t, j):
         C = self.coeffs[j]
         U = column_stack([t**3., t**2., t, ones_like(t)])
-        X = dot(U,C)
+        X = dot(U, C)
         return X
 
 ##############################################################################
@@ -1698,14 +1698,14 @@ def circle():
     In the current implementation it is approximated by a bezier spline
     with curl 0.375058 through 8 points.
     """
-    pts = Formex([1.0,0.0,0.0]).rosette(8,45.).coords.reshape(-1,3)
-    return BezierSpline(pts,curl=0.375058,closed=True)
+    pts = Formex([1.0, 0.0, 0.0]).rosette(8, 45.).coords.reshape(-1, 3)
+    return BezierSpline(pts, curl=0.375058, closed=True)
 
 
 class Arc3(Curve):
     """A class representing a circular arc."""
     ##approx returns a PolyLine that does not start from coords[0]. Why?
-    def __init__(self,coords):
+    def __init__(self, coords):
         """Create a circular arc.
 
         The arc is specified by 3 non-colinear points.
@@ -1717,23 +1717,23 @@ class Arc3(Curve):
         self._set_coords(Coords(coords))
 
 
-    def _set_coords(self,coords):
+    def _set_coords(self, coords):
         C = self.copy()
         C._set_coords_inplace(coords)
-        if self.coords.shape != (3,3):
+        if self.coords.shape != (3, 3):
             raise ValueError("Expected 3 points")
 
-        r,C,n = gt.triangleCircumCircle(self.coords.reshape(-1,3,3))
-        self.radius,self.center,self.normal = r[0],C[0],n[0]
-        self.angles = vectorPairAngle(Coords([1.,0.,0.]),self.coords-self.center)
-        print("Radius %s, Center %s, Normal %s" % (self.radius,self.center,self.normal))
+        r, C, n = gt.triangleCircumCircle(self.coords.reshape(-1, 3, 3))
+        self.radius, self.center, self.normal = r[0], C[0], n[0]
+        self.angles = vectorPairAngle(Coords([1., 0., 0.]), self.coords-self.center)
+        print("Radius %s, Center %s, Normal %s" % (self.radius, self.center, self.normal))
         print("ANGLES=%s" % (self.angles))
         return C
 
 
-    def sub_points(self,t,j):
+    def sub_points(self, t, j):
         a = t*(self.angles[-1]-self.angles[0])
-        X = Coords(column_stack([cos(a),sin(a),zeros_like(a)]))
+        X = Coords(column_stack([cos(a), sin(a), zeros_like(a)]))
         X = X.scale(self.radius).rotate(self.angles[0]/DEG).translate(self.center)
         return X
 
@@ -1757,36 +1757,36 @@ class Arc(Curve):
         self.closed = False
         if coords is not None:
             self.coords = Coords(coords)
-            if self.coords.shape != (3,3):
+            if self.coords.shape != (3, 3):
                 raise ValueError("Expected 3 points")
 
             self._center = self.coords[1]
             v = self.coords-self._center
             self.radius = length(self.coords[0]-self.coords[1])
             try:
-                self.normal = unitVector(cross(v[0],v[2]))
+                self.normal = unitVector(cross(v[0], v[2]))
             except:
                 pf.warning("The three points defining the Arc seem to be colinear: I will use a random orientation.")
                 self.normal = gt.anyPerpendicularVector(v[0])
-            self._angles = gt.rotationAngle(Coords([1.,0.,0.]).rotate(vectorRotation([0.,0.,1.],self.normal)),self.coords[[0,2]]-self._center,self.normal,RAD)
+            self._angles = gt.rotationAngle(Coords([1., 0., 0.]).rotate(vectorRotation([0., 0., 1.], self.normal)), self.coords[[0, 2]]-self._center, self.normal, RAD)
         else:
             if center is None:
-                center = [0.,0.,0.]
+                center = [0., 0., 0.]
             if radius is None:
                 radius = 1.0
             if angles is None:
-                angles = (0.,360.)
+                angles = (0., 360.)
             try:
                 self._center = center
                 self.radius = radius
-                self.normal = [0.,0.,1.]
+                self.normal = [0., 0., 1.]
                 self._angles = [ a * angle_spec for a in angles ]
                 while self._angles[1] < self._angles[0]:
                     self._angles[1] += 2*pi
                 while self._angles[1] > self._angles[0] + 2*pi:
                     self._angles[1] -= 2*pi
-                begin,end = self.sub_points(array([0.0,1.0]),0)
-                self.coords = Coords([begin,self._center,end])
+                begin, end = self.sub_points(array([0.0, 1.0]), 0)
+                self.coords = Coords([begin, self._center, end])
             except:
                 print("Invalid data for Arc")
                 raise
@@ -1795,15 +1795,15 @@ class Arc(Curve):
         return self._center
 
     def getAngles(self,angle_spec=DEG):
-        return (self._angles[0]/angle_spec,self._angles[1]/angle_spec)
+        return (self._angles[0]/angle_spec, self._angles[1]/angle_spec)
 
     def getAngleRange(self,angle_spec=DEG):
         return ((self._angles[1]-self._angles[0])/angle_spec)
 
 
 
-    def _set_coords(self,coords):
-        if isinstance(coords,Coords) and coords.shape == self.coords.shape:
+    def _set_coords(self, coords):
+        if isinstance(coords, Coords) and coords.shape == self.coords.shape:
             return self.__class__(coords)
         else:
             raise ValueError("Invalid reinitialization of %s coords" % self.__class__)
@@ -1814,9 +1814,9 @@ class Arc(Curve):
   Center %s, Radius %s, Normal %s
   Angles=%s
   Pt0=%s; Pt1=%s; Pt2=%s
-"""  % ( self._center,self.radius,self.normal,
+"""  % ( self._center, self.radius, self.normal,
          self.getAngles(),
-         self.coords[0],self.coords[1],self.coords[2]
+         self.coords[0], self.coords[1], self.coords[2]
        )
 
 
@@ -1824,17 +1824,17 @@ class Arc(Curve):
         return "Arc(%s,%s,%s,%s,%s,%s)" % tuple(list(self._center)+[self.radius]+list(self.getAngles()))
 
 
-    def sub_points(self,t,j):
+    def sub_points(self, t, j):
         a = t*(self._angles[-1]-self._angles[0])
-        X = Coords(column_stack([cos(a),sin(a),zeros_like(a)]))
-        X = X.scale(self.radius).rotate(self._angles[0]/DEG).rotate(vectorRotation([0.,0.,1.],self.normal)).translate(self._center)
+        X = Coords(column_stack([cos(a), sin(a), zeros_like(a)]))
+        X = X.scale(self.radius).rotate(self._angles[0]/DEG).rotate(vectorRotation([0., 0., 1.], self.normal)).translate(self._center)
         return X
 
 
-    def sub_directions(self,t,j):
+    def sub_directions(self, t, j):
         a = t*(self._angles[-1]-self._angles[0])
-        X = Coords(column_stack([-sin(a),cos(a),zeros_like(a)]))
-        X = X.rotate(self._angles[0]/DEG).rotate(vectorRotation([0.,0.,1.],self.normal))
+        X = Coords(column_stack([-sin(a), cos(a), zeros_like(a)]))
+        X = X.rotate(self._angles[0]/DEG).rotate(vectorRotation([0., 0., 1.], self.normal))
         return X
 
 
@@ -1856,7 +1856,7 @@ class Arc(Curve):
             phi = 2.*arccos(1.-chordal)
             rng = abs(self._angles[1] - self._angles[0])
             ndiv = int(ceil(rng/phi))
-        return Curve.approx(self,ndiv)
+        return Curve.approx(self, ndiv)
 
 
 def arc2points(x0,x1,R,pos='-'):
@@ -1878,8 +1878,8 @@ def arc2points(x0,x1,R,pos='-'):
         raise ValueError("The points should b in a plane // xy plane")
     xm = (x0+x1) / 2  # center of points
     xd = (x0-x1) / 2  # half length vector
-    do = normalize([xd[1],-xd[0],0])  # direction of center
-    xl = dot(xd,xd)    # square length
+    do = normalize([xd[1], -xd[0], 0])  # direction of center
+    xl = dot(xd, xd)    # square length
     if R**2 < xl:
         raise ValueError("The radius should at least be %s" % sqrt(xl))
     dd = sqrt(R**2 - xl)   # distance of center to xm
@@ -1888,13 +1888,13 @@ def arc2points(x0,x1,R,pos='-'):
     else:
         xc = xm + dd * do
 
-    xx = [1.,0.,0.]
-    xz = [0.,0.,1.]
-    angles = gt.rotationAngle([xx,xx],[x0-xc,x1-xc],m=[xz,xz])
+    xx = [1., 0., 0.]
+    xz = [0., 0., 1.]
+    angles = gt.rotationAngle([xx, xx], [x0-xc, x1-xc], m=[xz, xz])
     if dir == '-':
         angles = reversed(angles)
     xc[2] = x0[2]
-    return Arc(center=xc,radius=R,angles=angles)
+    return Arc(center=xc, radius=R, angles=angles)
 
 
 class Spiral(Curve):
@@ -1904,7 +1904,7 @@ class Spiral(Curve):
         Curve.__init__(self)
         if rfunc == None:
             rfunc = lambda x:x
-        self.coords = Coords([0.,0.,0.]).replic(npoints+1).hypercylindrical()
+        self.coords = Coords([0., 0., 0.]).replic(npoints+1).hypercylindrical()
         self.nparts = nparts
         self.closed = False
 
@@ -1921,17 +1921,17 @@ def convertFormexToCurve(self,closed=False):
     - plex 4 : to BezierSpline
     """
     if closed:
-        points = self.coords[:,0,:]
+        points = self.coords[:, 0,:]
     else:
-        points = Coords.concatenate([self.coords[:,0,:],self.coords[-1:,-1,:]],axis=0)
+        points = Coords.concatenate([self.coords[:, 0,:], self.coords[-1:, -1,:]], axis=0)
     if self.nplex() == 2:
-        curve = PolyLine(points,closed=closed)
+        curve = PolyLine(points, closed=closed)
     elif self.nplex() == 3:
-        control = self.coords[:,1,:]
-        curve = BezierSpline(points,control=control,closed=closed,degree=2)
+        control = self.coords[:, 1,:]
+        curve = BezierSpline(points, control=control, closed=closed, degree=2)
     elif self.nplex() == 4:
-        control = self.coords[:,1:3,:]
-        curve = BezierSpline(points,control=control,closed=closed)
+        control = self.coords[:, 1:3,:]
+        curve = BezierSpline(points, control=control, closed=closed)
     else:
         raise ValueError("Can not convert %s-plex Formex to a Curve" % self.nplex())
     return curve

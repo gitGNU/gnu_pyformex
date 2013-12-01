@@ -43,7 +43,7 @@ import utils
 
 class PyConsole(QtGui.QPlainTextEdit):
     def __init__(self,interpreter=None,prompt='>>> ',startup_message='pyFormex interactive Python console (EXPERIMENTAL!)',parent=None):
-        super(PyConsole,self).__init__(parent)
+        super(PyConsole, self).__init__(parent)
         self.prompt = prompt
         self.history = []
         self.construct = []
@@ -72,7 +72,7 @@ class PyConsole(QtGui.QPlainTextEdit):
         self.update()
 
 
-    def redirect(self,onoff):
+    def redirect(self, onoff):
         """Redirect standard and error output to this message board"""
         if onoff:
             sys.stderr.flush()
@@ -197,8 +197,8 @@ class PyConsole(QtGui.QPlainTextEdit):
     ##         print("RES=%s" % res)
 
 
-    def runSource(self,command):
-        res = self.interpreter.runsource(command,'<console>','single')
+    def runSource(self, command):
+        res = self.interpreter.runsource(command, '<console>', 'single')
 
 
     def runCommand(self):
@@ -230,7 +230,7 @@ class PyConsole(QtGui.QPlainTextEdit):
             except:
                 traceback_lines = traceback.format_exc().split('\n')
                 # Remove traceback mentioning this file, and a linebreak
-                for i in (3,2,1,-1):
+                for i in (3, 2, 1, -1):
                     traceback_lines.pop(i)
                 self.appendPlainText('\n'.join(traceback_lines))
             sys.stdout = tmp_stdout
@@ -269,7 +269,7 @@ class OtherPyConsole(Board):
 
     def __init__(self,parent=None):
 
-        super(PyConsole,self).__init__(parent)
+        super(PyConsole, self).__init__(parent)
         self.setReadOnly(False)
 
         self.refreshMarker = False # to change back to >>> from ...
@@ -350,7 +350,7 @@ class OtherPyConsole(Board):
             self.insertPlainText(self.history[self.historyIndex])
         return True
 
-    def customCommands(self,command):
+    def customCommands(self, command):
 
         if command == '!hist': # display history
             self.append('') # move down one line
@@ -359,15 +359,15 @@ class OtherPyConsole(Board):
             backup = self.interpreter.locals.copy()
             history = self.history[:]
             history.reverse()
-            for i,x in enumerate(history):
+            for i, x in enumerate(history):
                 iSize = len(str(i))
                 delta = len(str(len(history))) - iSize
-                line = line = ' ' * delta + '%i: %s' % (i,x) + '\n'
+                line = line = ' ' * delta + '%i: %s' % (i, x) + '\n'
                 self.write(line)
             self.interpreter.locals = backup
             return True
         import re
-        if re.match('!hist\(\d+\)',command): # recall command from history
+        if re.match('!hist\(\d+\)', command): # recall command from history
             backup = self.interpreter.locals.copy()
             history = self.history[:]
             history.reverse()
@@ -382,7 +382,7 @@ class OtherPyConsole(Board):
 
         return False
 
-    def keyPressEvent(self,event):
+    def keyPressEvent(self, event):
 
         if event.key() == QtCore.Qt.Key_Escape:
             # proper exit
@@ -423,12 +423,12 @@ class OtherPyConsole(Board):
             self.setTextCursor(textCursor)
             return None
 
-        if event.key() in [QtCore.Qt.Key_Left,QtCore.Qt.Key_Backspace]:
+        if event.key() in [QtCore.Qt.Key_Left, QtCore.Qt.Key_Backspace]:
             # don't allow deletion of marker
             if self.textCursor().positionInBlock() == 4:
                 return None
 
-        if event.key() in [QtCore.Qt.Key_Return,QtCore.Qt.Key_Enter]:
+        if event.key() in [QtCore.Qt.Key_Return, QtCore.Qt.Key_Enter]:
             # set cursor to end of line to avoid line splitting
             textCursor = self.textCursor()
             position = len(self.document().toPlainText())
@@ -447,7 +447,7 @@ class OtherPyConsole(Board):
                     self.haveLine = True
                     if line[-1] == ':':
                         self.multiLine = True
-                    self.history.insert(0,line)
+                    self.history.insert(0, line)
                 except:
                     self.haveLine = False
 
@@ -480,6 +480,6 @@ class OtherPyConsole(Board):
                 return None
 
         # allow all other key events
-        super(PyConsole,self).keyPressEvent(event)
+        super(PyConsole, self).keyPressEvent(event)
 
 # End

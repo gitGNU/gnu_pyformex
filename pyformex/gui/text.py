@@ -51,7 +51,7 @@ def fontHeight(font=None,size=None):
     This can be used to determine the canvas coordinates where the text is
     to be drawn.
     """
-    font = getFont(font,size)
+    font = getFont(font, size)
     fh = font.pixelSize()
     if fh < 0:
         fh = QtGui.QFontInfo(font).pixelSize()

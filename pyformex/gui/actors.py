@@ -37,7 +37,7 @@ from elements import elementType
 from mesh import Mesh
 
 from plugins.trisurface import TriSurface
-from plugins.nurbs import NurbsCurve,NurbsSurface
+from plugins.nurbs import NurbsCurve, NurbsSurface
 from marks import TextMark
 
 import timer
@@ -82,14 +82,14 @@ class Actor(Drawable):
         return 0
     def nelems(self):
         return 0
-    def pickGL(self,mode):
+    def pickGL(self, mode):
         pass
 
 
 class TranslatedActor(Actor):
     """An Actor translated to another position."""
 
-    def __init__(self,A,trl=(0.,0.,0.),**kargs):
+    def __init__(self,A,trl=(0., 0., 0.),**kargs):
         Actor.__init__(self,**kargs)
         self.actor = A
         self.opak = A.opak
@@ -118,7 +118,7 @@ class TranslatedActor(Actor):
 class RotatedActor(Actor):
     """An Actor rotated to another position."""
 
-    def __init__(self,A,rot=(1.,0.,0.),twist=0.0,**kargs):
+    def __init__(self,A,rot=(1., 0., 0.),twist=0.0,**kargs):
         """Created a new rotated actor.
 
         If rot is an array with shape (3,), the rotation is specified
@@ -130,7 +130,7 @@ class RotatedActor(Actor):
         self.actor = A
         self.opak = A.opak
         if shape(rot) == (3,):
-            self.rot = rotMatrix(rot,n=4)
+            self.rot = rotMatrix(rot, n=4)
         else:
             self.rot = rot
 
@@ -157,17 +157,17 @@ class RotatedActor(Actor):
 class CubeActor(Actor):
     """An OpenGL actor with cubic shape and 6 colored sides."""
 
-    def __init__(self,size=1.0,color=[red,cyan,green,magenta,blue,yellow],**kargs):
+    def __init__(self,size=1.0,color=[red, cyan, green, magenta, blue, yellow],**kargs):
         Actor.__init__(self,**kargs)
         self.size = size
         self.color = color
 
     def bbox(self):
-        return (0.5 * self.size) * array([[-1.,-1.,-1.],[1.,1.,1.]])
+        return (0.5 * self.size) * array([[-1., -1., -1.], [1., 1., 1.]])
 
     def drawGL(self,**kargs):
         """Draw the cube."""
-        drawCube(self.size,self.color)
+        drawCube(self.size, self.color)
 
 
 class SphereActor(Actor):
@@ -179,11 +179,11 @@ class SphereActor(Actor):
         self.color = color
 
     def bbox(self):
-        return (0.5 * self.size) * array([[-1.,-1.,-1.],[1.,1.,1.]])
+        return (0.5 * self.size) * array([[-1., -1., -1.], [1., 1., 1.]])
 
     def drawGL(self,**kargs):
         """Draw the cube."""
-        drawSphere(self.size,self.color)
+        drawSphere(self.size, self.color)
 
 
 # This could be subclassed from GridActor
@@ -207,7 +207,7 @@ class BboxActor(Actor):
         """Always draws a wireframe model of the bbox."""
         if self.linewidth is not None:
             GL.glLineWidth(self.linewidth)
-        drawLines(self.vertices,self.edges,self.color)
+        drawLines(self.vertices, self.edges, self.color)
 
 
 class AxesActor(Actor):
@@ -226,12 +226,12 @@ class AxesActor(Actor):
     """
     import coordsys
 
-    def __init__(self,cs=None,size=1.0,psize=0.5,color=[red,green,blue],colored_axes=True,draw_planes=True,draw_reverse=True,linewidth=2,alpha=0.5,**kargs):
+    def __init__(self,cs=None,size=1.0,psize=0.5,color=[red, green, blue],colored_axes=True,draw_planes=True,draw_reverse=True,linewidth=2,alpha=0.5,**kargs):
         Actor.__init__(self,**kargs)
         if cs is None:
             cs = coordsys.CoordinateSystem()
         self.cs = cs
-        self.color = saneColorArray(saneColor(color),(3,1))
+        self.color = saneColorArray(saneColor(color), (3, 1))
         self.alpha = alpha
         self.opak = False
         self.nolight = True
@@ -239,13 +239,13 @@ class AxesActor(Actor):
         self.draw_planes = draw_planes
         self.draw_reverse = draw_reverse
         self.linewidth = linewidth
-        self.setSize(size,psize)
+        self.setSize(size, psize)
 
     def bbox(self):
         origin = self.cs[3]
-        return array([origin-self.size,origin+self.size])
+        return array([origin-self.size, origin+self.size])
 
-    def setSize(self,size,psize):
+    def setSize(self, size, psize):
         self.size = 1.0
         size = float(size)
         if size > 0.0:
@@ -261,27 +261,27 @@ class AxesActor(Actor):
         """Draw the axes."""
         if self.draw_planes:
             x = self.cs.trl(-self.cs[3]).scale(self.psize).trl(self.cs[3])
-            e = array([[3,1,2],[3,2,0],[3,0,1]])
-            drawPolygons(x,e,color=self.color,alpha=self.alpha)
+            e = array([[3, 1, 2], [3, 2, 0], [3, 0, 1]])
+            drawPolygons(x, e, color=self.color, alpha=self.alpha)
 
         x = self.cs.trl(-self.cs[3]).scale(self.size).trl(self.cs[3])
-        e = array([[3,0],[3,1],[3,2]])
+        e = array([[3, 0], [3, 1], [3, 2]])
         if self.colored_axes:
             c = self.color
         else:
             c = None
         if self.linewidth:
             GL.glLineWidth(self.linewidth)
-        drawLines(x,e,c)
+        drawLines(x, e, c)
         if self.draw_reverse:
             x[:3] = 2*x[3] - x[:3]
-            drawLines(x,e,1.0-c)
+            drawLines(x, e, 1.0-c)
 
 
 class GridActor(Actor):
     """Draws a (set of) grid(s) in one of the coordinate planes."""
 
-    def __init__(self,nx=(1,1,1),ox=(0.0,0.0,0.0),dx=(1.0,1.0,1.0),linecolor=black,linewidth=None,planecolor=white,alpha=0.2,lines=True,planes=True,**kargs):
+    def __init__(self,nx=(1, 1, 1),ox=(0.0, 0.0, 0.0),dx=(1.0, 1.0, 1.0),linecolor=black,linewidth=None,planecolor=white,alpha=0.2,lines=True,planes=True,**kargs):
         Actor.__init__(self,**kargs)
         self.linecolor = saneColor(linecolor)
         self.planecolor = saneColor(planecolor)
@@ -295,7 +295,7 @@ class GridActor(Actor):
         self.x1 = self.x0 + self.nx * asarray(dx)
 
     def bbox(self):
-        return array([self.x0,self.x1])
+        return array([self.x0, self.x1])
 
     def drawGL(self,**kargs):
         """Draw the grid."""
@@ -304,17 +304,17 @@ class GridActor(Actor):
             if self.linewidth:
                 GL.glLineWidth(self.linewidth)
             glColor(self.linecolor)
-            drawGridLines(self.x0,self.x1,self.nx)
+            drawGridLines(self.x0, self.x1, self.nx)
 
         if self.planes:
-            glColor(self.planecolor,self.alpha)
-            drawGridPlanes(self.x0,self.x1,self.nx)
+            glColor(self.planecolor, self.alpha)
+            drawGridPlanes(self.x0, self.x1, self.nx)
 
 
 class CoordPlaneActor(Actor):
     """Draws a set of 3 coordinate planes."""
 
-    def __init__(self,nx=(1,1,1),ox=(0.0,0.0,0.0),dx=(1.0,1.0,1.0),linecolor=black,linewidth=None,planecolor=white,alpha=0.5,lines=True,planes=True,**kargs):
+    def __init__(self,nx=(1, 1, 1),ox=(0.0, 0.0, 0.0),dx=(1.0, 1.0, 1.0),linecolor=black,linewidth=None,planecolor=white,alpha=0.5,lines=True,planes=True,**kargs):
         Actor.__init__(self,**kargs)
         self.linecolor = saneColor(linecolor)
         self.planecolor = saneColor(planecolor)
@@ -328,7 +328,7 @@ class CoordPlaneActor(Actor):
         self.x1 = self.x0 + self.nx * asarray(dx)
 
     def bbox(self):
-        return array([self.x0,self.x1])
+        return array([self.x0, self.x1])
 
     def drawGL(self,**kargs):
         """Draw the grid."""
@@ -341,17 +341,17 @@ class CoordPlaneActor(Actor):
                 if self.linewidth:
                     GL.glLineWidth(self.linewidth)
                 glColor(self.linecolor)
-                drawGridLines(self.x0,self.x1,nx)
+                drawGridLines(self.x0, self.x1, nx)
 
             if self.planes:
-                glColor(self.planecolor,self.alpha)
-                drawGridPlanes(self.x0,self.x1,nx)
+                glColor(self.planecolor, self.alpha)
+                drawGridPlanes(self.x0, self.x1, nx)
 
 
 class PlaneActor(Actor):
     """A plane in a 3D scene."""
 
-    def __init__(self,nx=(2,2,2),ox=(0.,0.,0.),size=((0.0,1.0,1.0),(0.0,1.0,1.0)),linecolor=black,linewidth=None,planecolor=white,alpha=0.5,lines=True,planes=True,**kargs):
+    def __init__(self,nx=(2, 2, 2),ox=(0., 0., 0.),size=((0.0, 1.0, 1.0), (0.0, 1.0, 1.0)),linecolor=black,linewidth=None,planecolor=white,alpha=0.5,lines=True,planes=True,**kargs):
         """A plane perpendicular to the x-axis at the origin."""
         Actor.__init__(self,**kargs)
         self.linecolor = saneColor(linecolor)
@@ -364,11 +364,11 @@ class PlaneActor(Actor):
         self.nx = asarray(nx)
         ox = asarray(ox)
         sz = asarray(size)
-        self.x0,self.x1 = ox-sz[0], ox+sz[1]
+        self.x0, self.x1 = ox-sz[0], ox+sz[1]
 
 
     def bbox(self):
-        return array([self.x0,self.x1])
+        return array([self.x0, self.x1])
 
     def drawGL(self,**kargs):
         """Draw the grid."""
@@ -384,11 +384,11 @@ class PlaneActor(Actor):
                 if color is None:
                     color = canvas.settings.fgcolor
                 glColor(color)
-                drawGridLines(self.x0,self.x1,nx)
+                drawGridLines(self.x0, self.x1, nx)
 
             if self.planes:
-                glColor(self.planecolor,self.alpha)
-                drawGridPlanes(self.x0,self.x1,nx)
+                glColor(self.planecolor, self.alpha)
+                drawGridPlanes(self.x0, self.x1, nx)
 
 
 
@@ -398,24 +398,24 @@ class Text3DActor(Actor):
     This class provides an Actor representing a text as an object
     in 3D space.
     """
-    def __init__(self,text,font,facesize,color,trl):
+    def __init__(self, text, font, facesize, color, trl):
         Actor.__init__(self)
         self.text = text
         self.font = font
         self.setFaceSize(*facesize)
         self.setColor(color)
-        self.trl = at.checkArray(trl,(3,),'f')
+        self.trl = at.checkArray(trl, (3,), 'f')
 
-    def setFaceSize(self,a,b):
-        self.font.FaceSize(a,b)
+    def setFaceSize(self, a, b):
+        self.font.FaceSize(a, b)
 
-    def setColor(self,color):
+    def setColor(self, color):
         from gui.drawable import saneColor
         self.color = saneColor(color)
 
     def bbox(self):
         bb = self.font.BBox(self.text)
-        return [bb[:3],bb[3:]]
+        return [bb[:3], bb[3:]]
 
     def drawGL(self,*args,**kargs):
         GL.glMatrixMode(GL.GL_MODELVIEW)
@@ -487,7 +487,7 @@ class GeomActor(Actor):
         self.object = data
         # Copy special attributes
         # This is a future feature
-        if hasattr(data,'attrib'):
+        if hasattr(data, 'attrib'):
            attr = data.attrib
            if attr.color is not None:
                color = attr.color
@@ -496,19 +496,19 @@ class GeomActor(Actor):
 
         self.normals = None
 
-        if isinstance(data,GeomActor):
+        if isinstance(data, GeomActor):
             self.coords = data.coords
             self.elems = data.elems
             self.eltype = data.eltype
 
-        elif isinstance(data,Mesh):
+        elif isinstance(data, Mesh):
             self.coords = data.coords
             self.elems = data.elems
             self.eltype = data.elName()
-            if hasattr(data,'normals'):
+            if hasattr(data, 'normals'):
                 self.normals = data.normals
 
-        elif isinstance(data,Formex):
+        elif isinstance(data, Formex):
             self.coords = data.coords
             self.elems = None
             self.eltype = data.eltype
@@ -519,9 +519,9 @@ class GeomActor(Actor):
             self.eltype = eltype
 
         self.mode = mode
-        self.setColor(color,colormap)
-        self.setBkColor(bkcolor,bkcolormap)
-        self.setAlpha(alpha,bkalpha)
+        self.setColor(color, colormap)
+        self.setBkColor(bkcolor, bkcolormap)
+        self.setAlpha(alpha, bkalpha)
         self.setLineWidth(linewidth)
         self.setLineStipple(linestipple)
         self.marksize = marksize
@@ -573,15 +573,15 @@ class GeomActor(Actor):
 
     def setColor(self,color,colormap=None):
         """Set the color of the Actor."""
-        self.color,self.colormap = saneColorSet(color,colormap,self.shape())
+        self.color, self.colormap = saneColorSet(color, colormap, self.shape())
 
 
     def setBkColor(self,color,colormap=None):
         """Set the backside color of the Actor."""
-        self.bkcolor,self.bkcolormap = saneColorSet(color,colormap,self.shape())
+        self.bkcolor, self.bkcolormap = saneColorSet(color, colormap, self.shape())
 
 
-    def setAlpha(self,alpha,bkalpha):
+    def setAlpha(self, alpha, bkalpha):
         """Set the Actors alpha value."""
         try:
             self.alpha = float(alpha)
@@ -602,7 +602,7 @@ class GeomActor(Actor):
     def draw(self,**kargs):
         #print(self.__dict__.keys())
         mode = self.mode
-        canvas = kargs.get('canvas',pf.canvas)
+        canvas = kargs.get('canvas', pf.canvas)
         if mode is None:
             if 'mode' in kargs:
                 mode = kargs['mode']
@@ -612,7 +612,7 @@ class GeomActor(Actor):
 #        if mode.endswith('wire'):
         if canvas.settings.wiremode <= 0:
             # Remove the wires
-            if hasattr(self,'wire') and self.wire in self.extra:
+            if hasattr(self, 'wire') and self.wire in self.extra:
                 self.extra.remove(self.wire)
 
         else:
@@ -620,13 +620,13 @@ class GeomActor(Actor):
             try:
                 if self.level() > 1:
                     # Remove old wire mode
-                    if hasattr(self,'wire'):
+                    if hasattr(self, 'wire'):
                         if self.wire.wiremode != canvas.settings.wiremode:
                             if self.wire in self.extra:
                                 self.extra.remove(self.wire)
                             del self['wire']
 
-                    if not hasattr(self,'wire'): #or self.wire.wiremode != canvas.settings.wiremode:
+                    if not hasattr(self, 'wire'): #or self.wire.wiremode != canvas.settings.wiremode:
                         # Create new wires
                         import copy
                         wire = copy.copy(self)
@@ -635,7 +635,7 @@ class GeomActor(Actor):
                         wire.ontop = False # True will make objects transparent for edges
                         wire.list = None
                         wire.wiremode = canvas.settings.wiremode
-                        Drawable.prepare_list(wire,color=asarray(black))
+                        Drawable.prepare_list(wire, color=asarray(black))
                         self.wire = wire
                         #print('handled non att')
 
@@ -700,8 +700,8 @@ class GeomActor(Actor):
             bkalpha = canvas.settings.transparency
 
         if color is None:
-            color,colormap = self.color,self.colormap
-            bkcolor, bkcolormap = self.bkcolor,self.bkcolormap
+            color, colormap = self.color, self.colormap
+            bkcolor, bkcolormap = self.bkcolor, self.bkcolormap
         else:
             # THIS OPTION IS ONLY MEANT FOR OVERRIDING THE COLOR
             # WITH THE EDGECOLOR IN ..wire DRAWING MODES
@@ -710,8 +710,8 @@ class GeomActor(Actor):
             # NOT SURE IF WE STILL NEED THIS !   YES!!!
             #
             #raise ValueError("THIS ERROR SHOULD NOT OCCUR: Contact mainitainers"
-            color,colormap = saneColor(color),None
-            bkcolor, bkcolormap = None,None
+            color, colormap = saneColor(color), None
+            bkcolor, bkcolormap = None, None
 
         # convert color index to full colors
         if color is not None and color.dtype.kind == 'i':
@@ -731,17 +731,17 @@ class GeomActor(Actor):
             glLineStipple(*self.linestipple)
 
         if mode.startswith('smooth'):
-            if hasattr(self,'specular'):
+            if hasattr(self, 'specular'):
                 fill_mode = GL.GL_FRONT
                 import colors
                 if color is not None:
                     spec = color * self.specular# *  pf.canvas.specular
-                    spec = append(spec,1.)
+                    spec = append(spec, 1.)
                 else:
                     spec = colors.GREY(self.specular)# *  pf.canvas.specular
-                GL.glMaterialfv(fill_mode,GL.GL_SPECULAR,spec)
-                GL.glMaterialfv(fill_mode,GL.GL_EMISSION,spec)
-                GL.glMaterialfv(fill_mode,GL.GL_SHININESS,self.specular)
+                GL.glMaterialfv(fill_mode, GL.GL_SPECULAR, spec)
+                GL.glMaterialfv(fill_mode, GL.GL_EMISSION, spec)
+                GL.glMaterialfv(fill_mode, GL.GL_SHININESS, self.specular)
 
         ################## draw the geometry #################
         nplex = self.nplex()
@@ -755,31 +755,31 @@ class GeomActor(Actor):
                 coords = self.coords
             else:
                 coords = self.coords[self.elems]
-            drawPoints(coords,color,alpha,marksize)
+            drawPoints(coords, color, alpha, marksize)
 
         elif nplex == 2:
-            drawLines(self.coords,self.elems,color)
+            drawLines(self.coords, self.elems, color)
 
         # beware: some Formex eltypes are strings and may not
         # represent a valid Mesh elementType
         # This is only here for Formex type.
         # We can probably remove it if we avoid eltype 'curve'
         elif nplex == 3 and self.eltype == 'curve':
-            drawQuadraticCurves(self.coords,self.elems,color)
+            drawQuadraticCurves(self.coords, self.elems, color)
 
         elif self.eltype is None:
             # polygons
             if mode=='wireframe' :
-                drawPolyLines(self.coords,self.elems,color)
+                drawPolyLines(self.coords, self.elems, color)
             else:
                 if bkcolor is not None:
                     GL.glEnable(GL.GL_CULL_FACE)
                     GL.glCullFace(GL.GL_BACK)
 
-                drawPolygons(self.coords,self.elems,color,alpha,self.texture,None,None,lighting,avgnormals)
+                drawPolygons(self.coords, self.elems, color, alpha, self.texture, None, None, lighting, avgnormals)
                 if bkcolor is not None:
                     GL.glCullFace(GL.GL_FRONT)
-                    drawPolygons(self.coords,self.elems,bkcolor,bkalpha,None,None,None,lighting,avgnormals)
+                    drawPolygons(self.coords, self.elems, bkcolor, bkalpha, None, None, None, lighting, avgnormals)
                     GL.glDisable(GL.GL_CULL_FACE)
 
         else:
@@ -787,7 +787,7 @@ class GeomActor(Actor):
 
             if mode=='wireframe' or el.ndim < 2:
                 for edges in el.getDrawEdges(el.name() in pf.cfg['draw/quadline']):
-                    drawEdges(self.coords,self.elems,edges,edges.eltype,color)
+                    drawEdges(self.coords, self.elems, edges, edges.eltype, color)
             else:
                 for faces in el.getDrawFaces(el.name() in pf.cfg['draw/quadsurf']):
                     if bkcolor is not None:
@@ -795,39 +795,39 @@ class GeomActor(Actor):
                         GL.glEnable(GL.GL_CULL_FACE)
                         GL.glCullFace(GL.GL_BACK)
 
-                    drawFaces(self.coords,self.elems,faces,faces.eltype,color,alpha,self.texture,None,self.normals,lighting,avgnormals)
+                    drawFaces(self.coords, self.elems, faces, faces.eltype, color, alpha, self.texture, None, self.normals, lighting, avgnormals)
 
                     if bkcolor is not None:
                         # Draw the back sides
                         GL.glCullFace(GL.GL_FRONT)
-                        drawFaces(self.coords,self.elems,faces,faces.eltype,bkcolor,bkalpha,None,None,self.normals,lighting,avgnormals)
+                        drawFaces(self.coords, self.elems, faces, faces.eltype, bkcolor, bkalpha, None, None, self.normals, lighting, avgnormals)
                         GL.glDisable(GL.GL_CULL_FACE)
 
 
 
-    def pickGL(self,mode):
+    def pickGL(self, mode):
         """ Allow picking of parts of the actor.
 
         mode can be 'element', 'face', 'edge' or 'point'
         """
         if mode == 'element':
-            pickPolygons(self.coords,self.elems)
+            pickPolygons(self.coords, self.elems)
 
         elif mode == 'face':
             faces = self.object.getFaces()
             if faces is not None:
-                pickPolygons(self.coords,faces)
+                pickPolygons(self.coords, faces)
 
         elif mode == 'edge':
             edges = self.object.getEdges()
             if edges is not None:
-                pickPolygons(self.coords,edges)
+                pickPolygons(self.coords, edges)
 
         elif mode == 'point':
             pickPoints(self.coords)
 
 
-    def select(self,sel):
+    def select(self, sel):
         """Return a GeomActor with a selection of this actor's elements
 
         Currently, the resulting Actor will not inherit the properties
@@ -840,7 +840,7 @@ class GeomActor(Actor):
         else:
             x = self.coords
             e = self.elems[sel]
-        return GeomActor(x,e,eltype=self.eltype)
+        return GeomActor(x, e, eltype=self.eltype)
 
 
 class NurbsActor(Actor):
@@ -849,11 +849,11 @@ class NurbsActor(Actor):
         from gui.drawable import saneColor
         Actor.__init__(self,**kargs)
         self.object = data
-        self.setColor(color,colormap)
-        self.setBkColor(bkcolor,bkcolormap)
-        if isinstance(self.object,NurbsCurve):
+        self.setColor(color, colormap)
+        self.setBkColor(bkcolor, bkcolormap)
+        if isinstance(self.object, NurbsCurve):
             self.samplingTolerance = 5.0
-        elif isinstance(self.object,NurbsSurface):
+        elif isinstance(self.object, NurbsSurface):
             self.samplingTolerance = 10.0
         self.list = None
 
@@ -864,12 +864,12 @@ class NurbsActor(Actor):
 
     def setColor(self,color,colormap=None):
         """Set the color of the Actor."""
-        self.color,self.colormap = saneColorSet(color,colormap,self.shape())
+        self.color, self.colormap = saneColorSet(color, colormap, self.shape())
 
 
     def setBkColor(self,color,colormap=None):
         """Set the backside color of the Actor."""
-        self.bkcolor,self.bkcolormap = saneColorSet(color,colormap,self.shape())
+        self.bkcolor, self.bkcolormap = saneColorSet(color, colormap, self.shape())
 
 
     def bbox(self):
@@ -885,13 +885,13 @@ class NurbsActor(Actor):
         if mode.endswith('wire'):
             mode = mode[:-4]
 
-        if isinstance(self.object,NurbsCurve):
-            drawNurbsCurves(self.object.coords,self.object.knots,color=self.color,samplingTolerance=self.samplingTolerance)
-        elif isinstance(self.object,NurbsSurface):
+        if isinstance(self.object, NurbsCurve):
+            drawNurbsCurves(self.object.coords, self.object.knots, color=self.color, samplingTolerance=self.samplingTolerance)
+        elif isinstance(self.object, NurbsSurface):
             if mode == 'wireframe':
                 pass
             else:
-                drawNurbsSurfaces(self.object.coords,self.object.vknots,self.object.uknots,color=self.color,normals='auto',samplingTolerance=self.samplingTolerance)
+                drawNurbsSurfaces(self.object.coords, self.object.vknots, self.object.uknots, color=self.color, normals='auto', samplingTolerance=self.samplingTolerance)
 
 
 # End

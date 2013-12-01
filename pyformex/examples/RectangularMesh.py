@@ -32,7 +32,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'beginner'
 _topics = ['geometry', 'mesh']
-_techniques = ['rectangular','seed','layout']
+_techniques = ['rectangular', 'seed', 'layout']
 
 
 from gui.draw import *
@@ -48,30 +48,30 @@ def run():
     clearAll()
     smoothwire()
     fgcolor(red)
-    layout(6,3)
+    layout(6, 3)
 
     viewport(0)
-    M = rectangle(1.,1.,6,3)
+    M = rectangle(1., 1., 6, 3)
     draw(M)
 
     viewport(1)
-    M = rectangle(1.,1.,(6,0.3),(6,0.3))
+    M = rectangle(1., 1., (6, 0.3), (6, 0.3))
     draw(M)
 
     viewport(2)
-    M = rectangle(1.,1.,(6,0.3),(6,-0.5))
+    M = rectangle(1., 1., (6, 0.3), (6, -0.5))
     draw(M)
 
     viewport(3)
-    M = rectangle(1.,1.,(6,0.5,0.5),(6,1,1))
+    M = rectangle(1., 1., (6, 0.5, 0.5), (6, 1, 1))
     draw(M)
 
     viewport(4)
-    M = rectangle(1.,1.,(6,-1,-1),(6,-1,-1))
+    M = rectangle(1., 1., (6, -1, -1), (6, -1, -1))
     draw(M)
 
     viewport(5)
-    M = rectangle(2.,1.,(6,-1,-1),(6,-1,-1))
+    M = rectangle(2., 1., (6, -1, -1), (6, -1, -1))
     draw(M)
 
 

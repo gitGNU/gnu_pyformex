@@ -145,13 +145,13 @@ def convert2VPD(M,clean=False,lineopt='segment',verbose=False):
 
     Returns a vtkPolyData.
     """
-    from vtk import vtkPolyData,vtkPoints,vtkIdTypeArray,vtkCellArray
+    from vtk import vtkPolyData, vtkPoints, vtkIdTypeArray, vtkCellArray
 
     if verbose:
         print(('STARTING CONVERSION FOR DATA OF TYPE %s '%type(M)))
 
-    if  isinstance(M,Coords):
-        M = Mesh(M,arange(M.ncoords()))
+    if  isinstance(M, Coords):
+        M = Mesh(M, arange(M.ncoords()))
 
     Nelems = M.nelems() # Number of elements
     Ncxel = M.nplex() # # Number of nodes per element
@@ -161,7 +161,7 @@ def convert2VPD(M,clean=False,lineopt='segment',verbose=False):
         if lineopt=='line':
             Nelems = 1
             Ncxel = M.ncoords()
-            elems = arange(M.ncoords()).reshape(1,-1)
+            elems = arange(M.ncoords()).reshape(1, -1)
 
     # create a vtkPolyData variable
     vpd = vtkPolyData()
@@ -169,7 +169,7 @@ def convert2VPD(M,clean=False,lineopt='segment',verbose=False):
     # creating  vtk coords
     pts = vtkPoints()
     ntype = gnat(pts.GetDataType())
-    coordsv = n2v(asarray(M.coords,order='C',dtype=ntype),deep=1) # .copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
+    coordsv = n2v(asarray(M.coords, order='C', dtype=ntype), deep=1) # .copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
     pts.SetNumberOfPoints(M.ncoords())
     pts.SetData(coordsv)
     vpd.SetPoints(pts)
@@ -178,13 +178,13 @@ def convert2VPD(M,clean=False,lineopt='segment',verbose=False):
     # create vtk connectivity
     elms = vtkIdTypeArray()
     ntype = gnat(vtkIdTypeArray().GetDataType())
-    elmsv = concatenate([Ncxel*ones(Nelems).reshape(-1,1),elems],axis=1)
-    elmsv = n2v(asarray(elmsv,order='C',dtype=ntype),deep=1) # .copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
+    elmsv = concatenate([Ncxel*ones(Nelems).reshape(-1, 1), elems], axis=1)
+    elmsv = n2v(asarray(elmsv, order='C', dtype=ntype), deep=1) # .copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
     elms.DeepCopy(elmsv)
 
     # set vtk Cell data
     datav = vtkCellArray()
-    datav.SetCells(Nelems,elms)
+    datav.SetCells(Nelems, elms)
     if M.nplex() == 1:
         try:
             if verbose:
@@ -257,12 +257,12 @@ def convertFromVPD(vpd,verbose=False):
     fielddata = celldata = pointdata = dict()
 
     if vpd is None:
-        return [coords, cells, polys, lines, verts],fielddata,celldata,pointdata
+        return [coords, cells, polys, lines, verts], fielddata, celldata, pointdata
 
     # getting points coords
     if  vpd.GetPoints().GetData().GetNumberOfTuples():
         ntype = gnat(vpd.GetPoints().GetDataType())
-        coords = asarray(v2n(vpd.GetPoints().GetData()),dtype=ntype)
+        coords = asarray(v2n(vpd.GetPoints().GetData()), dtype=ntype)
         if verbose:
             print('Saved points coordinates array')
 
@@ -272,7 +272,7 @@ def convertFromVPD(vpd,verbose=False):
         if  vpd.GetCells().GetData().GetNumberOfTuples():
             ntype = gnat(vpd.GetCells().GetData().GetDataType())
             Nplex = vpd.GetCells().GetMaxCellSize()
-            cells = asarray(v2n(vpd.GetCells().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
+            cells = asarray(v2n(vpd.GetCells().GetData()), dtype=ntype).reshape(-1, Nplex+1)[:, 1:]
             if verbose:
                 print('Saved polys connectivity array')
 
@@ -281,7 +281,7 @@ def convertFromVPD(vpd,verbose=False):
         if  vpd.GetPolys().GetData().GetNumberOfTuples():
             ntype = gnat(vpd.GetPolys().GetData().GetDataType())
             Nplex = vpd.GetPolys().GetMaxCellSize()
-            polys = asarray(v2n(vpd.GetPolys().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
+            polys = asarray(v2n(vpd.GetPolys().GetData()), dtype=ntype).reshape(-1, Nplex+1)[:, 1:]
             if verbose:
                 print('Saved polys connectivity array')
 
@@ -290,7 +290,7 @@ def convertFromVPD(vpd,verbose=False):
         if  vpd.GetLines().GetData().GetNumberOfTuples():
             ntype = gnat(vpd.GetLines().GetData().GetDataType())
             Nplex = vpd.GetLines().GetMaxCellSize()
-            lines = asarray(v2n(vpd.GetLines().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
+            lines = asarray(v2n(vpd.GetLines().GetData()), dtype=ntype).reshape(-1, Nplex+1)[:, 1:]
             if verbose:
                 print('Saved lines connectivity array')
 
@@ -299,7 +299,7 @@ def convertFromVPD(vpd,verbose=False):
         if  vpd.GetVerts().GetData().GetNumberOfTuples():
             ntype = gnat(vpd.GetVerts().GetData().GetDataType())
             Nplex = vpd.GetVerts().GetMaxCellSize()
-            verts = asarray(v2n(vpd.GetVerts().GetData()),dtype=ntype).reshape(-1,Nplex+1)[:,1:]
+            verts = asarray(v2n(vpd.GetVerts().GetData()), dtype=ntype).reshape(-1, Nplex+1)[:, 1:]
             if verbose:
                 print('Saved verts connectivity array')
     
@@ -308,7 +308,7 @@ def convertFromVPD(vpd,verbose=False):
         fielddata = vpd.GetFieldData() # get field arrays
         arraynm = [fielddata.GetArrayName(i) for i in range(fielddata.GetNumberOfArrays())]
         ntypes = [gnat(fielddata.GetArray(an).GetDataType()) for an in arraynm]
-        fielddata = [asarray(v2n(fielddata.GetArray(an)),dtype=ntype) for ntype,an in zip(ntypes,arraynm)]
+        fielddata = [asarray(v2n(fielddata.GetArray(an)), dtype=ntype) for ntype, an in zip(ntypes, arraynm)]
         fielddata = dict(zip(arraynm, fielddata)) # dictionary of array names
         if verbose:
             print(('Field Data Arrays: '+''.join(['%s, '%nm for nm in arraynm])))
@@ -319,7 +319,7 @@ def convertFromVPD(vpd,verbose=False):
         celldata = vpd.GetCellData() # get cell arrays
         arraynm = [celldata.GetArrayName(i) for i in range(celldata.GetNumberOfArrays())]
         ntypes = [gnat(celldata.GetArray(an).GetDataType()) for an in arraynm]
-        celldata = [asarray(v2n(celldata.GetArray(an)),dtype=ntype) for ntype,an in zip(ntypes,arraynm)]
+        celldata = [asarray(v2n(celldata.GetArray(an)), dtype=ntype) for ntype, an in zip(ntypes, arraynm)]
         celldata = dict(zip(arraynm, celldata)) # dictionary of array names
         if verbose:
             print(('Cell Data Arrays: '+''.join(['%s, '%nm for nm in arraynm])))
@@ -330,13 +330,13 @@ def convertFromVPD(vpd,verbose=False):
         pointdata = vpd.GetPointData() # get point arrays
         arraynm = [pointdata.GetArrayName(i) for i in range(pointdata.GetNumberOfArrays())]
         ntypes = [gnat(pointdata.GetArray(an).GetDataType()) for an in arraynm]
-        pointdata = [asarray(v2n(pointdata.GetArray(an)),dtype=ntype) for ntype,an in zip(ntypes,arraynm)]
+        pointdata = [asarray(v2n(pointdata.GetArray(an)), dtype=ntype) for ntype, an in zip(ntypes, arraynm)]
         pointdata = dict(zip(arraynm, pointdata)) # dictionary of array names
         if verbose:
             print(('Point Data Arrays: '+''.join(['%s, '%nm for nm in arraynm])))
     
 
-    return [coords, cells, polys, lines, verts],fielddata,celldata,pointdata
+    return [coords, cells, polys, lines, verts], fielddata, celldata, pointdata
 
 
 def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
@@ -367,17 +367,17 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
     if checkMesh:
         if not checkClean(mesh):
             utils.warn("warn_writevtp_notclean")
-    lvtk = convert2VPD(mesh,clean=True,lineopt='segment') # also clean=False?
+    lvtk = convert2VPD(mesh, clean=True, lineopt='segment') # also clean=False?
     if mesh.prop is not None: # convert prop numbers into vtk array
         ntype = gnat(vtkIntArray().GetDataType())
-        vtkprop = n2v(asarray(mesh.prop,order='C',dtype=ntype),deep=1)
+        vtkprop = n2v(asarray(mesh.prop, order='C', dtype=ntype), deep=1)
         vtkprop.SetName('prop')
         lvtk.GetCellData().AddArray(vtkprop)
     for k in fielddata.keys(): # same numbering of mesh.elems??
         ntype = gnat(vtkDoubleArray().GetDataType())
         if fielddata[k].shape[0]!=mesh.nelems():
             print((fielddata[k].shape,))
-        fielddata = n2v(asarray(fielddata[k],order='C',dtype=ntype),deep=1)
+        fielddata = n2v(asarray(fielddata[k], order='C', dtype=ntype), deep=1)
         fieldar.SetName(k)
         lvtk.GetFieldData().AddArray(fielddata)
     for k in celldata.keys(): # same numbering of mesh.elems
@@ -385,7 +385,7 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
         if celldata[k].shape[0]!=mesh.nelems():
             print((celldata[k].shape, mesh.nelems()))
             utils.warn("warn_writevtp_shape")
-        celldata = n2v(asarray(celldata[k],order='C',dtype=ntype),deep=1)
+        celldata = n2v(asarray(celldata[k], order='C', dtype=ntype), deep=1)
         celldata.SetName(k)
         lvtk.GetCellData().AddArray(celldata)
     for k in pointdata.keys(): # same numbering of mesh.coords
@@ -393,7 +393,7 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
         if pointdata[k].shape[0]!=mesh.ncoords(): # mesh should be clean!!
             print((pointdata[k].shape, mesh.ncoords()))
             utils.warn("warn_writevtp_shape2")
-        pointdata = n2v(asarray(pointdata[k],order='C',dtype=ntype),deep=1)
+        pointdata = n2v(asarray(pointdata[k], order='C', dtype=ntype), deep=1)
         pointdata.SetName(k)
         lvtk.GetPointData().AddArray(pointdata)
     print(('************lvtk', lvtk))
@@ -463,7 +463,7 @@ def pointInsideObject(S,P,tol=0.):
     from vtk import vtkSelectEnclosedPoints
 
     vpp = convert2VPD(P)
-    vps = convert2VPD(S,clean=False)
+    vps = convert2VPD(S, clean=False)
 
     enclosed_pts = vtkSelectEnclosedPoints()
     enclosed_pts.SetInput(vpp)
@@ -475,7 +475,7 @@ def pointInsideObject(S,P,tol=0.):
     enclosed_pts.ReleaseDataFlagOn()
     enclosed_pts.Complete()
     del enclosed_pts
-    return asarray(v2n(inside_arr),'bool')
+    return asarray(v2n(inside_arr), 'bool')
 
 
 def inside(surf,pts,tol='auto'):
@@ -495,7 +495,7 @@ def inside(surf,pts,tol='auto'):
     """
     if tol == 'auto':
         tol = 0.
-    return where(pointInsideObject(surf,pts,tol))[0]
+    return where(pointInsideObject(surf, pts, tol))[0]
 
 
 def intersectWithSegment(surf,lines,tol=0.0):
@@ -511,9 +511,9 @@ def intersectWithSegment(surf,lines,tol=0.0):
     The position in the list is equal to the line number. If there is no
     intersection with the correspondent lists are empty
     """
-    from vtk import vtkOBBTree,vtkPoints,vtkIdList
+    from vtk import vtkOBBTree, vtkPoints, vtkIdList
 
-    vsurf = convert2VPD(surf,clean=False)
+    vsurf = convert2VPD(surf, clean=False)
     loc = vtkOBBTree()
     loc.SetDataSet(vsurf)
     loc.SetTolerance(tol)
@@ -524,13 +524,13 @@ def intersectWithSegment(surf,lines,tol=0.0):
     for i in range(lines.nelems()):
         ptstmp = vtkPoints()
         cellidstmp = vtkIdList()
-        loc.IntersectWithLine(lines.coords[lines.elems][i][1],lines.coords[lines.elems][i][0],ptstmp, cellidstmp)
+        loc.IntersectWithLine(lines.coords[lines.elems][i][1], lines.coords[lines.elems][i][0], ptstmp, cellidstmp)
         if cellidstmp.GetNumberOfIds():
             cellids[i] = [cellidstmp.GetId(j) for j in range(cellidstmp.GetNumberOfIds())]
             pts[i] = Coords(v2n(ptstmp.GetData()).squeeze())
     loc.FreeSearchStructure()
     del loc
-    return pts,cellids
+    return pts, cellids
 
 
 def convertTransform4x4FromVtk(transform):
@@ -539,7 +539,7 @@ def convertTransform4x4FromVtk(transform):
     Convert a vtk transformation instance vtkTrasmorm into a 4x4 transformation
     matrix array
     """
-    trMat4x4 = [[ transform.GetMatrix().GetElement(r,c) for c in range(4)] for r in range(4)]
+    trMat4x4 = [[ transform.GetMatrix().GetElement(r, c) for c in range(4)] for r in range(4)]
     return asarray(trMat4x4)
 
 
@@ -550,11 +550,11 @@ def convertTransform4x4ToVtk(trMat4x4):
     """
     from vtk import vtkTransform
     trMatVtk = vtkTransform()
-    [[trMatVtk.GetMatrix().SetElement(r,c,trMat4x4[r,c]) for c in range(4)] for r in range(4)]
+    [[trMatVtk.GetMatrix().SetElement(r, c, trMat4x4[r, c]) for c in range(4)] for r in range(4)]
     return trMatVtk
 
 
-def transform(source,trMat4x4):
+def transform(source, trMat4x4):
     """Apply a 4x4 transformation
 
     Apply a 4x4 transformation matrix array to source of Coords or any
@@ -586,7 +586,7 @@ def octree(surf,tol=0.0,npts=1.):
     from formex import Formex
     from connectivity import Connectivity
 
-    vm = convert2VPD(surf,clean=False)
+    vm = convert2VPD(surf, clean=False)
     loc = vtkOctreePointLocator()
     loc.SetDataSet(vm)
     loc.SetTolerance(tol)
@@ -603,26 +603,26 @@ def octree(surf,tol=0.0,npts=1.):
         bounds = zeros(6)
         loc.GetRegionBounds (lf, bounds)
         if (bounds!=zeros(6)).all():
-            region.append(bounds[:,(0,2,4)])
-            region.append(bounds[:,(1,2,4)])
-            region.append(bounds[:,(1,3,4)])
-            region.append(bounds[:,(0,3,4)])
+            region.append(bounds[:, (0, 2, 4)])
+            region.append(bounds[:, (1, 2, 4)])
+            region.append(bounds[:, (1, 3, 4)])
+            region.append(bounds[:, (0, 3, 4)])
 
-            region.append(bounds[:,(0,2,5)])
-            region.append(bounds[:,(1,2,5)])
-            region.append(bounds[:,(1,3,5)])
-            region.append(bounds[:,(0,3,5)])
+            region.append(bounds[:, (0, 2, 5)])
+            region.append(bounds[:, (1, 2, 5)])
+            region.append(bounds[:, (1, 3, 5)])
+            region.append(bounds[:, (0, 3, 5)])
 
         ptsinregion.append(loc.GetPointsInRegion(lf).GetNumberOfTuples())
         regions.append(Coords(region))
 
-    regions = Formex(regions).toMesh().setProp(asarray(ptsinregion,dtype=int32))
+    regions = Formex(regions).toMesh().setProp(asarray(ptsinregion, dtype=int32))
 
     pfrep = []
     for level in range(loc.GetLevel()+1):
-        loc.GenerateRepresentation(level,rep)
+        loc.GenerateRepresentation(level, rep)
         reptmp = convertFromVPD(rep)
-        reptmp[1] = reptmp[1].reshape(-1,6*4)[:,(0,1,2,3,9,8,11,10)]
+        reptmp[1] = reptmp[1].reshape(-1, 6*4)[:, (0, 1, 2, 3, 9, 8, 11, 10)]
         reptmp[0] = reptmp[0][Connectivity(reptmp[1]).renumber()[1]]
 
         pfrep.append(Mesh(reptmp[0], reptmp[1]).setProp(0))
@@ -644,7 +644,7 @@ def convexHull(object):
     chull.SetInput(convert2VPD(object))
     chull.Update()
     chull=convertFromVPD(chull.GetOutput())
-    return Mesh(chull[0][0],chull[0][1],eltype='tet4')
+    return Mesh(chull[0][0], chull[0][1], eltype='tet4')
 
 def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True, verbose=False):
     """decimate a surface (both tri3 or quad4) and returns a trisurface
@@ -657,7 +657,7 @@ def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True, verbose=Fal
     """
     from vtk import vtkDecimatePro
     
-    vpd = convert2VPD(self,clean=True)#convert pyFormex surface to vpd
+    vpd = convert2VPD(self, clean=True)#convert pyFormex surface to vpd
     vpd = convertVPD2Triangles(vpd)
     vpd = cleanVPD(vpd)
     decimationFilter = vtkDecimatePro()#decimate the surface
@@ -668,7 +668,7 @@ def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True, verbose=Fal
     decimationFilter.Update()
     vpd = decimationFilter.GetOutput()
     vpd=cleanVPD(vpd)
-    [coords, cells, polys, lines, verts],fielddata,celldata,pointdata=convertFromVPD(vpd)#convert vpd to pyFormex surface
+    [coords, cells, polys, lines, verts], fielddata, celldata, pointdata=convertFromVPD(vpd)#convert vpd to pyFormex surface
     if verbose:
         print(('%d faces decimated into %d triangles'%(self.nelems(), len(polys))))
     return TriSurface(coords, polys)

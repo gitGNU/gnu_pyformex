@@ -30,7 +30,7 @@ from __future__ import print_function
 
 import pyformex as pf
 from flatkeydb import FlatDB
-from mydict import Dict,CDict
+from mydict import Dict, CDict
 from arraytools import *
 
 #################################################################
@@ -48,7 +48,7 @@ def setMaterialDB(mat):
     the argument mat.
     """
     global _matDB
-    if isinstance(mat,MaterialDB) or mat is None:
+    if isinstance(mat, MaterialDB) or mat is None:
         _matDB = mat
     else:
         _matDB = MaterialDB(mat)
@@ -61,7 +61,7 @@ def setSectionDB(sec):
     the argument sec.
     """
     global _secDB
-    if isinstance(sec,SectionDB) or sec is None:
+    if isinstance(sec, SectionDB) or sec is None:
         _secDB = sec
     else:
         _secDB = SectionDB(sec)
@@ -75,7 +75,7 @@ class Database(Dict):
 
         The database can be initialized with a dict.
         """
-        Dict.__init__(self,data)
+        Dict.__init__(self, data)
 
 
     def readDatabase(self,filename,*args,**kargs):
@@ -87,7 +87,7 @@ class Database(Dict):
         """
         mat = FlatDB(*args,**kargs)
         mat.readFile(filename)
-        for k,v in mat.iteritems():
+        for k, v in mat.iteritems():
             self[k] = Dict(v)
 
 
@@ -102,11 +102,11 @@ class MaterialDB(Database):
         database can be read. If it is an empty string, the
         configured database name will be used.
         """
-        Database.__init__(self,{})
+        Database.__init__(self, {})
         if data == '':
-            data = pf.cfg.get('prop/matdb',{})
+            data = pf.cfg.get('prop/matdb', {})
         if isinstance(data, str):
-            self.readDatabase(data,['name'],beginrec='material',endrec='endmaterial')
+            self.readDatabase(data, ['name'], beginrec='material', endrec='endmaterial')
         elif isinstance(data, dict):
             self.update(data)
         else:
@@ -124,11 +124,11 @@ class SectionDB(Database):
         database can be read. If it is an empty string, the
         configured database name will be used.
         """
-        Database.__init__(self,{})
+        Database.__init__(self, {})
         if data == '':
-            data = pf.cfg.get('prop/secdb',{})
+            data = pf.cfg.get('prop/secdb', {})
         if isinstance(data, str):
-            self.readDatabase(data,['name'],beginrec='section',endrec='endsection')
+            self.readDatabase(data, ['name'], beginrec='section', endrec='endsection')
         elif isinstance(data, dict):
             self.update(data)
         else:
@@ -186,7 +186,7 @@ class ElemSection(CDict):
             setMaterialDB({})
         if _secDB is None:
             setSectionDB({})
-        CDict.__init__(self,kargs)
+        CDict.__init__(self, kargs)
         self.addMaterial(material)
         self.addSection(section)
         if orientation is not None:
@@ -206,7 +206,7 @@ class ElemSection(CDict):
                 self.section = _secDB[section]
             else:
                 pf.warning("Section '%s' is not in the database" % section)
-        elif isinstance(section,dict):
+        elif isinstance(section, dict):
             # WE COULD ADD AUTOMATIC CALCULATION OF SECTION PROPERTIES
             #self.computeSection(section)
             #print(section)
@@ -218,7 +218,7 @@ class ElemSection(CDict):
             raise ValueError("Expected a string or a dict")
 
 
-    def computeSection(self,section):
+    def computeSection(self, section):
         """Compute the section characteristics of specific sections."""
         if 'sectiontype' not in section:
             return
@@ -226,11 +226,11 @@ class ElemSection(CDict):
             r = section['radius']
             A = pi * r**2
             I = pi * r**4 / 4
-            section.update({'cross_section':A,
-                            'moment_inertia_11':I,
-                            'moment_inertia_22':I,
-                            'moment_inertia_12':0.0,
-                            'torsional_constant':2*I,
+            section.update({'cross_section': A,
+                            'moment_inertia_11': I,
+                            'moment_inertia_22': I,
+                            'moment_inertia_12': 0.0,
+                            'torsional_constant': 2*I,
                             })
         else:
             raise ValueError("Invalid sectiontype")
@@ -271,10 +271,10 @@ class ElemLoad(CDict):
         """
         if label == 'GRAV':
             if dir is None:
-                dir = [0, 0 ,-1]
+                dir = [0, 0, -1]
             if value is None:
                 value = 9.81
-        Dict.__init__(self,{'label':label,'value':value,'dir':dir})
+        Dict.__init__(self, {'label':label,'value':value,'dir':dir})
 
 
 class EdgeLoad(CDict):
@@ -288,7 +288,7 @@ class EdgeLoad(CDict):
         - label: the distributed load type label ('x','y','z').
         - value: the magnitude of the distibuted load.
         """
-        Dict.__init__(self,{'edge':edge,'label':label,'value':value})
+        Dict.__init__(self, {'edge':edge,'label':label,'value':value})
 
 
 ############## Basic property data classes ########################
@@ -298,7 +298,7 @@ class CoordSystem(object):
 
     valid_csys = 'RSC'
 
-    def __init__(self,csys,cdata):
+    def __init__(self, csys, cdata):
         """Create a new coordinate system.
 
         csys is one of 'Rectangular', 'Spherical', 'Cylindrical'. Case is
@@ -310,7 +310,7 @@ class CoordSystem(object):
             csys = csys[0].upper()
             if not csys in CoordSystem.valid_csys:
                 raise
-            cdata = asarray(cdata).reshape(2,3)
+            cdata = asarray(cdata).reshape(2, 3)
         except:
             raise ValueError("Invalid initialization data for CoordSystem")
         self.sys = csys
@@ -337,7 +337,7 @@ class Amplitude(object):
         """Create a new amplitude."""
         if definition in [ 'TABULAR', 'SMOOTH STEP' ]:
             if atime in [ 'STEP TIME', 'TOTAL TIME' ]:
-                self.data = checkArray(data,(-1,2),'f','i')
+                self.data = checkArray(data, (-1, 2), 'f', 'i')
                 self.type = definition
                 self.atime = atime
                 if definition == 'TABULAR':
@@ -360,7 +360,7 @@ def checkIdValue(values):
     try:
         l = [ len(v) for v in values ]
         if min(l) == 2 and max(l) == 2:
-            return [ (int(i),float(v)) for i,v in values ]
+            return [ (int(i), float(v)) for i, v in values ]
     except:
         raise ValueError("Expected a list of (int,float) tuples")
 
@@ -378,16 +378,16 @@ def checkArrayOrIdValue(values):
     """
     ##print("VALUES IN: %s" % values)
     try:
-        v = checkArray(values,(6,),'f','i')
+        v = checkArray(values, (6,), 'f', 'i')
         w = where(v != 0.0)[0]
-        values = [ (i,v[i]) for i in w ]
+        values = [ (i, v[i]) for i in w ]
     except:
         values = checkIdValue(values)
     ##print("VALUES OUT: %s" % values)
     return values
 
 
-def checkString(a,valid):
+def checkString(a, valid):
     """Check that a string a has one of the valid values.
 
     This is case insensitive, and returns the upper case string if valid.
@@ -398,7 +398,7 @@ def checkString(a,valid):
         if a in valid:
             return a
     except:
-        print("Expected one of %s, got: %s" % (valid,a))
+        print("Expected one of %s, got: %s" % (valid, a))
     raise ValueError
 
 
@@ -420,7 +420,7 @@ def Eset(*args):
 ##################### Properties Database ###################
 
 
-def FindListItem(l,p):
+def FindListItem(l, p):
     """Find the item p in the list l.
 
     If p is an item in the list (not a copy of it!), this returns
@@ -429,13 +429,13 @@ def FindListItem(l,p):
     Matches are found with a 'is' function, not an '=='.
     Only the first match will be reported.
     """
-    for i,j in enumerate(l):
+    for i, j in enumerate(l):
         if j is p:
             return i
     return -1
 
 
-def RemoveListItem(l,p):
+def RemoveListItem(l, p):
     """Remove the item p from the list l.
 
     If p is an item in the list (not a copy of it!), it is removed from
@@ -445,7 +445,7 @@ def RemoveListItem(l,p):
     As a result, we can find complex objects which do not allow '==',
     such as ndarrays.
     """
-    i = FindListItem(l,p)
+    i = FindListItem(l, p)
     if i >= 0:
         del l[i]
 
@@ -494,11 +494,11 @@ class PropertyDB(Dict):
     def autoName(clas,kind,*args):
         return autoName((kind+'set').capitalize(),*args)
 
-    def setMaterialDB(self,aDict):
+    def setMaterialDB(self, aDict):
         """Set the materials database to an external source"""
         setMaterialDB(aDict)
 
-    def setSectionDB(self,aDict):
+    def setSectionDB(self, aDict):
         """Set the sections database to an external source"""
         setSectionDB(aDict)
 
@@ -541,7 +541,7 @@ class PropertyDB(Dict):
         # update with kargs first, to make sure tag,set and nr are sane
         d.update(dict(**kargs))
 
-        prop = getattr(self,kind+'prop')
+        prop = getattr(self, kind+'prop')
         d.nr = len(prop)
         if tag is not None:
             d.tag = str(tag)
@@ -552,9 +552,9 @@ class PropertyDB(Dict):
         if name is None and isinstance(set, str):
             ### convenience to allow set='name' as alias for name='name'
             ### to reuse already defined set
-            name,set = set,name
+            name, set = set, name
         if name is None:
-            name = self.autoName(kind,d.nr)
+            name = self.autoName(kind, d.nr)
         elif not isinstance(name, str):
             raise ValueError("Property name should be a string")
         d.name = name
@@ -585,7 +585,7 @@ class PropertyDB(Dict):
 
         If delete==True, the returned properties are removed from the database.
         """
-        prop = getattr(self,kind+'prop')
+        prop = getattr(self, kind+'prop')
         if rec is not None:
             if not isinstance(rec, list):
                 rec = [ rec ]
@@ -594,14 +594,14 @@ class PropertyDB(Dict):
         if tag is not None:
             if not isinstance(tag, list):
                 tag = [ tag ]
-            tag = map(str,tag)   # tags are always converted to strings!
+            tag = map(str, tag)   # tags are always converted to strings!
             prop = [ p for p in prop if 'tag' in p and p['tag'] in tag ]
         for a in attr:
             prop = [ p for p in prop if a in p and p[a] is not None ]
         for a in noattr:
             prop = [ p for p in prop if a not in p or p[a] is None ]
         if delete:
-            self._delete(prop,kind=kind)
+            self._delete(prop, kind=kind)
         return prop
 
 
@@ -612,18 +612,18 @@ class PropertyDB(Dict):
         such as returned by getProp.
         The kind parameter can specify a specific property database.
         """
-        prop = getattr(self,kind+'prop')
+        prop = getattr(self, kind+'prop')
         if not isinstance(plist, list):
             pdel = [ plist ]
         for p in plist:
-            RemoveListItem(prop,p)
+            RemoveListItem(prop, p)
         self._sanitize(kind)
 
 
-    def _sanitize(self,kind):
+    def _sanitize(self, kind):
         """Sanitize the record numbers after deletion"""
-        prop = getattr(self,kind+'prop')
-        for i,p in enumerate(prop):
+        prop = getattr(self, kind+'prop')
+        for i, p in enumerate(prop):
             p.nr = i
 
 
@@ -633,7 +633,7 @@ class PropertyDB(Dict):
         This is equivalent to getProp() but the returned properties
         are removed from the database.
         """
-        return self.getProp(kind=kind,rec=rec,tag=tag,attr=attr,delete=True)
+        return self.getProp(kind=kind, rec=rec, tag=tag, attr=attr, delete=True)
 
 
     def nodeProp(self,prop=None,set=None,name=None,tag=None,cload=None,bound=None,displ=None,veloc=None,accel=None,csys=None,ampl=None,**kargs):
@@ -668,14 +668,14 @@ class PropertyDB(Dict):
                 d['accel'] = checkArrayOrIdValue(accel)
             if bound is not None:
                 if isinstance(bound, str):
-                    d['bound'] = checkString(bound,self.bound_strings)
+                    d['bound'] = checkString(bound, self.bound_strings)
                 elif isinstance(bound, list):
                     if not isinstance(bound[0], tuple):
-                        d['bound'] = checkArray1D(bound,kind='i',size=6)
+                        d['bound'] = checkArray1D(bound, kind='i', size=6)
                     else:
                         d['bound'] = bound # unchecked
             if csys is not None:
-                if isinstance(csys,CoordSystem):
+                if isinstance(csys, CoordSystem):
                     d['csys'] = csys
                 else:
                     raise ValueError("Invalid Coordinate System")
@@ -685,7 +685,7 @@ class PropertyDB(Dict):
                 d['ampl'] = ampl
             return self.Prop(kind='n',prop=prop,tag=tag,set=set,name=name,**d)
         except:
-            print("tag=%s,set=%s,name=%s,cload=%s,bound=%s,displ=%s,csys=%s" % (tag,set,name,cload,bound,displ,csys))
+            print("tag=%s,set=%s,name=%s,cload=%s,bound=%s,displ=%s,csys=%s" % (tag, set, name, cload, bound, displ, csys))
             raise ValueError("Invalid Node Property")
 
 
@@ -727,7 +727,7 @@ class PropertyDB(Dict):
 
             return self.Prop(kind='e',prop=prop,tag=tag,set=set,name=name,**d)
         except:
-            raise ValueError("Invalid Elem Property\n  tag=%s,set=%s,name=%s,eltype=%s,section=%s,dload=%s,eload=%s" % (tag,set,name,eltype,section,dload,eload))
+            raise ValueError("Invalid Elem Property\n  tag=%s,set=%s,name=%s,eltype=%s,section=%s,dload=%s,eload=%s" % (tag, set, name, eltype, section, dload, eload))
 
 
 ##################################### Test ###########################
@@ -741,10 +741,10 @@ if __name__ == "script" or  __name__ == "draw":
 
     P = PropertyDB()
 
-    Stick = P.Prop(color='green',name='Stick',weight=25,comment='This could be anything: a gum, a frog, a usb-stick,...')
+    Stick = P.Prop(color='green', name='Stick', weight=25, comment='This could be anything: a gum, a frog, a usb-stick,...')
     print(Stick)
 
-    author = P.Prop(tag='author',alias='Alfred E Neuman',address=CDict({'street':'Krijgslaan', 'city':'Gent','country':'Belgium'}))
+    author = P.Prop(tag='author', alias='Alfred E Neuman', address=CDict({'street':'Krijgslaan', 'city':'Gent','country':'Belgium'}))
 
     print(P.getProp(tag='author')[0])
 
@@ -759,10 +759,10 @@ if __name__ == "script" or  __name__ == "draw":
     author.address.street = 'Wiemersdreef'
     print(author.address.street)
 
-    author = P.Prop(tag='author',name='John Doe',address={'city': 'London', 'street': 'Downing Street 10', 'country': 'United Kingdom'})
+    author = P.Prop(tag='author', name='John Doe', address={'city': 'London', 'street': 'Downing Street 10', 'country': 'United Kingdom'})
     print(author)
 
-    for p in P.getProp(rec=[0,2]):
+    for p in P.getProp(rec=[0, 2]):
         print(p.name)
 
     for p in P.getProp(tag=['author']):
@@ -772,26 +772,26 @@ if __name__ == "script" or  __name__ == "draw":
         print(p.nr)
 
 
-    P.Prop(set=[0,1,3],name='green_elements',color='green')
-    P.Prop(name='green_elements',transparent=True)
-    a = P.Prop(set=[0,2,4,6],thickness=3.2)
-    P.Prop(name=a.name,material='steel')
+    P.Prop(set=[0, 1, 3], name='green_elements', color='green')
+    P.Prop(name='green_elements', transparent=True)
+    a = P.Prop(set=[0, 2, 4, 6], thickness=3.2)
+    P.Prop(name=a.name, material='steel')
 
     for p in P.getProp(attr=['name']):
         print(p)
 
-    P.Prop(set='green_elements',transparent=False)
+    P.Prop(set='green_elements', transparent=False)
     for p in P.getProp(attr=['name']):
         if p.name == 'green_elements':
-            print(p.nr,p.transparent)
+            print(p.nr, p.transparent)
 
     print("before")
     for p in P.getProp():
         print(p)
 
-    P.getProp(attr=['transparent'],delete=True)
+    P.getProp(attr=['transparent'], delete=True)
     P.delProp(attr=['color'])
-    pl = P.getProp(rec=[5,6])
+    pl = P.getProp(rec=[5, 6])
     print(pl)
     P._delete(pl)
 
@@ -803,23 +803,23 @@ if __name__ == "script" or  __name__ == "draw":
 
     times = arange(10)
     values = square(times)
-    amp = Amplitude(column_stack([times,values]))
-    P.Prop(amplitude=amp,name='amp1')
+    amp = Amplitude(column_stack([times, values]))
+    P.Prop(amplitude=amp, name='amp1')
 
-    P1 = [ 1.0,1.0,1.0, 0.0,0.0,0.0 ]
+    P1 = [ 1.0, 1.0, 1.0, 0.0, 0.0, 0.0 ]
     P2 = [ 0.0 ] * 3 + [ 1.0 ] * 3
     B1 = [ 1 ] + [ 0 ] * 5
-    CYL = CoordSystem('cylindrical',[0,0,0,0,0,1])
+    CYL = CoordSystem('cylindrical', [0, 0, 0, 0, 0, 1])
     # node property on single node
-    P.nodeProp(1,cload=[5,0,-75,0,0,0])
+    P.nodeProp(1, cload=[5, 0, -75, 0, 0, 0])
     # node property on nodes 2 and 3
-    P.nodeProp(set=[2,3],bound='pinned')
+    P.nodeProp(set=[2, 3], bound='pinned')
     # node property on ALL nodes
-    P.nodeProp(cload=P1,bound=B1,csys=CYL,ampl='amp1')
+    P.nodeProp(cload=P1, bound=B1, csys=CYL, ampl='amp1')
     # node property whose set will be reused
-    nset1 = P.nodeProp(tag='step1',set=[2,3,4],cload=P1).nr
+    nset1 = P.nodeProp(tag='step1', set=[2, 3, 4], cload=P1).nr
     # node properties with an already named set
-    P.nodeProp(tag='step2',set=Nset(nset1),cload=P2)
+    P.nodeProp(tag='step2', set=Nset(nset1), cload=P2)
 
     print('nodeproperties')
     print(P.nprop)
@@ -828,20 +828,20 @@ if __name__ == "script" or  __name__ == "draw":
     print(P.getProp('n'))
 
     print("properties 0 and 2")
-    for p in P.getProp('n',rec=[0,2]):
+    for p in P.getProp('n', rec=[0, 2]):
         print(p)
 
     print("tags 1 and step1")
-    for p in P.getProp('n',tag=[1,'step1']):
+    for p in P.getProp('n', tag=[1, 'step1']):
         print(p)
 
     print("cload attributes")
-    for p in P.getProp('n',attr=['cload']):
+    for p in P.getProp('n', attr=['cload']):
         print(p)
 
     vert = ElemSection('IPEA100', 'steel')
     hor = ElemSection({'name':'IPEM800','A':951247,'I':CDict({'Ix':1542,'Iy':6251,'Ixy':352})}, {'name':'S400','E':210,'fy':400})
-    circ = ElemSection({'name':'circle','radius':10,'sectiontype':'circ'},'steel')
+    circ = ElemSection({'name':'circle','radius':10,'sectiontype':'circ'}, 'steel')
 
     print("Materials")
     for m in Mat:
@@ -852,14 +852,14 @@ if __name__ == "script" or  __name__ == "draw":
         print(Sec[s])
 
 
-    q1 = ElemLoad('PZ',2.5)
-    q2 = ElemLoad('PY',3.14)
+    q1 = ElemLoad('PZ', 2.5)
+    q2 = ElemLoad('PY', 3.14)
 
 
-    top = P.elemProp(set=[0,1,2],eltype='B22',section=hor,dload=q1)
-    column = P.elemProp(eltype='B22',section=vert)
-    diagonal = P.elemProp(eltype='B22',section=hor)
-    bottom = P.elemProp(section=hor,dload=q2,ampl='amp1')
+    top = P.elemProp(set=[0, 1, 2], eltype='B22', section=hor, dload=q1)
+    column = P.elemProp(eltype='B22', section=vert)
+    diagonal = P.elemProp(eltype='B22', section=hor)
+    bottom = P.elemProp(section=hor, dload=q2, ampl='amp1')
 
 
     print('elemproperties')
@@ -867,10 +867,10 @@ if __name__ == "script" or  __name__ == "draw":
         print(p)
 
     print("section properties")
-    for p in P.getProp('e',attr=['section']):
+    for p in P.getProp('e', attr=['section']):
         print(p.nr)
 
-    P.Prop(set='cylinder',name='cylsurf',surftype='element',label='SNEG')
+    P.Prop(set='cylinder', name='cylsurf', surftype='element', label='SNEG')
 
     print(P.getProp(attr=['surftype']))
 

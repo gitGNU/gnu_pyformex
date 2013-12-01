@@ -107,9 +107,9 @@ def export(dic):
     pf.PF.update(dic)
 
 
-def export2(names,values):
+def export2(names, values):
     """Export a list of names and values."""
-    export(dict(zip(names,values)))
+    export(dict(zip(names, values)))
 
 
 def forget(names):
@@ -125,10 +125,10 @@ def forgetAll():
     pf.PF = {}
 
 
-def rename(oldnames,newnames):
+def rename(oldnames, newnames):
     """Rename the global variables in oldnames to newnames."""
     g = pf.PF
-    for oldname,newname in zip(oldnames,newnames):
+    for oldname, newname in zip(oldnames, newnames):
         if oldname in g:
             g[newname] = g[oldname]
             del g[oldname]
@@ -152,7 +152,7 @@ def listAll(clas=None,like=None,filtr=None,dic=None,sort=False):
 
     names = dic.keys()
     if clas is not None:
-        names = [ n for n in names if isinstance(dic[n],clas) ]
+        names = [ n for n in names if isinstance(dic[n], clas) ]
     if like is not None:
         names = [ n for n in names if n.startswith(like) ]
     if filtr is not None:
@@ -173,7 +173,7 @@ def named(name):
 
 def getcfg(name):
     """Return a value from the configuration."""
-    return pf.cfg.get(name,None)
+    return pf.cfg.get(name, None)
 
 
 #################### Interacting with the user ###############################
@@ -207,7 +207,7 @@ def ask(question,choices=None,default=''):
 
 def ack(question):
     """Show a Yes/No question and return True/False depending on answer."""
-    return ask(question,['Y','N']) == 0
+    return ask(question, ['Y', 'N']) == 0
 
 
 def error(message):
@@ -244,11 +244,11 @@ def scriptLock(id):
     elif id == '__auto/app__':
         pf.scriptMode = 'app'
 
-    pf.debug("Setting script lock %s" %id,pf.DEBUG.SCRIPT)
+    pf.debug("Setting script lock %s" %id, pf.DEBUG.SCRIPT)
     pf.scriptlock |= {id}
 
 def scriptRelease(id):
-    pf.debug("Releasing script lock %s" %id,pf.DEBUG.SCRIPT)
+    pf.debug("Releasing script lock %s" %id, pf.DEBUG.SCRIPT)
     pf.scriptlock -= {id}
     pf.scriptMode = None
 
@@ -264,7 +264,7 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
     If filename is specified, set the global variable __file__ to it.
     """
     utils.warn('print_function')
-    global exportNames,starttime
+    global exportNames, starttime
     global exitrequested
 
     # (We only allow one script executing at a time!)
@@ -295,7 +295,7 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
     # BV: Should we continue support for this?
     if pye:
         n = (len(scr)+1) // 2
-        scr = utils.mergeme(scr[:n],scr[n:])
+        scr = utils.mergeme(scr[:n], scr[n:])
 
     # Now we can execute the script using these collected globals
     exportNames = []
@@ -305,7 +305,7 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
     if pf.DEBUG.MEM:
         memu = memUsed()
         vmsiz = vmSize()
-        pf.debug("MemUsed = %s; vmSize = %s" % (memu,vmsiz),pf.DEBUG.MEM)
+        pf.debug("MemUsed = %s; vmSize = %s" % (memu, vmsiz), pf.DEBUG.MEM)
 
     if filename is None:
         filename = '<string>'
@@ -314,7 +314,7 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
     #starttime = time.clock()
     try:
         pf.interpreter.locals.update(g)
-        pf.interpreter.runsource(scr,filename,'exec')
+        pf.interpreter.runsource(scr, filename, 'exec')
 
     except SystemExit:
         print ("EXIT FROM SCRIPT")
@@ -326,23 +326,23 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
             try:
                 atExit()
             except:
-                pf.debug('Error while calling script exit function',pf.DEBUG.SCRIPT)
+                pf.debug('Error while calling script exit function', pf.DEBUG.SCRIPT)
 
         if pf.cfg['autoglobals']:
             if pf.console:
                 g = pf.console.interpreter.locals
-            exportNames.extend(listAll(clas=Geometry,dic=g))
-        pf.PF.update([(k,g[k]) for k in exportNames])
+            exportNames.extend(listAll(clas=Geometry, dic=g))
+        pf.PF.update([(k, g[k]) for k in exportNames])
 
         scriptRelease('__auto/script__') # release the lock
         if pf.GUI:
             pf.GUI.stopRun()
 
-    pf.debug("MemUsed = %s; vmSize = %s" % (memUsed(),vmSize()),pf.DEBUG.MEM)
-    pf.debug("Diff MemUsed = %s; diff vmSize = %s" % (memUsed()-memu,vmSize()-vmsiz),pf.DEBUG.MEM)
+    pf.debug("MemUsed = %s; vmSize = %s" % (memUsed(), vmSize()), pf.DEBUG.MEM)
+    pf.debug("Diff MemUsed = %s; diff vmSize = %s" % (memUsed()-memu, vmSize()-vmsiz), pf.DEBUG.MEM)
 
     if exitall:
-        pf.debug("Calling quit() from playscript",pf.DEBUG.SCRIPT)
+        pf.debug("Calling quit() from playscript", pf.DEBUG.SCRIPT)
         quit()
 
 
@@ -367,7 +367,7 @@ def breakpt(msg=None):
 
 
 def raiseExit():
-    pf.debug("RAISING SystemExit",pf.DEBUG.SCRIPT)
+    pf.debug("RAISING SystemExit", pf.DEBUG.SCRIPT)
     if pf.GUI:
         pf.GUI.drawlock.release()
     raise _Exit("EXIT REQUESTED FROM SCRIPT")
@@ -375,7 +375,7 @@ def raiseExit():
 
 def enableBreak(mode=True):
     if pf.GUI:
-        pf.GUI.enableButtons(pf.GUI.actions,['Stop'],mode)
+        pf.GUI.enableButtons(pf.GUI.actions, ['Stop'], mode)
 
 
 def stopatbreakpt():
@@ -401,10 +401,10 @@ def checkPrintSyntax(filename):
     attempted.
     Raises an exception if an error is found and no correction attempted.
     """
-    with open(filename,'r') as f:
+    with open(filename, 'r') as f:
         try:
             script = f.read()
-            scr = compile(script,filename,'exec')
+            scr = compile(script, filename, 'exec')
             return scr
         except SyntaxError as err:
             if re.compile('.*print +[^ (]').match(err.text):
@@ -434,7 +434,7 @@ This will overwrite the contents of file %s.
 
 Also, the automatic conversion is not guaranteed to work, because
 there may be other errors.
-""" % (err.lineno,err.filename,err.text,filename,filename),actions=['Not this time','Convert now'],)
+""" % (err.lineno, err.filename, err.text, filename, filename), actions=['Not this time', 'Convert now'],)
                 if ans == 'Convert now':
                     print(ans)
                     if convertPrintSyntax(filename):
@@ -456,23 +456,23 @@ def runScript(fn,argv=[]):
     msg = "Running script (%s)" % fn
     if pf.GUI:
         pf.GUI.scripthistory.add(fn)
-        pf.GUI.board.write(msg,color='red')
+        pf.GUI.board.write(msg, color='red')
     else:
         message(msg)
-    pf.debug("  Executing with arguments: %s" % argv,pf.DEBUG.SCRIPT)
+    pf.debug("  Executing with arguments: %s" % argv, pf.DEBUG.SCRIPT)
     pye = fn.endswith('.pye')
     if pf.GUI and getcfg('check_print'):
-        pf.debug("Testing script for use of print function",pf.DEBUG.SCRIPT)
+        pf.debug("Testing script for use of print function", pf.DEBUG.SCRIPT)
         scr = checkPrintSyntax(fn)
         #
         # TODO: if scr is a compiled object, we could just execute it
         #
 
-    res = playScript(file(fn,'r'),fn,fn,argv,pye)
-    pf.debug("  Arguments left after execution: %s" % argv,pf.DEBUG.SCRIPT)
-    msg = "Finished script %s in %s seconds" % (fn,t.seconds())
+    res = playScript(file(fn, 'r'), fn, fn, argv, pye)
+    pf.debug("  Arguments left after execution: %s" % argv, pf.DEBUG.SCRIPT)
+    msg = "Finished script %s in %s seconds" % (fn, t.seconds())
     if pf.GUI:
-        pf.GUI.board.write(msg,color='red')
+        pf.GUI.board.write(msg, color='red')
     else:
         message(msg)
     return res
@@ -488,8 +488,8 @@ def runApp(appname,argv=[],refresh=False,lock=True,check=True):
     import apps
     from timer import Timer
     t = Timer()
-    pf.message("Loading application %s with refresh=%s" % (appname,refresh))
-    app = apps.load(appname,refresh=refresh)
+    pf.message("Loading application %s with refresh=%s" % (appname, refresh))
+    app = apps.load(appname, refresh=refresh)
     if app is None:
         errmsg = "An  error occurred while loading application %s" % appname
         if pf.GUI:
@@ -500,7 +500,7 @@ def runApp(appname,argv=[],refresh=False,lock=True,check=True):
             fn = apps.findAppSource(appname)
             if os.path.exists(fn):
                 errmsg += "\n\nYou may try executing the application as a script,\n  or you can load the source file in the editor."
-                res = draw.ask(errmsg,choices=['Run as script', 'Load in editor', "Don't bother"])
+                res = draw.ask(errmsg, choices=['Run as script', 'Load in editor', "Don't bother"])
                 if res[0] in 'RL':
                     if res[0] == 'L':
                         draw.editFile(fn)
@@ -515,24 +515,24 @@ def runApp(appname,argv=[],refresh=False,lock=True,check=True):
 
         return
 
-    if pf.options.opengl2 and hasattr(app,'_opengl2') and not app._opengl2:
+    if pf.options.opengl2 and hasattr(app, '_opengl2') and not app._opengl2:
         pf.warning("This Example can not yet be run under the pyFormex opengl2 engine.\n You can run it when you start pyFormex with the '--gl1' command line options.")
         return
 
-    if hasattr(app,'_status') and app._status == 'unchecked':
+    if hasattr(app, '_status') and app._status == 'unchecked':
         pf.warning("This looks like an Example script that has been automatically converted to the pyFormex Application model, but has not been checked yet as to whether it is working correctly in App mode.\nYou can help here by running and rerunning the example, checking that it works correctly, and where needed fixing it (or reporting the failure to us). If the example runs well, you can change its status to 'checked'")
 
     if lock:
         scriptLock('__auto/app__')
-    msg = "Running application '%s' from %s" % (appname,app.__file__)
+    msg = "Running application '%s' from %s" % (appname, app.__file__)
     pf.scriptName = appname
     if pf.GUI:
         pf.GUI.startRun()
         pf.GUI.apphistory.add(appname)
-        pf.GUI.board.write(msg,color='green')
+        pf.GUI.board.write(msg, color='green')
     else:
         message(msg)
-    pf.debug("  Passing arguments: %s" % argv,pf.DEBUG.SCRIPT)
+    pf.debug("  Passing arguments: %s" % argv, pf.DEBUG.SCRIPT)
     app._args_ = argv
     try:
         try:
@@ -543,24 +543,24 @@ def runApp(appname,argv=[],refresh=False,lock=True,check=True):
         except:
             raise
     finally:
-        if hasattr(app,'atExit'):
+        if hasattr(app, 'atExit'):
             app.atExit()
         if pf.cfg['autoglobals']:
             g = app.__dict__
-            exportNames = listAll(clas=Geometry,dic=g)
-            pf.PF.update([(k,g[k]) for k in exportNames])
+            exportNames = listAll(clas=Geometry, dic=g)
+            pf.PF.update([(k, g[k]) for k in exportNames])
         if lock:
             scriptRelease('__auto/app__') # release the lock
         if pf.GUI:
             pf.GUI.stopRun()
 
-    pf.debug("  Arguments left after execution: %s" % argv,pf.DEBUG.SCRIPT)
-    msg = "Finished %s in %s seconds" % (appname,t.seconds())
+    pf.debug("  Arguments left after execution: %s" % argv, pf.DEBUG.SCRIPT)
+    msg = "Finished %s in %s seconds" % (appname, t.seconds())
     if pf.GUI:
-        pf.GUI.board.write(msg,color='green')
+        pf.GUI.board.write(msg, color='green')
     else:
         message(msg)
-    pf.debug("Memory: %s" % vmSize(),pf.DEBUG.MEM)
+    pf.debug("Memory: %s" % vmSize(), pf.DEBUG.MEM)
 
 
 def runAny(appname=None,argv=[],step=False,refresh=False):
@@ -587,10 +587,10 @@ def runAny(appname=None,argv=[],step=False,refresh=False):
 
     if utils.is_script(appname):
         #print "RUNNING SCRIPT %s" % appname
-        return runScript(appname,argv)
+        return runScript(appname, argv)
     else:
         #print "RUNNING APP %s" % appname
-        return runApp(appname,argv,refresh)
+        return runApp(appname, argv, refresh)
 
 
 ## def runAll(applist,refresh=False):
@@ -627,7 +627,7 @@ def quit():
     directly, but results from an exit(True) call.
     """
     if pf.app and pf.app_started: # quit the QT app
-        pf.debug("draw.exit called while no script running",pf.DEBUG.SCRIPT)
+        pf.debug("draw.exit called while no script running", pf.DEBUG.SCRIPT)
         pf.app.quit() # closes the GUI and exits pyformex
     else: # the QT app didn't even start
         sys.exit(0) # use Python to exit pyformex
@@ -648,7 +648,7 @@ def processArgs(args):
         elif not os.path.exists(fn) or not utils.is_pyFormex(fn):
             pf.message("Skipping %s: does not exist or is not a pyFormex script" % fn)
             continue
-        res = runScript(fn,args)
+        res = runScript(fn, args)
         if res and pf.GUI:
             pf.message("Error during execution of script %s" % fn)
 
@@ -664,15 +664,15 @@ def setPrefs(res,save=False):
     If save is True, the changes will be stored to the user's
     configuration file.
     """
-    pf.debug("Accepted settings:\n%s"%res,pf.DEBUG.CONFIG)
+    pf.debug("Accepted settings:\n%s"%res, pf.DEBUG.CONFIG)
     for k in res:
         pf.cfg[k] = res[k]
         if save and pf.prefcfg[k] != pf.cfg[k]:
             pf.prefcfg[k] = pf.cfg[k]
 
-    pf.debug("New settings:\n%s"%pf.cfg,pf.DEBUG.CONFIG)
+    pf.debug("New settings:\n%s"%pf.cfg, pf.DEBUG.CONFIG)
     if save:
-        pf.debug("New preferences:\n%s"%pf.prefcfg,pf.DEBUG.CONFIG)
+        pf.debug("New preferences:\n%s"%pf.prefcfg, pf.DEBUG.CONFIG)
 
 
 ########################## print information ################################
@@ -702,10 +702,10 @@ def printdetected():
 
 
 def printLoadedApps():
-    import apps,sys
+    import apps, sys
     loaded = apps.listLoaded()
     refcnt = [ sys.getrefcount(sys.modules[k]) for k in loaded ]
-    print(', '.join([ "%s (%s)" % (k,r) for k,r in zip(loaded,refcnt)]))
+    print(', '.join([ "%s (%s)" % (k, r) for k, r in zip(loaded, refcnt)]))
 
 
 # THis is not a good way of computing memory usage
@@ -717,7 +717,7 @@ def memUsed():
     return utils.memory_report()['MemUsed']
 
 def printVMem(msg='MEMORY'):
-    print('%s: VmSize=%skB'%(msg,vmSize()))
+    print('%s: VmSize=%skB'%(msg, vmSize()))
 
 
 ### Utilities
@@ -727,7 +727,7 @@ def isWritable(path):
 
     BEWARE: this only works if the path exists!
     """
-    return os.access(path,os.W_OK)
+    return os.access(path, os.W_OK)
 
 
 def chdir(path,create=False):
@@ -762,7 +762,7 @@ def chdir(path,create=False):
         if not create or not mkdir(path):
             raise ValueError("The path %s does not exist" % path)
     os.chdir(path)
-    setPrefs({'workdir':path},save=True)
+    setPrefs({'workdir':path}, save=True)
     if pf.GUI:
         pf.GUI.setcurdir()
     pwdir()
@@ -813,7 +813,7 @@ def runtime():
 def startGui(args=[]):
     """Start the gui"""
     if pf.GUI is None:
-        pf.debug("Starting the pyFormex GUI",pf.DEBUG.GUI)
+        pf.debug("Starting the pyFormex GUI", pf.DEBUG.GUI)
         from gui import guimain
         if guimain.startGUI(args) == 0:
             guimain.runGUI()
@@ -835,7 +835,7 @@ def checkRevision(rev,comp='>='):
     """
     try:
         cur = int(utils.splitStartDigits(pf.__revision__)[0])
-        return eval("%s %s %s" % (cur,comp,rev))
+        return eval("%s %s %s" % (cur, comp, rev))
     except:
         return False
 
@@ -846,8 +846,8 @@ def requireRevision(rev,comp='>='):
     The arguments are like checkRevision. However, this function will
     raise an error if the requirement fails.
     """
-    if not checkRevision(rev,comp):
-        raise RuntimeError("Your current pyFormex revision (%s) does not pass the test %s %s" % (pf.__revision__,comp,rev))
+    if not checkRevision(rev, comp):
+        raise RuntimeError("Your current pyFormex revision (%s) does not pass the test %s %s" % (pf.__revision__, comp, rev))
 
 
 
@@ -878,7 +878,7 @@ def writeGeomFile(filename,objects,sep=' ',mode='w',shortlines=False):
     gzip = filename.endswith('.gz')
     if gzip:
         filename = filename[:-3]
-    f = geomfile.GeometryFile(filename,mode='w',sep=sep)
+    f = geomfile.GeometryFile(filename, mode='w', sep=sep)
     if shortlines:
         f.fmt = {'i':'%i ','f':'%f '}
     f.write(objects)
@@ -906,8 +906,8 @@ def readGeomFile(filename):
     """
     gzip = filename.endswith('.gz')
     if gzip:
-        filename = utils.gunzip(filename,unzipped='',remove=False)
-    f = geomfile.GeometryFile(filename,mode='r')
+        filename = utils.gunzip(filename, unzipped='', remove=False)
+    f = geomfile.GeometryFile(filename, mode='r')
     objects = f.read()
     if gzip:
         utils.removeFile(filename)

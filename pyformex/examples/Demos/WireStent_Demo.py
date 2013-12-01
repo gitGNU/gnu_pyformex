@@ -75,96 +75,96 @@ class DoubleHelixStent(object):
         ny = int(round(nx*L/p))  # The actual length may differ a bit from L
         # a single bumped strut, oriented along the x-axis
         bump_z=lambda x: 1.-(x/nb)**2
-        A=Formex('l:1',3)
+        A=Formex('l:1', 3)
         pf.message("\nThis Demo is intended for educational purposes by rewriting the WireStent.py \n example and adding lots of drawing instructions and comments. More details \n regarding the used definitions can be found in the Pyformex reference manual.")
         pf.message("\nStep 1: Create a Formex: a line of length 1 (with property 3) oriented along the X-axis\n               A = Formex('l:1',3)")
-        draw(A,view='bottom')
+        draw(A, view='bottom')
         pause()
-        B=Formex(A.replic(nb,1.0),1)
+        B=Formex(A.replic(nb, 1.0), 1)
         pf.message("Step 2: Copy the Formex nb times in the X(0)-direction\n               B = Formex(A.replic(nb,1.0),1)")
-        draw(B,view='last')
+        draw(B, view='last')
         pause()
         clear() 
-        base = Formex(B.bump1(2,[0.,0.,dz],bump_z,0),1)
+        base = Formex(B.bump1(2, [0., 0., dz], bump_z, 0), 1)
         pf.message("Step 3: Create a bump in the Z(2)-direction\n               base = Formex(B.bump1(2,[0.,0.,dz],bump_z,0),1)")
-        draw(base,view='last')
+        draw(base, view='last')
         pause()
         clear()
         # scale back to size 1.
-        base = base.scale([1./nb,1./nb,1.])
+        base = base.scale([1./nb, 1./nb, 1.])
         pf.message("Step 4: Rescale the base line to size 1\n               base = base.scale([1./nb,1./nb,1.])")
-        draw(base,view='last')
+        draw(base, view='last')
         pause()
         clear()
         # NE and SE directed struts
-        NE = base.shear(1,0,1.)
+        NE = base.shear(1, 0, 1.)
         NE.setProp(1)
         pf.message("Step 5: Skew the base line to NE-direction\n               NE = base.shear(1,0,1.)")
 ##      The nxt two lines serve to rotate the camera up over 30°, i.e. 6 times the rotUp definition from cameraMenu 
-        pf.canvas.camera.rotate(30,1,0,0)
+        pf.canvas.camera.rotate(30, 1, 0, 0)
         pf.canvas.update()   
         draw(NE)
         pause()
         clear()
-        SE = base.reflect(2).shear(1,0,-1.)
+        SE = base.reflect(2).shear(1, 0, -1.)
         SE.setProp(3)
         pf.message("Step 6: Create a mirrored base line and skew it to SE-direction\n               SE = base.reflect(2).shear(1,0,-1.)")
-        draw(SE,view='last')
+        draw(SE, view='last')
         pause()
         clear()
         cell=(NE+SE)
         pf.message("Step 7: Create the base cell by combining the NE and SE formices\n               cell = (NE+SE)")
-        draw(cell,view='last')
+        draw(cell, view='last')
         pause()
         clear()
         # a unit cell of crossing struts
-        cell1 = (cell).rosette(2,180)
+        cell1 = (cell).rosette(2, 180)
         pf.message("Step 8: Create the base module (cell1) of two crossing wires by replicating the base cell by an angular rotation\n               cell1 = (cell).rosette(2,180)")
-        draw(cell1,view='last')
+        draw(cell1, view='last')
         pause()
         clear()
         # add a connector between first points of NE and SE
         if connectors:
-            cell1 += Formex([[NE[0][0],SE[0][0]]],2)
+            cell1 += Formex([[NE[0][0], SE[0][0]]], 2)
         pf.message("Step 9: Add a connector between the first points of NE and SE of the base module\n               cell1 += Formex([[NE[0][0],SE[0][0]]],2)")
-        draw(cell1,view='last')
+        draw(cell1, view='last')
         pause()
         clear()    
         # and create its mirror
         cell2 = cell1.reflect(2)
         pf.message("Step 10: Create a mirror in Z(2)-direction of the base module\n               cell2 = cell1.reflect(2)")
-        draw(cell2,view='last')
+        draw(cell2, view='last')
         pause()
         clear()
         # and move both to appropriate place
-        self.cell1 = cell1.translate([1.,1.,0.])
-        self.cell2 = cell2.translate([-1.,-1.,0.])
+        self.cell1 = cell1.translate([1., 1., 0.])
+        self.cell2 = cell2.translate([-1., -1., 0.])
         # the base pattern cell1+cell2 now has size [-2,-2]..[2,2]
         # Create the full pattern by replication
         dx = 4.
         dy = 4.
         module=(self.cell1+self.cell2)
         pf.message("Step 11: Extend the base module with its mirrored and translated copy\n               module = (self.cell1+self.cell2)")
-        draw(module,view='last')
+        draw(module, view='last')
         pause()
         clear()
-        F = module.replic2(nx,ny,dx,dy)
+        F = module.replic2(nx, ny, dx, dy)
         pf.message("Step 12: Replicate the base module in both directions of the base plane\n               F = module.replic2(nx,ny,dx,dy)")
-        draw(F,view='last')
+        draw(F, view='last')
         pause()
         clear()
         # fold it into a cylinder
-        C=F.translate([0.,0.,r])
+        C=F.translate([0., 0., r])
         pf.message("Step 13: Translate the full patern over the stent radius in Z-direction\n               C=F.translate([0.,0.,r])")
-        draw(C,view='last')
+        draw(C, view='last')
         pause()
         clear()
-        self.F = C.cylindrical(dir=[2,0,1],scale=[1.,360./(nx*dx),p/nx/dy])
+        self.F = C.cylindrical(dir=[2, 0, 1], scale=[1., 360./(nx*dx), p/nx/dy])
         pf.message("Step 14: Roll the nearly planar grid into a cylinder\n               self.F = C.cylindrical(dir=[2,0,1],scale=[1.,360./(nx*dx),p/nx/dy])")
-        draw(self.F,view='front')
+        draw(self.F, view='front')
         pause()
         clear()
-        draw(self.F,view='left')
+        draw(self.F, view='left')
         pause()
         clear()
         self.ny = ny
@@ -185,8 +185,8 @@ if __name__ == "draw":
     d = 0.22
     n = 12
     b = 40
-    res = askItems([['Diameter',D],['Length',L],['WireDiam',d],['NWires',n],
-                    ['Pitch',b]])
+    res = askItems([['Diameter', D], ['Length', L], ['WireDiam', d], ['NWires', n],
+                    ['Pitch', b]])
     D = float(res['Diameter'])
     L = float(res['Length'])
     d = float(res['WireDiam'])
@@ -197,9 +197,9 @@ if __name__ == "draw":
 ##        exit()
     b = float(res['Pitch'])
 
-    H = DoubleHelixStent(D,L,d,n,b).all()
+    H = DoubleHelixStent(D, L, d, n, b).all()
  #   clear()
-    draw(H,view='iso')
+    draw(H, view='iso')
     
     # and save it in a lot of graphics formats
 ##    if ack("Do you want to save this image (in lots of formats) ?"):

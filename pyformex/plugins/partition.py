@@ -27,7 +27,7 @@
 from __future__ import print_function
 
 import pyformex as pf
-from gui import decors,colors
+from gui import decors, colors
 from gui.camera import inverse
 from gui.draw import *
 from formex import *
@@ -41,14 +41,14 @@ def prepare(V):
     V = V.translate(-V.center())
     P = V.center()
     print("Initial P = %s" % P)
-    VA = draw(V,bbox=None,color='black')
-    area,norm = geomtools.areaNormals(V.coords)
+    VA = draw(V, bbox=None, color='black')
+    area, norm = geomtools.areaNormals(V.coords)
     N = norm[0]
-    return V,P,N
+    return V, P, N
 
 
-def testview(F,V,P):
-    global VA,waiting
+def testview(F, V, P):
+    global VA, waiting
     p = array(pf.canvas.camera.focus)
     waiting = True
     while waiting:
@@ -58,34 +58,34 @@ def testview(F,V,P):
     m = pf.canvas.camera.getRot()
     P += p
     print("TOTAL TRANSLATE: %s" % P)
-    V = V.affine(inverse(m[0:3,0:3])).translate(-P)
+    V = V.affine(inverse(m[0:3, 0:3])).translate(-P)
     print(V.center())
     print(F.center())
     undraw(VA)
     VA = draw(V)
-    area,norm = geomtools.areaNormals(V.coords)
+    area, norm = geomtools.areaNormals(V.coords)
     N = norm[0]
-    return P,N
+    return P, N
 
 
-def colorCut(F,P,N,prop):
+def colorCut(F, P, N, prop):
     """Color a Formex in two by a plane (P,N)"""
     print(F.bbox())
     print(P)
     print(N)
     print(prop)
-    dist = F.distanceFromPlane(P,N)
+    dist = F.distanceFromPlane(P, N)
     print(dist)
-    right = any(dist>0.0,axis=1)
+    right = any(dist>0.0, axis=1)
     print(right)
     F.prop[right] = prop
     nright = right.sum()
     nleft = F.nelems() - nright
-    print("Left part has %s elements, right part has %s elements" % (nleft,nright))
+    print("Left part has %s elements, right part has %s elements" % (nleft, nright))
     return F
 
 
-def splitProp(F,name):
+def splitProp(F, name):
     """Partition a Formex according to its prop values.
 
     Returns a dict with the partitions, named like name-prop and exports
@@ -95,7 +95,7 @@ def splitProp(F,name):
     if F.prop is None:
         d = { name:F }
     else:
-        d = dict([['%s-%s' % (name,p),F.selectProp(p)] for p in F.propSet()])
+        d = dict([['%s-%s' % (name, p), F.selectProp(p)] for p in F.propSet()])
     export(d)
     return d
 
@@ -123,7 +123,7 @@ def partition(Fin,prop=0):
     If you wish to restore the original properties, you should copy them
     (or the input Formex) before calling this function.
     """
-    global FA,VA,waiting
+    global FA, VA, waiting
 
     # start color
     keepprops = prop
@@ -142,43 +142,43 @@ def partition(Fin,prop=0):
     linewidth(1)
     perspective(False)
     clear()
-    FA = draw(F,view='front')
+    FA = draw(F, view='front')
 
     # create a centered cross plane, large enough
     bb = F.bbox()
     siz = F.sizes().max()
-    V = Formex([[[0.,0.,0.],[1.,0.,0.],[1.,1.,0.]],
-                [[1.,1.,0.],[0.,1.,0.],[0.,0.,0.]]],
+    V = Formex([[[0., 0., 0.], [1., 0., 0.], [1., 1., 0.]],
+                [[1., 1., 0.], [0., 1., 0.], [0., 0., 0.]]],
                0)
-    V = V.translate(-V.center()).rotate(90,1).scale(siz)
+    V = V.translate(-V.center()).rotate(90, 1).scale(siz)
 
     cut_planes = []
 
     pf.GUI.signals.WAKEUP.connect(wakeup)
 
     linewidth(2)
-    w,h = pf.canvas.width(),pf.canvas.height()
+    w, h = pf.canvas.width(), pf.canvas.height()
     fgcolor('magenta')
-    SD = decors.Line(w/2,0,w/2,h)
+    SD = decors.Line(w/2, 0, w/2, h)
     decorate(SD)
 
     fgcolor(colors.black)
 
-    V,P,N = prepare(V)
+    V, P, N = prepare(V)
     while True:
-        res = ask("",["Adjust Cut","Keep Cut", "Finish"])
+        res = ask("", ["Adjust Cut", "Keep Cut", "Finish"])
         if res == "Adjust Cut":
-            P,N = testview(F,V,P)
-            print("Plane: point %s, normal %s" % (P,N))
+            P, N = testview(F, V, P)
+            print("Plane: point %s, normal %s" % (P, N))
         elif res == "Keep Cut":
             undraw(FA)
             #undraw(VA)
-            cut_planes.append((P,N))
+            cut_planes.append((P, N))
             prop += 1
-            F = colorCut(F,-P,N,prop)
+            F = colorCut(F, -P, N, prop)
             FA = draw(F)
             undraw(VA)
-            V,P,N = prepare(V)
+            V, P, N = prepare(V)
         else:
             break
 
@@ -192,7 +192,7 @@ def partition(Fin,prop=0):
 def savePartitions(F):
     print("Current dir is %s" % os.getcwd())
     if ack("Save the partitioned Formex?"):
-        writeFormex(F,'part.fmx')
+        writeFormex(F, 'part.fmx')
         clear()
 
     if ack("Reread/draw the partitioned Formex?"):
@@ -200,12 +200,12 @@ def savePartitions(F):
         draw(F)
 
 
-    d = splitProp(F,'part')
+    d = splitProp(F, 'part')
     export(d)
 
     if ack("Save the partitions separately?"):
-        for (k,v) in d.iteritems():
-            writeFormex(v,"%s.fmx"%k)
+        for (k, v) in d.iteritems():
+            writeFormex(v, "%s.fmx"%k)
 
 
 # End

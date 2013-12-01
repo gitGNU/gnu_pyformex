@@ -30,8 +30,8 @@ implemented element types.
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['geometry','mesh']
-_techniques = ['dialog','elements']
+_topics = ['geometry', 'mesh']
+_techniques = ['dialog', 'elements']
 
 from gui.draw import *
 
@@ -41,11 +41,11 @@ import utils
 import olist
 
 
-colors = [black,blue,yellow,red]
+colors = [black, blue, yellow, red]
 
-def showElement(eltype,options):
+def showElement(eltype, options):
     clear()
-    drawText("Element type: %s" %eltype,100,200,font='times',size=18,color=black)
+    drawText("Element type: %s" %eltype, 100, 200, font='times', size=18, color=black)
     el = elementType(eltype)
 
     if options['Show report']:
@@ -70,16 +70,16 @@ def showElement(eltype,options):
         M.coords = M.coords.addNoise(rsize=0.1)
         if options['Force dimensionality']:
             if ndim < 3:
-                M.coords[...,2] = 0.0
+                M.coords[..., 2] = 0.0
             if ndim < 2:
-                M.coords[...,1] = 0.0
+                M.coords[..., 1] = 0.0
 
     i = 'xyz'.find(options['Mirrored'])
     if i>=0:
-        M = M.trl(i,0.2)
+        M = M.trl(i, 0.2)
         M = M + M.reflect(i)
 
-    M.setProp([5,6])
+    M.setProp([5, 6])
 
     if options['Draw as'] == 'Formex':
         M = M.toFormex()
@@ -87,42 +87,42 @@ def showElement(eltype,options):
         M = M.getBorderMesh()
 
     draw(M.coords)#,color=None,wait=False)
-    drawNumbers(M.coords,color=None)
+    drawNumbers(M.coords, color=None)
 
 
     if options['Color setting'] == 'prop':
         draw(M)
     else:
-        draw(M,color=red,bkcolor=blue)
+        draw(M, color=red, bkcolor=blue)
 
 
 
 def run():
     ElemList = []
-    for ndim in [0,1,2,3]:
+    for ndim in [0, 1, 2, 3]:
         ElemList += elementTypes(ndim)
 
     res = {
-        'Deformed':True,
-        'Mirrored':'No',
-        'Draw as':'Mesh',
-        'Color setting':'direct',
-        'Force dimensionality':False,
-        'Show report':False,
+        'Deformed': True,
+        'Mirrored': 'No',
+        'Draw as': 'Mesh',
+        'Color setting': 'direct',
+        'Force dimensionality': False,
+        'Show report': False,
         }
-    res.update(pf.PF.get('Elements_data',{}))
+    res.update(pf.PF.get('Elements_data', {}))
     #print res
 
     res = askItems(
         store=res,
         items=[
-            _I('Element Type',choices=['All',]+ElemList),
-            _I('Deformed',itemtype='bool'),
-            _I('Mirrored',itemtype='radio',choices=['No','x','y','z']),
-            _I('Draw as',itemtype='radio',choices=['Mesh','Formex','Border']),
-            _I('Color setting',itemtype='radio',choices=['direct','prop']),
-            _I('Force dimensionality',itemtype='bool'),
-            _I('Show report',itemtype='bool'),
+            _I('Element Type', choices=['All',]+ElemList),
+            _I('Deformed', itemtype='bool'),
+            _I('Mirrored', itemtype='radio', choices=['No', 'x', 'y', 'z']),
+            _I('Draw as', itemtype='radio', choices=['Mesh', 'Formex', 'Border']),
+            _I('Color setting', itemtype='radio', choices=['direct', 'prop']),
+            _I('Force dimensionality', itemtype='bool'),
+            _I('Show report', itemtype='bool'),
             ])
     if not res:
         return
@@ -138,7 +138,7 @@ def run():
     clear()
     #delay(1)
     for el in ellist:
-        showElement(el,res)
+        showElement(el, res)
 
 
 if __name__ == 'draw':

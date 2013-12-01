@@ -34,22 +34,22 @@ def roll(a,n=1):
     """Roll the elements of a list n positions forward (backward if n < 0)"""
     return a[n:] + a[:n]
 
-def union(a,b):
+def union(a, b):
     """Return a list with all items in a or in b, in the order of a,b."""
     return a + [ i for i in b if i not in a ]
 
 
-def difference(a,b):
+def difference(a, b):
     """Return a list with all items in a but not in b, in the order of a."""
     return [ i for i in a if i not in b ]
 
 
-def symdifference(a,b):
+def symdifference(a, b):
     """Return a list with all items in a or b but not in both."""
-    return difference(a,b) + difference(b,a)
+    return difference(a, b) + difference(b, a)
 
 
-def intersection (a,b):
+def intersection (a, b):
     """Return a list with all items in a and  in b, in the order of a."""
     return [ i for i in a if i in b ]
 
@@ -57,7 +57,7 @@ def intersection (a,b):
 def concatenate(a):
     """Concatenate a list of lists"""
     import functools
-    return functools.reduce(list.__add__,a)
+    return functools.reduce(list.__add__, a)
 
 
 def flatten(a,recurse=False):
@@ -75,7 +75,7 @@ def flatten(a,recurse=False):
     for i in a:
         if isinstance(i, list):
             if recurse:
-                r.extend(flatten(i,True))
+                r.extend(flatten(i, True))
             else:
                 r.extend(i)
         else:
@@ -83,7 +83,7 @@ def flatten(a,recurse=False):
     return r
 
     
-def select(a,b):
+def select(a, b):
     """Return a subset of items from a list.
 
     Returns a list with the items of a for which the index is in b.
@@ -91,12 +91,12 @@ def select(a,b):
     return [ a[i] for i in b ]
 
 
-def remove(a,b):
+def remove(a, b):
     """Returns the complement of select(a,b)."""
-    return [ ai for i,ai in enumerate(a) if i not in b ]
+    return [ ai for i, ai in enumerate(a) if i not in b ]
 
 
-def toFront(l,i):
+def toFront(l, i):
     """Add or move i to the front of list l
 
     l is a list.
@@ -125,8 +125,8 @@ def collectOnLength(items,return_indices=False):
     keys, holding the original indices of the items in the lists.
     """
     if return_indices:
-        res,ind = {},{}
-        for i,item in enumerate(items):
+        res, ind = {}, {}
+        for i, item in enumerate(items):
             li = len(item)
             if li in res.keys():
                 res[li].append(item)
@@ -134,7 +134,7 @@ def collectOnLength(items,return_indices=False):
             else:
                 res[li] = [ item ]
                 ind[li] = [ i ]
-        return res,ind
+        return res, ind
     else:
         res = {}
         for item in items:
@@ -157,24 +157,24 @@ class List(list):
 
 if __name__ == "__main__":
 
-    a = [1,2,3,5,6,7]
-    b = [2,3,4,7,8,9]
+    a = [1, 2, 3, 5, 6, 7]
+    b = [2, 3, 4, 7, 8, 9]
     print(a)
     print(b)
-    print(union(a,b))
-    print(difference(a,b))
-    print(difference(b,a))
-    print(symdifference(a,b))
-    print(intersection(a,b))
-    print(select(a,[1,3]))
-    print(concatenate([a,b,a]))
-    print(flatten([1,2,a,[a]]))
-    print(flatten([1,2,a,[a]],recurse=True))
+    print(union(a, b))
+    print(difference(a, b))
+    print(difference(b, a))
+    print(symdifference(a, b))
+    print(intersection(a, b))
+    print(select(a, [1, 3]))
+    print(concatenate([a, b, a]))
+    print(flatten([1, 2, a, [a]]))
+    print(flatten([1, 2, a, [a]], recurse=True))
       
 
 
     class String(str):
-        def __init__(self,s):
+        def __init__(self, s):
             str.__init__(s)
             self.length = len(s)
         def Len(self):
@@ -183,7 +183,7 @@ if __name__ == "__main__":
     A = String("aa")
     B = String("bbbb")
 
-    L = List([A,B])
+    L = List([A, B])
     print(L.upper())
 
     print(L.Len())

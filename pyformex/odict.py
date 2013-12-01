@@ -54,11 +54,11 @@ class ODict(dict):
     (key,value) tuples, or another     :class:`ODict` object. If a plain Python dict is used, the resulting
     order is undefined.
     """
-    def __init__(self,data={},):
+    def __init__(self, data={},):
         """Create a new ODict instance."""
-        dict.__init__(self,data)
+        dict.__init__(self, data)
 
-        if isinstance(data,ODict):
+        if isinstance(data, ODict):
             # keep order
             self._order = data._order
 
@@ -75,7 +75,7 @@ class ODict(dict):
             raise ValueError("Unexpected initialization value for ODict")
 
 
-    def _add_keys(self,keys):
+    def _add_keys(self, keys):
         """Add a list of keys to the ordered list, removing existing keys."""
         for k in keys:
             if k in self._order:
@@ -90,7 +90,7 @@ class ODict(dict):
         added keys is undetemined if data is a dict object. If data is an ODict
         its order will be respected..
         """
-        dict.update(self,data)
+        dict.update(self, data)
         self._add_keys(ODict(data)._order)
 
 
@@ -104,12 +104,12 @@ class ODict(dict):
         We use the format Dict({}), so that the string is a valid Python
         representation of the Dict.
         """
-        return [(k,self[k]) for k in self._order].__repr__()
+        return [(k, self[k]) for k in self._order].__repr__()
 
 
-    def __setitem__(self,key,value):
+    def __setitem__(self, key, value):
         """Allows items to be set using self[key] = value."""
-        dict.__setitem__(self,key,value)
+        dict.__setitem__(self, key, value)
 # setting an item should not change the order!
 # If you want to change the order, first remove the item
 ##         if key in self._order:
@@ -119,27 +119,27 @@ class ODict(dict):
             self._order.append(key)
 
 
-    def __delitem__(self,key):
+    def __delitem__(self, key):
         """Allow items to be deleted using del self[key].
 
         Raises an error if key does not exist.
         """
-        dict.__delitem__(self,key)
+        dict.__delitem__(self, key)
         self._order.remove(key)
 
 
-    def __add__(self,data):
+    def __add__(self, data):
         """Add two ODicts's together, returning the result."""
         self.update(data)
         return self
 
 
-    def sort(self,keys):
+    def sort(self, keys):
         """Set the order of the keys.
 
         keys should be a list containing exactly all the keys from self.
         """
-        if olist.difference(keys,dict.keys(self)) != []:
+        if olist.difference(keys, dict.keys(self)) != []:
             raise ValueError("List of keys does not match current object's keys")
         self._order = keys
 
@@ -156,16 +156,16 @@ class ODict(dict):
 
     def items(self):
         """Return the key,value pairs in order of the keys."""
-        return [(k,self[k]) for k in self._order]
+        return [(k, self[k]) for k in self._order]
 
 
     def iteritems(self):
         """Return the key,value pairs in order of the keys."""
         for k in self:
-            yield k,self[k]
+            yield k, self[k]
 
 
-    def pos(self,key):
+    def pos(self, key):
         """Return the position of the specified key.
 
         If the key is not in the ODict, None is returned"""
@@ -180,7 +180,7 @@ class ODict(dict):
         return (__newobj__, (self.__class__,), state)
 
 
-    def __setstate__(self,state):
+    def __setstate__(self, state):
         self.__init__()
         if isinstance(state, tuple):
             self.update(state[0])
@@ -207,10 +207,10 @@ class KeyedList(ODict):
         least 2 elements.
         The (string value of the) first is used as the key.
         """
-        L = map(len,alist)
+        L = map(len, alist)
         if min(L) < 2:
             raise ValueEror("All items in the data should have length >= 2")
-        ODict.__init__(self,[[i[0],i[1:]] for i in alist])
+        ODict.__init__(self, [[i[0], i[1:]] for i in alist])
         print(self)
 
 
@@ -223,9 +223,9 @@ if __name__ == "__main__":
 
     d = ODict({'a':1,'b':2,'c':3,'a':3})
     print(d)
-    d.sort(['a','b','c'])
+    d.sort(['a', 'b', 'c'])
     print(d)
-    d = ODict([('a',1),('b',2),('c',3),('a',3)])
+    d = ODict([('a', 1), ('b', 2), ('c', 3), ('a', 3)])
     print(d)
     d['d'] = 4
     d['e'] = 5
@@ -238,7 +238,7 @@ if __name__ == "__main__":
     D['d'] = 26
     print(D)
     print(D['b'])
-    D = ODict(zip(range(5),range(6,10)))
+    D = ODict(zip(range(5), range(6, 10)))
     print(D)
     print(D.keys())
     print(D.values())

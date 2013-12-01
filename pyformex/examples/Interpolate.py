@@ -34,7 +34,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'beginner'
 _topics = ['geometry']
-_techniques = ['color','interpolate']
+_techniques = ['color', 'interpolate']
 
 from gui.draw import *
 
@@ -42,8 +42,8 @@ def run():
     clear()
     wireframe()
 
-    a = Formex([[[0,0,0],[1,0,0]],[[1,0,0],[2,0,0]]])
-    b = Formex([[[0,1,0],[1,1,0]],[[1,1,0],[2,1,0]]])
+    a = Formex([[[0, 0, 0], [1, 0, 0]], [[1, 0, 0], [2, 0, 0]]])
+    b = Formex([[[0, 1, 0], [1, 1, 0]], [[1, 1, 0], [2, 1, 0]]])
     message("Two lines")
     draw(a+b)
     drawNumbers(a+b)
@@ -53,14 +53,14 @@ def run():
     p = arange(n)
     
     pause()
-    c = interpolate(a,b,v)
+    c = interpolate(a, b, v)
     c.setProp(p)
     message("Interpolate between the two")
     draw(c)
     drawNumbers(c)
 
     pause()
-    d = interpolate(a,b,v,swap=True)
+    d = interpolate(a, b, v, swap=True)
     d.setProp(p)
     clear()
     message("Interpolate again with swapped order")
@@ -70,7 +70,7 @@ def run():
 
     pause()
     f = c.divide(v)
-    f.setProp((1,2))
+    f.setProp((1, 2))
     clear()
     message("Divide the set of lines")
     draw(f)

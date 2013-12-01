@@ -55,7 +55,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'advanced'
 _topics = ['geometry', 'curve']
-_techniques = ['nurbs','border']
+_techniques = ['nurbs', 'border']
 
 from gui.draw import *
 import simple
@@ -66,37 +66,37 @@ def drawThePoints(N,n,color=None):
     umax = N.knots[-N.degree-1]
     u = umin + arange(n+1) * (umax-umin) / float(n)
     P = N.pointsAt(u)    
-    draw(P,color=color,marksize=5)
+    draw(P, color=color, marksize=5)
 
 def run():
     clear()
     linewidth(2)
     flat()
 
-    F = Formex([[[1.,0.,0.]],[[1.,1.,0.]]]).rosette(4,90.)
+    F = Formex([[[1., 0., 0.]], [[1., 1., 0.]]]).rosette(4, 90.)
     draw(F)
     drawNumbers(F)
     zoomAll()
     setDrawOptions(bbox=None)
     showDoc()
 
-    pts = F.coords.reshape(-1,3)
+    pts = F.coords.reshape(-1, 3)
 
-    draw(simple.circle(2,4),color=yellow,linewidth=4)
+    draw(simple.circle(2, 4), color=yellow, linewidth=4)
 
-    for degree,c in zip(range(1,4),[black,red,green]):
-        N = NurbsCurve(pts,degree=degree,closed=True)
-        draw(N,color=c)
-        drawThePoints(N,16,color=c)
+    for degree, c in zip(range(1, 4), [black, red, green]):
+        N = NurbsCurve(pts, degree=degree, closed=True)
+        draw(N, color=c)
+        drawThePoints(N, 16, color=c)
 
-    for w,c in zip([sqrt(2.),sqrt(2.)/2.,0.25,0.],[blue,cyan,magenta,white]):
-        wts = array([ 1., w ] * 4).reshape(8,1)
+    for w, c in zip([sqrt(2.), sqrt(2.)/2., 0.25, 0.], [blue, cyan, magenta, white]):
+        wts = array([ 1., w ] * 4).reshape(8, 1)
         pts4 = Coords4(pts)
         pts4.deNormalize(wts)
-        pts4 = Coords4(concatenate([pts4,pts4[:1]],axis=0))
-        N = NurbsCurve(pts4,degree=2,closed=False,blended=False)
-        draw(N,color=c)
-        drawThePoints(N,16,color=c)
+        pts4 = Coords4(concatenate([pts4, pts4[:1]], axis=0))
+        N = NurbsCurve(pts4, degree=2, closed=False, blended=False)
+        draw(N, color=c)
+        drawThePoints(N, 16, color=c)
 
 
 if __name__ == 'draw':

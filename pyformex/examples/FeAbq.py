@@ -34,8 +34,8 @@ _techniques = ['persistence', 'dialog', 'color']
 from gui.draw import *
 
 from plugins.fe import mergedModel
-from plugins.properties import PropertyDB,ElemSection,Eset
-from plugins.fe_abq import Step,Output,Result,AbqData
+from plugins.properties import PropertyDB, ElemSection, Eset
+from plugins.fe_abq import Step, Output, Result, AbqData
 
 
 def base(nplex):
@@ -49,9 +49,9 @@ def base(nplex):
 def abq_eltype(nplex):
     """Return matching abaqus/calculix eltype for given pyFormex plexitude"""
     return {
-        3 : 'CPS3',
-        4 : 'CPS4',
-        8 : 'CPS8',
+        3: 'CPS3',
+        4: 'CPS4',
+        8: 'CPS8',
         } [nplex]
 
 
@@ -60,7 +60,7 @@ def printModel(M):
     print("===================\nMERGED MODEL")
     print("NODES")
     print(M.coords)
-    for i,e in enumerate(M.elems):
+    for i, e in enumerate(M.elems):
         print("PART %s" %i)
         print(e)
     print("===================")
@@ -75,26 +75,26 @@ def drawFEModel(M,nodes=True,elems=True,nodenrs=True,elemnrs=True):
         if nodenrs:
             drawNumbers(M.coords)
     if elems or elemnrs:
-        meshes = [Mesh(M.coords,e,prop=i+1) for i,e in enumerate(M.elems)]
+        meshes = [Mesh(M.coords, e, prop=i+1) for i, e in enumerate(M.elems)]
         if elems:
             draw(meshes)
         if elemnrs:
-            [ drawNumbers(i,color=red) for i in meshes ]
+            [ drawNumbers(i, color=red) for i in meshes ]
     zoomAll()
 
 
 def run():
-    global parts,M,F
+    global parts, M, F
 
-    na,ma = 4,3  # Size of domain A
-    nb,mb = 3,4  # size of domain B
+    na, ma = 4, 3  # Size of domain A
+    nb, mb = 3, 4  # size of domain B
     # Make sure the property numbers never clash!
-    pa,pb,pc = 3,4,5 # Properties corresponding to domains A,B,C
+    pa, pb, pc = 3, 4, 5 # Properties corresponding to domains A,B,C
     pb1 = 2 # Property for part of domain B
-    pbc,pld = 1,6 # Properties corresponding to boundary/loaded nodes
+    pbc, pld = 1, 6 # Properties corresponding to boundary/loaded nodes
 
-    _choices = ["A mixture of tri3 and quad4","Only quad4","Only quad8"]
-    ans = _choices.index(ask("What kind of elements do you want?",_choices))
+    _choices = ["A mixture of tri3 and quad4", "Only quad4", "Only quad8"]
+    ans = _choices.index(ask("What kind of elements do you want?", _choices))
     if ans == 0:
         baseA = Formex(base(3))
         baseB = Formex(base(4))
@@ -102,13 +102,13 @@ def run():
         baseA = Formex(base(4))
         baseB = Formex(base(4))
 
-    A = baseA.replic2(na,ma,1,1).setProp(pa)
-    B = baseB.replic2(nb,mb,1,1).translate([na,0,0]).setProp(pb)
+    A = baseA.replic2(na, ma, 1, 1).setProp(pa)
+    B = baseB.replic2(nb, mb, 1, 1).translate([na, 0, 0]).setProp(pb)
     # Change every second element of B to property pb1
     B.prop[arange(B.prop.size) % 2 == 1] = pb1
     print(B.prop)
     C = A.rotate(90).setProp(pc)
-    parts = [A,B,C]
+    parts = [A, B, C]
     draw(parts)
 
     # First convert parts to Meshes
@@ -160,30 +160,30 @@ def run():
     print(thick_plate)
 
     # Create element sets according to the properties pa,pb,pb1,pc:
-    esets = dict([(v,where(elemprops==v)[0]) for v in [pa,pb,pb1,pc]])
+    esets = dict([(v, where(elemprops==v)[0]) for v in [pa, pb, pb1, pc]])
 
     # Set the element properties
-    ea,eb,ec = [ abq_eltype(p.nplex()) for p in parts ]
-    P.elemProp(set=esets[pa],eltype=ea,section=ElemSection(section=thin_plate,material=steel))
-    P.elemProp(set=esets[pb],eltype=eb,section=ElemSection(section=thick_plate,material=steel))
-    P.elemProp(set=esets[pb1],eltype=eb,section=ElemSection(section=thick_plate,material=steel))
-    P.elemProp(set=esets[pc],eltype=ec,section=ElemSection(section=medium_plate,material=steel))
+    ea, eb, ec = [ abq_eltype(p.nplex()) for p in parts ]
+    P.elemProp(set=esets[pa], eltype=ea, section=ElemSection(section=thin_plate, material=steel))
+    P.elemProp(set=esets[pb], eltype=eb, section=ElemSection(section=thick_plate, material=steel))
+    P.elemProp(set=esets[pb1], eltype=eb, section=ElemSection(section=thick_plate, material=steel))
+    P.elemProp(set=esets[pc], eltype=ec, section=ElemSection(section=medium_plate, material=steel))
 
     print("Element properties")
     for p in P.getProp('e'):
         print(p)
 
     # Set the nodal properties
-    xmin,xmax = M.coords.bbox()[:,0]
+    xmin, xmax = M.coords.bbox()[:, 0]
     bnodes = where(M.coords.test(min=xmax-0.01))[0] # Right end nodes
     lnodes = where(M.coords.test(max=xmin+0.01))[0] # Left end nodes
 
     print("Boundary nodes: %s" % bnodes)
     print("Loaded nodes: %s" % lnodes)
 
-    P.nodeProp(tag='init',set=bnodes,bound=[1,1,0,0,0,0])
-    P.nodeProp(tag='step1',set=lnodes,name='Loaded',cload=[-10.,0.,0.,0.,0.,0.])
-    P.nodeProp(tag='step2',set='Loaded',cload=[-10.,10.,0.,0.,0.,0.])
+    P.nodeProp(tag='init', set=bnodes, bound=[1, 1, 0, 0, 0, 0])
+    P.nodeProp(tag='step1', set=lnodes, name='Loaded', cload=[-10., 0., 0., 0., 0., 0.])
+    P.nodeProp(tag='step2', set='Loaded', cload=[-10., 10., 0., 0., 0., 0.])
 
     # Coloring the nodes gets easier using a Formex
     F = Formex(M.coords)
@@ -198,8 +198,8 @@ def run():
     while ack("Renumber nodes?"):
         # renumber the nodes randomly
         print([e.eltype  for e in M.elems])
-        old,new = M.renumber()
-        print(old,new)
+        old, new = M.renumber()
+        print(old, new)
         print([e for e in M.elems])
         print([e.eltype  for e in M.elems])
         drawFEModel(M)
@@ -213,7 +213,7 @@ def run():
     # Thus, all elements of part B will end up in Eset('grp',1)
     out = [ Output(type='history'),
             Output(type='field'),
-            Output(type='field',kind='element',set=Eset('grp',1),keys=['S']),
+            Output(type='field', kind='element', set=Eset('grp', 1), keys=['S']),
             ]
 
     # Create requests for output to the .fil file.
@@ -222,27 +222,27 @@ def run():
     # - the stresses averaged at the nodes
     # - the principal stresses and stress invariants in the elements of part B.
     # (add output='PRINT' to get the results printed in the .dat file)
-    res = [ Result(kind='NODE',keys=['U']),
-            Result(kind='ELEMENT',keys=['S']),
-            Result(kind='ELEMENT',keys=['S'],pos='AVERAGED AT NODES'),
-            Result(kind='ELEMENT',keys=['SP','SINV'],set=Eset('grp',1)),
+    res = [ Result(kind='NODE', keys=['U']),
+            Result(kind='ELEMENT', keys=['S']),
+            Result(kind='ELEMENT', keys=['S'], pos='AVERAGED AT NODES'),
+            Result(kind='ELEMENT', keys=['SP', 'SINV'], set=Eset('grp', 1)),
             ]
 
     # Define steps (default is static)
-    step1 = Step(time=[1., 1., 0.01, 1.],tags=['step1'],out=out,res=res)
-    step2 = Step(time=[1., 1., 0.01, 1.],tags=['step2'],out=out,res=res)
+    step1 = Step(time=[1., 1., 0.01, 1.], tags=['step1'], out=out, res=res)
+    step2 = Step(time=[1., 1., 0.01, 1.], tags=['step2'], out=out, res=res)
 
     # collect all data
     #
     # !! currently output/result request are global to all steps
     # !! this will be changed in future
     #
-    data = AbqData(M,prop=P,steps=[step1,step2],bound=['init'])
+    data = AbqData(M, prop=P, steps=[step1, step2], bound=['init'])
 
-    if ack('Export this model in ABAQUS input format?',default='No'):
+    if ack('Export this model in ABAQUS input format?', default='No'):
         fn = askNewFilename(filter='*.inp')
         if fn:
-            data.write(jobname=fn,group_by_group=True)
+            data.write(jobname=fn, group_by_group=True)
 
 
 # Initialize

@@ -40,8 +40,8 @@ import utils
 from olist import List, intersection
 from mydict import Dict
 import os
-from numpy import asarray,arange,int32
-from arraytools import checkFloat,checkArray,checkInt
+from numpy import asarray, arange, int32
+from arraytools import checkFloat, checkArray, checkInt
 from mesh import Mesh
 
 
@@ -57,15 +57,15 @@ controller_format = {
     'color': "addColor(%N,'%A')"
 }
 
-default_control = ['visible','opacity','color','face opacity','face color',
-    'show edges','edge opacity','edge color',
-    'show wires','wire opacity','wire color']
+default_control = ['visible', 'opacity', 'color', 'face opacity', 'face color',
+    'show edges', 'edge opacity', 'edge color',
+    'show wires', 'wire opacity', 'wire color']
 
 def saneSettings(k):
     """Sanitize sloppy settings for JavaScript output"""
     ok = {}
     try:
-        ok['color'] = checkArray(k['color'],(3,),'f')
+        ok['color'] = checkArray(k['color'], (3,), 'f')
     except:
         try:
             c = checkInt(k['color'][0])
@@ -76,7 +76,7 @@ def saneSettings(k):
             print("Unexpected color: %s" % k['color'])
 
     try:
-        ok['alpha'] = checkFloat(k['alpha'],0.,1.)
+        ok['alpha'] = checkFloat(k['alpha'], 0., 1.)
     except:
         pass
     try:
@@ -84,7 +84,7 @@ def saneSettings(k):
     except:
         pass
     try:
-        ok['control'] = intersection(k['control'],controller_format.keys())
+        ok['control'] = intersection(k['control'], controller_format.keys())
     except:
         pass
     return ok
@@ -96,8 +96,8 @@ def properties(o):
     properties are public attributes (not starting with an '_') that
     are not callable.
     """
-    keys = [ k for k in sorted(dir(o)) if not k.startswith('_') and not callable(getattr(o,k)) ]
-    return utils.selectDict(o.__dict__,keys)
+    keys = [ k for k in sorted(dir(o)) if not k.startswith('_') and not callable(getattr(o, k)) ]
+    return utils.selectDict(o.__dict__, keys)
 
 
 class WebGL(List):
@@ -127,14 +127,14 @@ class WebGL(List):
         self._camera = None
         if pf.cfg['webgl/devel']:
             self.scripts = [
-                os.path.join(pf.cfg['webgl/devpath'],'lib/closure-library/closure/goog/base.js'),
-                os.path.join(pf.cfg['webgl/devpath'],'xtk-deps.js')
+                os.path.join(pf.cfg['webgl/devpath'], 'lib/closure-library/closure/goog/base.js'),
+                os.path.join(pf.cfg['webgl/devpath'], 'xtk-deps.js')
                 ]
         else:
             self.scripts = [ pf.cfg['webgl/script'], pf.cfg['webgl/guiscript'] ]
         if pf.options.opengl2:
             # Force the FEops xtk script
-            self.scripts[0] = 'file://' + os.path.join(pf.cfg['pyformexdir'],'opengl','xtk.js')
+            self.scripts[0] = 'file://' + os.path.join(pf.cfg['pyformexdir'], 'opengl', 'xtk.js')
         print("WebGL scripts: %s" % self.scripts)
         self.gui = []
         self.name = str(name)
@@ -147,9 +147,9 @@ class WebGL(List):
         Returns a dict with the name:object pairs in the model. Objects
         that have no name are disregarded.
         """
-        obj = [ o for o in self if hasattr(o,'name') ]
+        obj = [ o for o in self if hasattr(o, 'name') ]
         if clas:
-            obj = [ o for o in obj if isinstance(o,clas) ]
+            obj = [ o for o in obj if isinstance(o, clas) ]
         print("OBJDICT: %s" % len(obj))
         print([type(o) for o in obj])
 #        print(obj)
@@ -166,11 +166,11 @@ class WebGL(List):
         self.bgcolor = cv.settings.bgcolor
         print("Exporting %s actors from current scene" % len(cv.actors))
         sorted_actors = [ a for a in cv.actors if a.opak ] + [ a for a in cv.actors if not a.opak ]
-        for i,a in enumerate(sorted_actors):
+        for i, a in enumerate(sorted_actors):
             o = a.object
             atype = type(a).__name__
             otype = type(o).__name__
-            pf.debug("Actor %s: %s %s Shape=(%s,%s) Color=%s"% (i,atype,otype,o.nelems(),o.nplex(),a.color),pf.DEBUG.WEBGL)
+            pf.debug("Actor %s: %s %s Shape=(%s,%s) Color=%s"% (i, atype, otype, o.nelems(), o.nplex(), a.color), pf.DEBUG.WEBGL)
             if pf.options.opengl2:
                 self.addActor(a)
             else:
@@ -182,9 +182,9 @@ class WebGL(List):
                 self.add(obj=o,**kargs)
         ca = cv.camera
         if pf.options.opengl2:
-            self.camera(focus=ca.focus,position=ca.eye,up=ca.upvector)
+            self.camera(focus=ca.focus, position=ca.eye, up=ca.upvector)
         else:
-            self.camera(focus=[0.,0.,0.],position=ca.eye-ca.focus,up=ca.upVector())
+            self.camera(focus=[0., 0., 0.], position=ca.eye-ca.focus, up=ca.upVector())
 
 
     def add(self,**kargs):
@@ -230,12 +230,12 @@ class WebGL(List):
                     obj = obj.getBorderMesh()
                 obj = obj.toSurface()
             except:
-                print("Not added because not convertible to TriSurface : %s",obj)
+                print("Not added because not convertible to TriSurface : %s", obj)
                 return
             if obj:
                 if not 'file' in kargs:
-                    kargs['file'] = '%s_%s.stl' % (self.name,kargs['name'])
-                obj.write(kargs['file'],'stlb')
+                    kargs['file'] = '%s_%s.stl' % (self.name, kargs['name'])
+                obj.write(kargs['file'], 'stlb')
         elif 'file' in kargs:
             # The name of an STL file
             fn = kargs['file']
@@ -248,15 +248,15 @@ class WebGL(List):
         self.append(Dict(kargs))
         if 'control' in kargs:
             # Move the 'control' parameters to gui
-            self.gui.append((kargs['name'],kargs.get('caption',''),kargs['control']))
+            self.gui.append((kargs['name'], kargs.get('caption', ''), kargs['control']))
             del kargs['control']
         elif pf.cfg['webgl/autogui']:
             # Add autogui
-            self.gui.append((kargs['name'],kargs.get('caption',''),controller_format.keys()))
+            self.gui.append((kargs['name'], kargs.get('caption', ''), controller_format.keys()))
 
 
 
-    def addActor(self,actor):
+    def addActor(self, actor):
         """Add an actor to the model.
 
         The actor's drawable objects are added to the WebGL model
@@ -268,26 +268,26 @@ class WebGL(List):
         controllers = []
 
         # add drawables
-        for i,d in enumerate(actor.drawable):
-            attrib = Attributes(d,default=actor)
+        for i, d in enumerate(actor.drawable):
+            attrib = Attributes(d, default=actor)
             # write the object to a .pgf file
             coords = asarray(attrib.vbo)
             if attrib.ibo is not None:
                 elems = asarray(attrib.ibo)
             else:
-                nelems,nplex = coords.shape[:2]
-                elems = arange(nelems*nplex).reshape(nelems,nplex).astype(int32)
-            coords = coords.reshape(-1,3)
-            obj = Mesh(coords,elems)
+                nelems, nplex = coords.shape[:2]
+                elems = arange(nelems*nplex).reshape(nelems, nplex).astype(int32)
+            coords = coords.reshape(-1, 3)
+            obj = Mesh(coords, elems)
             if attrib.nbo is not None:
-                normals = asarray(attrib.nbo).reshape(-1,3)
+                normals = asarray(attrib.nbo).reshape(-1, 3)
                 obj.setNormals(normals[elems])
             if attrib.cbo is not None:
-                color = asarray(attrib.cbo).reshape(-1,3)
+                color = asarray(attrib.cbo).reshape(-1, 3)
                 obj.color = color[elems]
-            attrib.file = '%s_%s.pgf' % (self.name,attrib.name)
+            attrib.file = '%s_%s.pgf' % (self.name, attrib.name)
             from geometry import Geometry
-            Geometry.write(obj,attrib.file,'')
+            Geometry.write(obj, attrib.file, '')
             # add missing attributes
             if attrib.lighting is None:
                 attrib.lighting = pf.canvas.settings.lighting
@@ -308,24 +308,24 @@ class WebGL(List):
             for attrib in drawables:
                 name = attrib.name.split('_')[-1]
                 if 'show ' + name in control:
-                    controllers.append((attrib.name,'show ' + name,'visible'))
+                    controllers.append((attrib.name, 'show ' + name, 'visible'))
                 if name[:-1] + ' opacity' in control:
-                    controllers.append((attrib.name,name[:-1] + ' opacity','opacity'))
+                    controllers.append((attrib.name, name[:-1] + ' opacity', 'opacity'))
                 if name[:-1] + ' color' in control and attrib.useObjectColor:
-                    controllers.append((attrib.name,name[:-1] + ' color','color'))
+                    controllers.append((attrib.name, name[:-1] + ' color', 'color'))
 
         # add faces if there are drawables for the front and back faces
         names = [ attrib.name for attrib in drawables ]
         if actor.name+'_frontfaces' in names and actor.name+'_backfaces' in names:
-            attrib = Attributes(dict(name=actor.name+'_faces',children=[actor.name+'_frontfaces',actor.name+'_backfaces']))
+            attrib = Attributes(dict(name=actor.name+'_faces', children=[actor.name+'_frontfaces', actor.name+'_backfaces']))
             contr = []
             if 'show faces' in control:
-                contr.append((attrib.name,'show faces','visible'))
+                contr.append((attrib.name, 'show faces', 'visible'))
             if 'face opacity' in control:
-                contr.append((attrib.name,'face opacity','opacity'))
+                contr.append((attrib.name, 'face opacity', 'opacity'))
                 attrib.alpha = drawables[names.index(actor.name+'_frontfaces')].alpha
             if 'face color' in control and drawables[names.index(actor.name+'_frontfaces')].useObjectColor:
-                contr.append((attrib.name,'face color','color'))
+                contr.append((attrib.name, 'face color', 'color'))
                 # use frontface color
                 attrib.useObjectColor = drawables[names.index(actor.name+'_frontfaces')].useObjectColor
                 attrib.color = drawables[names.index(actor.name+'_frontfaces')].color
@@ -336,16 +336,16 @@ class WebGL(List):
             names.append(actor.name+'_faces')
 
         # add actor
-        attrib = Attributes(dict(name=actor.name,children=names))
+        attrib = Attributes(dict(name=actor.name, children=names))
         contr = []
         if 'visible' in control:
-            contr.append((attrib.name,'visible','visible'))
+            contr.append((attrib.name, 'visible', 'visible'))
         drawables.append(attrib)
         controllers = contr + controllers
 
         self.append(drawables)
         if len(controllers) > 0:
-            self.gui.append((actor.name,actor.caption,controllers))
+            self.gui.append((actor.name, actor.caption, controllers))
 
 
     def camera(self,**kargs):
@@ -363,31 +363,31 @@ class WebGL(List):
         self._camera = Dict(kargs)
 
 
-    def format_actor(self,obj):
+    def format_actor(self, obj):
         """Export an object in XTK Javascript format"""
-        if hasattr(obj,'name'):
+        if hasattr(obj, 'name'):
             name = obj.name
             s = "var %s = new X.mesh();\n" % name
         else:
             return ''
-        if hasattr(obj,'file'):
-            s += "%s.file = '%s';\n" % (name,obj.file)
-        if hasattr(obj,'caption'):
-            s += "%s.caption = '%s';\n" % (name,obj.caption)
-        if hasattr(obj,'color'):
-            s += "%s.color = %s;\n" % (name,list(obj.color))
-        if hasattr(obj,'alpha'):
-            s += "%s.opacity = %s;\n" % (name,obj.alpha)
-        if hasattr(obj,'magicmode'):
-            s += "%s.magicmode = '%s';\n" % (name,str(bool(obj.magicmode)))
+        if hasattr(obj, 'file'):
+            s += "%s.file = '%s';\n" % (name, obj.file)
+        if hasattr(obj, 'caption'):
+            s += "%s.caption = '%s';\n" % (name, obj.caption)
+        if hasattr(obj, 'color'):
+            s += "%s.color = %s;\n" % (name, list(obj.color))
+        if hasattr(obj, 'alpha'):
+            s += "%s.opacity = %s;\n" % (name, obj.alpha)
+        if hasattr(obj, 'magicmode'):
+            s += "%s.magicmode = '%s';\n" % (name, str(bool(obj.magicmode)))
         s += "r.add(%s);\n" % name
         return s
 
 
-    def format_gui_controller(self,name,attr):
+    def format_gui_controller(self, name, attr):
         """Format a single controller"""
         if attr in controller_format:
-            return controller_format[attr].replace('%N',name).replace('%A',attr)
+            return controller_format[attr].replace('%N', name).replace('%A', attr)
         else:
             raise ValueError("Controller for attribute '%s' not implemented")
 
@@ -398,19 +398,19 @@ class WebGL(List):
 r.onShowtime = function() {
 var gui = new dat.GUI();
 """
-        for name,caption,attrs in self.gui:
+        for name, caption, attrs in self.gui:
             guiname = "gui_%s" % name
             if not caption:
                 caption = name
-            s += "var %s = gui.addFolder('%s');\n" % (guiname,caption)
+            s += "var %s = gui.addFolder('%s');\n" % (guiname, caption)
             if pf.options.opengl2:
-                for objname,name,attr in attrs:
-                    cname = "%s_%s" % (guiname,"".join(name.split()))
-                    s += "var %s = %s.%s.name('%s');\n" % (cname,guiname,self.format_gui_controller(objname,attr),name)
+                for objname, name, attr in attrs:
+                    cname = "%s_%s" % (guiname, "".join(name.split()))
+                    s += "var %s = %s.%s.name('%s');\n" % (cname, guiname, self.format_gui_controller(objname, attr), name)
             else:
                 for attr in attrs:
-                    cname = "%s_%s" % (guiname,attr)
-                    s += "var %s = %s.%s;\n" % (cname,guiname,self.format_gui_controller(name,attr))
+                    cname = "%s_%s" % (guiname, attr)
+                    s += "var %s = %s.%s;\n" % (cname, guiname, self.format_gui_controller(name, attr))
             #s += "%s.open();\n" % guiname
 
 
@@ -419,7 +419,7 @@ var gui = new dat.GUI();
         s += """
 var %s = gui.addFolder('Camera');
 var %s_reset = %s.add(r.camera,'reset');
-""".replace('%s',guiname)
+""".replace('%s', guiname)
 
 
         s += "}\n"
@@ -429,7 +429,7 @@ var %s_reset = %s.add(r.camera,'reset');
     def exportPGF(self,fn,sep=''):
         """Export the current scene to a pgf file"""
         from plugins.geometry_menu import writeGeometry
-        res = writeGeometry(self.objdict(),fn,sep=sep)
+        res = writeGeometry(self.objdict(), fn, sep=sep)
         return res
 
 
@@ -483,8 +483,8 @@ r.init();
 r.render();
 };
 """
-        jsname = utils.changeExt(name,'.js')
-        with open(jsname,'w') as jsfile:
+        jsname = utils.changeExt(name, '.js')
+        with open(jsname, 'w') as jsfile:
             jsfile.write(s)
         print("Exported WebGL script to %s" % os.path.abspath(jsname))
 
@@ -496,7 +496,7 @@ r.render();
 <meta name="generator" content="%s">
 <meta name="description" content="%s">
 <meta name="keywords" content="%s">
-""" % (pf.fullVersion(),description,keywords)
+""" % (pf.fullVersion(), description, keywords)
         if author:
             s += '<meta name="author" content="%s">\n' % author
         s += "<title>%s</title>\n" % title
@@ -522,8 +522,8 @@ r.render();
         s += """</body>
 </html>
 """
-        htmlname = utils.changeExt(jsname,'.html')
-        with open(htmlname,'w') as htmlfile:
+        htmlname = utils.changeExt(jsname, '.html')
+        with open(htmlname, 'w') as htmlfile:
             htmlfile.write(s)
         exported_webgl = os.path.abspath(htmlname)
         print("Exported WebGL model to %s" % exported_webgl)
@@ -538,10 +538,10 @@ def surface2webgl(S,name,caption=None):
     - `caption`: text to use as caption
     """
     W = WebGL()
-    W.add(obj=S,file=name)
+    W.add(obj=S, file=name)
     s = S.dsize()
-    W.view(position=[0.,0.,s])
-    W.export(name,caption)
+    W.view(position=[0., 0., s])
+    W.export(name, caption)
 
 
 # End

@@ -42,24 +42,24 @@ _menu = 'Draw'
 def create_menu(before='help'):
     """Create the menu."""
     MenuData = [
-        ("&Set grid",create_grid),
-        ("&Remove grid",remove_grid),
-        ("---",None),
-        ("&Toggle Preview",toggle_preview,{'checkable':True}),
-        ("---",None),
-        ("&Draw Points",draw_points),
-        ("&Draw Polyline",draw_polyline),
-        ("&Draw Curve",draw_curve),
-        ("&Draw Nurbs",draw_nurbs),
-        ("&Draw Circle",draw_circle),
-        ("---",None),
-        ("&Split Curve",split_curve),
-        ("---",None),
-        ("&Reload Menu",reload_menu),
-        ("&Close Menu",close_menu),
-        ("Test menu",test_menu),
+        ("&Set grid", create_grid),
+        ("&Remove grid", remove_grid),
+        ("---", None),
+        ("&Toggle Preview", toggle_preview, {'checkable':True}),
+        ("---", None),
+        ("&Draw Points", draw_points),
+        ("&Draw Polyline", draw_polyline),
+        ("&Draw Curve", draw_curve),
+        ("&Draw Nurbs", draw_nurbs),
+        ("&Draw Circle", draw_circle),
+        ("---", None),
+        ("&Split Curve", split_curve),
+        ("---", None),
+        ("&Reload Menu", reload_menu),
+        ("&Close Menu", close_menu),
+        ("Test menu", test_menu),
         ]
-    w = menu.Menu(_menu,items=MenuData,parent=pf.GUI.menu,before=before)
+    w = menu.Menu(_menu, items=MenuData, parent=pf.GUI.menu, before=before)
     return w
 
 def show_menu(before='help'):
@@ -75,7 +75,7 @@ def close_menu():
 def reload_menu():
     """Reload the menu."""
     before = pf.GUI.menu.nextitem(_menu)
-    print("Menu %s was before %s" % (_menu,before))
+    print("Menu %s was before %s" % (_menu, before))
     close_menu()
     import plugins
     plugins.refresh('draw2d')

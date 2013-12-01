@@ -52,18 +52,18 @@ RE_digits = re.compile(r'(\d+)')
 _warn_category = { 'U': UserWarning, 'D':DeprecationWarning }
 
 def saveWarningFilter(message,module='',category=UserWarning):
-    cat = inverseDict(_warn_category).get(category,'U')
+    cat = inverseDict(_warn_category).get(category, 'U')
     oldfilters = pf.prefcfg['warnings/filters']
-    newfilters = oldfilters + [(str(message),'',cat)]
-    pf.prefcfg.update({'filters':newfilters},name='warnings')
-    pf.debug("Future warning filters: %s" % pf.prefcfg['warnings/filters'],pf.DEBUG.WARNING)
+    newfilters = oldfilters + [(str(message), '', cat)]
+    pf.prefcfg.update({'filters':newfilters}, name='warnings')
+    pf.debug("Future warning filters: %s" % pf.prefcfg['warnings/filters'], pf.DEBUG.WARNING)
 
 
 def filterWarning(message,module='',cat='U',action='ignore'):
     import warnings
-    pf.debug("Filter Warning '%s' from module '%s' cat '%s'" % (message,module,cat),pf.DEBUG.WARNING)
-    category = _warn_category.get(cat,Warning)
-    warnings.filterwarnings(action,message,category,module)
+    pf.debug("Filter Warning '%s' from module '%s' cat '%s'" % (message, module, cat), pf.DEBUG.WARNING)
+    category = _warn_category.get(cat, Warning)
+    warnings.filterwarnings(action, message, category, module)
 
 
 def warn(message,level=UserWarning,stacklevel=3,data=None):
@@ -71,11 +71,11 @@ def warn(message,level=UserWarning,stacklevel=3,data=None):
     import messages
     # pass the data into the message
     messages._message_data = data
-    warnings.warn(message,level,stacklevel)
+    warnings.warn(message, level, stacklevel)
 
 
 def deprec(message,stacklevel=4,data=None):
-    warn(message,level=DeprecationWarning,stacklevel=stacklevel,data=data)
+    warn(message, level=DeprecationWarning, stacklevel=stacklevel, data=data)
 
 
 def deprecation(message):
@@ -139,7 +139,7 @@ class Process(subprocess.Popen):
 
         self.cmd = cmd
 
-        shell = kargs.get('shell',False)
+        shell = kargs.get('shell', False)
         if isinstance(cmd, str) and shell is False:
             # Tokenize the command line
             cmd = shlex.split(cmd)
@@ -152,7 +152,7 @@ class Process(subprocess.Popen):
                     mode = 'r'
                 else:
                     mode = 'w'
-                kargs[f] = open(kargs[f],mode)
+                kargs[f] = open(kargs[f], mode)
         self.kargs = kargs
 
         try:
@@ -194,13 +194,13 @@ class Process(subprocess.Popen):
         self.timedout = False
         if timeout > 0.0:
             # Start a timer to terminate the subprocess
-            t = threading.Timer(timeout,Process.terminate_on_timeout,[self])
+            t = threading.Timer(timeout, Process.terminate_on_timeout, [self])
             t.start()
         else:
             t = None
 
         # Start the process and wait for it to finish
-        self.out,self.err = self.communicate()
+        self.out, self.err = self.communicate()
 
         if t:
             # Cancel the timer if one was started
@@ -313,7 +313,7 @@ def command(cmd,timeout=None,verbose=True,raise_error=True,**kargs):
     This is equivalent with the utils.system function but with
     verbose=True and raise_error=True by default.
     """
-    pf.debug("Command: %s" % cmd,pf.DEBUG.INFO)
+    pf.debug("Command: %s" % cmd, pf.DEBUG.INFO)
     return system(cmd,timeout,verbose,raise_error,**kargs)
 
 
@@ -323,28 +323,28 @@ def lastCommandReport():
         return 'No external command has been run yet'
     s = "=" * 8 + " LAST COMMAND REPORT "
     s += "=" * (50-len(s)) + "\n"
-    s += "%8s: %s\n" % ('cmd',P.cmd)
-    shell = P.kargs.get('shell',False)
+    s += "%8s: %s\n" % ('cmd', P.cmd)
+    shell = P.kargs.get('shell', False)
     if shell:
-        s += "%8s: %s\n" % ('shell',shell)
-    s += "%8s: %s\n" % ('status',P.sta)
+        s += "%8s: %s\n" % ('shell', shell)
+    s += "%8s: %s\n" % ('status', P.sta)
     for p in [ 'stdin', 'stdout', 'stderr' ]:
-        a = P.kargs.get(p,None)
+        a = P.kargs.get(p, None)
         name = a.name if isinstance(a, file) else ''
         txt = None
-        if p[3:] in ['out','err']:
-            txt = getattr(P,p[3:])
+        if p[3:] in ['out', 'err']:
+            txt = getattr(P, p[3:])
             if txt is None and isinstance(a, file):
                 try:
-                    txt = open(a.name,'r').read(2000)
+                    txt = open(a.name, 'r').read(2000)
                 except:
                     pass
         if name or txt:
-            s += "%8s: %s\n" % (p,name)
+            s += "%8s: %s\n" % (p, name)
             if txt:
                 s += txt
     if P.timeout:
-        s += "%8s: %s (timedout: %s)\n" % ('timeout',P.timeout,P.timedout)
+        s += "%8s: %s (timedout: %s)\n" % ('timeout', P.timeout, P.timedout)
     s += "=" * 50 + "\n"
     return s
 
@@ -357,7 +357,7 @@ def runCommand(cmd,timeout=None,shell=True,**kargs):
     and the return value is a tuple (P.sta,P.out) instead of the Process P.
     """
     P = command(cmd,timeout,shell=shell,**kargs)
-    return P.sta,P.out.rstrip('\n')
+    return P.sta, P.out.rstrip('\n')
 
 
 # DEPRECATED, REMOVED in 1.0.0
@@ -378,9 +378,9 @@ def killProcesses(pids,signal=15):
     """
     for pid in pids:
         try:
-            os.kill(pid,signal)
+            os.kill(pid, signal)
         except:
-            pf.debug("Error in killing of process '%s'" % pid,pf.DEBUG.INFO)
+            pf.debug("Error in killing of process '%s'" % pid, pf.DEBUG.INFO)
 
 
 
@@ -392,7 +392,7 @@ def execSource(script,glob={}):
       which the source code is executed.
     """
     pf.interpreter.locals = glob
-    pf.interpreter.runsource(script,'<input>','exec')
+    pf.interpreter.runsource(script, '<input>', 'exec')
 
 
 
@@ -459,12 +459,12 @@ def splitFilename(filename,accept_ext=None,reject_ext=None):
       >>> splitFilename("cc/dd/aa.bb",reject_ext=['.bb'])
       ('cc/dd', 'aa.bb', '')
     """
-    dirname,basename = os.path.split(filename)
-    basename,ext = os.path.splitext(basename)
+    dirname, basename = os.path.split(filename)
+    basename, ext = os.path.splitext(basename)
     if accept_ext and ext not in accept_ext or \
        reject_ext and ext in reject_ext:
-        basename,ext = basename+ext,''
-    return dirname,basename,ext
+        basename, ext = basename+ext, ''
+    return dirname, basename, ext
 
 
 def buildFilename(dirname,basename,ext=''):
@@ -481,7 +481,7 @@ def buildFilename(dirname,basename,ext=''):
       os.path.join(dirname,basename) + ext
 
     """
-    return os.path.join(dirname,basename) + ext
+    return os.path.join(dirname, basename) + ext
 
 
 def changeExt(filename,ext,accept_ext=None,reject_ext=None):
@@ -523,8 +523,8 @@ def changeExt(filename,ext,accept_ext=None,reject_ext=None):
     """
     if not ext.startswith('.'):
         ext = ".%s" % ext
-    dirname,basename,oldext = splitFilename(filename,accept_ext,reject_ext)
-    return buildFilename(dirname,basename,ext)
+    dirname, basename, oldext = splitFilename(filename, accept_ext, reject_ext)
+    return buildFilename(dirname, basename, ext)
 
 
 def projectName(fn):
@@ -544,7 +544,7 @@ def tildeExpand(fn):
     This function can be used to do the same for strings that did not receive
     the bash tilde expansion, such as strings in the configuration file.
     """
-    return fn.replace('~',os.environ['HOME'])
+    return fn.replace('~', os.environ['HOME'])
 
 
 ##########################################################################
@@ -562,7 +562,7 @@ file_description = {
     'dxf': 'AutoCAD .dxf files (*.dxf)',
     'dxfall': 'AutoCAD .dxf or converted(*.dxf *.dxftext)',
     'dxftext': 'Converted AutoCAD files (*.dxftext)',
-    'flavia' : 'flavia results (*.flavia.msh *.flavia.res)',
+    'flavia': 'flavia results (*.flavia.msh *.flavia.res)',
     'gts': 'GTS files (*.gts)',
     'html': 'Web pages (*.html)',
     'icon': 'Icons (*.xpm)',
@@ -593,7 +593,7 @@ def fileExtensions(ftype):
     Returns a list of strings starting with a '.'.
     """
     import re
-    ext = file_description.get(ftype,[])
+    ext = file_description.get(ftype, [])
     ext = re.compile('[()]').split(ext)[1]
     return [ e.lstrip('*.') for e in ext.split(' ') ]
 
@@ -606,9 +606,9 @@ def fileDescription(ftype):
     ``TYPE files (*.type)``
     """
     if isinstance(ftype, list):
-        return map(fileDescription,ftype)
+        return map(fileDescription, ftype)
     ftype = ftype.lower()
-    return file_description.get(ftype,"%s files (*.%s)" % (ftype.upper(),ftype))
+    return file_description.get(ftype, "%s files (*.%s)" % (ftype.upper(), ftype))
 
 
 def fileType(ftype):
@@ -654,12 +654,12 @@ def fileTypeFromExt(fname):
     >>> fileTypeFromExt('pyformex.gz')
     'gz'
     """
-    name,ext = os.path.splitext(fname)
+    name, ext = os.path.splitext(fname)
     ext = fileType(ext)
     if ext == 'gz':
         ext1 = fileTypeFromExt(name)
         if ext1:
-            ext = '.'.join([ext1,ext])
+            ext = '.'.join([ext1, ext])
     return ext
 
 
@@ -673,9 +673,9 @@ def findIcon(name):
 
     If no icon file is found, returns the question mark icon.
     """
-    fname = buildFilename(pf.cfg['icondir'],name,pf.cfg['gui/icontype'])
+    fname = buildFilename(pf.cfg['icondir'], name, pf.cfg['gui/icontype'])
     if not os.path.exists(fname):
-        fname = buildFilename(pf.cfg['icondir'],'question',pf.cfg['gui/icontype'])
+        fname = buildFilename(pf.cfg['icondir'], 'question', pf.cfg['gui/icontype'])
 
     return fname
 
@@ -684,12 +684,12 @@ def findIcon(name):
 ## File lists ##
 ################
 
-def prefixFiles(prefix,files):
+def prefixFiles(prefix, files):
     """Prepend a prefix path to a list of filenames."""
-    return [ os.path.join(prefix,f) for f in files ]
+    return [ os.path.join(prefix, f) for f in files ]
 
 
-def unPrefixFiles(prefix,files):
+def unPrefixFiles(prefix, files):
     """Remove a prefix path from a list of filenames.
 
     The given prefix path is removed from all filenames that start with
@@ -710,29 +710,29 @@ def unPrefixFiles(prefix,files):
     return [ s[n:].lstrip('/') if s.startswith(prefix) else s for s in files ]
 
 
-def matchMany(regexps,target):
+def matchMany(regexps, target):
     """Return multiple regular expression matches of the same target string."""
-    return [re.match(r,target) for r in regexps]
+    return [re.match(r, target) for r in regexps]
 
 
-def matchCount(regexps,target):
+def matchCount(regexps, target):
     """Return the number of matches of target to  regexps."""
-    return len([_f for _f in matchMany(regexps,target) if _f])
+    return len([_f for _f in matchMany(regexps, target) if _f])
 
 
-def matchAny(regexps,target):
+def matchAny(regexps, target):
     """Check whether target matches any of the regular expressions."""
-    return matchCount(regexps,target) > 0
+    return matchCount(regexps, target) > 0
 
 
-def matchNone(regexps,target):
+def matchNone(regexps, target):
     """Check whether targes matches none of the regular expressions."""
-    return matchCount(regexps,target) == 0
+    return matchCount(regexps, target) == 0
 
 
-def matchAll(regexps,target):
+def matchAll(regexps, target):
     """Check whether targets matches all of the regular expressions."""
-    return matchCount(regexps,target) == len(regexps)
+    return matchCount(regexps, target) == len(regexps)
 
 
 def listTree(path,listdirs=True,topdown=True,sorted=False,excludedirs=[],excludefiles=[],includedirs=[],includefiles=[],symlinks=True):
@@ -760,20 +760,20 @@ def listTree(path,listdirs=True,topdown=True,sorted=False,excludedirs=[],exclude
             dirs.sort()
             files.sort()
         if excludedirs:
-            remove = [ d for d in dirs if matchAny(excludedirs,d) ]
+            remove = [ d for d in dirs if matchAny(excludedirs, d) ]
             for d in remove:
                 dirs.remove(d)
         if includedirs:
-            remove = [ d for d in dirs if not matchAny(includedirs,d) ]
+            remove = [ d for d in dirs if not matchAny(includedirs, d) ]
             for d in remove:
                 dirs.remove(d)
         if listdirs and topdown:
             filelist.append(root)
         if excludefiles:
-            files = [ f for f in files if matchNone(excludefiles,f) ]
+            files = [ f for f in files if matchNone(excludefiles, f) ]
         if includefiles:
-            files = [ f for f in files if matchAny(includefiles,f) ]
-        filelist.extend(prefixFiles(root,files))
+            files = [ f for f in files if matchAny(includefiles, f) ]
+        filelist.extend(prefixFiles(root, files))
         if listdirs and not topdown:
             filelist.append(root)
     if not symlinks:
@@ -809,12 +809,12 @@ def sourceFiles(relative=False,symlinks=True,extended=False):
     path = pf.cfg['pyformexdir']
     if relative:
         path = os.path.relpath(path)
-    files = listTree(path,listdirs=False,sorted=True,includedirs=['gui','plugins','apps','examples','lib','opengl'],includefiles=['.*\.py$'],symlinks=symlinks)
+    files = listTree(path, listdirs=False, sorted=True, includedirs=['gui', 'plugins', 'apps', 'examples', 'lib', 'opengl'], includefiles=['.*\.py$'], symlinks=symlinks)
     if extended:
         searchdirs = [ i[1] for i in pf.cfg['appdirs'] + pf.cfg['scriptdirs'] ]
         for path in set(searchdirs):
             if os.path.exists(path):
-                files += listTree(path,listdirs=False,sorted=True,includefiles=['.*\.py$'],symlinks=symlinks)
+                files += listTree(path, listdirs=False, sorted=True, includefiles=['.*\.py$'], symlinks=symlinks)
     return files
 
 
@@ -835,9 +835,9 @@ def grepSource(pattern,options='',relative=True):
         extended = True
     else:
         extended = False
-    files = sourceFiles(relative=relative,extended=extended,symlinks=False)
-    cmd = "grep %s '%s' %s" % (options,pattern,' '.join(files))
-    P = system(cmd,verbose=True)
+    files = sourceFiles(relative=relative, extended=extended, symlinks=False)
+    cmd = "grep %s '%s' %s" % (options, pattern, ' '.join(files))
+    P = system(cmd, verbose=True)
     if not P.sta:
         return P.out
 
@@ -864,7 +864,7 @@ def setSaneLocale(localestring=''):
     call this function when pyFormex is starting up.
     """
     import locale
-    locale.setlocale(locale.LC_ALL,localestring)
+    locale.setlocale(locale.LC_ALL, localestring)
     locale.setlocale(locale.LC_NUMERIC, 'C')
     locale.setlocale(locale.LC_COLLATE, 'C')
 
@@ -877,16 +877,16 @@ def strNorm(s):
 
     Text normalization removes all '&' characters and converts it to lower case.
     """
-    return str(s).replace('&','').lower()
+    return str(s).replace('&', '').lower()
 
 ###################### ReST conversion ###################
 
 #try:
 # be quiet, because the import is done early
-if checkModule('docutils',quiet=True):
+if checkModule('docutils', quiet=True):
     from docutils.core import publish_string
     def rst2html(text,writer='html'):
-        return publish_string(text,writer_name=writer)
+        return publish_string(text, writer_name=writer)
 #except ImportError:
 else:
     def rst2html(text,writer='html'):
@@ -960,8 +960,8 @@ def gzip(filename,gzipped=None,remove=True,level=5):
     import gzip
     if gzipped is None:
         gzipped = filename+'.gz'
-    fil = open(filename,'rb')
-    gz = gzip.open(gzipped,'wb',compresslevel=level)
+    fil = open(filename, 'rb')
+    gz = gzip.open(gzipped, 'wb', compresslevel=level)
     gz.write(fil.read())
     fil.close()
     gz.close()
@@ -990,13 +990,13 @@ def gunzip(filename,unzipped=None,remove=True):
     Returns the name of the decompressed file.
     """
     import gzip
-    gz = gzip.open(filename,'rb')
+    gz = gzip.open(filename, 'rb')
     if unzipped is None and filename.endswith('.gz'):
         unzipped = filename[:-3]
     if unzipped:
-        fil = open(unzipped,'wb')
+        fil = open(unzipped, 'wb')
     else:
-        fil = tempFile(prefix='gunzip-',delete=False)
+        fil = tempFile(prefix='gunzip-', delete=False)
         unzipped = fil.name
     fil.write(gz.read())
     gz.close()
@@ -1008,9 +1008,9 @@ def gunzip(filename,unzipped=None,remove=True):
 
 # These two functions are undocumented for a reason. Believe me! BV
 def splitme(s):
-    return s[::2],s[1::2]
-def mergeme(s1,s2):
-    return ''.join([a+b for a,b in zip(s1,s2)])
+    return s[::2], s[1::2]
+def mergeme(s1, s2):
+    return ''.join([a+b for a, b in zip(s1, s2)])
 
 
 def mtime(fn):
@@ -1032,7 +1032,7 @@ def timeEval(s,glob=None):
     microlevel execution time.
     """
     start = time.time()
-    res = eval(s,glob)
+    res = eval(s, glob)
     stop = time.time()
     print("Timed evaluation: %s seconds" % (stop-start))
     return res
@@ -1040,7 +1040,7 @@ def timeEval(s,glob=None):
 
 def countLines(fn):
     """Return the number of lines in a text file."""
-    P = system(["wc",fn])
+    P = system(["wc", fn])
     if P.sta == 0:
         return int(P.out.split()[0])
     else:
@@ -1078,11 +1078,11 @@ def getDocString(scriptfile):
     It does relies on the script file being structured properly and
     indeed including a doctring at the beginning of the file.
     """
-    fil = open(scriptfile,'r')
+    fil = open(scriptfile, 'r')
     s = fil.read()
     i = s.find('"""')
     if i >= 0:
-        j = s.find('"""',i+1)
+        j = s.find('"""', i+1)
         if j >= i+3:
             return s[i+3:j]
     return ''
@@ -1129,7 +1129,7 @@ def hsorted(l):
     def human(s):
         s = RE_digits.split(s)+['0']
         return zip(s[0::2], map(int, s[1::2]))
-    return sorted(l,key=human)
+    return sorted(l, key=human)
 
 
 def splitDigits(s,pos=-1):
@@ -1174,9 +1174,9 @@ def splitDigits(s,pos=-1):
         if i >= 0:
             i += 1
         #print(g,i,n)
-        return ''.join(g[:i]),g[i],''.join(g[i+1:])
+        return ''.join(g[:i]), g[i], ''.join(g[i+1:])
     else:
-        return s,'',''
+        return s, '', ''
 
 
 # BV: We could turn this into a factory
@@ -1214,7 +1214,7 @@ class NameSequence(object):
 
     def __init__(self,name,ext=''):
         """Create a new NameSequence from name,ext."""
-        prefix,number,suffix = splitDigits(name)
+        prefix, number, suffix = splitDigits(name)
         if len(number) > 0:
             self.nr = int(number)
             format = "%%0%dd" % len(number)
@@ -1241,7 +1241,7 @@ class NameSequence(object):
         UNIX-like shell command to select all the generated file names.
         """
         i = self.name.find('%')
-        j = self.name.find('d',i)
+        j = self.name.find('d', i)
         return self.name[:i]+'*'+self.name[j+1:]
 
     def files(self,sort=hsorted):
@@ -1268,7 +1268,7 @@ def prefixDict(d,prefix=''):
     The return value is a dict with all the items of d, but where the
     keys have been prefixed with the given string.
     """
-    return dict([ (prefix+k,v) for k,v in d.items() ])
+    return dict([ (prefix+k, v) for k, v in d.items() ])
 
 
 def subDict(d,prefix='',strip=True):
@@ -1283,12 +1283,12 @@ def subDict(d,prefix='',strip=True):
     stripped off, unless strip=False is specified.
     """
     if strip:
-        return dict([ (k.replace(prefix,'',1),v) for k,v in d.items() if k.startswith(prefix)])
+        return dict([ (k.replace(prefix, '', 1), v) for k, v in d.items() if k.startswith(prefix)])
     else:
-        return dict([ (k,v) for k,v in d.items() if k.startswith(prefix)])
+        return dict([ (k, v) for k, v in d.items() if k.startswith(prefix)])
 
 
-def selectDict(d,keys):
+def selectDict(d, keys):
     """Return a dict with the items whose key is in keys.
 
     - `d`: a dict where all the keys are strings.
@@ -1304,10 +1304,10 @@ def selectDict(d,keys):
     >>> selectDict(d,[4,0,1])
     {0: 0, 1: 1, 4: 16}
     """
-    return dict([ (k,d[k]) for k in set(d)&set(keys) ])
+    return dict([ (k, d[k]) for k in set(d)&set(keys) ])
 
 
-def removeDict(d,keys):
+def removeDict(d, keys):
     """Remove a set of keys from a dict.
 
     - `d`: a dict
@@ -1323,24 +1323,24 @@ def removeDict(d,keys):
     >>> removeDict(d,[4,0])
     {1: 1, 2: 4, 3: 9, 5: 25}
     """
-    return dict([ (k,d[k]) for k in set(d)-set(keys) ])
+    return dict([ (k, d[k]) for k in set(d)-set(keys) ])
 
 
-def refreshDict(d,src):
+def refreshDict(d, src):
     """Refresh a dict with values from another dict.
 
     The values in the dict d are update with those in src.
     Unlike the dict.update method, this will only update existing keys
     but not add new keys.
     """
-    d.update(selectDict(src,d))
+    d.update(selectDict(src, d))
 
 
 def inverseDict(d):
-    return dict([(v,k) for k,v in d.items()])
+    return dict([(v, k) for k, v in d.items()])
 
 
-def selectDictValues(d,values):
+def selectDictValues(d, values):
     """Return the keys in a dict which have a specified value
 
     - `d`: a dict where all the keys are strings.
@@ -1409,7 +1409,7 @@ class DictDiff(object):
     (2) items removed : %s
     (3) keys same in both but changed values : %s
     (4) keys same in both and unchanged values : %s
-""" % (', '.join(self.added()),', '.join(self.removed()),', '.join(self.changed()),', '.join(self.unchanged()))
+""" % (', '.join(self.added()), ', '.join(self.removed()), ', '.join(self.changed()), ', '.join(self.unchanged()))
 
 
 def stuur(x,xval,yval,exp=2.5):
@@ -1423,8 +1423,8 @@ def stuur(x,xval,yval,exp=2.5):
     For values x < xmin or x > xmax, the limit value ymin or ymax
     is returned.
     """
-    xmin,x0,xmax = xval
-    ymin,y0,ymax = yval
+    xmin, x0, xmax = xval
+    ymin, y0, ymax = yval
     if x < xmin:
         return ymin
     elif x < x0:
@@ -1443,7 +1443,7 @@ def listFontFiles():
     Returns a list of path names to all the font files found on the system.
     """
     cmd = "fc-list : file | sed 's|.*file=||;s|:||'"
-    P = system(cmd,shell=True)
+    P = system(cmd, shell=True)
     if P.sta:
         warning("fc-list could not find your font files.\nMaybe you do not have fontconfig installed?")
     else:
@@ -1489,15 +1489,15 @@ def memory_report(keys=None):
     res = {}
     for line in P.out.split('\n'):
         try:
-            k,v = line.split(':')
+            k, v = line.split(':')
             k = k.strip()
-            v = v.replace('kB','').strip()
+            v = v.replace('kB', '').strip()
             res[k] = int(v)
         except:
             break
     res['MemUsed'] = res['MemTotal'] - res['MemFree'] - res['Buffers'] - res['Cached']
     if keys:
-        res = selectDict(res,keys)
+        res = selectDict(res, keys)
     return res
 
 
@@ -1506,7 +1506,7 @@ def memory_diff(mem0,mem1,tag=None):
     m1 = mem1['MemUsed']/1024.
     m2 = m1 - m0
     m3 = mem1['MemFree']/1024.
-    print("%10.1f MB before; %10.1f MB after; %10.1f MB used; %10.1f MB free; %s" % (m0,m1,m2,m3,tag))
+    print("%10.1f MB before; %10.1f MB after; %10.1f MB used; %10.1f MB free; %s" % (m0, m1, m2, m3, tag))
 
 
 _mem_state = None
@@ -1516,7 +1516,7 @@ def memory_track(tag=None,since=None):
         since = _mem_state
     new_mem_state = memory_report()
     if tag and _mem_state is not None:
-        memory_diff(since,new_mem_state,tag)
+        memory_diff(since, new_mem_state, tag)
     _mem_state = new_mem_state
     return _mem_state
 

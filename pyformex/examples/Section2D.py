@@ -30,49 +30,49 @@ Computing geometrical properties of plane sections.
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['geometry','section2d']
+_topics = ['geometry', 'section2d']
 _techniques = []
 
 from gui.draw import *
 from plugins.section2d import *
-import simple,connectivity,mydict
+import simple, connectivity, mydict
 
 
-def showaxes(C,angle,size,color):
+def showaxes(C, angle, size, color):
     H = Formex(simple.Pattern['plus']).scale(0.6*size).rot(angle/DEG).trl(C)
-    draw(H,color=color)
+    draw(H, color=color)
 
 
-def square_example(scale=[1.,1.,1.]):
-    P = Formex([[[1,1]]]).rosette(4,90).scale(scale)
-    return sectionize.connectPoints(P,close=True)
+def square_example(scale=[1., 1., 1.]):
+    P = Formex([[[1, 1]]]).rosette(4, 90).scale(scale)
+    return sectionize.connectPoints(P, close=True)
 
 def rectangle_example():
-    return square_example(scale=[2.,1.,1.])
+    return square_example(scale=[2., 1., 1.])
 
 def circle_example():
-    return simple.circle(5.,5.)
+    return simple.circle(5., 5.)
 
 def close_loop_example():
     # one more example, originally not a closed loop curve
-    F = Formex('l:11').replic(2,1,1) + Formex('l:2').replic(2,2,0)
+    F = Formex('l:11').replic(2, 1, 1) + Formex('l:2').replic(2, 2, 0)
     M = F.toMesh()
-    draw(M,color='green')
-    drawNumbers(M,color=red)
-    drawNumbers(M.coords,color=blue)
+    draw(M, color='green')
+    drawNumbers(M, color=red)
+    drawNumbers(M.coords, color=blue)
 
-    print("Original elements:",M.elems)
+    print("Original elements:", M.elems)
     conn = connectivity.connectedLineElems(M.elems)
     if len(conn) > 1:
         message("This curve is not a closed circumference")
         return None
     
     sorted = conn[0]
-    print("Sorted elements:",sorted)
+    print("Sorted elements:", sorted)
 
     showInfo('Click to continue')
     clear()
-    M = Mesh(M.coords,sorted)
+    M = Mesh(M.coords, sorted)
     drawNumbers(M)
     return M.toFormex()
 
@@ -80,14 +80,14 @@ def run():
     clear()
     flat()
     reset()
-    examples = { 'Square'    : square_example,
-                 'Rectangle' : rectangle_example,
-                 'Circle'    : circle_example,
-                 'CloseLoop' : close_loop_example,
+    examples = { 'Square': square_example,
+                 'Rectangle': rectangle_example,
+                 'Circle': circle_example,
+                 'CloseLoop': close_loop_example,
                  }
 
     res = askItems([
-        _I('example',text='Select an example',choices=examples.keys()),
+        _I('example', text='Select an example', choices=examples.keys()),
         ])
     if res:
         F = examples[res['example']]()
@@ -97,9 +97,9 @@ def run():
         S = sectionChar(F)
         S.update(extendedSectionChar(S))
         print(mydict.CDict(S))
-        G = Formex([[[S['xG'],S['yG']]]])
-        draw(G,bbox='last')
-        showaxes([S['xG'],S['yG'],0.],S['alpha'],F.dsize(),'red')
+        G = Formex([[[S['xG'], S['yG']]]])
+        draw(G, bbox='last')
+        showaxes([S['xG'], S['yG'], 0.], S['alpha'], F.dsize(), 'red')
 
 if __name__ == 'draw':
     run()

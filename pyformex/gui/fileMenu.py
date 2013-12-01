@@ -26,13 +26,13 @@
 """
 from __future__ import print_function
 
-import os,shutil
+import os, shutil
 import pyformex as pf
 import widgets
 import utils
 import project
 import draw
-from draw import _I,_G
+from draw import _I, _G
 import image
 import plugins
 
@@ -43,7 +43,7 @@ from prefMenu import updateSettings
 ##################### handle project files ##########################
 
 
-def openProject(fn=None,exist=False,access=['wr','rw','w','r'],default=None):
+def openProject(fn=None,exist=False,access=['wr', 'rw', 'w', 'r'],default=None):
     """Open a (new or old) Project file.
 
     A dialog is presented to ask the user for a Project file name and the
@@ -68,8 +68,8 @@ def openProject(fn=None,exist=False,access=['wr','rw','w','r'],default=None):
     if isinstance(access, str):
         access = [access]
     cur = fn if fn else '.'
-    typ = utils.fileDescription(['pyf','all'])
-    res = widgets.ProjectSelection(cur,typ,exist=exist,access=access,default=default,convert=True).getResult()
+    typ = utils.fileDescription(['pyf', 'all'])
+    res = widgets.ProjectSelection(cur, typ, exist=exist, access=access, default=default, convert=True).getResult()
     if not res:
         return
 
@@ -85,9 +85,9 @@ def openProject(fn=None,exist=False,access=['wr','rw','w','r'],default=None):
     pf.message("Opening project %s" % fn)
     pf.GUI.setBusy() # loading  may take a while
     try:
-        proj = project.Project(fn,access=access,convert=convert,signature=signature,compression=compression)
+        proj = project.Project(fn, access=access, convert=convert, signature=signature, compression=compression)
         if proj.signature != signature:
-            pf.warning("The project was written with %s, while you are now running %s. If the latter is the newer one, this should probably not cause any problems. Saving is always done in the current format of the running version. Save your project and this message will be avoided on the next reopening." % (proj.signature,signature))
+            pf.warning("The project was written with %s, while you are now running %s. If the latter is the newer one, this should probably not cause any problems. Saving is always done in the current format of the running version. Save your project and this message will be avoided on the next reopening." % (proj.signature, signature))
     except:
         proj = None
         raise
@@ -95,13 +95,13 @@ def openProject(fn=None,exist=False,access=['wr','rw','w','r'],default=None):
         pf.GUI.setBusy(False)
 
     proj.hits = 0
-    pf.debug("START COUNTING HITS",pf.DEBUG.PROJECT)
+    pf.debug("START COUNTING HITS", pf.DEBUG.PROJECT)
     return proj
 
 
 def readProjectFile(fn):
     if os.path.exists(fn):
-        proj = project.Project(fn,access='wr')
+        proj = project.Project(fn, access='wr')
         return proj
     else:
         return None
@@ -154,9 +154,9 @@ def setProject(proj):
         _delete = "Delete"
         _add = "Keep non existing"
         _overwrite = "Keep all (overwrite project)"
-        res = draw.ask("What shall I do with the current pyFormex globals?",[_delete,_add,_overwrite])
+        res = draw.ask("What shall I do with the current pyFormex globals?", [_delete, _add, _overwrite])
         if res == _add:
-            keep = utils.removeDict(pf.PF,proj)
+            keep = utils.removeDict(pf.PF, proj)
         elif res == _overwrite:
             keep = pf.PF
     pf.PF = proj
@@ -164,17 +164,17 @@ def setProject(proj):
         pf.PF.update(keep)
     if pf.PF.filename:
         updateSettings({
-            'curproj':pf.PF.filename,
-            'workdir':os.path.dirname(pf.PF.filename),
-            },save=True)
+            'curproj': pf.PF.filename,
+            'workdir': os.path.dirname(pf.PF.filename),
+            }, save=True)
     pf.GUI.setcurproj(pf.PF.filename)
 
-    if hasattr(proj,'_autoscript_'):
+    if hasattr(proj, '_autoscript_'):
         _ignore = "Ignore it!"
         _show = "Show it"
         _edit = "Load it in the editor"
         _exec = "Execute it"
-        res = draw.ask("There is an autoscript stored inside the project.\nIf you received this project file from an untrusted source, you should probably not execute it.",[_ignore,_show,_edit,_exec])
+        res = draw.ask("There is an autoscript stored inside the project.\nIf you received this project file from an untrusted source, you should probably not execute it.", [_ignore, _show, _edit, _exec])
         if res == _show:
             res = draw.showText(proj._autoscript_)#,actions=[_ignore,_edit,_show])
             return
@@ -183,13 +183,13 @@ def setProject(proj):
         elif res == _edit:
             fn = "_autoscript_.py"
             draw.checkWorkdir()
-            f = open(fn,'w')
+            f = open(fn, 'w')
             f.write(proj._autoscript_)
             f.close()
             openScript(fn)
             editApp(fn)
 
-    if hasattr(proj,'autofile') and draw.ack("The project has an autofile attribute: %s\nShall I execute this script?" % proj.autofile):
+    if hasattr(proj, 'autofile') and draw.ack("The project has an autofile attribute: %s\nShall I execute this script?" % proj.autofile):
         draw.processArgs([proj.autofile])
 
     listProject()
@@ -201,7 +201,7 @@ def createProject():
     Ask the user to select an existing project file, and then open it.
     """
     closeProject()
-    proj = openProject(pf.PF.filename,exist=False)
+    proj = openProject(pf.PF.filename, exist=False)
     if proj is not None: # may be empty
         setProject(proj)
 
@@ -212,7 +212,7 @@ def openExistingProject():
     Ask the user to select an existing project file, and then open it.
     """
     closeProject()
-    proj = openProject(pf.PF.filename,exist=True)
+    proj = openProject(pf.PF.filename, exist=True)
     if proj is not None: # may be empty
         setProject(proj)
 
@@ -223,12 +223,12 @@ def importProject():
     Ask the user to select an existing project file, and then import
     all or selected data from it into the current project.
     """
-    proj = openProject(exist=True,access='r')
+    proj = openProject(exist=True, access='r')
     if proj: # only if non-empty
         keys = proj.contents()
         res = draw.askItems(
-            [   _I('mode',choices=['All','Defined','Undefined','Selected','None'],itemtype='radio'),
-                _I('selected',choices=keys,itemtype='list'),
+            [   _I('mode', choices=['All', 'Defined', 'Undefined', 'Selected', 'None'], itemtype='radio'),
+                _I('selected', choices=keys, itemtype='list'),
                 ],
             caption='Select variables to import',
             )
@@ -237,11 +237,11 @@ def importProject():
             if mode == 'A':
                 pass
             elif mode == 'D':
-                proj = utils.selectDict(proj,pf.PF)
+                proj = utils.selectDict(proj, pf.PF)
             elif mode == 'U':
-                proj = utils.removeDict(proj,pf.PF)
+                proj = utils.removeDict(proj, pf.PF)
             elif mode == 'S':
-                proj = utils.selectDict(proj,res['selected'])
+                proj = utils.selectDict(proj, res['selected'])
             elif mode == 'N':
                 return
             pf.message("Importing symbols: %s" % proj.contents())
@@ -262,11 +262,11 @@ def setAutoFile():
 
 
 def removeAutoScript():
-    delattr(pf.PF,'_autoscript_')
+    delattr(pf.PF, '_autoscript_')
 
 
 def removeAutoFile():
-    delattr(pf.PF,'autofile')
+    delattr(pf.PF, 'autofile')
 
 
 def saveProject():
@@ -283,7 +283,7 @@ def saveProject():
 
 
 def saveAsProject():
-    proj = openProject(pf.PF.filename,exist=False,access=['w'],default='w')
+    proj = openProject(pf.PF.filename, exist=False, access=['w'], default='w')
     if proj is not None: # even if empty
         pf.PF.filename = proj.filename
         pf.PF.gzip = proj.gzip
@@ -291,9 +291,9 @@ def saveAsProject():
         saveProject()
     if pf.PF.filename is not None:
         updateSettings({
-            'curproj':pf.PF.filename,
-            'workdir':os.path.dirname(pf.PF.filename),
-            },save=True)
+            'curproj': pf.PF.filename,
+            'workdir': os.path.dirname(pf.PF.filename),
+            }, save=True)
     pf.GUI.setcurproj(pf.PF.filename)
 
 
@@ -319,13 +319,13 @@ def closeProject(save=None,clear=None):
     if pf.PF.filename is not None:
         if save is None:
             save = draw.ack("Save the current project before closing it?")
-        pf.message("Closing project %s (save=%s)" % (pf.PF.filename,save))
+        pf.message("Closing project %s (save=%s)" % (pf.PF.filename, save))
         if save:
             saveProject()
             if pf.PF:
                 listProject()
                 if clear is None:
-                    clear = draw.ask("What shall I do with the existing globals?",["Delete","Keep"]) == "Delete"
+                    clear = draw.ask("What shall I do with the existing globals?", ["Delete", "Keep"]) == "Delete"
 
     if clear:
         pf.PF.clear()
@@ -333,8 +333,8 @@ def closeProject(save=None,clear=None):
     pf.PF.filename = None
     pf.GUI.setcurproj('None')
     updateSettings({
-        'curproj':pf.PF.filename,
-        },save=True)
+        'curproj': pf.PF.filename,
+        }, save=True)
 
 
 def closeProjectWithoutSaving():
@@ -343,16 +343,16 @@ def closeProjectWithoutSaving():
 
 
 def convertProjectFile():
-    proj = openProject(pf.PF.filename,access=['c'],default='c',exist=True)
+    proj = openProject(pf.PF.filename, access=['c'], default='c', exist=True)
     if proj is not None:
-        pf.debug("Converting project file %s" % proj.filename,pf.DEBUG.PROJECT|pf.DEBUG.INFO)
-        proj.convert(proj.filename.replace('.pyf','_converted.pyf'))
+        pf.debug("Converting project file %s" % proj.filename, pf.DEBUG.PROJECT|pf.DEBUG.INFO)
+        proj.convert(proj.filename.replace('.pyf', '_converted.pyf'))
 
 
 def uncompressProjectFile():
-    proj = openProject(pf.PF.filename,access=['u'],default='u',exist=True)
+    proj = openProject(pf.PF.filename, access=['u'], default='u', exist=True)
     if proj is not None:
-        proj.uncompress(proj.filename.replace('.pyf','_uncompressed.pyf'))
+        proj.uncompress(proj.filename.replace('.pyf', '_uncompressed.pyf'))
 
 
 ##################### handle script files ##########################
@@ -379,15 +379,15 @@ def openScript(fn=None,exist=True,create=False):
         if cur is None:
             cur  = '.'
         typ = utils.fileDescription('pyformex')
-        fn = widgets.FileSelection(cur,typ,exist=exist).getFilename()
+        fn = widgets.FileSelection(cur, typ, exist=exist).getFilename()
     if fn:
         if create:
             if not exist and os.path.exists(fn) and not draw.ack("The file %s already exists.\n Are you sure you want to overwrite it?" % fn):
                 return None
             template = pf.cfg['scripttemplate']
             if (os.path.exists(template)):
-                shutil.copyfile(template,fn)
-        updateSettings({'workdir':os.path.dirname(fn)},save=True)
+                shutil.copyfile(template, fn)
+        updateSettings({'workdir':os.path.dirname(fn)}, save=True)
         pf.GUI.setcurfile(fn)
         pf.GUI.scripthistory.add(fn)
         if create:
@@ -396,7 +396,7 @@ def openScript(fn=None,exist=True,create=False):
 
 
 def createScript(fn=None):
-    return openScript(fn,exist=False,create=True)
+    return openScript(fn, exist=False, create=True)
 
 
 def editApp(appname=None):
@@ -441,8 +441,8 @@ def saveImage(multi=False):
      - start the multisave/autosave mode
      - do nothing
     """
-    pat = map(utils.fileDescription, ['img','icon','all'])
-    dia = widgets.SaveImageDialog(pf.cfg['workdir'],pat,multi=multi)
+    pat = map(utils.fileDescription, ['img', 'icon', 'all'])
+    dia = widgets.SaveImageDialog(pf.cfg['workdir'], pat, multi=multi)
     opt = dia.getResult()
     if opt:
         if opt.fm == 'From Extension':
@@ -451,7 +451,7 @@ def saveImage(multi=False):
             opt.fm = None
         if opt.qu < 0:
             opt.qu = -1
-        updateSettings({'workdir':os.path.dirname(opt.fn)},save=True)
+        updateSettings({'workdir':os.path.dirname(opt.fn)}, save=True)
         image.save(filename=opt.fn,
                    format=opt.fm,
                    quality=opt.qu,
@@ -474,7 +474,7 @@ def saveIcon():
     ## We should create a specialized input dialog, asking also for the size
     fn = draw.askNewFilename(filter=utils.fileDescription('icon'))
     if fn:
-        image.saveIcon(fn,size=32)
+        image.saveIcon(fn, size=32)
 
 
 def startMultiSave():
@@ -493,7 +493,7 @@ def showImage():
     global viewer
     fn = draw.askFilename(filter=utils.fileDescription('img'))
     if fn:
-        viewer = ImageViewer(pf.app,fn)
+        viewer = ImageViewer(pf.app, fn)
         viewer.show()
 
 
@@ -514,20 +514,20 @@ def createMovieInteractive():
     glob = names.glob()
 
     res = draw.askItems(
-        [ _I('files',glob),
-          _I('encoder',choices=['mencoder','convert','ffmpeg']),
-          _G('Mencoder',[
-              _I('fps',10),
-              _I('vbirate',800),
+        [ _I('files', glob),
+          _I('encoder', choices=['mencoder', 'convert', 'ffmpeg']),
+          _G('Mencoder', [
+              _I('fps', 10),
+              _I('vbirate', 800),
               ]),
-          _G('Convert',[
-              _I('delay',1),
-              _I('colors',256),
+          _G('Convert', [
+              _I('delay', 1),
+              _I('colors', 256),
               ]),
           ],
         enablers = [
-            ('encoder','mencoder','Mencoder'),
-            ('encoder','convert','Convert'),
+            ('encoder', 'mencoder', 'Mencoder'),
+            ('encoder', 'convert', 'Convert'),
           ])
     if not res:
         return
@@ -540,8 +540,8 @@ def createMovieInteractive():
 def exportPGF():
     """Export the current scene to PGF"""
     from plugins.webgl import WebGL
-    types = utils.fileDescription(['pgf','all'])
-    fn = draw.askNewFilename(pf.cfg['workdir'],types)
+    types = utils.fileDescription(['pgf', 'all'])
+    fn = draw.askNewFilename(pf.cfg['workdir'], types)
     if fn:
         pf.GUI.setBusy()
         pf.message("Exporting current scene to %s" % fn)
@@ -551,7 +551,7 @@ def exportPGF():
         name = utils.projectName(fn)
         W = WebGL(name)
         W.addScene()
-        res = W.exportPGF(fn,sep='')
+        res = W.exportPGF(fn, sep='')
         pf.message("Contents: %s" % res)
         pf.GUI.setBusy(False)
 
@@ -564,7 +564,7 @@ def exportWebGL():
     """
     from plugins.webgl import WebGL
     types = [ utils.fileDescription('html') ]
-    fn = draw.askNewFilename(pf.cfg['workdir'],types)
+    fn = draw.askNewFilename(pf.cfg['workdir'], types)
     if fn:
         fn = draw.exportWebGL(fn)
         if draw.ack("Show the scene in your browser?"):
@@ -587,13 +587,13 @@ def recordSession(stop=0):
         if not draw.ack("Recording the session while using DRI may fail to correctly capture the OpenGL canvas. We recommend starting pyformex with the --nodri option to do session recording (at the expense of a slower execution). If you click YES I will nevertheless go ahead with recording."):
             return
 
-    fn = draw.askFilename(pf.cfg['workdir'],"Theora video files (*.ogv)",exist=False)
+    fn = draw.askFilename(pf.cfg['workdir'], "Theora video files (*.ogv)", exist=False)
     if not fn:
         return
 
     print("Recording your session to file %s" % fn)
-    x,y,w,h = pf.GUI.XGeometry()
-    cmd = "recordmydesktop -x %s -y %s --width %s --height %s --no-frame -o %s" % (x,y,w,h,fn)
+    x, y, w, h = pf.GUI.XGeometry()
+    cmd = "recordmydesktop -x %s -y %s --width %s --height %s --no-frame -o %s" % (x, y, w, h, fn)
     P = utils.system(cmd)
     print("Recording pid = %s" % P.pid)
     #
@@ -607,7 +607,7 @@ def stopRecording(stop=15):
     print("STOP RECORDING")
     if _recording_pid:
         # Was recording: finish it
-        utils.killProcesses([_recording_pid],stop)
+        utils.killProcesses([_recording_pid], stop)
         # should check that it has stopped
         _recording_pid = 0
 
@@ -619,47 +619,47 @@ def abortRecording():
 
 MenuData = [
     ## (_('&Open project'),openProject),
-    (_('&Start new project'),createProject),
-    (_('&Open existing project'),openExistingProject),
-    (_('&Import a project'),importProject),
-    (_('&Set current script as AutoScript'),setAutoScript),
-    (_('&Remove the AutoScript'),removeAutoScript),
-    (_('&Set current script as AutoFile'),setAutoFile),
-    (_('&Remove the AutoFile'),removeAutoFile),
-    (_('&List project contents'),listAll),
-    (_('&Save project'),saveProject),
-    (_('&Save project As'),saveAsProject),
+    (_('&Start new project'), createProject),
+    (_('&Open existing project'), openExistingProject),
+    (_('&Import a project'), importProject),
+    (_('&Set current script as AutoScript'), setAutoScript),
+    (_('&Remove the AutoScript'), removeAutoScript),
+    (_('&Set current script as AutoFile'), setAutoFile),
+    (_('&Remove the AutoFile'), removeAutoFile),
+    (_('&List project contents'), listAll),
+    (_('&Save project'), saveProject),
+    (_('&Save project As'), saveAsProject),
     ## (_('&Close project without saving'),closeProjectWithoutSaving),
-    (_('&Clear project'),clearProject),
-    (_('&Close project'),closeProject),
-    ('---',None),
-    (_('&Convert Project File'),convertProjectFile),
-    (_('&Uncompress Project File'),uncompressProjectFile),
-    ('---',None),
-    (_('&Change workdir'),draw.askDirname),
-    (_('&Create new script'),createScript),
-    (_('&Open existing script'),openScript),
-    (_('&Edit current script/app'),editApp),
-    (_('&Run current script/app'),draw.play),
-    (_('&Reload and run current app'),draw.replay),
+    (_('&Clear project'), clearProject),
+    (_('&Close project'), closeProject),
+    ('---', None),
+    (_('&Convert Project File'), convertProjectFile),
+    (_('&Uncompress Project File'), uncompressProjectFile),
+    ('---', None),
+    (_('&Change workdir'), draw.askDirname),
+    (_('&Create new script'), createScript),
+    (_('&Open existing script'), openScript),
+    (_('&Edit current script/app'), editApp),
+    (_('&Run current script/app'), draw.play),
+    (_('&Reload and run current app'), draw.replay),
     ## (_('&Unload all but current app'),),
-    (_('---1'),None),
-    (_('&Save Image'),saveImage),
-    (_('Start &MultiSave'),startMultiSave),
-    (_('Save &Next Image'),image.saveNext),
-    (_('Create &Movie'),createMovieInteractive),
-    (_('&Stop MultiSave'),stopMultiSave),
-    (_('&Save as Icon'),saveIcon),
-    (_('&Show Image'),showImage),
-    (_('&Export as PGF'),exportPGF),
-    (_('&Export as WebGL'),exportWebGL),
-    (_('&Record Session'),[
-        (_('&Start Recording'),recordSession),
-        (_('&Stop Recording'),stopRecording),
-        (_('&Abort Recording'),abortRecording),
+    (_('---1'), None),
+    (_('&Save Image'), saveImage),
+    (_('Start &MultiSave'), startMultiSave),
+    (_('Save &Next Image'), image.saveNext),
+    (_('Create &Movie'), createMovieInteractive),
+    (_('&Stop MultiSave'), stopMultiSave),
+    (_('&Save as Icon'), saveIcon),
+    (_('&Show Image'), showImage),
+    (_('&Export as PGF'), exportPGF),
+    (_('&Export as WebGL'), exportWebGL),
+    (_('&Record Session'), [
+        (_('&Start Recording'), recordSession),
+        (_('&Stop Recording'), stopRecording),
+        (_('&Abort Recording'), abortRecording),
         ]),
-    (_('---2'),None),
-    (_('E&xit'),draw.closeGui),
+    (_('---2'), None),
+    (_('E&xit'), draw.closeGui),
 ]
 
 #onExit(closeProject)

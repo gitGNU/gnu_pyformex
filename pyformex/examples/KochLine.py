@@ -38,7 +38,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'beginner'
 _topics = ['illustration']
-_techniques = ['color','lime']
+_techniques = ['color', 'lime']
 
 from gui.draw import *
 from plugins.lima import lima
@@ -51,8 +51,8 @@ def run():
     n = 6 # number of generations
 
     # We use the lima module to create six generations of the Koch line
-    F = [ Formex(lima("F",{"F":"F*F//F*F"},i,
-                      { 'F' : 'fd();', '*' : 'ro(60);', '/' : 'ro(-60);' }),i)
+    F = [ Formex(lima("F", {"F":"F*F//F*F"}, i,
+                      { 'F' : 'fd();', '*' : 'ro(60);', '/' : 'ro(-60);' }), i)
           for i in range(n) ]
 
     # scale each Formex individually to obtain same length
@@ -64,11 +64,11 @@ def run():
     mode = random.randint(3)
     if mode == 0:
         # all on top of each other
-        draw([F[i].translate([0,sz*(i-1),0]) for i in range(n)])
+        draw([F[i].translate([0, sz*(i-1), 0]) for i in range(n)])
 
     elif mode == 1:
         # one above the other
-        draw([F[i].translate([0,sz*n,0]) for i in range(n)])
+        draw([F[i].translate([0, sz*n, 0]) for i in range(n)])
 
     else:
         # as radii of an n-pointed star

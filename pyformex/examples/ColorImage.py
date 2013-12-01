@@ -37,7 +37,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
 _topics = ['image']
-_techniques = ['color','image']
+_techniques = ['color', 'image']
 
 from gui.draw import *
 from gui.widgets import ImageView
@@ -63,8 +63,8 @@ def loadImage(fn):
         warning("Could not load image '%s'" % fn)
         return None
 
-    w,h = image.width(),image.height()
-    print("size = %sx%s" % (w,h))
+    w, h = image.width(), image.height()
+    print("size = %sx%s" % (w, h))
 
     diag = currentDialog()
     if diag:
@@ -75,7 +75,7 @@ def loadImage(fn):
         scale = sqrt(maxsiz/w/h)
         w = int(w*scale)
         h = int(h*scale)
-    return w,h
+    return w, h
 
 
 def run():
@@ -89,24 +89,24 @@ def run():
     filename = getcfg('datadir')+'/butterfly.png'
     image = None
     scaled_image = None
-    w,h = 200,200
+    w, h = 200, 200
 
     # image viewer widget
     viewer = ImageView(filename)
 
     transforms = ODict([
         ('flat', lambda F: F),
-        ('cylindrical', lambda F: F.cylindrical([2,0,1],[2.,90./float(nx),1.]).rollAxes(-1)),
-        ('spherical', lambda F: F.spherical(scale=[1.,90./float(nx),2.]).rollAxes(-1)),
-        ('projected_on_cylinder', lambda F: F.projectOnCylinder(2*R,1)),
+        ('cylindrical', lambda F: F.cylindrical([2, 0, 1], [2., 90./float(nx), 1.]).rollAxes(-1)),
+        ('spherical', lambda F: F.spherical(scale=[1., 90./float(nx), 2.]).rollAxes(-1)),
+        ('projected_on_cylinder', lambda F: F.projectOnCylinder(2*R, 1)),
         ])
 
     res = askItems([
-        _I('filename',filename,text='Image file',itemtype='button',func=selectImage),
+        _I('filename', filename, text='Image file', itemtype='button', func=selectImage),
         viewer,   # image previewing widget
-        _I('nx',w,text='width'),
-        _I('ny',h,text='height'),
-        _I('transform',itemtype='vradio',choices=transforms.keys()),
+        _I('nx', w, text='width'),
+        _I('ny', h, text='height'),
+        _I('transform', itemtype='vradio', choices=transforms.keys()),
         ])
 
 
@@ -124,16 +124,16 @@ def run():
 
     # Create the colors
     sz = image.size()
-    print("Image size is (%s,%s)" % (sz.width(),sz.height()))
-    color,colortable = image2glcolor(image.scaled(nx,ny))
+    print("Image size is (%s,%s)" % (sz.width(), sz.height()))
+    color, colortable = image2glcolor(image.scaled(nx, ny))
     print("Converting image to color array")
 
     # Create a 2D grid of nx*ny elements
     print("Creating grid")
     R = float(nx)/pi
     L = float(ny)
-    F = Formex('4:0123').replic2(nx,ny).centered()
-    F = F.translate(2,R)
+    F = Formex('4:0123').replic2(nx, ny).centered()
+    F = F.translate(2, R)
 
     # Transform grid and draw
     def drawTransform(transform):
@@ -142,8 +142,8 @@ def run():
         G = trf(F)
         clear()
         print("Drawing Colored grid")
-        draw(G,color=color,colormap=colortable)
-        drawText('Created with pyFormex',20,20,size=24)
+        draw(G, color=color, colormap=colortable)
+        drawText('Created with pyFormex', 20, 20, size=24)
 
     drawTransform(transform)
     zoomAll()

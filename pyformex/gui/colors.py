@@ -52,8 +52,8 @@ RGB values in 0..1 range and luminance.
 from __future__ import print_function
 
 import pyformex as pf
-from gui import QtCore,QtGui
-from arraytools import array,isInt,Int,concatenate
+from gui import QtCore, QtGui
+from arraytools import array, isInt, Int, concatenate
 from odict import ODict
 
 
@@ -96,15 +96,15 @@ def GLcolor(color):
 
     # str or QtCore.Globalcolor: convert to QColor
     if ( isinstance(col, str) or
-         isinstance(col,QtCore.Qt.GlobalColor) ):
+         isinstance(col, QtCore.Qt.GlobalColor) ):
         try:
             col = QtGui.QColor(col)
         except:
             pass
 
     # QColor: convert to (r,g,b) tuple (0..255)
-    if isinstance(col,QtGui.QColor):
-        col = (col.red(),col.green(),col.blue())
+    if isinstance(col, QtGui.QColor):
+        col = (col.red(), col.green(), col.blue())
 
     # Convert to a list and check length
     try:
@@ -113,7 +113,7 @@ def GLcolor(color):
             if isInt(col[0]):
                 # convert int values to float
                 col = [ c/255. for c in col ]
-            col = map(float,col)
+            col = map(float, col)
             # SUCCESS !
             return tuple(col)
     except:
@@ -128,7 +128,7 @@ def GLcolor(color):
         pass
 
     # No success: raise an error
-    raise ValueError("GLcolor: unexpected input of type %s: %s" % (type(color),color))
+    raise ValueError("GLcolor: unexpected input of type %s: %s" % (type(color), color))
 
 # TODO: Should convert result to Int8 ?
 def RGBcolor(color):
@@ -141,13 +141,13 @@ def RGBcolor(color):
     return col.round().astype(Int)
 
 
-def RGBAcolor(color,alpha):
+def RGBAcolor(color, alpha):
     """Return an RGBA (0-255) tuple for a color and alpha value.
 
     color can be anything that is accepted by GLcolor.
     Returns the corresponding RGBA tuple.
     """
-    col = concatenate([array(GLcolor(color)),[alpha]])*255
+    col = concatenate([array(GLcolor(color)), [alpha]])*255
     return col.round().astype(Int)
 
 
@@ -200,16 +200,16 @@ def luminance(color,gamma=True):
     lum = lambda c: ((c+0.055)/1.055) ** 2.4 if c > 0.04045 else c/12.92
     color = GLcolor(color)
     if gamma:
-        R,G,B = map(lum,color)
+        R, G, B = map(lum, color)
     else:
-        R,G,B = color
+        R, G, B = color
     return 0.2126 * R + 0.7152 * G + 0.0722 * B
 
 
 def createColorDict():
     for c in QtGui.QColor.colorNames():
         col = QtGui.QColor
-        print("Color %s = %s" % (c,colorName(c)))
+        print("Color %s = %s" % (c, colorName(c)))
 
 
 def closestColorName(color):
@@ -224,10 +224,10 @@ def RGBA(rgb,alpha=1.0):
 
 def GREY(val,alpha=1.0):
     """Returns a grey OpenGL color of given intensity (0..1)"""
-    return (val,val,val,1.0)
+    return (val, val, val, 1.0)
 
 def grey(i):
-    return (i,i,i)
+    return (i, i, i)
 
 
 black       = (0.0, 0.0, 0.0)
@@ -245,7 +245,7 @@ darkcyan    = (0.0, 0.5, 0.5)
 darkmagenta = (0.5, 0.0, 0.5)
 darkyellow  = (0.5, 0.5, 0.0)
 
-pyformex_pink = (1.0,0.2,0.4)
+pyformex_pink = (1.0, 0.2, 0.4)
 
 lightlightgrey = grey(0.9)
 lightgrey = grey(0.8)
@@ -255,11 +255,11 @@ darkgrey = grey(0.4)
 
 def setPalette(colors):
     global palette
-    palette = ODict([ (k,GLcolor(k)) for k in colors ])
+    palette = ODict([ (k, GLcolor(k)) for k in colors ])
 
 
 # Set default palette
 # !! THIS IS CURRENTLY NOT USED YET
-palette = ODict([ (k,globals()[k]) for k in ['darkgrey','red','green','blue','cyan','magenta','yellow','white','black','darkred','darkgreen','darkblue','darkcyan','darkmagenta','darkyellow','lightgrey'] ])
+palette = ODict([ (k, globals()[k]) for k in ['darkgrey', 'red', 'green', 'blue', 'cyan', 'magenta', 'yellow', 'white', 'black', 'darkred', 'darkgreen', 'darkblue', 'darkcyan', 'darkmagenta', 'darkyellow', 'lightgrey'] ])
 
 # End

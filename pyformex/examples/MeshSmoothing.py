@@ -37,8 +37,8 @@ noise to be added, and the number of smoothing iterations
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['geometry','mesh']
-_techniques = ['dialog','smooth','noise','convert','extrude']
+_topics = ['geometry', 'mesh']
+_techniques = ['dialog', 'smooth', 'noise', 'convert', 'extrude']
 
 from gui.draw import *
 
@@ -48,48 +48,48 @@ noise = 0.05     # Amount of noise added to the coordinates
 niter = 5        # Number of smoothing iterations
 
 
-def createMesh(eltype,n):
+def createMesh(eltype, n):
     """Create a mesh of the given type with n cells in each direction.
 
     eltype should be one of 'quad4','tri3','hex8','tet4'.
     """
     if eltype == 'tet4':   # Tet conversions produces many elements, reduce n
         n /= 2
-    M = Formex('4:0123').rep([n,n]).toMesh()
+    M = Formex('4:0123').rep([n, n]).toMesh()
     if eltype == 'tri3':
         M = M.convert('tri3')
-    elif eltype in ['hex8','tet4']:
-        M = M.extrude(n,dir=2).convert(eltype)
+    elif eltype in ['hex8', 'tet4']:
+        M = M.extrude(n, dir=2).convert(eltype)
     return M
 
 
-def noiseSmooth(M,noise,niter):
+def noiseSmooth(M, noise, niter):
     """Draw 3 versions of a mesh: original, with noise, smoothed noise
 
     M is any mesh. A version with added noise is created. Then that version
     is smoothed. The three versions are displayed.
     """
     draw(M)
-    M1 = M.addNoise(noise).trl(0,M.dsize()).setProp(1)
+    M1 = M.addNoise(noise).trl(0, M.dsize()).setProp(1)
     draw(M1)
-    M2 = M1.smooth(niter).trl(0,M.dsize()).setProp(3)
-    draw([M,M1,M2])
+    M2 = M1.smooth(niter).trl(0, M.dsize()).setProp(3)
+    draw([M, M1, M2])
 
 
 def run():
     clear()
 
     res = askItems(items=[
-        _I('eltype',eltype,text='Element type',itemtype='radio',choices=['quad4','tri3','hex8','tet4']),
-        _I('n',n,text='Grid size',itemtype='slider',min=2,max=24),
-        _I('noise',noise,text='Noise',itemtype='fslider',min=0,max=100,scale=0.01),
-        _I('niter',niter,text='Smoothing iterations',itemtype='slider',min=1,max=20),
+        _I('eltype', eltype, text='Element type', itemtype='radio', choices=['quad4', 'tri3', 'hex8', 'tet4']),
+        _I('n', n, text='Grid size', itemtype='slider', min=2, max=24),
+        _I('noise', noise, text='Noise', itemtype='fslider', min=0, max=100, scale=0.01),
+        _I('niter', niter, text='Smoothing iterations', itemtype='slider', min=1, max=20),
     ])
 
     if res:
         globals().update(res)
-        M = createMesh(eltype,n)
-        noiseSmooth(M,noise,niter)
+        M = createMesh(eltype, n)
+        noiseSmooth(M, noise, niter)
 
 
 if __name__ == 'draw':

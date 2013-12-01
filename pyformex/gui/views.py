@@ -28,20 +28,20 @@ from __future__ import print_function
 
 
 built_in_views = {
-    'front': (0.,0.,0.),
-    'back': (180.,0.,0.),
-    'right': (90.,0.,0.),
-    'left': (270.,0.,0.),
-    'top': (0.,90.,0.),
-    'bottom': (0.,-90.,0.),
-    'iso0': (45.,45.,0.),
-    'iso1': (45.,135.,0.),
-    'iso2': (45.,225.,0.),
-    'iso3': (45.,315.,0.),
-    'iso4': (-45.,45.,0.),
-    'iso5': (-45.,135.,0.),
-    'iso6': (-45.,225.,0.),
-    'iso7': (-45.,315.,0.),
+    'front': (0., 0., 0.),
+    'back': (180., 0., 0.),
+    'right': (90., 0., 0.),
+    'left': (270., 0., 0.),
+    'top': (0., 90., 0.),
+    'bottom': (0., -90., 0.),
+    'iso0': (45., 45., 0.),
+    'iso1': (45., 135., 0.),
+    'iso2': (45., 225., 0.),
+    'iso3': (45., 315., 0.),
+    'iso4': (-45., 45., 0.),
+    'iso5': (-45., 135., 0.),
+    'iso6': (-45., 225., 0.),
+    'iso7': (-45., 315., 0.),
     }
 
 class ViewAngles(dict):
@@ -56,17 +56,17 @@ class ViewAngles(dict):
     """
 
     def __init__(self,data = built_in_views):
-       dict.__init__(self,data)
+       dict.__init__(self, data)
        self['iso'] = self['iso0']
 
 
-    def get(self,name):
+    def get(self, name):
         """Get the angles for a named view.
 
         Returns a tuple of angles (longitude, latitude, twist) if the
         named view was defined, or None otherwise
         """
-        return dict.get(self,name,None)
+        return dict.get(self, name, None)
 
 
 view_angles = ViewAngles()

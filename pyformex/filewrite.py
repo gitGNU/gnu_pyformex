@@ -81,13 +81,13 @@ def writeData(fil,data,sep='',fmt=None,end=''):
     """
     kind = data.dtype.kind
     if fmt is None:
-        data.tofile(fil,sep)
+        data.tofile(fil, sep)
     else:
-        val = data.reshape(-1,data.shape[-1])
+        val = data.reshape(-1, data.shape[-1])
         if kind == 'i':
-            misc.tofile_int32(val.astype(np.int32),fil,fmt)
+            misc.tofile_int32(val.astype(np.int32), fil, fmt)
         elif kind == 'f':
-            misc.tofile_float32(val.astype(np.float32),fil,fmt)
+            misc.tofile_float32(val.astype(np.float32), fil, fmt)
         else:
             raise ValueError("Can not write data fo type %s" % data.dtype)
     if end:
@@ -101,7 +101,7 @@ def writeIData(data,fil,fmt,ind=1):
           array: use these indices
     """
     kind = data.dtype.kind
-    val = data.reshape(-1,data.shape[-1])
+    val = data.reshape(-1, data.shape[-1])
     nrows = val.shape[0]
     if isinstance(ind, int):
         ind = ind + np.arange(nrows)
@@ -112,16 +112,16 @@ def writeIData(data,fil,fmt,ind=1):
 
     if kind == 'i':
         raise ImplementationError
-        misc.tofile_int32(val.astype(np.int32),fil,fmt)
+        misc.tofile_int32(val.astype(np.int32), fil, fmt)
     elif kind == 'f':
-        misc.tofile_ifloat32(ind.astype(np.int32),val.astype(np.float32),fil,fmt)
+        misc.tofile_ifloat32(ind.astype(np.int32), val.astype(np.float32), fil, fmt)
     else:
         raise ValueError("Can not write data fo type %s" % data.dtype)
 
 
 # Output of mesh file formats
 
-def writeOFF(fn,coords,elems):
+def writeOFF(fn, coords, elems):
     """Write a mesh of polygons to a file in OFF format.
 
     Parameters:
@@ -135,20 +135,20 @@ def writeOFF(fn,coords,elems):
     if coords.dtype.kind != 'f' or coords.ndim != 2 or coords.shape[1] != 3 or elems.dtype.kind != 'i' or elems.ndim != 2:
         raise runtimeError("Invalid type or shape of argument(s)")
 
-    fil = open(fn,'w')
+    fil = open(fn, 'w')
     fil.write("OFF\n")
-    fil.write("%d %d 0\n" % (coords.shape[0],elems.shape[0]))
-    writeData(fil,coords,fmt='%f ')
-    nelems = np.zeros_like(elems[:,:1])
+    fil.write("%d %d 0\n" % (coords.shape[0], elems.shape[0]))
+    writeData(fil, coords, fmt='%f ')
+    nelems = np.zeros_like(elems[:, :1])
     nelems.fill(elems.shape[1])
-    elemdata = np.column_stack([nelems,elems])
-    writeData(fil,elemdata,fmt='%i ')
+    elemdata = np.column_stack([nelems, elems])
+    writeData(fil, elemdata, fmt='%i ')
     fil.close()
 
 
 # Output of surface file formats
 
-def writeGTS(fn,coords,edges,faces):
+def writeGTS(fn, coords, edges, faces):
     """Write a mesh of triangles to a file in GTS format.
 
     Parameters:
@@ -164,11 +164,11 @@ def writeGTS(fn,coords,edges,faces):
     if coords.dtype.kind != 'f' or coords.ndim != 2 or coords.shape[1] != 3 or edges.dtype.kind != 'i' or edges.ndim != 2 or edges.shape[1] != 2 or faces.dtype.kind != 'i' or faces.ndim != 2 or faces.shape[1] != 3:
         raise runtimeError("Invalid type or shape of argument(s)")
 
-    fil = open(fn,'w')
-    fil.write("%d %d %d\n" % (coords.shape[0],edges.shape[0],faces.shape[0]))
-    writeData(fil,coords,fmt='%f ')
-    writeData(fil,edges+1,fmt='%i ')
-    writeData(fil,faces+1,fmt='%i ')
+    fil = open(fn, 'w')
+    fil.write("%d %d %d\n" % (coords.shape[0], edges.shape[0], faces.shape[0]))
+    writeData(fil, coords, fmt='%f ')
+    writeData(fil, edges+1, fmt='%i ')
+    writeData(fil, faces+1, fmt='%i ')
     fil.write("#GTS file written by %s\n" % pf.Version())
     fil.close()
 
@@ -191,20 +191,20 @@ def writeSTL(f,x,n=None,binary=False,color=None):
     - `color`: a single color can be passed to a binary STL and will be
       stpored in the header.
     """
-    if not x.shape[1:] == (3,3):
+    if not x.shape[1:] == (3, 3):
         raise ValueError("Expected an (ntri,3,3) array, got %s" % x.shape)
 
     if n is None:
         import geomtools
-        a,n = geomtools.areaNormals(x)
-        degen = geomtools.degenerate(a,n)
+        a, n = geomtools.areaNormals(x)
+        degen = geomtools.degenerate(a, n)
         print("The model contains %d degenerate triangles" % degen.shape[0])
-        x = np.column_stack([n.reshape(-1,1,3),x])
+        x = np.column_stack([n.reshape(-1, 1, 3), x])
 
     if binary:
-        write_stl_bin(f,x,color)
+        write_stl_bin(f, x, color)
     else:
-        write_stl_asc(f,x)
+        write_stl_asc(f, x)
 
 
 def write_stl_bin(fn,x,color=None):
@@ -220,9 +220,9 @@ def write_stl_bin(fn,x,color=None):
       single color for all the triangles, and will be stored in the header
       of the STL file.
     """
-    x = checkArray(x,shape=(-1,4,3),kind='f')
+    x = checkArray(x, shape=(-1, 4, 3), kind='f')
     if color is not None:
-        color = checkArray(color,shape=(4,),kind='i').astype(np.uint8)
+        color = checkArray(color, shape=(4,), kind='i').astype(np.uint8)
 
     def addTriangle(i):
         x[i].tofile(fil)
@@ -238,8 +238,8 @@ def write_stl_bin(fn,x,color=None):
         color = "COLOR=%4s" % color.tostring()
         pf.message("Adding %s to the header" % color)
 
-    with open(fn,'wb') as fil:
-        head = "%-50s%-30s" % (ver,color)
+    with open(fn, 'wb') as fil:
+        head = "%-50s%-30s" % (ver, color)
         fil.write(head)
         ntri = x.shape[0]
         pf.message("Number of triangles: %s" % ntri)
@@ -249,7 +249,7 @@ def write_stl_bin(fn,x,color=None):
     pf.message("Finished writing binary STL, %s bytes" % utils.fileSize(fn))
 
 
-def write_stl_asc(fn,x):
+def write_stl_asc(fn, x):
     """Write a collection of triangles to an ascii .stl file.
 
     Parameters:
@@ -258,11 +258,11 @@ def write_stl_asc(fn,x):
     - `x`: (ntriangles,3,3) shaped array with the vertices of the
       triangles
     """
-    if not x.shape[1:] == (4,3):
+    if not x.shape[1:] == (4, 3):
         raise ValueError("Expected an (ntri,4,3) array, got %s" % x.shape)
 
     pf.message("Writing ascii STL %s" % fn)
-    with open(fn,'wb') as fil:
+    with open(fn, 'wb') as fil:
 
         fil.write("solid  Created by %s\n" % pf.fullVersion())
         for e in x:

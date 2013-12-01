@@ -29,12 +29,12 @@ Surface operations plugin menu for pyFormex.
 from __future__ import print_function
 
 import pyformex as pf
-from gui import actors,colors,decors,widgets,menu
-from gui.colorscale import ColorScale,ColorLegend
+from gui import actors, colors, decors, widgets, menu
+from gui.colorscale import ColorScale, ColorLegend
 from gui.draw import *
 from plugins.trisurface import *
 from plugins.objects import *
-from plugins import plot2d,formex_menu,fe_abq
+from plugins import plot2d, formex_menu, fe_abq
 import simple
 from plugins.tools import Plane
 from pyformex.arraytools import niceLogSize
@@ -50,7 +50,7 @@ def draw_edge_numbers(n):
     """Draw the edge numbers of the named surface."""
     S = named(n)
     F = Formex(S.coords[S.getEdges()])
-    return drawNumbers(F,color='green')
+    return drawNumbers(F, color='green')
 
 def draw_normals(n,avg=False):
     """Draw the surface normals at centers or averaged normals at the nodes."""
@@ -60,10 +60,10 @@ def draw_normals(n,avg=False):
         N = S.avgVertexNormals()
     else:
         C = S.centroids()
-        A,N = S.areaNormals()
+        A, N = S.areaNormals()
     siz = pf.cfg['draw/normalsize']
     if siz == 'area' and not avg:
-        siz = sqrt(A).reshape(-1,1)
+        siz = sqrt(A).reshape(-1, 1)
     else:
         try:
             siz = float(siz)
@@ -73,24 +73,24 @@ def draw_normals(n,avg=False):
         color = 'orange'
     else:
         color = 'red'
-    return drawVectors(C,N,size=siz,color=color,wait=False)
+    return drawVectors(C, N, size=siz, color=color, wait=False)
 
 def draw_avg_normals(n):
-    return draw_normals(n,True)
+    return draw_normals(n, True)
 
 
 class SurfaceObjects(DrawableObjects):
     def __init__(self):
-        DrawableObjects.__init__(self,clas=TriSurface)
+        DrawableObjects.__init__(self, clas=TriSurface)
     def toggleEdgeNumbers(self,onoff=None):
-        self.toggleAnnotation(draw_edge_numbers,onoff)
+        self.toggleAnnotation(draw_edge_numbers, onoff)
     def toggleNormals(self,onoff=None):
-        self.toggleAnnotation(draw_normals,onoff)
+        self.toggleAnnotation(draw_normals, onoff)
     def toggleAvgNormals(self,onoff=None):
-        self.toggleAnnotation(draw_avg_normals,onoff)
-    def set(self,names):
+        self.toggleAnnotation(draw_avg_normals, onoff)
+    def set(self, names):
         import geometry_menu as gm
-        DrawableObjects.set(self,names)
+        DrawableObjects.set(self, names)
         pf.GUI.selection['geometry'].set(names)
 
 
@@ -102,7 +102,7 @@ def read_Surface(fn,exportName=True):
     pf.message("Reading file %s" % fn)
     t = timer.Timer()
     S = TriSurface.read(fn)
-    pf.message("Read surface with %d vertices, %d edges, %d triangles in %s seconds" % (S.ncoords(),S.nedges(),S.nelems(),t.seconds()))
+    pf.message("Read surface with %d vertices, %d edges, %d triangles in %s seconds" % (S.ncoords(), S.nedges(), S.nelems(), t.seconds()))
     if exportName:
         name = utils.projectName(fn)
         export({name:S})
@@ -116,20 +116,20 @@ def readSelection(select=True,draw=True,multi=True):
     If select is True (default), this becomes the current selection.
     If select and draw are True (default), the selection is drawn.
     """
-    types = map(utils.fileDescription,['surface','all'])
-    fn = askFilename(pf.cfg['workdir'],types,multi=multi)
+    types = map(utils.fileDescription, ['surface', 'all'])
+    fn = askFilename(pf.cfg['workdir'], types, multi=multi)
     if fn:
         if not multi:
             fn = [ fn ]
         chdir(fn[0])
-        names = map(utils.projectName,fn)
+        names = map(utils.projectName, fn)
         pf.GUI.setBusy()
-        surfaces = [ read_Surface(f,False) for f in fn ]
+        surfaces = [ read_Surface(f, False) for f in fn ]
         if len(surfaces) > 1:
-            for i,S in enumerate(surfaces):
+            for i, S in enumerate(surfaces):
                 S.setProp(i)
         pf.GUI.setBusy(False)
-        export(dict(zip(names,surfaces)))
+        export(dict(zip(names, surfaces)))
         if select:
             pf.message("Set selection to %s" % str(names))
             selection.set(names)
@@ -147,7 +147,7 @@ def printSize():
     for s in selection.names:
         S = named(s)
         pf.message("Surface %s has %d vertices, %s edges and %d faces" %
-                   (s,S.ncoords(),S.nedges(),S.nelems()))
+                   (s, S.ncoords(), S.nedges(), S.nelems()))
 
 def printType():
     for s in selection.names:
@@ -162,12 +162,12 @@ def printType():
 def printArea():
     for s in selection.names:
         S = named(s)
-        pf.message("Surface %s has area %s" % (s,S.area()))
+        pf.message("Surface %s has area %s" % (s, S.area()))
 
 def printVolume():
     for s in selection.names:
         S = named(s)
-        pf.message("Surface %s has volume %s" % (s,S.volume()))
+        pf.message("Surface %s has volume %s" % (s, S.volume()))
 
 
 def printStats():
@@ -194,7 +194,7 @@ def toFormex(suffix=''):
         newnames = [ n + suffix for n in newnames ]
 
     newvalues = [ named(n).toFormex() for n in newnames ]
-    export2(newnames,newvalues)
+    export2(newnames, newvalues)
 
     if not suffix:
         selection.clear()
@@ -222,7 +222,7 @@ def fromFormex(suffix=''):
         names = [ n + suffix for n in names ]
 
     t = timer.Timer()
-    surfaces =  dict([ (n,TriSurface(F)) for n,F in zip(names,formices) if F.nplex() == 3])
+    surfaces =  dict([ (n, TriSurface(F)) for n, F in zip(names, formices) if F.nplex() == 3])
     print("Converted in %s seconds" % t.seconds())
     print(surfaces.keys())
     export(surfaces)
@@ -251,7 +251,7 @@ def toMesh(suffix=''):
         newnames = [ n + suffix for n in newnames ]
 
     newvalues = [ named(n).toMesh() for n in newnames ]
-    export2(newnames,newvalues)
+    export2(newnames, newvalues)
 
     if not suffix:
         selection.clear()
@@ -280,7 +280,7 @@ def fromMesh(suffix=''):
         names = [ n + suffix for n in names ]
 
     t = timer.Timer()
-    surfaces =  dict([ (n,TriSurface(M)) for n,M in zip(names,meshes) if M.elName() == 'tri3'])
+    surfaces =  dict([ (n, TriSurface(M)) for n, M in zip(names, meshes) if M.elName() == 'tri3'])
     print("Converted in %s seconds" % t.seconds())
     print(surfaces.keys())
     export(surfaces)
@@ -309,7 +309,7 @@ def fixNormals():
     SL = selection.check()
     if SL:
         SL = [ S.fixNormals() for S in SL ]
-        export2(selection.names,SL)
+        export2(selection.names, SL)
         selection.draw()
 
 
@@ -318,7 +318,7 @@ def reverseNormals():
     SL = selection.check()
     if SL:
         SL = [ S.reverse() for S in SL ]
-        export2(selection.names,SL)
+        export2(selection.names, SL)
         selection.draw()
 
 
@@ -336,7 +336,7 @@ def merge():
     selection.draw()
 
 
-def export_surface(types=['surface','gts','stl','off','neu','smesh','vtp','vtk']):
+def export_surface(types=['surface', 'gts', 'stl', 'off', 'neu', 'smesh', 'vtp', 'vtk']):
     F = selection.check(single=True)
     if F:
         if isinstance(types, str):
@@ -344,15 +344,15 @@ def export_surface(types=['surface','gts','stl','off','neu','smesh','vtp','vtk']
             types = [ types ]
         else:
             ftype = None
-        types = map(utils.fileDescription,types)
+        types = map(utils.fileDescription, types)
         print(types)
-        fn = askNewFilename(pf.cfg['workdir'],types)
+        fn = askNewFilename(pf.cfg['workdir'], types)
         if fn:
             if ftype is None:
                 ftype = utils.fileTypeFromExt(fn)
-            pf.message("Exporting surface model to %s (%s)" % (fn,ftype.upper()))
+            pf.message("Exporting surface model to %s (%s)" % (fn, ftype.upper()))
             pf.GUI.setBusy()
-            F.write(fn,ftype)
+            F.write(fn, ftype)
             pf.GUI.setBusy(False)
 
 # TODO: this should be merged with export_surface
@@ -361,10 +361,10 @@ def export_stl():
     F = selection.check(single=True)
     if F:
         res = askItems([
-            _I('filename',pf.cfg['workdir'],itemtype='file',filter=utils.fileDescription('stl'),text=''),
-            _I('binary',True),
-            _I('color','red',itemtype='color'),
-            _I('alpha',0.5),
+            _I('filename', pf.cfg['workdir'], itemtype='file', filter=utils.fileDescription('stl'), text=''),
+            _I('binary', True),
+            _I('color', 'red', itemtype='color'),
+            _I('alpha', 0.5),
             ])
         if not res:
             return
@@ -373,21 +373,21 @@ def export_stl():
         ftype = utils.fileTypeFromExt(fn)
         if res['binary']:
             ftype = 'stlb'
-            color = colors.RGBAcolor(res['color'],res['alpha'])
+            color = colors.RGBAcolor(res['color'], res['alpha'])
         else:
             color = None
         print("Stored color is %s" % color)
-        pf.message("Exporting surface model to %s (%s)" % (fn,ftype.upper()))
+        pf.message("Exporting surface model to %s (%s)" % (fn, ftype.upper()))
         pf.GUI.setBusy()
-        F.write(fn,ftype,color)
+        F.write(fn, ftype, color)
         pf.GUI.setBusy(False)
 
 
 def export_webgl():
     F = selection.check(single=True)
     if F:
-        types = map(utils.fileDescription,['stl'])
-        fn = askNewFilename(pf.cfg['workdir'],types)
+        types = map(utils.fileDescription, ['stl'])
+        fn = askNewFilename(pf.cfg['workdir'], types)
         if fn:
             pf.message("Exporting surface model to %s" % fn)
             pf.GUI.setBusy()
@@ -404,12 +404,12 @@ def showBorder():
         if border:
             print("The border consists of %s parts" % len(border))
             print("The sorted border edges are: ")
-            print('\n'.join([" %s: %s" % (i,b.elems) for i,b in enumerate(border)]))
-            coloredB = [ b.compact().setProp(i+1) for i,b in enumerate(border) ]
-            draw(coloredB,linewidth=3)
-            for i,b in enumerate(coloredB):
-                c = roll(pf.canvas.settings.colormap,i+1,axis=0)
-                drawText3D(b.center(),str(i),color=c,font='sans',size=18,ontop=True)
+            print('\n'.join([" %s: %s" % (i, b.elems) for i, b in enumerate(border)]))
+            coloredB = [ b.compact().setProp(i+1) for i, b in enumerate(border) ]
+            draw(coloredB, linewidth=3)
+            for i, b in enumerate(coloredB):
+                c = roll(pf.canvas.settings.colormap, i+1, axis=0)
+                drawText3D(b.center(), str(i), color=c, font='sans', size=18, ontop=True)
             export({'border':coloredB})
         else:
             warning("The surface %s does not have a border" % selection[0])
@@ -427,9 +427,9 @@ def fillBorders():
     if B:
         props = [ b.prop[0] for b in B ]
         dia = Dialog([
-            _I('Fill which borders',itemtype='radio',choices=['All','One']),
-            _I('Filling method',itemtype='radio',choices=['radial','border']),
-            _I('merge',False,text='Merge fills into current surface'),
+            _I('Fill which borders', itemtype='radio', choices=['All', 'One']),
+            _I('Filling method', itemtype='radio', choices=['radial', 'border']),
+            _I('merge', False, text='Merge fills into current surface'),
             ])
         if _data_ in pf.PF:
             dia.updateData(pf.PF[_data_])
@@ -439,7 +439,7 @@ def fillBorders():
 
             if res['Fill which borders'] == 'One':
                 B = B[:1]
-            fills = [ fillBorder(b,method=res['Filling method']).setProp(i+1) for i,b in enumerate(B) ]
+            fills = [ fillBorder(b, method=res['Filling method']).setProp(i+1) for i, b in enumerate(B) ]
             if res['merge']:
                 name = selection.names[0]
                 S = named(name)
@@ -449,7 +449,7 @@ def fillBorders():
                 selection.draw()
             else:
                 draw(fills)
-                export(dict([('fill-%s'%i,f) for i,f in enumerate(fills)]))
+                export(dict([('fill-%s'%i, f) for i, f in enumerate(fills)]))
 
 
 def deleteTriangles():
@@ -478,26 +478,26 @@ def deleteTriangles():
 #  - domain to display: True to display on edges, False to display on elements
 
 SelectableStatsValues = odict.ODict([
-    ('Quality', (TriSurface.quality,False)),
-    ('Aspect ratio', (TriSurface.aspectRatio,False)),
-    ('Facet Area', (TriSurface.areas,False)),
-    ('Facet Perimeter', (TriSurface.perimeters,False)),
-    ('Smallest altitude', (TriSurface.smallestAltitude,False)),
-    ('Longest edge', (TriSurface.longestEdge,False)),
-    ('Shortest edge', (TriSurface.shortestEdge,False)),
-    ('Number of node adjacent elements', (TriSurface.nNodeAdjacent,False)),
-    ('Number of edge adjacent elements', (TriSurface.nEdgeAdjacent,False)),
-    ('Edge angle', (TriSurface.edgeAngles,True)),
-    ('Number of connected elements', (TriSurface.nEdgeConnected,True)),
-    ('Curvature', (TriSurface.curvature,False)),
+    ('Quality', (TriSurface.quality, False)),
+    ('Aspect ratio', (TriSurface.aspectRatio, False)),
+    ('Facet Area', (TriSurface.areas, False)),
+    ('Facet Perimeter', (TriSurface.perimeters, False)),
+    ('Smallest altitude', (TriSurface.smallestAltitude, False)),
+    ('Longest edge', (TriSurface.longestEdge, False)),
+    ('Shortest edge', (TriSurface.shortestEdge, False)),
+    ('Number of node adjacent elements', (TriSurface.nNodeAdjacent, False)),
+    ('Number of edge adjacent elements', (TriSurface.nEdgeAdjacent, False)),
+    ('Edge angle', (TriSurface.edgeAngles, True)),
+    ('Number of connected elements', (TriSurface.nEdgeConnected, True)),
+    ('Curvature', (TriSurface.curvature, False)),
     ])
 
-CurvatureValues = ['Gaussian curvature','Mean curvature','Shape index','Curvedness','First principal curvature','Second principal curvature']
+CurvatureValues = ['Gaussian curvature', 'Mean curvature', 'Shape index', 'Curvedness', 'First principal curvature', 'Second principal curvature']
 
 
-def showHistogram(key,val,cumulative):
-    y,x = plot2d.createHistogram(val,cumulative=cumulative)
-    plot2d.showHistogram(x,y,key)
+def showHistogram(key, val, cumulative):
+    y, x = plot2d.createHistogram(val, cumulative=cumulative)
+    plot2d.showHistogram(x, y, key)
 
 
 _stat_dia = None
@@ -510,7 +510,7 @@ def showStatistics(key=None,domain=True,dist=False,cumdist=False,clip=None,vmin=
     """
     S = selection.check(single=True)
     if S:
-        func,onEdges = SelectableStatsValues[key]
+        func, onEdges = SelectableStatsValues[key]
         kargs = {}
         if key == 'Curvature':
             kargs['neighbours'] = _stat_dia.results['neighbours']
@@ -536,8 +536,8 @@ def showStatistics(key=None,domain=True,dist=False,cumdist=False,clip=None,vmin=
 Most likely because 'python-scipy' is not installed on your system.""")
                     return
 
-                Q1 = scoreatpercentile(val,vmin)
-                Q3 = scoreatpercentile(val,vmax)
+                Q1 = scoreatpercentile(val, vmin)
+                Q3 = scoreatpercentile(val, vmax)
                 factor = 3
                 if vmin:
                     vmin = Q1-factor*(Q3-Q1)
@@ -549,19 +549,19 @@ Most likely because 'python-scipy' is not installed on your system.""")
             elif clip == 'bottom':
                 val = val.clip(min=vmin)
             else:
-                val = val.clip(vmin,vmax)
+                val = val.clip(vmin, vmax)
 
         if domain:
             clear()
             lights(False)
-            showSurfaceValue(S,key,val,onEdges)
+            showSurfaceValue(S, key, val, onEdges)
         if dist:
-            showHistogram(key,val,cumulative=False)
+            showHistogram(key, val, cumulative=False)
         if cumdist:
-            showHistogram(key,val,cumulative=True)
+            showHistogram(key, val, cumulative=True)
 
 
-def _show_stats(domain,dist):
+def _show_stats(domain, dist):
     _stat_dia.acceptData()
     res = _stat_dia.results
     key = res['Value']
@@ -576,12 +576,12 @@ def _show_stats(domain,dist):
     percentile = res['Clip Mode'] != 'Range'
     minval = res['Bottom']
     maxval = res['Top']
-    showStatistics(key,domain,dist,cumdist,clip=clip,vmin=minval,vmax=maxval,percentile=percentile)
+    showStatistics(key, domain, dist, cumdist, clip=clip, vmin=minval, vmax=maxval, percentile=percentile)
 
 def _show_domain():
-    _show_stats(True,False)
+    _show_stats(True, False)
 def _show_dist():
-    _show_stats(False,True)
+    _show_stats(False, True)
 
 def _close_stats_dia():
     global _stat_dia
@@ -595,64 +595,64 @@ def showStatisticsDialog():
     if _stat_dia:
         _close_stats_dia()
 
-    dispmodes = ['On Domain','Histogram','Cumulative Histogram']
+    dispmodes = ['On Domain', 'Histogram', 'Cumulative Histogram']
     keys = SelectableStatsValues.keys()
     _stat_dia = widgets.InputDialog(
-        caption='Surface Statistics',items=[
-            _I('Value',itemtype='vradio',choices=keys),
-            _I('neighbours',text='Curvature Neighbourhood',value=1),
-            _I('curval',text='Curvature Value',itemtype='vradio',choices=CurvatureValues),
-            _I('clip',itemtype='hradio',choices=['None','Top','Bottom','Both']),
-            _I('Clip Mode',itemtype='hradio',choices=['Range','Percentile']),
-            _G('Clip Values',checkable=True,items=[
-                _I('Top',1.0),
-                _I('Bottom',0.0),
+        caption='Surface Statistics', items=[
+            _I('Value', itemtype='vradio', choices=keys),
+            _I('neighbours', text='Curvature Neighbourhood', value=1),
+            _I('curval', text='Curvature Value', itemtype='vradio', choices=CurvatureValues),
+            _I('clip', itemtype='hradio', choices=['None', 'Top', 'Bottom', 'Both']),
+            _I('Clip Mode', itemtype='hradio', choices=['Range', 'Percentile']),
+            _G('Clip Values', checkable=True, items=[
+                _I('Top', 1.0),
+                _I('Bottom', 0.0),
                 ],
               ),
-            _I('Cumulative Distribution',False),
+            _I('Cumulative Distribution', False),
             ],
         actions=[
-            ('Close',_close_stats_dia),
-            ('Distribution',_show_dist),
-            ('Show on domain',_show_domain)],
+            ('Close', _close_stats_dia),
+            ('Distribution', _show_dist),
+            ('Show on domain', _show_domain)],
         default='Show on domain'
         )
     _stat_dia.show()
 
 
 
-def showSurfaceValue(S,txt,val,onEdges):
+def showSurfaceValue(S, txt, val, onEdges):
     val = nan_to_num(val)
-    mi,ma = val.min(),val.max()
+    mi, ma = val.min(), val.max()
     # Test: replace min with max
-    dec = min(abs(mi),abs(ma))
+    dec = min(abs(mi), abs(ma))
     if dec > 0.0:
-        dec = max(0,3-int(log10(dec)))
+        dec = max(0, 3-int(log10(dec)))
     else:
         dec = 2
     # create a colorscale and draw the colorlegend
-    CS = ColorScale('RAINBOW',mi,ma,0.5*(mi+ma),1.)
-    cval = array(map(CS.color,ravel(val)))
-    cval = cval.reshape(append(val.shape,cval.shape[-1]))
+    CS = ColorScale('RAINBOW', mi, ma, 0.5*(mi+ma), 1.)
+    cval = array(map(CS.color, ravel(val)))
+    cval = cval.reshape(append(val.shape, cval.shape[-1]))
     if onEdges:
         F = Formex(S.coords[S.getEdges()])
-        draw(F,color=cval)
+        draw(F, color=cval)
     else:
-        draw(S,color=cval)
-    CL = ColorLegend(CS,100)
-    CLA = decors.ColorLegend(CL,10,10,30,200,dec=dec)
+        draw(S, color=cval)
+    CL = ColorLegend(CS, 100)
+    CLA = decors.ColorLegend(CL, 10, 10, 30, 200, dec=dec)
     pf.canvas.addDecoration(CLA)
-    drawText(txt,10,230,font='hv18')
+    drawText(txt, 10, 230, font='hv18')
 
 
 def colorByFront():
     S = selection.check(single=True)
     if S:
-        res  = askItems([_I('front type',choices=['node','edge']),
-                         _I('number of colors',-1),
-                         _I('front width',1),
-                         _I('start at',0),
-                         _I('first prop',0),
+        res  = askItems([_I('front type', choices=['node', 'edge']),
+                         _I('number of colors', -1),
+                         _I('front width', 1),
+                         _I('start at', 0),
+                         _I('first prop', 0),
                          ])
         pf.app.processEvents()
         if res:
@@ -664,11 +664,11 @@ def colorByFront():
             startat = res['start at']
             firstprop = res['first prop']
             if ftype == 'node':
-                p = S.frontWalk(level=0,maxval=maxval,startat=startat)
+                p = S.frontWalk(level=0, maxval=maxval, startat=startat)
             else:
-                p = S.frontWalk(level=1,maxval=maxval,startat=startat)
+                p = S.frontWalk(level=1, maxval=maxval, startat=startat)
             S.setProp(p/nwidth + firstprop)
-            print("Colored in %s parts (%s seconds)" % (S.prop.max()+1,t.seconds()))
+            print("Colored in %s parts (%s seconds)" % (S.prop.max()+1, t.seconds()))
             selection.draw()
 
 
@@ -678,27 +678,27 @@ def partitionByConnection():
         selection.remember()
         t = timer.Timer()
         S.prop = S.partitionByConnection()
-        print("Partitioned in %s parts (%s seconds)" % (S.prop.max()+1,t.seconds()))
+        print("Partitioned in %s parts (%s seconds)" % (S.prop.max()+1, t.seconds()))
         selection.draw()
 
 
 def partitionByAngle():
     S = selection.check(single=True)
     if S:
-        res  = askItems([_I('angle',60.),
-                         _I('firstprop',1),
-                         _I('sort by',choices=['number','area','none']),
+        res  = askItems([_I('angle', 60.),
+                         _I('firstprop', 1),
+                         _I('sort by', choices=['number', 'area', 'none']),
 #                         _I('old algorithm',False),
                          ])
         pf.app.processEvents()
         if res:
             selection.remember()
             t = timer.Timer()
-            p = S.partitionByAngle(angle=res['angle'],sort=res['sort by'])#,alt=res['old algorithm'])
+            p = S.partitionByAngle(angle=res['angle'], sort=res['sort by'])#,alt=res['old algorithm'])
             S = S.setProp(p + res['firstprop'])
-            print("Partitioned in %s parts (%s seconds)" % (len(S.propSet()),t.seconds()))
+            print("Partitioned in %s parts (%s seconds)" % (len(S.propSet()), t.seconds()))
             for p in S.propSet():
-                print(" p: %s; n: %s" % (p,(S.prop==p).sum()))
+                print(" p: %s; n: %s" % (p, (S.prop==p).sum()))
             selection.draw()
 
 
@@ -707,14 +707,14 @@ def showFeatureEdges():
     if S:
         selection.draw()
         res  = askItems([
-            _I('angle',60.),
-            _I('ontop',False),
+            _I('angle', 60.),
+            _I('ontop', False),
             ])
         pf.app.processEvents()
         if res:
             p = S.featureEdges(angle=res['angle'])
-            M = Mesh(S.coords,S.edges[p])
-            draw(M,color='red',linewidth=3,bbox='last',nolight=True,ontop=res['ontop'])
+            M = Mesh(S.coords, S.edges[p])
+            draw(M, color='red', linewidth=3, bbox='last', nolight=True, ontop=res['ontop'])
 
 
 #############################################################################
@@ -730,8 +730,8 @@ def scaleSelection():
     """Scale the selection."""
     FL = selection.check()
     if FL:
-        res = askItems([_I('scale',1.0),
-                        ],caption = 'Scaling Factor')
+        res = askItems([_I('scale', 1.0),
+                        ], caption = 'Scaling Factor')
         if res:
             scale = float(res['scale'])
             selection.remember(True)
@@ -743,8 +743,8 @@ def scale3Selection():
     """Scale the selection with 3 scale values."""
     FL = selection.check()
     if FL:
-        res = askItems([_I('scale',[1.0,1.0,1.0],itemtype='point'),
-                        ],caption = 'Scaling Factors')
+        res = askItems([_I('scale', [1.0, 1.0, 1.0], itemtype='point'),
+                        ], caption = 'Scaling Factors')
         if res:
             scale = res['scale']
             selection.remember(True)
@@ -755,17 +755,17 @@ def scale3Selection():
 def translateSelection():
     """Translate the selection in axes direction."""
     FL = selection.check()
-    modes = ['Axis direction','General direction']
+    modes = ['Axis direction', 'General direction']
     if FL:
         res = askItems(
-            [   _I('mode',choices=modes),
-                _I('axis',0),
-                _I('direction',[1.,0.,0.],itemtype='point'),
-                _I('distance',1.0),
+            [   _I('mode', choices=modes),
+                _I('axis', 0),
+                _I('direction', [1., 0., 0.], itemtype='point'),
+                _I('distance', 1.0),
                 ],
             enablers=[
-                ('mode',modes[0],'axis'),
-                ('mode',modes[1],'direction'),
+                ('mode', modes[0], 'axis'),
+                ('mode', modes[1], 'direction'),
                 ],
             caption = 'Translation Parameters',
             )
@@ -777,7 +777,7 @@ def translateSelection():
                 dir = res['direction']
             dist = res['distance']
             selection.remember(True)
-            selection.changeValues([F.translate(dir,dist) for F in FL])
+            selection.changeValues([F.translate(dir, dist) for F in FL])
             selection.drawChanges()
 
 
@@ -798,34 +798,34 @@ def rotate(mode='global'):
     FL = selection.check()
     if FL:
         if mode == 'global':
-            res = askItems([_I('angle',90.0),
-                            _I('axis',2),
+            res = askItems([_I('angle', 90.0),
+                            _I('axis', 2),
                             ])
             if res:
                 angle = res['angle']
                 axis = res['axis']
                 around = None
         elif mode == 'parallel':
-            res = askItems([_I('angle',90.0),
-                            _I('axis',2),
-                            _I('point',[0.0,0.0,0.0],itemtype='point'),
+            res = askItems([_I('angle', 90.0),
+                            _I('axis', 2),
+                            _I('point', [0.0, 0.0, 0.0], itemtype='point'),
                             ])
             if res:
                 angle = res['angle']
                 axis = res['axis']
                 around = res['point']
         elif mode == 'central':
-            res = askItems([_I('angle',90.0),
-                            _I('axis',[1.0,0.0,0.0],itemtype='point'),
+            res = askItems([_I('angle', 90.0),
+                            _I('axis', [1.0, 0.0, 0.0], itemtype='point'),
                             ])
             if res:
                 angle = res['angle']
                 axis = res['axis']
                 around = None
         elif mode == 'general':
-            res = askItems([_I('angle',90.0),
-                            _I('axis',[1.0,0.0,0.0],itemtype='point'),
-                            _I('point',[0.0,0.0,0.0],itemtype='point'),
+            res = askItems([_I('angle', 90.0),
+                            _I('axis', [1.0, 0.0, 0.0], itemtype='point'),
+                            _I('point', [0.0, 0.0, 0.0], itemtype='point'),
                             ])
             if res:
                 angle = res['angle']
@@ -833,7 +833,7 @@ def rotate(mode='global'):
                 around = res['point']
         if res:
             selection.remember(True)
-            selection.changeValues([F.rotate(angle,axis,around) for F in FL])
+            selection.changeValues([F.rotate(angle, axis, around) for F in FL])
             selection.drawChanges()
 
 
@@ -866,11 +866,11 @@ def clipSelection():
     """
     FL = selection.check()
     if FL:
-        res = askItems([_I('axis',0),
-                        _I('begin',0.0),
-                        _I('end',1.0),
-                        _I('nodes','all',choices=['all','any','none']),
-                        ],caption='Clipping Parameters')
+        res = askItems([_I('axis', 0),
+                        _I('begin', 0.0),
+                        _I('end', 1.0),
+                        _I('nodes', 'all', choices=['all', 'any', 'none']),
+                        ], caption='Clipping Parameters')
         if res:
             bb = bbox(FL)
             axis = res['axis']
@@ -879,7 +879,7 @@ def clipSelection():
             dx = xma-xmi
             xc1 = xmi + float(res['begin']) * dx
             xc2 = xmi + float(res['end']) * dx
-            selection.changeValues([F.clip(F.test(nodes=res['nodes'],dir=axis,min=xc1,max=xc2)) for F in FL])
+            selection.changeValues([F.clip(F.test(nodes=res['nodes'], dir=axis, min=xc1, max=xc2)) for F in FL])
             selection.drawChanges()
 
 
@@ -892,13 +892,13 @@ def clipAtPlane():
     dsize = bbox(FL).dsize()
     esize = 10 ** (niceLogSize(dsize)-5)
 
-    res = askItems([_I('Point',[0.0,0.0,0.0],itemtype='point'),
-                    _I('Normal',[1.0,0.0,0.0],itemtype='point'),
-                    _I('Keep side',itemtype='radio',choices=['positive','negative']),
-                    _I('Nodes',itemtype='radio',choices=['all','any','none']),
-                    _I('Tolerance',esize),
-                    _I('Property',1),
-                    ],caption = 'Define the clipping plane')
+    res = askItems([_I('Point', [0.0, 0.0, 0.0], itemtype='point'),
+                    _I('Normal', [1.0, 0.0, 0.0], itemtype='point'),
+                    _I('Keep side', itemtype='radio', choices=['positive', 'negative']),
+                    _I('Nodes', itemtype='radio', choices=['all', 'any', 'none']),
+                    _I('Tolerance', esize),
+                    _I('Property', 1),
+                    ], caption = 'Define the clipping plane')
     if res:
         P = res['Point']
         N = res['Normal']
@@ -911,9 +911,9 @@ def clipAtPlane():
             func = TriSurface.clip
         else:
             func = TriSurface.cclip
-        FL = [ func(F,F.test(nodes=nodes,dir=N,min=P,atol=atol)) for F in FL]
+        FL = [ func(F, F.test(nodes=nodes, dir=N, min=P, atol=atol)) for F in FL]
         FL = [ F.setProp(prop) for F in FL ]
-        export(dict([('%s/clip' % n,F) for n,F in zip(selection,FL)]))
+        export(dict([('%s/clip' % n, F) for n, F in zip(selection, FL)]))
         selection.set(['%s/clip' % n for n in selection])
         selection.draw()
 
@@ -927,12 +927,12 @@ def cutWithPlane():
     dsize = bbox(FL).dsize()
     esize = 10 ** (niceLogSize(dsize)-5)
 
-    res = askItems([_I('Point',[0.0,0.0,0.0],itemtype='point'),
-                    _I('Normal',[1.0,0.0,0.0],itemtype='point'),
-                    _I('New props',[1,2,2,3,4,5,6]),
-                    _I('Side','positive',itemtype='radio',choices=['positive','negative','both']),
-                    _I('Tolerance',esize),
-                    ],caption = 'Define the cutting plane')
+    res = askItems([_I('Point', [0.0, 0.0, 0.0], itemtype='point'),
+                    _I('Normal', [1.0, 0.0, 0.0], itemtype='point'),
+                    _I('New props', [1, 2, 2, 3, 4, 5, 6]),
+                    _I('Side', 'positive', itemtype='radio', choices=['positive', 'negative', 'both']),
+                    _I('Tolerance', esize),
+                    ], caption = 'Define the cutting plane')
     if res:
         P = res['Point']
         N = res['Normal']
@@ -941,18 +941,18 @@ def cutWithPlane():
         atol = res['Tolerance']
         selection.remember(True)
         if side == 'both':
-            G = [F.toFormex().cutWithPlane(P,N,side=side,atol=atol,newprops=p) for F in FL]
+            G = [F.toFormex().cutWithPlane(P, N, side=side, atol=atol, newprops=p) for F in FL]
             G_pos = []
             G_neg  =[]
             for F in G:
                 G_pos.append(TriSurface(F[0]))
                 G_neg.append(TriSurface(F[1]))
-            export(dict([('%s/pos' % n,g) for n,g in zip(selection,G_pos)]))
-            export(dict([('%s/neg' % n,g) for n,g in zip(selection,G_neg)]))
+            export(dict([('%s/pos' % n, g) for n, g in zip(selection, G_pos)]))
+            export(dict([('%s/neg' % n, g) for n, g in zip(selection, G_neg)]))
             selection.set(['%s/pos' % n for n in selection] + ['%s/neg' % n for n in selection])
             selection.draw()
         else:
-            selection.changeValues([F.cutWithPlane(P,N,newprops=p,side=side,atol=atol) for F in FL])
+            selection.changeValues([F.cutWithPlane(P, N, newprops=p, side=side, atol=atol) for F in FL])
             selection.drawChanges()
 
 
@@ -967,12 +967,12 @@ def cutSelectionByPlanes():
         warning("You have to define some planes first.")
         return
 
-    res1 = widgets.ListSelection(planes,caption='Known %sobjects' % selection.object_type(),sort=True).getResult()
+    res1 = widgets.ListSelection(planes, caption='Known %sobjects' % selection.object_type(), sort=True).getResult()
     if res1:
-        res2 = askItems([_I('Tolerance',0.),
-                         _I('Color by','side',itemtype='radio',choices=['side', 'element type']),
-                         _I('Side','both',itemtype='radio',choices=['positive','negative','both']),
-                         ],caption = 'Cutting parameters')
+        res2 = askItems([_I('Tolerance', 0.),
+                         _I('Color by', 'side', itemtype='radio', choices=['side', 'element type']),
+                         _I('Side', 'both', itemtype='radio', choices=['positive', 'negative', 'both']),
+                         ], caption = 'Cutting parameters')
         if res2:
             planes = map(named, res1)
             p = [plane.P for plane in planes]
@@ -981,16 +981,16 @@ def cutSelectionByPlanes():
             color = res2['Color by']
             side = res2['Side']
             if color == 'element type':
-                newprops = [1,2,2,3,4,5,6]
+                newprops = [1, 2, 2, 3, 4, 5, 6]
             else:
                 newprops = None
             if side == 'both':
-                Spos, Sneg = S.toFormex().cutWithPlane(p,n,newprops=newprops,side=side,atol=atol)
+                Spos, Sneg = S.toFormex().cutWithPlane(p, n, newprops=newprops, side=side, atol=atol)
             elif side == 'positive':
-                Spos = S.toFormex().cutWithPlane(p,n,newprops=newprops,side=side,atol=atol)
+                Spos = S.toFormex().cutWithPlane(p, n, newprops=newprops, side=side, atol=atol)
                 Sneg = Formex()
             elif side == 'negative':
-                Sneg = S.toFormex().cutWithPlane(p,n,newprops=newprops,side=side,atol=atol)
+                Sneg = S.toFormex().cutWithPlane(p, n, newprops=newprops, side=side, atol=atol)
                 Spos = Formex()
             if Spos.nelems() !=0:
                 Spos = TriSurface(Spos)
@@ -1007,7 +1007,7 @@ def cutSelectionByPlanes():
             name = selection.names[0]
             export({name+"/pos":Spos})
             export({name+"/neg":Sneg})
-            selection.set([name+"/pos",name+"/neg"]+res1)
+            selection.set([name+"/pos", name+"/neg"]+res1)
             selection.draw()
 
 
@@ -1016,17 +1016,17 @@ def intersectWithPlane():
     FL = selection.check()
     if not FL:
         return
-    res = askItems([_I('Name suffix','intersect'),
-                    _I('Point',(0.0,0.0,0.0)),
-                    _I('Normal',(1.0,0.0,0.0)),
-                    ],caption = 'Define the cutting plane')
+    res = askItems([_I('Name suffix', 'intersect'),
+                    _I('Point', (0.0, 0.0, 0.0)),
+                    _I('Normal', (1.0, 0.0, 0.0)),
+                    ], caption = 'Define the cutting plane')
     if res:
         suffix = res['Name suffix']
         P = res['Point']
         N = res['Normal']
-        M = [ S.intersectionWithPlane(P,N) for S in FL ]
-        draw(M,color='red')
-        export(dict([('%s/%s' % (n,suffix), m) for (n,m) in zip(selection,M)]))
+        M = [ S.intersectionWithPlane(P, N) for S in FL ]
+        draw(M, color='red')
+        export(dict([('%s/%s' % (n, suffix), m) for (n, m) in zip(selection, M)]))
 
 
 def slicer():
@@ -1034,19 +1034,19 @@ def slicer():
     S = selection.check(single=True)
     if not S:
         return
-    res = askItems([_I('Direction',[1.,0.,0.]),
-                    _I('# slices',20),
-                    ],caption = 'Define the slicing planes')
+    res = askItems([_I('Direction', [1., 0., 0.]),
+                    _I('# slices', 20),
+                    ], caption = 'Define the slicing planes')
     if res:
         axis = res['Direction']
         nslices = res['# slices']
         pf.GUI.setBusy(True)
         t = timer.Timer()
-        slices = S.slice(dir=axis,nplanes=nslices)
+        slices = S.slice(dir=axis, nplanes=nslices)
         print("Sliced in %s seconds" % t.seconds())
         pf.GUI.setBusy(False)
         print([ s.nelems() for s in slices ])
-        draw([ s for s in slices if s.nelems() > 0],color='red',bbox='last',view=None)
+        draw([ s for s in slices if s.nelems() > 0], color='red', bbox='last', view=None)
         export({'%s/slices' % selection[0]:slices})
 
 
@@ -1057,16 +1057,16 @@ def spliner():
     S = selection.check(single=True)
     if not S:
         return
-    res = askItems([_I('Direction',[1.,0.,0.]),
-                    _I('# slices',20),
-                    _I('remove_invalid',False),
-                    ],caption = 'Define the slicing planes')
+    res = askItems([_I('Direction', [1., 0., 0.]),
+                    _I('# slices', 20),
+                    _I('remove_invalid', False),
+                    ], caption = 'Define the slicing planes')
     if res:
         axis = res['Direction']
         nslices = res['# slices']
         remove_cruft = res['remove_invalid']
         pf.GUI.setBusy(True)
-        slices = S.slice(dir=axis,nplanes=nslices)
+        slices = S.slice(dir=axis, nplanes=nslices)
         pf.GUI.setBusy(False)
         print([ s.nelems() for s in slices ])
         split = [ s.splitProp() for s in slices if s.nelems() > 0 ]
@@ -1076,9 +1076,9 @@ def spliner():
         print(sum(hasnan))
         #print [s.closed for s in split]
         export({'%s/split' % selection[0]:split})
-        draw(split,color='blue',bbox='last',view=None)
-        splines = [ BezierSpline(s.coords[s.elems[:,0]],closed=True) for s in split ]
-        draw(splines,color='red',bbox='last',view=None)
+        draw(split, color='blue', bbox='last', view=None)
+        splines = [ BezierSpline(s.coords[s.elems[:, 0]], closed=True) for s in split ]
+        draw(splines, color='red', bbox='last', view=None)
         export({'%s/splines' % selection[0]:splines})
 
 
@@ -1089,15 +1089,15 @@ def smooth():
     S = selection.check(single=True)
     if S:
         res = askItems(
-            [ _I('method','lowpass',itemtype='select',choices=['lowpass','laplace']),
-              _I('iterations',1,min=1),
-              _I('lambda_value',0.5,min=0.0,max=1.0),
-              _I('neighbourhood',1),
-              _I('alpha',0.0),
-              _I('beta',0.2),
+            [ _I('method', 'lowpass', itemtype='select', choices=['lowpass', 'laplace']),
+              _I('iterations', 1, min=1),
+              _I('lambda_value', 0.5, min=0.0, max=1.0),
+              _I('neighbourhood', 1),
+              _I('alpha', 0.0),
+              _I('beta', 0.2),
               ], enablers=[
-                ('method','lowpass','neighbourhood'),
-                ('method','laplace','alpha','beta'),
+                ('method', 'lowpass', 'neighbourhood'),
+                ('method', 'laplace', 'alpha', 'beta'),
                 ],
             )
         if res:
@@ -1113,8 +1113,8 @@ def smooth():
 def refine():
     S = selection.check(single=True)
     if S:
-        res = askItems([_I('max_edges',-1),
-                        _I('min_cost',-1.0),
+        res = askItems([_I('max_edges', -1),
+                        _I('min_cost', -1.0),
                         ])
         if res:
             selection.remember()
@@ -1135,8 +1135,8 @@ def refine():
 def flytru_stl():
     """Fly through the stl model."""
     global ctr
-    Fc = Formex(array(ctr).reshape((-1,1,3)))
-    path = connect([Fc,Fc],bias=[0,1])
+    Fc = Formex(array(ctr).reshape((-1, 1, 3)))
+    path = connect([Fc, Fc], bias=[0, 1])
     flyAlong(path)
 
 
@@ -1155,33 +1155,33 @@ def surface2abq():
     S = selection.check(single=True)
     if S:
         types = [ "Abaqus INP files (*.inp)" ]
-        fn = askNewFilename(pf.cfg['workdir'],types)
+        fn = askNewFilename(pf.cfg['workdir'], types)
         if fn:
             print("Exporting surface model to %s" % fn)
             updateGUI()
-            fe_abq.exportMesh(fn,S,eltype='S3',header="Abaqus model generated by pyFormex from input file %s" % os.path.basename(fn))
+            fe_abq.exportMesh(fn, S, eltype='S3', header="Abaqus model generated by pyFormex from input file %s" % os.path.basename(fn))
 
 
 def volume2abq():
     if PF['volume'] is None:
         return
     types = [ "Abaqus INP files (*.inp)" ]
-    fn = askNewFilename(pf.cfg['workdir'],types)
+    fn = askNewFilename(pf.cfg['workdir'], types)
     if fn:
         print("Exporting volume model to %s" % fn)
         updateGUI()
         mesh = Mesh(PF['volume'])
-        fe_abq.exportMesh(fn,mesh,eltype='C3D%d' % elems.shape[1],header="Abaqus model generated by tetgen from surface in STL file %s.stl" % PF['project'])
+        fe_abq.exportMesh(fn, mesh, eltype='C3D%d' % elems.shape[1], header="Abaqus model generated by tetgen from surface in STL file %s.stl" % PF['project'])
 
 
 def show_nodes():
     n = 0
-    data = askItems([_I('node number',n),
+    data = askItems([_I('node number', n),
                      ])
     n = int(data['node number'])
     if n > 0:
-        nodes,elems = PF['surface']
-        print("Node %s = %s",(n,nodes[n]))
+        nodes, elems = PF['surface']
+        print("Node %s = %s", (n, nodes[n]))
 
 
 def trim_border(elems,nodes,nb,visual=False):
@@ -1196,29 +1196,29 @@ def trim_border(elems,nodes,nb,visual=False):
     nelems = elems.shape[0]
     ntrim = trim.shape[0]
     nkeep = keep.shape[0]
-    print("Selected %s of %s elements, leaving %s" % (ntrim,nelems,nkeep) )
+    print("Selected %s of %s elements, leaving %s" % (ntrim, nelems, nkeep) )
 
     if visual and ntrim > 0:
-        prop = zeros(shape=(F.nelems(),),dtype=int32)
+        prop = zeros(shape=(F.nelems(),), dtype=int32)
         prop[trim] = 2 # red
         prop[keep] = 1 # yellow
-        F = Formex(nodes[elems],prop)
+        F = Formex(nodes[elems], prop)
         clear()
-        draw(F,view='left')
+        draw(F, view='left')
 
     return elems[keep]
 
 
 def trim_surface():
     check_surface()
-    res = askItems([_I('Number of trim rounds',1),
-                    _I('Minimum number of border edges',1),
+    res = askItems([_I('Number of trim rounds', 1),
+                    _I('Minimum number of border edges', 1),
                     ])
     n = int(res['Number of trim rounds'])
     nb = int(res['Minimum number of border edges'])
     print("Initial number of elements: %s" % elems.shape[0])
     for i in range(n):
-        elems = trim_border(elems,nodes,nb)
+        elems = trim_border(elems, nodes, nb)
         print("Number of elements after border removal: %s" % elems.shape[0])
 
 
@@ -1229,22 +1229,22 @@ def read_tetgen(surface=True, volume=True):
         ftype += ' *.smesh'
     if volume:
         ftype += ' *.ele'
-    fn = askFilename(pf.cfg['workdir'],"Tetgen files (%s)" % ftype)
+    fn = askFilename(pf.cfg['workdir'], "Tetgen files (%s)" % ftype)
     nodes = elems =surf = None
     if fn:
         chdir(fn)
         project = utils.projectName(fn)
         set_project(project)
-        nodes,nodenrs = tetgen.readNodes(project+'.node')
+        nodes, nodenrs = tetgen.readNodes(project+'.node')
 #        print("Read %d nodes" % nodes.shape[0])
         if volume:
-            elems,elemnrs,elemattr = tetgen.readElems(project+'.ele')
+            elems, elemnrs, elemattr = tetgen.readElems(project+'.ele')
             print("Read %d tetraeders" % elems.shape[0])
-            PF['volume'] = (nodes,elems)
+            PF['volume'] = (nodes, elems)
         if surface:
             surf = tetgen.readSurface(project+'.smesh')
             print("Read %d triangles" % surf.shape[0])
-            PF['surface'] = (nodes,surf)
+            PF['surface'] = (nodes, surf)
     if surface:
         show_surface()
     else:
@@ -1261,9 +1261,9 @@ def read_tetgen_volume():
 def scale_volume():
     if PF['volume'] is None:
         return
-    nodes,elems = PF['volume']
+    nodes, elems = PF['volume']
     nodes *= 0.01
-    PF['volume'] = (nodes,elems)
+    PF['volume'] = (nodes, elems)
 
 
 
@@ -1272,16 +1272,16 @@ def show_volume():
     """Display the volume model."""
     if PF['volume'] is None:
         return
-    nodes,elems = PF['volume']
-    F = Formex(nodes[elems],eltype='tet4')
+    nodes, elems = PF['volume']
+    F = Formex(nodes[elems], eltype='tet4')
     pf.message("BBOX = %s" % F.bbox())
     clear()
-    draw(F,color='random')
+    draw(F, color='random')
     PF['vol_model'] = F
 
 
 def createCube():
-    res = askItems([_I('name','__auto__'),
+    res = askItems([_I('name', '__auto__'),
                     ])
     if res:
         name = res['name']
@@ -1291,8 +1291,8 @@ def createCube():
         selection.draw()
 
 def createSphere():
-    res = askItems([_I('name','__auto__'),
-                    _I('ndiv',8,min=1),
+    res = askItems([_I('name', '__auto__'),
+                    _I('ndiv', 8, min=1),
                     ])
     if res:
         name = res['name']
@@ -1309,34 +1309,34 @@ def createSphere():
 def check():
     S = selection.check(single=True)
     if S:
-        sta,out = S.check()
-        pf.message((sta,out))
+        sta, out = S.check()
+        pf.message((sta, out))
         if sta == 3:
             clear()
-            draw(S.select(out),color='red')
-            draw(S,color='black')
+            draw(S.select(out), color='red')
+            draw(S, color='black')
 
 
 def split():
     S = selection.check(single=True)
     if S:
-        pf.message(S.split(base=selection[0],verbose=True))
+        pf.message(S.split(base=selection[0], verbose=True))
 
 
 def coarsen():
     S = selection.check(single=True)
     if S:
-        res = askItems([_I('min_edges',-1),
-                        _I('max_cost',-1.0),
-                        _I('mid_vertex',False),
-                        _I('length_cost',False),
-                        _I('max_fold',1.0),
-                        _I('volume_weight',0.5),
-                        _I('boundary_weight',0.5),
-                        _I('shape_weight',0.0),
-                        _I('progressive',False),
-                        _I('log',False),
-                        _I('verbose',False),
+        res = askItems([_I('min_edges', -1),
+                        _I('max_cost', -1.0),
+                        _I('mid_vertex', False),
+                        _I('length_cost', False),
+                        _I('max_fold', 1.0),
+                        _I('volume_weight', 0.5),
+                        _I('boundary_weight', 0.5),
+                        _I('shape_weight', 0.0),
+                        _I('progressive', False),
+                        _I('log', False),
+                        _I('verbose', False),
                         ])
         if res:
             selection.remember()
@@ -1362,17 +1362,17 @@ def boolean():
         warning("You currently have no exported surfaces!")
         return
 
-    ops = ['+ (Union)','- (Difference)','* (Intersection)']
-    res = askItems([_I('surface 1',choices=surfs),
-                    _I('surface 2',choices=surfs),
-                    _I('operation',choices=ops),
-                    _I('check self intersection',False),
-                    _I('verbose',False),
-                    ],'Boolean Operation')
+    ops = ['+ (Union)', '- (Difference)', '* (Intersection)']
+    res = askItems([_I('surface 1', choices=surfs),
+                    _I('surface 2', choices=surfs),
+                    _I('operation', choices=ops),
+                    _I('check self intersection', False),
+                    _I('verbose', False),
+                    ], 'Boolean Operation')
     if res:
         SA = pf.PF[res['surface 1']]
         SB = pf.PF[res['surface 2']]
-        SC = SA.boolean(SB,op=res['operation'].strip()[0],
+        SC = SA.boolean(SB, op=res['operation'].strip()[0],
                         check=res['check self intersection'],
                         verbose=res['verbose'])
         export({'__auto__':SC})
@@ -1387,18 +1387,18 @@ def intersection():
         warning("You currently have no exported surfaces!")
         return
 
-    res = askItems([_I('surface 1',choices=surfs),
-                    _I('surface 2',choices=surfs),
-                    _I('check self intersection',False),
-                    _I('verbose',False),
-                    ],'Intersection Curve')
+    res = askItems([_I('surface 1', choices=surfs),
+                    _I('surface 2', choices=surfs),
+                    _I('check self intersection', False),
+                    _I('verbose', False),
+                    ], 'Intersection Curve')
     if res:
         SA = pf.PF[res['surface 1']]
         SB = pf.PF[res['surface 2']]
-        SC = SA.intersection(SB,check=res['check self intersection'],
+        SC = SA.intersection(SB, check=res['check self intersection'],
                              verbose=res['verbose'])
         export({'__intersection_curve__':SC})
-        draw(SC,color=red,linewidth=3)
+        draw(SC, color=red, linewidth=3)
 
 
 def remesh():
@@ -1415,7 +1415,7 @@ def centerline():
     if S:
         CL = S.centerline()
         export({'centerline':CL})
-        draw(CL,color=red,ontop=True,nolight=True)
+        draw(CL, color=red, ontop=True, nolight=True)
 
 
 ################### menu #################
@@ -1425,110 +1425,110 @@ _menu = 'Surface'
 def create_menu():
     """Create the Surface menu."""
     MenuData = [
-        ("&Read Surface Files",readSelection),
-        ("&Select Surface(s)",selection.ask),
-        ("&Draw Selection",selection.draw),
-        ("&Forget Selection",selection.forget),
-        ("&Convert to Formex",toFormex),
-        ("&Convert from Formex",fromFormex),
-        ("&Convert from Mesh",fromMesh),
-        ("&Export Surface Model",export_surface),
-        ("&Export as STL",export_stl),
-        ("&Export as WebGL",export_webgl),
-        ("---",None),
+        ("&Read Surface Files", readSelection),
+        ("&Select Surface(s)", selection.ask),
+        ("&Draw Selection", selection.draw),
+        ("&Forget Selection", selection.forget),
+        ("&Convert to Formex", toFormex),
+        ("&Convert from Formex", fromFormex),
+        ("&Convert from Mesh", fromMesh),
+        ("&Export Surface Model", export_surface),
+        ("&Export as STL", export_stl),
+        ("&Export as WebGL", export_webgl),
+        ("---", None),
         ("&Create surface",
-         [('&Cube',createCube),
-          ('&Sphere',createSphere),
+         [('&Cube', createCube),
+          ('&Sphere', createSphere),
           ]),
-        ("&Merge Selection",merge),
-        ("&Fix Normals",fixNormals),
-        ("&Reverse Normals",reverseNormals),
+        ("&Merge Selection", merge),
+        ("&Fix Normals", fixNormals),
+        ("&Reverse Normals", reverseNormals),
         #("&Set Property",selection.setProp),
-        ("---",None),
+        ("---", None),
         ("Print &Information",
-         [('&Data Size',printSize),
-          ('&Bounding Box',selection.printbbox),
-          ('&Surface Type',printType),
-          ('&Total Area',printArea),
-          ('&Enclosed Volume',printVolume),
-          ('&All Statistics',printStats),
+         [('&Data Size', printSize),
+          ('&Bounding Box', selection.printbbox),
+          ('&Surface Type', printType),
+          ('&Total Area', printArea),
+          ('&Enclosed Volume', printVolume),
+          ('&All Statistics', printStats),
           ]),
-        ("&Shrink",toggle_shrink),
+        ("&Shrink", toggle_shrink),
         ("Toggle &Annotations",
-         [("&Names",selection.toggleNames,dict(checkable=True)),
-          ("&Face Numbers",selection.toggleNumbers,dict(checkable=True)),
-          ("&Edge Numbers",selection.toggleEdgeNumbers,dict(checkable=True)),
-          ("&Node Numbers",selection.toggleNodeNumbers,dict(checkable=True)),
-          ("&Normals",selection.toggleNormals,dict(checkable=True)),
-          ("&AvgNormals",selection.toggleAvgNormals,dict(checkable=True)),
-          ('&Toggle Bbox',selection.toggleBbox,dict(checkable=True)),
+         [("&Names", selection.toggleNames, dict(checkable=True)),
+          ("&Face Numbers", selection.toggleNumbers, dict(checkable=True)),
+          ("&Edge Numbers", selection.toggleEdgeNumbers, dict(checkable=True)),
+          ("&Node Numbers", selection.toggleNodeNumbers, dict(checkable=True)),
+          ("&Normals", selection.toggleNormals, dict(checkable=True)),
+          ("&AvgNormals", selection.toggleAvgNormals, dict(checkable=True)),
+          ('&Toggle Bbox', selection.toggleBbox, dict(checkable=True)),
           ]),
-        ("&Statistics",showStatisticsDialog),
-        ("---",None),
+        ("&Statistics", showStatisticsDialog),
+        ("---", None),
         ("&Frontal Methods",
-         [("&Color By Front",colorByFront),
-          ("&Partition By Connection",partitionByConnection),
-          ("&Partition By Angle",partitionByAngle),
-          ("&Show Feature Edges",showFeatureEdges),
+         [("&Color By Front", colorByFront),
+          ("&Partition By Connection", partitionByConnection),
+          ("&Partition By Angle", partitionByAngle),
+          ("&Show Feature Edges", showFeatureEdges),
           ]),
-        ("&Show Border",showBorder),
-        ("&Fill Border",fillBorders),
+        ("&Show Border", showBorder),
+        ("&Fill Border", fillBorders),
 #        ("&Fill Holes",fillHoles),
-        ("&Delete Triangles",deleteTriangles),
-        ("---",None),
+        ("&Delete Triangles", deleteTriangles),
+        ("---", None),
         ("&Transform",
-         [("&Scale",scaleSelection),
-          ("&Scale non-uniformly",scale3Selection),
-          ("&Translate",translateSelection),
-          ("&Center",centerSelection),
+         [("&Scale", scaleSelection),
+          ("&Scale non-uniformly", scale3Selection),
+          ("&Translate", translateSelection),
+          ("&Center", centerSelection),
           ("&Rotate",
-           [("&Around Global Axis",rotateGlobal),
-            ("&Around Parallel Axis",rotateParallel),
-            ("&Around Central Axis",rotateCentral),
-            ("&Around General Axis",rotateGeneral),
+           [("&Around Global Axis", rotateGlobal),
+            ("&Around Parallel Axis", rotateParallel),
+            ("&Around Central Axis", rotateCentral),
+            ("&Around General Axis", rotateGeneral),
             ]),
-          ("&Roll Axes",rollAxes),
+          ("&Roll Axes", rollAxes),
           ]),
         ("&Clip/Cut",
-         [("&Clip",clipSelection),
-          ("&Clip At Plane",clipAtPlane),
-          ("&Cut With Plane",cutWithPlane),
-          ("&Multiple Cut",cutSelectionByPlanes),
-          ("&Intersection With Plane",intersectWithPlane),
-          ("&Slicer",slicer),
-          ("&Spliner",spliner),
+         [("&Clip", clipSelection),
+          ("&Clip At Plane", clipAtPlane),
+          ("&Cut With Plane", cutWithPlane),
+          ("&Multiple Cut", cutSelectionByPlanes),
+          ("&Intersection With Plane", intersectWithPlane),
+          ("&Slicer", slicer),
+          ("&Spliner", spliner),
            ]),
-        ("&Smooth",smooth),
-        ("&Refine",refine),
-        ("&Undo Last Changes",selection.undoChanges),
-        ("---",None),
+        ("&Smooth", smooth),
+        ("&Refine", refine),
+        ("&Undo Last Changes", selection.undoChanges),
+        ("---", None),
         ('&GTS functions',
-         [('&Check surface',check),
-          ('&Split surface',split),
-          ("&Coarsen surface",coarsen),
-          ("&Refine",refine),
+         [('&Check surface', check),
+          ('&Split surface', split),
+          ("&Coarsen surface", coarsen),
+          ("&Refine", refine),
           ## ("&Smooth surface",smooth),
-          ("&Boolean operation on two surfaces",boolean),
-          ("&Intersection curve of two surfaces",intersection),
+          ("&Boolean operation on two surfaces", boolean),
+          ("&Intersection curve of two surfaces", intersection),
           ]),
         ('&VMTK functions',
-         [('&Quality remesh surface',remesh),
-          ("&Compute centerline",centerline),
+         [('&Quality remesh surface', remesh),
+          ("&Compute centerline", centerline),
           ]),
 #        ("&Show volume model",show_volume),
         # ("&Print Nodal Coordinates",show_nodes),
         # ("&Convert STL file to OFF file",convert_stl_to_off),
         # ("&Sanitize STL file to OFF file",sanitize_stl_to_off),
 #        ("&Trim border",trim_surface),
-        ("&Create volume mesh",create_volume),
+        ("&Create volume mesh", create_volume),
 #        ("&Read Tetgen Volume",read_tetgen_volume),
 #        ("&Export surface to Abaqus",surface2abq),
 #        ("&Export volume to Abaqus",volume2abq),
-        ("---",None),
-        ("&Reload Menu",reload_menu),
-        ("&Close Menu",close_menu),
+        ("---", None),
+        ("&Reload Menu", reload_menu),
+        ("&Close Menu", close_menu),
         ]
-    return menu.Menu(_menu,items=MenuData,parent=pf.GUI.menu,before='Help')
+    return menu.Menu(_menu, items=MenuData, parent=pf.GUI.menu, before='Help')
 
 
 def show_menu():

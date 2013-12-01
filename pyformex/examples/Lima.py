@@ -40,10 +40,10 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
 _topics = ['illustration']
-_techniques = ['dialog','lima']
+_techniques = ['dialog', 'lima']
 
 from gui.draw import *
-from plugins import lima,turtle
+from plugins import lima, turtle
 from odict import ODict
 
 # return standard Turtle rules 
@@ -61,28 +61,28 @@ def turtlecmds(rules={}):
 # here are some nice lima generations.
 # Each tuple holds an axiom, grow rules, generations and turtle rules
 limas = ODict([
-    ('Dragon Curve', [ "F", {"F":"F+G","G":"F-G"},10,turtlecmds() ]),
-    ('Koch Line', [ "F", {"F":"F*F//F*F"},6,turtlecmds() ]),
-    ('rule2', [ "F+F+F+F", {"F":"FF+FF--FF+F"},4,turtlecmds() ]),
-    ('rule3', [ "F+F+F+F", {"F":"FF+F+F-F+FF"},4,turtlecmds() ]),
-    ('Koch Snowflake', [ "F//F//F", {"F":"F*F//F*F"},5,turtlecmds() ]),
-    ('rule4', [ "F+F+F+F", {"F":"FF+F++F+F"},4,turtlecmds() ]),
-    ('rule5', [ "F+F+F+F", {"F":"FF+F+F+F+F+F-F"},4,turtlecmds() ]),
-    ('Hilbert Curve', [ "X", {"X":"-YF+XFX+FY-", "Y":"+XF-YFY-FX+"},5,turtlecmds() ]),
-    ('Greek Cross Curve', [ "F+XF+F+XF", {"X":"XF-F+F-XF+F+XF-F+F-X"},4,turtlecmds() ]),
-    ('Peano Curve', [ "X", {"X":"XFYFX+F+YFXFY-F-XFYFX", "Y":"YFXFY-F-XFYFX+F+YFXFY"},4,turtlecmds() ]),
-    ('Gosper Curve',      [ "XF", {"X":"X*YF**YF/FX//FXFX/YF*", "Y":"/FX*YFYF**YF*FX//FX/Y"},4,turtlecmds() ]),
-    ('Sierpinski Triangle', [ "F**F**F", {"F":"F*J++F**F", "J":"JJ"},6,turtlecmds() ]),
-    ('Sierpinski Triangle1', [ "F", {"F":"*G/F/G*", "G":"/F*G*F/"},8,turtlecmds() ]),
-    ('Sierpinski Carpet', [ "F+F+F+F", {"F":"JF+F+F+F+JF+F+F+F+J", "J":"JJJ"},3,turtlecmds() ]),
-    ('Gosper Island', [ "F*F*F*F*F*F", {"F":"+F/F*F-"},5,turtlecmds({'+':'ro(20);','-':'ro(-20);'}) ]),
-    ('Gosper Island Tiling', [ "F*F*F*F*F*F/F/F/F/F/F*F*F*F*F*F", {"F":"+F/F*F-"},4,turtlecmds({'+':'ro(20);','-':'ro(-20);'}) ]),
-    ('Plant0', [ "+F", {"F":"F[*F]F[/F]F"},5,turtlecmds({'*':'ro(25);','/':'ro(-25);'}) ]),
-    ('Plant1', [ "+Y", {"Y":"YFX[*Y][/Y]", "X":"[/F][*F]FX"},7,turtlecmds({'*':'ro(25);','/':'ro(-25);'}) ]),
-    ('Breezy Bush', [ "+F", {"F":"FF[//F*F*F][*F/F/F]"},4,turtlecmds({'*':'ro(22.55);','/':'ro(-22.5);'}) ]),
-    ('Islands and Lakes', [ "F-F-F-F", {"F":"F-J+FF-F-FF-FJ-FF+J-FF+F+FF+FJ+FFF", "J":"JJJJJJ"},2,turtlecmds() ]),
-    ('Hexagones', [ "F*F*F*F*F*F", {"F":"[//J*G*F*G]J", "G":"[//K*G*F*G]J"},5,turtlecmds() ]),
-    ('Lace', [ "F+F", {"F":"F*FF**F**FF*F"},4,turtlecmds() ]),
+    ('Dragon Curve', [ "F", {"F":"F+G","G":"F-G"}, 10, turtlecmds() ]),
+    ('Koch Line', [ "F", {"F":"F*F//F*F"}, 6, turtlecmds() ]),
+    ('rule2', [ "F+F+F+F", {"F":"FF+FF--FF+F"}, 4, turtlecmds() ]),
+    ('rule3', [ "F+F+F+F", {"F":"FF+F+F-F+FF"}, 4, turtlecmds() ]),
+    ('Koch Snowflake', [ "F//F//F", {"F":"F*F//F*F"}, 5, turtlecmds() ]),
+    ('rule4', [ "F+F+F+F", {"F":"FF+F++F+F"}, 4, turtlecmds() ]),
+    ('rule5', [ "F+F+F+F", {"F":"FF+F+F+F+F+F-F"}, 4, turtlecmds() ]),
+    ('Hilbert Curve', [ "X", {"X":"-YF+XFX+FY-", "Y":"+XF-YFY-FX+"}, 5, turtlecmds() ]),
+    ('Greek Cross Curve', [ "F+XF+F+XF", {"X":"XF-F+F-XF+F+XF-F+F-X"}, 4, turtlecmds() ]),
+    ('Peano Curve', [ "X", {"X":"XFYFX+F+YFXFY-F-XFYFX", "Y":"YFXFY-F-XFYFX+F+YFXFY"}, 4, turtlecmds() ]),
+    ('Gosper Curve',      [ "XF", {"X":"X*YF**YF/FX//FXFX/YF*", "Y":"/FX*YFYF**YF*FX//FX/Y"}, 4, turtlecmds() ]),
+    ('Sierpinski Triangle', [ "F**F**F", {"F":"F*J++F**F", "J":"JJ"}, 6, turtlecmds() ]),
+    ('Sierpinski Triangle1', [ "F", {"F":"*G/F/G*", "G":"/F*G*F/"}, 8, turtlecmds() ]),
+    ('Sierpinski Carpet', [ "F+F+F+F", {"F":"JF+F+F+F+JF+F+F+F+J", "J":"JJJ"}, 3, turtlecmds() ]),
+    ('Gosper Island', [ "F*F*F*F*F*F", {"F":"+F/F*F-"}, 5, turtlecmds({'+':'ro(20);','-':'ro(-20);'}) ]),
+    ('Gosper Island Tiling', [ "F*F*F*F*F*F/F/F/F/F/F*F*F*F*F*F", {"F":"+F/F*F-"}, 4, turtlecmds({'+':'ro(20);','-':'ro(-20);'}) ]),
+    ('Plant0', [ "+F", {"F":"F[*F]F[/F]F"}, 5, turtlecmds({'*':'ro(25);','/':'ro(-25);'}) ]),
+    ('Plant1', [ "+Y", {"Y":"YFX[*Y][/Y]", "X":"[/F][*F]FX"}, 7, turtlecmds({'*':'ro(25);','/':'ro(-25);'}) ]),
+    ('Breezy Bush', [ "+F", {"F":"FF[//F*F*F][*F/F/F]"}, 4, turtlecmds({'*':'ro(22.55);','/':'ro(-22.5);'}) ]),
+    ('Islands and Lakes', [ "F-F-F-F", {"F":"F-J+FF-F-FF-FJ-FF+J-FF+F+FF+FJ+FFF", "J":"JJJJJJ"}, 2, turtlecmds() ]),
+    ('Hexagones', [ "F*F*F*F*F*F", {"F":"[//J*G*F*G]J", "G":"[//K*G*F*G]J"}, 5, turtlecmds() ]),
+    ('Lace', [ "F+F", {"F":"F*FF**F**FF*F"}, 4, turtlecmds() ]),
     ('rule19', [ "F++F", {"F":"*F//F*"}, 10, turtlecmds({'*':'ro(30);','/':'ro(-30);'}) ]),
     ('rule20', [ "F+F+F+F", {"F":"*F//G*","G":"/F**G/"}, 8, turtlecmds({'*':'ro(30);','/':'ro(-30);'}) ]),
     ('rule21', [ "G+G+G+G", {"F":"*F//G*","G":"/F**G/"}, 8, turtlecmds({'*':'ro(30);','/':'ro(-30);'}) ]),
@@ -95,7 +95,7 @@ limas = ODict([
 
 def show(i,L,turtle_cmds,clear=True,text=True,colors=True):
     """Show the current production of the Lima L."""
-    global FA,TA
+    global FA, TA
     turtle_script = L.translate(turtle_cmds)
     coords = turtle.play("reset();" + turtle_script)
     if len(coords) > 0:
@@ -103,19 +103,19 @@ def show(i,L,turtle_cmds,clear=True,text=True,colors=True):
             prop = i
         else:
             prop = 0
-        FB = draw(Formex(coords,prop))
+        FB = draw(Formex(coords, prop))
         if clear:
             undraw(FA)
         FA = FB
         if text:
-            TB = drawText("Generation %d"%i,40,40,size=24)
+            TB = drawText("Generation %d"%i, 40, 40, size=24)
             undecorate(TA)
             TA = TB
         
 
 def grow(rule='',clearing=True,text=True,ngen=-1,colors=True,viewports=False):
     """Show subsequent Lima productions."""
-    global FA,TA
+    global FA, TA
     FA = None
     TA = None
     viewport(0)
@@ -124,26 +124,26 @@ def grow(rule='',clearing=True,text=True,ngen=-1,colors=True,viewports=False):
         return
     
     if text:
-        drawText(rule,40,60,size=24)
+        drawText(rule, 40, 60, size=24)
 
-    a,r,g,t = limas[rule]
+    a, r, g, t = limas[rule]
     if ngen >= 0:
         # respect the requested number of generations
         g = ngen
         
     if viewports:
-        layout(g+1,ncols=(g+2)//2)
+        layout(g+1, ncols=(g+2)//2)
 
-    L = lima.Lima(a,r)
+    L = lima.Lima(a, r)
     # show the axiom
-    show(0,L,t,clearing,text)
+    show(0, L, t, clearing, text)
     # show g generations
     for i in range(g):
         if viewports:
             viewport(i+1)
             clear()
         L.grow()
-        show(i+1,L,t,clearing,text)
+        show(i+1, L, t, clearing, text)
 
 
 def setDefaultGenerations(rule):
@@ -163,7 +163,7 @@ def run():
     linewidth(2)
     keys = limas.keys()
     #keys.sort()
-    choices = ['__all__','__custom__'] + keys
+    choices = ['__all__', '__custom__'] + keys
 
     defaults = {
         'rule':None,
@@ -173,14 +173,14 @@ def run():
         'viewports':False
         }
 
-    defaults = pf.PF.get('__Lima__data',defaults)
+    defaults = pf.PF.get('__Lima__data', defaults)
 
     res = askItems([
-        dict(name='rule',value=defaults['rule'],text='Production rule',choices=choices,onselect=setDefaultGenerations),
-        dict(name='ngen',value=defaults['ngen'],text='Number of generations (-1 = default)'),
-        dict(name='colors',value=defaults['colors'],text='Use different colors per generation'),
-        dict(name='clearing',value=defaults['clearing'],text='Clear screen between generations'),
-        dict(name='viewports',value=defaults['viewports'],text='Use a separate viewport for each generation'),
+        dict(name='rule', value=defaults['rule'], text='Production rule', choices=choices, onselect=setDefaultGenerations),
+        dict(name='ngen', value=defaults['ngen'], text='Number of generations (-1 = default)'),
+        dict(name='colors', value=defaults['colors'], text='Use different colors per generation'),
+        dict(name='clearing', value=defaults['clearing'], text='Clear screen between generations'),
+        dict(name='viewports', value=defaults['viewports'], text='Use a separate viewport for each generation'),
         ])
 
     if res:

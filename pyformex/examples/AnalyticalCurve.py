@@ -29,7 +29,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
 _topics = ['curve']
-_techniques = ['function','extrude']
+_techniques = ['function', 'extrude']
 _opengl2 = False
 
 
@@ -91,33 +91,33 @@ def Tschirnhausen(t):
     return [ 1-3*t**2, t*(3-t**2), 0*t ]
 
 
-def Lissajous(t,a,d):
+def Lissajous(t, a, d):
     return [ sin(a*t+d), sin(t), 0*t ]
 
 
 
-def Hypocycloid(t,k):
+def Hypocycloid(t, k):
     return [ (k-1)*cos(t) + cos((k-1)*t),
              (k-1)*sin(t) - sin((k-1)*t),
              0*t ]
 
 
 
-def Epicycloid(t,k):
+def Epicycloid(t, k):
     return [ (k+1)*cos(t) - cos((k+1)*t),
              (k+1)*sin(t) - sin((k+1)*t),
              0*t ]
 
 
-def Trochoid(t,l):
+def Trochoid(t, l):
     return [ t-l*sin(t), 1-l*cos(t), 0*t ]
 
 
 def Cycloid(t):
-    return Trochoid(t,1.0)
+    return Trochoid(t, 1.0)
 
 
-def Spirograph(t,k,l):
+def Spirograph(t, k, l):
     return [ (1-k)*cos(t) + k*l*cos((1-k)/k*t),
              (1-k)*sin(t) - k*l*sin((1-k)/k*t),
              0*t ]
@@ -127,22 +127,22 @@ def Involute(t):
     pass
 
 
-def Curve(func,trange,args,closed,degree,npoints):
+def Curve(func, trange, args, closed, degree, npoints):
     """Approximate an analytical curve
 
     The approximation is a BezierSpline of the specified degree
     through npoints points on the analytical curve.
     """
-    A = AnalyticalCurve(func,trange,args,closed)
+    A = AnalyticalCurve(func, trange, args, closed)
     X = A.points(npoints)
-    N = globalInterpolationCurve(X,degree=degree)
-    drawText(func.__name__,80,y0,size=18)
+    N = globalInterpolationCurve(X, degree=degree)
+    drawText(func.__name__, 80, y0, size=18)
     return N
 
 
 def drawCurve(*args,**kargs):
     draw(Curve(*args),**kargs)
-    drawText(args[0].__name__,80,y0,size=18,color=kargs.get('color',None))
+    drawText(args[0].__name__, 80, y0, size=18, color=kargs.get('color', None))
 
 
 def run():
@@ -152,10 +152,10 @@ def run():
     linewidth(3)
     delay(1)
     y0=80
-    draw(Curve(Tschirnhausen,(-3.,3.),(),False,3,10),view='front',clear=True)
-    draw(Curve(Viviani,(0,4*pi),(),True,4,10),view='right',clear=True)
-    draw(Curve(Lemniscate,(-pi,3*pi),(),True,4,10),view='front',clear=True)
-    draw(Curve(Lemniscate,(-pi,3*pi),(),True,4,12),view='front',color=red)
+    draw(Curve(Tschirnhausen, (-3., 3.), (), False, 3, 10), view='front', clear=True)
+    draw(Curve(Viviani, (0, 4*pi), (), True, 4, 10), view='right', clear=True)
+    draw(Curve(Lemniscate, (-pi, 3*pi), (), True, 4, 10), view='front', clear=True)
+    draw(Curve(Lemniscate, (-pi, 3*pi), (), True, 4, 12), view='front', color=red)
 
     NB = None
     n = 100
@@ -163,7 +163,7 @@ def run():
     clear()
     for a in arange(n+1)/float(n):
         print(a)
-        NA = draw(Curve(Lissajous,(0,12*pi),(a,0),True,4,120),color=red)
+        NA = draw(Curve(Lissajous, (0, 12*pi), (a, 0), True, 4, 120), color=red)
         if NB:
             undraw(NB)
         NB = NA
@@ -171,21 +171,21 @@ def run():
 
     delay(1)
     wait()
-    draw(Curve(Spirograph,(0,40*pi),(2*0.12345678,0.5),True,4,800),clear=True)
-    drawCurve(Spirograph,(0,40*pi),(2*0.12345678,1.0),True,4,800,clear=True)
+    draw(Curve(Spirograph, (0, 40*pi), (2*0.12345678, 0.5), True, 4, 800), clear=True)
+    drawCurve(Spirograph, (0, 40*pi), (2*0.12345678, 1.0), True, 4, 800, clear=True)
     y0 = 60
-    drawCurve(Hypocycloid,(0,40*pi),(300/99.,),True,4,800,color=blue,clear=True)
+    drawCurve(Hypocycloid, (0, 40*pi), (300/99.,), True, 4, 800, color=blue, clear=True)
     y0 = 40
-    drawCurve(Epicycloid,(0,40*pi),(300/99.,),True,4,800,color=red)
+    drawCurve(Epicycloid, (0, 40*pi), (300/99.,), True, 4, 800, color=red)
 
 
     # extrude curve
     clear()
     y0=80
-    C = Curve(Cycloid,(0,2*pi),(),True,4,20)
-    M = C.approx(20).toMesh().extrude(10,dir=2,length=1.0)
+    C = Curve(Cycloid, (0, 2*pi), (), True, 4, 20)
+    M = C.approx(20).toMesh().extrude(10, dir=2, length=1.0)
     smoothwire()
-    draw(M,color=red)
+    draw(M, color=red)
 
 
 if __name__ == 'draw':

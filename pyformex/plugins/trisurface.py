@@ -32,16 +32,16 @@ from __future__ import print_function
 import pyformex as pf
 
 from formex import *
-from connectivity import Connectivity,connectedLineElems,adjacencyArrays
+from connectivity import Connectivity, connectedLineElems, adjacencyArrays
 from mesh import Mesh
 import mesh_ext  # load the extended Mesh functions
 
 import geomtools
 import inertia
-import fileread,filewrite
+import fileread, filewrite
 import utils
 
-import os,tempfile
+import os, tempfile
 import tempfile
 
 from utils import deprecation
@@ -82,11 +82,11 @@ def stlConvert(stlname,outname=None,binary=False,options='-d'):
     program (or a 'file is already uptodate' message).
     """
     if not outname:
-        outname = pf.cfg.get('surface/stlread','.off')
+        outname = pf.cfg.get('surface/stlread', '.off')
     if outname.startswith('.'):
-        outname = utils.changeExt(stlname,outname)
+        outname = utils.changeExt(stlname, outname)
     if os.path.exists(outname) and utils.mtime(stlname) < utils.mtime(outname):
-        return outname,0,"File '%s' seems to be up to date" % outname
+        return outname, 0, "File '%s' seems to be up to date" % outname
 
     ftype = utils.fileTypeFromExt(outname)
     if ftype == 'stl' and binary:
@@ -94,20 +94,20 @@ def stlConvert(stlname,outname=None,binary=False,options='-d'):
 
     if ftype == 'off':
         utils.hasExternal('admesh')
-        cmd = "admesh %s --write-off '%s' '%s'" % (options,outname,stlname)
+        cmd = "admesh %s --write-off '%s' '%s'" % (options, outname, stlname)
     elif ftype in [ 'stl', 'stla' ]:
         utils.hasExternal('admesh')
-        cmd = "admesh %s -a '%s' '%s'" % (options,outname,stlname)
+        cmd = "admesh %s -a '%s' '%s'" % (options, outname, stlname)
     elif ftype == 'stlb':
         utils.hasExternal('admesh')
-        cmd = "admesh %s -b '%s' '%s'" % (options,outname,stlname)
+        cmd = "admesh %s -b '%s' '%s'" % (options, outname, stlname)
     elif ftype == 'gts':
-        cmd = "stl2gts < '%s' > '%s'" % (stlname,outname)
+        cmd = "stl2gts < '%s' > '%s'" % (stlname, outname)
     else:
-        return outname,1,"Can not convert file '%s' to '%s'" % (stlname,outname)
+        return outname, 1, "Can not convert file '%s' to '%s'" % (stlname, outname)
 
-    P = utils.command(cmd,shell=True)
-    return outname,P.sta,P.out
+    P = utils.command(cmd, shell=True)
+    return outname, P.sta, P.out
 
 # Input of surface file formats
 
@@ -117,23 +117,23 @@ def read_gts(fn):
     Return a coords,edges,faces tuple.
     """
     pf.message("Reading GTS file %s" % fn)
-    fil = open(fn,'r')
+    fil = open(fn, 'r')
     header = fil.readline().split()
-    ncoords,nedges,nfaces = map(int,header[:3])
+    ncoords, nedges, nfaces = map(int, header[:3])
     if len(header) >= 7 and header[6].endswith('Binary'):
         raise RuntimeError("We can not read binary GTS format yet. See https://savannah.nongnu.org/bugs/index.php?38608. Maybe you should recompile the extra/gts commands.")
         sep=''
     else:
         sep=' '
-    coords = fromfile(fil,dtype=Float,count=3*ncoords,sep=sep).reshape(-1,3)
-    edges = fromfile(fil,dtype=int32,count=2*nedges,sep=' ').reshape(-1,2) - 1
-    faces = fromfile(fil,dtype=int32,count=3*nfaces,sep=' ').reshape(-1,3) - 1
-    pf.message("Read %d coords, %d edges, %d faces" % (ncoords,nedges,nfaces))
+    coords = fromfile(fil, dtype=Float, count=3*ncoords, sep=sep).reshape(-1, 3)
+    edges = fromfile(fil, dtype=int32, count=2*nedges, sep=' ').reshape(-1, 2) - 1
+    faces = fromfile(fil, dtype=int32, count=3*nfaces, sep=' ').reshape(-1, 3) - 1
+    pf.message("Read %d coords, %d edges, %d faces" % (ncoords, nedges, nfaces))
     if coords.shape[0] != ncoords or \
        edges.shape[0] != nedges or \
        faces.shape[0] != nfaces:
         pf.message("Error while reading GTS file: the file is probably incorrect!")
-    return coords,edges,faces
+    return coords, edges, faces
 
 
 def read_stl(fn,intermediate=None):
@@ -147,9 +147,9 @@ def read_stl(fn,intermediate=None):
     Return a coords,edges,faces or a coords,elems tuple, depending on the
     intermediate format.
     """
-    ofn,sta,out = stlConvert(fn,intermediate)
+    ofn, sta, out = stlConvert(fn, intermediate)
     if sta:
-        pf.debug("Error during conversion of file '%s' to '%s'" % (fn,ofn))
+        pf.debug("Error during conversion of file '%s' to '%s'" % (fn, ofn))
         pf.debug(out)
         return ()
 
@@ -176,8 +176,8 @@ def surface_volume(x,pt=None):
     if pt is None:
         pt = x.center()
     x = x - pt
-    a,b,c = [ x[:,i,:] for i in range(3) ]
-    d = cross(b,c)
+    a, b, c = [ x[:, i,:] for i in range(3) ]
+    d = cross(b, c)
     e = (a*d).sum(axis=-1)
     # IS THIS ANY DIFFERENT FROM  e / 6.  ????
     v = sign(e) * abs(e)/6.
@@ -195,59 +195,59 @@ def curvature(coords,elems,edges,neighbours=1):
     principal directions.
     """
     # calculate n-ring neighbourhood of the nodes (n=neighbours)
-    adj = adjacencyArrays(edges,nsteps=neighbours)[-1]
+    adj = adjacencyArrays(edges, nsteps=neighbours)[-1]
     adjNotOk = adj<0
     # for nodes that have less than three adjacent nodes, remove the adjacencies
     adjNotOk[(adj>=0).sum(-1) <= 2] = True
     # calculate unit length average normals at the nodes p
     # a weight 1/|gi-p| could be used (gi=center of the face fi)
     p = coords
-    n = geomtools.averageNormals(coords,elems,atNodes=True)
+    n = geomtools.averageNormals(coords, elems, atNodes=True)
     # double-precision: this will allow us to check the sign of the angles
     p = p.astype(float64)
     n = n.astype(float64)
-    vp = p[adj] - p[:,newaxis]
-    vn = n[adj] - n[:,newaxis]
+    vp = p[adj] - p[:, newaxis]
+    vn = n[adj] - n[:, newaxis]
     # where adjNotOk, set vectors = [0.,0.,0.]
     # this will result in NaN values
     vp[adjNotOk] = 0.
     vn[adjNotOk] = 0.
     # calculate unit length projection of vp onto the tangent plane
-    t = geomtools.projectionVOP(vp,n[:,newaxis])
+    t = geomtools.projectionVOP(vp, n[:, newaxis])
     t = normalize(t)
     # calculate normal curvature
-    k = dotpr(vp,vn)/dotpr(vp,vp)
+    k = dotpr(vp, vn)/dotpr(vp, vp)
     # calculate maximum normal curvature and corresponding coordinate system
     try:
-        imax = nanargmax(k,-1)
-        kmax =  k[range(len(k)),imax]
-        tmax = t[range(len(k)),imax]
+        imax = nanargmax(k, -1)
+        kmax =  k[range(len(k)), imax]
+        tmax = t[range(len(k)), imax]
     except: # bug with numpy.nanargmax: cannot convert float NaN to integer
-        kmax = resize(NaN,(k.shape[0]))
-        tmax = resize(NaN,(t.shape[0],3))
+        kmax = resize(NaN, (k.shape[0]))
+        tmax = resize(NaN, (t.shape[0], 3))
         w = ~(isnan(k).all(1))
-        imax = nanargmax(k[w],-1)
-        kmax[w] =  k[w,imax]
-        tmax[w] =  t[w,imax]
+        imax = nanargmax(k[w], -1)
+        kmax[w] =  k[w, imax]
+        tmax[w] =  t[w, imax]
     tmax1 = tmax
-    tmax2 = cross(n,tmax1)
+    tmax2 = cross(n, tmax1)
     tmax2 = normalize(tmax2)
     # calculate angles (tmax1,t)
-    theta,rot = geomtools.rotationAngle(repeat(tmax1[:,newaxis],t.shape[1],1),t,angle_spec=RAD)
+    theta, rot = geomtools.rotationAngle(repeat(tmax1[:, newaxis], t.shape[1], 1), t, angle_spec=RAD)
     theta = theta.reshape(t.shape[:2])
     rot = rot.reshape(t.shape)
     # check the sign of the angles
-    d =  dotpr(rot,n[:,newaxis])/(length(rot)*length(n)[:,newaxis]) # divide by length for round-off errors
-    cw = isClose(d,[-1.])
+    d =  dotpr(rot, n[:, newaxis])/(length(rot)*length(n)[:, newaxis]) # divide by length for round-off errors
+    cw = isClose(d, [-1.])
     theta[cw] = -theta[cw]
     # calculate coefficients
     a = kmax
-    a11 = nansum(cos(theta)**2*sin(theta)**2,-1)
-    a12 = nansum(cos(theta)*sin(theta)**3,-1)
+    a11 = nansum(cos(theta)**2*sin(theta)**2, -1)
+    a12 = nansum(cos(theta)*sin(theta)**3, -1)
     a21 = a12
-    a22 = nansum(sin(theta)**4,-1)
-    a13 = nansum((k-a[:,newaxis]*cos(theta)**2)*cos(theta)*sin(theta),-1)
-    a23 = nansum((k-a[:,newaxis]*cos(theta)**2)*sin(theta)**2,-1)
+    a22 = nansum(sin(theta)**4, -1)
+    a13 = nansum((k-a[:, newaxis]*cos(theta)**2)*cos(theta)*sin(theta), -1)
+    a23 = nansum((k-a[:, newaxis]*cos(theta)**2)*sin(theta)**2, -1)
     denom = (a11*a22-a12**2)
     b = (a13*a22-a23*a12)/denom
     c = (a11*a23-a12*a13)/denom
@@ -258,14 +258,14 @@ def curvature(coords,elems,edges,neighbours=1):
     k1 = H+sqrt(H**2-K)
     k2 = H-sqrt(H**2-K)
     theta0 = 0.5*arcsin(b/(k2-k1))
-    w = apply_along_axis(isClose,0,-b,2*(k2-k1)*cos(theta0)*sin(theta0))
+    w = apply_along_axis(isClose, 0, -b, 2*(k2-k1)*cos(theta0)*sin(theta0))
     theta0[w] = pi-theta0[w]
-    e1 = cos(theta0)[:,newaxis]*tmax1+sin(theta0)[:,newaxis]*tmax2
-    e2 = cos(theta0)[:,newaxis]*tmax2-sin(theta0)[:,newaxis]*tmax1
+    e1 = cos(theta0)[:, newaxis]*tmax1+sin(theta0)[:, newaxis]*tmax2
+    e2 = cos(theta0)[:, newaxis]*tmax2-sin(theta0)[:, newaxis]*tmax1
     # calculate the shape index and curvedness
     S = 2./pi*arctan((k1+k2)/(k1-k2))
     C = square((k1**2+k2**2)/2)
-    return K,H,S,C,k1,k2,e1,e2
+    return K, H, S, C, k1, k2, e1, e2
 
 
 ############################################################################
@@ -311,16 +311,16 @@ def fillBorder(border,method='radial',dir=None):
       object.
     """
     from plugins.curve import PolyLine
-    if isinstance(border,Mesh) and border.nplex()==2:
+    if isinstance(border, Mesh) and border.nplex()==2:
         if method == 'radial':
             border = border.compact()
         coords = border.coords
-        elems = border.elems[:,0]
-    elif isinstance(border,PolyLine):
+        elems = border.elems[:, 0]
+    elif isinstance(border, PolyLine):
         coords = border.coords
         elems = None
-    elif isinstance(border,Coords):
-        coords = border.reshape(-1,3)
+    elif isinstance(border, Coords):
+        coords = border.reshape(-1, 3)
         elems = None
     else:
         raise ValueError("Expected a 2-plex Mesh, a PolyLine or a Coords array as first argument")
@@ -333,18 +333,18 @@ def fillBorder(border,method='radial',dir=None):
         raise ValueError("Expected at least 3 points.")
 
     if method == 'radial':
-        coords = Coords.concatenate([coords,coords.center()])
-        elems = column_stack([elems,roll(elems,-1),n*ones(elems.shape[0],dtype=Int)])
+        coords = Coords.concatenate([coords, coords.center()])
+        elems = column_stack([elems, roll(elems, -1), n*ones(elems.shape[0], dtype=Int)])
 
     elif method == 'border':
         # creating elems array at once (more efficient than appending)
-        tri = -ones((n-2,3),dtype=Int)
+        tri = -ones((n-2, 3), dtype=Int)
         # compute all internal angles
         x = coords[elems]
         e = arange(n)
-        v = roll(x,-1,axis=0) - x
+        v = roll(x, -1, axis=0) - x
         v = normalize(v)
-        c = vectorPairCosAngle(roll(v,1,axis=0),v)
+        c = vectorPairCosAngle(roll(v, 1, axis=0), v)
         # loop in order of smallest angles
         itri = 0
         while n > 3:
@@ -352,15 +352,15 @@ def fillBorder(border,method='radial',dir=None):
             j = c.argmin()
             i = (j - 1) % n
             k = (j + 1) % n
-            tri[itri] = [ e[i],e[j],e[k]]
+            tri[itri] = [ e[i], e[j], e[k]]
             # remove the point j of triangle i,j,k
             # recompute adjacent angles of edge i,k
             ii = (i-1) % n
             v1 = normalize([ v[e[ii]], x[e[k]] - x[e[i]] ])
             v2 = normalize([ x[e[k]] - x[e[i]], v[e[k]] ])
-            cnew = vectorPairCosAngle(v1,v2)
-            c = roll(concatenate([cnew,roll(c,1-j)[3:]]),j-1)
-            e = roll(roll(e,-j)[1:],j)
+            cnew = vectorPairCosAngle(v1, v2)
+            c = roll(concatenate([cnew, roll(c, 1-j)[3:]]), j-1)
+            e = roll(roll(e, -j)[1:], j)
             n -= 1
             itri += 1
         tri[itri] = e
@@ -374,11 +374,11 @@ def fillBorder(border,method='radial',dir=None):
         if dir is None:
             dir = geomtools.smallestDirection(x)
 
-        X,C,A,a = pg.projected(x,dir)
+        X, C, A, a = pg.projected(x, dir)
         P = pg.Polygon(X)
         if P.area() < 0.0:
             P = P.reverse()
-            e = reverseAxis(e,0)
+            e = reverseAxis(e, 0)
         S = P.fill()
         e = e[S.elems]
         elems = elems[e]
@@ -386,7 +386,7 @@ def fillBorder(border,method='radial',dir=None):
     else:
         raise ValueError("Strategy should be either 'radial', 'border' or 'planar'")
 
-    return TriSurface(coords,elems)
+    return TriSurface(coords, elems)
 
 
 ############################################################################
@@ -415,7 +415,7 @@ class TriSurface(Mesh):
         """Create a new surface."""
         self._areas = self._fnormals = None
         self.adj = None
-        if hasattr(self,'edglen'):
+        if hasattr(self, 'edglen'):
             del self.edglen
 
         if len(args) == 0:
@@ -427,13 +427,13 @@ class TriSurface(Mesh):
             # TriSurface, Mesh, Formex, Coords, ndarray, ...
             a = args[0]
 
-            if isinstance(a,Mesh):
+            if isinstance(a, Mesh):
                 if a.nplex() != 3 or a.elName() != 'tri3':
                     raise ValueError("Only meshes with plexitude 3 and eltype 'tri3' can be converted to TriSurface!")
-                Mesh.__init__(self,a.coords,a.elems,a.prop,'tri3')
+                Mesh.__init__(self, a.coords, a.elems, a.prop, 'tri3')
 
             else:
-                if not isinstance(a,Formex):
+                if not isinstance(a, Formex):
                     # something that can be converted to a Formex
                     try:
                         a = Formex(a)
@@ -443,8 +443,8 @@ class TriSurface(Mesh):
                 if a.nplex() != 3:
                     raise ValueError("Expected an object with plexitude 3!")
 
-                coords,elems = a.fuse()
-                Mesh.__init__(self,coords,elems,a.prop,'tri3')
+                coords, elems = a.fuse()
+                Mesh.__init__(self, coords, elems, a.prop, 'tri3')
 
         else:
             # arguments are (coords,elems) or (coords,edges,faces)
@@ -454,24 +454,24 @@ class TriSurface(Mesh):
 
             if len(args) == 2:
                 # arguments are (coords,elems)
-                elems = Connectivity(args[1],nplex=3)
-                Mesh.__init__(self,coords,elems,None,'tri3')
+                elems = Connectivity(args[1], nplex=3)
+                Mesh.__init__(self, coords, elems, None, 'tri3')
 
 
             elif len(args) == 3:
                 # arguments are (coords,edges,faces)
-                edges = Connectivity(args[1],nplex=2)
+                edges = Connectivity(args[1], nplex=2)
 
                 if edges.size > 0 and edges.max() >= coords.shape[0]:
                     raise ValueError("Some vertex number is too high")
 
-                faces = Connectivity(args[2],nplex=3)
+                faces = Connectivity(args[2], nplex=3)
 
                 if faces.max() >= edges.shape[0]:
                     raise ValueError("Some edge number is too high")
 
                 elems = faces.combine(edges)
-                Mesh.__init__(self,coords,elems,None,'tri3')
+                Mesh.__init__(self, coords, elems, None, 'tri3')
 
                 # since we have the extra data available, keep them
                 self.edges = edges
@@ -484,7 +484,7 @@ class TriSurface(Mesh):
             self.setProp(kargs['prop'])
 
 
-    def __setstate__(self,state):
+    def __setstate__(self, state):
         """Set the object from serialized state.
 
         This allows to read back old pyFormex Project files where the
@@ -516,13 +516,13 @@ class TriSurface(Mesh):
 
     def shape(self):
         """Return the number of points, edges, faces of the TriSurface."""
-        return self.ncoords(),self.nedges(),self.nfaces()
+        return self.ncoords(), self.nedges(), self.nfaces()
 
 
     def getElemEdges(self):
         """Get the faces' edge numbers."""
         if self.elem_edges is None:
-            self.elem_edges,self.edges = self.elems.insertLevel(1)
+            self.elem_edges, self.edges = self.elems.insertLevel(1)
         return self.elem_edges
 
 
@@ -538,42 +538,42 @@ class TriSurface(Mesh):
     # Convenience functions are defined to change some of the data.
     #
 
-    def setCoords(self,coords):
+    def setCoords(self, coords):
         """Change the coords."""
-        self.__init__(coords,self.elems,prop=self.prop)
+        self.__init__(coords, self.elems, prop=self.prop)
         return self
 
-    def setElems(self,elems):
+    def setElems(self, elems):
         """Change the elems."""
-        self.__init__(self.coords,elems,prop=self.prop)
+        self.__init__(self.coords, elems, prop=self.prop)
 
-    def setEdgesAndFaces(self,edges,faces):
+    def setEdgesAndFaces(self, edges, faces):
         """Change the edges and faces."""
-        self.__init__(self.coords,edges,faces,prop=self.prop)
+        self.__init__(self.coords, edges, faces, prop=self.prop)
 
 
-    def append(self,S):
+    def append(self, S):
         """Merge another surface with self.
 
         This just merges the data sets, and does not check
         whether the surfaces intersect or are connected!
         This is intended mostly for use inside higher level functions.
         """
-        coords = concatenate([self.coords,S.coords])
-        elems = concatenate([self.elems,S.elems+self.ncoords()])
+        coords = concatenate([self.coords, S.coords])
+        elems = concatenate([self.elems, S.elems+self.ncoords()])
         ## What to do if one of the surfaces has properties, the other one not?
         ## The current policy is to use zero property values for the Surface
         ## without props
         prop = None
         if self.prop is not None or S.prop is not None:
             if self.prop is None:
-                self.prop = zeros(shape=self.nelems(),dtype=Int)
+                self.prop = zeros(shape=self.nelems(), dtype=Int)
             if S.prop is None:
-                p = zeros(shape=S.nelems(),dtype=Int)
+                p = zeros(shape=S.nelems(), dtype=Int)
             else:
                 p = S.prop
-            prop = concatenate((self.prop,p))
-        self.__init__(coords,elems,prop=prop)
+            prop = concatenate((self.prop, p))
+        self.__init__(coords, elems, prop=prop)
 
 
 
@@ -606,7 +606,7 @@ class TriSurface(Mesh):
         ftype = utils.fileTypeFromExt(fn)
         gzip = ftype.endswith('.gz')
         if gzip:
-            fn = utils.gunzip(fn,unzipped='',remove=False)
+            fn = utils.gunzip(fn, unzipped='', remove=False)
             ftype = ftype[:-3]
         if ftype == 'off':
             data = read_off(fn)
@@ -615,8 +615,8 @@ class TriSurface(Mesh):
         elif ftype == 'stl':
             try:
                 # first try binary format
-                data,color = fileread.read_stl_bin(fn)
-                S = TriSurface(data[:,1:])
+                data, color = fileread.read_stl_bin(fn)
+                S = TriSurface(data[:, 1:])
                 if color:
                     #print(color)
                     #from gui.draw import colorindex
@@ -635,7 +635,7 @@ class TriSurface(Mesh):
             data = tetgen.readSurface(fn)
         elif ftype == 'vtp' or ftype == 'vtk':
             from vtk_itf import readVTKObject
-            [coords, cells, polys, lines, verts],fielddata,celldata,pointdata = readVTKObject(fn)
+            [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = readVTKObject(fn)
             data = (coords, polys)
             if 'prop' in celldata.keys():
                 kargs = {'prop':celldata['prop']}
@@ -662,26 +662,26 @@ class TriSurface(Mesh):
         else:
             ftype = ftype.strip('.').lower()
 
-        print("Writing surface to file %s (%s)" % (fname,ftype))
+        print("Writing surface to file %s (%s)" % (fname, ftype))
         if ftype == 'pgf':
-            Geometry.write(self,fname)
+            Geometry.write(self, fname)
         elif ftype == 'gts':
-            filewrite.writeGTS(fname,self.coords,self.getEdges(),self.getElemEdges())
+            filewrite.writeGTS(fname, self.coords, self.getEdges(), self.getElemEdges())
             print("Wrote %s vertices, %s edges, %s faces" % self.shape())
-        elif ftype in ['stl','stla','stlb','off','smesh','vtp','vtk']:
-            if ftype in ['stl','stla']:
-                filewrite.writeSTL(fname,self.coords[self.elems],binary=False)
+        elif ftype in ['stl', 'stla', 'stlb', 'off', 'smesh', 'vtp', 'vtk']:
+            if ftype in ['stl', 'stla']:
+                filewrite.writeSTL(fname, self.coords[self.elems], binary=False)
             elif ftype == 'stlb':
-                filewrite.writeSTL(fname,self.coords[self.elems],binary=True,color=color)
+                filewrite.writeSTL(fname, self.coords[self.elems], binary=True, color=color)
             elif ftype == 'off':
-                filewrite.writeOFF(fname,self.coords,self.elems)
+                filewrite.writeOFF(fname, self.coords, self.elems)
             elif ftype == 'smesh':
                 import tetgen
-                tetgen.writeSurface(fname,self.coords,self.elems)
+                tetgen.writeSurface(fname, self.coords, self.elems)
             elif ftype == 'vtp' or ftype == 'vtk':
                 import vtk_itf
-                vtk_itf.writeVTP(fname,self,checkMesh=False)
-            print("Wrote %s vertices, %s elems" % (self.ncoords(),self.nelems()))
+                vtk_itf.writeVTP(fname, self, checkMesh=False)
+            print("Wrote %s vertices, %s elems" % (self.ncoords(), self.nelems()))
         else:
             print("Cannot save TriSurface as file %s" % fname)
 
@@ -690,7 +690,7 @@ class TriSurface(Mesh):
 
     def avgVertexNormals(self):
         """Compute the average normals at the vertices."""
-        return geomtools.averageNormals(self.coords,self.elems,atNodes=True)
+        return geomtools.averageNormals(self.coords, self.elems, atNodes=True)
 
 
     def areaNormals(self):
@@ -702,8 +702,8 @@ class TriSurface(Mesh):
         The values are returned and saved in the object.
         """
         if self._areas is None or self._fnormals is None:
-            self._areas,self._fnormals = geomtools.areaNormals(self.coords[self.elems])
-        return self._areas,self._fnormals
+            self._areas, self._fnormals = geomtools.areaNormals(self.coords[self.elems])
+        return self._areas, self._fnormals
 
 
     def areas(self):
@@ -729,7 +729,7 @@ class TriSurface(Mesh):
         shape index, the curvedness, the principal curvatures and the
         principal directions.
         """
-        curv = curvature(self.coords,self.elems,self.getEdges(),neighbours=neighbours)
+        curv = curvature(self.coords, self.elems, self.getEdges(), neighbours=neighbours)
         return curv
 
 
@@ -755,7 +755,7 @@ class TriSurface(Mesh):
         mincon = ncon.min()
         manifold = maxcon == 2
         closed = mincon == 2
-        return manifold,closed,mincon,maxcon
+        return manifold, closed, mincon, maxcon
 
 
     def borderEdges(self):
@@ -836,7 +836,7 @@ class TriSurface(Mesh):
         surface coordinate sets. This is usefull for filling the
         border and adding to the surface.
         """
-        ML = [ Mesh(self.coords,e) for e in self.checkBorder() ]
+        ML = [ Mesh(self.coords, e) for e in self.checkBorder() ]
         if compact:
             ML = [ M.compact() for M in ML ]
         return ML
@@ -858,21 +858,21 @@ class TriSurface(Mesh):
             mprop = 1
         else:
             mprop = self.prop.max()+1
-        return [ fillBorder(b,method,dir).setProp(mprop+i) for i,b in enumerate(self.border(compact=compact)) ]
+        return [ fillBorder(b, method, dir).setProp(mprop+i) for i, b in enumerate(self.border(compact=compact)) ]
 
 
     def close(self,method='radial',dir=None):
-        border = self.fillBorder(method,dir,compact=method=='radial')
+        border = self.fillBorder(method, dir, compact=method=='radial')
         if method == 'radial':
             return self.concatenate([self]+border)
         else:
-            elems = concatenate([ m.elems for m in [self]+border ],axis=0)
+            elems = concatenate([ m.elems for m in [self]+border ], axis=0)
             if self.prop is None:
-                prop = zeros(shape=self.nelems(),dtype=Int)
+                prop = zeros(shape=self.nelems(), dtype=Int)
             else:
                 prop = self.prop
             prop = concatenate( [prop] + [ m.prop for m in border ])
-            return TriSurface(self.coords,elems,prop=prop)
+            return TriSurface(self.coords, elems, prop=prop)
 
 
     def edgeCosAngles(self,return_mask=False):
@@ -905,16 +905,16 @@ class TriSurface(Mesh):
         # get adjacent facet normals for 2-connected edges
         n = n[conn[conn2]]
         # compute cosinus of angles over 2-connected edges
-        cosa = dotpr(n[:,0],n[:,1])
+        cosa = dotpr(n[:, 0], n[:, 1])
         # Initialize cosangles to all 1. values
         cosangles = ones((conn.shape[0],))
         # Fill in the values for the 2-connected edges
         cosangles[conn2] = cosa
         # Clip to the -1...+1. range
-        cosangles = cosangles.clip(min=-1.,max=1.)
+        cosangles = cosangles.clip(min=-1., max=1.)
         # Return results
         if return_mask:
-            return cosangles,conn2
+            return cosangles, conn2
         else:
             return cosangles
 
@@ -926,11 +926,11 @@ class TriSurface(Mesh):
 
     def _compute_data(self):
         """Compute data for all edges and faces."""
-        if hasattr(self,'edglen'):
+        if hasattr(self, 'edglen'):
             return
         self.areaNormals()
         edg = self.coords[self.getEdges()]
-        edglen = length(edg[:,1]-edg[:,0])
+        edglen = length(edg[:, 1]-edg[:, 0])
         facedg = edglen[self.getElemEdges()]
         peri = facedg.sum(axis=-1)
         edgmin = facedg.min(axis=-1)
@@ -939,7 +939,7 @@ class TriSurface(Mesh):
         aspect = edgmax/altmin
         _qual_equi = sqrt(sqrt(3.)) / 6.
         qual = sqrt(self._areas) / peri / _qual_equi
-        self.edglen,self.facedg,self.peri,self.edgmin,self.edgmax,self.altmin,self.aspect,self.qual = edglen,facedg,peri,edgmin,edgmax,altmin,aspect,qual
+        self.edglen, self.facedg, self.peri, self.edgmin, self.edgmax, self.altmin, self.aspect, self.qual = edglen, facedg, peri, edgmin, edgmax, altmin, aspect, qual
 
 
     def perimeters(self):
@@ -994,7 +994,7 @@ class TriSurface(Mesh):
     def stats(self):
         """Return a text with full statistics."""
         bbox = self.bbox()
-        manifold,closed,mincon,maxcon = self.surfaceType()
+        manifold, closed, mincon, maxcon = self.surfaceType()
         self._compute_data()
         area = self.area()
         qual = self.quality()
@@ -1007,13 +1007,13 @@ Facet area: min %s; mean %s; max %s
 Edge length: min %s; mean %s; max %s
 Shortest altitude: %s; largest aspect ratio: %s
 Quality: %s .. %s
-""" % ( self.ncoords(),self.nedges(),self.nfaces(),
-        bbox[0],bbox[1],
-        mincon,maxcon,
-        {True:'',False:' not'}[manifold],{True:' closed',False:''}[closed],
-        self._areas.min(),self._areas.mean(),self._areas.max(),
-        self.edglen.min(),self.edglen.mean(),self.edglen.max(),
-        self.altmin.min(),self.aspect.max(),
+""" % ( self.ncoords(), self.nedges(), self.nfaces(),
+        bbox[0], bbox[1],
+        mincon, maxcon,
+        {True:'',False:' not'}[manifold], {True:' closed',False:''}[closed],
+        self._areas.min(), self._areas.mean(), self._areas.max(),
+        self.edglen.min(), self.edglen.mean(), self.edglen.max(),
+        self.altmin.min(), self.aspect.max(),
         qual.min(), qual.max(),
         )
         if manifold:
@@ -1024,7 +1024,7 @@ Quality: %s .. %s
                 volume = self.volume()
 
             s += """Angle between adjacent facets: min: %s; mean: %s; max: %s
-""" % ( angles.min(),angles.mean(),angles.max())
+""" % ( angles.min(), angles.mean(), angles.max())
 
         s += "Total area: %s; " % area
         if manifold and closed:
@@ -1049,7 +1049,7 @@ Quality: %s .. %s
         from timer import Timer
         t = Timer()
         # distance from vertices
-        ind,dist = geomtools.closest(X,self.coords)
+        ind, dist = geomtools.closest(X, self.coords)
         if return_points:
             points = self.coords[ind]
         print("Vertex distance: %s seconds" % t.seconds(True))
@@ -1057,8 +1057,8 @@ Quality: %s .. %s
 
         # distance from edges
         Ep = self.coords[self.getEdges()]
-        res = geomtools.edgeDistance(X,Ep,return_points) # OKpid, OKdist, (OKpoints)
-        okE,distE = res[:2]
+        res = geomtools.edgeDistance(X, Ep, return_points) # OKpid, OKdist, (OKpoints)
+        okE, distE = res[:2]
         closer = distE < dist[okE]
         #print okE,closer
         if closer.size > 0:
@@ -1070,8 +1070,8 @@ Quality: %s .. %s
 
         # distance from faces
         Fp = self.coords[self.elems]
-        res = geomtools.faceDistance(X,Fp,return_points) # OKpid, OKdist, (OKpoints)
-        okF,distF = res[:2]
+        res = geomtools.faceDistance(X, Fp, return_points) # OKpid, OKdist, (OKpoints)
+        okF, distF = res[:2]
         closer = distF < dist[okF]
         #print okF,closer
         if closer.size > 0:
@@ -1082,7 +1082,7 @@ Quality: %s .. %s
         #print dist
 
         if return_points:
-            return dist,points
+            return dist, points
         else:
             return dist
 
@@ -1107,7 +1107,7 @@ Quality: %s .. %s
         To reduce the coordinate set, set the compact argument to True
         or use the :meth:`compact` method afterwards.
         """
-        return self.cselect(self.degenerate(),compact=False)
+        return self.cselect(self.degenerate(), compact=False)
 
 
 ##################  Transform surface #############################
@@ -1121,7 +1121,7 @@ Quality: %s .. %s
         """
         n = self.avgVertexNormals()
         coordsNew = self.coords + n*distance
-        return TriSurface(coordsNew,self.getElems(),prop=self.prop)
+        return TriSurface(coordsNew, self.getElems(), prop=self.prop)
 
 
     def dualMesh(self, method='median'):
@@ -1143,7 +1143,7 @@ Quality: %s .. %s
         Q = self.convert('quad4')
         if method == 'voronoi':
             from geomtools import triangleCircumCircle
-            Q.coords[-self.nelems():] = triangleCircumCircle(self.coords[self.elems],bounding=False)[1]
+            Q.coords[-self.nelems():] = triangleCircumCircle(self.coords[self.elems], bounding=False)[1]
         nconn = Q.nodeConnections()[range(self.ncoords())]
         p = zeros(Q.nelems(), dtype=int)
         for i, conn in enumerate(nconn):
@@ -1185,9 +1185,9 @@ Quality: %s .. %s
              Mesh(S.coords,S.edges[p])
         """
         # Get the edge angles
-        cosangles,conn2 = self.edgeCosAngles(return_mask=True)
+        cosangles, conn2 = self.edgeCosAngles(return_mask=True)
         # initialize all edges as features
-        feature = ones((self.edges.shape[0],),dtype=bool)
+        feature = ones((self.edges.shape[0],), dtype=bool)
         # unmark edges with small angle
         feature[conn2] = cosangles[conn2] <= cosd(angle)
         return feature
@@ -1215,12 +1215,12 @@ Quality: %s .. %s
         method first to remove those elements.
         """
         feat = self.featureEdges(angle=angle)
-        p = self.maskedEdgeFrontWalk(mask=~feat,frontinc=0)
+        p = self.maskedEdgeFrontWalk(mask=~feat, frontinc=0)
 
         if sort == 'number':
             p = sortSubsets(p)
         elif sort == 'area':
-            p = sortSubsets(p,self.areaNormals()[0])
+            p = sortSubsets(p, self.areaNormals()[0])
 
         return p
 
@@ -1249,7 +1249,7 @@ Quality: %s .. %s
         containing the triangle number of the original surface from which
         the elements resulted.
         """
-        def finalize(Sp,Sn,I):
+        def finalize(Sp, Sn, I):
             # Result
             res = []
             if side in '+':
@@ -1281,7 +1281,7 @@ Quality: %s .. %s
         self.prop = arange(self.elems.shape[0])
 
         # Compute distance to plane of all vertices
-        d = self.distanceFromPlane(p,n)
+        d = self.distanceFromPlane(p, n)
 
         p_pos = d > 0.
         p_neg = d < 0.
@@ -1295,9 +1295,9 @@ Quality: %s .. %s
         # BV: SHOULD WE CHANGE THIS???
         all_p = p_posin[self.elems].all(axis=-1)
         all_n = p_negin[self.elems].all(axis=-1)
-        S = self.cclip(all_p+all_n,compact=False)  # DOES THIS COMPACT? NO
-        Sp = self.clip(all_p,compact=False)
-        Sn = self.clip(all_n,compact=False)
+        S = self.cclip(all_p+all_n, compact=False)  # DOES THIS COMPACT? NO
+        Sp = self.clip(all_p, compact=False)
+        Sn = self.clip(all_n, compact=False)
         # Restore properties
         self.prop = save_prop
 
@@ -1310,7 +1310,7 @@ Quality: %s .. %s
         # If there is no intersection, we're done
         # (we might have cut right along facet edges!)
         if S.nelems() == 0:
-            res = _select_side(side,[Sp,Sn])
+            res = _select_side(side, [Sp, Sn])
             return res
 
         #######################
@@ -1332,12 +1332,12 @@ Quality: %s .. %s
             raise ValueError("This really should not happen!")
 
         # Compute the intersection points
-        M = Mesh(S.coords,edg[cutedg])
-        x = geomtools.intersectionPointsSWP(M.toFormex().coords,p,n,mode='pair',return_all=True,atol=atol).reshape(-1,3)
+        M = Mesh(S.coords, edg[cutedg])
+        x = geomtools.intersectionPointsSWP(M.toFormex().coords, p, n, mode='pair', return_all=True, atol=atol).reshape(-1, 3)
         # Create inverse index to lookup the point using the edge number
         rev = inverseUniqueIndex(ind) + coords.shape[0]
         # Concatenate the coords arrays
-        coords = coords.concatenate([coords,x])
+        coords = coords.concatenate([coords, x])
 
         # For each triangle, compute the number of cutting edges
         cut = cutedg[fac]
@@ -1346,7 +1346,7 @@ Quality: %s .. %s
 
         if (ncut < 1).any() or (ncut > 2).any():
             # Maybe we should issue a warning and ignore these cases?
-            print("NCUT: ",ncut)
+            print("NCUT: ", ncut)
             raise ValueError("I expected all triangles to be cut along 1 or 2 edges. I do not know how to proceed now.")
 
         if return_intersection:
@@ -1379,9 +1379,9 @@ Quality: %s .. %s
                 ])
 
             if side in '+':
-                Sp += TriSurface(coords,elems[:,0:3],prop=prop1)
+                Sp += TriSurface(coords, elems[:, 0:3], prop=prop1)
             if side in '-':
-                Sn += TriSurface(coords,elems[:,1:4],prop=prop1)
+                Sn += TriSurface(coords, elems[:, 1:4], prop=prop1)
 
         # Process the elements cutting two edges
         ########################################
@@ -1395,10 +1395,10 @@ Quality: %s .. %s
             fac2 = fac[ncut2]
             ele2 = ele[ncut2]
             pp2 = p_pos[ele2]
-            print("ele",ele2,pp2)
+            print("ele", ele2, pp2)
             ncut2p = pp2.sum(axis=-1)==1   # selector over ncut2 elems
             ncut2n = pp2.sum(axis=-1)==2
-            print(ncut2p,ncut2n)
+            print(ncut2p, ncut2n)
 
             if ncut2p.any():
                 #print "# one vertex at positive side"
@@ -1406,18 +1406,18 @@ Quality: %s .. %s
                 fac1 = fac2[ncut2p]
                 ele1 = ele2[ncut2p]
 
-                print("ele1,1p",ele1)
+                print("ele1,1p", ele1)
                 cutedg1 = cutedg[fac1]
-                print(cutedg,fac1,cutedg1,fac1[cutedg1])
-                cut_edges =  fac1[cutedg1].reshape(-1,2)
+                print(cutedg, fac1, cutedg1, fac1[cutedg1])
+                cut_edges =  fac1[cutedg1].reshape(-1, 2)
                 #print cut_edges
 
                 corner = ele1[p_pos[ele1]]
                 #print corner
-                quad = edg[cut_edges].reshape(-1,4)
+                quad = edg[cut_edges].reshape(-1, 4)
                 #print quad
                 #print quad != corner.reshape(-1,1)
-                quad2 = quad[ quad != corner.reshape(-1,1) ]
+                quad2 = quad[ quad != corner.reshape(-1, 1) ]
                 #print quad2
                 # Identify the node numbers
                 # 0   : vertex on positive side
@@ -1426,16 +1426,16 @@ Quality: %s .. %s
                 elems = column_stack([
                     ele1[p_pos[ele1]],
                     rev[cut_edges],
-                    quad2.reshape(-1,2)
+                    quad2.reshape(-1, 2)
                     # ele1[p_neg[ele1]].reshape(-1,2),
                     ])
                 #print elems
 
                 if side in '+':
-                    Sp += TriSurface(coords,elems[:,0:3],prop=prop1)
+                    Sp += TriSurface(coords, elems[:, 0:3], prop=prop1)
                 if side in '-':
-                    Sn += TriSurface(coords,elems[:,1:4],prop=prop1)
-                    Sn += TriSurface(coords,elems[:,2:5],prop=prop1)
+                    Sn += TriSurface(coords, elems[:, 1:4], prop=prop1)
+                    Sn += TriSurface(coords, elems[:, 2:5], prop=prop1)
 
             if ncut2n.any():
                 #print "# one vertex at negative side"
@@ -1444,22 +1444,22 @@ Quality: %s .. %s
                 ele1 = ele[ncut2n]
 
                 cutedg1 = cutedg[fac1]
-                cut_edges =  fac1[cutedg1].reshape(-1,2)
+                cut_edges =  fac1[cutedg1].reshape(-1, 2)
                 #print cut_edges
 
                 corner = ele1[p_neg[ele1]]
                 #print corner
-                quad = edg[cut_edges].reshape(-1,4)
+                quad = edg[cut_edges].reshape(-1, 4)
                 #print quad
                 #print quad != corner.reshape(-1,1)
-                quad2 = quad[ quad != corner.reshape(-1,1) ]
+                quad2 = quad[ quad != corner.reshape(-1, 1) ]
                 #print quad2
 
                 # 0   : vertex on negative side
                 # 1,2 : new points dividing edges
                 # 3,4 : vertices on positive side
                 elems = column_stack([
-                    quad2.reshape(-1,2),
+                    quad2.reshape(-1, 2),
                     # we can not use this, because order of the 2 vertices
                     # is importtant
                     # ele1[p_pos[ele1]].reshape(-1,2),
@@ -1469,18 +1469,18 @@ Quality: %s .. %s
                 #print elems
 
                 if side in '+':
-                    Sp += TriSurface(coords,elems[:,0:3],prop=prop1)
-                    Sp += TriSurface(coords,elems[:,1:4],prop=prop1)
+                    Sp += TriSurface(coords, elems[:, 0:3], prop=prop1)
+                    Sp += TriSurface(coords, elems[:, 1:4], prop=prop1)
                 if side in '-':
-                    Sn += TriSurface(coords,elems[:,2:5],prop=prop1)
+                    Sn += TriSurface(coords, elems[:, 2:5], prop=prop1)
 
-        return finalize(Sp,Sn,I)
+        return finalize(Sp, Sn, I)
         # Result
         if side in '+':
             Sp = Sp.compact()#.fixNormals()
         if side in '-':
             Sn = Sn.compact()#.fixNormals()
-        return _select_side(side,[Sp,Sn])
+        return _select_side(side, [Sp, Sn])
 
 
     def cutWithPlane(self,*args,**kargs):
@@ -1575,7 +1575,7 @@ Quality: %s .. %s
         #1681 lines X 8000 triangle -> 2490 intersections
         """
 
-        def closeLinesPoints(p,q,m,dtresh):
+        def closeLinesPoints(p, q, m, dtresh):
             """Find points and lines which are closer than a treshold distance.
 
             Parameters:
@@ -1617,26 +1617,26 @@ Quality: %s .. %s
             if method=='segment':
                 ir=length(v-v0)+ length(v-v1)< length(v1-v0)+atol
             if method=='ray':
-                ir0 = dotpr(v-v0,normalize(v1-v0))>0#equivalent to ir0=length(normalize(v-v0)-m)<atol
+                ir0 = dotpr(v-v0, normalize(v1-v0))>0#equivalent to ir0=length(normalize(v-v0)-m)<atol
                 ir1 = length(v-v0)<atol#point close to the ray's end
                 ir=ir0+ir1
             return ir
 
-        r,C,n = geomtools.triangleBoundingCircle(self.coords[self.elems])#triangles' bounding sphere
+        r, C, n = geomtools.triangleBoundingCircle(self.coords[self.elems])#triangles' bounding sphere
         m = normalize(q2-q)
-        l, t=closeLinesPoints(C,q,m,r)#detects candidate lines/triangles (slow part)
-        p = geomtools.intersectionPointsLWP(q[l],m[l],C[t],self.areaNormals()[1][t],  mode='pair')#intersects candidate lines/triangles
+        l, t=closeLinesPoints(C, q, m, r)#detects candidate lines/triangles (slow part)
+        p = geomtools.intersectionPointsLWP(q[l], m[l], C[t], self.areaNormals()[1][t],  mode='pair')#intersects candidate lines/triangles
         prl=where(sum(isinf(p) + isnan(p), axis=1)>0)[0]#remove nan/inf (lines parallel to triangles)
         i1 = complement(prl, len(p))
         if len(i1)==0:
             return Coords(), []
         xt = self.select(t).toFormex().shrink(1.+atol)[:]#atol: insideTriangle sometimes fails on border!!
         xt, xp, xl = xt[i1], p[i1], l[i1]
-        i2 = geomtools.insideTriangle(xt,xp[newaxis,...]).reshape(-1)#remove intersections outside triangles
+        i2 = geomtools.insideTriangle(xt, xp[newaxis, ...]).reshape(-1)#remove intersections outside triangles
         i=i1[i2]
         if method!='line':
             xp, xl=xp[i2], xl[i2]
-            i3=insideLine(xp, q[xl], q2[xl],atol, method)
+            i3=insideLine(xp, q[xl], q2[xl], atol, method)
             i=i[i3]
         p, j=p[i].fuse()
         return p, column_stack([j, l[i], t[i]])
@@ -1671,15 +1671,15 @@ Quality: %s .. %s
 
         # First, reduce the surface to the part intersecting with the plane:
         # remove triangles with all up or all down vertices
-        d = self.distanceFromPlane(p,n)
+        d = self.distanceFromPlane(p, n)
         d_ele = d[self.elems]
         ele_all_up = (d_ele > 0.).all(axis=1)
         ele_all_do = (d_ele < 0.).all(axis=1)
-        S = self.cclip(ele_all_up+ele_all_do,compact=False)
+        S = self.cclip(ele_all_up+ele_all_do, compact=False)
 
         # If there is no intersection, we're done
         if S.nelems() == 0:
-            return Mesh(Coords(),Connectivity(nplex=2,eltype='line2'))
+            return Mesh(Coords(), Connectivity(nplex=2, eltype='line2'))
 
         Mparts = []
         coords = S.coords
@@ -1699,8 +1699,8 @@ Quality: %s .. %s
         # compute the intersection points
         if ind.size != 0:
             rev = inverseUniqueIndex(ind)
-            M = Mesh(S.coords,edg[w])
-            x = geomtools.intersectionPointsSWP(M.toFormex().coords,p,n,mode='pair',return_all=True,atol=atol).reshape(-1,3)
+            M = Mesh(S.coords, edg[w])
+            x = geomtools.intersectionPointsSWP(M.toFormex().coords, p, n, mode='pair', return_all=True, atol=atol).reshape(-1, 3)
 
         # For each triangle, compute the number of cutting edges
         cut = w[fac]
@@ -1710,63 +1710,63 @@ Quality: %s .. %s
         d_ele = d[ele]
         ins = d_ele == 0.
         nins = ins.sum(axis=1)
-        ins0,ins1,ins2,ins3 = [ where(nins==i)[0] for i in range(4) ]
+        ins0, ins1, ins2, ins3 = [ where(nins==i)[0] for i in range(4) ]
 
         # No inside vertices -> 2 cutting edges
         if ins0.size > 0:
-            cutedg = fac[ins0][cut[ins0]].reshape(-1,2)
+            cutedg = fac[ins0][cut[ins0]].reshape(-1, 2)
             e0 = rev[cutedg]
-            Mparts.append(Mesh(x,e0,eltype='line2').compact())
+            Mparts.append(Mesh(x, e0, eltype='line2').compact())
 
         # One inside vertex
         if ins1.size > 0:
             ncut1 = ncut[ins1]
-            cut10,cut11 = [ where(ncut1==i)[0] for i in range(2) ]
+            cut10, cut11 = [ where(ncut1==i)[0] for i in range(2) ]
             # 0 cutting edges: does not generate a line segment
             # 1 cutting edge
             if cut11.size != 0:
-                e11ins = ele[ins1][cut11][ins[ins1][cut11]].reshape(-1,1)
-                cutedg = fac[ins1][cut11][cut[ins1][cut11]].reshape(-1,1)
+                e11ins = ele[ins1][cut11][ins[ins1][cut11]].reshape(-1, 1)
+                cutedg = fac[ins1][cut11][cut[ins1][cut11]].reshape(-1, 1)
                 e11cut = rev[cutedg]
-                x11 = Coords.concatenate([coords,x],axis=0)
-                e11 = concatenate([e11ins,e11cut+len(coords)],axis=1)
-                Mparts.append(Mesh(x11,e11,eltype='line2').compact())
+                x11 = Coords.concatenate([coords, x], axis=0)
+                e11 = concatenate([e11ins, e11cut+len(coords)], axis=1)
+                Mparts.append(Mesh(x11, e11, eltype='line2').compact())
 
         # Two inside vertices -> 0 cutting edges
         if ins2.size > 0:
-            e2 = ele[ins2][ins[ins2]].reshape(-1,2)
-            Mparts.append(Mesh(coords,e2,eltype='line2').compact())
+            e2 = ele[ins2][ins[ins2]].reshape(-1, 2)
+            Mparts.append(Mesh(coords, e2, eltype='line2').compact())
 
         # Three inside vertices -> 0 cutting edges
         if ins3.size > 0:
             insedg =  fac[ins3].reshape(-1)
             insedg.sort(axis=0)
-            double = insedg == roll(insedg,1,axis=0)
-            insedg = setdiff1d(insedg,insedg[double])
+            double = insedg == roll(insedg, 1, axis=0)
+            insedg = setdiff1d(insedg, insedg[double])
             if insedg.size != 0:
                 e3 = edg[insedg]
-                Mparts.append(Mesh(coords,e3,eltype='line2').compact())
+                Mparts.append(Mesh(coords, e3, eltype='line2').compact())
 
         # Done with getting the segments
         if len(Mparts) ==  0:
             # No intersection: return empty mesh
-            return Mesh(Coords(),Connectivity(nplex=2,eltype='line2'))
+            return Mesh(Coords(), Connectivity(nplex=2, eltype='line2'))
         else:
             M = Mesh.concatenate(Mparts)
 
             # Remove degenerate and duplicate elements
-            M = Mesh(M.coords,M.elems.removeDegenerate().removeDuplicate())
+            M = Mesh(M.coords, M.elems.removeDegenerate().removeDuplicate())
 
             # Split in connected loops
             parts = connectedLineElems(M.elems)
-            prop = concatenate([ [i]*part.nelems() for i,part in enumerate(parts)])
-            elems = concatenate(parts,axis=0)
+            prop = concatenate([ [i]*part.nelems() for i, part in enumerate(parts)])
+            elems = concatenate(parts, axis=0)
             if sort == 'distance':
                 d = array([ M.coords[part].distanceFromPoint(p).min() for part in parts ])
                 srt = argsort(d)
                 inv = inverseUniqueIndex(srt)
                 prop = inv[prop]
-            return Mesh(M.coords,elems,prop=prop)
+            return Mesh(M.coords, elems, prop=prop)
 
 
     def slice(self,dir=0,nplanes=20):
@@ -1783,9 +1783,9 @@ Quality: %s .. %s
         o = self.center()
         if isinstance(dir, int):
             dir = unitVector(dir)
-        xmin,xmax = self.coords.directionalExtremes(dir,o)
-        P = Coords.interpolate(xmin,xmax,nplanes)
-        return [ self.intersectionWithPlane(p,dir) for p in P ]
+        xmin, xmax = self.coords.directionalExtremes(dir, o)
+        P = Coords.interpolate(xmin, xmax, nplanes)
+        return [ self.intersectionWithPlane(p, dir) for p in P ]
 
 
 ##################  Smooth a surface #############################
@@ -1817,18 +1817,18 @@ Quality: %s .. %s
         method = method.lower()
 
         # find adjacency
-        adj = adjacencyArrays(self.getEdges(),nsteps=neighbourhood)[1:]
+        adj = adjacencyArrays(self.getEdges(), nsteps=neighbourhood)[1:]
         adj = column_stack(adj)
         # find interior vertices
         bound_edges = self.borderEdgeNrs()
-        inter_vertex = resize(True,self.ncoords())
+        inter_vertex = resize(True, self.ncoords())
         inter_vertex[unique(self.getEdges()[bound_edges])] = False
         # calculate weights
-        w = ones(adj.shape,dtype=float)
+        w = ones(adj.shape, dtype=float)
         w[adj<0] = 0.
-        val = (adj>=0).sum(-1).reshape(-1,1)
+        val = (adj>=0).sum(-1).reshape(-1, 1)
         w /= val
-        w = w.reshape(adj.shape[0],adj.shape[1],1)
+        w = w.reshape(adj.shape[0], adj.shape[1], 1)
 
         # recalculate vertices
 
@@ -1836,7 +1836,7 @@ Quality: %s .. %s
             xo = self.coords
             x = self.coords.copy()
             for step in range(iterations):
-                xn = x + lambda_value*(w*(x[adj]-x.reshape(-1,1,3))).sum(1)
+                xn = x + lambda_value*(w*(x[adj]-x.reshape(-1, 1, 3))).sum(1)
                 xd = xn - (alpha*xo + (1-alpha)*x)
                 x[inter_vertex] = xn[inter_vertex] - (beta*xd[inter_vertex] + (1-beta)*(w[inter_vertex]*xd[adj[inter_vertex]]).sum(1))
 
@@ -1845,20 +1845,20 @@ Quality: %s .. %s
             mu_value = -lambda_value/(1-k*lambda_value)
             x = self.coords.copy()
             for step in range(iterations):
-                x[inter_vertex] = x[inter_vertex] + lambda_value*(w[inter_vertex]*(x[adj[inter_vertex]]-x[inter_vertex].reshape(-1,1,3))).sum(1)
-                x[inter_vertex] = x[inter_vertex] + mu_value*(w[inter_vertex]*(x[adj[inter_vertex]]-x[inter_vertex].reshape(-1,1,3))).sum(1)
+                x[inter_vertex] = x[inter_vertex] + lambda_value*(w[inter_vertex]*(x[adj[inter_vertex]]-x[inter_vertex].reshape(-1, 1, 3))).sum(1)
+                x[inter_vertex] = x[inter_vertex] + mu_value*(w[inter_vertex]*(x[adj[inter_vertex]]-x[inter_vertex].reshape(-1, 1, 3))).sum(1)
 
-        return TriSurface(x,self.elems,prop=self.prop)
+        return TriSurface(x, self.elems, prop=self.prop)
 
 
     def smoothLowPass(self,iterations=2,lambda_value=0.5,neighbours=1):
         """Apply a low pass smoothing to the surface."""
-        return self.smooth('lowpass',iterations/2,lambda_value,neighbours)
+        return self.smooth('lowpass', iterations/2, lambda_value, neighbours)
 
 
     def smoothLaplaceHC(self,iterations=2,lambda_value=0.5,alpha=0.,beta=0.2):
         """Apply Laplace smoothing with shrinkage compensation to the surface."""
-        return self.smooth('laplace',iterations,lambda_value,alpha=alpha,beta=beta)
+        return self.smooth('laplace', iterations, lambda_value, alpha=alpha, beta=beta)
 
 
     def refine(self,max_edges=None,min_cost=None,method='gts'):
@@ -1882,11 +1882,11 @@ Quality: %s .. %s
         - `verbose`: boolean: print statistics about the surface
         """
         if method == 'gts':
-            return self.gts_refine(max_edges,min_cost)
+            return self.gts_refine(max_edges, min_cost)
 
         # THIS IS WORK IN PROGRESS
         self.getElemEdges()
-        edglen = length(self.coords[self.edges[:,1]]-self.coords[self.edges[:,0]])
+        edglen = length(self.coords[self.edges[:, 1]]-self.coords[self.edges[:, 0]])
         print(edglen)
         return self
 
@@ -1928,9 +1928,9 @@ Quality: %s .. %s
         tmp = tempfile.mktemp('.stl')
         tmp1 = tempfile.mktemp('.off')
         pf.message("Writing temp file %s" % tmp)
-        self.write(tmp,'stl')
+        self.write(tmp, 'stl')
         pf.message("Fixing surface while converting to OFF format %s" % tmp1)
-        stlConvert(tmp,tmp1)
+        stlConvert(tmp, tmp1)
         pf.message("Reading result from %s" % tmp1)
         S = TriSurface.read(tmp1)
         os.remove(tmp)
@@ -1974,7 +1974,7 @@ Quality: %s .. %s
         command.
         """
         tmp = tempfile.mktemp('.gts')
-        self.write(tmp,'gts')
+        self.write(tmp, 'gts')
 
         cmd = "gtscheck -v < %s" % tmp
         P = utils.system(cmd)
@@ -1991,7 +1991,7 @@ Quality: %s .. %s
             pf.message('The surface is an orientable manifold but is self-intersecting')
             tmp = tempfile.mktemp('.gts')
             pf.message("Writing temp file %s" % tmp)
-            fil = open(tmp,'w')
+            fil = open(tmp, 'w')
             fil.write(P.out)
             fil.close()
             Si = TriSurface.read(tmp)
@@ -2021,10 +2021,10 @@ Quality: %s .. %s
             cmd += ' -v'
         tmp = tempfile.mktemp('.gts')
         pf.message("Writing temp file %s" % tmp)
-        self.write(tmp,'gts')
+        self.write(tmp, 'gts')
         pf.message("Splitting with command\n %s" % cmd)
         cmd += ' < %s' % tmp
-        P = utils.command(cmd,shell=True)
+        P = utils.command(cmd, shell=True)
         os.remove(tmp)
         if P.sta or verbose:
             pf.message(P.out)
@@ -2087,9 +2087,9 @@ Quality: %s .. %s
         tmp = tempfile.mktemp('.gts')
         tmp1 = tempfile.mktemp('.gts')
         pf.message("Writing temp file %s" % tmp)
-        self.write(tmp,'gts')
+        self.write(tmp, 'gts')
         pf.message("Coarsening with command\n %s" % cmd)
-        P = utils.command(cmd,stdin=tmp,stdout=tmp1)
+        P = utils.command(cmd, stdin=tmp, stdout=tmp1)
         os.remove(tmp)
         if P.sta or verbose:
             pf.message(P.out)
@@ -2133,9 +2133,9 @@ Quality: %s .. %s
         tmp = tempfile.mktemp('.gts')
         tmp1 = tempfile.mktemp('.gts')
         pf.message("Writing temp file %s" % tmp)
-        self.write(tmp,'gts')
+        self.write(tmp, 'gts')
         pf.message("Refining with command\n %s" % cmd)
-        P = utils.command(cmd,stdin=tmp,stdout=tmp1)
+        P = utils.command(cmd, stdin=tmp, stdout=tmp1)
         os.remove(tmp)
         if P.sta or verbose:
             pf.message(P.out)
@@ -2164,15 +2164,15 @@ Quality: %s .. %s
         cmd = 'gtssmooth'
 #        if fold_smoothing:
 #            cmd += ' -f %s' % fold_smoothing
-        cmd += ' %s %s' % (lambda_value,iterations)
+        cmd += ' %s %s' % (lambda_value, iterations)
         if verbose:
             cmd += ' -v'
         tmp = tempfile.mktemp('.gts')
         tmp1 = tempfile.mktemp('.gts')
         pf.message("Writing temp file %s" % tmp)
-        self.write(tmp,'gts')
+        self.write(tmp, 'gts')
         pf.message("Smoothing with command\n %s" % cmd)
-        P = utils.command(cmd,stdin=tmp,stdout=tmp1)
+        P = utils.command(cmd, stdin=tmp, stdout=tmp1)
         os.remove(tmp)
         if P.sta or verbose:
             pf.message(P.out)
@@ -2203,10 +2203,10 @@ Quality: %s .. %s
         pts = Coords(pts).points()
         if method == 'gts':
             from pyformex_gts import inside
-            return inside(self,pts,tol,multi=multi)
+            return inside(self, pts, tol, multi=multi)
         elif method == 'vtk':
             from vtk_itf import inside
-            return inside(self,pts,tol)
+            return inside(self, pts, tol)
 
 
     def tetgen(self,quality=True,volume=None,filename=None,format='.off'):
@@ -2228,11 +2228,11 @@ Quality: %s .. %s
         import tetgen
         if filename is None:
             outputdir = utils.tempDir()
-            fn = os.path.join(outputdir,'surface') + format
+            fn = os.path.join(outputdir, 'surface') + format
         else:
             fn = filename
         self.write(fn)
-        res = tetgen.tetMesh(fn,quality,volume)
+        res = tetgen.tetMesh(fn, quality, volume)
         if filename is None:
             utils.removeTree(outputdir)
         return res['tetgen.ele']
@@ -2247,9 +2247,9 @@ Quality: %s .. %s
 ################# Non-member and obsolete functions ######################
 
 
-def read_error(cnt,line):
+def read_error(cnt, line):
     """Raise an error on reading the stl file."""
-    raise RuntimeError("Invalid .stl format while reading line %s\n%s" % (cnt,line))
+    raise RuntimeError("Invalid .stl format while reading line %s\n%s" % (cnt, line))
 
 
 def read_stla(fn,dtype=Float,large=False,guess=True):
@@ -2259,14 +2259,14 @@ def read_stla(fn,dtype=Float,large=False,guess=True):
     a lot faster.
     """
     if large:
-        return read_ascii_large(fn,dtype=dtype)
+        return read_ascii_large(fn, dtype=dtype)
     if guess:
         n = utils.countLines(fn) / 7 # ASCII STL has 7 lines per triangle
     else:
         n = 100
-    f = open(fn,'r')
-    a = zeros(shape=[n,3,3],dtype=dtype)
-    x = zeros(shape=[3,3],dtype=dtype)
+    f = open(fn, 'r')
+    a = zeros(shape=[n, 3, 3], dtype=dtype)
+    x = zeros(shape=[3, 3], dtype=dtype)
     i = 0
     j = 0
     cnt = 0
@@ -2276,8 +2276,8 @@ def read_stla(fn,dtype=Float,large=False,guess=True):
         s = line.strip().split()
         if s[0] == 'vertex':
             if j >= 3:
-                read_error(cnt,line)
-            x[j] = map(float,s[1:4])
+                read_error(cnt, line)
+            x[j] = map(float, s[1:4])
             j += 1
         elif s[0] == 'outer':
             j = 0
@@ -2286,7 +2286,7 @@ def read_stla(fn,dtype=Float,large=False,guess=True):
         elif s[0] == 'facet':
             if i >= a.shape[0]:
                 # increase the array size
-                a.resize([2*a.shape[0],3,3])
+                a.resize([2*a.shape[0], 3, 3])
         elif s[0] == 'endfacet':
             i += 1
         elif s[0] == 'solid':
@@ -2298,7 +2298,7 @@ def read_stla(fn,dtype=Float,large=False,guess=True):
         f.close()
     if finished:
         return a[:i]
-    raise RuntimeError("Incorrect stl file: read %d lines, %d facets" % (cnt,i))
+    raise RuntimeError("Incorrect stl file: read %d lines, %d facets" % (cnt, i))
 
 
 def read_ascii_large(fn,dtype=Float):
@@ -2311,8 +2311,8 @@ def read_ascii_large(fn,dtype=Float):
     .nodes file and then reading it through numpy's fromfile() function.
     """
     tmp = '%s.nodes' % fn
-    utils.command("awk '/^[ ]*vertex[ ]+/{print $2,$3,$4}' '%s' | d2u > '%s'" % (fn,tmp),shell=True)
-    nodes = fromfile(tmp,sep=' ',dtype=dtype).reshape((-1,3,3))
+    utils.command("awk '/^[ ]*vertex[ ]+/{print $2,$3,$4}' '%s' | d2u > '%s'" % (fn, tmp), shell=True)
+    nodes = fromfile(tmp, sep=' ', dtype=dtype).reshape((-1, 3, 3))
     return nodes
 
 
@@ -2330,7 +2330,7 @@ def find_row(mat,row,nmatch=None):
     return where((mat == row).sum(axis=1) == nmatch)[0]
 
 
-def find_nodes(nodes,coords):
+def find_nodes(nodes, coords):
     """Find nodes with given coordinates in a node set.
 
     nodes is a (nnodes,3) float array of coordinates.
@@ -2339,10 +2339,10 @@ def find_nodes(nodes,coords):
     Returns a (n,) integer array with ALL the node numbers matching EXACTLY
     ALL the coordinates of ANY of the given points.
     """
-    return concatenate([ find_row(nodes,c) for c in coords])
+    return concatenate([ find_row(nodes, c) for c in coords])
 
 
-def find_first_nodes(nodes,coords):
+def find_first_nodes(nodes, coords):
     """Find nodes with given coordinates in a node set.
 
     nodes is a (nnodes,3) float array of coordinates.
@@ -2351,11 +2351,11 @@ def find_first_nodes(nodes,coords):
     Returns a (n,) integer array with THE FIRST node number matching EXACTLY
     ALL the coordinates of EACH of the given points.
     """
-    res = [ find_row(nodes,c) for c in coords ]
+    res = [ find_row(nodes, c) for c in coords ]
     return array([ r[0] for r in res ])
 
 
-def find_triangles(elems,triangles):
+def find_triangles(elems, triangles):
     """Find triangles with given node numbers in a surface mesh.
 
     elems is a (nelems,3) integer array of triangles.
@@ -2365,8 +2365,8 @@ def find_triangles(elems,triangles):
     """
     magic = elems.max()+1
 
-    mag1 = enmagic3(elems,magic)
-    mag2 = enmagic3(triangles,magic)
+    mag1 = enmagic3(elems, magic)
+    mag2 = enmagic3(triangles, magic)
 
     nelems = elems.shape[0]
     srt = mag1.argsort()
@@ -2377,7 +2377,7 @@ def find_triangles(elems,triangles):
     return tri
 
 
-def remove_triangles(elems,remove):
+def remove_triangles(elems, remove):
     """Remove triangles from a surface mesh.
 
     elems is a (nelems,3) integer array of triangles.
@@ -2386,11 +2386,11 @@ def remove_triangles(elems,remove):
     Returns a (nelems-nremove,3) integer array with the triangles of
     nelems where the triangles of remove have been removed.
     """
-    pf.message("Removing %s out of %s triangles" % (remove.shape[0],elems.shape[0]))
+    pf.message("Removing %s out of %s triangles" % (remove.shape[0], elems.shape[0]))
     magic = elems.max()+1
 
-    mag1 = enmagic3(elems,magic)
-    mag2 = enmagic3(remove,magic)
+    mag1 = enmagic3(elems, magic)
+    mag2 = enmagic3(remove, magic)
 
     mag1.sort()
     mag2.sort()
@@ -2401,8 +2401,8 @@ def remove_triangles(elems,remove):
     mag1[pos] = -1
     mag1 = mag1[mag1 >= 0]
 
-    elems = demagic3(mag1,magic)
-    pf.message("Actually removed %s triangles, leaving %s" % (nelems-mag1.shape[0],elems.shape[0]))
+    elems = demagic3(mag1, magic)
+    pf.message("Actually removed %s triangles, leaving %s" % (nelems-mag1.shape[0], elems.shape[0]))
 
     return elems
 
@@ -2410,9 +2410,9 @@ def remove_triangles(elems,remove):
 ### Some simple surfaces ###
 ### Should go to simple module ?
 
-def Rectangle(nx,ny):
+def Rectangle(nx, ny):
     """Create a plane rectangular surface consisting of a nx,ny grid."""
-    F = Formex('3:012934').replic2(nx,ny,1,1)
+    F = Formex('3:012934').replic2(nx, ny, 1, 1)
     return TriSurface(F)
 
 def Cube():
@@ -2422,7 +2422,7 @@ def Cube():
     Each face of the cube is represented by two triangles.
     """
     back = Formex('3:012934')
-    fb = back.reverse() + back.translate(2,1)
+    fb = back.reverse() + back.translate(2, 1)
     faces = fb + fb.rollAxes(1) + fb.rollAxes(2)
     return TriSurface(faces)
 

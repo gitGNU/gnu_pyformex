@@ -28,35 +28,35 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'beginner'
 _topics = ['geometry']
-_techniques = ['color','dialog','transform','function']
+_techniques = ['color', 'dialog', 'transform', 'function']
 
 from gui.draw import *
 
-def addFlares(F,dir=[0,2]):
+def addFlares(F,dir=[0, 2]):
     """Adds flares at both ends of the structure.
 
     The flare parameters are hardcoded, a real-life example would
     make them adjustable.
     Returns the flared structure.
     """
-    F = F.flare(m/4.,-1.,dir,0,0.5)
-    F = F.flare(m/4.,1.5,dir,1,2.)
+    F = F.flare(m/4., -1., dir, 0, 0.5)
+    F = F.flare(m/4., 1.5, dir, 1, 2.)
     return F
 
 def run():
     # Some named colors (they should exist in /etc/X11/rgb.txt)
-    color_choice = ['red','blue','orange','indianred','gold','pink','orchid','steelblue','turquoise','aquamarine','aquamarine1','aquamarine2','aquamarine3','aquamarine4','navy blue','royal blue']
+    color_choice = ['red', 'blue', 'orange', 'indianred', 'gold', 'pink', 'orchid', 'steelblue', 'turquoise', 'aquamarine', 'aquamarine1', 'aquamarine2', 'aquamarine3', 'aquamarine4', 'navy blue', 'royal blue']
 
     # Ask data from the user
     data = [
-        _I('m',36,text='number of cells in longest grid direction'),
-        _I('n',12,text='number of cells in shortes grid direction'),
-        _I('f0',True,text='add flares on rectangle'),
-        _I('f1',False,text='add flares on cylinder'),
-        _I('f2',False,text='add flares on torus'),
-        _I('geom','cylinder',itemtype='radio',choices=['rectangle','cylinder','torus'],text='geometry'),
-        _I('color0','red',choices=color_choice),
-        _I('color1','blue',choices=color_choice),
+        _I('m', 36, text='number of cells in longest grid direction'),
+        _I('n', 12, text='number of cells in shortes grid direction'),
+        _I('f0', True, text='add flares on rectangle'),
+        _I('f1', False, text='add flares on cylinder'),
+        _I('f2', False, text='add flares on torus'),
+        _I('geom', 'cylinder', itemtype='radio', choices=['rectangle', 'cylinder', 'torus'], text='geometry'),
+        _I('color0', 'red', choices=color_choice),
+        _I('color1', 'blue', choices=color_choice),
         ]
     res = askItems(data)
     if not res:
@@ -66,23 +66,23 @@ def run():
     globals().update(res)
 
     # Construct the geometry
-    F = Formex('3:.12.34',[0,1]).replic2(m,n,1,1)
+    F = Formex('3:.12.34', [0, 1]).replic2(m, n, 1, 1)
     if f0:
         F = addFlares(F)
 
     if geom != 'rectangle':
-        F = F.translate(2,1).cylindrical([2,1,0],[1.,360./n,1.])
+        F = F.translate(2, 1).cylindrical([2, 1, 0], [1., 360./n, 1.])
         if f1:
-            F = addFlares(F,dir=[2,0])
+            F = addFlares(F, dir=[2, 0])
         if geom == 'torus':
-            F = F.translate(0,5).cylindrical([0,2,1],[1.,360./m,1.])
+            F = F.translate(0, 5).cylindrical([0, 2, 1], [1., 360./m, 1.])
             if f2:
                 F = addFlares(F)
 
     # Draw the structure
     clear()
     view('iso')
-    draw(F,colormap=[color0,color1])
+    draw(F, colormap=[color0, color1])
 
 if __name__ == 'draw':
     run()

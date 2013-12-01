@@ -38,7 +38,7 @@ def showStepPlot(x,y,label='',title=None,plot2d_system=None):
     """
     if title is None:
         title = 'pyFormex step plot: %s' % label
-    maxlen = min(len(x),len(y))
+    maxlen = min(len(x), len(y))
     x = x[:maxlen]
     y = y[:maxlen]
 
@@ -50,7 +50,7 @@ def showStepPlot(x,y,label='',title=None,plot2d_system=None):
 
     if plot2d_system == 'gnuplot':
         import Gnuplot
-        data = Gnuplot.Data(x,y,title=label, with_='steps') 
+        data = Gnuplot.Data(x, y, title=label, with_='steps') 
         g = Gnuplot.Gnuplot(persist=1)
         g.title(title)
         g.plot(data)
@@ -61,7 +61,7 @@ def showStepPlot(x,y,label='',title=None,plot2d_system=None):
 
     elif plot2d_system == 'matplotlib':
         import matplotlib.pyplot as plt
-        plt.step(x,y,where='post',label=label)
+        plt.step(x, y, where='post', label=label)
         plt.title(title)
         plt.legend()
         plt.show()
@@ -75,17 +75,17 @@ def showHistogram(x,y,label,cumulative=False,plot2d_system=None):
         fill = y[-1]
     else:
         fill = y[0]
-    y = growAxis(y,len(x)-len(y),fill=fill)
-    showStepPlot(x,y,label,plot2d_system=plot2d_system)
+    y = growAxis(y, len(x)-len(y), fill=fill)
+    showStepPlot(x, y, label, plot2d_system=plot2d_system)
 
 
 def createHistogram(data,cumulative=False,**kargs):
     """Create a histogram from data
 
     """
-    y,x = histogram(data,**kargs)
+    y, x = histogram(data,**kargs)
     if cumulative:
         y = y.cumsum()
-    return y,x
+    return y, x
 
 # End

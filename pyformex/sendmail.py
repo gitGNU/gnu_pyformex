@@ -33,14 +33,14 @@ Distributed under the GNU General Public License, version 3 or later
 """
 from __future__ import print_function
 
-import os,socket,getpass
+import os, socket, getpass
 
 
 ################### global data ##################################
 
 host = socket.gethostname()
 user = getpass.getuser()
-mail = os.environ.get('MAIL',"%s@%s" % (user,host))
+mail = os.environ.get('MAIL', "%s@%s" % (user, host))
 
 ################### mail access ##################################
 
@@ -76,7 +76,7 @@ def sendmail(message,sender,to,serverURL='localhost'):
     'to' can be a list of addresses
     """
     mailServer = smtplib.SMTP(serverURL)
-    mailServer.sendmail(sender,to,message.as_string())
+    mailServer.sendmail(sender, to, message.as_string())
     mailServer.quit()
 
 
@@ -114,21 +114,21 @@ def input_message(prompt=True):
             
         except EOFError:
             break
-    return to,cc,subj,msg,sender
+    return to, cc, subj, msg, sender
 
 
 if __name__ == '__main__':
 
-    to,cc,subj,msg,sender = input_message()
+    to, cc, subj, msg, sender = input_message()
     if not sender:
         sender = mail
 
     if to and subj and msg and sender:
-        msg = message(sender,to,cc,subj,msg)
+        msg = message(sender, to, cc, subj, msg)
         print("\n\n    Email message:")
         print(msg)
         if raw_input('\n    Shall I send the email now? (y/n)') == 'y':
-            sendmail(msg,sender,to)
+            sendmail(msg, sender, to)
             print("Mail has been sent!")
         else:
             print("Mail not sent!")

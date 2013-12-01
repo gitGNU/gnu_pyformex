@@ -44,14 +44,14 @@ from OpenGL import GL
 
 S = sphere(6)
 S = S.toSurface().fixNormals().toFormex()
-T = Formex('4:0123').replic2(2,3).toMesh().align('-00')
+T = Formex('4:0123').replic2(2, 3).toMesh().align('-00')
 
 S1 = S.scale(0.75)
-S2 = S1.trl([0.,0.,-2.])
-draw(S1,color=red,opak=True,alpha=0.7)#,bkalpha=0.7,bkcolor=red)
-draw(S2,color=blue,opak=True,alpha=1.0)
-draw(T,color=green,alpha=1.0)
-draw(S,color=yellow,alpha=0.7)#,bkalpha=0.7,bkcolor=yellow)
+S2 = S1.trl([0., 0., -2.])
+draw(S1, color=red, opak=True, alpha=0.7)#,bkalpha=0.7,bkcolor=red)
+draw(S2, color=blue, opak=True, alpha=1.0)
+draw(T, color=green, alpha=1.0)
+draw(S, color=yellow, alpha=0.7)#,bkalpha=0.7,bkcolor=yellow)
 
 zoomAll()
 pf.app.processEvents()
@@ -59,18 +59,18 @@ pf.app.processEvents()
 exit()
 
 print((S.npoints()))
-col = [red,red]*81
+col = [red, red]*81
 print((len(col)))
-SA = GeomActor(S,ambient=0.0,diffuse=1.0,specular=0.0,color=red,alpha=0.7,light=(0.,1.,1.),shininess=20)
+SA = GeomActor(S, ambient=0.0, diffuse=1.0, specular=0.0, color=red, alpha=0.7, light=(0., 1., 1.), shininess=20)
 
-TA = GeomActor(T,ambient=0.5,diffuse=0.5,color=blue,bkcolor=green,alpha=0.9,light=(0.,1.,1.))
+TA = GeomActor(T, ambient=0.5, diffuse=0.5, color=blue, bkcolor=green, alpha=0.9, light=(0., 1., 1.))
 
 #SA.children.append(TA)
 
 #drawActor(SA)
 
-draw(S,color=red)
-draw(T,color=blue,bkcolor=green,lighting=False)
+draw(S, color=red)
+draw(T, color=blue, bkcolor=green, lighting=False)
 
 zoomAll()
 #pf.app.processEvents()

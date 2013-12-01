@@ -37,10 +37,10 @@ from plugins.curve import *
 from plugins.nurbs import *
 from simple import circle
 from plugins import objects
-from plugins.geometry_menu import autoname,autoName,geomList
+from plugins.geometry_menu import autoname, autoName, geomList
 from gui.draw import *
 
-draw_mode_2d = ['point','polyline','curve','nurbs','circle']
+draw_mode_2d = ['point', 'polyline', 'curve', 'nurbs', 'circle']
 autoname['point'] = autoName('coords')
 autoname['polyline'] = autoName('polyline')
 autoname['curve'] = autoName('bezierspline')
@@ -81,7 +81,7 @@ def draw2D(mode='point',npoints=-1,zplane=0.,coords=None,func=None):
         return
     if func == None:
         func = highlightDrawing
-    return pf.canvas.idraw(mode,npoints,zplane,func,coords,_preview)
+    return pf.canvas.idraw(mode, npoints, zplane, func, coords, _preview)
 
 
 obj_params = {}
@@ -90,7 +90,7 @@ def drawnObject(points,mode='point'):
     """Return the geometric object resulting from draw2D points"""
     minor = None
     if '_' in mode:
-        mode,minor = mode.split('_')
+        mode, minor = mode.split('_')
     closed = minor=='closed'
 
     if mode == 'point':
@@ -98,21 +98,21 @@ def drawnObject(points,mode='point'):
     elif mode == 'polyline':
         if points.ncoords() < 2:
             return None
-        closed = obj_params.get('closed',None)
-        return PolyLine(points,closed=closed)
+        closed = obj_params.get('closed', None)
+        return PolyLine(points, closed=closed)
     elif mode == 'curve' and points.ncoords() > 1:
-        curl = obj_params.get('curl',None)
-        closed = obj_params.get('closed',None)
-        return BezierSpline(points,curl=curl,closed=closed)
+        curl = obj_params.get('curl', None)
+        closed = obj_params.get('closed', None)
+        return BezierSpline(points, curl=curl, closed=closed)
     elif mode == 'nurbs':
-        degree = obj_params.get('degree',None)
+        degree = obj_params.get('degree', None)
         if points.ncoords() <= degree:
             return None
-        closed = obj_params.get('closed',None)
-        return NurbsCurve(points,degree=degree,closed=closed)
+        closed = obj_params.get('closed', None)
+        return NurbsCurve(points, degree=degree, closed=closed)
     elif mode == 'circle' and points.ncoords() % 3 == 0:
-        R,C,N = triangleCircumCircle(points.reshape(-1,3,3))
-        circles = [circle(r=r,c=c,n=n) for r,c,n in zip(R,C,N)]
+        R, C, N = triangleCircumCircle(points.reshape(-1, 3, 3))
+        circles = [circle(r=r, c=c, n=n) for r, c, n in zip(R, C, N)]
         if len(circles) == 1:
             return circles[0]
         else:
@@ -121,7 +121,7 @@ def drawnObject(points,mode='point'):
         return None
 
 
-def highlightDrawing(points,mode):
+def highlightDrawing(points, mode):
     """Highlight a temporary drawing on the canvas.
 
     pts is an array of points.
@@ -132,16 +132,16 @@ def highlightDrawing(points,mode):
     PA = actors.GeomActor(Formex(points))
     PA.specular=0.0
     pf.canvas.addHighlight(PA)
-    obj = drawnObject(points,mode=mode)
+    obj = drawnObject(points, mode=mode)
     if obj is not None:
         if mode == 'nurbs':
             OA = obj.actor(color=pf.canvas.settings.slcolor)
         else:
-            if hasattr(obj,'toFormex'):
+            if hasattr(obj, 'toFormex'):
                 F = obj.toFormex()
             else:
                 F = Formex(obj)
-            OA = actors.GeomActor(F,color=pf.canvas.settings.slcolor)
+            OA = actors.GeomActor(F, color=pf.canvas.settings.slcolor)
         OA.specular=0.0
         pf.canvas.addHighlight(OA)
     pf.canvas.update()
@@ -151,14 +151,14 @@ def drawPoints2D(mode,npoints=-1,zvalue=0.,coords=None):
     """Draw a 2D opbject in the xy-plane with given z-value"""
     if mode not in draw_mode_2d:
         return
-    x,y,z = pf.canvas.project(0.,0.,zvalue)
-    return draw2D(mode,npoints=npoints,zplane=z,coords=coords)
+    x, y, z = pf.canvas.project(0., 0., zvalue)
+    return draw2D(mode, npoints=npoints, zplane=z, coords=coords)
 
 
 def drawObject2D(mode,npoints=-1,zvalue=0.,coords=None):
     """Draw a 2D opbject in the xy-plane with given z-value"""
-    points = drawPoints2D(mode,npoints=npoints,zvalue=zvalue,coords=coords)
-    return drawnObject(points,mode=mode)
+    points = drawPoints2D(mode, npoints=npoints, zvalue=zvalue, coords=coords)
+    return drawnObject(points, mode=mode)
 
 
 def selectObject(mode=None):
@@ -175,18 +175,18 @@ the_zvalue = 0.
 
 def draw_object(mode,npoints=-1):
     print("z value = %s" % the_zvalue)
-    points = drawPoints2D(mode,npoints=-1,zvalue=the_zvalue)
+    points = drawPoints2D(mode, npoints=-1, zvalue=the_zvalue)
     if points is None:
         return
     print("POINTS %s" % points)
-    obj = drawnObject(points,mode=mode)
+    obj = drawnObject(points, mode=mode)
     if obj is None:
         pf.canvas.removeHighlight()
         return
     print("OBJECT IS %s" % obj)
     res = askItems([
-        _I('name',autoname[mode].peek(),text='Name for storing the object'),
-        _I('color','blue','color',text='Color for the object'),
+        _I('name', autoname[mode].peek(), text='Name for storing the object'),
+        _I('color', 'blue', 'color', text='Color for the object'),
         ])
     if not res:
         return
@@ -197,29 +197,29 @@ def draw_object(mode,npoints=-1):
         autoname[mode].next()
     export({name:obj})
     pf.canvas.removeHighlight()
-    draw(points,color='black',nolight=True)
+    draw(points, color='black', nolight=True)
     if mode != 'point':
-        draw(obj,color=color,nolight=True)
+        draw(obj, color=color, nolight=True)
     if mode == 'nurbs':
         print("DRAWING KNOTS")
-        draw(obj.knotPoints(),color=color,marksize=5)
+        draw(obj.knotPoints(), color=color, marksize=5)
     return name
 
 
 def draw_points(npoints=-1):
-    return draw_object('point',npoints=npoints)
+    return draw_object('point', npoints=npoints)
 def draw_polyline():
-    res = askItems([('closed',False)])
+    res = askItems([('closed', False)])
     obj_params.update(res)
     return draw_object('polyline')
 def draw_curve():
     global obj_params
-    res = askItems([('curl',1./3.),('closed',False)])
+    res = askItems([('curl', 1./3.), ('closed', False)])
     obj_params.update(res)
     return draw_object('curve')
 def draw_nurbs():
     global obj_params
-    res = askItems([('degree',3),('closed',False)])
+    res = askItems([('degree', 3), ('closed', False)])
     obj_params.update(res)
     return draw_object('nurbs')
 def draw_circle():
@@ -228,9 +228,9 @@ def draw_circle():
 
 def objectName(actor):
     """Find the exported name corresponding to a canvas actor"""
-    if hasattr(actor,'object'):
+    if hasattr(actor, 'object'):
         obj = actor.object
-        print("OBJECT",obj)
+        print("OBJECT", obj)
         for name in pf.PF:
             print(name)
             print(named(name))
@@ -242,11 +242,11 @@ def objectName(actor):
 def splitPolyLine(c):
     """Interactively split the specified polyline"""
     pf.options.debug = 1
-    XA = draw(c.coords,clear=False,bbox='last',nolight=True)
+    XA = draw(c.coords, clear=False, bbox='last', nolight=True)
     pf.canvas.pickable = [XA]
     #print "ACTORS",pf.canvas.actors
     #print "PICKABLE",pf.canvas.pickable
-    k = pickPoints(filter='single',oneshot=True)
+    k = pickPoints(filter='single', oneshot=True)
     pf.canvas.pickable = None
     undraw(XA)
     if 0 in k:
@@ -257,7 +257,7 @@ def splitPolyLine(c):
 
 
 def split_curve():
-    k = pickActors(filter='single',oneshot=True)
+    k = pickActors(filter='single', oneshot=True)
     print(k)
     print(k[-1])
     if -1 not in k:
@@ -269,31 +269,31 @@ def split_curve():
     c = named(name)
     cs = splitPolyLine(c)
     if len(cs) == 2:
-        draw(cs[0],color='red')
-        draw(cs[1],color='green')
+        draw(cs[0], color='red')
+        draw(cs[1], color='green')
 
 
 _grid_data = [
-    _I('autosize',False),
-    _I('dx',1.,text='Horizontal distance between grid lines'),
-    _I('dy',1.,text='Vertical distance between grid lines'),
-    _I('width',100.,text='Horizontal grid size'),
-    _I('height',100.,text='Vertical grid size'),
-    _I('point',[0.,0.,0.],text='Point in grid plane'),
-    _I('normal',[0.,0.,1.],text='Normal on the plane'),
-    _I('lcolor','black','color',text='Line color'),
-    _I('lwidth',1.0,text='Line width'),
-    _I('showplane',False,text='Show backplane'),
-    _I('pcolor','white','color',text='Backplane color'),
-    _I('alpha','0.3',text='Alpha transparency'),
+    _I('autosize', False),
+    _I('dx', 1., text='Horizontal distance between grid lines'),
+    _I('dy', 1., text='Vertical distance between grid lines'),
+    _I('width', 100., text='Horizontal grid size'),
+    _I('height', 100., text='Vertical grid size'),
+    _I('point', [0., 0., 0.], text='Point in grid plane'),
+    _I('normal', [0., 0., 1.], text='Normal on the plane'),
+    _I('lcolor', 'black', 'color', text='Line color'),
+    _I('lwidth', 1.0, text='Line width'),
+    _I('showplane', False, text='Show backplane'),
+    _I('pcolor', 'white', 'color', text='Backplane color'),
+    _I('alpha', '0.3', text='Alpha transparency'),
     ]
 
 
 def create_grid():
-    global dx,dy
+    global dx, dy
     dia = dialog(_grid_data)
-    if hasattr(pf.canvas,'_grid'):
-        if hasattr(pf.canvas,'_grid_data'):
+    if hasattr(pf.canvas, '_grid'):
+        if hasattr(pf.canvas, '_grid_data'):
             dia.updateData(pf.canvas._grid_data)
     res = dia.getResults()
     if res:
@@ -310,19 +310,19 @@ def create_grid():
                 nx = ny = 20
                 dx = dy = bb.sizes().max() / nx * 2.
 
-        ox = (-nx*dx/2.,-ny*dy/2.,0.)
+        ox = (-nx*dx/2., -ny*dy/2., 0.)
         if obj:
             c = bbox(obj).center()
             ox = c + ox
 
-        grid = actors.CoordPlaneActor(nx=(nx,ny,0),ox=ox,dx=(dx,dy,0.),linewidth=lwidth,linecolor=lcolor,planes=showplane,planecolor=pcolor,alpha=0.3)
+        grid = actors.CoordPlaneActor(nx=(nx, ny, 0), ox=ox, dx=(dx, dy, 0.), linewidth=lwidth, linecolor=lcolor, planes=showplane, planecolor=pcolor, alpha=0.3)
         remove_grid()
         drawActor(grid)
         pf.canvas._grid = grid
 
 
 def remove_grid():
-    if hasattr(pf.canvas,'_grid'):
+    if hasattr(pf.canvas, '_grid'):
         undraw(pf.canvas._grid)
         pf.canvas._grid = None
 

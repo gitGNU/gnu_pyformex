@@ -36,8 +36,8 @@ The 'remove surface' option removes the surface, leaving only the curves.
 from __future__ import print_function
 _status = 'checked'
 _level = 'advanced'
-_topics = ['geometry','surface','mesh']
-_techniques = ['intersection','dialog']
+_topics = ['geometry', 'surface', 'mesh']
+_techniques = ['intersection', 'dialog']
 
 from gui.draw import *
 from plugins.trisurface import TriSurface
@@ -51,11 +51,11 @@ def run():
     SA = draw(S)
 
     res = askItems([
-        ('direction',[1.,0.,0.]),
-        ('number of sections',20),
-        ('color','red'),
-        ('ontop',False),
-        ('remove surface',False),
+        ('direction', [1., 0., 0.]),
+        ('number of sections', 20),
+        ('color', 'red'),
+        ('ontop', False),
+        ('remove surface', False),
         ]) 
     if not res:
         return
@@ -64,9 +64,9 @@ def run():
     n = res['number of sections']
     c = res['color']
 
-    slices = S.slice(dir=d,nplanes=n)
+    slices = S.slice(dir=d, nplanes=n)
     linewidth(2)
-    draw(slices,color=c,view=None,bbox='last',nolight=True,ontop=res['ontop'])
+    draw(slices, color=c, view=None, bbox='last', nolight=True, ontop=res['ontop'])
     export({'_HorseSlice_slices':slices})
     
     if res['remove surface']:

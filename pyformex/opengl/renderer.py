@@ -67,7 +67,7 @@ class Renderer(object):
         ambient = lightprof.ambient * np.ones(3) # global ambient
         for light in lights:
             ambient += light.ambient
-        ambient = np.clip(ambient,0.,1.) # clip, OpenGL does anyways
+        ambient = np.clip(ambient, 0., 1.) # clip, OpenGL does anyways
         diffuse = np.array([ light.diffuse for light in lights ]).ravel()
         specular = np.array([ light.specular for light in lights ]).ravel()
         position = np.array([ light.position[:3] for light in lights ]).ravel()
@@ -83,7 +83,7 @@ class Renderer(object):
             'diffuse': mat.diffuse,
             'specular': mat.specular,
             'shininess': mat.shininess,
-            'alpha':self.canvas.settings.transparency,
+            'alpha': self.canvas.settings.transparency,
             })
         #print("LIGHT PROFILE to shader: %s" % settings)
         self.shader.loadUniforms(settings)
@@ -104,15 +104,15 @@ class Renderer(object):
         #self.shader.uniformInt('builtin',1)
         # THIS IS SET IN SHADER
         #
-        self.shader.uniformInt('highlight',0)
-        self.shader.uniformFloat('lighting',self.canvas.settings.lighting)
-        self.shader.uniformInt('useObjectColor',1)
-        self.shader.uniformVec3('objectColor',self.canvas.settings.fgcolor)
-        self.shader.uniformFloat('pointsize',self.canvas.settings.pointsize)
+        self.shader.uniformInt('highlight', 0)
+        self.shader.uniformFloat('lighting', self.canvas.settings.lighting)
+        self.shader.uniformInt('useObjectColor', 1)
+        self.shader.uniformVec3('objectColor', self.canvas.settings.fgcolor)
+        self.shader.uniformFloat('pointsize', self.canvas.settings.pointsize)
         self.loadLightProfile()
 
 
-    def renderObjects(self,objects):
+    def renderObjects(self, objects):
         """Render a list of objects"""
         for obj in objects:
             GL.glDepthFunc(GL.GL_LESS)
@@ -120,9 +120,9 @@ class Renderer(object):
             obj.render(self)
 
 
-    def pickObjects(self,objects):
+    def pickObjects(self, objects):
         """Draw a list of objects in picking mode"""
-        for i,obj in enumerate(objects):
+        for i, obj in enumerate(objects):
             #print("PUSH %s" % i)
             GL.glPushName(i)
             obj.render(self)
@@ -142,12 +142,12 @@ class Renderer(object):
             #print("PROJECTION-R",projection)
 
             # Propagate the matrices to the uniforms of the shader
-            self.shader.uniformMat4('modelview',modelview.gl())
-            self.shader.uniformMat4('projection',projection.gl())
+            self.shader.uniformMat4('modelview', modelview.gl())
+            self.shader.uniformMat4('projection', projection.gl())
             if pick:
                 import camera
                 pickmat = camera.pick_matrix(*pick)
-                self.shader.uniformMat4('pickmat',pickmat.gl())
+                self.shader.uniformMat4('pickmat', pickmat.gl())
 
             # draw the scene actors (sorted)
             actors = scene.back_actors() + scene.front_actors()

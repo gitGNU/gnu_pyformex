@@ -62,7 +62,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'beginner'
 _topics = ['geometry', 'mesh']
-_techniques = ['extrude','border','pause']
+_techniques = ['extrude', 'border', 'pause']
 
 from gui.draw import *
 def atExit():
@@ -75,10 +75,10 @@ def run():
     smoothwire()
     transparent()
 
-    n = 3,2,5
+    n = 3, 2, 5
     a = Formex(origin())
 
-    res = ask("Choose the model:",["None","2D","3D","Help"])
+    res = ask("Choose the model:", ["None", "2D", "3D", "Help"])
     if res == "None":
         return
     if res == "Help":
@@ -95,7 +95,7 @@ def run():
         view('iso')
 
     for i in range(ndim):
-        a = a.extrude(n[i],i)
+        a = a.extrude(n[i], i)
 
     draw(a)
     drawNumbers(a)
@@ -109,32 +109,32 @@ def run():
 
 
     flat()
-    e = Mesh(m.coords,m.getLowerEntities(1)).setProp(2)
+    e = Mesh(m.coords, m.getLowerEntities(1)).setProp(2)
     clear()
     draw(e)
     drawNumbers(e)
     pause(msg="%s edges" % e.nelems())
 
-    e = Mesh(m.coords,m.getEdges()).setProp(2)
+    e = Mesh(m.coords, m.getEdges()).setProp(2)
     clear()
     draw(e)
     drawNumbers(e)
     pause(msg="%s unique edges" % e.nelems())
 
     smoothwire()
-    e = Mesh(m.coords,m.getLowerEntities(2)).setProp(3)
+    e = Mesh(m.coords, m.getLowerEntities(2)).setProp(3)
     clear()
     draw(e)
     drawNumbers(e)
     pause(msg="%s faces" % e.nelems())
 
-    e = Mesh(m.coords,m.getFaces()).setProp(3)
+    e = Mesh(m.coords, m.getFaces()).setProp(3)
     clear()
     draw(e)
     drawNumbers(e)
     pause(msg="%s unique faces" % e.nelems())
 
-    e = Mesh(m.coords,m.getBorder()).setProp(4)
+    e = Mesh(m.coords, m.getBorder()).setProp(4)
     export({'border':e})
     clear()
     draw(e)

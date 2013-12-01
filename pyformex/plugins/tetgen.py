@@ -47,10 +47,10 @@ def readNodeFile(fn):
 
     Returns a tuple as described in readNodesBlock.
     """
-    fil = open(fn,'r')
+    fil = open(fn, 'r')
     line = skipComments(fil)
-    npts,ndim,nattr,nbmark = getInts(line,4)
-    return readNodesBlock(fil,npts,ndim,nattr,nbmark)
+    npts, ndim, nattr, nbmark = getInts(line, 4)
+    return readNodesBlock(fil, npts, ndim, nattr, nbmark)
 
 
 def readEleFile(fn):
@@ -58,10 +58,10 @@ def readEleFile(fn):
 
     Returns a tuple as described in readElemsBlock.
     """
-    fil = open(fn,'r')
+    fil = open(fn, 'r')
     line = skipComments(fil)
-    nelems,nplex,nattr = getInts(line,3)
-    return readElemsBlock(fil,nelems,nplex,nattr)
+    nelems, nplex, nattr = getInts(line, 3)
+    return readElemsBlock(fil, nelems, nplex, nattr)
 
 
 def readFaceFile(fn):
@@ -69,10 +69,10 @@ def readFaceFile(fn):
 
     Returns a tuple as described in readFacesBlock.
     """
-    fil = open(fn,'r')
+    fil = open(fn, 'r')
     line = skipComments(fil)
-    nelems,nbmark = getInts(line,2)
-    return readFacesBlock(fil,nelems,nbmark)
+    nelems, nbmark = getInts(line, 2)
+    return readFacesBlock(fil, nelems, nbmark)
 
 
 def readSmeshFile(fn):
@@ -80,21 +80,21 @@ def readSmeshFile(fn):
 
     Returns an array of triangle elements.
     """
-    fil = open(fn,'r')
+    fil = open(fn, 'r')
 
     # node section.
     line = skipComments(fil)
-    npts,ndim,nattr,nbmark = getInts(line,4)
+    npts, ndim, nattr, nbmark = getInts(line, 4)
     if npts > 0:
-        nodeInfo = readNodesBlock(fil,npts,ndim,nattr,nbmark)
+        nodeInfo = readNodesBlock(fil, npts, ndim, nattr, nbmark)
     else:
         # corresponding .node file
-        nodeInfo = readNodeFile(utils.changeExt(fn,'.node'))
+        nodeInfo = readNodeFile(utils.changeExt(fn, '.node'))
 
     # facet section
     line = skipComments(fil)
-    nelems,nbmark = getInts(line,2)
-    facetInfo = readSmeshFacetsBlock(fil,nelems,nbmark)
+    nelems, nbmark = getInts(line, 2)
+    facetInfo = readSmeshFacetsBlock(fil, nelems, nbmark)
 
     nodenrs = nodeInfo[1]
     if nodenrs.min() == 1 and nodenrs.max()==nodenrs.size:
@@ -104,7 +104,7 @@ def readSmeshFile(fn):
 
     # We currently do not read the holes and attributes
 
-    return nodeInfo[0],facetInfo[0]
+    return nodeInfo[0], facetInfo[0]
 
 
 def readPolyFile(fn):
@@ -112,24 +112,24 @@ def readPolyFile(fn):
 
     Returns an array of triangle elements.
     """
-    fil = open(fn,'r')
+    fil = open(fn, 'r')
 
     # node section.
     line = skipComments(fil)
-    npts,ndim,nattr,nbmark = getInts(line,4)
+    npts, ndim, nattr, nbmark = getInts(line, 4)
     if npts > 0:
-        nodeInfo = readNodesBlock(fil,npts,ndim,nattr,nbmark)
+        nodeInfo = readNodesBlock(fil, npts, ndim, nattr, nbmark)
     else:
         # corresponding .node file
-        nodeInfo = readNodeFile(utils.changeExt(fn,'.node'))
+        nodeInfo = readNodeFile(utils.changeExt(fn, '.node'))
 
     # facet section
     line = skipComments(fil)
-    nelems,nbmark = getInts(line,2)
-    facetInfo = readFacetsBlock(fil,nelems,nbmark)
+    nelems, nbmark = getInts(line, 2)
+    facetInfo = readFacetsBlock(fil, nelems, nbmark)
     print("NEXT LINE:")
     print(line)
-    return nodeInfo[0],facetinfo[0]
+    return nodeInfo[0], facetinfo[0]
 
     ## s = line.strip('\n').split()
     ## nelems = int(s[0])
@@ -144,15 +144,15 @@ def readSurface(fn):
     The given filename is either the .node or .face file.
     Returns a tuple of (nodes,elems).
     """
-    nodeInfo = readNodeFile(utils.changeExt(fn,'.node'))
+    nodeInfo = readNodeFile(utils.changeExt(fn, '.node'))
     nodes = nodeInfo[0]
     print("Read %s nodes" % nodes.shape[0])
-    elemInfo = readFaceFile(utils.changeExt(fn,'.face'))
+    elemInfo = readFaceFile(utils.changeExt(fn, '.face'))
     elems = elemInfo[0]
     print("Read %s elems" % elems.shape[0])
     #if numbers[0] == 1:
     #    elems -= 1
-    return nodes,elems
+    return nodes, elems
 
 
 ######### Support functions ####################################
@@ -185,20 +185,20 @@ def stripLine(line):
     return line.strip()  # strips blanks and end of line
 
 
-def getInts(line,nint):
+def getInts(line, nint):
     """Read a number of ints from a line, adding zero for omitted values.
 
     line is a string with b;anks separated integer values.
     Returns a list of nint integers. The trailing ones are set to zero
     if the strings contains less values.
     """
-    s = map(int,line.split())
+    s = map(int, line.split())
     if len(s) < nint:
         s.extend([0]*(nint-len(s)))
     return s
 
 
-def addElem(elems,nrs,e,n,nplex):
+def addElem(elems, nrs, e, n, nplex):
     """Add an element to a collection."""
     if nplex not in elems:
         elems[nplex] = []
@@ -207,7 +207,7 @@ def addElem(elems,nrs,e,n,nplex):
     nrs[nplex].append(n)
 
 
-def readNodesBlock(fil,npts,ndim,nattr,nbmark):
+def readNodesBlock(fil, npts, ndim, nattr, nbmark):
     """Read a tetgen nodes block.
 
     Returns a tuple with:
@@ -220,21 +220,21 @@ def readNodesBlock(fil,npts,ndim,nattr,nbmark):
     The last two may be None.
     """
     ndata = 1 + ndim + nattr + nbmark
-    data = fromfile(fil,sep=' ',dtype=Float,count=npts*(ndata)).reshape(npts,ndata)
-    nrs = data[:,0].astype(int32)
-    coords = Coords(data[:,1:ndim+1])
+    data = fromfile(fil, sep=' ', dtype=Float, count=npts*(ndata)).reshape(npts, ndata)
+    nrs = data[:, 0].astype(int32)
+    coords = Coords(data[:, 1:ndim+1])
     if nattr > 0:
-        attr = data[:,1+ndim:1+ndim+nattr].astype(int32)
+        attr = data[:, 1+ndim:1+ndim+nattr].astype(int32)
     else:
         attr = None
     if nbmark == 1:
-        bmark = data[:,-1].astype(int32)
+        bmark = data[:, -1].astype(int32)
     else:
         bmark = None
-    return coords,nrs,attr,bmark
+    return coords, nrs, attr, bmark
 
 
-def readElemsBlock(fil,nelems,nplex,nattr):
+def readElemsBlock(fil, nelems, nplex, nattr):
     """Read a tetgen elems block.
 
     Returns a tuple with:
@@ -246,11 +246,11 @@ def readElemsBlock(fil,nelems,nplex,nattr):
     The last can be None.
     """
     ndata = 1 + nplex + nattr
-    data = fromfile(fil,sep=' ',dtype=int32,count=ndata*nelems).reshape(nelems,ndata)
-    nrs = data[:,0]
-    elems = data[:,1:1+nplex]
+    data = fromfile(fil, sep=' ', dtype=int32, count=ndata*nelems).reshape(nelems, ndata)
+    nrs = data[:, 0]
+    elems = data[:, 1:1+nplex]
     if nattr > 0:
-        attr = data[:,1+nplex:]
+        attr = data[:, 1+nplex:]
     else:
         attr = None
     if nplex == 4:
@@ -259,10 +259,10 @@ def readElemsBlock(fil,nelems,nplex,nattr):
         eltype= 'tet10'
     else:
         raise ValueError("Unknown tetgen .ele plexitude %s" % nplex)
-    return Connectivity(elems,eltype=eltype),nrs,attr
+    return Connectivity(elems, eltype=eltype), nrs, attr
 
 
-def readFacesBlock(fil,nelems,nbmark):
+def readFacesBlock(fil, nelems, nbmark):
     """Read a tetgen faces block.
 
     Returns a a tuple with:
@@ -274,17 +274,17 @@ def readFacesBlock(fil,nelems,nbmark):
     The last can be None.
     """
     ndata = 1 + 3 + nbmark
-    data = fromfile(fil,sep=' ',dtype=int32, count=ndata*nelems).reshape(nelems,ndata)
-    nrs = data[:,0]
-    elems = data[:,1:4]
+    data = fromfile(fil, sep=' ', dtype=int32, count=ndata*nelems).reshape(nelems, ndata)
+    nrs = data[:, 0]
+    elems = data[:, 1:4]
     if nbmark == 1:
-        bmark = data[:,-1]
+        bmark = data[:, -1]
     else:
         bmark = None
-    return Connectivity(elems,eltype='tri3'),nrs,bmark
+    return Connectivity(elems, eltype='tri3'), nrs, bmark
 
 
-def readSmeshFacetsBlock(fil,nfacets,nbmark):
+def readSmeshFacetsBlock(fil, nfacets, nbmark):
     """Read a tetgen .smesh facets bock.
 
     Returns a tuple of dictionaries with plexitudes as keys:
@@ -299,12 +299,12 @@ def readSmeshFacetsBlock(fil,nfacets,nbmark):
         line = fil.readline()
         line = line.strip()
         if len(line) > 0:
-            data = fromstring(line,sep=' ',dtype=int32)
+            data = fromstring(line, sep=' ', dtype=int32)
             nplex = data[0]
             if nplex > 0:
                 e = data[1:1+nplex]
                 # bmark currently not read
-                addElem(elems,nrs,e,i,nplex)
+                addElem(elems, nrs, e, i, nplex)
             else:
                 raise ValueError("Invalid data line:\n%s" % line)
 
@@ -315,9 +315,9 @@ def readSmeshFacetsBlock(fil,nfacets,nbmark):
             eltype = 'quad4'
         else:
             eltype = None
-        elems[np] = Connectivity(elems[np],eltype=eltype)
+        elems[np] = Connectivity(elems[np], eltype=eltype)
         nrs[np] = array(nrs[np])
-    return elems,nrs
+    return elems, nrs
 
 
 def readNeigh(fn):
@@ -325,20 +325,20 @@ def readNeigh(fn):
 
     Returns an arrays containing the tetrahedra neighbours:
     """
-    fil = open(fn,'r')
+    fil = open(fn, 'r')
     line = fil.readline()
     s = line.strip('\n').split()
-    nelems, nneigh = map(int,s)
-    elems = fromfile(fil,sep=' ',dtype=int32).reshape((nelems,nneigh+1))
-    return elems[:,1:]
+    nelems, nneigh = map(int, s)
+    elems = fromfile(fil, sep=' ', dtype=int32).reshape((nelems, nneigh+1))
+    return elems[:, 1:]
 
 
 def writeNodes(fn,coords,offset=0):
     """Write a tetgen .node file."""
-    coords = asarray(coords).reshape((-1,3))
-    fil = open(fn,'w')
+    coords = asarray(coords).reshape((-1, 3))
+    fil = open(fn, 'w')
     fil.write("%d %d 0 0\n" % coords.shape)
-    writeIData(coords,fil,"%f ",ind=offset)
+    writeIData(coords, fil, "%f ", ind=offset)
     fil.close()
 
 
@@ -348,16 +348,16 @@ def writeSmesh(fn,facets,coords=None,holes=None,regions=None):
     Currently it only writes the facets of a triangular surface mesh.
     Coords should be written independently to a .node file.
     """
-    fil = open(fn,'w')
+    fil = open(fn, 'w')
     fil.write("# part 1: node list.\n")
     if coords is None:
         fil.write("0  3  0  0  # coords are found in %s.node.\n")
     fil.write("# part 2: facet list.\n")
     fil.write("%s 0\n" % facets.shape[0])
-    for i,n in enumerate(facets):
+    for i, n in enumerate(facets):
         # adding comments breaks fast readback
         # fil.write("3 %s %s %s # %s\n" % (n[0],n[1],n[2],i))
-        fil.write("3 %s %s %s\n" % (n[0],n[1],n[2]))
+        fil.write("3 %s %s %s\n" % (n[0], n[1], n[2]))
     fil.write("# part 3: hole list.\n")
     if holes is None:
         fil.write("0\n")
@@ -372,42 +372,42 @@ def writeTmesh(fn,elems,offset=0):
 
     Writes elements of a tet4 mesh.
     """
-    elems = asarray(elems).reshape((-1,4))
-    fil = open(fn,'w')
+    elems = asarray(elems).reshape((-1, 4))
+    fil = open(fn, 'w')
     fil.write("%d %d 0\n" % elems.shape)
     for i, e in  enumerate(elems):
-        fil.write('%d %d %d %d %d\n'%(i,e[0],e[1],e[2],e[3]))
+        fil.write('%d %d %d %d %d\n'%(i, e[0], e[1], e[2], e[3]))
     fil.write("# Generated by pyFormex\n")
     fil.close()
 
 
-def writeSurface(fn,coords,elems):
+def writeSurface(fn, coords, elems):
     """Write a tetgen surface model to .node and .smesh files.
 
     The provided file name is either the .node or the .smesh filename,
     or else it is the basename where .node and .smesh extensions will
     be appended.
     """
-    writeNodes(utils.changeExt(fn,'.node',accept_ext=['.node','.smesh']),coords)
-    writeSmesh(utils.changeExt(fn,'.smesh',accept_ext=['.node','.smesh']),elems)
+    writeNodes(utils.changeExt(fn, '.node', accept_ext=['.node', '.smesh']), coords)
+    writeSmesh(utils.changeExt(fn, '.smesh', accept_ext=['.node', '.smesh']), elems)
 
 
-def writeTetMesh(fn,coords,elems):
+def writeTetMesh(fn, coords, elems):
     """Write a tetgen tetrahedral mesh model to .node and .ele files.
 
     The provided file name is either the .node or the .smesh filename,
     or else it is the basename where .node and .ele extensions will
     be appended.
     """
-    writeNodes(utils.changeExt(fn,'.node',accept_ext=['.node','.ele']),coords)
-    writeTmesh(utils.changeExt(fn,'.ele',accept_ext=['.node','.ele']),elems)
+    writeNodes(utils.changeExt(fn, '.node', accept_ext=['.node', '.ele']), coords)
+    writeTmesh(utils.changeExt(fn, '.ele', accept_ext=['.node', '.ele']), elems)
 
 
 def nextFilename(fn):
     """Returns the next file name in a family of tetgen file names."""
     m = re.compile("(?P<base>.*)\.(?P<id>\d*)\.(?P<ext>.*)").match(fn)
     if m:
-        return "%s.%s.%s" % (m.group('base'),int(m.group('id'))+1,m.group('ext'))
+        return "%s.%s.%s" % (m.group('base'), int(m.group('id'))+1, m.group('ext'))
     else:
         return '.1'.join(os.path.splitext(fn))
 
@@ -429,7 +429,7 @@ tetgen is a quality tetrahedral mesh generator and a 3D Delaunay triangulator. S
         return
 
     if os.path.exists(fn) and utils.hasExternal('tetgen'):
-        P = utils.command('tetgen -z%s %s' % (options,fn))
+        P = utils.command('tetgen -z%s %s' % (options, fn))
         return P.sta
 
 
@@ -439,30 +439,30 @@ def readTetgen(fn):
     This is an experimental function for the geometry import menu.
     """
     res = {}
-    base,ext = os.path.splitext(fn)
+    base, ext = os.path.splitext(fn)
     if ext == '.node':
         nodes = readNodeFile(fn)[0]
         res['tetgen'+ext] = nodes
     elif ext in [ '.ele', '.face' ]:
-        nodes,nodenrs = readNodeFile(utils.changeExt(fn,'.node'))[:2]
+        nodes, nodenrs = readNodeFile(utils.changeExt(fn, '.node'))[:2]
         if ext == '.ele':
             elems = readEleFile(fn)[0]
         elif ext == '.face':
             elems = readFaceFile(fn)[0]
         if nodenrs.min() == 1 and nodenrs.max()==nodenrs.size:
             elems = elems-1
-        M = Mesh(nodes,elems,eltype=elems.eltype)
+        M = Mesh(nodes, elems, eltype=elems.eltype)
         res['tetgen'+ext] = M
 
     elif ext == '.smesh':
-        nodes,elems = readSmeshFile(fn)
-        ML = [ Mesh(nodes,elems[e]) for e in elems ]
-        res = dict([('Mesh-%s'%M.nplex(),M) for M in ML])
+        nodes, elems = readSmeshFile(fn)
+        ML = [ Mesh(nodes, elems[e]) for e in elems ]
+        res = dict([('Mesh-%s'%M.nplex(), M) for M in ML])
 
     elif ext == '.poly':
-        nodes,elems = readPolyFile(fn)
-        ML = [ Mesh(nodes,elems[e]) for e in elems ]
-        res = dict([('Mesh-%s'%M.nplex(),M) for M in ML])
+        nodes, elems = readPolyFile(fn)
+        ML = [ Mesh(nodes, elems[e]) for e in elems ]
+        res = dict([('Mesh-%s'%M.nplex(), M) for M in ML])
 
     return res
 
@@ -489,7 +489,7 @@ def tetgenConvexHull(pts):
     draw(ch, color='red', marksize=10)
     """
     tmp = utils.tempfile.mktemp('')
-    writeNodes(fn=tmp+'.node',coords=pts,offset=0)
+    writeNodes(fn=tmp+'.node', coords=pts, offset=0)
     P = utils.command('tetgen %s'%(tmp+'.node'))
     if P.sta:
         pf.message(P.out)
@@ -515,7 +515,7 @@ def checkSelfIntersectionsWithTetgen(self,verbose=False):
     cmd = 'tetgen -d '
     tmp = utils.tempfile.mktemp('')
     pf.message("Writing temp file %s" % tmp)
-    writeSurface(tmp,self.coords, self.elems)
+    writeSurface(tmp, self.coords, self.elems)
     if verbose:
         cmd += '-V '
     cmd=cmd+ tmp
@@ -561,12 +561,12 @@ def tetMesh(surfacefile,quality=False,volume=None,outputdir=None):
         options += 'a%f' % volume
     if outputdir is None:
         d = os.path.dirname(surfacefile)
-    tgt = os.path.join(d,os.path.basename(surfacefile))
-    print(surfacefile,tgt)
+    tgt = os.path.join(d, os.path.basename(surfacefile))
+    print(surfacefile, tgt)
     if not os.path.exists(tgt):
-        os.symlink(surfacefile,tgt)
-    runTetgen(tgt,options)
-    fn = utils.changeExt(tgt,'1.ele')
+        os.symlink(surfacefile, tgt)
+    runTetgen(tgt, options)
+    fn = utils.changeExt(tgt, '1.ele')
     res = readTetgen(fn)
     return res
 

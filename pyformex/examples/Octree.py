@@ -36,8 +36,8 @@ shown.
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['Mesh','Geometry']
-_techniques = ['Octree','Vtk']
+_topics = ['Mesh', 'Geometry']
+_techniques = ['Octree', 'Vtk']
 
 from gui.draw import *
 from simple import sphere3
@@ -49,15 +49,15 @@ transparent()
 def run():
     clear()
 
-    sf = sphere3(50,50,bot=-90,top=90).scale(10).toMesh()
+    sf = sphere3(50, 50, bot=-90, top=90).scale(10).toMesh()
     print(sf)
 
     levels = octree(sf)
 
-    A = draw(sf,color='yellow',)
+    A = draw(sf, color='yellow',)
     zoomAll()
     for lev in levels:
-        B = draw(lev,alpha=0.5)
+        B = draw(lev, alpha=0.5)
         delay(1)
         wait()
         undraw(B)

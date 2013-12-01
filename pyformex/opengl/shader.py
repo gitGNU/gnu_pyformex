@@ -56,8 +56,8 @@ class Shader(object):
 
     # Default shaders
     _dirname = os.path.dirname(__file__)
-    _vertexshader_filename = os.path.join(_dirname,"vertex_shader.c")
-    _fragmentshader_filename = os.path.join(_dirname,"fragment_shader.c")
+    _vertexshader_filename = os.path.join(_dirname, "vertex_shader.c")
+    _fragmentshader_filename = os.path.join(_dirname, "fragment_shader.c")
 
     # Default attributes and uniforms
     attributes = [
@@ -119,31 +119,31 @@ class Shader(object):
         if uniforms is None:
             uniforms = Shader.uniforms
 
-        vertex_shader = GL.shaders.compileShader(VertexShader,GL.GL_VERTEX_SHADER)
-        fragment_shader = GL.shaders.compileShader(FragmentShader,GL.GL_FRAGMENT_SHADER)
-        self.shader = GL.shaders.compileProgram(vertex_shader,fragment_shader)
+        vertex_shader = GL.shaders.compileShader(VertexShader, GL.GL_VERTEX_SHADER)
+        fragment_shader = GL.shaders.compileShader(FragmentShader, GL.GL_FRAGMENT_SHADER)
+        self.shader = GL.shaders.compileProgram(vertex_shader, fragment_shader)
 
-        self.attribute = self.locations(GL.glGetAttribLocation,attributes)
-        self.uniform = self.locations(GL.glGetUniformLocation,uniforms)
+        self.attribute = self.locations(GL.glGetAttribLocation, attributes)
+        self.uniform = self.locations(GL.glGetUniformLocation, uniforms)
         self.builtin = 0  # Use builtin attributes?
         self.picking = 0  # Default render mode
 
 
-    def locations(self,func,keys):
+    def locations(self, func, keys):
         """Create a dict with the locations of the specified keys"""
-        return dict([(k,func(self.shader,k)) for k in keys ])
+        return dict([(k, func(self.shader, k)) for k in keys ])
 
 
-    def uniformInt(self,name,value):
+    def uniformInt(self, name, value):
         """Load a uniform integer or boolean into the shader"""
         loc = self.uniform[name]
-        GL.glUniform1i(loc,value)
+        GL.glUniform1i(loc, value)
 
 
-    def uniformFloat(self,name,value):
+    def uniformFloat(self, name, value):
         """Load a uniform float into the shader"""
         loc = self.uniform[name]
-        GL.glUniform1f(loc,value)
+        GL.glUniform1f(loc, value)
 
 
     ## def uniformVec3(self,name,value):
@@ -152,44 +152,44 @@ class Shader(object):
     ##     GL.glUniform3fv(loc,1,value)
 
 
-    def uniformVec3(self,name,value):
+    def uniformVec3(self, name, value):
         """Load a uniform vec3[n] into the shader
 
         The value should be a 1D array or list.
         """
         loc = self.uniform[name]
         n = len(value) // 3
-        GL.glUniform3fv(loc,n,value)
+        GL.glUniform3fv(loc, n, value)
 
 
-    def uniformMat4(self,name,value):
+    def uniformMat4(self, name, value):
         """Load a uniform mat4 into the shader"""
         loc = self.uniform[name]
-        GL.glUniformMatrix4fv(loc,1,False,value)
+        GL.glUniformMatrix4fv(loc, 1, False, value)
 
 
     def bind(self,picking=False):
         GL.shaders.glUseProgram(self.shader)
-        self.uniformInt('builtin',self.builtin)
-        self.uniformInt('picking',picking)
+        self.uniformInt('builtin', self.builtin)
+        self.uniformInt('picking', picking)
 
 
     def unbind(self):
         GL.shaders.glUseProgram(0)
 
 
-    def loadUniforms(self,D):
+    def loadUniforms(self, D):
         """Load the uniform attributes defined in D"""
-        for attribs,func in [
-            (self.uniforms_int,self.uniformInt),
-            (self.uniforms_float,self.uniformFloat),
-            (self.uniforms_vec3,self.uniformVec3),
+        for attribs, func in [
+            (self.uniforms_int, self.uniformInt),
+            (self.uniforms_float, self.uniformFloat),
+            (self.uniforms_vec3, self.uniformVec3),
             ]:
             for a in attribs:
                 v = D[a]
                 #print("LOAD %s = %s" % (a,v))
                 if v is not None:
-                    func(a,v)
+                    func(a, v)
 
 
     def __del__(self):

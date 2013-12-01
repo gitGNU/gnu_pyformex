@@ -50,7 +50,7 @@ What
 from __future__ import print_function
 
 import copy
-from mydict import Dict,formatDict
+from mydict import Dict, formatDict
 
 
 class Config(Dict):
@@ -127,8 +127,8 @@ class Config(Dict):
         The latter includes the name of a config file, or a multiline string
         holding the contents of a configuration file.
         """
-        Dict.__init__(self,default=default)
-        if isinstance(data,dict):
+        Dict.__init__(self, default=default)
+        if isinstance(data, dict):
             self.update(data)
         elif data:
             self.read(data)
@@ -157,19 +157,19 @@ class Config(Dict):
                 if k[0] == '_':
                     del data[k]
         if name:
-            if name not in self or not isinstance(self[name],dict):
+            if name not in self or not isinstance(self[name], dict):
                 self[name] = Dict()
             self[name].update(data)
         else:
-            Dict.update(self,data)
+            Dict.update(self, data)
 
 
-    def _read_error(self,filename,lineno,line):
+    def _read_error(self, filename, lineno, line):
         if filename:
             where = 'config file %s,' % filename
         else:
             where = ''
-        raise RuntimeError('Error in %s line %d:\n%s' % (where,lineno,line))
+        raise RuntimeError('Error in %s line %d:\n%s' % (where, lineno, line))
 
 
     def read(self,fil,debug=False):
@@ -195,7 +195,7 @@ class Config(Dict):
                 fil = fil.split('\n')
             else:
                 filename = fil
-                fil = open(fil,'r')
+                fil = open(fil, 'r')
         section = None
         contents = {}
         lineno = 0
@@ -227,11 +227,11 @@ class Config(Dict):
 
             if s[0] == '[':
                 if contents:
-                    self.update(name=section,data=contents,removeLocals=True)
+                    self.update(name=section, data=contents, removeLocals=True)
                     contents = {}
                 i = s.find(']')
                 if i<0:
-                    self.read_error(filename,lineno,line)
+                    self.read_error(filename, lineno, line)
                 section = s[1:i]
                 if debug:
                     print("Starting new section '%s'" % section)
@@ -243,13 +243,13 @@ class Config(Dict):
             if i >= 0:
                 key = s[:i].strip()
                 if len(key) == 0:
-                    self.read_error(filename,lineno,line)
+                    self.read_error(filename, lineno, line)
                 contents[key] = eval(s[i+1:].strip())
                 globals().update(contents)
             else:
                 exec(s)
         if contents:
-            self.update(name=section,data=contents,removeLocals=True)
+            self.update(name=section, data=contents, removeLocals=True)
         return self
 
 
@@ -261,7 +261,7 @@ class Config(Dict):
         if i == -1:
             self.update({key:val})
         else:
-            self.update({key[i+1:]:val},key[:i])
+            self.update({key[i+1:]:val}, key[:i])
 
 
     def __getitem__(self, key):
@@ -285,13 +285,13 @@ class Config(Dict):
                 return self._default_(key)
 
 
-    def __delitem__(self,key):
+    def __delitem__(self, key):
         """Allows items to be delete with del self[section/key].
 
         """
         i = key.rfind('/')
         if i == -1:
-            Dict.__delitem__(self,key)
+            Dict.__delitem__(self, key)
         else:
             del self[key[:i]][key[i+1:]]
 
@@ -307,11 +307,11 @@ class Config(Dict):
         this is done with the Config.read() method.
         """
         s = ''
-        for k,v in self.iteritems():
-            if not isinstance(v,Dict):
+        for k, v in self.iteritems():
+            if not isinstance(v, Dict):
                 s += formatDict({k:v})
-        for k,v in self.iteritems():
-            if isinstance(v,Dict):
+        for k, v in self.iteritems():
+            if isinstance(v, Dict):
                 s += "\n[%s]\n" % k
                 s += formatDict(v)
         return s
@@ -329,7 +329,7 @@ class Config(Dict):
         Python statements (or comments) and that they contain the needed
         line separators, if you want to be able to read it back.
         """
-        fil = open(filename,'w')
+        fil = open(filename, 'w')
         fil.write(header)
         fil.write("%s" % self)
         fil.write(trailer)
@@ -343,9 +343,9 @@ class Config(Dict):
         """
         keys = Dict.keys(self)
         if descend:
-            for k,v in self.iteritems():
-                if isinstance(v,Dict):
-                    keys += ['%s/%s' % (k,ki) for ki in v.keys()]
+            for k, v in self.iteritems():
+                if isinstance(v, Dict):
+                    keys += ['%s/%s' % (k, ki) for ki in v.keys()]
 
         return keys
 
@@ -356,7 +356,7 @@ if __name__ == '__main__':
     def show(s):
         try:
             v = eval(s)
-            print("%s = %s" % (s,v))
+            print("%s = %s" % (s, v))
         except:
             print("%s ! ERROR" % s)
 

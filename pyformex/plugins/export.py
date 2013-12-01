@@ -44,8 +44,8 @@ class ObjFile(object):
       fil.close()
     """
 
-    def __init__(self,filename):
-        self.file = open(filename,'w')
+    def __init__(self, filename):
+        self.file = open(filename, 'w')
         self.file.write("# .obj file written by %s\n" % pf.Version())
 
     def write(self,mesh,name=None):
@@ -62,7 +62,7 @@ class ObjFile(object):
 
         # element code: p(oint), l(ine) or f(ace)
         nplex = mesh.elems.shape[1]
-        code = { 1:'p', 2:'l' }.get(nplex,'f')
+        code = { 1:'p', 2:'l' }.get(nplex, 'f')
         s = code+(' %s'*nplex)+'\n'
         for e in mesh.elems+1:   # .obj format starts at 1
             self.file.write(s % tuple(e))

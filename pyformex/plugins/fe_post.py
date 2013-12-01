@@ -82,8 +82,8 @@ class FeResult(object):
     def __init__(self,name=_name_,datasize={'U':3,'S':6,'COORD':3}):
         self.name = name
         self.datasize = datasize.copy()
-        self.about = {'creator':pf.Version(),
-                      'created':pf.StartTime,
+        self.about = {'creator': pf.Version(),
+                      'created': pf.StartTime,
                       }
         self.modeldone = False
         self.labels = {}
@@ -102,35 +102,35 @@ class FeResult(object):
         self.nodnr = 0
         self.elnr = 0
 
-    def dataSize(self,key,data):
+    def dataSize(self, key, data):
         if key in self.datasize:
             return self.datasize[key]
         else:
             return len(data)
 
-    def Abqver(self,version):
+    def Abqver(self, version):
         self.about.update({'abqver':version})
 
-    def Date(self,date,time):
+    def Date(self, date, time):
         self.about.update({'abqdate':date,'abqtime':time})
 
-    def Size(self,nelems,nnodes,length):
+    def Size(self, nelems, nnodes, length):
         self.nelems = nelems
         self.nnodes = nnodes
         self.length = length
-        self.nodid = -ones((nnodes,),dtype=int32)
-        self.nodes = zeros((nnodes,3),dtype=float32)
+        self.nodid = -ones((nnodes,), dtype=int32)
+        self.nodes = zeros((nnodes, 3), dtype=float32)
         self.elems = {}
         self.nset = {}
         self.eset = {}
 
-    def Dofs(self,data):
+    def Dofs(self, data):
         self.dofs = array(data)
         self.displ = self.dofs[self.dofs[:6] > 0]
         if self.displ.max() > 3:
             self.datasize['U'] = 6
 
-    def Heading(self,head):
+    def Heading(self, head):
         self.about.update({'heading':head})
 
     def Node(self,nr,coords,normal=None):
@@ -139,24 +139,24 @@ class FeResult(object):
         self.nodes[self.nodnr][:nn] = coords
         self.nodnr += 1
 
-    def Element(self,nr,typ,conn):
+    def Element(self, nr, typ, conn):
         if typ not in self.elems:
             self.elems[typ] = []
         self.elems[typ].append(conn)
 
-    def Nodeset(self,key,data):
+    def Nodeset(self, key, data):
         self.nsetkey = key
         self.nset[key] = asarray(data)
 
-    def NodesetAdd(self,data):
-        self.nset[self.nsetkey] = union1d(self.nset[self.nsetkey],asarray(data))
+    def NodesetAdd(self, data):
+        self.nset[self.nsetkey] = union1d(self.nset[self.nsetkey], asarray(data))
 
-    def Elemset(self,key,data):
+    def Elemset(self, key, data):
         self.esetkey = key
         self.eset[key] = asarray(data)
 
-    def ElemsetAdd(self,data):
-        self.eset[self.esetkey] = union1d(self.eset[self.esetkey],asarray(data))
+    def ElemsetAdd(self, data):
+        self.eset[self.esetkey] = union1d(self.eset[self.esetkey], asarray(data))
 
     def Finalize(self):
         self.nid = inverseUniqueIndex(self.nodid)
@@ -197,12 +197,12 @@ class FeResult(object):
             self.Finalize()
         self.step = self.inc = -1
 
-    def Label(self,tag,value):
+    def Label(self, tag, value):
         self.labels[tag] = value
 
-    def NodeOutput(self,key,nodid,data):
+    def NodeOutput(self, key, nodid, data):
         if key not in self.R:
-            self.R[key] = zeros((self.nnodes,self.dataSize(key,data)),dtype=float32)
+            self.R[key] = zeros((self.nnodes, self.dataSize(key, data)), dtype=float32)
         if key == 'U':
             self.R[key][nodid-1][self.displ-1] = data
         elif key == 'S':
@@ -218,9 +218,9 @@ class FeResult(object):
     def ElemHeader(self,**kargs):
         self.hdr = dict(**kargs)
 
-    def ElemOutput(self,key,data):
+    def ElemOutput(self, key, data):
         if self.hdr['loc'] == 'na':
-            self.NodeOutput(key,self.hdr['i'],data)
+            self.NodeOutput(key, self.hdr['i'], data)
 
     def Export(self):
         """Align on the last increment and export results"""
@@ -233,7 +233,7 @@ class FeResult(object):
             self.inc = None
             self.R = None
         export({self.name:self, self._name_:self})
-        pf.message("Read %d nodes, %d elements" % (self.nnodes,self.nelems))
+        pf.message("Read %d nodes, %d elements" % (self.nnodes, self.nelems))
         if self.res is None:
             pf.message("No results")
         else:
@@ -268,7 +268,7 @@ class FeResult(object):
         """Return all the step keys."""
         return self.res.keys()
 
-    def getIncs(self,step):
+    def getIncs(self, step):
         """Return all the incs for given step."""
         if step in self.res:
             return self.res[step].keys()
@@ -285,7 +285,7 @@ class FeResult(object):
         or the first increment of the next step.
         """
         if self.inc < self.getIncs(self.step)[-1]:
-            self.setStepInc(self.step,self.inc+1)
+            self.setStepInc(self.step, self.inc+1)
         else:
             self.nextStep()
 
@@ -301,12 +301,12 @@ class FeResult(object):
         step, or the last increment of the previous step.
         """
         if self.inc > 1:
-            self.setStepInc(self.step,self.inc-1)
+            self.setStepInc(self.step, self.inc-1)
         else:
             if self.step > 1:
                 step = self.step-1
                 inc = self.getIncs(step)[-1]
-            self.setStepInc(step,inc)
+            self.setStepInc(step, inc)
 
 
     def getres(self,key,domain='nodes'):
@@ -332,7 +332,7 @@ class FeResult(object):
         if key in self.R:
             val = self.R[key]
             if comp in range(val.shape[1]):
-                return val[:,comp]
+                return val[:, comp]
             else:
                 return val
         else:
@@ -342,14 +342,14 @@ class FeResult(object):
     def printSteps(self):
         """Print the steps/increments/resultcodes for which we have results."""
         if self.res is not None:
-            for i,step in self.res.iteritems():
-                for j,inc in step.iteritems():
-                    for k,v in inc.iteritems():
-                        if isinstance(v,ndarray):
-                            data = "%s %s" % (v.dtype.kind,str(v.shape))
+            for i, step in self.res.iteritems():
+                for j, inc in step.iteritems():
+                    for k, v in inc.iteritems():
+                        if isinstance(v, ndarray):
+                            data = "%s %s" % (v.dtype.kind, str(v.shape))
                         else:
                             data = str(v)
-                        print("Step %s, Inc %s, Res %s (%s)" % (i,j,k,data))
+                        print("Step %s, Inc %s, Res %s (%s)" % (i, j, k, data))
 
 
 #End

@@ -74,7 +74,7 @@ class Collection(object):
         return len(self.d)
 
 
-    def setType(self,obj_type):
+    def setType(self, obj_type):
         self.obj_type = obj_type
 
 
@@ -98,10 +98,10 @@ class Collection(object):
         data can also be another Collection, if it has the same object
         typ.
         """
-        if isinstance(data,Collection):
+        if isinstance(data, Collection):
             if data.obj_type == self.obj_type:
                 for k in data.d:
-                    self.add(data.d[k],k)
+                    self.add(data.d[k], k)
                 return
                 return
             else:
@@ -111,14 +111,14 @@ class Collection(object):
             return
         data = asarray(data)
         if data.ndim == 2:
-            for key in unique(data[:,0]):
-                self.add(data[data[:,0]==key,1],key)
+            for key in unique(data[:, 0]):
+                self.add(data[data[:, 0]==key, 1], key)
 
         else:
             key = int(key)
             data = unique(data)
             if key in self.d:
-                self.d[key] = union1d(self.d[key],data)
+                self.d[key] = union1d(self.d[key], data)
             elif data.size > 0:
                 self.d[key] = data
 
@@ -130,41 +130,41 @@ class Collection(object):
         before adding.
         """
         self.clear()
-        self.add(data,key)
+        self.add(data, key)
 
 
     def remove(self,data,key=-1):
         """Remove data from the collection."""
-        if isinstance(data,Collection):
+        if isinstance(data, Collection):
             if data.obj_type == self.obj_type:
                 for k in data.d:
-                    self.remove(data.d[k],k)
+                    self.remove(data.d[k], k)
                 return
             else:
                 raise ValueError("Cannot remove Collections with different object type")
 
         data = asarray(data)
         if data.ndim == 2:
-            for key in unique(data[:,0]):
-                self.remove(data[data[:,0]==key,1],key)
+            for key in unique(data[:, 0]):
+                self.remove(data[data[:, 0]==key, 1], key)
 
         else:
             key = int(key)
             if key in self.d:
-                data = setdiff1d(self.d[key],unique(data))
+                data = setdiff1d(self.d[key], unique(data))
                 if data.size > 0:
                     self.d[key] = data
                 else:
                     del self.d[key]
             else:
-                pf.debug("Not removing from non-existing selection for actor %s" % key,pf.DEBUG.DRAW)
+                pf.debug("Not removing from non-existing selection for actor %s" % key, pf.DEBUG.DRAW)
 
-    def has_key(self,key):
+    def has_key(self, key):
         """Check whether the collection has an entry for the key."""
         return key in self.d
 
 
-    def __setitem__(self,key,data):
+    def __setitem__(self, key, data):
         """Set new values for the given key."""
         key = int(key)
         data = unique(data)
@@ -174,15 +174,15 @@ class Collection(object):
             del self.d[key]
 
 
-    def __getitem__(self,key):
+    def __getitem__(self, key):
         """Return item with given key."""
         return self.d[key]
 
 
-    def get(self,key,default=[]):
+    def get(self, key, default=[]):
         """Return item with given key or default."""
         key = int(key)
-        return self.d.get(key,default)
+        return self.d.get(key, default)
 
 
     def keys(self):
@@ -199,7 +199,7 @@ class Collection(object):
     def __str__(self):
         s = ''
         for k in self.keys():
-            s += "%s %s; " % (k,self.d[k])
+            s += "%s %s; " % (k, self.d[k])
         return s.rstrip()
 
 

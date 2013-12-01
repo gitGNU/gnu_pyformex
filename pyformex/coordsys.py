@@ -62,14 +62,14 @@ class CoordinateSystem(Coords):
     def __new__(clas,coords=None,origin=None,axes=None):
         """Initialize the CoordinateSystem"""
         if coords is None:
-            coords = np.eye(4,3)
+            coords = np.eye(4, 3)
             if axes is not None:
                 coords[:3] = axes
             if origin is not None:
                 coords += origin
         else:
-            coords = at.checkArray(coords,(4,3),'f','i')
-        coords = Coords.__new__(clas,coords)
+            coords = at.checkArray(coords, (4, 3), 'f', 'i')
+        coords = Coords.__new__(clas, coords)
         return coords
 
 

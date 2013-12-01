@@ -30,12 +30,12 @@ creation of colored value plots on surfaces.
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['mesh','illustration','surface']
-_techniques = ['color','random','image','movie','extrude']
+_topics = ['mesh', 'illustration', 'surface']
+_techniques = ['color', 'random', 'image', 'movie', 'extrude']
 _opengl2 = True
 
 from gui.draw import *
-from plugins import trisurface,surface_menu
+from plugins import trisurface, surface_menu
 from elements import *
 
 def atExit():
@@ -46,11 +46,11 @@ def atExit():
 def drawMesh(M):
     clear()
     draw(M)
-    drawText("%s %s elements" % (M.nelems(),M.elName()),20,20,size=20)
+    drawText("%s %s elements" % (M.nelems(), M.elName()), 20, 20, size=20)
 
 def run():
     # make sure this is a good aspect ratio if you want a movie
-    nx,ny = 4,3
+    nx, ny = 4, 3
     global saved_autozoomfactor
     saved_autozoomfactor = pf.cfg['gui/autozoomfactor']
 
@@ -63,7 +63,7 @@ def run():
     transparent()
     linewidth(1)
 
-    M = Formex(origin()).extrude(nx,0).extrude(ny,1).toMesh().setProp(1)
+    M = Formex(origin()).extrude(nx, 0).extrude(ny, 1).toMesh().setProp(1)
 
     V = surface_menu.SelectableStatsValues
     possible_keys = [ k for k in V.keys() if not V[k][1] ][:-1]
@@ -78,7 +78,7 @@ def run():
 
     def carpet(M):
         conversions = []
-        nconv = random.randint(minconv,maxconv)
+        nconv = random.randint(minconv, maxconv)
 
         while (len(conversions) < nconv and M.nelems() < maxelems) or M.nelems() < minelems:
             possible_conversions = M.elType().conversions.keys()
@@ -102,7 +102,7 @@ def run():
         val = func(S)
         export({'surface':S})
         surface_menu.selection.set(['surface'])
-        surface_menu.showSurfaceValue(S,str(conversions),val,False)
+        surface_menu.showSurfaceValue(S, str(conversions), val, False)
         pf.canvas.removeDecoration()
 
 
@@ -112,15 +112,15 @@ def run():
     transparent(False)
 
     if pf.interactive:
-        canvasSize(nx*200,ny*200)
+        canvasSize(nx*200, ny*200)
         #canvasSize(720,576)
         print("running interactively")
-        n = ask("How many?",['0','1000','100','10','1'])
+        n = ask("How many?", ['0', '1000', '100', '10', '1'])
         n = int(n)
         save = ack("Save images?")
         if save:
             from gui import image
-            image.save(filename='Carpetry-000.jpg',window=False,multi=True,hotkey=False,autosave=False,border=False,rootcrop=False,format=None,quality=95,verbose=False)
+            image.save(filename='Carpetry-000.jpg', window=False, multi=True, hotkey=False, autosave=False, border=False, rootcrop=False, format=None, quality=95, verbose=False)
 
         A = None
         for i in range(n):
@@ -134,16 +134,16 @@ def run():
 
         if save:
             files = image.multisave[0].files()
-            image.createMovie(files,encoder='convert',delay=1,colors=256)
+            image.createMovie(files, encoder='convert', delay=1, colors=256)
             image.save()   # reset the multisave mode, disabling further saves
 
     else:
         import sys
         print(sys.argv)
         print(argv)
-        canvasSize(nx*200,ny*200)
+        canvasSize(nx*200, ny*200)
         print("just saving image")
-        from gui import image,guimain
+        from gui import image, guimain
         carpet(M)
         image.save('testje2.png')
         #return(all=True)

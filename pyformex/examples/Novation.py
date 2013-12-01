@@ -27,7 +27,7 @@
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['geometry','surface']
+_topics = ['geometry', 'surface']
 _techniques = ['dialog', 'persistence', 'color']
 
 from gui.draw import *
@@ -35,16 +35,16 @@ from gui.draw import *
 def run():
     reset()
 
-    basechoices = ['Triangles','Quadrilaterals']
+    basechoices = ['Triangles', 'Quadrilaterals']
     renderchoices = renderModes()
     res = askItems([
-        _I('baseGeom',itemtype='radio',choices=basechoices,text='Type of surface element'),
-        _I('nbumps',3,text='Number of bumps'),
-        _I('rendermode',choices=renderchoices,text='Render mode'),
-        _I('transp',False,text='Transparent'),
-        _I('bottom',False,text='Add a bottom plate'),
-        _I('shrink',False,text='Shrink elements'),
-        _I('export',False,text='Export to .stl'),
+        _I('baseGeom', itemtype='radio', choices=basechoices, text='Type of surface element'),
+        _I('nbumps', 3, text='Number of bumps'),
+        _I('rendermode', choices=renderchoices, text='Render mode'),
+        _I('transp', False, text='Transparent'),
+        _I('bottom', False, text='Add a bottom plate'),
+        _I('shrink', False, text='Shrink elements'),
+        _I('export', False, text='Export to .stl'),
         ])
     if not res:
         return
@@ -55,16 +55,16 @@ def run():
 
     if baseGeom == 'Triangles':
         # The base consists of two triangles
-        e = Formex([[[0,0,0],[1,0,0],[0,1,0]],[[1,0,0],[1,1,0],[0,1,0]]],1).replic2(n,n,1,1)
+        e = Formex([[[0, 0, 0], [1, 0, 0], [0, 1, 0]], [[1, 0, 0], [1, 1, 0], [0, 1, 0]]], 1).replic2(n, n, 1, 1)
     else:
         # The base is one quadrilateral
-        e = Formex([[[0,0,0],[1,0,0],[1,1,0],[0,1,0]]],1).replic2(n,n,1,1)
+        e = Formex([[[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0]]], 1).replic2(n, n, 1, 1)
 
     # Novation (Spots)
     s = nbumps+1
     r = n/s
     h = 12
-    a = [ [r*i,r*j,h]  for j in range(1,s) for i in range(1,s) ]
+    a = [ [r*i, r*j, h]  for j in range(1, s) for i in range(1, s) ]
 
     if bottom:
         # create a bottom
@@ -73,28 +73,28 @@ def run():
 
     # create the bumps
     for p in a:
-        e = e.bump(2,p, lambda x:exp(-0.5*x),[0,1])
+        e = e.bump(2, p, lambda x:exp(-0.5*x), [0, 1])
 
     renderMode(rendermode)
     setDrawOptions({'shrink':shrink})
     if transp:
         transparent(True)
     if bottom:
-        draw(b,color=yellow,alpha=1.0)
+        draw(b, color=yellow, alpha=1.0)
 
-    draw(e,alpha=0.8)
+    draw(e, alpha=0.8)
 
     if export and checkWorkdir():
         F = e # + b
         # Create triangles
-        G = F.selectNodes([0,1,2])
+        G = F.selectNodes([0, 1, 2])
         # If polygones, add more triangles
-        for i in range(3,F.nplex()):
-            G += F.selectNodes([0,i-1,i])
+        for i in range(3, F.nplex()):
+            G += F.selectNodes([0, i-1, i])
         clear()
         draw(G)
         from filewrite import writeSTL
-        writeSTL('novation.stl',G.coords)
+        writeSTL('novation.stl', G.coords)
 
 if __name__ == 'draw':
     run()

@@ -37,7 +37,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
 _topics = ['image']
-_techniques = ['color','filename']
+_techniques = ['color', 'filename']
 
 from gui.draw import *
 from plugins.imagearray import *
@@ -49,14 +49,14 @@ def run():
     view('front')
 
     # default image
-    fn = os.path.join(getcfg('datadir'),'world.jpg')
+    fn = os.path.join(getcfg('datadir'), 'world.jpg')
 
     # pattern of files to select from
     pat = utils.fileDescription('img')
 
     res = askItems([
-        _I('fn',fn,itemtype='file',pattern=pat,exist=True,text=''),
-        _I('part',itemtype='radio',choices=["Plane","Half Sphere","Full Sphere"],text='Show image on'),
+        _I('fn', fn, itemtype='file', pattern=pat, exist=True, text=''),
+        _I('part', itemtype='radio', choices=["Plane", "Half Sphere", "Full Sphere"], text='Show image on'),
         ])
     if not res:
         return
@@ -69,18 +69,18 @@ def run():
         warning("Could not load image '%s'" % fn)
         return
 
-    nx,ny = im.width(),im.height()
+    nx, ny = im.width(), im.height()
     #nx,ny = 200,200
 
     # Create the colors
-    color,colormap = image2glcolor(im.scaled(nx,ny))
+    color, colormap = image2glcolor(im.scaled(nx, ny))
     print("Size of colors: %s" % str(color.shape))
     if colormap is not None:
         print("Size of colormap: %s" % str(colormap.shape))
 
 
     # Create a 2D grid of nx*ny elements
-    F = Formex('4:0123').replic2(nx,ny).centered().translate(2,1.)
+    F = Formex('4:0123').replic2(nx, ny).centered().translate(2, 1.)
 
     #color = [ 'yellow' ]*(nx-2) + ['orange','red','orange']
 
@@ -91,9 +91,9 @@ def run():
             sx = 180.
         else:
             sx = 360.
-        G = F.spherical(scale=[sx/nx,180./ny,2.*max(nx,ny)]).rollAxes(-1)
-    draw(G,color=color,colormap=colormap)
-    drawText('Created with pyFormex',10,10)
+        G = F.spherical(scale=[sx/nx, 180./ny, 2.*max(nx, ny)]).rollAxes(-1)
+    draw(G, color=color, colormap=colormap)
+    drawText('Created with pyFormex', 10, 10)
 
 if __name__ == 'draw':
     run()

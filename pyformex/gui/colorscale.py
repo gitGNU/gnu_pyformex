@@ -32,18 +32,18 @@ from utils import stuur
 
 # predefined color palettes
 Palette = {
-    'RAINBOW' : [[-2.,0.,2.],[0.,2.,0.],[2.,0.,-2.]],
-    'IRAINBOW' : [[2.,0.,-2.],[0.,2.,0.],[-2.,0.,2.]],
-    'RGB' : [ red,green,blue ],
-    'BGR' : [ blue,green,red ],
-    'RWB' : [ red,white,blue ],
-    'BWR' : [ blue,white,red ],
-    'RWG' : [ red,white,green ],
-    'GWR' : [ green,white,red ],
-    'GWB' : [ green,white,blue ],
-    'BWG' : [ blue,white,green ],
-    'BW'  : [ black,None,white ],
-    'WB'  : [ white,grey(0.5),black ],
+    'RAINBOW': [[-2., 0., 2.], [0., 2., 0.], [2., 0., -2.]],
+    'IRAINBOW': [[2., 0., -2.], [0., 2., 0.], [-2., 0., 2.]],
+    'RGB': [ red, green, blue ],
+    'BGR': [ blue, green, red ],
+    'RWB': [ red, white, blue ],
+    'BWR': [ blue, white, red ],
+    'RWG': [ red, white, green ],
+    'GWR': [ green, white, red ],
+    'GWB': [ green, white, blue ],
+    'BWG': [ blue, white, green ],
+    'BW': [ black, None, white ],
+    'WB': [ white, grey(0.5), black ],
 }
 
 class ColorScale(object):
@@ -85,11 +85,11 @@ class ColorScale(object):
         in the range minval..midval and with exp2 in the range midval..maxval.
         """
         if isinstance(palet, str):
-            self.palet = Palette.get(palet.upper(),Palette['RGB'])
+            self.palet = Palette.get(palet.upper(), Palette['RGB'])
         else:
             self.palet = palet
         if self.palet[1] == None:
-            self.palet[1] = [ 0.5*(p+q) for p,q in zip(self.palet[0],self.palet[2]) ]
+            self.palet[1] = [ 0.5*(p+q) for p, q in zip(self.palet[0], self.palet[2]) ]
         self.xmin = minval
         self.xmax = maxval
         if midval == None:
@@ -100,7 +100,7 @@ class ColorScale(object):
         self.exp2 = exp2
 
 
-    def scale(self,val):
+    def scale(self, val):
         """Scale a value to the range -1...1.
 
         If the ColorScale has only one exponent, values in the range
@@ -111,15 +111,15 @@ class ColorScale(object):
         exp2 and exp onto the intevals -1..0 and 0..1.
         """
         if self.exp2 == None:
-            return stuur(val,[self.xmin,self.x0,self.xmax],[-1.,0.,1.],self.exp)
+            return stuur(val, [self.xmin, self.x0, self.xmax], [-1., 0., 1.], self.exp)
 
         if val < self.x0:
-            return stuur(val,[self.xmin,(self.x0+self.xmin)/2,self.x0],[-1.,-0.5,0.],self.exp2)
+            return stuur(val, [self.xmin, (self.x0+self.xmin)/2, self.x0], [-1., -0.5, 0.], self.exp2)
         else:
-            return stuur(val,[self.x0,(self.x0+self.xmax)/2,self.xmax],[0.,0.5,1.0],1./self.exp)
+            return stuur(val, [self.x0, (self.x0+self.xmax)/2, self.xmax], [0., 0.5, 1.0], 1./self.exp)
 
 
-    def color(self,val):
+    def color(self, val):
         """Return the color representing a value val.
 
         The returned color is a tuple of three RGB values in the range 0-1.
@@ -137,7 +137,7 @@ class ColorScale(object):
             x = -x
         else:
             c1 = self.palet[2]
-        return tuple( [ (1.-x)*p + x*q for p,q in zip(c0,c1) ] )
+        return tuple( [ (1.-x)*p + x*q for p, q in zip(c0, c1) ] )
 
 
 class ColorLegend(object):
@@ -155,7 +155,7 @@ class ColorLegend(object):
     correspond to the middle value of each subrange.
     """
 
-    def __init__(self,colorscale,n):
+    def __init__(self, colorscale, n):
         """Initialize the color legend."""
         self.cs = colorscale
         n = int(n)
@@ -169,7 +169,7 @@ class ColorLegend(object):
         vals += val2
         midvals = [ (vals[i] + vals[i+1])/2 for i in range(n) ]
         self.limits = vals 
-        self.colors = map(self.cs.color,midvals)
+        self.colors = map(self.cs.color, midvals)
         self.underflowcolor = None
         self.overflowcolor = None
 
@@ -182,7 +182,7 @@ class ColorLegend(object):
             return oflow
 
 
-    def color(self,val):
+    def color(self, val):
         """Return the color representing a value val.
 
         The color is that of the subrange holding the value. If the value
@@ -208,15 +208,15 @@ class ColorLegend(object):
 if __name__ == "__main__":
 
     for palet in [ 'RGB', 'BW' ]:
-        CS = ColorScale(palet,-50.,250.)
+        CS = ColorScale(palet, -50., 250.)
         for x in [ -50+10.*i for i in range(31) ]:
-            print(x,": ",CS.color(x))
+            print(x, ": ", CS.color(x))
     
-    CS = ColorScale('RGB',-50.,250.,0.)
-    CL = ColorLegend(CS,5)
+    CS = ColorScale('RGB', -50., 250., 0.)
+    CL = ColorLegend(CS, 5)
     print(CL.limits)
     for x in [ -45+10.*i for i in range(30) ]:
-        print(x,": ",CL.color(x))
+        print(x, ": ", CL.color(x))
     CL.underflowcolor = black
     CL.overflowcolor = white
 

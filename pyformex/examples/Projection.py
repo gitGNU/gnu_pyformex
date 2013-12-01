@@ -34,7 +34,7 @@ The result shows:
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['geometry','surface']
+_topics = ['geometry', 'surface']
 _techniques = ['projection']
 
 from gui.draw import *
@@ -46,17 +46,17 @@ def run():
     transparent()
     lights(True)
 
-    nx,ny = 20,10
+    nx, ny = 20, 10
 
-    F = simple.rectangle(nx,ny)
-    F = F.trl(-F.center()+[0.,0.,nx/2])
+    F = simple.rectangle(nx, ny)
+    F = F.trl(-F.center()+[0., 0., nx/2])
     draw(F)
 
     G = F.projectOnSphere(ny)
-    draw(G,color=red)
+    draw(G, color=red)
 
     H = F.rotate(30).projectOnCylinder(ny)
-    draw(H,color=blue)
+    draw(H, color=blue)
 
 if __name__ == 'draw':
     run()

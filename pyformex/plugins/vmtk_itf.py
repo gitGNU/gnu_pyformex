@@ -35,7 +35,7 @@ from mesh import Mesh
 from plugins.trisurface import TriSurface
 import utils
 import os
-from multi import multitask,cpu_count,splitar
+from multi import multitask, cpu_count, splitar
 
 def readVmtkCenterlineDat(fn):
    """Read a .dat file containing the centerlines generated with vmtk.
@@ -49,11 +49,11 @@ def readVmtkCenterlineDat(fn):
    - a float array (nlines,nf) with the data
    - a list with the identifiers from the first line
    """
-   fil = file(fn,'r')
+   fil = file(fn, 'r')
    line = fil.readline()
    s = line.strip('\n').split()
-   data = fromfile(fil,sep=' ',dtype=float32)
-   data = data.reshape(-1,len(s))
+   data = fromfile(fil, sep=' ', dtype=float32)
+   data = data.reshape(-1, len(s))
    return data, s
 
 
@@ -96,11 +96,11 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
     tmp1 = utils.tempFile(suffix='.vtp').name
     tmp2 = utils.tempFile(suffix='.dat').name
     pf.message("Writing temp file %s" % tmp)
-    self.write(tmp,'stl')
+    self.write(tmp, 'stl')
     pf.message("Computing centerline using VMTK")
     cmds=[]
-    cmd = 'vmtk vmtkcenterlines -seedselector %s -ifile %s -ofile %s'%(seedselector,tmp,tmp1)
-    if seedselector in ['pointlist','idlist']:
+    cmd = 'vmtk vmtkcenterlines -seedselector %s -ifile %s -ofile %s'%(seedselector, tmp, tmp1)
+    if seedselector in ['pointlist', 'idlist']:
         if not(len(sourcepoints)) or not(len(targetpoints)):
             raise ValueError('sourcepoints and targetpoints cannot be an empty list when using seedselector= \'%s\''%seedselector)
         if seedselector=='pointlist':
@@ -118,9 +118,9 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
     cmds.append(cmd)
     if groupcl:
         cmds.append('vmtk vmtkcenterlineattributes -ifile %s --pipe vmtkbranchextractor -radiusarray@ MaximumInscribedSphereRadius \
-        --pipe vmtkbifurcationreferencesystems --pipe vmtkcenterlineoffsetattributes -referencegroupid 0 -ofile %s\n'%(tmp1,tmp1))
-        cmds.append('vmtk vmtkcenterlinemerge -ifile %s -ofile %s -radiusarray MaximumInscribedSphereRadius -groupidsarray GroupIds -centerlineidsarray CenterlineIds -tractidsarray TractIds -blankingarray Blanking -mergeblanked 1'%(tmp1,tmp1))
-    cmds.append('vmtk vmtksurfacecelldatatopointdata -ifile %s -ofile %s'%(tmp1,tmp2))
+        --pipe vmtkbifurcationreferencesystems --pipe vmtkcenterlineoffsetattributes -referencegroupid 0 -ofile %s\n'%(tmp1, tmp1))
+        cmds.append('vmtk vmtkcenterlinemerge -ifile %s -ofile %s -radiusarray MaximumInscribedSphereRadius -groupidsarray GroupIds -centerlineidsarray CenterlineIds -tractidsarray TractIds -blankingarray Blanking -mergeblanked 1'%(tmp1, tmp1))
+    cmds.append('vmtk vmtksurfacecelldatatopointdata -ifile %s -ofile %s'%(tmp1, tmp2))
 
     for c in cmds:
         P = utils.command(c)
@@ -132,11 +132,11 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
     os.remove(tmp)
     os.remove(tmp1)
     os.remove(tmp2)
-    cl = Coords(data[:,:3])
+    cl = Coords(data[:, :3])
     if return_data:
         print('Returning Array data with values:')
         print(' %s'*len(header[3:])%tuple(header[3:]))
-        return cl,(header[3:],data[:,3:])
+        return cl, (header[3:], data[:, 3:])
     else:
         return cl
 
@@ -176,7 +176,7 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
             ps = self.propSet()
             mask = in1d(ar1=ps, ar2=checkArray1D(includeprop))
             if sum(mask)==0:
-                utils.warn("warn_vmtk_includeprop",data=(includeprop, ps))
+                utils.warn("warn_vmtk_includeprop", data=(includeprop, ps))
                 return self
             excludeprop = ps[~mask]
     if conformal == 'border' or conformal == 'regionsborder':
@@ -186,7 +186,7 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
             if conformal == 'regionsborder':
                 if self.propSet() is not None:
                     if len(self.propSet())>1:
-                        return TriSurface.concatenate([remesh(s2,elementsizemode=elementsizemode,edgelength=edgelength,
+                        return TriSurface.concatenate([remesh(s2, elementsizemode=elementsizemode, edgelength=edgelength,
                         area=area, areaarray=None, aspectratio=aspectratio,
                         excludeprop=excludeprop, preserveboundary=preserveboundary, conformal='border') for s2 in self.splitProp()])
             added =TriSurface(self.getBorderMesh().convert('line3').setType('tri3'))
@@ -195,9 +195,9 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
             excludeprop1 = array([-1, -2])
             if excludeprop is not None:
                 excludeprop1 = append(excludeprop1, asarray(excludeprop).reshape(-1))
-            return remesh(s1,elementsizemode=elementsizemode,edgelength=edgelength,
+            return remesh(s1, elementsizemode=elementsizemode, edgelength=edgelength,
                area=area, areaarray=None, aspectratio=aspectratio, excludeprop=excludeprop1,
-               preserveboundary=preserveboundary, conformal=None).cselectProp([-1,-2]).compact()
+               preserveboundary=preserveboundary, conformal=None).cselectProp([-1, -2]).compact()
     else:
         if conformal is not None:
             raise ValueError('conformal should be either None, border or regionsborder')
@@ -205,12 +205,12 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
     from plugins.vtk_itf import writeVTP, checkClean, readVTKObject
     tmp = utils.tempFile(suffix='.vtp').name
     tmp1 = utils.tempFile(suffix='.vtp').name
-    fielddata, celldata, pointdata = {},{},{}
-    cmd = 'vmtk vmtksurfaceremeshing -ifile %s -ofile %s'  % (tmp,tmp1)
+    fielddata, celldata, pointdata = {}, {}, {}
+    cmd = 'vmtk vmtksurfaceremeshing -ifile %s -ofile %s'  % (tmp, tmp1)
     if elementsizemode == 'edgelength':
         if  edgelength is None:
            self.getElemEdges()
-           E = Mesh(self.coords,self.edges,eltype='line2')
+           E = Mesh(self.coords, self.edges, eltype='line2')
            edgelength =  E.lengths().mean()
         cmd += ' -elementsizemode edgelength -edgelength %f' % edgelength
     elif elementsizemode == 'area':
@@ -225,7 +225,7 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
     if aspectratio is not None:
         cmd += ' -aspectratio %f' % aspectratio
     if excludeprop is not None:
-        cmd += ' -exclude '+' '.join(['%d'%i for i in checkArray1D(excludeprop,kind='i',allow=None)])
+        cmd += ' -exclude '+' '.join(['%d'%i for i in checkArray1D(excludeprop, kind='i', allow=None)])
     if preserveboundary:
         cmd += ' -preserveboundary 1'
     if self.prop is not None:
@@ -239,7 +239,7 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
         pf.message("An error occurred during the remeshing.")
         pf.message(P.out)
         return None
-    [coords, cells, polys, lines, verts],fielddata,celldata,pointdata = readVTKObject(tmp1)
+    [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = readVTKObject(tmp1)
     S = TriSurface(coords, polys)
     if self.prop is not None:
         S=S.setProp(celldata['prop'])
@@ -247,7 +247,7 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
     return S
 
 
-def vmtkDistanceOfSurface(self,S):
+def vmtkDistanceOfSurface(self, S):
     """Find the distances of TriSurface S to the TriSurface self.
 
     Retuns a tuple of vector and signed scalar distances for all nodes of S.
@@ -259,9 +259,9 @@ def vmtkDistanceOfSurface(self,S):
     tmp = utils.tempFile(suffix='.vtp').name
     tmp1 = utils.tempFile(suffix='.vtp').name
     tmp2 = utils.tempFile(suffix='.vtp').name
-    S.write(tmp,'vtp')
-    self.write(tmp1,'vtp')
-    cmd = 'vmtk vmtksurfacedistance -ifile %s -rfile %s -distancevectorsarray vdist -signeddistancearray sdist -ofile %s' % (tmp,tmp1,tmp2)
+    S.write(tmp, 'vtp')
+    self.write(tmp1, 'vtp')
+    cmd = 'vmtk vmtksurfacedistance -ifile %s -rfile %s -distancevectorsarray vdist -signeddistancearray sdist -ofile %s' % (tmp, tmp1, tmp2)
     P = utils.command(cmd)
     os.remove(tmp)
     os.remove(tmp1)
@@ -270,7 +270,7 @@ def vmtkDistanceOfSurface(self,S):
         pf.message(P.out)
         return None
     from plugins.vtk_itf import readVTKObject
-    [coords, cells, polys, lines, verts],fielddata, celldata, pointdata = readVTKObject(tmp2)
+    [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = readVTKObject(tmp2)
     vdist, sdist = pointdata['vdist'], pointdata['sdist']
     os.remove(tmp2)
     from plugins.vtk_itf import checkClean
@@ -279,7 +279,7 @@ def vmtkDistanceOfSurface(self,S):
         reorderindex = Coords(coords).match(S.coords)
         vdist = vdist[reorderindex]
         sdist = sdist[reorderindex]
-    return vdist,sdist
+    return vdist, sdist
 
 
 def vmtkDistanceOfPoints(self,X,nproc=1):
@@ -298,17 +298,17 @@ def vmtkDistanceOfPoints(self,X,nproc=1):
     if nproc < 1:
         nproc = cpu_count()
     if nproc==1:
-        S = TriSurface(X,arange(X.shape[0]).reshape(-1,1)*ones(3,dtype=int).reshape(1,-1))
-        return vmtkDistanceOfSurface(self,S)
+        S = TriSurface(X, arange(X.shape[0]).reshape(-1, 1)*ones(3, dtype=int).reshape(1, -1))
+        return vmtkDistanceOfSurface(self, S)
     else:
-        datablocks = splitar(X,nproc,close=False)
+        datablocks = splitar(X, nproc, close=False)
         print ('-----distance of %d points from %d triangles with %d proc'%(len(X), self.nelems(), nproc))
-        tasks = [(vmtkDistanceOfPoints,(self,d,1)) for d in datablocks]
-        ind = multitask(tasks,nproc)
-        vdist,sdist=zip(*ind)
+        tasks = [(vmtkDistanceOfPoints, (self, d, 1)) for d in datablocks]
+        ind = multitask(tasks, nproc)
+        vdist, sdist=zip(*ind)
         return concatenate(vdist), concatenate(sdist)
 
-def vmtkDistancePointsToSegments(X,L):
+def vmtkDistancePointsToSegments(X, L):
     """Find the shortest distances from points X to segments L.
 
     X is a (nX,3) shaped array of points.
@@ -318,9 +318,9 @@ def vmtkDistancePointsToSegments(X,L):
     Points and lines are first converted into degenerate triangles
     which are then used by vmtkDistanceOfSurface.
     """
-    SX = TriSurface(X,arange(X.shape[0]).reshape(-1,1)*ones(3,dtype=int).reshape(1,-1))
+    SX = TriSurface(X, arange(X.shape[0]).reshape(-1, 1)*ones(3, dtype=int).reshape(1, -1))
     SL = TriSurface(L.convert('line3').setType('tri3'))#from line2 to degenerate tri3 by adding the centroids.
-    vdist, dist = vmtkDistanceOfSurface(SL ,SX)
+    vdist, dist = vmtkDistanceOfSurface(SL, SX)
     return vdist, abs(dist)
 
 

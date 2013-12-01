@@ -30,7 +30,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
 _topics = ['surface']
-_techniques = ['animation','colors']
+_techniques = ['animation', 'colors']
 
 from gui.draw import *
 from plugins.trisurface import TriSurface
@@ -46,7 +46,7 @@ def run():
 
     def say(text):
         global y
-        drawText(text,x,y)
+        drawText(text, x, y)
         y -=20
 
     pf.message('Click Step to continue')
@@ -63,7 +63,7 @@ def run():
 
 
     say('the horse was badly cut;')
-    T = F.cutWithPlane([0.,0.,0.],[-1.,0.,0.],'+')
+    T = F.cutWithPlane([0., 0., 0.], [-1., 0., 0.], '+')
     undraw(A)
     A = draw(T)
     pause()
@@ -88,9 +88,9 @@ def run():
     pause()
 
     say('A method as yet unknown!')
-    colors = 0.1 * random.random((10,3))
+    colors = 0.1 * random.random((10, 3))
     for color in colors:
-        B = draw(T,color=color)
+        B = draw(T, color=color)
         undraw(A)
         A = B
         sleep(0.5)

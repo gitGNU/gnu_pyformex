@@ -43,7 +43,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
 _topics = ['geometry']
-_techniques = ['dialog', 'color','isopar','undraw']
+_techniques = ['dialog', 'color', 'isopar', 'undraw']
 
 from gui.draw import *
 
@@ -58,9 +58,9 @@ elems2 = [ elements.Line3, elements.Quad9, elements.Hex27 ]
 def run():
     clear()
     res = askItems([
-        _I('geometry','3D',itemtype='radio',choices=['1D','2D','3D']),
-        _I('transformation','3D',itemtype='radio',choices=['1D','2D','3D']),
-        _I('Show trf points',False),
+        _I('geometry', '3D', itemtype='radio', choices=['1D', '2D', '3D']),
+        _I('transformation', '3D', itemtype='radio', choices=['1D', '2D', '3D']),
+        _I('Show trf points', False),
         ])
     if not res:
         return
@@ -103,10 +103,10 @@ def run():
     n = 8
     F = elems1[sdim-1].toFormex()
     for i in range(sdim):
-        F = F.replic(n,1.,dir=i)
+        F = F.replic(n, 1., dir=i)
 
-    for i in range(sdim,tdim):
-        F = F.trl(i,0.5)
+    for i in range(sdim, tdim):
+        F = F.trl(i, 0.5)
 
     transparent()
     message('This is the initial Formex')
@@ -119,14 +119,14 @@ def run():
 
     if res['Show trf points']:
         message('This is the set of nodes in natural coordinates')
-        draw(x0,color=blue,nolights=True)
+        draw(x0, color=blue, nolights=True)
         message('This is the set of nodes in cartesian coordinates')
-        draw(x1,color=red,nolights=True)
-        drawNumbers(x1,color=red)
+        draw(x1, color=red, nolights=True)
+        drawNumbers(x1, color=red)
         drawNumbers(x1)
         pause()
 
-    G=F.isopar(eltype.name(),x1.points(),x0.points())
+    G=F.isopar(eltype.name(), x1.points(), x0.points())
     G.setProp(1)
 
     message('This is the transformed Formex')

@@ -50,17 +50,17 @@ implemented another solution.
 - reduce
 - renames
 - repr
-? set_literal
-? standard_error
-? sys_exc
-? throw
+- set_literal
+- standard_error
+- sys_exc
+- throw
 ? tuple_params
-? types
+- types
 ? unicode
 ? urllib
 ? ws_comma
 ? xrange
-? xreadlines
+- xreadlines
 ? zip
 
 

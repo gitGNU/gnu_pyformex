@@ -26,26 +26,26 @@
 
 clear()
 
-A = Formex('3:012').replic2(2,1)#.toMesh()
+A = Formex('3:012').replic2(2, 1)#.toMesh()
 
 pf.canvas.renderer.shader.builtin = True  # Set to 0 to not use builtin attributes
 
 A.attrib(color=red)
 
 
-A.attrib(lighting=True,ambient=0.5,diffuse=0.5,specular=0.5,color=[[red,green,blue],[cyan,magenta,yellow]])
+A.attrib(lighting=True, ambient=0.5, diffuse=0.5, specular=0.5, color=[[red, green, blue], [cyan, magenta, yellow]])
 
-A.attrib(color=[[0,1,2],[3,4,5]])
-A.attrib(color=[1,2])
+A.attrib(color=[[0, 1, 2], [3, 4, 5]])
+A.attrib(color=[1, 2])
 
 B = Formex('l:127')
 B.attrib(color=blue)
 
 C = Formex('1:012')
-C.attrib(color=yellow,pointsize=10)
+C.attrib(color=yellow, pointsize=10)
 
-D = A.trl([1.,1.,0.]).toMesh()
-D.attrib(lighting=True,color=green,bkcolor=blue,ambient=0.5,diffuse=0.5,specular=0.0,alpha=1.0)
+D = A.trl([1., 1., 0.]).toMesh()
+D.attrib(lighting=True, color=green, bkcolor=blue, ambient=0.5, diffuse=0.5, specular=0.0, alpha=1.0)
 
 E = Formex(D.points())
 E.attrib(pointsize=20)

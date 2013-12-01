@@ -33,7 +33,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'beginner'
 _topics = ['geometry']
-_techniques = ['color','random']
+_techniques = ['color', 'random']
 
 from gui.draw import *
 
@@ -56,25 +56,25 @@ def star(n,noise=0.,prop=0):
         n = 3
     if n % 2 == 0:
         n += 1
-    f = Formex([[[0,1]]]).rosette(n,(n/2)*360./n).view()
+    f = Formex([[[0, 1]]]).rosette(n, (n/2)*360./n).view()
     if noise != 0.:
         f = f + noise * random.random(f.shape)
-    P = Formex(concatenate([f,f[:1]]))
-    return connect([P,P],bias=[0,1]).setProp(prop)
+    P = Formex(concatenate([f, f[:1]]))
+    return connect([P, P], bias=[0, 1]).setProp(prop)
 
 def run():
     # create random number of points, rotation and translation
-    npts = random.randint(minpoints-1,maxpoints,(nstars,))
-    rot = random.random((nstars,3))
+    npts = random.randint(minpoints-1, maxpoints, (nstars,))
+    rot = random.random((nstars, 3))
     ang = random.random((nstars,)) * maxrot
-    trl = random.random((nstars,3)) * displ
+    trl = random.random((nstars, 3)) * displ
     # create the stars
-    Stars = Formex.concatenate([ star(n,noise,i).rotate(a,r).translate(t) for i,n,a,r,t in zip(range(nstars),npts,ang,rot,trl) ])
+    Stars = Formex.concatenate([ star(n, noise, i).rotate(a, r).translate(t) for i, n, a, r, t in zip(range(nstars), npts, ang, rot, trl) ])
     # draw them with random colors
-    colors = random.random((nstars,3))
+    colors = random.random((nstars, 3))
     clear()
     flat()
-    draw(Stars,colormap=colors)
+    draw(Stars, colormap=colors)
 
 if __name__ == 'draw':
     run()

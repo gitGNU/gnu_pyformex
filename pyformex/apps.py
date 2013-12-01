@@ -30,7 +30,7 @@ from __future__ import print_function
 
 import pyformex as pf
 import utils
-import os,sys
+import os, sys
 
 # global variable used of tracing application load errors
 _traceback = ''
@@ -42,7 +42,7 @@ class AppDir(object):
     When creatig an AppDir, its path is added to sys.path
     """
     known_dirs = {
-        'examples': pf.cfg.get('examplesdir',{}),
+        'examples': pf.cfg.get('examplesdir', {}),
         }
 
     def __init__(self,path,name=None,create=True):
@@ -60,17 +60,17 @@ class AppDir(object):
         parent = os.path.dirname(self.path)
         self.added = parent not in sys.path
         if self.added:
-            sys.path.insert(1,parent)
+            sys.path.insert(1, parent)
 
         self.pkg = os.path.basename(self.path)
         if name is None:
             self.name = self.pkg.capitalize()
         else:
             self.name = name
-        pf.debug("Created %s" % self,pf.DEBUG.CONFIG)
+        pf.debug("Created %s" % self, pf.DEBUG.CONFIG)
 
     def __repr__(self):
-        return "AppDir %s at %s (%s)" % (self.name,self.path,self.pkg)
+        return "AppDir %s at %s (%s)" % (self.name, self.path, self.pkg)
 
 
 def setAppDirs():
@@ -81,13 +81,13 @@ def setAppDirs():
             if p.added:
                 parent = os.path.dirname(p.path)
                 sys.path.remove(parent)
-        print('SYSPATH IS NOW:',sys.path)
+        print('SYSPATH IS NOW:', sys.path)
     except:
         pass
 
-    pf.appdirs = [ AppDir(i[1],i[0]) for i in pf.cfg['appdirs'] ]
+    pf.appdirs = [ AppDir(i[1], i[0]) for i in pf.cfg['appdirs'] ]
     for p in pf.appdirs:
-        pf.debug(str(p),pf.DEBUG.CONFIG)
+        pf.debug(str(p), pf.DEBUG.CONFIG)
 
 
 def addAppDir(d):
@@ -120,12 +120,12 @@ def checkAppdir(d):
     if not os.path.isdir(d):
         return None
 
-    initfile = os.path.join(d,'__init__.py')
+    initfile = os.path.join(d, '__init__.py')
     if os.path.exists(initfile):
         return os.path.dirname(initfile)
 
     try:
-        f = open(initfile,'w')
+        f = open(initfile, 'w')
         f.write("""# $Id$
 \"\"\"pyFormex application directory.
 
@@ -157,7 +157,7 @@ def load(appname,refresh=False):
     traceback is store in a module variable _traceback.
     """
     global _traceback
-    pf.debug("Loading %s with refresh=%s" % (appname,refresh),pf.DEBUG.APPS)
+    pf.debug("Loading %s with refresh=%s" % (appname, refresh), pf.DEBUG.APPS)
     print("Loading application %s " % appname)
     try:
         _traceback = ''
@@ -177,7 +177,7 @@ def findmodule(mod):
     import sys, imp, os
     path = sys.path
     for i in mod.split('.'):
-        path = [imp.find_module(i,path)[1],]
+        path = [imp.find_module(i, path)[1],]
     path = path[0] if os.path.isdir(path[0]) else os.path.dirname(path[0])
     return path
 
@@ -198,7 +198,7 @@ def findAppSource(app):
             fn = fn[:-1]
     else:
         path = findmodule(app)
-        fn = os.path.join(path,app.split('.')[-1]+'.py')
+        fn = os.path.join(path, app.split('.')[-1]+'.py')
     return fn
 
 
@@ -209,7 +209,7 @@ def unload(appname):
         app = sys.modules[name]
         refcnt = sys.getrefcount(app)
         if refcnt == 4:
-            pf.debug("Unloading %s" % name,pf.DEBUG.APPS)
+            pf.debug("Unloading %s" % name, pf.DEBUG.APPS)
             ## k = globals().keys()
             ## k.sort()
             ## print k
@@ -231,7 +231,7 @@ def listLoaded():
 def detect(appdir):
     # Detect, but do not load!!!!
     # because we are using this on import (before some applications can load)
-    files = utils.listTree(appdir,listdirs=False,excludedirs=['.*'],includefiles=['.*\.py$'])
+    files = utils.listTree(appdir, listdirs=False, excludedirs=['.*'], includefiles=['.*\.py$'])
     apps = [ os.path.basename(f) for f in files ]
     apps = [ os.path.splitext(f)[0] for f in apps if f[0] not in '._' ]
     return sorted(apps)

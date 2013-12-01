@@ -29,7 +29,7 @@ Los Manantiales by Felix Candela.
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['geometry','surface','domes']
+_topics = ['geometry', 'surface', 'domes']
 _techniques = ['dialog', 'color', 'boolean']
 
 from gui.draw import *
@@ -40,7 +40,7 @@ import simple
 from plugins.trisurface import *
 
 
-def scallop(F,sx,sy,n,f,c,r):
+def scallop(F, sx, sy, n, f, c, r):
     """Create a scallop dome from a sectorial layout.
 
     - `F`: a Formex with the layout of a sector of the projection
@@ -56,12 +56,12 @@ def scallop(F,sx,sy,n,f,c,r):
     - `c`: elevation at the center of the dome.
     - `r`: maximum elevation at the circumference.
     """
-    message("Scallop Dome with n=%d, f=%d, c=%f, r=%f" % (n,f,c,r))
-    F = F.scale([1./sx,1./sy,1.])
-    F = F.map(lambda x,y,z: [x,y,c*(1.-x*x)+r*x*x*power(4*(1.-y)*y,f)])
+    message("Scallop Dome with n=%d, f=%d, c=%f, r=%f" % (n, f, c, r))
+    F = F.scale([1./sx, 1./sy, 1.])
+    F = F.map(lambda x, y, z: [x, y, c*(1.-x*x)+r*x*x*power(4*(1.-y)*y, f)])
     a = 360./n
-    F = F.scale([sx,a,1.])
-    F = F.cylindrical([0,1,2]).rosette(n,a)
+    F = F.scale([sx, a, 1.])
+    F = F.cylindrical([0, 1, 2]).rosette(n, a)
     return F
 
 	
@@ -71,52 +71,52 @@ def projectOnXY(F):
     Returns a copy of the structure with all z-coordinates set to zero.
     """
     G = F.copy()
-    G.coords[:,:,2] = 0.
+    G.coords[:,:, 2] = 0.
     return G
 
 
-def Draw(F,G):
+def Draw(F, G):
     clear()
-    draw(F,wait=False,bkcolor=black)
-    draw(G,marksize=10,nolight=True,bbox=None)
+    draw(F, wait=False, bkcolor=black)
+    draw(G, marksize=10, nolight=True, bbox=None)
     
 
 
-def do_manant(narcs,radius,ypowr,celev,relev,nmod,mmod):
+def do_manant(narcs, radius, ypowr, celev, relev, nmod, mmod):
     """Create the manantiales dome"""
     
     # Create a triangular pattern in the first quadrant, and circulize it
-    F = Formex('3:012',1).replic2(nmod,mmod,1,1,0,1,1,-1) + Formex('3:021',3).reverse().replic2(nmod-1,mmod-1,1,1,0,1,1,-1).translate(0,1)
+    F = Formex('3:012', 1).replic2(nmod, mmod, 1, 1, 0, 1, 1, -1) + Formex('3:021', 3).reverse().replic2(nmod-1, mmod-1, 1, 1, 0, 1, 1, -1).translate(0, 1)
     # We also create points on the border of the circle sector, and give them
     # the same transformations
-    G = Formex([nmod*1.,0.,0.]).replic(mmod+1,1.,dir=1)
-    Draw(F,G)
+    G = Formex([nmod*1., 0., 0.]).replic(mmod+1, 1., dir=1)
+    Draw(F, G)
     
     # Circulize it
     F = F.circulize1()
     G = G.circulize1()
-    Draw(F,G)
+    Draw(F, G)
 
     # Transform to cylindrical coordinates
-    F = F.toCylindrical([0,1,2])
-    G = G.toCylindrical([0,1,2])
-    Draw(F,G)
+    F = F.toCylindrical([0, 1, 2])
+    G = G.toCylindrical([0, 1, 2])
+    Draw(F, G)
 
     # Create the scallop dome
-    sx,sy,sz = F.sizes()
-    F = scallop(F,sx,sy,narcs,ypowr,celev,relev)
-    G = scallop(G,sx,sy,narcs,ypowr,celev,relev)
-    Draw(F,G)
+    sx, sy, sz = F.sizes()
+    F = scallop(F, sx, sy, narcs, ypowr, celev, relev)
+    G = scallop(G, sx, sy, narcs, ypowr, celev, relev)
+    Draw(F, G)
 
     # Project on the xy plane to form the base
     dome = F
     base = projectOnXY(dome).reverse().setProp(8-dome.prop)
-    draw(base,bkcolor=black)
+    draw(base, bkcolor=black)
 
     # Close dome and base
     F = projectOnXY(G)
-    wall = connect([F,F,G],bias=[0,1,1])+connect([F,G,G],bias=[0,1,0])
-    draw(wall,color=yellow,bkcolor=black)
+    wall = connect([F, F, G], bias=[0, 1, 1])+connect([F, G, G], bias=[0, 1, 0])
+    draw(wall, color=yellow, bkcolor=black)
 
     # Create a closed surface
     S = TriSurface(dome+base+wall)
@@ -163,13 +163,13 @@ def run():
     mmod = 8      # number of modules over 1 arcade in tangential direction 
 
     res = askItems([
-        _I('narcs',text='Number of arcades (>=6)'),
-        _I('radius',text='Maximal radius of the dome'),
-        _I('ypowr',text='Power of the elevation curves (1=sharp, 2=smooth)'),
-        _I('celev',text='Elevation at center of dome'),
-        _I('relev',text='Maximum elevation along circumference'),
-        _I('nmod',text='Number of modules in radial direction'),
-        _I('mmod',text='Number of modules over 1 arcade in tangential direction'),
+        _I('narcs', text='Number of arcades (>=6)'),
+        _I('radius', text='Maximal radius of the dome'),
+        _I('ypowr', text='Power of the elevation curves (1=sharp, 2=smooth)'),
+        _I('celev', text='Elevation at center of dome'),
+        _I('relev', text='Maximum elevation along circumference'),
+        _I('nmod', text='Number of modules in radial direction'),
+        _I('mmod', text='Number of modules over 1 arcade in tangential direction'),
         ], store=defaults)
     if not res:
         return

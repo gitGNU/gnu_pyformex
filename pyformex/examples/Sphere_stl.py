@@ -27,8 +27,8 @@
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['geometry','surface']
-_techniques = ['connect','spherical','dialog', 'persistence', 'color']
+_topics = ['geometry', 'surface']
+_techniques = ['connect', 'spherical', 'dialog', 'persistence', 'color']
 
 from gui.draw import *
 
@@ -42,42 +42,42 @@ def run():
 
     # Create points
     dy = float(top-bot) / n
-    F = [ Formex(zeros((m+1,1,3))) ]
+    F = [ Formex(zeros((m+1, 1, 3))) ]
     for i in range(n):
         dx = 360./(m+i)
-        f = Formex([[[j*dx,(i+1)*dy,0]] for j in range(m+i+1)])
+        f = Formex([[[j*dx, (i+1)*dy, 0]] for j in range(m+i+1)])
         F.append(f)
         draw(F)
 
     # Create Lines
     if ack("Create Line model?"):
-        G = [[],[],[]]
-        for i,f in enumerate(F[1:]):
-            G[0].append(connect([f,f],bias=[0,1]))
-            G[1].append(connect([F[i],f],bias=[0,0]))
+        G = [[], [], []]
+        for i, f in enumerate(F[1:]):
+            G[0].append(connect([f, f], bias=[0, 1]))
+            G[1].append(connect([F[i], f], bias=[0, 0]))
             if i > 0:
-                G[2].append(connect([F[i],f],bias=[0,1]))
-        G = map(Formex.concatenate,G)
-        for i,f in enumerate(G):
+                G[2].append(connect([F[i], f], bias=[0, 1]))
+        G = map(Formex.concatenate, G)
+        for i, f in enumerate(G):
             f.setProp(i)
         G = Formex.concatenate(G)
 
         clear()
         draw(G)
         print(G.bbox())
-        L = G.translate([0,bot,r]).spherical()
+        L = G.translate([0, bot, r]).spherical()
         clear()
         draw(L)
 
     # Create Triangles
     if ack("Create Surface model?"):
-        G = [[],[]]
-        for i,f in enumerate(F[1:]):
-           G[0].append(connect([F[i],f,f],bias=[0,1,0]))
+        G = [[], []]
+        for i, f in enumerate(F[1:]):
+           G[0].append(connect([F[i], f, f], bias=[0, 1, 0]))
            if i > 0:
-               G[1].append(connect([F[i],F[i],f],bias=[0,1,1]))
-        G = map(Formex.concatenate,G)
-        for i,f in enumerate(G):
+               G[1].append(connect([F[i], F[i], f], bias=[0, 1, 1]))
+        G = map(Formex.concatenate, G)
+        for i, f in enumerate(G):
            f.setProp(i+1)
         G = Formex.concatenate(G)
 
@@ -86,7 +86,7 @@ def run():
 
         smoothwire()
         #pf.canvas.update()
-        T = G.translate([0,bot,r]).spherical()
+        T = G.translate([0, bot, r]).spherical()
         clear()
         draw(T)
 
@@ -94,11 +94,11 @@ def run():
         clear()
         draw(T)
 
-        if ack('Export this model in STL format?',default='No'):
-            fn = askNewFilename(getcfg('workdir'),"Stl files (*.stl)")
+        if ack('Export this model in STL format?', default='No'):
+            fn = askNewFilename(getcfg('workdir'), "Stl files (*.stl)")
             if fn:
                 from filewrite import writeSTL
-                writeSTL(fn,T.coords)
+                writeSTL(fn, T.coords)
 
 
 if __name__ == 'draw':

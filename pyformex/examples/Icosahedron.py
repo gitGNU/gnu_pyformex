@@ -38,8 +38,8 @@ is shown.
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['Mesh','Geometry','Sphere']
-_techniques = ['subdivide','project','animation']
+_topics = ['Mesh', 'Geometry', 'Sphere']
+_techniques = ['subdivide', 'project', 'animation']
 
 from gui.draw import *
 smooth()
@@ -56,22 +56,22 @@ def run():
     S = M.projectOnSphere()
 
     delay(0)
-    draw(S,color='red')
+    draw(S, color='red')
 
     a0 = 1./a
     a1 = 1./s - a0
-    A = draw(I.scale(a0),color='yellow')
+    A = draw(I.scale(a0), color='yellow')
     zoomAll()
     n = 100
     delay(0.05)
     for i in arange(n+1)/float(n):
-        B = draw(I.scale(a0+i*a1),color='yellow',bbox='last')
+        B = draw(I.scale(a0+i*a1), color='yellow', bbox='last')
         undraw(A)
         A = B
 
     delay(2)
     wait()
-    draw(I.scale(1./phi),color='yellow')
+    draw(I.scale(1./phi), color='yellow')
     undraw(A)
     delay(0)
 

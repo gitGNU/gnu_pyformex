@@ -35,7 +35,7 @@ from shader import Shader
 from attributes import Attributes
 from formex import Formex
 from mesh import Mesh
-from elements import elementType,_default_eltype
+from elements import elementType, _default_eltype
 import geomtools as gt
 import arraytools as at
 import numpy as np
@@ -49,7 +49,7 @@ import utils
 
 def glObjType(nplex):
     if nplex <= 3:
-        return [GL.GL_POINTS,GL.GL_LINES,GL.GL_TRIANGLES][nplex-1]
+        return [GL.GL_POINTS, GL.GL_LINES, GL.GL_TRIANGLES][nplex-1]
     else:
         # everything higher is a polygon
         #
@@ -84,16 +84,16 @@ class Drawable(Attributes):
     # A list of acceptable attributes in the drawable
     # These are the parent attributes that can be overridden
     attributes = [
-        'cullface', 'subelems', 'color', 'name', 'highlight','opak',
-        'linewidth', 'pointsize', 'lighting', 'offset', 'vbo', 'nbo','alpha'
+        'cullface', 'subelems', 'color', 'name', 'highlight', 'opak',
+        'linewidth', 'pointsize', 'lighting', 'offset', 'vbo', 'nbo', 'alpha'
         ]
 
     def __init__(self,parent,**kargs):
         """Create a new drawable."""
 
         # Should we really restrict this????
-        kargs = utils.selectDict(kargs,Drawable.attributes)
-        Attributes.__init__(self,kargs,default=parent)
+        kargs = utils.selectDict(kargs, Drawable.attributes)
+        Attributes.__init__(self, kargs, default=parent)
         #print("ATTRIBUTES STORED IN DRAWABLE",self)
         #print("ATTRIBUTES STORED IN PARENT",parent)
 
@@ -141,8 +141,8 @@ class Drawable(Attributes):
                 self.objectColor = self.color
             elif self.color.ndim == 2:
                 self.useObjectColor = 0
-                self.vertexColor = at.multiplex(self.color,self.object.nplex())
-                print ("Multiplexing colors: %s -> %s " % (self.color.shape,self.vertexColor.shape))
+                self.vertexColor = at.multiplex(self.color, self.object.nplex())
+                print ("Multiplexing colors: %s -> %s " % (self.color.shape, self.vertexColor.shape))
             elif self.color.ndim == 3:
                 self.useObjectColor = 0
                 self.vertexColor = self.color
@@ -159,22 +159,22 @@ class Drawable(Attributes):
         for nplex=3.
         """
         if self.subelems is not None:
-            self.ibo = VBO(self.subelems.astype(int32),target=GL.GL_ELEMENT_ARRAY_BUFFER)
+            self.ibo = VBO(self.subelems.astype(int32), target=GL.GL_ELEMENT_ARRAY_BUFFER)
 
 
-    def render(self,renderer):
+    def render(self, renderer):
         """Render the geometry of this object"""
 
         def render_geom():
             if self.ibo:
-                GL.glDrawElementsui(self.glmode,self.ibo)
+                GL.glDrawElementsui(self.glmode, self.ibo)
             else:
-                GL.glDrawArrays(self.glmode,0,asarray(self.vbo.shape[:-1]).prod())
+                GL.glDrawArrays(self.glmode, 0, asarray(self.vbo.shape[:-1]).prod())
 
 
         if self.offset:
             print("POLYGON OFFSET")
-            GL.glPolygonOffset(1.0,1.0)
+            GL.glPolygonOffset(1.0, 1.0)
 
         #print("LOAD DRAWABLE uniforms (AGAIN)")
         #print(self.keys())
@@ -186,7 +186,7 @@ class Drawable(Attributes):
             GL.glVertexPointerf(self.vbo)
         else:
             GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
-            GL.glVertexAttribPointer(renderer.shader.attribute['vertexPosition'],3, GL.GL_FLOAT,False,0,self.vbo)
+            GL.glVertexAttribPointer(renderer.shader.attribute['vertexPosition'], 3, GL.GL_FLOAT, False, 0, self.vbo)
 
         if self.ibo:
             self.ibo.bind()
@@ -198,7 +198,7 @@ class Drawable(Attributes):
                 GL.glNormalPointerf(self.nbo)
             else:
                 GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
-                GL.glVertexAttribPointer(renderer.shader.attribute['vertexNormal'],3, GL.GL_FLOAT,False,0,self.nbo)
+                GL.glVertexAttribPointer(renderer.shader.attribute['vertexNormal'], 3, GL.GL_FLOAT, False, 0, self.nbo)
 
         if self.cbo:
             self.cbo.bind()
@@ -207,7 +207,7 @@ class Drawable(Attributes):
                 GL.glColorPointerf(self.cbo)
             else:
                 GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexColor'])
-                GL.glVertexAttribPointer(renderer.shader.attribute['vertexColor'],3, GL.GL_FLOAT,False,0,self.cbo)
+                GL.glVertexAttribPointer(renderer.shader.attribute['vertexColor'], 3, GL.GL_FLOAT, False, 0, self.cbo)
 
         if self.cullface == 'front':
             # Draw back faces
@@ -247,18 +247,18 @@ class Drawable(Attributes):
             GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
         if self.offset:
             print("POLYGON OFFSET RESET")
-            GL.glPolygonOffset(0.0,0.0)
+            GL.glPolygonOffset(0.0, 0.0)
 
 
 
-    def pick(self,renderer):
+    def pick(self, renderer):
         """Pick the geometry of this object"""
 
         def render_geom():
             if self.ibo:
-                GL.glDrawElementsui(self.glmode,self.ibo)
+                GL.glDrawElementsui(self.glmode, self.ibo)
             else:
-                GL.glDrawArrays(self.glmode,0,asarray(self.vbo.shape[:-1]).prod())
+                GL.glDrawArrays(self.glmode, 0, asarray(self.vbo.shape[:-1]).prod())
 
         renderer.shader.loadUniforms(self)
 
@@ -268,7 +268,7 @@ class Drawable(Attributes):
             GL.glVertexPointerf(self.vbo)
         else:
             GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
-            GL.glVertexAttribPointer(renderer.shader.attribute['vertexPosition'],3, GL.GL_FLOAT,False,0,self.vbo)
+            GL.glVertexAttribPointer(renderer.shader.attribute['vertexPosition'], 3, GL.GL_FLOAT, False, 0, self.vbo)
 
         if self.ibo:
             self.ibo.bind()
@@ -300,16 +300,16 @@ class Drawable(Attributes):
 
 
 def polygonFaceIndex(n):
-    i0 = (n-1) * ones(n-2,dtype=int)
+    i0 = (n-1) * ones(n-2, dtype=int)
     i1 = arange(n-2)
     i2 = i1+1
-    return column_stack([i0,i1,i2])
+    return column_stack([i0, i1, i2])
 
 
 def polygonEdgeIndex(n):
     i0 = arange(n)
-    i1 = roll(i0,-1)
-    return column_stack([i0,i1])
+    i1 = roll(i0, -1)
+    return column_stack([i0, i1])
 
 
 ########################################################################
@@ -341,19 +341,19 @@ class GeomActor(Attributes):
 
     def __init__(self,obj,**kargs):
 
-        Attributes.__init__(self,pf.canvas.drawoptions)
+        Attributes.__init__(self, pf.canvas.drawoptions)
 
         # Check it is something we can draw
-        if not isinstance(obj,Mesh) and not isinstance(obj,Formex):
+        if not isinstance(obj, Mesh) and not isinstance(obj, Formex):
             raise ValueError("Object is of type %s.\nCan only render Mesh, Formex and objects that can be converted to Formex" % type(obj))
         self.object = obj
 
-        if isinstance(obj,Mesh): # should we store coords, elems and eltype?
+        if isinstance(obj, Mesh): # should we store coords, elems and eltype?
             coords = obj.coords.astype(float32)
             elems = obj.elems.astype(int32)
             eltype = obj.elName()
 
-        elif isinstance(obj,Formex):
+        elif isinstance(obj, Formex):
             coords = obj.coords.astype(float32)
             elems = None
             eltype = obj.eltype
@@ -381,7 +381,7 @@ class GeomActor(Attributes):
         if elems is None:
             self._fcoords = coords
         else:
-            self._coords = coords.reshape(-1,3)
+            self._coords = coords.reshape(-1, 3)
             self._elems = elems.astype(int32)
 
         # Currently do everything in Formex model
@@ -394,9 +394,9 @@ class GeomActor(Attributes):
 
 
     def _fcoords_fuse(self):
-        self._coords,self._elems = self._fcoords.fuse()
+        self._coords, self._elems = self._fcoords.fuse()
         if self._elems.ndim != 2:
-            self._elems = self._elems[:,newaxis]
+            self._elems = self._elems[:, newaxis]
 
 
     @property
@@ -414,7 +414,7 @@ class GeomActor(Attributes):
             return self.object.bbox()
         except:
             print("No bbox because no _coords for object of type %s" % type(self.object))
-            return np.zeros(6).reshape(2,3)
+            return np.zeros(6).reshape(2, 3)
 
 
     @property
@@ -485,12 +485,12 @@ class GeomActor(Attributes):
         """Return averaged normals at the vertices"""
         if self._avgnormals is None:
             tol = pf.cfg['render/avgnormaltreshold']
-            self._avgnormals = gt.averageNormals(self.coords,self.elems,False,tol).astype(float32)
+            self._avgnormals = gt.averageNormals(self.coords, self.elems, False, tol).astype(float32)
             #print("COMPUTE AVGNORMALS: %s" % str(self._avgnormals.shape))
         return self._avgnormals
 
 
-    def prepare(self,canvas):
+    def prepare(self, canvas):
         """Prepare the attributes for the renderer.
 
         This sanitizes and completes the attributes for the renderer.
@@ -499,9 +499,9 @@ class GeomActor(Attributes):
         """
         #print("PREPARE ACTOR")
 
-        self.setColor(self.color,self.colormap)
-        self.setBkColor(self.bkcolor,self.bkcolormap)
-        self.setAlpha(self.alpha,self.bkalpha)
+        self.setColor(self.color, self.colormap)
+        self.setBkColor(self.bkcolor, self.bkcolormap)
+        self.setAlpha(self.alpha, self.bkalpha)
         self.setLineWidth(self.linewidth)
         self.setLineStipple(self.linestipple)
 
@@ -510,9 +510,9 @@ class GeomActor(Attributes):
             child.prepare(canvas)
 
 
-    def changeMode(self,canvas):
+    def changeMode(self, canvas):
         """Modify the actor according to the specified mode"""
-        pf.debug("GEOMACTOR.changeMode",pf.DEBUG.DRAW)
+        pf.debug("GEOMACTOR.changeMode", pf.DEBUG.DRAW)
         self.drawable = []
         self._prepareNormals(canvas)
         # ndim >= 2
@@ -534,10 +534,10 @@ class GeomActor(Attributes):
         for child in self.children:
             child.changeMode(canvas)
 
-        pf.debug("GEOMACTOR.changeMode create %s drawables" % len(self.drawable),pf.DEBUG.DRAW)
+        pf.debug("GEOMACTOR.changeMode create %s drawables" % len(self.drawable), pf.DEBUG.DRAW)
 
 
-    def _prepareNormals(self,canvas):
+    def _prepareNormals(self, canvas):
         """Prepare the normals buffer object for the actor.
 
         The normals buffer object depends on the renderer settings:
@@ -557,8 +557,8 @@ class GeomActor(Attributes):
 
     def fullElems(self):
         """Return an elems index for the full coords set"""
-        nelems,nplex = self.fcoords.shape[:2]
-        return arange(nelems*nplex).reshape(nelems,nplex)
+        nelems, nplex = self.fcoords.shape[:2]
+        return arange(nelems*nplex).reshape(nelems, nplex)
 
 
     def subElems(self,nsel=None,esel=None):
@@ -583,11 +583,11 @@ class GeomActor(Attributes):
             if esel is not None:
                 elems = elems[esel]
             if nsel is not None:
-                elems = elems[:,nsel].reshape(-1,nsel.shape[-1])
+                elems = elems[:, nsel].reshape(-1, nsel.shape[-1])
             return elems
 
 
-    def _addFaces(self,renderer):
+    def _addFaces(self, renderer):
         """Draw the elems"""
         #print("ADDFACES %s" % self.faces)
         elems = self.subElems(self.faces)
@@ -607,23 +607,23 @@ class GeomActor(Attributes):
                 extra.nbo = VBO(-array(self.nbo))
             self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_backfaces",cullface='front',**extra))
             # Then, front sides
-            self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_frontfaces",cullface='back'))
+            self.drawable.append(Drawable(self, subelems=elems, name=self.name+"_frontfaces", cullface='back'))
         # ndim < 2
         else:
-            self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_faces",lighting=False))
+            self.drawable.append(Drawable(self, subelems=elems, name=self.name+"_faces", lighting=False))
 
 
-    def _addEdges(self,renderer):
+    def _addEdges(self, renderer):
         """Draw the edges"""
         #print("ADDEDGES %s" % self.edges)
         if self.edges is not None:
             elems = self.subElems(self.edges)
             #if elems is not None:
                 #print("ADDEDGES SIZE %s" % (elems.shape,))
-            self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_edges",lighting=False))
+            self.drawable.append(Drawable(self, subelems=elems, name=self.name+"_edges", lighting=False))
 
 
-    def _addWires(self,renderer):
+    def _addWires(self, renderer):
         """Add or remove the edges depending on rendering mode"""
         wiremode = renderer.canvas.settings.wiremode
         elems = None
@@ -635,9 +635,9 @@ class GeomActor(Attributes):
             elif wiremode == 2:
                 # border edges
                 #print("SELF.ELEMS",self.elems)
-                inv = at.inverseIndex(self.elems.reshape(-1,1))[:,-1]
+                inv = at.inverseIndex(self.elems.reshape(-1, 1))[:, -1]
                 #print("INVERSE",inv)
-                M = Mesh(self.coords,self.elems)
+                M = Mesh(self.coords, self.elems)
                 elems = M.getFreeEntities(level=1)
                 elems = inv[elems]
                 #print("ELEMS",elems)
@@ -648,10 +648,10 @@ class GeomActor(Attributes):
 
         if elems is not None and elems.size > 0:
             #print("ADDWIRES SIZE %s" % (elems.shape,))
-            wires = Drawable(self,subelems=elems,lighting=False,color=array(black),opak=True,name=self.name+"_wires")
+            wires = Drawable(self, subelems=elems, lighting=False, color=array(black), opak=True, name=self.name+"_wires")
             # Put at the front to make visible
             # ontop will not help, because we only sort actors
-            self.drawable.insert(0,wires)
+            self.drawable.insert(0, wires)
 
 
     def addHighlightElements(self,sel=None):
@@ -661,9 +661,9 @@ class GeomActor(Attributes):
                 self.drawable.remove(self._highlight)
             self._highlight = None
         elems = self.subElems(esel=sel)
-        self._highlight = Drawable(self,subelems=elems,name=self.name+"_highlight",linewidth=10,lighting=False,color=array(yellow),opak=True)
+        self._highlight = Drawable(self, subelems=elems, name=self.name+"_highlight", linewidth=10, lighting=False, color=array(yellow), opak=True)
         # Put at the front to make visible
-        self.drawable.insert(0,self._highlight)
+        self.drawable.insert(0, self._highlight)
 
 
     def addHighlightPoints(self,sel=None):
@@ -673,21 +673,21 @@ class GeomActor(Attributes):
                 self.drawable.remove(self._highlight)
             self._highlight = None
         vbo = VBO(self.coords)
-        self._highlight = Drawable(self,vbo=vbo,subelems=sel.reshape(-1,1),name=self.name+"_highlight",linewidth=10,lighting=False,color=array(yellow),opak=True,pointsize=10,offset=1.0)
+        self._highlight = Drawable(self, vbo=vbo, subelems=sel.reshape(-1, 1), name=self.name+"_highlight", linewidth=10, lighting=False, color=array(yellow), opak=True, pointsize=10, offset=1.0)
         # Put at the front to make visible
-        self.drawable.insert(0,self._highlight)
+        self.drawable.insert(0, self._highlight)
 
 
     def setColor(self,color,colormap=None):
         """Set the color of the Actor."""
         if isinstance(color, str):
-            if color == 'prop' and hasattr(self.object,'prop'):
+            if color == 'prop' and hasattr(self.object, 'prop'):
                 color = self.object.prop
             elif color == 'random':
                 # create random colors
-                color = np.random.rand(F.nelems(),3)
+                color = np.random.rand(F.nelems(), 3)
 
-        color,colormap = saneColorSet(color,colormap,self.fcoords.shape)
+        color, colormap = saneColorSet(color, colormap, self.fcoords.shape)
 
         if color is not None:
             if color.dtype.kind == 'i':
@@ -705,7 +705,7 @@ class GeomActor(Attributes):
 
     def setBkColor(self,color,colormap=None):
         """Set the backside color of the Actor."""
-        self.bkcolor,self.bkcolormap = saneColorSet(color,colormap,self.fcoords.shape)
+        self.bkcolor, self.bkcolormap = saneColorSet(color, colormap, self.fcoords.shape)
 
 
     def setAlpha(self,alpha,bkalpha=None):
@@ -721,17 +721,17 @@ class GeomActor(Attributes):
         self.opak = (self.alpha == 1.0) or (self.bkalpha == 1.0 )
 
 
-    def setLineWidth(self,linewidth):
+    def setLineWidth(self, linewidth):
         """Set the linewidth of the Drawable."""
         self.linewidth = saneLineWidth(linewidth)
 
 
-    def setLineStipple(self,linestipple):
+    def setLineStipple(self, linestipple):
         """Set the linewidth of the Drawable."""
         self.linestipple = saneLineStipple(linestipple)
 
 
-    def render(self,renderer):
+    def render(self, renderer):
         """Render the geometry of this object"""
 
         ## if self.modified:
@@ -739,9 +739,9 @@ class GeomActor(Attributes):
         ##     renderer.shader.loadUniforms(self)
         ##     self.modified = False
 
-        pf.debug("Render %s drawables for %s" % (len(self.drawable),self.name),pf.DEBUG.DRAW)
+        pf.debug("Render %s drawables for %s" % (len(self.drawable), self.name), pf.DEBUG.DRAW)
         for obj in self.drawable:
-            pf.debug("Render %s" % obj.name,pf.DEBUG.DRAW)
+            pf.debug("Render %s" % obj.name, pf.DEBUG.DRAW)
             #print("LOAD DRAWABLE uniforms")
             #print(obj.keys())
             #renderer.shader.loadUniforms(obj)
@@ -758,7 +758,7 @@ class GeomActor(Attributes):
         """Find the elems whose coords fall inside rect of camera
 
         """
-        ins = camera.inside(self.coords,rect)
+        ins = camera.inside(self.coords, rect)
         if mode == 'point':
             return where(ins)[0]
 
@@ -774,7 +774,7 @@ class GeomActor(Attributes):
             ok = ins.any(axis=-1)
         else:
             # Useful?
-            ok = ins[:,sel].all(axis=-1)
+            ok = ins[:, sel].all(axis=-1)
             return where(ok)[0]
 
         if mode == 'actor':

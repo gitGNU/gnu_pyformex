@@ -29,8 +29,8 @@ Examples showing the use of the 'curve' plugin
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['geometry','curve']
-_techniques = ['widgets','persistence','import','spline','frenet']
+_topics = ['geometry', 'curve']
+_techniques = ['widgets', 'persistence', 'import', 'spline', 'frenet']
 
 from gui.draw import *
 
@@ -39,8 +39,8 @@ from plugins.nurbs import *
 from odict import ODict
 
 
-ctype_color = [ 'red','green','blue','cyan','magenta','yellow','white' ]
-point_color = [ 'black','white' ]
+ctype_color = [ 'red', 'green', 'blue', 'cyan', 'magenta', 'yellow', 'white' ]
+point_color = [ 'black', 'white' ]
 
 open_or_closed = { True:'A closed', False:'An open' }
 
@@ -57,25 +57,25 @@ curvetypes = [
 
 
 def drawCurve(ctype,dset,closed,degree,endcond,curl,ndiv,ntot,extend,spread,approx,cutWP=False,scale=None,frenet=False,avgdir=True,upvector=None):
-    global S,TA
+    global S, TA
     P = dataset[dset]
-    text = "%s %s with %s points" % (open_or_closed[closed],ctype.lower(),len(P))
+    text = "%s %s with %s points" % (open_or_closed[closed], ctype.lower(), len(P))
     if TA is not None:
         undecorate(TA)
-    TA = drawText(text,10,20,font='sans',size=20)
-    draw(P, color='black',nolight=True)
+    TA = drawText(text, 10, 20, font='sans', size=20)
+    draw(P, color='black', nolight=True)
     drawNumbers(Formex(P))
     if ctype == 'PolyLine':
-        S = PolyLine(P,closed=closed)
+        S = PolyLine(P, closed=closed)
     elif ctype == 'BezierSpline':
-        S = BezierSpline(P,degree=degree,curl=curl,closed=closed,endzerocurv=(endcond,endcond))
+        S = BezierSpline(P, degree=degree, curl=curl, closed=closed, endzerocurv=(endcond, endcond))
     elif ctype == 'BezierSpline2':
-        S = BezierSpline(P,degree=2,closed=closed)
+        S = BezierSpline(P, degree=2, closed=closed)
     elif ctype == 'NaturalSpline':
-        S = NaturalSpline(P,closed=closed,endzerocurv=(endcond,endcond))
+        S = NaturalSpline(P, closed=closed, endzerocurv=(endcond, endcond))
         directions = False
     elif ctype == 'NurbsCurve':
-        S = NurbsCurve(P,closed=closed)#,blended=closed)
+        S = NurbsCurve(P, closed=closed)#,blended=closed)
         scale = None
         directions = False
         drawtype = 'Curve'
@@ -89,20 +89,20 @@ def drawCurve(ctype,dset,closed,degree,endcond,curl,ndiv,ntot,extend,spread,appr
 
     if approx:
         if spread:
-            PL = S.approx(ndiv=ndiv,ntot=ntot)
+            PL = S.approx(ndiv=ndiv, ntot=ntot)
         else:
             PL = S.approx(ndiv=ndiv)
 
         if cutWP:
-            PC = PL.cutWithPlane([0.,0.42,0.],[0.,1.,0.])
-            draw(PC[0],color=red)
-            draw(PC[1],color=green)
+            PC = PL.cutWithPlane([0., 0.42, 0.], [0., 1., 0.])
+            draw(PC[0], color=red)
+            draw(PC[1], color=green)
         else:
             draw(PL, color=ctype_color[im])
-        draw(PL.pointsOn(),color=black)
+        draw(PL.pointsOn(), color=black)
 
     else:
-        draw(S,color=ctype_color[im],nolight=True)
+        draw(S, color=ctype_color[im], nolight=True)
 
 
     ## if directions:
@@ -117,63 +117,63 @@ def drawCurve(ctype,dset,closed,degree,endcond,curl,ndiv,ntot,extend,spread,appr
             C = PL
         else:
             C = S
-        X,T,N,B = C.frenet(upvector=upvector,avgdir=avgdir)[:4]
-        drawVectors(X,T,size=1.,nolight=True,color='red')
-        drawVectors(X,N,size=1.,nolight=True,color='green')
-        drawVectors(X,B,size=1.,nolight=True,color='blue')
+        X, T, N, B = C.frenet(upvector=upvector, avgdir=avgdir)[:4]
+        drawVectors(X, T, size=1., nolight=True, color='red')
+        drawVectors(X, N, size=1., nolight=True, color='green')
+        drawVectors(X, B, size=1., nolight=True, color='blue')
         if  C.closed:
-            X,T,N,B = C.frenet(upvector=upvector,avgdir=avgdir,compensate=True)[:4]
-            drawVectors(X,T,size=1.,nolight=True,color='magenta')
-            drawVectors(X,N,size=1.,nolight=True,color='yellow')
-            drawVectors(X,B,size=1.,nolight=True,color='cyan')
+            X, T, N, B = C.frenet(upvector=upvector, avgdir=avgdir, compensate=True)[:4]
+            drawVectors(X, T, size=1., nolight=True, color='magenta')
+            drawVectors(X, N, size=1., nolight=True, color='yellow')
+            drawVectors(X, B, size=1., nolight=True, color='cyan')
         #print(T,N,B)
 
 
 
 dataset = [
-    Coords([[1., 0., 0.],[0., 1., 0.],[-1., 0., 0.],  [0., -1., 0.]]),
-    Coords([[6., 7., 12.],[9., 5., 6.],[11., -2., 6.],  [9.,  -4., 14.]]),
-    Coords([[-5., -10., -4.], [-3., -5., 2.],[-4., 0., -4.], [-4.,  5, 4.],
+    Coords([[1., 0., 0.], [0., 1., 0.], [-1., 0., 0.],  [0., -1., 0.]]),
+    Coords([[6., 7., 12.], [9., 5., 6.], [11., -2., 6.],  [9.,  -4., 14.]]),
+    Coords([[-5., -10., -4.], [-3., -5., 2.], [-4., 0., -4.], [-4.,  5, 4.],
             [6., 3., -1.], [6., -9., -1.]]),
-    Coords([[-1., 7., -14.], [-4., 7., -8.],[-7., 5., -14.],[-8., 2., -14.],
+    Coords([[-1., 7., -14.], [-4., 7., -8.], [-7., 5., -14.], [-8., 2., -14.],
             [-7.,  0, -6.], [-5., -3., -11.], [-7., -4., -11.]]),
-    Coords([[-1., 1., -4.], [1., 1., 2.],[2.6, 2., -4.], [2.9,  3.5, 4.],
-            [2., 4., -1.],[1.,3., 1.], [0., 0., 0.], [0., -3., 0.],
+    Coords([[-1., 1., -4.], [1., 1., 2.], [2.6, 2., -4.], [2.9,  3.5, 4.],
+            [2., 4., -1.], [1., 3., 1.], [0., 0., 0.], [0., -3., 0.],
             [2., -1.5, -2.], [1.5, -1.5, 2.], [0., -8., 0.], [-1., -8., -1.],
             [3., -3., 1.]]),
-    Coords([[0., 1., 0.],[0., 0.1, 0.],[0.1, 0., 0.],  [1., 0., 0.]]),
-    Coords([[0., 1., 0.],[0.,0.,0.],[0.,0.,0.],[1., 0., 0.]]),
-    Coords([[0.,0.,0.],[1.,0.,0.],[1.,1.,1.],[0.,1.,0.]]).scale(3),
+    Coords([[0., 1., 0.], [0., 0.1, 0.], [0.1, 0., 0.],  [1., 0., 0.]]),
+    Coords([[0., 1., 0.], [0., 0., 0.], [0., 0., 0.], [1., 0., 0.]]),
+    Coords([[0., 0., 0.], [1., 0., 0.], [1., 1., 1.], [0., 1., 0.]]).scale(3),
     ]
 
 _items = [
-    _I('DataSet','0',choices=map(str,range(len(dataset)))),
-    _I('CurveType',choices=curvetypes),
-    _I('Closed',False),
-    _I('Degree',3,min=1,max=3),
-    _I('Curl',1./3.),
-    _I('EndCurvatureZero',False),
-    _G('Approximation',[
-        _I('Ndiv',4),
-        _I('SpreadEvenly',False),
-        _I('Ntot',40),
-        ],checked=False),
-    _I('ExtendAtStart',0.0),
-    _I('ExtendAtEnd',0.0),
-    _I('Scale',[1.0,1.0,1.0]),
-    _I('Clear',True),
-    _G('FrenetFrame',[
-        _I('AvgDirections',True),
-        _I('AutoUpVector',True),
-        _I('UpVector',[0.,0.,1.]),
-        ],checked=False),
-    _I('CutWithPlane',False),
+    _I('DataSet', '0', choices=map(str, range(len(dataset)))),
+    _I('CurveType', choices=curvetypes),
+    _I('Closed', False),
+    _I('Degree', 3, min=1, max=3),
+    _I('Curl', 1./3.),
+    _I('EndCurvatureZero', False),
+    _G('Approximation', [
+        _I('Ndiv', 4),
+        _I('SpreadEvenly', False),
+        _I('Ntot', 40),
+        ], checked=False),
+    _I('ExtendAtStart', 0.0),
+    _I('ExtendAtEnd', 0.0),
+    _I('Scale', [1.0, 1.0, 1.0]),
+    _I('Clear', True),
+    _G('FrenetFrame', [
+        _I('AvgDirections', True),
+        _I('AutoUpVector', True),
+        _I('UpVector', [0., 0., 1.]),
+        ], checked=False),
+    _I('CutWithPlane', False),
     ]
 
 _enablers = [
-    ('CurveType','BezierSpline','Degree','Curl','EndCurvatureZero'),
-    ('SpreadEvenly',True,'Ntot'),
-    ('AutoUpVector',False,'UpVector'),
+    ('CurveType', 'BezierSpline', 'Degree', 'Curl', 'EndCurvatureZero'),
+    ('SpreadEvenly', True, 'Ntot'),
+    ('AutoUpVector', False, 'UpVector'),
     ]
 
 
@@ -212,7 +212,7 @@ def show(all=False):
         Types = [CurveType]
     setDrawOptions({'bbox':'auto'})
     for Type in Types:
-        drawCurve(Type,int(DataSet),Closed,Degree,EndCurvatureZero,Curl,Ndiv,Ntot,[ExtendAtStart,ExtendAtEnd],SpreadEvenly,Approximation,CutWithPlane,Scale,FrenetFrame,AvgDirections,UpVector)
+        drawCurve(Type, int(DataSet), Closed, Degree, EndCurvatureZero, Curl, Ndiv, Ntot, [ExtendAtStart, ExtendAtEnd], SpreadEvenly, Approximation, CutWithPlane, Scale, FrenetFrame, AvgDirections, UpVector)
         setDrawOptions({'bbox':None})
 
 def showAll():
@@ -230,7 +230,7 @@ def run():
         items=_items,
         enablers=_enablers,
         caption='Curve parameters',
-        actions = [('Close',close),('Clear',clear),('Show All',showAll),('Show',show)],
+        actions = [('Close', close), ('Clear', clear), ('Show All', showAll), ('Show', show)],
         default='Show')
 
     if '_Curves_data_' in pf.PF:

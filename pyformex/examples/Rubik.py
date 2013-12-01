@@ -66,8 +66,8 @@ of how easily Python can handle huge numbers.
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['illustration','game']
-_techniques = ['color','dialog','draw','persistence','random']
+_topics = ['illustration', 'game']
+_techniques = ['color', 'dialog', 'draw', 'persistence', 'random']
 _createdby = ['tpraet']
 
 from gui.draw import *
@@ -78,13 +78,13 @@ from numpy.random import rand
 # General definitions
 def createCube(n=3):
     tol = 0.005
-    front = Formex('4:0123').replic2(n,n).translate([-n/2.,-n/2.,-n/2.])
-    sides = front+front.translate(2,n)
-    darkPosTol = Formex('4:0123').replic2(n,n).translate([-n/2.,-n/2.,0.]).scale(1.-5.*tol/n).translate(2, -n/2.+1+tol)
+    front = Formex('4:0123').replic2(n, n).translate([-n/2., -n/2., -n/2.])
+    sides = front+front.translate(2, n)
+    darkPosTol = Formex('4:0123').replic2(n, n).translate([-n/2., -n/2., 0.]).scale(1.-5.*tol/n).translate(2, -n/2.+1+tol)
     darkNegTol = darkPosTol.translate(2, -2*tol)
     dark = darkPosTol.replic(n-1, 1, dir=2) + darkNegTol.replic(n-1, 1, dir=2)
-    cube = sides + sides.rotate(90,1) + sides.rotate(90,0) + dark + dark.rotate(90, 0) + dark.rotate(90, 1)
-    cube.prop = append(repeat(array([5,1,3,2,6,7]),n**2), repeat(array([0]), 6*(n-1)*n**2))
+    cube = sides + sides.rotate(90, 1) + sides.rotate(90, 0) + dark + dark.rotate(90, 0) + dark.rotate(90, 1)
+    cube.prop = append(repeat(array([5, 1, 3, 2, 6, 7]), n**2), repeat(array([0]), 6*(n-1)*n**2))
     return cube
 
 def refresh():
@@ -122,7 +122,7 @@ def turn(x=0,y=0,action=0):
             v = [dx, dy, 0]
             rot = pf.canvas.camera.rot[:3, :3]
             v2 = dot(v, linalg.inv(rot))
-            V = v2/sqrt(dot(v2,v2.conj()))
+            V = v2/sqrt(dot(v2, v2.conj()))
             centers = cube.centroids()
             P1 = centers[element][0]
 #            draw(Formex([[P1, P1+V]]), color=red, bbox='last', linewidth=3.0)
@@ -136,7 +136,7 @@ def selectElement(self, x, y, w, h):
     self.selection.clear()
     self.selection.setType('element')
     self.selection_filter = None
-    self.pick_window = (x,y,w,h,GL.glGetIntegerv(GL.GL_VIEWPORT))
+    self.pick_window = (x, y, w, h, GL.glGetIntegerv(GL.GL_VIEWPORT))
     self.pick_parts('element', 54, store_closest=True)
     if len(self.picked) != 0:
         self.selection_front = self.closest_pick
@@ -197,7 +197,7 @@ def perm(n=2):
 def fac(x):
     """Return the factorial of x"""
     import functools
-    return functools.reduce(lambda y,z:y*z,range(1,x+1))
+    return functools.reduce(lambda y, z:y*z, range(1, x+1))
 
 # Dialog
 dia = None
@@ -220,20 +220,20 @@ def set():
 def shuffle():
     global cube
     N = int(10*n + 5*n*rand())
-    random = rand(N,6)
+    random = rand(N, 6)
     centers = cube.centroids()
     for i in random:
         rotateCube(cube, int(3*i[0]), i[1]<0.5, centers[int(i[2]*6*n**2)], i[3:6], view=False)
     refresh()
 
 def permutations():
-    message('The total number of permutations of a %sx%s cube is:' % (n,n))
+    message('The total number of permutations of a %sx%s cube is:' % (n, n))
     N = str(perm(n))
     message(N)
-    message('or roughly %s.%se%s' % (N[0],N[1:4],len(N)-1))
+    message('or roughly %s.%se%s' % (N[0], N[1:4], len(N)-1))
 
 def close():
-    pf.canvas.resetMouse(LEFT,SHIFT)
+    pf.canvas.resetMouse(LEFT, SHIFT)
     dia.close()
     # Release script lock 
     scriptRelease(__file__)
@@ -251,11 +251,11 @@ dia = widgets.InputDialog(
         _I('t', 0.05, text='Time between steps', min=0),  
    ],
     actions=[
-        ('New',new),
+        ('New', new),
         ('Set', set), 
-        ('Shuffle',shuffle),
-        ('Permutations',permutations),
-        ('Close',close),
+        ('Shuffle', shuffle),
+        ('Permutations', permutations),
+        ('Close', close),
     ])
 
 def run():
@@ -267,8 +267,8 @@ def run():
     cube = createCube()
     busy = False
     refresh()
-    drawText("Rotate a row by moving the mouse with left button pressed.\nUse ALT button to rotate the whole cube.",20,40,color=blue,font='f',size=20)
-    pf.canvas.setMouse(LEFT,turn)
+    drawText("Rotate a row by moving the mouse with left button pressed.\nUse ALT button to rotate the whole cube.", 20, 40, color=blue, font='f', size=20)
+    pf.canvas.setMouse(LEFT, turn)
     dia.timeout = timeOut
     dia.show()
     dia.acceptData()

@@ -27,7 +27,7 @@
 from __future__ import print_function
 _status = 'checked'
 _level = 'advanced'
-_topics = ['geometry','surface']
+_topics = ['geometry', 'surface']
 _techniques = ['dialog', 'animation', 'color']
 
 from gui.draw import *
@@ -37,9 +37,9 @@ def run():
     smoothwire()
 
     res = askItems([
-        _I('w',2,text='width',tooltip='Number of unit squares along the width'),
-        _I('l',30,text='length',tooltip='Number of unit squares along the length'),
-        _I('n',1,text='number of turns',tooltip='Number of 180 degree turns to apply'),
+        _I('w', 2, text='width', tooltip='Number of unit squares along the width'),
+        _I('l', 30, text='length', tooltip='Number of unit squares along the length'),
+        _I('n', 1, text='number of turns', tooltip='Number of 180 degree turns to apply'),
         ])
     if not res:
         return
@@ -47,8 +47,8 @@ def run():
     globals().update(res)
 
     cell = Formex('4:0123')
-    strip = cell.replic2(l,w,1.,1.).translate(1,-0.5*w)
-    TA = draw(strip,color='orange',bkcolor='red')
+    strip = cell.replic2(l, w, 1., 1.).translate(1, -0.5*w)
+    TA = draw(strip, color='orange', bkcolor='red')
 
     sleep(1)
 
@@ -56,8 +56,8 @@ def run():
     step = n*180./nsteps/l
     for i in arange(nsteps+1):
         a = i*step
-        torded = strip.map(lambda x,y,z: [x,y*cosd(x*a),y*sind(x*a)])
-        TB = draw(torded,color='orange',bkcolor='red')
+        torded = strip.map(lambda x, y, z: [x, y*cosd(x*a), y*sind(x*a)])
+        TB = draw(torded, color='orange', bkcolor='red')
         undraw(TA)
         TA = TB
 
@@ -65,18 +65,18 @@ def run():
     #TA = None
     nsteps = 60
     step = 360./nsteps
-    for i in arange(1,nsteps+1):
-        ring = torded.trl(2,l*nsteps/pi/i).scale([i*step/l,1.,1.]).trl(0,-90).cylindrical(dir=[2,0,1])
-        TB = draw(ring,color='orange',bkcolor='red')
+    for i in arange(1, nsteps+1):
+        ring = torded.trl(2, l*nsteps/pi/i).scale([i*step/l, 1., 1.]).trl(0, -90).cylindrical(dir=[2, 0, 1])
+        TB = draw(ring, color='orange', bkcolor='red')
         undraw(TA)
         TA = TB
 
     sleep(1)
     nsteps = 80
     step = 720./nsteps
-    for i in arange(1,nsteps+1):
-        mobius = ring.rotate(i*step,1)
-        TB = draw(mobius,color='orange',bkcolor='red',bbox='last')
+    for i in arange(1, nsteps+1):
+        mobius = ring.rotate(i*step, 1)
+        TB = draw(mobius, color='orange', bkcolor='red', bbox='last')
         undraw(TA)
         TA = TB
 

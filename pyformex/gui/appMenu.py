@@ -29,10 +29,10 @@ from __future__ import print_function
 import pyformex as pf
 import apps
 
-import utils,olist
-import script,draw
+import utils, olist
+import script, draw
 import menu
-import os,random
+import os, random
 from gettext import gettext as _
 
 catname = 'apps.cat'
@@ -60,8 +60,8 @@ def classify(appdir,pkg,nmax=0):
         _status = 'failed'
 
     all_apps = sorted(apps.detect(appdir))
-    kat = ['all','status','level','topics','techniques']
-    cat = dict([ (k,set()) for k in kat])
+    kat = ['all', 'status', 'level', 'topics', 'techniques']
+    cat = dict([ (k, set()) for k in kat])
     cat['status'] = [ 'failed', 'checked', 'unchecked' ]
     cat['level'] = [ 'beginner', 'normal', 'advanced' ]
     print(cat)
@@ -69,12 +69,12 @@ def classify(appdir,pkg,nmax=0):
 
     if nmax > 9: # Do not exagerate!
         # split the full collection in alphabetical groups of length nmax
-        lbl,grp = splitAlpha(all_apps,nmax)
+        lbl, grp = splitAlpha(all_apps, nmax)
         cat['all'] = lbl
-        for l,g in zip(lbl,grp):
+        for l, g in zip(lbl, grp):
             col['all/'+l] = g
 
-    for i,appname in enumerate(all_apps):
+    for i, appname in enumerate(all_apps):
 
         #col['all'].update([appname])
         try:
@@ -84,18 +84,18 @@ def classify(appdir,pkg,nmax=0):
             print("Failed to load app '%s'" % (str(pkg)+'.'+appname))
 
         for k in kat:
-            if hasattr(app,'_'+k):
-                v = getattr(app,'_'+k)
+            if hasattr(app, '_'+k):
+                v = getattr(app, '_'+k)
                 if isinstance(v, list):
                     v = [ vi.lower() for vi in v ]
                 else:
                     v = v.lower()
-                if k in ['status','level']:
+                if k in ['status', 'level']:
                     v = [v]
                 else:
                     cat[k].update(v)
                 for i in v:
-                    ki = '%s/%s' % (k,i)
+                    ki = '%s/%s' % (k, i)
                     if not ki in col.keys():
                         col[ki] = set()
                     col[ki].update([appname])
@@ -103,7 +103,7 @@ def classify(appdir,pkg,nmax=0):
     sortSets(cat)
     sortSets(col)
 
-    return all_apps,kat,cat,col
+    return all_apps, kat, cat, col
 
 
 def splitAlpha(strings,n,ignorecase=True):
@@ -131,18 +131,18 @@ def splitAlpha(strings,n,ignorecase=True):
         key = key=str.upper
     else:
         key = str
-    strings = sorted(strings,key=key)
-    mult,bins = multiplicity([ord(key(f[0])) for f in strings ])
-    count = dict(zip(bins,mult))
+    strings = sorted(strings, key=key)
+    mult, bins = multiplicity([ord(key(f[0])) for f in strings ])
+    count = dict(zip(bins, mult))
     cat = []
     grp = []
 
-    def accept(i,j,mtot,skip):
+    def accept(i, j, mtot, skip):
         if not skip:
             if i == j:
                 cat.append(chr(i))
             else:
-                cat.append('%c-%c' % (chr(i),chr(j)))
+                cat.append('%c-%c' % (chr(i), chr(j)))
             grp.append(strings[:mtot])
         del strings[:mtot]
 
@@ -152,33 +152,33 @@ def splitAlpha(strings,n,ignorecase=True):
         fromchar and tochar are characters
         """
         j = i = ord(fromchar)
-        mtot = count.get(i,0)
+        mtot = count.get(i, 0)
         while j < ord(tochar):
             if mtot > n:
-                accept(i,j,mtot,skip)
+                accept(i, j, mtot, skip)
                 j = i = i+1
-                mtot = count.get(i,0)
+                mtot = count.get(i, 0)
             else:
-                mj = count.get(j+1,0)
+                mj = count.get(j+1, 0)
                 if mtot+mj > n:
-                    accept(i,j,mtot,skip)
+                    accept(i, j, mtot, skip)
                     j = i = j+1
                     mtot = mj
                 else:
                     j += 1
                     mtot += mj
         if mtot > 0:
-            accept(i,j,mtot,skip)
+            accept(i, j, mtot, skip)
 
     # The grouping has to start from char(0) and loop over all values!
-    group(chr(0),chr(31),skip=True)
-    group(' ','@')
-    group('A','Z')
+    group(chr(0), chr(31), skip=True)
+    group(' ', '@')
+    group('A', 'Z')
     if not ignorecase:
         # we should skip the group between
-        group('a','z')
+        group('a', 'z')
 
-    return cat,grp
+    return cat, grp
 
 
 class AppMenu(menu.Menu):
@@ -268,7 +268,7 @@ class AppMenu(menu.Menu):
 
     def __init__(self,title,dir=None,files=None,mode='app',ext=None,recursive=None,max=0,autoplay=False,toplevel=True,parent=None,before=None,runall=True):
         """Create a menu with pyFormex apps/scripts to play."""
-        menu.Menu.__init__(self,title,parent=parent,before=before)
+        menu.Menu.__init__(self, title, parent=parent, before=before)
         self.dir = dir
         self.files = files
         if self.dir is None and self.files is None:
@@ -297,15 +297,15 @@ class AppMenu(menu.Menu):
 
 
     def loadCatalog(self):
-        catfile = os.path.join(self.dir,catname)
+        catfile = os.path.join(self.dir, catname)
         if os.path.exists(catfile):
-            pf.execFile(catfile,globals())
+            pf.execFile(catfile, globals())
             for k in kat:
                 if k == 'all_apps' and self.mode != 'app':
                     files = col[k]
                 else:
                     files = []
-                mk = AppMenu(k.capitalize(),dir=self.dir,files=files,mode=self.mode,recursive=False,toplevel=False,autoplay=self.autoplay,parent=self,runall=True)
+                mk = AppMenu(k.capitalize(), dir=self.dir, files=files, mode=self.mode, recursive=False, toplevel=False, autoplay=self.autoplay, parent=self, runall=True)
                 for i in cat[k]:
                     if '-' in i:
                         # alpha label like A-B
@@ -313,8 +313,8 @@ class AppMenu(menu.Menu):
                     else:
                         # string from catalog file
                         lbl = i.capitalize()
-                    ki = '%s/%s' % (k,i)
-                    mi = AppMenu(lbl,dir=self.dir,files=col.get(ki,[]),mode=self.mode,recursive=False,toplevel=False,autoplay=self.autoplay,parent=mk,runall=self.runall)
+                    ki = '%s/%s' % (k, i)
+                    mi = AppMenu(lbl, dir=self.dir, files=col.get(ki, []), mode=self.mode, recursive=False, toplevel=False, autoplay=self.autoplay, parent=mk, runall=self.runall)
                     ## mi.addRunAllMenu()
 
                 ## mk.addRunAllMenu()
@@ -328,12 +328,12 @@ class AppMenu(menu.Menu):
     def loadSubmenus(self,dirs=[]):
         if not dirs:
             dirs = os.listdir(self.dir)
-        filtr = lambda s:os.path.isdir(os.path.join(self.dir,s))
+        filtr = lambda s:os.path.isdir(os.path.join(self.dir, s))
         dirs = [ d for d in dirs if filtr(d) ]
         filtr = lambda s: s[0]!='.' and s[0]!='_'
         dirs = sorted([ d for d in dirs if filtr(d) ])
         for d in dirs:
-            m = AppMenu(d,os.path.join(self.dir,d),mode=self.mode,ext=self.ext,autoplay=self.autoplay,recursive=self.recursive,parent=self,runall=self.runall)
+            m = AppMenu(d, os.path.join(self.dir, d), mode=self.mode, ext=self.ext, autoplay=self.autoplay, recursive=self.recursive, parent=self, runall=self.runall)
 
 
     def getFiles(self):
@@ -350,7 +350,7 @@ class AppMenu(menu.Menu):
         return files
 
 
-    def filterFiles(self,files):
+    def filterFiles(self, files):
         """Filter a list of scripts"""
         filtr = lambda s:utils.is_pyFormex(self.fileName(s))
         files = [ f for f in files if filtr(f) ]
@@ -377,7 +377,7 @@ class AppMenu(menu.Menu):
 
         self.files = files
 
-        pf.debug("Found %ss in %s\n%s" % (self.mode.capitalize(),self.dir,self.files),pf.DEBUG.INFO)
+        pf.debug("Found %ss in %s\n%s" % (self.mode.capitalize(), self.dir, self.files), pf.DEBUG.INFO)
 
         self.my_actions = [ self.insert_action(f) for f in self.files ]
         self.triggered.connect(self.run)
@@ -409,39 +409,39 @@ class AppMenu(menu.Menu):
 
             if self.toplevel:
                 self.insert_sep()
-                self.create_insert_action('Classify apps',self._classify)
-                self.create_insert_action('Remove catalog',self._unclassify)
+                self.create_insert_action('Classify apps', self._classify)
+                self.create_insert_action('Remove catalog', self._unclassify)
 
                 # Confined to 'app', crashes when applied on script
                 if self.mode == 'app':
-                    self.create_insert_action('Reload apps',self.reload)
+                    self.create_insert_action('Reload apps', self.reload)
 
 
-    def fileName(self,script):
+    def fileName(self, script):
         """Return the full pathname for a script."""
         fn = script + self.ext
         if self.dir:
-            return os.path.join(self.dir,fn)
+            return os.path.join(self.dir, fn)
         else:
             return fn
 
 
-    def fullAppName(self,app):
+    def fullAppName(self, app):
         """Return the pkg.module name for an app."""
         if self.pkg:
-            return "%s.%s" % (self.pkg,app)
+            return "%s.%s" % (self.pkg, app)
         else:
             return app
 
 
-    def run(self,action):
+    def run(self, action):
         """Run the selected app.
 
         This function is executed when the menu item is selected.
         """
         app = str(action.text())
         if app in self.files:
-            self.runApp(app,play=self.autoplay)
+            self.runApp(app, play=self.autoplay)
 
 
     def runApp(self,app,play=True):
@@ -458,7 +458,7 @@ class AppMenu(menu.Menu):
                 appname = self.fullAppName(app)
             else:
                 appname = self.fileName(app)
-            pf.debug("Running application %s" % appname,pf.DEBUG.APPS|pf.DEBUG.MENU)
+            pf.debug("Running application %s" % appname, pf.DEBUG.APPS|pf.DEBUG.MENU)
             script.runAny(appname)
 
 
@@ -474,13 +474,13 @@ class AppMenu(menu.Menu):
         The first and last arguments do not apply to the submenus.
 
         """
-        from gui.draw import layout,reset,sleep
+        from gui.draw import layout, reset, sleep
         from gui import widgets
-        pf.GUI.enableButtons(pf.GUI.actions,['Stop'],True)
+        pf.GUI.enableButtons(pf.GUI.actions, ['Stop'], True)
         if last is None:
             last = len(self.files)
         if count > 0:
-            last = min(last,first+count)
+            last = min(last, first+count)
         files = self.files[first:last]
         if random:
             import random as r
@@ -511,14 +511,14 @@ class AppMenu(menu.Menu):
         pf.GUI.drawlock.allow()
         if recursive and (count < 0 or tcount < count):
             for m in self._submenus_:
-                n = m.runAll(recursive=recursive,random=random,count=count-tcount)
+                n = m.runAll(recursive=recursive, random=random, count=count-tcount)
                 tcount += n
                 if count > 0 and tcount >= count:
                     print("Ran %s examples; getting out" % tcount)
                     break
                 else:
                     print("Still want %s more examples" % (count-tcount))
-        pf.GUI.enableButtons(pf.GUI.actions,['Stop'],False)
+        pf.GUI.enableButtons(pf.GUI.actions, ['Stop'], False)
         return tcount
 
 
@@ -534,23 +534,23 @@ class AppMenu(menu.Menu):
             i = self.files.index(self.current) + offset
         except ValueError:
             i = 0
-        self.runAll(first=i,count=count)
+        self.runAll(first=i, count=count)
 
 
     def runCurrent(self):
         """Run the current app, or the first if none was played yet."""
-        self.runAllNext(offset=0,count=1)
+        self.runAllNext(offset=0, count=1)
 
 
     def runNextApp(self):
         """Run the next app, or the first if none was played yet."""
-        self.runAllNext(offset=1,count=1)
+        self.runAllNext(offset=1, count=1)
 
 
     def runRandom(self):
         """Run a random script."""
-        i = random.randint(0,len(self.files)-1)
-        self.runAll(first=i,count=1)
+        i = random.randint(0, len(self.files)-1)
+        self.runAll(first=i, count=1)
 
 #
 # TODO: the following examples currently pause indefinitely
@@ -561,10 +561,10 @@ class AppMenu(menu.Menu):
 
     def runAllApps(self):
         res =draw.askItems([
-            ('timeout',True),
-            ('random',False),
-            ('recursive',True),
-            ('count',-1),
+            ('timeout', True),
+            ('random', False),
+            ('recursive', True),
+            ('count', -1),
             ])
         if not res:
             return
@@ -583,7 +583,7 @@ class AppMenu(menu.Menu):
         This is only available if a directory path was specified and
         no files.
         """
-        pf.debug("Reloading this menu",pf.DEBUG.APPS)
+        pf.debug("Reloading this menu", pf.DEBUG.APPS)
         if self.dir:
             self.clear()
             self._submenus_ = []
@@ -615,23 +615,23 @@ class AppMenu(menu.Menu):
                         return
 
         files = self.files
-        olist.toFront(files,name)
+        olist.toFront(files, name)
         if self.max > 0 and len(files) > self.max:
             files = files[:self.max]
         while len(self.my_actions) < len(files):
             self.my_actions.append(self.addAction(name))
-        for a,f in zip(self.my_actions,self.files):
+        for a, f in zip(self.my_actions, self.files):
             a.setText(f)
 
 
     def _classify(self,nmax=20):
         """Classify, symlink and reload the scripts"""
-        pf.debug("Classifying scripts",pf.DEBUG.APPS)
+        pf.debug("Classifying scripts", pf.DEBUG.APPS)
         if self.dir:
-            f = os.path.join(self.dir,catname)
-            all_apps,kat,cat,col = classify(self.dir,self.pkg,nmax)
-            s = "all_apps = %r\nkat = %r\ncat = %r\ncol = %r\n" % (all_apps,kat,cat,col)
-            open(f,'w').writelines(s)
+            f = os.path.join(self.dir, catname)
+            all_apps, kat, cat, col = classify(self.dir, self.pkg, nmax)
+            s = "all_apps = %r\nkat = %r\ncat = %r\ncol = %r\n" % (all_apps, kat, cat, col)
+            open(f, 'w').writelines(s)
             print("Created catalog %s" % f)
             self.reload()
 
@@ -639,7 +639,7 @@ class AppMenu(menu.Menu):
     def _unclassify(self):
         """Remove the catalog and reload the scripts unclassified"""
         if self.dir:
-            f = os.path.join(self.dir,catname)
+            f = os.path.join(self.dir, catname)
             if os.path.exists(f):
                 os.remove(f)
                 self.reload()
@@ -666,36 +666,36 @@ def createAppMenu(mode='app',parent=None,before=None):
     replaced.
     """
     Mode = mode.capitalize()
-    appmenu = menu.Menu('&%s'%Mode,parent=parent,before=before)
+    appmenu = menu.Menu('&%s'%Mode, parent=parent, before=before)
     appmenu.mode = mode
     if mode == 'app':
-        appdirs = [ (d.name,d.path) for d in pf.appdirs ]
+        appdirs = [ (d.name, d.path) for d in pf.appdirs ]
     else:
         appdirs = pf.cfg['scriptdirs']
 
     # Fill in missing default locations : this enables the user
     # to keep the pyFormex installed examples in his config
-    guessName = lambda n,s: s if len(s) > 0 else pf.cfg['%sdir' % n.lower()]
-    appdirs = [ (d[0],guessName(*d)) for d in appdirs ]
+    guessName = lambda n, s: s if len(s) > 0 else pf.cfg['%sdir' % n.lower()]
+    appdirs = [ (d[0], guessName(*d)) for d in appdirs ]
     appdirs = [ d for d in appdirs if d[1] is not None and len(d[1]) > 0 ] # may be removed?
     appdirs = [ d for d in appdirs if os.path.exists(d[1]) ]
-    for name,path in appdirs:
-        pf.debug("Loading menu %s from %s" % (name,path),pf.DEBUG.MENU)
-        m = AppMenu(name,path,mode=mode,autoplay=True,parent=appmenu,runall=True)
+    for name, path in appdirs:
+        pf.debug("Loading menu %s from %s" % (name, path), pf.DEBUG.MENU)
+        m = AppMenu(name, path, mode=mode, autoplay=True, parent=appmenu, runall=True)
 
-    history = AppMenu('%s History'%Mode,files=pf.cfg['gui/%shistory'%mode],max=pf.cfg['gui/history_max'],mode=mode,parent=appmenu,runall=False)
+    history = AppMenu('%s History'%Mode, files=pf.cfg['gui/%shistory'%mode], max=pf.cfg['gui/history_max'], mode=mode, parent=appmenu, runall=False)
 
-    setattr(pf.GUI,'%shistory'%mode,history)
+    setattr(pf.GUI, '%shistory'%mode, history)
 
     appmenu.insertItems([
-        ('---',None),
-        (_('&Configure %s Paths'%Mode),setDirs,{'data':'%sdirs'%mode}),
-        (_('&Reload %s Menu'%Mode),reloadMenu,{'data':mode}),
+        ('---', None),
+        (_('&Configure %s Paths'%Mode), setDirs, {'data':'%sdirs'%mode}),
+        (_('&Reload %s Menu'%Mode), reloadMenu, {'data':mode}),
         ])
     if mode == 'app':
         appmenu.insertItems([
-            (_('&List loaded Apps'),script.printLoadedApps),
-            (_('&Unload Current App'),menu.unloadCurrentApp),
+            (_('&List loaded Apps'), script.printLoadedApps),
+            (_('&Unload Current App'), menu.unloadCurrentApp),
             ])
 
     return appmenu
@@ -712,7 +712,7 @@ def reloadMenu(mode='app'):
             # reset pf.appdirs, we may have configuration changes
             import apps
             apps.setAppDirs()
-        newmenu = createAppMenu(mode,pf.GUI.menu,before)
+        newmenu = createAppMenu(mode, pf.GUI.menu, before)
 
 
 

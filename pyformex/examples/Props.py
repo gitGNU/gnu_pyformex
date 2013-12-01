@@ -62,18 +62,18 @@ from gui.draw import *
     
 def run():
     layout(4)
-    F0 = Formex('3:012934',[1,3])
-    F1 = F0.replic2(3,2)
+    F0 = Formex('3:012934', [1, 3])
+    F1 = F0.replic2(3, 2)
     F2 = F1 + F1.reflect(1)
-    F3 = F2 + F2.rotate(180.,1)
+    F3 = F2 + F2.rotate(180., 1)
     
-    for i,F in enumerate([F0,F1,F2,F3]):
+    for i, F in enumerate([F0, F1, F2, F3]):
         viewport(i)
         flat()
         clear()
         #vp(i)
         draw(F)
-        drawText("F%s"%i,10,20,size=18)
+        drawText("F%s"%i, 10, 20, size=18)
         pf.canvas.update()
     
     

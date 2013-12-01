@@ -29,8 +29,8 @@ clearall()
 
 A = Formex('3:012')
 B = Formex('3:053')
-A.attrib(lighting=True,ambient=0.0,diffuse=0.5,color=red)
-B.attrib(lighting=True,ambient=0.0,diffuse=1.0,color=red)
+A.attrib(lighting=True, ambient=0.0, diffuse=0.5, color=red)
+B.attrib(lighting=True, ambient=0.0, diffuse=1.0, color=red)
 draw(A)
 draw(B)
 

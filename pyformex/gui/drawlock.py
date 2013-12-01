@@ -65,9 +65,9 @@ class DrawLock(object):
             if time is None:
                 time = pf.GUI.drawwait
             if time > 0.:
-                pf.debug('STARTING TIMER',pf.DEBUG.SCRIPT)
+                pf.debug('STARTING TIMER', pf.DEBUG.SCRIPT)
                 self.locked = True
-                self.timer = threading.Timer(time,self.release)
+                self.timer = threading.Timer(time, self.release)
                 self.timer.start()
 
 
@@ -144,7 +144,7 @@ class Repeater(object):
     """
     def __init__(self,func,duration=-1,maxcount=-1,sleep=0):
         """Create a new repeater"""
-        pf.debug("REPEAT: %s, %s" % (duration,maxcount),pf.DEBUG.SCRIPT)
+        pf.debug("REPEAT: %s, %s" % (duration, maxcount), pf.DEBUG.SCRIPT)
         self.exitcode = False
         self.func = func
         self.duration = duration
@@ -155,12 +155,12 @@ class Repeater(object):
         """Start repeated execution"""
         timer = None
         if self.duration >= 0:
-            timer = threading.Timer(self.duration,self.timeOut)
+            timer = threading.Timer(self.duration, self.timeOut)
             timer.start()
         self.exitcode = 0
         count = 0
         while not self.exitcode:
-            pf.debug("Loop Exitcode %s, Count: %s" % (self.exitcode,count),pf.DEBUG.SCRIPT)
+            pf.debug("Loop Exitcode %s, Count: %s" % (self.exitcode, count), pf.DEBUG.SCRIPT)
             pf.app.processEvents()
             if callable(self.func):
                 self.exitcode = self.func(*args,**kargs)
@@ -173,7 +173,7 @@ class Repeater(object):
             if self.sleep > 0:
                 time.sleep(self.sleep)
 
-        pf.debug("Exit Repeater with Exitcode %s, Count: %s" % (self.exitcode,count),pf.DEBUG.SCRIPT)
+        pf.debug("Exit Repeater with Exitcode %s, Count: %s" % (self.exitcode, count), pf.DEBUG.SCRIPT)
 
     def timeOut(self):
         """Stop the repeater because of a timeout"""

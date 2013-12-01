@@ -34,26 +34,26 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'advanced'
 _topics = ['surface']
-_techniques = ['color','widgets','animation']
+_techniques = ['color', 'widgets', 'animation']
 
 from gui.draw import *
 from plugins.trisurface import TriSurface
 
 def askSlices(bb):
-    res = askItems([('Direction',0),
-                    ('# slices',15),
-                    ('total rot',70.),
-                   ],caption = 'Define the slicing planes')
+    res = askItems([('Direction', 0),
+                    ('# slices', 15),
+                    ('total rot', 70.),
+                   ], caption = 'Define the slicing planes')
     if res:
         axis = res['Direction']
         nslices = res['# slices']
         totalrot = res['total rot']
-        xmin,xmax = bb[:,axis]
+        xmin, xmax = bb[:, axis]
         dx =  (xmax-xmin) / nslices
         x = arange(nslices+1) * dx
         N = unitVector(axis)
         P = [ bb[0]+N*s for s in x ]
-        return P,N,totalrot
+        return P, N, totalrot
     else:
         return None
 
@@ -63,17 +63,17 @@ def run():
     smooth()
     lights(True)
     transparent(False)
-    setView('horse',[20,20,0])
+    setView('horse', [20, 20, 0])
     S = TriSurface.read(getcfg('datadir')+'/horse.off')
     bb = S.bbox()
 
     t = -0.3
     bb[0] = (1.0-t)*bb[0] + t*bb[1]
-    draw(S,bbox=bb,view='front')
+    draw(S, bbox=bb, view='front')
     return
 
     try:
-        P,n,t = askSlices(S.bbox())
+        P, n, t = askSlices(S.bbox())
     except:
         return
 
@@ -86,14 +86,14 @@ def run():
 
     clear()
     A = None
-    for i,p in enumerate(P):
-        F1,F = F.cutWithPlane(p,-n)
+    for i, p in enumerate(P):
+        F1, F = F.cutWithPlane(p, -n)
         if F1.nelems() > 0:
             F1.setProp(i)
-        G = [ g.rot(a,around=p) for g in G ]
+        G = [ g.rot(a, around=p) for g in G ]
         G.append(F1)
         #clear()
-        B = draw([F,G])
+        B = draw([F, G])
         if A:
             undraw(A)
         A = B
@@ -102,7 +102,7 @@ def run():
 
     x = pf.canvas.width()/2
     y = pf.canvas.height() - 40
-    T = drawText("No animals got hurt during the making of this movie!",x,y,size=18,gravity='C')
+    T = drawText("No animals got hurt during the making of this movie!", x, y, size=18, gravity='C')
     for i in range(10):
         sleep(0.3)
         undecorate(T)

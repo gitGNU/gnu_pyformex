@@ -41,7 +41,7 @@ def viewport_function(func):
     This is a decorator function executing a function on the
     current GUI viewport instead of on the current script viewport.
     """
-    draw_func = getattr(draw,func.__name__)
+    draw_func = getattr(draw, func.__name__)
     def newf(*args,**kargs):
         """Performs the draw.func on the current GUI viewport"""
         #print "SAVED script canvas %s" % pf.canvas
@@ -70,7 +70,7 @@ def zoomAll(*args,**kargs):
 
 def inGUIVP(func,*args,**kargs):
     """Execute a draw function in the current GUI viewport."""
-    draw_func = getattr(draw,func.__name__)
+    draw_func = getattr(draw, func.__name__)
     #print "inGUI SAVED script canvas %s" % pf.canvas
     save = pf.canvas
     pf.canvas = pf.GUI.viewports.current

@@ -41,16 +41,16 @@ def load(plugin):
     """Load the named plugin"""
     # import is done here to defer loading until possible
     __import__('plugins.'+plugin)
-    module = globals().get(plugin,None)
-    if isinstance(module, ModuleType) and hasattr(module,'show_menu'):
+    module = globals().get(plugin, None)
+    if isinstance(module, ModuleType) and hasattr(module, 'show_menu'):
         module.show_menu()
 
 
 def refresh(plugin):
     """Reload the named plugin"""
     __import__('plugins.'+plugin)
-    module = globals().get(plugin,None)
-    if isinstance(module, ModuleType) and hasattr(module,'show_menu'):
+    module = globals().get(plugin, None)
+    if isinstance(module, ModuleType) and hasattr(module, 'show_menu'):
         reload(module)
     else:
         error("No such module: %s" % plugin)
@@ -96,15 +96,15 @@ def pluginMenus():
     The description is the text string displayed to the user. It is
     a beautified version of the plugin name.
     """
-    return [ (name,name.capitalize().replace('_',' ')) for name in plugin_menus ]
+    return [ (name, name.capitalize().replace('_', ' ')) for name in plugin_menus ]
 
 
 def create_plugin_menu(parent=None,before=None):
     from gui import menu
-    loadmenu = menu.Menu('&Load plugins',parent=parent,before=before)
-    loadactions = menu.ActionList(function=load,menu=loadmenu)
-    for name,text in pluginMenus():
-        loadactions.add(name,icon=None,text=text)
+    loadmenu = menu.Menu('&Load plugins', parent=parent, before=before)
+    loadactions = menu.ActionList(function=load, menu=loadmenu)
+    for name, text in pluginMenus():
+        loadactions.add(name, icon=None, text=text)
 
     return loadactions
 
@@ -116,8 +116,8 @@ def loadConfiguredPlugins(ok_plugins=None):
         if p in ok_plugins:
             load(p)
         else:
-            module = globals().get(p,None)
-            if hasattr(module,'close_menu'):
+            module = globals().get(p, None)
+            if hasattr(module, 'close_menu'):
                 module.close_menu()
 
 #################### EXPERIMENTAL STUFF BELOW !! ################
@@ -132,18 +132,18 @@ def show_menu(name,before='help'):
 
 def close_menu(name):
     """Close the menu."""
-    name.replace('_menu','')
+    name.replace('_menu', '')
     print("CLOSING MENU %s" % name)
     pf.GUI.menu.removeItem(name)
 
 
 def register_plugin_menu(name,menudata,before=['help']):
     menudata.extend([
-        ("---",None),
+        ("---", None),
 #        ("&Reload Menu",reload_menu,{'data':name}),
-        ("&Close Menu",close_menu,{'data':name}),
+        ("&Close Menu", close_menu, {'data':name}),
         ])
-    w = menu.Menu(name,items=menudata,parent=pf.GUI.menu,before=before[0])
+    w = menu.Menu(name, items=menudata, parent=pf.GUI.menu, before=before[0])
     _registered_plugins[name] = w
     return w
 
@@ -151,7 +151,7 @@ def register_plugin_menu(name,menudata,before=['help']):
 def reload_menu(name):
     """Reload the menu."""
     before = pf.GUI.menu.nextitem(_menu)
-    print("Menu %s was before %s" % (_menu,before))
+    print("Menu %s was before %s" % (_menu, before))
     close_menu()
     import plugins
     plugins.refresh('draw2d')

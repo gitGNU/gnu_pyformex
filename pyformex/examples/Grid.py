@@ -28,7 +28,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'beginner'
 _topics = ['geometry']
-_techniques = ['dialog','actor']
+_techniques = ['dialog', 'actor']
 
 from gui.draw import *
 import gui.actors
@@ -37,24 +37,24 @@ import gui.actors
 def run():
     clear()
     res = askItems([
-        _I('nx',4),
-        _I('ny',3),
-        _I('nz',2),
-        _I('Grid type',itemtype='radio',choices=['Box','Plane']),
-        _I('alpha',0.3)
+        _I('nx', 4),
+        _I('ny', 3),
+        _I('nz', 2),
+        _I('Grid type', itemtype='radio', choices=['Box', 'Plane']),
+        _I('alpha', 0.3)
         ])
 
     if not res:
         return
 
-    nx = (res['nx'],res['ny'],res['nz'])
+    nx = (res['nx'], res['ny'], res['nz'])
     gridtype = res['Grid type']
     alpha = res['alpha']
 
     if gridtype == 'Box':
-        GA = actors.GridActor(nx=nx,linewidth=0.2,alpha=alpha)
+        GA = actors.GridActor(nx=nx, linewidth=0.2, alpha=alpha)
     else:
-        GA = actors.CoordPlaneActor(nx=nx,linewidth=0.2,alpha=alpha)
+        GA = actors.CoordPlaneActor(nx=nx, linewidth=0.2, alpha=alpha)
 
     smooth()
     drawActor(GA)

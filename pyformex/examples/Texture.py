@@ -29,7 +29,7 @@ Shows how to draw with textures and how to set a background image.
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['Image','Geometry']
+_topics = ['Image', 'Geometry']
 _techniques = ['texture']
 
 from gui.draw import *
@@ -39,21 +39,21 @@ def run():
     clear()
     smooth()
 
-    imagefile = os.path.join(pf.cfg['pyformexdir'],'data','butterfly.png')
-    image = image2numpy(imagefile,indexed=False)
+    imagefile = os.path.join(pf.cfg['pyformexdir'], 'data', 'butterfly.png')
+    image = image2numpy(imagefile, indexed=False)
 
     import simple
     F = simple.cuboid().centered()
-    G = Formex('4:0123').replic2(3,2).toMesh().setProp(range(1,7)).centered()
-    draw([F,G],texture=image)
+    G = Formex('4:0123').replic2(3, 2).toMesh().setProp(range(1, 7)).centered()
+    draw([F, G], texture=image)
     view('iso')
     zoom(0.5)
 
     from gui.decors import Rectangle
-    R = Rectangle(100,100,400,300,color=yellow,texture=image)
+    R = Rectangle(100, 100, 400, 300, color=yellow, texture=image)
     decorate(R)
 
-    bgcolor(color=white,image=imagefile)
+    bgcolor(color=white, image=imagefile)
 
 if __name__ == 'draw':
     run()

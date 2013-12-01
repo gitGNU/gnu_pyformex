@@ -52,9 +52,9 @@ def updateSettings(res,save=None):
     Add '_save_:False' to res or use save=False to not save and not
     being asked.
     """
-    pf.debug("\nACCEPTED SETTINGS\n%s"% res,pf.DEBUG.CONFIG)
+    pf.debug("\nACCEPTED SETTINGS\n%s"% res, pf.DEBUG.CONFIG)
     if save is None:
-        save = res.get('_save_',None)
+        save = res.get('_save_', None)
     if save is None:
         save = draw.ack("Save the current changes to your configuration file?")
 
@@ -74,7 +74,7 @@ def updateSettings(res,save=None):
             changed = True
 
         # if not saved, set in cfg
-        print("Setting %s = %s" % (k,res[k]))
+        print("Setting %s = %s" % (k, res[k]))
         if pf.cfg[k] != res[k]:
             pf.cfg[k] = res[k]
             changed = True
@@ -90,8 +90,8 @@ def updateSettings(res,save=None):
         for f in todo:
             f()
 
-    pf.debug("\nNEW SETTINGS\n%s"%pf.cfg,pf.DEBUG.CONFIG)
-    pf.debug("\nNEW PREFERENCES\n%s"%pf.prefcfg,pf.DEBUG.CONFIG)
+    pf.debug("\nNEW SETTINGS\n%s"%pf.cfg, pf.DEBUG.CONFIG)
+    pf.debug("\nNEW PREFERENCES\n%s"%pf.prefcfg, pf.DEBUG.CONFIG)
 
 
 def settings():
@@ -116,7 +116,7 @@ def settings():
         dia.acceptData()
         res = dia.results
         res['_save_'] = save
-        ok_plugins = utils.subDict(res,'_plugins/')
+        ok_plugins = utils.subDict(res, '_plugins/')
         res['gui/console'] = utils.inverseDict(gui_console_options)[res['gui/console']]
         res['gui/plugins'] = [ p for p in ok_plugins if ok_plugins[p]]
         res['gui/actionbuttons'] = [ t for t in _actionbuttons if res['_gui/%sbutton'%t ] ]
@@ -131,7 +131,7 @@ def settings():
         accept(save=True)
 
     def autoSettings(keylist):
-        return [_I(k,pf.cfg[k]) for k in keylist]
+        return [_I(k, pf.cfg[k]) for k in keylist]
 
     def changeDirs(dircfg):
         """dircfg is a config variable that is a list of dirs"""
@@ -144,27 +144,27 @@ def settings():
         changeDirs('appdirs')
 
     enablers = []
-    mouse_settings = autoSettings(['gui/rotfactor','gui/panfactor','gui/zoomfactor','gui/autozoomfactor','gui/dynazoom','gui/wheelzoom'])
+    mouse_settings = autoSettings(['gui/rotfactor', 'gui/panfactor', 'gui/zoomfactor', 'gui/autozoomfactor', 'gui/dynazoom', 'gui/wheelzoom'])
 
     # Use _ to avoid adding these items in the config
-    plugin_items = [ _I('_plugins/'+name,name in pf.cfg['gui/plugins'],text=text) for name,text in plugins.pluginMenus() ]
+    plugin_items = [ _I('_plugins/'+name, name in pf.cfg['gui/plugins'], text=text) for name, text in plugins.pluginMenus() ]
 
-    bindings_choices = ['PyQt4','PySide']
+    bindings_choices = ['PyQt4', 'PySide']
     bindings_current =  bindings_choices[ 1 if pf.options.pyside else 0 ]
     #interpreter_choices = ['','Python'] # ,'IPython']
     #interpreter_current = pf.cfg['gui/interpreter']
     appearance = [
-        _I('gui/style',pf.app.currentStyle(),choices=pf.app.getStyles()),
-        _I('gui/font',pf.app.font().toString(),'font'),
+        _I('gui/style', pf.app.currentStyle(), choices=pf.app.getStyles()),
+        _I('gui/font', pf.app.font().toString(), 'font'),
         ]
 
     toolbartip = "Currently, changing the toolbar position will only be in effect when you restart pyFormex"
     toolbars = [
-        _I('gui/%s'%t,pf.cfg['gui/%s'%t],text=getattr(pf.GUI,t).windowTitle(),choices=['left','right','top','bottom'],itemtype='radio',tooltip=toolbartip) for t in [ 'camerabar','modebar','viewbar' ]
+        _I('gui/%s'%t, pf.cfg['gui/%s'%t], text=getattr(pf.GUI, t).windowTitle(), choices=['left', 'right', 'top', 'bottom'], itemtype='radio', tooltip=toolbartip) for t in [ 'camerabar', 'modebar', 'viewbar' ]
         ]
     # Use _ to avoid adding these items in the config
     actionbuttons = [
-        _I('_gui/%sbutton'%t,t in pf.cfg['gui/actionbuttons'],text="%s Button" % t.capitalize()) for t in _actionbuttons
+        _I('_gui/%sbutton'%t, t in pf.cfg['gui/actionbuttons'], text="%s Button" % t.capitalize()) for t in _actionbuttons
         ]
 
     # callback to set a filename
@@ -175,7 +175,7 @@ def settings():
     cur = pf.cfg['gui/splash']
 #    if not cur:
 #        cur = pf.cfg.get('icondir','.')
-    viewer = widgets.ImageView(cur,maxheight=200)
+    viewer = widgets.ImageView(cur, maxheight=200)
 
     def changeSplash(fn):
         fn = draw.askImageFile(fn)
@@ -184,25 +184,25 @@ def settings():
         return fn
 
     mail_settings = [
-        _I('mail/sender',pf.cfg.get('mail/sender',sendmail.mail),text="My mail address"),
-        _I('mail/server',pf.cfg.get('mail/server','localhost'),text="Outgoing mail server")
+        _I('mail/sender', pf.cfg.get('mail/sender', sendmail.mail), text="My mail address"),
+        _I('mail/server', pf.cfg.get('mail/server', 'localhost'), text="Outgoing mail server")
         ]
 
     xtkscripts = ["http://feops.ugent.be/pub/xtk/feops_xtk.js", "http://feops.ugent.be/pub/xtk/xtk.js", "http://get.goXTK.com/xtk_edge.js", "http://get.goXTK.com/xtk_release_10.js", 'custom']
     guiscripts = ["http://get.goXTK.com/xtk_xdat.gui.js", 'custom']
     webgl_settings = [
-        _I('webgl/xtkscript',pf.cfg['webgl/xtkscript'],text='XTK base script',choices=xtkscripts),
-        _I('_webgl_xtkscript','',text='Custom XTK URL',itemtype='button',func=changeFilename),
-        _I('webgl/guiscript',pf.cfg['webgl/guiscript'],text='GUI base script',choices=guiscripts),
-        _I('_webgl_guiscript','',text='Custom GUI URL'),
-        _I('webgl/autogui',pf.cfg['webgl/autogui'],text='Always add a standard GUI'),
-        _I('webgl/devel',pf.cfg['webgl/devel'],text='Use a source XTK version'),
-        _I('webgl/devpath',pf.cfg['webgl/devpath'],text='Path to the XTK source'),
+        _I('webgl/xtkscript', pf.cfg['webgl/xtkscript'], text='XTK base script', choices=xtkscripts),
+        _I('_webgl_xtkscript', '', text='Custom XTK URL', itemtype='button', func=changeFilename),
+        _I('webgl/guiscript', pf.cfg['webgl/guiscript'], text='GUI base script', choices=guiscripts),
+        _I('_webgl_guiscript', '', text='Custom GUI URL'),
+        _I('webgl/autogui', pf.cfg['webgl/autogui'], text='Always add a standard GUI'),
+        _I('webgl/devel', pf.cfg['webgl/devel'], text='Use a source XTK version'),
+        _I('webgl/devpath', pf.cfg['webgl/devpath'], text='Path to the XTK source'),
         ]
     enablers.extend([
-        ('webgl/xtkscript','custom','_webgl_xtkscript'),
-        ('webgl/guiscript','custom','_webgl_guiscript'),
-        ('webgl/devel',True,'webgl/devpath'),
+        ('webgl/xtkscript', 'custom', '_webgl_xtkscript'),
+        ('webgl/guiscript', 'custom', '_webgl_guiscript'),
+        ('webgl/devel', True, 'webgl/devpath'),
         ])
 
 
@@ -210,69 +210,69 @@ def settings():
         caption='pyFormex Settings',
         store=pf.cfg,
         items=[
-            _T('General',[
-                _I('syspath',tooltip="If you need to import modules from a non-standard path, you can supply additional paths to search here."),
-                _I('editor',tooltip="The command to be used to edit a script file. The command will be executed with the path to the script file as argument."),
-                _I('viewer',tooltip="The command to be used to view an HTML file. The command will be executed with the path to the HTML file as argument."),
-                _I('browser',tooltip="The command to be used to browse the internet. The command will be executed with an URL as argument."),
+            _T('General', [
+                _I('syspath', tooltip="If you need to import modules from a non-standard path, you can supply additional paths to search here."),
+                _I('editor', tooltip="The command to be used to edit a script file. The command will be executed with the path to the script file as argument."),
+                _I('viewer', tooltip="The command to be used to view an HTML file. The command will be executed with the path to the HTML file as argument."),
+                _I('browser', tooltip="The command to be used to browse the internet. The command will be executed with an URL as argument."),
                 _I('help/docs'),
-                _I('autorun',text='Startup script',tooltip='This script will automatically be run at pyFormex startup'),
-                _I('scriptdirs',text='Script Paths',tooltip='pyFormex will look for scripts in these directories',buttons=[('Edit',changeScriptDirs)]),
-                _I('appdirs',text='Applicationt Paths',tooltip='pyFormex will look for applications in these directories',buttons=[('Edit',changeAppDirs)]),
-                _I('autoglobals',text='Auto Globals',tooltip='If checked, global Application variables of any Geometry type will automatically be copied to the pyFormex global variable dictionary (PF), and thus become available in the GUI'),
-                _I('showapploaderrors',text='Show Application Load Error Traceback',tooltip='If checked, a traceback of exceptions occurring at Application Load time will be output. If unchecked, such exceptions will be suppressed, and the application will not run.'),
-                _I('loadcurproj',text="Reload last project on startup"),
-                _I('check_print',text="Check scripts for the use of the print statement"),
-                _I('plot2d',text="Prefered 2D plot library",choices=['gnuplot','matplotlib']),
-                _I('commands',text='Use commands module instead of subprocess',tooltip="If checked, pyFormex will use the Python 'commands' module for the execution of external commands. The default (unchecked) is to use the 'subprocess' module. If you notice a lot of command failures, or even hangups, you may want to switch."),
+                _I('autorun', text='Startup script', tooltip='This script will automatically be run at pyFormex startup'),
+                _I('scriptdirs', text='Script Paths', tooltip='pyFormex will look for scripts in these directories', buttons=[('Edit', changeScriptDirs)]),
+                _I('appdirs', text='Applicationt Paths', tooltip='pyFormex will look for applications in these directories', buttons=[('Edit', changeAppDirs)]),
+                _I('autoglobals', text='Auto Globals', tooltip='If checked, global Application variables of any Geometry type will automatically be copied to the pyFormex global variable dictionary (PF), and thus become available in the GUI'),
+                _I('showapploaderrors', text='Show Application Load Error Traceback', tooltip='If checked, a traceback of exceptions occurring at Application Load time will be output. If unchecked, such exceptions will be suppressed, and the application will not run.'),
+                _I('loadcurproj', text="Reload last project on startup"),
+                _I('check_print', text="Check scripts for the use of the print statement"),
+                _I('plot2d', text="Prefered 2D plot library", choices=['gnuplot', 'matplotlib']),
+                _I('commands', text='Use commands module instead of subprocess', tooltip="If checked, pyFormex will use the Python 'commands' module for the execution of external commands. The default (unchecked) is to use the 'subprocess' module. If you notice a lot of command failures, or even hangups, you may want to switch."),
                 ],
                ),
-            _T('Startup',[
-                _I('_info_01_','The settings on this page will only become active after restarting pyFormex',itemtype='info'),
-                _I('gui/bindings',bindings_current,choices=bindings_choices,tooltip="The Python bindings for the Qt4 library"),
+            _T('Startup', [
+                _I('_info_01_', 'The settings on this page will only become active after restarting pyFormex', itemtype='info'),
+                _I('gui/bindings', bindings_current, choices=bindings_choices, tooltip="The Python bindings for the Qt4 library"),
                 #_I('gui/interpreter',interpreter_current,choices=interpreter_choices,tooltip="The Python interpreter to use for the message board"),
-                _I('gui/splash',text='Splash image',itemtype='button',func=changeSplash),
+                _I('gui/splash', text='Splash image', itemtype='button', func=changeSplash),
                 viewer,
                 ]),
-            _T('GUI',[
-                _G('Appearance',appearance),
-                _G('Components',toolbars+actionbuttons+[
-                    _I('gui/console',gui_console_options[pf.cfg['gui/console']],itemtype='hradio',choices=gui_console_options.values(),text="Board"),
-                    _I('gui/redirect',pf.cfg['gui/redirect']),
+            _T('GUI', [
+                _G('Appearance', appearance),
+                _G('Components', toolbars+actionbuttons+[
+                    _I('gui/console', gui_console_options[pf.cfg['gui/console']], itemtype='hradio', choices=gui_console_options.values(), text="Board"),
+                    _I('gui/redirect', pf.cfg['gui/redirect']),
                     _I('gui/coordsbox'),
-                    _I('gui/showfocus',pf.cfg['gui/showfocus']),
-                    _I('gui/runalloption',pf.cfg['gui/runalloption']),
-                    _I('gui/timeoutbutton',pf.cfg['gui/timeoutbutton']),
-                    _I('gui/timeoutvalue',pf.cfg['gui/timeoutvalue']),
+                    _I('gui/showfocus', pf.cfg['gui/showfocus']),
+                    _I('gui/runalloption', pf.cfg['gui/runalloption']),
+                    _I('gui/timeoutbutton', pf.cfg['gui/timeoutbutton']),
+                    _I('gui/timeoutvalue', pf.cfg['gui/timeoutvalue']),
                     ],
                  ),
                 ]),
-            _T('Canvas',[
-                _I('_not_active_','The canvas settings can be set from the Viewport Menu',itemtype='info',text=''),
+            _T('Canvas', [
+                _I('_not_active_', 'The canvas settings can be set from the Viewport Menu', itemtype='info', text=''),
                 ]),
-            _T('Drawing',[
-                _I('draw/rendermode',pf.cfg['draw/rendermode'],choices=canvas.CanvasSettings.RenderProfiles),
-                _I('draw/wait',pf.cfg['draw/wait']),
-                _I('draw/picksize',pf.cfg['draw/picksize']),
-                _I('draw/disable_depth_test',pf.cfg['draw/disable_depth_test'],text='Disable depth testing for transparent actors'),
-                _I('render/avgnormaltreshold',pf.cfg['render/avgnormaltreshold']),
-                _I('_info_00_',itemtype='info',text='Changes to the options below will only become effective after restarting pyFormex!'),
-                _I('draw/quadline',text='Draw as quadratic lines',itemtype='list',check=True,choices=elementTypes(1),tooltip='Line elements checked here will be drawn as quadratic lines whenever possible.'),
-                _I('draw/quadsurf',text='Draw as quadratic surfaces',itemtype='list',check=True,choices=elementTypes(2)+elementTypes(3),tooltip='Surface and volume elements checked here will be drawn as quadratic surfaces whenever possible.'),
+            _T('Drawing', [
+                _I('draw/rendermode', pf.cfg['draw/rendermode'], choices=canvas.CanvasSettings.RenderProfiles),
+                _I('draw/wait', pf.cfg['draw/wait']),
+                _I('draw/picksize', pf.cfg['draw/picksize']),
+                _I('draw/disable_depth_test', pf.cfg['draw/disable_depth_test'], text='Disable depth testing for transparent actors'),
+                _I('render/avgnormaltreshold', pf.cfg['render/avgnormaltreshold']),
+                _I('_info_00_', itemtype='info', text='Changes to the options below will only become effective after restarting pyFormex!'),
+                _I('draw/quadline', text='Draw as quadratic lines', itemtype='list', check=True, choices=elementTypes(1), tooltip='Line elements checked here will be drawn as quadratic lines whenever possible.'),
+                _I('draw/quadsurf', text='Draw as quadratic surfaces', itemtype='list', check=True, choices=elementTypes(2)+elementTypes(3), tooltip='Surface and volume elements checked here will be drawn as quadratic surfaces whenever possible.'),
                 ]),
-            _T('Mouse',mouse_settings),
-            _T('Plugins',plugin_items),
-            _T('WebGL',webgl_settings),
-            _T('Environment',[
-                _G('Mail',mail_settings),
+            _T('Mouse', mouse_settings),
+            _T('Plugins', plugin_items),
+            _T('WebGL', webgl_settings),
+            _T('Environment', [
+                _G('Mail', mail_settings),
 #                _G('Jobs',jobs_settings),
                 ]),
             ],
         enablers=enablers,
         actions=[
-            ('Close',close),
-            ('Accept and Save',acceptAndSave),
-            ('Accept',accept),
+            ('Close', close),
+            ('Accept and Save', acceptAndSave),
+            ('Accept', accept),
             ],
         )
     #dia.resize(800,400)
@@ -297,11 +297,11 @@ def askConfigPreferences(items,prefix=None,store=None):
     if store is None:
         store = pf.cfg
     if prefix:
-        items = [ '%s/%s' % (prefix,i) for i in items ]
-    itemlist = [ _I(i,store[i]) for i in items ] + [
-        _I('_save_',True,text='Save changes')
+        items = [ '%s/%s' % (prefix, i) for i in items ]
+    itemlist = [ _I(i, store[i]) for i in items ] + [
+        _I('_save_', True, text='Save changes')
         ]
-    res = widgets.InputDialog(itemlist,'Config Dialog',pf.GUI).getResults()
+    res = widgets.InputDialog(itemlist, 'Config Dialog', pf.GUI).getResults()
     #pf.debug(res,pf.DEBUG.CONFIG)
     if res and store==pf.cfg:
         updateSettings(res)
@@ -309,7 +309,7 @@ def askConfigPreferences(items,prefix=None,store=None):
 
 
 def set_mat_value(field):
-    key = field.text().replace('material/','')
+    key = field.text().replace('material/', '')
     val = field.value()
     vp = pf.GUI.viewports.current
     mat = vp.material
@@ -332,7 +332,7 @@ def setRendering():
     def set_render_value(field):
         key = field.name()
         val = field.value()
-        updateSettings({key:val},save=False)
+        updateSettings({key:val}, save=False)
         vp = pf.GUI.viewports.current
         vp.resetLighting()
         vp.update()
@@ -342,15 +342,15 @@ def setRendering():
             return
         mode = str(mode)
         on = mode.startswith('smooth')
-        for f in ['ambient','material']:
+        for f in ['ambient', 'material']:
             dia['render/'+f].setEnabled(on)
         dia['material'].setEnabled(on)
 
     def updateLightParams(matname):
         matname=str(matname)
         mat = pf.GUI.materials[matname]
-        val = utils.prefixDict(mat.dict(),'material/')
-        print("UPDATE",val)
+        val = utils.prefixDict(mat.dict(), 'material/')
+        print("UPDATE", val)
         dia.updateData(val)
 
     def close():
@@ -358,29 +358,29 @@ def setRendering():
 
     def accept(save=False):
         dia.acceptData()
-        print("RESULTS",dia.results)
+        print("RESULTS", dia.results)
         if dia.results['render/mode'].startswith('smooth'):
-            res = utils.subDict(dia.results,'render/',strip=False)
+            res = utils.subDict(dia.results, 'render/', strip=False)
             matname = dia.results['render/material']
-            matdata = utils.subDict(dia.results,'material/')
+            matdata = utils.subDict(dia.results, 'material/')
             # Currently, set both in cfg and Material db
             pf.cfg['material/%s' % matname] = matdata
             pf.GUI.materials[matname] = canvas.Material(matname,**matdata)
 
             for i in range(4):
                 key = 'light/light%s' % i
-                res[key] = utils.subDict(dia.results,key+'/',strip=True)
+                res[key] = utils.subDict(dia.results, key+'/', strip=True)
         else:
-            res = utils.selectDict(dia.results,['render/mode','render/lighting'])
+            res = utils.selectDict(dia.results, ['render/mode', 'render/lighting'])
         res['_save_'] = save
-        print("RES",res)
+        print("RES", res)
         updateSettings(res)
         #print(pf.cfg)
         vp = pf.GUI.viewports.current
         vp.resetLighting()
         #if pf.cfg['render/mode'] != vp.rendermode:
-        print("SETMODE %s %s" % (pf.cfg['render/mode'],pf.cfg['render/lighting']))
-        vp.setRenderMode(pf.cfg['render/mode'],pf.cfg['render/lighting'])
+        print("SETMODE %s %s" % (pf.cfg['render/mode'], pf.cfg['render/lighting']))
+        vp.setRenderMode(pf.cfg['render/mode'], pf.cfg['render/lighting'])
         #print(vp.rendermode,vp.settings.lighting)
         vp.update()
         toolbar.updateLightButton()
@@ -397,35 +397,35 @@ def setRendering():
         mat = vp.material
         print("createDialog: %s" % vp.settings.lighting)
 
-        light0 = {'enabled':True,'ambient':0.0,'diffuse':0.6,'specular':0.4,'position':(1.,1.,2.,0.)}
+        light0 = {'enabled':True,'ambient':0.0,'diffuse':0.6,'specular':0.4,'position':(1., 1., 2., 0.)}
         light_items = []
         for i in range(4):
             name = 'light%s' % i
             light = pf.cfg['light/%s'%name]
-            items = _T(name,[
-                _I("enabled",text="Enabled",value=light['enabled']),
-                _I("ambient",text="Ambient",value=light['ambient'],itemtype='color',func=changeLight),
-                _I("diffuse",text="Diffuse",value=light['diffuse'],itemtype='color',func=changeLight),
-                _I("specular",text="Specular",value=light['specular'],itemtype='color',func=changeLight),
-                _I("position",text="Position",value=light['position'][:3],itemtype='point'),
+            items = _T(name, [
+                _I("enabled", text="Enabled", value=light['enabled']),
+                _I("ambient", text="Ambient", value=light['ambient'], itemtype='color', func=changeLight),
+                _I("diffuse", text="Diffuse", value=light['diffuse'], itemtype='color', func=changeLight),
+                _I("specular", text="Specular", value=light['specular'], itemtype='color', func=changeLight),
+                _I("position", text="Position", value=light['position'][:3], itemtype='point'),
                 ])
             light_items.append(items)
 
         items = [
-            _I('render/mode',vp.rendermode,text='Rendering Mode',itemtype='select',choices=draw.renderModes()),#,onselect=enableLightParams),
-            _I('render/lighting',vp.settings.lighting,text='Use Lighting'),
-            _I('render/ambient',vp.lightprof.ambient,itemtype='slider',min=0,max=100,scale=0.01,func=set_render_value,text='Global Ambient Lighting'),
+            _I('render/mode', vp.rendermode, text='Rendering Mode', itemtype='select', choices=draw.renderModes()),#,onselect=enableLightParams),
+            _I('render/lighting', vp.settings.lighting, text='Use Lighting'),
+            _I('render/ambient', vp.lightprof.ambient, itemtype='slider', min=0, max=100, scale=0.01, func=set_render_value, text='Global Ambient Lighting'),
 
-            _G('light',text='Lights',items=light_items),
-            _I('render/material',vp.material.name,text='Material',choices=matnames,onselect=updateLightParams),
-            _G('material',text='Material Parameters',items=[
-                _I(a,text=a,value=getattr(mat,a),itemtype='slider',min=0,max=100,scale=0.01,func=set_mat_value) for a in [ 'ambient', 'diffuse', 'specular', 'emission'] ] + [
-                _I(a,text=a,value=getattr(mat,a),itemtype='slider',min=1,max=128,scale=1.,func=set_mat_value) for a in ['shininess']
+            _G('light', text='Lights', items=light_items),
+            _I('render/material', vp.material.name, text='Material', choices=matnames, onselect=updateLightParams),
+            _G('material', text='Material Parameters', items=[
+                _I(a, text=a, value=getattr(mat, a), itemtype='slider', min=0, max=100, scale=0.01, func=set_mat_value) for a in [ 'ambient', 'diffuse', 'specular', 'emission'] ] + [
+                _I(a, text=a, value=getattr(mat, a), itemtype='slider', min=1, max=128, scale=1., func=set_mat_value) for a in ['shininess']
                 ]),
             ]
 
         enablers = [
-            ('render/lighting',True,'render/ambient','render/material','material'),
+            ('render/lighting', True, 'render/ambient', 'render/material', 'material'),
             ]
         dia = widgets.InputDialog(
             caption='pyFormex Settings',
@@ -435,9 +435,9 @@ def setRendering():
             #prefix='render/',
             autoprefix=True,
             actions=[
-                ('Close',close),
-                ('Apply and Save',acceptAndSave),
-                ('Apply',accept),
+                ('Close', close),
+                ('Apply and Save', acceptAndSave),
+                ('Apply', accept),
                 ]
             )
         enableLightParams(vp.rendermode)
@@ -460,7 +460,7 @@ def setDirs(dircfg):
         import appMenu
         #print(dia.results)
         data = dia.results[dircfg]
-        pf.prefcfg[dircfg] = pf.cfg[dircfg] = map(tuple,data)
+        pf.prefcfg[dircfg] = pf.cfg[dircfg] = map(tuple, data)
         #print("SET %s to %s" % (dircfg,pf.prefcfg[dircfg]))
         appMenu.reloadMenu(mode=dircfg[:-4])
 
@@ -477,7 +477,7 @@ def addAppdir(path,name=None,dircfg='appdirs'):
         return
     if name is None:
         name = os.path.basename(p).capitalize()
-    pf.prefcfg[dircfg].append((name,p))
+    pf.prefcfg[dircfg].append((name, p))
     appMenu.reloadMenu(mode=dircfg[:-4])
 
 
@@ -496,23 +496,23 @@ def createDirsDialog(dircfg):
         title='Script paths'
 
     def insertRow():
-        ww = widgets.FileSelection(pf.cfg['workdir'],'*',exist=True,dir=True)
+        ww = widgets.FileSelection(pf.cfg['workdir'], '*', exist=True, dir=True)
         fn = ww.getFilename()
         if fn:
             _table.model().insertRows()
-            _table.model()._data[-1] = [os.path.basename(fn).capitalize(),fn]
+            _table.model()._data[-1] = [os.path.basename(fn).capitalize(), fn]
         _table.update()
 
     def removeRow():
         row = _table.currentIndex().row()
-        _table.model().removeRows(row,1)
+        _table.model().removeRows(row, 1)
         _table.update()
 
     def moveUp():
         row = _table.currentIndex().row()
         if row > 0:
-            a,b = _table.model()._data[row-1:row+1]
-            _table.model()._data[row-1:row+1] = b,a
+            a, b = _table.model()._data[row-1:row+1]
+            _table.model()._data[row-1:row+1] = b, a
         _table.setFocus() # For some unkown reason, this seems needed to
                           # immediately update the widget
         _table.update()
@@ -522,15 +522,15 @@ def createDirsDialog(dircfg):
         import appMenu
         appMenu.reloadMenu(mode=mode)
 
-    data = map(list,pf.cfg[dircfg])
+    data = map(list, pf.cfg[dircfg])
     _dia = widgets.InputDialog(
         items = [
-            _I(dircfg,data,itemtype='table',chead = ['Label','Path']),
+            _I(dircfg, data, itemtype='table', chead = ['Label', 'Path']),
             ],
         actions = [
-            ('New',insertRow),
-            ('Delete',removeRow),
-            ('Move Up',moveUp),
+            ('New', insertRow),
+            ('Delete', removeRow),
+            ('Move Up', moveUp),
             ('OK',),
             ('Cancel',),
             ],
@@ -545,13 +545,13 @@ def setDebug():
     options = [ o for o in dir(pf.DEBUG) if o[0] != '_' ]
     options.remove('ALL')
     options.remove('NONE')
-    values = [ getattr(pf.DEBUG,o) for o in options ]
-    items = [ _I(o,bool(pf.options.debuglevel & v)) for o,v in zip(options,values) ]
+    values = [ getattr(pf.DEBUG, o) for o in options ]
+    items = [ _I(o, bool(pf.options.debuglevel & v)) for o, v in zip(options, values) ]
     res = draw.askItems(items)
     if res:
         print(res)
         debug = 0
-        for o,v in zip(options,values):
+        for o, v in zip(options, values):
             if res[o]:
                 debug |= v
         print("debuglevel = %s" % debug)
@@ -559,26 +559,26 @@ def setDebug():
 
 
 def setOptions():
-    options = [ 'redirect','debuglevel','rst2html']
-    options = [ o for o in options if hasattr(pf.options,o) ]
-    items = [ _I(o,getattr(pf.options,o)) for o in options ]
+    options = [ 'redirect', 'debuglevel', 'rst2html']
+    options = [ o for o in options if hasattr(pf.options, o) ]
+    items = [ _I(o, getattr(pf.options, o)) for o in options ]
     res = draw.askItems(items)
     if res:
         print(res)
         for o in options:
-            setattr(pf.options,o,res[o])
+            setattr(pf.options, o, res[o])
             print("Options: %s" % pf.options)
             if o == 'redirect':
                 pf.GUI.board.redirect(pf.options.redirect)
 
 
 def resetDefaults():
-    if draw.warning('This will reset all the current pyFormex settings to your stored defaults.',actions=['Cancel','OK']) == 'OK':
+    if draw.warning('This will reset all the current pyFormex settings to your stored defaults.', actions=['Cancel', 'OK']) == 'OK':
         pf.cfg.clear()
 
 
 def resetFactory():
-    if draw.warning('Beware! This will throw away all your personalized pyFormex settings and return to the shipped default settings.\nSome settings may only become active after you restart pyFormex.',actions=['Cancel','OK']) == 'OK':
+    if draw.warning('Beware! This will throw away all your personalized pyFormex settings and return to the shipped default settings.\nSome settings may only become active after you restart pyFormex.', actions=['Cancel', 'OK']) == 'OK':
         pf.cfg.clear()
         pf.prefcfg.clear()
 
@@ -623,22 +623,22 @@ def updateQt4Bindings():
 
 # This sets the functions that should be called when a setting has changed
 _activate_settings = {
-    'gui/bindings':updateQt4Bindings,
+    'gui/bindings': updateQt4Bindings,
 #    'gui/interpreter':updateInterpreter,
-    'gui/console':updateConsole,
-    'gui/coordsbox':coordsbox,
-    'gui/timeoutbutton':timeoutbutton,
-    'gui/showfocus':updateCanvas,
-    'gui/style':updateStyle,
-    'gui/font':updateStyle,
-    'gui/camerabar':updateToolbars,
-    'gui/viewbar':updateToolbars,
-    'gui/modebar':updateToolbars,
-    'canvas/bgmode':updateBackground,
-    'canvas/bgcolor':updateBackground,
-    'canvas/bgimage':updateBackground,
-    'appdirs':updateAppdirs,
-    'draw/wait':updateDrawWait,
+    'gui/console': updateConsole,
+    'gui/coordsbox': coordsbox,
+    'gui/timeoutbutton': timeoutbutton,
+    'gui/showfocus': updateCanvas,
+    'gui/style': updateStyle,
+    'gui/font': updateStyle,
+    'gui/camerabar': updateToolbars,
+    'gui/viewbar': updateToolbars,
+    'gui/modebar': updateToolbars,
+    'canvas/bgmode': updateBackground,
+    'canvas/bgcolor': updateBackground,
+    'canvas/bgimage': updateBackground,
+    'appdirs': updateAppdirs,
+    'draw/wait': updateDrawWait,
     }
 
 def setDrawWait():
@@ -652,18 +652,18 @@ def reloadPreferences():
 
 
 MenuData = [
-    (_('&Settings'),[
-        (_('&Settings Dialog'),settings),
-        (_('&Debug'),setDebug),
-        (_('&Options'),setOptions),
-        (_('&Draw Wait'),setDrawWait),
-        (_('&Rendering Params'),setRendering),
-        (_('&Reset to My Defaults'),resetDefaults),
-        (_('&Reset to Factory Defaults'),resetFactory),
-        ('---',None),
-        (_('&Save Preferences Now'),savePreferences),
-        (_('&Edit Preferences File'),editPreferences),
-        (_('&Reload Preferences'),reloadPreferences),
+    (_('&Settings'), [
+        (_('&Settings Dialog'), settings),
+        (_('&Debug'), setDebug),
+        (_('&Options'), setOptions),
+        (_('&Draw Wait'), setDrawWait),
+        (_('&Rendering Params'), setRendering),
+        (_('&Reset to My Defaults'), resetDefaults),
+        (_('&Reset to Factory Defaults'), resetFactory),
+        ('---', None),
+        (_('&Save Preferences Now'), savePreferences),
+        (_('&Edit Preferences File'), editPreferences),
+        (_('&Reload Preferences'), reloadPreferences),
         ]),
     ]
 

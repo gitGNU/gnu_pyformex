@@ -41,16 +41,16 @@ import simple
 def run():
     n=12
     h=5.
-    A = simple.sector(1.,360.,1,n,diag='u')
-    B = simple.cylinder(2.,h,n,4,diag='u').reverse()
-    C = A.reverse()+B+A.trl(2,h)
+    A = simple.sector(1., 360., 1, n, diag='u')
+    B = simple.cylinder(2., h, n, 4, diag='u').reverse()
+    C = A.reverse()+B+A.trl(2, h)
     S = TriSurface(C)
     export({'surface':S})
 
     clear()
     smoothwire()
     view('iso')
-    draw(S,color=red,bkcolor=black)
+    draw(S, color=red, bkcolor=black)
 
 if __name__ == 'draw':
     run()

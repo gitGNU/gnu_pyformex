@@ -34,7 +34,7 @@ from __future__ import print_function
 import pyformex as pf
 from coords import Coords
 from connectivity import Connectivity
-from numpy import array,arange,concatenate
+from numpy import array, arange, concatenate
 from odict import ODict
 
 
@@ -43,13 +43,13 @@ e3 = 1./3.
 def _sanitize(ent):
     # input is Connectivity or (eltype,table)
     # output is Connectivity
-    if isinstance(ent,Connectivity):
-        if hasattr(ent,'eltype'):
+    if isinstance(ent, Connectivity):
+        if hasattr(ent, 'eltype'):
             return ent
         else:
             raise ValueError("Conectivity should have an element type")
     else:
-        return Connectivity(ent[1],eltype=ent[0])
+        return Connectivity(ent[1], eltype=ent[0])
 
 
 class ElementType(object):
@@ -219,10 +219,10 @@ class ElementType(object):
             return Connectivity()
 
         if level == 0:
-            return Connectivity(arange(self.nplex()).reshape((-1,1)),eltype='point')
+            return Connectivity(arange(self.nplex()).reshape((-1, 1)), eltype='point')
 
         elif level == self.ndim:
-            return Connectivity(arange(self.nplex()).reshape((1,-1)),eltype=self)
+            return Connectivity(arange(self.nplex()).reshape((1, -1)), eltype=self)
 
         elif level == 1:
             return self.edges
@@ -234,12 +234,12 @@ class ElementType(object):
     @classmethod
     def getDrawEdges(self,quadratic=False):
         if pf.options.opengl2:
-            if not hasattr(self,'drawgl2edges'):
+            if not hasattr(self, 'drawgl2edges'):
                 self.drawgl2edges = self.getEdges().reduceDegenerate()
             return self.drawgl2edges
-        if quadratic and hasattr(self,'drawedges2'):
+        if quadratic and hasattr(self, 'drawedges2'):
             return self.drawedges2
-        if not hasattr(self,'drawedges'):
+        if not hasattr(self, 'drawedges'):
             self.drawedges = self.getEdges().reduceDegenerate()
         return self.drawedges
 
@@ -248,12 +248,12 @@ class ElementType(object):
     def getDrawFaces(self,quadratic=False):
         """Returns the local connectivity for drawing the element's faces"""
         if pf.options.opengl2:
-            if not hasattr(self,'drawgl2faces'):
+            if not hasattr(self, 'drawgl2faces'):
                 self.drawgl2faces = self.getFaces().reduceDegenerate()
             return self.drawgl2faces
-        if quadratic and hasattr(self,'drawfaces2'):
+        if quadratic and hasattr(self, 'drawfaces2'):
             return self.drawfaces2
-        if not hasattr(self,'drawfaces'):
+        if not hasattr(self, 'drawfaces'):
             self.drawfaces = self.getFaces().reduceDegenerate()
         return self.drawfaces
 
@@ -267,7 +267,7 @@ class ElementType(object):
         from mesh import Mesh
         x = self.vertices
         e = self.getElement()
-        return Mesh(x,e,eltype=e.eltype)
+        return Mesh(x, e, eltype=e.eltype)
 
 
     @classmethod
@@ -300,14 +300,14 @@ class ElementType(object):
 
     @classmethod
     def report(self):
-        return "ElementType %s: ndim=%s, nplex=%s, nedges=%s, nfaces=%s" % (self.__name__,self.ndim,self.nplex(),self.nedges(),self.nfaces())
+        return "ElementType %s: ndim=%s, nplex=%s, nedges=%s, nfaces=%s" % (self.__name__, self.ndim, self.nplex(), self.nedges(), self.nfaces())
 
 
 # all registered element types:
 _registered_element_types = ODict()
 
 
-def createElementType(name,doc,ndim,vertices,edges=('',[]),faces=('',[]),**kargs):
+def createElementType(name,doc,ndim,vertices,edges=('', []),faces=('', []),**kargs):
     name = name.capitalize()
     if name in _registered_element_types:
         raise ValueError("Element type %s already exists" % name)
@@ -322,7 +322,7 @@ def createElementType(name,doc,ndim,vertices,edges=('',[]),faces=('',[]),**kargs
         faces = _sanitize(faces),
         )
 
-    for a in [ 'drawedges', 'drawedges2', 'drawfaces', 'drawfaces2','drawgl2edges','drawgl2faces']:
+    for a in [ 'drawedges', 'drawedges2', 'drawfaces', 'drawfaces2', 'drawgl2edges', 'drawgl2faces']:
         if a in kargs:
             D[a] = [ _sanitize(e) for e in kargs[a] ]
             del kargs[a]
@@ -336,7 +336,7 @@ def createElementType(name,doc,ndim,vertices,edges=('',[]),faces=('',[]),**kargs
         ##     raise ValueError("Can not create duplicate element names"
         ## Element.collection[self._name] = self
 
-    C = type(name,(ElementType,),D)
+    C = type(name, (ElementType,), D)
     _registered_element_types[name] = C
     return C
 
@@ -344,13 +344,13 @@ def createElementType(name,doc,ndim,vertices,edges=('',[]),faces=('',[]),**kargs
 # Define the collection of default pyFormex elements
 
 Point = createElementType(
-    'point',"A single point",
+    'point', "A single point",
     ndim = 0,
     vertices = [ ( 0.0, 0.0, 0.0 ) ],
     )
 
 Line2 = createElementType(
-    'line2',"A 2-node line segment",
+    'line2', "A 2-node line segment",
     ndim = 1,
     vertices = [ ( 0.0, 0.0, 0.0 ),
                  ( 1.0, 0.0, 0.0 ),
@@ -358,42 +358,42 @@ Line2 = createElementType(
     )
 
 Line3 = createElementType(
-    'line3',"A 3-node quadratic line segment",
+    'line3', "A 3-node quadratic line segment",
     ndim = 1,
     vertices = [ ( 0.0, 0.0, 0.0 ),
                  ( 0.5, 0.0, 0.0 ),
                  ( 1.0, 0.0, 0.0 ),
                  ],
-    drawgl2faces = [('line2', [ (0,1), (1,2) ])],
+    drawgl2faces = [('line2', [ (0, 1), (1, 2) ])],
     )
 
 
 Line4 = createElementType(
-    'line4',"A 4-node cubic line segment",
+    'line4', "A 4-node cubic line segment",
     ndim = 1,
     vertices = [ ( 0.0, 0.0, 0.0 ),
                  ( e3, 0.0, 0.0 ),
                  ( 2*e3, 0.0, 0.0 ),
                  ( 1.0, 0.0, 0.0 ),
                  ],
-    edges = ('line2', [ (0,2), (2,3), (3,1) ]),
-    drawgl2faces = [('line2', [ (0,1), (1,2), (2,3) ])],
+    edges = ('line2', [ (0, 2), (2, 3), (3, 1) ]),
+    drawgl2faces = [('line2', [ (0, 1), (1, 2), (2, 3) ])],
     )
 
 ######### 2D ###################
 
 Tri3 = createElementType(
-    'tri3',"A 3-node triangle",
+    'tri3', "A 3-node triangle",
     ndim = 2,
     vertices = [ ( 0.0, 0.0, 0.0 ),
                  ( 1.0, 0.0, 0.0 ),
                  ( 0.0, 1.0, 0.0 ),
                  ],
-    edges = ('line2', [ (0,1), (1,2), (2,0) ]),
+    edges = ('line2', [ (0, 1), (1, 2), (2, 0) ]),
     )
 
 Tri6 = createElementType(
-    'tri6',"A 6-node triangle",
+    'tri6', "A 6-node triangle",
     ndim = 2,
     vertices = [ ( 0.0, 0.0, 0.0 ),
                  ( 1.0, 0.0, 0.0 ),
@@ -402,46 +402,46 @@ Tri6 = createElementType(
                  ( 0.5, 0.5, 0.0 ),
                  ( 0.0, 0.5, 0.0 ),
                  ],
-    edges = ('line3', [ (0,3,1), (1,4,2), (2,5,0) ], ),
-    reversed = (2,1,0,4,3,5),
-    drawfaces = [('tri3', [ (0,3,5),(3,1,4),(4,2,5),(3,4,5) ] )],
-    drawgl2faces = [('tri3', [ (0,3,5),(3,1,4),(4,2,5),(3,4,5) ])],
+    edges = ('line3', [ (0, 3, 1), (1, 4, 2), (2, 5, 0) ], ),
+    reversed = (2, 1, 0, 4, 3, 5),
+    drawfaces = [('tri3', [ (0, 3, 5), (3, 1, 4), (4, 2, 5), (3, 4, 5) ] )],
+    drawgl2faces = [('tri3', [ (0, 3, 5), (3, 1, 4), (4, 2, 5), (3, 4, 5) ])],
     )
 
 Tri6.drawgl2edges = [ Tri6.edges.selectNodes(i) for i in Line3.drawgl2faces ]
 
 Quad4 = createElementType(
-    'quad4',"A 4-node quadrilateral",
+    'quad4', "A 4-node quadrilateral",
     ndim = 2,
     vertices = [ (  0.0,  0.0, 0.0 ),
                  (  1.0,  0.0, 0.0 ),
                  (  1.0,  1.0, 0.0 ),
                  (  0.0,  1.0, 0.0 ),
                  ],
-    edges = ('line2', [ (0,1), (1,2), (2,3), (3,0) ], ),
-    drawgl2faces = [('tri3', [ (0,1,3),(1,2,3) ])],
+    edges = ('line2', [ (0, 1), (1, 2), (2, 3), (3, 0) ], ),
+    drawgl2faces = [('tri3', [ (0, 1, 3), (1, 2, 3) ])],
     )
 
 Quad6 = createElementType(
-    'quad6',"A 6-node quadrilateral",
+    'quad6', "A 6-node quadrilateral",
     ndim = 2,
     vertices = Coords.concatenate([
         Quad4.vertices,
         [ (  0.5,  0.0, 0.0 ),
           (  0.5,  1.0, 0.0 ),
           ]]),
-    edges = ('line3', [ (0,4,1), (1,1,2), (2,5,3), (3,3,0) ] ),
-    reversed = (3,2,1,0,5,4),
-    drawedges = [ ('line2', [(1,2), (3,0)]),
-                  ('line3', [(0,4,1), (2,5,3)])
+    edges = ('line3', [ (0, 4, 1), (1, 1, 2), (2, 5, 3), (3, 3, 0) ] ),
+    reversed = (3, 2, 1, 0, 5, 4),
+    drawedges = [ ('line2', [(1, 2), (3, 0)]),
+                  ('line3', [(0, 4, 1), (2, 5, 3)])
                   ],
-    drawfaces = [('quad4',[(0,4,5,3),(2,5,4,1)], )],
-    drawgl2edges = [('line2', [ (1,2), (3,0),(0,4),(4,1),(2,5),(5,3) ])],
-    drawgl2faces = [('tri3',[(0,4,3),(4,5,3),(4,1,5),(1,2,5) ])],
+    drawfaces = [('quad4', [(0, 4, 5, 3), (2, 5, 4, 1)], )],
+    drawgl2edges = [('line2', [ (1, 2), (3, 0), (0, 4), (4, 1), (2, 5), (5, 3) ])],
+    drawgl2faces = [('tri3', [(0, 4, 3), (4, 5, 3), (4, 1, 5), (1, 2, 5) ])],
     )
 
 Quad8 = createElementType(
-    'quad8',"A 8-node quadratic quadrilateral",
+    'quad8', "A 8-node quadratic quadrilateral",
     ndim = 2,
     vertices = Coords.concatenate([
         Quad4.vertices,
@@ -450,33 +450,33 @@ Quad8 = createElementType(
           (  0.5,  1.0, 0.0 ),
           (  0.0,  0.5, 0.0 ),
           ]]),
-    edges = ('line3',[ (0,4,1), (1,5,2), (2,6,3), (3,7,0), ]),
-    reversed = (3,2,1,0,6,5,4,7),
-    drawfaces = [('tri3', [(0,4,7), (1,5,4), (2,6,5), (3,7,6)]), ('quad4', [(4,5,6,7)], )],
-    drawfaces2 = [('quad8', [(0,1,2,3,4,5,6,7)], )],
-    drawgl2faces = [('tri3', [(0,4,7), (1,5,4), (2,6,5), (3,7,6), (4,5,6), (4,6,7) ])],
+    edges = ('line3', [ (0, 4, 1), (1, 5, 2), (2, 6, 3), (3, 7, 0), ]),
+    reversed = (3, 2, 1, 0, 6, 5, 4, 7),
+    drawfaces = [('tri3', [(0, 4, 7), (1, 5, 4), (2, 6, 5), (3, 7, 6)]), ('quad4', [(4, 5, 6, 7)], )],
+    drawfaces2 = [('quad8', [(0, 1, 2, 3, 4, 5, 6, 7)], )],
+    drawgl2faces = [('tri3', [(0, 4, 7), (1, 5, 4), (2, 6, 5), (3, 7, 6), (4, 5, 6), (4, 6, 7) ])],
     )
 
 Quad8.drawgl2edges = [ Quad8.edges.selectNodes(i) for i in Line3.drawgl2faces ]
 
 Quad9 = createElementType(
-    'quad9',"A 9-node quadratic quadrilateral",
+    'quad9', "A 9-node quadratic quadrilateral",
     ndim = 2,
     vertices = Coords.concatenate([
         Quad8.vertices,
         [ (  0.5,  0.5, 0.0 ),
           ]]),
     edges = Quad8.edges,
-    reversed = (3,2,1,0,6,5,4,7,8),
-    drawfaces = [('quad4', [(0,4,8,7),(1,5,8,4),(2,6,8,5),(3,7,8,6) ], )],
-    drawfaces2 = [('quad9', [(0,1,2,3,4,5,6,7,8)], )],
+    reversed = (3, 2, 1, 0, 6, 5, 4, 7, 8),
+    drawfaces = [('quad4', [(0, 4, 8, 7), (1, 5, 8, 4), (2, 6, 8, 5), (3, 7, 8, 6) ], )],
+    drawfaces2 = [('quad9', [(0, 1, 2, 3, 4, 5, 6, 7, 8)], )],
     drawgl2edges = Quad8.drawgl2edges,
-    drawgl2faces = [('tri3', [(0,4,8),(4,1,8),(1,5,8),(5,2,8),(2,6,8),(6,3,8),(3,7,8),(7,0,8) ])],
+    drawgl2faces = [('tri3', [(0, 4, 8), (4, 1, 8), (1, 5, 8), (5, 2, 8), (2, 6, 8), (6, 3, 8), (3, 7, 8), (7, 0, 8) ])],
     )
 
 
 Quad12 = createElementType(
-    'quad12',"A 12-node cubic quadrilateral",
+    'quad12', "A 12-node cubic quadrilateral",
     ndim = 2,
     vertices = Coords.concatenate([
         Quad4.vertices,
@@ -489,14 +489,14 @@ Quad12 = createElementType(
           (  0.0, 2*e3, 0.0 ),
           (  0.0,   e3, 0.0 ),
           ]]),
-    edges = ('line4',[ (0,4,5,1), (1,6,7,2), (2,8,9,3), (3,10,11,0), ]),
-    reversed = (3,2,1,0,9,8,7,6,5,4,11,10),
-    drawfaces = [('tri3', [(0,4,11),(1,6,5),(2,8,7),(3,10,9),
-                           (4,5,6),(6,7,8),(8,9,10),(10,11,4),
-                           (4,6,8),(8,10,4) ], )],
-    drawgl2faces = [('tri3', [(0,4,11),(1,6,5),(2,8,7),(3,10,9),
-                           (4,5,6),(6,7,8),(8,9,10),(10,11,4),
-                           (4,6,8),(8,10,4) ])],
+    edges = ('line4', [ (0, 4, 5, 1), (1, 6, 7, 2), (2, 8, 9, 3), (3, 10, 11, 0), ]),
+    reversed = (3, 2, 1, 0, 9, 8, 7, 6, 5, 4, 11, 10),
+    drawfaces = [('tri3', [(0, 4, 11), (1, 6, 5), (2, 8, 7), (3, 10, 9),
+                           (4, 5, 6), (6, 7, 8), (8, 9, 10), (10, 11, 4),
+                           (4, 6, 8), (8, 10, 4) ], )],
+    drawgl2faces = [('tri3', [(0, 4, 11), (1, 6, 5), (2, 8, 7), (3, 10, 9),
+                           (4, 5, 6), (6, 7, 8), (8, 9, 10), (10, 11, 4),
+                           (4, 6, 8), (8, 10, 4) ])],
     )
 
 Quad12.drawgl2edges = [ Quad12.edges.selectNodes(i) for i in Line4.drawgl2faces ]
@@ -504,21 +504,21 @@ Quad12.drawgl2edges = [ Quad12.edges.selectNodes(i) for i in Line4.drawgl2faces 
 ######### 3D ###################
 
 Tet4 = createElementType(
-    'tet4',"A 4-node tetrahedron",
+    'tet4', "A 4-node tetrahedron",
     ndim = 3,
     vertices = [ ( 0.0, 0.0, 0.0 ),
                  ( 1.0, 0.0, 0.0 ),
                  ( 0.0, 1.0, 0.0 ),
                  ( 0.0, 0.0, 1.0 ),
                  ],
-    edges = ('line2', [ (0,1), (1,2), (2,0), (0,3), (1,3), (2,3) ], ),
-    faces = ('tri3', [ (0,2,1), (0,1,3), (1,2,3), (2,0,3) ], ),
-    reversed = (0,1,3,2),
+    edges = ('line2', [ (0, 1), (1, 2), (2, 0), (0, 3), (1, 3), (2, 3) ], ),
+    faces = ('tri3', [ (0, 2, 1), (0, 1, 3), (1, 2, 3), (2, 0, 3) ], ),
+    reversed = (0, 1, 3, 2),
     )
 
 
 Tet10 = createElementType(
-    'tet10',"A 10-node tetrahedron",
+    'tet10', "A 10-node tetrahedron",
     ndim = 3,
     vertices = Coords.concatenate([
         Tet4.vertices,
@@ -529,16 +529,16 @@ Tet10 = createElementType(
           ( 0.0, 0.5, 0.5 ),
           ( 0.5, 0.0, 0.5 ),
           ]]),
-    edges = ('line3', [ (0,4,1),(1,7,2),(2,5,0),(0,6,3),(1,9,3),(2,8,3) ],),
-    faces = ('tri3', array([(0,2,1,5,7,4),(0,1,3,4,9,6),(0,3,2,6,8,5),(1,2,3,2,7,8)])[:,[(0,3,5),(3,1,4),(4,2,5),(3,4,5)]].reshape(-1,3)),
-    reversed = (0,1,3,2,4,6,5,9,8,7),
+    edges = ('line3', [ (0, 4, 1), (1, 7, 2), (2, 5, 0), (0, 6, 3), (1, 9, 3), (2, 8, 3) ],),
+    faces = ('tri3', array([(0, 2, 1, 5, 7, 4), (0, 1, 3, 4, 9, 6), (0, 3, 2, 6, 8, 5), (1, 2, 3, 2, 7, 8)])[:, [(0, 3, 5), (3, 1, 4), (4, 2, 5), (3, 4, 5)]].reshape(-1, 3)),
+    reversed = (0, 1, 3, 2, 4, 6, 5, 9, 8, 7),
     )
 
 Tet10.drawgl2edges = [ Tet10.edges.selectNodes(i) for i in Line3.drawgl2faces ]
 
 
 Tet14 = createElementType(
-    'tet14',"A 14-node tetrahedron",
+    'tet14', "A 14-node tetrahedron",
     ndim = 3,
     vertices = Coords.concatenate([
         Tet10.vertices,
@@ -548,15 +548,15 @@ Tet14 = createElementType(
           ( 1./3., 1./3., 1./3. ),
           ]]),
     edges = Tet10.edges,
-    faces = ('tri3', array([(0,2,1,5,7,4,10),(0,1,3,4,9,6,11),(0,3,2,6,8,5,12),(1,2,3,2,7,8,13)])[:,[(0,3,6),(3,1,6),(1,4,6),(4,2,6),(2,5,6),(5,0,6)]].reshape(-1,3)),
-    reversed = (0,1,3,2,4,6,5,9,8,7,12,11,10,13),
+    faces = ('tri3', array([(0, 2, 1, 5, 7, 4, 10), (0, 1, 3, 4, 9, 6, 11), (0, 3, 2, 6, 8, 5, 12), (1, 2, 3, 2, 7, 8, 13)])[:, [(0, 3, 6), (3, 1, 6), (1, 4, 6), (4, 2, 6), (2, 5, 6), (5, 0, 6)]].reshape(-1, 3)),
+    reversed = (0, 1, 3, 2, 4, 6, 5, 9, 8, 7, 12, 11, 10, 13),
     )
 
 Tet14.drawgl2edges = Tet10.drawgl2edges
 
 
 Tet15 = createElementType(
-    'tet15',"A 15-node tetrahedron",
+    'tet15', "A 15-node tetrahedron",
     ndim = 3,
     vertices = Coords.concatenate([
         Tet14.vertices,
@@ -564,14 +564,14 @@ Tet15 = createElementType(
           ]]),
     edges = Tet10.edges,
     faces = Tet14.faces,
-    reversed = (0,1,3,2,4,6,5,9,8,7,12,11,10,13,14),
+    reversed = (0, 1, 3, 2, 4, 6, 5, 9, 8, 7, 12, 11, 10, 13, 14),
     )
 
 Tet15.drawgl2edges = Tet10.drawgl2edges
 
 
 Wedge6 = createElementType(
-    'wedge6',"A 6-node wedge element",
+    'wedge6', "A 6-node wedge element",
     ndim = 3,
     vertices = Coords.concatenate([
         Tri3.vertices,
@@ -579,18 +579,18 @@ Wedge6 = createElementType(
           ( 1.0, 0.0, 1.0 ),
           ( 0.0, 1.0, 1.0 ),
           ]]),
-    edges = ('line2', [ (0,1), (1,2), (2,0), (0,3), (1,4), (2,5), (3,4), (4,5), (5,3) ], ),
-    faces = ('quad4', [ (0,2,1,1), (3,4,4,5), (0,1,4,3), (1,2,5,4), (0,3,5,2) ], ),
-    reversed = (3,4,5,0,1,2),
-    drawfaces = [ ('tri3', [ (0,2,1), (3,4,5)] ),
-                  ('quad4', [(0,1,4,3), (1,2,5,4), (0,3,5,2) ], )],
+    edges = ('line2', [ (0, 1), (1, 2), (2, 0), (0, 3), (1, 4), (2, 5), (3, 4), (4, 5), (5, 3) ], ),
+    faces = ('quad4', [ (0, 2, 1, 1), (3, 4, 4, 5), (0, 1, 4, 3), (1, 2, 5, 4), (0, 3, 5, 2) ], ),
+    reversed = (3, 4, 5, 0, 1, 2),
+    drawfaces = [ ('tri3', [ (0, 2, 1), (3, 4, 5)] ),
+                  ('quad4', [(0, 1, 4, 3), (1, 2, 5, 4), (0, 3, 5, 2) ], )],
     )
 
 Wedge6.drawgl2faces = [ Wedge6.faces.selectNodes(i).removeDegenerate() for i in Quad4.drawgl2faces ]
 
 
 Hex8 = createElementType(
-    'hex8',"An 8-node hexahedron",
+    'hex8', "An 8-node hexahedron",
     ndim = 3,
     vertices = [ ( 0.0, 0.0, 0.0 ),
                  ( 1.0, 0.0, 0.0 ),
@@ -601,20 +601,20 @@ Hex8 = createElementType(
                  ( 1.0, 1.0, 1.0 ),
                  ( 0.0, 1.0, 1.0 ),
                  ],
-    edges = ('line2',[ (0,1), (1,2), (2,3), (3,0),
-                       (4,5), (5,6), (6,7), (7,4),
-                       (0,4), (1,5), (2,6), (3,7) ], ),
-    faces = ('quad4', [ (0,4,7,3), (1,2,6,5),
-                        (0,1,5,4), (3,7,6,2),
-                        (0,3,2,1), (4,5,6,7) ], ),
-    reversed = (4,5,6,7,0,1,2,3),
+    edges = ('line2', [ (0, 1), (1, 2), (2, 3), (3, 0),
+                       (4, 5), (5, 6), (6, 7), (7, 4),
+                       (0, 4), (1, 5), (2, 6), (3, 7) ], ),
+    faces = ('quad4', [ (0, 4, 7, 3), (1, 2, 6, 5),
+                        (0, 1, 5, 4), (3, 7, 6, 2),
+                        (0, 3, 2, 1), (4, 5, 6, 7) ], ),
+    reversed = (4, 5, 6, 7, 0, 1, 2, 3),
     )
 
 Hex8.drawgl2faces = [ Hex8.faces.selectNodes(i) for i in Quad4.drawgl2faces ]
 
 
 Hex16 = createElementType(
-    'hex16',"A 16-node hexahedron",
+    'hex16', "A 16-node hexahedron",
     ndim = 3,
     vertices = Coords.concatenate([
         Hex8.vertices,
@@ -627,13 +627,13 @@ Hex16 = createElementType(
          (  0.5,  1.0, 1.0 ),
          (  0.0,  0.5, 1.0 ),
          ]]),
-    edges = ('line3', [ (0,8,1), (1,9,2), (2,10,3),(3,11,0),
-                        (4,12,5),(5,13,6),(6,14,7),(7,15,4),
-                        (0,0,4),(1,1,5),(2,2,6),(3,3,7) ], ),
-    faces = ('quad8', [ (0,4,7,3,0,15,7,11), (1,2,6,5,9,2,13,5),
-                        (0,1,5,4,8,1,12,4), (3,7,6,2,3,14,6,10),
-                        (0,3,2,1,11,10,9,8), (4,5,6,7,12,13,14,15) ], ),
-    reversed= (4,5,6,7,0,1,2,3,12,13,14,15,8,9,10,11),
+    edges = ('line3', [ (0, 8, 1), (1, 9, 2), (2, 10, 3), (3, 11, 0),
+                        (4, 12, 5), (5, 13, 6), (6, 14, 7), (7, 15, 4),
+                        (0, 0, 4), (1, 1, 5), (2, 2, 6), (3, 3, 7) ], ),
+    faces = ('quad8', [ (0, 4, 7, 3, 0, 15, 7, 11), (1, 2, 6, 5, 9, 2, 13, 5),
+                        (0, 1, 5, 4, 8, 1, 12, 4), (3, 7, 6, 2, 3, 14, 6, 10),
+                        (0, 3, 2, 1, 11, 10, 9, 8), (4, 5, 6, 7, 12, 13, 14, 15) ], ),
+    reversed= (4, 5, 6, 7, 0, 1, 2, 3, 12, 13, 14, 15, 8, 9, 10, 11),
     drawedges = [ Hex8.edges ],
     drawfaces = [ Hex8.faces ],
     )
@@ -643,7 +643,7 @@ Hex16.drawgl2faces = [ Hex16.faces.selectNodes(i).removeDegenerate() for i in Qu
 
 
 Hex20 = createElementType(
-    'hex20',"A 20-node hexahedron",
+    'hex20', "A 20-node hexahedron",
     ndim = 3,
     vertices = Coords.concatenate([
         Hex16.vertices,
@@ -652,13 +652,13 @@ Hex20 = createElementType(
          (  1.0,  1.0, 0.5 ),
          (  0.0,  1.0, 0.5 )
          ]]),
-    edges = ('line3',[ (0,8,1), (1,9,2), (2,10,3),(3,11,0),
-                       (4,12,5),(5,13,6),(6,14,7),(7,15,4),
-                       (0,16,4),(1,17,5),(2,18,6),(3,19,7) ],),
-    faces = ('quad8',[ (0,4,7,3,16,15,19,11), (1,2,6,5,9,18,13,17),
-                       (0,1,5,4,8,17,12,16), (3,7,6,2,19,14,18,10),
-                       (0,3,2,1,11,10,9,8), (4,5,6,7,12,13,14,15) ], ),
-    reversed = (4,5,6,7,0,1,2,3,12,13,14,15,8,9,10,11,16,17,18,19),
+    edges = ('line3', [ (0, 8, 1), (1, 9, 2), (2, 10, 3), (3, 11, 0),
+                       (4, 12, 5), (5, 13, 6), (6, 14, 7), (7, 15, 4),
+                       (0, 16, 4), (1, 17, 5), (2, 18, 6), (3, 19, 7) ],),
+    faces = ('quad8', [ (0, 4, 7, 3, 16, 15, 19, 11), (1, 2, 6, 5, 9, 18, 13, 17),
+                       (0, 1, 5, 4, 8, 17, 12, 16), (3, 7, 6, 2, 19, 14, 18, 10),
+                       (0, 3, 2, 1, 11, 10, 9, 8), (4, 5, 6, 7, 12, 13, 14, 15) ], ),
+    reversed = (4, 5, 6, 7, 0, 1, 2, 3, 12, 13, 14, 15, 8, 9, 10, 11, 16, 17, 18, 19),
 )
 
 Hex20.drawfaces = [ Hex20.faces.selectNodes(i) for i in Quad8.drawfaces ]
@@ -673,15 +673,15 @@ Hex20.drawgl2faces = [ Hex20.faces.selectNodes(i) for i in Quad8.drawgl2faces ]
 # AND ADD THE RENUMBERING TO THE FE OUTPUT MODULES
 from simple import regularGrid
 Hex27 = createElementType(
-    'hex27',"A 27-node hexahedron",
+    'hex27', "A 27-node hexahedron",
     ndim = 3,
-    vertices = regularGrid([0.,0.,0.],[1.,1.,1.],[2,2,2]).swapaxes(0,2).reshape(-1,3),
-    edges = ('line3',[ (0,1,2),(6,7,8),(18,19,20),(24,25,26),
-                       (0,3,6),(2,5,8),(18,21,24),(20,23,26),
-                       (0,9,18),(2,11,20),(6,15,24),(8,17,26) ],),
-    faces = ('quad9',[ (0,18,24,6,9,21,15,3,12),(2,8,26,20,5,17,23,11,14),
-                       (0,2,20,18,1,11,19,9,10),(6,24,26,8,15,25,17,7,16),
-                       (0,6,8,2,3,7,5,1,4),(18,20,26,24,19,23,25,21,22), ],),
+    vertices = regularGrid([0., 0., 0.], [1., 1., 1.], [2, 2, 2]).swapaxes(0, 2).reshape(-1, 3),
+    edges = ('line3', [ (0, 1, 2), (6, 7, 8), (18, 19, 20), (24, 25, 26),
+                       (0, 3, 6), (2, 5, 8), (18, 21, 24), (20, 23, 26),
+                       (0, 9, 18), (2, 11, 20), (6, 15, 24), (8, 17, 26) ],),
+    faces = ('quad9', [ (0, 18, 24, 6, 9, 21, 15, 3, 12), (2, 8, 26, 20, 5, 17, 23, 11, 14),
+                       (0, 2, 20, 18, 1, 11, 19, 9, 10), (6, 24, 26, 8, 15, 25, 17, 7, 16),
+                       (0, 6, 8, 2, 3, 7, 5, 1, 4), (18, 20, 26, 24, 19, 23, 25, 21, 22), ],),
 )
 Hex27.drawfaces = [ Hex27.faces.selectNodes(i) for i in Quad9.drawfaces ]
 Hex27.drawgl2edges = [ Hex27.edges.selectNodes(i) for i in Line3.drawgl2faces ]
@@ -765,141 +765,141 @@ The operation of these methods is as follows:
 
 """
 Line2.conversions = {
-    'line3'   : [ ('a', [ (0,1) ]),
-                  ('s', [ (0,2,1) ]),
+    'line3': [ ('a', [ (0, 1) ]),
+                  ('s', [ (0, 2, 1) ]),
                   ],
-    'line2-2' : [ ('v', 'line3'),
-                  ('s', [ (0,2), (2,1) ]), ],
+    'line2-2': [ ('v', 'line3'),
+                  ('s', [ (0, 2), (2, 1) ]), ],
     }
 Line3.conversions = {
-    'line2'   : [ ('s', [ (0,2) ]), ],
-    'line2-2' : [ ('s', [ (0,1), (1,2) ]), ],
+    'line2': [ ('s', [ (0, 2) ]), ],
+    'line2-2': [ ('s', [ (0, 1), (1, 2) ]), ],
     }
 Tri3.conversions =  {
-    'tri3-3' : [ ('a', [ (0,1,2), ]),
-                 ('s', [ (0,1,3),(1,2,3),(2,0,3) ]),
+    'tri3-3': [ ('a', [ (0, 1, 2), ]),
+                 ('s', [ (0, 1, 3), (1, 2, 3), (2, 0, 3) ]),
                  ],
-    'tri3-4' : [ ('v', 'tri6'), ],
-    'tri6'   : [ ('a', [ (0,1), (1,2), (2,0) ]), ],
-    'quad4'  : [ ('v', 'tri6'), ],
+    'tri3-4': [ ('v', 'tri6'), ],
+    'tri6': [ ('a', [ (0, 1), (1, 2), (2, 0) ]), ],
+    'quad4': [ ('v', 'tri6'), ],
     }
 Tri6.conversions = {
-    'tri3'   : [ ('s', [ (0,1,2) ]), ],
-    'tri3-4' : [ ('s', [ (0,3,5),(3,1,4),(4,2,5),(3,4,5) ]), ],
-    'quad4'  : [ ('a', [ (0,1,2), ]),
-                 ('s', [ (0,3,6,5),(1,4,6,3),(2,5,6,4) ]),
+    'tri3': [ ('s', [ (0, 1, 2) ]), ],
+    'tri3-4': [ ('s', [ (0, 3, 5), (3, 1, 4), (4, 2, 5), (3, 4, 5) ]), ],
+    'quad4': [ ('a', [ (0, 1, 2), ]),
+                 ('s', [ (0, 3, 6, 5), (1, 4, 6, 3), (2, 5, 6, 4) ]),
                  ],
     }
 Quad4.conversions = {
-    'tri3'   : 'tri3-u',
-    'tri3-r' : [ ('r', ['tri3-u','tri3-d']), ],
-    'tri3-u' : [ ('s', [ (0,1,2), (2,3,0) ]), ],
-    'tri3-d' : [ ('s', [ (0,1,3), (2,3,1) ]), ],
-    'tri3-x' : [ ('a', [ (0,1,2,3) ]),
-                 ('s', [ (0,1,4),(1,2,4),(2,3,4),(3,0,4) ]),
+    'tri3': 'tri3-u',
+    'tri3-r': [ ('r', ['tri3-u', 'tri3-d']), ],
+    'tri3-u': [ ('s', [ (0, 1, 2), (2, 3, 0) ]), ],
+    'tri3-d': [ ('s', [ (0, 1, 3), (2, 3, 1) ]), ],
+    'tri3-x': [ ('a', [ (0, 1, 2, 3) ]),
+                 ('s', [ (0, 1, 4), (1, 2, 4), (2, 3, 4), (3, 0, 4) ]),
                  ],
-    'quad8'  : [ ('a', [ (0,1), (1,2), (2,3), (3,0) ])],
+    'quad8': [ ('a', [ (0, 1), (1, 2), (2, 3), (3, 0) ])],
     'quad4-4': [ ('v', 'quad9'), ],
-    'quad9'  : [ ('v', 'quad8'), ],
+    'quad9': [ ('v', 'quad8'), ],
     }
 Quad6.conversions = {
-    'quad8'  : [ ('a',[ (0,3), (1,2)]),
-                 ('s',[(0, 1, 2, 3, 4, 7, 5, 6)])],
-    'quad9'  : [ ('a',[ (0,3), (1,2), (4,5)]), ],
+    'quad8': [ ('a', [ (0, 3), (1, 2)]),
+                 ('s', [(0, 1, 2, 3, 4, 7, 5, 6)])],
+    'quad9': [ ('a', [ (0, 3), (1, 2), (4, 5)]), ],
     }
 Quad8.conversions = {
-    'tri3'   : [ ('v', 'quad9'), ],
-    'tri3-v' : [ ('s', [ (0,4,7),(1,5,4),(2,6,5),(3,7,6),(5,6,4),(7,4,6) ]), ],
-    'tri3-h' : [ ('s', [ (0,4,7),(1,5,4),(2,6,5),(3,7,6),(4,5,7),(6,7,5) ]), ],
-    'quad4'  : [ ('s', [ (0,1,2,3) ]), ],
+    'tri3': [ ('v', 'quad9'), ],
+    'tri3-v': [ ('s', [ (0, 4, 7), (1, 5, 4), (2, 6, 5), (3, 7, 6), (5, 6, 4), (7, 4, 6) ]), ],
+    'tri3-h': [ ('s', [ (0, 4, 7), (1, 5, 4), (2, 6, 5), (3, 7, 6), (4, 5, 7), (6, 7, 5) ]), ],
+    'quad4': [ ('s', [ (0, 1, 2, 3) ]), ],
     'quad4-4': [ ('v', 'quad9'), ],
-    'quad9'  : [ ('a', [ (4,5,6,7) ]), ],
+    'quad9': [ ('a', [ (4, 5, 6, 7) ]), ],
     }
 Quad9.conversions = {
-    'quad8'  : [ ('s', [ (0,1,2,3,4,5,6,7) ]), ],
-    'quad4'  : [ ('v', 'quad8'), ],
-    'quad4-4': [ ('s', [ (0,4,8,7),(4,1,5,8),(7,8,6,3),(8,5,2,6) ]), ],
-    'tri3'   : 'tri3-d',
-    'tri3-d' : [ ('s', [ (0,4,7),(4,1,5),(5,2,6),(6,3,7),
-                         (7,4,8),(4,5,8),(5,6,8),(6,7,8) ]), ],
-    'tri3-x' : [ ('s', [ (0,4,8),(4,1,8),(1,5,8),(5,2,8),
-                         (2,6,8),(6,3,8),(3,7,8),(7,0,8) ]), ],
+    'quad8': [ ('s', [ (0, 1, 2, 3, 4, 5, 6, 7) ]), ],
+    'quad4': [ ('v', 'quad8'), ],
+    'quad4-4': [ ('s', [ (0, 4, 8, 7), (4, 1, 5, 8), (7, 8, 6, 3), (8, 5, 2, 6) ]), ],
+    'tri3': 'tri3-d',
+    'tri3-d': [ ('s', [ (0, 4, 7), (4, 1, 5), (5, 2, 6), (6, 3, 7),
+                         (7, 4, 8), (4, 5, 8), (5, 6, 8), (6, 7, 8) ]), ],
+    'tri3-x': [ ('s', [ (0, 4, 8), (4, 1, 8), (1, 5, 8), (5, 2, 8),
+                         (2, 6, 8), (6, 3, 8), (3, 7, 8), (7, 0, 8) ]), ],
     }
 Tet4.conversions = {
-    'tet4-4'  : [ ('a', [ (0,1,2,3) ]),\
-                        ('s', [ (0,1,2,4),(0,3,1,4),(1,3,2,4),(2,3,0,4) ]), ],
-    'tet10'  : [ ('a', [ (0,1), (0,2), (0,3), (1,2), (2, 3), (1, 3)]), ],
-    'tet14'  : [ ('v', 'tet10'), ],
-    'tet15'  : [ ('v', 'tet14'), ],
-    'hex8'   : [ ('v', 'tet15'), ],
+    'tet4-4': [ ('a', [ (0, 1, 2, 3) ]),\
+                        ('s', [ (0, 1, 2, 4), (0, 3, 1, 4), (1, 3, 2, 4), (2, 3, 0, 4) ]), ],
+    'tet10': [ ('a', [ (0, 1), (0, 2), (0, 3), (1, 2), (2, 3), (1, 3)]), ],
+    'tet14': [ ('v', 'tet10'), ],
+    'tet15': [ ('v', 'tet14'), ],
+    'hex8': [ ('v', 'tet15'), ],
     }
 Tet10.conversions = {
-    'tet4'   :  [ ('s', [ (0,1,2,3,) ]), ],
-    'tet14'  : [ ('a', [ (0,1, 2), (0, 2, 3), (0, 3, 1), (1, 2, 3), ]), ],
-    'tet15'  : [ ('v', 'tet14'), ],
-    'hex8'   : [ ('v', 'tet15'), ],
+    'tet4':  [ ('s', [ (0, 1, 2, 3,) ]), ],
+    'tet14': [ ('a', [ (0, 1, 2), (0, 2, 3), (0, 3, 1), (1, 2, 3), ]), ],
+    'tet15': [ ('v', 'tet14'), ],
+    'hex8': [ ('v', 'tet15'), ],
     }
 Tet14.conversions = {
-    'tet10' : [ ('s', [ (0,1,2,3,4, 5, 6, 7, 8, 9) ]), ],
-    'tet4'  : [ ('v', 'tet10'), ],
-    'tet15' : [ ('a', [ (0,1, 2, 3), ]), ],
-    'hex8'  : [ ('v', 'tet15'), ],
+    'tet10': [ ('s', [ (0, 1, 2, 3, 4, 5, 6, 7, 8, 9) ]), ],
+    'tet4': [ ('v', 'tet10'), ],
+    'tet15': [ ('a', [ (0, 1, 2, 3), ]), ],
+    'hex8': [ ('v', 'tet15'), ],
     }
 Tet15.conversions = {
-    'tet14' :  [ ('s', [ (0,1,2,3,4, 5, 6, 7, 8, 9, 10, 11, 12, 13) ]), ],
-    'tet10' :  [ ('v', 'tet14'), ],
-    'tet4'  :  [ ('v', 'tet10'), ],
-    'hex8'  :  [ ('s', [ (0,4,10, 5, 6, 12, 14, 11), (4,1,7, 10, 12, 9, 13, 14),
-                       (5, 10, 7,2,11, 14, 13, 8), (6, 12, 14, 11, 3, 9, 13, 8) ]), ],
+    'tet14':  [ ('s', [ (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13) ]), ],
+    'tet10':  [ ('v', 'tet14'), ],
+    'tet4':  [ ('v', 'tet10'), ],
+    'hex8':  [ ('s', [ (0, 4, 10, 5, 6, 12, 14, 11), (4, 1, 7, 10, 12, 9, 13, 14),
+                       (5, 10, 7, 2, 11, 14, 13, 8), (6, 12, 14, 11, 3, 9, 13, 8) ]), ],
     }
 Wedge6.conversions = {
-    'tet4'    : 'tet4-11',
-    'tet4-3'  : [ ('s', [ (0,1,2,3),(1,2,3,4),(2,3,4,5) ]), ],
-    'tet4-11' : [ ('a', [ (0,1, 4, 3), (1,2, 5, 4), (0, 2, 5, 3)]),
-                  ('s', [   (0, 1, 2, 6), (0, 6, 2, 8), (1, 2, 6, 7), (2, 6, 7, 8), (1, 7, 6, 4), (0, 6, 8, 3), (2, 8, 7, 5), (6,7, 8, 3), (3,7, 8, 5), (3,4, 7, 5), (3,6, 7, 4)  ]), ],
+    'tet4': 'tet4-11',
+    'tet4-3': [ ('s', [ (0, 1, 2, 3), (1, 2, 3, 4), (2, 3, 4, 5) ]), ],
+    'tet4-11': [ ('a', [ (0, 1, 4, 3), (1, 2, 5, 4), (0, 2, 5, 3)]),
+                  ('s', [   (0, 1, 2, 6), (0, 6, 2, 8), (1, 2, 6, 7), (2, 6, 7, 8), (1, 7, 6, 4), (0, 6, 8, 3), (2, 8, 7, 5), (6, 7, 8, 3), (3, 7, 8, 5), (3, 4, 7, 5), (3, 6, 7, 4)  ]), ],
     }
 Hex8.conversions = {
-    'wedge6' : [ ('s', [ (0,1,2,4,5,6),(2,3,0,6,7,4) ]), ],
-    'wedge6-r' : [ ('s', [ (0,4,5,3,7,6),(0,5,1,3,6,2) ]), ],
-    'tet4'   : 'tet4-24',
-    'tet4-5' : [ ('s', [ (0,1,2,5),(2,3,0,7),(5,7,6,2),(7,5,4,0),(0,5,2,7) ]), ],
-    'tet4-6' : [ ('v', 'wedge6') ],
-    'tet4-24': [ ('a', [(0,3,2,1),(0,1,5,4),(0,4,7,3),(1,2,6,5),(2,3,7,6),(4,5,6,7)]),
-                 ('a', [(0,1,2,3,4,5,6,7)]),
-                 ('s', [(0,1,8,14),(1,2,8,14),(2,3,8,14),(3,0,8,14),
-                        (0,4,9,14),(4,5,9,14),(5,1,9,14),(1,0,9,14),
-                        (0,3,10,14),(3,7,10,14),(7,4,10,14),(4,0,10,14),
-                        (1,5,11,14),(5,6,11,14),(6,2,11,14),(2,1,11,14),
-                        (2,6,12,14),(6,7,12,14),(7,3,12,14),(3,2,12,14),
-                        (4,7,13,14),(7,6,13,14),(6,5,13,14),(5,4,13,14),]),],
+    'wedge6': [ ('s', [ (0, 1, 2, 4, 5, 6), (2, 3, 0, 6, 7, 4) ]), ],
+    'wedge6-r': [ ('s', [ (0, 4, 5, 3, 7, 6), (0, 5, 1, 3, 6, 2) ]), ],
+    'tet4': 'tet4-24',
+    'tet4-5': [ ('s', [ (0, 1, 2, 5), (2, 3, 0, 7), (5, 7, 6, 2), (7, 5, 4, 0), (0, 5, 2, 7) ]), ],
+    'tet4-6': [ ('v', 'wedge6') ],
+    'tet4-24': [ ('a', [(0, 3, 2, 1), (0, 1, 5, 4), (0, 4, 7, 3), (1, 2, 6, 5), (2, 3, 7, 6), (4, 5, 6, 7)]),
+                 ('a', [(0, 1, 2, 3, 4, 5, 6, 7)]),
+                 ('s', [(0, 1, 8, 14), (1, 2, 8, 14), (2, 3, 8, 14), (3, 0, 8, 14),
+                        (0, 4, 9, 14), (4, 5, 9, 14), (5, 1, 9, 14), (1, 0, 9, 14),
+                        (0, 3, 10, 14), (3, 7, 10, 14), (7, 4, 10, 14), (4, 0, 10, 14),
+                        (1, 5, 11, 14), (5, 6, 11, 14), (6, 2, 11, 14), (2, 1, 11, 14),
+                        (2, 6, 12, 14), (6, 7, 12, 14), (7, 3, 12, 14), (3, 2, 12, 14),
+                        (4, 7, 13, 14), (7, 6, 13, 14), (6, 5, 13, 14), (5, 4, 13, 14),]),],
     'hex8-8': [ ('v', 'hex20'), ],
-    'hex20' : [ ('a', [ (0,1), (1,2), (2,3), (3,0),
-                        (4,5), (5,6), (6,7), (7,4),
-                        (0,4), (1,5), (2,6), (3,7), ]), ],
+    'hex20': [ ('a', [ (0, 1), (1, 2), (2, 3), (3, 0),
+                        (4, 5), (5, 6), (6, 7), (7, 4),
+                        (0, 4), (1, 5), (2, 6), (3, 7), ]), ],
     'hex27': [ ('v', 'hex20'), ],
     }
 Hex16.conversions = {
-    'hex20'  : [ ('a',[ (0,4), (1,5), (2,6), (3,7) ]),
-                 ('s',[(0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16, 17, 18, 19)])],
+    'hex20': [ ('a', [ (0, 4), (1, 5), (2, 6), (3, 7) ]),
+                 ('s', [(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19)])],
     }
 Hex20.conversions = {
-    'hex8'  : [ ('s', [ (0,1,2,3,4,5,6,7) ]), ],
+    'hex8': [ ('s', [ (0, 1, 2, 3, 4, 5, 6, 7) ]), ],
     'hex8-8': [ ('v', 'hex27'), ],
-    'hex27' : [ ('a', [ (0,1,2,3),(0,1,5,4),(0,3,7,4),(1,2,6,5),(2,6,7,3),(4,5,6,7), ]),
-                ('a', [ (0,1,2,3,4,5,6,7), ]),
-                ('s', [ (0,8,1,11,20,9,3,10,2,16,21,17,22,26,23,19,24,18,4,12,5,15,25,13,7,14,6), ]),
+    'hex27': [ ('a', [ (0, 1, 2, 3), (0, 1, 5, 4), (0, 3, 7, 4), (1, 2, 6, 5), (2, 6, 7, 3), (4, 5, 6, 7), ]),
+                ('a', [ (0, 1, 2, 3, 4, 5, 6, 7), ]),
+                ('s', [ (0, 8, 1, 11, 20, 9, 3, 10, 2, 16, 21, 17, 22, 26, 23, 19, 24, 18, 4, 12, 5, 15, 25, 13, 7, 14, 6), ]),
                 ],
-    'tet4'  : [ ('v', 'hex8'), ],
+    'tet4': [ ('v', 'hex8'), ],
     }
 Hex27.conversions = {
-    'hex8-8': [ ('s', [ (0, 1, 4, 3, 9, 10,13,12),
-                        (1, 2, 5, 4, 10,11,14,13),
-                        (3, 4, 7, 6, 12,13,16,15),
-                        (4, 5, 8, 7, 13,14,17,16),
-                        (9, 10,13,12,18,19,22,21),
-                        (10,11,14,13,19,20,23,22),
-                        (12,13,16,15,21,22,25,24),
-                        (13,14,17,16,22,23,26,25),
+    'hex8-8': [ ('s', [ (0, 1, 4, 3, 9, 10, 13, 12),
+                        (1, 2, 5, 4, 10, 11, 14, 13),
+                        (3, 4, 7, 6, 12, 13, 16, 15),
+                        (4, 5, 8, 7, 13, 14, 17, 16),
+                        (9, 10, 13, 12, 18, 19, 22, 21),
+                        (10, 11, 14, 13, 19, 20, 23, 22),
+                        (12, 13, 16, 15, 21, 22, 25, 24),
+                        (13, 14, 17, 16, 22, 23, 26, 25),
                       ]), ],
     }
 
@@ -920,51 +920,51 @@ Hex27.conversions = {
 #   first plane, intermediate plane, last plane.
 
 Point.extruded = { 1: (Line2, []),
-                   2: (Line3, [0,2,1]) }
-Line2.extruded = { 1: (Quad4, [0,1,3,2] ) }
-Line3.extruded = { 1: (Quad6, [0,2,5,3,1,4]),
-                   2: (Quad9, [0,2,8,6,1,5,7,3,4]), }
+                   2: (Line3, [0, 2, 1]) }
+Line2.extruded = { 1: (Quad4, [0, 1, 3, 2] ) }
+Line3.extruded = { 1: (Quad6, [0, 2, 5, 3, 1, 4]),
+                   2: (Quad9, [0, 2, 8, 6, 1, 5, 7, 3, 4]), }
 Tri3.extruded = { 1: (Wedge6, [] ) }
 Quad4.extruded = { 1: (Hex8, [] ) }
-Quad8.extruded = { 1: (Hex16, [0,1,2,3,8,9,10,11,4,5,6,7,12,13,14,15] ),
-                   2: (Hex20, [0,1,2,3,16,17,18,19,4,5,6,7,20,21,22,23,8,9,10,11] ) }
+Quad8.extruded = { 1: (Hex16, [0, 1, 2, 3, 8, 9, 10, 11, 4, 5, 6, 7, 12, 13, 14, 15] ),
+                   2: (Hex20, [0, 1, 2, 3, 16, 17, 18, 19, 4, 5, 6, 7, 20, 21, 22, 23, 8, 9, 10, 11] ) }
 # BV: If Quad9 would be numbered consecutively, extrusion would be as easy as
 #Quad9.extruded = { 2: (Hex27, [] }
 Quad9.extruded = { 2: (Hex27, [ 0, 4, 1, 7, 8, 5, 3, 6, 2,
-                                9,13,10,16,17,14,12,15,11,
-                               18,22,19,25,26,23,21,24,20,
+                                9, 13, 10, 16, 17, 14, 12, 15, 11,
+                               18, 22, 19, 25, 26, 23, 21, 24, 20,
                                 ]) }
 
 ############################################################
 ############ Reduction of degenerate elements ##############
 
 Line3.degenerate = {
-    'line2' : [ ([[0,1]], [0,2]),
-                ([[1,2]], [0,2]),
+    'line2': [ ([[0, 1]], [0, 2]),
+                ([[1, 2]], [0, 2]),
                 ],
     }
 
 Quad4.degenerate = {
-    'tri3' : [ ([[0,1]], [0,2,3]),
-               ([[1,2]], [0,1,3]),
-               ([[2,3]], [0,1,2]),
-               ([[3,0]], [0,1,2]),
+    'tri3': [ ([[0, 1]], [0, 2, 3]),
+               ([[1, 2]], [0, 1, 3]),
+               ([[2, 3]], [0, 1, 2]),
+               ([[3, 0]], [0, 1, 2]),
                ],
     }
 
 Hex8.degenerate = {
-    'wedge6' : [ ([[0,1],[4,5]], [0,2,3,4,6,7]),
-                 ([[1,2],[5,6]], [0,1,3,4,5,7]),
-                 ([[2,3],[6,7]], [0,1,2,4,5,6]),
-                 ([[3,0],[7,4]], [0,1,2,4,5,6]),
-                 ([[0,1],[3,2]], [0,4,5,3,7,6]),
-                 ([[1,5],[2,6]], [0,4,5,3,7,6]),
-                 ([[5,4],[6,7]], [0,4,1,3,7,2]),
-                 ([[4,0],[7,3]], [0,5,1,3,6,2]),
-                 ([[0,3],[1,2]], [0,7,4,1,6,5]),
-                 ([[3,7],[2,6]], [0,3,4,1,2,5]),
-                 ([[7,4],[6,5]], [0,3,4,1,2,5]),
-                 ([[4,0],[5,1]], [0,3,7,1,2,6]),
+    'wedge6': [ ([[0, 1], [4, 5]], [0, 2, 3, 4, 6, 7]),
+                 ([[1, 2], [5, 6]], [0, 1, 3, 4, 5, 7]),
+                 ([[2, 3], [6, 7]], [0, 1, 2, 4, 5, 6]),
+                 ([[3, 0], [7, 4]], [0, 1, 2, 4, 5, 6]),
+                 ([[0, 1], [3, 2]], [0, 4, 5, 3, 7, 6]),
+                 ([[1, 5], [2, 6]], [0, 4, 5, 3, 7, 6]),
+                 ([[5, 4], [6, 7]], [0, 4, 1, 3, 7, 2]),
+                 ([[4, 0], [7, 3]], [0, 5, 1, 3, 6, 2]),
+                 ([[0, 3], [1, 2]], [0, 7, 4, 1, 6, 5]),
+                 ([[3, 7], [2, 6]], [0, 3, 4, 1, 2, 5]),
+                 ([[7, 4], [6, 5]], [0, 3, 4, 1, 2, 5]),
+                 ([[4, 0], [5, 1]], [0, 3, 7, 1, 2, 6]),
                  ],
     }
 
@@ -984,56 +984,56 @@ Icosa = createElementType(
     """,
     ndim = 3,
     vertices = [ ( 0.0, 1.0, phi ),
-                 ( 0.0,-1.0, phi ),
-                 ( 0.0, 1.0,-phi ),
-                 ( 0.0,-1.0,-phi ),
+                 ( 0.0, -1.0, phi ),
+                 ( 0.0, 1.0, -phi ),
+                 ( 0.0, -1.0, -phi ),
                  ( 1.0, phi, 0.0 ),
                  (-1.0, phi, 0.0 ),
-                 ( 1.0,-phi, 0.0 ),
-                 (-1.0,-phi, 0.0 ),
+                 ( 1.0, -phi, 0.0 ),
+                 (-1.0, -phi, 0.0 ),
                  ( phi, 0.0, 1.0 ),
-                 ( phi, 0.0,-1.0 ),
+                 ( phi, 0.0, -1.0 ),
                  (-phi, 0.0, 1.0 ),
-                 (-phi, 0.0,-1.0 ),
+                 (-phi, 0.0, -1.0 ),
                  ],
-    edges = ('line2', [ (0,1),  (0,8), (1,8), (0,10),(1,10),
-                        (2,3),  (2,9), (3,9), (2,11),(3,11),
-                        (4,5),  (4,0), (5,0), (4,2), (5,2),
-                        (6,7),  (6,1), (7,1), (6,3), (7,3),
-                        (8,9),  (8,4), (9,4), (8,6), (9,6),
-                        (10,11),(10,5),(11,5),(10,7),(11,7),
+    edges = ('line2', [ (0, 1),  (0, 8), (1, 8), (0, 10), (1, 10),
+                        (2, 3),  (2, 9), (3, 9), (2, 11), (3, 11),
+                        (4, 5),  (4, 0), (5, 0), (4, 2), (5, 2),
+                        (6, 7),  (6, 1), (7, 1), (6, 3), (7, 3),
+                        (8, 9),  (8, 4), (9, 4), (8, 6), (9, 6),
+                        (10, 11), (10, 5), (11, 5), (10, 7), (11, 7),
                         ], ),
-    faces = ('tri3', [ (0,1,8),  (1,0,10),
-                       (2,3,11), (3,2,9),
-                       (4,5,0),  (5,4,2),
-                       (6,7,3),  (7,6,1),
-                       (8,9,4),  (9,8,6),
-                       (10,11,7),(11,10,5),
-                       (0,8,4),  (1,6,8),
-                       (0,5,10), (1,10,7),
-                       (2,11,5), (3,7,11),
-                       (2,4,9),  (3,9,6),
+    faces = ('tri3', [ (0, 1, 8),  (1, 0, 10),
+                       (2, 3, 11), (3, 2, 9),
+                       (4, 5, 0),  (5, 4, 2),
+                       (6, 7, 3),  (7, 6, 1),
+                       (8, 9, 4),  (9, 8, 6),
+                       (10, 11, 7), (11, 10, 5),
+                       (0, 8, 4),  (1, 6, 8),
+                       (0, 5, 10), (1, 10, 7),
+                       (2, 11, 5), (3, 7, 11),
+                       (2, 4, 9),  (3, 9, 6),
                        ], ),
-    reversed = (2,3,0,1,4,5,6,7,9,8,11,10),
+    reversed = (2, 3, 0, 1, 4, 5, 6, 7, 9, 8, 11, 10),
     )
 
 
 # list of default element type per plexitude
 _default_eltype = {
-    1 : Point,
-    2 : Line2,
-    3 : Tri3,
-    4 : Quad4,
-    6 : Wedge6,
-    8 : Hex8,
+    1: Point,
+    2: Line2,
+    3: Tri3,
+    4: Quad4,
+    6: Wedge6,
+    8: Hex8,
     }
 
 _default_facetype = {
-    3 : 'tri3',
-    4 : 'quad4',
-    6 : 'tri6',
-    8 : 'quad8',
-    9 : 'quad9',
+    3: 'tri3',
+    4: 'quad4',
+    6: 'tri6',
+    8: 'quad8',
+    9: 'quad9',
     }
 
 
@@ -1065,7 +1065,7 @@ def elementType(name=None,nplex=-1):
     eltype = name
 
     try:
-        if issubclass(eltype,ElementType):
+        if issubclass(eltype, ElementType):
             return eltype
     except:
         pass
@@ -1078,7 +1078,7 @@ def elementType(name=None,nplex=-1):
 
     try:
         eltype = globals()[name.capitalize()]
-        if issubclass(eltype,ElementType):
+        if issubclass(eltype, ElementType):
             return eltype
     except:
         pass
@@ -1109,7 +1109,7 @@ def printElementTypes(lower=False):
     """
     print("Available Element Types:")
     for ndim in range(4):
-        print("  %s-dimensional elements: %s" % (ndim,elementTypes(ndim,lower))        )
+        print("  %s-dimensional elements: %s" % (ndim, elementTypes(ndim, lower))        )
 
 
 #printElementTypes()

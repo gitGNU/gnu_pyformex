@@ -48,22 +48,22 @@ def run():
     c = (x*s+k1*s*s/2*sin(radians(2*hoek)))/(k1*s*cos(radians(hoek))+k1*s*sin(radians(hoek))) # pentacapvoorwaarde
 
     # compret van 1 blad
-    T = Formex([[[-a,0,d],[-a+2,0,d]],[[-a,0,d],[1-a,3,d]],[[1-a,3,d],[2-a,0,d]]],1)
-    B = Formex([[[1-a,-1,0],[3-a,-1,0]],[[1-a,-1,0],[2-a,2,0]],[[2-a,2,0],[3-a,-1,0]]],2)
-    W1 = Formex([[[2-a,2,0],[1-a,3,d]],[[2-a,2,0],[3-a,3,d]],[[2-a,2,0],[2-a,0,d]]])
-    W2 = Formex([[[1-a,-1,0],[-a,0,d]],[[1-a,-1,0],[2-a,0,d]],[[1-a,-1,0],[1-a,-3,d]]])
-    W3 = Formex([[[0,3*a,d],[0,3*(a-1)-1,0]]])
-    top = T.replic2(a,a,2,3,bias=1,taper=-1).reflect(1,0,True).unique()
-    bot = B.replic2(a-1,a-1,2,3,bias=1,taper=-1).reflect(1,-1,True).unique()
-    web = W1.replic2(a-1,a-1,2,3,bias=1,taper=-1) + W2.replic2(a,a,2,-3,bias=1,taper=-1) + W3
-    blad = (top+bot+web).scale([1.,1./3,1.]).translate([0,a,0])
+    T = Formex([[[-a, 0, d], [-a+2, 0, d]], [[-a, 0, d], [1-a, 3, d]], [[1-a, 3, d], [2-a, 0, d]]], 1)
+    B = Formex([[[1-a, -1, 0], [3-a, -1, 0]], [[1-a, -1, 0], [2-a, 2, 0]], [[2-a, 2, 0], [3-a, -1, 0]]], 2)
+    W1 = Formex([[[2-a, 2, 0], [1-a, 3, d]], [[2-a, 2, 0], [3-a, 3, d]], [[2-a, 2, 0], [2-a, 0, d]]])
+    W2 = Formex([[[1-a, -1, 0], [-a, 0, d]], [[1-a, -1, 0], [2-a, 0, d]], [[1-a, -1, 0], [1-a, -3, d]]])
+    W3 = Formex([[[0, 3*a, d], [0, 3*(a-1)-1, 0]]])
+    top = T.replic2(a, a, 2, 3, bias=1, taper=-1).reflect(1, 0, True).unique()
+    bot = B.replic2(a-1, a-1, 2, 3, bias=1, taper=-1).reflect(1, -1, True).unique()
+    web = W1.replic2(a-1, a-1, 2, 3, bias=1, taper=-1) + W2.replic2(a, a, 2, -3, bias=1, taper=-1) + W3
+    blad = (top+bot+web).scale([1., 1./3, 1.]).translate([0, a, 0])
     # herschalen
-    vlakblad = blad.scale([s*sin(radians(b/2))/a,s*cos(radians(b/2))/a,1.]).rotate(-45.)
+    vlakblad = blad.scale([s*sin(radians(b/2))/a, s*cos(radians(b/2))/a, 1.]).rotate(-45.)
     # transleren en mappen op hyperbolische paraboloide (z=k1*x*y)
-    vlakblad2=vlakblad.translate([-c,-c,0])
-    j=vlakblad2.map(lambda x,y,z:[x,y,k1*x*y])
+    vlakblad2=vlakblad.translate([-c, -c, 0])
+    j=vlakblad2.map(lambda x, y, z:[x, y, k1*x*y])
     #overige bladen genereren
-    hyparcap=j.translate([c,c,0]).rosette(m,360/m,2,[0.,0.,0.])
+    hyparcap=j.translate([c, c, 0]).rosette(m, 360/m, 2, [0., 0., 0.])
     draw(hyparcap)
 
 

@@ -35,7 +35,7 @@ from __future__ import print_function
 import pyformex as pf
 
 import utils
-import sys,os
+import sys, os
 
 calpy_path = None  # never tried to detect
 
@@ -51,7 +51,7 @@ def detect(trypaths=None):
     pf.message("You have calpy version %s" % calpy)
     path = ''
     calpy = calpy.split('-')[0]  # trim the version trailer
-    if utils.checkVersion('calpy','0.3.4-rev3',external=True) >= 0:
+    if utils.checkVersion('calpy', '0.3.4-rev3', external=True) >= 0:
         P = utils.command('calpy --whereami')
         if not P.sta:
             path = P.out
@@ -60,7 +60,7 @@ def detect(trypaths=None):
         if trypaths is None:
             trypaths = [ '/usr/local/lib', '/usr/local' ]
         for p in trypaths:
-            path = '%s/calpy-%s' % (p,calpy)
+            path = '%s/calpy-%s' % (p, calpy)
             if os.path.exists(path):
                 pf.debug('path exists: %s' % path)
                 break
@@ -85,7 +85,7 @@ def check(trypaths=None):
     except ImportError:
         pass
 
-    if utils.hasModule('calpy',check=True):
+    if utils.hasModule('calpy', check=True):
         return True
     else:
         pf.warning("sys.path=%s\nSorry, I can not run this example, because you do not have calpy installed (at least not in a place where I can find it)." % sys.path)
@@ -120,12 +120,12 @@ else:
                 option = 'dummy'
                 tempfilename = 'dummy'
 
-            def __init__(self,nelems,nplex,gprule):
+            def __init__(self, nelems, nplex, gprule):
                 from numpy import array
-                plane.Quad.__init__(self,'myQuad',gprule,self.Model)
+                plane.Quad.__init__(self, 'myQuad', gprule, self.Model)
                 self.nnod = nplex
                 self.nelems = nelems
-                self.natCoords = array([1,1,-1,1,-1,-1,1,-1,0,1,-1,0,0,-1,1,0,0,0],dtype=float).reshape((9,2))[:self.nnod,:]
+                self.natCoords = array([1, 1, -1, 1, -1, -1, 1, -1, 0, 1, -1, 0, 0, -1, 1, 0, 0, 0], dtype=float).reshape((9, 2))[:self.nnod,:]
 
 
     else:

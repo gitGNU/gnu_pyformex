@@ -33,7 +33,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
 _topics = ['surface']
-_techniques = ['transform','projection','dialog','image','isopar']
+_techniques = ['transform', 'projection', 'dialog', 'image', 'isopar']
 
 from gui.draw import *
 from plugins.trisurface import TriSurface
@@ -59,24 +59,24 @@ def loadImage(fn):
     return image
 
 
-def makeGrid(nx,ny,eltype):
+def makeGrid(nx, ny, eltype):
     """Create a 2D grid of nx*ny elements of type eltype.
 
     The grid is scaled to unit size and centered.
     """
-    elem = getattr(elements,eltype)
-    return elem.toFormex().replic2(nx,ny).resized(1.).centered()
+    elem = getattr(elements, eltype)
+    return elem.toFormex().replic2(nx, ny).resized(1.).centered()
 
 
-def drawImage(grid,base,patch):
+def drawImage(grid, base, patch):
     """Draw the image on the specified patch grid.
 
     The image colors are specified in the global variable pcolor.
     grid is a Formex with px*py Quad8 elements.
     Each element of grid will be filled by a kx*ky patch of colors.
     """
-    mT = [ patch.isopar('quad8',x,base) for x in grid.coords ]
-    return [ draw(i,color=c,alpha=0.99,bbox='last',nolight=True,wait=False) for i,c in zip (mT,pcolor)]
+    mT = [ patch.isopar('quad8', x, base) for x in grid.coords ]
+    return [ draw(i, color=c, alpha=0.99, bbox='last', nolight=True, wait=False) for i, c in zip (mT, pcolor)]
 
 
 def intersectSurfaceWithSegments2(s1, segm, atol=1.e-5, max1xperline=True):
@@ -96,7 +96,7 @@ def intersectSurfaceWithSegments2(s1, segm, atol=1.e-5, max1xperline=True):
 
 
 def run():
-    global wviewer,pcolor,px,py
+    global wviewer, pcolor, px, py
     clear()
     smooth()
     lights(True)
@@ -108,24 +108,24 @@ def run():
 
     # read the teapot surface
     T = TriSurface.read(getcfg('datadir')+'/teapot.off')
-    xmin,xmax = T.bbox()
+    xmin, xmax = T.bbox()
     T= T.trl(-T.center()).scale(4./(xmax[0]-xmin[0])).setProp(2)
     draw(T)
 
     # default image file
     dfilename = getcfg('datadir')+'/benedict_6.jpg'
-    wviewer = ImageView(dfilename,maxheight=200)
+    wviewer = ImageView(dfilename, maxheight=200)
 
     res = askItems([
-        _I('filename',dfilename,text='Image file',itemtype='button',func=selectImage),
+        _I('filename', dfilename, text='Image file', itemtype='button', func=selectImage),
         wviewer,
-        _I('px',4,text='Number of patches in x-direction'),
-        _I('py',6,text='Number of patches in y-direction'),
-        _I('kx',30,text='Width of a patch in pixels'),
-        _I('ky',30,text='Height of a patch in pixels'),
-        _I('scale',1.0,text='Scale factor'),
-        _I('trl',[-0.4,-0.1,2.],itemtype='point',text='Translation'),
-        _I('method',choices=['projection','intersection']),
+        _I('px', 4, text='Number of patches in x-direction'),
+        _I('py', 6, text='Number of patches in y-direction'),
+        _I('kx', 30, text='Width of a patch in pixels'),
+        _I('ky', 30, text='Height of a patch in pixels'),
+        _I('scale', 1.0, text='Scale factor'),
+        _I('trl', [-0.4, -0.1, 2.], itemtype='point', text='Translation'),
+        _I('method', choices=['projection', 'intersection']),
         ])
 
     if not res:
@@ -133,75 +133,75 @@ def run():
 
     globals().update(res)
 
-    nx,ny = px*kx,py*ky # pixels
+    nx, ny = px*kx, py*ky # pixels
     print('The image is reconstructed with %d x %d pixels'%(nx, ny))
 
-    F = Formex('4:0123').replic2(nx,ny).centered()
+    F = Formex('4:0123').replic2(nx, ny).centered()
     if image is None:
         print("Loading image")
         image = loadImage(filename)
-        wpic,hpic = image.width(),image.height()
-        print("Image size is %sx%s" % (wpic,hpic))
+        wpic, hpic = image.width(), image.height()
+        print("Image size is %sx%s" % (wpic, hpic))
 
     if image is None:
         return
 
     # Create the colors
-    color,colortable = image2glcolor(image.scaled(nx,ny))
+    color, colortable = image2glcolor(image.scaled(nx, ny))
     # Reorder by patch
-    pcolor = color.reshape((py,ky,px,kx,3)).swapaxes(1,2).reshape(-1,kx*ky,3)
+    pcolor = color.reshape((py, ky, px, kx, 3)).swapaxes(1, 2).reshape(-1, kx*ky, 3)
     print("Shape of the colors array: %s" % str(pcolor.shape))
 
-    mH = makeGrid(px,py,'Quad8')
+    mH = makeGrid(px, py, 'Quad8')
 
     try:
         ratioYX = float(hpic)/wpic
-        mH = mH.scale(ratioYX,1) # Keep original aspect ratio
+        mH = mH.scale(ratioYX, 1) # Keep original aspect ratio
     except:
         pass
 
     mH0 = mH.scale(scale).translate(trl)
 
-    dg0 = draw(mH0,mode='wireframe')
+    dg0 = draw(mH0, mode='wireframe')
     zoomAll()
     zoom(0.5)
-    print("Create %s x %s patches" % (px,py))
+    print("Create %s x %s patches" % (px, py))
 
     # Create the transforms
-    base = makeGrid(1,1,'Quad8').coords[0]
-    patch = makeGrid(kx,ky,'Quad4').toMesh()
-    d0 = drawImage(mH0,base,patch)
+    base = makeGrid(1, 1, 'Quad8').coords[0]
+    patch = makeGrid(kx, ky, 'Quad4').toMesh()
+    d0 = drawImage(mH0, base, patch)
 
     if method == 'projection':
-        pts = mH0.coords.projectOnSurface(T,[0.,0.,1.],'-f')
+        pts = mH0.coords.projectOnSurface(T, [0., 0., 1.], '-f')
         dg1 = d1 = [] # to allow dummy undraw
 
 
     else:
-        mH1 = mH.rotate(-30.,0).scale(0.5).translate([0.,-.7,-2.])
-        dg1 = draw(mH1,mode='wireframe')
-        d1 = drawImage(mH1,base,patch)
+        mH1 = mH.rotate(-30., 0).scale(0.5).translate([0., -.7, -2.])
+        dg1 = draw(mH1, mode='wireframe')
+        d1 = drawImage(mH1, base, patch)
 
-        x = connect([mH0.asPoints(),mH1.asPoints()])
+        x = connect([mH0.asPoints(), mH1.asPoints()])
         dx = draw(x)
         print("Creating intersection with surface")
         pts, il, it, mil=intersectSurfaceWithSegments2(T, x, max1xperline=True)
 
         if len(x) != len(pts):
             print("Some of the lines do not intersect the surface:")
-            print(" %d lines, %d intersections %d missing" % (len(x),len(pts),len(mil)))
+            print(" %d lines, %d intersections %d missing" % (len(x), len(pts), len(mil)))
             return
 
     dp = draw(pts, marksize=6, color='white')
     #print pts.shape
-    mH2 = Formex(pts.reshape(-1,8,3))
+    mH2 = Formex(pts.reshape(-1, 8, 3))
 
     if method == 'projection':
-        x = connect([mH0.points(),mH2.points()])
+        x = connect([mH0.points(), mH2.points()])
         dx = draw(x)
 
     print("Create projection mapping using the grid points")
-    d2 = drawImage(mH2.trl([0.,0.,0.01]),base,patch)
+    d2 = drawImage(mH2.trl([0., 0., 0.01]), base, patch)
     # small translation to make sure the image is above the surface, not cutting it
 
     print("Finally show the finished image")

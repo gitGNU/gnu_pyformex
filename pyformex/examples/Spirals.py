@@ -31,8 +31,8 @@ See also the Sweep example for a more sophisticated application of spirals.
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['geometry','curve']
-_techniques = ['transform','spiral']
+_topics = ['geometry', 'curve']
+_techniques = ['transform', 'spiral']
 
 from gui.draw import *
 from plugins import curve
@@ -41,20 +41,20 @@ m = 100 # number of cells along spiral
 a = 1. # number of 360 degree turns
 
 F = Formex(origin()) # base pattern, here a point
-F = F.replic(m,1.,0)#.reflect(0)
+F = F.replic(m, 1., 0)#.reflect(0)
 s = a*2*pi/(m-1)
 F = F.scale(s)
 
 
-def spiral(X,dir=[0,1,2],rfunc=lambda x:1,zfunc=lambda x:0):
+def spiral(X,dir=[0, 1, 2],rfunc=lambda x:1,zfunc=lambda x:0):
     """Perform a spiral transformation on a coordinate array"""
-    theta = X[...,dir[0]]
+    theta = X[..., dir[0]]
     #print(theta)
-    r = rfunc(theta) + X[...,dir[1]]
+    r = rfunc(theta) + X[..., dir[1]]
     x = r * cos(theta)
     y = r * sin(theta)
-    z = zfunc(theta) + X[...,dir[2]]
-    X = hstack([x,y,z]).reshape(X.shape)
+    z = zfunc(theta) + X[..., dir[2]]
+    X = hstack([x, y, z]).reshape(X.shape)
     return Coords(X)
 
 
@@ -71,20 +71,20 @@ zf = lambda x : c * exp(b*x)
 rf = lambda x : a * exp(b*x)
 
 
-S = spiral(F.coords,[0,1,2],rf)#.rosette(nwires,360./nwires)
+S = spiral(F.coords, [0, 1, 2], rf)#.rosette(nwires,360./nwires)
 
-PL = curve.PolyLine(S[:,0,:])
+PL = curve.PolyLine(S[:, 0,:])
 
 def run():
     linewidth(2)
     clear()
     flat()
     draw(origin())
-    draw(F,color=blue)
-    drawNumbers(F,color=blue)
-    draw(PL,color=red)
-    draw(PL.coords,color=red)
-    drawNumbers(PL.coords,color=red)
+    draw(F, color=blue)
+    drawNumbers(F, color=blue)
+    draw(PL, color=red)
+    draw(PL.coords, color=red)
+    drawNumbers(PL.coords, color=red)
     return
 
 
@@ -93,8 +93,8 @@ def run():
         X = PL.pointsAt(at)
         PL2 = curve.PolyLine(X)
         clear()
-        draw(PL2,color=blue)
-        draw(PL2.coords,color=blue)
+        draw(PL2, color=blue)
+        draw(PL2.coords, color=blue)
 
 if __name__ == 'draw':
     run()

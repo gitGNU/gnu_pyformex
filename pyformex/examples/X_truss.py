@@ -79,27 +79,27 @@ class X_truss(object):
         """
         total_length = n_mod * mod_length
         # Nodes
-        bot_nodes = Formex([[[0.0,0.0]]]).replic(n_mod+1,mod_length)
-        top_nodes = bot_nodes.translate([0.0,height,0.0])
+        bot_nodes = Formex([[[0.0, 0.0]]]).replic(n_mod+1, mod_length)
+        top_nodes = bot_nodes.translate([0.0, height, 0.0])
         if diagonals_connected:
-            mid_nodes = Formex(bot_nodes[:n_mod]).translate([0.5*mod_length,0.5*height, 0.0])
+            mid_nodes = Formex(bot_nodes[:n_mod]).translate([0.5*mod_length, 0.5*height, 0.0])
         else:
             mid_nodes = None
         # Truss Members
-        bot = connect([bot_nodes,bot_nodes],bias=[0,1])
-        top = connect([top_nodes,top_nodes],bias=[0,1])
+        bot = connect([bot_nodes, bot_nodes], bias=[0, 1])
+        top = connect([top_nodes, top_nodes], bias=[0, 1])
         if interior_verticals:
-            vert = connect([bot_nodes,top_nodes])
+            vert = connect([bot_nodes, top_nodes])
         else:
-            vert1 = connect([Formex(bot_nodes[:1]),Formex(top_nodes[:1])])
-            vert2 = vert1.translate([total_length,0.,0.])
+            vert1 = connect([Formex(bot_nodes[:1]), Formex(top_nodes[:1])])
+            vert2 = vert1.translate([total_length, 0., 0.])
             vert = vert1+vert2
         if diagonals_connected:
-            dia1 = connect([bot_nodes,mid_nodes]) + connect([mid_nodes,top_nodes],bias=[0,1])
-            dia2 = connect([top_nodes,mid_nodes]) + connect([mid_nodes,bot_nodes],bias=[0,1])
+            dia1 = connect([bot_nodes, mid_nodes]) + connect([mid_nodes, top_nodes], bias=[0, 1])
+            dia2 = connect([top_nodes, mid_nodes]) + connect([mid_nodes, bot_nodes], bias=[0, 1])
         else:
-            dia1 = connect([bot_nodes,top_nodes],bias=[0,1])
-            dia2 = connect([top_nodes,bot_nodes],bias=[0,1])
+            dia1 = connect([bot_nodes, top_nodes], bias=[0, 1])
+            dia2 = connect([top_nodes, bot_nodes], bias=[0, 1])
         # save attributes
         self.n_mod = n_mod
         self.mod_length = mod_length
@@ -135,7 +135,7 @@ def run():
     reset()
     delay(1)
     def example(diag=True,vert=True):
-        truss = X_truss(12,2.35,2.65,diag,vert)
+        truss = X_truss(12, 2.35, 2.65, diag, vert)
 
         truss.bot.setProp(3)
         truss.top.setProp(3)
@@ -144,12 +144,12 @@ def run():
         truss.dia2.setProp(1)
 
         clear()
-        draw(truss.allNodes(),wait=False)
+        draw(truss.allNodes(), wait=False)
         draw(truss.allBars())
 
-    for diag in [True,False]:
-        for vert in [True,False]:
-            example(diag,vert)
+    for diag in [True, False]:
+        for vert in [True, False]:
+            example(diag, vert)
 
 if __name__ == 'draw':
     run()

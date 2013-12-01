@@ -29,8 +29,8 @@ of a plane cross section along thay curve.
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['geometry','curve','mesh']
-_techniques = ['sweep','spiral']
+_topics = ['geometry', 'curve', 'mesh']
+_techniques = ['sweep', 'spiral']
 
 from gui.draw import *
 from plugins import curve
@@ -54,16 +54,16 @@ rfuncs = [
 cross_sections = ODict()
 # select the planar patterns from the simple module
 for cs in simple.Pattern:
-    if re.search('[a-zA-Z]',simple.Pattern[cs][2:]) is None:
+    if re.search('[a-zA-Z]', simple.Pattern[cs][2:]) is None:
         cross_sections[cs] = simple.Pattern[cs]
 # add some more patterns
 cross_sections.update({
-    'channel' : 'l:1223',
-    'H-beam' : 'l:11/322/311',
-    'sigma' : 'l:16253',
+    'channel': 'l:1223',
+    'H-beam': 'l:11/322/311',
+    'sigma': 'l:16253',
     'Z-beam': 'l:353',
-    'octagon':'l:15263748',
-    'swastika':'l:12+23+34+41',
+    'octagon': 'l:15263748',
+    'swastika': 'l:12+23+34+41',
     'solid_square': '4:0123',
     'solid_triangle': '3:012',
     'swastika3': '3:012023034041',
@@ -71,31 +71,31 @@ cross_sections.update({
 
 
 dialog_items = [
-    _I('nmod',100,text='Number of cells along spiral'),
-    _I('turns',2.5,text='Number of 360 degree turns'),
-    _I('rfunc',None,text='Spiral function',choices=rfuncs),
-    _I('coeffs',(1.,0.5,0.2),text='Coefficients in the spiral function'),
-    _I('spiral3d',0.0,text='Out of plane factor'),
-    _I('spread',False,text='Spread points evenly along spiral'),
-    _I('nwires',1,text='Number of spirals'),
-    _G('sweep',text='Sweep Data',checked=True,items= [
-        _I('cross_section','cross','select',text='Shape of cross section',choices=cross_sections.keys()),
-        _I('cross_rotate',0.,text='Cross section rotation angle before sweeping'),
-        _I('cross_upvector','2',text='Cross section vector that keeps its orientation'),
-        _I('cross_scale',0.,text='Cross section scaling factor'),
+    _I('nmod', 100, text='Number of cells along spiral'),
+    _I('turns', 2.5, text='Number of 360 degree turns'),
+    _I('rfunc', None, text='Spiral function', choices=rfuncs),
+    _I('coeffs', (1., 0.5, 0.2), text='Coefficients in the spiral function'),
+    _I('spiral3d', 0.0, text='Out of plane factor'),
+    _I('spread', False, text='Spread points evenly along spiral'),
+    _I('nwires', 1, text='Number of spirals'),
+    _G('sweep', text='Sweep Data', checked=True, items= [
+        _I('cross_section', 'cross', 'select', text='Shape of cross section', choices=cross_sections.keys()),
+        _I('cross_rotate', 0., text='Cross section rotation angle before sweeping'),
+        _I('cross_upvector', '2', text='Cross section vector that keeps its orientation'),
+        _I('cross_scale', 0., text='Cross section scaling factor'),
         ]),
-    _I('flyalong',False,text='Fly along the spiral'),
+    _I('flyalong', False, text='Fly along the spiral'),
    ]
 
 
-def spiral(X,dir=[0,1,2],rfunc=lambda x:1,zfunc=lambda x:0):
+def spiral(X,dir=[0, 1, 2],rfunc=lambda x:1,zfunc=lambda x:0):
     """Perform a spiral transformation on a coordinate array"""
-    theta = X[...,dir[0]]
-    r = rfunc(theta) + X[...,dir[1]]
+    theta = X[..., dir[0]]
+    r = rfunc(theta) + X[..., dir[1]]
     x = r * cos(theta)
     y = r * sin(theta)
-    z = zfunc(theta) + X[...,dir[2]]
-    X = hstack([x,y,z]).reshape(X.shape)
+    z = zfunc(theta) + X[..., dir[2]]
+    X = hstack([x, y, z]).reshape(X.shape)
     return Coords(X)
 
 
@@ -105,9 +105,9 @@ def drawSpiralCurves(PL,nwires,color1,color2=None):
     # Convert to Formex, because that has a rosette() method
     PL = PL.toFormex()
     if nwires > 1:
-        PL = PL.rosette(nwires,360./nwires)
-    draw(PL,color=color1)
-    draw(PL.points(),color=color2)
+        PL = PL.rosette(nwires, 360./nwires)
+    draw(PL, color=color1)
+    draw(PL.points(), color=color2)
 
 
 def createCrossSection():
@@ -117,18 +117,18 @@ def createCrossSection():
     if cross_scale:
         CS = CS.scale(cross_scale)
     # Convert to Mesh, because that has a sweep() method
-    CS = CS.swapAxes(0,2).toMesh()
+    CS = CS.swapAxes(0, 2).toMesh()
     return CS
 
 
-def createSpiralCurve(turns,nmod):
-    F = Formex(origin()).replic(nmod,1.,0).scale(turns*2*pi/nmod)
-    a,b,c = coeffs
+def createSpiralCurve(turns, nmod):
+    F = Formex(origin()).replic(nmod, 1., 0).scale(turns*2*pi/nmod)
+    a, b, c = coeffs
     rfunc_defs = {
         'constant':                    lambda x: a,
         'linear (Archimedes)':         lambda x: a + b*x,
-        'quadratic' :                  lambda x: a + b*x + c*x*x,
-        'exponential (equi-angular)' : lambda x: a + b * exp(c*x),
+        'quadratic':                  lambda x: a + b*x + c*x*x,
+        'exponential (equi-angular)': lambda x: a + b * exp(c*x),
 #        'custom' :                     lambda x: a + b * sqrt(c*x),
     }
 
@@ -138,9 +138,9 @@ def createSpiralCurve(turns,nmod):
     else:
         zf = lambda x : 0.0
 
-    S = spiral(F.coords,[0,1,2],rf,zf)
+    S = spiral(F.coords, [0, 1, 2], rf, zf)
 
-    PL = curve.PolyLine(S[:,0,:])
+    PL = curve.PolyLine(S[:, 0,:])
 
     return PL
     
@@ -152,15 +152,15 @@ def show():
     dialog.acceptData()
     globals().update(dialog.results)
 
-    PL = createSpiralCurve(turns,nmod)
-    drawSpiralCurves(PL,nwires,red,blue)
+    PL = createSpiralCurve(turns, nmod)
+    drawSpiralCurves(PL, nwires, red, blue)
 
     if spread:
         at = PL.atLength(PL.nparts)
         X = PL.pointsAt(at)
         PL = curve.PolyLine(X)
         clear()
-        drawSpiralCurves(PL,nwires,blue,red)
+        drawSpiralCurves(PL, nwires, blue, red)
 
 
     if sweep:
@@ -170,17 +170,17 @@ def show():
 
         draw(CS)
         wait()
-        structure = CS.sweep(PL,normal=[1.,0.,0.],upvector=eval(cross_upvector),avgdir=True)
+        structure = CS.sweep(PL, normal=[1., 0., 0.], upvector=eval(cross_upvector), avgdir=True)
         clear()
         smoothwire()
-        draw(structure,color='red',bkcolor='cyan')
+        draw(structure, color='red', bkcolor='cyan')
 
         if nwires > 1:
-            structure = structure.toFormex().rosette(nwires,360./nwires).toMesh()
-            draw(structure,color='orange')
+            structure = structure.toFormex().rosette(nwires, 360./nwires).toMesh()
+            draw(structure, color='orange')
 
     if flyalong:
-        flyAlong(PL.scale(1.1).trl([0.0,0.0,0.2]),upvector=[0.,0.,1.],sleeptime=0.1)
+        flyAlong(PL.scale(1.1).trl([0.0, 0.0, 0.2]), upvector=[0., 0., 1.], sleeptime=0.1)
 
         view('front')
 
@@ -213,7 +213,7 @@ def createDialog():
     dialog = Dialog(
         caption = 'Sweep parameters',
         items = dialog_items,
-        actions = [('Close',close),('Show',show)],
+        actions = [('Close', close), ('Show', show)],
         default = 'Show'
         )
 

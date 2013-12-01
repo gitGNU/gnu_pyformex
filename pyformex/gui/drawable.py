@@ -28,7 +28,7 @@ from __future__ import print_function
 
 import pyformex as pf
 
-from OpenGL import GL,GLU
+from OpenGL import GL, GLU
 
 from colors import *
 from formex import *
@@ -70,7 +70,7 @@ def glColor(color,alpha=None):
             if alpha is None:
                 GL.glColor3fv(color)
             else:
-                GL.glColor4fv(append(color,alpha))
+                GL.glColor4fv(append(color, alpha))
         else:
             GL.glColor4fv(color)
 
@@ -80,11 +80,11 @@ def glTexture(texture,mode='*'):
     texmode = {'*': GL.GL_MODULATE, '1': GL.GL_DECAL}[mode]
     # Configure the texture rendering parameters
     GL.glEnable(GL.GL_TEXTURE_2D)
-    GL.glTexParameterf(GL.GL_TEXTURE_2D,GL.GL_TEXTURE_MAG_FILTER,GL.GL_NEAREST)
-    GL.glTexParameterf(GL.GL_TEXTURE_2D,GL.GL_TEXTURE_MIN_FILTER,GL.GL_NEAREST)
-    GL.glTexEnvf(GL.GL_TEXTURE_ENV,GL.GL_TEXTURE_ENV_MODE,texmode)
+    GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST)
+    GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST)
+    GL.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, texmode)
     # Re-select the texture
-    GL.glBindTexture(GL.GL_TEXTURE_2D,texture.tex)
+    GL.glBindTexture(GL.GL_TEXTURE_2D, texture.tex)
 
 #
 # Though all three functions drawPoints, drawLines and drawPolygons
@@ -103,33 +103,33 @@ def drawPoints(x,color=None,alpha=1.0,size=None):
     If size (float) is given, it specifies the point size.
     If color is given it is an (npoints,3) array of RGB values.
     """
-    x = x.astype(float32).reshape(-1,3)
+    x = x.astype(float32).reshape(-1, 3)
     if color is not None:
-        color = resize(color.astype(float32),x.shape)
+        color = resize(color.astype(float32), x.shape)
     if size:
         GL.glPointSize(size)
-    x = x.reshape(-1,1,3)
-    drawgl.draw_polygons(x,None,color,None,alpha,-1)
+    x = x.reshape(-1, 1, 3)
+    drawgl.draw_polygons(x, None, color, None, alpha, -1)
 
 
 def multi_draw_polygons(x,n,color,t,alpha,objtype,nproc=-1):
-    from multi import multitask,cpu_count
+    from multi import multitask, cpu_count
     if nproc < 1:
         nproc = cpu_count()
 
     print("MULTIDRAW %s" % nproc)
 
     if nproc == 1:
-        drawgl.draw_polygons(x,n,color,t,alpha,objtype)
+        drawgl.draw_polygons(x, n, color, t, alpha, objtype)
 
     else:
-        xblocks = splitar(x,nproc)
+        xblocks = splitar(x, nproc)
         n = t = color = None
         print([xb.shape for xb in xblocks])
         #[ drawgl.draw_polygons(xb,n,color,t,alpha,objtype) for xb in xblocks]
 
-        tasks = [(drawgl.draw_polygons,(xb,n,color,t,alpha,objtype)) for xb in xblocks]
-        multitask(tasks,nproc)
+        tasks = [(drawgl.draw_polygons, (xb, n, color, t, alpha, objtype)) for xb in xblocks]
+        multitask(tasks, nproc)
 
 
 def drawPolygons(x,e,color=None,alpha=1.0,texture=None,t=None,normals=None,lighting=False,avgnormals=False,objtype=-1):
@@ -151,7 +151,7 @@ def drawPolygons(x,e,color=None,alpha=1.0,texture=None,t=None,normals=None,light
       This value can be set to GL.GL_LINE_LOOP to draw the element's
       circumference independent from the drawing mode.
     """
-    pf.debug("drawPolygons",pf.DEBUG.DRAW)
+    pf.debug("drawPolygons", pf.DEBUG.DRAW)
     if e is None:
         nelems = x.shape[0]
     else:
@@ -160,9 +160,9 @@ def drawPolygons(x,e,color=None,alpha=1.0,texture=None,t=None,normals=None,light
     #print("LIGHTING %s, AVGNORMALS %s" % (lighting,avgnormals))
     if lighting and objtype==-1:
         if normals is None:
-            pf.debug("Computing normals",pf.DEBUG.DRAW)
+            pf.debug("Computing normals", pf.DEBUG.DRAW)
             if avgnormals and e is not None:
-                n = geomtools.averageNormals(x,e,treshold=pf.cfg['render/avgnormaltreshold'])
+                n = geomtools.averageNormals(x, e, treshold=pf.cfg['render/avgnormaltreshold'])
             else:
                 if e is None:
                     n = geomtools.polygonNormals(x)
@@ -171,13 +171,13 @@ def drawPolygons(x,e,color=None,alpha=1.0,texture=None,t=None,normals=None,light
                 #pf.debug("NORMALS:%s" % str(n.shape),pf.DEBUG.DRAW)
         else:
             #print("NORMALS=%s"% normals)
-            n = checkArray(normals,(nelems,-1,3),'f')
+            n = checkArray(normals, (nelems, -1, 3), 'f')
 
     # Texture
     if texture is not None:
         glTexture(texture)
         if t is None:
-            t = array([[0.,0.],[1.,0.],[1.,1.],[0.,1.]])
+            t = array([[0., 0.], [1., 0.], [1., 1.], [0., 1.]])
     else:
         t = None
 
@@ -190,32 +190,32 @@ def drawPolygons(x,e,color=None,alpha=1.0,texture=None,t=None,normals=None,light
         n = n.astype(float32)
     if color is not None:
         color = color.astype(float32)
-        pf.debug("COLORS:%s" % str(color.shape),pf.DEBUG.DRAW)
+        pf.debug("COLORS:%s" % str(color.shape), pf.DEBUG.DRAW)
         if color.shape[-1] != 3 or (
             color.ndim > 1 and color.shape[0] != nelems) :
-            pf.debug("INCOMPATIBLE COLOR SHAPE: %s, while nelems=%s" % (str(color.shape),nelems),pf.DEBUG.DRAW)
+            pf.debug("INCOMPATIBLE COLOR SHAPE: %s, while nelems=%s" % (str(color.shape), nelems), pf.DEBUG.DRAW)
             color = None
     if t is not None:
         t = t.astype(float32)
 
     # Call library function
     if e is None:
-        drawgl.draw_polygons(x,n,color,t,alpha,objtype)
+        drawgl.draw_polygons(x, n, color, t, alpha, objtype)
         #multi_draw_polygons(x,n,color,t,alpha,objtype)
     else:
-        drawgl.draw_polygon_elems(x,e,n,color,t,alpha,objtype)
+        drawgl.draw_polygon_elems(x, e, n, color, t, alpha, objtype)
 
 
-def drawPolyLines(x,e,color):
+def drawPolyLines(x, e, color):
     """Draw the circumference of polygons."""
-    pf.debug("drawPolyLines",pf.DEBUG.DRAW)
-    drawPolygons(x,e,color=color,alpha=1.0,objtype=GL.GL_LINE_LOOP)
+    pf.debug("drawPolyLines", pf.DEBUG.DRAW)
+    drawPolygons(x, e, color=color, alpha=1.0, objtype=GL.GL_LINE_LOOP)
 
 
-def drawLines(x,e,color):
+def drawLines(x, e, color):
     """Draw straight line segments."""
-    pf.debug("drawLines",pf.DEBUG.DRAW)
-    drawPolygons(x,e,color=color,alpha=1.0)
+    pf.debug("drawLines", pf.DEBUG.DRAW)
+    drawPolygons(x, e, color=color, alpha=1.0)
 
 
 def drawBezier(x,color=None,objtype=GL.GL_LINE_STRIP,granularity=100):
@@ -224,10 +224,10 @@ def drawBezier(x,color=None,objtype=GL.GL_LINE_STRIP,granularity=100):
     x: (4,3,3) : control points
     color: (4,) or (4,4): colors
     """
-    GL.glMap1f(GL.GL_MAP1_VERTEX_3,0.0,1.0,x)
+    GL.glMap1f(GL.GL_MAP1_VERTEX_3, 0.0, 1.0, x)
     GL.glEnable(GL.GL_MAP1_VERTEX_3)
-    if color is not None and color.shape == (4,4):
-        GL.glMap1f(GL.GL_MAP1_COLOR_4,0.0,1.0,color)
+    if color is not None and color.shape == (4, 4):
+        GL.glMap1f(GL.GL_MAP1_COLOR_4, 0.0, 1.0, color)
         GL.glEnable(GL.GL_MAP1_COLOR_4)
 
     u = arange(granularity+1) / float(granularity)
@@ -247,7 +247,7 @@ def drawBezier(x,color=None,objtype=GL.GL_LINE_STRIP,granularity=100):
 
 
 def drawBezierPoints(x,color=None,granularity=100):
-    drawBezier(x,color=None,objtype=GL.GL_POINTS,granularity=granularity)
+    drawBezier(x, color=None, objtype=GL.GL_POINTS, granularity=granularity)
 
 
 def drawNurbsCurves(x,knots,color=None,alpha=1.0,samplingTolerance=5.0):
@@ -267,7 +267,7 @@ def drawNurbsCurves(x,knots,color=None,alpha=1.0,samplingTolerance=5.0):
 
     If color is given it is an (ncurves,3) array of RGB values.
     """
-    nctrl,ndim = x.shape[-2:]
+    nctrl, ndim = x.shape[-2:]
     nknots = asarray(knots).shape[-1]
     order = nknots-nctrl
     if  order > 8:
@@ -275,45 +275,45 @@ def drawNurbsCurves(x,knots,color=None,alpha=1.0,samplingTolerance=5.0):
         return
 
     if x.ndim == 2:
-        x = x.reshape(-1,nctrl,ndim)
+        x = x.reshape(-1, nctrl, ndim)
         if color is not None and color.ndim == 2:
-            color = color.reshape(-1,nctrl,color.shape[-1])
+            color = color.reshape(-1, nctrl, color.shape[-1])
 
     if color is not None:
-        pf.debug('Coords shape: %s' % str(x.shape),pf.DEBUG.DRAW)
-        pf.debug('Color shape: %s' % str(color.shape),pf.DEBUG.DRAW)
+        pf.debug('Coords shape: %s' % str(x.shape), pf.DEBUG.DRAW)
+        pf.debug('Color shape: %s' % str(color.shape), pf.DEBUG.DRAW)
         if color.ndim == 1:
-            pf.debug('Single color',pf.DEBUG.DRAW)
+            pf.debug('Single color', pf.DEBUG.DRAW)
         elif color.ndim == 2 and color.shape[0] == x.shape[0]:
-            pf.debug('Element color: %s colors' % color.shape[0],pf.DEBUG.DRAW)
+            pf.debug('Element color: %s colors' % color.shape[0], pf.DEBUG.DRAW)
         elif color.shape == x.shape[:-1] + (3,):
-            pf.debug('Vertex color: %s colors' % str(color.shape[:-1]),pf.DEBUG.DRAW)
+            pf.debug('Vertex color: %s colors' % str(color.shape[:-1]), pf.DEBUG.DRAW)
         else:
-            raise ValueError("Number of colors (%s) should equal 1 or the number of curves(%s) or the number of curves * number of vertices" % (color.shape[0],x.shape[0]))
+            raise ValueError("Number of colors (%s) should equal 1 or the number of curves(%s) or the number of curves * number of vertices" % (color.shape[0], x.shape[0]))
 
-        pf.debug("Color shape = %s" % str(color.shape),pf.DEBUG.DRAW)
-        if color.shape[-1] not in (3,4):
+        pf.debug("Color shape = %s" % str(color.shape), pf.DEBUG.DRAW)
+        if color.shape[-1] not in (3, 4):
             raise ValueError("Expected 3 or 4 color components")
 
     if color is not None:
-        pf.debug("Final Color shape = %s" % str(color.shape),pf.DEBUG.DRAW)
+        pf.debug("Final Color shape = %s" % str(color.shape), pf.DEBUG.DRAW)
 
     nurb = GLU.gluNewNurbsRenderer()
     if not nurb:
         raise RuntimeError("Could not create a new NURBS renderer")
 
-    GLU.gluNurbsProperty(nurb,GLU.GLU_SAMPLING_TOLERANCE,samplingTolerance)
+    GLU.gluNurbsProperty(nurb, GLU.GLU_SAMPLING_TOLERANCE, samplingTolerance)
 
     mode = {3:GL.GL_MAP1_VERTEX_3, 4:GL.GL_MAP1_VERTEX_4}[ndim]
 
     if color is not None and color.ndim == 1:
         # Handle single color
-        pf.debug('Set single color: OK',pf.DEBUG.DRAW)
+        pf.debug('Set single color: OK', pf.DEBUG.DRAW)
         glColor(color)
         color = None
 
     ki = knots
-    for i,xi in enumerate(x):
+    for i, xi in enumerate(x):
         if color is not None and color.ndim == 2:
             # Handle element color
             glColor(color[i])
@@ -325,9 +325,9 @@ def drawNurbsCurves(x,knots,color=None,alpha=1.0,samplingTolerance=5.0):
             ci = color[i]
             if ci.shape[-1] == 3:
                 # gluNurbs always wants 4 colors
-                ci = growAxis(ci,1,axis=-1,fill=alpha)
-            GLU.gluNurbsCurve(nurb,ki,ci,GL.GL_MAP1_COLOR_4)
-        GLU.gluNurbsCurve(nurb,ki,xi,mode)
+                ci = growAxis(ci, 1, axis=-1, fill=alpha)
+            GLU.gluNurbsCurve(nurb, ki, ci, GL.GL_MAP1_COLOR_4)
+        GLU.gluNurbsCurve(nurb, ki, xi, mode)
         GLU.gluEndCurve(nurb)
 
     GLU.gluDeleteNurbsRenderer(nurb)
@@ -348,29 +348,29 @@ def drawQuadraticCurves(x,e=None,color=None,alpha=1.0):
 
     If color is given it is an (nlines,3) array of RGB values.
     """
-    pf.debug("drawQuadraticCurves",pf.DEBUG.DRAW)
+    pf.debug("drawQuadraticCurves", pf.DEBUG.DRAW)
     if e is None:
         #print("X SHAPE %s" % str(x.shape))
-        nelems,nfaces,nplex = x.shape[:3]
-        x = x.reshape(-1,nplex,3)
+        nelems, nfaces, nplex = x.shape[:3]
+        x = x.reshape(-1, nplex, 3)
     else:
         if e.ndim == 3:
-            nelems,nfaces,nplex = e.shape
-            e = e.reshape(-1,nplex)
+            nelems, nfaces, nplex = e.shape
+            e = e.reshape(-1, nplex)
         elif e.ndim == 2:
-            nelems,nplex = e.shape
+            nelems, nplex = e.shape
             nfaces = 1
         else:
             raise ValueError("Can not handle elems with shape: %s" % str(e.shape))
 
     if color is not None:
         if color.ndim == 2:
-            pf.debug("COLOR SHAPE BEFORE MULTIPLEXING %s" % str(color.shape),pf.DEBUG.DRAW)
-            color = multiplex(color,nfaces).reshape(-1,3)
-            pf.debug("COLOR SHAPE AFTER  MULTIPLEXING %s" % str(color.shape),pf.DEBUG.DRAW)
+            pf.debug("COLOR SHAPE BEFORE MULTIPLEXING %s" % str(color.shape), pf.DEBUG.DRAW)
+            color = multiplex(color, nfaces).reshape(-1, 3)
+            pf.debug("COLOR SHAPE AFTER  MULTIPLEXING %s" % str(color.shape), pf.DEBUG.DRAW)
         if color.ndim > 2:
             color = color.reshape((nelems*nfaces,) + color.shape[-2:]).squeeze()
-            pf.debug("COLOR SHAPE AFTER RESHAPING %s" % str(color.shape),pf.DEBUG.DRAW)
+            pf.debug("COLOR SHAPE AFTER RESHAPING %s" % str(color.shape), pf.DEBUG.DRAW)
 
     if e is None:
         xx = x.copy()
@@ -379,11 +379,11 @@ def drawQuadraticCurves(x,e=None,color=None,alpha=1.0):
 
     #print xx.shape
     #print xx
-    xx[...,1,:] = 2*xx[...,1,:] - 0.5*(xx[...,0,:] + xx[...,2,:])
+    xx[..., 1,:] = 2*xx[..., 1,:] - 0.5*(xx[..., 0,:] + xx[..., 2,:])
     #print xx.shape
     #print xx
-    knots = array([0.,0.,0.,1.,1.,1.])
-    drawNurbsCurves(xx,knots,color=color,alpha=alpha)
+    knots = array([0., 0., 0., 1., 1., 1.])
+    drawNurbsCurves(xx, knots, color=color, alpha=alpha)
 
 
 _nurbs_renderers_ = []
@@ -415,7 +415,7 @@ def drawNurbsSurfaces(x,sknots,tknots,color=None,alpha=1.0,normals='auto',sampli
     import timer
     t = timer.Timer()
 
-    ns,nt,ndim = x.shape[-3:]
+    ns, nt, ndim = x.shape[-3:]
     nsk = asarray(sknots).shape[-1]
     ntk = asarray(tknots).shape[-1]
     sorder = nsk-ns
@@ -425,24 +425,24 @@ def drawNurbsSurfaces(x,sknots,tknots,color=None,alpha=1.0,normals='auto',sampli
         return
 
     if x.ndim == 3:
-        x = x.reshape(-1,ns,nt,ndim)
+        x = x.reshape(-1, ns, nt, ndim)
         if color is not None and color.ndim == 3:
-            color = color.reshape(-1,ns,nt,color.shape[-1])
+            color = color.reshape(-1, ns, nt, color.shape[-1])
 
     if color is not None:
-        pf.debug('Coords shape: %s' % str(x.shape),pf.DEBUG.DRAW)
-        pf.debug('Color shape: %s' % str(color.shape),pf.DEBUG.DRAW)
+        pf.debug('Coords shape: %s' % str(x.shape), pf.DEBUG.DRAW)
+        pf.debug('Color shape: %s' % str(color.shape), pf.DEBUG.DRAW)
         if color.ndim == 1:
-            pf.debug('Single color',pf.DEBUG.DRAW)
+            pf.debug('Single color', pf.DEBUG.DRAW)
         elif color.ndim == 2 and color.shape[0] == x.shape[0]:
-            pf.debug('Element color: %s' % color.shape[0],pf.DEBUG.DRAW)
+            pf.debug('Element color: %s' % color.shape[0], pf.DEBUG.DRAW)
         elif color.shape == x.shape[:-1] + (3,):
-            pf.debug('Vertex color: %s' % str(color.shape[:-1]),pf.DEBUG.DRAW)
+            pf.debug('Vertex color: %s' % str(color.shape[:-1]), pf.DEBUG.DRAW)
         else:
-            raise ValueError("Number of colors (%s) should equal 1 or the number of faces(%s) or the number of faces * number of vertices" % (color.shape[0],x.shape[0]))
+            raise ValueError("Number of colors (%s) should equal 1 or the number of faces(%s) or the number of faces * number of vertices" % (color.shape[0], x.shape[0]))
 
-        pf.debug("Color shape = %s" % str(color.shape),pf.DEBUG.DRAW)
-        if color.shape[-1] not in (3,4):
+        pf.debug("Color shape = %s" % str(color.shape), pf.DEBUG.DRAW)
+        if color.shape[-1] not in (3, 4):
             raise ValueError("Expected 3 or 4 color components")
 
     if normals == 'auto':
@@ -467,28 +467,28 @@ def drawNurbsSurfaces(x,sknots,tknots,color=None,alpha=1.0,normals='auto',sampli
 
             if color.shape[-1] == 3:
                 # gluNurbs always wants 4 colors
-                color = growAxis(color,3,axis=-1,fill=alpha)
+                color = growAxis(color, 3, axis=-1, fill=alpha)
 
-        nb = drawgl.draw_nurbs_surfaces(x,sknots,tknots,color,alpha,samplingTolerance)
+        nb = drawgl.draw_nurbs_surfaces(x, sknots, tknots, color, alpha, samplingTolerance)
 
     else:
         nurb = GLU.gluNewNurbsRenderer()
         if not nurb:
             raise RuntimeError("Could not create a new NURBS renderer")
 
-        GLU.gluNurbsProperty(nurb,GLU.GLU_SAMPLING_TOLERANCE,samplingTolerance)
+        GLU.gluNurbsProperty(nurb, GLU.GLU_SAMPLING_TOLERANCE, samplingTolerance)
 
         mode = {3:GL.GL_MAP2_VERTEX_3, 4:GL.GL_MAP2_VERTEX_4}[ndim]
 
         if color is not None and color.ndim == 1:
             # Handle single color
-            pf.debug('Set single color: OK',pf.DEBUG.DRAW)
+            pf.debug('Set single color: OK', pf.DEBUG.DRAW)
             glColor(color)
             color = None
 
         si = sknots
         ti = tknots
-        for i,xi in enumerate(x):
+        for i, xi in enumerate(x):
             if color is not None and color.ndim == 2:
                 # Handle element color
                 glColor(color[i])
@@ -502,9 +502,9 @@ def drawNurbsSurfaces(x,sknots,tknots,color=None,alpha=1.0,normals='auto',sampli
                 ci = color[i]
                 if ci.shape[-1] == 3:
                     # gluNurbs always wants 4 colors
-                    ci = growAxis(ci,1,axis=-1,fill=alpha)
-                GLU.gluNurbsSurface(nurb,si,ti,ci,GL.GL_MAP2_COLOR_4)
-            GLU.gluNurbsSurface(nurb,si,ti,xi,mode)
+                    ci = growAxis(ci, 1, axis=-1, fill=alpha)
+                GLU.gluNurbsSurface(nurb, si, ti, ci, GL.GL_MAP2_COLOR_4)
+            GLU.gluNurbsSurface(nurb, si, ti, xi, mode)
             GLU.gluEndSurface(nurb)
 
         GLU.gluDeleteNurbsRenderer(nurb)
@@ -514,14 +514,14 @@ def drawNurbsSurfaces(x,sknots,tknots,color=None,alpha=1.0,normals='auto',sampli
 
 def quad4_quad8(x):
     """_Convert an array of quad4 surfaces to quad8"""
-    y = roll(x,-1,axis=-2)
+    y = roll(x, -1, axis=-2)
     x5_8 = (x+y)/2
-    return concatenate([x,x5_8],axis=-2)
+    return concatenate([x, x5_8], axis=-2)
 
 def quad8_quad9(x):
     """_Convert an array of quad8 surfaces to quad9"""
-    x9 = x[...,:4,:].sum(axis=-2)/2 - x[...,4:,:].sum(axis=-2)/4
-    return concatenate([x,x9[...,newaxis,:]],axis=-2)
+    x9 = x[..., :4,:].sum(axis=-2)/2 - x[..., 4:,:].sum(axis=-2)/4
+    return concatenate([x, x9[..., newaxis,:]], axis=-2)
 
 
 def drawQuadraticSurfaces(x,e,color=None):
@@ -542,24 +542,24 @@ def drawQuadraticSurfaces(x,e,color=None):
     """
     import timer
     t = timer.Timer()
-    pf.debug("drawQuadraticSurfaces",pf.DEBUG.DRAW)
+    pf.debug("drawQuadraticSurfaces", pf.DEBUG.DRAW)
     if e is None:
-        nelems,nfaces,nplex = x.shape[:3]
-        x = x.reshape(-1,nplex,3)
+        nelems, nfaces, nplex = x.shape[:3]
+        x = x.reshape(-1, nplex, 3)
     else:
-        nelems,nfaces,nplex = e.shape[:3]
-        e = e.reshape(-1,nplex)
+        nelems, nfaces, nplex = e.shape[:3]
+        e = e.reshape(-1, nplex)
 
     if color is not None:
-        pf.debug('Color shape: %s' % str(color.shape),pf.DEBUG.DRAW)
+        pf.debug('Color shape: %s' % str(color.shape), pf.DEBUG.DRAW)
         if color.ndim == 2:
-            pf.debug("COLOR SHAPE BEFORE MULTIPLEXING %s" % str(color.shape),pf.DEBUG.DRAW)
-            color = multiplex(color,nfaces).reshape(-1,3)
-            pf.debug("COLOR SHAPE AFTER  MULTIPLEXING %s" % str(color.shape),pf.DEBUG.DRAW)
+            pf.debug("COLOR SHAPE BEFORE MULTIPLEXING %s" % str(color.shape), pf.DEBUG.DRAW)
+            color = multiplex(color, nfaces).reshape(-1, 3)
+            pf.debug("COLOR SHAPE AFTER  MULTIPLEXING %s" % str(color.shape), pf.DEBUG.DRAW)
         if color.ndim > 2:
             # BV REMOVED squeeze: may break some things
             color = color.reshape((nelems*nfaces,) + color.shape[-2:])#.squeeze()
-            pf.debug("COLOR SHAPE AFTER RESHAPING %s" % str(color.shape),pf.DEBUG.DRAW)
+            pf.debug("COLOR SHAPE AFTER RESHAPING %s" % str(color.shape), pf.DEBUG.DRAW)
 
     if e is None:
         xx = x.copy()
@@ -569,13 +569,13 @@ def drawQuadraticSurfaces(x,e,color=None):
     # Draw quad4 as quad4
     if xx.shape[-2] == 4:
         # Bilinear surface
-        knots = array([0.,0.,1.,1.])
-        xx = xx[...,[0,3,1,2],:]
-        xx = xx.reshape(-1,2,2,xx.shape[-1])
+        knots = array([0., 0., 1., 1.])
+        xx = xx[..., [0, 3, 1, 2],:]
+        xx = xx.reshape(-1, 2, 2, xx.shape[-1])
         if color is not None and color.ndim > 2:
-            color = color[...,[0,3,1,2],:]
-            color = color.reshape(-1,2,2,color.shape[-1])
-        drawNurbsSurfaces(xx,knots,knots,color)
+            color = color[..., [0, 3, 1, 2],:]
+            color = color.reshape(-1, 2, 2, color.shape[-1])
+        drawNurbsSurfaces(xx, knots, knots, color)
         return
 
     # Convert quad8 to quad9
@@ -583,20 +583,20 @@ def drawQuadraticSurfaces(x,e,color=None):
         xx = quad8_quad9(xx)
 
     # Convert quad9 to nurbs node order
-    xx = xx[...,[0,7,3,4,8,6,1,5,2],:]
-    xx = xx.reshape(-1,3,3,xx.shape[-1])
+    xx = xx[..., [0, 7, 3, 4, 8, 6, 1, 5, 2],:]
+    xx = xx.reshape(-1, 3, 3, xx.shape[-1])
     if color is not None and color.ndim > 2:
-        pf.debug("INITIAL COLOR %s" % str(color.shape),pf.DEBUG.DRAW)
+        pf.debug("INITIAL COLOR %s" % str(color.shape), pf.DEBUG.DRAW)
         if color.shape[-2] == 8:
             color = quad8_quad9(color)
-        color = color[...,[0,7,3,4,8,6,1,5,2],:]
-        color = color.reshape(-1,3,3,color.shape[-1])
-        pf.debug("RESHAPED COLOR %s" % str(color.shape),pf.DEBUG.DRAW)
+        color = color[..., [0, 7, 3, 4, 8, 6, 1, 5, 2],:]
+        color = color.reshape(-1, 3, 3, color.shape[-1])
+        pf.debug("RESHAPED COLOR %s" % str(color.shape), pf.DEBUG.DRAW)
 
-    xx[...,1,:] = 2*xx[...,1,:] - 0.5*(xx[...,0,:] + xx[...,2,:])
-    xx[...,1,:,:] = 2*xx[...,1,:,:] - 0.5*(xx[...,0,:,:] + xx[...,2,:,:])
-    knots = array([0.,0.,0.,1.,1.,1.])
-    drawNurbsSurfaces(xx,knots,knots,color)
+    xx[..., 1,:] = 2*xx[..., 1,:] - 0.5*(xx[..., 0,:] + xx[..., 2,:])
+    xx[..., 1,:,:] = 2*xx[..., 1,:,:] - 0.5*(xx[..., 0,:,:] + xx[..., 2,:,:])
+    knots = array([0., 0., 0., 1., 1., 1.])
+    drawNurbsSurfaces(xx, knots, knots, color)
     print("drawQuadraticSurfaces: %s seconds" % t.seconds())
 
 
@@ -616,24 +616,24 @@ def draw_faces(x,e,color=None,alpha=1.0,texture=None,texc=None,normals=None,ligh
     `nfaces` faces are drawn in the same color.
     This is e.g. convenient when drawing faces of a solid element.
     """
-    pf.debug("draw_faces",pf.DEBUG.DRAW)
+    pf.debug("draw_faces", pf.DEBUG.DRAW)
     if e is None:
-        nelems,nfaces,nplex = x.shape[:3]
-        x = x.reshape(-1,nplex,3)
+        nelems, nfaces, nplex = x.shape[:3]
+        x = x.reshape(-1, nplex, 3)
     else:
-        nelems,nfaces,nplex = e.shape[:3]
-        e = e.reshape(-1,nplex)
+        nelems, nfaces, nplex = e.shape[:3]
+        e = e.reshape(-1, nplex)
 
     if color is not None:
         if color.ndim == 2:
-            pf.debug("COLOR SHAPE BEFORE MULTIPLEXING %s" % str(color.shape),pf.DEBUG.DRAW)
-            color = multiplex(color,nfaces).reshape(-1,3)
-            pf.debug("COLOR SHAPE AFTER  MULTIPLEXING %s" % str(color.shape),pf.DEBUG.DRAW)
+            pf.debug("COLOR SHAPE BEFORE MULTIPLEXING %s" % str(color.shape), pf.DEBUG.DRAW)
+            color = multiplex(color, nfaces).reshape(-1, 3)
+            pf.debug("COLOR SHAPE AFTER  MULTIPLEXING %s" % str(color.shape), pf.DEBUG.DRAW)
         if color.ndim > 2:
             color = color.reshape((nelems*nfaces,) + color.shape[-2:]).squeeze()
-            pf.debug("COLOR SHAPE AFTER RESHAPING %s" % str(color.shape),pf.DEBUG.DRAW)
+            pf.debug("COLOR SHAPE AFTER RESHAPING %s" % str(color.shape), pf.DEBUG.DRAW)
 
-    drawPolygons(x,e,color,alpha,texture,texc,normals,lighting,avgnormals,objtype=objtype)
+    drawPolygons(x, e, color, alpha, texture, texc, normals, lighting, avgnormals, objtype=objtype)
 
 
 def drawEdges(x,e,edges,eltype,color=None):
@@ -650,7 +650,7 @@ def drawEdges(x,e,edges,eltype,color=None):
     If eltype is None, the edges are drawn as polygons. Other allowed values
     are: 'line3'
     """
-    pf.debug("drawEdges",pf.DEBUG.DRAW)
+    pf.debug("drawEdges", pf.DEBUG.DRAW)
     if not isinstance(eltype, str):
         eltype = eltype.name()
     # We may have edges with different plexitudes!
@@ -662,27 +662,27 @@ def drawEdges(x,e,edges,eltype,color=None):
         fa = asarray(edg)
         nplex = fa.shape[1]
         if e is None:
-            coords = x[:,fa,:]
+            coords = x[:, fa,:]
             elems = None
         else:
             coords = x
-            elems = e[:,fa]
-        pf.debug("COORDS SHAPE: %s" % str(coords.shape),pf.DEBUG.DRAW)
+            elems = e[:, fa]
+        pf.debug("COORDS SHAPE: %s" % str(coords.shape), pf.DEBUG.DRAW)
         if elems is not None:
-            pf.debug("ELEMS SHAPE: %s" % str(elems.shape),pf.DEBUG.DRAW)
+            pf.debug("ELEMS SHAPE: %s" % str(elems.shape), pf.DEBUG.DRAW)
         if color is not None and color.ndim==3:
-            pf.debug("COLOR SHAPE BEFORE EXTRACTING: %s" % str(color.shape),pf.DEBUG.DRAW)
+            pf.debug("COLOR SHAPE BEFORE EXTRACTING: %s" % str(color.shape), pf.DEBUG.DRAW)
             # select the colors of the matching points
-            color = color[:,fa,:]
-            pf.debug("COLOR SHAPE AFTER EXTRACTING: %s" % str(color.shape),pf.DEBUG.DRAW)
+            color = color[:, fa,:]
+            pf.debug("COLOR SHAPE AFTER EXTRACTING: %s" % str(color.shape), pf.DEBUG.DRAW)
 
         if eltype == 'line3':
             if 'line3' in pf.cfg['draw/quadline']:
-                drawQuadraticCurves(coords,elems,color)
+                drawQuadraticCurves(coords, elems, color)
             else:
-                draw_faces(coords,elems,color,1.0,objtype=GL.GL_LINE_STRIP)
+                draw_faces(coords, elems, color, 1.0, objtype=GL.GL_LINE_STRIP)
         else:
-            draw_faces(coords,elems,color,1.0)
+            draw_faces(coords, elems, color, 1.0)
 
 
 def drawFaces(x,e,faces,eltype,color=None,alpha=1.0,texture=None,texc=None,normals=None,lighting=False,avgnormals=False):
@@ -697,7 +697,7 @@ def drawFaces(x,e,faces,eltype,color=None,alpha=1.0,texture=None,texc=None,norma
     face of the solid, in local vertex numbers (0..nplex-1). The faces are
     sorted and collected according to their plexitude before drawing them.
     """
-    pf.debug("drawFaces",pf.DEBUG.DRAW)
+    pf.debug("drawFaces", pf.DEBUG.DRAW)
     # We may have faces with different plexitudes!
     # We collect them according to plexitude.
     # But first convert to a list, so that we can call this function
@@ -707,26 +707,26 @@ def drawFaces(x,e,faces,eltype,color=None,alpha=1.0,texture=None,texc=None,norma
         fa = asarray(fac)
         nplex = fa.shape[1]
         if e is None:
-            coords = x[:,fa,:]
+            coords = x[:, fa,:]
             elems = None
         else:
             coords = x
-            elems = e[:,fa]
-        pf.debug("COORDS SHAPE: %s" % str(coords.shape),pf.DEBUG.DRAW)
+            elems = e[:, fa]
+        pf.debug("COORDS SHAPE: %s" % str(coords.shape), pf.DEBUG.DRAW)
         if elems is not None:
-            pf.debug("ELEMS SHAPE: %s" % str(elems.shape),pf.DEBUG.DRAW)
+            pf.debug("ELEMS SHAPE: %s" % str(elems.shape), pf.DEBUG.DRAW)
         if color is not None:
-            pf.debug("COLOR SHAPE: %s" % str(color.shape),pf.DEBUG.DRAW)
+            pf.debug("COLOR SHAPE: %s" % str(color.shape), pf.DEBUG.DRAW)
             # select the colors of the matching points
             if color.ndim==3:
-                color = color[:,fa,:]
-                pf.debug("COLOR SHAPE AFTER EXTRACTING: %s" % str(color.shape),pf.DEBUG.DRAW)
+                color = color[:, fa,:]
+                pf.debug("COLOR SHAPE AFTER EXTRACTING: %s" % str(color.shape), pf.DEBUG.DRAW)
         if eltype in pf.cfg['draw/quadsurf'] and eltype in _nurbs_elements:
             #print "USING QUADSURF"
-            drawQuadraticSurfaces(coords,elems,color)
+            drawQuadraticSurfaces(coords, elems, color)
         else:
             #print "USING POLYGON"
-            draw_faces(coords,elems,color,alpha,texture,texc,normals,lighting,avgnormals)
+            draw_faces(coords, elems, color, alpha, texture, texc, normals, lighting, avgnormals)
 
 
 def drawAtPoints(x,mark,color=None):
@@ -737,7 +737,7 @@ def drawAtPoints(x,mark,color=None):
     If color is given it is an (npoints,3) array of RGB values. It only
     makes sense if the mark was created without color!
     """
-    for i,xi in enumerate(x):
+    for i, xi in enumerate(x):
         if color is not None:
             GL.glColor3fv(color[i])
         GL.glPushMatrix()
@@ -773,32 +773,32 @@ def averageDirection(a,tol=0.5):
     if a.ndim != 2:
         raise ValueError("array should be 2-dimensional!")
     nrow = a.shape[0]
-    cnt = zeros(nrow,dtype=int32)
+    cnt = zeros(nrow, dtype=int32)
     while cnt.min() == 0:
         # select unhandled vectors
         w = where(cnt==0)
         nw = a[w]
         # find all those with direction close to the first
-        wok = where(dotpr(nw[0],nw) >= tol)
+        wok = where(dotpr(nw[0], nw) >= tol)
         wi = w[0][wok[0]]
         # replace each with the sum and remember how many we have
         cnt[wi] = len(wi)
         a[wi] = a[wi].sum(axis=0)
 
     # divide by the sum to get average
-    a /= cnt.reshape(-1,1)
+    a /= cnt.reshape(-1, 1)
 
     return a
 
 
-def averageDirectionsOneNode(d,wi,tol):
+def averageDirectionsOneNode(d, wi, tol):
     k = d[wi]
-    misc.averageDirection(k,tol)
+    misc.averageDirection(k, tol)
     d[wi] = k
 
 
 # CANDIDATE FOR C LIBRARY
-def nodalSum2(val,elems,tol):
+def nodalSum2(val, elems, tol):
     """Compute the nodal sum of values defined on elements.
 
     val   : (nelems,nplex,nval) values at points of elements.
@@ -817,7 +817,7 @@ def nodalSum2(val,elems,tol):
     t = timer.Timer()
     nodes = unique(elems)
     t.reset()
-    [ averageDirectionsOneNode(val,where(elems==i),tol) for i in nodes ]
+    [ averageDirectionsOneNode(val, where(elems==i), tol) for i in nodes ]
     ## for i in nodes:
     ##     wi = where(elems==i)
     ##     k = val[wi]
@@ -827,13 +827,13 @@ def nodalSum2(val,elems,tol):
     print("TIME %s \n" % t.seconds())
 
 
-def drawCube(s,color=[red,cyan,green,magenta,blue,yellow]):
+def drawCube(s,color=[red, cyan, green, magenta, blue, yellow]):
     """Draws a centered cube with side 2*s and colored faces.
 
     Colors are specified in the order [FRONT,BACK,RIGHT,LEFT,TOP,BOTTOM].
     """
-    vertices = [[s,s,s],[-s,s,s],[-s,-s,s],[s,-s,s],[s,s,-s],[-s,s,-s],[-s,-s,-s],[s,-s,-s]]
-    planes = [[0,1,2,3],[4,5,6,7],[0,3,7,4],[1,2,6,5],[0,1,5,4],[3,2,6,7]]
+    vertices = [[s, s, s], [-s, s, s], [-s, -s, s], [s, -s, s], [s, s, -s], [-s, s, -s], [-s, -s, -s], [s, -s, -s]]
+    planes = [[0, 1, 2, 3], [4, 5, 6, 7], [0, 3, 7, 4], [1, 2, 6, 5], [0, 1, 5, 4], [3, 2, 6, 7]]
     GL.glBegin(GL.GL_QUADS)
     for i in range(6):
         #glNormal3d(0,1,0);
@@ -848,10 +848,10 @@ def drawSphere(s,color=cyan,ndiv=8):
     quad = GLU.gluNewQuadric()
     GLU.gluQuadricNormals(quad, GLU.GLU_SMOOTH)
     GL.glColor(*color)
-    GLU.gluSphere(quad,s,ndiv,ndiv)
+    GLU.gluSphere(quad, s, ndiv, ndiv)
 
 
-def drawGridLines(x0,x1,nx):
+def drawGridLines(x0, x1, nx):
     """Draw a 3D rectangular grid of lines.
 
     A grid of lines parallel to the axes is drawn in the domain bounded
@@ -867,20 +867,20 @@ def drawGridLines(x0,x1,nx):
 
     for i in range(3):
         if nx[i] > 0:
-            axes = (asarray([1,2]) + i) % 3
-            base = simple.regularGrid(x0[axes],x1[axes],nx[axes]).reshape((-1,2))
-            x = zeros((base.shape[0],2,3))
-            x[:,0,axes] = base
-            x[:,1,axes] = base
-            x[:,0,i] = x0[i]
-            x[:,1,i] = x1[i]
+            axes = (asarray([1, 2]) + i) % 3
+            base = simple.regularGrid(x0[axes], x1[axes], nx[axes]).reshape((-1, 2))
+            x = zeros((base.shape[0], 2, 3))
+            x[:, 0, axes] = base
+            x[:, 1, axes] = base
+            x[:, 0, i] = x0[i]
+            x[:, 1, i] = x1[i]
             GL.glBegin(GL.GL_LINES)
-            for p in x.reshape((-1,3)):
+            for p in x.reshape((-1, 3)):
                 GL.glVertex3fv(p)
             GL.glEnd()
 
 
-def drawGridPlanes(x0,x1,nx):
+def drawGridPlanes(x0, x1, nx):
     """Draw a 3D rectangular grid of planes.
 
     A grid of planes parallel to the axes is drawn in the domain bounded
@@ -895,17 +895,17 @@ def drawGridPlanes(x0,x1,nx):
     nx = asarray(nx)
 
     for i in range(3):
-        axes = (asarray([1,2]) + i) % 3
+        axes = (asarray([1, 2]) + i) % 3
         if all(nx[axes] > 0):
-            j,k = axes
-            base = simple.regularGrid(x0[i],x1[i],nx[i]).ravel()
-            x = zeros((base.shape[0],4,3))
-            corners = array([x0[axes],[x1[j],x0[k]],x1[axes],[x0[j],x1[k]]])
+            j, k = axes
+            base = simple.regularGrid(x0[i], x1[i], nx[i]).ravel()
+            x = zeros((base.shape[0], 4, 3))
+            corners = array([x0[axes], [x1[j], x0[k]], x1[axes], [x0[j], x1[k]]])
             for j in range(4):
-                x[:,j,i] = base
-            x[:,:,axes] = corners
+                x[:, j, i] = base
+            x[:,:, axes] = corners
             GL.glBegin(GL.GL_QUADS)
-            for p in x.reshape((-1,3)):
+            for p in x.reshape((-1, 3)):
                 GL.glVertex3fv(p)
             GL.glEnd()
 
@@ -918,17 +918,17 @@ def pickPolygons(x,e=None,objtype=-1):
     if e is not None:
         e = e.astype(int32)
     if e is None:
-        drawgl.pick_polygons(x,objtype)
+        drawgl.pick_polygons(x, objtype)
     else:
-        drawgl.pick_polygon_elems(x,e,objtype)
+        drawgl.pick_polygon_elems(x, e, objtype)
 
 
-def pickPolygonEdges(x,e,edg):
+def pickPolygonEdges(x, e, edg):
     utils.warn("warn_pickPolygonEdges")
 
 
 def pickPoints(x):
-    x = x.reshape((-1,1,3))
+    x = x.reshape((-1, 1, 3))
     pickPolygons(x)
 
 
@@ -963,7 +963,7 @@ def saneLineStipple(stipple):
     factor is a multiplier for each bit.
     """
     try:
-        stipple = map(int,stipple)
+        stipple = map(int, stipple)
     except:
         stipple = None
     return stipple
@@ -1013,7 +1013,7 @@ def saneColor(color=None):
     except ValueError:
 
         try:
-            color = map(GLcolor,color)
+            color = map(GLcolor, color)
         except ValueError:
             pass
 
@@ -1030,7 +1030,7 @@ def saneColor(color=None):
     return None
 
 
-def saneColorArray(color,shape):
+def saneColorArray(color, shape):
     """Makes sure the shape of the color array is compatible with shape.
 
     shape is an (nelems,nplex) tuple
@@ -1047,9 +1047,9 @@ def saneColorArray(color,shape):
         return color
     if color.ndim == 3:
         if color.shape[1] > 1 and color.shape[1] != shape[1]:
-            color = color[:,0]
+            color = color[:, 0]
     if color.shape[0] > 1 and color.shape[0] != shape[0]:
-        color = resize(color,(shape[0],color.shape[1]))
+        color = resize(color, (shape[0], color.shape[1]))
     return color
 
 
@@ -1069,19 +1069,19 @@ def saneColorSet(color=None,colormap=None,shape=(1,)):
         shape = (shape,)
     color = saneColor(color)
     if color is not None:
-        pf.debug("SANECOLORSET: color %s, shape %s" % (color.shape,shape),pf.DEBUG.DRAW)
+        pf.debug("SANECOLORSET: color %s, shape %s" % (color.shape, shape), pf.DEBUG.DRAW)
         if color.dtype.kind == 'i':
             ncolors = color.max()+1
             if colormap is None:
                 colormap = pf.canvas.settings.colormap
             colormap = saneColor(colormap)
-            colormap = saneColorArray(colormap,(ncolors,))
+            colormap = saneColorArray(colormap, (ncolors,))
         else:
-            color = saneColorArray(color,shape)
+            color = saneColorArray(color, shape)
             colormap = None
 
-        pf.debug("SANECOLORSET RESULT: %s" % str(color.shape),pf.DEBUG.DRAW)
-    return color,colormap
+        pf.debug("SANECOLORSET RESULT: %s" % str(color.shape), pf.DEBUG.DRAW)
+    return color, colormap
 
 
 ### Drawable Objects ###############################################
@@ -1149,7 +1149,7 @@ class Drawable(object):
             if 'mode' in kargs:
                 mode = kargs['mode']
             else:
-                canvas = kargs.get('canvas',pf.canvas)
+                canvas = kargs.get('canvas', pf.canvas)
                 mode = canvas.rendermode
 
         if mode.endswith('wire'):
@@ -1168,8 +1168,8 @@ class Drawable(object):
 
     def create_list(self,**kargs):
         displist = GL.glGenLists(1)
-        pf.debug("CREATE LIST %s" % displist,pf.DEBUG.OPENGL)
-        GL.glNewList(displist,GL.GL_COMPILE)
+        pf.debug("CREATE LIST %s" % displist, pf.DEBUG.OPENGL)
+        GL.glNewList(displist, GL.GL_COMPILE)
         ok = False
         try:
             if self.nolight:
@@ -1180,38 +1180,38 @@ class Drawable(object):
             ok = True
         finally:
             if not ok:
-                pf.debug("Error while creating a display list",pf.DEBUG.DRAW)
+                pf.debug("Error while creating a display list", pf.DEBUG.DRAW)
                 displist = None
             GL.glEndList()
         self.listmode = kargs['mode']
         return displist
 
     def delete_list(self):
-        pf.debug("DELETE LIST %s" % self.list,pf.DEBUG.OPENGL)
+        pf.debug("DELETE LIST %s" % self.list, pf.DEBUG.OPENGL)
         if self.list:
-            GL.glDeleteLists(self.list,1)
-            pf.debug("REALLY DELETED",pf.DEBUG.OPENGL)
+            GL.glDeleteLists(self.list, 1)
+            pf.debug("REALLY DELETED", pf.DEBUG.OPENGL)
         else:
-            pf.debug("NOT REALLY DELETED",pf.DEBUG.OPENGL)
+            pf.debug("NOT REALLY DELETED", pf.DEBUG.OPENGL)
         self.list = None
 
 
-    def setLineWidth(self,linewidth):
+    def setLineWidth(self, linewidth):
         """Set the linewidth of the Drawable."""
         self.linewidth = saneLineWidth(linewidth)
 
-    def setLineStipple(self,linestipple):
+    def setLineStipple(self, linestipple):
         """Set the linewidth of the Drawable."""
         self.linestipple = saneLineStipple(linestipple)
 
     def setColor(self,color=None,colormap=None,ncolors=1):
         """Set the color of the Drawable."""
-        self.color,self.colormap = saneColorSet(color,colormap,shape=(ncolors,))
+        self.color, self.colormap = saneColorSet(color, colormap, shape=(ncolors,))
 
-    def setTexture(self,texture):
+    def setTexture(self, texture):
         """Set the texture data of the Drawable."""
         if texture is not None:
-            if not isinstance(texture,Texture):
+            if not isinstance(texture, Texture):
                 try:
                     texture = Texture(texture)
                 except:
@@ -1231,20 +1231,20 @@ class Texture(object):
         self.tex = None
         image = asarray(image)
         # print "Texture: type %s, size %s" % (image.dtype, image.shape)
-        image = require(image,dtype='ubyte',requirements='C')
+        image = require(image, dtype='ubyte', requirements='C')
         # print "Converted to: type %s, size %s" % (image.dtype, image.shape)
-        ny,nx = image.shape[:2]
+        ny, nx = image.shape[:2]
 
         # Generate a texture id
         tex = GL.glGenTextures(1)
         # Make our new texture the current 2D texture
         GL.glEnable(GL.GL_TEXTURE_2D)
         #GL.glTexEnvf(GL.GL_TEXTURE_ENV,GL.GL_TEXTURE_ENV_MODE,GL.GL_MODULATE)
-        GL.glBindTexture(GL.GL_TEXTURE_2D,tex)
-        GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT,1)
+        GL.glBindTexture(GL.GL_TEXTURE_2D, tex)
+        GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
         # Copy the texture data into the current texture
-        GL.glTexImage2D(GL.GL_TEXTURE_2D,0,4,nx,ny,0,
-                        GL.GL_RGBA,GL.GL_UNSIGNED_BYTE,image)
+        GL.glTexImage2D(GL.GL_TEXTURE_2D, 0, 4, nx, ny, 0,
+                        GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, image)
         self.tex = tex
 
 

@@ -31,7 +31,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'advanced'
 _topics = ['geometry', 'curve']
-_techniques = ['nurbs','connect','border','frenet']
+_techniques = ['nurbs', 'connect', 'border', 'frenet']
 
 from gui.draw import *
 import simple
@@ -45,14 +45,14 @@ def drawThePoints(N,n,color=None):
     #print "Umin = %s, Umax = %s" % (umin,umax)
     u = umin + arange(n+1) * (umax-umin) / float(n)
     P = N.pointsAt(u)
-    draw(P,color=color,marksize=5)
-    drawNumbers(P,color=color)
+    draw(P, color=color, marksize=5)
+    drawNumbers(P, color=color)
 
-    XD = N.derivs(u,5)[:4]
+    XD = N.derivs(u, 5)[:4]
     if XD.shape[-1] == 4:
         XD = XD.toCoords()
-    x,d1,d2,d3 = XD[:4]
-    e1,e2,e3,k,t = frenet(d1,d2,d3)
+    x, d1, d2, d3 = XD[:4]
+    e1, e2, e3, k, t = frenet(d1, d2, d3)
     #print t
 
     #k = 1./k
@@ -66,14 +66,14 @@ def drawThePoints(N,n,color=None):
     x1 = x+s*e1
     x2 = x+s*e2
     x3 = x+s*e3
-    x2k = x+k.reshape(-1,1)*e2 # draw curvature along normal
-    x3t = x+t.reshape(-1,1)*e3
-    draw(x,marksize=10,color=yellow)
-    draw(connect([Formex(x),Formex(x1)]),color=yellow,linewidth=3)
-    draw(connect([Formex(x),Formex(x2)]),color=cyan,linewidth=2)
-    draw(connect([Formex(x),Formex(x2k)]),color=blue,linewidth=5)
-    draw(connect([Formex(x),Formex(x3)]),color=magenta,linewidth=2)
-    draw(connect([Formex(x),Formex(x3t)]),color=red,linewidth=5)
+    x2k = x+k.reshape(-1, 1)*e2 # draw curvature along normal
+    x3t = x+t.reshape(-1, 1)*e3
+    draw(x, marksize=10, color=yellow)
+    draw(connect([Formex(x), Formex(x1)]), color=yellow, linewidth=3)
+    draw(connect([Formex(x), Formex(x2)]), color=cyan, linewidth=2)
+    draw(connect([Formex(x), Formex(x2k)]), color=blue, linewidth=5)
+    draw(connect([Formex(x), Formex(x3)]), color=magenta, linewidth=2)
+    draw(connect([Formex(x), Formex(x3t)]), color=red, linewidth=5)
 
 
 def drawNurbs(points,pointtype,degree,strategy,closed,blended,weighted=False,Clear=False,showpoints=False,npoints=10):
@@ -82,15 +82,15 @@ def drawNurbs(points,pointtype,degree,strategy,closed,blended,weighted=False,Cle
 
     X = pattern(points)
     F = Formex(X)
-    draw(F,marksize=10,bbox='auto',view='front')
-    drawNumbers(F,leader='P',trl=[0.02,0.02,0.])
+    draw(F, marksize=10, bbox='auto', view='front')
+    drawNumbers(F, leader='P', trl=[0.02, 0.02, 0.])
     if closed:
         # remove last point if it coincides with first
-        x,e = Coords.concatenate([X[0],X[-1]]).fuse()
+        x, e = Coords.concatenate([X[0], X[-1]]).fuse()
         if x.shape[0] == 1:
             X = X[:-1]
         blended=True
-    draw(PolyLine(X,closed=closed))
+    draw(PolyLine(X, closed=closed))
     if not blended:
         nX = ((len(X)-1) // degree) * degree + 1
         X = X[:nX]
@@ -101,12 +101,12 @@ def drawNurbs(points,pointtype,degree,strategy,closed,blended,weighted=False,Cle
     else:
         wts=None
     if pointtype == 'Control':
-        N = NurbsCurve(X,wts=wts,degree=degree,closed=closed,blended=blended)
+        N = NurbsCurve(X, wts=wts, degree=degree, closed=closed, blended=blended)
     else:
-        N = globalInterpolationCurve(X,degree=degree,strategy=strategy)
-    draw(N,color=red)
+        N = globalInterpolationCurve(X, degree=degree, strategy=strategy)
+    draw(N, color=red)
     if showpoints:
-        drawThePoints(N,npoints,color=black)
+        drawThePoints(N, npoints, color=black)
 
 
 dialog = None
@@ -164,25 +164,25 @@ predefined = [
     ]
 
 data_items = [
-    _I('points',text='Point set',choices=predefined),
-    _I('pointtype',text='Point type',itemtype='select',choices=['Control','OnCurve']),
-    _I('degree',3),
-    _I('strategy',0.5),
-    _I('closed',False),
-    _I('blended',True,enabled=False),
-    _I('weighted',False),
-    _I('showpoints',False,text='Show Frenet vectors'),
-    _I('npoints',20,text='Number of curve points'),
-    _I('Clear',True),
+    _I('points', text='Point set', choices=predefined),
+    _I('pointtype', text='Point type', itemtype='select', choices=['Control', 'OnCurve']),
+    _I('degree', 3),
+    _I('strategy', 0.5),
+    _I('closed', False),
+    _I('blended', True, enabled=False),
+    _I('weighted', False),
+    _I('showpoints', False, text='Show Frenet vectors'),
+    _I('npoints', 20, text='Number of curve points'),
+    _I('Clear', True),
     ]
 input_enablers = [
-    ('pointtype','OnCurve','strategy'),
-    ('pointtype','Control','closed'),
-    ('pointtype','Control','blended'),
-    ('pointtype','Control','weighted'),
-    ('closed',False,'blended'),
+    ('pointtype', 'OnCurve', 'strategy'),
+    ('pointtype', 'Control', 'closed'),
+    ('pointtype', 'Control', 'blended'),
+    ('pointtype', 'Control', 'weighted'),
+    ('closed', False, 'blended'),
 #    ('blended',True,'closed'),
-    ('showpoints',True,'npoints'),
+    ('showpoints', True, 'npoints'),
     ]
 
 
@@ -198,7 +198,7 @@ def run():
         data_items,
         enablers = input_enablers,
         caption = 'Nurbs parameters',
-        actions = [('Close',close),('Clear',clear),('Show All',showAll),('Show',show)],
+        actions = [('Close', close), ('Clear', clear), ('Show All', showAll), ('Show', show)],
         default = 'Show',
         )
 

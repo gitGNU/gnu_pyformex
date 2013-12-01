@@ -37,7 +37,7 @@ from geomtools import *
 from simple import circle
 
 
-def intersection(F1,F2):
+def intersection(F1, F2):
     """Return the intersection of two Formices.
 
     Currently this only works for plex-2 Formices.
@@ -53,28 +53,28 @@ def intersection(F1,F2):
 
     from geomtools import intersectionTimesLWL
 
-    errh = seterr(divide='ignore',invalid='ignore') # ignore division errors
-    q1 = F1[:,0]
-    m1 = F1[:,1]-F1[:,0]
-    q2 = F2[:,0]
-    m2 = F2[:,1]-F2[:,0]
+    errh = seterr(divide='ignore', invalid='ignore') # ignore division errors
+    q1 = F1[:, 0]
+    m1 = F1[:, 1]-F1[:, 0]
+    q2 = F2[:, 0]
+    m2 = F2[:, 1]-F2[:, 0]
 
     # Compute all intersection points of the lines
-    t1,t2 = intersectionTimesLWL(q1,m1,q2,m2,mode='all')
-    X1 = pointsAtLines(q1[:,newaxis],m1[:,newaxis],t1)
-    X2 = pointsAtLines(q2,m2,t2)
+    t1, t2 = intersectionTimesLWL(q1, m1, q2, m2, mode='all')
+    X1 = pointsAtLines(q1[:, newaxis], m1[:, newaxis], t1)
+    X2 = pointsAtLines(q2, m2, t2)
     seterr(**errh) # reactivate division errors
 
     # Keep intersecting segments
     inside = (t1>=0.0)*(t1<=1.0)*(t2>=0.0)*(t2<=1.0)
-    w1,w2 = where(inside)
+    w1, w2 = where(inside)
 
     # Find coinciding intersection points and the intersecting segments
-    X1,X2 = X1[inside],X2[inside]
+    X1, X2 = X1[inside], X2[inside]
     matches = X2.match(X1)
     ok = matches!=-1
 
-    return X1[ok],w1[ok],w2[ok]
+    return X1[ok], w1[ok], w2[ok]
 
 
 def run():
@@ -84,17 +84,17 @@ def run():
     flat()
 
     line1 = circle(30.)
-    line2 = line1.trl(0,0.4)
+    line2 = line1.trl(0, 0.4)
 
     # Find the intersection of the segments
-    X,w1,w2 = intersection(line1,line2)
+    X, w1, w2 = intersection(line1, line2)
 
     # Change the color of the intersecting segments
     line1.setProp(1).prop[w1] = 5
     line2.setProp(3).prop[w2] = 4
 
-    draw([line1,line2],linewidth=3)
-    draw(X,marksize=10,ontop=True)
+    draw([line1, line2], linewidth=3)
+    draw(X, marksize=10, ontop=True)
 
 
 if __name__ == 'draw':

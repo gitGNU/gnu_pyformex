@@ -45,19 +45,19 @@ from gui.draw import *
 
 def circle(n=60):
     a1 = 360./n
-    return Formex([[[cosd(i*a1),sind(i*a1),0.] for i in range(n)]])
+    return Formex([[[cosd(i*a1), sind(i*a1), 0.] for i in range(n)]])
 
 def triangle():
-    return Formex([[[0.,0.,0.],[1.,0.,0.],[0.5,0.5*sqrt(3.),0.]]])
+    return Formex([[[0., 0., 0.], [1., 0., 0.], [0.5, 0.5*sqrt(3.), 0.]]])
 
 def square():
-    return Formex([[[0.,0.,0.],[1.,0.,0.],[1.,1.,0.],[0.,1.,0.]]])
+    return Formex([[[0., 0., 0.], [1., 0., 0.], [1., 1., 0.], [0., 1., 0.]]])
 
 
 class Shape(Geometry):
-    def __init__(self,shape,size,position,color):
+    def __init__(self, shape, size, position, color):
         self.shape = shape
-        self.size = resize(size,(3))
+        self.size = resize(size, (3))
         self.position = position
         self.color = color
         self.F = None
@@ -68,7 +68,7 @@ class Shape(Geometry):
         self.F = globals()[self.shape]().scale(self.size).translate(self.position)
 
     def draw(self):
-        self.A = draw(self.F,color=self.color)
+        self.A = draw(self.F, color=self.color)
 
     def hide(self):
         if self.A:
@@ -93,18 +93,18 @@ class Shape(Geometry):
         self.color = color
         self.draw()
 
-    def move(self,direction,step):
-        self.F = self.F.trl(direction,step)
+    def move(self, direction, step):
+        self.F = self.F.trl(direction, step)
 
 
 def run():
     clear()
     flat()
 
-    wall = Shape('square',[80.,60.],[10.,0.],'red')
-    window = Shape('square',[10.,10.],[30.,30.],'white')
-    roof = Shape('triangle',[100.,40.],[0.,60.],'green')
-    sun = Shape('circle',10,[110.,80.],'yellow')
+    wall = Shape('square', [80., 60.], [10., 0.], 'red')
+    window = Shape('square', [10., 10.], [30., 30.], 'white')
+    roof = Shape('triangle', [100., 40.], [0., 60.], 'green')
+    sun = Shape('circle', 10, [110., 80.], 'yellow')
 
     delay(0)
     window.draw()
@@ -119,8 +119,8 @@ def run():
     setDrawOptions({'bbox':None})
     sun.hide()
     for y in range(n):
-        sun.move(0,sqrt(0.4*(n-y)/n))
-        sun.move(1,-100./n)
+        sun.move(0, sqrt(0.4*(n-y)/n))
+        sun.move(1, -100./n)
         sun.redraw()
 
         

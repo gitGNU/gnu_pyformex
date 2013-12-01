@@ -60,7 +60,7 @@ def shape(name):
     return Formex(Pattern[name])
 
 
-def regularGrid(x0,x1,nx):
+def regularGrid(x0, x1, nx):
     """Create a regular grid between points x0 and x1.
 
     x0 and x1 are n-dimensional points (usually 1D, 2D or 3D).
@@ -77,10 +77,10 @@ def regularGrid(x0,x1,nx):
     if any(nx < 0):
         raise ValueError("nx values should be >= 0")
     n = x0.size
-    ind = indices(nx+1).reshape((n,-1))
-    shape = append(tuple(nx+1),n)
+    ind = indices(nx+1).reshape((n, -1))
+    shape = append(tuple(nx+1), n)
     nx[nx==0] = 1
-    jnd = nx.reshape((n,-1)) - ind
+    jnd = nx.reshape((n, -1)) - ind
     ind = ind.transpose()
     jnd = jnd.transpose()
     return ( (x0*jnd + x1*ind) / nx ).reshape(shape)
@@ -91,19 +91,19 @@ def point(x=0.,y=0.,z=0.):
 
     Each of the coordinates can be specified and is zero by default.
     """
-    return Formex([[[x,y,z]]])
+    return Formex([[[x, y, z]]])
 
 
-def line(p1=[0.,0.,0.],p2=[1.,0.,0.],n=1):
+def line(p1=[0., 0., 0.],p2=[1., 0., 0.],n=1):
     """Return a Formex which is a line between two specified points.
 
     p1: first point, p2: second point
     The line is split up in n segments.
     """
-    return Formex([[p1,p2]]).divide(n)
+    return Formex([[p1, p2]]).divide(n)
 
 
-def rect(p1=[0.,0.,0.],p2=[1.,0.,0.],nx=1,ny=1):
+def rect(p1=[0., 0., 0.],p2=[1., 0., 0.],nx=1,ny=1):
     """Return a Formex which is a the circumference of a rectangle.
 
     p1 and p2 are two opposite corner points of the rectangle.
@@ -118,13 +118,13 @@ def rect(p1=[0.,0.,0.],p2=[1.,0.,0.],nx=1,ny=1):
     """
     p1 = Coords(p1)
     p2 = Coords(p2)
-    p12 = Coords([p2[0],p1[1],p1[2]])
-    p21 = Coords([p1[0],p2[1],p2[2]])
+    p12 = Coords([p2[0], p1[1], p1[2]])
+    p21 = Coords([p1[0], p2[1], p2[2]])
     return Formex.concatenate([
-        line(p1,p12,nx),
-        line(p12,p2,ny),
-        line(p2,p21,nx),
-        line(p21,p1,ny)
+        line(p1, p12, nx),
+        line(p12, p2, ny),
+        line(p2, p21, nx),
+        line(p21, p1, ny)
         ])
 
 
@@ -139,9 +139,9 @@ def rectangle(nx=1,ny=1,b=None,h=None,bias=0.,diag=None):
     diagonals are added in /, resp. \ and both directions, to form triangles.
     """
     if diag == 'x':
-        base = Formex([[[0.0,0.0,0.0],[1.0,-1.0,0.0],[1.0,1.0,0.0]]]).rosette(4,90.).translate([-1.0,-1.0,0.0]).scale(0.5)
+        base = Formex([[[0.0, 0.0, 0.0], [1.0, -1.0, 0.0], [1.0, 1.0, 0.0]]]).rosette(4, 90.).translate([-1.0, -1.0, 0.0]).scale(0.5)
     else:
-        base = Formex({ 'u': '3:012934', 'd': '3:016823' }.get(diag,'4:0123'))
+        base = Formex({ 'u': '3:012934', 'd': '3:016823' }.get(diag, '4:0123'))
     if b is None:
         sx = 1.
     else:
@@ -150,7 +150,7 @@ def rectangle(nx=1,ny=1,b=None,h=None,bias=0.,diag=None):
         sy = 1.
     else:
         sy = float(h)/ny
-    return base.replic2(nx,ny,bias=bias).scale([sx,sy,0.])
+    return base.replic2(nx, ny, bias=bias).scale([sx, sy, 0.])
 
 
 def circle(a1=2.,a2=0.,a3=360.,r=None,n=None,c=None,eltype='line2'):
@@ -190,13 +190,13 @@ def circle(a1=2.,a2=0.,a3=360.,r=None,n=None,c=None,eltype='line2'):
     ns = int(round(a3/a2))
     a1 *= pi/180.
     if eltype=='line2':
-        F = Formex([[[1.,0.,0.],[cos(a1),sin(a1),0.]]]).rosette(ns,a2,axis=2,point=[0.,0.,0.])
+        F = Formex([[[1., 0., 0.], [cos(a1), sin(a1), 0.]]]).rosette(ns, a2, axis=2, point=[0., 0., 0.])
     elif eltype=='line3':
-        F = Formex([[[1.,0.,0.],[cos(a1/2.),sin(a1/2.),0.],[cos(a1),sin(a1),0.]]],eltype=eltype).rosette(ns,a2,axis=2,point=[0.,0.,0.])
+        F = Formex([[[1., 0., 0.], [cos(a1/2.), sin(a1/2.), 0.], [cos(a1), sin(a1), 0.]]], eltype=eltype).rosette(ns, a2, axis=2, point=[0., 0., 0.])
     if r is not None:
         F = F.scale(r)
     if n is not None:
-        F = F.swapAxes(0,2).rotate(rotMatrix(n))
+        F = F.swapAxes(0, 2).rotate(rotMatrix(n))
     if c is not None:
         F = F.trl(c)
     return F
@@ -221,7 +221,7 @@ def triangle():
     The first point is the origin, the second points is on the axis 0.
     The return value is a plex-3 Formex.
     """
-    return Formex([[[0.,0.,0.],[1.,0.,0.],[0.5,0.5*sqrt(3.),0.]]])
+    return Formex([[[0., 0., 0.], [1., 0., 0.], [0.5, 0.5*sqrt(3.), 0.]]])
 
 
 def quadraticCurve(x=None,n=8):
@@ -237,9 +237,9 @@ def quadraticCurve(x=None,n=8):
     #    raise ValueError("Expected a (3,3) shaped array."
     # Interpolation functions in normalized coordinates (-1..1)
     h = [ lambda x: x*(x-1)/2, lambda x: (1+x)*(1-x), lambda x: x*(1+x)/2 ]
-    t = arange(-n,n+1) / float(n)
+    t = arange(-n, n+1) / float(n)
     H = column_stack([ hi(t) for hi in h ])
-    return dot(H,x)
+    return dot(H, x)
 
 
 def sphere(ndiv=6):
@@ -259,7 +259,7 @@ def sphere(ndiv=6):
     from elements import Icosa
     from plugins.trisurface import TriSurface
 
-    M = TriSurface(Icosa.vertices,Icosa.faces)
+    M = TriSurface(Icosa.vertices, Icosa.faces)
     M = M.subdivide(ndiv).fuse()
     M = M.projectOnSphere()
     return M
@@ -277,12 +277,12 @@ def sphere3(nx,ny,r=1,bot=-90,top=90):
     The sphere caps can be cut off by specifying top and bottom latitude
     angles (measured in degrees from 0 at north pole to 180 at south pole.
     """
-    base = Formex( [[[0,0,0],[1,0,0],[1,1,0]],
-                    [[1,1,0],[0,1,0],[0,0,0]]],
-                   [1,2])
-    grid = base.replic2(nx,ny,1,1)
+    base = Formex( [[[0, 0, 0], [1, 0, 0], [1, 1, 0]],
+                    [[1, 1, 0], [0, 1, 0], [0, 0, 0]]],
+                   [1, 2])
+    grid = base.replic2(nx, ny, 1, 1)
     s = float(top-bot) / ny
-    return grid.translate([0,bot/s,1]).spherical(scale=[360./nx,s,r])
+    return grid.translate([0, bot/s, 1]).spherical(scale=[360./nx, s, r])
 
 
 def sphere2(nx,ny,r=1,bot=-90,top=90):
@@ -297,18 +297,18 @@ def sphere2(nx,ny,r=1,bot=-90,top=90):
     The sphere caps can be cut off by specifying top and bottom latitude
     angles (measured in degrees from 0 at north pole to 180 at south pole.
     """
-    base = Formex('l:543',[1,2,3])           # single cell
-    d = base.select([0]).replic2(nx,ny,1,1)   # all diagonals
-    m = base.select([1]).replic2(nx,ny,1,1)   # all meridionals
-    h = base.select([2]).replic2(nx,ny+1,1,1) # all horizontals
+    base = Formex('l:543', [1, 2, 3])           # single cell
+    d = base.select([0]).replic2(nx, ny, 1, 1)   # all diagonals
+    m = base.select([1]).replic2(nx, ny, 1, 1)   # all meridionals
+    h = base.select([2]).replic2(nx, ny+1, 1, 1) # all horizontals
     grid = m+d+h
     s = float(top-bot) / ny
-    return grid.translate([0,bot/s,1]).spherical(scale=[360./nx,s,r])
+    return grid.translate([0, bot/s, 1]).spherical(scale=[360./nx, s, r])
 
 
 # TODO: This should be renamed and probably use mesh.connect
 # TODO: or polylines
-def connectCurves(curve1,curve2,n):
+def connectCurves(curve1, curve2, n):
     """Connect two curves to form a surface.
 
     curve1, curve2 are plex-2 Formices with the same number of elements.
@@ -318,8 +318,8 @@ def connectCurves(curve1,curve2,n):
     if curve1.nelems() != curve2.nelems():
         raise ValueError("Both curves should have same number of elements")
     # Create the interpolations
-    curves = interpolate(curve1,curve2,n).split(curve1.nelems())
-    quads = [ connect([c1,c1,c2,c2],nodid=[0,1,1,0]) for c1,c2 in zip(curves[:-1],curves[1:]) ]
+    curves = interpolate(curve1, curve2, n).split(curve1.nelems())
+    quads = [ connect([c1, c1, c2, c2], nodid=[0, 1, 1, 0]) for c1, c2 in zip(curves[:-1], curves[1:]) ]
     return Formex.concatenate(quads)
 
 
@@ -341,20 +341,20 @@ def sector(r,t,nr,nt,h=0.,diag=None):
     """
     r = float(r)
     t = float(t)
-    p = Formex(regularGrid([0.,0.,0.],[r,0.,0.],[nr,0,0]).reshape(-1,3))
+    p = Formex(regularGrid([0., 0., 0.], [r, 0., 0.], [nr, 0, 0]).reshape(-1, 3))
     if h != 0.:
-        p = p.shear(2,0,h/r)
+        p = p.shear(2, 0, h/r)
     q = p.rotate(t/nt)
     if isinstance(diag, str):
         diag = diag[0]
     if diag == 'u':
-        F = connect([p,p,q],bias=[0,1,1]) + \
-            connect([p,q,q],bias=[1,2,1])
+        F = connect([p, p, q], bias=[0, 1, 1]) + \
+            connect([p, q, q], bias=[1, 2, 1])
     elif diag == 'd':
-        F = connect([q,p,q],bias=[0,1,1]) + \
-            connect([p,p,q],bias=[1,2,1])
+        F = connect([q, p, q], bias=[0, 1, 1]) + \
+            connect([p, p, q], bias=[1, 2, 1])
     else:
-        F = connect([p,p,q,q],bias=[0,1,1,0])
+        F = connect([p, p, q, q], bias=[0, 1, 1, 0])
 
     F = Formex.concatenate([F.rotate(i*t/nt) for i in range(nt)])
     return F
@@ -381,10 +381,10 @@ def cylinder(D,L,nt,nl,D1=None,angle=360.,bias=0.,diag=None):
     - `diag`: by default, the elements are quads. Setting `diag` to 'u' or 'd'
       will put in an 'up' or 'down' diagonal to create triangles.
     """
-    C = rectangle(nl,nt,L,angle,bias=bias,diag=diag).trl(2,D/2.)
+    C = rectangle(nl, nt, L, angle, bias=bias, diag=diag).trl(2, D/2.)
     if D1 is not None and D1 != D:
-        C = C.shear(2,0,(D1-D)/L/2)
-    return C.cylindrical(dir=[2,1,0])
+        C = C.shear(2, 0, (D1-D)/L/2)
+    return C.cylindrical(dir=[2, 1, 0])
 
 
 def boxes(x):
@@ -400,22 +400,22 @@ def boxes(x):
 
     This function can be used to visualize the bboxes() of a geometry.
     """
-    x = Coords(x).reshape(-1,2,3)
-    i = [ [0,0,0],
-          [1,0,0],
-          [1,1,0],
-          [0,1,0],
-          [0,0,1],
-          [1,0,1],
-          [1,1,1],
-          [0,1,1]]
+    x = Coords(x).reshape(-1, 2, 3)
+    i = [ [0, 0, 0],
+          [1, 0, 0],
+          [1, 1, 0],
+          [0, 1, 0],
+          [0, 0, 1],
+          [1, 0, 1],
+          [1, 1, 1],
+          [0, 1, 1]]
 
-    j = [ 0,1,2 ]
+    j = [ 0, 1, 2 ]
 
-    return Formex(x[:,i,j],eltype='hex8')
+    return Formex(x[:, i, j], eltype='hex8')
 
 
-def cuboid(xmin=[0.,0.,0.],xmax=[1.,1.,1.]):
+def cuboid(xmin=[0., 0., 0.],xmax=[1., 1., 1.]):
     """Create a rectangular prism
 
     Creates a rectangular prism with faces parallel to the global
@@ -423,7 +423,7 @@ def cuboid(xmin=[0.,0.,0.],xmax=[1.,1.,1.]):
 
     Returns a single element Formex with eltype 'hex8'.
     """
-    return boxes([xmin,xmax])
+    return boxes([xmin, xmax])
 
 
 # End

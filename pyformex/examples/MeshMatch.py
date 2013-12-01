@@ -36,7 +36,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
 _topics = ['mesh']
-_techniques = ['draw','replicate','match','cselect']
+_techniques = ['draw', 'replicate', 'match', 'cselect']
 
 from gui.draw import *
 
@@ -51,15 +51,15 @@ def run():
     ny=2*n
 
     # construct a Quad4 Mesh
-    M = Formex('4:0123').replic2(nx,ny).cselect(arange(4*nx,int(7.5*nx))).toMesh().setProp(1)
+    M = Formex('4:0123').replic2(nx, ny).cselect(arange(4*nx, int(7.5*nx))).toMesh().setProp(1)
     draw(M)
-    drawNumbers(M.coords,color=red)
+    drawNumbers(M.coords, color=red)
 
     # construct a Tri3 Mesh
-    M1 = Formex('3:012').replic2(int(0.6*nx),int(0.45*ny),bias=1,taper=-2).toMesh().scale(2).trl(1,1.).setProp(2)
+    M1 = Formex('3:012').replic2(int(0.6*nx), int(0.45*ny), bias=1, taper=-2).toMesh().scale(2).trl(1, 1.).setProp(2)
     draw(M1)
     zoomAll()
-    drawNumbers(M1.coords,color=yellow,trl=[0.,-0.25,0.])
+    drawNumbers(M1.coords, color=yellow, trl=[0., -0.25, 0.])
 
     # find matching nodes
     match = M.matchCoords(M1)
@@ -69,17 +69,17 @@ def run():
     n0 = match[n1]              # node numbers in Mesh M
 
     print("List of the %s matching nodes" % len(n1))
-    print(column_stack([n0,n1]))
+    print(column_stack([n0, n1]))
 
-    draw(M.coords[n0],marksize=10,bbox='last',ontop=True)
+    draw(M.coords[n0], marksize=10, bbox='last', ontop=True)
 
     # compute and draw parts connected to the common nodes
     sleep(4)
     clear()
-    draw(M.coords[n0],marksize=10,bbox='last',ontop=True)
+    draw(M.coords[n0], marksize=10, bbox='last', ontop=True)
     M = M.select(M.connectedTo(n0))
     M1 = M.select(M1.connectedTo(n1))
-    draw([M,M1])
+    draw([M, M1])
 
 if __name__ == 'draw':
     run()

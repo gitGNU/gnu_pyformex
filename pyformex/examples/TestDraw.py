@@ -28,8 +28,8 @@ Example for testing the low level drawing functions
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['geometry','mesh','drawing']
-_techniques = ['widgets','dialog','random','color']
+_topics = ['geometry', 'mesh', 'drawing']
+_techniques = ['widgets', 'dialog', 'random', 'color']
 
 from gui.draw import *
 
@@ -38,26 +38,26 @@ from numpy.random import rand
 setDrawOptions({'clear':True, 'bbox':'auto'})
 linewidth(2) # The linewidth option is not working nyet
 
-geom_mode = [ 'Formex','Mesh' ]
-plexitude = [ 1,2,3,4,5,6,8 ]
+geom_mode = [ 'Formex', 'Mesh' ]
+plexitude = [ 1, 2, 3, 4, 5, 6, 8 ]
 element_type = [ 'auto', 'tet4', 'wedge6', 'hex8' ]
 color_mode = [ 'none', 'single', 'element', 'vertex' ]
 
 # The points used for a single element of plexitude 1..8
 Points = {
-    1: [[0.,0.,0.]],
-    2: [[0.,0.,0.],[1.,0.,0.]],
-    3: [[0.,0.,0.],[1.,0.,0.],[0.,1.,0.]],
-    4: [[0.,0.,0.],[1.,0.,0.],[1.,1.,0.],[0.,1.,0.]],
-    5: [[0.,0.,0.],[1.,0.,0.],[1.5,0.5,0.],[1.,1.,0.],[0.,1.,0.]],
-    6: [[0.,0.,0.],[1.,0.,0.],[1.5,0.5,0.],[1.,1.,0.],[0.,1.,0.],[-0.2,0.5,0.]],
-    'tet4': [[0.,0.,0.],[1.,0.,0.],[0.,1.,0.],[0.,0.,1.]],
-    'wedge6': [[0.,0.,0.],[1.,0.,0.],[0.,1.,0.],[0.,0.,1.],[1.,0.,1.],[0.,1.,1.]],
-    'hex8': [[0.,0.,0.],[1.,0.,0.],[1.,1.,0.],[0.,1.,0.],[0.,0.,1.],[1.,0.,1.],[1.,1.,1.],[0.,1.,1.]],
+    1: [[0., 0., 0.]],
+    2: [[0., 0., 0.], [1., 0., 0.]],
+    3: [[0., 0., 0.], [1., 0., 0.], [0., 1., 0.]],
+    4: [[0., 0., 0.], [1., 0., 0.], [1., 1., 0.], [0., 1., 0.]],
+    5: [[0., 0., 0.], [1., 0., 0.], [1.5, 0.5, 0.], [1., 1., 0.], [0., 1., 0.]],
+    6: [[0., 0., 0.], [1., 0., 0.], [1.5, 0.5, 0.], [1., 1., 0.], [0., 1., 0.], [-0.2, 0.5, 0.]],
+    'tet4': [[0., 0., 0.], [1., 0., 0.], [0., 1., 0.], [0., 0., 1.]],
+    'wedge6': [[0., 0., 0.], [1., 0., 0.], [0., 1., 0.], [0., 0., 1.], [1., 0., 1.], [0., 1., 1.]],
+    'hex8': [[0., 0., 0.], [1., 0., 0.], [1., 1., 0.], [0., 1., 0.], [0., 0., 1.], [1., 0., 1.], [1., 1., 1.], [0., 1., 1.]],
     }
 
 
-def select_geom(geom,nplex,eltype):
+def select_geom(geom, nplex, eltype):
     """Construct the geometry"""
     try:
         nplex = int(eltype[-1])
@@ -69,21 +69,21 @@ def select_geom(geom,nplex,eltype):
         x = Points[nplex]
     else:
         x = Points[eltype]
-    F = Formex([x],eltype=eltype).replic2(2,2,2.,2.)
+    F = Formex([x], eltype=eltype).replic2(2, 2, 2., 2.)
     if geom == 'Formex':
         return F
     else:
         return F.toMesh()
     
 
-def select_color(F,color):
+def select_color(F, color):
     """Create a set of colors for object F"""
     if color == 'single':
-        shape = (1,3)
+        shape = (1, 3)
     elif color == 'element':
-        shape = (F.nelems(),3)
+        shape = (F.nelems(), 3)
     elif color == 'vertex':
-        shape = (F.nelems(),F.nplex(),3)
+        shape = (F.nelems(), F.nplex(), 3)
     else:
         return None
     return rand(*shape)
@@ -94,10 +94,10 @@ eltype = 'auto'
 color = 'element'
 pos = None
 items = [
-    _I('geom',geom,'radio',choices=geom_mode,text='Geometry Model'),
-    _I('nplex',nplex,'select',choices=plexitude,text='Plexitude'),
-    _I('eltype',eltype,'select',choices=element_type,text='Element Type'),
-    _I('color',color,'select',choices=color_mode,text='Color Mode'),
+    _I('geom', geom, 'radio', choices=geom_mode, text='Geometry Model'),
+    _I('nplex', nplex, 'select', choices=plexitude, text='Plexitude'),
+    _I('eltype', eltype, 'select', choices=element_type, text='Element Type'),
+    _I('color', color, 'select', choices=color_mode, text='Color Mode'),
     ]
 
 dialog = None
@@ -110,12 +110,12 @@ def show():
     res['nplex'] = int(res['nplex'])
     globals().update(res)
 
-    G = select_geom(geom,nplex,eltype)
-    print("GEOM: nelems=%s, nplex=%s" % (G.nelems(),G.nplex()))
-    C = select_color(G,color)
+    G = select_geom(geom, nplex, eltype)
+    print("GEOM: nelems=%s, nplex=%s" % (G.nelems(), G.nplex()))
+    C = select_color(G, color)
     if C is not None:
         print("COLORS: shape=%s" % str(C.shape))
-    draw(G,color=C,clear=True)
+    draw(G, color=C, clear=True)
 
 
 def close():
@@ -141,7 +141,7 @@ def run():
     clear()
     lights(False)
     # Create the non-modal dialog widget and show it
-    dialog = Dialog(items,caption='Drawing parameters',actions = [('Close',close),('Show',show)],default='Show')
+    dialog = Dialog(items, caption='Drawing parameters', actions = [('Close', close), ('Show', show)], default='Show')
     dialog.timeout = timeOut
     dialog.show()
     scriptLock(__file__)

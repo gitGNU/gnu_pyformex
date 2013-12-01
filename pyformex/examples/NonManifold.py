@@ -37,16 +37,16 @@ import simple
 
 
 def hex_mesh():
-    nx,ny,nz = 3,2,2
-    F = simple.cuboid().replic2(nx,ny).replic(nz,1.,2)
-    F += F.trl([nx,ny,0])
-    F += F.trl([2*nx,2*ny,nz])
+    nx, ny, nz = 3, 2, 2
+    F = simple.cuboid().replic2(nx, ny).replic(nz, 1., 2)
+    F += F.trl([nx, ny, 0])
+    F += F.trl([2*nx, 2*ny, nz])
     return F.toMesh()
 
 def quad_mesh():
-    nx,ny = 3,2
-    F = Formex('4:0123').replic2(nx,ny)
-    F += F.trl([nx,ny,0.])
+    nx, ny = 3, 2
+    F = Formex('4:0123').replic2(nx, ny)
+    F += F.trl([nx, ny, 0.])
     return F.toMesh()
 
 def tri_mesh():
@@ -59,9 +59,9 @@ def hex_mesh_orig():
     return F.toMesh()
 
 def hex_mesh_huge():
-    nx,ny,nz = 20,20,8
-    F = simple.cuboid().replic2(nx,ny).replic(nz,1.,2)
-    F += F.trl([nx,ny,nz])
+    nx, ny, nz = 20, 20, 8
+    F = simple.cuboid().replic2(nx, ny).replic(nz, 1., 2)
+    F += F.trl([nx, ny, nz])
     return F.toMesh()
 
 def quad_mesh_orig():
@@ -91,25 +91,25 @@ def showNonMan(M):
     draw(M)
     if M.nelems()<100 and M.nnodes() < 100:
         drawNumbers(M.coords)
-        drawNumbers(M,color=red)
+        drawNumbers(M, color=red)
 
     nm = M.nonManifoldNodes()
     print(nm)
     if len(nm) > 0:
-        draw(M.coords[nm],marksize=10,color=red)
+        draw(M.coords[nm], marksize=10, color=red)
 
     nm = M.nonManifoldEdgeNodes()
     print(nm)
     if len(nm) > 0:
-        draw(M.coords[nm],marksize=10,color=blue)
+        draw(M.coords[nm], marksize=10, color=blue)
 
     nm = M.nonManifoldEdges()
     print(nm)
     if len(nm) > 0:
         ed = M.edges[nm]
         print(ed)
-        ME = Mesh(M.coords,ed,eltype='line2')
-        draw(ME,color=cyan,linewidth=5)
+        ME = Mesh(M.coords, ed, eltype='line2')
+        draw(ME, color=cyan, linewidth=5)
 
 def run():
     examples = [
@@ -129,7 +129,7 @@ def run():
     clear()
 
     res = askItems([
-        _I('example',choices=examplenames),
+        _I('example', choices=examplenames),
         ])
 
     if res:

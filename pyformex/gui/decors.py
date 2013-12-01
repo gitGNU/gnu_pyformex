@@ -41,22 +41,22 @@ import gluttext
 ### Some drawing functions ###############################################
 
 
-def drawDot(x,y):
+def drawDot(x, y):
     """Draw a dot at canvas coordinates (x,y)."""
     GL.glBegin(GL.GL_POINTS)
-    GL.glVertex2f(x,y)
+    GL.glVertex2f(x, y)
     GL.glEnd()
 
 
-def drawLine(x1,y1,x2,y2):
+def drawLine(x1, y1, x2, y2):
     """Draw a straight line from (x1,y1) to (x2,y2) in canvas coordinates."""
     GL.glBegin(GL.GL_LINES)
-    GL.glVertex2f(x1,y1)
-    GL.glVertex2f(x2,y2)
+    GL.glVertex2f(x1, y1)
+    GL.glVertex2f(x2, y2)
     GL.glEnd()
 
 
-def drawGrid(x1,y1,x2,y2,nx,ny):
+def drawGrid(x1, y1, x2, y2, nx, ny):
     """Draw a rectangular grid of lines
         
     The rectangle has (x1,y1) and and (x2,y2) as opposite corners.
@@ -72,7 +72,7 @@ def drawGrid(x1,y1,x2,y2,nx,ny):
         nx = 1
     else:
         jx = ix[::-1] 
-    for i,j in zip(ix,jx):
+    for i, j in zip(ix, jx):
         x = (i*x2+j*x1)/nx
         GL.glVertex2f(x, y1)
         GL.glVertex2f(x, y2)
@@ -83,26 +83,26 @@ def drawGrid(x1,y1,x2,y2,nx,ny):
         ny = 1
     else:
         jy = iy[::-1] 
-    for i,j in zip(iy,jy):
+    for i, j in zip(iy, jy):
         y = (i*y2+j*y1)/ny
         GL.glVertex2f(x1, y)
         GL.glVertex2f(x2, y)
     GL.glEnd()
 
 
-def drawRect(x1,y1,x2,y2):
+def drawRect(x1, y1, x2, y2):
     """Draw the circumference of a rectangle."""
-    drawGrid(x1,y1,x2,y2,1,1)
+    drawGrid(x1, y1, x2, y2, 1, 1)
 
 
 def drawRectangle(x1,y1,x2,y2,color,texture=None):
     """Draw a single rectangular quad."""
-    x = array([(x1,y1),(x2,y1),(x2,y2),(x1,y2)])
-    c = resize(asarray(color),(4,3))
+    x = array([(x1, y1), (x2, y1), (x2, y2), (x1, y2)])
+    c = resize(asarray(color), (4, 3))
     ##drawPolygons(coord,None,'flat',color=color,texture=texture)
     if texture is not None:
         glTexture(texture)
-        t = [[0.,0.],[1.,0.],[1.,1.],[0.,1.]]
+        t = [[0., 0.], [1., 0.], [1., 1.], [0., 1.]]
     else:
         t = None
     GL.glBegin(GL.GL_QUADS)
@@ -142,7 +142,7 @@ class Decoration(Drawable):
 # Marks database: a dict with mark name and a function to draw
 # the mark. The 
 _marks_ = {
-    'dot':drawDot,
+    'dot': drawDot,
     }
 
 class Mark(Decoration):
@@ -163,7 +163,7 @@ class Mark(Decoration):
             GL.glColor3fv(self.color)
         if self.linewidth is not None:
             GL.glLineWidth(self.linewidth)
-        _marks_[self.mark](self.x,self.y)
+        _marks_[self.mark](self.x, self.y)
 
 
 class Line(Decoration):
@@ -183,7 +183,7 @@ class Line(Decoration):
             GL.glColor3fv(self.color)
         if self.linewidth is not None:
             GL.glLineWidth(self.linewidth)
-        drawLine(self.x1,self.y1,self.x2,self.y2)
+        drawLine(self.x1, self.y1, self.x2, self.y2)
 
         
 ## ## class QText(Decoration):
@@ -228,7 +228,7 @@ class GlutText(Decoration):
         """Create a text actor"""
         Decoration.__init__(self,x,y,**kargs)
         self.text = str(text)
-        self.font = gluttext.glutSelectFont(font,size)
+        self.font = gluttext.glutSelectFont(font, size)
 
         if gravity is None:
             gravity = 'E'
@@ -242,7 +242,7 @@ class GlutText(Decoration):
         ##     pf.canvas.zoom_2D(self.zoom)
         if self.color is not None: 
             GL.glColor3fv(self.color)
-        gluttext.glutDrawText(self.text,self.x,self.y,font=self.font,gravity=self.gravity)
+        gluttext.glutDrawText(self.text, self.x, self.y, font=self.font, gravity=self.gravity)
         ## if self.zoom:
         ##     pf.canvas.zoom_2D()
 
@@ -323,7 +323,7 @@ class ColorLegend(Decoration):
         self.nlabel = int(nlabel)
         if self.nlabel < 0:
             self.nlabel = len(self.cl.colors)
-        self.font = gluttext.glutSelectFont(font,size)
+        self.font = gluttext.glutSelectFont(font, size)
         self.dec = dec   # number of decimals
         self.scale = 10 ** scale # scale all numbers with 10**scale
         self.lefttext = lefttext
@@ -343,10 +343,10 @@ class ColorLegend(Decoration):
         # colors
         y1 = y0
         #GL.glLineWidth(1.5)
-        for i,c in enumerate(self.cl.colors):
+        for i, c in enumerate(self.cl.colors):
             y2 = y0 + (i+1)*dy
             GL.glColor3f(*c)
-            GL.glRectf(x1,y1,x2,y2)   
+            GL.glRectf(x1, y1, x2, y2)   
             y1 = y2
             
         if self.nlabel > 0 or self.ngrid > 0:
@@ -372,12 +372,12 @@ class ColorLegend(Decoration):
             # FOR 3-VALUE SCALES THIS SHOULD BE DONE IN TWO PARTS,
             # FROM THE CENTER OUTWARDS, AND THEN ADDING THE
             # MIN AND MAX VALUES
-            for i,v in enumerate(self.cl.limits):
+            for i, v in enumerate(self.cl.limits):
                 y2 = y0 + i*dy
                 if y2 >= y1 or i == 0 or i == len(self.cl.limits)-1:
                     if y2 >= self.y+self.h-dh/2 and i < len(self.cl.limits)-1:
                         continue
-                    t = Text(("%%.%df" % self.dec) % (v*self.scale),x1,round(y2),font=self.font,gravity=gravity)
+                    t = Text(("%%.%df" % self.dec) % (v*self.scale), x1, round(y2), font=self.font, gravity=gravity)
                     self.decorations.append(t)
                     t.drawGL(**kargs)
                     y1 = y2 + dh
@@ -386,7 +386,7 @@ class ColorLegend(Decoration):
         if self.ngrid > 0:
             if self.linewidth is not None:
                 GL.glLineWidth(self.linewidth)
-            drawGrid(self.x,self.y,self.x+self.w,self.y+self.h,1,self.ngrid)
+            drawGrid(self.x, self.y, self.x+self.w, self.y+self.h, 1, self.ngrid)
 
 
     def use_list(self):
@@ -403,11 +403,11 @@ class Rectangle(Decoration):
         self.y1 = y1
         self.x2 = x2
         self.y2 = y2
-        self.setColor(color,ncolors=4)
+        self.setColor(color, ncolors=4)
         self.setTexture(texture)
 
     def drawGL(self,**kargs):
-        drawRectangle(self.x1,self.y1,self.x2,self.y2,self.color,self.texture)
+        drawRectangle(self.x1, self.y1, self.x2, self.y2, self.color, self.texture)
 
 
 class Grid(Decoration):
@@ -428,7 +428,7 @@ class Grid(Decoration):
             GL.glColor3fv(self.color)
         if self.linewidth is not None:
             GL.glLineWidth(self.linewidth)
-        drawGrid(self.x1,self.y1,self.x2,self.y2,self.nx,self.ny)
+        drawGrid(self.x1, self.y1, self.x2, self.y2, self.nx, self.ny)
 
 
 class LineDrawing(Decoration):
@@ -441,10 +441,10 @@ class LineDrawing(Decoration):
         A (n,2,2) shaped array will do as well.
         """
         data = data.view()
-        data = data.reshape((-1,2,data.shape[-1]))
-        data = data[:,:,:2]
+        data = data.reshape((-1, 2, data.shape[-1]))
+        data = data[:,:, :2]
         self.data = data.astype(Float)
-        x1,y1 = self.data[0,0]
+        x1, y1 = self.data[0, 0]
         Decoration.__init__(self,x1,y1,**kargs)
         self.color = saneColor(color)
         self.linewidth = saneLineWidth(linewidth)
@@ -483,7 +483,7 @@ class Triade(Drawable):
       
     """
 
-    def __init__(self,pos='lb',siz=100,pat='3:012934',legend='xyz',color=[red,green,blue,cyan,magenta,yellow],**kargs):
+    def __init__(self,pos='lb',siz=100,pat='3:012934',legend='xyz',color=[red, green, blue, cyan, magenta, yellow],**kargs):
         Drawable.__init__(self,**kargs)
         self.pos = pos
         self.siz = siz
@@ -495,7 +495,7 @@ class Triade(Drawable):
     def _draw_me(self):
         """Draw the triade components."""
         GL.glBegin(GL.GL_LINES)
-        pts = Formex('1').coords.reshape(-1,3)
+        pts = Formex('1').coords.reshape(-1, 3)
         GL.glColor3f(*black)
         for i in range(3):
             #GL.glColor(*self.color[i])
@@ -508,7 +508,7 @@ class Triade(Drawable):
             GL.glBegin(GL.GL_TRIANGLES)
             pts = Formex(self.pat)
             #pts += pts.reverse()
-            pts = pts.scale(0.5).coords.reshape(-1,3)
+            pts = pts.scale(0.5).coords.reshape(-1, 3)
             for i in range(3):
                 pts = pts.rollAxes(1)
                 GL.glColor3f(*self.color[i])
@@ -516,9 +516,9 @@ class Triade(Drawable):
                     GL.glVertex3f(*x)
             GL.glEnd()
         # Coord axes denomination
-        for i,x in enumerate(self.legend):
+        for i, x in enumerate(self.legend):
             p = unitVector(i)*1.1
-            t = TextMark(p,x)
+            t = TextMark(p, x)
             t.drawGL()
 
  
@@ -527,7 +527,7 @@ class Triade(Drawable):
         GL.glMatrixMode(GL.GL_MODELVIEW)
         GL.glPushMatrix()
         GL.glTranslatef (*self.pos) 
-        GL.glScalef (self.size,self.size,self.size)
+        GL.glScalef (self.size, self.size, self.size)
         self._draw_me()
         GL.glMatrixMode(GL.GL_MODELVIEW)
         GL.glPopMatrix()
@@ -539,11 +539,11 @@ class Triade(Drawable):
         GL.glPushMatrix()
         # Cancel the translations
         rot = GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX)
-        rot[3,0:3] = [0.,0.,0.]
+        rot[3, 0:3] = [0., 0., 0.]
         GL.glLoadMatrixf(rot)
         vp = GL.glGetIntegerv(GL.GL_VIEWPORT)
-        x,y,w,h = vp
-        w0,h0 = self.siz,self.siz # we force aspect ratio 1
+        x, y, w, h = vp
+        w0, h0 = self.siz, self.siz # we force aspect ratio 1
         if self.pos[0] == 'l':
             x0 = x
         elif self.pos[0] =='r':
@@ -556,7 +556,7 @@ class Triade(Drawable):
             y0 = y + h-h0
         else:
             y0 = y + (h-h0)/2
-        GL.glViewport(x0,y0,w0,h0)
+        GL.glViewport(x0, y0, w0, h0)
         GL.glMatrixMode(GL.GL_PROJECTION)
         GL.glPushMatrix()
         GL.glLoadIdentity()
@@ -566,11 +566,11 @@ class Triade(Drawable):
         fh = fv
         # BEWARE: near/far should be larger than size, but not very large
         # or the depth sort will fail
-        frustum = (-fh,fh,-fv,fv,-3.,100.)
+        frustum = (-fh, fh, -fv, fv, -3., 100.)
         GL.glOrtho(*frustum)
         GL.glDisable(GL.GL_LIGHTING)
         GL.glDisable (GL.GL_BLEND)
-        GL.glPolygonMode(GL.GL_FRONT_AND_BACK,GL.GL_FILL)
+        GL.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL)
         GL.glDisable(GL.GL_CULL_FACE)
         GL.glClearDepth(1.0)
         GL.glDepthMask (GL.GL_TRUE)

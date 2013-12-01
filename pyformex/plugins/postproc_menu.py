@@ -31,7 +31,7 @@ from gui import menu
 from plugins.postproc import *
 from plugins.fe_post import FeResult
 from plugins.objects import Objects
-from gui.colorscale import ColorScale,ColorLegend
+from gui.colorscale import ColorScale, ColorLegend
 import utils
 from odict import ODict
 
@@ -56,19 +56,19 @@ class AttributeModel(QtCore.QAbstractTableModel):
             dic = gobals()
         self.dic = dic
         self.name = name
-        self.obj = dic.get(name,None)
+        self.obj = dic.get(name, None)
         keys = dir(self.obj)
-        vals = [ str(getattr(self.obj,k)) for k in keys ]
-        isdict = [ isinstance(self.obj,dict) for k in keys ]
-        has_dict = [ hasattr(self.obj,'__dict__') for k in keys ]
-        has_class = [ getattr(self.obj,'__class__') for k in keys ]
-        self.items = zip(keys,vals,isdict,has_dict,has_class)
+        vals = [ str(getattr(self.obj, k)) for k in keys ]
+        isdict = [ isinstance(self.obj, dict) for k in keys ]
+        has_dict = [ hasattr(self.obj, '__dict__') for k in keys ]
+        has_class = [ getattr(self.obj, '__class__') for k in keys ]
+        self.items = zip(keys, vals, isdict, has_dict, has_class)
 
 
-    def rowCount(self,parent):
+    def rowCount(self, parent):
         return len(self.items)
 
-    def columnCount(self,parent):
+    def columnCount(self, parent):
         return len(self.header)
 
     def data(self,index,role=QtCore.Qt.DisplayRole):
@@ -95,13 +95,13 @@ class DictModel(QtCore.QAbstractTableModel):
         keys = dic.keys()
         vals = dic.values()
         typs = [ str(type(v)) for v in vals ]
-        self.items = zip(keys,typs,vals)
+        self.items = zip(keys, typs, vals)
         #print(self.items)
 
-    def rowCount(self,parent):
+    def rowCount(self, parent):
         return len(self.items)
 
-    def columnCount(self,parent):
+    def columnCount(self, parent):
         return len(self.header)
 
     def data(self,index,role=QtCore.Qt.DisplayRole):
@@ -129,7 +129,7 @@ class Table(QtGui.QDialog):
         if parent is None:
             parent = pf.GUI
 
-        QtGui.QDialog.__init__(self,parent)
+        QtGui.QDialog.__init__(self, parent)
         self.setWindowTitle(str(caption))
 
         form = QtGui.QVBoxLayout()
@@ -141,7 +141,7 @@ class Table(QtGui.QDialog):
         #print(table.size())
         form.addWidget(table)
 
-        but = widgets.ButtonBox(actions,default,parent=self)
+        but = widgets.ButtonBox(actions, default, parent=self)
         form.addWidget(but)
         self.setLayout(form)
         #print(table.size())
@@ -149,9 +149,9 @@ class Table(QtGui.QDialog):
         #self.resize(table.size())
         self.table = table
         self.show()
-        self.setSizePolicy(QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Minimum)
+        self.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
         #form.setSizePolicy(QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Minimum)
-        table.setSizePolicy(QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Minimum)
+        table.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
 
 
 
@@ -164,7 +164,7 @@ tbl = None
 def showfields():
     """Show the table of field acronyms."""
     global tbl
-    tbl = widgets.Table(result_types.items(),['acronym','description'],actions=[('Cancel',),('Ok',),('Print',tblIndex)])
+    tbl = widgets.Table(result_types.items(), ['acronym', 'description'], actions=[('Cancel',), ('Ok',), ('Print', tblIndex)])
     tbl.show()
 
 
@@ -175,7 +175,7 @@ def tblIndex():
     c = tbl.table.currentIndex().column()
     #print("(%s,%s)" % (r,c))
     m = tbl.table.model()
-    p = m.data(m.index(r,c))
+    p = m.data(m.index(r, c))
     #print(p,p.toString(),p.toBool())
 
 def showattr(name=None,dic=None):
@@ -188,13 +188,13 @@ def showattr(name=None,dic=None):
     #print(k)
     if name is None:
         name = 'dia_full'
-    tbl = AttributeTable(name,dic,actions=[('Cancel',),('Ok',),('Print',tblIndex)])
+    tbl = AttributeTable(name, dic, actions=[('Cancel',), ('Ok',), ('Print', tblIndex)])
     tbl.show()
 
 def showdict(dic,name=None):
     global tbl
-    model = DictModel(dic,name)
-    tbl = Table(model,caption="Dict '%s'" % name,actions=[('Cancel',),('Ok',),('Print',tblIndex)])
+    model = DictModel(dic, name)
+    tbl = Table(model, caption="Dict '%s'" % name, actions=[('Cancel',), ('Ok',), ('Print', tblIndex)])
     tbl.show()
     tbl.table.resizeColumnsToContents()
     tbl.table.updateGeometry()
@@ -208,7 +208,7 @@ def keys(items):
     """Return the list of keys in items"""
     return [ i[0] for i in items ]
 
-def named_item(items,name):
+def named_item(items, name):
     """Return the named item"""
     n = keys(items).index(name)
     return items[n]
@@ -221,11 +221,11 @@ def showModel(nodes=True,elems=True):
     transparent(True)
     clear()
     print('Elements in model:')
-    for k,v in DB.elems.iteritems():
-        print("%s: %s" % (k,len(v)))
-    M = [ Mesh(DB.nodes,el,eltype='quad%d'%el.shape[1],prop=i) for i,el in enumerate(DB.elems.itervalues()) ]
+    for k, v in DB.elems.iteritems():
+        print("%s: %s" % (k, len(v)))
+    M = [ Mesh(DB.nodes, el, eltype='quad%d'%el.shape[1], prop=i) for i, el in enumerate(DB.elems.itervalues()) ]
     if nodes:
-        draw([m.coords for m in M],nolight=True)
+        draw([m.coords for m in M], nolight=True)
     if elems:
         draw(M)
     zoomAll()
@@ -253,10 +253,10 @@ def showResults(nodes,elems,displ,text,val,showref=False,dscale=100.,
         # e.g. in 2d returning only 2d displacements
         n = nodes.shape[1] - displ.shape[1]
         if n > 0:
-            displ = growAxis(displ,n,axis=1,fill=0.0)
+            displ = growAxis(displ, n, axis=1, fill=0.0)
 
         if nodes.shape != displ.shape:
-            warning("The displacements do not match the mesh: the mesh coords have shape %s; but the displacements have shape %s. I will continue without displacements." % (nodes.shape,displ.shape))
+            warning("The displacements do not match the mesh: the mesh coords have shape %s; but the displacements have shape %s. I will continue without displacements." % (nodes.shape, displ.shape))
             displ = None
 
     if not isinstance(elems, list):
@@ -268,25 +268,25 @@ def showResults(nodes,elems,displ,text,val,showref=False,dscale=100.,
 
     # draw undeformed structure
     if showref:
-        ref = [ Mesh(nodes,el,eltype='quad%d'%el.shape[1]) for el in elems ]
-        draw(ref,bbox=None,color='green',linewidth=1,mode='wireframe',nolight=True)
+        ref = [ Mesh(nodes, el, eltype='quad%d'%el.shape[1]) for el in elems ]
+        draw(ref, bbox=None, color='green', linewidth=1, mode='wireframe', nolight=True)
 
     # compute the colors according to the values
     multiplier = 0
     if val is not None:
         if val.shape != (nodes.shape[0],):
-            warning("The values do not match the mesh: there are %s nodes in the mesh, and I got values with shape %s. I will continue without showing values." % (nodes.shape[0],val.shape))
+            warning("The values do not match the mesh: there are %s nodes in the mesh, and I got values with shape %s. I will continue without showing values." % (nodes.shape[0], val.shape))
             val = None
 
     if val is not None:
         # create a colorscale and draw the colorlegend
-        vmin,vmax = val.min(),val.max()
+        vmin, vmax = val.min(), val.max()
         if vmin*vmax < 0.0 and not symmetric_scale:
             vmid = 0.0
         else:
             vmid = 0.5*(vmin+vmax)
 
-        scalev = [vmin,vmid,vmax]
+        scalev = [vmin, vmid, vmax]
         if max(scalev) > 0.0:
             logv = [ abs(a) for a in scalev if a != 0.0 ]
             logs = log10(logv)
@@ -299,20 +299,20 @@ def showResults(nodes,elems,displ,text,val,showref=False,dscale=100.,
             multiplier = 3 * ((2 - logma) / 3 )
             #print("MULTIPLIER %s" % multiplier)
 
-        CS = ColorScale('RAINBOW',vmin,vmax,vmid,1.,1.)
-        cval = array(map(CS.color,val))
-        CL = ColorLegend(CS,100)
-        CLA = decors.ColorLegend(CL,20,20,30,200,scale=multiplier)
+        CS = ColorScale('RAINBOW', vmin, vmax, vmid, 1., 1.)
+        cval = array(map(CS.color, val))
+        CL = ColorLegend(CS, 100)
+        CLA = decors.ColorLegend(CL, 20, 20, 30, 200, scale=multiplier)
         pf.canvas.addDecoration(CLA)
 
     # the supplied text
     if text:
         # Replace text tags
-        text = text.replace('%S',str(DB.step))
-        text = text.replace('%I',str(DB.inc))
+        text = text.replace('%S', str(DB.step))
+        text = text.replace('%I', str(DB.inc))
         if multiplier != 0:
-            text = text.replace('%M',' (* 10**%s)' % -multiplier)
-        drawText(text,200,30)
+            text = text.replace('%M', ' (* 10**%s)' % -multiplier)
+        drawText(text, 200, 30)
 
     smooth()
     lights(False)
@@ -330,17 +330,17 @@ def showResults(nodes,elems,displ,text,val,showref=False,dscale=100.,
             dnodes = nodes
         else:
             dnodes = nodes + dsc * displ
-        deformed = [ Mesh(dnodes,el,eltype='quad%d'%el.shape[1]) for el in elems ]
+        deformed = [ Mesh(dnodes, el, eltype='quad%d'%el.shape[1]) for el in elems ]
         bboxes.append(bbox(deformed))
         # We store the changing parts of the display, so that we can
         # easily remove/redisplay them
         #print(val)
         if val is None:
-            F = [ draw(df,color='blue',view=None,bbox='last',wait=False) for df in deformed ]
+            F = [ draw(df, color='blue', view=None, bbox='last', wait=False) for df in deformed ]
         else:
             #print([ df.report() + "\nCOLORS %s" % str(cval[el].shape)  for df,el in zip(deformed,elems) ])
-            F = [ draw(df,color=cval[el],view=None,bbox='last',wait=False) for df,el in zip(deformed,elems) ]
-        T = drawText('Deformation scale = %s' % dsc,200,10)
+            F = [ draw(df, color=cval[el], view=None, bbox='last', wait=False) for df, el in zip(deformed, elems) ]
+        T = drawText('Deformation scale = %s' % dsc, 200, 10)
 
         # remove the last frame
         # This is a clever trick: we remove the old drawings only after
@@ -350,12 +350,12 @@ def showResults(nodes,elems,displ,text,val,showref=False,dscale=100.,
             pf.canvas.removeActor(frames[-1][0])
             pf.canvas.removeDecoration(frames[-1][2])
         # add the latest frame to the stored list of frames
-        frames.append((F,[],T))
+        frames.append((F, [], T))
         wait()
 
     zoomBbox(bbox(bboxes))
 
-    animateScenes(frames,count,sleeptime)
+    animateScenes(frames, count, sleeptime)
 
 
 def animateScenes(scenes,count=1,sleeptime=None):
@@ -369,12 +369,12 @@ def animateScenes(scenes,count=1,sleeptime=None):
         delay(sleeptime)
 
     # prepare to remove last scene
-    FA,AA,TA = scenes[-1] # !! not None: that would remove everything !!
+    FA, AA, TA = scenes[-1] # !! not None: that would remove everything !!
 
     while count > 0:
         count -= 1
 
-        for F,A,T in scenes:
+        for F, A, T in scenes:
             # annotations and decorations should not change smoothly
             # therefore remove the old ones first
             pf.canvas.removeAnnotation(AA)
@@ -387,7 +387,7 @@ def animateScenes(scenes,count=1,sleeptime=None):
             pf.canvas.removeActor(FA)
             pf.canvas.display()
             pf.canvas.update()
-            FA,AA,TA = F,A,T
+            FA, AA, TA = F, A, T
             wait()
 
 
@@ -515,34 +515,34 @@ def animateScenes(scenes,count=1,sleeptime=None):
 ########## Postproc results dialog #######
 
 result_types = ODict([
-    ('','None'),
-    ('U0','X-Displacement'),
-    ('U1','Y-Displacement'),
-    ('U2','Z-Displacement'),
-    ('U','[Displacement]'),
-    ('S0','X-Normal Stress'),
-    ('S1','Y-Normal Stress'),
-    ('S2','Z-Normal Stress'),
-    ('S3','XY-Shear Stress'),
-    ('S4','XZ-Shear Stress'),
-    ('S5','YZ-Shear Stress'),
-    ('SP0','1-Principal Stress'),
-    ('SP1','2-Principal Stress'),
-    ('SP2','3-Principal Stress'),
-    ('SF0','x-Normal Membrane Force'),
-    ('SF1','y-Normal Membrane Force'),
-    ('SF2','xy-Shear Membrane Force'),
-    ('SF3','x-Bending Moment'),
-    ('SF4','y-Bending Moment'),
-    ('SF5','xy-Twisting Moment'),
-    ('SINV0','Mises Stress'),
-    ('SINV1','Tresca Stress'),
-    ('SINV2','Hydrostatic Pressure'),
-    ('SINV6','Third Invariant'),
-    ('COORD0','X-Coordinate'),
-    ('COORD1','Y-Coordinate'),
-    ('COORD2','Z-Coordinate'),
-    ('Computed','Distance from a point'),
+    ('', 'None'),
+    ('U0', 'X-Displacement'),
+    ('U1', 'Y-Displacement'),
+    ('U2', 'Z-Displacement'),
+    ('U', '[Displacement]'),
+    ('S0', 'X-Normal Stress'),
+    ('S1', 'Y-Normal Stress'),
+    ('S2', 'Z-Normal Stress'),
+    ('S3', 'XY-Shear Stress'),
+    ('S4', 'XZ-Shear Stress'),
+    ('S5', 'YZ-Shear Stress'),
+    ('SP0', '1-Principal Stress'),
+    ('SP1', '2-Principal Stress'),
+    ('SP2', '3-Principal Stress'),
+    ('SF0', 'x-Normal Membrane Force'),
+    ('SF1', 'y-Normal Membrane Force'),
+    ('SF2', 'xy-Shear Membrane Force'),
+    ('SF3', 'x-Bending Moment'),
+    ('SF4', 'y-Bending Moment'),
+    ('SF5', 'xy-Twisting Moment'),
+    ('SINV0', 'Mises Stress'),
+    ('SINV1', 'Tresca Stress'),
+    ('SINV2', 'Hydrostatic Pressure'),
+    ('SINV6', 'Third Invariant'),
+    ('COORD0', 'X-Coordinate'),
+    ('COORD1', 'Y-Coordinate'),
+    ('COORD2', 'Z-Coordinate'),
+    ('Computed', 'Distance from a point'),
     ])
 
 
@@ -554,7 +554,7 @@ DB = None
 def setDB(db):
     """Set the current result. db is an FeResult instance."""
     global DB
-    if isinstance(db,FeResult):
+    if isinstance(db, FeResult):
         DB = db
     else:
         DB = None
@@ -572,14 +572,14 @@ def selectDB(db=None):
 
     Returns the database or None.
     """
-    if not isinstance(db,FeResult):
+    if not isinstance(db, FeResult):
         db = selection.ask1()
         if db:
             print("Selected results database: %s" % selection.names[0])
     if db:
         setDB(db)
         clear()
-        print(DB.about.get('heading','No Heading'))
+        print(DB.about.get('heading', 'No Heading'))
         print('Stress tensor has %s components' % DB.datasize['S'])
         DB.printSteps()
         showModel()
@@ -603,15 +603,15 @@ def importCalculix(fn=None):
     #from plugins.fe import Model
     if fn is None:
         types = [ utils.fileDescription('ccx') ]
-        fn = askFilename(pf.cfg['workdir'],types)
+        fn = askFilename(pf.cfg['workdir'], types)
     if fn:
         chdir(fn)
         if fn.endswith('.inp'):
             meshfile = fn
-            resfile = utils.changeExt(fn,'dat')
+            resfile = utils.changeExt(fn, 'dat')
         else:
             resfile = fn
-            meshfile = utils.changeExt(fn,'inp')
+            meshfile = utils.changeExt(fn, 'inp')
 
         parts = readInpFile(meshfile)
         print(type(parts))
@@ -621,7 +621,7 @@ def importCalculix(fn=None):
         #fem = Model(meshes=meshes,fuse=False)
         DB = ccxdat.createResultDB(meshes)
         ngp = 8
-        ccxdat.readResults(resfile,DB,DB.nnodes,DB.nelems,ngp)
+        ccxdat.readResults(resfile, DB, DB.nnodes, DB.nelems, ngp)
         DB.printSteps()
         name = 'FeResult-%s' % meshfile[:-4]
         export({name:DB})
@@ -645,23 +645,23 @@ def importFlavia(fn=None):
     from plugins.flavia import readFlavia
     if fn is None:
         types = [ utils.fileDescription('flavia'), utils.fileDescription('all') ]
-        fn = askFilename(pf.cfg['workdir'],types)
+        fn = askFilename(pf.cfg['workdir'], types)
     if fn:
         chdir(fn)
         if fn.endswith('.msh'):
             meshfile = fn
-            resfile = utils.changeExt(fn,'res')
+            resfile = utils.changeExt(fn, 'res')
         else:
             resfile = fn
-            meshfile = utils.changeExt(fn,'msh')
+            meshfile = utils.changeExt(fn, 'msh')
 
-        db = readFlavia(meshfile,resfile)
-        if not isinstance(db,FeResult):
+        db = readFlavia(meshfile, resfile)
+        if not isinstance(db, FeResult):
             warning("!Something went wrong during the import of the flavia database %s" % fn)
             return
 
         ### ok: export and select the DB
-        name = os.path.splitext(os.path.basename(fn))[0].replace('.flavia','')
+        name = os.path.splitext(os.path.basename(fn))[0].replace('.flavia', '')
         export({name:db})
         db.printSteps()
         print(db.R)
@@ -677,7 +677,7 @@ def importDB(fn=None):
 
     if fn is None:
         types = utils.fileDescription('postproc')
-        fn = askFilename(pf.cfg['workdir'],types)
+        fn = askFilename(pf.cfg['workdir'], types)
     if fn:
         chdir(fn)
         sizeM = round(os.stat(fn).st_size * 1.e-6)
@@ -687,7 +687,7 @@ BEWARE!!!
 The size of this file is very large: %.1fMB.
 It is unlikely that I will be able to process this file.
 I strongly recommend you to cancel the operation now.
-""" % sizeM,["Continue","Cancel"]) != "Continue":
+""" % sizeM, ["Continue", "Cancel"]) != "Continue":
             return
 
         # import the results DB
@@ -698,7 +698,7 @@ I strongly recommend you to cancel the operation now.
         ### check whether the import succeeded
         name = FeResult._name_
         db = pf.PF[name]
-        if not isinstance(db,FeResult):
+        if not isinstance(db, FeResult):
             warning("!Something went wrong during the import of the database %s" % fn)
             return
 
@@ -713,9 +713,9 @@ def checkDB():
     If no results database was already selected, asks the user to do so.
     Returns True if a databases is selected.
     """
-    if not isinstance(DB,FeResult):
+    if not isinstance(DB, FeResult):
         selectDB()
-    return isinstance(DB,FeResult)
+    return isinstance(DB, FeResult)
 
 
 def dialog_getresults():
@@ -729,7 +729,7 @@ def dialog_getresults():
 def dialog_reset(data=None):
     # data is a dict with short keys/data
     if data is None:
-        data = dict((i['name'],i.get('value',None)) for i in input_items)
+        data = dict((i['name'], i.get('value', None)) for i in input_items)
     dialog.updateData(data)
 
 
@@ -746,7 +746,7 @@ def show_results(data):
     the displayed results are those of the step/inc in the database.
     """
     globals().update(data)
-    DB.setStepInc(int(data['step']),int(data['inc']))
+    DB.setStepInc(int(data['step']), int(data['inc']))
 
     nodes = DB.nodes
     if elgroup == '--ALL--':
@@ -755,10 +755,10 @@ def show_results(data):
         elems = [ DB.elems[elgroup] ]
 
     dscale = data['dscale']
-    print(DB.step,DB.inc)
+    print(DB.step, DB.inc)
     displ = DB.getres('U')
     if displ is not None:
-        displ = displ[:,0:3]
+        displ = displ[:, 0:3]
 
         if autoscale:
             siz0 = Coords(nodes).sizes()
@@ -767,7 +767,7 @@ def show_results(data):
                 # all displacements are zero
                 dscale = 1.
             else:
-                print(siz0,siz1)
+                print(siz0, siz1)
                 w = where(siz0 > 0.0)[0]
                 print(w)
                 dscale = 0.5/(siz1[w]/siz0[w]).max()
@@ -775,7 +775,7 @@ def show_results(data):
                 dscale = niceNumber(0.5/(siz1[w]/siz0[w]).max())
 
     if animate:
-        dscale = dscale * frameScale(nframes,cycle=cycle,shape=shape)
+        dscale = dscale * frameScale(nframes, cycle=cycle, shape=shape)
 
     txt = "Step %S; Inc %I; "
 
@@ -794,7 +794,7 @@ def show_results(data):
     if val is not None:
         txt += result_types.values()[resindex]
     #print("RESULT ELTYPE: %s" % [e.eltype.name() for e in elems])
-    showResults(nodes,elems,displ,txt,val,showref,dscale,count,sleeptime,symmetric_scale)
+    showResults(nodes, elems, displ, txt, val, showref, dscale, count, sleeptime, symmetric_scale)
     return val
 
 
@@ -806,8 +806,8 @@ def show_DB_results():
     global dialog
     if dialog:
         dialog.updateData({
-            'step':DB.step,
-            'inc':DB.inc,
+            'step': DB.step,
+            'inc': DB.inc,
             })
     # This shoud use show_results instead, with the stored data
     show()
@@ -839,46 +839,46 @@ def open_dialog():
 
     def set_inc_choices(step):
         if step: # to avoid an error when called before data set
-            print("  Incs for step %s: %s" % (step,DB.getIncs(int(step))))
+            print("  Incs for step %s: %s" % (step, DB.getIncs(int(step))))
             dialog['inc'].setChoices(DB.getIncs(int(step)))
 
     input_items = [
-        _T('Result',[
-            _I('feresult',text='FE Result DB',value='',itemtype='info'),
-            _I('step',text='Step',choices=DB.getSteps(),onselect=set_inc_choices),
-            _I('inc',text='Increment',choices=[1]),
-            _I('elgroup',text='Element Group',choices=['--ALL--',]),
-            _I('restype',text='Type of result',choices=result_types.values()),
-            _I('autoscale',text='Autocalculate deformation scale',value=True),
-            _I('dscale',text='Deformation scale',value=100.),
-            _I('symmetric_scale',text='Symmetric scale',value=False),
-            _I('showref',text='Show undeformed configuration',value=True),
+        _T('Result', [
+            _I('feresult', text='FE Result DB', value='', itemtype='info'),
+            _I('step', text='Step', choices=DB.getSteps(), onselect=set_inc_choices),
+            _I('inc', text='Increment', choices=[1]),
+            _I('elgroup', text='Element Group', choices=['--ALL--',]),
+            _I('restype', text='Type of result', choices=result_types.values()),
+            _I('autoscale', text='Autocalculate deformation scale', value=True),
+            _I('dscale', text='Deformation scale', value=100.),
+            _I('symmetric_scale', text='Symmetric scale', value=False),
+            _I('showref', text='Show undeformed configuration', value=True),
             ]),
-        _T('Animation',[
-            _I('animate',text='Animate results',value=False),
-            _I('shape',text='Amplitude shape',value='linear',itemtype='radio',choices=['linear','sine']),
-            _I('cycle',text='Animation cycle',value='updown',itemtype='radio',choices=['up','updown','revert']),
-            _I('count',text='Number of cycles',value=5),
-            _I('nframes',text='Number of frames',value=10),
-            _I('sleeptime',text='Animation sleeptime',value=0.1),
+        _T('Animation', [
+            _I('animate', text='Animate results', value=False),
+            _I('shape', text='Amplitude shape', value='linear', itemtype='radio', choices=['linear', 'sine']),
+            _I('cycle', text='Animation cycle', value='updown', itemtype='radio', choices=['up', 'updown', 'revert']),
+            _I('count', text='Number of cycles', value=5),
+            _I('nframes', text='Number of frames', value=10),
+            _I('sleeptime', text='Animation sleeptime', value=0.1),
             ]),
         ]
 
     enablers = [
-        ('autoscale',False,'dscale'),
-        ('animate',True,'shape','cycle','count','nframes','sleeptime'),
+        ('autoscale', False, 'dscale'),
+        ('animate', True, 'shape', 'cycle', 'count', 'nframes', 'sleeptime'),
         ]
 
     actions = [
-        ('Prev Step',prev_step,'rew'),
-        ('Prev',prev_inc,'prev'),
-        ('Next',next_inc,'next'),
-        ('Next Step',next_step,'ff'),
+        ('Prev Step', prev_step, 'rew'),
+        ('Prev', prev_inc, 'prev'),
+        ('Next', next_inc, 'next'),
+        ('Next Step', next_step, 'ff'),
         ('---',),
-        ('Close',close_dialog),
-        ('Reset',reset),
+        ('Close', close_dialog),
+        ('Reset', reset),
         # ('Select DB',selectDB),
-        ('Show',show),
+        ('Show', show),
         # ('Show Fields',showfields),
         # ('Show Attr',showattr),
         ]
@@ -919,7 +919,7 @@ def close_dialog():
 
 def askPoint():
     global point
-    res = askItems([('Point',point)])
+    res = askItems([('Point', point)])
     if res:
         point = res['Point']
         return point
@@ -935,21 +935,21 @@ def create_menu():
     """Create the Postproc menu."""
     MenuData = [
 #        ("&Translate Abaqus .fil to FeResult database",P.postABQ),
-        ("&Read FeResult Database",importDB),
-        ("&Read CalculiX results",importCalculix),
-        ("&Read Flavia Database",importFlavia),
-        ("&Select FeResult Data",selectDB),
+        ("&Read FeResult Database", importDB),
+        ("&Read CalculiX results", importCalculix),
+        ("&Read Flavia Database", importFlavia),
+        ("&Select FeResult Data", selectDB),
 #        ("&Forget FeResult Data",P.selection.forget),
-        ("---",None),
-        ("Show Geometry",showModel),
+        ("---", None),
+        ("Show Geometry", showModel),
 #        ("Select Step/Inc",P.selectStepInc),
 #        ("Show Results",P.postProc),
-        ("Results Dialog",open_dialog),
-        ("---",None),
-        ("&Reload menu",reload_menu),
-        ("&Close menu",close_menu),
+        ("Results Dialog", open_dialog),
+        ("---", None),
+        ("&Reload menu", reload_menu),
+        ("&Close menu", close_menu),
         ]
-    return menu.Menu(_menu,items=MenuData,parent=pf.GUI.menu,before='help')
+    return menu.Menu(_menu, items=MenuData, parent=pf.GUI.menu, before='help')
 
 
 def show_menu():
@@ -967,7 +967,7 @@ def reload_menu():
     """Reload the Postproc menu."""
     global DB
     close_menu()
-    DB = pf.PF.get('PostProcMenu_result',None)
+    DB = pf.PF.get('PostProcMenu_result', None)
     print("Current database %s" % DB)
     import plugins
     plugins.refresh('postproc_menu')

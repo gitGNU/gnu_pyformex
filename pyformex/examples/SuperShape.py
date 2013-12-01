@@ -38,7 +38,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'advanced'
 _topic = ['geometry']
-_techniques = ['dialog','persistence']
+_techniques = ['dialog', 'persistence']
 
 from gui.draw import *
 from simple import rectangle
@@ -60,19 +60,19 @@ colormap = None
 def createGrid():
     """Create the grid from global parameters"""
     global B
-    nx,ny = grid_size
-    b,h = x_range[1]-x_range[0], y_range[1]-y_range[0]
+    nx, ny = grid_size
+    b, h = x_range[1]-x_range[0], y_range[1]-y_range[0]
     if grid_base.startswith('tri'):
         diag = grid_base[-1]
     else:
         diag = ''
-    B = rectangle(nx,ny,b,h,diag=diag,bias=grid_bias).translate([x_range[0],y_range[0],1.])
+    B = rectangle(nx, ny, b, h, diag=diag, bias=grid_bias).translate([x_range[0], y_range[0], 1.])
     if grid_skewness != 0.0:
-        B = B.shear(0,1,grid_skewness*b*ny/(h*nx))
+        B = B.shear(0, 1, grid_skewness*b*ny/(h*nx))
     if x_clip:
-        B = B.clip(B.test('any',dir=0,min=x_clip[0]+tol*b,max=x_clip[1]-tol*b))
+        B = B.clip(B.test('any', dir=0, min=x_clip[0]+tol*b, max=x_clip[1]-tol*b))
     if y_clip:
-        B = B.clip(B.test('any',dir=1,min=y_clip[0]+tol*h,max=y_clip[1]-tol*h))
+        B = B.clip(B.test('any', dir=1, min=y_clip[0]+tol*h, max=y_clip[1]-tol*h))
     export({grid_name:B})
     
 
@@ -80,8 +80,8 @@ def createSuperShape():
     """Create a super shape from global parameters"""
     global F
     B = pf.PF[grid_name]
-    F = B.superSpherical(n=north_south,e=east_west,k=eggness)
-    if scale == [1.0,1.0,1.0]:
+    F = B.superSpherical(n=north_south, e=east_west, k=eggness)
+    if scale == [1.0, 1.0, 1.0]:
         pass
     else:
         F = F.scale(scale)
@@ -96,12 +96,12 @@ def drawGrid():
     clear()
     wireframe()
     view('front')
-    draw(B,color=grid_color)
+    draw(B, color=grid_color)
     
 
 def drawSuperShape():
     """Show the last created super shape"""
-    global color,colormap
+    global color, colormap
     clear()
     smoothwire()
     if isinstance(color, str) and color.startswith('file:'):
@@ -109,11 +109,11 @@ def drawSuperShape():
         im = QtGui.QImage('Elevation-800.jpg')
         print(im)
         print(im.isNull())
-        nx,ny = grid_size
-        color,colormap = image2glcolor(im.scaled(nx,ny))[0]
+        nx, ny = grid_size
+        color, colormap = image2glcolor(im.scaled(nx, ny))[0]
         print(color.shape)
 
-    draw(F,color=color,colormap=colormap,bkcolor=bkcolor)
+    draw(F, color=color, colormap=colormap, bkcolor=bkcolor)
 
 
 def acceptData():
@@ -143,7 +143,7 @@ def show():
 
 
 def close():
-    global dialog,savefile
+    global dialog, savefile
     if dialog:
         dialog.close()
         dialog = None
@@ -160,12 +160,12 @@ def save():
     if savefile is None:
         filename = askNewFilename(filter="Text files (*.txt)")
         if filename:
-            savefile = open(filename,'a')
+            savefile = open(filename, 'a')
     if savefile:
         print("Saving to file")
         savefile.write('%s\n' % str(dialog.results))
         savefile.flush()
-        globals().update({'grid_name':gname.next(),'name':sname.next(),})
+        globals().update({'grid_name': gname.next(), 'name': sname.next(),})
         if dialog:
            dialog['grid_name'].setValue(grid_name)
            dialog['name'].setValue(name)            
@@ -177,52 +177,52 @@ def replay():
         filename = savefile.name
         savefile.close()
     else:
-        filename = os.path.join(getcfg('datadir'),'supershape.txt')
-        filename = askFilename(cur=filename,filter="Text files (*.txt)")
+        filename = os.path.join(getcfg('datadir'), 'supershape.txt')
+        filename = askFilename(cur=filename, filter="Text files (*.txt)")
     if filename:
-        savefile = open(filename,'r')
+        savefile = open(filename, 'r')
         for line in savefile:
             print(line)
             globals().update(eval(line))
             replayShape()
-        savefile = open(filename,'a')
+        savefile = open(filename, 'a')
 
 
 ################# Dialog
 
 dialog_items = [
-    _G('Grid data',[
-        _I('grid_size',[24,12],),
-        _I('x_range',(-180.,180.),),
-        _I('y_range',(-90.,90.),),
-        _I('grid_base','quad',itemtype='radio',choices=['quad','tri-u','tri-d','tri-x']),
-        _I('grid_bias',0.0,),
-        _I('grid_skewness',0.0,),
-        _I('x_clip',(-360.,360.),),
-        _I('y_clip',(-90.,90.),),
-        _I('grid_name',gname.peek(),),
-        _I('grid_color','blue',),
+    _G('Grid data', [
+        _I('grid_size', [24, 12],),
+        _I('x_range', (-180., 180.),),
+        _I('y_range', (-90., 90.),),
+        _I('grid_base', 'quad', itemtype='radio', choices=['quad', 'tri-u', 'tri-d', 'tri-x']),
+        _I('grid_bias', 0.0,),
+        _I('grid_skewness', 0.0,),
+        _I('x_clip', (-360., 360.),),
+        _I('y_clip', (-90., 90.),),
+        _I('grid_name', gname.peek(),),
+        _I('grid_color', 'blue',),
         ]),
-    _G('Shape data',[
-        _I('north_south',1.0,),
-        _I('east_west',1.0,),
-        _I('eggness',0.0,),
-        _I('scale',[1.,1.,1.],),
-        _I('post','',),
-        _I('name',sname.peek(),),
-        _I('color','red',),
-        _I('bkcolor','yellow',),
+    _G('Shape data', [
+        _I('north_south', 1.0,),
+        _I('east_west', 1.0,),
+        _I('eggness', 0.0,),
+        _I('scale', [1., 1., 1.],),
+        _I('post', '',),
+        _I('name', sname.peek(),),
+        _I('color', 'red',),
+        _I('bkcolor', 'yellow',),
 #        _I('texture','None',),
         ]),
     ]
 
 dialog_actions = [
-    ('Close',close),
-    ('Reset',reset),
-    ('Replay',replay),
-    ('Save',save),
-    ('Grid',showGrid),
-    ('Show',show)
+    ('Close', close),
+    ('Reset', reset),
+    ('Replay', replay),
+    ('Save', save),
+    ('Grid', showGrid),
+    ('Show', show)
     ]
 
 dialog_default = 'Show'
@@ -260,7 +260,7 @@ def run():
     lights(True)
     transparent(False)
     createDialog()
-    setView('eggview',(0.,-30.,0.))
+    setView('eggview', (0., -30., 0.))
     view('eggview')
     dialog.show()
     scriptLock(__file__)

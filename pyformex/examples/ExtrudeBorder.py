@@ -33,18 +33,18 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
 _topics = ['surface']
-_techniques = ['extrude','borderfill','cut']
+_techniques = ['extrude', 'borderfill', 'cut']
 
 from gui.draw import *
 
-def cutBorderClose(S,P,N):
+def cutBorderClose(S, P, N):
     """Cut a surface with a plane, and close it
 
     Return the border line and the closed surface.
     """
-    S = S.cutWithPlane(P,N,side='-')
+    S = S.cutWithPlane(P, N, side='-')
     B = S.border()[0]
-    return B,S.close()
+    return B, S.close()
 
 
 def run():
@@ -56,18 +56,18 @@ def run():
     SA = draw(S)
 
     p = 0
-    for P,N,L,div in [
+    for P, N, L, div in [
         #
         # Each line contains a point, a normal, an extrusion length
         # and the number of elements along this length
         ((0.6, 0., 0.), (1., 0., 0.), 2.5, 5 ),
-        ((-0.6, 0.6, 0.), (-1., 1., 0.), 4., (16,1.0,1.0)),
+        ((-0.6, 0.6, 0.), (-1., 1., 0.), 4., (16, 1.0, 1.0)),
         ((-0.6, -0.6, 0.), (-1., -1., 0.), 3., 2),
         ]:
-        B,S = cutBorderClose(S,P,N)
+        B, S = cutBorderClose(S, P, N)
         draw(B)
         p += 1
-        E = B.extrude(div,dir=normalize(N),length=L,eltype='tri3').setProp(p)
+        E = B.extrude(div, dir=normalize(N), length=L, eltype='tri3').setProp(p)
         draw(E)
 
     draw(S)

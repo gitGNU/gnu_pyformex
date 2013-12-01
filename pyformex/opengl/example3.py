@@ -42,7 +42,7 @@ _techniques = ['webgl']
 
 from gui.draw import *
 
-from simple import sphere,sector,cylinder
+from simple import sphere, sector, cylinder
 from mydict import Dict
 from plugins.webgl import WebGL
 
@@ -57,8 +57,8 @@ def run():
 
     # Create some geometry
     S = sphere()
-    T = sector(1.0,360.,6,36,h=1.0,diag='u').toSurface().scale(1.5).reverse()
-    C = cylinder(1.2,1.5,24,4,diag='u').toSurface().trl([0.5,0.5,0.5]).reverse()
+    T = sector(1.0, 360., 6, 36, h=1.0, diag='u').toSurface().scale(1.5).reverse()
+    C = cylinder(1.2, 1.5, 24, 4, diag='u').toSurface().trl([0.5, 0.5, 0.5]).reverse()
 
     # Draw the geometry with given colors/opacity
     # Settings colors and opacity in this way makes the model
@@ -67,21 +67,21 @@ def run():
     Sa.color = red
     Sa.alpha = 0.7
     Sa.caption = 'A sphere'
-    Sa.control = ['visible','opacity','color']
+    Sa.control = ['visible', 'opacity', 'color']
     #Sa.setNormals('avg')
 
     Ta = T.attrib
     Ta.color = blue
     Ta.caption = 'A cone'
     Ta.alpha = 1.0
-    Ta.control = ['visible','opacity','color']
+    Ta.control = ['visible', 'opacity', 'color']
     #S.setNormals('auto')
 
     Ca = C.attrib
     Ca.color = 'yellow'
     Ca.caption = 'A cylinder'
     Ca.alpha = 0.8
-    Ca.control = ['visible','opacity','color']
+    Ca.control = ['visible', 'opacity', 'color']
     #S.setNormals('auto')
 
     export({'sphere':S,'cone':T,'cylinder':C})
@@ -99,7 +99,7 @@ def run():
     for i in range(11):
 
         alpha = 0.1*i
-        print("%s -> %s"% (CA.alpha,alpha))
+        print("%s -> %s"% (CA.alpha, alpha))
         print(CA.caption)
         CA.alpha = alpha
         CA.modified = True
@@ -123,19 +123,19 @@ def run():
         if key == 'objectColor':
             print("VALUE %s" % val)
             val = GLcolor(val)
-        print("%s: %s = %s" % (actor.name,key,val))
-        setattr(actor,key,val)
+        print("%s: %s = %s" % (actor.name, key, val))
+        setattr(actor, key, val)
         pf.canvas.update()
 
     def obj_dialog(obj):
         items = [
-            _I('name',obj.name),
-            _I('visible',True,func=set_attr,data=obj),
+            _I('name', obj.name),
+            _I('visible', True, func=set_attr, data=obj),
             ]
         if 'objectColor' in obj:
-            items.append(_I('objectColor',CA.objectColor,itemtype='color',min=0.0,max=100.0,scale=0.01,func=set_attr,data=CA))
+            items.append(_I('objectColor', CA.objectColor, itemtype='color', min=0.0, max=100.0, scale=0.01, func=set_attr, data=CA))
         if 'alpha' in obj:
-            items.append(_I('alpha',CA.alpha,itemtype='fslider',min=0.0,max=100.0,scale=0.01,func=set_attr,data=CA))
+            items.append(_I('alpha', CA.alpha, itemtype='fslider', min=0.0, max=100.0, scale=0.01, func=set_attr, data=CA))
         return Dialog(items)
 
 

@@ -28,7 +28,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
 _topics = ['geometry']
-_techniques = ['connect','dialog']
+_techniques = ['connect', 'dialog']
 
 from gui.draw import *
 
@@ -58,10 +58,10 @@ def cone(r0,r1,h,t=360.,nr=1,nt=24,diag=None):
     If diag='up' or diag = 'down', all quads are divided by an up directed
     diagonal and a plex-3 Formex results.
     """
-    B = simple.rectangle(nt,nr,1.,1.,diag=diag) # grid with size 1x1
-    B = B.map(lambda x,y,z:[x,y,r0-y*(r0-r1)]) # translate and tilt it
-    B = B.scale([t,h,1.])             # scale to fit parameters
-    return B.cylindrical(dir=[2,0,1]) # roll it into a cone
+    B = simple.rectangle(nt, nr, 1., 1., diag=diag) # grid with size 1x1
+    B = B.map(lambda x, y, z:[x, y, r0-y*(r0-r1)]) # translate and tilt it
+    B = B.scale([t, h, 1.])             # scale to fit parameters
+    return B.cylindrical(dir=[2, 0, 1]) # roll it into a cone
 
 
 def cone1(r0,r1,h,t=360.,nr=1,nt=24,diag=None):
@@ -86,25 +86,25 @@ def cone1(r0,r1,h,t=360.,nr=1,nt=24,diag=None):
     If diag='up' or diag = 'down', all quads are divided by an up directed
     diagonal and a plex-3 Formex results.
     """
-    r0,r1,h,t = map(float,(r0,r1,h,t))
-    p = Formex(simple.regularGrid([r0,0.,0.],[r1,h,0.],[0,nr,0]).reshape(-1,3))
+    r0, r1, h, t = map(float, (r0, r1, h, t))
+    p = Formex(simple.regularGrid([r0, 0., 0.], [r1, h, 0.], [0, nr, 0]).reshape(-1, 3))
     #draw(p,color=red)
     a = (r1-r0)/h 
     if a != 0.:
-        p = p.shear(0,1,a)
+        p = p.shear(0, 1, a)
     #draw(p)
-    q = p.rotate(t/nt,axis=1)
+    q = p.rotate(t/nt, axis=1)
     #draw(q,color=green)
     if diag == 'u':
-        F = connect([p,p,q],bias=[0,1,1]) + \
-            connect([p,q,q],bias=[1,2,1])
+        F = connect([p, p, q], bias=[0, 1, 1]) + \
+            connect([p, q, q], bias=[1, 2, 1])
     elif diag == 'd':
-        F = connect([q,p,q],bias=[0,1,1]) + \
-            connect([p,p,q],bias=[1,2,1])
+        F = connect([q, p, q], bias=[0, 1, 1]) + \
+            connect([p, p, q], bias=[1, 2, 1])
     else:
-        F = connect([p,p,q,q],bias=[0,1,1,0])
+        F = connect([p, p, q, q], bias=[0, 1, 1, 0])
 
-    F = Formex.concatenate([F.rotate(i*t/nt,1) for i in range(nt)])
+    F = Formex.concatenate([F.rotate(i*t/nt, 1) for i in range(nt)])
     return F
 
 
@@ -120,10 +120,10 @@ diag=''
 
 def run():
     items = [
-        widgets.simpleInputItem(n,globals()[n])
-        for n in ['r0','r1','h','t', 'nr','nt']
+        widgets.simpleInputItem(n, globals()[n])
+        for n in ['r0', 'r1', 'h', 't', 'nr', 'nt']
         ] + [
-        widgets.simpleInputItem('diag',diag,itemtype='radio',choices=['','u','d'])
+        widgets.simpleInputItem('diag', diag, itemtype='radio', choices=['', 'u', 'd'])
         ]
     dialog = widgets.InputDialog(items)
 
@@ -134,8 +134,8 @@ def run():
             break
 
         globals().update(res)
-        F = cone(r0,r1,h,t,nr,nt,diag)
-        G = cone1(r0,r1,h,t,nr,nt,diag).swapAxes(1,2).trl(0,2*max(r0,r1))
+        F = cone(r0, r1, h, t, nr, nt, diag)
+        G = cone1(r0, r1, h, t, nr, nt, diag).swapAxes(1, 2).trl(0, 2*max(r0, r1))
         G.setProp(1)
         H = F+G
         clear()

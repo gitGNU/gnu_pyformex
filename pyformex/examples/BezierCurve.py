@@ -48,11 +48,11 @@ from plugins.curve import *
 from plugins.nurbs import *
 
 def run():
-    predefined = ['514','1234','51414336','custom']
+    predefined = ['514', '1234', '51414336', 'custom']
 
     res = askItems([
-        dict(name='pattern',choices=predefined),
-        dict(name='custom',value=''),
+        dict(name='pattern', choices=predefined),
+        dict(name='custom', value=''),
         ])
 
     if not res:
@@ -70,14 +70,14 @@ def run():
     linewidth(2)
     flat()
 
-    draw(C,bbox='auto',view='front')
+    draw(C, bbox='auto', view='front')
     draw(C.coords)
     drawNumbers(C.coords)
 
     setDrawOptions({'bbox':None})
     n = 100
     u = arange(n+1)*1.0/n
-    P = pointsOnBezierCurve(C.coords,u)
+    P = pointsOnBezierCurve(C.coords, u)
     draw(P)
 
 

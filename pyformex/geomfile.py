@@ -35,7 +35,7 @@ from coords import *
 from formex import Formex
 from mesh import Mesh
 from odict import ODict
-from pyformex import message,debug,warning,DEBUG
+from pyformex import message, debug, warning, DEBUG
 
 
 import os
@@ -71,7 +71,7 @@ class GeometryFile(object):
                     mode = 'r'
                 else:
                     mode = 'w'
-            fil = open(fil,mode)
+            fil = open(fil, mode)
         self.isname = isname
         self.fil = fil
         self.writing = self.fil.mode[0] in 'wa'
@@ -91,8 +91,8 @@ class GeometryFile(object):
         The default mode for the reopen is 'r'
         """
         self.fil.close()
-        self.__init__(self.fil.name,mode)
-        print(self.fil,self.writing,self.isname)
+        self.__init__(self.fil.name, mode)
+        print(self.fil, self.writing, self.isname)
 
 
     def close(self):
@@ -119,7 +119,7 @@ class GeometryFile(object):
         - `sep`: the default separator to be used when not specified in
           the data block
         """
-        self.fil.write("# pyFormex Geometry File (http://pyformex.org) version='%s'; sep='%s'\n" % (self._version_,self.sep))
+        self.fil.write("# pyFormex Geometry File (http://pyformex.org) version='%s'; sep='%s'\n" % (self._version_, self.sep))
 
 
     def writeData(self,data,sep,fmt=None):
@@ -135,7 +135,7 @@ class GeometryFile(object):
         kind = data.dtype.kind
         #if fmt is None:
         #    fmt = self.fmt[kind]
-        filewrite.writeData(self.fil,data,sep,end='\n')
+        filewrite.writeData(self.fil, data, sep, end='\n')
 
 
     def write(self,geom,name=None,sep=None):
@@ -151,36 +151,36 @@ class GeometryFile(object):
         separator, or the default.
         """
         self.checkWritable()
-        if isinstance(geom,dict):
+        if isinstance(geom, dict):
             for name in geom:
-                self.write(geom[name],name,sep)
-        elif isinstance(geom,list):
+                self.write(geom[name], name, sep)
+        elif isinstance(geom, list):
             if name is None:
                 for obj in geom:
-                    if hasattr(obj,'obj'):
+                    if hasattr(obj, 'obj'):
                         #This must be a WebGL object dict
-                        self.writeDict(obj,sep=sep)
+                        self.writeDict(obj, sep=sep)
                     else:
-                        if hasattr(obj,'name'):
+                        if hasattr(obj, 'name'):
                             objname = obj.name
                         else:
                             objname = None
-                        self.write(obj,objname,sep)
+                        self.write(obj, objname, sep)
             else:
                 name = utils.NameSequence(name)
                 for obj in geom:
-                    self.write(obj,name.next(),sep)
+                    self.write(obj, name.next(), sep)
 
-        elif hasattr(geom,'write_geom'):
-            geom.write_geom(self,name,sep)
+        elif hasattr(geom, 'write_geom'):
+            geom.write_geom(self, name, sep)
         else:
             try:
-                writefunc = getattr(self,'write'+geom.__class__.__name__)
+                writefunc = getattr(self, 'write'+geom.__class__.__name__)
             except:
                 warning("Can not (yet) write objects of type %s to geometry file: skipping" % type(geom))
                 return
             try:
-                writefunc(geom,name,sep)
+                writefunc(geom, name, sep)
             except:
                 warning("Error while writing objects of type %s to geometry file: skipping" % type(geom))
                 raise
@@ -196,13 +196,13 @@ class GeometryFile(object):
         if sep is None:
             sep = self.sep
         hasprop = F.prop is not None
-        head = "# objtype='Formex'; nelems=%r; nplex=%r; props=%r; eltype=%r; sep=%r" % (F.nelems(),F.nplex(),hasprop,F.eltype,sep)
+        head = "# objtype='Formex'; nelems=%r; nplex=%r; props=%r; eltype=%r; sep=%r" % (F.nelems(), F.nplex(), hasprop, F.eltype, sep)
         if name:
             head += "; name='%s'" % name
         self.fil.write(head+'\n')
-        self.writeData(F.coords,sep)
+        self.writeData(F.coords, sep)
         if hasprop:
-            self.writeData(F.prop,sep)
+            self.writeData(F.prop, sep)
 
 
     def writeDict(self,F,name=None,sep=None,objtype='Mesh'):
@@ -216,15 +216,15 @@ class GeometryFile(object):
         if sep is None:
             sep = self.sep
         color = ''
-        if hasattr(F,'color'):
+        if hasattr(F, 'color'):
             Fc = F.color
             print("HAS COLOR=%s" % str(Fc))
-            if isinstance(Fc,ndarray):
+            if isinstance(Fc, ndarray):
                 if Fc.shape == (3,):
                     color = tuple(Fc)
-                elif Fc.shape == (F.nelems(),3):
+                elif Fc.shape == (F.nelems(), 3):
                     color = 'element'
-                elif Fc.shape == (F.nelems(),F.nplex(),3):
+                elif Fc.shape == (F.nelems(), F.nplex(), 3):
                     color = 'vertex'
                 else:
                     raise ValueError("Incorrect color shape: %s" % Fc.shape)
@@ -233,17 +233,17 @@ class GeometryFile(object):
         # Now take the object
         F = F.obj
         hasprop = F.prop is not None
-        hasnorm = hasattr(F,'normals') and isinstance(F.normals,ndarray) and F.normals.shape == (F.nelems(),F.nplex(),3)
-        head = "# objtype='%s'; ncoords=%s; nelems=%s; nplex=%s; props=%s; eltype='%s'; normals=%s; color=%s; sep='%s'" % (objtype,F.ncoords(),F.nelems(),F.nplex(),hasprop,F.elName(),hasnorm,repr(color),sep)
+        hasnorm = hasattr(F, 'normals') and isinstance(F.normals, ndarray) and F.normals.shape == (F.nelems(), F.nplex(), 3)
+        head = "# objtype='%s'; ncoords=%s; nelems=%s; nplex=%s; props=%s; eltype='%s'; normals=%s; color=%s; sep='%s'" % (objtype, F.ncoords(), F.nelems(), F.nplex(), hasprop, F.elName(), hasnorm, repr(color), sep)
         if name:
             head += "; name='%s'" % name
         self.fil.write(head+'\n')
-        self.writeData(F.coords,sep)
-        self.writeData(F.elems,sep)
+        self.writeData(F.coords, sep)
+        self.writeData(F.elems, sep)
         if hasprop:
-            self.writeData(F.prop,sep)
+            self.writeData(F.prop, sep)
         if hasnorm:
-            self.writeData(F.normals,sep)
+            self.writeData(F.normals, sep)
 
 
     def writeMesh(self,F,name=None,sep=None,objtype='Mesh'):
@@ -262,34 +262,34 @@ class GeometryFile(object):
         if sep is None:
             sep = self.sep
         hasprop = F.prop is not None
-        hasnorm = hasattr(F,'normals') and isinstance(F.normals,ndarray) and F.normals.shape == (F.nelems(),F.nplex(),3)
+        hasnorm = hasattr(F, 'normals') and isinstance(F.normals, ndarray) and F.normals.shape == (F.nelems(), F.nplex(), 3)
         color = ''
-        if hasattr(F,'color'):
+        if hasattr(F, 'color'):
             Fc = F.color
             #print("HAS COLOR=%s" % str(Fc))
-            if isinstance(Fc,ndarray):
+            if isinstance(Fc, ndarray):
                 if Fc.shape == (3,):
                     color = str(Fc)
-                elif Fc.shape == (F.nelems(),3):
+                elif Fc.shape == (F.nelems(), 3):
                     color = 'element'
-                elif Fc.shape == (F.nelems(),F.nplex(),3):
+                elif Fc.shape == (F.nelems(), F.nplex(), 3):
                     color = 'vertex'
                 else:
                     raise ValueError("Incorrect color shape: %s" % Fc.shape)
 
         #print("COLOR=%s" % color)
-        head = "# objtype='%s'; ncoords=%s; nelems=%s; nplex=%s; props=%s; eltype='%s'; normals=%s; color=%r; sep='%s'" % (objtype,F.ncoords(),F.nelems(),F.nplex(),hasprop,F.elName(),hasnorm,color,sep)
+        head = "# objtype='%s'; ncoords=%s; nelems=%s; nplex=%s; props=%s; eltype='%s'; normals=%s; color=%r; sep='%s'" % (objtype, F.ncoords(), F.nelems(), F.nplex(), hasprop, F.elName(), hasnorm, color, sep)
         if name:
             head += "; name='%s'" % name
         self.fil.write(head+'\n')
-        self.writeData(F.coords,sep)
-        self.writeData(F.elems,sep)
+        self.writeData(F.coords, sep)
+        self.writeData(F.elems, sep)
         if hasprop:
-            self.writeData(F.prop,sep)
+            self.writeData(F.prop, sep)
         if hasnorm:
-            self.writeData(F.normals,sep)
+            self.writeData(F.normals, sep)
         if color == 'element' or color == 'vertex':
-            self.writeData(F.color,sep)
+            self.writeData(F.color, sep)
 
 
     def writeTriSurface(self,F,name=None,sep=None):
@@ -297,7 +297,7 @@ class GeometryFile(object):
 
         This is equivalent to writeMesh(F,name,sep,objtype='TriSurface')
         """
-        self.writeMesh(F,name=name,sep=sep,objtype='TriSurface')
+        self.writeMesh(F, name=name, sep=sep, objtype='TriSurface')
 
 
     def writeCurve(self,F,name=None,sep=None,objtype=None,extra=None):
@@ -312,13 +312,13 @@ class GeometryFile(object):
         """
         if sep is None:
             sep = self.sep
-        head = "# objtype='%s'; ncoords=%s; closed=%s; sep='%s'" % (F.__class__.__name__,F.coords.shape[0],F.closed,sep)
+        head = "# objtype='%s'; ncoords=%s; closed=%s; sep='%s'" % (F.__class__.__name__, F.coords.shape[0], F.closed, sep)
         if name:
             head += "; name='%s'" % name
         if extra:
             head += extra
         self.fil.write(head+'\n')
-        self.writeData(F.coords,sep)
+        self.writeData(F.coords, sep)
 
 
     def writePolyLine(self,F,name=None,sep=None):
@@ -326,7 +326,7 @@ class GeometryFile(object):
 
         This is equivalent to writeCurve(F,name,sep,objtype='PolyLine')
         """
-        self.writeCurve(F,name=name,sep=sep,objtype='PolyLine')
+        self.writeCurve(F, name=name, sep=sep, objtype='PolyLine')
 
 
     def writeBezierSpline(self,F,name=None,sep=None):
@@ -334,7 +334,7 @@ class GeometryFile(object):
 
         This is equivalent to writeCurve(F,name,sep,objtype='BezierSpline')
         """
-        self.writeCurve(F,name=name,sep=sep,objtype='BezierSpline',extra="; degree=%s" % F.degree)
+        self.writeCurve(F, name=name, sep=sep, objtype='BezierSpline', extra="; degree=%s" % F.degree)
 
 
     def writeNurbsCurve(self,F,name=None,sep=None,extra=None):
@@ -348,14 +348,14 @@ class GeometryFile(object):
         """
         if sep is None:
             sep = self.sep
-        head = "# objtype='%s'; ncoords=%s; nknots=%s; closed=%s; sep='%s'" % (F.__class__.__name__,F.coords.shape[0],F.knots.shape[0],F.closed,sep)
+        head = "# objtype='%s'; ncoords=%s; nknots=%s; closed=%s; sep='%s'" % (F.__class__.__name__, F.coords.shape[0], F.knots.shape[0], F.closed, sep)
         if name:
             head += "; name='%s'" % name
         if extra:
             head += extra
         self.fil.write(head+'\n')
-        self.writeData(F.coords,sep)
-        self.writeData(F.knots,sep)
+        self.writeData(F.coords, sep)
+        self.writeData(F.knots, sep)
 
 
     def writeNurbsSurface(self,F,name=None,sep=None,extra=None):
@@ -369,15 +369,15 @@ class GeometryFile(object):
         """
         if sep is None:
             sep = self.sep
-        head = "# objtype='%s'; ncoords=%s; nuknots=%s; nvknots=%s; uclosed=%s; vclosed=%s; sep='%s'" % (F.__class__.__name__,F.coords.shape[0],F.uknots.shape[0],F.uknots.shape[0],F.closed[0],F.closed[1],sep)
+        head = "# objtype='%s'; ncoords=%s; nuknots=%s; nvknots=%s; uclosed=%s; vclosed=%s; sep='%s'" % (F.__class__.__name__, F.coords.shape[0], F.uknots.shape[0], F.uknots.shape[0], F.closed[0], F.closed[1], sep)
         if name:
             head += "; name='%s'" % name
         if extra:
             head += extra
         self.fil.write(head+'\n')
-        self.writeData(F.coords,sep)
-        self.writeData(F.uknots,sep)
-        self.writeData(F.vknots,sep)
+        self.writeData(F.coords, sep)
+        self.writeData(F.uknots, sep)
+        self.writeData(F.vknots, sep)
 
 
     def readHeader(self):
@@ -449,30 +449,30 @@ class GeometryFile(object):
             if nelems is None and ncoords is None:
                 # For historical reasons, this is a certain way to test
                 # that no geom data block is following
-                debug("SKIPPING %s" % s,DEBUG.LEGACY)
+                debug("SKIPPING %s" % s, DEBUG.LEGACY)
                 continue  # not a legal header: skip
 
-            debug("Reading object of type %s" % objtype,DEBUG.INFO)
+            debug("Reading object of type %s" % objtype, DEBUG.INFO)
 
             # OK, we have a legal header, try to read data
             if objtype == 'Formex':
-                obj = self.readFormex(nelems,nplex,props,eltype,sep)
-            elif objtype in ['Mesh','TriSurface']:
-                obj = self.readMesh(ncoords,nelems,nplex,props,eltype,normals,sep,objtype)
+                obj = self.readFormex(nelems, nplex, props, eltype, sep)
+            elif objtype in ['Mesh', 'TriSurface']:
+                obj = self.readMesh(ncoords, nelems, nplex, props, eltype, normals, sep, objtype)
             elif objtype == 'PolyLine':
-                obj = self.readPolyLine(ncoords,closed,sep)
+                obj = self.readPolyLine(ncoords, closed, sep)
             elif objtype == 'BezierSpline':
                 if 'nparts' in s:
                     # THis looks like a version 1.3 BezierSpline
-                    obj = self.oldReadBezierSpline(ncoords,nparts,closed,sep)
+                    obj = self.oldReadBezierSpline(ncoords, nparts, closed, sep)
                 else:
                     if not 'degree' in s:
                         # compatibility with 1.4  BezierSpline records
                         degree = 3
-                    obj = self.readBezierSpline(ncoords,closed,degree,sep)
+                    obj = self.readBezierSpline(ncoords, closed, degree, sep)
             elif objtype == 'NurbsCurve':
-                obj = self.readNurbsCurve(ncoords,nknots,closed,sep)
-            elif objtype in globals() and hasattr(globals()[objtype],'read_geom'):
+                obj = self.readNurbsCurve(ncoords, nknots, closed, sep)
+            elif objtype in globals() and hasattr(globals()[objtype], 'read_geom'):
                 obj = globals()[objtype].read_geom(self)
             else:
                 message("Can not (yet) read objects of type %s from geometry file: skipping" % objtype)
@@ -481,7 +481,7 @@ class GeometryFile(object):
 
             if obj is not None:
                 try:
-                    color = checkArray(color,(3,),'f')
+                    color = checkArray(color, (3,), 'f')
                     #debug("SET OBJECT COLOR TO %s" % color,DEBUG.INFO)
                     obj.color = color
                 except:
@@ -501,7 +501,7 @@ class GeometryFile(object):
         return self.results
 
 
-    def readFormex(self,nelems,nplex,props,eltype,sep):
+    def readFormex(self, nelems, nplex, props, eltype, sep):
         """Read a Formex from a pyFormex geometry file.
 
         The coordinate array for nelems*nplex points is read from the file.
@@ -509,12 +509,12 @@ class GeometryFile(object):
         From the coords and props a Formex is created and returned.
         """
         ndim = 3
-        f = readArray(self.fil,Float,(nelems,nplex,ndim),sep=sep)
+        f = readArray(self.fil, Float, (nelems, nplex, ndim), sep=sep)
         if props:
-            p = readArray(self.fil,Int,(nelems,),sep=sep)
+            p = readArray(self.fil, Int, (nelems,), sep=sep)
         else:
             p = None
-        return Formex(f,p,eltype)
+        return Formex(f, p, eltype)
 
 
     def readMesh(self,ncoords,nelems,nplex,props,eltype,normals,sep,objtype='Mesh'):
@@ -532,13 +532,13 @@ class GeometryFile(object):
         from plugins.trisurface import TriSurface
 
         ndim = 3
-        x = readArray(self.fil,Float,(ncoords,ndim),sep=sep)
-        e = readArray(self.fil,Int,(nelems,nplex),sep=sep)
+        x = readArray(self.fil, Float, (ncoords, ndim), sep=sep)
+        e = readArray(self.fil, Int, (nelems, nplex), sep=sep)
         if props:
-            p = readArray(self.fil,Int,(nelems,),sep=sep)
+            p = readArray(self.fil, Int, (nelems,), sep=sep)
         else:
             p = None
-        M = Mesh(x,e,p,eltype)
+        M = Mesh(x, e, p, eltype)
         if objtype != 'Mesh':
             try:
                 clas = locals()[objtype]
@@ -546,12 +546,12 @@ class GeometryFile(object):
                 clas = globals()[objtype]
             M = clas(M)
         if normals:
-            n = readArray(self.fil,Float,(nelems,nplex,ndim),sep=sep)
+            n = readArray(self.fil, Float, (nelems, nplex, ndim), sep=sep)
             M.normals = n
         return M
 
 
-    def readPolyLine(self,ncoords,closed,sep):
+    def readPolyLine(self, ncoords, closed, sep):
         """Read a Curve from a pyFormex geometry file.
 
         The coordinate array for ncoords points is read from the file
@@ -559,11 +559,11 @@ class GeometryFile(object):
         """
         from plugins.curve import PolyLine
         ndim = 3
-        coords = readArray(self.fil,Float,(ncoords,ndim),sep=sep)
-        return PolyLine(control=coords,closed=closed)
+        coords = readArray(self.fil, Float, (ncoords, ndim), sep=sep)
+        return PolyLine(control=coords, closed=closed)
 
 
-    def readBezierSpline(self,ncoords,closed,degree,sep):
+    def readBezierSpline(self, ncoords, closed, degree, sep):
         """Read a BezierSpline from a pyFormex geometry file.
 
         The coordinate array for ncoords points is read from the file
@@ -571,11 +571,11 @@ class GeometryFile(object):
         """
         from plugins.curve import BezierSpline
         ndim = 3
-        coords = readArray(self.fil,Float,(ncoords,ndim),sep=sep)
-        return BezierSpline(control=coords,closed=closed,degree=degree)
+        coords = readArray(self.fil, Float, (ncoords, ndim), sep=sep)
+        return BezierSpline(control=coords, closed=closed, degree=degree)
 
 
-    def readNurbsCurve(self,ncoords,nknots,closed,sep):
+    def readNurbsCurve(self, ncoords, nknots, closed, sep):
         """Read a NurbsCurve from a pyFormex geometry file.
 
         The coordinate array for ncoords control points and the nknots
@@ -584,12 +584,12 @@ class GeometryFile(object):
         """
         from plugins.nurbs import NurbsCurve
         ndim = 4
-        coords = readArray(self.fil,Float,(ncoords,ndim),sep=sep)
-        knots = readArray(self.fil,Float,(nknots,),sep=sep)
-        return NurbsCurve(control=coords,knots=knots,closed=closed)
+        coords = readArray(self.fil, Float, (ncoords, ndim), sep=sep)
+        knots = readArray(self.fil, Float, (nknots,), sep=sep)
+        return NurbsCurve(control=coords, knots=knots, closed=closed)
 
 
-    def readNurbsSurface(self,ncoords,nuknots,nvknots,uclosed,vclosed,sep):
+    def readNurbsSurface(self, ncoords, nuknots, nvknots, uclosed, vclosed, sep):
         """Read a NurbsSurface from a pyFormex geometry file.
 
         The coordinate array for ncoords control points and the nuknots and
@@ -599,13 +599,13 @@ class GeometryFile(object):
         """
         from plugins.nurbs import NurbsSurface
         ndim = 4
-        coords = readArray(self.fil,Float,(ncoords,ndim),sep=sep)
-        uknots = readArray(self.fil,Float,(nuknots,),sep=sep)
-        vknots = readArray(self.fil,Float,(nvknots,),sep=sep)
-        return NurbsSurface(control=coords,knots=(uknots,vknots),closed=(uclosed,vclosed))
+        coords = readArray(self.fil, Float, (ncoords, ndim), sep=sep)
+        uknots = readArray(self.fil, Float, (nuknots,), sep=sep)
+        vknots = readArray(self.fil, Float, (nvknots,), sep=sep)
+        return NurbsSurface(control=coords, knots=(uknots, vknots), closed=(uclosed, vclosed))
 
 
-    def oldReadBezierSpline(self,ncoords,nparts,closed,sep):
+    def oldReadBezierSpline(self, ncoords, nparts, closed, sep):
         """Read a BezierSpline from a pyFormex geometry file version 1.3.
 
         The coordinate array for ncoords points and control point array
@@ -614,9 +614,9 @@ class GeometryFile(object):
         """
         from plugins.curve import BezierSpline
         ndim = 3
-        coords = readArray(self.fil,Float,(ncoords,ndim),sep=sep)
-        control = readArray(self.fil,Float,(nparts,2,ndim),sep=sep)
-        return BezierSpline(coords,control=control,closed=closed)
+        coords = readArray(self.fil, Float, (ncoords, ndim), sep=sep)
+        control = readArray(self.fil, Float, (nparts, 2, ndim), sep=sep)
+        return BezierSpline(coords, control=control, closed=closed)
 
 
     def rewrite(self):

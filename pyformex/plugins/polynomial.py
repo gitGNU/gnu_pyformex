@@ -61,11 +61,11 @@ class Polynomial(object):
 
     def __init__(self,exp,coeff=None):
         """Create an n-d polynomial"""
-        self.exp = at.checkArray(exp,kind='i',ndim=2)
+        self.exp = at.checkArray(exp, kind='i', ndim=2)
         if coeff is None:
             self.coeff = np.ones(self.nterms)
         else:
-            self.coeff = at.checkArray(coeff,(self.nterms,),'f','i')
+            self.coeff = at.checkArray(coeff, (self.nterms,), 'f', 'i')
 
 
     @property
@@ -93,15 +93,15 @@ class Polynomial(object):
         return self.degrees().sum()
 
 
-    def evalAtoms1(self,x):
+    def evalAtoms1(self, x):
         """Evaluate the monomials at the given points
 
         x is an (npoints,ndim) array of points where the polynomial is to
         be evaluated. The result is an (npoints,nterms) array of values.
         """
-        x = at.checkArray(x,(-1,self.ndim),'f','i')
+        x = at.checkArray(x, (-1, self.ndim), 'f', 'i')
         maxd = self.degrees()
-        mon = [ at.powers(x[:,j],maxd[j]) for j in range(self.ndim) ]
+        mon = [ at.powers(x[:, j], maxd[j]) for j in range(self.ndim) ]
         terms = [[mon[j][e[j]] for j in range(self.ndim)] for e in self.exp]
         terms = np.dstack([np.column_stack([mon[j][e[j]] for j in range(self.ndim)]) for e in self.exp])
         return terms.prod(axis=1)
@@ -110,23 +110,23 @@ class Polynomial(object):
     #### ALTERNATIVE evalAtoms
     # This implementation first computes the monomial strings and
     #    then evals the strins. It is currrently faster than evalAtoms.
-    def evalAtoms(self,x):
+    def evalAtoms(self, x):
         """Evaluate the monomials at the given points
 
         x is an (npoints,ndim) array of points where the polynomial is to
         be evaluated. The result is an (npoints,nterms) array of values.
         """
-        x = at.checkArray(x,(-1,self.ndim),'f','i')
+        x = at.checkArray(x, (-1, self.ndim), 'f', 'i')
         symbol = 'xyz'
-        g = dict([(symbol[i],x[:,i]) for i in range(self.ndim) ])
+        g = dict([(symbol[i], x[:, i]) for i in range(self.ndim) ])
         atoms = self.atoms(symbol)
-        aa = np.zeros((len(x),len(atoms)),at.Float)
-        for k,a in enumerate(atoms):
-            aa[:,k] = eval(a,g)
+        aa = np.zeros((len(x), len(atoms)), at.Float)
+        for k, a in enumerate(atoms):
+            aa[:, k] = eval(a, g)
         return aa
 
 
-    def eval(self,x):
+    def eval(self, x):
         """Evaluate the polynomial at the given points
 
         x is an (npoints,ndim) array of points where the polynomial is to
@@ -138,14 +138,14 @@ class Polynomial(object):
 
     def atoms(self,symbol='xyz'):
         """Return a human representation of the monomials"""
-        return [ monomial(e,symbol) for e in self.exp ]
+        return [ monomial(e, symbol) for e in self.exp ]
 
 
     def human(self,symbol='xyz'):
         """Return a human representation"""
         mon = self.atoms(symbol)
-        mon = [ str(c)+'*'+m if c != 1 else m for c,m in zip(self.coeff,mon)]
-        return ' + '.join(mon).replace('*1','').replace('+ -','-')
+        mon = [ str(c)+'*'+m if c != 1 else m for c, m in zip(self.coeff, mon)]
+        return ' + '.join(mon).replace('*1', '').replace('+ -', '-')
 
 
 def polynomial(atoms,x,y=0,z=0):
@@ -158,9 +158,9 @@ def polynomial(atoms,x,y=0,z=0):
 
     Returns a matrix with `nvalues` rows and `natoms` colums.
     """
-    aa = np.zeros((len(x),len(atoms)),Float)
-    for k,a in enumerate(atoms):
-        aa[:,k] = eval(a)
+    aa = np.zeros((len(x), len(atoms)), Float)
+    for k, a in enumerate(atoms):
+        aa[:, k] = eval(a)
     return aa
 
 
@@ -179,9 +179,9 @@ def monomial(exp,symbol='xyz'):
     'x**2*y'
 
     """
-    factor = lambda sym,exp: '1' if exp == 0 else sym if exp == 1 else sym+'**'+str(exp)
-    factors = [ factor(symbol[i],j) for i,j in enumerate(exp) ]
+    factor = lambda sym, exp: '1' if exp == 0 else sym if exp == 1 else sym+'**'+str(exp)
+    factors = [ factor(symbol[i], j) for i, j in enumerate(exp) ]
     # Join and sanitize (note we do not have '**1')
-    return '*'.join(factors).replace('1*','').replace('*1','')
+    return '*'.join(factors).replace('1*', '').replace('*1', '')
 
 # End

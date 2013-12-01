@@ -27,7 +27,7 @@
 """
 from __future__ import print_function
 
-__all__ = ['splitFloat','readData']
+__all__ = ['splitFloat', 'readData']
 
 import re
 from numpy import *
@@ -81,12 +81,12 @@ def readData(s,type,strict=False):
       You need to have the GNU ``units`` command installed for the unit
       conversion to work. 
     """
-    import units,string
+    import units, string
     out = []
-    data = string.split(s,',')
+    data = string.split(s, ',')
     if strict and len(data) != len(type):
-        raise RuntimeError("Data do not match type specifier %s\nData: '%s'" % (type,s))
-    for t,d in zip(type,data):
+        raise RuntimeError("Data do not match type specifier %s\nData: '%s'" % (type, s))
+    for t, d in zip(type, data):
         #print(t,d)
         if len(d) == 0:
             break
@@ -101,7 +101,7 @@ def readData(s,type,strict=False):
             if m and m.end() == len(v):
                 val = float(v)
             else:
-                val = float(units.ConvertUnits(v,t))
+                val = float(units.ConvertUnits(v, t))
         out.append(val)
     return out
 
@@ -120,16 +120,16 @@ def readAsciiTable(fn, header=True):
     if header is False, there is no header.
     it returns the header as None and the 2D array of data as floats.
     """
-    fil=open(fn,'r')
+    fil=open(fn, 'r')
     line = fil.readline()
     h = line.strip('\n').split()
-    data = fromfile(fil,sep=' ',dtype=float32)
+    data = fromfile(fil, sep=' ', dtype=float32)
     if header==False:
         h=asarray(h, dtype=float)
         data=append(h, data)
-        return None, data.reshape (-1,len(h) )
+        return None, data.reshape (-1, len(h) )
     if header==True:
-        data = data.reshape((-1,len(h)))
+        data = data.reshape((-1, len(h)))
     return h, data
 
 def writeAsciiTable(fn, h, d, fmtdata='e'):
@@ -142,7 +142,7 @@ def writeAsciiTable(fn, h, d, fmtdata='e'):
         2) fmtdata is 'f' , the data are written as floats,
         3)fmtdata is 'd' , the data are written as integers,
         4) otherwise, the fmt is specified (e.g. fmtdata='d f f d'). In this case, there should be as many fmt as data columns"""
-    fil=open(fn,'w')
+    fil=open(fn, 'w')
     ncol= len(h)-1#number of columns-1
     fmtH = '%s'+ncol*' %s' + '\n'
     fil.write(fmtH %(tuple(h )))#header
@@ -167,4 +167,4 @@ def writeAsciiTable(fn, h, d, fmtdata='e'):
 
 
 if __name__ == "__main__":
-    print(readData('12, 13, 14.5e3, 12 inch, 1hr, 5MPa', ['int','float','kg','cm','s']))
+    print(readData('12, 13, 14.5e3, 12 inch, 1hr, 5MPa', ['int', 'float', 'kg', 'cm', 's']))

@@ -31,7 +31,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'advanced'
 _topics = ['surface']
-_techniques = ['voxelize','image']
+_techniques = ['voxelize', 'image']
 
 from gui.draw import *
 from plugins.imagearray import *
@@ -40,12 +40,12 @@ import simple
 
 
 def showGreyImage(a):
-    F = Formex('4:0123').rep([a.shape[1],a.shape[0]],[0,1],[1.,1.]).setProp(a)
+    F = Formex('4:0123').rep([a.shape[1], a.shape[0]], [0, 1], [1., 1.]).setProp(a)
     return draw(F)
 
-def saveBinaryImage(a,f):
+def saveBinaryImage(a, f):
     c = flipud(a)
-    c = dstack([c,c,c])
+    c = dstack([c, c, c])
     im = numpy2qimage(c)
     im.save(f)
 
@@ -64,7 +64,7 @@ def run():
     print(bb1)
 
     res = askItems([
-        _I('Resolution',100),
+        _I('Resolution', 100),
         ])
     if not res:
         return
@@ -74,15 +74,15 @@ def run():
     step = sz.max() / (nmax-1)
     n = (sz / step).astype(Int)
     print(n)
-    P = Formex(simple.regularGrid(bb1[0],bb1[0]+n*step,n).reshape(-1,3))
+    P = Formex(simple.regularGrid(bb1[0], bb1[0]+n*step, n).reshape(-1, 3))
     draw(P, marksize=1, color='black')
     #drawNumbers(P)
     zoomAll()
     ind = S.inside(P)
-    vox = zeros(n+1,dtype=uint8)
+    vox = zeros(n+1, dtype=uint8)
     print(vox.shape)
     vox1 = vox.reshape(-1)
-    print(vox1.shape,ind.max())
+    print(vox1.shape, ind.max())
     vox1[ind] = 1
     print(vox.max())
     P.setProp(vox1)
@@ -95,13 +95,13 @@ def run():
         print("Could not open a directory for writing. I have to stop here")
         return
     
-    fs = utils.NameSequence('horse','.png')
+    fs = utils.NameSequence('horse', '.png')
     clear()
     flat()
     A = None
     for frame in vox:
         B = showGreyImage(frame)
-        saveBinaryImage(frame*255,fs.next())
+        saveBinaryImage(frame*255, fs.next())
         undraw(A)
         A = B
 

@@ -39,12 +39,12 @@ clear()
 wireframe()
 from pyformex.plugins.geomtools import anyPerpendicularVector as av
 
-print(av([0.,0.,1.]))
-print(av([0.,1.,1.]))
-print(av([1.,1.,1.]))
-print(av([1.,0.,1.]))
-print(av([1.,0.,0.]))
-print(av([0.,1.,0.]))
+print(av([0., 0., 1.]))
+print(av([0., 1., 1.]))
+print(av([1., 1., 1.]))
+print(av([1., 0., 1.]))
+print(av([1., 0., 0.]))
+print(av([0., 1., 0.]))
 exit()
 
 
@@ -57,12 +57,12 @@ class LineDrawing(object):
     """A collection of curves.
 
     """
-    def __init__(self,data):
+    def __init__(self, data):
         self.all = data
         print(data)
         print([ type(i) for i in data ])
         print([ i.__class__ for i in data ])
-        print(Arc,Line,PolyLine)
+        print(Arc, Line, PolyLine)
         self.lines = [ i for i in data if i.__class__ == Line ]
         self.polylines = [  i for i in data if isinstance(i, PolyLine) ]
         self.arcs = [ i for i in data if isinstance(i, Arc) ]
@@ -70,12 +70,12 @@ class LineDrawing(object):
 
 
     def report(self):
-        print("LineDrawing: %s Lines, %s PolyLines, %s Arcs" % (len(self.lines),len(self.polylines),len(self.arcs)))
+        print("LineDrawing: %s Lines, %s PolyLines, %s Arcs" % (len(self.lines), len(self.polylines), len(self.arcs)))
  
 
     def assembleCurves(self):
         print(len(self.all))
-        FL = [Formex([a.endPoints()]).setProp(i) for i,a in enumerate(self.all)]
+        FL = [Formex([a.endPoints()]).setProp(i) for i, a in enumerate(self.all)]
         FL = Formex.concatenate(FL)
         print(FL.shape())
         print(FL)
@@ -84,9 +84,9 @@ class LineDrawing(object):
         return M.setProp(self.parts)
 
 
-    def setProp(self,prop):
-        for a,p in zip(self.all,prop):
-            print(a,p)
+    def setProp(self, prop):
+        for a, p in zip(self.all, prop):
+            print(a, p)
             a.setProp(p)
 
         
@@ -97,7 +97,7 @@ if ack('Custom file?'):
         exit()
     model = importDXF(fn)
 else:
-    fn = os.path.join(pf.cfg['pyformexdir'],'data','P.dxftext')
+    fn = os.path.join(pf.cfg['pyformexdir'], 'data', 'P.dxftext')
     model = convertDXF(open(fn).read())
 
 for a in model:
@@ -109,8 +109,8 @@ D.assembleCurves()
 print(D.parts)
 #D.setProp(D.parts)
 clear()
-for a,c in zip(D.all,D.parts):
-    draw(a,color=c)
+for a, c in zip(D.all, D.parts):
+    draw(a, color=c)
 
 
 

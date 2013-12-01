@@ -62,8 +62,8 @@ def reset():
     ``pos=(0,0), step=1., angle=0.``, removes everything from the state save
     stack and empties the resulting path.
     """
-    global pos,step,angle,list,save
-    pos = [0.,0.]
+    global pos, step, angle, list, save
+    pos = [0., 0.]
     step = 1.
     angle = 0.
     list=[]
@@ -76,12 +76,12 @@ def push():
     The turtle state includes its position, step and angle.
     """
     global save
-    save.append([pos,step,angle])
+    save.append([pos, step, angle])
 
 def pop():
     """Restore the turtle state to the last saved state.""" 
-    global pos,step,angle,list,save
-    pos,step,angle = save.pop(-1)
+    global pos, step, angle, list, save
+    pos, step, angle = save.pop(-1)
 
 
 def fd(d=None,connect=True):
@@ -93,23 +93,23 @@ def fd(d=None,connect=True):
     By default, the new position is connected to the previous with a
     straight line segment.
     """
-    global pos,step,angle,list
+    global pos, step, angle, list
     if d:
         step = d
     p = [ pos[0] + step * cosd(angle), pos[1] + step * sind(angle) ]
     if connect:
-        list.append([pos,p])
+        list.append([pos, p])
     pos = p
 
 
 def mv(d=None):
     """Move over step `d` without drawing."""
-    fd(d,False)
+    fd(d, False)
 
 
 def ro(a):
     """Rotate over angle `a`. The new direction is incremented with `a`"""
-    global pos,step,angle,list
+    global pos, step, angle, list
     angle += a
 
 
@@ -119,17 +119,17 @@ def go(p):
     While the `mv` method performs a relative move, this is an absolute move.
     `p` is a tuple of (x,y) values.
     """
-    global pos,step,angle,list
+    global pos, step, angle, list
     pos = p
 
 def st(d):
     """Set the step size."""
-    global pos,step,angle,list
+    global pos, step, angle, list
     step = d
 
 def an(a):
     """Set the angle"""
-    global pos,step,angle,list
+    global pos, step, angle, list
     angle = a
 
 
@@ -143,11 +143,11 @@ def play(scr,glob=None):
     module's globals() after each turtle command.
     """
     import string
-    for line in string.split(scr,";"):
+    for line in string.split(scr, ";"):
         if line:
             if glob:
                 glob.update(globals())
-                eval(line,glob)
+                eval(line, glob)
             else:
                 eval(line)
     return list

@@ -28,7 +28,7 @@ Finite Element Plugin Menu for pyFormex.
 """
 from __future__ import print_function
 
-from plugins import formex_menu,trisurface
+from plugins import formex_menu, trisurface
 import simple
 from elements import Hex8
 
@@ -43,42 +43,42 @@ def readModel(fn):
     if not os.path.exists(fn):
         error("Node file '%s' does not exist" % fn)
         return None
-    efn = fn.replace('nodes','elems')
+    efn = fn.replace('nodes', 'elems')
     if not os.path.exists(efn):
         error("Corresponding element file '%s' does not exist" % efn)
         return None
 
     print("Importing model %s" % fn)
-    fil = open(fn,'r')
+    fil = open(fn, 'r')
     noffset = 0
     #noffset = int(fil.readline().split()[1])
-    a = fromfile(fil,sep=" ").reshape(-1,3)
+    a = fromfile(fil, sep=" ").reshape(-1, 3)
     print(a.shape)
     x = Coords(a)
     print(x.shape)
-    e = fromfile(efn,sep=" ",dtype=Int).reshape(-1,3) 
+    e = fromfile(efn, sep=" ", dtype=Int).reshape(-1, 3) 
     print(e.shape)
 
     # convert to numpy offset
     if noffset != 0:
         e -= noffset
 
-    return x,e
+    return x, e
     
 
 def importModel(fn=None):
 
     if fn is None:
-        fn = askFilename(".","*nodes.txt",multi=True)
+        fn = askFilename(".", "*nodes.txt", multi=True)
         if not fn:
             return
     if isinstance(fn, str):
         fn = [fn]
         
-    for i,f in enumerate(fn):
-        x,e = readModel(f)
-        modelname = os.path.basename(f).replace('nodes.txt','')
-        F = Formex(x[e],i)#,eltype='hex8')
+    for i, f in enumerate(fn):
+        x, e = readModel(f)
+        modelname = os.path.basename(f).replace('nodes.txt', '')
+        F = Formex(x[e], i)#,eltype='hex8')
         export({modelname:F})
         formex_menu.selection.append(modelname)
         
@@ -99,13 +99,13 @@ _menu = 'FeModel'
 def create_menu():
     """Create the menu."""
     MenuData = [
-        ("&Import Model",importModel),
-        ("&Draw Model",drawModel),
-        ("---",None),
-        ("&Reload Menu",reload_menu),
-        ("&Close Menu",close_menu),
+        ("&Import Model", importModel),
+        ("&Draw Model", drawModel),
+        ("---", None),
+        ("&Reload Menu", reload_menu),
+        ("&Close Menu", close_menu),
         ]
-    return menu.Menu(_menu,items=MenuData,parent=pf.GUI.menu,before='help')
+    return menu.Menu(_menu, items=MenuData, parent=pf.GUI.menu, before='help')
 
 
 def show_menu():

@@ -46,23 +46,23 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'beginner'
 _topics = []
-_techniques = ['color','text', 'random', 'animation']
+_techniques = ['color', 'text', 'random', 'animation']
 
 from gui.draw import *
 
 def run():
     n = 40
-    T = ['Python','NumPy','OpenGL','QT4','pyFormex']
-    fonts = ['times','helvetica','fixed']
-    ftmin,ftmax = 12,48
+    T = ['Python', 'NumPy', 'OpenGL', 'QT4', 'pyFormex']
+    fonts = ['times', 'helvetica', 'fixed']
+    ftmin, ftmax = 12, 48
 
-    r = random.random((n,8))
-    w,h = pf.canvas.width(), pf.canvas.height()
-    a = r[:,:2] * array([w,h]).astype(int)
-    size = (ftmin + r[:,2] * (ftmax-ftmin)).astype(int)
-    colors = r[:,3:6]
-    t = (r[:,6] * len(T)).astype(int)
-    f = (r[:,7] * len(fonts) - 0.5).astype(int).clip(0,len(fonts)-1)
+    r = random.random((n, 8))
+    w, h = pf.canvas.width(), pf.canvas.height()
+    a = r[:, :2] * array([w, h]).astype(int)
+    size = (ftmin + r[:, 2] * (ftmax-ftmin)).astype(int)
+    colors = r[:, 3:6]
+    t = (r[:, 6] * len(T)).astype(int)
+    f = (r[:, 7] * len(fonts) - 0.5).astype(int).clip(0, len(fonts)-1)
     clear()
 
     bgcolor(white)
@@ -70,7 +70,7 @@ def run():
     TA = None
 
     for i in range(n):
-        TB = drawText(T[t[i]],a[i][0],a[i][1],font=fonts[f[i]],size=size[i],color=list(colors[i]))
+        TB = drawText(T[t[i]], a[i][0], a[i][1], font=fonts[f[i]], size=size[i], color=list(colors[i]))
         sleep(0.5)
         breakpt()
         if i < n/2:

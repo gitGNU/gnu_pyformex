@@ -52,20 +52,20 @@ def run():
     #Creating the model
     ###################
 
-    top = (Formex("1").replic2(nx-1,ny,1,1) + Formex("2").replic2(nx,ny-1,1,1)).scale(dx)
+    top = (Formex("1").replic2(nx-1, ny, 1, 1) + Formex("2").replic2(nx, ny-1, 1, 1)).scale(dx)
     top.setProp(3)
-    bottom = (Formex("1").replic2(nx,ny+1,1,1) + Formex("2").replic2(nx+1,ny,1,1)).scale(dx).translate([-dx/2,-dx/2,-ht])
+    bottom = (Formex("1").replic2(nx, ny+1, 1, 1) + Formex("2").replic2(nx+1, ny, 1, 1)).scale(dx).translate([-dx/2, -dx/2, -ht])
     bottom.setProp(0)
-    T0 = Formex(4*[[[0,0,0]]]) 	   # 4 times the corner of the top deck
-    T4 = bottom.select([0,1,nx,nx+1])  # 4 nodes of corner module of bottom deck
-    dia = connect([T0,T4]).replic2(nx,ny,dx,dx)
+    T0 = Formex(4*[[[0, 0, 0]]]) 	   # 4 times the corner of the top deck
+    T4 = bottom.select([0, 1, nx, nx+1])  # 4 nodes of corner module of bottom deck
+    dia = connect([T0, T4]).replic2(nx, ny, dx, dx)
     dia.setProp(1)
 
     F = (top+bottom+dia)
 
     # Show upright
-    createView('myview1',(0.,-90.,0.))
-    clear();linewidth(1);draw(F,view='myview1')
+    createView('myview1', (0., -90., 0.))
+    clear();linewidth(1);draw(F, view='myview1')
 
 
     ############
@@ -96,8 +96,8 @@ def run():
     topcorner = nlist[count==6]
     bottomedge = nlist[count==5]
     bottomcorner = nlist[count==3]
-    support = concatenate([bottomedge,bottomcorner])
-    edge =  concatenate([topedge,topcorner])
+    support = concatenate([bottomedge, bottomcorner])
+    edge =  concatenate([topedge, topcorner])
 
     ########################
     #Defining and assigning the properties
@@ -106,19 +106,19 @@ def run():
     Q = 0.5*q*dx*dx
 
     P = PropertyDB()
-    P.nodeProp(set=field,cload = [0,0,Q,0,0,0])
-    P.nodeProp(set=edge,cload = [0,0,Q/2,0,0,0])
-    P.nodeProp(set=support,bound = [1,1,1,0,0,0])
+    P.nodeProp(set=field, cload = [0, 0, Q, 0, 0, 0])
+    P.nodeProp(set=edge, cload = [0, 0, Q/2, 0, 0, 0])
+    P.nodeProp(set=support, bound = [1, 1, 1, 0, 0, 0])
 
     circ20 = ElemSection(section={'name':'circ20','sectiontype':'Circ','radius':10, 'cross_section':314.159}, material={'name':'S500', 'young_modulus':210000, 'shear_modulus':81000, 'poisson_ratio':0.3, 'yield_stress' : 500,'density':0.000007850})
 
     # example of how to set the element type by set
-    P.elemProp(set=topbar,section=circ20,eltype='T3D2')
-    P.elemProp(set=bottombar,section=circ20,eltype='T3D2')
+    P.elemProp(set=topbar, section=circ20, eltype='T3D2')
+    P.elemProp(set=bottombar, section=circ20, eltype='T3D2')
 
     # alternatively, we can specify the elements by an index value
     # in an array that we will pass in the Abqdata 'eprop' argument
-    P.elemProp(prop=1,section=circ20,eltype='T3D2')
+    P.elemProp(prop=1, section=circ20, eltype='T3D2')
 
     # Since all elements have same characteristics, we could just have used:
     #   P.elemProp(section=circ20,elemtype='T3D2')
@@ -138,17 +138,17 @@ def run():
     ###################
 
     step = Step(
-        out = [ Output(type='field',variable='preselect') ],
-        res = [ Result(kind='element',keys=['S']),
-                Result(kind='node',keys=['U'])
+        out = [ Output(type='field', variable='preselect') ],
+        res = [ Result(kind='element', keys=['S']),
+                Result(kind='node', keys=['U'])
                 ]
         )
-    model = Model(M.coords,M.elems)
+    model = Model(M.coords, M.elems)
 
     if not checkWorkdir():
         return
 
-    AbqData(model,P,[step],eprop=F.prop).write('SpaceTruss')
+    AbqData(model, P, [step], eprop=F.prop).write('SpaceTruss')
 
 if __name__ == 'draw':
     run()

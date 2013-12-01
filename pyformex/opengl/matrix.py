@@ -46,7 +46,7 @@ class Vector4(np.matrix):
         if data.shape[-1] == 4:
             pass
         elif data.shape[-1] == 3:
-            data = at.growAxis(data,1,fill=1)
+            data = at.growAxis(data, 1, fill=1)
         else:
             raise ValueError("Expected length 3 or 4 fro last axis")
         ar = data.view(clas)
@@ -88,22 +88,22 @@ class Matrix4(np.matrix):
     def __new__(clas,data=None):
         """Create a new Matrix instance"""
         if data is None:
-            data = np.eye(4,4)
+            data = np.eye(4, 4)
         else:
-            data = at.checkArray(data,(4,4),'f')
+            data = at.checkArray(data, (4, 4), 'f')
         ar = data.view(clas)
         ar._gl = None
         return ar
 
 
-    def __array_finalize__(self,obj):
+    def __array_finalize__(self, obj):
         """Finalize the new Matrix object.
 
         When a class is derived from numpy.ndarray and the constructor (the
         __new__ method) defines new attributes, these atttributes need to be
         reset in this method.
         """
-        self._gl = getattr(obj,'_gl', None)
+        self._gl = getattr(obj, '_gl', None)
 
 
     def gl(self):
@@ -121,34 +121,34 @@ class Matrix4(np.matrix):
     @property
     def rot(self):
         """Return the (3,3) rotation matrix"""
-        return self[:3,:3]
+        return self[:3, :3]
 
 
     @rot.setter
-    def rot(self,value):
-        self[:3,:3] = value
+    def rot(self, value):
+        self[:3, :3] = value
         self._gl = None
 
 
     @property
     def trl(self):
         """Return the (3,) translation vector"""
-        return self[3,:3]
+        return self[3, :3]
 
 
     @trl.setter
-    def trl(self,value):
-        self[3,:3] = value
+    def trl(self, value):
+        self[3, :3] = value
         self._gl = None
 
 
     def identity(self):
         """Reset the matrix to a 4x4 identity matrix."""
-        self = np.matrix(np.eye(4,4))
+        self = np.matrix(np.eye(4, 4))
         self._gl = None
 
 
-    def translate(self,vector):
+    def translate(self, vector):
         """Translate a 4x4 matrix by a (3,) vector.
 
         - `vector`: (3,) float array: the translation vector
@@ -163,7 +163,7 @@ class Matrix4(np.matrix):
                 [ 0.,  0.,  1.,  0.],
                 [ 1.,  2.,  3.,  1.]])
         """
-        vector = at.checkArray(vector,(3,),'f')
+        vector = at.checkArray(vector, (3,), 'f')
         self.trl += vector*self.rot
 
 
@@ -195,17 +195,17 @@ class Matrix4(np.matrix):
 
         """
         try:
-            rot = at.checkArray(angle,(4,4),'f')[:3,:3]
+            rot = at.checkArray(angle, (4, 4), 'f')[:3, :3]
         except:
             try:
-                rot = at.checkArray(angle,(3,3),'f')
+                rot = at.checkArray(angle, (3, 3), 'f')
             except:
                 angle = at.checkFloat(angle)
-                rot = np.matrix(at.rotationMatrix(angle,axis))
+                rot = np.matrix(at.rotationMatrix(angle, axis))
         self.rot = rot*self.rot
 
 
-    def scale(self,vector):
+    def scale(self, vector):
         """Scale a 4x4 matrix by a (3,) vector.
 
         - `vector`: (3,) float array: the scaling vector
@@ -220,14 +220,14 @@ class Matrix4(np.matrix):
                 [ 0.,  0.,  3.,  0.],
                 [ 0.,  0.,  0.,  1.]])
         """
-        vector = at.checkArray(vector,(3,),'f')
+        vector = at.checkArray(vector, (3,), 'f')
         for i in range(3):
-            self[i,i] *= vector[i]
+            self[i, i] *= vector[i]
         self._gl = None
 
 
     # Do we need these?
-    def swapRows(self,row1,row2):
+    def swapRows(self, row1, row2):
         """Swap two rows.
 
         - `row1`, `row2`: index of the rows to swap
@@ -238,14 +238,14 @@ class Matrix4(np.matrix):
         self._gl = None
 
 
-    def swapCols(self,col1,col2):
+    def swapCols(self, col1, col2):
         """Swap two columns.
 
         - `col1`, `col2`: index of the columns to swap
         """
-        temp = np.copy(self[:,col1])
-        self[:,col1] = self[:,col2]
-        self[:,col2] = temp
+        temp = np.copy(self[:, col1])
+        self[:, col1] = self[:, col2]
+        self[:, col2] = temp
         self._gl = None
 
 
@@ -254,7 +254,7 @@ class Matrix4(np.matrix):
         return np.linalg.inv(self)
 
 
-    def transform(self,x):
+    def transform(self, x):
         """Transform a vertex using this matrix.
 
         - `x`: a (3,) or (4,) vector.
@@ -265,14 +265,14 @@ class Matrix4(np.matrix):
         assumed to be 1, and the product is computed in an optimized way.
         """
         try:
-            x = at.checkArray(x,(3,),'f')
-            return np.dot(x,self[:3,:3]) + self[3,:3]
+            x = at.checkArray(x, (3,), 'f')
+            return np.dot(x, self[:3, :3]) + self[3, :3]
         except:
-            x = at.checkArray(x,(4,),'f')
-            return np.dot(x,self)
+            x = at.checkArray(x, (4,), 'f')
+            return np.dot(x, self)
 
 
-    def invtransform(self,x):
+    def invtransform(self, x):
         """Transform a vertex with the inverse of this matrix.
 
         - `x`: a (3,) or (4,) vector.

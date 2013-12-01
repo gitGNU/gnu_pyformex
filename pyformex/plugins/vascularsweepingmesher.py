@@ -48,9 +48,9 @@ from geomtools import triangleCircumCircle
 
 def structuredQuadMeshGrid(sgx=3, sgy=3, isopquad=None):
     """it returns nodes (2D) and elems of a structured quadrilateral grid. nodes and elements are both ordered first vertically (y) and then orizontally (x). This function is the equivalent of simple.rectangularGrid but on the mesh level."""
-    sg=regularGrid([0., 0.],[1., 1.],[sgx, sgy])
+    sg=regularGrid([0., 0.], [1., 1.], [sgx, sgy])
     sgc=sgy+1
-    esg=array([array([[i,i+sgc, i+1+sgc,  i+1] for i in range(sgc-1)])+sgc*j for j in range(sgx)])
+    esg=array([array([[i, i+sgc, i+1+sgc,  i+1] for i in range(sgc-1)])+sgc*j for j in range(sgx)])
     if isopquad=='quad16': return sg.reshape(-1, 2), esg.reshape(-1, 4), regularGrid([0., 0.], [1., 1.], [3, 3]).reshape(-1, 2)#control points for the hex64 applied to a basic struct hex grid
     else:return sg.reshape(-1, 2), esg.reshape(-1, 4)
 
@@ -63,12 +63,12 @@ from __future__ import print_function
     if not isinstance(dx, int):sgx=len(dx)-1
     if not isinstance(dy, int):sgy=len(dy)-1
     if not isinstance(dz, int):sgz=len(dz)-1
-    n3=regularGrid([0., 0., 0.],[1., 1., 1.],[sgx, sgy, sgz])
+    n3=regularGrid([0., 0., 0.], [1., 1., 1.], [sgx, sgy, sgz])
     if not isinstance(dx, int):n3[..., 0]=array(dx).reshape(-1, 1, 1)
     if not isinstance(dy, int):n3[..., 1]=array(dy).reshape(-1,  1)
     if not isinstance(dz, int):n3[..., 2]=array(dz).reshape(-1)
     nyz=(sgy+1)*(sgz+1)
-    xh0= array([0, nyz, nyz+sgz+1,0+sgz+1 ])
+    xh0= array([0, nyz, nyz+sgz+1, 0+sgz+1 ])
     xh0= concatenate([xh0, xh0+1], axis=1)#first cell
     hz= array([xh0+j for j in range(sgz)])#z column
     hzy= array([hz+(sgz+1)*j for j in range(sgy)])#zy 2D rectangle
@@ -120,7 +120,7 @@ def cpBoundaryLayer(BS,  centr, issection0=False,  bl_rel=0.2):
         midp=BS.shape[0]/2#is 12 if use 24 control points, will be 24 with 48 cp.
         blvecn[midp]=normalize(centr-BS[midp])
     blvec=blvecn*bllength
-    cpblayer=array([BS+blvec*i for i in [1., 2/3.,1/3.,0.]])
+    cpblayer=array([BS+blvec*i for i in [1., 2/3., 1/3., 0.]])
     cpblayer=swapaxes(cpblayer, 0, 1)
     #draw(Formex(cpblayer[:].reshape(-1, 3)))
     #drawNumbers(Formex(cpblayer[0]))
@@ -135,22 +135,22 @@ def cpQuarterLumen(lumb, centp, edgesq=0.75, diag=0.6*2**0.5, verbos=False):
     arcsh= arcp.shape[0]-1
     xcp1, xcp3=centp+(arcp[[arcsh, 0]]-centp)*edgesq
     xcp2=centp+(arcp[arcsh/2]-centp)*diag
-    nc0=array([centp,xcp1, xcp2, xcp3])#new coord0
-    grid16= regularGrid([0., 0., 0],[1., 1., 0.],[3, 3, 0]).reshape(-1, 3)#grid
+    nc0=array([centp, xcp1, xcp2, xcp3])#new coord0
+    grid16= regularGrid([0., 0., 0], [1., 1., 0.], [3, 3, 0]).reshape(-1, 3)#grid
     ncold=grid16[[0, 12, 15, 3]]#old coord
     fx=arcsh/6
     sc=array([1./fx, 1./fx, 0.])
     grid16=Formex([grid16]).replic2(fx, fx, 1., 1.).scale(sc)[:]
-    gridint= Isopar('quad4',nc0,ncold).transform(grid16)#4 internal grids
-    xa0=Coords.interpolate(Coords(ncold[[3]]), Coords(ncold[[2]]),div=3*fx)
-    xa1=Coords.interpolate(Coords(ncold[[2]]), Coords(ncold[[1]]),div=3*fx)
+    gridint= Isopar('quad4', nc0, ncold).transform(grid16)#4 internal grids
+    xa0=Coords.interpolate(Coords(ncold[[3]]), Coords(ncold[[2]]), div=3*fx)
+    xa1=Coords.interpolate(Coords(ncold[[2]]), Coords(ncold[[1]]), div=3*fx)
     xa= concatenate([xa0, xa1[1:]], axis=0)
-    xa= Isopar('quad4',nc0,ncold).transform(xa).reshape(-1, 3)
+    xa= Isopar('quad4', nc0, ncold).transform(xa).reshape(-1, 3)
     xar3=concatenate( [i*3+arange(4) for i in arange(2*fx)])
     gridext=array(zip(xa[xar3], arcp[xar3]))
-    gridext=Coords.interpolate(Coords(gridext[:, 0]), Coords(gridext[:, 1]),div=3)
-    gridext=swapaxes(gridext, 0, 1) .reshape(2*fx,16,  3)
-    if verbos:print('---one Quarter of section is submapped in %d internal and %d transitional quad regions---'%(gridint.shape[0],gridext.shape[0] ))
+    gridext=Coords.interpolate(Coords(gridext[:, 0]), Coords(gridext[:, 1]), div=3)
+    gridext=swapaxes(gridext, 0, 1) .reshape(2*fx, 16,  3)
+    if verbos:print('---one Quarter of section is submapped in %d internal and %d transitional quad regions---'%(gridint.shape[0], gridext.shape[0] ))
 #    gridG=concatenate([gridint, gridext], axis=0)
 #    print '---one Quarter of section is submapped in %d quad regions---'%gridG.shape[0]
 #    [draw(Formex(fo).setProp(i)) for  i, fo in enumerate(gridG) ]
@@ -167,10 +167,10 @@ def cpQuarterLumen(lumb, centp, edgesq=0.75, diag=0.6*2**0.5, verbos=False):
 
 def visualizeSubmappingQuadRegion(sqr, timewait=None):
     """visualilze the control points (-1,16,3) in each submapped region and check the quality of the region (which will be inherited by the mesh crossectionally)"""
-    sqr3=regularGrid([0., 0., 0.],[1., 1., 0.],[3, 3, 0]).reshape(-1, 3)#base old coords
+    sqr3=regularGrid([0., 0., 0.], [1., 1., 0.], [3, 3, 0]).reshape(-1, 3)#base old coords
     sqrn3, sqre3=structuredQuadMeshGrid(3, 3)#quad mesh to map
     for  i, f in enumerate(sqr):
-        sqr0=Formex(sqrn3).isopar('quad16',f,sqr3)[:].reshape(-1, 3)
+        sqr0=Formex(sqrn3).isopar('quad16', f, sqr3)[:].reshape(-1, 3)
         sqr0=Formex(sqr0[sqre3])
         draw(Formex(f).setProp(i+1))
         draw(sqr0.setProp(i+1))
@@ -245,7 +245,7 @@ def cpAllSections(HC, OC, start_end_branching=[False, False]):
         i=cpOneSection(hc, oc,  isBranchingSection=isBr )
         cpain.append(i[0]), cpatr.append(i[1]), cpabl.append(i[2])
     cpain, cpatr, cpabl=[ array(i) for i in [cpain, cpatr, cpabl] ]
-    print('# sections= %d,  # inner quad reg = %d, # trans quad reg = %d, # boundary-layer quad reg = %d' %(cpain.shape[0],cpain.shape[1], cpatr.shape[1], cpabl.shape[1]))
+    print('# sections= %d,  # inner quad reg = %d, # trans quad reg = %d, # boundary-layer quad reg = %d' %(cpain.shape[0], cpain.shape[1], cpatr.shape[1], cpabl.shape[1]))
     if start_end_branching==[True, True]: print('--this vessel BIFURCATES both at FIRST AND LAST section')
     if start_end_branching==[True, False]: print('--this vessel BIFURCATES at FIRST section')
     if start_end_branching==[False, True]: print('--this vessel BIFURCATES at LAST section')
@@ -264,7 +264,7 @@ def cpStackQ16toH64(cpq16):
     cpqindex= concatenate( [i+arange(4) for i in arange(cpq16.shape[0]-3)]).reshape(-1, 4)
     cpq16t=swapaxes(cpq16[cpqindex], 1, 2)
     shcp=cpq16t.shape
-    return cpq16t.reshape( [ shcp[0], shcp[1],64, 3 ] )
+    return cpq16t.reshape( [ shcp[0], shcp[1], 64, 3 ] )
 
 ##SECOND STEP ----- FROM CONTROL-POINTS-QUAD16 to CONTROL-POINTS-HEX64-------------------------
 #hex_cp=[cpStackQ16toH64(i) for i in [cpAin, cpAtr, cpAbl] ]#control points for hex64 divided in 3 groups: central, transition, and boundary layer. The stacking uses the TRICK for sweeping.
@@ -284,7 +284,7 @@ def mapHexLong(mesh_block, cpvr):
     n_block, e_block, cp_block=mesh_block
     n_start, n_body, n_end=[n_block.scale([1./3., 1., 1.]).translate([i/3., 0., 0.]) for i in range(3)]
     cp_start, cp_body, cp_end=cpvr[0], cpvr.reshape(-1, 64, 3), cpvr[-1]
-    n=[ [Coords(n_tract).isopar('hex64',cpi,cp_block) for cpi in cp_tract] for n_tract, cp_tract in zip([n_start, n_body, n_end], [cp_start, cp_body, cp_end]) ]
+    n=[ [Coords(n_tract).isopar('hex64', cpi, cp_block) for cpi in cp_tract] for n_tract, cp_tract in zip([n_start, n_body, n_end], [cp_start, cp_body, cp_end]) ]
     n=concatenate(n, axis=0)
     return n, e_block
 
@@ -296,7 +296,7 @@ def mapQuadLong(mesh_block, cpvr):
     cp_body=cpvr.reshape(-1, 16, 3)
     cp_start=cp_body[:8]
     cp_end=cp_body[-8:]
-    n=[ [Coords(n_tract).isopar('quad16',cpi,cp_block) for cpi in cp_tract] for n_tract, cp_tract in zip([n_start, n_body, n_end], [cp_start, cp_body, cp_end]) ]
+    n=[ [Coords(n_tract).isopar('quad16', cpi, cp_block) for cpi in cp_tract] for n_tract, cp_tract in zip([n_start, n_body, n_end], [cp_start, cp_body, cp_end]) ]
     n=concatenate(n, axis=0)
     return n, e_block
 

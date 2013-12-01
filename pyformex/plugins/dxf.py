@@ -34,8 +34,8 @@ import utils
 
 
 # Avoid compilation problems
-def execSource(s,g):
-    exec(s,g)
+def execSource(s, g):
+    exec(s, g)
 
 
 def importDXF(filename):
@@ -81,7 +81,7 @@ def readDXF(filename):
     if utils.hasExternal('dxfparser'):
         cmd = 'pyformex-dxfparser %s 2>/dev/null' % filename
         print(cmd)
-        P = utils.command(cmd,shell=True)
+        P = utils.command(cmd, shell=True)
         if P.sta==0:
             return P.out
         else:
@@ -133,7 +133,7 @@ def convertDXF(text):
 
     """
     import types
-    global Entities,Vertices
+    global Entities, Vertices
 
     Entities = []
     Vertices = []
@@ -145,50 +145,50 @@ def convertDXF(text):
 
 
     def EndEntity():
-        global Entities,Vertices
+        global Entities, Vertices
         if Entities:
             f = Entities[-1]
             if isinstance(f, types.FunctionType):
                 f()
 
-    def Arc(x0,y0,z0,r,a0,a1):
-        global Entities,Vertices
+    def Arc(x0, y0, z0, r, a0, a1):
+        global Entities, Vertices
         count = len(Entities)
-        part = curve.Arc(center=[x0,y0,z0],radius=r,angles=[a0,a1]).setProp(count)
+        part = curve.Arc(center=[x0, y0, z0], radius=r, angles=[a0, a1]).setProp(count)
         part.dxftype = 'Arc'
         Entities.append(part)
 
-    def Circle(x0,y0,z0,r):
-        Arc(x0,y0,z0,r,0.,360.)
+    def Circle(x0, y0, z0, r):
+        Arc(x0, y0, z0, r, 0., 360.)
 
-    def Line(x0,y0,z0,x1,y1,z1):
-        global Entities,Vertices
+    def Line(x0, y0, z0, x1, y1, z1):
+        global Entities, Vertices
         count = len(Entities)
-        part = curve.Line([[x0,y0,z0],[x1,y1,z1]]).setProp(count)
+        part = curve.Line([[x0, y0, z0], [x1, y1, z1]]).setProp(count)
         part.dxftype = 'Line'
         Entities.append(part)
 
     def Polyline(n):
-        global Entities,Vertices
+        global Entities, Vertices
         EndEntity()
         Entities.append(EndPolyline)
         Vertices = []
 
     def EndPolyline():
-        global Entities,Vertices
+        global Entities, Vertices
         count = len(Entities) - 1
         part = curve.PolyLine(Vertices).setProp(count)
         part.dxftype = 'Polyline'
         Entities[-1] = part
         Vertices = []
 
-    def Vertex(x,y,z):
-        global Entities,Vertices
-        Vertices.append([x,y,z])
+    def Vertex(x, y, z):
+        global Entities, Vertices
+        Vertices.append([x, y, z])
 
 
     l = {'Line':Line, 'Arc':Arc, 'Circle':Circle, 'Polyline':Polyline, 'EndPolyline':EndPolyline, 'Vertex':Vertex}
-    execSource(text,l)
+    execSource(text, l)
     EndEntity()
     return Entities
 
@@ -201,7 +201,7 @@ def collectByType(entities):
     for t in types:
         n = t.__name__
         cn = [ i for i in entities if isinstance(i, t) ]
-        print("  items of type %s: %s" % (n,len(cn)))
+        print("  items of type %s: %s" % (n, len(cn)))
         coll[n] = cn
     return coll
 
@@ -215,11 +215,11 @@ def toLines(coll,chordal=0.01,arcdiv=None):
     the accuracy for the approximation of the Arc by line segments.
     """
     Lines = []
-    for k,v in coll.items():
+    for k, v in coll.items():
         if k in [ 'Line', 'PolyLine' ]:
             Lines.extend([ a.toFormex() for a in v ] )
         elif k == 'Arc':
-            Lines.extend([ a.toFormex(chordal=chordal,ndiv=arcdiv) for a in v ])
+            Lines.extend([ a.toFormex(chordal=chordal, ndiv=arcdiv) for a in v ])
     return Formex.concatenate(Lines)
 
 
@@ -240,11 +240,11 @@ class DxfExporter(object):
         An existing file will be overwritten without warning!
         """
         self.filename = filename
-        self.fil = open(self.filename,'w')
+        self.fil = open(self.filename, 'w')
         self.term = terminator
 
 
-    def write(self,s):
+    def write(self, s):
         """Write a string to the dxf file.
 
         The string does not include the line terminator.
@@ -252,7 +252,7 @@ class DxfExporter(object):
         self.fil.write(s+self.term)
 
 
-    def out(self,code,data):
+    def out(self, code, data):
         """Output a string data item to the dxf file.
 
         code is the group code,
@@ -264,19 +264,19 @@ class DxfExporter(object):
 
     def close(self):
         """Finalize and close the DXF file"""
-        self.out(0,'EOF')
+        self.out(0, 'EOF')
         self.fil.close()
 
 
-    def section(self,name):
+    def section(self, name):
         """Start a new section"""
-        self.out(0,'SECTION')
-        self.out(2,name)
+        self.out(0, 'SECTION')
+        self.out(2, name)
 
 
     def endSection(self):
         """End the current section"""
-        self.out(0,'ENDSEC')
+        self.out(0, 'ENDSEC')
 
 
     def entities(self):
@@ -284,9 +284,9 @@ class DxfExporter(object):
         self.section('ENTITIES')
 
 
-    def layer(self,layer):
+    def layer(self, layer):
         """Export the layer"""
-        self.out(8,layer)
+        self.out(8, layer)
 
 
     def vertex(self,x,layer=0):
@@ -294,10 +294,10 @@ class DxfExporter(object):
 
         x is a (3,) shaped array
         """
-        self.out(0,'VERTEX')
-        self.out(8,layer)
+        self.out(0, 'VERTEX')
+        self.out(8, layer)
         for i in range(3):
-            self.out(10*(i+1),x[i])
+            self.out(10*(i+1), x[i])
 
 
     def line(self,x,layer=0):
@@ -305,11 +305,11 @@ class DxfExporter(object):
 
         x is a (2,3) shaped array
         """
-        self.out(0,'LINE')
-        self.out(8,layer)
+        self.out(0, 'LINE')
+        self.out(8, layer)
         for j in range(2):
             for i in range(3):
-                self.out(10*(i+1)+j,x[j][i])
+                self.out(10*(i+1)+j, x[j][i])
 
 
     def polyline(self,x,layer=0):
@@ -317,31 +317,31 @@ class DxfExporter(object):
 
         x is a (nvertices,3) shaped array
         """
-        self.out(0,'POLYLINE')
-        self.out(8,layer)
+        self.out(0, 'POLYLINE')
+        self.out(8, layer)
         for xi in x:
-            self.vertex(xi,layer)
-        self.out(0,'SEQEND')
+            self.vertex(xi, layer)
+        self.out(0, 'SEQEND')
 
 
     def arc(self,C,R,a,layer=0):
         """Export an arc.
 
         """
-        self.out(0,'ARC')
-        self.out(8,layer)
-        for k,v in [
-            (10,C[0]),
-            (20,C[1]),
-            (30,C[2]),
-            (40,R),
-            (50,a[0]),
-            (51,a[1]),
+        self.out(0, 'ARC')
+        self.out(8, layer)
+        for k, v in [
+            (10, C[0]),
+            (20, C[1]),
+            (30, C[2]),
+            (40, R),
+            (50, a[0]),
+            (51, a[1]),
             ]:
-            self.out(k,v)
+            self.out(k, v)
 
 
-def exportDXF(filename,F):
+def exportDXF(filename, F):
     """Export a Formex to a DXF file
 
     Currently, only plex-2 Formices can be exported to DXF.
@@ -356,7 +356,7 @@ def exportDXF(filename,F):
     dxf.close()
 
 
-def exportDxf(filename,coll):
+def exportDxf(filename, coll):
     """Export a collection of dxf parts a DXF file
 
     coll is a list of dxf objects
@@ -366,23 +366,23 @@ def exportDxf(filename,coll):
     dxf = DxfExporter(filename)
     dxf.entities()
     for ent in coll:
-        print(type(ent),ent)
-        if isinstance(ent,curve.Line):
+        print(type(ent), ent)
+        if isinstance(ent, curve.Line):
             dxf.line(ent.coords)
-        elif isinstance(ent,curve.Arc):
-            dxf.arc(ent.getCenter(),ent.radius,ent.getAngles())
-        elif isinstance(ent,curve.PolyLine):
+        elif isinstance(ent, curve.Arc):
+            dxf.arc(ent.getCenter(), ent.radius, ent.getAngles())
+        elif isinstance(ent, curve.PolyLine):
             dxf.polyline(ent.coords)
         else:
-            utils.warn('warn_dxf_export',data=type(ent))
+            utils.warn('warn_dxf_export', data=type(ent))
 
     dxf.endSection()
     dxf.close()
 
 
-def exportDxfText(filename,parts):
+def exportDxfText(filename, parts):
     """Export a set of dxf entities to a .dxftext file."""
-    fil = open(filename,'w')
+    fil = open(filename, 'w')
     for p in parts:
         fil.write(p.dxftext()+'\n')
     fil.close()
@@ -393,8 +393,8 @@ def exportDxfText(filename,parts):
 if __name__ == 'draw':
     #chdir(__file__)
     from simple import circle
-    c = circle(360./20.,360./20.,360.)
+    c = circle(360./20., 360./20., 360.)
     draw(c)
-    exportDXF('circle1.dxf',c)
+    exportDXF('circle1.dxf', c)
 
 #End

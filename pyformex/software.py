@@ -47,22 +47,22 @@ import re
 # If empty, the attribute is supposed to be '__version__'
 # If module name is an empty string, it is supposed to be equal to our alias
 known_modules = {
-    'calpy'     : (),
-    'dicom'     : (),
-    'docutils'  : (),
-    'gdcm'      : ('','','GDCM_VERSION'),
-    'gl2ps'     : ('','','GL2PS_VERSION'),
-    'gnuplot'   : ('Gnuplot',),
-    'ipython'   : ('IPython',),
+    'calpy': (),
+    'dicom': (),
+    'docutils': (),
+    'gdcm': ('', '', 'GDCM_VERSION'),
+    'gl2ps': ('', '', 'GL2PS_VERSION'),
+    'gnuplot': ('Gnuplot',),
+    'ipython': ('IPython',),
     'ipython-qt': ('IPython.frontend.qt',),
     'matplotlib': (),
-    'numpy'     : (),
-    'pyopengl'  : ('OpenGL',),
-    'pyqt4'     : ('PyQt4.QtCore','PyQt4','QtCore','QT_VERSION_STR'),
-    'pyqt4gl'   : ('PyQt4.QtOpenGL','PyQt4','QtCore','QT_VERSION_STR'),
-    'pyside'    : ('PySide',),
-    'scipy'     : (),
-    'vtk'       : ('','','VTK_VERSION'),
+    'numpy': (),
+    'pyopengl': ('OpenGL',),
+    'pyqt4': ('PyQt4.QtCore', 'PyQt4', 'QtCore', 'QT_VERSION_STR'),
+    'pyqt4gl': ('PyQt4.QtOpenGL', 'PyQt4', 'QtCore', 'QT_VERSION_STR'),
+    'pyside': ('PySide',),
+    'scipy': (),
+    'vtk': ('', '', 'VTK_VERSION'),
      }
 
 known_externals = {
@@ -73,27 +73,27 @@ known_externals = {
 #  NOTE: abaqus command may hang longtime on checking the license server
 #    'abaqus': ('abaqus info=sys|head -n2|tail -n1', 'Abaqus (\S+)'),
     'admesh': ('admesh --version', 'ADMesh - version (\S+)'),
-    'calculix': ('ccx -v','.*version (\S+)'),
-    'calix': ('calix --version','CALIX-(\S+)'),
-    'calpy': ('calpy --version','Calpy (\S+)'),
-    'dxfparser': ('pyformex-dxfparser --version','dxfparser (\S+)'),
-    'ffmpeg': ('ffmpeg -version','[fF][fF]mpeg version (\S+)'),
-    'gts': ('gtsset -h','Usage(:) '),
-    'gts-bin': ('gts2stl -h','Usage(:) '),
-    'gts-extra': ('gtsinside -h','Usage(:) '),
-    'imagemagick': ('import -version','Version: ImageMagick (\S+)'),
-    'postabq': ('pyformex-postabq -V','postabq (\S+).*'),
-    'python': ('python --version','Python (\\S+)'),
-    'recordmydesktop': ('recordmydesktop --version','recordMyDesktop v(\S+)'),
-    'tetgen': ("sh -c 'tetgen -h |fgrep Version'",'Version (\S+)'),
-    'units': ('units --version','GNU Units version (\S+)'),
-    'vmtk': ('vmtk --help','Usage: 	vmtk(\S+).*'),
+    'calculix': ('ccx -v', '.*version (\S+)'),
+    'calix': ('calix --version', 'CALIX-(\S+)'),
+    'calpy': ('calpy --version', 'Calpy (\S+)'),
+    'dxfparser': ('pyformex-dxfparser --version', 'dxfparser (\S+)'),
+    'ffmpeg': ('ffmpeg -version', '[fF][fF]mpeg version (\S+)'),
+    'gts': ('gtsset -h', 'Usage(:) '),
+    'gts-bin': ('gts2stl -h', 'Usage(:) '),
+    'gts-extra': ('gtsinside -h', 'Usage(:) '),
+    'imagemagick': ('import -version', 'Version: ImageMagick (\S+)'),
+    'postabq': ('pyformex-postabq -V', 'postabq (\S+).*'),
+    'python': ('python --version', 'Python (\\S+)'),
+    'recordmydesktop': ('recordmydesktop --version', 'recordMyDesktop v(\S+)'),
+    'tetgen': ("sh -c 'tetgen -h |fgrep Version'", 'Version (\S+)'),
+    'units': ('units --version', 'GNU Units version (\S+)'),
+    'vmtk': ('vmtk --help', 'Usage: 	vmtk(\S+).*'),
     }
 
 # versions of detected modules
 the_version = {
-    'pyformex':pf.__version__,
-    'python':sys.version.split()[0],
+    'pyformex': pf.__version__,
+    'python': sys.version.split()[0],
     }
 # versions of detected external commands
 the_external = {}
@@ -162,7 +162,7 @@ def requireModule(name,version=None):
             attr = 'required'
         else:
             attr = 'unknown'
-        errmsg = "Could not load %s module '%s'" % (attr,name)
+        errmsg = "Could not load %s module '%s'" % (attr, name)
         errmsg = """..
 
 **Module %s not found!**
@@ -171,13 +171,13 @@ You activated some functionality requiring
 the Python module '%s'.
 However, the module '%s' could not be loaded.
 Probably it is not installed on your system.
-""" % (name,name,name)
+""" % (name, name, name)
         pf.error(errmsg)
         raise ValueError(errmsg)
 
     else:
         if version is not None:
-            if checkVersion(name,version) < 0:
+            if checkVersion(name, version) < 0:
                 # Version too old
                 errmsg = """..
 
@@ -187,7 +187,7 @@ You activated some functionality requiring
 the Python module '%s'.
 However, the module '%s' could not be loaded.
 Probably it is not installed on your system.
-""" % (name,name,name)
+""" % (name, name, name)
                 pf.error(errmsg)
                 raise ValueError(errmsg)
 
@@ -197,7 +197,7 @@ def checkAllModules():
 
     """
     #print("CHECKING ALL MODULES")
-    [ checkModule(n,quiet=True) for n in known_modules ]
+    [ checkModule(n, quiet=True) for n in known_modules ]
 
 
 def checkModule(name,ver=(),fatal=False,quiet=False):
@@ -224,22 +224,22 @@ def checkModule(name,ver=(),fatal=False,quiet=False):
 
     try:
         if not quiet:
-            pf.debug(modname,pf.DEBUG.DETECT)
+            pf.debug(modname, pf.DEBUG.DETECT)
         m = __import__(modname)
         if not quiet:
-            pf.debug(m,pf.DEBUG.DETECT)
+            pf.debug(m, pf.DEBUG.DETECT)
         if len(ver) > 1 and len(ver[1]) > 0:
             modname = ver[1]
             m = __import__(modname)
             if not quiet:
-                pf.debug(m,pf.DEBUG.DETECT)
+                pf.debug(m, pf.DEBUG.DETECT)
         ver = ver[2:]
         if len(ver) == 0:
             ver = ('__version__',)
         for a in ver:
-            m = getattr(m,a)
+            m = getattr(m, a)
             if not quiet:
-                pf.debug(m,pf.DEBUG.DETECT)
+                pf.debug(m, pf.DEBUG.DETECT)
 
     except:
         # failure: unexisting or unregistered modules
@@ -251,7 +251,7 @@ def checkModule(name,ver=(),fatal=False,quiet=False):
 
     # make sure version is a string (e.g. gl2ps uses a float!)
     m = str(m)
-    _congratulations(name,m,'module',fatal,quiet=quiet)
+    _congratulations(name, m, 'module', fatal, quiet=quiet)
     #if version:
     the_version[name] = m
     return m
@@ -296,7 +296,7 @@ def requireExternal(name):
 You activated some functionality requiring
 the external program '%s'.
 However, '%s' was not found on your system.
-""" % (name,name,name)
+""" % (name, name, name)
         pf.error(errmsg)
         raise ValueError(errmsg)
 
@@ -308,7 +308,7 @@ def checkAllExternals():
     The detected ones have a non-zero value, usually the version number.
     """
     #print("CHECKING ALL EXTERNALS")
-    [ checkExternal(n,quiet=True) for n in known_externals.keys() ]
+    [ checkExternal(n, quiet=True) for n in known_externals.keys() ]
     return the_external
 
 
@@ -333,25 +333,25 @@ def checkExternal(name,command=None,answer=None,quiet=False):
     import utils
 
     if command is None or answer is None:
-        cmd,ans = known_externals.get(name,(name,'(.+)\n'))
+        cmd, ans = known_externals.get(name, (name, '(.+)\n'))
         if command is None:
             command = cmd
         if answer is None:
             answer = ans
 
-    pf.debug("Check %s\n%s" % (name,command),pf.DEBUG.DETECT)
+    pf.debug("Check %s\n%s" % (name, command), pf.DEBUG.DETECT)
     P = utils.system(command)
-    pf.debug("Status:\n%s\nStdout:\n%s\nStderr:\n%s" % (P.sta,P.out,P.err),pf.DEBUG.DETECT)
+    pf.debug("Status:\n%s\nStdout:\n%s\nStderr:\n%s" % (P.sta, P.out, P.err), pf.DEBUG.DETECT)
     version = ''
     # Beware: some programs write their version to stderr, others to stdout
     m = None
     if P.out:
-        m = re.match(answer,P.out)
+        m = re.match(answer, P.out)
     if m is None and P.err:
-        m = re.match(answer,P.err)
+        m = re.match(answer, P.err)
     if m:
         version = m.group(1)
-    _congratulations(name,version,'program',quiet=quiet)
+    _congratulations(name, version, 'program', quiet=quiet)
     the_external[name] = version
     return version
 
@@ -360,10 +360,10 @@ def _congratulations(name,version,typ='module',fatal=False,quiet=False,severity=
     """Report a detected module/program."""
     if version:
         if not quiet:
-            pf.debug("Congratulations! You have %s (%s)" % (name,version),pf.DEBUG.DETECT)
+            pf.debug("Congratulations! You have %s (%s)" % (name, version), pf.DEBUG.DETECT)
     else:
         if not quiet or fatal:
-            pf.debug("ALAS! I could not find %s '%s' on your system" % (typ,name),pf.DEBUG.DETECT)
+            pf.debug("ALAS! I could not find %s '%s' on your system" % (typ, name), pf.DEBUG.DETECT)
         if fatal:
             pf.error("Sorry, I'm getting out of here....")
             sys.exit()
@@ -380,7 +380,7 @@ def detectedSoftware(all=True):
         checkAllModules()
         checkAllExternals()
 
-    system,host,release,version,arch = os.uname()
+    system, host, release, version, arch = os.uname()
     soft = {
         'System': ODict([
             ('pyFormex_version', the_version['pyformex']),
@@ -388,15 +388,15 @@ def detectedSoftware(all=True):
             ('pyFormex_fullversion', pf.fullVersion()),
             ('pyFormex_libraries', Libraries()),
             ('Python_version', the_version['python']),
-            ('Python_fullversion', sys.version.replace('\n',' ')),
+            ('Python_fullversion', sys.version.replace('\n', ' ')),
             ('System', system),
             ('Host', host),
             ('Release', release),
             ('Version', version),
             ('Arch', arch),
             ]),
-        'Modules' : the_version,
-        'Externals' : the_external,
+        'Modules': the_version,
+        'Externals': the_external,
         }
     return soft
 
@@ -413,7 +413,7 @@ def reportSoftware(soft=None,header=None):
             v = d[k]
             if not v:
                 v = notfound
-            s += "  %s (%s)\n" % ( k,v)
+            s += "  %s (%s)\n" % ( k, v)
         return s
 
     if soft is None:
@@ -422,17 +422,17 @@ def reportSoftware(soft=None,header=None):
     if header:
         header = str(header)
         s += utils.underlineHeader(header)
-    for key,desc,sort in [
-        ('System','Installed System',False),
-        ('Modules','Detected Python Modules',True),
-        ('Externals','Detected External Programs',True)
+    for key, desc, sort in [
+        ('System', 'Installed System', False),
+        ('Modules', 'Detected Python Modules', True),
+        ('Externals', 'Detected External Programs', True)
         ]:
         s += "\n%s:\n" % desc
-        s += format_dict(soft[key],sort=sort)
+        s += format_dict(soft[key], sort=sort)
     return s
 
 
-def checkItem(has,want):
+def checkItem(has, want):
     if has == want:
         return 'Matching'
     if not has:
@@ -441,7 +441,7 @@ def checkItem(has,want):
         return 'Unwanted'
     has = SaneVersion(has)
     want = SaneVersion(want)
-    print(("HAS %s; WANT %s" % (has,want)))
+    print(("HAS %s; WANT %s" % (has, want)))
     if has == want:
         return 'Matching'
     if has < want:
@@ -450,8 +450,8 @@ def checkItem(has,want):
         return 'Too Recent'
 
 
-def checkDict(has,want):
-    return [ (k,has[k],want[k],checkItem(has[k],want[k])) for k in want.keys()]
+def checkDict(has, want):
+    return [ (k, has[k], want[k], checkItem(has[k], want[k])) for k in want.keys()]
 
 
 def checkSoftware(req):
@@ -460,8 +460,8 @@ def checkSoftware(req):
     soft = detectedSoftware()
     comp = []
     for k in req:
-        comp.extend(checkDict(soft[k],req[k]))
-    print((utils.underlineHeader("%30s %15s %15s %10s" % ("Item","Found","Required","OK"))))
+        comp.extend(checkDict(soft[k], req[k]))
+    print((utils.underlineHeader("%30s %15s %15s %10s" % ("Item", "Found", "Required", "OK"))))
     for item in comp:
         print(("%30s %15s %15s %10s" % item))
 
@@ -472,7 +472,7 @@ def registerSoftware(req):
     soft = detectedSoftware()
     reg = {}
     for k in req:
-        reg[k] = utils.selectDict(soft[k],req[k].keys())
+        reg[k] = utils.selectDict(soft[k], req[k].keys())
     return reg
 
 
@@ -481,7 +481,7 @@ def soft2config(soft):
     import utils
     conf = Config()
     for k in soft:
-        conf.update(utils.prefixDict(soft[k],k+'/'))
+        conf.update(utils.prefixDict(soft[k], k+'/'))
     return conf
 
 
@@ -489,23 +489,23 @@ def config2soft(conf):
     """Convert software collection from config"""
     import utils
     soft = {}
-    for k in ['System','Modules','Externals']:
-        soft[k] = utils.subDict(conf,prefix=k+'/')
+    for k in ['System', 'Modules', 'Externals']:
+        soft[k] = utils.subDict(conf, prefix=k+'/')
     return soft
 
 
 def storeSoftware(soft,fn,mode='python'):
     """Store the software collection on file."""
     if mode == 'python':
-        with open(fn,'w') as fil:
+        with open(fn, 'w') as fil:
             fil.write("soft=%r\n" % soft)
     elif mode == 'config':
         conf = soft2config(soft)
         conf.write(fn)
     elif mode == 'pickle':
         import cPickle as pickle
-        print(("PICKLING",soft))
-        pickle.dump(soft,open(fn,'w'))
+        print(("PICKLING", soft))
+        pickle.dump(soft, open(fn, 'w'))
 
 
 def readSoftware(fn,mode='python'):
@@ -517,14 +517,14 @@ def readSoftware(fn,mode='python'):
     """
     if mode == 'python':
         print((os.path.abspath(fn)))
-        with open(fn,'r') as fil:
+        with open(fn, 'r') as fil:
             exec(fil.read())
     elif mode == 'config':
         conf = Config(fn)
         soft = config2soft(conf)
     elif mode == 'pickle':
         import cPickle as pickle
-        soft = pickle.load(open(fn,'r'))
+        soft = pickle.load(open(fn, 'r'))
     return soft
 
 
@@ -534,22 +534,22 @@ if __name__ == "draw":
 
     Required = {
         'System': {
-            'pyFormex_installtype':'R',
+            'pyFormex_installtype': 'R',
             },
         'Modules': {
-            'pyformex':'0.9.1',
-            'python':'2.7.3',
-            'matplotlib':'1.1.1',
+            'pyformex': '0.9.1',
+            'python': '2.7.3',
+            'matplotlib': '1.1.1',
             },
         'Externals': {
-            'admesh':'0.95',
+            'admesh': '0.95',
             },
         }
 
     soft = detectedSoftware()
     print((reportSoftware(header="Found Software")))
     print('\n ')
-    print((reportSoftware(Required,header="Required Software")))
+    print((reportSoftware(Required, header="Required Software")))
     print('\n ')
 
     checkSoftware(Required)
@@ -558,7 +558,7 @@ if __name__ == "draw":
     print("REGISTER")
     print(reg)
 
-    storeSoftware(reg,'checksoft.py')
+    storeSoftware(reg, 'checksoft.py')
     req = readSoftware('checksoft.py')
     print(req)
     checkSoftware(req)

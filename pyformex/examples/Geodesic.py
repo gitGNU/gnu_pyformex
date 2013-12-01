@@ -27,7 +27,7 @@
 from __future__ import print_function
 _status = 'checked'
 _level = 'beginner'
-_topics = ['geometry','domes']
+_topics = ['geometry', 'domes']
 _techniques = ['dialog', 'color']
 
 from gui.draw import *
@@ -38,7 +38,7 @@ def run():
 
     m=n=6
     f=0.8
-    res = askItems([('m',m),('n',n),('f',f)])
+    res = askItems([('m', m), ('n', n), ('f', f)])
     if not res:
         return
 
@@ -47,22 +47,22 @@ def run():
     f = res['f']
 
     v=0.5*sqrt(3.)
-    a = Formex([[[0,0],[1,0],[0.5,v]]],1)
-    aa = Formex([[[1,0],[1.5,v],[0.5,v]]],2)
+    a = Formex([[[0, 0], [1, 0], [0.5, v]]], 1)
+    aa = Formex([[[1, 0], [1.5, v], [0.5, v]]], 2)
     draw(a+aa)
     sleep(1)
 
-    d = a.replic2(m,min(m,n),1.,v,bias=0.5,taper=-1)
-    dd = aa.replic2(m-1,min(m-1,n),1.,v,bias=0.5,taper=-1)
+    d = a.replic2(m, min(m, n), 1., v, bias=0.5, taper=-1)
+    dd = aa.replic2(m-1, min(m-1, n), 1., v, bias=0.5, taper=-1)
     clear()
     draw(d+dd)
     sleep(1)
 
-    e = (d+dd).rosette(6,60,point=[m*0.5,m*v,0])
+    e = (d+dd).rosette(6, 60, point=[m*0.5, m*v, 0])
     draw(e)
     sleep(1)
 
-    g = e.mapd(2,lambda d:f*sqrt((m+1)**2-d**2),e.center(),[0,1])
+    g = e.mapd(2, lambda d:f*sqrt((m+1)**2-d**2), e.center(), [0, 1])
     clear()
     draw(g)
 

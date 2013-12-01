@@ -29,7 +29,7 @@ from __future__ import print_function
 
 import pyformex as pf
 
-import os,sys
+import os, sys
 import draw
 import utils
 import tempfile
@@ -53,8 +53,8 @@ def help(page=None):
         browser = pf.cfg['browser']
     else:
         browser = pf.cfg['viewer']
-    print([browser,page])
-    utils.system([browser,page])
+    print([browser, page])
+    utils.system([browser, page])
 
 
 def catchAndDisplay(expression):
@@ -99,7 +99,7 @@ A tool for generating, manipulating and transforming 3D geometrical models by se
 %s
 
 Distributed under the GNU GPL version 3 or later
-""" % (version,'='*len(version),pf.Copyright))
+""" % (version, '='*len(version), pf.Copyright))
 
 # List of developers/contributors (current and past)
 _developers = [
@@ -163,7 +163,7 @@ def roll(l):
     l.append(l.pop(0))
 
 def cookie():
-    draw.showInfo(_cookies[0],["OK"])
+    draw.showInfo(_cookies[0], ["OK"])
     roll(_cookies)
 
 
@@ -191,7 +191,7 @@ def showFileOrURL(link):
     if link.startswith('http://') or link.startswith('file://'):
         showURL(link)
     else:
-        draw.showFile(link,mono=not link.endswith('.rst'))
+        draw.showFile(link, mono=not link.endswith('.rst'))
 
 
 def searchText():
@@ -202,13 +202,13 @@ def searchText():
     """
     from widgets import simpleInputItem as _I
     res = draw.askItems([
-        _I('pattern','',text='String to grep'),
-        _I('options','',text='Options',tooltip="Some cool options: -a (extended search), -i (ignore case), -f (literal string), -e (extended regexp)"),
+        _I('pattern', '', text='String to grep'),
+        _I('options', '', text='Options', tooltip="Some cool options: -a (extended search), -i (ignore case), -f (literal string), -e (extended regexp)"),
         ])
 
     if res:
         out = utils.grepSource(relative=False,**res)
-        draw.showText(out,mono=True,modal=False)
+        draw.showText(out, mono=True, modal=False)
 
 
 def searchIndex():
@@ -219,72 +219,72 @@ def searchIndex():
     """
     from widgets import simpleInputItem as _I
     res = draw.askItems([
-        _I('text','',text='String to search'),
+        _I('text', '', text='String to search'),
         ])
 
     if res:
-        print("file://%s/doc/html/search.html?q=%s&check_keywords=yes&area=default" % (pf.cfg['pyformexdir'],res['text']))
-        showURL("file://%s/doc/html/search.html?q=%s&check_keywords=yes&area=default" % (pf.cfg['pyformexdir'],res['text']))
+        print("file://%s/doc/html/search.html?q=%s&check_keywords=yes&area=default" % (pf.cfg['pyformexdir'], res['text']))
+        showURL("file://%s/doc/html/search.html?q=%s&check_keywords=yes&area=default" % (pf.cfg['pyformexdir'], res['text']))
 
 
 def createMenuData():
     """Returns the help menu data"""
-    DocsMenuData = [(k,help,{'data':v}) for k,v in pf.cfg['help/docs']]
-    Docs2MenuData = [(k,draw.showFile,{'data':v}) for k,v in pf.cfg['help/docs2']]
-    LinksMenuData = [(k,showURL,{'data':v}) for k,v in pf.cfg['help/links']]
+    DocsMenuData = [(k, help, {'data':v}) for k, v in pf.cfg['help/docs']]
+    Docs2MenuData = [(k, draw.showFile, {'data':v}) for k, v in pf.cfg['help/docs2']]
+    LinksMenuData = [(k, showURL, {'data':v}) for k, v in pf.cfg['help/links']]
 
     try:
         MenuData = [
             DocsMenuData[0],
-            ('---',None),
+            ('---', None),
             ] + DocsMenuData[1:] + [
-            (_('&Search in index'),searchIndex),
-            (_('&Search in source'),searchText),
-            (_('&Current Application'),draw.showDoc),
-            ('---',None),
+            (_('&Search in index'), searchIndex),
+            (_('&Search in source'), searchText),
+            (_('&Current Application'), draw.showDoc),
+            ('---', None),
             ] + Docs2MenuData + [
-            (_('&Detected Software'),detected),
-            (_('&OpenGL Format'),opengl),
-            (_('&Fortune Cookie'),cookie),
-            (_('&Favourite Links'),LinksMenuData),
-            (_('&People'),developers),
-            (_('&About'),about),
+            (_('&Detected Software'), detected),
+            (_('&OpenGL Format'), opengl),
+            (_('&Fortune Cookie'), cookie),
+            (_('&Favourite Links'), LinksMenuData),
+            (_('&People'), developers),
+            (_('&About'), about),
             ]
     except:
         MenuData = []
 
     if pf.installtype in 'SG':
         pyformexdir = pf.cfg['pyformexdir']
-        devtodo = os.path.join(pyformexdir,"..","TODO")
-        devhowto = os.path.join(pyformexdir,"..","HOWTO-dev.rst")
-        devapp = os.path.join(pyformexdir,"..","scripts-apps.rst")
-        devextra = os.path.join(pyformexdir,"..","install-extra.rst")
-        devopengl = os.path.join(pyformexdir,"..","OPENGL-dev.rst")
+        devtodo = os.path.join(pyformexdir, "..", "TODO")
+        devhowto = os.path.join(pyformexdir, "..", "HOWTO-dev.rst")
+        devapp = os.path.join(pyformexdir, "..", "scripts-apps.rst")
+        devextra = os.path.join(pyformexdir, "..", "install-extra.rst")
+        devopengl = os.path.join(pyformexdir, "..", "OPENGL-dev.rst")
         #print pf.refcfg.help['developer']
         developer = [
-            ('Developer HOWTO',devhowto),
-            ('New OPENGL engine',devopengl),
-            ('Scripts versus Apps',devapp),
-            ('pyFormex TODO list',devtodo),
-            ('Installation of extra software',devextra),
-            ('Numpy documentation guidelines','http://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt'),
-            ('re-structured text (reST)','http://docutils.sourceforge.net/rst.html')
+            ('Developer HOWTO', devhowto),
+            ('New OPENGL engine', devopengl),
+            ('Scripts versus Apps', devapp),
+            ('pyFormex TODO list', devtodo),
+            ('Installation of extra software', devextra),
+            ('Numpy documentation guidelines', 'http://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt'),
+            ('re-structured text (reST)', 'http://docutils.sourceforge.net/rst.html')
             ]
 
 
-        DevLinksMenuData = [(k,showFileOrURL,{'data':v}) for k,v in developer]
+        DevLinksMenuData = [(k, showFileOrURL, {'data':v}) for k, v in developer]
         MenuData += [
-            ('---',None),
-            (_('&Developer Guidelines'),DevLinksMenuData),
+            ('---', None),
+            (_('&Developer Guidelines'), DevLinksMenuData),
             ]
 
-        def install_external(pkgdir,prgname):
-            extdir = os.path.join(pf.cfg['pyformexdir'],'extra',pkgdir)
-            P = utils.system("cd %s; make && gksu make install" % extdir,shell=True)
+        def install_external(pkgdir, prgname):
+            extdir = os.path.join(pf.cfg['pyformexdir'], 'extra', pkgdir)
+            P = utils.system("cd %s; make && gksu make install" % extdir, shell=True)
             if P.sta:
                 info = P.out
             else:
-                if utils.hasExternal(prgname,force=True):
+                if utils.hasExternal(prgname, force=True):
                     info = "Succesfully installed %s" % pkgdir
                 else:
                     info ="You should now restart pyFormex!"
@@ -292,19 +292,19 @@ def createMenuData():
             return P.sta
 
         def install_dxfparser():
-            install_external('dxfparser','pyformex-dxfparser')
+            install_external('dxfparser', 'pyformex-dxfparser')
 
         def install_postabq():
-            install_external('postabq','pyformex-postabq')
+            install_external('postabq', 'pyformex-postabq')
 
         def install_gts():
-            install_external('gts','gtsinside')
+            install_external('gts', 'gtsinside')
 
 
-        MenuData.append((_('&Install Externals'),[
-            (_('dxfparser'),install_dxfparser,{'tooltip':"Install dxfparser: requires libdxflib-dev!"}),
-            (_('postabq'),install_postabq),
-            (_('gts'),install_gts),
+        MenuData.append((_('&Install Externals'), [
+            (_('dxfparser'), install_dxfparser, {'tooltip':"Install dxfparser: requires libdxflib-dev!"}),
+            (_('postabq'), install_postabq),
+            (_('gts'), install_gts),
             ]))
 
 

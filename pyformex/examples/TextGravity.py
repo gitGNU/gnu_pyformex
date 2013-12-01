@@ -41,20 +41,20 @@ def run():
     y = pf.canvas.height()//2
 
     s = 100
-    G = Grid(x-s,y-s,x+s,y+s,2,2)
+    G = Grid(x-s, y-s, x+s, y+s, 2, 2)
     decorate(G)
 
     delay(2)
-    for g in [ 'NW','N','NE','W','C','E','SW','S','SE']:
-        T = drawText("XXX  %s  XXX"%g,x,y,gravity=g)
+    for g in [ 'NW', 'N', 'NE', 'W', 'C', 'E', 'SW', 'S', 'SE']:
+        T = drawText("XXX  %s  XXX"%g, x, y, gravity=g)
         wait()
         undecorate(T)
 
     delay(1)
     from gui.gluttext import GLUTFONTS
     for f in GLUTFONTS.keys():
-        S = drawText(f,20,20,font='hv18')
-        T = drawText('X',x,y,font=f,gravity='C')
+        S = drawText(f, 20, 20, font='hv18')
+        T = drawText('X', x, y, font=f, gravity='C')
         wait()
         undecorate(S)
         undecorate(T)

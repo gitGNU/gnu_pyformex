@@ -31,8 +31,8 @@ from __future__ import print_function
 from coords import *
 
 class Plane(object):
-    def __init__(self,P,n):
-        self.coords = Coords.concatenate([P,normalize(n)])
+    def __init__(self, P, n):
+        self.coords = Coords.concatenate([P, normalize(n)])
 
 
 def areaNormals(x):
@@ -44,13 +44,13 @@ def areaNormals(x):
     Returns a tuple (areas,normals) with the areas and the normals of the
     triangles. The area is always positive. The normal vectors are normalized.
     """
-    x = x.reshape(-1,3,3)
-    area,normals = vectorPairAreaNormals(x[:,1]-x[:,0],x[:,2]-x[:,1])
+    x = x.reshape(-1, 3, 3)
+    area, normals = vectorPairAreaNormals(x[:, 1]-x[:, 0], x[:, 2]-x[:, 1])
     area *= 0.5
-    return area,normals
+    return area, normals
 
 
-def degenerate(area,normals):
+def degenerate(area, normals):
     """Return a list of the degenerate faces according to area and normals.
 
     area,normals are equal sized arrays with the areas and normals of a
@@ -61,7 +61,7 @@ def degenerate(area,normals):
 
     Returns a list of the degenerate element numbers as a sorted array.
     """
-    return unique(concatenate([where(area<=0)[0],where(isnan(normals))[0]]))
+    return unique(concatenate([where(area<=0)[0], where(isnan(normals))[0]]))
 
 
 def levelVolumes(x):
@@ -82,11 +82,11 @@ def levelVolumes(x):
     """
     nplex = x.shape[1]
     if nplex == 2:
-        return length(x[:,1]-x[:,0])
+        return length(x[:, 1]-x[:, 0])
     elif nplex == 3:
-        return vectorPairArea(x[:,1]-x[:,0], x[:,2]-x[:,1]) / 2
+        return vectorPairArea(x[:, 1]-x[:, 0], x[:, 2]-x[:, 1]) / 2
     elif nplex == 4:
-        return vectorTripleProduct(x[:,1]-x[:,0], x[:,2]-x[:,1], x[:,3]-x[:,0]) / 6
+        return vectorTripleProduct(x[:, 1]-x[:, 0], x[:, 2]-x[:, 1], x[:, 3]-x[:, 0]) / 6
     else:
         raise ValueError("Plexitude should be one of 2, 3 or 4; got %s" % nplex)
 
@@ -100,19 +100,19 @@ def smallestDirection(x,method='inertia',return_size=False):
       vector and the size  along that direction and the cross directions;
       else, only return the direction vector.
     """
-    x = x.reshape(-1,3)
+    x = x.reshape(-1, 3)
     if method == 'inertia':
         # The idea is to take the smallest dimension in a coordinate
         # system aligned with the global axes.
-        C,r,Ip,I = x.inertia()
+        C, r, Ip, I = x.inertia()
         X = x.trl(-C).rot(r)
         sizes = X.sizes()
         i = sizes.argmin()
         # r gives the directions as column vectors!
         # TODO: maybe we should change that
-        N = r[:,i]
+        N = r[:, i]
         if return_size:
-            return N,sizes[i]
+            return N, sizes[i]
         else:
             return N
     elif method == 'random':
@@ -123,10 +123,10 @@ def smallestDirection(x,method='inertia',return_size=False):
         e = arange(m)
         random.shuffle(e)
         if n > m:
-            e = concatenate([e,[0,1,n-1]])
+            e = concatenate([e, [0, 1, n-1]])
         el = e[-3:]
-        S = TriSurface(x,e.reshape(-1,3))
-        A,N = S.areaNormals()
+        S = TriSurface(x, e.reshape(-1, 3))
+        A, N = S.areaNormals()
         ok = where(isnan(N).sum(axis=1) == 0)[0]
         N = N[ok]
         N = N*N
@@ -136,7 +136,7 @@ def smallestDirection(x,method='inertia',return_size=False):
         return N
 
 
-def distance(X,Y):
+def distance(X, Y):
     """Returns the distance of all points of X to those of Y.
 
     Parameters:
@@ -147,7 +147,7 @@ def distance(X,Y):
     Returns an (nX,nT) shaped array with the distances between all points of
     X and Y.
     """
-    return length(X[:,newaxis]-Y)
+    return length(X[:, newaxis]-Y)
 
 
 def closest(X,Y,return_dist=True):
@@ -167,15 +167,15 @@ def closest(X,Y,return_dist=True):
     - `dist`: (nX,) float array with the distance of the closest point. This
       is equal to length(X-Y[ind]). It is only returned if return_dist is True.
     """
-    dist = distance(X,Y)    # Compute all distances
+    dist = distance(X, Y)    # Compute all distances
     ind = dist.argmin(-1)   # Locate the smallest distances
     if return_dist:
-        return ind, dist[arange(dist.shape[0]),ind]
+        return ind, dist[arange(dist.shape[0]), ind]
     else:
         return ind
 
 
-def closestPair(X,Y):
+def closestPair(X, Y):
     """Find the closest pair of points from X and Y.
 
     Parameters:
@@ -186,13 +186,13 @@ def closestPair(X,Y):
     Returns a tuple (i,j,d) where i,j are the indices in X,Y identifying
     the closest points, and d is the distance between them.
     """
-    dist = distance(X,Y)    # Compute all distances
+    dist = distance(X, Y)    # Compute all distances
     ind = dist.argmin()     # Locate the smallest distances
-    i,j = divmod(ind,Y.shape[0])
-    return i,j,dist[i,j]
+    i, j = divmod(ind, Y.shape[0])
+    return i, j, dist[i, j]
 
 
-def projectedArea(x,dir):
+def projectedArea(x, dir):
     """Compute projected area inside a polygon.
 
     Parameters:
@@ -217,8 +217,8 @@ def projectedArea(x,dir):
         dir = unitVector(dir)
     else:
         dir = normalize(dir)
-    x1 = roll(x,-1,axis=0)
-    area = vectorTripleProduct(Coords(dir),x,x1)
+    x1 = roll(x, -1, axis=0)
+    area = vectorTripleProduct(Coords(dir), x, x1)
     return 0.5 * area.sum()
 
 
@@ -234,15 +234,15 @@ def polygonNormals(x):
     if x.shape[1] < 3:
         #raise ValueError("Cannot compute normals for plex-2 elements"
         n = zeros_like(x)
-        n[:,:,2] = -1.
+        n[:,:, 2] = -1.
         return n
 
     ni = arange(x.shape[1])
-    nj = roll(ni,1)
-    nk = roll(ni,-1)
-    v1 = x-x[:,nj]
-    v2 = x[:,nk]-x
-    n = vectorPairNormals(v1.reshape(-1,3),v2.reshape(-1,3)).reshape(x.shape)
+    nj = roll(ni, 1)
+    nk = roll(ni, -1)
+    v1 = x-x[:, nj]
+    v2 = x[:, nk]-x
+    n = vectorPairNormals(v1.reshape(-1, 3), v2.reshape(-1, 3)).reshape(x.shape)
     return n
 
 
@@ -258,7 +258,7 @@ def averageNormals(coords,elems,atNodes=False,treshold=None):
     at the nodes is returned.
     """
     n = polygonNormals(coords[elems])
-    n = nodalSum(n,elems,return_all=not atNodes,direction_treshold=treshold)
+    n = nodalSum(n, elems, return_all=not atNodes, direction_treshold=treshold)
     return normalize(n)
 
 
@@ -273,21 +273,21 @@ def triangleInCircle(x):
     Returns a tuple r,C,n with the radii, Center and unit normals of the
     incircles.
     """
-    checkArray(x,shape=(-1,3,3))
+    checkArray(x, shape=(-1, 3, 3))
     # Edge vectors
-    v = roll(x,-1,axis=1) - x
+    v = roll(x, -1, axis=1) - x
     v = normalize(v)
     # create bisecting lines in x0 and x1
-    b0 = v[:,0]-v[:,2]
-    b1 = v[:,1]-v[:,0]
+    b0 = v[:, 0]-v[:, 2]
+    b1 = v[:, 1]-v[:, 0]
     # find intersection => center point of incircle
-    center = lineIntersection(x[:,0],b0,x[:,1],b1)
+    center = lineIntersection(x[:, 0], b0, x[:, 1], b1)
     # find distance to any side => radius
-    radius = center.distanceFromLine(x[:,0],v[:,0])
+    radius = center.distanceFromLine(x[:, 0], v[:, 0])
     # normals
-    normal = cross(v[:,0],v[:,1])
-    normal /= length(normal).reshape(-1,1)
-    return radius,center,normal
+    normal = cross(v[:, 0], v[:, 1])
+    normal /= length(normal).reshape(-1, 1)
+    return radius, center, normal
 
 
 def triangleCircumCircle(x,bounding=False):
@@ -300,33 +300,33 @@ def triangleCircumCircle(x,bounding=False):
 
     If bounding=True, this returns the triangle bounding circle.
     """
-    checkArray(x,shape=(-1,3,3))
+    checkArray(x, shape=(-1, 3, 3))
     # Edge vectors
-    v = x - roll(x,-1,axis=1)
-    vv = dotpr(v,v)
+    v = x - roll(x, -1, axis=1)
+    vv = dotpr(v, v)
     # Edge lengths
     lv = sqrt(vv)
-    n = cross(v[:,0],v[:,1])
-    nn = dotpr(n,n)
+    n = cross(v[:, 0], v[:, 1])
+    nn = dotpr(n, n)
     # Radius
     N = sqrt(nn)
     r = asarray(lv.prod(axis=-1) / N / 2)
     # Center
-    w = -dotpr(roll(v,1,axis=1),roll(v,2,axis=1))
+    w = -dotpr(roll(v, 1, axis=1), roll(v, 2, axis=1))
     a = w * vv
-    C = a.reshape(-1,3,1) * roll(x,1,axis=1)
-    C = C.sum(axis=1) / nn.reshape(-1,1) / 2
+    C = a.reshape(-1, 3, 1) * roll(x, 1, axis=1)
+    C = C.sum(axis=1) / nn.reshape(-1, 1) / 2
     # Unit normals
-    n = n / N.reshape(-1,1)
+    n = n / N.reshape(-1, 1)
     # Bounding circle
     if bounding:
         # Modify for obtuse triangles
-        for i,j,k in [[0,1,2],[1,2,0],[2,0,1]]:
-            obt = vv[:,i] >= vv[:,j]+vv[:,k]
-            r[obt] = 0.5 * lv[obt,i]
-            C[obt] = 0.5 * (x[obt,i] + x[obt,j])
+        for i, j, k in [[0, 1, 2], [1, 2, 0], [2, 0, 1]]:
+            obt = vv[:, i] >= vv[:, j]+vv[:, k]
+            r[obt] = 0.5 * lv[obt, i]
+            C[obt] = 0.5 * (x[obt, i] + x[obt, j])
 
-    return r,C,n
+    return r, C, n
 
 
 def triangleBoundingCircle(x):
@@ -343,7 +343,7 @@ def triangleBoundingCircle(x):
     Returns a tuple r,C,n with the radii, Center and unit normals of the
     bounding circles.
     """
-    return triangleCircumCircle(x,bounding=True)
+    return triangleCircumCircle(x, bounding=True)
 
 
 def triangleObtuse(x):
@@ -354,14 +354,14 @@ def triangleObtuse(x):
     Returns an (ntri) array of True/False values indicating whether the
     triangles are obtuse.
     """
-    checkArray(x,shape=(-1,3,3))
+    checkArray(x, shape=(-1, 3, 3))
     # Edge vectors
-    v = x - roll(x,-1,axis=1)
-    vv = dotpr(v,v)
-    return (vv[:,0] > vv[:,1]+vv[:,2]) + (vv[:,1] > vv[:,2]+vv[:,0]) + (vv[:,2] > vv[:,0]+vv[:,1])
+    v = x - roll(x, -1, axis=1)
+    vv = dotpr(v, v)
+    return (vv[:, 0] > vv[:, 1]+vv[:, 2]) + (vv[:, 1] > vv[:, 2]+vv[:, 0]) + (vv[:, 2] > vv[:, 0]+vv[:, 1])
 
 
-def lineIntersection(P1,D1,P2,D2):
+def lineIntersection(P1, D1, P2, D2):
     """Finds the intersection of 2 coplanar lines.
 
     The lines (P1,D1) and (P2,D2) are defined by a point and a direction
@@ -370,38 +370,38 @@ def lineIntersection(P1,D1,P2,D2):
     the intersection point X is then given by X = 0.5(P1+P2+sa*a+sb*b)
     where sa = det([c,b,d])/ld and sb = det([c,a,d])/ld
     """
-    P1 = asarray(P1).reshape((-1,3)).astype(float64)
-    D1 = asarray(D1).reshape((-1,3)).astype(float64)
-    P2 = asarray(P2).reshape((-1,3)).astype(float64)
-    D2 = asarray(D2).reshape((-1,3)).astype(float64)
+    P1 = asarray(P1).reshape((-1, 3)).astype(float64)
+    D1 = asarray(D1).reshape((-1, 3)).astype(float64)
+    P2 = asarray(P2).reshape((-1, 3)).astype(float64)
+    D2 = asarray(D2).reshape((-1, 3)).astype(float64)
     N = P1.shape[0]
     # a,b,c,d
-    la,a = vectorNormalize(D1)
-    lb,b = vectorNormalize(D2)
+    la, a = vectorNormalize(D1)
+    lb, b = vectorNormalize(D2)
     c = (P2-P1)
-    d = cross(a,b)
-    ld,d = vectorNormalize(d)
+    d = cross(a, b)
+    ld, d = vectorNormalize(d)
     # sa,sb
-    a = a.reshape((-1,1,3))
-    b = b.reshape((-1,1,3))
-    c = c.reshape((-1,1,3))
-    d = d.reshape((-1,1,3))
-    m1 = concatenate([c,b,d],axis=-2)
-    m2 = concatenate([c,a,d],axis=-2)
+    a = a.reshape((-1, 1, 3))
+    b = b.reshape((-1, 1, 3))
+    c = c.reshape((-1, 1, 3))
+    d = d.reshape((-1, 1, 3))
+    m1 = concatenate([c, b, d], axis=-2)
+    m2 = concatenate([c, a, d], axis=-2)
     # This may still be optimized
-    sa = zeros((N,1))
-    sb = zeros((N,1))
+    sa = zeros((N, 1))
+    sb = zeros((N, 1))
     for i in range(P1.shape[0]):
         sa[i] = linalg.det(m1[i]) / ld[i]
         sb[i] = linalg.det(m2[i]) / ld[i]
     # X
-    a = a.reshape((-1,3))
-    b = b.reshape((-1,3))
+    a = a.reshape((-1, 3))
+    b = b.reshape((-1, 3))
     X = 0.5 * ( P1 + sa*a + P2 + sb*b )
     return Coords(X)
 
 
-def displaceLines(A,N,C,d):
+def displaceLines(A, N, C, d):
     """Move all lines (A,N) over a distance a in the direction of point C.
 
     A,N are arrays with points and directions defining the lines.
@@ -411,11 +411,11 @@ def displaceLines(A,N,C,d):
     over a distance d in the direction of the point C.
     Returns a new set of lines (A,N).
     """
-    l,v = vectorNormalize(N)
+    l, v = vectorNormalize(N)
     w = C - A
-    vw = (v*w).sum(axis=-1).reshape((-1,1))
+    vw = (v*w).sum(axis=-1).reshape((-1, 1))
     Y = A + vw*v
-    l,v = vectorNormalize(C-Y)
+    l, v = vectorNormalize(C-Y)
     return A + d*v, N
 
 
@@ -437,12 +437,12 @@ def segmentOrientation(vertices,vertices2=None,point=None):
     Returns an array with +1/-1 for positive/negative oriented segments.
     """
     if vertices2 is None:
-        vertices2 = roll(vertices,-1,axis=0)
+        vertices2 = roll(vertices, -1, axis=0)
     if point is None:
         point = vertices.center()
 
-    w = cross(vertices,vertices2)
-    orient = sign(dotpr(point,w)).astype(Int)
+    w = cross(vertices, vertices2)
+    orient = sign(dotpr(point, w)).astype(Int)
     return orient
 
 
@@ -459,12 +459,12 @@ def rotationAngle(A,B,m=None,angle_spec=DEG):
     return value is a (n,) shaped array with rotation angles.
     Specify angle_spec=RAD to get the angles in radians.
     """
-    A = asarray(A).reshape(-1,3)
-    B = asarray(B).reshape(-1,3)
+    A = asarray(A).reshape(-1, 3)
+    B = asarray(B).reshape(-1, 3)
     if m is None:
         A = normalize(A)
         B = normalize(B)
-        n = cross(A,B) # vectors perpendicular to A and B
+        n = cross(A, B) # vectors perpendicular to A and B
         t = length(n) == 0.
         if t.any(): # some vectors A and B are parallel
             if A.shape[0] >=  B.shape[0]:
@@ -473,18 +473,18 @@ def rotationAngle(A,B,m=None,angle_spec=DEG):
                 temp = B[t]
             n[t] = anyPerpendicularVector(temp)
         n = normalize(n)
-        c = dotpr(A,B)
-        angle = arccosd(c.clip(min=-1.,max=1.),angle_spec)
-        return angle,n
+        c = dotpr(A, B)
+        angle = arccosd(c.clip(min=-1., max=1.), angle_spec)
+        return angle, n
     else:
-        m = asarray(m).reshape(-1,3)
+        m = asarray(m).reshape(-1, 3)
         # project vectors on plane
-        A = projectionVOP(A,m)
-        B = projectionVOP(B,m)
-        angle,n = rotationAngle(A,B,angle_spec=angle_spec)
+        A = projectionVOP(A, m)
+        B = projectionVOP(B, m)
+        angle, n = rotationAngle(A, B, angle_spec=angle_spec)
         # check sign of the angles
         m = normalize(m)
-        inv = isClose(dotpr(n,m),[-1.])
+        inv = isClose(dotpr(n, m), [-1.])
         angle[inv] *= -1.
         return angle
 
@@ -498,33 +498,33 @@ def anyPerpendicularVector(A):
     The returned vector is always a vector in the x,y plane. If the original
     is the z-axis, the result is the x-axis.
     """
-    A = asarray(A).reshape(-1,3)
-    x,y,z = hsplit(A,[1,2])
-    n = zeros(x.shape,dtype=Float)
-    i = ones(x.shape,dtype=Float)
+    A = asarray(A).reshape(-1, 3)
+    x, y, z = hsplit(A, [1, 2])
+    n = zeros(x.shape, dtype=Float)
+    i = ones(x.shape, dtype=Float)
     t = (x==0.)*(y==0.)
-    B = where(t,column_stack([i,n,n]),column_stack([-y,x,n]))
+    B = where(t, column_stack([i, n, n]), column_stack([-y, x, n]))
     # B = where(t,column_stack([-z,n,x]),column_stack([-y,x,n]))
     return B
 
 
-def perpendicularVector(A,B):
+def perpendicularVector(A, B):
     """Return vectors perpendicular on both A and B."""
-    return cross(A,B)
+    return cross(A, B)
 
 
-def projectionVOV(A,B):
+def projectionVOV(A, B):
     """Return the projection of vector of A on vector of B."""
-    L = projection(A,B)
+    L = projection(A, B)
     B = normalize(B)
     shape = list(L.shape)
     shape.append(1)
     return L.reshape(shape)*B
 
 
-def projectionVOP(A,n):
+def projectionVOP(A, n):
     """Return the projection of vector of A on plane of B."""
-    Aperp = projectionVOV(A,n)
+    Aperp = projectionVOV(A, n)
     return A-Aperp
 
 
@@ -538,7 +538,7 @@ def projectionVOP(A,n):
 #  VECTORS, AND u,v,w for (possibly) unnormalized
 #
 
-def pointsAtLines(q,m,t):
+def pointsAtLines(q, m, t):
     """Return the points of lines (q,m) at parameter values t.
 
     Parameters:
@@ -549,11 +549,11 @@ def pointsAtLines(q,m,t):
 
     Returns an array with the points at parameter values t.
     """
-    t = t[...,newaxis]
+    t = t[..., newaxis]
     return q+t*m
 
 
-def pointsAtSegments(S,t):
+def pointsAtSegments(S, t):
     """Return the points of line segments S at parameter values t.
 
     Parameters:
@@ -564,9 +564,9 @@ def pointsAtSegments(S,t):
 
     Returns an array with the points at parameter values t.
     """
-    q0 = S[...,0,:]
-    q1 = S[...,1,:]
-    return pointsAtLines(q0,q1-q0,t)
+    q0 = S[..., 0,:]
+    q1 = S[..., 1,:]
+    return pointsAtLines(q0, q1-q0, t)
 
 
 def intersectionTimesLWL(q1,m1,q2,m2,mode='all'):
@@ -591,21 +591,21 @@ def intersectionTimesLWL(q1,m1,q2,m2,mode='all'):
     ``q1+t1*m1`` and ``q2+t2*m2``.
     """
     if mode == 'all':
-        q1 = asarray(q1).reshape(-1,1,3)
-        m1 = asarray(m1).reshape(-1,1,3)
-        q2 = asarray(q2).reshape(1,-1,3)
-        m2 = asarray(m2).reshape(1,-1,3)
-    dot11 = dotpr(m1,m1)
-    dot22 = dotpr(m2,m2)
-    dot12 = dotpr(m1,m2)
+        q1 = asarray(q1).reshape(-1, 1, 3)
+        m1 = asarray(m1).reshape(-1, 1, 3)
+        q2 = asarray(q2).reshape(1, -1, 3)
+        m2 = asarray(m2).reshape(1, -1, 3)
+    dot11 = dotpr(m1, m1)
+    dot22 = dotpr(m2, m2)
+    dot12 = dotpr(m1, m2)
     denom = (dot12**2-dot11*dot22)
     q12 = q2-q1
-    dot11 = dot11[...,newaxis]
-    dot22 = dot22[...,newaxis]
-    dot12 = dot12[...,newaxis]
-    t1 = dotpr(q12,m2*dot12-m1*dot22) / denom
-    t2 = dotpr(q12,m2*dot11-m1*dot12) / denom
-    return t1,t2
+    dot11 = dot11[..., newaxis]
+    dot22 = dot22[..., newaxis]
+    dot12 = dot12[..., newaxis]
+    t1 = dotpr(q12, m2*dot12-m1*dot22) / denom
+    t2 = dotpr(q12, m2*dot11-m1*dot12) / denom
+    return t1, t2
 
 
 def intersectionPointsLWL(q1,m1,q2,m2,mode='all'):
@@ -617,11 +617,11 @@ def intersectionPointsLWL(q1,m1,q2,m2,mode='all'):
     shaped (`mode=all`) arrays of intersection points instead of the
     parameter values.
     """
-    t1,t2 = intersectionTimesLWL(q1,m1,q2,m2,mode)
+    t1, t2 = intersectionTimesLWL(q1, m1, q2, m2, mode)
     if mode == 'all':
-        q1 = q1[:,newaxis]
-        m1 = m1[:,newaxis]
-    return pointsAtLines(q1,m1,t1),pointsAtLines(q2,m2,t2)
+        q1 = q1[:, newaxis]
+        m1 = m1[:, newaxis]
+    return pointsAtLines(q1, m1, t1), pointsAtLines(q2, m2, t2)
 
 
 def intersectionTimesLWP(q,m,p,n,mode='all'):
@@ -645,9 +645,9 @@ def intersectionTimesLWP(q,m,p,n,mode='all'):
     parallel to the plane.
     """
     if mode == 'all':
-        res = (dotpr(p,n) - inner(q,n)) / inner(m,n)
+        res = (dotpr(p, n) - inner(q, n)) / inner(m, n)
     elif mode == 'pair':
-        res = dotpr(n, (p-q)) / dotpr(m,n)
+        res = dotpr(n, (p-q)) / dotpr(m, n)
     return res
 
 
@@ -658,11 +658,11 @@ def intersectionPointsLWP(q,m,p,n,mode='all'):
     (`mode=all`) array of intersection points instead of the
     parameter values.
     """
-    t = intersectionTimesLWP(q,m,p,n,mode)
+    t = intersectionTimesLWP(q, m, p, n, mode)
     if mode == 'all':
-        q = q[:,newaxis]
-        m = m[:,newaxis]
-    return pointsAtLines(q,m,t)
+        q = q[:, newaxis]
+        m = m[:, newaxis]
+    return pointsAtLines(q, m, t)
 
 
 def intersectionTimesSWP(S,p,n,mode='all'):
@@ -685,9 +685,9 @@ def intersectionTimesSWP(S,p,n,mode='all'):
     This function is comparable to intersectionTimesLWP, but ensures that
     parameter values 0<=t<=1 are points inside the line segments.
     """
-    q0 = S[...,0,:]
-    q1 = S[...,1,:]
-    return intersectionTimesLWP(q0,q1-q0,p,n,mode)
+    q0 = S[..., 0,:]
+    q1 = S[..., 1,:]
+    return intersectionTimesLWP(q0, q1-q0, p, n, mode)
 
 
 def intersectionSWP(S,p,n,mode='all',return_all=False,atol=0.):
@@ -721,11 +721,11 @@ def intersectionSWP(S,p,n,mode='all',return_all=False,atol=0.):
     - `wl`: (n,) line indices corresponding with the returned intersections.
     - `wp`: (n,) plane indices corresponding with the returned intersections
     """
-    S = asanyarray(S).reshape(-1,2,3)
-    p = asanyarray(p).reshape(-1,3)
-    n = asanyarray(n).reshape(-1,3)
+    S = asanyarray(S).reshape(-1, 2, 3)
+    p = asanyarray(p).reshape(-1, 3)
+    n = asanyarray(n).reshape(-1, 3)
     # Find intersection parameters
-    t = intersectionTimesSWP(S,p,n,mode)
+    t = intersectionTimesSWP(S, p, n, mode)
     #~ print("S.shape: %s; p.shape: %s; n.shape: %s; t.shape: %s" % (S.shape,p.shape,n.shape,t.shape))
 
     if not return_all:
@@ -733,17 +733,17 @@ def intersectionSWP(S,p,n,mode='all',return_all=False,atol=0.):
         ok = (t >= 0.0-atol) * (t <= 1.0+atol)
         t = t[ok]
         if mode == 'all':
-            wl,wt = where(ok)
+            wl, wt = where(ok)
         elif mode == 'pair':
             S = S[ok]
             wl = wt = where(ok)[0]
 
     if len(t) > 0:
         if mode == 'all':
-            S = S[:,newaxis]
-        x = pointsAtSegments(S,t)
+            S = S[:, newaxis]
+        x = pointsAtSegments(S, t)
         if x.ndim == 1:
-            x = x.reshape(1,3)
+            x = x.reshape(1, 3)
         if mode == 'all' and not return_all:
             x = x[ok]
     else:
@@ -751,9 +751,9 @@ def intersectionSWP(S,p,n,mode='all',return_all=False,atol=0.):
         x = Coords()
 
     if return_all:
-        return t,x
+        return t, x
     else:
-        return t,x,wl,wt
+        return t, x, wl, wt
 
 
 def intersectionPointsSWP(S,p,n,mode='all',return_all=False,atol=0.):
@@ -764,7 +764,7 @@ def intersectionPointsSWP(S,p,n,mode='all',return_all=False,atol=0.):
 
       intersectionSWP(S,p,n,mode,return_all)[1:]
     """
-    res = intersectionSWP(S,p,n,mode,return_all,atol)
+    res = intersectionSWP(S, p, n, mode, return_all, atol)
     if return_all:
         return res[1]
     else:
@@ -787,8 +787,8 @@ def intersectionTimesLWT(q,m,F,mode='all'):
     Returns a (nq,nF) shaped (`mode=all`) array of parameter values t,
       such that the intersection points are given q+tm.
     """
-    Fn = cross(F[...,1,:]-F[...,0,:],F[...,2,:]-F[...,1,:])
-    return intersectionTimesLWP(q,m,F[...,0,:],Fn,mode)
+    Fn = cross(F[..., 1,:]-F[..., 0,:], F[..., 2,:]-F[..., 1,:])
+    return intersectionTimesLWP(q, m, F[..., 0,:], Fn, mode)
 
 
 def intersectionPointsLWT(q,m,F,mode='all',return_all=False):
@@ -811,32 +811,32 @@ def intersectionPointsLWT(q,m,F,mode='all',return_all=False):
       intersection points, else, a tuple of intersection points with shape (n,3)
       and line and plane indices with shape (n), where n <= nq*nF.
     """
-    q = asanyarray(q).reshape(-1,3)
-    m = asanyarray(m).reshape(-1,3)
-    F = asanyarray(F).reshape(-1,3,3)
+    q = asanyarray(q).reshape(-1, 3)
+    m = asanyarray(m).reshape(-1, 3)
+    F = asanyarray(F).reshape(-1, 3, 3)
     if not return_all:
         # Find lines passing through the bounding spheres of the triangles
-        r,c,n = triangleBoundingCircle(F)
+        r, c, n = triangleBoundingCircle(F)
         if mode == 'all':
 ##            d = distancesPFL(c,q,m,mode).transpose() # this is much slower for large arrays
             mode = 'pair'
-            d = row_stack([ distancesPFL(c,q[i],m[i],mode) for i in range(q.shape[0]) ])
-            wl,wt = where(d<=r)
+            d = row_stack([ distancesPFL(c, q[i], m[i], mode) for i in range(q.shape[0]) ])
+            wl, wt = where(d<=r)
         elif mode == 'pair':
-            d = distancesPFL(c,q,m,mode)
+            d = distancesPFL(c, q, m, mode)
             wl = wt = where(d<=r)[0]
         if wl.size == 0:
-            return empty((0,3,),dtype=float),wl,wt
-        q,m,F = q[wl],m[wl],F[wt]
-    t = intersectionTimesLWT(q,m,F,mode)
+            return empty((0, 3,), dtype=float), wl, wt
+        q, m, F = q[wl], m[wl], F[wt]
+    t = intersectionTimesLWT(q, m, F, mode)
     if mode == 'all':
-        q = q[:,newaxis]
-        m = m[:,newaxis]
-    x = pointsAtLines(q,m,t)
+        q = q[:, newaxis]
+        m = m[:, newaxis]
+    x = pointsAtLines(q, m, t)
     if not return_all:
         # Find points inside the faces
-        ok = insideTriangle(F,x[newaxis]).reshape(-1)
-        return x[ok],wl[ok],wt[ok]
+        ok = insideTriangle(F, x[newaxis]).reshape(-1)
+        return x[ok], wl[ok], wt[ok]
     else:
         return x
 
@@ -857,8 +857,8 @@ def intersectionTimesSWT(S,F,mode='all'):
     such that the intersection points are given by
     `(1-t)*S[...,0,:] + t*S[...,1,:]`.
     """
-    Fn = cross(F[...,1,:]-F[...,0,:],F[...,2,:]-F[...,1,:])
-    return intersectionTimesSWP(S,F[...,0,:],Fn,mode)
+    Fn = cross(F[..., 1,:]-F[..., 0,:], F[..., 2,:]-F[..., 1,:])
+    return intersectionTimesSWP(S, F[..., 0,:], Fn, mode)
 
 
 def intersectionPointsSWT(S,F,mode='all',return_all=False):
@@ -883,30 +883,30 @@ def intersectionPointsSWT(S,F,mode='all',return_all=False):
       and line and plane indices with shape (n), where n <= nS*nF.
     """
 
-    S = asanyarray(S).reshape(-1,2,3)
-    F = asanyarray(F).reshape(-1,3,3)
+    S = asanyarray(S).reshape(-1, 2, 3)
+    F = asanyarray(F).reshape(-1, 3, 3)
     if not return_all:
         # Find lines passing through the bounding spheres of the triangles
-        r,c,n = triangleBoundingCircle(F)
+        r, c, n = triangleBoundingCircle(F)
         if mode == 'all':
 ##            d = distancesPFS(c,S,mode).transpose() # this is much slower for large arrays
             mode = 'pair'
-            d = row_stack([ distancesPFS(c,S[i],mode) for i in range(S.shape[0]) ])
-            wl,wt = where(d<=r)
+            d = row_stack([ distancesPFS(c, S[i], mode) for i in range(S.shape[0]) ])
+            wl, wt = where(d<=r)
         elif mode == 'pair':
-            d = distancesPFS(c,S,mode)
+            d = distancesPFS(c, S, mode)
             wl = wt = where(d<=r)[0]
         if wl.size == 0:
-            return empty((0,3,),dtype=float),wl,wt
-        S,F = S[wl],F[wt]
-    t = intersectionTimesSWT(S,F,mode)
+            return empty((0, 3,), dtype=float), wl, wt
+        S, F = S[wl], F[wt]
+    t = intersectionTimesSWT(S, F, mode)
     if mode == 'all':
-        S = S[:,newaxis]
-    x = pointsAtSegments(S,t)
+        S = S[:, newaxis]
+    x = pointsAtSegments(S, t)
     if not return_all:
         # Find points inside the segments and faces
-        ok = (t >= 0.0) * (t <= 1.0) * insideTriangle(F,x[newaxis]).reshape(-1)
-        return x[ok],wl[ok],wt[ok]
+        ok = (t >= 0.0) * (t <= 1.0) * insideTriangle(F, x[newaxis]).reshape(-1)
+        return x[ok], wl[ok], wt[ok]
     else:
         return x
 
@@ -926,19 +926,19 @@ def intersectionPointsPWP(p1,n1,p2,n2,p3,n3,mode='all'):
     Returns a (np1,np2,np3,3) shaped (`mode=all`) array of intersection points.
     """
     if mode == 'all':
-        p1 = asanyarray(p1).reshape(-1,1,1,3)
-        n1 = asanyarray(n1).reshape(-1,1,1,3)
-        p2 = asanyarray(p2).reshape(1,-1,1,3)
-        n2 = asanyarray(n2).reshape(1,-1,1,3)
-        p3 = asanyarray(p3).reshape(1,1,-1,3)
-        n3 = asanyarray(n3).reshape(1,1,-1,3)
-    dot1 = dotpr(p1,n1)[...,newaxis]
-    dot2 = dotpr(p2,n2)[...,newaxis]
-    dot3 = dotpr(p3,n3)[...,newaxis]
-    cross23 = cross(n2,n3)
-    cross31 = cross(n3,n1)
-    cross12 = cross(n1,n2)
-    denom = dotpr(n1,cross23)[...,newaxis]
+        p1 = asanyarray(p1).reshape(-1, 1, 1, 3)
+        n1 = asanyarray(n1).reshape(-1, 1, 1, 3)
+        p2 = asanyarray(p2).reshape(1, -1, 1, 3)
+        n2 = asanyarray(n2).reshape(1, -1, 1, 3)
+        p3 = asanyarray(p3).reshape(1, 1, -1, 3)
+        n3 = asanyarray(n3).reshape(1, 1, -1, 3)
+    dot1 = dotpr(p1, n1)[..., newaxis]
+    dot2 = dotpr(p2, n2)[..., newaxis]
+    dot3 = dotpr(p3, n3)[..., newaxis]
+    cross23 = cross(n2, n3)
+    cross31 = cross(n3, n1)
+    cross12 = cross(n1, n2)
+    denom = dotpr(n1, cross23)[..., newaxis]
     return (dot1*cross23+dot2*cross31+dot3*cross12)/denom
 
 
@@ -958,13 +958,13 @@ def intersectionLinesPWP(p1,n1,p2,n2,mode='all'):
     ``q+t*m``.
     """
     if mode == 'all':
-        p1 = asanyarray(p1).reshape(-1,1,3)
-        n1 = asanyarray(n1).reshape(-1,1,3)
-        p2 = asanyarray(p2).reshape(1,-1,3)
-        n2 = asanyarray(n2).reshape(1,-1,3)
-    m =  cross(n1,n2)
-    q = intersectionPointsPWP(p1,n1,p2,n2,p1,m,mode='pair')
-    return q,m
+        p1 = asanyarray(p1).reshape(-1, 1, 3)
+        n1 = asanyarray(n1).reshape(-1, 1, 3)
+        p2 = asanyarray(p2).reshape(1, -1, 3)
+        n2 = asanyarray(n2).reshape(1, -1, 3)
+    m =  cross(n1, n2)
+    q = intersectionPointsPWP(p1, n1, p2, n2, p1, m, mode='pair')
+    return q, m
 
 
 def intersectionTimesPOP(X,p,n,mode='all'):
@@ -984,9 +984,9 @@ def intersectionTimesPOP(X,p,n,mode='all'):
     such that the intersection points are given by X+t*n.
     """
     if mode == 'all':
-        return (dotpr(p,n) - inner(X,n)) / dotpr(n,n)
+        return (dotpr(p, n) - inner(X, n)) / dotpr(n, n)
     elif mode == 'pair':
-        return (dotpr(p,n) - dotpr(X,n)) / dotpr(n,n)
+        return (dotpr(p, n) - dotpr(X, n)) / dotpr(n, n)
 
 
 def intersectionPointsPOP(X,p,n,mode='all'):
@@ -995,10 +995,10 @@ def intersectionPointsPOP(X,p,n,mode='all'):
     This is like intersectionTimesPOP but returns a (nX,np,3) shaped (`mode=all`)
     array of intersection points instead of the parameter values.
     """
-    t = intersectionTimesPOP(X,p,n,mode)
+    t = intersectionTimesPOP(X, p, n, mode)
     if mode == 'all':
-        X = X[:,newaxis]
-    return pointsAtLines(X,n,t)
+        X = X[:, newaxis]
+    return pointsAtLines(X, n, t)
 
 
 def intersectionTimesPOL(X,q,m,mode='all'):
@@ -1018,9 +1018,9 @@ def intersectionTimesPOL(X,q,m,mode='all'):
       such that the intersection points are given by q+t*m.
     """
     if mode == 'all':
-        return (inner(X,m) - dotpr(q,m)) / dotpr(m,m)
+        return (inner(X, m) - dotpr(q, m)) / dotpr(m, m)
     elif mode == 'pair':
-        return (dotpr(X,m) - dotpr(q,m)) / dotpr(m,m)
+        return (dotpr(X, m) - dotpr(q, m)) / dotpr(m, m)
 
 
 def intersectionPointsPOL(X,q,m,mode='all'):
@@ -1029,11 +1029,11 @@ def intersectionPointsPOL(X,q,m,mode='all'):
     This is like intersectionTimesPOL but returns a (nX,nq,3) shaped (`mode=all`)
     array of intersection points instead of the parameter values.
     """
-    t = intersectionTimesPOL(X,q,m,mode)
-    return pointsAtLines(q,m,t)
+    t = intersectionTimesPOL(X, q, m, mode)
+    return pointsAtLines(q, m, t)
 
 
-def intersectionSphereSphere(R,r,d):
+def intersectionSphereSphere(R, r, d):
     """Intersection of two spheres (or two circles in the x,y plane).
 
     Computes the intersection of two spheres with radii R, resp. r, having
@@ -1043,12 +1043,12 @@ def intersectionSphereSphere(R,r,d):
     tuple x,y.
     """
     if d > R+r:
-        raise ValueError("d (%s) should not be larger than R+r (%s)" % (d,R+r))
+        raise ValueError("d (%s) should not be larger than R+r (%s)" % (d, R+r))
     dd = R**2-r**2+d**2
     d2 = 2*d
     x = dd/d2
     y = sqrt(d2**2*R**2 - dd**2) / d2
-    return x,y
+    return x, y
 
 
 #################### distance tools ###############
@@ -1068,9 +1068,9 @@ def distancesPFL(X,q,m,mode='all'):
 
     Returns a (nX,nq) shaped (`mode=all`) array of distances.
     """
-    Y = intersectionPointsPOL(X,q,m,mode)
+    Y = intersectionPointsPOL(X, q, m, mode)
     if mode == 'all':
-        X = asarray(X).reshape(-1,1,3)
+        X = asarray(X).reshape(-1, 1, 3)
     return length(Y-X)
 
 
@@ -1089,9 +1089,9 @@ def distancesPFS(X,S,mode='all'):
 
     Returns a (nX,nS) shaped (`mode=all`) array of distances.
     """
-    q0 = S[...,0,:]
-    q1 = S[...,1,:]
-    return distancesPFL(X,q0,q1-q0,mode)
+    q0 = S[..., 0,:]
+    q1 = S[..., 1,:]
+    return distancesPFL(X, q0, q1-q0, mode)
 
 
 def insideTriangle(x,P,method='bary'):
@@ -1106,14 +1106,14 @@ def insideTriangle(x,P,method='bary'):
     Returns an array with (npts,ntri) bool values.
     """
     if method == 'bary':
-        return insideSimplex(baryCoords(x,P))
+        return insideSimplex(baryCoords(x, P))
     else:
         # Older, slower algorithm
-        xP = x[newaxis,...] - P[:,:,newaxis,:]
-        xx = [ cross(xP[:,:,i],xP[:,:,j]) for (i,j) in ((0,1),(1,2),(2,0)) ]
+        xP = x[newaxis, ...] - P[:,:, newaxis,:]
+        xx = [ cross(xP[:,:, i], xP[:,:, j]) for (i, j) in ((0, 1), (1, 2), (2, 0)) ]
         xy = (xx[0]*xx[1]).sum(axis=-1)
         yz = (xx[1]*xx[2]).sum(axis=-1)
-        d = dstack([xy,yz])
+        d = dstack([xy, yz])
         return (d > 0).all(axis=-1)
 
 
@@ -1136,30 +1136,30 @@ def faceDistance(X,Fp,return_points=False):
     if not Fp.shape[1] == 3:
         raise ValueError("Currently this function only works for triangular faces.")
     # Compute normals on the faces
-    Fn = cross(Fp[:,1]-Fp[:,0],Fp[:,2]-Fp[:,1])
+    Fn = cross(Fp[:, 1]-Fp[:, 0], Fp[:, 2]-Fp[:, 1])
     # Compute intersection points of perpendiculars from X on facets F
-    Y = intersectionPointsPOP(X,Fp[:,0,:],Fn)
+    Y = intersectionPointsPOP(X, Fp[:, 0,:], Fn)
     # Find intersection points Y inside the facets
-    inside = insideTriangle(Fp,Y)
+    inside = insideTriangle(Fp, Y)
     pid = where(inside)[0]
     if pid.size == 0:
         if return_points:
-            return [],[],[]
+            return [], [], []
         else:
-            return [],[]
+            return [], []
 
     # Compute the distances
     X = X[pid]
     Y = Y[inside]
     dist = length(X-Y)
     # Get the shortest distances
-    OKpid,OKpos = groupArgmin(dist,pid)
+    OKpid, OKpos = groupArgmin(dist, pid)
     OKdist = dist[OKpos]
     if return_points:
         # Get the closest footpoints matching OKpid
         OKpoints = Y[OKpos]
-        return OKpid,OKdist,OKpoints
-    return OKpid,OKdist
+        return OKpid, OKdist, OKpoints
+    return OKpid, OKdist
 
 
 def edgeDistance(X,Ep,return_points=False):
@@ -1179,31 +1179,31 @@ def edgeDistance(X,Ep,return_points=False):
       and is only returned if return_points = True.
     """
     # Compute vectors along the edges
-    En = Ep[:,1] - Ep[:,0]
+    En = Ep[:, 1] - Ep[:, 0]
     # Compute intersection points of perpendiculars from X on edges E
-    t = intersectionTimesPOL(X,Ep[:,0],En)
-    Y = Ep[:,0] + t[:,:,newaxis] * En
+    t = intersectionTimesPOL(X, Ep[:, 0], En)
+    Y = Ep[:, 0] + t[:,:, newaxis] * En
     # Find intersection points Y inside the edges
     inside = (t >= 0.) * (t <= 1.)
     pid = where(inside)[0]
     if pid.size == 0:
         if return_points:
-            return [],[],[]
+            return [], [], []
         else:
-            return [],[]
+            return [], []
 
     # Compute the distances
     X = X[pid]
     Y = Y[inside]
     dist = length(X-Y)
     # Get the shortest distances
-    OKpid,OKpos = groupArgmin(dist,pid)
+    OKpid, OKpos = groupArgmin(dist, pid)
     OKdist = dist[OKpos]
     if return_points:
         # Get the closest footpoints matching OKpid
         OKpoints = Y[OKpos]
-        return OKpid,OKdist,OKpoints
-    return OKpid,OKdist
+        return OKpid, OKdist, OKpoints
+    return OKpid, OKdist
 
 
 def vertexDistance(X,Vp,return_points=False):
@@ -1219,20 +1219,20 @@ def vertexDistance(X,Vp,return_points=False):
       and is only returned if return_points = True.
     """
     # Compute the distances
-    dist = length(X[:,newaxis]-Vp)
+    dist = length(X[:, newaxis]-Vp)
     # Get the shortest distances
     OKdist = dist.min(-1)
     if return_points:
         # Get the closest points matching X
         minid = dist.argmin(-1)
         OKpoints = Vp[minid]
-        return OKdist,OKpoints
+        return OKdist, OKpoints
     return OKdist,
 
 
 #################### barycentric coordinates ###############
 
-def baryCoords(S,P):
+def baryCoords(S, P):
     """Compute the barycentric coordinates of points  P wrt. simplexes S.
 
     S is a (nel,nplex,3) shaped array of n-simplexes (n=nplex-1):
@@ -1246,17 +1246,17 @@ def baryCoords(S,P):
     if S.ndim != 3:
         raise ValueError("S should be a 3-dim array, got shape %s" % str(S.shape))
     if P.ndim == 2:
-        P = P.reshape(-1,1,3)
+        P = P.reshape(-1, 1, 3)
     elif P.shape[1] != S.shape[0] and P.shape[1] != 1:
         raise ValueError("Second dimension of P should be first dimension of S or 1.")
-    S = S.transpose(1,0,2) # (nplex,nel,3)
+    S = S.transpose(1, 0, 2) # (nplex,nel,3)
     vp = P - S[0]
     vs = S[1:] - S[:1]
-    A = dotpr(vs[:,newaxis],vs[newaxis]) # (nplex-1,nplex-1,nel)
-    b = dotpr(vp[newaxis],vs[:,newaxis]) # (nplex-1,npts,nel)
+    A = dotpr(vs[:, newaxis], vs[newaxis]) # (nplex-1,nplex-1,nel)
+    b = dotpr(vp[newaxis], vs[:, newaxis]) # (nplex-1,npts,nel)
     #import timer
     #T = timer.Timer()
-    t = solveMany(A,b)
+    t = solveMany(A, b)
     #print "DIRECT SOLVER: %s" % T.seconds()
     #T.reset()
     #tt = solveMany(A,b,False)
@@ -1264,8 +1264,8 @@ def baryCoords(S,P):
     #print "RESULTS MATCH: %s" % (tt-t).sum()
 
     t0 = (1.-t.sum(0))
-    t0 = addAxis(t0,0)
-    t = row_stack([t0,t])
+    t0 = addAxis(t0, 0)
+    t = row_stack([t0, t])
     return t
 
 
@@ -1286,10 +1286,10 @@ def insideSimplex(BC,bound=True):
 
 if __name__ == "__main__":
 
-    X = random.rand(6,3)
-    Y = random.rand(4,3)
-    print("DISTANCE",distance(X,Y))
-    print("SMALLEST DISTANCE",closest(X,Y))
-    print("CLOSEST PAIR",closestPair(X,Y))
+    X = random.rand(6, 3)
+    Y = random.rand(4, 3)
+    print("DISTANCE", distance(X, Y))
+    print("SMALLEST DISTANCE", closest(X, Y))
+    print("CLOSEST PAIR", closestPair(X, Y))
 
 # End

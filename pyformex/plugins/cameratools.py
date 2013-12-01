@@ -30,13 +30,13 @@ Some extra tools to handle the camera.
 from __future__ import print_function
 
 import pyformex as pf
-from gui.widgets import simpleInputItem as _I,InputDialog as Dialog
+from gui.widgets import simpleInputItem as _I, InputDialog as Dialog
 from utils import stuur
 
 dialog = None
 
 def getCameraSettings(cam):
-    return dict([ (k,getattr(cam,k)) for k in ['focus','dist','rot','fovy','aspect','area','near','far']])
+    return dict([ (k, getattr(cam, k)) for k in ['focus', 'dist', 'rot', 'fovy', 'aspect', 'area', 'near', 'far']])
 
 
 def apply():
@@ -45,7 +45,7 @@ def apply():
     settings = dialog.results
     #print settings
     cam = pf.canvas.camera
-    cam.setClip(settings['near'],settings['far'])
+    cam.setClip(settings['near'], settings['far'])
     pf.canvas.update()
 
 
@@ -64,16 +64,16 @@ def updateSettings(cam):
 def setNear(fld):
     val = fld.value()/100.
     cam = pf.canvas.camera
-    res = stuur(val,[0.,0.5,1.0],[0.01*cam.dist,cam.dist,100.*cam.dist])
+    res = stuur(val, [0., 0.5, 1.0], [0.01*cam.dist, cam.dist, 100.*cam.dist])
     #print "%s = %s" % (val,res)
-    cam.setClip(res,cam.far)
+    cam.setClip(res, cam.far)
     pf.canvas.update()
 def setFar(fld):
     val = fld.value()/100.
     cam = pf.canvas.camera
-    res = stuur(val,[0.,0.5,1.0],[0.01*cam.dist,cam.dist,100.*cam.dist])
+    res = stuur(val, [0., 0.5, 1.0], [0.01*cam.dist, cam.dist, 100.*cam.dist])
     #print "%s = %s" % (val,res)
-    cam.setClip(cam.near,res)
+    cam.setClip(cam.near, res)
     pf.canvas.update()
 
 
@@ -92,14 +92,14 @@ def showCameraTool():
     settings['far'] = cam.far/cam.dist
 
     dialog = Dialog(store=settings, items=[
-        _I('focus',text='Focus',itemtype='point',tooltip='The point where the camera is looking at.'),
-        _I('dist',text='Distance',tooltip='The distance of the camera to the focus point.'),
-        _I('fovy',text='Field of View',tooltip='The vertical opening angle of the camera lens.'),
-        _I('aspect',text='Aspect ratio',tooltip='The ratio of the vertical over the horizontal lens opening angles.'),
+        _I('focus', text='Focus', itemtype='point', tooltip='The point where the camera is looking at.'),
+        _I('dist', text='Distance', tooltip='The distance of the camera to the focus point.'),
+        _I('fovy', text='Field of View', tooltip='The vertical opening angle of the camera lens.'),
+        _I('aspect', text='Aspect ratio', tooltip='The ratio of the vertical over the horizontal lens opening angles.'),
 #        _I('area',text='Visible area',tooltip='Relative part of the camera area that is visible in the viewport.'),
-        _I('near',text='Near clipping plane',itemtype='fslider',func=setNear,tooltip='Distance of the near clipping plane to the camera.'),
-        _I('far',100,text='Far clipping plane',itemtype='fslider',func=setFar,tooltip='Distance of the far clipping plane to the camera.'),
-        ],actions = [('Close',close),
+        _I('near', text='Near clipping plane', itemtype='fslider', func=setNear, tooltip='Distance of the near clipping plane to the camera.'),
+        _I('far', 100, text='Far clipping plane', itemtype='fslider', func=setFar, tooltip='Distance of the far clipping plane to the camera.'),
+        ], actions = [('Close', close),
 #                     ('Apply',apply),
                      ],
                     default='Close',

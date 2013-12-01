@@ -33,7 +33,7 @@ from coords import *
 from connectivity import *
 from geometry import Geometry
 #from numpy import *
-from mesh import Mesh,mergeMeshes
+from mesh import Mesh, mergeMeshes
 from utils import deprecation
 import warnings
 
@@ -67,7 +67,7 @@ class Model(Geometry):
             for M in meshes:
                 if M.prop is None:
                     M.setProp(0)
-            self.coords,self.elems = mergeMeshes(meshes,fuse=fuse)
+            self.coords, self.elems = mergeMeshes(meshes, fuse=fuse)
             self.prop = concatenate([M.prop for M in meshes])
         else:
             if not isinstance(elems, list):
@@ -92,7 +92,7 @@ class Model(Geometry):
 
     def meshes(self):
         """Return the parts as a list of meshes"""
-        return [ Mesh(self.coords,e) for e in self.elems ]
+        return [ Mesh(self.coords, e) for e in self.elems ]
 
     def nnodes(self):
         """Return the number of nodes in the model."""
@@ -111,7 +111,7 @@ class Model(Geometry):
         return max([e.nplex() for e in self.elems])
 
 
-    def splitElems(self,elems):
+    def splitElems(self, elems):
         """Splits a set of element numbers over the element groups.
 
         Returns two lists of element sets, the first in global numbering,
@@ -127,7 +127,7 @@ class Model(Geometry):
             split.append(elems[n:i])
             n = i
 
-        return split,[ asarray(s) - ofs for s,ofs in zip(split,self.celems) ]
+        return split, [ asarray(s) - ofs for s, ofs in zip(split, self.celems) ]
 
 
     def elemNrs(self,group,elems=None):
@@ -137,7 +137,7 @@ class Model(Geometry):
         return self.celems[group] + elems
 
  
-    def getElems(self,sets):
+    def getElems(self, sets):
         """Return the definitions of the elements in sets.
 
         sets should be a list of element sets with length equal to the
@@ -152,7 +152,7 @@ class Model(Geometry):
         It also provide the global and group element numbers, since they
         had to be calculated anyway.
         """
-        return [ e[s] for e,s in zip(self.elems,sets) ]
+        return [ e[s] for e, s in zip(self.elems, sets) ]
         
  
     def renumber(self,old=None,new=None):
@@ -174,28 +174,28 @@ class Model(Geometry):
         """
         nnodes = self.nnodes()
         if old is None and new is None:
-            old = unique(random.randint(0,nnodes-1,nnodes))
-            new = unique(random.randint(0,nnodes-1,nnodes))
-            nn = max(old.size,new.size)
+            old = unique(random.randint(0, nnodes-1, nnodes))
+            new = unique(random.randint(0, nnodes-1, nnodes))
+            nn = max(old.size, new.size)
             old = old[:nn]
             new = new[:nn]
         elif old is None:
             new = asarray(new).reshape(-1)
-            checkUniqueNumbers(new,0,nnodes)
+            checkUniqueNumbers(new, 0, nnodes)
             old = arange(new.size)
         elif new is None:
             old = asarray(old).reshape(-1)
-            checkUniqueNumbers(old,0,nnodes)
+            checkUniqueNumbers(old, 0, nnodes)
             new = arange(old.size)
 
         all = arange(nnodes)
-        old = concatenate([old,setdiff1d(all,old)])
-        new = concatenate([new,setdiff1d(all,new)])
+        old = concatenate([old, setdiff1d(all, old)])
+        new = concatenate([new, setdiff1d(all, new)])
         oldnew = old[new]
         newold = argsort(oldnew)
         self.coords = self.coords[oldnew]
-        self.elems = [ Connectivity(newold[e],eltype=e.eltype) for e in self.elems ]
-        return oldnew,newold
+        self.elems = [ Connectivity(newold[e], eltype=e.eltype) for e in self.elems ]
+        return oldnew, newold
 
 
 class FEModel(Geometry):
@@ -219,14 +219,14 @@ class FEModel(Geometry):
     
     _set_coords = Geometry._set_coords_inplace
     
-    def __init__(self,meshes):
+    def __init__(self, meshes):
         """Create a new FEModel."""
         
         if not isinstance(meshes, list):
             meshes = [ meshes ]
 
         for m in meshes:
-            if not isinstance(m,Mesh):
+            if not isinstance(m, Mesh):
                 raise ValueError("Expected a Mesh or a list thereof.")
 
         nnodes = [ m.nnodes() for m in meshes ]
@@ -264,10 +264,10 @@ def sortElemsByLoadedFace(ind):
 
     For a typical use case, see the FePlast example.
     """
-    edgset = unique(ind[:,1])
+    edgset = unique(ind[:, 1])
     d = {}
     for e in edgset:
-        d[e] = ind[where(ind[:,1]==e)[0],0]
+        d[e] = ind[where(ind[:, 1]==e)[0], 0]
     return d
 
 

@@ -30,10 +30,10 @@ from __future__ import print_function
 from plugins.fe_abq import fmtData
 from plugins.properties import *
 from plugins.fe import *
-from mydict import Dict,CDict
+from mydict import Dict, CDict
 import pyformex as pf
 from datetime import datetime
-import os,sys
+import os, sys
 
 
 
@@ -49,11 +49,11 @@ def astInputNames(job,extension='mail'):
     """
     jobname = os.path.basename(job)
     filename = os.path.abspath(job)
-    if extension in ['mail','comm']:
+    if extension in ['mail', 'comm']:
         filename += '.%s' % extension
     else:
         raise ValueError("Extension should be mail or comm")
-    return jobname,filename
+    return jobname, filename
 
 
 def nsetName(p):
@@ -77,17 +77,17 @@ def writeNodes(fil,nodes,type,name=None):
     
     Type can be 2D or 3D.
     """
-    if not type in ['2D','3D']:
+    if not type in ['2D', '3D']:
         raise ValueError("Type should be 2D or 3D")
     out = 'COOR_%s' % type
     if name is not None:
         out += ' nom = %s' % name
     fil.write('%s\n'% out)
     if type == '2D':
-        nodes = nodes[:,:2]        
+        nodes = nodes[:, :2]        
     nn = nodes.shape[1]
     fmt = 'N%d' + nn*' %14.6e' + '\n'
-    for i,n in enumerate(nodes):
+    for i, n in enumerate(nodes):
         fil.write(fmt % ((i,)+tuple(n)))
     fil.write('FINSF\n')
     fil.write('%\n')
@@ -118,14 +118,14 @@ def writeElems(fil,elems,type,name=None,eid=None,eofs=0,nofs=0):
         eid = arange(elems.shape[0])
     else:
         eid = asarray(eid)
-    for i,e in zip(eid+eofs,elems+nofs):
+    for i, e in zip(eid+eofs, elems+nofs):
         fil.write(fmt % ((i,)+tuple(e)))
 
     fil.write('FINSF\n')
     fil.write('%\n')
 
 
-def writeSet(fil,type,name,set):
+def writeSet(fil, type, name, set):
     """Write a named set of nodes or elements (type=NSET|ELSET)
 
     `set` is a list of node/element numbers,
@@ -141,7 +141,7 @@ def writeSet(fil,type,name,set):
         raise ValueError("Type should be NSET or ELSET")
             
     for i in set:
-        fil.write('%s%d\n' % (cap,i))
+        fil.write('%s%d\n' % (cap, i))
     fil.write('FINSF\n')
     fil.write('%\n')
 
@@ -152,7 +152,7 @@ def fmtHeadingMesh(text=''):
 Code Aster mail file created by %s (%s)
 %s
 FINSF
-""" % (pf.Version(),pf.Url,text)
+""" % (pf.Version(), pf.Url, text)
     return out
 
 
@@ -161,7 +161,7 @@ def fmtHeadingComm(text=''):
     out = """#
 # Code Aster command file created by %s (%s)
 # %s
-""" % (pf.Version(),pf.Url,text)
+""" % (pf.Version(), pf.Url, text)
     return out
 
 
@@ -189,11 +189,11 @@ def fmtEquation(prop):
     In this case, the displacement in Y-direction of node 209 and 32 should be equal.
     """
     
-    dof = ['DX','DY','DZ']
+    dof = ['DX', 'DY', 'DZ']
     out = 'link = AFFE_CHAR_MECA(\n'
     out += '    MODELE=Model,\n'
     out += '    LIAISON_DDL=(\n'
-    for i,p in enumerate(prop):
+    for i, p in enumerate(prop):
         l1 = '        _F(NOEUD=('
         l2 = '           DDL=('
         l3 = '           COEF_MULT=('
@@ -230,15 +230,15 @@ def fmtDisplacements(prop):
     In the second example, a rotation is imposed around the X-axis on node number 2.
     """
     
-    dof = ['DX','DY','DZ','DRX','DRY','DRZ']
+    dof = ['DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ']
     out = ''
-    for i,p in enumerate(prop):
+    for i, p in enumerate(prop):
         out += 'displ%s = AFFE_CHAR_MECA(\n' % i
         out += '    MODELE=Model,\n'
         out += '    DDL_IMPO=\n'
         out += '        _F(GROUP_NO=(\'%s\'),\n' % p.name.upper()
         for j in p.displ:
-            out += '           %s=%s,\n' % (dof[j[0]],j[1])
+            out += '           %s=%s,\n' % (dof[j[0]], j[1])
         out += '          ),\n'
         out += '    );\n\n'
     return out
@@ -262,15 +262,15 @@ def fmtLocalDisplacements(prop):
     
     """
     
-    dof = ['DX','DY','DZ','DRX','DRY','DRZ']
+    dof = ['DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ']
     out = 'locDispl = AFFE_CHAR_MECA(\n'
     out += '    MODELE=Model,\n'
     out += '    LIAISON_OBLIQUE=(\n'
-    for i,p in enumerate(prop):
+    for i, p in enumerate(prop):
         for j in p.displ:
             out += '        _F(GROUP_NO=(\'%s\'),\n' % p.name.upper()
             out += '           ANGL_NAUT=%s,\n' % p.local
-            out += '           %s=%s),\n' % (dof[j[0]],j[1])
+            out += '           %s=%s),\n' % (dof[j[0]], j[1])
     out += '          ),\n'
     out += '    );\n\n'
     return out
@@ -294,7 +294,7 @@ def fmtMaterial(mat):
         if mat.poisson_ratio is None and mat.shear_modulus is not None:
             mat.poisson_ratio = 0.5 * mat.young_modulus / mat.shear_modulus - 1.0
 
-        out += '    ELAS=_F(E=%s,NU=%s),\n' % (float(mat.young_modulus),float(mat.poisson_ratio))
+        out += '    ELAS=_F(E=%s,NU=%s),\n' % (float(mat.young_modulus), float(mat.poisson_ratio))
 
     if mat.plastic is not None:
         mat.plastic = asarray(mat.plastic)
@@ -304,7 +304,7 @@ def fmtMaterial(mat):
         out1 += '    NOM_PARA=\'EPSI\',\n'
         out1 += '    VALE=(\n'
         for i in mat.plastic:
-            out1 += '        %s,%s,\n' % (i[0],i[1])
+            out1 += '        %s,%s,\n' % (i[0], i[1])
         out1 += '        ),\n'
         out1 += '    );\n\n'
         
@@ -382,8 +382,8 @@ class AstData(object):
     
     def __init__(self,model,prop,nprop=None,eprop=None,steps=[],res=[],out=[],bound=None,type='3D'):
         """Create new AstData."""
-        if not isinstance(model,Model) or not isinstance(prop,PropertyDB):
-            raise ValueError("Invalid arguments: expected Model and PropertyDB, got %s and %s" % (type(model),type(prop)))
+        if not isinstance(model, Model) or not isinstance(prop, PropertyDB):
+            raise ValueError("Invalid arguments: expected Model and PropertyDB, got %s and %s" % (type(model), type(prop)))
         
         self.model = model
         self.prop = prop
@@ -402,11 +402,11 @@ class AstData(object):
         
         # Create the Code Aster mesh file
         if jobname is None:
-            jobname,filename = 'Test',None
+            jobname, filename = 'Test', None
             fil = sys.stdout
         else:
-            jobname,filename = astInputNames(jobname,extension='mail')
-            fil = open(filename,'w')
+            jobname, filename = astInputNames(jobname, extension='mail')
+            fil = open(filename, 'w')
             pf.message("Writing mesh to file %s" % (filename))
         
         fil.write(fmtHeadingMesh("""Model: %s     Date: %s      Created by pyFormex
@@ -417,7 +417,7 @@ Script: %s
         # write coords
         nnod = self.model.nnodes()
         pf.message("Writing %s nodes" % nnod)
-        writeNodes(fil,self.model.coords,self.type)
+        writeNodes(fil, self.model.coords, self.type)
 
 
         # write elements
@@ -440,8 +440,8 @@ Script: %s
             setname = esetName(p)
             
             if 'eltype' in p:
-                print('Writing elements of type %s: %s' % (p.eltype,set))
-                gl,gr = self.model.splitElems(set)
+                print('Writing elements of type %s: %s' % (p.eltype, set))
+                gl, gr = self.model.splitElems(set)
                 elems = self.model.getElems(gr)
     
                 elnrs = array([]).astype(int)
@@ -449,12 +449,12 @@ Script: %s
                 for i in elems:
                     nels = len(i)
                     if nels > 0:
-                        els = append(els,i).reshape(-1,i.shape[1])
+                        els = append(els, i).reshape(-1, i.shape[1])
                         nelems += nels
-                writeElems(fil,els,p.eltype,name=setname,eid=set)
+                writeElems(fil, els, p.eltype, name=setname, eid=set)
                 
             pf.message("Writing element sets")
-            writeSet(fil,'ELSET',setname,set)
+            writeSet(fil, 'ELSET', setname, set)
 
         pf.message("Total number of elements: %s" % telems)
         if nelems != telems:
@@ -463,7 +463,7 @@ Script: %s
 
         # write node sets
         pf.message("Writing node sets")
-        for p in self.prop.getProp('n',attr=['set']):
+        for p in self.prop.getProp('n', attr=['set']):
             if p.set is not None:
                 # set is directly specified
                 set = p.set
@@ -477,7 +477,7 @@ Script: %s
                 set = range(self.model.nnodes())
                 
             setname = nsetName(p)
-            writeSet(fil,'NSET',setname,set)
+            writeSet(fil, 'NSET', setname, set)
 
 
         ## # write element sets
@@ -514,11 +514,11 @@ Script: %s
         
         # Create the Code Aster command file
         if jobname is None:
-            jobname,filename = 'Test',None
+            jobname, filename = 'Test', None
             fil = sys.stdout
         else:
-            jobname,filename = astInputNames(jobname,extension='comm')
-            fil = open(filename,'w')
+            jobname, filename = astInputNames(jobname, extension='comm')
+            fil = open(filename, 'w')
             pf.message("Writing command to file %s" % (filename))
         
         fil.write(fmtHeadingComm("""Model: %s     Date: %s      Created by pyFormex
@@ -530,22 +530,22 @@ Script: %s
         fil.write('DEBUT();\n\n')
         fil.write('Mesh=LIRE_MAILLAGE(INFO=2,);\n\n')
         
-        prop = self.prop.getProp('e',attr=['section','eltype'])
+        prop = self.prop.getProp('e', attr=['section', 'eltype'])
         if prop:
             pf.message("Writing element sections")
             fil.write(fmtSections(prop))
         
-        prop = self.prop.getProp('n',attr=['displ'],noattr=['local'])
+        prop = self.prop.getProp('n', attr=['displ'], noattr=['local'])
         if prop:
             pf.message("Writing displacement boundary conditions")
             fil.write(fmtDisplacements(prop))
 
-        prop = self.prop.getProp('n',attr=['local'])
+        prop = self.prop.getProp('n', attr=['local'])
         if prop:
             pf.message("Writing local displacement boundary conditions")
             fil.write(fmtLocalDisplacements(prop))
 
-        prop = self.prop.getProp('n',attr=['equation'])
+        prop = self.prop.getProp('n', attr=['equation'])
         if prop:
             pf.message("Writing constraint equations")
             fil.write(fmtEquation(prop))

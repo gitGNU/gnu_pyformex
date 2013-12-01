@@ -52,21 +52,21 @@ def resizeImage(image,w=0,h=0):
 
     Returns a QImage with the requested size.
     """
-    if not isinstance(image,QImage):
+    if not isinstance(image, QImage):
         image = QImage(image)
 
-    W,H = image.width(),image.height()
+    W, H = image.width(), image.height()
     if w <= 0:
         w = W
     if h <= 0:
         h = H
     if w != W or h != H:
-        image = image.scaled(w,h)
+        image = image.scaled(w, h)
 
     return image
 
 
-def image2numpy(image,resize=(0,0),order='RGBA',flip=True,indexed=None,expand=None):
+def image2numpy(image,resize=(0, 0),order='RGBA',flip=True,indexed=None,expand=None):
     """Transform an image to a Numpy array.
 
     Parameters:
@@ -133,7 +133,7 @@ def image2numpy(image,resize=(0,0),order='RGBA',flip=True,indexed=None,expand=No
     if indexed:
         image = image.convertToFormat(QImage.Format_Indexed8)
 
-    h,w = image.height(),image.width()
+    h, w = image.height(), image.width()
 
     if image.format() in (QImage.Format_ARGB32_Premultiplied,
                           QImage.Format_ARGB32,
@@ -141,25 +141,25 @@ def image2numpy(image,resize=(0,0),order='RGBA',flip=True,indexed=None,expand=No
         buf = image.bits()
         if not pf.options.pyside:
             buf = buf.asstring(image.numBytes())
-        ar = np.frombuffer(buf,dtype='ubyte',count=image.numBytes()).reshape(h,w,4)
+        ar = np.frombuffer(buf, dtype='ubyte', count=image.numBytes()).reshape(h, w, 4)
         idx = [ 'BGRA'.index(c) for c in order ]
-        ar = ar[...,idx]
+        ar = ar[..., idx]
         ct = None
 
     elif image.format() == QImage.Format_Indexed8:
-        ct = np.array(image.colorTable(),dtype=np.uint32)
+        ct = np.array(image.colorTable(), dtype=np.uint32)
         #print("IMAGE FORMAT is INDEXED with %s colors" % ct.shape[0])
-        ct = ct.view(np.uint8).reshape(-1,4)
+        ct = ct.view(np.uint8).reshape(-1, 4)
         idx = [ 'BGRA'.index(c) for c in order ]
-        ct = ct[...,idx]
+        ct = ct[..., idx]
         buf = image.bits()
         if not pf.options.pyside:
             buf = buf.asstring(image.numBytes())
-        ar = np.frombuffer(buf,dtype=np.uint8)
+        ar = np.frombuffer(buf, dtype=np.uint8)
         if ar.size != w*h:
-            pf.warning("Size of image data (%s) does not match the reported dimensions: %s x %s = %s" % (ar.size,w,h,w*h))
+            pf.warning("Size of image data (%s) does not match the reported dimensions: %s x %s = %s" % (ar.size, w, h, w*h))
             #ar = ar[:w*h]
-        ar = ar.reshape(h,-1)
+        ar = ar.reshape(h, -1)
         #print "IMAGE SHAPE IS %s" % str(ar.shape)
 
     else:
@@ -178,7 +178,7 @@ def image2numpy(image,resize=(0,0),order='RGBA',flip=True,indexed=None,expand=No
     if indexed is False:
         return ar
     else:
-        return ar,ct
+        return ar, ct
 
 
 def numpy2qimage(array):
@@ -222,27 +222,27 @@ def rgb2qimage(rgb):
         if rgb.shape[2] != 3:
                 raise ValueError("rgb2QImage can only convert 3D arrays")
 
-        h,w,channels = rgb.shape
+        h, w, channels = rgb.shape
 
         # Qt expects 32bit BGRA data for color images:
-        bgra = np.empty((h,w,4),np.uint8,'C')
-        bgra[...,0] = rgb[...,2]
-        bgra[...,1] = rgb[...,1]
-        bgra[...,2] = rgb[...,0]
+        bgra = np.empty((h, w, 4), np.uint8, 'C')
+        bgra[..., 0] = rgb[..., 2]
+        bgra[..., 1] = rgb[..., 1]
+        bgra[..., 2] = rgb[..., 0]
 
         if channels == 4:
-            bgra[...,3] = rgb[...,3]
+            bgra[..., 3] = rgb[..., 3]
             fmt = QImage.Format_ARGB32
         else:
             fmt = QImage.Format_RGB32
 
-        result = QImage(bgra.data,w,h,fmt)
+        result = QImage(bgra.data, w, h, fmt)
         result.ndarray = bgra
         return result
 
 
 
-def image2glcolor(image,resize=(0,0)):
+def image2glcolor(image,resize=(0, 0)):
     """Convert a bitmap image to corresponding OpenGL colors.
 
     Parameters:
@@ -259,8 +259,8 @@ def image2glcolor(image,resize=(0,0)):
     By default the image is flipped upside-down because the vertical
     OpenGL axis points upwards, while bitmap images are stored downwards.
     """
-    c = image2numpy(image,resize=resize,order='RGB',flip=True,indexed=False)
-    c = c.reshape(-1,3)
+    c = image2numpy(image, resize=resize, order='RGB', flip=True, indexed=False)
+    c = c.reshape(-1, 3)
     c = c / 255.
     return c, None
 
@@ -270,12 +270,12 @@ def image2glcolor(image,resize=(0,0)):
 def imagefile2string(filename):
     import Image
     im = Image.open(filename)
-    nx,ny = im.size[0],im.size[1]
+    nx, ny = im.size[0], im.size[1]
     try:
-        data = im.tostring("raw","RGBA",0,-1)
+        data = im.tostring("raw", "RGBA", 0, -1)
     except SystemError:
-        data = im.tostring("raw","RGBX",0,-1)
-    return nx,ny,data
+        data = im.tostring("raw", "RGBX", 0, -1)
+    return nx, ny, data
 
 
 
@@ -364,7 +364,7 @@ if utils.checkModule('gdcm'):
             if fmt.GetScalarType() not in get_gdcm_to_numpy_typemap().keys():
                 raise ValueError("Unsupported Pixel Format\n%s"%fmt)
 
-            shape = (image.GetDimension(0),image.GetDimension(1))
+            shape = (image.GetDimension(0), image.GetDimension(1))
             if image.GetNumberOfDimensions() == 3:
               shape = shape + (image.GetDimension(2),)
             if fmt.GetSamplesPerPixel() != 1:
@@ -372,9 +372,9 @@ if utils.checkModule('gdcm'):
 
             dtype = get_numpy_array_type(fmt.GetScalarType())
             gdcm_array = image.GetBuffer()
-            data = np.frombuffer(gdcm_array,dtype=dtype).reshape(shape)
+            data = np.frombuffer(gdcm_array, dtype=dtype).reshape(shape)
             spacing = np.array(image.GetSpacing())
-            return data,spacing
+            return data, spacing
 
 
         global _dicom_spacing
@@ -382,7 +382,7 @@ if utils.checkModule('gdcm'):
         r.SetFileName(filename)
         if not r.Read():
             raise ValueError("Could not read image file '%s'" % filename)
-        pix,_dicom_spacing = gdcm_to_numpy(r.GetImage())
+        pix, _dicom_spacing = gdcm_to_numpy(r.GetImage())
         return pix
 
     readDicom = loadImage_gdcm
@@ -404,13 +404,13 @@ def dicom2numpy(files):
     - `scale`: a (3,) array with the scaling factors, in order (x,y,z).
     """
     if isinstance(files, str):
-        files = utils.listTree(fp,listdirs=False,includefiles="*.dcm")
+        files = utils.listTree(fp, listdirs=False, includefiles="*.dcm")
     # read and stack the images
     print("Using %s to read DICOM files" % readDicom.__name__)
 
     pixar = np.dstack([ readDicom(f) for f in files ])
     scale = _dicom_spacing
-    return pixar,scale
+    return pixar, scale
 
 
 # End

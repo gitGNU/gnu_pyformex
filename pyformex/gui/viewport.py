@@ -63,17 +63,17 @@ from arraytools import isInt
 # We could do this with the general functions of coords.py,
 # but that would be overkill for this simple 2D vectors
 
-def dotpr (v,w):
+def dotpr (v, w):
     """Return the dot product of vectors v and w"""
     return v[0]*w[0] + v[1]*w[1]
 
 def length (v):
     """Return the length of the vector v"""
-    return math.sqrt(dotpr(v,v))
+    return math.sqrt(dotpr(v, v))
 
-def projection(v,w):
+def projection(v, w):
     """Return the (signed) length of the projection of vector v on vector w."""
-    return dotpr(v,w)/length(w)
+    return dotpr(v, w)/length(w)
 
 
 # signals
@@ -93,7 +93,7 @@ RELEASE = 2
 LEFT = QtCore.Qt.LeftButton
 MIDDLE = QtCore.Qt.MidButton
 RIGHT = QtCore.Qt.RightButton
-_buttons = [LEFT,MIDDLE,RIGHT]
+_buttons = [LEFT, MIDDLE, RIGHT]
 
 # modifiers
 NONE = QtCore.Qt.NoModifier
@@ -101,8 +101,8 @@ SHIFT = QtCore.Qt.ShiftModifier
 CTRL = QtCore.Qt.ControlModifier
 ALT = QtCore.Qt.AltModifier
 ALLMODS = SHIFT | CTRL | ALT
-_modifiers = [NONE,SHIFT,CTRL,ALT]
-_modifiername = ['NONE','SHIFT','CTRL','ALT']
+_modifiers = [NONE, SHIFT, CTRL, ALT]
+_modifiername = ['NONE', 'SHIFT', 'CTRL', 'ALT']
 
 def modifierName(mod):
     try:
@@ -126,29 +126,29 @@ def setOpenGLFormat():
        --opengl : set the opengl version
     """
     global opengl_format
-    pf.debug("Get OpenGL Format",pf.DEBUG.OPENGL)
+    pf.debug("Get OpenGL Format", pf.DEBUG.OPENGL)
     fmt = QtOpenGL.QGLFormat.defaultFormat()
     if pf.options.debuglevel & pf.DEBUG.OPENGL:
-        pf.debug("Got OpenGL Format",pf.DEBUG.OPENGL)
-        pf.debug(OpenGLFormat(fmt),pf.DEBUG.OPENGL)
+        pf.debug("Got OpenGL Format", pf.DEBUG.OPENGL)
+        pf.debug(OpenGLFormat(fmt), pf.DEBUG.OPENGL)
     if pf.options.dri is not None:
         fmt.setDirectRendering(pf.options.dri)
     if pf.options.opengl:
         try:
-            major,minor = map(int,pf.options.opengl.split('.'))
-            fmt.setVersion(major,minor)
+            major, minor = map(int, pf.options.opengl.split('.'))
+            fmt.setVersion(major, minor)
         except:
             pass
 
     if pf.options.debuglevel & pf.DEBUG.OPENGL:
-        pf.debug("Set OpenGL Format",pf.DEBUG.OPENGL)
-        pf.debug(OpenGLFormat(fmt),pf.DEBUG.OPENGL)
+        pf.debug("Set OpenGL Format", pf.DEBUG.OPENGL)
+        pf.debug(OpenGLFormat(fmt), pf.DEBUG.OPENGL)
     QtOpenGL.QGLFormat.setDefaultFormat(fmt)
     #QtOpenGL.QGLFormat.setOverlayFormat(fmt)
     #fmt.setDirectRendering(False)
     opengl_format = fmt
     if pf.options.debuglevel & pf.DEBUG.OPENGL:
-        pf.debug(OpenGLFormat(fmt),pf.DEBUG.OPENGL)
+        pf.debug(OpenGLFormat(fmt), pf.DEBUG.OPENGL)
     return fmt
 
 def getOpenGLContext():
@@ -167,7 +167,7 @@ def OpenGLSupportedVersions(flags):
     """
     flag = QtOpenGL.QGLFormat.OpenGLVersionFlag
     keys = [ k for k in dir(flag) if k.startswith('OpenGL') and not k.endswith('None')]
-    return [ (k,bool(int(flags) & int(getattr(flag,k)))) for k in keys ]
+    return [ (k, bool(int(flags) & int(getattr(flag, k)))) for k in keys ]
 
 
 def OpenGLFormat(fmt=None):
@@ -177,7 +177,7 @@ def OpenGLFormat(fmt=None):
     flags = fmt.openGLVersionFlags()
     s = [ "OpenGL: %s" % fmt.hasOpenGL() ]
     try:
-        s.append("OpenGl Version: %s.%s (%x)" % (fmt.majorVersion(),fmt.minorVersion(),flags))
+        s.append("OpenGl Version: %s.%s (%x)" % (fmt.majorVersion(), fmt.minorVersion(), flags))
     except:
         s.append("OpenGL Version: %0x" % flags)
         pass
@@ -197,8 +197,8 @@ def OpenGLFormat(fmt=None):
         ''
         ])
     s.append("\nSupported OpenGL versions:")
-    for k,v in OpenGLSupportedVersions(flags):
-        s.append("  %s: %s" % (k,v))
+    for k, v in OpenGLSupportedVersions(flags):
+        s.append("  %s: %s" % (k, v))
     return '\n'.join(s)
 
 
@@ -217,24 +217,24 @@ class CursorShapeHandler(object):
 
     """
     cursor_shape = { 'default': QtCore.Qt.ArrowCursor,
-                     'pick'   : QtCore.Qt.CrossCursor,
-                     'busy'   : QtCore.Qt.BusyCursor,
+                     'pick': QtCore.Qt.CrossCursor,
+                     'busy': QtCore.Qt.BusyCursor,
                      }
 
-    def __init__(self,widget):
+    def __init__(self, widget):
         """Create a CursorHandler for the specified widget."""
         self.widget = widget
 
-    def setCursorShape(self,shape):
+    def setCursorShape(self, shape):
         """Set the cursor shape to shape"""
         if shape not in QtCanvas.cursor_shape.keys():
             shape = 'default'
         self.setCursor(QtCanvas.cursor_shape[shape])
 
 
-    def setCursorShapeFromFunc(self,func):
+    def setCursorShapeFromFunc(self, func):
         """Set the cursor shape to shape"""
-        if func in [ self.mouse_rectangle_zoom,self.mouse_pick ]:
+        if func in [ self.mouse_rectangle_zoom, self.mouse_pick ]:
             shape = 'pick'
         else:
             shape = 'default'
@@ -246,30 +246,30 @@ class CanvasMouseHandler(object):
 
     """
     def setMouse(self,button,func,mod=NONE):
-        pf.debug(button,mod,pf.DEBUG.MOUSE)
+        pf.debug(button, mod, pf.DEBUG.MOUSE)
         self.mousefncsaved[mod][button].append(self.mousefnc[mod][button])
         self.mousefnc[mod][button] = func
         self.setCursorShapeFromFunc(func)
-        pf.debug("MOUSE %s" % func,pf.DEBUG.MOUSE)
-        pf.debug("MOUSE SAVED %s" % self.mousefncsaved[mod][button],pf.DEBUG.MOUSE)
+        pf.debug("MOUSE %s" % func, pf.DEBUG.MOUSE)
+        pf.debug("MOUSE SAVED %s" % self.mousefncsaved[mod][button], pf.DEBUG.MOUSE)
 
 
     def resetMouse(self,button,mod=NONE):
-        pf.debug("MOUSE SAVED %s" % self.mousefncsaved[mod][button],pf.DEBUG.MOUSE)
+        pf.debug("MOUSE SAVED %s" % self.mousefncsaved[mod][button], pf.DEBUG.MOUSE)
         try:
             func = self.mousefncsaved[mod][button].pop()
         except:
-            pf.debug("AAAAAHHH, COULD NOT POP",pf.DEBUG.MOUSE)
+            pf.debug("AAAAAHHH, COULD NOT POP", pf.DEBUG.MOUSE)
             func = None
         self.mousefnc[mod][button] = func
         self.setCursorShapeFromFunc(func)
-        pf.debug("RESETMOUSE %s" % func,pf.DEBUG.MOUSE)
-        pf.debug("MOUSE SAVED %s" % self.mousefncsaved[mod][button],pf.DEBUG.MOUSE)
+        pf.debug("RESETMOUSE %s" % func, pf.DEBUG.MOUSE)
+        pf.debug("MOUSE SAVED %s" % self.mousefncsaved[mod][button], pf.DEBUG.MOUSE)
 
 
     def getMouseFunc(self):
         """Return the mouse function bound to self.button and self.mod"""
-        return self.mousefnc.get(int(self.mod),{}).get(self.button,None)
+        return self.mousefnc.get(int(self.mod), {}).get(self.button, None)
 
 
 
@@ -279,7 +279,7 @@ class CanvasMouseHandler(object):
 
 
 
-class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
+class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
     """A canvas for OpenGL rendering.
 
     This class provides interactive functionality for the OpenGL canvas
@@ -294,9 +294,9 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
     while the keyword arguments are passed to the canvas.Canvas constructor.
     """
     cursor_shape = { 'default': QtCore.Qt.ArrowCursor,
-                     'pick'   : QtCore.Qt.CrossCursor,
-                     'draw'   : QtCore.Qt.CrossCursor,
-                     'busy'   : QtCore.Qt.BusyCursor,
+                     'pick': QtCore.Qt.CrossCursor,
+                     'draw': QtCore.Qt.CrossCursor,
+                     'busy': QtCore.Qt.BusyCursor,
                      }
 
     selection_filters = [ 'none', 'single', 'closest', 'connected', 'closest-connected' ]
@@ -315,8 +315,8 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
         self.CANCEL = self.signals.CANCEL
         self.DONE   = self.signals.DONE
         #
-        self.setMinimumSize(32,32)
-        self.setSizePolicy(QtGui.QSizePolicy.MinimumExpanding,QtGui.QSizePolicy.MinimumExpanding)
+        self.setMinimumSize(32, 32)
+        self.setSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.MinimumExpanding)
         self.setFocusPolicy(QtCore.Qt.StrongFocus)
         canvas.Canvas.__init__(self,**kargs)
         self.setCursorShape('default')
@@ -334,20 +334,20 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
                 self.mousefncsaved[mod][button] = []
         # Initial mouse funcs are dynamic handling
         # ALT is initially same as NONE and should never be changed
-        for mod in (NONE,ALT):
-            self.setMouse(LEFT,self.dynarot,mod)
-            self.setMouse(MIDDLE,self.dynapan,mod)
-            self.setMouse(RIGHT,self.dynazoom,mod)
+        for mod in (NONE, ALT):
+            self.setMouse(LEFT, self.dynarot, mod)
+            self.setMouse(MIDDLE, self.dynapan, mod)
+            self.setMouse(RIGHT, self.dynazoom, mod)
         self.selection_mode = None
         self.selection = Collection()
         self.trackfunc = None
         self.pick_func = {
-            'actor'  : self.pick_actors,
+            'actor': self.pick_actors,
             'element': self.pick_elements,
-            'face'   : self.pick_faces,
-            'edge'   : self.pick_edges,
-            'point'  : self.pick_points,
-            'number' : self.pick_numbers,
+            'face': self.pick_faces,
+            'edge': self.pick_edges,
+            'point': self.pick_points,
+            'number': self.pick_numbers,
             }
         self.pickable = None
         self.drawmode = None
@@ -365,7 +365,7 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
 
     # TODO: negative sizes should probably resize all viewports
     # OR we need to implement frames
-    def changeSize(self,width,height):
+    def changeSize(self, width, height):
         """Resize the canvas to (width x height).
 
         If a negative value is given for either width or height,
@@ -376,19 +376,19 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
         viewports are used.
         """
         if width < 0 or height < 0:
-            w,h = pf.GUI.maxCanvasSize()
+            w, h = pf.GUI.maxCanvasSize()
             if width < 0:
                 width = w
             if height < 0:
                 height = h
-        self.resize(width,height)
+        self.resize(width, height)
 
 
     def getPickModes(self):
         return self.pick_func.keys()
 
 
-    def setCursorShape(self,shape):
+    def setCursorShape(self, shape):
         """Set the cursor shape to shape"""
         if shape not in QtCanvas.cursor_shape.keys():
             shape = 'default'
@@ -396,9 +396,9 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
         self.setCursor(QtCanvas.cursor_shape[shape])
 
 
-    def setCursorShapeFromFunc(self,func):
+    def setCursorShapeFromFunc(self, func):
         """Set the cursor shape to shape"""
-        if func in [ self.mouse_rectangle_zoom,self.mouse_pick ]:
+        if func in [ self.mouse_rectangle_zoom, self.mouse_pick ]:
             shape = 'pick'
         elif func == self.mouse_draw:
             shape = 'draw'
@@ -408,7 +408,7 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
 
 
     def setMouse(self,button,func,mod=NONE):
-        pf.debug("setMouse %s %s %s" % (button,mod,func),pf.DEBUG.MOUSE)
+        pf.debug("setMouse %s %s %s" % (button, mod, func), pf.DEBUG.MOUSE)
         self.mousefncsaved[mod][button].append(self.mousefnc[mod][button])
         self.mousefnc[mod][button] = func
         if button == LEFT and mod == NONE:
@@ -417,7 +417,7 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
 
 
     def resetMouse(self,button,mod=NONE):
-        pf.debug("resetMouse %s %s" % (button,mod),pf.DEBUG.MOUSE)
+        pf.debug("resetMouse %s %s" % (button, mod), pf.DEBUG.MOUSE)
         try:
             func = self.mousefncsaved[mod][button].pop()
         except:
@@ -430,11 +430,11 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
 
     def getMouseFunc(self):
         """Return the mouse function bound to self.button and self.mod"""
-        return self.mousefnc.get(int(self.mod),{}).get(self.button,None)
+        return self.mousefnc.get(int(self.mod), {}).get(self.button, None)
 
 
     def start_rectangle_zoom(self):
-        self.setMouse(LEFT,self.mouse_rectangle_zoom)
+        self.setMouse(LEFT, self.mouse_rectangle_zoom)
 
 
     def finish_rectangle_zoom(self):
@@ -442,7 +442,7 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
         self.resetMouse(LEFT)
 
 
-    def mouse_rectangle_zoom(self,x,y,action):
+    def mouse_rectangle_zoom(self, x, y, action):
         """Process mouse events during interactive rectangle zooming.
 
         On PRESS, record the mouse position.
@@ -455,38 +455,38 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             if self.trackfunc:
                 #print "PRESS",self.trackfunc,pf.canvas.camera.focus
                 pf.canvas.camera.setTracking(True)
-                x,y,z = pf.canvas.camera.focus
-                self.zplane = pf.canvas.project(x,y,z,True)[2]
+                x, y, z = pf.canvas.camera.focus
+                self.zplane = pf.canvas.project(x, y, z, True)[2]
                 #print 'ZPLANE',self.zplane
-                self.trackfunc(x,y,self.zplane)
+                self.trackfunc(x, y, self.zplane)
             self.begin_2D_drawing()
             GL.glEnable(GL.GL_COLOR_LOGIC_OP)
             # An alternative is GL_XOR #
             GL.glLogicOp(GL.GL_INVERT)
             # Draw rectangle
-            self.draw_state_rect(x,y)
+            self.draw_state_rect(x, y)
             self.swapBuffers()
 
         elif action == MOVE:
             if self.trackfunc:
                 #print "MOVE",self.trackfunc
                 #print 'ZPLANE',self.zplane
-                self.trackfunc(x,y,self.zplane)
+                self.trackfunc(x, y, self.zplane)
             # Remove old rectangle
             self.swapBuffers()
             self.draw_state_rect(*self.state)
             # Draw new rectangle
-            self.draw_state_rect(x,y)
+            self.draw_state_rect(x, y)
             self.swapBuffers()
 
         elif action == RELEASE:
             GL.glDisable(GL.GL_COLOR_LOGIC_OP)
             self.end_2D_drawing()
-            x0 = min(self.statex,x)
-            y0 = min(self.statey,y)
-            x1 = max(self.statex,x)
-            y1 = max(self.statey,y)
-            self.zoomRectangle(x0,y0,x1,y1)
+            x0 = min(self.statex, x)
+            y0 = min(self.statey, y)
+            x1 = max(self.statex, x)
+            y1 = max(self.statey, y)
+            self.zoomRectangle(x0, y0, x1, y1)
             self.finish_rectangle_zoom()
 
 ####################### INTERACTIVE PICKING ############################
@@ -499,20 +499,20 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             self.pickable = [ self.actors[i] for i in nrs if i in range(len(self.actors))]
 
 
-    def start_selection(self,mode,filter):
+    def start_selection(self, mode, filter):
         """Start an interactive picking mode.
 
         If selection mode was already started, mode is disregarded and
         this can be used to change the filter method.
         """
-        pf.debug("START SELECTION",pf.DEBUG.GUI)
-        pf.debug("Mode is %s" % self.selection_mode,pf.DEBUG.GUI)
+        pf.debug("START SELECTION", pf.DEBUG.GUI)
+        pf.debug("Mode is %s" % self.selection_mode, pf.DEBUG.GUI)
         if self.selection_mode is None:
-            self.setMouse(LEFT,self.mouse_pick)
-            self.setMouse(LEFT,self.mouse_pick,SHIFT)
-            self.setMouse(LEFT,self.mouse_pick,CTRL)
-            self.setMouse(RIGHT,self.emit_done)
-            self.setMouse(RIGHT,self.emit_cancel,SHIFT)
+            self.setMouse(LEFT, self.mouse_pick)
+            self.setMouse(LEFT, self.mouse_pick, SHIFT)
+            self.setMouse(LEFT, self.mouse_pick, CTRL)
+            self.setMouse(RIGHT, self.emit_done)
+            self.setMouse(RIGHT, self.emit_cancel, SHIFT)
             self.DONE.connect(self.accept_selection)
             self.CANCEL.connect(self.cancel_selection)
             self.selection_mode = mode
@@ -525,32 +525,32 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             self.selection_front = None
         self.selection.clear()
         self.selection.setType(self.selection_mode)
-        pf.debug("START SELECTION DONE",pf.DEBUG.GUI)
+        pf.debug("START SELECTION DONE", pf.DEBUG.GUI)
 
 
     def wait_selection(self):
         """Wait for the user to interactively make a selection."""
-        pf.debug("WAIT SELECTION",pf.DEBUG.GUI)
+        pf.debug("WAIT SELECTION", pf.DEBUG.GUI)
         self.selection_timer = QtCore.QThread
         self.selection_busy = True
         while self.selection_busy:
             self.selection_timer.msleep(20)
             pf.app.processEvents()
-        pf.debug("WAIT SELECTION DONE",pf.DEBUG.GUI)
+        pf.debug("WAIT SELECTION DONE", pf.DEBUG.GUI)
 
 
     def finish_selection(self):
         """End an interactive picking mode."""
-        pf.debug("FINISH SELECTION",pf.DEBUG.GUI)
+        pf.debug("FINISH SELECTION", pf.DEBUG.GUI)
         self.resetMouse(LEFT)
-        self.resetMouse(LEFT,SHIFT)
-        self.resetMouse(LEFT,CTRL)
+        self.resetMouse(LEFT, SHIFT)
+        self.resetMouse(LEFT, CTRL)
         self.resetMouse(RIGHT)
-        self.resetMouse(RIGHT,SHIFT)
+        self.resetMouse(RIGHT, SHIFT)
         self.DONE.disconnect(self.accept_selection)
         self.CANCEL.disconnect(self.cancel_selection)
         self.selection_mode = None
-        pf.debug("FINISH SELECTION DONE",pf.DEBUG.GUI)
+        pf.debug("FINISH SELECTION DONE", pf.DEBUG.GUI)
 
 
     def accept_selection(self,clear=False):
@@ -599,7 +599,7 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
         The return value is always a Collection object.
         """
         self.selection_canceled = False
-        self.start_selection(mode,filter)
+        self.start_selection(mode, filter)
         while not self.selection_canceled:
             self.wait_selection()
             if not self.selection_canceled:
@@ -628,7 +628,7 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
                     elif self.selection_filter == 'connected':
                         if self.selection_front is None or self.mod == NONE or len(self.selection.keys()) == 0:
                             self.selection_front = self.closest_pick
-                            closest_actor,closest_elem = map(int,self.selection_front[0])
+                            closest_actor, closest_elem = map(int, self.selection_front[0])
                         elif self.mod == SHIFT:
                             closest_elem = self.selection.get(closest_actor)[0]
                         if self.mod == NONE:
@@ -638,10 +638,10 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
                         elif self.mod == CTRL:
                             self.selection.remove(self.picked)
                         if self.mod == NONE or self.mod == SHIFT:
-                            conn_elems = self.actors[closest_actor].object.connectedElements(closest_elem,self.selection.get(closest_actor))
-                            self.selection.set(conn_elems,closest_actor)
+                            conn_elems = self.actors[closest_actor].object.connectedElements(closest_elem, self.selection.get(closest_actor))
+                            self.selection.set(conn_elems, closest_actor)
                     if func:
-                        func(self,self.selection)
+                        func(self, self.selection)
                 self.update()
             if oneshot:
                 self.accept_selection()
@@ -687,7 +687,7 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
         The return value is a (n,3) shaped Coords array.
         """
         self.draw_canceled = False
-        self.start_draw(mode,zplane,coords)
+        self.start_draw(mode, zplane, coords)
         try:
             if preview:
                 self.previewfunc = func
@@ -697,24 +697,24 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             while not self.draw_canceled:
                 self.wait_selection()
                 if not self.draw_canceled:
-                    self.drawn = Coords(self.drawn).reshape(-1,3)
-                    self.drawing = Coords.concatenate([self.drawing,self.drawn])
+                    self.drawn = Coords(self.drawn).reshape(-1, 3)
+                    self.drawing = Coords.concatenate([self.drawing, self.drawn])
                     if func:
-                        func(self.drawing,self.drawmode)
+                        func(self.drawing, self.drawmode)
                 if npoints > 0 and len(self.drawing) >= npoints:
                     self.accept_draw()
             if func and not self.draw_accepted:
-                func(self.drawing,self.drawmode)
+                func(self.drawing, self.drawmode)
         finally:
             self.finish_draw()
         return self.drawing
 
 
-    def start_draw(self,mode,zplane,coords):
+    def start_draw(self, mode, zplane, coords):
         """Start an interactive drawing mode."""
-        self.setMouse(LEFT,self.mouse_draw)
-        self.setMouse(RIGHT,self.emit_done)
-        self.setMouse(RIGHT,self.emit_cancel,SHIFT)
+        self.setMouse(LEFT, self.mouse_draw)
+        self.setMouse(RIGHT, self.emit_done)
+        self.setMouse(RIGHT, self.emit_cancel, SHIFT)
         self.DONE.connect(self.accept_draw)
         self.CANCEL.connect(self.cancel_draw)
         self.drawmode = mode
@@ -725,7 +725,7 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
         """End an interactive drawing mode."""
         self.resetMouse(LEFT)
         self.resetMouse(RIGHT)
-        self.resetMouse(RIGHT,SHIFT)
+        self.resetMouse(RIGHT, SHIFT)
         self.DONE.disconnect(self.accept_draw)
         self.CANCEL.disconnect(self.cancel_draw)
         self.drawmode = None
@@ -747,7 +747,7 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
         self.accept_draw(clear=True)
 
 
-    def mouse_draw(self,x,y,action):
+    def mouse_draw(self, x, y, action):
         """Process mouse events during interactive drawing.
 
         On PRESS, do nothing.
@@ -765,17 +765,17 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             if pf.app.hasPendingEvents():
                 return
             if self.trackfunc:
-                self.trackfunc(x,y,self.zplane)
+                self.trackfunc(x, y, self.zplane)
                 #pf.app.processEvents()
             if self.previewfunc:
                 self.swapBuffers()
-                self.drawn = self.unProject(x,y,self.zplane)
-                self.drawn = Coords(self.drawn).reshape(-1,3)
-                self.previewfunc(Coords.concatenate([self.drawing,self.drawn]),self.drawmode)
+                self.drawn = self.unProject(x, y, self.zplane)
+                self.drawn = Coords(self.drawn).reshape(-1, 3)
+                self.previewfunc(Coords.concatenate([self.drawing, self.drawn]), self.drawmode)
                 self.swapBuffers()
 
         elif action == RELEASE:
-            self.drawn = self.unProject(x,y,self.zplane)
+            self.drawn = self.unProject(x, y, self.zplane)
             self.selection_busy = False
 
 ##########################################################################
@@ -802,15 +802,15 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             if not self.drawing_canceled:
                 if self.edit_mode: # an edit mode from the edit combo was clicked
                     if self.edit_mode == 'undo' and self.drawing.size != 0:
-                        self.drawing = delete(self.drawing,-1,0)
+                        self.drawing = delete(self.drawing, -1, 0)
                     elif self.edit_mode == 'clear':
-                        self.drawing = empty((0,2,2),dtype=int)
+                        self.drawing = empty((0, 2, 2), dtype=int)
                     elif self.edit_mode == 'close' and self.drawing.size != 0:
-                        line = asarray([self.drawing[-1,-1],self.drawing[0,0]])
-                        self.drawing = append(self.drawing,line.reshape(-1,2,2),0)
+                        line = asarray([self.drawing[-1, -1], self.drawing[0, 0]])
+                        self.drawing = append(self.drawing, line.reshape(-1, 2, 2), 0)
                     self.edit_mode = None
                 else: # a line was drawn interactively
-                    self.drawing = append(self.drawing,self.drawn.reshape(-1,2,2),0)
+                    self.drawing = append(self.drawing, self.drawn.reshape(-1, 2, 2), 0)
                 if func:
                     func(self.drawing)
             if oneshot:
@@ -820,18 +820,18 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
         self.finish_drawing()
         return self.drawing
 
-    def start_drawing(self,mode):
+    def start_drawing(self, mode):
         """Start an interactive line drawing mode."""
-        pf.debug("START DRAWING MODE",pf.DEBUG.GUI)
-        self.setMouse(LEFT,self.mouse_draw_line)
-        self.setMouse(RIGHT,self.emit_done)
-        self.setMouse(RIGHT,self.emit_cancel,SHIFT)
+        pf.debug("START DRAWING MODE", pf.DEBUG.GUI)
+        self.setMouse(LEFT, self.mouse_draw_line)
+        self.setMouse(RIGHT, self.emit_done)
+        self.setMouse(RIGHT, self.emit_cancel, SHIFT)
         self.DONE.connect(self.accept_drawing)
         self.CANCEL.connect(self.cancel_drawing)
         #self.setCursorShape('pick')
         self.drawing_mode = mode
         self.edit_mode = None
-        self.drawing = empty((0,2,2),dtype=int)
+        self.drawing = empty((0, 2, 2), dtype=int)
 
     def wait_drawing(self):
         """Wait for the user to interactively draw a line."""
@@ -843,11 +843,11 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
 
     def finish_drawing(self):
         """End an interactive drawing mode."""
-        pf.debug("END DRAWING MODE",pf.DEBUG.GUI)
+        pf.debug("END DRAWING MODE", pf.DEBUG.GUI)
         #self.setCursorShape('default')
         self.resetMouse(LEFT)
         self.resetMouse(RIGHT)
-        self.resetMouse(RIGHT,SHIFT)
+        self.resetMouse(RIGHT, SHIFT)
         self.DONE.disconnect(self.accept_drawing)
         self.CANCEL.disconnect(self.cancel_drawing)
         self.drawing_mode = None
@@ -857,10 +857,10 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
 
         If clear == True, the current drawing is cleared.
         """
-        pf.debug("CANCEL DRAWING MODE",pf.DEBUG.GUI)
+        pf.debug("CANCEL DRAWING MODE", pf.DEBUG.GUI)
         self.drawing_accepted = True
         if clear:
-            self.drawing = empty((0,2,2),dtype=int)
+            self.drawing = empty((0, 2, 2), dtype=int)
             self.drawing_accepted = False
         self.drawing_canceled = True
         self.drawing_busy = False
@@ -869,7 +869,7 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
         """Cancel an interactive drawing mode and clear the drawing."""
         self.accept_drawing(clear=True)
 
-    def edit_drawing(self,mode):
+    def edit_drawing(self, mode):
         """Edit an interactive drawing."""
         self.edit_mode = mode
         self.drawing_busy = False
@@ -883,11 +883,11 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             print("Size policy %s,%s,%s,%s" % (p.horizontalPolicy(), p.verticalPolicy(), p.horizontalStretch(), p.verticalStretch()))
         self.initCamera()
         self.glinit()
-        self.resizeGL(self.width(),self.height())
+        self.resizeGL(self.width(), self.height())
         self.setCamera()
 
-    def	resizeGL(self,w,h):
-        self.setSize(w,h)
+    def	resizeGL(self, w, h):
+        self.setSize(w, h)
 
     def	paintGL(self):
         if not self.mode2D:
@@ -911,18 +911,18 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
     # operations!
 
 
-    def dynarot(self,x,y,action):
+    def dynarot(self, x, y, action):
         """Perform dynamic rotation operation.
 
         This function processes mouse button events controlling a dynamic
         rotation operation. The action is one of PRESS, MOVE or RELEASE.
         """
         if action == PRESS:
-            w,h = self.getSize()
+            w, h = self.getSize()
             self.state = [self.statex-w/2, self.statey-h/2 ]
 
         elif action == MOVE:
-            w,h = self.getSize()
+            w, h = self.getSize()
             # set all three rotations from mouse movement
             # tangential movement sets twist,
             # but only if initial vector is big enough
@@ -930,24 +930,24 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             d = length(x0)
             if d > h/8:
                 x1 = [x-w/2, y-h/2]     # new vector
-                a0 = math.atan2(x0[0],x0[1])
-                a1 = math.atan2(x1[0],x1[1])
+                a0 = math.atan2(x0[0], x0[1])
+                a1 = math.atan2(x1[0], x1[1])
                 an = (a1-a0) / math.pi * 180
-                ds = utils.stuur(d,[-h/4,h/8,h/4],[-1,0,1],2)
+                ds = utils.stuur(d, [-h/4, h/8, h/4], [-1, 0, 1], 2)
                 twist = - an*ds
-                self.camera.rotate(twist,0.,0.,1.)
+                self.camera.rotate(twist, 0., 0., 1.)
                 self.state = x1
             # radial movement rotates around vector in lens plane
             x0 = [self.statex-w/2, self.statey-h/2]    # initial vector
-            if x0 == [0.,0.]:
-                x0 = [1.,0.]
+            if x0 == [0., 0.]:
+                x0 = [1., 0.]
             dx = [x-self.statex, y-self.statey]        # movement
-            b = projection(dx,x0)
+            b = projection(dx, x0)
             if abs(b) > 5:
-                val = utils.stuur(b,[-2*h,0,2*h],[-180,0,+180],1)
-                rot =  [ abs(val),-dx[1],dx[0],0 ]
+                val = utils.stuur(b, [-2*h, 0, 2*h], [-180, 0, +180], 1)
+                rot =  [ abs(val), -dx[1], dx[0], 0 ]
                 self.camera.rotate(*rot)
-                self.statex,self.statey = (x,y)
+                self.statex, self.statey = (x, y)
             self.update()
 
         elif action == RELEASE:
@@ -955,7 +955,7 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             self.camera.saveModelView()
 
 
-    def dynapan(self,x,y,action):
+    def dynapan(self, x, y, action):
         """Perform dynamic pan operation.
 
         This function processes mouse button events controlling a dynamic
@@ -965,10 +965,10 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             pass
 
         elif action == MOVE:
-            w,h = self.getSize()
-            dx,dy = float(self.statex-x)/w, float(self.statey-y)/h
-            self.camera.transArea(dx,dy)
-            self.statex,self.statey = (x,y)
+            w, h = self.getSize()
+            dx, dy = float(self.statex-x)/w, float(self.statey-y)/h
+            self.camera.transArea(dx, dy)
+            self.statex, self.statey = (x, y)
             self.update()
 
         elif action == RELEASE:
@@ -976,25 +976,25 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             self.camera.saveModelView()
 
 
-    def dynazoom(self,x,y,action):
+    def dynazoom(self, x, y, action):
         """Perform dynamic zoom operation.
 
         This function processes mouse button events controlling a dynamic
         zoom operation. The action is one of PRESS, MOVE or RELEASE.
         """
         if action == PRESS:
-            self.state = [self.camera.dist,self.camera.area.tolist(),pf.cfg['gui/dynazoom']]
+            self.state = [self.camera.dist, self.camera.area.tolist(), pf.cfg['gui/dynazoom']]
 
         elif action == MOVE:
-            w,h = self.getSize()
-            dx,dy = float(self.statex-x)/w, float(self.statey-y)/h
-            for method,state,value,size in zip(self.state[2],[self.statex,self.statey],[x,y],[w,h]):
+            w, h = self.getSize()
+            dx, dy = float(self.statex-x)/w, float(self.statey-y)/h
+            for method, state, value, size in zip(self.state[2], [self.statex, self.statey], [x, y], [w, h]):
                 if method == 'area':
                     d = float(state-value)/size
                     f = exp(4*d)
-                    self.camera.zoomArea(f,area=asarray(self.state[1]).reshape(2,2))
+                    self.camera.zoomArea(f, area=asarray(self.state[1]).reshape(2, 2))
                 elif method == 'dolly':
-                    d = utils.stuur(value,[0,state,size],[5,1,0.2],1.2)
+                    d = utils.stuur(value, [0, state, size], [5, 1, 0.2], 1.2)
                     self.camera.dist = d*self.state[0]
 
             self.update()
@@ -1003,7 +1003,7 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             self.update()
             self.camera.saveModelView()
 
-    def wheel_zoom(self,delta):
+    def wheel_zoom(self, delta):
         """Zoom by rotating a wheel over an angle delta"""
         f = 2**(delta/120.*pf.cfg['gui/wheelzoomfactor'])
         if pf.cfg['gui/wheelzoom'] == 'area':
@@ -1014,14 +1014,14 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             self.camera.dolly(f)
         self.update()
 
-    def emit_done(self,x,y,action):
+    def emit_done(self, x, y, action):
         """Emit a DONE event by clicking the mouse.
 
         This is equivalent to pressing the ENTER button."""
         if action == RELEASE:
             self.DONE.emit()
 
-    def emit_cancel(self,x,y,action):
+    def emit_cancel(self, x, y, action):
         """Emit a CANCEL event by clicking the mouse.
 
         This is equivalent to pressing the ESC button."""
@@ -1029,13 +1029,13 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             self.CANCEL.emit()
 
 
-    def draw_state_rect(self,x,y):
+    def draw_state_rect(self, x, y):
         """Store the pos and draw a rectangle to it."""
-        self.state = x,y
-        decors.drawRect(self.statex,self.statey,x,y)
+        self.state = x, y
+        decors.drawRect(self.statex, self.statey, x, y)
 
 
-    def mouse_pick(self,x,y,action):
+    def mouse_pick(self, x, y, action):
         """Process mouse events during interactive picking.
 
         On PRESS, record the mouse position.
@@ -1051,7 +1051,7 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             # An alternative is GL_XOR #
             GL.glLogicOp(GL.GL_INVERT)
             # Draw rectangle
-            self.draw_state_rect(x,y)
+            self.draw_state_rect(x, y)
             self.swapBuffers()
 
         elif action == MOVE:
@@ -1059,7 +1059,7 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             self.swapBuffers()
             self.draw_state_rect(*self.state)
             # Draw new rectangle
-            self.draw_state_rect(x,y)
+            self.draw_state_rect(x, y)
             self.swapBuffers()
 
         elif action == RELEASE:
@@ -1067,22 +1067,22 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             self.swapBuffers()
             self.end_2D_drawing()
 
-            x,y = (x+self.statex)/2., (y+self.statey)/2.
-            w,h = abs(x-self.statex)*2., abs(y-self.statey)*2.
+            x, y = (x+self.statex)/2., (y+self.statey)/2.
+            w, h = abs(x-self.statex)*2., abs(y-self.statey)*2.
             if w <= 0 or h <= 0:
-               w,h = pf.cfg.get('draw/picksize',(20,20))
+               w, h = pf.cfg.get('draw/picksize', (20, 20))
             vp = GL.glGetIntegerv(GL.GL_VIEWPORT)
-            self.pick_window = (x,y,w,h,vp)
+            self.pick_window = (x, y, w, h, vp)
             self.selection_busy = False
 
 
-    def draw_state_line(self,x,y):
+    def draw_state_line(self, x, y):
         """Store the pos and draw a line to it."""
-        self.state = x,y
-        decors.drawLine(self.statex,self.statey,x,y)
+        self.state = x, y
+        decors.drawLine(self.statex, self.statey, x, y)
 
 
-    def mouse_draw_line(self,x,y,action):
+    def mouse_draw_line(self, x, y, action):
         """Process mouse events during interactive drawing.
 
         On PRESS, record the mouse position.
@@ -1099,8 +1099,8 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             GL.glLogicOp(GL.GL_INVERT)
             # Draw rectangle
             if self.drawing.size != 0:
-                self.statex,self.statey = self.drawing[-1,-1]
-            self.draw_state_line(x,y)
+                self.statex, self.statey = self.drawing[-1, -1]
+            self.draw_state_line(x, y)
             self.swapBuffers()
 
         elif action == MOVE:
@@ -1108,7 +1108,7 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             self.swapBuffers()
             self.draw_state_line(*self.state)
             # Draw new rectangle
-            self.draw_state_line(x,y)
+            self.draw_state_line(x, y)
             self.swapBuffers()
 
         elif action == RELEASE:
@@ -1116,45 +1116,45 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
             #self.swapBuffers()
             self.end_2D_drawing()
 
-            self.drawn = asarray([[self.statex,self.statey],[x,y]])
+            self.drawn = asarray([[self.statex, self.statey], [x, y]])
             self.drawing_busy = False
 
 
     @classmethod
-    def has_modifier(clas,e,mod):
+    def has_modifier(clas, e, mod):
         return ( e.modifiers() & mod ) == mod
 
-    def mousePressEvent(self,e):
+    def mousePressEvent(self, e):
         """Process a mouse press event."""
         # Make the clicked viewport the current one
         pf.GUI.viewports.setCurrent(self)
         # on PRESS, always remember mouse position and button
-        self.statex,self.statey = e.x(), self.height()-e.y()
+        self.statex, self.statey = e.x(), self.height()-e.y()
         self.button = e.button()
         self.mod = e.modifiers() & ALLMODS
         #pf.debug("PRESS BUTTON %s WITH MODIFIER %s" % (self.button,self.mod))
         func = self.getMouseFunc()
         if func:
-            func(self.statex,self.statey,PRESS)
+            func(self.statex, self.statey, PRESS)
         e.accept()
 
-    def mouseMoveEvent(self,e):
+    def mouseMoveEvent(self, e):
         """Process a mouse move event."""
         # the MOVE event does not identify a button, use the saved one
         func = self.getMouseFunc()
         if func:
-            func(e.x(),self.height()-e.y(),MOVE)
+            func(e.x(), self.height()-e.y(), MOVE)
         e.accept()
 
-    def mouseReleaseEvent(self,e):
+    def mouseReleaseEvent(self, e):
         """Process a mouse release event."""
         func = self.getMouseFunc()
         self.button = None        # clear the stored button
         if func:
-            func(e.x(),self.height()-e.y(),RELEASE)
+            func(e.x(), self.height()-e.y(), RELEASE)
         e.accept()
 
-    def wheelEvent(self,e):
+    def wheelEvent(self, e):
         """Process a wheel event."""
         func = self.wheel_zoom
         if func:
@@ -1167,7 +1167,7 @@ class QtCanvas(QtOpenGL.QGLWidget,canvas.Canvas):
     # This is used to break out of a wait status.
     # Events not handled here could also be handled by the toplevel
     # event handler.
-    def keyPressEvent (self,e):
+    def keyPressEvent (self, e):
         pf.GUI.signals.WAKEUP.emit()
         if e.key() == ESC:
             self.CANCEL.emit()
@@ -1234,9 +1234,9 @@ class NewiMultiCanvas(QtGui.QGridLayout):
                 if nrows is None:
                     ncols = self.ncols()
             if isInt(ncols):
-                pos = [ divmod(i,ncols) for i in range(nvps) ]
+                pos = [ divmod(i, ncols) for i in range(nvps) ]
             elif isInt(nrows):
-                pos = [ divmod(i,nrows)[::-1] for i in range(nvps) ]
+                pos = [ divmod(i, nrows)[::-1] for i in range(nvps) ]
             else:
                 return
         else:
@@ -1257,7 +1257,7 @@ class NewiMultiCanvas(QtGui.QGridLayout):
            # w.hide()
 
         # create the new layout
-        for view,args in zip(self.all,pos):
+        for view, args in zip(self.all, pos):
             self.addView(view,*args)
         self.setCurrent(self.all[-1])
 
@@ -1269,8 +1269,8 @@ class NewiMultiCanvas(QtGui.QGridLayout):
         display lists and textures.
         """
         if shared is not None:
-            pf.debug("SHARING display lists WITH %s" % shared,pf.DEBUG.DRAW)
-        view = QtCanvas(self.parent,shared)
+            pf.debug("SHARING display lists WITH %s" % shared, pf.DEBUG.DRAW)
+        view = QtCanvas(self.parent, shared)
         if len(self.all) > 0:
             # copy default settings from previous
             view.resetDefaults(self.all[-1].settings)
@@ -1279,7 +1279,7 @@ class NewiMultiCanvas(QtGui.QGridLayout):
 
     def addView(self,view,row,col,rowspan=1,colspan=1):
         """Add a new viewport and make it visible"""
-        self.addWidget(view,row,col,rowspan,colspan)
+        self.addWidget(view, row, col, rowspan, colspan)
         view.raise_()
         view.initializeGL()   # Initialize OpenGL context and camera
 
@@ -1304,7 +1304,7 @@ class NewiMultiCanvas(QtGui.QGridLayout):
                 view.close()
 
 
-    def setCurrent(self,view):
+    def setCurrent(self, view):
         """Make the specified viewport the current one.
 
         view can be either a viewport or viewport number.
@@ -1342,7 +1342,7 @@ class NewiMultiCanvas(QtGui.QGridLayout):
         return self.columnCount()
 
 
-    def setStretch(self,rowstretch,colstretch):
+    def setStretch(self, rowstretch, colstretch):
         """Set the row and column stretch factors.
 
         rowstretch and colstretch are lists of stretch factors to be applied
@@ -1350,22 +1350,22 @@ class NewiMultiCanvas(QtGui.QGridLayout):
         number of rows/columns, the
         """
         if rowstretch:
-            for i in range(min(len(rowstretch),self.nrows())):
-                self.setRowStretch(i,rowstretch[i])
+            for i in range(min(len(rowstretch), self.nrows())):
+                self.setRowStretch(i, rowstretch[i])
         if colstretch:
-            for i in range(min(len(colstretch),self.ncols())):
-                self.setColumnStretch(i,colstretch[i])
+            for i in range(min(len(colstretch), self.ncols())):
+                self.setColumnStretch(i, colstretch[i])
 
 
     def updateAll(self):
-         pf.debug("UPDATING ALL VIEWPORTS",pf.DEBUG.GUI)
+         pf.debug("UPDATING ALL VIEWPORTS", pf.DEBUG.GUI)
          for v in self.all:
              v.update()
          pf.GUI.processEvents()
 
 
     def printSettings(self):
-        for i,v in enumerate(self.all):
+        for i, v in enumerate(self.all):
             pf.message("""
 ## VIEWPORTS ##
 Viewport %s;  Current:%s;  Settings:
@@ -1373,9 +1373,9 @@ Viewport %s;  Current:%s;  Settings:
 """ % (i, v == self.current, v.settings))
 
 
-    def link(self,vp,to):
+    def link(self, vp, to):
         """Link viewport vp to to"""
-        print("LINK %s to %s" % (vp,to))
+        print("LINK %s to %s" % (vp, to))
         print("LINKING CURRENTLY DISABLED")
         return
         nvps = len(self.all)
@@ -1405,7 +1405,7 @@ class FramedGridLayout(QtGui.QGridLayout):
     def __init__(self,parent=None):
         """Initialize the multicanvas."""
         QtGui.QGridLayout.__init__(self)
-        self.setContentsMargins(0,0,0,0)
+        self.setContentsMargins(0, 0, 0, 0)
 #       self.frames = []
 
 
@@ -1415,8 +1415,8 @@ class FramedGridLayout(QtGui.QGridLayout):
         QtGui.QGridLayout.addWidget(*args)
 
 
-    def removeWidget(self,w):
-        QtGui.QGridLayout.removeWidget(self,w)
+    def removeWidget(self, w):
+        QtGui.QGridLayout.removeWidget(self, w)
 
 
 class MultiCanvas(FramedGridLayout):
@@ -1445,16 +1445,16 @@ class MultiCanvas(FramedGridLayout):
         display lists and textures.
         """
         if shared is not None:
-            pf.debug("SHARING display lists WITH %s" % shared,pf.DEBUG.DRAW)
+            pf.debug("SHARING display lists WITH %s" % shared, pf.DEBUG.DRAW)
         if settings is None:
             try:
                 settings = self.current.settings
             except:
                 settings = {}
-        pf.debug("Create new viewport with settings:\n%s"%settings,pf.DEBUG.CANVAS)
+        pf.debug("Create new viewport with settings:\n%s"%settings, pf.DEBUG.CANVAS)
         ##
         ## BEWARE: shared should be positional, settings should be keyword !
-        canv = QtCanvas(self.parent,shared,settings=settings)
+        canv = QtCanvas(self.parent, shared, settings=settings)
         #print(canv.settings)
         return(canv)
 
@@ -1471,7 +1471,7 @@ class MultiCanvas(FramedGridLayout):
         self.setCurrent(canv)
 
 
-    def setCurrent(self,canv):
+    def setCurrent(self, canv):
         """Make the specified viewport the current one.
 
         canv can be either a viewport or viewport number.
@@ -1495,7 +1495,7 @@ class MultiCanvas(FramedGridLayout):
         pf.canvas = self.current
 
 
-    def viewIndex(self,view):
+    def viewIndex(self, view):
         """Return the index of the specified view"""
         return self.all.index(view)
 
@@ -1504,31 +1504,31 @@ class MultiCanvas(FramedGridLayout):
         return self.all.index(self.current)
 
 
-    def showWidget(self,w):
+    def showWidget(self, w):
         """Show the view w."""
         ind = self.all.index(w)
         if self.pos is None:
-            row,col = divmod(ind,self.ncols)
+            row, col = divmod(ind, self.ncols)
             if not self.rowwise:
-                row,col = col,row
-            rspan,cspan = 1,1
+                row, col = col, row
+            rspan, cspan = 1, 1
         elif ind < len(self.pos):
-            row,col,rspan,cspan = self.pos[ind]
+            row, col, rspan, cspan = self.pos[ind]
         else:
             return
-        self.addWidget(w,row,col,rspan,cspan)
+        self.addWidget(w, row, col, rspan, cspan)
         w.raise_()
         # set the stretch factors
         if self.rstretch is not None:
-            for i in range(row,row+rspan):
+            for i in range(row, row+rspan):
                 if i >= len(self.rstretch):
                     self.rstretch.append(1)
-                self.setRowStretch(i,self.rstretch[i])
+                self.setRowStretch(i, self.rstretch[i])
         if self.cstretch is not None:
-            for i in range(col,col+cspan):
+            for i in range(col, col+cspan):
                 if i >= len(self.cstretch):
                     self.cstretch.append(1)
-                self.setColumnStretch(i,self.cstretch[i])
+                self.setColumnStretch(i, self.cstretch[i])
 
 
     def removeView(self):
@@ -1544,13 +1544,13 @@ class MultiCanvas(FramedGridLayout):
             pos = [self.getItemPosition(self.indexOf(w)) for w in self.all]
             if self.rstretch is not None:
                 row = max([p[0]+p[2] for p in pos])
-                for i in range(row,len(self.rstretch)):
-                    self.setRowStretch(i,0)
+                for i in range(row, len(self.rstretch)):
+                    self.setRowStretch(i, 0)
                 self.rstretch = self.rstretch[:row]
             if self.cstretch is not None:
                 col = max([p[1]+p[3] for p in pos])
-                for i in range(col,len(self.cstretch)):
-                    self.setColumnStretch(i,0)
+                for i in range(col, len(self.cstretch)):
+                    self.setColumnStretch(i, 0)
                 self.cstretch = self.cstretch[:col]
 
 
@@ -1558,13 +1558,13 @@ class MultiCanvas(FramedGridLayout):
 ##         self.current.setCamera(bbox,view)
 
     def updateAll(self):
-         pf.debug("UPDATING ALL VIEWPORTS",pf.DEBUG.GUI)
+         pf.debug("UPDATING ALL VIEWPORTS", pf.DEBUG.GUI)
          for v in self.all:
              v.update()
          pf.GUI.processEvents()
 
     def printSettings(self):
-        for i,v in enumerate(self.all):
+        for i, v in enumerate(self.all):
             pf.message("""
 ## VIEWPORTS ##
 Viewport %s;  Current:%s;  Settings:
@@ -1628,9 +1628,9 @@ Viewport %s;  Current:%s;  Settings:
             self.showWidget(w)
 
 
-    def link(self,vp,to):
+    def link(self, vp, to):
         """Link viewport vp to to"""
-        print("LINK %s to %s" % (vp,to))
+        print("LINK %s to %s" % (vp, to))
         nvps = len(self.all)
         if vp in range(nvps) and to in range(nvps) and vp != to:
             to = self.all[to]

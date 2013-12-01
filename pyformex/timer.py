@@ -57,7 +57,7 @@ class Timer(object):
         - `start`: a datetime object. If not specified, the current time as
           returned by datetime.now() is used.
         """
-        if isinstance(start,datetime):
+        if isinstance(start, datetime):
             self.start = start
         else:
             self.start = datetime.now()
@@ -99,7 +99,7 @@ if __name__ == "__main__":
     t = Timer()
     time.sleep(14.2)
     r = t.read()
-    print(r.days,r.seconds,r.microseconds)
+    print(r.days, r.seconds, r.microseconds)
     print(t.seconds())
     print(t.seconds(False))
 

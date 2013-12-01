@@ -44,12 +44,12 @@ print("""
 """)
 
 import sys
-if sys.hexversion &  0xFFFF0000:  # Checks for Python 3.1
+if (sys.hexversion & 0xFFFF0000) == 0x03010000:
 
     # Python 3.1 has no callable(), let's define it here
     import collections
     def callable(f):
-        return isinstance(f,collections.Callable)
+        return isinstance(f, collections.Callable)
     __builtins__['callable'] = callable
 
 

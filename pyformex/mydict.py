@@ -51,12 +51,12 @@ def formatDict(d):
     This format is the storage format of the Config class.
     """
     s = ""
-    if isinstance(d,dict):
-        for k,v in d.iteritems():
+    if isinstance(d, dict):
+        for k, v in d.iteritems():
             if isinstance(v, str):
-                s += '%s = "%s"\n' % (k,v)
+                s += '%s = "%s"\n' % (k, v)
             else:
-                s += '%s = %s\n' % (k,v)
+                s += '%s = %s\n' % (k, v)
     return s
 
 
@@ -68,12 +68,12 @@ def cascade(d, key):
     and the first matching key found is returned.
     """
     try:
-        return dict.__getitem__(d,key)
+        return dict.__getitem__(d, key)
     except KeyError:
         for v in d.itervalues():
-            if isinstance(v,dict):
+            if isinstance(v, dict):
                 try:
-                    return cascade(v,key)
+                    return cascade(v, key)
                 except KeyError:
                     pass
         raise KeyError
@@ -145,7 +145,7 @@ class Dict(dict):
         If defined, default is a function that is used for alternate key
         lookup if the key was not found in the dict.
         """
-        dict.__init__(self,data.items())
+        dict.__init__(self, data.items())
         if default is None:
             default = raiseKeyError
         if not callable(default):
@@ -182,18 +182,18 @@ class Dict(dict):
             return self._default_(key)
 
 
-    def __delitem__(self,key):
+    def __delitem__(self, key):
         """Allow items to be deleted using del self[key].
 
         Silently ignore if key is nonexistant.
         """
         try:
-            dict.__delitem__(self,key)
+            dict.__delitem__(self, key)
         except KeyError:
             pass
 
 
-    def __getattr__(self,key):
+    def __getattr__(self, key):
         """Allows items to be addressed as self.key.
 
         This makes self.key equivalent to self['key'], except if key
@@ -201,7 +201,7 @@ class Dict(dict):
         attribute instead, so that the 'dict' methods keep their binding.
         """
         try:
-            return dict.__getattribute__(self,key)
+            return dict.__getattribute__(self, key)
         except AttributeError:
             if key == '_default_':
                 return self.__dict__['_default_']
@@ -216,10 +216,10 @@ class Dict(dict):
         builtin dict class: the key,value pair is stored in the dict,
         leaving the dict's attributes unchanged.
         """
-        self.__setitem__(key,value)
+        self.__setitem__(key, value)
 
 
-    def __delattr__(self,key):
+    def __delattr__(self, key):
         """Allow items to be deleted using del self.key.
 
         This works even if the key is an existing attribute of the
@@ -234,8 +234,8 @@ class Dict(dict):
 
         The data can be a dict or Dict type object.
         """
-        dict.update(self,data)
-        dict.update(self,kargs)
+        dict.update(self, data)
+        dict.update(self, kargs)
 
 
     def get(self, key, default):
@@ -269,11 +269,11 @@ class Dict(dict):
             return default
 
 
-    def __deepcopy__(self,memo):
+    def __deepcopy__(self, memo):
         """Create a deep copy of ourself."""
         newdict = self.__class__(default=self._default_)
-        for k,v in self.items():
-            newdict[k] = copy.deepcopy(v,memo)
+        for k, v in self.items():
+            newdict[k] = copy.deepcopy(v, memo)
         return newdict
 
 
@@ -293,7 +293,7 @@ class Dict(dict):
         return (__newobj__, (self.__class__,), state)
 
 
-    def __setstate__(self,state):
+    def __setstate__(self, state):
         if isinstance(state, tuple):
             self.update(state[0])
             self.__dict__.update(state[1])
@@ -325,7 +325,7 @@ class CDict(Dict):
 
 
     def __init__(self,data={},default=returnNone):
-        Dict.__init__(self,data,default)
+        Dict.__init__(self, data, default)
 
 
     def __repr__(self):
@@ -363,37 +363,37 @@ class CDict(Dict):
 if __name__ == '__main__':
 
     import cPickle as pickle
-    global C,Cr,Cs
+    global C, Cr, Cs
 
     def val(s,typ='s'):
         """Returns a string assigning the value of s to the name s."""
         try:
-            return ("%s = %"+typ) % (s,eval(s))
+            return ("%s = %"+typ) % (s, eval(s))
         except:
             return "Error in %s" % s
 
     def show():
         """Print C with '%r' and '%s' formatting."""
-        global C,Cr,Cs
-        Cr = val('C','r')
-        Cs = val('C','s')
+        global C, Cr, Cs
+        Cr = val('C', 'r')
+        Cs = val('C', 's')
         print(Cr)
         print(Cs)
-        print(C.get('y','yorro'))
-        print(C.get('z','zorro'))
-        print(C.setdefault('w','worro'))
-        print("%s = %s" % (C['y']['c'],C.y.c))
+        print(C.get('y', 'yorro'))
+        print(C.get('z', 'zorro'))
+        print(C.setdefault('w', 'worro'))
+        print("%s = %s" % (C['y']['c'], C.y.c))
 
 
     def testpickle():
         global C
         print("Test (un)pickle")
-        f = open('test.pickle','w')
+        f = open('test.pickle', 'w')
         print(type(C))
         print(C._default_)
-        pickle.dump(C,f)
+        pickle.dump(C, f)
         f.close()
-        f = open('test.pickle','r')
+        f = open('test.pickle', 'r')
         C = pickle.load(f)
         print(type(C))
         print(C._default_)
@@ -410,7 +410,7 @@ if __name__ == '__main__':
     show()
 
     # now replace Dict with CDict
-    Cr = Cr.replace('Dict','CDict')
+    Cr = Cr.replace('Dict', 'CDict')
     exec(Cr)
     show()
     testpickle()
@@ -432,7 +432,7 @@ if __name__ == '__main__':
     D = copy.deepcopy(C)
     print(D)
     print(D.__dict__)
-    print("%s == %s" % (C['b'],D['b']) )
+    print("%s == %s" % (C['b'], D['b']) )
 
     C = Dict({'a':'aa','d':{'a':'aaa','b':'bbb'}})
     print(C)

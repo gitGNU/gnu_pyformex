@@ -35,7 +35,7 @@ from gui.draw import *
 
 from plugins.fe import *
 from plugins.properties import *
-from plugins.fe_abq import Step,Output,Result,AbqData
+from plugins.fe_abq import Step, Output, Result, AbqData
 
 
 import simple
@@ -46,7 +46,7 @@ def centralPoint(X):
     d = X.distanceFromPoint(X.center())
     return argmin(d)
 
-def globalNodeNr(M,group,nodid):
+def globalNodeNr(M, group, nodid):
     """Return the global node number of a node with group id.
 
     group is the element group number.
@@ -58,11 +58,11 @@ def globalNodeNr(M,group,nodid):
     """
     return M.elems[group].ravel()[nodid]
 
-def groupCentralPoint(M,group):
+def groupCentralPoint(M, group):
     """Return the node number of the most central point of the given group"""
     # Find the local group center
     nodid = centralPoint(M.coords[M.elems[group]])
-    return globalNodeNr(M,group,nodid)
+    return globalNodeNr(M, group, nodid)
 
 
 def run():
@@ -86,16 +86,16 @@ def run():
     draw(Bol)
 
     # Create top and bottom plates
-    plate = simple.rectangle(4,4).toMesh().centered()
-    topplate = plate.setProp(ptop).trl(2,1.).scale(scale)
-    botplate = plate.setProp(pbot).trl(2,-1.).scale(scale)
-    draw([topplate,botplate])
+    plate = simple.rectangle(4, 4).toMesh().centered()
+    topplate = plate.setProp(ptop).trl(2, 1.).scale(scale)
+    botplate = plate.setProp(pbot).trl(2, -1.).scale(scale)
+    draw([topplate, botplate])
 
     # model is completely drawn, keep fixed bbox
     setDrawOptions({'bbox':'last','marksize':8})
 
     # Assemble the model
-    M = Model(meshes=[Bol,topplate,botplate])
+    M = Model(meshes=[Bol, topplate, botplate])
 
     # Create the property database
     P = PropertyDB()
@@ -107,7 +107,7 @@ def run():
         'young_modulus': 207000,
         'poisson_ratio': 0.3,
         'density': 7.85e-9,
-        'plastic' : [
+        'plastic': [
             (305.45,       0.),
             (306.52, 0.003507),
             (308.05, 0.008462),
@@ -139,10 +139,10 @@ def run():
         }
 
     # Set the element properties
-    eset = dict([(p,where(M.prop==p)[0]) for p in [pbol,ptop,pbot]])
+    eset = dict([(p, where(M.prop==p)[0]) for p in [pbol, ptop, pbot]])
 
     # Bol is elasto/plastic
-    P.elemProp(set=eset[pbol],name='Bol',eltype='C3D4',section=ElemSection(section=solid_steel,material=steel))
+    P.elemProp(set=eset[pbol], name='Bol', eltype='C3D4', section=ElemSection(section=solid_steel, material=steel))
 
     # Top plate is rigid or elasto-plastic
     topplate_rigid = True
@@ -150,30 +150,30 @@ def run():
         # Rigid bodies need a reference node.
         # We select the most central node, but any node would also work,
         # e.g. pbref = M.elems[1][0][0], the very first node in the group
-        reftop = groupCentralPoint(M,1)
+        reftop = groupCentralPoint(M, 1)
         print("Top plate refnode: %s" % reftop)
-        draw(M.coords[reftop],color=green)
-        P.elemProp(set=eset[ptop],name='TopPlate',eltype='R3D4',section=ElemSection(sectiontype='rigid',refnode=reftop))
+        draw(M.coords[reftop], color=green)
+        P.elemProp(set=eset[ptop], name='TopPlate', eltype='R3D4', section=ElemSection(sectiontype='rigid', refnode=reftop))
     else:
-        P.elemProp(set=eset[ptop],name='TopPlate',eltype='CPS4',section=ElemSection(section=steel_plate,material=steel))
+        P.elemProp(set=eset[ptop], name='TopPlate', eltype='CPS4', section=ElemSection(section=steel_plate, material=steel))
 
 
     # Bottom plate is rigid or elasto-plastic
-    refbot = groupCentralPoint(M,2)
+    refbot = groupCentralPoint(M, 2)
     print("Bottom plate refnode: %s" % refbot)
-    draw(M.coords[refbot],color=blue)
-    P.elemProp(set=eset[pbot],name='BottomPlate',eltype='R3D4',section=ElemSection(sectiontype='rigid',refnode=refbot))
+    draw(M.coords[refbot], color=blue)
+    P.elemProp(set=eset[pbot], name='BottomPlate', eltype='R3D4', section=ElemSection(sectiontype='rigid', refnode=refbot))
 
     # Set the boundary conditions
     # Bottom plate is fixed
     fixed = unique(M.elems[2])
-    P.nodeProp(tag='init',set=[refbot],name='Fixed',bound=[1,1,1,1,1,1])
+    P.nodeProp(tag='init', set=[refbot], name='Fixed', bound=[1, 1, 1, 1, 1, 1])
 
     # Set the loading conditions
     # Top plate gets z-displacement of -5 mm
     displ = unique(M.elems[1])
-    P.nodeProp(tag='init',set=[reftop],name='Displ',bound=[1,1,0,1,1,1])
-    P.nodeProp(tag='step1',set=[reftop],name='Refnod',displ=[(2,-0.5)])
+    P.nodeProp(tag='init', set=[reftop], name='Displ', bound=[1, 1, 0, 1, 1, 1])
+    P.nodeProp(tag='step1', set=[reftop], name='Refnod', displ=[(2, -0.5)])
 
     ## # Set the loading conditions
     ## # All elements of Plate1 have a pressure loading of 10 MPa
@@ -181,7 +181,7 @@ def run():
     ## P.elemProp(tag='step1',set=loaded,name='Loaded',dload=ElemLoad('P',10.0))
 
     from plugins.fe_abq import Interaction
-    P.Prop(tag='init',generalinteraction=Interaction(name='interaction1',friction=0.1))
+    P.Prop(tag='init', generalinteraction=Interaction(name='interaction1', friction=0.1))
 
     print("Element properties")
     for p in P.getProp('e'):
@@ -203,21 +203,21 @@ def run():
     # - the stresses averaged at the nodes
     # - the principal stresses and stress invariants in the elements of part B.
     # (add output='PRINT' to get the results printed in the .dat file)
-    res = [ Result(kind='NODE',keys=['U']),
-            Result(kind='ELEMENT',keys=['S'],set='Bol'),
-            Result(kind='ELEMENT',keys=['S'],pos='AVERAGED AT NODES',set='Bol'),
-            Result(kind='ELEMENT',keys=['SP','SINV'],set='Bol'),
+    res = [ Result(kind='NODE', keys=['U']),
+            Result(kind='ELEMENT', keys=['S'], set='Bol'),
+            Result(kind='ELEMENT', keys=['S'], pos='AVERAGED AT NODES', set='Bol'),
+            Result(kind='ELEMENT', keys=['SP', 'SINV'], set='Bol'),
             ]
 
     # Define steps (default is static)
-    step1 = Step('DYNAMIC',time=[1., 1., 0.01, 1.],tags=['step1'])
+    step1 = Step('DYNAMIC', time=[1., 1., 0.01, 1.], tags=['step1'])
 
-    data = AbqData(M,prop=P,steps=[step1],res=res,bound=['init'])
+    data = AbqData(M, prop=P, steps=[step1], res=res, bound=['init'])
 
-    if ack('Export this model in ABAQUS input format?',default='No'):
+    if ack('Export this model in ABAQUS input format?', default='No'):
         fn = askNewFilename(filter='*.inp')
         if fn:
-            data.write(jobname=fn,group_by_group=True)
+            data.write(jobname=fn, group_by_group=True)
 
 
 if __name__ == 'draw':

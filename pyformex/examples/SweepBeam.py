@@ -31,8 +31,8 @@ sweeping, extruding, revolving or connecting.
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['geometry','surface']
-_techniques = ['color','sweep','extrude','connect','revolve']
+_topics = ['geometry', 'surface']
+_techniques = ['color', 'sweep', 'extrude', 'connect', 'revolve']
 
 from gui.draw import *
 from plugins import curve
@@ -55,51 +55,51 @@ def run():
     ewf = 8 #number of elements over half of the width of the flange
     er = 6  #number of elements in the circular segment
 
-    Body = simple.rectangle(etb,ehb,tw/2.,h/2.-tf-r)
-    Flange1 =  simple.rectangle(er/2,etf-etb,tw/2.+r,tf-tw/2.).translate([0.,h/2.-(tf-tw/2.),0.])
-    Flange2 =  simple.rectangle(ewf,etf-etb,b/2.-r-tw/2.,tf-tw/2.).translate([tw/2.+r,h/2.-(tf-tw/2.),0.])
-    Flange3 =  simple.rectangle(ewf,etb,b/2.-r-tw/2.,tw/2.).translate([tw/2.+r,h/2.-tf,0.])
-    c1a = simple.line([0,h/2-tf-r,0],[0,h/2-tf+tw/2,0],er/2)
-    c1b = simple.line([0,h/2-tf+tw/2,0],[tw/2+r,h/2-tf+tw/2,0],er/2)
+    Body = simple.rectangle(etb, ehb, tw/2., h/2.-tf-r)
+    Flange1 =  simple.rectangle(er/2, etf-etb, tw/2.+r, tf-tw/2.).translate([0., h/2.-(tf-tw/2.), 0.])
+    Flange2 =  simple.rectangle(ewf, etf-etb, b/2.-r-tw/2., tf-tw/2.).translate([tw/2.+r, h/2.-(tf-tw/2.), 0.])
+    Flange3 =  simple.rectangle(ewf, etb, b/2.-r-tw/2., tw/2.).translate([tw/2.+r, h/2.-tf, 0.])
+    c1a = simple.line([0, h/2-tf-r, 0], [0, h/2-tf+tw/2, 0], er/2)
+    c1b = simple.line([0, h/2-tf+tw/2, 0], [tw/2+r, h/2-tf+tw/2, 0], er/2)
     c1 = c1a + c1b
-    c2 = simple.circle(90./er,0.,90.).reflect(0).scale(r).translate([tw/2+r,h/2-tf-r,0])
-    Filled = simple.connectCurves(c2,c1,etb)
+    c2 = simple.circle(90./er, 0., 90.).reflect(0).scale(r).translate([tw/2+r, h/2-tf-r, 0])
+    Filled = simple.connectCurves(c2, c1, etb)
     Quarter = Body + Filled + Flange1 + Flange2 + Flange3
     Half = Quarter + Quarter.reflect(1).reverse()
     Full = Half + Half.reflect(0).reverse()
     Section = Full.toMesh()
 
     clear()
-    draw(Section,color=red)
+    draw(Section, color=red)
 
     #pause()
 
-    method = ask("Choose extrude method:",['Cancel','Sweep','Connect','Extrude','ExtrudeQuadratic','Revolve','RevolveLoop'])
+    method = ask("Choose extrude method:", ['Cancel', 'Sweep', 'Connect', 'Extrude', 'ExtrudeQuadratic', 'Revolve', 'RevolveLoop'])
 
     import timer
     t = timer.Timer()
     if method == 'Sweep':
-        L = simple.line([0,0,0],[0,0,l],el)
-        x = concatenate([L.coords[:,0],L.coords[-1:,1]])
+        L = simple.line([0, 0, 0], [0, 0, l], el)
+        x = concatenate([L.coords[:, 0], L.coords[-1:, 1]])
         path = curve.PolyLine(x)
-        Beam = Section.sweep(path,normal=[0.,0.,1.],upvector=[0.,1.,0.])
+        Beam = Section.sweep(path, normal=[0., 0., 1.], upvector=[0., 1., 0.])
 
     elif method == 'Connect':
-        Section1 = Section.trl([0,0,l])
-        Beam = Section.connect(Section1,el)
+        Section1 = Section.trl([0, 0, l])
+        Beam = Section.connect(Section1, el)
 
     elif method == 'Extrude':
-        Beam = Section.extrude(el,dir=2,length=l)
+        Beam = Section.extrude(el, dir=2, length=l)
 
     elif method == 'ExtrudeQuadratic':
         Section = Section.convert('quad9')
-        Beam = Section.extrude(el,dir=2,length=l,degree=2)
+        Beam = Section.extrude(el, dir=2, length=l, degree=2)
 
     elif method == 'Revolve':
-        Beam = Section.revolve(el,axis=1,angle=60.,around=[-l,0.,0.])
+        Beam = Section.revolve(el, axis=1, angle=60., around=[-l, 0., 0.])
 
     elif method == 'RevolveLoop':
-        Beam = Section.revolve(el,axis=1,angle=240.,around=[-l,0.,0.],loop=True)
+        Beam = Section.revolve(el, axis=1, angle=240., around=[-l, 0., 0.], loop=True)
 
     else:
         return
@@ -111,7 +111,7 @@ def run():
     t.reset()
     clear()
     #draw(Beam,color='red',linewidth=2)
-    draw(Beam.getBorderMesh(),color='red',linewidth=2)
+    draw(Beam.getBorderMesh(), color='red', linewidth=2)
     print("Drawing: %s seconds" % t.seconds())
     export({'Beam':Beam})
 

@@ -30,11 +30,11 @@ Qt widgets directly.
 """
 from __future__ import print_function
 
-import os,types
+import os, types
 from gui import QtCore, QtGui, Slot
 import pyformex as pf
 import colors
-import odict,mydict,olist
+import odict, mydict, olist
 import utils
 import arraytools as at
 
@@ -72,7 +72,7 @@ selection_mode = {
 # icons
 def standardIcon(label):
     try:
-        icon = ['noicon','info','warning','error','question'].index(label)
+        icon = ['noicon', 'info', 'warning', 'error', 'question'].index(label)
         return QtGui.QMessageBox.standardIcon(icon)
     except:
         return label
@@ -92,7 +92,7 @@ def objSize(object):
 
     Returns a tuple w,h for any object that has width and height methods.
     """
-    return object.width(),object.height()
+    return object.width(), object.height()
 
 
 def maxWinSize():
@@ -121,13 +121,13 @@ def addTimeOut(widget,timeout=None,timeoutfunc=None):
     """
     if timeout is None:
         timeout = input_timeout
-    if timeoutfunc is None and hasattr(widget,'timeout'):
+    if timeoutfunc is None and hasattr(widget, 'timeout'):
         timeoutfunc = widget.timeout
 
     try:
         timeout = float(timeout)
         if timeout >= 0.0:
-            pf.debug("ADDING TIMEOUT %s,%s" % (timeout,timeoutfunc))
+            pf.debug("ADDING TIMEOUT %s,%s" % (timeout, timeoutfunc))
             timer = QtCore.QTimer()
             timer.timeout.connect(timeoutfunc)
             timer.setSingleShot(True)
@@ -146,7 +146,7 @@ def setExpanding(w):
     w.adjustSize()
 
 def hspacer():
-    spacer = QtGui.QSpacerItem(0,0,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum )
+    spacer = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
     return spacer
 
 
@@ -259,9 +259,9 @@ class InputItem(QtGui.QWidget):
             # PySide does not have this setMargin
         #layout.setMargin(0)
         s = pf.cfg['gui/spacing']
-        layout.setContentsMargins(s,s,s,s)
+        layout.setContentsMargins(s, s, s, s)
         self.setLayout(layout)
-        spacer = kargs.get('spacer','')
+        spacer = kargs.get('spacer', '')
         if 'l' in spacer:
             layout.addStretch()
 
@@ -273,7 +273,7 @@ class InputItem(QtGui.QWidget):
         if text:
             self.label = QtGui.QLabel()
             #text = standardIcon(text)
-            if isinstance(text,QtGui.QPixmap):
+            if isinstance(text, QtGui.QPixmap):
                 self.label.setPixmap(text)
             else:
                 self.label.setText(text)
@@ -297,11 +297,11 @@ class InputItem(QtGui.QWidget):
             try:
                 self.input.setReadOnly(kargs['readonly'])
             except:
-                print("Can not set readonly: %s,%s" % (name,kargs))
+                print("Can not set readonly: %s,%s" % (name, kargs))
 
         if 'width' in kargs:
             try:
-                print('SETTING WIDTH',self.input)
+                print('SETTING WIDTH', self.input)
                 self.input.setMinimumWidth(kargs['width'])
             except:
                 pass
@@ -317,7 +317,7 @@ class InputItem(QtGui.QWidget):
         ##     pass
 
         if 'buttons' in kargs and kargs['buttons']:
-            self.buttons = ButtonBox(actions=kargs['buttons'],parent=self)
+            self.buttons = ButtonBox(actions=kargs['buttons'], parent=self)
             layout.addWidget(self.buttons)
 
         if 'r' in spacer:
@@ -330,7 +330,7 @@ class InputItem(QtGui.QWidget):
 
     def text(self):
         """Return the displayed text of the InputItem."""
-        if hasattr(self,'label'):
+        if hasattr(self, 'label'):
             return str(self.label.text())
         else:
             return self.key
@@ -339,7 +339,7 @@ class InputItem(QtGui.QWidget):
         """Return the widget's value."""
         return str(self.input.text())
 
-    def setValue(self,val):
+    def setValue(self, val):
         """Change the widget's value."""
         self.input.setText(str(val))
 
@@ -359,7 +359,7 @@ class InputInfo(InputItem):
         InputItem.__init__(self,name,*args,**kargs)
         self._value_ = value
         if self._value_ is not None:
-            self.layout().insertWidget(1,self.input)
+            self.layout().insertWidget(1, self.input)
 
     def value(self):
         """Return the widget's value."""
@@ -376,7 +376,7 @@ class InputLabel(InputItem):
     """
     def __init__(self,name,value,*args,**kargs):
         """Initialize the input item."""
-        self._plain = kargs.get('plain',False)
+        self._plain = kargs.get('plain', False)
         self.input =  QtGui.QLabel()
         #maxw,maxh = self.maxSize()
         #self.input.setMaximumSize(0.6*maxw,0.6*maxh)
@@ -384,17 +384,17 @@ class InputLabel(InputItem):
         setExpanding(self.input)
         InputItem.__init__(self,name,*args,**kargs)
         self.setValue(value)
-        self.layout().insertWidget(1,self.input)
+        self.layout().insertWidget(1, self.input)
  #       self.setSize()
 
-    def setValue(self,val):
+    def setValue(self, val):
         """Change the widget's value."""
         val = str(val)
         if self._plain:
             self.input.setText(val)
             self.input.setWordWrap(False)
         else:
-            updateText(self.input,val)
+            updateText(self.input, val)
             self.input.setWordWrap(True)
 
 
@@ -430,7 +430,7 @@ class InputString(InputItem):
         if isinstance(max, int) and max > 0:
             self.input.setMaxLength(max)
         self._is_string_ = isinstance(value, str)
-        self.layout().insertWidget(1,self.input)
+        self.layout().insertWidget(1, self.input)
 
     def show(self):
         """Select all text on first display."""
@@ -460,7 +460,7 @@ class InputText(InputItem):
     def __init__(self,name,value,*args,**kargs):
         """Initialize the input item."""
         self._is_string_ = isinstance(value, str)
-        self._plain = kargs.get('plain',False)
+        self._plain = kargs.get('plain', False)
         self.input =  QtGui.QTextEdit()
 #        maxw,maxh = maxSize()
 #        self.input.setMaximumSize(0.6*maxw,0.6*maxh)
@@ -468,7 +468,7 @@ class InputText(InputItem):
         setExpanding(self.input)
         InputItem.__init__(self,name,*args,**kargs)
         self.setValue(value)
-        self.layout().insertWidget(1,self.input)
+        self.layout().insertWidget(1, self.input)
         if 'font' in kargs:
             try:
                 self.setFont(QtGui.QFont(kargs['font']))
@@ -479,8 +479,8 @@ class InputText(InputItem):
 
 
     def sizeHint(self):
-        if hasattr(self,'_size'):
-            width,height = self._size
+        if hasattr(self, '_size'):
+            width, height = self._size
             docsize = self.input.document().size().toSize()
             #print "docsize = %s" % docsize
             font = self.input.font()
@@ -492,7 +492,7 @@ class InputText(InputItem):
             if height < 0:
                 height = docsize.height() + (self.input.height() - self.input.viewport().height())
                 height = max(height, 0.75*width)
-            size = QtCore.QSize(width,height)
+            size = QtCore.QSize(width, height)
             #print "newsize = %s" % size
         else:
             size = QtGui.QTextEdit.sizeHint(self.input)
@@ -513,7 +513,7 @@ class InputText(InputItem):
         else:
             return eval(s)
 
-    def setValue(self,val):
+    def setValue(self, val):
         """Change the widget's value."""
         val = str(val)
         if self._plain:
@@ -521,7 +521,7 @@ class InputText(InputItem):
             ## self.input.setLineWrapMode(QtGui.QTextEdit.FixedColumnWidth)
             ## self.input.setLineWrapColumnOrWidth(200)
         else:
-            updateText(self.input,val)
+            updateText(self.input, val)
             ## self.input.setLineWrapMode(QtGui.QTextEdit.FixedPixelWidth)
             ## self.input.setLineWrapColumnOrWidth(600)
         self.input.adjustSize()
@@ -555,8 +555,8 @@ class InputBool(InputItem):
         self.input = QtGui.QCheckBox(text)
         InputItem.__init__(self,name,*args,**kargs)
         self.setValue(value)
-        self.layout().insertWidget(1,self.input)
-        self.func = kargs.get('func',None)
+        self.layout().insertWidget(1, self.input)
+        self.func = kargs.get('func', None)
         if 'func' in kargs:
             self.input.stateChanged.connect(self.on_value_change)
 
@@ -568,14 +568,14 @@ class InputBool(InputItem):
         """Return the widget's value."""
         return self.input.checkState() == QtCore.Qt.Checked
 
-    def setValue(self,val):
+    def setValue(self, val):
         """Change the widget's value."""
         if val:
             self.input.setCheckState(QtCore.Qt.Checked)
         else:
             self.input.setCheckState(QtCore.Qt.Unchecked)
 
-    def on_value_change(self,val):
+    def on_value_change(self, val):
         if self.func:
             self.func(self)
 
@@ -613,7 +613,7 @@ class InputList(InputItem):
         self.input = ListWidget(maxh=maxh)
 
         if fast_sel:
-            but = [('Select All',self.setAll),('Deselect All',self.setNone)]
+            but = [('Select All', self.setAll), ('Deselect All', self.setNone)]
             if 'buttons' in kargs and kargs['buttons']:
                 kargs['buttons'].extend(but)
             else:
@@ -639,16 +639,16 @@ class InputList(InputItem):
             #self.input.updateGeometry()
             self.scroll = QtGui.QScrollArea()
             if maxh > 0:
-                self.scroll.setSizePolicy(QtGui.QSizePolicy.Maximum,QtGui.QSizePolicy.Expanding)
+                self.scroll.setSizePolicy(QtGui.QSizePolicy.Maximum, QtGui.QSizePolicy.Expanding)
             else:
-                self.scroll.setSizePolicy(QtGui.QSizePolicy.Maximum,QtGui.QSizePolicy.Maximum)
+                self.scroll.setSizePolicy(QtGui.QSizePolicy.Maximum, QtGui.QSizePolicy.Maximum)
             self.scroll.setBackgroundRole(QtGui.QPalette.Dark)
             self.scroll.setWidgetResizable(False)
             self.scroll.setWidget(self.input)
-            self.layout().insertWidget(1,self.scroll)
+            self.layout().insertWidget(1, self.scroll)
         else:
             self.input.updateGeometry()
-            self.layout().insertWidget(1,self.input)
+            self.layout().insertWidget(1, self.input)
 
         self.updateGeometry()
         #self.input.setSizeHint(QtCore.QSize(self.input.width(),10))
@@ -656,7 +656,7 @@ class InputList(InputItem):
     def setSelected(self,selected,flag=True):
         """Mark the specified items as selected or not."""
         for s in selected:
-            for i in self.input.findItems(s,QtCore.Qt.MatchExactly):
+            for i in self.input.findItems(s, QtCore.Qt.MatchExactly):
                 i.setSelected(flag)
 
     def setChecked(self,selected,flag=True):
@@ -667,16 +667,16 @@ class InputList(InputItem):
             qtflag = QtCore.Qt.Unchecked
 
         for s in selected:
-            for i in self.input.findItems(s,QtCore.Qt.MatchExactly):
+            for i in self.input.findItems(s, QtCore.Qt.MatchExactly):
                 i.setCheckState(qtflag)
 
     def getSelected(self):
         res = [i.text() for i in self.input.selectedItems()]
-        return map(str,res)
+        return map(str, res)
 
     def getChecked(self):
         res = [ i.text() for i in self.input.allItems() if i.checkState()==QtCore.Qt.Checked ]
-        return map(str,res)
+        return map(str, res)
 
     def value(self):
         """Return the widget's value."""
@@ -686,14 +686,14 @@ class InputList(InputItem):
             f = self.getSelected
         return f()
 
-    def setValue(self,val):
+    def setValue(self, val):
         """Change the widget's value."""
         if self._check_:
             f = self.setChecked
         else:
             f = self.setSelected
-        f(val,True)
-        f(olist.difference(self._choices_,val),False)
+        f(val, True)
+        f(olist.difference(self._choices_, val), False)
 
     def setAll(self):
         """Mark all items as selected/checked."""
@@ -738,19 +738,19 @@ class InputCombo(InputItem):
             # BEWARE: onselect now returns index of selection instead of string
             self.input.currentIndexChanged['QString'].connect(onselect)
         self.setValue(value)
-        self.layout().insertWidget(1,self.input)
+        self.layout().insertWidget(1, self.input)
 
     def value(self):
         """Return the widget's value."""
         return str(self.input.currentText())
 
-    def setValue(self,val):
+    def setValue(self, val):
         """Change the widget's current value."""
         val = str(val)
         if val in self._choices_:
             self.input.setCurrentIndex(self._choices_.index(val))
 
-    def setChoices(self,choices):
+    def setChoices(self, choices):
         """Change the widget's choices.
 
         This also sets the current value to the first in the list.
@@ -762,7 +762,7 @@ class InputCombo(InputItem):
         self._choices_ = [ str(s) for s in choices ]
         self.input.addItems(self._choices_)
 
-    def setIndex(self,i):
+    def setIndex(self, i):
         self.input.setCurrentIndex(i)
 
 
@@ -791,10 +791,10 @@ class InputRadio(InputItem):
         InputItem.__init__(self,name,*args,**kargs)
         if direction == 'v':
             self.hbox = QtGui.QVBoxLayout()
-            self.hbox.setContentsMargins(0,10,0,10)
+            self.hbox.setContentsMargins(0, 10, 0, 10)
         else:
             self.hbox = QtGui.QHBoxLayout()
-            self.hbox.setContentsMargins(10,0,10,0)
+            self.hbox.setContentsMargins(10, 0, 10, 0)
         self.rb = []
         self.hbox.addStretch(1)
 
@@ -805,7 +805,7 @@ class InputRadio(InputItem):
 
         self.rb[choices.index(value)].setChecked(True)
         self.input.setLayout(self.hbox)
-        self.layout().insertWidget(1,self.input)
+        self.layout().insertWidget(1, self.input)
 
     def value(self):
         """Return the widget's value."""
@@ -814,7 +814,7 @@ class InputRadio(InputItem):
                 return str(rb.text())
         return ''
 
-    def setValue(self,val):
+    def setValue(self, val):
         """Change the widget's value."""
         val = str(val)
         for rb in self.rb:
@@ -853,17 +853,17 @@ class InputPush(InputItem):
         self.input.setFlat(True)
         if direction == 'v':
             self.hbox = QtGui.QVBoxLayout()
-            self.hbox.setContentsMargins(0,10,0,10)
+            self.hbox.setContentsMargins(0, 10, 0, 10)
         else:
             self.hbox = QtGui.QHBoxLayout()
-            self.hbox.setContentsMargins(5,0,5,0)
+            self.hbox.setContentsMargins(5, 0, 5, 0)
         self.hbox.setSpacing(0)
 
         self.bg = QtGui.QButtonGroup()
-        for i,v in enumerate(choices):
+        for i, v in enumerate(choices):
             if icon and iconsonly:
                 b = QtGui.QToolButton()
-                b.setContentsMargins(0,0,0,0)
+                b.setContentsMargins(0, 0, 0, 0)
                 b.setStyleSheet("* { margin: 0px; padding: 0px; }")
                 b.setText(v)
                 b.setIcon(pyformexIcon(icon[i]))
@@ -875,11 +875,11 @@ class InputPush(InputItem):
             b.setCheckable(True)
             if v == value:
                 b.setChecked(True)
-            self.bg.addButton(b,i)
+            self.bg.addButton(b, i)
             self.hbox.addWidget(b)
 
         self.input.setLayout(self.hbox)
-        self.layout().insertWidget(1,self.input)
+        self.layout().insertWidget(1, self.input)
 
     def setText(self,text,index=0):
         """Change the text on button index."""
@@ -893,7 +893,7 @@ class InputPush(InputItem):
         """Return the widget's value."""
         return str(self.bg.checkedButton().text())
 
-    def setValue(self,val):
+    def setValue(self, val):
         """Change the widget's value."""
         val = str(val)
         for b in self.bg.buttons():
@@ -918,7 +918,7 @@ class InputInteger(InputItem):
         if 'max' in kargs:
             self.validator.setTop(int(kargs['max']))
         self.input.setValidator(self.validator)
-        self.layout().insertWidget(1,self.input)
+        self.layout().insertWidget(1, self.input)
 
     def show(self):
         """Select all text on first display."""
@@ -929,7 +929,7 @@ class InputInteger(InputItem):
         """Return the widget's value."""
         return int(self.input.text())
 
-    def setValue(self,val):
+    def setValue(self, val):
         """Change the widget's value."""
         val = int(val)
         self.input.setText(str(val))
@@ -950,7 +950,7 @@ class InputFloat(InputItem):
         if 'dec' in kargs:
             self.validator.setDecimals(int(kargs['dec']))
         self.input.setValidator(self.validator)
-        self.layout().insertWidget(1,self.input)
+        self.layout().insertWidget(1, self.input)
 
     def show(self):
         """Select all text on first display."""
@@ -961,7 +961,7 @@ class InputFloat(InputItem):
         """Return the widget's value."""
         return float(self.input.text())
 
-    def setValue(self,val):
+    def setValue(self, val):
         """Change the widget's value."""
         val = float(val)
         self.input.setText(str(val))
@@ -986,7 +986,7 @@ class InputTable(InputItem):
 
     def __init__(self,name,value,chead=None,rhead=None,celltype=None,rowtype=None,coltype=None,edit=True,resize=None,autowidth=True,*args,**kargs):
         """Initialize the input item."""
-        self.input = Table(value,chead=chead,rhead=rhead,celltype=celltype,rowtype=rowtype,coltype=coltype,edit=edit,resize=resize,autowidth=autowidth)
+        self.input = Table(value, chead=chead, rhead=rhead, celltype=celltype, rowtype=rowtype, coltype=coltype, edit=edit, resize=resize, autowidth=autowidth)
         InputItem.__init__(self,name,*args,**kargs)
         self.layout().addWidget(self.input)
 
@@ -1018,10 +1018,10 @@ class InputSlider(InputInteger):
         InputInteger.__init__(self,name,value,*args,**kargs)
         self.slider = QtGui.QSlider(QtCore.Qt.Horizontal)
         self.slider.setTickPosition(QtGui.QSlider.TicksBelow)
-        vmin = kargs.get('min',0)
-        vmax = kargs.get('max',100)
+        vmin = kargs.get('min', 0)
+        vmax = kargs.get('max', 100)
 
-        ticks = kargs.get('ticks',(vmax-vmin)/10)
+        ticks = kargs.get('ticks', (vmax-vmin)/10)
         self.slider.setTickInterval(ticks)
         self.slider.setMinimum(vmin)
         self.slider.setMaximum(vmax)
@@ -1035,7 +1035,7 @@ class InputSlider(InputInteger):
             self.slider.valueChanged.connect(kargs['func'])
         self.layout().addWidget(self.slider)
 
-    def set_value(self,val):
+    def set_value(self, val):
         val = int(val)
         self.input.setText(str(val))
 
@@ -1059,12 +1059,12 @@ class InputFSlider(InputFloat):
         InputFloat.__init__(self,name,value,*args,**kargs)
         self.slider = QtGui.QSlider(QtCore.Qt.Horizontal)
         self.slider.setTickPosition(QtGui.QSlider.TicksBelow)
-        self.scale = kargs.get('scale',1.0)
-        self.func = kargs.get('func',None)
+        self.scale = kargs.get('scale', 1.0)
+        self.func = kargs.get('func', None)
 
-        vmin = kargs.get('min',0)
-        vmax = kargs.get('max',100)
-        ticks = kargs.get('ticks',(vmax-vmin)/10)
+        vmin = kargs.get('min', 0)
+        vmax = kargs.get('max', 100)
+        ticks = kargs.get('ticks', (vmax-vmin)/10)
         self.slider.setTickInterval(ticks)
         self.slider.setMinimum(vmin)
         self.slider.setMaximum(vmax)
@@ -1075,10 +1075,10 @@ class InputFSlider(InputFloat):
         self.slider.valueChanged.connect(self.set_value)
         self.layout().addWidget(self.slider)
 
-    def set_value(self,val):
+    def set_value(self, val):
         val = float(val)
         value = val*self.scale
-        pf.debug("  fslider: %s = %s" % (val,value),pf.DEBUG.GUI)
+        pf.debug("  fslider: %s = %s" % (val, value), pf.DEBUG.GUI)
         self.input.setText(str(value))
         if self.func:
             self.func(self)
@@ -1091,14 +1091,14 @@ class InputPoint(InputItem):
         """Initialize the input item."""
         self.input = CoordsBox()
         InputItem.__init__(self,name,*args,**kargs)
-        self.layout().insertWidget(1,self.input)
+        self.layout().insertWidget(1, self.input)
         self.setValue(value)
 
     def value(self):
         """Return the widget's value."""
         return self.input.getValues()
 
-    def setValue(self,val):
+    def setValue(self, val):
         """Change the widget's value."""
         self.input.setValues(val)
 
@@ -1122,8 +1122,8 @@ class InputIVector(InputItem):
         #self.input.setLayout(layout)
         layout = self.layout()
         self.fields = []
-        for fld,val in zip(fields,value):
-            f = InputInteger(fld,val)
+        for fld, val in zip(fields, value):
+            f = InputInteger(fld, val)
             self.fields.append(f)
             layout.addWidget(f)
 
@@ -1132,9 +1132,9 @@ class InputIVector(InputItem):
         """Return the widget's value."""
         return [ f.value() for f in self.fields ]
 
-    def setValue(self,val):
+    def setValue(self, val):
         """Change the widget's value."""
-        for f,v in zip(self.fields,val):
+        for f, v in zip(self.fields, val):
             f.setValue(v)
 
 
@@ -1157,12 +1157,12 @@ class InputButton(InputItem):
         """Initialize the input item."""
         value = str(value)
         self.input = QtGui.QPushButton(value)
-        self.func = kargs.get('func',None)
+        self.func = kargs.get('func', None)
         InputItem.__init__(self,name,*args,**kargs)
         self.setValue(value)
         if self.func:
             self.input.clicked.connect(self.doFunc)
-        self.layout().insertWidget(1,self.input)
+        self.layout().insertWidget(1, self.input)
 
 
     def doFunc(self):
@@ -1197,24 +1197,24 @@ class InputColor(InputItem):
         InputItem.__init__(self,name,*args,**kargs)
         self.setValue(color)
         self.input.clicked.connect(self.setColor)
-        self.layout().insertWidget(1,self.input)
-        self.func = kargs.get('func',None)
+        self.layout().insertWidget(1, self.input)
+        self.func = kargs.get('func', None)
 
 
     def setColor(self):
-        dia = QtGui.QColorDialog(QtGui.QColor(self.input.text()),self)
+        dia = QtGui.QColorDialog(QtGui.QColor(self.input.text()), self)
         dia.currentColorChanged.connect(self.set_value)
         dia.open()
 
 
-    def set_value(self,val):
+    def set_value(self, val):
         color = colors.colorName(val)
         self.setValue(color)
         if self.func:
             self.func(self)
 
 
-    def setValue(self,value):
+    def setValue(self, value):
         """Change the widget's value."""
         col = QtGui.QColor(value)
         col = colors.RGBcolor(col)
@@ -1240,7 +1240,7 @@ class InputFont(InputItem):
         InputItem.__init__(self,name,*args,**kargs)
         self.setValue(value)
         self.input.clicked.connect(self.setFont)
-        self.layout().insertWidget(1,self.input)
+        self.layout().insertWidget(1, self.input)
 
 
     def setFont(self):
@@ -1258,13 +1258,13 @@ class InputFile(InputItem):
     """
     def __init__(self,name,value,pattern='*',exist=False,multi=False,dir=False,*args,**kargs):
         """Initialize the input item."""
-        self.input = FileSelection(value,pattern,exist,multi,dir)
+        self.input = FileSelection(value, pattern, exist, multi, dir)
         # remove the dialog buttons, since the widget is embedded
         for b in self.input.findChildren(QtGui.QPushButton):
             b.close()
 
         InputItem.__init__(self,name,*args,**kargs)
-        self.layout().insertWidget(1,self.input)
+        self.layout().insertWidget(1, self.input)
 
 
     def value(self):
@@ -1272,7 +1272,7 @@ class InputFile(InputItem):
         #self.input.accept()
         return self.input.value()
 
-    def setValue(self,value):
+    def setValue(self, value):
         self.input.selectFile(value)
 
 
@@ -1295,7 +1295,7 @@ class InputWidget(InputItem):
         kargs['text'] = '' # Force no label
         self.input = value
         InputItem.__init__(self,name,*args,**kargs)
-        self.layout().insertWidget(1,self.input)
+        self.layout().insertWidget(1, self.input)
 
     def text(self):
         """Return the displayed text."""
@@ -1305,7 +1305,7 @@ class InputWidget(InputItem):
         """Return the widget's value."""
         return self.input.value()
 
-    def setValue(self,val):
+    def setValue(self, val):
         """Change the widget's value."""
         if val:
             self.input.setValue(val)
@@ -1351,7 +1351,7 @@ class InputGroup(QtGui.QGroupBox):
         self.tab = None
         self.form = InputForm()
         self.setLayout(self.form)
-        self.setTitle(kargs.get('text',name))
+        self.setTitle(kargs.get('text', name))
         if 'checked' in kargs:
             self.setCheckable(True)
             self.setChecked(kargs['checked'])
@@ -1368,7 +1368,7 @@ class InputGroup(QtGui.QGroupBox):
         else:
             return None
 
-    def setValue(self,val):
+    def setValue(self, val):
         """Change the widget's value."""
         if self.isCheckable():
             self.setChecked(val)
@@ -1383,7 +1383,7 @@ class InputTab(QtGui.QWidget):
         self.key = name
         self.form = InputForm()
         self.setLayout(self.form)
-        tab.addTab(self,kargs.get('text',name))
+        tab.addTab(self, kargs.get('text', name))
 
     def name(self):
         return self.key
@@ -1438,11 +1438,11 @@ def convertInputItem(item):
       is tried, using the item items as arguments.
     - if neither succeeds, an error is raised.
     """
-    if isinstance(item,dict):
+    if isinstance(item, dict):
         return item
-    elif isinstance(item,QtGui.QWidget):
+    elif isinstance(item, QtGui.QWidget):
         return item
-    elif type(item) in [list,tuple]:
+    elif type(item) in [list, tuple]:
         try:
             return simpleInputItem(*item)
         except:
@@ -1453,7 +1453,7 @@ def convertInputItem(item):
 # define a function to have the same enabling name as for InputItem
 def enableItem(self,*args):
     try:
-        ok = any([ src.value() == val for src,val in self.enabled_by ])
+        ok = any([ src.value() == val for src, val in self.enabled_by ])
         self.setEnabled(ok)
     except:
         utils.warn("error_widgets_enableitem")
@@ -1541,7 +1541,7 @@ class InputDialog(QtGui.QDialog):
         """Create a dialog asking the user for the value of items."""
         if parent is None:
             parent = pf.GUI
-        QtGui.QDialog.__init__(self,parent)
+        QtGui.QDialog.__init__(self, parent)
 
         if caption is None:
             caption = 'pyFormex-dialog'
@@ -1553,12 +1553,12 @@ class InputDialog(QtGui.QDialog):
             self.setModal(modal)
 
         try:
-            w,h = size
+            w, h = size
             if isinstance(w, float):
                 w = int(w*pf.maxsize[0])
             if isinstance(h, float):
                 h = int(h*pf.maxsize[1])
-            self.resize(w,h)
+            self.resize(w, h)
         except:
             pass
 
@@ -1586,10 +1586,10 @@ class InputDialog(QtGui.QDialog):
         # add the items to the input form
         # converting first allows for sloppy input
         items = [ convertInputItem(i) for i in items ]
-        self.add_items(items,self.form,self.prefix)
+        self.add_items(items, self.form, self.prefix)
 
         # add the action buttons
-        but = ButtonBox(actions=actions,default=default,parent=self,stretch=[0,1])
+        but = ButtonBox(actions=actions, default=default, parent=self, stretch=[0, 1])
         self.form.addWidget(but)
 
         self.setLayout(self.form)
@@ -1607,19 +1607,19 @@ class InputDialog(QtGui.QDialog):
                     #print "%s" % (tgt)
                     if tgt:
                         try:
-                            tgt.enabled_by.append((src,val))
+                            tgt.enabled_by.append((src, val))
                         except:
-                            tgt.enabled_by = [(src,val)]
+                            tgt.enabled_by = [(src, val)]
                         signal = None
-                        if isinstance(src,InputBool):
+                        if isinstance(src, InputBool):
                             signal = src.input.stateChanged[int]
-                        elif isinstance(src,InputRadio):
+                        elif isinstance(src, InputRadio):
                             utils.warn('radio_enabler')
                             # BV: this does not work
                             #signal = src.input.buttonClicked[int]
-                        elif isinstance(src,InputCombo):
+                        elif isinstance(src, InputCombo):
                             signal = src.input.currentIndexChanged[int]
-                        elif isinstance(src,InputGroup):
+                        elif isinstance(src, InputGroup):
                             signal = src.input.clicked[bool]
                         else:
                             raise ValueError("Can not enable from a %s input field" % type(src.input))
@@ -1642,9 +1642,9 @@ class InputDialog(QtGui.QDialog):
         """
         for item in items:
 
-            if isinstance(item,dict):
+            if isinstance(item, dict):
 
-                itemtype = item.get('itemtype',None)
+                itemtype = item.get('itemtype', None)
 
                 if itemtype == 'tab':
                     self.add_tab(form,prefix=prefix,**item)
@@ -1657,7 +1657,7 @@ class InputDialog(QtGui.QDialog):
 
                 form.last = itemtype
 
-            elif isinstance(item,QtGui.QWidget):
+            elif isinstance(item, QtGui.QWidget):
                 # this allows including widgets which are not
                 # input fields
                 form.addWidget(item)
@@ -1681,7 +1681,7 @@ class InputDialog(QtGui.QDialog):
         w = InputTab(prefix+name,tab,**extra)
         if self.autoprefix:
             prefix += name+'/'
-        self.add_items(items,w.form,prefix=prefix)
+        self.add_items(items, w.form, prefix=prefix)
         w.form.addStretch() # makes items in tab align to top
 
 
@@ -1694,13 +1694,13 @@ class InputDialog(QtGui.QDialog):
 
         if self.autoprefix:
             prefix += name+'/'
-        self.add_items(items,w.form,prefix=prefix)
+        self.add_items(items, w.form, prefix=prefix)
 
 
     def add_input(self,form,prefix,**item):
         """Add a single input item to the form."""
         #print item
-        item['name'] = prefix + item.get('name',self.autoname.next())
+        item['name'] = prefix + item.get('name', self.autoname.next())
         if not 'value' in item:
             # no value: try to find one
             if 'choices' in item:
@@ -1747,7 +1747,7 @@ class InputDialog(QtGui.QDialog):
         form.addWidget(field)
 
 
-    def __getitem__(self,name):
+    def __getitem__(self, name):
         """Return the input item with specified name."""
         items = [ f for f in self.fields if f.name() == name ]
         if len(items) > 0:
@@ -1791,7 +1791,7 @@ class InputDialog(QtGui.QDialog):
         #print self.maximumHeight()
         QtGui.QDialog.show(self)
 
-        addTimeOut(self,timeout,timeoutfunc)
+        addTimeOut(self, timeout, timeoutfunc)
 
 
     ## def close(self):
@@ -1814,7 +1814,7 @@ class InputDialog(QtGui.QDialog):
         would close the dialog).
         """
         self.results = odict.ODict()
-        self.results.update([ (fld.name(),fld.value()) for fld in self.fields ])
+        self.results.update([ (fld.name(), fld.value()) for fld in self.fields ])
         #print(self.results)
         ## if self.report_pos:
         ##     self.results.update({'__pos__':self.pos()})
@@ -1824,7 +1824,7 @@ class InputDialog(QtGui.QDialog):
             self.setResult(result)
 
 
-    def updateData(self,d):
+    def updateData(self, d):
         """Update a dialog from the data in given dictionary.
 
         d is a dictionary where the keys are field names in the dialog.
@@ -1862,7 +1862,7 @@ class InputDialog(QtGui.QDialog):
         if self._pos is not None:
             self.restoreGeometry(self._pos)
 
-        self.show(timeout,modal=True)
+        self.show(timeout, modal=True)
         self.exec_()
         #self.activateWindow()
         #self.raise_()
@@ -1903,7 +1903,7 @@ def getInputItemDict(base=InputItem):
     if not sub:
         return {}
 
-    d = dict([ (k.__name__[5:].lower(),k) for k in sub ])
+    d = dict([ (k.__name__[5:].lower(), k) for k in sub ])
     for k in sub:
         d.update(getInputItemDict(k))
     return d
@@ -1945,7 +1945,7 @@ def inputAny(name,value,itemtype,**options):
     return f(name,value,**options)
 
 
-def updateDialogItems(data,newdata):
+def updateDialogItems(data, newdata):
     """Update the input data fields with new data values
 
     - data: a list of dialog items, as required by an InputDialog.
@@ -1960,30 +1960,30 @@ def updateDialogItems(data,newdata):
     if newdata:
         # check for old format
         if isinstance(data, dict):
-            return updateOldDialogItems(data,newdata)
+            return updateOldDialogItems(data, newdata)
         for d in data:
-            if not isinstance(d,dict):
-                return updateOldDialogItems(data,newdata)
+            if not isinstance(d, dict):
+                return updateOldDialogItems(data, newdata)
         # new format
         for d in data:
-            if d.get('itemtype',None) in [ 'group', 'tab' ]:
-                updateDialogItems(d['items'],newdata)
+            if d.get('itemtype', None) in [ 'group', 'tab' ]:
+                updateDialogItems(d['items'], newdata)
             else:
-                newval = newdata.get(d['name'],None)
+                newval = newdata.get(d['name'], None)
                 if newval is not None:
                     d['value'] = newval
 
 
-def updateOldDialogItems(data,newdata):
+def updateOldDialogItems(data, newdata):
     """_Update the input data fields with new data values."""
     utils.warn("warn_widgets_updatedialogitems")
     if newdata:
         if isinstance(data, dict):
             for d in data:
-                updateOldDialogItems(data[d],newdata)
+                updateOldDialogItems(data[d], newdata)
         else:
             for d in data:
-                v = newdata.get(d[0],None)
+                v = newdata.get(d[0], None)
                 if v is not None:
                     d[1] = v
 
@@ -2013,33 +2013,33 @@ class ListWidget(QtGui.QListWidget):
         for i in self.allItems():
             r = self.visualItemRect(i)
             h += r.height()
-            w = max(w,r.width())
-        return w,h
+            w = max(w, r.width())
+        return w, h
 
     def setSize(self):
-        w,h = self.reqSize()
-        pf.debug("Required list size is %s,%s" % (w,h),pf.DEBUG.WIDGET)
+        w, h = self.reqSize()
+        pf.debug("Required list size is %s,%s" % (w, h), pf.DEBUG.WIDGET)
         if self.maxh > -1:
-            self.setSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding)
+            self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
             if self.maxh > 0:
-                h = min(h,self.maxh)
-            w,hs = objSize(QtGui.QListWidget.sizeHint(self))
-            pf.debug("QListWidget hints size %s,%s" % (w,hs),pf.DEBUG.WIDGET)
+                h = min(h, self.maxh)
+            w, hs = objSize(QtGui.QListWidget.sizeHint(self))
+            pf.debug("QListWidget hints size %s,%s" % (w, hs), pf.DEBUG.WIDGET)
 
         if self.maxh < 0:
-            self.setFixedSize(w,h)
+            self.setFixedSize(w, h)
 
-        pf.debug("Setting list size to %s,%s" % (w,h),pf.DEBUG.WIDGET)
-        self._size = QtCore.QSize(w,h)
+        pf.debug("Setting list size to %s,%s" % (w, h), pf.DEBUG.WIDGET)
+        self._size = QtCore.QSize(w, h)
 
     def sizeHint(self):
         if self.maxh > 0:
-            w,h = objSize(QtGui.QListWidget.sizeHint(self))
+            w, h = objSize(QtGui.QListWidget.sizeHint(self))
             print(w)
             print(h)
-            print("QListWidget hints size %s,%s" % (w,h),pf.DEBUG.WIDGET)
-            h = max(h,self.maxh)
-            return QtCore.QSize(w,h)
+            print("QListWidget hints size %s,%s" % (w, h), pf.DEBUG.WIDGET)
+            h = max(h, self.maxh)
+            return QtCore.QSize(w, h)
         else:
             return self._size
 
@@ -2094,18 +2094,18 @@ class TableModel(QtCore.QAbstractTableModel):
         elif celltype is not None:
             self.celltype = celltype
         else:
-            if isinstance(data,np.ndarray):
+            if isinstance(data, np.ndarray):
                 self.celltype = data.dtype
             else:
                 self.celltype = str
         if self.coltype:
-            self._data = [ [ coltype(i) for i,coltype in zip(r,self.coltype) ] for r in data ]
+            self._data = [ [ coltype(i) for i, coltype in zip(r, self.coltype) ] for r in data ]
         elif self.rowtype:
-            self._data = [ [ rowtype(i) for i in r ] for r,rowtype in zip(data,self.rowtype) ]
+            self._data = [ [ rowtype(i) for i in r ] for r, rowtype in zip(data, self.rowtype) ]
         else:
             self._data = [ [ self.celltype(i) for i in r ] for r in data ]
         self.headerdata = {QtCore.Qt.Horizontal:chead,QtCore.Qt.Vertical:rhead}
-        self.makeEditable(edit,resize)
+        self.makeEditable(edit, resize)
 
 
     def makeEditable(self,edit=True,resize=None):
@@ -2135,16 +2135,16 @@ class TableModel(QtCore.QAbstractTableModel):
         return len(self._data[0])
 
 
-    def data(self,index,role):
+    def data(self, index, role):
         """Return the data at the specified index"""
         if index.isValid() and role == QtCore.Qt.DisplayRole:
-            r,c = index.row(),index.column()
+            r, c = index.row(), index.column()
             return self._data[r][c]
         else:
             return None
 
 
-    def cellType(self,r,c):
+    def cellType(self, r, c):
         """Return the type of the item at the specified position"""
         if self.coltype:
             itemtype = self.coltype[c]
@@ -2155,12 +2155,12 @@ class TableModel(QtCore.QAbstractTableModel):
         return itemtype
 
 
-    def setCellData(self,r,c,value):
+    def setCellData(self, r, c, value):
         """Set the value of an individual table element.
 
         This changes the stored data, not the interface.
         """
-        itemtype = self.cellType(r,c)
+        itemtype = self.cellType(r, c)
         if self.coltype:
             itemtype = self.coltype[c]
         elif self.rowtype:
@@ -2174,9 +2174,9 @@ class TableModel(QtCore.QAbstractTableModel):
         """Set the value of an individual table element."""
         if self.edit and role == QtCore.Qt.EditRole:
             try:
-                r,c = [index.row(),index.column()]
-                self.setCellData(r,c,value)
-                self.dataChanged.emit(index,index) #not sure if needed
+                r, c = [index.row(), index.column()]
+                self.setCellData(r, c, value)
+                self.dataChanged.emit(index, index) #not sure if needed
                 return True
             except:
                 raise
@@ -2187,7 +2187,7 @@ class TableModel(QtCore.QAbstractTableModel):
         return False
 
 
-    def headerData(self,col,orientation,role):
+    def headerData(self, col, orientation, role):
         """Return the header data for the sepcified row or column"""
         if orientation in self.headerdata and self.headerdata[orientation] and role == QtCore.Qt.DisplayRole:
             return self.headerdata[orientation][col]
@@ -2202,7 +2202,7 @@ class TableModel(QtCore.QAbstractTableModel):
             count = 1
         last = row+count-1
         newdata = [ [ None ] * self.columnCount() ] * count
-        self.beginInsertRows(QtCore.QModelIndex(),row,last)
+        self.beginInsertRows(QtCore.QModelIndex(), row, last)
         self._data[row:row] = newdata
         self.endInsertRows()
         return True
@@ -2215,13 +2215,13 @@ class TableModel(QtCore.QAbstractTableModel):
         if count is None:
             count = 1
         last = row+count-1
-        self.beginRemoveRows(QtCore.QModelIndex(),row,last)
+        self.beginRemoveRows(QtCore.QModelIndex(), row, last)
         self._data[row:row+count] = []
         self.endRemoveRows()
         return True
 
 
-    def flags(self,index):
+    def flags(self, index):
         """Return the TableModel flags."""
         return self._flags
 
@@ -2277,15 +2277,15 @@ class ArrayModel(QtCore.QAbstractTableModel):
         return self._data.shape[1]
 
 
-    def data(self,index,role):
+    def data(self, index, role):
         if index.isValid() and role == QtCore.Qt.DisplayRole:
-            r,c = index.row(),index.column()
-            return self.generictype(self._data[r,c])
+            r, c = index.row(), index.column()
+            return self.generictype(self._data[r, c])
         else:
             return None
 
 
-    def cellType(self,r,c):
+    def cellType(self, r, c):
         """Return the type of the item at the specified position"""
         return self._data.dtype
 
@@ -2296,19 +2296,19 @@ class ArrayModel(QtCore.QAbstractTableModel):
             try:
                 k = self._data.dtype.kind
                 if k == 'f':
-                    value,ok = value.toDouble()
+                    value, ok = value.toDouble()
                 elif k == 'i':
                     #value,ok = value.toInt()
                     print(type(value))
-                    value,ok = int(value),True
+                    value, ok = int(value), True
                 else:
                     ok = False
                 if not ok:
                     pf.warning("Expected %s data" % self.generictype)
                     return False
-                r,c = [index.row(),index.column()]
-                self._data[r,c] = value
-                self.dataChanged.emit(index,index) #not sure if needed
+                r, c = [index.row(), index.column()]
+                self._data[r, c] = value
+                self.dataChanged.emit(index, index) #not sure if needed
                 return True
             except:
                 raise
@@ -2319,14 +2319,14 @@ class ArrayModel(QtCore.QAbstractTableModel):
         return False
 
 
-    def headerData(self,col,orientation,role):
+    def headerData(self, col, orientation, role):
         """Return the header data for the sepcified row or column"""
         if orientation in self.headerdata and self.headerdata[orientation] and role == QtCore.Qt.DisplayRole:
             return self.headerdata[orientation][col]
         return None
 
 
-    def flags(self,index):
+    def flags(self, index):
         """Return the TableModel flags."""
         return self._flags
 
@@ -2353,15 +2353,15 @@ class Table(QtGui.QTableView):
     def __init__(self,data,chead=None,rhead=None,label=None,celltype=None,rowtype=None,coltype=None,edit=True,resize=None,parent=None,autowidth=True):
         """Initialize the Table widget."""
         import numpy as np
-        QtGui.QTableView.__init__(self,parent)
-        if isinstance(data,np.ndarray):
-            self.tm = ArrayModel(data,chead,rhead,edit=edit)
+        QtGui.QTableView.__init__(self, parent)
+        if isinstance(data, np.ndarray):
+            self.tm = ArrayModel(data, chead, rhead, edit=edit)
         else:
-            self.tm = TableModel(data,chead,rhead,celltype,rowtype,coltype,edit=edit,resize=resize)
+            self.tm = TableModel(data, chead, rhead, celltype, rowtype, coltype, edit=edit, resize=resize)
         self.setModel(self.tm)
         self.horizontalHeader().setVisible(chead is not None)
         self.verticalHeader().setVisible(rhead is not None)
-        self.setSizePolicy(QtGui.QSizePolicy.MinimumExpanding,QtGui.QSizePolicy.MinimumExpanding)
+        self.setSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.MinimumExpanding)
         #self.connect(tm,dataChanged
         self.autowidth = autowidth
         if self.autowidth:
@@ -2394,14 +2394,14 @@ class Table(QtGui.QTableView):
         if self.verticalHeader().isVisible():
             width += self.verticalHeader().width()
         #print("HEADERED SIZE: %s, %s" % (width,height))
-        size = QtCore.QSize(width,height)
+        size = QtCore.QSize(width, height)
         return size
 
     sizeHint = minimumSizeHint
 
-    def dataChanged(self,ind1,ind2):
+    def dataChanged(self, ind1, ind2):
         print("DATA CHANGED")
-        QtGui.QTableView.dataChanged(self,ind1,ind2)
+        QtGui.QTableView.dataChanged(self, ind1, ind2)
         self.update()
 
     def update(self):
@@ -2502,8 +2502,8 @@ class FileSelection(QtGui.QFileDialog):
                 mode = QtGui.QFileDialog.Directory
             else:
                 mode = QtGui.QFileDialog.ExistingFile
-                self.setOption(QtGui.QFileDialog.DontUseNativeDialog,True)
-                l = self.findChild(QtGui.QListView,'listView')
+                self.setOption(QtGui.QFileDialog.DontUseNativeDialog, True)
+                l = self.findChild(QtGui.QListView, 'listView')
                 l.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
                 c = self.findChild(QtGui.QTreeView)
                 c.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
@@ -2531,7 +2531,7 @@ class FileSelection(QtGui.QFileDialog):
                 button = '&Open'
             else:
                 button = '&Save'
-        self.setLabelText(QtGui.QFileDialog.Accept,button)
+        self.setLabelText(QtGui.QFileDialog.Accept, button)
 #         if self.sidebar:
 ##             urls = self.sidebarUrls()
 ##             for f in self.sidebar:
@@ -2544,13 +2544,13 @@ class FileSelection(QtGui.QFileDialog):
     def show(self,timeout=None,timeoutfunc=None,modal=False):
         self.setModal(modal)
         QtGui.QFileDialog.show(self)
-        addTimeOut(self,timeout,timeoutfunc)
+        addTimeOut(self, timeout, timeoutfunc)
 
 
     def value(self):
         """Return the selected value"""
         # TODO: since API2, this mapping may be left out?
-        ret = map(str,self.selectedFiles())
+        ret = map(str, self.selectedFiles())
         if self.fileMode() != QtGui.QFileDialog.ExistingFiles:
             # not multiple selection
             ret = ret[0]
@@ -2566,7 +2566,7 @@ class FileSelection(QtGui.QFileDialog):
         Return the filename selected by the user.
         If the user hits CANCEL or ESC, None is returned.
         """
-        self.show(timeout,modal=True)
+        self.show(timeout, modal=True)
         self.exec_()
         if self.result() == ACCEPTED:
             return self.value()
@@ -2584,27 +2584,27 @@ class ProjectSelection(FileSelection):
             path = pf.cfg['workdir']
         if pattern is None:
             pattern = map(utils.fileDescription, ['pyf'])
-        FileSelection.__init__(self,path,pattern,exist)
+        FileSelection.__init__(self, path, pattern, exist)
         grid = self.layout()
-        nr,nc = grid.rowCount(),grid.columnCount()
+        nr, nc = grid.rowCount(), grid.columnCount()
 
         if access is None:
             access = [ 'rw', 'r' ] if exist else [ 'wr', 'rw', 'w', 'r' ]
-        self.acc = InputRadio("Access Mode",default,choices=access)
+        self.acc = InputRadio("Access Mode", default, choices=access)
         self.acc.setToolTip("wr=read if exist; rw=must exist; w=overwrite; r=readonly")
-        grid.addWidget(self.acc,nr,0,1,-1)
+        grid.addWidget(self.acc, nr, 0, 1, -1)
         nr += 1
 
         if exist:
-            self.cvt = InputBool("Automatically convert file to latest format",convert)
+            self.cvt = InputBool("Automatically convert file to latest format", convert)
             self.cvt.setToolTip("It is recommended to automatically convert your project files to the latest format, to avoid future compatibility problems. The only reason to not convert is if you still need to read your files with olde versions of pyFormex. The conversion will not be performed if pyFormex can not correctly read your file.")
-            grid.addWidget(self.cvt,nr,0,1,-1)
+            grid.addWidget(self.cvt, nr, 0, 1, -1)
             nr += 1
 
         if not exist:
-            self.cpr = InputSlider("Compression level (0-9)",compression,min=0,max=9,ticks=1)
+            self.cpr = InputSlider("Compression level (0-9)", compression, min=0, max=9, ticks=1)
             self.cpr.setToolTip("Higher compression levels result in smaller files, but higher load and save times.")
-            grid.addWidget(self.cpr,nr,0,1,-1)
+            grid.addWidget(self.cpr, nr, 0, 1, -1)
             nr += 1
 
 
@@ -2615,9 +2615,9 @@ class ProjectSelection(FileSelection):
             opt.fn = str(self.selectedFiles()[0])
             opt.acc = self.acc.value()
             opt.cpr = opt.cvt = None
-            if hasattr(self,'cpr'):
+            if hasattr(self, 'cpr'):
                 opt.cpr = self.cpr.value()
-            if hasattr(self,'cvt'):
+            if hasattr(self, 'cvt'):
                 opt.cvt = self.cvt.value()
             return opt
 
@@ -2646,19 +2646,19 @@ class SaveImageDialog(FileSelection):
         if path is None:
             path = pf.cfg['workdir']
         if pattern is None:
-            pattern = map(utils.fileDescription, ['img','icon','all'])
-        FileSelection.__init__(self,path,pattern,exist)
+            pattern = map(utils.fileDescription, ['img', 'icon', 'all'])
+        FileSelection.__init__(self, path, pattern, exist)
         grid = self.layout()
-        nr,nc = grid.rowCount(),grid.columnCount()
+        nr, nc = grid.rowCount(), grid.columnCount()
         try:
-            w,h = SaveImageDialog.default_size
+            w, h = SaveImageDialog.default_size
         except:
-            w,h = pf.canvas.getSize()
+            w, h = pf.canvas.getSize()
         import image
         formats = ['From Extension'] + image.imageFormats()
-        self.fmt = InputCombo("Format:",None,choices=formats)
-        self.qua = InputInteger("Quality:",-1)
-        self.siz = InputIVector("Size:",[w,h],fields=['W','H'])
+        self.fmt = InputCombo("Format:", None, choices=formats)
+        self.qua = InputInteger("Quality:", -1)
+        self.siz = InputIVector("Size:", [w, h], fields=['W', 'H'])
         self.win = QtGui.QCheckBox("Whole Window")
         self.roo = QtGui.QCheckBox("Crop Root")
         self.bor = QtGui.QCheckBox("Add Border")
@@ -2673,18 +2673,18 @@ class SaveImageDialog(FileSelection):
         self.mul.setToolTip("If checked, multiple images can be saved\nwith autogenerated names.")
         self.hot.setToolTip("If checked, a new image can be saved\nby hitting the 'S' key when focus is in the Canvas.")
         self.aut.setToolTip("If checked, a new image will saved\non each draw() operation")
-        grid.addWidget(self.fmt,nr,0,1,2)
-        grid.addWidget(self.qua,nr,2)
+        grid.addWidget(self.fmt, nr, 0, 1, 2)
+        grid.addWidget(self.qua, nr, 2)
         nr += 1
-        grid.addWidget(self.siz,nr,0,1,2)
+        grid.addWidget(self.siz, nr, 0, 1, 2)
         nr += 1
-        grid.addWidget(self.win,nr,0)
-        grid.addWidget(self.roo,nr,1)
-        grid.addWidget(self.bor,nr,2)
+        grid.addWidget(self.win, nr, 0)
+        grid.addWidget(self.roo, nr, 1)
+        grid.addWidget(self.bor, nr, 2)
         nr += 1
-        grid.addWidget(self.mul,nr,0)
-        grid.addWidget(self.hot,nr,1)
-        grid.addWidget(self.aut,nr,2)
+        grid.addWidget(self.mul, nr, 0)
+        grid.addWidget(self.hot, nr, 1)
+        grid.addWidget(self.aut, nr, 2)
 
 
     def getResult(self):
@@ -2716,7 +2716,7 @@ def selectFont():
     button.
     Returns None if the user clicked :guilabel:`CANCEL`.
     """
-    font,ok = QtGui.QFontDialog.getFont()
+    font, ok = QtGui.QFontDialog.getFont()
     if ok:
         return font
     else:
@@ -2735,13 +2735,13 @@ class ListSelection(InputDialog):
     """
     def __init__(self,choices,caption='ListSelection',default=[],single=False,check=False,sort=False,*args,**kargs):
         """Create the SelectionList dialog."""
-        InputDialog.__init__(self,caption=caption,items = [
+        InputDialog.__init__(self, caption=caption, items = [
             dict(name='input',value=default,itemtype='list',choices=choices,
                  text='',single=single,check=check,sort=sort,*args,**kargs),
             ],)
 
 
-    def setValue(self,selected):
+    def setValue(self, selected):
         """Mark the specified items as selected."""
         self['input'].setValue(selected)
 
@@ -2807,7 +2807,7 @@ class GenericDialog(QtGui.QDialog):
         """Create the Dialog"""
         if parent is None:
             parent = pf.GUI
-        QtGui.QDialog.__init__(self,parent)
+        QtGui.QDialog.__init__(self, parent)
         if title is None:
             title = 'pyFormex Dialog'
         self.setWindowTitle(str(title))
@@ -2816,7 +2816,7 @@ class GenericDialog(QtGui.QDialog):
         self.add(widgets)
 
         if actions is not None:
-            but = ButtonBox(actions=actions,default=default,parent=self)
+            but = ButtonBox(actions=actions, default=default, parent=self)
             self.form.addWidget(but)
 
         self.setLayout(self.form)
@@ -2830,7 +2830,7 @@ class GenericDialog(QtGui.QDialog):
                 ind = pos
             else:
                 ind = pos+self.form.count()
-            self.form.insertWidget(ind,w)
+            self.form.insertWidget(ind, w)
 
 
 # Deprecated in 0.9.0
@@ -2906,7 +2906,7 @@ def updateText(widget,text,format=''):
 
     """
     # autorecognition
-    if format not in ['plain','html','rest']:
+    if format not in ['plain', 'html', 'rest']:
         if isinstance(text, str) and text.startswith('..'):
             format = 'rest'
 
@@ -2958,22 +2958,22 @@ class MessageBox(QtGui.QMessageBox):
     def __init__(self,text,format='',level='info',actions=['OK'],default=None,timeout=None,modal=None,parent=None,check=None):
         if parent is None:
             parent = pf.GUI
-        QtGui.QMessageBox.__init__(self,parent)
+        QtGui.QMessageBox.__init__(self, parent)
         if modal is not None:
             self.setModal(modal)
         if default is None:
             default = actions[-1]
-        updateText(self,text,format)
+        updateText(self, text, format)
         icon = self.getIcon(level)
         if icon:
             self.setIcon(icon)
 
         for a in actions:
-            b = self.addButton(a,QtGui.QMessageBox.AcceptRole)
+            b = self.addButton(a, QtGui.QMessageBox.AcceptRole)
             if a == default:
                 self.setDefaultButton(b)
 
-        addTimeOut(self,timeout,self.accept)
+        addTimeOut(self, timeout, self.accept)
         self.checks = []
         if check:
             self.checks.append(self.addCheck(check))
@@ -2989,12 +2989,12 @@ class MessageBox(QtGui.QMessageBox):
             return self.Question
 
 
-    def addCheck(self,text):
+    def addCheck(self, text):
         """Add a check field at the bottom of the layout."""
         grid = self.layout()
-        nr,nc = grid.rowCount(),grid.columnCount()
+        nr, nc = grid.rowCount(), grid.columnCount()
         check = QtGui.QCheckBox(text)
-        grid.addWidget(check,nr,1)
+        grid.addWidget(check, nr, 1)
         return check
 
 
@@ -3021,13 +3021,13 @@ class MessageBox(QtGui.QMessageBox):
         else:
             res = ''
         if self.checks:
-            return res,[c.isChecked() for c in self.checks]
+            return res, [c.isChecked() for c in self.checks]
         else:
             return res
 
 
     def updateText(self,text,format=''):
-        updateText(self._t,text,format)
+        updateText(self._t, text, format)
 
 
 class WarningBox(QtGui.QMessageBox):
@@ -3071,7 +3071,7 @@ class TextBox(QtGui.QDialog):
     def __init__(self,text,format=None,actions=[('OK',)],modal=None,parent=None,caption=None,mono=False,timeout=None,flags=None):
         if parent is None:
             parent = pf.GUI
-        QtGui.QDialog.__init__(self,parent)
+        QtGui.QDialog.__init__(self, parent)
         if flags is not None:
             self.setWindowFlags(flags)
         if caption is None:
@@ -3081,31 +3081,31 @@ class TextBox(QtGui.QDialog):
             self.setModal(modal)
         self._t = QtGui.QTextEdit()
         self._t.setReadOnly(True)
-        updateText(self._t,text,format)
-        self._b = ButtonBox(actions=actions,parent=self)#,stretch=[1,1])
+        updateText(self._t, text, format)
+        self._b = ButtonBox(actions=actions, parent=self)#,stretch=[1,1])
         l = QtGui.QVBoxLayout()
         l.addWidget(self._t)
         l.addWidget(self._b)
         self.setLayout(l)
-        self.resize(800,400)
+        self.resize(800, 400)
         if mono:
             font = QtGui.QFont("DejaVu Sans Mono")
             # font.setStyle(QtGui.QFont.StyleNormal)
             self.setFont(font)
 
-        addTimeOut(self,timeout,self.accept)
+        addTimeOut(self, timeout, self.accept)
 
     def getResult(self):
         return self.exec_() == ACCEPTED
 
     def updateText(self,text,format=''):
-        updateText(self._t,text,format)
+        updateText(self._t, text, format)
 
 
 ############################# Button box ###########################
 
 
-def addActionButtons(layout,actions=[('Cancel',),('OK',)],default=None,
+def addActionButtons(layout,actions=[('Cancel',), ('OK',)],default=None,
                      parent=None):
     """Add a set of action buttons to a layout
 
@@ -3136,22 +3136,22 @@ def addActionButtons(layout,actions=[('Cancel',),('OK',)],default=None,
             return strippedFunc
 
     if actions is None:
-        actions = [('Cancel',),('OK',)]
+        actions = [('Cancel',), ('OK',)]
     if actions and default is None:
         default = actions[-1][0].lower()
     blist = []
     for a in actions:
         name = a[0]
         if name == '---':
-            spacer = QtGui.QSpacerItem(20,0,QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
+            spacer = QtGui.QSpacerItem(20, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
             layout.addItem(spacer)
         else:
             if len(a) > 2:
                 icon = a[2]
                 icon = pyformexIcon(icon)
-                b = QtGui.QPushButton(icon,'',parent)
+                b = QtGui.QPushButton(icon, '', parent)
             else:
-                b = QtGui.QPushButton(name,parent)
+                b = QtGui.QPushButton(name, parent)
             n = name.lower()
             if len(a) > 1 and callable(a[1]):
                 slot = a[1]
@@ -3200,23 +3200,23 @@ class ButtonBox(QtGui.QWidget):
       widgets.ACCEPTED or widgets.REJECTED.
     """
     def __init__(self,name='',actions=None,default=None,parent=None,
-                 spacer=False,stretch=[-1,-1],cmargin=(2,2,2,2)):
-        QtGui.QWidget.__init__(self,parent=parent)
-        self.setContentsMargins(0,0,0,0)
+                 spacer=False,stretch=[-1, -1],cmargin=(2, 2, 2, 2)):
+        QtGui.QWidget.__init__(self, parent=parent)
+        self.setContentsMargins(0, 0, 0, 0)
         layout = QtGui.QHBoxLayout()
         if name:
             self.label = QtGui.QLabel(name)
             layout.addWidget(self.label)
         if spacer:
-            spacer = QtGui.QSpacerItem(0,0,QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
+            spacer = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
             layout.addItem(spacer)
-        for i in [0,-1]:
+        for i in [0, -1]:
             if stretch[i] >= 0:
-                layout.insertStretch(i,stretch[i])
+                layout.insertStretch(i, stretch[i])
         layout.setSpacing(0)
         #layout.setMargin(20)
         layout.setContentsMargins(*cmargin)
-        self.buttons = addActionButtons(layout,actions,default,parent)
+        self.buttons = addActionButtons(layout, actions, default, parent)
         self.setLayout(layout)
 
     def setText(self,text,index=0):
@@ -3242,7 +3242,7 @@ class CoordsBox(QtGui.QWidget):
         layout = QtGui.QHBoxLayout(self)
         self.validator = QtGui.QDoubleValidator(self)
         self.values = []
-        for name in ['x','y','z'][:ndim]:
+        for name in ['x', 'y', 'z'][:ndim]:
             lbl = QtGui.QLabel(name)
             val = QtGui.QLineEdit('0.0')
             val.setValidator(self.validator)
@@ -3256,9 +3256,9 @@ class CoordsBox(QtGui.QWidget):
         """Return the current x,y,z values as a list of floats."""
         return [ float(val.text()) for val in self.values ]
 
-    def setValues(self,values):
+    def setValues(self, values):
         """Set the three values of the widget."""
-        for v,val in zip(self.values,map(float,values)):
+        for v, val in zip(self.values, map(float, values)):
             v.setText(str(val))
 
 
@@ -3272,15 +3272,15 @@ class ImageView(QtGui.QLabel):
 
     def __init__(self,image=None,maxheight=None,parent=None):
         """Create a new ImageView widget."""
-        QtGui.QLabel.__init__(self,parent)
+        QtGui.QLabel.__init__(self, parent)
         self.setBackgroundRole(QtGui.QPalette.Base)
-        self.setSizePolicy(QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Minimum)
+        self.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
         if maxheight:
             self.setMaximumHeight(maxheight)
         if image is None:
             self.filename = self.image = None
         else:
-            self.showImage(image,maxheight=maxheight)
+            self.showImage(image, maxheight=maxheight)
 
 
     def showImage(self,image,maxheight=None):
@@ -3291,7 +3291,7 @@ class ImageView(QtGui.QLabel):
         Most image formats are understood by QImage. The variable
         gui.image.image_formats_qtr provides a list.
         """
-        if isinstance(image,QtGui.QImage):
+        if isinstance(image, QtGui.QImage):
             filename = None
         else:
             filename = str(image)

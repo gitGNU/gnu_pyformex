@@ -81,13 +81,13 @@ def configure():
         accept(save=True)
 
     def autoSettings(keylist):
-        return [_I(k,pf.cfg[k]) for k in keylist]
+        return [_I(k, pf.cfg[k]) for k in keylist]
 
     jobs_settings = [
-        _I('jobs/host',pf.cfg.get('jobs/host','localhost'),text="Host",tooltip="The host machine where your job input/output files are located.",choices=pf.cfg.get('jobs/hosts',['localhost'])), #,buttons=[('Add Host',addHost)]),
-        _I('jobs/inputdir',pf.cfg.get('jobs/inputdir','bumper/requests'),text="Input directory"),
-        _I('jobs/outputdir',pf.cfg.get('jobs/outputdir','bumper/results'),text="Output directory"),
-        _I('_addhost_','',text="New host",tooltip="To set a host name that is not yet in the list of hosts, you can simply fill it in here."),
+        _I('jobs/host', pf.cfg.get('jobs/host', 'localhost'), text="Host", tooltip="The host machine where your job input/output files are located.", choices=pf.cfg.get('jobs/hosts', ['localhost'])), #,buttons=[('Add Host',addHost)]),
+        _I('jobs/inputdir', pf.cfg.get('jobs/inputdir', 'bumper/requests'), text="Input directory"),
+        _I('jobs/outputdir', pf.cfg.get('jobs/outputdir', 'bumper/results'), text="Output directory"),
+        _I('_addhost_', '', text="New host", tooltip="To set a host name that is not yet in the list of hosts, you can simply fill it in here."),
         ]
 
     dia = widgets.InputDialog(
@@ -95,21 +95,21 @@ def configure():
         store=pf.cfg,
         items=jobs_settings,
         actions=[
-            ('Close',close),
-            ('Accept and Save',acceptAndSave),
-            ('Accept',accept),
+            ('Close', close),
+            ('Accept and Save', acceptAndSave),
+            ('Accept', accept),
         ])
     dia.show()
 
 
-def getRemoteDirs(host,userdir):
+def getRemoteDirs(host, userdir):
     """Get a list of all subdirs in userdir on host.
 
     The host should be a machine where the user has ssh access.
     The userdir is relative to the user's home dir.
     """
-    cmd = "ssh %s 'cd %s;ls -F|egrep \".*/\"'" % (host,userdir)
-    P = utils.command(cmd,shell=True)
+    cmd = "ssh %s 'cd %s;ls -F|egrep \".*/\"'" % (host, userdir)
+    P = utils.command(cmd, shell=True)
     if P.sta:
         dirs = []
     else:
@@ -132,13 +132,13 @@ def getRemoteDirs(host,userdir):
 ##     return dirs
 
 
-def transferFiles(host,userdir,files,targetdir):
+def transferFiles(host, userdir, files, targetdir):
     """Copy files from userdir on host to targetdir.
 
     files is a list of file names.
     """
-    files = [ '%s:%s/%s' % (host,userdir.rstrip('/'),f) for f in files ]
-    cmd = "scp %s %s" % (' '.join(files),targetdir)
+    files = [ '%s:%s/%s' % (host, userdir.rstrip('/'), f) for f in files ]
+    cmd = "scp %s %s" % (' '.join(files), targetdir)
     P = utils.command(cmd)
     return P.sta
 
@@ -151,11 +151,11 @@ def remoteCommand(host=None,command=None):
     """
     if host is None or command is None:
         res = askItems(
-            [ _I('host',choices=['bumpfs','bumpfs2','--other--']),
-              _I('other','',text='Other host name'),
-              _I('command','hostname'),
+            [ _I('host', choices=['bumpfs', 'bumpfs2', '--other--']),
+              _I('other', '', text='Other host name'),
+              _I('command', 'hostname'),
               ],
-            enablers = [('host','--other--','other')],
+            enablers = [('host', '--other--', 'other')],
             )
 
     if res:
@@ -165,7 +165,7 @@ def remoteCommand(host=None,command=None):
         command = res['command']
 
     if host and command:
-        P = utils.command(['ssh',host,command])
+        P = utils.command(['ssh', host, command])
         print(P.out)
         return P.sta
 
@@ -178,7 +178,7 @@ def runLocalProcessor(filename='',processor='abaqus'):
     it is relative to the current directory.
     """
     if not filename:
-        filename = askFilename(pf.cfg['workdir'],filter="Abaqus input files (*.inp)",exist=True)
+        filename = askFilename(pf.cfg['workdir'], filter="Abaqus input files (*.inp)", exist=True)
     cpus = '4'
     if filename:
         jobname = os.path.basename(filename)[:-4]
@@ -186,57 +186,57 @@ def runLocalProcessor(filename='',processor='abaqus'):
         if dirname == '':
             dirname = '.'
         cmd = pf.cfg['jobs/cmd_%s' % processor]
-        cmd = cmd.replace('$F',jobname)
-        cmd = cmd.replace('$C',cpus)
-        cmd = "cd %s;%s" % (dirname,cmd)
-        P = utils.command(cmd,shell=True)
+        cmd = cmd.replace('$F', jobname)
+        cmd = cmd.replace('$C', cpus)
+        cmd = "cd %s;%s" % (dirname, cmd)
+        P = utils.command(cmd, shell=True)
         print(P.out)
 
 
 def runLocalAbaqus(filename=''):
-    runLocalProcessor(filename,processor='abaqus')
+    runLocalProcessor(filename, processor='abaqus')
 
 def runLocalCalculix(filename=''):
-    runLocalProcessor(filename,processor='calculix')
+    runLocalProcessor(filename, processor='calculix')
 
 
 def submitToCluster(filename=None):
     """Submit an Abaqus job to the cluster."""
     if not filename:
-        filename = askFilename(pf.cfg['workdir'],filter="Abaqus input files (*.inp)",exist=True)
+        filename = askFilename(pf.cfg['workdir'], filter="Abaqus input files (*.inp)", exist=True)
     if filename:
         if not filename.endswith('.inp'):
             filename += '.inp'
         jobname = os.path.basename(filename)[:-4]
         res = askItems([
-            _I('ncpus',4,text='Number of cpus',min=1,max=1024),
-            _I('abqver','6.10',text='Abaqus Version',choices=['6.8','6.9','6.10','6.11']),
-            _I('postabq',False,text='Run postabq on the results?'),
+            _I('ncpus', 4, text='Number of cpus', min=1, max=1024),
+            _I('abqver', '6.10', text='Abaqus Version', choices=['6.8', '6.9', '6.10', '6.11']),
+            _I('postabq', False, text='Run postabq on the results?'),
             ])
         if res:
             reqtxt = 'cpus=%s\n' % res['ncpus']
             reqtxt += 'abqver=%s\n' % res['abqver']
             if res['postabq']:
                 reqtxt += 'postproc=postabq\n'
-            host = pf.cfg.get('jobs/host','bumpfs')
-            reqdir = pf.cfg.get('jobs/inputdir','bumper/requests')
-            cmd = "scp %s %s:%s" % (filename,host,reqdir)
+            host = pf.cfg.get('jobs/host', 'bumpfs')
+            reqdir = pf.cfg.get('jobs/inputdir', 'bumper/requests')
+            cmd = "scp %s %s:%s" % (filename, host, reqdir)
             utils.command(cmd)
-            cmd = ['ssh',host,"echo '%s' > %s/%s.request" % (reqtxt,reqdir,jobname)]
+            cmd = ['ssh', host, "echo '%s' > %s/%s.request" % (reqtxt, reqdir, jobname)]
             utils.command(cmd)
 
 
 def killClusterJob(jobname=None):
     """Kill a job to the cluster."""
-    res = askItems([('jobname','')])
+    res = askItems([('jobname', '')])
     if res:
         jobname = res['jobname']
-        host = pf.cfg.get('jobs/host','mecaflix')
-        reqdir = pf.cfg.get('jobs/inputdir','bumper/requests')
-        cmd = "touch %s/%s.kill" % (reqdir,jobname)
+        host = pf.cfg.get('jobs/host', 'mecaflix')
+        reqdir = pf.cfg.get('jobs/inputdir', 'bumper/requests')
+        cmd = "touch %s/%s.kill" % (reqdir, jobname)
         print(host)
         print(cmd)
-        P = utils.command(['ssh',host,"%s" % cmd])
+        P = utils.command(['ssh', host, "%s" % cmd])
         print(P.out)
 
 
@@ -251,15 +251,15 @@ def checkResultsOnServer(host=None,userdir=None):
 
     Specify userdir='bumper/running' to get a list of running jobs.
     """
-    global the_host,the_userdir,the_jobnames
+    global the_host, the_userdir, the_jobnames
     if host is None or userdir is None:
         res = askItems(
-            [ _I('host',None,'select',choices=['bumpfs','bumpfs2','other']),
-              _I('other','',text='Other host name'),
-              _I('status',None,'select',choices=['results','running','custom']),
-              _I('userdir','bumper/results/',text='Custom user directory'),
+            [ _I('host', None, 'select', choices=['bumpfs', 'bumpfs2', 'other']),
+              _I('other', '', text='Other host name'),
+              _I('status', None, 'select', choices=['results', 'running', 'custom']),
+              _I('userdir', 'bumper/results/', text='Custom user directory'),
             ], enablers=[
-                ('status','custom','userdir')
+                ('status', 'custom', 'userdir')
                 ]
             )
         if not res:
@@ -268,12 +268,12 @@ def checkResultsOnServer(host=None,userdir=None):
         if host == 'other':
             host = res['other']
         status = res['status']
-        if status in ['results','running']:
+        if status in ['results', 'running']:
             userdir = 'bumper/%s/' % status
         else:
             userdir = res['userdir']
 
-    jobnames = getRemoteDirs(host,userdir)
+    jobnames = getRemoteDirs(host, userdir)
     if jobnames:
         the_host = host
         the_userdir = userdir
@@ -299,39 +299,39 @@ def getResultsFromServer(jobname=None,targetdir=None,ext=['.fil']):
     if jobname is None:
         if the_jobnames is None:
             jobname_input = [
-                ('host',pf.cfg['jobs/host']),
-                ('userdir','bumper/results'),
-                ('jobname',''),
+                ('host', pf.cfg['jobs/host']),
+                ('userdir', 'bumper/results'),
+                ('jobname', ''),
                 ]
         else:
             jobname_input = [
-                _I('jobname',the_jobname,choices=the_jobnames)
+                _I('jobname', the_jobname, choices=the_jobnames)
                 ]
 
         print(jobname_input)
         res = askItems(jobname_input + [
-            _I('target dir',targetdir,itemtype='button',func=changeTargetDir),
-            _I('create subdir',False,tooltip="Create subdir (with same name as remote) in target dir"),
-            ('.post',True),
-            ('.fil',False),
-            ('.odb',False),
-            _I('other',[],tooltip="A list of '.ext' strings"),
+            _I('target dir', targetdir, itemtype='button', func=changeTargetDir),
+            _I('create subdir', False, tooltip="Create subdir (with same name as remote) in target dir"),
+            ('.post', True),
+            ('.fil', False),
+            ('.odb', False),
+            _I('other', [], tooltip="A list of '.ext' strings"),
             ])
         if res:
-            host = res.get('host',the_host)
-            userdir = res.get('userdir',the_userdir)
+            host = res.get('host', the_host)
+            userdir = res.get('userdir', the_userdir)
             jobname = res['jobname']
             targetdir = res['target dir']
             if res['create subdir']:
-                targetdir = os.path.join(targetdir,jobname)
+                targetdir = os.path.join(targetdir, jobname)
                 mkdir(targetdir)
-            ext = [ e for e in ['.fil','.post','.odb'] if res[e] ]
+            ext = [ e for e in ['.fil', '.post', '.odb'] if res[e] ]
             res += [ e for e in res['other'] if e.startswith('.') ]
     if jobname and ext:
-        files = [ '%s%s' % (jobname,e) for e in ext ]
-        userdir = "%s/%s" % (userdir,jobname)
+        files = [ '%s%s' % (jobname, e) for e in ext ]
+        userdir = "%s/%s" % (userdir, jobname)
         pf.GUI.setBusy(True)
-        if transferFiles(host,userdir,files,targetdir) == 0:
+        if transferFiles(host, userdir, files, targetdir) == 0:
             the_jobname = jobname
             print("Files succesfully transfered")
         pf.GUI.setBusy(False)
@@ -346,20 +346,20 @@ _menu = 'Jobs'
 def create_menu():
     """Create the Jobs menu."""
     MenuData = [
-        ("&About",about),
-        ("&Configure Job Plugin",configure),
-        ("&Run local Abaqus job",runLocalAbaqus),
-        ("&Run local Calculix job",runLocalCalculix),
-        ("&Submit Abaqus Job",submitToCluster),
-        ("&Kill Cluster Job",killClusterJob),
-        ("&List available results on server",checkResultsOnServer),
-        ("&Get results from server",getResultsFromServer),
-        ("&Execute remote command",remoteCommand),
-        ("---",None),
-        ("&Reload Menu",reload_menu),
-        ("&Close Menu",close_menu),
+        ("&About", about),
+        ("&Configure Job Plugin", configure),
+        ("&Run local Abaqus job", runLocalAbaqus),
+        ("&Run local Calculix job", runLocalCalculix),
+        ("&Submit Abaqus Job", submitToCluster),
+        ("&Kill Cluster Job", killClusterJob),
+        ("&List available results on server", checkResultsOnServer),
+        ("&Get results from server", getResultsFromServer),
+        ("&Execute remote command", remoteCommand),
+        ("---", None),
+        ("&Reload Menu", reload_menu),
+        ("&Close Menu", close_menu),
         ]
-    return menu.Menu(_menu,items=MenuData,parent=pf.GUI.menu,before='help')
+    return menu.Menu(_menu, items=MenuData, parent=pf.GUI.menu, before='help')
 
 
 def show_menu():

@@ -51,7 +51,7 @@ currently unused.
 from __future__ import print_function
 _status = 'checked'
 _level = 'advanced'
-_topics = ['geometry','surface']
+_topics = ['geometry', 'surface']
 _techniques = ['spline']
 
 from gui.draw import *
@@ -84,12 +84,12 @@ def rollCurvePoints(curve,n=1):
 
     This only works for PolyLine and BezierSpline (and derived) classes.
     """
-    if (isinstance(curve,PolyLine) or isinstance(curve,BezierSpline)) and curve.closed:
-        if isinstance(curve,PolyLine):
+    if (isinstance(curve, PolyLine) or isinstance(curve, BezierSpline)) and curve.closed:
+        if isinstance(curve, PolyLine):
             mult = 1
         else:
             mult = curve.degree
-        curve.coords[:-1] = roll(curve.coords[:-1],-mult*n,axis=0)
+        curve.coords[:-1] = roll(curve.coords[:-1], -mult*n, axis=0)
         curve.coords[-1] = curve.coords[0]
     else:
         raise ValueError("Expected a closed PolyLine or BezierSpline.")
@@ -107,10 +107,10 @@ def alignCurvePoints(curve,axis=1,max=True):
     if not curve.closed:
         raise ValueError("Expected a closed curve.")
     if max:
-        ind = curve.pointsOn()[:,axis].argmax()
+        ind = curve.pointsOn()[:, axis].argmax()
     else:
-        ind = curve.pointsOn()[:,axis].argmin()
-    rollCurvePoints(curve,ind)
+        ind = curve.pointsOn()[:, axis].argmin()
+    rollCurvePoints(curve, ind)
     
 
 class SplineSurface(Geometry):
@@ -142,7 +142,7 @@ class SplineSurface(Geometry):
 
 
     def createGrid(self,nu,nv=None):
-        print("Creating grid %s x %s" % (nu,nv))
+        print("Creating grid %s x %s" % (nu, nv))
         if nv is None:
             nv = self.curves[0].nparts
 
@@ -157,16 +157,16 @@ class SplineSurface(Geometry):
 
 
     def vCurves(self):
-        return [ BezierSpline(self.grid[:,i,:],curl=0.375) for i in range(self.grid.shape[1]) ]
+        return [ BezierSpline(self.grid[:, i,:], curl=0.375) for i in range(self.grid.shape[1]) ]
 
 
     def uCurves(self):
-        return [ BezierSpline(self.grid[i,:,:],curl=0.375) for i in range(self.grid.shape[0]) ]
+        return [ BezierSpline(self.grid[i,:,:], curl=0.375) for i in range(self.grid.shape[0]) ]
 
 
-    def approx(self,nu,nv):
+    def approx(self, nu, nv):
         CL = self.vCurves()
-        draw(CL,color=red)
+        draw(CL, color=red)
         
 
     def actor(self,**kargs):
@@ -177,24 +177,24 @@ def gridToMesh(grid,closed=False):
     """Convert a Grid Surface to a Quad Mesh"""
     nu = grid.shape[1]
     nv = grid.shape[0] -1 
-    elems = array([[ 0,1,nu+1,nu ]])
+    elems = array([[ 0, 1, nu+1, nu ]])
     if closed:
-        elems = concatenate([(elems+i) for i in range(nu-1)],axis=0)
-        elems = concatenate([elems,[[ nu-1,0,nu,2*nu-1]]],axis=0)
+        elems = concatenate([(elems+i) for i in range(nu-1)], axis=0)
+        elems = concatenate([elems, [[ nu-1, 0, nu, 2*nu-1]]], axis=0)
     else:
         #drawNumbers(self.grid.reshape(-1,3))
         #print elems
-        elems = concatenate([(elems+i) for i in range(nu-1)],axis=0)
+        elems = concatenate([(elems+i) for i in range(nu-1)], axis=0)
     #print elems
     #print nu
-    elems = concatenate([(elems+i*nu) for i in range(nv)],axis=0)
+    elems = concatenate([(elems+i*nu) for i in range(nv)], axis=0)
 
-    x = grid.reshape(-1,3)
+    x = grid.reshape(-1, 3)
     #print nu,nv
     #print x.shape
     #print elems.shape
     #print elems.min(),elems.max()
-    M = Mesh(grid.reshape(-1,3),elems)
+    M = Mesh(grid.reshape(-1, 3), elems)
     #print M.elems
     #drawNumbers(M.coords)
     return M
@@ -209,20 +209,20 @@ def createCircles(n):
     """
     C = circle()
     t = arange(n+1) /float(n)
-    CL = [ C.scale([1.,a,0.]) for a in 0.5 + arange(n+1) /float(n) ]
-    CL = [ Ci.rot(a,2) for Ci,a in zip(CL,arange(n+1)/float(n)*45.) ]
-    CL = [ Ci.trl(2,a) for Ci,a in zip(CL,arange(n+1)/float(n)*4.) ]
+    CL = [ C.scale([1., a, 0.]) for a in 0.5 + arange(n+1) /float(n) ]
+    CL = [ Ci.rot(a, 2) for Ci, a in zip(CL, arange(n+1)/float(n)*45.) ]
+    CL = [ Ci.trl(2, a) for Ci, a in zip(CL, arange(n+1)/float(n)*4.) ]
     return CL
 
 
-def createPowerCurves(nu,nv):
+def createPowerCurves(nu, nv):
     """Create a set of BezierSpline power curves.
 
     The curves are transformations of a straight line. The line is
     transformed by two subsequent power law transformations:
     y = a*x**b and z = c*y**d.
     """
-    X = Formex(origin()).replic(nu+1,1.).coords.reshape(-1,3)
+    X = Formex(origin()).replic(nu+1, 1.).coords.reshape(-1, 3)
     C = BezierSpline(X)
     sx = C.dsize()
     sy = 0.5*sx
@@ -231,7 +231,7 @@ def createPowerCurves(nu,nv):
     print(powers)
     powers = exp(powers)
     print(powers)
-    CL = [ C.map1(1,lambda x:sy*(x/sx)**e,0).map1(2,lambda x:sz*(x/sx)**e,1) for e in powers ]
+    CL = [ C.map1(1, lambda x:sy*(x/sx)**e, 0).map1(2, lambda x:sz*(x/sx)**e, 1) for e in powers ]
     return CL
 
 
@@ -261,7 +261,7 @@ def removeInvalid(CL):
     CL = [ Ci for Ci in CL if not isnan(Ci.coords).any() ]
     nd = len(CL)
     if nc > nd:
-        print("Removed %s invalid curves, leaving %s" % (nc-nd,nd))
+        print("Removed %s invalid curves, leaving %s" % (nc-nd, nd))
     return CL
 
 
@@ -288,18 +288,18 @@ def run():
     from gui.widgets import simpleInputItem as I
 
     res = askItems([
-        I('base',itemtype='vradio',choices=[
+        I('base', itemtype='vradio', choices=[
             'Circles and Ellipses',
             'Power Curves',
             'Kinked Artery',
             ]),
-        I('ncurve',value=12,text='Number of spline curves'),
-        I('nu',value=36,text='Number of cells along splines'),
-        I('refine',False),
-        I('nv',value=12,text='Number of cells across splines'),
-        I('align',False),
-        I('aligndir',1),
-        I('alignmax',True),
+        I('ncurve', value=12, text='Number of spline curves'),
+        I('nu', value=36, text='Number of cells along splines'),
+        I('refine', False),
+        I('nv', value=12, text='Number of cells across splines'),
+        I('align', False),
+        I('aligndir', 1),
+        I('alignmax', True),
         ])
 
     if not res:
@@ -312,7 +312,7 @@ def run():
         nroll = 0
         reverse = False
     elif base == 'Power Curves':
-        CL = createPowerCurves(nu,nv)
+        CL = createPowerCurves(nu, nv)
         nroll = 0
         reverse = False
     else:
@@ -325,9 +325,9 @@ def run():
     CL = removeInvalid(CL)
 
     if reverse:
-        areas = [ area(Ci,nroll) for Ci in CL ]
+        areas = [ area(Ci, nroll) for Ci in CL ]
         print(areas)
-        for i,a in enumerate(areas):
+        for i, a in enumerate(areas):
             if a < 0.0:
                 print("Reversing curve %s" % i)
                 CL[i] = CL[i].reverse()
@@ -336,36 +336,36 @@ def run():
         #view('left')
         for Ci in CL:
             #clear()
-            alignCurvePoints(Ci,aligndir,alignmax)
-            draw(Ci.pointsOn()[0],color=green)
+            alignCurvePoints(Ci, aligndir, alignmax)
+            draw(Ci.pointsOn()[0], color=green)
             #zoomAll()
             #pause()
             #return
 
     draw(CL)
     export({'splines':CL})
-    print("Number of points in the curves:",[ Ci.coords.shape[0] for Ci in CL])
+    print("Number of points in the curves:", [ Ci.coords.shape[0] for Ci in CL])
 
     PL = [Ci.approx(1) for Ci in CL]
 
     createPL = False
     if createPL:
         export({'polylines':PL})
-        draw(PL,color=red)
-        print("Number of points in the PolyLines:",[ Ci.coords.shape[0] for Ci in PL])
+        draw(PL, color=red)
+        print("Number of points in the PolyLines:", [ Ci.coords.shape[0] for Ci in PL])
 
 
-    S = SplineSurface(CL,nu)
-    M = gridToMesh(S.grid,closed = S.uclosed)
-    draw(M,color=yellow,bkcolor='steelblue')
+    S = SplineSurface(CL, nu)
+    M = gridToMesh(S.grid, closed = S.uclosed)
+    draw(M, color=yellow, bkcolor='steelblue')
     export({'quadsurface':M})
 
     if refine:
         clear()
         print("Refining to %s" % nv)
-        S = SplineSurface(S.vCurves(),nv)
-        N = gridToMesh(S.grid,closed = S.uclosed)
-        draw(N,color=magenta,bkcolor='olive')
+        S = SplineSurface(S.vCurves(), nv)
+        N = gridToMesh(S.grid, closed = S.uclosed)
+        draw(N, color=magenta, bkcolor='olive')
         export({'quadsurface-1':N})
 
     zoomAll()

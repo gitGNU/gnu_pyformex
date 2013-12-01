@@ -5,7 +5,7 @@ A short introduction to some aspects of the Python programming language
 """
 from __future__ import print_function
 
-for light in [ 'green','yellow','red','black',None]:
+for light in [ 'green', 'yellow', 'red', 'black', None]:
     if light == 'red':
         print('stop')
     elif light == 'yellow':
@@ -25,6 +25,6 @@ appreciation = {
 
 for i in range(5):
     speed = 30*i
-    print("%s. Driving at speed %s is %s" % (i,speed,appreciation[speed]))
+    print("%s. Driving at speed %s is %s" % (i, speed, appreciation[speed]))
 
 # End

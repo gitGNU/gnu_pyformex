@@ -45,20 +45,20 @@ def run():
     view('iso')
     delay(1)
 
-    a = Formex([0.,0.,0.])
-    draw(a,color='black')
+    a = Formex([0., 0., 0.])
+    draw(a, color='black')
 
 
-    b = a.extrude(8,0)
-    draw(b,color='red')
+    b = a.extrude(8, 0)
+    draw(b, color='red')
 
 
-    c = b.extrude(8,1)
-    draw(c,color='blue')
+    c = b.extrude(8, 1)
+    draw(c, color='blue')
 
 
-    d = c.extrude(7,2,-1.)
-    draw(d,color='yellow')
+    d = c.extrude(7, 2, -1.)
+    draw(d, color='yellow')
 
 if __name__ == 'draw':
     run()

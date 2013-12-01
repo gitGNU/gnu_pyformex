@@ -61,8 +61,8 @@ def geometry():
 
     # during testing
     stent_length = 10.
-    stent = DoubleHelixStent(stent_diameter,stent_length,
-                             wire_diameter,number_wires,pitch_angle,nb=1
+    stent = DoubleHelixStent(stent_diameter, stent_length,
+                             wire_diameter, number_wires, pitch_angle, nb=1
                              ).getFormex()
     return stent
 
@@ -81,8 +81,8 @@ def analysis(stent):
         return
 
     outfilename = 'WireStent_calpy.out'
-    outfile = open(outfilename,'w')
-    message("Output is written to file '%s' in %s" % (outfilename,os.getcwd()))
+    outfile = open(outfilename, 'w')
+    message("Output is written to file '%s' in %s" % (outfilename, os.getcwd()))
     stdout_saved = sys.stdout
     sys.stdout = outfile
     print("# File created by pyFormex on %s" % time.ctime())
@@ -93,14 +93,14 @@ def analysis(stent):
     print("Original number of nodes: %s" % stent.nnodes())
     # Create FE model
     message("Creating Finite Element model: this may take some time.")
-    nodes,elems = stent.fuse(ppb=1)
+    nodes, elems = stent.fuse(ppb=1)
 
     nnod = nodes.shape[0]
     print("Compressed number of nodes: %s" % nnod)
 
     # Create an extra node on the axis for beam orientations
-    extra_node = array([[0.0,0.0,-10.0]])
-    coords = concatenate([nodes,extra_node])
+    extra_node = array([[0.0, 0.0, -10.0]])
+    coords = concatenate([nodes, extra_node])
     nnod = coords.shape[0]
     print("After adding a node for orientation: %s" % nnod)
 
@@ -108,9 +108,9 @@ def analysis(stent):
     # while incrementing node numbers with 1 (for calpy)
     # (remember props are 1,2,3, so are OK)
 
-    thirdnode = nnod*ones(shape=(nel,1),dtype=int)
-    matnr = reshape(stent.prop,(nel,1))
-    elements = concatenate([elems+1,thirdnode,matnr],1)
+    thirdnode = nnod*ones(shape=(nel, 1), dtype=int)
+    matnr = reshape(stent.prop, (nel, 1))
+    elements = concatenate([elems+1, thirdnode, matnr], 1)
 
     # Create endnode sets (with calpy numbering)
     bb = stent.bbox()
@@ -121,29 +121,29 @@ def analysis(stent):
     for n in elems.flat:
         count[n] += 1
     unconnected = arange(nnod)[count==1]
-    zvals = nodes[unconnected][:,2]
+    zvals = nodes[unconnected][:, 2]
     #print zlo,zhi,zmi,zvals
     end0 = unconnected[zvals<zmi]
     end1 = unconnected[zvals>zmi]
-    print("Nodes at end 0:",end0)
-    print("Nodes at end 1:",end1)
+    print("Nodes at end 0:", end0)
+    print("Nodes at end 1:", end1)
 
     # Create End Connectors to enforce radial boundary conditions
     coords_end0 = coords[end0]
-    extra_nodes = coords_end0 * array([0.80,0.80,1.0])
+    extra_nodes = coords_end0 * array([0.80, 0.80, 1.0])
     nnod0 = nnod
-    coords = concatenate([coords,extra_nodes])
+    coords = concatenate([coords, extra_nodes])
     nnod = coords.shape[0]
     print("Nodes added for boundary connectors: %s" % (nnod-nnod0))
     print("Final number of nodes: %s" % nnod)
-    extra_elems = zeros((nnod-nnod0,4),dtype=int)
-    end0_ext = arange(nnod0,nnod)
-    extra_elems[:,0] = end0_ext + 1
-    extra_elems[:,1] = end0 + 1
-    extra_elems[:,2] = nnod0
-    extra_elems[:,3] = 4  # Extra elements have matnr 4
+    extra_elems = zeros((nnod-nnod0, 4), dtype=int)
+    end0_ext = arange(nnod0, nnod)
+    extra_elems[:, 0] = end0_ext + 1
+    extra_elems[:, 1] = end0 + 1
+    extra_elems[:, 2] = nnod0
+    extra_elems[:, 3] = 4  # Extra elements have matnr 4
     print(extra_elems)
-    elements = concatenate([elements,extra_elems])
+    elements = concatenate([elements, extra_elems])
 
     # Boundary conditions
     s = ""
@@ -153,12 +153,12 @@ def analysis(stent):
     s += "  %d  1  1  1  1  1  1\n" % nnod0
     print("Specified boundary conditions")
     print(s)
-    bcon = ReadBoundary(nnod,6,s)
+    bcon = ReadBoundary(nnod, 6, s)
     NumberEquations(bcon)
     print(bcon)
 
     # Materials (E, G, rho, A, Izz, Iyy, J)
-    mats = zeros((4,7),float)
+    mats = zeros((4, 7), float)
     A = math.pi * wire_diameter ** 2
     Izz = Iyy = math.pi * wire_diameter ** 4 / 4
     J = math.pi * wire_diameter ** 4 / 2
@@ -174,22 +174,22 @@ def analysis(stent):
     # Create loads
     nlc = 1
     ndof = bcon.max()
-    loads = zeros((ndof,nlc),float)
+    loads = zeros((ndof, nlc), float)
     zforce = [ 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 ]
     for n in end1: # NO +1 HERE!
-        loads[:,0] = AssembleVector(loads[:,0],zforce,bcon[n,:])
+        loads[:, 0] = AssembleVector(loads[:, 0], zforce, bcon[n,:])
 
     # Perform analysis
     import calpy
     calpy.options.optimize=True
     print(elements)
-    displ,frc = static(coords,bcon,mats,elements,loads,Echo=True)
+    displ, frc = static(coords, bcon, mats, elements, loads, Echo=True)
 
     print("# Analysis finished on %s" % time.ctime())
     sys.stdout = stdout_saved
     outfile.close()
 
-    return coords,elements,displ,frc
+    return coords, elements, displ, frc
 
 
 
@@ -197,17 +197,17 @@ def analysis(stent):
 ## Using pyFormex as postprocessor ##
 #####################################
 
-def postproc(coords,elements,displ,frc):
+def postproc(coords, elements, displ, frc):
     """Display the results of the analysis."""
 
-    from gui.colorscale import ColorScale,ColorLegend
+    from gui.colorscale import ColorScale, ColorLegend
     import gui.decors
 
     # Creating a formex for displaying results is fairly easy
-    elems = elements[:,:2]-1
+    elems = elements[:, :2]-1
     results = Formex(coords[elems])
     clear()
-    draw(results,color='black')
+    draw(results, color='black')
 
     # Now try to give the formex some meaningful colors.
     # The frc array returns element forces and has shape
@@ -216,37 +216,37 @@ def postproc(coords,elements,displ,frc):
     # normal force), and only load case; we still need to select the
     # scalar element result values from the array into a onedimensional
     # vector val.
-    val = frc[:,0,0]
+    val = frc[:, 0, 0]
     # create a colorscale
-    CS = ColorScale([blue,yellow,red],val.min(),val.max(),0.,2.,2.)
-    cval = array(map(CS.color,val))
+    CS = ColorScale([blue, yellow, red], val.min(), val.max(), 0., 2., 2.)
+    cval = array(map(CS.color, val))
     #aprint(cval,header=['Red','Green','Blue'])
     clear()
-    draw(results,color=cval)
+    draw(results, color=cval)
 
     bgcolor('lightgreen')
     linewidth(3)
     x = pf.canvas.width()//2
-    TA = drawText('Normal force in the members',x,100,font='tr32')
-    CL = ColorLegend(CS,100)
-    CLA = decors.ColorLegend(CL,10,10,30,200)
+    TA = drawText('Normal force in the members', x, 100, font='tr32')
+    CL = ColorLegend(CS, 100)
+    CLA = decors.ColorLegend(CL, 10, 10, 30, 200)
     decorate(CLA)
     sleep(3)
 
     # and a deformed plot on multiple scales
-    dscales = arange(1,6) * 1.0
+    dscales = arange(1, 6) * 1.0
     loadcase = 0
     for dscale in dscales:
-        dcoords = coords + dscale * displ[:,0:3,loadcase]
+        dcoords = coords + dscale * displ[:, 0:3, loadcase]
         clear()
         decorate(CLA)
         decorate(TA)
         linewidth(1)
-        draw(results,color='darkgreen',wait=False)
+        draw(results, color='darkgreen', wait=False)
         linewidth(3)
         deformed = Formex(dcoords[elems])
-        draw(deformed,color=cval)
-        drawText('Deformed geometry (scale %.2f)' % dscale,x,70)
+        draw(deformed, color=cval)
+        drawText('Deformed geometry (scale %.2f)' % dscale, x, 70)
 
 
 
@@ -262,7 +262,7 @@ def run():
     if pf.options.gui:
         reset()
         clear()
-        draw(stent,view='iso')
+        draw(stent, view='iso')
 
     results = analysis(stent)
 

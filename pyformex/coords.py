@@ -40,7 +40,7 @@ from __future__ import print_function
 
 from arraytools import *
 from lib import misc
-from utils import deprecation,warn
+from utils import deprecation, warn
 
 
 ###########################################################################
@@ -113,11 +113,11 @@ class Coords(ndarray):
             # create an empty array : we need at least a 2D array
             # because we want the last axis to have length 3 and
             # we also need an axis with length 0 to have size 0
-            ar = ndarray((0,3),dtype=dtyp)
+            ar = ndarray((0, 3), dtype=dtyp)
         else:
             # turn the data into an array, and copy if requested
             # DO NOT ADD ndmin=1 HERE ! (see below)
-            ar = array(data,dtype=dtyp,copy=copy)
+            ar = array(data, dtype=dtyp, copy=copy)
 
         #
         # The Coords object needs to be at least 1-D array, no a scalar
@@ -131,12 +131,12 @@ class Coords(ndarray):
 
         if ar.shape[-1] == 3:
             pass
-        elif ar.shape[-1] in [1,2]:
+        elif ar.shape[-1] in [1, 2]:
             # make last axis length 3, adding 0 values
-            ar = growAxis(ar,3-ar.shape[-1],-1)
+            ar = growAxis(ar, 3-ar.shape[-1], -1)
         elif ar.shape[-1] == 0:
             # allow empty coords objects
-            ar = ar.reshape(0,3)
+            ar = ar.reshape(0, 3)
         else:
             raise ValueError("Expected a length 1,2 or 3 for last array axis")
 
@@ -163,7 +163,7 @@ class Coords(ndarray):
         This reshapes the array to a 2-dimensional array, flattening
         the structure of the points.
         """
-        return self.reshape((-1,3))
+        return self.reshape((-1, 3))
 
     def pshape(self):
         """Returns the shape of the :class:`Coords` object.
@@ -190,7 +190,7 @@ class Coords(ndarray):
 
           asarray(self[...,0])
         """
-        return asarray(self[...,0])
+        return asarray(self[..., 0])
 
     def y(self):
         """Return the Y-coordinates of all points.
@@ -202,7 +202,7 @@ class Coords(ndarray):
 
           asarray(self[...,1])
         """
-        return asarray(self[...,1])
+        return asarray(self[..., 1])
 
     def z(self):
         """Returns the Z-coordinates of all points.
@@ -214,7 +214,7 @@ class Coords(ndarray):
 
           asarray(self[...,2])
         """
-        return asarray(self[...,2])
+        return asarray(self[..., 2])
 
 
     # Size, Bounds
@@ -241,7 +241,7 @@ class Coords(ndarray):
             bb = row_stack([ x.min(axis=0), x.max(axis=0) ])
         else:
             o = origin()
-            bb = [o,o]
+            bb = [o, o]
         return Coords(bb)
 
 
@@ -259,11 +259,11 @@ class Coords(ndarray):
 
         See also: :meth:`centroid`
         """
-        X0,X1 = self.bbox()
+        X0, X1 = self.bbox()
         return 0.5 * (X0+X1)
 
 
-    def bboxPoint(self,position):
+    def bboxPoint(self, position):
         """Returns a bounding box point of a Coords.
 
         Bounding box points are points whose coordinates are either
@@ -297,7 +297,7 @@ class Coords(ndarray):
         bb = self.bbox()
         al = { '-': bb[0], '+': bb[1], '0': 0.5*(bb[0]+bb[1]) }
         pt = zeros(3)
-        for i,c in enumerate(position):
+        for i, c in enumerate(position):
             if c in al:
                 pt[i] = al[c][i]
         return Coords(pt)
@@ -333,7 +333,7 @@ class Coords(ndarray):
           [[ 0.75  0.    0.  ]
            [ 4.75  0.    0.  ]]
         """
-        return average(self,weights=wts,axis=axis)
+        return average(self, weights=wts, axis=axis)
 
 
     def centroid(self):
@@ -368,7 +368,7 @@ class Coords(ndarray):
           [ 3.  3.  0.]
 
         """
-        X0,X1 = self.bbox()
+        X0, X1 = self.bbox()
         return X1-X0
 
 
@@ -383,7 +383,7 @@ class Coords(ndarray):
           4.24264
 
         """
-        X0,X1 = self.bbox()
+        X0, X1 = self.bbox()
         return length(X1-X0)
 
 
@@ -410,7 +410,7 @@ class Coords(ndarray):
         are stored the minimal and maximal values of the Coords
         along that axis.
         """
-        return minmax(self,axis=1)
+        return minmax(self, axis=1)
 
 
     # Inertia
@@ -433,13 +433,13 @@ class Coords(ndarray):
         """
         from plugins import inertia
         if mass is not None:
-            mass = mass.reshape(self.npoints(),1)
-        ctr,I = inertia.inertia(self.points(),mass)
-        Iprin,Iaxes = inertia.principal(I,sort=True,right_handed=True)
-        return (ctr,Iaxes,Iprin,I)
+            mass = mass.reshape(self.npoints(), 1)
+        ctr, I = inertia.inertia(self.points(), mass)
+        Iprin, Iaxes = inertia.principal(I, sort=True, right_handed=True)
+        return (ctr, Iaxes, Iprin, I)
 
 
-    def orientedBbox(self,ctr,rot):
+    def orientedBbox(self, ctr, rot):
         """Returns an oriented bounding box of a set of points.
 
         Parameters:
@@ -464,13 +464,13 @@ class Coords(ndarray):
 
         Returns a single hexahedral Formex object.
         """
-        ctr,rot = self.inertia()[:2]  # get the center and principal axes
-        return self.orientedBbox(ctr,rot)
+        ctr, rot = self.inertia()[:2]  # get the center and principal axes
+        return self.orientedBbox(ctr, rot)
 
 
     #  Distance
 
-    def distanceFromPlane(self,p,n):
+    def distanceFromPlane(self, p, n):
         """Returns the distance of all points from the plane (p,n).
 
         Parameters:
@@ -493,11 +493,11 @@ class Coords(ndarray):
         p = asarray(p).reshape((3))
         n = asarray(n).reshape((3))
         n = normalize(n)
-        d = inner(self,n) - inner(p,n)
+        d = inner(self, n) - inner(p, n)
         return asarray(d)
 
 
-    def distanceFromLine(self,p,n):
+    def distanceFromLine(self, p, n):
         """Returns the distance of all points from the line (p,n).
 
         p,n are (1,3) or (npts,3) arrays defining 1 or npts lines
@@ -520,12 +520,12 @@ class Coords(ndarray):
         """
         p = asarray(p)#.reshape((3))
         n = asarray(n)#.reshape((3))
-        t = cross(n,p-self)
-        d = sqrt(sum(t*t,-1)) / length(n)
+        t = cross(n, p-self)
+        d = sqrt(sum(t*t, -1)) / length(n)
         return asarray(d)
 
 
-    def distanceFromPoint(self,p):
+    def distanceFromPoint(self, p):
         """Returns the distance of all points from the point p.
 
         p is a single point specified by 3 coordinates.
@@ -543,11 +543,11 @@ class Coords(ndarray):
         """
         p = asarray(p).reshape((3))
         d = self-p
-        d = sqrt(sum(d*d,-1))
+        d = sqrt(sum(d*d, -1))
         return asarray(d)
 
 
-    def closestToPoint(self,p):
+    def closestToPoint(self, p):
         """Returns the point closest to point p.
 
         """
@@ -576,13 +576,13 @@ class Coords(ndarray):
         else:
             p = Coords(p)
 
-        d = self.distanceFromPlane(p,n)
-        dmin,dmax = d.min(),d.max()
+        d = self.distanceFromPlane(p, n)
+        dmin, dmax = d.min(), d.max()
 
         if _points:
             return [p+dmin*n, p+dmax*n]
         else:
-            return dmin,dmax
+            return dmin, dmax
 
 
     def directionalExtremes(self,n,p=None):
@@ -594,10 +594,10 @@ class Coords(ndarray):
         such that the planes with normal n through these points define
         the extremal planes of the Coords.
         """
-        return self.directionalSize(n,p,_points=True)
+        return self.directionalSize(n, p, _points=True)
 
 
-    def directionalWidth(self,n):
+    def directionalWidth(self, n):
         """Returns the width of a Coords in the given direction.
 
         The direction can be specified by a 3 component vector or by
@@ -605,7 +605,7 @@ class Coords(ndarray):
 
         The return value is the thickness of the object in the direction n.
         """
-        dmin,dmax = self.directionalSize(n)
+        dmin, dmax = self.directionalSize(n)
         return dmax-dmin
 
     # Test position
@@ -662,14 +662,14 @@ class Coords(ndarray):
 
         if array(dir).size == 1:
             if min is not None:
-                T1 = self[...,dir] > (min - atol)
+                T1 = self[..., dir] > (min - atol)
             if max is not None:
-                T2 = self[...,dir] < (max + atol)
+                T2 = self[..., dir] < (max + atol)
         else:
             if min is not None:
-                T1 = self.distanceFromPlane(min,dir) > - atol
+                T1 = self.distanceFromPlane(min, dir) > - atol
             if max is not None:
-                T2 = self.distanceFromPlane(max,dir) < atol
+                T2 = self.distanceFromPlane(max, dir) < atol
 
         if min is None:
             T = T2
@@ -697,7 +697,7 @@ class Coords(ndarray):
 
 ##############################################################################
 
-    def set(self,f):
+    def set(self, f):
         """Set the coordinates from those in the given array."""
         self[...] = f      # do not be tempted to use self = f !
 
@@ -743,7 +743,7 @@ class Coords(ndarray):
         """
         if center is not None:
             center = asarray(center)
-            return self.trl(-center).scale(scale,dir).translate(center)
+            return self.trl(-center).scale(scale, dir).translate(center)
 
         if inplace:
             out = self
@@ -752,7 +752,7 @@ class Coords(ndarray):
         if dir is None:
             out *= scale
         else:
-            out[...,dir] *= scale
+            out[..., dir] *= scale
         return out
 
 
@@ -795,7 +795,7 @@ class Coords(ndarray):
             out = self.copy()
         if isinstance(dir, int):
             dir = unitVector(dir)
-        dir = Coords(dir,copy=True)
+        dir = Coords(dir, copy=True)
         if step is not None:
             dir *= step
         out += dir
@@ -815,7 +815,7 @@ class Coords(ndarray):
         return self.trl(-self.center())
 
 
-    def align(self,alignment='---',point=[0.,0.,0.]):
+    def align(self,alignment='---',point=[0., 0., 0.]):
         """Align a Coords on a given point.
 
         Alignment involves a translation such that the bounding box
@@ -863,15 +863,15 @@ class Coords(ndarray):
         """
         mat = asarray(angle)
         if mat.size == 1:
-            mat = rotationMatrix(angle,axis)
-        if mat.shape != (3,3):
+            mat = rotationMatrix(angle, axis)
+        if mat.shape != (3, 3):
             raise ValueError("Rotation matrix should be 3x3")
         if around is not None:
             around = asarray(around)
             out = self.translate(-around)
         else:
             out = self
-        return out.affine(mat,around)
+        return out.affine(mat, around)
 
 
     def shear(self,dir,dir1,skew,inplace=False):
@@ -883,7 +883,7 @@ class Coords(ndarray):
             out = self
         else:
             out = self.copy()
-        out[...,dir] += skew * out[...,dir1]
+        out[..., dir] += skew * out[..., dir1]
         return out
 
 
@@ -901,7 +901,7 @@ class Coords(ndarray):
             out = self
         else:
             out = self.copy()
-        out[...,dir] = 2*pos - out[...,dir]
+        out[..., dir] = 2*pos - out[..., dir]
         return out
 
 
@@ -917,19 +917,19 @@ class Coords(ndarray):
         If `mat` is a rotation matrix, than the operation performs a
         rigid rotation of the object plus a translation.
         """
-        out = dot(self,mat)
+        out = dot(self, mat)
         if vec is not None:
             out += vec
         return out
 
 
-    def position(self,x,y):
+    def position(self, x, y):
         """Position an object so that points x are aligned with y.
 
         Parameters are as for :func:`arraytools.trfMatrix`
         """
-        r,t =  trfMatrix(x,y)
-        return self.affine(r,t)
+        r, t =  trfMatrix(x, y)
+        return self.affine(r, t)
 
 #
 #
@@ -940,7 +940,7 @@ class Coords(ndarray):
 #        Cylindrical, Spherical, Isoparametric
 #
 
-    def cylindrical(self,dir=[0,1,2],scale=[1.,1.,1.],angle_spec=DEG):
+    def cylindrical(self,dir=[0, 1, 2],scale=[1., 1., 1.],angle_spec=DEG):
         """Converts from cylindrical to cartesian after scaling.
 
         Parameters:
@@ -955,29 +955,29 @@ class Coords(ndarray):
         # We put in a optional scaling, because doing this together with the
         # transforming is cheaper than first scaling and then transforming.
         f = zeros_like(self)
-        theta = (scale[1]*angle_spec) * self[...,dir[1]]
-        r = scale[0] * self[...,dir[0]]
-        f[...,0] = r*cos(theta)
-        f[...,1] = r*sin(theta)
-        f[...,2] = scale[2] * self[...,dir[2]]
+        theta = (scale[1]*angle_spec) * self[..., dir[1]]
+        r = scale[0] * self[..., dir[0]]
+        f[..., 0] = r*cos(theta)
+        f[..., 1] = r*sin(theta)
+        f[..., 2] = scale[2] * self[..., dir[2]]
         return f
 
 
-    def hyperCylindrical(self,dir=[0,1,2],scale=[1.,1.,1.],rfunc=None,zfunc=None,angle_spec=DEG):
+    def hyperCylindrical(self,dir=[0, 1, 2],scale=[1., 1., 1.],rfunc=None,zfunc=None,angle_spec=DEG):
         if rfunc is None:
             rfunc = lambda x:1
         if zfunc is None:
             zfunc = lambda x:1
         f = zeros_like(self)
-        theta = (scale[1]*angle_spec) * self[...,dir[1]]
-        r = scale[0] * rfunc(theta) * self[...,dir[0]]
-        f[...,0] = r * cos(theta)
-        f[...,1] = r * sin(theta)
-        f[...,2] = scale[2] * zfunc(theta) * self[...,dir[2]]
+        theta = (scale[1]*angle_spec) * self[..., dir[1]]
+        r = scale[0] * rfunc(theta) * self[..., dir[0]]
+        f[..., 0] = r * cos(theta)
+        f[..., 1] = r * sin(theta)
+        f[..., 2] = scale[2] * zfunc(theta) * self[..., dir[2]]
         return f
 
 
-    def toCylindrical(self,dir=[0,1,2],angle_spec=DEG):
+    def toCylindrical(self,dir=[0, 1, 2],angle_spec=DEG):
         """Converts from cartesian to cylindrical coordinates.
 
         Parameters:
@@ -989,14 +989,14 @@ class Coords(ndarray):
         The angle value is given in degrees.
         """
         f = zeros_like(self)
-        x,y,z = [ self[...,i] for i in dir ]
-        f[...,0] = sqrt(x*x+y*y)
-        f[...,1] = arctand2(y,x,angle_spec)
-        f[...,2] = z
+        x, y, z = [ self[..., i] for i in dir ]
+        f[..., 0] = sqrt(x*x+y*y)
+        f[..., 1] = arctand2(y, x, angle_spec)
+        f[..., 2] = z
         return f
 
 
-    def spherical(self,dir=[0,1,2],scale=[1.,1.,1.],angle_spec=DEG,colat=False):
+    def spherical(self,dir=[0, 1, 2],scale=[1., 1., 1.],angle_spec=DEG,colat=False):
         """Converts from spherical to cartesian after scaling.
 
         Parameters:
@@ -1011,18 +1011,18 @@ class Coords(ndarray):
 
         If colat=True, the third coordinate is the colatitude (90-lat) instead.
         """
-        f = self.reshape((-1,3))
-        theta = (scale[0]*angle_spec) * f[:,dir[0]]
-        phi = (scale[1]*angle_spec) * f[:,dir[1]]
-        r = scale[2] * f[:,dir[2]]
+        f = self.reshape((-1, 3))
+        theta = (scale[0]*angle_spec) * f[:, dir[0]]
+        phi = (scale[1]*angle_spec) * f[:, dir[1]]
+        r = scale[2] * f[:, dir[2]]
         if colat:
             phi = 90.0*angle_spec - phi
         rc = r*cos(phi)
-        f = column_stack([rc*cos(theta),rc*sin(theta),r*sin(phi)])
+        f = column_stack([rc*cos(theta), rc*sin(theta), r*sin(phi)])
         return f.reshape(self.shape)
 
 
-    def superSpherical(self,n=1.0,e=1.0,k=0.0, dir=[0,1,2],scale=[1.,1.,1.],angle_spec=DEG,colat=False):
+    def superSpherical(self,n=1.0,e=1.0,k=0.0, dir=[0, 1, 2],scale=[1., 1., 1.],angle_spec=DEG,colat=False):
         """Performs a superspherical transformation.
 
         superSpherical is much like spherical, but adds some extra
@@ -1050,28 +1050,28 @@ class Coords(ndarray):
           southern hemisphere. Values > 0 enlarge the southern hemishpere and
           shrink the northern.
         """
-        def c(o,m):
+        def c(o, m):
             c = cos(o)
             return sign(c)*abs(c)**m
-        def s(o,m):
+        def s(o, m):
             c = sin(o)
             return sign(c)*abs(c)**m
 
-        f = self.reshape((-1,3))
-        theta = (scale[0]*angle_spec) * f[:,dir[0]]
-        phi = (scale[1]*angle_spec) * f[:,dir[1]]
-        r = scale[2] * f[:,dir[2]]
+        f = self.reshape((-1, 3))
+        theta = (scale[0]*angle_spec) * f[:, dir[0]]
+        phi = (scale[1]*angle_spec) * f[:, dir[1]]
+        r = scale[2] * f[:, dir[2]]
         if colat:
             phi = 90.0*angle_spec - phi
-        rc = r*c(phi,n)
+        rc = r*c(phi, n)
         if k != 0:   # k should be > -1.0 !!!!
             x = sin(phi)
             rc *= (1-k*x)/(1+k*x)
-        f = column_stack([rc*c(theta,e),rc*s(theta,e),r*s(phi,n)])
+        f = column_stack([rc*c(theta, e), rc*s(theta, e), r*s(phi, n)])
         return f.reshape(self.shape)
 
 
-    def toSpherical(self,dir=[0,1,2],angle_spec=DEG):
+    def toSpherical(self,dir=[0, 1, 2],angle_spec=DEG):
         """Converts from cartesian to spherical coordinates.
 
         Parameters:
@@ -1084,15 +1084,15 @@ class Coords(ndarray):
 
         The returned angle values are given in degrees.
         """
-        v = self[...,dir].reshape((-1,3))
-        dist = sqrt(sum(v*v,-1))
-        long = arctand2(v[:,0],v[:,2],angle_spec)
-        lat = where(dist <= 0.0,0.0,arcsind(v[:,1]/dist,angle_spec))
-        f = column_stack([long,lat,dist])
+        v = self[..., dir].reshape((-1, 3))
+        dist = sqrt(sum(v*v, -1))
+        long = arctand2(v[:, 0], v[:, 2], angle_spec)
+        lat = where(dist <= 0.0, 0.0, arcsind(v[:, 1]/dist, angle_spec))
+        f = column_stack([long, lat, dist])
         return f.reshape(self.shape)
 
 
-    def bump1(self,dir,a,func,dist):
+    def bump1(self, dir, a, func, dist):
         """Returns a :class:`Coords` with a one-dimensional bump.
 
         Parameters:
@@ -1104,12 +1104,12 @@ class Coords(ndarray):
           and should be such that ``func(0) != 0``.
         """
         f = self.copy()
-        d = f[...,dist] - a[dist]
-        f[...,dir] += func(d)*a[dir]/func(0)
+        d = f[..., dist] - a[dist]
+        f[..., dir] += func(d)*a[dir]/func(0)
         return f
 
 
-    def bump2(self,dir,a,func):
+    def bump2(self, dir, a, func):
         """Returns a :class:`Coords` with a two-dimensional bump.
 
         Parameters:
@@ -1120,12 +1120,12 @@ class Coords(ndarray):
           !! func(0) should be different from 0.
         """
         f = self.copy()
-        dist = [0,1,2]
+        dist = [0, 1, 2]
         dist.remove(dir)
-        d1 = f[...,dist[0]] - a[dist[0]]
-        d2 = f[...,dist[1]] - a[dist[1]]
+        d1 = f[..., dist[0]] - a[dist[0]]
+        d2 = f[..., dist[1]] - a[dist[1]]
         d = sqrt(d1*d1+d2*d2)
-        f[...,dir] += func(d)*a[dir]/func(0)
+        f[..., dir] += func(d)*a[dir]/func(0)
         return f
 
 
@@ -1158,49 +1158,49 @@ class Coords(ndarray):
         """
         f = self.copy()
         if dist == None:
-            dist = [0,1,2]
+            dist = [0, 1, 2]
             dist.remove(dir)
         try:
             l = len(dist)
         except TypeError:
             l = 1
             dist = [dist]
-        d = f[...,dist[0]] - a[dist[0]]
+        d = f[..., dist[0]] - a[dist[0]]
         if l==1:
             d = abs(d)
         else:
             d = d*d
             for i in dist[1:]:
-                d1 = f[...,i] - a[i]
+                d1 = f[..., i] - a[i]
                 d += d1*d1
             d = sqrt(d)
-        f[...,dir] += func(d)*a[dir]/func(0)
+        f[..., dir] += func(d)*a[dir]/func(0)
         return f
 
 
-    def flare (self,xf,f,dir=[0,2],end=0,exp=1.):
+    def flare (self,xf,f,dir=[0, 2],end=0,exp=1.):
         """Create a flare at the end of a :class:`Coords` block.
 
         The flare extends over a distance ``xf`` at the start (``end=0``)
         or end (``end=1``) in direction ``dir[0]`` of the coords block,
         and has a maximum amplitude of ``f`` in the ``dir[1]`` direction.
         """
-        ix,iz = dir
+        ix, iz = dir
         bb = self.bbox()
         if end == 0:
             xmin = bb[0][ix]
-            endx = self.test(dir=ix,max=xmin+xf)
+            endx = self.test(dir=ix, max=xmin+xf)
             func = lambda x: (1.-(x-xmin)/xf) ** exp
         else:
             xmax = bb[1][ix]
-            endx = self.test(dir=ix,min=xmax-xf)
+            endx = self.test(dir=ix, min=xmax-xf)
             func = lambda x: (1.-(xmax-x)/xf) ** exp
         x = self.copy()
-        x[endx,iz] += f * func(x[endx,ix])
+        x[endx, iz] += f * func(x[endx, ix])
         return x
 
 
-    def map(self,func):
+    def map(self, func):
         """Map a :class:`Coords` by a 3-D function.
 
         This is one of the versatile mapping functions.
@@ -1226,7 +1226,7 @@ class Coords(ndarray):
         # we should probably do this for map1 and mapd too
         X = self.points()
         f = zeros_like(X)
-        f[...,0],f[...,1],f[...,2] = func(X.x(),X.y(),X.z())
+        f[..., 0], f[..., 1], f[..., 2] = func(X.x(), X.y(), X.z())
         return f.reshape(self.shape)
 
 
@@ -1247,11 +1247,11 @@ class Coords(ndarray):
         if x is None:
             x = dir
         f = self.copy()
-        f[...,dir] = func(self[...,x])
+        f[..., dir] = func(self[..., x])
         return f
 
 
-    def mapd(self,dir,func,point=[0.,0.,0.],dist=None):
+    def mapd(self,dir,func,point=[0., 0., 0.],dist=None):
         """Map one coordinate by a function of the distance to a point.
 
         Parameters:
@@ -1278,26 +1278,26 @@ class Coords(ndarray):
         """
         f = self.copy()
         if dist == None:
-            dist = [0,1,2]
+            dist = [0, 1, 2]
         try:
             l = len(dist)
         except TypeError:
             l = 1
             dist = [dist]
-        d = f[...,dist[0]] - point[dist[0]]
+        d = f[..., dist[0]] - point[dist[0]]
         if l==1:
             d = abs(d)
         else:
             d = d*d
             for i in dist[1:]:
-                d1 = f[...,i] - point[i]
+                d1 = f[..., i] - point[i]
                 d += d1*d1
             d = sqrt(d)
-        f[...,dir] = func(d)
+        f[..., dir] = func(d)
         return f
 
 
-    def egg(self,k):
+    def egg(self, k):
         """Maps the coordinates to an egg-shape"""
         return (1-k*self)/(1+k*self)
 
@@ -1314,16 +1314,16 @@ class Coords(ndarray):
         if other is None:
             other = self
         f = self.copy()
-        f[...,i] = other[...,j]
+        f[..., i] = other[..., j]
         return f
 
 
-    def swapAxes(self,i,j):
+    def swapAxes(self, i, j):
         """Swap coordinate axes i and j.
 
         Beware! This is different from numpy's swapaxes() method !
         """
-        return self.replace([i,j],[j,i])
+        return self.replace([i, j], [j, i])
 
 
     def rollAxes(self,n=1):
@@ -1332,10 +1332,10 @@ class Coords(ndarray):
         Default is 1, thus axis 0 becomes the new 1 axis, 1 becomes 2 and
         2 becomes 0.
         """
-        return roll(self, int(n) % 3,axis=-1)
+        return roll(self, int(n) % 3, axis=-1)
 
 
-    def projectOnPlane(self,n=2,P=[0.,0.,0.]):
+    def projectOnPlane(self,n=2,P=[0., 0., 0.]):
         """Project a :class:`Coords` on a plane (or planes).
 
         Parameters:
@@ -1360,16 +1360,16 @@ class Coords(ndarray):
         """
         if isinstance(n, int):
             x = self.copy()
-            x[...,n] = P[n]
+            x[..., n] = P[n]
             return x
 
-        n = normalize(Coords(n).reshape(-1,3))
-        x = self.reshape(-1,3)
-        x = dotpr(n,(x-P)).reshape(-1,1)
+        n = normalize(Coords(n).reshape(-1, 3))
+        x = self.reshape(-1, 3)
+        x = dotpr(n, (x-P)).reshape(-1, 1)
         return self - x*n
 
 
-    def projectOnSphere(self,radius=1.,center=[0.,0.,0.]):
+    def projectOnSphere(self,radius=1.,center=[0., 0., 0.]):
         """Project :class:`Coords` on a sphere.
 
         The default sphere is a unit sphere at the origin.
@@ -1379,26 +1379,26 @@ class Coords(ndarray):
         s = radius / d
         f = self - center
         for i in range(3):
-            f[...,i] *= s
+            f[..., i] *= s
         f += center
         return f
 
 
-    def projectOnCylinder(self,radius=1.,dir=0,center=[0.,0.,0.]):
+    def projectOnCylinder(self,radius=1.,dir=0,center=[0., 0., 0.]):
         """Project :class:`Coords` on a cylinder with axis parallel to a global axis.
 
         The default cylinder has its axis along the x-axis and a unit radius.
         No points of the :class:`Coords` should belong to the axis..
         """
-        d = self.distanceFromLine(center,unitVector(dir))
+        d = self.distanceFromLine(center, unitVector(dir))
         s = radius / d
-        c = resize(asarray(center),self.shape)
-        c[...,dir] = self[...,dir]
+        c = resize(asarray(center), self.shape)
+        c[..., dir] = self[..., dir]
         f = self - c
         axes = range(3)
         del axes[dir]
         for i in axes:
-            f[...,i] *= s
+            f[..., i] *= s
         f += c
         return f
 
@@ -1450,28 +1450,28 @@ class Coords(ndarray):
             dir = unitVector()
         else:
             dir = asarray(dir)
-        x = self.reshape(-1,3)
+        x = self.reshape(-1, 3)
         # Create planes through x in direction n
         # WE SHOULD MOVE THIS TO geomtools?
         v1 = anyPerpendicularVector(dir)
-        v2 = cross(dir,v1)
+        v2 = cross(dir, v1)
         # Create set of cuts with set of planes
-        cuts = [ S.intersectionWithPlane(xi,v1) for xi in x ]
+        cuts = [ S.intersectionWithPlane(xi, v1) for xi in x ]
         nseg = [ c.nelems() for c in cuts ]
         # remove the empty intersections
-        cutid = [ i for i,n in enumerate(nseg) if n > 0 ]
-        cuts = olist.select(cuts,cutid)
+        cutid = [ i for i, n in enumerate(nseg) if n > 0 ]
+        cuts = olist.select(cuts, cutid)
 
         # cut the cuts with second set of planes
-        cuts = [ c.toFormex().intersectionWithPlane(xi,v2).coords for c,xi in zip(cuts,x[cutid]) ]
+        cuts = [ c.toFormex().intersectionWithPlane(xi, v2).coords for c, xi in zip(cuts, x[cutid]) ]
         npts = [ p.shape[0] for p in cuts ]
-        okid = [ i for i,n in enumerate(npts) if n > 0 ]
+        okid = [ i for i, n in enumerate(npts) if n > 0 ]
         # remove the empty intersections
-        cutid = olist.select(cutid,okid)
-        cuts = olist.select(cuts,okid)
+        cutid = olist.select(cutid, okid)
+        cuts = olist.select(cuts, okid)
 
         # find the points closest to self
-        cuts = [ p.closestToPoint(xi) for p,xi in zip(cuts,x[cutid]) ]
+        cuts = [ p.closestToPoint(xi) for p, xi in zip(cuts, x[cutid]) ]
         cuts = Coords.concatenate(cuts)
 
         if cuts.size == 0:
@@ -1499,14 +1499,14 @@ class Coords(ndarray):
 
         x = x.reshape(self.shape)
         if return_indices:
-            return x,cutid
+            return x, cutid
         else:
             return x
 
 
     # Extra transformations implemented by plugins
 
-    def isopar(self,eltype,coords,oldcoords):
+    def isopar(self, eltype, coords, oldcoords):
         """Perform an isoparametric transformation on a Coords.
 
         This is a convenience method to transform a Coords object through
@@ -1517,7 +1517,7 @@ class Coords(ndarray):
         See :mod:`plugins.isopar` for more details.
         """
         from plugins.isopar import Isopar
-        return Isopar(eltype,coords,oldcoords).transform(self)
+        return Isopar(eltype, coords, oldcoords).transform(self)
 
 
     def transformCS(self,currentCS,initialCS=None):
@@ -1545,7 +1545,7 @@ class Coords(ndarray):
         """
         # This is currently implemented using isopar, but could
         # obviously also be done using affine
-        return self.isopar('tet4',currentCS,initialCS)
+        return self.isopar('tet4', currentCS, initialCS)
 
 
     def addNoise(self,rsize=0.05,asize=0.0):
@@ -1557,7 +1557,7 @@ class Coords(ndarray):
         is to set it to 0.05 times the geometrical size of the structure.
         """
         max = asize + rsize * self.sizes().max()
-        return self + randomNoise(self.shape,-max,+max)
+        return self + randomNoise(self.shape, -max, +max)
 
 
 ############################################################################
@@ -1580,11 +1580,11 @@ class Coords(ndarray):
         n = int(n)
         if isinstance(dir, int):
             dir = unitVector(dir)
-        dir = Coords(dir,copy=True)
+        dir = Coords(dir, copy=True)
         if step is not None:
             dir *= step
-        f = resize(self,(n,)+self.shape)
-        for i in range(1,n):
+        f = resize(self, (n,)+self.shape)
+        for i in range(1, n):
             f[i] += i*dir
         return Coords(f)
 
@@ -1600,7 +1600,7 @@ class Coords(ndarray):
         return [ self[i] for i in range(self.shape[0]) ]
 
 
-    def sort(self,order=[0,1,2]):
+    def sort(self,order=[0, 1, 2]):
         """Sort points in the specified order of their coordinates.
 
         The points are sorted based on their coordinate values. There is a
@@ -1624,8 +1624,8 @@ class Coords(ndarray):
         nmax = iinfo('int64').max # max integer, a bit above 2 million
         if n > nmax:
             raise ValueError("I can only sort %s points" % nmax)
-        s0,s1,s2 = [ argsort(self[:,i]) for i in range(3) ]
-        i0,i1,i2 = [ inverseUniqueIndex(i) for i in [s0,s1,s2] ]
+        s0, s1, s2 = [ argsort(self[:, i]) for i in range(3) ]
+        i0, i1, i2 = [ inverseUniqueIndex(i) for i in [s0, s1, s2] ]
         val = i2 + n * (i1 + n * i0)
         return argsort(val)
 
@@ -1655,28 +1655,28 @@ class Coords(ndarray):
           directions.
         """
         # serialize points
-        x = self.reshape(-1,3)
+        x = self.reshape(-1, 3)
         nnod = x.shape[0]
         # Calculate box size
-        lo,hi = x.bbox()
+        lo, hi = x.bbox()
         sz = hi-lo
         esz = sz[sz > 0.0]  # only keep the nonzero dimensions
 
         if esz.size == 0:
             # All points are coincident
-            ox = zeros(3,dtype=Float)
-            dx = ones(3,dtype=Float)
-            nx = ones(3,dtype=Int)
+            ox = zeros(3, dtype=Float)
+            dx = ones(3, dtype=Float)
+            nx = ones(3, dtype=Int)
 
         else:
-            nboxes = max(1,nnod // ppb) # ideal total number of boxes
+            nboxes = max(1, nnod // ppb) # ideal total number of boxes
             vol = esz.prod()
             # avoid error message on the global sz/nx calculation
             errh = seterr(all='ignore')
             # set ideal box size, but not smaller than minsize
-            boxsz = max(minsize,(vol/nboxes) ** (1./esz.shape[0]))
+            boxsz = max(minsize, (vol/nboxes) ** (1./esz.shape[0]))
             nx = (sz/boxsz).astype(int32)
-            dx = where(nx>0,sz/nx,boxsz)
+            dx = where(nx>0, sz/nx, boxsz)
             seterr(**errh)
 
         # perform the origin shift and adjust nx to make sure we enclose all
@@ -1684,7 +1684,7 @@ class Coords(ndarray):
         ex = ox + dx*nx
         adj = ceil((hi-ex)/dx).astype(Int).clip(min=0)
         nx += adj
-        return ox,dx,nx
+        return ox, dx, nx
 
 
     def fuse(self,ppb=1,shift=0.5,rtol=1.e-5,atol=1.e-5,repeat=True,nodesperbox=None):
@@ -1727,14 +1727,14 @@ class Coords(ndarray):
             ppb = nodesperbox
         if self.size == 0:
             # allow empty coords sets
-            return self,array([],dtype=Int).reshape(self.pshape())
+            return self, array([], dtype=Int).reshape(self.pshape())
 
         if repeat:
             # Apply twice with different shift value
-            coords,index = self.fuse(ppb,shift,rtol,atol,repeat=False)
-            coords,index2 = coords.fuse(ppb,shift+0.25,rtol,atol,repeat=False)
+            coords, index = self.fuse(ppb, shift, rtol, atol, repeat=False)
+            coords, index2 = coords.fuse(ppb, shift+0.25, rtol, atol, repeat=False)
             index = index2[index]
-            return coords,index
+            return coords, index
 
         #########################################
         # This is the single pass
@@ -1742,18 +1742,18 @@ class Coords(ndarray):
 
         if (self.sizes()==0.).all():
             # All points are coincident
-            e = zeros(x.shape[0],dtype=int32)
+            e = zeros(x.shape[0], dtype=int32)
             x = x[:1]
-            return x,e
+            return x, e
 
         # Compute boxes
-        ox,dx,nx = self.boxes(ppb=ppb,shift=shift,minsize=atol)
+        ox, dx, nx = self.boxes(ppb=ppb, shift=shift, minsize=atol)
 
         # Create box coordinates for all nodes
         ind = floor((x-ox)/dx).astype(int32)
         # Create unique box numbers in smallest direction first
         o = argsort(nx)
-        val = ( ind[:,o[2]] * nx[o[2]] + ind[:,o[1]] ) * nx[o[1]] + ind[:,o[0]]
+        val = ( ind[:, o[2]] * nx[o[2]] + ind[:, o[1]] ) * nx[o[1]] + ind[:, o[0]]
         # sort according to box number
         srt = argsort(val)
         # rearrange the data according to the sort order
@@ -1764,15 +1764,15 @@ class Coords(ndarray):
         # than enough for all practical purposes
         x = x.astype(float32)
         val = val.astype(int32)
-        tol = float32(max(abs(rtol*self.sizes()).max(),atol))
+        tol = float32(max(abs(rtol*self.sizes()).max(), atol))
         nnod = val.shape[0]
-        flag = ones((nnod,),dtype=int32)   # 1 = new, 0 = existing node
+        flag = ones((nnod,), dtype=int32)   # 1 = new, 0 = existing node
         # new fusing algorithm
         sel = arange(nnod).astype(int32)      # replacement unique node nr
-        misc._fuse(x,val,flag,sel,tol)     # fuse the close points
+        misc._fuse(x, val, flag, sel, tol)     # fuse the close points
         x = x[flag>0]          # extract unique nodes
         s = sel[argsort(srt)]  # and indices for old nodes
-        return (x,s.reshape(self.shape[:-1]))
+        return (x, s.reshape(self.shape[:-1]))
 
 
     def match(self,coords,clean=False,**kargs):
@@ -1799,16 +1799,16 @@ class Coords(ndarray):
 
 
         """
-        x = Coords.concatenate([self.points(),coords.points()])
-        c,e = x.fuse(**kargs)
-        e0,e1 = e[:self.npoints()],e[self.npoints():]
-        matches = matchIndex(e0,e1)
+        x = Coords.concatenate([self.points(), coords.points()])
+        c, e = x.fuse(**kargs)
+        e0, e1 = e[:self.npoints()], e[self.npoints():]
+        matches = matchIndex(e0, e1)
         if clean:
             matches=matches[matches>-1]
         return matches
 
 
-    def append(self,coords):
+    def append(self, coords):
         """Append coords to a Coords object.
 
         The appended coords should have matching dimensions in all
@@ -1820,7 +1820,7 @@ class Coords(ndarray):
         is a :class:`Coords` object, the default axis is the first one
         instead of the last, and it is a method rather than a function.
         """
-        return Coords(append(self,coords,axis=0))
+        return Coords(append(self, coords, axis=0))
 
 
     @classmethod
@@ -1857,7 +1857,7 @@ class Coords(ndarray):
         if len(L)==1:
             return L2
         else:
-            return Coords(data=concatenate(L2,axis=axis))
+            return Coords(data=concatenate(L2, axis=axis))
 
 
     @classmethod
@@ -1886,12 +1886,12 @@ class Coords(ndarray):
 
         The return value is  Coords object.
         """
-        x = fromstring(fil,dtype=Float,sep=sep,count=count)
+        x = fromstring(fil, dtype=Float, sep=sep, count=count)
         if count > 0 and x.size != count :
-            raise RuntimeError("Number of coordinates read: %s, expected %s!" % (x.size,count))
+            raise RuntimeError("Number of coordinates read: %s, expected %s!" % (x.size, count))
         if x.size % ndim != 0 :
-            raise RuntimeError("Number of coordinates read: %s, expected a multiple of %s!" % (x.size,ndim))
-        return Coords(x.reshape(-1,ndim))
+            raise RuntimeError("Number of coordinates read: %s, expected a multiple of %s!" % (x.size, ndim))
+        return Coords(x.reshape(-1, ndim))
 
 
     @classmethod
@@ -1907,10 +1907,10 @@ class Coords(ndarray):
         x = fromfile(fil,dtype=Float,**kargs)
         if x.size % 3 != 0 :
             raise RuntimeError("Number of coordinates read: %s, should be multiple of 3!" % x.size)
-        return Coords(x.reshape(-1,3))
+        return Coords(x.reshape(-1, 3))
 
 
-    def interpolate(self,X,div):
+    def interpolate(self, X, div):
         """Create interpolations between two :class:`Coords`.
 
         Parameters:
@@ -1939,7 +1939,7 @@ class Coords(ndarray):
         if self.shape != X.shape:
             raise RuntimeError("`X` should have same shape as `self`")
         div = unitDivisor(div)
-        return self + outer(div,X-self).reshape((-1,)+self.shape)
+        return self + outer(div, X-self).reshape((-1,)+self.shape)
 
 
     def convexHull(self):
@@ -1951,7 +1951,7 @@ class Coords(ndarray):
         This requires SciPy version 0.12.0 or higher.
         """
         from software import requireModule
-        requireModule('scipy','0.12.0')
+        requireModule('scipy', '0.12.0')
         from scipy import spatial
         return spatial.ConvexHull(self).simplices
 
@@ -1969,7 +1969,7 @@ class Coords(ndarray):
             return None
 
         from formex import Formex
-        return Formex(self.reshape(-1,3)).actor(**kargs)
+        return Formex(self.reshape(-1, 3)).actor(**kargs)
 
 
 
@@ -2010,32 +2010,32 @@ def bbox(objects):
              [ 1.,  1.,  0.]], dtype=float32)
 
     """
-    bboxes = [f.bbox() for f in objects if hasattr(f,'bbox') and not isnan(f.bbox()).any()]
+    bboxes = [f.bbox() for f in objects if hasattr(f, 'bbox') and not isnan(f.bbox()).any()]
     bboxes = [bb for bb in bboxes if bb is not None]
     if len(bboxes) == 0:
         o = origin()
-        bboxes = [ [o,o] ]
+        bboxes = [ [o, o] ]
     return Coords(concatenate(bboxes)).bbox()
 
 
 # TODO: should give a warning/ return None when no intersection?
-def bboxIntersection(A,B):
+def bboxIntersection(A, B):
     """Compute the intersection of the bounding box of two objects.
 
     A and B are objects having a bbox method. The intersection of the two
     bounding boxes is returned in boox format.
     """
-    Amin,Amax = A.bbox()
-    Bmin,Bmax = B.bbox()
-    min = where(Amin>Bmin,Amin,Bmin)
-    max = where(Amax<Bmax,Amax,Bmax)
-    return Coords([min,max])
+    Amin, Amax = A.bbox()
+    Bmin, Bmax = B.bbox()
+    min = where(Amin>Bmin, Amin, Bmin)
+    max = where(Amax<Bmax, Amax, Bmax)
+    return Coords([min, max])
 
 #
 # TODO: this could be merged with the test method by allowing a list for
 #       the parameters dir, min, max
 #
-def testBbox(A,bb,dirs=[0,1,2],nodes='any',atol=0.):
+def testBbox(A,bb,dirs=[0, 1, 2],nodes='any',atol=0.):
     """Test which part of A is inside a given bbox, applied in directions dirs.
 
     Parameters:
@@ -2048,7 +2048,7 @@ def testBbox(A,bb,dirs=[0,1,2],nodes='any',atol=0.):
     The result is a bool array flagging the elements that are inside the given
     bounding box.
     """
-    test = [ A.test(nodes=nodes,dir=i,min=bb[0][i],max=bb[1][i],atol=atol) for i in dirs ]
+    test = [ A.test(nodes=nodes, dir=i, min=bb[0][i], max=bb[1][i], atol=atol) for i in dirs ]
     return stack(test).prod(axis=0).astype(bool)
 
 
@@ -2058,7 +2058,7 @@ def origin():
     Returns a :class:`Coords` object with shape(3,) holding three zero
     coordinates.
     """
-    return Coords(zeros((3),dtype=Float))
+    return Coords(zeros((3), dtype=Float))
 
 
 def pattern(s,aslist=False):
@@ -2133,7 +2133,7 @@ def pattern(s,aslist=False):
         elif c == '.':
             pass
         else:
-            j,i = divmod(ord(c),16)
+            j, i = divmod(ord(c), 16)
             if j == 3:
                 pass
             elif j == 4:
@@ -2167,7 +2167,7 @@ def pattern(s,aslist=False):
             else:
                 raise RuntimeError("Unknown character '%c' in pattern input" % c)
         if insert:
-            l.append((x,y,z))
+            l.append((x, y, z))
         insert = True
     if not aslist:
         l = Coords(l)
@@ -2198,12 +2198,12 @@ def xpattern(s,nplex=1):
     """
     x = Coords(pattern(s))
     try:
-        return x.reshape(-1,nplex,3)
+        return x.reshape(-1, nplex, 3)
     except:
         raise ValueError("Could not reshape points list to plexitude %s" % nplex)
 
 
-def align(L,align,offset=[0.,0.,0.]):
+def align(L,align,offset=[0., 0., 0.]):
     """Align a list of geometrical objects.
 
     L is a list of geometrical objects (Coords or Geometry or subclasses
@@ -2234,11 +2234,11 @@ def align(L,align,offset=[0.,0.,0.]):
             al += align[i]
             am += align[i]
     for o in L[1:]:
-        r.append(o.align(al,r[-1].bboxPoint(am)+offset))
+        r.append(o.align(al, r[-1].bboxPoint(am)+offset))
     return r
 
 
-def sweepCoords(self,path,origin=[0.,0.,0.],normal=0,upvector=2,avgdir=False,enddir=None,scalex=None,scaley=None,scalez=None):
+def sweepCoords(self,path,origin=[0., 0., 0.],normal=0,upvector=2,avgdir=False,enddir=None,scalex=None,scaley=None,scalez=None):
     """ Sweep a Coords object along a path, returning a series of copies.
 
     origin and normal define the local path position and direction on the mesh.
@@ -2265,25 +2265,25 @@ def sweepCoords(self,path,origin=[0.,0.,0.],normal=0,upvector=2,avgdir=False,end
     The return value is a sequence of the transformed Coords objects.
     """
     points = path.coords
-    if isinstance(avgdir,bool):
+    if isinstance(avgdir, bool):
         if avgdir:
             directions = path.avgDirections()
         else:
             directions = path.directions()
     else:
-        directions=asarray(avgdir).reshape(len(avgdir),-1)
+        directions=asarray(avgdir).reshape(len(avgdir), -1)
 
     missing = points.shape[0] - directions.shape[0]
     if missing == 1:
-        lastdir = (points[-1] - points[-2]).reshape(1,3)
-        directions = concatenate([directions,lastdir],axis=0)
+        lastdir = (points[-1] - points[-2]).reshape(1, 3)
+        directions = concatenate([directions, lastdir], axis=0)
     elif missing == 2:
-        lastdir = (points[-1] - points[-2]).reshape(1,3)
-        firstdir = (points[1] - points[0]).reshape(1,3)
-        directions = concatenate([firstdir,directions,lastdir],axis=0)
+        lastdir = (points[-1] - points[-2]).reshape(1, 3)
+        firstdir = (points[1] - points[0]).reshape(1, 3)
+        directions = concatenate([firstdir, directions, lastdir], axis=0)
 
     if enddir:
-        for i,j in enumerate([0,-1]):
+        for i, j in enumerate([0, -1]):
             if enddir[i]:
                 directions[j] = Coords(enddir[i])
 
@@ -2314,8 +2314,8 @@ def sweepCoords(self,path,origin=[0.,0.,0.],normal=0,upvector=2,avgdir=False,end
         scalez = ones(points.shape[0])
 
     base = self.translate(-Coords(origin))
-    sequence = [ base.scale([scx,scy,scz]).rotate(vectorRotation(normal,d,upvector)).translate(p)
-                 for scx,scy,scz,d,p in zip(scalex,scaley,scalez,directions,points)
+    sequence = [ base.scale([scx, scy, scz]).rotate(vectorRotation(normal, d, upvector)).translate(p)
+                 for scx, scy, scz, d, p in zip(scalex, scaley, scalez, directions, points)
                  ]
 
     return sequence
@@ -2331,56 +2331,56 @@ if __name__ == "__main__":
     def testX(X):
         """Run some tests on:class:`Coords` X."""
 
-        def prt(s,v):
+        def prt(s, v):
             """Print a statement 's = v' and return v"""
-            if isinstance(v,ndarray):
+            if isinstance(v, ndarray):
                 sep = '\n'
             else:
                 sep = ' '
-            print("%s =%s%s" % (s,sep,v))
+            print("%s =%s%s" % (s, sep, v))
             return v
 
-        prt("###################################\nTests for Coords X",X)
+        prt("###################################\nTests for Coords X", X)
 
         # Info
-        prt("points",X.points())
-        prt("pshape",X.pshape())
-        prt("npoints",X.npoints())
-        prt("y",X.y())
-        prt("bbox",X.bbox())
-        prt("center",X.center())
-        prt("centroid",X.centroid())
-        prt("sizes",X.sizes())
-        prt("dsize",X.dsize())
-        prt("bsphere",X.bsphere())
-        prt("distanceFromPlane",X.distanceFromPlane([0.,0.,1.],[0.,0.,1.]))
-        prt("distanceFromLine",X.distanceFromLine([0.,0.,1.],[0.,0.,1.]))
-        prt("distanceFromPoint",X.distanceFromPoint([0.,0.,1.]))
-        prt("test",X.test(dir=1,min=0.5,max=1.5))
-        prt("test2",X.test(dir=[1.,1.,0.],min=[0.,0.5,0.],max=[0.,1.5,0.]))
+        prt("points", X.points())
+        prt("pshape", X.pshape())
+        prt("npoints", X.npoints())
+        prt("y", X.y())
+        prt("bbox", X.bbox())
+        prt("center", X.center())
+        prt("centroid", X.centroid())
+        prt("sizes", X.sizes())
+        prt("dsize", X.dsize())
+        prt("bsphere", X.bsphere())
+        prt("distanceFromPlane", X.distanceFromPlane([0., 0., 1.], [0., 0., 1.]))
+        prt("distanceFromLine", X.distanceFromLine([0., 0., 1.], [0., 0., 1.]))
+        prt("distanceFromPoint", X.distanceFromPoint([0., 0., 1.]))
+        prt("test", X.test(dir=1, min=0.5, max=1.5))
+        prt("test2", X.test(dir=[1., 1., 0.], min=[0., 0.5, 0.], max=[0., 1.5, 0.]))
 
         # Transforms
-        prt("X_scl",X.scale(2,False))
-        prt("X",X)
-        prt("X_scl",X.scale(2,True))
-        prt("X",X)
-        prt("X_scl2",X.scale([0.5,1.,0.]))
-        prt("X_trl",X.copy().translate(0,6))
-        prt("X_trl2",X.translate([10.,100.,1000.]))
-        prt("X_rot",X.rotate(90.))
-        prt("X_rot2",X.rotate(90.,0))
+        prt("X_scl", X.scale(2, False))
+        prt("X", X)
+        prt("X_scl", X.scale(2, True))
+        prt("X", X)
+        prt("X_scl2", X.scale([0.5, 1., 0.]))
+        prt("X_trl", X.copy().translate(0, 6))
+        prt("X_trl2", X.translate([10., 100., 1000.]))
+        prt("X_rot", X.rotate(90.))
+        prt("X_rot2", X.rotate(90., 0))
 
-        Y=prt("Y = X_reflect",X.reflect(1,2))
-        prt("X_bbox",X.bbox())
-        prt("Y_bbox",Y.bbox())
-        prt("(X+Y)bbox",bbox([X,Y]))
-        Z = X.copy().reflect(1,1.5).translate(1,2)
-        prt("X",X)
-        prt("Y",Y)
-        prt("Z",Z)
-        G = Coords.concatenate([X,Z,Y,Z],axis=0)
-        prt("X+Z+Y+Z",G)
-        prt("Points with y > 4.5",where(G.test(dir=1,min=4.5))[0])
+        Y=prt("Y = X_reflect", X.reflect(1, 2))
+        prt("X_bbox", X.bbox())
+        prt("Y_bbox", Y.bbox())
+        prt("(X+Y)bbox", bbox([X, Y]))
+        Z = X.copy().reflect(1, 1.5).translate(1, 2)
+        prt("X", X)
+        prt("Y", Y)
+        prt("Z", Z)
+        G = Coords.concatenate([X, Z, Y, Z], axis=0)
+        prt("X+Z+Y+Z", G)
+        prt("Points with y > 4.5", where(G.test(dir=1, min=4.5))[0])
         return
 
 
@@ -2390,9 +2390,9 @@ if __name__ == "__main__":
         This is intended for tests during development and can be
         changed at will.
         """
-        testX(Coords([[1,0,0],[0,1,0]]))
-        testX(Coords([[[0,0,0],[1,0,0]],[[0,1,0],[1,1,0]]]))
-        testX(Coords([1,0,0]))
+        testX(Coords([[1, 0, 0], [0, 1, 0]]))
+        testX(Coords([[[0, 0, 0], [1, 0, 0]], [[0, 1, 0], [1, 1, 0]]]))
+        testX(Coords([1, 0, 0]))
         try:
             testX(Coords())
         except:

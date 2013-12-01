@@ -45,7 +45,7 @@ if (sys.hexversion & 0xFFFF0000) < 0x02070000:
 ##  Alternatively, you can use an older version of pyFormex,    ##
 ##  but then you will miss all recent and future improvements.  ##
 ##################################################################
-""" % (sys.version_info.major,sys.version_info.minor))
+""" % (sys.version_info.major, sys.version_info.minor))
     sys.exit()
 
 

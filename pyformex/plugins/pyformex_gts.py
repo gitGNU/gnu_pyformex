@@ -52,12 +52,12 @@ def read_gts_intersectioncurve(fn):
     from formex import Formex
     RE = re.compile("^VECT 1 2 0 2 0 (?P<data>.*)$")
     r = []
-    for line in open(fn,'r'):
+    for line in open(fn, 'r'):
         m = RE.match(line)
         if m:
             r.append(m.group('data'))
     nelems = len(r)
-    x = fromstring('\n'.join(r),sep=' ').reshape(-1,2,3)
+    x = fromstring('\n'.join(r), sep=' ').reshape(-1, 2, 3)
     F = Formex(x)
     return F
 
@@ -88,7 +88,7 @@ def boolean(self,surf,op,check=False,verbose=False):
 
     .. note: This uses the external command 'gtsset'
     """
-    return self.gtsset(surf,op,filt = '',ext='.gts',check=check,verbose=verbose)
+    return self.gtsset(surf, op, filt = '', ext='.gts', check=check, verbose=verbose)
 
 
 def intersection(self,surf,check=False,verbose=False):
@@ -109,7 +109,7 @@ def intersection(self,surf,check=False,verbose=False):
 
     Returns: a list of intersection curves.
     """
-    return self.gtsset(surf,op='*',ext='.list',curve=True,check=check,verbose=verbose)
+    return self.gtsset(surf, op='*', ext='.list', curve=True, check=check, verbose=verbose)
 
 
 def gtsset(self,surf,op,filt='',ext='.tmp',curve=False,check=False,verbose=False):
@@ -135,12 +135,12 @@ def gtsset(self,surf,op,filt='',ext='.tmp',curve=False,check=False,verbose=False
     tmp1 = utils.tempFile(suffix='.gts').name
     tmp2 = utils.tempFile(suffix=ext).name
     pf.message("Writing temp file %s" % tmp)
-    self.write(tmp,'gts')
+    self.write(tmp, 'gts')
     pf.message("Writing temp file %s" % tmp1)
-    surf.write(tmp1,'gts')
+    surf.write(tmp1, 'gts')
     pf.message("Performing boolean operation")
-    cmd = "gtsset %s %s %s %s %s" % (options,op,tmp,tmp1,filt)
-    P = utils.system(cmd,stdout=open(tmp2,'w'))
+    cmd = "gtsset %s %s %s %s %s" % (options, op, tmp, tmp1, filt)
+    P = utils.system(cmd, stdout=open(tmp2, 'w'))
     os.remove(tmp)
     os.remove(tmp1)
     if P.sta or verbose:
@@ -173,15 +173,15 @@ def gtsinside(self,pts,dir=0):
     tmp1 = utils.tempFile(suffix='.dta').name
     tmp2 = utils.tempFile(suffix='.out').name
     #print("Writing temp file %s" % tmp)
-    S.write(tmp,'gts')
+    S.write(tmp, 'gts')
     #print("Writing temp file %s" % tmp1)
-    with open(tmp1,'w') as f:
-        P.coords.tofile(f,sep=' ')
+    with open(tmp1, 'w') as f:
+        P.coords.tofile(f, sep=' ')
         f.write('\n')
 
     #print("Performing inside testing")
-    cmd = "gtsinside %s %s" % (tmp,tmp1)
-    P = utils.command(cmd,stdout=open(tmp2,'w'))
+    cmd = "gtsinside %s %s" % (tmp, tmp1)
+    P = utils.command(cmd, stdout=open(tmp2, 'w'))
     os.remove(tmp)
     os.remove(tmp1)
     if P.sta:
@@ -189,7 +189,7 @@ def gtsinside(self,pts,dir=0):
         pf.message(P.out)
         return None
     #print("Reading results from %s" % tmp2)
-    ind = fromfile(tmp2,sep=' ',dtype=Int)
+    ind = fromfile(tmp2, sep=' ', dtype=Int)
     os.remove(tmp2)
     return ind
 
@@ -207,7 +207,7 @@ def inside(self,pts,atol='auto',multi=False):
     of points as obtained from pts.points().
     """
     from formex import Formex
-    if not isinstance(pts,Formex):
+    if not isinstance(pts, Formex):
         pts = Formex(pts)
     pts = Formex(pts)#.asPoints()
 
@@ -215,31 +215,31 @@ def inside(self,pts,atol='auto',multi=False):
         atol = pts.dsize()*0.001
 
     # determine bbox of common space of surface and points
-    bb = bboxIntersection(self,pts)
+    bb = bboxIntersection(self, pts)
     if (bb[0] > bb[1]).any():
         # No bbox intersection: no points inside
-        return array([],dtype=Int)
+        return array([], dtype=Int)
 
     # Limit the points to the common part
     # Add point numbers as property, to allow return of original numbers
     pts.setProp(arange(pts.nelems()))
-    pts = pts.clip(testBbox(pts,bb,atol=atol))
+    pts = pts.clip(testBbox(pts, bb, atol=atol))
 
-    ins = zeros((3,pts.nelems()),dtype=bool)
+    ins = zeros((3, pts.nelems()), dtype=bool)
     if pf.scriptMode == 'script' or not multi:
         for i in range(3):
-            dirs = roll(arange(3),-i)[1:]
+            dirs = roll(arange(3), -i)[1:]
             # clip the surface perpendicular to the shooting direction
             # !! gtsinside seems to fail sometimes when using clipping
             S = self#.clip(testBbox(self,bb,dirs=dirs,atol=atol),compact=False)
             # find inside points shooting in direction i
-            ok = gtsinside(S,pts,dir=i)
-            ins[i,ok] = True
+            ok = gtsinside(S, pts, dir=i)
+            ins[i, ok] = True
     else:
-        tasks = [(gtsinside,(self,pts,i)) for i in range(3)]
-        ind = multitask(tasks,3)
+        tasks = [(gtsinside, (self, pts, i)) for i in range(3)]
+        ind = multitask(tasks, 3)
         for i in range(3):
-            ins[i,ind[i]] = True
+            ins[i, ind[i]] = True
 
     ok = where(ins.sum(axis=0) > 1)[0]
     return pts.prop[ok]

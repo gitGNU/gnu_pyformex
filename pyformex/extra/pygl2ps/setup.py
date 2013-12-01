@@ -36,5 +36,5 @@ See http://www.geuz.org/gl2ps/
       license="GNU LGPL (Library General Public License)",
       py_modules=["gl2ps"],
       ext_modules=[Extension("_gl2ps",
-                             ["gl2ps.c","gl2ps_wrap.c"],
+                             ["gl2ps.c", "gl2ps_wrap.c"],
                              libraries=["GL"])])

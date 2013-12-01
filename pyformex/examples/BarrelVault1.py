@@ -38,12 +38,12 @@ def run():
     smoothwire()
 
     res = askItems([
-        dict(name='m',value=12,text='number of modules in axial direction'),
-        dict(name='n',value=8,text='number of modules in tangential direction'),
-        dict(name='r',value=10.,text='barrel radius'),
-        dict(name='a',value=180.,text='barrel opening angle'),
-        dict(name='l',value=30.,text='barrel length'),
-        dict(name='eltype',value='quad8',text='element type',itemtype='radio',choices=['tri3','quad4','quad8','quad9']),
+        dict(name='m', value=12, text='number of modules in axial direction'),
+        dict(name='n', value=8, text='number of modules in tangential direction'),
+        dict(name='r', value=10., text='barrel radius'),
+        dict(name='a', value=180., text='barrel opening angle'),
+        dict(name='l', value=30., text='barrel length'),
+        dict(name='eltype', value='quad8', text='element type', itemtype='radio', choices=['tri3', 'quad4', 'quad8', 'quad9']),
         ])
     if not res:
         return
@@ -51,12 +51,12 @@ def run():
     globals().update(res)
 
     # Grid
-    g = Formex('4:0123').replic2(m,n).toMesh().convert(eltype)
+    g = Formex('4:0123').replic2(m, n).toMesh().convert(eltype)
 
     # Create barrel
-    barrel = g.rotate(90,1).translate(0,r).scale([1.,a/n,l/m]).cylindrical()
+    barrel = g.rotate(90, 1).translate(0, r).scale([1., a/n, l/m]).cylindrical()
 
-    draw(barrel,color=red,bkcolor=blue)
+    draw(barrel, color=red, bkcolor=blue)
 
     export({'Barrel':barrel})
 

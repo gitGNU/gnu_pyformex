@@ -32,7 +32,7 @@ import pyformex as pf
 
 from coords import bbox
 from script import named
-from gui.draw import drawBbox,_I
+from gui.draw import drawBbox, _I
 import geomfile
 import odict
 
@@ -74,7 +74,7 @@ class Objects(object):
             return ''
 
 
-    def set(self,names):
+    def set(self, names):
         """Set the selection to a list of names.
 
         namelist can be a single object name or a list of names.
@@ -83,7 +83,7 @@ class Objects(object):
         if isinstance(names, str):
             names = [ names ]
         self.names = [ s for s in names if isinstance(s, str) ]
-        self.values = map(named,self.names)
+        self.values = map(named, self.names)
 
 
     def append(self,name,value=None):
@@ -105,7 +105,7 @@ class Objects(object):
         self.set([])
 
 
-    def __getitem__(self,i):
+    def __getitem__(self, i):
         """Return selection item i"""
         return self.names[i]
 
@@ -116,7 +116,7 @@ class Objects(object):
         This lists all the global names in pyformex.PF that match
         the class and/or filter (if specified).
         """
-        return listAll(clas=self.clas,like=self.like,filtr=self.filter)
+        return listAll(clas=self.clas, like=self.like, filtr=self.filter)
 
 
     def selectAll(self):
@@ -129,12 +129,12 @@ class Objects(object):
         If copy==True, the values are copied, so that the variables' current
         values can be changed inplace without affecting the remembered values.
         """
-        self.values = map(named,self.names)
+        self.values = map(named, self.names)
         if copy:
-            self.values = map(deepcopy,self.values)
+            self.values = map(deepcopy, self.values)
 
 
-    def changeValues(self,newvalues):
+    def changeValues(self, newvalues):
         """Replace the current values of selection by new ones.
 
         The old values are stored locally, to enable undo operations.
@@ -143,12 +143,12 @@ class Objects(object):
         be changed inplace!
         """
         self.remember()
-        export2(self.names,newvalues)
+        export2(self.names, newvalues)
 
 
     def undoChanges(self):
         """Undo the last changes of the values."""
-        export2(self.names,self.values)
+        export2(self.names, self.values)
 
 
     def check(self,single=False,warn=True):
@@ -172,7 +172,7 @@ class Objects(object):
         if single:
             return named(self.names[0])
         else:
-            return map(named,self.names)
+            return map(named, self.names)
 
 
     def odict(self):
@@ -181,7 +181,7 @@ class Objects(object):
         Returns an ODict with the currently selected objects in the order
         of the selection.names.
         """
-        return odict.ODict(zip(self.names,self.check(warn=False)))
+        return odict.ODict(zip(self.names, self.check(warn=False)))
 
 
     def ask(self,mode='multi'):
@@ -233,29 +233,29 @@ class Objects(object):
         """Print the selection."""
         objects = self.check()
         if objects:
-            for n,o in zip(self.names,objects):
-                print("%s = %s" % (n,str(o)))
+            for n, o in zip(self.names, objects):
+                print("%s = %s" % (n, str(o)))
 
 
     def printbbox(self):
         """Print the bbox of the current selection."""
         objects = self.check()
         if objects:
-            for n,o in zip(self.names,objects):
+            for n, o in zip(self.names, objects):
                 bb = o.bbox()
-                pf.message("* %s (%s): bbox [%s, %s]" % (n,o.__class__.__name__,bb[0],bb[1]))
+                pf.message("* %s (%s): bbox [%s, %s]" % (n, o.__class__.__name__, bb[0], bb[1]))
             if len(self.names) > 1:
-                pf.message("** Overal bbox: [%s, %s]" % (bb[0],bb[1]))
+                pf.message("** Overal bbox: [%s, %s]" % (bb[0], bb[1]))
 
 
-    def writeToFile(self,filename):
+    def writeToFile(self, filename):
         """Write objects to a geometry file."""
         objects = self.odict()
         if objects:
-            writeGeomFile(filename,objects)
+            writeGeomFile(filename, objects)
 
 
-    def readFromFile(self,filename):
+    def readFromFile(self, filename):
         """Read objects from a geometry file."""
         res = readGeomFile(filename)
         export(res)
@@ -270,23 +270,23 @@ from gui.draw import *
 
 def draw_object_name(n):
     """Draw the name of an object at its center."""
-    return drawText3D(named(n).center(),n)
+    return drawText3D(named(n).center(), n)
 
 def draw_elem_numbers(n):
     """Draw the numbers of an object's elements."""
-    return drawNumbers(named(n),color='blue')
+    return drawNumbers(named(n), color='blue')
 
 def draw_nodes(n):
     """Draw the nodes of an object."""
-    return draw(named(n).coords,nolight=True,wait=False)
+    return draw(named(n).coords, nolight=True, wait=False)
 
 def draw_node_numbers(n):
     """Draw the numbers of an object's nodes."""
-    return drawNumbers(named(n).coords,color='red')
+    return drawNumbers(named(n).coords, color='red')
 
 def draw_free_edges(n):
     """Draw the feature edges of an object."""
-    return drawFreeEdges(named(n),color='black')
+    return drawFreeEdges(named(n), color='black')
 
 def draw_bbox(n):
     """Draw the bbox of an object."""
@@ -325,7 +325,7 @@ class DrawableObjects(Objects):
 
     def ask(self,mode='multi'):
         """Interactively sets the current selection."""
-        new = Objects.ask(self,mode)
+        new = Objects.ask(self, mode)
         if new is not None:
             self.draw()
         return new
@@ -333,10 +333,10 @@ class DrawableObjects(Objects):
 
     def draw(self,**kargs):
         clear()
-        pf.debug("Drawing SELECTION: %s" % self.names,pf.DEBUG.DRAW)
+        pf.debug("Drawing SELECTION: %s" % self.names, pf.DEBUG.DRAW)
         self._actors = draw(self.names,clear=False,shrink=self.shrink,wait=False,**kargs)
         for f in self.annotations:
-            pf.debug("Drawing ANNOTATION: %s" % f,pf.DEBUG.DRAW)
+            pf.debug("Drawing ANNOTATION: %s" % f, pf.DEBUG.DRAW)
             self.drawAnnotation(f)
 
 
@@ -347,7 +347,7 @@ class DrawableObjects(Objects):
         old are drawn in yellow, new in the current color.
         """
         self.draw()
-        draw(self.values,color='yellow',bbox=None,clear=False,shrink=self.shrink,wait=False)
+        draw(self.values, color='yellow', bbox=None, clear=False, shrink=self.shrink, wait=False)
 
 
     def undoChanges(self):
@@ -375,12 +375,12 @@ class DrawableObjects(Objects):
             self.removeAnnotation(f)
 
 
-    def drawAnnotation(self,f):
+    def drawAnnotation(self, f):
         """Draw some annotation for the current selection."""
         self._annotations[f] = [ f(n) for n in self.names ]
 
 
-    def removeAnnotation(self,f):
+    def removeAnnotation(self, f):
         """Remove the annotation f."""
         if f in self._annotations:
             # pf.canvas.removeAnnotation(self._annotations[f])
@@ -401,16 +401,16 @@ class DrawableObjects(Objects):
         """
         for f in self._annotations.values():
             if ontop in [ True, False, '' ]:
-                if not isinstance(f,list):
+                if not isinstance(f, list):
                    f = [f]
                 for a in f:
                     if ontop == '':
                         ontop = not a.ontop
-                    print(a,ontop)
+                    print(a, ontop)
                     a.ontop = ontop
 
 
-    def hasAnnotation(self,f):
+    def hasAnnotation(self, f):
         """Return the status of annotation f"""
         return f in self.annotations
     def hasNames(self):
@@ -427,17 +427,17 @@ class DrawableObjects(Objects):
         return self.hasAnnotation(draw_bbox)
 
     def toggleNames(self,onoff=None):
-        self.toggleAnnotation(draw_object_name,onoff)
+        self.toggleAnnotation(draw_object_name, onoff)
     def toggleNumbers(self,onoff=None):
-        self.toggleAnnotation(draw_elem_numbers,onoff)
+        self.toggleAnnotation(draw_elem_numbers, onoff)
     def toggleNodeNumbers(self,onoff=None):
-        self.toggleAnnotation(draw_node_numbers,onoff)
+        self.toggleAnnotation(draw_node_numbers, onoff)
     def toggleFreeEdges(self,onoff=None):
-        self.toggleAnnotation(draw_free_edges,onoff)
+        self.toggleAnnotation(draw_free_edges, onoff)
     def toggleNodes(self,onoff=None):
-        self.toggleAnnotation(draw_nodes,onoff)
+        self.toggleAnnotation(draw_nodes, onoff)
     def toggleBbox(self,onoff=None):
-        self.toggleAnnotation(draw_bbox,onoff)
+        self.toggleAnnotation(draw_bbox, onoff)
 
 
     def setProp(self,prop=None):
@@ -451,14 +451,14 @@ class DrawableObjects(Objects):
         objects = self.check()
         if objects:
             if prop is None:
-                res = askItems([['property',0]],
+                res = askItems([['property', 0]],
                                caption = 'Set Property Number for Selection (negative value to remove)')
                 if res:
                     prop = int(res['property'])
                     if prop < 0:
                         prop = None
             for o in objects:
-                if hasattr(o,'setProp'):
+                if hasattr(o, 'setProp'):
                     o.setProp(prop)
             self.draw()
 
@@ -472,7 +472,7 @@ class DrawableObjects(Objects):
         objects = self.check()
         if objects:
             for o in objects:
-                if hasattr(o,'prop'):
+                if hasattr(o, 'prop'):
                     o.prop=None
             self.draw()
 

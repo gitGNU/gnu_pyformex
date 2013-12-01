@@ -54,12 +54,12 @@ def addButton(toolbar,tooltip,icon,func,repeat=False,toggle=False,checked=False,
     """
     iconset = QtGui.QIcon()
     icon_on = QtGui.QPixmap(utils.findIcon(icon))
-    iconset.addPixmap(icon_on,QtGui.QIcon.Normal,QtGui.QIcon.On)
+    iconset.addPixmap(icon_on, QtGui.QIcon.Normal, QtGui.QIcon.On)
     if toggle and icon0:
         icon_off = QtGui.QPixmap(utils.findIcon(icon0))
-        iconset.addPixmap(icon_off,QtGui.QIcon.Normal,QtGui.QIcon.Off)
+        iconset.addPixmap(icon_off, QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
-    a = toolbar.addAction(iconset,tooltip,func)
+    a = toolbar.addAction(iconset, tooltip, func)
     a.setEnabled(enabled)
 
     b = toolbar.widgetForAction(a)
@@ -79,7 +79,7 @@ def addButton(toolbar,tooltip,icon,func,repeat=False,toggle=False,checked=False,
     return b
 
 
-def removeButton(toolbar,button):
+def removeButton(toolbar, button):
     """Remove a button from a toolbar."""
     toolbar.removeAction(button)
 
@@ -103,8 +103,8 @@ def addActionButtons(toolbar):
     # Filter configured buttons
     show_buttons = pf.cfg['gui/actionbuttons']
     show_buttons = [ b for b in avail_buttons if b[0].lower() in show_buttons ]
-    for name,icon,func,enabled in show_buttons:
-        action[name] = addButton(toolbar,'',icon,func,enabled=enabled)
+    for name, icon, func, enabled in show_buttons:
+        action[name] = addButton(toolbar, '', icon, func, enabled=enabled)
     return action
 
 
@@ -137,7 +137,7 @@ def addCameraButtons(toolbar):
                 ]
     for but in buttons:
         icon = widgets.pyformexIcon(but[1])
-        a = toolbar.addAction(icon,but[0],but[2])
+        a = toolbar.addAction(icon, but[0], but[2])
         b = toolbar.children()[-1] # Get the QToolButton for the last action
         if len(but) < 4 or but[3]:
             b.setAutoRepeat(True)
@@ -167,7 +167,7 @@ class Toggle(object):
 
 class ViewportToggleButton(object):
     def __init__(self,toolbar,tooltip,icon,func,attr,checked=False,icon0=None):
-        self.button = addButton(toolbar,tooltip,icon,func,toggle=True,icon0=icon0)
+        self.button = addButton(toolbar, tooltip, icon, func, toggle=True, icon0=icon0)
         self.attr = attr
 
     def updateButton(self):
@@ -184,7 +184,7 @@ class ViewportToggleButton(object):
         This does not update the button state.
         """
         vp = pf.GUI.viewports.current
-        vp.setToggle(attr,state)
+        vp.setToggle(attr, state)
         vp.update()
         pf.GUI.processEvents()
 
@@ -195,11 +195,11 @@ def toggleButton(attr,state=None):
     This does not update the button state.
     """
     vp = pf.GUI.viewports.current
-    vp.setToggle(attr,state)
+    vp.setToggle(attr, state)
     vp.update()
     pf.GUI.processEvents()
 
-def updateButton(button,attr):
+def updateButton(button, attr):
     """Update the button to correct state."""
     if button:
         vp = pf.GUI.viewports.current
@@ -229,8 +229,8 @@ wire_button = None # the toggle wire button
 
 def addWireButton(toolbar):
     global wire_button
-    wire_button = addButton(toolbar,'Toggle Wire Mode',
-                            'wireall',toggleWire,icon0='wirenone',
+    wire_button = addButton(toolbar, 'Toggle Wire Mode',
+                            'wireall', toggleWire, icon0='wirenone',
                             toggle=True)
 
 def toggleWire(state=None):
@@ -261,16 +261,16 @@ transparency_button = None # the toggle transparency button
 
 def addTransparencyButton(toolbar):
     global transparency_button
-    transparency_button = addButton(toolbar,'Toggle Transparent Mode',
-                                    'transparent',toggleTransparency,
+    transparency_button = addButton(toolbar, 'Toggle Transparent Mode',
+                                    'transparent', toggleTransparency,
                                     toggle=True)
 
 def toggleTransparency(state=None):
-    toggleButton('alphablend',state)
+    toggleButton('alphablend', state)
 
 def updateTransparencyButton():
     """Update the transparency button to correct state."""
-    updateButton(transparency_button,'alphablend')
+    updateButton(transparency_button, 'alphablend')
 
 
 ################# Lights Button ###############
@@ -279,16 +279,16 @@ light_button = None
 
 def addLightButton(toolbar):
     global light_button
-    light_button = addButton(toolbar,'Toggle Lights',
-                             'lamp-on',toggleLight,icon0='lamp',
-                             toggle=True,checked=True)
+    light_button = addButton(toolbar, 'Toggle Lights',
+                             'lamp-on', toggleLight, icon0='lamp',
+                             toggle=True, checked=True)
 
 def toggleLight(state=None):
-    toggleButton('lighting',state)
+    toggleButton('lighting', state)
 
 def updateLightButton():
     """Update the light button to correct state."""
-    updateButton(light_button,'lighting')
+    updateButton(light_button, 'lighting')
 
 
 ################# Normals Button ###############
@@ -297,16 +297,16 @@ normals_button = None
 
 def addNormalsButton(toolbar):
     global normals_button
-    normals_button = addButton(toolbar,'Toggle Normals',
-                               'normals-avg',toggleNormals,icon0='normals-ind',
-                               toggle=True,checked=False)
+    normals_button = addButton(toolbar, 'Toggle Normals',
+                               'normals-avg', toggleNormals, icon0='normals-ind',
+                               toggle=True, checked=False)
 
 def toggleNormals(state=None):
-    toggleButton('avgnormals',state)
+    toggleButton('avgnormals', state)
 
 def updateNormalsButton(state=True):
     """Update the normals button to correct state."""
-    updateButton(normals_button,'avgnormals')
+    updateButton(normals_button, 'avgnormals')
 
 
 ################# Perspective Button ###############
@@ -324,9 +324,9 @@ def togglePerspective(mode=None): # Called by the button, not by user
 
 def addPerspectiveButton(toolbar):
     global perspective_button
-    perspective_button = addButton(toolbar,'Toggle Perspective/Projective Mode',
-                                   'perspect',togglePerspective,
-                                   toggle=True,icon0='project',checked=True)
+    perspective_button = addButton(toolbar, 'Toggle Perspective/Projective Mode',
+                                   'perspect', togglePerspective,
+                                   toggle=True, icon0='project', checked=True)
 
 def updatePerspectiveButton():
     """Update the normals button to correct state."""
@@ -353,7 +353,7 @@ def setProjection():
 shrink_button = None # the toggle shrink button
 
 def toggleShrink(): # Called by the button
-    mode = draw.DrawOptions.get('shrink',None)
+    mode = draw.DrawOptions.get('shrink', None)
     if mode is None:
         mode = 0.8
     else:
@@ -362,8 +362,8 @@ def toggleShrink(): # Called by the button
 
 def addShrinkButton(toolbar):
     global shrink_button
-    shrink_button = addButton(toolbar,'Toggle Shrink Mode',
-                              'shrink',toggleShrink,
+    shrink_button = addButton(toolbar, 'Toggle Shrink Mode',
+                              'shrink', toggleShrink,
                               toggle=True)
 
 def setShrink(mode):
@@ -379,7 +379,7 @@ def toggleTimeout(onoff=None):
     if onoff is None:
         onoff = widgets.input_timeout < 0
     if onoff:
-        timeout = pf.cfg.get('gui/timeoutvalue',-1)
+        timeout = pf.cfg.get('gui/timeoutvalue', -1)
     else:
         timeout = -1
 
@@ -402,10 +402,10 @@ def addTimeoutButton(toolbar):
     global timeout_button
     if pf.cfg['gui/timeoutbutton']:
         if timeout_button is None:
-            timeout_button = addButton(toolbar,'Toggle Timeout','clock',toggleTimeout,toggle=True,checked=False)
+            timeout_button = addButton(toolbar, 'Toggle Timeout', 'clock', toggleTimeout, toggle=True, checked=False)
     else:
         if timeout_button is not None:
-            removeButton(toolbar,timeout_button)
+            removeButton(toolbar, timeout_button)
             timeout_button = None
 
 

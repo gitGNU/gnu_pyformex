@@ -45,12 +45,12 @@ def setTriade():
         pos = 'lb'
         siz = 100
     res = draw.askItems([
-        _I('triade',True),
-        _I('pos',pos,choices=['lt','lc','lb','ct','cc','cb','rt','rc','rb']),
-        _I('size',siz),
+        _I('triade', True),
+        _I('pos', pos, choices=['lt', 'lc', 'lb', 'ct', 'cc', 'cb', 'rt', 'rc', 'rb']),
+        _I('size', siz),
         ])
     if res:
-        draw.setTriade(res['triade'],res['pos'],res['size'])
+        draw.setTriade(res['triade'], res['pos'], res['size'])
 
 
 def setBgColor():
@@ -62,13 +62,13 @@ def setBgColor():
     import os
     bgmodes = pf.canvas.settings.bgcolor_modes
     mode = pf.canvas.settings.bgmode
-    color = saneColorArray(pf.canvas.settings.bgcolor,(4,))
-    color = resize(color,(4,3))
+    color = saneColorArray(pf.canvas.settings.bgcolor, (4,))
+    color = resize(color, (4, 3))
     cur = pf.canvas.settings.bgimage
     showimage = os.path.exists(cur)
     if not showimage:
         cur = pf.cfg['gui/splash']
-    viewer = widgets.ImageView(cur,maxheight=200)
+    viewer = widgets.ImageView(cur, maxheight=200)
 
     def changeColor(field):
         bgcolor_dialog.acceptData()
@@ -84,22 +84,22 @@ def setBgColor():
 
     bgcolor_dialog = widgets.InputDialog(
         [
-            _I('mode',mode,choices=bgmodes),
-            _I('color1',color[0],itemtype='color',func=changeColor,text='Background color 1 (Bottom Left)'),
-            _I('color2',color[1],itemtype='color',func=changeColor,text='Background color 2 (Bottom Right)'),
-            _I('color3',color[2],itemtype='color',func=changeColor,text='Background color 3 (Top Right)'),
-            _I('color4',color[3],itemtype='color',func=changeColor,text='Background color 4 (Top Left'),
-            _I('showimage',showimage,text='Show background image'),
-            _I('image',cur,text='Background image',itemtype='button',func=changeImage),
+            _I('mode', mode, choices=bgmodes),
+            _I('color1', color[0], itemtype='color', func=changeColor, text='Background color 1 (Bottom Left)'),
+            _I('color2', color[1], itemtype='color', func=changeColor, text='Background color 2 (Bottom Right)'),
+            _I('color3', color[2], itemtype='color', func=changeColor, text='Background color 3 (Top Right)'),
+            _I('color4', color[3], itemtype='color', func=changeColor, text='Background color 4 (Top Left'),
+            _I('showimage', showimage, text='Show background image'),
+            _I('image', cur, text='Background image', itemtype='button', func=changeImage),
             viewer,
-            _I('_save_',False,text='Save as default'),
+            _I('_save_', False, text='Save as default'),
             ],
         caption='Config Dialog',
         enablers=[
-            ('mode','vertical','color4'),
-            ('mode','horizontal','color2'),
-            ('mode','full','color2','color3','color4'),
-            ('showimage',True,'image'),
+            ('mode', 'vertical', 'color4'),
+            ('mode', 'horizontal', 'color2'),
+            ('mode', 'full', 'color2', 'color3', 'color4'),
+            ('showimage', True, 'image'),
             ]
         )
     res = bgcolor_dialog.getResults()
@@ -107,18 +107,18 @@ def setBgColor():
         setBackground(**res)
 
 
-def setBackground(mode,color1,color2,color3,color4,showimage,image,_save_):
+def setBackground(mode, color1, color2, color3, color4, showimage, image, _save_):
     if mode == 'solid':
         color = color1
     elif mode == 'vertical':
-        color = [color1,color1,color4,color4]
+        color = [color1, color1, color4, color4]
     elif mode == 'horizontal':
-        color = [color1,color2,color2,color1]
+        color = [color1, color2, color2, color1]
     else:
-        color = [color1,color2,color3,color4]
+        color = [color1, color2, color3, color4]
     if not showimage:
         image = None
-    pf.canvas.setBackground(color=color,image=image)
+    pf.canvas.setBackground(color=color, image=image)
     pf.canvas.update()
     if _save_:
         prefMenu.updateSettings({
@@ -148,7 +148,7 @@ def setSlColor():
 def setLineWidth():
     """Change the default line width."""
     res = draw.askItems(
-        [_I('Line Width',pf.canvas.settings.linewidth)],
+        [_I('Line Width', pf.canvas.settings.linewidth)],
         'Choose default line width'
         )
     if res:
@@ -158,12 +158,12 @@ def setLineWidth():
 def setCanvasSize():
     """Save the current viewport size"""
     res = draw.askItems([
-        _I('w',pf.canvas.width()),
-        _I('h',pf.canvas.height())
-        ],caption='Set Canvas Size'
+        _I('w', pf.canvas.width()),
+        _I('h', pf.canvas.height())
+        ], caption='Set Canvas Size'
         )
     if res:
-        draw.canvasSize(res['w'],res['h'])
+        draw.canvasSize(res['w'], res['h'])
 
 
 def canvasSettings():
@@ -194,12 +194,12 @@ def canvasSettings():
         dia.acceptData()
         res = dia.results
         vp = getVp(res['viewport'])
-        pf.debug("Changing Canvas settings for viewport %s to:\n%s"%(pf.GUI.viewports.viewIndex(vp),res),pf.DEBUG.CANVAS)
-        pf.canvas.settings.update(res,strict=False)
+        pf.debug("Changing Canvas settings for viewport %s to:\n%s"%(pf.GUI.viewports.viewIndex(vp), res), pf.DEBUG.CANVAS)
+        pf.canvas.settings.update(res, strict=False)
         pf.canvas.redrawAll()
         pf.canvas.update()
         if save:
-            res = utils.prefixDict(res,'canvas/')
+            res = utils.prefixDict(res, 'canvas/')
             print(res)
             res['_save_'] = save
             del res['canvas/viewport']
@@ -219,34 +219,34 @@ def canvasSettings():
 
     canv = pf.canvas
     vp = pf.GUI.viewports
-    pf.debug("Focus: %s; Current: %s" % (canv,vp),pf.DEBUG.CANVAS)
+    pf.debug("Focus: %s; Current: %s" % (canv, vp), pf.DEBUG.CANVAS)
     s = canv.settings
 
     dia = widgets.InputDialog(
         caption='Canvas Settings',
         store=canv.settings,
         items=[
-            _I('viewport',choices=['focus','current']+[str(i) for i in range(len(pf.GUI.viewports.all))],onselect=changeViewport),
+            _I('viewport', choices=['focus', 'current']+[str(i) for i in range(len(pf.GUI.viewports.all))], onselect=changeViewport),
             _I('pointsize',),
             _I('linewidth',),
             _I('linestipple',),
-            _I('fgcolor',itemtype='color'),
-            _I('slcolor',itemtype='color'),
+            _I('fgcolor', itemtype='color'),
+            _I('slcolor', itemtype='color'),
             _I('smooth'),
             _I('fill'),
             _I('lighting'),
             _I('culling'),
             _I('alphablend'),
-            _I('transparency',min=0.0,max=1.0),
+            _I('transparency', min=0.0, max=1.0),
             _I('avgnormals',),
             ],
         enablers =[
-            ('alphablend',('transparency')),
+            ('alphablend', ('transparency')),
             ],
         actions=[
-            ('Close',close),
-            ('Apply and Save',acceptAndSave),
-            ('Apply',accept),
+            ('Close', close),
+            ('Apply and Save', acceptAndSave),
+            ('Apply', accept),
             ],
         )
     #dia.resize(800,400)
@@ -255,15 +255,15 @@ def canvasSettings():
 
 def viewportLayout():
     """Set the viewport layout."""
-    directions = [ 'rowwise','columnwise' ]
+    directions = [ 'rowwise', 'columnwise' ]
     if pf.GUI.viewports.rowwise:
         current = directions[0]
     else:
         current = directions[1]
     res = draw.askItems(
-        [_I('Number of viewports',len(pf.GUI.viewports.all)),
-         _I('Viewport layout direction',current,choices=directions),
-         _I('Number of viewports per row/column',pf.GUI.viewports.ncols),
+        [_I('Number of viewports', len(pf.GUI.viewports.all)),
+         _I('Viewport layout direction', current, choices=directions),
+         _I('Number of viewports per row/column', pf.GUI.viewports.ncols),
          ],
         caption='Config Dialog')
 
@@ -277,7 +277,7 @@ def viewportLayout():
         else:
             nrows = ncols
             ncols = None
-        pf.GUI.viewports.changeLayout(nvps,ncols,nrows)
+        pf.GUI.viewports.changeLayout(nvps, ncols, nrows)
 #        if res['Store these settings as defaults']:
 #            pf.cfg.update()
 
@@ -290,14 +290,14 @@ def drawOptions(d={}):
     """
     draw.setDrawOptions(d)
     print(pf.canvas.drawoptions)
-    res = draw.askItems(store=pf.canvas.drawoptions,items=[
-        _I('view',choices=['None']+pf.canvas.view_angles.keys(),tooltip="Camera viewing direction"),
-        _I('bbox',choices=['auto','last'],tooltip="Automatically focus/zoom on the last drawn object(s)"),
-        _I('clear',tooltip="Clear the canvas on each drawing action"),
-        _I('shrink',tooltip="Shrink all elements to make their borders better visible"),
+    res = draw.askItems(store=pf.canvas.drawoptions, items=[
+        _I('view', choices=['None']+pf.canvas.view_angles.keys(), tooltip="Camera viewing direction"),
+        _I('bbox', choices=['auto', 'last'], tooltip="Automatically focus/zoom on the last drawn object(s)"),
+        _I('clear', tooltip="Clear the canvas on each drawing action"),
+        _I('shrink', tooltip="Shrink all elements to make their borders better visible"),
         _I('shrink_factor'),
         _I('marksize'),
-        ],enablers=[('shrink',True,'shrink_factor')]
+        ], enablers=[('shrink', True, 'shrink_factor')]
     )
     if not res:
         return
@@ -322,15 +322,15 @@ def openglSettings():
     dia = widgets.InputDialog(
         caption='OpenGL Settings',
         items=[
-            _I('Line Smoothing','Off',itemtype='radio',choices=['On','Off']),
-            _I('Polygon Mode',None,itemtype='radio',choices=['Fill','Line']),
-            _I('Polygon Fill',None,itemtype='radio',choices=['Front and Back','Front','Back']),
-            _I('Culling','Off',itemtype='radio',choices=['On','Off']),
+            _I('Line Smoothing', 'Off', itemtype='radio', choices=['On', 'Off']),
+            _I('Polygon Mode', None, itemtype='radio', choices=['Fill', 'Line']),
+            _I('Polygon Fill', None, itemtype='radio', choices=['Front and Back', 'Front', 'Back']),
+            _I('Culling', 'Off', itemtype='radio', choices=['On', 'Off']),
 # These are currently set by the render mode
 #            ('Shading',None,'radio',{'choices':['Smooth','Flat']}),
 #            ('Lighting',None,'radio',{'choices':['On','Off']}),
             ],
-        actions=[('Done',close),('Apply',apply_)]
+        actions=[('Done', close), ('Apply', apply_)]
         )
     dia.show()
 
@@ -353,20 +353,20 @@ def clearAll():
 
 
 MenuData = [
-    (_('&Viewport'),[
-        (_('&Clear'),draw.clear),
-        (_('&Clear All'),clearAll),
-        (_('&Axes Triade'),setTriade),
+    (_('&Viewport'), [
+        (_('&Clear'), draw.clear),
+        (_('&Clear All'), clearAll),
+        (_('&Axes Triade'), setTriade),
 #        (_('&Transparency'),setOpacity),
-        (_('&Background Color'),setBgColor),
-        (_('&Foreground Color'),setFgColor),
-        (_('&Highlight Color'),setSlColor),
-        (_('Line&Width'),setLineWidth),
-        (_('&Canvas Size'),setCanvasSize),
-        (_('&Canvas Settings'),canvasSettings),
-        (_('&Global Draw Options'),drawOptions),
-        (_('&Camera Settings'),cameraSettings),
-        (_('&OpenGL Settings'),openglSettings),
+        (_('&Background Color'), setBgColor),
+        (_('&Foreground Color'), setFgColor),
+        (_('&Highlight Color'), setSlColor),
+        (_('Line&Width'), setLineWidth),
+        (_('&Canvas Size'), setCanvasSize),
+        (_('&Canvas Settings'), canvasSettings),
+        (_('&Global Draw Options'), drawOptions),
+        (_('&Camera Settings'), cameraSettings),
+        (_('&OpenGL Settings'), openglSettings),
         ## ('&OpenGL Settings',
         ##  [('&Flat',canvas.glFlat),
         ##   ('&Smooth',canvas.glSmooth),
@@ -380,12 +380,12 @@ MenuData = [
         ##   ('&Polygon Back Fill',canvas.glBackFill),
         ##   ('&Polygon Front and Back Fill',canvas.glBothFill),
         ##   ]),
-        (_('&Redraw'),draw.redraw),
-        (_('&Reset viewport'),draw.reset),
-        (_('&Reset layout'),singleViewport),
-        (_('&Change viewport layout'),viewportLayout),
-        (_('&Add new viewport'),draw.addViewport),
-        (_('&Remove last viewport'),draw.removeViewport),
+        (_('&Redraw'), draw.redraw),
+        (_('&Reset viewport'), draw.reset),
+        (_('&Reset layout'), singleViewport),
+        (_('&Change viewport layout'), viewportLayout),
+        (_('&Add new viewport'), draw.addViewport),
+        (_('&Remove last viewport'), draw.removeViewport),
         ]),
     ]
 

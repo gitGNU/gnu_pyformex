@@ -29,7 +29,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'beginner'
 _topics = ['geometry']
-_techniques = ['color','pattern']
+_techniques = ['color', 'pattern']
 
 from gui.draw import *
 import simple
@@ -37,15 +37,15 @@ import simple
 
 def run():
     reset()
-    setDrawOptions(dict(view='front',linewidth=5,fgcolor='red'))
-    grid = actors.GridActor(nx=(4,4,0),ox=(-2.0,-2.0,0.0),dx=(1.0,1.0,1.0),planes=False,linewidth=1)
+    setDrawOptions(dict(view='front', linewidth=5, fgcolor='red'))
+    grid = actors.GridActor(nx=(4, 4, 0), ox=(-2.0, -2.0, 0.0), dx=(1.0, 1.0, 1.0), planes=False, linewidth=1)
     drawActor(grid)
     linewidth(3)
     FA = None
     setDrawOptions({'bbox':None})
-    for n,p in simple.Pattern.items():
-        message("%s = %s" % (n,p))
-        FB = draw(Formex(p),bbox=None,color='red')
+    for n, p in simple.Pattern.items():
+        message("%s = %s" % (n, p))
+        FB = draw(Formex(p), bbox=None, color='red')
         if FA:
             undraw(FA)
         FA = FB

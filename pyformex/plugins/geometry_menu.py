@@ -40,8 +40,8 @@ from geometry import Geometry
 from geomfile import GeometryFile
 from formex import Formex
 from connectivity import Connectivity
-from mesh import Mesh,mergeMeshes
-from trisurface import TriSurface,Sphere
+from mesh import Mesh, mergeMeshes
+from trisurface import TriSurface, Sphere
 from elements import elementType
 import simple
 
@@ -49,7 +49,7 @@ from gui import actors
 from gui import menu
 from gui.draw import *
 
-from plugins import objects,trisurface,inertia,partition,sectionize,dxf,surface_menu
+from plugins import objects, trisurface, inertia, partition, sectionize, dxf, surface_menu
 
 import commands, os, timer
 
@@ -71,7 +71,7 @@ def autoName(clas):
     >>> print autoName(F).next()
     formex-000
     """
-    if isinstance(clas,str):
+    if isinstance(clas, str):
         name = clas
     else:
         try:
@@ -92,7 +92,7 @@ def autoName(clas):
 
 def _init_():
     global selection
-    global selection_F,selection_M,selection_TS,selection_PL,selection_NC,setSelection,drawSelection
+    global selection_F, selection_M, selection_TS, selection_PL, selection_NC, setSelection, drawSelection
     selection = pf.GUI.selection['geometry']
 
 
@@ -131,11 +131,11 @@ def draw_convex_hull(n):
 
     """
     pf.PF['_convex_hull_'] = H = named(n).convexHull()
-    draw(H,color='red')
+    draw(H, color='red')
 
 # add a toggle for drawing the convex hull
 def toggleConvexHull(self,onoff=None):
-    self.toggleAnnotation(draw_convex_hull,onoff)
+    self.toggleAnnotation(draw_convex_hull, onoff)
 
 objects.DrawableObjects.toggleConvexHull = toggleConvexHull
 
@@ -175,7 +175,7 @@ def readGeometry(filename,filetype=None):
         if filetype == 'pgf' or filetype == 'pgf.gz':
             res = GeometryFile(filename).read()
 
-        elif filetype in ['surface','stl','off','gts','neu']:
+        elif filetype in ['surface', 'stl', 'off', 'gts', 'neu']:
             surf = TriSurface.read(filename)
             name = autoName(TriSurface).next()
             res = {name:surf}
@@ -185,11 +185,11 @@ def readGeometry(filename,filetype=None):
             res = {}
             color_by_part = len(parts.keys()) > 1
             j = 0
-            for name,part in parts.items():
-                for i,mesh in enumerate(part.meshes()):
+            for name, part in parts.items():
+                for i, mesh in enumerate(part.meshes()):
                     p = j if color_by_part else i
                     print("Color %s" % p)
-                    res["%s-%s" % (name,i)] = mesh.setProp(p)
+                    res["%s-%s" % (name, i)] = mesh.setProp(p)
                 j += 1
 
         elif filetype in utils.fileExtensions('tetgen'):
@@ -197,7 +197,7 @@ def readGeometry(filename,filetype=None):
             res = tetgen.readTetgen(filename)
 
         else:
-            error("Can not import from file %s of type %s" % (filename,filetype))
+            error("Can not import from file %s of type %s" % (filename, filetype))
     finally:
         pf.GUI.setBusy(False)
 
@@ -212,25 +212,25 @@ def importGeometry(select=True,draw=True,ftype=None):
     If select and draw are True (default), the selection is drawn.
     """
     if ftype is None:
-        ftype = ['pgf','pyf','surface','off','stl','gts','smesh','neu','inp','all']
+        ftype = ['pgf', 'pyf', 'surface', 'off', 'stl', 'gts', 'smesh', 'neu', 'inp', 'all']
     elif isinstance(ftype, list):
         pass
     else:
         ftype = [ftype]
     types = utils.fileDescription(ftype)
     cur = pf.cfg['workdir']
-    fn = askFilename(cur=cur,filter=types)
+    fn = askFilename(cur=cur, filter=types)
     if fn:
         message("Reading geometry file %s" % fn)
         res = readGeometry(fn)
         export(res)
         #selection.readFromFile(fn)
-        print("Items read: %s" % [ "%s(%s)" % (k,res[k].__class__.__name__) for k in res])
+        print("Items read: %s" % [ "%s(%s)" % (k, res[k].__class__.__name__) for k in res])
         if select:
             print("SET SELECTION")
             selection.set(res.keys())
             #print(selection.names)
-            surface_menu.selection.set([n for n in selection.names if isinstance(named(n),TriSurface)])
+            surface_menu.selection.set([n for n in selection.names if isinstance(named(n), TriSurface)])
             #print(surface_menu.selection.names)
 
             if draw:
@@ -243,7 +243,7 @@ def importPgf():
     importGeometry(ftype='pgf')
 
 def importSurface():
-    importGeometry(ftype=['surface','pgf','all'])
+    importGeometry(ftype=['surface', 'pgf', 'all'])
 
 def importInp():
     importGeometry(ftype='inp')
@@ -264,7 +264,7 @@ def importModel(fn=None):
     """
 
     if fn is None:
-        fn = askFilename(".","*.mesh",multi=True)
+        fn = askFilename(".", "*.mesh", multi=True)
         if not fn:
             return
     if isinstance(fn, str):
@@ -273,11 +273,11 @@ def importModel(fn=None):
     pf.GUI.setBusy(True)
     for f in fn:
         d = fileread.readMeshFile(f)
-        modelname = os.path.basename(f).replace('.mesh','')
+        modelname = os.path.basename(f).replace('.mesh', '')
         export({modelname:d})
         M = fileread.extractMeshes(d)
-        names = [ "%s-%d"%(modelname,i) for i in range(len(M)) ]
-        export(dict(zip(names,M)))
+        names = [ "%s-%d"%(modelname, i) for i in range(len(M)) ]
+        export(dict(zip(names, M)))
     pf.GUI.setBusy(False)
 
 
@@ -286,7 +286,7 @@ def readInp(fn=None):
 
     """
     if fn is None:
-        fn = askFilename(".","*.inp",multi=True)
+        fn = askFilename(".", "*.inp", multi=True)
         if not fn:
             return
 
@@ -309,7 +309,7 @@ def writeGeometry(obj,filename,filetype=None,sep=' ',shortlines=False):
     if filetype in [ 'pgf', 'pgf.gz', 'pyf' ]:
         # Can write anything
         if filetype in [ 'pgf', 'pgf.gz' ]:
-            res = writeGeomFile(filename,obj,sep=sep,shortlines=shortlines)
+            res = writeGeomFile(filename, obj, sep=sep, shortlines=shortlines)
 
     else:
         error("Don't know how to export in '%s' format" % filetype)
@@ -317,7 +317,7 @@ def writeGeometry(obj,filename,filetype=None,sep=' ',shortlines=False):
     return res
 
 
-def exportGeometry(types=['pgf','all'],sep=' ',shortlines=False):
+def exportGeometry(types=['pgf', 'all'],sep=' ',shortlines=False):
     """Write geometry to file."""
     selection.ask()
     if not selection.check():
@@ -325,31 +325,31 @@ def exportGeometry(types=['pgf','all'],sep=' ',shortlines=False):
 
     filter = utils.fileDescription(types)
     cur = pf.cfg['workdir']
-    fn = askNewFilename(cur=cur,filter=filter)
+    fn = askNewFilename(cur=cur, filter=filter)
     if fn:
         message("Writing geometry file %s" % fn)
-        res = writeGeometry(selection.odict(),fn,sep=sep,shortlines=shortlines)
+        res = writeGeometry(selection.odict(), fn, sep=sep, shortlines=shortlines)
         pf.message("Contents: %s" % res)
 
 
 def exportPgf():
     exportGeometry(['pgf'])
 def exportPgfShortlines():
-    exportGeometry(['pgf'],shortlines=True)
+    exportGeometry(['pgf'], shortlines=True)
 def exportPgfBinary():
-    exportGeometry(['pgf'],sep='')
+    exportGeometry(['pgf'], sep='')
 def exportOff():
     exportGeometry(['off'])
 
 
 def convertGeometryFile():
     """Convert pyFormex geometry file to latest format."""
-    filter = utils.fileDescription(['pgf','all'])
+    filter = utils.fileDescription(['pgf', 'all'])
     cur = pf.cfg['workdir']
-    fn = askFilename(cur=cur,filter=filter)
+    fn = askFilename(cur=cur, filter=filter)
     if fn:
         from geomfile import GeometryFile
-        message("Converting geometry file %s to version %s" % (fn,GeometryFile._version_))
+        message("Converting geometry file %s to version %s" % (fn, GeometryFile._version_))
         GeometryFile(fn).rewrite()
 
 ##################### properties ##########################
@@ -374,10 +374,10 @@ def setAttributes():
         except:
             visible = True
         res = askItems([
-            _I('caption',name),
-            _I('color',color,itemtype='color'),
-            _I('alpha',alpha,itemtype='fslider',min=0.0,max=1.0),
-            _I('visible',visible,itemtype='bool'),
+            _I('caption', name),
+            _I('color', color, itemtype='color'),
+            _I('alpha', alpha, itemtype='fslider', min=0.0, max=1.0),
+            _I('visible', visible, itemtype='bool'),
             ])
         if res:
             color = res['color']
@@ -394,7 +394,7 @@ def printDataSize():
             size = S.info()
         except:
             size = 'no info available'
-        pf.message("* %s (%s): %s" % (s,S.__class__.__name__,size))
+        pf.message("* %s (%s): %s" % (s, S.__class__.__name__, size))
 
 
 ##################### conversion ##########################
@@ -417,7 +417,7 @@ def toFormex(suffix=''):
         names = [ n + suffix for n in names ]
 
     values = [ named(n).toFormex() for n in names ]
-    export2(names,values)
+    export2(names, values)
 
     clear()
     selection.draw()
@@ -442,7 +442,7 @@ def toMesh(suffix=''):
         names = [ n + suffix for n in names ]
 
     print("CONVERTING %s" % names)
-    meshes =  dict([ (n,o.toMesh()) for n,o in zip(names,objects) if hasattr(o,'toMesh')])
+    meshes =  dict([ (n, o.toMesh()) for n, o in zip(names, objects) if hasattr(o, 'toMesh')])
     print("Converted %s" % meshes.keys())
     export(meshes)
 
@@ -468,14 +468,14 @@ def toSurface(suffix=''):
     ok = [ o.nplex()==3 for o in objects ]
     print(ok)
     if not all(ok):
-        warning("Only objects with plexitude 3 can be converted to TriSurface. I can not convert the following objects: %s" % [ n for i,n in zip(ok,names) if not i ])
+        warning("Only objects with plexitude 3 can be converted to TriSurface. I can not convert the following objects: %s" % [ n for i, n in zip(ok, names) if not i ])
         return
 
     if suffix:
         names = [ n + suffix for n in names ]
 
     print("CONVERTING %s" % names)
-    surfaces =  dict([ (n,TriSurface(o)) for n,o in zip(names,objects)])
+    surfaces =  dict([ (n, TriSurface(o)) for n, o in zip(names, objects)])
     print("Converted %s" % surfaces.keys())
     export(surfaces)
 
@@ -496,7 +496,7 @@ def splitProp():
         return
 
     name = selection[0]
-    partition.splitProp(F,name)
+    partition.splitProp(F, name)
 
 
 #############################################
@@ -504,7 +504,7 @@ def splitProp():
 #############################################
 
 
-def convertFormex(F,totype):
+def convertFormex(F, totype):
     if totype != 'Formex':
         F = F.toMesh()
         if totype == 'TriSurface':
@@ -512,7 +512,7 @@ def convertFormex(F,totype):
     return F
 
 
-def convert_Mesh_TriSurface(F,totype):
+def convert_Mesh_TriSurface(F, totype):
     if totype == 'Formex':
         return F.toFormex()
     else:
@@ -530,15 +530,15 @@ def createGrid():
     _data_ = _name_+'createGrid_data'
     dia = Dialog(
         items = [
-            _I('name','__auto__'),
-            _I('object type',choices=['Formex','Mesh','TriSurface']),
-            _I('base',choices=base_patterns),
-            _I('nx',4),
-            _I('ny',2),
-            _I('stepx',1.),
-            _I('stepy',1.),
-            _I('taper',0),
-            _I('bias',0.),
+            _I('name', '__auto__'),
+            _I('object type', choices=['Formex', 'Mesh', 'TriSurface']),
+            _I('base', choices=base_patterns),
+            _I('nx', 4),
+            _I('ny', 2),
+            _I('stepx', 1.),
+            _I('stepy', 1.),
+            _I('taper', 0),
+            _I('bias', 0.),
              ]
         )
     if _data_ in pf.PF:
@@ -553,7 +553,7 @@ def createGrid():
             n1=res['nx'], n2=res['ny'],
             t1=res['stepx'], t2=res['stepy'],
             bias=res['bias'], taper=res['taper'])
-        F = convertFormex(F,res['object type'])
+        F = convertFormex(F, res['object type'])
         export({name:F})
         selection.set([name])
         if res['object type'] == 'TriSurface':
@@ -565,14 +565,14 @@ def createRectangle():
     _data_ = _name_+'createRectangle_data'
     dia = Dialog(
         items = [
-            _I('name','__auto__'),
-            _I('object type',choices=['Formex','Mesh','TriSurface']),
-            _I('nx',1),
-            _I('ny',1),
-            _I('width',1.),
-            _I('height',1.),
-            _I('bias',0.),
-            _I('diag','up',choices=['none','up','down','x-both']),
+            _I('name', '__auto__'),
+            _I('object type', choices=['Formex', 'Mesh', 'TriSurface']),
+            _I('nx', 1),
+            _I('ny', 1),
+            _I('width', 1.),
+            _I('height', 1.),
+            _I('bias', 0.),
+            _I('diag', 'up', choices=['none', 'up', 'down', 'x-both']),
              ]
         )
     if _data_ in pf.PF:
@@ -584,10 +584,10 @@ def createRectangle():
         if name == '__auto__':
             name = autoName(res['object type']).next()
         F = simple.rectangle(
-            nx=res['nx'],ny=res['ny'],
-            b=res['width'],h=res['height'],
-            bias=res['bias'],diag=res['diag'][0])
-        F = convertFormex(F,res['object type'])
+            nx=res['nx'], ny=res['ny'],
+            b=res['width'], h=res['height'],
+            bias=res['bias'], diag=res['diag'][0])
+        F = convertFormex(F, res['object type'])
         export({name:F})
         selection.set([name])
         if res['object type'] == 'TriSurface':
@@ -598,16 +598,16 @@ def createRectangle():
 def createCylinder():
     _data_ = _name_+'createCylinder_data'
     dia = Dialog(items=[
-            _I('name','__auto__'),
-            _I('object type',choices=['Formex','Mesh','TriSurface']),
-            _I('base diameter',1.),
-            _I('top diameter',1.),
-            _I('height',2.),
-            _I('angle',360.),
-            _I('div_along_length',6),
-            _I('div_along_circ',12),
-            _I('bias',0.),
-            _I('diag','up',choices=['none','up','down','x-both']),
+            _I('name', '__auto__'),
+            _I('object type', choices=['Formex', 'Mesh', 'TriSurface']),
+            _I('base diameter', 1.),
+            _I('top diameter', 1.),
+            _I('height', 2.),
+            _I('angle', 360.),
+            _I('div_along_length', 6),
+            _I('div_along_circ', 12),
+            _I('bias', 0.),
+            _I('diag', 'up', choices=['none', 'up', 'down', 'x-both']),
             ],
         )
     if _data_ in pf.PF:
@@ -630,7 +630,7 @@ def createCylinder():
             diag=res['diag'][0]
             )
 
-        F = convertFormex(F,res['object type'])
+        F = convertFormex(F, res['object type'])
         export({name:F})
         selection.set([name])
         if res['object type'] == 'TriSurface':
@@ -641,27 +641,27 @@ def createCylinder():
 def createCone():
     _data_ = _name_+'createCone_data'
     res = {
-        'name' : '__auto__',
-        'object type':'Formex',
+        'name': '__auto__',
+        'object type': 'Formex',
         'radius': 1.,
         'height': 1.,
         'angle': 360.,
         'div_along_radius': 6,
-        'div_along_circ':12,
-        'diagonals':'up',
+        'div_along_circ': 12,
+        'diagonals': 'up',
         }
     if _data_ in pf.PF:
         res.update(pf.PF[_data_])
 
     res = askItems(store=res, items=[
         _I('name'),
-        _I('object type',choices=['Formex','Mesh','TriSurface']),
+        _I('object type', choices=['Formex', 'Mesh', 'TriSurface']),
         _I('radius'),
         _I('height'),
         _I('angle'),
         _I('div_along_radius'),
         _I('div_along_circ'),
-        _I('diagonals',choices=['none','up','down']),
+        _I('diagonals', choices=['none', 'up', 'down']),
         ])
 
     if res:
@@ -670,10 +670,10 @@ def createCone():
         if name == '__auto__':
             name = autoName(res['object type']).next()
 
-        F = simple.sector(r=res['radius'],t=res['angle'],nr=res['div_along_radius'],
-                          nt=res['div_along_circ'],h=res['height'],diag=res['diagonals'])
+        F = simple.sector(r=res['radius'], t=res['angle'], nr=res['div_along_radius'],
+                          nt=res['div_along_circ'], h=res['height'], diag=res['diagonals'])
 
-        F = convertFormex(F,res['object type'])
+        F = convertFormex(F, res['object type'])
         export({name:F})
         selection.set([name])
         if res['object type'] == 'TriSurface':
@@ -685,16 +685,16 @@ def createSphere():
     _data_ = _name_+'createSphere_data'
     dia = Dialog(
         items = [
-            _I('name','__auto__'),
-            _I('object type',itemtype='radio',choices=['TriSurface','Mesh','Formex']),
-            _I('method',choices=['icosa','geo']),
-            _I('ndiv',8),
-            _I('nx',36),
-            _I('ny',18),
+            _I('name', '__auto__'),
+            _I('object type', itemtype='radio', choices=['TriSurface', 'Mesh', 'Formex']),
+            _I('method', choices=['icosa', 'geo']),
+            _I('ndiv', 8),
+            _I('nx', 36),
+            _I('ny', 18),
              ],
         enablers=[
-            ('method','icosa','ndiv'),
-            ('method','geo','nx','ny'),
+            ('method', 'icosa', 'ndiv'),
+            ('method', 'geo', 'nx', 'ny'),
             ],
         )
     if _data_ in pf.PF:
@@ -707,11 +707,11 @@ def createSphere():
             name = autoName(res['object type']).next()
         if res['method'] == 'icosa':
             F = simple.sphere(res['ndiv'])
-            print("Surface has %s vertices and %s faces" % (F.ncoords(),F.nelems()))
-            F = convert_Mesh_TriSurface(F,res['object type'])
+            print("Surface has %s vertices and %s faces" % (F.ncoords(), F.nelems()))
+            F = convert_Mesh_TriSurface(F, res['object type'])
         else:
-            F = simple.sphere3(res['nx'],res['ny'])
-            F = convertFormex(F,res['object type'])
+            F = simple.sphere3(res['nx'], res['ny'])
+            F = convertFormex(F, res['object type'])
             print("Surface has  %s faces" % F.nelems())
         export({name:F})
         selection.set([name])
@@ -733,15 +733,15 @@ def showPrincipal():
         return
     # compute the axes
     data = F.inertia()
-    C,Iaxes,Iprin,I = data
+    C, Iaxes, Iprin, I = data
     pf.message("Center of gravity: %s" % C)
     pf.message("Principal Directions:\n %s" % Iaxes)
     pf.message("Principal Values: %s" % Iprin)
     pf.message("Inertia tensor: %s" % I)
     # display the axes
-    CS = coordsys.CoordinateSystem(origin=C,axes=Iaxes.transpose())
+    CS = coordsys.CoordinateSystem(origin=C, axes=Iaxes.transpose())
     size = 0.6*F.dsize()
-    drawAxes(CS,size=size,psize=0.1*size)
+    drawAxes(CS, size=size, psize=0.1*size)
     export({'_principal_data_':data})
     return data
 
@@ -754,7 +754,7 @@ def rotatePrincipal():
         data = showPrincipal()
     FL = selection.check()
     if FL:
-        ctr,rot = data[:2]
+        ctr, rot = data[:2]
         selection.changeValues([ F.trl(-ctr).rot(rot).trl(ctr) for F in FL ])
         selection.drawChanges()
 
@@ -770,7 +770,7 @@ def transformPrincipal():
         data = showPrincipal()
     FL = selection.check()
     if FL:
-        ctr,rot = data[:2]
+        ctr, rot = data[:2]
         selection.changeValues([ F.trl(-ctr).rot(rot) for F in FL ])
         selection.drawChanges()
 
@@ -781,9 +781,9 @@ def transformPrincipal():
 
 def narrow_selection(clas):
     global selection
-    print("SELECTION ALL TYPES",selection.names)
-    selection.set([n for n in selection.names if isinstance(named(n),clas)])
-    print("SELECTION MESH TYPE",selection.names)
+    print("SELECTION ALL TYPES", selection.names)
+    selection.set([n for n in selection.names if isinstance(named(n), clas)])
+    print("SELECTION MESH TYPE", selection.names)
 
 
 def reverseMesh():
@@ -798,7 +798,7 @@ def reverseMesh():
 
     meshes = [ named(n) for n in selection.names ]
     meshes = [ m.reverse() for m in meshes ]
-    export2(selection.names,meshes)
+    export2(selection.names, meshes)
     clear()
     selection.draw()
 
@@ -815,7 +815,7 @@ def doOnSelectedMeshes(method):
 
     meshes = [ named(n) for n in selection.names ]
     meshes = [ method(m) for m in meshes ]
-    export2(selection.names,meshes)
+    export2(selection.names, meshes)
     clear()
     selection.draw()
 
@@ -836,7 +836,7 @@ def compactMesh():
 
     meshes = [ named(n) for n in selection.names ]
     meshes = [ m.compact() for m in meshes ]
-    export2(selection.names,meshes)
+    export2(selection.names, meshes)
     clear()
     selection.draw()
 
@@ -853,7 +853,7 @@ def peelOffMesh():
 
     meshes = [ named(n) for n in selection.names ]
     meshes = [ m.peel() for m in meshes ]
-    export2(selection.names,meshes)
+    export2(selection.names, meshes)
     clear()
     selection.draw()
 
@@ -870,10 +870,10 @@ def fuseMesh():
 
     meshes = [ named(n) for n in selection.names ]
     res = askItems([
-        _I('Relative Tolerance',1.e-5),
-        _I('Absolute Tolerance',1.e-5),
-        _I('Shift',0.5),
-        _I('Points per box',1)])
+        _I('Relative Tolerance', 1.e-5),
+        _I('Absolute Tolerance', 1.e-5),
+        _I('Shift', 0.5),
+        _I('Points per box', 1)])
 
     if not res:
         return
@@ -890,7 +890,7 @@ def fuseMesh():
     print("Number of points after fusing: %s" % after)
 
     names = [ "%s_fused" % n for n in selection.names ]
-    export2(names,meshes)
+    export2(names, meshes)
     selection.set(names)
     clear()
     selection.draw()
@@ -916,16 +916,16 @@ def subdivideMesh():
         warning("I can only subdivide meshes with the same element type\nPlease narrow your selection before trying conversion.")
         return
 
-    oktypes = ['tri3','quad4']
+    oktypes = ['tri3', 'quad4']
     eltype = eltypes.pop()
-    if eltype not in ['tri3','quad4']:
+    if eltype not in ['tri3', 'quad4']:
         warning("I can only subdivide meshes of types %s" % ', '.join(oktypes))
         return
 
     if eltype == 'tri3':
-        items = [_I('ndiv',4)]
+        items = [_I('ndiv', 4)]
     elif eltype == 'quad4':
-        items = [_I('nx',4),_I('ny',4)]
+        items = [_I('nx', 4), _I('ny', 4)]
     res = askItems(items)
 
     if not res:
@@ -935,7 +935,7 @@ def subdivideMesh():
     elif eltype == 'quad4':
         ndiv = [ res['nx'], res['ny'] ]
     meshes = [ m.subdivide(*ndiv) for m in meshes ]
-    export2(selection.names,meshes)
+    export2(selection.names, meshes)
     clear()
     selection.draw()
 
@@ -960,14 +960,14 @@ def convertMesh():
         return
     if len(eltypes) == 1:
         fromtype = elementType(eltypes.pop())
-        choices = ["%s -> %s" % (fromtype,to) for to in fromtype.conversions.keys()]
+        choices = ["%s -> %s" % (fromtype, to) for to in fromtype.conversions.keys()]
         if len(choices) == 0:
             warning("Sorry, can not convert a %s mesh"%fromtype)
             return
         res = askItems([
-            _I('_conversion',itemtype='vradio',text='Conversion Type',choices=choices),
-            _I('_compact',True),
-            _I('_merge',itemtype='hradio',text="Merge Meshes",choices=['None','Each','All']),
+            _I('_conversion', itemtype='vradio', text='Conversion Type', choices=choices),
+            _I('_compact', True),
+            _I('_merge', itemtype='hradio', text="Merge Meshes", choices=['None', 'Each', 'All']),
             ])
         if res:
             globals().update(res)
@@ -979,17 +979,17 @@ def convertMesh():
                 meshes = [ m.fuse() for m in meshes ]
             elif  _merge == 'All':
                 #print(_merge)
-                coords,elems = mergeMeshes(meshes)
+                coords, elems = mergeMeshes(meshes)
                 #print(elems)
                 ## names = [ "_merged_mesh_%s" % e.nplex() for e in elems ]
                 ## meshes = [ Mesh(coords,e,eltype=meshes[0].elType()) for e in elems ]
                 ## print meshes[0].elems
-                meshes = [ Mesh(coords,e,m.prop,m.eltype) for e,m in zip(elems,meshes) ]
+                meshes = [ Mesh(coords, e, m.prop, m.eltype) for e, m in zip(elems, meshes) ]
             if _compact:
                 print("compacting meshes")
                 meshes = [ m.compact() for m in meshes ]
 
-            export2(names,meshes)
+            export2(names, meshes)
             selection.set(names)
             clear()
             selection.draw()
@@ -1010,7 +1010,7 @@ def renumberMesh(order='elems'):
     meshes = [ named(n) for n in selection.names ]
     names = selection.names
     meshes = [ M.renumber(order) for M in meshes ]
-    export2(names,meshes)
+    export2(names, meshes)
     selection.set(names)
     clear()
     selection.draw()
@@ -1047,7 +1047,7 @@ def getBorderMesh():
     meshes = [ M.getBorderMesh() for M in meshes ]
 
     names = [ "%s_border" % n for n in selection.names ]
-    export2(names,meshes)
+    export2(names, meshes)
     selection.set(names)
     clear()
     selection.draw()
@@ -1071,76 +1071,76 @@ def create_menu():
     from dxf_menu import importDxf
     _init_()
     MenuData = [
-        ("&Import ",[
-            (utils.fileDescription('pgf'),importPgf),
-            (utils.fileDescription('surface'),importSurface),
-            (utils.fileDescription('tetgen'),importTetgen),
-            ("Abaqus/Calculix FE model (*.inp)",importInp),
-            ("All known geometry formats",importAny),
-            ("Abaqus .inp",[
-                ("&Convert Abaqus .inp file",readInp),
-                ("&Import Converted Abaqus Model",importModel),
+        ("&Import ", [
+            (utils.fileDescription('pgf'), importPgf),
+            (utils.fileDescription('surface'), importSurface),
+            (utils.fileDescription('tetgen'), importTetgen),
+            ("Abaqus/Calculix FE model (*.inp)", importInp),
+            ("All known geometry formats", importAny),
+            ("Abaqus .inp", [
+                ("&Convert Abaqus .inp file", readInp),
+                ("&Import Converted Abaqus Model", importModel),
                 ]),
 #            ("AutoCAD .dxf",[
 #                ("&Import .dxf or .dxftext",importDxf),
 #                ("&Load DXF plugin menu",loadDxfMenu),
 #                ]),
-            ('&Upgrade pyFormex Geometry File',convertGeometryFile,dict(tooltip="Convert a pyFormex Geometry File (.pgf) to the latest format, overwriting the file.")),
+            ('&Upgrade pyFormex Geometry File', convertGeometryFile, dict(tooltip="Convert a pyFormex Geometry File (.pgf) to the latest format, overwriting the file.")),
             ]),
-        ("&Export ",[
-            (utils.fileDescription('pgf'),exportPgf),
-            ("pyFormex Geometry File (binary)",exportPgfBinary),
-            ("pyFormex Geometry File with short lines",exportPgfShortlines),
-            ("Object File Format (.off)",exportOff),
+        ("&Export ", [
+            (utils.fileDescription('pgf'), exportPgf),
+            ("pyFormex Geometry File (binary)", exportPgfBinary),
+            ("pyFormex Geometry File with short lines", exportPgfShortlines),
+            ("Object File Format (.off)", exportOff),
             ]),
-        ("&Select ",[
-            ('Any',set_selection),
-            ('Formex',set_selection,{'data':'formex'}),
-            ('Mesh',set_selection,{'data':'mesh'}),
-            ('TriSurface',set_selection,{'data':'surface'}),
-            ('PolyLine',set_selection,{'data':'polyline'}),
-            ('Curve',set_selection,{'data':'curve'}),
-            ('NurbsCurve',set_selection,{'data':'nurbs'}),
+        ("&Select ", [
+            ('Any', set_selection),
+            ('Formex', set_selection, {'data':'formex'}),
+            ('Mesh', set_selection, {'data':'mesh'}),
+            ('TriSurface', set_selection, {'data':'surface'}),
+            ('PolyLine', set_selection, {'data':'polyline'}),
+            ('Curve', set_selection, {'data':'curve'}),
+            ('NurbsCurve', set_selection, {'data':'nurbs'}),
             ]),
-        ("&Draw Selection",selection.draw),
-        ("&Forget Selection",selection.forget),
-        ("---",None),
-        ("Print &Information ",[
-            ('&Bounding Box',selection.printbbox),
-            ('&Type and Size',printDataSize),
+        ("&Draw Selection", selection.draw),
+        ("&Forget Selection", selection.forget),
+        ("---", None),
+        ("Print &Information ", [
+            ('&Bounding Box', selection.printbbox),
+            ('&Type and Size', printDataSize),
             ]),
-        ("Set &Attributes ",setAttributes),
-        ("&Annotations ",[
-             ("&Names",selection.toggleNames,dict(checkable=True)),
-            ("&Elem Numbers",selection.toggleNumbers,dict(checkable=True)),
-            ("&Node Numbers",selection.toggleNodeNumbers,dict(checkable=True,checked=selection.hasNodeNumbers())),
-            ("&Free Edges",selection.toggleFreeEdges,dict(checkable=True,checked=selection.hasFreeEdges())),
-            ("&Node Marks",selection.toggleNodes,dict(checkable=True,checked=selection.hasNodeMarks())),
-            ('&Toggle Bbox',selection.toggleBbox,dict(checkable=True)),
-            ('&Toggle Convex Hull',selection.toggleConvexHull,dict(checkable=True)),
-            ('&Toggle Shrink Mode',shrink,dict(checkable=True)),
-            ("&Toggle Numbers On Top",toggleNumbersOntop),
+        ("Set &Attributes ", setAttributes),
+        ("&Annotations ", [
+             ("&Names", selection.toggleNames, dict(checkable=True)),
+            ("&Elem Numbers", selection.toggleNumbers, dict(checkable=True)),
+            ("&Node Numbers", selection.toggleNodeNumbers, dict(checkable=True, checked=selection.hasNodeNumbers())),
+            ("&Free Edges", selection.toggleFreeEdges, dict(checkable=True, checked=selection.hasFreeEdges())),
+            ("&Node Marks", selection.toggleNodes, dict(checkable=True, checked=selection.hasNodeMarks())),
+            ('&Toggle Bbox', selection.toggleBbox, dict(checkable=True)),
+            ('&Toggle Convex Hull', selection.toggleConvexHull, dict(checkable=True)),
+            ('&Toggle Shrink Mode', shrink, dict(checkable=True)),
+            ("&Toggle Numbers On Top", toggleNumbersOntop),
             ]),
-        ("---",None),
-        ("&Convert",[
-            ("To &Formex",toFormex),
-            ("To &Mesh",toMesh),
-            ("To &TriSurface",toSurface),
+        ("---", None),
+        ("&Convert", [
+            ("To &Formex", toFormex),
+            ("To &Mesh", toMesh),
+            ("To &TriSurface", toSurface),
             ## ("To &PolyLine",toPolyLine),
             ## ("To &BezierSpline",toBezierSpline),
             ## ("To &NurbsCurve",toNurbsCurve),
             ]),
-        ("&Property Numbers",[
-            ("&Set",selection.setProp),
-            ("&Delete",selection.delProp),
-            ("&Split",splitProp),
+        ("&Property Numbers", [
+            ("&Set", selection.setProp),
+            ("&Delete", selection.delProp),
+            ("&Split", splitProp),
             ]),
-        ("&Create Object",[
-            ('&Grid',createGrid),
-            ('&Rectangle',createRectangle),
-            ('&Cylinder, Cone, Truncated Cone',createCylinder),
-            ('&Circle, Sector, Cone',createCone),
-            ('&Sphere',createSphere),
+        ("&Create Object", [
+            ('&Grid', createGrid),
+            ('&Rectangle', createRectangle),
+            ('&Cylinder, Cone, Truncated Cone', createCylinder),
+            ('&Circle, Sector, Cone', createCone),
+            ('&Sphere', createSphere),
             ]),
         ## ("&Shrink",shrink),
         ## ("&Bbox",
@@ -1161,11 +1161,11 @@ def create_menu():
         ##   ("&Cut With Plane",cutSelection),
         ##   ]),
         ## ("&Undo Last Changes",selection.undoChanges),
-        ("---",None),
-        ("Principal",[
-            ("Show &Principal Axes",showPrincipal),
-            ("Rotate to &Principal Axes",rotatePrincipal),
-            ("Transform to &Principal Axes",transformPrincipal),
+        ("---", None),
+        ("Principal", [
+            ("Show &Principal Axes", showPrincipal),
+            ("Rotate to &Principal Axes", rotatePrincipal),
+            ("Transform to &Principal Axes", transformPrincipal),
             ]),
         ## ("---",None),
         ## ("&Concatenate Selection",concatenateSelection),
@@ -1174,26 +1174,26 @@ def create_menu():
         ## ("&Sectionize Selection",sectionizeSelection),
         ## ("---",None),
         ## ("&Fly",fly),
-        ("Mesh",[
-            ("&Reverse mesh elements",reverseMesh),
-            ("&Convert element type",convertMesh),
-            ("&Subdivide",subdivideMesh),
-            ("&Compact",compactMesh),
-            ("&Fuse nodes",fuseMesh),
-            ("&Remove degenerate",removeDegenerate),
-            ("&Renumber nodes",[
-                ("In element order",renumberMesh),
-                ("In random order",renumberMeshRandom),
-                ("In frontal order",renumberMeshFront),
+        ("Mesh", [
+            ("&Reverse mesh elements", reverseMesh),
+            ("&Convert element type", convertMesh),
+            ("&Subdivide", subdivideMesh),
+            ("&Compact", compactMesh),
+            ("&Fuse nodes", fuseMesh),
+            ("&Remove degenerate", removeDegenerate),
+            ("&Renumber nodes", [
+                ("In element order", renumberMesh),
+                ("In random order", renumberMeshRandom),
+                ("In frontal order", renumberMeshFront),
                 ]),
-            ("&Get border mesh",getBorderMesh),
-            ("&Peel off border",peelOffMesh),
+            ("&Get border mesh", getBorderMesh),
+            ("&Peel off border", peelOffMesh),
             ]),
-        ("---",None),
-        ("&Reload menu",reload_menu),
-        ("&Close",close_menu),
+        ("---", None),
+        ("&Reload menu", reload_menu),
+        ("&Close", close_menu),
         ]
-    M = menu.Menu(_menu,items=MenuData,parent=pf.GUI.menu,before='help')
+    M = menu.Menu(_menu, items=MenuData, parent=pf.GUI.menu, before='help')
     ## if not utils.hasExternal('dxfparser'):
     ##     I = M.item("&Import ").item("AutoCAD .dxf")
     ##     I.setEnabled(False)

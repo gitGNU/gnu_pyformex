@@ -39,7 +39,7 @@ from gui.draw import *
 
 from plugins.fe import *
 from plugins.properties import *
-from plugins.fe_abq import Step,Output,Result,AbqData
+from plugins.fe_abq import Step, Output, Result, AbqData
 from plugins import ccxdat
 from plugins import postproc_menu
 from mesh import *
@@ -58,20 +58,20 @@ def run():
     L = 400. # length of the plate (mm)
     B = 100. # width of the plate (mm)
     th = 10. # thickness of the plate (mm)
-    L2,B2 = L/2, B/2  # dimensions of the quarter plate
-    nl,nb = 16,10     # number of elements along length, width
+    L2, B2 = L/2, B/2  # dimensions of the quarter plate
+    nl, nb = 16, 10     # number of elements along length, width
     D = 20.
     r = D/2
     e0 = 0.3
 
     # User input
     res = askItems([
-        _I('geometry',choices=['Rectangle','Square with hole'],text='Plate geometry'),
-        _I('material',choices=['Elastic','Plastic'],text='Material model'),
-        _I('eltype',choices=['quad4','quad8','hex8','hex20'],text='Element type'),
-        _I('interpolation',choices=['Linear','Quadratic'],text='Degree of interpolation'),
-        _I('format',choices=['CalculiX','Abaqus'],text='FEA input format'),
-        _I('run',True,text='Run simulation'),
+        _I('geometry', choices=['Rectangle', 'Square with hole'], text='Plate geometry'),
+        _I('material', choices=['Elastic', 'Plastic'], text='Material model'),
+        _I('eltype', choices=['quad4', 'quad8', 'hex8', 'hex20'], text='Element type'),
+        _I('interpolation', choices=['Linear', 'Quadratic'], text='Degree of interpolation'),
+        _I('format', choices=['CalculiX', 'Abaqus'], text='FEA input format'),
+        _I('run', True, text='Run simulation'),
         ])
 
     if not res:
@@ -80,13 +80,13 @@ def run():
 
     # Create geometry
     if res['geometry'] == 'Rectangle':
-        plate = rectangle(L2,B2,nl,nb)
+        plate = rectangle(L2, B2, nl, nb)
     else:
-        plate = rectangleWithHole(L2,B2,r,nl,nb,e0)
+        plate = rectangleWithHole(L2, B2, r, nl, nb, e0)
 
 
     if res['eltype'].startswith('hex'):
-        plate = plate.extrude(1,dir=2,length=1.0)
+        plate = plate.extrude(1, dir=2, length=1.0)
 
     plate = plate.convert(res['eltype'])
 
@@ -143,19 +143,19 @@ def run():
     # Give the elements their properties: this is simple here because
     # all elements have the same properties. The element type is
     # for an Abaqus plain stress quadrilateral element with 4 nodes.
-    P.elemProp(name='Plate',eltype='CPS4',section=ElemSection(section=steel_plate,material=steel))
+    P.elemProp(name='Plate', eltype='CPS4', section=ElemSection(section=steel_plate, material=steel))
 
     # Set the boundary conditions
     # The xz and yz planes should be defined as symmetry planes.
     # First, we find the node numbers along the x, y axes:
-    elsize = min(L2/nl,B2/nb)  # smallest size of elements
+    elsize = min(L2/nl, B2/nb)  # smallest size of elements
     tol = 0.001*elsize         # a tolerance to avoid roundoff errors
-    nyz = FEM.coords.test(dir=0,max=tol)  # test for points in the yz plane
-    nxz = FEM.coords.test(dir=1,max=tol)  # test for points in the xz plane
+    nyz = FEM.coords.test(dir=0, max=tol)  # test for points in the yz plane
+    nxz = FEM.coords.test(dir=1, max=tol)  # test for points in the xz plane
     nyz = where(nyz)[0]  # the node numbers passing the above test
     nxz = where(nxz)[0]
-    draw(FEM.coords[nyz],color=cyan)
-    draw(FEM.coords[nxz],color=green)
+    draw(FEM.coords[nyz], color=cyan)
+    draw(FEM.coords[nxz], color=green)
 
     # Define the boundary conditions
     # For Abaqus, we could define it like follows
@@ -163,19 +163,19 @@ def run():
     #P.nodeProp(tag='init',set=nxz,name='XZ_plane',bound='YSYMM')
     # But as Calculix does not have the XSYMM/YSYMM possibilities
     # we define the conditions explicitely
-    P.nodeProp(tag='init',set=nyz,name='YZ_plane',bound=[1,0,0,0,0,0])
-    P.nodeProp(tag='init',set=nxz,name='XZ_plane',bound=[0,1,0,0,0,0])
+    P.nodeProp(tag='init', set=nyz, name='YZ_plane', bound=[1, 0, 0, 0, 0, 0])
+    P.nodeProp(tag='init', set=nxz, name='XZ_plane', bound=[0, 1, 0, 0, 0, 0])
 
     # The plate is loaded by a uniform tensile stress in the x-direction
     # First we detect the border
-    brd,ind = FEM.meshes()[0].getBorder(return_indices=True)
-    BRD = Mesh(FEM.coords,brd).compact()
-    draw(BRD,color=red,linewidth=2)
+    brd, ind = FEM.meshes()[0].getBorder(return_indices=True)
+    BRD = Mesh(FEM.coords, brd).compact()
+    draw(BRD, color=red, linewidth=2)
     xmax = BRD.bbox()[1][0]   # the maximum x coordinate
-    loaded = BRD.test(dir=0,min=xmax-tol)
+    loaded = BRD.test(dir=0, min=xmax-tol)
     # The loaded border elements
     loaded = where(loaded)[0]
-    draw(BRD.select(loaded),color=blue,linewidth=4)
+    draw(BRD.select(loaded), color=blue, linewidth=4)
     sortedelems = sortElemsByLoadedFace(ind[loaded])
     # Define the load
     # Apply 4 load steps:
@@ -183,12 +183,12 @@ def run():
     # 2: higher load, but still elastic (100 MPa)
     # 3: slightly exceeding yield stress (320 MPa)
     # 4: high plastic deformation (400MPa)
-    loads = [10.,100.,320.,400.]  # tensile load in MPa
+    loads = [10., 100., 320., 400.]  # tensile load in MPa
     steps = ['step%s'%(i+1) for i in range(len(loads)) ]   # step names
     for face in sortedelems:
         abqface = face+1 # BEWARE: Abaqus numbers start with 1
-        for step,load in zip(steps,loads):
-            P.elemProp(tag=step,set=sortedelems[face],name='Loaded-%s'%face,dload=ElemLoad('P%s'%(abqface),-load))
+        for step, load in zip(steps, loads):
+            P.elemProp(tag=step, set=sortedelems[face], name='Loaded-%s'%face, dload=ElemLoad('P%s'%(abqface), -load))
 
     # Print the property database
     P.print()
@@ -201,25 +201,25 @@ def run():
     # (add output='PRINT' to get the results printed in the .dat file)
     if res['format'] == 'Abaqus':
         result = [
-            Result(kind='NODE',keys=['U']),
-            Result(kind='ELEMENT',keys=['S'],set='Plate'),
-            Result(kind='ELEMENT',keys=['S'],pos='AVERAGED AT NODES',set='Plate'),
-            Result(kind='ELEMENT',keys=['SP','SINV'],set='Plate'),
+            Result(kind='NODE', keys=['U']),
+            Result(kind='ELEMENT', keys=['S'], set='Plate'),
+            Result(kind='ELEMENT', keys=['S'], pos='AVERAGED AT NODES', set='Plate'),
+            Result(kind='ELEMENT', keys=['SP', 'SINV'], set='Plate'),
             ]
     else:
         result = [
-            Result(kind='NODE',keys=['U'],output='PRINT'),
-            Result(kind='ELEMENT',keys=['S'],output='PRINT'),
+            Result(kind='NODE', keys=['U'], output='PRINT'),
+            Result(kind='ELEMENT', keys=['S'], output='PRINT'),
             ]
 
 
     # Define the simulation steps
     # The tags refer to the property database
-    simsteps = [ Step('STATIC',time=[1., 1., 0.01, 1.],tags=[step]) for step in steps ]
+    simsteps = [ Step('STATIC', time=[1., 1., 0.01, 1.], tags=[step]) for step in steps ]
 
-    data = AbqData(FEM,prop=P,steps=simsteps,res=result,bound=['init'])
+    data = AbqData(FEM, prop=P, steps=simsteps, res=result, bound=['init'])
 
-    fn = askNewFilename(pf.cfg['workdir']+'/feplast.inp',filter='*.inp')
+    fn = askNewFilename(pf.cfg['workdir']+'/feplast.inp', filter='*.inp')
 
 
     if fn:
@@ -227,13 +227,13 @@ def run():
         if res['run']:
             cmd = {'CalculiX':'ccx','Abaqus':'abaqus'}[res['format']]
             if not utils.hasExternal(res['format'].lower()):
-                ans = pf.warning("I did not find the command '%s' on your system.\nIf you continue, I can prepare the model and write the input file,but not run the simulation" % cmd,actions=['Cancel','Continue'])
+                ans = pf.warning("I did not find the command '%s' on your system.\nIf you continue, I can prepare the model and write the input file,but not run the simulation" % cmd, actions=['Cancel', 'Continue'])
                 if ans == 'Continue':
                     cmd = None
                 else:
                     return
 
-        data.write(jobname=fn,group_by_group=True)
+        data.write(jobname=fn, group_by_group=True)
 
         if cmd:
             chdir(fn)
@@ -248,13 +248,13 @@ def run():
             if ack('Create the result database?'):
                 DB = ccxdat.createResultDB(FEM)
                 ngp = 8
-                fn = utils.changeExt(fn,'.dat')
-                ccxdat.readResults(fn,DB,DB.nnodes,DB.nelems,ngp)
+                fn = utils.changeExt(fn, '.dat')
+                ccxdat.readResults(fn, DB, DB.nnodes, DB.nelems, ngp)
                 DB.printSteps()
                 name = 'FeResult-%s'%job
                 export({name:DB})
                 postproc_menu.setDB(DB)
-                if showInfo("The results have been exported as %s\nYou can now use the postproc menu to display results" % name,actions=['Cancel','OK']) == 'OK':
+                if showInfo("The results have been exported as %s\nYou can now use the postproc menu to display results" % name, actions=['Cancel', 'OK']) == 'OK':
                     postproc_menu.selection.set(name)
                     postproc_menu.selectDB(DB)
                     postproc_menu.open_dialog()

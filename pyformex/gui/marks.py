@@ -58,12 +58,12 @@ class AxesMark(Mark):
     def drawGL(self,**kargs):
         if self.color is not None:
             GL.glColor3fv(self.color)
-        GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT,1)
+        GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
         GL.glRasterPos3fv(self.pos)
-        a =  0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0x80
-        b = 0x00,0x00,0x00,0x00,0x00,0x80,0x00,0x00,0x00,0x00,0x00
-        bitmap = [b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,a,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b]
-        GL.glBitmap(81,81,41,41,0,0,bitmap)
+        a =  0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x80
+        b = 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00
+        bitmap = [b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, a, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b]
+        GL.glBitmap(81, 81, 41, 41, 0, 0, bitmap)
 
 
 class TextMark(Mark):
@@ -73,13 +73,13 @@ class TextMark(Mark):
         Mark.__init__(self,pos,**kargs)
         self.text = text
         self.color = saneColor(color)
-        self.font = gluttext.glutSelectFont(font,size)
+        self.font = gluttext.glutSelectFont(font, size)
 
     def drawGL(self,**kargs):
         if self.color is not None:
             GL.glColor3fv(self.color)
         GL.glRasterPos3fv(self.pos)
-        gluttext.glutRenderText(self.text,self.font)
+        gluttext.glutRenderText(self.text, self.font)
 
     ## def use_list(self):
     ##     Mark.use_list(self)
@@ -106,7 +106,7 @@ class MarkList(Mark):
         Mark.__init__(self,pos,**kargs)
         self.val = val
         self.color = saneColor(color)
-        self.font = gluttext.glutSelectFont(font,size)
+        self.font = gluttext.glutSelectFont(font, size)
         #self.font = getFont(font,size)
         self.leader = str(leader)
         self.gravity = gravity
@@ -115,9 +115,9 @@ class MarkList(Mark):
     def drawGL(self,**kargs):
         if self.color is not None:
             GL.glColor3fv(self.color)
-        for p,v in zip(self.pos,self.val):
+        for p, v in zip(self.pos, self.val):
             GL.glRasterPos3fv(p)
-            gluttext.glutRenderText(self.leader+str(v),self.font,self.gravity)
+            gluttext.glutRenderText(self.leader+str(v), self.font, self.gravity)
 
 
     def drawpick(self):
@@ -125,7 +125,7 @@ class MarkList(Mark):
         GL.glSelectBuffer(16+3*len(self.val))
         GL.glRenderMode(GL.GL_SELECT)
         GL.glInitNames() # init the name stack
-        for p,v in zip(self.pos,self.val):
+        for p, v in zip(self.pos, self.val):
             GL.glPushName(v)
             GL.glRasterPos3fv(p)
             #drawGlutText(str(v),self.font)
@@ -133,7 +133,7 @@ class MarkList(Mark):
         buf = GL.glRenderMode(GL.GL_RENDER)
         numbers =[]
         for r in buf:
-            numbers += map(int,r[2])
+            numbers += map(int, r[2])
         return numbers
 
 

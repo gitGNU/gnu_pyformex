@@ -41,7 +41,7 @@ _techniques = ['webgl']
 
 from gui.draw import *
 
-from simple import sphere,sector,cylinder
+from simple import sphere, sector, cylinder
 from mydict import Dict
 from plugins.webgl import WebGL
 
@@ -55,8 +55,8 @@ def run():
 
     # Create some geometry
     S = sphere().scale(1.2)
-    T = sector(1.0,360.,6,36,h=1.0,diag='u').toSurface().scale(1.5).reverse()
-    C = cylinder(1.2,1.5,24,4,diag='u').toSurface().trl([0.5,0.5,0.5]).reverse()
+    T = sector(1.0, 360., 6, 36, h=1.0, diag='u').toSurface().scale(1.5).reverse()
+    C = cylinder(1.2, 1.5, 24, 4, diag='u').toSurface().trl([0.5, 0.5, 0.5]).reverse()
 
     # Draw the geometry with given colors/opacity
     # Settings colors and opacity in this way makes the model
@@ -90,7 +90,7 @@ def run():
 
     export({'sphere':S,'cone':T,'cylinder':C})
 
-    draw([S,T,C])
+    draw([S, T, C])
     zoomAll()
     #rotRight(30.)
 
@@ -99,7 +99,7 @@ def run():
 
     if checkWorkdir():
         # Export everything to webgl
-        exportWebGL('Scene1',title='Two spheres and a cone')
+        exportWebGL('Scene1', title='Two spheres and a cone')
 
 
 if __name__ == 'draw':

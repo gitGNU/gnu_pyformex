@@ -60,20 +60,20 @@ class ActorList(list):
     the proper type.
     """
 
-    def __init__(self,canvas):
+    def __init__(self, canvas):
         self.canvas = canvas
         list.__init__(self)
 
-    def add(self,actor):
+    def add(self, actor):
         """Add an actor or a list thereof to a ActorList."""
         if isinstance(actor, list):
             self.extend(actor)
         else:
             self.append(actor)
 
-    def delete(self,actor):
+    def delete(self, actor):
         """Remove an actor or a list thereof from an ActorList."""
-        if not type(actor) in (list,tuple):
+        if not type(actor) in (list, tuple):
             actor = [ actor ]
         for a in actor:
             if a in self:
@@ -141,7 +141,7 @@ class Scene(object):
 
 
     @bbox.setter
-    def bbox(self,bb):
+    def bbox(self, bb):
         """Set the bounding box of the scene.
 
         This can be used to set the scene bounding box to another value
@@ -175,7 +175,7 @@ class Scene(object):
         self.actors.add(actor)
 
 
-    def addActor(self,actor):
+    def addActor(self, actor):
         self.actors.add(actor)
         actor.prepare(self.canvas)
         actor.changeMode(self.canvas)
@@ -205,7 +205,7 @@ class Scene(object):
             a.changeMode(canvas)
 
 
-    def addAny(self,actor):
+    def addAny(self, actor):
         """Add any actor type or a list thereof.
 
         This will add any actor/annotation/decoration item or a list
@@ -213,19 +213,19 @@ class Scene(object):
         an item to the scene, because it makes sure that each item is added
         to the proper list.
         """
-        if isinstance(actor,list):
+        if isinstance(actor, list):
             [ self.addActor(a) for a in actor ]
-        elif isinstance(actor,drawable.GeomActor):
+        elif isinstance(actor, drawable.GeomActor):
             self.addActor(actor)
-        elif isinstance(actor,actors.Actor):
+        elif isinstance(actor, actors.Actor):
             self.oldactors.add(actor)
-        elif isinstance(actor,marks.Mark):
+        elif isinstance(actor, marks.Mark):
             self.annotations.add(actor)
-        elif isinstance(actor,decors.Decoration):
+        elif isinstance(actor, decors.Decoration):
             self.decorations.add(actor)
 
 
-    def removeAny(self,actor):
+    def removeAny(self, actor):
         """Remove a list of any actor/highlights/annotation/decoration items.
 
         This will remove the items from any of the canvas lists in which the
@@ -233,15 +233,15 @@ class Scene(object):
         itemlist can also be a single item instead of a list.
         If None is specified, all items from all lists will be removed.
         """
-        if isinstance(actor,list):
+        if isinstance(actor, list):
             [ self.addActor(a) for a in actor ]
-        elif isinstance(actor,drawable.GeomActor):
+        elif isinstance(actor, drawable.GeomActor):
             self.actors.delete(actor)
-        elif isinstance(actor,actors.Actor):
+        elif isinstance(actor, actors.Actor):
             self.oldactors.delete(actor)
-        elif isinstance(actor,marks.Mark):
+        elif isinstance(actor, marks.Mark):
             self.annotations.delete(actor)
-        elif isinstance(actor,decors.Decoration):
+        elif isinstance(actor, decors.Decoration):
             self.decorations.delete(actor)
 
 
@@ -253,7 +253,7 @@ class Scene(object):
         self.decorations.clear()
 
 
-    def highlight(self,actors):
+    def highlight(self, actors):
         """Highlight the actors in the list."""
         for obj in actors:
             obj.highlight = 1
@@ -271,7 +271,7 @@ class Scene(object):
 
 
     def printTotals(self):
-        print("SCENE: %s actors, %s oldactors, %s annotations, %s decorations" % (len(self.actors),len(self.oldactors),len(self.annotations),len(self.decorations)))
+        print("SCENE: %s actors, %s oldactors, %s annotations, %s decorations" % (len(self.actors), len(self.oldactors), len(self.annotations), len(self.decorations)))
 
 
 ##########################################
@@ -287,7 +287,7 @@ def sane_bbox(bb):
     A value 1 is added in the directions where the input bbox
     has zero size. Also, any NaNs will be transformed to numbers.
     """
-    bb = at.checkArray(bb,(2,3),'f')
+    bb = at.checkArray(bb, (2, 3), 'f')
     # make sure we have no NaNs in the bbox
     try:
         bb = at.nan_to_num(bb)
@@ -298,8 +298,8 @@ def sane_bbox(bb):
     ds = 0.01 * at.length(sz)
     if ds == 0.0:
         ds = 0.5    # when bbox is zero in all directions
-    bb[0,sz==0.0] -= ds
-    bb[1,sz==0.0] += ds
+    bb[0, sz==0.0] -= ds
+    bb[1, sz==0.0] += ds
     return coords.Coords(bb)
 
 ### End

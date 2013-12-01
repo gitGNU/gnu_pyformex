@@ -752,10 +752,6 @@ General guidelines
     #!/usr/bin/env python
     # $Id$
 
-  Start pyFormex examples with the following line::
-
-    # $Id$ *** pyformex ***
-
   Start reStructuredText with the following two lines (the second being
   an empty line)::
 
@@ -839,10 +835,19 @@ Coding style
   These names will indeed not be made available by Python's ``import``
   statements.
 
-- Do not put blanks before or after operators, except with the assignment
-  operator (``=``), where you should always put a single blank before and after it.
+- For whitespace in expressions and statements, try to follow the rules in
+  http://www.python.org/dev/peps/pep-0008/#whitespace-in-expressions-and-statements.
+  More precisely, do not put a whitespace directly inside delimiters
+  or around mathematic operators.
+  But do put spaces around the assignment operator ('='), except in argument
+  lists. Also put a blank after commas. Thus::
 
-- Always start a new line after the colon (``:``) in ``if`` and ``for`` statements.
+    def inc(x, y=1):
+        z = x+y
+        return z
+
+- Always start a new line after the colon (``:``) in ``if`` and ``for``
+  statements.
 
 - Always try to use implicit for loops instead of explicit ones.
 

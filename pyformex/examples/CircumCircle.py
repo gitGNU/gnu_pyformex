@@ -28,7 +28,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'beginner'
 _topics = ['geometry']
-_techniques = ['function','import','dialog','viewport']
+_techniques = ['function', 'import', 'dialog', 'viewport']
 
 from gui.draw import *
 import simple
@@ -37,15 +37,15 @@ from geomtools import *
 
 
 def draw_circles(circles,color=red):
-    for r,c,n in circles:
-        C = simple.circle(r=r,n=n,c=c)
-        draw(C,color=color)
+    for r, c, n in circles:
+        C = simple.circle(r=r, n=n, c=c)
+        draw(C, color=color)
 
 
 def drawCircles(F,func,color=red):
-    r,c,n = func(F.coords)
-    draw(c,color=color)
-    draw_circles(zip(r,c,n),color=color)
+    r, c, n = func(F.coords)
+    draw(c, color=color)
+    draw_circles(zip(r, c, n), color=color)
     
 
 def run():
@@ -56,14 +56,14 @@ def run():
     viewport(0)
     view('front')
     clear()
-    rtri = Formex('3:016932').scale([1.5,1,0])
-    F = rtri + rtri.shear(0,1,-0.5).trl(0,-4.0) + rtri.shear(0,1,0.75).trl(0,3.0)
+    rtri = Formex('3:016932').scale([1.5, 1, 0])
+    F = rtri + rtri.shear(0, 1, -0.5).trl(0, -4.0) + rtri.shear(0, 1, 0.75).trl(0, 3.0)
     draw(F)
 
-    drawCircles(F,triangleCircumCircle,color=red)
+    drawCircles(F, triangleCircumCircle, color=red)
     zoomAll()   
-    drawCircles(F,triangleInCircle,color=blue)
-    drawCircles(F,triangleBoundingCircle,color=black)
+    drawCircles(F, triangleInCircle, color=blue)
+    drawCircles(F, triangleBoundingCircle, color=black)
     zoomAll()   
 
 
@@ -71,9 +71,9 @@ def run():
     viewport(1)
     view('iso')
     clear()
-    F,c = cube_tri()
+    F, c = cube_tri()
     draw(F)
-    drawCircles(F,triangleInCircle)
+    drawCircles(F, triangleInCircle)
     zoomAll()   
 
     if not ack("Keep both viewports ?"):

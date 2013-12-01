@@ -45,25 +45,25 @@ def position(*args):
 def IndexedFaceSet(coords,faces=None):
     global _prop_
     _prop_ += 1
-    coords = asarray(coords).reshape(-1,3)
-    print(coords.shape,_prop_)
-    F = Formex(coords,_prop_)
+    coords = asarray(coords).reshape(-1, 3)
+    print(coords.shape, _prop_)
+    F = Formex(coords, _prop_)
     print(F.prop)
     draw(F)
-    export({"%s-%s" % (_name_,'coords'):F})
+    export({"%s-%s" % (_name_, 'coords'):F})
     if faces is None:
         return
 
     
-def IndexedLineSet(coords,lines):
-    coords = asarray(coords).reshape(-1,3)
+def IndexedLineSet(coords, lines):
+    coords = asarray(coords).reshape(-1, 3)
     print(coords.shape)
-    F = Formex(coords,_prop_)
+    F = Formex(coords, _prop_)
     draw(F)
-    export({"%s-%s" % (_name_,'coords'):F})
-    lines = column_stack([lines[:-1],lines[1:]])
+    export({"%s-%s" % (_name_, 'coords'):F})
+    lines = column_stack([lines[:-1], lines[1:]])
     print(lines.shape)
-    G = Formex(coords[lines],_prop_)
+    G = Formex(coords[lines], _prop_)
     export({_name_:G})
     draw(G)
    

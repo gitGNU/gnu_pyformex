@@ -33,7 +33,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
 _topics = ['geometry']
-_techniques = ['image','icon']
+_techniques = ['image', 'icon']
 
 from gui.draw import *
 
@@ -52,8 +52,8 @@ def icon_smooth():
 
 def icon_wirenone():
     view('front')
-    F = rectangle(2,2)
-    draw(F,color=red)
+    F = rectangle(2, 2)
+    draw(F, color=red)
     smooth()
     zoomAll()
     zoomIn()
@@ -62,10 +62,10 @@ def icon_wirenone():
 
 def icon_wireborder():
     view('front')
-    F = rectangle(2,2)
-    draw(F,color=red)
+    F = rectangle(2, 2)
+    draw(F, color=red)
     B = F.toMesh().getBorderMesh()
-    draw(B,color=black,linewidth=2,ontop=True,opak=True,nolight=True)
+    draw(B, color=black, linewidth=2, ontop=True, opak=True, nolight=True)
     smooth()
     zoomAll()
     zoomIn()
@@ -74,8 +74,8 @@ def icon_wireborder():
 
 def icon_wireall():
     view('front')
-    F = rectangle(2,2)
-    draw(F,color=red,linewidth=2)
+    F = rectangle(2, 2)
+    draw(F, color=red, linewidth=2)
     smoothwire()
     zoomAll()
     zoomIn()
@@ -87,18 +87,18 @@ def icon_clock():
     view('front')
     F = AnalogClock()
     F.draw()
-    F.drawTime(11,55)
+    F.drawTime(11, 55)
 
 
 def icon_run():
     view('front')
-    F = Formex('3:016045').trl([-0.3,0.,0.])
+    F = Formex('3:016045').trl([-0.3, 0., 0.])
     draw(F)
 
 
 def icon_rerun():
     icon_run()
-    A = Arc(radius=1.5,angles=(45.,135.)).setProp(1)
+    A = Arc(radius=1.5, angles=(45., 135.)).setProp(1)
     B = A.scale(0.8)
     MA = A.approx().toMesh()
     MB = B.approx().toMesh()
@@ -108,30 +108,30 @@ def icon_rerun():
     draw(D)
     E = C.rotate(180)
     F = D.rotate(180)
-    draw([E,F])
+    draw([E, F])
     zoomAll()
 
 
-def spiral(X,dir=[0,1,2],rfunc=lambda x:1,zfunc=lambda x:1):
+def spiral(X,dir=[0, 1, 2],rfunc=lambda x:1,zfunc=lambda x:1):
     """Perform a spiral transformation on a coordinate array"""
-    theta = X[...,dir[0]]
-    r = rfunc(theta) + X[...,dir[1]]
+    theta = X[..., dir[0]]
+    r = rfunc(theta) + X[..., dir[1]]
     x = r * cos(theta)
     y = r * sin(theta)
-    z = zfunc(theta) + X[...,dir[2]]
-    X = hstack([x,y,z]).reshape(X.shape)
+    z = zfunc(theta) + X[..., dir[2]]
+    X = hstack([x, y, z]).reshape(X.shape)
     return Coords(X)
 
 def icon_reset():
-    T = Formex([[(0,0),(-3,0),(-3,3)]])
-    draw(T,color='steelblue')
-    x = Coords([(-2,2),(-1,3),(3,3),(3,0)])
+    T = Formex([[(0, 0), (-3, 0), (-3, 3)]])
+    draw(T, color='steelblue')
+    x = Coords([(-2, 2), (-1, 3), (3, 3), (3, 0)])
     draw(x)
     P = BezierSpline(control=x)
-    x = Coords([(3,0),(3,-1),(3,-2),(1,-3)])
+    x = Coords([(3, 0), (3, -1), (3, -2), (1, -3)])
     draw(x)
     P1 = BezierSpline(control=x)
-    draw([P,P1],color='indianred')
+    draw([P, P1], color='indianred')
     zoomAll()
 
 
@@ -140,13 +140,13 @@ def icon_script():
     from examples import FontForge
     okfonts = [ f for f in FontForge.fonts if 'Sans' in f and 'Oblique' in f ]
     res = askItems([
-        _I('fontname',None,choices=okfonts),
+        _I('fontname', None, choices=okfonts),
         ])
     if res:
         fontname = res['fontname']
-        curve = FontForge.charCurve(fontname,'S')
+        curve = FontForge.charCurve(fontname, 'S')
         curve = curve.scale(2.5/curve.sizes()[1]).centered()
-        FontForge.drawCurve(curve,color=red,fill=True,with_border=False,with_points=False)
+        FontForge.drawCurve(curve, color=red, fill=True, with_border=False, with_points=False)
         print(curve.bbox())
     zoomAll()
 
@@ -168,8 +168,8 @@ def run():
 
 
     res = askItems([
-        _I('icon',text='Icon Name',choices=_avail_icons),
-        _I('save',False,text='Save Icon'),
+        _I('icon', text='Icon Name', choices=_avail_icons),
+        _I('save', False, text='Save Icon'),
         ])
 
     if not res:

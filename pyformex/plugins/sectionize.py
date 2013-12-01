@@ -43,9 +43,9 @@ def connectPoints(F,close=False):
     If close=True, the last point is connected back to the first to create a
     closed polyline.
     """
-    if not isinstance(F,formex.Formex):
+    if not isinstance(F, formex.Formex):
         F = Formex(F)
-    return formex.connect([F,F],bias=[0,1],loop=close)
+    return formex.connect([F, F], bias=[0, 1], loop=close)
 
 
 def centerline(F,dir,nx=2,mode=2,th=0.2):
@@ -57,25 +57,25 @@ def centerline(F,dir,nx=2,mode=2,th=0.2):
     x1 = F.center()
     x0[dir] = bb[0][dir]
     x1[dir] = bb[1][dir]
-    n = array((0,0,0))
+    n = array((0, 0, 0))
     n[dir] = nx
     
-    grid = simple.regularGrid(x0,x1,n).reshape((-1,3))
+    grid = simple.regularGrid(x0, x1, n).reshape((-1, 3))
 
     th *= (x1[dir]-x0[dir])/nx
     n = zeros((3,))
     n[dir] = 1.0
 
-    def localCenter(X,P,n):
+    def localCenter(X, P, n):
         """Return the local center of points X in the plane P,n"""
-        test = abs(X.distanceFromPlane(P,n)) < th # points close to plane
+        test = abs(X.distanceFromPlane(P, n)) < th # points close to plane
         if mode == 1:
             C = X[test].center()
         elif mode == 2:
             C = X[test].centroid()
         return C
 
-    center = [ localCenter(F,P,n) for P in grid ]
+    center = [ localCenter(F, P, n) for P in grid ]
     return PolyLine(center)
 
 
@@ -84,22 +84,22 @@ def createSegments(F,ns=None,th=None):
     bb = F.bbox()
     pf.message("Bounding box = %s" % bb)
     if ns is None or th is None:
-        res = askItems([['number of sections',20],
-                        ['relative thickness',0.1]],
+        res = askItems([['number of sections', 20],
+                        ['relative thickness', 0.1]],
                        'Sectioning Parameters')
         if res:
             ns = int(res['number of sections'])
             th = float(res['relative thickness'])
     if isInt(ns) and isinstance(th, float):
-        xmin,ymin,zmin = bb[0]
-        xmax,ymax,zmax = bb[1]
-        xgem,ygem,zgem = F.center()
-        A = [ xmin,ygem,zgem ]
-        B = [ xmax,ygem,zgem ]
-        segments = Formex([[A,B]]).divide(ns)
+        xmin, ymin, zmin = bb[0]
+        xmax, ymax, zmax = bb[1]
+        xgem, ygem, zgem = F.center()
+        A = [ xmin, ygem, zgem ]
+        B = [ xmax, ygem, zgem ]
+        segments = Formex([[A, B]]).divide(ns)
         pf.message("Segments: %s" % segments)
-        return ns,th,segments
-    return 0,0,[]
+        return ns, th, segments
+    return 0, 0, []
 
 
 def sectionize(F,segments,th=0.1,visual=True):
@@ -123,7 +123,7 @@ def sectionize(F,segments,th=0.1,visual=True):
     if visual:
         clear()
         linewidth(1)
-        draw(F,color='yellow')
+        draw(F, color='yellow')
         linewidth(2)
     for s in segments:
         c = 0.5 * (s[0]+s[1])
@@ -131,26 +131,26 @@ def sectionize(F,segments,th=0.1,visual=True):
         l = length(d)
         n = d/l
         t = th*l
-        test = abs(F.distanceFromPlane(c,n)) < th*l
+        test = abs(F.distanceFromPlane(c, n)) < th*l
         test = test.sum(axis=-1)
         G = F.select(test==3)
         if visual:
-            draw(G,color='blue',view=None)
+            draw(G, color='blue', view=None)
             pf.canvas.update()
         print(G)
         C = G.center()
-        D = 2 * G.distanceFromLine(C,n).mean()
-        pf.message("Section Center: %s; Diameter: %s" % (C,D))
+        D = 2 * G.distanceFromLine(C, n).mean()
+        pf.message("Section Center: %s; Diameter: %s" % (C, D))
         sections.append(G)
         ctr.append(C)
         diam.append(D)
-    return sections,ctr,diam
+    return sections, ctr, diam
 
 
-def drawCircles(sections,ctr,diam):
+def drawCircles(sections, ctr, diam):
     """Draw circles as approximation of Formices."""
-    circle = simple.circle().rotate(-90,1)
-    cross = Formex(simple.Pattern['plus']).rotate(-90,1)
+    circle = simple.circle().rotate(-90, 1)
+    cross = Formex(simple.Pattern['plus']).rotate(-90, 1)
     circles = []
     n = len(sections)
     for i in range(n):
@@ -158,24 +158,24 @@ def drawCircles(sections,ctr,diam):
         B = circle.scale(diam[i]/2).translate(ctr[i])
         S = sections[i]
         clear()
-        draw(S,view='left',wait=False)
-        draw(C,color='red',bbox=None,wait=False)
-        draw(B,color='blue',bbox=None)
+        draw(S, view='left', wait=False)
+        draw(C, color='red', bbox=None, wait=False)
+        draw(B, color='blue', bbox=None)
         circles.append(B)
     return circles
 
 
-def drawAllCircles(F,circles):
+def drawAllCircles(F, circles):
     clear()
     linewidth(1)
-    draw(F,color='yellow',view='front')
+    draw(F, color='yellow', view='front')
     linewidth(2)
     for circ in circles:
         bb = circ.bbox()
         d = (bb[1] - bb[0]) * 0.5
         bb[0] -= d
         bb[1] += d
-        draw(circ,color='blue',bbox=bb)
+        draw(circ, color='blue', bbox=bb)
     zoomAll()
 
 

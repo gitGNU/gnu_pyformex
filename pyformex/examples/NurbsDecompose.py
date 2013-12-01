@@ -50,19 +50,19 @@ def clearDecors():
 
 def drawNurbs(N):
     clearDecors()
-    draw(N,color=_options.color,nolight=True)
+    draw(N, color=_options.color, nolight=True)
     if _options.ctrl:
-        draw(N.coords.toCoords(),color=_options.color,nolight=True)
+        draw(N.coords.toCoords(), color=_options.color, nolight=True)
         if _options.ctrl_polygon:
-            draw(PolyLine(N.coords.toCoords()),color=_options.color,nolight=True)
+            draw(PolyLine(N.coords.toCoords()), color=_options.color, nolight=True)
         if _options.ctrl_numbers:
             _decors.ctrl_numbers = drawNumbers(N.coords.toCoords())
     if _options.knots:
-        draw(N.knotPoints(),color=_options.color,marksize=_options.knotsize)
+        draw(N.knotPoints(), color=_options.color, marksize=_options.knotsize)
         if _options.knot_numbers:
             drawNumbers(N.knotPoints())
         if _options.knot_values:
-            drawMarks(N.knotPoints(),["%f"%i for i in N.knots],leader='  --> ')
+            drawMarks(N.knotPoints(), ["%f"%i for i in N.knots], leader='  --> ')
 
 
 def run():
@@ -80,7 +80,7 @@ def run():
     _options.ctrl_polygon = True
     _options.knot_values = True
 
-    N = NurbsCurve(C.coords,degree=degree)#,blended=False)
+    N = NurbsCurve(C.coords, degree=degree)#,blended=False)
     print(N)
     _options.linewidth = 1
     _options.color = magenta
@@ -90,7 +90,7 @@ def run():
 
     while True:
         res = askItems([
-            _I('u',0.2,text='New knot values'),
+            _I('u', 0.2, text='New knot values'),
             ], default='Cancel')
         if not res:
             break;
@@ -122,12 +122,12 @@ def run():
         _options.knot_values = False
         drawNurbs(N1)
         zoomAll()
-        C = BezierSpline(control=N1.coords.toCoords(),degree=N1.degree)
-        draw(C,color=blue)
+        C = BezierSpline(control=N1.coords.toCoords(), degree=N1.degree)
+        draw(C, color=blue)
 
 
         if ack("Shift decomposed parts?"):
-            CS = [ c.trl([0.,0.1*(-1)**i,0.]) for i,c in enumerate(C.split()) ]
+            CS = [ c.trl([0., 0.1*(-1)**i, 0.]) for i, c in enumerate(C.split()) ]
             draw(CS)
 
 

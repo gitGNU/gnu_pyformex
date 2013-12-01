@@ -68,7 +68,7 @@ def sortAdjacency(adj):
     if adj.shape[1] > 0:
         adj.sort(axis=-1)      # sort rows
         maxc = adj.max(axis=0) # find maximum per column
-        adj = adj[:,maxc>=0]   # retain columns with non-negative maximum
+        adj = adj[:, maxc>=0]   # retain columns with non-negative maximum
     return adj
 
 
@@ -113,11 +113,11 @@ def reduceAdjacency(adj):
              [-1, -1,  0]])
 
     """
-    adj = checkArray(adj,ndim=2)
+    adj = checkArray(adj, ndim=2)
     n = adj.shape[0]
-    adj[adj == arange(n).reshape(n,-1)] = -1 # remove the item i
+    adj[adj == arange(n).reshape(n, -1)] = -1 # remove the item i
     adj = sortAdjacency(adj)
-    adj[adj[:,:-1] == adj[:,1:]] = -1 #remove duplicate items
+    adj[adj[:, :-1] == adj[:, 1:]] = -1 #remove duplicate items
     adj = sortAdjacency(adj)
     return adj
 
@@ -214,9 +214,9 @@ class Adjacency(ndarray):
         ar = array(data, dtype=dtyp, copy=copy)
         if ar.ndim < 2:
             if ncon > 0:
-                ar = ar.reshape(-1,ncon)
+                ar = ar.reshape(-1, ncon)
             else:
-                ar = ar.reshape(-1,1)
+                ar = ar.reshape(-1, 1)
 
         elif ar.ndim > 2:
             raise ValueError("Expected 2-dim data")
@@ -229,12 +229,12 @@ class Adjacency(ndarray):
         if ar.size > 0:
             maxval = ar.max()
             if maxval > ar.shape[0]-1:
-                raise ValueError("Too large element number (%s) for number of rows(%s)" % (maxval,ar.shape[0]))
+                raise ValueError("Too large element number (%s) for number of rows(%s)" % (maxval, ar.shape[0]))
             if ncon > 0 and ar.shape[1] != ncon:
                 raise ValueError("Expected data with %s columns" % ncon)
         else:
             maxval = -1
-            ar = ar.reshape(0,ncon)
+            ar = ar.reshape(0, ncon)
 
         # Transform 'subarr' from an ndarray to our new subclass.
         ar = ar.view(clas)
@@ -318,12 +318,12 @@ class Adjacency(ndarray):
                [1, 2]])
 
         """
-        p = [ [[i,j] for j in k if j >= 0] for i,k in enumerate(self[:-1]) if max(k) >= 0]
+        p = [ [[i, j] for j in k if j >= 0] for i, k in enumerate(self[:-1]) if max(k) >= 0]
         p = row_stack(p)
-        return p[p[:,1] > p[:,0]]
+        return p[p[:, 1] > p[:, 0]]
 
 
-    def symdiff(self,adj):
+    def symdiff(self, adj):
         """Return the symmetric difference of two adjacency tables.
 
         Parameters:
@@ -336,13 +336,13 @@ class Adjacency(ndarray):
         """
         if adj.nelems() != self.nelems():
             raise ValueError("`adj` should have same number of rows as `self`")
-        adj = concatenate([self,adj],axis=-1)
+        adj = concatenate([self, adj], axis=-1)
         adj = sortAdjacency(adj)
-        dup = adj[:,:-1] == adj[:,1:] # duplicate items
+        dup = adj[:, :-1] == adj[:, 1:] # duplicate items
         adj[dup] = -1
-        adj = roll(adj,-1,axis=-1)
+        adj = roll(adj, -1, axis=-1)
         adj[dup] = -1
-        adj = roll(adj,1,axis=-1)
+        adj = roll(adj, 1, axis=-1)
         return Adjacency(adj)
 
 
@@ -378,12 +378,12 @@ class Adjacency(ndarray):
         [ 0  1  1  2 -1]
         [0 1 1 2 4]
         """
-        p = -ones((self.nelems()),dtype=Int)
+        p = -ones((self.nelems()), dtype=Int)
         if self.nelems() <= 0:
             return
 
         # Remember current elements front
-        elems = clip(asarray(startat),0,self.nelems())
+        elems = clip(asarray(startat), 0, self.nelems())
         prop = 0
         while elems.size > 0:
             # Store prop value for current elems
@@ -441,7 +441,7 @@ class Adjacency(ndarray):
           >>> print(A.frontWalk())
           [0 1 1 1 2 2]
         """
-        for p in self.frontGenerator(startat=startat,frontinc=frontinc,partinc=partinc):
+        for p in self.frontGenerator(startat=startat, frontinc=frontinc, partinc=partinc):
             if maxval >= 0:
                 if p.max() >= maxval:
                     break
@@ -487,7 +487,7 @@ class Adjacency(ndarray):
         """
         elems = unique(asarray(self[startat]))
         if not add:
-            elems = setdiff1d(elems,asarray(startat))
+            elems = setdiff1d(elems, asarray(startat))
         elems = elems[elems >= 0]
         return elems
 

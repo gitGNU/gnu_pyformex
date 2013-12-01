@@ -28,7 +28,7 @@ Torsing a horse is like horsing a torse.
 from __future__ import print_function
 _status = 'checked'
 _level = 'advanced'
-_topics = ['geometry','surface']
+_topics = ['geometry', 'surface']
 _techniques = ['animation', 'color']
 
 from gui.draw import *
@@ -49,10 +49,10 @@ def run():
     surf=True
     F = Formex.read(getcfg('datadir')+'/horse.pgf')
     F = F.translate(-F.center())
-    xmin,xmax = F.bbox()
+    xmin, xmax = F.bbox()
 
     F = F.scale(1./(xmax[0]-xmin[0]))
-    FA = drawSurf(F,surf)
+    FA = drawSurf(F, surf)
 
     angle = 360.
     n = 120
@@ -61,9 +61,9 @@ def run():
     F.setProp(1)
     for i in range(n+1):
         a = i*da
-        torse = lambda x,y,z: [x,cos(a*x)*y-sin(a*x)*z,cos(a*x)*z+sin(a*x)*y]
+        torse = lambda x, y, z: [x, cos(a*x)*y-sin(a*x)*z, cos(a*x)*z+sin(a*x)*y]
         G = F.map(torse)
-        GA = drawSurf(G,surf)
+        GA = drawSurf(G, surf)
         undraw(FA)
         FA = GA
 
@@ -74,8 +74,8 @@ def run():
 
     for i in range(nx+1):
         s = 1.0+i*dx
-        H = G.scale([s,1.,1.])
-        GA = drawSurf(H,surf,bbox=None)
+        H = G.scale([s, 1., 1.])
+        GA = drawSurf(H, surf, bbox=None)
         undraw(FA)
         FA = GA
 

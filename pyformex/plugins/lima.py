@@ -45,7 +45,7 @@ class Lima(object):
         print("  Generation: %d" % self.gen)
         print("  Product: %s" % self.product)
 
-    def addRule (self,atom,product):
+    def addRule (self, atom, product):
         """Add a new rule (or overwrite an existing)"""
         self.rule[atom] = product
 
@@ -61,12 +61,12 @@ class Lima(object):
         for c in self.product:
             if keep:
                 default=c
-            product += rule.get(c,default)
+            product += rule.get(c, default)
         return product
         
     def grow (self, ngen=1):
         for gen in range(ngen):
-            self.product = self.translate(self.rule,keep=True)
+            self.product = self.translate(self.rule, keep=True)
             self.gen += 1
         return self.product
     
@@ -84,17 +84,17 @@ def lima(axiom,rules,level,turtlecmds,glob=None):
     of the same Lima, it is better to use the grow() and translate() methods
     directly.
     """
-    A = Lima(axiom,rules)
+    A = Lima(axiom, rules)
     A.grow(level)
-    scr = "reset();"+A.translate(turtlecmds,keep=False)
-    list = turtle.play(scr,glob)
+    scr = "reset();"+A.translate(turtlecmds, keep=False)
+    list = turtle.play(scr, glob)
     return list
 
 if __name__ == "__main__":
     def test():
         TurtleRules = { 'F' : 'fd();', '*' : 'ro(60);', '/' : 'ro(-60);' }
-        print(lima("F",{"F":"F*F//F*F"},1,{ 'F' : 'fd();', '*' : 'ro(60);', '/' : 'ro(-60);' }))
-        print(lima("F",{"F":"F*F//F*F"},2,{ 'F' : 'fd();', '*' : 'ro(60);', '/' : 'ro(-60);' })                   )
+        print(lima("F", {"F":"F*F//F*F"}, 1, { 'F' : 'fd();', '*' : 'ro(60);', '/' : 'ro(-60);' }))
+        print(lima("F", {"F":"F*F//F*F"}, 2, { 'F' : 'fd();', '*' : 'ro(60);', '/' : 'ro(-60);' })                   )
 
     test()
     test()

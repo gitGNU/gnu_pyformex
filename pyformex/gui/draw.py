@@ -30,7 +30,7 @@ to import it.
 """
 from __future__ import print_function
 import pyformex as pf
-import threading,os,sys,types,copy,commands,time
+import threading, os, sys, types, copy, commands, time
 
 import numpy
 import utils
@@ -49,7 +49,7 @@ import canvas
 import colors
 
 import coords
-from plugins import trisurface,tools,fe
+from plugins import trisurface, tools, fe
 
 from script import *
 from colors import *
@@ -65,7 +65,7 @@ def closeGui():
     Calling this function from a script closes the GUI and terminates
     pyFormex.
     """
-    pf.debug("Closing the GUI: currently, this will also terminate pyformex.",pf.DEBUG.GUI)
+    pf.debug("Closing the GUI: currently, this will also terminate pyformex.", pf.DEBUG.GUI)
     pf.GUI.close()
 
 
@@ -91,7 +91,7 @@ def showMessage(text,actions=['OK'],level='info',modal=True,align='00',**kargs):
     """
     w = widgets.MessageBox(text,level=level,actions=actions,**kargs)
     if align == '--':
-        w.move(100,100)
+        w.move(100, 100)
     if modal:
         return w.getResult()
     else:
@@ -101,15 +101,15 @@ def showMessage(text,actions=['OK'],level='info',modal=True,align='00',**kargs):
 
 def showInfo(text,actions=['OK'],modal=True):
     """Show an informational message and wait for user acknowledgement."""
-    return showMessage(text,actions,'info',modal)
+    return showMessage(text, actions, 'info', modal)
 
 def warning(text,actions=['OK']):
     """Show a warning message and wait for user acknowledgement."""
-    return showMessage(text,actions,'warning')
+    return showMessage(text, actions, 'warning')
 
 def error(text,actions=['OK']):
     """Show an error message and wait for user acknowledgement."""
-    return showMessage(text,actions,'error')
+    return showMessage(text, actions, 'error')
 
 
 def ask(question,choices=None,**kargs):
@@ -123,10 +123,10 @@ def ask(question,choices=None,**kargs):
 
 def ack(question,**kargs):
     """Show a Yes/No question and return True/False depending on answer."""
-    return ask(question,['No','Yes'],**kargs) == 'Yes'
+    return ask(question,['No', 'Yes'],**kargs) == 'Yes'
 
 
-def showText(text,itemtype='text',actions=[('OK',None)],modal=True,mono=False):
+def showText(text,itemtype='text',actions=[('OK', None)],modal=True,mono=False):
     """Display a text in a dialog window.
 
     Creates a dialog window displaying some text. The dialog can be modal
@@ -159,8 +159,8 @@ def showText(text,itemtype='text',actions=[('OK',None)],modal=True,mono=False):
         font = "DejaVu Sans Mono"
     else:
         font = None
-    w = Dialog(size=(0.75,0.75),
-        items=[_I('text',text,itemtype=itemtype,text='',font=font,size=(-1,-1))],
+    w = Dialog(size=(0.75, 0.75),
+        items=[_I('text', text, itemtype=itemtype, text='', font=font, size=(-1, -1))],
         modal=modal,
         actions=actions,
         caption='pyFormex Text Display',
@@ -181,7 +181,7 @@ def showFile(filename,mono=True,**kargs):
     Other arguments may also be passed to ShowText.
     """
     try:
-        f = open(filename,'r')
+        f = open(filename, 'r')
     except IOError:
         return
     showText(f.read(),mono=mono,**kargs)
@@ -220,13 +220,13 @@ def showDoc(obj=None,rst=True,modal=False):
     if text is None:
         raise ValueError("No documentation found for object %s" % obj)
 
-    text = utils.forceReST(text,underline=True)
+    text = utils.forceReST(text, underline=True)
     if pf.GUI.doc_dialog is None:
         if modal:
-            actions=[('OK',None)]
+            actions=[('OK', None)]
         else:
-            actions = [('Close',pf.GUI.close_doc_dialog)]
-        pf.GUI.doc_dialog = showText(text,actions=actions,modal=modal)
+            actions = [('Close', pf.GUI.close_doc_dialog)]
+        pf.GUI.doc_dialog = showText(text, actions=actions, modal=modal)
     else:
         #
         # TODO: check why needed: without sometimes fails
@@ -263,7 +263,7 @@ def editFile(fn,exist=False):
     if pf.cfg['editor']:
         if exist and not os.path.exists(fn):
             return
-        utils.system('%s %s' % (pf.cfg['editor'],fn))
+        utils.system('%s %s' % (pf.cfg['editor'], fn))
     else:
         warning('No known editor was found or configured')
 
@@ -299,7 +299,7 @@ def askItems(items,timeout=None,**kargs):
     (key,value) pair. Returns an empty dictionary if the dialog was canceled.
     Sets the dialog timeout and accepted status in global variables.
     """
-    global _dialog_widget,_dialog_result
+    global _dialog_widget, _dialog_result
 
     w = widgets.InputDialog(items,**kargs)
 
@@ -351,7 +351,7 @@ def askFilename(cur=None,filter="All files (*.*)",exist=True,multi=False,change=
     else:
         fn = os.path.basename(cur)
         cur = os.path.dirname(cur)
-    w = widgets.FileSelection(cur,filter,exist,multi)
+    w = widgets.FileSelection(cur, filter, exist, multi)
     if fn:
         w.selectFile(fn)
     fn = w.getFilename(timeout)
@@ -373,7 +373,7 @@ def askNewFilename(cur=None,filter="All files (*.*)",timeout=None):
     This is a convenience function for calling askFilename with the
     arguments exist=False.
     """
-    return askFilename(cur=cur,filter=filter,exist=False,multi=False,timeout=timeout)
+    return askFilename(cur=cur, filter=filter, exist=False, multi=False, timeout=timeout)
 
 
 def askDirname(path=None,change=True,byfile=False):
@@ -394,7 +394,7 @@ def askDirname(path=None,change=True,byfile=False):
         dirmode = 'auto'
     else:
         dirmode = True
-    fn = widgets.FileSelection(path,'*',dir=dirmode).getFilename()
+    fn = widgets.FileSelection(path, '*', dir=dirmode).getFilename()
     if fn:
         if not os.path.isdir(fn):
             fn = os.path.dirname(fn)
@@ -408,8 +408,8 @@ def askDirname(path=None,change=True,byfile=False):
 def askImageFile(fn=None):
     if not fn:
         fn = pf.cfg['pyformexdir']
-    filt = map(utils.fileDescription,['img','all'])
-    return askFilename(fn,filter=filt,multi=False,exist=True)
+    filt = map(utils.fileDescription, ['img', 'all'])
+    return askFilename(fn, filter=filt, multi=False, exist=True)
 
 
 def checkWorkdir():
@@ -418,11 +418,11 @@ def checkWorkdir():
     Returns True if the new workdir is writable.
     """
     workdir = os.getcwd()
-    ok = os.access(workdir,os.W_OK)
+    ok = os.access(workdir, os.W_OK)
     if not ok:
         warning("Your current working directory (%s) is not writable. Change your working directory to a path where you have write permission." % workdir)
         askDirname()
-        ok = os.access(os.getcwd(),os.W_OK)
+        ok = os.access(os.getcwd(), os.W_OK)
     return ok
 
 
@@ -467,7 +467,7 @@ def flatten(objects,recurse=True):
             i = named(i)
         if isinstance(i, list):
             if recurse:
-                r.extend(flatten(i,True))
+                r.extend(flatten(i, True))
             else:
                 r.extend(i)
         else:
@@ -489,11 +489,11 @@ def drawable(objects):
     The result is a list of drawable objects (since a Formex is drawable).
     """
     def fltr(i):
-        if hasattr(i,'actor'):
+        if hasattr(i, 'actor'):
             return i
-        elif hasattr(i,'toFormex'):
+        elif hasattr(i, 'toFormex'):
             return i.toFormex()
-        elif hasattr(i,'toMesh'):
+        elif hasattr(i, 'toMesh'):
             return i.toMesh()
         else:
             return None
@@ -675,7 +675,7 @@ def draw(F,
     """
 
     # For simplicity of the code, put objects to draw always in a list
-    if isinstance(F,list):
+    if isinstance(F, list):
         FL = F
     else:
         FL = [ F ]
@@ -689,33 +689,33 @@ def draw(F,
     nres = len(FL)
 
     if nres < ntot and not silent:
-        raise ValueError("Data contains undrawable objects (%s/%s)" % (ntot-nres,ntot))
+        raise ValueError("Data contains undrawable objects (%s/%s)" % (ntot-nres, ntot))
 
     # Fill in the remaining defaults
 
     if bbox is None:
-        bbox = pf.canvas.drawoptions.get('bbox','auto')
+        bbox = pf.canvas.drawoptions.get('bbox', 'auto')
 
     if shrink is None:
-        shrink = pf.canvas.drawoptions.get('shrink',None)
+        shrink = pf.canvas.drawoptions.get('shrink', None)
 
     ## if marksize is None:
     ##     marksize = pf.canvas.drawoptions.get('marksize',pf.cfg.get('marksize',5.0))
 
     # Shrink the objects if requested
     if shrink:
-        FL = [ _shrink(F,pf.canvas.drawoptions.get('shrink_factor',0.8)) for F in FL ]
+        FL = [ _shrink(F, pf.canvas.drawoptions.get('shrink_factor', 0.8)) for F in FL ]
 
     # Execute the drawlock wait before doing first canvas change
     pf.GUI.drawlock.wait()
 
     if clear is None:
-        clear = pf.canvas.drawoptions.get('clear',False)
+        clear = pf.canvas.drawoptions.get('clear', False)
     if clear:
         clear_canvas()
 
     if view is not None and view != 'last':
-        pf.debug("SETTING VIEW to %s" % view,pf.DEBUG.DRAW)
+        pf.debug("SETTING VIEW to %s" % view, pf.DEBUG.DRAW)
         setView(view)
 
     pf.GUI.setBusy()
@@ -737,7 +737,7 @@ def draw(F,
                         Fcolor = colors.black
                 elif color == 'random':
                     # create random colors
-                    Fcolor = numpy.random.rand(F.nelems(),3)
+                    Fcolor = numpy.random.rand(F.nelems(), 3)
                 else:
                     Fcolor = color
             else:
@@ -763,7 +763,7 @@ def draw(F,
         # Adjust the camera
         #print "adjusting camera"
         #print "VIEW = %s; BBOX = %s" % (view,bbox)
-        if view is not None or bbox not in [None,'last']:
+        if view is not None or bbox not in [None, 'last']:
             if view == 'last':
                 view = pf.canvas.drawoptions['view']
             if bbox == 'auto':
@@ -771,7 +771,7 @@ def draw(F,
             if bbox == 'last':
                 bbox = None
             #print("SET CAMERA TO: bbox=%s, view=%s" % (bbox,view))
-            pf.canvas.setCamera(bbox,view)
+            pf.canvas.setCamera(bbox, view)
             #setView(view)
 
         pf.canvas.update()
@@ -790,14 +790,14 @@ def draw(F,
         return actors[0]
 
 
-def _setFocus(object,bbox,view):
+def _setFocus(object, bbox, view):
     """Set focus after a draw operation"""
-    if view is not None or bbox not in [None,'last']:
+    if view is not None or bbox not in [None, 'last']:
         if view == 'last':
             view = pf.canvas.drawoptions['view']
         if bbox == 'auto':
             bbox = coords.bbox(object)
-        pf.canvas.setCamera(bbox,view)
+        pf.canvas.setCamera(bbox, view)
     pf.canvas.update()
 
 
@@ -841,7 +841,7 @@ def reset():
     pf.GUI.drawwait = pf.cfg['draw/wait']
     try:
         if len(pf.GUI.viewports.all) == 1:
-            size = (-1,-1)
+            size = (-1, -1)
             canvasSize(*size)
     except:
         print("Warning: Resetting canvas before initialization?")
@@ -864,13 +864,13 @@ def shrink(onoff,factor=None):
     setDrawOptions(data)
 
 
-def _shrink(F,factor):
+def _shrink(F, factor):
     """Return a shrinked object.
 
     A shrinked object is one where each element is shrinked with a factor
     around its own center.
     """
-    if not isinstance(F,Formex):
+    if not isinstance(F, Formex):
         F = F.toFormex()
     return F.shrink(factor)
 
@@ -889,12 +889,12 @@ def drawVectors(P,v,size=None,nolight=True,**drawOptions):
         Q = P + v
     else:
         Q = P + size*normalize(v)
-    return draw(connect([P,Q]),nolight=nolight,**drawOptions)
+    return draw(connect([P, Q]),nolight=nolight,**drawOptions)
 
 
 def drawPlane(P,N,size,**drawOptions):
     from plugins.tools import Plane
-    p = Plane(P,N,size)
+    p = Plane(P, N, size)
     return draw(p,bbox='last',**drawOptions)
 
 
@@ -910,7 +910,7 @@ def drawMarks(X,M,color='black',leader='',ontop=True):
     if len(M) > _large_:
         if not ack("You are trying to draw marks at %s points. This may take a long time, and the results will most likely not be readible anyway. If you insist on drawing these marks, anwer YES." % len(M)):
             return None
-    M = marks.MarkList(X,M,color=color,leader=leader,ontop=ontop)
+    M = marks.MarkList(X, M, color=color, leader=leader, ontop=ontop)
     pf.canvas.addAnnotation(M)
     pf.canvas.numbers = M
     pf.canvas.update()
@@ -922,7 +922,7 @@ def drawFreeEdges(M,color='black'):
     #print "DRAW FREE EDGES"
     B = M.getFreeEdgesMesh()
     #print B
-    draw(B,color=color,nolight=True)
+    draw(B, color=color, nolight=True)
 
 
 def drawNumbers(F,numbers=None,color='black',trl=None,offset=0,leader='',ontop=None):
@@ -944,10 +944,10 @@ def drawNumbers(F,numbers=None,color='black',trl=None,offset=0,leader='',ontop=N
         return None
     if trl is not None:
         X = X.trl(trl)
-    X = X.reshape(-1,3)
+    X = X.reshape(-1, 3)
     if numbers is None:
         numbers = numpy.arange(X.shape[0])
-    return drawMarks(X,numbers+offset,color=color,leader=leader,ontop=ontop)
+    return drawMarks(X, numbers+offset, color=color, leader=leader, ontop=ontop)
 
 
 def drawPropNumbers(F,**kargs):
@@ -958,7 +958,7 @@ def drawPropNumbers(F,**kargs):
     If the object F thus not have property numbers, -1 values are drawn.
     """
     if F.prop is None:
-        nrs = -ones(F.nelems(),dtype=Int)
+        nrs = -ones(F.nelems(), dtype=Int)
     else:
         nrs = F.prop
     drawNumbers(F,nrs,**kargs)
@@ -972,10 +972,10 @@ def drawVertexNumbers(F,color='black',trl=None,ontop=False):
     e.g. to put them in front of the objects to make them visible,
     or to allow to view a mark at the vertices.
     """
-    FC = F.coords.reshape((-1,3))
+    FC = F.coords.reshape((-1, 3))
     if trl is not None:
         FC = FC.trl(trl)
-    return drawMarks(FC,numpy.resize(numpy.arange(F.coords.shape[-2]),(FC.shape[0])),color=color,ontop=ontop)
+    return drawMarks(FC, numpy.resize(numpy.arange(F.coords.shape[-2]), (FC.shape[0])), color=color, ontop=ontop)
 
 
 def drawBbox(F,color=None,linewidth=None):
@@ -984,7 +984,7 @@ def drawBbox(F,color=None,linewidth=None):
     F is any object that has a `bbox` method.
     Returns the drawn Annotation.
     """
-    B = actors.BboxActor(F.bbox(),color=color,linewidth=linewidth)
+    B = actors.BboxActor(F.bbox(), color=color, linewidth=linewidth)
     annotate(B)
     return B
 
@@ -996,14 +996,14 @@ def drawPrincipal(F,weight=None):
     If specified, weight is an array of weights attributed to the points
     of F. It should have the same length as `F.coords`.
     """
-    B = actors.PrincipalActor(F,weight)
+    B = actors.PrincipalActor(F, weight)
     annotate(B)
     return B
 
 
 def drawText3D(P,text,color=None,font='sans',size=18,ontop=True):
     """Draw a text at a 3D point P."""
-    M = marks.TextMark(P,text,color=color,font=font,size=size,ontop=ontop)
+    M = marks.TextMark(P, text, color=color, font=font, size=size, ontop=ontop)
     pf.canvas.addAnnotation(M)
     pf.canvas.update()
     return M
@@ -1054,25 +1054,25 @@ def drawImage3D(image,nx=0,ny=0,pixel='dot'):
     See also :func:`drawImage`.
     """
     pf.GUI.setBusy()
-    from plugins.imagearray import image2glcolor,resizeImage
+    from plugins.imagearray import image2glcolor, resizeImage
 
     # Create the colors
-    image = resizeImage(image,nx,ny)
-    nx,ny = image.width(),image.height()
-    color,colortable = image2glcolor(image)
+    image = resizeImage(image, nx, ny)
+    nx, ny = image.width(), image.height()
+    color, colortable = image2glcolor(image)
 
     # Create a 2D grid of nx*ny elements
     # !! THIS CAN PROBABLY BE DONE FASTER
-    if isinstance(pixel,Formex) and pixel.nelems()==1:
+    if isinstance(pixel, Formex) and pixel.nelems()==1:
         F = pixel
     elif pixel == 'quad':
         F = Formex('4:0123')
     else:
         F = Formex('1:0')
-    F = F.replic2(nx,ny).centered()
+    F = F.replic2(nx, ny).centered()
 
     # Draw the grid using the image colors
-    FA = draw(F,color=color,colormap=colortable,nolight=True)
+    FA = draw(F, color=color, colormap=colortable, nolight=True)
     pf.GUI.setBusy(False)
     return FA
 
@@ -1107,20 +1107,20 @@ def drawImage(image,w=0,h=0,x=-1,y=-1,color=white,ontop=False):
     from plugins.imagearray import image2numpy
     from gui.decors import Rectangle
 
-    image = image2numpy(image,resize=(w,h),indexed=False)
-    w,h = image.shape[:2]
+    image = image2numpy(image, resize=(w, h), indexed=False)
+    w, h = image.shape[:2]
     if x < 0:
         x = (pf.canvas.width() - w) // 2
     if y < 0:
         y = (pf.canvas.height() - h) // 2
-    R = Rectangle(x,y,x+w,y+h,color=color,texture=image,ontop=ontop)
+    R = Rectangle(x, y, x+w, y+h, color=color, texture=image, ontop=ontop)
     decorate(R)
     return R
 
 
 def drawViewportAxes3D(pos,color=None):
     """Draw two viewport axes at a 3D position."""
-    M = marks.AxesMark(pos,color)
+    M = marks.AxesMark(pos, color)
     annotate(M)
     return M
 
@@ -1166,7 +1166,7 @@ def view(v,wait=True):
         if not angles:
             warning("A view named '%s' has not been created yet" % v)
             return
-        pf.canvas.setCamera(None,angles)
+        pf.canvas.setCamera(None, angles)
     setView(v)
     pf.canvas.update()
     if wait:
@@ -1179,14 +1179,14 @@ def setTriade(on=None,pos='lb',siz=100):
     If on is True, the axes triade is displayed, if False it is
     removed. The default (None) toggles between on and off.
     """
-    pf.canvas.setTriade(on,pos,siz)
+    pf.canvas.setTriade(on, pos, siz)
     pf.canvas.update()
     pf.app.processEvents()
 
 
 def drawText(text,x,y,gravity='E',font='helvetica',size=14,color=None,zoom=None):
     """Show a text at position x,y using font."""
-    TA = decors.Text(text,x,y,gravity=gravity,font=font,size=size,color=color,zoom=zoom)
+    TA = decors.Text(text, x, y, gravity=gravity, font=font, size=size, color=color, zoom=zoom)
     decorate(TA)
     return TA
 
@@ -1220,7 +1220,7 @@ def createView(name,angles,addtogui=False):
     """
     pf.canvas.view_angles[name] = angles
     if addtogui:
-        pf.GUI.createView(name,angles)
+        pf.GUI.createView(name, angles)
 
 
 def setView(name,angles=None):
@@ -1232,7 +1232,7 @@ def setView(name,angles=None):
     followed by setView(name).
     """
     if name != 'last' and angles:
-        createView(name,angles)
+        createView(name, angles)
     setDrawOptions({'view':name})
 
 
@@ -1269,7 +1269,7 @@ def bgcolor(color=None,image=None):
       overlayed on the background colors. Specify a solid white background
       color to sea the image unaltered.
     """
-    pf.canvas.setBackground(color=color,image=image)
+    pf.canvas.setBackground(color=color, image=image)
     pf.canvas.display()
     pf.canvas.update()
 
@@ -1297,9 +1297,9 @@ def colorindex(color):
         return i[0]
     else:
         i = len(cmap)
-        pf.message("Add color %s = %s to viewport colormap" % (i,color))
-        color = color.reshape(1,3)
-        pf.canvas.settings.colormap = concatenate([cmap,color],axis=0)
+        pf.message("Add color %s = %s to viewport colormap" % (i, color))
+        color = color.reshape(1, 3)
+        pf.canvas.settings.colormap = concatenate([cmap, color], axis=0)
     return i
 
 
@@ -1321,7 +1321,7 @@ def renderMode(mode,light=None):
     - smooth_avg
     """
     # ERROR The following redraws twice !!!
-    pf.canvas.setRenderMode(mode,light)
+    pf.canvas.setRenderMode(mode, light)
     pf.canvas.update()
     toolbar.updateViewportButtons(pf.canvas)
     #toolbar.updateNormalsButton()
@@ -1345,7 +1345,7 @@ def wireMode(mode):
         mode = None
     else:
         return
-    pf.canvas.setWireMode(state,mode)
+    pf.canvas.setWireMode(state, mode)
     pf.canvas.update()
     pf.GUI.processEvents()
 
@@ -1382,7 +1382,7 @@ def lights(state=True):
 
 def transparent(state=True):
     """Set the transparency mode on or off."""
-    pf.canvas.setToggle('alphablend',state)
+    pf.canvas.setToggle('alphablend', state)
     pf.canvas.update()
     toolbar.updateTransparencyButton()
     pf.GUI.processEvents()
@@ -1399,13 +1399,13 @@ def timeout(state=None):
     toolbar.timeout(state)
 
 
-def set_material_value(typ,val):
+def set_material_value(typ, val):
     """Set the value of one of the material lighting parameters
 
     typ is one of 'ambient','specular','emission','shininess'
     val is a value between 0.0 and 1.0
     """
-    setattr(pf.canvas,typ,val)
+    setattr(pf.canvas, typ, val)
     pf.canvas.setLighting(True)
     pf.canvas.update()
     pf.app.processEvents()
@@ -1417,9 +1417,9 @@ def set_light(light,**args):
     pf.canvas.update()
     pf.app.processEvents()
 
-def set_light_value(light,key,val):
+def set_light_value(light, key, val):
     light = int(light)
-    pf.canvas.lights.set_value(light,key,val)
+    pf.canvas.lights.set_value(light, key, val)
     pf.canvas.setLighting(True)
     pf.canvas.update()
     pf.app.processEvents()
@@ -1429,16 +1429,16 @@ def linewidth(wid):
     """Set the linewidth to be used in line drawings."""
     pf.canvas.setLineWidth(wid)
 
-def linestipple(factor,pattern):
+def linestipple(factor, pattern):
     """Set the linewidth to be used in line drawings."""
-    pf.canvas.setLineStipple(factor,pattern)
+    pf.canvas.setLineStipple(factor, pattern)
 
 def pointsize(siz):
     """Set the size to be used in point drawings."""
     pf.canvas.setPointSize(siz)
 
 
-def canvasSize(width,height):
+def canvasSize(width, height):
     """Resize the canvas to (width x height).
 
     If a negative value is given for either width or height,
@@ -1448,7 +1448,7 @@ def canvasSize(width,height):
     Note that changing the canvas size when multiple viewports are
     active is not approved.
     """
-    pf.canvas.changeSize(width,height)
+    pf.canvas.changeSize(width, height)
 
 
 def clear_canvas():
@@ -1578,17 +1578,17 @@ def pause(timeout=None,msg=None):
     if msg is None and timeout is None:
         msg = "Use the Play/Step/Continue button to proceed"
 
-    pf.debug("Pause (%s): %s" % (timeout,msg),pf.DEBUG.SCRIPT)
+    pf.debug("Pause (%s): %s" % (timeout, msg), pf.DEBUG.SCRIPT)
     if msg:
         print(msg)
 
-    pf.GUI.enableButtons(pf.GUI.actions,['Step','Continue'],True)
+    pf.GUI.enableButtons(pf.GUI.actions, ['Step', 'Continue'], True)
     pf.GUI.drawlock.release()
     if pf.GUI.drawlock.allowed:
         pf.GUI.drawlock.locked = True
     if timeout is None:
         timeout = widgets.input_timeout
-    R = Repeater(_continue_,timeout,sleep=0.1)
+    R = Repeater(_continue_, timeout, sleep=0.1)
     R.start()
     pf.GUI.drawlock.release()
 
@@ -1598,7 +1598,7 @@ def pause(timeout=None,msg=None):
 
 def sleep(duration,granularity=0.01):
     from drawlock import Repeater
-    R = Repeater(None,duration,sleep=granularity)
+    R = Repeater(None, duration, sleep=granularity)
     R.start()
 
 
@@ -1640,52 +1640,52 @@ def zoomOut(factor=None):
     pf.canvas.update()
 
 def panRight(factor=None):
-    pf.canvas.camera.transArea(-pan_factor(factor),0.)
+    pf.canvas.camera.transArea(-pan_factor(factor), 0.)
     pf.canvas.update()
 def panLeft(factor=None):
-    pf.canvas.camera.transArea(pan_factor(factor),0.)
+    pf.canvas.camera.transArea(pan_factor(factor), 0.)
     pf.canvas.update()
 def panUp(factor=None):
-    pf.canvas.camera.transArea(0.,-pan_factor(factor))
+    pf.canvas.camera.transArea(0., -pan_factor(factor))
     pf.canvas.update()
 def panDown(factor=None):
-    pf.canvas.camera.transArea(0.,pan_factor(factor))
+    pf.canvas.camera.transArea(0., pan_factor(factor))
     pf.canvas.update()
 
 def rotRight(factor=None):
-    pf.canvas.camera.rotate(rot_factor(factor),0,1,0)
+    pf.canvas.camera.rotate(rot_factor(factor), 0, 1, 0)
     pf.canvas.update()
 def rotLeft(factor=None):
-    pf.canvas.camera.rotate(-rot_factor(factor),0,1,0)
+    pf.canvas.camera.rotate(-rot_factor(factor), 0, 1, 0)
     pf.canvas.update()
 def rotUp(factor=None):
-    pf.canvas.camera.rotate(-rot_factor(factor),1,0,0)
+    pf.canvas.camera.rotate(-rot_factor(factor), 1, 0, 0)
     pf.canvas.update()
 def rotDown(factor=None):
-    pf.canvas.camera.rotate(rot_factor(factor),1,0,0)
+    pf.canvas.camera.rotate(rot_factor(factor), 1, 0, 0)
     pf.canvas.update()
 def twistLeft(factor=None):
-    pf.canvas.camera.rotate(rot_factor(factor),0,0,1)
+    pf.canvas.camera.rotate(rot_factor(factor), 0, 0, 1)
     pf.canvas.update()
 def twistRight(factor=None):
-    pf.canvas.camera.rotate(-rot_factor(factor),0,0,1)
+    pf.canvas.camera.rotate(-rot_factor(factor), 0, 0, 1)
     pf.canvas.update()
 
 def transLeft(factor=None):
     val = pan_factor(factor) * pf.canvas.camera.dist
-    pf.canvas.camera.translate(-val,0,0,pf.cfg['draw/localaxes'])
+    pf.canvas.camera.translate(-val, 0, 0, pf.cfg['draw/localaxes'])
     pf.canvas.update()
 def transRight(factor=None):
     val = pan_factor(factor) * pf.canvas.camera.dist
-    pf.canvas.camera.translate(+val,0,0,pf.cfg['draw/localaxes'])
+    pf.canvas.camera.translate(+val, 0, 0, pf.cfg['draw/localaxes'])
     pf.canvas.update()
 def transDown(factor=None):
     val = pan_factor(factor) * pf.canvas.camera.dist
-    pf.canvas.camera.translate(0,-val,0,pf.cfg['draw/localaxes'])
+    pf.canvas.camera.translate(0, -val, 0, pf.cfg['draw/localaxes'])
     pf.canvas.update()
 def transUp(factor=None):
     val = pan_factor(factor) * pf.canvas.camera.dist
-    pf.canvas.camera.translate(0,+val,0,pf.cfg['draw/localaxes'])
+    pf.canvas.camera.translate(0, +val, 0, pf.cfg['draw/localaxes'])
     pf.canvas.update()
 def dollyIn(factor=None):
     pf.canvas.camera.dolly(1./zoom_factor(factor))
@@ -1723,7 +1723,7 @@ def zoom(f):
     pf.canvas.update()
 
 
-def flyAlong(path,upvector=[0.,1.,0.],sleeptime=None):
+def flyAlong(path,upvector=[0., 1., 0.],sleeptime=None):
     """Fly through the current scene along the specified path.
 
     - `path`: a plex-2 or plex-3 Formex (or convertibel to such Formex)
@@ -1741,9 +1741,9 @@ def flyAlong(path,upvector=[0.,1.,0.],sleeptime=None):
     Formex, the upvector is constant as specified in the arguments.
     """
     try:
-        if not isinstance(path,Formex):
+        if not isinstance(path, Formex):
             path = path.toFormex()
-        if not path.nplex() in (2,3):
+        if not path.nplex() in (2, 3):
             raise ValueError
     except:
         raise ValueError("The camera path should be (convertible to) a plex-2 or plex-3 Formex!")
@@ -1753,22 +1753,22 @@ def flyAlong(path,upvector=[0.,1.,0.],sleeptime=None):
         sleeptime = pf.cfg['draw/flywait']
     saved = delay(sleeptime)
     saved1 = pf.GUI.actions['Continue'].isEnabled()
-    pf.GUI.enableButtons(pf.GUI.actions,['Continue'],True)
+    pf.GUI.enableButtons(pf.GUI.actions, ['Continue'], True)
 
     for elem in path:
-        eye,center = elem[:2]
+        eye, center = elem[:2]
         if nplex == 3:
             upv = elem[2] - center
         else:
             upv = upvector
-        pf.canvas.camera.lookAt(eye,center,upv)
+        pf.canvas.camera.lookAt(eye, center, upv)
         wait()
         pf.canvas.display()
         pf.canvas.update()
         image.saveNext()
 
     delay(saved)
-    pf.GUI.enableButtons(pf.GUI.actions,['Continue'],saved1)
+    pf.GUI.enableButtons(pf.GUI.actions, ['Continue'], saved1)
     pf.canvas.camera.focus = center
     pf.canvas.camera.dist = length(center-eye)
     pf.canvas.update()
@@ -1800,7 +1800,7 @@ def nViewports():
 
 def layout(nvps=None,ncols=None,nrows=None,pos=None,rstretch=None,cstretch=None):
     """Set the viewports layout."""
-    pf.GUI.viewports.changeLayout(nvps,ncols,nrows,pos,rstretch,cstretch)
+    pf.GUI.viewports.changeLayout(nvps, ncols, nrows, pos, rstretch, cstretch)
     viewport()
 
 def addViewport():
@@ -1814,12 +1814,12 @@ def removeViewport():
         pf.GUI.viewports.removeView()
     viewport()
 
-def linkViewport(vp,tovp):
+def linkViewport(vp, tovp):
     """Link viewport vp to viewport tovp.
 
     Both vp and tovp should be numbers of viewports.
     """
-    pf.GUI.viewports.link(vp,tovp)
+    pf.GUI.viewports.link(vp, tovp)
     viewport()
 
 ####################
@@ -1875,7 +1875,7 @@ def pick(mode='actor',filter=None,oneshot=False,func=None):
         """
         s = str(s)
         if pf.canvas.selection_mode is not None and s in pf.canvas.selection_filters:
-            pf.canvas.start_selection(None,s)
+            pf.canvas.start_selection(None, s)
 
 
     if pf.canvas.selection_mode is not None:
@@ -1883,27 +1883,27 @@ def pick(mode='actor',filter=None,oneshot=False,func=None):
         return
 
     if mode not in pf.canvas.getPickModes():
-        warning("Invalid picking mode: %s. Expected one of %s." % (mode,pf.canvas.getPickModes()))
+        warning("Invalid picking mode: %s. Expected one of %s." % (mode, pf.canvas.getPickModes()))
         return
 
-    pick_buttons = widgets.ButtonBox('Selection:',[('Cancel',pf.canvas.cancel_selection),('OK',pf.canvas.accept_selection)])
+    pick_buttons = widgets.ButtonBox('Selection:', [('Cancel', pf.canvas.cancel_selection), ('OK', pf.canvas.accept_selection)])
 
     if mode == 'element':
         filters = pf.canvas.selection_filters
     else:
         filters = pf.canvas.selection_filters[:3]
-    filter_combo = widgets.InputCombo('Filter:',None,choices=filters,onselect=_set_selection_filter)
+    filter_combo = widgets.InputCombo('Filter:', None, choices=filters, onselect=_set_selection_filter)
     if filter is not None and filter in pf.canvas.selection_filters:
         filter_combo.setValue(filter)
 
     if func is None:
-        func = pf.canvas.highlight_funcs.get(mode,None)
-    pf.message("Select %s %s" % (filter,mode))
+        func = pf.canvas.highlight_funcs.get(mode, None)
+    pf.message("Select %s %s" % (filter, mode))
 
     pf.GUI.statusbar.addWidget(pick_buttons)
     pf.GUI.statusbar.addWidget(filter_combo)
     try:
-        sel = pf.canvas.pick(mode,oneshot,func,filter)
+        sel = pf.canvas.pick(mode, oneshot, func, filter)
     finally:
         # cleanup
         if pf.canvas.selection_mode is not None:
@@ -1914,16 +1914,16 @@ def pick(mode='actor',filter=None,oneshot=False,func=None):
 
 
 def pickActors(filter=None,oneshot=False,func=None):
-    return pick('actor',filter,oneshot,func)
+    return pick('actor', filter, oneshot, func)
 
 def pickElements(filter=None,oneshot=False,func=None):
-    return pick('element',filter,oneshot,func)
+    return pick('element', filter, oneshot, func)
 
 def pickPoints(filter=None,oneshot=False,func=None):
-    return pick('point',filter,oneshot,func)
+    return pick('point', filter, oneshot, func)
 
 def pickEdges(filter=None,oneshot=False,func=None):
-    return pick('edge',filter,oneshot,func)
+    return pick('edge', filter, oneshot, func)
 
 def pickNumbers(marks=None):
     if marks:
@@ -1932,7 +1932,7 @@ def pickNumbers(marks=None):
 
 
 LineDrawing = None
-edit_modes = ['undo', 'clear','close']
+edit_modes = ['undo', 'clear', 'close']
 
 
 def set_edit_mode(s):
@@ -1957,11 +1957,11 @@ def drawLinesInter(mode ='line',single=False,func=None):
         return
     if func == None:
         func = showLineDrawing
-    drawing_buttons = widgets.ButtonBox('Drawing:',[('Cancel',pf.canvas.cancel_drawing),('OK',pf.canvas.accept_drawing)])
+    drawing_buttons = widgets.ButtonBox('Drawing:', [('Cancel', pf.canvas.cancel_drawing), ('OK', pf.canvas.accept_drawing)])
     pf.GUI.statusbar.addWidget(drawing_buttons)
-    edit_combo = widgets.InputCombo('Edit:',None,choices=edit_modes,onselect=set_edit_mode)
+    edit_combo = widgets.InputCombo('Edit:', None, choices=edit_modes, onselect=set_edit_mode)
     pf.GUI.statusbar.addWidget(edit_combo)
-    lines = pf.canvas.drawLinesInter(mode,single,func)
+    lines = pf.canvas.drawLinesInter(mode, single, func)
     pf.GUI.statusbar.removeWidget(drawing_buttons)
     pf.GUI.statusbar.removeWidget(edit_combo)
     return lines
@@ -1978,7 +1978,7 @@ def showLineDrawing(L):
         undecorate(LineDrawing)
         LineDrawing = None
     if L.size != 0:
-        LineDrawing = decors.LineDrawing(L,color='yellow',linewidth=3)
+        LineDrawing = decors.LineDrawing(L, color='yellow', linewidth=3)
         decorate(LineDrawing)
 
 
@@ -2001,7 +2001,7 @@ def exportWebGL(fn,title=None,description=None,keywords=None,author=None,created
         title="%s WebGL model"%name
     W = WebGL(name)
     W.addScene()
-    fn = W.export(title=title,description=description,keywords=keywords,author=author,createdby=createdby)
+    fn = W.export(title=title, description=description, keywords=keywords, author=author, createdby=createdby)
     pf.GUI.setBusy(False)
     return fn
 
@@ -2041,8 +2041,8 @@ def resetGUI():
     """
     ## resetPick()
     pf.GUI.resetCursor()
-    pf.GUI.enableButtons(pf.GUI.actions,['Play','Step'],True)
-    pf.GUI.enableButtons(pf.GUI.actions,['Continue','Stop'],False)
+    pf.GUI.enableButtons(pf.GUI.actions, ['Play', 'Step'], True)
+    pf.GUI.enableButtons(pf.GUI.actions, ['Continue', 'Stop'], False)
 
 
 ## REMOVED in 0.9.1
@@ -2075,6 +2075,6 @@ except:
 # Make _I, _G and _T be included when doing 'from gui.draw import *'
 #
 
-__all__ = [ n for n in globals().keys() if not n.startswith('_')] + ['_I','_G','_T']
+__all__ = [ n for n in globals().keys() if not n.startswith('_')] + ['_I', '_G', '_T']
 
 #### End

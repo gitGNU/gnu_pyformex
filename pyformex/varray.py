@@ -151,13 +151,13 @@ class Varray(object):
         """Initialize the Varray. See the class docstring."""
 
         # If data is a Varray, just use its data
-        if isinstance(data,Varray):
+        if isinstance(data, Varray):
             self.replace_data(data)
             return
 
         # If data is an array, convert to list of lists
         try:
-            data = checkArray(data,kind='i',ndim=2)
+            data = checkArray(data, kind='i', ndim=2)
             data = [ row[row>=0] for row in data ]
         except:
             pass
@@ -173,13 +173,13 @@ class Varray(object):
 
         # Data and ind should now be 1D arrays
         try:
-            data = checkArray(data,kind='i',ndim=1)
-            ind = checkArray(ind,kind='i',ndim=1)
+            data = checkArray(data, kind='i', ndim=1)
+            ind = checkArray(ind, kind='i', ndim=1)
             ind.sort()
             if ind[0] != 0 or ind[-1] > len(data):
                 raise ValueError
             if ind[-1] != len(data):
-                ind = concatenate([ind,[len(data)]])
+                ind = concatenate([ind, [len(data)]])
         except:
             raise ValueError("Invalid input data for Varray")
 
@@ -191,9 +191,9 @@ class Varray(object):
         self.width = max(self.lengths)
 
 
-    def replace_data(self,va):
+    def replace_data(self, va):
         """Replace the current data with data from another Varray"""
-        if not isinstance(va,Varray):
+        if not isinstance(va, Varray):
             raise ValueError("Expected a Varray as argument")
         self.data = va.data
         self.ind = va.ind
@@ -219,12 +219,12 @@ class Varray(object):
 
 
     ## Do we need this? Yes, if we do not store lengths
-    def length(self,i):
+    def length(self, i):
         """Return the length of row i"""
         return self.ind[i+1]-self.ind[i]
 
 
-    def __getitem__(self,i):
+    def __getitem__(self, i):
         """Return the data for the row or rows i.
 
         Parameters:
@@ -261,7 +261,7 @@ class Varray(object):
         return row
 
 
-    def index(self,sel):
+    def index(self, sel):
         """Convert a selector to an index
 
         sel is either a list of element numbers or a bool array with
@@ -270,24 +270,24 @@ class Varray(object):
         Returns an index array with the selected numbers.
         """
         try:
-            sel = checkArray(sel,shape=(self.size,),kind='b')
+            sel = checkArray(sel, shape=(self.size,), kind='b')
             sel = where(sel)[0]
         except:
-            sel = checkArray(sel,kind='i')
+            sel = checkArray(sel, kind='i')
         return sel
 
 
-    def rowindex(self,sel):
+    def rowindex(self, sel):
         """Return the rowindex for the elements flagged by selector sel.
 
         sel is either a list of element numbers or a bool array with
         length self.size
         """
         sel = self.index(sel)
-        return self.ind.searchsorted(sel,side='right')-1
+        return self.ind.searchsorted(sel, side='right')-1
 
 
-    def colindex(self,sel):
+    def colindex(self, sel):
         """Return the column index for the elements flagged by selector sel.
 
         sel is either a list of element numbers or a bool array with
@@ -298,7 +298,7 @@ class Varray(object):
         return sel - self.ind[ri]
 
 
-    def where(self,sel):
+    def where(self, sel):
         """Return row and column index of the selected elements
 
         sel is either a list of element numbers or a bool array with
@@ -308,10 +308,10 @@ class Varray(object):
         and the second column the corresponding column index of an
         element selected by sel
         """
-        return column_stack([self.rowindex(sel),self.colindex(sel)])
+        return column_stack([self.rowindex(sel), self.colindex(sel)])
 
 
-    def index1d(self,i,j):
+    def index1d(self, i, j):
         """Return the sequential index for the element with 2D index i,j"""
         if j >= 0 and j < self.length(i):
             return self.ind[i]+j
@@ -336,10 +336,10 @@ class Varray(object):
         Rows which are shorter than width are padded at the start with
         values -1.
         """
-        a = -ones((self.nrows,self.width),dtype=Int)
-        for i,r in enumerate(self):
+        a = -ones((self.nrows, self.width), dtype=Int)
+        for i, r in enumerate(self):
             if len(r) > 0:
-                a[i,-len(r):] = r
+                a[i, -len(r):] = r
         return a
 
 
@@ -391,7 +391,7 @@ class Varray(object):
 
     def __str__(self):
         """Nicely print the Varray"""
-        s = "%s (%s,%s)\n" % (self.__class__.__name__,self.nrows,self.width)
+        s = "%s (%s,%s)\n" % (self.__class__.__name__, self.nrows, self.width)
         for row in self:
             s += '  ' + row.__str__() + '\n'
         return s
@@ -425,11 +425,11 @@ def inverseIndex(a,sort=False,expand=False):
         [3]
       <BLANKLINE>
     """
-    if isinstance(a,Varray):
+    if isinstance(a, Varray):
         a = a.toArray()
-    a = checkArray(a,ndim=2,kind='i')
-    b = resize(arange(a.shape[0]),a.shape[::-1])
-    c = stack([a,b.transpose()]).reshape(2,-1)
+    a = checkArray(a, ndim=2, kind='i')
+    b = resize(arange(a.shape[0]), a.shape[::-1])
+    c = stack([a, b.transpose()]).reshape(2, -1)
     s = c[0].argsort()
     t = c[0][s]
     u = c[1][s]
@@ -438,7 +438,7 @@ def inverseIndex(a,sort=False,expand=False):
         # There were negative numbers: remove them
         u = u[v[0]:]
         v -= v[0]
-    Va = Varray(u,v)
+    Va = Varray(u, v)
     if sort:
         Va.sort()
     if expand:

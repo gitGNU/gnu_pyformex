@@ -36,42 +36,42 @@ from gui.draw import *
 n = 16
 
 # These are triangles
-F = Formex([[[0,0,0],[1,0,0],[0,1,0]],[[1,0,0],[1,1,0],[0,1,0]]],0).replic2(n,n,1,1)
+F = Formex([[[0, 0, 0], [1, 0, 0], [0, 1, 0]], [[1, 0, 0], [1, 1, 0], [0, 1, 0]]], 0).replic2(n, n, 1, 1)
 
 # Novation (Spots)
 m = 4
 h = 0.15*n
 r = n/m
 s = n/r
-a = [ [r*i,r*j,h]  for j in range(1,s) for i in range(1,s) ]
+a = [ [r*i, r*j, h]  for j in range(1, s) for i in range(1, s) ]
 
 for p in a:
-    F = F.bump(2,p, lambda x:exp(-0.75*x),[0,1])
+    F = F.bump(2, p, lambda x:exp(-0.75*x), [0, 1])
 
 
 # Define a plane
-plane_p = [3.2,3.0,0.0]
-plane_n = [2.0,1.0,0.0]
+plane_p = [3.2, 3.0, 0.0]
+plane_n = [2.0, 1.0, 0.0]
 #compute number of nodes above/below the plane
-dist = F.distanceFromPlane(plane_p,plane_n)
+dist = F.distanceFromPlane(plane_p, plane_n)
 above = (dist>0.0).sum(-1)
 below = (dist<0.0).sum(-1) 
 
 # Define a line by a point and direction
-line_p = [0.0,0.0,0.0]
-line_n = [1.,1.,1./3]
-d = F.distanceFromLine(line_p,line_n)
+line_p = [0.0, 0.0, 0.0]
+line_n = [1., 1., 1./3]
+d = F.distanceFromLine(line_p, line_n)
 # compute number of nodes closer that 2.2 to line 
 close = (d < 2.2).sum(-1)
 
 
 
-sel = [ F.test(nodes=0,dir=0,min=1.5,max=3.5),
-        F.test(nodes=[0,1],dir=0,min=1.5,max=3.5),
-        F.test(nodes=[0,1,2],dir=0,min=1.5,max=3.5),
-        F.test(nodes='all',dir=1,min=1.5,max=3.5),
-        F.test(nodes='any',dir=1,min=1.5,max=3.5),
-        F.test(nodes='none',dir=1,min=1.5),
+sel = [ F.test(nodes=0, dir=0, min=1.5, max=3.5),
+        F.test(nodes=[0, 1], dir=0, min=1.5, max=3.5),
+        F.test(nodes=[0, 1, 2], dir=0, min=1.5, max=3.5),
+        F.test(nodes='all', dir=1, min=1.5, max=3.5),
+        F.test(nodes='any', dir=1, min=1.5, max=3.5),
+        F.test(nodes='none', dir=1, min=1.5),
         (above > 0) * (below > 0 ),
         close == 3,
         ]
@@ -99,15 +99,15 @@ def run():
     color[0:0] = ['black'] # restore the black
     prop = zeros(F.nelems())
     i = 1
-    for s,t in zip(sel,txt):
+    for s, t in zip(sel, txt):
         prop[s] = i
         F.setProp(prop)
-        message('%s (%s): %s' % (color[i],sum(s),t))
+        message('%s (%s): %s' % (color[i], sum(s), t))
         draw(F)
         i += 1
 
     message('Clip Formex to last selection')
-    draw(F.clip(s),view=None)
+    draw(F.clip(s), view=None)
 
     message('Clip complement')
     draw(F.cclip(s))

@@ -49,7 +49,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
 _topics = ['geometry', 'curve']
-_techniques = ['pattern','delay']
+_techniques = ['pattern', 'delay']
 _opengl2 = True
 
 from gui.draw import *
@@ -77,10 +77,10 @@ value = 0.5   # Parametric value of the point to construct
 def run():
 
     res = askItems([
-        dict(name='pattern',value=pattern,choices=predefined),
-        dict(name='custom',value=custom),
-        dict(name='value',value=value),
-        ],enablers=[('pattern','custom','custom')])
+        dict(name='pattern', value=pattern, choices=predefined),
+        dict(name='custom', value=custom),
+        dict(name='value', value=value),
+        ], enablers=[('pattern', 'custom', 'custom')])
 
     if not res:
         return
@@ -101,25 +101,25 @@ def run():
 
     # Construct and show a polyline through the points
     C = Formex(pat).toCurve()
-    draw(C,bbox='auto',view='front')
+    draw(C, bbox='auto', view='front')
     draw(C.coords)
     drawNumbers(C.coords)
 
     setDrawOptions({'bbox':None})
 
     # Compute and show the deCasteljou construction
-    Q = nurbs.deCasteljou(C.coords,value)
+    Q = nurbs.deCasteljou(C.coords, value)
     delay(1)
     wait()
     for q in Q[1:-1]:
-        draw(PolyLine(q),color=red)
-    draw(Q[-1],marksize=10)
+        draw(PolyLine(q), color=red)
+    draw(Q[-1], marksize=10)
 
     # Compute and show many points on the Bezier
     delay(0)
     n = 100
     u = arange(n+1)*1.0/n
-    P = nurbs.pointsOnBezierCurve(C.coords,u)
+    P = nurbs.pointsOnBezierCurve(C.coords, u)
     draw(Coords(P))
 
 if __name__ == 'draw':

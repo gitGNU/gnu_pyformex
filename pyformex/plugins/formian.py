@@ -89,7 +89,7 @@ Formex.pex = Formex.unique
 # methods that can be emulated in Formex
 
 def formex_method(f):
-    setattr(Formex,f.__name__,f)
+    setattr(Formex, f.__name__, f)
     return f
 
 @formex_method
@@ -97,134 +97,134 @@ def give(self):
     print(self.toFormian())
 
 @formex_method
-def tran(self,dir,dist):
-    return self.translate(dir-1,dist)
+def tran(self, dir, dist):
+    return self.translate(dir-1, dist)
 
 @formex_method
-def ref(self,dir,dist):
-    return self.reflect(dir-1,dist)
+def ref(self, dir, dist):
+    return self.reflect(dir-1, dist)
 
 @formex_method
-def rindle(self,n,dir,step):
-    return self.replic(n,step,dir)
+def rindle(self, n, dir, step):
+    return self.replic(n, step, dir)
 @formex_method
-def rin(self,dir,n,dist):
-    return self.replic(n,dist,dir-1)
+def rin(self, dir, n, dist):
+    return self.replic(n, dist, dir-1)
 
 
 @formex_method
-def lam(self,dir,dist):
-    return self+self.reflect(dir-1,dist)
+def lam(self, dir, dist):
+    return self+self.reflect(dir-1, dist)
 
 @formex_method
-def ros(self,i,j,x,y,n,angle):
-    if (i,j) == (1,2):
-        return self.rosette(n,angle,2,[x,y,0])
-    elif (i,j) == (2,3):
-        return self.rosette(n,angle,0,[0,x,y])
-    elif (i,j) == (1,3):
-        return self.rosette(n,-angle,1,[x,0,y])
+def ros(self, i, j, x, y, n, angle):
+    if (i, j) == (1, 2):
+        return self.rosette(n, angle, 2, [x, y, 0])
+    elif (i, j) == (2, 3):
+        return self.rosette(n, angle, 0, [0, x, y])
+    elif (i, j) == (1, 3):
+        return self.rosette(n, -angle, 1, [x, 0, y])
 
 @formex_method
 def tranic(self,*args,**kargs):
     n = len(args)/2
     d = [ i-1 for i in args[:n] ]
-    return self.translatem(*zip(d,args[n:]))
+    return self.translatem(*zip(d, args[n:]))
 @formex_method
-def tranid(self,t1,t2):
-    return self.translate([t1,t2,0])
+def tranid(self, t1, t2):
+    return self.translate([t1, t2, 0])
 @formex_method
-def tranis(self,t1,t2):
-    return self.translate([t1,0,t2])
+def tranis(self, t1, t2):
+    return self.translate([t1, 0, t2])
 @formex_method
-def tranit(self,t1,t2):
-    return self.translate([0,t1,t2])
+def tranit(self, t1, t2):
+    return self.translate([0, t1, t2])
 @formex_method
-def tranix(self,t1,t2,t3):
-    return self.translate([t1,t2,t3])
+def tranix(self, t1, t2, t3):
+    return self.translate([t1, t2, t3])
 
 @formex_method
 def tranad(self,a1,a2,b1,b2,t=None):
-    return self.translate([b1-a1,b2-a2,0.],t)
+    return self.translate([b1-a1, b2-a2, 0.], t)
 @formex_method
 def tranas(self,a1,a2,b1,b2,t=None):
-    return self.translate([b1-a1,0.,b2-a2],t)
+    return self.translate([b1-a1, 0., b2-a2], t)
 @formex_method
 def tranat(self,a1,a2,b1,b2,t=None):
-    return self.translate([0.,b1-a1,b2-a2],t)
+    return self.translate([0., b1-a1, b2-a2], t)
 @formex_method
 def tranax(self,a1,a2,a3,b1,b2,b3,t=None):
-    return self.translate([b1-a1,b2-a2,b3-a3],t)
+    return self.translate([b1-a1, b2-a2, b3-a3], t)
 
 @formex_method
 def rinic(self,*args,**kargs):
     n = len(args)/3
     F = self
-    for d,m,t in zip(args[:n],args[n:2*n],args[2*n:]):
-        F = F.rin(d,m,t)
+    for d, m, t in zip(args[:n], args[n:2*n], args[2*n:]):
+        F = F.rin(d, m, t)
     return F
 @formex_method
-def rinid(self,n1,n2,t1,t2):
-    return self.rin(1,n1,t1).rin(2,n2,t2)
+def rinid(self, n1, n2, t1, t2):
+    return self.rin(1, n1, t1).rin(2, n2, t2)
 @formex_method
-def rinis(self,n1,n2,t1,t2):
-    return self.rin(1,n1,t1).rin(3,n2,t2)
+def rinis(self, n1, n2, t1, t2):
+    return self.rin(1, n1, t1).rin(3, n2, t2)
 @formex_method
-def rinit(self,n1,n2,t1,t2):
-    return self.rin(2,n1,t1).rin(3,n2,t2)
+def rinit(self, n1, n2, t1, t2):
+    return self.rin(2, n1, t1).rin(3, n2, t2)
 
 @formex_method
 def lamic(self,*args,**kargs):
     n = len(args)/2
     F = self
-    for d,p in zip(args[:n],args[n:]):
-        F = F.lam(d,p)
+    for d, p in zip(args[:n], args[n:]):
+        F = F.lam(d, p)
     return F
 @formex_method
-def lamid(self,t1,t2):
-    return self.lam(1,t1).lam(2,t2)
+def lamid(self, t1, t2):
+    return self.lam(1, t1).lam(2, t2)
 @formex_method
-def lamis(self,t1,t2):
-    return self.lam(1,t1).lam(3,t2)
+def lamis(self, t1, t2):
+    return self.lam(1, t1).lam(3, t2)
 @formex_method
-def lamit(self,t1,t2):
-    return self.lam(2,t1).lam(2,t2)
+def lamit(self, t1, t2):
+    return self.lam(2, t1).lam(2, t2)
 
 @formex_method
 def rosad(self,a,b,n=4,angle=90):
-    return self.rosette(n,angle,2,[a,b,0])
+    return self.rosette(n, angle, 2, [a, b, 0])
 @formex_method
 def rosas(self,a,b,n=4,angle=90):
-    return self.rosette(n,angle,1,[a,0,b])
+    return self.rosette(n, angle, 1, [a, 0, b])
 @formex_method
 def rosat(self,a,b,n=4,angle=90):
-    return self.rosette(n,angle,0,[0,a,b])
+    return self.rosette(n, angle, 0, [0, a, b])
 
 @formex_method
 def genid(self,n1,n2,t1,t2,bias=0,taper=0):
-    return self.replic2(n1,n2,t1,t2,0,1,bias,taper)
+    return self.replic2(n1, n2, t1, t2, 0, 1, bias, taper)
 @formex_method
 def genis(self,n1,n2,t1,t2,bias=0,taper=0):
-    return self.replic2(n1,n2,t1,t2,0,2,bias,taper)
+    return self.replic2(n1, n2, t1, t2, 0, 2, bias, taper)
 @formex_method
 def genit(self,n1,n2,t1,t2,bias=0,taper=0):
-    return self.replic2(n1,n2,t1,t2,1,2,bias,taper)
+    return self.replic2(n1, n2, t1, t2, 1, 2, bias, taper)
 
 @formex_method
-def bb(self,b1,b2):
-    return self.scale([b1,b2,1.])
+def bb(self, b1, b2):
+    return self.scale([b1, b2, 1.])
 
 @formex_method
-def bc(self,b1,b2,b3):
-    return self.cylindrical(scale=[b1,b2,b3])
+def bc(self, b1, b2, b3):
+    return self.cylindrical(scale=[b1, b2, b3])
 
 @formex_method
-def bp(self,b1,b2):
-    return self.cylindrical(scale=[b1,b2,1.])
+def bp(self, b1, b2):
+    return self.cylindrical(scale=[b1, b2, 1.])
 
 @formex_method
-def bs(self,b1,b2,b3):
-    return self.spherical(scale=[b1,b2,b3],colat=True)
+def bs(self, b1, b2, b3):
+    return self.spherical(scale=[b1, b2, b3], colat=True)
 
 
 # Some functions

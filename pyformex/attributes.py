@@ -28,7 +28,7 @@ other objects without cluttering the name space.
 """
 from __future__ import print_function
 
-from mydict import Dict,returnNone
+from mydict import Dict, returnNone
 import utils
 
 
@@ -78,7 +78,7 @@ class Attributes(Dict):
 
     def __init__(self,data={},default=None):
         """Create a new Attributes dict"""
-        if isinstance(default,Attributes):
+        if isinstance(default, Attributes):
             self._default_dict_ = default
             default = self._return_default_
         elif default is None:
@@ -90,26 +90,26 @@ class Attributes(Dict):
             ## print("WARNING","The 'default' argument of Attributes should be an Attributes instance or None; got %s:" % default)
             default = returnNone
 
-        Dict.__init__(self,data,default)
+        Dict.__init__(self, data, default)
 
     def __call__(self,**kargs):
         self.update(kargs)
 
 
-    def __setattr__(self,key,value):
+    def __setattr__(self, key, value):
         if value is None:
             if key in self:
                 del self[key]
         else:
-            self.__setitem__(key,value)
+            self.__setitem__(key, value)
 
 
-    def _return_default_(self,key):
+    def _return_default_(self, key):
         return self._default_dict_[key]
 
 
     def __str__(self):
         from utils import removeDict
-        return dict.__str__(removeDict(self,['_default_dict_']))
+        return dict.__str__(removeDict(self, ['_default_dict_']))
 
 # End

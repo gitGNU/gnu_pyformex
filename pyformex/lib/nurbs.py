@@ -37,7 +37,7 @@ import pyformex as pf
 __version__ = pf.__version__
 accelerated = False
 
-def binomial(n,k):
+def binomial(n, k):
     """Compute the binomial coefficient Cn,k.
 
     This computes the binomial coefficient Cn,k = fac(n) / fac(k) / fac(n-k).
@@ -49,7 +49,7 @@ def binomial(n,k):
     return f(n) / f(k) / f(n-k)
 
 
-def allBernstein(n,u):
+def allBernstein(n, u):
     """Compute the value of all n-th degree Bernstein polynomials.
 
     Parameters:
@@ -66,7 +66,7 @@ def allBernstein(n,u):
     B = zeros(n+1)
     B[0] = 1.0
     u1 = 1.0-u
-    for j in range(1,n+1):
+    for j in range(1, n+1):
         saved = 0.0
         for k in range(j):
             temp = B[k]

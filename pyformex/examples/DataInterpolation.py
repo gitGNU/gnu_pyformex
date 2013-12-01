@@ -42,8 +42,8 @@ nodal averaging.
 from __future__ import print_function
 _status = 'checked'
 _level = 'advanced'
-_topics = [ 'mesh','postprocess']
-_techniques = ['calpy','color']
+_topics = [ 'mesh', 'postprocess']
+_techniques = ['calpy', 'color']
 
 from gui.draw import *
 
@@ -64,29 +64,29 @@ def run():
 
     # Now, let's create a grid of 'quad8' elements
     # size of the grid
-    nx,ny = 4,3
+    nx, ny = 4, 3
     # plexitude
     nplex = 8
     clear()
     flatwire()
-    M = Formex('4:0123').replic2(nx,ny).toMesh().convert('quad%s'%nplex,fuse=True)
+    M = Formex('4:0123').replic2(nx, ny).toMesh().convert('quad%s'%nplex, fuse=True)
     #draw(M,color=yellow)
 
     # Create the Mesh interpolator
-    gprule = (5,1) # integration rule: minimum (1,1),  maximum (5,5)
-    Q = calpy_itf.QuadInterpolator(M.nelems(),M.nplex(),gprule)
+    gprule = (5, 1) # integration rule: minimum (1,1),  maximum (5,5)
+    Q = calpy_itf.QuadInterpolator(M.nelems(), M.nplex(), gprule)
 
     # Define some random data at the GP.
     # We use 3 data per GP, because we will use the data directly as colors
     ngp = prod(gprule) # number of datapoints per element
-    data = random.rand(M.nelems(),ngp,3)
+    data = random.rand(M.nelems(), ngp, 3)
     print("Number of data points per element: %s" % ngp)
     print("Original element data: %s" % str(data.shape))
     # compute the data at the nodes, per element
     endata = Q.GP2Nodes(data)
     print("Element nodal data: %s" % str(endata.shape))
     # compute nodal averages
-    nodata = Q.NodalAvg(M.elems+1,endata,M.nnodes())
+    nodata = Q.NodalAvg(M.elems+1, endata, M.nnodes())
     print("Average nodal data: %s" % str(nodata.shape))
     # extract the colors per element
     colors = nodata[M.elems]
@@ -97,17 +97,17 @@ def run():
     clear()
     smoothwire()
     lights(False)
-    draw(M,color=endata)
+    draw(M, color=endata)
     drawNumbers(M.coords)
-    drawText("Per element interpolation",20,20,font='9x15')
+    drawText("Per element interpolation", 20, 20, font='9x15')
 
     viewport(1)
     clear()
     smoothwire()
     lights(False)
-    draw(M,color=colors)
+    draw(M, color=colors)
     drawNumbers(M.coords)
-    drawText("Averaged nodal values",20,20,font='9x15')
+    drawText("Averaged nodal values", 20, 20, font='9x15')
 
 if __name__ == 'draw':
     run()

@@ -35,7 +35,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'advanced'
 _topics = ['text']
-_techniques = ['ftgl','font']
+_techniques = ['ftgl', 'font']
 
 from gui.draw import *
 
@@ -45,7 +45,7 @@ try:
 except ImportError:
     warning("You do not have FTGL and its Python bindings (pyftgl).\nSee the pyformex/extra/pyftgl directory in the pyFormex source tree for instructions.")
 
-from gui import colors,image
+from gui import colors, image
 import odict
 
 
@@ -59,11 +59,11 @@ fonts.sort()
 print("Number of available fonts: %s" % len(fonts))
 
 fonttypes = odict.ODict([
-    ('polygon',FTGL.PolygonFont),
-    ('outline',FTGL.OutlineFont),
-    ('texture',FTGL.TextureFont),
+    ('polygon', FTGL.PolygonFont),
+    ('outline', FTGL.OutlineFont),
+    ('texture', FTGL.TextureFont),
 #    ('extrude',FTGL.ExtrudeFont),
-    ('bitmap',FTGL.BitmapFont),
+    ('bitmap', FTGL.BitmapFont),
 #    ('buffer',FTGL.BufferFont),
     ])
 
@@ -72,10 +72,10 @@ def showSquare():
     draw(F)
 
 
-def showText(text,font,fonttype,facesize,color,pos):
-    from gui.actors import Text3DActor,TranslatedActor
+def showText(text, font, fonttype, facesize, color, pos):
+    from gui.actors import Text3DActor, TranslatedActor
     font = fonttypes[fonttype](font)
-    t = Text3DActor(text,font,facesize,color,pos)
+    t = Text3DActor(text, font, facesize, color, pos)
     t.nolight=True
     drawAny(t)
     zoomAll()  #  !! Removing this may cause errors
@@ -88,7 +88,7 @@ def rotate():
     m = 5
     val = m * 360. / n
     for i in range(n):
-        pf.canvas.camera.rotate(val,0.,1.,0.)
+        pf.canvas.camera.rotate(val, 0., 1., 0.)
         pf.canvas.update()
         sleep(sleeptime)
         sleeptime *= 0.98
@@ -96,12 +96,12 @@ def rotate():
 
 
 _items = [
-    _I('text','pyFormex'),
-    _I('font',choices=fonts),
-    _I('fonttype',choices=fonttypes.keys()),
-    _I('facesize',(24,36)),
-    _I('color',colors.pyformex_pink),
-    _I('pos',(0.,0.,0.)),
+    _I('text', 'pyFormex'),
+    _I('font', choices=fonts),
+    _I('fonttype', choices=fonttypes.keys()),
+    _I('facesize', (24, 36)),
+    _I('color', colors.pyformex_pink),
+    _I('pos', (0., 0., 0.)),
     ]
 
 dialog = None
@@ -117,15 +117,15 @@ def close():
 
 
 def show(all=False):
-    global text,font,facesize,color
+    global text, font, facesize, color
     dialog.acceptData()
     globals().update(dialog.results)
     export({'_Ftgl_data_':dialog.results})
 
     clear()
     print(dialog.results)
-    F = Formex('3:012').replic2(10,6).align('+-0')
-    draw(F,color='yellow')
+    F = Formex('3:012').replic2(10, 6).align('+-0')
+    draw(F, color='yellow')
     showText(**dialog.results)
     zoomAll()
 
@@ -144,7 +144,7 @@ def run():
         items=_items,
 #        enablers=_enablers,
         caption='Ftgl parameters',
-        actions = [('Close',close),('Clear',clear),('Show',show)],
+        actions = [('Close', close), ('Clear', clear), ('Show', show)],
         default='Show')
 
     if '_Ftgl_data_' in pf.PF:

@@ -41,18 +41,18 @@ n = 8     # number of levels
 a = (r-r1)/h1**2; b = -2*a*h1; c = r; d = h/n
 g = lambda i: a*(d*i)**2 + b*d*i + c
 f = concatenate([
-    [[[g(i),i,i], [g(i+1),i-1,i+1]],
-     [[g(i),i,i], [g(i+1),i+1,i+1]],
-     [[g(i+1),i-1,i+1], [g(i+1),i+1,i+1]]]
+    [[[g(i), i, i], [g(i+1), i-1, i+1]],
+     [[g(i), i, i], [g(i+1), i+1, i+1]],
+     [[g(i+1), i-1, i+1], [g(i+1), i+1, i+1]]]
     for i in range(n) ])
-F = Formex(f,[3,0,1]).replic(m,2,dir=1)
-T = F.cylindrical(scale=[1,360./(2*m),d])
+F = Formex(f, [3, 0, 1]).replic(m, 2, dir=1)
+T = F.cylindrical(scale=[1, 360./(2*m), d])
 
 
 def run():
     reset()
     clear()
-    draw(T,view='bottom')
+    draw(T, view='bottom')
 
 
 if __name__ == 'draw':

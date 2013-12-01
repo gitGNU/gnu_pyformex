@@ -70,7 +70,7 @@ def importDxf(convert=False,keep=False):
     pf.GUI.setBusy(False)
     if text:
         if convert or keep:
-            f = file(utils.changeExt(fn,'.dxftext'),'w')
+            f = file(utils.changeExt(fn, '.dxftext'), 'w')
             f.write(text)
             f.close()
         if not convert:
@@ -127,7 +127,7 @@ def pickParts(filter=None):
     parts = named('_dxf_sel_')
     if not parts:
         return
-    selection = pick('actor',filter=filter)
+    selection = pick('actor', filter=filter)
     #print selection
     try:
         selection = selection[-1]
@@ -149,7 +149,7 @@ def pickSelection():
         selection = pickParts()
         if selection is None:
             break
-        parts = olist.select(parts,selection)
+        parts = olist.select(parts, selection)
         export({'_dxf_sel_':parts})
     drawDxf(zoom=True)
 
@@ -166,13 +166,13 @@ def printSelection():
         return
     selection = [ s for s in selection if s < len(parts) ]
     print("Selected entities: %s" % selection)
-    for p in olist.select(parts,selection):
-        print("PART %s: %s" % (p.prop,p))
-        if hasattr(p,'endp'):
+    for p in olist.select(parts, selection):
+        print("PART %s: %s" % (p.prop, p))
+        if hasattr(p, 'endp'):
             print("  End Points: %s" % p.endp)
-        if hasattr(p,'freep'):
+        if hasattr(p, 'freep'):
             print("  Free Points: %s" % p.freep)
-        if hasattr(p,'endd'):
+        if hasattr(p, 'endd'):
             print("  End Directions: %s" % p.endd)
 
 
@@ -183,7 +183,7 @@ def renumberDxf():
     """
     parts = named('_dxf_sel_')
     if parts:
-        for i,p in enumerate(parts):
+        for i, p in enumerate(parts):
             p.setProp(i)
         drawCell()
 
@@ -194,9 +194,9 @@ def exportDxfText():
     if parts:
         types = utils.fileDescription(['dxftext'])
         cur = pf.cfg['workdir']
-        fn = askFilename(cur=cur,filter=types,exist=False)
+        fn = askFilename(cur=cur, filter=types, exist=False)
         if fn:
-            dxf.exportDxfText(fn,parts)
+            dxf.exportDxfText(fn, parts)
             print("Wrote .dxftext file %s" % fn)
 
 
@@ -210,9 +210,9 @@ def exportDxf():
     if parts:
         types = utils.fileDescription(['dxf'])
         cur = pf.cfg['workdir']
-        fn = askFilename(cur=cur,filter=types,exist=False)
+        fn = askFilename(cur=cur, filter=types, exist=False)
         if fn:
-            dxf.exportDxf(fn,parts)
+            dxf.exportDxf(fn, parts)
 
 
 ## def exportLines():
@@ -230,25 +230,25 @@ def exportDxf():
 def editArc(p):
     a = p.getAngles()
     res = askItems([
-        _I('part_number',p.prop,readonly=True),
-        _I('center',p._center,itemtype='point'),
-        _I('radius',p.radius),
-        _I('start_angle',a[0]),
-        _I('end_angle',a[1]),
+        _I('part_number', p.prop, readonly=True),
+        _I('center', p._center, itemtype='point'),
+        _I('radius', p.radius),
+        _I('start_angle', a[0]),
+        _I('end_angle', a[1]),
         ])
     if res:
-        return Arc(center=res['center'],radius=res['radius'],angles=(res['start_angle'],res['end_angle'])).setProp(p.prop)
+        return Arc(center=res['center'], radius=res['radius'], angles=(res['start_angle'], res['end_angle'])).setProp(p.prop)
 
 
 def editLine(p):
-    x0,x1 = p.coords
+    x0, x1 = p.coords
     res = askItems([
-        _I('part_number',p.prop,readonly=True),
-        _I('point 0',x0,itemtype='point'),
-        _I('point 1',x1,itemtype='point'),
+        _I('part_number', p.prop, readonly=True),
+        _I('point 0', x0, itemtype='point'),
+        _I('point 1', x1, itemtype='point'),
         ])
     if res:
-        return Line([x0,x1]).setProp(p.prop)
+        return Line([x0, x1]).setProp(p.prop)
 
 
 def editParts():
@@ -277,7 +277,7 @@ def splitArcs():
     if not parts:
         return
     while True:
-        drawParts(zoom=False,showpoints=True,shownumbers=True)
+        drawParts(zoom=False, showpoints=True, shownumbers=True)
         selection = pickParts(filter='single')
         if selection is None:
             break
@@ -286,15 +286,15 @@ def splitArcs():
         a = p.getAngles()
         if type(p).__name__ == 'Arc':
             res = askItems([
-                _I('part_number',p.prop,readonly=True),
-                _I('center',p._center,itemtype='point',readonly=True),
-                _I('radius',p.radius,readonly=True),
-                _I('start_angle',a[0],readonly=True),
-                _I('end_angle',a[1],readonly=True),
-                _I('split_angle',(a[0]+a[1])/2)])
+                _I('part_number', p.prop, readonly=True),
+                _I('center', p._center, itemtype='point', readonly=True),
+                _I('radius', p.radius, readonly=True),
+                _I('start_angle', a[0], readonly=True),
+                _I('end_angle', a[1], readonly=True),
+                _I('split_angle', (a[0]+a[1])/2)])
             if res:
                 asp = res['split_angle']
-                newp = [ Arc(center=p._center,radius=p.radius,angles=ap).setProp(p.prop) for ap in [ (a[0],asp), (asp,a[1]) ] ]
+                newp = [ Arc(center=p._center, radius=p.radius, angles=ap).setProp(p.prop) for ap in [ (a[0], asp), (asp, a[1]) ] ]
                 print("NEW: %s" % len(newp))
                 parts[i:i+1] = newp
         print("# of parts: %s" % len(parts))
@@ -307,23 +307,23 @@ def splitLines():
     if not parts:
         return
     while True:
-        drawParts(zoom=False,showpoints=True,shownumbers=True)
+        drawParts(zoom=False, showpoints=True, shownumbers=True)
         selection = pickParts(filter='single')
         if selection is None:
             break
         i = selection[0]
         p = parts[i]
-        x0,x1 = p.coords
+        x0, x1 = p.coords
         if type(p).__name__ == 'Line':
             res = askItems([
-                _I('part_number',p.prop,readonly=True),
-                _I('point 0',x0,itemtype='point'),
-                _I('point 1',x1,itemtype='point'),
-                _I('split parameter value',0.5)])
+                _I('part_number', p.prop, readonly=True),
+                _I('point 0', x0, itemtype='point'),
+                _I('point 1', x1, itemtype='point'),
+                _I('split parameter value', 0.5)])
             if res:
                 asp = res['split parameter value']
                 xm = (1.0-asp) * x0 + asp * x1
-                newp = [ Line([x0,xm]).setProp(p.prop), Line([xm,x1]).setProp(p.prop) ]
+                newp = [ Line([x0, xm]).setProp(p.prop), Line([xm, x1]).setProp(p.prop) ]
                 print("NEW: %s" % len(newp))
                 parts[i:i+1] = newp
         print("# of parts: %s" % len(parts))
@@ -332,10 +332,10 @@ def splitLines():
 
 def endPoints(parts):
     """Find the end points of all parts"""
-    ep = Coords.concatenate([ p.coords[[0,-1]] for p in parts ])
+    ep = Coords.concatenate([ p.coords[[0, -1]] for p in parts ])
     endpoints, ind = ep.fuse()
-    ind = Connectivity(ind.reshape(-1,2))
-    return endpoints,ind
+    ind = Connectivity(ind.reshape(-1, 2))
+    return endpoints, ind
 
 
 def convertToFormex():
@@ -350,13 +350,13 @@ def convertToFormex():
     if not parts:
         return
     res = askItems(
-        [  _I('method',choices=['chordal error','fixed number'],tooltip="What method should be used to approximate the Arcs by straight line segments."),
-           _I('chordal',0.01),
-           _I('ndiv',8),
+        [  _I('method', choices=['chordal error', 'fixed number'], tooltip="What method should be used to approximate the Arcs by straight line segments."),
+           _I('chordal', 0.01),
+           _I('ndiv', 8),
            ],
         enablers = [
-            ('method','chordal error','chordal'),
-            ('method','fixed number','ndiv'),
+            ('method', 'chordal error', 'chordal'),
+            ('method', 'fixed number', 'ndiv'),
             ]
         )
     if res:
@@ -368,7 +368,7 @@ def convertToFormex():
 
         coll = dxf.collectByType(parts)
         print(coll)
-        lines = dxf.toLines(coll,chordal=chordal,arcdiv=ndiv)
+        lines = dxf.toLines(coll, chordal=chordal, arcdiv=ndiv)
         print("Number of lines: %s" % lines.nelems())
         export({'_dxf_lines_':lines})
 
@@ -416,15 +416,15 @@ def drawParts(zoom=True,showpoints=None,shownumbers=None,showbif=None):
     if _show_colors:
         draw(parts)
     else:
-        draw(parts,color=black)
+        draw(parts, color=black)
     if zoom:
         zoomAll()
     if shownumbers:
         nrs = array([p.prop for p in parts])
         X = Coords.concatenate([p.pointsAt([0.5])[0] for p in parts])
-        drawMarks(X,nrs,color=blue)#,color=nrs)
+        drawMarks(X, nrs, color=blue)#,color=nrs)
     if showpoints:
-        endpoints,ind = endPoints(parts)
+        endpoints, ind = endPoints(parts)
         draw(endpoints)
         drawNumbers(endpoints)
     if showbif and 'bifurc' in pf.PF:
@@ -433,31 +433,31 @@ def drawParts(zoom=True,showpoints=None,shownumbers=None,showbif=None):
         for b in bif:
             for i in b:
                 p = parts[i]
-                draw(p,color=red,linewidth=3)
+                draw(p, color=red, linewidth=3)
 
 
 def drawDxf():
     """Draw the imported dxf model"""
     dxf_parts = named('_dxf_import_')
     if dxf_parts:
-        draw(dxf_parts,color='black',nolight=True)
+        draw(dxf_parts, color='black', nolight=True)
 
 def drawDxf(zoom=True):
-    drawParts(zoom=zoom,showpoints=False,shownumbers=False,)
+    drawParts(zoom=zoom, showpoints=False, shownumbers=False,)
 
 
 def drawDxf(zoom=True):
-    drawParts(zoom=zoom,showpoints=False,shownumbers=False,showbif=False)
+    drawParts(zoom=zoom, showpoints=False, shownumbers=False, showbif=False)
 
 
 def drawCell(zoom=True,):
-    drawParts(zoom=zoom,showpoints=True,shownumbers=True,showbif=True)
+    drawParts(zoom=zoom, showpoints=True, shownumbers=True, showbif=True)
 
 
 def drawDirs():
     x = Formex([p.pointsAt([0.5])[0] for p in parts])
     v = Formex([p.directionsAt([0.5])[0] for p in parts])
-    drawVectors(x,v,color=red)
+    drawVectors(x, v, color=red)
 
 
 ##########################################################################
@@ -469,31 +469,31 @@ _menu = 'Dxf'
 def create_menu():
     """Create the DXF menu."""
     MenuData = [
-        ("&Read DXF file",importDxf),
-        ("&Read DXFTEXT file",importDxfText),
-        ("&Convert DXF to DXFTEXT",convertDxf,dict(tooltip="Parse a .dxf file and output a .dxftext script.")),
-        ("&Read DXF without saving the DXFTEXT",importDxf),
-        ("---",None),
-        ("&Write DXF file",exportDxf),
-        ("&Write DXFTEXT file",exportDxfText),
-         ("---",None),
-        ("&Pick DXF selection",pickSelection),
-        ("&Convert to Formex",convertToFormex),
-        ("&Renumber DXF entities",renumberDxf),
-        ("&Edit DXF entities",editParts),
-        ("&Split Arcs",splitArcs),
-        ("&Split Lines",splitLines),
+        ("&Read DXF file", importDxf),
+        ("&Read DXFTEXT file", importDxfText),
+        ("&Convert DXF to DXFTEXT", convertDxf, dict(tooltip="Parse a .dxf file and output a .dxftext script.")),
+        ("&Read DXF without saving the DXFTEXT", importDxf),
+        ("---", None),
+        ("&Write DXF file", exportDxf),
+        ("&Write DXFTEXT file", exportDxfText),
+         ("---", None),
+        ("&Pick DXF selection", pickSelection),
+        ("&Convert to Formex", convertToFormex),
+        ("&Renumber DXF entities", renumberDxf),
+        ("&Edit DXF entities", editParts),
+        ("&Split Arcs", splitArcs),
+        ("&Split Lines", splitLines),
        #("&Clip by property",clipByProp),
         #("&Partition by connection",partition),
-        ("---",None),
-        ("&Print DXF selection",printSelection),
-        ("&Draw DXF entities",drawDxf),
-        ("&Toggle drawing property numbers",toggleProps),
-        ("&Toggle drawing property colors",toggleColors),
-        ("---",None),
-        ("&Close Menu",close_menu),
+        ("---", None),
+        ("&Print DXF selection", printSelection),
+        ("&Draw DXF entities", drawDxf),
+        ("&Toggle drawing property numbers", toggleProps),
+        ("&Toggle drawing property colors", toggleColors),
+        ("---", None),
+        ("&Close Menu", close_menu),
         ]
-    return menu.Menu(_menu,items=MenuData,parent=pf.GUI.menu,before='help')
+    return menu.Menu(_menu, items=MenuData, parent=pf.GUI.menu, before='help')
 
 
 def show_menu():

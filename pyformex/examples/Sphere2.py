@@ -33,11 +33,11 @@ south pole.
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['geometry','surface','sphere']
+_topics = ['geometry', 'surface', 'sphere']
 _techniques = ['color']
 
 from gui.draw import *
-from simple import sphere2,sphere3
+from simple import sphere2, sphere3
 
 def run():
     reset()
@@ -49,15 +49,15 @@ def run():
     smooth()
     setView('front')
     for i in range(ns):
-        print("nx=%s, ny=%s" % (nx,ny))
-        b = sphere2(nx,ny,bot=-90,top=90).translate(0,-1.0)
-        s = sphere3(nx,ny,bot=-90,top=90)
-        s = s.translate(0,1.0)
+        print("nx=%s, ny=%s" % (nx, ny))
+        b = sphere2(nx, ny, bot=-90, top=90).translate(0, -1.0)
+        s = sphere3(nx, ny, bot=-90, top=90)
+        s = s.translate(0, 1.0)
         s.setProp(3)
         clear()
-        bb = bbox([b,s])
-        draw(b,bbox=bb,wait=False)
-        draw(s,bbox=bb)#,color='random')
+        bb = bbox([b, s])
+        draw(b, bbox=bb, wait=False)
+        draw(s, bbox=bb)#,color='random')
         nx = int(m*nx)
         ny = int(m*ny)
         sleep(2)

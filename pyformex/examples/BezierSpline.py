@@ -35,7 +35,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
 _topics = ['geometry', 'curve']
-_techniques = ['spline','dialog']
+_techniques = ['spline', 'dialog']
 
 from gui.draw import *
 from plugins.curve import BezierSpline
@@ -43,15 +43,15 @@ from plugins.curve import BezierSpline
 
 # Predefined set of points
 _pts = Coords([
-    [1.,0.,0.],
-    [1.,1.,0.],
-    [0.,1.,0.],
-    [-1.,1.,0.],
-    [-1.,0.,0.],
-    [-1.,-1.,0.],
-    [0.,-1.,0.],
-    [1.,-1.,0.],
-    [1.,0.,0.],
+    [1., 0., 0.],
+    [1., 1., 0.],
+    [0., 1., 0.],
+    [-1., 1., 0.],
+    [-1., 0., 0.],
+    [-1., -1., 0.],
+    [0., -1., 0.],
+    [1., -1., 0.],
+    [1., 0., 0.],
     ])
 
 # Number of points to actually use
@@ -64,7 +64,7 @@ def run():
     linewidth(2)
 
     # Ask the user how many points he wants to use
-    res = askItems([_I('npts',npts,text='How many points to use (2..%s)' % len(_pts))])
+    res = askItems([_I('npts', npts, text='How many points to use (2..%s)' % len(_pts))])
     if not res:
         return
 
@@ -73,25 +73,25 @@ def run():
     pts = _pts[:npts]
 
     # Show open and closed Bezier Splines, for degrees 1,2,3
-    degrees = [1,2,3]
-    colors = [red,green,blue]
+    degrees = [1, 2, 3]
+    colors = [red, green, blue]
     collection = {}
-    for closed in [False,True]:
+    for closed in [False, True]:
         draw(pts)
         drawNumbers(pts)
-        for d,c in zip(degrees,colors):
-            print("Degree %s, %s" % (d,closed))
-            B = BezierSpline(coords=pts,closed=closed,degree=d)
-            collection["BezierSpline-degree:%s-closed:%s" % (d,closed)] = B
-            draw(B,color=c)
+        for d, c in zip(degrees, colors):
+            print("Degree %s, %s" % (d, closed))
+            B = BezierSpline(coords=pts, closed=closed, degree=d)
+            collection["BezierSpline-degree:%s-closed:%s" % (d, closed)] = B
+            draw(B, color=c)
 
             t = arange(2*B.nparts)*0.5
             ipts = B.pointsAt(t)
-            draw(ipts,color=c,marksize=10)
+            draw(ipts, color=c, marksize=10)
             idir = B.directionsAt(t)
-            drawVectors(ipts,0.2*idir)
+            drawVectors(ipts, 0.2*idir)
         # Translate the points to the right
-        pts = pts.trl(0,2.5)#[:-1]
+        pts = pts.trl(0, 2.5)#[:-1]
 
     zoomAll()
     export(collection)

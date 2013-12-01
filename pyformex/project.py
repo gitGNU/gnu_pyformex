@@ -31,40 +31,40 @@ from __future__ import print_function
 import pyformex as pf
 from track import TrackedDict
 from pyformex import utils
-import os,sys
+import os, sys
 import cPickle
 import gzip
 
 _signature_ = pf.fullVersion()
 
 module_relocations = {
-    'plugins.mesh' : 'mesh',
-    'plugins.surface' : 'plugins.trisurface',
+    'plugins.mesh': 'mesh',
+    'plugins.surface': 'plugins.trisurface',
 }
 
 class_relocations = {
-    'coords.BoundVectors' : 'plugins.alt.BoundVectors',
-    'coords.CoordinateSystem' : 'coordsys.CoordinateSystem',
-    'elements.Element':'elements.ElementType',
+    'coords.BoundVectors': 'plugins.alt.BoundVectors',
+    'coords.CoordinateSystem': 'coordsys.CoordinateSystem',
+    'elements.Element': 'elements.ElementType',
 }
 
-def find_global(module,name):
+def find_global(module, name):
     """Override the import path of some classes"""
-    pf.debug("I want to import %s from %s" % (name,module),pf.DEBUG.PROJECT)
-    clas = '%s.%s' % (module,name)
-    pf.debug("Object is %s" % clas,pf.DEBUG.PROJECT)
+    pf.debug("I want to import %s from %s" % (name, module), pf.DEBUG.PROJECT)
+    clas = '%s.%s' % (module, name)
+    pf.debug("Object is %s" % clas, pf.DEBUG.PROJECT)
     if clas in class_relocations:
         module = class_relocations[clas]
         lastdot = module.rfind('.')
-        module,name = module[:lastdot],module[lastdot+1:]
-        pf.debug("  I will try %s from module %s instead" % (name,module),pf.DEBUG.PROJECT)
+        module, name = module[:lastdot], module[lastdot+1:]
+        pf.debug("  I will try %s from module %s instead" % (name, module), pf.DEBUG.PROJECT)
     elif module in module_relocations:
         module = module_relocations[module]
-        pf.debug("  I will try module %s instead" % module,pf.DEBUG.PROJECT)
+        pf.debug("  I will try module %s instead" % module, pf.DEBUG.PROJECT)
     __import__(module)
     mod = sys.modules[module]
     clas = getattr(mod, name)
-    pf.debug("Success: Got %s" % clas.__class__.__name__,pf.DEBUG.PROJECT)
+    pf.debug("Success: Got %s" % clas.__class__.__name__, pf.DEBUG.PROJECT)
     return clas
 
 
@@ -74,7 +74,7 @@ def pickle_load(f,try_resolve=True):
     if try_resolve:
         pi.find_global = find_global
     else:
-        pf.debug("NOT TRYING TO RESOLVE RELOCATIONS: YOU MAY GET INTO TROUBLE",pf.DEBUG.PROJECT)
+        pf.debug("NOT TRYING TO RESOLVE RELOCATIONS: YOU MAY GET INTO TROUBLE", pf.DEBUG.PROJECT)
 
     return pi.load()
 
@@ -205,7 +205,7 @@ class Project(TrackedDict):
         self.filename = filename
         self.access = access
         self.signature = str(signature)
-        self.gzip = compression if compression in range(1,10) else 0
+        self.gzip = compression if compression in range(1, 10) else 0
         self.mode = 'b' if binary or compression > 0 else ''
 
         TrackedDict.__init__(self)
@@ -218,7 +218,7 @@ class Project(TrackedDict):
         if filename and access=='w':
             # destroy existing contents
             self.save()
-        pf.debug("INITIAL hits = %s" % self.hits,pf.DEBUG.PROJECT)
+        pf.debug("INITIAL hits = %s" % self.hits, pf.DEBUG.PROJECT)
 
 
     def __str__(self):
@@ -226,7 +226,7 @@ class Project(TrackedDict):
   access: %s    mode: %s     gzip:%s
   signature: %s
   contents: %s
-""" % (self.filename,self.access,self.mode,self.gzip,self.signature,
+""" % (self.filename, self.access, self.mode, self.gzip, self.signature,
         self.contents())
         return s
 
@@ -237,15 +237,15 @@ class Project(TrackedDict):
 
     def header_data(self):
         """Construct the data to be saved in the header."""
-        store_attr = ['signature','gzip','mode','autofile','_autoscript_']
-        store_vals = [getattr(self,k,None) for k in store_attr]
-        return dict([(k,v) for k,v in zip(store_attr,store_vals) if v is not None])
+        store_attr = ['signature', 'gzip', 'mode', 'autofile', '_autoscript_']
+        store_vals = [getattr(self, k, None) for k in store_attr]
+        return dict([(k, v) for k, v in zip(store_attr, store_vals) if v is not None])
 
 
     def save(self,quiet=False):
         """Save the project to file."""
         if 'w' not in self.access:
-            pf.debug("Not saving because Project file opened readonly",pf.DEBUG.PROJECT)
+            pf.debug("Not saving because Project file opened readonly", pf.DEBUG.PROJECT)
             return
 
         if not quiet:
@@ -253,13 +253,13 @@ class Project(TrackedDict):
 
         if self.filename is None:
             import tempfile
-            fd,fn = tempfile.mkstemp(prefix='pyformex_',suffix='.pyf')
+            fd, fn = tempfile.mkstemp(prefix='pyformex_', suffix='.pyf')
             self.filename = fn
         else:
             if not quiet:
-                print("Saving project %s with mode %s and compression %s" % (self.filename,self.mode,self.gzip))
+                print("Saving project %s with mode %s and compression %s" % (self.filename, self.mode, self.gzip))
             #print("  Contents: %s" % self.keys())
-        f = open(self.filename,'w'+self.mode)
+        f = open(self.filename, 'w'+self.mode)
         # write header
         f.write("%s\n" % self.header_data())
         f.flush()
@@ -269,11 +269,11 @@ class Project(TrackedDict):
         else:
             protocol = 0
         if self.gzip:
-            pyf = gzip.GzipFile(mode='w'+self.mode,compresslevel=self.gzip,fileobj=f)
-            cPickle.dump(self,pyf,protocol)
+            pyf = gzip.GzipFile(mode='w'+self.mode, compresslevel=self.gzip, fileobj=f)
+            cPickle.dump(self, pyf, protocol)
             pyf.close()
         else:
-            cPickle.dump(self,f,protocol)
+            cPickle.dump(self, f, protocol)
         f.close()
         self.hits = 0
 
@@ -289,7 +289,7 @@ class Project(TrackedDict):
         self.format = -1
         if not quiet:
             print("Reading project file: %s" % self.filename)
-        f = open(self.filename,'rb')
+        f = open(self.filename, 'rb')
         fpos = f.tell()
         s = f.readline()
         # Try subsequent formats
@@ -338,13 +338,13 @@ class Project(TrackedDict):
             try:
                 if not quiet:
                     print("Unpickling gzip")
-                pyf = gzip.GzipFile(fileobj=f,mode='rb')
-                p = pickle_load(pyf,try_resolve)
+                pyf = gzip.GzipFile(fileobj=f, mode='rb')
+                p = pickle_load(pyf, try_resolve)
                 pyf.close()
             except:
                 if not quiet:
                     print("Unpickling clear")
-                p = pickle_load(f,try_resolve)
+                p = pickle_load(f, try_resolve)
             self.update(p)
 
 
@@ -375,17 +375,17 @@ class Project(TrackedDict):
         of the data inside.
         """
         f = self.readHeader()
-        print(self.format,self.gzip)
+        print(self.format, self.gzip)
         if f:
             if self.gzip:
                 try:
-                    pyf = gzip.GzipFile(self.filename,'r',self.gzip,f)
+                    pyf = gzip.GzipFile(self.filename, 'r', self.gzip, f)
                 except:
                     self.gzip = 0
 
             if self.gzip:
-                fn = self.filename.replace('.pyf','_uncompressed.pyf')
-                fu = open(fn,'w'+self.mode)
+                fn = self.filename.replace('.pyf', '_uncompressed.pyf')
+                fu = open(fn, 'w'+self.mode)
                 h = self.header_data()
                 h['gzip'] = 0
                 fu.write("%s\n" % h)
@@ -396,7 +396,7 @@ class Project(TrackedDict):
                     else:
                         break
                 fu.close()
-                print("Uncompressed %s to %s" % (self.filename,fn))
+                print("Uncompressed %s to %s" % (self.filename, fn))
 
             else:
                 utils.warn("warn_project_compression")

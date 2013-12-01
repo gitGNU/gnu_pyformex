@@ -58,7 +58,7 @@ def unQuote(s):
         return s
 
 
-def splitKeyValue(s,key_sep):
+def splitKeyValue(s, key_sep):
     """Split a string in a (key,value) on occurrence of key_sep.
 
     The string is split on the first occurrence of the substring key_sep.
@@ -166,7 +166,7 @@ class FlatDB(dict):
         Make sure that the arguments are legal."""
         
         dict.__init__(self)
-        self.req_keys = map(str,list(req_keys))
+        self.req_keys = map(str, list(req_keys))
         self.key = self.req_keys[0]
         self.comment = str(comment)
         self.key_sep = str(key_sep)
@@ -192,7 +192,7 @@ class FlatDB(dict):
     def checkKeys(self, record):
         """Check that record has the required keys."""
         import functools
-        return functools.reduce(int.__and__,map(record.has_key,self.req_keys),True)
+        return functools.reduce(int.__and__, map(record.has_key, self.req_keys), True)
     
     
     def checkRecord(self, record):
@@ -212,7 +212,7 @@ class FlatDB(dict):
         return OK
     
 
-    def record_error_handler(self,record):
+    def record_error_handler(self, record):
         """Error handler called when a check error on record is discovered.
 
         Default is to raise a runtime error.
@@ -221,7 +221,7 @@ class FlatDB(dict):
         raise ValueError("FlatDB: invalid record : %s" % record)
     
 
-    def key_error_handler(self,key):
+    def key_error_handler(self, key):
         """Error handler called when a duplicate key is found.
 
         Default is to raise a runtime error.
@@ -265,7 +265,7 @@ class FlatDB(dict):
             self.insert(record)
 
 
-    def splitKeyValue(self,line):
+    def splitKeyValue(self, line):
         """Split a line in key,value pair.
 
         The field is split on the first occurrence of the `key_sep`.
@@ -274,15 +274,15 @@ class FlatDB(dict):
         value is an empty string. If the key_sep is the first character,
         the key becomes an empty string.
         """
-        key,value = splitKeyValue(line,self.key_sep)
+        key, value = splitKeyValue(line, self.key_sep)
         key = key.rstrip()
         value = value.lstrip()
         if self.strip_quotes:
             value = unQuote(value)
-        return (key,value)
+        return (key, value)
             
 
-    def parseLine(self,line):
+    def parseLine(self, line):
         """Parse a line of the flat database file.
 
         A line starting with the comment string is ignored.
@@ -336,7 +336,7 @@ class FlatDB(dict):
                 else:
                     self.error_msg = "Unrecognized line '%s'" % line
                     return 1
-            key,value = self.splitKeyValue(line)
+            key, value = self.splitKeyValue(line)
             self.record[key] = value
             return 0
         return 0
@@ -357,7 +357,7 @@ class FlatDB(dict):
         for line in lines:
             linenr += 1
             if self.parseLine(line) != 0 and not ignore:
-                raise RuntimeError("FlatDB: error while reading line %d of database (File: %s)\n%s" % (linenr,filename,self.error_msg))
+                raise RuntimeError("FlatDB: error while reading line %d of database (File: %s)\n%s" % (linenr, filename, self.error_msg))
                 break
                 
 
@@ -371,13 +371,13 @@ class FlatDB(dict):
         """
         infile=None
         try:
-            infile = open(filename,'r')
+            infile = open(filename, 'r')
             lines = infile.readlines()
         finally:
             if infile:
                 infile.close()
 
-        self.parse(lines,ignore,filename)
+        self.parse(lines, ignore, filename)
         
 
     def writeFile(self,filename,mode='w',header=None):
@@ -387,20 +387,20 @@ class FlatDB(dict):
         The header is written at the start of the database. Make sure to start
         each line with a comment marker if you want to read it back! 
         """
-        outfile = open(filename,mode)
+        outfile = open(filename, mode)
         if isinstance(header, str):
             outfile.writelines(header)
         for record in self.itervalues():
             s = self.beginrec+'\n'
             for (k, v) in record.iteritems():
-                s += "  %s%s%s\n" % (k,self.key_sep,v)
+                s += "  %s%s%s\n" % (k, self.key_sep, v)
             s += self.endrec+'\n'
             outfile.writelines(s)
         if isinstance(outfile, file):
             outfile.close()
 
 
-    def match(self,key,value):
+    def match(self, key, value):
         """Return a list of records matching key=value.
 
         This returns a list of primary keys of the matching records.
@@ -421,16 +421,16 @@ if __name__ == '__main__':
     print(db)
     print(len(db))
     
-    mat = FlatDB(['name'],beginrec='material',endrec='endmaterial')
+    mat = FlatDB(['name'], beginrec='material', endrec='endmaterial')
     mat.readFile('data/materials.db')
     mat.append({'name':'concrete', 'junk':''})
     print(mat)
 
     mat.writeFile('materials.copy')
 
-    for i in mat.match('name','steel'):
+    for i in mat.match('name', 'steel'):
         print(mat[i])
-    mat = FlatDB(req_keys=['name'],beginrec='material',endrec='endmaterial')
+    mat = FlatDB(req_keys=['name'], beginrec='material', endrec='endmaterial')
     mat.readFile('data/materials.db')
     mat.append({'name':'concrete'})
     try:
@@ -443,12 +443,12 @@ if __name__ == '__main__':
     print(mat)
 
     # Variant without endmarker
-    mat = FlatDB(req_keys=['name'],beginrec='material',endrec='')
-    mat.readFile('data/materials.db',ignore=True)
+    mat = FlatDB(req_keys=['name'], beginrec='material', endrec='')
+    mat.readFile('data/materials.db', ignore=True)
     print(mat)
 
     # Variant without begin/endrec markers: records separated by blanks
-    mat = FlatDB(req_keys=['name'],beginrec='',endrec='')
+    mat = FlatDB(req_keys=['name'], beginrec='', endrec='')
     mat.readFile('data/materials.db')
     print(mat)
 

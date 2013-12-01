@@ -32,7 +32,7 @@ from __future__ import print_function
 
 import pyformex as pf
 from arraytools import splitar
-from multiprocessing import Pool,cpu_count,Process,Queue
+from multiprocessing import Pool, cpu_count, Process, Queue
 
 
 def dofunc(arg):
@@ -40,7 +40,7 @@ def dofunc(arg):
 
     It expects a tuple with (function,args) as single argument.
     """
-    func,args = arg
+    func, args = arg
     return func(*args)
 
 
@@ -62,9 +62,9 @@ def multitask(tasks,nproc=-1):
       values.
     """
     if nproc < 0:
-        nproc = min(len(tasks),cpu_count())
+        nproc = min(len(tasks), cpu_count())
 
-    pf.debug("Multiprocessing using %s processors" % nproc,pf.DEBUG.MULTI)
+    pf.debug("Multiprocessing using %s processors" % nproc, pf.DEBUG.MULTI)
     if pf.scriptMode == 'script':
         if pf.warning("""..
 
@@ -75,11 +75,11 @@ You are trying to use multiprocessing while running in 'script' mode.
 Multiprocessing in 'script' mode may cause pyFormex to hang indefinitely.
 We strongly advice you to cancel the operation now and to run your
 application in 'app' mode. Multiprocessing runs fine in 'app' mode.
-""", actions=['Cancel','I know the risks and insist on continuing']) == 'Cancel':
+""", actions=['Cancel', 'I know the risks and insist on continuing']) == 'Cancel':
             return
         
     pool = Pool(nproc)
-    res = pool.map(dofunc,tasks)
+    res = pool.map(dofunc, tasks)
     pool.close()
     return res
 
@@ -122,7 +122,7 @@ def multitask2(tasks,nproc=-1):
       values.
     """
     if nproc < 0:
-        nproc = min(len(tasks),cpu_count())
+        nproc = min(len(tasks), cpu_count())
 
     # Create queues
     task_queue = Queue()

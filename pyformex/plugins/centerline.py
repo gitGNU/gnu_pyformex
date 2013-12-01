@@ -33,7 +33,7 @@ from __future__ import print_function
 import pyformex as pf
 import os
 from numpy import *
-from plugins import trisurface,tetgen
+from plugins import trisurface, tetgen
 import utils
 import coords
 import connectivity
@@ -45,7 +45,7 @@ def det3(f):
     f is a (n,3,3) array.
     The output is 1d array containing the n corresponding determinants.
     """
-    det = f[:,0,0]*(f[:,1,1]*f[:,2,2]-f[:,1,2]*f[:,2,1]) - f[:,0,1]*(f[:,1,0]*f[:,2,2]-f[:,1,2]*f[:,2,0]) + f[:,0,2]*(f[:,1,0]*f[:,2,1]-f[:,1,1]*f[:,2,0])
+    det = f[:, 0, 0]*(f[:, 1, 1]*f[:, 2, 2]-f[:, 1, 2]*f[:, 2, 1]) - f[:, 0, 1]*(f[:, 1, 0]*f[:, 2, 2]-f[:, 1, 2]*f[:, 2, 0]) + f[:, 0, 2]*(f[:, 1, 0]*f[:, 2, 1]-f[:, 1, 1]*f[:, 2, 0])
     return det
 
 
@@ -55,20 +55,20 @@ def det4(f):
     f is a (n,4,4) array.
     The output is 1d array containing the n corresponding determinants.
     """
-    det = f[:,0,0]*det3(f[:,1:,1:])-f[:,0,1]*det3(f[:,1:,[0,2,3]])+f[:,0,2]*det3(f[:,1:,[0,1,3]])-f[:,0,3]*det3(f[:,1:,[0,1,2]])
+    det = f[:, 0, 0]*det3(f[:, 1:, 1:])-f[:, 0, 1]*det3(f[:, 1:, [0, 2, 3]])+f[:, 0, 2]*det3(f[:, 1:, [0, 1, 3]])-f[:, 0, 3]*det3(f[:, 1:, [0, 1, 2]])
     return det
 
 
-def encode2(i,j,n):
+def encode2(i, j, n):
     return n*i+j
 
 
-def decode2(code,n):
-    i,j = code/n, code%n
-    return i,j
+def decode2(code, n):
+    i, j = code/n, code%n
+    return i, j
 
 
-def circumcenter(nodes,elems):
+def circumcenter(nodes, elems):
     """Calculate the circumcenters of a list of tetrahedrons.
 
     For a description of the method: http://mathworld.wolfram.com/Circumsphere.html
@@ -76,23 +76,23 @@ def circumcenter(nodes,elems):
     """
     kwadSum = (nodes*nodes).sum(axis=-1)
     one = zeros(nodes.shape[0])+1
-    nodesOne = append(nodes,one.reshape(-1,1),1)
-    nodesKwadOne = append(kwadSum.reshape(-1,1),nodesOne,1)
+    nodesOne = append(nodes, one.reshape(-1, 1), 1)
+    nodesKwadOne = append(kwadSum.reshape(-1, 1), nodesOne, 1)
     #construct necessary 4 by 4 arrays
-    Wx = nodesKwadOne[:,[0,2,3,4]]
-    Wy = nodesKwadOne[:,[0,1,3,4]]
-    Wz = nodesKwadOne[:,[0,1,2,4]]
+    Wx = nodesKwadOne[:, [0, 2, 3, 4]]
+    Wy = nodesKwadOne[:, [0, 1, 3, 4]]
+    Wz = nodesKwadOne[:, [0, 1, 2, 4]]
     #calculate derminants of the 4 by 4 arrays
     Dx = det4(Wx[elems])
     Dy = -det4(Wy[elems])
     Dz = det4(Wz[elems])
     alfa = det4(nodesOne[elems[:]])
     #circumcenters
-    centers = column_stack([Dx[:]/(2*alfa[:]),Dy[:]/(2*alfa[:]),Dz[:]/(2*alfa[:])])
+    centers = column_stack([Dx[:]/(2*alfa[:]), Dy[:]/(2*alfa[:]), Dz[:]/(2*alfa[:])])
     #calculate radii of the circumscribed spheres
-    vec = centers[:]-nodes[elems[:,0]]
+    vec = centers[:]-nodes[elems[:, 0]]
     radii = sqrt((vec*vec).sum(axis=-1))
-    return centers,radii
+    return centers, radii
 
 ## Voronoi: vor diagram is determined using Tetgen. Some of the vor nodes may fall outside the surface. This should be avoided as this may compromise the centerline determination. Therefore, we created a second definition to determine the inner voronoi diagram (voronoiInner).
 
@@ -104,7 +104,7 @@ def voronoi(fn):
     The output are the voronoi nodes and the corresponding radii of the voronoi spheres.
     """
     S = trisurface.TriSurface.read(fn)
-    fn,ftype = os.path.splitext(fn)
+    fn, ftype = os.path.splitext(fn)
     ftype = ftype.strip('.').lower()
     if ftype != 'smesh':
         S.write('%s.smesh' %fn)
@@ -115,9 +115,9 @@ def voronoi(fn):
     #voronoi information
     nodesVor = tetgen.readNodes('%s.1.v.node' %fn)[0]
     #calculate the radii of the voronoi spheres
-    vec = nodesVor[:]-nodes[elems[:,0]]
+    vec = nodesVor[:]-nodes[elems[:, 0]]
     radii = sqrt((vec*vec).sum(axis=-1))
-    return nodesVor,radii
+    return nodesVor, radii
 
 
 def voronoiInner(fn):
@@ -127,7 +127,7 @@ def voronoiInner(fn):
     The output are the voronoi nodes and the corresponding radii of the voronoi spheres.
     """
     S = trisurface.TriSurface.read(fn)
-    fn,ftype = os.path.splitext(fn)
+    fn, ftype = os.path.splitext(fn)
     ftype = ftype.strip('.').lower()
     if ftype != 'smesh':
         S.write('%s.smesh' %fn)
@@ -138,21 +138,21 @@ def voronoiInner(fn):
     #calculate surface normal for each point
     elemsS = array(S.elems)
     NT = S.areaNormals()[1]
-    NP = zeros([nodes.shape[0],3])
-    for i in [0,1,2]:
-        NP[elemsS[:,i]] = NT
+    NP = zeros([nodes.shape[0], 3])
+    for i in [0, 1, 2]:
+        NP[elemsS[:, i]] = NT
     #calculate centrum circumsphere of each tetrahedron
-    centers = circumcenter(nodes,elems)[0]
+    centers = circumcenter(nodes, elems)[0]
     #check if circumcenter falls within the geomety described by the surface
-    ie = column_stack([((nodes[elems[:,j]] - centers[:])*NP[elems[:,j]]).sum(axis=-1) for j in [0,1,2,3]])
+    ie = column_stack([((nodes[elems[:, j]] - centers[:])*NP[elems[:, j]]).sum(axis=-1) for j in [0, 1, 2, 3]])
     ie = ie[:,:]>=0
     w = where(ie.all(1))[0]
     elemsInner = elems[w]
     nodesVorInner = centers[w]
     #calculate the radii of the voronoi spheres
-    vec = nodesVorInner[:]-nodes[elemsInner[:,0]]
+    vec = nodesVorInner[:]-nodes[elemsInner[:, 0]]
     radii = sqrt((vec*vec).sum(axis=-1))
-    return nodesVorInner,radii
+    return nodesVorInner, radii
 
 
 def selectMaxVor(nodesVor,radii,r1=1.,r2=2.,q=0.7,maxruns=-1):
@@ -194,10 +194,10 @@ def selectMaxVor(nodesVor,radii,r1=1.,r2=2.,q=0.7,maxruns=-1):
             radii = radii[-ttot2]
             nodesVor = nodesVor[-ttot2]
         #add local maximum to a list
-        nodesCent = append(nodesCent,maxP)
-        radCent = append(radCent,maxR)
+        nodesCent = append(nodesCent, maxP)
+        radCent = append(radCent, maxR)
         run += 1
-    return nodesCent.reshape(-1,1,3),radCent
+    return nodesCent.reshape(-1, 1, 3), radCent
 
 
 def removeDoubles(elems):
@@ -209,13 +209,13 @@ def removeDoubles(elems):
     """
     elems.sort(1)
     magic = elems.shape[0]+1
-    code = encode2(elems[:,0],elems[:,1],magic)
+    code = encode2(elems[:, 0], elems[:, 1], magic)
     r = unique(code.reshape(-1))
-    elemsU = decode2(r,magic)
+    elemsU = decode2(r, magic)
     return transpose(array(elemsU))
 
 
-def connectVorNodes(nodes,radii):
+def connectVorNodes(nodes, radii):
     """Create connections between the voronoi nodes.
 
     Each of the nodes is connected with its closest neighbours.
@@ -237,11 +237,11 @@ def connectVorNodes(nodes,radii):
         w2 = d < radii[w1] + radii[i]
         w = w1[w2]
         for j in w:
-            connections = append(connections,i)
-            connections = append(connections,j)
-    connections = connections.reshape(-1,2)
+            connections = append(connections, i)
+            connections = append(connections, j)
+    connections = connections.reshape(-1, 2)
     connections = removeDoubles(connections)
-    return connections.reshape(-1,2)
+    return connections.reshape(-1, 2)
 
 
 def removeTriangles(elems):
@@ -253,18 +253,18 @@ def removeTriangles(elems):
     """
     rev = connectivity.Connectivity(elems).inverse()
     if rev.shape[1] > 2:
-        w =  where(rev[:,-3] != -1)[0]
+        w =  where(rev[:, -3] != -1)[0]
         for i in w:
             el = rev[i].compress(rev[i] != -1)
             u = unique(elems[el].reshape(-1))
             NB = u.compress(u != i)
-            int = intersect1d(w,NB)
+            int = intersect1d(w, NB)
             if int.shape[0] == 2:
-                tri = append(int,i)
+                tri = append(int, i)
                 w1 = where(tri != tri.min())[0]
-                t = (elems[:,0] == tri[w1[0]])*(elems[:,1] == tri[w1[1]])
+                t = (elems[:, 0] == tri[w1[0]])*(elems[:, 1] == tri[w1[1]])
                 elems[t] = -1
-    w2 = where(elems[:,0] != -1)[0]
+    w2 = where(elems[:, 0] != -1)[0]
     return elems[w2]
 
 
@@ -275,11 +275,11 @@ def centerline(fn):
     The output are the centerline nodes, an array containing the connectivity information
     and radii of the voronoi spheres.
     """
-    nodesVor,radii= voronoiInner('%s' %fn)
-    nodesC,radii=selectMaxVor(nodesVor,radii)
-    elemsC = connectVorNodes(nodesC,radii)
+    nodesVor, radii= voronoiInner('%s' %fn)
+    nodesC, radii=selectMaxVor(nodesVor, radii)
+    elemsC = connectVorNodes(nodesC, radii)
     elemsC = removeTriangles(elemsC)
-    return nodesC,elemsC,radii
+    return nodesC, elemsC, radii
 
 # End
 

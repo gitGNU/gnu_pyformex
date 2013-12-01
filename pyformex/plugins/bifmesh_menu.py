@@ -76,7 +76,7 @@ def inputCentralPoint():
     #transparent()
     perspective(False)
     drawSurface()
-    obj = d2.drawObject2D('point',npoints=1,zvalue=0.)
+    obj = d2.drawObject2D('point', npoints=1, zvalue=0.)
     obj.specular = 0.
     if obj is not None:
         export({'central_point':obj})
@@ -95,10 +95,10 @@ def getData(*args):
         error("I could not find all the data")
         raise
 
-def getDataItem(data,item):
+def getDataItem(data, item):
     """Return an item from a dict"""
     items = getData(data)
-    return items.get(item,None)
+    return items.get(item, None)
 
 def drawOption(item):
     """Return draw option"""
@@ -125,7 +125,7 @@ def largestSubMesh(M):
     return M.selectProp(p[i])
 
 
-def selectPart(M,x0,x1):
+def selectPart(M, x0, x1):
     """
     Select part of section between x0 and x1
 
@@ -136,15 +136,15 @@ def selectPart(M,x0,x1):
     """
     #meshlist = [ m.clipAtPlane(x1,x0-x1).clipAtPlane(x0,x1-x0) for m in meshlist ]
     #return meshToPolyLine(longestItem(meshlist))
-    M =  M.clipAtPlane(x1,x0-x1, nodes='all').clipAtPlane(x0,x1-x0, nodes='all')
+    M =  M.clipAtPlane(x1, x0-x1, nodes='all').clipAtPlane(x0, x1-x0, nodes='all')
     if M.prop is not None:
         M = largestSubMesh(M)
     return meshToPolyLine2(M)
 
 
-def cutPart(M,x0,x1):
+def cutPart(M, x0, x1):
     """Cut part of section at plane thru x0 and return part between x0 and x1"""
-    M = M.clipAtPlane(x1,x0-x1, nodes='all')
+    M = M.clipAtPlane(x1, x0-x1, nodes='all')
 
     meshlist = M.splitProp()
 
@@ -158,11 +158,11 @@ def cutPart(M,x0,x1):
     if len(meshlist) == 1:
         pl = meshlist[0]
     elif len(meshlist) == 2:
-        p1,p0 = meshlist
-        pl = PolyLine(Coords.concatenate([p0.coords,p1.coords]))
+        p1, p0 = meshlist
+        pl = PolyLine(Coords.concatenate([p0.coords, p1.coords]))
     else:
         print([ p.nelems() for p in meshlist])
-        [ draw(p,color=c) for p,c in zip(meshlist,pf.canvas.settings.colormap) ]
+        [ draw(p, color=c) for p, c in zip(meshlist, pf.canvas.settings.colormap) ]
         pl = longestItem(meshlist)
     return pl
 
@@ -171,15 +171,15 @@ def getPart(section,x0,x1,cutat=-1):
     """Return a cut or a selected part, depending on cutat parameter."""
     if cutat == 0:
         #cut at plane x0
-        return cutPart(section,x0,x1)
+        return cutPart(section, x0, x1)
 
     elif cutat == 1:
         #cut at plane x1
-        return cutPart(section,x1,x0)
+        return cutPart(section, x1, x0)
 
     else:
         # select parts between x0 and x1 only
-       return selectPart(section,x0,x1)
+       return selectPart(section, x0, x1)
 
 
 def connectPolyLines(plist):
@@ -190,16 +190,16 @@ def connectPolyLines(plist):
     """
     pass
 
-def meshList(coords,elems):
+def meshList(coords, elems):
     """Create a list of Meshes from intersection lines"""
-    return [ Mesh(coords,e) for e in elems ]
+    return [ Mesh(coords, e) for e in elems ]
 
 
 def meshToPolyLine1(m):
     "Convert a 2-plex mesh with ordered segments to a PolyLine."""
-    pts = m.elems[:,0]
-    if m.elems[-1,-1] != m.elems[0,0]:
-        pts = concatenate([pts,m.elems[-1:,-1]])
+    pts = m.elems[:, 0]
+    if m.elems[-1, -1] != m.elems[0, 0]:
+        pts = concatenate([pts, m.elems[-1:, -1]])
     return PolyLine(m.coords[pts])
 
 def meshToPolyLine2(m2):
@@ -208,15 +208,15 @@ def meshToPolyLine2(m2):
     # Remove degenerate and doubles
     m2=m2.fuse().compact()
     ##m2 = Mesh(m2.coords,m2.elems.removeDegenerate().removeDoubles())
-    m2 = Mesh(m2.coords,m2.elems.removeDegenerate().removeDuplicate())
+    m2 = Mesh(m2.coords, m2.elems.removeDegenerate().removeDuplicate())
     # Split in connected loops
     parts = connectedLineElems(m2.elems)
-    prop = concatenate([ [i]*p.nelems() for i,p in enumerate(parts)])
-    elems = concatenate(parts,axis=0)
-    m2= Mesh(m2.coords,elems,prop=prop)
-    pts = m2.elems[:,0]
-    if m2.elems[-1,-1] != m2.elems[0,0]:
-        pts = concatenate([pts,m2.elems[-1:,-1]])
+    prop = concatenate([ [i]*p.nelems() for i, p in enumerate(parts)])
+    elems = concatenate(parts, axis=0)
+    m2= Mesh(m2.coords, elems, prop=prop)
+    pts = m2.elems[:, 0]
+    if m2.elems[-1, -1] != m2.elems[0, 0]:
+        pts = concatenate([pts, m2.elems[-1:, -1]])
         return PolyLine(m2.coords[pts], closed=False)
     else: return PolyLine(m2.coords[pts], closed=True)
 
@@ -230,33 +230,33 @@ def slicer(S,s0,s1,cutat=-1,visual=False):
     Each pair of corresponding points of s0 and s1 defines a plane parallel
     to the z-axis
     """
-    if not isinstance(S,TriSurface):
+    if not isinstance(S, TriSurface):
         S = TriSurface(S)
-    if not isinstance(s0,Coords):
+    if not isinstance(s0, Coords):
         s0 = s0.coords
-    if not isinstance(s1,Coords):
+    if not isinstance(s1, Coords):
         s1 = s1.coords
 
     v1 = s1-s0 # direction of the knife
     zdir = unitVector(2) # direction of the z axis
-    ncut = cross(zdir,v1) # normals on the cut planes
+    ncut = cross(zdir, v1) # normals on the cut planes
 
-    sections = [ S.intersectionWithPlane(p0,n0) for p0,n0 in zip(s0,ncut)]
-
-    if visual:
-        clear()
-        draw(sections,color='magenta')
-
-
-    sections = [ getPart(s,x0,x1,cutat=cutat) for s,x0,x1 in zip(sections,s0,s1)]
+    sections = [ S.intersectionWithPlane(p0, n0) for p0, n0 in zip(s0, ncut)]
 
     if visual:
         clear()
-        draw(sections,color='cyan')
+        draw(sections, color='magenta')
+
+
+    sections = [ getPart(s, x0, x1, cutat=cutat) for s, x0, x1 in zip(sections, s0, s1)]
+
+    if visual:
+        clear()
+        draw(sections, color='cyan')
 
     # Orient all PolyLines so that first points is at max. z-value
-    for i,s in enumerate(sections):
-        if s.coords[0,2] < s.coords[-1,2]:
+    for i, s in enumerate(sections):
+        if s.coords[0, 2] < s.coords[-1, 2]:
             #print "Reversing PL %s" % i
             sections[i] = s.reverse()
 
@@ -265,7 +265,7 @@ def slicer(S,s0,s1,cutat=-1,visual=False):
     return sections
 
 
-def sliceBranch(S,cp,s0,s1,cl,nslices):
+def sliceBranch(S, cp, s0, s1, cl, nslices):
     """Slice a single branch of the bifurcation
 
     - `S`: the bifurcation surface, oriented parallel to xy.
@@ -281,22 +281,22 @@ def sliceBranch(S,cp,s0,s1,cl,nslices):
     s0 = s0.approx(ntot=nslices)
     s1 = s1.approx(ntot=nslices)
 
-    h0 = slicer(S,s0,cl,cutat=-1,visual=visual)
+    h0 = slicer(S, s0, cl, cutat=-1, visual=visual)
     if visual:
         clear()
-        draw(h0,color='black')
-    h1 = slicer(S,cl,s1,cutat=-1,visual=visual)
+        draw(h0, color='black')
+    h1 = slicer(S, cl, s1, cutat=-1, visual=visual)
 #    if visual:
 #        draw(h0,color='red')
 #        draw(h1,color='blue')
-    return [h0,h1]
+    return [h0, h1]
 
 
 def sliceIt():
     """Slice a surface using the provided slicing data
 
     """
-    S,cp = getData('surface','central_point')
+    S, cp = getData('surface', 'central_point')
     try:
         hl = named('control_lines')
         cl = named('center_lines')
@@ -308,7 +308,7 @@ def sliceIt():
     nslice = sliceData('nslice')
 
     pf.GUI.setBusy(True)
-    h = [sliceBranch(S,cp,hl[2*i],hl[2*i+1],cl[i],nslice[i]) for i in range(3) ]
+    h = [sliceBranch(S, cp, hl[2*i], hl[2*i+1], cl[i], nslice[i]) for i in range(3) ]
 
     ##corrections of some points of the cross-PolyLines because sometimes, due to the cutting, different pts appear at the connections between semi-branches (0,1) and branches (at center-splines top and bottom)
     ##merge the points between half branches
@@ -359,9 +359,9 @@ def splineIt():
     drawCrossSplines()
 
     # axis spline
-    [hi0,  hi1, hi2,hi3, hi4, hi5]=[array([h.coords for h in hi]) for hi in spc]
+    [hi0,  hi1, hi2, hi3, hi4, hi5]=[array([h.coords for h in hi]) for hi in spc]
     clv=[ PolyLine( (hi[:, 0]+hi[:, -1])*0.5  ) for hi in [hi0, hi2, hi4] ]
-    axis = [BezierSpline(c.coords,curl=1./3.).approx(ntot=nsl) for c,nsl in zip(clv,nslice)]
+    axis = [BezierSpline(c.coords, curl=1./3.).approx(ntot=nsl) for c, nsl in zip(clv, nslice)]
     export({'axis_splines':axis})
     drawAxisSplines()
 
@@ -369,9 +369,9 @@ def splineIt():
     # 2 options: with or without continuity of the tangent at the connections between contiguous splines, except for the center-Top and center-Bottom
 
     if (smoothconnections)==True:##with continuity
-        TBspl = [BezierSpline([ci.coords[j] for ci in spc[i]],curl=1./3.) for j, i in zip([0, niso, 0, niso, 0, niso], range(6))]#6 splines at the center-Top and center-Bottom
+        TBspl = [BezierSpline([ci.coords[j] for ci in spc[i]], curl=1./3.) for j, i in zip([0, niso, 0, niso, 0, niso], range(6))]#6 splines at the center-Top and center-Bottom
         prolspc=[[spc[i][1]]+spc[j] for i, j in [[5, 0], [2, 1], [1, 2], [4, 3], [3, 4], [0, 5] ] ]#prolonged sections, to give correct tangence
-        mspl = [ [BezierSpline([ci.coords[j] for ci in prolspc[i]],curl=1./3.) for j in range(1, niso)] for i in range(6)]#all splines between Top and Bottom splines
+        mspl = [ [BezierSpline([ci.coords[j] for ci in prolspc[i]], curl=1./3.) for j in range(1, niso)] for i in range(6)]#all splines between Top and Bottom splines
         spl=[]
         for i in range(6):#6 semi-branches
             smspl=[TBspl[i]]#splines of 1 semi-branch
@@ -388,7 +388,7 @@ def splineIt():
                 smspl=smspl+[BezierSpline(coords=coordb[:, 0], control=coordb[:-1, [1, 2]])]
             spl.append(smspl)
     else: ##without continuity
-        spl = [[BezierSpline([ci.coords[j] for ci in c],curl=1./3.) for j in range(niso+1)] for c in spc]
+        spl = [[BezierSpline([ci.coords[j] for ci in c], curl=1./3.) for j in range(niso+1)] for c in spc]
     export({'long_splines':spl})
     drawLongSplines()
 
@@ -429,16 +429,16 @@ def seeding3zones(nseeds=[10, 10],zonesizes=[0.3, 0.3]):
     xtrans= cumsum(xtrans)
     xtrans=xtrans[:-1]*transzone/xtrans[-1]
     #if  len(xtrans)==0: warning('There is not enough space to fit a transition zone!')
-    seedingarray=[seed0,xtrans+seed0[-1], seed1 ]
+    seedingarray=[seed0, xtrans+seed0[-1], seed1 ]
     return seedingarray#concatenate(seedingarray)
 
 
 def drawLongitudinalSeeding(H, at):
     for i, j in zip([0, 2, 4], range(3)):#semibranch,at
         l0=H[i][0].subPoints(10)#0,2,4,napproxlong
-        draw(divPolyLine(l0,at[j][0]), color='green', marksize=7  ,flat=True, alpha=1)
-        draw(divPolyLine(l0,at[j][1]), color='yellow', marksize=7 ,flat=True, alpha=1)
-        draw(divPolyLine(l0,at[j][2]), color='red', marksize=7 ,flat=True, alpha=1)
+        draw(divPolyLine(l0, at[j][0]), color='green', marksize=7, flat=True, alpha=1)
+        draw(divPolyLine(l0, at[j][1]), color='yellow', marksize=7, flat=True, alpha=1)
+        draw(divPolyLine(l0, at[j][2]), color='red', marksize=7, flat=True, alpha=1)
     zoomAll()
 
 dialog = None
@@ -451,15 +451,15 @@ def inputLongitudinalSeeds():
 
     def show():
         """Show the current seeds"""
-        global dialog,SA
+        global dialog, SA
         undraw(SA)
         dialog.acceptData()
         res = dialog.results
         if not res:
             return
-        sat = [ seeding3zones(nseeds=eval(res['nseeds%s'%i]),zonesizes=eval(res['ratios%s'%i])) for i in range(3)]
+        sat = [ seeding3zones(nseeds=eval(res['nseeds%s'%i]), zonesizes=eval(res['ratios%s'%i])) for i in range(3)]
         print('# of seeds in branches: %s'% [sum([len(i) for i in j])-1 for j in sat])
-        SA = drawLongitudinalSeeding(long_splines,sat)
+        SA = drawLongitudinalSeeding(long_splines, sat)
         return sat
 
     def accept():
@@ -474,7 +474,7 @@ def inputLongitudinalSeeds():
 
     clear()
     long_splines=named('long_splines')
-    draw(long_splines, linewidth=1, color='gray' ,flat=True, alpha=1)
+    draw(long_splines, linewidth=1, color='gray', flat=True, alpha=1)
     drawNumbers(Formex( [long_splines[i][0].subPoints(1)[-1]  for i in  [0, 2, 4] ]))
 
     nseeds = '[5,3 ]'
@@ -482,16 +482,16 @@ def inputLongitudinalSeeds():
     dialog = Dialog(
         caption = 'Ratio Seeding Spline',
         items = [
-            _I('nseeds0',nseeds),
-            _I('ratios0',ratios),
-            _I('nseeds1',nseeds),
-            _I('ratios1',ratios),
-            _I('nseeds2',nseeds),
-            _I('ratios2',ratios),
+            _I('nseeds0', nseeds),
+            _I('ratios0', ratios),
+            _I('nseeds1', nseeds),
+            _I('ratios1', ratios),
+            _I('nseeds2', nseeds),
+            _I('ratios2', ratios),
             ],
-        actions = [('Cancel',),('Show',show),('Accept',accept),('Help',help)],
+        actions = [('Cancel',), ('Show', show), ('Accept', accept), ('Help', help)],
         )
-    dialog.move(100,100)
+    dialog.move(100, 100)
     dialog.getResults()
 
 
@@ -501,7 +501,7 @@ def seedLongSplines (H, at,  curvedSection=True, nPushedSections=6, napproxlong=
     nplong=[ at[0].shape[0]-1, at[1].shape[0]-1, at[2].shape[0] -1]
     H=[ H[i]+[H[i+(-1)**i][0]] for i in range(6) ]#add 1 splines at each semibranch
     H=[[h.subPoints(napproxlong) for h in hi] for hi in H ]
-    B=[array( [ divPolyLine(longi,at[bra]) for longi in h]) for h, bra in zip(H, [0, 0, 1, 1, 2, 2])]#seeds control points longitudinally
+    B=[array( [ divPolyLine(longi, at[bra]) for longi in h]) for h, bra in zip(H, [0, 0, 1, 1, 2, 2])]#seeds control points longitudinally
 
     def BezierCurve(X):
         """Create a Bezier curve between 4 points"""
@@ -509,9 +509,9 @@ def seedLongSplines (H, at,  curvedSection=True, nPushedSections=6, napproxlong=
         ip = 3*arange(ns+1)
         P = X[ip]
         ip = 3*arange(ns)
-        ic = column_stack([ip+1,ip+2]).ravel()
-        C = X[ic].reshape(-1,2,3)
-        return BezierSpline(P,control=C,closed=False)
+        ic = column_stack([ip+1, ip+2]).ravel()
+        C = X[ic].reshape(-1, 2, 3)
+        return BezierSpline(P, control=C, closed=False)
 
     def nearestPoints2D(pt0, pt1):
         """P0 and P1 and 2D arryas. It takes the closest point of 2 arrays of points and finds the 2 closest points. It returns the 2 indices."""
@@ -519,7 +519,7 @@ def seedLongSplines (H, at,  curvedSection=True, nPushedSections=6, napproxlong=
         np= (pt0.reshape(-1, 1, 2)-pt1.reshape(1, -1, 2))#create a matrix!!!
         npl=(np[:,:,  0]**2+np[:,:,  1]**2)**0.5
         nearest= where(npl==npl.min())
-        return nearest[0][0],nearest[1][0]
+        return nearest[0][0], nearest[1][0]
 
     def cutLongSplinesWithCurvedProfile(sideA, sideB, curvA, curvB, npb):
         #create 2D cutting curved profiles given 3 points
@@ -534,7 +534,7 @@ def seedLongSplines (H, at,  curvedSection=True, nPushedSections=6, napproxlong=
         cutcurvA, cutcurvB=[], []
         for ind in range(ssh):
             hlongA, hlongB=curvA[ind], curvB[ind]
-            iA,iB =[0], [0]
+            iA, iB =[0], [0]
             for il in range(0, cutProfile2D.shape[0]):
                 iA.append(nearestPoints2D(hlongA[:, :2], cutProfile2D[il])[0])
                 iB.append(nearestPoints2D(hlongB[:, :2], cutProfile2D[il])[0])
@@ -552,13 +552,13 @@ def seedLongSplines (H, at,  curvedSection=True, nPushedSections=6, napproxlong=
         if nPushedSections>0:#this part pushes 'nPushedSections' sections closer to the bifurcation center!
             cv=range(nPushedSections+2)
             mcv= array(cv, dtype=float)/cv[-1]
-            for tbi, bi in zip(TB,B ):
-                for i in cv:  tbi[:, i]=(tbi[:, i]*mcv[i] +bi[:,i]*(1.-mcv[i]) )
+            for tbi, bi in zip(TB, B ):
+                for i in cv:  tbi[:, i]=(tbi[:, i]*mcv[i] +bi[:, i]*(1.-mcv[i]) )
         B=TB
 
     B=[swapaxes(b, 0, 1) for b in B]
     cent012=[(b[:, 0]+b[:, -1])*0.5 for b in [B[0], B[2], B[4]] ]
-    lum012=[ concatenate([ B[i][:, ::-1],B[i+1][:, 1:-1] ], axis=1) for i in [0, 2, 4] ]
+    lum012=[ concatenate([ B[i][:, ::-1], B[i+1][:, 1:-1] ], axis=1) for i in [0, 2, 4] ]
     return zip( lum012, cent012 )
 
 
@@ -582,29 +582,29 @@ def seedLongitudinalSplines():
         warning("You need to set the longitudinal seeds first")
         return
 
-    seededBif = seedLongSplines (named('long_splines'),seeds,  curvedSection=curvedsecs, nPushedSections=numpushed, napproxlong=splineapprox, napproxcut=splineapprox)
+    seededBif = seedLongSplines (named('long_splines'), seeds,  curvedSection=curvedsecs, nPushedSections=numpushed, napproxlong=splineapprox, napproxcut=splineapprox)
     export({'seededBif':seededBif})
     [ drawSeededBranch(seededBif[i][0], seededBif[i][1], propbranch=i+1) for i in range(3) ]
 
 
-def meshBranch(HC,OC,nlong,ncirc,ntr,nbl):
+def meshBranch(HC, OC, nlong, ncirc, ntr, nbl):
     """Convenient function: from sections and centerlines to parametric volume mesh and outer surface mesh."""
-    cpAin,cpAtr,cpAbl = vsm.cpAllSections(HC,OC,[True,True])
-    hex_cp = [vsm.cpStackQ16toH64(i) for i in [cpAin,cpAtr,cpAbl] ]
+    cpAin, cpAtr, cpAbl = vsm.cpAllSections(HC, OC, [True, True])
+    hex_cp = [vsm.cpStackQ16toH64(i) for i in [cpAin, cpAtr, cpAbl] ]
 
-    in_block = vsm.structuredHexMeshGrid(nlong,ncirc,ncirc,isophex='hex64')
-    tr_block = vsm.structuredHexMeshGrid(nlong,ncirc,ntr,isophex='hex64')
-    bl_block = vsm.structuredHexMeshGrid(nlong,ncirc,nbl,isophex='hex64')
-    in_mesh,tr_mesh,bl_mesh = [vsm.mapHexLong(v_block,v_cp) for v_block,v_cp in zip([in_block,tr_block,bl_block],hex_cp)]
-    M = [m[0][:,m[1]].reshape(-1,8,3) for m in [in_mesh,tr_mesh,bl_mesh] ]
+    in_block = vsm.structuredHexMeshGrid(nlong, ncirc, ncirc, isophex='hex64')
+    tr_block = vsm.structuredHexMeshGrid(nlong, ncirc, ntr, isophex='hex64')
+    bl_block = vsm.structuredHexMeshGrid(nlong, ncirc, nbl, isophex='hex64')
+    in_mesh, tr_mesh, bl_mesh = [vsm.mapHexLong(v_block, v_cp) for v_block, v_cp in zip([in_block, tr_block, bl_block], hex_cp)]
+    M = [m[0][:, m[1]].reshape(-1, 8, 3) for m in [in_mesh, tr_mesh, bl_mesh] ]
     M = [Formex(m).toMesh() for m in M]
     #M=[correctHexMeshOrientation(m) for m in M ]
     #crate quad mesh on the external surface
-    nq,eq = vsm.structuredQuadMeshGrid(nlong,ncirc)
-    nq = Coords(column_stack([nq,ones([len(nq)])]) )
-    gnq,eq = vsm.mapHexLong([nq,eq,bl_block[2] ],hex_cp[2])#group of nodes
-    xsurf = gnq[:, eq].reshape(-1,4,3)
-    return M,xsurf
+    nq, eq = vsm.structuredQuadMeshGrid(nlong, ncirc)
+    nq = Coords(column_stack([nq, ones([len(nq)])]) )
+    gnq, eq = vsm.mapHexLong([nq, eq, bl_block[2] ], hex_cp[2])#group of nodes
+    xsurf = gnq[:, eq].reshape(-1, 4, 3)
+    return M, xsurf
 
 
 def getMeshingParameters():
@@ -625,12 +625,12 @@ def inputMeshingParameters():
 
     """
     dialog = Dialog(
-        caption='Meshing parameters',store=getMeshingParameters(),
+        caption='Meshing parameters', store=getMeshingParameters(),
         items = [
-            _I('n_longit',min=1,max=16,tooltip="Number of hex elements in longitudinal direction of a block"),
-            _I('n_circum',min=1,max=16,tooltip="Number of hex elements over the circumference of a 1/4 section"),
-            _I('s_radial',tooltip="Number of hex elements radially from inner pattern to boundary layer. It can be an integer or a list of seeds in the range 0.0 to 1.0"),
-            _I('s_boundary',tooltip="Number of hex elements radially in the boundary layer. It can be an integer or a list of seeds in the range 0.0 to 1.0"),
+            _I('n_longit', min=1, max=16, tooltip="Number of hex elements in longitudinal direction of a block"),
+            _I('n_circum', min=1, max=16, tooltip="Number of hex elements over the circumference of a 1/4 section"),
+            _I('s_radial', tooltip="Number of hex elements radially from inner pattern to boundary layer. It can be an integer or a list of seeds in the range 0.0 to 1.0"),
+            _I('s_boundary', tooltip="Number of hex elements radially in the boundary layer. It can be an integer or a list of seeds in the range 0.0 to 1.0"),
             ]
         )
     res = dialog.getResults()
@@ -648,7 +648,7 @@ def sweepingMesher():
     dialog = Dialog(
         caption='Domain selection',
         items=[
-            _I('domain','Lumen','radio',choices=['Lumen', ]),
+            _I('domain', 'Lumen', 'radio', choices=['Lumen', ]),
             ]
         )
     res = dialog.getResults()
@@ -659,8 +659,8 @@ def sweepingMesher():
 
     # Get the meshing parameters
     res = getMeshingParameters()
-    longp,longc = res['n_longit'], res['n_circum']
-    longr,longbl = eval(res['s_radial']), eval(res['s_boundary'])
+    longp, longc = res['n_longit'], res['n_circum']
+    longr, longbl = eval(res['s_radial']), eval(res['s_boundary'])
 
     # Create the meshes
     pf.GUI.setBusy(True)
@@ -691,7 +691,7 @@ def sweepingMesher():
 def surfMesh():
     spc = getData('cross_splines')
     Fspc = [[ci.toFormex() for ci in c] for c in spc]
-    surf = [ [ connect([Fi,Fi,Fj,Fj],nodid=[0,1,1,0]) for Fi,Fj in zip(f[:-1],f[1:]) ] for f in Fspc ]
+    surf = [ [ connect([Fi, Fi, Fj, Fj], nodid=[0, 1, 1, 0]) for Fi, Fj in zip(f[:-1], f[1:]) ] for f in Fspc ]
     draw(surf)
     export({'surface_mesh':surf})
 
@@ -703,10 +703,10 @@ def divideControlLines():
     br = getData('branch')
     try:
         slice_data = named(_slice_data_name)
-        print("1",slice_data)
+        print("1", slice_data)
     except:
         slice_data = _slice_data
-        print("2",slice_data)
+        print("2", slice_data)
     npcent = slice_data['nslice']
     cl = [ br[i].approx(ntot=npcent[i//2]) for i in range(len(br))]
 
@@ -715,31 +715,31 @@ def divideControlLines():
         drawControlLines()
 
 
-def center2D(x,x0,x1):
+def center2D(x, x0, x1):
     """Find the center of the section x between the points x0 and x1"""
-    x[:,2] = 0. # clear the z-coordinates
+    x[:, 2] = 0. # clear the z-coordinates
     i = x.distanceFromPoint(x0).argmin()
     j = x.distanceFromPoint(x1).argmin()
     xm = 0.5*(x[i]+x[j])
     return xm
 
 
-def centerline2D(S,s0,s1):
+def centerline2D(S, s0, s1):
     """Find the centerline of a tubular surface.
 
     - `S`: a tubular surface
     - `s0`,`s1`: helper polylines on opposing sides of the surface.
 
     """
-    sections = slicer(S,s0,s1,visual=False)
+    sections = slicer(S, s0, s1, visual=False)
     ## if drawOption('visual'):
     ##     draw(sections,color='red', alpha=1, flat=True)
-    draw(sections,color='black', alpha=1, flat=True)
-    cl = PolyLine([center2D(s.coords,x0,x1) for s,x0,x1 in zip(sections,s0.coords,s1.coords)])
+    draw(sections, color='black', alpha=1, flat=True)
+    cl = PolyLine([center2D(s.coords, x0, x1) for s, x0, x1 in zip(sections, s0.coords, s1.coords)])
     return cl
 
 
-def extendedCenterline(cl,s0,s1,cp):
+def extendedCenterline(cl, s0, s1, cp):
     """Extend the center line to the central point.
 
     cl: center line
@@ -749,13 +749,13 @@ def extendedCenterline(cl,s0,s1,cp):
     Each center line gets two extra points at the start:
     the central point and a point on the bisectrix at half distance.
     """
-    vb = vecbisectrix(s0.coords[0],s1.coords[0],cp)
+    vb = vecbisectrix(s0.coords[0], s1.coords[0], cp)
     d0 = cl.coords[0].distanceFromPoint(cp)
-    return PolyLine(Coords.concatenate([cp,cp+vb*d0/2.,cl.coords]))
+    return PolyLine(Coords.concatenate([cp, cp+vb*d0/2., cl.coords]))
 
 
 def centerlines():
-    S,cp = getData('surface','central_point')
+    S, cp = getData('surface', 'central_point')
     try:
         hl = named('control_lines')
     except:
@@ -763,8 +763,8 @@ def centerlines():
         hl = named('control_lines')
 
     pf.GUI.setBusy(True)
-    cl = [ centerline2D(S,hl[2*i],hl[2*i+1]) for i in range(3) ]
-    cl = [ extendedCenterline(cl[i],hl[2*i],hl[2*i+1],cp) for i in range(3) ]
+    cl = [ centerline2D(S, hl[2*i], hl[2*i+1]) for i in range(3) ]
+    cl = [ extendedCenterline(cl[i], hl[2*i], hl[2*i+1], cp) for i in range(3) ]
     pf.GUI.setBusy(False)
 
     export({'center_lines':cl})
@@ -812,12 +812,12 @@ def createBranches(branch):
     branch = branch[1:]+branch[:1]
 
     # reverse the uneven branches
-    for i in range(1,6,2):
+    for i in range(1, 6, 2):
         branch[i] = branch[i].reverse()
 
     print("Branch control lines:")
     for i in range(6):
-        print(" %s, %s" % divmod(i,2))
+        print(" %s, %s" % divmod(i, 2))
         print(branch[i].coords)
     export({'branch':branch})
     drawHelperLines()
@@ -835,13 +835,13 @@ def inputControlLines():
         else:
             coords = branch[i-1].coords[-1:]
 
-        obj = d2.drawObject2D(mode='polyline',npoints=-1,coords=coords,zvalue=0.)
+        obj = d2.drawObject2D(mode='polyline', npoints=-1, coords=coords, zvalue=0.)
 
         obj.specular = 0.
         pf.canvas.removeHighlight()
         ## WHY is bbox='last' or zoomAll needed here
         if obj is not None:
-            BA.append(draw(obj,color='blue',flat=True))
+            BA.append(draw(obj, color='blue', flat=True))
             zoomAll()
             branch.append(obj)
         else:
@@ -856,31 +856,31 @@ def inputControlLines():
 
 ####################### DRAWING ######################################
 
-color_half_branch = ['red','cyan','green','magenta','blue','yellow']
+color_half_branch = ['red', 'cyan', 'green', 'magenta', 'blue', 'yellow']
 
 def drawSurface():
     S = named('surface')
-    draw(S,color='red', alpha=0.3)
+    draw(S, color='red', alpha=0.3)
 
 def drawHelperLines():
      branch = named('branch')
      for i in range(3):
-        draw(branch[2*i:2*i+2],color=['red','green','blue'][i],flat=True, alpha=1, linewidth=3)
+        draw(branch[2*i:2*i+2], color=['red', 'green', 'blue'][i], flat=True, alpha=1, linewidth=3)
 
 def drawControlLines():
     hl = named('control_lines')
-    draw(hl,color='red',flat=True, alpha=1, linewidth=3)
+    draw(hl, color='red', flat=True, alpha=1, linewidth=3)
     if drawOption('numbers'):
         [drawNumbers(h.coords) for h in hl]
 
 def drawCentralPoint():
     cp = named('central_point')
     print("Central Point = %s" % cp)
-    draw(cp,bbox='last',color='black', marksize=8,flat=True, alpha=1, ontop=True)
+    draw(cp, bbox='last', color='black', marksize=8, flat=True, alpha=1, ontop=True)
 
 def drawCenterLines():
     cl = named('center_lines')
-    draw(cl,color='blue',flat=True, alpha=1, linewidth=3)
+    draw(cl, color='blue', flat=True, alpha=1, linewidth=3)
     if drawOption('numbers'):
         [drawNumbers(li.coords) for li in cl]
 
@@ -888,8 +888,8 @@ def drawCrossSections():
     cs = named('cross_sections')
     #draw(cs[0:6:2],color='red')
     #draw(cs[1:6:2],color='blue')
-    draw(Mesh.concatenate([i.toMesh() for i in olist.flatten(cs[0:6:2]) ]),color='red',flat=True, alpha=1, linewidth=3)
-    draw(Mesh.concatenate([i.toMesh() for i in olist.flatten(cs[1:6:2]) ]),color='blue',flat=True, alpha=1, linewidth=3)
+    draw(Mesh.concatenate([i.toMesh() for i in olist.flatten(cs[0:6:2]) ]), color='red', flat=True, alpha=1, linewidth=3)
+    draw(Mesh.concatenate([i.toMesh() for i in olist.flatten(cs[1:6:2]) ]), color='blue', flat=True, alpha=1, linewidth=3)
 
 def drawSeededBranch(branchsections, branchcl, propbranch=0):
     [draw(PolyLine(sec, closed=True), flat=True, alpha=1, linewidth=3) for sec in branchsections]
@@ -899,8 +899,8 @@ def drawSeededBranch(branchsections, branchcl, propbranch=0):
 #from plugins.objects import *
 def drawOuterCrossSections():
     cs = named('cross_sections')
-    draw(cs[0:6:2],color='red', linewidth=4,flat=True, alpha=1)
-    draw(cs[1:6:2],color='blue', linewidth=4,flat=True, alpha=1)
+    draw(cs[0:6:2], color='red', linewidth=4, flat=True, alpha=1)
+    draw(cs[1:6:2], color='blue', linewidth=4, flat=True, alpha=1)
 
 def drawSurfaceMesh():
     [draw(Formex(smesh), linewidth=3, color='green') for smesh in named('inner_surface_mesh') ]
@@ -914,9 +914,9 @@ def drawLumenMesh():
 def drawCrossSplines():
     sp = getData('cross_splines')
     if drawOption('fill_cross'):
-        [draw(Formex([si.coords for si in s]),color='black' ,flat=True, alpha=1) for s in sp]
+        [draw(Formex([si.coords for si in s]), color='black', flat=True, alpha=1) for s in sp]
     else:
-        [draw(s,color=c,flat=True, alpha=1) for s,c in zip(sp,color_half_branch)]
+        [draw(s, color=c, flat=True, alpha=1) for s, c in zip(sp, color_half_branch)]
         if drawOption('numbers'):
             [[drawNumbers(si.coords) for si in s] for s in sp]
 
@@ -924,31 +924,31 @@ def drawCrossSplines():
 
 def drawLongSplines():
     sp = getData('long_splines')
-    [draw(s,color=c,flat=True, alpha=1) for s,c in zip(sp,color_half_branch)]
+    [draw(s, color=c, flat=True, alpha=1) for s, c in zip(sp, color_half_branch)]
 
 
 def drawAxisSplines():
     sp = getData('axis_splines')
-    draw(sp,color='black',flat=True, alpha=1)
+    draw(sp, color='black', flat=True, alpha=1)
     #drawNumbers( Formex( [i.coords[-1] for i in sp]  ).scale(1.1)  )
 
 def drawSurfMesh():
     surf = getData('surface_mesh')
-    draw(surf,color='black')
+    draw(surf, color='black')
 
 
-def drawCSys(ax=Formex([[[1., 0., 0.]],[[0., 1., 0.]],[[0., 0., 1.]], [[0., 0., 0.]]]), color='black'):
+def drawCSys(ax=Formex([[[1., 0., 0.]], [[0., 1., 0.]], [[0., 0., 1.]], [[0., 0., 0.]]]), color='black'):
     """it draws the coordinate system with origin in ax[0] and directions determined by the 3 points in ax[1:4]"""
     assex=array([ax[3], ax[0]])
     assey=array([ax[3], ax[1]])
     assez=array([ax[3], ax[2]])
     for asse in [assex, assey, assez]:draw(Formex(asse.reshape(1, 2, 3)), color=color)
-    drawNumbers(Formex([assex[1], assey[1],assez[1] ]))#
+    drawNumbers(Formex([assex[1], assey[1], assez[1] ]))#
 
 def flyThru():
     cl = named('axis_splines')
     for li in cl:
-        flyAlong(li,upvector=[0.,0.,1.])
+        flyAlong(li, upvector=[0., 0., 1.])
 
 def drawAll():
     drawSurface()
@@ -963,7 +963,7 @@ def drawAll():
 def nextStep(msg):
     global stepwise
     if stepwise:
-        ans = ask(msg,['Quit','Continue','Step'],align='--')
+        ans = ask(msg, ['Quit', 'Continue', 'Step'], align='--')
         if ans == 'Continue':
             stepwise = False
         return ans != 'Quit'
@@ -981,7 +981,7 @@ def example():
     if not nextStep("This example guides you through the subsequent steps to create a hexahedral mesh in a bifurcation. At each step you can opt to execute a single step, continue the whole procedure, or quit the example.\n\n1. Input the bifurcation surface model"):
         return
 
-    examplefile = os.path.join(getcfg('datadir'),'bifurcation.off')
+    examplefile = os.path.join(getcfg('datadir'), 'bifurcation.off')
     print(examplefile)
     export({'surface':TriSurface.read(examplefile)})
     drawSurface()
@@ -1000,20 +1000,20 @@ def example():
     perspective(False)
     C = [[-33.93232346,   7.50834751,   0.        ],
          [ -1.96555257,   6.90520096,   0.        ],
-         [ 19.08426476,  10.4637661 ,   0.        ],
-         [ 19.14457893,   1.2959373 ,   0.        ],
+         [ 19.08426476,  10.4637661,   0.        ],
+         [ 19.14457893,   1.2959373,   0.        ],
          [  2.61836171,   0.87373471,   0.        ],
          [ 19.08426476,  -1.59916639,   0.        ],
-         [ 19.02395058, -12.6970644 ,   0.        ],
+         [ 19.02395058, -12.6970644,   0.        ],
          [ -1.84492326,  -6.30370998,   0.        ],
          [-34.29421234,  -4.61489964,   0.        ]]
     C = Coords(C)
     drawNumbers(C)
-    C = C.reshape(3,3,3)
+    C = C.reshape(3, 3, 3)
     branch = []
     for i in range(3):
         for j in range(2):
-            branch.append(PolyLine(C[i,j:j+2]))
+            branch.append(PolyLine(C[i, j:j+2]))
     createBranches(branch)
 
     if not nextStep('Notice the order of the input points!\n\n4. Create the Center Lines'):
@@ -1041,11 +1041,11 @@ def example():
     setDrawOptions({'bbox':'auto'})
 
 
-def updateData(data,newdata):
+def updateData(data, newdata):
     """Update the input data fields with new data values"""
     if newdata:
         for d in data:
-            v = newdata.get(d[0],None)
+            v = newdata.get(d[0], None)
             if v is not None:
                 d[1] = v
 
@@ -1069,43 +1069,43 @@ _menu_ = 'BifMesh'
 def create_menu():
     """Create the %s menu.""" % _menu_
     MenuData = [
-        ("&Run through example",example),
-        ("---",None),
-        ("&1.  Import Bifurcation Geometry",importGeometry),
-        ("&2.  Input Central Point",inputCentralPoint),
-        ("&3.  Input Helper Lines",inputControlLines),
-        ("&4a. Input Slicing Parameters",inputSlicingParameters),
-        ("&4b.  Create Center Lines",centerlines),
-        ("&5. Slice the bifurcation",sliceIt),
-        ("&6.  Create Spline Mesh",splineIt),
-        ("&7a. Input Longitudinal Seeds",inputLongitudinalSeeds),
-        ("&7b. Seed Longitudinal Splines",seedLongitudinalSplines),
-        ("&8a. Input Meshing Parameters",inputMeshingParameters),
-        ("&8b. Sweeping Mesher",sweepingMesher),
-        ("---",None),
-        ("&Create Surface Mesh",surfMesh),
-        ("---",None),
+        ("&Run through example", example),
+        ("---", None),
+        ("&1.  Import Bifurcation Geometry", importGeometry),
+        ("&2.  Input Central Point", inputCentralPoint),
+        ("&3.  Input Helper Lines", inputControlLines),
+        ("&4a. Input Slicing Parameters", inputSlicingParameters),
+        ("&4b.  Create Center Lines", centerlines),
+        ("&5. Slice the bifurcation", sliceIt),
+        ("&6.  Create Spline Mesh", splineIt),
+        ("&7a. Input Longitudinal Seeds", inputLongitudinalSeeds),
+        ("&7b. Seed Longitudinal Splines", seedLongitudinalSplines),
+        ("&8a. Input Meshing Parameters", inputMeshingParameters),
+        ("&8b. Sweeping Mesher", sweepingMesher),
+        ("---", None),
+        ("&Create Surface Mesh", surfMesh),
+        ("---", None),
         ("&Draw", [
-            ("&All",drawAll),
-            ("&Surface",drawSurface),
-            ("&Helper Lines",drawHelperLines),
-            ("&Control Lines",drawControlLines),
-            ("&Central Point",drawCentralPoint),
-            ("&Center Lines2D",drawCenterLines),
-            ("&Center Lines3D",drawAxisSplines),
-            ("&Cross Sections",drawCrossSections),
-            ("&Cross Splines",drawCrossSplines),
-            ("&Long Splines",drawLongSplines),
-            ("&SurfaceMesh",drawSurfaceMesh),
-            ("&Surface Spline_Mesh",drawSurfMesh),
-            ("Set Draw Options",inputDrawOptions),
+            ("&All", drawAll),
+            ("&Surface", drawSurface),
+            ("&Helper Lines", drawHelperLines),
+            ("&Control Lines", drawControlLines),
+            ("&Central Point", drawCentralPoint),
+            ("&Center Lines2D", drawCenterLines),
+            ("&Center Lines3D", drawAxisSplines),
+            ("&Cross Sections", drawCrossSections),
+            ("&Cross Splines", drawCrossSplines),
+            ("&Long Splines", drawLongSplines),
+            ("&SurfaceMesh", drawSurfaceMesh),
+            ("&Surface Spline_Mesh", drawSurfMesh),
+            ("Set Draw Options", inputDrawOptions),
             ]),
-        ("---",None),
-        ("&Fly Along Center Lines",flyThru),
-        ("---",None),
-        ("&Close Menu",close_menu),
+        ("---", None),
+        ("&Fly Along Center Lines", flyThru),
+        ("---", None),
+        ("&Close Menu", close_menu),
         ]
-    return menu.Menu(_menu_,items=MenuData,parent=pf.GUI.menu,before='help')
+    return menu.Menu(_menu_, items=MenuData, parent=pf.GUI.menu, before='help')
 
 
 def show_menu():

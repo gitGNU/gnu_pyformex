@@ -37,7 +37,7 @@ from gui import actors
 from gui import menu
 from gui.draw import *
 
-from plugins import objects,trisurface,partition,sectionize
+from plugins import objects, trisurface, partition, sectionize
 
 import commands, os, timer
 
@@ -61,8 +61,8 @@ def showBbox():
     if FL:
         bb = bbox(FL)
         pf.message("Bbox of selection: %s" % bb)
-        nx = array([4,4,4])
-        _bbox = actors.CoordPlaneActor(nx=nx,ox=bb[0],dx=(bb[1]-bb[0])/nx)
+        nx = array([4, 4, 4])
+        _bbox = actors.CoordPlaneActor(nx=nx, ox=bb[0], dx=(bb[1]-bb[0])/nx)
         pf.canvas.addAnnotation(_bbox)
         pf.canvas.update()
 
@@ -81,7 +81,7 @@ def scaleSelection():
     """Scale the selection."""
     FL = selection.check()
     if FL:
-        res = askItems([['scale',1.0]],
+        res = askItems([['scale', 1.0]],
                        caption = 'Scale Factor')
         if res:
             scale = float(res['scale'])
@@ -93,10 +93,10 @@ def scale3Selection():
     """Scale the selection with 3 scale values."""
     FL = selection.check()
     if FL:
-        res = askItems([['x-scale',1.0],['y-scale',1.0],['z-scale',1.0]],
+        res = askItems([['x-scale', 1.0], ['y-scale', 1.0], ['z-scale', 1.0]],
                        caption = 'Scaling Factors')
         if res:
-            scale = map(float,[res['%c-scale'%c] for c in 'xyz'])
+            scale = map(float, [res['%c-scale'%c] for c in 'xyz'])
             selection.changeValues([ F.scale(scale) for F in FL ])
             selection.drawChanges()
 
@@ -105,12 +105,12 @@ def translateSelection():
     """Translate the selection."""
     FL = selection.check()
     if FL:
-        res = askItems([['direction',0],['distance','1.0']],
+        res = askItems([['direction', 0], ['distance', '1.0']],
                        caption = 'Translation Parameters')
         if res:
             dir = int(res['direction'])
             dist = float(res['distance'])
-            selection.changeValues([ F.translate(dir,dist) for F in FL ])
+            selection.changeValues([ F.translate(dir, dist) for F in FL ])
             selection.drawChanges()
 
 
@@ -126,11 +126,11 @@ def rotateSelection():
     """Rotate the selection."""
     FL = selection.check()
     if FL:
-        res = askItems([['axis',2],['angle','90.0']])
+        res = askItems([['axis', 2], ['angle', '90.0']])
         if res:
             axis = int(res['axis'])
             angle = float(res['angle'])
-            selection.changeValues([ F.rotate(angle,axis) for F in FL ])
+            selection.changeValues([ F.rotate(angle, axis) for F in FL ])
             selection.drawChanges()
 
 
@@ -138,13 +138,13 @@ def rotateAround():
     """Rotate the selection."""
     FL = selection.check()
     if FL:
-        res = askItems([['axis',2],['angle','90.0'],['around','[0.0,0.0,0.0]']])
+        res = askItems([['axis', 2], ['angle', '90.0'], ['around', '[0.0,0.0,0.0]']])
         if res:
             axis = int(res['axis'])
             angle = float(res['angle'])
             around = eval(res['around'])
             pf.debug('around = %s'%around)
-            selection.changeValues([ F.rotate(angle,axis,around) for F in FL ])
+            selection.changeValues([ F.rotate(angle, axis, around) for F in FL ])
             selection.drawChanges()
 
 
@@ -160,7 +160,7 @@ def clipSelection():
     """Clip the selection."""
     FL = selection.check()
     if FL:
-        res = askItems([['axis',0],['begin',0.0],['end',1.0],['nodes','all','select',['all','any','none']]],caption='Clipping Parameters')
+        res = askItems([['axis', 0], ['begin', 0.0], ['end', 1.0], ['nodes', 'all', 'select', ['all', 'any', 'none']]], caption='Clipping Parameters')
         if res:
             bb = bbox(FL)
             axis = int(res['axis'])
@@ -169,14 +169,14 @@ def clipSelection():
             dx = xma-xmi
             xc1 = xmi + float(res['begin']) * dx
             xc2 = xmi + float(res['end']) * dx
-            selection.changeValues([ F.clip(F.test(nodes=res['nodes'],dir=axis,min=xc1,max=xc2)) for F in FL ])
+            selection.changeValues([ F.clip(F.test(nodes=res['nodes'], dir=axis, min=xc1, max=xc2)) for F in FL ])
             selection.drawChanges()
         
 
 def cutSelection():
     """Cut the selection with a plane."""
     FL = selection.check()
-    FLnot = [ F for F in FL if F.nplex() not in [2,3] ]
+    FLnot = [ F for F in FL if F.nplex() not in [2, 3] ]
     if FLnot:
         warning("Currently I can only cut Formices with plexitude 2 or 3.\nPlease change your selection.")
         return
@@ -187,12 +187,12 @@ def cutSelection():
     else:
         esize = 1.e-5
     
-    res = askItems([['Point',(0.0,0.0,0.0)],
-                    ['Normal',(1.0,0.0,0.0)],
-                    ['New props',[1,2,2,3,4,5,6]],
-                    ['Side','positive', 'radio', ['positive','negative','both']],
-                    ['Tolerance',esize],
-                    ],caption = 'Define the cutting plane')
+    res = askItems([['Point', (0.0, 0.0, 0.0)],
+                    ['Normal', (1.0, 0.0, 0.0)],
+                    ['New props', [1, 2, 2, 3, 4, 5, 6]],
+                    ['Side', 'positive', 'radio', ['positive', 'negative', 'both']],
+                    ['Tolerance', esize],
+                    ], caption = 'Define the cutting plane')
     if res:
         P = res['Point']
         N = res['Normal']
@@ -200,16 +200,16 @@ def cutSelection():
         p = res['New props']
         side = res['Side']
         if side == 'both':
-            G = [F.cutWithPlane(P,N,side=side,atol=atol,newprops=p) for F in FL]
+            G = [F.cutWithPlane(P, N, side=side, atol=atol, newprops=p) for F in FL]
             draw(G[0])
             G_pos = [ g[0] for g in G ]
             G_neg = [ g[1] for g in G ]
-            export(dict([('%s/pos' % n,g) for n,g in zip(selection,G_pos)]))
-            export(dict([('%s/neg' % n,g) for n,g in zip(selection,G_neg)]))
+            export(dict([('%s/pos' % n, g) for n, g in zip(selection, G_pos)]))
+            export(dict([('%s/neg' % n, g) for n, g in zip(selection, G_neg)]))
             selection.set(['%s/pos' % n for n in selection] + ['%s/neg' % n for n in selection])
             selection.draw()
         else:
-            selection.changeValues([ F.cutWithPlane(P,N,side=side,atol=atol,newprops=p) for F in FL ])
+            selection.changeValues([ F.cutWithPlane(P, N, side=side, atol=atol, newprops=p) for F in FL ])
             selection.drawChanges()
 
 
@@ -219,7 +219,7 @@ def concatenateSelection():
     if FL:
         plexitude = array([ F.nplex() for F in FL ])
         if plexitude.min() == plexitude.max():
-            res = askItems([['name','combined']],'Name for the concatenation')
+            res = askItems([['name', 'combined']], 'Name for the concatenation')
             if res:
                 name = res['name']
                 export({name:Formex.concatenate(FL)})
@@ -241,10 +241,10 @@ def partitionSelection():
     pf.message("Subsequent cutting planes: %s" % cuts)
     if ack('Save cutting plane data?'):
         types = [ 'Text Files (*.txt)', 'All Files (*)' ]
-        fn = askNewFilename(pf.cfg['workdir'],types)
+        fn = askNewFilename(pf.cfg['workdir'], types)
         if fn:
             chdir(fn)
-            fil = open(fn,'w')
+            fil = open(fn, 'w')
             fil.write("%s\n" % cuts)
             fil.close()
     
@@ -256,7 +256,7 @@ def createParts():
         return
 
     name = selection[0]
-    partition.splitProp(F,name)
+    partition.splitProp(F, name)
 
 
 def sectionizeSelection():
@@ -267,31 +267,31 @@ def sectionizeSelection():
 
     name = selection[0]
     pf.message("Sectionizing Formex '%s'" % name)
-    ns,th,segments = sectionize.createSegments(F)
+    ns, th, segments = sectionize.createSegments(F)
     if not ns:
         return
     
-    sections,ctr,diam = sectionize.sectionize(F,segments,th)
+    sections, ctr, diam = sectionize.sectionize(F, segments, th)
     #pf.message("Centers: %s" % ctr)
     #pf.message("Diameters: %s" % diam)
     if ack('Save section data?'):
         types = [ 'Text Files (*.txt)', 'All Files (*)' ]
-        fn = askNewFilename(pf.cfg['workdir'],types)
+        fn = askNewFilename(pf.cfg['workdir'], types)
         if fn:
             chdir(fn)
-            fil = open(fn,'w')
+            fil = open(fn, 'w')
             fil.write("%s\n" % ctr)
             fil.write("%s\n" % diam)
             fil.close()
     if ack('Draw circles?'):
-        circles = sectionize.drawCircles(sections,ctr,diam)
+        circles = sectionize.drawCircles(sections, ctr, diam)
         ctrline = sectionize.connectPoints(ctr)
         if ack('Draw circles on Formex ?'):
-            sectionize.drawAllCircles(F,circles)
+            sectionize.drawAllCircles(F, circles)
         circles = Formex.concatenate(circles)
         circles.setProp(3)
         ctrline.setProp(1)
-        draw(ctrline,color='red')
+        draw(ctrline, color='red')
         export({'circles':circles,'ctrline':ctrline,'flypath':ctrline})
         if ack('Fly through the Formex ?'):
             flyAlong(ctrline)
@@ -316,35 +316,35 @@ def create_menu():
     """Create the Formex menu."""
     MenuData = [
         ("&Bbox",
-         [('&Show Bbox Planes',showBbox),
-          ('&Remove Bbox Planes',removeBbox),
+         [('&Show Bbox Planes', showBbox),
+          ('&Remove Bbox Planes', removeBbox),
           ]),
         ("&Transform",
-         [("&Scale Selection",scaleSelection),
-          ("&Scale non-uniformly",scale3Selection),
-          ("&Translate",translateSelection),
-          ("&Center",centerSelection),
-          ("&Rotate",rotateSelection),
-          ("&Rotate Around",rotateAround),
-          ("&Roll Axes",rollAxes),
+         [("&Scale Selection", scaleSelection),
+          ("&Scale non-uniformly", scale3Selection),
+          ("&Translate", translateSelection),
+          ("&Center", centerSelection),
+          ("&Rotate", rotateSelection),
+          ("&Rotate Around", rotateAround),
+          ("&Roll Axes", rollAxes),
           ]),
         ("&Clip/Cut",
-         [("&Clip",clipSelection),
-          ("&Cut With Plane",cutSelection),
+         [("&Clip", clipSelection),
+          ("&Cut With Plane", cutSelection),
           ]),
-        ("&Undo Last Changes",selection.undoChanges),
-        ("---",None),
-        ("&Concatenate Selection",concatenateSelection),
-        ("&Partition Selection",partitionSelection),
-        ("&Create Parts",createParts),
-        ("&Sectionize Selection",sectionizeSelection),
-        ("---",None),
-        ("&Fly",fly),
-        ("---",None),
-        ("&Reload menu",reload_menu),
-        ("&Close",close_menu),
+        ("&Undo Last Changes", selection.undoChanges),
+        ("---", None),
+        ("&Concatenate Selection", concatenateSelection),
+        ("&Partition Selection", partitionSelection),
+        ("&Create Parts", createParts),
+        ("&Sectionize Selection", sectionizeSelection),
+        ("---", None),
+        ("&Fly", fly),
+        ("---", None),
+        ("&Reload menu", reload_menu),
+        ("&Close", close_menu),
         ]
-    return menu.Menu(_menu,items=MenuData,parent=pf.GUI.menu,before='help')
+    return menu.Menu(_menu, items=MenuData, parent=pf.GUI.menu, before='help')
 
     
 def show_menu():

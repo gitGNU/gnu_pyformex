@@ -64,7 +64,7 @@ def draw(F,
     """New draw function for OpenGL2"""
 
     # For simplicity of the code, put objects to draw always in a list
-    if isinstance(F,list):
+    if isinstance(F, list):
         FL = F
     else:
         FL = [ F ]
@@ -82,11 +82,11 @@ def draw(F,
     attr.update(kargs)
 
     if nres < ntot and not attr.silent:
-        raise ValueError("Data contains undrawable objects (%s/%s)" % (ntot-nres,ntot))
+        raise ValueError("Data contains undrawable objects (%s/%s)" % (ntot-nres, ntot))
 
     # Shrink the objects if requested
     if attr.shrink:
-        FL = [ _shrink(F,attr.shrink_factor) for F in FL ]
+        FL = [ _shrink(F, attr.shrink_factor) for F in FL ]
 
     ## # Execute the drawlock wait before doing first canvas change
     pf.GUI.drawlock.wait()
@@ -95,7 +95,7 @@ def draw(F,
         clear_canvas()
 
     if attr.view is not None and attr.view != 'last':
-        pf.debug("SETTING VIEW to %s" % attr.view,pf.DEBUG.DRAW)
+        pf.debug("SETTING VIEW to %s" % attr.view, pf.DEBUG.DRAW)
         gui.draw.setView(attr.view)
 
     pf.GUI.setBusy()
@@ -141,13 +141,13 @@ def draw(F,
 
         view = attr.view
         bbox = attr.bbox
-        pf.debug(pf.canvas.drawoptions,pf.DEBUG.OPENGL)
-        pf.debug(attr,pf.DEBUG.OPENGL)
-        pf.debug(view,pf.DEBUG.OPENGL)
-        pf.debug(bbox,pf.DEBUG.OPENGL)
+        pf.debug(pf.canvas.drawoptions, pf.DEBUG.OPENGL)
+        pf.debug(attr, pf.DEBUG.OPENGL)
+        pf.debug(view, pf.DEBUG.OPENGL)
+        pf.debug(bbox, pf.DEBUG.OPENGL)
 
         # Adjust the camera
-        if view is not None or bbox not in [None,'last']:
+        if view is not None or bbox not in [None, 'last']:
             if view == 'last':
                 view = pf.canvas.drawoptions['view']
             if bbox == 'auto':
@@ -155,7 +155,7 @@ def draw(F,
             if bbox == 'last':
                 bbox = None
 
-            pf.canvas.setCamera(bbox,view)
+            pf.canvas.setCamera(bbox, view)
 
         # Update the rendering
         pf.canvas.update()
@@ -208,7 +208,7 @@ _set_actors()
 
 def _set_webgl():
 
-    def format_actor (self,actor):
+    def format_actor (self, actor):
         """Export an actor in XTK Javascript format."""
         s = ""
         for attr in actor:
@@ -217,21 +217,21 @@ def _set_webgl():
             if len(attr.children) > 0:
                 s += "%s.children = new Array();\n" % name
                 for child in attr.children:
-                    s += "%s.children.push(%s);\n" % (name,child)
+                    s += "%s.children.push(%s);\n" % (name, child)
             if attr.file is not None:
-                s += "%s.file = '%s';\n" % (name,attr.file)
+                s += "%s.file = '%s';\n" % (name, attr.file)
             if attr.caption is not None:
-                s += "%s.caption = '%s';\n" % (name,attr.caption)
+                s += "%s.caption = '%s';\n" % (name, attr.caption)
             if attr.useObjectColor and attr.color is not None:
-               s += "%s.color = %s;\n" % (name,list(attr.color))
+               s += "%s.color = %s;\n" % (name, list(attr.color))
             if attr.alpha is not None:
-                s += "%s.opacity = %s;\n" % (name,attr.alpha)
+                s += "%s.opacity = %s;\n" % (name, attr.alpha)
             if attr.lighting is not None:
-                s += "%s.lighting = %s;\n" % (name,str(bool(attr.lighting)).lower())
+                s += "%s.lighting = %s;\n" % (name, str(bool(attr.lighting)).lower())
             if attr.cullface is not None:
-                s += "%s.cullface = '%s';\n" % (name,attr.cullface)
+                s += "%s.cullface = '%s';\n" % (name, attr.cullface)
             if attr.magicmode is not None:
-                s += "%s.magicmode = '%s';\n" % (name,str(bool(attr.magicmode)).lower())
+                s += "%s.magicmode = '%s';\n" % (name, str(bool(attr.magicmode)).lower())
             if len(attr.children) == 0:
                 s += "r.add(%s);\n" % name
             s += "\n"

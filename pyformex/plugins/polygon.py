@@ -39,7 +39,7 @@ import utils
 #
 # TODO : this should be integrated with CoordinateSystem
 #
-def projected(X,N):
+def projected(X, N):
     """Returns 2-D coordinates of a set of 3D coordinates.
 
     The returned 2D coordinates are still stored in a 3D Coords object.
@@ -48,12 +48,12 @@ def projected(X,N):
     from geomtools import rotationAngle
     if N is None:
         N = self.normal
-    a,A = rotationAngle([0.,0.,1.],N)
-    a,A = a[0],A[0]
-    X = X.rotate(angle=-a,axis=A)
+    a, A = rotationAngle([0., 0., 1.], N)
+    a, A = a[0], A[0]
+    X = X.rotate(angle=-a, axis=A)
     C = X.center()
     X = X.translate(-C)
-    return X,C,A,a
+    return X, C, A, a
 
 
 def delaunay(X):
@@ -64,7 +64,7 @@ def delaunay(X):
     Returns a TriSurface with the Delaunay trinagulation in the x-y plane.
     """
     from voronoi import voronoi
-    return TriSurface(X,voronoi(X[:,:2]).triangles)
+    return TriSurface(X, voronoi(X[:, :2]).triangles)
     
 
 class Polygon(Geometry):
@@ -79,7 +79,7 @@ class Polygon(Geometry):
         """Initialize a Polygon instance"""
         Geometry.__init__(self)
         self.prop = None
-        self.coords = border.reshape(-1,3)
+        self.coords = border.reshape(-1, 3)
 
 
     def npoints(self):
@@ -90,13 +90,13 @@ class Polygon(Geometry):
     def vectors(self):
         """Return the vectors from each point to the next one."""
         x = self.coords
-        return roll(x,-1,axis=0) - x
+        return roll(x, -1, axis=0) - x
 
 
     def angles(self):
         """Return the angles of the line segments with the x-axis."""
         v = self.vectors()
-        return arctand2(v[:,1],v[:,0])
+        return arctand2(v[:, 1], v[:, 0])
 
 
     def externalAngles(self):
@@ -109,7 +109,7 @@ class Polygon(Geometry):
         A convex polygon has all angles of the same sign.
         """
         a = self.angles()
-        va =  a - roll(a,1)
+        va =  a - roll(a, 1)
         va[va <= -180.] += 360.
         va[va > 180.] -= 360.
         return va
@@ -140,7 +140,7 @@ class Polygon(Geometry):
 
     def reverse(self):
         """Return the Polygon with reversed order of vertices."""
-        return Polygon(Coords(reverseAxis(self.coords,0)))
+        return Polygon(Coords(reverseAxis(self.coords, 0)))
 
 
     def fill(self):
@@ -150,11 +150,11 @@ class Polygon(Geometry):
         """
         print("AREA(self) %s" % self.area())
         # creating elems array at once (more efficient than appending)
-        from gui.draw import draw,pause,undraw
+        from gui.draw import draw, pause, undraw
         from geomtools import insideTriangle
         x = self.coords
         n = x.shape[0]
-        tri = -ones((n-2,3),dtype=Int)
+        tri = -ones((n-2, 3), dtype=Int)
         # compute all internal angles
         e = arange(x.shape[0])
         c = self.internalAngles()
@@ -173,34 +173,34 @@ class Polygon(Geometry):
                     #
                     # We could return here also the remaining part
                     #
-                    return TriSurface(x,tri[:itri])
+                    return TriSurface(x, tri[:itri])
                 i = (j - 1) % n
                 k = (j + 1) % n
-                newtri = [ e[i],e[j],e[k]]
+                newtri = [ e[i], e[j], e[k]]
                 # remove the point j of triangle i,j,k
                 # recompute adjacent angles of edge i,k
                 ii = (i-1) % n
                 kk = (k+1) % n
-                iq = e[[ii,i,k,kk]]
+                iq = e[[ii, i, k, kk]]
                 PQ = Polygon(x[iq])
                 cn = PQ.internalAngles()
                 cnew = cn[1:3]
-                reme = roll(e,-j)[2:-1]
-                T = x[newtri].reshape(1,3,3)
-                P = x[reme].reshape(-1,1,3)
-                check = insideTriangle(T,P)
+                reme = roll(e, -j)[2:-1]
+                T = x[newtri].reshape(1, 3, 3)
+                P = x[reme].reshape(-1, 1, 3)
+                check = insideTriangle(T, P)
                 if not check.any():
                     # Triangle is ok
                     break
             #draw(TriSurface(x,newtri),bbox='last',color='red')
             # accept new triangle
             tri[itri] = newtri
-            c = roll(concatenate([cnew,roll(c,1-j)[3:]]),j-1)
-            e = roll(roll(e,-j)[1:],j)
+            c = roll(concatenate([cnew, roll(c, 1-j)[3:]]), j-1)
+            e = roll(roll(e, -j)[1:], j)
             n -= 1
             itri += 1
         tri[itri] = e
-        return TriSurface(x,tri)
+        return TriSurface(x, tri)
 
 
     def area(self):
@@ -214,13 +214,13 @@ class Polygon(Geometry):
     def toMesh(self):
         from mesh import Mesh
         a = arange(self.coords.shape[0])
-        e = column_stack([a,roll(a,-1)])
-        return Mesh(self.coords,e)
+        e = column_stack([a, roll(a, -1)])
+        return Mesh(self.coords, e)
 
 
     def toFormex(self):
         from formex import Formex
-        x = stack([self.coords,roll(self.coords,-1,axis=0)],axis=1)
+        x = stack([self.coords, roll(self.coords, -1, axis=0)], axis=1)
         return Formex(x)
         
 
@@ -229,12 +229,12 @@ if __name__ == 'draw':
 
 
     def randomPL(n=5,r=0.7,noise=0.0):
-        x = randomNoise((n),r*3.,3.)
-        y = sorted(randomNoise((n),0.,360.))
+        x = randomNoise((n), r*3., 3.)
+        y = sorted(randomNoise((n), 0., 360.))
         #y = y[::-1] # reverse
         z = zeros(n)
-        X = Coords(column_stack([x,y,z])).cylindrical().addNoise(noise)
-        return PolyLine(X,closed=True)
+        X = Coords(column_stack([x, y, z])).cylindrical().addNoise(noise)
+        return PolyLine(X, closed=True)
 
     def readPL(n=5,r=0.7,noise=0.0):
         fn = askFilename()
@@ -254,11 +254,11 @@ if __name__ == 'draw':
         ##     clear()
         ##     smoothwire()
 
-        ans = ask("Read curve or create random?",["Read","Random","Cancel"])
+        ans = ask("Read curve or create random?", ["Read", "Random", "Cancel"])
 
         PL = None
         if ans == "Random":
-            PL = randomPL(n=5,r=0.7,noise=0.0)
+            PL = randomPL(n=5, r=0.7, noise=0.0)
         elif ans == "Read":
             PL = readPL()
 
@@ -268,7 +268,7 @@ if __name__ == 'draw':
         PG = Polygon(PL.coords).reverse()
         X = PG.coords
         #drawNumbers(X)
-        draw(PL,color=cyan,linewidth=3)
+        draw(PL, color=cyan, linewidth=3)
 
         v = normalize(PG.vectors())
         #drawVectors(PG.coords,v,color=red,linewidth=2)
@@ -281,14 +281,14 @@ if __name__ == 'draw':
         print("External angles:", ae)
         print("Internal angles:", ai)
 
-        print("Sum of external angles: ",ae.sum())
+        print("Sum of external angles: ", ae.sum())
         print("The polygon is convex: %s" % PG.isConvex())
 
         ## viewport(2)
         S = PG.fill()
-        draw(S,color=red)
+        draw(S, color=red)
         #drawNumbers(S)
-        drawText(S.check(),100,20)
+        drawText(S.check(), 100, 20)
 
     run()
     

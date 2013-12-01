@@ -29,53 +29,53 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
 _topics = ['geometry']
-_techniques = ['programming','widgets','globals']
+_techniques = ['programming', 'widgets', 'globals']
 
 from gui.draw import *
 
 def torus(m,n,surface=True):
     """Create a torus with m cells along big circle and n cells along small."""
     if surface:
-        C = Formex([[[0,0,0],[1,0,0],[0,1,0]],[[1,0,0],[1,1,0],[0,1,0]]],[1,3])
+        C = Formex([[[0, 0, 0], [1, 0, 0], [0, 1, 0]], [[1, 0, 0], [1, 1, 0], [0, 1, 0]]], [1, 3])
     else:
-        C = Formex('l:164',[1,2,3])
-    F = C.replic2(m,n,1,1)
-    G = F.translate(2,1).cylindrical([2,1,0],[1.,360./n,1.])
-    H = G.translate(0,5).cylindrical([0,2,1],[1.,360./m,1.])
+        C = Formex('l:164', [1, 2, 3])
+    F = C.replic2(m, n, 1, 1)
+    G = F.translate(2, 1).cylindrical([2, 1, 0], [1., 360./n, 1.])
+    H = G.translate(0, 5).cylindrical([0, 2, 1], [1., 360./m, 1.])
     return H
 
 
 def series():
     view='iso'
-    for n in [3,4,6,8,12]:
-        for m in [3,4,6,12,36]:
+    for n in [3, 4, 6, 8, 12]:
+        for m in [3, 4, 6, 12, 36]:
             clear()
-            draw(torus(m,n),view)
+            draw(torus(m, n), view)
             view=None
 
-def drawTorus(m,n):
+def drawTorus(m, n):
     clear()
-    print(m,n)
-    draw(torus(m,n),view=None)
+    print(m, n)
+    draw(torus(m, n), view=None)
 
 def nice():
-    drawTorus(72,36)
+    drawTorus(72, 36)
 
 
 def run():
-    global m,n
+    global m, n
     m = 20
     n = 10
     while not dialogTimedOut():
         res = askItems([
-            _I('m',m,itemtype='slider',text='Number of elements along large circle',min=3,max=72),
-            _I('n',n,itemtype='slider',text='Number of elements along small circle',min=3,max=36)
+            _I('m', m, itemtype='slider', text='Number of elements along large circle', min=3, max=72),
+            _I('n', n, itemtype='slider', text='Number of elements along small circle', min=3, max=36)
             ])
         if not res:
             break
 
         globals().update(res)
-        drawTorus(m,n)
+        drawTorus(m, n)
 
 
 if __name__ == 'draw':

@@ -37,8 +37,8 @@ from arraytools import *
 def norm2(A):
     return sqrt(square(asarray(A)).sum(axis=-1))
 
-def norm(A,x):
-    return power(power(asarray(A),x).sum(axis=-1),1./x)
+def norm(A, x):
+    return power(power(asarray(A), x).sum(axis=-1), 1./x)
 
 def max(A):
     return asarray(A).max(axis=-1)
@@ -68,9 +68,9 @@ def frameScale(nframes=10,cycle='up',shape='linear'):
     """
     s = arange(nframes+1)
     if cycle in [ 'updown', 'revert' ]:
-        s = concatenate([s, fliplr(s[:-1].reshape((1,-1)))[0]])
+        s = concatenate([s, fliplr(s[:-1].reshape((1, -1)))[0]])
     if cycle in [ 'revert' ]: 
-        s = concatenate([s, -fliplr(s[:-1].reshape((1,-1)))[0]])
+        s = concatenate([s, -fliplr(s[:-1].reshape((1, -1)))[0]])
     return s.astype(float)/nframes
 
 

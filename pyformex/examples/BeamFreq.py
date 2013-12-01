@@ -33,8 +33,8 @@ Make sure you have version 1.5-a8 or higher.
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['FEA','curve','drawing']
-_techniques = ['external','viewport']
+_topics = ['FEA', 'curve', 'drawing']
+_techniques = ['external', 'viewport']
 _opengl2 = True
 
 from gui.draw import *
@@ -43,7 +43,7 @@ import simple
 
 def check_calix(version='1.5-a8'):
     """Check that we have the required calix version"""
-    ok = utils.checkVersion('calix',version,True) >= 0
+    ok = utils.checkVersion('calix', version, True) >= 0
     if not ok:
         showText("""..
 
@@ -62,7 +62,7 @@ Calix is a free program and you can install it as follows:
    cd calix-1.5
    make
    (sudo) make install
-""" % (version,version))
+""" % (version, version))
     return ok
 
 
@@ -70,28 +70,28 @@ def geometry():
     global M
     n = 16
     nshow = 4
-    bcons = ['cantilever','simply supported']
+    bcons = ['cantilever', 'simply supported']
     keep = False
     verbose = False
 
     res = askItems([
-        _I('n',n,text='number of elements along beam'),
-        _I('nshow',nshow,text='number of natural modes to show'),
-        _I('bcon',bcons[0],text='beam boundary conditions',choices=bcons),
-        _I('keep',keep,text='keep data and result files'),
-        _I('verbose',verbose,text='show intermediate information'),
+        _I('n', n, text='number of elements along beam'),
+        _I('nshow', nshow, text='number of natural modes to show'),
+        _I('bcon', bcons[0], text='beam boundary conditions', choices=bcons),
+        _I('keep', keep, text='keep data and result files'),
+        _I('verbose', verbose, text='show intermediate information'),
         ])
     if not res:
         return
 
     globals().update(res)
-    F = simple.line([0.,0.,0.],[0.,1.,0.],n)
+    F = simple.line([0., 0., 0.], [0., 1., 0.], n)
     M = F.toMesh()
     return M
 
 
 def compute():
-    global nshow,a,freq
+    global nshow, a, freq
     nnod = M.ncoords()
     nel = M.nelems()
     nmat = 1
@@ -105,15 +105,15 @@ endtext
 """
 
     # params
-    s += " %s %s %s %s\n" % (nnod+1,nel,nmat,iout)
+    s += " %s %s %s %s\n" % (nnod+1, nel, nmat, iout)
     # nodes
-    for i,x in enumerate(M.coords):
+    for i, x in enumerate(M.coords):
         s += "%5d%10.3e%10.3e%10.3e\n" %  ((i+1,)+tuple(x))
     # orientation node
-    s += "%5d%10.3e%10.3e%10.3e\n\n" %  (nnod+1,0.0,0.0,1.0)
+    s += "%5d%10.3e%10.3e%10.3e\n\n" %  (nnod+1, 0.0, 0.0, 1.0)
 
     # boundary conditions
-    s += "%5s    0    1    1    1    1    0%5s    1\n" %  (2,nnod-2)
+    s += "%5s    0    1    1    1    1    0%5s    1\n" %  (2, nnod-2)
     s += "%5s    1    1    1    1    1    1\n" % (nnod+1)
     if bcon == 'cantilever':
         # boundary conditions for cantilever
@@ -128,8 +128,8 @@ endtext
     s += "      3.d6     1.2d6      1.00     3000.      1.00     70.d4    110.d4\n"
     # elems
     fmt = "%5s"*(M.nplex()+3) + '\n'
-    for i,e in enumerate(M.elems+1):
-        s += fmt % ((i+1,1)+tuple(e)+(nnod+1,))
+    for i, e in enumerate(M.elems+1):
+        s += fmt % ((i+1, 1)+tuple(e)+(nnod+1,))
 
     # action and output in a format we can easily read back
     s += """
@@ -153,7 +153,7 @@ stop
     chdir(tmpdir)
     print("Using a temporary directory: %s" % tmpdir)
 
-    fil = open('temp.dta','w')
+    fil = open('temp.dta', 'w')
     fil.write(s)
     fil.close()
 
@@ -175,20 +175,20 @@ stop
         showFile('test.out')
 
     # read results from eigenvalue analysis
-    fil = open('test.out','r')
-    nnod,ndof = fromfile(fil,sep=' ',count=2,dtype=int)
-    eig = fromfile(fil,sep=' ',count=4*ndof).reshape(ndof,4)
+    fil = open('test.out', 'r')
+    nnod, ndof = fromfile(fil, sep=' ', count=2, dtype=int)
+    eig = fromfile(fil, sep=' ', count=4*ndof).reshape(ndof, 4)
 
-    nshow = min(nshow,ndof)
-    freq = eig[:nshow,2]
+    nshow = min(nshow, ndof)
+    freq = eig[:nshow, 2]
     basefreq = freq[0]
     print("Frequencies: %s" % freq)
     print("Multipliers: %s" % (freq/freq[0]))
 
-    a = fromfile(fil,sep=' ',).reshape(-1,nnod,6)
+    a = fromfile(fil, sep=' ',).reshape(-1, nnod, 6)
     # print a.shape
     # remove the extra node
-    a = a[:,:-1,:]
+    a = a[:, :-1,:]
 
     chdir(savedir)
     if not keep:
@@ -196,11 +196,11 @@ stop
         utils.removeTree(tmpdir)
 
 
-def drawDeformed(M,u,r):
+def drawDeformed(M, u, r):
     xd = M.coords.copy()
-    xd[:,0] += u
+    xd[:, 0] += u
     c = NaturalSpline(xd)
-    draw(c,color=red)
+    draw(c, color=red)
     draw(c.pointsOn())
 
 
@@ -213,17 +213,17 @@ def showResults(hscale):
         linewidth(2)
         draw(M)
         ai = a[i]
-        u = ai[:,0]
+        u = ai[:, 0]
         imax = argmax(abs(u))
-        r = ai[:,5]
+        r = ai[:, 5]
         sc = hscale / u[imax]
         u *= sc
         r *= sc
         # print u,r
-        drawDeformed(M,u,r)
+        drawDeformed(M, u, r)
         fi = freq[i]
         mi = fi/freq[0]
-        drawText('%s Hz = %.2f f0' % (fi,mi),20,20,size=20)
+        drawText('%s Hz = %.2f f0' % (fi, mi), 20, 20, size=20)
 
 
 def run():
@@ -235,7 +235,7 @@ def run():
     M = geometry()
     if M:
         compute()
-        layout(nshow,ncols=4)
+        layout(nshow, ncols=4)
         showResults(hscale = 0.5)
 
 if __name__ == 'draw':

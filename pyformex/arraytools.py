@@ -37,7 +37,7 @@ from numpy import *
 import sys
 if sys.hexversion >= 0x02060000:
     # We have combinations and permutations built in
-    from itertools import combinations,permutations
+    from itertools import combinations, permutations
 else:
     # Provide our own implementation of combinations,permutations
     def combinations(iterable, r):
@@ -89,11 +89,11 @@ else:
 # Define a wrapper function for old versions of numpy
 
 try:
-    unique([1],True)
+    unique([1], True)
 except TypeError:
     from numpy import unique1d as unique
 
-if unique([1],True)[0][0] == 0:
+if unique([1], True)[0][0] == 0:
     # We have the old numy version
     import utils   # We are early on startup: utils not loaded yet
     utils.warn("warn_old_numpy")
@@ -102,8 +102,8 @@ if unique([1],True)[0][0] == 0:
         """Replacement for numpy's unique1d"""
         import numpy
         if return_indices:
-            indices,uniq = numpy.unique1d(a,True)
-            return uniq,indices
+            indices, uniq = numpy.unique1d(a, True)
+            return uniq, indices
         else:
             return numpy.unique1d(a)
 
@@ -120,7 +120,7 @@ def isInt(obj):
     The type of the object can be either a Python int or a
     numpy integer type.
     """
-    return isinstance(obj,(int,integer))
+    return isinstance(obj, (int, integer))
 
 
 def isFloat(obj):
@@ -130,10 +130,10 @@ def isFloat(obj):
     The type of the object can be either a Python float or a
     numpy floating type.
     """
-    return isinstance(obj,(float,floating))
+    return isinstance(obj, (float, floating))
 
 
-def powers(x,n):
+def powers(x, n):
     """Compute all the powers of x from zero up to n
 
     Returns a list of arrays with same shape as x
@@ -236,7 +236,7 @@ def arctand2(sin,cos,angle_spec=DEG):
     >>> print(arctand2(0.0,-1.0), arctand2(-sqrt(0.5),-sqrt(0.5),RAD))
     180.0 -2.35619449019
     """
-    return arctan2(sin,cos)/angle_spec
+    return arctan2(sin, cos)/angle_spec
 
 
 def niceLogSize(f):
@@ -270,7 +270,7 @@ def niceNumber(f,below=False):
     """
     fa = abs(f)
     s = "%.0e" % fa
-    m,n = map(int,s.split('e'))
+    m, n = map(int, s.split('e'))
     if not below:
         m = m+1
     return m*10.**n
@@ -315,7 +315,7 @@ def normalize(A,axis=-1):
     A = asarray(A)
     shape = list(A.shape)
     shape[axis] = 1
-    Al = length(A,axis).reshape(shape)
+    Al = length(A, axis).reshape(shape)
 #    if (Al == 0.).any():
 #        raise ValueError("Normalization of zero vector."
     return A/Al
@@ -327,8 +327,8 @@ def projection(A,B,axis=-1):
     The components of the vectors are stored along the specified array axis
     (default axis is the last).
     """
-    d = dotpr(A,B,axis)
-    Bl = length(B,axis)
+    d = dotpr(A, B, axis)
+    Bl = length(B, axis)
     if (Bl == 0.).any():
         raise ValueError("Projection on zero vector.")
     return d/Bl
@@ -340,7 +340,7 @@ def orthog(A,B,axis=-1):
     The components of the vectors are stored along the specified array axis
     (default axis is the last).
     """
-    p = projection(A,B,axis=-1)
+    p = projection(A, B, axis=-1)
     return A - p * normalize(B)
 
 
@@ -363,7 +363,7 @@ def norm(v,n=2):
     return
 
 
-def horner(a,u):
+def horner(a, u):
     """Compute the value of a polynom using Horner's rule.
 
     Parameters:
@@ -380,9 +380,9 @@ def horner(a,u):
 
     """
     a = asarray(a)
-    u = asarray(u).reshape(-1,1)
+    u = asarray(u).reshape(-1, 1)
     c = a[-1]
-    for i in range(-2,-1-len(a),-1):
+    for i in range(-2, -1-len(a), -1):
         c = c * u + a[i]
     return c
 
@@ -403,35 +403,35 @@ def solveMany(A,b,direct=True):
     equation solver is called for each system of equations. This is also the
     method used if ``ndof>4``.
     """
-    ndof,nrhs,nsys = b.shape
-    if A.shape[:2] != (ndof,ndof):
-        raise ValueError("A(%s) and b(%s) have incompatible shape" % (A.shape,b.shape))
+    ndof, nrhs, nsys = b.shape
+    if A.shape[:2] != (ndof, ndof):
+        raise ValueError("A(%s) and b(%s) have incompatible shape" % (A.shape, b.shape))
 
     if ndof < 4 and direct:
-        A = addAxis(A,2)
-        b = addAxis(b,1)
+        A = addAxis(A, 2)
+        b = addAxis(b, 1)
 
         if ndof == 1:
-            x = b[0]/A[0,0]
+            x = b[0]/A[0, 0]
 
         elif ndof == 2:
-            denom = cross(A[:,0],A[:,1],axis=0)
-            As = roll(A,-1,axis=1)
-            As[:,1] *= -1.
-            x = cross(b,As,axis=0) / denom
+            denom = cross(A[:, 0], A[:, 1], axis=0)
+            As = roll(A, -1, axis=1)
+            As[:, 1] *= -1.
+            x = cross(b, As, axis=0) / denom
 
         elif ndof == 3:
-            C = cross(roll(A,-1,axis=1),roll(A,-2,axis=1),axis=0)
-            denom = dotpr(A[:,0],C[:,0],axis=0)
-            x = dotpr(b,C,axis=0) / denom
+            C = cross(roll(A, -1, axis=1), roll(A, -2, axis=1), axis=0)
+            denom = dotpr(A[:, 0], C[:, 0], axis=0)
+            x = dotpr(b, C, axis=0) / denom
 
     else:
-        x = dstack([linalg.solve(A[:,:,i],b[:,:,i]) for i in range(nsys)])
+        x = dstack([linalg.solve(A[:,:, i], b[:,:, i]) for i in range(nsys)])
 
     return x
 
 
-def inside(p,mi,ma):
+def inside(p, mi, ma):
     """Return true if point p is inside bbox defined by points mi and ma"""
     return p[0] >= mi[0] and p[1] >= mi[1] and p[2] >= mi[2] and \
            p[0] <= ma[0] and p[1] <= ma[1] and p[2] <= ma[2]
@@ -459,7 +459,7 @@ def anyVector(v):
     v is some data compatible with a (3)-shaped float array.
     Returns v as such an array.
     """
-    return asarray(v,dtype=Float).reshape((3))
+    return asarray(v, dtype=Float).reshape((3))
 
 
 def unitVector(v):
@@ -469,10 +469,10 @@ def unitVector(v):
       or a 3-element array or compatible.
     """
     if array(v).size == 1:
-        u = zeros((3),dtype=Float)
+        u = zeros((3), dtype=Float)
         u[v] = 1.0
     else:
-        u = asarray(v,dtype=Float).reshape((3))
+        u = asarray(v, dtype=Float).reshape((3))
         ul = length(u)
         if ul <= 0.0:
             raise ValueError("Zero length vector %s" % v)
@@ -502,21 +502,21 @@ def rotationMatrix(angle,axis=None,angle_spec=DEG):
     c = cos(a)
     s = sin(a)
     if axis==None:
-        f = [[c,s],[-s,c]]
+        f = [[c, s], [-s, c]]
     elif array(axis).size == 1:
         f = [[0.0 for i in range(3)] for j in range(3)]
         axes = range(3)
-        i,j,k = axes[axis:]+axes[:axis]
+        i, j, k = axes[axis:]+axes[:axis]
         f[i][i] = 1.0
         f[j][j] = c
         f[j][k] = s
         f[k][j] = -s
         f[k][k] = c
     else:
-        X,Y,Z = unitVector(axis)
+        X, Y, Z = unitVector(axis)
         t = 1.-c
-        f = [ [ t*X*X + c  , t*X*Y + s*Z, t*X*Z - s*Y ],
-              [ t*Y*X - s*Z, t*Y*Y + c  , t*Y*Z + s*X ],
+        f = [ [ t*X*X + c, t*X*Y + s*Z, t*X*Z - s*Y ],
+              [ t*Y*X - s*Z, t*Y*Y + c, t*Y*Z + s*X ],
               [ t*Z*X + s*Y, t*Z*Y - s*X, t*Z*Z + c   ] ]
 
     return array(f)
@@ -534,13 +534,13 @@ def rotmat(x):
     x = asanyarray(x)
     u = normalize(x[1]-x[0])
     v = normalize(x[2]-x[0])
-    v = normalize(orthog(v,u))
-    w = cross(u,v) # is orthog and normalized
-    m = row_stack([u,v,w])
+    v = normalize(orthog(v, u))
+    w = cross(u, v) # is orthog and normalized
+    m = row_stack([u, v, w])
     return m
 
 
-def trfMatrix(x,y):
+def trfMatrix(x, y):
     """Find the transformation matrix from points x0 to x1.
 
     x and y are each arrays of 3 non-colinear points.
@@ -563,13 +563,13 @@ def trfMatrix(x,y):
     r1 = rotmat(x)
     r2 = rotmat(y)
     # combined rotation matrix
-    r = dot(r1.transpose(),r2)
+    r = dot(r1.transpose(), r2)
     # translation vector (in a rotate first operation
-    t = y[0] - dot(x[0],r)
-    return r,t
+    t = y[0] - dot(x[0], r)
+    return r, t
 
 
-def rotMatrix(u,w=[0.,0.,1.],n=3):
+def rotMatrix(u,w=[0., 0., 1.],n=3):
     """Create a rotation matrix that rotates axis 0 to the given vector.
 
     u is a vector representing the
@@ -578,23 +578,23 @@ def rotMatrix(u,w=[0.,0.,1.],n=3):
     u = unitVector(u)
 
     try:
-        v = unitVector(cross(w,u))
+        v = unitVector(cross(w, u))
     except:
-        if w == [0.,0.,1.]:
-            w = [0.,1.,0.]
-            v = unitVector(cross(w,u))
+        if w == [0., 0., 1.]:
+            w = [0., 1., 0.]
+            v = unitVector(cross(w, u))
         else:
             raise
 
-    w = unitVector(cross(u,v))
+    w = unitVector(cross(u, v))
 
-    m = row_stack([u,v,w])
+    m = row_stack([u, v, w])
 
     if n != 4:
         return m
     else:
         a = identity(4)
-        a[0:3,0:3] = m
+        a[0:3, 0:3] = m
         return a
 
 # HOW DOES THIS DEAL WITH GIMBALL LOCK?
@@ -604,14 +604,14 @@ def rotationAnglesFromMatrix(mat,angle_spec=DEG):
     This returns the three angles around the global axes 0, 1 and 2.
     The angles are returned in degrees, unless angle_spec=RAD.
     """
-    rx = arctan(mat[1,2]/mat[2,2])
-    ry = -arcsin(mat[0,2])
-    rz = arctan(mat[0,1]/mat[0,0])
-    for rxi in [rx,pi+rx]:
-        for ryi in [ry,pi-ry]:
-            for rzi in [rz,pi+rz]:
-                R = dot(dot(rotationMatrix(rxi,0,RAD),rotationMatrix(ryi,1,RAD)),rotationMatrix(rzi,2,RAD))
-                T = isClose(mat,R,rtol=1.e-3,atol=1.e-3)
+    rx = arctan(mat[1, 2]/mat[2, 2])
+    ry = -arcsin(mat[0, 2])
+    rz = arctan(mat[0, 1]/mat[0, 0])
+    for rxi in [rx, pi+rx]:
+        for ryi in [ry, pi-ry]:
+            for rzi in [rz, pi+rz]:
+                R = dot(dot(rotationMatrix(rxi, 0, RAD), rotationMatrix(ryi, 1, RAD)), rotationMatrix(rzi, 2, RAD))
+                T = isClose(mat, R, rtol=1.e-3, atol=1.e-3)
                 if T.all():
                     return rxi / angle_spec, ryi / angle_spec, rzi / angle_spec
 
@@ -630,23 +630,23 @@ def vectorRotation(vec1,vec2,upvec=None):
     u = normalize(vec1)
     u1 = normalize(vec2)
     if upvec is None:
-        w = cross(u,u1)
+        w = cross(u, u1)
         if length(w) == 0.: # vec1 and vec2 are parallel
-            x,y,z = u
-            w = array([1.,0.,0.]) if x==0. and y==0. else array([-y,x,0.])
+            x, y, z = u
+            w = array([1., 0., 0.]) if x==0. and y==0. else array([-y, x, 0.])
         w = normalize(w)
-        v = normalize(cross(w,u))
-        v1 = normalize(cross(w,u1))
+        v = normalize(cross(w, u))
+        v1 = normalize(cross(w, u1))
         w1 = w
     else:
         w = normalize(upvec)
-        v = normalize(cross(w,u))
-        w = normalize(cross(u,v))
-        v1 = normalize(cross(w,u1))
-        w1 = normalize(cross(u1,v1))
-    mat1 = column_stack([u,v,w])
-    mat2 = row_stack([u1,v1,w1])
-    mat = dot(mat1,mat2)
+        v = normalize(cross(w, u))
+        w = normalize(cross(u, v))
+        v1 = normalize(cross(w, u1))
+        w1 = normalize(cross(u1, v1))
+    mat1 = column_stack([u, v, w])
+    mat2 = row_stack([u1, v1, w1])
+    mat = dot(mat1, mat2)
     return mat
 
 
@@ -689,7 +689,7 @@ def growAxis(a,add,axis=-1,fill=0):
     else:
         missing = list(a.shape)
         missing[axis] = add
-        return concatenate([a,fill * ones(missing,dtype=a.dtype)],axis=axis)
+        return concatenate([a, fill * ones(missing, dtype=a.dtype)], axis=axis)
 
 
 def reorderAxis(a,order,axis=-1):
@@ -727,12 +727,12 @@ def reorderAxis(a,order,axis=-1):
     a = asarray(a)
     n = a.shape[axis]
     if order == 'reverse':
-        order = arange(n-1,-1,-1)
+        order = arange(n-1, -1, -1)
     elif order == 'random':
         order = random.permutation(n)
     else:
         order = asarray(order)
-    return a.take(order,axis)
+    return a.take(order, axis)
 
 
 def reverseAxis(a,axis=-1):
@@ -753,7 +753,7 @@ def reverseAxis(a,axis=-1):
        [6 5 4]]
 
     """
-    return reorderAxis(a,'reverse',axis)
+    return reorderAxis(a, 'reverse', axis)
 
 
 def addAxis(a,axis=0):
@@ -801,11 +801,11 @@ def multiplex(a,n,axis=-1):
           [3 4 5]
           [3 4 5]]]
     """
-    a = addAxis(a,axis)
+    a = addAxis(a, axis)
     if axis < 0:
         # distance of axis from end has increased with 1
         axis -= 1
-    return a.repeat(n,axis=axis)
+    return a.repeat(n, axis=axis)
 
 
 def stack(al,axis=0):
@@ -816,13 +816,13 @@ def stack(al,axis=0):
     input arrays are stacked. The position of the new axis can be specified,
     and is the first axis by default.
     """
-    return concatenate([addAxis(ai,axis) for ai in al],axis=axis)
+    return concatenate([addAxis(ai, axis) for ai in al], axis=axis)
 
 
 def concat(al,axis=0):
     """Smart array concatenation ignoring empty arrays"""
     if len(al) > 0:
-        return concatenate([a for a in al if a.size > 0],axis=axis)
+        return concatenate([a for a in al if a.size > 0], axis=axis)
     else:
         return []
 
@@ -847,10 +847,10 @@ def minmax(a,axis=-1):
        [[ 0.  0.  0.]
         [ 2.  2.  0.]]]
     """
-    return stack([a.min(axis=axis),a.max(axis=axis)],axis=axis)
+    return stack([a.min(axis=axis), a.max(axis=axis)], axis=axis)
 
 
-def splitrange(n,nblk):
+def splitrange(n, nblk):
     """Split the range of integers 0..n in nblk almost equal sized slices.
 
     This divides the range of integer numbers 0..n in nblk slices of (almost)
@@ -895,11 +895,11 @@ def splitar(ar,nblk,close=False):
     if nblk > na:
         return [ar]
 
-    ndata = splitrange(na,nblk)
+    ndata = splitrange(na, nblk)
     if close:
-        return [ ar[i:j+1] for i,j in zip(ndata[:-1],ndata[1:]) ]
+        return [ ar[i:j+1] for i, j in zip(ndata[:-1], ndata[1:]) ]
     else:
-        return [ ar[i:j] for i,j in zip(ndata[:-1],ndata[1:]) ]
+        return [ ar[i:j] for i, j in zip(ndata[:-1], ndata[1:]) ]
 
 
 def checkInt(value,min=None,max=None):
@@ -935,7 +935,7 @@ def checkFloat(value,min=None,max=None):
             raise
         return a
     except:
-        raise ValueError("Expected a float in the range(%s, %s), got: %s" % (min,max,value))
+        raise ValueError("Expected a float in the range(%s, %s), got: %s" % (min, max, value))
 
 
 def checkArray(a,shape=None,kind=None,allow=None,size=None,ndim=None):
@@ -973,7 +973,7 @@ def checkArray(a,shape=None,kind=None,allow=None,size=None,ndim=None):
                 raise
         return a
     except:
-        raise ValueError("Expected shape %s, kind %s, size %s, ndim %s\n  Got: shape %s, kind %s, size %s, ndim %s" % (shape,kind,size,ndim,a.shape,a.dtype.kind,a.size,a.ndim))
+        raise ValueError("Expected shape %s, kind %s, size %s, ndim %s\n  Got: shape %s, kind %s, size %s, ndim %s" % (shape, kind, size, ndim, a.shape, a.dtype.kind, a.size, a.ndim))
 
 
 
@@ -988,7 +988,7 @@ def checkArray1D(a,kind=None,allow=None,size=None):
     This is equivalent to calling checkArray with shape=None and then
     ravel the result.
     """
-    return checkArray(a,kind=kind,allow=allow,size=size).ravel()
+    return checkArray(a, kind=kind, allow=allow, size=size).ravel()
 
 
 # DEPRECATED IN 0.9.1
@@ -997,7 +997,7 @@ def checkArrayDim(a,ndim=-1):
     utils.deprec("depr_checkarraydim")
     if ndim < 0:
         ndim = None
-    return checkArray(a,ndim=ndim)
+    return checkArray(a, ndim=ndim)
 
 
 def checkUniqueNumbers(nrs,nmin=0,nmax=None):
@@ -1038,7 +1038,7 @@ def readArray(file,dtype,shape,sep=' '):
     """
     shape = asarray(shape)
     size = shape.prod()
-    data = fromfile(file=file,dtype=dtype,count=size,sep=sep).reshape(shape)
+    data = fromfile(file=file, dtype=dtype, count=size, sep=sep).reshape(shape)
     if sep == '':
         pos = file.tell()
         byte = file.read(1)
@@ -1054,10 +1054,10 @@ def writeArray(file,array,sep=' '):
     This uses :func:`numpy.tofile` to write an array to an open file.
     The sep parameter can be specified as in tofile.
     """
-    array.tofile(file,sep=sep)
+    array.tofile(file, sep=sep)
 
 
-def cubicEquation(a,b,c,d):
+def cubicEquation(a, b, c, d):
     """Solve a cubiq equation using a direct method.
 
     a,b,c,d are the (floating point) coefficients of a third degree
@@ -1107,7 +1107,7 @@ def cubicEquation(a,b,c,d):
     t = d/a
 
     # scale variable
-    sc = max(abs(r),sqrt(abs(s)),abs(t)**e3)
+    sc = max(abs(r), sqrt(abs(s)), abs(t)**e3)
     sc = 10**(int(log10(sc)))
     r = r/sc
     s = s/sc/sc
@@ -1130,7 +1130,7 @@ def cubicEquation(a,b,c,d):
         if abs(rt) > 0.0:
             phi = cos(-q2/rt)*e3
             rt = 2.*sqrt(-p3)
-            roots += rt * cos(phi + [0.,+pie, -pie])
+            roots += rt * cos(phi + [0., +pie, -pie])
 
         # sort the 3 roots
 
@@ -1152,11 +1152,11 @@ def cubicEquation(a,b,c,d):
         r2 = -r1/2-rx
         r3 = (u-v)*sqrt(3.)/2.
         r1 = r1-rx
-        roots = array([r1,r2,r3])
+        roots = array([r1, r2, r3])
 
     # scale and return values
     roots *= sc
-    return roots,ic
+    return roots, ic
 
 
 # THIS MAY BE FASTER THAN olist.collectOnLength, BUT IT IS DEPENDENT ON NUMPY
@@ -1301,7 +1301,7 @@ def renumberIndex(index):
       array([0, 1, 2, 2, 3, 0])
 
     """
-    un,pos = uniqueOrdered(index,True)
+    un, pos = uniqueOrdered(index, True)
     srt = pos.argsort()
     old = un[srt]
     return old
@@ -1345,14 +1345,14 @@ def complement(index,n=-1):
     if index.dtype == bool:
         m = index.shape[0]
         if n > m:
-            comp = ones(n,dtype=bool)
+            comp = ones(n, dtype=bool)
             comp[:m] = ~index
         else:
             comp = ~index[:n]
     else:
         if n < 0:
-            n = max(n,1+index.max())
-        comp = delete(arange(n),index)
+            n = max(n, 1+index.max())
+        comp = delete(arange(n), index)
     return comp
 
 
@@ -1391,8 +1391,8 @@ def inverseUniqueIndex(index):
 
     """
     ind = asarray(index)
-    inv = -ones(ind.max()+1,dtype=ind.dtype)
-    inv[ind] = arange(ind.size,dtype=inv.dtype)
+    inv = -ones(ind.max()+1, dtype=ind.dtype)
+    inv[ind] = arange(ind.size, dtype=inv.dtype)
     return inv
 
 
@@ -1421,7 +1421,7 @@ def sortSubsets(a,w=None):
     """
     a = asarray(a).ravel()
     if w is None:
-        h = histogram(a,list(unique(a))+[a.max()+1])[0]
+        h = histogram(a, list(unique(a))+[a.max()+1])[0]
     else:
         w = asarray(w).ravel()
         h = [w[a==j].sum() for j in unique(a)]
@@ -1449,8 +1449,8 @@ def sortByColumns(a):
       array([0, 3, 1, 4, 2])
 
     """
-    A = checkArray(a,ndim=2)
-    keys = [A[:,i] for i in range(A.shape[1]-1,-1,-1)]
+    A = checkArray(a, ndim=2)
+    keys = [A[:, i] for i in range(A.shape[1]-1, -1, -1)]
     return lexsort(keys)
 
 
@@ -1482,24 +1482,24 @@ def uniqueRows(a,permutations=False):
       (array([0, 3, 1]), array([0, 2, 2, 1, 2]))
 
     """
-    A = array(a,copy=permutations)
+    A = array(a, copy=permutations)
     if A.ndim != 2:
         raise ValueError
     if permutations:
         A.sort(axis=-1)
     srt = sortByColumns(A)
-    A = A.take(srt,axis=0)
-    ok = (A != roll(A,1,axis=0)).any(axis=1)
+    A = A.take(srt, axis=0)
+    ok = (A != roll(A, 1, axis=0)).any(axis=1)
     if not ok[0]: # all doubles -> should result in one unique element
         ok[0] = True
     w = where(ok)[0]
     inv = inverseUniqueIndex(srt)
-    uniqid = w.searchsorted(inv,side='right')-1
+    uniqid = w.searchsorted(inv, side='right')-1
     uniq = srt[ok]
-    return uniq,uniqid
+    return uniq, uniqid
 
 
-def argNearestValue(values,target):
+def argNearestValue(values, target):
     """Return the index of the item nearest to target.
 
     Parameters:
@@ -1520,7 +1520,7 @@ def argNearestValue(values,target):
     return argmin(c*c)
 
 
-def nearestValue(values,target):
+def nearestValue(values, target):
     """Return the item nearest to target.
 
     ``values``: a list of float values
@@ -1530,7 +1530,7 @@ def nearestValue(values,target):
     Returns the item in ``values`` values that is
     nearest to ``target``.
     """
-    return values[argNearestValue(values,target)]
+    return values[argNearestValue(values, target)]
 
 
 def inverseIndex(a,sort=True,expand=True):
@@ -1557,7 +1557,7 @@ def inverseIndex(a,sort=True,expand=True):
              [-1, -1,  3]], dtype=int32)
     """
     import varray
-    return varray.inverseIndex(a,sort=sort,expand=expand)
+    return varray.inverseIndex(a, sort=sort, expand=expand)
 
 
 def inverseIndexOld(index,maxcon=4):
@@ -1609,35 +1609,35 @@ def inverseIndexOld(index,maxcon=4):
     ind = asarray(index)
     if len(ind.shape) != 2 or ind.dtype.kind != 'i':
         raise ValueError("index should be an integer array with dimension 2")
-    nr,nc = ind.shape
+    nr, nc = ind.shape
     mr = ind.max() + 1
     mc = maxcon*nc
     # start with all -1 flags, maxcon*nc columns (because in each column
     # of index, some number might appear with multiplicity maxcon)
-    inverse = zeros((mr,mc),dtype=ind.dtype) - 1
+    inverse = zeros((mr, mc), dtype=ind.dtype) - 1
     i = 0 # column in inverse where we will store next result
     for c in range(nc):
-        col = ind[:,c].copy()  # make a copy, because we will change it
+        col = ind[:, c].copy()  # make a copy, because we will change it
         while(col.max() >= 0):
             # we still have values to process in this column
-            uniq,pos = unique(col,True)
+            uniq, pos = unique(col, True)
             #put the unique values at a unique position in inverse index
             ok = uniq >= 0
             if i >= inverse.shape[1]:
                 # no more columns available, expand it
-                inverse = concatenate([inverse,zeros_like(inverse)-1],axis=-1)
-            inverse[uniq[ok],i] = pos[ok]
+                inverse = concatenate([inverse, zeros_like(inverse)-1], axis=-1)
+            inverse[uniq[ok], i] = pos[ok]
             i += 1
             # remove the stored values from index
             col[pos[ok]] = -1
 
     inverse.sort(axis=-1)
     maxc = inverse.max(axis=0)
-    inverse = inverse[:,maxc>=0]
+    inverse = inverse[:, maxc>=0]
     return inverse
 
 
-def matchIndex(target,values):
+def matchIndex(target, values):
     """Find position of values in target.
 
     This function finds the position in the array `target` of the elements
@@ -1668,16 +1668,16 @@ def matchIndex(target,values):
       >>> matchIndex(A,B)
       array([-1, -1,  4,  0, -1], dtype=int32)
     """
-    target = target.reshape(-1,1)
+    target = target.reshape(-1, 1)
     values = values.reshape(-1)
-    inv = inverseIndex(target)[:,-1]
+    inv = inverseIndex(target)[:, -1]
     diff = values.max()-len(inv)+1
     if diff > 0:
-        inv = concatenate([inv,-ones((diff,),dtype=Int)])
+        inv = concatenate([inv, -ones((diff,), dtype=Int)])
     return inv[values]
 
 
-def groupPositions(gid,values):
+def groupPositions(gid, values):
     """Compute the group positions.
 
     Computes the positions per group in a set of group identifiers.
@@ -1700,14 +1700,14 @@ def groupPositions(gid,values):
     """
     srt = gid.argsort()
     gid = gid[srt]
-    first = searchsorted(gid,values,side='left')
-    last = searchsorted(gid,values,side='right')
-    pos = [ srt[i:j] for i,j in zip(first,last) ]
+    first = searchsorted(gid, values, side='left')
+    last = searchsorted(gid, values, side='right')
+    pos = [ srt[i:j] for i, j in zip(first, last) ]
     return pos
 
 
 ## THIS IS A CANDIDATE FOR THE LIBRARY !!!
-def groupArgmin(val,gid):
+def groupArgmin(val, gid):
     """Compute the group minimum.
 
     Computes the minimum value per group of a set of values tagged with
@@ -1734,10 +1734,10 @@ def groupArgmin(val,gid):
     (array([1, 2, 6]), array([5, 0, 3]))
     """
     ugid = unique(gid)
-    pos = groupPositions(gid,ugid)
+    pos = groupPositions(gid, ugid)
     minid = hstack([ val[ind].argmin() for ind in pos ])
-    minpos = hstack([ ind[k] for ind,k in zip(pos,minid) ])
-    return ugid,minpos
+    minpos = hstack([ ind[k] for ind, k in zip(pos, minid) ])
+    return ugid, minpos
 
 
 ###########################################################
@@ -1762,11 +1762,11 @@ def vectorNormalize(vec):
     - normal (n,3): unit-length vectors along vec.
     """
     length = vectorLength(vec)
-    normal = vec / length.reshape((-1,1))
-    return length,normal
+    normal = vec / length.reshape((-1, 1))
+    return length, normal
 
 
-def vectorPairAreaNormals(vec1,vec2):
+def vectorPairAreaNormals(vec1, vec2):
     """Compute area of and normals on parallellograms formed by vec1 and vec2.
 
     vec1 and vec2 are (n,3) shaped arrays holding collections of vectors.
@@ -1784,36 +1784,36 @@ def vectorPairAreaNormals(vec1,vec2):
     Note that where two vectors are parallel, an area zero results and
     an axis with components NaN.
     """
-    normal = cross(vec1.reshape(-1,3),vec2.reshape(-1,3))
+    normal = cross(vec1.reshape(-1, 3), vec2.reshape(-1, 3))
     area = vectorLength(normal)
-    errh = seterr(divide='ignore',invalid='ignore')
-    normal /= area.reshape((-1,1))
+    errh = seterr(divide='ignore', invalid='ignore')
+    normal /= area.reshape((-1, 1))
     seterr(**errh)
-    return area,normal
+    return area, normal
 
 
-def vectorPairArea(vec1,vec2):
+def vectorPairArea(vec1, vec2):
     """Compute area of the parallellogram formed by a vector pair vec1,vec2.
 
     vec1 and vec2 are (n,3) shaped arrays holding collections of vectors.
     The result is an (n) shaped array with the area of the parallellograms
     formed by each pair of vectors (vec1,vec2).
     """
-    normal = cross(vec1.reshape(-1,3),vec2.reshape(-1,3))
+    normal = cross(vec1.reshape(-1, 3), vec2.reshape(-1, 3))
     return length(normal)
 
 
-def vectorPairNormals(vec1,vec2):
+def vectorPairNormals(vec1, vec2):
     """Compute vectors normal to vec1 and vec2.
 
     vec1 and vec2 are (n,3) shaped arrays holding collections of vectors.
     The result is an (n,3) shaped array of unit length vectors normal to
     each couple (edg1,edg2).
     """
-    return vectorPairAreaNormals(vec1,vec2)[1]
+    return vectorPairAreaNormals(vec1, vec2)[1]
 
 
-def vectorTripleProduct(vec1,vec2,vec3):
+def vectorTripleProduct(vec1, vec2, vec3):
     """Compute triple product vec1 . (vec2 x vec3).
 
     vec1, vec2, vec3 are (n,3) shaped arrays holding collections of vectors.
@@ -1824,10 +1824,10 @@ def vectorTripleProduct(vec1,vec2,vec3):
     If vec1 is a unit normal, the result is also the area of the parallellogram
     (vec2,vec3) projected in the direction vec1.
     """
-    return dotpr(vec1,cross(vec2,vec3))
+    return dotpr(vec1, cross(vec2, vec3))
 
 
-def vectorPairCosAngle(v1,v2):
+def vectorPairCosAngle(v1, v2):
     """Return the cosinus of the angle between the vectors v1 and v2.
 
     vec1 and vec2 are (n,3) shaped arrays holding collections of vectors.
@@ -1836,22 +1836,22 @@ def vectorPairCosAngle(v1,v2):
     """
     v1 = asarray(v1)
     v2 = asarray(v2)
-    cos = dotpr(v1,v2) / sqrt(dotpr(v1,v1)*dotpr(v2,v2))
+    cos = dotpr(v1, v2) / sqrt(dotpr(v1, v1)*dotpr(v2, v2))
     # clip to [-1.,1.] in case of rounding errors
-    return cos.clip(min=-1.,max=1.)
+    return cos.clip(min=-1., max=1.)
 
 
-def vectorPairAngle(v1,v2):
+def vectorPairAngle(v1, v2):
     """Return the angle (in radians) between the vectors v1 and v2.
 
     vec1 and vec2 are (n,3) shaped arrays holding collections of vectors.
     The result is an (n) shaped array with the angle between
     each pair of vectors (vec1,vec2).
     """
-    return arccos(vectorPairCosAngle(v1,v2))
+    return arccos(vectorPairCosAngle(v1, v2))
 
 
-def percentile(values,perc=[25.,50.,75.],wts=None):
+def percentile(values,perc=[25., 50., 75.],wts=None):
     """Return the `perc` percentile(s) of `values`.
 
     Parameters:
@@ -1874,13 +1874,13 @@ def percentile(values,perc=[25.,50.,75.],wts=None):
     ind = values.argsort()
     values = values[ind]
     if wts is None:
-        wts = resize(1.,values.shape)
+        wts = resize(1., values.shape)
     else:
         wts = wts[ind]
     wts = wts.cumsum()
     w = perc /100. * (wts[-1])
     ind = wts.searchsorted(w)
-    val = where(ind>0,values[ind-1]+(w-wts[ind-1])/(wts[ind]-wts[ind-1])*(values[ind]-values[ind-1]),values[0])
+    val = where(ind>0, values[ind-1]+(w-wts[ind-1])/(wts[ind]-wts[ind-1])*(values[ind]-values[ind-1]), values[0])
     return val
 
 
@@ -1901,10 +1901,10 @@ def multiplicity(a):
     """
     bins = unique(a)
     if bins.size > 0:
-        mult,b = histogram(a,bins=concatenate([bins,[max(a)+1]]))
+        mult, b = histogram(a, bins=concatenate([bins, [max(a)+1]]))
     else:
         mult = bins
-    return mult,bins
+    return mult, bins
 
 
 def histogram2(a,bins,range=None):
@@ -1953,14 +1953,14 @@ def histogram2(a,bins,range=None):
     ar = asarray(a)
     if array(bins).size == 1:
         nbins = bins
-        xbins = linspace(a.min(),a.max(),nbins+1)
+        xbins = linspace(a.min(), a.max(), nbins+1)
     else:
         xbins = asarray(bins)
         nbins = len(xbins)-1
-    d = digitize(ar,xbins)
-    ind = [ where(d==i)[0] for i in arange(1,nbins+1) ]
+    d = digitize(ar, xbins)
+    ind = [ where(d==i)[0] for i in arange(1, nbins+1) ]
     hist = asarray([ i.size for i in ind ])
-    return hist,ind,xbins
+    return hist, ind, xbins
 
 
 def movingView(a, size):
@@ -2063,8 +2063,8 @@ def movingAverage(a,n,m0=None,m1=None):
         elif m1 is None:
             m1 = n-1 - m0
         ae = [a[:1]] * m0 + [ a ] + [a[-1:]] * m1
-        ae = concatenate(ae,axis=0)
-    return movingView(ae,n).mean(axis=0)
+        ae = concatenate(ae, axis=0)
+    return movingView(ae, n).mean(axis=0)
 
 
 def randomNoise(shape,min=0.0,max=1.0):
@@ -2092,7 +2092,7 @@ def unitDivisor(div,start=0):
     div = asarray(div).ravel()
     if div.size == 1 and div.dtype.kind=='i':
         n = div[0]
-        div = arange(start,n+1) / float(n)
+        div = arange(start, n+1) / float(n)
     return div
 
 
@@ -2156,9 +2156,9 @@ def nodalSum(val,elems,avg=False,return_all=True,direction_treshold=None):
     elems = elems.astype(int32)
     if val.shape[2] > 1 and direction_treshold is not None:
         #nodalSum2(val,elems,direction_treshold)
-        val = misc.nodalSum(val,elems,elems.max(),avg,return_all)
+        val = misc.nodalSum(val, elems, elems.max(), avg, return_all)
     else:
-        val = misc.nodalSum(val,elems,elems.max(),avg,return_all)
+        val = misc.nodalSum(val, elems, elems.max(), avg, return_all)
     return val
 
 

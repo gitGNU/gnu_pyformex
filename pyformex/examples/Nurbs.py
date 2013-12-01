@@ -70,9 +70,9 @@ custom = ''
 def run():
     
     res = askItems([
-        dict(name='pattern',value=pattern,choices=predefined),
-        dict(name='custom',value=custom),
-        ],enablers=[('pattern','custom','custom')])
+        dict(name='pattern', value=pattern, choices=predefined),
+        dict(name='custom', value=custom),
+        ], enablers=[('pattern', 'custom', 'custom')])
 
     if not res:
         return
@@ -96,18 +96,18 @@ def run():
     setDrawOptions({'bbox':None})
 
     cmap = colormap() * 2
-    n = min(len(C.coords),len(cmap))
+    n = min(len(C.coords), len(cmap))
     dmax = 7 # maximum Nurbs degree we can draw in OpenGL
-    for d in range(1,n):
+    for d in range(1, n):
         print("Degree %s" % d)
         c = cmap[ (d-1) % len(cmap) ] # wrap around if color map is too short
-        N = NurbsCurve(C.coords,degree=d)
+        N = NurbsCurve(C.coords, degree=d)
         if d <= dmax:
-            draw(N,color=c)
-            draw(N.knotPoints(),color=c,marksize=10)
+            draw(N, color=c)
+            draw(N.knotPoints(), color=c, marksize=10)
         else:
-            draw(N.approx(),color=c)
-            draw(N.knotPoints(),color=c,marksize=5)
+            draw(N.approx(), color=c)
+            draw(N.knotPoints(), color=c, marksize=5)
 
     n = 100
     u = arange(n+1)*1.0/n

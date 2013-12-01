@@ -49,10 +49,10 @@ from __future__ import print_function
 
 from plugins.properties import *
 from plugins.fe import *
-from mydict import Dict,CDict
+from mydict import Dict, CDict
 import pyformex as pf
 from datetime import datetime
-import os,sys
+import os, sys
 import utils
 from arraytools import isInt
 
@@ -75,7 +75,7 @@ def abqInputNames(job):
     filename = os.path.abspath(job)
     if not filename.endswith('.inp'):
         filename += '.inp'
-    return jobname,filename
+    return jobname, filename
 
 
 def nsetName(p):
@@ -123,7 +123,7 @@ def fmtData1D(data,npl=8,sep=', ',linesep='\n'):
     data = asarray(data)
     data = data.flat
     return linesep.join([
-        sep.join(map(str,data[i:i+npl])) for i in range(0,len(data),npl)
+        sep.join(map(str, data[i:i+npl])) for i in range(0, len(data), npl)
         ])
 
 def fmtData(data,npl=8,sep=', ',linesep='\n'):
@@ -135,8 +135,8 @@ def fmtData(data,npl=8,sep=', ',linesep='\n'):
     by sep. Lines are separated by linesep.
     """
     data = asarray(data)
-    data = data.reshape(-1,data.shape[-1])
-    return linesep.join([fmtData1D(row,npl,sep,linesep) for row in data])+linesep
+    data = data.reshape(-1, data.shape[-1])
+    return linesep.join([fmtData1D(row, npl, sep, linesep) for row in data])+linesep
 
 
 def fmtOptions(options):
@@ -162,7 +162,7 @@ def fmtHeading(text=''):
 **
 *HEADING
 %s
-""" % (pf.Version(),pf.Url,text)
+""" % (pf.Version(), pf.Url, text)
     return out
 
 def fmtPart(name='Part-1'):
@@ -322,18 +322,18 @@ def fmtMaterial(mat):
     return out
 
 
-def fmtTransform(setname,csys):
+def fmtTransform(setname, csys):
     """Write transform command for the given set.
 
     - `setname` is the name of a node set
     - `csys` is a CoordSystem.
     """
-    out = "*TRANSFORM, NSET=%s, TYPE=%s\n" % (setname,csys.sys)
+    out = "*TRANSFORM, NSET=%s, TYPE=%s\n" % (setname, csys.sys)
     out += fmtData(csys.data.reshape(-1))
     return out
 
 
-def fmtFrameSection(el,setname):
+def fmtFrameSection(el, setname):
     """Write a frame section for the named element set.
 
     Recognized data fields in the property record:
@@ -376,25 +376,25 @@ def fmtFrameSection(el,setname):
         el.shear_modulus = el.young_modulus / 2. / (1.+float(el.poisson_ratio))
 
     sectiontype = el.sectiontype.upper()
-    out += "*FRAME SECTION, ELSET=%s, SECTION=%s%s\n" % (setname,sectiontype,extra)
+    out += "*FRAME SECTION, ELSET=%s, SECTION=%s%s\n" % (setname, sectiontype, extra)
     if sectiontype == 'GENERAL':
-        out += "%s, %s, %s, %s, %s \n" % (float(el.cross_section),float(el.moment_inertia_11),float(el.moment_inertia_12),float(el.moment_inertia_22),float(el.torsional_constant))
+        out += "%s, %s, %s, %s, %s \n" % (float(el.cross_section), float(el.moment_inertia_11), float(el.moment_inertia_12), float(el.moment_inertia_22), float(el.torsional_constant))
     elif sectiontype == 'CIRC':
         out += "%s \n" % float(el.radius)
     elif sectiontype == 'RECT':
-        out += "%s, %s\n" % (float(el.width),float(el.height))
+        out += "%s, %s\n" % (float(el.width), float(el.height))
 
     if el.orientation != None:
         out += fmtData(el.orientation)
     else:
         out += '\n'
 
-    out += fmtData([float(el.young_modulus),float(el.shear_modulus)])
+    out += fmtData([float(el.young_modulus), float(el.shear_modulus)])
 
     return out
 
 
-def fmtGeneralBeamSection(el,setname):
+def fmtGeneralBeamSection(el, setname):
     """Write a general beam section for the named element set.
 
     To specify a beam section when numerical integration over the section is not required.
@@ -435,25 +435,25 @@ def fmtGeneralBeamSection(el,setname):
         el.shear_modulus = el.young_modulus / 2. / (1.+float(el.poisson_ratio))
 
     sectiontype = el.sectiontype.upper()
-    out += "*BEAM GENERAL SECTION, ELSET=%s, SECTION=%s%s\n" % (setname,sectiontype,extra)
+    out += "*BEAM GENERAL SECTION, ELSET=%s, SECTION=%s%s\n" % (setname, sectiontype, extra)
     if sectiontype == 'GENERAL':
-        out += "%s, %s, %s, %s, %s \n" % (float(el.cross_section),float(el.moment_inertia_11),float(el.moment_inertia_12),float(el.moment_inertia_22),float(el.torsional_constant))
+        out += "%s, %s, %s, %s, %s \n" % (float(el.cross_section), float(el.moment_inertia_11), float(el.moment_inertia_12), float(el.moment_inertia_22), float(el.torsional_constant))
     elif sectiontype == 'CIRC':
         out += "%s \n" % float(el.radius)
     elif sectiontype == 'RECT':
-        out += "%s, %s\n" % (float(el.width),float(el.height))
+        out += "%s, %s\n" % (float(el.width), float(el.height))
 
     if el.orientation != None:
         out += "%s,%s,%s\n" % tuple(el.orientation)
     else:
         out += '\n'
 
-    out += "%s, %s \n" % (float(el.young_modulus),float(el.shear_modulus))
+    out += "%s, %s \n" % (float(el.young_modulus), float(el.shear_modulus))
 
     return out
 
 
-def fmtBeamSection(el,setname):
+def fmtBeamSection(el, setname):
     """Write a beam section for the named element set.
 
     To specify a beam section when numerical integration over the section is required.
@@ -486,16 +486,16 @@ def fmtBeamSection(el,setname):
     out = ""
 
     sectiontype = el.sectiontype.upper()
-    out += "*BEAM SECTION, ELSET=%s, MATERIAL=%s, SECTION=%s" % (setname,el.material.name,sectiontype)
+    out += "*BEAM SECTION, ELSET=%s, MATERIAL=%s, SECTION=%s" % (setname, el.material.name, sectiontype)
     if el.poisson != None:
         out += ", POISSON=%s"% (float(el.poisson))
     out += "\n"
     if sectiontype == 'GENERAL':
-        out += "%s, %s, %s, %s, %s \n" % (float(el.cross_section),float(el.moment_inertia_11),float(el.moment_inertia_12),float(el.moment_inertia_22),float(el.torsional_constant))
+        out += "%s, %s, %s, %s, %s \n" % (float(el.cross_section), float(el.moment_inertia_11), float(el.moment_inertia_12), float(el.moment_inertia_22), float(el.torsional_constant))
     elif sectiontype == 'CIRC':
         out += "%s \n" % float(el.radius)
     elif sectiontype == 'RECT':
-        out += "%s, %s\n" % (float(el.width),float(el.height))
+        out += "%s, %s\n" % (float(el.width), float(el.height))
 
     if el.orientation != None:
         out += "%s,%s,%s\n" % tuple(el.orientation)
@@ -514,7 +514,7 @@ def fmtBeamSection(el,setname):
     return out
 
 
-def fmtConnectorSection(el,setname):
+def fmtConnectorSection(el, setname):
     """Write a connector section.
 
     Required:
@@ -563,7 +563,7 @@ def fmtConnectorBehavior(prop):
     return out
 
 
-def fmtSpring(el,setname):
+def fmtSpring(el, setname):
     """Write a spring of type spring.
 
     Optional data:
@@ -579,7 +579,7 @@ def fmtSpring(el,setname):
     return out
 
 
-def fmtDashpot(el,setname):
+def fmtDashpot(el, setname):
     """Write a dashpot.
 
     Optional data:
@@ -598,7 +598,7 @@ def fmtDashpot(el,setname):
 #
 # BV: removed composite, if anyone uses it: create a fmtCompositeSection
 #
-def fmtSolidSection(el,setname,matname):
+def fmtSolidSection(el, setname, matname):
     """Format the SOLID SECTION keyword.
 
     Required:
@@ -620,7 +620,7 @@ def fmtSolidSection(el,setname,matname):
 
      P.elemProp(set='STENT',eltype='C3D8R',section=ElemSection(section=stentSec,material=steel,controls=dict(name='StentControl',hourglass='enhanced'))
     """
-    out = "*SOLID SECTION, ELSET=%s, MATERIAL=%s" % (setname,matname)
+    out = "*SOLID SECTION, ELSET=%s, MATERIAL=%s" % (setname, matname)
     if el.orientation is not None:
         out += ", ORIENTATION=%s" % el.orientation.name
     if el.controls is not None:
@@ -634,7 +634,7 @@ def fmtSolidSection(el,setname,matname):
         out += "*SECTION CONTROLS, NAME=%s" % el.controls.name
         if el.controls.options is not None:
             out += ", "+str(el.controls.options)
-        out += fmtOptions(utils.removeDict(el.controls,['name','options','data']))
+        out += fmtOptions(utils.removeDict(el.controls, ['name', 'options', 'data']))
         out += '\n'
 
         if el.controls.data is not None:
@@ -643,7 +643,7 @@ def fmtSolidSection(el,setname,matname):
     return out
 
 
-def fmtShellSection(el,setname,matname):
+def fmtShellSection(el, setname, matname):
     """Format the shell SHELL SECTION keyword.
 
     Required:
@@ -659,7 +659,7 @@ def fmtShellSection(el,setname,matname):
     out = ''
     if el.sectiontype.upper() == 'SHELL':
         if matname is not None:
-            out += """*SHELL SECTION, ELSET=%s, MATERIAL=%s"""%(setname,matname)
+            out += """*SHELL SECTION, ELSET=%s, MATERIAL=%s"""%(setname, matname)
             if el.offset is not None:
                 out += """, OFFSET=%s"""%el.offset
             if el.thicknessmodulus is not None:
@@ -697,16 +697,16 @@ def fmtSurface(prop):
     """
     out = ''
     for p in prop:
-        out += "*SURFACE, NAME=%s, TYPE=%s\n" % (p.name,p.surftype)
-        for i,e in enumerate(p.set):
+        out += "*SURFACE, NAME=%s, TYPE=%s\n" % (p.name, p.surftype)
+        for i, e in enumerate(p.set):
             if e.dtype.kind != 'S':
                 e += 1
             if p.label is None:
                 out += "%s\n" % e
             elif isinstance(p.label, str):
-                out += "%s, %s\n" % (e,p.label)
+                out += "%s, %s\n" % (e, p.label)
             else:
-                out += "%s, %s\n" % (e,p.label[i])
+                out += "%s, %s\n" % (e, p.label[i])
     return out
 
 
@@ -726,7 +726,7 @@ def fmtAnalyticalSurface(prop):
     """
     out = ''
     for p in prop:
-        out += "*RIGID BODY, ANALYTICAL SURFACE = %s, REFNOD=%s\n" % (p.name,p.nodeset)
+        out += "*RIGID BODY, ANALYTICAL SURFACE = %s, REFNOD=%s\n" % (p.name, p.nodeset)
     return out
 
 def fmtSurfaceInteraction(prop):
@@ -840,7 +840,7 @@ def fmtContactPair(prop):
             out += ", type=%s\n" % p.contacttype
         else:
             out+="\n"
-        out += "%s, %s\n" % (p.slave,p.master)
+        out += "%s, %s\n" % (p.slave, p.master)
     return out
 
 def fmtConstraint(prop):
@@ -957,7 +957,7 @@ def fmtEquation(prop):
         out += "%s\n" % asarray(p.equation).shape[0]
         for i in p.equation:
             dof = i[1]+1
-            out += "%s, %s, %s\n" % (i[0]+nofs,dof,i[2])
+            out += "%s, %s, %s\n" % (i[0]+nofs, dof, i[2])
     return out
 
 
@@ -1007,7 +1007,7 @@ def writeNodes(fil,nodes,name='Nall',nofs=1):
     The default is 1, because Abaqus numbering starts at 1.
     """
     fil.write('*NODE, NSET=%s\n' % name)
-    for i,n in enumerate(nodes):
+    for i, n in enumerate(nodes):
         fil.write("%d, %14.6e, %14.6e, %14.6e\n" % ((i+nofs,)+tuple(n)))
     if name != 'Nall':
         fil.write('*NSET, NSET=Nall\n%s\n' % name)
@@ -1024,16 +1024,16 @@ def writeElems(fil,elems,type,name='Eall',eid=None,eofs=1,nofs=1):
     The default is 1, because Abaqus numbering starts at 1.
     If eid is specified, it contains the element numbers increased with eofs.
     """
-    fil.write('*ELEMENT, TYPE=%s, ELSET=%s\n' % (type.upper(),name))
+    fil.write('*ELEMENT, TYPE=%s, ELSET=%s\n' % (type.upper(), name))
     nn = elems.shape[1]
     fmt = '%d' + nn*', %d' + '\n'
     if eid is None:
         eid = arange(elems.shape[0])
     else:
         eid = asarray(eid)
-    for i,e in zip(eid+eofs,elems+nofs):
+    for i, e in zip(eid+eofs, elems+nofs):
         fil.write(fmt % ((i,)+tuple(e)))
-    writeSet(fil,'ELSET','Eall',[name])
+    writeSet(fil, 'ELSET', 'Eall', [name])
 
 
 def writeSet(fil,type,name,set,ofs=1):
@@ -1043,7 +1043,7 @@ def writeSet(fil,type,name,set,ofs=1):
     in which case the `ofs` value will be added to them,
     or a list of names the name of another already defined set.
     """
-    fil.write("*%s,%s=%s\n" % (type,type,name))
+    fil.write("*%s,%s=%s\n" % (type, type, name))
     set = asarray(set)
     if set.dtype.kind == 'S':
         # we have set names
@@ -1056,63 +1056,63 @@ def writeSet(fil,type,name,set,ofs=1):
 
 spring_elems = ['SPRINGA', ]
 dashpot_elems = ['DASHPOTA', ]
-connector_elems = ['CONN3D2','CONN2D2']
-frame_elems = ['FRAME3D','FRAME2D']
+connector_elems = ['CONN3D2', 'CONN2D2']
+frame_elems = ['FRAME3D', 'FRAME2D']
 truss_elems = [
-    'T2D2','T2D2H','T2D3','T2D3H',
-    'T3D2','T3D2H','T3D3','T3D3H']
+    'T2D2', 'T2D2H', 'T2D3', 'T2D3H',
+    'T3D2', 'T3D2H', 'T3D3', 'T3D3H']
 beam_elems = [
-    'B21', 'B21H','B22','B22H','B23','B23H',
-    'B31', 'B31H','B32','B32H','B33','B33H']
+    'B21', 'B21H', 'B22', 'B22H', 'B23', 'B23H',
+    'B31', 'B31H', 'B32', 'B32H', 'B33', 'B33H']
 membrane_elems = [
     'M3D3',
-    'M3D4','M3D4R',
-    'M3D6','M3D8',
+    'M3D4', 'M3D4R',
+    'M3D6', 'M3D8',
     'M3D8R',
-    'M3D9','M3D9R']
+    'M3D9', 'M3D9R']
 plane_stress_elems = [
     'CPS3',
-    'CPS4','CPS4I','CPS4R',
-    'CPS6','CPS6M',
-    'CPS8','CPS8R','CPS8M']
+    'CPS4', 'CPS4I', 'CPS4R',
+    'CPS6', 'CPS6M',
+    'CPS8', 'CPS8R', 'CPS8M']
 plane_strain_elems = [
-    'CPE3','CPE3H',
-    'CPE4','CPE4H','CPE4I','CPE4IH','CPE4R','CPE4RH',
-    'CPE6','CPE6H','CPE6M','CPE6MH',
-    'CPE8','CPE8H','CPE8R','CPE8RH']
+    'CPE3', 'CPE3H',
+    'CPE4', 'CPE4H', 'CPE4I', 'CPE4IH', 'CPE4R', 'CPE4RH',
+    'CPE6', 'CPE6H', 'CPE6M', 'CPE6MH',
+    'CPE8', 'CPE8H', 'CPE8R', 'CPE8RH']
 generalized_plane_strain_elems = [
-    'CPEG3','CPEG3H',
-    'CPEG4','CPEG4H','CPEG4I','CPEG4IH','CPEG4R','CPEG4RH',
-    'CPEG6','CPEG6H','CPEG6M','CPEG6MH',
-    'CPEG8','CPEG8H','CPEG8R','CPEG8RH']
+    'CPEG3', 'CPEG3H',
+    'CPEG4', 'CPEG4H', 'CPEG4I', 'CPEG4IH', 'CPEG4R', 'CPEG4RH',
+    'CPEG6', 'CPEG6H', 'CPEG6M', 'CPEG6MH',
+    'CPEG8', 'CPEG8H', 'CPEG8R', 'CPEG8RH']
 solid2d_elems = plane_stress_elems + \
                 plane_strain_elems + \
                 generalized_plane_strain_elems
 shell_elems = [
-    'S3','S3R', 'S3RS',
-    'S4','S4R', 'S4RS','S4RSW','S4R5',
-    'S8R','S8R5',
+    'S3', 'S3R', 'S3RS',
+    'S4', 'S4R', 'S4RS', 'S4RSW', 'S4R5',
+    'S8R', 'S8R5',
     'S9R5',
     'STRI3',
     'STRI65',
     'SC8R']
 surface_elems = [
     'SFM3D3',
-    'SFM3D4','SFM3D4R',
+    'SFM3D4', 'SFM3D4R',
     'SFM3D6',
-    'SFM3D8','SFM3D8R']
+    'SFM3D8', 'SFM3D8R']
 solid3d_elems = [
-    'C3D4','C3D4H',
-    'C3D6','C3D6H',
-    'C3D8','C3D8I','C3D8H','C3D8R','C3D8RH','C3D10',
-    'C3D10H','C3D10M','C3D10MH',
-    'C3D15','C3D15H',
-    'C3D20','C3D20H','C3D20R','C3D20RH',]
+    'C3D4', 'C3D4H',
+    'C3D6', 'C3D6H',
+    'C3D8', 'C3D8I', 'C3D8H', 'C3D8R', 'C3D8RH', 'C3D10',
+    'C3D10H', 'C3D10M', 'C3D10MH',
+    'C3D15', 'C3D15H',
+    'C3D20', 'C3D20H', 'C3D20R', 'C3D20RH',]
 rigid_elems = [
-    'R2D2','RB2D2','RB3D2','RAX2','R3D3','R3D4',
+    'R2D2', 'RB2D2', 'RB3D2', 'RAX2', 'R3D3', 'R3D4',
     ]
 
-def writeSection(fil,prop):
+def writeSection(fil, prop):
     """Write an element section.
 
     prop is a an element property record with a section and eltype attribute
@@ -1127,41 +1127,41 @@ def writeSection(fil,prop):
         fil.write(fmtMaterial(mat))
 
     if eltype in connector_elems:
-        fil.write(fmtConnectorSection(el,setname))
+        fil.write(fmtConnectorSection(el, setname))
 
     elif eltype in spring_elems:
-        fil.write(fmtSpring(el,setname))
+        fil.write(fmtSpring(el, setname))
 
     elif eltype in dashpot_elems:
-        fil.write(fmtDashpot(el,setname))
+        fil.write(fmtDashpot(el, setname))
 
     elif eltype in frame_elems:
-        fil.write(fmtFrameSection(el,setname))
+        fil.write(fmtFrameSection(el, setname))
 
     elif eltype in truss_elems:
         if el.sectiontype.upper() == 'GENERAL':
             fil.write("""*SOLID SECTION, ELSET=%s, MATERIAL=%s
 %s
-""" %(setname,el.material.name, float(el.cross_section)))
+""" %(setname, el.material.name, float(el.cross_section)))
         elif el.sectiontype.upper() == 'CIRC':
             fil.write("""*SOLID SECTION, ELSET=%s, MATERIAL=%s
 %s
-""" %(setname,el.material.name, float(el.radius)**2*pi))
+""" %(setname, el.material.name, float(el.radius)**2*pi))
 
     ############
     ##BEAM elements
     ##########################
     elif eltype in beam_elems:
         if el.integrate:
-            fil.write(fmtBeamSection(el,setname))
+            fil.write(fmtBeamSection(el, setname))
         else:
-            fil.write(fmtGeneralBeamSection(el,setname))
+            fil.write(fmtGeneralBeamSection(el, setname))
 
     ############
     ## SHELL elements
     ##########################
     elif eltype in shell_elems:
-        fil.write(fmtShellSection(el,setname,mat.name))
+        fil.write(fmtShellSection(el, setname, mat.name))
 
     ############
     ## SURFACE elements
@@ -1180,7 +1180,7 @@ def writeSection(fil,prop):
         if el.sectiontype.upper() == 'MEMBRANE':
             if mat is not None:
                 fil.write("""*MEMBRANE SECTION, ELSET=%s, MATERIAL=%s
-%s \n""" % (setname,mat.name,float(el.thickness)))
+%s \n""" % (setname, mat.name, float(el.thickness)))
 
 
     ############
@@ -1189,7 +1189,7 @@ def writeSection(fil,prop):
     elif eltype in solid3d_elems:
         if el.sectiontype.upper() == 'SOLID':
             if mat is not None:
-                fil.write(fmtSolidSection(el,setname,mat.name))
+                fil.write(fmtSolidSection(el, setname, mat.name))
 
     ############
     ## 2D SOLID elements
@@ -1197,7 +1197,7 @@ def writeSection(fil,prop):
     elif eltype in solid2d_elems:
         if el.sectiontype.upper() == 'SOLID':
             if mat is not None:
-                fil.write(fmtSolidSection(el,setname,mat.name))
+                fil.write(fmtSolidSection(el, setname, mat.name))
 
     ############
     ## RIGID elements
@@ -1208,7 +1208,7 @@ def writeSection(fil,prop):
             # do not test for int type, because it might be np.intx
             if not isinstance(el.refnode, str):
                 el.refnode += 1
-            out = "*RIGID BODY, ELSET=%s, REFNODE=%s" % (setname,el.refnode)
+            out = "*RIGID BODY, ELSET=%s, REFNODE=%s" % (setname, el.refnode)
             if el.density is not None:
                 out += ", DENSITY=%s" % el.density
             if el.thickness is not None:
@@ -1232,7 +1232,7 @@ def writeSection(fil,prop):
 # does not need to be specified
 #~ the key ampl can be also icluded in extra but has not been removed
 # I will suggest to remove writeDisplacements or set this function equal to writeBoundaries
-def writeBoundaries(fil,prop):
+def writeBoundaries(fil, prop):
     """_ BAD STRUCTURE! Write nodal boundary conditions.
 
     prop is a list of node property records that should be scanned for
@@ -1282,13 +1282,13 @@ def writeBoundaries(fil,prop):
 
         fil.write("\n")
 
-        if isinstance(p.bound,str):
-            fil.write("%s, %s\n" % (setname,p.bound))
+        if isinstance(p.bound, str):
+            fil.write("%s, %s\n" % (setname, p.bound))
         elif isInt(p.bound[0]):
             for b in range(6):
                 if p.bound[b]==1:
-                    fil.write("%s, %s\n" % (setname,b+1))
-        elif isinstance(p.bound[0],tuple):
+                    fil.write("%s, %s\n" % (setname, b+1))
+        elif isinstance(p.bound[0], tuple):
             for b in p.bound:
                 dof = b[0]+1
 #                fil.write(fmtData(setname,dof,dof,b[1]))
@@ -1317,10 +1317,10 @@ def writeDisplacements(fil,prop,dtype='DISPLACEMENT'):
         fil.write("\n")
         for v in p.displ:
             dof = v[0]+1
-            fil.write("%s, %s, %s, %s\n" % (setname,dof,dof,v[1]))
+            fil.write("%s, %s, %s, %s\n" % (setname, dof, dof, v[1]))
 
 
-def writeCloads(fil,prop):
+def writeCloads(fil, prop):
     """Write cloads.
 
     prop is a list of node property records that should be scanned for
@@ -1341,7 +1341,7 @@ def writeCloads(fil,prop):
         fil.write("\n")
         for v in p.cload:
             dof = v[0]+1
-            fil.write("%s, %s, %s\n" % (setname,dof,v[1]))
+            fil.write("%s, %s, %s\n" % (setname, dof, v[1]))
 
 
 def writeCommaList(fil,*args):
@@ -1349,7 +1349,7 @@ def writeCommaList(fil,*args):
     fil.write(', '.join([str(i) for i in args]))
 
 
-def writeDloads(fil,prop):
+def writeDloads(fil, prop):
     """Write Dloads.
 
     prop is a list of elem property records having an attribute dload.
@@ -1367,14 +1367,14 @@ def writeDloads(fil,prop):
         if p.ampl is not None:
             fil.write(", AMPLITUDE=%s" % p.ampl)
         fil.write("\n")
-        data = [setname,p.dload.label,p.dload.value]
+        data = [setname, p.dload.label, p.dload.value]
         if p.dload.dir is not None:
             data += p.dload.dir
         writeCommaList(fil,*data)
         fil.write('\n')
 
 
-def writeDsloads(fil,prop):
+def writeDsloads(fil, prop):
     """Write Dsloads.
 
     prop is a list property records having an attribute dsload
@@ -1391,16 +1391,16 @@ def writeDsloads(fil,prop):
         if p.ampl is not None:
             fil.write(", AMPLITUDE=%s" % p.ampl)
         fil.write("\n")
-        fil.write("%s, %s, %s\n" % (p.dsload.surface,p.dsload.label,p.dsload.value))
+        fil.write("%s, %s, %s\n" % (p.dsload.surface, p.dsload.label, p.dsload.value))
 
 #######################################################
 # General model data
 #
 
-def writeAmplitude(fil,prop):
+def writeAmplitude(fil, prop):
     for p in prop:
-        fil.write("*AMPLITUDE, NAME=%s, DEFINITION=%s, TIME=%s\n" % (p.name,p.amplitude.type,p.amplitude.atime))
-        for i,v in enumerate(p.amplitude.data):
+        fil.write("*AMPLITUDE, NAME=%s, DEFINITION=%s, TIME=%s\n" % (p.name, p.amplitude.type, p.amplitude.atime))
+        for i, v in enumerate(p.amplitude.data):
             fil.write("%s, %s," % tuple(v))
             if i % 4 == 3:
                 fil.write("\n")
@@ -1430,7 +1430,7 @@ def writeNodeOutput(fil,kind,keys,set='Nall'):
             setname = Nset(str(i))
         else:
             setname = i
-        s = "*NODE %s, NSET=%s" % (output,setname)
+        s = "*NODE %s, NSET=%s" % (output, setname)
         fil.write("%s\n" % s)
         for key in keys:
             fil.write("%s\n" % key)
@@ -1469,7 +1469,7 @@ def writeNodeResult(fil,kind,keys,set='Nall',output='FILE',freq=1,
             setname = Nset(str(i))
         else:
             setname = i
-        s = "*NODE %s, NSET=%s" % (output,setname)
+        s = "*NODE %s, NSET=%s" % (output, setname)
         if freq != 1:
             s += ", FREQUENCY=%s" % freq
         if globalaxes:
@@ -1503,7 +1503,7 @@ def writeElemOutput(fil,kind,keys,set='Eall'):
             setname = Eset(str(i))
         else:
             setname = i
-        s = "*ELEMENT %s, ELSET=%s" % (output,setname)
+        s = "*ELEMENT %s, ELSET=%s" % (output, setname)
         fil.write("%s\n" % s)
         for key in keys:
             fil.write("%s\n" % key)
@@ -1549,7 +1549,7 @@ def writeElemResult(fil,kind,keys,set='Eall',output='FILE',freq=1,
             setname = Eset(str(i))
         else:
             setname = i
-        s = "*EL %s, ELSET=%s" % (output,setname)
+        s = "*EL %s, ELSET=%s" % (output, setname)
         if freq != 1:
             s += ", FREQUENCY=%s" % freq
         if pos:
@@ -1577,7 +1577,7 @@ def writeFileOutput(fil,resfreq=1,timemarks=False):
 # but now extra can be also a list of Dict .This is more convenient  if more addictional lines
 # need to be written at the step level for type history.
 # This function is very similar to writeStepExtra maybe can be merged
-def writeModelProps(fil,prop):
+def writeModelProps(fil, prop):
     """_ BAD STRUCTURE Write model props for this step
 
     extra : str
@@ -1598,29 +1598,29 @@ def writeModelProps(fil,prop):
     """
     for p in prop:
         if p.extra:
-            if isinstance(p.extra,str):
+            if isinstance(p.extra, str):
                 fil.write(p.extra)
-            elif isinstance(p.extra,list):
+            elif isinstance(p.extra, list):
                 cmd=''
                 for l in p.extra:
                     l=CDict(l) # to avoid keyerrors if l.data is not a key
                     cmd+='*%s'%l['keyword']
-                    cmd+=fmtOptions(utils.removeDict(l,['keyword','data']))
+                    cmd+=fmtOptions(utils.removeDict(l, ['keyword', 'data']))
                     cmd+='\n'
                     if l.data is not None:
                         cmd+=fmtData(l.data)
                 fil.write(cmd.upper())
 
 #~ FI see comments for writeModelProps
-def writeStepExtra(fil,extra):
-    if isinstance(extra,str):
+def writeStepExtra(fil, extra):
+    if isinstance(extra, str):
         fil.write(extra)
-    elif isinstance(extra,list):
+    elif isinstance(extra, list):
         cmd=''
         for l in extra:
             l=CDict(l) # to avoid keyerrors if l.data is not a key
             cmd+='*%s'%l['keyword']
-            cmd+=fmtOptions(utils.removeDict(l,['keyword','data']))
+            cmd+=fmtOptions(utils.removeDict(l, ['keyword', 'data']))
             cmd+='\n'
             if l.data is not None:
                 cmd+=fmtData(l.data)
@@ -1730,7 +1730,7 @@ class Step(Dict):
     analysis_types = [ 'STATIC', 'DYNAMIC', 'EXPLICIT', \
                        'PERTURBATION', 'BUCKLE', 'RIKS' ]
 
-    def __init__(self,analysis='STATIC',time=[0.,0.,0.,0.],nlgeom=False,
+    def __init__(self,analysis='STATIC',time=[0., 0., 0., 0.],nlgeom=False,
                  subheading=None,tags=None,name=None,out=[],res=[],
                  stepOptions=None,analysisOptions=None,extra=None):
         """Create a new analysis step."""
@@ -1747,7 +1747,7 @@ class Step(Dict):
 
         if analysis == 'RIKS':
             nlgeom = True
-        elif analysis in ['BUCKLE','PERTURBATION']:
+        elif analysis in ['BUCKLE', 'PERTURBATION']:
             nlgeom = False
         if nlgeom == 'NO':
             nlgeom = False
@@ -1813,42 +1813,42 @@ class Step(Dict):
         fil.write(fmtData(self.time))
 
         if self.extra is not None:
-            writeStepExtra(fil,self.extra)
+            writeStepExtra(fil, self.extra)
 
-        prop = propDB.getProp('n',tag=self.tags,attr=['bound'])
+        prop = propDB.getProp('n', tag=self.tags, attr=['bound'])
         if prop:
             pf.message("  Writing step boundary conditions")
-            writeBoundaries(fil,prop)
+            writeBoundaries(fil, prop)
 
-        for pname,aname in [
-            ('displ','DISPLACEMENT'),
-            ('veloc','VELOCITY'),
-            ('accel','ACCELERATION')
+        for pname, aname in [
+            ('displ', 'DISPLACEMENT'),
+            ('veloc', 'VELOCITY'),
+            ('accel', 'ACCELERATION')
             ]:
-            prop = propDB.getProp('n',tag=self.tags,attr=[pname])
+            prop = propDB.getProp('n', tag=self.tags, attr=[pname])
             if prop:
                 pf.message("  Writing step %s" % aname.lower())
-                writeDisplacements(fil,prop,dtype=aname)
+                writeDisplacements(fil, prop, dtype=aname)
 
-        prop = propDB.getProp('n',tag=self.tags,attr=['cload'])
+        prop = propDB.getProp('n', tag=self.tags, attr=['cload'])
         if prop:
             pf.message("  Writing step cloads")
-            writeCloads(fil,prop)
+            writeCloads(fil, prop)
 
-        prop = propDB.getProp('e',tag=self.tags,attr=['dload'])
+        prop = propDB.getProp('e', tag=self.tags, attr=['dload'])
         if prop:
             pf.message("  Writing step dloads")
-            writeDloads(fil,prop)
+            writeDloads(fil, prop)
 
-        prop = propDB.getProp('',tag=self.tags,attr=['dsload'])
+        prop = propDB.getProp('', tag=self.tags, attr=['dsload'])
         if prop:
             pf.message("  Writing step dsloads")
-            writeDsloads(fil,prop)
+            writeDsloads(fil, prop)
 
-        prop = propDB.getProp('',tag=self.tags)
+        prop = propDB.getProp('', tag=self.tags)
         if prop:
             pf.message("  Writing step model props")
-            writeModelProps(fil,prop)
+            writeModelProps(fil, prop)
 
         for i in out + self.out:
             if i.kind is None:
@@ -1859,7 +1859,7 @@ class Step(Dict):
                 writeElemOutput(fil,**i)
 
         if res and self.analysis == 'EXPLICIT':
-            writeFileOutput(fil,resfreq,timemarks)
+            writeFileOutput(fil, resfreq, timemarks)
         for i in res + self.res:
             if i.kind == 'N':
                 writeNodeResult(fil,**i)
@@ -1904,7 +1904,7 @@ class Output(Dict):
             kind = kind[0].upper()
         if set is None:
             set = "%sall" % kind
-        Dict.__init__(self,{'kind':kind})
+        Dict.__init__(self, {'kind':kind})
         if kind is None:
             self.update({'type':type,'variable':variable,'extra':extra})
         else:
@@ -1916,7 +1916,7 @@ class Output(Dict):
 
         Return a string with the formatted output command.
         """
-        out = ['*OUTPUT',self.type.upper()]
+        out = ['*OUTPUT', self.type.upper()]
         if self.variable:
             out.append('VARIABLE=%s' % self.variable.upper())
         if self.extra:
@@ -1955,7 +1955,7 @@ class Result(Dict):
         kind = kind[0].upper()
         if set is None:
             set = "%sall" % kind
-        Dict.__init__(self,{'keys':keys,'kind':kind,'set':set,'output':output,
+        Dict.__init__(self, {'keys':keys,'kind':kind,'set':set,'output':output,
                             'freq':freq})
         self.update(dict(**kargs))
 
@@ -1995,8 +1995,8 @@ class AbqData(object):
 
     def __init__(self,model,prop,nprop=None,eprop=None,steps=[],res=[],out=[],bound=None):
         """Create new AbqData."""
-        if not isinstance(model,Model) or not isinstance(prop,PropertyDB):
-            raise ValueError("Invalid arguments: expected Model and PropertyDB, got %s and %s" % (type(model),type(prop)))
+        if not isinstance(model, Model) or not isinstance(prop, PropertyDB):
+            raise ValueError("Invalid arguments: expected Model and PropertyDB, got %s and %s" % (type(model), type(prop)))
 
         if res or out:
             utils.warn("depr_abqdata_outres")
@@ -2023,11 +2023,11 @@ class AbqData(object):
         materialswritten = []
         # Create the Abaqus input file
         if jobname is None:
-            jobname,filename = 'Test',None
+            jobname, filename = 'Test', None
             fil = sys.stdout
         else:
-            jobname,filename = abqInputNames(jobname)
-            fil = open(filename,'w')
+            jobname, filename = abqInputNames(jobname)
+            fil = open(filename, 'w')
             pf.message("Writing to file %s" % (filename))
 
         fil.write(fmtHeading("""Model: %s     Date: %s      Created by pyFormex
@@ -2040,11 +2040,11 @@ Script: %s
 
         nnod = self.model.nnodes()
         pf.message("Writing %s nodes" % nnod)
-        writeNodes(fil,self.model.coords)
+        writeNodes(fil, self.model.coords)
 
         pf.message("Writing node sets")
-        for p in self.prop.getProp('n',attr=['set']):
-            print("NODE SET",p)
+        for p in self.prop.getProp('n', attr=['set']):
+            print("NODE SET", p)
             if p.set is not None:
                 # set is directly specified
                 set = p.set
@@ -2059,11 +2059,11 @@ Script: %s
                 set = range(self.model.nnodes())
 
             setname = nsetName(p)
-            writeSet(fil,'NSET',setname,set)
+            writeSet(fil, 'NSET', setname, set)
 
         pf.message("Writing coordinate transforms")
-        for p in self.prop.getProp('n',attr=['csys']):
-            fil.write(fmtTransform(p.name,p.csys))
+        for p in self.prop.getProp('n', attr=['csys']):
+            fil.write(fmtTransform(p.name, p.csys))
 
         pf.message("Writing element sets")
         telems = self.model.celems[-1]
@@ -2083,25 +2083,25 @@ Script: %s
                 set = range(telems)
 
             if 'eltype' in p:
-                pf.debug('Elements of type %s: %s' % (p.eltype,set),pf.DEBUG.ABQ)
+                pf.debug('Elements of type %s: %s' % (p.eltype, set), pf.DEBUG.ABQ)
 
                 setname = esetName(p)
-                gl,gr = self.model.splitElems(set)
+                gl, gr = self.model.splitElems(set)
                 elems = self.model.getElems(gr)
-                for i,elnrs,els in zip(range(len(gl)),gl,elems):
-                    grpname = Eset('grp',i,setname)
-                    subsetname = Eset(p.nr,'grp',i,setname)
+                for i, elnrs, els in zip(range(len(gl)), gl, elems):
+                    grpname = Eset('grp', i, setname)
+                    subsetname = Eset(p.nr, 'grp', i, setname)
                     nels = len(els)
                     if nels > 0:
-                        pf.message("Writing %s elements from group %s" % (nels,i))
-                        writeElems(fil,els,p.eltype,name=subsetname,eid=elnrs)
+                        pf.message("Writing %s elements from group %s" % (nels, i))
+                        writeElems(fil, els, p.eltype, name=subsetname, eid=elnrs)
                         nelems += nels
                         if group_by_eset:
-                            writeSet(fil,'ELSET',setname,[subsetname])
+                            writeSet(fil, 'ELSET', setname, [subsetname])
                         if group_by_group:
-                            writeSet(fil,'ELSET',grpname,[subsetname])
+                            writeSet(fil, 'ELSET', grpname, [subsetname])
             else:
-                writeSet(fil,'ELSET',p.name,p.set)
+                writeSet(fil, 'ELSET', p.name, p.set)
 
         pf.message("Total number of elements: %s" % telems)
         if nelems != telems:
@@ -2113,8 +2113,8 @@ Script: %s
         ##     writeSet(fil,'ELSET',setname,p.set)
 
         pf.message("Writing element sections")
-        for p in self.prop.getProp('e',attr=['section','eltype']):
-            writeSection(fil,p)
+        for p in self.prop.getProp('e', attr=['section', 'eltype']):
+            writeSection(fil, p)
 
         if create_part:
             fil.write("*END PART\n")
@@ -2125,74 +2125,74 @@ Script: %s
 
         pf.message("Writing global model properties")
 
-        prop = self.prop.getProp('',attr=['mass'])
+        prop = self.prop.getProp('', attr=['mass'])
         if prop:
             pf.message("Writing masses")
             fil.write(fmtMass(prop))
 
-        prop = self.prop.getProp('',attr=['inertia'])
+        prop = self.prop.getProp('', attr=['inertia'])
         if prop:
             pf.message("Writing rotary inertia")
             fil.write(fmtInertia(prop))
 
-        prop = self.prop.getProp('',attr=['amplitude'])
+        prop = self.prop.getProp('', attr=['amplitude'])
         if prop:
             pf.message("Writing amplitudes")
-            writeAmplitude(fil,prop)
+            writeAmplitude(fil, prop)
 
-        prop = self.prop.getProp('',attr=['orientation'])
+        prop = self.prop.getProp('', attr=['orientation'])
         if prop:
             pf.message("Writing orientations")
             fil.write(fmtOrientation(prop))
 
-        prop = self.prop.getProp('',attr=['ConnectorBehavior'])
+        prop = self.prop.getProp('', attr=['ConnectorBehavior'])
         if prop:
             pf.message("Writing Connector Behavior")
             fil.write(fmtConnectorBehavior(prop))
 
-        prop = self.prop.getProp('n',attr=['equation'])
+        prop = self.prop.getProp('n', attr=['equation'])
         if prop:
             pf.message("Writing constraint equations")
             fil.write(fmtEquation(prop))
 
-        prop = self.prop.getProp('',attr=['surftype'])
+        prop = self.prop.getProp('', attr=['surftype'])
         if prop:
             pf.message("Writing surfaces")
             fil.write(fmtSurface(prop))
 
-        prop = self.prop.getProp('',attr=['analyticalsurface'])
+        prop = self.prop.getProp('', attr=['analyticalsurface'])
         if prop:
             pf.message("Writing analytical surfaces")
             fil.write(fmtAnalyticalSurface(prop))
 
-        prop = self.prop.getProp('',attr=['interaction'])
+        prop = self.prop.getProp('', attr=['interaction'])
         if prop:
             pf.message("Writing contact pairs")
             fil.write(fmtContactPair(prop))
 
-        prop = self.prop.getProp('',attr=['generalinteraction'])
+        prop = self.prop.getProp('', attr=['generalinteraction'])
         if prop:
                 pf.message("Writing general contact")
                 fil.write(fmtGeneralContact(prop))
 
-        prop = self.prop.getProp('',attr=['constraint'])
+        prop = self.prop.getProp('', attr=['constraint'])
         if prop:
                 pf.message("Writing constraints")
                 fil.write(fmtConstraint(prop))
 
-        prop = self.prop.getProp('',attr=['initialcondition'])
+        prop = self.prop.getProp('', attr=['initialcondition'])
         if prop:
                 pf.message("Writing initial conditions")
                 fil.write(fmtInitialConditions(prop))
 
-        prop = self.prop.getProp('n',tag=self.bound,attr=['bound'])
+        prop = self.prop.getProp('n', tag=self.bound, attr=['bound'])
         if prop:
             pf.message("Writing initial boundary conditions")
-            writeBoundaries(fil,prop)
+            writeBoundaries(fil, prop)
 
         pf.message("Writing steps")
         for step in self.steps:
-            step.write(fil,self.prop,self.out,self.res,resfreq=Result.nintervals,timemarks=Result.timemarks)
+            step.write(fil, self.prop, self.out, self.res, resfreq=Result.nintervals, timemarks=Result.timemarks)
 
         if filename is not None:
             fil.close()
@@ -2216,12 +2216,12 @@ def exportMesh(filename,mesh,eltype=None,header=''):
     If an eltype is specified, it will oerride the value stored in the mesh.
     This should be used to set a correct Abaqus element type matchin the mesh.
     """
-    fil = open(filename,'w')
+    fil = open(filename, 'w')
     fil.write(fmtHeading(header))
     if eltype is None:
         eltype = mesh.eltype
-    writeNodes(fil,mesh.coords)
-    writeElems(fil,mesh.elems,eltype,nofs=1)
+    writeNodes(fil, mesh.coords)
+    writeElems(fil, mesh.elems, eltype, nofs=1)
     fil.close()
     pf.message("Abaqus file %s written." % filename)
 
@@ -2235,13 +2235,13 @@ if __name__ == "script" or __name__ == "draw":
     def TestwriteFormatLines():
         a = arange(27)
         print(fmtData1D(a))
-        print(fmtData1D(a,5))
-        print(fmtData1D(a,12))
+        print(fmtData1D(a, 5))
+        print(fmtData1D(a, 12))
 
-        a = a.reshape(3,9)
+        a = a.reshape(3, 9)
         print(fmtData(a))
-        print(fmtData(a,5))
-        print(fmtData(a,12))
+        print(fmtData(a, 5))
+        print(fmtData(a, 12))
 
     TestwriteFormatLines()
 

@@ -28,13 +28,13 @@ from __future__ import print_function
 
 
 from numpy import *
-from OpenGL import GL,GLU
+from OpenGL import GL, GLU
 
 import pyformex as pf
 
 import coords
 from formex import Formex
-from drawable import saneColor,glColor
+from drawable import saneColor, glColor
 import colors
 from camera import Camera
 import views
@@ -79,9 +79,9 @@ def glBothFill():
 
 def glFill(fill=True):
     if fill:
-        GL.glPolygonMode(fill_mode,GL.GL_FILL)
+        GL.glPolygonMode(fill_mode, GL.GL_FILL)
     else:
-        GL.glPolygonMode(GL.GL_FRONT_AND_BACK,GL.GL_LINE)
+        GL.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE)
 
 def glLineSmooth(onoff):
     if onoff is True:
@@ -91,7 +91,7 @@ def glLineSmooth(onoff):
         GL.glDisable(GL.GL_LINE_SMOOTH)
 
 
-def glLineStipple(factor,pattern):
+def glLineStipple(factor, pattern):
     """Set the line stipple pattern.
 
     When drawing lines, OpenGl can use a stipple pattern. The stipple
@@ -101,7 +101,7 @@ def glLineStipple(factor,pattern):
     If factor <= 0, the stippling is disabled.
     """
     if factor > 0:
-        GL.glLineStipple(factor,pattern)
+        GL.glLineStipple(factor, pattern)
         GL.glEnable(GL.GL_LINE_STIPPLE)
     else:
         GL.glDisable(GL.GL_LINE_STIPPLE)
@@ -129,7 +129,7 @@ def onOff(onoff):
             return False
 
 
-def glEnable(facility,onoff):
+def glEnable(facility, onoff):
     """Enable/Disable an OpenGL facility, depending on onoff value
 
     facility is an OpenGL facility.
@@ -146,12 +146,12 @@ def glEnable(facility,onoff):
 
 
 def glCulling(onoff=True):
-    glEnable(GL.GL_CULL_FACE,onoff)
+    glEnable(GL.GL_CULL_FACE, onoff)
 def glNoCulling():
     glCulling(False)
 
 def glLighting(onoff):
-    glEnable(GL.GL_LIGHTING,onoff)
+    glEnable(GL.GL_LIGHTING, onoff)
 
 
 def glPolygonFillMode(mode):
@@ -185,7 +185,7 @@ def glPolygonOffset(value):
         GL.glDisable(GL.GL_POLYGON_OFFSET_FILL)
     else:
         GL.glEnable(GL.GL_POLYGON_OFFSET_FILL)
-        GL.glPolygonOffset(value,value)
+        GL.glPolygonOffset(value, value)
 
 
 class ActorList(list):
@@ -197,20 +197,20 @@ class ActorList(list):
     the proper type.
     """
 
-    def __init__(self,canvas):
+    def __init__(self, canvas):
         self.canvas = canvas
         list.__init__(self)
 
-    def add(self,actor):
+    def add(self, actor):
         """Add an actor or a list thereof to a ActorList."""
         if isinstance(actor, list):
             self.extend(actor)
         else:
             self.append(actor)
 
-    def delete(self,actor):
+    def delete(self, actor):
         """Remove an actor or a list thereof from an ActorList."""
-        if not type(actor) in (list,tuple):
+        if not type(actor) in (list, tuple):
             actor = [ actor ]
         for a in actor:
             if a in self:
@@ -243,23 +243,23 @@ class Material(object):
         #print "setValues",kargs
         for k in kargs:
             #print k,kargs[k]
-            if hasattr(self,k):
+            if hasattr(self, k):
                 #print getattr(self,k)
-                setattr(self,k,float(kargs[k]))
+                setattr(self, k, float(kargs[k]))
                 #print getattr(self,k)
 
 
     def activate(self):
-        GL.glMaterialfv(fill_mode,GL.GL_AMBIENT,colors.GREY(self.ambient))
-        GL.glMaterialfv(fill_mode,GL.GL_DIFFUSE,colors.GREY(self.diffuse))
-        GL.glMaterialfv(fill_mode,GL.GL_SPECULAR,colors.GREY(self.specular))
-        GL.glMaterialfv(fill_mode,GL.GL_EMISSION,colors.GREY(self.emission))
-        GL.glMaterialfv(fill_mode,GL.GL_SHININESS,self.shininess)
+        GL.glMaterialfv(fill_mode, GL.GL_AMBIENT, colors.GREY(self.ambient))
+        GL.glMaterialfv(fill_mode, GL.GL_DIFFUSE, colors.GREY(self.diffuse))
+        GL.glMaterialfv(fill_mode, GL.GL_SPECULAR, colors.GREY(self.specular))
+        GL.glMaterialfv(fill_mode, GL.GL_EMISSION, colors.GREY(self.emission))
+        GL.glMaterialfv(fill_mode, GL.GL_SHININESS, self.shininess)
 
 
     def dict(self):
         """Return the material light parameters as a dict"""
-        return dict([(k,getattr(self,k)) for k in ['ambient','diffuse','specular','emission','shininess']])
+        return dict([(k, getattr(self, k)) for k in ['ambient', 'diffuse', 'specular', 'emission', 'shininess']])
 
 
     def __str__(self):
@@ -269,7 +269,7 @@ class Material(object):
     specular: %s
     emission: %s
     shininess: %s
-""" % (self.name,self.ambient,self.diffuse,self.specular,self.emission,self.shininess)
+""" % (self.name, self.ambient, self.diffuse, self.specular, self.emission, self.shininess)
 
 
 
@@ -294,25 +294,25 @@ class Light(object):
         #print("INIT LIGHT %s: %s" % (nr,kargs))
         self.light = GL.GL_LIGHT0 + (nr % GL.GL_MAX_LIGHTS)
         self.ambient = self.diffuse = self.specular = 0.5
-        self.position = [1.,1.,1.,0.]
+        self.position = [1., 1., 1., 0.]
         self.enabled = False
         self.set(**kargs)
 
     def set(self,**kargs):
         for k in kargs:
-            self.set_value(k,kargs[k])
+            self.set_value(k, kargs[k])
 
-    def set_value(self,key,value):
-        if key in [ 'ambient','diffuse','specular' ]:
+    def set_value(self, key, value):
+        if key in [ 'ambient', 'diffuse', 'specular' ]:
             value = colors.GLcolor(value)
-        setattr(self,key,value)
+        setattr(self, key, value)
 
     def enable(self):
         GL.glEnable(self.light)
-        GL.glLightfv(self.light,GL.GL_AMBIENT,self.ambient)
-        GL.glLightfv(self.light,GL.GL_DIFFUSE,self.diffuse)
-        GL.glLightfv(self.light,GL.GL_SPECULAR,self.specular)
-        GL.glLightfv(self.light,GL.GL_POSITION,self.position)
+        GL.glLightfv(self.light, GL.GL_AMBIENT, self.ambient)
+        GL.glLightfv(self.light, GL.GL_DIFFUSE, self.diffuse)
+        GL.glLightfv(self.light, GL.GL_SPECULAR, self.specular)
+        GL.glLightfv(self.light, GL.GL_POSITION, self.position)
 
     def disable(self):
         GL.glDisable(self.light)
@@ -323,7 +323,7 @@ class Light(object):
     diffuse color:  %s
     specular color: %s
     position: %s
-""" % (self.light-GL.GL_LIGHT0,self.ambient,self.diffuse,self.specular,self.position)
+""" % (self.light-GL.GL_LIGHT0, self.ambient, self.diffuse, self.specular, self.position)
 
 
 class LightProfile(object):
@@ -336,7 +336,7 @@ class LightProfile(object):
         'specular': GL.GL_SPECULAR,
         }
 
-    def __init__(self,model,ambient,lights):
+    def __init__(self, model, ambient, lights):
         self.model = self.light_model[model]
         self.ambient = ambient
         self.lights = lights
@@ -344,8 +344,8 @@ class LightProfile(object):
     def activate(self):
         #GL.glEnable(GL.GL_LIGHTING)
         GL.glEnable(GL.GL_COLOR_MATERIAL)
-        GL.glColorMaterial(fill_mode,self.model)
-        GL.glLightModelfv(GL.GL_LIGHT_MODEL_AMBIENT,colors.GREY(self.ambient))
+        GL.glColorMaterial(fill_mode, self.model)
+        GL.glLightModelfv(GL.GL_LIGHT_MODEL_AMBIENT, colors.GREY(self.ambient))
         GL.glLightModeli(GL.GL_LIGHT_MODEL_TWO_SIDE, 1)
         GL.glLightModeli(GL.GL_LIGHT_MODEL_LOCAL_VIEWER, 0)
         GL.glMatrixMode(GL.GL_MODELVIEW)
@@ -465,7 +465,7 @@ class CanvasSettings(Dict):
             }),
         }
     bgcolor_modes = [ 'solid', 'vertical', 'horizontal', 'full' ]
-    edge_modes = [ 'none','feature','all' ]
+    edge_modes = [ 'none', 'feature', 'all' ]
 
     def __init__(self,**kargs):
         """Create a new set of CanvasSettings."""
@@ -490,17 +490,17 @@ class CanvasSettings(Dict):
 
         Returns the sanitized update values.
         """
-        ok = self.checkDict(d,strict)
-        Dict.update(self,ok)
+        ok = self.checkDict(d, strict)
+        Dict.update(self, ok)
 
     @classmethod
     def checkDict(clas,dict,strict=True):
         """Transform a dict to acceptable settings."""
         ok = {}
-        for k,v in dict.items():
+        for k, v in dict.items():
             try:
                 if k in [ 'bgcolor', 'fgcolor', 'bkcolor', 'slcolor',
-                          'colormap','bkcolormap' ]:
+                          'colormap', 'bkcolormap' ]:
                     if v is not None:
                         v = saneColor(v)
                 elif k in ['bgimage']:
@@ -513,9 +513,9 @@ class CanvasSettings(Dict):
                 elif k in ['wiremode']:
                     v = int(v)
                 elif k == 'linestipple':
-                    v = map(int,v)
+                    v = map(int, v)
                 elif k == 'transparency':
-                    v = max(min(float(v),1.0),0.0)
+                    v = max(min(float(v), 1.0), 0.0)
                 elif k == 'bgmode':
                     v = str(v).lower()
                     if not v in clas.bgcolor_modes:
@@ -527,7 +527,7 @@ class CanvasSettings(Dict):
                 ok[k] = v
             except:
                 if strict:
-                    raise ValueError("Invalid key/value for CanvasSettings: %s = %s" % (k,v))
+                    raise ValueError("Invalid key/value for CanvasSettings: %s = %s" % (k, v))
         return ok
 
     def __str__(self):
@@ -546,21 +546,21 @@ class CanvasSettings(Dict):
 
     def activate(self):
         """Activate the default canvas settings in the GL machine."""
-        self.glOverride(self,self)
+        self.glOverride(self, self)
 
 
     @staticmethod
-    def glOverride(settings,default):
+    def glOverride(settings, default):
         #if settings != default:
         #print("OVERRIDE CANVAS SETINGS %s" % settings['fill'])
         for k in settings:
-            if k in ['fgcolor','transparency']:
-                c = settings.get('fgcolor',default.fgcolor)
-                t = settings.get('transparency',default.transparency)
-                glColor(c,t)
+            if k in ['fgcolor', 'transparency']:
+                c = settings.get('fgcolor', default.fgcolor)
+                t = settings.get('transparency', default.transparency)
+                glColor(c, t)
             elif k == 'linestipple':
                 glLineStipple(*settings[k])
-            elif k in ['smooth','fill','lighting','linewidth','pointsize']:
+            elif k in ['smooth', 'fill', 'lighting', 'linewidth', 'pointsize']:
                 func = globals()['gl'+k.capitalize()]
                 func(settings[k])
             ## else:
@@ -569,13 +569,13 @@ class CanvasSettings(Dict):
 
 ### OLD: to be rmoved
 def glSettings(settings):
-    pf.debug("GL SETTINGS: %s" % settings,pf.DEBUG.DRAW)
-    glShadeModel(settings.get('Shading',None))
-    glCulling(settings.get('Culling',None))
-    glLighting(settings.get('Lighting',None))
-    glLineSmooth(onOff(settings.get('Line Smoothing',None)))
-    glPolygonFillMode(settings.get('Polygon Fill',None))
-    glPolygonMode(settings.get('Polygon Mode',None))
+    pf.debug("GL SETTINGS: %s" % settings, pf.DEBUG.DRAW)
+    glShadeModel(settings.get('Shading', None))
+    glCulling(settings.get('Culling', None))
+    glLighting(settings.get('Lighting', None))
+    glLineSmooth(onOff(settings.get('Line Smoothing', None)))
+    glPolygonFillMode(settings.get('Polygon Fill', None))
+    glPolygonMode(settings.get('Polygon Mode', None))
     pf.canvas.update()
 
 
@@ -586,7 +586,7 @@ def extractCanvasSettings(d):
     Returns a tuple of two dicts: the first one contains the items
     that are canvas settings, the second one the rest.
     """
-    return utils.select(d,pf.refcfg['canvas']),utils.remove(d,pf.refcfg['canvas'])
+    return utils.select(d, pf.refcfg['canvas']), utils.remove(d, pf.refcfg['canvas'])
 
 
 ##################################################################
@@ -631,10 +631,10 @@ class Canvas(object):
         self.view_angles = views.ViewAngles()
         self.cursor = None
         self.focus = False
-        pf.debug("Canvas Setting:\n%s"% self.settings,pf.DEBUG.DRAW)
+        pf.debug("Canvas Setting:\n%s"% self.settings, pf.DEBUG.DRAW)
 
 
-    def enable_lighting(self,state):
+    def enable_lighting(self, state):
         """Toggle lights on/off."""
         if state:
             self.lightprof.activate()
@@ -657,11 +657,11 @@ class Canvas(object):
         self.resetLighting()
         ## self.resetLights()
 
-    def setAmbient(self,ambient):
+    def setAmbient(self, ambient):
         """Set the global ambient lighting for the canvas"""
         self.lightprof.ambient = float(ambient)
 
-    def setMaterial(self,matname):
+    def setMaterial(self, matname):
         """Set the default material light properties for the canvas"""
         self.material = pf.GUI.materials[matname]
 
@@ -672,7 +672,7 @@ class Canvas(object):
         self.setMaterial(pf.cfg['render/material'])
         self.lightset = pf.cfg['render/lights']
         lights = [ Light(int(light[-1:]),**pf.cfg['light/%s' % light]) for light in self.lightset ]
-        self.lightprof = LightProfile(self.lightmodel,pf.cfg['render/ambient'],lights)
+        self.lightprof = LightProfile(self.lightmodel, pf.cfg['render/ambient'], lights)
 
 
     def resetOptions(self):
@@ -687,7 +687,7 @@ class Canvas(object):
             color = 'prop',
             )
 
-    def setOptions(self,d):
+    def setOptions(self, d):
         """Set the Drawing options to some values"""
         self.drawoptions.update(d)
 
@@ -727,17 +727,17 @@ class Canvas(object):
         mode=None
         if state is False:
             # switch off
-            if self.rendermode in ['smoothwire','flatwire']:
+            if self.rendermode in ['smoothwire', 'flatwire']:
                 mode = self.rendermode[:-4]
         else:
             # switch on
-            if self.rendermode in ['smooth','flat']:
+            if self.rendermode in ['smooth', 'flat']:
                 mode = self.rendermode+'wire'
         if mode is not None:
             self.setRenderMode(mode)
 
 
-    def setToggle(self,attr,state):
+    def setToggle(self, attr, state):
         """Set or toggle a boolean settings attribute
 
         Furthermore, if a Canvas method do_ATTR is defined, it will be called
@@ -745,18 +745,18 @@ class Canvas(object):
         """
         #print("Toggling %s = %s"%(attr,state),pf.DEBUG.CANVAS)
         oldstate = self.settings[attr]
-        if state not in [True,False]:
+        if state not in [True, False]:
             state = not oldstate
         self.settings[attr] = state
         try:
-            func = getattr(self,'do_'+attr)
-            func(state,oldstate)
+            func = getattr(self, 'do_'+attr)
+            func(state, oldstate)
         except:
             pass
 
 
-    def setLighting(self,onoff):
-        self.setToggle('lighting',onoff)
+    def setLighting(self, onoff):
+        self.setToggle('lighting', onoff)
 
 
     def do_lighting(self,state,oldstate=None):
@@ -766,7 +766,7 @@ class Canvas(object):
             self.enable_lighting(state)
 
 
-    def do_avgnormals(self,state,oldstate):
+    def do_avgnormals(self, state, oldstate):
         #print("Toggling avgnormals",self.rendermode,state,oldstate)
         if state!=oldstate and self.rendermode.startswith('smooth'):
             if self.settings.avgnormals:
@@ -778,17 +778,17 @@ class Canvas(object):
             self.display()
 
 
-    def setLineWidth(self,lw):
+    def setLineWidth(self, lw):
         """Set the linewidth for line rendering."""
         self.settings.linewidth = float(lw)
 
 
-    def setLineStipple(self,repeat,pattern):
+    def setLineStipple(self, repeat, pattern):
         """Set the linestipple for line rendering."""
-        self.settings.update({'linestipple':(repeat,pattern)})
+        self.settings.update({'linestipple':(repeat, pattern)})
 
 
-    def setPointSize(self,sz):
+    def setPointSize(self, sz):
         """Set the size for point drawing."""
         self.settings.pointsize = float(sz)
 
@@ -806,10 +806,10 @@ class Canvas(object):
           four colors.
         - `image`: an image to be set.
         """
-        self.settings.update(dict(bgcolor=color,bgimage=image))
+        self.settings.update(dict(bgcolor=color, bgimage=image))
         color = self.settings.bgcolor
         if color.ndim == 1 and not self.settings.bgimage:
-            pf.debug("Clearing fancy background",pf.DEBUG.DRAW)
+            pf.debug("Clearing fancy background", pf.DEBUG.DRAW)
             self.background = None
         else:
             self.createBackground()
@@ -822,28 +822,28 @@ class Canvas(object):
 
     def createBackground(self):
         """Create the background object."""
-        x1,y1 = 0,0
-        x2,y2 = self.getSize()
+        x1, y1 = 0, 0
+        x2, y2 = self.getSize()
         from gui.drawable import saneColorArray
-        color = saneColorArray(self.settings.bgcolor,(4,))
+        color = saneColorArray(self.settings.bgcolor, (4,))
         #print color.shape,color
         image = None
         if self.settings.bgimage:
             from plugins.imagearray import image2numpy
             try:
-                image = image2numpy(self.settings.bgimage,indexed=False)
+                image = image2numpy(self.settings.bgimage, indexed=False)
             except:
                 pass
         #print("BACKGROUN %s,%s"%(x2,y2))
-        self.background = decors.Rectangle(x1,y1,x2,y2,color=color,texture=image)
+        self.background = decors.Rectangle(x1, y1, x2, y2, color=color, texture=image)
 
 
-    def setFgColor(self,color):
+    def setFgColor(self, color):
         """Set the default foreground color."""
         self.settings.fgcolor = colors.GLcolor(color)
 
 
-    def setSlColor(self,color):
+    def setSlColor(self, color):
         """Set the highlight color."""
         self.settings.slcolor = colors.GLcolor(color)
 
@@ -856,12 +856,12 @@ class Canvas(object):
         """
         if on is None:
             on = self.triade is None
-        pf.debug("SETTING TRIADE %s" % on,pf.DEBUG.DRAW)
+        pf.debug("SETTING TRIADE %s" % on, pf.DEBUG.DRAW)
         if self.triade:
             self.removeAnnotation(self.triade)
             self.triade = None
         if on:
-            self.triade = decors.Triade(pos,siz)
+            self.triade = decors.Triade(pos, siz)
             self.addAnnotation(self.triade)
 
 
@@ -879,7 +879,7 @@ class Canvas(object):
         self.setDefaults()
 
 
-    def setSize (self,w,h):
+    def setSize (self, w, h):
         if h == 0:	# prevent divide by zero
             h = 1
         GL.glViewport(0, 0, w, h)
@@ -891,7 +891,7 @@ class Canvas(object):
         self.display()
 
 
-    def drawit(self,a):
+    def drawit(self, a):
         """_Perform the drawing of a single item"""
         self.setDefaults()
         a.draw(self)
@@ -904,10 +904,10 @@ class Canvas(object):
         GL.glDepthFunc(GL.GL_LESS)
 
 
-    def overrideMode(self,mode):
+    def overrideMode(self, mode):
         """Override some settings"""
         settings = CanvasSettings.RenderProfiles[mode]
-        CanvasSettings.glOverride(settings,self.settings)
+        CanvasSettings.glOverride(settings, self.settings)
 
 
     def glinit(self):
@@ -918,7 +918,7 @@ class Canvas(object):
         - self.lighting
         """
         self.setDefaults()
-        self.setBackground(self.settings.bgcolor,self.settings.bgimage)
+        self.setBackground(self.settings.bgcolor, self.settings.bgimage)
         self.clear()
         GL.glClearDepth(1.0)	       # Enables Clearing Of The Depth Buffer
         GL.glEnable(GL.GL_DEPTH_TEST)	       # Enables Depth Testing
@@ -967,9 +967,9 @@ class Canvas(object):
         # draw the focus rectangle if more than one viewport
         if len(pf.GUI.viewports.all) > 1 and pf.cfg['gui/showfocus']:
             if self.hasFocus(): # QT focus
-                self.draw_focus_rectangle(0,color=colors.blue)
+                self.draw_focus_rectangle(0, color=colors.blue)
             if self.focus:      # pyFormex DRAW focus
-                self.draw_focus_rectangle(2,color=colors.red)
+                self.draw_focus_rectangle(2, color=colors.red)
 
         self.end_2D_drawing()
 
@@ -1033,7 +1033,7 @@ class Canvas(object):
 
     def zoom_2D(self,zoom=None):
         if zoom is None:
-            zoom = (0,self.width(),0,self.height())
+            zoom = (0, self.width(), 0, self.height())
         GLU.gluOrtho2D(*zoom)
 
 
@@ -1097,24 +1097,24 @@ class Canvas(object):
             pf.message("Invalid Bbox: %s" % bb)
         # make sure bbox size is nonzero in all directions
         sz = bb[1]-bb[0]
-        bb[1,sz==0.0] += 1.
+        bb[1, sz==0.0] += 1.
         # Set bbox
         self._bbox = bb
 
 
-    def addActor(self,itemlist):
+    def addActor(self, itemlist):
         """Add a 3D actor or a list thereof to the 3D scene."""
         self.actors.add(itemlist)
 
-    def addHighlight(self,itemlist):
+    def addHighlight(self, itemlist):
         """Add a highlight or a list thereof to the 3D scene."""
         self.highlights.add(itemlist)
 
-    def addAnnotation(self,itemlist):
+    def addAnnotation(self, itemlist):
         """Add an annotation or a list thereof to the 3D scene."""
         self.annotations.add(itemlist)
 
-    def addDecoration(self,itemlist):
+    def addDecoration(self, itemlist):
         """Add a 2D decoration or a list thereof to the canvas."""
         self.decorations.add(itemlist)
 
@@ -1129,11 +1129,11 @@ class Canvas(object):
         If you have a long list of a single type, it is more efficient to
         use one of the type specific add methods.
         """
-        if type(itemlist) not in (tuple,list):
+        if type(itemlist) not in (tuple, list):
             itemlist = [ itemlist ]
-        self.addActor([ i for i in itemlist if isinstance(i,actors.Actor)])
-        self.addAnnotation([ i for i in itemlist if isinstance(i,marks.Mark)])
-        self.addDecoration([ i for i in itemlist if isinstance(i,decors.Decoration)])
+        self.addActor([ i for i in itemlist if isinstance(i, actors.Actor)])
+        self.addAnnotation([ i for i in itemlist if isinstance(i, marks.Mark)])
+        self.addDecoration([ i for i in itemlist if isinstance(i, decors.Decoration)])
 
 
     def removeActor(self,itemlist=None):
@@ -1244,10 +1244,10 @@ class Canvas(object):
 
         # set scene center
         if bbox is not None:
-            pf.debug("SETTING BBOX: %s" % bbox,pf.DEBUG.DRAW)
+            pf.debug("SETTING BBOX: %s" % bbox, pf.DEBUG.DRAW)
             self.setBbox(bbox)
 
-            X0,X1 = self._bbox
+            X0, X1 = self._bbox
             self.camera.focus = 0.5*(X0+X1)
 
         # set camera angles
@@ -1265,23 +1265,23 @@ class Canvas(object):
             # and change the camera distance to focus
             fovy = self.camera.fovy
             #pf.debug("FOVY: %s" % fovy,pf.DEBUG.DRAW)
-            self.camera.setLens(fovy,self.aspect)
+            self.camera.setLens(fovy, self.aspect)
             # Default correction is sqrt(3)
-            correction = float(pf.cfg.get('gui/autozoomfactor',1.732))
+            correction = float(pf.cfg.get('gui/autozoomfactor', 1.732))
             tf = coords.tand(fovy/2.)
 
             import simple
-            bbix = simple.regularGrid(X0,X1,[1,1,1])
-            bbix = dot(bbix,self.camera.rot[:3,:3])
+            bbix = simple.regularGrid(X0, X1, [1, 1, 1])
+            bbix = dot(bbix, self.camera.rot[:3, :3])
             bbox = coords.Coords(bbix).bbox()
-            dx,dy,dz = bbox[1] - bbox[0]
-            vsize = max(dx/self.aspect,dy)
+            dx, dy, dz = bbox[1] - bbox[0]
+            vsize = max(dx/self.aspect, dy)
             dsize = bbox.dsize()
             offset = dz
             dist = (vsize/tf + offset) / correction
 
             if dist == nan or dist == inf:
-                pf.debug("DIST: %s" % dist,pf.DEBUG.DRAW)
+                pf.debug("DIST: %s" % dist, pf.DEBUG.DRAW)
                 return
             if dist <= 0.0:
                 dist = 1.0
@@ -1291,16 +1291,16 @@ class Canvas(object):
             ## near,far = 0.01*dist,100.*dist
             ## print "near,far = %s, %s" % (near,far)
             #near,far = dist-1.2*offset/correction,dist+1.2*offset/correction
-            near,far = dist-1.0*dsize,dist+1.0*dsize
+            near, far = dist-1.0*dsize, dist+1.0*dsize
             # print "near,far = %s, %s" % (near,far)
             #print (0.0001*vsize,0.01*dist,near)
             # make sure near is positive
-            near = max(near,0.0001*vsize,0.01*dist,finfo(coords.Float).tiny)
+            near = max(near, 0.0001*vsize, 0.01*dist, finfo(coords.Float).tiny)
             # make sure far > near
             if far <= near:
                 far += finfo(coords.Float).eps
             #print "near,far = %s, %s" % (near,far)
-            self.camera.setClip(near,far)
+            self.camera.setClip(near, far)
             self.camera.resetArea()
 
 
@@ -1308,32 +1308,32 @@ class Canvas(object):
         "Map the object coordinates (x,y,z) to window coordinates."""
         locked=False
         if locked:
-            model,proj,view = self.projection_matrices
+            model, proj, view = self.projection_matrices
         else:
             self.makeCurrent()
             self.camera.loadProjection()
             model = GL.glGetDoublev(GL.GL_MODELVIEW_MATRIX)
             proj = GL.glGetDoublev(GL.GL_PROJECTION_MATRIX)
             view = GL.glGetIntegerv(GL.GL_VIEWPORT)
-        winx,winy,winz = GLU.gluProject(x,y,z,model,proj,view)
-        return winx,winy,winz
-        return self.camera.project(x,y,z)
+        winx, winy, winz = GLU.gluProject(x, y, z, model, proj, view)
+        return winx, winy, winz
+        return self.camera.project(x, y, z)
 
 
     def unProject(self,x,y,z,locked=False):
         "Map the window coordinates (x,y,z) to object coordinates."""
         locked=False
         if locked:
-            model,proj,view = self.projection_matrices
+            model, proj, view = self.projection_matrices
         else:
             self.makeCurrent()
             self.camera.loadProjection()
             model = GL.glGetDoublev(GL.GL_MODELVIEW_MATRIX)
             proj = GL.glGetDoublev(GL.GL_PROJECTION_MATRIX)
             view = GL.glGetIntegerv(GL.GL_VIEWPORT)
-        objx, objy, objz = GLU.gluUnProject(x,y,z,model,proj,view)
-        return (objx,objy,objz)
-        return self.camera.unProject(x,y,z)
+        objx, objy, objz = GLU.gluUnProject(x, y, z, model, proj, view)
+        return (objx, objy, objz)
+        return self.camera.unProject(x, y, z)
 
 
     def zoom(self,f,dolly=True):
@@ -1347,7 +1347,7 @@ class Canvas(object):
             self.camera.dolly(f)
 
 
-    def zoomRectangle(self,x0,y0,x1,y1):
+    def zoomRectangle(self, x0, y0, x1, y1):
         """Rectangle zooming.
 
         Zooms in/out by changing the area and position of the visible
@@ -1359,8 +1359,8 @@ class Canvas(object):
         canvas viewport.
         Specifying values that lead to smaller width/height will zoom in.
         """
-        w,h = float(self.width()),float(self.height())
-        self.camera.setArea(x0/w,y0/h,x1/w,y1/h)
+        w, h = float(self.width()), float(self.height())
+        self.camera.setArea(x0/w, y0/h, x1/w, y1/h)
 
 
     def zoomCentered(self,w,h,x=None,y=None):
@@ -1370,7 +1370,7 @@ class Canvas(object):
         by its center and size, which may be more appropriate when using
         off-center zooming.
         """
-        self.zoomRectangle(x-w/2,y-h/2,x+w/2,y+w/2)
+        self.zoomRectangle(x-w/2, y-h/2, x+w/2, y+w/2)
 
 
     def zoomAll(self):
@@ -1393,24 +1393,24 @@ class Canvas(object):
 
         The specified width is HALF of the line width
         """
-        w,h = self.width(),self.height()
-        self._focus = decors.Grid(1+ofs,ofs,w-ofs,h-1-ofs,color=color,linewidth=1)
+        w, h = self.width(), self.height()
+        self._focus = decors.Grid(1+ofs, ofs, w-ofs, h-1-ofs, color=color, linewidth=1)
         self._focus.draw()
 
-    def draw_cursor(self,x,y):
+    def draw_cursor(self, x, y):
         """draw the cursor"""
         if self.cursor:
             self.removeDecoration(self.cursor)
-        w,h = pf.cfg.get('draw/picksize',(20,20))
-        col = pf.cfg.get('pick/color','yellow')
-        self.cursor = decors.Grid(x-w/2,y-h/2,x+w/2,y+h/2,color=col,linewidth=1)
+        w, h = pf.cfg.get('draw/picksize', (20, 20))
+        col = pf.cfg.get('pick/color', 'yellow')
+        self.cursor = decors.Grid(x-w/2, y-h/2, x+w/2, y+h/2, color=col, linewidth=1)
         self.addDecoration(self.cursor)
 
-    def draw_rectangle(self,x,y):
+    def draw_rectangle(self, x, y):
         if self.cursor:
             self.removeDecoration(self.cursor)
-        col = pf.cfg.get('pick/color','yellow')
-        self.cursor = decors.Grid(self.statex,self.statey,x,y,color=col,linewidth=1)
+        col = pf.cfg.get('pick/color', 'yellow')
+        self.cursor = decors.Grid(self.statex, self.statey, x, y, color=col, linewidth=1)
         self.addDecoration(self.cursor)
 
 
@@ -1427,7 +1427,7 @@ class Canvas(object):
         selbuf = GL.glSelectBuffer(npickable*(3+stackdepth))
         GL.glRenderMode(GL.GL_SELECT)
         GL.glInitNames()
-        for i,a in enumerate(self.actors):
+        for i, a in enumerate(self.actors):
             GL.glPushName(i)
             GL.glCallList(a.list)
             GL.glPopName()
@@ -1437,12 +1437,12 @@ class Canvas(object):
                         self.selection_filter == 'closest'
         self.picked = []
         if selbuf[0] > 0:
-            buf = asarray(selbuf).reshape(-1,3+selbuf[0])
-            buf = buf[buf[:,0] > 0]
-            self.picked = buf[:,3]
+            buf = asarray(selbuf).reshape(-1, 3+selbuf[0])
+            buf = buf[buf[:, 0] > 0]
+            self.picked = buf[:, 3]
             if store_closest:
-                w = buf[:,1].argmin()
-                self.closest_pick = (self.picked[w], buf[w,1])
+                w = buf[:, 1].argmin()
+                self.closest_pick = (self.picked[w], buf[w, 1])
 
 
     def pick_parts(self,obj_type,max_objects,store_closest=False):
@@ -1461,7 +1461,7 @@ class Canvas(object):
         By default, the full actor list is used.
         """
         self.picked = []
-        pf.debug('PICK_PARTS %s %s %s' % (obj_type,max_objects,store_closest),pf.DEBUG.DRAW)
+        pf.debug('PICK_PARTS %s %s %s' % (obj_type, max_objects, store_closest), pf.DEBUG.DRAW)
         if max_objects <= 0:
             pf.message("No such objects to be picked!")
             return
@@ -1475,20 +1475,20 @@ class Canvas(object):
             pickable = self.actors
         else:
             pickable = self.pickable
-        for i,a in enumerate(pickable):
+        for i, a in enumerate(pickable):
             GL.glPushName(i)
             a.pickGL(obj_type)  # this will push the number of the part
             GL.glPopName()
         self.picked = []
         libGL.glRenderMode(GL.GL_RENDER)
         if selbuf[0] > 0:
-            buf = asarray(selbuf).reshape(-1,3+selbuf[0])
-            buf = buf[buf[:,0] > 0]
-            self.picked = buf[:,3:]
-            pf.debug("PICKBUFFER: %s" % self.picked,pf.DEBUG.DRAW)
+            buf = asarray(selbuf).reshape(-1, 3+selbuf[0])
+            buf = buf[buf[:, 0] > 0]
+            self.picked = buf[:, 3:]
+            pf.debug("PICKBUFFER: %s" % self.picked, pf.DEBUG.DRAW)
             if store_closest and len(buf) > 0:
-                w = buf[:,1].argmin()
-                self.closest_pick = (self.picked[w], buf[w,1])
+                w = buf[:, 1].argmin()
+                self.closest_pick = (self.picked[w], buf[w, 1])
 
 
     def pick_elements(self):
@@ -1496,7 +1496,7 @@ class Canvas(object):
         npickable = 0
         for a in self.actors:
             npickable += a.nelems()
-        self.pick_parts('element',npickable,store_closest=\
+        self.pick_parts('element', npickable, store_closest=\
                         self.selection_filter == 'single' or\
                         self.selection_filter == 'closest' or\
                         self.selection_filter == 'connected'
@@ -1507,9 +1507,9 @@ class Canvas(object):
         """Set the list of actor points inside the pick_window."""
         npickable = 0
         for a in self.actors:
-            pf.debug("ADDING %s pickable points"%a.npoints(),pf.DEBUG.DRAW)
+            pf.debug("ADDING %s pickable points"%a.npoints(), pf.DEBUG.DRAW)
             npickable += a.npoints()
-        self.pick_parts('point',npickable,store_closest=\
+        self.pick_parts('point', npickable, store_closest=\
                         self.selection_filter == 'single' or\
                         self.selection_filter == 'closest',
                         )
@@ -1519,9 +1519,9 @@ class Canvas(object):
         """Set the list of actor edges inside the pick_window."""
         npickable = 0
         for a in self.actors:
-            if hasattr(a,'nedges'):
+            if hasattr(a, 'nedges'):
                 npickable += a.nedges()
-        self.pick_parts('edge',npickable,store_closest=\
+        self.pick_parts('edge', npickable, store_closest=\
                         self.selection_filter == 'single' or\
                         self.selection_filter == 'closest',
                         )
@@ -1531,9 +1531,9 @@ class Canvas(object):
         """Set the list of actor faces inside the pick_window."""
         npickable = 0
         for a in self.actors:
-            if hasattr(a,'nfaces'):
+            if hasattr(a, 'nfaces'):
                 npickable += a.nfaces()
-        self.pick_parts('face',npickable,store_closest=\
+        self.pick_parts('face', npickable, store_closest=\
                         self.selection_filter == 'single' or\
                         self.selection_filter == 'closest',
                         )
@@ -1543,21 +1543,21 @@ class Canvas(object):
         """Return the numbers inside the pick_window."""
         self.camera.loadProjection(pick=self.pick_window)
         self.camera.loadModelView()
-        self.picked = [0,1,2,3]
+        self.picked = [0, 1, 2, 3]
         if self.numbers:
             self.picked = self.numbers.drawpick()
 
     ######### Highlighting ###############
 
-    def highlightActor(self,actor):
+    def highlightActor(self, actor):
         """Highlight an actor in the scene."""
         if pf.options.debuglevel & pf.DEBUG.DRAW:
-            print("  Highlighting actor %s/%s" % (i,len(self.actors)))
-        FA = actors.GeomActor(actor,color=self.settings.slcolor)
+            print("  Highlighting actor %s/%s" % (i, len(self.actors)))
+        FA = actors.GeomActor(actor, color=self.settings.slcolor)
         self.addHighlight(FA)
 
 
-    def highlightActors(self,K):
+    def highlightActors(self, K):
         """Highlight a selection of actors on the canvas.
 
         K is Collection of actors as returned by the pick() method.
@@ -1565,12 +1565,12 @@ class Canvas(object):
         the Collection K.
         """
         self.removeHighlight()
-        actors = [ self.actors[i] for i in K.get(-1,[]) ]
+        actors = [ self.actors[i] for i in K.get(-1, []) ]
         [ self.highlightActor(a) for a in actors ]
         self.update()
 
 
-    def highlightElements(self,K):
+    def highlightElements(self, K):
         """Highlight a selection of actor elements on the canvas.
 
         K is Collection of actor elements as returned by the pick() method.
@@ -1579,14 +1579,14 @@ class Canvas(object):
         """
         self.removeHighlight()
         for i in K.keys():
-            pf.debug("Actor %s: Selection %s" % (i,K[i]),pf.DEBUG.DRAW)
+            pf.debug("Actor %s: Selection %s" % (i, K[i]), pf.DEBUG.DRAW)
             actor = self.actors[i]
-            FA = actors.GeomActor(actor.select(K[i]),color=self.settings.slcolor,linewidth=3)
+            FA = actors.GeomActor(actor.select(K[i]), color=self.settings.slcolor, linewidth=3)
             self.addHighlight(FA)
         self.update()
 
 
-    def highlightEdges(self,K):
+    def highlightEdges(self, K):
         """Highlight a selection of actor edges on the canvas.
 
         K is Collection of TriSurface actor edges as returned by the pick() method.
@@ -1595,29 +1595,29 @@ class Canvas(object):
         """
         self.removeHighlight()
         for i in K.keys():
-            pf.debug("Actor %s: Selection %s" % (i,K[i]),pf.DEBUG.DRAW)
+            pf.debug("Actor %s: Selection %s" % (i, K[i]), pf.DEBUG.DRAW)
             actor = self.actors[i]
-            FA = actors.GeomActor(Formex(actor.coords[actor.object.getEdges()[K[i]]]),color=self.settings.slcolor,linewidth=3)
+            FA = actors.GeomActor(Formex(actor.coords[actor.object.getEdges()[K[i]]]), color=self.settings.slcolor, linewidth=3)
             self.addHighlight(FA)
 
         self.update()
 
 
-    def highlightPoints(self,K):
+    def highlightPoints(self, K):
         """Highlight a selection of actor elements on the canvas.
 
         K is Collection of actor elements as returned by the pick() method.
         """
         self.removeHighlight()
         for i in K.keys():
-            pf.debug("Actor %s: Selection %s" % (i,K[i]),pf.DEBUG.DRAW)
+            pf.debug("Actor %s: Selection %s" % (i, K[i]), pf.DEBUG.DRAW)
             actor = self.actors[i]
-            FA = actors.GeomActor(Formex(actor.points()[K[i]]),color=self.settings.slcolor,marksize=10)
+            FA = actors.GeomActor(Formex(actor.points()[K[i]]), color=self.settings.slcolor, marksize=10)
             self.addHighlight(FA)
         self.update()
 
 
-    def highlightPartitions(self,K):
+    def highlightPartitions(self, K):
         """Highlight a selection of partitions on the canvas.
 
         K is a Collection of actor elements, where each actor element is
@@ -1626,10 +1626,10 @@ class Canvas(object):
         """
         self.removeHighlight()
         for i in K.keys():
-            pf.debug("Actor %s: Partitions %s" % (i,K[i][0]),pf.DEBUG.DRAW)
+            pf.debug("Actor %s: Partitions %s" % (i, K[i][0]), pf.DEBUG.DRAW)
             actor = self.actors[i]
             for j in K[i][0].keys():
-                FA = actors.GeomActor(actor.select(K[i][0][j]),color=j*numpy.ones(len(K[i][0][j]),dtype=int))
+                FA = actors.GeomActor(actor.select(K[i][0][j]), color=j*numpy.ones(len(K[i][0][j]), dtype=int))
                 self.addHighlight(FA)
         self.update()
 
@@ -1641,14 +1641,14 @@ class Canvas(object):
                         }
 
 
-    def highlight(self,K,mode):
+    def highlight(self, K, mode):
         """Highlight a Collection of actor/elements.
 
         K is usually the return value of a pick operation, but might also
         be set by the user.
         mode is one of the pick modes.
         """
-        func = self.highlight_funcs.get(mode,None)
+        func = self.highlight_funcs.get(mode, None)
         if func:
             func(K)
 

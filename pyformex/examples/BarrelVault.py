@@ -40,11 +40,11 @@ def run():
     wireframe()
 
     res = askItems([
-        dict(name='m',value=10,text='number of modules in axial direction'),
-        dict(name='n',value=8,text='number of modules in tangential direction'),
-        dict(name='r',value=10.,text='barrel radius'),
-        dict(name='a',value=180.,text='barrel opening angle'),
-        dict(name='l',value=30.,text='barrel length'),
+        dict(name='m', value=10, text='number of modules in axial direction'),
+        dict(name='n', value=8, text='number of modules in tangential direction'),
+        dict(name='r', value=10., text='barrel radius'),
+        dict(name='a', value=180., text='barrel opening angle'),
+        dict(name='l', value=30., text='barrel length'),
         ])
     if not res:
         return
@@ -52,13 +52,13 @@ def run():
     globals().update(res)
 
     # Diagonals
-    d = Formex('l:5',1).rosette(4,90).translate([1,1,0]).replic2(m,n,2,2)
+    d = Formex('l:5', 1).rosette(4, 90).translate([1, 1, 0]).replic2(m, n, 2, 2)
     # Longitudinals
-    h = Formex('l:1',3).replic2(2*m,2*n+1,1,1)
+    h = Formex('l:1', 3).replic2(2*m, 2*n+1, 1, 1)
     # End bars
-    e = Formex('l:2',0).replic2(2,2*n,2*m,1)
+    e = Formex('l:2', 0).replic2(2, 2*n, 2*m, 1)
     # Create barrel
-    barrel = (d+h+e).rotate(90,1).translate(0,r).scale([1.,a/(2*n),l/(2*m)]).cylindrical()
+    barrel = (d+h+e).rotate(90, 1).translate(0, r).scale([1., a/(2*n), l/(2*m)]).cylindrical()
 
     draw(barrel)
 

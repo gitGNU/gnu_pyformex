@@ -45,7 +45,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'beginner'
 _topics = ['formex']
-_techniques = ['color','random','connect']
+_techniques = ['color', 'random', 'connect']
 
 from gui.draw import *
 
@@ -55,11 +55,11 @@ def run():
     delay(2)
     setDrawOptions({'clear':True})
     npoints = 30
-    p = random.randint(0,7,(npoints,))
-    P = Formex(random.random((npoints,1,3)),p)
+    p = random.randint(0, 7, (npoints,))
+    P = Formex(random.random((npoints, 1, 3)), p)
     draw(P)
     smooth()
-    for n in range(1,5):
+    for n in range(1, 5):
         F = connect([P] * n,
                     bias=[i*(n-1) for i in range(n)],
                     loop=True)

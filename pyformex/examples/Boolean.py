@@ -28,8 +28,8 @@ Perform boolean operations on surfaces
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['surface','gts']
-_techniques = ['boolean','intersection']
+_topics = ['surface', 'gts']
+_techniques = ['boolean', 'intersection']
 _opengl2 = True
 _opengl2_comments = """
 - No color
@@ -39,15 +39,15 @@ _opengl2_comments = """
 from gui.draw import *
 from simple import cylinder
 from connectivity import connectedLineElems
-from plugins.trisurface import TriSurface,fillBorder
+from plugins.trisurface import TriSurface, fillBorder
 
 def splitAlongPath(path,mesh,atol=0.0):
     '''
     Given split mesh into opposite regions along a closed path matching coords of mesh
     '''
-    cpath= Mesh(mesh.coords,mesh.getEdges()).matchCentroids(path)
-    mask=complement(cpath,mesh.getEdges().shape[0])
-    p=mesh.maskedEdgeFrontWalk(mask=mask,frontinc=0)
+    cpath= Mesh(mesh.coords, mesh.getEdges()).matchCentroids(path)
+    mask=complement(cpath, mesh.getEdges().shape[0])
+    p=mesh.maskedEdgeFrontWalk(mask=mask, frontinc=0)
     msplit=mesh.setProp(p)
     return msplit
 
@@ -58,12 +58,12 @@ def drawResults(**res):
     split = res['split']
     path = None
     if op in '+-*':
-        I = F.boolean(G,op,verbose=verbose)
+        I = F.boolean(G, op, verbose=verbose)
         if split:
-            path = F.intersection(G,verbose=verbose)
-            I = splitAlongPath(path.toMesh(),I.fuse(atol=0).compact()) # with atol = 0 removes repeted nodes which may results after boolean operation
+            path = F.intersection(G, verbose=verbose)
+            I = splitAlongPath(path.toMesh(), I.fuse(atol=0).compact()) # with atol = 0 removes repeted nodes which may results after boolean operation
     else:
-        I = F.intersection(G,verbose=verbose)
+        I = F.intersection(G, verbose=verbose)
     clear()
     draw(I)
 
@@ -74,10 +74,10 @@ def drawResults(**res):
         if ack('Create a surface inside the curve ?'):
             I = I.toMesh()
             e = connectedLineElems(I.elems)
-            I = Mesh(I.coords,connectedLineElems(I.elems)[0])
+            I = Mesh(I.coords, connectedLineElems(I.elems)[0])
             clear()
-            draw(I,color=red,linewidth=3)
-            S = fillBorder(I,method='planar')
+            draw(I, color=red, linewidth=3)
+            S = fillBorder(I, method='planar')
             draw(S)
 
 
@@ -102,34 +102,34 @@ def timeOut():
     close()
 
 def run():
-    global dialog,F,G
+    global dialog, F, G
     clear()
     smooth()
     view('iso')
-    F = cylinder(L=8.,D=2.,nt=36,nl=20,diag='u').centered()
+    F = cylinder(L=8., D=2., nt=36, nl=20, diag='u').centered()
     F = TriSurface(F).setProp(3).close(method='planar').fixNormals().fuse().compact()
-    G = F.rotate(90.,0).trl(0,1.).setProp(1)
+    G = F.rotate(90., 0).trl(0, 1.).setProp(1)
     export({'F':F,'G':G})
-    draw([F,G])
+    draw([F, G])
 
     _items =\
-        [ _I('op',text='Operation',choices=[
+        [ _I('op', text='Operation', choices=[
             '+ (Union)',
             '- (Difference)',
             '* Intersection',
             'Intersection Curve',
             ]),
-          _I('split',False,text='Split along intersection'),
-          _I('verbose',False,text='Show stats'),
+          _I('split', False, text='Split along intersection'),
+          _I('verbose', False, text='Show stats'),
         ]
-    _enablers = [('op','+ (Union)','split'),
-        ('op','- (Difference)','split'),
-        ('op','* Intersection','split'),]
+    _enablers = [('op', '+ (Union)', 'split'),
+        ('op', '- (Difference)', 'split'),
+        ('op', '* Intersection', 'split'),]
 
     dialog = Dialog(
         items=_items,
         enablers=_enablers,
-        actions=[('Close',close),('Show',show)],
+        actions=[('Close', close), ('Show', show)],
         default='Show')
 
     dialog.timeout=timeOut

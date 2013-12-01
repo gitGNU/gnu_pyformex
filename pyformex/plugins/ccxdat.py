@@ -42,29 +42,29 @@ def skipBlankLine(fil):
 #
 # REMARK: this could be speed up as done in tetgen.py
 #
-def readDispl(fil,nnodes,nres):
+def readDispl(fil, nnodes, nres):
     """Read displacements from a Calculix .dat file"""
-    values = zeros((nnodes,nres),dtype=Float)
+    values = zeros((nnodes, nres), dtype=Float)
     for line in fil:
         if len(line.strip()) == 0:
             break
         s = line.split()
         i = int(s[0])
-        x = map(float,s[1:])
+        x = map(float, s[1:])
         values[i-1] = x
     return values
 
 
-def readStress(fil,nelems,ngp,nres):
+def readStress(fil, nelems, ngp, nres):
     """Read stresses from a Calculix .dat file"""
-    values = zeros((nelems,ngp,nres),dtype=Float)
+    values = zeros((nelems, ngp, nres), dtype=Float)
     for line in fil:
         if len(line.strip()) == 0:
             break
         s = line.split()
-        i,j = map(int,s[:2])
-        x = map(float,s[2:])
-        values[i-1,j-1] = x
+        i, j = map(int, s[:2])
+        x = map(float, s[2:])
+        values[i-1, j-1] = x
     return values
 
 
@@ -73,12 +73,12 @@ re_float = re.compile("[-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?")
 re_header = re.compile(" *(?P<name>[^ ]+) *\(.*\) +for set (?P<set>[^ ]+) *and time *(?P<time>[^ ]+)")
 
 
-def readResults(fn,DB,nnodes,nelems,ngp):
+def readResults(fn, DB, nnodes, nelems, ngp):
     """Read Calculix results file for nnodes, nelems, ngp
 
     Add results to the specified DB
     """
-    fil = open(fn,'r')
+    fil = open(fn, 'r')
 
     result = {}
     step = 1
@@ -89,14 +89,14 @@ def readResults(fn,DB,nnodes,nelems,ngp):
             name = m['name'][:5]
             setname = m['set']
             time = m['time']
-            print("Match %s %s %s" % (name,setname,time))
+            print("Match %s %s %s" % (name, setname, time))
             skipBlankLine(fil)
             if name == 'displ':
-                result[name] = readDispl(fil,nnodes,3)
+                result[name] = readDispl(fil, nnodes, 3)
             elif name == 'stres':
-                result[name] = readStress(fil,nelems,ngp,6)
+                result[name] = readStress(fil, nelems, ngp, 6)
         if 'displ' in result and 'stres' in result:
-            addFeResult(DB,step,time,result)
+            addFeResult(DB, step, time, result)
             result = {}
             step += 1
             
@@ -115,13 +115,13 @@ def createResultDB(model):
     return DB
     
 
-def addFeResult(DB,step,time,result):
+def addFeResult(DB, step, time, result):
     """Add an FeResult for a time step to the result DB
 
     This is currently 2D only
     """
-    print("Storing result for step %s, time %s" % (step,time))
-    DB.Increment(step,0)
+    print("Storing result for step %s, time %s" % (step, time))
+    DB.Increment(step, 0)
     DB.R['TIME'] = time
     if 'displ' in result:
         DB.datasize['U'] = result['displ'].shape[1]
@@ -131,11 +131,11 @@ def addFeResult(DB,step,time,result):
             stress = result['stres']
             # CALCULIX HAS NO 2D: keep only half of GP's
             ngp = stress.shape[1]/2
-            stress = stress[:,:ngp,:]
+            stress = stress[:, :ngp,:]
             print("Reduced stresses: %s" % str(stress.shape))
-            mesh = Mesh(DB.nodes,DB.elems[0],eltype='quad4')
-            gprule = [2,2]
-            stress = computeAveragedNodalStresses(mesh,stress,gprule)
+            mesh = Mesh(DB.nodes, DB.elems[0], eltype='quad4')
+            gprule = [2, 2]
+            stress = computeAveragedNodalStresses(mesh, stress, gprule)
             DB.datasize['S'] = result['stres'].shape[1]
             DB.R['S'] = stress
         except:
@@ -143,7 +143,7 @@ def addFeResult(DB,step,time,result):
     return DB
 
 
-def computeAveragedNodalStresses(M,data,gprule):
+def computeAveragedNodalStresses(M, data, gprule):
     """Compute averaged nodal stresses from GP stresses in 2D quad8 mesh"""
 
 
@@ -152,8 +152,8 @@ def computeAveragedNodalStresses(M,data,gprule):
     from plugins import calpy_itf
     calpy_itf.check()
 
-    gprule = (2,2) # integration rule: minimum (1,1),  maximum (5,5)
-    Q = calpy_itf.QuadInterpolator(M.nelems(),M.nplex(),gprule)
+    gprule = (2, 2) # integration rule: minimum (1,1),  maximum (5,5)
+    Q = calpy_itf.QuadInterpolator(M.nelems(), M.nplex(), gprule)
     ngp = prod(gprule) # number of datapoints per element
     print("Number of data points per element: %s" % ngp)
     print("Original element data: %s" % str(data.shape))
@@ -161,7 +161,7 @@ def computeAveragedNodalStresses(M,data,gprule):
     endata = Q.GP2Nodes(data)
     print("Element nodal data: %s" % str(endata.shape))
     # compute nodal averages
-    nodata = Q.NodalAvg(M.elems+1,endata,M.nnodes())
+    nodata = Q.NodalAvg(M.elems+1, endata, M.nnodes())
     print("Average nodal data: %s" % str(nodata.shape))
     # extract the colors per element
 

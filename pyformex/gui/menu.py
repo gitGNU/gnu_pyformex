@@ -30,7 +30,7 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex.gui import *
-from gui import QtGui,QtCore,Signal
+from gui import QtGui, QtCore, Signal
 import odict
 import utils
 
@@ -74,16 +74,16 @@ class BaseMenu(object):
     def __init__(self,title='AMenu',parent=None,before=None,items=None):
         """Create a menu."""
         self._title = title
-        pf.debug("Creating menu %s" % title,pf.DEBUG.MENU)
+        pf.debug("Creating menu %s" % title, pf.DEBUG.MENU)
         self.parent = parent
         self.separators = odict.ODict()
         self._actions_ = []
         self._submenus_ = []
         if items:
             self.insertItems(items)
-        if parent and isinstance(parent,BaseMenu):
+        if parent and isinstance(parent, BaseMenu):
             before = parent.action(before)
-            parent.insert_menu(self,before)
+            parent.insert_menu(self, before)
 
 
     def actionList(self):
@@ -91,15 +91,15 @@ class BaseMenu(object):
         return [ utils.strNorm(str(a.text())) for a in self.actions() ]
 
 
-    def actionsLike(self,clas):
+    def actionsLike(self, clas):
         """Return a list with the current actions of given class."""
-        return [ a for a in self.actions() if isinstance(a,clas) ]
+        return [ a for a in self.actions() if isinstance(a, clas) ]
 
     def subMenus(self):
         """Return a list with the submenus"""
         return self.actionsLike(BaseMenu)
 
-    def index(self,text):
+    def index(self, text):
         """Return the index of the specified item in the actionlist.
 
         If the requested item is not in the actionlist, -1 is returned.
@@ -110,7 +110,7 @@ class BaseMenu(object):
             return -1
 
 
-    def action(self,text):
+    def action(self, text):
         """Return the action with specified text.
 
         First, a normal action is tried. If none is found,
@@ -124,10 +124,10 @@ class BaseMenu(object):
         if i >= 0:
             return self.actions()[i]
         else:
-            return self.separators.get(utils.strNorm(text),None)
+            return self.separators.get(utils.strNorm(text), None)
 
 
-    def item(self,text):
+    def item(self, text):
         """Return the item with specified text.
 
         For a normal action or a separator, an action is returned.
@@ -142,10 +142,10 @@ class BaseMenu(object):
             else:
                 return a
         else:
-            return self.separators.get(utils.strNorm(text),None)
+            return self.separators.get(utils.strNorm(text), None)
 
 
-    def nextitem(self,text):
+    def nextitem(self, text):
         """Returns the name of the next item.
 
         This can be used to replace the current item with another menu.
@@ -159,12 +159,12 @@ class BaseMenu(object):
             return None
 
 
-    def removeItem(self,item):
+    def removeItem(self, item):
         """Remove an item from this menu."""
         action = self.action(item)
         if action:
             self.removeAction(action)
-            if isinstance(action,QtGui.QMenu):
+            if isinstance(action, QtGui.QMenu):
                 action.close()
                 del action
 
@@ -182,14 +182,14 @@ class BaseMenu(object):
         """Insert an existing menu."""
         self._submenus_.append(menu)
         if before:
-            return self.insertMenu(before,menu)
+            return self.insertMenu(before, menu)
         else:
             return self.addMenu(menu)
 
     def insert_action(self,action,before=None):
         """Insert an action."""
         if before:
-            return self.insertAction(before,action)
+            return self.insertAction(before, action)
         else:
             return self.addAction(action)
 
@@ -197,9 +197,9 @@ class BaseMenu(object):
         """Create and insert an action."""
         if before:
             raise RuntimeError("THIS CAN NOT WORK")
-            return self.insertAction(before,name,val)
+            return self.insertAction(before, name, val)
         else:
-            return self.addAction(name,val)
+            return self.addAction(name, val)
 
 
     def insertItems(self,items,before=None,debug=False):
@@ -237,12 +237,12 @@ class BaseMenu(object):
           items will be inserted before the specified item.
         """
         if debug:
-            print("Inserting %s items in menu %s" % (len(items),self.title()))
+            print("Inserting %s items in menu %s" % (len(items), self.title()))
         before = self.action(before)
         for item in items:
-            txt,val = item[:2]
+            txt, val = item[:2]
             if debug:
-                print("INSERTING %s: %s" % (txt,val))
+                print("INSERTING %s: %s" % (txt, val))
             if len(item) > 2:
                 options = item[2]
             else:
@@ -251,11 +251,11 @@ class BaseMenu(object):
                 a = self.insert_sep(before)
                 self.separators[txt] = a
             elif isinstance(val, list):
-                a = Menu(txt,parent=self,before=before)
+                a = Menu(txt, parent=self, before=before)
                 a.insertItems(val)
             elif isinstance(val, BaseMenu):
                 #print("INSERTING MENU %s"%txt)
-                self.insert_menu(val,before=before)
+                self.insert_menu(val, before=before)
             else:
                 if isinstance(val, str):
                     val = eval(val)
@@ -263,9 +263,9 @@ class BaseMenu(object):
                     # DActions should be saved to keep them alive !!!
                     if debug:
                         print("INSERTING DAction %s" % txt)
-                    a = DAction(txt,data = options['data'])
+                    a = DAction(txt, data = options['data'])
                     a.signal.connect(val)
-                    self.insert_action(a,before)
+                    self.insert_action(a, before)
                     # We need to store the DActions, or else they are
                     # destroyed. QActions are stroed by Qt
                     self._actions_.append(a)
@@ -274,8 +274,8 @@ class BaseMenu(object):
                         print("INSERTING QAction %s" % txt)
                     if before is not None:
                         raise RuntimeError("I can not insert a QAction menu item before an existing one.")
-                    a = self.create_insert_action(txt,val,before)
-                for k,v in options.items():
+                    a = self.create_insert_action(txt, val, before)
+                for k, v in options.items():
                     if k == 'icon':
                         a.setIcon(QtGui.QIcon(QtGui.QPixmap(utils.findIcon(v))))
                     elif k == 'shortcut':
@@ -299,11 +299,11 @@ class BaseMenu(object):
         print("SUBMENUS: %s" % [ str(a.title()) for a in self.subMenus()])
         if recursive:
             for a in self._submenus_:
-                if isinstance(a,BaseMenu):
+                if isinstance(a, BaseMenu):
                     a.print_report()
 
 
-class Menu(BaseMenu,QtGui.QMenu):
+class Menu(BaseMenu, QtGui.QMenu):
     """A popup/pulldown menu."""
 
     def __init__(self,title='UserMenu',parent=None,before=None,tearoff=False,items=None):
@@ -324,8 +324,8 @@ class Menu(BaseMenu,QtGui.QMenu):
         If insert == False, the created menu will be an independent dialog
         and the user will have to process it explicitely.
         """
-        QtGui.QMenu.__init__(self,title,parent)
-        BaseMenu.__init__(self,title,parent,before,items)
+        QtGui.QMenu.__init__(self, title, parent)
+        BaseMenu.__init__(self, title, parent, before, items)
         if parent is None:
             self.setWindowFlags(QtCore.Qt.Dialog)
             self.setWindowTitle(title)
@@ -350,13 +350,13 @@ class Menu(BaseMenu,QtGui.QMenu):
         self.parent.removeItem(self.title())
 
 
-class MenuBar(BaseMenu,QtGui.QMenuBar):
+class MenuBar(BaseMenu, QtGui.QMenuBar):
     """A menu bar allowing easy menu creation."""
 
     def __init__(self,title='TopMenuBar'):
         """Create the menubar."""
         QtGui.QMenuBar.__init__(self)
-        BaseMenu.__init__(self,title)
+        BaseMenu.__init__(self, title)
 
 
     def title(self):
@@ -388,7 +388,7 @@ class DAction(QtGui.QAction):
 
         See the views.py module for an example.
         """
-        QtGui.QAction.__init__(self,name,None)
+        QtGui.QAction.__init__(self, name, None)
         if icon:
             self.setIcon(icon)
         if signal is None:
@@ -402,7 +402,7 @@ class DAction(QtGui.QAction):
         self.triggered[bool].connect(self.activated)
 
 
-    def activated(self,ok):
+    def activated(self, ok):
         self.signal.emit(self.data())
 
 
@@ -435,11 +435,11 @@ class ActionList(object):
         self.toolbar = toolbar
         if icons is None:
             icons = actions
-        icons = map(utils.findIcon,icons)
+        icons = map(utils.findIcon, icons)
         if text is None:
             text = actions
-        for name,icon,txt in zip(actions,icons,text):
-            self.add(name,icon,txt)
+        for name, icon, txt in zip(actions, icons, text):
+            self.add(name, icon, txt)
 
 
     def add(self,name,icon=None,text=None):
@@ -458,10 +458,10 @@ class ActionList(object):
                 raise RuntimeError('Icons not installed properly')
         if text is None:
             text = name
-        a = DAction(text,icon,name)
+        a = DAction(text, icon, name)
         if self.function:
             a.signal.connect(self.function)
-        self.actions.append([name,a])
+        self.actions.append([name, a])
         if self.menu:
             self.menu.addAction(a)
         if self.toolbar:
@@ -473,10 +473,10 @@ class ActionList(object):
         return [ i[0] for i in self.actions ]
 
 
-    def toolbar(self,name):
+    def toolbar(self, name):
         """Create a new toolbar corresponding to the menu."""
         tb = QtGui.QToolBar(name)
-        for n,a in self.actions:
+        for n, a in self.actions:
             self.toolbar.addAction(a)
 
 
@@ -501,7 +501,7 @@ def resetWarnings():
     """Reset the warning filters to the default."""
     del pf.prefcfg['warnings/filters']
     print("This will only become effective in your future sessions!")
-    print("FILTERS:",pf.prefcfg['warnings/filters'])
+    print("FILTERS:", pf.prefcfg['warnings/filters'])
 
 
 # The menu actions can be simply function names instead of strings, if the
@@ -510,7 +510,7 @@ def resetWarnings():
 def printwindow():
     pf.app.syncX()
     r = pf.GUI.frameGeometry()
-    print("Qt4 geom(w,h,x,y): %s,%s,%s,%s" % (r.width(),r.height(),r.x(),r.y()))
+    print("Qt4 geom(w,h,x,y): %s,%s,%s,%s" % (r.width(), r.height(), r.x(), r.y()))
     print("According to xwininfo, (x,y) is %s,%s" % pf.GUI.XPos())
 
 
@@ -533,14 +533,14 @@ def closeLogFile():
         draw.logfile = None
 
 def openLogFile():
-    fn = draw.askFilename(filter=['*.log','*'],multi=False)
+    fn = draw.askFilename(filter=['*.log', '*'], multi=False)
     if fn:
         closeLogFile()
-        draw.logfile = open(fn,'w')
+        draw.logfile = open(fn, 'w')
 
 
 def saveBoard():
-    fn = draw.askFilename(filter=['*.txt','*'],multi=False,exist=False)
+    fn = draw.askFilename(filter=['*.txt', '*'], multi=False, exist=False)
     if fn:
         pf.GUI.board.save(fn)
 
@@ -569,57 +569,57 @@ def createMenuData():
     """Returns the default pyFormex GUI menu data."""
 
     ActionMenuData = [
-        (_('&Play'),draw.play),
-        (_('&Rerun'),draw.replay),
+        (_('&Play'), draw.play),
+        (_('&Rerun'), draw.replay),
         ## (_('&Step'),draw.step),
-        (_('&Continue'),draw.fforward),
-        (_('&Stop'),draw.raiseExit),
-        ("---",None),
+        (_('&Continue'), draw.fforward),
+        (_('&Stop'), draw.raiseExit),
+        ("---", None),
         # (_('&Edit',fileMenu.editApp),   # is in file menu
-        (_('&App Info'),draw.showDoc),
+        (_('&App Info'), draw.showDoc),
         ## (_('&Run All Examples'),runAllExamples),
-        ("---",None),
+        ("---", None),
         ## (_('&Reset Picking Mode'),resetPick),
-        (_('&Reset GUI'),draw.resetGUI),
-        (_('&Reset Warning Filters'),resetWarnings),
-        (_('&Force Finish Script'),script.force_finish),
-        (_('&Unload Current App'),unloadCurrentApp),
+        (_('&Reset GUI'), draw.resetGUI),
+        (_('&Reset Warning Filters'), resetWarnings),
+        (_('&Force Finish Script'), script.force_finish),
+        (_('&Unload Current App'), unloadCurrentApp),
         ## (_('&Execute single statement'),command),
-        (_('&Save Message Board'),saveBoard),
-        (_('&Open Log File'),openLogFile),
-        (_('&Close Log File'),closeLogFile),
-        (_('&Print Global Names'),script.printglobalnames),
-        (_('&Print Globals'),script.printglobals),
-        (_('&Print Config'),script.printconfig),
-        (_('&Print Last Command'),printLastCommand),
-        (_('&Print Detected Software'),script.printdetected),
-        (_('&Print Loaded Apps'),script.printLoadedApps),
-        (_('&Print sys.path'),printSysPath),
-        (_('&Print loaded modules'),printModules),
-        (_('&Print Used Memory'),script.printVMem),
-        (_('&PrintBbox'),draw.printbbox),
-        (_('&Print Viewport Settings'),draw.printviewportsettings),
-        (_('&Print Window Geometry'),printwindow),
-        (_('&Correct the Qt4 Geometry'),moveCorrect),
-        (_('&Save Geometry'),saveGeometry),
-        (_('&Restore Geometry'),restoreGeometry),
-        (_('&Toggle Input Timeout'),toolbar.timeout),
+        (_('&Save Message Board'), saveBoard),
+        (_('&Open Log File'), openLogFile),
+        (_('&Close Log File'), closeLogFile),
+        (_('&Print Global Names'), script.printglobalnames),
+        (_('&Print Globals'), script.printglobals),
+        (_('&Print Config'), script.printconfig),
+        (_('&Print Last Command'), printLastCommand),
+        (_('&Print Detected Software'), script.printdetected),
+        (_('&Print Loaded Apps'), script.printLoadedApps),
+        (_('&Print sys.path'), printSysPath),
+        (_('&Print loaded modules'), printModules),
+        (_('&Print Used Memory'), script.printVMem),
+        (_('&PrintBbox'), draw.printbbox),
+        (_('&Print Viewport Settings'), draw.printviewportsettings),
+        (_('&Print Window Geometry'), printwindow),
+        (_('&Correct the Qt4 Geometry'), moveCorrect),
+        (_('&Save Geometry'), saveGeometry),
+        (_('&Restore Geometry'), restoreGeometry),
+        (_('&Toggle Input Timeout'), toolbar.timeout),
         ]
 
 
     MenuData = [
-        (_('&File'),fileMenu.MenuData),
-        (_('&Actions'),ActionMenuData),
-        (_('&Help'),helpMenu.createMenuData())
+        (_('&File'), fileMenu.MenuData),
+        (_('&Actions'), ActionMenuData),
+        (_('&Help'), helpMenu.createMenuData())
         ]
 
     # Insert configurable menus
-    if pf.cfg.get('gui/prefsmenu','True'):
+    if pf.cfg.get('gui/prefsmenu', 'True'):
         MenuData[1:1] = prefMenu.MenuData
-    if pf.cfg.get('gui/viewportmenu','True'):
+    if pf.cfg.get('gui/viewportmenu', 'True'):
         MenuData[2:2] = viewportMenu.MenuData
-    if pf.cfg.get('gui/cameramenu','True'):
-        MenuData[3:3] = [(_('&Camera'),cameraMenu.MenuData)]
+    if pf.cfg.get('gui/cameramenu', 'True'):
+        MenuData[3:3] = [(_('&Camera'), cameraMenu.MenuData)]
 
     return MenuData
 

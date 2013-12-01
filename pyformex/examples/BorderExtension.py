@@ -31,7 +31,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
 _topics = ['surface']
-_techniques = ['extrude','borderfill','cut']
+_techniques = ['extrude', 'borderfill', 'cut']
 
 from gui.draw import *
 import geomtools
@@ -49,25 +49,25 @@ def run():
 
     BL = []
     for B in border:
-        draw(B,color=red,linewidth=2)
+        draw(B, color=red, linewidth=2)
         # find the smallest direction of the curve
-        d,s = geomtools.smallestDirection(B.coords,return_size=True)
+        d, s = geomtools.smallestDirection(B.coords, return_size=True)
         # Find outbound direction of extension
         CB = B.center()
-        p = sign(projection((CB-CS),d))
+        p = sign(projection((CB-CS), d))
         # Flatten the border curve and translate it outwards
-        B1 = B.projectOnPlane(d,CB).trl(d,s*4*p)
-        draw(B1,color=green)
+        B1 = B.projectOnPlane(d, CB).trl(d, s*4*p)
+        draw(B1, color=green)
         # create a surface between border curve and translted flat curve
         M = B.connect(B1)
-        draw(M,color=blue,bkcolor=yellow)
+        draw(M, color=blue, bkcolor=yellow)
         BL.append(M)
 
     zoomAll()
 
     if ack("Convert extensions to 'tri3' and add to surface?"):
         # convert extensions to 'tri3'
-        BL = [ B.setProp(i+1).convert('tri3') for i,B in enumerate(BL) ]
+        BL = [ B.setProp(i+1).convert('tri3') for i, B in enumerate(BL) ]
         T = TriSurface.concatenate([S]+BL).fixNormals()
         clear()
         draw(T)

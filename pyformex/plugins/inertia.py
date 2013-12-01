@@ -51,7 +51,7 @@ def center(X,mass=None):
     If you also need the inertia tensor, it is more efficient to
     use the inertia() function. 
     """
-    X = X.reshape((-1,X.shape[-1]))
+    X = X.reshape((-1, X.shape[-1]))
     if mass is not None:
         mass = array(mass)
         ctr = (X*mass).sum(axis=0) / mass.sum()
@@ -72,19 +72,19 @@ def inertia(X,mass=None):
       - the inertia tensor: shape (6,) with the following values (in order):
         Ixx, Iyy, Izz, Ixy, Ixz, Iyz 
     """
-    X = X.reshape((-1,X.shape[-1]))
+    X = X.reshape((-1, X.shape[-1]))
     if mass is not None:
         mass = array(mass)
         ctr = (X*mass).sum(axis=0) / mass.sum()
     else:
         ctr = X.mean(axis=0)
     Xc = X - ctr
-    x,y,z = Xc[:,0],Xc[:,1],Xc[:,2]
-    xx,yy,zz,yz,zx,xy = x*x, y*y, z*z, y*z, z*x, x*y
+    x, y, z = Xc[:, 0], Xc[:, 1], Xc[:, 2]
+    xx, yy, zz, yz, zx, xy = x*x, y*y, z*z, y*z, z*x, x*y
     I = column_stack([ yy+zz, zz+xx, xx+yy, -yz, -zx, -xy ])
     if mass is not None:
         I *= mass
-    return ctr,I.sum(axis=0)
+    return ctr, I.sum(axis=0)
 
 
 def principal(inertia,sort=False,right_handed=False):
@@ -93,16 +93,16 @@ def principal(inertia,sort=False,right_handed=False):
     If sort is True, they are sorted (maximum comes first).
     If right_handed is True, the axes define a right-handed coordinate system.
     """
-    Ixx,Iyy,Izz,Iyz,Izx,Ixy = inertia
-    Itensor = array([ [Ixx,Ixy,Izx], [Ixy,Iyy,Iyz], [Izx,Iyz,Izz] ])
-    Iprin,Iaxes = linalg.eig(Itensor)
+    Ixx, Iyy, Izz, Iyz, Izx, Ixy = inertia
+    Itensor = array([ [Ixx, Ixy, Izx], [Ixy, Iyy, Iyz], [Izx, Iyz, Izz] ])
+    Iprin, Iaxes = linalg.eig(Itensor)
     if sort:
         s = Iprin.argsort()[::-1]
         Iprin = Iprin[s]
-        Iaxes = Iaxes[:,s]
-    if right_handed and not allclose(normalize(cross(Iaxes[:,0],Iaxes[:,1])),Iaxes[:,2]):
-        Iaxes[:,2] = -Iaxes[:,2]
-    return Iprin,Iaxes
+        Iaxes = Iaxes[:, s]
+    if right_handed and not allclose(normalize(cross(Iaxes[:, 0], Iaxes[:, 1])), Iaxes[:, 2]):
+        Iaxes[:, 2] = -Iaxes[:, 2]
+    return Iprin, Iaxes
 
 
 

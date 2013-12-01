@@ -40,8 +40,8 @@ but we are working on an equivalent using the 'fontforge' library.
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['curve','drawing','illustration']
-_techniques = ['color','persistence','lima','import']
+_topics = ['curve', 'drawing', 'illustration']
+_techniques = ['color', 'persistence', 'lima', 'import']
 
 from gui.draw import *
 from pyformex.apps.Lima import *
@@ -51,14 +51,14 @@ def run():
     flat()
     linewidth(2)
     fgcolor(blue)
-    grow('Plant1',ngen=7,clearing=False,text=False)
-    data = readGeomFile(os.path.join(pf.cfg['datadir'],'blippo.pgf'))
+    grow('Plant1', ngen=7, clearing=False, text=False)
+    data = readGeomFile(os.path.join(pf.cfg['datadir'], 'blippo.pgf'))
     curve = data['blippo_000']
     bb = curve.coords.bbox()
     ctr = bb.center()
     siz = bb.sizes()
-    curve.coords = curve.coords.trl(0,-ctr[0]).scale(50./siz[0])
-    draw(curve,color=pyformex_pink,linewidth=5)
+    curve.coords = curve.coords.trl(0, -ctr[0]).scale(50./siz[0])
+    draw(curve, color=pyformex_pink, linewidth=5)
 
 if __name__ == 'draw':
     run()

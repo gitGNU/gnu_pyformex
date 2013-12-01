@@ -32,27 +32,27 @@ startup script.
 from __future__ import print_function
 import pyformex as pf
 
-import sys,os
+import sys, os
 startup_warnings = ''
 startup_messages = ''
 
 pyformexdir = sys.path[0]
 
-if os.path.exists(os.path.join(os.path.dirname(pyformexdir),'.git')):
+if os.path.exists(os.path.join(os.path.dirname(pyformexdir), '.git')):
     pf.installtype = 'G'
 
-libraries = [ 'misc_','nurbs_','drawgl_' ]
+libraries = [ 'misc_', 'nurbs_', 'drawgl_' ]
 
 if pf.installtype in 'SG':
     # Running from source tree: check if compiled libraries are up-to-date
-    libdir = os.path.join(pyformexdir,'lib')
+    libdir = os.path.join(pyformexdir, 'lib')
 
     def checkLibraries():
         #print "Checking pyFormex libraries"
         msg = ''
         for lib in libraries:
-            src = os.path.join(libdir,lib+'.c')
-            obj = os.path.join(libdir,lib+'.so')
+            src = os.path.join(libdir, lib+'.c')
+            obj = os.path.join(libdir, lib+'.so')
             if not os.path.exists(obj) or os.path.getmtime(obj) < os.path.getmtime(src):
                 msg += "\nThe compiled library '%s' is not up to date!" % lib
         return msg
@@ -81,7 +81,7 @@ import utils
 branch = None
 if pf.installtype=='G':
     try:
-        P = utils.system('cd %s && git describe --always' % pyformexdir,shell=True)
+        P = utils.system('cd %s && git describe --always' % pyformexdir, shell=True)
         if P.sta == 0:
             pf.__revision__ = P.out.split('\n')[0].strip()
     except:
@@ -90,7 +90,7 @@ if pf.installtype=='G':
 
     # Set branch name if we are in a git repository
     try:
-        P = utils.system('cd %s && git symbolic-ref --short -q HEAD' % pyformexdir,shell=True)
+        P = utils.system('cd %s && git symbolic-ref --short -q HEAD' % pyformexdir, shell=True)
         if P.sta == 0:
             branch = P.out.split('\n')[0]
     except:
@@ -107,7 +107,7 @@ if utils.SaneVersion(found_version) < utils.SaneVersion(minimal_version):
 #if utils.checkVersion('python',minimal_version) < 0:
     startup_warnings += """
 Your Python version is %s, but pyFormex requires Python >= %s. We advice you to upgrade your Python version. Getting pyFormex to run on Python 2.4 requires only minor adjustements. Lower versions are problematic.
-""" % (found_version,minimal_version)
+""" % (found_version, minimal_version)
     print(startup_warnings)
     sys.exit()
 
@@ -115,7 +115,7 @@ if utils.SaneVersion(found_version[:3]) > utils.SaneVersion(target_version):
 #if utils.checkVersion('python',target_version) > 0:
     startup_warnings += """
 Your Python version is %s, but pyFormex has only been tested with Python <= %s. We expect pyFormex to run correctly with your Python version, but if you encounter problems, please contact the developers at http://pyformex.org.
-""" % (found_version,target_version,)
+""" % (found_version, target_version,)
 
 
 from config import Config
@@ -123,12 +123,12 @@ from config import Config
 ###########################  main  ################################
 
 def filterWarnings():
-    pf.debug("Current warning filters: %s" % pf.cfg['warnings/filters'],pf.DEBUG.WARNING)
+    pf.debug("Current warning filters: %s" % pf.cfg['warnings/filters'], pf.DEBUG.WARNING)
     try:
         for w in pf.cfg['warnings/filters']:
             utils.filterWarning(*w)
     except:
-        pf.debug("Error while processing warning filters: %s" % pf.cfg['warnings/filters'],pf.DEBUG.WARNING)
+        pf.debug("Error while processing warning filters: %s" % pf.cfg['warnings/filters'], pf.DEBUG.WARNING)
 
 
 def refLookup(key):
@@ -136,7 +136,7 @@ def refLookup(key):
     try:
         return pf.refcfg[key]
     except:
-        pf.debug("!There is no key '%s' in the reference config!"%key,pf.DEBUG.CONFIG)
+        pf.debug("!There is no key '%s' in the reference config!"%key, pf.DEBUG.CONFIG)
         return None
 
 
@@ -147,13 +147,13 @@ def prefLookup(key):
 
 def printcfg(key):
     try:
-        print("!! refcfg[%s] = %s" % (key,pf.refcfg[key]))
+        print("!! refcfg[%s] = %s" % (key, pf.refcfg[key]))
     except KeyError:
         pass
-    print("!! cfg[%s] = %s" % (key,pf.cfg[key]))
+    print("!! cfg[%s] = %s" % (key, pf.cfg[key]))
 
 
-def remove_pyFormex(pyformexdir,bindir):
+def remove_pyFormex(pyformexdir, bindir):
     """Remove the pyFormex installation."""
     if pf.installtype == 'D':
         print("It looks like this version of pyFormex was installed from a distribution package. You should use your distribution's package tools to remove the pyFormex installation.")
@@ -172,19 +172,19 @@ If you continue, pyFormex will exit and you will not be able to run it again.
 The pyFormex installation is in: %s
 The pyFormex executable script is in: %s
 You will need proper permissions to actually delete the files.
-""" % (pyformexdir,bindir))
+""" % (pyformexdir, bindir))
     s = raw_input("Are you sure you want to remove pyFormex? yes/NO: ")
     if s == 'yes':
         import glob
         print("Removing %s" % pyformexdir)
         utils.removeTree(pyformexdir)
-        script = os.path.join(bindir,'pyformex')
+        script = os.path.join(bindir, 'pyformex')
         scripts = glob.glob(script+'-*')
-        egginfo = "%s-%s*.egg-info" % (pyformexdir,pf.__version__.replace('~','_'))
+        egginfo = "%s-%s*.egg-info" % (pyformexdir, pf.__version__.replace('~', '_'))
         egginfo = glob.glob(egginfo)
-        datadir = os.path.commonprefix(['/usr/local/share',pyformexdir])
-        datadir = os.path.join(datadir,'share')
-        data = utils.prefixFiles(datadir,['man/man1/pyformex.1',
+        datadir = os.path.commonprefix(['/usr/local/share', pyformexdir])
+        datadir = os.path.join(datadir, 'share')
+        data = utils.prefixFiles(datadir, ['man/man1/pyformex.1',
                                           'applications/pyformex.desktop',
                                           'pixmaps/pyformex-64x64.png',
                                           'pixmaps/pyformex.xpm'])
@@ -235,15 +235,15 @@ def savePreferences():
     del pf.prefcfg['render']['light2']
     del pf.prefcfg['render']['light3']
 
-    pf.debug("="*60,pf.DEBUG.CONFIG)
-    pf.debug("!!!Saving config:\n%s" % pf.prefcfg,pf.DEBUG.CONFIG)
+    pf.debug("="*60, pf.DEBUG.CONFIG)
+    pf.debug("!!!Saving config:\n%s" % pf.prefcfg, pf.DEBUG.CONFIG)
 
     try:
         pf.prefcfg.write(pf.preffile)
         res = "Saved"
     except:
         res = "Could not save"
-    pf.debug("%s preferences to file %s" % (res,pf.preffile),pf.DEBUG.CONFIG)
+    pf.debug("%s preferences to file %s" % (res, pf.preffile), pf.DEBUG.CONFIG)
 
 
 def apply_config_changes(cfg):
@@ -273,15 +273,15 @@ def apply_config_changes(cfg):
                 if i[1] == '' or os.path.isdir(i[1]):
                     scriptdirs.append(tuple(i))
                 elif i[0] == '' or os.path.isdir(i[0]):
-                    scriptdirs.append((i[1],i[0]))
+                    scriptdirs.append((i[1], i[0]))
             cfg[d] = scriptdirs
 
     # Rename settings
-    for old,new in [
-        ('history','gui/scripthistory'),
-        ('gui/history','gui/scripthistory'),
-        ('raiseapploadexc','showapploaderrors'),
-        ('webgl/xtkscript','webgl/script'),
+    for old, new in [
+        ('history', 'gui/scripthistory'),
+        ('gui/history', 'gui/scripthistory'),
+        ('raiseapploadexc', 'showapploaderrors'),
+        ('webgl/xtkscript', 'webgl/script'),
         ]:
         if old in cfg.keys():
             if new not in cfg.keys():
@@ -290,10 +290,10 @@ def apply_config_changes(cfg):
 
     # Delete settings
     for key in [
-        'input/timeout','filterwarnings',
-        'render/ambient','render/diffuse','render/specular','render/emission',
-        'render/material','canvas/propcolors','Save changes','canvas/bgmode',
-        'canvas/bgcolor2','_save_',
+        'input/timeout', 'filterwarnings',
+        'render/ambient', 'render/diffuse', 'render/specular', 'render/emission',
+        'render/material', 'canvas/propcolors', 'Save changes', 'canvas/bgmode',
+        'canvas/bgcolor2', '_save_',
         ]:
         if key in cfg.keys():
             print("DELETING CONFIG VARIABLE %s" % key)
@@ -308,7 +308,7 @@ def test_module(module):
     # even if a dotted path is specified
     import numpy as np
     np.set_printoptions(precision=2)
-    mod = __import__(module,fromlist=['a'])
+    mod = __import__(module, fromlist=['a'])
     return doctest.testmod(mod)
 
 
@@ -488,7 +488,7 @@ def run(argv=[]):
         print("\nInvalid options: --nodefaultconfig but no --config option\nDo pyformex --help for help on options.\n")
         sys.exit()
 
-    pf.debug("Options: %s" % pf.options,pf.DEBUG.ALL)
+    pf.debug("Options: %s" % pf.options, pf.DEBUG.ALL)
 
     ########## Load default configuration ##################################
 
@@ -504,11 +504,11 @@ def run(argv=[]):
     pf.cfg.read("homedir = '%s'\n" % homedir)
 
     # Read the defaults (before the options)
-    defaults = os.path.join(pyformexdir,"pyformex.conf")
+    defaults = os.path.join(pyformexdir, "pyformex.conf")
     pf.cfg.read(defaults)
 
     # The default user config path (do not change!)
-    pf.cfg.userprefs = os.path.join(pf.cfg.userconfdir,'pyformex.conf')
+    pf.cfg.userprefs = os.path.join(pf.cfg.userconfdir, 'pyformex.conf')
 
     ########## Process special options which do not start pyFormex #######
 
@@ -518,7 +518,7 @@ def run(argv=[]):
         return
 
     if pf.options.remove:
-        remove_pyFormex(pyformexdir,pf.bindir)
+        remove_pyFormex(pyformexdir, pf.bindir)
         return
 
     if pf.options.whereami: # or pf.options.detect :
@@ -528,9 +528,9 @@ def run(argv=[]):
         print("Detecting installed helper software")
         print(utils.reportSoftware())
 
-    pf.debug("pyformex script started from %s" % pf.bindir,pf.DEBUG.INFO)
-    pf.debug("I found pyFormex installed in %s " %  pyformexdir,pf.DEBUG.INFO)
-    pf.debug("Current Python sys.path: %s" % sys.path,pf.DEBUG.INFO)
+    pf.debug("pyformex script started from %s" % pf.bindir, pf.DEBUG.INFO)
+    pf.debug("I found pyFormex installed in %s " %  pyformexdir, pf.DEBUG.INFO)
+    pf.debug("Current Python sys.path: %s" % sys.path, pf.DEBUG.INFO)
     #sys.exit()
 
     if pf.options.whereami or pf.options.detect :
@@ -541,29 +541,29 @@ def run(argv=[]):
     # Migrate the user preferences to the new place under $HOME/.config
     if not os.path.exists(pf.cfg.userprefs):
         # Check old place
-        olduserprefs = os.path.join(homedir,'.pyformex','pyformexrc')
+        olduserprefs = os.path.join(homedir, '.pyformex', 'pyformexrc')
         if os.path.exists(olduserprefs):
-            print("Migrating your user preferences\n  from %s\n  to %s" % (olduserprefs,pf.cfg.userprefs))
+            print("Migrating your user preferences\n  from %s\n  to %s" % (olduserprefs, pf.cfg.userprefs))
             try:
                 import shutil
                 olddir = os.path.dirname(olduserprefs)
                 newdir = pf.cfg.userconfdir
                 # Move old user conf file to new and link back
-                oldfile = os.path.join(olddir,'pyformexrc')
-                newfile = os.path.join(olddir,'pyformex.conf')
-                print("Moving %s to %s" % (oldfile,newfile))
-                shutil.move(oldfile,newfile)
+                oldfile = os.path.join(olddir, 'pyformexrc')
+                newfile = os.path.join(olddir, 'pyformex.conf')
+                print("Moving %s to %s" % (oldfile, newfile))
+                shutil.move(oldfile, newfile)
                 newfile = 'pyformex.conf'
-                print("Symlinking %s to %s" % (newfile,oldfile))
-                os.symlink(newfile,oldfile)
+                print("Symlinking %s to %s" % (newfile, oldfile))
+                os.symlink(newfile, oldfile)
                 # Move old config dir to new and link back to old
-                print("Moving %s to %s" % (olddir,newdir))
-                shutil.move(olddir,newdir)
-                print("Symlinking %s to %s" % (newdir,olddir))
-                os.symlink(newdir,olddir)
+                print("Moving %s to %s" % (olddir, newdir))
+                shutil.move(olddir, newdir)
+                print("Symlinking %s to %s" % (newdir, olddir))
+                os.symlink(newdir, olddir)
 
             except:
-                raise RuntimeError("Error while trying to migrate your user configuration\nTry moving the config files yourself.\nYou may also remove the config directories %s\n and %s alltogether\s to get a fresh start with default config." % (olddir,newdir))
+                raise RuntimeError("Error while trying to migrate your user configuration\nTry moving the config files yourself.\nYou may also remove the config directories %s\n and %s alltogether\s to get a fresh start with default config." % (olddir, newdir))
 
     ########### Load the user configuration  ####################
 
@@ -587,21 +587,21 @@ def run(argv=[]):
     pf.preffile = os.path.abspath(userprefs[-1]) # Settings will be saved here
 
     # Read all but the last as reference
-    for f in filter(os.path.exists,sysprefs + userprefs[:-1]):
-        pf.debug("Reading config file %s" % f,pf.DEBUG.CONFIG)
+    for f in filter(os.path.exists, sysprefs + userprefs[:-1]):
+        pf.debug("Reading config file %s" % f, pf.DEBUG.CONFIG)
         pf.cfg.read(f)
 
     pf.refcfg = pf.cfg
-    pf.debug("="*60,pf.DEBUG.CONFIG)
-    pf.debug("RefConfig: %s" % pf.refcfg,pf.DEBUG.CONFIG)
+    pf.debug("="*60, pf.DEBUG.CONFIG)
+    pf.debug("RefConfig: %s" % pf.refcfg, pf.DEBUG.CONFIG)
 
     # Use the last as place to save preferences
     pf.prefcfg = Config(default=refLookup)
     if os.path.exists(pf.preffile):
-        pf.debug("Reading config file %s" % pf.preffile,pf.DEBUG.CONFIG)
+        pf.debug("Reading config file %s" % pf.preffile, pf.DEBUG.CONFIG)
         pf.prefcfg.read(pf.preffile)
-    pf.debug("="*60,pf.DEBUG.CONFIG)
-    pf.debug("Config: %s" % pf.prefcfg,pf.DEBUG.CONFIG)
+    pf.debug("="*60, pf.DEBUG.CONFIG)
+    pf.debug("Config: %s" % pf.prefcfg, pf.DEBUG.CONFIG)
 
     # Fix incompatible changes in configuration
     apply_config_changes(pf.prefcfg)
@@ -626,15 +626,15 @@ def run(argv=[]):
             if len(args) > 1:
                 files = args[1:]
             else:
-                files = utils.sourceFiles(relative=True,extended=extended)
+                files = utils.sourceFiles(relative=True, extended=extended)
             if pf.options.listfiles:
                 print('\n'.join(files))
             else:
                 search = args[0]
                 if "'" in search:
-                    search.replace("'","\'")
+                    search.replace("'", "\'")
                 print("SEARCH = [%s]" % search)
-                cmd = 'grep %s "%s" %s' % (' '.join(opts),args[0],''.join([" '%s'" % f for f in files]))
+                cmd = 'grep %s "%s" %s' % (' '.join(opts), args[0], ''.join([" '%s'" % f for f in files]))
                 os.system(cmd)
         return
 
@@ -646,11 +646,11 @@ def run(argv=[]):
     # process options that override the config
     if pf.options.redirect is not None:
         pf.cfg['gui/redirect'] = pf.options.redirect
-    delattr(pf.options,'redirect') # avoid abuse
+    delattr(pf.options, 'redirect') # avoid abuse
 
     if pf.options.uselib is not None:
         pf.cfg['uselib'] = pf.options.uselib
-    delattr(pf.options,'uselib') # avoid abuse
+    delattr(pf.options, 'uselib') # avoid abuse
 
     ###################################################################
 
@@ -669,7 +669,7 @@ def run(argv=[]):
     # run the source_clean procedure.
 
     if pf.installtype in 'SG':
-        source_clean = os.path.join(pyformexdir,'source_clean')
+        source_clean = os.path.join(pyformexdir, 'source_clean')
         if os.path.exists(source_clean):
             try:
                 utils.system(source_clean)
@@ -699,7 +699,7 @@ pyFormex Warning
 %s
 
 `Called from:` %s `line:` %s
-""" % (message,filename,lineno)
+""" % (message, filename, lineno)
         if line:
             message += "%s\n" % line
         return message
@@ -714,7 +714,7 @@ pyFormex Warning
         warnings.formatwarning = _format_warning
 
 
-    utils.checkModule('numpy',fatal=True)
+    utils.checkModule('numpy', fatal=True)
 
     # Make sure pf.PF is a Project
     from project import Project
@@ -723,7 +723,7 @@ pyFormex Warning
     utils.setSaneLocale()
 
     # Set application paths
-    pf.debug("Loading AppDirs",pf.DEBUG.INFO)
+    pf.debug("Loading AppDirs", pf.DEBUG.INFO)
     import apps
     apps.setAppDirs()
 
@@ -731,7 +731,7 @@ pyFormex Warning
     # Importing the gui should be done after the config is set !!
     if pf.options.gui:
         from gui import guimain
-        pf.debug("GUI version",pf.DEBUG.INFO)
+        pf.debug("GUI version", pf.DEBUG.INFO)
         res = guimain.startGUI(args)
         if res != 0:
             print("Could not start the pyFormex GUI: %s" % res)
@@ -748,7 +748,7 @@ pyFormex Warning
 
     if pf.options.debuglevel & pf.DEBUG.INFO:
         # NOTE: inside an if to avoid computing the report when not printed
-        pf.debug(utils.reportSoftware(),pf.DEBUG.INFO)
+        pf.debug(utils.reportSoftware(), pf.DEBUG.INFO)
 
     #
     # Qt4 may have changed the locale.
@@ -759,14 +759,14 @@ pyFormex Warning
     utils.setSaneLocale()
 
     # Prepend the autorun script
-    ar = pf.cfg.get('autorun','')
+    ar = pf.cfg.get('autorun', '')
     if ar and os.path.exists(ar):
         args[0:0] = [ ar ]
 
     # remaining args are interpreted as scripts and their parameters
     res = 0
     if args:
-        pf.debug("Remaining args: %s" % args,pf.DEBUG.INFO)
+        pf.debug("Remaining args: %s" % args, pf.DEBUG.INFO)
         from script import processArgs
         res = processArgs(args)
 
@@ -777,7 +777,7 @@ pyFormex Warning
                 return res # EXIT
 
     else:
-        pf.debug("stdin is a tty: %s" % sys.stdin.isatty(),pf.DEBUG.INFO)
+        pf.debug("stdin is a tty: %s" % sys.stdin.isatty(), pf.DEBUG.INFO)
         # Play script from stdin
         # Can we check for interactive session: stdin connected to terminal?
         #from script import playScript

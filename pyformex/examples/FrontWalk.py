@@ -37,32 +37,32 @@ from gui.draw import *
 def gradColor(n):
     """Create gradually varying colors for n values"""
     from gui.colorscale import ColorScale
-    CS = ColorScale('RGB',0,float(n))
-    return array(map(CS.color,1.*arange(n+1)))
+    CS = ColorScale('RGB', 0, float(n))
+    return array(map(CS.color, 1.*arange(n+1)))
 
 def run():
     from mesh import rectangle
     clear()
-    M = rectangle(L=1,W=1,nl=50,nw=50)
+    M = rectangle(L=1, W=1, nl=50, nw=50)
     draw(M)
 
     # Walk 0: start at elements 10 and 600
-    e0 = [10,600]
+    e0 = [10, 600]
     p0 = M.frontWalk(startat=e0)
 
     # Walk 1: start at nodes 1834 and 2000
-    n0 = [1444,2020]
+    n0 = [1444, 2020]
     e1 = M.connectedTo(n0)
     p1 = M.frontWalk(startat=e1)
 
     # Walk 2: start at elements and nodes
-    e2 = concatenate([e0,e1])
+    e2 = concatenate([e0, e1])
     p2 = M.frontWalk(startat=e2)
 
     # Walk 3: start at elements and nodes, but the nodes start 1 step later
-    q = M.frontWalk(startat=e0,maxval=1) # single step from elements e0
+    q = M.frontWalk(startat=e0, maxval=1) # single step from elements e0
     eq = where(q==1)[0]  # find the first next front
-    e3 = concatenate([eq,e1])
+    e3 = concatenate([eq, e1])
     p3 = M.frontWalk(startat=e3) + 1  # add 1 to account for first step
     p3[e0] = 0
 
@@ -79,14 +79,14 @@ def run():
         viewport(i)
         clear()
         view('front')
-        draw(M,color=c[i])
+        draw(M, color=c[i])
 
 
     if ack("Redraw with smooth colors?"):
         for i in range(nc):
             viewport(i)
             clear()
-            draw(M,color=c[i],colormap=cm[i])
+            draw(M, color=c[i], colormap=cm[i])
 
 
 if __name__ == 'draw':

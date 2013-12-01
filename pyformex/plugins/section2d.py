@@ -44,7 +44,7 @@ class PlaneSection(object):
     segments connecting them.
     """
 
-    def __init__(self,F):
+    def __init__(self, F):
         """Initialize a plane section.
 
         Initialization can be done either by a list of points or a set of line
@@ -62,7 +62,7 @@ class PlaneSection(object):
           rather meaningless.
         """
         if F.nplex() == 1:
-            self.F = sectionize.connectPoints(F,close=True)
+            self.F = sectionize.connectPoints(F, close=True)
         elif F.nplex() == 2:
             self.F = F
         else:
@@ -99,19 +99,19 @@ def sectionChar(F):
     #pf.debug("The circumference has %d segments" % F.nelems())
     x = F.x()
     y = F.y()
-    x0 = x[:,0]
-    y0 = y[:,0]
-    x1 = x[:,1]
-    y1 = y[:,1]
+    x0 = x[:, 0]
+    y0 = y[:, 0]
+    x1 = x[:, 1]
+    y1 = y[:, 1]
     a = (x0*y1 - x1*y0) / 2
     return {
-        'L'   : sqrt((x1-x0)**2 + (y1-y0)**2).sum(),
-        'A'   : a.sum(),
-        'Sx'  : (a*(y0+y1)).sum()/3,
-        'Sy'  : (a*(x0+x1)).sum()/3,
-        'Ixx' : (a*(y0*y0+y0*y1+y1*y1)).sum()/6,
-        'Iyy' : (a*(x0*x0+x0*x1+x1*x1)).sum()/6,
-        'Ixy' :-(a*(x0*y0+x1*y1+(x0*y1+x1*y0)/2)).sum()/6,
+        'L': sqrt((x1-x0)**2 + (y1-y0)**2).sum(),
+        'A': a.sum(),
+        'Sx': (a*(y0+y1)).sum()/3,
+        'Sy': (a*(x0+x1)).sum()/3,
+        'Ixx': (a*(y0*y0+y0*y1+y1*y1)).sum()/6,
+        'Iyy': (a*(x0*x0+x0*x1+x1*x1)).sum()/6,
+        'Ixy': -(a*(x0*y0+x1*y1+(x0*y1+x1*y0)/2)).sum()/6,
         }
 
 
@@ -135,20 +135,20 @@ def extendedSectionChar(S):
     IGxx = S['Ixx'] - S['A'] * yG**2
     IGyy = S['Iyy'] - S['A'] * xG**2
     IGxy = S['Ixy'] + S['A'] * xG*yG
-    alpha,IXX,IYY = princTensor2D(IGxx,IGyy,IGxy)
+    alpha, IXX, IYY = princTensor2D(IGxx, IGyy, IGxy)
     return {
-        'xG'   : xG,
-        'yG'   : yG,
-        'IGxx' : IGxx,
-        'IGyy' : IGyy,
-        'IGxy' : IGxy,
+        'xG': xG,
+        'yG': yG,
+        'IGxx': IGxx,
+        'IGyy': IGyy,
+        'IGxy': IGxy,
         'alpha': alpha,
-        'IXX'  : IXX,
-        'IYY'  : IYY,
+        'IXX': IXX,
+        'IYY': IYY,
         }
 
 
-def princTensor2D(Ixx,Iyy,Ixy):
+def princTensor2D(Ixx, Iyy, Ixy):
     """Compute the principal values and directions of a 2D tensor.
 
     Returns a tuple with three values:
@@ -156,14 +156,14 @@ def princTensor2D(Ixx,Iyy,Ixy):
     - `alpha` : angle (in radians) from x-axis to principal X-axis
     - `IXX,IYY` : principal values of the tensor
     """
-    from math import sqrt,atan2
+    from math import sqrt, atan2
     C = (Ixx+Iyy) * 0.5
     D = (Ixx-Iyy) * 0.5
     R = sqrt(D**2 + Ixy**2)
     IXX = C+R
     IYY = C-R
-    alpha = atan2(Ixy,D) * 0.5
-    return alpha,IXX,IYY
+    alpha = atan2(Ixy, D) * 0.5
+    return alpha, IXX, IYY
     
 
 # End

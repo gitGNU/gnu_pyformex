@@ -44,9 +44,9 @@ def evaluate(atoms,x,y=0,z=0):
 
     Returns a matrix with `nvalues` rows and `natoms` colums.
     """
-    aa = zeros((len(x),len(atoms)),Float)
-    for k,a in enumerate(atoms):
-        aa[:,k] = eval(a)
+    aa = zeros((len(x), len(atoms)), Float)
+    for k, a in enumerate(atoms):
+        aa[:, k] = eval(a)
     return aa
 
 
@@ -86,19 +86,19 @@ def exponents(n,layout='lag'):
       in 3D.
 
     """
-    n = checkArray(n,(-1,),'i')
+    n = checkArray(n, (-1,), 'i')
     ndim = n.shape[0]
     if ndim < 1 or ndim > 3:
         raise RuntimeError("Expected a 1..3 length tuple")
 
     layout = layout[:3]
-    if layout in ['tri','ser']:
+    if layout in ['tri', 'ser']:
         if not (n == n[0]).all():
             raise RuntimeError("For triangular and serendipity grids, all axes should have the same number of points")
 
 
     # First create the full lagrangian set
-    exp = indices(n+1).reshape(ndim,-1).transpose()
+    exp = indices(n+1).reshape(ndim, -1).transpose()
 
     if layout != 'lag':
         if layout == 'tri':
@@ -124,7 +124,7 @@ def exponents(n,layout='lag'):
                 np = 4 + 4*(n[0] - 1) # minimal number of points
                 ok = exp.sum(axis=-1) <= n[0] + 1
             if ok.sum() < np:
-                raise ValueError("No solution for eltype %s %s" % (layout,n))
+                raise ValueError("No solution for eltype %s %s" % (layout, n))
         else:
             raise RuntimeError("Unknown layout %s" % layout)
         exp = exp[ok]
@@ -139,7 +139,7 @@ def interpoly(n,layout='lag'):
     Returns a Polynomial that can be used for interpolation over
     the element.
     """
-    exp = exponents(n,layout)
+    exp = exponents(n, layout)
     return Polynomial(exp)
 
 
@@ -168,28 +168,28 @@ class Isopar(object):
         }
 
     isodata_alias = {
-        'line2' : 'lag-1',
-        'line3' : 'lag-2',
-        'line4' : 'lag-3',
-        'tri3'  : 'tri-1-1',
-        'tri6'  : 'tri-2-2',
-        'tri10' : 'tri-3-3',
-        'quad4' : 'lag-1-1',
-        'quad9' : 'lag-2-2',
+        'line2': 'lag-1',
+        'line3': 'lag-2',
+        'line4': 'lag-3',
+        'tri3': 'tri-1-1',
+        'tri6': 'tri-2-2',
+        'tri10': 'tri-3-3',
+        'quad4': 'lag-1-1',
+        'quad9': 'lag-2-2',
         'quad16': 'lag-3-3',
-        'quad8' : 'bor-2-2',
+        'quad8': 'bor-2-2',
         'quad12': 'bor-3-3',
         'quad13': 'ser-3-3',
-        'tet4'  : 'tri-1-1-1',
-        'tet10' : 'tri-2-2-2',
-        'hex8'  : 'lag-1-1-1',
-        'hex20' : 'ser-2-2-2',
-        'hex27' : 'lag-2-2-2',
-        'hex36' : 'lag-2-2-3',
-        'hex64' : 'lag-3-3-3',
+        'tet4': 'tri-1-1-1',
+        'tet10': 'tri-2-2-2',
+        'hex8': 'lag-1-1-1',
+        'hex20': 'ser-2-2-2',
+        'hex27': 'lag-2-2-2',
+        'hex36': 'lag-2-2-3',
+        'hex64': 'lag-3-3-3',
         }
 
-    def __init__(self,eltype,coords,oldcoords):
+    def __init__(self, eltype, coords, oldcoords):
         """Create an isoparametric transformation.
 
         `eltype`: string: either one of the keys in the isodata dictionary,
@@ -202,30 +202,30 @@ class Isopar(object):
         if eltype not in Isopar.isodata:
             s = eltype.split('-')
             if s[0] in [ 'lag', 'tri', 'bor', 'ser' ]:
-                n = map(int,s[1:])
+                n = map(int, s[1:])
                 #
                 # It might be better to just store (ndim,atoms)
                 # if we use string atoms to evaluate
                 #
-                Isopar.isodata[eltype] = interpoly(n,s[0])
+                Isopar.isodata[eltype] = interpoly(n, s[0])
             else:
                 raise RuntimeError("Unknown eltype %s")
 
         poly = Isopar.isodata[eltype]
-        coords = coords.view().reshape(-1,3)
-        oldcoords = oldcoords.view().reshape(-1,3)
-        aa = poly.evalAtoms(oldcoords[:,:poly.ndim])
-        ab = linalg.solve(aa,coords)
+        coords = coords.view().reshape(-1, 3)
+        oldcoords = oldcoords.view().reshape(-1, 3)
+        aa = poly.evalAtoms(oldcoords[:, :poly.ndim])
+        ab = linalg.solve(aa, coords)
         self.eltype = eltype
         self.trf = ab
 
 
-    def transform(self,X):
+    def transform(self, X):
         """Apply isoparametric transform to a set of coordinates.
 
         Returns a Coords array with same shape as X
         """
-        if not isinstance(X,Coords):
+        if not isinstance(X, Coords):
             try:
                 X = Coords(X)
             except:
@@ -233,10 +233,10 @@ class Isopar(object):
 
         poly = Isopar.isodata[self.eltype]
         ndim = poly.ndim
-        aa = poly.evalAtoms(X.reshape(-1,3)[:,:ndim])
-        xx = dot(aa,self.trf).reshape(X.shape)
+        aa = poly.evalAtoms(X.reshape(-1, 3)[:, :ndim])
+        xx = dot(aa, self.trf).reshape(X.shape)
         if ndim < 3:
-            xx[...,ndim:] += X[...,ndim:]
+            xx[..., ndim:] += X[..., ndim:]
         return X.__class__(xx)
 
 

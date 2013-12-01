@@ -33,13 +33,13 @@ _techniques = ['menu', 'dialog', 'persistence', 'color']
 
 from gui.draw import *
 
-import simple,utils
+import simple, utils
 from connectivity import Connectivity
 from plugins.trisurface import TriSurface
 from plugins.properties import *
 from plugins.fe_abq import *
-from gui.colorscale import ColorScale,ColorLegend
-from gui import menu,decors
+from gui.colorscale import ColorScale, ColorLegend
+from gui import menu, decors
 import time
 
 
@@ -90,8 +90,8 @@ def createGeometry():
     draw(A)
 
     # Modular size
-    a,b,c = A.sizes()
-    pf.message("Cell width: %s; height: %s" % (a,b))
+    a, b, c = A.sizes()
+    pf.message("Cell width: %s; height: %s" % (a, b))
 
     # Create a mirrored triangle
     B = A.reflect(1)
@@ -99,16 +99,16 @@ def createGeometry():
     draw(B)
 
     # Replicate nplus times in 2 directions to create triangular pattern
-    F = A.replic2(1,nplus,a,-b,0,1,bias=-a/2,taper=1)
-    G = B.replic2(1,nplus-1,a,-b,0,1,bias=-a/2,taper=1)
+    F = A.replic2(1, nplus, a, -b, 0, 1, bias=-a/2, taper=1)
+    G = B.replic2(1, nplus-1, a, -b, 0, 1, bias=-a/2, taper=1)
 
     clear()
     F += G
     draw(F)
 
     # Get the top vertex and make it the origin
-    P = F[0,-1]
-    draw(Formex([P]),bbox='last')
+    P = F[0, -1]
+    draw(Formex([P]), bbox='last')
     F = F.translate(-P)
     draw(F)
 
@@ -119,10 +119,10 @@ def createGeometry():
     # Ratio of the height of the isosceles triangle over the icosaeder edge length.
     c = 0.5*tand(54.)
     angle = arccosd(tand(54.)/sqrt(3.))
-    pf.message("Rotation Ratio: %s; Angle: %s degrees" % (c,angle))
-    F = F.rotate(angle,0)
+    pf.message("Rotation Ratio: %s; Angle: %s degrees" % (c, angle))
+    F = F.rotate(angle, 0)
     clear()
-    draw(F,colormap=['black','magenta','yellow','black'])
+    draw(F, colormap=['black', 'magenta', 'yellow', 'black'])
 
     # Project it on the circumscribing sphere
     # The sphere has radius ru
@@ -131,11 +131,11 @@ def createGeometry():
     pf.message("Radius of circumscribed sphere: %s" % ru)
 
     ru *= n
-    C = [0.,0.,-ru]
-    F = F.projectOnSphere(ru,center=C)
+    C = [0., 0., -ru]
+    F = F.projectOnSphere(ru, center=C)
     draw(F)
 
-    hx,hy,h = F.sizes()
+    hx, hy, h = F.sizes()
     pf.message("Height of the dome: %s" % h)
 
     # The base circle goes through bottom corner of n-th row,
@@ -144,14 +144,14 @@ def createGeometry():
 
     i = (n-1)*n/2
     P = F[i][0]
-    draw(Formex([P]),marksize=10,bbox='last')
+    draw(Formex([P]), marksize=10, bbox='last')
 
     # Get the radius of the base circle from the point's coordinates
-    x,y,z = P
+    x, y, z = P
     rb = sqrt(x*x+y*y)
 
     # Give the base points a z-coordinate 0
-    F = F.translate([0.,0.,-z])
+    F = F.translate([0., 0., -z])
     clear()
     draw(F)
 
@@ -160,28 +160,28 @@ def createGeometry():
     draw(H)
 
     # Determine intersections with base plane
-    P = [0.,0.,0.]
-    N = [0.,0.,1.]
+    P = [0., 0., 0.]
+    N = [0., 0., 1.]
 
-    newprops = [ 5,6,6,None,4,None,None ]
-    F = F.cutWithPlane(P,N,side='+',newprops=newprops)#,atol=0.0001)
+    newprops = [ 5, 6, 6, None, 4, None, None ]
+    F = F.cutWithPlane(P, N, side='+', newprops=newprops)#,atol=0.0001)
     #clear()
     draw(F)
 
     # Finally, create a rosette to make the circle complete
     # and rotate 90 degrees to orient it like in the paper
     clear()
-    F = F.rosette(5,72.).rotate(90)
+    F = F.rosette(5, 72.).rotate(90)
 
-    def cutOut(F,c,r):
+    def cutOut(F, c, r):
         """Remove all elements of F contained in a sphere (c,r)"""
         d = F.distanceFromPoint(c)
         return F.select((d < r).any(axis=-1) == False)
 
     # Cut out the door: remove all members having a point less than
     # edge-length a away from the base point
-    p1 = [rb,0.,0.]
-    F = cutOut(F,p1,1.1*a*n/6)      # a was a good size with n = 6
+    p1 = [rb, 0., 0.]
+    F = cutOut(F, p1, 1.1*a*n/6)      # a was a good size with n = 6
 
     # Scale to the real geometry
     scale = 7000. / F.sizes()[2]
@@ -191,7 +191,7 @@ def createGeometry():
     print(F.bbox())
 
     clear()
-    draw(F,alpha=0.4)
+    draw(F, alpha=0.4)
     export({'F':F})
 
 
@@ -203,7 +203,7 @@ def assignProperties():
     #drawNumbers(F)
     p = 0
     while True:
-        res = askItems([('Property',p)])
+        res = askItems([('Property', p)])
         if not res:
             break
 
@@ -213,12 +213,12 @@ def assignProperties():
             pf.debug("PICKED NUMBERS:%s" % sel)
             F.prop[sel[0]] = p
         undraw(FA)
-        FA = draw(F,bbox='last')
+        FA = draw(F, bbox='last')
 
 
 def exportProperties():
     """Save the current properties under a name"""
-    res = askItems([('Property Name','p')])
+    res = askItems([('Property Name', 'p')])
     if res:
         p = res['Property Name']
         if not p.startswith('prop:'):
@@ -228,7 +228,7 @@ def exportProperties():
 
 def selectProperties():
     """Select one of the saved properties"""
-    res = askItems([('Property Name','p')])
+    res = askItems([('Property Name', 'p')])
     if res:
         p = res['Property Name']
         if p in pf.PF:
@@ -238,9 +238,9 @@ def selectProperties():
 def saveProperties(fn = None):
     """Save the current properties."""
     if not fn:
-        fn = askNewFilename(dirname,filter="Property files (*.prop)")
+        fn = askNewFilename(dirname, filter="Property files (*.prop)")
     if fn:
-        F.prop.tofile(fn,sep=',')
+        F.prop.tofile(fn, sep=',')
 
 
 def readProperties(fn = None):
@@ -248,7 +248,7 @@ def readProperties(fn = None):
     if not fn:
         fn = askFilename(filter="Property files (*.prop)")
     if fn:
-        p = fromfile(fn,sep=',')
+        p = fromfile(fn, sep=',')
         F.setProp(p)
         clear()
         draw(F)
@@ -263,7 +263,7 @@ def connections(elems):
     the numbers of the rows of elems that contain (at least) one value
     equal to the index of the list.
     """
-    return [ (i,list(where(elems==i)[0])) for i in unique(elems.flat) ]
+    return [ (i, list(where(elems==i)[0])) for i in unique(elems.flat) ]
 
 
 #####################################################################
@@ -284,7 +284,7 @@ def createFrameModel():
     elems = S.elems  # the triangles
 
     # Create edges and faces from edges
-    print("The structure has %s nodes, %s edges and %s faces" % (S.ncoords(),S.nedges(),S.nfaces()))
+    print("The structure has %s nodes, %s edges and %s faces" % (S.ncoords(), S.nedges(), S.nfaces()))
 
     # Remove the edges between to quad triangles
     drawNumbers(S.coords)
@@ -292,11 +292,11 @@ def createFrameModel():
     nquadtri = quadtri.shape[0]
     print("%s triangles are part of quadrilateral faces" % nquadtri)
     faces = S.getElemEdges()[quadtri]
-    cnt,ind,xbin = histogram2(faces.reshape(-1),arange(faces.max()+1))
+    cnt, ind, xbin = histogram2(faces.reshape(-1), arange(faces.max()+1))
     rem = where(cnt==2)[0]
     print("Total edges %s" % len(S.edges))
     print("Removing %s edges" % len(rem))
-    edges = S.edges[complement(rem,n=len(S.edges))]
+    edges = S.edges[complement(rem, n=len(S.edges))]
     print("Remaining edges %s" % len(edges))
 
     # Create the steel structure
@@ -314,7 +314,7 @@ def createFrameModel():
     internal = [ c[0] for c in conn if len(c[1]) > 1 ]
     print("Internal edges in quadrilaterals: %s" % internal)
 
-    E = Formex(nodes[edges],1)
+    E = Formex(nodes[edges], 1)
     E.prop[internal] = 6
     wireframe()
     clear()
@@ -323,9 +323,9 @@ def createFrameModel():
     # Remove internal edges
     tubes = edges[E.prop != 6]
 
-    print("Number of tube elements after removing %s internals: %s" % (len(internal),tubes.shape[0]))
+    print("Number of tube elements after removing %s internals: %s" % (len(internal), tubes.shape[0]))
 
-    D = Formex(nodes[tubes],1)
+    D = Formex(nodes[tubes], 1)
     clear()
     draw(D)
 
@@ -351,43 +351,43 @@ def createFrameModel():
         'torsional_constant': J
         }
     steel = {
-        'name':'steel',
-        'young_modulus' : 206000,
-        'shear_modulus' : 81500,
-        'density' : 7.85e-9,
+        'name': 'steel',
+        'young_modulus': 206000,
+        'shear_modulus': 81500,
+        'density': 7.85e-9,
         }
     print(tube)
     print(steel)
 
-    tubesection = ElemSection(section=tube,material=steel)
+    tubesection = ElemSection(section=tube, material=steel)
 
     # Calculate the nodal loads
 
     # Area of triangles
-    area,normals = S.areaNormals()
+    area, normals = S.areaNormals()
     print("Area:\n%s" % area)
     # compute bar lengths
     bars = nodes[tubes]
-    barV = bars[:,1,:] - bars[:,0,:]
+    barV = bars[:, 1,:] - bars[:, 0,:]
     barL = sqrt((barV*barV).sum(axis=-1))
     print("Member length:\n%s" % barL)
 
 
     ### DEFINE LOAD CASE (ask user) ###
     res = askItems(
-        [ _I('Steel',True),
-          _I('Glass',True),
-          _I('Snow',False),
-          _I('Solver',choices=['Calpy','Abaqus']),
+        [ _I('Steel', True),
+          _I('Glass', True),
+          _I('Snow', False),
+          _I('Solver', choices=['Calpy', 'Abaqus']),
           ])
     if not res:
         return
 
     nlc = 0
-    for lc in [ 'Steel','Glass','Snow' ]:
+    for lc in [ 'Steel', 'Glass', 'Snow' ]:
         if res[lc]:
             nlc += 1
-    NODLoad = zeros((nlc,S.ncoords(),3))
+    NODLoad = zeros((nlc, S.ncoords(), 3))
 
     nlc = 0
     if res['Steel']:
@@ -395,39 +395,39 @@ def createFrameModel():
         lwgt = steel['density'] * tube['cross_section'] * 9810  # mm/s**2
         print("Weight per length %s" % lwgt)
         # assemble steel weight load
-        for e,L in zip(tubes,barL):
-            NODLoad[nlc,e] += [ 0., 0., - L * lwgt / 2 ]
+        for e, L in zip(tubes, barL):
+            NODLoad[nlc, e] += [ 0., 0., - L * lwgt / 2 ]
         nlc += 1
 
     if res['Glass']:
         # the GLASS weight
         wgt = 450e-6 # N/mm**2
         # assemble uniform glass load
-        for e,a in zip(S.elems,area):
-            NODLoad[nlc,e] += [ 0., 0., - a * wgt / 3 ]
+        for e, a in zip(S.elems, area):
+            NODLoad[nlc, e] += [ 0., 0., - a * wgt / 3 ]
         nlc += 1
 
     if res['Snow']:
         # NON UNIFORM SNOW
         fn = '../data/hesperia-nieve.prop'
-        snowp = fromfile(fn,sep=',')
+        snowp = fromfile(fn, sep=',')
         snow_uniform = 320e-6 # N/mm**2
         snow_non_uniform = { 1:333e-6, 2:133e-6, 3:133e-6, 4:266e-6, 5:266e-6, 6:667e-6 }
 
         # assemble non-uniform snow load
-        for e,a,p in zip(S.elems,area,snowp):
-            NODLoad[nlc,e] += [ 0., 0., - a * snow_non_uniform[p] / 3]
+        for e, a, p in zip(S.elems, area, snowp):
+            NODLoad[nlc, e] += [ 0., 0., - a * snow_non_uniform[p] / 3]
         nlc += 1
 
     # For Abaqus: put the nodal loads in the properties database
     print(NODLoad)
     PDB = PropertyDB()
     for lc in range(nlc):
-        for i,P in enumerate(NODLoad[lc]):
-            PDB.nodeProp(tag=lc,set=i,cload=[P[0],P[1],P[2],0.,0.,0.])
+        for i, P in enumerate(NODLoad[lc]):
+            PDB.nodeProp(tag=lc, set=i, cload=[P[0], P[1], P[2], 0., 0., 0.])
 
     # Get support nodes
-    botnodes = where(isClose(nodes[:,2], 0.0))[0]
+    botnodes = where(isClose(nodes[:, 2], 0.0))[0]
     bot = nodes[botnodes]
     pf.message("There are %s support nodes." % bot.shape[0])
 
@@ -435,17 +435,17 @@ def createFrameModel():
     nnodes = nodes.shape[0]              # node number offset
     ntubes = tubes.shape[0]              # element number offset
 
-    PDB.elemProp(set=arange(ntubes),section=tubesection,eltype='FRAME3D')
+    PDB.elemProp(set=arange(ntubes), section=tubesection, eltype='FRAME3D')
 
     # Create support systems (vertical beams)
-    bot2 = bot + [ 0.,0.,-200.]         # new nodes 200mm below bot
+    bot2 = bot + [ 0., 0., -200.]         # new nodes 200mm below bot
     botnodes2 = arange(botnodes.shape[0]) + nnodes  # node numbers
-    nodes = concatenate([nodes,bot2])
-    supports = column_stack([botnodes,botnodes2])
-    elems = concatenate([tubes,supports])
+    nodes = concatenate([nodes, bot2])
+    supports = column_stack([botnodes, botnodes2])
+    elems = concatenate([tubes, supports])
     ## !!!
     ## THIS SHOULD BE FIXED !!!
-    supportsection = ElemSection(material=steel,section={
+    supportsection = ElemSection(material=steel, section={
         'name':'support',
         'cross_section': A,
         'moment_inertia_11': I1,
@@ -453,7 +453,7 @@ def createFrameModel():
         'moment_inertia_12': I12,
         'torsional_constant': J
         })
-    PDB.elemProp(set=arange(ntubes,elems.shape[0]),section=supportsection,eltype='FRAME3D')
+    PDB.elemProp(set=arange(ntubes, elems.shape[0]), section=supportsection, eltype='FRAME3D')
 
     # Finally, the botnodes2 get the support conditions
     botnodes = botnodes2
@@ -469,13 +469,13 @@ def createFrameModel():
 ##     #np_transf = NodeProperty(0,coords='cylindrical',coordset=[0,0,0,0,0,1])
 
     # Draw the supports
-    S = connect([Formex(bot),Formex(bot2)])
-    draw(S,color='black')
+    S = connect([Formex(bot), Formex(bot2)])
+    draw(S, color='black')
 
     if res['Solver'] == 'Calpy':
-        fe_model = Dict(dict(solver='Calpy',nodes=nodes,elems=elems,prop=PDB,loads=NODLoad,botnodes=botnodes,nsteps=nlc))
+        fe_model = Dict(dict(solver='Calpy', nodes=nodes, elems=elems, prop=PDB, loads=NODLoad, botnodes=botnodes, nsteps=nlc))
     else:
-        fe_model = Dict(dict(solver='Abaqus',nodes=nodes,elems=elems,prop=PDB,botnodes=botnodes,nsteps=nlc))
+        fe_model = Dict(dict(solver='Abaqus', nodes=nodes, elems=elems, prop=PDB, botnodes=botnodes, nsteps=nlc))
     export({'fe_model':fe_model})
     print("FE model created and exported as 'fe_model'")
 
@@ -491,7 +491,7 @@ def createShellModel():
     # Turn the Formex structure into a TriSurface
     # This guarantees that element i of the Formex is element i of the TriSurface
     S = TriSurface(F)
-    print("The structure has %s nodes, %s edges and %s faces" % (S.ncoords(),S.nedges(),S.nfaces()))
+    print("The structure has %s nodes, %s edges and %s faces" % (S.ncoords(), S.nedges(), S.nfaces()))
     nodes = S.coords
     elems = S.elems  # the triangles
 
@@ -515,60 +515,60 @@ def createShellModel():
         }
     print(glass_plate)
     print(glass)
-    glasssection = ElemSection(section=glass_plate,material=glass)
+    glasssection = ElemSection(section=glass_plate, material=glass)
 
     PDB = PropertyDB()
     # All elements have same property:
-    PDB.elemProp(set=arange(len(elems)),section=glasssection,eltype='STRI3')
+    PDB.elemProp(set=arange(len(elems)), section=glasssection, eltype='STRI3')
 
     # Calculate the nodal loads
 
     # Area of triangles
-    area,normals = S.areaNormals()
+    area, normals = S.areaNormals()
     print("Area:\n%s" % area)
 
     ### DEFINE LOAD CASE (ask user) ###
-    res = askItems([('Glass',True),('Snow',False)])
+    res = askItems([('Glass', True), ('Snow', False)])
     if not res:
         return
 
     step = 0
     if res['Glass']:
         step += 1
-        NODLoad = zeros((S.ncoords(),3))
+        NODLoad = zeros((S.ncoords(), 3))
         # add the GLASS weight
         wgt = 450e-6 # N/mm**2
         # Or, calculate weight from density:
         # wgt = glass_plate['thickness'] * glass['density'] * 9810
         # assemble uniform glass load
-        for e,a in zip(S.elems,area):
+        for e, a in zip(S.elems, area):
             NODLoad[e] += [ 0., 0., - a * wgt / 3 ]
         # Put the nodal loads in the properties database
-        for i,P in enumerate(NODLoad):
-            PDB.nodeProp(tag=step,set=i,cload=[P[0],P[1],P[2],0.,0.,0.])
+        for i, P in enumerate(NODLoad):
+            PDB.nodeProp(tag=step, set=i, cload=[P[0], P[1], P[2], 0., 0., 0.])
 
     if res['Snow']:
         step += 1
-        NODLoad = zeros((S.ncoords(),3))
+        NODLoad = zeros((S.ncoords(), 3))
         # add NON UNIFORM SNOW
         fn = '../data/hesperia-nieve.prop'
-        snowp = fromfile(fn,sep=',')
+        snowp = fromfile(fn, sep=',')
         snow_uniform = 320e-6 # N/mm**2
         snow_non_uniform = { 1:333e-6, 2:133e-6, 3:133e-6, 4:266e-6, 5:266e-6, 6:667e-6 }
         # assemble non-uniform snow load
-        for e,a,p in zip(S.elems,area,snowp):
+        for e, a, p in zip(S.elems, area, snowp):
             NODLoad[e] += [ 0., 0., - a * snow_non_uniform[p] / 3]
         # Put the nodal loads in the properties database
-        for i,P in enumerate(NODLoad):
-            PDB.nodeProp(tag=step,set=[i],cload=[P[0],P[1],P[2],0.,0.,0.])
+        for i, P in enumerate(NODLoad):
+            PDB.nodeProp(tag=step, set=[i], cload=[P[0], P[1], P[2], 0., 0., 0.])
 
     # Get support nodes
-    botnodes = where(isClose(nodes[:,2], 0.0))[0]
-    bot = nodes[botnodes].reshape((-1,1,3))
+    botnodes = where(isClose(nodes[:, 2], 0.0))[0]
+    bot = nodes[botnodes].reshape((-1, 1, 3))
     pf.message("There are %s support nodes." % bot.shape[0])
 
-    botofs = bot + [ 0.,0.,-0.2]
-    bbot2 = concatenate([bot,botofs],axis=1)
+    botofs = bot + [ 0., 0., -0.2]
+    bbot2 = concatenate([bot, botofs], axis=1)
     print(bbot2.shape)
     S = Formex(bbot2)
     draw(S)
@@ -580,12 +580,12 @@ def createShellModel():
 ##     np_fixed = NodeProperty(1,bound=[0,1,1,0,0,0],coords='cylindrical',coordset=[0,0,0,0,0,1])
 
     # Since we left out the ring beam, we enforce no movement at the botnodes
-    bc = PDB.nodeProp(set=botnodes,bound=[1,1,1,0,0,0],csys=CoordSystem('C',[0,0,0,0,0,1]))
+    bc = PDB.nodeProp(set=botnodes, bound=[1, 1, 1, 0, 0, 0], csys=CoordSystem('C', [0, 0, 0, 0, 0, 1]))
 
     # And we record the name of the bottom nodes set
     botnodeset = Nset(bc.nr)
 
-    fe_model = Dict(dict(nodes=nodes,elems=elems,prop=PDB,botnodeset=botnodeset,nsteps=step))
+    fe_model = Dict(dict(nodes=nodes, elems=elems, prop=PDB, botnodeset=botnodeset, nsteps=step))
     export({'fe_model':fe_model})
     smooth()
     lights(False)
@@ -612,7 +612,7 @@ def createAbaqusInput():
         return
 
     # ask job name from user
-    res = askItems([('JobName','hesperia_shell')])
+    res = askItems([('JobName', 'hesperia_shell')])
     if not res:
         return
 
@@ -625,18 +625,18 @@ def createAbaqusInput():
             Output(type='field'),
             ]
 
-    res = [ Result(kind='NODE',keys=['U','COORD']),
-            Result(kind='ELEMENT',keys=['S'],pos='AVERAGED AT NODES'),
-            Result(kind='ELEMENT',keys=['SINV'],pos='AVERAGED AT NODES'),
-            Result(kind='ELEMENT',keys=['SF'],pos='AVERAGED AT NODES'),
+    res = [ Result(kind='NODE', keys=['U', 'COORD']),
+            Result(kind='ELEMENT', keys=['S'], pos='AVERAGED AT NODES'),
+            Result(kind='ELEMENT', keys=['SINV'], pos='AVERAGED AT NODES'),
+            Result(kind='ELEMENT', keys=['SF'], pos='AVERAGED AT NODES'),
             ]
 
-    step1 = Step(time=[1.,1.,0.01,1.],nlgeom='no',tags=[1])
-    step2 = Step(time=[1.,1.,0.01,1.],nlgeom='no',tags=[2])
+    step1 = Step(time=[1., 1., 0.01, 1.], nlgeom='no', tags=[1])
+    step2 = Step(time=[1., 1., 0.01, 1.], nlgeom='no', tags=[2])
 
-    model = Model(nodes,elems)
+    model = Model(nodes, elems)
 
-    AbqData(model,prop,[step1,step2],out=out,res=res).write(jobname)
+    AbqData(model, prop, [step1, step2], out=out, res=res).write(jobname)
 
 
 #############################################################################
@@ -664,7 +664,7 @@ def runCalpyAnalysis():
     import calpy
     print(calpy)
     calpy.options.optimize=True
-    from calpy import fe_util,beam3d
+    from calpy import fe_util, beam3d
     ############################
 
     try:
@@ -681,7 +681,7 @@ def runCalpyAnalysis():
         return
 
     # ask job name from user
-    res = askItems([('JobName','hesperia_frame'),('Verbose Mode',False)])
+    res = askItems([('JobName', 'hesperia_frame'), ('Verbose Mode', False)])
     if not res:
         return
 
@@ -700,13 +700,13 @@ def runCalpyAnalysis():
     #
     # !!! This is ok for the support beams, but for the structural beams
     # !!! this should be changed to the center of the sphere !!!
-    extra_node = array([[0.0,0.0,0.0]])
-    coords = concatenate([FE.nodes,extra_node])
+    extra_node = array([[0.0, 0.0, 0.0]])
+    coords = concatenate([FE.nodes, extra_node])
     nnod = coords.shape[0]
     print("Adding a node for orientation: %s" % nnod)
 
     # We extract the materials/sections from the property database
-    matprops = FE.prop.getProp(kind='e',attr=['section'])
+    matprops = FE.prop.getProp(kind='e', attr=['section'])
 
     # Beam Properties in Calpy consist of 7 values:
     #   E, G, rho, A, Izz, Iyy, J
@@ -733,12 +733,12 @@ def runCalpyAnalysis():
     # in pyFormex; therefore we add 1 to elems.
     # The third node for all beams is the last (extra) node, numbered nnod.
     # We need to reshape tubeprops to allow concatenation
-    matnr = zeros(nel,dtype=int32)
-    for i,mat in enumerate(matprops):  # proces in same order as above!
+    matnr = zeros(nel, dtype=int32)
+    for i, mat in enumerate(matprops):  # proces in same order as above!
         matnr[mat.set] = i+1
     elements = concatenate([FE.elems + 1,         # the normal node numbers
-                            nnod * ones(shape=(nel,1),dtype=int), # extra node
-                            matnr.reshape((-1,1))],  # mat number
+                            nnod * ones(shape=(nel, 1), dtype=int), # extra node
+                            matnr.reshape((-1, 1))],  # mat number
                            axis=1)
 
     if verbose:
@@ -766,7 +766,7 @@ def runCalpyAnalysis():
     if verbose:
         print("Specified boundary conditions")
         print(s)
-    bcon = fe_util.ReadBoundary(nnod,6,s)
+    bcon = fe_util.ReadBoundary(nnod, 6, s)
     fe_util.NumberEquations(bcon)
     if verbose:
         print("Calpy.DOF numbering")
@@ -796,14 +796,14 @@ def runCalpyAnalysis():
     # convention (starting at 0), thus no adding 1 is needed!
     print("Assembling Concentrated Loads")
     nlc = 1
-    loads = zeros((ndof,nlc),float)
-    for p in FE.prop.getProp('n',attr=['cload']):
+    loads = zeros((ndof, nlc), float)
+    for p in FE.prop.getProp('n', attr=['cload']):
         cload = zeros(6)
-        for i,v in p.cload:
+        for i, v in p.cload:
             cload[i] += v
         print(cload)
         print(cload.shape)
-        loads[:,0] = fe_util.AssembleVector(loads[:,0],cload,bcon[p.set,:])
+        loads[:, 0] = fe_util.AssembleVector(loads[:, 0], cload, bcon[p.set,:])
     if verbose:
         print("Calpy.Loads")
         print(loads)
@@ -815,19 +815,19 @@ def runCalpyAnalysis():
     print("Starting the Calpy analysis module --- this might take some time")
     pf.app.processEvents()
     starttime = time.clock()
-    displ,frc = beam3d.static(coords,bcon,mats,elements,loads,Echo=True)
+    displ, frc = beam3d.static(coords, bcon, mats, elements, loads, Echo=True)
     print("Calpy analysis has finished --- Runtime was %s seconds." % (time.clock()-starttime))
     # Export the results, but throw way these for the extra (last) node
-    export({'calpy_results':(displ[:-1],frc)})
+    export({'calpy_results':(displ[:-1], frc)})
 
 
 def postCalpy():
     """Show results from the Calpy analysis."""
-    from plugins.postproc import niceNumber,frameScale
+    from plugins.postproc import niceNumber, frameScale
     from plugins.postproc_menu import showResults
     try:
         FE = named('fe_model')
-        displ,frc = named('calpy_results')
+        displ, frc = named('calpy_results')
     except:
         warning("I could not find the finite element model and/or the calpy results. Maybe you should try to first create them?")
         raise
@@ -838,30 +838,30 @@ def postCalpy():
     # nforcevalues = 8 (Nx,Vy,Vz,Mx,My1,Mz1,My2,Mz2)
     # Describe the nforcevalues element results in frc.
     # For each result we give a short and a long description:
-    frc_contents = [('Nx','Normal force'),
-                    ('Vy','Shear force in local y-direction'),
-                    ('Vz','Shear force in local z-direction'),
-                    ('Mx','Torsional moment'),
-                    ('My','Bending moment around local y-axis'),
-                    ('Mz','Bending moment around local z-axis'),
-                    ('None','No results'),
+    frc_contents = [('Nx', 'Normal force'),
+                    ('Vy', 'Shear force in local y-direction'),
+                    ('Vz', 'Shear force in local z-direction'),
+                    ('Mx', 'Torsional moment'),
+                    ('My', 'Bending moment around local y-axis'),
+                    ('Mz', 'Bending moment around local z-axis'),
+                    ('None', 'No results'),
                     ]
     # split in two lists
     frc_keys = [ c[0] for c in frc_contents ]
     frc_desc = [ c[1] for c in frc_contents ]
 
     # Ask the user which results he wants
-    res = askItems([('Type of result',None,'select',frc_desc),
-                    ('Load case',0),
-                    ('Autocalculate deformation scale',True),
-                    ('Deformation scale',100.),
-                    ('Show undeformed configuration',False),
-                    ('Animate results',False),
-                    ('Amplitude shape','linear','select',['linear','sine']),
-                    ('Animation cycle','updown','select',['up','updown','revert']),
-                    ('Number of cycles',5),
-                    ('Number of frames',10),
-                    ('Animation sleeptime',0.1),
+    res = askItems([('Type of result', None, 'select', frc_desc),
+                    ('Load case', 0),
+                    ('Autocalculate deformation scale', True),
+                    ('Deformation scale', 100.),
+                    ('Show undeformed configuration', False),
+                    ('Animate results', False),
+                    ('Amplitude shape', 'linear', 'select', ['linear', 'sine']),
+                    ('Animation cycle', 'updown', 'select', ['up', 'updown', 'revert']),
+                    ('Number of cycles', 5),
+                    ('Number of frames', 10),
+                    ('Animation sleeptime', 0.1),
                     ])
     if res:
         frcindex = frc_desc.index(res['Type of result'])
@@ -876,7 +876,7 @@ def postCalpy():
         nframes = res['Number of frames']
         sleeptime = res['Animation sleeptime']
 
-        dis = displ[:,0:3,loadcase]
+        dis = displ[:, 0:3, loadcase]
         if autoscale:
             siz0 = Coords(FE.nodes).sizes()
             siz1 = Coords(dis).sizes()
@@ -885,18 +885,18 @@ def postCalpy():
             dscale = niceNumber(1./(siz1/siz0).max())
 
         if animate:
-            dscale = dscale * frameScale(nframes,cycle=cycle,shape=shape)
+            dscale = dscale * frameScale(nframes, cycle=cycle, shape=shape)
 
         # Get the scalar element result values from the frc array.
         val = val1 = txt = None
         if frcindex <= 5:
-            val = frc[:,frcindex,loadcase]
+            val = frc[:, frcindex, loadcase]
             txt = frc_desc[frcindex]
             if frcindex > 3:
                 # bending moment values at second node
-                val1 = frc[:,frcindex+2,loadcase]
+                val1 = frc[:, frcindex+2, loadcase]
 
-        showResults(FE.nodes,FE.elems,dis,txt,val,showref,dscale,count,sleeptime)
+        showResults(FE.nodes, FE.elems, dis, txt, val, showref, dscale, count, sleeptime)
 
 
 
@@ -906,25 +906,25 @@ def postCalpy():
 def create_menu():
     """Create the Hesperia menu."""
     MenuData = [
-        ("&How To Use",howto),
-        ("---",None),
-        ("&Create Geometry",createGeometry),
-        ("&Assign Properties",assignProperties),
-        ("&Export Properties",exportProperties),
-        ("&Select Properties",selectProperties),
-        ("&Save Properties",saveProperties),
-        ("&Read Properties",readProperties),
-        ("---",None),
-        ("&Create Frame Model",createFrameModel),
-        ("&Create Shell Model",createShellModel),
-        ("---",None),
-        ("&Write Abaqus input file",createAbaqusInput),
-        ("&Run Calpy Analysis",runCalpyAnalysis),
-        ("&Show Calpy Results",postCalpy),
-        ("---",None),
-        ("&Close Menu",close_menu),
+        ("&How To Use", howto),
+        ("---", None),
+        ("&Create Geometry", createGeometry),
+        ("&Assign Properties", assignProperties),
+        ("&Export Properties", exportProperties),
+        ("&Select Properties", selectProperties),
+        ("&Save Properties", saveProperties),
+        ("&Read Properties", readProperties),
+        ("---", None),
+        ("&Create Frame Model", createFrameModel),
+        ("&Create Shell Model", createShellModel),
+        ("---", None),
+        ("&Write Abaqus input file", createAbaqusInput),
+        ("&Run Calpy Analysis", runCalpyAnalysis),
+        ("&Show Calpy Results", postCalpy),
+        ("---", None),
+        ("&Close Menu", close_menu),
         ]
-    return menu.Menu('Hesperia',items=MenuData,parent=pf.GUI.menu,before='help')
+    return menu.Menu('Hesperia', items=MenuData, parent=pf.GUI.menu, before='help')
 
 
 def show_menu():

@@ -34,7 +34,7 @@ from __future__ import print_function
 import pyformex as pf
 
 from OpenGL import GL
-from gui import QtCore,QtGui,QtOpenGL
+from gui import QtCore, QtGui, QtOpenGL
 import utils
 import os
 
@@ -60,14 +60,14 @@ gl2ps = None
 
 def initialize():
     """Initialize the image module."""
-    global image_formats_qt,image_formats_qtr,image_formats_gl2ps,image_formats_fromeps,gl2ps,_producer,_gl2ps_types
+    global image_formats_qt, image_formats_qtr, image_formats_gl2ps, image_formats_fromeps, gl2ps, _producer, _gl2ps_types
 
     # Find interesting supporting software
     utils.hasExternal('imagemagick')
     # Set some globals
-    pf.debug("Loading Image Formats",pf.DEBUG.IMAGE)
-    image_formats_qt = map(str,QtGui.QImageWriter.supportedImageFormats())
-    image_formats_qtr = map(str,QtGui.QImageReader.supportedImageFormats())
+    pf.debug("Loading Image Formats", pf.DEBUG.IMAGE)
+    image_formats_qt = map(str, QtGui.QImageWriter.supportedImageFormats())
+    image_formats_qtr = map(str, QtGui.QImageReader.supportedImageFormats())
     ## if pf.cfg.get('imagesfromeps',False):
     ##     pf.image_formats_qt = []
 
@@ -75,17 +75,17 @@ def initialize():
 
         import gl2ps
 
-        _producer = pf.Version() + ' (%s)' % pf.cfg.get('help/website','')
+        _producer = pf.Version() + ' (%s)' % pf.cfg.get('help/website', '')
         _gl2ps_types = {
-            'ps':gl2ps.GL2PS_PS,
-            'eps':gl2ps.GL2PS_EPS,
-            'tex':gl2ps.GL2PS_TEX,
-            'pdf':gl2ps.GL2PS_PDF,
+            'ps': gl2ps.GL2PS_PS,
+            'eps': gl2ps.GL2PS_EPS,
+            'tex': gl2ps.GL2PS_TEX,
+            'pdf': gl2ps.GL2PS_PDF,
             }
-        if utils.checkVersion('gl2ps','1.03') >= 0:
+        if utils.checkVersion('gl2ps', '1.03') >= 0:
             _gl2ps_types.update({
-                'svg':gl2ps.GL2PS_SVG,
-                'pgf':gl2ps.GL2PS_PGF,
+                'svg': gl2ps.GL2PS_SVG,
+                'pgf': gl2ps.GL2PS_PGF,
                 })
         image_formats_gl2ps = _gl2ps_types.keys()
         image_formats_fromeps = [ 'ppm', 'png', 'jpeg', 'rast', 'tiff',
@@ -94,7 +94,7 @@ def initialize():
 Qt image types for saving: %s
 Qt image types for input: %s
 gl2ps image types: %s
-image types converted from EPS: %s""" % (image_formats_qt,image_formats_qtr,image_formats_gl2ps,image_formats_fromeps),pf.DEBUG.IMAGE|pf.DEBUG.INFO)
+image types converted from EPS: %s""" % (image_formats_qt, image_formats_qtr, image_formats_gl2ps, image_formats_fromeps), pf.DEBUG.IMAGE|pf.DEBUG.INFO)
 
 
 def imageFormats():
@@ -113,8 +113,8 @@ def checkImageFormat(fmt,verbose=True):
 
     Returns the image format, or None if it is not OK.
     """
-    pf.debug("Format requested: %s" % fmt,pf.DEBUG.IMAGE)
-    pf.debug("Formats available: %s" % imageFormats(),pf.DEBUG.IMAGE)
+    pf.debug("Format requested: %s" % fmt, pf.DEBUG.IMAGE)
+    pf.debug("Formats available: %s" % imageFormats(), pf.DEBUG.IMAGE)
     if fmt in imageFormats():
         if fmt == 'tex' and verbose:
             pf.warning("This will only write a LaTeX fragment to include the 'eps' image\nYou have to create the .eps image file separately.\n")
@@ -159,61 +159,61 @@ def save_canvas(canvas,fn,fmt='png',quality=-1,size=None):
     pf.app.processEvents()
 
     if fmt in image_formats_qt:
-        pf.debug("Image format can be saved by Qt",pf.DEBUG.IMAGE)
-        wc,hc = canvas.getSize()
+        pf.debug("Image format can be saved by Qt", pf.DEBUG.IMAGE)
+        wc, hc = canvas.getSize()
         try:
-            w,h = size
+            w, h = size
         except:
-            w,h = wc,hc
-        if (w,h) == (wc,hc):
-            pf.debug("Saving image from canvas with size %sx%s" % (w,h),pf.DEBUG.IMAGE)
-            if (w,h) != (wc,hc):
-                canvas.resize(w,h)
+            w, h = wc, hc
+        if (w, h) == (wc, hc):
+            pf.debug("Saving image from canvas with size %sx%s" % (w, h), pf.DEBUG.IMAGE)
+            if (w, h) != (wc, hc):
+                canvas.resize(w, h)
             GL.glFlush()
             qim = canvas.grabFrameBuffer(withAlpha=False)
-            if (w,h) != (wc,hc):
-                canvas.resize(wc,hc)
+            if (w, h) != (wc, hc):
+                canvas.resize(wc, hc)
         else:
-            pf.debug("Saving image from virtual buffer with size %sx%s" % (w,h),pf.DEBUG.IMAGE)
-            vcanvas = QtOpenGL.QGLFramebufferObject(w,h)
+            pf.debug("Saving image from virtual buffer with size %sx%s" % (w, h), pf.DEBUG.IMAGE)
+            vcanvas = QtOpenGL.QGLFramebufferObject(w, h)
             vcanvas.bind()
-            canvas.resize(w,h)
+            canvas.resize(w, h)
             canvas.display()
             GL.glFlush()
             qim = vcanvas.toImage()
             ### REMOVE THE ALPHA CHANNEL (see bug #36995)
             ### Since we did not find a way to do this directly on
             ### the QImage, we got through an numpy array
-            from plugins.imagearray import image2numpy,rgb2qimage
-            ar,cm = image2numpy(qim,flip=False)
-            qim = rgb2qimage(ar[...,:3])
+            from plugins.imagearray import image2numpy, rgb2qimage
+            ar, cm = image2numpy(qim, flip=False)
+            qim = rgb2qimage(ar[..., :3])
             ####
             vcanvas.release()
-            canvas.resize(wc,hc)
+            canvas.resize(wc, hc)
             GL.glFlush()
             del vcanvas
 
         pf.debug("Image has alpha channel: %s" % qim.hasAlphaChannel())
-        print("SAVING %s in format %s with quality %s" % (fn,fmt,quality))
-        if qim.save(fn,fmt,quality):
+        print("SAVING %s in format %s with quality %s" % (fn, fmt, quality))
+        if qim.save(fn, fmt, quality):
             sta = 0
         else:
             sta = 1
 
     elif fmt in image_formats_gl2ps:
-        pf.debug("Image format can be saved by gl2ps",pf.DEBUG.IMAGE)
-        sta = save_PS(canvas,fn,fmt)
+        pf.debug("Image format can be saved by gl2ps", pf.DEBUG.IMAGE)
+        sta = save_PS(canvas, fn, fmt)
 
     elif fmt in image_formats_fromeps:
-        pf.debug("Image format can be converted from eps",pf.DEBUG.IMAGE)
+        pf.debug("Image format can be converted from eps", pf.DEBUG.IMAGE)
         fneps = os.path.splitext(fn)[0] + '.eps'
         delete = not os.path.exists(fneps)
-        save_PS(canvas,fneps,'eps')
+        save_PS(canvas, fneps, 'eps')
         if os.path.exists(fneps):
             cmd = 'pstopnm -portrait -stdout %s' % fneps
             if fmt != 'ppm':
-                cmd += '| pnmto%s > %s' % (fmt,fn)
-            utils.command(cmd,shell=True)
+                cmd += '| pnmto%s > %s' % (fmt, fn)
+            utils.command(cmd, shell=True)
             if delete:
                 os.remove(fneps)
 
@@ -291,7 +291,7 @@ def save_window(filename,format,quality=-1,windowname=None):
     pf.canvas.raise_()
     pf.canvas.update()
     pf.app.processEvents()
-    cmd = 'import -window "%s" %s:%s' % (windowname,format,filename)
+    cmd = 'import -window "%s" %s:%s' % (windowname, format, filename)
     P = utils.command(cmd)
     return P.sta
 
@@ -313,13 +313,13 @@ def save_main_window(filename,format,quality=-1,border=False):
         geom = pf.GUI.frameGeometry()
     else:
         geom = pf.GUI.geometry()
-    x,y,w,h = geom.getRect()
-    return save_rect(x,y,w,h,filename,format,quality)
+    x, y, w, h = geom.getRect()
+    return save_rect(x, y, w, h, filename, format, quality)
 
 
 def save_rect(x,y,w,h,filename,format,quality=-1):
     """Save a rectangular part of the screen to a an image file."""
-    cmd = 'import -window root -crop "%sx%s+%s+%s" %s:%s' % (w,h,x,y,format,filename)
+    cmd = 'import -window root -crop "%sx%s+%s+%s" %s:%s' % (w, h, x, y, format, filename)
     P = utils.command(cmd)
     return P.sta
 
@@ -376,7 +376,7 @@ def save(filename=None,window=False,multi=False,hotkey=True,autosave=False,borde
         return
 
     #chdir(filename)
-    name,ext = os.path.splitext(filename)
+    name, ext = os.path.splitext(filename)
     # Get/Check format
     if not format: # is None:
         format = checkImageFormat(imageFormatFromExt(ext))
@@ -384,30 +384,30 @@ def save(filename=None,window=False,multi=False,hotkey=True,autosave=False,borde
         return
 
     if multi: # Start multisave mode
-        names = utils.NameSequence(name,ext)
+        names = utils.NameSequence(name, ext)
         if os.path.exists(names.peek()):
             next = names.next()
-        pf.message("Start multisave mode to files: %s (%s)" % (names.name,format))
+        pf.message("Start multisave mode to files: %s (%s)" % (names.name, format))
         if hotkey:
              pf.GUI.signals.SAVE.connect(saveNext)
              if verbose:
                  pf.warning("Each time you hit the '%s' key,\nthe image will be saved to the next number." % pf.cfg['keys/save'])
-        multisave = (names,format,quality,size,window,border,hotkey,autosave,rootcrop)
+        multisave = (names, format, quality, size, window, border, hotkey, autosave, rootcrop)
         print("MULTISAVE %s "% str(multisave))
         return multisave is None
 
     else: # Save the image
         if window:
             if rootcrop:
-                sta = save_main_window(filename,format,quality,border=border)
+                sta = save_main_window(filename, format, quality, border=border)
             else:
-                sta = save_window(filename,format,quality)
+                sta = save_window(filename, format, quality)
         else:
             if size == pf.canvas.getSize():
                 size = None
-            sta = save_canvas(pf.canvas,filename,format,quality,size)
+            sta = save_canvas(pf.canvas, filename, format, quality, size)
         if sta:
-            pf.debug("Error while saving image %s" % filename,pf.DEBUG.IMAGE)
+            pf.debug("Error while saving image %s" % filename, pf.DEBUG.IMAGE)
         else:
             pf.message("Image file %s written" % filename)
         return
@@ -426,12 +426,12 @@ def saveNext():
     or not.
     """
     if multisave:
-        names,format,quality,size,window,border,hotkey,autosave,rootcrop = multisave
+        names, format, quality, size, window, border, hotkey, autosave, rootcrop = multisave
         name = names.next()
-        save(name,window,False,hotkey,autosave,border,rootcrop,format,quality,size,False)
+        save(name, window, False, hotkey, autosave, border, rootcrop, format, quality, size, False)
 
 
-def changeBackgroundColorXPM(fn,color):
+def changeBackgroundColorXPM(fn, color):
     """Changes the background color of an .xpm image.
 
     This changes the background color of an .xpm image to the given value.
@@ -451,11 +451,11 @@ def changeBackgroundColorXPM(fn,color):
     if not c:
         print("Can not change background color of '%s' " % fn)
         return
-    for i,l in enumerate(t):
+    for i, l in enumerate(t):
         if l.startswith('"%s c ' % c):
             t[i] = '"%s c None",\n' % c
             break
-    f = open(fn,'w')
+    f = open(fn, 'w')
     f.writelines(t)
     f.close()
 
@@ -465,10 +465,10 @@ def saveIcon(fn,size=32,transparent=True):
 
     if not fn.endswith('.xpm'):
         fn += '.xpm'
-    save_canvas(pf.canvas,fn,fmt='xpm',size=(size,size))
-    print("Saved icon to file %s in %s" % (fn,os.getcwd()))
+    save_canvas(pf.canvas, fn, fmt='xpm', size=(size, size))
+    print("Saved icon to file %s in %s" % (fn, os.getcwd()))
     if transparent:
-        changeBackgroundColorXPM(fn,'None')
+        changeBackgroundColorXPM(fn, 'None')
 
 
 def autoSaveOn():
@@ -513,14 +513,14 @@ def createMovie(files,encoder='convert',outfn='output',**kargs):
 
     if encoder == 'convert':
         outfile = outfn+'.gif'
-        cmd= "convert "+" ".join(["-%s %s"%k for k in kargs.items()])+" %s %s"%(files,outfile)
+        cmd= "convert "+" ".join(["-%s %s"%k for k in kargs.items()])+" %s %s"%(files, outfile)
     elif encoder == 'mencoder':
         outfile = outfn + '.avi'
-        cmd = "mencoder \"mf://%s\" -o %s -mf fps=%s -ovc lavc -lavcopts vcodec=msmpeg4v2:vbitrate=%s" % (files,outfile,kargs['fps'],kargs['vbirate'])
+        cmd = "mencoder \"mf://%s\" -o %s -mf fps=%s -ovc lavc -lavcopts vcodec=msmpeg4v2:vbitrate=%s" % (files, outfile, kargs['fps'], kargs['vbirate'])
     else:
         outfile = outfn+'.mp4'
         cmd = "ffmpeg -qscale 1 -r 1 -i %s output.mp4" % files
-    pf.debug(cmd,pf.DEBUG.IMAGE)
+    pf.debug(cmd, pf.DEBUG.IMAGE)
     P = utils.command(cmd)
     print("Created file %s" % os.path.abspath(outfile))
     return P.sta
@@ -539,8 +539,8 @@ def saveMovie(filename,format,windowname=None):
     pf.canvas.update()
     pf.app.processEvents()
     windowid = windowname
-    cmd = "xvidcap --fps 5 --window %s --file %s" % (windowid,filename)
-    pf.debug(cmd,pf.DEBUG.IMAGE)
+    cmd = "xvidcap --fps 5 --window %s --file %s" % (windowid, filename)
+    pf.debug(cmd, pf.DEBUG.IMAGE)
     P = utils.command(cmd)
     return P.sta
 

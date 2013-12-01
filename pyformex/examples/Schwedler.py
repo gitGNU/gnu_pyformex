@@ -37,8 +37,8 @@ Both are drawn at the same time, juxtaposed by the align function.
 from __future__ import print_function
 _status = 'checked'
 _level = 'normal'
-_topics = ['geometry','domes']
-_techniques = ['color','align','withprop']
+_topics = ['geometry', 'domes']
+_techniques = ['color', 'align', 'withprop']
 
 from gui.draw import *
 
@@ -50,11 +50,11 @@ def schwedler():
     base=50 # slope of the dome at its base (= half angle of the sphere cap)
     top=5   # slope of the dome at its top opening (0 = no opening) 
     a = ny*float(top)/(base-top)
-    e1 = Formex('l:54',[1,3]) # diagonals and meridionals
-    e2 = Formex('l:1',0)      # horizontals
-    f1 = e1.replic2(nx,ny,1,1)
-    f2 = e2.replic2(nx,ny+1,1,1)
-    g = (f1+f2).translate([0,a,1]).spherical(scale=[360./nx,base/(ny+a),rd],colat=True)
+    e1 = Formex('l:54', [1, 3]) # diagonals and meridionals
+    e2 = Formex('l:1', 0)      # horizontals
+    f1 = e1.replic2(nx, ny, 1, 1)
+    f2 = e2.replic2(nx, ny+1, 1, 1)
+    g = (f1+f2).translate([0, a, 1]).spherical(scale=[360./nx, base/(ny+a), rd], colat=True)
     return g
 
 
@@ -62,8 +62,8 @@ def run():
     clear()
     wireframe()
     g = schwedler()
-    h = g.selectProp([0,3]) # only horizontals and meridionals
-    draw(align([g,h],'|0-'))
+    h = g.selectProp([0, 3]) # only horizontals and meridionals
+    draw(align([g, h], '|0-'))
 
 if __name__ == 'draw':
     run()

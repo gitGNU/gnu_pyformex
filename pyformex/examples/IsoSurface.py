@@ -41,7 +41,7 @@ import plugins.imagearray as ia
 
 def loadImage(file,grey=True):
     """Load a grey image into a numpy array"""
-    im = ia.image2numpy(file,order='RGB',indexed=False)
+    im = ia.image2numpy(file, order='RGB', indexed=False)
     if grey:
         # Do type conversion because auto conversion produces float64
         im = im.sum(axis=-1).astype(Float) / 3.
@@ -60,14 +60,14 @@ def run():
     clear()
     smooth()
 
-    options = ["Cancel","Image files","DICOM files","Generated from function"]
-    ans = ask("This IsoSurface example can either reconstruct a surface from a series of 2D images, or it can use data generated from a function. Use which data?",options)
+    options = ["Cancel", "Image files", "DICOM files", "Generated from function"]
+    ans = ask("This IsoSurface example can either reconstruct a surface from a series of 2D images, or it can use data generated from a function. Use which data?", options)
     ans = options.index(ans)
 
     if ans == 0:
         return
 
-    elif ans in [1,2]:
+    elif ans in [1, 2]:
         ## fp = askDirname(byfile=True)
         ## if not fp:
         ##     return
@@ -87,14 +87,14 @@ def run():
             data = loadImages(files)
             scale = ones(3)
         else:
-            data,scale = ia.dicom2numpy(files)
+            data, scale = ia.dicom2numpy(files)
             print("Spacing: %s" % scale)
             # normalize
-            dmin,dmax = data.min(),data.max()
+            dmin, dmax = data.min(), data.max()
             data = (data-dmin).astype(float32)/(dmax-dmin)
 
         # level at which the isosurface is computed
-        res = askItems([('isolevel',0.5)])
+        res = askItems([('isolevel', 0.5)])
         if not res:
             return
         level = res['isolevel']
@@ -104,23 +104,23 @@ def run():
     else:
         # data space: create a grid to visualize
         if ack("Large model (takes some time)?"):
-            nx,ny,nz = 100,150,200 # for time testing
+            nx, ny, nz = 100, 150, 200 # for time testing
         else:
-            nx,ny,nz = 6,8,10
-        F = elements.Hex8.toFormex().rep([nz,ny,nx]).setProp(1)
+            nx, ny, nz = 6, 8, 10
+        F = elements.Hex8.toFormex().rep([nz, ny, nx]).setProp(1)
         #draw(F,mode='wireframe')
 
         # function to generate data: the distance from the origin
-        dist = lambda x,y,z: sqrt(x*x+y*y+z*z)
-        data = fromfunction(dist,(nz+1,ny+1,nx+1))
+        dist = lambda x, y, z: sqrt(x*x+y*y+z*z)
+        data = fromfunction(dist, (nz+1, ny+1, nx+1))
         scale = ones(3)
 
         # level at which the isosurface is computed
         level = 0.5*data.max()
 
-    print("IMAGE DATA: %s, %s" % (data.shape,data.dtype))
+    print("IMAGE DATA: %s, %s" % (data.shape, data.dtype))
     print("Pixel Spacing: %s" % str(scale))
-    print("levels: min = %s, max = %s" % (data.min(),data.max()))
+    print("levels: min = %s, max = %s" % (data.min(), data.max()))
     print("isolevel: %s" % level)
 
     fast = True
@@ -129,9 +129,9 @@ def run():
     from timer import Timer
     pf.GUI.setBusy()
     timer = Timer()
-    tri = sf.isosurface(data,level,nproc=4)
+    tri = sf.isosurface(data, level, nproc=4)
     sec = timer.seconds()
-    print("Got %s triangles in %s seconds" % (len(tri),sec))
+    print("Got %s triangles in %s seconds" % (len(tri), sec))
     if len(tri) > 0:
         S = TriSurface(tri).scale(scale[::-1])
         draw(S)

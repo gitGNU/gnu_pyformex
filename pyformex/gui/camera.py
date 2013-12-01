@@ -122,14 +122,14 @@ class Camera(object):
     #    and afterwards back to ModelView should be performed.
 
 
-    def __init__(self,center=[0.,0.,0.], long=0., lat=0., twist=0., dist=1.):
+    def __init__(self,center=[0., 0., 0.], long=0., lat=0., twist=0., dist=1.):
         """Create a new camera at position (0,0,0) looking along the -z axis"""
         self.locked = False
         self.focus = center
         self.dist = dist
-        self.setRotation(long,lat,twist)
-        self.setLens(45.,4./3.)
-        self.setClip(0.1,10.)
+        self.setRotation(long, lat, twist)
+        self.setLens(45., 4./3.)
+        self.setClip(0.1, 10.)
         self.area = None
         self.resetArea()
         self.keep_aspect = True
@@ -145,7 +145,7 @@ class Camera(object):
         return self._focus
 
     @focus.setter
-    def focus(self,vector):
+    def focus(self, vector):
         """Set the camera reference point (the focus point).
 
         The focus is the point the camer is looking at. It is a point on
@@ -155,7 +155,7 @@ class Camera(object):
 
         """
         if not self.locked:
-            self._focus = at.checkArray(vector,(3,),'f')
+            self._focus = at.checkArray(vector, (3,), 'f')
             self.viewChanged = True
 
 
@@ -165,7 +165,7 @@ class Camera(object):
         return self._dist
 
     @dist.setter
-    def dist(self,dist):
+    def dist(self, dist):
         """Set the camera distance."""
         if not self.locked:
             if dist > 0.0 and dist != inf:
@@ -181,7 +181,7 @@ class Camera(object):
     @property
     def eye(self):
         """Return the absolute position of the camera."""
-        return self.toWorld([0.,0.,0.])
+        return self.toWorld([0., 0., 0.])
 
 
     @property
@@ -191,7 +191,7 @@ class Camera(object):
 
 
     def upVector(self):
-        return self.rot[:3,1].reshape(3)
+        return self.rot[:3, 1].reshape(3)
 
 
     def lock(self,onoff=True):
@@ -205,7 +205,7 @@ class Camera(object):
         self.locked = bool(onoff)
 
 
-    def setAngles(self,angles):
+    def setAngles(self, angles):
         """Set the rotation angles.
 
         angles is either:
@@ -247,10 +247,10 @@ class Camera(object):
   Aspect Ratio: %s
   Area: %s, %s
   Near/Far Clip: %s, %s
-""" % (self.focus,self.eye,self.dist,self.rot,self.upVector(),self.fovy,self.aspect,self.area[0],self.area[1],self.near,self.far)
+""" % (self.focus, self.eye, self.dist, self.rot, self.upVector(), self.fovy, self.aspect, self.area[0], self.area[1], self.near, self.far)
 
 
-    def dolly(self,val):
+    def dolly(self, val):
         """Move the camera eye towards/away from the scene center.
 
         This has the effect of zooming. A value > 1 zooms out,
@@ -299,14 +299,14 @@ class Camera(object):
     ##         self.viewChanged = True
 
 
-    def move(self,dx,dy,dz):
+    def move(self, dx, dy, dz):
         """Move the camera over translation (dx,dy,dz) in global coordinates.
 
         The center of the camera is moved over the specified translation
         vector. This has the effect of moving the scene in opposite direction.
         """
         if not self.locked:
-            self.focus += [dx,dy,dz]
+            self.focus += [dx, dy, dz]
 
 
 ##    def truck(self,dx,dy,dz):
@@ -328,25 +328,25 @@ class Camera(object):
 ##        self.viewChanged = True
 
 
-    def lookAt(self,eye,center,up):
+    def lookAt(self, eye, center, up):
         if not self.locked:
             GL.glMatrixMode(GL.GL_MODELVIEW)
             GL.glLoadIdentity()
-            GLU.gluLookAt(*concatenate([eye,center,up]))
+            GLU.gluLookAt(*concatenate([eye, center, up]))
             self.saveModelView()
 
 
-    def rotate(self,val,vx,vy,vz):
+    def rotate(self, val, vx, vy, vz):
         """Rotate the camera around current axis (vx,vy,vz)."""
         if not self.locked:
             GL.glMatrixMode(GL.GL_MODELVIEW)
             self.saveModelView()
             GL.glLoadIdentity()
-            GL.glTranslatef(0,0,-self.dist)
-            GL.glRotatef(val,vx,vy,vz)
+            GL.glTranslatef(0, 0, -self.dist)
+            GL.glRotatef(val, vx, vy, vz)
             GL.glMultMatrixf(self.rot)
-            dx,dy,dz = self.focus
-            GL.glTranslatef(-dx,-dy,-dz)
+            dx, dy, dz = self.focus
+            GL.glTranslatef(-dx, -dy, -dz)
             self.saveModelView()
 
 
@@ -355,9 +355,9 @@ class Camera(object):
         if not self.locked:
             self.m = GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX)
             self.rot = copy.deepcopy(self.m)
-            self.trl = copy.deepcopy(self.rot[3,0:3])
+            self.trl = copy.deepcopy(self.rot[3, 0:3])
             #print("Translation: %s" % self.trl)
-            self.rot[3,0:3] = [0.,0.,0.]
+            self.rot[3, 0:3] = [0., 0., 0.]
             #print "Rotation: %s" % self.rot
 
 
@@ -371,12 +371,12 @@ class Camera(object):
             GL.glMatrixMode(GL.GL_MODELVIEW)
             GL.glLoadIdentity()
             # translate over camera distance
-            GL.glTranslate(0,0,-self.dist)
+            GL.glTranslate(0, 0, -self.dist)
             # rotate according to current rotation matrix
             GL.glMultMatrixf(self.rot)
             # translate to center
-            dx,dy,dz = self.focus
-            GL.glTranslatef(-dx,-dy,-dz)
+            dx, dy, dz = self.focus
+            GL.glTranslatef(-dx, -dy, -dz)
 
 
     def loadModelView (self,m=None):
@@ -421,22 +421,22 @@ class Camera(object):
     def loadCurrentRotation (self):
         """Load the current ModelView matrix with translations canceled out."""
         rot = GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX)
-        rot[3,0:3] = [0.,0.,0.]
+        rot[3, 0:3] = [0., 0., 0.]
         GL.glLoadMatrixf(rot)
 
 
     def translate(self,vx,vy,vz,local=True):
         if not self.locked:
             if local:
-                vx,vy,vz = self.toWorld([vx,vy,vz,1])
-            self.move(-vx,-vy,-vz)
+                vx, vy, vz = self.toWorld([vx, vy, vz, 1])
+            self.move(-vx, -vy, -vz)
 
 
-    def transform(self,v):
+    def transform(self, v):
         """Transform a vertex using the currently saved Modelview matrix."""
         if len(v) == 3:
             v = v + [ 1. ]
-        v = multiply([v],self.m)[0]
+        v = multiply([v], self.m)[0]
         return [ a/v[3] for a in v[0:3] ]
 
 
@@ -453,15 +453,15 @@ class Camera(object):
     ##     return v[0:3] / v[3]
 
     # TO MATRIX4?
-    def toWorld(self,v):
+    def toWorld(self, v):
         """Transform a vertex from camera to world coordinates.
 
         This multiplies
         The specified vector can have 3 or 4 (homogoneous) components.
         This uses the currently saved rotation matrix.
         """
-        v = at.checkArray(v,(3,),'f') + [0.,0.,self.dist]
-        return dot(v,transpose(self.rot[:3,:3])) + self.focus
+        v = at.checkArray(v, (3,), 'f') + [0., 0., self.dist]
+        return dot(v, transpose(self.rot[:3, :3])) + self.focus
 
 
     def setLens(self,fovy=None,aspect=None):
@@ -472,7 +472,7 @@ class Camera(object):
         A parameter that is not specified is left unchanged.
         """
         if fovy:
-            self.fovy = min(abs(fovy),180)
+            self.fovy = min(abs(fovy), 180)
         if aspect:
             self.aspect = abs(aspect)
         self.lensChanged = True
@@ -484,16 +484,16 @@ class Camera(object):
         Resets the camera window area to its maximum values corresponding
         to the fovy setting, symmetrical about the camera axes.
         """
-        self.setArea(0.,0.,1.,1.,False)
+        self.setArea(0., 0., 1., 1., False)
 
 
     def setArea(self,hmin,vmin,hmax,vmax,relative=True,center=False,clip=True):
         """Set the viewable area of the camera."""
-        area = array([hmin,vmin,hmax,vmax])
+        area = array([hmin, vmin, hmax, vmax])
         if clip:
-            area = area.clip(0.,1.)
+            area = area.clip(0., 1.)
         if area[0] < area[2] and area[1] < area[3]:
-            area = area.reshape(2,2)
+            area = area.reshape(2, 2)
             mean = (area[1]+area[0]) * 0.5
             diff = (area[1]-area[0]) * 0.5
 
@@ -541,7 +541,7 @@ class Camera(object):
             self.lensChanged = True
 
 
-    def transArea(self,dx,dy):
+    def transArea(self, dx, dy):
         """Pan by moving the vamera area.
 
         dx and dy are relative movements in fractions of the
@@ -549,17 +549,17 @@ class Camera(object):
         """
         #print("TRANSAREA %s,%s" % (dx,dy))
         area = self.area
-        diff = (area[1]-area[0]) * array([dx,dy])
+        diff = (area[1]-area[0]) * array([dx, dy])
         area += diff
         self.area = area
         self.lensChanged = True
 
 
 
-    def setClip(self,near,far):
+    def setClip(self, near, far):
         """Set the near and far clipping planes"""
         if near > 0 and near < far:
-            self.near,self.far = near,far
+            self.near, self.far = near, far
             self.lensChanged = True
         else:
             print("Error: Invalid Near/Far clipping values")
@@ -618,8 +618,8 @@ class Camera(object):
             else:
                 fv *= self.dist
             fh = fv * self.aspect
-            x0,x1 = 2*self.area - 1.0
-            frustum = (fh*x0[0],fh*x1[0],fv*x0[1],fv*x1[1],self.near,self.far)
+            x0, x1 = 2*self.area - 1.0
+            frustum = (fh*x0[0], fh*x1[0], fv*x0[1], fv*x1[1], self.near, self.far)
             if self.perspective:
                 GL.glFrustum(*frustum)
             else:
@@ -644,16 +644,16 @@ class Camera(object):
         self.v = GL.glGetIntegerv(GL.GL_VIEWPORT)
 
 
-    def project(self,x,y,z):
+    def project(self, x, y, z):
         "Map the object coordinates (x,y,z) to window coordinates."""
         self.set3DMatrices()
-        return GLU.gluProject(x,y,z,self.m.astype(double),self.p,self.v)
+        return GLU.gluProject(x, y, z, self.m.astype(double), self.p, self.v)
 
 
-    def unProject(self,x,y,z):
+    def unProject(self, x, y, z):
         "Map the window coordinates (x,y,z) to object coordinates."""
         self.set3DMatrices()
-        return GLU.gluUnProject(x,y,z,self.m.astype(double),self.p,self.v)
+        return GLU.gluUnProject(x, y, z, self.m.astype(double), self.p, self.v)
 
 
     def setTracking(self,onoff=True):
@@ -705,13 +705,13 @@ if __name__ == "__main__":
         elif key == 'R':
             cam.rotate(-5.)
         elif key == 's':
-            cam.rotate(5.,1)
+            cam.rotate(5., 1)
         elif key == 'S':
-            cam.rotate(-5.,1)
+            cam.rotate(-5., 1)
         elif key == 'w':
-            cam.rotate(5.,2)
+            cam.rotate(5., 2)
         elif key == 'W':
-            cam.rotate(-5.,2)
+            cam.rotate(-5., 2)
         elif key == 'p':
             cam.pan(5.)
         elif key == 'P':
@@ -721,13 +721,13 @@ if __name__ == "__main__":
         elif key == 'T':
             cam.tilt(-5.)
         elif key == 'h':
-            cam.move(0.2,0.,0.)
+            cam.move(0.2, 0., 0.)
         elif key == 'H':
-            cam.move(-0.2,0.,0.)
+            cam.move(-0.2, 0., 0.)
         elif key == 'v':
-            cam.move(0.,0.2,0.)
+            cam.move(0., 0.2, 0.)
         elif key == 'V':
-            cam.move(0.,-0.2,0.)
+            cam.move(0., -0.2, 0.)
         elif key == '+':
             cam.zoom(0.8)
         elif key == '-':
@@ -760,8 +760,8 @@ if __name__ == "__main__":
         glutCreateWindow (sys.argv[0])
         init ()
 
-        cam = Camera(center=[0.,0.,0.],dist=5.)
-        cam.setLens(45.,1.)
+        cam = Camera(center=[0., 0., 0.], dist=5.)
+        cam.setLens(45., 1.)
 
         glutDisplayFunc(display)
         glutReshapeFunc(reshape)

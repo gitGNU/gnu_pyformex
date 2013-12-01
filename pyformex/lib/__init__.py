@@ -36,8 +36,8 @@ accelerated = []
 
 
 def checkVersion(lib):
-    pf.debug("Succesfully loaded the pyFormex compiled library %s" % lib.__name__,pf.DEBUG.LIB)
-    pf.debug("  Library version is %s" % lib.__version__,pf.DEBUG.LIB)
+    pf.debug("Succesfully loaded the pyFormex compiled library %s" % lib.__name__, pf.DEBUG.LIB)
+    pf.debug("  Library version is %s" % lib.__version__, pf.DEBUG.LIB)
     if not lib.__version__ == pf.__version__:
         raise RuntimeError("Incorrect acceleration library version (have %s, required %s)\nIf you are running pyFormex directly from sources, this might mean you have to run 'make lib' in the top directory of your pyFormex source tree.\nElse, this probably means pyFormex was not correctly installed.")
     accelerated.append(lib)
@@ -56,13 +56,13 @@ if accelerate:
         import misc_ as misc
         checkVersion(misc)
     except ImportError:
-        pf.debug("Error while loading the pyFormex compiled misc library",pf.DEBUG.LIB)
+        pf.debug("Error while loading the pyFormex compiled misc library", pf.DEBUG.LIB)
 
     try:
         import nurbs_ as nurbs
         checkVersion(nurbs)
     except ImportError:
-        pf.debug("Error while loading the pyFormex compiled nurbs library",pf.DEBUG.LIB)
+        pf.debug("Error while loading the pyFormex compiled nurbs library", pf.DEBUG.LIB)
 
     if gui:
         # !! We need to import GL before drawgl, to define the GL calls !
@@ -71,21 +71,21 @@ if accelerate:
             import drawgl_ as drawgl
             checkVersion(drawgl)
         except ImportError:
-            pf.debug("Error while loading the pyFormex compiled drawgl library",pf.DEBUG.LIB)
+            pf.debug("Error while loading the pyFormex compiled drawgl library", pf.DEBUG.LIB)
 
 if misc is None:
-    pf.debug("Using the (slower) Python misc functions",pf.DEBUG.LIB)
+    pf.debug("Using the (slower) Python misc functions", pf.DEBUG.LIB)
     import misc
 
 if nurbs is None:
-    pf.debug("Using the (slower) Python nurbs functions",pf.DEBUG.LIB)
+    pf.debug("Using the (slower) Python nurbs functions", pf.DEBUG.LIB)
     import nurbs
 
 if gui and drawgl is None:
-    pf.debug("Using the (slower) Python draw functions",pf.DEBUG.LIB)
+    pf.debug("Using the (slower) Python draw functions", pf.DEBUG.LIB)
     import drawgl
 
 
-pf.debug("Accelerated: %s" % accelerated,pf.DEBUG.LIB|pf.DEBUG.INFO)
+pf.debug("Accelerated: %s" % accelerated, pf.DEBUG.LIB|pf.DEBUG.INFO)
 
 # End

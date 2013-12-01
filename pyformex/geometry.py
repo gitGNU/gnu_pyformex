@@ -29,7 +29,7 @@ Coords class to the derived classes.
 """
 from __future__ import print_function
 
-from coords import Coords,Int
+from coords import Coords, Int
 import numpy as np
 from arraytools import complement
 
@@ -144,7 +144,7 @@ class Geometry(object):
 
         This is a decorator function.
         """
-        coords_func = getattr(Coords,func.__name__)
+        coords_func = getattr(Coords, func.__name__)
         def newf(self,*args,**kargs):
             """Performs the Coords %s transformation on the coords attribute"""
             return self._set_coords(coords_func(self.coords,*args,**kargs))
@@ -152,22 +152,22 @@ class Geometry(object):
         newf.__doc__ ="""Apply '%s' transformation to the Geometry object.
 
         See :meth:`coords.Coords.%s` for details.
-""" % (func.__name__,func.__name__)
+""" % (func.__name__, func.__name__)
         return newf
 
 
-    def _set_coords_inplace(self,coords):
+    def _set_coords_inplace(self, coords):
         """Replace the current coords with new ones.
 
         """
-        if isinstance(coords,Coords) and coords.shape == self.coords.shape:
+        if isinstance(coords, Coords) and coords.shape == self.coords.shape:
             self.coords = coords
             return self
         else:
             raise ValueError("Invalid reinitialization of Geometry coords")
 
 
-    def _set_coords_copy(self,coords):
+    def _set_coords_copy(self, coords):
         """Return a copy of the object with new coordinates replacing the old.
 
         """
@@ -225,25 +225,25 @@ class Geometry(object):
                 prop = np.array(prop)
 
             if blocks is not None:
-                if isinstance(blocks,int):
+                if isinstance(blocks, int):
                     blocks = [blocks]
-                blocks = np.resize(blocks,prop.ravel().shape)
-                prop = np.concatenate([np.resize(p,b) for p,b in zip(prop,blocks)]).astype(Int)
+                blocks = np.resize(blocks, prop.ravel().shape)
+                prop = np.concatenate([np.resize(p, b) for p, b in zip(prop, blocks)]).astype(Int)
 
             self.prop = self.toProp(prop)
         return self
 
 
-    def toProp(self,prop):
+    def toProp(self, prop):
         """Converts the argument into a legal set of properties for the object.
 
         The conversion involves resizing the argument to a 1D array of
         length self.nelems(), and converting the data type to integer.
         """
-        return np.resize(prop,(self.nelems(),)).astype(Int)
+        return np.resize(prop, (self.nelems(),)).astype(Int)
 
 
-    def whereProp(self,val):
+    def whereProp(self, val):
         """Return the numbers of the elements with property val.
 
         val is either a single integer, or a list/array of integers.
@@ -254,7 +254,7 @@ class Geometry(object):
         """
         if self.prop is not None and np.array(val).size > 0:
             return np.concatenate([np.where(self.prop==v)[0] for v in np.unique(np.array(val))])
-        return np.array([],dtype=Int)
+        return np.array([], dtype=Int)
 
 
     def select(self,selected,compact=True):
@@ -278,7 +278,7 @@ class Geometry(object):
 
         See :meth:`cselect` for the complementary operation.
         """
-        return self._select(selected,compact=compact)
+        return self._select(selected, compact=compact)
 
 
     def cselect(self,selected,compact=True):
@@ -314,7 +314,7 @@ class Geometry(object):
 
         This is the complimentary operation of :meth:`select`.
         """
-        return self._select(complement(selected,self.nelems()),compact=compact)
+        return self._select(complement(selected, self.nelems()), compact=compact)
 
 
     def selectProp(self,val,compact=True):
@@ -330,7 +330,7 @@ class Geometry(object):
         if self.prop is None:
             return self.copy()
         else:
-            return self._select(self.whereProp(val),compact=compact)
+            return self._select(self.whereProp(val), compact=compact)
 
 
     def cselectProp(self, val,compact=True):
@@ -347,7 +347,7 @@ class Geometry(object):
         if self.prop is None:
             return self.copy()
         else:
-            return self.cselect(self.whereProp(val),compact=compact)
+            return self.cselect(self.whereProp(val), compact=compact)
 
 
     ########### Return information about the coords #################
@@ -401,14 +401,14 @@ class Geometry(object):
         """
         from plugins.trisurface import TriSurface
         X = self.coords
-        hull = TriSurface(X,X.convexHull())
+        hull = TriSurface(X, X.convexHull())
         if compact:
             hull = hull.compact()
         return hull
 
 
     def info(self):
-        return "Geometry: coords shape = %s; level = %s" % (self.coords.shape,self.level())
+        return "Geometry: coords shape = %s; level = %s" % (self.coords.shape, self.level())
     def level(self):
         """Return the dimensionality of the Geometry, or -1 if unknown"""
         return -1
@@ -486,7 +486,7 @@ class Geometry(object):
         """
         from numpy import resize
         s = self.sizes()
-        size = Coords(resize(size,(3,)))
+        size = Coords(resize(size, (3,)))
         ignore = s<tol*s.max()
         s[ignore] = size[ignore]
         return self.scale(size/s)
@@ -605,7 +605,7 @@ class Geometry(object):
         If fil is a string, the file is closed prior to returning.
         """
         from geomfile import GeometryFile
-        f = GeometryFile(fil,mode='w',sep=sep)
+        f = GeometryFile(fil, mode='w', sep=sep)
         f.write(self)
         if f.isname and mode[0]=='w':
             f.close()
@@ -627,10 +627,10 @@ if __name__ == "draw":
     G.coords = F.coords
     G.draw(color='red')
 
-    G1 = G.scale(2).trl([0.2,0.7,0.])
+    G1 = G.scale(2).trl([0.2, 0.7, 0.])
     G1.draw(color='green')
 
-    G2 = G.translate([0.5,0.5,0.5])
+    G2 = G.translate([0.5, 0.5, 0.5])
     G2.draw(color='blue')
 
     print(Geometry.scale.__doc__)

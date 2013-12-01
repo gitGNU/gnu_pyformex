@@ -28,7 +28,7 @@ from __future__ import print_function
 _status = 'unchecked'
 _level = 'advanced'
 _topics = ['FEA']
-_techniques = ['color','persistence'] 
+_techniques = ['color', 'persistence'] 
 
 from gui.draw import *
 from examples.X_truss import X_truss
@@ -60,11 +60,11 @@ def run():
     n = 5
     l = 800.
     h = 800.
-    truss = X_truss(n,l,h)
+    truss = X_truss(n, l, h)
 
     # draw it
     clear()
-    draw(truss.allNodes(),wait=False)
+    draw(truss.allNodes(), wait=False)
     draw(truss.allBars())
 
     # assign property numbers
@@ -86,22 +86,22 @@ def run():
 
     def getmat(key):
         """Return the 'truss material' with key (str or int)."""
-        p = properties.get(str(key),[None,None])
-        m = materials.get(p[0],{})
-        E = m.get('E',0.)
-        rho = m.get('rho',0.)
-        A = sections.get(p[1],0.)
+        p = properties.get(str(key), [None, None])
+        m = materials.get(p[0], {})
+        E = m.get('E', 0.)
+        rho = m.get('rho', 0.)
+        A = sections.get(p[1], 0.)
         return [ E, rho, A ]
 
 
     # create model for structural analysis
     model = truss.allBars()
-    coords,elems = model.fuse()
+    coords, elems = model.fuse()
     props = model.prop
     propset = model.propSet()
 
     clear()
-    draw(Formex(reshape(coords,(coords.shape[0],1,coords.shape[1]))),wait=False)
+    draw(Formex(reshape(coords, (coords.shape[0], 1, coords.shape[1]))), wait=False)
     draw(model)
 
 
@@ -116,28 +116,28 @@ def run():
     nr_fixed_support = elems[0][0]
     nr_moving_support = elems[n-1][1]
     nr_loaded = elems[2][1] # right node of the 3-d element
-    bcon = ReadBoundary(nnod,3,"""
+    bcon = ReadBoundary(nnod, 3, """
       all  0  0  1
       %d   1  1  1
       %d   0  1  1
-    """ % (nr_fixed_support + 1,nr_moving_support + 1))
+    """ % (nr_fixed_support + 1, nr_moving_support + 1))
     NumberEquations(bcon)
     mats=array([ getmat(i) for i in range(max(propset)+1) ])
-    matnod = concatenate([reshape(props+1,(nelems,1)),elems+1],1)
+    matnod = concatenate([reshape(props+1, (nelems, 1)), elems+1], 1)
     ndof=bcon.max()
     nlc=1
-    loads=zeros((ndof,nlc),Float)
-    loads[:,0]=AssembleVector(loads[:,0],[ 0.0, -50.0, 0.0 ],bcon[nr_loaded,:])
+    loads=zeros((ndof, nlc), Float)
+    loads[:, 0]=AssembleVector(loads[:, 0], [ 0.0, -50.0, 0.0 ], bcon[nr_loaded,:])
 
     message("Performing analysis: this may take some time")
     outfilename = os.path.splitext(os.path.basename(pf.scriptName))[0] + '.out'
-    outfile = open(outfilename,'w')
-    message("Output is written to file '%s' in %s" % (outfilename,os.getcwd()))
+    outfile = open(outfilename, 'w')
+    message("Output is written to file '%s' in %s" % (outfilename, os.getcwd()))
     stdout_saved = sys.stdout
     sys.stdout = outfile
     print("# File created by pyFormex on %s" % time.ctime())
     print("# App/script: %s" % __file__)
-    displ,frc = static(coords,bcon,mats,matnod,loads,Echo=True)
+    displ, frc = static(coords, bcon, mats, matnod, loads, Echo=True)
     print("# Analysis finished on %s" % time.ctime())
     sys.stdout = stdout_saved
     outfile.close()
@@ -151,7 +151,7 @@ def run():
     import gui.decors
 
     # Creating a formex for displaying results is fairly easy
-    results = Formex(coords[elems],range(nelems))
+    results = Formex(coords[elems], range(nelems))
     # Now try to give the formex some meaningful colors.
     # The frc array returns element forces and has shape
     #  (nelems,nforcevalues,nloadcases)
@@ -159,34 +159,34 @@ def run():
     # normal force), and only load case; we still need to select the
     # scalar element result values from the array into a onedimensional
     # vector val. 
-    val = frc[:,0,0]
+    val = frc[:, 0, 0]
     # create a colorscale
-    CS = cs.ColorScale([blue,yellow,red],val.min(),val.max(),0.,2.,2.)
-    cval = array(map(CS.color,val))
+    CS = cs.ColorScale([blue, yellow, red], val.min(), val.max(), 0., 2., 2.)
+    cval = array(map(CS.color, val))
     #aprint(cval,header=['Red','Green','Blue'])
     clear()
-    draw(results,color=cval)
+    draw(results, color=cval)
 
     bgcolor('lightgreen')
     linewidth(3)
-    drawText('Normal force in the truss members',400,100,size=12)
-    CL = cs.ColorLegend(CS,256)
-    CLA = decors.ColorLegend(CL,10,10,30,200) 
+    drawText('Normal force in the truss members', 400, 100, size=12)
+    CL = cs.ColorLegend(CS, 256)
+    CLA = decors.ColorLegend(CL, 10, 10, 30, 200) 
     decorate(CLA)
 
     # and a deformed plot
     dscale = 10000.
-    dcoords = coords + dscale * displ[:,:,0]
+    dcoords = coords + dscale * displ[:,:, 0]
     # first load case
-    deformed = Formex(dcoords[elems],range(nelems))
+    deformed = Formex(dcoords[elems], range(nelems))
     clear()
     pf.canvas.addDecoration(CLA)
     linewidth(1)
-    draw(results,color='darkgreen')
+    draw(results, color='darkgreen')
     linewidth(3)
-    draw(deformed,color=cval)
-    drawText('Normal force in the truss members',400,100,size=14)
-    drawText('Deformed geometry (scale %.2f)' % dscale,400,130,size=12)
+    draw(deformed, color=cval)
+    drawText('Normal force in the truss members', 400, 100, size=14)
+    drawText('Deformed geometry (scale %.2f)' % dscale, 400, 130, size=12)
 
     if ack("Show the output file?"):
         showFile(outfilename)

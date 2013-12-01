@@ -49,7 +49,7 @@ def writeHeading(fil, nodes, elems, nbsets=0, heading=''):
     fil.write('PROGRAM:                Gambit     VERSION:  2.4.6\n')
     fil.write(strftime('%d %b %Y    %H:%M:%S\n', gmtime()))
     fil.write('     NUMNP     NELEM     NGRPS    NBSETS     NDFCD     NDFVL\n')
-    fil.write('%10i%10i%10i%10i%10i%10i\n' % (shape(nodes)[0],shape(elems)[0],1,  nbsets  ,3,3))
+    fil.write('%10i%10i%10i%10i%10i%10i\n' % (shape(nodes)[0], shape(elems)[0], 1,  nbsets, 3, 3))
     fil.write('ENDOFSECTION\n')
 
 def writeNodes(fil, nodes):
@@ -57,7 +57,7 @@ def writeNodes(fil, nodes):
 
     """
     fil.write('   NODAL COORDINATES 2.4.6\n')
-    for i,n in enumerate(nodes):
+    for i, n in enumerate(nodes):
         fil.write("%10d%20.11e%20.11e%20.11e\n" % ((i+nofs,)+tuple(n)))
     fil.write('ENDOFSECTION\n')
 
@@ -68,11 +68,11 @@ def writeElems(fil, elems):
     shape = elems.shape[1]
     # Library to define the gambit element type number
     gamb_el_library = {#'line2':1, #Edge
-                        'quad4':2,  #Quadrilateral
-                        'tri3':3,  #Triangle
-                        'hex8':4,  #Brick
-                        'wedge6':5,  # Wedge (Prism)
-                        'tet4':6,  #Tetrahedron
+                        'quad4': 2,  #Quadrilateral
+                        'tri3': 3,  #Triangle
+                        'hex8': 4,  #Brick
+                        'wedge6': 5,  # Wedge (Prism)
+                        'tet4': 6,  #Tetrahedron
                         #'pyr5':7,  #Pyramid
                         }
     try:
@@ -95,8 +95,8 @@ def writeElems(fil, elems):
     els+='\n'
 
     fil.write('      ELEMENTS/CELLS 2.4.6\n')
-    for i,e in enumerate(elems+nofs):
-        fil.write(('%8d %2d %2d '+els) % ((i+eofs,gamb_shape,shape)+tuple(e)))
+    for i, e in enumerate(elems+nofs):
+        fil.write(('%8d %2d %2d '+els) % ((i+eofs, gamb_shape, shape)+tuple(e)))
     fil.write('ENDOFSECTION\n')
 
 
@@ -105,12 +105,12 @@ def writeGroup(fil, elems):
 
     """
     fil.write('       ELEMENT GROUP 2.4.6\n')
-    fil.write('GROUP:%11d ELEMENTS:%11d MATERIAL:%11d NFLAGS:%11d\n' % (1,shape(elems)[0],2,1))
+    fil.write('GROUP:%11d ELEMENTS:%11d MATERIAL:%11d NFLAGS:%11d\n' % (1, shape(elems)[0], 2, 1))
     fil.write('%32s\n' %'fluid')
     fil.write('%8d\n' %0)
     n =  shape(elems)[0]/10
     for i in range(n):
-        fil.write('%8d%8d%8d%8d%8d%8d%8d%8d%8d%8d\n' %(10*i+1,10*i+2,10*i+3,10*i+4,10*i+5,10*i+6,10*i+7,10*i+8,10*i+9,10*i+10))
+        fil.write('%8d%8d%8d%8d%8d%8d%8d%8d%8d%8d\n' %(10*i+1, 10*i+2, 10*i+3, 10*i+4, 10*i+5, 10*i+6, 10*i+7, 10*i+8, 10*i+9, 10*i+10))
     for j in range(shape(elems)[0]-10*n):
         fil.write('%8d' %(10*n+j+1))
     fil.write('\n')
@@ -148,7 +148,7 @@ def writeBCsets(fil, bcsets, elgeotype):
     http://combust.hit.edu.cn:8080/fluent/Gambit13_help/modeling_guide/mg0b.htm#mg0b01
     for the description of the neu file syntax.
     """
-    py2neuHF = asarray([3,1,0,2,4,5])#hex faces numbering conversion (pyformex to gambit neu)
+    py2neuHF = asarray([3, 1, 0, 2, 4, 5])#hex faces numbering conversion (pyformex to gambit neu)
     if bcsets is not None:
         for k in bcsets.keys():
             print ('Writing BC set : %s\n'%k)
@@ -175,7 +175,7 @@ def read_tetgen(filename):
     print("Read %d nodes" % nodes[0].shape[0])
     elems = tetgen.readEleFile(filename+'.1.ele')[0]
     print("Read %d tetraeders" % elems.shape[0])
-    return nodes,elems
+    return nodes, elems
 
 
 def write_neu(fil, mesh, bcsets=None, heading='generated with pyFormex'):
