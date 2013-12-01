@@ -147,10 +147,10 @@ def setProject(proj):
     the adding without asking.
     """
     pf.message("Setting current project to %s" % proj.filename)
-    pf.message("Project contents: %s" % utils.sortedKeys(proj))
+    pf.message("Project contents: %s" % proj.contents())
     keep = {}
     if pf.PF:
-        pf.message("Current pyFormex globals: %s" % utils.sortedKeys(pf.PF))
+        pf.message("Current pyFormex globals: %s" % pf.PF.contents())
         _delete = "Delete"
         _add = "Keep non existing"
         _overwrite = "Keep all (overwrite project)"
@@ -225,7 +225,7 @@ def importProject():
     """
     proj = openProject(exist=True,access='r')
     if proj: # only if non-empty
-        keys = utils.sortedKeys(proj)
+        keys = proj.contents()
         res = draw.askItems(
             [   _I('mode',choices=['All','Defined','Undefined','Selected','None'],itemtype='radio'),
                 _I('selected',choices=keys,itemtype='list'),
@@ -244,7 +244,7 @@ def importProject():
                 proj = utils.selectDict(proj,res['selected'])
             elif mode == 'N':
                 return
-            pf.message("Importing symbols: %s" % utils.sortedKeys(proj))
+            pf.message("Importing symbols: %s" % proj.contents())
             pf.PF.update(proj)
             listProject()
 
@@ -276,7 +276,7 @@ def saveProject():
     This function does nothing if the current project is a temporary one.
     """
     if pf.PF.filename is not None:
-        pf.message("Saving Project contents: %s" % utils.sortedKeys(pf.PF))
+        pf.message("Saving Project contents: %s" % pf.PF.contents())
         pf.GUI.setBusy()
         pf.PF.save()
         pf.GUI.setBusy(False)
@@ -299,7 +299,7 @@ def saveAsProject():
 
 def listProject():
     """Print all global variable names."""
-    pf.message("pyFormex globals: %s" % utils.sortedKeys(pf.PF))
+    pf.message("pyFormex globals: %s" % pf.PF.contents())
 
 def clearProject():
     """Clear the contents of the current project."""
