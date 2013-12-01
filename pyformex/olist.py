@@ -73,7 +73,7 @@ def flatten(a,recurse=False):
     """
     r = []
     for i in a:
-        if type(i) == list:
+        if isinstance(i, list):
             if recurse:
                 r.extend(flatten(i,True))
             else:

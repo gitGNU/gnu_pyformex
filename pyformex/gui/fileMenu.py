@@ -65,7 +65,7 @@ def openProject(fn=None,exist=False,access=['wr','rw','w','r'],default=None):
     - `default`: the access mode that is presented as default to the user.
       If not specified, the first option of `access` will be the default.
     """
-    if type(access) == str:
+    if isinstance(access, str):
         access = [access]
     cur = fn if fn else '.'
     typ = utils.fileDescription(['pyf','all'])

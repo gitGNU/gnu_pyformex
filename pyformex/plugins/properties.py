@@ -105,9 +105,9 @@ class MaterialDB(Database):
         Database.__init__(self,{})
         if data == '':
             data = pf.cfg.get('prop/matdb',{})
-        if type(data) == str:
+        if isinstance(data, str):
             self.readDatabase(data,['name'],beginrec='material',endrec='endmaterial')
-        elif type(data) == dict:
+        elif isinstance(data, dict):
             self.update(data)
         else:
             raise ValueError("Expected a filename or a dict.")
@@ -127,9 +127,9 @@ class SectionDB(Database):
         Database.__init__(self,{})
         if data == '':
             data = pf.cfg.get('prop/secdb',{})
-        if type(data) == str:
+        if isinstance(data, str):
             self.readDatabase(data,['name'],beginrec='section',endrec='endsection')
-        elif type(data) == dict:
+        elif isinstance(data, dict):
             self.update(data)
         else:
             raise ValueError("Expected a filename or a dict.")
@@ -549,17 +549,17 @@ class PropertyDB(Dict):
             # allow for backwards compatibility
             pf.utils.warn("warn_properties_setname")
             name = setname
-        if name is None and type(set) is str:
+        if name is None and isinstance(set, str):
             ### convenience to allow set='name' as alias for name='name'
             ### to reuse already defined set
             name,set = set,name
         if name is None:
             name = self.autoName(kind,d.nr)
-        elif type(name) is not str:
+        elif not isinstance(name, str):
             raise ValueError("Property name should be a string")
         d.name = name
         if set is not None:
-            if type(set) is int or type(set) is str:
+            if isinstance(set, int) or isinstance(set, str):
                 set = [ set ]
             d.set = unique(set)
 
@@ -587,12 +587,12 @@ class PropertyDB(Dict):
         """
         prop = getattr(self,kind+'prop')
         if rec is not None:
-            if type(rec) != list:
+            if not isinstance(rec, list):
                 rec = [ rec ]
             rec = [ i for i in rec if i < len(prop) ]
             prop = [ prop[i] for i in rec ]
         if tag is not None:
-            if type(tag) != list:
+            if not isinstance(tag, list):
                 tag = [ tag ]
             tag = map(str,tag)   # tags are always converted to strings!
             prop = [ p for p in prop if 'tag' in p and p['tag'] in tag ]
@@ -613,7 +613,7 @@ class PropertyDB(Dict):
         The kind parameter can specify a specific property database.
         """
         prop = getattr(self,kind+'prop')
-        if not type(plist) == list:
+        if not isinstance(plist, list):
             pdel = [ plist ]
         for p in plist:
             RemoveListItem(prop,p)
@@ -667,10 +667,10 @@ class PropertyDB(Dict):
             if accel is not None:
                 d['accel'] = checkArrayOrIdValue(accel)
             if bound is not None:
-                if type(bound) == str:
+                if isinstance(bound, str):
                     d['bound'] = checkString(bound,self.bound_strings)
-                elif type(bound) == list:
-                    if type(bound[0]) != tuple:
+                elif isinstance(bound, list):
+                    if not isinstance(bound[0], tuple):
                         d['bound'] = checkArray1D(bound,kind='i',size=6)
                     else:
                         d['bound'] = bound # unchecked

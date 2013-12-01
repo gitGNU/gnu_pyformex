@@ -794,7 +794,7 @@ def fmtGeneralContact(prop):
     """
     out = ''
     for p in prop:
-        if type(p.generalinteraction) is str:
+        if isinstance(p.generalinteraction, str):
             intername = p.generalinteraction
         else:
             intername = p.generalinteraction.name
@@ -829,7 +829,7 @@ def fmtContactPair(prop):
     """
     out = ''
     for p in prop:
-        if type(p.interaction) is str:
+        if isinstance(p.interaction, str):
             intername = p.interaction
         else:
             intername = p.interaction.name
@@ -1206,7 +1206,7 @@ def writeSection(fil,prop):
         if el.sectiontype.upper() == 'RIGID':
             # refnode can be setname or number
             # do not test for int type, because it might be np.intx
-            if not type(el.refnode) is str:
+            if not isinstance(el.refnode, str):
                 el.refnode += 1
             out = "*RIGID BODY, ELSET=%s, REFNODE=%s" % (setname,el.refnode)
             if el.density is not None:
@@ -1423,7 +1423,7 @@ def writeNodeOutput(fil,kind,keys,set='Nall'):
       be written
     """
     output = 'OUTPUT'
-    if type(set) == str or isInt(set):
+    if isinstance(set, str) or isInt(set):
         set = [ set ]
     for i in set:
         if isInt(i):
@@ -1462,7 +1462,7 @@ def writeNodeResult(fil,kind,keys,set='Nall',output='FILE',freq=1,
     'Remark that the `kind` argument is not used, but is included so that we can
     easily call it with a `Results` dict as arguments.'
     """
-    if type(set) == str or isInt(set):
+    if isinstance(set, str) or isInt(set):
         set = [ set ]
     for i in set:
         if isInt(i):
@@ -1496,7 +1496,7 @@ def writeElemOutput(fil,kind,keys,set='Eall'):
     """
     output = 'OUTPUT'
 
-    if type(set) == str or isInt(set):
+    if isinstance(set, str) or isInt(set):
         set = [ set ]
     for i in set:
         if isInt(i):
@@ -1542,7 +1542,7 @@ def writeElemResult(fil,kind,keys,set='Eall',output='FILE',freq=1,
     Remark: the ``kind`` argument is not used, but is included so that we can
     easily call it with a Results dict as arguments
     """
-    if type(set) == str or isInt(set):
+    if isinstance(set, str) or isInt(set):
         set = [ set ]
     for i in set:
         if isInt(i):
@@ -1741,7 +1741,7 @@ class Step(Dict):
         self.name = name
         if not self.analysis in Step.analysis_types:
             raise ValueError('analysis should be one of %s' % analysis_types)
-        if type(time) == float:
+        if isinstance(time, float):
             time = [ 0., time, 0., 0. ]
         self.time = time
 

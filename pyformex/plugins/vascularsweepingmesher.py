@@ -60,13 +60,13 @@ from __future__ import print_function
     If isopHex is specified, a convenient set of control points for the isoparametric transformation hex64 is also returned.
     TODO: include other optons to get the control points for other isoparametric transformation for hex."""
     sgx, sgy, sgz=dx, dy, dz
-    if type(dx)!=int:sgx=len(dx)-1
-    if type(dy)!=int:sgy=len(dy)-1
-    if type(dz)!=int:sgz=len(dz)-1
+    if not isinstance(dx, int):sgx=len(dx)-1
+    if not isinstance(dy, int):sgy=len(dy)-1
+    if not isinstance(dz, int):sgz=len(dz)-1
     n3=regularGrid([0., 0., 0.],[1., 1., 1.],[sgx, sgy, sgz])
-    if type(dx)!=int:n3[..., 0]=array(dx).reshape(-1, 1, 1)
-    if type(dy)!=int:n3[..., 1]=array(dy).reshape(-1,  1)
-    if type(dz)!=int:n3[..., 2]=array(dz).reshape(-1)
+    if not isinstance(dx, int):n3[..., 0]=array(dx).reshape(-1, 1, 1)
+    if not isinstance(dy, int):n3[..., 1]=array(dy).reshape(-1,  1)
+    if not isinstance(dz, int):n3[..., 2]=array(dz).reshape(-1)
     nyz=(sgy+1)*(sgz+1)
     xh0= array([0, nyz, nyz+sgz+1,0+sgz+1 ])
     xh0= concatenate([xh0, xh0+1], axis=1)#first cell

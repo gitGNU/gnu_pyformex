@@ -213,7 +213,7 @@ def importGeometry(select=True,draw=True,ftype=None):
     """
     if ftype is None:
         ftype = ['pgf','pyf','surface','off','stl','gts','smesh','neu','inp','all']
-    elif type(ftype) is list:
+    elif isinstance(ftype, list):
         pass
     else:
         ftype = [ftype]
@@ -267,7 +267,7 @@ def importModel(fn=None):
         fn = askFilename(".","*.mesh",multi=True)
         if not fn:
             return
-    if type(fn) == str:
+    if isinstance(fn, str):
         fn = [fn]
 
     pf.GUI.setBusy(True)

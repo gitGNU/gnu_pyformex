@@ -463,9 +463,9 @@ def flatten(objects,recurse=True):
     """
     r = []
     for i in objects:
-        if type(i) == str:
+        if isinstance(i, str):
             i = named(i)
-        if type(i) == list:
+        if isinstance(i, list):
             if recurse:
                 r.extend(flatten(i,True))
             else:
@@ -729,7 +729,7 @@ def draw(F,
         for F in FL:
 
             # Treat special case colors
-            if type(color) is str:
+            if isinstance(color, str):
                 if color == 'prop':
                     try:
                         Fcolor = F.prop
@@ -784,7 +784,7 @@ def draw(F,
     finally:
         pf.GUI.setBusy(False)
 
-    if type(F) is list or len(actors) != 1:
+    if isinstance(F, list) or len(actors) != 1:
         return actors
     else:
         return actors[0]

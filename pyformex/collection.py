@@ -41,6 +41,29 @@ class Collection(object):
     as an integer array with unique values.
     This is e.g. used to identify a set of individual parts of one or more
     OpenGL actors.
+
+    Examples:
+
+    >>> a = Collection()
+    >>> a.add(range(7),3)
+    >>> a.add(range(4))
+    >>> a.remove([2,4],3)
+    >>> print(a)
+    -1 [0 1 2 3]; 3 [0 1 3 5 6];
+    >>> a.add([[2,0],[2,3],[-1,7],[3,88]])
+    >>> print(a)
+    -1 [0 1 2 3 7]; 2 [0 3]; 3 [ 0  1  3  5  6 88];
+    >>> a[2] = [1,2,3]
+    >>> print(a)
+    -1 [0 1 2 3 7]; 2 [1 2 3]; 3 [ 0  1  3  5  6 88];
+    >>> a[2] = []
+    >>> print(a)
+    -1 [0 1 2 3 7]; 3 [ 0  1  3  5  6 88];
+    >>> a.set([[2,0],[2,3],[-1,7],[3,88]])
+    >>> print(a)
+    -1 [7]; 2 [0 3]; 3 [88];
+    >>> print(a.keys())
+    [-1  2  3]
     """
     def __init__(self,object_type=None):
         self.d = {}
@@ -164,9 +187,8 @@ class Collection(object):
 
     def keys(self):
         """Return a sorted array with the keys"""
-        k = asarray(self.d.keys())
-        k.sort()
-        return k
+        keys = sorted(self.d.keys())
+        return asarray(keys)
 
 
     def items(self):
@@ -176,30 +198,9 @@ class Collection(object):
 
     def __str__(self):
         s = ''
-        keys = self.d.keys()
-        keys.sort()
-        for k in keys:
+        for k in self.keys():
             s += "%s %s; " % (k,self.d[k])
-        return s
-
-
-################# Testing ###############
-
-if __name__ == "__main__":
-    print("Testing the Collection object")
-    a = Collection()
-    a.add(range(7),3)
-    a.add(range(4))
-    a.remove([2,4],3)
-    print(a)
-    a.add([[2,0],[2,3],[-1,7],[3,88]])
-    print(a)
-    a[2] = [1,2,3]
-    print(a)
-    a[2] = []
-    print(a)
-    a.set([[2,0],[2,3],[-1,7],[3,88]])
-    print(a)
+        return s.rstrip()
 
 
 # End

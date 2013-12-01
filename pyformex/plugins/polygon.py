@@ -230,8 +230,7 @@ if __name__ == 'draw':
 
     def randomPL(n=5,r=0.7,noise=0.0):
         x = randomNoise((n),r*3.,3.)
-        y = randomNoise((n),0.,360.)
-        y.sort()    # sort
+        y = sorted(randomNoise((n),0.,360.))
         #y = y[::-1] # reverse
         z = zeros(n)
         X = Coords(column_stack([x,y,z])).cylindrical().addNoise(noise)

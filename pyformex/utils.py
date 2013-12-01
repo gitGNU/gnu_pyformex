@@ -140,14 +140,14 @@ class Process(subprocess.Popen):
         self.cmd = cmd
 
         shell = kargs.get('shell',False)
-        if type(cmd) is str and shell is False:
+        if isinstance(cmd, str) and shell is False:
             # Tokenize the command line
             cmd = shlex.split(cmd)
 
         for f in [ 'stdin', 'stdout', 'stderr' ]:
             if f not in kargs or kargs[f] is None:
                 kargs[f] = subprocess.PIPE
-            elif f in kargs and type(kargs[f]) is str:
+            elif f in kargs and isinstance(kargs[f], str):
                 if f.endswith('in'):
                     mode = 'r'
                 else:
@@ -330,11 +330,11 @@ def lastCommandReport():
     s += "%8s: %s\n" % ('status',P.sta)
     for p in [ 'stdin', 'stdout', 'stderr' ]:
         a = P.kargs.get(p,None)
-        name = a.name if type(a) is file else ''
+        name = a.name if isinstance(a, file) else ''
         txt = None
         if p[3:] in ['out','err']:
             txt = getattr(P,p[3:])
-            if txt is None and type(a) is file:
+            if txt is None and isinstance(a, file):
                 try:
                     txt = open(a.name,'r').read(2000)
                 except:
@@ -605,7 +605,7 @@ def fileDescription(ftype):
     If the type is unknown, the returned string has the form
     ``TYPE files (*.type)``
     """
-    if type(ftype) is list:
+    if isinstance(ftype, list):
         return map(fileDescription,ftype)
     ftype = ftype.lower()
     return file_description.get(ftype,"%s files (*.%s)" % (ftype.upper(),ftype))

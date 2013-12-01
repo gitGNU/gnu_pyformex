@@ -70,7 +70,7 @@ class Model(Geometry):
             self.coords,self.elems = mergeMeshes(meshes,fuse=fuse)
             self.prop = concatenate([M.prop for M in meshes])
         else:
-            if not type(elems) == list:
+            if not isinstance(elems, list):
                 elems = [ elems ]
             self.coords = Coords(coords)
             self.elems = [ Connectivity(e) for e in elems ]
@@ -222,7 +222,7 @@ class FEModel(Geometry):
     def __init__(self,meshes):
         """Create a new FEModel."""
         
-        if not type(meshes) == list:
+        if not isinstance(meshes, list):
             meshes = [ meshes ]
 
         for m in meshes:

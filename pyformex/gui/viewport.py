@@ -1609,7 +1609,7 @@ Viewport %s;  Current:%s;  Settings:
             ncols = nrows
             rowwise = False
             pos = None
-        elif type(pos) == list and len(pos) == len(self.all):
+        elif isinstance(pos, list) and len(pos) == len(self.all):
             ncols = None
             rowwise = None
         else:

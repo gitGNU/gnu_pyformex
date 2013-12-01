@@ -61,7 +61,7 @@ class AppDir(object):
         self.added = parent not in sys.path
         if self.added:
             sys.path.insert(1,parent)
-        
+
         self.pkg = os.path.basename(self.path)
         if name is None:
             self.name = self.pkg.capitalize()
@@ -95,7 +95,7 @@ def addAppDir(d):
 
     d should be a valid path, chacked with checkAppdir
     """
-    
+
     adddirs = [ a for a in adddirs if not a in sys.path ]
     #print "appdir parents to add",adddirs
     sys.path[1:1] = adddirs
@@ -123,14 +123,14 @@ def checkAppdir(d):
     initfile = os.path.join(d,'__init__.py')
     if os.path.exists(initfile):
         return os.path.dirname(initfile)
-        
+
     try:
         f = open(initfile,'w')
         f.write("""# $Id$
 \"\"\"pyFormex application directory.
 
 Do not remove this file. It is used by pyFormex to flag the parent
-directory as a pyFormex application path. 
+directory as a pyFormex application path.
 \"\"\"
 # End
 """)
@@ -192,7 +192,7 @@ def findAppSource(app):
     be used to load the source file when the application can not be loaded.
     """
     import types
-    if type(app) is types.ModuleType:
+    if isinstance(app, types.ModuleType):
         fn = app.__file__
         if fn.endswith('.pyc'):
             fn = fn[:-1]
@@ -201,7 +201,7 @@ def findAppSource(app):
         fn = os.path.join(path,app.split('.')[-1]+'.py')
     return fn
 
-    
+
 def unload(appname):
     """Try to unload an application"""
     name = 'apps.'+appname
@@ -225,10 +225,8 @@ def unload(appname):
 
 
 def listLoaded():
-    loaded = [ m for m in sys.modules.keys() if m.startswith('apps.') ]
-    loaded.sort()
-    return loaded
-    
+    return sorted([ m for m in sys.modules.keys() if m.startswith('apps.') ])
+
 
 def detect(appdir):
     # Detect, but do not load!!!!
@@ -236,10 +234,8 @@ def detect(appdir):
     files = utils.listTree(appdir,listdirs=False,excludedirs=['.*'],includefiles=['.*\.py$'])
     apps = [ os.path.basename(f) for f in files ]
     apps = [ os.path.splitext(f)[0] for f in apps if f[0] not in '._' ]
-    apps.sort()
-        
-    return apps
-       
+    return sorted(apps)
+
 
 _available_apps = detect(os.path.dirname(__file__))
 

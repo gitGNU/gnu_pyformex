@@ -90,7 +90,7 @@ def createSegments(F,ns=None,th=None):
         if res:
             ns = int(res['number of sections'])
             th = float(res['relative thickness'])
-    if isInt(ns) and type(th) == float:
+    if isInt(ns) and isinstance(th, float):
         xmin,ymin,zmin = bb[0]
         xmax,ymax,zmax = bb[1]
         xgem,ygem,zgem = F.center()

@@ -1516,7 +1516,7 @@ def runGUI():
     pf.debug('EGG: %s' % str(egg),pf.DEBUG.INFO)
     if egg:
         pf.debug('EGG')
-        if type(egg) is str:
+        if isinstance(egg, str):
             pye = egg.endswith('pye')
             egg = open(egg).read()
         else:

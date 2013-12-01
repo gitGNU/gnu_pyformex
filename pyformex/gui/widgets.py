@@ -427,9 +427,9 @@ class InputString(InputItem):
         """Initialize the input item."""
         self.input = QtGui.QLineEdit(str(value))
         InputItem.__init__(self,name,*args,**kargs)
-        if type(max) is int and max > 0:
+        if isinstance(max, int) and max > 0:
             self.input.setMaxLength(max)
-        self._is_string_ = type(value) == str
+        self._is_string_ = isinstance(value, str)
         self.layout().insertWidget(1,self.input)
 
     def show(self):
@@ -459,7 +459,7 @@ class InputText(InputItem):
     """
     def __init__(self,name,value,*args,**kargs):
         """Initialize the input item."""
-        self._is_string_ = type(value) == str
+        self._is_string_ = isinstance(value, str)
         self._plain = kargs.get('plain',False)
         self.input =  QtGui.QTextEdit()
 #        maxw,maxh = maxSize()
@@ -1554,9 +1554,9 @@ class InputDialog(QtGui.QDialog):
 
         try:
             w,h = size
-            if type(w) is float:
+            if isinstance(w, float):
                 w = int(w*pf.maxsize[0])
-            if type(h) is float:
+            if isinstance(h, float):
                 h = int(h*pf.maxsize[1])
             self.resize(w,h)
         except:
@@ -1721,7 +1721,7 @@ class InputDialog(QtGui.QDialog):
 
         itemtype = item['itemtype']
 
-        if type(itemtype) is str:
+        if isinstance(itemtype, str):
             if itemtype.endswith('radio') or itemtype.endswith('push'):
                 if itemtype[0] in 'hv':
                     item['direction'] = itemtype[0]
@@ -1735,7 +1735,7 @@ class InputDialog(QtGui.QDialog):
                 value = item['value']
                 if at.isInt(value):
                     pass
-                elif type(value) == float:
+                elif isinstance(value, float):
                     item['itemtype'] = 'fslider'
                 else:
                     raise ValueError("Invalid value type for slider: %s" % value)
@@ -1959,7 +1959,7 @@ def updateDialogItems(data,newdata):
     """
     if newdata:
         # check for old format
-        if type(data) is dict:
+        if isinstance(data, dict):
             return updateOldDialogItems(data,newdata)
         for d in data:
             if not isinstance(d,dict):
@@ -1978,7 +1978,7 @@ def updateOldDialogItems(data,newdata):
     """_Update the input data fields with new data values."""
     utils.warn("warn_widgets_updatedialogitems")
     if newdata:
-        if type(data) is dict:
+        if isinstance(data, dict):
             for d in data:
                 updateOldDialogItems(data[d],newdata)
         else:
@@ -2492,7 +2492,7 @@ class FileSelection(QtGui.QFileDialog):
             self.selectFile(path)
         else:
             self.setDirectory(path)
-        if type(pattern) == str:
+        if isinstance(pattern, str):
             self.setFilter(pattern)
         else: # should be a list of patterns
             self.setFilters(pattern)
@@ -2823,7 +2823,7 @@ class GenericDialog(QtGui.QDialog):
 
 
     def add(self,widgets,pos=-1):
-        if type(widgets) is not list:
+        if not isinstance(widgets, list):
             widgets = [widgets]
         for w in widgets:
             if pos >= 0:
@@ -2907,7 +2907,7 @@ def updateText(widget,text,format=''):
     """
     # autorecognition
     if format not in ['plain','html','rest']:
-        if type(text) is str and text.startswith('..'):
+        if isinstance(text, str) and text.startswith('..'):
             format = 'rest'
 
     # conversion

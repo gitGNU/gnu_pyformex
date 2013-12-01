@@ -339,7 +339,7 @@ def merge():
 def export_surface(types=['surface','gts','stl','off','neu','smesh','vtp','vtk']):
     F = selection.check(single=True)
     if F:
-        if type(types) == str:
+        if isinstance(types, str):
             ftype = types
             types = [ types ]
         else:

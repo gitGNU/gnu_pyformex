@@ -25,8 +25,8 @@ implemented another solution.
 - funcattrs
 = future: We need to keep future for python2 version
 - getcwdu
-? has_key
-? idioms
+- has_key
+- idioms
 ? import
 ? imports
 ? imports2

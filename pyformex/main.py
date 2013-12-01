@@ -252,11 +252,11 @@ def apply_config_changes(cfg):
     cfg is the user configuration that is to be saved.
     """
     # Safety checks
-    if type(cfg['warnings/filters']) != list:
+    if not isinstance(cfg['warnings/filters'], list):
         cfg['warnings/filters'] = []
 
     # Adhoc changes
-    if type(cfg['gui/dynazoom']) is str:
+    if isinstance(cfg['gui/dynazoom'], str):
         cfg['gui/dynazoom'] = [ cfg['gui/dynazoom'], '' ]
 
     for i in range(8):

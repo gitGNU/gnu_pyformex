@@ -104,7 +104,7 @@ def drawSuperShape():
     global color,colormap
     clear()
     smoothwire()
-    if type(color) == str and color.startswith('file:'):
+    if isinstance(color, str) and color.startswith('file:'):
         print("trying to convert color")
         im = QtGui.QImage('Elevation-800.jpg')
         print(im)

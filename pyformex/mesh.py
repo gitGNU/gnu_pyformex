@@ -1520,7 +1520,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
         strategy = self.elType().conversions.get(totype,None)
 
-        while not type(strategy) is list:
+        while not isinstance(strategy, list):
             # This allows for aliases in the conversion database
             strategy = self.elType().conversions.get(strategy,None)
 
@@ -1884,8 +1884,8 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
           connection degree. If a different element type is specified,
           a final conversion to the requested element type is attempted.
         """
-        if type(coordslist) is list:
-            if type(coordslist[0]) == Mesh:
+        if isinstance(coordslist, list):
+            if isinstance(coordslist[0], Mesh):
                 if sum([c.elType() != self.elType() for c in coordslist]):
                     raise ValueError("All Meshes in the list should have same element type")
                 clist = [ c.coords for c in coordslist ]
@@ -1974,7 +1974,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         to the seeds specified by `dir`.
         """
         utils.warn("warn_mesh_extrude")
-        if type(dir) is float:
+        if isinstance(dir, float):
             import pyformex as pf
             pf.warning("""Extrusion in direction %s over length %s
 
@@ -2205,7 +2205,7 @@ The dir,length are in the same order as in the translate method.""" % (dir,lengt
         if min is None and max is None:
             raise ValueError("At least one of min or max have to be specified.")
 
-        if type(nodes)==str:
+        if isinstance(nodes, str):
             nod = range(self.nplex())
         else:
             nod = nodes

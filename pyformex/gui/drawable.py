@@ -651,7 +651,7 @@ def drawEdges(x,e,edges,eltype,color=None):
     are: 'line3'
     """
     pf.debug("drawEdges",pf.DEBUG.DRAW)
-    if not type(eltype) == str:
+    if not isinstance(eltype, str):
         eltype = eltype.name()
     # We may have edges with different plexitudes!
     # We collect them according to plexitude.

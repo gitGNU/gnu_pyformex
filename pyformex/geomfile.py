@@ -64,7 +64,7 @@ class GeometryFile(object):
 
     def __init__(self,fil,mode=None,sep=' ',ifmt=' ',ffmt=' '):
         """Create the GeometryFile object."""
-        isname = type(fil) == str
+        isname = isinstance(fil, str)
         if isname:
             if mode is None:
                 if os.path.exists(fil):

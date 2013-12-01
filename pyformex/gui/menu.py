@@ -257,7 +257,7 @@ class BaseMenu(object):
                 #print("INSERTING MENU %s"%txt)
                 self.insert_menu(val,before=before)
             else:
-                if type(val) == str:
+                if isinstance(val, str):
                     val = eval(val)
                 if 'data' in options:
                     # DActions should be saved to keep them alive !!!
@@ -451,7 +451,7 @@ class ActionList(object):
         The icon is either a filename or a QIcon object.
         If text is specified, it is displayed instead of the action's name.
         """
-        if type(icon) == str:
+        if isinstance(icon, str):
             if os.path.exists(icon):
                 icon = QtGui.QIcon(QtGui.QPixmap(icon))
             else:

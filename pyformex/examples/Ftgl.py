@@ -147,7 +147,7 @@ def run():
         actions = [('Close',close),('Clear',clear),('Show',show)],
         default='Show')
 
-    if pf.PF.has_key('_Ftgl_data_'):
+    if '_Ftgl_data_' in pf.PF:
         dialog.updateData(pf.PF['_Ftgl_data_'])
 
     dialog.timeout = timeOut

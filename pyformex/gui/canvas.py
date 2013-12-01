@@ -120,7 +120,7 @@ def glFlat():
 
 def onOff(onoff):
     """Convert On/Off strings to a boolean"""
-    if type(onoff) is str:
+    if isinstance(onoff, str):
         return (onoff.lower() == 'on')
     else:
         if onoff:
@@ -155,7 +155,7 @@ def glLighting(onoff):
 
 
 def glPolygonFillMode(mode):
-    if type(mode) is str:
+    if isinstance(mode, str):
         mode = mode.lower()
         if mode == 'Front and Back':
             glBothFill()
@@ -166,13 +166,13 @@ def glPolygonFillMode(mode):
 
 
 def glPolygonMode(mode):
-    if type(mode) is str:
+    if isinstance(mode, str):
         mode = mode.lower()
         glFill(mode == 'fill')
 
 
 def glShadeModel(model):
-    if type(model) is str:
+    if isinstance(model, str):
         model = model.lower()
         if model == 'smooth':
             glSmooth()
@@ -203,7 +203,7 @@ class ActorList(list):
 
     def add(self,actor):
         """Add an actor or a list thereof to a ActorList."""
-        if type(actor) is list:
+        if isinstance(actor, list):
             self.extend(actor)
         else:
             self.append(actor)
@@ -1251,7 +1251,7 @@ class Canvas(object):
             self.camera.focus = 0.5*(X0+X1)
 
         # set camera angles
-        if type(angles) is str:
+        if isinstance(angles, str):
             angles = self.view_angles.get(angles)
         if angles is not None:
             try:

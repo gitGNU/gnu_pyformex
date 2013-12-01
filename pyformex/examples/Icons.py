@@ -157,8 +157,7 @@ def available_icons():
     The icon name is the second part of the 'icon_' function names.
     """
     icons = [ i[5:] for i in globals().keys() if i.startswith('icon_') and callable(globals()[i]) ]
-    icons.sort()
-    return icons
+    return sorted(icons)
 
 
 def run():

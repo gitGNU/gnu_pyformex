@@ -80,9 +80,9 @@ class Objects(object):
         namelist can be a single object name or a list of names.
         This will also store the current values of the variables.
         """
-        if type(names) == str:
+        if isinstance(names, str):
             names = [ names ]
-        self.names = [ s for s in names if type(s) == str ]
+        self.names = [ s for s in names if isinstance(s, str) ]
         self.values = map(named,self.names)
 
 

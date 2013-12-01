@@ -390,7 +390,7 @@ class NurbsCurve(Geometry4):
 
     def derivs(self,at,d=1):
         """Returns the points and derivatives up to d at parameter values at"""
-        if type(at) is int:
+        if isinstance(at, int):
             u = uniformParamValues(at,self.knots[0],self.knots[-1])
         else:
             u = at

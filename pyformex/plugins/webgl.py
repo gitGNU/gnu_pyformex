@@ -512,7 +512,7 @@ r.render();
 </head>
 <body bgcolor='%s'>""" % colors.WEBcolor(self.bgcolor)
         if createdby:
-            if type(createdby) is int:
+            if isinstance(createdby, int):
                 width = ' width="%s%%"' % createdby
             else:
                 width = ''

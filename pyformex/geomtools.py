@@ -213,7 +213,7 @@ def projectedArea(x,dir):
     """
     if x.shape[0] < 3:
         return 0.0
-    if type(dir) is int:
+    if isinstance(dir, int):
         dir = unitVector(dir)
     else:
         dir = normalize(dir)

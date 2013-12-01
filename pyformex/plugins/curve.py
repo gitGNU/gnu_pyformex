@@ -258,7 +258,7 @@ class Curve(Geometry):
         """
         if split is None:
             split = range(1,self.nparts)
-        elif type(split) is int:
+        elif isinstance(split, int):
             split = [split]
         start = [0] + split
         end = split + [self.nparts]

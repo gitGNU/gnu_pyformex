@@ -464,7 +464,7 @@ class Camera(object):
         - None
         """
         if not self.locked:
-            if type(angles) is str:
+            if isinstance(angles, str):
                 angles = view_angles.get(angles)
             if angles is None:
                 return

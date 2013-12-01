@@ -283,7 +283,7 @@ def exportObjects(obj,name,single=False):
     as a single item. The items will be given the names name-0, name-1, etc.
     Else, the obj is exported as is under the name.
     """
-    if single and type(obj) == list:
+    if single and isinstance(obj, list):
         export(dict([ ("name-%s"%i,v) for i,v in enumerate(obj)]))
     else:
         export({name:obj})

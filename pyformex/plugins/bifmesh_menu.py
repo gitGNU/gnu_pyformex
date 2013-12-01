@@ -397,11 +397,11 @@ def divPolyLine(pts, div, closed=None):
     """it takes the points, build a PolyLine and divide it in pieces. If div is an integer, it returns the point used to divide the polyline in div-equal pieces, otherwise it returns the points needed to divide the PolyLine at the values of curvilinear abscissa of the array div. So div=array([0., 0.5, 0.7, 0.85, 0.95, 0.97, 1.  ])
 or div=4. If closed =='closed' the last point has to be coincident to the 1st one !!! Even if it is closed the last point (==to the first one) div=...1. needs to be present because it will be removed."""
     Pts = PolyLine(pts)
-    if type(div)==int:
+    if isinstance(div, int):
         at = Pts.atLength(div)
         if closed=='closed':return Pts.pointsAt(at)[:-1]
         return Pts.pointsAt(at)
-    if type(div)==ndarray:
+    if isinstance(div, ndarray):
         At= Pts.atLength(div)
         if closed=='closed':return Pts.pointsAt(At) [:-1]
         return Pts.pointsAt(At)

@@ -148,7 +148,7 @@ def convertDXF(text):
         global Entities,Vertices
         if Entities:
             f = Entities[-1]
-            if type(f) is types.FunctionType:
+            if isinstance(f, types.FunctionType):
                 f()
 
     def Arc(x0,y0,z0,r,a0,a1):
@@ -200,7 +200,7 @@ def collectByType(entities):
     print("DXF collection:")
     for t in types:
         n = t.__name__
-        cn = [ i for i in entities if type(i) == t ]
+        cn = [ i for i in entities if isinstance(i, t) ]
         print("  items of type %s: %s" % (n,len(cn)))
         coll[n] = cn
     return coll

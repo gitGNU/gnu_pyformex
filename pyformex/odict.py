@@ -62,12 +62,12 @@ class ODict(dict):
             # keep order
             self._order = data._order
 
-        elif type(data) is list or type(data) is tuple:
+        elif isinstance(data, list) or isinstance(data, tuple):
             # preserve the order
             self._order = []
             self._add_keys([i[0] for i in data])
 
-        elif type(data) is dict:
+        elif isinstance(data, dict):
             # order is undefined
             self._order = data.keys()
 
@@ -182,10 +182,10 @@ class ODict(dict):
 
     def __setstate__(self,state):
         self.__init__()
-        if type(state) == tuple:
+        if isinstance(state, tuple):
             self.update(state[0])
             self.__dict__.update(state[1])
-        elif type(state) == dict:
+        elif isinstance(state, dict):
             #self.__dict__['_default_'] = state.pop('_default_')
             self.update(state)
 
@@ -253,8 +253,7 @@ if __name__ == "__main__":
     print(D.keys())
     print(D.values())
     print(D.items())
-    k = D.keys()
-    k.sort()
+    k = sorted(D.keys())
     D.sort(k)
     print(D)
     print(D.keys())

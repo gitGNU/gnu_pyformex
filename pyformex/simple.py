@@ -345,7 +345,7 @@ def sector(r,t,nr,nt,h=0.,diag=None):
     if h != 0.:
         p = p.shear(2,0,h/r)
     q = p.rotate(t/nt)
-    if type(diag) is str:
+    if isinstance(diag, str):
         diag = diag[0]
     if diag == 'u':
         F = connect([p,p,q],bias=[0,1,1]) + \

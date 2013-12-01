@@ -232,9 +232,7 @@ class Project(TrackedDict):
 
 
     def contents(self):
-        k = self.keys()
-        k.sort()
-        return k
+        return sorted(self.keys())
 
 
     def header_data(self):

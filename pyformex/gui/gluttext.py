@@ -133,7 +133,7 @@ def glutRenderText(text,font,gravity=''):
     before drawing.
     After drawing, the rasterpos will have been updated!
     """
-    if type(font) == str:
+    if isinstance(font, str):
         font = glutFont(font)
     if gravity:
         curpos = GL.glGetFloatv(GL.GL_CURRENT_RASTER_POSITION)
@@ -149,7 +149,7 @@ def glutBitmapLength(font, text):
     We use our own function to calculate the length because the builtin
     has a bug.
     """
-    if type(font) == str:
+    if isinstance(font, str):
         font = glutFont(font)
     len = 0
     for c in text:
@@ -169,7 +169,7 @@ def glutDrawText(text,x,y,font='hv18',gravity='',spacing=1.0):
       for the horizontal. The default(empty) string will center the text.
 
     """
-    if type(text) is str:
+    if isinstance(text, str):
         text = text.split('\n')
     nlines = len(text)
     widths = [ glutBitmapLength(font, t) for t in text ]

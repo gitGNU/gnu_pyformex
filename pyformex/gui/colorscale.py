@@ -84,7 +84,7 @@ class ColorScale(object):
         If 2 exponents are given, mapping is done independently with exp
         in the range minval..midval and with exp2 in the range midval..maxval.
         """
-        if type(palet) == str:
+        if isinstance(palet, str):
             self.palet = Palette.get(palet.upper(),Palette['RGB'])
         else:
             self.palet = palet

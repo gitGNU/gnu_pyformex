@@ -205,7 +205,7 @@ class FlatDB(dict):
         `record_error_handler` and (if it returns) return False.
         This method can safely be overriden in subclasses.
         """
-        OK = type(record) == dict and self.checkKeys(record) and (
+        OK = isinstance(record, dict) and self.checkKeys(record) and (
             self.check_func == None or self.check_func(record) )
         if not OK:
             self.record_error_handler(record)
@@ -388,7 +388,7 @@ class FlatDB(dict):
         each line with a comment marker if you want to read it back! 
         """
         outfile = open(filename,mode)
-        if type(header) == str:
+        if isinstance(header, str):
             outfile.writelines(header)
         for record in self.itervalues():
             s = self.beginrec+'\n'
@@ -396,7 +396,7 @@ class FlatDB(dict):
                 s += "  %s%s%s\n" % (k,self.key_sep,v)
             s += self.endrec+'\n'
             outfile.writelines(s)
-        if type(outfile) == file:
+        if isinstance(outfile, file):
             outfile.close()
 
 

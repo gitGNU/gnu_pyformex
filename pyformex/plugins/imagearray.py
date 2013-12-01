@@ -403,7 +403,7 @@ def dicom2numpy(files):
       axis is the `z` value, the last the `x`.
     - `scale`: a (3,) array with the scaling factors, in order (x,y,z).
     """
-    if type(files) is str:
+    if isinstance(files, str):
         files = utils.listTree(fp,listdirs=False,includefiles="*.dcm")
     # read and stack the images
     print("Using %s to read DICOM files" % readDicom.__name__)

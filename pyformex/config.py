@@ -190,7 +190,7 @@ class Config(Dict):
         The function returns self, so that you can write: cfg = Config().
         """
         filename = None
-        if type(fil) == str:
+        if isinstance(fil, str):
             if fil.find('\n') >= 0:
                 fil = fil.split('\n')
             else:

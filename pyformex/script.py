@@ -194,7 +194,7 @@ def ask(question,choices=None,default=''):
     if choices:
         question += " (%s) " % ', '.join(choices)
         choices = [ c.lower() for c in choices ]
-    while 1:
+    while True:
         res = raw_input(question)
         if res == '' and default:
             res = default
@@ -281,7 +281,7 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
         pf.GUI.startRun()
 
     # Read the script, if a file was specified
-    if type(scr) is file:
+    if isinstance(scr, file):
         if filename is None:
             filename = scr.name
         scr = scr.read() + '\n'
@@ -688,9 +688,7 @@ def printglobals():
 
 
 def printglobalnames():
-    a = Globals().keys()
-    a.sort()
-    print(a)
+    print(sorted(Globals().keys()))
 
 
 def printconfig():

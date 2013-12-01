@@ -1501,7 +1501,7 @@ Quality: %s .. %s
         """
         F = self.toFormex()
         R = F.cutWithPlane(*args,**kargs)
-        if type(R) is list:
+        if isinstance(R, list):
             return [ TriSurface(r).fixNormals() for r in R ]
         else:
             return TriSurface(R).fixNormals()
@@ -1781,7 +1781,7 @@ Quality: %s .. %s
         property number.
         """
         o = self.center()
-        if type(dir) is int:
+        if isinstance(dir, int):
             dir = unitVector(dir)
         xmin,xmax = self.coords.directionalExtremes(dir,o)
         P = Coords.interpolate(xmin,xmax,nplanes)

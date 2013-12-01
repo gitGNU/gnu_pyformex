@@ -53,7 +53,7 @@ def formatDict(d):
     s = ""
     if isinstance(d,dict):
         for k,v in d.iteritems():
-            if type(v) == str:
+            if isinstance(v, str):
                 s += '%s = "%s"\n' % (k,v)
             else:
                 s += '%s = %s\n' % (k,v)
@@ -294,10 +294,10 @@ class Dict(dict):
 
 
     def __setstate__(self,state):
-        if type(state) == tuple:
+        if isinstance(state, tuple):
             self.update(state[0])
             self.__dict__.update(state[1])
-        elif type(state) == dict:
+        elif isinstance(state, dict):
             self.__dict__['_default_'] = state.pop('_default_')
             self.update(state)
 

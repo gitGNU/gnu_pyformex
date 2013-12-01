@@ -47,7 +47,7 @@ def sortSets(d):
     `set` are converted to a sorted list.
     """
     for k in d:
-        if type(d[k]) == set:
+        if isinstance(d[k], set):
             d[k] = sorted(d[k])
 
 
@@ -86,7 +86,7 @@ def classify(appdir,pkg,nmax=0):
         for k in kat:
             if hasattr(app,'_'+k):
                 v = getattr(app,'_'+k)
-                if type(v) is list:
+                if isinstance(v, list):
                     v = [ vi.lower() for vi in v ]
                 else:
                     v = v.lower()
@@ -331,8 +331,7 @@ class AppMenu(menu.Menu):
         filtr = lambda s:os.path.isdir(os.path.join(self.dir,s))
         dirs = [ d for d in dirs if filtr(d) ]
         filtr = lambda s: s[0]!='.' and s[0]!='_'
-        dirs = [ d for d in dirs if filtr(d) ]
-        dirs.sort()
+        dirs = sorted([ d for d in dirs if filtr(d) ])
         for d in dirs:
             m = AppMenu(d,os.path.join(self.dir,d),mode=self.mode,ext=self.ext,autoplay=self.autoplay,recursive=self.recursive,parent=self,runall=self.runall)
 
@@ -347,8 +346,7 @@ class AppMenu(menu.Menu):
             n = len(self.ext)
             files = [ f[:-n] for f in files if filtr(f) ]
 
-        files = self.filterFiles(files)
-        files.sort()
+        files = sorted(self.filterFiles(files))
         return files
 
 

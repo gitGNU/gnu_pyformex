@@ -173,7 +173,7 @@ def draw(F,
     finally:
         pf.GUI.setBusy(False)
 
-    if type(F) is list or len(actors) != 1:
+    if isinstance(F, list) or len(actors) != 1:
         return actors
     else:
         return actors[0]

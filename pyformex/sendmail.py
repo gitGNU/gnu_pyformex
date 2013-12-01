@@ -54,9 +54,9 @@ def message(sender='',to='',cc='',subject='',text=''):
 
     'to' and 'cc' can be lists of email addresses.
     """
-    if type(to) is list:
+    if isinstance(to, list):
         to = ', '.join(to)
-    if type(cc) is list:
+    if isinstance(cc, list):
         cc = ', '.join(cc)
     message = email.Message.Message()
     message["From"] = sender

@@ -680,7 +680,7 @@ class GeomActor(Attributes):
 
     def setColor(self,color,colormap=None):
         """Set the color of the Actor."""
-        if type(color) is str:
+        if isinstance(color, str):
             if color == 'prop' and hasattr(self.object,'prop'):
                 color = self.object.prop
             elif color == 'random':

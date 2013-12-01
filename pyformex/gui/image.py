@@ -508,7 +508,7 @@ def createMovie(files,encoder='convert',outfn='output',**kargs):
     will create an animated gif 'output.gif'.
     """
     print("Encoding %s" % files)
-    if type(files) == list:
+    if isinstance(files, list):
         files = ' '.join(files)
 
     if encoder == 'convert':

@@ -793,7 +793,7 @@ class Coords(ndarray):
             out = self
         else:
             out = self.copy()
-        if type(dir) is int:
+        if isinstance(dir, int):
             dir = unitVector(dir)
         dir = Coords(dir,copy=True)
         if step is not None:
@@ -1358,7 +1358,7 @@ class Coords(ndarray):
         Returns a :class:`Coords` with same shape as original, with all the
         points projected on the specified plane(s).
         """
-        if type(n) is int:
+        if isinstance(n, int):
             x = self.copy()
             x[...,n] = P[n]
             return x
@@ -1439,14 +1439,14 @@ class Coords(ndarray):
         try:
             missing = float(missing)
         except:
-            if type(missing) is str and len(missing) > 0:
+            if isinstance(missing, str) and len(missing) > 0:
                 if missing[0] not in '+-':
                     missing = '+' + missing
                 missing = missing[:2]
             else:
                 missing = None
 
-        if type(dir) is int:
+        if isinstance(dir, int):
             dir = unitVector()
         else:
             dir = asarray(dir)
@@ -1478,7 +1478,7 @@ class Coords(ndarray):
             raise ValueError("The projection does not intersect with the surface")
         if cuts.shape[0] < x.shape[0]:
             # fill in missing values or raise error
-            if type(missing) is float:
+            if isinstance(missing, float):
                 d = missing
             elif missing[1] in 'cfm':
                 d = length(x[cutid] - cuts)
@@ -1578,7 +1578,7 @@ class Coords(ndarray):
         original Coords.
         """
         n = int(n)
-        if type(dir) is int:
+        if isinstance(dir, int):
             dir = unitVector(dir)
         dir = Coords(dir,copy=True)
         if step is not None:
@@ -2289,10 +2289,10 @@ def sweepCoords(self,path,origin=[0.,0.,0.],normal=0,upvector=2,avgdir=False,end
 
     directions = normalize(directions)
 
-    if type(normal) is int:
+    if isinstance(normal, int):
         normal = unitVector(normal)
 
-    if type(upvector) is int:
+    if isinstance(upvector, int):
         upvector = Coords(unitVector(upvector))
 
     if scalex is not None:

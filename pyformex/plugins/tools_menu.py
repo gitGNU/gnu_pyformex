@@ -51,7 +51,7 @@ def editFormex(F,name):
     if res:
         x = eval(res['coords'])
         p = res.get('eltype',None)
-        if type(p) is str:
+        if isinstance(p, str):
             p = eval(p)
         e = res['eltype']
 

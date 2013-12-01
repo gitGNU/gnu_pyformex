@@ -203,7 +203,7 @@ class Formex(Geometry):
                 eltype = data.eltype
             data = data.coords
         else:
-            if type(data) == str:
+            if isinstance(data, str):
                 d = re.compile("(((?P<base>[^:]*):)?(?P<data>.*))").match(data).groupdict()
                 base,data = d['base'],d['data']
                 if base is None or base == 'l':
@@ -859,7 +859,7 @@ maxprop  = %s
         if min is None and max is None:
             raise ValueError("At least one of min or max have to be specified.")
 
-        if type(nodes)==str:
+        if isinstance(nodes, str):
             nod = range(self.nplex())
         else:
             nod = nodes
@@ -1709,7 +1709,7 @@ def intersectionLinesWithPlane(F,p,n,atol=1.e-4):
 
 def _sane_side(side):
     """_Allow some old variants of arguments_"""
-    if type(side) == str:
+    if isinstance(side, str):
         if side.startswith('pos'):
             side = '+'
         if side.startswith('neg'):
@@ -1837,7 +1837,7 @@ def cut3AtPlane(F,p,n,side='',atol=None,newprops=None):
         try:
             newprops = newprops[:7]
             for prop in newprops:
-                if not (prop is None or type(prop) is int):
+                if not (prop is None or isinstance(prop, int)):
                     raise
         except:
             newprops = range(7)

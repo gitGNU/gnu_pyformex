@@ -259,7 +259,7 @@ def showResults(nodes,elems,displ,text,val,showref=False,dscale=100.,
             warning("The displacements do not match the mesh: the mesh coords have shape %s; but the displacements have shape %s. I will continue without displacements." % (nodes.shape,displ.shape))
             displ = None
 
-    if type(elems) != list:
+    if not isinstance(elems, list):
         elems = [ elems ]
 
     print(["ELEMS: %s" % str(el.shape) for el in elems ])

@@ -91,11 +91,11 @@ def GLcolor(color):
     # erroneous input. Therefore, we check it ourselves
 
     # Check if it is a palette color name
-    if type(col) is str and col in palette:
+    if isinstance(col, str) and col in palette:
         col = palette[col]
 
     # str or QtCore.Globalcolor: convert to QColor
-    if ( type(col) is str or
+    if ( isinstance(col, str) or
          isinstance(col,QtCore.Qt.GlobalColor) ):
         try:
             col = QtGui.QColor(col)

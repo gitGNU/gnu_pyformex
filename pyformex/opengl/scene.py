@@ -66,7 +66,7 @@ class ActorList(list):
 
     def add(self,actor):
         """Add an actor or a list thereof to a ActorList."""
-        if type(actor) is list:
+        if isinstance(actor, list):
             self.extend(actor)
         else:
             self.append(actor)

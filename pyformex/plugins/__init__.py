@@ -42,7 +42,7 @@ def load(plugin):
     # import is done here to defer loading until possible
     __import__('plugins.'+plugin)
     module = globals().get(plugin,None)
-    if type(module) is ModuleType and hasattr(module,'show_menu'):
+    if isinstance(module, ModuleType) and hasattr(module,'show_menu'):
         module.show_menu()
 
 
@@ -50,16 +50,11 @@ def refresh(plugin):
     """Reload the named plugin"""
     __import__('plugins.'+plugin)
     module = globals().get(plugin,None)
-    if type(module) is ModuleType and hasattr(module,'show_menu'):
+    if isinstance(module, ModuleType) and hasattr(module,'show_menu'):
         reload(module)
     else:
         error("No such module: %s" % plugin)
 
-
-def loaded_modules():
-    d = [ k for k in globals() if type(globals()[k]) is ModuleType ]
-    d.sort()
-    return d
 
 def find_plugin_menus():
     """Return a list of plugin menus in the pyFormex 'plugins' directory.
@@ -104,16 +99,16 @@ def pluginMenus():
     return [ (name,name.capitalize().replace('_',' ')) for name in plugin_menus ]
 
 
-def create_plugin_menu(parent=None,before=None): 	 
+def create_plugin_menu(parent=None,before=None):
     from gui import menu
     loadmenu = menu.Menu('&Load plugins',parent=parent,before=before)
-    loadactions = menu.ActionList(function=load,menu=loadmenu) 	 
+    loadactions = menu.ActionList(function=load,menu=loadmenu)
     for name,text in pluginMenus():
         loadactions.add(name,icon=None,text=text)
-        
+
     return loadactions
 
-         
+
 def loadConfiguredPlugins(ok_plugins=None):
     if ok_plugins is None:
         ok_plugins = pf.cfg['gui/plugins']
@@ -128,7 +123,7 @@ def loadConfiguredPlugins(ok_plugins=None):
 #################### EXPERIMENTAL STUFF BELOW !! ################
 import odict
 
-_registered_plugins = odict.ODict() 
+_registered_plugins = odict.ODict()
 
 def show_menu(name,before='help'):
     """Show the menu."""
@@ -138,7 +133,7 @@ def show_menu(name,before='help'):
 def close_menu(name):
     """Close the menu."""
     name.replace('_menu','')
-    print("CLOSING MENU %s" % name) 
+    print("CLOSING MENU %s" % name)
     pf.GUI.menu.removeItem(name)
 
 

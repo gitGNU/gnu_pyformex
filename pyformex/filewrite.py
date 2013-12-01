@@ -103,7 +103,7 @@ def writeIData(data,fil,fmt,ind=1):
     kind = data.dtype.kind
     val = data.reshape(-1,data.shape[-1])
     nrows = val.shape[0]
-    if type(ind) is int:
+    if isinstance(ind, int):
         ind = ind + np.arange(nrows)
     else:
         ind = ind.reshape(-1)

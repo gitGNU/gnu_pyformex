@@ -555,7 +555,7 @@ def tetMesh(surfacefile,quality=False,volume=None,outputdir=None):
     options = ''
     if quality is True:
         options += 'q'
-    elif type(quality) == float:
+    elif isinstance(quality, float):
         options += 'q%f' % quality
     if volume is not None:
         options += 'a%f' % volume

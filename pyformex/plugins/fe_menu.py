@@ -72,7 +72,7 @@ def importModel(fn=None):
         fn = askFilename(".","*nodes.txt",multi=True)
         if not fn:
             return
-    if type(fn) == str:
+    if isinstance(fn, str):
         fn = [fn]
         
     for i,f in enumerate(fn):

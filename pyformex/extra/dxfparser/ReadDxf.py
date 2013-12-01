@@ -64,8 +64,8 @@ class LineDrawing(object):
         print([ i.__class__ for i in data ])
         print(Arc,Line,PolyLine)
         self.lines = [ i for i in data if i.__class__ == Line ]
-        self.polylines = [  i for i in data if type(i) is PolyLine ]
-        self.arcs = [ i for i in data if type(i) is Arc ]
+        self.polylines = [  i for i in data if isinstance(i, PolyLine) ]
+        self.arcs = [ i for i in data if isinstance(i, Arc) ]
         self.report()
 
 

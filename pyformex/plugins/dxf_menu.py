@@ -113,7 +113,7 @@ def importDxfText(text=None):
     parts = dxf.convertDXF(text)
     print("Imported %s entities" % len(parts))
     coll = dxf.collectByType(parts)
-    parts = [ p for p in parts if type(p) is not types.FunctionType ]
+    parts = [ p for p in parts if not isinstance(p, types.FunctionType) ]
     print("Kept %s entities of type Arc, Line, PolyLine" % len(parts))
     pf.GUI.setBusy(False)
     export({'_dxf_import_':parts,'_dxf_sel_':parts})
