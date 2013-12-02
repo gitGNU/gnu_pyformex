@@ -26,16 +26,16 @@
 """
 from __future__ import print_function
 
-
 import pyformex as pf
-from gui import menu
-import utils
-import os
+from pyformex import utils
+from pyformex.gui import menu
 
 from numpy import *
-from formex import *
-from gui.draw import *
-from gui.colors import *
+from pyformex.formex import *
+from pyformex.gui.draw import *
+from pyformex.gui.colors import *
+
+import os
 
 
 def about():
@@ -58,7 +58,7 @@ access to the host system.
 
 
 def configure():
-    from gui.prefMenu import updateSettings
+    from pyformex.gui.prefMenu import updateSettings
 
     dia = None
 
@@ -287,7 +287,7 @@ def checkResultsOnServer(host=None,userdir=None):
 
 
 def changeTargetDir(fn):
-    from gui import draw
+    from pyformex.gui import draw
     return draw.askDirname(fn)
 
 

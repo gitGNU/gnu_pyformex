@@ -28,17 +28,16 @@ Graphic Tools plugin menu for pyFormex.
 """
 from __future__ import print_function
 
-
 import pyformex as pf
-from gui import menu
+from pyformex import utils
+from pyformex.gui import menu
+from pyformex.plugins import objects
 
-from geometry_menu import autoName
-import utils
-from formex import *
-from gui.draw import *
-from plugins import objects
-from plugins.tools import *
-from plugins.trisurface import TriSurface
+from pyformex.formex import *
+from pyformex.gui.draw import *
+from pyformex.plugins.geometry_menu import autoName
+from pyformex.plugins.tools import *
+from pyformex.plugins.trisurface import TriSurface
 
 
 
@@ -469,7 +468,7 @@ def actor_dialog():
 ###############################################################
 
 def sendMail():
-    import sendmail
+    from pyformex import sendmail
     sender = pf.cfg['mail/sender']
     if not sender:
         warning("You have to configure your email settings first")
@@ -501,8 +500,8 @@ def selectImage(extra_items=[]):
 
     """
     global image
-    from gui.widgets import ImageView
-    from plugins.imagearray import resizeImage
+    from pyformex.gui.widgets import ImageView
+    from pyformex.plugins.imagearray import resizeImage
 
     # some default values
     filename = getcfg('datadir')+'/butterfly.png'

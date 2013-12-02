@@ -25,26 +25,21 @@
 
 """
 from __future__ import print_function
-from pyformex import zip
 
 import pyformex as pf
-from gui import menu
+from pyformex import zip, utils
+from pyformex.gui import menu, QtCore
 
-from plugins.postproc import *
-from plugins.fe_post import FeResult
-from plugins.objects import Objects
-from gui.colorscale import ColorScale, ColorLegend
-import utils
-from odict import ODict
-
-import commands
+from pyformex.odict import ODict
+from pyformex.formex import *
+from pyformex.gui.colorscale import ColorScale, ColorLegend
+from pyformex.gui.draw import *
+from pyformex.gui.colors import *
+from pyformex.plugins.postproc import *
+from pyformex.plugins.fe_post import FeResult
+from pyformex.plugins.objects import Objects
 
 from numpy import *
-from formex import *
-from gui.draw import *
-from gui.colors import *
-
-from gui import QtCore
 
 
 class AttributeModel(QtCore.QAbstractTableModel):
@@ -600,8 +595,8 @@ def importCalculix(fn=None):
     files, and store the results in a FeResult instance, which will be set as
     the current results database for the postprocessing menu.
     """
-    from plugins import ccxdat
-    from fileread import readInpFile
+    from pyformex.plugins import ccxdat
+    from pyformex.fileread import readInpFile
     #from plugins.fe import Model
     if fn is None:
         types = [ utils.fileDescription('ccx') ]
@@ -644,7 +639,7 @@ def importFlavia(fn=None):
     and store the results in a FeResult instance, which will be set as the
     current results database for the postprocessing menu.
     """
-    from plugins.flavia import readFlavia
+    from pyformex.plugins.flavia import readFlavia
     if fn is None:
         types = [ utils.fileDescription('flavia'), utils.fileDescription('all') ]
         fn = askFilename(pf.cfg['workdir'], types)
@@ -971,7 +966,7 @@ def reload_menu():
     close_menu()
     DB = pf.PF.get('PostProcMenu_result', None)
     print("Current database %s" % DB)
-    import plugins
+    from pyformex import plugins
     plugins.refresh('postproc_menu')
     show_menu()
 

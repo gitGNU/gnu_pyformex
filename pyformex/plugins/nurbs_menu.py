@@ -27,11 +27,12 @@
 """
 from __future__ import print_function
 
+from pyformex.gui import menu
+from pyformex.plugins import geometry_menu as gm
 
-from draw2d import *
-from plugins.objects import *
-import plugins.geometry_menu as gm
-from gui import menu
+from pyformex.plugins.draw2d import *
+from pyformex.plugins.objects import *
+
 
 # We subclass the DrawableObject to change its toggleAnnotation method
 class NurbsObjects(DrawableObjects):
@@ -208,7 +209,7 @@ def reload_menu():
     before = pf.GUI.menu.nextitem(_menu)
     print("Menu %s was before %s" % (_menu, before))
     close_menu()
-    import plugins
+    from pyformex import plugins
     plugins.refresh('draw2d')
     show_menu(before=before)
     setDrawOptions({'bbox':'last'})
