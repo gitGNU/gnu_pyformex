@@ -31,18 +31,13 @@ from numpy import *
 from OpenGL import GL, GLU
 
 import pyformex as pf
+from pyformex import coords, utils
+from pyformex.gui import colors, views, actors, decors, marks
 
-import coords
-from formex import Formex
-from drawable import saneColor, glColor
-import colors
-from camera import Camera
-import views
-import actors
-import decors
-import marks
-import utils
-from mydict import Dict
+from pyformex.mydict import Dict
+from pyformex.formex import Formex
+from pyformex.gui.drawable import saneColor, glColor
+from pyformex.gui.camera import Camera
 
 libGL = None
 
@@ -1270,7 +1265,7 @@ class Canvas(object):
             correction = float(pf.cfg.get('gui/autozoomfactor', 1.732))
             tf = coords.tand(fovy/2.)
 
-            import simple
+            from pyformex import simple
             bbix = simple.regularGrid(X0, X1, [1, 1, 1])
             bbix = dot(bbix, self.camera.rot[:3, :3])
             bbox = coords.Coords(bbix).bbox()

@@ -246,16 +246,4 @@ def inside(self,pts,atol='auto',multi=False):
     return pts.prop[ok]
 
 
-
-def install_more_trisurface_methods():
-
-    ###################################################
-    ## install these functions as TriSurface methods ##
-
-    from trisurface import TriSurface
-    TriSurface.boolean = boolean
-    TriSurface.intersection = intersection
-    TriSurface.gtsset = gtsset
-
-
 # End

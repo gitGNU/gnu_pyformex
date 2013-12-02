@@ -28,24 +28,18 @@ Any surface in space, no matter how complex, can be approximated with
 a triangulated surface.
 """
 from __future__ import print_function
-from pyformex import zip
 
 import pyformex as pf
+from pyformex import fileread, filewrite, geomtools, utils, zip
+from pyformex.plugins import mesh_ext, inertia
 
-from formex import *
+from pyformex.formex import *
 from pyformex.connectivity import Connectivity, connectedLineElems, adjacencyArrays
 from pyformex.mesh import Mesh
-import mesh_ext  # load the extended Mesh functions
-
-import geomtools
-import inertia
-import fileread, filewrite
-import utils
 
 import os, tempfile
 import tempfile
 
-from utils import deprecation
 
 #
 # gts commands used:
@@ -368,7 +362,7 @@ def fillBorder(border,method='radial',dir=None):
         elems = elems[tri]
 
     elif method == 'planar':
-        import plugins.polygon as pg
+        from pyformex.plugins import polygon as pg
         x = coords[elems]
         e = arange(x.shape[0])
 
@@ -632,10 +626,10 @@ class TriSurface(Mesh):
         elif ftype == 'neu':
             data = fileread.read_gambit_neutral(fn)
         elif ftype == 'smesh':
-            import tetgen
+            from pyformex.plugins import tetgen
             data = tetgen.readSurface(fn)
         elif ftype == 'vtp' or ftype == 'vtk':
-            from vtk_itf import readVTKObject
+            from pyformex.plugins.vtk_itf import readVTKObject
             [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = readVTKObject(fn)
             data = (coords, polys)
             if 'prop' in celldata.keys():
@@ -677,10 +671,10 @@ class TriSurface(Mesh):
             elif ftype == 'off':
                 filewrite.writeOFF(fname, self.coords, self.elems)
             elif ftype == 'smesh':
-                import tetgen
+                from pyformex.plugins import tetgen
                 tetgen.writeSurface(fname, self.coords, self.elems)
             elif ftype == 'vtp' or ftype == 'vtk':
-                import vtk_itf
+                from pyformex.plugins import vtk_itf
                 vtk_itf.writeVTP(fname, self, checkMesh=False)
             print("Wrote %s vertices, %s elems" % (self.ncoords(), self.nelems()))
         else:
@@ -1047,7 +1041,7 @@ Quality: %s .. %s
         If return_points = True, a second value is returned: an array with
         the closest (foot)points matching X.
         """
-        from timer import Timer
+        from pyformex.timer import Timer
         t = Timer()
         # distance from vertices
         ind, dist = geomtools.closest(X, self.coords)
@@ -1143,7 +1137,7 @@ Quality: %s .. %s
         """
         Q = self.convert('quad4')
         if method == 'voronoi':
-            from geomtools import triangleCircumCircle
+            from pyformex.geomtools import triangleCircumCircle
             Q.coords[-self.nelems():] = triangleCircumCircle(self.coords[self.elems], bounding=False)[1]
         nconn = Q.nodeConnections()[range(self.ncoords())]
         p = zeros(Q.nelems(), dtype=int)
@@ -1268,7 +1262,7 @@ Quality: %s .. %s
             return res
 
 
-        from formex import _sane_side, _select_side
+        from pyformex.formex import _sane_side, _select_side
         side = _sane_side(side)
 
         try:
@@ -2203,10 +2197,10 @@ Quality: %s .. %s
         """
         pts = Coords(pts).points()
         if method == 'gts':
-            from pyformex_gts import inside
+            from pyformex.plugins.pyformex_gts import inside
             return inside(self, pts, tol, multi=multi)
         elif method == 'vtk':
-            from vtk_itf import inside
+            from pyformex.plugins.vtk_itf import inside
             return inside(self, pts, tol)
 
 
@@ -2226,7 +2220,7 @@ Quality: %s .. %s
         If the creation of the tetrahedral model is succesful, the
         resulting tetrahedral mesh is returned.
         """
-        import tetgen
+        from pyformex.plugins import tetgen
         if filename is None:
             outputdir = utils.tempDir()
             fn = os.path.join(outputdir, 'surface') + format
@@ -2239,7 +2233,7 @@ Quality: %s .. %s
         return res['tetgen.ele']
 
 
-    @deprecation("depr_facetarea")
+    @utils.deprecation("depr_facetarea")
     def facetArea(self):
         return self.areas()
 
@@ -2428,21 +2422,21 @@ def Cube():
     return TriSurface(faces)
 
 
-@deprecation('depr_trisurface_Sphere')
+@utils.deprecation('depr_trisurface_Sphere')
 def Sphere(level=4,verbose=False,filename=None):
-    import simple
+    from pyformex import simple
     return simple.sphere(ndiv=2**(level-1))
 
 
 ####### Unsupported functions needing cleanup #######################
 
-@deprecation("intersectSurfaceWithLines has been removed: use intersectionWithLines instead")
+@utils.deprecation("intersectSurfaceWithLines has been removed: use intersectionWithLines instead")
 def intersectSurfaceWithLines(ts, qli, mli, atol=1.e-5):
     pass
 ##this function has been removed. You can get the same results using:
 ##      P,X=intersectionWithLines(self, q, m, q2,atol=1.e-5)
 ##      P,L,T = P[X[:, 0]], X[:, 1], X[:, 2]
-@deprecation("intersectSurfaceWithSegments has been removed: use intersectionWithLines instead")
+@utils.deprecation("intersectSurfaceWithSegments has been removed: use intersectionWithLines instead")
 def intersectSurfaceWithSegments(s1, segm, atol=1.e-5):
     pass
 ##this function has been removed. You can get the same results using:
@@ -2450,21 +2444,15 @@ def intersectSurfaceWithSegments(s1, segm, atol=1.e-5):
 ##      P,L,T = P[X[:, 0]], X[:, 1], X[:, 2]
 
 
-import pyformex_gts
-pyformex_gts.install_more_trisurface_methods()
 
+# Set TriSurface methods defined elsewhere
 
-#import tetgen
-#tetgen.install_more_trisurface_methods()
+from pyformex.plugins import pyformex_gts
+TriSurface.boolean = pyformex_gts.boolean
+TriSurface.intersection = pyformex_gts.intersection
+TriSurface.gtsset = pyformex_gts.gtsset
 
-
-#import vmtk_itf
-
-
-#import vtk_itf
-
-
-import webgl
+from pyformex.plugins import webgl
 TriSurface.webgl = webgl.surface2webgl
 
 

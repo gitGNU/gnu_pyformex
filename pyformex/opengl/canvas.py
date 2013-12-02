@@ -26,28 +26,23 @@
 """
 from __future__ import print_function
 
+import pyformex as pf
+
+from pyformex import utils, coords
+from pyformex import arraytools as at
+from pyformex.gui import colors, views, decors, marks
+
+from pyformex.mydict import Dict
+from pyformex.collection import Collection
+from pyformex.attributes import Attributes
+from pyformex.formex import Formex
+from pyformex.gui.drawable import saneColor, glColor
+from pyformex.opengl.camera import Camera
+from pyformex.opengl.renderer import Renderer
+from pyformex.opengl.scene import Scene, ActorList
 
 from numpy import *
 from OpenGL import GL, GLU
-
-import pyformex as pf
-
-import coords
-from formex import Formex
-from drawable import saneColor, glColor
-import arraytools as at
-import utils
-from mydict import Dict
-from pyformex.attributes import Attributes
-from pyformex.gui import colors
-from pyformex.gui import views
-from pyformex.gui import decors
-from pyformex.gui import marks
-
-from camera import Camera
-from renderer import Renderer
-from pyformex.collection import Collection
-from scene import Scene, ActorList
 
 libGL = None
 
