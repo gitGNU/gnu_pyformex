@@ -1407,7 +1407,7 @@ pyFormex comes with ABSOLUTELY NO WARRANTY. This is free software, and you are w
     createDatabases()
 
     # Plugin menus
-    import plugins
+    from pyformex import plugins
     filemenu = pf.GUI.menu.item('file')
     pf.gui.plugin_menu = plugins.create_plugin_menu(filemenu, before='---1')
     # Load configured plugins, ignore if not found
@@ -1474,13 +1474,13 @@ pyFormex comes with ABSOLUTELY NO WARRANTY. This is free software, and you are w
 
 def createDatabases():
     """Create unified database objects for all menus."""
-    from plugins import objects
-    from geometry import Geometry
-    from formex import Formex
-    from mesh import Mesh
-    from plugins.trisurface import TriSurface
-    from plugins.curve import PolyLine, BezierSpline
-    from plugins.nurbs import NurbsCurve
+    from pyformex.plugins import objects
+    from pyformex.geometry import Geometry
+    from pyformex.formex import Formex
+    from pyformex.mesh import Mesh
+    from pyformex.plugins.trisurface import TriSurface
+    from pyformex.plugins.curve import PolyLine, BezierSpline
+    from pyformex.plugins.nurbs import NurbsCurve
     pf.GUI.database = objects.Objects()
     pf.GUI.drawable = objects.DrawableObjects()
     pf.GUI.selection = {

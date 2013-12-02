@@ -30,29 +30,29 @@ The geometry menu is intended to become the major interactive geometry menu
 in pyFormex.
 """
 from __future__ import print_function
-from pyformex import zip
 
 import pyformex as pf
-import utils
-from odict import ODict
+from pyformex import (
+    zip, utils, fileread, simple
+    )
 
-import fileread
-from geometry import Geometry
-from geomfile import GeometryFile
-from formex import Formex
-from connectivity import Connectivity
-from mesh import Mesh, mergeMeshes
-from trisurface import TriSurface, Sphere
-from elements import elementType
-import simple
+from pyformex.odict import ODict
+from pyformex.geometry import Geometry
+from pyformex.geomfile import GeometryFile
+from pyformex.formex import Formex
+from pyformex.connectivity import Connectivity
+from pyformex.mesh import Mesh, mergeMeshes
+from pyformex.plugins.trisurface import TriSurface, Sphere
+from pyformex.elements import elementType
 
-from gui import actors
-from gui import menu
-from gui.draw import *
+from pyformex.gui import actors, menu
+from pyformex.gui.draw import *
 
-from plugins import objects, trisurface, inertia, partition, sectionize, dxf, surface_menu
+from pyformex.plugins import (
+    objects, trisurface, inertia, partition, sectionize, dxf, surface_menu,
+    )
 
-import commands, os, timer
+import os, timer
 
 _name_ = 'geometry_menu'
 

@@ -34,14 +34,14 @@ from types import ModuleType
 
 # The following imports help with reading back old projects
 # (We moved these modules from pluginst to core)
-import project
-import mesh
+from pyformex import project
+from pyformex import mesh
 
 
 def load(plugin):
     """Load the named plugin"""
     # import is done here to defer loading until possible
-    __import__('plugins.'+plugin)
+    __import__('pyformex.plugins.'+plugin)
     module = globals().get(plugin, None)
     if isinstance(module, ModuleType) and hasattr(module, 'show_menu'):
         module.show_menu()
@@ -49,7 +49,7 @@ def load(plugin):
 
 def refresh(plugin):
     """Reload the named plugin"""
-    __import__('plugins.'+plugin)
+    __import__('pyformex.plugins.'+plugin)
     module = globals().get(plugin, None)
     if isinstance(module, ModuleType) and hasattr(module, 'show_menu'):
         reload(module)
@@ -101,7 +101,7 @@ def pluginMenus():
 
 
 def create_plugin_menu(parent=None,before=None):
-    from gui import menu
+    from pyformex.gui import menu
     loadmenu = menu.Menu('&Load plugins', parent=parent, before=before)
     loadactions = menu.ActionList(function=load, menu=loadmenu)
     for name, text in pluginMenus():
@@ -113,16 +113,22 @@ def create_plugin_menu(parent=None,before=None):
 def loadConfiguredPlugins(ok_plugins=None):
     if ok_plugins is None:
         ok_plugins = pf.cfg['gui/plugins']
+        pf.debug("Configured plugins: %s" % ok_plugins,pf.DEBUG.PLUGIN)
     for p in plugin_menus:
+        pf.debug("Plugin menu: %s" % p)
         if p in ok_plugins:
+            pf.debug("  Loading plugin menu: %s" % p)
             load(p)
         else:
+            pf.debug("  Closing plugin menu: %s" % p)
             module = globals().get(p, None)
             if hasattr(module, 'close_menu'):
                 module.close_menu()
 
+
 #################### EXPERIMENTAL STUFF BELOW !! ################
-import odict
+
+from pyformex import odict
 
 _registered_plugins = odict.ODict()
 
@@ -154,7 +160,7 @@ def reload_menu(name):
     before = pf.GUI.menu.nextitem(_menu)
     print("Menu %s was before %s" % (_menu, before))
     close_menu()
-    import plugins
+    from pyformex import plugins
     plugins.refresh('draw2d')
     show_menu(before=before)
     setDrawOptions({'bbox':'last'})
