@@ -42,7 +42,7 @@ The followin example turtle script creates a unit square::
   fd();ro(90);fd();ro(90);fd();ro(90);fd()
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 import math
 deg = math.pi/180.

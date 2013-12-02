@@ -26,7 +26,7 @@
 Show applications of the front walk method of a Mesh.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 _status = 'checked'
 _level = 'normal'

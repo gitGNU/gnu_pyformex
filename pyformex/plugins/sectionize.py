@@ -26,7 +26,7 @@
 Create, measure and approximate cross section of a Formex.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 import pyformex as pf
 from plugins.curve import PolyLine

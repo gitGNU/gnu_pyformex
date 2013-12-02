@@ -34,7 +34,7 @@ image and can possibly be transformed to a sphere or a half sphere.
   This example is slow when using high resolution images.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 _status = 'checked'
 _level = 'normal'

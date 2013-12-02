@@ -27,7 +27,7 @@ This module allows to import and export some simple geometrical items
 in DXF format.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 from formex import *
 from plugins import curve

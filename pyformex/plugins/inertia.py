@@ -30,7 +30,7 @@ Currently, these functions work on arrays of nodes, not on Formices!
 Use func(F,f) to operate on a Formex F.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 from numpy import *
 from arraytools import normalize

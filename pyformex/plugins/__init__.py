@@ -27,7 +27,7 @@ This module contains the functions to detect and load the pyFormex
 plugin menus.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 import pyformex as pf
 from types import ModuleType

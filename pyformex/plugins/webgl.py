@@ -33,7 +33,7 @@ browser and starts the Javascript program, responsible for rendering the
 WebGL scene.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 import pyformex as pf
 from gui import colors

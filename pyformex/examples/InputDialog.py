@@ -28,7 +28,7 @@ Example showing the use of input dialogs.
 
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 _status = 'failed'
 _level = 'normal'

@@ -27,7 +27,7 @@ This module defines some basic operations on simple geometrical entities
 such as lines, triangles, circles, planes.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 from coords import *
 

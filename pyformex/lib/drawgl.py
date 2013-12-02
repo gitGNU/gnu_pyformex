@@ -30,7 +30,7 @@ These are low level functions that should normally not be used by
 the user.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 # There should be no other imports here than OpenGL and numpy
 import pyformex as pf

@@ -40,7 +40,7 @@ composed of a short first line, then a blank line and
 one or more lines explaining the intention of the script.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 from gui.draw import *  # for an app we need to import explicitely
 

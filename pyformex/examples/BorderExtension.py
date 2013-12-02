@@ -28,7 +28,7 @@ This example shows how to create extension tubes on the borders of a
 surface techniques.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 _status = 'checked'
 _level = 'normal'

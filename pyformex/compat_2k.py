@@ -50,9 +50,9 @@ if (sys.hexversion & 0xFFFF0000) < 0x02070000:
 """ % (sys.version_info.major, sys.version_info.minor))
     sys.exit()
 
+
 from future_builtins import zip
-# Force future_builtins zip on all modules
-__builtins__['zip'] = zip
+
 
 def execFile(f,*args,**kargs):
     return execfile(f,*args,**kargs)

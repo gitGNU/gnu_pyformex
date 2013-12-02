@@ -27,7 +27,7 @@ This script reads horse.pgf, transforms it into a surface,
 loads the surface plugin and cuts the horse in a number of surfaces.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 _status = 'checked'
 _level = 'normal'

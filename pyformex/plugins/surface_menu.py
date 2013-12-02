@@ -27,7 +27,7 @@
 Surface operations plugin menu for pyFormex.
 """
 from __future__ import print_function
-from future_builtins import zip
+from pyformex import zip
 
 import pyformex as pf
 from gui import actors, colors, decors, widgets, menu

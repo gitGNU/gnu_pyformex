@@ -36,7 +36,7 @@ disappears inside the red sphere. Finally, an intermediate configuration
 is shown.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 _status = 'checked'
 _level = 'normal'

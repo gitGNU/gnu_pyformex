@@ -32,7 +32,7 @@ In a mesh model, points common to adjacent elements are unique, and
 adjacency of elements can easily be detected from common node numbers.
 """
 from __future__ import print_function
-from future_builtins import zip
+from pyformex import zip
 
 from arraytools import *
 from adjacency import *

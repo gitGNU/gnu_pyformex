@@ -30,7 +30,7 @@ The geometry menu is intended to become the major interactive geometry menu
 in pyFormex.
 """
 from __future__ import print_function
-from future_builtins import zip
+from pyformex import zip
 
 import pyformex as pf
 import utils

@@ -64,7 +64,7 @@ This number is not stored, it is calculated each time. It's a nice example
 of how easily Python can handle huge numbers.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 _status = 'checked'
 _level = 'normal'

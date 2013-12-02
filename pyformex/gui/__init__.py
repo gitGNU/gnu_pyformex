@@ -36,7 +36,7 @@ Currently, the pyFormex GUI is only guaranteed on X11.
 For other systems, a warning will be printed that some things may not work.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 import pyformex as pf
 import utils

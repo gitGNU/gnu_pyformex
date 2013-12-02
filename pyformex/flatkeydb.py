@@ -29,7 +29,7 @@ A simple database stored as a flat text file.
 | Distributed under the GNU GPL version 3 or later.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 # A few utility functions
 def firstWord(s):

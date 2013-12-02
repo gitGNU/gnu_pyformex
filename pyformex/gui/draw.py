@@ -29,7 +29,7 @@ is available to scripts running in the pyFormex GUI without the need
 to import it.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 import pyformex as pf
 

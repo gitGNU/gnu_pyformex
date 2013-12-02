@@ -28,7 +28,7 @@ This module provides the basic functions for using the GLUT library in the
 rendering of text on an OpenGL canvas.
 """
 from __future__ import print_function
-from future_builtins import zip
+from pyformex import zip
 
 import OpenGL.GL as GL
 import OpenGL.GLUT as GLUT

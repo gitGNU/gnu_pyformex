@@ -30,7 +30,7 @@ This module contains the main function of pyFormex, which is run by the
 startup script.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 import pyformex as pf
 import sys, os

@@ -32,7 +32,7 @@ The line is further extrude in y-direction to yield a quadratic surface.
 A final extrusion in the z-direction delivers a quadratic volume.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 _status = 'checked'
 _level = 'beginner'

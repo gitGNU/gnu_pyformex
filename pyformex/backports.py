@@ -33,7 +33,7 @@ OrderedDict:
 
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 try:
     from thread import get_ident as _get_ident

@@ -35,7 +35,7 @@ While they are intende mostly to be imported in other applications, a plugin
 menu is provided for standard tasks.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 from gui.draw import *
 from plugins import dxf

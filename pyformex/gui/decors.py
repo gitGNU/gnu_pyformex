@@ -27,7 +27,7 @@
 instead of through the 3D OpenGL engine.
 """
 from __future__ import print_function
-from future_builtins import zip
+from pyformex import zip
 
 from OpenGL import GL
 from gui import QtOpenGL

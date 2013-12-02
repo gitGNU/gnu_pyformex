@@ -29,7 +29,7 @@ functionality of Formex algebra in a consistent and easy to understand
 syntax.
 """
 from __future__ import print_function
-from future_builtins import zip
+from pyformex import zip
 
 from coords import *
 from utils import deprecation, deprec, warn

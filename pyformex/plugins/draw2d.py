@@ -30,7 +30,7 @@ on a plane with any orientation in space. The constructed geometry always
 has 3D coordinates in the global cartesian coordinate system.
 """
 from __future__ import print_function
-from future_builtins import zip
+from pyformex import zip
 
 from odict import ODict
 from geomtools import triangleCircumCircle

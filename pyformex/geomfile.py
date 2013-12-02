@@ -28,7 +28,7 @@ This module defines a class to work with files in the native
 pyFormex Geometry File Format.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 import utils
 import filewrite

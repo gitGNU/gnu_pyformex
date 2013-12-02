@@ -31,7 +31,7 @@ This module provides the basic interface to convert data structures between
 vtk and pyFormex.
 """
 from __future__ import print_function
-from future_builtins import zip
+from pyformex import zip
 
 from pyformex import utils
 utils.requireModule('vtk')

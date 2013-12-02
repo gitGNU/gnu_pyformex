@@ -28,7 +28,7 @@ pyFormex mesh models to Gambit neutral files.
 
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 import sys
 from plugins import tetgen

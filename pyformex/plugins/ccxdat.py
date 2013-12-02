@@ -27,7 +27,7 @@ Interface with Calculix FE result files (.dat).
 
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 from plugins.fe_post import FeResult
 from arraytools import *

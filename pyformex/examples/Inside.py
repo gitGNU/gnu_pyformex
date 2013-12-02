@@ -27,7 +27,7 @@ This example shows how to find out if points are inside a closed surface.
 
 """
 from __future__ import print_function
-from future_builtins import zip
+from pyformex import zip
 
 _status = 'checked'
 _level = 'normal'

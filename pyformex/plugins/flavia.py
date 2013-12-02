@@ -28,7 +28,7 @@ Interface with flavia FE result files.
 (C) 2010 Benedict Verhegghe.
 """
 from __future__ import print_function
-from future_builtins import zip
+from pyformex import zip
 
 from arraytools import *
 from mesh import Mesh, mergeMeshes

@@ -35,7 +35,7 @@ or tetrahedral), the number of elements in the regular grid, the amount of
 noise to be added, and the number of smoothing iterations
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 _status = 'checked'
 _level = 'normal'

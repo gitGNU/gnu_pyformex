@@ -33,7 +33,7 @@ in the pyFormex C-library) and allow to easily create new exporters for
 other formats.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 import pyformex as pf
 import numpy as np

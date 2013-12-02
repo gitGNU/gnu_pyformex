@@ -30,7 +30,7 @@ in n variables.
 """
 
 from __future__ import print_function
-from future_builtins import zip
+from pyformex import zip
 
 import numpy as np
 import arraytools as at

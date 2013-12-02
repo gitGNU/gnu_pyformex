@@ -33,7 +33,7 @@ the Python version inside that module. The differences between the
 versions might cause compilation to fail.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 print("""
 #####################################################################
@@ -52,6 +52,9 @@ if (sys.hexversion & 0xFFFF0000) == 0x03010000:
     def callable(f):
         return isinstance(f, collections.Callable)
     __builtins__['callable'] = callable
+
+
+zip = __builtins__['zip']
 
 
 def execFile(f,*args,**kargs):

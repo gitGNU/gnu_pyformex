@@ -36,7 +36,7 @@ This example illustrates the use of Bernstein polynomials to evaluate points
 on a Bezier curve.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 _status = 'checked'
 _level = 'normal'

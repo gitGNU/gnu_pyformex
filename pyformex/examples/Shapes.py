@@ -35,7 +35,7 @@ Later I added some nice utilities to make it worthwile as a programming example.
 It would be nice a nice exercise to add a GUI to create and position the shapes.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 _status = 'checked'
 _level = 'normal'

@@ -34,7 +34,7 @@ working directory. Point your WebGL capable browser to the created
 'scene1.html' file to view the WebGL model.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 _status = 'checked'
 _level = 'normal'

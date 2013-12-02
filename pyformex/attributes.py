@@ -27,7 +27,7 @@ This module defines a general class for adding extra attributes to
 other objects without cluttering the name space.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 from mydict import Dict, returnNone
 import utils

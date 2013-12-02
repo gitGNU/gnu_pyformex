@@ -49,7 +49,7 @@ splines can be chosen. The number of elements across the splines is
 currently unused.
 """
 from __future__ import print_function
-from future_builtins import zip
+from pyformex import zip
 
 _status = 'checked'
 _level = 'advanced'

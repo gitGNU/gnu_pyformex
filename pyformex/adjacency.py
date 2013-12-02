@@ -29,7 +29,7 @@ of items of a single type. This is e.g. used in mesh models, to store
 the adjacent elements.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 from arraytools import *
 

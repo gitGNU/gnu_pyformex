@@ -46,7 +46,7 @@ Finally it also draws a whole set of points on the Bezier Spline. These points
 are computed from Bernstein polynomials, just like in example BezierCurve.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 _status = 'checked'
 _level = 'normal'

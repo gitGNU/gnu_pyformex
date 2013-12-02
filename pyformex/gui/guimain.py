@@ -27,7 +27,7 @@ This module contains the main functions responsible for constructing
 and starting the pyFormex GUI.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 import pyformex as pf
 from pyformex.gui import signals

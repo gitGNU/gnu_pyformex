@@ -39,7 +39,7 @@ For the last (highest degree) Nurbs curve, also a set of 100 points along
 the curve are shown.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 _status = 'checked'
 _level = 'normal'

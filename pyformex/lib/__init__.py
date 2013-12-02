@@ -27,7 +27,7 @@ This tries to load the compiled libraries, and replaces those that failed
 to load with the (slower) Python versions.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 import pyformex as pf
 __all__ = [ 'misc', 'nurbs', 'drawgl', 'accelerated' ]

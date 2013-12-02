@@ -4,7 +4,7 @@
 A short introduction to some aspects of the Python programming language
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 for light in [ 'green', 'yellow', 'red', 'black', None]:
     if light == 'red':

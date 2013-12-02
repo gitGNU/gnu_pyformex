@@ -25,7 +25,7 @@
 
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 built_in_views = {
     'front': (0., 0., 0.),

@@ -31,7 +31,7 @@ Remark that simple.sphere3 may contain degenerate triangles at the north and
 south pole.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 _status = 'checked'
 _level = 'normal'

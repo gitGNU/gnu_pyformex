@@ -27,7 +27,6 @@ This module initializes the pyFormex global variables and
 defines a few essential functions.
 """
 from __future__ import print_function
-from future_builtins import zip
 
 # This is the very first thing that is executed when starting pyFormex
 # It is loaded even before main.
@@ -48,6 +47,7 @@ def fullVersion():
 Copyright = 'Copyright (C) 2004-2013 Benedict Verhegghe'
 Url = 'http://pyformex.org'
 Description = "pyFormex is a tool for generating, manipulating and transforming large geometrical models of 3D structures by sequences of mathematical transformations."
+
 
 # Compatibility with Python2 and Python3
 # We keep these in separate modules, because the ones for 2k might

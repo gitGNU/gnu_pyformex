@@ -29,7 +29,7 @@ arrays and vice versa.
 This code was based on ideas found on the PyQwt mailing list.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 import pyformex as pf
 from gui import QtGui

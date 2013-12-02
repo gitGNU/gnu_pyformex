@@ -28,7 +28,7 @@ Generates input-surface.inp and input-volume.inp with the
 surface and volume modules in Abaqus(R) input format.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 from mesh import Mesh
 from plugins import fe_abq, tetgen

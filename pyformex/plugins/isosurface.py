@@ -31,7 +31,7 @@ http://paulbourke.net/geometry/polygonise/
    
 """
 from __future__ import print_function
-from future_builtins import zip
+from pyformex import zip
 
 import numpy as np
 from multi import multitask, cpu_count, splitar

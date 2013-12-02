@@ -27,7 +27,7 @@ Finite element models are geometrical models that consist of a unique
 set of nodal coordinates and one of more sets of elements.
 """
 from __future__ import print_function
-from future_builtins import zip
+from pyformex import zip
 
 import pyformex as pf
 from coords import *

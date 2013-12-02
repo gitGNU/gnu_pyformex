@@ -32,7 +32,7 @@ if the key is not found in the CDict itself.
 Distributed under the GNU GPL version 3 or later
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 import copy
 

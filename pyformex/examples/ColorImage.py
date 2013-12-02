@@ -34,7 +34,7 @@ Finally, before the result is drawn, the geometry can be transformed into some
 other shape or be projected on a another surface.
 """
 from __future__ import print_function
-from future_builtins import zip
+
 
 _status = 'checked'
 _level = 'normal'
