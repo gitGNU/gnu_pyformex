@@ -36,13 +36,12 @@ menu is provided for standard tasks.
 """
 from __future__ import print_function
 
+from pyformex.gui import menu
+from pyformex.plugins import dxf, geometry_menu
 
-from gui.draw import *
-from plugins import dxf
-from plugins import geometry_menu
-from plugins.curve import *
-from gui import menu
-from connectivity import Connectivity
+from pyformex.connectivity import Connectivity
+from pyformex.gui.draw import *
+from pyformex.plugins.curve import *
 
 _name_ = 'dxf_menu'
 
@@ -141,7 +140,7 @@ def pickParts(filter=None):
 
 def pickSelection():
     """Replace the parts by the picked selection"""
-    import olist
+    from pyformex import olist
     parts = named('_dxf_sel_')
     if not parts:
         return
@@ -157,7 +156,7 @@ def pickSelection():
 
 def printSelection():
     """Print the picked selection"""
-    import olist
+    from pyformex import olist
     parts = named('_dxf_sel_')
     if not parts:
         return

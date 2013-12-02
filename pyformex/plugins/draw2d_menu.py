@@ -31,9 +31,9 @@ has 3D coordinates in the global cartesian coordinate system.
 """
 from __future__ import print_function
 
-
-from draw2d import *
-from geometry_menu import *
+from pyformex import plugins
+from pyformex.plugins.geometry_menu import *
+from pyformex.plugins.draw2d import *
 
 ################################## Menu #############################
 
@@ -77,7 +77,6 @@ def reload_menu():
     before = pf.GUI.menu.nextitem(_menu)
     print("Menu %s was before %s" % (_menu, before))
     close_menu()
-    import plugins
     plugins.refresh('draw2d')
     show_menu(before=before)
     setDrawOptions({'bbox':'last'})

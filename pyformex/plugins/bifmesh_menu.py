@@ -29,22 +29,23 @@ PhD research by Gianluca De Santis at bioMMeda (Ghent University).
 
 """
 from __future__ import print_function
-from pyformex import zip
 
 import pyformex as pf
-from gui.draw import *
-import plugins.vascularsweepingmesher as vsm
-import plugins.geometry_menu as gm
-import plugins.surface_menu as sm
-import plugins.draw2d as d2
+from pyformex import zip,olist
 
-from plugins.fe import mergedModel
-from connectivity import connectedLineElems
-from plugins.trisurface import fillBorder
-from plugins.curve import *
-from gui import menu
-import olist
+from pyformex.plugins import (
+    vascularsweepingmesher as vsm,
+    geometry_menu as gm,
+    surface_menu as sm,
+    draw2d as d2,
+    )
+from pyformex.gui import menu
 
+from pyformex.connectivity import connectedLineElems
+from pyformex.gui.draw import *
+from pyformex.plugins.fe import mergedModel
+from pyformex.plugins.trisurface import fillBorder
+from pyformex.plugins.curve import *
 
 import sys
 
@@ -1122,9 +1123,7 @@ def close_menu():
 
 def reload_menu():
     """Reload the menu."""
-    from plugins import refresh
     close_menu()
-    #refresh(_menu_)
     show_menu()
 
 
