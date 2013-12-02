@@ -800,6 +800,28 @@ pyFormex modules
     python module.py
 
 
+imports
+-------
+All import statements in the pyFormex Python source should use absolute
+imports, starting with the pyformex main package. Imports should by preference
+be ordered as in the following example, putting first (sub)package imports,
+then module imports, and finally individual define imports.
+The subpackages should be in the order lib, gui, opengl, plugins, examples.
+::
+
+    # Example of an extensive import list
+    from __future__ import print_function
+
+    import pyformex as pf
+    from pyformex import plugins   # import a subpackge
+    from pyformex import utils,zip,mesh    # import modules
+    from pyformex.gui import draw, image
+    from pyformex.plugins import geometry_menu, inertia
+    from pyformex.utils import system, command    # import individual defines
+    from pyformex.gui.draw import *
+    from pyformex.plugins.curve import Arc, PolyLine
+
+
 pyFormex scripts
 ----------------
 
