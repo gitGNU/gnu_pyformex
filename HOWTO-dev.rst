@@ -821,6 +821,8 @@ The subpackages should be in the order lib, gui, opengl, plugins, examples.
     from pyformex.gui.draw import *
     from pyformex.plugins.curve import Arc, PolyLine
 
+    import os, sys               # import non-pyformex parts
+
 
 pyFormex scripts
 ----------------

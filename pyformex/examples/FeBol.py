@@ -33,11 +33,11 @@ _level = 'advanced'
 _topics = ['FEA']
 _techniques = ['properties', 'export']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
-from plugins.fe import *
-from plugins.properties import *
-from plugins.fe_abq import Step, Output, Result, AbqData
+from pyformex.plugins.fe import *
+from pyformex.plugins.properties import *
+from pyformex.plugins.fe_abq import Step, Output, Result, AbqData
 
 
 import simple
@@ -182,7 +182,7 @@ def run():
     ## loaded = M.elemNrs(1)
     ## P.elemProp(tag='step1',set=loaded,name='Loaded',dload=ElemLoad('P',10.0))
 
-    from plugins.fe_abq import Interaction
+    from pyformex.plugins.fe_abq import Interaction
     P.Prop(tag='init', generalinteraction=Interaction(name='interaction1', friction=0.1))
 
     print("Element properties")

@@ -32,13 +32,13 @@ _level = 'advanced'
 _topics = ['FEA']
 _techniques = ['color', 'persistence']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 from examples.X_truss import X_truss
 
 ############################
 # Load the needed calpy modules
 
-from plugins import calpy_itf
+from pyformex.plugins import calpy_itf
 #calpy_itf.check()
 
 from calpy.fe_util import *

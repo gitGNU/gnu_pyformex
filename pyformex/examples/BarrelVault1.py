@@ -33,7 +33,7 @@ _topics = ['frame']
 _techniques = ['dialog']
 _opengl2 = True
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 def run():
     reset()

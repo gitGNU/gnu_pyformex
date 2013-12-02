@@ -34,9 +34,9 @@ _topics = ['illustration', 'geometry']
 _techniques = ['dialog', 'draw', 'persistence', 'random']
 _acknowledgements = ['Tomas Praet']
 
-from gui.draw import *
-from simple import *
-from gui import widgets
+from pyformex.gui.draw import *
+from pyformex.simple import *
+from pyformex.gui import widgets
 from odict import ODict
 
 ################# Illusion definitions #####################

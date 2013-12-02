@@ -26,7 +26,7 @@
 """
 
 from numpy import *
-from coords import Coords
+from pyformex.coords import Coords
 
 class BoundVectors(Coords):
     """A collection of bound vectors in a 3D Cartesian space.

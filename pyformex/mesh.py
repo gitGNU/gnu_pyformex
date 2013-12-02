@@ -40,14 +40,14 @@ It also contains some useful functions to create such models.
 from __future__ import print_function
 from pyformex import zip
 
-from arraytools import groupPositions
-from coords import *
+from pyformex.arraytools import groupPositions
+from pyformex.coords import *
 from formex import Formex
 from connectivity import Connectivity
 from elements import elementType
 from geometry import Geometry
-from attributes import Attributes
-from simple import regularGrid
+from pyformex.attributes import Attributes
+from pyformex.simple import regularGrid
 import utils
 
 
@@ -404,7 +404,7 @@ class Mesh(Geometry):
         On success, returns a TriSurface corresponding with the input Mesh.
         If the Mesh can not be converted to a TriSurface, an error is raised.
         """
-        from plugins.trisurface import TriSurface
+        from pyformex.plugins.trisurface import TriSurface
         if self.level() == 3:
             obj = self.getBorderMesh()
         elif self.level() == 2:
@@ -1027,7 +1027,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         Also, the 'quad4' partitioning method currently only works correctly
         if the quads are nearly planar.
         """
-        from plugins.trisurface import TriSurface
+        from pyformex.plugins.trisurface import TriSurface
         if self.elName() not in [ 'tri3', 'quad4' ]:
             raise ValueError("partitionByAngle currently only works for 'tri3' and 'quad4' type Meshes.")
 
@@ -2435,7 +2435,7 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
         if self.nelems() == 0:
             return None
 
-        from gui.actors import GeomActor
+        from pyformex.gui.actors import GeomActor
         return GeomActor(self,**kargs)
 
 
@@ -2849,7 +2849,7 @@ def quadrilateral(x, n1, n2):
     points `x`.
     """
     from elements import Quad4
-    from plugins import isopar
+    from pyformex.plugins import isopar
     x = checkArray(x, (4, 3), 'f')
     M = rectangle(1., 1., nl, nw).isopar('quad4', x, Quad4.vertices)
     return M
@@ -2872,7 +2872,7 @@ def quarterCircle(n1, n2):
     border mesh).
 
     """
-    from plugins.curve import Arc, PolyLine
+    from pyformex.plugins.curve import Arc, PolyLine
     r = float(n1)/(n1+n2)  # radius of the kernel
     P0, P1 = Coords([[0., 0., 0.], [r, 0., 0.]])
     P2 = P1.rot(45.)

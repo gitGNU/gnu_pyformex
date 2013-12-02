@@ -36,8 +36,8 @@ _level = 'normal'
 _topics = ['geometry', 'curve']
 _techniques = ['transform', 'spiral']
 
-from gui.draw import *
-from plugins import curve
+from pyformex.gui.draw import *
+from pyformex.plugins import curve
 
 m = 100 # number of cells along spiral
 a = 1. # number of 360 degree turns

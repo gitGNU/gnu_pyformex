@@ -35,7 +35,7 @@ _level = 'beginner'
 _topics = ['geometry']
 _techniques = ['position']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 def drawObjectWithName(obj, name):
     """Draw an object and show its name at the center"""

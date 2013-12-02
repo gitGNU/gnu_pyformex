@@ -54,9 +54,9 @@ _topics = ['geometry', 'curve']
 _techniques = ['pattern', 'delay']
 _opengl2 = True
 
-from gui.draw import *
-from plugins.curve import PolyLine
-from plugins import nurbs
+from pyformex.gui.draw import *
+from pyformex.plugins.curve import PolyLine
+from pyformex.plugins import nurbs
 
 # Some strings defining line patterns
 predefined = [

@@ -32,7 +32,7 @@ from __future__ import print_function
 from pyformex import zip
 
 import os, types
-from gui import QtCore, QtGui, Slot
+from pyformex.gui import QtCore, QtGui, Slot
 import pyformex as pf
 import colors
 import odict, mydict, olist

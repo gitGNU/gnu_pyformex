@@ -32,7 +32,7 @@ _level = 'beginner'
 _topics = ['geometry']
 _techniques = ['dialog', 'actor']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 import gui.actors
 
 

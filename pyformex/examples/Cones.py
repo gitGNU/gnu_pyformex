@@ -32,10 +32,10 @@ _level = 'normal'
 _topics = ['geometry']
 _techniques = ['connect', 'dialog']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 import simple
-from gui import widgets
+from pyformex.gui import widgets
 
 
 def cone(r0,r1,h,t=360.,nr=1,nt=24,diag=None):
@@ -110,7 +110,7 @@ def cone1(r0,r1,h,t=360.,nr=1,nt=24,diag=None):
     return F
 
 
-from simple import rectangle
+from pyformex.simple import rectangle
 
 r0=3.   # bottom radius
 r1=1.   # top radius

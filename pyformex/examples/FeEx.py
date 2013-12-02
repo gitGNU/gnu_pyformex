@@ -32,18 +32,18 @@ _level = 'advanced'
 _topics = ['FEA']
 _techniques = ['menu', 'dialog', 'persistence', 'color', 'isopar']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 from pyformex import GUI, PF
-from gui import menu
+from pyformex.gui import menu
 
-from simple import rectangle
-from plugins.fe import *
-from plugins.properties import *
-from plugins.fe_abq import *
-from plugins.fe_post import FeResult
-from plugins import postproc_menu
-from plugins import geometry_menu
-from plugins import isopar
+from pyformex.simple import rectangle
+from pyformex.plugins.fe import *
+from pyformex.plugins.properties import *
+from pyformex.plugins.fe_abq import *
+from pyformex.plugins.fe_post import FeResult
+from pyformex.plugins import postproc_menu
+from pyformex.plugins import geometry_menu
+from pyformex.plugins import isopar
 from odict import ODict
 import utils
 
@@ -729,7 +729,7 @@ stop
         showFile(outfile, mono=True)
 
         if ack("Shall I read the results for postprocessing?"):
-            from plugins import flavia
+            from pyformex.plugins import flavia
             meshfile = utils.changeExt(filnam, 'flavia.msh')
             resfile = utils.changeExt(filnam, 'flavia.res')
             DB = flavia.readFlavia(meshfile, resfile)
@@ -757,7 +757,7 @@ def runCalpyAnalysis(jobname=None,verbose=False,flavia=False):
 
     ############################
     # Load the needed calpy modules
-    from plugins import calpy_itf
+    from pyformex.plugins import calpy_itf
     calpy_itf.check()
 
     ## # Load development version

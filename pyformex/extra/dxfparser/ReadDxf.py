@@ -51,8 +51,8 @@ exit()
 
 
 
-from plugins.curve import *
-from plugins.dxf import *
+from pyformex.plugins.curve import *
+from pyformex.plugins.dxf import *
 
 
 class LineDrawing(object):

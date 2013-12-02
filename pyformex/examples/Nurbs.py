@@ -46,8 +46,8 @@ _level = 'normal'
 _topics = ['geometry', 'curve']
 _techniques = ['nurbs']
 
-from gui.draw import *
-from plugins.nurbs import NurbsCurve
+from pyformex.gui.draw import *
+from pyformex.plugins.nurbs import NurbsCurve
 
 resetAll()
 

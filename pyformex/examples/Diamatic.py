@@ -32,7 +32,7 @@ _level = 'beginner'
 _topics = ['structure', 'domes']
 _techniques = ['color']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 def run():
     wireframe()

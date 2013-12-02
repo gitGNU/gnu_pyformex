@@ -53,8 +53,8 @@ from __future__ import print_function
 
 
 import pyformex as pf
-from gui import QtCore, QtGui
-from arraytools import array, isInt, Int, concatenate
+from pyformex.gui import QtCore, QtGui
+from pyformex.arraytools import array, isInt, Int, concatenate
 from odict import ODict
 
 

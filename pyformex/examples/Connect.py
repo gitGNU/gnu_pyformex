@@ -33,7 +33,7 @@ _level = 'normal'
 _topics = ['formex', 'surface']
 _techniques = ['connect', 'color']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 import simple
 
 def run():
@@ -137,7 +137,7 @@ def run():
     
 
     # Convert to a surface
-    from plugins.trisurface import TriSurface
+    from pyformex.plugins.trisurface import TriSurface
     S = TriSurface(M)
     print("nelems = %s, nplex = %s, coords = %s" % (S.nelems(), S.nplex(), S.coords.shape))
     clear()

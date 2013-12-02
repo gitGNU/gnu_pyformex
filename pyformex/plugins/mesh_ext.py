@@ -30,7 +30,7 @@ work before they get added to the regular mesh.py module.
 from __future__ import print_function
 
 
-from mesh import *
+from pyformex.mesh import *
 import utils
 
 

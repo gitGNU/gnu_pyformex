@@ -37,7 +37,7 @@ _level = 'normal'
 _topics = ['surface']
 _techniques = ['extrude', 'borderfill', 'cut']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 def cutBorderClose(S, P, N):
     """Cut a surface with a plane, and close it

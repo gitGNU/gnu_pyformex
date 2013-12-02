@@ -31,10 +31,10 @@ syntax.
 from __future__ import print_function
 from pyformex import zip
 
-from coords import *
+from pyformex.coords import *
 from utils import deprecation, deprec, warn
 from geometry import Geometry
-from attributes import Attributes
+from pyformex.attributes import Attributes
 import re
 
 
@@ -475,7 +475,7 @@ class Formex(Geometry):
         are fused into a single point, and elements are defined by a
         connectivity table with integers pointing to the corresponding vertex.
         """
-        from mesh import Mesh
+        from pyformex.mesh import Mesh
         x, e = self.fuse(*args,**kargs)
         return Mesh(x, e, prop=self.prop, eltype=self.eltype)
 
@@ -1326,7 +1326,7 @@ maxprop  = %s
 
 
     def actor(self,**kargs):
-        from gui.actors import GeomActor
+        from pyformex.gui.actors import GeomActor
 
         if self.nelems() == 0:
             return None

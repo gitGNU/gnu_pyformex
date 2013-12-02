@@ -32,7 +32,7 @@ from __future__ import print_function
 
 
 import pyformex as pf
-from arraytools import splitar
+from pyformex.arraytools import splitar
 from multiprocessing import Pool, cpu_count, Process, Queue
 
 

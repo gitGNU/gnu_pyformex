@@ -39,7 +39,7 @@ _level = 'normal'
 _topics = ['geometry', 'surface']
 _techniques = ['projection']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 import simple
 
 def run():

@@ -34,8 +34,8 @@ _level = 'normal'
 _topics = ['Image', 'Geometry']
 _techniques = ['texture']
 
-from gui.draw import *
-from plugins.imagearray import image2numpy
+from pyformex.gui.draw import *
+from pyformex.plugins.imagearray import image2numpy
 
 def run():
     clear()
@@ -51,7 +51,7 @@ def run():
     view('iso')
     zoom(0.5)
 
-    from gui.decors import Rectangle
+    from pyformex.gui.decors import Rectangle
     R = Rectangle(100, 100, 400, 300, color=yellow, texture=image)
     decorate(R)
 

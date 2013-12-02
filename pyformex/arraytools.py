@@ -28,7 +28,7 @@ These are general utility functions that depend only on the :mod:`numpy`
 array model. All pyformex modules needing :mod:`numpy` should import
 everything from this module::
 
-  from arraytools import *
+  from pyformex.arraytools import *
 """
 from __future__ import print_function
 from pyformex import zip

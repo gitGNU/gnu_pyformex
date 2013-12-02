@@ -32,8 +32,8 @@ _level = 'advanced'
 _topics = ['FEA']
 _techniques = ['dialog', 'animation', 'persistence', 'color']
 
-from gui.draw import *
-from plugins.properties import *
+from pyformex.gui.draw import *
+from pyformex.plugins.properties import *
 import time
 
 
@@ -41,7 +41,7 @@ def run():
     try:
         ############################
         # Load the needed calpy modules
-        from plugins import calpy_itf
+        from pyformex.plugins import calpy_itf
         import calpy
         calpy.options.optimize = False
         from calpy import fe_util
@@ -201,7 +201,7 @@ def run():
 
     if pf.options.gui:
 
-        from plugins.postproc import niceNumber, frameScale
+        from pyformex.plugins.postproc import niceNumber, frameScale
         import gui.colorscale as cs
         import gui.decors
 

@@ -35,7 +35,7 @@ _level = 'normal'
 _topics = ['surface']
 _techniques = ['extrude', 'borderfill', 'cut']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 import geomtools
 
 def run():

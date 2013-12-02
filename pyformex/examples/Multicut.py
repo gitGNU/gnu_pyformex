@@ -34,13 +34,13 @@ _level = 'beginner'
 _topics = ['surface']
 _techniques = ['cut']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 def run():
     clear()
     smooth()
 
-    from simple import sphere
+    from pyformex.simple import sphere
     S = sphere(8).scale(3.)
     T = S.cutWithPlane([[2., 0., 0.], [0., 1., 0.], [-2., 0., 0.], [0., -1., 0.]],
                        [[-1., 0., 0.], [0., -1., 0.], [1., 0., 0.], [0., +1., 0.]],

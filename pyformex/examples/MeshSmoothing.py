@@ -42,7 +42,7 @@ _level = 'normal'
 _topics = ['geometry', 'mesh']
 _techniques = ['dialog', 'smooth', 'noise', 'convert', 'extrude']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 eltype = 'quad4'
 n = 6            # Number of elements in each direction (should be even)

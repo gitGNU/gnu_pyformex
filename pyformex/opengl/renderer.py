@@ -36,11 +36,11 @@ from __future__ import print_function
 
 import os
 import pyformex as pf
-from coords import bbox
+from pyformex.coords import bbox
 import numpy as np
 from OpenGL import GL
 from shader import Shader
-from attributes import Attributes
+from pyformex.attributes import Attributes
 #import utils
 
 from drawable import GeomActor

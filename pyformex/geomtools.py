@@ -29,7 +29,7 @@ such as lines, triangles, circles, planes.
 from __future__ import print_function
 
 
-from coords import *
+from pyformex.coords import *
 
 class Plane(object):
     def __init__(self, P, n):
@@ -118,7 +118,7 @@ def smallestDirection(x,method='inertia',return_size=False):
             return N
     elif method == 'random':
         # Take the mean of the normals on randomly created triangles
-        from plugins.trisurface import TriSurface
+        from pyformex.plugins.trisurface import TriSurface
         n = x.shape[0]
         m = 3 * (n // 3)
         e = arange(m)

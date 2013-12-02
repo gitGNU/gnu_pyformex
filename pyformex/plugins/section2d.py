@@ -32,7 +32,7 @@ See the Section2D example for an example of its use.
 from __future__ import print_function
 
 
-from plugins import sectionize
+from pyformex.plugins import sectionize
 from numpy import *
 
 ## initalization should be with a closed PolyLine, after checking it is plane

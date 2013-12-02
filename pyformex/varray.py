@@ -68,7 +68,7 @@ The Varray class defined below therefore does not sort the rows
 by default, but provides the methods to sort them when needed.
 """
 
-from arraytools import *
+from pyformex.arraytools import *
 import sys
 
 class Varray(object):

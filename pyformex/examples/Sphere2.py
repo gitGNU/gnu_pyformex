@@ -38,8 +38,8 @@ _level = 'normal'
 _topics = ['geometry', 'surface', 'sphere']
 _techniques = ['color']
 
-from gui.draw import *
-from simple import sphere2, sphere3
+from pyformex.gui.draw import *
+from pyformex.simple import sphere2, sphere3
 
 def run():
     reset()

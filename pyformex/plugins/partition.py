@@ -28,9 +28,9 @@ from __future__ import print_function
 
 
 import pyformex as pf
-from gui import decors, colors
-from gui.camera import inverse
-from gui.draw import *
+from pyformex.gui import decors, colors
+from pyformex.gui.camera import inverse
+from pyformex.gui.draw import *
 from formex import *
 import geomtools
 

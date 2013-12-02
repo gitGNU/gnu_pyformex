@@ -33,7 +33,7 @@ _level = 'normal'
 _topics = ['mesh']
 _techniques = ['connect', 'color']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 import simple
 

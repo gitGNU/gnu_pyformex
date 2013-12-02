@@ -490,7 +490,7 @@ def toSurface(suffix=''):
 
 def splitProp():
     """Split the selected object based on property values"""
-    from plugins import partition
+    from pyformex.plugins import partition
 
     F = selection.check(single=True)
     if not F:
@@ -1216,7 +1216,7 @@ def close_menu():
 
 def reload_menu():
     """Reload the menu."""
-    from plugins import refresh
+    from pyformex.plugins import refresh
     close_menu()
     refresh(_menu)
     show_menu()

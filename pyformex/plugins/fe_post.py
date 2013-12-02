@@ -29,7 +29,7 @@ from __future__ import print_function
 
 
 import pyformex as pf
-from arraytools import *
+from pyformex.arraytools import *
 from script import export
 from odict import ODict
 

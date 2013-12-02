@@ -29,17 +29,17 @@ from __future__ import print_function
 from pyformex import zip
 
 from numpy import *
-from plugins.trisurface import *
+from pyformex.plugins.trisurface import *
 from formex import *
-from coords import *
-from simple import *
+from pyformex.coords import *
+from pyformex.simple import *
 from connectivity import *
-from plugins.curve import *
-from plugins.isopar import *
+from pyformex.plugins.curve import *
+from pyformex.plugins.isopar import *
 from elements import *
 
-from plugins.fe import *
-from mesh import *
+from pyformex.plugins.fe import *
+from pyformex.mesh import *
 from project import *
 from geomtools import triangleCircumCircle
 

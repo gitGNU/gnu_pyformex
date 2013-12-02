@@ -38,7 +38,7 @@ from __future__ import print_function
 import pyformex as pf
 import numpy as np
 from lib import misc
-from arraytools import checkArray
+from pyformex.arraytools import checkArray
 import utils
 import os
 

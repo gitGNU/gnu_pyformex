@@ -33,7 +33,7 @@ from __future__ import print_function
 
 
 import pyformex as pf
-from coords import Coords
+from pyformex.coords import Coords
 from connectivity import Connectivity
 from numpy import array, arange, concatenate
 from odict import ODict
@@ -265,7 +265,7 @@ class ElementType(object):
 
         Returns a Mesh with a single element of natural size.
         """
-        from mesh import Mesh
+        from pyformex.mesh import Mesh
         x = self.vertices
         e = self.getElement()
         return Mesh(x, e, eltype=e.eltype)
@@ -672,7 +672,7 @@ Hex20.drawgl2faces = [ Hex20.faces.selectNodes(i) for i in Quad8.drawgl2faces ]
 # THIS ELEMENT USES A REGULAR NODE NUMBERING!!
 # WE MIGHT SWITCH OTHER ELEMENTS TO THIS REGULAR SCHEME TOO
 # AND ADD THE RENUMBERING TO THE FE OUTPUT MODULES
-from simple import regularGrid
+from pyformex.simple import regularGrid
 Hex27 = createElementType(
     'hex27', "A 27-node hexahedron",
     ndim = 3,
@@ -973,7 +973,7 @@ Hex8.degenerate = {
 ##########################################################
 # This element added just for fun, no practical importance
 
-from arraytools import golden_ratio as phi
+from pyformex.arraytools import golden_ratio as phi
 
 Icosa = createElementType(
     'icosa',

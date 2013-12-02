@@ -33,9 +33,9 @@ _level = 'normal'
 _topics = ['geometry']
 _techniques = ['connect', 'dialog', 'animation']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
-from simple import circle
+from pyformex.simple import circle
 from geomtools import rotationAngle
 
 def run():

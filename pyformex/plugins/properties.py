@@ -32,7 +32,7 @@ from __future__ import print_function
 import pyformex as pf
 from flatkeydb import FlatDB
 from mydict import Dict, CDict
-from arraytools import *
+from pyformex.arraytools import *
 
 #################################################################
 # This first part still needs to be changed.

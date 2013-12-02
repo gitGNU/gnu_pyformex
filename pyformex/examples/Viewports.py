@@ -33,7 +33,7 @@ _level = 'advanced'
 _topics = ['surface']
 _techniques = ['viewport', 'color']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 def atExit():
     print("EXITING")
     layout(1)

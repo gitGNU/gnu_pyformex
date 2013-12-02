@@ -37,11 +37,11 @@ _level = 'normal'
 _topics = ['surface']
 _techniques = ['transform', 'projection', 'dialog', 'image', 'isopar']
 
-from gui.draw import *
-from plugins.trisurface import TriSurface
+from pyformex.gui.draw import *
+from pyformex.plugins.trisurface import TriSurface
 import elements
-from gui.widgets import ImageView
-from plugins.imagearray import *
+from pyformex.gui.widgets import ImageView
+from pyformex.plugins.imagearray import *
 
 
 def selectImage(fn):

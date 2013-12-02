@@ -32,7 +32,7 @@ _level = 'advanced'
 _topics = ['geometry', 'surface']
 _techniques = ['dialog', 'animation', 'color']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 def run():
     reset()

@@ -41,8 +41,8 @@ _level = 'normal'
 _topics = ['image']
 _techniques = ['color', 'filename']
 
-from gui.draw import *
-from plugins.imagearray import *
+from pyformex.gui.draw import *
+from pyformex.plugins.imagearray import *
 
 def run():
     clear()

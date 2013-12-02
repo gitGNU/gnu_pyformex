@@ -31,7 +31,7 @@ from __future__ import print_function
 
 
 import pyformex as pf
-from gui.widgets import simpleInputItem as _I, InputDialog as Dialog
+from pyformex.gui.widgets import simpleInputItem as _I, InputDialog as Dialog
 from utils import stuur
 
 dialog = None

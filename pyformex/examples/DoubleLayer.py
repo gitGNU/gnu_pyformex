@@ -34,9 +34,9 @@ _level = 'beginner'
 _topics = ['structure']
 _techniques = ['color']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
-from plugins import formian
+from pyformex.plugins import formian
 
 def run():
     clear()

@@ -34,7 +34,7 @@ _level = 'beginner'
 _topics = ['illustration']
 _techniques = ['draw']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 def tmbbox(a):
     return [[0.0, 0.0, 0.0], [1.0, 1.0, 1.0]]

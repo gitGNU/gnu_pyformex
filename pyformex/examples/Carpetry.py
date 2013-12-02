@@ -36,8 +36,8 @@ _topics = ['mesh', 'illustration', 'surface']
 _techniques = ['color', 'random', 'image', 'movie', 'extrude']
 _opengl2 = True
 
-from gui.draw import *
-from plugins import trisurface, surface_menu
+from pyformex.gui.draw import *
+from pyformex.plugins import trisurface, surface_menu
 from elements import *
 
 def atExit():
@@ -121,7 +121,7 @@ def run():
         n = int(n)
         save = ack("Save images?")
         if save:
-            from gui import image
+            from pyformex.gui import image
             image.save(filename='Carpetry-000.jpg', window=False, multi=True, hotkey=False, autosave=False, border=False, rootcrop=False, format=None, quality=95, verbose=False)
 
         A = None
@@ -145,7 +145,7 @@ def run():
         print(argv)
         canvasSize(nx*200, ny*200)
         print("just saving image")
-        from gui import image, guimain
+        from pyformex.gui import image, guimain
         carpet(M)
         image.save('testje2.png')
         #return(all=True)

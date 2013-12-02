@@ -66,7 +66,7 @@ _level = 'beginner'
 _topics = ['geometry', 'mesh']
 _techniques = ['extrude', 'border', 'pause']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 def atExit():
     #print "THIS IS THE EXIT FUNC"
     pf.GUI.setBusy(False)

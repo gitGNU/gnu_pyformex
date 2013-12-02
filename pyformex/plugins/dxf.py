@@ -30,7 +30,7 @@ from __future__ import print_function
 
 
 from formex import *
-from plugins import curve
+from pyformex.plugins import curve
 import utils
 
 
@@ -393,7 +393,7 @@ def exportDxfText(filename, parts):
 
 if __name__ == 'draw':
     #chdir(__file__)
-    from simple import circle
+    from pyformex.simple import circle
     c = circle(360./20., 360./20., 360.)
     draw(c)
     exportDXF('circle1.dxf', c)

@@ -33,7 +33,7 @@ from __future__ import print_function
 import pyformex as pf
 import gui
 import coords
-from attributes import Attributes
+from pyformex.attributes import Attributes
 
 
 
@@ -238,7 +238,7 @@ def _set_webgl():
             s += "\n"
         return s
 
-    from plugins import webgl
+    from pyformex.plugins import webgl
     webgl.WebGL.format_actor = format_actor
 
 

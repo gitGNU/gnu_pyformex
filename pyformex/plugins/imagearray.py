@@ -32,7 +32,7 @@ from __future__ import print_function
 
 
 import pyformex as pf
-from gui import QtGui
+from pyformex.gui import QtGui
 QImage = QtGui.QImage
 QColor = QtGui.QColor
 

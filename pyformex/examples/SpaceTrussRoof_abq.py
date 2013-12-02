@@ -32,9 +32,9 @@ _level = 'advanced'
 _topics = ['FEA']
 _techniques = ['color'] 
 
-from gui.draw import *
-from plugins.properties import *
-from plugins.fe_abq import *
+from pyformex.gui.draw import *
+from pyformex.plugins.properties import *
+from pyformex.plugins.fe_abq import *
 import os
 
 def run():

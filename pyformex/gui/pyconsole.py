@@ -35,8 +35,8 @@ import atexit
 import traceback
 
 
-from gui import QtGui, QtCore
-from gui.guimain import Board
+from pyformex.gui import QtGui, QtCore
+from pyformex.gui.guimain import Board
 import utils
 
 

@@ -42,7 +42,7 @@ _level = 'normal'
 _topics = ['illustration']
 _techniques = ['animation']
 
-from gui.draw import *
+from pyformex.gui.draw import *
    
 
 def circle(n=60):

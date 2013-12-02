@@ -34,7 +34,7 @@ adjacency of elements can easily be detected from common node numbers.
 from __future__ import print_function
 from pyformex import zip
 
-from arraytools import *
+from pyformex.arraytools import *
 from adjacency import *
 from utils import deprecation
 from messages import _future_deprecation

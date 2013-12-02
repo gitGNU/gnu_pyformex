@@ -239,7 +239,7 @@ def toMesh(suffix=''):
     surface names plus the suffix, else, the surface names will be used
     (and the surfaces will thus be cleared from memory).
     """
-    from plugins import geometry_menu
+    from pyformex.plugins import geometry_menu
     if not selection.check():
         selection.ask()
 
@@ -267,7 +267,7 @@ def fromMesh(suffix=''):
     Mesh names plus the suffix, else, the Mesh names will be used
     (and the Meshes will thus be cleared from memory).
     """
-    from plugins import geometry_menu
+    from pyformex.plugins import geometry_menu
     if not geometry_menu.selection.check():
         geometry_menu.selection.ask()
 
@@ -1053,7 +1053,7 @@ def slicer():
 def spliner():
     """Slice the surface to a sequence of cross sections."""
     import olist
-    from plugins.curve import BezierSpline
+    from pyformex.plugins.curve import BezierSpline
     S = selection.check(single=True)
     if not S:
         return
@@ -1147,7 +1147,7 @@ def create_volume():
         M = S.tetgen(quality=True)
         export({'tetmesh':M})
         selection.set([])
-        from plugins import geometry_menu as gm
+        from pyformex.plugins import geometry_menu as gm
         gm.selection.set(['tetmesh'])
 
 

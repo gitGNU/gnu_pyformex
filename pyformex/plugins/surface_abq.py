@@ -30,8 +30,8 @@ surface and volume modules in Abaqus(R) input format.
 from __future__ import print_function
 
 
-from mesh import Mesh
-from plugins import fe_abq, tetgen
+from pyformex.mesh import Mesh
+from pyformex.plugins import fe_abq, tetgen
 import os
 
 

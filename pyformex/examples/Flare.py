@@ -32,7 +32,7 @@ _level = 'beginner'
 _topics = ['geometry']
 _techniques = ['color', 'dialog', 'transform', 'function']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 def addFlares(F,dir=[0, 2]):
     """Adds flares at both ends of the structure.

@@ -28,7 +28,7 @@
 from __future__ import print_function
 
 
-from coords import *
+from pyformex.coords import *
 from polynomial import *
 
 

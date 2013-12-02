@@ -33,15 +33,15 @@ _level = 'advanced'
 _topics = ['geometry', 'FEA', 'domes', 'surface']
 _techniques = ['menu', 'dialog', 'persistence', 'color']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 import simple, utils
 from connectivity import Connectivity
-from plugins.trisurface import TriSurface
-from plugins.properties import *
-from plugins.fe_abq import *
-from gui.colorscale import ColorScale, ColorLegend
-from gui import menu, decors
+from pyformex.plugins.trisurface import TriSurface
+from pyformex.plugins.properties import *
+from pyformex.plugins.fe_abq import *
+from pyformex.gui.colorscale import ColorScale, ColorLegend
+from pyformex.gui import menu, decors
 import time
 
 
@@ -661,7 +661,7 @@ def runCalpyAnalysis():
     # Load the needed calpy modules
     # You can prepend your own path here to override the installed calpy
     # sys.path[0:0] = ['/home/bene/prj/calpy']
-    from plugins import calpy_itf
+    from pyformex.plugins import calpy_itf
     calpy_itf.check()
     import calpy
     print(calpy)
@@ -825,8 +825,8 @@ def runCalpyAnalysis():
 
 def postCalpy():
     """Show results from the Calpy analysis."""
-    from plugins.postproc import niceNumber, frameScale
-    from plugins.postproc_menu import showResults
+    from pyformex.plugins.postproc import niceNumber, frameScale
+    from pyformex.plugins.postproc_menu import showResults
     try:
         FE = named('fe_model')
         displ, frc = named('calpy_results')

@@ -48,14 +48,14 @@ the data involved with the finite element model.
 from __future__ import print_function
 from pyformex import zip
 
-from plugins.properties import *
-from plugins.fe import *
+from pyformex.plugins.properties import *
+from pyformex.plugins.fe import *
 from mydict import Dict, CDict
 import pyformex as pf
 from datetime import datetime
 import os, sys
 import utils
-from arraytools import isInt
+from pyformex.arraytools import isInt
 
 ##################################################
 ## Some Abaqus .inp format output routines

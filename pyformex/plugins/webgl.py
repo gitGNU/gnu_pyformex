@@ -34,17 +34,16 @@ WebGL scene.
 """
 from __future__ import print_function
 
-
 import pyformex as pf
-from gui import colors
-import utils
-from olist import List, intersection
-from mydict import Dict
-import os
+from pyformex import utils
+from pyformex.gui import colors
+from pyformex.olist import List, intersection
+from pyformex.mydict import Dict
+from pyformex.arraytools import checkFloat, checkArray, checkInt
+from pyformex.mesh import Mesh
 from numpy import asarray, arange, int32
-from arraytools import checkFloat, checkArray, checkInt
-from mesh import Mesh
 
+import os
 
 exported_webgl = None
 
@@ -264,7 +263,7 @@ class WebGL(List):
         as a list.
         The actor's controller attributes are added to the controller gui.
         """
-        from attributes import Attributes
+        from pyformex.attributes import Attributes
         drawables = []
         controllers = []
 
@@ -287,7 +286,7 @@ class WebGL(List):
                 color = asarray(attrib.cbo).reshape(-1, 3)
                 obj.color = color[elems]
             attrib.file = '%s_%s.pgf' % (self.name, attrib.name)
-            from geometry import Geometry
+            from pyformex.geometry import Geometry
             Geometry.write(obj, attrib.file, '')
             # add missing attributes
             if attrib.lighting is None:
@@ -429,7 +428,7 @@ var %s_reset = %s.add(r.camera,'reset');
 
     def exportPGF(self,fn,sep=''):
         """Export the current scene to a pgf file"""
-        from plugins.geometry_menu import writeGeometry
+        from pyformex.plugins.geometry_menu import writeGeometry
         res = writeGeometry(self.objdict(), fn, sep=sep)
         return res
 

@@ -30,10 +30,10 @@ from __future__ import print_function
 from pyformex import zip
 
 import pyformex as pf
-from coords import *
+from pyformex.coords import *
 from connectivity import *
 from geometry import Geometry
-from mesh import Mesh, mergeMeshes
+from pyformex.mesh import Mesh, mergeMeshes
 from utils import deprecation
 import warnings
 

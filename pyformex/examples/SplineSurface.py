@@ -56,7 +56,7 @@ _level = 'advanced'
 _topics = ['geometry', 'surface']
 _techniques = ['spline']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 
 ##
@@ -71,7 +71,7 @@ two-dimensional geometry in pyFormex.
 
 import numpy as np
 from geometry import Geometry
-from plugins.curve import *
+from pyformex.plugins.curve import *
 
 
 ##############################################################################
@@ -275,7 +275,7 @@ def area(C,nroll=0):
     appropriately.
     """
     print(nroll)
-    from plugins.section2d import PlaneSection
+    from pyformex.plugins.section2d import PlaneSection
     F = C.toFormex().rollAxes(nroll)
     S = PlaneSection(F)
     C = S.sectionChar()
@@ -287,7 +287,7 @@ def run():
     clear()
     smoothwire()
 
-    from gui.widgets import simpleInputItem as I
+    from pyformex.gui.widgets import simpleInputItem as I
 
     res = askItems([
         I('base', itemtype='vradio', choices=[

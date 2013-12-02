@@ -29,10 +29,10 @@ from __future__ import print_function
 
 
 import pyformex as pf
-from plugins.curve import PolyLine
+from pyformex.plugins.curve import PolyLine
 import simple
-from gui.draw import *
-from arraytools import isInt
+from pyformex.gui.draw import *
+from pyformex.arraytools import isInt
 
 def connectPoints(F,close=False):
     """Return a Formex with straight segments connecting subsequent points.

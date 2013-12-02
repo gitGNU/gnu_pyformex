@@ -258,7 +258,7 @@ def sphere(ndiv=6):
       spherical surface with radius 1 and center at the origin.
     """
     from elements import Icosa
-    from plugins.trisurface import TriSurface
+    from pyformex.plugins.trisurface import TriSurface
 
     M = TriSurface(Icosa.vertices, Icosa.faces)
     M = M.subdivide(ndiv).fuse()

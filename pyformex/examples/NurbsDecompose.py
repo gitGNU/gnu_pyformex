@@ -37,10 +37,10 @@ _level = 'advanced'
 _topics = ['Geometry', 'Curve']
 _techniques = ['nurbs']
 
-from gui.draw import *
-from plugins.nurbs import *
-from plugins.curve import *
-from plugins.nurbs_menu import _options, drawNurbs
+from pyformex.gui.draw import *
+from pyformex.plugins.nurbs import *
+from pyformex.plugins.curve import *
+from pyformex.plugins.nurbs_menu import _options, drawNurbs
 
 class _decors:
     ctrl_numbers = None

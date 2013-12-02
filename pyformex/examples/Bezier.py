@@ -37,7 +37,7 @@ _level = 'beginner'
 _topics = ['geometry', 'curve']
 _techniques = ['connect', 'color', 'solve']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 def build_matrix(atoms, vars):
     """Build a matrix of functions of coords.

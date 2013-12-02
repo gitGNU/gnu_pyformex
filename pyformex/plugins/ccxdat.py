@@ -29,9 +29,9 @@ Interface with Calculix FE result files (.dat).
 from __future__ import print_function
 
 
-from plugins.fe_post import FeResult
-from arraytools import *
-from mesh import Mesh
+from pyformex.plugins.fe_post import FeResult
+from pyformex.arraytools import *
+from pyformex.mesh import Mesh
 
 
 ######################### functions #############################
@@ -151,7 +151,7 @@ def computeAveragedNodalStresses(M, data, gprule):
 
     ############################
     # Load the needed calpy modules
-    from plugins import calpy_itf
+    from pyformex.plugins import calpy_itf
     calpy_itf.check()
 
     gprule = (2, 2) # integration rule: minimum (1,1),  maximum (5,5)

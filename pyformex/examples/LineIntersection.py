@@ -33,10 +33,10 @@ _level = 'normal'
 _topics = ['curve']
 _techniques = ['intersection']
 
-from gui.draw import *
-from plugins.curve import *
+from pyformex.gui.draw import *
+from pyformex.plugins.curve import *
 from geomtools import *
-from simple import circle
+from pyformex.simple import circle
 
 
 def intersection(F1, F2):

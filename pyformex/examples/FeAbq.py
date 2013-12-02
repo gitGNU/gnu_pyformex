@@ -33,11 +33,11 @@ _level = 'advanced'
 _topics = ['FEA']
 _techniques = ['persistence', 'dialog', 'color']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
-from plugins.fe import mergedModel
-from plugins.properties import PropertyDB, ElemSection, Eset
-from plugins.fe_abq import Step, Output, Result, AbqData
+from pyformex.plugins.fe import mergedModel
+from pyformex.plugins.properties import PropertyDB, ElemSection, Eset
+from pyformex.plugins.fe_abq import Step, Output, Result, AbqData
 
 
 def base(nplex):

@@ -33,8 +33,8 @@ _level = 'beginner'
 _topics = []
 _techniques = ['text']
 
-from gui.draw import *
-from gui.decors import Grid
+from pyformex.gui.draw import *
+from pyformex.gui.decors import Grid
 
 def run():
     clear()
@@ -53,7 +53,7 @@ def run():
         undecorate(T)
 
     delay(1)
-    from gui.gluttext import GLUTFONTS
+    from pyformex.gui.gluttext import GLUTFONTS
     for f in GLUTFONTS.keys():
         S = drawText(f, 20, 20, font='hv18')
         T = drawText('X', x, y, font=f, gravity='C')

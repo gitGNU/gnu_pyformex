@@ -45,7 +45,7 @@ _level = 'normal'
 _topics = ['curve', 'drawing', 'illustration']
 _techniques = ['color', 'persistence', 'lima', 'import']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 from pyformex.apps.Lima import *
 
 def run():

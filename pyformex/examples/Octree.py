@@ -41,9 +41,9 @@ _level = 'normal'
 _topics = ['Mesh', 'Geometry']
 _techniques = ['Octree', 'Vtk']
 
-from gui.draw import *
-from simple import sphere3
-from plugins.vtk_itf import octree
+from pyformex.gui.draw import *
+from pyformex.simple import sphere3
+from pyformex.plugins.vtk_itf import octree
 
 smoothwire()
 transparent()

@@ -43,11 +43,11 @@ _level = 'normal'
 _topics = ['geometry', 'curve']
 _techniques = []
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 
-from plugins.curve import *
-from plugins.nurbs import *
+from pyformex.plugins.curve import *
+from pyformex.plugins.nurbs import *
 
 def run():
     predefined = ['514', '1234', '51414336', 'custom']

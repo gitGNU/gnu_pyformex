@@ -35,8 +35,8 @@ _level = 'beginner'
 _topics = ['surface']
 _techniques = ['isosurface']
 
-from gui.draw import *
-from plugins import isosurface as sf
+from pyformex.gui.draw import *
+from pyformex.plugins import isosurface as sf
 import elements
 import plugins.imagearray as ia
 

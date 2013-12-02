@@ -28,7 +28,7 @@ from __future__ import print_function
 
 
 from numpy import *
-from gui.draw import *
+from pyformex.gui.draw import *
 
 _prop_ = 0
 _name_ = "_dummy_"

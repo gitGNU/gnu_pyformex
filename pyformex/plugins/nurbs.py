@@ -30,9 +30,9 @@ NURBS curves and surface in pyFormex.
 from __future__ import print_function
 
 
-from coords import *
+from pyformex.coords import *
 from lib import nurbs
-from plugins import curve
+from pyformex.plugins import curve
 from pyformex import options
 from pyformex import utils
 import olist
@@ -503,7 +503,7 @@ class NurbsCurve(Geometry4):
 
     def actor(self,**kargs):
         """Graphical representation"""
-        from gui.actors import NurbsActor
+        from pyformex.gui.actors import NurbsActor
         return NurbsActor(self,**kargs)
 
 
@@ -673,7 +673,7 @@ class NurbsSurface(Geometry4):
 
     def actor(self,**kargs):
         """Graphical representation"""
-        from gui.actors import NurbsActor
+        from pyformex.gui.actors import NurbsActor
         return NurbsActor(self,**kargs)
 
 
@@ -706,7 +706,7 @@ def globalInterpolationCurve(Q,degree=3,strategy=0.5):
     0.5: centripetal (default, recommended)
     1.0: chord length (often used)
     """
-    from plugins.curve import PolyLine
+    from pyformex.plugins.curve import PolyLine
     # set the knot values at the points
     nc = Q.shape[0]
     n = nc-1

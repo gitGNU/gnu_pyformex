@@ -29,10 +29,10 @@ from __future__ import print_function
 
 
 import pyformex as pf
-from coords import *
+from pyformex.coords import *
 import utils
 import os
-from plugins.trisurface import TriSurface
+from pyformex.plugins.trisurface import TriSurface
 from multi import multitask
 
 if not utils.hasExternal('gts-bin'):

@@ -47,7 +47,7 @@ _level = 'advanced'
 _topics = [ 'mesh', 'postprocess']
 _techniques = ['calpy', 'color']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 # First, we need to import calpy. If you do not have calpy,
 # download it from ftp://bumps.ugent.be/pub/calpy
@@ -56,7 +56,7 @@ from gui.draw import *
 def run():
 
     # Locate calpy and load interface
-    from plugins import calpy_itf
+    from pyformex.plugins import calpy_itf
     try:
         Q = calpy_itf.QuadInterpolator
     except:

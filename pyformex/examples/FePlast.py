@@ -37,14 +37,14 @@ _level = 'advanced'
 _topics = ['FEA']
 _techniques = ['properties', 'export', 'extrude']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
-from plugins.fe import *
-from plugins.properties import *
-from plugins.fe_abq import Step, Output, Result, AbqData
-from plugins import ccxdat
-from plugins import postproc_menu
-from mesh import *
+from pyformex.plugins.fe import *
+from pyformex.plugins.properties import *
+from pyformex.plugins.fe_abq import Step, Output, Result, AbqData
+from pyformex.plugins import ccxdat
+from pyformex.plugins import postproc_menu
+from pyformex.mesh import *
 
 
 def run():

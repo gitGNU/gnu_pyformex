@@ -42,7 +42,7 @@ _level = 'normal'
 _topics = ['geometry', 'domes']
 _techniques = ['color', 'align', 'withprop']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 
 def schwedler():

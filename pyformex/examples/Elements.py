@@ -35,10 +35,10 @@ _level = 'normal'
 _topics = ['geometry', 'mesh']
 _techniques = ['dialog', 'elements']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 from elements import *
-from mesh import Mesh
+from pyformex.mesh import Mesh
 import utils
 import olist
 

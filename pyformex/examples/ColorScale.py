@@ -34,9 +34,9 @@ _level = 'normal'
 _topics = ['FEA']
 _techniques = ['dialog', 'color']
 
-from gui.draw import *
-from gui.colorscale import *
-from gui.gluttext import GLUTFONTS
+from pyformex.gui.draw import *
+from pyformex.gui.colorscale import *
+from pyformex.gui.gluttext import GLUTFONTS
 
 input_data = [
     _I('valrange', text='Value range type', itemtype='select', choices=['Minimum-Medium-Maximum', 'Minimum-Maximum']),

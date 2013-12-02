@@ -34,12 +34,12 @@ from pyformex import zip
 
 from odict import ODict
 from geomtools import triangleCircumCircle
-from plugins.curve import *
-from plugins.nurbs import *
-from simple import circle
-from plugins import objects
-from plugins.geometry_menu import autoname, autoName, geomList
-from gui.draw import *
+from pyformex.plugins.curve import *
+from pyformex.plugins.nurbs import *
+from pyformex.simple import circle
+from pyformex.plugins import objects
+from pyformex.plugins.geometry_menu import autoname, autoName, geomList
+from pyformex.gui.draw import *
 
 draw_mode_2d = ['point', 'polyline', 'curve', 'nurbs', 'circle']
 autoname['point'] = autoName('coords')
@@ -127,7 +127,7 @@ def highlightDrawing(points, mode):
 
     pts is an array of points.
     """
-    from gui import actors
+    from pyformex.gui import actors
     pf.canvas.removeHighlight()
     #print points[-1]
     PA = actors.GeomActor(Formex(points))

@@ -47,9 +47,9 @@ _level = 'normal'
 _topics = ['geometry']
 _techniques = ['dialog', 'color', 'isopar', 'undraw']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
-from plugins import isopar
+from pyformex.plugins import isopar
 import elements
 
 # First and second order elements to be used for geometry, resp. transform

@@ -26,19 +26,16 @@
 """
 from __future__ import print_function
 
+import pyformex as pf
+from pyformex import utils, project
+from pyformex import plugins
+
+from pyformex.gui import widgets, draw, image
+from pyformex.gui.draw import _I, _G
+from pyformex.gui.prefMenu import updateSettings
 
 import os, shutil
-import pyformex as pf
-import widgets
-import utils
-import project
-import draw
-from draw import _I, _G
-import image
-import plugins
-
 from gettext import gettext as _
-from prefMenu import updateSettings
 
 
 ##################### handle project files ##########################
@@ -417,7 +414,7 @@ def editApp(appname=None):
         fn = appname
 
     else:
-        import apps
+        from pyformex import apps
         app = apps.load(appname)
         if app is None:
             fn = apps.findAppSource(appname)
@@ -487,10 +484,10 @@ def stopMultiSave():
     """Stop multisave mode."""
     image.save()
 
-from imageViewer import ImageViewer
 viewer = None
 def showImage():
     """Display an image file."""
+    from pyformex.gui.imageViewer import ImageViewer
     global viewer
     fn = draw.askFilename(filter=utils.fileDescription('img'))
     if fn:
@@ -540,7 +537,7 @@ def createMovieInteractive():
 
 def exportPGF():
     """Export the current scene to PGF"""
-    from plugins.webgl import WebGL
+    from pyformex.plugins.webgl import WebGL
     types = utils.fileDescription(['pgf', 'all'])
     fn = draw.askNewFilename(pf.cfg['workdir'], types)
     if fn:
@@ -563,7 +560,7 @@ def exportWebGL():
     The user is asked for a file name to store the exported model,
     and after export, whether to load the model in the browser.
     """
-    from plugins.webgl import WebGL
+    from pyformex.plugins.webgl import WebGL
     types = [ utils.fileDescription('html') ]
     fn = draw.askNewFilename(pf.cfg['workdir'], types)
     if fn:
@@ -577,7 +574,7 @@ _recording_pid = 0
 def recordSession(stop=0):
     """Record the current pyFormex session."""
     global _recording_pid
-    from guimain import hasDRI
+    from pyformex.guimain import hasDRI
 
     print("RECORDING with dri=%s" % pf.options.dri)
 

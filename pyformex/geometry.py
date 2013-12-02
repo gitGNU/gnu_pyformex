@@ -30,9 +30,9 @@ Coords class to the derived classes.
 from __future__ import print_function
 from pyformex import zip
 
-from coords import Coords, Int
+from pyformex.coords import Coords, Int
 import numpy as np
-from arraytools import complement
+from pyformex.arraytools import complement
 
 
 class Geometry(object):
@@ -401,7 +401,7 @@ class Geometry(object):
         The convex hull is a closed TriSurface enclosing all points
         of the geometry.
         """
-        from plugins.trisurface import TriSurface
+        from pyformex.plugins.trisurface import TriSurface
         X = self.coords
         hull = TriSurface(X, X.convexHull())
         if compact:
@@ -616,7 +616,7 @@ class Geometry(object):
 
 if __name__ == "draw":
 
-    from gui.draw import draw
+    from pyformex.gui.draw import draw
 
     def draw(self,*args,**kargs):
         draw(self.coords,*args,**kargs)

@@ -36,9 +36,9 @@ import software
 software.requireExternal('tetgen')
 
 
-from coords import *
+from pyformex.coords import *
 from connectivity import Connectivity
-from mesh import Mesh
+from pyformex.mesh import Mesh
 from filewrite import *
 import utils
 
@@ -482,10 +482,10 @@ def tetgenConvexHull(pts):
 
     This could be made an example:
 
-    from simple import regularGrid
+    from pyformex.simple import regularGrid
     X = Coords(regularGrid([0., 0., 0.], [1., 1., 1.], [10, 10, 10]).reshape(-1, 3)).addNoise(rsize=0.05,asize=0.5)
     draw(X)
-    from plugins.tetgen import tetgenConvexHull
+    from pyformex.plugins.tetgen import tetgenConvexHull
     tch, ch =tetgenConvexHull( X)
     draw(ch, color='red', marksize=10)
     """
@@ -512,7 +512,7 @@ def checkSelfIntersectionsWithTetgen(self,verbose=False):
 
     Returns pairs of intersecting triangles
     """
-    from plugins.tetgen import writeSurface
+    from pyformex.plugins.tetgen import writeSurface
     cmd = 'tetgen -d '
     tmp = utils.tempfile.mktemp('')
     pf.message("Writing temp file %s" % tmp)
@@ -573,7 +573,7 @@ def tetMesh(surfacefile,quality=False,volume=None,outputdir=None):
 
 
 def install_more_trisurface_methods():
-    from plugins.trisurface import TriSurface
+    from pyformex.plugins.trisurface import TriSurface
     #TriSurface.tetmesh = meshInsideSurface
     TriSurface.checkSelfIntersectionsWithTetgen = checkSelfIntersectionsWithTetgen
 

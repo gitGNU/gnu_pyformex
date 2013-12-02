@@ -50,7 +50,7 @@ _level = 'beginner'
 _topics = []
 _techniques = ['color', 'text', 'random', 'animation']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 def run():
     n = 40

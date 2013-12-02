@@ -33,7 +33,7 @@ _level = 'normal'
 _topics = ['geometry']
 _techniques = ['programming', 'widgets', 'globals']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 def torus(m,n,surface=True):
     """Create a torus with m cells along big circle and n cells along small."""

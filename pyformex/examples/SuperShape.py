@@ -42,10 +42,10 @@ _level = 'advanced'
 _topic = ['geometry']
 _techniques = ['dialog', 'persistence']
 
-from gui.draw import *
-from simple import rectangle
+from pyformex.gui.draw import *
+from pyformex.simple import rectangle
 from utils import NameSequence
-from plugins.imagearray import *
+from pyformex.plugins.imagearray import *
 
 dialog = None
 savefile = None

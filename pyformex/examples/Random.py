@@ -49,7 +49,7 @@ _level = 'beginner'
 _topics = ['formex']
 _techniques = ['color', 'random', 'connect']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 def run():
     resetAll()

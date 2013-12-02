@@ -40,13 +40,13 @@ _level = 'normal'
 _topics = ['mesh']
 _techniques = ['draw', 'replicate', 'match', 'cselect']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 def run():
     transparent()
     smoothwire()
     clear()
-    from mesh import Mesh
+    from pyformex.mesh import Mesh
 
     n=5
     nx=4*n

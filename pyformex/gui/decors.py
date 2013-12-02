@@ -30,7 +30,7 @@ from __future__ import print_function
 from pyformex import zip
 
 from OpenGL import GL
-from gui import QtOpenGL
+from pyformex.gui import QtOpenGL
 
 from drawable import *
 from text import *

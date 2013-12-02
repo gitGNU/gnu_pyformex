@@ -35,7 +35,7 @@ _level = 'normal'
 _topics = []
 _techniques = ['dialog']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 
 # BV

@@ -40,11 +40,11 @@ _level = 'normal'
 _topics = ['export']
 _techniques = ['webgl']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
-from simple import sphere, sector, cylinder
+from pyformex.simple import sphere, sector, cylinder
 from mydict import Dict
-from plugins.webgl import WebGL
+from pyformex.plugins.webgl import WebGL
 
 def run():
     reset()

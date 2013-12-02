@@ -52,12 +52,12 @@ import canvas
 import colors
 
 import coords
-from plugins import trisurface, tools, fe
+from pyformex.plugins import trisurface, tools, fe
 
 from script import *
 from colors import *
 from formex import *
-from coordsys import CoordinateSystem
+from pyformex.coordsys import CoordinateSystem
 
 #################### Interacting with the user ###############################
 
@@ -896,7 +896,7 @@ def drawVectors(P,v,size=None,nolight=True,**drawOptions):
 
 
 def drawPlane(P,N,size,**drawOptions):
-    from plugins.tools import Plane
+    from pyformex.plugins.tools import Plane
     p = Plane(P, N, size)
     return draw(p,bbox='last',**drawOptions)
 
@@ -1023,7 +1023,7 @@ def drawAxes(CS=None,*args,**kargs):
     this function gives a better result because it has specialized color
     and annotation settings and provides reasonable deafults.
     """
-    from coordsys import CoordinateSystem
+    from pyformex.coordsys import CoordinateSystem
     if CS is None:
         CS = CoordinateSystem()
     A = actors.AxesActor(CS,*args,**kargs)
@@ -1057,7 +1057,7 @@ def drawImage3D(image,nx=0,ny=0,pixel='dot'):
     See also :func:`drawImage`.
     """
     pf.GUI.setBusy()
-    from plugins.imagearray import image2glcolor, resizeImage
+    from pyformex.plugins.imagearray import image2glcolor, resizeImage
 
     # Create the colors
     image = resizeImage(image, nx, ny)
@@ -1107,8 +1107,8 @@ def drawImage(image,w=0,h=0,x=-1,y=-1,color=white,ontop=False):
     fills the background.
     """
     utils.warn("warn_drawImage_changed")
-    from plugins.imagearray import image2numpy
-    from gui.decors import Rectangle
+    from pyformex.plugins.imagearray import image2numpy
+    from pyformex.gui.decors import Rectangle
 
     image = image2numpy(image, resize=(w, h), indexed=False)
     w, h = image.shape[:2]
@@ -1993,7 +1993,7 @@ def exportWebGL(fn,title=None,description=None,keywords=None,author=None,created
 
     Returns the absolute pathname of the generated .html file.
     """
-    from plugins.webgl import WebGL
+    from pyformex.plugins.webgl import WebGL
     pf.message("Exporting current scene to %s.html" % fn)
     pf.GUI.setBusy()
     if os.path.isabs(fn):
@@ -2014,7 +2014,7 @@ def showURL(url):
 
     - `url`: url to load
     """
-    from gui.helpMenu import help
+    from pyformex.gui.helpMenu import help
     help(url)
 
 

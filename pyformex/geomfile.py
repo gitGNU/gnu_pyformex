@@ -32,9 +32,9 @@ from __future__ import print_function
 
 import utils
 import filewrite
-from coords import *
+from pyformex.coords import *
 from formex import Formex
-from mesh import Mesh
+from pyformex.mesh import Mesh
 from odict import ODict
 from pyformex import message, debug, warning, DEBUG
 
@@ -530,7 +530,7 @@ class GeometryFile(object):
         an objtype is specified.
         """
         # Make sure to import the Mesh subclasses that can be read
-        from plugins.trisurface import TriSurface
+        from pyformex.plugins.trisurface import TriSurface
 
         ndim = 3
         x = readArray(self.fil, Float, (ncoords, ndim), sep=sep)
@@ -558,7 +558,7 @@ class GeometryFile(object):
         The coordinate array for ncoords points is read from the file
         and a Curve of type `objtype` is returned.
         """
-        from plugins.curve import PolyLine
+        from pyformex.plugins.curve import PolyLine
         ndim = 3
         coords = readArray(self.fil, Float, (ncoords, ndim), sep=sep)
         return PolyLine(control=coords, closed=closed)
@@ -570,7 +570,7 @@ class GeometryFile(object):
         The coordinate array for ncoords points is read from the file
         and a BezierSpline of the given degree is returned.
         """
-        from plugins.curve import BezierSpline
+        from pyformex.plugins.curve import BezierSpline
         ndim = 3
         coords = readArray(self.fil, Float, (ncoords, ndim), sep=sep)
         return BezierSpline(control=coords, closed=closed, degree=degree)
@@ -583,7 +583,7 @@ class GeometryFile(object):
         knot values are read from the file.
         A NurbsCurve of degree p = nknots - ncoords - 1 is returned.
         """
-        from plugins.nurbs import NurbsCurve
+        from pyformex.plugins.nurbs import NurbsCurve
         ndim = 4
         coords = readArray(self.fil, Float, (ncoords, ndim), sep=sep)
         knots = readArray(self.fil, Float, (nknots,), sep=sep)
@@ -598,7 +598,7 @@ class GeometryFile(object):
         A NurbsSurface of degree ``pu = nuknots - ncoords - 1``  and
         ``pv = nvknots - ncoords - 1`` is returned.
         """
-        from plugins.nurbs import NurbsSurface
+        from pyformex.plugins.nurbs import NurbsSurface
         ndim = 4
         coords = readArray(self.fil, Float, (ncoords, ndim), sep=sep)
         uknots = readArray(self.fil, Float, (nuknots,), sep=sep)
@@ -613,7 +613,7 @@ class GeometryFile(object):
         for (nparts,2) control points are read from the file.
         A BezierSpline is constructed and returned.
         """
-        from plugins.curve import BezierSpline
+        from pyformex.plugins.curve import BezierSpline
         ndim = 3
         coords = readArray(self.fil, Float, (ncoords, ndim), sep=sep)
         control = readArray(self.fil, Float, (nparts, 2, ndim), sep=sep)

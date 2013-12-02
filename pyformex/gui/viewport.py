@@ -33,7 +33,7 @@ from pyformex import zip
 
 import pyformex as pf
 
-from gui import QtCore, QtGui, QtOpenGL
+from pyformex.gui import QtCore, QtGui, QtOpenGL
 from OpenGL import GL
 
 from collection import Collection
@@ -55,9 +55,9 @@ import toolbar
 
 import math
 
-from coords import Coords
+from pyformex.coords import Coords
 from numpy import *
-from arraytools import isInt
+from pyformex.arraytools import isInt
 
 
 # Some 2D vector operations
@@ -360,7 +360,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
 
     def getSize(self):
         """Return the size of this canvas"""
-        from guimain import Size
+        from pyformex.guimain import Size
         return Size(self)
 
 

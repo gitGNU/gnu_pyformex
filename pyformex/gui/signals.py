@@ -30,7 +30,7 @@ from __future__ import print_function
 
 
 import pyformex as pf
-from gui import QtCore
+from pyformex.gui import QtCore
 
 # These have to disappear
 SIGNAL = QtCore.SIGNAL
@@ -41,7 +41,7 @@ DONE   = SIGNAL("Done")     # accept and finish the operation
 TIMEOUT = SIGNAL("Timeout") # terminate what was going on
 
 
-from gui import Signal
+from pyformex.gui import Signal
 
 class Signals(QtCore.QObject):
     """A class with all custom signals in pyFormex.

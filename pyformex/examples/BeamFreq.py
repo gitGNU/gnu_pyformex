@@ -39,8 +39,8 @@ _topics = ['FEA', 'curve', 'drawing']
 _techniques = ['external', 'viewport']
 _opengl2 = True
 
-from gui.draw import *
-from plugins.curve import *
+from pyformex.gui.draw import *
+from pyformex.plugins.curve import *
 import simple
 
 def check_calix(version='1.5-a8'):

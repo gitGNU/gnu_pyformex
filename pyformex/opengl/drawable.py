@@ -28,14 +28,14 @@ from __future__ import print_function
 
 
 import pyformex as pf
-from gui.drawable import *
-from gui import colors
+from pyformex.gui.drawable import *
+from pyformex.gui import colors
 from OpenGL import GL
 from OpenGL.arrays.vbo import VBO
 from shader import Shader
-from attributes import Attributes
+from pyformex.attributes import Attributes
 from formex import Formex
-from mesh import Mesh
+from pyformex.mesh import Mesh
 from elements import elementType, _default_eltype
 import geomtools as gt
 import arraytools as at

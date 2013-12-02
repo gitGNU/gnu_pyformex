@@ -33,7 +33,7 @@ _level = 'beginner'
 _topics = ['geometry']
 _techniques = ['color', 'pattern']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 import simple
 
 

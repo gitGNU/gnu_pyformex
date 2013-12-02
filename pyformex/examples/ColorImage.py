@@ -41,9 +41,9 @@ _level = 'normal'
 _topics = ['image']
 _techniques = ['color', 'image']
 
-from gui.draw import *
-from gui.widgets import ImageView
-from plugins.imagearray import *
+from pyformex.gui.draw import *
+from pyformex.gui.widgets import ImageView
+from pyformex.plugins.imagearray import *
 from odict import ODict
 
 resetAll()

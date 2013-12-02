@@ -34,7 +34,7 @@ from __future__ import print_function
 import pyformex as pf
 
 from OpenGL import GL
-from gui import QtCore, QtGui, QtOpenGL
+from pyformex.gui import QtCore, QtGui, QtOpenGL
 import utils
 import os
 
@@ -184,7 +184,7 @@ def save_canvas(canvas,fn,fmt='png',quality=-1,size=None):
             ### REMOVE THE ALPHA CHANNEL (see bug #36995)
             ### Since we did not find a way to do this directly on
             ### the QImage, we got through an numpy array
-            from plugins.imagearray import image2numpy, rgb2qimage
+            from pyformex.plugins.imagearray import image2numpy, rgb2qimage
             ar, cm = image2numpy(qim, flip=False)
             qim = rgb2qimage(ar[..., :3])
             ####

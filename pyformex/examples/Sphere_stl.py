@@ -32,7 +32,7 @@ _level = 'normal'
 _topics = ['geometry', 'surface']
 _techniques = ['connect', 'spherical', 'dialog', 'persistence', 'color']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 def run():
     clear()

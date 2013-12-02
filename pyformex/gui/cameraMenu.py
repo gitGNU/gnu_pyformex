@@ -26,13 +26,12 @@
 """
 from __future__ import print_function
 
-
 import pyformex as pf
-import draw
-import toolbar
+from pyformex.gui import draw, toolbar
+from pyformex.gui.guifunc import *
+from pyformex.plugins.cameratools import showCameraTool
+
 from gettext import gettext as _
-from guifunc import *
-from plugins.cameratools import showCameraTool
 
 @viewport_function
 def zoomIn(*args,**kargs):
@@ -110,35 +109,35 @@ MenuData = [
     (_('&GlobalAxes'), draw.setGlobalAxes),
     (_('&Projection'), toolbar.setProjection),
     (_('&Perspective'), toolbar.setPerspective),
-    (_('&Zoom Rectangle'), zoomRectangle), 
-    (_('&Zoom All'), zoomAll), 
-    (_('&Zoom In'), zoomIn), 
-    (_('&Zoom Out'), zoomOut), 
-    (_('&Dolly In'), dollyIn), 
-    (_('&Dolly Out'), dollyOut), 
-    (_('&Pan Left'), panLeft), 
-    (_('&Pan Right'), panRight), 
-    (_('&Pan Down'), panDown), 
-    (_('&Pan Up'), panUp), 
+    (_('&Zoom Rectangle'), zoomRectangle),
+    (_('&Zoom All'), zoomAll),
+    (_('&Zoom In'), zoomIn),
+    (_('&Zoom Out'), zoomOut),
+    (_('&Dolly In'), dollyIn),
+    (_('&Dolly Out'), dollyOut),
+    (_('&Pan Left'), panLeft),
+    (_('&Pan Right'), panRight),
+    (_('&Pan Down'), panDown),
+    (_('&Pan Up'), panUp),
     (_('&Translate'), [
-        (_('Translate &Left'), transLeft), 
-        (_('Translate &Right'), transRight), 
+        (_('Translate &Left'), transLeft),
+        (_('Translate &Right'), transRight),
         (_('Translate &Down'), transDown),
         (_('Translate &Up'), transUp),
         ]),
     (_('&Rotate'), [
         (_('Rotate &Left'), rotLeft),
         (_('Rotate &Right'), rotRight),
-        (_('Rotate &Down'), rotDown), 
+        (_('Rotate &Down'), rotDown),
         (_('Rotate &Up'), rotUp),
         (_('Rotate &ClockWise'), twistRight),
         (_('Rotate &CCW'), twistLeft),
         ]),
-    (_('&Lock'), lockCamera), 
-    (_('&Unlock'), unlockCamera), 
+    (_('&Lock'), lockCamera),
+    (_('&Unlock'), unlockCamera),
     ('---', None),
-    (_('&Report'), reportCamera), 
-    (_('&Settings'), showCameraTool), 
+    (_('&Report'), reportCamera),
+    (_('&Settings'), showCameraTool),
     ]
 
 

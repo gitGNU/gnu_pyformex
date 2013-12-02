@@ -30,9 +30,9 @@ Interface with flavia FE result files.
 from __future__ import print_function
 from pyformex import zip
 
-from arraytools import *
-from mesh import Mesh, mergeMeshes
-from plugins.fe_post import FeResult
+from pyformex.arraytools import *
+from pyformex.mesh import Mesh, mergeMeshes
+from pyformex.plugins.fe_post import FeResult
 import shlex
 
 element_type_translation = {
@@ -176,8 +176,8 @@ def readResult(fil, nvalues, nres):
             values[i-1] = x
     return values
 
-from plugins.fe import Model
-from plugins.fe_post import FeResult
+from pyformex.plugins.fe import Model
+from pyformex.plugins.fe_post import FeResult
 
 
 def createFeResult(model, results):

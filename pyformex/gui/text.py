@@ -29,7 +29,7 @@ from __future__ import print_function
 
 
 import pyformex
-from gui import QtGui
+from pyformex.gui import QtGui
 
 
 def getFont(font=None,size=None):

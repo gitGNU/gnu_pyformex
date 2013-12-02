@@ -57,9 +57,9 @@ def setTriade():
 def setBgColor():
     """Interactively set the viewport background colors."""
     global bgcolor_dialog
-    from gui.drawable import saneColorArray
+    from pyformex.gui.drawable import saneColorArray
     from numpy import resize
-    from gui import colors
+    from pyformex.gui import colors
     import os
     bgmodes = pf.canvas.settings.bgcolor_modes
     mode = pf.canvas.settings.bgmode
@@ -308,7 +308,7 @@ def drawOptions(d={}):
 
 
 def cameraSettings():
-    from plugins import cameratools
+    from pyformex.plugins import cameratools
     cameratools.showCameraTool()
 
 

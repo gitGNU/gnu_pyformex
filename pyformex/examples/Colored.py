@@ -35,12 +35,12 @@ _opengl2 = True
 _opengl2_comments = """
 - Lighted models are darker (no front light)
 """
-from gui.draw import *
+from pyformex.gui.draw import *
 
 if pf.options.opengl2:
     from opengl.drawable import GeomActor
 else:
-    from gui.actors import *
+    from pyformex.gui.actors import *
 
 
 def run():

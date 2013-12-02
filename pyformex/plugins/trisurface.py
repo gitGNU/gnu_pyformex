@@ -34,7 +34,7 @@ import pyformex as pf
 
 from formex import *
 from connectivity import Connectivity, connectedLineElems, adjacencyArrays
-from mesh import Mesh
+from pyformex.mesh import Mesh
 import mesh_ext  # load the extended Mesh functions
 
 import geomtools
@@ -311,7 +311,7 @@ def fillBorder(border,method='radial',dir=None):
       returned surface will use the same point coordinate array as the input
       object.
     """
-    from plugins.curve import PolyLine
+    from pyformex.plugins.curve import PolyLine
     if isinstance(border, Mesh) and border.nplex()==2:
         if method == 'radial':
             border = border.compact()
@@ -1554,12 +1554,12 @@ Quality: %s .. %s
         levelL = 49
         levelS = 50
 
-        from simple import sphere, regularGrid
+        from pyformex.simple import sphere, regularGrid
         S=sphere(levelS)
         R=regularGrid([0., 0., 0.],[0., 1., 1.],[1, levelL, levelL])
         L0=Coords(R.reshape(-1, 3)).scale([1., 2., 2.]).trl([-2., -1., -1.]).fuse()[0]
         L1=L0.trl([1., 0., 0.])
-        from plugins.trisurface import intersectSurfaceWithLines
+        from pyformex.plugins.trisurface import intersectSurfaceWithLines
         import timer
         timesec = timer.Timer()
         P, X=S.intersectionWithLines(q=L0,q2=L1,method='line',  atol=1.e-5)

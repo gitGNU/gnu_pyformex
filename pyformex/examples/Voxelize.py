@@ -35,9 +35,9 @@ _level = 'advanced'
 _topics = ['surface']
 _techniques = ['voxelize', 'image']
 
-from gui.draw import *
-from plugins.imagearray import *
-from plugins.trisurface import TriSurface
+from pyformex.gui.draw import *
+from pyformex.plugins.imagearray import *
+from pyformex.plugins.trisurface import TriSurface
 import simple
 
 

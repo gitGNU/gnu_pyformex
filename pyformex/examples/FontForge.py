@@ -37,12 +37,12 @@ _level = 'advanced'
 _topics = ['curve', 'font']
 _techniques = ['bezier', 'borderfill']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 import odict
-from plugins.curve import BezierSpline, PolyLine
-from simple import connectCurves
-from plugins.trisurface import fillBorder
-from plugins.polygon import Polygon, delaunay
+from pyformex.plugins.curve import BezierSpline, PolyLine
+from pyformex.simple import connectCurves
+from pyformex.plugins.trisurface import fillBorder
+from pyformex.plugins.polygon import Polygon, delaunay
 from geomtools import closestPair, intersectionSWP
 import utils
 import os, sys

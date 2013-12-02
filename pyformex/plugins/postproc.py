@@ -30,7 +30,7 @@ from a numerical simulation, and render the values on the domain.
 from __future__ import print_function
 
 
-from arraytools import *
+from pyformex.arraytools import *
 
 
 # Some functions to calculate a scalar value from a vector

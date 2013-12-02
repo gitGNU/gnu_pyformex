@@ -59,9 +59,9 @@ _level = 'advanced'
 _topics = ['geometry', 'curve']
 _techniques = ['nurbs', 'border']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 import simple
-from plugins.nurbs import *
+from pyformex.plugins.nurbs import *
 
 def drawThePoints(N,n,color=None):
     umin = N.knots[N.degree]

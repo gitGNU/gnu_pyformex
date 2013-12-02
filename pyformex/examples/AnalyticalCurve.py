@@ -35,9 +35,9 @@ _techniques = ['function', 'extrude']
 _opengl2 = False
 
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
-from plugins.nurbs import *
+from pyformex.plugins.nurbs import *
 
 class AnalyticalCurve(object):
     """Analytical curve

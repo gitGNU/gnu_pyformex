@@ -31,8 +31,8 @@ from __future__ import print_function
 import pyformex as pf
 from formex import *
 from geometry import Geometry
-from plugins.curve import PolyLine
-from plugins.trisurface import TriSurface
+from pyformex.plugins.curve import PolyLine
+from pyformex.plugins.trisurface import TriSurface
 import utils
 
 ############################################################################
@@ -151,7 +151,7 @@ class Polygon(Geometry):
         """
         print("AREA(self) %s" % self.area())
         # creating elems array at once (more efficient than appending)
-        from gui.draw import draw, pause, undraw
+        from pyformex.gui.draw import draw, pause, undraw
         from geomtools import insideTriangle
         x = self.coords
         n = x.shape[0]
@@ -208,12 +208,12 @@ class Polygon(Geometry):
         """Compute area inside a polygon.
 
         """
-        from plugins.section2d import PlaneSection
+        from pyformex.plugins.section2d import PlaneSection
         return PlaneSection(Formex(self.coords)).sectionChar()['A']   
 
 
     def toMesh(self):
-        from mesh import Mesh
+        from pyformex.mesh import Mesh
         a = arange(self.coords.shape[0])
         e = column_stack([a, roll(a, -1)])
         return Mesh(self.coords, e)
@@ -246,7 +246,7 @@ if __name__ == 'draw':
 
 
     def run():
-        from plugins.trisurface import fillBorder
+        from pyformex.plugins.trisurface import fillBorder
         clear()
 
         ## layout(3,2)

@@ -39,7 +39,7 @@ _level = 'beginner'
 _topics = ['mesh']
 _techniques = ['extrude', 'quadratic']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 
 

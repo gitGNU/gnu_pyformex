@@ -33,7 +33,7 @@ _level = 'beginner'
 _topics = ['dialog']
 _techniques = []
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 def run():
     print(error("This is a simulated error, to demonstrate how an error message would be shown to the user.\nJust click OK and the error will go away."))

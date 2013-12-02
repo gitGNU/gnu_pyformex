@@ -34,7 +34,7 @@ _level = 'normal'
 _topics = ['surface', 'vtk']
 _techniques = ['inside']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 import simple
 import timer
 

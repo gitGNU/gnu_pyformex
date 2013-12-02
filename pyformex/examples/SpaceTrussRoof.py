@@ -32,7 +32,7 @@ _level = 'normal'
 _topics = ['geometry']
 _techniques = ['dialog', 'animation', 'color', 'import', 'connect', 'interpolate']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 import simple
 
 roof = None

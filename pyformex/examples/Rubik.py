@@ -72,8 +72,8 @@ _topics = ['illustration', 'game']
 _techniques = ['color', 'dialog', 'draw', 'persistence', 'random']
 _createdby = ['tpraet']
 
-from gui.draw import *
-from gui.viewport import *
+from pyformex.gui.draw import *
+from pyformex.gui.viewport import *
 from numpy.random import rand
 
 

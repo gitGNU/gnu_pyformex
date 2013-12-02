@@ -34,7 +34,7 @@ _techniques = ['color', 'bump']
 _opengl2 = True
 _opengl2_comment = "Not enough light"
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 def run():
     global a1, a2, a3, a4

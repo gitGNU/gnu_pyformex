@@ -31,9 +31,9 @@ from pyformex import zip
 
 import pyformex as pf
 
-from coords import bbox
+from pyformex.coords import bbox
 from script import named
-from gui.draw import drawBbox, _I
+from pyformex.gui.draw import drawBbox, _I
 import geomfile
 import odict
 
@@ -265,7 +265,7 @@ class Objects(object):
 
 ###################### Drawable Objects #############################
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 # Default Annotations
 

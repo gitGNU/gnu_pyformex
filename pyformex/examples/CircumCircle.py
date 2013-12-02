@@ -32,7 +32,7 @@ _level = 'beginner'
 _topics = ['geometry']
 _techniques = ['function', 'import', 'dialog', 'viewport']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 import simple
 from examples.Cube import cube_tri
 from geomtools import *

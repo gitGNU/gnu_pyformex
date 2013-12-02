@@ -37,7 +37,7 @@ _level = 'beginner'
 _topics = ['geometry']
 _techniques = ['color', 'random']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 nstars = 200 # number of stars
 minpoints = 5 # minimum number of points in the stars

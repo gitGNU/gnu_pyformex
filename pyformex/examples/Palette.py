@@ -35,7 +35,7 @@ _topics = ['color']
 _techniques = ['palette', 'align']
 _opengl2 = True
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 def run():
     clear()

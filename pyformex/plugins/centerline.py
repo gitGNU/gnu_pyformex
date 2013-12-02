@@ -34,7 +34,7 @@ from __future__ import print_function
 import pyformex as pf
 import os
 from numpy import *
-from plugins import trisurface, tetgen
+from pyformex.plugins import trisurface, tetgen
 import utils
 import coords
 import connectivity

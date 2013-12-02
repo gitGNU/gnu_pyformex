@@ -35,7 +35,7 @@ from __future__ import print_function
 from pyformex import zip
 
 import pyformex as pf
-from mesh import *
+from pyformex.mesh import *
 import utils
 from lib import misc
 import os
@@ -138,7 +138,7 @@ def readInpFile(filename):
 
     Returns an dict.
     """
-    from plugins import ccxinp, fe
+    from pyformex.plugins import ccxinp, fe
     ccxinp.skip_unknown_eltype = True
     model = ccxinp.readInput(filename)
     pf.message("Number of parts: %s" % len(model.parts))
@@ -211,7 +211,7 @@ def read_stl_bin(fn):
     pf.message("Finished reading binary stl")
     x = Coords(x)
     if color is not None:
-        from gui.colors import GLcolor
+        from pyformex.gui.colors import GLcolor
         color = GLcolor(color[:3])
     return x, color
 

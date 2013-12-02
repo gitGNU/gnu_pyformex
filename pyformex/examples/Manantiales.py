@@ -34,12 +34,12 @@ _level = 'normal'
 _topics = ['geometry', 'surface', 'domes']
 _techniques = ['dialog', 'color', 'boolean']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 clear()
 view('front')
 import simple
-from plugins.trisurface import *
+from pyformex.plugins.trisurface import *
 
 
 def scallop(F, sx, sy, n, f, c, r):

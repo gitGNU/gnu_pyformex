@@ -43,13 +43,13 @@ _level = 'normal'
 _topics = ['Mesh', 'Geometry', 'Sphere']
 _techniques = ['subdivide', 'project', 'animation']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 smooth()
 
 def run():
     clear()
 
-    from arraytools import golden_ratio as phi
+    from pyformex.arraytools import golden_ratio as phi
     s = sqrt(1.+phi*phi)
     a = sqrt(3.)/6.*(3.+sqrt(5.))
 

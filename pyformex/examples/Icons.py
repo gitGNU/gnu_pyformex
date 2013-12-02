@@ -37,12 +37,12 @@ _level = 'normal'
 _topics = ['geometry']
 _techniques = ['image', 'icon']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
-from gui.actors import CubeActor
-from gui.image import saveIcon
-from plugins.curve import *
-from simple import rectangle
+from pyformex.gui.actors import CubeActor
+from pyformex.gui.image import saveIcon
+from pyformex.plugins.curve import *
+from pyformex.simple import rectangle
 
 def icon_smooth():
     view('iso')

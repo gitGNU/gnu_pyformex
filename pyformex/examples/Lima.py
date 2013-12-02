@@ -43,8 +43,8 @@ _level = 'normal'
 _topics = ['illustration']
 _techniques = ['dialog', 'lima']
 
-from gui.draw import *
-from plugins import lima, turtle
+from pyformex.gui.draw import *
+from pyformex.plugins import lima, turtle
 from odict import ODict
 
 # return standard Turtle rules 

@@ -37,7 +37,7 @@ _level = 'normal'
 _topics = ['geometry', 'surface']
 _techniques = ['color', 'elements', 'reverse']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 from elements import Hex8
 
 # This could be obtained from a Mesh conversion
@@ -91,7 +91,7 @@ def showCube(base, color):
 
 
 def run():
-    from gui import widgets
+    from pyformex.gui import widgets
 
     clear()
     reset()

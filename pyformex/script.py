@@ -41,8 +41,8 @@ from geometry import Geometry
 ########################
 # Imported here only to make available in scripts
 from olist import List
-from mesh import Mesh
-from plugins.trisurface import TriSurface
+from pyformex.mesh import Mesh
+from pyformex.plugins.trisurface import TriSurface
 
 ########################
 
@@ -91,7 +91,7 @@ def Globals():
     g = {}
     g.update(globals())
     if pf.GUI:
-        from gui import draw
+        from pyformex.gui import draw
         g.update(draw.__dict__)
     g.update(formex.__dict__)
     # Set module correct
@@ -497,7 +497,7 @@ def runApp(appname,argv=[],refresh=False,lock=True,check=True):
             if apps._traceback and pf.cfg['showapploaderrors']:
                 print(apps._traceback)
 
-            from gui import draw
+            from pyformex.gui import draw
             fn = apps.findAppSource(appname)
             if os.path.exists(fn):
                 errmsg += "\n\nYou may try executing the application as a script,\n  or you can load the source file in the editor."
@@ -815,7 +815,7 @@ def startGui(args=[]):
     """Start the gui"""
     if pf.GUI is None:
         pf.debug("Starting the pyFormex GUI", pf.DEBUG.GUI)
-        from gui import guimain
+        from pyformex.gui import guimain
         if guimain.startGUI(args) == 0:
             guimain.runGUI()
 

@@ -35,10 +35,10 @@ from OpenGL import GL
 from drawable import *
 from formex import *
 from elements import elementType
-from mesh import Mesh
+from pyformex.mesh import Mesh
 
-from plugins.trisurface import TriSurface
-from plugins.nurbs import NurbsCurve, NurbsSurface
+from pyformex.plugins.trisurface import TriSurface
+from pyformex.plugins.nurbs import NurbsCurve, NurbsSurface
 from marks import TextMark
 
 import timer
@@ -411,7 +411,7 @@ class Text3DActor(Actor):
         self.font.FaceSize(a, b)
 
     def setColor(self, color):
-        from gui.drawable import saneColor
+        from pyformex.gui.drawable import saneColor
         self.color = saneColor(color)
 
     def bbox(self):
@@ -847,7 +847,7 @@ class GeomActor(Actor):
 class NurbsActor(Actor):
 
     def __init__(self,data,color=None,colormap=None,bkcolor=None,bkcolormap=None,**kargs):
-        from gui.drawable import saneColor
+        from pyformex.gui.drawable import saneColor
         Actor.__init__(self,**kargs)
         self.object = data
         self.setColor(color, colormap)

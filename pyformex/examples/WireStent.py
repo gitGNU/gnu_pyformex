@@ -35,7 +35,7 @@ _level = 'normal'
 _topics = ['geometry']
 _techniques = ['dialog', 'persistence', 'color']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 class DoubleHelixStent(object):
     """Constructs a double helix wire stent.

@@ -39,8 +39,8 @@ _level = 'normal'
 _topics = ['geometry', 'curve']
 _techniques = ['spline', 'dialog']
 
-from gui.draw import *
-from plugins.curve import BezierSpline
+from pyformex.gui.draw import *
+from pyformex.plugins.curve import BezierSpline
 
 
 # Predefined set of points

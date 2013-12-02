@@ -32,7 +32,7 @@ _level = 'normal'
 _topics = ['geometry']
 _techniques = ['color']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 class X_truss(object):
     """An X-shaped truss girder.

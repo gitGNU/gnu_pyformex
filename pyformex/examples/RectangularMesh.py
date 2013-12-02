@@ -37,9 +37,9 @@ _topics = ['geometry', 'mesh']
 _techniques = ['rectangular', 'seed', 'layout']
 
 
-from gui.draw import *
-from plugins.mesh_ext import *
-from gui.viewportMenu import clearAll
+from pyformex.gui.draw import *
+from pyformex.plugins.mesh_ext import *
+from pyformex.gui.viewportMenu import clearAll
 
 
 def run():

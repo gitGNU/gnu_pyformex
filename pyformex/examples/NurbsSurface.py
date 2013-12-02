@@ -55,8 +55,8 @@ _level = 'advanced'
 _topics = ['geometry', 'surface']
 _techniques = ['nurbs']
 
-from gui.draw import *
-from plugins.nurbs import *
+from pyformex.gui.draw import *
+from pyformex.plugins.nurbs import *
 
 # Default data
 

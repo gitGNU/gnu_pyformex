@@ -33,8 +33,8 @@ _level = 'advanced'
 _topics = ['geometry', 'surface']
 _techniques = ['animation', 'color']
 
-from gui.draw import *
-from plugins.trisurface import TriSurface
+from pyformex.gui.draw import *
+from pyformex.plugins.trisurface import TriSurface
 
 def drawSurf(F,surface=False,**kargs):
     """Draw a Formex as surface or not."""

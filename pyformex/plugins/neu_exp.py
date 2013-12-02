@@ -31,7 +31,7 @@ from __future__ import print_function
 
 
 import sys
-from plugins import tetgen
+from pyformex.plugins import tetgen
 from time import strftime, gmtime
 from numpy import *
 
@@ -219,7 +219,7 @@ def testConverts():
         os.makedirs(testdir)
     chdir(testdir)
 
-    from simple import cuboid
+    from pyformex.simple import cuboid
     mesh = Formex([0., 0., 0.]).extrude(3, dir=0).toMesh().extrude(3, dir=1)
     write_neu('test-quad4.neu', mesh)
     write_neu('test-tri3.neu', mesh.convert('tri3'))

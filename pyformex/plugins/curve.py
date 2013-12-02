@@ -33,10 +33,10 @@ from __future__ import print_function
 from pyformex import zip
 
 import pyformex as pf
-from coords import *
+from pyformex.coords import *
 from geometry import Geometry
 from formex import Formex, connect
-from mesh import Mesh
+from pyformex.mesh import Mesh
 import geomtools as gt
 import utils
 
@@ -734,7 +734,7 @@ class PolyLine(Curve):
 
         if self.closed and compensate:
             import arraytools as at
-            from gui.draw import drawVectors
+            from pyformex.gui.draw import drawVectors
             print(len(T))
             print(T[0], B[0])
             print(T[-1], B[-1])

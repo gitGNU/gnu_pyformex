@@ -29,7 +29,7 @@ Finite Element Plugin Menu for pyFormex.
 from __future__ import print_function
 
 
-from plugins import formex_menu, trisurface
+from pyformex.plugins import formex_menu, trisurface
 import simple
 from elements import Hex8
 

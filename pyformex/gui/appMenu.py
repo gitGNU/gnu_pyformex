@@ -127,7 +127,7 @@ def splitAlpha(strings,n,ignorecase=True):
       of sorted strings starting with one of the characters in the
       corresponding label
     """
-    from arraytools import multiplicity
+    from pyformex.arraytools import multiplicity
     if ignorecase:
         key = key=str.upper
     else:
@@ -475,8 +475,8 @@ class AppMenu(menu.Menu):
         The first and last arguments do not apply to the submenus.
 
         """
-        from gui.draw import layout, reset, sleep
-        from gui import widgets
+        from pyformex.gui.draw import layout, reset, sleep
+        from pyformex.gui import widgets
         pf.GUI.enableButtons(pf.GUI.actions, ['Stop'], True)
         if last is None:
             last = len(self.files)

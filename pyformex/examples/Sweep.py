@@ -34,8 +34,8 @@ _level = 'normal'
 _topics = ['geometry', 'curve', 'mesh']
 _techniques = ['sweep', 'spiral']
 
-from gui.draw import *
-from plugins import curve
+from pyformex.gui.draw import *
+from pyformex.plugins import curve
 from odict import ODict
 
 import simple

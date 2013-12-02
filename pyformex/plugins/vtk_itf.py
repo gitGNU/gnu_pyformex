@@ -31,10 +31,14 @@ This module provides the basic interface to convert data structures between
 vtk and pyFormex.
 """
 from __future__ import print_function
-from pyformex import zip
 
 from pyformex import utils
 utils.requireModule('vtk')
+
+from pyformex import zip
+from pyformex.mesh import Mesh
+from pyformex.coords import Coords
+from pyformex.plugins.trisurface import TriSurface
 
 import vtk
 from vtk.util.numpy_support import numpy_to_vtk as n2v
@@ -43,12 +47,8 @@ from vtk.util.numpy_support import create_vtk_array as cva
 from vtk.util.numpy_support import get_numpy_array_type as gnat
 from vtk.util.numpy_support import get_vtk_array_type as gvat
 from vtk import vtkXMLPolyDataReader, vtkXMLPolyDataWriter, vtkIntArray, vtkDoubleArray, vtkDataSetReader, vtkDataSetWriter
+
 from numpy import *
-
-from mesh import Mesh
-from coords import Coords
-from plugins.trisurface import TriSurface
-
 import os
 
 # List of vtk data types
@@ -583,8 +583,8 @@ def octree(surf,tol=0.0,npts=1.):
     with property equal to the number of point of the in each region.
     """
     from vtk import vtkOctreePointLocator, vtkPolyData
-    from formex import Formex
-    from connectivity import Connectivity
+    from pyformex.formex import Formex
+    from pyformex.connectivity import Connectivity
 
     vm = convert2VPD(surf, clean=False)
     loc = vtkOctreePointLocator()
@@ -678,7 +678,6 @@ def install_trisurface_methods():
     """Install extra TriSurface methods
 
     """
-    #from plugins.trisurface import TriSurface
     TriSurface.decimate = decimate
 
 install_trisurface_methods()

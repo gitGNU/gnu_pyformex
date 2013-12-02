@@ -33,7 +33,7 @@ _level = 'normal'
 _topics = ['geometry', 'mesh', 'drawing']
 _techniques = ['widgets', 'dialog', 'random', 'color']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 from numpy.random import rand
     

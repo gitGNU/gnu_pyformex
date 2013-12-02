@@ -31,7 +31,7 @@ the adjacent elements.
 from __future__ import print_function
 
 
-from arraytools import *
+from pyformex.arraytools import *
 
 ############### Utility functions ##############
 

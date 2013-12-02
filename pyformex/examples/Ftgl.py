@@ -39,7 +39,7 @@ _level = 'advanced'
 _topics = ['text']
 _techniques = ['ftgl', 'font']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 try:
     import FTGL
@@ -47,7 +47,7 @@ try:
 except ImportError:
     warning("You do not have FTGL and its Python bindings (pyftgl).\nSee the pyformex/extra/pyftgl directory in the pyFormex source tree for instructions.")
 
-from gui import colors, image
+from pyformex.gui import colors, image
 import odict
 
 
@@ -75,7 +75,7 @@ def showSquare():
 
 
 def showText(text, font, fonttype, facesize, color, pos):
-    from gui.actors import Text3DActor, TranslatedActor
+    from pyformex.gui.actors import Text3DActor, TranslatedActor
     font = fonttypes[fonttype](font)
     t = Text3DActor(text, font, facesize, color, pos)
     t.nolight=True

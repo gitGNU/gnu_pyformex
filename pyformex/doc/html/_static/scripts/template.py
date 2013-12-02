@@ -42,7 +42,7 @@ one or more lines explaining the intention of the script.
 from __future__ import print_function
 
 
-from gui.draw import *  # for an app we need to import explicitely
+from pyformex.gui.draw import *  # for an app we need to import explicitely
 
 def run():
     """Main function.

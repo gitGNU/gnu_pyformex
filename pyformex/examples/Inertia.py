@@ -32,8 +32,8 @@ _level = 'beginner'
 _topics = ['geometry']
 _techniques = ['color', 'axes']
 
-from gui.draw import *
-from plugins import inertia
+from pyformex.gui.draw import *
+from pyformex.plugins import inertia
 
 def unitAxes():
     """Create a set of three axes."""

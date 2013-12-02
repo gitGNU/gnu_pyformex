@@ -32,12 +32,12 @@ _level = 'advanced'
 _topics = ['FEA']
 _techniques = ['color']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 
 ############################
 # Load the needed calpy modules
 
-from plugins import calpy_itf
+from pyformex.plugins import calpy_itf
 from calpy.fe_util import *
 from calpy.beam3d import *
 
@@ -202,7 +202,7 @@ def analysis(stent):
 def postproc(coords, elements, displ, frc):
     """Display the results of the analysis."""
 
-    from gui.colorscale import ColorScale, ColorLegend
+    from pyformex.gui.colorscale import ColorScale, ColorLegend
     import gui.decors
 
     # Creating a formex for displaying results is fairly easy

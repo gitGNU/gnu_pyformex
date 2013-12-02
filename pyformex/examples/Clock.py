@@ -33,10 +33,10 @@ _level = 'advanced'
 _topics = []
 _techniques = ['timer']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 import simple
 from datetime import datetime
-from gui import QtCore
+from pyformex.gui import QtCore
 
 class AnalogClock(object):
     """An analog clock built from Formices"""

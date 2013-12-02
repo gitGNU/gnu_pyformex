@@ -36,7 +36,7 @@ _topics = ['geometry']
 _techniques = ['transform']
 _author = 'gianluca'
 
-from gui.draw import *
+from pyformex.gui.draw import *
 import simple
 
 

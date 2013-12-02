@@ -30,13 +30,13 @@ from __future__ import print_function
 from pyformex import zip
 
 import pyformex as pf
-from coords import *
+from pyformex.coords import *
 from collection import Collection
-from gui.actors import GeomActor
-from mesh import Mesh
+from pyformex.gui.actors import GeomActor
+from pyformex.mesh import Mesh
 from formex import Formex
-from plugins.trisurface import TriSurface
-from plugins.nurbs import NurbsCurve, NurbsSurface
+from pyformex.plugins.trisurface import TriSurface
+from pyformex.plugins.nurbs import NurbsCurve, NurbsSurface
 
 class Plane(object):
 
@@ -76,7 +76,7 @@ class Plane(object):
 
 
     def actor(self,**kargs):
-        from gui import actors
+        from pyformex.gui import actors
         actor = actors.PlaneActor(size=self.s,**kargs)
         actor = actors.RotatedActor(actor,self.n,**kargs)
         actor = actors.TranslatedActor(actor,self.P,**kargs)
@@ -294,7 +294,7 @@ def actorDialog(actorids):
     """Create an actor dialog for the specified actors (by index)
 
     """
-    from gui.draw import _T, _G, _I, askItems
+    from pyformex.gui.draw import _T, _G, _I, askItems
     print("actorDialog %s" % actorids)
     actors = [ pf.canvas.actors[i] for i in actorids ]
     items = [ _T("actor_%s" % i, [

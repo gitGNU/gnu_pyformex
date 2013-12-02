@@ -35,10 +35,10 @@ _level = 'advanced'
 _topics = ['geometry', 'curve']
 _techniques = ['nurbs', 'connect', 'border', 'frenet']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 import simple
-from plugins.curve import *
-from plugins.nurbs import *
+from pyformex.plugins.curve import *
+from pyformex.plugins.nurbs import *
 
 
 def drawThePoints(N,n,color=None):

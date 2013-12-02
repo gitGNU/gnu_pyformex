@@ -42,8 +42,8 @@ _level = 'beginner'
 _topics = ['illustration']
 _techniques = ['color', 'lime']
 
-from gui.draw import *
-from plugins.lima import lima
+from pyformex.gui.draw import *
+from pyformex.plugins.lima import lima
 
 def run():
     clear()

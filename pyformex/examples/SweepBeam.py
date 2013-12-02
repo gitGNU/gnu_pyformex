@@ -36,8 +36,8 @@ _level = 'normal'
 _topics = ['geometry', 'surface']
 _techniques = ['color', 'sweep', 'extrude', 'connect', 'revolve']
 
-from gui.draw import *
-from plugins import curve
+from pyformex.gui.draw import *
+from pyformex.plugins import curve
 import simple
 
 def run():

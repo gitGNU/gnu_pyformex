@@ -36,7 +36,7 @@ _level = 'beginner'
 _topics = ['geometry', 'surface', 'cylinder']
 _techniques = ['import']
 
-from gui.draw import *
+from pyformex.gui.draw import *
 import simple
 #from plugins.trisurface import TriSurface
 

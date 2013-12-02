@@ -31,9 +31,9 @@ from __future__ import print_function
 from pyformex import zip
 
 import pyformex as pf
-from coords import *
-from mesh import Mesh
-from plugins.trisurface import TriSurface
+from pyformex.coords import *
+from pyformex.mesh import Mesh
+from pyformex.plugins.trisurface import TriSurface
 import utils
 import os
 from multi import multitask, cpu_count, splitar
@@ -203,7 +203,7 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
         if conformal is not None:
             raise ValueError('conformal should be either None, border or regionsborder')
 
-    from plugins.vtk_itf import writeVTP, checkClean, readVTKObject
+    from pyformex.plugins.vtk_itf import writeVTP, checkClean, readVTKObject
     tmp = utils.tempFile(suffix='.vtp').name
     tmp1 = utils.tempFile(suffix='.vtp').name
     fielddata, celldata, pointdata = {}, {}, {}
@@ -270,11 +270,11 @@ def vmtkDistanceOfSurface(self, S):
         pf.message("An error occurred during the distance calculation.")
         pf.message(P.out)
         return None
-    from plugins.vtk_itf import readVTKObject
+    from pyformex.plugins.vtk_itf import readVTKObject
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = readVTKObject(tmp2)
     vdist, sdist = pointdata['vdist'], pointdata['sdist']
     os.remove(tmp2)
-    from plugins.vtk_itf import checkClean
+    from pyformex.plugins.vtk_itf import checkClean
     if not checkClean(S):
         print('nodes need to be re-matched because surface was not clean')
         reorderindex = Coords(coords).match(S.coords)

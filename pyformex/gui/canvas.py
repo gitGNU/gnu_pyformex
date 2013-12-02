@@ -824,12 +824,12 @@ class Canvas(object):
         """Create the background object."""
         x1, y1 = 0, 0
         x2, y2 = self.getSize()
-        from gui.drawable import saneColorArray
+        from pyformex.gui.drawable import saneColorArray
         color = saneColorArray(self.settings.bgcolor, (4,))
         #print color.shape,color
         image = None
         if self.settings.bgimage:
-            from plugins.imagearray import image2numpy
+            from pyformex.plugins.imagearray import image2numpy
             try:
                 image = image2numpy(self.settings.bgimage, indexed=False)
             except:
@@ -1075,7 +1075,7 @@ class Canvas(object):
 
     def sceneBbox(self):
         """Return the bbox of all actors in the scene"""
-        from coords import bbox
+        from pyformex.coords import bbox
         return bbox(self.actors)
 
 

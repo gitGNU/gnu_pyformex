@@ -38,10 +38,10 @@ _opengl2_comments = """
 - Not enough light
 """
 
-from gui.draw import *
-from simple import cylinder
+from pyformex.gui.draw import *
+from pyformex.simple import cylinder
 from connectivity import connectedLineElems
-from plugins.trisurface import TriSurface, fillBorder
+from pyformex.plugins.trisurface import TriSurface, fillBorder
 
 def splitAlongPath(path,mesh,atol=0.0):
     '''

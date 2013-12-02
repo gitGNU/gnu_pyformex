@@ -39,7 +39,7 @@ def modified(obj):
 
 #transparent()
 
-from simple import sphere
+from pyformex.simple import sphere
 from OpenGL import GL
 
 S = sphere(6)

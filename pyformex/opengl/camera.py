@@ -38,8 +38,8 @@ from __future__ import print_function
 from matrix import Matrix4, Vector4
 import numpy as np
 import pyformex.arraytools as at
-from coords import Coords
-from plugins.nurbs import Coords4
+from pyformex.coords import Coords
+from pyformex.plugins.nurbs import Coords4
 
 #
 # DEVS: collect all GL calls here, so we can easily move them somewhere else

@@ -39,7 +39,7 @@ find good reason to use the :class:`Coords` class directly as well.
 from __future__ import print_function
 from pyformex import zip
 
-from arraytools import *
+from pyformex.arraytools import *
 from lib import misc
 from utils import deprecation, warn
 
@@ -432,7 +432,7 @@ class Coords(ndarray):
         - `tensor`: the full inertia tensor in the global axes: shape (3,3)
 
         """
-        from plugins import inertia
+        from pyformex.plugins import inertia
         if mass is not None:
             mass = mass.reshape(self.npoints(), 1)
         ctr, I = inertia.inertia(self.points(), mass)
@@ -450,7 +450,7 @@ class Coords(ndarray):
 
         Returns a single hexahedral Formex object.
         """
-        from simple import cuboid
+        from pyformex.simple import cuboid
         X = self.trl(-ctr).rot(rot)  # rotate data to align with axes
         bb = cuboid(*X.bbox())  # get the bbox and make a hex8
         bb = bb.rot(rot.transpose()).trl(ctr) # transform back to global coordinates
@@ -1517,7 +1517,7 @@ class Coords(ndarray):
 
         See :mod:`plugins.isopar` for more details.
         """
-        from plugins.isopar import Isopar
+        from pyformex.plugins.isopar import Isopar
         return Isopar(eltype, coords, oldcoords).transform(self)
 
 

@@ -34,8 +34,8 @@ _level = 'normal'
 _topics = ['surface']
 _techniques = ['animation', 'colors']
 
-from gui.draw import *
-from plugins.trisurface import TriSurface
+from pyformex.gui.draw import *
+from pyformex.plugins.trisurface import TriSurface
 
 
 def run():

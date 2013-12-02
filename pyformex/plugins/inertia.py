@@ -33,7 +33,7 @@ from __future__ import print_function
 
 
 from numpy import *
-from arraytools import normalize
+from pyformex.arraytools import normalize
 
 def centroids(X):
     """Compute the centroids of the points of a set of elements.

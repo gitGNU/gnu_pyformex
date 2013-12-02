@@ -35,8 +35,8 @@ _level = 'normal'
 _topics = ['geometry', 'section2d']
 _techniques = []
 
-from gui.draw import *
-from plugins.section2d import *
+from pyformex.gui.draw import *
+from pyformex.plugins.section2d import *
 import simple, connectivity, mydict
 
 
