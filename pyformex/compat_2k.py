@@ -53,6 +53,7 @@ if (sys.hexversion & 0xFFFF0000) < 0x02070000:
 
 from future_builtins import zip
 
+import cPickle as pickle
 
 def execFile(f,*args,**kargs):
     return execfile(f,*args,**kargs)

@@ -503,7 +503,7 @@ def storeSoftware(soft,fn,mode='python'):
         conf = soft2config(soft)
         conf.write(fn)
     elif mode == 'pickle':
-        import cPickle as pickle
+        from pyformex import pickle
         print(("PICKLING", soft))
         pickle.dump(soft, open(fn, 'w'))
 
@@ -523,7 +523,7 @@ def readSoftware(fn,mode='python'):
         conf = Config(fn)
         soft = config2soft(conf)
     elif mode == 'pickle':
-        import cPickle as pickle
+        from pyformex import pickle
         soft = pickle.load(open(fn, 'r'))
     return soft
 

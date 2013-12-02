@@ -54,13 +54,13 @@ if pf.options:
 if accelerate:
 
     try:
-        import misc_ as misc
+        from pyformex.lib import misc_ as misc
         checkVersion(misc)
     except ImportError:
         pf.debug("Error while loading the pyFormex compiled misc library", pf.DEBUG.LIB)
 
     try:
-        import nurbs_ as nurbs
+        from pyformex.lib import nurbs_ as nurbs
         checkVersion(nurbs)
     except ImportError:
         pf.debug("Error while loading the pyFormex compiled nurbs library", pf.DEBUG.LIB)
@@ -69,22 +69,22 @@ if accelerate:
         # !! We need to import GL before drawgl, to define the GL calls !
         from OpenGL import GL
         try:
-            import drawgl_ as drawgl
+            from pyformex.lib import drawgl_ as drawgl
             checkVersion(drawgl)
         except ImportError:
             pf.debug("Error while loading the pyFormex compiled drawgl library", pf.DEBUG.LIB)
 
 if misc is None:
     pf.debug("Using the (slower) Python misc functions", pf.DEBUG.LIB)
-    import misc
+    from pyformex.lib import misc
 
 if nurbs is None:
     pf.debug("Using the (slower) Python nurbs functions", pf.DEBUG.LIB)
-    import nurbs
+    from pyformex.lib import nurbs
 
 if gui and drawgl is None:
     pf.debug("Using the (slower) Python draw functions", pf.DEBUG.LIB)
-    import drawgl
+    from pyformex.lib import drawgl
 
 
 pf.debug("Accelerated: %s" % accelerated, pf.DEBUG.LIB|pf.DEBUG.INFO)

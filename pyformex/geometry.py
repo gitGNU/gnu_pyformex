@@ -30,9 +30,10 @@ Coords class to the derived classes.
 from __future__ import print_function
 from pyformex import zip
 
-from coords import Coords, Int
+from pyformex.coords import Coords, Int
+from pyformex.arraytools import complement
 import numpy as np
-from arraytools import complement
+
 
 class Geometry(object):
     """A generic geometry object allowing transformation of coords sets.

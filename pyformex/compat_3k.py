@@ -56,6 +56,7 @@ if (sys.hexversion & 0xFFFF0000) == 0x03010000:
 
 zip = __builtins__['zip']
 
+import pickle
 
 def execFile(f,*args,**kargs):
     return exec(compile(open(f,*args,**kargs).read(), f, 'exec'),*args,**kargs)

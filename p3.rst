@@ -1,0 +1,39 @@
+pyFormex with Python3
+=====================
+
+Python3 is the expected succursor of the Python language.
+
+All the basic dependencies of pyFormex are now running under Python3.
+So it becomes feasible to run pyFormex under Python3.
+The p2to3 directory contains a script pyformex3 that will launch
+pyformex under Python3. You need to make sure that the following dependencies
+are installed:
+
+Debian packages
+---------------
+python3-dev
+python3-numpy
+python3-pyside.qtopengl
+
+
+Source packages
+---------------
+The PyOpenGL package for Python3 is not yet available in the Debian repositories. You have to install it from source::
+
+  wget https://pypi.python.org/packages/source/P/PyOpenGL-accelerate/PyOpenGL-accelerate-3.0.2.tar.gz#md5=a977041e27b50804bc5188cc54e2a7ba
+  cd PyOpenGL-3.0.2
+  python setup.py install
+
+And you can also install the accelerator::
+
+  wget https://pypi.python.org/packages/source/P/PyOpenGL-accelerate/PyOpenGL-accelerate-3.0.2.tar.gz#md5=a977041e27b50804bc5188cc54e2a7ba
+  cd PyOpenGL-accelerate-3.0.2
+  python setup.py install
+
+
+Run pyformex3
+-------------
+
+Create a symlink in your bin directory to the pyformex3 script in p2to3, and you can run pyformex3 from anywhere.
+
+

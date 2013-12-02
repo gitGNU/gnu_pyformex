@@ -76,7 +76,7 @@ You should probably exit pyFormex, fix the problem first and then restart pyForm
 """ % pyformexdir
     startup_warnings += msg
 
-import utils
+from pyformex import utils
 
 # Set the proper revision number when running from git sources
 branch = None
@@ -119,7 +119,7 @@ Your Python version is %s, but pyFormex has only been tested with Python <= %s. 
 """ % (found_version, target_version,)
 
 
-from config import Config
+from pyformex.config import Config
 
 ###########################  main  ################################
 
@@ -478,6 +478,9 @@ def run(argv=[]):
 
 
     pf.options, args = parser.parse_args(argv)
+    ## print(pf.options)
+    ## print(args)
+    ## sys.exit()
     pf.print_help = parser.print_help
 
     # Set debug level
@@ -664,7 +667,7 @@ def run(argv=[]):
         pf.options.interactive = True
 
     # Initialize the libraries
-    import lib
+    from pyformex import lib
 
     # If we run from a checked out source repository, we should
     # run the source_clean procedure.
@@ -691,7 +694,7 @@ def run(argv=[]):
         This allows the warnings being called using a simple mnemonic
         string. The full message is then found from the message module.
         """
-        import messages
+        from pyformex import messages
         message = messages.getMessage(message)
         message = """..
 
@@ -718,20 +721,21 @@ pyFormex Warning
     utils.checkModule('numpy', fatal=True)
 
     # Make sure pf.PF is a Project
-    from project import Project
+    from pyformex.project import Project
     pf.PF = Project()
 
     utils.setSaneLocale()
 
     # Set application paths
     pf.debug("Loading AppDirs", pf.DEBUG.INFO)
-    import apps
+    from pyformex import apps
     apps.setAppDirs()
 
     # Start the GUI if needed
     # Importing the gui should be done after the config is set !!
+    #print(pf.options)
     if pf.options.gui:
-        from gui import guimain
+        from pyformex.gui import guimain
         pf.debug("GUI version", pf.DEBUG.INFO)
         res = guimain.startGUI(args)
         if res != 0:

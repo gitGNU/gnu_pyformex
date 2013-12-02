@@ -53,7 +53,7 @@ def formatDict(d):
     """
     s = ""
     if isinstance(d, dict):
-        for k, v in d.iteritems():
+        for k, v in d.items():
             if isinstance(v, str):
                 s += '%s = "%s"\n' % (k, v)
             else:
@@ -71,7 +71,7 @@ def cascade(d, key):
     try:
         return dict.__getitem__(d, key)
     except KeyError:
-        for v in d.itervalues():
+        for v in d.values():
             if isinstance(v, dict):
                 try:
                     return cascade(v, key)
@@ -146,7 +146,7 @@ class Dict(dict):
         If defined, default is a function that is used for alternate key
         lookup if the key was not found in the dict.
         """
-        dict.__init__(self, data.items())
+        dict.__init__(self, data)
         if default is None:
             default = raiseKeyError
         if not callable(default):
@@ -273,8 +273,8 @@ class Dict(dict):
     def __deepcopy__(self, memo):
         """Create a deep copy of ourself."""
         newdict = self.__class__(default=self._default_)
-        for k, v in self.items():
-            newdict[k] = copy.deepcopy(v, memo)
+        for k in self:
+            newdict[k] = copy.deepcopy(self[k], memo)
         return newdict
 
 
@@ -363,7 +363,11 @@ class CDict(Dict):
 
 if __name__ == '__main__':
 
-    import cPickle as pickle
+    try:
+        import cPickle as pickle
+    except:
+        import pickle
+
     global C, Cr, Cs
 
     def val(s,typ='s'):

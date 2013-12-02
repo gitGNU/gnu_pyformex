@@ -27,13 +27,13 @@
 Functions for managing a project in pyFormex.
 """
 from __future__ import print_function
-from pyformex import zip
 
 import pyformex as pf
-from track import TrackedDict
-from pyformex import utils
+from pyformex import (pickle, utils, zip,)
+
+from pyformex.track import TrackedDict
+
 import os, sys
-import cPickle
 import gzip
 
 _signature_ = pf.fullVersion()
@@ -71,7 +71,7 @@ def find_global(module, name):
 
 def pickle_load(f,try_resolve=True):
     """Load data from pickle file f."""
-    pi = cPickle.Unpickler(f)
+    pi = pickle.Unpickler(f)
     if try_resolve:
         pi.find_global = find_global
     else:
@@ -266,15 +266,15 @@ class Project(TrackedDict):
         f.flush()
         if self.mode == 'b':
             # When using binary, can as well use highest protocol
-            protocol = cPickle.HIGHEST_PROTOCOL
+            protocol = pickle.HIGHEST_PROTOCOL
         else:
             protocol = 0
         if self.gzip:
             pyf = gzip.GzipFile(mode='w'+self.mode, compresslevel=self.gzip, fileobj=f)
-            cPickle.dump(self, pyf, protocol)
+            pickle.dump(self, pyf, protocol)
             pyf.close()
         else:
-            cPickle.dump(self, f, protocol)
+            pickle.dump(self, f, protocol)
         f.close()
         self.hits = 0
 

@@ -154,7 +154,7 @@ class Config(Dict):
         removeLocals to false.
         """
         if removeLocals:
-            for k in data.keys():
+            for k in list(data.keys()):
                 if k[0] == '_':
                     del data[k]
         if name:
@@ -308,10 +308,10 @@ class Config(Dict):
         this is done with the Config.read() method.
         """
         s = ''
-        for k, v in self.iteritems():
+        for k, v in self.items():
             if not isinstance(v, Dict):
                 s += formatDict({k:v})
-        for k, v in self.iteritems():
+        for k, v in self.items():
             if isinstance(v, Dict):
                 s += "\n[%s]\n" % k
                 s += formatDict(v)
@@ -344,9 +344,9 @@ class Config(Dict):
         """
         keys = Dict.keys(self)
         if descend:
-            for k, v in self.iteritems():
+            for k, v in self.items():
                 if isinstance(v, Dict):
-                    keys += ['%s/%s' % (k, ki) for ki in v.keys()]
+                    keys += ['%s/%s' % (k, ki) for ki in v]
 
         return keys
 

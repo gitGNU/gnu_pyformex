@@ -30,36 +30,20 @@ from __future__ import print_function
 
 
 import pyformex as pf
-from pyformex.gui import signals
-
-import sys, utils
+from pyformex import utils
 
 # If we get here, either PyQt4 or PySide are imported
-#utils.checkModule('pyqt4',fatal=True)
+# Check for OpenGL
 utils.checkModule('pyopengl', fatal=True)
 
-import os.path
+from pyformex.gui import (
+    signals, QtCore, QtGui,
+    menu, cameraMenu, fileMenu, appMenu, prefMenu,
+    toolbar, canvas, viewport, guifunc, draw, widgets, drawlock, views,
+    )
 
-from gui import QtCore, QtGui
-
-import menu
-import cameraMenu
-import fileMenu
-import appMenu
-import prefMenu
-import toolbar
-import canvas
-import viewport
-
-import script
-import draw
-import widgets
-import drawlock
-import views
-
+import sys,os
 import warnings
-
-import guifunc
 
 
 ############### General Qt utility functions #######
