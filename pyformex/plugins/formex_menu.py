@@ -27,18 +27,16 @@ This is a pyFormex plugin. It is not intended to be executed as a script,
 but to be loaded as a plugin.
 """
 from __future__ import print_function
-from pyformex import zip
 
 import pyformex as pf
-from formex import *
-import utils
-from odict import ODict
+from pyformex import zip, utils
+from pyformex.formex import *
+from pyformex.odict import ODict
 
-from gui import actors
-from gui import menu
-from gui.draw import *
+from pyformex.gui import actors, menu
+from pyformex.gui.draw import *
 
-from plugins import objects, trisurface, partition, sectionize
+from pyformex.plugins import objects, trisurface, partition, sectionize
 
 import commands, os, timer
 

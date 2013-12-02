@@ -27,23 +27,19 @@ This modules implements specialized classes and functions for building
 the pyFormex GUI menu system.
 """
 from __future__ import print_function
-from pyformex import zip
 
 import pyformex as pf
-from pyformex.gui import *
-from gui import QtGui, QtCore, Signal
-import odict
-import utils
+from pyformex import (
+    zip, odict, utils, script,
+    )
+from pyformex.gui import (
+    QtGui, QtCore, Signal,
+    fileMenu, cameraMenu, prefMenu, viewportMenu, helpMenu,
+    toolbar, image, draw,
+    )
 
-import fileMenu
-import cameraMenu
-import prefMenu
-import viewportMenu
-import toolbar
-import helpMenu
-import image
-import draw
-import script
+# TODO: this should be removed!
+from pyformex.gui import *
 
 import os
 from gettext import gettext as _
