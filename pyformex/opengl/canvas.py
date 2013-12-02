@@ -46,7 +46,7 @@ from pyformex.gui import marks
 
 from camera import Camera
 from renderer import Renderer
-from collection import Collection
+from pyformex.collection import Collection
 from scene import Scene, ActorList
 
 libGL = None

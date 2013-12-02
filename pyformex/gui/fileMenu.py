@@ -574,7 +574,7 @@ _recording_pid = 0
 def recordSession(stop=0):
     """Record the current pyFormex session."""
     global _recording_pid
-    from pyformex.guimain import hasDRI
+    from pyformex.gui.guimain import hasDRI
 
     print("RECORDING with dri=%s" % pf.options.dri)
 

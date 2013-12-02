@@ -36,7 +36,7 @@ _techniques = ['menu', 'dialog', 'persistence', 'color']
 from pyformex.gui.draw import *
 
 import simple, utils
-from connectivity import Connectivity
+from pyformex.connectivity import Connectivity
 from pyformex.plugins.trisurface import TriSurface
 from pyformex.plugins.properties import *
 from pyformex.plugins.fe_abq import *

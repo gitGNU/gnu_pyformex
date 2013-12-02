@@ -37,7 +37,7 @@ software.requireExternal('tetgen')
 
 
 from pyformex.coords import *
-from connectivity import Connectivity
+from pyformex.connectivity import Connectivity
 from pyformex.mesh import Mesh
 from filewrite import *
 import utils

@@ -36,7 +36,7 @@ from shader import Shader
 from pyformex.attributes import Attributes
 from formex import Formex
 from pyformex.mesh import Mesh
-from elements import elementType, _default_eltype
+from pyformex.elements import elementType, _default_eltype
 import geomtools as gt
 import arraytools as at
 import numpy as np

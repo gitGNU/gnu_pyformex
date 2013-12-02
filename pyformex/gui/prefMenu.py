@@ -103,7 +103,7 @@ def settings():
     """
     import plugins
     import sendmail
-    from elements import elementTypes
+    from pyformex.elements import elementTypes
 
     dia = None
     _actionbuttons = [ 'play', 'rerun', 'step', 'continue', 'stop', 'edit', 'info' ]

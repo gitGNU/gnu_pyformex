@@ -33,7 +33,7 @@ from pyformex import zip
 import pyformex as pf
 
 from formex import *
-from connectivity import Connectivity, connectedLineElems, adjacencyArrays
+from pyformex.connectivity import Connectivity, connectedLineElems, adjacencyArrays
 from pyformex.mesh import Mesh
 import mesh_ext  # load the extended Mesh functions
 

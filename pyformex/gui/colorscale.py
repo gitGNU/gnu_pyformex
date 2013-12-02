@@ -28,7 +28,7 @@
 from __future__ import print_function
 from pyformex import zip
 
-from colors import *
+from pyformex.gui.colors import *
 from utils import stuur
 
 # predefined color palettes

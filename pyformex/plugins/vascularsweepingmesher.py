@@ -33,10 +33,10 @@ from pyformex.plugins.trisurface import *
 from formex import *
 from pyformex.coords import *
 from pyformex.simple import *
-from connectivity import *
+from pyformex.connectivity import *
 from pyformex.plugins.curve import *
 from pyformex.plugins.isopar import *
-from elements import *
+from pyformex.elements import *
 
 from pyformex.plugins.fe import *
 from pyformex.mesh import *

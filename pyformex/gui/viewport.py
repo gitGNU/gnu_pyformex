@@ -29,35 +29,32 @@ module :mod:`canvas`.
 implements a dynamic array of multiple canvases.
 """
 from __future__ import print_function
-from pyformex import zip
 
 import pyformex as pf
+from pyformex import zip, utils
 
-from pyformex.gui import QtCore, QtGui, QtOpenGL
-from OpenGL import GL
-
-from collection import Collection
-
+from pyformex.gui import (
+    QtCore, QtGui, QtOpenGL,
+    decors, image, toolbar,
+    )
 
 try:
     opengl2 = pf.options.opengl2
 except:
     opengl2 = False
 if opengl2:
-    from opengl import canvas
+    from pyformex.opengl import canvas
 else:
-    import canvas
+    from pyformex.gui import canvas
 
-import decors
-import image
-import utils
-import toolbar
+from pyformex.collection import Collection
+from pyformex.coords import Coords
+from pyformex.arraytools import isInt
 
 import math
-
-from pyformex.coords import Coords
 from numpy import *
-from pyformex.arraytools import isInt
+from OpenGL import GL
+from signals import *
 
 
 # Some 2D vector operations
@@ -78,7 +75,6 @@ def projection(v, w):
 
 
 # signals
-from signals import *
 
 # keys
 ESC = QtCore.Qt.Key_Escape
@@ -360,7 +356,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
 
     def getSize(self):
         """Return the size of this canvas"""
-        from pyformex.guimain import Size
+        from pyformex.gui.guimain import Size
         return Size(self)
 
 

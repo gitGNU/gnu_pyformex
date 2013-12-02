@@ -55,7 +55,7 @@ import coords
 from pyformex.plugins import trisurface, tools, fe
 
 from script import *
-from colors import *
+from pyformex.gui.colors import *
 from formex import *
 from pyformex.coordsys import CoordinateSystem
 

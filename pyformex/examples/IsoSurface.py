@@ -29,16 +29,15 @@ isosurface through a set of data
 """
 from __future__ import print_function
 
-
 _status = 'checked'
 _level = 'beginner'
 _topics = ['surface']
 _techniques = ['isosurface']
 
 from pyformex.gui.draw import *
+from pyformex import elements
 from pyformex.plugins import isosurface as sf
-import elements
-import plugins.imagearray as ia
+from pyformex.plugins import imagearray as ia
 
 
 def loadImage(file,grey=True):

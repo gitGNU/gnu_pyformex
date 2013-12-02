@@ -34,8 +34,15 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex.coords import Coords
-from connectivity import Connectivity
+from pyformex.connectivity import Connectivity
+
 from numpy import array, arange, concatenate
+
+try:
+    from collections import OrderedDict
+except:
+    from pyformex.backports import OrderedDict
+
 from odict import ODict
 
 
@@ -48,7 +55,7 @@ def _sanitize(ent):
         if hasattr(ent, 'eltype'):
             return ent
         else:
-            raise ValueError("Conectivity should have an element type")
+            raise ValueError("Connectivity should have an element type")
     else:
         return Connectivity(ent[1], eltype=ent[0])
 
@@ -266,9 +273,7 @@ class ElementType(object):
         Returns a Mesh with a single element of natural size.
         """
         from pyformex.mesh import Mesh
-        x = self.vertices
-        e = self.getElement()
-        return Mesh(x, e, eltype=e.eltype)
+        return Mesh(self.vertices,self.getElement())
 
 
     @classmethod
@@ -1084,8 +1089,8 @@ def elementType(name=None,nplex=-1):
     except:
         pass
 
-    #raise ValueError("No such element type: %s" % name
-    return None
+    raise ValueError("No such element type: %s" % name)
+    #return None
 
 
 def elementTypes(ndim=None,lower=True):
@@ -1095,7 +1100,7 @@ def elementTypes(ndim=None,lower=True):
     dimensionality are returned.
     """
     eltypes = _registered_element_types.keys()
-    if ndim:
+    if ndim is not None:
         eltypes = [ k for k in eltypes if _registered_element_types[k].ndim==ndim ]
     if lower:
         eltypes = [ k.lower() for k in eltypes ]

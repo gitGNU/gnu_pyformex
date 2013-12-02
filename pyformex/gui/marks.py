@@ -28,7 +28,7 @@ from __future__ import print_function
 from pyformex import zip
 
 from OpenGL import GL
-from colors import *
+from pyformex.gui.colors import *
 from formex import *
 from drawable import *
 from text import *

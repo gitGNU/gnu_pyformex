@@ -38,17 +38,18 @@ geometrical models like those used in Finite Element models.
 It also contains some useful functions to create such models.
 """
 from __future__ import print_function
-from pyformex import zip
+
+import pyformex as pf
+from pyformex import zip, utils
 
 from pyformex.arraytools import groupPositions
 from pyformex.coords import *
-from formex import Formex
-from connectivity import Connectivity
-from elements import elementType
-from geometry import Geometry
+from pyformex.formex import Formex
+from pyformex.connectivity import Connectivity
+from pyformex.elements import elementType
+from pyformex.geometry import Geometry
 from pyformex.attributes import Attributes
 from pyformex.simple import regularGrid
-import utils
 
 
 ##############################################################
@@ -254,7 +255,7 @@ class Mesh(Geometry):
         """Set/Remove the normals of the mesh.
 
         """
-        import geomtools as gt
+        from pyformex import geomtools as gt
         if normals is None:
             pass
         elif normals == 'auto':
@@ -1976,7 +1977,6 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         """
         utils.warn("warn_mesh_extrude")
         if isinstance(dir, float):
-            import pyformex as pf
             pf.warning("""Extrusion in direction %s over length %s
 
 Remember: the arguments of extrude have changed!
@@ -2278,7 +2278,7 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
         Note that for level-3 Meshes, negative volumes will be returned
         for elements having a reversed node ordering.
         """
-        from geomtools import levelVolumes
+        from pyformex.geomtools import levelVolumes
 
         base_elem = {
             1:'line2',
@@ -2735,7 +2735,7 @@ def quadgrid(seed0, seed1):
 
     The seeds are usually generated with the seed() function.
     """
-    from elements import Quad4
+    from pyformex.elements import Quad4
     wts = gridpoints(seed0, seed1)
     n0 = len(seed0)-1
     n1 = len(seed1)-1
@@ -2816,8 +2816,8 @@ def rectangleWithHole(L,W,r,nr,nt,e0=0.0,eltype='quad4'):
     Returns a Mesh
     """
     L = W
-    import elements
-    from formex import interpolate
+    from pyformex import elements
+    from pyformex.formex import interpolate
     base = elements.Quad9.vertices.scale([L, W, 1.])
     F0 = Formex([[[r, 0., 0.]]]).rosette(5, 90./4)
     F2 = Formex([[[L, 0.]], [[L, W/2]], [[L, W]], [[L/2, W]], [[0, W]]])
@@ -2848,7 +2848,7 @@ def quadrilateral(x, n1, n2):
     Returns a Mesh of quads filling the quadrilateral defined  by the four
     points `x`.
     """
-    from elements import Quad4
+    from pyformex.elements import Quad4
     from pyformex.plugins import isopar
     x = checkArray(x, (4, 3), 'f')
     M = rectangle(1., 1., nl, nw).isopar('quad4', x, Quad4.vertices)
@@ -2909,7 +2909,7 @@ def correctHexMeshOrientation(hm):
     volume of the hexahedral (triple product).
     This function fixes the hexahedrals without orientation.
     """
-    from formex import vectorTripleProduct
+    from pyformex.formex import vectorTripleProduct
     hf=hm.coords[hm.elems]
     tp=vectorTripleProduct(hf[:, 1]-hf[:, 0], hf[:, 2]-hf[:, 1], hf[:, 4]-hf[:, 0])# from formex.py
     hm.elems[tp<0.]=hm.elems[tp<0.][:,  [4, 5, 6, 7, 0, 1, 2, 3]]

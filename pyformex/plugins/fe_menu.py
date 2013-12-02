@@ -31,7 +31,7 @@ from __future__ import print_function
 
 from pyformex.plugins import formex_menu, trisurface
 import simple
-from elements import Hex8
+from pyformex.elements import Hex8
 
 
 ######################### functions #############################

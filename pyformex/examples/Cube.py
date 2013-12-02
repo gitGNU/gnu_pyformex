@@ -38,7 +38,7 @@ _topics = ['geometry', 'surface']
 _techniques = ['color', 'elements', 'reverse']
 
 from pyformex.gui.draw import *
-from elements import Hex8
+from pyformex.elements import Hex8
 
 # This could be obtained from a Mesh conversion
 def cube_tri(color=None):

@@ -31,7 +31,7 @@ from pyformex import zip
 
 import pyformex as pf
 from pyformex.coords import *
-from collection import Collection
+from pyformex.collection import Collection
 from pyformex.gui.actors import GeomActor
 from pyformex.mesh import Mesh
 from formex import Formex

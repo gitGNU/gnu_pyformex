@@ -385,7 +385,7 @@ class Formex(Geometry):
         one for plexitudes up to 3, an equal to 2 for any higher plexitude
         (since the default is to interprete a higher plexitude as a polygon).
         """
-        from elements import elementType
+        from pyformex.elements import elementType
         if self.eltype is not None:
             return elementType(self.eltype).ndim
         else:

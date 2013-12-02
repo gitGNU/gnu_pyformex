@@ -37,18 +37,20 @@ _techniques = ['dialog', 'elements']
 
 from pyformex.gui.draw import *
 
-from elements import *
+from pyformex.elements import elementType,elementTypes
 from pyformex.mesh import Mesh
-import utils
-import olist
+from pyformex import utils
+from pyformex import olist
 
 
 colors = [black, blue, yellow, red]
 
 def showElement(eltype, options):
+    print(eltype)
     clear()
     drawText("Element type: %s" %eltype, 100, 200, font='times', size=18, color=black)
     el = elementType(eltype)
+    print(el)
 
     if options['Show report']:
         print(el.report())

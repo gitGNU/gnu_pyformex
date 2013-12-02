@@ -38,7 +38,7 @@ _opengl2 = True
 
 from pyformex.gui.draw import *
 from pyformex.plugins import trisurface, surface_menu
-from elements import *
+from pyformex.elements import *
 
 def atExit():
     pf.cfg['gui/autozoomfactor'] = saved_autozoomfactor

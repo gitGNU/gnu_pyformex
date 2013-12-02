@@ -41,7 +41,6 @@ After the pause, the original structure is removed, and transparency is set off.
 """
 from __future__ import print_function
 
-
 _status = 'checked'
 _level = 'normal'
 _topics = ['geometry']
@@ -49,8 +48,8 @@ _techniques = ['dialog', 'color', 'isopar', 'undraw']
 
 from pyformex.gui.draw import *
 
+from pyformex import elements
 from pyformex.plugins import isopar
-import elements
 
 # First and second order elements to be used for geometry, resp. transform
 elems1 = [ elements.Line2, elements.Quad4, elements.Hex8 ]

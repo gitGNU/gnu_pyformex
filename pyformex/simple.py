@@ -257,7 +257,7 @@ def sphere(ndiv=6):
       A TriSurface, representing a triangulated approximation of a
       spherical surface with radius 1 and center at the origin.
     """
-    from elements import Icosa
+    from pyformex.elements import Icosa
     from pyformex.plugins.trisurface import TriSurface
 
     M = TriSurface(Icosa.vertices, Icosa.faces)

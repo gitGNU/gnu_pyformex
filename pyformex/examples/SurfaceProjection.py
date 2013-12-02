@@ -31,16 +31,15 @@ onto a 3D surface.
 """
 from __future__ import print_function
 
-
 _status = 'checked'
 _level = 'normal'
 _topics = ['surface']
 _techniques = ['transform', 'projection', 'dialog', 'image', 'isopar']
 
 from pyformex.gui.draw import *
-from pyformex.plugins.trisurface import TriSurface
-import elements
+from pyformex import elements
 from pyformex.gui.widgets import ImageView
+from pyformex.plugins.trisurface import TriSurface
 from pyformex.plugins.imagearray import *
 
 

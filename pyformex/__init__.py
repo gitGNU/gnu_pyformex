@@ -54,9 +54,9 @@ Description = "pyFormex is a tool for generating, manipulating and transforming 
 # not compile in 3k and vice-versa.
 import sys
 if sys.hexversion < 0x03000000:
-    from compat_2k import *
+    from pyformex.compat_2k import *
 else:
-    from compat_3k import *
+    from pyformex.compat_3k import *
 
 # Install type.
 # This can have the followig values:

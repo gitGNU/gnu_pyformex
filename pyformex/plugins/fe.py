@@ -31,7 +31,7 @@ from pyformex import zip
 
 import pyformex as pf
 from pyformex.coords import *
-from connectivity import *
+from pyformex.connectivity import *
 from geometry import Geometry
 from pyformex.mesh import Mesh, mergeMeshes
 from utils import deprecation

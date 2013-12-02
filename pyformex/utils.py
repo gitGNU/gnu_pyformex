@@ -1575,7 +1575,7 @@ def totalMemSize(o, handlers={}, verbose=False):
     """
     from sys import getsizeof, stderr
     from itertools import chain
-    from collections import deque
+    from pyformex.collections import deque
     try:
         from reprlib import repr
     except ImportError:

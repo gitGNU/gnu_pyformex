@@ -32,12 +32,13 @@ In a mesh model, points common to adjacent elements are unique, and
 adjacency of elements can easily be detected from common node numbers.
 """
 from __future__ import print_function
+
 from pyformex import zip
 
 from pyformex.arraytools import *
-from adjacency import *
-from utils import deprecation
-from messages import _future_deprecation
+from pyformex.adjacency import *
+from pyformex.utils import deprecation
+from pyformex.messages import _future_deprecation
 
 
 # BV: Should we make an InverseConnectivity class?
@@ -334,7 +335,7 @@ class Connectivity(ndarray):
                [0, 3, 2]])]
 
         """
-        from elements import elementType
+        from pyformex.elements import elementType
         if self.eltype is None:
            return [ self ]
 
@@ -1023,7 +1024,7 @@ class Connectivity(ndarray):
                   [0, 1, 2],
                   [1, 2, 3]]))
         """
-        from elements import elementType
+        from pyformex.elements import elementType
 
         if isInt(selector):
             if hasattr(self, 'eltype'):

@@ -34,7 +34,7 @@ from OpenGL import GL
 
 from drawable import *
 from formex import *
-from elements import elementType
+from pyformex.elements import elementType
 from pyformex.mesh import Mesh
 
 from pyformex.plugins.trisurface import TriSurface
@@ -192,7 +192,7 @@ class BboxActor(Actor):
     """Draws a bbox."""
 
     def __init__(self,bbox,color=None,linewidth=None,**kargs):
-        from elements import Hex8
+        from pyformex.elements import Hex8
         Actor.__init__(self,**kargs)
         self.color = saneColor(color)
         self.linewidth = saneLineWidth(linewidth)
