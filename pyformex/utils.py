@@ -193,7 +193,7 @@ class Process(subprocess.Popen):
         """
         self.timeout = timeout
         self.timedout = False
-        if timeout > 0.0:
+        if timeout and float(timeout) > 0.0:
             # Start a timer to terminate the subprocess
             t = threading.Timer(timeout, Process.terminate_on_timeout, [self])
             t.start()
@@ -201,7 +201,9 @@ class Process(subprocess.Popen):
             t = None
 
         # Start the process and wait for it to finish
-        self.out, self.err = self.communicate()
+        out, err = self.communicate()
+        self.out = str(out)
+        self.err = str(err)
 
         if t:
             # Cancel the timer if one was started
