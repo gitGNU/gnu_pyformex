@@ -120,7 +120,7 @@ def scaledJacobian(self,scaled=True,blksize=100000):
     ne = self.nelems()
     if blksize>0 and ne>blksize:
         slices = splitrange(n=self.nelems(), nblk=self.nelems()/blksize)
-        return concatenate([self.select(range(slices[i], slices[i+1])).scaledJacobian(scaled=scaled, blksize=-1) for i in range(len(slices)-1)])
+        return concatenate([self.select(arange(slices[i], slices[i+1])).scaledJacobian(scaled=scaled, blksize=-1) for i in range(len(slices)-1)])
     if self.elName()=='hex20':
         self = self.convert('hex8')
     elif self.elName()=='tet10':

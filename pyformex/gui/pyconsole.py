@@ -39,6 +39,9 @@ from pyformex.gui import QtGui, QtCore
 from pyformex.gui.guimain import Board
 from pyformex import utils
 
+if sys.hexversion < 0x03000000:
+    range = xrange
+
 
 ##########################################################################
 
@@ -341,7 +344,7 @@ class OtherPyConsole(Board):
             return None
         else:
             # should have a better way of doing this but I can't find it
-            [self.textCursor().deletePreviousChar() for x in xrange(length)]
+            [self.textCursor().deletePreviousChar() for x in range(length)]
         return True
 
     def recallHistory(self):

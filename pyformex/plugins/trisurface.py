@@ -215,8 +215,8 @@ def curvature(coords,elems,edges,neighbours=1):
     # calculate maximum normal curvature and corresponding coordinate system
     try:
         imax = nanargmax(k, -1)
-        kmax =  k[range(len(k)), imax]
-        tmax = t[range(len(k)), imax]
+        kmax =  k[arange(len(k)), imax]
+        tmax = t[arange(len(k)), imax]
     except: # bug with numpy.nanargmax: cannot convert float NaN to integer
         kmax = resize(NaN, (k.shape[0]))
         tmax = resize(NaN, (t.shape[0], 3))
@@ -1139,7 +1139,7 @@ Quality: %s .. %s
         if method == 'voronoi':
             from pyformex.geomtools import triangleCircumCircle
             Q.coords[-self.nelems():] = triangleCircumCircle(self.coords[self.elems], bounding=False)[1]
-        nconn = Q.nodeConnections()[range(self.ncoords())]
+        nconn = Q.nodeConnections()[arange(self.ncoords())]
         p = zeros(Q.nelems(), dtype=int)
         for i, conn in enumerate(nconn):
             p[conn[conn>-1]]=i

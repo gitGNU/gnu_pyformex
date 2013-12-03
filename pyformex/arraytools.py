@@ -40,52 +40,8 @@ if sys.hexversion >= 0x02060000:
     # We have combinations and permutations built in
     from itertools import combinations, permutations
 else:
-    # Provide our own implementation of combinations,permutations
-    def combinations(iterable, r):
-        # combinations('ABCD', 2) --> AB AC AD BC BD CD
-        # combinations(range(4), 3) --> 012 013 023 123
-        pool = tuple(iterable)
-        n = len(pool)
-        if r > n:
-            return
-        indices = range(r)
-        yield tuple(pool[i] for i in indices)
-        while True:
-            for i in reversed(range(r)):
-                if indices[i] != i + n - r:
-                    break
-            else:
-                return
-            indices[i] += 1
-            for j in range(i+1, r):
-                indices[j] = indices[j-1] + 1
-            yield tuple(pool[i] for i in indices)
+    from pyformex.backports import combinations, permutations
 
-    def permutations(iterable, r=None):
-        # permutations('ABCD', 2) --> AB AC AD BA BC BD CA CB CD DA DB DC
-        # permutations(range(3)) --> 012 021 102 120 201 210
-        pool = tuple(iterable)
-        n = len(pool)
-        if r is None:
-            r = n
-        if r > n:
-            return
-        indices = range(n)
-        cycles = range(n, n-r, -1)
-        yield tuple(pool[i] for i in indices[:r])
-        while n:
-            for i in reversed(range(r)):
-                cycles[i] -= 1
-                if cycles[i] == 0:
-                    indices[i:] = indices[i+1:] + indices[i:i+1]
-                    cycles[i] = n - i
-                else:
-                    j = cycles[i]
-                    indices[i], indices[-j] = indices[-j], indices[i]
-                    yield tuple(pool[i] for i in indices[:r])
-                    break
-            else:
-                return
 
 # Define a wrapper function for old versions of numpy
 
@@ -505,8 +461,8 @@ def rotationMatrix(angle,axis=None,angle_spec=DEG):
     if axis==None:
         f = [[c, s], [-s, c]]
     elif array(axis).size == 1:
-        f = [[0.0 for i in range(3)] for j in range(3)]
-        axes = range(3)
+        f = zeros((3,3))
+        axes = arange(3)
         i, j, k = axes[axis:]+axes[:axis]
         f[i][i] = 1.0
         f[j][j] = c
@@ -866,7 +822,7 @@ def splitrange(n, nblk):
     if n > nblk:
         ndata = (arange(nblk+1) * n * 1.0 / nblk).round().astype(int)
     else:
-        ndata = range(n+1)
+        ndata = arange(n+1)
     return ndata
 
 

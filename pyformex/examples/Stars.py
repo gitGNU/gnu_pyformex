@@ -71,7 +71,7 @@ def run():
     ang = random.random((nstars,)) * maxrot
     trl = random.random((nstars, 3)) * displ
     # create the stars
-    Stars = Formex.concatenate([ star(n, noise, i).rotate(a, r).translate(t) for i, n, a, r, t in zip(range(nstars), npts, ang, rot, trl) ])
+    Stars = Formex.concatenate([ star(n, noise, i).rotate(a, r).translate(t) for i, n, a, r, t in zip(arange(nstars), npts, ang, rot, trl) ])
     # draw them with random colors
     colors = random.random((nstars, 3))
     clear()

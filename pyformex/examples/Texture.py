@@ -28,7 +28,6 @@ Shows how to draw with textures and how to set a background image.
 """
 from __future__ import print_function
 
-
 _status = 'checked'
 _level = 'normal'
 _topics = ['Image', 'Geometry']
@@ -46,7 +45,7 @@ def run():
 
     from pyformex import simple
     F = simple.cuboid().centered()
-    G = Formex('4:0123').replic2(3, 2).toMesh().setProp(range(1, 7)).centered()
+    G = Formex('4:0123').replic2(3, 2).toMesh().setProp(arange(1, 7)).centered()
     draw([F, G], texture=image)
     view('iso')
     zoom(0.5)

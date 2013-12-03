@@ -37,13 +37,13 @@ The following curves are closed (and blended) Nurbs curves of different degree:
 The next four curves are unclosed, unblended Nurbs of degree 2, with non-unity
 weight factors for the corner points. Allthough these curves are not blended,
 they still have continuous derivatives (except for the one with weight 0.)
-because of the appropriate position of the control points. 
+because of the appropriate position of the control points.
 
-  :blue: weight = sqrt(2) 
+  :blue: weight = sqrt(2)
   :cyan: weight = sqrt(2)/2
   :magenta: weight = 0.25
   :white: weight = 0.
-  
+
 Finally, The dotted yellow curve is created with simple.circle and shows 180
 line segments approximately on the circumference of a circle with unit radius.
 
@@ -67,7 +67,7 @@ def drawThePoints(N,n,color=None):
     umin = N.knots[N.degree]
     umax = N.knots[-N.degree-1]
     u = umin + arange(n+1) * (umax-umin) / float(n)
-    P = N.pointsAt(u)    
+    P = N.pointsAt(u)
     draw(P, color=color, marksize=5)
 
 def run():
@@ -86,7 +86,7 @@ def run():
 
     draw(simple.circle(2, 4), color=yellow, linewidth=4)
 
-    for degree, c in zip(range(1, 4), [black, red, green]):
+    for degree, c in zip(list(range(1, 4)), [black, red, green]):
         N = NurbsCurve(pts, degree=degree, closed=True)
         draw(N, color=c)
         drawThePoints(N, 16, color=c)

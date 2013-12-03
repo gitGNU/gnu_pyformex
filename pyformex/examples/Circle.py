@@ -26,7 +26,6 @@
 
 """
 from __future__ import print_function
-from pyformex import zip
 
 _status = 'checked'
 _level = 'normal'
@@ -35,13 +34,14 @@ _techniques = ['connect', 'dialog', 'animation']
 
 from pyformex.gui.draw import *
 
+from pyformex import zip
 from pyformex.simple import circle
 from pyformex.geomtools import rotationAngle
 
 def run():
     resetAll()
     delay(1)
-    
+
     linewidth(1)
     for i in [3, 4, 5, 6, 8, 12, 20, 60, 180]:
         #print "%s points" % i
@@ -79,7 +79,7 @@ def run():
     diam = 0.1*h*(2.-abs(C[:, 0]))
     # finally, here are the circles:
     circles = [ circle().scale(d).rotate(a, r).translate(c) for d, r, a, c in zip(diam, rot, ang, C) ]
-    F = Formex.concatenate(circles).setProp(3) 
+    F = Formex.concatenate(circles).setProp(3)
     draw(F)
 
     # And now something more fancy: connect 1 out of 15 points of the circles
@@ -93,7 +93,7 @@ def run():
     if res:
 
         if res['Connect circles'] or res['Create Triangles']:
-            conn = range(0, 180, 15)
+            conn = arange(0, 180, 15)
 
         if res['Connect circles']:
             G = Formex.concatenate([ connect([c1.select(conn), c2.select(conn)]) for c1, c2 in zip(circles[:-1], circles[1:]) ])
@@ -103,7 +103,6 @@ def run():
             conn1 = concatenate([conn[1:], conn[:1]])
             G = Formex.concatenate([ connect([c1.select(conn), c2.select(conn), c2.select(conn1)]) for c1, c2 in zip(circles[:-1], circles[1:]) ])
             smooth()
-            print(G.eltype)
             draw(G)
 
         if res['Fly Through']:

@@ -153,7 +153,7 @@ def run():
     from pyformex.gui import decors
 
     # Creating a formex for displaying results is fairly easy
-    results = Formex(coords[elems], range(nelems))
+    results = Formex(coords[elems], arange(nelems))
     # Now try to give the formex some meaningful colors.
     # The frc array returns element forces and has shape
     #  (nelems,nforcevalues,nloadcases)
@@ -180,7 +180,7 @@ def run():
     dscale = 10000.
     dcoords = coords + dscale * displ[:,:, 0]
     # first load case
-    deformed = Formex(dcoords[elems], range(nelems))
+    deformed = Formex(dcoords[elems], arange(nelems))
     clear()
     pf.canvas.addDecoration(CLA)
     linewidth(1)

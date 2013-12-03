@@ -2083,7 +2083,7 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
             if len(expoints) != self.ncoords():
                 externals[expoints] = True
                 a = adj[externals].ravel()
-                inpoints = delete(range(self.ncoords()), expoints)
+                inpoints = delete(arange(self.ncoords()), expoints)
                 for i in range(len(a)):
                     if a[i] in inpoints:
                         a[i]=-2
@@ -2207,7 +2207,7 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
             raise ValueError("At least one of min or max have to be specified.")
 
         if isinstance(nodes, str):
-            nod = range(self.nplex())
+            nod = arange(self.nplex())
         else:
             nod = nodes
 

@@ -2057,7 +2057,7 @@ Script: %s
                 set = where(self.nprop == p.prop)[0]
             else:
                 # default is all nodes
-                set = range(self.model.nnodes())
+                set = arange(self.model.nnodes())
 
             setname = nsetName(p)
             writeSet(fil, 'NSET', setname, set)
@@ -2081,7 +2081,7 @@ Script: %s
                 set = where(self.eprop == p.prop)[0]
             else:
                 # default is all elements
-                set = range(telems)
+                set = arange(telems)
 
             if 'eltype' in p:
                 pf.debug('Elements of type %s: %s' % (p.eltype, set), pf.DEBUG.ABQ)

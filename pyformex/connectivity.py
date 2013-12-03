@@ -1011,7 +1011,8 @@ class Connectivity(ndarray):
 
         Example:
 
-          >>> Connectivity([[0,1,2],[0,2,1],[0,3,2]]).insertLevel([[0,1],[1,2],[2,0]])
+          >>> Connectivity([[0,1,2],[0,2,1],[0,3,2]]).\
+          insertLevel([[0,1],[1,2],[2,0]])
           (Connectivity([[0, 3, 1],
                  [1, 3, 0],
                  [2, 4, 1]]), Connectivity([[0, 1],
@@ -1046,7 +1047,7 @@ class Connectivity(ndarray):
             lo = lo[uniq]
         else:
             hi = lo = Connectivity()
-        if hasattr(sel, 'eltype'):
+        if hasattr(sel, 'eltype') and sel.eltype is not None:
             lo.eltype = elementType(sel.eltype)
         return hi, lo
 
@@ -1266,147 +1267,6 @@ class Connectivity(ndarray):
             f[:, i] = resize(v, (n))
         return Connectivity(f)
 
-
-
-######################################################################
-    # BV: the methods below should probably be removed,
-    # after a check that they are not essential
-
-    ## @deprecation("tangle has been renamed to combine")
-    ## def tangle(self,*args,**kargs):
-    ##     return self.combine(*args,**kargs)
-
-
-    ## @deprecation("untangle has been deprecated. Use insertLevel instead.")
-    ## def untangle(self,ind):
-    ##     return self.insertLevel(ind)
-
-
-    ## @deprecation(_future_deprecation)
-    ## def encode(self,permutations=True,return_magic=False):
-    ##     """_Encode the element connectivities into single integer numbers.
-
-    ##     Each row of numbers is encoded into a single integer value, such that
-    ##     equal rows result in the same number and different rows yield
-    ##     different numbers. Furthermore, enough information can be kept to
-    ##     restore the original rows from these single integer numbers.
-    ##     This is seldom needed however, because the original data are
-    ##     available from the Connectivity table itself.
-
-    ##     - permutations: if True(default), two rows are considered equal if
-    ##       they contain the same numbers regardless of their order.
-    ##       If False, two rows are only equal if they contain the same
-    ##       numbers at the same position.
-    ##     - return_magic: if True, return a codes,magic tuple. The default is
-    ##       to return only the codes.
-
-    ##     Returns:
-
-    ##     - codes: an (nelems,) shaped array with the element code numbers,
-    ##     - magic: the information needed to restore the original rows from
-    ##       the codes. See Connectivity.decode()
-
-    ##     Example:
-
-    ##       >>> Connectivity([[0,1,2],[0,1,3],[0,3,2]]).encode(return_magic=True)
-    ##       (array([0, 1, 3]), [(2, array([0, 1]), array([2, 3])), (2, array([0]), array([1, 2]))])
-
-    ##     *The use of this function is deprecated.*
-    ##     """
-    ##     def compact_encode2(data):
-    ##         """Encode two columns of integers into a single column.
-
-    ##         This is like enmagic2 but results in smaller encoded values, because
-    ##         the original values are first replaced by indices into the sets of unique
-    ##         values.
-    ##         This encoding scheme is therefore usable for repeated application
-    ##         on multiple columns.
-
-    ##         The return value is the list of codes, the magic value used in encoding,
-    ##         and the two sets of uniq values for the columns, needed to restore the
-    ##         original data. Decoding can be done with compact_decode2.
-    ##         """
-    ##         # We could use a single compaction vector?
-    ##         uniqa, posa = unique(data[:,0], return_inverse=True)
-    ##         uniqb, posb = unique(data[:,1], return_inverse=True)
-    ##         # We could insert the encoding directly here,
-    ##         # or use an encoding function with 2 arguments
-    ##         # to avoid the column_stack operation
-    ##         rt = column_stack([posa, posb])
-    ##         codes, magic = enmagic2(rt)
-    ##         return codes,magic,uniqa,uniqb
-
-
-    ##     if permutations:
-    ##         data = self.copy()
-    ##         data.sort(axis=1)
-    ##     else:
-    ##         data = self
-
-    ##     magic = []
-    ##     codes = data[:,0]
-    ##     for i in range(1,data.shape[1]):
-    ##         cols = column_stack([codes,data[:,i]])
-    ##         codes,mag,uniqa,uniqb = compact_encode2(cols)
-    ##         # insert at the front so we can process in order
-    ##         magic.insert(0,(mag,uniqa,uniqb))
-
-    ##     if return_magic:
-    ##         return codes,magic
-    ##     else:
-    ##         return codes
-
-
-    ## @deprecation(_future_deprecation)
-    ## @staticmethod
-    ## def decode(codes,magic):
-    ##     """Decode element codes into a Connectivity table.
-
-    ##     This is the inverse operation of the Connectivity.encode() method.
-    ##     It recreates a Connectivity table from the (codes,magic) information.
-
-    ##     This is a static method, and should be invoked as
-    ##     ``Connectivity.decode(codes,magic)``.
-
-    ##     - codes: code numbers as returned by Connectivity.encode, or a subset
-    ##       thereof.
-    ##     - magic: the magic information as returned by Connectivity.encode,
-    ##       with argument return_magic=True.
-
-    ##     Returns:
-
-    ##     A Connectivity table.
-
-    ##     Example:
-
-    ##       >>> Connectivity.decode(array([0,1,3]), [(2, array([0, 1]), array([2, 3])), (2, array([0]), array([1, 2]))])
-    ##       Connectivity([[0, 1, 2],
-    ##              [0, 1, 3],
-    ##              [0, 2, 3]])
-
-    ##     *The use of this function is deprecated.*
-    ##     """
-
-    ##     def compact_decode2(codes,magic,uniqa,uniqb):
-    ##         """Decodes a single integer value into the original 2 values.
-
-    ##         This is the inverse operation of compact_encode2.
-    ##         Thus compact_decode2(*compact_encode(data)) will return data.
-
-    ##         codes can be a subset of the encoded values, but the other 3 arguments
-    ##         should be exactly those from the compact_encode2 result.
-    ##         """
-    ##         # decoding returns the indices into the uniq numberings
-    ##         pos = demagic2(codes,magic)
-    ##         return column_stack([uniqa[pos[:,0]],uniqb[pos[:,1]]])
-
-    ##     data = []
-    ##     for mag in magic:
-    ##         cols = compact_decode2(codes,mag[0],mag[1],mag[2])
-    ##         data.insert(0,cols[:,1])
-    ##         codes = cols[:,0]
-    ##     data.insert(0,codes)
-    ##     return Connectivity(column_stack(data))
 
 ############################################################################
 

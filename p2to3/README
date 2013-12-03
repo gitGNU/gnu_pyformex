@@ -63,7 +63,7 @@ implemented another solution::
     - unicode
     - urllib
     - ws_comma
-    ? xrange
+    - xrange
     - xreadlines
     - zip
 

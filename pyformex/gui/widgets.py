@@ -2249,9 +2249,9 @@ class ArrayModel(QtCore.QAbstractTableModel):
         self._data = np.asarray(data)
         self.generictype = _generic_nptype[self._data.dtype.kind]
         if rhead is None:
-            rhead = range(data.shape[0])
+            rhead = arange(data.shape[0])
         if chead is None:
-            chead = range(data.shape[1])
+            chead = arange(data.shape[1])
         self.headerdata = {QtCore.Qt.Horizontal:chead,QtCore.Qt.Vertical:rhead}
         self.makeEditable(edit)
 

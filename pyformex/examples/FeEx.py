@@ -25,7 +25,6 @@
 
 """
 from __future__ import print_function
-from pyformex import zip
 
 _status = 'checked'
 _level = 'advanced'
@@ -33,6 +32,8 @@ _topics = ['FEA']
 _techniques = ['menu', 'dialog', 'persistence', 'color', 'isopar']
 
 from pyformex.gui.draw import *
+from pyformex import utils
+from pyformex import zip
 from pyformex import GUI, PF
 from pyformex.gui import menu
 
@@ -45,7 +46,6 @@ from pyformex.plugins import postproc_menu
 from pyformex.plugins import geometry_menu
 from pyformex.plugins import isopar
 from pyformex.odict import OrderedDict
-from pyformex import utils
 
 # global data
 
@@ -609,7 +609,7 @@ loads f bcon 1
         for p in cloads:
             loadcase = loadcaseFromTag(p)
             if p.set is None:
-                nodeset = range(calpyModel.nnodes)
+                nodeset = arange(calpyModel.nnodes)
             else:
                 nodeset = p.set
             F = [0.0, 0.0]
@@ -758,7 +758,8 @@ def runCalpyAnalysis(jobname=None,verbose=False,flavia=False):
     ############################
     # Load the needed calpy modules
     from pyformex.plugins import calpy_itf
-    calpy_itf.check()
+    if not calpy_itf.check():
+        return
 
     ## # Load development version
     #import sys
@@ -905,7 +906,7 @@ def runCalpyAnalysis(jobname=None,verbose=False,flavia=False):
     for p in PDB.getProp('n', attr=['cload']):
         lc = loadcaseFromTag(p)-1  # calpy loadcases start from 0
         if p.set is None:
-            nodeset = range(calpyModel.nnodes)
+            nodeset = arange(calpyModel.nnodes)
         else:
             nodeset = p.set
         F = [0.0, 0.0]

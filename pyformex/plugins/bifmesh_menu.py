@@ -552,7 +552,7 @@ def seedLongSplines (H, at,  curvedSection=True, nPushedSections=6, napproxlong=
         TB=[  cutLongSplinesWithCurvedProfile(B[i], B[i+1], H[i], H[i+1], napproxcut) for i in [0, 2, 4]  ]
         TB=TB[0]+TB[1]+TB[2]
         if nPushedSections>0:#this part pushes 'nPushedSections' sections closer to the bifurcation center!
-            cv=range(nPushedSections+2)
+            cv = arange(nPushedSections+2)
             mcv= array(cv, dtype=float)/cv[-1]
             for tbi, bi in zip(TB, B ):
                 for i in cv:  tbi[:, i]=(tbi[:, i]*mcv[i] +bi[:, i]*(1.-mcv[i]) )

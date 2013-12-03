@@ -258,7 +258,7 @@ class Curve(Geometry):
         Returns a list of open curves of the same type as the original.
         """
         if split is None:
-            split = range(1, self.nparts)
+            split = list(range(1, self.nparts))
         elif isinstance(split, int):
             split = [split]
         start = [0] + split

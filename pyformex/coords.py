@@ -1386,7 +1386,7 @@ class Coords(ndarray):
 
 
     def projectOnCylinder(self,radius=1.,dir=0,center=[0., 0., 0.]):
-        """Project :class:`Coords` on a cylinder with axis parallel to a global axis.
+        """Project the Coords on a cylinder with axis parallel to a global axis.
 
         The default cylinder has its axis along the x-axis and a unit radius.
         No points of the :class:`Coords` should belong to the axis..
@@ -1396,10 +1396,9 @@ class Coords(ndarray):
         c = resize(asarray(center), self.shape)
         c[..., dir] = self[..., dir]
         f = self - c
-        axes = range(3)
-        del axes[dir]
-        for i in axes:
-            f[..., i] *= s
+        for i in range(3):
+            if i != dir:
+                f[..., i] *= s
         f += c
         return f
 

@@ -28,7 +28,6 @@ of (ncolors+1) x (ncolors-1) squares.
 """
 from __future__ import print_function
 
-
 _status = 'checked'
 _level = 'beginner'
 _topics = ['color']
@@ -42,8 +41,8 @@ def run():
     flat()
     palette = pf.canvas.settings.colormap
     ncolors = len(palette)
-    F = Formex('4:0123').replic2(ncolors/2, 2).setProp(range(ncolors))
-    G = Formex('4:0123').replic2(ncolors+1, ncolors-1).setProp(range(ncolors))
+    F = Formex('4:0123').replic2(ncolors/2, 2).setProp(arange(ncolors))
+    G = Formex('4:0123').replic2(ncolors+1, ncolors-1).setProp(arange(ncolors))
     draw(align([F, G], '|00', offset=[1., 0., 0.]))
 
 

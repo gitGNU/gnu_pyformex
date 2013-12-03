@@ -132,7 +132,7 @@ class Model(Geometry):
     def elemNrs(self,group,elems=None):
         """Return the global element numbers for elements set in group"""
         if elems is None:
-            elems = range(len(self.elems[group]))
+            elems = arange(len(self.elems[group]))
         return self.celems[group] + elems
 
 

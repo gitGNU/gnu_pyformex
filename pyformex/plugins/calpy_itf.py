@@ -55,7 +55,7 @@ def detect(trypaths=None):
     if utils.checkVersion('calpy', '0.3.4-rev3', external=True) >= 0:
         P = utils.command('calpy --whereami')
         if not P.sta:
-            path = P.out
+            path = P.out.splitlines()[0]
             pf.debug("I found calpy in %s" % path)
     if not path:
         if trypaths is None:
@@ -89,7 +89,7 @@ def check(trypaths=None):
     if utils.hasModule('calpy', check=True):
         return True
     else:
-        pf.warning("sys.path=%s\nSorry, I can not run this example, because you do not have calpy installed (at least not in a place where I can find it)." % sys.path)
+        pf.warning("Sorry, I can not run this example, because you do not have calpy installed (at least not in a place where I can find it).")
         return False
 
 

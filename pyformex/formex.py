@@ -861,7 +861,7 @@ maxprop  = %s
             raise ValueError("At least one of min or max have to be specified.")
 
         if isinstance(nodes, str):
-            nod = range(self.nplex())
+            nod = arange(self.nplex())
         else:
             nod = nodes
 
@@ -1001,7 +1001,7 @@ maxprop  = %s
         """
         F = self
         if dir is None:
-            dir = range(len(n))
+            dir = list(range(len(n)))
         if step is None:
             step = [1.]*len(n)
         for ni, diri, stepi in zip(n, dir, step):
@@ -1841,7 +1841,7 @@ def cut3AtPlane(F,p,n,side='',atol=None,newprops=None):
                 if not (prop is None or isinstance(prop, int)):
                     raise
         except:
-            newprops = range(7)
+            newprops = arange(7)
     side = _sane_side(side)
 
     p = asarray(p).reshape(-1, 3)

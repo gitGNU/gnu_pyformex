@@ -82,7 +82,15 @@ StartTime = datetime.datetime.now()
 
 # initialize some global variables used for communication between modules
 
-options = None     # the options found on the command line
+# the options found on the command line
+# this is replaced with the options read from the command line
+# but we define it here with an attribute debuglevel, so that we can
+# use debug (unintentionally) before the debuglevel is set
+
+class options:
+    debuglevel = 0  # Make sure we can use
+
+
 
 print_help = None  # the function to print(the pyformex help text (pyformex -h))
 

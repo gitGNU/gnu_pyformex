@@ -174,7 +174,7 @@ def rotateRow(self, rowElements, rotAxis, dir, steps=1, view=True):
         if steps == 0:
             steps = 1
         for i in range(steps):
-            self[rowElements] = self[rowElements].rotate(angle/steps, rotAxis)        
+            self[rowElements] = self[rowElements].rotate(angle/steps, rotAxis)
             dr = drawn
             drawn = draw(self, bbox='last')
             undraw(dr)
@@ -199,7 +199,7 @@ def perm(n=2):
 def fac(x):
     """Return the factorial of x"""
     import functools
-    return functools.reduce(lambda y, z:y*z, range(1, x+1))
+    return functools.reduce(lambda y, z:y*z, list(range(1, x+1)))
 
 # Dialog
 dia = None
@@ -237,7 +237,7 @@ def permutations():
 def close():
     pf.canvas.resetMouse(LEFT, SHIFT)
     dia.close()
-    # Release script lock 
+    # Release script lock
     scriptRelease(__file__)
 
 def timeOut():
@@ -250,11 +250,11 @@ dia = widgets.InputDialog(
     items=[
         _I('n', 3,  text='Number of elements on a row', itemtype='slider', min=2, max=10, ticks=1),
         _I('steps', 10, text='Animation steps', itemtype='slider', min=0, max=50, ticks=5),
-        _I('t', 0.05, text='Time between steps', min=0),  
+        _I('t', 0.05, text='Time between steps', min=0),
    ],
     actions=[
         ('New', new),
-        ('Set', set), 
+        ('Set', set),
         ('Shuffle', shuffle),
         ('Permutations', permutations),
         ('Close', close),
@@ -276,7 +276,7 @@ def run():
     dia.acceptData()
     globals().update(dia.results)
 
-    # Block other scripts 
+    # Block other scripts
     scriptLock(__file__)
 
 if __name__ == 'draw':

@@ -255,7 +255,7 @@ def partitionCollection(K):
         actor_numbers = K.get(-1, [])
         K.clear()
         for i in actor_numbers:
-            K.add(range(sel[int(i)].nelems()), i)
+            K.add(arange(sel[int(i)].nelems()), i)
     prop = 1
     j = 0
     for i in K.keys():
