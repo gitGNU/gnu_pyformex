@@ -38,7 +38,7 @@ from pyformex.connectivity import Connectivity
 
 from numpy import array, arange, concatenate
 
-from pyformex.odict import ODict
+from pyformex.odict import OrderedDict
 
 
 e3 = 1./3.
@@ -305,7 +305,7 @@ class ElementType(object):
 
 
 # all registered element types:
-_registered_element_types = ODict()
+_registered_element_types = OrderedDict()
 
 
 def createElementType(name,doc,ndim,vertices,edges=('', []),faces=('', []),**kargs):
