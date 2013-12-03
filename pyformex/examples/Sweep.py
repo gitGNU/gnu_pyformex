@@ -38,7 +38,7 @@ from pyformex.gui.draw import *
 from pyformex.plugins import curve
 from pyformex.odict import ODict
 
-import simple
+from pyformex import simple
 import re
 
 linewidth(2)

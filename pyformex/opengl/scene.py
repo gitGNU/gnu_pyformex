@@ -45,7 +45,7 @@ from __future__ import print_function
 import pyformex as pf
 from pyformex import arraytools as at
 from pyformex import coords
-import drawable
+from pyformex.gui import drawable
 from pyformex.gui import actors
 from pyformex.gui import decors
 from pyformex.gui import marks

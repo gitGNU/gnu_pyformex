@@ -36,7 +36,7 @@ _topics = ['geometry', 'curve']
 _techniques = ['nurbs', 'connect', 'border', 'frenet']
 
 from pyformex.gui.draw import *
-import simple
+from pyformex import simple
 from pyformex.plugins.curve import *
 from pyformex.plugins.nurbs import *
 

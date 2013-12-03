@@ -32,8 +32,8 @@ from __future__ import print_function
 from pyformex import zip
 
 import pyformex as pf
-import formex
-import geomfile
+from pyformex import formex
+from pyformex import geomfile
 from pyformex import utils
 from project import Project
 from pyformex.geometry import Geometry

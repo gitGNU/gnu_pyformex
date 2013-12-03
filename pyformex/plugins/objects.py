@@ -34,8 +34,8 @@ import pyformex as pf
 from pyformex.coords import bbox
 from pyformex.script import named
 from pyformex.gui.draw import drawBbox, _I
-import geomfile
-import odict
+from pyformex import geomfile
+from pyformex import odict
 
 from copy import deepcopy
 

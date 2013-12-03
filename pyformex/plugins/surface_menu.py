@@ -29,7 +29,7 @@ Surface operations plugin menu for pyFormex.
 from __future__ import print_function
 
 import pyformex as pf
-from pyformex import zip, simple
+from pyformex import zip, simple, timer
 from pyformex.gui import actors, colors, decors, widgets, menu
 from pyformex.plugins import plot2d, formex_menu, fe_abq
 
@@ -40,7 +40,7 @@ from pyformex.plugins.trisurface import *
 from pyformex.plugins.objects import *
 from pyformex.plugins.tools import Plane
 
-import os, timer
+import os
 
 _name_ = '_surface_menu_'
 ##################### selection and annotations ##########################

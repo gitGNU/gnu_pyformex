@@ -31,7 +31,7 @@ from __future__ import print_function
 
 
 import pyformex as pf
-import gui
+from pyformex import gui
 from pyformex import coords
 from pyformex.attributes import Attributes
 
@@ -198,9 +198,9 @@ def _set_actors():
 
         return GeomActor(self,**kargs)
 
-    import formex
+    from pyformex import formex
     formex.Formex.actor = actor
-    import mesh
+    from pyformex import mesh
     mesh.Mesh.actor = actor
 
 _set_actors()

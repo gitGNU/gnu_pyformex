@@ -34,7 +34,7 @@ _topics = ['geometry']
 _techniques = ['color', 'pattern']
 
 from pyformex.gui.draw import *
-import simple
+from pyformex import simple
 
 
 def run():

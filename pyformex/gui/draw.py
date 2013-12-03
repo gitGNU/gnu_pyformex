@@ -33,31 +33,36 @@ from __future__ import print_function
 
 import pyformex as pf
 
-import threading, os, sys, types, copy, commands, time
-
-import numpy
 from pyformex import utils
-import messages
-import widgets
+from pyformex import messages
+from pyformex import coords
+from pyformex.gui import widgets
 Dialog = widgets.InputDialog
 _I = widgets.simpleInputItem
 _G = widgets.groupInputItem
 _T = widgets.tabInputItem
-import toolbar
+from pyformex.gui import toolbar
 from pyformex.gui import actors
-import decors
-import marks
-import image
+from pyformex.gui import decors
+from pyformex.gui import marks
+from pyformex.gui import image
 from pyformex.gui import canvas
 from pyformex.gui import colors
 
-from pyformex import coords
 from pyformex.plugins import trisurface, tools, fe
 
 from pyformex.script import *
 from pyformex.gui.colors import *
 from pyformex.formex import *
 from pyformex.coordsys import CoordinateSystem
+
+import numpy
+import threading
+import os
+import sys
+import types
+import copy
+import time
 
 #################### Interacting with the user ###############################
 

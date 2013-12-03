@@ -43,7 +43,7 @@ _topics = ['mesh']
 _techniques = ['revolve', 'degenerate'] 
 
 from pyformex.gui.draw import *
-import simple
+from pyformex import simple
 
 delay(1)
 

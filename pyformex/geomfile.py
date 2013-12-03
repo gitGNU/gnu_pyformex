@@ -31,7 +31,7 @@ from __future__ import print_function
 
 
 from pyformex import utils
-import filewrite
+from pyformex import filewrite
 from pyformex.coords import *
 from pyformex.formex import Formex
 from pyformex.mesh import Mesh

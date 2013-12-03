@@ -37,7 +37,7 @@ _techniques = []
 
 from pyformex.gui.draw import *
 from pyformex.plugins.section2d import *
-import simple, connectivity, mydict
+from pyformex import simple, connectivity, mydict
 
 
 def showaxes(C, angle, size, color):

@@ -38,7 +38,7 @@ _techniques = ['color', 'sweep', 'extrude', 'connect', 'revolve']
 
 from pyformex.gui.draw import *
 from pyformex.plugins import curve
-import simple
+from pyformex import simple
 
 def run():
     # GEOMETRICAL PARAMETERS FOR HE200B wide flange beam

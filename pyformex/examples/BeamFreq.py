@@ -41,7 +41,7 @@ _opengl2 = True
 
 from pyformex.gui.draw import *
 from pyformex.plugins.curve import *
-import simple
+from pyformex import simple
 
 def check_calix(version='1.5-a8'):
     """Check that we have the required calix version"""

@@ -203,7 +203,7 @@ def postproc(coords, elements, displ, frc):
     """Display the results of the analysis."""
 
     from pyformex.gui.colorscale import ColorScale, ColorLegend
-    import gui.decors
+    from pyformex import gui.decors
 
     # Creating a formex for displaying results is fairly easy
     elems = elements[:, :2]-1

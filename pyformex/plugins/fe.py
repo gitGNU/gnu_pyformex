@@ -35,7 +35,6 @@ from pyformex.connectivity import *
 from pyformex.geometry import Geometry
 from pyformex.mesh import Mesh, mergeMeshes
 from pyformex.utils import deprecation
-import warnings
 
 
 ######################## Finite Element Model ##########################

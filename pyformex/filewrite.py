@@ -196,7 +196,7 @@ def writeSTL(f,x,n=None,binary=False,color=None):
         raise ValueError("Expected an (ntri,3,3) array, got %s" % x.shape)
 
     if n is None:
-        import geomtools
+        from pyformex import geomtools
         a, n = geomtools.areaNormals(x)
         degen = geomtools.degenerate(a, n)
         print("The model contains %d degenerate triangles" % degen.shape[0])

@@ -34,7 +34,7 @@ _techniques = ['connect', 'dialog']
 
 from pyformex.gui.draw import *
 
-import simple
+from pyformex import simple
 from pyformex.gui import widgets
 
 

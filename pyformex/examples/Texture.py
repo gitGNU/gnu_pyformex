@@ -44,7 +44,7 @@ def run():
     imagefile = os.path.join(pf.cfg['pyformexdir'], 'data', 'butterfly.png')
     image = image2numpy(imagefile, indexed=False)
 
-    import simple
+    from pyformex import simple
     F = simple.cuboid().centered()
     G = Formex('4:0123').replic2(3, 2).toMesh().setProp(range(1, 7)).centered()
     draw([F, G], texture=image)

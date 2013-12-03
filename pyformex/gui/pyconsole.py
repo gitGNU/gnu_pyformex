@@ -50,7 +50,7 @@ class PyConsole(QtGui.QPlainTextEdit):
         self.construct = []
         if interpreter is None:
             import code
-            import script
+            from pyformex import script
             interpreter = code.InteractiveInterpreter(script.Globals())
         self.interpreter = interpreter
 

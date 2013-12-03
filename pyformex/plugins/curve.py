@@ -37,7 +37,7 @@ from pyformex.coords import *
 from pyformex.geometry import Geometry
 from pyformex.formex import Formex, connect
 from pyformex.mesh import Mesh
-import geomtools as gt
+from pyformex import geomtools as gt
 from pyformex import utils
 
 ##############################################################################

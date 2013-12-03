@@ -32,7 +32,7 @@ from pyformex.gui import decors, colors
 from pyformex.gui.camera import inverse
 from pyformex.gui.draw import *
 from pyformex.formex import *
-import geomtools
+from pyformex import geomtools
 
 VA=None
 

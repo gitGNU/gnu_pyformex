@@ -35,7 +35,7 @@ _topics = ['mesh']
 _techniques = ['']
 
 from pyformex.gui.draw import *
-import simple
+from pyformex import simple
 
 
 def hex_mesh():

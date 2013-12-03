@@ -1557,7 +1557,7 @@ def inverseIndex(a,sort=True,expand=True):
              [-1,  1,  2],
              [-1, -1,  3]], dtype=int32)
     """
-    import varray
+    from pyformex import varray
     return varray.inverseIndex(a, sort=sort, expand=expand)
 
 

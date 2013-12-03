@@ -34,7 +34,7 @@ _topics = ['formex', 'surface']
 _techniques = ['connect', 'color']
 
 from pyformex.gui.draw import *
-import simple
+from pyformex import simple
 
 def run():
     clear()

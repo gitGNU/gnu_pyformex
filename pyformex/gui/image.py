@@ -121,7 +121,7 @@ def checkImageFormat(fmt,verbose=True):
         return fmt
     else:
         if verbose:
-            import draw
+            from pyformex.gui import draw
             draw.error("Sorry, can not save in %s format!\n"
                        "I suggest you use 'png' format ;)"%fmt)
         return None

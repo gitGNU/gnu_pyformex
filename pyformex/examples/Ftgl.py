@@ -48,7 +48,7 @@ except ImportError:
     warning("You do not have FTGL and its Python bindings (pyftgl).\nSee the pyformex/extra/pyftgl directory in the pyFormex source tree for instructions.")
 
 from pyformex.gui import colors, image
-import odict
+from pyformex import odict
 
 
 extra_fonts = [

@@ -38,7 +38,7 @@ _topics = ['curve', 'font']
 _techniques = ['bezier', 'borderfill']
 
 from pyformex.gui.draw import *
-import odict
+from pyformex import odict
 from pyformex.plugins.curve import BezierSpline, PolyLine
 from pyformex.simple import connectCurves
 from pyformex.plugins.trisurface import fillBorder

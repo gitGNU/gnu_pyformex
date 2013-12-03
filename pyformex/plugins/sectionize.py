@@ -30,7 +30,7 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex.plugins.curve import PolyLine
-import simple
+from pyformex import simple
 from pyformex.gui.draw import *
 from pyformex.arraytools import isInt
 

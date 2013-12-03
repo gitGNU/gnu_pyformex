@@ -37,7 +37,7 @@ _techniques = ['transform']
 _author = 'gianluca'
 
 from pyformex.gui.draw import *
-import simple
+from pyformex import simple
 
 
 def atExit():

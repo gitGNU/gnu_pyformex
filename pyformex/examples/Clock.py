@@ -34,7 +34,7 @@ _topics = []
 _techniques = ['timer']
 
 from pyformex.gui.draw import *
-import simple
+from pyformex import simple
 from datetime import datetime
 from pyformex.gui import QtCore
 

@@ -31,11 +31,11 @@ from __future__ import print_function
 import pyformex as pf
 
 import os, sys
-import draw
+from pyformex.gui import draw
 from pyformex import utils
 import tempfile
 import random
-import viewport
+from pyformex.gui import viewport
 from gettext import gettext as _
 
 

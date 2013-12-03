@@ -38,7 +38,7 @@ _techniques = ['voxelize', 'image']
 from pyformex.gui.draw import *
 from pyformex.plugins.imagearray import *
 from pyformex.plugins.trisurface import TriSurface
-import simple
+from pyformex import simple
 
 
 def showGreyImage(a):

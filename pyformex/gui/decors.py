@@ -37,7 +37,7 @@ from pyformex.gui.text import *
 from pyformex.gui.marks import TextMark
 
 from pyformex.gui import colors
-import gluttext
+from pyformex.gui import gluttext
 
 ### Some drawing functions ###############################################
 

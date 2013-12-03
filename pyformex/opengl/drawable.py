@@ -37,7 +37,7 @@ from pyformex.attributes import Attributes
 from pyformex.formex import Formex
 from pyformex.mesh import Mesh
 from pyformex.elements import elementType, _default_eltype
-import geomtools as gt
+from pyformex import geomtools as gt
 from pyformex import arraytools as at
 import numpy as np
 from pyformex import utils

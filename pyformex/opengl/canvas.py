@@ -1202,7 +1202,7 @@ class Canvas(object):
             correction = float(pf.cfg.get('gui/autozoomfactor', 1.732))
             tf = coords.tand(fovy/2.)
 
-            import simple
+            from pyformex import simple
             bbix = simple.regularGrid(X0, X1, [1, 1, 1])
             bbix = dot(bbix, self.camera.rot[:3, :3])
             bbox = coords.Coords(bbix).bbox()

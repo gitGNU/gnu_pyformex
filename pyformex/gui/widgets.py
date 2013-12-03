@@ -35,7 +35,7 @@ import os, types
 from pyformex.gui import QtCore, QtGui, Slot
 import pyformex as pf
 from pyformex.gui import colors
-import odict, mydict, olist
+from pyformex import odict, mydict, olist
 from pyformex import utils
 from pyformex import arraytools as at
 
@@ -2652,7 +2652,7 @@ class SaveImageDialog(FileSelection):
             w, h = SaveImageDialog.default_size
         except:
             w, h = pf.canvas.getSize()
-        import image
+        from pyformex.gui import image
         formats = ['From Extension'] + image.imageFormats()
         self.fmt = InputCombo("Format:", None, choices=formats)
         self.qua = InputInteger("Quality:", -1)

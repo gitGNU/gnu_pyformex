@@ -69,7 +69,7 @@ def filterWarning(message,module='',cat='U',action='ignore'):
 
 def warn(message,level=UserWarning,stacklevel=3,data=None):
     import warnings
-    import messages
+    from pyformex import messages
     # pass the data into the message
     messages._message_data = data
     warnings.warn(message, level, stacklevel)
@@ -1499,7 +1499,7 @@ def procInfo(title):
 
 def interrogate(item):
     """Print useful information about item."""
-    import odict
+    from pyformex import odict
     info = odict.ODict()
     if hasattr(item, '__name__'):
         info["NAME:    "] =  item.__name__

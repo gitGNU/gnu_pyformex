@@ -40,7 +40,7 @@ from pyformex.plugins.properties import *
 from pyformex.plugins.fe_abq import Step, Output, Result, AbqData
 
 
-import simple
+from pyformex import simple
 
 
 def centralPoint(X):

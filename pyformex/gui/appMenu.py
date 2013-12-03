@@ -25,14 +25,16 @@
 
 """
 from __future__ import print_function
-from pyformex import zip
 
 import pyformex as pf
+from pyformex import zip
 from pyformex import apps
+from pyformex import utils
+from pyformex import  olist
+from pyformex import script
+from pyformex.gui import draw
+from pyformex.gui import menu
 
-from pyformex import utils, olist
-import script, draw
-import menu
 import os, random
 from gettext import gettext as _
 

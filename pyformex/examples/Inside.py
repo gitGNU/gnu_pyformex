@@ -35,7 +35,7 @@ _topics = ['surface', 'vtk']
 _techniques = ['inside']
 
 from pyformex.gui.draw import *
-import simple
+from pyformex import simple
 from pyformex import timer
 
 from pyformex.multi import *

@@ -35,7 +35,7 @@ from numpy import *
 
 Float = re.compile('[-+]?(\d+(\.\d*)?|\d*\.\d+)([eE]\d+)?')
 FloatString = re.compile('(?P<float>[-+]?(\d+(\.\d*)?|\d*\.\d+)([eE]\d+)?)(?P<string>.*)')
-        
+
 
 def splitFloat(s):
     """Match a floating point number at the beginning of a string
@@ -72,26 +72,26 @@ def readData(s,type,strict=False):
     data or types are ignored, UNLESS the strict flag has been set, in which
     case a RuntimError is raised.
     Example::
-    
+
        readData('12, 13, 14.5e3, 12 inch, 1hr, 31kg ', ['int','float','kg','cm','s'])
-      
+
     returns ``[12, 13.0, 14500.0, 30.48, 3600.0]``
-    
+
     ..warning ::
-    
+
       You need to have the GNU ``units`` command installed for the unit
-      conversion to work. 
+      conversion to work.
     """
-    import units, string
+    from pyformex import units
     out = []
-    data = string.split(s, ',')
+    data = s.split(',')
     if strict and len(data) != len(type):
         raise RuntimeError("Data do not match type specifier %s\nData: '%s'" % (type, s))
     for t, d in zip(type, data):
         #print(t,d)
         if len(d) == 0:
             break
-        v = string.strip(d)
+        v = d.strip()
         if t == 'int':
             val = int(v)
         elif t == 'float':
@@ -115,7 +115,7 @@ def readData(s,type,strict=False):
 
 def readAsciiTable(fn, header=True):
     """_Reads data from an ASCII text file (Table).
-    
+
     if header is True: first line is the header, the rest is a table (2D array)
     it returns the header and the 2D array of data as floats.
     if header is False, there is no header.
@@ -135,9 +135,9 @@ def readAsciiTable(fn, header=True):
 
 def writeAsciiTable(fn, h, d, fmtdata='e'):
     """_Writes an ASCII text file.
-    
+
     The first line is the header h (tuple of strings, e.g. h=[ 'n0', 'n1', 'n2' ] ).
-    The other lines contains the data d (2D array of floats) as a table. 
+    The other lines contains the data d (2D array of floats) as a table.
     If format of the data can be chosen with fmtdata:
         1) fmtdata is 'e' , the data are written as scientific (1.123456e+01),
         2) fmtdata is 'f' , the data are written as floats,

@@ -27,14 +27,11 @@ This module defines the functions for creating the pyFormex window toolbars.
 """
 from __future__ import print_function
 
-
 import pyformex as pf
-import os
-from pyformex.gui import QtCore, QtGui
-
-import widgets
-import draw
 from pyformex import utils
+from pyformex.gui import QtCore, QtGui, widgets
+
+import os
 
 
 ################### General Button Functions ###########
@@ -90,7 +87,8 @@ def removeButton(toolbar, button):
 
 def addActionButtons(toolbar):
     """Add the script action buttons to the toolbar."""
-    import fileMenu
+    from pyformex.gui import draw
+    from pyformex.gui import fileMenu
     action = {}
     avail_buttons = [
         ( "Play", "next", draw.play, False ),
@@ -354,6 +352,7 @@ def setProjection():
 shrink_button = None # the toggle shrink button
 
 def toggleShrink(): # Called by the button
+    from pyformex.gui import draw
     mode = draw.DrawOptions.get('shrink', None)
     if mode is None:
         mode = 0.8
@@ -368,6 +367,7 @@ def addShrinkButton(toolbar):
                               toggle=True)
 
 def setShrink(mode):
+    from pyformex.gui import draw
     draw.shrink(mode)
     if shrink_button:
         shrink_button.setChecked(mode != None)

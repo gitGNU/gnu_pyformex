@@ -38,7 +38,7 @@ from pyformex.gui.draw import *
 
 clear()
 view('front')
-import simple
+from pyformex import simple
 from pyformex.plugins.trisurface import *
 
 

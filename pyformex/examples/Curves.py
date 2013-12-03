@@ -186,7 +186,7 @@ flat()
 
 dialog = None
 
-import script
+from pyformex import script
 
 
 def close():

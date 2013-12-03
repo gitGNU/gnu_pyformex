@@ -33,7 +33,7 @@ _topics = ['geometry']
 _techniques = ['dialog', 'actor']
 
 from pyformex.gui.draw import *
-import gui.actors
+from pyformex import gui.actors
 
 
 def run():

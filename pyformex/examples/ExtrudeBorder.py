@@ -50,7 +50,7 @@ def cutBorderClose(S, P, N):
 
 
 def run():
-    import simple
+    from pyformex import simple
     smooth()
     linewidth(2)
     clear()

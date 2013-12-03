@@ -36,7 +36,7 @@ _topics = ['surface']
 _techniques = ['extrude', 'borderfill', 'cut']
 
 from pyformex.gui.draw import *
-import geomtools
+from pyformex import geomtools
 
 def run():
     reset()

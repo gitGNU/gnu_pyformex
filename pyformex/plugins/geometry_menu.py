@@ -33,7 +33,7 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import (
-    zip, utils, fileread, simple
+    zip, utils, fileread, simple, timer,
     )
 
 from pyformex.odict import ODict
@@ -52,7 +52,7 @@ from pyformex.plugins import (
     objects, trisurface, inertia, partition, sectionize, dxf, surface_menu,
     )
 
-import os, timer
+import os
 
 _name_ = 'geometry_menu'
 
@@ -194,7 +194,7 @@ def readGeometry(filename,filetype=None):
                 j += 1
 
         elif filetype in utils.fileExtensions('tetgen'):
-            import tetgen
+            from pyformex.plugins import tetgen
             res = tetgen.readTetgen(filename)
 
         else:

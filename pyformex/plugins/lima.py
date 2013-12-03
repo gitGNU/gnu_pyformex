@@ -27,7 +27,7 @@
 from __future__ import print_function
 
 
-import turtle
+from pyformex.plugins import turtle
 
 class Lima(object):
     """A class for operations on Lindenmayer Systems."""

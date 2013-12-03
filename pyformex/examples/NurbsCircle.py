@@ -60,7 +60,7 @@ _topics = ['geometry', 'curve']
 _techniques = ['nurbs', 'border']
 
 from pyformex.gui.draw import *
-import simple
+from pyformex import simple
 from pyformex.plugins.nurbs import *
 
 def drawThePoints(N,n,color=None):

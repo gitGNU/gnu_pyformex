@@ -32,7 +32,7 @@ from pyformex.gui.colors import *
 from pyformex.formex import *
 from pyformex.gui.drawable import *
 from pyformex.gui.text import *
-import gluttext
+from pyformex.gui import gluttext
 
 ### Marks ###############################################
 
