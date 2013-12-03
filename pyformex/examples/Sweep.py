@@ -36,7 +36,7 @@ _techniques = ['sweep', 'spiral']
 
 from pyformex.gui.draw import *
 from pyformex.plugins import curve
-from pyformex.odict import ODict
+from pyformex.odict import OrderedDict
 
 from pyformex import simple
 import re
@@ -53,7 +53,7 @@ rfuncs = [
 ]
 
 # Define a dictionary of planar cross sections
-cross_sections = ODict()
+cross_sections = OrderedDict()
 # select the planar patterns from the simple module
 for cs in simple.Pattern:
     if re.search('[a-zA-Z]', simple.Pattern[cs][2:]) is None:

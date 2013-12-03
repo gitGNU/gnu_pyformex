@@ -35,10 +35,11 @@ import os, types
 from pyformex.gui import QtCore, QtGui, Slot
 import pyformex as pf
 from pyformex.gui import colors
-from pyformex import odict, mydict, olist
+from pyformex import mydict, olist
 from pyformex import utils
 from pyformex import arraytools as at
 
+from pyformex.odict import OrderedDict
 
 
 # timeout value for all widgets providing timeout feature
@@ -1286,7 +1287,7 @@ class InputWidget(InputItem):
     - a setValue(dict) method that sets the widgets values to those
       specified in the dict.
 
-    The return value of this item is an ODict.
+    The return value of this item is an OrderedDict.
     """
 
     def __init__(self,name,value,*args,**kargs):
@@ -1563,7 +1564,7 @@ class InputDialog(QtGui.QDialog):
 
         self.fields = []
         self.groups = {}
-        self.results = odict.ODict()
+        self.results = OrderedDict()
         self._pos = None
         self.store = store
         self.autoname = utils.NameSequence('input')
@@ -1812,7 +1813,7 @@ class InputDialog(QtGui.QDialog):
         results without having to raise the accepted() signal (which
         would close the dialog).
         """
-        self.results = odict.ODict()
+        self.results = OrderedDict()
         self.results.update([ (fld.name(), fld.value()) for fld in self.fields ])
         #print(self.results)
         ## if self.report_pos:
@@ -1856,7 +1857,7 @@ class InputDialog(QtGui.QDialog):
         The result() method can be used to find out how the dialog was ended.
         Its value will be one of ACCEPTED, REJECTED ot TIMEOUT.
         """
-        self.results = odict.ODict()
+        self.results = OrderedDict()
         self.setResult(0)
         if self._pos is not None:
             self.restoreGeometry(self._pos)

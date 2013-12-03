@@ -38,7 +38,7 @@ from pyformex.gui.draw import *
 
 from pyformex.plugins.curve import *
 from pyformex.plugins.nurbs import *
-from pyformex.odict import ODict
+from pyformex.odict import OrderedDict
 
 
 ctype_color = [ 'red', 'green', 'blue', 'cyan', 'magenta', 'yellow', 'white' ]

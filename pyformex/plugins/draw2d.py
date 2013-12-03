@@ -32,7 +32,6 @@ has 3D coordinates in the global cartesian coordinate system.
 from __future__ import print_function
 from pyformex import zip
 
-from pyformex.odict import ODict
 from pyformex.geomtools import triangleCircumCircle
 from pyformex.plugins.curve import *
 from pyformex.plugins.nurbs import *

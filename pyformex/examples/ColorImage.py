@@ -44,7 +44,7 @@ _techniques = ['color', 'image']
 from pyformex.gui.draw import *
 from pyformex.gui.widgets import ImageView
 from pyformex.plugins.imagearray import *
-from pyformex.odict import ODict
+from pyformex.odict import OrderedDict
 
 resetAll()
 
@@ -96,7 +96,7 @@ def run():
     # image viewer widget
     viewer = ImageView(filename)
 
-    transforms = ODict([
+    transforms = OrderedDict([
         ('flat', lambda F: F),
         ('cylindrical', lambda F: F.cylindrical([2, 0, 1], [2., 90./float(nx), 1.]).rollAxes(-1)),
         ('spherical', lambda F: F.spherical(scale=[1., 90./float(nx), 2.]).rollAxes(-1)),

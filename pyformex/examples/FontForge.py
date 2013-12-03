@@ -31,14 +31,13 @@ installed. On Debian GNU/Linux you can achieve this by installing the package
 """
 from __future__ import print_function
 
-
 _status = 'checked'
 _level = 'advanced'
 _topics = ['curve', 'font']
 _techniques = ['bezier', 'borderfill']
 
 from pyformex.gui.draw import *
-from pyformex import odict
+from pyformex.odict import OrderedDict
 from pyformex.plugins.curve import BezierSpline, PolyLine
 from pyformex.simple import connectCurves
 from pyformex.plugins.trisurface import fillBorder
@@ -241,7 +240,7 @@ def show(fontname,character,fill=None):
 # Initialization
 
 # Define some extra font files
-extra_fonts = odict.ODict([
+extra_fonts = OrderedDict([
     ('blippo', "/mnt/work/local/share/fonts/blippok.ttf"),
     ('blimpo', "/home/bene/tmp/Blimpo-Regular.ttf"),
     ('verdana', "/var/lib/defoma/x-ttcidfont-conf.d/dirs/TrueType/Verdana.ttf"),

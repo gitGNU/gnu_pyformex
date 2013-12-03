@@ -48,7 +48,7 @@ except ImportError:
     warning("You do not have FTGL and its Python bindings (pyftgl).\nSee the pyformex/extra/pyftgl directory in the pyFormex source tree for instructions.")
 
 from pyformex.gui import colors, image
-from pyformex import odict
+from pyformex.odict import OrderedDict
 
 
 extra_fonts = [
@@ -60,7 +60,7 @@ fonts += [ f for f in extra_fonts if os.path.exists(f) ]
 fonts.sort()
 print("Number of available fonts: %s" % len(fonts))
 
-fonttypes = odict.ODict([
+fonttypes = OrderedDict([
     ('polygon', FTGL.PolygonFont),
     ('outline', FTGL.OutlineFont),
     ('texture', FTGL.TextureFont),

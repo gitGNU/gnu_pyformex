@@ -31,7 +31,7 @@ moved here from utils.py.
 """
 
 import pyformex as pf
-from pyformex.odict import ODict
+from pyformex.odict import OrderedDict
 from distutils.version import LooseVersion as SaneVersion
 import os
 import sys
@@ -382,7 +382,7 @@ def detectedSoftware(all=True):
 
     system, host, release, version, arch = os.uname()
     soft = {
-        'System': ODict([
+        'System': OrderedDict([
             ('pyFormex_version', the_version['pyformex']),
             ('pyFormex_installtype', pf.installtype),
             ('pyFormex_fullversion', pf.fullVersion()),

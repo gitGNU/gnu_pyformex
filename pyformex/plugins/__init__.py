@@ -128,9 +128,9 @@ def loadConfiguredPlugins(ok_plugins=None):
 
 #################### EXPERIMENTAL STUFF BELOW !! ################
 
-from pyformex import odict
+from pyformex.odict import OrderedDict
 
-_registered_plugins = odict.ODict()
+_registered_plugins = OrderedDict()
 
 def show_menu(name,before='help'):
     """Show the menu."""

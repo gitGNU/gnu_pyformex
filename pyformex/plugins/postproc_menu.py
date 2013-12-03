@@ -30,7 +30,7 @@ import pyformex as pf
 from pyformex import zip, utils
 from pyformex.gui import menu, QtCore
 
-from pyformex.odict import ODict
+from pyformex.odict import OrderedDict
 from pyformex.formex import *
 from pyformex.gui.colorscale import ColorScale, ColorLegend
 from pyformex.gui.draw import *
@@ -511,7 +511,7 @@ def animateScenes(scenes,count=1,sleeptime=None):
 
 ########## Postproc results dialog #######
 
-result_types = ODict([
+result_types = OrderedDict([
     ('', 'None'),
     ('U0', 'X-Displacement'),
     ('U1', 'Y-Displacement'),

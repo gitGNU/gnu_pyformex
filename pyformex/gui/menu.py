@@ -30,7 +30,7 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import (
-    zip, odict, utils, script,
+    zip, utils, script,
     )
 from pyformex.gui import (
     QtGui, QtCore, Signal,
@@ -38,6 +38,7 @@ from pyformex.gui import (
     toolbar, image, draw,
     )
 
+from pyformex.odict import OrderedDict
 # TODO: this should be removed!
 from pyformex.gui import *
 
@@ -73,7 +74,7 @@ class BaseMenu(object):
         self._title = title
         pf.debug("Creating menu %s" % title, pf.DEBUG.MENU)
         self.parent = parent
-        self.separators = odict.ODict()
+        self.separators = OrderedDict()
         self._actions_ = []
         self._submenus_ = []
         if items:

@@ -37,7 +37,7 @@ _acknowledgements = ['Tomas Praet']
 from pyformex.gui.draw import *
 from pyformex.simple import *
 from pyformex.gui import widgets
-from pyformex.odict import ODict
+from pyformex.odict import OrderedDict
 
 ################# Illusion definitions #####################
 
@@ -459,7 +459,7 @@ illusions = [
     ]
 
 headers = [ getattr(f, '__doc__').split('\n')[0] for f in illusions ]
-method = ODict(zip(headers, illusions))
+method = OrderedDict(zip(headers, illusions))
 
 # Dialog Actions
 

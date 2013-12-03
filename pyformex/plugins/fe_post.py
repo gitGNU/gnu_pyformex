@@ -31,7 +31,7 @@ from __future__ import print_function
 import pyformex as pf
 from pyformex.arraytools import *
 from pyformex.script import export
-from pyformex.odict import ODict
+from pyformex.odict import OrderedDict
 
 import re
 
@@ -166,7 +166,7 @@ class FeResult(object):
             self.elems[k] = asarray(self.nid[v])
         self.modeldone = True
         # we use lists, to keep the cases in order
-        self.res = ODict()
+        self.res = OrderedDict()
         self.step = None
         self.inc = None
 
@@ -183,7 +183,7 @@ class FeResult(object):
             self.Finalize()
         if step != self.step:
             if step not in self.res.keys():
-                self.res[step] = ODict()
+                self.res[step] = OrderedDict()
             self.step = step
             self.inc = None
         res = self.res[self.step]

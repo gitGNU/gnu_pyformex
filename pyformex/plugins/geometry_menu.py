@@ -36,7 +36,6 @@ from pyformex import (
     zip, utils, fileread, simple, timer,
     )
 
-from pyformex.odict import ODict
 from pyformex.geometry import Geometry
 from pyformex.geomfile import GeometryFile
 from pyformex.formex import Formex

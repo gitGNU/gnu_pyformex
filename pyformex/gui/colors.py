@@ -55,7 +55,7 @@ from __future__ import print_function
 import pyformex as pf
 from pyformex.gui import QtCore, QtGui
 from pyformex.arraytools import array, isInt, Int, concatenate
-from pyformex.odict import ODict
+from pyformex.odict import OrderedDict
 
 
 def GLcolor(color):
@@ -256,11 +256,11 @@ darkgrey = grey(0.4)
 
 def setPalette(colors):
     global palette
-    palette = ODict([ (k, GLcolor(k)) for k in colors ])
+    palette = OrderedDict([ (k, GLcolor(k)) for k in colors ])
 
 
 # Set default palette
 # !! THIS IS CURRENTLY NOT USED YET
-palette = ODict([ (k, globals()[k]) for k in ['darkgrey', 'red', 'green', 'blue', 'cyan', 'magenta', 'yellow', 'white', 'black', 'darkred', 'darkgreen', 'darkblue', 'darkcyan', 'darkmagenta', 'darkyellow', 'lightgrey'] ])
+palette = OrderedDict([ (k, globals()[k]) for k in ['darkgrey', 'red', 'green', 'blue', 'cyan', 'magenta', 'yellow', 'white', 'black', 'darkred', 'darkgreen', 'darkblue', 'darkcyan', 'darkmagenta', 'darkyellow', 'lightgrey'] ])
 
 # End

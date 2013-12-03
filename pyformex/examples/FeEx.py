@@ -44,7 +44,7 @@ from pyformex.plugins.fe_post import FeResult
 from pyformex.plugins import postproc_menu
 from pyformex.plugins import geometry_menu
 from pyformex.plugins import isopar
-from pyformex.odict import ODict
+from pyformex.odict import OrderedDict
 from pyformex import utils
 
 # global data
@@ -262,13 +262,13 @@ abq_eltype = {
 def warn():
    warning("You should first merge the parts!")
 
-material = ODict([
+material = OrderedDict([
     ('name', 'steel'),
     ('young_modulus', 207000),
     ('poisson_ratio', 0.3),
     ('density', 7.85e-9),
     ])
-section = ODict([
+section = OrderedDict([
     ('name', 'thin steel plate'),
     ('sectiontype', 'solid'),
     ('thickness', 1.0),

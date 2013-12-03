@@ -45,7 +45,7 @@ _techniques = ['dialog', 'lima']
 
 from pyformex.gui.draw import *
 from pyformex.plugins import lima, turtle
-from pyformex.odict import ODict
+from pyformex.odict import OrderedDict
 
 # return standard Turtle rules 
 def turtlecmds(rules={}):
@@ -61,7 +61,7 @@ def turtlecmds(rules={}):
 
 # here are some nice lima generations.
 # Each tuple holds an axiom, grow rules, generations and turtle rules
-limas = ODict([
+limas = OrderedDict([
     ('Dragon Curve', [ "F", {"F":"F+G","G":"F-G"}, 10, turtlecmds() ]),
     ('Koch Line', [ "F", {"F":"F*F//F*F"}, 6, turtlecmds() ]),
     ('rule2', [ "F+F+F+F", {"F":"FF+FF--FF+F"}, 4, turtlecmds() ]),

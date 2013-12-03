@@ -31,7 +31,6 @@ from __future__ import print_function
 import pyformex as pf
 from pyformex import zip, utils
 from pyformex.formex import *
-from pyformex.odict import ODict
 
 from pyformex.gui import actors, menu
 from pyformex.gui.draw import *
