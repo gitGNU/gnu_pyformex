@@ -34,7 +34,7 @@ from pyformex.coords import *
 from pyformex.collection import Collection
 from pyformex.gui.actors import GeomActor
 from pyformex.mesh import Mesh
-from formex import Formex
+from pyformex.formex import Formex
 from pyformex.plugins.trisurface import TriSurface
 from pyformex.plugins.nurbs import NurbsCurve, NurbsSurface
 

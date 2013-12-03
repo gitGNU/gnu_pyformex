@@ -43,8 +43,8 @@ from pyformex.plugins.curve import BezierSpline, PolyLine
 from pyformex.simple import connectCurves
 from pyformex.plugins.trisurface import fillBorder
 from pyformex.plugins.polygon import Polygon, delaunay
-from geomtools import closestPair, intersectionSWP
-import utils
+from pyformex.geomtools import closestPair, intersectionSWP
+from pyformex import utils
 import os, sys
 
 try:

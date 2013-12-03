@@ -31,7 +31,7 @@ moved here from utils.py.
 """
 
 import pyformex as pf
-from odict import ODict
+from pyformex.odict import ODict
 from distutils.version import LooseVersion as SaneVersion
 import os
 import sys
@@ -330,7 +330,7 @@ def checkExternal(name,command=None,answer=None,quiet=False):
     As a convenience, we provide a list of predeclared external commands,
     that can be checked by their name alone.
     """
-    import utils
+    from pyformex import utils
 
     if command is None or answer is None:
         cmd, ans = known_externals.get(name, (name, '(.+)\n'))
@@ -370,7 +370,7 @@ def _congratulations(name,version,typ='module',fatal=False,quiet=False,severity=
 
 
 def Libraries():
-    from lib import accelerated
+    from pyformex.lib import accelerated
     return [ m.__name__ for m in accelerated ]
 
 
@@ -402,7 +402,7 @@ def detectedSoftware(all=True):
 
 
 def reportSoftware(soft=None,header=None):
-    import utils
+    from pyformex import utils
     notfound = '** Not Found **'
     def format_dict(d,sort=True):
         s = ''
@@ -456,7 +456,7 @@ def checkDict(has, want):
 
 def checkSoftware(req):
     """Check that we have the matching components"""
-    import utils
+    from pyformex import utils
     soft = detectedSoftware()
     comp = []
     for k in req:
@@ -468,7 +468,7 @@ def checkSoftware(req):
 
 def registerSoftware(req):
     """Register the current values of required software"""
-    import utils
+    from pyformex import utils
     soft = detectedSoftware()
     reg = {}
     for k in req:
@@ -478,7 +478,7 @@ def registerSoftware(req):
 
 def soft2config(soft):
     """Convert software collection to config"""
-    import utils
+    from pyformex import utils
     conf = Config()
     for k in soft:
         conf.update(utils.prefixDict(soft[k], k+'/'))
@@ -487,7 +487,7 @@ def soft2config(soft):
 
 def config2soft(conf):
     """Convert software collection from config"""
-    import utils
+    from pyformex import utils
     soft = {}
     for k in ['System', 'Modules', 'Externals']:
         soft[k] = utils.subDict(conf, prefix=k+'/')

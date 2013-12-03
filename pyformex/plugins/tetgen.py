@@ -32,15 +32,15 @@ See http://tetgen.org
 from __future__ import print_function
 
 
-import software
+from pyformex import software
 software.requireExternal('tetgen')
 
 
 from pyformex.coords import *
 from pyformex.connectivity import Connectivity
 from pyformex.mesh import Mesh
-from filewrite import *
-import utils
+from pyformex.filewrite import *
+from pyformex import utils
 
 import os
 

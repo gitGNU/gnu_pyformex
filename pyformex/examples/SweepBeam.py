@@ -78,7 +78,7 @@ def run():
 
     method = ask("Choose extrude method:", ['Cancel', 'Sweep', 'Connect', 'Extrude', 'ExtrudeQuadratic', 'Revolve', 'RevolveLoop'])
 
-    import timer
+    from pyformex import timer
     t = timer.Timer()
     if method == 'Sweep':
         L = simple.line([0, 0, 0], [0, 0, l], el)

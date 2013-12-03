@@ -113,7 +113,7 @@ class DoubleHelixStent(object):
         The return value is two lists of curves (PolyLines), representing the
         individual wire axes for each wire direction.
         """
-        import connectivity
+        from pyformex import connectivity
         M = self.F.toMesh()
         ML = [ M.selectProp(i) for i in [1, 3] ]
         wires = [ connectivity.connectedLineElems(Mi.elems) for Mi in ML ]

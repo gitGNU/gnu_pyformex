@@ -36,9 +36,9 @@ _techniques = ['inside']
 
 from pyformex.gui.draw import *
 import simple
-import timer
+from pyformex import timer
 
-from multi import *
+from pyformex.multi import *
 
 filename = os.path.join(getcfg('datadir'), 'horse.off')
 

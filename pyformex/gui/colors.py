@@ -55,7 +55,7 @@ from __future__ import print_function
 import pyformex as pf
 from pyformex.gui import QtCore, QtGui
 from pyformex.arraytools import array, isInt, Int, concatenate
-from odict import ODict
+from pyformex.odict import ODict
 
 
 def GLcolor(color):

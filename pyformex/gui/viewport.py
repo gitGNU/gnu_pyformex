@@ -54,7 +54,7 @@ from pyformex.arraytools import isInt
 import math
 from numpy import *
 from OpenGL import GL
-from signals import *
+from pyformex.gui.signals import *
 
 
 # Some 2D vector operations

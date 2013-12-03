@@ -44,7 +44,7 @@ _techniques = ['webgl']
 from pyformex.gui.draw import *
 
 from pyformex.simple import sphere, sector, cylinder
-from mydict import Dict
+from pyformex.mydict import Dict
 from pyformex.plugins.webgl import WebGL
 
 

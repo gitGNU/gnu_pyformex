@@ -772,7 +772,7 @@ pyFormex Warning
     res = 0
     if args:
         pf.debug("Remaining args: %s" % args, pf.DEBUG.INFO)
-        from script import processArgs
+        from pyformex.script import processArgs
         res = processArgs(args)
 
         if res:

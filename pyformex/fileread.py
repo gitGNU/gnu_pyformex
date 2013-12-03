@@ -36,8 +36,8 @@ from pyformex import zip
 
 import pyformex as pf
 from pyformex.mesh import *
-import utils
-from lib import misc
+from pyformex import utils
+from pyformex.lib import misc
 import os
 
 

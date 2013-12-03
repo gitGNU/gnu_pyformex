@@ -37,7 +37,7 @@ QImage = QtGui.QImage
 QColor = QtGui.QColor
 
 import numpy as np
-import utils
+from pyformex import utils
 
 
 def resizeImage(image,w=0,h=0):

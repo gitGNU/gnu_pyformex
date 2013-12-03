@@ -23,7 +23,7 @@
 ##
 
 
-from examples.WireStent import DoubleHelixStent
+from pyformex.examples.WireStent import DoubleHelixStent
 
 for De in [16., 32.]:
     for nx in [6, 10]:

@@ -36,7 +36,7 @@ import pyformex as pf
 import threading, os, sys, types, copy, commands, time
 
 import numpy
-import utils
+from pyformex import utils
 import messages
 import widgets
 Dialog = widgets.InputDialog
@@ -44,19 +44,19 @@ _I = widgets.simpleInputItem
 _G = widgets.groupInputItem
 _T = widgets.tabInputItem
 import toolbar
-import actors
+from pyformex.gui import actors
 import decors
 import marks
 import image
-import canvas
-import colors
+from pyformex.gui import canvas
+from pyformex.gui import colors
 
-import coords
+from pyformex import coords
 from pyformex.plugins import trisurface, tools, fe
 
-from script import *
+from pyformex.script import *
 from pyformex.gui.colors import *
-from formex import *
+from pyformex.formex import *
 from pyformex.coordsys import CoordinateSystem
 
 #################### Interacting with the user ###############################
@@ -210,11 +210,11 @@ def showDoc(obj=None,rst=True,modal=False):
         obj = pf.prefcfg['curfile']
         if utils.is_script(obj):
             #print "obj is a script"
-            from utils import getDocString
+            from pyformex.utils import getDocString
             text = getDocString(obj)
             obj = None
         else:
-            import apps
+            from pyformex import apps
             obj = apps.load(obj)
 
     if obj:
@@ -1574,7 +1574,7 @@ def pause(timeout=None,msg=None):
     - `msg`: string: a message to write to the board to explain the user
       about the pause
     """
-    from drawlock import Repeater
+    from pyformex.gui.drawlock import Repeater
     def _continue_():
         return not pf.GUI.drawlock.locked
 
@@ -1600,7 +1600,7 @@ def pause(timeout=None,msg=None):
 
 
 def sleep(duration,granularity=0.01):
-    from drawlock import Repeater
+    from pyformex.gui.drawlock import Repeater
     R = Repeater(None, duration, sleep=granularity)
     R.start()
 
@@ -2070,7 +2070,7 @@ def resetGUI():
 #
 try:
     if pf.options.opengl2:
-        from opengl import *
+        from pyformex.opengl import *
 except:
     pass
 

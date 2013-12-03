@@ -38,7 +38,6 @@ from pyformex.gui.draw import *
 
 from pyformex.plugins import objects, trisurface, partition, sectionize
 
-import commands, os, timer
 
 
 ##################### select, read and write ##########################

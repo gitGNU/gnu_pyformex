@@ -31,7 +31,7 @@ from __future__ import print_function
 
 
 from pyformex.mesh import *
-import utils
+from pyformex import utils
 
 
 ##############################################################################

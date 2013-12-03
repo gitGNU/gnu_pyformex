@@ -166,7 +166,7 @@ class Board(QtGui.QTextEdit):
 
 
 def toggleAppScript():
-    import apps
+    from pyformex import apps
     appname = pf.cfg['curfile']
     if utils.is_script(appname):
         path = os.path.dirname(appname)
@@ -639,7 +639,7 @@ class Gui(QtGui.QMainWindow):
             # application
             label = 'App:'
             name = appname
-            import apps
+            from pyformex import apps
             app = apps.load(appname)
             if app is None:
                 self.canPlay = False

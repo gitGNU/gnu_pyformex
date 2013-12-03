@@ -606,7 +606,7 @@ class Geometry(object):
         sep as separator between the coordinates.
         If fil is a string, the file is closed prior to returning.
         """
-        from geomfile import GeometryFile
+        from pyformex.geomfile import GeometryFile
         f = GeometryFile(fil, mode='w', sep=sep)
         f.write(self)
         if f.isname and mode[0]=='w':

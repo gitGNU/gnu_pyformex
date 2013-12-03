@@ -35,7 +35,7 @@ _techniques = ['intersection']
 
 from pyformex.gui.draw import *
 from pyformex.plugins.curve import *
-from geomtools import *
+from pyformex.geomtools import *
 from pyformex.simple import circle
 
 
@@ -53,7 +53,7 @@ def intersection(F1, F2):
     if F1.nplex() != 2 or F2.nplex() != 2:
         raise ValueError("Can only interesect plex-2 Formices")
 
-    from geomtools import intersectionTimesLWL
+    from pyformex.geomtools import intersectionTimesLWL
 
     errh = seterr(divide='ignore', invalid='ignore') # ignore division errors
     q1 = F1[:, 0]

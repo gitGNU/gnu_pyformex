@@ -30,8 +30,8 @@ from __future__ import print_function
 
 
 import pyformex as pf
-from flatkeydb import FlatDB
-from mydict import Dict, CDict
+from pyformex.flatkeydb import FlatDB
+from pyformex.mydict import Dict, CDict
 from pyformex.arraytools import *
 
 #################################################################

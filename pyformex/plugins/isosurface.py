@@ -34,7 +34,7 @@ from __future__ import print_function
 from pyformex import zip
 
 import numpy as np
-from multi import multitask, cpu_count, splitar
+from pyformex.multi import multitask, cpu_count, splitar
 
 
 def isosurface(data,level,nproc=-1):
@@ -57,7 +57,7 @@ def isosurface(data,level,nproc=-1):
 
     if nproc == 1:
         # Perform single process isosurface (accelerated)
-        from lib import misc
+        from pyformex.lib import misc
         data = data.astype(np.float32)
         level = np.float32(level)
         tri = misc.isosurface(data, level)

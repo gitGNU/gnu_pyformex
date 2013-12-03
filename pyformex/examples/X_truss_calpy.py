@@ -33,7 +33,7 @@ _topics = ['FEA']
 _techniques = ['color', 'persistence']
 
 from pyformex.gui.draw import *
-from examples.X_truss import X_truss
+from pyformex.examples.X_truss import X_truss
 
 ############################
 # Load the needed calpy modules

@@ -39,11 +39,11 @@ import pyformex as pf
 from pyformex.coords import bbox
 import numpy as np
 from OpenGL import GL
-from shader import Shader
+from pyformex.opengl.shader import Shader
 from pyformex.attributes import Attributes
 #import utils
 
-from drawable import GeomActor
+from pyformex.gui.drawable import GeomActor
 
 class Renderer(object):
 
@@ -146,7 +146,7 @@ class Renderer(object):
             self.shader.uniformMat4('modelview', modelview.gl())
             self.shader.uniformMat4('projection', projection.gl())
             if pick:
-                import camera
+                from pyformex.opengl import camera
                 pickmat = camera.pick_matrix(*pick)
                 self.shader.uniformMat4('pickmat', pickmat.gl())
 

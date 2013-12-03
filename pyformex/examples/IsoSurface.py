@@ -127,7 +127,7 @@ def run():
     fast = True
 
     # Compute the isosurface
-    from timer import Timer
+    from pyformex.timer import Timer
     pf.GUI.setBusy()
     timer = Timer()
     tri = sf.isosurface(data, level, nproc=4)

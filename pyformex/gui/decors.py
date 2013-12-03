@@ -32,11 +32,11 @@ from pyformex import zip
 from OpenGL import GL
 from pyformex.gui import QtOpenGL
 
-from drawable import *
-from text import *
-from marks import TextMark
+from pyformex.gui.drawable import *
+from pyformex.gui.text import *
+from pyformex.gui.marks import TextMark
 
-import colors
+from pyformex.gui import colors
 import gluttext
 
 ### Some drawing functions ###############################################

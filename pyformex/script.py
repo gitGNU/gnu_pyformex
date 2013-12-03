@@ -34,13 +34,13 @@ from pyformex import zip
 import pyformex as pf
 import formex
 import geomfile
-import utils
+from pyformex import utils
 from project import Project
-from geometry import Geometry
+from pyformex.geometry import Geometry
 
 ########################
 # Imported here only to make available in scripts
-from olist import List
+from pyformex.olist import List
 from pyformex.mesh import Mesh
 from pyformex.plugins.trisurface import TriSurface
 
@@ -452,7 +452,7 @@ def runScript(fn,argv=[]):
     argv. This variable can be changed by the script and the resulting argv
     is returned to the caller.
     """
-    from timer import Timer
+    from pyformex.timer import Timer
     t = Timer()
     msg = "Running script (%s)" % fn
     if pf.GUI:
@@ -486,8 +486,8 @@ def runApp(appname,argv=[],refresh=False,lock=True,check=True):
         #print(pf.scriptlock)
         return
 
-    import apps
-    from timer import Timer
+    from pyformex import apps
+    from pyformex.timer import Timer
     t = Timer()
     pf.message("Loading application %s with refresh=%s" % (appname, refresh))
     app = apps.load(appname, refresh=refresh)
@@ -703,7 +703,7 @@ def printdetected():
 
 
 def printLoadedApps():
-    import apps, sys
+    from pyformex import apps, sys
     loaded = apps.listLoaded()
     refcnt = [ sys.getrefcount(sys.modules[k]) for k in loaded ]
     print(', '.join([ "%s (%s)" % (k, r) for k, r in zip(loaded, refcnt)]))

@@ -31,11 +31,11 @@ from __future__ import print_function
 
 
 from pyformex.coords import *
-from lib import nurbs
+from pyformex.lib import nurbs
 from pyformex.plugins import curve
 from pyformex import options
 from pyformex import utils
-import olist
+from pyformex import olist
 
 
 ###########################################################################
@@ -490,7 +490,7 @@ class NurbsCurve(Geometry4):
         straight segments of nearly equal length. The lengths are computed
         based on the first approximation with `ndiv` segments.
         """
-        from curve import PolyLine
+        from pyformex.plugins.curve import PolyLine
         if ndiv is None:
             ndiv = self.N_approx
         u = arange(ndiv+1)*1.0/ndiv

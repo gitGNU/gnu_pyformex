@@ -70,7 +70,7 @@ two-dimensional geometry in pyFormex.
 """
 
 import numpy as np
-from geometry import Geometry
+from pyformex.geometry import Geometry
 from pyformex.plugins.curve import *
 
 
@@ -242,7 +242,7 @@ def readSplines():
 
     The geometry file splines.pgf is provided with the pyFormex distribution.
     """
-    from geomfile import GeometryFile
+    from pyformex.geomfile import GeometryFile
     fn = getcfg('datadir')+'/splines.pgf'
     f = GeometryFile(fn)
     obj = f.read()

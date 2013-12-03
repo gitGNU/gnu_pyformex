@@ -44,7 +44,7 @@ _techniques = ['dialog', 'persistence']
 
 from pyformex.gui.draw import *
 from pyformex.simple import rectangle
-from utils import NameSequence
+from pyformex.utils import NameSequence
 from pyformex.plugins.imagearray import *
 
 dialog = None

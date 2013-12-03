@@ -50,11 +50,11 @@ from pyformex import zip
 
 from pyformex.plugins.properties import *
 from pyformex.plugins.fe import *
-from mydict import Dict, CDict
+from pyformex.mydict import Dict, CDict
 import pyformex as pf
 from datetime import datetime
 import os, sys
-import utils
+from pyformex import utils
 from pyformex.arraytools import isInt
 
 ##################################################

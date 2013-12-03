@@ -85,7 +85,7 @@ def icon_wireall():
 
 
 def icon_clock():
-    from examples.Clock import AnalogClock
+    from pyformex.examples.Clock import AnalogClock
     view('front')
     F = AnalogClock()
     F.draw()
@@ -139,7 +139,7 @@ def icon_reset():
 
 def icon_script():
     icon_run()
-    from examples import FontForge
+    from pyformex.examples import FontForge
     okfonts = [ f for f in FontForge.fonts if 'Sans' in f and 'Oblique' in f ]
     res = askItems([
         _I('fontname', None, choices=okfonts),

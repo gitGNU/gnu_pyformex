@@ -25,19 +25,15 @@
 
 """
 from __future__ import print_function
-from pyformex import zip
 
 import pyformex as pf
-from main import savePreferences
-import os
+from pyformex import zip,utils
+from pyformex.gui import widgets, toolbar, draw, canvas
+from pyformex.main import savePreferences
+from pyformex.gui.draw import _I, _G, _T
 
+import os
 from gettext import gettext as _
-import utils
-import widgets
-from widgets import simpleInputItem as _I, groupInputItem as _G, tabInputItem as _T
-import toolbar
-import draw
-import canvas
 
 
 def updateSettings(res,save=None):
@@ -324,7 +320,7 @@ def setRendering():
     """Interactively change the render parameters.
 
     """
-    import canvas
+    from pyformex.gui import canvas
 
     vp = pf.GUI.viewports.current
     dia = None
@@ -458,7 +454,7 @@ def setDirs(dircfg):
     dia = createDirsDialog(dircfg)
     dia.exec_()
     if (dia.result()==widgets.ACCEPTED):
-        import appMenu
+        from pyformex.gui import appMenu
         #print(dia.results)
         data = dia.results[dircfg]
         pf.prefcfg[dircfg] = pf.cfg[dircfg] = [tuple(d) for d in data]
@@ -468,7 +464,7 @@ def setDirs(dircfg):
 
 def addAppdir(path,name=None,dircfg='appdirs'):
     """Add a path to the appdirs"""
-    import appMenu
+    from pyformex.gui import appMenu
     if os.path.isdir(path):
         p = path
     else:
@@ -520,7 +516,7 @@ def createDirsDialog(dircfg):
         pf.app.processEvents()
 
     def reloadMenu():
-        import appMenu
+        from pyformex.gui import appMenu
         appMenu.reloadMenu(mode=mode)
 
     data = [list(c) for c in pf.cfg[dircfg]]

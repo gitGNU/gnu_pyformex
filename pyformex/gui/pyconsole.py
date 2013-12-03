@@ -37,7 +37,7 @@ import traceback
 
 from pyformex.gui import QtGui, QtCore
 from pyformex.gui.guimain import Board
-import utils
+from pyformex import utils
 
 
 ##########################################################################

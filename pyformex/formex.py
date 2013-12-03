@@ -32,8 +32,8 @@ from __future__ import print_function
 from pyformex import zip
 
 from pyformex.coords import *
-from utils import deprecation, deprec, warn
-from geometry import Geometry
+from pyformex.utils import deprecation, deprec, warn
+from pyformex.geometry import Geometry
 from pyformex.attributes import Attributes
 import re
 
@@ -1144,7 +1144,7 @@ maxprop  = %s
         (triangles) the returned Formex has plexitude 2 (lines).
         """
         if self.nplex() == 2:
-            from geomtools import intersectionSWP
+            from pyformex.geomtools import intersectionSWP
             return Formex(intersectionSWP(self.coords, p, n, mode='pair', atol=atol)[1])
         elif self.nplex() == 3:
             m = self.toSurface().intersectionWithPlane(p, n, atol=atol)
@@ -1225,7 +1225,7 @@ maxprop  = %s
         """
         if self.nplex() != 2:
             raise ValueError("Expected a 2-plex Formex, got %s" % self.nplex())
-        from geomtools import levelVolumes
+        from pyformex.geomtools import levelVolumes
         return levelVolumes(self.coords)
 
 
@@ -1237,7 +1237,7 @@ maxprop  = %s
         """
         if self.nplex() != 3:
             raise ValueError("Expected a 3-plex Formex, got %s" % self.nplex())
-        from geomtools import levelVolumes
+        from pyformex.geomtools import levelVolumes
         return levelVolumes(self.coords)
 
 
@@ -1249,7 +1249,7 @@ maxprop  = %s
         """
         if self.nplex() != 4:
             raise ValueError("Expected a 4-plex Formex, got %s" % self.nplex())
-        from geomtools import levelVolumes
+        from pyformex.geomtools import levelVolumes
         return levelVolumes(self.coords)
 
 
@@ -1265,7 +1265,7 @@ maxprop  = %s
         sep as separator between the coordinates.
         If fil is a string, the file is closed prior to returning.
         """
-        from geomfile import GeometryFile
+        from pyformex.geomfile import GeometryFile
         f = GeometryFile(fil, mode='w', sep=sep)
         f.write(self)
         if f.isname and mode[0]=='w':
@@ -1281,7 +1281,7 @@ maxprop  = %s
         returned. Otherwise, None is returned.
         Valid Formex file formats are described in the manual.
         """
-        from geomfile import GeometryFile
+        from pyformex.geomfile import GeometryFile
         f = GeometryFile(fil, mode='r', sep=sep)
         res = f.read(count=1)
         return res.values()[0]
@@ -1924,7 +1924,7 @@ def cutElements3AtPlane(F,p,n,newprops=None,side='',atol=0.):
         else:
             return newp
 
-    from geomtools import intersectionSWP
+    from pyformex.geomtools import intersectionSWP
     C = [connect([F, F], nodid=ax) for ax in [[0, 1], [1, 2], [2, 0]]]
     errh = seterr(divide='ignore', invalid='ignore')
     res = [intersectionSWP(Ci.coords, p, n, mode='pair', return_all=True, atol=atol) for Ci in C]

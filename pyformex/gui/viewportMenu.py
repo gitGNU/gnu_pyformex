@@ -27,15 +27,12 @@ This module defines the functions of the Viewport menu.
 """
 from __future__ import print_function
 
-
 import pyformex as pf
-import canvas
-import widgets
-import draw
+from pyformex import utils
+from pyformex.gui import canvas, widgets, draw, prefMenu
+from pyformex.gui.draw import _I
+
 from gettext import gettext as _
-import prefMenu
-from widgets import simpleInputItem as _I
-import utils
 
 
 def setTriade():

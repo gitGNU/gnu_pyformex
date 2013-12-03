@@ -30,8 +30,8 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex.arraytools import *
-from script import export
-from odict import ODict
+from pyformex.script import export
+from pyformex.odict import ODict
 
 import re
 

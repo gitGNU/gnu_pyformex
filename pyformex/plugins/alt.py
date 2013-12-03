@@ -71,7 +71,7 @@ class BoundVectors(Coords):
 
     def actor(self,**kargs):
         """_This allows a BoundVectors object to be drawn directly."""
-        from formex import connect
+        from pyformex.formex import connect
         return connect([self.origins(), self.heads()]).actor(**kargs)
 
 

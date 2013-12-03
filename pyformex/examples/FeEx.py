@@ -44,8 +44,8 @@ from pyformex.plugins.fe_post import FeResult
 from pyformex.plugins import postproc_menu
 from pyformex.plugins import geometry_menu
 from pyformex.plugins import isopar
-from odict import ODict
-import utils
+from pyformex.odict import ODict
+from pyformex import utils
 
 # global data
 

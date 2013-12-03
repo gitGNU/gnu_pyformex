@@ -109,7 +109,7 @@ def drawPoints(x,color=None,alpha=1.0,size=None):
 
 
 def multi_draw_polygons(x,n,color,t,alpha,objtype,nproc=-1):
-    from multi import multitask, cpu_count
+    from pyformex.multi import multitask, cpu_count
     if nproc < 1:
         nproc = cpu_count()
 
@@ -408,7 +408,7 @@ def drawNurbsSurfaces(x,sknots,tknots,color=None,alpha=1.0,normals='auto',sampli
 
     If color is given it is an (nsurf,3) array of RGB values.
     """
-    import timer
+    from pyformex import timer
     t = timer.Timer()
 
     ns, nt, ndim = x.shape[-3:]
@@ -536,7 +536,7 @@ def drawQuadraticSurfaces(x,e,color=None):
 
     If color is given it is an (nsurf,3) array of RGB values.
     """
-    import timer
+    from pyformex import timer
     t = timer.Timer()
     pf.debug("drawQuadraticSurfaces", pf.DEBUG.DRAW)
     if e is None:
@@ -808,7 +808,7 @@ def nodalSum2(val, elems, tol):
     """
     print("!!!!nodalSum2!!!!")
     val[:] = normalize(val)
-    import timer
+    from pyformex import timer
     from pyformex.lib import misc
     t = timer.Timer()
     nodes = unique(elems)

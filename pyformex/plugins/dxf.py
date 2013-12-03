@@ -29,9 +29,9 @@ in DXF format.
 from __future__ import print_function
 
 
-from formex import *
+from pyformex.formex import *
 from pyformex.plugins import curve
-import utils
+from pyformex import utils
 
 
 # Avoid compilation problems

@@ -34,8 +34,8 @@ _techniques = ['function', 'import', 'dialog', 'viewport']
 
 from pyformex.gui.draw import *
 import simple
-from examples.Cube import cube_tri
-from geomtools import *
+from pyformex.examples.Cube import cube_tri
+from pyformex.geomtools import *
 
 
 def draw_circles(circles,color=red):

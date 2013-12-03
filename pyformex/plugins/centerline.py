@@ -35,9 +35,9 @@ import pyformex as pf
 import os
 from numpy import *
 from pyformex.plugins import trisurface, tetgen
-import utils
-import coords
-import connectivity
+from pyformex import utils
+from pyformex import coords
+from pyformex import connectivity
 
 
 def det3(f):

@@ -35,7 +35,7 @@ from __future__ import print_function
 
 import pyformex as pf
 
-import utils
+from pyformex import utils
 import sys, os
 
 calpy_path = None  # never tried to detect

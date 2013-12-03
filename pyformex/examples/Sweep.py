@@ -36,7 +36,7 @@ _techniques = ['sweep', 'spiral']
 
 from pyformex.gui.draw import *
 from pyformex.plugins import curve
-from odict import ODict
+from pyformex.odict import ODict
 
 import simple
 import re

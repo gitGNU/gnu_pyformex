@@ -43,13 +43,13 @@ from __future__ import print_function
 ## from collection import Collection
 
 import pyformex as pf
-import arraytools as at
-import coords
+from pyformex import arraytools as at
+from pyformex import coords
 import drawable
 from pyformex.gui import actors
 from pyformex.gui import decors
 from pyformex.gui import marks
-import utils
+from pyformex import utils
 
 
 class ActorList(list):

@@ -30,7 +30,7 @@ from __future__ import print_function
 
 
 import pyformex as pf
-import utils
+from pyformex import utils
 import os, sys
 
 # global variable used of tracing application load errors

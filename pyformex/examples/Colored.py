@@ -38,7 +38,7 @@ _opengl2_comments = """
 from pyformex.gui.draw import *
 
 if pf.options.opengl2:
-    from opengl.drawable import GeomActor
+    from pyformex.opengl.drawable import GeomActor
 else:
     from pyformex.gui.actors import *
 

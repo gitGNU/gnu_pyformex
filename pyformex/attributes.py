@@ -29,8 +29,8 @@ other objects without cluttering the name space.
 from __future__ import print_function
 
 
-from mydict import Dict, returnNone
-import utils
+from pyformex.mydict import Dict, returnNone
+from pyformex import utils
 
 
 class Attributes(Dict):
@@ -110,7 +110,7 @@ class Attributes(Dict):
 
 
     def __str__(self):
-        from utils import removeDict
+        from pyformex.utils import removeDict
         return dict.__str__(removeDict(self, ['_default_dict_']))
 
 # End

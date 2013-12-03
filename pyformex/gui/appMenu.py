@@ -28,9 +28,9 @@ from __future__ import print_function
 from pyformex import zip
 
 import pyformex as pf
-import apps
+from pyformex import apps
 
-import utils, olist
+from pyformex import utils, olist
 import script, draw
 import menu
 import os, random
@@ -711,7 +711,7 @@ def reloadMenu(mode='app'):
         pf.GUI.menu.removeItem(name)
         if mode == 'app':
             # reset pf.appdirs, we may have configuration changes
-            import apps
+            from pyformex import apps
             apps.setAppDirs()
         newmenu = createAppMenu(mode, pf.GUI.menu, before)
 

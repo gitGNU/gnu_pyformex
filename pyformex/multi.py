@@ -78,7 +78,7 @@ We strongly advice you to cancel the operation now and to run your
 application in 'app' mode. Multiprocessing runs fine in 'app' mode.
 """, actions=['Cancel', 'I know the risks and insist on continuing']) == 'Cancel':
             return
-        
+
     pool = Pool(nproc)
     res = pool.map(dofunc, tasks)
     pool.close()
@@ -104,7 +104,7 @@ def worker(input, output):
         result = func(*args)
         output.put(result)
 
-    
+
 def multitask2(tasks,nproc=-1):
     """Perform tasks in parallel.
 

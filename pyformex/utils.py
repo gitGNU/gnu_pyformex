@@ -38,12 +38,12 @@ import subprocess
 import threading
 import shlex
 
-from mydict import formatDict
+from pyformex.mydict import formatDict
 
 # Software detection has been moved to software.py
 # We currently import everything from software here, for compatibility
 # TODO: This should be removed later on.
-from software import *
+from pyformex.software import *
 
 # Some regular expressions
 RE_digits = re.compile(r'(\d+)')

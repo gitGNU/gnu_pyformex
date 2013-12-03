@@ -34,7 +34,7 @@ from pyformex.gui import QtCore, QtGui
 
 import widgets
 import draw
-import utils
+from pyformex import utils
 
 
 ################### General Button Functions ###########
@@ -120,7 +120,7 @@ def addCameraButtons(toolbar):
     #  2 : function
     # optional:
     #  3 : REPEAT  (default True)
-    import cameraMenu
+    from pyformex.gui import cameraMenu
     buttons = [ [ "Rotate left", "rotleft", cameraMenu.rotLeft ],
                 [ "Rotate right", "rotright", cameraMenu.rotRight ],
                 [ "Rotate up", "rotup", cameraMenu.rotUp ],

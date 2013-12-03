@@ -51,7 +51,7 @@ import datetime
 
 
 def geometry():
-    from examples.WireStent import DoubleHelixStent
+    from pyformex.examples.WireStent import DoubleHelixStent
     global wire_diameter
 
     # create a Doublehelix stent with fixed geometry

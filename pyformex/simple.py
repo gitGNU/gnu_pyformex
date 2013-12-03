@@ -31,7 +31,7 @@ contents.
 from __future__ import print_function
 from pyformex import zip
 
-from formex import *
+from pyformex.formex import *
 
 # A collection of Formex string input patterns to construct some simple
 # geometrical shapes

@@ -32,7 +32,7 @@ from __future__ import print_function
 
 import pyformex as pf
 import gui
-import coords
+from pyformex import coords
 from pyformex.attributes import Attributes
 
 
@@ -194,7 +194,7 @@ def _set_actors():
         if self.nelems() == 0:
             return None
 
-        from opengl.drawable import GeomActor
+        from pyformex.opengl.drawable import GeomActor
 
         return GeomActor(self,**kargs)
 

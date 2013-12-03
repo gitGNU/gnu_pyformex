@@ -30,7 +30,7 @@
 ###
 
 # needed if we import this from another script
-from formex import *
+from pyformex.formex import *
 
 class DoubleHelixStent:
     """Constructs a double helix wire stent.

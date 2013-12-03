@@ -99,7 +99,7 @@ def run():
         if ack('Export this model in STL format?', default='No'):
             fn = askNewFilename(getcfg('workdir'), "Stl files (*.stl)")
             if fn:
-                from filewrite import writeSTL
+                from pyformex.filewrite import writeSTL
                 writeSTL(fn, T.coords)
 
 

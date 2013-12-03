@@ -30,12 +30,12 @@ pyFormex Geometry File Format.
 from __future__ import print_function
 
 
-import utils
+from pyformex import utils
 import filewrite
 from pyformex.coords import *
-from formex import Formex
+from pyformex.formex import Formex
 from pyformex.mesh import Mesh
-from odict import ODict
+from pyformex.odict import ODict
 from pyformex import message, debug, warning, DEBUG
 
 

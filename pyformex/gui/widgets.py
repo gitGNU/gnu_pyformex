@@ -34,10 +34,10 @@ from pyformex import zip
 import os, types
 from pyformex.gui import QtCore, QtGui, Slot
 import pyformex as pf
-import colors
+from pyformex.gui import colors
 import odict, mydict, olist
-import utils
-import arraytools as at
+from pyformex import utils
+from pyformex import arraytools as at
 
 
 

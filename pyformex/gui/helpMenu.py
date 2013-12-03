@@ -32,7 +32,7 @@ import pyformex as pf
 
 import os, sys
 import draw
-import utils
+from pyformex import utils
 import tempfile
 import random
 import viewport
@@ -201,7 +201,7 @@ def searchText():
     Asks a pattern from the user and searches for it through all
     the pyFormex source files.
     """
-    from widgets import simpleInputItem as _I
+    from pyformex.gui.draw import _I
     res = draw.askItems([
         _I('pattern', '', text='String to grep'),
         _I('options', '', text='Options', tooltip="Some cool options: -a (extended search), -i (ignore case), -f (literal string), -e (extended regexp)"),
@@ -218,7 +218,7 @@ def searchIndex():
     Asks a pattern from the user and searches for it the index of the
     local pyFormex documentation. Displays the results in the browser.
     """
-    from widgets import simpleInputItem as _I
+    from pyformex.gui.draw import _I
     res = draw.askItems([
         _I('text', '', text='String to search'),
         ])

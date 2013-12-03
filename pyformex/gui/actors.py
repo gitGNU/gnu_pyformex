@@ -28,20 +28,20 @@ from __future__ import print_function
 
 
 import pyformex as pf
-import arraytools as at
+from pyformex import arraytools as at
 import sys
 from OpenGL import GL
 
-from drawable import *
-from formex import *
+from pyformex.gui.drawable import *
+from pyformex.formex import *
 from pyformex.elements import elementType
 from pyformex.mesh import Mesh
 
 from pyformex.plugins.trisurface import TriSurface
 from pyformex.plugins.nurbs import NurbsCurve, NurbsSurface
-from marks import TextMark
+from pyformex.gui.marks import TextMark
 
-import timer
+from pyformex import timer
 
 ### Actors ###############################################
 
@@ -225,7 +225,7 @@ class AxesActor(Actor):
     colored_axes = False: draw black axes.
     draw_planes = False: do not draw the coordinate planes.
     """
-    import coordsys
+    from pyformex import coordsys
 
     def __init__(self,cs=None,size=1.0,psize=0.5,color=[red, green, blue],colored_axes=True,draw_planes=True,draw_reverse=True,linewidth=2,alpha=0.5,**kargs):
         Actor.__init__(self,**kargs)
@@ -734,7 +734,7 @@ class GeomActor(Actor):
         if mode.startswith('smooth'):
             if hasattr(self, 'specular'):
                 fill_mode = GL.GL_FRONT
-                import colors
+                from pyformex.gui import colors
                 if color is not None:
                     spec = color * self.specular# *  pf.canvas.specular
                     spec = append(spec, 1.)

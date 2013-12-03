@@ -30,10 +30,10 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex.coords import *
-import utils
+from pyformex import utils
 import os
 from pyformex.plugins.trisurface import TriSurface
-from multi import multitask
+from pyformex.multi import multitask
 
 if not utils.hasExternal('gts-bin'):
     utils.warn("error_no_gts_bin")
@@ -50,7 +50,7 @@ if not utils.hasExternal('gts-extra'):
 
 def read_gts_intersectioncurve(fn):
     import re
-    from formex import Formex
+    from pyformex.formex import Formex
     RE = re.compile("^VECT 1 2 0 2 0 (?P<data>.*)$")
     r = []
     for line in open(fn, 'r'):
@@ -207,7 +207,7 @@ def inside(self,pts,atol='auto',multi=False):
     inside the surface. The indices refer to the onedimensional list
     of points as obtained from pts.points().
     """
-    from formex import Formex
+    from pyformex.formex import Formex
     if not isinstance(pts, Formex):
         pts = Formex(pts)
     pts = Formex(pts)#.asPoints()

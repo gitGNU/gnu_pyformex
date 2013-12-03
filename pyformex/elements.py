@@ -43,7 +43,7 @@ try:
 except:
     from pyformex.backports import OrderedDict
 
-from odict import ODict
+from pyformex.odict import ODict
 
 
 e3 = 1./3.

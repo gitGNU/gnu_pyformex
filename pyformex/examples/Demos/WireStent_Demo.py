@@ -37,7 +37,7 @@ from __future__ import print_function
 
 
 # needed if we import this from another script
-from formex import *
+from pyformex.formex import *
 
 class DoubleHelixStent(object):
     """Constructs a double helix wire stent.

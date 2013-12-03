@@ -37,7 +37,7 @@ from pyformex import zip
 ##     from collections import OrderedDict
 
 
-import olist
+from pyformex import olist
 
 
 def __newobj__(cls, *args):

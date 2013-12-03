@@ -32,15 +32,15 @@ from pyformex.gui.drawable import *
 from pyformex.gui import colors
 from OpenGL import GL
 from OpenGL.arrays.vbo import VBO
-from shader import Shader
+from pyformex.opengl.shader import Shader
 from pyformex.attributes import Attributes
-from formex import Formex
+from pyformex.formex import Formex
 from pyformex.mesh import Mesh
 from pyformex.elements import elementType, _default_eltype
 import geomtools as gt
-import arraytools as at
+from pyformex import arraytools as at
 import numpy as np
-import utils
+from pyformex import utils
 
 
 ### Drawable Objects ###############################################

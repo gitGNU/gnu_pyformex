@@ -36,7 +36,7 @@ _techniques = ['connect', 'dialog', 'animation']
 from pyformex.gui.draw import *
 
 from pyformex.simple import circle
-from geomtools import rotationAngle
+from pyformex.geomtools import rotationAngle
 
 def run():
     resetAll()

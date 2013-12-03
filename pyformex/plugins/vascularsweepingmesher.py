@@ -30,7 +30,7 @@ from pyformex import zip
 
 from numpy import *
 from pyformex.plugins.trisurface import *
-from formex import *
+from pyformex.formex import *
 from pyformex.coords import *
 from pyformex.simple import *
 from pyformex.connectivity import *
@@ -41,7 +41,7 @@ from pyformex.elements import *
 from pyformex.plugins.fe import *
 from pyformex.mesh import *
 from project import *
-from geomtools import triangleCircumCircle
+from pyformex.geomtools import triangleCircumCircle
 
 
 def structuredQuadMeshGrid(sgx=3, sgy=3, isopquad=None):

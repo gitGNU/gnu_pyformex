@@ -37,7 +37,7 @@ _acknowledgements = ['Tomas Praet']
 from pyformex.gui.draw import *
 from pyformex.simple import *
 from pyformex.gui import widgets
-from odict import ODict
+from pyformex.odict import ODict
 
 ################# Illusion definitions #####################
 

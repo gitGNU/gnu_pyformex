@@ -35,7 +35,7 @@ import pyformex as pf
 
 from OpenGL import GL
 from pyformex.gui import QtCore, QtGui, QtOpenGL
-import utils
+from pyformex import utils
 import os
 
 

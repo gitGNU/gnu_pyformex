@@ -31,7 +31,7 @@ import pyformex as pf
 from pyformex.gui import decors, colors
 from pyformex.gui.camera import inverse
 from pyformex.gui.draw import *
-from formex import *
+from pyformex.formex import *
 import geomtools
 
 VA=None

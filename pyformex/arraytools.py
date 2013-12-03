@@ -96,7 +96,7 @@ except TypeError:
 
 if unique([1], True)[0][0] == 0:
     # We have the old numy version
-    import utils   # We are early on startup: utils not loaded yet
+    from pyformex import utils   # We are early on startup: utils not loaded yet
     utils.warn("warn_old_numpy")
 
     def unique(a,return_indices=False):
@@ -994,7 +994,7 @@ def checkArray1D(a,kind=None,allow=None,size=None):
 
 # DEPRECATED IN 0.9.1
 def checkArrayDim(a,ndim=-1):
-    import utils
+    from pyformex import utils
     utils.deprec("depr_checkarraydim")
     if ndim < 0:
         ndim = None
@@ -2148,7 +2148,7 @@ def nodalSum(val,elems,avg=False,return_all=True,direction_treshold=None):
     summed if their direction is close (projection of one onto the other is
     higher than the specified tolerance).
     """
-    from lib import misc
+    from pyformex.lib import misc
     if val.ndim != 3:
         val.reshape(val.shape+(1,))
     if elems.shape != val.shape[:2]:

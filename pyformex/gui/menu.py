@@ -544,7 +544,7 @@ def saveBoard():
 
 def unloadCurrentApp():
     appname = pf.cfg['curfile']
-    import apps
+    from pyformex import apps
     apps.unload(appname)
 
 

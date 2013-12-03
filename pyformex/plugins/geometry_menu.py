@@ -349,7 +349,7 @@ def convertGeometryFile():
     cur = pf.cfg['workdir']
     fn = askFilename(cur=cur, filter=filter)
     if fn:
-        from geomfile import GeometryFile
+        from pyformex.geomfile import GeometryFile
         message("Converting geometry file %s to version %s" % (fn, GeometryFile._version_))
         GeometryFile(fn).rewrite()
 
@@ -728,7 +728,7 @@ def createSphere():
 
 def showPrincipal():
     """Show the principal axes."""
-    import coordsys
+    from pyformex import coordsys
     F = selection.check(single=True)
     if not F:
         return
@@ -1069,7 +1069,7 @@ def toggleNumbersOntop():
 
 def create_menu():
     """Create the plugin menu."""
-    from dxf_menu import importDxf
+    from pyformex.plugins.dxf_menu import importDxf
     _init_()
     MenuData = [
         ("&Import ", [

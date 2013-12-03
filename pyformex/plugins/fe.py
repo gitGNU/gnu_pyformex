@@ -32,9 +32,9 @@ from pyformex import zip
 import pyformex as pf
 from pyformex.coords import *
 from pyformex.connectivity import *
-from geometry import Geometry
+from pyformex.geometry import Geometry
 from pyformex.mesh import Mesh, mergeMeshes
-from utils import deprecation
+from pyformex.utils import deprecation
 import warnings
 
 

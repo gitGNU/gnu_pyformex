@@ -33,7 +33,7 @@ from __future__ import print_function
 from pyformex import zip
 
 import numpy as np
-import arraytools as at
+from pyformex import arraytools as at
 
 
 class Polynomial(object):

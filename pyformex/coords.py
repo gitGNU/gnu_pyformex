@@ -40,8 +40,8 @@ from __future__ import print_function
 from pyformex import zip
 
 from pyformex.arraytools import *
-from lib import misc
-from utils import deprecation, warn
+from pyformex.lib import misc
+from pyformex.utils import deprecation, warn
 
 
 ###########################################################################
@@ -1435,8 +1435,8 @@ class Coords(ndarray):
           on the surface. This index is a sequential one, no matter what the
           shape of the input Coords is.
         """
-        import olist
-        from geomtools import anyPerpendicularVector
+        from pyformex import olist
+        from pyformex.geomtools import anyPerpendicularVector
         try:
             missing = float(missing)
         except:
@@ -1951,7 +1951,7 @@ class Coords(ndarray):
 
         This requires SciPy version 0.12.0 or higher.
         """
-        from software import requireModule
+        from pyformex.software import requireModule
         requireModule('scipy', '0.12.0')
         from scipy import spatial
         return spatial.ConvexHull(self).simplices
@@ -1969,7 +1969,7 @@ class Coords(ndarray):
         if self.npoints() == 0:
             return None
 
-        from formex import Formex
+        from pyformex.formex import Formex
         return Formex(self.reshape(-1, 3)).actor(**kargs)
 
 

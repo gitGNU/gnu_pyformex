@@ -34,9 +34,9 @@ import pyformex as pf
 from pyformex.coords import *
 from pyformex.mesh import Mesh
 from pyformex.plugins.trisurface import TriSurface
-import utils
+from pyformex import utils
 import os
-from multi import multitask, cpu_count, splitar
+from pyformex.multi import multitask, cpu_count, splitar
 
 def readVmtkCenterlineDat(fn):
    """Read a .dat file containing the centerlines generated with vmtk.

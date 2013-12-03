@@ -29,9 +29,9 @@ from pyformex import zip
 
 from OpenGL import GL
 from pyformex.gui.colors import *
-from formex import *
-from drawable import *
-from text import *
+from pyformex.formex import *
+from pyformex.gui.drawable import *
+from pyformex.gui.text import *
 import gluttext
 
 ### Marks ###############################################

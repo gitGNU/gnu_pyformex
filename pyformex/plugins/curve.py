@@ -34,11 +34,11 @@ from pyformex import zip
 
 import pyformex as pf
 from pyformex.coords import *
-from geometry import Geometry
-from formex import Formex, connect
+from pyformex.geometry import Geometry
+from pyformex.formex import Formex, connect
 from pyformex.mesh import Mesh
 import geomtools as gt
-import utils
+from pyformex import utils
 
 ##############################################################################
 
@@ -733,7 +733,7 @@ class PolyLine(Curve):
         B = normalize(B)
 
         if self.closed and compensate:
-            import arraytools as at
+            from pyformex import arraytools as at
             from pyformex.gui.draw import drawVectors
             print(len(T))
             print(T[0], B[0])

@@ -28,7 +28,7 @@ A pyFormex script to generate a geometrical model of a wire stent.
 This version is for inclusion in the pyFormex documentation.
 """
 
-from formex import *
+from pyformex.formex import *
 
 class DoubleHelixStent:
     """Constructs a double helix wire stent.

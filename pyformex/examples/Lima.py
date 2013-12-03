@@ -45,7 +45,7 @@ _techniques = ['dialog', 'lima']
 
 from pyformex.gui.draw import *
 from pyformex.plugins import lima, turtle
-from odict import ODict
+from pyformex.odict import ODict
 
 # return standard Turtle rules 
 def turtlecmds(rules={}):

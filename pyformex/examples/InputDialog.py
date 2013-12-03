@@ -105,7 +105,7 @@ input_enablers = [
 
 def show():
     """Accept the data and show the results"""
-    from utils import formatDict
+    from pyformex.utils import formatDict
     dialog.acceptData()
     res = dialog.results
     print(formatDict(res))

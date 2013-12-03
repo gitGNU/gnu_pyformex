@@ -95,7 +95,7 @@ def run():
             G += F.selectNodes([0, i-1, i])
         clear()
         draw(G)
-        from filewrite import writeSTL
+        from pyformex.filewrite import writeSTL
         writeSTL('novation.stl', G.coords)
 
 if __name__ == 'draw':

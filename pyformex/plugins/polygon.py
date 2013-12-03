@@ -29,11 +29,11 @@ from __future__ import print_function
 
 
 import pyformex as pf
-from formex import *
-from geometry import Geometry
+from pyformex.formex import *
+from pyformex.geometry import Geometry
 from pyformex.plugins.curve import PolyLine
 from pyformex.plugins.trisurface import TriSurface
-import utils
+from pyformex import utils
 
 ############################################################################
 
@@ -46,7 +46,7 @@ def projected(X, N):
     The returned 2D coordinates are still stored in a 3D Coords object.
     The last coordinate will however (approximately) be zero.
     """
-    from geomtools import rotationAngle
+    from pyformex.geomtools import rotationAngle
     if N is None:
         N = self.normal
     a, A = rotationAngle([0., 0., 1.], N)
@@ -57,16 +57,18 @@ def projected(X, N):
     return X, C, A, a
 
 
-def delaunay(X):
-    """Return a Delaunay triangulation of the specified Coords.
+# TODO: replace with scipy delaunay/voronoi
 
-    While the Coords are 3d, only the first 2 components are used.
+## def delaunay(X):
+##     """Return a Delaunay triangulation of the specified Coords.
 
-    Returns a TriSurface with the Delaunay trinagulation in the x-y plane.
-    """
-    from voronoi import voronoi
-    return TriSurface(X, voronoi(X[:, :2]).triangles)
-    
+##     While the Coords are 3d, only the first 2 components are used.
+
+##     Returns a TriSurface with the Delaunay trinagulation in the x-y plane.
+##     """
+##     from voronoi import voronoi
+##     return TriSurface(X, voronoi(X[:, :2]).triangles)
+
 
 class Polygon(Geometry):
     """A Polygon is a flat surface bounded by a closed PolyLine.
@@ -86,7 +88,7 @@ class Polygon(Geometry):
     def npoints(self):
         """Return the number of points and edges."""
         return self.coords.shape[0]
-    
+
 
     def vectors(self):
         """Return the vectors from each point to the next one."""
@@ -134,7 +136,7 @@ class Polygon(Geometry):
         The returned angles are those between the two line segments at
         each vertex.
         The angles are given in degrees, in the range ]-180,180].
-        These angles are the complement of the 
+        These angles are the complement of the
         """
         return 180.-self.externalAngles()
 
@@ -152,7 +154,7 @@ class Polygon(Geometry):
         print("AREA(self) %s" % self.area())
         # creating elems array at once (more efficient than appending)
         from pyformex.gui.draw import draw, pause, undraw
-        from geomtools import insideTriangle
+        from pyformex.geomtools import insideTriangle
         x = self.coords
         n = x.shape[0]
         tri = -ones((n-2, 3), dtype=Int)
@@ -209,7 +211,7 @@ class Polygon(Geometry):
 
         """
         from pyformex.plugins.section2d import PlaneSection
-        return PlaneSection(Formex(self.coords)).sectionChar()['A']   
+        return PlaneSection(Formex(self.coords)).sectionChar()['A']
 
 
     def toMesh(self):
@@ -220,10 +222,10 @@ class Polygon(Geometry):
 
 
     def toFormex(self):
-        from formex import Formex
+        from pyformex.formex import Formex
         x = stack([self.coords, roll(self.coords, -1, axis=0)], axis=1)
         return Formex(x)
-        
+
 
 
 if __name__ == 'draw':
@@ -292,5 +294,5 @@ if __name__ == 'draw':
         drawText(S.check(), 100, 20)
 
     run()
-    
+
 # End

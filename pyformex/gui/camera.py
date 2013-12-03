@@ -28,7 +28,7 @@ from __future__ import print_function
 
 
 from numpy import *
-import arraytools as at
+from pyformex import arraytools as at
 
 inverse = linalg.linalg.inv
 multiply = dot
@@ -41,7 +41,7 @@ import copy
 import OpenGL.GL as GL
 import OpenGL.GLU as GLU
 
-from views import getAngles
+from pyformex.gui.views import getAngles
 
 def printModelviewMatrix(s="%s"):
     print(s % GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX))

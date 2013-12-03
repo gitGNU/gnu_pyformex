@@ -1052,7 +1052,7 @@ def slicer():
 
 def spliner():
     """Slice the surface to a sequence of cross sections."""
-    import olist
+    from pyformex import olist
     from pyformex.plugins.curve import BezierSpline
     S = selection.check(single=True)
     if not S:

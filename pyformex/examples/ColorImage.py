@@ -44,7 +44,7 @@ _techniques = ['color', 'image']
 from pyformex.gui.draw import *
 from pyformex.gui.widgets import ImageView
 from pyformex.plugins.imagearray import *
-from odict import ODict
+from pyformex.odict import ODict
 
 resetAll()
 
