@@ -50,7 +50,7 @@ def readVmtkCenterlineDat(fn):
    - a float array (nlines,nf) with the data
    - a list with the identifiers from the first line
    """
-   fil = file(fn, 'r')
+   fil = open(fn, 'r')
    line = fil.readline()
    s = line.strip('\n').split()
    data = fromfile(fil, sep=' ', dtype=float32)

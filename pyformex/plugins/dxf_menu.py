@@ -70,7 +70,7 @@ def importDxf(convert=False,keep=False):
     pf.GUI.setBusy(False)
     if text:
         if convert or keep:
-            f = file(utils.changeExt(fn, '.dxftext'), 'w')
+            f = open(utils.changeExt(fn, '.dxftext'), 'w')
             f.write(text)
             f.close()
         if not convert:

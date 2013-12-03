@@ -469,7 +469,7 @@ def runScript(fn,argv=[]):
         # TODO: if scr is a compiled object, we could just execute it
         #
 
-    res = playScript(file(fn, 'r'), fn, fn, argv, pye)
+    res = playScript(open(fn, 'r'), fn, fn, argv, pye)
     pf.debug("  Arguments left after execution: %s" % argv, pf.DEBUG.SCRIPT)
     msg = "Finished script %s in %s seconds" % (fn, t.seconds())
     if pf.GUI:

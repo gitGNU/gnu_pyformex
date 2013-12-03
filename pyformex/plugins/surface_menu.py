@@ -89,7 +89,6 @@ class SurfaceObjects(DrawableObjects):
     def toggleAvgNormals(self,onoff=None):
         self.toggleAnnotation(draw_avg_normals, onoff)
     def set(self, names):
-        import geometry_menu as gm
         DrawableObjects.set(self, names)
         pf.GUI.selection['geometry'].set(names)
 

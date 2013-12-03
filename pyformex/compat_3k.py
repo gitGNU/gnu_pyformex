@@ -59,7 +59,7 @@ zip = __builtins__['zip']
 import pickle
 
 def execFile(f,*args,**kargs):
-    return exec(compile(open(f,*args,**kargs).read(), f, 'exec'),*args,**kargs)
+    return exec(compile(open(f,'r').read(), f, 'exec'),*args,**kargs)
 
 
 def userInput(*args,**kargs):
