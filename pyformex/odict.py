@@ -32,6 +32,12 @@ from pyformex import zip
 from pyformex import olist
 
 
+try:
+    from collections import OrderedDict
+except:
+    from pyformex.backports import OrderedDict
+
+
 def __newobj__(cls, *args):
     return cls.__new__(cls, *args)
 

@@ -33,11 +33,12 @@ from pyformex import zip, simple, timer
 from pyformex.gui import actors, colors, decors, widgets, menu
 from pyformex.plugins import plot2d, formex_menu, fe_abq
 
+from pyformex.odict import OrderedDict
 from pyformex.arraytools import niceLogSize
 from pyformex.gui.colorscale import ColorScale, ColorLegend
 from pyformex.gui.draw import *
 from pyformex.plugins.trisurface import *
-from pyformex.plugins.objects import *
+from pyformex.plugins.objects import DrawableObjects
 from pyformex.plugins.tools import Plane
 
 import os
@@ -476,7 +477,7 @@ def deleteTriangles():
 #  - function to calculate the values
 #  - domain to display: True to display on edges, False to display on elements
 
-SelectableStatsValues = odict.ODict([
+SelectableStatsValues = OrderedDict([
     ('Quality', (TriSurface.quality, False)),
     ('Aspect ratio', (TriSurface.aspectRatio, False)),
     ('Facet Area', (TriSurface.areas, False)),

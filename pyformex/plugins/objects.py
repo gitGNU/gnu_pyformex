@@ -27,15 +27,14 @@
 This is a support module for other pyFormex plugins.
 """
 from __future__ import print_function
-from pyformex import zip
 
 import pyformex as pf
-
+from pyformex import zip
+from pyformex import geomfile
 from pyformex.coords import bbox
 from pyformex.script import named
 from pyformex.gui.draw import drawBbox, _I
-from pyformex import geomfile
-from pyformex import odict
+from pyformex.odict import OrderedDict
 
 from copy import deepcopy
 
@@ -179,10 +178,10 @@ class Objects(object):
     def odict(self):
         """Return the currently selected items as a dictionary.
 
-        Returns an ODict with the currently selected objects in the order
+        Returns an OrderedDict with the currently selected objects in the order
         of the selection.names.
         """
-        return odict.ODict(zip(self.names, self.check(warn=False)))
+        return OrderedDict(zip(self.names, self.check(warn=False)))
 
 
     def ask(self,mode='multi'):

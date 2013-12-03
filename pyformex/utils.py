@@ -1501,8 +1501,8 @@ def procInfo(title):
 
 def interrogate(item):
     """Print useful information about item."""
-    from pyformex import odict
-    info = odict.ODict()
+    from pyformex.odict import OrderedDict
+    info = OrderedDict()
     if hasattr(item, '__name__'):
         info["NAME:    "] =  item.__name__
     if hasattr(item, '__class__'):
