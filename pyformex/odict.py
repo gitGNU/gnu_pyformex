@@ -27,16 +27,8 @@
 
 """
 from __future__ import print_function
+
 from pyformex import zip
-
-## import utils
-## have_version = utils.hasModule('python')
-## if utils.SaneVersion(have_version) < utils.SaneVersion('2.7'):
-##     from backports import OrderedDict
-## else:
-##     from collections import OrderedDict
-
-
 from pyformex import olist
 
 

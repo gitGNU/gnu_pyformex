@@ -571,7 +571,7 @@ class AppMenu(menu.Menu):
             ])
         if not res:
             return
-        from toolbar import timeout
+        from pyformex.gui.toolbar import timeout
         timeout(res['timeout'])
         del res['timeout']
         self.runAll(**res)

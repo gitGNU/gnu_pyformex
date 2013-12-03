@@ -202,8 +202,8 @@ def run():
     if pf.options.gui:
 
         from pyformex.plugins.postproc import niceNumber, frameScale
-        from pyformex import gui.colorscale as cs
-        from pyformex import gui.decors
+        from pyformex.gui import colorscale as cs
+        from pyformex.gui import decors
 
 
         def showOutput():

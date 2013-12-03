@@ -149,8 +149,8 @@ def run():
     #Using pyFormex as postprocessor
     ################################
 
-    from pyformex import gui.colorscale as cs
-    from pyformex import gui.decors
+    from pyformex.gui import colorscale as cs
+    from pyformex.gui import decors
 
     # Creating a formex for displaying results is fairly easy
     results = Formex(coords[elems], range(nelems))

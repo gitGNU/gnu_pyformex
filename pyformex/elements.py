@@ -38,10 +38,7 @@ from pyformex.connectivity import Connectivity
 
 from numpy import array, arange, concatenate
 
-try:
-    from collections import OrderedDict
-except:
-    from pyformex.backports import OrderedDict
+from pyformex import OrderedDict
 
 from pyformex.odict import ODict
 

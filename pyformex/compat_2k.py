@@ -55,6 +55,11 @@ from future_builtins import zip
 
 import cPickle as pickle
 
+try:
+    from collections import OrderedDict
+except:
+    from pyformex.backports import OrderedDict
+
 def execFile(f,*args,**kargs):
     return execfile(f,*args,**kargs)
 
