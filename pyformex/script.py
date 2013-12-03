@@ -282,7 +282,8 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
         pf.GUI.startRun()
 
     # Read the script, if a file was specified
-    if isinstance(scr, file):
+    if not isinstance(scr, (str,unicode)):
+        # scr should be an open file/stream
         if filename is None:
             filename = scr.name
         scr = scr.read() + '\n'
@@ -334,7 +335,6 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
                 g = pf.console.interpreter.locals
             exportNames.extend(listAll(clas=Geometry, dic=g))
         pf.PF.update([(k, g[k]) for k in exportNames])
-
         scriptRelease('__auto/script__') # release the lock
         if pf.GUI:
             pf.GUI.stopRun()

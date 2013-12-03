@@ -55,6 +55,7 @@ if (sys.hexversion & 0xFFFF0000) == 0x03010000:
 
 
 zip = __builtins__['zip']
+__builtins__['unicode'] = str
 
 import pickle
 

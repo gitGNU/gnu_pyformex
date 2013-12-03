@@ -529,8 +529,9 @@ def run(argv=[]):
         pf.options.debuglevel |= pf.DEBUG.INFO
 
     if pf.options.detect:
+        from pyformex import software
         print("Detecting installed helper software")
-        print(utils.reportSoftware())
+        print(software.reportSoftware())
 
     pf.debug("pyformex script started from %s" % pf.bindir, pf.DEBUG.INFO)
     pf.debug("I found pyFormex installed in %s " %  pyformexdir, pf.DEBUG.INFO)

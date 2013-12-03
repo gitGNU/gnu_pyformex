@@ -28,6 +28,8 @@ from __future__ import print_function
 from pyformex import zip
 
 import pyformex as pf
+from pyformex.mydict import formatDict
+from pyformex.software import *
 
 import os
 import re
@@ -38,12 +40,6 @@ import subprocess
 import threading
 import shlex
 
-from pyformex.mydict import formatDict
-
-# Software detection has been moved to software.py
-# We currently import everything from software here, for compatibility
-# TODO: This should be removed later on.
-from pyformex.software import *
 
 # Some regular expressions
 RE_digits = re.compile(r'(\d+)')
@@ -202,8 +198,12 @@ class Process(subprocess.Popen):
 
         # Start the process and wait for it to finish
         out, err = self.communicate()
-        self.out = str(out)
-        self.err = str(err)
+        if out is not None:
+            out = out.decode(encoding='UTF-8')
+        if err is not None:
+            err = err.decode(encoding='UTF-8')
+        self.out, self.err = out,err
+        pf.debug("Command output %s %s" % (type(out),type(err)),pf.DEBUG.UNICODE)
 
         if t:
             # Cancel the timer if one was started
@@ -1526,7 +1526,7 @@ def memory_report(keys=None):
     gc.collect()
     P = system('cat /proc/meminfo')
     res = {}
-    for line in P.out.split('\n'):
+    for line in str(P.out).split('\n'):
         try:
             k, v = line.split(':')
             k = k.strip()
