@@ -29,15 +29,13 @@ pyFormex Geometry File Format.
 """
 from __future__ import print_function
 
-
 from pyformex import utils
 from pyformex import filewrite
+from pyformex import message, debug, warning, DEBUG
 from pyformex.coords import *
 from pyformex.formex import Formex
 from pyformex.mesh import Mesh
-from pyformex.odict import ODict
-from pyformex import message, debug, warning, DEBUG
-
+from pyformex.odict import OrderedDict
 
 import os
 
@@ -65,7 +63,7 @@ class GeometryFile(object):
 
     def __init__(self,fil,mode=None,sep=' ',ifmt=' ',ffmt=' '):
         """Create the GeometryFile object."""
-        isname = isinstance(fil, str)
+        isname = isinstance(fil, (str,unicode))
         if isname:
             if mode is None:
                 if os.path.exists(fil):
@@ -399,7 +397,7 @@ class GeometryFile(object):
         self._version_ = version
         self.sep = sep
         self.objname = utils.NameSequence('%s_000' % utils.projectName(self.fil.name))
-        self.results = ODict()
+        self.results = OrderedDict()
 
 
     def read(self,count=-1):
