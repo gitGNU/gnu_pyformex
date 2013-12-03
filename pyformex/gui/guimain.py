@@ -931,6 +931,7 @@ class Gui(QtGui.QMainWindow):
         # menu for testing. At the end of the file helpMenu.py there is an
         # example (commented out).
         #
+        from pyformex import script
         pf.GUI.cleanup()
         if pf.options.gui:
             script.force_finish()

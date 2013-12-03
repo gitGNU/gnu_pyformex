@@ -36,6 +36,11 @@ from pyformex.gui.colors import *
 from OpenGL import GL, GLU
 
 
+import sys
+if sys.hexversion >= 0x03000000:
+    print("DRAWGL MODULE IS %s" % drawgl)
+
+
 def glObjType(nplex):
     if nplex == 1:
         objtype = GL.GL_POINTS

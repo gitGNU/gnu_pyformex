@@ -34,8 +34,6 @@ from __future__ import print_function
 
 import pyformex as pf
 import sys, os
-startup_warnings = ''
-startup_messages = ''
 
 pyformexdir = sys.path[0]
 
@@ -74,7 +72,7 @@ if pf.installtype in 'SG':
 I had a problem rebuilding the libraries in %s/lib.
 You should probably exit pyFormex, fix the problem first and then restart pyFormex.
 """ % pyformexdir
-    startup_warnings += msg
+    pf.startup_warnings += msg
 
 from pyformex import utils
 
@@ -106,15 +104,15 @@ found_version = utils.hasModule('python')
 
 if utils.SaneVersion(found_version) < utils.SaneVersion(minimal_version):
 #if utils.checkVersion('python',minimal_version) < 0:
-    startup_warnings += """
+    pf.startup_warnings += """
 Your Python version is %s, but pyFormex requires Python >= %s. We advice you to upgrade your Python version. Getting pyFormex to run on Python 2.4 requires only minor adjustements. Lower versions are problematic.
 """ % (found_version, minimal_version)
-    print(startup_warnings)
+    print(pf.startup_warnings)
     sys.exit()
 
 if utils.SaneVersion(found_version[:3]) > utils.SaneVersion(target_version):
 #if utils.checkVersion('python',target_version) > 0:
-    startup_warnings += """
+    pf.startup_warnings += """
 Your Python version is %s, but pyFormex has only been tested with Python <= %s. We expect pyFormex to run correctly with your Python version, but if you encounter problems, please contact the developers at http://pyformex.org.
 """ % (found_version, target_version,)
 
@@ -744,13 +742,15 @@ pyFormex Warning
             return res # EXIT
 
     # Display the startup warnings and messages
-    if startup_warnings:
+    if pf.startup_warnings:
         if pf.cfg['startup_warnings']:
-            pf.warning(startup_warnings)
+            pf.warning(pf.startup_warnings)
         else:
-            print(startup_warnings)
-    if startup_messages:
-        print(startup_messages)
+            print(pf.startup_warnings)
+    if pf.startup_messages:
+        print(pf.startup_messages)
+
+    #pf.startup_warnings = pf.startup_messages = ''
 
     if pf.options.debuglevel & pf.DEBUG.INFO:
         # NOTE: inside an if to avoid computing the report when not printed

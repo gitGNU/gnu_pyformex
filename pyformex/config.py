@@ -342,7 +342,7 @@ class Config(Dict):
 
         By default this descends one level of Dicts.
         """
-        keys = Dict.keys(self)
+        keys = list(Dict.keys(self))
         if descend:
             for k, v in self.items():
                 if isinstance(v, Dict):

@@ -49,6 +49,12 @@ Url = 'http://pyformex.org'
 Description = "pyFormex is a tool for generating, manipulating and transforming large geometrical models of 3D structures by sequences of mathematical transformations."
 
 
+# set start date/time
+import time, datetime
+StartTime = datetime.datetime.now()
+startup_messages = ''
+startup_warnings = ''
+
 # Compatibility with Python2 and Python3
 # We keep these in separate modules, because the ones for 2k might
 # not compile in 3k and vice-versa.
@@ -57,6 +63,7 @@ if sys.hexversion < 0x03000000:
     from pyformex.compat_2k import *
 else:
     from pyformex.compat_3k import *
+
 
 # Install type.
 # This can have the followig values:
@@ -75,10 +82,6 @@ GUI = None         # the GUI QMainWindow
 canvas = None      # the OpenGL Drawing widget controlled by the running script
 #board = None      # the message board
 console = None     # alternate Python console
-
-# set start date/time
-import time, datetime
-StartTime = datetime.datetime.now()
 
 # initialize some global variables used for communication between modules
 

@@ -34,15 +34,15 @@ versions might cause compilation to fail.
 """
 from __future__ import print_function
 
-
-print("""
+startup_warnings ="""
 #####################################################################
 ##  Warning! This is an experimental Python3 version of pyFormex.  ##
 ##  It is only meant for development and debugging purposes.       ##
 ##  It is not functional yet. For production purposes, use the     ##
 ##  Python2 version.                                               ##
 #####################################################################
-""")
+"""
+print(startup_warnings)
 
 import sys
 if (sys.hexversion & 0xFFFF0000) == 0x03010000:
