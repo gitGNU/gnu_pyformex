@@ -650,7 +650,7 @@ class AppMenu(menu.Menu):
 
 ############### The pyFormex App menu ############################
 
-from prefMenu import setDirs
+from pyformex.gui.prefMenu import setDirs
 
 
 def createAppMenu(mode='app',parent=None,before=None):

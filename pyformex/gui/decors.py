@@ -31,13 +31,19 @@ from pyformex import zip
 
 from OpenGL import GL
 from pyformex.gui import QtOpenGL
+from pyformex.gui import colors
 
 from pyformex.gui.drawable import *
 from pyformex.gui.text import *
 from pyformex.gui.marks import TextMark
 
-from pyformex.gui import colors
-from pyformex.gui import gluttext
+
+import sys
+if (sys.hexversion & 0xFFFF0000) < 0x03000000:
+    # GLUT currently fails with Python3
+    # We should remove GLUT anyways
+    from pyformex.gui import gluttext
+
 
 ### Some drawing functions ###############################################
 
@@ -59,7 +65,7 @@ def drawLine(x1, y1, x2, y2):
 
 def drawGrid(x1, y1, x2, y2, nx, ny):
     """Draw a rectangular grid of lines
-        
+
     The rectangle has (x1,y1) and and (x2,y2) as opposite corners.
     There are (nx,ny) subdivisions along the (x,y)-axis. So the grid
     has (nx+1) * (ny+1) lines. nx=ny=1 draws a rectangle.
@@ -72,7 +78,7 @@ def drawGrid(x1, y1, x2, y2, nx, ny):
         jx = [1]
         nx = 1
     else:
-        jx = ix[::-1] 
+        jx = ix[::-1]
     for i, j in zip(ix, jx):
         x = (i*x2+j*x1)/nx
         GL.glVertex2f(x, y1)
@@ -83,7 +89,7 @@ def drawGrid(x1, y1, x2, y2, nx, ny):
         jy = [1]
         ny = 1
     else:
-        jy = iy[::-1] 
+        jy = iy[::-1]
     for i, j in zip(iy, jy):
         y = (i*y2+j*y1)/ny
         GL.glVertex2f(x1, y)
@@ -110,7 +116,7 @@ def drawRectangle(x1,y1,x2,y2,color,texture=None):
     for i in range(4):
         GL.glColor3fv(c[i])
         if texture is not None:
-            GL.glTexCoord2fv(t[i]) 
+            GL.glTexCoord2fv(t[i])
         GL.glVertex2fv(x[i])
     GL.glEnd()
 
@@ -121,12 +127,12 @@ class Decoration(Drawable):
     """A decoration is a 2-D drawing at canvas position x,y.
 
     All decorations have at least the following attributes:
-    
+
     - x,y : (int) window coordinates of the insertion point
     - drawGL() : function that draws the decoration at (x,y).
                This should only use openGL function that are
                allowed in a display list.
-               
+
     """
 
     def __init__(self,x,y,**kargs):
@@ -141,7 +147,7 @@ class Decoration(Drawable):
 
 
 # Marks database: a dict with mark name and a function to draw
-# the mark. The 
+# the mark. The
 _marks_ = {
     'dot': drawDot,
     }
@@ -186,7 +192,7 @@ class Line(Decoration):
             GL.glLineWidth(self.linewidth)
         drawLine(self.x1, self.y1, self.x2, self.y2)
 
-        
+
 ## ## class QText(Decoration):
 ## ##     """A viewport decoration showing a text."""
 
@@ -208,8 +214,8 @@ class Line(Decoration):
 ## ##         if self.color is not None:
 ## ##             GL.glColor3fv(self.color)
 ## ##         pf.canvas.renderText(self.x,pf.canvas.height()-self.y,self.text,self.font)
-## ## #        pf.canvas.swapBuffers() 
-## ## #        pf.canvas.updateGL() 
+## ## #        pf.canvas.swapBuffers()
+## ## #        pf.canvas.updateGL()
 
 
 class GlutText(Decoration):
@@ -222,7 +228,7 @@ class GlutText(Decoration):
       respect to the insert position. It can be a combination of one of the
       characters 'N or 'S' to specify the vertical positon, and 'W' or 'E'
       for the horizontal. The default(empty) string will center the text.
-    
+
     """
 
     def __init__(self,text,x,y,font='9x15',size=None,gravity=None,color=None,zoom=None,**kargs):
@@ -241,7 +247,7 @@ class GlutText(Decoration):
         """Draw the text."""
         ## if self.zoom:
         ##     pf.canvas.zoom_2D(self.zoom)
-        if self.color is not None: 
+        if self.color is not None:
             GL.glColor3fv(self.color)
         gluttext.glutDrawText(self.text, self.x, self.y, font=self.font, gravity=self.gravity)
         ## if self.zoom:
@@ -278,7 +284,7 @@ class ColorLegend(Decoration):
       If > 0, labels will be displayed at `nlabel` interval borders, if
       possible. The number of labels displayed thus will be ``nlabel+1``,
       or less if the labels would otherwise be too close or overlapping.
-      If 0, no labels are shown. 
+      If 0, no labels are shown.
       If < 0 (default), a default number of labels is shown.
     - `font`, `size`: font and size to be used for the labels
     - `dec`: int: number of decimals to be used in the labels
@@ -328,7 +334,7 @@ class ColorLegend(Decoration):
         self.dec = dec   # number of decimals
         self.scale = 10 ** scale # scale all numbers with 10**scale
         self.lefttext = lefttext
-        self.xgap = 4  # hor. gap between color bar and labels 
+        self.xgap = 4  # hor. gap between color bar and labels
         self.ygap = 4  # (min) vert. gap between labels
 
 
@@ -340,16 +346,16 @@ class ColorLegend(Decoration):
         x2 = float(self.x+self.w)
         y0 = float(self.y)
         dy = float(self.h)/n
-        
+
         # colors
         y1 = y0
         #GL.glLineWidth(1.5)
         for i, c in enumerate(self.cl.colors):
             y2 = y0 + (i+1)*dy
             GL.glColor3f(*c)
-            GL.glRectf(x1, y1, x2, y2)   
+            GL.glRectf(x1, y1, x2, y2)
             y1 = y2
-            
+
         if self.nlabel > 0 or self.ngrid > 0:
             GL.glColor3f(*colors.black)
 
@@ -362,7 +368,7 @@ class ColorLegend(Decoration):
             maxlabel = float(self.h)/dh # maximum n umber of labels
             if self.nlabel <= maxlabel:
                 dh = float(self.h)/self.nlabel # respect requested number
-                
+
             if self.lefttext:
                 x1 = x1 - self.xgap
                 gravity = 'W'
@@ -449,7 +455,7 @@ class LineDrawing(Decoration):
         Decoration.__init__(self,x1,y1,**kargs)
         self.color = saneColor(color)
         self.linewidth = saneLineWidth(linewidth)
-    
+
 
     def drawGL(self,**kargs):
         if self.color is not None:
@@ -469,7 +475,7 @@ class LineDrawing(Decoration):
 
 class Triade(Drawable):
     """An OpenGL actor representing a triade of global axes.
-    
+
     - `pos`: position on the canvas: two characters, of which first sets
       horizontal position ('l', 'c' or 'r') and second sets vertical
       position ('b', 'c' or 't').
@@ -481,7 +487,7 @@ class Triade(Drawable):
 
     - `legend`: text symbols to plot at the end of the axes. A 3-character
       string or a tuple of 3 strings.
-      
+
     """
 
     def __init__(self,pos='lb',siz=100,pat='3:012934',legend='xyz',color=[red, green, blue, cyan, magenta, yellow],**kargs):
@@ -492,7 +498,7 @@ class Triade(Drawable):
         self.legend = legend
         self.color = color
 
- 
+
     def _draw_me(self):
         """Draw the triade components."""
         GL.glBegin(GL.GL_LINES)
@@ -522,12 +528,12 @@ class Triade(Drawable):
             t = TextMark(p, x)
             t.drawGL()
 
- 
+
     def _draw_relative(self):
         """Draw the triade in the origin and with the size of the 3D space."""
         GL.glMatrixMode(GL.GL_MODELVIEW)
         GL.glPushMatrix()
-        GL.glTranslatef (*self.pos) 
+        GL.glTranslatef (*self.pos)
         GL.glScalef (self.size, self.size, self.size)
         self._draw_me()
         GL.glMatrixMode(GL.GL_MODELVIEW)
@@ -550,7 +556,7 @@ class Triade(Drawable):
         elif self.pos[0] =='r':
             x0 = x + w-w0
         else:
-            x0 = x + (w-w0)/2     
+            x0 = x + (w-w0)/2
         if self.pos[1] == 'b':
             y0 = y
         elif self.pos[1] =='t':

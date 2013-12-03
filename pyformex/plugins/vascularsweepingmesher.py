@@ -40,7 +40,7 @@ from pyformex.elements import *
 
 from pyformex.plugins.fe import *
 from pyformex.mesh import *
-from project import *
+from pyformex.project import *
 from pyformex.geomtools import triangleCircumCircle
 
 

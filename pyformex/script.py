@@ -35,7 +35,7 @@ import pyformex as pf
 from pyformex import formex
 from pyformex import geomfile
 from pyformex import utils
-from project import Project
+from pyformex.project import Project
 from pyformex.geometry import Geometry
 
 ########################

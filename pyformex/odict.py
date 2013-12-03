@@ -70,7 +70,7 @@ class ODict(dict):
 
         elif isinstance(data, dict):
             # order is undefined
-            self._order = data.keys()
+            self._order = list(data.keys())
 
         else:
             raise ValueError("Unexpected initialization value for ODict")

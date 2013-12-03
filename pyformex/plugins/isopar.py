@@ -29,7 +29,7 @@ from __future__ import print_function
 
 
 from pyformex.coords import *
-from polynomial import *
+from pyformex.plugins.polynomial import *
 
 
 #

@@ -181,7 +181,7 @@ def toggleAppScript():
         else:
             if pf.warning("This script is not in an application directory.\n\nYou should add the directory path '%s' to the application paths before you can run this file as an application." % path, actions=['Not this time', 'Add this directory now']).startswith('Add'):
                 #print("Adding directory %s" % path)
-                from prefMenu import addAppdir
+                from pyformex.gui.prefMenu import addAppdir
                 addAppdir(path, dircfg='appdirs')
                 draw.showInfo('Added the path %s' % path)
 
