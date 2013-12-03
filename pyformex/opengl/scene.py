@@ -26,30 +26,14 @@
 """
 from __future__ import print_function
 
-
-## from numpy import *
-
-
-## from formex import Formex
-## from drawable import saneColor,glColor
-## import arraytools as at
-## import utils
-## from mydict import Dict
-## from gui import colors
-## from gui import views
-
-## from camera import Camera
-## from renderer import Renderer
-## from collection import Collection
-
 import pyformex as pf
+from pyformex import utils
 from pyformex import arraytools as at
 from pyformex import coords
-from pyformex.gui import drawable
 from pyformex.gui import actors
 from pyformex.gui import decors
 from pyformex.gui import marks
-from pyformex import utils
+from pyformex.opengl import drawable
 
 
 class ActorList(list):

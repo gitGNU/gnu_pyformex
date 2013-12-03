@@ -33,17 +33,16 @@ the current OpenGL framework in pyFormex.
 """
 from __future__ import print_function
 
-
-import os
 import pyformex as pf
 from pyformex.coords import bbox
+from pyformex.attributes import Attributes
+from pyformex.opengl.shader import Shader
+from pyformex.opengl.drawable import GeomActor
+
 import numpy as np
 from OpenGL import GL
-from pyformex.opengl.shader import Shader
-from pyformex.attributes import Attributes
-#import utils
+import os
 
-from pyformex.gui.drawable import GeomActor
 
 class Renderer(object):
 
