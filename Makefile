@@ -216,6 +216,7 @@ stampstaticdirs: Stamp.staticdir
 
 # Create the distribution
 cleandist:
+	mkdir -p ${PKGDIR}
 	rm -f ${PKGDIR}/${PKGVER}
 
 dist: cleandist manpages ${PKGDIR}/${LATEST} clean

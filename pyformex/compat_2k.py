@@ -33,24 +33,6 @@ versions might cause compilation to fail.
 """
 from __future__ import print_function
 
-import sys
-if (sys.hexversion & 0xFFFF0000) < 0x02070000:
-
-    # Need at least Python 2.7
-    # Note that the second line in the frame below is longer.
-    # That is intentionally !!
-    print("""
-##################################################################
-##  Requirement Error! This is Python %s.%s, however as of        ##
-##  version 1.0, pyFormex requires at Python 2.7 or higher.     ##
-##  The best thing you can do is install Python 2.7.            ##
-##  Alternatively, you can use an older version of pyFormex,    ##
-##  but then you will miss all recent and future improvements.  ##
-##################################################################
-""" % (sys.version_info.major, sys.version_info.minor))
-    sys.exit()
-
-
 from future_builtins import zip
 
 import cPickle as pickle

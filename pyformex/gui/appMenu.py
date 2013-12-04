@@ -614,7 +614,7 @@ class AppMenu(menu.Menu):
                     return
                 if skipconfig:
                     # This is here to skip the startup script
-                    if os.path.dirname(os.path.abspath(name)) == pf.cfg.userconfdir:
+                    if os.path.dirname(os.path.abspath(name)) == pf.cfg['userconfdir']:
                         return
 
         files = self.files

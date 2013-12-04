@@ -25,13 +25,163 @@
 
 This module initializes the pyFormex global variables and
 defines a few essential functions.
+It is the very first thing that is executed when starting pyFormex.
+It is loaded even before main.
 """
 from __future__ import print_function
 
-# This is the very first thing that is executed when starting pyFormex
-# It is loaded even before main.
 __version__ = "1.0.0~a1"
 __revision__ = __version__
+
+Copyright = 'Copyright (C) 2004-2013 Benedict Verhegghe'
+Url = 'http://pyformex.org'
+Description = "pyFormex is a tool for generating, manipulating and transforming large geometrical models of 3D structures by sequences of mathematical transformations."
+
+# set start date/time
+import time, datetime
+StartTime = datetime.datetime.now()
+
+startup_messages = ''
+startup_warnings = ''  # may be overridden in compat_?k below
+
+#########  Check Python version #############
+
+# intended Python version
+minimal_version = 0x02060000
+target_version = 0x02070000
+future_version = 0x03000000
+
+def major(v):
+    """Return the major component of version"""
+    return v >> 24
+
+def minor(v):
+    """Return the minor component of version"""
+    return (v & 0x00FF0000) >> 16
+
+def human_version(v):
+    """Return the human readable string for version"""
+    return "%s.%s" % (major(v),minor(v))
+
+import sys
+
+if sys.hexversion < minimal_version:
+    # Older than minimal
+    startup_warnings += """
+#######################################################################
+##  Your Python version is %s, but pyFormex requires Python >= %s. ##
+##  We advice you to upgrade your Python version. Getting pyFormex   ##
+##  running on Python versions from 2.5 is possible but may require  ##
+##  minor adjustements. Older versions are more problematic.         ##
+#######################################################################
+""" % (human_version(sys.hexversion), human_version(minimal_version))
+    print(startup_warnings)
+    sys.exit()
+
+if sys.hexversion & 0xFFFF0000 > target_version:
+    # Major,minor newer than target:
+    startup_warnings += """
+#######################################################################
+##  Your Python version is %s, but pyFormex has only been tested    ##
+##  with Python <= %s. We expect pyFormex to run correctly with     ##
+##  your Python version, but if you encounter problems, please       ##
+##  contact the developers at http://pyformex.org.                   ##
+#######################################################################
+""" % (human_version(sys.hexversion), human_version(minimal_version))
+    #print(startup_warnings)
+
+# Compatibility with Python2 and Python3
+# We keep these in separate modules, because the ones for 2k might
+# not compile in 3k and vice-versa.
+if sys.hexversion < 0x03000000:
+    from pyformex.compat_2k import *
+else:
+    from pyformex.compat_3k import *
+
+
+#### Detect install type ########
+
+# Install type.
+# This can have the followig values:
+#     'R' : normal (source) release, i.e. tarball (default)
+#     'D' : Debian package of a relesed version
+#     'G' : unreleased version running from GIT sources
+#     'S' : unreleased version running from SVN sources (obsolete)
+#
+installtype = 'R'
+
+import os
+pyformexdir = os.path.dirname(__file__)
+#print("PYFORMEXDIR = %s" % pyformexdir)
+if os.path.exists(os.path.join(os.path.dirname(pyformexdir), '.git')):
+    installtype = 'G'
+
+
+########## import libraries ##############
+
+
+libraries = [ 'misc_', 'nurbs_', 'drawgl_' ]
+
+if installtype in 'SG':
+    # Running from source tree: check if compiled libraries are up-to-date
+    libdir = os.path.join(pyformexdir, 'lib')
+
+    def checkLibraries():
+        #print "Checking pyFormex libraries"
+        msg = ''
+        for lib in libraries:
+            src = os.path.join(libdir, lib+'.c')
+            obj = os.path.join(libdir, lib+'.so')
+            if not os.path.exists(obj) or os.path.getmtime(obj) < os.path.getmtime(src):
+                msg += "\nThe compiled library '%s' is not up to date!" % lib
+        return msg
+
+
+    msg = checkLibraries()
+    if msg:
+        # Try rebyuilding
+        print("Rebuilding pyFormex libraries, please wait")
+        cmd = "cd %s/..; make lib" % pyformexdir
+        os.system(cmd)
+        msg = checkLibraries()
+
+    if msg:
+        # No success
+        msg += """
+
+I had a problem rebuilding the libraries in %s/lib.
+You should probably exit pyFormex, fix the problem first and then restart pyFormex.
+""" % pyformexdir
+    startup_warnings += msg
+
+
+# Set the proper revision number when running from git sources
+if installtype=='G':
+    branch = None
+    from pyformex import utils
+    try:
+        #print("Check whether %s is a git source" % pyformexdir)
+        cmd = 'cd %s && git describe --always' % pyformexdir
+        #print(cmd)
+        P = utils.system(cmd,shell=True)
+        #print(P.sta,P.out,P.err)
+        if P.sta == 0:
+            __revision__ = P.out.split('\n')[0].strip()
+    except:
+        print("Could not set revision number")
+        pass
+
+    # Set branch name if we are in a git repository
+    try:
+        cmd = 'cd %s && git symbolic-ref --short -q HEAD' % pyformexdir
+        P = utils.system(cmd, shell=True)
+        if P.sta == 0:
+            branch = P.out.split('\n')[0]
+    except:
+        print("Could not set branch name")
+        pass
+
+    del branch, cmd, P
 
 
 def Version():
@@ -42,37 +192,6 @@ def Version():
 def fullVersion():
     """Return a string with the pyFormex name, version and revision"""
     return "%s (%s)" % (Version(), __revision__)
-
-
-Copyright = 'Copyright (C) 2004-2013 Benedict Verhegghe'
-Url = 'http://pyformex.org'
-Description = "pyFormex is a tool for generating, manipulating and transforming large geometrical models of 3D structures by sequences of mathematical transformations."
-
-
-# set start date/time
-import time, datetime
-StartTime = datetime.datetime.now()
-startup_messages = ''
-startup_warnings = ''
-
-# Compatibility with Python2 and Python3
-# We keep these in separate modules, because the ones for 2k might
-# not compile in 3k and vice-versa.
-import sys
-if sys.hexversion < 0x03000000:
-    from pyformex.compat_2k import *
-else:
-    from pyformex.compat_3k import *
-
-
-# Install type.
-# This can have the followig values:
-#     'R' : normal (source) release, i.e. tarball (default)
-#     'D' : Debian package of a relesed version
-#     'G' : unreleased version running from GIT sources
-#     'S' : unreleased version running from SVN sources (obsolete)
-#
-installtype = 'R'
 
 # The GUI parts
 app_started = False

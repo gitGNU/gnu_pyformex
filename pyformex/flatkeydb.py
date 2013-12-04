@@ -160,9 +160,7 @@ class FlatDB(dict):
                  strip_blanks = True, strip_quotes = True,
                  check_func = None,
                  ):
-        """Initialize a new (empty) database.
-
-        Make sure that the arguments are legal."""
+        """Initialize a new (empty) database."""
 
         dict.__init__(self)
         self.req_keys = [str(s) for s in req_keys]

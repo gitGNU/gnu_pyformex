@@ -47,7 +47,7 @@ def checkVersion(lib):
 accelerate = gui = False
 if pf.options:
     # testing for not False makes other values than T/F (like None) pass
-    accelerate = pf.cfg.uselib is not False
+    accelerate = pf.cfg['uselib'] is not False
     gui = pf.options.gui
 
 

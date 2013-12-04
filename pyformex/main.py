@@ -33,94 +33,11 @@ from __future__ import print_function
 
 
 import pyformex as pf
-import sys, os
-startup_warnings = ''
-startup_messages = ''
-
-pyformexdir = os.path.join(sys.path[0],'pyformex')
-#print("PYFORMEXDIR = %s" %  sys.path[0])
-
-if os.path.exists(os.path.join(os.path.dirname(pyformexdir), '.git')):
-    pf.installtype = 'G'
-
-libraries = [ 'misc_', 'nurbs_', 'drawgl_' ]
-
-if pf.installtype in 'SG':
-    # Running from source tree: check if compiled libraries are up-to-date
-    libdir = os.path.join(pyformexdir, 'lib')
-
-    def checkLibraries():
-        #print "Checking pyFormex libraries"
-        msg = ''
-        for lib in libraries:
-            src = os.path.join(libdir, lib+'.c')
-            obj = os.path.join(libdir, lib+'.so')
-            if not os.path.exists(obj) or os.path.getmtime(obj) < os.path.getmtime(src):
-                msg += "\nThe compiled library '%s' is not up to date!" % lib
-        return msg
-
-
-    msg = checkLibraries()
-    if msg:
-        # Try rebyuilding
-        print("Rebuilding pyFormex libraries, please wait")
-        cmd = "cd %s/..; make lib" % pyformexdir
-        os.system(cmd)
-        msg = checkLibraries()
-
-    if msg:
-        # No success
-        msg += """
-
-I had a problem rebuilding the libraries in %s/lib.
-You should probably exit pyFormex, fix the problem first and then restart pyFormex.
-""" % pyformexdir
-    startup_warnings += msg
-
 from pyformex import utils
-
-# Set the proper revision number when running from git sources
-branch = None
-if pf.installtype=='G':
-    try:
-        P = utils.system('cd %s && git describe --always' % pyformexdir, shell=True)
-        if P.sta == 0:
-            pf.__revision__ = P.out.split('\n')[0].strip()
-    except:
-        print("Could not set revision number")
-        pass
-
-    # Set branch name if we are in a git repository
-    try:
-        P = utils.system('cd %s && git symbolic-ref --short -q HEAD' % pyformexdir, shell=True)
-        if P.sta == 0:
-            branch = P.out.split('\n')[0]
-    except:
-        print("Could not set branch name")
-        pass
-
-# intended Python version
-minimal_version = '2.5'
-target_version = '2.7'
-found_version = utils.hasModule('python')
-
-
-if utils.SaneVersion(found_version) < utils.SaneVersion(minimal_version):
-#if utils.checkVersion('python',minimal_version) < 0:
-    startup_warnings += """
-Your Python version is %s, but pyFormex requires Python >= %s. We advice you to upgrade your Python version. Getting pyFormex to run on Python 2.4 requires only minor adjustements. Lower versions are problematic.
-""" % (found_version, minimal_version)
-    print(startup_warnings)
-    sys.exit()
-
-if utils.SaneVersion(found_version[:3]) > utils.SaneVersion(target_version):
-#if utils.checkVersion('python',target_version) > 0:
-    startup_warnings += """
-Your Python version is %s, but pyFormex has only been tested with Python <= %s. We expect pyFormex to run correctly with your Python version, but if you encounter problems, please contact the developers at http://pyformex.org.
-""" % (found_version, target_version,)
-
-
 from pyformex.config import Config
+
+import sys, os
+
 
 ###########################  main  ################################
 
@@ -512,15 +429,15 @@ def run(argv=[]):
         homedir = os.environ['HOME']
     elif os.name == 'nt':
         homedir = os.environ['HOMEDRIVE']+os.environ['HOMEPATH']
-    pf.cfg.read("pyformexdir = '%s'\n" % pyformexdir)
+    pf.cfg.read("pyformexdir = '%s'\n" % pf.pyformexdir)
     pf.cfg.read("homedir = '%s'\n" % homedir)
 
     # Read the defaults (before the options)
-    defaults = os.path.join(pyformexdir, "pyformex.conf")
+    defaults = os.path.join(pf.pyformexdir, "pyformex.conf")
     pf.cfg.read(defaults)
 
     # The default user config path (do not change!)
-    pf.cfg.userprefs = os.path.join(pf.cfg.userconfdir, 'pyformex.conf')
+    pf.cfg['userprefs'] = os.path.join(pf.cfg['userconfdir'], 'pyformex.conf')
 
     ########## Process special options which do not start pyFormex #######
 
@@ -530,7 +447,7 @@ def run(argv=[]):
         return
 
     if pf.options.remove:
-        remove_pyFormex(pyformexdir, pf.bindir)
+        remove_pyFormex(pf.pyformexdir, pf.bindir)
         return
 
     if pf.options.whereami: # or pf.options.detect :
@@ -542,7 +459,7 @@ def run(argv=[]):
         print(software.reportSoftware())
 
     pf.debug("pyformex script started from %s" % pf.bindir, pf.DEBUG.INFO)
-    pf.debug("I found pyFormex installed in %s " %  pyformexdir, pf.DEBUG.INFO)
+    pf.debug("I found pyFormex installed in %s " %  pf.pyformexdir, pf.DEBUG.INFO)
     pf.debug("Current Python sys.path: %s" % sys.path, pf.DEBUG.INFO)
     #sys.exit()
 
@@ -552,15 +469,15 @@ def run(argv=[]):
     ########### Migrate the user configuration files ####################
 
     # Migrate the user preferences to the new place under $HOME/.config
-    if not os.path.exists(pf.cfg.userprefs):
+    if not os.path.exists(pf.cfg['userprefs']):
         # Check old place
         olduserprefs = os.path.join(homedir, '.pyformex', 'pyformexrc')
         if os.path.exists(olduserprefs):
-            print("Migrating your user preferences\n  from %s\n  to %s" % (olduserprefs, pf.cfg.userprefs))
+            print("Migrating your user preferences\n  from %s\n  to %s" % (olduserprefs, pf.cfg['userprefs']))
             try:
                 import shutil
                 olddir = os.path.dirname(olduserprefs)
-                newdir = pf.cfg.userconfdir
+                newdir = pf.cfg['userconfdir']
                 # Move old user conf file to new and link back
                 oldfile = os.path.join(olddir, 'pyformexrc')
                 newfile = os.path.join(olddir, 'pyformex.conf')
@@ -585,17 +502,17 @@ def run(argv=[]):
         sysprefs = []
         userprefs = []
     else:
-        sysprefs = [ pf.cfg.siteprefs ]
-        userprefs = [ pf.cfg.userprefs ]
-        if os.path.exists(pf.cfg.localprefs):
-            userprefs.append(pf.cfg.localprefs)
+        sysprefs = [ pf.cfg['siteprefs'] ]
+        userprefs = [ pf.cfg['userprefs'] ]
+        if os.path.exists(pf.cfg['localprefs']):
+            userprefs.append(pf.cfg['localprefs'])
 
     if pf.options.config:
         userprefs.append(utils.tildeExpand(pf.options.config))
 
     if len(userprefs) == 0:
         # We should always have a place to store the user preferences
-        userprefs = [ pf.cfg.userprefs ]
+        userprefs = [ pf.cfg['userprefs'] ]
 
     pf.preffile = os.path.abspath(userprefs[-1]) # Settings will be saved here
 
@@ -752,13 +669,13 @@ pyFormex Warning
             return res # EXIT
 
     # Display the startup warnings and messages
-    if startup_warnings:
+    if pf.startup_warnings:
         if pf.cfg['startup_warnings']:
-            pf.warning(startup_warnings)
+            pf.warning(pf.startup_warnings)
         else:
-            print(startup_warnings)
-    if startup_messages:
-        print(startup_messages)
+            print(pf.startup_warnings)
+    if pf.startup_messages:
+        print(pf.startup_messages)
 
     if pf.options.debuglevel & pf.DEBUG.INFO:
         # NOTE: inside an if to avoid computing the report when not printed

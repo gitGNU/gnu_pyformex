@@ -203,7 +203,7 @@ class Process(subprocess.Popen):
         if err is not None:
             err = err.decode(encoding='UTF-8')
         self.out, self.err = out,err
-        pf.debug("Command output %s %s" % (type(out),type(err)),pf.DEBUG.UNICODE)
+        #pf.debug("Command output %s %s" % (type(out),type(err)),pf.DEBUG.UNICODE)
 
         if t:
             # Cancel the timer if one was started
