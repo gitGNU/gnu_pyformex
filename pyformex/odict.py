@@ -36,26 +36,53 @@ except:
     from pyformex.backports import OrderedDict
 
 
-from collections import defaultdict
 
-class CascadingDict(defaultdict):
-    """A cascading dict: keys not in dict are searched in all dict values.
+class DDict(dict):
+    """A dict with multiple ways to set the default values.
 
-    This is equivalent to the Dict class, except that if a key is not found
-    and the CDict has items with values that are themselves instances
-    of Dict or CDict, the key will be looked up in those Dicts as well.
+    This is equivalent to the dict class, except that if a key is not found
+    it's value may be found from calling a function or from looking it up
+    in another dict.
 
-    As you expect, this will make the lookup cascade into all lower levels
-    of CDict's. The cascade will stop if you use a Dict.
-    There is no way to guarantee in which order the (Cascading)Dict's are
-    visited, so if multiple Dicts on the same level hold the same key,
-    you should know yourself what you are doing.
+    This differs in two ways from the :class:`collections.defaultdict` class:
+
+    - the default function takes the missing key as a parameter,
+    - the value looked up through the default function is not stored in
+      the DDict itself, but will be looked up againe with the default
+      function on each subsequent access of the same key.
+      See :class:`EDict` for an analog class that stores the looked up values
+      in itself.
+
+    Parameters:
+
+    - `default`: either None, a function. If it is a function, it should take
+      the key as parameter and return the value for that key. It can
+      appropriately be set to the get method of another dict, to have
+      missing keys being looked up in another dict. The default None will
+      cause a KeyError on missing keys.
+
+    - all other parameters are passed to the dict initialisation.
+
+    Examples:
+
+    >>> d = DDict(lambda x:-x)
+    >>> print(d)
+    {}
+    >>> print(d[1],d[2],d[3])
+    -1 -2 -3
+    >>> d[2] = 2
+    >>> e = DDict(d.get,{1:1})
+    >>> print(e)
+    {1: 1}
+    >>> print(e[1],e[2],e[3])
+    1 2 None
+
     """
 
-    def __init__(self,default=None,*args,**kargs):
+    def __init__(self, default=None, *args, **kargs):
         """Initialize the CascadingDict"""
-
-        defaultdict.__init__(self,default,*args,**kargs)
+        self.default_factory = default
+        dict.__init__(self, *args, **kargs)
 
 
     def __missing__(self,key):
@@ -65,17 +92,40 @@ class CascadingDict(defaultdict):
             return self.default_factory(key)
 
 
-if __name__ == "__main__":
+class EDict(dict):
+    """An extensible DDict
 
-    c = CascadingDict(None, zip(range(4),range(4)))
-    print(c)
+    This class is like DDict, but it installs missing keys in itself,
+    with the value of the first default lookup.
+
+    Examples (compare with DDict):
+
+    >>> d = EDict(lambda x:-x)
+    >>> print(d)
+    {}
+    >>> print(d[1],d[2],d[3])
+    -1 -2 -3
+    >>> d[2] = 2
+    >>> e = EDict(d.get,{1:1})
+    >>> print(e)
+    {1: 1}
+    >>> print(e[1],e[2],e[3])
+    1 2 -3
+
+    """
+
+    def __init__(self, factory=None, *args, **kargs):
+        """Initialize the CascadingDict"""
+        self.default_factory = factory
+        dict.__init__(self, *args, **kargs)
 
 
-    d = CascadingDict(c.get, zip(range(3),range(3)))
-    print(d)
+    def __missing__(self, key):
+        if self.default_factory is None:
+            raise KeyError
+        else:
+            self[key] = self.default_factory(key)
+            return self[key]
 
-    print(c[3])
-    #print(c[4])
-    print(d[3])
 
 # End
