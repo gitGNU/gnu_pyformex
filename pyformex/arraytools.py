@@ -462,7 +462,7 @@ def rotationMatrix(angle,axis=None,angle_spec=DEG):
         f = [[c, s], [-s, c]]
     elif array(axis).size == 1:
         f = zeros((3,3))
-        axes = arange(3)
+        axes = list(range(3))
         i, j, k = axes[axis:]+axes[:axis]
         f[i][i] = 1.0
         f[j][j] = c
