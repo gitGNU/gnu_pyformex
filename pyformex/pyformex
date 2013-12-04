@@ -42,12 +42,17 @@ distributed under the GNU General Public License, version 3 or later.
 import sys,os
 _bindir = sys.path[0]
 
+#print("BINDIR %s" %_bindir)
+
 # In case we execute the pyformex script from inside the
 # pyformex package dir: add the parent to the front of sys.path
 # to pick up the package here instead of from default path
 
 if _bindir.endswith('pyformex'):
-    sys.path[:0] = [ os.path.dirname(_bindir) ]
+    #sys.path[:0] = [ os.path.dirname(_bindir) ]
+    sys.path[0] = os.path.dirname(_bindir)
+
+#print("SYSPATH %s" % sys.path[:2])
 
 try:
     import pyformex
@@ -68,37 +73,22 @@ pyformex.bindir = _bindir
 #                   set this to 'D' before packaging the files.
 pyformex.installtype = 'R'
 
-# Put the pyformex module path in front to avoid picking up modules
-# from other packages installed next to pyformex.
-pyformex_path = pyformex.__path__[0]
+## # Put the pyformex module path in front to avoid picking up modules
+## # from other packages installed next to pyformex.
+## pyformex_path = pyformex.__path__[0]
 
-if pyformex_path == _bindir:
-    # pyformex path is second, its parent is first: exchange the two
-    sys.path[:2] = sys.path[1::-1]
-else:
-    # pointless _bindir parent is first: it can be removed
-    # pyformex path is not there: add it at the front
-    # so, just overwrite first path
-    sys.path[0] = pyformex_path
-
-TEST=0
-if len(sys.argv) > 1:
-    if sys.argv[1] == "--testpyf":
-        from pyformex.main import run
-        TEST=1
-    elif sys.argv[1] == "--testnopyf":
-        from .main import run
-        TEST=2
-if TEST:
-    for m in sys.modules:
-        try:
-            print("MODULE %s: %s" % (m,sys.modules[m].__path__))
-        except:
-            print("MODULE %s: " % (m))
-    sys.exit()
+## if pyformex_path == _bindir:
+##     # pyformex path is second, its parent is first: exchange the two
+##     sys.path[:2] = sys.path[1::-1]
+## else:
+##     # pointless _bindir parent is first: it can be removed
+##     # pyformex path is not there: add it at the front
+##     # so, just overwrite first path
+##     sys.path[0] = pyformex_path
 
 if __name__ == "__main__":
-    from main import run
-    sys.exit(run(sys.argv[1:]))
+    from pyformex import main
+    #print(dir(main),main.__file__)
+    sys.exit(main.run(sys.argv[1:]))
 
 # End

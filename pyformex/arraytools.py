@@ -454,6 +454,17 @@ def rotationMatrix(angle,axis=None,angle_spec=DEG):
 
     but the latter functions calls are more efficient.
     The result is returned as an array.
+
+    Examples:
+
+    >>> rotationMatrix(30.,1)
+    array([[ 0.87,  0.  , -0.5 ],
+           [ 0.  ,  1.  ,  0.  ],
+           [ 0.5 ,  0.  ,  0.87]])
+    >>> rotationMatrix(45.,[1.,1.,0.])
+    array([[ 0.85,  0.15, -0.5 ],
+           [ 0.15,  0.85,  0.5 ],
+           [ 0.5 , -0.5 ,  0.71]])
     """
     a = angle*angle_spec
     c = cos(a)
@@ -718,6 +729,9 @@ def addAxis(a,axis=0):
 
     The new axis is inserted before the specified one. Default is to
     add it at the front.
+
+    Note that if the axis number is a constant, this effect can also be
+    achieved with numpy's newaxis feature.
     """
     s = list(a.shape)
     s[axis:axis] = [1]

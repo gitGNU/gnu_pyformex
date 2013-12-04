@@ -34,8 +34,11 @@ from __future__ import print_function
 
 import pyformex as pf
 import sys, os
+startup_warnings = ''
+startup_messages = ''
 
-pyformexdir = sys.path[0]
+pyformexdir = os.path.join(sys.path[0],'pyformex')
+#print("PYFORMEXDIR = %s" %  sys.path[0])
 
 if os.path.exists(os.path.join(os.path.dirname(pyformexdir), '.git')):
     pf.installtype = 'G'
@@ -72,7 +75,7 @@ if pf.installtype in 'SG':
 I had a problem rebuilding the libraries in %s/lib.
 You should probably exit pyFormex, fix the problem first and then restart pyFormex.
 """ % pyformexdir
-    pf.startup_warnings += msg
+    startup_warnings += msg
 
 from pyformex import utils
 
@@ -104,15 +107,15 @@ found_version = utils.hasModule('python')
 
 if utils.SaneVersion(found_version) < utils.SaneVersion(minimal_version):
 #if utils.checkVersion('python',minimal_version) < 0:
-    pf.startup_warnings += """
+    startup_warnings += """
 Your Python version is %s, but pyFormex requires Python >= %s. We advice you to upgrade your Python version. Getting pyFormex to run on Python 2.4 requires only minor adjustements. Lower versions are problematic.
 """ % (found_version, minimal_version)
-    print(pf.startup_warnings)
+    print(startup_warnings)
     sys.exit()
 
 if utils.SaneVersion(found_version[:3]) > utils.SaneVersion(target_version):
 #if utils.checkVersion('python',target_version) > 0:
-    pf.startup_warnings += """
+    startup_warnings += """
 Your Python version is %s, but pyFormex has only been tested with Python <= %s. We expect pyFormex to run correctly with your Python version, but if you encounter problems, please contact the developers at http://pyformex.org.
 """ % (found_version, target_version,)
 
@@ -300,14 +303,21 @@ def apply_config_changes(cfg):
 
 
 def test_module(module):
-    """Run the doctests in the module's docstrings."""
+    """Run the doctests in the module's docstrings.
+
+    module is a pyFormex module dotted path. The leading pyformex.
+    may be omitted. numpy's floating point print precision is set to
+    two decimals, to allow consisten tests independent of machine precision.
+    """
     import doctest
     # Note that a non-empty fromlist is needed to make the
     # __import__ function always return the imported module
     # even if a dotted path is specified
     import numpy as np
     np.set_printoptions(precision=2)
-    mod = __import__(module, fromlist=['a'])
+    if not module.startswith('pyformex.'):
+        module = 'pyformex.' + module
+    mod = __import__(module, fromlist=[None])
     return doctest.testmod(mod)
 
 
@@ -416,10 +426,10 @@ def run(argv=[]):
        action="store_true", dest="testcamera", default=False,
        help="Print camera settings whenever they change.",
        ),
-    MO("--testexecutor",
-       action="store_true", dest="executor", default=False,
-       help="Test alternate executor: only for developers!",
-       ),
+    ## MO("--testexecutor",
+    ##    action="store_true", dest="executor", default=False,
+    ##    help="Test alternate executor: only for developers!",
+    ##    ),
     MO("--memtrack",
        action="store_true", dest="memtrack", default=False,
        help="Track memory for leaks. This is only for developers.",
@@ -742,15 +752,13 @@ pyFormex Warning
             return res # EXIT
 
     # Display the startup warnings and messages
-    if pf.startup_warnings:
+    if startup_warnings:
         if pf.cfg['startup_warnings']:
-            pf.warning(pf.startup_warnings)
+            pf.warning(startup_warnings)
         else:
-            print(pf.startup_warnings)
-    if pf.startup_messages:
-        print(pf.startup_messages)
-
-    #pf.startup_warnings = pf.startup_messages = ''
+            print(startup_warnings)
+    if startup_messages:
+        print(startup_messages)
 
     if pf.options.debuglevel & pf.DEBUG.INFO:
         # NOTE: inside an if to avoid computing the report when not printed
