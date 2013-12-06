@@ -1079,7 +1079,10 @@ def pidofxwin(windowid):
     a normal desktop configuration.
     """
     import re
-    P = utils.system('xprop -id %s _NET_WM_PID' % windowid)
+    #
+    # We need a new shell here, otherwise we get a 127 exit.
+    #
+    P = utils.system("xprop -id '%s' _NET_WM_PID" % windowid,shell=True)
     m = re.match("_NET_WM_PID\(.*\)\s*=\s*(?P<pid>\d+)", P.out)
     if m:
         pid = m.group('pid')
