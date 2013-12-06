@@ -595,7 +595,6 @@ class Canvas(object):
     def sceneBbox(self):
         """Return the bbox of all actors in the scene"""
         from pyformex.coords import bbox
-        return self.scene.bbox
         return bbox(self.scene.actors)
 
 
@@ -1132,6 +1131,7 @@ class Canvas(object):
         pass
 
     redrawAll = dummy
+
 
     def setBbox(self, bbox):
         self.scene.bbox = bbox

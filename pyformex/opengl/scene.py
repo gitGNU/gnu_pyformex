@@ -118,10 +118,7 @@ class Scene(object):
         recomputing the bbox from all Actors.
         """
         if self._bbox is None:
-            #print(self.actors)
-            #print([type(a) for a in self.actors])
-            #print([a.bbox() for a in self.actors])
-            self._bbox = sane_bbox(coords.bbox(self.actors))
+            self.set_bbox(self.actors)
         return self._bbox
 
 
@@ -136,9 +133,22 @@ class Scene(object):
         A special value None may be given to force
         recomputing the bbox from all Actors.
         """
-        if bb is not None:
-            bb = sane_bbox(bb)
-        self._bbox = bb
+        if bb is None:
+            bb = self.actors
+        self.set_bbox(bb)
+
+
+    def set_bbox(self, bb):
+        """Set the bounding box of the scene.
+
+        This can be used to set the scene bounding box to another value
+        than the one autocomputed from all actors.
+
+        bb is a (2,3) shaped array specifying a bounding box.
+        A special value None may be given to force
+        recomputing the bbox from all Actors.
+        """
+        self._bbox = sane_bbox(coords.bbox(bb))
 
 
     def back_decors(self):
@@ -155,18 +165,23 @@ class Scene(object):
         return [ a for a in self.actors if a.ontop ]
 
 
-    def add(self,obj,**kargs):
-        actor = GeomActor(obj,**kargs)
-        self.actors.add(actor)
+    ## def add(self,obj,**kargs):
+    ##     actor = GeomActor(obj,**kargs)
+    ##     self.actors.add(actor)
 
 
     def addActor(self, actor):
         self.actors.add(actor)
         actor.prepare(self.canvas)
         actor.changeMode(self.canvas)
-        self.bbox = None
+        self._bbox = None #coords.bbox([actor,self.bbox])
         self.canvas.camera.focus = self.bbox.center()
-        #print("NEW BBOX: %s" % self.bbox)
+
+
+    def removeActor(self, actor):
+        self.actors.delete(actor)
+        self._bbox = None
+        self.canvas.camera.focus = self.bbox.center()
 
 
     ## def prepare(self,canvas):
@@ -219,7 +234,7 @@ class Scene(object):
         If None is specified, all items from all lists will be removed.
         """
         if isinstance(actor, list):
-            [ self.addActor(a) for a in actor ]
+            [ self.removeActor(a) for a in actor ]
         elif isinstance(actor, drawable.GeomActor):
             self.actors.delete(actor)
         elif isinstance(actor, actors.Actor):

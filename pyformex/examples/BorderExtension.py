@@ -58,9 +58,9 @@ def run():
         CB = B.center()
         p = sign(projection((CB-CS), d))
         # Flatten the border curve and translate it outwards
-        B1 = B.projectOnPlane(d, CB).trl(d, s*4*p)
+        B1 = B.projectOnPlane(d, CB).trl(d, s*8*p)
         draw(B1, color=green)
-        # create a surface between border curve and translted flat curve
+        # create a surface between border curve and translated flat curve
         M = B.connect(B1)
         draw(M, color=blue, bkcolor=yellow)
         BL.append(M)
