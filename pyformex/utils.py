@@ -587,6 +587,18 @@ file_description = {
 }
 
 
+def fileExtensionsFromFilter(ftype):
+    """Return the list of file extensions from a given filter.
+
+    ftype is one of the valuess in :attr:`utils.file_description`.
+
+    Returns a list of strings starting with a '.'.
+    """
+    import re
+    ext = re.compile('[()]').split(ftype)[1]
+    return [ e.lstrip('*') for e in ext.split(' ') ]
+
+
 def fileExtensions(ftype):
     """Return the list of file extensions from a given type.
 
@@ -594,10 +606,7 @@ def fileExtensions(ftype):
 
     Returns a list of strings starting with a '.'.
     """
-    import re
-    ext = file_description.get(ftype, [])
-    ext = re.compile('[()]').split(ext)[1]
-    return [ e.lstrip('*.') for e in ext.split(' ') ]
+    return fileExtensionsFromFilter(file_description.get(ftype))
 
 
 def fileDescription(ftype):

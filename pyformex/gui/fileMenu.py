@@ -80,7 +80,7 @@ def openProject(fn=None,exist=False,access=['wr', 'rw', 'w', 'r'],default=None):
     signature = pf.fullVersion()
 
     # OK, we have all data, now create/open the project
-    pf.message("Opening project %s" % fn)
+    print("Opening project %s" % fn)
     pf.GUI.setBusy() # loading  may take a while
     try:
         proj = project.Project(fn, access=access, convert=convert, signature=signature, compression=compression)
@@ -144,11 +144,11 @@ def setProject(proj):
     should be added to the project. Set True or False to force or reject
     the adding without asking.
     """
-    pf.message("Setting current project to %s" % proj.filename)
-    pf.message("Project contents: %s" % proj.contents())
+    print("Setting current project to %s" % proj.filename)
+    print("Project contents: %s" % proj.contents())
     keep = {}
     if pf.PF:
-        pf.message("Current pyFormex globals: %s" % pf.PF.contents())
+        print("Current pyFormex globals: %s" % pf.PF.contents())
         _delete = "Delete"
         _add = "Keep non existing"
         _overwrite = "Keep all (overwrite project)"
@@ -242,7 +242,7 @@ def importProject():
                 proj = utils.selectDict(proj, res['selected'])
             elif mode == 'N':
                 return
-            pf.message("Importing symbols: %s" % proj.contents())
+            print("Importing symbols: %s" % proj.contents())
             pf.PF.update(proj)
             listProject()
 
@@ -274,7 +274,7 @@ def saveProject():
     This function does nothing if the current project is a temporary one.
     """
     if pf.PF.filename is not None:
-        pf.message("Saving Project contents: %s" % pf.PF.contents())
+        print("Saving Project contents: %s" % pf.PF.contents())
         pf.GUI.setBusy()
         pf.PF.save()
         pf.GUI.setBusy(False)
@@ -297,7 +297,7 @@ def saveAsProject():
 
 def listProject():
     """Print all global variable names."""
-    pf.message("pyFormex globals: %s" % pf.PF.contents())
+    print("pyFormex globals: %s" % pf.PF.contents())
 
 def clearProject():
     """Clear the contents of the current project."""
@@ -317,7 +317,7 @@ def closeProject(save=None,clear=None):
     if pf.PF.filename is not None:
         if save is None:
             save = draw.ack("Save the current project before closing it?")
-        pf.message("Closing project %s (save=%s)" % (pf.PF.filename, save))
+        print("Closing project %s (save=%s)" % (pf.PF.filename, save))
         if save:
             saveProject()
             if pf.PF:
@@ -542,7 +542,7 @@ def exportPGF():
     fn = draw.askNewFilename(pf.cfg['workdir'], types)
     if fn:
         pf.GUI.setBusy()
-        pf.message("Exporting current scene to %s" % fn)
+        print("Exporting current scene to %s" % fn)
         fn = os.path.basename(fn)
         if not fn.endswith('.pgf'):
             fn += '.pgf'
@@ -550,7 +550,7 @@ def exportPGF():
         W = WebGL(name)
         W.addScene()
         res = W.exportPGF(fn, sep='')
-        pf.message("Contents: %s" % res)
+        print("Contents: %s" % res)
         pf.GUI.setBusy(False)
 
 

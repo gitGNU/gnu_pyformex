@@ -363,6 +363,11 @@ def askFilename(cur=None,filter="All files (*.*)",exist=True,multi=False,change=
     if fn:
         w.selectFile(fn)
     fn = w.getFilename(timeout)
+    fs = w.selectedNameFilter()
+    okext = utils.fileExtensionsFromFilter(fs)
+    basename, ext = os.path.splitext(fn)
+    if not ext in okext:
+        fn += okext[0]
     if fn and change:
         if multi:
             cur = fn[0]
@@ -1999,7 +2004,7 @@ def exportWebGL(fn,title=None,description=None,keywords=None,author=None,created
     Returns the absolute pathname of the generated .html file.
     """
     from pyformex.plugins.webgl import WebGL
-    pf.message("Exporting current scene to %s.html" % fn)
+    pf.message("Exporting current scene to %s" % fn)
     pf.GUI.setBusy()
     if os.path.isabs(fn):
         chdir(os.path.dirname(fn))
