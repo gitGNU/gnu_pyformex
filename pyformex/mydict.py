@@ -37,30 +37,6 @@ from __future__ import print_function
 import copy
 
 
-def formatDict(d):
-    """Format a dict in Python source representation.
-
-    Each (key,value) pair is formatted on a line of the form::
-
-       key = value
-
-    If all the keys are strings containing only characters that are
-    allowed in Python variable names, the resulting text is a legal
-    Python script to define the items in the dict. It can be stored
-    on a file and executed.
-
-    This format is the storage format of the Config class.
-    """
-    s = ""
-    if isinstance(d, dict):
-        for k, v in d.items():
-            if isinstance(v, str):
-                s += '%s = "%s"\n' % (k, v)
-            else:
-                s += '%s = %s\n' % (k, v)
-    return s
-
-
 def cascade(d, key):
     """Cascading lookup in a dictionary.
 
