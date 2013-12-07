@@ -1177,18 +1177,28 @@ class Canvas(object):
         self.decorations.delete(itemlist)
 
 
-    def removeAny(self,itemlist=None):
+    def removeAny(self,itemlist):
         """Remove a list of any actor/highlights/annotation/decoration items.
 
         This will remove the items from any of the canvas lists in which the
         item appears.
         itemlist can also be a single item instead of a list.
-        If None is specified, all items from all lists will be removed.
         """
         self.removeActor(itemlist)
         self.removeHighlight(itemlist)
         self.removeAnnotation(itemlist)
         self.removeDecoration(itemlist)
+
+
+    def removeAll(self):
+        """Remove all actor/highlights/annotation/decoration items.
+
+        This will remove all the items from any of the canvas lists.
+        """
+        self.actors.clear()
+        self.highlights.clear()
+        self.decorations.clear()
+        self.annotations.clear()
 
 
     def redrawAll(self):

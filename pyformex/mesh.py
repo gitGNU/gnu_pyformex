@@ -1516,8 +1516,10 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         #
         # totype is a string !
         #
+        print("Convert Mesh from %s to %s" % (self.elName(),totype))
 
-        if elementType(totype) == self.elType():
+
+        if totype == self.elName():
             return self
 
         strategy = self.elType().conversions.get(totype, None)

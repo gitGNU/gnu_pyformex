@@ -1469,7 +1469,7 @@ def clear_canvas():
 
     This is a low level function not intended for the user.
     """
-    pf.canvas.removeAny()
+    pf.canvas.removeAll()
     pf.canvas.clear()
 
 
@@ -2010,6 +2010,7 @@ def exportWebGL(fn,title=None,description=None,keywords=None,author=None,created
         chdir(os.path.dirname(fn))
     fn = os.path.basename(fn)
     name = utils.projectName(fn)
+    print("PROJECT %s" % name)
     if title is None:
         title="%s WebGL model"%name
     W = WebGL(name)

@@ -39,7 +39,7 @@ from pyformex.formex import Formex
 from pyformex.gui.drawable import saneColor, glColor
 from pyformex.opengl.camera import Camera
 from pyformex.opengl.renderer import Renderer
-from pyformex.opengl.scene import Scene, ActorList
+from pyformex.opengl.scene import Scene, ItemList
 
 from numpy import *
 from OpenGL import GL, GLU
@@ -568,7 +568,7 @@ class Canvas(object):
         """Initialize an empty canvas with default settings."""
         loadLibGL()
         self.scene = Scene(self)
-        self.highlights = ActorList(self)
+        self.highlights = ItemList(self)
         self.camera = None
         self.triade = None
         self.background = None
@@ -1124,7 +1124,21 @@ class Canvas(object):
     def removeAny(self, itemlist):
         self.scene.removeAny(itemlist)
 
-    removeActor = removeAnnotation = removeDecoration = removeAny
+
+    def removeActor(self,itemlist=None):
+        self.scene.actors.delete(itemlist)
+        self.scene.oldactors.delete(itemlist)
+
+    def removeAnnotation(self,itemlist=None):
+        self.scene.annotations.delete(itemlist)
+
+    def removeDecoration(self,itemlist=None):
+        self.scene.decorations.delete(itemlist)
+
+
+    def removeAll(self):
+        self.scene.clear()
+        self.highlights.clear()
 
 
     def dummy(self):

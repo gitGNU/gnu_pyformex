@@ -36,7 +36,7 @@ from pyformex.gui import marks
 from pyformex.opengl import drawable
 
 
-class ActorList(list):
+class ItemList(list):
     """A list of drawn objects of the same kind.
 
     This is used to collect the Actors, Decorations and Annotations
@@ -49,35 +49,43 @@ class ActorList(list):
         self.canvas = canvas
         list.__init__(self)
 
-    def add(self, actor):
-        """Add an actor or a list thereof to a ActorList."""
-        if isinstance(actor, list):
-            self.extend(actor)
+    def add(self, item):
+        """Add an item or a list thereof to a ItemList."""
+        if isinstance(item, list):
+            self.extend(item)
         else:
-            self.append(actor)
+            self.append(item)
 
-    def delete(self, actor):
-        """Remove an actor or a list thereof from an ActorList."""
-        if not type(actor) in (list, tuple):
-            actor = [ actor ]
-        for a in actor:
-            if a in self:
-                self.remove(a)
-                #a.__del__()
+    def delete(self, item):
+        """Remove an item or a list thereof from an ItemList.
+
+        A special value item==None will remove all items from the list.
+        """
+        if item is None:
+            self.clear()
+        else:
+            if not type(item) in (list, tuple):
+                item = [ item ]
+            for a in item:
+                if a in self:
+                    self.remove(a)
 
     def clear(self):
-        """Clear the list"""
+        """Clear the list
+
+        Removes all items from the ItemList.
+        """
         del self[:]
 
 
     ## def redraw(self):
-    ##     """Redraw all actors in the list.
+    ##     """Redraw all items in the list.
 
-    ##     This redraws the specified actors (recreating their display list).
-    ##     This could e.g. be used after changing an actor's properties.
+    ##     This redraws the specified items (recreating their display list).
+    ##     This could e.g. be used after changing an item's properties.
     ##     """
-    ##     for actor in self:
-    ##         actor.redraw()
+    ##     for item in self:
+    ##         item.redraw()
 
 
 
@@ -98,10 +106,10 @@ class Scene(object):
     def __init__(self,canvas=None):
         """Initialize an empty scene with default settings."""
         self.canvas = canvas
-        self.actors = ActorList(self)
-        self.oldactors = ActorList(self)
-        self.annotations = ActorList(self)
-        self.decorations = ActorList(self)
+        self.actors = ItemList(self)
+        self.oldactors = ItemList(self)
+        self.annotations = ItemList(self)
+        self.decorations = ItemList(self)
         self.background = None
         self._bbox = None
 
@@ -171,6 +179,7 @@ class Scene(object):
 
 
     def addActor(self, actor):
+        """Add an actor or a list of actors to the scene"""
         self.actors.add(actor)
         actor.prepare(self.canvas)
         actor.changeMode(self.canvas)
@@ -179,6 +188,7 @@ class Scene(object):
 
 
     def removeActor(self, actor):
+        """Remove an actor or a list of actors from the scene"""
         self.actors.delete(actor)
         self._bbox = None
         self.canvas.camera.focus = self.bbox.center()
@@ -236,7 +246,7 @@ class Scene(object):
         if isinstance(actor, list):
             [ self.removeActor(a) for a in actor ]
         elif isinstance(actor, drawable.GeomActor):
-            self.actors.delete(actor)
+            self.removeActor(actor)
         elif isinstance(actor, actors.Actor):
             self.oldactors.delete(actor)
         elif isinstance(actor, marks.Mark):

@@ -134,7 +134,7 @@ class WebGL(List):
             self.scripts = [ pf.cfg['webgl/script'], pf.cfg['webgl/guiscript'] ]
         if pf.options.opengl2:
             # Force the FEops xtk script
-            self.scripts[0] = 'file://' + os.path.join(pf.cfg['pyformexdir'], 'opengl', 'xtk.js')
+            self.scripts[0] = 'file://' + os.path.join(pf.cfg['pyformexdir'], 'opengl', 'feops_xtk.js')
         print("WebGL scripts: %s" % self.scripts)
         self.gui = []
         self.name = str(name)
