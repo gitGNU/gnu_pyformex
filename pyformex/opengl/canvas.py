@@ -359,7 +359,7 @@ class CanvasSettings(Dict):
             'smooth': False,
             'fill': False,
             'lighting': False,
-#            'alphablend': False,
+            'alphablend': False,
             'transparency': 1.0,
             'wiremode': -1,
             'avgnormals': False,
@@ -368,7 +368,7 @@ class CanvasSettings(Dict):
             'smooth': True,
             'fill': True,
             'lighting': True,
-#            'alphablend': False,
+            'alphablend': False,
             'transparency': 0.5,
             'wiremode': -1,
             'avgnormals': False,
@@ -386,7 +386,7 @@ class CanvasSettings(Dict):
             'smooth': True,
             'fill': True,
             'lighting': True,
-#            'alphablend': False,
+            'alphablend': False,
             'transparency': 0.5,
             'wiremode': 1,
             'avgnormals': False,
@@ -404,7 +404,7 @@ class CanvasSettings(Dict):
             'smooth': False,
             'fill': True,
             'lighting': False,
-#            'alphablend': False,
+            'alphablend': False,
             'transparency': 0.5,
             'wiremode': 1,
             'avgnormals': False,
@@ -737,6 +737,8 @@ class Canvas(object):
         except:
             pass
 
+        print("SETTINGS",self.settings)
+
 
     def setLighting(self, onoff):
         self.setToggle('lighting', onoff)
@@ -756,6 +758,7 @@ class Canvas(object):
         """Toggle alphablend on/off."""
         #print("CANVAS.do_alphablend: %s -> %s"%(state,oldstate))
         if state != oldstate:
+            self.renderer.changeMode(self)
             self.scene.changeMode(self)
             self.display()
 

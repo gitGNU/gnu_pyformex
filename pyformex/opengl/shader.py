@@ -72,6 +72,7 @@ class Shader(object):
     uniforms_int = [
         'highlight',
         'useObjectColor',
+        'alphablend',
         'lighting',
         'nlights',
         ]

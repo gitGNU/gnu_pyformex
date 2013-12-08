@@ -83,6 +83,7 @@ class Renderer(object):
             'diffuse': mat.diffuse,
             'specular': mat.specular,
             'shininess': mat.shininess,
+            'alphablend': self.canvas.settings.alphablend,
             'alpha': self.canvas.settings.transparency,
             })
         #print("LIGHT PROFILE to shader: %s" % settings)

@@ -1,4 +1,4 @@
-/* $Id$ */
+// $Id$
 //
 //  This file is part of pyFormex
 //  pyFormex is a tool for generating, manipulating and transforming 3D
@@ -22,11 +22,11 @@
 //  along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-/* Vertex shader
+// Vertex shader
 
-If you add a uniform value to the shader, you should also add it
-in shader.py, in order to allow setting the uniform value.
- */
+// If you add a uniform value to the shader, you should also add it
+// in shader.py, in order to allow setting the uniform value.
+
 
 #define MAX_LIGHTS 4
 
@@ -61,8 +61,9 @@ uniform vec3 objectColor;
 
 uniform float pointsize;
 
-uniform bool builtin;
 uniform bool picking;
+
+uniform bool alphablend;   // Switch transparency on/off
 
 uniform bool lighting;     // Are the lights on?
 uniform int nlights;       // Number of lights?  <= MAX_LIGHTS
@@ -103,22 +104,24 @@ void main()
       fragmentColor = objectColor;
     } else {
       // Vertex color
-      if (builtin) {
+#ifdef BUILTIN
 	fragmentColor = gl_Color;
-      } else {
+#else
 	fragmentColor = vertexColor;
-      }
+#endif
     }
 
     // Add in lighting
     if (highlight) {
+      fragColor = vec4(fragmentColor,1.);
     } else {
       if (lighting) {
-	if (builtin) {
-	  fvertexNormal = gl_Normal;
-	} else {
-	  fvertexNormal = vertexNormal;
-	}
+#ifdef BUILTIN
+	fvertexNormal = gl_Normal;
+#else
+	fvertexNormal = vertexNormal;
+#endif
+
 	fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * fvertexNormal;
 	vec3 nNormal = normalize(fTransformedVertexNormal);
 	vec3 fcolor = fragmentColor;
@@ -128,24 +131,32 @@ void main()
 
 	// add diffuse and specular for each light
 	//fragmentColor = vec3(0.3,0.,0.);
-	for (int i=0; i<nlights; ++i) {
-	  vec3 nlight = normalize(lightdir[i]);
-	  //vec3 eyeDirection = normalize(-vertexPosition);
-	  vec3 eyeDirection = normalize(vec3(0.,0.,1.));
-	  vec3 reflectionDirection = reflect(-nlight, nNormal);
-	  float nspecular = specular*pow(max(dot(reflectionDirection,eyeDirection), 0.0), shininess);
-	  float ndiffuse = diffuse * max(dot(nNormal,nlight),0.0);
-	  vec3 diffcol = vec3(1.,1.,0.);
-	  //fragmentColor += fcolor * (diffcolor[i] * ndiffuse + speccolor[i] * nspecular);
-	  //fragmentColor += (fcolor + diffcolor[i]) * ndiffuse / 2;
-	  //fragmentColor += (fcolor + speccolor[i]) * nspecular / 2;
-	  fragmentColor += (fcolor + diffcolor[i])/2 * ndiffuse;
-	  fragmentColor += (fcolor + speccolor[i])/2 * nspecular;
+	for (int i=0; i<MAX_LIGHTS; ++i) {
+	  if (i < nlights) {
+	    vec3 nlight = normalize(lightdir[i]);
+	    //vec3 eyeDirection = normalize(-vertexPosition);
+	    vec3 eyeDirection = normalize(vec3(0.,0.,1.));
+	    vec3 reflectionDirection = reflect(-nlight, nNormal);
+	    float nspecular = specular*pow(max(dot(reflectionDirection,eyeDirection), 0.0), shininess);
+	    float ndiffuse = diffuse * max(dot(nNormal,nlight),0.0);
+	    vec3 diffcol = vec3(1.,1.,0.);
+	    //fragmentColor += fcolor * (diffcolor[i] * ndiffuse + speccolor[i] * nspecular);
+	    //fragmentColor += (fcolor + diffcolor[i]) * ndiffuse / 2;
+	    //fragmentColor += (fcolor + speccolor[i]) * nspecular / 2;
+	    // Beware! Use /2. instrad of /2  (needed for WebGL!)
+	    fragmentColor += (fcolor + diffcolor[i])/2. * ndiffuse;
+	    fragmentColor += (fcolor + speccolor[i])/2. * nspecular;
+	  }
 	}
+      } //lighting
+
+      // Add in opacity
+      if (alphablend) {
+      	fragColor = vec4(fragmentColor,alpha);
+      }	else {
+      	fragColor = vec4(fragmentColor,1.);
       }
     }
-    // Add in opacity
-    fragColor = vec4(fragmentColor,alpha);
 
     // setup vertex Point Size
     gl_PointSize = pointsize;
@@ -153,11 +164,11 @@ void main()
   }
 
   // Transforming the vertex coordinates
-  if (builtin) {
-    fvertexPosition = gl_Vertex;
-  } else {
-    fvertexPosition = vec4(vertexPosition,1.0);
-  }
+#ifdef BUILTIN
+  fvertexPosition = gl_Vertex;
+#else
+  fvertexPosition = vec4(vertexPosition,1.0);
+#endif
 
   if (picking) {
     gl_Position = pickmat * projection * modelview * fvertexPosition;
@@ -165,3 +176,5 @@ void main()
     gl_Position = projection * modelview * fvertexPosition;
   }
 }
+
+// End

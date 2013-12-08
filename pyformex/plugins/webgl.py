@@ -502,7 +502,8 @@ r.render();
         s += "<title>%s</title>\n" % title
 
         if self.gui:
-            self.scripts.append(pf.cfg['webgl/guiscript'])
+            if pf.cfg['webgl/guiscript'] not in self.scripts:
+                self.scripts.append(pf.cfg['webgl/guiscript'])
         self.scripts.append(jsname)
 
         for scr in self.scripts:
