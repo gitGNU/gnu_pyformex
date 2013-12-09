@@ -182,36 +182,83 @@ def elementToNodal(self, val):
 # should be merged with smooth method
 # needs an example
 
-@utils.deprecation("depr_avgNodalScalarOnAdjacentNodes")
-def avgNodalScalarOnAdjacentNodes(self, val, iter=1, ival=None,includeself=False):
-    """_Smooth nodal scalar values by averaging over adjacent nodes iter times.
+# GDS: name is simpler, but is it appropriate?
+# docstring has been improved
+# example has been added
 
-    Nodal scalar values (val is a 1D array of self.ncoords() scalar values )
-    are averaged over adjacent nodes an number of time (iter)
-    in order to provide a smoothed mapping.
+def nodalAveraging(self, val, iter=1, mask=None,includeself=False):
+    """Replace a nodal value with the mean value of the adjacent nodes.
 
     Parameters:
 
-        -'ival' : boolean of shape (self.coords(), 1 ) to select the nodes on which to average.
-        The default value ivar=None selects all the nodes
+    `val` : 1D float array of self.ncoords()
+    `includeself` : bool, if True, the node will take part to the averaging process.
+    `iter` : int, how many times the averaging procedure should be iterated.
+    `mask` : either None or a boolean array or index flagging the nodes of which
+      the value has to be changed. If None, all nodal values are replaced.
+    
+    This function could be used to apply blurring on a image, 
+    or smooth sharp variations on a countour plot.
 
-        -'includeself' : include also the scalar value on the node to be average
+    Example:
+    
+      3(5.0)---6(4.0)---2(3.3)
+      |        |        |
+      |        |        |
+      7(6.5)---8(3.2)---5(8.0)
+      |        |        |
+      |        |        |
+      0(1.0)---4(1.2)---1(2.2)    
+    
+    node 8 is adjacent via edge to nodes 4,5,6,7.
+    One avg iteration with includeself=False will give val[8] = (1.2+8.0+4.0+6.5)/4. = 4.925
+    One avg iteration with includeself=True will give val[8] = (1.2+8.0+4.0+6.5+3.2)/5. = 4.580
 
+    import elements
+
+    q=Mesh(elements.Quad4())
+    q=q.convert('quad4-4')
+    VAL = array([1., 2.2, 3.3, 5., 1.2, 8., 4., 6.5, 3.2,])
+    txt=['%.3f'%n for n in VAL]
+    drawMarks(q.coords.trl([0., 0.05, 0.]), txt)
+    draw(q, color='white')
+    drawNumbers(q.coords, color='blue')
+    
+    q2 = q.trl([1.5, 0., 0.])
+    draw(q2, color='red')
+    from plugins import mesh_ext
+    val2=nodalAveraging(q2, VAL, iter=1, mask=None,includeself=False)
+    txt2=['%.3f'%n for n in val2]
+    drawMarks(q2.coords, txt2)
+    draw(q2, color='red')
+    
+    q3 = q.trl([3.0, 0., 0.])
+    draw(q3, color='green')
+    from plugins import mesh_ext
+    val3=nodalAveraging(q3, VAL, iter=1, mask=None,includeself=True)
+    txt3=['%.3f'%n for n in val3]
+    drawMarks(q3.coords, txt3)
+    draw(q3, color='red')
+    
+    setTriade()
+    zoomAll()
     """
 
-    if iter==0: return val
+    avgval = checkArray1D(val,kind='f',size=self.ncoords())   
+    if iter==0: 
+        return avgval
     nadj = self.getEdges().adjacency(kind='n')
     if includeself:
-        nadj = concatenate([nadj, arange(alen(nadj)).reshape(-1, 1)], axis=1)
-
-    inadj = nadj>=0
-    lnadj = inadj.sum(axis=1)
-    avgval = val
-
-    for j in range(iter):
-        avgval = sum(avgval[nadj]*inadj, axis=1)/lnadj # multiplying by inadj set to zero the values where nadj==-1
-        if ival!=None:
-            avgval[where(ival!=True)] = val[where(ival!=True)]
+        nadj = concatenate([nadj,arange(alen(nadj)).reshape(-1,1)],axis=1)
+    inadj = nadj>=0#False if == -1    
+    lnadj = inadj.sum(axis=1)#nr of adjacent nodes
+    lnadj = lnadj.astype(Float)#NEEDED!!!, otherwise it becomes float64 and fails if mask is not None !
+    if mask is None:
+        for j in range(iter):
+            avgval = sum(avgval[nadj]*inadj, axis=1)/lnadj # multiplying by inadj set to zero the values where nadj==-1
+    else:
+        for j in range(iter):
+            avgval[mask] = (sum(avgval[nadj]*inadj, axis=1)/lnadj)[mask]   
     return avgval
 
 
@@ -242,7 +289,7 @@ def avgNodalScalarOnAdjacentNodes(self, val, iter=1, ival=None,includeself=False
 Mesh.connectionSteps = connectionSteps
 Mesh.scaledJacobian = scaledJacobian
 Mesh.elementToNodal = elementToNodal
-Mesh.avgNodalScalarOnAdjacentNodes = avgNodalScalarOnAdjacentNodes
+Mesh.nodalAveragings = nodalAveraging
 
 
 
