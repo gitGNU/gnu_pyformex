@@ -421,6 +421,10 @@ var %s = gui.addFolder('Camera');
 var %s_reset = %s.add(r.camera,'reset');
 """.replace('%s', guiname)
 
+        s += """
+var gui_global = gui.addFolder('Global');
+var gui_global_alphablend = gui_global.add(r,'toggleAlphablend');
+"""
 
         s += "}\n"
         return s
@@ -468,6 +472,9 @@ r.config.ORDERING_COMPARATOR = 'ID';
 r.init();
 
 """ % pf.fullVersion()
+        js_alphablend = str(pf.canvas.settings.alphablend).lower()
+        s += "r.setAlphablend(%s);\n" % js_alphablend
+
         s += '\n'.join([self.format_actor(a) for a in self ])
         if self.gui:
             s += self.format_gui()
@@ -479,6 +486,7 @@ r.init();
                 s +=  "r.camera.focus = %s;\n" % list(self._camera.focus)
             if 'up' in self._camera:
                 s +=  "r.camera.up = %s;\n" % list(self._camera.up)
+
         s += """
 r.render();
 };
