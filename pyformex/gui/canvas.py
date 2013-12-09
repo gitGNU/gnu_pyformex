@@ -191,26 +191,40 @@ class ActorList(list):
     Currently the implementation does not check that the objects are of
     the proper type.
     """
-
+ 
     def __init__(self, canvas):
         self.canvas = canvas
         list.__init__(self)
 
-    def add(self, actor):
-        """Add an actor or a list thereof to a ActorList."""
-        if isinstance(actor, list):
-            self.extend(actor)
+    def add(self, item):
+        """Add an item or a list thereof to a ItemList."""
+        if isinstance(item, list):
+            self.extend(item)
         else:
-            self.append(actor)
+            self.append(item)
 
-    def delete(self, actor):
-        """Remove an actor or a list thereof from an ActorList."""
-        if not type(actor) in (list, tuple):
-            actor = [ actor ]
-        for a in actor:
-            if a in self:
-                self.remove(a)
+    def delete(self, item):
+        """Remove an item or a list thereof from an ItemList.
 
+        A special value item==None will remove all items from the list.
+        """
+        if item is None:
+            self.clear()
+        else:
+            if not type(item) in (list, tuple):
+                item = [ item ]
+            for a in item:
+                if a in self:
+                    self.remove(a)
+
+    def clear(self):
+        """Clear the list
+
+        Removes all items from the ItemList.
+        """
+        del self[:]
+
+        
     def redraw(self):
         """Redraw all actors in the list.
 
@@ -219,7 +233,6 @@ class ActorList(list):
         """
         for actor in self:
             actor.redraw()
-
 
 
 ############### OpenGL Lighting #################################
