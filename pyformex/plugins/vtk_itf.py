@@ -674,11 +674,40 @@ def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True, verbose=Fal
     return TriSurface(coords, polys)
 
 
+def findCell(surf, pts, tol=1.e-3, verbose=False):
+    """Find indices of triangles containing points.
+
+    Parameters:
+
+    - `surf`: TriSurface
+    - `pts`: a Coords (npts,3) specifying npts points
+    - `tol`: a tolerance applied to unshrink triangles
+    
+    Returns an integer array with the indices of the cells containing the points, returns -1 if no cell is found. 
+    FindCell has no tolerance. However, tol has been used to enlarge (unshrink) all triangles.    
+    Docs on http://www.vtk.org/doc/nightly/html/classvtkAbstractCellLocator.html#a0c980b5fcf6adcfbf06932185e89defb
+    This has been tested for TriSurface. Can it work with any (surface/volume) mesh??
+    """
+    from vtk import vtkCellLocator
+    
+    surf = surf.toFormex().shrink(1.+tol)[:]#to add some tolerance (edges)
+    surf = TriSurface(surf)
+    vpd = convert2VPD(surf,clean=False)    
+    cellLocator=vtkCellLocator()
+    cellLocator.SetDataSet(vpd)
+    cellLocator.BuildLocator()
+    cellids = array([cellLocator.FindCell(pts[i]) for i in range(len(pts))])
+    if verbose:
+        print ('%d (of %d) points have not been found inside any cell'%(sum(cellids==-1), len(pts)))
+    return cellids
+
+
 def install_trisurface_methods():
     """Install extra TriSurface methods
 
     """
     TriSurface.decimate = decimate
+    TriSurface.findCell = findCell
 
 install_trisurface_methods()
 
