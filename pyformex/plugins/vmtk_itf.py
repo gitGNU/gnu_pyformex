@@ -257,11 +257,9 @@ def vmtkDistanceOfSurface(self, S, fixsign=True):
     The signed distance is positive if the distance vector and the surface
     normal have negative dot product, i.e. if node of S is outer with respect to self.
     NB: the sign of sdist computed by vmtk can be wrong! This is a known bug of vmtk: 
-    the sign of sdist is the sign of the dot product of the distancevector (from S.coords to self) 
-    and the normal of self at the endpoint of the distancevector. If the endpoint of the 
-    distancevector is located on an edge of self, the normal is wrongly computed and the sign 
-    of sdist is wrong. The option fixsign has been added to solve this bug,
-    by letting pyFormex re-computing the dot product.
+    If the endpoint of the distancevector is located on an edge of self, 
+    the normal is wrongly computed and the sign of sdist is wrong. 
+    The option fixsign has been added to solve this bug by letting pyFormex re-computing the dot product.
     """
     tmp = utils.tempFile(suffix='.vtp').name
     tmp1 = utils.tempFile(suffix='.vtp').name
@@ -291,9 +289,9 @@ def vmtkDistanceOfSurface(self, S, fixsign=True):
         cellids = findCell(self, S.coords+vdist)
         if sum(cellids==-1)>0:
             raise RuntimeError("%d (of %d) points have not been found inside any cell. Check tolerance of findCell"%(sum(cellids==-1), S.ncoords()))
-        nc=self.areaNormals()[1][cellids]#normals of cellids
-        sdist = sign(dotpr(nc, vdist))*abs(sdist)
-    return vdist,sdist
+        nc = self.areaNormals()[1][cellids]#normals of cellids
+        sdist = -sign(dotpr(nc, vdist))*abs(sdist)
+    return vdist, sdist
 
 
 def vmtkDistanceOfPoints(self, X, fixsign=True, nproc=1):
