@@ -341,7 +341,7 @@ def dialogTimedOut():
     return _dialog_result == widgets.TIMEOUT
 
 
-def askFilename(cur=None,filter="All files (*.*)",exist=True,multi=False,change=True,timeout=None):
+def askFilename(cur=None,filter="All files (*.*)",exist=True,multi=False,change=True,timeout=None,caption=None):
     """Ask for a file name or multiple file names using a file dialog.
 
     cur is a directory or filename. All the files matching the filter in that
@@ -359,7 +359,7 @@ def askFilename(cur=None,filter="All files (*.*)",exist=True,multi=False,change=
     else:
         fn = os.path.basename(cur)
         cur = os.path.dirname(cur)
-    w = widgets.FileSelection(cur, filter, exist, multi)
+    w = widgets.FileSelection(cur, filter, exist, multi,caption=caption)
     if fn:
         w.selectFile(fn)
     fn = w.getFilename(timeout)
@@ -382,16 +382,16 @@ def askFilename(cur=None,filter="All files (*.*)",exist=True,multi=False,change=
     return fn
 
 
-def askNewFilename(cur=None,filter="All files (*.*)",timeout=None):
+def askNewFilename(cur=None,filter="All files (*.*)",timeout=None,caption=None):
     """Ask a single new filename.
 
     This is a convenience function for calling askFilename with the
     arguments exist=False.
     """
-    return askFilename(cur=cur, filter=filter, exist=False, multi=False, timeout=timeout)
+    return askFilename(cur=cur, filter=filter, exist=False, multi=False, timeout=timeout, caption=caption)
 
 
-def askDirname(path=None,change=True,byfile=False):
+def askDirname(path=None,change=True,byfile=False,caption=None):
     """Interactively select a directory and change the current workdir.
 
     The user is asked to select a directory through the standard file
@@ -409,7 +409,7 @@ def askDirname(path=None,change=True,byfile=False):
         dirmode = 'auto'
     else:
         dirmode = True
-    fn = widgets.FileSelection(path, '*', dir=dirmode).getFilename()
+    fn = widgets.FileSelection(path, '*', dir=dirmode,caption=caption).getFilename()
     if fn:
         if not os.path.isdir(fn):
             fn = os.path.dirname(fn)

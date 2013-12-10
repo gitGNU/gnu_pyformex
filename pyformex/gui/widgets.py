@@ -2484,7 +2484,7 @@ class FileSelection(QtGui.QFileDialog):
     timeout = accept_any
 
 
-    def __init__(self,path='.',pattern='*',exist=False,multi=False,dir=False,button=None,**kargs):
+    def __init__(self,path='.',pattern='*',exist=False,multi=False,dir=False,button=None,caption=None,**kargs):
         """The constructor shows the widget."""
         QtGui.QFileDialog.__init__(self,**kargs)
         if os.path.isfile(path):
@@ -2497,7 +2497,8 @@ class FileSelection(QtGui.QFileDialog):
         else: # should be a list of patterns
             self.setFilters(pattern)
         if dir:
-            caption = "Select a directory"
+            if caption is None:
+                caption = "Select a directory"
             if dir is True:
                 mode = QtGui.QFileDialog.Directory
             else:
@@ -2513,13 +2514,16 @@ class FileSelection(QtGui.QFileDialog):
         elif exist:
             if multi:
                 mode = QtGui.QFileDialog.ExistingFiles
-                caption = "Select existing files"
+                if caption is None:
+                    caption = "Select existing files"
             else:
                 mode = QtGui.QFileDialog.ExistingFile
-                caption = "Open existing file"
+                if caption is None:
+                    caption = "Open existing file"
         else:
             mode = QtGui.QFileDialog.AnyFile
-            caption = "Save file as"
+            if caption is None:
+                caption = "Save file as"
 
         self.setFileMode(mode)
         self.setWindowTitle(caption)
