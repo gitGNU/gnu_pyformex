@@ -290,7 +290,7 @@ def vmtkDistanceOfSurface(self, S, fixsign=True):
         if sum(cellids==-1)>0:
             raise RuntimeError("%d (of %d) points have not been found inside any cell. Check tolerance of findCell"%(sum(cellids==-1), S.ncoords()))
         nc = self.areaNormals()[1][cellids]#normals of cellids
-        sdist = -sign(dotpr(nc, vdist))*abs(sdist)
+        sdist = sign(dotpr(nc, vdist))*abs(sdist)
     return vdist, sdist
 
 
