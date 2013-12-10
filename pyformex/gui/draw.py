@@ -271,7 +271,7 @@ def editFile(fn,exist=False):
     if pf.cfg['editor']:
         if exist and not os.path.exists(fn):
             return
-        utils.system('%s %s' % (pf.cfg['editor'], fn))
+        utils.system('%s %s' % (pf.cfg['editor'], fn),wait=False)
     else:
         warning('No known editor was found or configured')
 

@@ -27,7 +27,6 @@ This example shows how to find out if points are inside a closed surface.
 
 """
 from __future__ import print_function
-from pyformex import zip
 
 _status = 'checked'
 _level = 'normal'
@@ -35,9 +34,9 @@ _topics = ['surface', 'vtk']
 _techniques = ['inside']
 
 from pyformex.gui.draw import *
+from pyformex import zip
 from pyformex import simple
 from pyformex import timer
-
 from pyformex.multi import *
 
 filename = os.path.join(getcfg('datadir'), 'horse.off')

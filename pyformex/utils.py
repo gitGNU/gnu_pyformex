@@ -117,6 +117,17 @@ class Process(subprocess.Popen):
     - `cmd`: string or args list. If a string, it is the command as it should
       entered in a shell. If an args list, args[0] is the executable to run
       and the remainder are the arguments to be passed.
+    - `timeout`: float. If > 0.0, the subprocess will be terminated
+      or killed after this number of seconds have passed.
+    - `wait`: bool. If True (default), the caller waits for the Process
+      to terminate. Setting this value to False will allow the caller to
+      continue, but it will not be able to retrieve the standard output
+      and standard error of the process.
+
+    Any other parameters are passed to the :class`subprocess.Popen`
+    initialization. See the Python documentation for details.
+    Some interesting ones:
+
     - `shell`: bool. Default False. If True, the command will be run in a
       new shell. This may cause problems with killing the command and also
       poses a security risk.
@@ -124,14 +135,12 @@ class Process(subprocess.Popen):
       for subprocess.Popen. Here, they default to PIPE, allowing the caller
       to grab the output of the command. Set them to an open file object to
       redirect output to that file.
-    - Any other parameters accepted by :class`subprocess.Popen` can also be
-      specified.
 
     """
 
     gracetime = 2
 
-    def __init__(self,cmd,**kargs):
+    def __init__(self,cmd,timeout,wait,**kargs):
 
         self.cmd = cmd
 
@@ -162,6 +171,7 @@ class Process(subprocess.Popen):
 
         self.out = self.err = None
         self.timeout = self.timedout = False
+        self.run(timeout,wait)
 
 
     @property
@@ -169,7 +179,7 @@ class Process(subprocess.Popen):
         return self.returncode
 
 
-    def run(self,timeout=None):
+    def run(self,timeout=None,wait=True):
         """Run a Process, optionally with timeout.
 
         Parameters:
@@ -195,14 +205,15 @@ class Process(subprocess.Popen):
         else:
             t = None
 
-        # Start the process and wait for it to finish
-        out, err = self.communicate()
-        if out is not None:
-            out = out.decode(encoding='UTF-8')
-        if err is not None:
-            err = err.decode(encoding='UTF-8')
-        self.out, self.err = out,err
-        #pf.debug("Command output %s %s" % (type(out),type(err)),pf.DEBUG.UNICODE)
+        if wait:
+            # Wait for the process to finish and retrieve its stdout/stdin
+            out, err = self.communicate()
+            if out is not None:
+                out = out.decode(encoding='UTF-8')
+            if err is not None:
+                err = err.decode(encoding='UTF-8')
+            self.out, self.err = out,err
+            #pf.debug("Command output %s %s" % (type(out),type(err)),pf.DEBUG.UNICODE)
 
         if t:
             # Cancel the timer if one was started
@@ -247,7 +258,7 @@ class Process(subprocess.Popen):
 last_command = None
 
 
-def system(cmd,timeout=None,verbose=False,raise_error=False,**kargs):
+def system(cmd,timeout=None,wait=True,verbose=False,raise_error=False,**kargs):
     """Execute an external command.
 
     This (and the more user oriented :func:`utils.command`) are the
@@ -258,6 +269,10 @@ def system(cmd,timeout=None,verbose=False,raise_error=False,**kargs):
     - `cmd`: a string with the command to be executed
     - `timeout`: float. If specified and > 0.0, the command will time out
       and be terminated or killed after the specified number of seconds.
+    - `wait`: bool. If True (default), the caller waits for the Process
+      to terminate. Setting this value to False will allow the caller to
+      continue, but it will not be able to retrieve the standard output
+      and standard error of the process.
     - `verbose`: bool. If True, some extra informative message are printed:
       - the command that will be run
       - an occurring timeout condition,
@@ -289,8 +304,8 @@ def system(cmd,timeout=None,verbose=False,raise_error=False,**kargs):
     global last_command
     if verbose:
         print("Running command: %s" % cmd)
-    last_command = P = Process(cmd,**kargs)
-    P.run(timeout)
+    last_command = P = Process(cmd,timeout,wait,**kargs)
+    #P.run(timeout)
     if verbose:
         if P.timedout:
             print("Command terminated due to timeout (%ss)" % timeout)

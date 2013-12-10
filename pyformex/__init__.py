@@ -172,6 +172,7 @@ if installtype=='G':
         pass
 
     # Set branch name if we are in a git repository
+    branch = cmd = P = None
     try:
         cmd = 'cd %s && git symbolic-ref --short -q HEAD' % pyformexdir
         P = utils.system(cmd, shell=True)
@@ -180,6 +181,7 @@ if installtype=='G':
     except:
         print("Could not set branch name")
         pass
+
 
     del branch, cmd, P
 
