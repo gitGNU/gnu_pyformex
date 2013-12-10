@@ -364,10 +364,12 @@ def askFilename(cur=None,filter="All files (*.*)",exist=True,multi=False,change=
         w.selectFile(fn)
     fn = w.getFilename(timeout)
     fs = w.selectedNameFilter()
-    okext = utils.fileExtensionsFromFilter(fs)
-    basename, ext = os.path.splitext(fn)
-    if not ext in okext:
-        fn += okext[0]
+    if not exist and not multi:
+        # Check and force extension for single new file
+        okext = utils.fileExtensionsFromFilter(fs)
+        basename, ext = os.path.splitext(fn)
+        if not ext in okext:
+            fn += okext[0]
     if fn and change:
         if multi:
             cur = fn[0]
