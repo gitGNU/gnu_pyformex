@@ -2550,6 +2550,8 @@ class FileSelection(QtGui.QFileDialog):
     def value(self):
         """Return the selected value"""
         ret = self.selectedFiles()
+        if not pf.options.unicode:
+            ret = [ str(r) for r in ret ]
         if self.fileMode() != QtGui.QFileDialog.ExistingFiles:
             # not multiple selection
             ret = ret[0]
