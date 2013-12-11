@@ -289,7 +289,7 @@ def nodalAveraging(self, val, iter=1, mask=None,includeself=False):
 Mesh.connectionSteps = connectionSteps
 Mesh.scaledJacobian = scaledJacobian
 Mesh.elementToNodal = elementToNodal
-Mesh.nodalAveragings = nodalAveraging
+Mesh.nodalAveraging = nodalAveraging
 
 
 
