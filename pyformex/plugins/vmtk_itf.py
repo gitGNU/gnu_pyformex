@@ -248,7 +248,7 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
     return S
 
 
-def vmtkDistanceOfSurface(self, S, fixsign=True):
+def vmtkDistanceOfSurface(self, S, tryfixsign=True):
     """Find the distances of TriSurface S to the TriSurface self.
 
     Retuns a tuple of vector and signed scalar distances for all nodes of S.
@@ -259,7 +259,8 @@ def vmtkDistanceOfSurface(self, S, fixsign=True):
     NB: the sign of sdist computed by vmtk can be wrong! This is a known bug of vmtk: 
     If the endpoint of the distancevector is located on an edge of self, 
     the normal is wrongly computed and the sign of sdist is wrong. 
-    The option fixsign has been added to solve this bug by letting pyFormex re-computing the dot product.
+    The option tryfixsign has been added to solve this bug by letting pyFormex re-computing the dot product.
+    However, some wrong sign may still be wrong.
     """
     tmp = utils.tempFile(suffix='.vtp').name
     tmp1 = utils.tempFile(suffix='.vtp').name
@@ -284,17 +285,19 @@ def vmtkDistanceOfSurface(self, S, fixsign=True):
         reorderindex = Coords(coords).match(S.coords)
         vdist = vdist[reorderindex]
         sdist = sdist[reorderindex]
-    if fixsign:
-        from pyformex.plugins.vtk_itf import findCell
-        cellids = findCell(self, S.coords+vdist)
-        if sum(cellids==-1)>0:
-            raise RuntimeError("%d (of %d) points have not been found inside any cell. Check tolerance of findCell"%(sum(cellids==-1), S.ncoords()))
+    if tryfixsign:
+        from pyformex.plugins.vtk_itf import findElemContainingPoint
+        cellids = findElemContainingPoint(self, S.coords+vdist)
+        notFound = cellids==-1
+        if sum(notFound)>0:
+            print ("%d (of %d) points have not been found inside any cell. Check tolerance of findElemContainingPoint"%(sum(notFound), S.ncoords()))
         nc = self.areaNormals()[1][cellids]#normals of cellids
-        sdist = sign(dotpr(nc, vdist))*abs(sdist)
+        sdist1 = sign(dotpr(nc, vdist))*abs(sdist)
+        sdist[~notFound] = sdist1[~notFound]
     return vdist, sdist
 
 
-def vmtkDistanceOfPoints(self, X, fixsign=True, nproc=1):
+def vmtkDistanceOfPoints(self, X, tryfixsign=True, nproc=1):
     """Find the distances of points X to the TriSurface self.
 
     - `X` is a (nX,3) shaped array of points.
@@ -311,11 +314,11 @@ def vmtkDistanceOfPoints(self, X, fixsign=True, nproc=1):
         nproc = cpu_count()
     if nproc==1:
         S = TriSurface(X, arange(X.shape[0]).reshape(-1, 1)*ones(3, dtype=int).reshape(1, -1))
-        return vmtkDistanceOfSurface(self, S, fixsign)
+        return vmtkDistanceOfSurface(self, S, tryfixsign)
     else:
         datablocks = splitar(X, nproc, close=False)
         print ('-----distance of %d points from %d triangles with %d proc'%(len(X), self.nelems(), nproc))
-        tasks = [(vmtkDistanceOfPoints, (self, d, fixsign, 1)) for d in datablocks]
+        tasks = [(vmtkDistanceOfPoints, (self, d, tryfixsign, 1)) for d in datablocks]
         ind = multitask(tasks, nproc)
         vdist, sdist = list(zip(*ind))
         return concatenate(vdist), concatenate(sdist)
@@ -332,7 +335,7 @@ def vmtkDistancePointsToSegments(X, L):
     """
     SX = TriSurface(X, arange(X.shape[0]).reshape(-1, 1)*ones(3, dtype=int).reshape(1, -1))
     SL = TriSurface(L.convert('line3').setType('tri3'))#from line2 to degenerate tri3 by adding the centroids.
-    vdist, dist = vmtkDistanceOfSurface(SL, SX, fixsign=False)
+    vdist, dist = vmtkDistanceOfSurface(SL, SX, tryfixsign=False)
     return vdist, abs(dist)
 
 

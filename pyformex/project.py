@@ -326,7 +326,7 @@ class Project(TrackedDict):
         return f
 
 
-    def load(self,try_resolve=False,quiet=False):
+    def load(self,try_resolve=True,quiet=False):
         """Load a project from file.
 
         The loaded definitions will update the current project.
