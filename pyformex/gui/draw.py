@@ -2015,9 +2015,10 @@ def exportWebGL(fn,title=None,description=None,keywords=None,author=None,created
     print("PROJECT %s" % name)
     if title is None:
         title="%s WebGL model"%name
-    W = WebGL(name)
+    W = WebGL(name, title=title, description=description, keywords=keywords, author=author)
     W.addScene()
-    fn = W.export(title=title, description=description, keywords=keywords, author=author, createdby=createdby)
+    W.exportScene()
+    fn = W.export(createdby=createdby)
     pf.GUI.setBusy(False)
     return fn
 

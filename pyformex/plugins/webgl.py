@@ -100,45 +100,82 @@ def properties(o):
     return utils.selectDict(o.__dict__, keys)
 
 
-class WebGL(List):
-    """A 3D geometry model for export to WebGL.
+class WebGL(object):
+    """A class to export a 3D scene to WebGL.
 
-    The WebGL class provides a limited model to be easily exported as
-    a complete WebGL model, including the required HTML, Javascript
-    and data files.
+    Exporting a WebGL model creates:
 
-    Currently the following features are included:
+    - a HTML file calling some Javascript files. This file can be viewed
+      in a WebGL enabled browser (Firefox, Chrome, Safari)
+    - a Javascript file describing the model. This file relies an other
+      Javascript files to do the actual rendering and provide control menus.
+      The default rendering script is
+      http://feops.ugent.be/pub/xtk/feops_xtk.js and the gui toolkit is
 
-    - create a new WebGL model
-    - add the current scene to the model
-    - add Geometry to the model (including color and transparency)
-    - set the camera position
-    - export the model
+      The user can replace them with scripts of his choice.
+    - a number of geometry files in pyFormex PGF format. These are normally
+      created automatically by the exportScene method. The user can optionally
+      add other files.
 
     An example of its usage can be found in the WebGL example.
 
-    The created model uses the XTK toolkit from http://www.goXTK.com or
-    the modified version of FEops.
+    Parameters:
+
+    - `name`: the base name for the created HTML and JS files.
+    - `scripts`: a list of URLs pointing to scripts that will be needed
+      for the rendering of the scene.
+    - `bgcolor`: the background color of the rendered page.
+    - `title`: an optional title to be set in the .html file. If not
+      specified, the `name` is used.
+
+    You can also set the meta tags 'description', 'keywords' and
+    'author' to be included in the .html file. The first two have
+    defaults if not specified.
+
     """
 
-    def __init__(self,name='Scene1'):
+    def __init__(self,
+                 name='Scene1',
+                 scripts=None,
+                 bgcolor='white',
+                 title=None,
+                 description=None,
+                 keywords=None,
+                 author=None,
+                 gui=True,
+                 ):
         """Create a new (empty) WebGL model."""
-        List.__init__(self)
+        if not pf.options.opengl2:
+            utils.warn("WebGL export is no longer supported with the old OpenGL engine. Use the --gl2 command line option to activate the new OpenGL engine.")
+            return
+
+        self._actors = List()
         self._camera = None
-        if pf.cfg['webgl/devel']:
-            self.scripts = [
-                os.path.join(pf.cfg['webgl/devpath'], 'lib/closure-library/closure/goog/base.js'),
-                os.path.join(pf.cfg['webgl/devpath'], 'xtk-deps.js')
-                ]
-        else:
-            self.scripts = [ pf.cfg['webgl/script'], pf.cfg['webgl/guiscript'] ]
-        if pf.options.opengl2:
-            # Force the FEops xtk script
-            self.scripts[0] = 'file://' + os.path.join(pf.cfg['pyformexdir'], 'opengl', 'feops_xtk.js')
+        print("SCRIPTS %s" % scripts)
+        if not scripts:
+            if pf.cfg['webgl/devel']:
+                scripts = 'file://' + os.path.join(pf.cfg['pyformexdir'], 'opengl', 'feops_xtk.js')
+            else:
+                print("PF.CFG %s" % pf.cfg['webgl/script'])
+                scripts = pf.cfg['webgl/script']
+            scripts = [ scripts ]
+            if gui:
+                scripts.append(pf.cfg['webgl/guiscript'])
+        self.scripts = scripts
         print("WebGL scripts: %s" % self.scripts)
         self.gui = []
         self.name = str(name)
-        self.bgcolor = 'white'
+        if title is None:
+            title = '%s WebGL example, created by pyFormex' % name
+        if description is None:
+            description = title
+        if keywords is None:
+            keywords = "pyFormex, WebGL, XTK, HTML, JavaScript"
+        self.title = title
+        self.description = description
+        self.keywords = keywords
+        self.author = author
+        self.jsfile = None
 
 
     def objdict(self,clas=None):
@@ -152,7 +189,6 @@ class WebGL(List):
             obj = [ o for o in obj if isinstance(o, clas) ]
         print("OBJDICT: %s" % len(obj))
         print([type(o) for o in obj])
-#        print(obj)
         return obj
 
 
@@ -171,89 +207,12 @@ class WebGL(List):
             atype = type(a).__name__
             otype = type(o).__name__
             pf.debug("Actor %s: %s %s Shape=(%s,%s) Color=%s"% (i, atype, otype, o.nelems(), o.nplex(), a.color), pf.DEBUG.WEBGL)
-            if pf.options.opengl2:
-                self.addActor(a)
-            else:
-                ## kargs = properties(o)
-                kargs = o.attrib
-                kargs.update(properties(a))
-                kargs = saneSettings(kargs)
-                print("  Exporting with settings %s" % kargs)
-                self.add(obj=o,**kargs)
+            self.addActor(a)
         ca = cv.camera
         if pf.options.opengl2:
             self.camera(focus=ca.focus, position=ca.eye, up=ca.upvector)
         else:
             self.camera(focus=[0., 0., 0.], position=ca.eye-ca.focus, up=ca.upVector())
-
-
-    def add(self,**kargs):
-        """Add a geometry object to the model.
-
-        Currently, two types of objects can be added: pyFormex Geometry
-        objects and file names. Geometry objects should be convertible
-        to TriSurface (using their toSurface method). Geometry files
-        should be in STL format.
-
-        The following keyword parameters are available and all optional:
-
-        - `obj=`: specify a pyFormex Geometry object
-        - `file=`: specify a geometry data file (STL). If no `obj` is
-          specified, the file should exist. If an `obj` file is specified,
-          this is the name that will be used to export the object.
-        - `name=`: specify a name for the object. The name will be used
-          as a variable in the Javascript script and as filename for for
-          export if an `obj` was specified but no `file` was given.
-          It should only contain alphanumeric characters and not start with
-          a digit.
-        - `caption=`: specify a caption to be used as a tooltip when the
-          mouse hovers over the object.
-        - `color=`: specify a color to be sued for the object. The color
-          should be a list of 3 values in the range 0..1 (OpenGL color).
-        - `opacity=`: specify a value for the opacity of the object (the
-          'alpha' value in pyFormex terms).
-        - `magicmode=`: specify True or False. If magicmode is True, colors
-          will be set from the normals of the object. This is incompatible
-          with `color=`.
-        - `control=`: a list of attributes that get a gui controller
-        """
-        if not 'name' in kargs:
-            kargs['name'] = 'm%s' % len(self)
-        if 'obj' in kargs:
-            # A pyFormex object.
-            try:
-                obj = kargs['obj']
-                obj = obj.toMesh()
-                print("LEVEL:%s" % obj.level())
-                if obj.level() == 3:
-                    print("TAKING BORDER")
-                    obj = obj.getBorderMesh()
-                obj = obj.toSurface()
-            except:
-                print("Not added because not convertible to TriSurface : %s", obj)
-                return
-            if obj:
-                if not 'file' in kargs:
-                    kargs['file'] = '%s_%s.stl' % (self.name, kargs['name'])
-                obj.write(kargs['file'], 'stlb')
-        elif 'file' in kargs:
-            # The name of an STL file
-            fn = kargs['file']
-            if fn.endswith('.stl') and os.path.exists(fn):
-                # We should copy to current directory!
-                pass
-            else:
-                return
-        # OK, we can add it
-        self.append(Dict(kargs))
-        if 'control' in kargs:
-            # Move the 'control' parameters to gui
-            self.gui.append((kargs['name'], kargs.get('caption', ''), kargs['control']))
-            del kargs['control']
-        elif pf.cfg['webgl/autogui']:
-            # Add autogui
-            self.gui.append((kargs['name'], kargs.get('caption', ''), controller_format.keys()))
-
 
 
     def addActor(self, actor):
@@ -343,7 +302,7 @@ class WebGL(List):
         drawables.append(attrib)
         controllers = contr + controllers
 
-        self.append(drawables)
+        self._actors.append(drawables)
         if len(controllers) > 0:
             self.gui.append((actor.name, actor.caption, controllers))
 
@@ -397,6 +356,7 @@ class WebGL(List):
         s = """
 r.onShowtime = function() {
 var gui = new dat.GUI();
+the_controls = gui;
 """
         for name, caption, attrs in self.gui:
             guiname = "gui_%s" % name
@@ -430,40 +390,23 @@ var gui_global_alphablend = gui_global.add(r,'toggleAlphablend');
         return s
 
 
-    def exportPGF(self,fn,sep=''):
-        """Export the current scene to a pgf file"""
-        from pyformex.plugins.geometry_menu import writeGeometry
-        res = writeGeometry(self.objdict(), fn, sep=sep)
-        return res
-
-
-    def export(self,name=None,title=None,description=None,keywords=None,author=None,createdby=False):
-        """Export the WebGL scene.
+    def start_js(self,name):
+        """Export the start of the js file.
 
         Parameters:
 
-        - `name`: a string that will be used for the filenames of the
-          HTML, JS and PGF files.
-        - `title`: an optional title to be set in the .html file. If not
-          specified, the `name` is used.
+        - `name`: a string with the name of the model that will be shown
+          by default when displaying the webgl html page
 
-        You can also set the meta tags 'description', 'keywords' and
-        'author' to be included in the .html file. The first two have
-        defaults if not specified.
-
-        Returns the name of the exported htmlfile.
+        This function should only be executed once, before any
+        other export functions. It is called automatically by
+        the first call to exportScene.
         """
-        global exported_webgl
+        jsname = utils.changeExt(self.name, '.js')
+        print("Exporting WebGL script to %s" % os.path.abspath(jsname))
+        self.scripts.append(jsname)
 
-        if name is None:
-            name = self.name
-        if title is None:
-            title = '%s WebGL example, created by pyFormex' % name
-        if description is None:
-            description = title
-        if keywords is None:
-            keywords = "pyFormex, WebGL, XTK, HTML, JavaScript"
-
+        self.jsfile = open(jsname, 'w')
         s = """// Script generated by %s
 var the_renderer;
 var the_controls;
@@ -473,18 +416,41 @@ if (the_controls != null) the_controls.destroy();
 if (the_renderer != null) the_renderer.destroy();
 show%s();
 }
+"""% (pf.fullVersion(),name)
+        self.jsfile.write(s)
 
+
+    def exportScene(self,name=None):
+        """Export the current OpenGL scene to the WebGL model.
+
+        Parameters:
+
+        - `name`: a string with the name of the model for the current
+          scene. When multiple scenes are exported, they will be identified
+          by this name. This name is also used as the basename for the
+          exported geometry files. For a single scene export, the name may
+          be omitted, and will then be set equal to the name of the WebGL
+          exporter.
+
+        """
+        if name is None:
+            name = self.name
+
+        if self.jsfile is None:
+            self.start_js(name)
+
+        s = """
 show%s = function() {
 var r = new X.renderer3D();
 the_renderer = r;
 r.config.ORDERING_COMPARATOR = 'ID';
 r.init();
 
-""" % (pf.fullVersion(),name,name)
+""" % name
         js_alphablend = str(pf.canvas.settings.alphablend).lower()
         s += "r.setAlphablend(%s);\n" % js_alphablend
 
-        s += '\n'.join([self.format_actor(a) for a in self ])
+        s += '\n'.join([self.format_actor(a) for a in self._actors ])
         if self.gui:
             s += self.format_gui()
         if self._camera:
@@ -500,28 +466,35 @@ r.init();
 r.render();
 };
 """
-        jsname = utils.changeExt(name, '.js')
-        with open(jsname, 'w') as jsfile:
-            jsfile.write(s)
-        print("Exported WebGL script to %s" % os.path.abspath(jsname))
+        self.jsfile.write(s)
 
-        if self.gui:
-            if pf.cfg['webgl/guiscript'] not in self.scripts:
-                self.scripts.append(pf.cfg['webgl/guiscript'])
-        self.scripts.append(jsname)
-        htmlname = utils.changeExt(jsname, '.html')
+
+    def export(self,body='',createdby=-1):
+        """Finish the export by creating the html file.
+
+        Parameters:
+
+        - `body`: an HTML section to be put in the body
+        - `createdby: int. If not zero, a logo 'Created by pyFormex'
+          will appear on the page. If > 0, it specifies the width of the
+          logo field. If < 0, the logo will be displayed on its natural
+          width.
+
+        Returns the full path of the create html file.
+        """
+        htmlname = utils.changeExt(self.jsfile.name, '.html')
         if createdby:
             if isinstance(createdby, int):
                 width = createdby
             else:
                 width = 0
-            body = createdBy(width)
+            logo = createdBy(width)
         else:
-            body = ''
+            logo = ''
 
         exported_webgl = createWebglHtml(
-            htmlname,self.scripts,self.bgcolor,body,
-            description,keywords,author,title)
+            htmlname,self.scripts,self.bgcolor,logo+body,
+            self.description,self.keywords,self.author,self.title)
         print("Exported WebGL model to %s" % exported_webgl)
         return exported_webgl
 
