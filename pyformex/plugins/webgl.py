@@ -486,6 +486,7 @@ r.render();
 };
 """
         self.jsfile.write(s)
+        self.scenes.append(name)
 
 
     def export(self,body='',createdby=-1):
@@ -502,20 +503,32 @@ r.render();
         Returns the full path of the create html file.
         """
         htmlname = utils.changeExt(self.jsfile.name, '.html')
+        body = ''
+        
         if createdby:
             if isinstance(createdby, int):
                 width = createdby
             else:
                 width = 0
-            logo = createdBy(width)
-        else:
-            logo = ''
+            body += createdBy(width)
+
+        if len(self.scenes) > 1:
+            body += createSceneButtons(self.scenes)
 
         exported_webgl = createWebglHtml(
-            htmlname,self.scripts,self.bgcolor,logo+body,
+            htmlname,self.scripts,self.bgcolor,body,
             self.description,self.keywords,self.author,self.title)
         print("Exported WebGL model to %s" % exported_webgl)
         return exported_webgl
+
+
+
+def createSceneButtons(scenes):
+    body = "<div style='position:absolute;top:150px;left:10px;'>"
+    for name in scenes:
+        body += "<button onclick='show%s()'>Show %s</button><br />" % (name,name)
+    body += "</div>"
+    return body
 
 
 def createdBy(width=0):

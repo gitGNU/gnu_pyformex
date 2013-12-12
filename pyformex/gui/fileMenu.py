@@ -535,23 +535,27 @@ def createMovieInteractive():
     pf.GUI.setBusy(False)
 
 
-def exportPGF():
-    """Export the current scene to PGF"""
-    from pyformex.plugins.webgl import WebGL
-    types = utils.fileDescription(['pgf', 'all'])
-    fn = draw.askNewFilename(pf.cfg['workdir'], types)
-    if fn:
-        pf.GUI.setBusy()
-        print("Exporting current scene to %s" % fn)
-        fn = os.path.basename(fn)
-        if not fn.endswith('.pgf'):
-            fn += '.pgf'
-        name = utils.projectName(fn)
-        W = WebGL(name)
-        W.addScene()
-        res = W.exportPGF(fn, sep='')
-        print("Contents: %s" % res)
-        pf.GUI.setBusy(False)
+
+#
+# TODO: this no longer works with the new webgl; should redo
+#
+## def exportPGF():
+##     """Export the current scene to PGF"""
+##     from pyformex.plugins.webgl import WebGL
+##     types = utils.fileDescription(['pgf', 'all'])
+##     fn = draw.askNewFilename(pf.cfg['workdir'], types)
+##     if fn:
+##         pf.GUI.setBusy()
+##         print("Exporting current scene to %s" % fn)
+##         fn = os.path.basename(fn)
+##         if not fn.endswith('.pgf'):
+##             fn += '.pgf'
+##         name = utils.projectName(fn)
+##         W = WebGL(name)
+##         W.addScene()
+##         res = W.exportPGF(fn, sep='')
+##         print("Contents: %s" % res)
+##         pf.GUI.setBusy(False)
 
 
 def exportWebGL():
@@ -560,13 +564,45 @@ def exportWebGL():
     The user is asked for a file name to store the exported model,
     and after export, whether to load the model in the browser.
     """
-    from pyformex.plugins.webgl import WebGL
     types = [ utils.fileDescription('html') ]
     fn = draw.askNewFilename(pf.cfg['workdir'], types)
     if fn:
         fn = draw.exportWebGL(fn)
         if draw.ack("Show the scene in your browser?"):
             draw.showHTML(fn)
+
+
+
+def multiWebGL():
+    """Export the current scene as a model in a multiscene WebGL
+
+    The user is asked for a file name to store the exported model,
+    and after export, whether to load the model in the browser.
+    """
+    if draw.the_multiWebGL is None:
+        print("NO CURRENT EXPORT")
+    else:
+        print("CURRENTLY EXPORTED: %s" % draw.the_multiWebGL.scenes)
+
+    if draw.the_multiWebGL is None:
+        types = [ utils.fileDescription('html') ]
+        fn = draw.askNewFilename(pf.cfg['workdir'], types)
+        if fn:
+            print("Exporting multiscene WebGL to %s" % fn)
+            draw.multiWebGL(fn=fn)
+            print(draw.the_multiWebGL)
+
+    if draw.the_multiWebGL is not None:
+        res = draw.askItems([
+            _I('name',draw.the_multiWebGL.name,text='Name of the scene',tooltip='An empty name will skip the export of the current scene'),
+            _I('finish',False,text='Finish the export'),
+            ])
+        if res['name']:
+            draw.multiWebGL(res['name'])
+        if res['finish']:
+            draw.multiWebGL()
+            if draw.ack("Show the scene in your browser?"):
+                draw.showHTML(fn)
 
 
 _recording_pid = 0
@@ -649,8 +685,9 @@ MenuData = [
     (_('&Stop MultiSave'), stopMultiSave),
     (_('&Save as Icon'), saveIcon),
     (_('&Show Image'), showImage),
-    (_('&Export as PGF'), exportPGF),
+    ## (_('&Export as PGF'), exportPGF),
     (_('&Export as WebGL'), exportWebGL),
+    (_('&Export as multiscene WebGL'), multiWebGL),
     (_('&Record Session'), [
         (_('&Start Recording'), recordSession),
         (_('&Stop Recording'), stopRecording),
