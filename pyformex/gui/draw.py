@@ -2016,11 +2016,46 @@ def exportWebGL(fn,title=None,description=None,keywords=None,author=None,created
     if title is None:
         title="%s WebGL model"%name
     W = WebGL(name, title=title, description=description, keywords=keywords, author=author)
-    W.addScene()
-    W.exportScene()
+    W.addScene(name)
     fn = W.export(createdby=createdby)
     pf.GUI.setBusy(False)
     return fn
+
+
+the_multiWebGL = None
+
+def multiWebGL(name=None,fn=None,title=None,description=None,keywords=None,author=None,createdby=50):
+    """Export the current scene to WebGL.
+
+    fn is the (relative or absolute) pathname of the .html and .js files to be
+    created.
+
+    Returns the absolute pathname of the generated .html file.
+    """
+    from pyformex.plugins.webgl import WebGL
+    pf.GUI.setBusy()
+    if fn is not None:
+        if the_multiWebGL is not None:
+            the_multiWebGL.export()
+            the_multiWebGL = None
+
+        if os.path.isabs(fn):
+            chdir(os.path.dirname(fn))
+        fn = os.path.basename(fn)
+        proj = utils.projectName(fn)
+        print("PROJECT %s" % proj)
+        the_multiWebGL = WebGL(proj, title=title, description=description, keywords=keywords, author=author)
+        pf.message("Exporting current scene to %s" % fn)
+
+    if the_multiWebGL is not None:
+        if name is not None:
+            the_multiWebGL.addScene(name)
+        else:
+            the_multiWebGL.export(createdby=createdby)
+            the_multiWebGL = None
+
+    pf.GUI.setBusy(False)
+    return the_multiWebGL
 
 
 def showURL(url):

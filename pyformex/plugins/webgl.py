@@ -166,7 +166,7 @@ class WebGL(object):
         self.gui = []
         self.name = str(name)
         if title is None:
-            title = '%s WebGL example, created by pyFormex' % name
+            title = 'WebGL model %s, created by pyFormex' % name
         if description is None:
             description = title
         if keywords is None:
@@ -176,6 +176,7 @@ class WebGL(object):
         self.keywords = keywords
         self.author = author
         self.jsfile = None
+        self.scenes = []
 
 
     def objdict(self,clas=None):
@@ -192,11 +193,26 @@ class WebGL(object):
         return obj
 
 
-    def addScene(self):
+    def addScene(self,name=None,camera=True):
         """Add the current OpenGL scene to the WebGL model.
 
-        This method add all the geometry in the current viewport to
-        the WebGL model.
+        This method adds all the geometry in the current viewport to
+        the WebGL model. By default it will also add the current camera
+        and export the scene as a completed WebGL model with the given
+        name.
+
+        Parameters:
+
+        - `name`: a string with the name of the model for the current
+          scene. When multiple scenes are exported, they will be identified
+          by this name. This name is also used as the basename for the
+          exported geometry files. For a single scene export, the name may
+          be omitted, and will then be set equal to the name of the WebGL
+          exporter. If no name is specified, the model is not exported.
+          This allows the user to add more scenes to the same model, and
+          then to explicitely export it with :func:`exportScene`.
+        - `camera`: bool: if True, sets the current viewport camera as the
+          camera in the WebGL model.
         """
         cv = pf.canvas
         self.bgcolor = cv.settings.bgcolor
@@ -208,11 +224,13 @@ class WebGL(object):
             otype = type(o).__name__
             pf.debug("Actor %s: %s %s Shape=(%s,%s) Color=%s"% (i, atype, otype, o.nelems(), o.nplex(), a.color), pf.DEBUG.WEBGL)
             self.addActor(a)
-        ca = cv.camera
-        if pf.options.opengl2:
-            self.camera(focus=ca.focus, position=ca.eye, up=ca.upvector)
-        else:
-            self.camera(focus=[0., 0., 0.], position=ca.eye-ca.focus, up=ca.upVector())
+
+        if camera:
+            ca = cv.camera
+            self.setCamera(focus=ca.focus, position=ca.eye, up=ca.upvector)
+
+        if name:
+            self.exportScene(name)
 
 
     def addActor(self, actor):
@@ -307,7 +325,7 @@ class WebGL(object):
             self.gui.append((actor.name, actor.caption, controllers))
 
 
-    def camera(self,**kargs):
+    def setCamera(self,**kargs):
         """Set the camera position and direction.
 
         This takes two (optional) keyword parameters:
@@ -374,13 +392,14 @@ the_controls = gui;
             #s += "%s.open();\n" % guiname
 
 
-        # add camera gui
+        # add camera controls
         guiname = "gui_camera"
         s += """
 var %s = gui.addFolder('Camera');
 var %s_reset = %s.add(r.camera,'reset');
 """.replace('%s', guiname)
 
+        # add global controls
         s += """
 var gui_global = gui.addFolder('Global');
 var gui_global_alphablend = gui_global.add(r,'toggleAlphablend');
