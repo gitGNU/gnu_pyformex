@@ -41,8 +41,10 @@ from pyformex.olist import List, intersection
 from pyformex.mydict import Dict
 from pyformex.arraytools import checkFloat, checkArray, checkInt
 from pyformex.mesh import Mesh
-from numpy import asarray, arange, int32
+from pyformex.attributes import Attributes
+from pyformex.geometry import Geometry
 
+import numpy as np
 import os
 
 exported_webgl = None
@@ -149,8 +151,6 @@ class WebGL(object):
             utils.warn("WebGL export is no longer supported with the old OpenGL engine. Use the --gl2 command line option to activate the new OpenGL engine.")
             return
 
-        self._actors = List()
-        self._camera = None
         print("SCRIPTS %s" % scripts)
         if not scripts:
             if pf.cfg['webgl/devel']:
@@ -163,7 +163,6 @@ class WebGL(object):
                 scripts.append(pf.cfg['webgl/guiscript'])
         self.scripts = scripts
         print("WebGL scripts: %s" % self.scripts)
-        self.gui = []
         self.name = str(name)
         if title is None:
             title = 'WebGL model %s, created by pyFormex' % name
@@ -177,6 +176,7 @@ class WebGL(object):
         self.author = author
         self.jsfile = None
         self.scenes = []
+        self.files = utils.NameSequence(self.name+'_','.pgf')
 
 
     def objdict(self,clas=None):
@@ -214,6 +214,10 @@ class WebGL(object):
         - `camera`: bool: if True, sets the current viewport camera as the
           camera in the WebGL model.
         """
+        self._actors = List()
+        self._gui = []
+        self._camera = None
+
         cv = pf.canvas
         self.bgcolor = cv.settings.bgcolor
         print("Exporting %s actors from current scene" % len(cv.actors))
@@ -240,7 +244,6 @@ class WebGL(object):
         as a list.
         The actor's controller attributes are added to the controller gui.
         """
-        from pyformex.attributes import Attributes
         drawables = []
         controllers = []
 
@@ -248,22 +251,22 @@ class WebGL(object):
         for i, d in enumerate(actor.drawable):
             attrib = Attributes(d, default=actor)
             # write the object to a .pgf file
-            coords = asarray(attrib.vbo)
+            coords = np.asarray(attrib.vbo)
             if attrib.ibo is not None:
-                elems = asarray(attrib.ibo)
+                elems = np.asarray(attrib.ibo)
             else:
                 nelems, nplex = coords.shape[:2]
-                elems = arange(nelems*nplex).reshape(nelems, nplex).astype(int32)
+                elems = arange(nelems*nplex).reshape(nelems, nplex).astype(np.int32)
             coords = coords.reshape(-1, 3)
             obj = Mesh(coords, elems)
             if attrib.nbo is not None:
-                normals = asarray(attrib.nbo).reshape(-1, 3)
+                normals = np.asarray(attrib.nbo).reshape(-1, 3)
                 obj.setNormals(normals[elems])
             if attrib.cbo is not None:
-                color = asarray(attrib.cbo).reshape(-1, 3)
+                color = np.asarray(attrib.cbo).reshape(-1, 3)
                 obj.color = color[elems]
-            attrib.file = '%s_%s.pgf' % (self.name, attrib.name)
-            from pyformex.geometry import Geometry
+            #attrib.file = self.files.next()
+            attrib.file = '%s_s%s_%s.pgf' % (self.name,len(self.scenes),attrib.name)
             Geometry.write(obj, attrib.file, '')
             # add missing attributes
             if attrib.lighting is None:
@@ -322,7 +325,7 @@ class WebGL(object):
 
         self._actors.append(drawables)
         if len(controllers) > 0:
-            self.gui.append((actor.name, actor.caption, controllers))
+            self._gui.append((actor.name, actor.caption, controllers))
 
 
     def setCamera(self,**kargs):
@@ -376,7 +379,7 @@ r.onShowtime = function() {
 var gui = new dat.GUI();
 the_controls = gui;
 """
-        for name, caption, attrs in self.gui:
+        for name, caption, attrs in self._gui:
             guiname = "gui_%s" % name
             if not caption:
                 caption = name
@@ -431,8 +434,6 @@ var the_renderer;
 var the_controls;
 
 window.onload = function() {
-if (the_controls != null) the_controls.destroy();
-if (the_renderer != null) the_renderer.destroy();
 show%s();
 }
 """% (pf.fullVersion(),name)
@@ -460,6 +461,8 @@ show%s();
 
         s = """
 show%s = function() {
+if (the_controls != null) the_controls.destroy();
+if (the_renderer != null) the_renderer.destroy();
 var r = new X.renderer3D();
 the_renderer = r;
 r.config.ORDERING_COMPARATOR = 'ID';
@@ -470,7 +473,7 @@ r.init();
         s += "r.setAlphablend(%s);\n" % js_alphablend
 
         s += '\n'.join([self.format_actor(a) for a in self._actors ])
-        if self.gui:
+        if self._gui:
             s += self.format_gui()
         if self._camera:
             s += '\n'
@@ -502,24 +505,26 @@ r.render();
 
         Returns the full path of the create html file.
         """
-        htmlname = utils.changeExt(self.jsfile.name, '.html')
-        body = ''
-        
-        if createdby:
-            if isinstance(createdby, int):
-                width = createdby
-            else:
-                width = 0
-            body += createdBy(width)
+        if self.jsfile:
+            htmlname = utils.changeExt(self.jsfile.name, '.html')
+            self.jsfile.close()
+            body = ''
 
-        if len(self.scenes) > 1:
-            body += createSceneButtons(self.scenes)
+            if createdby:
+                if isinstance(createdby, int):
+                    width = createdby
+                else:
+                    width = 0
+                body += createdBy(width)
 
-        exported_webgl = createWebglHtml(
-            htmlname,self.scripts,self.bgcolor,body,
-            self.description,self.keywords,self.author,self.title)
-        print("Exported WebGL model to %s" % exported_webgl)
-        return exported_webgl
+            if len(self.scenes) > 1:
+                body += createSceneButtons(self.scenes)
+
+            exported_webgl = createWebglHtml(
+                htmlname,self.scripts,self.bgcolor,body,
+                self.description,self.keywords,self.author,self.title)
+            print("Exported WebGL model to %s" % exported_webgl)
+            return exported_webgl
 
 
 

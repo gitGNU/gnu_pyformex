@@ -2030,13 +2030,14 @@ def multiWebGL(name=None,fn=None,title=None,description=None,keywords=None,autho
     fn is the (relative or absolute) pathname of the .html and .js files to be
     created.
 
-    Returns the absolute pathname of the generated .html file.
+    When the export is finished, returns the absolute pathname of the
+    generated .html file. Else, returns None.
     """
     global the_multiWebGL
-   
+
     from pyformex.plugins.webgl import WebGL
+    ret = None
     pf.GUI.setBusy()
-    print("FILE NAME %s" % fn)
     if fn is not None:
         if the_multiWebGL is not None:
             the_multiWebGL.export()
@@ -2055,13 +2056,14 @@ def multiWebGL(name=None,fn=None,title=None,description=None,keywords=None,autho
         if name is not None:
             print("Exporting current scene to %s" % the_multiWebGL.name)
             the_multiWebGL.addScene(name)
+
         elif fn is None: # No name, and not just starting
             print("Finishing export of %s" % the_multiWebGL.name)
-            the_multiWebGL.export(createdby=createdby)
+            ret = the_multiWebGL.export(createdby=createdby)
             the_multiWebGL = None
 
     pf.GUI.setBusy(False)
-    return the_multiWebGL
+    return ret
 
 
 def showURL(url):

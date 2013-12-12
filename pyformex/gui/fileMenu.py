@@ -600,8 +600,8 @@ def multiWebGL():
         if res['name']:
             draw.multiWebGL(res['name'])
         if res['finish']:
-            draw.multiWebGL()
-            if draw.ack("Show the scene in your browser?"):
+            fn = draw.multiWebGL()
+            if fn and draw.ack("Show the scene in your browser?"):
                 draw.showHTML(fn)
 
 
