@@ -110,6 +110,7 @@ def cleanVPD(vpd):
     cleaner.Update()
     return  cleaner.GetOutput()
 
+
 def checkClean(mesh):
     """Check if the mesh is fused, compacted and renumbered.
 
@@ -124,6 +125,36 @@ def checkClean(mesh):
     if any(m1.elems!=mesh.elems):
         return False
     return True
+
+
+def coords2VTK(coords):
+    """Convert pyFormex class Coords into VTK class vtkPoints"""
+    # creating  vtk coords
+    from vtk import vtkPoints
+    pts = vtkPoints()
+    ntype = gnat(pts.GetDataType())
+    coordsv = n2v(asarray(coords, order='C', dtype=ntype), deep=1) # .copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
+    pts.SetNumberOfPoints(len(coords))
+    pts.SetData(coordsv)
+    return pts
+
+
+def elems2VTK(elems):
+    """Convert pyFormex class Connectivity into VTK class vtkCellArray"""
+    from vtk import vtkIdTypeArray, vtkCellArray
+    # create vtk connectivity
+    Nelems = len(elems)
+    elms = vtkIdTypeArray()
+    ntype = gnat(vtkIdTypeArray().GetDataType())
+    Ncxel = len(elems[0])
+    elmsv = concatenate([Ncxel*ones(Nelems).reshape(-1, 1), elems], axis=1)
+    elmsv = n2v(asarray(elmsv, order='C', dtype=ntype), deep=1) # .copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
+    elms.DeepCopy(elmsv)
+    # set vtk Cell data
+    datav = vtkCellArray()
+    datav.SetCells(Nelems, elms)
+    return datav
+    
 
 def convert2VPD(M,clean=False,lineopt='segment',verbose=False):
     """Convert pyFormex data to vtkPolyData.
@@ -167,24 +198,11 @@ def convert2VPD(M,clean=False,lineopt='segment',verbose=False):
     vpd = vtkPolyData()
 
     # creating  vtk coords
-    pts = vtkPoints()
-    ntype = gnat(pts.GetDataType())
-    coordsv = n2v(asarray(M.coords, order='C', dtype=ntype), deep=1) # .copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
-    pts.SetNumberOfPoints(M.ncoords())
-    pts.SetData(coordsv)
+    pts = coords2VTK(M.coords)
     vpd.SetPoints(pts)
 
-
-    # create vtk connectivity
-    elms = vtkIdTypeArray()
-    ntype = gnat(vtkIdTypeArray().GetDataType())
-    elmsv = concatenate([Ncxel*ones(Nelems).reshape(-1, 1), elems], axis=1)
-    elmsv = n2v(asarray(elmsv, order='C', dtype=ntype), deep=1) # .copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
-    elms.DeepCopy(elmsv)
-
-    # set vtk Cell data
-    datav = vtkCellArray()
-    datav.SetCells(Nelems, elms)
+    # create vtk connectivity as vtk Cell data
+    datav = elems2VTK(elems)
     if M.nplex() == 1:
         try:
             if verbose:
@@ -214,6 +232,46 @@ def convert2VPD(M,clean=False,lineopt='segment',verbose=False):
         vpd = cleanVPD(vpd)
     return vpd
 
+
+def convert2VTU(M):
+    """Convert pyFormex Mesh to vtk unstructured grid.
+    
+    Return a VTK unstructured grid (VTU) supports any element type and
+    is therefore an equivalent of pyFormex class Mesh.
+    """
+    def eltype2VTU(elname):
+        """convert the Mesh.elName() into vtk cell type
+        
+        vtk cell type is an integer. See
+        http://davis.lbl.gov/Manuals/VTK-4.5/vtkCellType_8h-source.html
+        """
+        import vtk
+        if elname == 'tri3':
+            return vtk.VTK_TRIANGLE
+        elif elname == 'quad4':
+            return vtk.VTK_QUAD
+        elif elname == 'tet4':
+            return vtk.VTK_TETRA
+        elif elname == 'wedge6':
+            return vtk.VTK_WEDGE
+        elif elname == 'hex8':
+            return vtk.VTK_HEXAHEDRON
+        else:
+            raise ValueError ('conversion not yet implemented')
+    # create vtk coords
+    pts = coords2VTK(M.coords)
+    # create vtk connectivity    
+    datav = elems2VTK(M.elems)
+    # find vtu cell type
+    vtuCellType = eltype2VTU(M.elName())
+    # create the vtu
+    from vtk import vtkUnstructuredGrid
+    vtu = vtkUnstructuredGrid()
+    vtu.SetPoints(pts)
+    vtu.SetCells(vtuCellType, datav)
+    vtu.Update()
+    return vtu
+    
 
 def convertVPD2Triangles(vpd):
     """Convert a vtkPolyData to a vtk triangular surface.
@@ -367,7 +425,16 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
     if checkMesh:
         if not checkClean(mesh):
             utils.warn("warn_writevtp_notclean")
-    lvtk = convert2VPD(mesh, clean=True, lineopt='segment') # also clean=False?
+
+    ftype = os.path.splitext(fn)[1]
+    ftype = ftype.strip('.').lower()
+    if ftype=='vtp':
+        lvtk = convert2VPD(mesh, clean=True, lineopt='segment') # also clean=False?
+    elif ftype=='vtk':
+        lvtk = convert2VTU(mesh)
+    else:
+        raise ValueError ('extension not recongnized')
+
     if mesh.prop is not None: # convert prop numbers into vtk array
         ntype = gnat(vtkIntArray().GetDataType())
         vtkprop = n2v(asarray(mesh.prop, order='C', dtype=ntype), deep=1)
@@ -397,8 +464,6 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
         pointdata.SetName(k)
         lvtk.GetPointData().AddArray(pointdata)
     print(('************lvtk', lvtk))
-    ftype = os.path.splitext(fn)[1]
-    ftype = ftype.strip('.').lower()
     if ftype=='vtp':
         writer = vtkXMLPolyDataWriter()
     if ftype=='vtk':
@@ -675,31 +740,30 @@ def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True, verbose=Fal
 
 
 def findElemContainingPoint(self, pts, tol=0., verbose=False):
-    """Find indices of triangles containing points.
+    """Find indices of elements containing points.
 
     Parameters:
 
-    - `self`: TriSurface
+    - `self`: a Mesh (tested with surface and volume meshes)
     - `pts`: a Coords (npts,3) specifying npts points
-    - `tol`: a tolerance applied to unshrink triangles
+    - `tol`: a tolerance applied to unshrink elems
     
     This is experimental!
-    Returns an integer array with the indices of the elem containing the points, returns -1 if no cell is found. 
-    VTK FindCell seems not having tolerance in python. However, tol could be used to enlarge (unshrink) all triangles.    
+    Returns an integer array with the indices of the elems containing the points, returns -1 if no cell is found. 
+    VTK FindCell seems not having tolerance in python. However, tol could be used to enlarge (unshrink) all elems.    
     Docs on http://www.vtk.org/doc/nightly/html/classvtkAbstractCellLocator.html#a0c980b5fcf6adcfbf06932185e89defb
-    This has been tested for TriSurface. Can it work with any (surface/volume) mesh?
-    It is still not stable: some pts are not found probably because of tolerances!
     """
     from vtk import vtkCellLocator
     
     if tol>0.:
-        ce = self.center()
-        sz = max(self.dsize(), pts.dsize())
-        self = self.trl(-ce).scale(100./sz)
-        pts = pts.trl(-ce).scale(100./sz)
-        self = self.toFormex().shrink(1.+tol)[:]#to add some tolerance to avoid errors on edges
-    
-    vpd = convert2VPD(TriSurface(self), clean=False)    
+#        ce = self.center()
+#        sz = max(self.dsize(), pts.dsize())
+#        self = self.trl(-ce).scale(100./sz)
+#        pts = pts.trl(-ce).scale(100./sz)
+        self = self.toFormex().shrink(1.+tol).toMesh()#to add some tolerance to avoid errors on edges
+  
+    from pyformex.plugins.vtk_itf import convert2VTU
+    vpd = convert2VTU(Mesh(self))    
     cellLocator=vtkCellLocator()
     cellLocator.SetDataSet(vpd)
     cellLocator.BuildLocator()
