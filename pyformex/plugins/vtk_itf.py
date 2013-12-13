@@ -246,7 +246,11 @@ def convert2VTU(M):
         http://davis.lbl.gov/Manuals/VTK-4.5/vtkCellType_8h-source.html
         """
         import vtk
-        if elname == 'tri3':
+        if elname == 'point':
+            return vtk.VTK_VERTEX
+        if elname == 'line2':
+            return vtk.VTK_LINE
+        elif elname == 'tri3':
             return vtk.VTK_TRIANGLE
         elif elname == 'quad4':
             return vtk.VTK_QUAD
@@ -739,30 +743,21 @@ def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True, verbose=Fal
     return TriSurface(coords, polys)
 
 
-def findElemContainingPoint(self, pts, tol=0., verbose=False):
+def findElemContainingPoint(self, pts, verbose=False):
     """Find indices of elements containing points.
 
     Parameters:
 
-    - `self`: a Mesh (tested with surface and volume meshes)
+    - `self`: a Mesh (point, line, surface or volume meshes)
     - `pts`: a Coords (npts,3) specifying npts points
-    - `tol`: a tolerance applied to unshrink elems
     
     This is experimental!
-    Returns an integer array with the indices of the elems containing the points, returns -1 if no cell is found. 
-    VTK FindCell seems not having tolerance in python. However, tol could be used to enlarge (unshrink) all elems.    
+    Returns an integer array with the indices of the elems containing the points, returns -1 if no cell is found.
+    Only one elem index per points is returned, which is probably the one with lower index number. 
+    VTK FindCell seems not having tolerance in python. However, the user could enlarge (unshrink) all elems.    
     Docs on http://www.vtk.org/doc/nightly/html/classvtkAbstractCellLocator.html#a0c980b5fcf6adcfbf06932185e89defb
     """
     from vtk import vtkCellLocator
-    
-    if tol>0.:
-#        ce = self.center()
-#        sz = max(self.dsize(), pts.dsize())
-#        self = self.trl(-ce).scale(100./sz)
-#        pts = pts.trl(-ce).scale(100./sz)
-        self = self.toFormex().shrink(1.+tol).toMesh()#to add some tolerance to avoid errors on edges
-  
-    from pyformex.plugins.vtk_itf import convert2VTU
     vpd = convert2VTU(Mesh(self))    
     cellLocator=vtkCellLocator()
     cellLocator.SetDataSet(vpd)
