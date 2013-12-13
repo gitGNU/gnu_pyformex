@@ -842,7 +842,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
             elems = self.elems
         else:
             elems, lo = self.elems.insertLevel(level)
-        return self.elems.connectedTo(entities)
+        return elems.connectedTo(entities)
 
 
     @utils.deprecation("mesh_notConnectedTo")
