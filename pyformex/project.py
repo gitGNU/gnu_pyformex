@@ -48,6 +48,8 @@ class_relocations = {
     'coords.BoundVectors': 'plugins.alt.BoundVectors',
     'coords.CoordinateSystem': 'coordsys.CoordinateSystem',
     'elements.Element': 'elements.ElementType',
+    'elements.Tri3': 'pyformex.elements.Tri3',
+    'mesh.Mesh': 'pyformex.mesh.Mesh',
 }
 
 def find_global(module, name):
