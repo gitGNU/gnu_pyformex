@@ -1046,6 +1046,7 @@ def writeSet(fil,type,name,set,ofs=1):
     """
     fil.write("*%s,%s=%s\n" % (type, type, name))
     set = asarray(set)
+    fl = False
     if set.dtype.kind == 'S':
         # we have set names
         for i in set:
@@ -1053,9 +1054,13 @@ def writeSet(fil,type,name,set,ofs=1):
     else:
         for i,j in enumerate(set+ofs):
             fil.write("%d," % j)
+            if not fl:
+                fl = True
             if (i+1)%16==0:
                 fil.write("\n")
-    print("\n")            
+                fl = False
+    if fl:
+        fil.write("\n")            
 
 spring_elems = ['SPRINGA', ]
 dashpot_elems = ['DASHPOTA', ]
