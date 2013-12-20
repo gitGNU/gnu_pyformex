@@ -1051,9 +1051,11 @@ def writeSet(fil,type,name,set,ofs=1):
         for i in set:
             fil.write('%s\n' % i)
     else:
-        for i in set+ofs:
-            fil.write("%d,\n" % i)
-
+        for i,j in enumerate(set+ofs):
+            fil.write("%d," % j)
+            if (i+1)%16==0:
+                fil.write("\n")
+    print("\n")            
 
 spring_elems = ['SPRINGA', ]
 dashpot_elems = ['DASHPOTA', ]
