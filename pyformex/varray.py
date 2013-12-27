@@ -88,6 +88,8 @@ class Varray(object):
 
     - `data`: can be one of the following:
 
+      - another Varray instance: a shallow copy of the Varray is created.
+
       - a list of lists of integers. Each item in the list contains
         one row of the table.
 
@@ -95,10 +97,14 @@ class Varray(object):
         constitute the data for that row.
 
       - a 1D array or list of integers, containing the concatenation of
-        the rows. In this case the specification of the index as second
-        argument is required.
+        the rows. The second argument `ind` specifies the indices of the
+        first element of each row.
 
-    - `ind`: only used when `data` is already a concatenation of all rows.
+      - a 1D array or list of integers, containing the concatenation of
+        the rows obtained by prepending each row with the row length.
+        The caller should make sure the these 1D data are consistent.
+
+    - `ind`: only used when `data` is the pure concatenation of all rows.
       It is a 1D integer array or list specifying the position in `data` of
       the first element of each row. Its length should be equal to the
       number of rows (`nrows`) or `nrows+1`.
@@ -125,6 +131,21 @@ class Varray(object):
       [0 2]
     <BLANKLINE>
 
+    Other initialization methods resulting in the same Varray:
+
+    >>> Vb = Varray(Va)
+    >>> print(str(Vb) == str(Va))
+    True
+    >>> Vb = Varray(array([[-1,-1,0],[-1,1,2],[0,2,4],[-1,0,2]]))
+    >>> print(str(Vb) == str(Va))
+    True
+    >>> Vb = Varray([0,1,2,0,2,4,0,2],cumsum([0,1,2,3,2]))
+    >>> print(str(Vb) == str(Va))
+    True
+    >>> Vb = Varray([1,0, 2,1,2, 3,0,2,4, 2,0,2])
+    >>> print(str(Vb) == str(Va))
+    True
+
     Indexing: The data for any row can be obtained by simple indexing:
 
     >>> print(Va[1])
@@ -148,7 +169,7 @@ class Varray(object):
     [0 2]
 
     """
-    def __init__(self,data=[],ind=[]):
+    def __init__(self,data=[],ind=None):
         """Initialize the Varray. See the class docstring."""
 
         # If data is a Varray, just use its data
@@ -172,9 +193,22 @@ class Varray(object):
         except:
             pass
 
-        # Data and ind should now be 1D arrays
+        # data should now be 1D array
+        # ind is also 1D array, unless initialized from inlined length data
         try:
             data = checkArray(data, kind='i', ndim=1)
+            if ind is None:
+                # extract row lengths from data
+                i = 0
+                size = len(data)
+                rowlen = []
+                while i < size:
+                    rowlen.append(data[i])
+                    i += data[i]+1
+                # create indices and remove row lengths from data
+                ind = cumsum([0]+rowlen)
+                data = delete(data,ind[:-1]+arange(len(rowlen)))
+
             ind = checkArray(ind, kind='i', ndim=1)
             ind.sort()
             if ind[0] != 0 or ind[-1] > len(data):
@@ -188,7 +222,7 @@ class Varray(object):
         self.data = data
         self.ind = ind
         # We also store the width because it is often needed and
-        # expensive to compute
+        # may be expensive to compute
         self.width = max(self.lengths)
 
 
