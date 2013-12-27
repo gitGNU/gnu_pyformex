@@ -297,17 +297,35 @@ def convertVPD2Triangles(vpd):
     return triangles.GetOutput()
 
 
-def convertFromVPD(vpd,verbose=False):
+def vtkCellArray2varray(vtkCA):
+    """convert a vtkCellArray to a pyFormex varray.
+    
+    The cell array structure of vtk is a raw integer list of the form: (n,id1,id2,...,idn, n,id1,id2,...,idn, ...) 
+    where n is the number of points in the cell, and id is a zero-offset index into an associated point list.
+    The equivalent of this structure in pyFormex is the varray.    
+    """
+    from pyformex.varray import Varray
+    va=asarray(v2n(vtkCA.GetData()))
+    nrows=vtkCA.GetNumberOfCells()
+    Pos = [0]
+    [Pos.append(Pos[i]+va[Pos[i]]+1) for i in range(nrows-1)]#implicit scan of full array
+    ind = va[Pos]
+    ind = append([0], cumsum(ind))
+    return Varray(data=delete(va, Pos), ind=ind)
+
+
+def convertFromVPD(vpd,verbose=False,samePlex=True):
     """Convert a vtkPolyData into pyFormex objects.
 
     Parameters:
 
     - `vpd`: a vtkPolyData
-
+    - `samePlex`: True if you are sure that all lines and polys have the same element type
 
     Returns:
 
-        - a list with points, cells, polygons, lines, vertices numpy arrays
+        - a list with points, cells, polygons, lines, vertices numpy arrays if samePlex is True
+         or pyFormex varray if samePlex is False.
         - `fielddata` : a dict of {name:fielddata_numpy_array}
         - `celldata` : a dict of {name:celldata_numpy_array}
         - `pointdata` : a dict of {name:pointdata_numpy_array}
@@ -319,12 +337,14 @@ def convertFromVPD(vpd,verbose=False):
     fielddata = celldata = pointdata = dict()
 
     if vpd is None:
+        if verbose:
+            print('The vtkPolyData is None')
         return [coords, cells, polys, lines, verts], fielddata, celldata, pointdata
 
     # getting points coords
     if  vpd.GetPoints().GetData().GetNumberOfTuples():
         ntype = gnat(vpd.GetPoints().GetDataType())
-        coords = asarray(v2n(vpd.GetPoints().GetData()), dtype=ntype)
+        coords = Coords(asarray(v2n(vpd.GetPoints().GetData()), dtype=ntype))
         if verbose:
             print('Saved points coordinates array')
 
@@ -341,20 +361,30 @@ def convertFromVPD(vpd,verbose=False):
     # getting Polygons
     if vtkdtype not in [4]: # this list need to be updated according to the data type
         if  vpd.GetPolys().GetData().GetNumberOfTuples():
-            ntype = gnat(vpd.GetPolys().GetData().GetDataType())
-            Nplex = vpd.GetPolys().GetMaxCellSize()
-            polys = asarray(v2n(vpd.GetPolys().GetData()), dtype=ntype).reshape(-1, Nplex+1)[:, 1:]
-            if verbose:
-                print('Saved polys connectivity array')
+            if samePlex == True:
+                ntype = gnat(vpd.GetPolys().GetData().GetDataType())
+                Nplex = vpd.GetPolys().GetMaxCellSize()
+                polys = asarray(v2n(vpd.GetPolys().GetData()), dtype=ntype).reshape(-1, Nplex+1)[:, 1:]
+                if verbose:
+                    print('Saved polys connectivity array')
+            else:
+                polys =  vtkCellArray2varray(vpd.GetPolys())
+                if verbose:
+                    print('Saved polys connectivity varray')
 
     # getting Lines
     if vtkdtype not in [4]: # this list need to be updated according to the data type
         if  vpd.GetLines().GetData().GetNumberOfTuples():
-            ntype = gnat(vpd.GetLines().GetData().GetDataType())
-            Nplex = vpd.GetLines().GetMaxCellSize()
-            lines = asarray(v2n(vpd.GetLines().GetData()), dtype=ntype).reshape(-1, Nplex+1)[:, 1:]
-            if verbose:
-                print('Saved lines connectivity array')
+            if samePlex == True:
+                ntype = gnat(vpd.GetLines().GetData().GetDataType())
+                Nplex = vpd.GetLines().GetMaxCellSize()
+                lines = asarray(v2n(vpd.GetLines().GetData()), dtype=ntype).reshape(-1, Nplex+1)[:, 1:]
+                if verbose:
+                    print('Saved lines connectivity array')
+            else:
+                lines =  vtkCellArray2varray(vpd.GetLines())#this is the case of polylines
+                if verbose:
+                    print('Saved lines connectivity varray')
 
     # getting Vertices
     if vtkdtype not in [4]: # this list need to be updated acoorind to the data type
@@ -482,7 +512,7 @@ def readVTP(fn):
     return readVTKObject(fn)
 
 
-def readVTKObject(fn):
+def readVTKObject(fn,verbose=True,samePlex=True):
     """Read a .vtp file
 
     Read a .vtp file and return coords, list of elems, and a dict of arrays.
@@ -511,7 +541,7 @@ def readVTKObject(fn):
     reader.SetFileName(fn)
     reader.Update()
     vpd = reader.GetOutput() # vtk polydata object
-    return convertFromVPD(vpd)
+    return convertFromVPD(vpd, verbose=verbose, samePlex=samePlex)
 
 
 
