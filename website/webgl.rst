@@ -31,7 +31,9 @@
 
 .. _`WebGL`: http://en.wikipedia.org/wiki/WebGL
 .. _`X Toolkit`: http://www.goxtk.com
+.. _`multiscene WebGL`: _static/Combined.html
 .. _`WebGL BridgeDeck`: _static/BridgeDeck.html
+
 
 WebGL models
 ============
@@ -51,6 +53,15 @@ middle mouse button pressed you can move the model. Pressing the right button
 lets you zoom in and out. There is also a gui where you can interactively change
 the color and transparency of the parts of the model, and even switch the parts
 on or off.
+
+
+- A demo of the `multiscene WebGL`_ export capability in pyFormex.
+  A single export contains three different models from pyFormex stock examples.
+
+  .. image:: images/multiscene_WebGL.png
+     :width: 60%
+     :align: center
+     :target: `multiscene WebGL`_
 
 - A bridgedeck model, by Frederik Anseeuw and Kenzo De Sutter.
   Try out the `WebGL BridgeDeck`_ model.
