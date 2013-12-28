@@ -66,8 +66,7 @@ def openProject(fn=None,exist=False,access=['wr', 'rw', 'w', 'r'],default=None):
     if isinstance(access, str):
         access = [access]
     cur = fn if fn else '.'
-    typ = utils.fileDescription(['pyf', 'all'])
-    res = widgets.ProjectSelection(cur, typ, exist=exist, access=access, default=default, convert=True).getResult()
+    res = widgets.ProjectSelection(cur, ['pyf', 'all'], exist=exist, access=access, default=default, convert=True).getResult()
     if not res:
         return
 
@@ -376,8 +375,7 @@ def openScript(fn=None,exist=True,create=False):
             cur = pf.cfg['workdir']
         if cur is None:
             cur  = '.'
-        typ = utils.fileDescription('pyformex')
-        fn = widgets.FileSelection(cur, typ, exist=exist).getFilename()
+        fn = widgets.FileSelection(cur, 'pyformex', exist=exist).getFilename()
     if fn:
         if create:
             if not exist and os.path.exists(fn) and not draw.ack("The file %s already exists.\n Are you sure you want to overwrite it?" % fn):
@@ -439,8 +437,7 @@ def saveImage(multi=False):
      - start the multisave/autosave mode
      - do nothing
     """
-    pat = [utils.fileDescription(e) for e in ['img', 'icon', 'all']]
-    dia = widgets.SaveImageDialog(pf.cfg['workdir'], pat, multi=multi)
+    dia = widgets.SaveImageDialog(pf.cfg['workdir'], ['img', 'icon', 'all'], multi=multi)
     opt = dia.getResult()
     if opt:
         if opt.fm == 'From Extension':
@@ -470,7 +467,7 @@ def saveIcon():
     asking for an icon file name. Then save the current rendering to that file.
     """
     ## We should create a specialized input dialog, asking also for the size
-    fn = draw.askNewFilename(filter=utils.fileDescription('icon'))
+    fn = draw.askNewFilename(filter='icon')
     if fn:
         image.saveIcon(fn, size=32)
 
@@ -489,7 +486,7 @@ def showImage():
     """Display an image file."""
     from pyformex.gui.imageViewer import ImageViewer
     global viewer
-    fn = draw.askFilename(filter=utils.fileDescription('img'))
+    fn = draw.askFilename(filter='img')
     if fn:
         viewer = ImageViewer(pf.app, fn)
         viewer.show()
@@ -542,8 +539,7 @@ def createMovieInteractive():
 ## def exportPGF():
 ##     """Export the current scene to PGF"""
 ##     from pyformex.plugins.webgl import WebGL
-##     types = utils.fileDescription(['pgf', 'all'])
-##     fn = draw.askNewFilename(pf.cfg['workdir'], types)
+##     fn = draw.askNewFilename(pf.cfg['workdir'], ['pgf', 'all'])
 ##     if fn:
 ##         pf.GUI.setBusy()
 ##         print("Exporting current scene to %s" % fn)
@@ -564,8 +560,7 @@ def exportWebGL():
     The user is asked for a file name to store the exported model,
     and after export, whether to load the model in the browser.
     """
-    types = [ utils.fileDescription('html') ]
-    fn = draw.askNewFilename(pf.cfg['workdir'], types)
+    fn = draw.askNewFilename(pf.cfg['workdir'], 'html')
     if fn:
         fn = draw.exportWebGL(fn)
         if draw.ack("Show the scene in your browser?"):
@@ -585,8 +580,7 @@ def multiWebGL():
         print("CURRENTLY EXPORTED: %s" % draw.the_multiWebGL.scenes)
 
     if draw.the_multiWebGL is None:
-        types = [ utils.fileDescription('html') ]
-        fn = draw.askNewFilename(pf.cfg['workdir'], types)
+        fn = draw.askNewFilename(pf.cfg['workdir'], 'html')
         if fn:
             print("Exporting multiscene WebGL to %s" % fn)
             draw.multiWebGL(fn=fn)

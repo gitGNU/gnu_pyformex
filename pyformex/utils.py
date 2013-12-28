@@ -29,6 +29,7 @@ from pyformex import zip
 
 import pyformex as pf
 from pyformex.software import *
+from pyformex.odict import OrderedDict
 
 import os
 import re
@@ -573,33 +574,33 @@ def all_image_extensions():
     imgfmt = []
 
 
-file_description = {
-    'all': 'All files (*)',
-    'ccx': 'CalCuliX files (*.dat *.inp)',
-    'dxf': 'AutoCAD .dxf files (*.dxf)',
-    'dxfall': 'AutoCAD .dxf or converted(*.dxf *.dxftext)',
-    'dxftext': 'Converted AutoCAD files (*.dxftext)',
-    'flavia': 'flavia results (*.flavia.msh *.flavia.res)',
-    'gts': 'GTS files (*.gts)',
-    'html': 'Web pages (*.html)',
-    'icon': 'Icons (*.xpm)',
-    'img': 'Images (*.png *.jpg *.eps *.gif *.bmp)',
-    'inp': 'Abaqus or CalCuliX input files (*.inp)',
-    'neu': 'Gambit Neutral files (*.neu)',
-    'off': 'OFF files (*.off)',
-    'pgf': 'pyFormex geometry files (*.pgf)',
-    'png': 'PNG images (*.png)',
-    'postproc': 'Postproc scripts (*_post.py *.post)',
-    'pyformex': 'pyFormex scripts (*.py *.pye)',
-    'pyf': 'pyFormex projects (*.pyf)',
-    'smesh': 'Tetgen surface mesh files (*.smesh)',
-    'stl': 'STL files (*.stl)',
-    'stlb': 'Binary STL files (*.stl)',  # Use only for output
-    'surface': 'Surface models (*.off *.gts *.stl *.off.gz *.gts.gz *.stl.gz *.neu *.smesh *.vtp *.vtk)',
-    'tetgen': 'Tetgen files (*.poly *.smesh *.ele *.face *.edge *.node *.neigh)',
-    'vtk': 'All VTK types (*.vtk *.vtp)',
-    'vtp': 'vtkPolyData file (*.vtp)',
-}
+file_description = OrderedDict([
+    ('all', 'All files (*)'),
+    ('ccx', 'CalCuliX files (*.dat *.inp)'),
+    ('dxf', 'AutoCAD .dxf files (*.dxf)'),
+    ('dxfall', 'AutoCAD .dxf or converted(*.dxf *.dxftext)'),
+    ('dxftext', 'Converted AutoCAD files (*.dxftext)'),
+    ('flavia', 'flavia results (*.flavia.msh *.flavia.res)'),
+    ('gts', 'GTS files (*.gts)'),
+    ('html', 'Web pages (*.html)'),
+    ('icon', 'Icons (*.xpm)'),
+    ('img', 'Images (*.png *.jpg *.eps *.gif *.bmp)'),
+    ('inp', 'Abaqus or CalCuliX input files (*.inp)'),
+    ('neu', 'Gambit Neutral files (*.neu)'),
+    ('off', 'OFF files (*.off)'),
+    ('pgf', 'pyFormex geometry files (*.pgf)'),
+    ('png', 'PNG images (*.png)'),
+    ('postproc', 'Postproc scripts (*_post.py *.post)'),
+    ('pyformex', 'pyFormex scripts (*.py *.pye)'),
+    ('pyf', 'pyFormex projects (*.pyf)'),
+    ('smesh', 'Tetgen surface mesh files (*.smesh)'),
+    ('stl', 'STL files (*.stl)'),
+    ('stlb', 'Binary STL files (*.stl)'),  # Use only for output
+    ('surface', 'Surface models (*.off *.gts *.stl *.off.gz *.gts.gz *.stl.gz *.neu *.smesh *.vtp *.vtk)'),
+    ('tetgen', 'Tetgen files (*.poly *.smesh *.ele *.face *.edge *.node *.neigh)'),
+    ('vtk', 'All VTK types (*.vtk *.vtp)'),
+    ('vtp', 'vtkPolyData file (*.vtp)'),
+])
 
 
 def fileExtensionsFromFilter(ftype):
@@ -625,16 +626,74 @@ def fileExtensions(ftype):
 
 
 def fileDescription(ftype):
-    """Return a description of the specified file type.
+    """Return a description of the specified file type(s).
 
-    The description of known types are listed in a dict file_description.
-    If the type is unknown, the returned string has the form
-    ``TYPE files (*.type)``
+    Parameters:
+
+    - `ftype`: a string or a list of strings. If it is a list, the return
+      value will be a list of the corresponding return values for each of
+      the strings in it. Each input string is converted to lower case
+      and represents a file type. It can be one of the following:
+
+      - a key in the :var:`file_description` dict: the corresponding value
+        will be returned (see Examples below).
+      - a string of only alphanumerical characters: it will be interpreted
+        as a file extension and the corresponding return value is
+        ``FTYPE files (*.ftype)``
+      - any other string is returned as as: this allows the user to compose
+        his filters himself.
+
+    Examples:
+
+    >>> print(formatDict(file_description))
+    all = 'All files (*)'
+    ccx = 'CalCuliX files (*.dat *.inp)'
+    dxf = 'AutoCAD .dxf files (*.dxf)'
+    dxfall = 'AutoCAD .dxf or converted(*.dxf *.dxftext)'
+    dxftext = 'Converted AutoCAD files (*.dxftext)'
+    flavia = 'flavia results (*.flavia.msh *.flavia.res)'
+    gts = 'GTS files (*.gts)'
+    html = 'Web pages (*.html)'
+    icon = 'Icons (*.xpm)'
+    img = 'Images (*.png *.jpg *.eps *.gif *.bmp)'
+    inp = 'Abaqus or CalCuliX input files (*.inp)'
+    neu = 'Gambit Neutral files (*.neu)'
+    off = 'OFF files (*.off)'
+    pgf = 'pyFormex geometry files (*.pgf)'
+    png = 'PNG images (*.png)'
+    postproc = 'Postproc scripts (*_post.py *.post)'
+    pyformex = 'pyFormex scripts (*.py *.pye)'
+    pyf = 'pyFormex projects (*.pyf)'
+    smesh = 'Tetgen surface mesh files (*.smesh)'
+    stl = 'STL files (*.stl)'
+    stlb = 'Binary STL files (*.stl)'
+    surface = 'Surface models (*.off *.gts *.stl *.off.gz *.gts.gz *.stl.gz *.neu *.smesh *.vtp *.vtk)'
+    tetgen = 'Tetgen files (*.poly *.smesh *.ele *.face *.edge *.node *.neigh)'
+    vtk = 'All VTK types (*.vtk *.vtp)'
+    vtp = 'vtkPolyData file (*.vtp)'
+    <BLANKLINE>
+    >>> fileDescription('img')
+    'Images (*.png *.jpg *.eps *.gif *.bmp)'
+    >>> fileDescription(['pgf','stl','all'])
+    ['pyFormex geometry files (*.pgf)', 'STL files (*.stl)', 'All files (*)']
+    >>> fileDescription('doc')
+    'DOC files (*.doc)'
+    >>> fileDescription('inp')
+    'Abaqus or CalCuliX input files (*.inp)'
+    >>> fileDescription('*.inp')
+    '*.inp'
+
     """
     if isinstance(ftype, list):
         return [fileDescription(f) for f in ftype]
     ftype = ftype.lower()
-    return file_description.get(ftype, "%s files (*.%s)" % (ftype.upper(), ftype))
+    if ftype in file_description:
+        ret = file_description[ftype]
+    elif ftype.isalnum():
+        ret = "%s files (*.%s)" % (ftype.upper(), ftype)
+    else:
+        ret = ftype
+    return ret
 
 
 def fileType(ftype):

@@ -153,11 +153,12 @@ class WebGL(object):
 
         print("SCRIPTS %s" % scripts)
         if not scripts:
-            if pf.cfg['webgl/devel']:
-                scripts = 'file://' + os.path.join(pf.cfg['pyformexdir'], 'opengl', 'feops_xtk.js')
-            else:
-                print("PF.CFG %s" % pf.cfg['webgl/script'])
-                scripts = pf.cfg['webgl/script']
+            ## if pf.cfg['webgl/devel']:
+            ##     scripts = nd('file://' + os.path.join(pf.cfg['pyformexdir'], 'opengl', 'feops_xtk.js'))
+            ##     scripts.append('file://' + os.path.join(pf.cfg['pyformexdir'], 'opengl', 'xtk_xdat_gui.js'))
+            ## else:
+                ## print("PF.CFG %s" % pf.cfg['webgl/script'])
+            scripts = pf.cfg['webgl/script']
             scripts = [ scripts ]
             if gui:
                 scripts.append(pf.cfg['webgl/guiscript'])
@@ -597,10 +598,10 @@ def surface2webgl(S,name,caption=None):
 
 def createMultiWebGL():
     """Creates a multimodel WebGL from single WebGL models"""
-    models = askFilename(filter=utils.fileDescription(['html','js']),multi=True)
+    models = askFilename(filter=['html','js'],multi=True)
     if not models:
         return
-    combined = askNewFilename(filter=utils.fileDescription(['html','js']),caption="Enter name of the combined model")
+    combined = askNewFilename(filter=['html','js'],caption="Enter name of the combined model")
     if not combined:
         return
     fout = open(utils.changeExt(combined,'js'),'w')

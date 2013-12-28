@@ -116,8 +116,7 @@ def readSelection(select=True,draw=True,multi=True):
     If select is True (default), this becomes the current selection.
     If select and draw are True (default), the selection is drawn.
     """
-    types = [utils.fileDescription(e) for e in ['surface', 'all']]
-    fn = askFilename(pf.cfg['workdir'], types, multi=multi)
+    fn = askFilename(pf.cfg['workdir'], ['surface', 'all'], multi=multi)
     if fn:
         if not multi:
             fn = [ fn ]
@@ -344,8 +343,6 @@ def export_surface(types=['surface', 'gts', 'stl', 'off', 'neu', 'smesh', 'vtp',
             types = [ types ]
         else:
             ftype = None
-        types = [utils.fileDescription(e) for e in types]
-        print(types)
         fn = askNewFilename(pf.cfg['workdir'], types)
         if fn:
             if ftype is None:
@@ -361,7 +358,7 @@ def export_stl():
     F = selection.check(single=True)
     if F:
         res = askItems([
-            _I('filename', pf.cfg['workdir'], itemtype='file', filter=utils.fileDescription('stl'), text=''),
+            _I('filename', pf.cfg['workdir'], itemtype='file', filter='stl', text=''),
             _I('binary', True),
             _I('color', 'red', itemtype='color'),
             _I('alpha', 0.5),
@@ -386,8 +383,7 @@ def export_stl():
 def export_webgl():
     F = selection.check(single=True)
     if F:
-        types = [utils.fileDescription(e) for e in ['stl']]
-        fn = askNewFilename(pf.cfg['workdir'], types)
+        fn = askNewFilename(pf.cfg['workdir'], 'stl')
         if fn:
             pf.message("Exporting surface model to %s" % fn)
             pf.GUI.setBusy()

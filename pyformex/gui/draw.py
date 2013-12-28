@@ -341,16 +341,33 @@ def dialogTimedOut():
     return _dialog_result == widgets.TIMEOUT
 
 
-def askFilename(cur=None,filter="All files (*.*)",exist=True,multi=False,change=True,timeout=None,caption=None):
+def askFilename(cur=None,filter='all',exist=True,multi=False,change=True,timeout=None,caption=None):
     """Ask for a file name or multiple file names using a file dialog.
 
-    cur is a directory or filename. All the files matching the filter in that
-    directory (or that file's directory) will be shown.
-    If cur is a file, it will be selected as the current filename.
+    Parameters:
 
-    Unless the user cancels the operation, or the change parameter was set to
-    False, the parent directory of the selected file will become the new
-    working directory.
+    - `cur`: directory or filename. Specifies the starting point of the
+      selection dialog. All the files in the specified directory (or the
+      file's directory) matching the `filter` will be presented to the user.
+      If cur is a file, it will be set as the initial selection.
+    - `filter`: string or list of strings. Specifies a (set of) filter(s) to
+      be applied on the files in the selected directory. This allows to
+      narrow down the selection possibilities. The `filter` argument is passed
+      through the :func:`utils.fileDescription` function to create the
+      actual filter set. If multiple filters are included, the user can
+      select the appropriate one from the dialog.
+    - `multi`: bool. If True, allows the user to pick multiple file names
+      in a single operation.
+    - `change`: bool. If True (default), the current working directory will
+      be changed to the parent directory of the selection.
+    - `caption`: string. This string will be displayed as the dialog title
+      instead of the default one.
+    - `timeout`: float. If specified, the dialog will timeout after the
+      specified number of seconds.
+
+    Returns nothing if the user cancels the operation. Else, a single file
+    name is returned if `multi` is False, or a list of file names if
+    `multi` is True.
     """
     if cur is None:
         cur = pf.cfg['workdir']
@@ -363,6 +380,8 @@ def askFilename(cur=None,filter="All files (*.*)",exist=True,multi=False,change=
     if fn:
         w.selectFile(fn)
     fn = w.getFilename(timeout)
+    if not fn:
+        return None
     fs = w.selectedNameFilter()
     if not exist and not multi:
         # Check and force extension for single new file
@@ -423,8 +442,7 @@ def askDirname(path=None,change=True,byfile=False,caption=None):
 def askImageFile(fn=None):
     if not fn:
         fn = pf.cfg['pyformexdir']
-    filt = [utils.fileDescription(e) for e in ['img', 'all']]
-    return askFilename(fn, filter=filt, multi=False, exist=True)
+    return askFilename(fn, filter=['img', 'all'], multi=False, exist=True)
 
 
 def checkWorkdir():

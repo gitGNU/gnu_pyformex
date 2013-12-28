@@ -66,18 +66,33 @@ def run():
     r = D/2
     e0 = 0.3
 
+
+    if not 'FePlast_diag' in pf.PF:
+        print("Initializing")
+        pf.PF['FePlast_diag'] = dict(
+            geometry = None,
+            material = None,
+            eltype = None,
+            interpolation = None,
+            format = None,
+            run = False,
+            )
+
+
     # User input
-    res = askItems([
+    res = askItems(store=pf.PF['FePlast_diag'],items=[
         _I('geometry', choices=['Rectangle', 'Square with hole'], text='Plate geometry'),
         _I('material', choices=['Elastic', 'Plastic'], text='Material model'),
         _I('eltype', choices=['quad4', 'quad8', 'hex8', 'hex20'], text='Element type'),
         _I('interpolation', choices=['Linear', 'Quadratic'], text='Degree of interpolation'),
         _I('format', choices=['CalculiX', 'Abaqus'], text='FEA input format'),
-        _I('run', True, text='Run simulation'),
+        _I('run', False, text='Run simulation'),
         ])
 
     if not res:
         return
+
+    pf.PF['FePlast_diag'] = res
 
 
     # Create geometry
@@ -221,7 +236,7 @@ def run():
 
     data = AbqData(FEM, prop=P, steps=simsteps, res=result, bound=['init'])
 
-    fn = askNewFilename(pf.cfg['workdir']+'/feplast.inp', filter='*.inp')
+    fn = askNewFilename(pf.cfg['workdir']+'/feplast.inp', filter='inp')
 
 
     if fn:

@@ -53,11 +53,8 @@ def run():
     # default image
     fn = os.path.join(getcfg('datadir'), 'world.jpg')
 
-    # pattern of files to select from
-    pat = utils.fileDescription('img')
-
     res = askItems([
-        _I('fn', fn, itemtype='file', pattern=pat, exist=True, text=''),
+        _I('fn', fn, itemtype='file', pattern='img', exist=True, text=''),
         _I('part', itemtype='radio', choices=["Plane", "Half Sphere", "Full Sphere"], text='Show image on'),
         ])
     if not res:

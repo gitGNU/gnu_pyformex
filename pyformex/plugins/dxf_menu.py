@@ -61,7 +61,7 @@ def importDxf(convert=False,keep=False):
 
     If convert == False, this function returns the list imported DXF entities.
     """
-    fn = askFilename(filter=utils.fileDescription('dxf'))
+    fn = askFilename(filter='dxf')
     if not fn:
         return
 
@@ -102,7 +102,7 @@ def importDxfText(text=None):
     """
     import types
     if text is None:
-        fn = askFilename(filter=utils.fileDescription('dxftext'))
+        fn = askFilename(filter='dxftext')
         if not fn:
             return
         text = open(fn).read()
@@ -192,9 +192,8 @@ def exportDxfText():
     """Export the parts as a .dxftext file"""
     parts = named('_dxf_sel_')
     if parts:
-        types = utils.fileDescription(['dxftext'])
         cur = pf.cfg['workdir']
-        fn = askFilename(cur=cur, filter=types, exist=False)
+        fn = askFilename(cur=cur, filter='dxftext', exist=False)
         if fn:
             dxf.exportDxfText(fn, parts)
             print("Wrote .dxftext file %s" % fn)
@@ -208,9 +207,8 @@ def exportDxf():
     """
     parts = named('_dxf_sel_')
     if parts:
-        types = utils.fileDescription(['dxf'])
         cur = pf.cfg['workdir']
-        fn = askFilename(cur=cur, filter=types, exist=False)
+        fn = askFilename(cur=cur, filter='dxf', exist=False)
         if fn:
             dxf.exportDxf(fn, parts)
 
@@ -219,9 +217,8 @@ def exportDxf():
 ##     """Export the lines as a .dxf file."""
 ##     F = named("_lines_")
 ##     if F:
-##         types = utils.fileDescription(['dxf'])
 ##         cur = pf.cfg['workdir']
-##         fn = askFilename(cur=cur,filter=types,exist=False)
+##         fn = askFilename(cur=cur,filter='dxf',exist=False)
 ##         if fn:
 ##             dxf.exportDXF(fn,F)
 ##             print("Wrote .dxf file %s" % fn)

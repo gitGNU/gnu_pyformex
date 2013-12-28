@@ -217,9 +217,8 @@ def importGeometry(select=True,draw=True,ftype=None):
         pass
     else:
         ftype = [ftype]
-    types = utils.fileDescription(ftype)
     cur = pf.cfg['workdir']
-    fn = askFilename(cur=cur, filter=types)
+    fn = askFilename(cur=cur, filter=ftype)
     if fn:
         message("Reading geometry file %s" % fn)
         res = readGeometry(fn)
@@ -323,9 +322,8 @@ def exportGeometry(types=['pgf', 'all'],sep=' ',shortlines=False):
     if not selection.check():
         return
 
-    filter = utils.fileDescription(types)
     cur = pf.cfg['workdir']
-    fn = askNewFilename(cur=cur, filter=filter)
+    fn = askNewFilename(cur=cur, filter=types)
     if fn:
         message("Writing geometry file %s" % fn)
         res = writeGeometry(selection.odict(), fn, sep=sep, shortlines=shortlines)
@@ -344,9 +342,8 @@ def exportOff():
 
 def convertGeometryFile():
     """Convert pyFormex geometry file to latest format."""
-    filter = utils.fileDescription(['pgf', 'all'])
     cur = pf.cfg['workdir']
-    fn = askFilename(cur=cur, filter=filter)
+    fn = askFilename(cur=cur, filter=['pgf', 'all'])
     if fn:
         from pyformex.geomfile import GeometryFile
         message("Converting geometry file %s to version %s" % (fn, GeometryFile._version_))

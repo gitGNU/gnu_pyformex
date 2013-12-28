@@ -242,7 +242,7 @@ def run():
     data = AbqData(M, prop=P, steps=[step1, step2], bound=['init'])
 
     if ack('Export this model in ABAQUS input format?', default='No'):
-        fn = askNewFilename(filter='*.inp')
+        fn = askNewFilename(filter='inp')
         if fn:
             data.write(jobname=fn, group_by_group=True)
 

@@ -599,8 +599,7 @@ def importCalculix(fn=None):
     from pyformex.fileread import readInpFile
     #from plugins.fe import Model
     if fn is None:
-        types = [ utils.fileDescription('ccx') ]
-        fn = askFilename(pf.cfg['workdir'], types)
+        fn = askFilename(pf.cfg['workdir'], 'ccx')
     if fn:
         chdir(fn)
         if fn.endswith('.inp'):
@@ -641,8 +640,7 @@ def importFlavia(fn=None):
     """
     from pyformex.plugins.flavia import readFlavia
     if fn is None:
-        types = [ utils.fileDescription('flavia'), utils.fileDescription('all') ]
-        fn = askFilename(pf.cfg['workdir'], types)
+        fn = askFilename(pf.cfg['workdir'], ['flavia','all'])
     if fn:
         chdir(fn)
         if fn.endswith('.msh'):
@@ -673,8 +671,7 @@ def importDB(fn=None):
     """Import a _post.py database and select it as the current."""
 
     if fn is None:
-        types = utils.fileDescription('postproc')
-        fn = askFilename(pf.cfg['workdir'], types)
+        fn = askFilename(pf.cfg['workdir'], 'postproc')
     if fn:
         chdir(fn)
         sizeM = round(os.stat(fn).st_size * 1.e-6)

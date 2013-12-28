@@ -43,7 +43,7 @@ filename = os.path.join(getcfg('datadir'), 'horse.off')
 
 
 def selectSurfaceFile(fn):
-    fn = askFilename(fn, filter=utils.fileDescription('surface'))
+    fn = askFilename(fn, filter='surface')
     return fn
 
 

@@ -2453,14 +2453,10 @@ class FileSelection(QtGui.QFileDialog):
 
         'Image files (*.png *.jpg)'
 
-      The function :func:`utils.fileDescription` can be used to create some
-      strings for common classes of files.
-
-      As a convenience, if a string starts with a '.', the remainder of the
-      string will be used as a lookup key in utils.fileDescription to get
-      the actual string to be used. Thus, pattern='.png' will filter all
-      '.png' files, and pattern='.img' will filter all image files in any
-      of the supported formats.
+      The `pattern` argument is passed through the
+      :func:`utils.fileDescription`
+      function to create the actual pattern set. This allows the creation
+      of filters for common file types with a minimal input.
 
       If a list of multiple strings is given, a combo box will allow the
       user to select between one of them.
@@ -2474,8 +2470,8 @@ class FileSelection(QtGui.QFileDialog):
     - `button`: string: the label to be displayed on the accept button. The
       default is set to 'Save' if new files are allowed or 'Open' if only
       existing files can be selected.
-    """
 
+    """
 
     def accept_any(self):
         self.done(ACCEPTED)
@@ -2492,6 +2488,7 @@ class FileSelection(QtGui.QFileDialog):
             self.selectFile(path)
         else:
             self.setDirectory(path)
+        pattern = utils.fileDescription(pattern)
         if isinstance(pattern, str):
             self.setFilter(pattern)
         else: # should be a list of patterns
@@ -2588,7 +2585,7 @@ class ProjectSelection(FileSelection):
         if path is None:
             path = pf.cfg['workdir']
         if pattern is None:
-            pattern = [ utils.fileDescription('pyf') ]
+            pattern = 'pyf'
         FileSelection.__init__(self, path, pattern, exist)
         grid = self.layout()
         nr, nc = grid.rowCount(), grid.columnCount()
@@ -2651,7 +2648,7 @@ class SaveImageDialog(FileSelection):
         if path is None:
             path = pf.cfg['workdir']
         if pattern is None:
-            pattern = [utils.fileDescription(e) for e in ['img', 'icon', 'all']]
+            pattern = ['img', 'icon', 'all']
         FileSelection.__init__(self, path, pattern, exist)
         grid = self.layout()
         nr, nc = grid.rowCount(), grid.columnCount()
