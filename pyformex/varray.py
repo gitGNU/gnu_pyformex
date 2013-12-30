@@ -159,6 +159,19 @@ class Varray(object):
       [0 2]
     <BLANKLINE>
 
+    Select takes row numbers or bool:
+
+    >>> print(Va.select([1,3]))
+    Varray (2,2)
+      [1 2]
+      [0 2]
+    <BLANKLINE>
+    >>> print(Va.select(Va.lengths==2))
+    Varray (2,2)
+      [1 2]
+      [0 2]
+    <BLANKLINE>
+
     Iterator: A Varray provides its own iterator:
 
     >>> for row in Va:
@@ -168,6 +181,11 @@ class Varray(object):
     [0 2 4]
     [0 2]
 
+
+    >>> print(Varray())
+    Varray (0,0)
+    <BLANKLINE>
+
     """
     def __init__(self,data=[],ind=None):
         """Initialize the Varray. See the class docstring."""
@@ -176,6 +194,10 @@ class Varray(object):
         if isinstance(data, Varray):
             self.replace_data(data)
             return
+
+        # Allow for empty Varray
+        if len(data) <= 0:
+            data = array([],dtype=Int)
 
         # If data is an array, convert to list of lists
         try:
@@ -223,7 +245,7 @@ class Varray(object):
         self.ind = ind
         # We also store the width because it is often needed and
         # may be expensive to compute
-        self.width = max(self.lengths)
+        self.width = max(self.lengths) if len(self.lengths) > 0 else 0
 
 
     def replace_data(self, va):
@@ -252,6 +274,11 @@ class Varray(object):
         """Return the total number of elements in the Varray"""
         return self.ind[-1]
 
+    @property
+    def shape(self):
+        """Return a tuple with the number of rows and maximum row length"""
+        return (self.nrows,self.width)
+
 
     ## Do we need this? Yes, if we do not store lengths
     def length(self, i):
@@ -279,6 +306,26 @@ class Varray(object):
             return Varray([ self[j] for j in i ])
         # Shall we also add a tuple as index?
         # to allow self[i,j] instead of i[i][j]
+
+
+    # BV: Shall we add this to __getitem__ ?
+    #     Or remove multiple values from __getitem__ ?
+
+    def select(self, sel):
+        """Select some rows from the Varray.
+
+        Parameters:
+
+        - `sel`: specifies the requested row(s). It can be one of:
+
+          - an iterable of ints, specifying the requested row numbers;
+          - an iterable of bools, flagging the requested rows.
+
+        Returns a Varray containing the requested rows.
+        """
+        if len(sel) > 0 and not isInt(sel[0]):
+            sel = where(sel)[0]
+        return Varray([ self[j] for j in sel ])
 
 
     def __iter__(self):
