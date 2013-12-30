@@ -117,8 +117,8 @@ def settings():
         res['gui/console'] = utils.inverseDict(gui_console_options)[res['gui/console']]
         res['gui/plugins'] = [ p for p in ok_plugins if ok_plugins[p]]
         res['gui/actionbuttons'] = [ t for t in _actionbuttons if res['_gui/%sbutton'%t ] ]
-        if res['webgl/xtkscript'] == 'custom':
-            res['webgl/xtkscript'] = 'file:'+res['_webgl_xtkscript']
+        if res['webgl/script'] == 'custom':
+            res['webgl/script'] = 'file:'+res['_webgl_script']
         if res['webgl/guiscript'] == 'custom':
             res['webgl/guiscript'] = res['_webgl_guiscript']
         updateSettings(res)
@@ -185,20 +185,20 @@ def settings():
         _I('mail/server', pf.cfg.get('mail/server', 'localhost'), text="Outgoing mail server")
         ]
 
-    xtkscripts = ["http://feops.ugent.be/pub/xtk/feops_xtk.js", 'custom']
-    guiscripts = ["http://get.goXTK.com/xtk_xdat.gui.js", 'custom']
+    scripts = ["http://feops.ugent.be/pub/xtk/feops_xtk.js", 'local']
+    guiscripts = ["http://get.goXTK.com/xtk_xdat.gui.js", 'local']
     webgl_settings = [
-        _I('webgl/xtkscript', pf.cfg['webgl/xtkscript'], text='XTK base script', choices=xtkscripts),
-        _I('_webgl_xtkscript', '', text='Custom XTK URL', itemtype='button', func=changeFilename),
+        _I('webgl/script', pf.cfg['webgl/script'], text='WebGL base script', choices=scripts),
+        _I('_webgl_script', '', text='URL for local WebGL base script', itemtype='button', func=changeFilename),
         _I('webgl/guiscript', pf.cfg['webgl/guiscript'], text='GUI base script', choices=guiscripts),
-        _I('_webgl_guiscript', '', text='Custom GUI URL'),
+        _I('_webgl_guiscript', '', text='URL for local GUI base script'),
         _I('webgl/autogui', pf.cfg['webgl/autogui'], text='Always add a standard GUI'),
-        _I('webgl/devel', pf.cfg['webgl/devel'], text='Use a source XTK version'),
+        _I('webgl/devel', pf.cfg['webgl/devel'], text='Use the pyFormex source WebGL script'),
         _I('webgl/devpath', pf.cfg['webgl/devpath'], text='Path to the XTK source'),
         ]
     enablers.extend([
-        ('webgl/xtkscript', 'custom', '_webgl_xtkscript'),
-        ('webgl/guiscript', 'custom', '_webgl_guiscript'),
+        ('webgl/script', 'local', '_webgl_script'),
+        ('webgl/guiscript', 'local', '_webgl_guiscript'),
         ('webgl/devel', True, 'webgl/devpath'),
         ])
 

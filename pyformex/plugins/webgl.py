@@ -151,17 +151,19 @@ class WebGL(object):
             utils.warn("WebGL export is no longer supported with the old OpenGL engine. Use the --gl2 command line option to activate the new OpenGL engine.")
             return
 
-        print("SCRIPTS %s" % scripts)
         if not scripts:
-            ## if pf.cfg['webgl/devel']:
-            ##     scripts = nd('file://' + os.path.join(pf.cfg['pyformexdir'], 'opengl', 'feops_xtk.js'))
-            ##     scripts.append('file://' + os.path.join(pf.cfg['pyformexdir'], 'opengl', 'xtk_xdat_gui.js'))
-            ## else:
-                ## print("PF.CFG %s" % pf.cfg['webgl/script'])
-            scripts = pf.cfg['webgl/script']
-            scripts = [ scripts ]
-            if gui:
-                scripts.append(pf.cfg['webgl/guiscript'])
+            if pf.cfg['webgl/devel']:
+                scripts = ['feops_xtk.js' ]
+                if gui:
+                    scripts.append('xtk_xdat.gui.js')
+                scripts = [
+                    'file://' + os.path.join(pf.cfg['webgl/devpath'], f)
+                    for f in scripts
+                    ]
+            else:
+                scripts = [ pf.cfg['webgl/script'] ]
+                if gui:
+                    scripts.append(pf.cfg['webgl/guiscript'])
         self.scripts = scripts
         print("WebGL scripts: %s" % self.scripts)
         self.name = str(name)
