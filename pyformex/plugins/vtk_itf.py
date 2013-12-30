@@ -38,6 +38,7 @@ utils.requireModule('vtk')
 from pyformex import zip
 from pyformex.mesh import Mesh
 from pyformex.coords import Coords
+from pyformex.varray import Varray
 from pyformex.plugins.trisurface import TriSurface
 
 import vtk
@@ -297,23 +298,6 @@ def convertVPD2Triangles(vpd):
     return triangles.GetOutput()
 
 
-def vtkCellArray2varray(vtkCA):
-    """convert a vtkCellArray to a pyFormex varray.
-    
-    The cell array structure of vtk is a raw integer list of the form: (n,id1,id2,...,idn, n,id1,id2,...,idn, ...) 
-    where n is the number of points in the cell, and id is a zero-offset index into an associated point list.
-    The equivalent of this structure in pyFormex is the varray.    
-    """
-    from pyformex.varray import Varray
-    va=asarray(v2n(vtkCA.GetData()))
-    nrows=vtkCA.GetNumberOfCells()
-    Pos = [0]
-    [Pos.append(Pos[i]+va[Pos[i]]+1) for i in range(nrows-1)]#implicit scan of full array
-    ind = va[Pos]
-    ind = append([0], cumsum(ind))
-    return Varray(data=delete(va, Pos), ind=ind)
-
-
 def convertFromVPD(vpd,verbose=False,samePlex=True):
     """Convert a vtkPolyData into pyFormex objects.
 
@@ -368,7 +352,7 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
                 if verbose:
                     print('Saved polys connectivity array')
             else:
-                polys =  vtkCellArray2varray(vpd.GetPolys())
+                polys =  Varray(asarray(v2n(vpd.GetPolys().GetData())))#vtkCellArray to varray
                 if verbose:
                     print('Saved polys connectivity varray')
 
@@ -381,8 +365,8 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
                 lines = asarray(v2n(vpd.GetLines().GetData()), dtype=ntype).reshape(-1, Nplex+1)[:, 1:]
                 if verbose:
                     print('Saved lines connectivity array')
-            else:
-                lines =  vtkCellArray2varray(vpd.GetLines())#this is the case of polylines
+            else:              
+                lines =  Varray(asarray(v2n(vpd.GetLines().GetData())))#this is the case of polylines 
                 if verbose:
                     print('Saved lines connectivity varray')
 
