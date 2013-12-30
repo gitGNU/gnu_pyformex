@@ -40,6 +40,7 @@ from pyformex.mesh import Mesh
 from pyformex.coords import Coords
 from pyformex.varray import Varray
 from pyformex.plugins.trisurface import TriSurface
+from pyformex.plugins.curve import PolyLine
 
 import vtk
 from vtk.util.numpy_support import numpy_to_vtk as n2v
@@ -157,23 +158,18 @@ def elems2VTK(elems):
     return datav
     
 
-def convert2VPD(M,clean=False,lineopt='segment',verbose=False):
+def convert2VPD(M,clean=False,verbose=True):
     """Convert pyFormex data to vtkPolyData.
 
-    Convert a pyFormex Mesh or Coords object into vtkPolyData.
+    Convert a pyFormex Mesh or Coords or open PolyLine object into vtkPolyData.
     This is limited to vertices, lines, and polygons.
-    Lines should already be ordered (with connectedLineElems for instance).
 
     Parameters:
 
-    - `M`: a Mesh or Coords type. If M is a Coords type it will be saved as
+    - `M`: a Coords or Mesh or open PolyLine. If M is a Coords type it will be saved as
       VERTS. Else...
-    - `clean`: if True, the resulting vtkdata will be cleaned by calling
+    - `clean`: if True, the resulting vtkPolyData will be cleaned by calling
       cleanVPD.
-    - `lineopt`: can have 2 options for handling a line conversion
-        'line' will save the entire line
-        'segments' will save the line as segments
-
 
     Returns a vtkPolyData.
     """
@@ -182,52 +178,46 @@ def convert2VPD(M,clean=False,lineopt='segment',verbose=False):
     if verbose:
         print(('STARTING CONVERSION FOR DATA OF TYPE %s '%type(M)))
 
-    if  isinstance(M, Coords):
+    if isinstance(M, Coords):
         M = Mesh(M, arange(M.ncoords()))
-
-    Nelems = M.nelems() # Number of elements
-    Ncxel = M.nplex() # # Number of nodes per element
-
-    elems = M.elems
-    if Ncxel==2:
-        if lineopt=='line':
-            Nelems = 1
-            Ncxel = M.ncoords()
-            elems = arange(M.ncoords()).reshape(1, -1)
-
-    # create a vtkPolyData variable
-    vpd = vtkPolyData()
-
-    # creating  vtk coords
-    pts = coords2VTK(M.coords)
+        elems = M.elems
+    elif isinstance(M, PolyLine):
+        if M.closed == True:
+            raise ValueError('only an OPEN polyline can be convert to a vtkPolyData. Convert a closed polyline into a line2 Mesh.')
+        M = M.toMesh()
+        elems = arange(M.ncoords()).reshape(1, -1) #a polyline in vtk has one single element
+    elif isinstance(M, Mesh):
+        elems = M.elems 
+    else:
+        raise ValueError('conversion of %s type to vtkPolyData is not yet supported'%type(M))
+    
+    plex = elems.shape[1]
+    vpd = vtkPolyData()# create a vtkPolyData variable
+    pts = coords2VTK(M.coords)# creating  vtk coords
     vpd.SetPoints(pts)
-
-    # create vtk connectivity as vtk Cell data
-    datav = elems2VTK(elems)
-    if M.nplex() == 1:
+    datav = elems2VTK(elems)# create vtk connectivity as vtkCellArray
+    
+    if M.nplex() == 1:#point mesh
         try:
             if verbose:
-                print(("setting VERTS for data with %s maximum number of point for cell "%Ncxel))
+                print("setting VERTS for data with %s maximum number of point for cell "%plex)
             vpd.SetVerts(datav)
         except:
             raise ValueError("Error in saving  VERTS")
-
-    elif M.nplex() == 2:
+    elif M.nplex() == 2:#line2 mesh or polyline
         try:
             if verbose:
-                print(("setting LINES for data with %s maximum number of point for cell "%Ncxel))
+                print("setting LINES for data with %s maximum number of point for cell "%plex)
             vpd.SetLines(datav)
         except:
             raise  ValueError("Error in saving  LINES")
-
-    else:
+    else:#polygons
         try:
             if verbose:
-                print(("setting POLYS for data with %s maximum number of point for cell "%Ncxel))
+                print("setting POLYS for data with %s maximum number of point for cell "%plex)
             vpd.SetPolys(datav)
         except:
             raise ValueError("Error in saving  POLYS")
-
     vpd.Update()
     if clean:
         vpd = cleanVPD(vpd)
@@ -336,11 +326,16 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
     # getting Cells
     if vtkdtype not in [0]: # this list need to be updated according to the data type
         if  vpd.GetCells().GetData().GetNumberOfTuples():
-            ntype = gnat(vpd.GetCells().GetData().GetDataType())
-            Nplex = vpd.GetCells().GetMaxCellSize()
-            cells = asarray(v2n(vpd.GetCells().GetData()), dtype=ntype).reshape(-1, Nplex+1)[:, 1:]
-            if verbose:
-                print('Saved polys connectivity array')
+            if samePlex == True:
+                ntype = gnat(vpd.GetCells().GetData().GetDataType())
+                Nplex = vpd.GetCells().GetMaxCellSize()
+                cells = asarray(v2n(vpd.GetCells().GetData()), dtype=ntype).reshape(-1, Nplex+1)[:, 1:]
+                if verbose:
+                    print('Saved polys connectivity array')
+            else:
+                cells =  Varray(asarray(v2n(vpd.GetCells().GetData())))#vtkCellArray to varray
+                if verbose:
+                    print('Saved cells connectivity varray')
 
     # getting Polygons
     if vtkdtype not in [4]: # this list need to be updated according to the data type
@@ -419,7 +414,7 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
     """Write a Mesh in .vtp or .vtk file format.
 
     - `fn`: a filename with .vtp or .vtk extension.
-    - `mesh`: a Mesh of level 0, 1 or 2 (i.e. not a volume Mesh)
+    - `mesh`: a Mesh of level 0, 1 or 2 (and volume Mesh in case of .vtk)
     - `fielddata`: dictionary of arrays associated to the fields (?).
     - `celldata`: dictionary of arrays associated to the elements.
     - `pointdata`: dictionary of arrays associated to the points (renumbered).
@@ -439,6 +434,11 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
     - polygons: triangles, quads, etc.
     - lines
     - points
+
+    VTU format has been tested with
+
+    - Mesh of type: point,line2,tri3,quad4,tet4,hex8
+
     """
     if checkMesh:
         if not checkClean(mesh):
@@ -447,7 +447,7 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
     ftype = os.path.splitext(fn)[1]
     ftype = ftype.strip('.').lower()
     if ftype=='vtp':
-        lvtk = convert2VPD(mesh, clean=True, lineopt='segment') # also clean=False?
+        lvtk = convert2VPD(mesh, clean=True) # also clean=False?
     elif ftype=='vtk':
         lvtk = convert2VTU(mesh)
     else:
@@ -490,6 +490,35 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
     writer.SetFileName(fn)
     writer.Write()
 
+
+def writeVTPmany(fn,items):
+    """Writes many objects in vtp or vtk file format.
+    
+    item can be a list of items supported by convert2VPD (mesh of coords, line2, tri3 and quad4)
+    or convert2VTU (mesh of coords, line2, tri3, quad4, tet4 and hex8).
+    
+    This is experimental!
+    """
+    from vtk import vtkAppendPolyData
+    ftype = os.path.splitext(fn)[1]
+    ftype = ftype.strip('.').lower()
+    
+    if ftype=='vtp':
+        from vtk import vtkAppendPolyData
+        writer = vtkXMLPolyDataWriter()
+        apd=vtkAppendPolyData()
+        vtkitems = [convert2VPD(M=m) for m in items]
+    if ftype=='vtk':
+        from vtk import vtkAppendFilter
+        writer = vtkDataSetWriter()
+        apd = vtkAppendFilter()
+        vtkitems = [convert2VTU(M=m) for m in items]
+    [apd.AddInput(lvtk) for lvtk in vtkitems]
+    vtkobj = apd.GetOutput()
+    writer.SetInput(vtkobj)
+    writer.SetFileName(fn)
+    writer.Write()
+    
 
 @utils.deprecation("depr_vtk_readVTP")
 def readVTP(fn):
