@@ -1247,18 +1247,21 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return enr, fnr
 
 
-    def compact(self):
+    def compact(self,return_index=False):
         """Remove unconnected nodes and renumber the mesh.
 
         Returns a mesh where all nodes that are not used in any
         element have been removed, and the nodes are renumbered to
         a compacter scheme.
 
+        If return_index is True, also returns an index specifying the
+        index of the new nodes in the old node scheme.
+
         Example:
 
           >>> x = Coords([[i] for i in arange(5)])
           >>> M = Mesh(x,[[0,2],[1,4],[4,2]])
-          >>> M = M.compact()
+          >>> M,ind = M.compact(True)
           >>> print(M.coords)
           [[ 0.  0.  0.]
            [ 1.  0.  0.]
@@ -1279,10 +1282,13 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
           [[0 2]
            [1 3]
            [3 2]]
+          >>> print(ind)
+          [0 1 2 4]
 
         """
         if self.nelems() == 0:
             ret = self.__class__([], [], eltype=self.elType())
+            nodes = array([],dtype=Int)
         else:
             elems, nodes = self.elems.renumber()
             if elems is self.elems:
@@ -1296,7 +1302,11 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
                 # numbering has been changed, return new object
                 coords = self.coords[nodes]
                 ret = self.__class__(coords, elems, prop=self.prop, eltype=self.elType())
-        return ret
+
+        if return_index:
+            return ret,nodes
+        else:
+            return ret
 
 
     def _select(self,selected,compact=True):
