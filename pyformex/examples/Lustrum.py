@@ -46,7 +46,7 @@ _topics = ['curve', 'drawing', 'illustration']
 _techniques = ['color', 'persistence', 'lima', 'import']
 
 from pyformex.gui.draw import *
-from pyformex.apps.Lima import *
+from pyformex.examples.Lima import *
 
 def run():
     resetAll()

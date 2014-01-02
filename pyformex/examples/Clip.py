@@ -34,11 +34,11 @@ _topics = ['geometry']
 _techniques = ['color']
 
 from pyformex.gui.draw import *
+from pyformex.simple import rectangle
 
+# A square domain of triangles
 n = 16
-
-# These are triangles
-F = Formex([[[0, 0, 0], [1, 0, 0], [0, 1, 0]], [[1, 0, 0], [1, 1, 0], [0, 1, 0]]], 0).replic2(n, n, 1, 1)
+F = rectangle(n,n,diag='d')
 
 # Novation (Spots)
 m = 4
@@ -57,13 +57,13 @@ plane_n = [2.0, 1.0, 0.0]
 #compute number of nodes above/below the plane
 dist = F.distanceFromPlane(plane_p, plane_n)
 above = (dist>0.0).sum(-1)
-below = (dist<0.0).sum(-1) 
+below = (dist<0.0).sum(-1)
 
 # Define a line by a point and direction
 line_p = [0.0, 0.0, 0.0]
 line_n = [1., 1., 1./3]
 d = F.distanceFromLine(line_p, line_n)
-# compute number of nodes closer that 2.2 to line 
+# compute number of nodes closer that 2.2 to line
 close = (d < 2.2).sum(-1)
 
 
