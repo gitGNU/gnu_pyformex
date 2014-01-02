@@ -259,7 +259,7 @@ class WebGL(object):
                 elems = np.asarray(attrib.ibo)
             else:
                 nelems, nplex = coords.shape[:2]
-                elems = arange(nelems*nplex).reshape(nelems, nplex).astype(np.int32)
+                elems = np.arange(nelems*nplex).reshape(nelems, nplex).astype(np.int32)
             coords = coords.reshape(-1, 3)
             obj = Mesh(coords, elems)
             if attrib.nbo is not None:
