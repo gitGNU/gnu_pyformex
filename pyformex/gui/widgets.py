@@ -1147,10 +1147,12 @@ class InputButton(InputItem):
 
     Extra parameters:
 
-    - `func`: the function to call when the button is clicked. The current
-      input value is passed as an argument. The function should return the
-      value to be set, or None if it is to be unchanged.
-      If no function is specified, the value can not be changed.
+    - `func`: the function to call when the button is clicked. The function
+      receives the input field as argument. From this argument, the fields
+      attributes like name, value, text, can be retrieved.
+      The function should return the value to be set, or None if it is to be
+      unchanged. If no function is specified, the value can not be changed.
+
     """
 
     def __init__(self,name,value,*args,**kargs):

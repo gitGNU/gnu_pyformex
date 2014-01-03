@@ -113,7 +113,7 @@ class WebGL(object):
       Javascript files to do the actual rendering and provide control menus.
       The default rendering script is
       http://feops.ugent.be/pub/xtk/feops_xtk.js and the gui toolkit is
-
+      http://get.goXTK.com/xtk_xdat.gui.js.
       The user can replace them with scripts of his choice.
     - a number of geometry files in pyFormex PGF format. These are normally
       created automatically by the exportScene method. The user can optionally
@@ -153,7 +153,7 @@ class WebGL(object):
 
         if not scripts:
             if pf.cfg['webgl/devel']:
-                scripts = ['feops_xtk.js' ]
+                scripts = ['fewgl.js' ]
                 if gui:
                     scripts.append('xtk_xdat.gui.js')
                 scripts = [
@@ -172,7 +172,7 @@ class WebGL(object):
         if description is None:
             description = title
         if keywords is None:
-            keywords = "pyFormex, WebGL, XTK, HTML, JavaScript"
+            keywords = "pyFormex, WebGL, FEops, XTK, HTML, JavaScript"
         self.title = title
         self.description = description
         self.keywords = keywords
