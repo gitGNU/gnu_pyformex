@@ -143,7 +143,7 @@ class Drawable(Attributes):
             elif self.color.ndim == 2:
                 self.useObjectColor = 0
                 self.vertexColor = at.multiplex(self.color, self.object.nplex())
-                print ("Multiplexing colors: %s -> %s " % (self.color.shape, self.vertexColor.shape))
+                pf.debug("Multiplexing colors: %s -> %s " % (self.color.shape, self.vertexColor.shape),pf.DEBUG.OPENGL2)
             elif self.color.ndim == 3:
                 self.useObjectColor = 0
                 self.vertexColor = self.color

@@ -43,9 +43,9 @@ from pyformex.plugins.trisurface import TriSurface
 from pyformex.plugins.imagearray import *
 
 
-def selectImage(fn):
+def selectImage(field):
     global wviewer
-    fn = askImageFile(fn)
+    fn = askImageFile(field.value())
     if fn:
         wviewer.showImage(fn)
     return fn
@@ -80,22 +80,6 @@ def drawImage(grid, base, patch):
     return [ draw(i, color=c, alpha=0.99, bbox='last', nolight=True, wait=False) for i, c in zip (mT, pcolor)]
 
 
-def intersectSurfaceWithSegments2(s1, segm, atol=1.e-5, max1xperline=True):
-    """it takes a TriSurface ts and a set of segments (-1,2,3) and intersect the segments with the TriSurface.
-    It returns the points of intersections and, for each point, the indices of the intersected segment and triangle. If max1xperline is True, only 1 intersection per line is returned (in order to remove multiple intersections due to the tolerance) together with the index of line and triangle (at the moment the selection of one intersection among the others is random: it does not take into account the distances). If some segments do not intersect the surface, their indices are also returned."""
-    segm = segm.coords
-    p, il, it=trisurface.intersectSurfaceWithLines(s1, segm[:, 0], normalize(segm[:, 1]-segm[:, 0]))
-    win= length(p-segm[:, 0][il])+ length(p-segm[:, 1][il])< length(segm[:, 1][il]-segm[:, 0][il])+atol
-    px, ilx, itx=p[win], il[win], it[win]
-    if max1xperline:
-        ip= inverseIndex(ilx.reshape(-1, 1))
-        sp=sort(ip, axis=1)[:, -1]
-        w= where(sp>-1)[0]
-        sw=sp[w]
-        return px[sw], w, itx[sw], delete( arange(len(segm)),  w)
-    else:return px, ilx, itx
-
-
 def run():
     global wviewer, pcolor, px, py
     clear()
@@ -124,9 +108,8 @@ def run():
         _I('py', 6, text='Number of patches in y-direction'),
         _I('kx', 30, text='Width of a patch in pixels'),
         _I('ky', 30, text='Height of a patch in pixels'),
-        _I('scale', 1.0, text='Scale factor'),
+        _I('scale', 0.8, text='Scale factor'),
         _I('trl', [-0.4, -0.1, 2.], itemtype='point', text='Translation'),
-        _I('method', choices=['projection', 'intersection']),
         ])
 
     if not res:
@@ -173,33 +156,12 @@ def run():
     patch = makeGrid(kx, ky, 'Quad4').toMesh()
     d0 = drawImage(mH0, base, patch)
 
-    if method == 'projection':
-        pts = mH0.coords.projectOnSurface(T, [0., 0., 1.], '-f')
-        dg1 = d1 = [] # to allow dummy undraw
-
-
-    else:
-        mH1 = mH.rotate(-30., 0).scale(0.5).translate([0., -.7, -2.])
-        dg1 = draw(mH1, mode='wireframe')
-        d1 = drawImage(mH1, base, patch)
-
-        x = connect([mH0.asPoints(), mH1.asPoints()])
-        dx = draw(x)
-        print("Creating intersection with surface")
-        pts, il, it, mil=intersectSurfaceWithSegments2(T, x, max1xperline=True)
-
-        if len(x) != len(pts):
-            print("Some of the lines do not intersect the surface:")
-            print(" %d lines, %d intersections %d missing" % (len(x), len(pts), len(mil)))
-            return
-
+    pts = mH0.coords.projectOnSurface(T, [0., 0., 1.], '-f')
     dp = draw(pts, marksize=6, color='white')
-    #print pts.shape
     mH2 = Formex(pts.reshape(-1, 8, 3))
 
-    if method == 'projection':
-        x = connect([mH0.points(), mH2.points()])
-        dx = draw(x)
+    x = connect([mH0.points(), mH2.points()])
+    dx = draw(x)
 
     print("Create projection mapping using the grid points")
     d2 = drawImage(mH2.trl([0., 0., 0.01]), base, patch)
@@ -209,13 +171,9 @@ def run():
     undraw(dp);
     undraw(dx);
     undraw(d0);
-    undraw(d1);
     undraw(dg0);
-    undraw(dg1);
     view('front')
     zoomAll()
-    sleep(1)
-    transparent()
 
 if __name__ == 'draw':
     run()

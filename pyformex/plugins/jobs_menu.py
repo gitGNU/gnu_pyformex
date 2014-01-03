@@ -286,9 +286,9 @@ def checkResultsOnServer(host=None,userdir=None):
     print(the_jobnames)
 
 
-def changeTargetDir(fn):
+def changeTargetDir(field):
     from pyformex.gui import draw
-    return draw.askDirname(fn)
+    return draw.askDirname(field.value())
 
 
 def getResultsFromServer(jobname=None,targetdir=None,ext=['.fil']):

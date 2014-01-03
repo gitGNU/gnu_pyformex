@@ -42,8 +42,8 @@ from pyformex.multi import *
 filename = os.path.join(getcfg('datadir'), 'horse.off')
 
 
-def selectSurfaceFile(fn):
-    fn = askFilename(fn, filter='surface')
+def selectSurfaceFile(field):
+    fn = askFilename(field.value(), filter='surface')
     return fn
 
 

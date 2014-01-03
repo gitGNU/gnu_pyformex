@@ -117,9 +117,9 @@ def settings():
         res['gui/console'] = utils.inverseDict(gui_console_options)[res['gui/console']]
         res['gui/plugins'] = [ p for p in ok_plugins if ok_plugins[p]]
         res['gui/actionbuttons'] = [ t for t in _actionbuttons if res['_gui/%sbutton'%t ] ]
-        if res['webgl/script'] == 'custom':
+        if res['webgl/script'] == 'local':
             res['webgl/script'] = 'file:'+res['_webgl_script']
-        if res['webgl/guiscript'] == 'custom':
+        if res['webgl/guiscript'] == 'local':
             res['webgl/guiscript'] = res['_webgl_guiscript']
         updateSettings(res)
         plugins.loadConfiguredPlugins()
@@ -165,8 +165,8 @@ def settings():
         ]
 
     # callback to set a filename
-    def changeFilename(fn):
-        fn = draw.askImageFile(fn)
+    def changeFilename(field):
+        fn = draw.askFilename(field.value(),filter=field.data)
         return fn
 
     cur = pf.cfg['gui/splash']
@@ -174,8 +174,8 @@ def settings():
 #        cur = pf.cfg.get('icondir','.')
     viewer = widgets.ImageView(cur, maxheight=200)
 
-    def changeSplash(fn):
-        fn = draw.askImageFile(fn)
+    def changeSplash(field):
+        fn = draw.askImageFile(field.value())
         if fn:
             viewer.showImage(fn)
         return fn
@@ -189,7 +189,7 @@ def settings():
     guiscripts = ["http://get.goXTK.com/xtk_xdat.gui.js", 'local']
     webgl_settings = [
         _I('webgl/script', pf.cfg['webgl/script'], text='WebGL base script', choices=scripts),
-        _I('_webgl_script', '', text='URL for local WebGL base script', itemtype='button', func=changeFilename),
+        _I('_webgl_script', '', text='URL for local WebGL base script', itemtype='button', func=changeFilename,data='js'),
         _I('webgl/guiscript', pf.cfg['webgl/guiscript'], text='GUI base script', choices=guiscripts),
         _I('_webgl_guiscript', '', text='URL for local GUI base script'),
         _I('webgl/autogui', pf.cfg['webgl/autogui'], text='Always add a standard GUI'),

@@ -50,8 +50,8 @@ resetAll()
 
 viewer = None
 
-def selectImage(fn):
-    fn = askImageFile(fn)
+def selectImage(field):
+    fn = askImageFile(field.value())
     if fn:
         viewer.showImage(fn)
         loadImage(fn)

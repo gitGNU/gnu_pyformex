@@ -512,9 +512,9 @@ def selectImage(extra_items=[]):
     # construct the image previewer widget
     viewer = ImageView(filename, maxheight=h)
 
-    def select_image(fn):
+    def select_image(field):
         """Helper function to load and preview image"""
-        fn = askImageFile(fn)
+        fn = askImageFile(field.value())
         if fn:
             viewer.showImage(fn)
             load_image(fn)

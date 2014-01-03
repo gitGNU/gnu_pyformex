@@ -1167,7 +1167,7 @@ class InputButton(InputItem):
 
     def doFunc(self):
         """Set the value by calling the button's func"""
-        val = self.func(self.value())
+        val = self.func(self)
         if val:
             self.setValue(val)
 
