@@ -1311,6 +1311,8 @@ You should seriously consider to bail out now!!!
     # create GUI, show it, run it
 
     pf.debug("Creating the GUI", pf.DEBUG.GUI)
+    if splash is not None:
+        splash.showMessage("Creating the GUI");
     desktop = pf.app.desktop()
     pf.maxsize = Size(desktop.availableGeometry())
     size = pf.cfg.get('gui/size', (800, 600))
@@ -1368,6 +1370,8 @@ pyFormex comes with ABSOLUTELY NO WARRANTY. This is free software, and you are w
 
 
     # setup the canvas
+    if splash is not None:
+        splash.showMessage("Creating the canvas");
     pf.debug("Setting the canvas", pf.DEBUG.GUI)
     pf.GUI.processEvents()
     pf.GUI.viewports.changeLayout(1)
@@ -1388,10 +1392,10 @@ pyFormex comes with ABSOLUTELY NO WARRANTY. This is free software, and you are w
     pf.GUI.toggleCoordsTracker(pf.cfg.get('gui/coordsbox', False))
     pf.debug("Using window name %s" % pf.GUI.windowTitle(), pf.DEBUG.GUI)
 
-    # Script menu
+    # Script/App menu
+    if splash is not None:
+        splash.showMessage("Loading script/app menu");
     pf.GUI.scriptmenu = appMenu.createAppMenu(mode='script', parent=pf.GUI.menu, before='help')
-
-    # App menu
     pf.GUI.appmenu = appMenu.createAppMenu(parent=pf.GUI.menu, before='help')
 
 
@@ -1411,6 +1415,8 @@ pyFormex comes with ABSOLUTELY NO WARRANTY. This is free software, and you are w
     createDatabases()
 
     # Plugin menus
+    if splash is not None:
+        splash.showMessage("Loading plugins");
     from pyformex import plugins
     filemenu = pf.GUI.menu.item('file')
     pf.gui.plugin_menu = plugins.create_plugin_menu(filemenu, before='---1')
@@ -1418,23 +1424,29 @@ pyFormex comes with ABSOLUTELY NO WARRANTY. This is free software, and you are w
     plugins.loadConfiguredPlugins()
 
     # show current application/file
+    if splash is not None:
+        splash.showMessage("Load current application");
     appname = pf.cfg['curfile']
     pf.GUI.setcurfile(appname)
 
     # Last minute menu modifications can go here
 
     # cleanup
+    if splash is not None:
+        splash.showMessage("Set status bar");
     pf.GUI.setBusy(False)         # HERE
     pf.GUI.addStatusBarButtons()
-
-    if splash is not None:
-        # remove the splash window
-        splash.finish(pf.GUI)
 
     pf.GUI.setBusy(False)        # OR HERE
 
     pf.debug("Showing the GUI", pf.DEBUG.GUI)
+    if splash is not None:
+        splash.showMessage("Show the GUI");
     pf.GUI.show()
+
+    if splash is not None:
+        # remove the splash window
+        splash.finish(pf.GUI)
 
     # redirect standard output to board
     # TODO: this should disappear when we have buffered stdout
