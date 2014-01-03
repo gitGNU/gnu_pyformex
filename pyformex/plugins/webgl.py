@@ -112,7 +112,7 @@ class WebGL(object):
     - a Javascript file describing the model. This file relies an other
       Javascript files to do the actual rendering and provide control menus.
       The default rendering script is
-      http://feops.ugent.be/pub/xtk/feops_xtk.js and the gui toolkit is
+      http://feops.ugent.be/pub/webgl/fewgl.js and the gui toolkit is
       http://get.goXTK.com/xtk_xdat.gui.js.
       The user can replace them with scripts of his choice.
     - a number of geometry files in pyFormex PGF format. These are normally
@@ -649,12 +649,15 @@ var r = the_renderer;
     fout.close()
     body += "</div>"
 
-    fn = webgl.createWebglHtml(utils.changeExt(combined,'html'),scripts=[
-        'http://feops.ugent.be/pub/xtk/feops_xtk.js',
-        'http://get.goXTK.com/xtk_xdat.gui.js',
-        utils.changeExt(combined,'js')
-        ], body=body)
-
+    fn = webgl.createWebglHtml(
+        utils.changeExt(combined,'html'),
+        scripts=[
+            pf.cfg['webgl/script'],
+            pf.cfg['webgl/guiscript'],
+            utils.changeExt(combined,'js')
+            ],
+        body=body
+        )
 
     if ack("Show the scene in your browser?"):
         showHTML(fn)

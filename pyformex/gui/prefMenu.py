@@ -185,7 +185,7 @@ def settings():
         _I('mail/server', pf.cfg.get('mail/server', 'localhost'), text="Outgoing mail server")
         ]
 
-    scripts = ["http://feops.ugent.be/pub/xtk/feops_xtk.js", 'local']
+    scripts = ["http://feops.ugent.be/pub/webgl/fewgl.js", 'local']
     guiscripts = ["http://get.goXTK.com/xtk_xdat.gui.js", 'local']
     webgl_settings = [
         _I('webgl/script', pf.cfg['webgl/script'], text='WebGL base script', choices=scripts),
@@ -194,7 +194,7 @@ def settings():
         _I('_webgl_guiscript', '', text='URL for local GUI base script'),
         _I('webgl/autogui', pf.cfg['webgl/autogui'], text='Always add a standard GUI'),
         _I('webgl/devel', pf.cfg['webgl/devel'], text='Use the pyFormex source WebGL script'),
-        _I('webgl/devpath', pf.cfg['webgl/devpath'], text='Path to the XTK source'),
+        _I('webgl/devpath', pf.cfg['webgl/devpath'], text='Path to the pyFormex source WebGL script'),
         ]
     enablers.extend([
         ('webgl/script', 'local', '_webgl_script'),
