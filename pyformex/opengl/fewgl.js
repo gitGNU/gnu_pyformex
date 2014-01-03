@@ -1,36 +1,31 @@
 /*
- * 
- *                  xxxxxxx      xxxxxxx
- *                   x:::::x    x:::::x 
- *                    x:::::x  x:::::x  
- *                     x:::::xx:::::x   
- *                      x::::::::::x    
- *                       x::::::::x     
- *                       x::::::::x     
- *                      x::::::::::x    
- *                     x:::::xx:::::x   
- *                    x:::::x  x:::::x  
- *                   x:::::x    x:::::x 
- *              THE xxxxxxx      xxxxxxx TOOLKIT
- *                    
- *                  http://www.goXTK.com
- *                   
+ *
+ * Copyright (c) 2013 FEops bvba <info@feops.com>
+ *
+ * Modification and redistribution of this software without written consent
+ * of FEops bvba is prohibited, with the following exception:
+ * this software can be distributed by web servers to allow the rendering
+ * of WebGL models; with this purpose it may be copied in unaltered state
+ * to an unlimited number of other computers.
+ *
+ * This software contains parts of the XTK toolkit (http://www.goXTK.com)
+ *
  * Copyright (c) 2012 The X Toolkit Developers <dev@goXTK.com>
- *                   
+ *
  *    The X Toolkit (XTK) is licensed under the MIT License:
  *      http://www.opensource.org/licenses/mit-license.php
- * 
+ *
  *      "Free software" is a matter of liberty, not price.
  *      "Free" as in "free speech", not as in "free beer".
  *                                         - Richard M. Stallman
- * 
+ *
  * FUELED BY:
  *  - the wonderful Constructive Solid Geometry library by Evan Wallace (http://madebyevan.com)
  *    LICENSE: https://raw.github.com/xtk/X/master/lib/csg/LICENSE
  *
  *  - parts of the Google Closure Library (http://code.google.com/closure/library)
  *    LICENSE: https://raw.github.com/xtk/X/master/lib/closure-library/LICENSE
- * 
+ *
  *  - the JSXCompressor library (http://jsxgraph.uni-bayreuth.de/wp/jsxcompressor/)
  *    LICENSE: https://raw.github.com/xtk/X/master/lib/JXG/LICENSE
  *
@@ -256,7 +251,7 @@ q.bh=function(){this.Ld();this.dispatchEvent("change")};q.Ld=function(){if(this.
 d+="  overflow: hidden;\n";d+="  width: 0%;\n";d+="  height: 100%;\n";d+="}";var e;e=".progress-bar-thumb-done {\n  background: #57E964;\n}";this.Jb=[c,d,e];this.Id(b);this.Ce()}B(ag,Yf);
 ag.prototype.Ce=function(){if("static"==this.qa.style.position||""==this.qa.style.position)this.nf=this.qa.style.position,this.qa.style.position="relative";var a=document.getElementsByTagName("head")[0],b=Od("style");b.type="text/css";b.media="screen";var c=document.createTextNode(String(this.Jb[0])),d=document.createTextNode(String(this.Jb[1])),e=document.createTextNode(String(this.Jb[2]));a.appendChild(b);b.appendChild(c);b.appendChild(d);b.appendChild(e);this.fb=b;this.fc(this.qa);a=this.k();a.style.position=
 "absolute";a.style.top=(this.qa.clientHeight-5)/2+"px";a.style.left=(this.qa.clientWidth-100)/2+"px";a.classList.add("xtk-progress-bar")};function bg(a){var b=a.k().style.top,c=a.k().style.left;Sd(a.k());var d=new ag(a.qa,100),e=d.k();e.style.position="absolute";e.style.top=b;e.style.left=c;e.classList.add("xtk-progress-bar");(void 0!=e.firstElementChild?e.firstElementChild:Td(e.firstChild)).classList.add("progress-bar-thumb-done");a.ad=d}
-ag.prototype.Ad=function(){this.fb&&Sd(this.fb);this.k()&&Sd(this.k());this.ad&&Sd(this.ad.k());this.ad=this.fb=null;this.qa.style.position=this.nf};function cg(a,b,c){if(ka(a))c&&(a=ta(a,c));else if(a&&"function"==typeof a.handleEvent)a=ta(a.handleEvent,a);else throw Error("Invalid listener argument");return 2147483647<b?-1:ea.setTimeout(a,b||0)};function dg(){H.call(this);this.b="renderer";this.l=window.document.body;this.M=this.l.clientWidth;this.G=this.l.clientHeight;this.Nb=this.s=this.ka=null;this.Na=new Jf(ed);this.Wa=[];this.C=null;this.ce=this.dd=this.ed=!1;this.a=this.ra=null;this.u={PROGRESSBAR_ENABLED:!0,INTERMEDIATE_RENDERING:!1};this.af=-1;window.console.log("XTK release 9 -- 2013-12-09 22:07:25 -- http://www.goXTK.com -- @goXTK")}B(dg,H);q=dg.prototype;q.Lh=function(a){this.ra&&this.ra.Id(100*a.uf)};
+ag.prototype.Ad=function(){this.fb&&Sd(this.fb);this.k()&&Sd(this.k());this.ad&&Sd(this.ad.k());this.ad=this.fb=null;this.qa.style.position=this.nf};function cg(a,b,c){if(ka(a))c&&(a=ta(a,c));else if(a&&"function"==typeof a.handleEvent)a=ta(a.handleEvent,a);else throw Error("Invalid listener argument");return 2147483647<b?-1:ea.setTimeout(a,b||0)};function dg(){H.call(this);this.b="renderer";this.l=window.document.body;this.M=this.l.clientWidth;this.G=this.l.clientHeight;this.Nb=this.s=this.ka=null;this.Na=new Jf(ed);this.Wa=[];this.C=null;this.ce=this.dd=this.ed=!1;this.a=this.ra=null;this.u={PROGRESSBAR_ENABLED:!0,INTERMEDIATE_RENDERING:!1};this.af=-1;window.console.log("XTK release 9 -- 2014-01-03 18:00:58 -- http://www.goXTK.com -- @goXTK")}B(dg,H);q=dg.prototype;q.Lh=function(a){this.ra&&this.ra.Id(100*a.uf)};
 q.Bh=function(a){null!=a&&a instanceof dd&&a.T&&this.ab(a.T)};q.Le=function(a){if(!(null!=a&&a instanceof yd))throw Error("Invalid hover event.");};q.Mh=function(){var a=Ld(this.l);this.M=a.clientWidth;this.G=a.clientHeight;a=Ld(this.ka);a.width=this.M;a.height=this.G;"renderer3D"==this.b&&(this.a.viewport(0,0,this.M,this.G),this.s.of=new Float32Array(Nf(this.s.df,this.ka.width/this.ka.height).Ja()));this.uc()};q.Me=function(a){if(!(null!=a&&a instanceof xd))throw Error("Invalid scroll event.");};
 dg.prototype.__defineGetter__("config",k("u"));dg.prototype.__defineGetter__("interactor",k("Nb"));dg.prototype.__defineGetter__("camera",k("s"));dg.prototype.__defineGetter__("loadingCompleted",k("dd"));dg.prototype.__defineGetter__("container",k("l"));dg.prototype.__defineSetter__("container",function(a){if(null==a)throw Error("An ID to a valid container (<div>..) is required.");var b=a;ja(b)&&(b=Ld(a));if(!ma(b)||1!=b.nodeType)throw Error("Could not find the given container.");this.l=b});q=dg.prototype;
 q.uc=function(){this.s.reset()};function eg(a){a.u.PROGRESSBAR_ENABLED&&a.ra&&!a.bf&&(bg(a.ra),a.bf=cg(function(){this.bf=null;this.ra&&(this.ra.Ad(),this.ra=null);this.fc()}.bind(a),700))}
