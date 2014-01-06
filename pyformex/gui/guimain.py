@@ -467,7 +467,7 @@ class Gui(QtGui.QMainWindow):
         """
         if name is None:
             name = self.saved_views_name.next()
-        self.saved_views[name] = (pf.canvas.camera.m, None)
+        self.saved_views[name] = (pf.canvas.camera.modelview, None)
         if name not in self.viewbtns.names():
             iconpath = os.path.join(pf.cfg['icondir'], 'userview')+pf.cfg['gui/icontype']
             self.viewbtns.add(name, iconpath)
@@ -479,7 +479,10 @@ class Gui(QtGui.QMainWindow):
         """
         m, p = self.saved_views.get(name, (None, None))
         if m is not None:
-            self.viewports.current.camera.loadModelView(m)
+            if pf.options.opengl2:
+                self.viewports.current.camera.setModelview(m)
+            else:
+                self.viewports.current.camera.loadModelView(m)
 
 
     def createView(self, name, angles):

@@ -141,6 +141,11 @@ class Camera(object):
 
 
     @property
+    def modelview(self):
+        return self.m
+
+
+    @property
     def focus(self):
         """Return the camera reference (focus) point (the scene center)."""
         return self._focus
