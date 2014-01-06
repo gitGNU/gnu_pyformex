@@ -631,7 +631,12 @@ class TriSurface(Mesh):
         elif ftype == 'vtp' or ftype == 'vtk':
             from pyformex.plugins.vtk_itf import readVTKObject
             [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = readVTKObject(fn)
-            data = (coords, polys)
+            if cells is None:
+                data = (coords, polys)
+            elif polys is None:
+                data = (coords, cells)
+            else:
+                raise "Both polys and cells are in file %s"%fn
             if 'prop' in celldata.keys():
                 kargs = {'prop':celldata['prop']}
         else:
