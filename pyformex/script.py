@@ -41,6 +41,7 @@ from pyformex.geometry import Geometry
 ########################
 # Imported here only to make available in scripts
 from pyformex.olist import List
+from pyformex.formex import *
 from pyformex.mesh import Mesh
 from pyformex.plugins.trisurface import TriSurface
 
