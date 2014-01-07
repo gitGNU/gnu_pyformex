@@ -588,7 +588,7 @@ file_description = OrderedDict([
     ('inp', 'Abaqus or CalCuliX input files (*.inp)'),
     ('neu', 'Gambit Neutral files (*.neu)'),
     ('off', 'OFF files (*.off)'),
-    ('pgf', 'pyFormex geometry files (*.pgf)'),
+    ('pgf', 'pyFormex geometry files (*.pgf *.pgf.gz *.pgf.bz2)'),
     ('png', 'PNG images (*.png)'),
     ('postproc', 'Postproc scripts (*_post.py *.post)'),
     ('pyformex', 'pyFormex scripts (*.py *.pye)'),
@@ -659,7 +659,7 @@ def fileDescription(ftype):
     inp = 'Abaqus or CalCuliX input files (*.inp)'
     neu = 'Gambit Neutral files (*.neu)'
     off = 'OFF files (*.off)'
-    pgf = 'pyFormex geometry files (*.pgf)'
+    pgf = 'pyFormex geometry files (*.pgf *.pgf.gz *.pgf.bz2)'
     png = 'PNG images (*.png)'
     postproc = 'Postproc scripts (*_post.py *.post)'
     pyformex = 'pyFormex scripts (*.py *.pye)'
@@ -674,8 +674,8 @@ def fileDescription(ftype):
     <BLANKLINE>
     >>> fileDescription('img')
     'Images (*.png *.jpg *.eps *.gif *.bmp)'
-    >>> fileDescription(['pgf','stl','all'])
-    ['pyFormex geometry files (*.pgf)', 'STL files (*.stl)', 'All files (*)']
+    >>> fileDescription(['stl','all'])
+    ['STL files (*.stl)', 'All files (*)']
     >>> fileDescription('doc')
     'DOC files (*.doc)'
     >>> fileDescription('inp')
@@ -724,7 +724,10 @@ def fileTypeFromExt(fname):
     """Derive the file type from the file name.
 
     The derived file type is the file extension part in lower case and
-    without the leading dot.
+    without the leading dot. However, if the file extension is '.gz' or
+    '.bz2', and the filename contains another dot, the extension is set
+    to the filename part after that dot. This allows for transparent
+    handling of compressed files.
 
     Example:
 
@@ -741,7 +744,7 @@ def fileTypeFromExt(fname):
     """
     name, ext = os.path.splitext(fname)
     ext = fileType(ext)
-    if ext == 'gz':
+    if ext in [ 'gz', 'bz2' ]:
         ext1 = fileTypeFromExt(name)
         if ext1:
             ext = '.'.join([ext1, ext])
@@ -1125,6 +1128,21 @@ def gunzip(filename,unzipped=None,remove=True):
     if remove:
         removeFile(filename)
     return unzipped
+
+
+def openFile(name,mode,compr=None,level=5):
+    import gzip
+    import bz2
+    if name.endswith('.gz') and compr is None:
+        compr = 'gz'
+    if name.endswith('.bz2') and compr is None:
+        compr = 'bz2'
+    if compr is None:
+        return open(name,mode)
+    if compr is 'gz':
+        return gzip.GzipFile(name,mode,compresslevel=level)
+    if compr is 'bz2':
+        return bz2.BZ2File(name,mode,compresslevel=level)
 
 
 # These two functions are undocumented for a reason. Believe me! BV
