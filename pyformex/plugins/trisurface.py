@@ -1049,11 +1049,10 @@ Quality: %s .. %s
         from pyformex.timer import Timer
         t = Timer()
         # distance from vertices
-        ind, dist = geomtools.closest(X, self.coords)
+        ind, dist = geomtools.closest(X, self.coords, return_dist=True)
         if return_points:
             points = self.coords[ind]
         print("Vertex distance: %s seconds" % t.seconds(True))
-        #print dist
 
         # distance from edges
         Ep = self.coords[self.getEdges()]
