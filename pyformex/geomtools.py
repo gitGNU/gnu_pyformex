@@ -151,13 +151,16 @@ def distance(X, Y):
     return length(X[:, newaxis]-Y)
 
 
-def closest(X,Y,return_dist=True):
-    """Find the point of Y closest to points of X.
+def closest(X,Y=None,return_dist=True):
+    """Find the point of Y closest to each of the points of X.
 
     Parameters:
 
     - `X`: (nX,3) shaped array of points
-    - `Y`: (nY,3) shaped array of points
+    - `Y`: (nY,3) shaped array of points. If None, Y is taken equal to X,
+      allowing to search for the closest point in a single set. In the latter
+      case, the point itself is excluded from the search (as otherwise
+      that would obviously be the closest one).
     - `return_dist`: bool. If False, only the index of the closest point
       is returned. If True (default), the distance are also returned.
 
@@ -168,8 +171,41 @@ def closest(X,Y,return_dist=True):
     - `dist`: (nX,) float array with the distance of the closest point. This
       is equal to length(X-Y[ind]). It is only returned if return_dist is True.
     """
-    dist = distance(X, Y)    # Compute all distances
+    dist = distance(X, Y)   # Compute all distances
     ind = dist.argmin(-1)   # Locate the smallest distances
+    if return_dist:
+        return ind, dist[arange(dist.shape[0]), ind]
+    else:
+        return ind
+
+
+def closest(X,Y=None,return_dist=True):
+    """Find the point of Y closest to each of the points of X.
+
+    Parameters:
+
+    - `X`: (nX,3) shaped array of points
+    - `Y`: (nY,3) shaped array of points. If None, Y is taken equal to X,
+      allowing to search for the closest point in a single set. In the latter
+      case, the point itself is excluded from the search (as otherwise
+      that would obviously be the closest one).
+    - `return_dist`: bool. If False, only the index of the closest point
+      is returned. If True (default), the distances are also returned.
+
+    Returns:
+
+    - `ind`: (nX,) int array with the index of the closest point in Y to the
+      points of X
+    - `dist`: (nX,) float array with the distance of the closest point. This
+      is equal to length(X-Y[ind]). It is only returned if return_dist is True.
+    """
+    if Y is None:
+        dist = distance(X, X)   # Compute all distances
+        ar = arange(X.shape[0])
+        dist[ar,ar] = dist.max()+1.
+    else:
+        dist = distance(X, Y)   # Compute all distances
+    ind = dist.argmin(-1)       # Locate the smallest distances
     if return_dist:
         return ind, dist[arange(dist.shape[0]), ind]
     else:
@@ -187,7 +223,7 @@ def closestPair(X, Y):
     Returns a tuple (i,j,d) where i,j are the indices in X,Y identifying
     the closest points, and d is the distance between them.
     """
-    dist = distance(X, Y)    # Compute all distances
+    dist = distance(X, Y)   # Compute all distances
     ind = dist.argmin()     # Locate the smallest distances
     i, j = divmod(ind, Y.shape[0])
     return i, j, dist[i, j]
