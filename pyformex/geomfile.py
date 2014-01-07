@@ -32,7 +32,7 @@ from __future__ import print_function
 from pyformex import utils
 from pyformex import filewrite
 from pyformex import message, debug, warning, DEBUG
-from pyformex.coords import *
+from pyformex.arraytools import *
 from pyformex.formex import Formex
 from pyformex.mesh import Mesh
 from pyformex.odict import OrderedDict
@@ -53,10 +53,9 @@ class GeometryFile(object):
     If `fil` is a string, a file with that name is opened with the
     specified `mode`. If no mode is specified, 'r' will be used for
     existing files and 'w' for new files.
-    Else, `file` should be an already open file.
-    For files opened in write mode,
+    Else, `file` should be an already open file and the `mode` argument
+    should not be used.
 
-    Geometry classes can provide the facility
     """
 
     _version_ = '1.7'
@@ -71,16 +70,21 @@ class GeometryFile(object):
                 else:
                     mode = 'w'
             fil = open(fil, mode)
+        else:
+            if mode is not None:
+                raise ValueError("`mode` can only be specified if `fil` is a string.")
+
         self.isname = isname
         self.fil = fil
-        self.writing = self.fil.mode[0] in 'wa'
+        self.writing = self.fil.mode[0:1] in 'wa'
+
         if self.writing:
             self.sep = sep
             self.fmt = {'i':ifmt,'f':ffmt}
         if self.isname:
-            if mode[0] == 'w':
+            if self.writing:
                 self.writeHeader()
-            elif mode[0] == 'r':
+            else:
                 self.readHeader()
 
 

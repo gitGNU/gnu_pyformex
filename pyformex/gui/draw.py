@@ -53,7 +53,6 @@ from pyformex.plugins import trisurface, tools, fe
 
 from pyformex.script import *
 from pyformex.gui.colors import *
-from pyformex.formex import *
 from pyformex.coordsys import CoordinateSystem
 
 import numpy
@@ -386,8 +385,13 @@ def askFilename(cur=None,filter='all',exist=True,multi=False,change=True,timeout
     if not exist and not multi:
         # Check and force extension for single new file
         okext = utils.fileExtensionsFromFilter(fs)
-        basename, ext = os.path.splitext(fn)
-        if not ext in okext:
+        print("Accepted extensions: %s" % okext)
+        ok = False
+        for ext in okext:
+            if fn.endswith(ext):
+                ok = True
+                break
+        if not ok:
             fn += okext[0]
     if fn and change:
         if multi:

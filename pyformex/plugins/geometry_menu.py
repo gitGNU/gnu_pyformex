@@ -172,7 +172,7 @@ def readGeometry(filename,filetype=None):
 
         print("Reading file of type %s" % filetype)
 
-        if filetype == 'pgf' or filetype == 'pgf.gz':
+        if filetype in [ 'pgf', 'pgf.gz', 'pgf.bz2' ] :
             res = GeometryFile(filename).read()
 
         elif filetype in ['surface', 'stl', 'off', 'gts', 'neu']:
@@ -305,12 +305,11 @@ def writeGeometry(obj,filename,filetype=None,sep=' ',shortlines=False):
 
     print("Writing file of type %s" % filetype)
 
-    if filetype in [ 'pgf', 'pgf.gz', 'pyf' ]:
-        # Can write anything
-        if filetype in [ 'pgf', 'pgf.gz' ]:
-            res = writeGeomFile(filename, obj, sep=sep, shortlines=shortlines)
+    if '.'+filetype in utils.fileExtensions('pgf'):
+        res = writeGeomFile(filename, obj, sep=sep, shortlines=shortlines)
 
     else:
+        res = None
         error("Don't know how to export in '%s' format" % filetype)
 
     return res
