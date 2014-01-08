@@ -247,7 +247,7 @@ class Drawable(Attributes):
         else:
             GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
         if self.offset:
-            print("POLYGON OFFSET RESET")
+            pf.debug("POLYGON OFFSET RESET", pf.DEBUG.DRAW)
             GL.glPolygonOffset(0.0, 0.0)
 
 
