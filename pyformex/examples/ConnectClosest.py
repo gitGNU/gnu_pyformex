@@ -48,6 +48,8 @@ def run():
     drawNumbers(X)
     ind = geomtools.closest(X)
     M = connect([X,X[ind]]).toMesh().removeDuplicate()
+    # Hint: the connect() function transforms all items in the first
+    # argument to Formices. Thus it also works directly with Coords objects.
     draw(M)
     drawNumbers(M, color='red')
 

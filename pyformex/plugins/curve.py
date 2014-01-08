@@ -492,14 +492,14 @@ class PolyLine(Curve):
 
 
     def toFormex(self):
-        """Return the polyline as a Formex."""
+        """Return the PolyLine as a Formex."""
         x = self.coords
         F = connect([x, x], bias=[0, 1], loop=self.closed)
         return F.setProp(self.prop)
 
 
     def toMesh(self):
-        """Convert the polyLine to a plex-2 Mesh.
+        """Convert the PolyLine to a plex-2 Mesh.
 
         The returned Mesh is equivalent with the PolyLine.
         """
