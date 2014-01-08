@@ -1157,10 +1157,66 @@ def gunzip(filename,unzipped=None,remove=True,compr='gz'):
 class File(object):
     """Transparent file compression.
 
-    This class is a context manager providing for transparent
-    file compression and decompression.
+    This class is a context manager providing transparent file compression
+    and decompression. It is commonly used in a `with` statement, as follows::
+
+      with File('filename.ext','w') as f:
+          f.write('something')
+          f.write('something more')
+
+    This will create an uncompressed file with the specified name, write some
+    things to the file, and close it. The file can be read back similarly::
+
+      with File('filename.ext','r') as f:
+          for line in f:
+              print(f)
+
+    Because File is a context manager, the file is closed automatically when
+    leaving the `with` block.
+
+    By specifying a filename ending with '.gz' or '.bz2', the file will be
+    compressed (on writing) or decompressed (on reading) automatically.
+    The code can just stay the same as above.
+
+    Parameters:
+
+    - `name`: string: name of the file to open.
+      If the name ends with '.gz' or '.bz2', transparent (de)compression
+      will be used, with gzip or bzip2 compression algorithms respectively.
+    - `mode`: string: file open mode: 'r' for read, 'w' for write or 'a' for
+      append mode. See also the documentation for Python's open function.
+      For compressed files, append mode is not yet available.
+    - `compr`: string, one of 'gz' or 'bz2': identifies the compression
+      algorithm to be used: gzip or bzip2. If the file name is ending with
+      '.gz' or '.bz2', `compr` is set automatically from the extension.
+    - `level`: an integer from 1..9: gzip/bzip2 compression level.
+      Higher values result in smaller files, but require longer compression
+      times. The default of 5 gives already a fairly good compression ratio.
+    - `delete_temp`: bool: if True (default), the temporary files needed to
+      do the (de)compression are deleted when the File instance is closed.
+
+    The File class can also be used outside a `with` statement. In that case
+    the user has to open and close the File himself. The following are more
+    or less equivalent with the above examples (the `with` statement is
+    better at handling exceptions)::
+
+      fil = File('filename.ext','w')
+      f = fil.open()
+      f.write('something')
+      f.write('something more')
+      fil.close()
+
+    This will create an uncompressed file with the specified name, write some
+    things to the file, and close it. The file can be read back similarly::
+
+      fil = File('filename.ext','r')
+      f = fil.open()
+      for line in f:
+          print(f)
+      fil.close()
+
     """
-    
+
     def __init__(self,name,mode,compr=None,level=5,delete_temp=True):
         import gzip
         import bz2
@@ -1169,8 +1225,8 @@ class File(object):
         if name.endswith('.bz2') and compr is None:
             compr = 'bz2'
         if compr and mode[0:1] not in 'rw':
-            raise ValueError("Mode %s is not allowed for compressed files")
-        
+            raise ValueError("Mode %s is not allowed for compressed files" % mode)
+
         self.name = name
         self.tmpfile = None
         self.tmpname = None
@@ -1181,9 +1237,20 @@ class File(object):
         self.file = None
 
 
-    def __enter__(self):
-        """Open the File in the requested mode
+    def open(self):
+        """Open the File in the requested mode.
 
+        This can be used to open a File object outside a `with`
+        statement. It returns a Python file object that can be used
+        to read from or write to the File. It performs the following:
+
+        - If no compression is used, ope the file in the requested mode.
+        - For reading a compressed file, decompress the file to a temporary
+          file and open the temporary file for reading.
+        - For writing a compressed file, open a tem[porary file for writing.
+
+        See the documentation for the :class:`File` class for an example of
+        its use.
         """
         if not self.compr:
             # Open an uncompressed file:
@@ -1207,17 +1274,40 @@ class File(object):
         return self.file
 
 
+    # this is needed to make this a context manager
+    __enter__ = open
+
+
+    def close(self):
+        """Close the File.
+
+        This can be used to close the File if it was not opened using a
+        `with` statement. It performs the following:
+
+        - The underlying file object is closed.
+        - If the file was opened for writing and compression is requested,
+          the file is compressed.
+        - If a temporary file was in use and delete_temp is True,
+          the temporary file is deleted.
+
+        See the documentation for the :class:`File` class for an example of
+        its use.
+
+        """
+        self.file.close()
+        if self.compr and self.mode[0:1] == 'w':
+            # - compress the resulting file
+            gzip(self.tmpname,gzipped=self.name,remove=True,compr=self.compr,level=self.level)
+        if self.tmpname and self.delete:
+            removeFile(self.tmpname)
+
+
     def __exit__(self,exc_type, exc_value, traceback):
         """Close the File
 
         """
         if exc_type is None:
-            self.file.close()
-            if self.compr and self.mode[0:1] == 'w':
-                # - compress the resulting file
-                gzip(self.tmpname,gzipped=self.name,remove=True,compr=self.compr,level=self.level)
-            if self.tmpname and self.delete:
-                removeFile(self.tmpname)
+            self.close()
             return True
 
         else:
@@ -1227,12 +1317,12 @@ class File(object):
 
             if self.tmpfile:
                 self.tmpfile.close()
-                
+
             if self.tmpname and self.delete:
                 removeFile(self.tmpname)
 
             return False
-                
+
 
 
 # These two functions are undocumented for a reason. Believe me! BV

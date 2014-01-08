@@ -53,9 +53,10 @@ class GeometryFile(object):
     If `fil` is a string, a file with that name is opened with the
     specified `mode`. If no mode is specified, 'r' will be used for
     existing files and 'w' for new files.
-    Else, `file` should be an already open file and the `mode` argument
-    should not be used.
 
+    Else, `file` should be an already open file and the `mode` argument
+    should not be used. Using a :class:`utils.File` instance even allows
+    for transparent (de)compression of the geometry file.
     """
 
     _version_ = '1.7'
