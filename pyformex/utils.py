@@ -1064,59 +1064,83 @@ def unix2dos(infile,outfile=None):
     return system("sed -i 's|\\r||' %s" % infile)
 
 
-def gzip(filename,gzipped=None,remove=True,level=5):
-    """Compress a file in gzip format.
+def gzip(filename,gzipped=None,remove=True,level=5,compr='gz'):
+    """Compress a file in gzip/bzip2 format.
 
     Parameters:
 
     - `filename`: input file name
     - `gzipped`: output file name. If not specified, it will be set to
-      the input file name + '.gz'. An existing output file will be
+      the input file name + '.' + `compr`. An existing output file will be
       overwritten.
     - `remove`: if True (default), the input file is removed after
       succesful compression
-    - `level`: an integer from 1..9: gzip compression level. Higher values
-      result in smaller files, but require longer compression times. The
-      default of 5 gives already a fairly good compression ratio.
+    - `level`: an integer from 1..9: gzip/bzip2 compression level.
+      Higher values result in smaller files, but require longer compression
+      times. The default of 5 gives already a fairly good compression ratio.
+    - `compr`: 'gz' or 'bz2': the compression algorithm to be used.
+      The default is 'gz' for gzip compression. Setting to 'bz2' will use
+      bzip2 compression.
 
     Returns the name of the compressed file.
     """
-    import gzip
     if gzipped is None:
-        gzipped = filename+'.gz'
-    fil = open(filename, 'rb')
-    gz = gzip.open(gzipped, 'wb', compresslevel=level)
-    gz.write(fil.read())
-    fil.close()
+        gzipped = filename+'.'+compr
+    if compr == 'gz':
+        import gzip
+        gz = gzip.GzipFile(gzipped, 'wb', compresslevel=level)
+    elif compr == 'bz2':
+        import bz2
+        gz = bz2.BZ2File(gzipped, 'wb', compresslevel=level)
+    else:
+        raise ValueError("`compr` should be 'gz' or 'bz2'")
+    with open(filename,'rb') as fil:
+        gz.write(fil.read())
     gz.close()
     if remove:
         removeFile(filename)
     return gzipped
 
 
-def gunzip(filename,unzipped=None,remove=True):
-    """Uncompress a file in gzip format.
+def gunzip(filename,unzipped=None,remove=True,compr='gz'):
+    """Uncompress a file in gzip/bzip2 format.
 
     Parameters:
 
-    - `filename`: compressed input file name (usually ending in '.gz')
+    - `filename`: compressed input file name (usually ending in '.gz' or
+      '.bz2')
     - `unzipped`: output file name. If not specified and `filename` ends with
-      '.gz', it will be set to the `filename` with the '.gz' removed.
-      If an empty string is specified or it is not specified and the filename
-      does not end in '.gz', the name of a temporary file is generated. Since
-      you will normally want to read something from the decompressed file, this
-      temporary file is not deleted after closing. It is up to the user to
-      delete it (using the returned file name) when he is ready with it.
+      '.gz' or '.bz2', it will be set to the `filename` with the '.gz' or
+      '.bz2' removed.
+      If an empty string is specified or it is not specified and `filename`
+      does not end in '.gz' or '.bz2', the name of a temporary file is
+      generated. Since you will normally want to read something from the
+      decompressed file, this temporary file is not deleted after closing.
+      It is up to the user to delete it (using the returned file name) when
+      he is ready with it.
     - `remove`: if True (default), the input file is removed after
       succesful decompression. You probably want to set this to False when
       decompressing to a temporary file.
+    - `compr`: 'gz' or 'bz2': the compression algorithm used in the input
+      file. If `filename` ends with either '.gz' or '.bz2', it is automatically
+      set from the extension. Else, the default 'gz' is used.
 
     Returns the name of the decompressed file.
     """
-    import gzip
-    gz = gzip.open(filename, 'rb')
-    if unzipped is None and filename.endswith('.gz'):
-        unzipped = filename[:-3]
+    if filename.endswith('.gz'):
+        compr = 'gz'
+    if filename.endswith('.bz2'):
+        compr = 'bz2'
+    if compr == 'gz':
+        import gzip
+        gz = gzip.GzipFile(filename, 'rb')
+    elif compr == 'bz2':
+        import bz2
+        gz = bz2.BZ2File(filename, 'rb')
+    else:
+        raise ValueError("`compr` should be 'gz' or 'bz2'")
+    if unzipped is None and filename.endswith('.'+compr):
+        unzipped = filename[:-(len(compr)+1)]
     if unzipped:
         fil = open(unzipped, 'wb')
     else:
@@ -1130,19 +1154,85 @@ def gunzip(filename,unzipped=None,remove=True):
     return unzipped
 
 
-def openFile(name,mode,compr=None,level=5):
-    import gzip
-    import bz2
-    if name.endswith('.gz') and compr is None:
-        compr = 'gz'
-    if name.endswith('.bz2') and compr is None:
-        compr = 'bz2'
-    if compr is None:
-        return open(name,mode)
-    if compr is 'gz':
-        return gzip.GzipFile(name,mode,compresslevel=level)
-    if compr is 'bz2':
-        return bz2.BZ2File(name,mode,compresslevel=level)
+class File(object):
+    """Transparent file compression.
+
+    This class is a context manager providing for transparent
+    file compression and decompression.
+    """
+    
+    def __init__(self,name,mode,compr=None,level=5,delete_temp=True):
+        import gzip
+        import bz2
+        if name.endswith('.gz') and compr is None:
+            compr = 'gz'
+        if name.endswith('.bz2') and compr is None:
+            compr = 'bz2'
+        if compr and mode[0:1] not in 'rw':
+            raise ValueError("Mode %s is not allowed for compressed files")
+        
+        self.name = name
+        self.tmpfile = None
+        self.tmpname = None
+        self.mode = mode
+        self.compr = compr
+        self.level = level
+        self.delete = delete_temp
+        self.file = None
+
+
+    def __enter__(self):
+        """Open the File in the requested mode
+
+        """
+        if not self.compr:
+            # Open an uncompressed file:
+            # - just open the file with specified mode
+            self.file = open(self.name,self.mode)
+
+        elif self.mode[0:1] == 'r':
+            # Open a compressed file in read mode:
+            # - first decompress file
+            self.tmpname = gunzip(self.name, unzipped='', remove=False)
+            # - then open the decompressed file in read mode
+            self.file = open(self.tmpname,self.mode)
+
+        else:
+            # Open a compressed file in write mode
+            # - open a temporary file (to be compressed after closing)
+            self.tmpfile = tempFile(prefix='File-', delete=False)
+            self.tmpname = self.tmpfile.name
+            self.file = self.tmpfile.file
+
+        return self.file
+
+
+    def __exit__(self,exc_type, exc_value, traceback):
+        """Close the File
+
+        """
+        if exc_type is None:
+            self.file.close()
+            if self.compr and self.mode[0:1] == 'w':
+                # - compress the resulting file
+                gzip(self.tmpname,gzipped=self.name,remove=True,compr=self.compr,level=self.level)
+            if self.tmpname and self.delete:
+                removeFile(self.tmpname)
+            return True
+
+        else:
+            # An exception occurred
+            if self.file:
+                self.file.close()
+
+            if self.tmpfile:
+                self.tmpfile.close()
+                
+            if self.tmpname and self.delete:
+                removeFile(self.tmpname)
+
+            return False
+                
 
 
 # These two functions are undocumented for a reason. Believe me! BV
