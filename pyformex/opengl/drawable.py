@@ -174,7 +174,7 @@ class Drawable(Attributes):
 
 
         if self.offset:
-            print("POLYGON OFFSET")
+            pf.debug("POLYGON OFFSET", pf.DEBUG.DRAW)
             GL.glPolygonOffset(1.0, 1.0)
 
         #print("LOAD DRAWABLE uniforms (AGAIN)")
