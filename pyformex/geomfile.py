@@ -42,80 +42,108 @@ import os
 class GeometryFile(object):
     """A class to handle files in the pyFormex Geometry File format.
 
-    The pyFormex Geometry File format allows the storage of most of the
-    geometrical objects in pyFormex, as well as some of their attributes,
-    to an external file and to read it back, even with other versions
-    of the program or with other software.
+    The pyFormex Geometry File (PGF) format allows the persistent storage
+    of most of the geometrical objects available in pyFormex using a format
+    that is independent of the pyFormex version. It guarantees a possible read
+    back in future versions. The format is simple and public, and hence
+    also allows read back from other software.
 
     See http://pyformex.org/documentation/file_format for a full description
     of the file format(s). Older file formats are supported for reading.
 
+    Other than just geometry, the pyFormex Geometry File format can also
+    store some attributes of the objects, like names and colors.
+    Future versions will also allow to store field variables.
+
+    The GeometryFile class uses the utils.File class to access the files,
+    and thus provides for transparent compression and decompression of the
+    files. When making use of the compression, the PGF files will remain small
+    even for complex models.
+
+    A PGF file starts with a specific header identifying the format and
+    version. When opening a file for reading, the PGF header is read
+    automatically, and the file is thus positioned ready for reading
+    the objects. When opening a file for writing (not appending!), the
+    header is automatically written, and the file is ready for writing objects.
+
+    In append mode however, nothing is currently done with the header.
+    This means that it is possible to append to a file using a format
+    different from that used to create the file initially. This is not a
+    good practice, as it may hinder the proper read back of the data.
+    Therefore, append mode should only be used when you are sure that
+    your current pyFormex uses the same format as the already stored file.
+    As a reminder, warning is written when opening the file in append mode.
+
+    The `filename`, `mode`, `compr`, `level` and `delete_temp` arguments are
+    passed to the utils.File class. See :class:`utils.File` for more
+    details.
+
     Parameters:
 
-    - `fil`: either a string with the file name, or an open file object.
-
-      If `fil` is a string, a file with that name is opened with the
-      specified `mode`. If no mode is specified, 'r' will be used for
-      existing files and 'w' for new files. If the file name ends with
-      '.gz' or '.bz2', transparent (de)compression will be used, as
-      provided by the :class:`utils.File` class. When opening a file
-      for reading, the pyFormex file header is read automatically, and
-      the file is thus positioned ready for reading the objects. When
-      opening a file for writing (not appending!), the pyFormex header is
-      automatically written, and the file is ready for writing objects.
-
-      Else, `file` should be an open Python file object and the `mode`
-      argument should not be used. In this case the user is responsible
-      for reading or writing the header at the start of the file.
-
+    - `filename`: string: the name of the file to open.
+      If the file name ends with '.gz' or '.bz2', transparent (de)compression
+      will be used, as provided by the :class:`utils.File` class.
     - `mode`: one of 'r', 'w' or 'a': specifies that the file should be
-      opened in read, write or append mode. This argument is only allowed
-      if `fil` is a string. Even then, it can often be omitted, because an
+      opened in read, write or append mode. If omitted, an
       existing file will be opened in read mode and a non-existing in write
       mode. Opening an existing file in 'w' mode will overwrite the file,
       while opening it in 'a' mode will allow to append to the file.
-
+    - `compr`: string, one of 'gz' or 'bz2': identifies the compression
+      algorithm to be used: gzip or bzip2. If the file name is ending with
+      '.gz' or '.bz2', `compr` is set automatically from the extension.
+    - `level`: an integer from 1..9: gzip/bzip2 compression level.
+      Higher values result in smaller files, but require longer compression
+      times. The default of 5 gives already a fairly good compression ratio.
+    - `delete_temp`: bool: if True (default), the temporary files needed to
+      do the (de)compression are deleted when the GeometryFile is closed.
     - `sep`: string: separator string to be used when writing numpy arrays
       to the file. An empty string will make the arrays being written in
       binary format. Any other string will force text mode, and the `sep`
       string is used as a separator between subsequent array elements.
       See also :func:`numpy.tofile`.
-
     - `ifmt` and `ffmt` are present for historical and development reasons,
       but currently inactive.
     """
 
     _version_ = '1.7'
 
-    def __init__(self,fil,mode=None,sep=' ',ifmt=' ',ffmt=' '):
+    def __init__(self,filename,mode=None,compr=None,level=5,delete_temp=True,
+                 sep=' ',ifmt=' ',ffmt=' '):
         """Create the GeometryFile object."""
-        isname = isinstance(fil, (str,unicode))
-        if isname:
-            if mode is None:
-                if os.path.exists(fil):
-                    mode = 'r'
-                else:
-                    mode = 'w'
-            fil = open(fil, mode)
-        else:
-            if mode is not None:
-                raise ValueError("`mode` can only be specified if `fil` is a string.")
+        if mode is None:
+            if os.path.exists(filename):
+                mode = 'r'
+            else:
+                mode = 'w'
 
-        self.isname = isname
-        self.fil = fil
-        self.writing = self.fil.mode[0:1] in 'wa'
-        self.header_done = self.fil.mode[0:1] == 'a'
-        self.autoname = utils.NameSequence(utils.projectName(self.fil.name))
+        self.file = utils.File(filename,mode,compr,level,delete_temp)
+        self._autoname = None
 
         if self.writing:
             self.sep = sep
             self.fmt = {'i':ifmt,'f':ffmt}
 
-        if self.isname:
-            if self.writing:
-                self.writeHeader()
-            else:
-                self.readHeader()
+        self.open()
+
+
+    @property
+    def writing(self):
+        return self.file.mode[0:1] in 'wa'
+
+
+    @property
+    def autoname(self):
+        if self._autoname is None:
+            self._autoname = utils.NameSequence(utils.projectName(self.file.name)+'-0')
+        return self._autoname
+
+
+    def open(self):
+        self.fil = self.file.open()
+        if self.writing:
+            self.writeHeader()
+        else:
+            self.readHeader()
 
 
     def reopen(self,mode='r'):
@@ -123,17 +151,14 @@ class GeometryFile(object):
 
         The default mode for the reopen is 'r'
         """
-        self.fil.close()
-        self.__init__(self.fil.name, mode)
+        self.file.reopen(mode)
 
 
     def close(self):
         """Close the file.
 
-        After closing, the file is no longer accessible.
         """
-        self.fil.close()
-        self.fil = None
+        self.file.close()
 
 
     def checkWritable(self):
@@ -173,7 +198,7 @@ class GeometryFile(object):
         filewrite.writeData(self.fil, data, sep, end='\n')
 
 
-    def write(self,geom):
+    def write(self,geom,name=None,sep=None):
         """Write a collection of Geometry objects to the Geometry File.
 
         Parameters:
@@ -192,9 +217,12 @@ class GeometryFile(object):
             for obj in geom:
                 if hasattr(obj, 'obj'):
                     # This must be a WebGL object dict
-                    self.writeDict(obj, sep=sep)
+                    self.writeDict(obj)
                 else:
-                    self.writeGeometry(geom[name])
+                    self.writeGeometry(obj,sep=sep)
+        else:
+            self.writeGeometry(geom,name,sep)
+
 
 
     def writeGeometry(self,geom,name=None,sep=None):
@@ -545,8 +573,7 @@ class GeometryFile(object):
             if count > 0 and len(self.results) >= count:
                 break
 
-        if self.isname:
-            self.fil.close()
+        self.file.close()
 
         return self.results
 

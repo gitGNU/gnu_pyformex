@@ -545,15 +545,6 @@ def changeExt(filename,ext,accept_ext=None,reject_ext=None):
     return buildFilename(dirname, basename, ext)
 
 
-def projectName(fn):
-    """Derive a project name from a file name.
-`
-    The project name is the basename of the file without the extension.
-    It is equivalent with splitFilename(fn)[1]
-    """
-    return os.path.splitext(os.path.basename(fn))[0]
-
-
 def tildeExpand(fn):
     """Perform tilde expansion on a filename.
 
@@ -768,6 +759,15 @@ def fileTypeFromExt(fname):
     'gz'
     """
     return fileType(splitExt(fname)[1])
+
+
+def projectName(fn):
+    """Derive a project name from a file name.
+`
+    The project name is the basename of the file without the extension.
+    It is equivalent with splitFilename(fn)[1]
+    """
+    return splitExt(os.path.basename(fn))[0]
 
 
 def fileSize(fn):

@@ -881,12 +881,12 @@ def writeGeomFile(filename,objects,sep=' ',mode='w',shortlines=False):
 
     Returns the number of objects written to the file.
     """
-    with utils.File(filename, mode) as fil:
-        f = geomfile.GeometryFile(fil, sep=sep)
-        # TODO: shis option could goto into GeometryFile
-        if shortlines:
-            f.fmt = {'i':'%i ','f':'%f '}
-        f.write(objects)
+    f = geomfile.GeometryFile(filename, mode, sep=sep)
+    # TODO: shis option could goto into GeometryFile
+    if shortlines:
+        f.fmt = {'i':'%i ','f':'%f '}
+    f.write(objects)
+    f.close()
     return len(objects)
 
 
@@ -906,9 +906,8 @@ def readGeomFile(filename,count=-1):
     If object names were stored in the file, they will be used as the keys.
     Else, default names will be provided.
     """
-    with utils.File(filename, 'r') as fil:
-        f = geomfile.GeometryFile(fil)
-        objects = f.read(count)
+    f = geomfile.GeometryFile(filename, 'r')
+    objects = f.read(count)
     return objects
 
 
