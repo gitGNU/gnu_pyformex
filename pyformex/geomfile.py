@@ -96,7 +96,6 @@ class GeometryFile(object):
         """
         self.fil.close()
         self.__init__(self.fil.name, mode)
-        print(self.fil, self.writing, self.isname)
 
 
     def close(self):
@@ -175,8 +174,9 @@ class GeometryFile(object):
                 for obj in geom:
                     self.write(obj, name.next(), sep)
 
-        elif hasattr(geom, 'write_geom'):
-            geom.write_geom(self, name, sep)
+        # This is not used anymore
+        ## elif hasattr(geom, 'write_geom'):
+        ##     geom.write_geom(self, name, sep)
         else:
             try:
                 writefunc = getattr(self, 'write'+geom.__class__.__name__)
@@ -222,7 +222,6 @@ class GeometryFile(object):
         color = ''
         if hasattr(F, 'color'):
             Fc = F.color
-            print("HAS COLOR=%s" % str(Fc))
             if isinstance(Fc, ndarray):
                 if Fc.shape == (3,):
                     color = tuple(Fc)
@@ -232,7 +231,6 @@ class GeometryFile(object):
                     color = 'vertex'
                 else:
                     raise ValueError("Incorrect color shape: %s" % Fc.shape)
-        print("COLOR=%s" % str(color))
 
         # Now take the object
         F = F.obj
@@ -270,7 +268,6 @@ class GeometryFile(object):
         color = ''
         if hasattr(F, 'color'):
             Fc = F.color
-            #print("HAS COLOR=%s" % str(Fc))
             if isinstance(Fc, ndarray):
                 if Fc.shape == (3,):
                     color = str(Fc)
@@ -281,7 +278,6 @@ class GeometryFile(object):
                 else:
                     raise ValueError("Incorrect color shape: %s" % Fc.shape)
 
-        #print("COLOR=%s" % color)
         head = "# objtype='%s'; ncoords=%s; nelems=%s; nplex=%s; props=%s; eltype='%s'; normals=%s; color=%r; sep='%s'" % (objtype, F.ncoords(), F.nelems(), F.nplex(), hasprop, F.elName(), hasnorm, color, sep)
         if name:
             head += "; name='%s'" % name
@@ -467,7 +463,7 @@ class GeometryFile(object):
                 obj = self.readPolyLine(ncoords, closed, sep)
             elif objtype == 'BezierSpline':
                 if 'nparts' in s:
-                    # THis looks like a version 1.3 BezierSpline
+                    # This looks like a version 1.3 BezierSpline
                     obj = self.oldReadBezierSpline(ncoords, nparts, closed, sep)
                 else:
                     if not 'degree' in s:
@@ -486,10 +482,8 @@ class GeometryFile(object):
             if obj is not None:
                 try:
                     color = checkArray(color, (3,), 'f')
-                    #debug("SET OBJECT COLOR TO %s" % color,DEBUG.INFO)
                     obj.color = color
                 except:
-                    #debug("NOT SETTING COLOR %s" % str(color),DEBUG.INFO)
                     pass
 
                 if name is None:
@@ -633,7 +627,6 @@ class GeometryFile(object):
         self.reopen('r')
         obj = self.read()
         self._version_ = GeometryFile._version_
-        #print self._version_
         if obj is not None:
             self.reopen('w')
             self.write(obj)

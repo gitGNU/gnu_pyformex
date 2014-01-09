@@ -864,8 +864,7 @@ def writeGeomFile(filename,objects,sep=' ',mode='w',shortlines=False):
     even to other software.
 
     - `filename`: the name of the file to be written. If it ends with '.gz'
-      the file will be compressed with gzip. If a file with the given name
-      minus the trailing '.gz' exists, it will be destroyed.
+      or '.bz2', the file will be compressed with gzip or bzip2, respectively.
     - `objects`: a list or a dictionary. If it is a dictionary,
       the objects will be saved with the key values as there names.
       Objects that can not be exported to a Geometry File will be
@@ -877,16 +876,12 @@ def writeGeomFile(filename,objects,sep=' ',mode='w',shortlines=False):
 
     Returns the number of objects written to the file.
     """
-    gzip = filename.endswith('.gz')
-    if gzip:
-        filename = filename[:-3]
-    f = geomfile.GeometryFile(filename, mode='w', sep=sep)
-    if shortlines:
-        f.fmt = {'i':'%i ','f':'%f '}
-    f.write(objects)
-    f.close()
-    if gzip:
-        utils.gzip(filename)
+    with utils.File(filename, mode) as fil:
+        f = geomfile.GeometryFile(fil, sep=sep)
+        if shortlines:
+            f.fmt = {'i':'%i ','f':'%f '}
+        f.writeHeader()
+        f.write(objects)
     return len(objects)
 
 
@@ -906,13 +901,12 @@ def readGeomFile(filename):
     If object names were stored in the file, they will be used as the keys.
     Else, default names will be provided.
     """
-    gzip = filename.endswith('.gz')
-    if gzip:
-        filename = utils.gunzip(filename, unzipped='', remove=False)
-    f = geomfile.GeometryFile(filename, mode='r')
-    objects = f.read()
-    if gzip:
-        utils.removeFile(filename)
+    print("FILENAME %s" % filename)
+    with utils.File(filename, 'r') as fil:
+        print("FIL %s" % fil)
+        f = geomfile.GeometryFile(fil)
+        f.readHeader()
+        objects = f.read()
     return objects
 
 

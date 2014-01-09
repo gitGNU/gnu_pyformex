@@ -173,7 +173,7 @@ def readGeometry(filename,filetype=None):
         print("Reading file of type %s" % filetype)
 
         if filetype in [ 'pgf', 'pgf.gz', 'pgf.bz2' ] :
-            res = GeometryFile(filename).read()
+            res = readGeomFile(filename)
 
         elif filetype in ['surface', 'stl', 'off', 'gts', 'neu']:
             surf = TriSurface.read(filename)
@@ -223,18 +223,13 @@ def importGeometry(select=True,draw=True,ftype=None):
         message("Reading geometry file %s" % fn)
         res = readGeometry(fn)
         export(res)
-        #selection.readFromFile(fn)
         print("Items read: %s" % [ "%s(%s)" % (k, res[k].__class__.__name__) for k in res])
         if select:
-            print("SET SELECTION")
             selection.set(res.keys())
-            #print(selection.names)
-            surface_menu.selection.set([n for n in selection.names if isinstance(named(n), TriSurface)])
-            #print(surface_menu.selection.names)
+            pf.GUI.selection['surface'].set([n for n in selection.names if isinstance(named(n), TriSurface)])
 
             if draw:
-                print("DRAW SELECTION")
-                selection.draw()
+                 selection.draw()
                 zoomAll()
 
 
