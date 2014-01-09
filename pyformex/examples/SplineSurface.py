@@ -37,7 +37,7 @@ two sets of curves are predefined:
   with a series of parallel planes. The original surface model was
   obtained from medical imaging processes and represents a human
   artery with a kink. These curves are read from a geometry file
-  'splines.pgf' include in the pyFormex distribution. 
+  'splines.pgf' include in the pyFormex distribution.
 
 In the first case, the number of curves will be equal to the specified
 number.  In the latter case, the number can not be larger than the
@@ -66,7 +66,7 @@ from pyformex.gui.draw import *
 """Definition of surfaces in pyFormex.
 
 This module defines classes and functions specialized for handling
-two-dimensional geometry in pyFormex. 
+two-dimensional geometry in pyFormex.
 """
 
 import numpy as np
@@ -95,7 +95,7 @@ def rollCurvePoints(curve,n=1):
         curve.coords[-1] = curve.coords[0]
     else:
         raise ValueError("Expected a closed PolyLine or BezierSpline.")
-    
+
 
 def alignCurvePoints(curve,axis=1,max=True):
     """Roll the points of a closed curved according to some rule.
@@ -113,7 +113,7 @@ def alignCurvePoints(curve,axis=1,max=True):
     else:
         ind = curve.pointsOn()[:, axis].argmin()
     rollCurvePoints(curve, ind)
-    
+
 
 class SplineSurface(Geometry):
     """A surface created by a sequence of splines.
@@ -152,7 +152,7 @@ class SplineSurface(Geometry):
         print("Curves have %s points" % CA[0].coords.shape[0])
         print("There are %s curves" % len(CA))
         if not self.uclosed:
-            nu += 1 
+            nu += 1
         grid = Coords(stack([CAi.coords[:nu] for CAi in CA]))
         print("Created grid %s x %s" % grid.shape[:2])
         return grid
@@ -169,16 +169,16 @@ class SplineSurface(Geometry):
     def approx(self, nu, nv):
         CL = self.vCurves()
         draw(CL, color=red)
-        
+
 
     def actor(self,**kargs):
-        return [ draw(c,**kargs) for c in self.curves ] 
+        return [ draw(c,**kargs) for c in self.curves ]
 
 
 def gridToMesh(grid,closed=False):
     """Convert a Grid Surface to a Quad Mesh"""
     nu = grid.shape[1]
-    nv = grid.shape[0] -1 
+    nv = grid.shape[0] -1
     elems = array([[ 0, 1, nu+1, nu ]])
     if closed:
         elems = concatenate([(elems+i) for i in range(nu-1)], axis=0)
@@ -242,16 +242,14 @@ def readSplines():
 
     The geometry file splines.pgf is provided with the pyFormex distribution.
     """
-    from pyformex.geomfile import GeometryFile
     fn = getcfg('datadir')+'/splines.pgf'
-    f = GeometryFile(fn)
-    obj = f.read()
+    obj = readGeomFile(fn)
     T = obj.values()
-    print(len(T))
-    print([len(Si.coords) for Si in T])
+    print("Number of curve: %s" % len(T))
+    print("Curve lengths: %s" % [len(Si.coords) for Si in T])
     return T
 
-    
+
 def removeInvalid(CL):
     """Remove the curves that contain NaN values.
 
@@ -274,7 +272,7 @@ def area(C,nroll=0):
     The nroll parameter may be specified to roll the coordinates
     appropriately.
     """
-    print(nroll)
+    #print(nroll)
     from pyformex.plugins.section2d import PlaneSection
     F = C.toFormex().rollAxes(nroll)
     S = PlaneSection(F)

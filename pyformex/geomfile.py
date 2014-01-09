@@ -104,17 +104,13 @@ class GeometryFile(object):
         self.isname = isname
         self.fil = fil
         self.writing = self.fil.mode[0:1] in 'wa'
+        self.header_done = self.fil.mode[0:1] == 'a'
+        self.autoname = utils.NameSequence(utils.projectName(self.fil.name))
 
         if self.writing:
             self.sep = sep
             self.fmt = {'i':ifmt,'f':ffmt}
 
-
-        # TODO
-        # read/write Header should be done automatically also for
-        # fil type arguments. This could be done by remembering
-        # the initial or headerprocessed state, and checking at
-        # the start of each read/write
         if self.isname:
             if self.writing:
                 self.writeHeader()
@@ -143,6 +139,8 @@ class GeometryFile(object):
     def checkWritable(self):
         if not self.writing:
             raise RuntimeError("File is not opened for writing")
+        if not self.header_done:
+            self.writeHeader()
 
 
     def writeHeader(self):
@@ -156,6 +154,7 @@ class GeometryFile(object):
           the data block
         """
         self.fil.write("# pyFormex Geometry File (http://pyformex.org) version='%s'; sep='%s'\n" % (self._version_, self.sep))
+        self.header_done = True
 
 
     def writeData(self,data,sep,fmt=None):
@@ -174,53 +173,72 @@ class GeometryFile(object):
         filewrite.writeData(self.fil, data, sep, end='\n')
 
 
-    def write(self,geom,name=None,sep=None):
-        """Write any geometry object to the geometry file.
+    def write(self,geom):
+        """Write a collection of Geometry objects to the Geometry File.
 
-        `geom` is one of the Geometry data types of pyFormex or a list
-        or dict of such objects or a WebGL objdict.
+        Parameters:
 
-        Currently exported geometry objects are
-        :class:`Coords`, :class:`Formex`, :class:`Mesh`,
-        :class:`PolyLine`, :class:`BezierSpline`.
-        The geometry object is written to the file using the specified
-        separator, or the default.
+        - `geom`: an object of one the supported Geometry data types
+          or a list or dict of such objects, or a WebGL objdict.
+          Currently exported geometry objects are
+          :class:`Coords`, :class:`Formex`, :class:`Mesh`,
+          :class:`PolyLine`, :class:`BezierSpline`.
         """
         self.checkWritable()
         if isinstance(geom, dict):
             for name in geom:
-                self.write(geom[name], name, sep)
+                self.writeGeometry(geom[name], name)
         elif isinstance(geom, list):
-            if name is None:
-                for obj in geom:
-                    if hasattr(obj, 'obj'):
-                        #This must be a WebGL object dict
-                        self.writeDict(obj, sep=sep)
-                    else:
-                        if hasattr(obj, 'name'):
-                            objname = obj.name
-                        else:
-                            objname = None
-                        self.write(obj, objname, sep)
-            else:
-                name = utils.NameSequence(name)
-                for obj in geom:
-                    self.write(obj, name.next(), sep)
+            for obj in geom:
+                if hasattr(obj, 'obj'):
+                    # This must be a WebGL object dict
+                    self.writeDict(obj, sep=sep)
+                else:
+                    self.writeGeometry(geom[name])
 
-        # This is not used anymore
-        ## elif hasattr(geom, 'write_geom'):
-        ##     geom.write_geom(self, name, sep)
-        else:
-            try:
-                writefunc = getattr(self, 'write'+geom.__class__.__name__)
-            except:
-                warning("Can not (yet) write objects of type %s to geometry file: skipping" % type(geom))
-                return
-            try:
-                writefunc(geom, name, sep)
-            except:
-                warning("Error while writing objects of type %s to geometry file: skipping" % type(geom))
-                raise
+
+    def writeGeometry(self,geom,name=None,sep=None):
+        """Write a single Geometry object to the Geometry File.
+
+        Writes a single Geometry object to the Geometry File, using the
+        specified name and separator.
+
+        Parameters:
+
+        - `geom`: a supported Geometry type object.
+          Currently supported Geometry objects are
+          :class:`Coords`,
+          :class:`Formex`,
+          :class:`Mesh`,
+          :class:`PolyLine`,
+          :class:`BezierSpline`.
+          Other types are skipped, and a message is written, but processing
+          continues.
+        - `name`: string: the name of the object to be stored in the file.
+          If not specified, and the object has an `attrib` dict contains
+          a name, that value is used. Else an object name is generated
+          from the file name.
+          On readback, the object names are used as keys to store the objects
+          in a dict.
+        - `sep`: string: defines the separator to be used for writing this
+          object. If not specified, the value given in the constructor will
+          be used. This argument allows to override it on a per object base.
+        """
+        self.checkWritable()
+        if name is None:
+            name = geom.attrib.name
+        if name is None:
+            name = self.autoname.next()
+        try:
+            writefunc = getattr(self, 'write'+geom.__class__.__name__)
+        except:
+            warning("Can not (yet) write objects of type %s to geometry file: skipping" % type(geom))
+            return
+        try:
+            writefunc(geom, name, sep)
+        except:
+            warning("Error while writing objects of type %s to geometry file: skipping" % type(geom))
+            raise
 
 
     def writeFormex(self,F,name=None,sep=None):
@@ -428,6 +446,7 @@ class GeometryFile(object):
             version = None
             raise RuntimeError("This does not look like a pyFormex geometry file, or it is a very old version.")
 
+        self.header_done = True
         self._version_ = version
         self.sep = sep
         self.objname = utils.NameSequence('%s_000' % utils.projectName(self.fil.name))
@@ -447,6 +466,8 @@ class GeometryFile(object):
         object names found in the file. If the file does not contain
         object names, they will be autogenerated from the file name.
         """
+        if not self.header_done:
+            self.readHeader()
         eltype = None # for compatibility with pre 1.1 .formex files
         ndim = 3
         while True:

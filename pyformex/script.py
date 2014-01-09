@@ -881,7 +881,6 @@ def writeGeomFile(filename,objects,sep=' ',mode='w',shortlines=False):
         # TODO: shis option could goto into GeometryFile
         if shortlines:
             f.fmt = {'i':'%i ','f':'%f '}
-        f.writeHeader()
         f.write(objects)
     return len(objects)
 
@@ -904,7 +903,6 @@ def readGeomFile(filename,count=-1):
     """
     with utils.File(filename, 'r') as fil:
         f = geomfile.GeometryFile(fil)
-        f.readHeader()
         objects = f.read(count)
     return objects
 
