@@ -881,14 +881,12 @@ def writeGeomFile(filename,objects,sep=' ',mode='w',shortlines=False):
         # TODO: shis option could goto into GeometryFile
         if shortlines:
             f.fmt = {'i':'%i ','f':'%f '}
-        # TODO: these two should be combined in one write(objects) method
-        # (renaming the current write to writeObjects)
         f.writeHeader()
         f.write(objects)
     return len(objects)
 
 
-def readGeomFile(filename):
+def readGeomFile(filename,count=-1):
     """Read a pyFormex Geometry File.
 
     A pyFormex Geometry File can store multiple geometrical objects in a
@@ -904,14 +902,10 @@ def readGeomFile(filename):
     If object names were stored in the file, they will be used as the keys.
     Else, default names will be provided.
     """
-    print("FILENAME %s" % filename)
     with utils.File(filename, 'r') as fil:
-        print("FIL %s" % fil)
         f = geomfile.GeometryFile(fil)
-        # TODO: these two should be combined in one read() method
-        # (renaming the current read to readObjects)
         f.readHeader()
-        objects = f.read()
+        objects = f.read(count)
     return objects
 
 

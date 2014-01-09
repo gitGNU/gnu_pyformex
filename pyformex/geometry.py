@@ -597,21 +597,35 @@ class Geometry(object):
     trl = translate
 
 
-    def write(self,fil,sep=' ',mode='w'):
+    def write(self,filename,sep=' ',mode='w'):
         """Write a Geometry to a .pgf file.
 
-        If fil is a string, a file with that name is opened. Else fil should
-        be an open file.
-        The Geometry is then written to that file in a native format, using
-        sep as separator between the coordinates.
-        If fil is a string, the file is closed prior to returning.
-        """
-        from pyformex.geomfile import GeometryFile
-        f = GeometryFile(fil, mode='w', sep=sep)
-        f.write(self)
-        if f.isname and mode[0]=='w':
-            f.close()
+        This writes the Geometry to a pyFormex Geometry File (PGF) with
+        the specified name.
 
+        It is a convenient shorthand for::
+
+          script.writeGeomFile(filename, self, sep=sep, mode=mode)
+
+        """
+        from pyformex.script import writeGeomFile
+        writeGeomFile(filename, self, sep=sep, mode=mode)
+
+
+    @classmethod
+    def read(clas,filename):
+        """Read a Geometry from a PGF file.
+
+        This reads a single object (the object) from a PGF file
+        and returns it.
+
+        It is a convenient shorthand for::
+
+          script.readGeomFile(filename, 1).values()[0]
+        """
+        from pyformex.script import readGeomFile
+        res = readGeomFile(filename,1)
+        return res.values()[0]
 
 
 if __name__ == "draw":

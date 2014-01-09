@@ -1253,38 +1253,11 @@ maxprop  = %s
         return levelVolumes(self.coords)
 
 
-#################### Read/Write Formex File ##################################
+#################### Read from string/file ##################################
 
-
-    def write(self,fil,sep=' ',mode='w'):
-        """Write a Formex to file.
-
-        If fil is a string, a file with that name is opened. Else fil should
-        be an open file.
-        The Formex is then written to that file in a native format, using
-        sep as separator between the coordinates.
-        If fil is a string, the file is closed prior to returning.
-        """
-        from pyformex.geomfile import GeometryFile
-        f = GeometryFile(fil, mode='w', sep=sep)
-        f.write(self)
-        if f.isname and mode[0]=='w':
-            f.close()
-
-
-    @classmethod
-    def read(clas,fil,sep=' '):
-        """Read a Formex from file.
-
-        fil is a filename or a file object.
-        If the file is in a valid Formex file format, the Formex is read and
-        returned. Otherwise, None is returned.
-        Valid Formex file formats are described in the manual.
-        """
-        from pyformex.geomfile import GeometryFile
-        f = GeometryFile(fil, mode='r', sep=sep)
-        res = f.read(count=1)
-        return res.values()[0]
+    #
+    # See also Geometry.read and Geometry.write
+    #
 
 
     @classmethod
