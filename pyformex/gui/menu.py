@@ -595,6 +595,7 @@ def createMenuData():
         (_('&Print sys.path'), printSysPath),
         (_('&Print loaded modules'), printModules),
         (_('&Print Used Memory'), script.printVMem),
+        (_('&Print Environment'), script.printEnv),
         (_('&PrintBbox'), draw.printbbox),
         (_('&Print Viewport Settings'), draw.printviewportsettings),
         (_('&Print Window Geometry'), printwindow),

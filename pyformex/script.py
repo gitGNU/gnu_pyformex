@@ -710,6 +710,11 @@ def printLoadedApps():
     print(', '.join([ "%s (%s)" % (k, r) for k, r in zip(loaded, refcnt)]))
 
 
+def printEnv():
+    """Print the environment."""
+    print(utils.formatDict(os.environ.data))
+
+
 # THis is not a good way of computing memory usage
 def vmSize():
     import os
