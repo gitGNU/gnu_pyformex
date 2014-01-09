@@ -1218,14 +1218,12 @@ class File(object):
     """
 
     def __init__(self,name,mode,compr=None,level=5,delete_temp=True):
-        import gzip
-        import bz2
         if name.endswith('.gz') and compr is None:
             compr = 'gz'
         if name.endswith('.bz2') and compr is None:
             compr = 'bz2'
-        if compr and mode[0:1] not in 'rw':
-            raise ValueError("Mode %s is not allowed for compressed files" % mode)
+        ## if compr and mode[0:1] not in 'rw':
+        ##     raise ValueError("Mode %s is not allowed for compressed files" % mode)
 
         self.name = name
         self.tmpfile = None
@@ -1257,11 +1255,11 @@ class File(object):
             # - just open the file with specified mode
             self.file = open(self.name,self.mode)
 
-        elif self.mode[0:1] == 'r':
-            # Open a compressed file in read mode:
+        elif self.mode[0:1] in 'ra':
+            # Open a compressed file in read or append mode:
             # - first decompress file
             self.tmpname = gunzip(self.name, unzipped='', remove=False)
-            # - then open the decompressed file in read mode
+            # - then open the decompressed file in read/append mode
             self.file = open(self.tmpname,self.mode)
 
         else:
@@ -1285,8 +1283,8 @@ class File(object):
         `with` statement. It performs the following:
 
         - The underlying file object is closed.
-        - If the file was opened for writing and compression is requested,
-          the file is compressed.
+        - If the file was opened in write or append mode and compression is
+          requested, the file is compressed.
         - If a temporary file was in use and delete_temp is True,
           the temporary file is deleted.
 
@@ -1295,7 +1293,7 @@ class File(object):
 
         """
         self.file.close()
-        if self.compr and self.mode[0:1] == 'w':
+        if self.compr and self.mode[0:1] in 'wa':
             # - compress the resulting file
             gzip(self.tmpname,gzipped=self.name,remove=True,compr=self.compr,level=self.level)
         if self.tmpname and self.delete:
