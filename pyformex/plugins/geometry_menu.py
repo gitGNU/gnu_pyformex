@@ -229,7 +229,7 @@ def importGeometry(select=True,draw=True,ftype=None):
             pf.GUI.selection['surface'].set([n for n in selection.names if isinstance(named(n), TriSurface)])
 
             if draw:
-                 selection.draw()
+                selection.draw()
                 zoomAll()
 
 
