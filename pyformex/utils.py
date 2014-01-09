@@ -720,19 +720,44 @@ def fileType(ftype):
     return ftype
 
 
-def fileTypeFromExt(fname):
-    """Derive the file type from the file name.
+def splitExt(fname):
+    """Split a file name in a=name and extension.
 
-    The derived file type is the file extension part in lower case and
-    without the leading dot. However, if the file extension is '.gz' or
-    '.bz2', and the filename contains another dot, the extension is set
-    to the filename part after that dot. This allows for transparent
-    handling of compressed files.
+    The extension is the part of the file name starting from the last dot.
+    However, if the file extension is '.gz' or '.bz2', and the filename
+    contains another dot, the extension is set to the filename part after
+    starting at the penultimate dot.
+    This allows for transparent handling of compressed files.
+
+    Returns a tuple (name,ext).
 
     Example:
 
-    >>> fileTypeFromExt('pyformex.pdf')
-    'pdf'
+    >>> splitExt('pyformex')
+    ('pyformex', '')
+    >>> splitExt('pyformex.pgf')
+    ('pyformex', '.pgf')
+    >>> splitExt('pyformex.pgf.gz')
+    ('pyformex', '.pgf.gz')
+    >>> splitExt('pyformex.gz')
+    ('pyformex', '.gz')
+    """
+    name, ext = os.path.splitext(fname)
+    if ext in [ '.gz', '.bz2' ]:
+        name,ext1 = os.path.splitext(name)
+        if ext1:
+            ext = ext1 + ext
+    return name, ext
+
+
+def fileTypeFromExt(fname):
+    """Derive the file type from the file name.
+
+    The derived file type is the file extension part as obtained by
+    :func:`splitExt` without the leading dot and in lower case.
+
+    Example:
+
     >>> fileTypeFromExt('pyformex')
     ''
     >>> fileTypeFromExt('pyformex.pgf')
@@ -742,13 +767,7 @@ def fileTypeFromExt(fname):
     >>> fileTypeFromExt('pyformex.gz')
     'gz'
     """
-    name, ext = os.path.splitext(fname)
-    ext = fileType(ext)
-    if ext in [ 'gz', 'bz2' ]:
-        ext1 = fileTypeFromExt(name)
-        if ext1:
-            ext = '.'.join([ext1, ext])
-    return ext
+    return fileType(splitExt(fname)[1])
 
 
 def fileSize(fn):
@@ -1180,8 +1199,8 @@ class File(object):
 
     Parameters:
 
-    - `name`: string: name of the file to open.
-      If the name ends with '.gz' or '.bz2', transparent (de)compression
+    - `filename`: string: name of the file to open.
+      If the filename ends with '.gz' or '.bz2', transparent (de)compression
       will be used, with gzip or bzip2 compression algorithms respectively.
     - `mode`: string: file open mode: 'r' for read, 'w' for write or 'a' for
       append mode. See also the documentation for Python's open function.
@@ -1217,15 +1236,13 @@ class File(object):
 
     """
 
-    def __init__(self,name,mode,compr=None,level=5,delete_temp=True):
-        if name.endswith('.gz') and compr is None:
+    def __init__(self,filename,mode,compr=None,level=5,delete_temp=True):
+        if filename.endswith('.gz') and compr is None:
             compr = 'gz'
-        if name.endswith('.bz2') and compr is None:
+        if filename.endswith('.bz2') and compr is None:
             compr = 'bz2'
-        ## if compr and mode[0:1] not in 'rw':
-        ##     raise ValueError("Mode %s is not allowed for compressed files" % mode)
 
-        self.name = name
+        self.name = filename
         self.tmpfile = None
         self.tmpname = None
         self.mode = mode
@@ -1321,6 +1338,16 @@ class File(object):
 
             return False
 
+
+    def reopen(self,mode='r'):
+        """Reopen the file, possibly in another mode.
+
+        This allows e.g. to read back data from a just saved file
+        without having to destroy the File instance.
+        """
+        self.close()
+        self.mode = mode
+        self.open()
 
 
 # These two functions are undocumented for a reason. Believe me! BV
