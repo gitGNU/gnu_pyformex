@@ -208,21 +208,25 @@ class GeometryFile(object):
           Currently exported geometry objects are
           :class:`Coords`, :class:`Formex`, :class:`Mesh`,
           :class:`PolyLine`, :class:`BezierSpline`.
+
+        Returns the number of objects written.
         """
         self.checkWritable()
+        nobj = 0
         if isinstance(geom, dict):
             for name in geom:
-                self.writeGeometry(geom[name], name)
+                nobj += self.writeGeometry(geom[name], name)
         elif isinstance(geom, list):
             for obj in geom:
                 if hasattr(obj, 'obj'):
                     # This must be a WebGL object dict
-                    self.writeDict(obj)
+                    nobj += self.writeDict(obj)
                 else:
-                    self.writeGeometry(obj,sep=sep)
+                    nobj += self.writeGeometry(obj,sep=sep)
         else:
-            self.writeGeometry(geom,name,sep)
+            nobj += self.writeGeometry(geom,name,sep)
 
+        return nobj
 
 
     def writeGeometry(self,geom,name=None,sep=None):
@@ -251,8 +255,11 @@ class GeometryFile(object):
         - `sep`: string: defines the separator to be used for writing this
           object. If not specified, the value given in the constructor will
           be used. This argument allows to override it on a per object base.
+
+        Returns 1 if the object has been written, 0 otherwise.
         """
         self.checkWritable()
+
         if name is None:
             name = geom.attrib.name
         if name is None:
@@ -261,12 +268,14 @@ class GeometryFile(object):
             writefunc = getattr(self, 'write'+geom.__class__.__name__)
         except:
             warning("Can not (yet) write objects of type %s to geometry file: skipping" % type(geom))
-            return
+            return 1
         try:
             writefunc(geom, name, sep)
         except:
             warning("Error while writing objects of type %s to geometry file: skipping" % type(geom))
             raise
+
+        return 0
 
 
     def writeFormex(self,F,name=None,sep=None):
@@ -325,6 +334,7 @@ class GeometryFile(object):
             self.writeData(F.prop, sep)
         if hasnorm:
             self.writeData(F.normals, sep)
+        return 1
 
 
     def writeMesh(self,F,name=None,sep=None,objtype='Mesh'):
