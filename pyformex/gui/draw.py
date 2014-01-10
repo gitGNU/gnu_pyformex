@@ -340,7 +340,7 @@ def dialogTimedOut():
     return _dialog_result == widgets.TIMEOUT
 
 
-def askFilename(cur=None,filter='all',exist=True,multi=False,change=True,timeout=None,caption=None):
+def askFilename(cur=None,filter='all',exist=True,multi=False,compr=False,change=True,timeout=None,caption=None):
     """Ask for a file name or multiple file names using a file dialog.
 
     Parameters:
