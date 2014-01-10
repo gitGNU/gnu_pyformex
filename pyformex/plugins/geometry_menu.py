@@ -299,8 +299,9 @@ def writeGeometry(obj,filename,filetype=None,sep=' ',shortlines=False):
         filetype = utils.fileTypeFromExt(filename)
 
     print("Writing file of type %s" % filetype)
+    ext = '.'+filetype
 
-    if '.'+filetype in utils.fileExtensions('pgf'):
+    if ext in utils.fileExtensions('pgf',compr=True):
         res = writeGeomFile(filename, obj, sep=sep, shortlines=shortlines)
 
     else:
@@ -310,14 +311,14 @@ def writeGeometry(obj,filename,filetype=None,sep=' ',shortlines=False):
     return res
 
 
-def exportGeometry(types=['pgf', 'all'],sep=' ',shortlines=False):
+def exportGeometry(types=['pgf', 'all'],sep=' ',shortlines=False,compr=False):
     """Write geometry to file."""
     selection.ask()
     if not selection.check():
         return
 
     cur = pf.cfg['workdir']
-    fn = askNewFilename(cur=cur, filter=types)
+    fn = askNewFilename(cur=cur, filter=types,compr=compr)
     if fn:
         message("Writing geometry file %s" % fn)
         res = writeGeometry(selection.odict(), fn, sep=sep, shortlines=shortlines)
@@ -325,11 +326,11 @@ def exportGeometry(types=['pgf', 'all'],sep=' ',shortlines=False):
 
 
 def exportPgf():
-    exportGeometry(['pgf'])
+    exportGeometry(['pgf'],compr=True)
 def exportPgfShortlines():
-    exportGeometry(['pgf'], shortlines=True)
+    exportGeometry(['pgf'], shortlines=True,compr=True)
 def exportPgfBinary():
-    exportGeometry(['pgf'], sep='')
+    exportGeometry(['pgf'], sep='',compr=True)
 def exportOff():
     exportGeometry(['off'])
 
