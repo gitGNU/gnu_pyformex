@@ -1256,11 +1256,11 @@ class InputFile(InputItem):
     """An input item to select a file.
 
     The following arguments are passed to the FileSelection widget:
-    path,pattern,exist,multi,dir.
+    path,pattern,exist,multi,dir,compr.
     """
-    def __init__(self,name,value,pattern='*',exist=False,multi=False,dir=False,*args,**kargs):
+    def __init__(self,name,value,pattern='*',exist=False,multi=False,dir=False,compr=False,*args,**kargs):
         """Initialize the input item."""
-        self.input = FileSelection(value, pattern, exist, multi, dir)
+        self.input = FileSelection(value, pattern, exist, multi, dir, compr)
         # remove the dialog buttons, since the widget is embedded
         for b in self.input.findChildren(QtGui.QPushButton):
             b.close()
@@ -2455,10 +2455,10 @@ class FileSelection(QtGui.QFileDialog):
 
         'Image files (*.png *.jpg)'
 
-      The `pattern` argument is passed through the
-      :func:`utils.fileDescription`
-      function to create the actual pattern set. This allows the creation
-      of filters for common file types with a minimal input.
+      The `pattern` argument is passed to the :func:`utils.fileDescription`
+      function, together with the `compr` argument, to generate the actual
+      pattern set. This allows the creation of filters for common file types
+      with a minimal input.
 
       If a list of multiple strings is given, a combo box will allow the
       user to select between one of them.
@@ -2469,6 +2469,9 @@ class FileSelection(QtGui.QFileDialog):
     - `dir`: bool: if True, only directories can be selected. If dir evaluates
       to True, but is not the value True, either a directory or a filename can
       be selected.
+    - `compr`: bool: if True, compressed files of the specified type will be
+      selectable as well. This is passed together with the `pattern` argument
+      to the :func:`utils.fileDescription` to generate the actual patterns.
     - `button`: string: the label to be displayed on the accept button. The
       default is set to 'Save' if new files are allowed or 'Open' if only
       existing files can be selected.
@@ -2482,7 +2485,7 @@ class FileSelection(QtGui.QFileDialog):
     timeout = accept_any
 
 
-    def __init__(self,path='.',pattern='*',exist=False,multi=False,dir=False,button=None,caption=None,**kargs):
+    def __init__(self,path='.',pattern='*',exist=False,multi=False,dir=False,compr=False,button=None,caption=None,**kargs):
         """The constructor shows the widget."""
         QtGui.QFileDialog.__init__(self,**kargs)
         if os.path.isfile(path):
@@ -2490,7 +2493,7 @@ class FileSelection(QtGui.QFileDialog):
             self.selectFile(path)
         else:
             self.setDirectory(path)
-        pattern = utils.fileDescription(pattern)
+        pattern = utils.fileDescription(pattern,compr)
         if isinstance(pattern, str):
             self.setFilter(pattern)
         else: # should be a list of patterns

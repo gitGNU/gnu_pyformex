@@ -336,14 +336,14 @@ def system(cmd,timeout=None,wait=True,verbose=False,raise_error=False,**kargs):
     return P
 
 
-def command(cmd,timeout=None,wait=True,verbose=True,raise_error=True,**kargs):
+def command(cmd,verbose=True,raise_error=True,**kargs):
     """Run an external command in a user friendly way.
 
     This is equivalent with the utils.system function but with
     verbose=True and raise_error=True by default.
     """
     pf.debug("Command: %s" % cmd, pf.DEBUG.INFO)
-    return system(cmd,timeout,wait,verbose,raise_error,**kargs)
+    return system(cmd,verbose=verbose,raise_error=raise_error,**kargs)
 
 
 def lastCommandReport():
@@ -385,7 +385,7 @@ def runCommand(cmd,timeout=None,shell=True,**kargs):
     This is like with the utils.command, but with shell=True by default,
     and the return value is a tuple (P.sta,P.out) instead of the Process P.
     """
-    P = command(cmd,timeout,shell=shell,**kargs)
+    P = command(cmd,timeout=timeout,shell=shell,**kargs)
     return P.sta, P.out.rstrip('\n')
 
 
@@ -497,7 +497,7 @@ def splitFileDescription(fdesc,compr=False):
     if compr:
         ext = addCompressedTypes(ext)
     return desc,ext
-    
+
 
 def fileExtensionsFromFilter(fdesc,compr=False):
     """Return the list of file extensions from a given filter.
@@ -540,7 +540,7 @@ def addCompressedTypes(ext):
     import olist
     ext =  [ [e] + [ e+ec for ec in ['.gz','.bz2'] ] for e in ext ]
     return olist.flatten(ext)
- 
+
 
 def fileDescription(ftype,compr=False):
     """Return a description of the specified file type(s).

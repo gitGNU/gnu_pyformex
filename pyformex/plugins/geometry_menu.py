@@ -204,7 +204,7 @@ def readGeometry(filename,filetype=None):
     return res
 
 
-def importGeometry(select=True,draw=True,ftype=None):
+def importGeometry(select=True,draw=True,ftype=None,compr=False):
     """Read geometry from file.
 
     If select is True (default), the imported geometry becomes the current
@@ -218,7 +218,7 @@ def importGeometry(select=True,draw=True,ftype=None):
     else:
         ftype = [ftype]
     cur = pf.cfg['workdir']
-    fn = askFilename(cur=cur, filter=ftype)
+    fn = askFilename(cur=cur, filter=ftype, compr=compr)
     if fn:
         message("Reading geometry file %s" % fn)
         res = readGeometry(fn)
@@ -234,7 +234,7 @@ def importGeometry(select=True,draw=True,ftype=None):
 
 
 def importPgf():
-    importGeometry(ftype='pgf')
+    importGeometry(ftype='pgf',compr=True)
 
 def importSurface():
     importGeometry(ftype=['surface', 'pgf', 'all'])
