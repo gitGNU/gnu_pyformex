@@ -357,6 +357,8 @@ def askFilename(cur=None,filter='all',exist=True,multi=False,compr=False,change=
       select the appropriate one from the dialog.
     - `multi`: bool. If True, allows the user to pick multiple file names
       in a single operation.
+    - `compr`: bool. If True, the specified pattern will be extended with
+      the corresponding compressed file types.
     - `change`: bool. If True (default), the current working directory will
       be changed to the parent directory of the selection.
     - `caption`: string. This string will be displayed as the dialog title
@@ -375,7 +377,7 @@ def askFilename(cur=None,filter='all',exist=True,multi=False,compr=False,change=
     else:
         fn = os.path.basename(cur)
         cur = os.path.dirname(cur)
-    w = widgets.FileSelection(cur, filter, exist, multi,caption=caption)
+    w = widgets.FileSelection(cur, filter, exist, multi, compr=compr,caption=caption)
     if fn:
         w.selectFile(fn)
     fn = w.getFilename(timeout)
@@ -405,13 +407,13 @@ def askFilename(cur=None,filter='all',exist=True,multi=False,compr=False,change=
     return fn
 
 
-def askNewFilename(cur=None,filter="All files (*.*)",timeout=None,caption=None):
+def askNewFilename(cur=None,filter="All files (*.*)",compr=False,timeout=None,caption=None):
     """Ask a single new filename.
 
     This is a convenience function for calling askFilename with the
     arguments exist=False.
     """
-    return askFilename(cur=cur, filter=filter, exist=False, multi=False, timeout=timeout, caption=caption)
+    return askFilename(cur=cur, filter=filter, exist=False, multi=False, compr=compr, timeout=timeout, caption=caption)
 
 
 def askDirname(path=None,change=True,byfile=False,caption=None):
@@ -443,7 +445,7 @@ def askDirname(path=None,change=True,byfile=False,caption=None):
     return fn
 
 
-def askImageFile(fn=None):
+def askImageFile(fn=None,compr=False):
     if not fn:
         fn = pf.cfg['pyformexdir']
     return askFilename(fn, filter=['img', 'all'], multi=False, exist=True)
