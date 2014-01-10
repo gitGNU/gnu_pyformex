@@ -113,6 +113,9 @@ class Process(subprocess.Popen):
       attributes sta, out and err, providing the return code, standard
       output and standard error of the command.
 
+    - If 'shell=True' is specified, and no executable is specified, it sets
+      executable to the value of the environment variable 'SHELL'.
+
     Parameters:
 
     - `cmd`: string or args list. If a string, it is the command as it should
@@ -132,6 +135,11 @@ class Process(subprocess.Popen):
     - `shell`: bool. Default False. If True, the command will be run in a
       new shell. This may cause problems with killing the command and also
       poses a security risk.
+    - `executable`: string. The full path name of the program to be executed.
+      This can be used to specify the real executable if the program specified
+      in `cmd` is not in your PATH, or, with `shell`==True, if you want
+      to use another shell than the default. Note that Process uses a default
+      shell equal to the SHELL variable, while Python uses '/bin/sh' by default.
     - `stdout`,`stderr`: Standard output and error output. See Python docs
       for subprocess.Popen. Here, they default to PIPE, allowing the caller
       to grab the output of the command. Set them to an open file object to
@@ -145,10 +153,13 @@ class Process(subprocess.Popen):
 
         self.cmd = cmd
 
-        shell = kargs.get('shell', False)
+        shell = bool(kargs.get('shell', False))
         if isinstance(cmd, str) and shell is False:
             # Tokenize the command line
             cmd = shlex.split(cmd)
+
+        if shell and 'executable' not in kargs:
+            kargs['executable'] = os.environ['SHELL']
 
         for f in [ 'stdin', 'stdout', 'stderr' ]:
             if f not in kargs or kargs[f] is None:
@@ -413,6 +424,202 @@ def execSource(script,glob={}):
     pf.interpreter.runsource(script, '<input>', 'exec')
 
 
+##########################################################################
+## File types ##
+################
+
+def all_image_extensions():
+    """Return a list with all known image extensions."""
+    imgfmt = []
+
+
+file_description = OrderedDict([
+    ('all', 'All files (*)'),
+    ('ccx', 'CalCuliX files (*.dat *.inp)'),
+    ('gz',  'Compressed files (*.gz *.bz2)'),
+    ('dxf', 'AutoCAD .dxf files (*.dxf)'),
+    ('dxfall', 'AutoCAD .dxf or converted(*.dxf *.dxftext)'),
+    ('dxftext', 'Converted AutoCAD files (*.dxftext)'),
+    ('flavia', 'flavia results (*.flavia.msh *.flavia.res)'),
+    ('gts', 'GTS files (*.gts)'),
+    ('html', 'Web pages (*.html)'),
+    ('icon', 'Icons (*.xpm)'),
+    ('img', 'Images (*.png *.jpg *.eps *.gif *.bmp)'),
+    ('inp', 'Abaqus or CalCuliX input files (*.inp)'),
+    ('neu', 'Gambit Neutral files (*.neu)'),
+    ('off', 'OFF files (*.off)'),
+    ('pgf', 'pyFormex geometry files (*.pgf)'),
+    ('png', 'PNG images (*.png)'),
+    ('postproc', 'Postproc scripts (*_post.py *.post)'),
+    ('pyformex', 'pyFormex scripts (*.py *.pye)'),
+    ('pyf', 'pyFormex projects (*.pyf)'),
+    ('smesh', 'Tetgen surface mesh files (*.smesh)'),
+    ('stl', 'STL files (*.stl)'),
+    ('stlb', 'Binary STL files (*.stl)'),  # Use only for output
+    ('surface', 'Surface models (*.off *.gts *.stl *.neu *.smesh *.vtp *.vtk)'),
+    ('tetgen', 'Tetgen files (*.poly *.smesh *.ele *.face *.edge *.node *.neigh)'),
+    ('vtk', 'All VTK types (*.vtk *.vtp)'),
+    ('vtp', 'vtkPolyData file (*.vtp)'),
+])
+
+
+def splitFileDescription(fdesc,compr=False):
+    """Split a file descriptor.
+
+    A file descriptor is a string consisting of an initial part followed
+    by a second part enclosed in parentheses.
+    The second part is a space separated list of glob patterns. An example
+    file descriptor is 'file type text (*.ext1 *.ext2)'.
+    The values of :attr:`utils.file_description` all have this format.
+
+    This function splits the file descriptor in two parts: the leading text
+    and a list of global patterns.
+
+    Parameters:
+
+    - `ftype`: a file descriptor string.
+    - `compr`: bool. If True, the compressed file types are automatically
+      added.
+
+    Returns a tuple:
+
+    - `desc`: the file type description text
+    - `ext`: a list of strings each starting with a '.'.
+
+    >>> splitFileDescription(file_description['img'])
+    ('Images ', ['.png', '.jpg', '.eps', '.gif', '.bmp'])
+    >>> splitFileDescription(file_description['pgf'],compr=True)
+    ('pyFormex geometry files ', ['.pgf', '.pgf.gz', '.pgf.bz2'])
+    """
+    import re
+    desc,ext,dummy = re.compile('[()]').split(fdesc)
+    ext = [ e.lstrip('*') for e in ext.split(' ') ]
+    if compr:
+        ext = addCompressedTypes(ext)
+    return desc,ext
+    
+
+def fileExtensionsFromFilter(fdesc,compr=False):
+    """Return the list of file extensions from a given filter.
+
+    Parameters:
+
+    - `fdesc`: one of the values in :attr:`utils.file_description`.
+
+    Returns a list of strings starting with a '.'.
+
+    >>> fileExtensionsFromFilter(file_description['ccx'])
+    ['.dat', '.inp']
+    >>> fileExtensionsFromFilter(file_description['ccx'],compr=True)
+    ['.dat', '.dat.gz', '.dat.bz2', '.inp', '.inp.gz', '.inp.bz2']
+    """
+    return splitFileDescription(fdesc,compr)[1]
+
+
+def fileExtensions(ftype,compr=False):
+    """Return the list of file extensions from a given type.
+
+    ftype is one of the keys in :attr:`utils.file_description`.
+
+    Returns a list of strings starting with a '.'.
+
+    >>> fileExtensions('pgf')
+    ['.pgf']
+    >>> fileExtensions('pgf',compr=True)
+    ['.pgf', '.pgf.gz', '.pgf.bz2']
+    """
+    return fileExtensionsFromFilter(file_description[ftype],compr)
+
+
+def addCompressedTypes(ext):
+    """Add the defined compress types to a list of extensions
+
+    >>> addCompressedTypes(['.ccx','.inp'])
+    ['.ccx', '.ccx.gz', '.ccx.bz2', '.inp', '.inp.gz', '.inp.bz2']
+    """
+    import olist
+    ext =  [ [e] + [ e+ec for ec in ['.gz','.bz2'] ] for e in ext ]
+    return olist.flatten(ext)
+ 
+
+def fileDescription(ftype,compr=False):
+    """Return a description of the specified file type(s).
+
+    Parameters:
+
+    - `ftype`: a string or a list of strings. If it is a list, the return
+      value will be a list of the corresponding return values for each of
+      the strings in it. Each input string is converted to lower case
+      and represents a file type. It can be one of the following:
+
+      - a key in the :var:`file_description` dict: the corresponding value
+        will be returned (see Examples below).
+      - a string of only alphanumerical characters: it will be interpreted
+        as a file extension and the corresponding return value is
+        ``FTYPE files (*.ftype)``
+      - any other string is returned as as: this allows the user to compose
+        his filters himself.
+
+    Examples:
+
+    >>> print(formatDict(file_description))
+    all = 'All files (*)'
+    ccx = 'CalCuliX files (*.dat *.inp)'
+    gz = 'Compressed files (*.gz *.bz2)'
+    dxf = 'AutoCAD .dxf files (*.dxf)'
+    dxfall = 'AutoCAD .dxf or converted(*.dxf *.dxftext)'
+    dxftext = 'Converted AutoCAD files (*.dxftext)'
+    flavia = 'flavia results (*.flavia.msh *.flavia.res)'
+    gts = 'GTS files (*.gts)'
+    html = 'Web pages (*.html)'
+    icon = 'Icons (*.xpm)'
+    img = 'Images (*.png *.jpg *.eps *.gif *.bmp)'
+    inp = 'Abaqus or CalCuliX input files (*.inp)'
+    neu = 'Gambit Neutral files (*.neu)'
+    off = 'OFF files (*.off)'
+    pgf = 'pyFormex geometry files (*.pgf)'
+    png = 'PNG images (*.png)'
+    postproc = 'Postproc scripts (*_post.py *.post)'
+    pyformex = 'pyFormex scripts (*.py *.pye)'
+    pyf = 'pyFormex projects (*.pyf)'
+    smesh = 'Tetgen surface mesh files (*.smesh)'
+    stl = 'STL files (*.stl)'
+    stlb = 'Binary STL files (*.stl)'
+    surface = 'Surface models (*.off *.gts *.stl *.neu *.smesh *.vtp *.vtk)'
+    tetgen = 'Tetgen files (*.poly *.smesh *.ele *.face *.edge *.node *.neigh)'
+    vtk = 'All VTK types (*.vtk *.vtp)'
+    vtp = 'vtkPolyData file (*.vtp)'
+    <BLANKLINE>
+    >>> fileDescription('img')
+    'Images (*.png *.jpg *.eps *.gif *.bmp)'
+    >>> fileDescription(['stl','all'])
+    ['STL files (*.stl)', 'All files (*)']
+    >>> fileDescription('doc')
+    'DOC files (*.doc)'
+    >>> fileDescription('inp')
+    'Abaqus or CalCuliX input files (*.inp)'
+    >>> fileDescription('*.inp')
+    '*.inp'
+    >>> fileDescription(['stl','all'],compr=True)
+    ['STL files  (*.stl *.stl.gz *.stl.bz2)', 'All files  (* *.gz *.bz2)']
+
+    """
+    if isinstance(ftype, list):
+        return [fileDescription(f,compr) for f in ftype]
+    ftype = ftype.lower()
+    if ftype in file_description:
+        ret = file_description[ftype]
+    elif ftype.isalnum():
+        ret = "%s files (*.%s)" % (ftype.upper(), ftype)
+    else:
+        return ftype
+    if compr:
+        desc,ext = splitFileDescription(ret,compr)
+        ext = [ '*'+e for e in ext ]
+        ret = "%s (%s)" % (desc, ' '.join(ext))
+    return ret
+
+
 
 ##########################################################################
 ## Filenames ##
@@ -554,137 +761,6 @@ def tildeExpand(fn):
     the bash tilde expansion, such as strings in the configuration file.
     """
     return fn.replace('~', os.environ['HOME'])
-
-
-##########################################################################
-## File types ##
-################
-
-def all_image_extensions():
-    """Return a list with all known image extensions."""
-    imgfmt = []
-
-
-file_description = OrderedDict([
-    ('all', 'All files (*)'),
-    ('ccx', 'CalCuliX files (*.dat *.inp)'),
-    ('dxf', 'AutoCAD .dxf files (*.dxf)'),
-    ('dxfall', 'AutoCAD .dxf or converted(*.dxf *.dxftext)'),
-    ('dxftext', 'Converted AutoCAD files (*.dxftext)'),
-    ('flavia', 'flavia results (*.flavia.msh *.flavia.res)'),
-    ('gts', 'GTS files (*.gts)'),
-    ('html', 'Web pages (*.html)'),
-    ('icon', 'Icons (*.xpm)'),
-    ('img', 'Images (*.png *.jpg *.eps *.gif *.bmp)'),
-    ('inp', 'Abaqus or CalCuliX input files (*.inp)'),
-    ('neu', 'Gambit Neutral files (*.neu)'),
-    ('off', 'OFF files (*.off)'),
-    ('pgf', 'pyFormex geometry files (*.pgf *.pgf.gz *.pgf.bz2)'),
-    ('png', 'PNG images (*.png)'),
-    ('postproc', 'Postproc scripts (*_post.py *.post)'),
-    ('pyformex', 'pyFormex scripts (*.py *.pye)'),
-    ('pyf', 'pyFormex projects (*.pyf)'),
-    ('smesh', 'Tetgen surface mesh files (*.smesh)'),
-    ('stl', 'STL files (*.stl)'),
-    ('stlb', 'Binary STL files (*.stl)'),  # Use only for output
-    ('surface', 'Surface models (*.off *.gts *.stl *.off.gz *.gts.gz *.stl.gz *.neu *.smesh *.vtp *.vtk)'),
-    ('tetgen', 'Tetgen files (*.poly *.smesh *.ele *.face *.edge *.node *.neigh)'),
-    ('vtk', 'All VTK types (*.vtk *.vtp)'),
-    ('vtp', 'vtkPolyData file (*.vtp)'),
-])
-
-
-def fileExtensionsFromFilter(ftype):
-    """Return the list of file extensions from a given filter.
-
-    ftype is one of the valuess in :attr:`utils.file_description`.
-
-    Returns a list of strings starting with a '.'.
-    """
-    import re
-    ext = re.compile('[()]').split(ftype)[1]
-    return [ e.lstrip('*') for e in ext.split(' ') ]
-
-
-def fileExtensions(ftype):
-    """Return the list of file extensions from a given type.
-
-    ftype is one of the keys in :attr:`utils.file_description`.
-
-    Returns a list of strings starting with a '.'.
-    """
-    return fileExtensionsFromFilter(file_description.get(ftype))
-
-
-def fileDescription(ftype):
-    """Return a description of the specified file type(s).
-
-    Parameters:
-
-    - `ftype`: a string or a list of strings. If it is a list, the return
-      value will be a list of the corresponding return values for each of
-      the strings in it. Each input string is converted to lower case
-      and represents a file type. It can be one of the following:
-
-      - a key in the :var:`file_description` dict: the corresponding value
-        will be returned (see Examples below).
-      - a string of only alphanumerical characters: it will be interpreted
-        as a file extension and the corresponding return value is
-        ``FTYPE files (*.ftype)``
-      - any other string is returned as as: this allows the user to compose
-        his filters himself.
-
-    Examples:
-
-    >>> print(formatDict(file_description))
-    all = 'All files (*)'
-    ccx = 'CalCuliX files (*.dat *.inp)'
-    dxf = 'AutoCAD .dxf files (*.dxf)'
-    dxfall = 'AutoCAD .dxf or converted(*.dxf *.dxftext)'
-    dxftext = 'Converted AutoCAD files (*.dxftext)'
-    flavia = 'flavia results (*.flavia.msh *.flavia.res)'
-    gts = 'GTS files (*.gts)'
-    html = 'Web pages (*.html)'
-    icon = 'Icons (*.xpm)'
-    img = 'Images (*.png *.jpg *.eps *.gif *.bmp)'
-    inp = 'Abaqus or CalCuliX input files (*.inp)'
-    neu = 'Gambit Neutral files (*.neu)'
-    off = 'OFF files (*.off)'
-    pgf = 'pyFormex geometry files (*.pgf *.pgf.gz *.pgf.bz2)'
-    png = 'PNG images (*.png)'
-    postproc = 'Postproc scripts (*_post.py *.post)'
-    pyformex = 'pyFormex scripts (*.py *.pye)'
-    pyf = 'pyFormex projects (*.pyf)'
-    smesh = 'Tetgen surface mesh files (*.smesh)'
-    stl = 'STL files (*.stl)'
-    stlb = 'Binary STL files (*.stl)'
-    surface = 'Surface models (*.off *.gts *.stl *.off.gz *.gts.gz *.stl.gz *.neu *.smesh *.vtp *.vtk)'
-    tetgen = 'Tetgen files (*.poly *.smesh *.ele *.face *.edge *.node *.neigh)'
-    vtk = 'All VTK types (*.vtk *.vtp)'
-    vtp = 'vtkPolyData file (*.vtp)'
-    <BLANKLINE>
-    >>> fileDescription('img')
-    'Images (*.png *.jpg *.eps *.gif *.bmp)'
-    >>> fileDescription(['stl','all'])
-    ['STL files (*.stl)', 'All files (*)']
-    >>> fileDescription('doc')
-    'DOC files (*.doc)'
-    >>> fileDescription('inp')
-    'Abaqus or CalCuliX input files (*.inp)'
-    >>> fileDescription('*.inp')
-    '*.inp'
-
-    """
-    if isinstance(ftype, list):
-        return [fileDescription(f) for f in ftype]
-    ftype = ftype.lower()
-    if ftype in file_description:
-        ret = file_description[ftype]
-    elif ftype.isalnum():
-        ret = "%s files (*.%s)" % (ftype.upper(), ftype)
-    else:
-        ret = ftype
-    return ret
 
 
 def fileType(ftype):
