@@ -336,14 +336,14 @@ def system(cmd,timeout=None,wait=True,verbose=False,raise_error=False,**kargs):
     return P
 
 
-def command(cmd,timeout=None,verbose=True,raise_error=True,**kargs):
+def command(cmd,timeout=None,wait=True,verbose=True,raise_error=True,**kargs):
     """Run an external command in a user friendly way.
 
     This is equivalent with the utils.system function but with
     verbose=True and raise_error=True by default.
     """
     pf.debug("Command: %s" % cmd, pf.DEBUG.INFO)
-    return system(cmd,timeout,verbose,raise_error,**kargs)
+    return system(cmd,timeout,wait,verbose,raise_error,**kargs)
 
 
 def lastCommandReport():
