@@ -531,6 +531,22 @@ def fileExtensions(ftype,compr=False):
     return fileExtensionsFromFilter(file_description[ftype],compr)
 
 
+def fileTypes(ftype,compr=False):
+    """Return the list of file extension types for a given type.
+
+    This is like fileExtensions, but the strings do not have the
+    leading dot and are guaranteed to be lower case.
+
+    Returns a list of normalized file types.
+
+    >>> fileTypes('pgf')
+    ['pgf']
+    >>> fileTypes('pgf',compr=True)
+    ['pgf', 'pgf.gz', 'pgf.bz2']
+    """
+    return [ normalizeFileType(e) for e in fileExtensions(ftype,compr) ]
+
+
 def addCompressedTypes(ext):
     """Add the defined compress types to a list of extensions
 
