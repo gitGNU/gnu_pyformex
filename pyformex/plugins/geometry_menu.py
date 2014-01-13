@@ -168,14 +168,14 @@ def readGeometry(filename,filetype=None):
     try:
         res = {}
         if filetype is None:
-            filetype = utils.fileTypeFromExt(filename)
+            filetype,compr = utils.fileTypeComprFromExt(filename)
 
-        print("Reading file of type %s" % filetype)
+        print("Reading file %s of type '%s' (%s)" % (filename,filetype,compr))
 
-        if filetype in [ 'pgf', 'pgf.gz', 'pgf.bz2' ] :
+        if filetype == 'pgf':
             res = readGeomFile(filename)
 
-        elif filetype in ['surface', 'stl', 'off', 'gts', 'neu']:
+        elif filetype in utils.fileTypes('surface'):
             surf = TriSurface.read(filename)
             name = autoName(TriSurface).next()
             res = {name:surf}
@@ -192,7 +192,7 @@ def readGeometry(filename,filetype=None):
                     res["%s-%s" % (name, i)] = mesh.setProp(p)
                 j += 1
 
-        elif filetype in utils.fileExtensions('tetgen'):
+        elif filetype in utils.fileTypes('tetgen'):
             from pyformex.plugins import tetgen
             res = tetgen.readTetgen(filename)
 
@@ -237,7 +237,7 @@ def importPgf():
     importGeometry(ftype='pgf',compr=True)
 
 def importSurface():
-    importGeometry(ftype=['surface', 'pgf', 'all'])
+    importGeometry(ftype=['surface', 'pgf', 'vtk', 'all'],compr=True)
 
 def importInp():
     importGeometry(ftype='inp')

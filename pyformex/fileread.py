@@ -169,17 +169,42 @@ def read_off(fn):
     Returns a nodes,elems tuple.
     """
     pf.message("Reading .OFF %s" % fn)
-    fil = open(fn, 'r')
-    head = fil.readline().strip()
-    if head != "OFF":
-        pf.message("%s is not an OFF file!" % fn)
-        return None, None
-    nnodes, nelems, nedges = [int(i) for i in fil.readline().split()]
-    nodes = fromfile(file=fil, dtype=Float, count=3*nnodes, sep=' ')
-    # elems have number of vertices + 3 vertex numbers
-    elems = fromfile(file=fil, dtype=int32, count=4*nelems, sep=' ')
+    with utils.File(fn, 'r') as fil:
+        head = fil.readline().strip()
+        if head != "OFF":
+            pf.message("%s is not an OFF file!" % fn)
+            return None, None
+        nnodes, nelems, nedges = [int(i) for i in fil.readline().split()]
+        nodes = fromfile(file=fil, dtype=Float, count=3*nnodes, sep=' ')
+        # elems have number of vertices + 3 vertex numbers
+        elems = fromfile(file=fil, dtype=int32, count=4*nelems, sep=' ')
     pf.message("Read %d nodes and %d elems" % (nnodes, nelems))
     return nodes.reshape((-1, 3)), elems.reshape((-1, 4))[:, 1:]
+
+
+def read_gts(fn):
+    """Read a GTS surface mesh.
+
+    Return a coords,edges,faces tuple.
+    """
+    pf.message("Reading GTS file %s" % fn)
+    with utils.File(fn, 'r') as fil:
+        header = fil.readline().split()
+        ncoords, nedges, nfaces = [int(i) for i in header[:3]]
+        if len(header) >= 7 and header[6].endswith('Binary'):
+            raise RuntimeError("We can not read binary GTS format yet. See https://savannah.nongnu.org/bugs/index.php?38608. Maybe you should recompile the extra/gts commands.")
+            sep=''
+        else:
+            sep=' '
+        coords = fromfile(fil, dtype=Float, count=3*ncoords, sep=sep).reshape(-1, 3)
+        edges = fromfile(fil, dtype=int32, count=2*nedges, sep=' ').reshape(-1, 2) - 1
+        faces = fromfile(fil, dtype=int32, count=3*nfaces, sep=' ').reshape(-1, 3) - 1
+    pf.message("Read %d coords, %d edges, %d faces" % (ncoords, nedges, nfaces))
+    if coords.shape[0] != ncoords or \
+       edges.shape[0] != nedges or \
+       faces.shape[0] != nfaces:
+        pf.message("Error while reading GTS file: the file is probably incorrect!")
+    return coords, edges, faces
 
 
 def read_stl_bin(fn):

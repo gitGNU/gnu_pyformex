@@ -39,7 +39,6 @@ from pyformex import zip
 from pyformex.mesh import Mesh
 from pyformex.coords import Coords
 from pyformex.varray import Varray
-from pyformex.plugins.trisurface import TriSurface
 from pyformex.plugins.curve import PolyLine
 
 import vtk
@@ -156,7 +155,7 @@ def elems2VTK(elems):
     datav = vtkCellArray()
     datav.SetCells(Nelems, elms)
     return datav
-    
+
 
 def convert2VPD(M,clean=False,verbose=True):
     """Convert pyFormex data to vtkPolyData.
@@ -187,16 +186,16 @@ def convert2VPD(M,clean=False,verbose=True):
         M = M.toMesh()
         elems = arange(M.ncoords()).reshape(1, -1) #a polyline in vtk has one single element
     elif isinstance(M, Mesh):
-        elems = M.elems 
+        elems = M.elems
     else:
         raise ValueError('conversion of %s type to vtkPolyData is not yet supported'%type(M))
-    
+
     plex = elems.shape[1]
     vpd = vtkPolyData()# create a vtkPolyData variable
     pts = coords2VTK(M.coords)# creating  vtk coords
     vpd.SetPoints(pts)
     datav = elems2VTK(elems)# create vtk connectivity as vtkCellArray
-    
+
     if M.nplex() == 1:#point mesh
         try:
             if verbose:
@@ -226,13 +225,13 @@ def convert2VPD(M,clean=False,verbose=True):
 
 def convert2VTU(M):
     """Convert pyFormex Mesh to vtk unstructured grid.
-    
+
     Return a VTK unstructured grid (VTU) supports any element type and
     is therefore an equivalent of pyFormex class Mesh.
     """
     def eltype2VTU(elname):
         """convert the Mesh.elName() into vtk cell type
-        
+
         vtk cell type is an integer. See
         http://davis.lbl.gov/Manuals/VTK-4.5/vtkCellType_8h-source.html
         """
@@ -255,7 +254,7 @@ def convert2VTU(M):
             raise ValueError ('conversion not yet implemented')
     # create vtk coords
     pts = coords2VTK(M.coords)
-    # create vtk connectivity    
+    # create vtk connectivity
     datav = elems2VTK(M.elems)
     # find vtu cell type
     vtuCellType = eltype2VTU(M.elName())
@@ -266,7 +265,7 @@ def convert2VTU(M):
     vtu.SetCells(vtuCellType, datav)
     vtu.Update()
     return vtu
-    
+
 
 def convertVPD2Triangles(vpd):
     """Convert a vtkPolyData to a vtk triangular surface.
@@ -360,8 +359,8 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
                 lines = asarray(v2n(vpd.GetLines().GetData()), dtype=ntype).reshape(-1, Nplex+1)[:, 1:]
                 if verbose:
                     print('Saved lines connectivity array')
-            else:              
-                lines =  Varray(asarray(v2n(vpd.GetLines().GetData())))#this is the case of polylines 
+            else:
+                lines =  Varray(asarray(v2n(vpd.GetLines().GetData())))#this is the case of polylines
                 if verbose:
                     print('Saved lines connectivity varray')
 
@@ -493,16 +492,16 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
 
 def writeVTPmany(fn,items):
     """Writes many objects in vtp or vtk file format.
-    
+
     item can be a list of items supported by convert2VPD (mesh of coords, line2, tri3 and quad4)
     or convert2VTU (mesh of coords, line2, tri3, quad4, tet4 and hex8).
-    
+
     This is experimental!
     """
     from vtk import vtkAppendPolyData
     ftype = os.path.splitext(fn)[1]
     ftype = ftype.strip('.').lower()
-    
+
     if ftype=='vtp':
         from vtk import vtkAppendPolyData
         writer = vtkXMLPolyDataWriter()
@@ -518,7 +517,7 @@ def writeVTPmany(fn,items):
     writer.SetInput(vtkobj)
     writer.SetFileName(fn)
     writer.Write()
-    
+
 
 @utils.deprecation("depr_vtk_readVTP")
 def readVTP(fn):
@@ -768,6 +767,7 @@ def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True, verbose=Fal
     This function has been adapted from VMTK: vmtkScripts/vmtksurfacedecimation.py
     """
     from vtk import vtkDecimatePro
+    from pyformex.plugins.trisurface import TriSurface
 
     vpd = convert2VPD(self, clean=True)#convert pyFormex surface to vpd
     vpd = convertVPD2Triangles(vpd)
@@ -793,15 +793,15 @@ def findElemContainingPoint(self, pts, verbose=False):
 
     - `self`: a Mesh (point, line, surface or volume meshes)
     - `pts`: a Coords (npts,3) specifying npts points
-    
+
     This is experimental!
     Returns an integer array with the indices of the elems containing the points, returns -1 if no cell is found.
-    Only one elem index per points is returned, which is probably the one with lower index number. 
-    VTK FindCell seems not having tolerance in python. However, the user could enlarge (unshrink) all elems.    
+    Only one elem index per points is returned, which is probably the one with lower index number.
+    VTK FindCell seems not having tolerance in python. However, the user could enlarge (unshrink) all elems.
     Docs on http://www.vtk.org/doc/nightly/html/classvtkAbstractCellLocator.html#a0c980b5fcf6adcfbf06932185e89defb
     """
     from vtk import vtkCellLocator
-    vpd = convert2VTU(Mesh(self))    
+    vpd = convert2VTU(Mesh(self))
     cellLocator=vtkCellLocator()
     cellLocator.SetDataSet(vpd)
     cellLocator.BuildLocator()
@@ -811,12 +811,28 @@ def findElemContainingPoint(self, pts, verbose=False):
     return cellids
 
 
+def read_vtk_surface(fn):
+    from pyformex.plugins.trisurface import TriSurface
+    [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = readVTKObject(fn)
+    if cells is None:
+        data = (coords, polys)
+    elif polys is None:
+        data = (coords, cells)
+    else:
+        raise "Both polys and cells are in file %s"%fn
+    if 'prop' in celldata.keys():
+        kargs = {'prop':celldata['prop']}
+    return TriSurface(*data,**kargs)
+
+
 def install_trisurface_methods():
     """Install extra TriSurface methods
 
     """
-    TriSurface.decimate = decimate
-    TriSurface.findElemContainingPoint = findElemContainingPoint
+    from pyformex.plugins import trisurface
+    trisurface.read_vtk_surface = read_vtk_surface
+    trisurface.TriSurface.decimate = decimate
+    trisurface.TriSurface.findElemContainingPoint = findElemContainingPoint
 
 install_trisurface_methods()
 

@@ -49,8 +49,10 @@ import tempfile
 
 # Conversion of surface file formats
 
-read_off = fileread.read_off
 
+#
+# TODO: this should unzip compressed input files and zip compressed output
+#
 def stlConvert(stlname,outname=None,binary=False,options='-d'):
     """Transform an .stl file to .off or .gts or binary .stl format.
 
@@ -106,30 +108,6 @@ def stlConvert(stlname,outname=None,binary=False,options='-d'):
 
 # Input of surface file formats
 
-def read_gts(fn):
-    """Read a GTS surface mesh.
-
-    Return a coords,edges,faces tuple.
-    """
-    pf.message("Reading GTS file %s" % fn)
-    fil = open(fn, 'r')
-    header = fil.readline().split()
-    ncoords, nedges, nfaces = [int(i) for i in header[:3]]
-    if len(header) >= 7 and header[6].endswith('Binary'):
-        raise RuntimeError("We can not read binary GTS format yet. See https://savannah.nongnu.org/bugs/index.php?38608. Maybe you should recompile the extra/gts commands.")
-        sep=''
-    else:
-        sep=' '
-    coords = fromfile(fil, dtype=Float, count=3*ncoords, sep=sep).reshape(-1, 3)
-    edges = fromfile(fil, dtype=int32, count=2*nedges, sep=' ').reshape(-1, 2) - 1
-    faces = fromfile(fil, dtype=int32, count=3*nfaces, sep=' ').reshape(-1, 3) - 1
-    pf.message("Read %d coords, %d edges, %d faces" % (ncoords, nedges, nfaces))
-    if coords.shape[0] != ncoords or \
-       edges.shape[0] != nedges or \
-       faces.shape[0] != nfaces:
-        pf.message("Error while reading GTS file: the file is probably incorrect!")
-    return coords, edges, faces
-
 
 def read_stl(fn,intermediate=None):
     """Read a surface from .stl file.
@@ -148,11 +126,11 @@ def read_stl(fn,intermediate=None):
         pf.debug(out)
         return ()
 
-    if ofn.endswith('.gts'):
-        return read_gts(ofn)
-    elif ofn.endswith('.off'):
-        return read_off(ofn)
-
+    ftype,compr = utils.fileTypeComprFromExt(ofn)
+    if ftype == 'off':
+        return fileread.read_off(ofn)
+    elif ftype == 'gts':
+        return fileread.read_gts(ofn)
 
 
 # Surface characteristics
@@ -586,64 +564,45 @@ class TriSurface(Mesh):
         extension.
         Currently supported file types:
 
-        - .stl (ASCII or BINARY)
-        - .gts
         - .off
+        - .gts
+        - .stl (ASCII or BINARY)
         - .neu (Gambit Neutral)
         - .smesh (Tetgen)
 
-        Gzipped .stl, .gts and .off files are also supported. Their names
-        should be the normal filename with '.gz' appended. These files are
-        uncompressed on the fly during the reading and the uncompressed
-        versions are deleted after reading.
+        Compressed (gzip or bzip2) files are also supported. Their names
+        should be the normal filename with '.gz' or '.bz2' appended.
+        These files are uncompressed on the fly during the reading and
+        the uncompressed versions are deleted after reading.
         """
-        kargs=dict()
-        ftype = utils.fileTypeFromExt(fn)
-        gzip = ftype.endswith('.gz')
-        if gzip:
-            fn = utils.gunzip(fn, unzipped='', remove=False)
-            ftype = ftype[:-3]
+        ftype,compr = utils.fileTypeComprFromExt(fn)
         if ftype == 'off':
-            data = read_off(fn)
+            data = fileread.read_off(fn)
         elif ftype == 'gts':
-            data = read_gts(fn)
+            data = fileread.read_gts(fn)
         elif ftype == 'stl':
             try:
                 # first try binary format
                 data, color = fileread.read_stl_bin(fn)
                 S = TriSurface(data[:, 1:])
                 if color:
-                    #print(color)
-                    #from gui.draw import colorindex
-                    #p = colorindex(color)
-                    #S.setProp(p)
-                    S.color = color
+                    S.attrib(color = color)
                 return S
             except:
                 print("Could not read as binary stl, will try conversion")
-                # no succes: use conversion
                 data = read_stl(fn)
-        elif ftype == 'neu':
-            data = fileread.read_gambit_neutral(fn)
-        elif ftype == 'smesh':
+        # The remainder should probably disappear
+        # The following do not support compression yet
+        elif ftype == 'smesh' and not compr:
             from pyformex.plugins import tetgen
             data = tetgen.readSurface(fn)
-        elif ftype == 'vtp' or ftype == 'vtk':
-            from pyformex.plugins.vtk_itf import readVTKObject
-            [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = readVTKObject(fn)
-            if cells is None:
-                data = (coords, polys)
-            elif polys is None:
-                data = (coords, cells)
-            else:
-                raise "Both polys and cells are in file %s"%fn
-            if 'prop' in celldata.keys():
-                kargs = {'prop':celldata['prop']}
+        elif ftype == 'neu' and not compr:
+            data = fileread.read_gambit_neutral(fn)
+        elif ftype in [ 'vtp', 'vtk'] and not compr:
+            return read_vtk_surface(fn)
         else:
             raise "Unknown TriSurface type, cannot read file %s" % fn
-        if gzip:
-            utils.removeFile(fn)
-        return TriSurface(*data,**kargs)
+        return TriSurface(*data)
 
 
     def write(self,fname,ftype=None,color=None):
@@ -655,6 +614,9 @@ class TriSurface(Mesh):
         to force ascii or binary STL format.
         The color is only useful for 'stlb' format.
         """
+        ftype,compr = utils.fileTypeComprFromExt(fn)
+        if compr:
+            raise ValueError("Compressed surface export is currently not active")
         if ftype is None:
             ftype = os.path.splitext(fname)[1]
         if ftype == '':
@@ -2246,73 +2208,73 @@ Quality: %s .. %s
 ################# Non-member and obsolete functions ######################
 
 
-def read_error(cnt, line):
-    """Raise an error on reading the stl file."""
-    raise RuntimeError("Invalid .stl format while reading line %s\n%s" % (cnt, line))
+## def read_error(cnt, line):
+##     """Raise an error on reading the stl file."""
+##     raise RuntimeError("Invalid .stl format while reading line %s\n%s" % (cnt, line))
 
 
-def read_stla(fn,dtype=Float,large=False,guess=True):
-    """Read an ascii .stl file into an [n,3,3] float array.
+## def read_stla(fn,dtype=Float,large=False,guess=True):
+##     """Read an ascii .stl file into an [n,3,3] float array.
 
-    If the .stl is large, read_ascii_large() is recommended, as it is
-    a lot faster.
-    """
-    if large:
-        return read_ascii_large(fn, dtype=dtype)
-    if guess:
-        n = utils.countLines(fn) / 7 # ASCII STL has 7 lines per triangle
-    else:
-        n = 100
-    f = open(fn, 'r')
-    a = zeros(shape=[n, 3, 3], dtype=dtype)
-    x = zeros(shape=[3, 3], dtype=dtype)
-    i = 0
-    j = 0
-    cnt = 0
-    finished = False
-    for line in f:
-        cnt += 1
-        s = line.strip().split()
-        if s[0] == 'vertex':
-            if j >= 3:
-                read_error(cnt, line)
-            x[j] = [float(_s) for _s in s[1:4]]
-            j += 1
-        elif s[0] == 'outer':
-            j = 0
-        elif s[0] == 'endloop':
-            a[i] = x
-        elif s[0] == 'facet':
-            if i >= a.shape[0]:
-                # increase the array size
-                a.resize([2*a.shape[0], 3, 3])
-        elif s[0] == 'endfacet':
-            i += 1
-        elif s[0] == 'solid':
-            pass
-        elif s[0] == 'endsolid':
-            finished = True
-            break
-    if f:
-        f.close()
-    if finished:
-        return a[:i]
-    raise RuntimeError("Incorrect stl file: read %d lines, %d facets" % (cnt, i))
+##     If the .stl is large, read_ascii_large() is recommended, as it is
+##     a lot faster.
+##     """
+##     if large:
+##         return read_ascii_large(fn, dtype=dtype)
+##     if guess:
+##         n = utils.countLines(fn) / 7 # ASCII STL has 7 lines per triangle
+##     else:
+##         n = 100
+##     f = open(fn, 'r')
+##     a = zeros(shape=[n, 3, 3], dtype=dtype)
+##     x = zeros(shape=[3, 3], dtype=dtype)
+##     i = 0
+##     j = 0
+##     cnt = 0
+##     finished = False
+##     for line in f:
+##         cnt += 1
+##         s = line.strip().split()
+##         if s[0] == 'vertex':
+##             if j >= 3:
+##                 read_error(cnt, line)
+##             x[j] = [float(_s) for _s in s[1:4]]
+##             j += 1
+##         elif s[0] == 'outer':
+##             j = 0
+##         elif s[0] == 'endloop':
+##             a[i] = x
+##         elif s[0] == 'facet':
+##             if i >= a.shape[0]:
+##                 # increase the array size
+##                 a.resize([2*a.shape[0], 3, 3])
+##         elif s[0] == 'endfacet':
+##             i += 1
+##         elif s[0] == 'solid':
+##             pass
+##         elif s[0] == 'endsolid':
+##             finished = True
+##             break
+##     if f:
+##         f.close()
+##     if finished:
+##         return a[:i]
+##     raise RuntimeError("Incorrect stl file: read %d lines, %d facets" % (cnt, i))
 
 
-def read_ascii_large(fn,dtype=Float):
-    """Read an ascii .stl file into an [n,3,3] float array.
+## def read_ascii_large(fn,dtype=Float):
+##     """Read an ascii .stl file into an [n,3,3] float array.
 
-    This is an alternative for read_ascii, which is a lot faster on large
-    STL models.
-    It requires the 'awk' command though, so is probably only useful on
-    Linux/UNIX. It works by first transforming the input file to a
-    .nodes file and then reading it through numpy's fromfile() function.
-    """
-    tmp = '%s.nodes' % fn
-    utils.command("awk '/^[ ]*vertex[ ]+/{print $2,$3,$4}' '%s' | d2u > '%s'" % (fn, tmp), shell=True)
-    nodes = fromfile(tmp, sep=' ', dtype=dtype).reshape((-1, 3, 3))
-    return nodes
+##     This is an alternative for read_ascii, which is a lot faster on large
+##     STL models.
+##     It requires the 'awk' command though, so is probably only useful on
+##     Linux/UNIX. It works by first transforming the input file to a
+##     .nodes file and then reading it through numpy's fromfile() function.
+##     """
+##     tmp = '%s.nodes' % fn
+##     utils.command("awk '/^[ ]*vertex[ ]+/{print $2,$3,$4}' '%s' | d2u > '%s'" % (fn, tmp), shell=True)
+##     nodes = fromfile(tmp, sep=' ', dtype=dtype).reshape((-1, 3, 3))
+##     return nodes
 
 
 ## def off_to_tet(fn):
@@ -2458,6 +2420,15 @@ TriSurface.gtsset = pyformex_gts.gtsset
 
 from pyformex.plugins import webgl
 TriSurface.webgl = webgl.surface2webgl
+
+
+
+def read_vtk_surface(fn):
+    try:
+        from pyformex.plugins import vtk_itf
+    except:
+        utils.warn("I could not import VTK. This probably means that Python"
+                   "VTK bindings are not installed on your machine.")
 
 
 # End
