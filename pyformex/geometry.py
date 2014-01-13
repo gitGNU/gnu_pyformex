@@ -28,11 +28,12 @@ possibilities of coordinate transformations offered by the
 Coords class to the derived classes.
 """
 from __future__ import print_function
-from pyformex import zip
 
+from pyformex import zip
 from pyformex.coords import Coords, Int
+from pyformex.odict import OrderedDict
+import pyformex.arraytools as at
 import numpy as np
-from pyformex.arraytools import complement
 
 
 class Geometry(object):
@@ -316,7 +317,7 @@ class Geometry(object):
 
         This is the complimentary operation of :meth:`select`.
         """
-        return self._select(complement(selected, self.nelems()), compact=compact)
+        return self._select(at.complement(selected, self.nelems()), compact=compact)
 
 
     def selectProp(self,val,compact=True):
@@ -595,6 +596,70 @@ class Geometry(object):
 
     rot = rotate
     trl = translate
+
+
+    def addField(self,fldname,fldtype,data):
+        """Add a data field to the geometry.
+
+        Add a scalar or vectorial field defined over the domain of the
+        Geometry. A vectorial field is just a collection of `nval` scalar
+        fields: the individual values can be unrelated.
+
+        Parameters:
+
+        - `fldname`: string: the name under which to store the field. The
+          name can later be used to retrieve the field.
+        - `fldtype`: string: one of the following predefined field types:
+
+          - 'node': the field data are specified at the nodes of the geometry;
+          - 'elemc': the field data are constant per element;
+          - 'elemn': the field data vary over the element and are specified at
+            the nodes of the elements;
+          - 'elemg': the field data are specified at a number of points of
+            the elements, from which they can be inter- or extrapolated;
+
+          The actually available field types depend on the Geometry class.
+
+        - `data`: an array with the filed values defined at the specified
+          points. The required shape of the array depends on `fldtype`:
+
+          - 'node':  ( nnodes, ) or ( nval, nnodes )
+          - 'elemc': ( nelems, ) or ( nval, nelems )
+          - 'elemn': ( nelems, nplex ) or  (nval, nelems, nplex )
+          - 'elemg': ( nelems, ngp ) or  (nval, nelems, ngp )
+
+        """
+        if not hasattr(self,'fieldtypes') or fldtype not in self.fieldtypes:
+            raise ValueError("Can not add field of type '%s' to a %s" % (fldtype,self.__class__.__name__))
+
+        if not hasattr(self,'_fields'):
+            self._fields = OrderedDict()
+
+        if fldtype == 'node':
+            datashape = (-1,self.nnodes(),)
+        elif fldtype == 'elemc':
+            datashape = (-1,self.nelems(),)
+        elif fldtype == 'elemn':
+            datashape = (-1,self.nelems(),self.nplex())
+        elif fldtype == 'elemg':
+            datashape = (-1,self.nelems(),-1)
+
+        fldname = str(fldname)
+        if len(data.shape) < len(datashape):
+            data = data.reshape((-1,)+data.shape)
+        data = at.checkArray(data,shape=datashape)
+        self._fields[fldname] = data
+
+
+    def getField(self,fldname):
+        """Get the data field with the specified name.
+
+        If the data field does not exist, returns None
+        """
+        if hasattr(self,'_fields') and fldname in self._fields:
+            return self._fields[fldname]
+        else:
+            return None
 
 
     def write(self,filename,sep=' ',mode='w'):

@@ -88,7 +88,6 @@ class Attributes(Dict):
             pass
         else:
             raise ValueError("The 'default' argument should be an Attributes instance or None; got %s:" % type(default))
-            ## print("WARNING","The 'default' argument of Attributes should be an Attributes instance or None; got %s:" % default)
             default = returnNone
 
         Dict.__init__(self, data, default)

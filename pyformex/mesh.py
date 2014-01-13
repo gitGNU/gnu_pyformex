@@ -111,20 +111,26 @@ class Mesh(Geometry):
     ## See the copy() method for an example.
     ###################################################################
 
-    def _formex_transform(func):
-        """Perform a Formex transformation on the .coords attribute of the object.
 
-        This is a decorator function. It should be used only for Formex methods
-        which are not Geometry methods as well.
-        """
-        formex_func = getattr(Formex, func.__name__)
-        def newf(self,*args,**kargs):
-            """Performs the Formex %s transformation on the coords attribute"""
-            F = Formex(self.coords).formex_func(self.coords,*args,**kargs)
-            return self._set_coords(coords_func(self.coords,*args,**kargs))
-        newf.__name__ = func.__name__
-        newf.__doc__ = coords_func.__doc__
-        return newf
+    fieldtypes = ['node','elemc','elemn']
+
+
+
+    # BV: This is not used anymore
+    ## def _formex_transform(func):
+    ##     """Perform a Formex transformation on the .coords attribute of the object.
+
+    ##     This is a decorator function. It should be used only for Formex methods
+    ##     which are not Geometry methods as well.
+    ##     """
+    ##     formex_func = getattr(Formex, func.__name__)
+    ##     def newf(self,*args,**kargs):
+    ##         """Performs the Formex %s transformation on the coords attribute"""
+    ##         F = Formex(self.coords).formex_func(self.coords,*args,**kargs)
+    ##         return self._set_coords(coords_func(self.coords,*args,**kargs))
+    ##     newf.__name__ = func.__name__
+    ##     newf.__doc__ = coords_func.__doc__
+    ##     return newf
 
 
     def __init__(self,coords=None,elems=None,prop=None,eltype=None):
@@ -2441,6 +2447,30 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
         return val[self.elems].mean(axis=1)
 
 
+    def convertField(self,data,fromtype,totype):
+        cvrt = "%s->%s" % (fromtype,totype)
+        if cvrt == 'node->elemn':
+            data = data[:,self.elems]
+        elif cvrt == 'elemn->elemc':
+            data = data.mean(axis=-1)
+        elif cvrt == 'node->elemc':
+            data = self.convertfield(self.convertfield('node','elemn'),'elemn','elemc')
+        elif cvrt == 'elemc->elemn':
+            data = repeat(data,self.nplex(),axis=-1)
+        elif cvrt == 'elemn->node':
+            data = nodalSum(data,self.elems,avg=True,return_all=False)
+            if data.shape[-1] < self.nnodes():
+                data = growAxis(data,self.nnodes()-data.shape[-1])
+        elif cvrt == 'elemc->node':
+            data = self.convertfield(self.convertfield('elemc','elemn'),'elemn','node')
+        else:
+            raise ValueError("Can not convert field data from '%s' to '%s'" % (fromtype,totype))
+
+        return data
+
+
+##########################################
+    ## Allow drawing ##
 
     def actor(self,**kargs):
 
