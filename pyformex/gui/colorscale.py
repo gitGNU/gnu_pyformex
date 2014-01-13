@@ -109,7 +109,7 @@ class ColorScale(object):
 
         If two exponents were specified, scaling is done independently in
         the intervals minval..midval and midval..maxval, mapped resp. using
-        exp2 and exp onto the intevals -1..0 and 0..1.
+        exp2 and exp onto the intervals -1..0 and 0..1.
         """
         if self.exp2 == None:
             return stuur(val, [self.xmin, self.x0, self.xmax], [-1., 0., 1.], self.exp)

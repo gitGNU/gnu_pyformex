@@ -1256,7 +1256,7 @@ class InputFile(InputItem):
     """An input item to select a file.
 
     The following arguments are passed to the FileSelection widget:
-    path,pattern,exist,multi,dir,compr.
+    value,pattern,exist,multi,dir,compr.
     """
     def __init__(self,name,value,pattern='*',exist=False,multi=False,dir=False,compr=False,*args,**kargs):
         """Initialize the input item."""
