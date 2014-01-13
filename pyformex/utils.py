@@ -763,7 +763,7 @@ def tildeExpand(fn):
     return fn.replace('~', os.environ['HOME'])
 
 
-def fileType(ftype):
+def normalizeFileType(ftype):
     """Normalize a filetype string.
 
     The string is converted to lower case and a leading dot is removed.
@@ -771,13 +771,13 @@ def fileType(ftype):
 
     Example:
 
-    >>> fileType('pdf')
+    >>> normalizeFileType('pdf')
     'pdf'
-    >>> fileType('.pdf')
+    >>> normalizeFileType('.pdf')
     'pdf'
-    >>> fileType('PDF')
+    >>> normalizeFileType('PDF')
     'pdf'
-    >>> fileType('.PDF')
+    >>> normalizeFileType('.PDF')
     'pdf'
 
     """
@@ -834,7 +834,40 @@ def fileTypeFromExt(fname):
     >>> fileTypeFromExt('pyformex.gz')
     'gz'
     """
-    return fileType(splitExt(fname)[1])
+    return normalizeFileType(splitExt(fname)[1])
+
+
+def fileTypeComprFromExt(fname):
+    """Derive the file type and compression from the file name.
+
+    This derives the uncompressed file type and the compression type
+    from the file name extension.
+
+    It first computes fileTypeFromExt(fname) and then splits it in the
+    pure filetype and the compression type.
+
+    Returns a tuple:
+
+    - `filetype`: the file type of the uncompressed file
+    - `compressed`: the compression type: either '', '.gz' or '.bz2'.
+      If the file was uncompressed, this is an empty string.
+
+    Example:
+
+    >>> fileTypeComprFromExt('pyformex')
+    ('', '')
+    >>> fileTypeComprFromExt('pyformex.pgf')
+    ('pgf', '')
+    >>> fileTypeComprFromExt('pyformex.pgf.gz')
+    ('pgf', 'gz')
+    >>> fileTypeComprFromExt('pyformex.gz')
+    ('gz', '')
+    """
+    ext = fileTypeFromExt(fname)
+    ext,gz = os.path.splitext(ext)
+    if gz.startswith('.'):
+        gz = gz[1:]
+    return ext,gz
 
 
 def projectName(fn):
