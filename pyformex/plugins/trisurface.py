@@ -614,7 +614,7 @@ class TriSurface(Mesh):
         to force ascii or binary STL format.
         The color is only useful for 'stlb' format.
         """
-        ftype,compr = utils.fileTypeComprFromExt(fn)
+        ftype,compr = utils.fileTypeComprFromExt(fname)
         if compr:
             raise ValueError("Compressed surface export is currently not active")
         if ftype is None:
