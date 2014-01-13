@@ -685,6 +685,39 @@ def transform(source, trMat4x4):
     return Coords(convertFromVPD(transformFilter.GetOutput())[0])
 
 
+def vtkCutWithPlane(self,p,n):
+    """Cut a Mesh with a plane (p,n).
+
+    Parameters:
+
+    - `mesh`: a Mesh.
+    - `p`, `n`: a point and normal vector defining the cutting plane.
+    
+    Returns a mesh of points if self is a line2 mesh,
+    a mesh of lines if self is a surface tri3 or quad4 mesh,
+    a triangular mesh if self is tet4 or hex8 mesh.
+    """
+    from vtk import vtkPlane, vtkCutter
+    plane = vtkPlane()
+    plane.SetOrigin(p)
+    plane.SetNormal(n)
+    vtkobj = convert2VTU(self)
+    cutter = vtkCutter()
+    cutter.SetCutFunction(plane)
+    cutter.SetInput(vtkobj)
+    cutter.Update()
+    cutter = cutter.GetOutput()
+    [coords, cells, polys, lines, verts], fielddata, celldata, pointdata=convertFromVPD(cutter,verbose=True,samePlex=True)
+    if verts is not None: #self was a line mesh
+        return Mesh(coords, verts)
+    elif lines is not None: #self was a surface mesh
+        return Mesh(coords, lines)
+    elif polys is not None: #self was a volume mesh
+        return Mesh(coords, polys)
+    else:
+        return None #no intersection found
+
+
 def octree(surf,tol=0.0,npts=1.):
     """Compute the octree structure of the surface.
 
