@@ -685,25 +685,26 @@ def transform(source, trMat4x4):
     return Coords(convertFromVPD(transformFilter.GetOutput())[0])
 
 
-def vtkCutWithPlane(self,p,n):
-    """Cut a Mesh with a plane (p,n).
+def _vtkCutter(self,vtkif):
+    """Cut a Mesh with a vtk implicit function.
 
     Parameters:
 
     - `mesh`: a Mesh.
-    - `p`, `n`: a point and normal vector defining the cutting plane.
+    - `vtkif`: a vtk implicit function.
     
     Returns a mesh of points if self is a line2 mesh,
     a mesh of lines if self is a surface tri3 or quad4 mesh,
     a triangular mesh if self is tet4 or hex8 mesh.
+    If there is no intersection returns None.
+    This functions should not be used by the user.
+    VTK implicit functions are listed here:    
+    http://www.vtk.org/doc/nightly/html/classvtkImplicitFunction.html
     """
-    from vtk import vtkPlane, vtkCutter
-    plane = vtkPlane()
-    plane.SetOrigin(p)
-    plane.SetNormal(n)
+    from vtk import vtkCutter
     vtkobj = convert2VTU(self)
     cutter = vtkCutter()
-    cutter.SetCutFunction(plane)
+    cutter.SetCutFunction(vtkif)
     cutter.SetInput(vtkobj)
     cutter.Update()
     cutter = cutter.GetOutput()
@@ -716,6 +717,46 @@ def vtkCutWithPlane(self,p,n):
         return Mesh(coords, polys)
     else:
         return None #no intersection found
+
+
+def vtkCutWithPlane(self,p,n):
+    """Cut a Mesh with a plane (p,n).
+
+    Parameters:
+
+    - `mesh`: a Mesh.
+    - `p`, `n`: a point and normal vector defining the cutting plane.
+    
+    Returns a mesh of points if self is a line2 mesh,
+    a mesh of lines if self is a surface tri3 or quad4 mesh,
+    a triangular mesh if self is tet4 or hex8 mesh.
+    If there is no intersection returns None.
+    """
+    from vtk import vtkPlane
+    plane = vtkPlane()
+    plane.SetOrigin(p)
+    plane.SetNormal(n)
+    return _vtkCutter(self,plane)
+
+
+def vtkCutWithSphere(self,c,r):
+    """Cut a Mesh with a sphere (c,r).
+
+    Parameters:
+
+    - `mesh`: a Mesh.
+    - `c`, `r`: center and radiues defining a sphere.
+    
+    Returns a mesh of points if self is a line2 mesh,
+    a mesh of lines if self is a surface tri3 or quad4 mesh,
+    a triangular mesh if self is tet4 or hex8 mesh.
+    If there is no intersection returns None.
+    """
+    from vtk import vtkSphere
+    sphere = vtkSphere()
+    sphere.SetCenter(c)
+    sphere.SetRadius(r)
+    return _vtkCutter(self,sphere)
 
 
 def octree(surf,tol=0.0,npts=1.):
@@ -855,7 +896,7 @@ def read_vtk_surface(fn):
         raise "Both polys and cells are in file %s"%fn
     if 'prop' in celldata.keys():
         kargs = {'prop':celldata['prop']}
-    return TriSurface(*data,**kargs)
+    return TriSurface(*data)
 
 
 def install_trisurface_methods():
