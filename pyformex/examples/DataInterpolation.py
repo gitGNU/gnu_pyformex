@@ -75,7 +75,7 @@ def run():
     #draw(M,color=yellow)
 
     # Create the Mesh interpolator
-    gprule = (5, 1) # integration rule: minimum (1,1),  maximum (5,5)
+    gprule = (3,1) # integration rule: minimum (1,1),  maximum (5,5)
     Q = calpy_itf.QuadInterpolator(M.nelems(), M.nplex(), gprule)
 
     # Define some random data at the GP.
