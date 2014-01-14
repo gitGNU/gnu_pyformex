@@ -747,16 +747,38 @@ def vtkCutWithSphere(self,c,r):
     - `mesh`: a Mesh.
     - `c`, `r`: center and radiues defining a sphere.
     
-    Returns a mesh of points if self is a line2 mesh,
-    a mesh of lines if self is a surface tri3 or quad4 mesh,
-    a triangular mesh if self is tet4 or hex8 mesh.
-    If there is no intersection returns None.
+    See vtkCutWithPlane.
     """
     from vtk import vtkSphere
     sphere = vtkSphere()
     sphere.SetCenter(c)
     sphere.SetRadius(r)
     return _vtkCutter(self,sphere)
+
+
+def vtkCutWithBox(self,xmin,xmax, trMat4x4=None):
+    """Cut a Mesh with a box (or cuboid).
+
+    Parameters:
+
+    - `mesh`: a Mesh.
+    - `xmin`, `xmax`: two points to define a rectangular prism 
+     with faces parallel to the global axes through these points.
+    - `trMat4x4`: matrix to apply affine transformation (roto-translate-scale-shear) 
+     to the box. 
+    
+    See vtkCutWithPlane.
+    
+    NB: trMat4x4 is equivalent to transformCS. Why 4x4 matrix are not in pyFormex?
+    """
+    from vtk import vtkBox
+    box = vtkBox()
+    box.SetXMin(xmin)
+    box.SetXMax(xmax)
+    if trMat4x4 is not None:
+        trMat4x4 = convertTransform4x4ToVtk(trMat4x4)
+        box.SetTransform(trMat4x4)
+    return _vtkCutter(self,box)
 
 
 def octree(surf,tol=0.0,npts=1.):
