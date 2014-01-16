@@ -598,57 +598,58 @@ class Geometry(object):
     trl = translate
 
 
-    def addField(self,fldname,fldtype,data):
+    @property
+    def fields(self):
+        """Return the Fields dict of this Geometry.
+
+        If the Geometry has no Fields, an empty dict is returned.
+        """
+        if hasattr(self,'_fields'):
+            return self._fields
+        else:
+            return {}
+
+
+    def addField(self,fldtype,data,fldname):
         """Add a data field to the geometry.
 
         Add a scalar or vectorial field defined over the domain of the
-        Geometry. A vectorial field is just a collection of `nval` scalar
-        fields: the individual values can be unrelated.
+        Geometry. This creates a :class:`Field` instance with the specified
+        parameters and adds it to the Geometry object.
+        Fields stored inside a Geometry object are exported to PGF file
+        whenever the object is exported.
 
         Parameters:
 
-        - `fldname`: string: the name under which to store the field. The
-          name can later be used to retrieve the field.
-        - `fldtype`: string: one of the following predefined field types:
-
-          - 'node': the field data are specified at the nodes of the geometry;
-          - 'elemc': the field data are constant per element;
-          - 'elemn': the field data vary over the element and are specified at
-            the nodes of the elements;
-          - 'elemg': the field data are specified at a number of points of
-            the elements, from which they can be inter- or extrapolated;
-
-          The actually available field types depend on the Geometry class.
-
-        - `data`: an array with the filed values defined at the specified
-          points. The required shape of the array depends on `fldtype`:
-
-          - 'node':  ( nnodes, ) or ( nval, nnodes )
-          - 'elemc': ( nelems, ) or ( nval, nelems )
-          - 'elemn': ( nelems, nplex ) or  (nval, nelems, nplex )
-          - 'elemg': ( nelems, ngp ) or  (nval, nelems, ngp )
+        - `fldtype`, `data`, `fldname`: are passed together with the
+          Geometry object to the Field initialization. See :class:`Field`
+          for details.
 
         """
+        from pyformex.field import Field
+
         if not hasattr(self,'fieldtypes') or fldtype not in self.fieldtypes:
             raise ValueError("Can not add field of type '%s' to a %s" % (fldtype,self.__class__.__name__))
 
+        fld = Field(self,fldtype,data,fldname)
+        self.add_field(fld)
+
+
+    def add_field(self,field):
+        """Low level function to add a Field"""
         if not hasattr(self,'_fields'):
             self._fields = OrderedDict()
+        self._fields[field.fldname] = field
 
-        if fldtype == 'node':
-            datashape = (-1,self.nnodes(),)
-        elif fldtype == 'elemc':
-            datashape = (-1,self.nelems(),)
-        elif fldtype == 'elemn':
-            datashape = (-1,self.nelems(),self.nplex())
-        elif fldtype == 'elemg':
-            datashape = (-1,self.nelems(),-1)
 
-        fldname = str(fldname)
-        if len(data.shape) < len(datashape):
-            data = data.reshape((-1,)+data.shape)
-        data = at.checkArray(data,shape=datashape)
-        self._fields[fldname] = data
+    def convertField(self,fldname,totype,toname):
+        """Convert the data field with the specified name.
+
+        If the data field does not exist, returns None
+        """
+        if fldname in self.fields:
+            fld = self.fields[fldname].convert(totype,toname)
+            self.add_field(fld)
 
 
     def getField(self,fldname):
@@ -656,10 +657,17 @@ class Geometry(object):
 
         If the data field does not exist, returns None
         """
-        if hasattr(self,'_fields') and fldname in self._fields:
-            return self._fields[fldname]
-        else:
-            return None
+        if fldname in self.fields:
+            return self.fields[fldname]
+
+
+    def delField(self,fldname):
+        """Delete the Field with the given name.
+
+        A nonexisting name is silently ignored.
+        """
+        if fldname in self.fields:
+            del self.fields[fldname]
 
 
     @property

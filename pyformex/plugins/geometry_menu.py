@@ -223,7 +223,7 @@ def importGeometry(select=True,draw=True,ftype=None,compr=False):
         message("Reading geometry file %s" % fn)
         res = readGeometry(fn)
         export(res)
-        print("Items read: %s" % [ "%s(%s)" % (k, res[k].__class__.__name__) for k in res])
+        print("Items read: %s" % ', '.join([ "'%s'(%s)" % (k, res[k].__class__.__name__) for k in res]))
         if select:
             selection.set(res.keys())
             pf.GUI.selection['surface'].set([n for n in selection.names if isinstance(named(n), TriSurface)])

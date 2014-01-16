@@ -2447,26 +2447,26 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
         return val[self.elems].mean(axis=1)
 
 
-    def convertField(self,data,fromtype,totype):
-        cvrt = "%s->%s" % (fromtype,totype)
-        if cvrt == 'node->elemn':
-            data = data[:,self.elems]
-        elif cvrt == 'elemn->elemc':
-            data = data.mean(axis=-1)
-        elif cvrt == 'node->elemc':
-            data = self.convertfield(self.convertfield('node','elemn'),'elemn','elemc')
-        elif cvrt == 'elemc->elemn':
-            data = repeat(data,self.nplex(),axis=-1)
-        elif cvrt == 'elemn->node':
-            data = nodalSum(data,self.elems,avg=True,return_all=False)
-            if data.shape[-1] < self.nnodes():
-                data = growAxis(data,self.nnodes()-data.shape[-1])
-        elif cvrt == 'elemc->node':
-            data = self.convertfield(self.convertfield('elemc','elemn'),'elemn','node')
-        else:
-            raise ValueError("Can not convert field data from '%s' to '%s'" % (fromtype,totype))
+    ## def convertField(self,data,fromtype,totype):
+    ##     cvrt = "%s->%s" % (fromtype,totype)
+    ##     if cvrt == 'node->elemn':
+    ##         data = data[:,self.elems]
+    ##     elif cvrt == 'elemn->elemc':
+    ##         data = data.mean(axis=-1)
+    ##     elif cvrt == 'node->elemc':
+    ##         data = self.convertfield(self.convertfield('node','elemn'),'elemn','elemc')
+    ##     elif cvrt == 'elemc->elemn':
+    ##         data = repeat(data,self.nplex(),axis=-1)
+    ##     elif cvrt == 'elemn->node':
+    ##         data = nodalSum(data,self.elems,avg=True,return_all=False)
+    ##         if data.shape[-1] < self.nnodes():
+    ##             data = growAxis(data,self.nnodes()-data.shape[-1])
+    ##     elif cvrt == 'elemc->node':
+    ##         data = self.convertfield(self.convertfield('elemc','elemn'),'elemn','node')
+    ##     else:
+    ##         raise ValueError("Can not convert field data from '%s' to '%s'" % (fromtype,totype))
 
-        return data
+    ##     return data
 
 
 ##########################################

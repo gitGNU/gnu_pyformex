@@ -382,11 +382,10 @@ class GeometryFile(object):
         if color == 'element' or color == 'vertex':
             self.writeData(Fc, sep)
         for field in F.fields:
-            print(field)
-            fld = F.getField(field)
-            head = "# field='%s'; fldtype='%s'; shape=%r; sep='%s'" % (field, 'unknown', fld.shape, sep)
+            fld = F.fields[field]
+            head = "# field='%s'; fldtype='%s'; shape=%r; sep='%s'" % (fld.fldname, fld.fldtype,fld.data.shape, sep)
             self.fil.write(head+'\n')
-            self.writeData(fld, sep)
+            self.writeData(fld.data, sep)
 
 
     def writeTriSurface(self,F,name=None,sep=None):

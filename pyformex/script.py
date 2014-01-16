@@ -881,6 +881,7 @@ def writeGeomFile(filename,objects,sep=' ',mode='w',shortlines=False):
 
     Returns the number of objects written to the file.
     """
+    print("Writing PGF file '%s'" % os.path.abspath(filename))
     f = geomfile.GeometryFile(filename, mode, sep=sep)
     # TODO: shis option could goto into GeometryFile
     if shortlines:
@@ -906,6 +907,7 @@ def readGeomFile(filename,count=-1):
     If object names were stored in the file, they will be used as the keys.
     Else, default names will be provided.
     """
+    print("Reading PGF file '%s'" % os.path.abspath(filename))
     f = geomfile.GeometryFile(filename, 'r')
     objects = f.read(count)
     return objects

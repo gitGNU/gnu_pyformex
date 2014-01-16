@@ -39,6 +39,7 @@ scalar and vectorial field data over a geometrical domain.
 from __future__ import print_function
 
 import pyformex as pf
+from pyformex import utils
 import pyformex.arraytools as at
 from pyformex.formex import Formex
 from pyformex.mesh import Mesh
@@ -84,9 +85,7 @@ class Field(object):
     - `geometry`: Geometry instance: describes the geometrical domain
       over which the field is defined. Currently this has to be a
       :class:`Formex` or a :class:`Mesh`.
-    - `fldname`: string: the name used to identify the field. Fields
-      stored in a Geometry object can be retrieved using this name. See
-      :func:`Geometry.getField`.
+
     - `fldtype`: string: one of the following predefined field types:
 
       - 'node': the field data are specified at the nodes of the geometry;
@@ -108,9 +107,16 @@ class Field(object):
       - 'elemn': ( nelems, nplex ) or  (nval, nelems, nplex )
       - 'elemg': ( nelems, ngp ) or  (nval, nelems, ngp )
 
+    - `fldname`: string: the name used to identify the field. Fields
+      stored in a Geometry object can be retrieved using this name. See
+      :func:`Geometry.getField`. If no name is specified, one is generated.
+
     """
 
-    def __init__(self,geometry,fldname,fldtype,data):
+    _autoname = utils.NameSequence('Field-0')
+
+
+    def __init__(self,geometry,fldtype,data,fldname=None):
         """Initialize a Field.
 
         """
@@ -126,10 +132,12 @@ class Field(object):
         elif fldtype == 'elemg':
             datashape = (-1,geometry.nelems(),-1)
 
-        fldname = str(fldname)
         if len(data.shape) < len(datashape):
             data = data.reshape((-1,)+data.shape)
         data = at.checkArray(data,shape=datashape)
+
+        if fldname is None:
+            fldname = Field._autoname.next()
 
         # All data seem OK, store them
         self.geometry = geometry
@@ -137,6 +145,35 @@ class Field(object):
         self.fldtype = fldtype
         self.data = data
 
+
+    def convert(self,totype,toname=None):
+        """Convert a Field to another type.
+
+        """
+        data = None
+        if totype in self.geometry.fieldtypes:
+            if self.fldtype == 'node':
+                if totype == 'elemn':
+                    data = self.data[:,self.geometry.elems]
+                elif totype == 'elemc':
+                    data = self.convert('elemn').convert('elemc')
+            elif self.fldtype == 'elemn':
+                if totype == 'elemc':
+                    data = self.data.mean(axis=-1)
+                elif totype == 'node':
+                    data = nodalSum(data,self.geometry.elems,avg=True,return_all=False)
+                    if data.shape[-1] < self.geometry.nnodes():
+                        data = growAxis(data,self.geometry.nnodes()-data.shape[-1])
+            elif self.fldtype == 'elemc':
+                if totype == 'elemn':
+                    data = repeat(data,self.geometry.nplex(),axis=-1)
+                elif totype == 'node':
+                    data = self.convert('elemn').convert('node')
+
+        if data is None:
+            raise ValueError("Can not convert %s field data from '%s' to '%s'" % (self.geometry.__class__.__name__,fromtype,totype))
+
+        return Field(self.geometry,totype,data,toname)
 
 
 # End

@@ -55,22 +55,21 @@ def run():
     # 1. distance from point 7, defined at nodes
 
     data = length(M.coords - M.coords[7])
-    M.addField('dist','node',data)
+    M.addField('node',data,'dist')
+
 
     # 2. convert to field defined at element nodes
-    data = M.convertField(M.getField('dist'),'node','elemn')
-    M.addField('distn','elemn',data)
+    M.convertField('dist','elemn','distn')
 
     # 3. convert to field constant over elements
-    data = M.convertField(M.getField('distn'),'elemn','elemc')
-    M.addField('distc','elemc',data)
+    M.convertField('distn','elemc','distc')
 
     # draw two fields
     viewport(0)
-    drawField(M,'elemn',M.getField('distn')[0])
+    drawField(M,'elemn',M.getField('distn').data[0])
     zoom(1.25)
     viewport(1)
-    drawField(M,'elemc',M.getField('distc')[0])
+    drawField(M,'elemc',M.getField('distc').data[0])
     zoom(1.25)
 
     writeGeomFile('field.pgf',{'mesh':M})
