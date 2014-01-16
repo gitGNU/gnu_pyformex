@@ -43,12 +43,12 @@ from pyformex.plugins.postproc import drawField
 def run():
 
     clear()
-    flatwire()
+    smoothwire()
     layout(2)
 
-    F = simple.rectangle(6,4)
-    M = F.toMesh().trl(0,10.)
-    M.attrib(color=red)
+    F = simple.rectangle(4,3)
+    M = F.toMesh()
+    #M.attrib(color=yellow)
 
     # add some fields
 
@@ -72,6 +72,8 @@ def run():
     viewport(1)
     drawField(M,'elemc',M.getField('distc')[0])
     zoom(1.25)
+
+    writeGeomFile('field.pgf',{'mesh':M})
 
 if __name__ == 'draw':
     run()

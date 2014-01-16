@@ -662,6 +662,14 @@ class Geometry(object):
             return None
 
 
+    @property
+    def fields(self):
+        if hasattr(self,'_fields'):
+            return self._fields
+        else:
+            return {}
+        
+
     def write(self,filename,sep=' ',mode='w'):
         """Write a Geometry to a .pgf file.
 

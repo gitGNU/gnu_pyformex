@@ -105,7 +105,7 @@ class GeometryFile(object):
       but currently inactive.
     """
 
-    _version_ = '1.7'
+    _version_ = '1.8'
 
     def __init__(self,filename,mode=None,compr=None,level=5,delete_temp=True,
                  sep=' ',ifmt=' ',ffmt=' '):
@@ -355,9 +355,11 @@ class GeometryFile(object):
         hasprop = F.prop is not None
         hasnorm = hasattr(F, 'normals') and isinstance(F.normals, ndarray) and F.normals.shape == (F.nelems(), F.nplex(), 3)
         color = ''
-        if hasattr(F, 'color'):
-            Fc = F.color
-            if isinstance(Fc, ndarray):
+        Fc = F.attrib['color']
+        if Fc is not None:
+            if isinstance(Fc,(str,unicode)):
+                color = Fc
+            elif isinstance(Fc, ndarray):
                 if Fc.shape == (3,):
                     color = str(Fc)
                 elif Fc.shape == (F.nelems(), 3):
@@ -378,7 +380,13 @@ class GeometryFile(object):
         if hasnorm:
             self.writeData(F.normals, sep)
         if color == 'element' or color == 'vertex':
-            self.writeData(F.color, sep)
+            self.writeData(Fc, sep)
+        for field in F.fields:
+            print(field)
+            fld = F.getField(field)
+            head = "# field='%s'; fldtype='%s'; shape=%r; sep='%s'" % (field, 'unknown', fld.shape, sep)
+            self.fil.write(head+'\n')
+            self.writeData(fld, sep)
 
 
     def writeTriSurface(self,F,name=None,sep=None):
