@@ -36,6 +36,9 @@ from pyformex import utils
 utils.requireModule('vtk')
 
 from pyformex import zip
+from pyformex.arraytools import DEG, RAD, normalize, length, trfMatrix, rotationAnglesFromMatrix
+from pyformex.coordsys import CoordinateSystem
+from pyformex.formex import Formex
 from pyformex.mesh import Mesh
 from pyformex.coords import Coords
 from pyformex.varray import Varray
@@ -756,29 +759,96 @@ def vtkCutWithSphere(self,c,r):
     return _vtkCutter(self,sphere)
 
 
-def vtkCutWithBox(self,xmin,xmax, trMat4x4=None):
+##trf2CS is needed by setVTKbox
+def trf2CS(CS, angle_spec=DEG):
+    """Return the transformations to change coordinate system.
+    
+    Return a series of ordered transformations required to position 
+    an object into a new cartesian coordinate system (CS): 
+    scaling, rotation about x, rotation about y, rotation about z, translation. 
+    The scaling is needed for CS with non-unitary axes'vectors.
+    Scaling, rotations and translations should be applied in order.
+    An error is raised if CS is not orthogonal because 
+    shearing is not supported.
+    """
+    def isOrthogonal(CS, tol=1.e-4):
+        """Check if a coordinate system is orthogonal
+        """
+        from pyformex.geomtools import rotationAngle
+        r, ax = rotationAngle(CS[0]-CS[3], CS[1]-CS[3])
+        if abs(r-90.)<tol:
+            if sum(abs(normalize(CS[2]-CS[3]) - ax))<tol:
+                return True
+        return False
+    if isOrthogonal(CS) == False:
+        raise ValueError, 'the coordinate system is not orthogonal'
+    sz = length(CS[:3]-CS[3])#axes`s length
+    j = [3, 0, 2]#z,x,o
+    mat, t = trfMatrix(CoordinateSystem()[j], CS[j])
+    rx, ry, rz = rotationAnglesFromMatrix(mat,angle_spec)
+    return sz, rx, ry, rz, t
+
+
+##When 4x4 matrices will be added to pyFormex, the box
+##could be also sheared by first rotating and then scaling.
+def setVTKbox(p=None, trMat4x4=None):
+    """Return scaled an positioned vtkBox.
+
+    Parameters:
+
+    - `p`: a coordinate system, 4 coords, a formex or a mesh.
+    - `trMat4x4`: a 4x4 matrix.
+    
+    A vtkBox is an implicit vtk function defining a scaled cuboid in space.
+    In order to place the cuboid in space you cannot assing coordinates to
+    this vtk class, but you can transform an original box 
+    using affine transformations. In general a 4x4 matrix 
+    would be appropriate but it is not yet implemented in pyFormex.
+    Alternatively, 4 points corresponding to the x,y,z,o of an orthogonal 
+    coordinate system can be used. In this case p can be either a list of 4 coords, 
+    a coordinate system, a cuboid defined as hex8-element Formex 
+    or Mesh (in this case only 4 points are taken).
+    """
+    from vtk import vtkBox
+    box = vtkBox()
+    if trMat4x4 is not None:
+        if p is not None:
+            raise ValueError, 'a box cannot be defined both by coordinates and matrix'
+        else:
+            vtkMat4x4 = convertTransform4x4ToVtk(trMat4x4)
+            box.SetTransform(vtkMat4x4)
+            return box
+    elif p is not None:
+        if type(p)==Mesh:
+            p = p.toFormex()
+        if type(p)==Formex:
+            p = p.points()[[1, 3, 4, 0]]
+        L, r0, r1, r2, trv = trf2CS(p)
+        box = vtkBox()# vtk equivalent of simple.cuboid(xmin=xmin,xmax=xmax)
+        box.SetXMin([0., 0., 0.])
+        box.SetXMax(L)
+        trans = vtk.vtkTransform()
+        trans.RotateWXYZ(-r0, 1., 0., 0.) 
+        trans.RotateWXYZ(-r1, 0., 1., 0.)
+        trans.RotateWXYZ(-r2, 0., 0., 1.) 
+        trans.Translate(-trv)
+        box.SetTransform(trans)
+        return box
+
+
+def vtkCutWithBox(self, box):
     """Cut a Mesh with a box (or cuboid).
 
     Parameters:
 
-    - `mesh`: a Mesh.
-    - `xmin`, `xmax`: two points to define a rectangular prism 
-     with faces parallel to the global axes through these points.
-    - `trMat4x4`: matrix to apply affine transformation (roto-translate-scale-shear) 
-     to the box. 
+    - `self`: a Mesh.
+    - `box`, either a 4x4 matrix to apply affine transformation (not yet implemented)
+     or a box defined by 4 points, a formex or a mesh. See setVTKbox.
     
     See vtkCutWithPlane.
-    
-    NB: trMat4x4 is equivalent to transformCS. Why 4x4 matrix are not in pyFormex?
     """
-    from vtk import vtkBox
-    box = vtkBox()
-    box.SetXMin(xmin)
-    box.SetXMax(xmax)
-    if trMat4x4 is not None:
-        trMat4x4 = convertTransform4x4ToVtk(trMat4x4)
-        box.SetTransform(trMat4x4)
-    return _vtkCutter(self,box)
+    vbox = setVTKbox(box)
+    return _vtkCutter(self,vbox)
 
 
 def octree(surf,tol=0.0,npts=1.):
