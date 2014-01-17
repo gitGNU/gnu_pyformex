@@ -102,7 +102,6 @@ class Renderer(object):
         # single statement like
         #   self.shader.loadUniforms(self.canvas.settings)
         #print("DEFAULTS",self.canvas.settings)
-        #self.shader.uniformInt('builtin',1)
         # THIS IS SET IN SHADER
         #
         self.shader.uniformInt('highlight', 0)

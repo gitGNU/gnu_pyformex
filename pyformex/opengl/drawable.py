@@ -182,33 +182,21 @@ class Drawable(Attributes):
         renderer.shader.loadUniforms(self)
 
         self.vbo.bind()
-        if renderer.shader.builtin:
-            GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
-            GL.glVertexPointerf(self.vbo)
-        else:
-            GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
-            GL.glVertexAttribPointer(renderer.shader.attribute['vertexPosition'], 3, GL.GL_FLOAT, False, 0, self.vbo)
+        GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
+        GL.glVertexAttribPointer(renderer.shader.attribute['vertexPosition'], 3, GL.GL_FLOAT, False, 0, self.vbo)
 
         if self.ibo:
             self.ibo.bind()
 
         if self.nbo:
             self.nbo.bind()
-            if renderer.shader.builtin:
-                GL.glEnableClientState(GL.GL_NORMAL_ARRAY)
-                GL.glNormalPointerf(self.nbo)
-            else:
-                GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
-                GL.glVertexAttribPointer(renderer.shader.attribute['vertexNormal'], 3, GL.GL_FLOAT, False, 0, self.nbo)
+            GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
+            GL.glVertexAttribPointer(renderer.shader.attribute['vertexNormal'], 3, GL.GL_FLOAT, False, 0, self.nbo)
 
         if self.cbo:
             self.cbo.bind()
-            if renderer.shader.builtin:
-                GL.glEnableClientState(GL.GL_COLOR_ARRAY)
-                GL.glColorPointerf(self.cbo)
-            else:
-                GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexColor'])
-                GL.glVertexAttribPointer(renderer.shader.attribute['vertexColor'], 3, GL.GL_FLOAT, False, 0, self.cbo)
+            GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexColor'])
+            GL.glVertexAttribPointer(renderer.shader.attribute['vertexColor'], 3, GL.GL_FLOAT, False, 0, self.cbo)
 
         if self.cullface == 'front':
             # Draw back faces
@@ -231,21 +219,12 @@ class Drawable(Attributes):
             self.ibo.unbind()
         if self.cbo:
             self.cbo.unbind()
-            if renderer.shader.builtin:
-                GL.glDisableClientState(GL.GL_COLOR_ARRAY)
-            else:
-                GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexColor'])
+            GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexColor'])
         if self.nbo:
             self.nbo.unbind()
-            if renderer.shader.builtin:
-                GL.glDisableClientState(GL.GL_NORMAL_ARRAY)
-            else:
-                GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
+            GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
         self.vbo.unbind()
-        if renderer.shader.builtin:
-            GL.glDisableClientState(GL.GL_VERTEX_ARRAY)
-        else:
-            GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
+        GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
         if self.offset:
             pf.debug("POLYGON OFFSET RESET", pf.DEBUG.DRAW)
             GL.glPolygonOffset(0.0, 0.0)
@@ -264,12 +243,8 @@ class Drawable(Attributes):
         renderer.shader.loadUniforms(self)
 
         self.vbo.bind()
-        if renderer.shader.builtin:
-            GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
-            GL.glVertexPointerf(self.vbo)
-        else:
-            GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
-            GL.glVertexAttribPointer(renderer.shader.attribute['vertexPosition'], 3, GL.GL_FLOAT, False, 0, self.vbo)
+        GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
+        GL.glVertexAttribPointer(renderer.shader.attribute['vertexPosition'], 3, GL.GL_FLOAT, False, 0, self.vbo)
 
         if self.ibo:
             self.ibo.bind()
@@ -294,10 +269,7 @@ class Drawable(Attributes):
         if self.ibo:
             self.ibo.unbind()
         self.vbo.unbind()
-        if renderer.shader.builtin:
-            GL.glDisableClientState(GL.GL_VERTEX_ARRAY)
-        else:
-            GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
+        GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
 
 
 def polygonFaceIndex(n):

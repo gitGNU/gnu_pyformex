@@ -98,7 +98,6 @@ class Shader(object):
         'modelview',
         'projection',
         'pickmat',
-        'builtin',
         'picking',
     ]
 
@@ -126,7 +125,6 @@ class Shader(object):
 
         self.attribute = self.locations(GL.glGetAttribLocation, attributes)
         self.uniform = self.locations(GL.glGetUniformLocation, uniforms)
-        self.builtin = 0  # Use builtin attributes?
         self.picking = 0  # Default render mode
 
 
@@ -171,7 +169,6 @@ class Shader(object):
 
     def bind(self,picking=False):
         GL.shaders.glUseProgram(self.shader)
-        self.uniformInt('builtin', self.builtin)
         self.uniformInt('picking', picking)
 
 
