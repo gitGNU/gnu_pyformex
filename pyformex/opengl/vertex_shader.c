@@ -104,23 +104,17 @@ void main()
       fragmentColor = objectColor;
     } else {
       // Vertex color
-#ifdef BUILTIN
-	fragmentColor = gl_Color;
-#else
-	fragmentColor = vertexColor;
-#endif
+      fragmentColor = vertexColor;
     }
 
     // Add in lighting
     if (highlight) {
       fragColor = vec4(fragmentColor,1.);
     } else {
+
       if (lighting) {
-#ifdef BUILTIN
-	fvertexNormal = gl_Normal;
-#else
+
 	fvertexNormal = vertexNormal;
-#endif
 
 	fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * fvertexNormal;
 	vec3 nNormal = normalize(fTransformedVertexNormal);
@@ -164,11 +158,7 @@ void main()
   }
 
   // Transforming the vertex coordinates
-#ifdef BUILTIN
-  fvertexPosition = gl_Vertex;
-#else
   fvertexPosition = vec4(vertexPosition,1.0);
-#endif
 
   if (picking) {
     gl_Position = pickmat * projection * modelview * fvertexPosition;
