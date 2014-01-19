@@ -72,7 +72,6 @@ def run():
     drawField(M,'elemc',M.getField('distc').data[0])
     zoom(1.25)
 
-    writeGeomFile('field.pgf',{'mesh':M})
 
 if __name__ == 'draw':
     run()

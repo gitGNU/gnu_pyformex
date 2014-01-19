@@ -1469,10 +1469,12 @@ class File(object):
 
         This allows e.g. to read back data from a just saved file
         without having to destroy the File instance.
+
+        Returns the open file object.
         """
         self.close()
         self.mode = mode
-        self.open()
+        return self.open()
 
 
 # These two functions are undocumented for a reason. Believe me! BV
