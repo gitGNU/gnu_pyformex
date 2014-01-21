@@ -573,7 +573,7 @@ class GeomActor(Attributes):
                 drawface = self.drawface
             name = self.name
 
-            if self.bkalpha is not None or self.bkcolor is not None or self.bkcolormap is not None:
+            if self.bkalpha is not None or self.bkcolor is not None or self.bkcolormap is not None or not pf.cfg['render/experimental']:
 
                 # Draw both sides separately
                 # First, back sides with inverted normals
