@@ -73,6 +73,7 @@ class Shader(object):
         'highlight',
         'useObjectColor',
         'alphablend',
+        'drawface',
         'lighting',
         'nlights',
         ]

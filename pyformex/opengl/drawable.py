@@ -86,7 +86,8 @@ class Drawable(Attributes):
     # These are the parent attributes that can be overridden
     attributes = [
         'cullface', 'subelems', 'color', 'name', 'highlight', 'opak',
-        'linewidth', 'pointsize', 'lighting', 'offset', 'vbo', 'nbo', 'alpha'
+        'linewidth', 'pointsize', 'lighting', 'offset', 'vbo', 'nbo', 'alpha',
+        'drawface',
         ]
 
     def __init__(self,parent,**kargs):
@@ -564,23 +565,36 @@ class GeomActor(Attributes):
         """Draw the elems"""
         #print("ADDFACES %s" % self.faces)
         elems = self.subElems(self.faces)
-        #if elems is not None:
-        #print("ADDFACES SIZE %s" % (elems.shape,))
-        # ndim >= 2
         if (self.eltype is not None and self.eltype.ndim >= 2) or (self.eltype is None and self.object.nplex() >= 3):
-            # Draw both sides separately
-            # First, back sides with inverted normals
-            extra = Attributes()
-            if self.bkalpha is not None:
-                extra.alpha = self.bkalpha
-            if self.bkcolor is not None:
-                extra.color = self.bkcolor
-            # !! What about colormap?
-            if self.nbo is not None:
-                extra.nbo = VBO(-array(self.nbo))
-            self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_backfaces",cullface='front',**extra))
-            # Then, front sides
-            self.drawable.append(Drawable(self, subelems=elems, name=self.name+"_frontfaces", cullface='back'))
+
+            if self.drawface is None:
+                drawface = 0
+            else:
+                drawface = self.drawface
+            name = self.name
+
+            if self.bkalpha is not None or self.bkcolor is not None or self.bkcolormap is not None:
+
+                # Draw both sides separately
+                # First, back sides with inverted normals
+                extra = Attributes()
+                if self.bkalpha is not None:
+                    extra.alpha = self.bkalpha
+                if self.bkcolor is not None:
+                    extra.color = self.bkcolor
+                if self.bkcolormap is not None:
+                    extra.colormap = self.bkcolormap
+                if self.nbo is not None:
+                    extra.nbo = VBO(-array(self.nbo))
+                # cullface='front',
+                self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_backfaces",cullface='front',drawface=-1,**extra))
+                drawface = 1
+                name = self.name+"_frontfaces"
+
+            # Draw front or both sides
+            # cullface='back',
+            self.drawable.append(Drawable(self, subelems=elems, name=name,cullface='back',drawface=drawface))
+
         # ndim < 2
         else:
             self.drawable.append(Drawable(self, subelems=elems, name=self.name+"_faces", lighting=False))

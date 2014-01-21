@@ -164,10 +164,11 @@ class Renderer(object):
                 # ALPHABLEND
                 opaque = [ a for a in actors if a.opak ]
                 transp = [ a for a in actors if not a.opak ]
+
+                # First render the opaque objects
                 self.renderObjects(opaque)
-                GL.glEnable (GL.GL_BLEND)
-                #if pf.cfg['draw/disable_depth_test']:
-                #    GL.glDisable(GL.GL_DEPTH_TEST)
+
+                # Then render the transparent ones
                 # Enable depth testing (it really should always be on)
                 # so that opaque in front come out unblended
                 GL.glEnable(GL.GL_DEPTH_TEST)
@@ -175,11 +176,23 @@ class Renderer(object):
                 # as everything behind the opaque object
                 # also needs to be drawn
                 GL.glDepthMask (GL.GL_FALSE)
-                GL.glBlendFunc (GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+
+                #GL.glDisable(GL.GL_CULL_FACE)
+
+                GL.glEnable(GL.GL_BLEND)
+                GL.glBlendEquation(GL.GL_FUNC_ADD)
+                if pf.cfg['render/alphablend'] in ['trad','sort']:
+                    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+                elif pf.cfg['render/alphablend'] == 'mult':
+                    GL.glBlendFunc(GL.GL_ZERO, GL.GL_SRC_COLOR)
+                elif pf.cfg['render/alphablend'] == 'add':
+                    GL.glBlendFunc(GL.GL_ONE, GL.GL_ONE)
                 self.renderObjects(transp)
+
+                GL.glDisable (GL.GL_BLEND)
+                GL.glEnable(GL.GL_CULL_FACE)
                 GL.glEnable(GL.GL_DEPTH_TEST)
                 GL.glDepthMask (GL.GL_TRUE)
-                GL.glDisable (GL.GL_BLEND)
 
         finally:
             self.shader.unbind()

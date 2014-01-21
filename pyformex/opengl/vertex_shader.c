@@ -64,6 +64,7 @@ uniform float pointsize;
 uniform bool picking;
 
 uniform bool alphablend;   // Switch transparency on/off
+uniform int drawface;      // Which side of the face to draw (-1,0,1)
 
 uniform bool lighting;     // Are the lights on?
 uniform int nlights;       // Number of lights?  <= MAX_LIGHTS
@@ -115,9 +116,15 @@ void main()
       if (lighting) {
 
 	fvertexNormal = vertexNormal;
-
 	fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * fvertexNormal;
+
 	vec3 nNormal = normalize(fTransformedVertexNormal);
+
+	//if (drawface == -10 && nNormal[2] < 0) {
+	if (drawface == -1) {
+	  nNormal = -nNormal;
+	}
+
 	vec3 fcolor = fragmentColor;
 
 	// ambient

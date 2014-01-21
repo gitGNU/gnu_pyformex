@@ -64,8 +64,8 @@ def run():
     # directly ready to export as WebGL
 
     # Style 1: using function call
-    S.attrib(color=red,
-             alpha=0.5,
+    S.attrib(color=red,bkcolor=red,
+             alpha=0.8,
              caption='A sphere',
 #             control=['visible','opacity','color'],
              )
@@ -77,6 +77,7 @@ def run():
     # Style 2: setting attributes of the .attrib attribute
     Ta = T.attrib
     Ta.color = blue
+    Ta.bkcolor = blue
     Ta.caption = 'A cone'
     Ta.alpha = 0.5
 #    Ta.control = ['visible','opacity','color']
@@ -84,6 +85,7 @@ def run():
 
     Ca = C.attrib
     Ca.color = 'yellow'
+    Ca.bkcolor = 'yellow'
     Ca.caption = 'A cylinder'
     Ca.alpha = 1.0
 #    Ca.control = ['visible','opacity','color']
