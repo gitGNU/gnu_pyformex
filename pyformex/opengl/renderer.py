@@ -166,10 +166,15 @@ class Renderer(object):
                 transp = [ a for a in actors if not a.opak ]
                 self.renderObjects(opaque)
                 GL.glEnable (GL.GL_BLEND)
-                #GL.glDepthMask (GL.GL_FALSE)
                 #if pf.cfg['draw/disable_depth_test']:
                 #    GL.glDisable(GL.GL_DEPTH_TEST)
+                # Enable depth testing (it really should always be on)
+                # so that opaque in front come out unblended
                 GL.glEnable(GL.GL_DEPTH_TEST)
+                # Disable writing to the depth buffer
+                # as everything behind the opaque object
+                # also needs to be drawn
+                GL.glDepthMask (GL.GL_FALSE)
                 GL.glBlendFunc (GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
                 self.renderObjects(transp)
                 GL.glEnable(GL.GL_DEPTH_TEST)

@@ -78,7 +78,7 @@ def run():
     Ta = T.attrib
     Ta.color = blue
     Ta.caption = 'A cone'
-    Ta.alpha = 1.0
+    Ta.alpha = 0.5
 #    Ta.control = ['visible','opacity','color']
     #S.setNormals('auto')
 
@@ -91,7 +91,7 @@ def run():
 
     export({'sphere':S,'cone':T,'cylinder':C})
 
-    draw([S, T, C])
+    draw([C, T, S])
     zoomAll()
     #rotRight(30.)
 
