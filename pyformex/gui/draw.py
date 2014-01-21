@@ -2029,6 +2029,8 @@ def exportWebGL(fn,title=None,description=None,keywords=None,author=None,created
 
     Returns the absolute pathname of the generated .html file.
     """
+    if not pf.options.opengl2:
+        return
     from pyformex.plugins.webgl import WebGL
     pf.message("Exporting current scene to %s" % fn)
     pf.GUI.setBusy()
