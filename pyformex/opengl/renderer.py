@@ -177,7 +177,8 @@ class Renderer(object):
                 # also needs to be drawn
                 GL.glDepthMask (GL.GL_FALSE)
 
-                #GL.glDisable(GL.GL_CULL_FACE)
+                if pf.cfg['render/transp_nocull']:
+                    GL.glDisable(GL.GL_CULL_FACE)
 
                 GL.glEnable(GL.GL_BLEND)
                 GL.glBlendEquation(GL.GL_FUNC_ADD)

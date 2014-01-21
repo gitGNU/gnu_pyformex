@@ -46,7 +46,7 @@ from pyformex.simple import sphere, sector, cylinder
 from pyformex.mydict import Dict
 from pyformex.plugins.webgl import WebGL
 
-pf.cfg['render/experimental'] = True
+pf.cfg['render/experimental'] = False
 
 def run():
     reset()
@@ -67,7 +67,7 @@ def run():
 
     # Style 1: using function call
     S.attrib(color=red,#bkcolor=red,
-             alpha=0.8,
+             alpha=0.7,
              caption='A sphere',
 #             control=['visible','opacity','color'],
              )
@@ -82,14 +82,16 @@ def run():
     #Ta.bkcolor = blue
     Ta.caption = 'A cone'
     Ta.alpha = 0.5
+    #Ta.opak = True
 #    Ta.control = ['visible','opacity','color']
     #S.setNormals('auto')
 
     Ca = C.attrib
     Ca.color = 'yellow'
-    #Ca.bkcolor = 'yellow'
+    Ca.bkcolor = 'green'
     Ca.caption = 'A cylinder'
     Ca.alpha = 1.0
+    #Ca.opak = True
 #    Ca.control = ['visible','opacity','color']
     #S.setNormals('auto')
 

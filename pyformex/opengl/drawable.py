@@ -86,8 +86,8 @@ class Drawable(Attributes):
     # These are the parent attributes that can be overridden
     attributes = [
         'cullface', 'subelems', 'color', 'name', 'highlight', 'opak',
-        'linewidth', 'pointsize', 'lighting', 'offset', 'vbo', 'nbo', 'alpha',
-        'drawface',
+        'linewidth', 'pointsize', 'lighting', 'offset', 'vbo', 'nbo', 'ibo',
+        'alpha', 'drawface',
         ]
 
     def __init__(self,parent,**kargs):
@@ -160,7 +160,7 @@ class Drawable(Attributes):
         This is always used for nplex > 3, but also to draw the edges
         for nplex=3.
         """
-        if self.subelems is not None:
+        if self.ibo is None and self.subelems is not None:
             self.ibo = VBO(self.subelems.astype(int32), target=GL.GL_ELEMENT_ARRAY_BUFFER)
 
 
@@ -573,27 +573,34 @@ class GeomActor(Attributes):
                 drawface = self.drawface
             name = self.name
 
-            if self.bkalpha is not None or self.bkcolor is not None or self.bkcolormap is not None or not pf.cfg['render/experimental']:
+            if pf.cfg['render/experimental'] and self.opak:
 
-                # Draw both sides separately
-                # First, back sides with inverted normals
+                # Draw front and back at once, without culling
+                # Beware: this does not work with different front/back color
+                # as our Drawable currently has only one color
+                print("OPAK ACTOR")
+                self.drawable.append(Drawable(self,subelems=elems,name=name,cullface='',drawface=0))
+
+            else:
+
+                # Draw both back and front sides, with culling                # First the back sides (they are more remote from eye)
                 extra = Attributes()
+
+                # Use specified backside attributes
                 if self.bkalpha is not None:
                     extra.alpha = self.bkalpha
                 if self.bkcolor is not None:
                     extra.color = self.bkcolor
                 if self.bkcolormap is not None:
                     extra.colormap = self.bkcolormap
-                if self.nbo is not None:
-                    extra.nbo = VBO(-array(self.nbo))
-                # cullface='front',
-                self.drawable.append(Drawable(self,subelems=elems,name=self.name+"_backfaces",cullface='front',drawface=-1,**extra))
-                drawface = 1
-                name = self.name+"_frontfaces"
 
-            # Draw front or both sides
-            # cullface='back',
-            self.drawable.append(Drawable(self, subelems=elems, name=name,cullface='back',drawface=drawface))
+                D = Drawable(self,subelems=elems,name=self.name+"_back",cullface='front',drawface=1,**extra)
+                self.drawable.append(D)
+
+
+                # Then the front sides
+                D = Drawable(self,subelems=elems,name=self.name+"_front",cullface='back',drawface=1,ibo=D.ibo)
+                self.drawable.append(D)
 
         # ndim < 2
         else:
@@ -705,7 +712,8 @@ class GeomActor(Attributes):
             self.bkalpha = float(bkalpha)
         except:
             del self.bkalpha
-        self.opak = (self.alpha == 1.0) or (self.bkalpha == 1.0 )
+        if self.opak is None:
+            self.opak = (self.alpha == 1.0) or (self.bkalpha == 1.0 )
 
 
     def setLineWidth(self, linewidth):
