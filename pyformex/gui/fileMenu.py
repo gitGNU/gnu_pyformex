@@ -554,18 +554,19 @@ def createMovieInteractive():
 ##         pf.GUI.setBusy(False)
 
 
+last_exported_webgl = None
+
 def exportWebGL():
     """Export the current scene to WebGL
 
     The user is asked for a file name to store the exported model,
     and after export, whether to load the model in the browser.
     """
+    global last_exported_webgl
+    last_exported_webgl = None
     fn = draw.askNewFilename(pf.cfg['workdir'], 'html')
     if fn:
-        fn = draw.exportWebGL(fn)
-        if draw.ack("Show the scene in your browser?"):
-            draw.showHTML(fn)
-
+        last_exported_webgl = draw.exportWebGL(fn)
 
 
 def multiWebGL():
@@ -574,6 +575,8 @@ def multiWebGL():
     The user is asked for a file name to store the exported model,
     and after export, whether to load the model in the browser.
     """
+    global last_exported_webgl
+    last_exported_webgl = None
     if draw.the_multiWebGL is None:
         print("NO CURRENT EXPORT")
     else:
@@ -594,9 +597,15 @@ def multiWebGL():
         if res['name']:
             draw.multiWebGL(res['name'])
         if res['finish']:
-            fn = draw.multiWebGL()
-            if fn and draw.ack("Show the scene in your browser?"):
-                draw.showHTML(fn)
+            last_exported_webgl = draw.multiWebGL()
+
+
+def showWebGL():
+    """Show the last WebGL model.
+
+    """
+    if last_exported_webgl and os.path.exists(last_exported_webgl):
+        draw.showHTML(last_exported_webgl)
 
 
 _recording_pid = 0
@@ -682,6 +691,8 @@ MenuData = [
     ## (_('&Export as PGF'), exportPGF),
     (_('&Export as WebGL'), exportWebGL),
     (_('&Export as multiscene WebGL'), multiWebGL),
+    (_('&Show exported WebGL'), showWebGL),
+    (_('&Show HTML'), draw.showHTML),
     (_('&Record Session'), [
         (_('&Start Recording'), recordSession),
         (_('&Stop Recording'), stopRecording),

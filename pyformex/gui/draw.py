@@ -2025,7 +2025,7 @@ def exportWebGL(fn,createdby=50,**kargs):
     """Export the current scene to WebGL.
 
     Parameters:
-    
+
     - `fn` : string: the (relative or absolute) filename of the .html, .js
       and .pgf files comprising the WebGL model. It can contain a directory
       path and an any extension. The latter is dropped and not used.
@@ -2107,12 +2107,16 @@ def showURL(url):
     help(url)
 
 
-def showHTML(fn):
+def showHTML(fn=None):
     """Show a local .html file in the browser
 
-    - `fn`: name of a local .html file
+    - `fn`: name of a local .html file. If unspecified, a FileSelection
+      dialog is popped up to select a file.
     """
-    showURL('file:%s' % fn)
+    if not fn:
+        fn = askFilename(filter='html')
+    if fn:
+        showURL('file:%s' % fn)
 
 
 ################################
