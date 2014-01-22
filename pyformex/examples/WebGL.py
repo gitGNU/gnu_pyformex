@@ -106,7 +106,10 @@ def run():
 
     if checkWorkdir():
         # Export everything to webgl
-        exportWebGL('Scene1', title='Two spheres and a cone', cleanup=True)
+        exportWebGL('Scene1',
+                    title='Two spheres and a cone',
+                    jsheader='// Created by pyFormex WebGL example',
+                    cleanup=True)
 
 
 if __name__ == 'draw':
