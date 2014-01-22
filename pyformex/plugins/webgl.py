@@ -46,6 +46,7 @@ from pyformex.geometry import Geometry
 
 import numpy as np
 import os
+import glob
 
 exported_webgl = None
 
@@ -199,16 +200,17 @@ class WebGL(object):
         self.jsheader = jsheader
         self.pgfheader = pgfheader
         self.scenes = []
-        existing = utils.listTree('.', listdirs=False, sorted=True, includefiles=[
-            '%s\.html' % self.name,
-            '%s\.js' % self.name,
-            '%s_.*\.pgf' % self.name,
-            '%s_.*\.stl' % self.name,
-            ])
+        ## existing = utils.listTree('.', listdirs=False, sorted=True, includefiles=[
+        ##     '%s\.html' % self.name,
+        ##     '%s\.js' % self.name,
+        ##     '%s_.*\.pgf' % self.name,
+        ##     '%s_.*\.stl' % self.name,
+        ##     ])
+        existing = glob.glob(self.name+'.html') + glob.glob(self.name+'.js') + glob.glob(self.name+'_*.pgf') + glob.glob(self.name+'_*.stl')
         print("EXISTING FILES: %s" % existing)
-        #if cleanup:
-        #    for f in existing:
-        #        os.remove(f)
+        if cleanup:
+           for f in existing:
+               os.remove(f)
 
 
     def objdict(self,clas=None):
