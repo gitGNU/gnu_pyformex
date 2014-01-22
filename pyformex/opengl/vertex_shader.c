@@ -120,7 +120,7 @@ void main()
 
 	vec3 nNormal = normalize(fTransformedVertexNormal);
 
-        if (drawface == 0 && nNormal[2] < 0) {
+        if (drawface == 0 && nNormal[2] < 0.0) {
 	  nNormal = -nNormal;
 	}
 
