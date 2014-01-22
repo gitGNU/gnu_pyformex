@@ -128,13 +128,13 @@ class WebGL(object):
       for the rendering of the scene.
     - `bgcolor`: string: the background color of the rendered page. This
       can be the name of a color or a hexadecimal WEB color string like
-      '#F0A0F0'. 
+      '#F0A0F0'.
     - `title`: string: an optional title to be set in the .html file. If not
       specified, the `name` is used.
     - `description`, `keywords`, `author`: strings: if specified, these
       will be added as meta tags to the generated .html file. The first two
       have defaults if not specified.
-    - `gui`: bool: if True, a gui will be added to the model, 
+    - `gui`: bool: if True, a gui will be added to the model,
       allowing some features to be changed interactively.
     - `jsheader`: string: a string to be included at the start of
       the javascript file. It should be a legal javascript text.
@@ -206,10 +206,10 @@ class WebGL(object):
             '%s_.*\.stl' % self.name,
             ])
         print("EXISTING FILES: %s" % existing)
-        if cleanup:
-            for f in existing:
-                os.remove(f)
-                
+        #if cleanup:
+        #    for f in existing:
+        #        os.remove(f)
+
 
     def objdict(self,clas=None):
         """Return a dict with the objects in this model.
@@ -301,7 +301,7 @@ class WebGL(object):
                     color = np.asarray(attrib.cbo).reshape(-1, 3)
                     obj.color = color[elems]
                 Geometry.write(obj, attrib.file, '')
-                
+
             # add missing attributes
             if attrib.lighting is None:
                 attrib.lighting = pf.canvas.settings.lighting
@@ -491,8 +491,8 @@ show%s();
           exported geometry files. For a single scene export, the name may
           be omitted, and will then be set equal to the name of the WebGL
           exporter.
-        - `cleanup`: if True, 
-        
+        - `cleanup`: if True,
+
         """
         if name is None:
             name = self.name
