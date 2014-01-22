@@ -91,7 +91,7 @@ def run():
     Ca.bkcolor = 'green'
     Ca.caption = 'A cylinder'
     Ca.alpha = 1.0
-    #Ca.opak = True
+    Ca.opak = True
 #    Ca.control = ['visible','opacity','color']
     #S.setNormals('auto')
 

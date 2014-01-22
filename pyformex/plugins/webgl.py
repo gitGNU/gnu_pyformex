@@ -179,7 +179,6 @@ class WebGL(object):
         self.author = author
         self.jsfile = None
         self.scenes = []
-        self.files = utils.NameSequence(self.name+'_','.pgf')
 
 
     def objdict(self,clas=None):
@@ -253,24 +252,26 @@ class WebGL(object):
         # add drawables
         for i, d in enumerate(actor.drawable):
             attrib = Attributes(d, default=actor)
+            attrib.file = '%s_s%s_%s.pgf' % (self.name,len(self.scenes),actor.name)
             # write the object to a .pgf file
-            coords = np.asarray(attrib.vbo)
-            if attrib.ibo is not None:
-                elems = np.asarray(attrib.ibo)
-            else:
-                nelems, nplex = coords.shape[:2]
-                elems = np.arange(nelems*nplex).reshape(nelems, nplex).astype(np.int32)
-            coords = coords.reshape(-1, 3)
-            obj = Mesh(coords, elems)
-            if attrib.nbo is not None:
-                normals = np.asarray(attrib.nbo).reshape(-1, 3)
-                obj.setNormals(normals[elems])
-            if attrib.cbo is not None:
-                color = np.asarray(attrib.cbo).reshape(-1, 3)
-                obj.color = color[elems]
-            #attrib.file = self.files.next()
-            attrib.file = '%s_s%s_%s.pgf' % (self.name,len(self.scenes),attrib.name)
-            Geometry.write(obj, attrib.file, '')
+            # we do not store the back faces, reuse the front faces file instead
+            if not attrib.name.endswith('_back'):
+                coords = np.asarray(attrib.vbo)
+                if attrib.ibo is not None:
+                    elems = np.asarray(attrib.ibo)
+                else:
+                    nelems, nplex = coords.shape[:2]
+                    elems = np.arange(nelems*nplex).reshape(nelems, nplex).astype(np.int32)
+                coords = coords.reshape(-1, 3)
+                obj = Mesh(coords, elems)
+                if attrib.nbo is not None:
+                    normals = np.asarray(attrib.nbo).reshape(-1, 3)
+                    obj.setNormals(normals[elems])
+                if attrib.cbo is not None:
+                    color = np.asarray(attrib.cbo).reshape(-1, 3)
+                    obj.color = color[elems]
+                Geometry.write(obj, attrib.file, '')
+                
             # add missing attributes
             if attrib.lighting is None:
                 attrib.lighting = pf.canvas.settings.lighting
@@ -299,23 +300,23 @@ class WebGL(object):
 
         # add faces if there are drawables for the front and back faces
         names = [ attrib.name for attrib in drawables ]
-        if actor.name+'_frontfaces' in names and actor.name+'_backfaces' in names:
-            attrib = Attributes(dict(name=actor.name+'_faces', children=[actor.name+'_frontfaces', actor.name+'_backfaces']))
+        if actor.name+'_front' in names and actor.name+'_back' in names:
+            attrib = Attributes(dict(name=actor.name+'_faces', children=[actor.name+'_front', actor.name+'_back']))
             contr = []
             if 'show faces' in control:
                 contr.append((attrib.name, 'show faces', 'visible'))
             if 'face opacity' in control:
                 contr.append((attrib.name, 'face opacity', 'opacity'))
-                attrib.alpha = drawables[names.index(actor.name+'_frontfaces')].alpha
-            if 'face color' in control and drawables[names.index(actor.name+'_frontfaces')].useObjectColor:
+                attrib.alpha = drawables[names.index(actor.name+'_front')].alpha
+            if 'face color' in control and drawables[names.index(actor.name+'_front')].useObjectColor:
                 contr.append((attrib.name, 'face color', 'color'))
                 # use frontface color
-                attrib.useObjectColor = drawables[names.index(actor.name+'_frontfaces')].useObjectColor
-                attrib.color = drawables[names.index(actor.name+'_frontfaces')].color
+                attrib.useObjectColor = drawables[names.index(actor.name+'_front')].useObjectColor
+                attrib.color = drawables[names.index(actor.name+'_front')].color
             drawables.append(attrib)
             controllers = contr + controllers
-            names.remove(actor.name+'_frontfaces')
-            names.remove(actor.name+'_backfaces')
+            names.remove(actor.name+'_front')
+            names.remove(actor.name+'_back')
             names.append(actor.name+'_faces')
 
         # add actor

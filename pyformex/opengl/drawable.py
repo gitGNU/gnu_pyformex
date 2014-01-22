@@ -565,7 +565,9 @@ class GeomActor(Attributes):
         """Draw the elems"""
         #print("ADDFACES %s" % self.faces)
         elems = self.subElems(self.faces)
+        
         if (self.eltype is not None and self.eltype.ndim >= 2) or (self.eltype is None and self.object.nplex() >= 3):
+            # Drawing triangles
 
             if self.drawface is None:
                 drawface = 0
@@ -602,8 +604,8 @@ class GeomActor(Attributes):
                 D = Drawable(self,subelems=elems,name=self.name+"_front",cullface='back',drawface=1,ibo=D.ibo)
                 self.drawable.append(D)
 
-        # ndim < 2
         else:
+            # Drawing lines and points
             self.drawable.append(Drawable(self, subelems=elems, name=self.name+"_faces", lighting=False))
 
 
