@@ -106,7 +106,7 @@ def run():
 
     if checkWorkdir():
         # Export everything to webgl
-        exportWebGL('Scene1', title='Two spheres and a cone')
+        exportWebGL('Scene1', title='Two spheres and a cone', cleanup=True)
 
 
 if __name__ == 'draw':

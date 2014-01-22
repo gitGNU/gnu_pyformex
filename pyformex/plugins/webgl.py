@@ -123,16 +123,24 @@ class WebGL(object):
 
     Parameters:
 
-    - `name`: the base name for the created HTML and JS files.
+    - `name`: string: the base name for the created HTML and JS files.
     - `scripts`: a list of URLs pointing to scripts that will be needed
       for the rendering of the scene.
-    - `bgcolor`: the background color of the rendered page.
-    - `title`: an optional title to be set in the .html file. If not
+    - `bgcolor`: string: the background color of the rendered page. This
+      can be the name of a color or a hexadecimal WEB color string like
+      '#F0A0F0'. 
+    - `title`: string: an optional title to be set in the .html file. If not
       specified, the `name` is used.
-
-    You can also set the meta tags 'description', 'keywords' and
-    'author' to be included in the .html file. The first two have
-    defaults if not specified.
+    - `description`, `keywords`, `author`: strings: if specified, these
+      will be added as meta tags to the generated .html file. The first two
+      have defaults if not specified.
+    - `gui`: bool: if True, a gui will be added to the model, 
+      allowing some features to be changed interactively.
+    - `cleanup`: bool: if True, files in the output directory (the current
+      work directory) starting with the specified base name and having a name
+      structure used by the exported, will be deleted from the file system.
+      Currently, this includes files with name patterns NAME.html*, NAME.js*
+      NAME_*.pgf and NAME_*.stl.
 
     """
 
@@ -145,6 +153,7 @@ class WebGL(object):
                  keywords=None,
                  author=None,
                  gui=True,
+                 cleanup=False,
                  ):
         """Create a new (empty) WebGL model."""
         if not pf.options.opengl2:
@@ -179,7 +188,17 @@ class WebGL(object):
         self.author = author
         self.jsfile = None
         self.scenes = []
-
+        existing = utils.listTree('.', listdirs=False, sorted=True, includefiles=[
+            '%s\.html' % self.name,
+            '%s\.js' % self.name,
+            '%s_.*\.pgf' % self.name,
+            '%s_.*\.stl' % self.name,
+            ])
+        print("EXISTING FILES: %s" % existing)
+        if cleanup:
+            for f in existing:
+                os.remove(f)
+                
 
     def objdict(self,clas=None):
         """Return a dict with the objects in this model.
@@ -449,13 +468,14 @@ show%s();
 
         Parameters:
 
-        - `name`: a string with the name of the model for the current
+        - `name`: string: the name of the model in the current
           scene. When multiple scenes are exported, they will be identified
           by this name. This name is also used as the basename for the
           exported geometry files. For a single scene export, the name may
           be omitted, and will then be set equal to the name of the WebGL
           exporter.
-
+        - `cleanup`: if True, 
+        
         """
         if name is None:
             name = self.name

@@ -2021,11 +2021,20 @@ def showLineDrawing(L):
         decorate(LineDrawing)
 
 
-def exportWebGL(fn,title=None,description=None,keywords=None,author=None,createdby=50):
+def exportWebGL(fn,createdby=50,**kargs):
     """Export the current scene to WebGL.
 
-    fn is the (relative or absolute) pathname of the .html and .js files to be
-    created.
+    Parameters:
+    
+    - `fn` : string: the (relative or absolute) filename of the .html, .js
+      and .pgf files comprising the WebGL model. It can contain a directory
+      path and an any extension. The latter is dropped and not used.
+    - `createdby: int: width in pixels of the 'Created by pyFormex' logo
+      appearing on the page. If < 0, the logo is displayed at its natural
+      width. If 0, the logo is suppressed.
+    - `**kargs`: any other keyword parameteris passed to the
+      :class:`WebGL` initialization. The `name` can not be specified: it
+      is derived from the `fn` parameter.
 
     Returns the absolute pathname of the generated .html file.
     """
@@ -2038,10 +2047,7 @@ def exportWebGL(fn,title=None,description=None,keywords=None,author=None,created
         chdir(os.path.dirname(fn))
     fn = os.path.basename(fn)
     name = utils.projectName(fn)
-    print("PROJECT %s" % name)
-    if title is None:
-        title="%s WebGL model"%name
-    W = WebGL(name, title=title, description=description, keywords=keywords, author=author)
+    W = WebGL(name=name,**kargs)
     W.addScene(name)
     fn = W.export(createdby=createdby)
     pf.GUI.setBusy(False)
