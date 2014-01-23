@@ -135,18 +135,25 @@ class WebGL(object):
     - `description`, `keywords`, `author`: strings: if specified, these
       will be added as meta tags to the generated .html file. The first two
       have defaults if not specified.
-    - `gui`: bool: if True, a gui will be added to the model,
-      allowing some features to be changed interactively.
     - `jsheader`: string: a string to be included at the start of
       the javascript file. It should be a legal javascript text.
       Usually, it is only used to insert comments, in which case
       all lines should start with '//', or the whole text should
       be included in a '/*', '*/' pair.
+    - `dataformat`: string: the extension of the data files used for storing
+      the geometry. This should be an extension supported by the webgl
+      rendering script. The default (http://feops.ugent.be/pub/webgl/fewgl.js)
+      will always support pyFormex native formats '.pgf' and '.pgf.gz'.
+      Some other formats (like .stl) may also be supported, but the use of
+      the native formats is prefered, because they are a lot smaller.
+      Default is to use the compressed '.pgf.gz' format.
+    - `gui`: bool: if True, a gui will be added to the model,
+      allowing some features to be changed interactively.
     - `cleanup`: bool: if True, files in the output directory (the current
       work directory) starting with the specified base name and having a name
       structure used by the exported, will be deleted from the file system.
       Currently, this includes files with name patterns NAME.html*, NAME.js*
-      NAME_*.pgf and NAME_*.stl.
+      NAME_*.pgf* and NAME_*.stl*.
 
     """
 
@@ -161,6 +168,7 @@ class WebGL(object):
                  htmlheader=None,
                  jsheader=None,
                  pgfheader=None,
+                 dataformat='.pgf.gz',
                  gui=True,
                  cleanup=False,
                  ):
@@ -199,6 +207,7 @@ class WebGL(object):
         self.htmlheader = htmlheader
         self.jsheader = jsheader
         self.pgfheader = pgfheader
+        self.dataformat = dataformat
         self.scenes = []
         ## existing = utils.listTree('.', listdirs=False, sorted=True, includefiles=[
         ##     '%s\.html' % self.name,
@@ -206,11 +215,11 @@ class WebGL(object):
         ##     '%s_.*\.pgf' % self.name,
         ##     '%s_.*\.stl' % self.name,
         ##     ])
-        existing = glob.glob(self.name+'.html') + glob.glob(self.name+'.js') + glob.glob(self.name+'_*.pgf') + glob.glob(self.name+'_*.stl')
-        print("EXISTING FILES: %s" % existing)
         if cleanup:
-           for f in existing:
-               os.remove(f)
+            existing = glob.glob(self.name+'.html') + glob.glob(self.name+'.js') + glob.glob(self.name+'_*.pgf*') + glob.glob(self.name+'_*.stl*')
+            print("Removing existing files: %s" % existing)
+            for f in existing:
+                os.remove(f)
 
 
     def objdict(self,clas=None):
@@ -284,7 +293,7 @@ class WebGL(object):
         # add drawables
         for i, d in enumerate(actor.drawable):
             attrib = Attributes(d, default=actor)
-            attrib.file = '%s_s%s_%s.pgf' % (self.name,len(self.scenes),actor.name)
+            attrib.file = '%s_s%s_%s%s' % (self.name,len(self.scenes),actor.name,self.dataformat)
             # write the object to a .pgf file
             # we do not store the back faces, reuse the front faces file instead
             if not attrib.name.endswith('_back'):
