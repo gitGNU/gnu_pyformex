@@ -465,7 +465,7 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
         if fielddata[k].shape[0]!=mesh.nelems():
             print((fielddata[k].shape,))
         fielddata = n2v(asarray(fielddata[k], order='C', dtype=ntype), deep=1)
-        fieldar.SetName(k)
+        fielddata.SetName(k)
         lvtk.GetFieldData().AddArray(fielddata)
     for k in celldata.keys(): # same numbering of mesh.elems
         ntype = gnat(vtkDoubleArray().GetDataType())
