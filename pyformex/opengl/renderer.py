@@ -101,13 +101,12 @@ class Renderer(object):
         # When all attribute names are correct, this could be done with a
         # single statement like
         #   self.shader.loadUniforms(self.canvas.settings)
-        #print("DEFAULTS",self.canvas.settings)
-        # THIS IS SET IN SHADER
         #
         self.shader.uniformInt('highlight', 0)
         self.shader.uniformFloat('lighting', self.canvas.settings.lighting)
         self.shader.uniformInt('useObjectColor', 1)
         self.shader.uniformVec3('objectColor', self.canvas.settings.fgcolor)
+        self.shader.uniformVec3('objectBkColor', self.canvas.settings.fgcolor)
         self.shader.uniformFloat('pointsize', self.canvas.settings.pointsize)
         self.loadLightProfile()
 
@@ -137,9 +136,7 @@ class Renderer(object):
 
             # Get the current modelview*projection matrix
             modelview = self.camera.modelview
-            #print("MODELVIEW-R",modelview)
             projection = self.camera.projection
-            #print("PROJECTION-R",projection)
 
             # Propagate the matrices to the uniforms of the shader
             self.shader.uniformMat4('modelview', modelview.gl())

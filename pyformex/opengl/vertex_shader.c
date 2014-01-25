@@ -44,41 +44,30 @@ uniform bool pyformex;              // Is the shader being used in pyFormex
 uniform mat4 modelview;
 uniform mat4 projection;
 uniform mat4 pickmat;
-uniform bool useObjectColor;
-uniform bool highlight;
-
-uniform mat4 objectTransform;
-uniform bool useScalars;
-uniform bool scalarsReplaceMode;
-uniform float scalarsMin;
-uniform float scalarsMax;
-uniform vec3 scalarsMinColor;
-uniform vec3 scalarsMaxColor;
-uniform float scalarsMinThreshold;
-uniform float scalarsMaxThreshold;
-uniform int scalarsInterpolation;
-uniform vec3 objectColor;
-
+//uniform mat4 objectTransform;
 uniform float pointsize;
-
+uniform bool highlight;
 uniform bool picking;
-
 uniform bool alphablend;   // Switch transparency on/off
-uniform int drawface;      // Which side of the face to draw (-1,0,1)
 
-uniform bool lighting;     // Are the lights on?
-uniform int nlights;       // Number of lights?  <= MAX_LIGHTS
-uniform vec3 ambicolor;                // Total ambient color
-uniform vec3 diffcolor[MAX_LIGHTS];    // Colors of diffuse light
-uniform vec3 speccolor[MAX_LIGHTS];    // Colors of reflected light
-uniform vec3 lightdir[MAX_LIGHTS];     // Light directions
+uniform int drawface;        // Which side of the face to draw (0,1,2)
+uniform int useObjectColor;  // 0 = no, 1 = single color, 2 = twosided color
+uniform vec3 objectColor;    // front and back color (1) or front color (2)
+uniform vec3 objectBkColor;  // back color (2)
 
 uniform float ambient;     // Material ambient value
 uniform float diffuse;     // Material diffuse value
 uniform float specular;    // Material Intensity of reflection
 uniform float shininess;   // Material surface shininess
 uniform float alpha;       // Material opacity
+uniform float bkalpha;     // Material backside opacity
 
+uniform bool lighting;          // Are the lights on?
+uniform int nlights;            // Number of lights?  <= MAX_LIGHTS
+uniform vec3 ambicolor;                // Total ambient color
+uniform vec3 diffcolor[MAX_LIGHTS];    // Colors of diffuse light
+uniform vec3 speccolor[MAX_LIGHTS];    // Colors of reflected light
+uniform vec3 lightdir[MAX_LIGHTS];     // Light directions
 
 varying float fDiscardNow;
 varying vec4 fvertexPosition;
@@ -100,8 +89,11 @@ void main()
     if (highlight) {
       // Highlight color, currently hardwired yellow
       fragmentColor = vec3(1.,1.,0.);
-    } else if (useObjectColor) {
-      // Single color
+    } else if (useObjectColor == 2 && drawface == -1) {
+      // Object color, front and back have different color, backside
+      fragmentColor = objectBkColor;
+    } else if (useObjectColor > 0) {
+      // Object color, front side or both sides same color
       fragmentColor = objectColor;
     } else {
       // Vertex color

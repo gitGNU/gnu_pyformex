@@ -45,8 +45,61 @@ from pyformex.gui.draw import *
 from pyformex.simple import sphere, sector, cylinder
 from pyformex.mydict import Dict
 from pyformex.plugins.webgl import WebGL
+from pyformex.opengl.objectdialog import objectDialog
 
 pf.cfg['render/experimental'] = False
+
+def createGeometry():
+    """Create some geometry.
+
+    This example creates a sphere, a cone and a cylinder, all
+    partially overlapping. It sets some rendering attributes
+    on the objects.
+    """
+    # A sphere
+    S = sphere().scale(1.2)
+    # A Cone
+    T = sector(1.0, 360., 6, 36, h=1.0, diag='u').toSurface().scale(1.5).reverse()
+    # A Cylinder
+    C = cylinder(1.2, 1.5, 24, 4, diag='u').toSurface().trl([0.5, 0.5, 0.5]).reverse()
+
+    # Add some rendering attributes. These attributes will be used
+    # when doing default drawing. The attributes will also be exported
+    # to WebGL models. Finally, the attributes can be used to create
+    # a dialog for interactively changing the rendering.
+
+    # Attributes can be created using different styles.
+
+    # Style 1: specify them as parameters in the attrib() method call
+    S.attrib(
+        name = 'Sphere',
+        caption = 'A sphere',
+        color = red,
+        alpha = 0.7,
+        )
+
+    T.attrib(
+        name = 'Cone',
+        caption = 'A cone',
+        color = blue,
+        alpha = 1.0,
+       )
+
+    C.attrib(
+        name = 'Cylinder',
+        caption = 'A cylinder',
+        color = 'yellow',
+        bkcolor = 'green',
+        alpha = 1.0,
+        )
+
+    # Style 2: alternately, you can directly set the values as attributes
+    # on the created attrib. This style is mostly used to modify or add
+    # some attribute afterwards.
+    T.attrib.alpha = 0.6
+
+    return List([S,T,C])
+
 
 def run():
     reset()
@@ -56,62 +109,26 @@ def run():
     bgcolor(white)
     view('right')
 
-    # Create some geometry
-    S = sphere().scale(1.2)
-    T = sector(1.0, 360., 6, 36, h=1.0, diag='u').toSurface().scale(1.5).reverse()
-    C = cylinder(1.2, 1.5, 24, 4, diag='u').toSurface().trl([0.5, 0.5, 0.5]).reverse()
+    # Create some geometrical objects
+    objects = createGeometry()
 
-    # Draw the geometry with given colors/opacity
-    # Settings colors and opacity in this way makes the model
-    # directly ready to export as WebGL
+    # make them available in the GUI
+    export([(obj.attrib.name,obj) for obj in objects])
 
-    # Style 1: using function call
-    S.attrib(color=red,#bkcolor=red,
-             alpha=0.7,
-             caption='A sphere',
-#             control=['visible','opacity','color'],
-             )
-    #S.setNormals('avg')
-
-    #r = pf.canvas.renderer
-    #r.settings.nlights = 1
-
-    # Style 2: setting attributes of the .attrib attribute
-    Ta = T.attrib
-    Ta.color = blue
-    #Ta.bkcolor = blue
-    Ta.caption = 'A cone'
-    Ta.alpha = 0.5
-    #Ta.opak = True
-#    Ta.control = ['visible','opacity','color']
-    #S.setNormals('auto')
-
-    Ca = C.attrib
-    Ca.color = 'yellow'
-    Ca.bkcolor = 'green'
-    Ca.caption = 'A cylinder'
-    Ca.alpha = 1.0
-    Ca.opak = True
-#    Ca.control = ['visible','opacity','color']
-    #S.setNormals('auto')
-
-    export({'sphere':S,'cone':T,'cylinder':C})
-
-    draw([C, T, S])
+    # draw the objects
+    draw(objects)
     zoomAll()
-    #rotRight(30.)
 
+    # export to WebGL
     camera = pf.canvas.camera
     print("Camera focus: %s; eye: %s" % (camera.focus, camera.eye))
+    fn = exportWebGL('Scene1',
+                     title='Two spheres and a cone',
+                     jsheader='// Created by pyFormex WebGL example',
+                     cleanup=True)
+    if fn and ack("Show the model in your browser?"):
+        showHTML(fn)
 
-    if checkWorkdir():
-        # Export everything to webgl
-        fn = exportWebGL('Scene1',
-                         title='Two spheres and a cone',
-                         jsheader='// Created by pyFormex WebGL example',
-                         cleanup=True)
-        if fn and ack("Show the model in your browser?"):
-            showHTML(fn)
 
 if __name__ == 'draw':
     run()

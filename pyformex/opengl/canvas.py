@@ -737,7 +737,7 @@ class Canvas(object):
         except:
             pass
 
-        print("SETTINGS",self.settings)
+        #print("SETTINGS",self.settings)
 
 
     def setLighting(self, onoff):

@@ -89,6 +89,7 @@ class Shader(object):
 
     uniforms_vec3 = [
         'objectColor',
+        'objectBkColor',
         'ambicolor',
         'diffcolor',
         'speccolor',

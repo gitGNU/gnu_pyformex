@@ -87,14 +87,14 @@ class Drawable(Attributes):
     attributes = [
         'cullface', 'subelems', 'color', 'name', 'highlight', 'opak',
         'linewidth', 'pointsize', 'lighting', 'offset', 'vbo', 'nbo', 'ibo',
-        'alpha', 'drawface',
+        'alpha', 'drawface', 'objectColor', 'useObjectColor'
         ]
 
     def __init__(self,parent,**kargs):
         """Create a new drawable."""
 
         # Should we really restrict this????
-        kargs = utils.selectDict(kargs, Drawable.attributes)
+        #kargs = utils.selectDict(kargs, Drawable.attributes)
         Attributes.__init__(self, kargs, default=parent)
         #print("ATTRIBUTES STORED IN DRAWABLE",self)
         #print("ATTRIBUTES STORED IN PARENT",parent)
@@ -112,9 +112,9 @@ class Drawable(Attributes):
         self.prepareSubelems()
 
 
-    def bbox(self):
-        print("WHY DO YOU NEED MY BBOX?")
-        return self._coords.bbox()
+    ## def bbox(self):
+    ##     print("WHY DO YOU NEED MY BBOX?")
+    ##     return self._coords.bbox()
 
 
     ## def __del__(self):
@@ -126,19 +126,21 @@ class Drawable(Attributes):
 
     def prepareColor(self):
         """Prepare the colors for the shader."""
-        #print("PREPARECOLOR")
+        #
+        # This should probably be moved to GeomActor
+        #
         if self.highlight:
-            #print("HIIGHLIGHT!!!")
             # we set single highlight color in shader
             # Currently do everything in Formex model
             # And we always need this one
-            #print(self.fcoords)
             self.avbo = VBO(self.fcoords)
             self.useObjectColor = 1
             self.objectColor = array(red)
 
         elif self.color is not None:
             if self.color.ndim == 1:
+                # here we only accept a single color for front and back
+                # different colors should have been handled before
                 self.useObjectColor = 1
                 self.objectColor = self.color
             elif self.color.ndim == 2:
@@ -151,7 +153,6 @@ class Drawable(Attributes):
 
             if self.vertexColor is not None:
                 self.cbo = VBO(self.vertexColor.astype(float32))
-            #print("SELF.USEOBJECTCOLOR = %s" % (self.useObjectColor))
 
 
     def prepareSubelems(self):
@@ -173,13 +174,10 @@ class Drawable(Attributes):
             else:
                 GL.glDrawArrays(self.glmode, 0, asarray(self.vbo.shape[:-1]).prod())
 
-
         if self.offset:
             pf.debug("POLYGON OFFSET", pf.DEBUG.DRAW)
             GL.glPolygonOffset(1.0, 1.0)
 
-        #print("LOAD DRAWABLE uniforms (AGAIN)")
-        #print(self.keys())
         renderer.shader.loadUniforms(self)
 
         self.vbo.bind()
@@ -471,10 +469,18 @@ class GeomActor(Attributes):
         Since the attributes may be dependent on the rendering mode,
         this method is called on each mode change.
         """
-        #print("PREPARE ACTOR")
+        self.color = self.okColor(self.color, self.colormap)
+        self.bkcolor = self.okColor(self.bkcolor, self.bkcolormap)
+        if self.color is not None:
+            if self.color.ndim == 1:
+                self.useObjectColor = 1
+                self.objectColor = self.color
+                self.color = None
+                if self.bkcolor is not None and self.bkcolor.ndim == 1:
+                    self.useObjectColor = 2
+                    self.objectBkColor = self.bkcolor
+                    self.bkcolor = None
 
-        self.setColor(self.color, self.colormap)
-        self.setBkColor(self.bkcolor, self.bkcolormap)
         self.setAlpha(self.alpha, self.bkalpha)
         self.setLineWidth(self.linewidth)
         self.setLineStipple(self.linestipple)
@@ -565,7 +571,7 @@ class GeomActor(Attributes):
         """Draw the elems"""
         #print("ADDFACES %s" % self.faces)
         elems = self.subElems(self.faces)
-        
+
         if (self.eltype is not None and self.eltype.ndim >= 2) or (self.eltype is None and self.object.nplex() >= 3):
             # Drawing triangles
 
@@ -585,22 +591,13 @@ class GeomActor(Attributes):
 
             else:
 
-                # Draw both back and front sides, with culling                # First the back sides (they are more remote from eye)
-                extra = Attributes()
+                # Draw both back and front sides, with culling
+                # First the back sides (they are more remote from eye)
 
-                # Use specified backside attributes
-                if self.bkalpha is not None:
-                    extra.alpha = self.bkalpha
-                if self.bkcolor is not None:
-                    extra.color = self.bkcolor
-                if self.bkcolormap is not None:
-                    extra.colormap = self.bkcolormap
-
-                D = Drawable(self,subelems=elems,name=self.name+"_back",cullface='front',drawface=1,**extra)
+                D = Drawable(self,subelems=elems,name=self.name+"_back",cullface='front',drawface=-1)
                 self.drawable.append(D)
 
-
-                # Then the front sides
+                # Then the front sides, using same ibo
                 D = Drawable(self,subelems=elems,name=self.name+"_front",cullface='back',drawface=1,ibo=D.ibo)
                 self.drawable.append(D)
 
@@ -674,8 +671,15 @@ class GeomActor(Attributes):
         self.drawable.insert(0, self._highlight)
 
 
-    def setColor(self,color,colormap=None):
-        """Set the color of the Actor."""
+    def okColor(self,color,colormap=None):
+        """Compute a color usable by the shader.
+
+        The shader only supports 3*float type of colors:
+
+        - None
+        - single color (separate for front and back faces)
+        - vertex colors
+        """
         if isinstance(color, str):
             if color == 'prop' and hasattr(self.object, 'prop'):
                 color = self.object.prop
@@ -690,18 +694,9 @@ class GeomActor(Attributes):
                 # We have a color index
                 if colormap is None:
                     colormap = array(colors.palette)
-                #print("PALETTE:%s"%colormap)
                 color = colormap[color]
 
-            #print("VERTEX SHAPE = %s" % (self.fcoords.shape,))
-            #print("COLOR SHAPE = %s" % (color.shape,))
-
-        self.color = color
-
-
-    def setBkColor(self,color,colormap=None):
-        """Set the backside color of the Actor."""
-        self.bkcolor, self.bkcolormap = saneColorSet(color, colormap, self.fcoords.shape)
+        return color
 
 
     def setAlpha(self,alpha,bkalpha=None):

@@ -1709,7 +1709,12 @@ def twistLeft(factor=None):
 def twistRight(factor=None):
     pf.canvas.camera.rotate(-rot_factor(factor), 0, 0, 1)
     pf.canvas.update()
-
+def barrelRoll(n=36):
+    d = 360./n
+    t = 2./n
+    for i in range(n):
+        twistRight(d)
+        sleep(t)
 def transLeft(factor=None):
     val = pan_factor(factor) * pf.canvas.camera.dist
     pf.canvas.camera.translate(-val, 0, 0, pf.cfg['draw/localaxes'])
