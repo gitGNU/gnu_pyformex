@@ -489,7 +489,7 @@ def tetgenConvexHull(pts):
     tch, ch =tetgenConvexHull( X)
     draw(ch, color='red', marksize=10)
     """
-    tmp = utils.tempfile.mktemp('')
+    tmp = utils.tempName()
     writeNodes(fn=tmp+'.node', coords=pts, offset=0)
     P = utils.command('tetgen %s'%(tmp+'.node'))
     if P.sta:
@@ -514,7 +514,7 @@ def checkSelfIntersectionsWithTetgen(self,verbose=False):
     """
     from pyformex.plugins.tetgen import writeSurface
     cmd = 'tetgen -d '
-    tmp = utils.tempfile.mktemp('')
+    tmp = utils.tempName()
     pf.message("Writing temp file %s" % tmp)
     writeSurface(tmp, self.coords, self.elems)
     if verbose:

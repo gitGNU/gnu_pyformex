@@ -37,8 +37,7 @@ from pyformex.formex import *
 from pyformex.connectivity import Connectivity, connectedLineElems, adjacencyArrays
 from pyformex.mesh import Mesh
 
-import os, tempfile
-import tempfile
+import os
 
 
 #
@@ -1886,8 +1885,8 @@ Quality: %s .. %s
         if self.nelems() == 0:
             # Protect against impossible file handling for empty surfaces
             return self
-        tmp = tempfile.mktemp('.stl')
-        tmp1 = tempfile.mktemp('.off')
+        tmp = utils.tempName('.stl')
+        tmp1 = utils.tempName('.off')
         pf.message("Writing temp file %s" % tmp)
         self.write(tmp, 'stl')
         pf.message("Fixing surface while converting to OFF format %s" % tmp1)
@@ -1934,7 +1933,7 @@ Quality: %s .. %s
         If verbose is True, prints the statistics reported by the gtscheck
         command.
         """
-        tmp = tempfile.mktemp('.gts')
+        tmp = utils.tempName('.gts')
         self.write(tmp, 'gts')
 
         cmd = "gtscheck -v < %s" % tmp
@@ -1950,7 +1949,7 @@ Quality: %s .. %s
             return P.sta, None
         if P.sta==3:
             pf.message('The surface is an orientable manifold but is self-intersecting')
-            tmp = tempfile.mktemp('.gts')
+            tmp = utils.tempName('.gts')
             pf.message("Writing temp file %s" % tmp)
             fil = open(tmp, 'w')
             fil.write(P.out)
@@ -1980,7 +1979,7 @@ Quality: %s .. %s
         cmd = 'gtssplit -v %s' % base
         if verbose:
             cmd += ' -v'
-        tmp = tempfile.mktemp('.gts')
+        tmp = utils.tempName('.gts')
         pf.message("Writing temp file %s" % tmp)
         self.write(tmp, 'gts')
         pf.message("Splitting with command\n %s" % cmd)
@@ -2045,8 +2044,8 @@ Quality: %s .. %s
             cmd += ' -L'
         if verbose:
             cmd += ' -v'
-        tmp = tempfile.mktemp('.gts')
-        tmp1 = tempfile.mktemp('.gts')
+        tmp = utils.tempName('.gts')
+        tmp1 = utils.tempName('.gts')
         pf.message("Writing temp file %s" % tmp)
         self.write(tmp, 'gts')
         pf.message("Coarsening with command\n %s" % cmd)
@@ -2091,8 +2090,8 @@ Quality: %s .. %s
             cmd += ' -L'
         if verbose:
             cmd += ' -v'
-        tmp = tempfile.mktemp('.gts')
-        tmp1 = tempfile.mktemp('.gts')
+        tmp = utils.tempName('.gts')
+        tmp1 = utils.tempName('.gts')
         pf.message("Writing temp file %s" % tmp)
         self.write(tmp, 'gts')
         pf.message("Refining with command\n %s" % cmd)
@@ -2128,8 +2127,8 @@ Quality: %s .. %s
         cmd += ' %s %s' % (lambda_value, iterations)
         if verbose:
             cmd += ' -v'
-        tmp = tempfile.mktemp('.gts')
-        tmp1 = tempfile.mktemp('.gts')
+        tmp = utils.tempName('.gts')
+        tmp1 = utils.tempName('.gts')
         pf.message("Writing temp file %s" % tmp)
         self.write(tmp, 'gts')
         pf.message("Smoothing with command\n %s" % cmd)

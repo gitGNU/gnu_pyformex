@@ -186,9 +186,7 @@ class Project(TrackedDict):
     Example:
 
       >>> d = dict(a=1,b=2,c=3,d=[1,2,3],e={'f':4,'g':5})
-      >>> import tempfile
-      >>> f = tempfile.mktemp('.pyf','w')
-      >>> P = Project(f)
+      >>> P = Project()
       >>> P.update(d)
       >>> print dict.__str__(P)
       {'a': 1, 'c': 3, 'b': 2, 'e': {'g': 5, 'f': 4}, 'd': [1, 2, 3]}
@@ -259,9 +257,7 @@ class Project(TrackedDict):
             print("Project variables changed: %s" % self.hits)
 
         if self.filename is None:
-            import tempfile
-            fd, fn = tempfile.mkstemp(prefix='pyformex_', suffix='.pyf')
-            self.filename = fn
+            self.filename = utils.tempName(prefix='pyformex_', suffix='.pyf')
         else:
             if not quiet:
                 print("Saving project %s with mode %s and compression %s" % (self.filename, self.mode, self.gzip))

@@ -41,6 +41,7 @@ import threading
 import shlex
 
 
+
 # Some regular expressions
 RE_digits = re.compile(r'(\d+)')
 
@@ -1074,6 +1075,39 @@ def grepSource(pattern,options='',relative=True):
         return P.out
 
 
+
+
+##########################################################################
+## Temporary Files ##
+#####################
+
+
+tempFile = tempfile.NamedTemporaryFile
+tempDir = tempfile.mkdtemp
+
+def tempName(*args,**kargs):
+    """Create a temporary file.
+
+    Creates a temporary file by calling :func:`tempfile.mkstemp` with the
+    specified arguments and returns the file name. It is equivalent with::
+
+      tempfile.mkstemp(*args,**kargs)[1]
+
+    The user is responsible for removing the temporary file.
+
+    Example:
+
+    >>> tmp = tempName('.txt')
+    >>> open(tmp,'w').write('hallo')
+    >>> s = open(tmp,'r').read()
+    >>> os.remove(tmp)
+    >>> print(s)
+    hallo
+
+    """
+    return tempfile.mkstemp(*args,**kargs)[1]
+
+
 ###################### locale ###################
 
 def setSaneLocale(localestring=''):
@@ -1557,10 +1591,6 @@ def getDocString(scriptfile):
         if j >= i+3:
             return s[i+3:j]
     return ''
-
-
-tempFile = tempfile.NamedTemporaryFile
-tempDir = tempfile.mkdtemp
 
 
 def numsplit(s):

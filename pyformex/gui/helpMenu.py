@@ -33,7 +33,6 @@ import pyformex as pf
 import os, sys
 from pyformex.gui import draw
 from pyformex import utils
-import tempfile
 import random
 from pyformex.gui import viewport
 from gettext import gettext as _
@@ -62,11 +61,12 @@ def catchAndDisplay(expression):
     """Catch stdout from a Python expression and display it in a window."""
     save = sys.stdout
     try:
-        f = tempfile.TemporaryFile('w+')
+        f = utils.tempFile(delete=True)
         sys.stdout = f
         eval(expression)
         f.seek(0)
         draw.showText(f.read())
+        f.close()
     finally:
         sys.stdout = save
 
