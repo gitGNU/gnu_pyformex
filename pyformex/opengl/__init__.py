@@ -54,6 +54,10 @@ def clear_canvas():
     pf.canvas.scene.clear()
     pf.canvas.clear()
 
+#
+# TODO: Note that the option 'clear' in the draw statement
+#       should be 'clear_' int the gl2 version!
+#       Maybe rename to erase?
 
 def draw(F,
          ## color='prop',colormap=None,alpha=None,
@@ -62,10 +66,14 @@ def draw(F,
          ## marksize=None,nolight=False,ontop=False,
          ## view=None,bbox=None,shrink=None,clear=None,
          ## wait=True,allviews=False,highlight=False,silent=True,
+         # A trick to allow 'clear' argument, but not inside kargs
+         clear=None,
          **kargs):
     """New draw function for OpenGL2"""
 
-    draw_options = [ 'silent','shrink','clear','view','highlight','bbox',
+    kargs['clear_'] = clear
+
+    draw_options = [ 'silent','shrink','clear_','view','highlight','bbox',
                      'allviews' ]
 
     # For simplicity of the code, put objects to draw always in a list
@@ -96,7 +104,7 @@ def draw(F,
     ## # Execute the drawlock wait before doing first canvas change
     pf.GUI.drawlock.wait()
 
-    if opts.clear:
+    if opts.clear_:
         clear_canvas()
 
     if opts.view is not None and opts.view != 'last':
