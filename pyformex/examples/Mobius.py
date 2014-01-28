@@ -78,7 +78,7 @@ def run():
     step = 720./nsteps
     for i in arange(1, nsteps+1):
         mobius = ring.rotate(i*step, 1)
-        TB = draw(mobius, color='orange', bkcolor='red', bbox='last')
+        TB = draw(mobius, name='mobius',color='orange', bkcolor='red', bbox='last')
         undraw(TA)
         TA = TB
 

@@ -41,6 +41,7 @@ from pyformex.plugins import curve
 from pyformex import simple
 
 def run():
+    smoothwire()
     # GEOMETRICAL PARAMETERS FOR HE200B wide flange beam
     h = 200. #beam height
     b = 200. #flange width
@@ -72,11 +73,11 @@ def run():
     Section = Full.toMesh()
 
     clear()
-    draw(Section, color=red)
+    draw(Section,name='Section', color=red)
 
     #pause()
 
-    method = ask("Choose extrude method:", ['Cancel', 'Sweep', 'Connect', 'Extrude', 'ExtrudeQuadratic', 'Revolve', 'RevolveLoop'])
+    method = ask("Choose extrude method:", ['Cancel', 'Sweep', 'Connect', 'Extrude', 'ExtrudeQuadratic', 'RevolveLoop', 'Revolve'])
 
     from pyformex import timer
     t = timer.Timer()
@@ -111,9 +112,9 @@ def run():
     #print Beam.elems.shape
 
     t.reset()
-    clear()
-    #draw(Beam,color='red',linewidth=2)
-    draw(Beam.getBorderMesh(), color='red', linewidth=2)
+    #clear()
+    #draw(Beam,name='Beam',color='red',linewidth=2)
+    draw(Beam.getBorderMesh(),name='Beam', color='red', linewidth=2)
     print("Drawing: %s seconds" % t.seconds())
     export({'Beam':Beam})
 
