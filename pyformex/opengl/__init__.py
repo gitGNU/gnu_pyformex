@@ -31,6 +31,7 @@ from __future__ import print_function
 
 
 import pyformex as pf
+from pyformex import utils
 from pyformex import gui
 from pyformex import coords
 from pyformex.attributes import Attributes
@@ -64,6 +65,9 @@ def draw(F,
          **kargs):
     """New draw function for OpenGL2"""
 
+    draw_options = [ 'silent','shrink','clear','view','highlight','bbox',
+                     'allviews' ]
+
     # For simplicity of the code, put objects to draw always in a list
     if isinstance(F, list):
         FL = F
@@ -79,25 +83,25 @@ def draw(F,
     nres = len(FL)
 
     # Get default drawing options and overwrite with specified values
-    attr = Attributes(pf.canvas.drawoptions)
-    attr.update(kargs)
+    opts = Attributes(pf.canvas.drawoptions)
+    opts.update(utils.selectDict(kargs,draw_options,remove=True))
 
-    if nres < ntot and not attr.silent:
+    if nres < ntot and not opts.silent:
         raise ValueError("Data contains undrawable objects (%s/%s)" % (ntot-nres, ntot))
 
     # Shrink the objects if requested
-    if attr.shrink:
-        FL = [ _shrink(F, attr.shrink_factor) for F in FL ]
+    if opts.shrink:
+        FL = [ _shrink(F, opts.shrink_factor) for F in FL ]
 
     ## # Execute the drawlock wait before doing first canvas change
     pf.GUI.drawlock.wait()
 
-    if attr.clear_:
+    if opts.clear:
         clear_canvas()
 
-    if attr.view is not None and attr.view != 'last':
-        pf.debug("SETTING VIEW to %s" % attr.view, pf.DEBUG.DRAW)
-        gui.draw.setView(attr.view)
+    if opts.view is not None and opts.view != 'last':
+        pf.debug("SETTING VIEW to %s" % opts.view, pf.DEBUG.DRAW)
+        gui.draw.setView(opts.view)
 
     pf.GUI.setBusy()
     pf.app.processEvents()
@@ -109,41 +113,21 @@ def draw(F,
         # loop over the objects
         for F in FL:
 
-            ## if type(color) is str:
-            ##     if color == 'prop':
-            ##         try:
-            ##             Fcolor = F.prop
-            ##         except:
-            ##             Fcolor = colors.black
-            ##     elif color == 'random':
-            ##         # create random colors
-            ##         Fcolor = numpy.random.rand(F.nelems(),3)
-            ##     else:
-            ##         Fcolor = color
-            ## else:
-            ##     Fcolor = asarray(color)
-
             # Create the actor
-            actor = F.actor(
-#                color=Fcolor,colormap=colormap,alpha=alpha,
-#                bkcolor=bkcolor,bkcolormap=bkcolormap,bkalpha=bkalpha,
-#                mode=mode,linewidth=linewidth,linestipple=linestipple,
-#                marksize=marksize,nolight=nolight,ontop=ontop,
-                **kargs)
-
+            actor = F.actor(**kargs)
             actors.append(actor)
 
             if actor is not None:
                 # Show the actor
-                if attr.highlight:
+                if opts.highlight:
                     pf.canvas.addHighlight(actor)
                 else:
                     pf.canvas.addActor(actor)
 
-        view = attr.view
-        bbox = attr.bbox
+        view = opts.view
+        bbox = opts.bbox
         pf.debug(pf.canvas.drawoptions, pf.DEBUG.OPENGL)
-        pf.debug(attr, pf.DEBUG.OPENGL)
+        pf.debug(opts, pf.DEBUG.OPENGL)
         pf.debug(view, pf.DEBUG.OPENGL)
         pf.debug(bbox, pf.DEBUG.OPENGL)
 
@@ -168,7 +152,7 @@ def draw(F,
             gui.image.saveNext()
 
         # Make sure next drawing operation is retarded
-        if attr.wait:
+        if opts.wait:
             pf.GUI.drawlock.lock()
 
     finally:

@@ -61,7 +61,6 @@ class DrawLock(object):
 
         If a no time is specified, a global value is used.
         """
-        #print self.allowed,self.locked
         if self.allowed and not self.locked:
             if time is None:
                 time = pf.GUI.drawwait
@@ -85,7 +84,6 @@ class DrawLock(object):
 
         If a timer is running, cancel it.
         """
-        #print "RELEASING LOCK"
         self.locked = False
         if self.timer:
             self.timer.cancel()
@@ -93,7 +91,6 @@ class DrawLock(object):
 
     def free(self):
         """Release the lock and prevent waits until allow() is called."""
-        #print "FREEING THE DRAW LOCK"
         self.allowed = False
         self.release()
 
