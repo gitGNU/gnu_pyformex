@@ -38,7 +38,7 @@ utils.checkModule('pyopengl', fatal=True)
 
 from pyformex.gui import (
     signals, QtCore, QtGui,
-    menu, cameraMenu, fileMenu, appMenu, prefMenu,
+    menu, cameraMenu, fileMenu, appMenu, prefMenu, viewportMenu, 
     toolbar, canvas, viewport, guifunc, draw, widgets, drawlock, views,
     )
 
@@ -336,6 +336,9 @@ class Gui(QtGui.QMainWindow):
             toolbar.addNormalsButton(self.modebar)
         if self.modebar and pf.cfg['gui/shrinkbutton']:
             toolbar.addShrinkButton(self.modebar)
+
+        if self.modebar and pf.options.opengl2:
+            toolbar.addButton(self.modebar,"Popup dialog to interactively change object rendering",'objects',viewportMenu.showObjectDialog)
 
         ###############  VIEWS menu ################
         if pf.cfg['gui/viewmenu']:

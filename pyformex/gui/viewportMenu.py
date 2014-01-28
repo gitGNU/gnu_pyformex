@@ -350,6 +350,20 @@ def clearAll():
     pf.GUI.processEvents()
 
 
+def showObjectDialog(show=True):
+    """Show the object dialog for the current scene.
+
+
+    """
+    if pf.options.opengl2:
+        from pyformex.opengl import objectdialog
+        dia = objectdialog.objectDialog(pf.canvas.actors)
+        if dia and show:
+            dia.show()
+        return dia
+    
+
+
 MenuData = [
     (_('&Viewport'), [
         (_('&Clear'), draw.clear),
@@ -379,6 +393,7 @@ MenuData = [
         ##   ('&Polygon Front and Back Fill',canvas.glBothFill),
         ##   ]),
         (_('&Redraw'), draw.redraw),
+        (_('&Object Dialog'), showObjectDialog),
         (_('&Reset viewport'), draw.reset),
         (_('&Reset layout'), singleViewport),
         (_('&Change viewport layout'), viewportLayout),

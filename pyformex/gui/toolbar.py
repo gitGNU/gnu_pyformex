@@ -40,7 +40,7 @@ def addButton(toolbar,tooltip,icon,func,repeat=False,toggle=False,checked=False,
     """Add a button to a toolbar.
 
     - `toolbar`: the toolbar where the button will be added
-    - `tooltip`: the text to appears as tooltip
+    - `tooltip`: the text to appear as tooltip
     - `icon`: name of the icon to be displayed on the button,
     - `func`: function to be called when the button is pressed,
     - `repeat`: if True, the `func` will repeatedly be called if button is

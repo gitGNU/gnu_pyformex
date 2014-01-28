@@ -36,14 +36,15 @@ from pyformex.gui.draw import _T, _G, _I, Dialog
 from pyformex.gui.colors import GLcolor
 
 
-def objectDialog(obj):
+def objectDialog(obj=None,unlike='object_'):
     """Create an interactive object dialog for drawn objects
 
     obj is a single drawn object or a list thereof.
+    If no objects are specified, the current scene actors are
+    used.
     A drawn object is the return value of a draw() function call.
     """
     items = None
-    #print(type(obj))
 
     def set_attr(field):
         actor = field.data
@@ -75,12 +76,18 @@ def objectDialog(obj):
 
         return items
 
+    # process obj
+    if obj is None:
+        obj = pf.canvas.actors
+        
     if isinstance(obj,GeomActor):
         items = objectItems(obj)
 
     elif isinstance(obj,list):
         #print([type(o) for o in obj])
         obj = [ o for o in obj if isinstance(o,GeomActor) ]
+        if unlike:
+            obj = [ o for o in obj if not o.name.startswith(unlike) ]
         items = [
             _T(o.name,objectItems(o)) for o in obj
             ]

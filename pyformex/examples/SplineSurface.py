@@ -357,7 +357,8 @@ def run():
 
     S = SplineSurface(CL, nu)
     M = gridToMesh(S.grid, closed = S.uclosed)
-    draw(M, color=yellow, bkcolor='steelblue')
+    M.attrib(name='quadsurface',color=yellow, bkcolor='steelblue')
+    draw(M)
     export({'quadsurface':M})
 
     if refine:
