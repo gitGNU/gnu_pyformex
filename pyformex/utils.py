@@ -1789,23 +1789,34 @@ def subDict(d,prefix='',strip=True):
         return dict([ (k, v) for k, v in d.items() if k.startswith(prefix)])
 
 
-def selectDict(d, keys):
+def selectDict(d, keys, remove=False):
     """Return a dict with the items whose key is in keys.
 
-    - `d`: a dict where all the keys are strings.
+    - `d`: a dict.
     - `keys`: a set of key values, can be a list or another dict.
+    - `remove`: if True, the selected keys are removed from the input dict.
 
-    The return value is a dict with all the items from d whose key
-    is in keys.
+    Returns a dict with all the items from d whose key is in keys.
     See :func:`removeDict` for the complementary operation.
 
     Example:
 
-    >>> d = dict([(c,c*c) for c in range(6)])
-    >>> selectDict(d,[4,0,1])
-    {0: 0, 1: 1, 4: 16}
+    >>> d = dict([(c,c*c) for c in range(4)])
+    >>> selectDict(d,[2,0])
+    {0: 0, 2: 4}
+    >>> print(d)
+    {0: 0, 1: 1, 2: 4, 3: 9}
+    >>> selectDict(d,[2,0,6],remove=True)
+    {0: 0, 2: 4}
+    >>> print(d)
+    {1: 1, 3: 9}
     """
-    return dict([ (k, d[k]) for k in set(d)&set(keys) ])
+    keys = set(d) & set(keys)
+    sel = dict([ (k, d[k]) for k in keys ])
+    if remove:
+        for k in keys:
+            del d[k]
+    return sel
 
 
 def removeDict(d, keys):

@@ -27,21 +27,17 @@ Perform boolean operations on surfaces
 """
 from __future__ import print_function
 
-
 _status = 'checked'
 _level = 'normal'
 _topics = ['surface', 'gts']
 _techniques = ['boolean', 'intersection']
 _opengl2 = True
-_opengl2_comments = """
-- No color
-- Not enough light
-"""
 
 from pyformex.gui.draw import *
 from pyformex.simple import cylinder
 from pyformex.connectivity import connectedLineElems
 from pyformex.plugins.trisurface import TriSurface, fillBorder
+
 
 def splitAlongPath(path,mesh,atol=0.0):
     '''
@@ -52,6 +48,7 @@ def splitAlongPath(path,mesh,atol=0.0):
     p=mesh.maskedEdgeFrontWalk(mask=mask, frontinc=0)
     msplit=mesh.setProp(p)
     return msplit
+
 
 def drawResults(**res):
 
