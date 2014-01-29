@@ -37,7 +37,6 @@ _status = 'checked'
 _level = 'normal'
 _topics = ['FEA', 'curve', 'drawing']
 _techniques = ['external', 'viewport']
-_opengl2 = True
 
 from pyformex.gui.draw import *
 from pyformex.plugins.curve import *

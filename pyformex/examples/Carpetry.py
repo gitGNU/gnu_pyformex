@@ -29,12 +29,10 @@ creation of colored value plots on surfaces.
 """
 from __future__ import print_function
 
-
 _status = 'checked'
 _level = 'normal'
 _topics = ['mesh', 'illustration', 'surface']
 _techniques = ['color', 'random', 'image', 'movie', 'extrude']
-_opengl2 = True
 
 from pyformex.gui.draw import *
 from pyformex.plugins import trisurface, surface_menu

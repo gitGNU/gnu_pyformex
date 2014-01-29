@@ -71,7 +71,6 @@ _level = 'normal'
 _topics = ['illustration', 'game']
 _techniques = ['color', 'dialog', 'draw', 'persistence', 'random']
 _createdby = ['tpraet']
-_opengl2 = False
 
 from pyformex.gui.draw import *
 from pyformex.gui.viewport import *

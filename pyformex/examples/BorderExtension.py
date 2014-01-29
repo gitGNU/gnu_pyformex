@@ -34,7 +34,6 @@ _status = 'checked'
 _level = 'normal'
 _topics = ['surface']
 _techniques = ['extrude', 'borderfill', 'cut']
-_opengl2 = True
 
 from pyformex.gui.draw import *
 from pyformex import geomtools

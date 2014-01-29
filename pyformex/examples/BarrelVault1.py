@@ -31,7 +31,6 @@ _status = 'checked'
 _level = 'beginner'
 _topics = ['frame']
 _techniques = ['dialog']
-_opengl2 = True
 
 from pyformex.gui.draw import *
 

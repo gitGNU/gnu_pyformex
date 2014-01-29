@@ -31,8 +31,6 @@ _status = 'checked'
 _level = 'beginner'
 _topics = ['structure']
 _techniques = ['color', 'bump']
-_opengl2 = True
-_opengl2_comment = "Not enough light"
 
 from pyformex.gui.draw import *
 

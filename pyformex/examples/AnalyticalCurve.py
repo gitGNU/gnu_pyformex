@@ -32,7 +32,6 @@ _status = 'checked'
 _level = 'normal'
 _topics = ['curve']
 _techniques = ['function', 'extrude']
-_opengl2 = False
 
 
 from pyformex.gui.draw import *

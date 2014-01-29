@@ -32,7 +32,6 @@ _status = 'checked'
 _level = 'normal'
 _topics = ['mesh']
 _techniques = ['frontwalk']
-_opengl2 = True
 
 from pyformex.gui.draw import *
 

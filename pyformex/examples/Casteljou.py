@@ -52,7 +52,6 @@ _status = 'checked'
 _level = 'normal'
 _topics = ['geometry', 'curve']
 _techniques = ['pattern', 'delay']
-_opengl2 = True
 
 from pyformex.gui.draw import *
 from pyformex.plugins.curve import PolyLine

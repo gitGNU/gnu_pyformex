@@ -41,7 +41,6 @@ _status = 'checked'
 _level = 'beginner'
 _topics = ['illustration']
 _techniques = ['color', 'lime']
-_opengl2 = True
 
 from pyformex.gui.draw import *
 from pyformex.plugins.lima import lima

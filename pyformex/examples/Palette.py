@@ -32,7 +32,6 @@ _status = 'checked'
 _level = 'beginner'
 _topics = ['color']
 _techniques = ['palette', 'align']
-_opengl2 = True
 
 from pyformex.gui.draw import *
 

@@ -31,7 +31,6 @@ _status = 'checked'
 _level = 'normal'
 _topics = ['surface', 'gts']
 _techniques = ['boolean', 'intersection']
-_opengl2 = True
 
 from pyformex.gui.draw import *
 from pyformex.simple import cylinder

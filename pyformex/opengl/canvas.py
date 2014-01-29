@@ -1415,7 +1415,13 @@ class Canvas(object):
             print("PICKBUFFER: %s" % picked)
             self.picked.add(picked, key=i)
 
-        pf.debug("PICKBUFFER: %s" % self.picked, pf.DEBUG.DRAW)
+        #
+        # TODO: since we do not have the pick buffers in gl2
+        # we need to use another technique:
+        # - compute distance from camera
+        # - use the z-depth
+        #
+        ## pf.debug("PICKBUFFER: %s" % self.picked, pf.DEBUG.DRAW)
         ## if store_closest and len(buf) > 0:
         ##     w = buf[:,1].argmin()
         ##     self.closest_pick = (self.picked[w], buf[w,1])

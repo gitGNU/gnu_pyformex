@@ -31,10 +31,7 @@ _status = 'checked'
 _level = 'beginner'
 _topics = ['surface']
 _techniques = ['color']
-_opengl2 = True
-_opengl2_comments = """
-- Lighted models are darker (no front light)
-"""
+
 from pyformex.gui.draw import *
 
 if pf.options.opengl2:
