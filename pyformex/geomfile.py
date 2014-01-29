@@ -222,11 +222,11 @@ class GeometryFile(object):
                 nobj += self.writeGeometry(geom[name], name)
         elif isinstance(geom, list):
             for obj in geom:
-                if hasattr(obj, 'obj'):
-                    # This must be a WebGL object dict
-                    nobj += self.writeDict(obj)
-                else:
-                    nobj += self.writeGeometry(obj,sep=sep)
+                ## if hasattr(obj, 'obj'):
+                ##     # This must be a WebGL object dict
+                ##     nobj += self.writeDict(obj)
+                ## else:
+                nobj += self.writeGeometry(obj,sep=sep)
         else:
             nobj += self.writeGeometry(geom,name,sep)
 
@@ -301,44 +301,44 @@ class GeometryFile(object):
             self.writeData(F.prop, sep)
 
 
-    def writeDict(self,F,name=None,sep=None,objtype='Mesh'):
-        """Write a dict to a pyFormex geometry file.
+    ## def writeDict(self,F,name=None,sep=None,objtype='Mesh'):
+    ##     """Write a dict to a pyFormex geometry file.
 
-        This is equivalent to the Mesh write, but input
-        is a WebGL object dict
-        """
-        if objtype is None:
-            objtype = 'Mesh'
-        if sep is None:
-            sep = self.sep
-        color = ''
-        if hasattr(F, 'color'):
-            Fc = F.color
-            if isinstance(Fc, ndarray):
-                if Fc.shape == (3,):
-                    color = tuple(Fc)
-                elif Fc.shape == (F.nelems(), 3):
-                    color = 'element'
-                elif Fc.shape == (F.nelems(), F.nplex(), 3):
-                    color = 'vertex'
-                else:
-                    raise ValueError("Incorrect color shape: %s" % Fc.shape)
+    ##     This is equivalent to the Mesh write, but input
+    ##     is a WebGL object dict
+    ##     """
+    ##     if objtype is None:
+    ##         objtype = 'Mesh'
+    ##     if sep is None:
+    ##         sep = self.sep
+    ##     color = ''
+    ##     if hasattr(F, 'color'):
+    ##         Fc = F.color
+    ##         if isinstance(Fc, ndarray):
+    ##             if Fc.shape == (3,):
+    ##                 color = tuple(Fc)
+    ##             elif Fc.shape == (F.nelems(), 3):
+    ##                 color = 'element'
+    ##             elif Fc.shape == (F.nelems(), F.nplex(), 3):
+    ##                 color = 'vertex'
+    ##             else:
+    ##                 raise ValueError("Incorrect color shape: %s" % Fc.shape)
 
-        # Now take the object
-        F = F.obj
-        hasprop = F.prop is not None
-        hasnorm = hasattr(F, 'normals') and isinstance(F.normals, ndarray) and F.normals.shape == (F.nelems(), F.nplex(), 3)
-        head = "# objtype='%s'; ncoords=%s; nelems=%s; nplex=%s; props=%s; eltype='%s'; normals=%s; color=%s; sep='%s'" % (objtype, F.ncoords(), F.nelems(), F.nplex(), hasprop, F.elName(), hasnorm, repr(color), sep)
-        if name:
-            head += "; name='%s'" % name
-        self.fil.write(head+'\n')
-        self.writeData(F.coords, sep)
-        self.writeData(F.elems, sep)
-        if hasprop:
-            self.writeData(F.prop, sep)
-        if hasnorm:
-            self.writeData(F.normals, sep)
-        return 1
+    ##     # Now take the object
+    ##     F = F.obj
+    ##     hasprop = F.prop is not None
+    ##     hasnorm = hasattr(F, 'normals') and isinstance(F.normals, ndarray) and F.normals.shape == (F.nelems(), F.nplex(), 3)
+    ##     head = "# objtype='%s'; ncoords=%s; nelems=%s; nplex=%s; props=%s; eltype='%s'; normals=%s; color=%s; sep='%s'" % (objtype, F.ncoords(), F.nelems(), F.nplex(), hasprop, F.elName(), hasnorm, repr(color), sep)
+    ##     if name:
+    ##         head += "; name='%s'" % name
+    ##     self.fil.write(head+'\n')
+    ##     self.writeData(F.coords, sep)
+    ##     self.writeData(F.elems, sep)
+    ##     if hasprop:
+    ##         self.writeData(F.prop, sep)
+    ##     if hasnorm:
+    ##         self.writeData(F.normals, sep)
+    ##     return 1
 
 
     def writeMesh(self,F,name=None,sep=None,objtype='Mesh'):
@@ -360,18 +360,21 @@ class GeometryFile(object):
         hasnorm = hasattr(F, 'normals') and isinstance(F.normals, ndarray) and F.normals.shape == (F.nelems(), F.nplex(), 3)
         color = ''
         Fc = F.attrib['color']
+        print("FOUND COLOR " +str(Fc))
         if Fc is not None:
             if isinstance(Fc,(str,unicode)):
                 color = Fc
-            elif isinstance(Fc, ndarray):
+            else:
+                Fc = checkArray(Fc,kind='f')
                 if Fc.shape == (3,):
-                    color = str(Fc)
+                    color = tuple(Fc)
                 elif Fc.shape == (F.nelems(), 3):
                     color = 'element'
                 elif Fc.shape == (F.nelems(), F.nplex(), 3):
                     color = 'vertex'
                 else:
                     raise ValueError("Incorrect color shape: %s" % Fc.shape)
+        print("WRITE " +str(color))
 
         head = "# objtype='%s'; ncoords=%s; nelems=%s; nplex=%s; props=%s; eltype='%s'; normals=%s; color=%r; sep='%s'" % (objtype, F.ncoords(), F.nelems(), F.nplex(), hasprop, F.elName(), hasnorm, color, sep)
         if name:
@@ -591,7 +594,7 @@ class GeometryFile(object):
         self.header_done = True
 
 
-    def readGeometry(self,objtype='Formex',name=None,nelems=None,ncoords=None,nplex=None,props=None,eltype=None,normals=None,closed=None,degree=None,nknots=None,sep=None,**kargs):
+    def readGeometry(self,objtype='Formex',name=None,nelems=None,ncoords=None,nplex=None,props=None,eltype=None,normals=None,color=None,closed=None,degree=None,nknots=None,sep=None,**kargs):
         """Read a geometry record of a pyFormex geometry file.
 
         If an object was succesfully read, it is set in self.geometry
@@ -615,11 +618,14 @@ class GeometryFile(object):
             print("Can not (yet) read objects of type %s from geometry file: skipping" % objtype)
 
         if obj is not None:
-            try:
-                color = checkArray(color, (3,), 'f')
-                obj.color = color
-            except:
-                pass
+            if color is not None:
+                if not isinstance(color,str):
+                    try:
+                        color = checkArray(color, (3,), 'f')
+                        color = tuple(color)
+                    except:
+                        pass
+                obj.attrib(color=color)
 
             # store the geometry object, and remember as last
             if name is None:
