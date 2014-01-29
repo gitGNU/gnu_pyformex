@@ -30,7 +30,7 @@ ways:
 
 - all on top of each other
 - in a series one above the other
-- as radii of an n-pointed star  
+- as radii of an n-pointed star
 
 The actual draw method is choosen randomly. Execute again to see another one.
 """
@@ -41,6 +41,7 @@ _status = 'checked'
 _level = 'beginner'
 _topics = ['illustration']
 _techniques = ['color', 'lime']
+_opengl2 = True
 
 from pyformex.gui.draw import *
 from pyformex.plugins.lima import lima
@@ -60,9 +61,9 @@ def run():
     # scale each Formex individually to obtain same length
     sc = [ 3**(-i) for i in range(n) ]
     sz = sc[0]/3.
-    F = [F[i].scale(sc[i]) for i in range(n)] 
+    F = [F[i].scale(sc[i]) for i in range(n)]
 
-    # display all lines in one (randomly choosen) of three ways 
+    # display all lines in one (randomly choosen) of three ways
     mode = random.randint(3)
     if mode == 0:
         # all on top of each other

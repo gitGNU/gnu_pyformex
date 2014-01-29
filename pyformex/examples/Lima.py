@@ -47,7 +47,7 @@ from pyformex.gui.draw import *
 from pyformex.plugins import lima, turtle
 from pyformex.odict import OrderedDict
 
-# return standard Turtle rules 
+# return standard Turtle rules
 def turtlecmds(rules={}):
     """Return standard Turtle rules, extended and/or overriden by arg.
 
@@ -57,7 +57,7 @@ def turtlecmds(rules={}):
     d = { 'F' : 'fd();', 'G' : 'fd();', '+' : 'ro(90);', '-' : 'ro(-90);', '*' : 'ro(60);', '/' : 'ro(-60);', 'J':'mv();','K':'mv();', 'X':'', 'Y':'', '[':'push();', ']':'pop();' }
     d.update(rules)
     return d
-    
+
 
 # here are some nice lima generations.
 # Each tuple holds an axiom, grow rules, generations and turtle rules
@@ -94,17 +94,13 @@ limas = OrderedDict([
     # (rule25', [ "F", {"F":"F-F++F-F"}, 4, turtlecmds() ]),
     ])
 
-def show(i,L,turtle_cmds,clear=True,text=True,colors=True):
+def show(i,L,turtle_cmds,clear=True,text=True,color=0,lw=1.):
     """Show the current production of the Lima L."""
     global FA, TA
     turtle_script = L.translate(turtle_cmds)
     coords = turtle.play("reset();" + turtle_script)
     if len(coords) > 0:
-        if colors:
-            prop = i
-        else:
-            prop = 0
-        FB = draw(Formex(coords, prop))
+        FB = draw(Formex(coords),color=color,linewidth=lw)
         if clear:
             undraw(FA)
         FA = FB
@@ -112,7 +108,7 @@ def show(i,L,turtle_cmds,clear=True,text=True,colors=True):
             TB = drawText("Generation %d"%i, 40, 40, size=24)
             undecorate(TA)
             TA = TB
-        
+
 
 def grow(rule='',clearing=True,text=True,ngen=-1,colors=True,viewports=False):
     """Show subsequent Lima productions."""
@@ -123,7 +119,7 @@ def grow(rule='',clearing=True,text=True,ngen=-1,colors=True,viewports=False):
     clear()
     if not rule in limas.keys():
         return
-    
+
     if text:
         drawText(rule, 40, 60, size=24)
 
@@ -131,20 +127,21 @@ def grow(rule='',clearing=True,text=True,ngen=-1,colors=True,viewports=False):
     if ngen >= 0:
         # respect the requested number of generations
         g = ngen
-        
+
     if viewports:
         layout(g+1, ncols=(g+2)//2)
 
     L = lima.Lima(a, r)
     # show the axiom
-    show(0, L, t, clearing, text)
+    show(0, L, t, clearing, text, color=0)
     # show g generations
     for i in range(g):
         if viewports:
             viewport(i+1)
             clear()
         L.grow()
-        show(i+1, L, t, clearing, text)
+        linewidth((g-i)*1.0)
+        show(i+1, L, t, clearing, text, color=i if colors else 0,lw=(g-i)*1.0)
 
 
 def setDefaultGenerations(rule):
@@ -154,7 +151,7 @@ def setDefaultGenerations(rule):
         d = currentDialog()
         if d:
             d.updateData({'ngen':ngen})
-        
+
 
 def run():
     layout(1)

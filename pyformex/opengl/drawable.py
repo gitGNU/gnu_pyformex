@@ -178,6 +178,9 @@ class Drawable(Attributes):
             pf.debug("POLYGON OFFSET", pf.DEBUG.DRAW)
             GL.glPolygonOffset(1.0, 1.0)
 
+        if self.linewidth:
+            GL.glLineWidth(self.linewidth)
+
         renderer.shader.loadUniforms(self)
 
         self.vbo.bind()
