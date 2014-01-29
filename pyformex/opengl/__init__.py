@@ -71,7 +71,8 @@ def draw(F,
          **kargs):
     """New draw function for OpenGL2"""
 
-    kargs['clear_'] = clear
+    if clear is not None:
+        kargs['clear_'] = clear
 
     draw_options = [ 'silent','shrink','clear_','view','highlight','bbox',
                      'allviews' ]
@@ -99,7 +100,7 @@ def draw(F,
 
     # Shrink the objects if requested
     if opts.shrink:
-        FL = [ _shrink(F, opts.shrink_factor) for F in FL ]
+        FL = [ gui.draw._shrink(F, opts.shrink_factor) for F in FL ]
 
     ## # Execute the drawlock wait before doing first canvas change
     pf.GUI.drawlock.wait()

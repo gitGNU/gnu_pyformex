@@ -348,6 +348,11 @@ class GeomActor(Attributes):
         # Acknowledge all object attributes and passed parameters
         self.update(obj.attrib)
         self.update(kargs)
+
+        # copy marksize as pointsize for gl2 shader
+        if 'marksize' in self:
+            self['pointsize'] = self['marksize']
+
         if self.name is None:
             self.name = GeomActor.defaultname.next()
 

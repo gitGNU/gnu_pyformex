@@ -17,6 +17,10 @@ Missing GL2 engine functionality
 - Texture drawing is not yet implemented
 
 
+Minor/possible improvements
+---------------------------
+- Should 'marksize' and 'pointsize' be merged?
+
 Comparison of examples
 ----------------------
 Ideally, all examples should run and produce the same or better results.
@@ -51,15 +55,33 @@ BezierCurve
 - OK
 
 BezierSpline
-...........
-- marksize not honored
+............
+- OK
 
 Boolean
+.......
+- OK
+
 BorderExtension
+...............
+- OK
+
 Carpetry
+........
+- default zoom is closer: better
+
 Casteljou
+.........
+- OK
+
 Circle
+......
+- ends with other orientation (after flyalong)
+
 CircumCircle
+.........
+- OK
+
 Clip
 Clock
 ColorImage

@@ -91,7 +91,7 @@ txt = [ 'First node has x between 1.5 and 3.5',
 
 def run():
     resetAll()
-    setDrawOptions({'clear':True})
+    setDrawOptions({'clear':True, 'shrink':True})
     delay(1)
     draw(F)
 

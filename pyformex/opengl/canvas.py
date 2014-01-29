@@ -638,8 +638,8 @@ class Canvas(object):
     def resetOptions(self):
         """Reset the Drawing options to some defaults"""
         self.drawoptions = dict(
-            view = None,       # Keep the current camera angles
-            bbox = 'auto',     # Automatically zoom on the drawed object
+            view = None,        # Keep the current camera angles
+            bbox = 'auto',      # Automatically zoom on the drawed object
             clear_ = False,     # Clear on each drawing action
             shrink = False,
             shrink_factor = 0.8,
@@ -652,12 +652,12 @@ class Canvas(object):
     def setOptions(self, d):
         """Set the Drawing options to some values"""
 
-        # BEWARE
-        # We rename the 'clear' to 'clear_', because we use a Dict
-        # to store these (in __init__.draw) and Dict does not allow
-        # a 'clear' key.
+        ## # BEWARE
+        ## # We rename the 'clear' to 'clear_', because we use a Dict
+        ## # to store these (in __init__.draw) and Dict does not allow
+        ## # a 'clear' key.
 
-        if 'clear' in d:
+        if 'clear' in d and isinstance(d['clear'],bool):
             d['clear_'] = d['clear']
             del d['clear']
         self.drawoptions.update(d)
