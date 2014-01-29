@@ -339,6 +339,14 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
                 if verbose:
                     print('Saved cells connectivity varray')
 
+    # getting Strips
+    if vpd.GetStrips().GetData().GetNumberOfTuples():
+        utils.warn("There are strips in the VTK object (not yet supported in pyFormex). I will use vtkTriangleFilter.")
+        tf = vtk.vtkTriangleFilter()
+        tf.SetInput(vpd)
+        tf.Update()
+        vpd=tf.GetOutput()
+        
     # getting Polygons
     if vtkdtype not in [4]: # this list need to be updated according to the data type
         if  vpd.GetPolys().GetData().GetNumberOfTuples():
@@ -352,7 +360,7 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
                 polys =  Varray(asarray(v2n(vpd.GetPolys().GetData())))#vtkCellArray to varray
                 if verbose:
                     print('Saved polys connectivity varray')
-
+    
     # getting Lines
     if vtkdtype not in [4]: # this list need to be updated according to the data type
         if  vpd.GetLines().GetData().GetNumberOfTuples():
