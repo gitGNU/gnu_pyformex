@@ -200,41 +200,4 @@ _set_actors()
 
 #### Set the WebGL format_actor method
 
-def _set_webgl():
-
-    def format_actor (self, actor):
-        """Export an actor in XTK Javascript format."""
-        s = ""
-        for attr in actor:
-            name = attr.name
-            s += "var %s = new X.mesh();\n" % name
-            if len(attr.children) > 0:
-                s += "%s.children = new Array();\n" % name
-                for child in attr.children:
-                    s += "%s.children.push(%s);\n" % (name, child)
-            if attr.file is not None:
-                s += "%s.file = '%s';\n" % (name, attr.file)
-            if attr.caption is not None:
-                s += "%s.caption = '%s';\n" % (name, attr.caption)
-            if attr.useObjectColor and attr.color is not None:
-               s += "%s.color = %s;\n" % (name, list(attr.color))
-            if attr.alpha is not None:
-                s += "%s.opacity = %s;\n" % (name, attr.alpha)
-            if attr.lighting is not None:
-                s += "%s.lighting = %s;\n" % (name, str(bool(attr.lighting)).lower())
-            if attr.cullface is not None:
-                s += "%s.cullface = '%s';\n" % (name, attr.cullface)
-            if attr.magicmode is not None:
-                s += "%s.magicmode = '%s';\n" % (name, str(bool(attr.magicmode)).lower())
-            if len(attr.children) == 0:
-                s += "r.add(%s);\n" % name
-            s += "\n"
-        return s
-
-    from pyformex.plugins import webgl
-    webgl.WebGL.format_actor = format_actor
-
-
-_set_webgl()
-
 # End

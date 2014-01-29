@@ -360,7 +360,6 @@ class GeometryFile(object):
         hasnorm = hasattr(F, 'normals') and isinstance(F.normals, ndarray) and F.normals.shape == (F.nelems(), F.nplex(), 3)
         color = ''
         Fc = F.attrib['color']
-        print("FOUND COLOR " +str(Fc))
         if Fc is not None:
             if isinstance(Fc,(str,unicode)):
                 color = Fc
@@ -374,7 +373,6 @@ class GeometryFile(object):
                     color = 'vertex'
                 else:
                     raise ValueError("Incorrect color shape: %s" % Fc.shape)
-        print("WRITE " +str(color))
 
         head = "# objtype='%s'; ncoords=%s; nelems=%s; nplex=%s; props=%s; eltype='%s'; normals=%s; color=%r; sep='%s'" % (objtype, F.ncoords(), F.nelems(), F.nplex(), hasprop, F.elName(), hasnorm, color, sep)
         if name:

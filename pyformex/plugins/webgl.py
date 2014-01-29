@@ -209,12 +209,6 @@ class WebGL(object):
         self.pgfheader = pgfheader
         self.dataformat = dataformat
         self.scenes = []
-        ## existing = utils.listTree('.', listdirs=False, sorted=True, includefiles=[
-        ##     '%s\.html' % self.name,
-        ##     '%s\.js' % self.name,
-        ##     '%s_.*\.pgf' % self.name,
-        ##     '%s_.*\.stl' % self.name,
-        ##     ])
         if cleanup:
             existing = glob.glob(self.name+'.html') + glob.glob(self.name+'.js') + glob.glob(self.name+'_*.pgf*') + glob.glob(self.name+'_*.stl*')
             print("Removing existing files: %s" % existing)
@@ -222,18 +216,18 @@ class WebGL(object):
                 os.remove(f)
 
 
-    def objdict(self,clas=None):
-        """Return a dict with the objects in this model.
+    ## def objdict(self,clas=None):
+    ##     """Return a dict with the objects in this model.
 
-        Returns a dict with the name:object pairs in the model. Objects
-        that have no name are disregarded.
-        """
-        obj = [ o for o in self if hasattr(o, 'name') ]
-        if clas:
-            obj = [ o for o in obj if isinstance(o, clas) ]
-        print("OBJDICT: %s" % len(obj))
-        print([type(o) for o in obj])
-        return obj
+    ##     Returns a dict with the name:object pairs in the model. Objects
+    ##     that have no name are disregarded.
+    ##     """
+    ##     obj = [ o for o in self if hasattr(o, 'name') ]
+    ##     if clas:
+    ##         obj = [ o for o in obj if isinstance(o, clas) ]
+    ##     print("OBJDICT: %s" % len(obj))
+    ##     print([type(o) for o in obj])
+    ##     return obj
 
 
     def addScene(self,name=None,camera=True):
@@ -310,7 +304,7 @@ class WebGL(object):
                     obj.setNormals(normals[elems])
                 if attrib.cbo is not None:
                     color = np.asarray(attrib.cbo).reshape(-1, 3)
-                    obj.color = color[elems]
+                    obj.attrib(color=color[elems])
                 Geometry.write(obj, attrib.file, '')
 
             # add missing attributes
@@ -390,24 +384,37 @@ class WebGL(object):
         self._camera = Dict(kargs)
 
 
-    def format_actor(self, obj):
-        """Export an object in XTK Javascript format"""
-        if hasattr(obj, 'name'):
-            name = obj.name
-            s = "var %s = new X.mesh();\n" % name
-        else:
-            return ''
-        if hasattr(obj, 'file'):
-            s += "%s.file = '%s';\n" % (name, obj.file)
-        if hasattr(obj, 'caption'):
-            s += "%s.caption = '%s';\n" % (name, obj.caption)
-        if hasattr(obj, 'color'):
-            s += "%s.color = %s;\n" % (name, list(obj.color))
-        if hasattr(obj, 'alpha'):
-            s += "%s.opacity = %s;\n" % (name, obj.alpha)
-        if hasattr(obj, 'magicmode'):
-            s += "%s.magicmode = '%s';\n" % (name, str(bool(obj.magicmode)))
-        s += "r.add(%s);\n" % name
+    def format_actor (self, actor):
+        """Export an actor in XTK Javascript format."""
+        s = ""
+        for attr in actor:
+            name = attr.name
+            s += "var %s = new X.mesh();\n" % name
+            if len(attr.children) > 0:
+                s += "%s.children = new Array();\n" % name
+                for child in attr.children:
+                    s += "%s.children.push(%s);\n" % (name, child)
+            if attr.file is not None:
+                s += "%s.file = '%s';\n" % (name, attr.file)
+            if attr.caption is not None:
+                s += "%s.caption = '%s';\n" % (name, attr.caption)
+            if attr.useObjectColor == 2 and attr.drawface == -1:
+                # we have back faces with different color
+                s += "%s.color = %s;\n" % (name, list(attr.objectBkColor))
+            elif attr.useObjectColor > 0 and attr.objectColor is not None:
+                # front faces or ack faces same color as front
+                s += "%s.color = %s;\n" % (name, list(attr.objectColor))
+            if attr.alpha is not None:
+                s += "%s.opacity = %s;\n" % (name, attr.alpha)
+            if attr.lighting is not None:
+                s += "%s.lighting = %s;\n" % (name, str(bool(attr.lighting)).lower())
+            if attr.cullface is not None:
+                s += "%s.cullface = '%s';\n" % (name, attr.cullface)
+            if attr.magicmode is not None:
+                s += "%s.magicmode = '%s';\n" % (name, str(bool(attr.magicmode)).lower())
+            if len(attr.children) == 0:
+                s += "r.add(%s);\n" % name
+            s += "\n"
         return s
 
 
