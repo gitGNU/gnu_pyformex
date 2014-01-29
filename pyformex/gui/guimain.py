@@ -38,7 +38,7 @@ utils.checkModule('pyopengl', fatal=True)
 
 from pyformex.gui import (
     signals, QtCore, QtGui,
-    menu, cameraMenu, fileMenu, appMenu, prefMenu, viewportMenu, 
+    menu, cameraMenu, fileMenu, appMenu, prefMenu, viewportMenu,
     toolbar, canvas, viewport, guifunc, draw, widgets, drawlock, views,
     )
 
@@ -300,7 +300,8 @@ class Gui(QtGui.QMainWindow):
         self.camerabar = self.updateToolBar('camerabar', 'Camera ToolBar')
         self.modebar = self.updateToolBar('modebar', 'RenderMode ToolBar')
         self.viewbar = self.updateToolBar('viewbar', 'Views ToolBar')
-        self.toolbars = [self.camerabar, self.modebar, self.viewbar]
+        self.toolbars = [self.toolbar, self.camerabar, self.modebar, self.viewbar]
+        self.enableToolbars(False)
 
         ###############  CAMERA menu and toolbar #############
         if self.camerabar:
@@ -973,7 +974,7 @@ class Gui(QtGui.QMainWindow):
         This mode is activated by pressing the F5 key. A second F5 press
         will revert to normal display mode.
         """
-        hide = [self.board, self.statusbar, self.toolbar, self.menu] + self.toolbars
+        hide = [self.board, self.statusbar, self.menu] + self.toolbars
         if self.fullscreen:
             # already fullscreen: go back to normal mode
             for w in hide:
@@ -990,6 +991,11 @@ class Gui(QtGui.QMainWindow):
         self.fullscreen = not self.fullscreen
         pf.app.processEvents()
 
+
+    def enableToolbars(self,enable=True):
+        """En/disable the toolbars."""
+        for tb in self.toolbars:
+            tb.setEnabled(enable)
 
 
 def exitDialog():
@@ -1469,6 +1475,13 @@ pyFormex comes with ABSOLUTELY NO WARRANTY. This is free software, and you are w
         P = utils.system(pf.cfg['fortune'])
         if P.sta == 0:
             draw.showInfo(P.out)
+
+    # display startup warning
+    if pf.cfg['gui/startup_warning']:
+        utils.warn(pf.cfg['gui/startup_warning'])
+
+    # Enable the toolbars
+    pf.GUI.enableToolbars()
 
     #pf.app.setQuitOnLastWindowClosed(False)
     pf.debug("ProcessEvents", pf.DEBUG.GUI)

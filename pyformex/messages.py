@@ -70,7 +70,18 @@ You can convert your scripts automatically with the command::
 warn_viewport_linking = "Linking viewports is an experimental feature and is not fully functional yet."
 
 _future_deprecation = "This functionality is deprecated and will probably be removed in future, unless you explain to the developers why they should retain it."
+warn_default_gl = """..
 
+GL2 now default
+---------------
+The new GL2 rendering engine has been made the default. While there are some issues remaining with the new engine, it is already quite usable for most tasks, and provides a lot of new features and improvements over the old engine.
+
+However, if you find some rendering not working properly, you can help by filing a bug report at https://savannah.nongnu.org/bugs/?func=additem&group=pyformex.
+
+You can still get the old engine by using a command line option::
+
+  pyformex --gl1
+"""
 warn_drawImage_changed = "The `drawImage` function has changed: it now draws an image in 2D on the canvas. Use `drawImage3D` to get the old behavior of drawing a 3D grid colored like the image."
 warn_dxf_export = "Objects of type '%s' can not be exported to DXF file"
 warn_dxf_noparser = """..

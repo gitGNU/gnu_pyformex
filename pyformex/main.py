@@ -364,11 +364,11 @@ def run(argv=[]):
        help="Use the PyQt4 bindings for QT4 libraries",
        ),
     MO("--gl1",
-       action="store_false", dest="opengl2", default=False,
+       action="store_false", dest="opengl2", default=None,
        help="Use the old OpenGL rendering engine. This is almost identical to the engine in the old 0.9 branch, but does not provide some new and advanced features of the new enging. To ease the transition after the branch switching, the old engine is currently the default.",
        ),
     MO("--gl2",
-       action="store_true", dest="opengl2", default=False,
+       action="store_true", dest="opengl2", default=None,
        help="Use the new OpenGL rendering engine. This will become the default when it becomes fully functional.",
        ),
     MO("--unicode",
@@ -610,9 +610,15 @@ def run(argv=[]):
             except:
                 print("Error while executing %s, we ignore it and continue" % source_clean)
 
-    # Set future version for development branch
+    if pf.options.opengl2 is None:
+        pf.options.opengl2 = True
+    else:
+        pf.cfg['gui/startup_warning'] = None
+
     if pf.options.opengl2:
         pf.__version__ += " (GL2)"
+    else:
+        pf.__version__ += " (old GL1 engine)"
 
 
     ###### We have the config and options all set up ############
