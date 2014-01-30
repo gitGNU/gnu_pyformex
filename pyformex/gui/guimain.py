@@ -975,6 +975,8 @@ class Gui(QtGui.QMainWindow):
         will revert to normal display mode.
         """
         hide = [self.board, self.statusbar, self.menu] + self.toolbars
+        if self.console:
+            hide.append(self.console)
         if self.fullscreen:
             # already fullscreen: go back to normal mode
             for w in hide:
