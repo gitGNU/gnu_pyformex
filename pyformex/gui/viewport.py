@@ -346,6 +346,8 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
             'point': self.pick_points,
             'number': self.pick_numbers,
             }
+        self.picked = None
+        self.closest_pick = None
         self.pickable = None
         self.drawmode = None
         self.drawing_mode = None
@@ -602,6 +604,10 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
             if not self.selection_canceled:
                 # selection by mouse_picking
                 self.pick_func[self.selection_mode]()
+                print("PICKED")
+                print(self.picked)
+                print("CLOSEST PICK")
+                print(self.closest_pick)
                 if len(self.picked) != 0:
                     if self.selection_filter is None:
                         if self.mod == NONE:

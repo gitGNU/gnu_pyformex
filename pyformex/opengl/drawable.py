@@ -754,13 +754,48 @@ class GeomActor(Attributes):
             obj.render(renderer)
 
 
-    def inside(self,camera,rect=None,mode='actor',sel='any'):
-        """Find the elems whose coords fall inside rect of camera
+    def inside(self,camera,rect=None,mode='actor',sel='any',return_depth=False):
+        """Test whether the actor is rendered inside rect of camera.
+
+        Parameters:
+
+        - `camera`: a Camera that has been set up properly. Usually it
+          will be the current canvas camera, pf.canvas.camera.
+        - `rect`: a tuple of 4 values (x,y,w,h) specifying
+          a rectangular subregion of the camera's viewport. The default
+          is the full camera viewport.
+        - `mode`: the testing mode. Currently defined modes:
+
+          - 'actor' (default): test if the actor is (partly) inside
+          - 'element': test which elements of the actor are inside
+          - 'point': test which vertices of the actor are inside
+
+        - `sel`: either 'all' or 'any'. This is not used with 'point' mode.
+          It specifies whether all or any of the points of the actor,
+          element, ... should be inside the rectangle in order to be flagged
+          as a[positive.
+
+        The return value depends on the mode:
+
+        - 'actor': True or False
+        - 'element': the indices of the elements inside
+        - 'point': the indices of the vertices inside
+
+        If `return_depth` is True, a second value is returned, with the z-depth
+        value of all the objects inside.
 
         """
-        ins = camera.inside(self.coords, rect)
+        ins = camera.inside(self.coords, rect, return_depth)
+        if return_depth:
+            ins,depth = ins
+            print("INS,DEPTHS",ins,depth)
+
         if mode == 'point':
-            return where(ins)[0]
+            ok = where(ins)[0]
+            if return_depth:
+                return ok, depth[ok]
+            else:
+                return ok
 
         if mode == 'element':
             ins = ins[self.elems]

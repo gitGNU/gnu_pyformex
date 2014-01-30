@@ -1404,27 +1404,29 @@ class Canvas(object):
         """
         pf.debug('PICK_PARTS %s %s' % (obj_type, store_closest), pf.DEBUG.DRAW)
 
+        # This allows us to set a list of pickable actors.
+        # Or should we add a pickable attribute to actors instead?
         if self.pickable is None:
             pickable = self.actors
         else:
             pickable = self.pickable
 
         self.picked = Collection(self.selection_mode)
+        self.closest_pick = None
         for i, a in enumerate(pickable):
-            picked = a.inside(self.camera, rect=self.pick_window[:4], mode=self.selection_mode, sel='any')
-            print("PICKBUFFER: %s" % picked)
+            picked = a.inside(self.camera, rect=self.pick_window[:4], mode=self.selection_mode, sel='any', return_depth=store_closest)
+            print("PICK_PARTS %s" % self.selection_mode)
+            print(picked)
+            if store_closest:
+                picked,zdepth = picked
             self.picked.add(picked, key=i)
 
-        #
-        # TODO: since we do not have the pick buffers in gl2
-        # we need to use another technique:
-        # - compute distance from camera
-        # - use the z-depth
-        #
-        ## pf.debug("PICKBUFFER: %s" % self.picked, pf.DEBUG.DRAW)
-        ## if store_closest and len(buf) > 0:
-        ##     w = buf[:,1].argmin()
-        ##     self.closest_pick = (self.picked[w], buf[w,1])
+            if store_closest and len(picked) > 0:
+                w = zdepth.argmin()
+                print("PICK_PARTS CLOSEST: %s" % w)
+                if self.closest_pick is None or zdepth[w] < self.closest_pick[2]:
+                    self.closest_pick = ([i,w],zdepth[w])
+                print("CLOSEST_PICK: " + str(self.closest_pick))
 
 
     def pick_elements(self):

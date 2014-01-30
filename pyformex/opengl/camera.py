@@ -1060,17 +1060,20 @@ class Camera(object):
         - `rect`: optional, a tuple of 4 values (x,y,w,h) specifying
           a rectangular subregion of the camera's viewport. The default
           is the full camera viewport.
+        - `return_depth`: if True, also returns the the z-depth of the
+          points.
 
         Returns a boolean array with value 1 (True) for the points that
         are projected inside the rectangular are of the camera.
+        If `return_depth` is True, a second array with the z-depth value
+        of all the points is returned.
         """
         ndc = self.toNDC(x, rect)
+        # TODO: WHY THE abs ?????
+        xy = ndc[:, :2]
+        inside = ( xy >= -1 ).all(axis=-1) * ( xy <= 1 ).all(axis=-1)
         if return_depth:
-            depth = ndc[:, 2].min(axis=-1)
-        ndc = abs(ndc[:, :2])
-        inside = ( ndc >= -1 ).all(axis=-1) * ( ndc <= 1 ).all(axis=-1)
-        if return_depth:
-            return inside, depth
+            return inside, ndc[:, 2]
         else:
             return inside
 

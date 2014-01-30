@@ -97,7 +97,7 @@ class Collection(object):
         separately, or a default value will be used.
 
         data can also be another Collection, if it has the same object
-        typ.
+        type.
         """
         if isinstance(data, Collection):
             if data.obj_type == self.obj_type:
