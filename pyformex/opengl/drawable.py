@@ -555,7 +555,7 @@ class GeomActor(Attributes):
 
         The esel selects the elements to be used (default all).
 
-        The nsel selects (psossibly multiple) parts from eacht element.
+        The nsel selects (possibly multiple) parts from each element.
         The selector is 2D (nsubelems, nsubplex). It is applied on all
         selected elements
 
@@ -577,7 +577,7 @@ class GeomActor(Attributes):
     def _addFaces(self, renderer):
         """Draw the elems"""
         #print("ADDFACES %s" % self.faces)
-        elems = self.subElems(self.faces)
+        elems = self.subElems(nsel=self.faces)
 
         if (self.eltype is not None and self.eltype.ndim >= 2) or (self.eltype is None and self.object.nplex() >= 3):
             # Drawing triangles
@@ -617,7 +617,7 @@ class GeomActor(Attributes):
         """Draw the edges"""
         #print("ADDEDGES %s" % self.edges)
         if self.edges is not None:
-            elems = self.subElems(self.edges)
+            elems = self.subElems(nsel=self.edges)
             #if elems is not None:
                 #print("ADDEDGES SIZE %s" % (elems.shape,))
             self.drawable.append(Drawable(self, subelems=elems, name=self.name+"_edges", lighting=False))
@@ -631,7 +631,7 @@ class GeomActor(Attributes):
             if wiremode == 1:
                 # all edges:
                 #print("ADDWIRES %s" % self.edges)
-                elems = self.subElems(self.edges)
+                elems = self.subElems(nsel=self.edges)
             elif wiremode == 2:
                 # border edges
                 #print("SELF.ELEMS",self.elems)
@@ -678,7 +678,7 @@ class GeomActor(Attributes):
         """Add a highlight for the selected elements. Default is all."""
         self.removeHighlight()
         print("ESEL",sel)
-        elems = self.subElems(esel=sel)
+        elems = self.subElems(nsel=self.faces,esel=sel)
         print("ELEMS",elems)
         self._highlight = Drawable(self, subelems=elems, name=self.name+"_highlight", linewidth=10, lighting=False, color=array(yellow), opak=True)
         # Put at the front to make visible
