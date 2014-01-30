@@ -1425,7 +1425,7 @@ class Canvas(object):
                 w = zdepth.argmin()
                 print("PICK_PARTS CLOSEST: %s" % w)
                 if self.closest_pick is None or zdepth[w] < self.closest_pick[2]:
-                    self.closest_pick = ([i,w],zdepth[w])
+                    self.closest_pick = ([i,picked[w]],zdepth[w])
                 print("CLOSEST_PICK: " + str(self.closest_pick))
 
 
