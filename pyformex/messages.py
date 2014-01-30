@@ -159,4 +159,7 @@ depr_avgNodalScalarOnAdjacentNodes = "avgNodalScalarOnAdjacentNodes is deprecate
 depr_connectionSteps1 = "connectionSteps is deprecated and has been removed. Use frontWalk instead. See the FrontWalk example: walk 3 gives an equivalent result, though you might prefer the simpler solution of walk 2."
 depr_vtk_readVTP = "readVTP is deprecated. Use readVTKObject instead."
 
+VTK_strips = "There are strips in the VTK object (not yet supported in pyFormex). I will convert it to triangles."
+
+
 # End

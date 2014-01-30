@@ -342,9 +342,9 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
     # getting Strips
     if vpd.GetStrips().GetData().GetNumberOfTuples():
         if verbose:
-            utils.warn("There are strips in the VTK object (not yet supported in pyFormex). I will convert it to triangles.")
+            utils.warn("VTK_strips")
         vpd = convertVPD2Triangles(vpd)
-        
+
     # getting Polygons
     if vtkdtype not in [4]: # this list need to be updated according to the data type
         if  vpd.GetPolys().GetData().GetNumberOfTuples():
@@ -358,7 +358,7 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
                 polys =  Varray(asarray(v2n(vpd.GetPolys().GetData())))#vtkCellArray to varray
                 if verbose:
                     print('Saved polys connectivity varray')
-    
+
     # getting Lines
     if vtkdtype not in [4]: # this list need to be updated according to the data type
         if  vpd.GetLines().GetData().GetNumberOfTuples():
@@ -701,13 +701,13 @@ def _vtkCutter(self,vtkif):
 
     - `mesh`: a Mesh.
     - `vtkif`: a vtk implicit function.
-    
+
     Returns a mesh of points if self is a line2 mesh,
     a mesh of lines if self is a surface tri3 or quad4 mesh,
     a triangular mesh if self is tet4 or hex8 mesh.
     If there is no intersection returns None.
     This functions should not be used by the user.
-    VTK implicit functions are listed here:    
+    VTK implicit functions are listed here:
     http://www.vtk.org/doc/nightly/html/classvtkImplicitFunction.html
     """
     from vtk import vtkCutter
@@ -735,7 +735,7 @@ def vtkCutWithPlane(self,p,n):
 
     - `mesh`: a Mesh.
     - `p`, `n`: a point and normal vector defining the cutting plane.
-    
+
     Returns a mesh of points if self is a line2 mesh,
     a mesh of lines if self is a surface tri3 or quad4 mesh,
     a triangular mesh if self is tet4 or hex8 mesh.
@@ -755,7 +755,7 @@ def vtkCutWithSphere(self,c,r):
 
     - `mesh`: a Mesh.
     - `c`, `r`: center and radiues defining a sphere.
-    
+
     See vtkCutWithPlane.
     """
     from vtk import vtkSphere
@@ -768,13 +768,13 @@ def vtkCutWithSphere(self,c,r):
 ##trf2CS is needed by setVTKbox
 def trf2CS(CS, angle_spec=DEG):
     """Return the transformations to change coordinate system.
-    
-    Return a series of ordered transformations required to position 
-    an object into a new cartesian coordinate system (CS): 
-    scaling, rotation about x, rotation about y, rotation about z, translation. 
+
+    Return a series of ordered transformations required to position
+    an object into a new cartesian coordinate system (CS):
+    scaling, rotation about x, rotation about y, rotation about z, translation.
     The scaling is needed for CS with non-unitary axes'vectors.
     Scaling, rotations and translations should be applied in order.
-    An error is raised if CS is not orthogonal because 
+    An error is raised if CS is not orthogonal because
     shearing is not supported.
     """
     def isOrthogonal(CS, tol=1.e-4):
@@ -804,15 +804,15 @@ def setVTKbox(p=None, trMat4x4=None):
 
     - `p`: a coordinate system, 4 coords, a formex or a mesh.
     - `trMat4x4`: a 4x4 matrix.
-    
+
     A vtkBox is an implicit vtk function defining a scaled cuboid in space.
     In order to place the cuboid in space you cannot assing coordinates to
-    this vtk class, but you can transform an original box 
-    using affine transformations. In general a 4x4 matrix 
+    this vtk class, but you can transform an original box
+    using affine transformations. In general a 4x4 matrix
     would be appropriate but it is not yet implemented in pyFormex.
-    Alternatively, 4 points corresponding to the x,y,z,o of an orthogonal 
-    coordinate system can be used. In this case p can be either a list of 4 coords, 
-    a coordinate system, a cuboid defined as hex8-element Formex 
+    Alternatively, 4 points corresponding to the x,y,z,o of an orthogonal
+    coordinate system can be used. In this case p can be either a list of 4 coords,
+    a coordinate system, a cuboid defined as hex8-element Formex
     or Mesh (in this case only 4 points are taken).
     """
     from vtk import vtkBox
@@ -834,9 +834,9 @@ def setVTKbox(p=None, trMat4x4=None):
         box.SetXMin([0., 0., 0.])
         box.SetXMax(L)
         trans = vtk.vtkTransform()
-        trans.RotateWXYZ(-r0, 1., 0., 0.) 
+        trans.RotateWXYZ(-r0, 1., 0., 0.)
         trans.RotateWXYZ(-r1, 0., 1., 0.)
-        trans.RotateWXYZ(-r2, 0., 0., 1.) 
+        trans.RotateWXYZ(-r2, 0., 0., 1.)
         trans.Translate(-trv)
         box.SetTransform(trans)
         return box
@@ -850,7 +850,7 @@ def vtkCutWithBox(self, box):
     - `self`: a Mesh.
     - `box`, either a 4x4 matrix to apply affine transformation (not yet implemented)
      or a box defined by 4 points, a formex or a mesh. See setVTKbox.
-    
+
     See vtkCutWithPlane.
     """
     vbox = setVTKbox(box)
@@ -999,17 +999,17 @@ def read_vtk_surface(fn):
 
 def import3ds(fn, vtkcolor='color', verbose=True):
     """Import an object from a .3ds file and returns a list of colored meshes.
-    
+
     It reads and converts a .3ds file into a list of colored meshes,
     by using vtk as intermediate step.
-    
+
     Parameters:
 
     - `fn`: filename (.3ds or .3DS)
     - `vtkcolor`: select which color to read from the vtk class: `color` or `specular`.
      The class vtkOpenGLProperty has multiple fields with colors.
-        
-    Free 3D galleries are 
+
+    Free 3D galleries are
     archive3d.net
     archibase.net
     """
