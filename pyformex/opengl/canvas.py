@@ -1481,7 +1481,7 @@ class Canvas(object):
         print("HIGHLIGHT_ACTORS", K)
         self.scene.removeHighlight()
         for i in K.get(-1, []):
-            self.scene.actors[i].highlight = True
+            self.scene.actors[i].addHighlight()
 
 
     def highlightElements(self, K):

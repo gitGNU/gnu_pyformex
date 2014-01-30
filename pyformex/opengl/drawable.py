@@ -316,9 +316,7 @@ class GeomActor(Attributes):
 
     def __init__(self,obj,**kargs):
 
-        print("GEOMACTOR INIT",kargs)
         Attributes.__init__(self, pf.canvas.drawoptions)
-        print("GEOMACTOR INIT",self.color)
 
         # Check it is something we can draw
         if not isinstance(obj, Mesh) and not isinstance(obj, Formex):
@@ -342,17 +340,13 @@ class GeomActor(Attributes):
                 eltype = _default_eltype[obj.nplex()]
 
         self.eltype = elementType(eltype)
-        #print("ELTYPE %s" % self.eltype)
 
         self.drawable = []
         self.children = []
 
         # Acknowledge all object attributes and passed parameters
-        print("ATTRIB",obj.attrib)
         self.update(obj.attrib)
-        print("GEOMACTOR ATTRIB",self.color)
         self.update(kargs)
-        print("GEOMACTOR KARGS",self.color)
 
         # copy marksize as pointsize for gl2 shader
         if 'marksize' in self:
@@ -660,13 +654,32 @@ class GeomActor(Attributes):
             self.drawable.insert(0, wires)
 
 
-    def addHighlightElements(self,sel=None):
-        """Add a highlight for the selected elements. Default is all."""
-        if self._highlight:
+    def removeHighlight(self):
+        """Remove the highlight for the current actor.
+
+        Remove the highlight (whether full or partial) from the actor.
+        """
+        self.highlight = 0 # Full highlight
+        if self._highlight:   # Partial highlight
             if self._highlight in self.drawable:
                 self.drawable.remove(self._highlight)
             self._highlight = None
+
+
+    def addHighlight(self):
+        """Add full highlighting of the actor.
+
+        This makes the whole actor being drawn in the highlight color.
+        """
+        self.highlight = 1
+
+
+    def addHighlightElements(self,sel=None):
+        """Add a highlight for the selected elements. Default is all."""
+        self.removeHighlight()
+        print("ESEL",sel)
         elems = self.subElems(esel=sel)
+        print("ELEMS",elems)
         self._highlight = Drawable(self, subelems=elems, name=self.name+"_highlight", linewidth=10, lighting=False, color=array(yellow), opak=True)
         # Put at the front to make visible
         self.drawable.insert(0, self._highlight)
@@ -674,10 +687,7 @@ class GeomActor(Attributes):
 
     def addHighlightPoints(self,sel=None):
         """Add a highlight for the selected points. Default is all."""
-        if self._highlight:
-            if self._highlight in self.drawable:
-                self.drawable.remove(self._highlight)
-            self._highlight = None
+        self.removeHighlight()
         vbo = VBO(self.coords)
         self._highlight = Drawable(self, vbo=vbo, subelems=sel.reshape(-1, 1), name=self.name+"_highlight", linewidth=10, lighting=False, color=array(yellow), opak=True, pointsize=10, offset=1.0)
         # Put at the front to make visible

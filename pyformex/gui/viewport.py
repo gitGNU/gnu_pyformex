@@ -604,11 +604,11 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
             if not self.selection_canceled:
                 # selection by mouse_picking
                 self.pick_func[self.selection_mode]()
-                print("PICKED")
-                print(self.picked)
-                print("CLOSEST PICK")
-                print(self.closest_pick)
-                if len(self.picked) != 0:
+                #print("PICKED")
+                #print(self.picked)
+                #print("CLOSEST PICK")
+                #print(self.closest_pick)
+                if len(self.picked) > 0 or self.mod == NONE:
                     if self.selection_filter is None:
                         if self.mod == NONE:
                             self.selection.set(self.picked)
@@ -643,8 +643,9 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
                         if self.mod == NONE or self.mod == SHIFT:
                             conn_elems = self.actors[closest_actor].object.connectedElements(closest_elem, self.selection.get(closest_actor))
                             self.selection.set(conn_elems, closest_actor)
-                    if func:
-                        func(self, self.selection)
+                if func:
+                    #print("EXECUTING FUNC %s" % func)
+                    func(self, self.selection)
                 self.update()
             if oneshot:
                 self.accept_selection()

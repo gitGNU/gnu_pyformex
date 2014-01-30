@@ -263,10 +263,11 @@ class Scene(object):
         self.decorations.clear()
 
 
-    def highlight(self, actors):
-        """Highlight the actors in the list."""
-        for obj in actors:
-            obj.highlight = 1
+    ## def highlight(self, actors):
+    ##     """Highlight the actors in the list."""
+    ##     for  in actors:
+    ##         obj.removeHighlight()
+    ##         obj.highlight = 1
 
 
     def removeHighlight(self,actors=None):
@@ -276,8 +277,8 @@ class Scene(object):
         """
         if actors is None:
             actors = self.actors
-        for obj in actors:
-            obj.highlight = None
+        for actor in actors:
+            actor.removeHighlight()
 
 
     def printTotals(self):
