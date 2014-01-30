@@ -341,11 +341,9 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
 
     # getting Strips
     if vpd.GetStrips().GetData().GetNumberOfTuples():
-        utils.warn("There are strips in the VTK object (not yet supported in pyFormex). I will use vtkTriangleFilter.")
-        tf = vtk.vtkTriangleFilter()
-        tf.SetInput(vpd)
-        tf.Update()
-        vpd=tf.GetOutput()
+        if verbose:
+            utils.warn("There are strips in the VTK object (not yet supported in pyFormex). I will convert it to triangles.")
+        vpd = convertVPD2Triangles(vpd)
         
     # getting Polygons
     if vtkdtype not in [4]: # this list need to be updated according to the data type
@@ -997,6 +995,52 @@ def read_vtk_surface(fn):
     if 'prop' in celldata.keys():
         kargs = {'prop':celldata['prop']}
     return TriSurface(*data)
+
+
+def import3ds(fn, vtkcolor='color', verbose=True):
+    """Import an object from a .3ds file and returns a list of colored meshes.
+    
+    It reads and converts a .3ds file into a list of colored meshes,
+    by using vtk as intermediate step.
+    
+    Parameters:
+
+    - `fn`: filename (.3ds or .3DS)
+    - `vtkcolor`: select which color to read from the vtk class: `color` or `specular`.
+     The class vtkOpenGLProperty has multiple fields with colors.
+        
+    Free 3D galleries are 
+    archive3d.net
+    archibase.net
+    """
+    from vtk import vtk3DSImporter
+    importer = vtk3DSImporter()
+    importer.ComputeNormalsOn()
+    importer.SetFileName(fn)
+    importer.Read()
+    ren = importer.GetRenderer()
+    actors=ren.GetActors()
+    ML = []
+    for i in range(0, actors.GetNumberOfItems()):
+        act=actors.GetItemAsObject(i)
+        act.GetNextPart()
+        propOfActor = act.GetProperty()#print (dir(propOfActor))#print list the methods to extract the 3ds such as camera settings and colors.
+        if vtkcolor == 'color':
+            col = propOfActor.GetColor()#also camera and other things can be extracted!!
+        elif vtkcolor == 'specular':
+            col = propOfActor.GetSpecularColor()
+        else:
+            raise ValueError, 'the color you selected in not yet implemented'
+        obj = act.GetMapper()
+        obj = obj.GetInputAsDataSet()
+        obj.Update()
+        [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = convertFromVPD(vpd=obj,verbose=verbose,samePlex=True)
+        m = Mesh(coords, polys)
+        m.attrib(color=col)
+        ML.append(m)
+    if verbose == True:
+        print ('model contains %d objects with a total of %d triangles'%(len(ML), Mesh.concatenate(ML).nelems()))
+    return ML
 
 
 def install_trisurface_methods():
