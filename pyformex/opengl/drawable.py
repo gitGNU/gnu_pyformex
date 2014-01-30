@@ -316,7 +316,9 @@ class GeomActor(Attributes):
 
     def __init__(self,obj,**kargs):
 
+        print("GEOMACTOR INIT",kargs)
         Attributes.__init__(self, pf.canvas.drawoptions)
+        print("GEOMACTOR INIT",self.color)
 
         # Check it is something we can draw
         if not isinstance(obj, Mesh) and not isinstance(obj, Formex):
@@ -346,8 +348,11 @@ class GeomActor(Attributes):
         self.children = []
 
         # Acknowledge all object attributes and passed parameters
+        print("ATTRIB",obj.attrib)
         self.update(obj.attrib)
+        print("GEOMACTOR ATTRIB",self.color)
         self.update(kargs)
+        print("GEOMACTOR KARGS",self.color)
 
         # copy marksize as pointsize for gl2 shader
         if 'marksize' in self:

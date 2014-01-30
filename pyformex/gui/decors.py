@@ -166,6 +166,8 @@ class Mark(Decoration):
 
 
     def drawGL(self,**kargs):
+        from pyformex.gui.canvas import glFill
+        glFill()
         if self.color is not None:
             GL.glColor3fv(self.color)
         if self.linewidth is not None:
@@ -339,6 +341,8 @@ class ColorLegend(Decoration):
 
 
     def drawGL(self,**kargs):
+        from pyformex.gui.canvas import glFill
+        glFill()
         self.decorations = []
         n = len(self.cl.colors)
         pf.debug("NUMBER OF COLORS: %s" % n)
@@ -414,6 +418,8 @@ class Rectangle(Decoration):
         self.setTexture(texture)
 
     def drawGL(self,**kargs):
+        from pyformex.gui.canvas import glFill
+        glFill()
         drawRectangle(self.x1, self.y1, self.x2, self.y2, self.color, self.texture)
 
 

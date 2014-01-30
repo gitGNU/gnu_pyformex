@@ -550,11 +550,11 @@ def selectImage(extra_items=[]):
         ] + extra_items)
 
     if not res:
-        return None
+        return None,None
 
     if image is None:
         print("Loading image")
-        load_image(filename)
+        load_image(res['filename'])
 
     image = resizeImage(image, res['nx'], res['ny'])
     return image, res
@@ -562,7 +562,7 @@ def selectImage(extra_items=[]):
 
 def showImage():
     clear()
-    im, res = selectImage()
+    im,res = selectImage()
     if im:
         drawImage(im)
 

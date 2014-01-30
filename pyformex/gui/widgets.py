@@ -3314,4 +3314,8 @@ class ImageView(QtGui.QLabel):
         self.zoom = 1.0
 
 
+    def value(self):
+        return self.filename
+
+
 # End
