@@ -31,7 +31,6 @@ unzipping the files, and displaying the .3ds models included.
 from __future__ import print_function
 
 from pyformex import utils
-from pyformex.gui.draw import draw
 import urllib
 import os
 
@@ -88,6 +87,7 @@ def show3ds(fn):
     Import a 3ds file, render it, and export it to th GUI
     """
     from pyformex.plugins.vtk_itf import import3ds
+    from pyformex.gui.draw import draw,export
     name = utils.projectName(fn)
     geom = import3ds(fn)
     draw(geom)
