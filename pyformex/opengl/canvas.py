@@ -1363,7 +1363,6 @@ class Canvas(object):
         self.addDecoration(self.cursor)
 
 
-
     def pick_actors(self):
         """Set the list of actors inside the pick_window."""
         stackdepth = 1
@@ -1415,18 +1414,28 @@ class Canvas(object):
         self.closest_pick = None
         for i, a in enumerate(pickable):
             picked = a.inside(self.camera, rect=self.pick_window[:4], mode=self.selection_mode, sel='any', return_depth=store_closest)
-            print("PICK_PARTS %s" % self.selection_mode)
-            print(picked)
+            #print("PICK_PARTS %s" % self.selection_mode)
+            #print(picked)
             if store_closest:
                 picked,zdepth = picked
             self.picked.add(picked, key=i)
 
             if store_closest and len(picked) > 0:
                 w = zdepth.argmin()
-                print("PICK_PARTS CLOSEST: %s" % w)
+                #print("PICK_PARTS CLOSEST: %s" % w)
                 if self.closest_pick is None or zdepth[w] < self.closest_pick[1]:
                     self.closest_pick = ([i,picked[w]],zdepth[w])
-                print("CLOSEST_PICK: " + str(self.closest_pick))
+                #print("CLOSEST_PICK: " + str(self.closest_pick))
+
+
+    # TODO: pick actors based on pick_parts
+    # this would however make pick actors only work if points are picked
+    ## def pick_actors(self):
+    ##     """Set the list of actors inside the pick_window."""
+    ##     self.pick_parts('actor', store_closest=\
+    ##                     self.selection_filter == 'single' or\
+    ##                     self.selection_filter == 'closest',
+    ##                     )
 
 
     def pick_elements(self):

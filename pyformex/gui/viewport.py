@@ -101,6 +101,13 @@ ALLMODS = SHIFT | CTRL | ALT
 _modifiers = [NONE, SHIFT, CTRL, ALT]
 _modifiername = ['NONE', 'SHIFT', 'CTRL', 'ALT']
 
+# modifiers for picking actions
+# TODO: this should be made configurable
+_PICK_SET = NONE
+_PICK_ADD = SHIFT
+_PICK_REMOVE = CTRL
+
+
 def modifierName(mod):
     try:
         return _modifiername[_modifiers.index(mod)]
@@ -608,41 +615,48 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
                 #print(self.picked)
                 #print("CLOSEST PICK")
                 #print(self.closest_pick)
-                if len(self.picked) > 0 or self.mod == NONE:
+                if len(self.picked) > 0:
                     if self.selection_filter is None:
-                        if self.mod == NONE:
+                        if self.mod == _PICK_SET:
                             self.selection.set(self.picked)
-                        elif self.mod == SHIFT:
+                        elif self.mod == _PICK_ADD:
                             self.selection.add(self.picked)
-                        elif self.mod == CTRL:
+                        elif self.mod == _PICK_REMOVE:
                             self.selection.remove(self.picked)
                     elif self.selection_filter == 'single':
-                        if self.mod == NONE:
+                        if self.mod == _PICK_SET:
                             self.selection.set([self.closest_pick[0]])
-                        elif self.mod == SHIFT:
+                        elif self.mod == _PICK_ADD:
                             self.selection.add([self.closest_pick[0]])
-                        elif self.mod == CTRL:
+                        elif self.mod == _PICK_REMOVE:
                             self.selection.remove([self.closest_pick[0]])
                     elif self.selection_filter == 'closest':
-                        if self.selection_front is None or self.mod == NONE or \
-                               (self.mod == SHIFT and self.closest_pick[1] < self.selection_front[1]):
+                        if self.selection_front is None or \
+                               self.mod == _PICK_SET or \
+                               (self.mod == _PICK_ADD and self.closest_pick[1] < self.selection_front[1]):
                             self.selection_front = self.closest_pick
                             self.selection.set([self.closest_pick[0]])
                     elif self.selection_filter == 'connected':
-                        if self.selection_front is None or self.mod == NONE or len(self.selection.keys()) == 0:
+                        if self.selection_front is None or \
+                               self.mod == _PICK_SET or \
+                               len(self.selection.keys()) == 0:
                             self.selection_front = self.closest_pick
                             closest_actor, closest_elem = [int(i) for i in self.selection_front[0]]
-                        elif self.mod == SHIFT:
+                        elif self.mod == _PICK_ADD:
                             closest_elem = self.selection.get(closest_actor)[0]
-                        if self.mod == NONE:
+                        if self.mod == _PICK_SET:
                             self.selection.set(self.picked)
-                        elif self.mod == SHIFT:
+                        elif self.mod == _PICK_ADD:
                             self.selection.add(self.picked)
-                        elif self.mod == CTRL:
+                        elif self.mod == _PICK_REMOVE:
                             self.selection.remove(self.picked)
-                        if self.mod == NONE or self.mod == SHIFT:
+                        if self.mod == _PICK_SET or \
+                               self.mod == _PICK_ADD:
                             conn_elems = self.actors[closest_actor].object.connectedElements(closest_elem, self.selection.get(closest_actor))
                             self.selection.set(conn_elems, closest_actor)
+                elif self.mod == _PICK_SET:
+                    # Nothing picked and set mode:
+                    self.selection.set([])
                 if func:
                     #print("EXECUTING FUNC %s" % func)
                     func(self, self.selection)

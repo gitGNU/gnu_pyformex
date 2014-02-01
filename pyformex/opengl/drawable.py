@@ -808,32 +808,40 @@ class GeomActor(Attributes):
         if mode == 'point':
             ok = where(ins)[0]
             if return_depth:
-                return ok, depth[ok]
+                depth = depth[ok]
+
+        else:
+            if mode in ['element','actor']:
+                elems = self.elems
+            elif mode == 'edge':
+                # TODO: add edges selector
+                #elems =
+                raise ValueError("Edge picking is not implemented yet")
+
+            ins = ins[elems]
+            if sel == 'all':
+                ok = ins.all(axis=-1)
+            elif sel == 'any':
+                ok = ins.any(axis=-1)
             else:
-                return ok
+                # Useful?
+                ok = ins[:, sel].all(axis=-1)
 
-        if mode == 'element':
-            ins = ins[self.elems]
-        elif mode == 'edge':
-            # TODO: add edges selector
-            raise ValueError("Edge picking is not implemented yet")
+            if mode == 'actor':
+                ok = ok.any()
+                if return_depth:
+                    depth =  depth[unique(elems)].min()
 
-        if sel == 'all':
-            ok = ins.all(axis=-1)
-        elif sel == 'any':
-            ok = ins.any(axis=-1)
+            else:
+                ok = where(ok)[0]
+                elems = elems[ok]
+                if return_depth:
+                    depth = depth[elems].min(axis=-1)
+
+        if return_depth:
+            return ok, depth
         else:
-            # Useful?
-            ok = ins[:, sel].all(axis=-1)
-            return where(ok)[0]
-
-        if mode == 'actor':
             return ok
-
-        else:
-            return where(ok)[0]
-
-
 
 
 ### End
