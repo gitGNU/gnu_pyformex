@@ -186,6 +186,10 @@ def settings():
         ]
 
     scripts = ["http://feops.ugent.be/pub/webgl/fewgl.js", 'local']
+    if pf.installtype == 'G':
+        fewgl_dir = os.path.join(pf.parentdir, "fewgl")
+        if os.path.exists(fewgl_dir):
+            scripts[1:1] = [ os.path.join(fewgl_dir,f) for f in ['fewgl.js','fewgl_debug.js'] ]
     guiscripts = ["http://get.goXTK.com/xtk_xdat.gui.js", 'local']
     webgl_settings = [
         _I('webgl/script', pf.cfg['webgl/script'], text='WebGL base script', choices=scripts),
