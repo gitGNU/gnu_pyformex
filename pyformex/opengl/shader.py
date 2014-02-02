@@ -36,6 +36,7 @@ the current OpenGL framework in pyFormex.
 import os
 from OpenGL import GL
 from OpenGL.GL import shaders
+import pyformex as pf
 
 
 class Shader(object):
@@ -55,7 +56,7 @@ class Shader(object):
     """
 
     # Default shaders
-    _dirname = os.path.dirname(__file__)
+    _dirname = os.path.join(pf.pyformexdir,'data')
     _vertexshader_filename = os.path.join(_dirname, "vertex_shader.c")
     _fragmentshader_filename = os.path.join(_dirname, "fragment_shader.c")
 
@@ -104,7 +105,6 @@ class Shader(object):
     ]
 
     def __init__(self,vshader=None,fshader=None,attributes=None,uniforms=None):
-        #print("LOADING SHADER PROGRAMS")
         if vshader is None:
             vshader = Shader._vertexshader_filename
         with open(vshader) as f:
