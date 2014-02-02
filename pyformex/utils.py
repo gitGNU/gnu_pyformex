@@ -959,7 +959,7 @@ def matchAny(regexps, target):
 
 
 def matchNone(regexps, target):
-    """Check whether targes matches none of the regular expressions."""
+    """Check whether target matches none of the regular expressions."""
     return matchCount(regexps, target) == 0
 
 
@@ -1003,7 +1003,7 @@ def listTree(path,listdirs=True,topdown=True,sorted=False,excludedirs=[],exclude
         if listdirs and topdown:
             filelist.append(root)
         if excludefiles:
-            files = [ f for f in files if matchNone(excludefiles, f) ]
+            files = [ f for f in files if not matchAny(excludefiles, f) ]
         if includefiles:
             files = [ f for f in files if matchAny(includefiles, f) ]
         filelist.extend(prefixFiles(root, files))
