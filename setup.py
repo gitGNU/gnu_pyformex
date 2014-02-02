@@ -177,6 +177,7 @@ def run_setup(with_cext):
               'pyformex',
               'pyformex.gui',
               'pyformex.lib',
+              'pyformex.opengl',
               'pyformex.plugins',
               'pyformex.examples'
               ],

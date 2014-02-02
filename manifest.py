@@ -87,7 +87,7 @@ def listTree(path,listdirs=True,topdown=True,sorted=False,excludedirs=[],exclude
         if listdirs and topdown:
             filelist.append(root)
         if excludefiles:
-            files = [ f for f in files if matchNone(excludefiles,f) ]
+            files = [ f for f in files if not matchAny(excludefiles,f) ]
         if includefiles:
             files = [ f for f in files if matchAny(includefiles,f) ]
         filelist.extend(prefixFiles(root,files))
@@ -195,25 +195,25 @@ DIST_FILES = [
     'setup.cfg',
     ] + \
     listTree('pyformex',listdirs=False,sorted=True,
-             excludedirs=['.svn'],
              includedirs=['gui','plugins'],
              includefiles=['.*\.py$','pyformex(rc)?$','pyformex.conf$'],
              excludefiles=['core.py','curvetools.py','backports.py'],
              ) + \
+    listTree('pyformex/opengl',listdirs=False,sorted=True,
+             excludefiles=['buffer.py'],
+             includefiles=['.*\.py$','.*shader\.c$','.*\.js$']
+             ) + \
     listTree('pyformex/icons',listdirs=False,sorted=True,
-             excludedirs=['.svn'],
              includefiles=['README','.*\.xpm$','pyformex.*\.png$']
              ) + \
     listTree('pyformex/lib',listdirs=False,sorted=True,
-             excludedirs=['.svn'],
              includefiles=['.*\.c$','.*\.py$']
              ) + \
     listTree('pyformex/bin',listdirs=False,sorted=True,
-             excludedirs=['.svn'],
              excludefiles=['.*~$'],
              ) + \
     listTree('pyformex/examples',listdirs=False,sorted=True,
-             excludedirs=['.svn','Demos'],
+             excludedirs=['Demos'],
              excludefiles=['.*\.pyc','.*~$',
 #                           'NurbsCircle.py',  # missing nurbs
 #                           'NurbsSurface.py',     # idem

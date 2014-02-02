@@ -39,20 +39,18 @@ distributed under the GNU General Public License, version 3 or later.
 """
 
 # Get the pyformex dir and put it on the head of sys.path
+# This has to be done *before* importing pyformex, so it
+# can only be done here.
+
 import sys,os
 _bindir = sys.path[0]
-
-#print("BINDIR %s" %_bindir)
 
 # In case we execute the pyformex script from inside the
 # pyformex package dir: add the parent to the front of sys.path
 # to pick up the package here instead of from default path
 
 if _bindir.endswith('pyformex'):
-    #sys.path[:0] = [ os.path.dirname(_bindir) ]
     sys.path[0] = os.path.dirname(_bindir)
-
-#print("SYSPATH %s" % sys.path[:2])
 
 try:
     import pyformex
@@ -61,7 +59,7 @@ except:
     print("This probably means that pyFormex was not properly installed.")
     raise
 
-# Remember where we got started
+# Remember where we got started: save the _bindir inside pyformex
 pyformex.bindir = _bindir
 
 if __name__ == "__main__":

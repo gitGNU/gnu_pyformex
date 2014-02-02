@@ -24,7 +24,7 @@
 #
 #
 
-clearall()
+clear()
 
 
 A = Formex('3:012')
