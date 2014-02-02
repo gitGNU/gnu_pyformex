@@ -30,6 +30,9 @@ It is loaded even before main.
 """
 from __future__ import print_function
 
+import os, sys
+import time, datetime
+
 __version__ = "1.0.0~a1"
 __revision__ = __version__
 
@@ -38,7 +41,6 @@ Url = 'http://pyformex.org'
 Description = "pyFormex is a tool for generating, manipulating and transforming large geometrical models of 3D structures by sequences of mathematical transformations."
 
 # set start date/time
-import time, datetime
 StartTime = datetime.datetime.now()
 
 startup_messages = ''
@@ -63,7 +65,6 @@ def human_version(v):
     """Return the human readable string for version"""
     return "%s.%s" % (major(v),minor(v))
 
-import sys
 
 if sys.hexversion < minimal_version:
     # Older than minimal
@@ -90,6 +91,7 @@ if sys.hexversion & 0xFFFF0000 > target_version:
 """ % (human_version(sys.hexversion), human_version(minimal_version))
     #print(startup_warnings)
 
+
 # Compatibility with Python2 and Python3
 # We keep these in separate modules, because the ones for 2k might
 # not compile in 3k and vice-versa.
@@ -103,17 +105,23 @@ else:
 
 # Install type.
 # This can have the followig values:
-#     'R' : normal (source) release, i.e. tarball (default)
-#     'D' : Debian package of a relesed version
-#     'G' : unreleased version running from GIT sources
-#     'S' : unreleased version running from SVN sources (obsolete)
+#     'G' : unreleased version running from GIT sources: no installation
+#           required. This is set if directory containing the
+#           pyformex start script is a git repository.
+#     'R' : normal (source) Release, i.e. tarball (default). Installation
+#           is done with 'python setup.py install' in the unpacked source.
+#           The builtin pyFormex removal is activated.
+#     'D' : Distribution package of a released version, official or not
+#           (e.g. Debian package). The distribution package tools should
+#           be used to install/uninstall. The builtin pyFormex removal is
+#           deactivated.
 #
+
 installtype = 'R'
 
-import os
 pyformexdir = os.path.dirname(__file__)
-#print("PYFORMEXDIR = %s" % pyformexdir)
-if os.path.exists(os.path.join(os.path.dirname(pyformexdir), '.git')):
+parentdir = os.path.dirname(pyformexdir)
+if os.path.exists(os.path.join(parentdir, '.git')):
     installtype = 'G'
 
 
@@ -218,13 +226,12 @@ class options:
 
 print_help = None  # the function to print(the pyformex help text (pyformex -h))
 
-cfg = {}         # the current session configuration
+cfg = {}           # the current session configuration
 prefcfg = None     # the preferenced configuration
 refcfg = None      # the reference configuration
 preffile = None    # the file where the preferenced configuration will be saved
 
 PF = {}            # explicitely exported globals
-#_PF_ = {}          # globals that will be offered to scripts
 
 scriptName = None
 scriptlock = set()
@@ -286,7 +293,6 @@ def debug(s,level=DEBUG.ALL):
 def debugt(s, level):
     """Print a debug message with timer"""
     debug("%s: %s" % (time.time(), s))
-
 
 
 

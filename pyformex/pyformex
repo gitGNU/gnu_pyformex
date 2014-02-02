@@ -64,31 +64,8 @@ except:
 # Remember where we got started
 pyformex.bindir = _bindir
 
-# Installation type. Should be one of:
-# 'R(elease)': installed from a released tarball with the included install
-#              procedure. This is the default.
-# 'S(ource)' : running directly from the checked out source tree. This is set
-#              during startup after detection.
-# 'D(istribution)': installed from a distribution package. The packager should
-#                   set this to 'D' before packaging the files.
-pyformex.installtype = 'R'
-
-## # Put the pyformex module path in front to avoid picking up modules
-## # from other packages installed next to pyformex.
-## pyformex_path = pyformex.__path__[0]
-
-## if pyformex_path == _bindir:
-##     # pyformex path is second, its parent is first: exchange the two
-##     sys.path[:2] = sys.path[1::-1]
-## else:
-##     # pointless _bindir parent is first: it can be removed
-##     # pyformex path is not there: add it at the front
-##     # so, just overwrite first path
-##     sys.path[0] = pyformex_path
-
 if __name__ == "__main__":
     from pyformex import main
-    #print(dir(main),main.__file__)
     sys.exit(main.run(sys.argv[1:]))
 
 # End

@@ -31,13 +31,10 @@ startup script.
 """
 from __future__ import print_function
 
-
+import sys, os
 import pyformex as pf
 from pyformex import utils
 from pyformex.config import Config
-
-import sys, os
-
 
 ###########################  main  ################################
 
@@ -598,12 +595,11 @@ def run(argv=[]):
 
     # Initialize the libraries
     from pyformex import lib
-
     # If we run from a checked out source repository, we should
     # run the source_clean procedure.
 
     if pf.installtype in 'SG':
-        source_clean = os.path.join(pyformexdir, 'source_clean')
+        source_clean = os.path.join(pf.pyformexdir, 'source_clean')
         if os.path.exists(source_clean):
             try:
                 utils.system(source_clean)
