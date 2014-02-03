@@ -635,7 +635,7 @@ class TriSurface(Mesh):
             elif ftype == 'stlb':
                 filewrite.writeSTL(fname, self.coords[self.elems], binary=True, color=color)
             elif ftype == 'off':
-                filewrite.writeOFF(fname, self.coords, self.elems)
+                filewrite.writeOFF(fname, self)
             elif ftype == 'smesh':
                 from pyformex.plugins import tetgen
                 tetgen.writeSurface(fname, self.coords, self.elems)

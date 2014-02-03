@@ -33,7 +33,7 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import (
-    zip, utils, fileread, simple, timer,
+    zip, utils, fileread, filewrite, simple, timer,
     )
 
 from pyformex.geometry import Geometry
@@ -291,29 +291,47 @@ def readInp(fn=None):
         return
 
 
-def writeGeometry(obj,filename,filetype=None,sep=' ',shortlines=False):
+def writeGeometry(obj,filename,filetype=None,sep=' ',shortlines=False,compr=False):
     """Write the geometry items in objdict to the specified file.
 
+    Returns the number of objects written.
     """
+    nobj = 0
     if filetype is None:
         filetype = utils.fileTypeFromExt(filename)
 
     print("Writing file of type %s" % filetype)
     ext = '.'+filetype
 
-    if ext in utils.fileExtensions('pgf',compr=True):
-        res = writeGeomFile(filename, obj, sep=sep, shortlines=shortlines)
+    if ext in utils.fileExtensions('pgf',compr=compr):
+        nobj = writeGeomFile(filename, obj, sep=sep, shortlines=shortlines)
+
+    elif ext in utils.fileExtensions('obj',compr=compr) or \
+             ext in utils.fileExtensions('off',compr=compr) :
+        for name in obj:
+            # There is only one because of the single selection mode
+            mesh = obj[name]
+            if not isinstance(mesh,Mesh):
+                try:
+                    mesh = mesh.toMesh()
+                except:
+                    error("Object is not a Mesh and can not be converted to a Mesh.")
+                    continue
+            if ext in utils.fileExtensions('obj',compr=compr):
+                filewrite.writeOBJ(filename,mesh)
+            elif ext in utils.fileExtensions('off',compr=compr):
+                filewrite.writeOFF(filename,mesh)
+            nobj += 1
 
     else:
-        res = None
         error("Don't know how to export in '%s' format" % filetype)
 
-    return res
+    return nobj
 
 
-def exportGeometry(types=['pgf', 'all'],sep=' ',shortlines=False,compr=False):
+def exportGeometry(types=['pgf', 'all'],mode='multi',sep=' ',shortlines=False,compr=False):
     """Write geometry to file."""
-    selection.ask()
+    selection.ask(mode=mode)
     if not selection.check():
         return
 
@@ -321,18 +339,20 @@ def exportGeometry(types=['pgf', 'all'],sep=' ',shortlines=False,compr=False):
     fn = askNewFilename(cur=cur, filter=types,compr=compr)
     if fn:
         message("Writing geometry file %s" % fn)
-        res = writeGeometry(selection.odict(), fn, sep=sep, shortlines=shortlines)
+        res = writeGeometry(selection.odict(), fn, sep=sep, shortlines=shortlines,compr=compr)
         pf.message("Contents: %s" % res)
 
 
 def exportPgf():
-    exportGeometry(['pgf'],compr=True)
+    exportGeometry(['pgf'], compr=True)
 def exportPgfShortlines():
     exportGeometry(['pgf'], shortlines=True,compr=True)
 def exportPgfBinary():
     exportGeometry(['pgf'], sep='',compr=True)
 def exportOff():
-    exportGeometry(['off'])
+    exportGeometry(['off'], mode='single')
+def exportObj():
+    exportGeometry(['obj'], mode='single')
 
 
 def convertGeometryFile():
@@ -1083,7 +1103,8 @@ def create_menu():
             (utils.fileDescription('pgf'), exportPgf),
             ("pyFormex Geometry File (binary)", exportPgfBinary),
             ("pyFormex Geometry File with short lines", exportPgfShortlines),
-            ("Object File Format (.off)", exportOff),
+            (utils.fileDescription('obj'), exportObj),
+            (utils.fileDescription('off'), exportOff),
             ]),
         ("&Select ", [
             ('Any', set_selection),

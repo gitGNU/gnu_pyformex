@@ -122,20 +122,16 @@ def writeIData(data,fil,fmt,ind=1):
 
 # Output of mesh file formats
 
-def writeOFF(fn, coords, elems):
+def writeOFF(fn, mesh):
     """Write a mesh of polygons to a file in OFF format.
 
     Parameters:
 
     - `fn`: file name, by preference ending on '.off'
-    - `coords`: float array with shape (ncoords,3), with the coordinates of
-      `ncoords` vertices.
-    - `elems`: int array with shape (nelems,nplex), with the definition of
-      `nelems` polygon elements.
+    - `mesh`: a Mesh
     """
-    if coords.dtype.kind != 'f' or coords.ndim != 2 or coords.shape[1] != 3 or elems.dtype.kind != 'i' or elems.ndim != 2:
-        raise runtimeError("Invalid type or shape of argument(s)")
-
+    coords = mesh.coords
+    elems = mesh.elems
     fil = open(fn, 'w')
     fil.write("OFF\n")
     fil.write("%d %d 0\n" % (coords.shape[0], elems.shape[0]))
@@ -144,6 +140,24 @@ def writeOFF(fn, coords, elems):
     nelems.fill(elems.shape[1])
     elemdata = np.column_stack([nelems, elems])
     writeData(fil, elemdata, fmt='%i ')
+    fil.close()
+
+
+def writeOBJ(fn, mesh, name=None):
+    """Write a mesh of polygons to a file in OBJ format.
+
+    Parameters:
+
+    - `fn`: file name, by preference ending on '.obj'
+    - `mesh`: a Mesh
+    - `name`: name of the Mesh to be written into the file. If None, and the
+      Mesh has an .attrib.name, that name will be used.
+    """
+    from pyformex.plugins.export import ObjFile
+    if name is None and hasattr(mesh,'attrib'):
+        name = mesh.attrib.name
+    fil = ObjFile(fn)
+    fil.write(mesh,name)
     fil.close()
 
 
