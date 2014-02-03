@@ -154,6 +154,18 @@ class Drawable(Attributes):
             if self.vertexColor is not None:
                 self.cbo = VBO(self.vertexColor.astype(float32))
 
+        #### TODO: should we make this configurable ??
+        #
+        #  !!!!!!!!!!!!   Fix a bug with AMD cards   !!!!!!!!!!!!!!!
+        #
+        #  it turns out that some? AMD? cards do not like an unbound cbo
+        #  even if that attribute is not used in the shader.
+        #  Creating a dummy color buffer seems to solve that problem
+        #
+        if self.cbo is None:
+            print("ADD FAKE CBO for useColor %s (%s)" % (self.useObjectColor,self.name))
+            self.cbo = VBO(array(red))
+
 
     def prepareSubelems(self):
         """Create an index buffer to draw subelements
