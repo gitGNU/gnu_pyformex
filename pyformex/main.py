@@ -546,27 +546,27 @@ def run(argv=[]):
     # process non-starting options dependent on config
 
     if pf.options.search or pf.options.listfiles:
+        extended = False
         if len(args) > 0:
             opts = [ a for a in args if a.startswith('-') ]
             args = [ a for a in args if not a in opts ]
             if '-a' in opts:
                 opts.remove('-a')
                 extended = True
-            else:
-                extended = False
-            if len(args) > 1:
-                files = args[1:]
-            else:
-                files = utils.sourceFiles(relative=True, extended=extended)
-            if pf.options.listfiles:
-                print('\n'.join(files))
-            else:
-                search = args[0]
-                if "'" in search:
-                    search.replace("'", "\'")
-                print("SEARCH = [%s]" % search)
-                cmd = 'grep %s "%s" %s' % (' '.join(opts), args[0], ''.join([" '%s'" % f for f in files]))
-                os.system(cmd)
+        if pf.options.search:
+            search = args.pop(0)
+        if len(args) > 0:
+            files = args
+        else:
+            files = utils.sourceFiles(relative=True, extended=extended)
+        if pf.options.listfiles:
+            print('\n'.join(files))
+        else:
+            if "'" in search:
+                search.replace("'", "\'")
+            print("SEARCH = [%s]" % search)
+            cmd = 'grep %s "%s" %s' % (' '.join(opts), search, ''.join([" '%s'" % f for f in files]))
+            os.system(cmd)
         return
 
 
