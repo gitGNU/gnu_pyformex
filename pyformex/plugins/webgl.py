@@ -303,8 +303,13 @@ class WebGL(object):
                     normals = np.asarray(attrib.nbo).reshape(-1, 3)
                     obj.setNormals(normals[elems])
                 if attrib.cbo is not None:
-                    color = np.asarray(attrib.cbo).reshape(-1, 3)
-                    obj.attrib(color=color[elems])
+                    if attrib.useObjectColor != 0:
+                        # skip the fake cbo buffer
+                        pass
+                    else:
+                        color = np.asarray(attrib.cbo).reshape(-1, 3)
+                        obj.attrib(color=color[elems])
+                #print("WRITING %s" % attrib.name)
                 Geometry.write(obj, attrib.file, '')
 
             # add missing attributes
