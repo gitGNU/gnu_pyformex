@@ -133,11 +133,11 @@ default:
 	@echo Please specify a target
 
 clean:
-	alldirs . "rm -f *~"
+	find . -name '*~' -delete
 	make -C pyformex/extra clean
 
 distclean: clean
-	alldirs . "rm -f *.pyc *.so"
+	find . \( -name '*.so' -or -name '*.pyc' \)
 
 # Create the C library
 lib:
@@ -325,5 +325,6 @@ pubpdf:
 # Currently this tests only the core modules
 testall:
 	cd pyformex; for f in *.py; do pyformex --testmodule $${f%.py}; done
+
 
 # End
