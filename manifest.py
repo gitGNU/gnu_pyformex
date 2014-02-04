@@ -128,7 +128,10 @@ DATA_FILES = listTree(
         'benedict_6.jpg',
         'bifurcation.off',
         'blippo.pgf',
+        'blippok.ttf',
         'butterfly.png',
+        'fewgl.js',
+        'fragment_shader.c',
         'hesperia-nieve.prop',
         'horse.off',
         'horse.pgf',
@@ -137,7 +140,9 @@ DATA_FILES = listTree(
         'splines.pgf',
         'supershape.txt',
         'teapot.off',
+        'vertex_shader.c',
         'world.jpg',
+        'xtk_xdat.gui.js',
         ],
     )
 
