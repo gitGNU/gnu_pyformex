@@ -43,7 +43,7 @@ def run():
     clear()
     # read and draw the surface
     chdir(getcfg('datadir'))
-    S = TriSurface.read('bifurcation.off')
+    S = TriSurface.read('bifurcation.off.gz')
     draw(S)
     # Get the center point and the border curves
     CS = S.center()

@@ -202,7 +202,7 @@ DIST_FILES = [
     listTree('pyformex',listdirs=False,sorted=True,
              includedirs=['gui','plugins'],
              includefiles=['.*\.py$','pyformex(rc)?$','pyformex.conf$'],
-             excludefiles=['core.py','curvetools.py','backports.py'],
+             excludefiles=['core.py','curvetools.py','backports.py', 'compat_3k.py'],
              ) + \
     listTree('pyformex/opengl',listdirs=False,sorted=True,
              excludefiles=['buffer.py'],

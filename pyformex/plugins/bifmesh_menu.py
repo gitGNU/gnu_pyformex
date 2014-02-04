@@ -983,7 +983,7 @@ def example():
     if not nextStep("This example guides you through the subsequent steps to create a hexahedral mesh in a bifurcation. At each step you can opt to execute a single step, continue the whole procedure, or quit the example.\n\n1. Input the bifurcation surface model"):
         return
 
-    examplefile = os.path.join(getcfg('datadir'), 'bifurcation.off')
+    examplefile = os.path.join(getcfg('datadir'), 'bifurcation.off.gz')
     print(examplefile)
     export({'surface':TriSurface.read(examplefile)})
     drawSurface()
