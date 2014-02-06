@@ -104,18 +104,23 @@ main pyformex path are considered to belong to the pyformex core functionality.
    :numbered:
    :numberedfrom: -1
 
-   ref/geometry
    ref/mesh
+   ref/geometry
    ref/connectivity
+   ref/elements
+   ref/utils
    ref/varray
    ref/adjacency
-   ref/elements
    ref/simple
    ref/project
-   ref/utils
+   ref/geomfile
    ref/geomtools
    ref/fileread
    ref/filewrite
+   ref/coordsys
+   ref/field
+   ref/multi
+   ref/software
 
 
 .. _sec:gui-modules:
@@ -123,7 +128,7 @@ main pyformex path are considered to belong to the pyformex core functionality.
 pyFormex GUI modules
 ====================
 
-These modules are located under pyformex/gui.
+These modules create the components of the pyFormex GUI. They are located under pyformex/gui. They depend on the Qt4 framework.
 
 .. mytoctree::
    :maxdepth: 1
@@ -133,13 +138,7 @@ These modules are located under pyformex/gui.
    ref/widgets
    ref/menu
    ref/colorscale
-   ref/actors
-   ref/decors
-   ref/marks
-   ref/gluttext
-   ref/canvas
    ref/viewport
-   ref/camera
    ref/image
    ref/imageViewer
    ref/imagearray
@@ -195,6 +194,7 @@ path, these modules are in no way different from other pyFormex modules.
    ref/turtle
    ref/units
    ref/vascularsweepingmesher
+   ref/web
    ref/webgl
 
 ..   ref/centerline  still relevant?
@@ -207,6 +207,45 @@ path, these modules are in no way different from other pyFormex modules.
 ..   ref/partition  still relevant?
 ..   ref/surface_abq  still relevant?
 ..   ref/wrl    gives errors on py2rst
+
+.. _sec:opengl-modules:
+
+pyFormex OpenGL modules
+=======================
+
+These modules are responsible for rendering the 3D models and depend on OpenGL. Currently, pyFormex contains two rendering engines. The new engine's modules are located under pyformex/opengl.
+
+.. mytoctree::
+   :maxdepth: 1
+   :numbered:
+   :numberedfrom: -1
+
+   ref/camera
+   ref/canvas
+   ref/drawable
+   ref/objectdialog
+   ref/renderer
+   ref/scene
+   ref/shader
+
+..   ref/matrix  Does not work due to inherited methodes from numpy
+
+The old OpenGL engine resides under pyformex/gui. As the functionality is
+being transfered to the new engine, these modules are sheduled to be removed
+in future.
+
+.. mytoctree::
+   :maxdepth: 1
+   :numbered:
+   :numberedfrom: -1
+
+   ref/actors
+   ref/decors
+   ref/marks
+   ref/gluttext
+
+..  ref/camera  clashing with opengl modules!!!
+..  ref/canvas
 
 .. _sec:menu-modules:
 
@@ -252,6 +291,7 @@ elsewhere.
    ref/olist
    ref/mydict
    ref/odict
+   ref/attributes
    ref/collection
    ref/config
    ref/flatkeydb

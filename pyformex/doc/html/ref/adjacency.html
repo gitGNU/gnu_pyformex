@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>11. adjacency — A class for storing and handling adjacency tables. &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>13. adjacency — A class for storing and handling adjacency tables. &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -54,8 +54,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="12. elements — Definition of elements." href="elements.html" />
-    <link rel="prev" title="10. varray — Working with variable width tables." href="varray.html" />
+    <link rel="next" title="14. simple — Predefined geometries with a simple shape." href="simple.html" />
+    <link rel="prev" title="12. varray — Working with variable width tables." href="varray.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -78,10 +78,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="elements.html" title="12. elements — Definition of elements."
+          <a href="simple.html" title="14. simple — Predefined geometries with a simple shape."
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="varray.html" title="10. varray — Working with variable width tables."
+          <a href="varray.html" title="12. varray — Working with variable width tables."
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
@@ -100,13 +100,22 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">13. <tt class="docutils literal"><span class="pre">adjacency</span></tt> &#8212; A class for storing and handling adjacency tables.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-adjacency">13.1. Classes defined in module adjacency</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-adjacency">13.2. Functions defined in module adjacency</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="varray.html"
-                        title="previous chapter">10. <tt class="docutils literal"><span class="pre">varray</span></tt> &#8212; Working with variable width tables.</a></p>
+                        title="previous chapter">12. <tt class="docutils literal"><span class="pre">varray</span></tt> &#8212; Working with variable width tables.</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="elements.html"
-                        title="next chapter">12. <tt class="docutils literal"><span class="pre">elements</span></tt> &#8212; Definition of elements.</a></p>
+  <p class="topless"><a href="simple.html"
+                        title="next chapter">14. <tt class="docutils literal"><span class="pre">simple</span></tt> &#8212; Predefined geometries with a simple shape.</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -141,11 +150,12 @@
           <div class="body">
             
   <div class="section" id="module-adjacency">
-<span id="adjacency-a-class-for-storing-and-handling-adjacency-tables"></span><span id="sec-ref-adjacency"></span><h1>11. <a class="reference internal" href="#module-adjacency" title="adjacency: A class for storing and handling adjacency tables."><tt class="xref py py-mod docutils literal"><span class="pre">adjacency</span></tt></a> &#8212; A class for storing and handling adjacency tables.<a class="headerlink" href="#module-adjacency" title="Permalink to this headline">¶</a></h1>
+<span id="adjacency-a-class-for-storing-and-handling-adjacency-tables"></span><span id="sec-ref-adjacency"></span><h1>13. <a class="reference internal" href="#module-adjacency" title="adjacency: A class for storing and handling adjacency tables."><tt class="xref py py-mod docutils literal"><span class="pre">adjacency</span></tt></a> &#8212; A class for storing and handling adjacency tables.<a class="headerlink" href="#module-adjacency" title="Permalink to this headline">¶</a></h1>
 <p>This module defines a specialized array class for representing adjacency
 of items of a single type. This is e.g. used in mesh models, to store
 the adjacent elements.</p>
-<p><tt class="docutils literal"><span class="pre">Classes</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">adjacency</span></tt></p>
+<div class="section" id="classes-defined-in-module-adjacency">
+<h2>13.1. Classes defined in module adjacency<a class="headerlink" href="#classes-defined-in-module-adjacency" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="adjacency.Adjacency">
 <em class="property">class </em><tt class="descclassname">adjacency.</tt><tt class="descname">Adjacency</tt><a class="headerlink" href="#adjacency.Adjacency" title="Permalink to this definition">¶</a></dt>
@@ -390,7 +400,9 @@ by frontWalk.</p>
 
 </dd></dl>
 
-<p><tt class="docutils literal"><span class="pre">Functions</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">adjacency</span></tt></p>
+</div>
+<div class="section" id="functions-defined-in-module-adjacency">
+<h2>13.2. Functions defined in module adjacency<a class="headerlink" href="#functions-defined-in-module-adjacency" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="adjacency.sortAdjacency">
 <tt class="descclassname">adjacency.</tt><tt class="descname">sortAdjacency</tt><big>(</big><em>adj</em><big>)</big><a class="headerlink" href="#adjacency.sortAdjacency" title="Permalink to this definition">¶</a></dt>
@@ -462,6 +474,7 @@ padded with -1 values.</p>
 </dd></dl>
 
 </div>
+</div>
 
 
           </div>
@@ -479,10 +492,10 @@ padded with -1 values.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="elements.html" title="12. elements — Definition of elements."
+          <a href="simple.html" title="14. simple — Predefined geometries with a simple shape."
              >next</a> |</li>
         <li class="right" >
-          <a href="varray.html" title="10. varray — Working with variable width tables."
+          <a href="varray.html" title="12. varray — Working with variable width tables."
              >previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
@@ -492,7 +505,7 @@ padded with -1 values.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Nov 30, 2013.
+      Last updated on Feb 06, 2014.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

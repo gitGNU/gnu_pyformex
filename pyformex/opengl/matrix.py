@@ -37,7 +37,9 @@ import pyformex.arraytools as at
 
 
 class Vector4(np.matrix):
-    """One or more homogeneous coordinates"""
+    """One or more homogeneous coordinates
+
+    """
     def __new__(clas,data=None):
         """Create a new Vector4 instance"""
         data = np.asarray(data)

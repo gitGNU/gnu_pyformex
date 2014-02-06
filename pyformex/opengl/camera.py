@@ -79,8 +79,10 @@ def gl_depth(x, y):
 def normalize(x, w):
     """Normalized coordinates inside a window.
 
-    x is an (np,nc) array with coordinates.
-    w is a (2,nc) array with minimal and width of the window that will
+    Parameters:
+
+    - `x`: an (np,nc) array with coordinates.
+    - `w`: a (2,nc) array with minimal and width of the window that will
       be mapped to the range -1..1.
 
     Returns an array with the x values linearly remapped thus that values w[0]
@@ -95,8 +97,10 @@ def normalize(x, w):
 def denormalize(x, w):
     """Map normalized coordinates to fit a window
 
-    x is an (np,nc) array with normalized coordinates.
-    w is a (2,nc) array with minimal and width values of the window.
+    Parameters:
+
+    - `x`: an (np,nc) array with normalized coordinates.
+    - `w`: a (2,nc) array with minimal and width values of the window.
 
     Returns an array with the x values linearly remapped thus that values -1
     coincide with the minimum window values and +1 with the minimum+width

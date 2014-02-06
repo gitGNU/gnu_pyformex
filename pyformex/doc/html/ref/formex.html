@@ -100,6 +100,15 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">2. <tt class="docutils literal"><span class="pre">formex</span></tt> &#8212; Formex algebra in Python</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-formex">2.1. Classes defined in module formex</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-formex">2.2. Functions defined in module formex</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="coords.html"
@@ -146,7 +155,8 @@
 representing geometry in pyFormex. The Formex class implements most
 functionality of Formex algebra in a consistent and easy to understand
 syntax.</p>
-<p><tt class="docutils literal"><span class="pre">Classes</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">formex</span></tt></p>
+<div class="section" id="classes-defined-in-module-formex">
+<h2>2.1. Classes defined in module formex<a class="headerlink" href="#classes-defined-in-module-formex" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="formex.Formex">
 <em class="property">class </em><tt class="descclassname">formex.</tt><tt class="descname">Formex</tt><big>(</big><em>data=</em><span class="optional">[</span><span class="optional">]</span>, <em>prop=None</em>, <em>eltype=None</em><big>)</big><a class="headerlink" href="#formex.Formex" title="Permalink to this definition">¶</a></dt>
@@ -877,27 +887,6 @@ three points.</p>
 by its points.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="formex.Formex.write">
-<tt class="descname">write</tt><big>(</big><em>fil</em>, <em>sep=' '</em>, <em>mode='w'</em><big>)</big><a class="headerlink" href="#formex.Formex.write" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write a Formex to file.</p>
-<p>If fil is a string, a file with that name is opened. Else fil should
-be an open file.
-The Formex is then written to that file in a native format, using
-sep as separator between the coordinates.
-If fil is a string, the file is closed prior to returning.</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="formex.Formex.read">
-<em class="property">classmethod </em><tt class="descname">read</tt><big>(</big><em>clas</em>, <em>fil</em>, <em>sep=' '</em><big>)</big><a class="headerlink" href="#formex.Formex.read" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read a Formex from file.</p>
-<p>fil is a filename or a file object.
-If the file is in a valid Formex file format, the Formex is read and
-returned. Otherwise, None is returned.
-Valid Formex file formats are described in the manual.</p>
-</dd></dl>
-
 <dl class="classmethod">
 <dt id="formex.Formex.fromstring">
 <em class="property">classmethod </em><tt class="descname">fromstring</tt><big>(</big><em>clas</em>, <em>fil</em>, <em>sep=' '</em>, <em>nplex=1</em>, <em>ndim=3</em>, <em>count=-1</em><big>)</big><a class="headerlink" href="#formex.Formex.fromstring" title="Permalink to this definition">¶</a></dt>
@@ -1348,6 +1337,74 @@ the maximum size are not rescaled.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="formex.Formex.addField">
+<tt class="descname">addField</tt><big>(</big><em>fldtype</em>, <em>data</em>, <em>fldname</em><big>)</big><a class="headerlink" href="#formex.Formex.addField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a data field to the geometry.</p>
+<p>Add a scalar or vectorial field defined over the domain of the
+Geometry. This creates a <tt class="xref py py-class docutils literal"><span class="pre">Field</span></tt> instance with the specified
+parameters and adds it to the Geometry object.
+Fields stored inside a Geometry object are exported to PGF file
+whenever the object is exported.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>fldtype</cite>, <cite>data</cite>, <cite>fldname</cite>: are passed together with the
+Geometry object to the Field initialization. See <tt class="xref py py-class docutils literal"><span class="pre">Field</span></tt>
+for details.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.add_field">
+<tt class="descname">add_field</tt><big>(</big><em>field</em><big>)</big><a class="headerlink" href="#formex.Formex.add_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Low level function to add a Field</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.convertField">
+<tt class="descname">convertField</tt><big>(</big><em>fldname</em>, <em>totype</em>, <em>toname</em><big>)</big><a class="headerlink" href="#formex.Formex.convertField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the data field with the specified name.</p>
+<p>If the data field does not exist, returns None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.getField">
+<tt class="descname">getField</tt><big>(</big><em>fldname</em><big>)</big><a class="headerlink" href="#formex.Formex.getField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the data field with the specified name.</p>
+<p>If the data field does not exist, returns None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.delField">
+<tt class="descname">delField</tt><big>(</big><em>fldname</em><big>)</big><a class="headerlink" href="#formex.Formex.delField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the Field with the given name.</p>
+<p>A nonexisting name is silently ignored.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.write">
+<tt class="descname">write</tt><big>(</big><em>filename</em>, <em>sep=' '</em>, <em>mode='w'</em><big>)</big><a class="headerlink" href="#formex.Formex.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a Geometry to a .pgf file.</p>
+<p>This writes the Geometry to a pyFormex Geometry File (PGF) with
+the specified name.</p>
+<p>It is a convenient shorthand for:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">script</span><span class="o">.</span><span class="n">writeGeomFile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="formex.Formex.read">
+<em class="property">classmethod </em><tt class="descname">read</tt><big>(</big><em>clas</em>, <em>filename</em><big>)</big><a class="headerlink" href="#formex.Formex.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a Geometry from a PGF file.</p>
+<p>This reads a single object (the object) from a PGF file
+and returns it.</p>
+<p>It is a convenient shorthand for:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">script</span><span class="o">.</span><span class="n">readGeomFile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="formex.Formex.nnodes">
 <tt class="descname">nnodes</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.nnodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the number of points in the formex.</p>
@@ -1357,7 +1414,9 @@ with the number of nodes per element.</p>
 
 </dd></dl>
 
-<p><tt class="docutils literal"><span class="pre">Functions</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">formex</span></tt></p>
+</div>
+<div class="section" id="functions-defined-in-module-formex">
+<h2>2.2. Functions defined in module formex<a class="headerlink" href="#functions-defined-in-module-formex" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="formex.connect">
 <tt class="descclassname">formex.</tt><tt class="descname">connect</tt><big>(</big><em>Flist</em>, <em>nodid=None</em>, <em>bias=None</em>, <em>loop=False</em><big>)</big><a class="headerlink" href="#formex.connect" title="Permalink to this definition">¶</a></dt>
@@ -1530,6 +1589,7 @@ side is either &#8216;+&#8217;, &#8216;-&#8216; or &#8216;&#8217;</p>
 </dd></dl>
 
 </div>
+</div>
 
 
           </div>
@@ -1560,7 +1620,7 @@ side is either &#8216;+&#8217;, &#8216;-&#8216; or &#8216;&#8217;</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Nov 30, 2013.
+      Last updated on Feb 06, 2014.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

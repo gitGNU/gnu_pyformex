@@ -42,13 +42,12 @@ import os,sys
 # set path to the pyformex modules
 parent = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 pyformexdir = os.path.join(parent,'pyformex')
-for d in [ 'lib', 'gui', 'plugins' ]: # this order is important!
+for d in [ 'lib', 'gui', 'opengl', 'plugins' ]: # this order is important!
     sys.path.insert(0,os.path.join(pyformexdir,d))
 sys.path.insert(0,pyformexdir)
 sys.path.insert(0,os.path.dirname(pyformexdir))
 
-from pyformex.odict import ODict
-
+from pyformex.utils import underlineHeader
 
 import inspect
 
@@ -120,10 +119,10 @@ def do_module(filename):
     ship_module(modname,module.__doc__)
     #print names
     ship_functions(names)
-    ship_class_init(modname)
+    ship_section_init('Classes',modname)
     for c in classes:
         do_class(*c)
-    ship_functions_init(modname)
+    ship_section_init('Functions',modname)
     ship_end()
 
     sys.__stdout__.write(out)
@@ -131,6 +130,11 @@ def do_module(filename):
 
 
 ############# Output formatting ##########################
+
+
+def indent(s,n):
+    """Indent all lines of a multinline string with n blanks."""
+    return '\n'.join([ ' '*n + si for si in s.split('\n') ])
 
 
 def split_doc(docstring):
@@ -197,6 +201,7 @@ def ship_end():
 .. End
 """)
 
+
 def ship_functions(members=[]):
     if members:
         ship("""   :members: %s""" % (','.join(members)))
@@ -206,15 +211,11 @@ def ship_class(name,members=[]):
    .. autoclass:: %s
       :members: %s""" % (name,','.join(members)))
 
-def ship_class_init(name):
-    ship("""
-   ``Classes defined in module %s``
-""" % name)
+def ship_section_init(secname,modname):
+    ship(indent('\n'+underlineHeader("%s defined in module %s" % (secname,modname),'~')+'\n',3))
 
-def ship_functions_init(name):
-    ship("""
-   ``Functions defined in module %s``
-""" % name)
+## def ship_section_init(secname,modname):
+##     ship(indent("\n*%s defined in module %s*\n" % (secname,modname),3))
 
 
 def main(argv):

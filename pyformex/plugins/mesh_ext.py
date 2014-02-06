@@ -95,8 +95,7 @@ def connectionSteps(self, nodesource=[], elemsource=[], maxstep=-1):
 #
 
 def scaledJacobian(self,scaled=True,blksize=100000):
-    """
-    Compute a quality measure for volume meshes.
+    """Compute a quality measure for volume meshes.
 
     Parameters:
 
@@ -159,7 +158,7 @@ def scaledJacobian(self,scaled=True,blksize=100000):
 # interpolation formulas.
 
 def elementToNodal(self, val):
-    """Compute nodal values from element values.
+    """_Compute nodal values from element values.
 
     Given scalar values defined on elements, finds the average values at
     the nodes.
@@ -175,19 +174,16 @@ def elementToNodal(self, val):
     return nval.reshape(-1)
 
 
-# BV: name is way too complex
-# docstring is not clean
-# should not be a mesh method, but of some MeshValue class? Field?
-# should be generalized: not only adjacency over edges
-# should be merged with smooth method
-# needs an example
-
-# GDS: name is simpler, but is it appropriate?
-# docstring has been improved
-# example has been added
+# BV:
+# - name is misleading with other nodal averaging methods (which average
+#   the nodal values at the same point, but obtained from different elems)
+# - docstring still does not compile: the example script should go to
+#   the example directory, as a pyFormex example
+# - should be generalized: not only adjacency over edges
+# - should be merged with smooth method
 
 def nodalAveraging(self, val, iter=1, mask=None,includeself=False):
-    """Replace a nodal value with the mean value of the adjacent nodes.
+    """_Replace a nodal value with the mean value of the adjacent nodes.
 
     Parameters:
 
@@ -196,20 +192,20 @@ def nodalAveraging(self, val, iter=1, mask=None,includeself=False):
     `iter` : int, how many times the averaging procedure should be iterated.
     `mask` : either None or a boolean array or index flagging the nodes of which
       the value has to be changed. If None, all nodal values are replaced.
-    
-    This function could be used to apply blurring on a image, 
+
+    This function could be used to apply blurring on a image,
     or smooth sharp variations on a countour plot.
 
     Example:
-    
+
       3(5.0)---6(4.0)---2(3.3)
       |        |        |
       |        |        |
       7(6.5)---8(3.2)---5(8.0)
       |        |        |
       |        |        |
-      0(1.0)---4(1.2)---1(2.2)    
-    
+      0(1.0)---4(1.2)---1(2.2)
+
     node 8 is adjacent via edge to nodes 4,5,6,7.
     One avg iteration with includeself=False will give val[8] = (1.2+8.0+4.0+6.5)/4. = 4.925
     One avg iteration with includeself=True will give val[8] = (1.2+8.0+4.0+6.5+3.2)/5. = 4.580
@@ -223,7 +219,7 @@ def nodalAveraging(self, val, iter=1, mask=None,includeself=False):
     drawMarks(q.coords.trl([0., 0.05, 0.]), txt)
     draw(q, color='white')
     drawNumbers(q.coords, color='blue')
-    
+
     q2 = q.trl([1.5, 0., 0.])
     draw(q2, color='red')
     from plugins import mesh_ext
@@ -231,7 +227,7 @@ def nodalAveraging(self, val, iter=1, mask=None,includeself=False):
     txt2=['%.3f'%n for n in val2]
     drawMarks(q2.coords, txt2)
     draw(q2, color='red')
-    
+
     q3 = q.trl([3.0, 0., 0.])
     draw(q3, color='green')
     from plugins import mesh_ext
@@ -239,18 +235,18 @@ def nodalAveraging(self, val, iter=1, mask=None,includeself=False):
     txt3=['%.3f'%n for n in val3]
     drawMarks(q3.coords, txt3)
     draw(q3, color='red')
-    
+
     setTriade()
     zoomAll()
     """
 
-    avgval = checkArray1D(val,kind='f',size=self.ncoords())   
-    if iter==0: 
+    avgval = checkArray1D(val,kind='f',size=self.ncoords())
+    if iter==0:
         return avgval
     nadj = self.getEdges().adjacency(kind='n')
     if includeself:
         nadj = concatenate([nadj,arange(alen(nadj)).reshape(-1,1)],axis=1)
-    inadj = nadj>=0#False if == -1    
+    inadj = nadj>=0#False if == -1
     lnadj = inadj.sum(axis=1)#nr of adjacent nodes
     lnadj = lnadj.astype(Float)#NEEDED!!!, otherwise it becomes float64 and fails if mask is not None !
     if mask is None:
@@ -258,7 +254,7 @@ def nodalAveraging(self, val, iter=1, mask=None,includeself=False):
             avgval = sum(avgval[nadj]*inadj, axis=1)/lnadj # multiplying by inadj set to zero the values where nadj==-1
     else:
         for j in range(iter):
-            avgval[mask] = (sum(avgval[nadj]*inadj, axis=1)/lnadj)[mask]   
+            avgval[mask] = (sum(avgval[nadj]*inadj, axis=1)/lnadj)[mask]
     return avgval
 
 

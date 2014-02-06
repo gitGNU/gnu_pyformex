@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>26. canvas — This implements an OpenGL drawing widget for painting 3D scenes. &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>70. canvas — This implements an OpenGL drawing widget for painting 3D scenes. &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -54,8 +54,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="27. viewport — Interactive OpenGL Canvas embedded in a Qt4 widget." href="viewport.html" />
-    <link rel="prev" title="25. gluttext — 2D text decorations using GLUT fonts" href="gluttext.html" />
+    <link rel="next" title="71. drawable — OpenGL rendering objects for the new OpenGL2 engine." href="drawable.html" />
+    <link rel="prev" title="69. camera — OpenGL camera handling" href="camera.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -78,10 +78,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="viewport.html" title="27. viewport — Interactive OpenGL Canvas embedded in a Qt4 widget."
+          <a href="drawable.html" title="71. drawable — OpenGL rendering objects for the new OpenGL2 engine."
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="gluttext.html" title="25. gluttext — 2D text decorations using GLUT fonts"
+          <a href="camera.html" title="69. camera — OpenGL camera handling"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
@@ -100,13 +100,22 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">70. <tt class="docutils literal"><span class="pre">canvas</span></tt> &#8212; This implements an OpenGL drawing widget for painting 3D scenes.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-canvas">70.1. Classes defined in module canvas</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-canvas">70.2. Functions defined in module canvas</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="gluttext.html"
-                        title="previous chapter">25. <tt class="docutils literal"><span class="pre">gluttext</span></tt> &#8212; 2D text decorations using GLUT fonts</a></p>
+  <p class="topless"><a href="camera.html"
+                        title="previous chapter">69. <tt class="docutils literal docutils literal"><span class="pre">camera</span></tt> &#8212; OpenGL camera handling</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="viewport.html"
-                        title="next chapter">27. <tt class="docutils literal docutils literal"><span class="pre">viewport</span></tt> &#8212; Interactive OpenGL Canvas embedded in a Qt4 widget.</a></p>
+  <p class="topless"><a href="drawable.html"
+                        title="next chapter">71. <tt class="docutils literal"><span class="pre">drawable</span></tt> &#8212; OpenGL rendering objects for the new OpenGL2 engine.</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -141,36 +150,24 @@
           <div class="body">
             
   <div class="section" id="module-canvas">
-<span id="canvas-this-implements-an-opengl-drawing-widget-for-painting-3d-scenes"></span><span id="sec-ref-canvas"></span><h1>26. <a class="reference internal" href="#module-canvas" title="canvas: This implements an OpenGL drawing widget for painting 3D scenes."><tt class="xref py py-mod docutils literal"><span class="pre">canvas</span></tt></a> &#8212; This implements an OpenGL drawing widget for painting 3D scenes.<a class="headerlink" href="#module-canvas" title="Permalink to this headline">¶</a></h1>
-<p><tt class="docutils literal"><span class="pre">Classes</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">canvas</span></tt></p>
+<span id="canvas-this-implements-an-opengl-drawing-widget-for-painting-3d-scenes"></span><span id="sec-ref-canvas"></span><h1>70. <a class="reference internal" href="#module-canvas" title="canvas: This implements an OpenGL drawing widget for painting 3D scenes."><tt class="xref py py-mod docutils literal"><span class="pre">canvas</span></tt></a> &#8212; This implements an OpenGL drawing widget for painting 3D scenes.<a class="headerlink" href="#module-canvas" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="classes-defined-in-module-canvas">
+<h2>70.1. Classes defined in module canvas<a class="headerlink" href="#classes-defined-in-module-canvas" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="canvas.ActorList">
-<em class="property">class </em><tt class="descclassname">canvas.</tt><tt class="descname">ActorList</tt><big>(</big><em>canvas</em><big>)</big><a class="headerlink" href="#canvas.ActorList" title="Permalink to this definition">¶</a></dt>
-<dd><p>A list of drawn objects of the same kind.</p>
-<p>This is used to collect the Actors, Decorations and Annotations
-in a scene.
-Currently the implementation does not check that the objects are of
-the proper type.</p>
-<dl class="method">
-<dt id="canvas.ActorList.add">
-<tt class="descname">add</tt><big>(</big><em>actor</em><big>)</big><a class="headerlink" href="#canvas.ActorList.add" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add an actor or a list thereof to a ActorList.</p>
+<dt id="canvas.Light">
+<em class="property">class </em><tt class="descclassname">canvas.</tt><tt class="descname">Light</tt><big>(</big><em>ambient=0.0, diffuse=0.0, specular=0.0, position=[0.0, 0.0, 1.0], enabled=True</em><big>)</big><a class="headerlink" href="#canvas.Light" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class representing an OpenGL light.</p>
+<p>The light can emit 3 types of light: ambient, diffuse and specular,
+which can have different color and are all off by default.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="canvas.ActorList.delete">
-<tt class="descname">delete</tt><big>(</big><em>actor</em><big>)</big><a class="headerlink" href="#canvas.ActorList.delete" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove an actor or a list thereof from an ActorList.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="canvas.ActorList.redraw">
-<tt class="descname">redraw</tt><big>(</big><big>)</big><a class="headerlink" href="#canvas.ActorList.redraw" title="Permalink to this definition">¶</a></dt>
-<dd><p>Redraw all actors in the list.</p>
-<p>This redraws the specified actors (recreating their display list).
-This could e.g. be used after changing an actor&#8217;s properties.</p>
-</dd></dl>
-
+<dl class="class">
+<dt id="canvas.LightProfile">
+<em class="property">class </em><tt class="descclassname">canvas.</tt><tt class="descname">LightProfile</tt><big>(</big><em>ambient</em>, <em>lights</em><big>)</big><a class="headerlink" href="#canvas.LightProfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>A lightprofile contains all the lighting parameters.</p>
+<p>Currently this consists off:
+- <cite>ambient</cite>: the global ambient lighting (currently a float)
+- <cite>lights</cite>: a list of 1 to 4 Lights</p>
 </dd></dl>
 
 <dl class="class">
@@ -278,9 +275,15 @@ The canvas has a Camera object holding important viewing parameters.
 Finally, it stores the lighting information.</p>
 <p>It does not however contain the viewport size and position.</p>
 <dl class="method">
+<dt id="canvas.Canvas.sceneBbox">
+<tt class="descname">sceneBbox</tt><big>(</big><big>)</big><a class="headerlink" href="#canvas.Canvas.sceneBbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the bbox of all actors in the scene</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="canvas.Canvas.enable_lighting">
 <tt class="descname">enable_lighting</tt><big>(</big><em>state</em><big>)</big><a class="headerlink" href="#canvas.Canvas.enable_lighting" title="Permalink to this definition">¶</a></dt>
-<dd><p>Toggle lights on/off.</p>
+<dd><p>Toggle OpenGL lighting on/off.</p>
 </dd></dl>
 
 <dl class="method">
@@ -334,7 +337,7 @@ If lighting is not specified, it is set depending on the rendermode.</p>
 <p>If the canvas has not been initialized, this merely sets the
 attributes self.rendermode and self.settings.lighting.
 If the canvas was already initialized (it has a camera), and one of
-the specified settings is fdifferent from the existing, the new mode
+the specified settings is different from the existing, the new mode
 is set, the canvas is re-initialized according to the newly set mode,
 and everything is redrawn with the new mode.</p>
 </dd></dl>
@@ -344,7 +347,12 @@ and everything is redrawn with the new mode.</p>
 <tt class="descname">setWireMode</tt><big>(</big><em>state</em>, <em>mode=None</em><big>)</big><a class="headerlink" href="#canvas.Canvas.setWireMode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the wire mode.</p>
 <p>This toggles the drawing of edges on top of 2D and 3D geometry.
-Value is an integer. If positive, edges are shown, else not.</p>
+State is either True or False, mode is 1, 2 or 3 to switch:</p>
+<p>1: all edges
+2: feature edges
+3: border edges</p>
+<p>If no mode is specified, the current wiremode is used. A negative
+value inverses the state.</p>
 </dd></dl>
 
 <dl class="method">
@@ -356,8 +364,20 @@ with the old and new toggle state as a parameter.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="canvas.Canvas.do_wiremode">
+<tt class="descname">do_wiremode</tt><big>(</big><em>state</em>, <em>oldstate</em><big>)</big><a class="headerlink" href="#canvas.Canvas.do_wiremode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the wiremode</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="canvas.Canvas.do_alphablend">
+<tt class="descname">do_alphablend</tt><big>(</big><em>state</em>, <em>oldstate</em><big>)</big><a class="headerlink" href="#canvas.Canvas.do_alphablend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Toggle alphablend on/off.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="canvas.Canvas.do_lighting">
-<tt class="descname">do_lighting</tt><big>(</big><em>state</em>, <em>oldstate=None</em><big>)</big><a class="headerlink" href="#canvas.Canvas.do_lighting" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">do_lighting</tt><big>(</big><em>state</em>, <em>oldstate</em><big>)</big><a class="headerlink" href="#canvas.Canvas.do_lighting" title="Permalink to this definition">¶</a></dt>
 <dd><p>Toggle lights on/off.</p>
 </dd></dl>
 
@@ -439,18 +459,34 @@ removed. The default (None) toggles between on and off.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="canvas.Canvas.glinit">
-<tt class="descname">glinit</tt><big>(</big><big>)</big><a class="headerlink" href="#canvas.Canvas.glinit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize the rendering machine.</p>
+<dt id="canvas.Canvas.reset">
+<tt class="descname">reset</tt><big>(</big><big>)</big><a class="headerlink" href="#canvas.Canvas.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the rendering engine.</p>
 <p>The rendering machine is initialized according to self.settings:
 - self.rendermode: one of
 - self.lighting</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="canvas.Canvas.glinit">
+<tt class="descname">glinit</tt><big>(</big><big>)</big><a class="headerlink" href="#canvas.Canvas.glinit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the rendering engine.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="canvas.Canvas.glupdate">
 <tt class="descname">glupdate</tt><big>(</big><big>)</big><a class="headerlink" href="#canvas.Canvas.glupdate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flush all OpenGL commands, making sure the display is updated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="canvas.Canvas.draw_sorted_objects">
+<tt class="descname">draw_sorted_objects</tt><big>(</big><em>objects</em>, <em>alphablend</em><big>)</big><a class="headerlink" href="#canvas.Canvas.draw_sorted_objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a list of sorted objects.</p>
+<p>If alphablend is True, objects are separated in opaque
+and transparent ones, and the opaque are drawn first.
+Inside each group, ordering is preserved.
+Else, the objects are drawn in the order submitted.</p>
 </dd></dl>
 
 <dl class="method">
@@ -477,99 +513,9 @@ It is assumed that you will not try to change/refresh the normal
 </dd></dl>
 
 <dl class="method">
-<dt id="canvas.Canvas.sceneBbox">
-<tt class="descname">sceneBbox</tt><big>(</big><big>)</big><a class="headerlink" href="#canvas.Canvas.sceneBbox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the bbox of all actors in the scene</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="canvas.Canvas.setBbox">
-<tt class="descname">setBbox</tt><big>(</big><em>bb=None</em><big>)</big><a class="headerlink" href="#canvas.Canvas.setBbox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the bounding box of the scene you want to be visible.</p>
-<p>bb is a (2,3) shaped array specifying a bounding box.
-If no bbox is given, the bounding box of all the actors in the
-scene is used, or if the scene is empty, a default unit bounding box.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="canvas.Canvas.addActor">
-<tt class="descname">addActor</tt><big>(</big><em>itemlist</em><big>)</big><a class="headerlink" href="#canvas.Canvas.addActor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a 3D actor or a list thereof to the 3D scene.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="canvas.Canvas.addHighlight">
 <tt class="descname">addHighlight</tt><big>(</big><em>itemlist</em><big>)</big><a class="headerlink" href="#canvas.Canvas.addHighlight" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a highlight or a list thereof to the 3D scene.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="canvas.Canvas.addAnnotation">
-<tt class="descname">addAnnotation</tt><big>(</big><em>itemlist</em><big>)</big><a class="headerlink" href="#canvas.Canvas.addAnnotation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add an annotation or a list thereof to the 3D scene.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="canvas.Canvas.addDecoration">
-<tt class="descname">addDecoration</tt><big>(</big><em>itemlist</em><big>)</big><a class="headerlink" href="#canvas.Canvas.addDecoration" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a 2D decoration or a list thereof to the canvas.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="canvas.Canvas.addAny">
-<tt class="descname">addAny</tt><big>(</big><em>itemlist=None</em><big>)</big><a class="headerlink" href="#canvas.Canvas.addAny" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add any  item or list.</p>
-<p>This will add any actor/annotation/decoration item or a list
-of any such items  to the canvas. This is the prefered method to add
-an item to the canvas, because it makes sure that each item is added
-to the proper list. It can however not be used to add highlights.</p>
-<p>If you have a long list of a single type, it is more efficient to
-use one of the type specific add methods.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="canvas.Canvas.removeActor">
-<tt class="descname">removeActor</tt><big>(</big><em>itemlist=None</em><big>)</big><a class="headerlink" href="#canvas.Canvas.removeActor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove a 3D actor or a list thereof from the 3D scene.</p>
-<p>Without argument, removes all actors from the scene.
-This also resets the bounding box for the canvas autozoom.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="canvas.Canvas.removeHighlight">
-<tt class="descname">removeHighlight</tt><big>(</big><em>itemlist=None</em><big>)</big><a class="headerlink" href="#canvas.Canvas.removeHighlight" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove a highlight or a list thereof from the 3D scene.</p>
-<p>Without argument, removes all highlights from the scene.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="canvas.Canvas.removeAnnotation">
-<tt class="descname">removeAnnotation</tt><big>(</big><em>itemlist=None</em><big>)</big><a class="headerlink" href="#canvas.Canvas.removeAnnotation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove an annotation or a list thereof from the 3D scene.</p>
-<p>Without argument, removes all annotations from the scene.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="canvas.Canvas.removeDecoration">
-<tt class="descname">removeDecoration</tt><big>(</big><em>itemlist=None</em><big>)</big><a class="headerlink" href="#canvas.Canvas.removeDecoration" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove a 2D decoration or a list thereof from the canvas.</p>
-<p>Without argument, removes all decorations from the scene.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="canvas.Canvas.removeAny">
-<tt class="descname">removeAny</tt><big>(</big><em>itemlist=None</em><big>)</big><a class="headerlink" href="#canvas.Canvas.removeAny" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove a list of any actor/highlights/annotation/decoration items.</p>
-<p>This will remove the items from any of the canvas lists in which the
-item appears.
-itemlist can also be a single item instead of a list.
-If None is specified, all items from all lists will be removed.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="canvas.Canvas.redrawAll">
-<tt class="descname">redrawAll</tt><big>(</big><big>)</big><a class="headerlink" href="#canvas.Canvas.redrawAll" title="Permalink to this definition">¶</a></dt>
-<dd><p>Redraw all actors in the scene.</p>
 </dd></dl>
 
 <dl class="method">
@@ -683,11 +629,10 @@ off-center zooming.</p>
 
 <dl class="method">
 <dt id="canvas.Canvas.pick_parts">
-<tt class="descname">pick_parts</tt><big>(</big><em>obj_type</em>, <em>max_objects</em>, <em>store_closest=False</em><big>)</big><a class="headerlink" href="#canvas.Canvas.pick_parts" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">pick_parts</tt><big>(</big><em>obj_type</em>, <em>store_closest=False</em><big>)</big><a class="headerlink" href="#canvas.Canvas.pick_parts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the list of actor parts inside the pick_window.</p>
 <p>obj_type can be &#8216;element&#8217;, &#8216;face&#8217;, &#8216;edge&#8217; or &#8216;point&#8217;.
-&#8216;face&#8217; and &#8216;edge&#8217; are only available for Mesh type geometry.
-max_objects specifies the maximum number of objects</p>
+&#8216;face&#8217; and &#8216;edge&#8217; are only available for Mesh type geometry.</p>
 <p>The picked object numbers are stored in self.picked.
 If store_closest==True, the closest picked object is stored in as a
 tuple ( [actor,object] ,distance) in self.picked_closest</p>
@@ -727,12 +672,6 @@ By default, the full actor list is used.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="canvas.Canvas.highlightActor">
-<tt class="descname">highlightActor</tt><big>(</big><em>actor</em><big>)</big><a class="headerlink" href="#canvas.Canvas.highlightActor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Highlight an actor in the scene.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="canvas.Canvas.highlightActors">
 <tt class="descname">highlightActors</tt><big>(</big><em>K</em><big>)</big><a class="headerlink" href="#canvas.Canvas.highlightActors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Highlight a selection of actors on the canvas.</p>
@@ -742,51 +681,17 @@ the Collection K.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="canvas.Canvas.highlightElements">
-<tt class="descname">highlightElements</tt><big>(</big><em>K</em><big>)</big><a class="headerlink" href="#canvas.Canvas.highlightElements" title="Permalink to this definition">¶</a></dt>
-<dd><p>Highlight a selection of actor elements on the canvas.</p>
-<p>K is Collection of actor elements as returned by the pick() method.
-colormap is a list of two colors, for the elements not in, resp. in
-the Collection K.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="canvas.Canvas.highlightEdges">
-<tt class="descname">highlightEdges</tt><big>(</big><em>K</em><big>)</big><a class="headerlink" href="#canvas.Canvas.highlightEdges" title="Permalink to this definition">¶</a></dt>
-<dd><p>Highlight a selection of actor edges on the canvas.</p>
-<p>K is Collection of TriSurface actor edges as returned by the pick() method.
-colormap is a list of two colors, for the edges not in, resp. in
-the Collection K.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="canvas.Canvas.highlightPoints">
-<tt class="descname">highlightPoints</tt><big>(</big><em>K</em><big>)</big><a class="headerlink" href="#canvas.Canvas.highlightPoints" title="Permalink to this definition">¶</a></dt>
-<dd><p>Highlight a selection of actor elements on the canvas.</p>
-<p>K is Collection of actor elements as returned by the pick() method.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="canvas.Canvas.highlightPartitions">
-<tt class="descname">highlightPartitions</tt><big>(</big><em>K</em><big>)</big><a class="headerlink" href="#canvas.Canvas.highlightPartitions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Highlight a selection of partitions on the canvas.</p>
-<p>K is a Collection of actor elements, where each actor element is
-connected to a collection of property numbers, as returned by the
-partitionCollection() method.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="canvas.Canvas.highlight">
-<tt class="descname">highlight</tt><big>(</big><em>K</em>, <em>mode</em><big>)</big><a class="headerlink" href="#canvas.Canvas.highlight" title="Permalink to this definition">¶</a></dt>
-<dd><p>Highlight a Collection of actor/elements.</p>
-<p>K is usually the return value of a pick operation, but might also
-be set by the user.
-mode is one of the pick modes.</p>
+<dt id="canvas.Canvas.removeHighlight">
+<tt class="descname">removeHighlight</tt><big>(</big><big>)</big><a class="headerlink" href="#canvas.Canvas.removeHighlight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a highlight or a list thereof from the 3D scene.</p>
+<p>Without argument, removes all highlights from the scene.</p>
 </dd></dl>
 
 </dd></dl>
 
-<p><tt class="docutils literal"><span class="pre">Functions</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">canvas</span></tt></p>
+</div>
+<div class="section" id="functions-defined-in-module-canvas">
+<h2>70.2. Functions defined in module canvas<a class="headerlink" href="#functions-defined-in-module-canvas" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="canvas.gl_pickbuffer">
 <tt class="descclassname">canvas.</tt><tt class="descname">gl_pickbuffer</tt><big>(</big><big>)</big><a class="headerlink" href="#canvas.gl_pickbuffer" title="Permalink to this definition">¶</a></dt>
@@ -839,6 +744,7 @@ that are canvas settings, the second one the rest.</p>
 </dd></dl>
 
 </div>
+</div>
 
 
           </div>
@@ -856,10 +762,10 @@ that are canvas settings, the second one the rest.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="viewport.html" title="27. viewport — Interactive OpenGL Canvas embedded in a Qt4 widget."
+          <a href="drawable.html" title="71. drawable — OpenGL rendering objects for the new OpenGL2 engine."
              >next</a> |</li>
         <li class="right" >
-          <a href="gluttext.html" title="25. gluttext — 2D text decorations using GLUT fonts"
+          <a href="camera.html" title="69. camera — OpenGL camera handling"
              >previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
@@ -869,7 +775,7 @@ that are canvas settings, the second one the rest.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Nov 30, 2013.
+      Last updated on Feb 06, 2014.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

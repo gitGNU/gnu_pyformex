@@ -100,6 +100,15 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">3. <tt class="docutils literal"><span class="pre">arraytools</span></tt> &#8212; A collection of numerical array utilities.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-arraytools">3.1. Classes defined in module arraytools</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-arraytools">3.2. Functions defined in module arraytools</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="formex.html"
@@ -145,11 +154,14 @@
 <p>These are general utility functions that depend only on the <tt class="xref py py-mod docutils literal"><span class="pre">numpy</span></tt>
 array model. All pyformex modules needing <tt class="xref py py-mod docutils literal"><span class="pre">numpy</span></tt> should import
 everything from this module:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">arraytools</span> <span class="kn">import</span> <span class="o">*</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyformex.arraytools</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 </div>
-<p><tt class="docutils literal"><span class="pre">Classes</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">arraytools</span></tt></p>
-<p><tt class="docutils literal"><span class="pre">Functions</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">arraytools</span></tt></p>
+<div class="section" id="classes-defined-in-module-arraytools">
+<h2>3.1. Classes defined in module arraytools<a class="headerlink" href="#classes-defined-in-module-arraytools" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="functions-defined-in-module-arraytools">
+<h2>3.2. Functions defined in module arraytools<a class="headerlink" href="#functions-defined-in-module-arraytools" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="arraytools.isInt">
 <tt class="descclassname">arraytools.</tt><tt class="descname">isInt</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#arraytools.isInt" title="Permalink to this definition">¶</a></dt>
@@ -432,6 +444,17 @@ Note that:</p>
 </ul>
 <p>but the latter functions calls are more efficient.
 The result is returned as an array.</p>
+<p>Examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">rotationMatrix</span><span class="p">(</span><span class="mf">30.</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">array([[ 0.87,  0.  , -0.5 ],</span>
+<span class="go">       [ 0.  ,  1.  ,  0.  ],</span>
+<span class="go">       [ 0.5 ,  0.  ,  0.87]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rotationMatrix</span><span class="p">(</span><span class="mf">45.</span><span class="p">,[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">])</span>
+<span class="go">array([[ 0.85,  0.15, -0.5 ],</span>
+<span class="go">       [ 0.15,  0.85,  0.5 ],</span>
+<span class="go">       [ 0.5 , -0.5 ,  0.71]])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -582,6 +605,8 @@ an indexing operation:</p>
 <dd><p>Add an additional axis with length 1 to an array.</p>
 <p>The new axis is inserted before the specified one. Default is to
 add it at the front.</p>
+<p>Note that if the axis number is a constant, this effect can also be
+achieved with numpy&#8217;s newaxis feature.</p>
 </dd></dl>
 
 <dl class="function">
@@ -1579,6 +1604,7 @@ that issue and prints the full array nicely aligned.</p>
 </dd></dl>
 
 </div>
+</div>
 
 
           </div>
@@ -1609,7 +1635,7 @@ that issue and prints the full array nicely aligned.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Nov 30, 2013.
+      Last updated on Feb 06, 2014.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

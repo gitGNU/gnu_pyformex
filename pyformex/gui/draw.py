@@ -2034,7 +2034,7 @@ def exportWebGL(fn,createdby=50,**kargs):
     - `fn` : string: the (relative or absolute) filename of the .html, .js
       and .pgf files comprising the WebGL model. It can contain a directory
       path and an any extension. The latter is dropped and not used.
-    - `createdby: int: width in pixels of the 'Created by pyFormex' logo
+    - `createdby`: int: width in pixels of the 'Created by pyFormex' logo
       appearing on the page. If < 0, the logo is displayed at its natural
       width. If 0, the logo is suppressed.
     - `**kargs`: any other keyword parameteris passed to the

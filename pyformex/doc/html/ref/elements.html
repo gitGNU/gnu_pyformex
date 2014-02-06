@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>12. elements — Definition of elements. &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>10. elements — Definition of elements. &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -54,8 +54,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="13. simple — Predefined geometries with a simple shape." href="simple.html" />
-    <link rel="prev" title="11. adjacency — A class for storing and handling adjacency tables." href="adjacency.html" />
+    <link rel="next" title="11. utils — A collection of miscellaneous utility functions." href="utils.html" />
+    <link rel="prev" title="9. connectivity — A class and functions for handling nodal connectivity." href="connectivity.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -78,10 +78,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="simple.html" title="13. simple — Predefined geometries with a simple shape."
+          <a href="utils.html" title="11. utils — A collection of miscellaneous utility functions."
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="adjacency.html" title="11. adjacency — A class for storing and handling adjacency tables."
+          <a href="connectivity.html" title="9. connectivity — A class and functions for handling nodal connectivity."
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
@@ -100,13 +100,22 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">10. <tt class="docutils literal"><span class="pre">elements</span></tt> &#8212; Definition of elements.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-elements">10.1. Classes defined in module elements</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-elements">10.2. Functions defined in module elements</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="adjacency.html"
-                        title="previous chapter">11. <tt class="docutils literal docutils literal"><span class="pre">adjacency</span></tt> &#8212; A class for storing and handling adjacency tables.</a></p>
+  <p class="topless"><a href="connectivity.html"
+                        title="previous chapter">9. <tt class="docutils literal docutils literal"><span class="pre">connectivity</span></tt> &#8212; A class and functions for handling nodal connectivity.</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="simple.html"
-                        title="next chapter">13. <tt class="docutils literal"><span class="pre">simple</span></tt> &#8212; Predefined geometries with a simple shape.</a></p>
+  <p class="topless"><a href="utils.html"
+                        title="next chapter">11. <tt class="docutils literal"><span class="pre">utils</span></tt> &#8212; A collection of miscellaneous utility functions.</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -141,13 +150,14 @@
           <div class="body">
             
   <div class="section" id="module-elements">
-<span id="elements-definition-of-elements"></span><span id="sec-ref-elements"></span><h1>12. <a class="reference internal" href="#module-elements" title="elements: Definition of elements."><tt class="xref py py-mod docutils literal"><span class="pre">elements</span></tt></a> &#8212; Definition of elements.<a class="headerlink" href="#module-elements" title="Permalink to this headline">¶</a></h1>
+<span id="elements-definition-of-elements"></span><span id="sec-ref-elements"></span><h1>10. <a class="reference internal" href="#module-elements" title="elements: Definition of elements."><tt class="xref py py-mod docutils literal"><span class="pre">elements</span></tt></a> &#8212; Definition of elements.<a class="headerlink" href="#module-elements" title="Permalink to this headline">¶</a></h1>
 <p>This modules allows for a consistent local numbering scheme of element
 connectivities throughout pyFormex.
 When interfacing with other programs, one should be aware
 that conversions may be necessary. Conversions to/from external programs
 should be done by the interface modules.</p>
-<p><tt class="docutils literal"><span class="pre">Classes</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">elements</span></tt></p>
+<div class="section" id="classes-defined-in-module-elements">
+<h2>10.1. Classes defined in module elements<a class="headerlink" href="#classes-defined-in-module-elements" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="elements.ElementType">
 <em class="property">class </em><tt class="descclassname">elements.</tt><tt class="descname">ElementType</tt><a class="headerlink" href="#elements.ElementType" title="Permalink to this definition">¶</a></dt>
@@ -288,7 +298,9 @@ ElementType&#8217;s name. To get the real name, use the attribute
 
 </dd></dl>
 
-<p><tt class="docutils literal"><span class="pre">Functions</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">elements</span></tt></p>
+</div>
+<div class="section" id="functions-defined-in-module-elements">
+<h2>10.2. Functions defined in module elements<a class="headerlink" href="#functions-defined-in-module-elements" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="elements.elementType">
 <tt class="descclassname">elements.</tt><tt class="descname">elementType</tt><big>(</big><em>name=None</em>, <em>nplex=-1</em><big>)</big><a class="headerlink" href="#elements.elementType" title="Permalink to this definition">¶</a></dt>
@@ -332,6 +344,7 @@ grouped by their dimensionality.</p>
 </dd></dl>
 
 </div>
+</div>
 
 
           </div>
@@ -349,10 +362,10 @@ grouped by their dimensionality.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="simple.html" title="13. simple — Predefined geometries with a simple shape."
+          <a href="utils.html" title="11. utils — A collection of miscellaneous utility functions."
              >next</a> |</li>
         <li class="right" >
-          <a href="adjacency.html" title="11. adjacency — A class for storing and handling adjacency tables."
+          <a href="connectivity.html" title="9. connectivity — A class and functions for handling nodal connectivity."
              >previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
@@ -362,7 +375,7 @@ grouped by their dimensionality.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Nov 30, 2013.
+      Last updated on Feb 06, 2014.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

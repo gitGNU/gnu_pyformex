@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>15. utils — A collection of miscellaneous utility functions. &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>11. utils — A collection of miscellaneous utility functions. &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -54,8 +54,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="16. geomtools — Basic geometrical operations." href="geomtools.html" />
-    <link rel="prev" title="14. project — project.py" href="project.html" />
+    <link rel="next" title="12. varray — Working with variable width tables." href="varray.html" />
+    <link rel="prev" title="10. elements — Definition of elements." href="elements.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -78,10 +78,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="geomtools.html" title="16. geomtools — Basic geometrical operations."
+          <a href="varray.html" title="12. varray — Working with variable width tables."
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="project.html" title="14. project — project.py"
+          <a href="elements.html" title="10. elements — Definition of elements."
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
@@ -100,13 +100,22 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">11. <tt class="docutils literal"><span class="pre">utils</span></tt> &#8212; A collection of miscellaneous utility functions.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-utils">11.1. Classes defined in module utils</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-utils">11.2. Functions defined in module utils</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="project.html"
-                        title="previous chapter">14. <tt class="docutils literal docutils literal docutils literal"><span class="pre">project</span></tt> &#8212; project.py</a></p>
+  <p class="topless"><a href="elements.html"
+                        title="previous chapter">10. <tt class="docutils literal docutils literal docutils literal"><span class="pre">elements</span></tt> &#8212; Definition of elements.</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="geomtools.html"
-                        title="next chapter">16. <tt class="docutils literal docutils literal docutils literal"><span class="pre">geomtools</span></tt> &#8212; Basic geometrical operations.</a></p>
+  <p class="topless"><a href="varray.html"
+                        title="next chapter">12. <tt class="docutils literal docutils literal"><span class="pre">varray</span></tt> &#8212; Working with variable width tables.</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -141,13 +150,14 @@
           <div class="body">
             
   <div class="section" id="module-utils">
-<span id="utils-a-collection-of-miscellaneous-utility-functions"></span><span id="sec-ref-utils"></span><h1>15. <a class="reference internal" href="#module-utils" title="utils: A collection of miscellaneous utility functions."><tt class="xref py py-mod docutils literal"><span class="pre">utils</span></tt></a> &#8212; A collection of miscellaneous utility functions.<a class="headerlink" href="#module-utils" title="Permalink to this headline">¶</a></h1>
-<p><tt class="docutils literal"><span class="pre">Classes</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">utils</span></tt></p>
+<span id="utils-a-collection-of-miscellaneous-utility-functions"></span><span id="sec-ref-utils"></span><h1>11. <a class="reference internal" href="#module-utils" title="utils: A collection of miscellaneous utility functions."><tt class="xref py py-mod docutils literal"><span class="pre">utils</span></tt></a> &#8212; A collection of miscellaneous utility functions.<a class="headerlink" href="#module-utils" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="classes-defined-in-module-utils">
+<h2>11.1. Classes defined in module utils<a class="headerlink" href="#classes-defined-in-module-utils" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="utils.Process">
-<em class="property">class </em><tt class="descclassname">utils.</tt><tt class="descname">Process</tt><big>(</big><em>cmd</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#utils.Process" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">utils.</tt><tt class="descname">Process</tt><big>(</big><em>cmd</em>, <em>timeout</em>, <em>wait</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#utils.Process" title="Permalink to this definition">¶</a></dt>
 <dd><p>A subprocess for running an external command.</p>
-<p>This is a subclass of Python&#8217;s :class`subprocess.Popen` class, providing
+<p>This is a subclass of Python&#8217;s <tt class="xref py py-class docutils literal"><span class="pre">subprocess.Popen</span></tt> class, providing
 some extra functionality:</p>
 <ul class="simple">
 <li>It stores the specified command</li>
@@ -159,25 +169,41 @@ with the opened files (in mode &#8216;r&#8217; for stdin, &#8216;w&#8217; for th
 <li>After the command has terminated, the Process instance has three
 attributes sta, out and err, providing the return code, standard
 output and standard error of the command.</li>
+<li>If &#8216;shell=True&#8217; is specified, and no executable is specified, it sets
+executable to the value of the environment variable &#8216;SHELL&#8217;.</li>
 </ul>
 <p>Parameters:</p>
 <ul class="simple">
 <li><cite>cmd</cite>: string or args list. If a string, it is the command as it should
 entered in a shell. If an args list, args[0] is the executable to run
 and the remainder are the arguments to be passed.</li>
+<li><cite>timeout</cite>: float. If &gt; 0.0, the subprocess will be terminated
+or killed after this number of seconds have passed.</li>
+<li><cite>wait</cite>: bool. If True (default), the caller waits for the Process
+to terminate. Setting this value to False will allow the caller to
+continue, but it will not be able to retrieve the standard output
+and standard error of the process.</li>
+</ul>
+<p>Any other parameters are passed to the <tt class="xref py py-class docutils literal"><span class="pre">subprocess.Popen</span></tt>
+initialization. See the Python documentation for details.
+Some interesting ones:</p>
+<ul class="simple">
 <li><cite>shell</cite>: bool. Default False. If True, the command will be run in a
 new shell. This may cause problems with killing the command and also
 poses a security risk.</li>
-<li><cite>stdout</cite>,`stderr`: Standard output and error output. See Python docs
+<li><cite>executable</cite>: string. The full path name of the program to be executed.
+This can be used to specify the real executable if the program specified
+in <cite>cmd</cite> is not in your PATH, or, with <cite>shell == True</cite>, if you want
+to use another shell than the default. Note that Process uses a default
+shell equal to the SHELL variable, while Python uses <cite>/bin/sh</cite> by default.</li>
+<li><cite>stdout</cite>, <cite>stderr</cite>: Standard output and error output. See Python docs
 for subprocess.Popen. Here, they default to PIPE, allowing the caller
 to grab the output of the command. Set them to an open file object to
 redirect output to that file.</li>
-<li>Any other parameters accepted by :class`subprocess.Popen` can also be
-specified.</li>
 </ul>
 <dl class="method">
 <dt id="utils.Process.run">
-<tt class="descname">run</tt><big>(</big><em>timeout=None</em><big>)</big><a class="headerlink" href="#utils.Process.run" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">run</tt><big>(</big><em>timeout=None</em>, <em>wait=True</em><big>)</big><a class="headerlink" href="#utils.Process.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run a Process, optionally with timeout.</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -259,6 +285,111 @@ attribute.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="utils.File">
+<em class="property">class </em><tt class="descclassname">utils.</tt><tt class="descname">File</tt><big>(</big><em>filename</em>, <em>mode</em>, <em>compr=None</em>, <em>level=5</em>, <em>delete_temp=True</em><big>)</big><a class="headerlink" href="#utils.File" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transparent file compression.</p>
+<p>This class is a context manager providing transparent file compression
+and decompression. It is commonly used in a <cite>with</cite> statement, as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">File</span><span class="p">(</span><span class="s">&#39;filename.ext&#39;</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;something&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;something more&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will create an uncompressed file with the specified name, write some
+things to the file, and close it. The file can be read back similarly:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">File</span><span class="p">(</span><span class="s">&#39;filename.ext&#39;</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Because File is a context manager, the file is closed automatically when
+leaving the <cite>with</cite> block.</p>
+<p>By specifying a filename ending with &#8216;.gz&#8217; or &#8216;.bz2&#8217;, the file will be
+compressed (on writing) or decompressed (on reading) automatically.
+The code can just stay the same as above.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>filename</cite>: string: name of the file to open.
+If the filename ends with &#8216;.gz&#8217; or &#8216;.bz2&#8217;, transparent (de)compression
+will be used, with gzip or bzip2 compression algorithms respectively.</li>
+<li><cite>mode</cite>: string: file open mode: &#8216;r&#8217; for read, &#8216;w&#8217; for write or &#8216;a&#8217; for
+append mode. See also the documentation for Python&#8217;s open function.
+For compressed files, append mode is not yet available.</li>
+<li><cite>compr</cite>: string, one of &#8216;gz&#8217; or &#8216;bz2&#8217;: identifies the compression
+algorithm to be used: gzip or bzip2. If the file name is ending with
+&#8216;.gz&#8217; or &#8216;.bz2&#8217;, <cite>compr</cite> is set automatically from the extension.</li>
+<li><cite>level</cite>: an integer from 1..9: gzip/bzip2 compression level.
+Higher values result in smaller files, but require longer compression
+times. The default of 5 gives already a fairly good compression ratio.</li>
+<li><cite>delete_temp</cite>: bool: if True (default), the temporary files needed to
+do the (de)compression are deleted when the File instance is closed.</li>
+</ul>
+<p>The File class can also be used outside a <cite>with</cite> statement. In that case
+the user has to open and close the File himself. The following are more
+or less equivalent with the above examples (the <cite>with</cite> statement is
+better at handling exceptions):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">fil</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="s">&#39;filename.ext&#39;</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">fil</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;something&#39;</span><span class="p">)</span>
+<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;something more&#39;</span><span class="p">)</span>
+<span class="n">fil</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This will create an uncompressed file with the specified name, write some
+things to the file, and close it. The file can be read back similarly:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">fil</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="s">&#39;filename.ext&#39;</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">fil</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="n">fil</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="utils.File.open">
+<tt class="descname">open</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.File.open" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open the File in the requested mode.</p>
+<p>This can be used to open a File object outside a <cite>with</cite>
+statement. It returns a Python file object that can be used
+to read from or write to the File. It performs the following:</p>
+<ul class="simple">
+<li>If no compression is used, ope the file in the requested mode.</li>
+<li>For reading a compressed file, decompress the file to a temporary
+file and open the temporary file for reading.</li>
+<li>For writing a compressed file, open a tem[porary file for writing.</li>
+</ul>
+<p>See the documentation for the <a class="reference internal" href="#utils.File" title="utils.File"><tt class="xref py py-class docutils literal"><span class="pre">File</span></tt></a> class for an example of
+its use.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.File.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.File.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the File.</p>
+<p>This can be used to close the File if it was not opened using a
+<cite>with</cite> statement. It performs the following:</p>
+<ul class="simple">
+<li>The underlying file object is closed.</li>
+<li>If the file was opened in write or append mode and compression is
+requested, the file is compressed.</li>
+<li>If a temporary file was in use and delete_temp is True,
+the temporary file is deleted.</li>
+</ul>
+<p>See the documentation for the <a class="reference internal" href="#utils.File" title="utils.File"><tt class="xref py py-class docutils literal"><span class="pre">File</span></tt></a> class for an example of
+its use.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.File.reopen">
+<tt class="descname">reopen</tt><big>(</big><em>mode='r'</em><big>)</big><a class="headerlink" href="#utils.File.reopen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reopen the file, possibly in another mode.</p>
+<p>This allows e.g. to read back data from a just saved file
+without having to destroy the File instance.</p>
+<p>Returns the open file object.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="utils.NameSequence">
 <em class="property">class </em><tt class="descclassname">utils.</tt><tt class="descname">NameSequence</tt><big>(</big><em>name</em>, <em>ext=''</em><big>)</big><a class="headerlink" href="#utils.NameSequence" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class for autogenerating sequences of names.</p>
@@ -310,7 +441,7 @@ UNIX-like shell command to select all the generated file names.</p>
 
 <dl class="method">
 <dt id="utils.NameSequence.files">
-<tt class="descname">files</tt><big>(</big><em>sort=&lt;function hsorted at 0x2aadaa0&gt;</em><big>)</big><a class="headerlink" href="#utils.NameSequence.files" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">files</tt><big>(</big><em>sort=&lt;function hsorted at 0xc003a28&gt;</em><big>)</big><a class="headerlink" href="#utils.NameSequence.files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a (sorted) list of files matching the name pattern.</p>
 <p>A function may be specified to sort/filter the list of file names.
 The function should take a list of filenames as input. The output
@@ -366,10 +497,12 @@ the filenames in a human order.</p>
 
 </dd></dl>
 
-<p><tt class="docutils literal"><span class="pre">Functions</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">utils</span></tt></p>
+</div>
+<div class="section" id="functions-defined-in-module-utils">
+<h2>11.2. Functions defined in module utils<a class="headerlink" href="#functions-defined-in-module-utils" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="utils.system">
-<tt class="descclassname">utils.</tt><tt class="descname">system</tt><big>(</big><em>cmd</em>, <em>timeout=None</em>, <em>verbose=False</em>, <em>raise_error=False</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#utils.system" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">utils.</tt><tt class="descname">system</tt><big>(</big><em>cmd</em>, <em>timeout=None</em>, <em>wait=True</em>, <em>verbose=False</em>, <em>raise_error=False</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#utils.system" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute an external command.</p>
 <p>This (and the more user oriented <a class="reference internal" href="#utils.command" title="utils.command"><tt class="xref py py-func docutils literal"><span class="pre">utils.command()</span></tt></a>) are the
 prefered way to execute external commands from inside pyFormex.</p>
@@ -378,6 +511,10 @@ prefered way to execute external commands from inside pyFormex.</p>
 <li><cite>cmd</cite>: a string with the command to be executed</li>
 <li><cite>timeout</cite>: float. If specified and &gt; 0.0, the command will time out
 and be terminated or killed after the specified number of seconds.</li>
+<li><cite>wait</cite>: bool. If True (default), the caller waits for the Process
+to terminate. Setting this value to False will allow the caller to
+continue, but it will not be able to retrieve the standard output
+and standard error of the process.</li>
 <li><cite>verbose</cite>: bool. If True, some extra informative message are printed:
 - the command that will be run
 - an occurring timeout condition,
@@ -408,7 +545,7 @@ from other places but the caller.</p>
 
 <dl class="function">
 <dt id="utils.command">
-<tt class="descclassname">utils.</tt><tt class="descname">command</tt><big>(</big><em>cmd</em>, <em>timeout=None</em>, <em>verbose=True</em>, <em>raise_error=True</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#utils.command" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">utils.</tt><tt class="descname">command</tt><big>(</big><em>cmd</em>, <em>verbose=True</em>, <em>raise_error=True</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#utils.command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run an external command in a user friendly way.</p>
 <p>This is equivalent with the utils.system function but with
 verbose=True and raise_error=True by default.</p>
@@ -423,6 +560,174 @@ verbose=True and raise_error=True by default.</p>
 <li><cite>signal</cite>: the signal to send to the processes. The default (15) will
 try to terminate the process. See &#8216;man kill&#8217; for more values.</li>
 </ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.execSource">
+<tt class="descclassname">utils.</tt><tt class="descname">execSource</tt><big>(</big><em>script</em>, <em>glob={}</em><big>)</big><a class="headerlink" href="#utils.execSource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute Python code in another thread.</p>
+<ul class="simple">
+<li><cite>script</cite>: a string with executable Python code</li>
+<li><cite>glob</cite>: an optional gloabls dict specifying the environment in
+which the source code is executed.</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.all_image_extensions">
+<tt class="descclassname">utils.</tt><tt class="descname">all_image_extensions</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.all_image_extensions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with all known image extensions.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.splitFileDescription">
+<tt class="descclassname">utils.</tt><tt class="descname">splitFileDescription</tt><big>(</big><em>fdesc</em>, <em>compr=False</em><big>)</big><a class="headerlink" href="#utils.splitFileDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split a file descriptor.</p>
+<p>A file descriptor is a string consisting of an initial part followed
+by a second part enclosed in parentheses.
+The second part is a space separated list of glob patterns. An example
+file descriptor is &#8216;file type text (*.ext1 *.ext2)&#8217;.
+The values of <tt class="xref py py-attr docutils literal"><span class="pre">utils.file_description</span></tt> all have this format.</p>
+<p>This function splits the file descriptor in two parts: the leading text
+and a list of global patterns.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>ftype</cite>: a file descriptor string.</li>
+<li><cite>compr</cite>: bool. If True, the compressed file types are automatically
+added.</li>
+</ul>
+<p>Returns a tuple:</p>
+<ul class="simple">
+<li><cite>desc</cite>: the file type description text</li>
+<li><cite>ext</cite>: a list of strings each starting with a &#8216;.&#8217;.</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">splitFileDescription</span><span class="p">(</span><span class="n">file_description</span><span class="p">[</span><span class="s">&#39;img&#39;</span><span class="p">])</span>
+<span class="go">(&#39;Images &#39;, [&#39;.png&#39;, &#39;.jpg&#39;, &#39;.eps&#39;, &#39;.gif&#39;, &#39;.bmp&#39;])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">splitFileDescription</span><span class="p">(</span><span class="n">file_description</span><span class="p">[</span><span class="s">&#39;pgf&#39;</span><span class="p">],</span><span class="n">compr</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">(&#39;pyFormex geometry files &#39;, [&#39;.pgf&#39;, &#39;.pgf.gz&#39;, &#39;.pgf.bz2&#39;])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.fileExtensionsFromFilter">
+<tt class="descclassname">utils.</tt><tt class="descname">fileExtensionsFromFilter</tt><big>(</big><em>fdesc</em>, <em>compr=False</em><big>)</big><a class="headerlink" href="#utils.fileExtensionsFromFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the list of file extensions from a given filter.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>fdesc</cite>: one of the values in <tt class="xref py py-attr docutils literal"><span class="pre">utils.file_description</span></tt>.</li>
+</ul>
+<p>Returns a list of strings starting with a &#8216;.&#8217;.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fileExtensionsFromFilter</span><span class="p">(</span><span class="n">file_description</span><span class="p">[</span><span class="s">&#39;ccx&#39;</span><span class="p">])</span>
+<span class="go">[&#39;.dat&#39;, &#39;.inp&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fileExtensionsFromFilter</span><span class="p">(</span><span class="n">file_description</span><span class="p">[</span><span class="s">&#39;ccx&#39;</span><span class="p">],</span><span class="n">compr</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">[&#39;.dat&#39;, &#39;.dat.gz&#39;, &#39;.dat.bz2&#39;, &#39;.inp&#39;, &#39;.inp.gz&#39;, &#39;.inp.bz2&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.fileExtensions">
+<tt class="descclassname">utils.</tt><tt class="descname">fileExtensions</tt><big>(</big><em>ftype</em>, <em>compr=False</em><big>)</big><a class="headerlink" href="#utils.fileExtensions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the list of file extensions from a given type.</p>
+<p>ftype is one of the keys in <tt class="xref py py-attr docutils literal"><span class="pre">utils.file_description</span></tt>.</p>
+<p>Returns a list of strings starting with a &#8216;.&#8217;.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fileExtensions</span><span class="p">(</span><span class="s">&#39;pgf&#39;</span><span class="p">)</span>
+<span class="go">[&#39;.pgf&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fileExtensions</span><span class="p">(</span><span class="s">&#39;pgf&#39;</span><span class="p">,</span><span class="n">compr</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">[&#39;.pgf&#39;, &#39;.pgf.gz&#39;, &#39;.pgf.bz2&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.fileTypes">
+<tt class="descclassname">utils.</tt><tt class="descname">fileTypes</tt><big>(</big><em>ftype</em>, <em>compr=False</em><big>)</big><a class="headerlink" href="#utils.fileTypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the list of file extension types for a given type.</p>
+<p>This is like fileExtensions, but the strings do not have the
+leading dot and are guaranteed to be lower case.</p>
+<p>Returns a list of normalized file types.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fileTypes</span><span class="p">(</span><span class="s">&#39;pgf&#39;</span><span class="p">)</span>
+<span class="go">[&#39;pgf&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fileTypes</span><span class="p">(</span><span class="s">&#39;pgf&#39;</span><span class="p">,</span><span class="n">compr</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">[&#39;pgf&#39;, &#39;pgf.gz&#39;, &#39;pgf.bz2&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.addCompressedTypes">
+<tt class="descclassname">utils.</tt><tt class="descname">addCompressedTypes</tt><big>(</big><em>ext</em><big>)</big><a class="headerlink" href="#utils.addCompressedTypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the defined compress types to a list of extensions</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">addCompressedTypes</span><span class="p">([</span><span class="s">&#39;.ccx&#39;</span><span class="p">,</span><span class="s">&#39;.inp&#39;</span><span class="p">])</span>
+<span class="go">[&#39;.ccx&#39;, &#39;.ccx.gz&#39;, &#39;.ccx.bz2&#39;, &#39;.inp&#39;, &#39;.inp.gz&#39;, &#39;.inp.bz2&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.fileDescription">
+<tt class="descclassname">utils.</tt><tt class="descname">fileDescription</tt><big>(</big><em>ftype</em>, <em>compr=False</em><big>)</big><a class="headerlink" href="#utils.fileDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a description of the specified file type(s).</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>ftype</cite>: a string or a list of strings. If it is a list, the return
+value will be a list of the corresponding return values for each of
+the strings in it. Each input string is converted to lower case
+and represents a file type. It can be one of the following:<ul>
+<li>a key in the <tt class="xref py py-attr docutils literal"><span class="pre">file_description</span></tt> dict: the corresponding value
+will be returned (see Examples below).</li>
+<li>a string of only alphanumerical characters: it will be interpreted
+as a file extension and the corresponding return value is
+<tt class="docutils literal"><span class="pre">FTYPE</span> <span class="pre">files</span> <span class="pre">(*.ftype)</span></tt></li>
+<li>any other string is returned as as: this allows the user to compose
+his filters himself.</li>
+</ul>
+</li>
+</ul>
+<p>Examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">formatDict</span><span class="p">(</span><span class="n">file_description</span><span class="p">))</span>
+<span class="go">all = &#39;All files (*)&#39;</span>
+<span class="go">ccx = &#39;CalCuliX files (*.dat *.inp)&#39;</span>
+<span class="go">gz = &#39;Compressed files (*.gz *.bz2)&#39;</span>
+<span class="go">dxf = &#39;AutoCAD .dxf files (*.dxf)&#39;</span>
+<span class="go">dxfall = &#39;AutoCAD .dxf or converted(*.dxf *.dxftext)&#39;</span>
+<span class="go">dxftext = &#39;Converted AutoCAD files (*.dxftext)&#39;</span>
+<span class="go">flavia = &#39;flavia results (*.flavia.msh *.flavia.res)&#39;</span>
+<span class="go">gts = &#39;GTS files (*.gts)&#39;</span>
+<span class="go">html = &#39;Web pages (*.html)&#39;</span>
+<span class="go">icon = &#39;Icons (*.xpm)&#39;</span>
+<span class="go">img = &#39;Images (*.png *.jpg *.eps *.gif *.bmp)&#39;</span>
+<span class="go">inp = &#39;Abaqus or CalCuliX input files (*.inp)&#39;</span>
+<span class="go">neu = &#39;Gambit Neutral files (*.neu)&#39;</span>
+<span class="go">off = &#39;OFF files (*.off)&#39;</span>
+<span class="go">pgf = &#39;pyFormex geometry files (*.pgf)&#39;</span>
+<span class="go">png = &#39;PNG images (*.png)&#39;</span>
+<span class="go">postproc = &#39;Postproc scripts (*_post.py *.post)&#39;</span>
+<span class="go">pyformex = &#39;pyFormex scripts (*.py *.pye)&#39;</span>
+<span class="go">pyf = &#39;pyFormex projects (*.pyf)&#39;</span>
+<span class="go">smesh = &#39;Tetgen surface mesh files (*.smesh)&#39;</span>
+<span class="go">stl = &#39;STL files (*.stl)&#39;</span>
+<span class="go">stlb = &#39;Binary STL files (*.stl)&#39;</span>
+<span class="go">surface = &#39;Surface models (*.off *.gts *.stl *.neu *.smesh *.vtp *.vtk)&#39;</span>
+<span class="go">tetgen = &#39;Tetgen files (*.poly *.smesh *.ele *.face *.edge *.node *.neigh)&#39;</span>
+<span class="go">vtk = &#39;All VTK types (*.vtk *.vtp)&#39;</span>
+<span class="go">vtp = &#39;vtkPolyData file (*.vtp)&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fileDescription</span><span class="p">(</span><span class="s">&#39;img&#39;</span><span class="p">)</span>
+<span class="go">&#39;Images (*.png *.jpg *.eps *.gif *.bmp)&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fileDescription</span><span class="p">([</span><span class="s">&#39;stl&#39;</span><span class="p">,</span><span class="s">&#39;all&#39;</span><span class="p">])</span>
+<span class="go">[&#39;STL files (*.stl)&#39;, &#39;All files (*)&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fileDescription</span><span class="p">(</span><span class="s">&#39;doc&#39;</span><span class="p">)</span>
+<span class="go">&#39;DOC files (*.doc)&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fileDescription</span><span class="p">(</span><span class="s">&#39;inp&#39;</span><span class="p">)</span>
+<span class="go">&#39;Abaqus or CalCuliX input files (*.inp)&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fileDescription</span><span class="p">(</span><span class="s">&#39;*.inp&#39;</span><span class="p">)</span>
+<span class="go">&#39;*.inp&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fileDescription</span><span class="p">([</span><span class="s">&#39;stl&#39;</span><span class="p">,</span><span class="s">&#39;all&#39;</span><span class="p">],</span><span class="n">compr</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">[&#39;STL files  (*.stl *.stl.gz *.stl.bz2)&#39;, &#39;All files  (* *.gz *.bz2)&#39;]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -535,15 +840,6 @@ These have the same meaning as in <a class="reference internal" href="#utils.spl
 </dd></dl>
 
 <dl class="function">
-<dt id="utils.projectName">
-<tt class="descclassname">utils.</tt><tt class="descname">projectName</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#utils.projectName" title="Permalink to this definition">¶</a></dt>
-<dd><p>Derive a project name from a file name.
-`
-The project name is the basename of the file without the extension.
-It is equivalent with splitFilename(fn)[1]</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="utils.tildeExpand">
 <tt class="descclassname">utils.</tt><tt class="descname">tildeExpand</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#utils.tildeExpand" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform tilde expansion on a filename.</p>
@@ -554,43 +850,43 @@ the bash tilde expansion, such as strings in the configuration file.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="utils.all_image_extensions">
-<tt class="descclassname">utils.</tt><tt class="descname">all_image_extensions</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.all_image_extensions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a list with all known image extensions.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.fileExtensions">
-<tt class="descclassname">utils.</tt><tt class="descname">fileExtensions</tt><big>(</big><em>ftype</em><big>)</big><a class="headerlink" href="#utils.fileExtensions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the list of file extensions from a given type.</p>
-<p>ftype is one of the keys in <tt class="xref py py-attr docutils literal"><span class="pre">utils.file_description</span></tt>.</p>
-<p>Returns a list of strings starting with a &#8216;.&#8217;.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.fileDescription">
-<tt class="descclassname">utils.</tt><tt class="descname">fileDescription</tt><big>(</big><em>ftype</em><big>)</big><a class="headerlink" href="#utils.fileDescription" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a description of the specified file type.</p>
-<p>The description of known types are listed in a dict file_description.
-If the type is unknown, the returned string has the form
-<tt class="docutils literal"><span class="pre">TYPE</span> <span class="pre">files</span> <span class="pre">(*.type)</span></tt></p>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.fileType">
-<tt class="descclassname">utils.</tt><tt class="descname">fileType</tt><big>(</big><em>ftype</em><big>)</big><a class="headerlink" href="#utils.fileType" title="Permalink to this definition">¶</a></dt>
+<dt id="utils.normalizeFileType">
+<tt class="descclassname">utils.</tt><tt class="descname">normalizeFileType</tt><big>(</big><em>ftype</em><big>)</big><a class="headerlink" href="#utils.normalizeFileType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Normalize a filetype string.</p>
 <p>The string is converted to lower case and a leading dot is removed.
 This makes it fit for use with a filename extension.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fileType</span><span class="p">(</span><span class="s">&#39;pdf&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">normalizeFileType</span><span class="p">(</span><span class="s">&#39;pdf&#39;</span><span class="p">)</span>
 <span class="go">&#39;pdf&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fileType</span><span class="p">(</span><span class="s">&#39;.pdf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normalizeFileType</span><span class="p">(</span><span class="s">&#39;.pdf&#39;</span><span class="p">)</span>
 <span class="go">&#39;pdf&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fileType</span><span class="p">(</span><span class="s">&#39;PDF&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normalizeFileType</span><span class="p">(</span><span class="s">&#39;PDF&#39;</span><span class="p">)</span>
 <span class="go">&#39;pdf&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fileType</span><span class="p">(</span><span class="s">&#39;.PDF&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normalizeFileType</span><span class="p">(</span><span class="s">&#39;.PDF&#39;</span><span class="p">)</span>
 <span class="go">&#39;pdf&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.splitExt">
+<tt class="descclassname">utils.</tt><tt class="descname">splitExt</tt><big>(</big><em>fname</em><big>)</big><a class="headerlink" href="#utils.splitExt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split a file name in a=name and extension.</p>
+<p>The extension is the part of the file name starting from the last dot.
+However, if the file extension is &#8216;.gz&#8217; or &#8216;.bz2&#8217;, and the filename
+contains another dot, the extension is set to the filename part after
+starting at the penultimate dot.
+This allows for transparent handling of compressed files.</p>
+<p>Returns a tuple (name,ext).</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">splitExt</span><span class="p">(</span><span class="s">&#39;pyformex&#39;</span><span class="p">)</span>
+<span class="go">(&#39;pyformex&#39;, &#39;&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">splitExt</span><span class="p">(</span><span class="s">&#39;pyformex.pgf&#39;</span><span class="p">)</span>
+<span class="go">(&#39;pyformex&#39;, &#39;.pgf&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">splitExt</span><span class="p">(</span><span class="s">&#39;pyformex.pgf.gz&#39;</span><span class="p">)</span>
+<span class="go">(&#39;pyformex&#39;, &#39;.pgf.gz&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">splitExt</span><span class="p">(</span><span class="s">&#39;pyformex.gz&#39;</span><span class="p">)</span>
+<span class="go">(&#39;pyformex&#39;, &#39;.gz&#39;)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -599,12 +895,10 @@ This makes it fit for use with a filename extension.</p>
 <dt id="utils.fileTypeFromExt">
 <tt class="descclassname">utils.</tt><tt class="descname">fileTypeFromExt</tt><big>(</big><em>fname</em><big>)</big><a class="headerlink" href="#utils.fileTypeFromExt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Derive the file type from the file name.</p>
-<p>The derived file type is the file extension part in lower case and
-without the leading dot.</p>
+<p>The derived file type is the file extension part as obtained by
+<a class="reference internal" href="#utils.splitExt" title="utils.splitExt"><tt class="xref py py-func docutils literal"><span class="pre">splitExt()</span></tt></a> without the leading dot and in lower case.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fileTypeFromExt</span><span class="p">(</span><span class="s">&#39;pyformex.pdf&#39;</span><span class="p">)</span>
-<span class="go">&#39;pdf&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fileTypeFromExt</span><span class="p">(</span><span class="s">&#39;pyformex&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fileTypeFromExt</span><span class="p">(</span><span class="s">&#39;pyformex&#39;</span><span class="p">)</span>
 <span class="go">&#39;&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fileTypeFromExt</span><span class="p">(</span><span class="s">&#39;pyformex.pgf&#39;</span><span class="p">)</span>
 <span class="go">&#39;pgf&#39;</span>
@@ -614,6 +908,42 @@ without the leading dot.</p>
 <span class="go">&#39;gz&#39;</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.fileTypeComprFromExt">
+<tt class="descclassname">utils.</tt><tt class="descname">fileTypeComprFromExt</tt><big>(</big><em>fname</em><big>)</big><a class="headerlink" href="#utils.fileTypeComprFromExt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Derive the file type and compression from the file name.</p>
+<p>This derives the uncompressed file type and the compression type
+from the file name extension.</p>
+<p>It first computes fileTypeFromExt(fname) and then splits it in the
+pure filetype and the compression type.</p>
+<p>Returns a tuple:</p>
+<ul class="simple">
+<li><cite>filetype</cite>: the file type of the uncompressed file</li>
+<li><cite>compressed</cite>: the compression type: either &#8216;&#8217;, &#8216;.gz&#8217; or &#8216;.bz2&#8217;.
+If the file was uncompressed, this is an empty string.</li>
+</ul>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fileTypeComprFromExt</span><span class="p">(</span><span class="s">&#39;pyformex&#39;</span><span class="p">)</span>
+<span class="go">(&#39;&#39;, &#39;&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fileTypeComprFromExt</span><span class="p">(</span><span class="s">&#39;pyformex.pgf&#39;</span><span class="p">)</span>
+<span class="go">(&#39;pgf&#39;, &#39;&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fileTypeComprFromExt</span><span class="p">(</span><span class="s">&#39;pyformex.pgf.gz&#39;</span><span class="p">)</span>
+<span class="go">(&#39;pgf&#39;, &#39;gz&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fileTypeComprFromExt</span><span class="p">(</span><span class="s">&#39;pyformex.gz&#39;</span><span class="p">)</span>
+<span class="go">(&#39;gz&#39;, &#39;&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.projectName">
+<tt class="descclassname">utils.</tt><tt class="descname">projectName</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#utils.projectName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Derive a project name from a file name.
+`
+The project name is the basename of the file without the extension.
+It is equivalent with splitFilename(fn)[1]</p>
 </dd></dl>
 
 <dl class="function">
@@ -672,7 +1002,7 @@ The changed files are guaranteed not to start with a &#8216;/&#8217;.</p>
 <dl class="function">
 <dt id="utils.matchNone">
 <tt class="descclassname">utils.</tt><tt class="descname">matchNone</tt><big>(</big><em>regexps</em>, <em>target</em><big>)</big><a class="headerlink" href="#utils.matchNone" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check whether targes matches none of the regular expressions.</p>
+<dd><p>Check whether target matches none of the regular expressions.</p>
 </dd></dl>
 
 <dl class="function">
@@ -732,6 +1062,27 @@ more info.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="utils.tempName">
+<tt class="descclassname">utils.</tt><tt class="descname">tempName</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#utils.tempName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a temporary file.</p>
+<p>Creates a temporary file by calling <tt class="xref py py-func docutils literal"><span class="pre">tempfile.mkstemp()</span></tt> with the
+specified arguments and returns the file name. It is equivalent with:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kargs</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The user is responsible for removing the temporary file.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tmp</span> <span class="o">=</span> <span class="n">tempName</span><span class="p">(</span><span class="s">&#39;.txt&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">open</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;hallo&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="go">hallo</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="utils.setSaneLocale">
 <tt class="descclassname">utils.</tt><tt class="descname">setSaneLocale</tt><big>(</big><em>localestring=''</em><big>)</big><a class="headerlink" href="#utils.setSaneLocale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set a sane local configuration for LC_NUMERIC.</p>
@@ -778,6 +1129,16 @@ the specified char.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="utils.framedText">
+<tt class="descclassname">utils.</tt><tt class="descname">framedText</tt><big>(</big><em>text, padding=[0, 2, 0, 2], border=[1, 2, 1, 2], margin=[0, 0, 0, 0], borderchar='####', cornerchar=None, width=None, adjust='l'</em><big>)</big><a class="headerlink" href="#utils.framedText" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a text with a frame around it.</p>
+<ul class="simple">
+<li><cite>adjust</cite>: &#8216;l&#8217;, &#8216;c&#8217; or &#8216;r&#8217;: makes the text lines be adjusted to the
+left, center or right.</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
 <dt id="utils.dos2unix">
 <tt class="descclassname">utils.</tt><tt class="descname">dos2unix</tt><big>(</big><em>infile</em><big>)</big><a class="headerlink" href="#utils.dos2unix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a text file to unix line endings.</p>
@@ -791,40 +1152,49 @@ the specified char.</p>
 
 <dl class="function">
 <dt id="utils.gzip">
-<tt class="descclassname">utils.</tt><tt class="descname">gzip</tt><big>(</big><em>filename</em>, <em>gzipped=None</em>, <em>remove=True</em>, <em>level=5</em><big>)</big><a class="headerlink" href="#utils.gzip" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compress a file in gzip format.</p>
+<tt class="descclassname">utils.</tt><tt class="descname">gzip</tt><big>(</big><em>filename</em>, <em>gzipped=None</em>, <em>remove=True</em>, <em>level=5</em>, <em>compr='gz'</em><big>)</big><a class="headerlink" href="#utils.gzip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compress a file in gzip/bzip2 format.</p>
 <p>Parameters:</p>
 <ul class="simple">
 <li><cite>filename</cite>: input file name</li>
 <li><cite>gzipped</cite>: output file name. If not specified, it will be set to
-the input file name + &#8216;.gz&#8217;. An existing output file will be
+the input file name + &#8216;.&#8217; + <cite>compr</cite>. An existing output file will be
 overwritten.</li>
 <li><cite>remove</cite>: if True (default), the input file is removed after
 succesful compression</li>
-<li><cite>level</cite>: an integer from 1..9: gzip compression level. Higher values
-result in smaller files, but require longer compression times. The
-default of 5 gives already a fairly good compression ratio.</li>
+<li><cite>level</cite>: an integer from 1..9: gzip/bzip2 compression level.
+Higher values result in smaller files, but require longer compression
+times. The default of 5 gives already a fairly good compression ratio.</li>
+<li><cite>compr</cite>: &#8216;gz&#8217; or &#8216;bz2&#8217;: the compression algorithm to be used.
+The default is &#8216;gz&#8217; for gzip compression. Setting to &#8216;bz2&#8217; will use
+bzip2 compression.</li>
 </ul>
 <p>Returns the name of the compressed file.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="utils.gunzip">
-<tt class="descclassname">utils.</tt><tt class="descname">gunzip</tt><big>(</big><em>filename</em>, <em>unzipped=None</em>, <em>remove=True</em><big>)</big><a class="headerlink" href="#utils.gunzip" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uncompress a file in gzip format.</p>
+<tt class="descclassname">utils.</tt><tt class="descname">gunzip</tt><big>(</big><em>filename</em>, <em>unzipped=None</em>, <em>remove=True</em>, <em>compr='gz'</em><big>)</big><a class="headerlink" href="#utils.gunzip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uncompress a file in gzip/bzip2 format.</p>
 <p>Parameters:</p>
 <ul class="simple">
-<li><cite>filename</cite>: compressed input file name (usually ending in &#8216;.gz&#8217;)</li>
+<li><cite>filename</cite>: compressed input file name (usually ending in &#8216;.gz&#8217; or
+&#8216;.bz2&#8217;)</li>
 <li><cite>unzipped</cite>: output file name. If not specified and <cite>filename</cite> ends with
-&#8216;.gz&#8217;, it will be set to the <cite>filename</cite> with the &#8216;.gz&#8217; removed.
-If an empty string is specified or it is not specified and the filename
-does not end in &#8216;.gz&#8217;, the name of a temporary file is generated. Since
-you will normally want to read something from the decompressed file, this
-temporary file is not deleted after closing. It is up to the user to
-delete it (using the returned file name) when he is ready with it.</li>
+&#8216;.gz&#8217; or &#8216;.bz2&#8217;, it will be set to the <cite>filename</cite> with the &#8216;.gz&#8217; or
+&#8216;.bz2&#8217; removed.
+If an empty string is specified or it is not specified and <cite>filename</cite>
+does not end in &#8216;.gz&#8217; or &#8216;.bz2&#8217;, the name of a temporary file is
+generated. Since you will normally want to read something from the
+decompressed file, this temporary file is not deleted after closing.
+It is up to the user to delete it (using the returned file name) when
+he is ready with it.</li>
 <li><cite>remove</cite>: if True (default), the input file is removed after
 succesful decompression. You probably want to set this to False when
 decompressing to a temporary file.</li>
+<li><cite>compr</cite>: &#8216;gz&#8217; or &#8216;bz2&#8217;: the compression algorithm used in the input
+file. If <cite>filename</cite> ends with either &#8216;.gz&#8217; or &#8216;.bz2&#8217;, it is automatically
+set from the extension. Else, the default &#8216;gz&#8217; is used.</li>
 </ul>
 <p>Returns the name of the decompressed file.</p>
 </dd></dl>
@@ -980,19 +1350,25 @@ stripped off, unless strip=False is specified.</p>
 
 <dl class="function">
 <dt id="utils.selectDict">
-<tt class="descclassname">utils.</tt><tt class="descname">selectDict</tt><big>(</big><em>d</em>, <em>keys</em><big>)</big><a class="headerlink" href="#utils.selectDict" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">utils.</tt><tt class="descname">selectDict</tt><big>(</big><em>d</em>, <em>keys</em>, <em>remove=False</em><big>)</big><a class="headerlink" href="#utils.selectDict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dict with the items whose key is in keys.</p>
 <ul class="simple">
-<li><cite>d</cite>: a dict where all the keys are strings.</li>
+<li><cite>d</cite>: a dict.</li>
 <li><cite>keys</cite>: a set of key values, can be a list or another dict.</li>
+<li><cite>remove</cite>: if True, the selected keys are removed from the input dict.</li>
 </ul>
-<p>The return value is a dict with all the items from d whose key
-is in keys.
+<p>Returns a dict with all the items from d whose key is in keys.
 See <a class="reference internal" href="#utils.removeDict" title="utils.removeDict"><tt class="xref py py-func docutils literal"><span class="pre">removeDict()</span></tt></a> for the complementary operation.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">c</span><span class="p">,</span><span class="n">c</span><span class="o">*</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">)])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">selectDict</span><span class="p">(</span><span class="n">d</span><span class="p">,[</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
-<span class="go">{0: 0, 1: 1, 4: 16}</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">c</span><span class="p">,</span><span class="n">c</span><span class="o">*</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">selectDict</span><span class="p">(</span><span class="n">d</span><span class="p">,[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">{0: 0, 2: 4}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="go">{0: 0, 1: 1, 2: 4, 3: 9}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">selectDict</span><span class="p">(</span><span class="n">d</span><span class="p">,[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span><span class="n">remove</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">{0: 0, 2: 4}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="go">{1: 1, 3: 9}</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1044,11 +1420,18 @@ is in keys.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="utils.sortedKeys">
-<tt class="descclassname">utils.</tt><tt class="descname">sortedKeys</tt><big>(</big><em>d</em><big>)</big><a class="headerlink" href="#utils.sortedKeys" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the sorted keys of a dict.</p>
-<p>It is required that the keys of the dict be sortable, e.g. all strings
-or integers.</p>
+<dt id="utils.formatDict">
+<tt class="descclassname">utils.</tt><tt class="descname">formatDict</tt><big>(</big><em>d</em><big>)</big><a class="headerlink" href="#utils.formatDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format a dict in Python source representation.</p>
+<p>Each (key,value) pair is formatted on a line of the form:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">key</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+<p>If all the keys are strings containing only characters that are
+allowed in Python variable names, the resulting text is a legal
+Python script to define the items in the dict. It can be stored
+on a file and executed.</p>
+<p>This format is the storage format of the Config class.</p>
 </dd></dl>
 
 <dl class="function">
@@ -1102,6 +1485,7 @@ To search other containers, add handlers to iterate over their contents:</p>
 </dd></dl>
 
 </div>
+</div>
 
 
           </div>
@@ -1119,10 +1503,10 @@ To search other containers, add handlers to iterate over their contents:</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="geomtools.html" title="16. geomtools — Basic geometrical operations."
+          <a href="varray.html" title="12. varray — Working with variable width tables."
              >next</a> |</li>
         <li class="right" >
-          <a href="project.html" title="14. project — project.py"
+          <a href="elements.html" title="10. elements — Definition of elements."
              >previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
@@ -1132,7 +1516,7 @@ To search other containers, add handlers to iterate over their contents:</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Nov 30, 2013.
+      Last updated on Feb 06, 2014.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

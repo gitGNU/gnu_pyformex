@@ -100,6 +100,15 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">5. <tt class="docutils literal"><span class="pre">draw</span></tt> &#8212; Create 3D graphical representations.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-draw">5.1. Classes defined in module draw</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-draw">5.2. Functions defined in module draw</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="script.html"
@@ -146,8 +155,11 @@
 rendering capabilities of pyFormex. The full contents of this module
 is available to scripts running in the pyFormex GUI without the need
 to import it.</p>
-<p><tt class="docutils literal"><span class="pre">Classes</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">draw</span></tt></p>
-<p><tt class="docutils literal"><span class="pre">Functions</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">draw</span></tt></p>
+<div class="section" id="classes-defined-in-module-draw">
+<h2>5.1. Classes defined in module draw<a class="headerlink" href="#classes-defined-in-module-draw" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="functions-defined-in-module-draw">
+<h2>5.2. Functions defined in module draw<a class="headerlink" href="#functions-defined-in-module-draw" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="draw.closeGui">
 <tt class="descclassname">draw.</tt><tt class="descname">closeGui</tt><big>(</big><big>)</big><a class="headerlink" href="#draw.closeGui" title="Permalink to this definition">¶</a></dt>
@@ -340,19 +352,39 @@ or if the user already closed the dialog, None is returned.</p>
 
 <dl class="function">
 <dt id="draw.askFilename">
-<tt class="descclassname">draw.</tt><tt class="descname">askFilename</tt><big>(</big><em>cur=None</em>, <em>filter='All files (*.*)'</em>, <em>exist=True</em>, <em>multi=False</em>, <em>change=True</em>, <em>timeout=None</em><big>)</big><a class="headerlink" href="#draw.askFilename" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">draw.</tt><tt class="descname">askFilename</tt><big>(</big><em>cur=None</em>, <em>filter='all'</em>, <em>exist=True</em>, <em>multi=False</em>, <em>compr=False</em>, <em>change=True</em>, <em>timeout=None</em>, <em>caption=None</em><big>)</big><a class="headerlink" href="#draw.askFilename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ask for a file name or multiple file names using a file dialog.</p>
-<p>cur is a directory or filename. All the files matching the filter in that
-directory (or that file&#8217;s directory) will be shown.
-If cur is a file, it will be selected as the current filename.</p>
-<p>Unless the user cancels the operation, or the change parameter was set to
-False, the parent directory of the selected file will become the new
-working directory.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>cur</cite>: directory or filename. Specifies the starting point of the
+selection dialog. All the files in the specified directory (or the
+file&#8217;s directory) matching the <cite>filter</cite> will be presented to the user.
+If cur is a file, it will be set as the initial selection.</li>
+<li><cite>filter</cite>: string or list of strings. Specifies a (set of) filter(s) to
+be applied on the files in the selected directory. This allows to
+narrow down the selection possibilities. The <cite>filter</cite> argument is passed
+through the <a class="reference internal" href="utils.html#utils.fileDescription" title="utils.fileDescription"><tt class="xref py py-func docutils literal"><span class="pre">utils.fileDescription()</span></tt></a> function to create the
+actual filter set. If multiple filters are included, the user can
+select the appropriate one from the dialog.</li>
+<li><cite>multi</cite>: bool. If True, allows the user to pick multiple file names
+in a single operation.</li>
+<li><cite>compr</cite>: bool. If True, the specified pattern will be extended with
+the corresponding compressed file types.</li>
+<li><cite>change</cite>: bool. If True (default), the current working directory will
+be changed to the parent directory of the selection.</li>
+<li><cite>caption</cite>: string. This string will be displayed as the dialog title
+instead of the default one.</li>
+<li><cite>timeout</cite>: float. If specified, the dialog will timeout after the
+specified number of seconds.</li>
+</ul>
+<p>Returns nothing if the user cancels the operation. Else, a single file
+name is returned if <cite>multi</cite> is False, or a list of file names if
+<cite>multi</cite> is True.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="draw.askNewFilename">
-<tt class="descclassname">draw.</tt><tt class="descname">askNewFilename</tt><big>(</big><em>cur=None</em>, <em>filter='All files (*.*)'</em>, <em>timeout=None</em><big>)</big><a class="headerlink" href="#draw.askNewFilename" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">draw.</tt><tt class="descname">askNewFilename</tt><big>(</big><em>cur=None</em>, <em>filter='All files (*.*)'</em>, <em>compr=False</em>, <em>timeout=None</em>, <em>caption=None</em><big>)</big><a class="headerlink" href="#draw.askNewFilename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ask a single new filename.</p>
 <p>This is a convenience function for calling askFilename with the
 arguments exist=False.</p>
@@ -360,7 +392,7 @@ arguments exist=False.</p>
 
 <dl class="function">
 <dt id="draw.askDirname">
-<tt class="descclassname">draw.</tt><tt class="descname">askDirname</tt><big>(</big><em>path=None</em>, <em>change=True</em>, <em>byfile=False</em><big>)</big><a class="headerlink" href="#draw.askDirname" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">draw.</tt><tt class="descname">askDirname</tt><big>(</big><em>path=None</em>, <em>change=True</em>, <em>byfile=False</em>, <em>caption=None</em><big>)</big><a class="headerlink" href="#draw.askDirname" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interactively select a directory and change the current workdir.</p>
 <p>The user is asked to select a directory through the standard file
 dialog. Initially, the dialog shows all the subdirectories in the
@@ -1185,11 +1217,31 @@ might also be set by the user.</p>
 
 <dl class="function">
 <dt id="draw.exportWebGL">
-<tt class="descclassname">draw.</tt><tt class="descname">exportWebGL</tt><big>(</big><em>fn</em>, <em>title=None</em>, <em>description=None</em>, <em>keywords=None</em>, <em>author=None</em>, <em>createdby=50</em><big>)</big><a class="headerlink" href="#draw.exportWebGL" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">draw.</tt><tt class="descname">exportWebGL</tt><big>(</big><em>fn</em>, <em>createdby=50</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#draw.exportWebGL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export the current scene to WebGL.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>fn</cite> : string: the (relative or absolute) filename of the .html, .js
+and .pgf files comprising the WebGL model. It can contain a directory
+path and an any extension. The latter is dropped and not used.</li>
+<li><cite>createdby</cite>: int: width in pixels of the &#8216;Created by pyFormex&#8217; logo
+appearing on the page. If &lt; 0, the logo is displayed at its natural
+width. If 0, the logo is suppressed.</li>
+<li><cite>**kargs</cite>: any other keyword parameteris passed to the
+<tt class="xref py py-class docutils literal"><span class="pre">WebGL</span></tt> initialization. The <cite>name</cite> can not be specified: it
+is derived from the <cite>fn</cite> parameter.</li>
+</ul>
+<p>Returns the absolute pathname of the generated .html file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="draw.multiWebGL">
+<tt class="descclassname">draw.</tt><tt class="descname">multiWebGL</tt><big>(</big><em>name=None</em>, <em>fn=None</em>, <em>title=None</em>, <em>description=None</em>, <em>keywords=None</em>, <em>author=None</em>, <em>createdby=50</em><big>)</big><a class="headerlink" href="#draw.multiWebGL" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export the current scene to WebGL.</p>
 <p>fn is the (relative or absolute) pathname of the .html and .js files to be
 created.</p>
-<p>Returns the absolute pathname of the generated .html file.</p>
+<p>When the export is finished, returns the absolute pathname of the
+generated .html file. Else, returns None.</p>
 </dd></dl>
 
 <dl class="function">
@@ -1203,10 +1255,11 @@ created.</p>
 
 <dl class="function">
 <dt id="draw.showHTML">
-<tt class="descclassname">draw.</tt><tt class="descname">showHTML</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#draw.showHTML" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">draw.</tt><tt class="descname">showHTML</tt><big>(</big><em>fn=None</em><big>)</big><a class="headerlink" href="#draw.showHTML" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show a local .html file in the browser</p>
 <ul class="simple">
-<li><cite>fn</cite>: name of a local .html file</li>
+<li><cite>fn</cite>: name of a local .html file. If unspecified, a FileSelection
+dialog is popped up to select a file.</li>
 </ul>
 </dd></dl>
 
@@ -1220,6 +1273,7 @@ This function may be called to reset most of the GUI components
 to their default operating mode.</p>
 </dd></dl>
 
+</div>
 </div>
 
 
@@ -1251,7 +1305,7 @@ to their default operating mode.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Nov 30, 2013.
+      Last updated on Feb 06, 2014.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

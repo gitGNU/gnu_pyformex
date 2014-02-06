@@ -47,8 +47,9 @@ def checkVersion(lib):
 accelerate = gui = False
 if pf.options:
     # testing for not False makes other values than T/F (like None) pass
-    accelerate = pf.cfg['uselib'] is not False
-    gui = pf.options.gui
+    # test for existence of these is for sphinx
+    accelerate = pf.cfg.get('uselib',False) is not False
+    gui = hasattr(pf.options,'gui') and pf.options.gui
 
 
 if accelerate:

@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>19. widgets — A collection of custom widgets used in the pyFormex GUI &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>24. widgets — A collection of custom widgets used in the pyFormex GUI &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -54,8 +54,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="20. menu — Menus for the pyFormex GUI." href="menu.html" />
-    <link rel="prev" title="18. filewrite — Write geometry to file in a whole number of formats." href="filewrite.html" />
+    <link rel="next" title="25. menu — Menus for the pyFormex GUI." href="menu.html" />
+    <link rel="prev" title="23. software — software.py" href="software.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -78,10 +78,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="menu.html" title="20. menu — Menus for the pyFormex GUI."
+          <a href="menu.html" title="25. menu — Menus for the pyFormex GUI."
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="filewrite.html" title="18. filewrite — Write geometry to file in a whole number of formats."
+          <a href="software.html" title="23. software — software.py"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
@@ -100,13 +100,22 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">24. <tt class="docutils literal"><span class="pre">widgets</span></tt> &#8212; A collection of custom widgets used in the pyFormex GUI</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-widgets">24.1. Classes defined in module widgets</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-widgets">24.2. Functions defined in module widgets</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="filewrite.html"
-                        title="previous chapter">18. <tt class="docutils literal docutils literal docutils literal"><span class="pre">filewrite</span></tt> &#8212; Write geometry to file in a whole number of formats.</a></p>
+  <p class="topless"><a href="software.html"
+                        title="previous chapter">23. <tt class="docutils literal docutils literal docutils literal"><span class="pre">software</span></tt> &#8212; software.py</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="menu.html"
-                        title="next chapter">20. <tt class="docutils literal docutils literal docutils literal"><span class="pre">menu</span></tt> &#8212; Menus for the pyFormex GUI.</a></p>
+                        title="next chapter">25. <tt class="docutils literal docutils literal docutils literal"><span class="pre">menu</span></tt> &#8212; Menus for the pyFormex GUI.</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -141,12 +150,13 @@
           <div class="body">
             
   <div class="section" id="module-widgets">
-<span id="widgets-a-collection-of-custom-widgets-used-in-the-pyformex-gui"></span><span id="sec-ref-widgets"></span><h1>19. <a class="reference internal" href="#module-widgets" title="widgets: A collection of custom widgets used in the pyFormex GUI"><tt class="xref py py-mod docutils literal"><span class="pre">widgets</span></tt></a> &#8212; A collection of custom widgets used in the pyFormex GUI<a class="headerlink" href="#module-widgets" title="Permalink to this headline">¶</a></h1>
+<span id="widgets-a-collection-of-custom-widgets-used-in-the-pyformex-gui"></span><span id="sec-ref-widgets"></span><h1>24. <a class="reference internal" href="#module-widgets" title="widgets: A collection of custom widgets used in the pyFormex GUI"><tt class="xref py py-mod docutils literal"><span class="pre">widgets</span></tt></a> &#8212; A collection of custom widgets used in the pyFormex GUI<a class="headerlink" href="#module-widgets" title="Permalink to this headline">¶</a></h1>
 <p>The widgets in this module were primarily created in function of the
 pyFormex GUI. The user can apply them to change the GUI or to add
 interactive widgets to his scripts. Of course he can also use all the
 Qt widgets directly.</p>
-<p><tt class="docutils literal"><span class="pre">Classes</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">widgets</span></tt></p>
+<div class="section" id="classes-defined-in-module-widgets">
+<h2>24.1. Classes defined in module widgets<a class="headerlink" href="#classes-defined-in-module-widgets" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="widgets.InputItem">
 <em class="property">class </em><tt class="descclassname">widgets.</tt><tt class="descname">InputItem</tt><big>(</big><em>name</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#widgets.InputItem" title="Permalink to this definition">¶</a></dt>
@@ -937,10 +947,11 @@ Clicking on the button executes a function responsible for changing
 the value.</p>
 <p>Extra parameters:</p>
 <ul class="simple">
-<li><cite>func</cite>: the function to call when the button is clicked. The current
-input value is passed as an argument. The function should return the
-value to be set, or None if it is to be unchanged.
-If no function is specified, the value can not be changed.</li>
+<li><cite>func</cite>: the function to call when the button is clicked. The function
+receives the input field as argument. From this argument, the fields
+attributes like name, value, text, can be retrieved.
+The function should return the value to be set, or None if it is to be
+unchanged. If no function is specified, the value can not be changed.</li>
 </ul>
 <dl class="method">
 <dt id="widgets.InputButton.value">
@@ -1047,10 +1058,10 @@ be retrieved.</li>
 
 <dl class="class">
 <dt id="widgets.InputFile">
-<em class="property">class </em><tt class="descclassname">widgets.</tt><tt class="descname">InputFile</tt><big>(</big><em>name</em>, <em>value</em>, <em>pattern='*'</em>, <em>exist=False</em>, <em>multi=False</em>, <em>dir=False</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#widgets.InputFile" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">widgets.</tt><tt class="descname">InputFile</tt><big>(</big><em>name</em>, <em>value</em>, <em>pattern='*'</em>, <em>exist=False</em>, <em>multi=False</em>, <em>dir=False</em>, <em>compr=False</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#widgets.InputFile" title="Permalink to this definition">¶</a></dt>
 <dd><p>An input item to select a file.</p>
 <p>The following arguments are passed to the FileSelection widget:
-path,pattern,exist,multi,dir.</p>
+value,pattern,exist,multi,dir,compr.</p>
 <dl class="method">
 <dt id="widgets.InputFile.value">
 <tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#widgets.InputFile.value" title="Permalink to this definition">¶</a></dt>
@@ -1083,7 +1094,7 @@ values when the widget&#8217;s acceptData() is called.</li>
 <li>a setValue(dict) method that sets the widgets values to those
 specified in the dict.</li>
 </ul>
-<p>The return value of this item is an ODict.</p>
+<p>The return value of this item is an OrderedDict.</p>
 <dl class="method">
 <dt id="widgets.InputWidget.text">
 <tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#widgets.InputWidget.text" title="Permalink to this definition">¶</a></dt>
@@ -1528,7 +1539,7 @@ adjust the column widths.</p>
 
 <dl class="class">
 <dt id="widgets.FileSelection">
-<em class="property">class </em><tt class="descclassname">widgets.</tt><tt class="descname">FileSelection</tt><big>(</big><em>path='.'</em>, <em>pattern='*'</em>, <em>exist=False</em>, <em>multi=False</em>, <em>dir=False</em>, <em>button=None</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#widgets.FileSelection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">widgets.</tt><tt class="descname">FileSelection</tt><big>(</big><em>path='.'</em>, <em>pattern='*'</em>, <em>exist=False</em>, <em>multi=False</em>, <em>dir=False</em>, <em>compr=False</em>, <em>button=None</em>, <em>caption=None</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#widgets.FileSelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>A file selection dialog.</p>
 <p>The FileSelection dialog is a special purpose complex dialog widget
 that allows to interactively select a file or directory from the file
@@ -1546,13 +1557,10 @@ explanation string can be place in front:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="s">&#39;Image files (*.png *.jpg)&#39;</span>
 </pre></div>
 </div>
-<p>The function <a class="reference internal" href="utils.html#utils.fileDescription" title="utils.fileDescription"><tt class="xref py py-func docutils literal"><span class="pre">utils.fileDescription()</span></tt></a> can be used to create some
-strings for common classes of files.</p>
-<p>As a convenience, if a string starts with a &#8216;.&#8217;, the remainder of the
-string will be used as a lookup key in utils.fileDescription to get
-the actual string to be used. Thus, pattern=&#8217;.png&#8217; will filter all
-&#8216;.png&#8217; files, and pattern=&#8217;.img&#8217; will filter all image files in any
-of the supported formats.</p>
+<p>The <cite>pattern</cite> argument is passed to the <a class="reference internal" href="utils.html#utils.fileDescription" title="utils.fileDescription"><tt class="xref py py-func docutils literal"><span class="pre">utils.fileDescription()</span></tt></a>
+function, together with the <cite>compr</cite> argument, to generate the actual
+pattern set. This allows the creation of filters for common file types
+with a minimal input.</p>
 <p>If a list of multiple strings is given, a combo box will allow the
 user to select between one of them.</p>
 </li>
@@ -1565,6 +1573,10 @@ to allow only a single file.</p>
 <li><p class="first"><cite>dir</cite>: bool: if True, only directories can be selected. If dir evaluates
 to True, but is not the value True, either a directory or a filename can
 be selected.</p>
+</li>
+<li><p class="first"><cite>compr</cite>: bool: if True, compressed files of the specified type will be
+selectable as well. This is passed together with the <cite>pattern</cite> argument
+to the <a class="reference internal" href="utils.html#utils.fileDescription" title="utils.fileDescription"><tt class="xref py py-func docutils literal"><span class="pre">utils.fileDescription()</span></tt></a> to generate the actual patterns.</p>
 </li>
 <li><p class="first"><cite>button</cite>: string: the label to be displayed on the accept button. The
 default is set to &#8216;Save&#8217; if new files are allowed or &#8216;Open&#8217; if only
@@ -1922,7 +1934,9 @@ gui.image.image_formats_qtr provides a list.</p>
 
 </dd></dl>
 
-<p><tt class="docutils literal"><span class="pre">Functions</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">widgets</span></tt></p>
+</div>
+<div class="section" id="functions-defined-in-module-widgets">
+<h2>24.2. Functions defined in module widgets<a class="headerlink" href="#functions-defined-in-module-widgets" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="widgets.pyformexIcon">
 <tt class="descclassname">widgets.</tt><tt class="descname">pyformexIcon</tt><big>(</big><em>icon</em><big>)</big><a class="headerlink" href="#widgets.pyformexIcon" title="Permalink to this definition">¶</a></dt>
@@ -2098,6 +2112,7 @@ is given, it is set to the LAST button.</p>
 </dd></dl>
 
 </div>
+</div>
 
 
           </div>
@@ -2115,10 +2130,10 @@ is given, it is set to the LAST button.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="menu.html" title="20. menu — Menus for the pyFormex GUI."
+          <a href="menu.html" title="25. menu — Menus for the pyFormex GUI."
              >next</a> |</li>
         <li class="right" >
-          <a href="filewrite.html" title="18. filewrite — Write geometry to file in a whole number of formats."
+          <a href="software.html" title="23. software — software.py"
              >previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
@@ -2128,7 +2143,7 @@ is given, it is set to the LAST button.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Nov 30, 2013.
+      Last updated on Feb 06, 2014.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

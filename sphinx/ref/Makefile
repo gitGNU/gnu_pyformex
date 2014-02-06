@@ -31,21 +31,25 @@
 # of Sphinx are not yet powerful enough.
 #
 
-COREMODULES= adjacency arraytools collection config connectivity coords \
-  elements fileread filewrite \
-  flatkeydb formex geometry geomtools mesh mydict odict olist project \
-  script sendmail simple timer utils varray
-GUIMODULES= actors camera canvas colors colorscale decors draw gluttext \
+COREMODULES= adjacency arraytools attributes \
+  collection config connectivity coords coordsys \
+  elements field fileread filewrite flatkeydb formex \
+  geometry geomfile geomtools \
+  mesh multi mydict odict olist project \
+  script sendmail simple software timer utils varray
+GUIMODULES= actors colors colorscale decors draw gluttext \
   image imageViewer imagearray marks menu\
   appMenu toolbar viewport widgets
+OPENGLMODULES= camera canvas drawable objectdialog \
+  renderer scene shader
 PLUGINMODULES= calpy_itf cameratools ccxdat ccxinp curve datareader dxf export \
   fe fe_abq fe_post flavia \
   inertia isopar isosurface lima neu_exp nurbs objects \
   partition plot2d polygon polynomial \
   postproc properties pyformex_gts section2d sectionize \
-  tetgen tools trisurface turtle units vascularsweepingmesher webgl
-#AUTOREF= $(COREMODULES) $(addprefix gui., $(GUIMODULES)) $(addprefix plugins., $(PLUGINMODULES))
-AUTOREF= $(COREMODULES) $(GUIMODULES) $(PLUGINMODULES)
+  tetgen tools trisurface turtle units vascularsweepingmesher web webgl
+
+AUTOREF= $(COREMODULES) $(GUIMODULES) $(OPENGLMODULES) $(PLUGINMODULES)
 AUTOSRC= $(addsuffix .rst, ${AUTOREF})
 
 MANUALREF = #geometry
@@ -59,7 +63,7 @@ PY2RST=../py2rst.py
 
 # where to search for source files
 PYFORMEXDIR=../pyformex
-vpath %.py $(addprefix ../../pyformex, / /gui/ /plugins/)
+vpath %.py $(addprefix ../../pyformex, / /opengl/ /gui/ /plugins/)
 
 
 all: ${AUTOSRC}

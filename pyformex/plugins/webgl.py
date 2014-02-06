@@ -562,7 +562,7 @@ r.render();
         Parameters:
 
         - `body`: an HTML section to be put in the body
-        - `createdby: int. If not zero, a logo 'Created by pyFormex'
+        - `createdby`: int. If not zero, a logo 'Created by pyFormex'
           will appear on the page. If > 0, it specifies the width of the
           logo field. If < 0, the logo will be displayed on its natural
           width.

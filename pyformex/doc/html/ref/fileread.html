@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>17. fileread — Read geometry from file in a whole number of formats. &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>18. fileread — Read geometry from file in a whole number of formats. &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -54,8 +54,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="18. filewrite — Write geometry to file in a whole number of formats." href="filewrite.html" />
-    <link rel="prev" title="16. geomtools — Basic geometrical operations." href="geomtools.html" />
+    <link rel="next" title="19. filewrite — Write geometry to file in a whole number of formats." href="filewrite.html" />
+    <link rel="prev" title="17. geomtools — Basic geometrical operations." href="geomtools.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -78,10 +78,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="filewrite.html" title="18. filewrite — Write geometry to file in a whole number of formats."
+          <a href="filewrite.html" title="19. filewrite — Write geometry to file in a whole number of formats."
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="geomtools.html" title="16. geomtools — Basic geometrical operations."
+          <a href="geomtools.html" title="17. geomtools — Basic geometrical operations."
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
@@ -100,13 +100,22 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">18. <tt class="docutils literal"><span class="pre">fileread</span></tt> &#8212; Read geometry from file in a whole number of formats.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-fileread">18.1. Classes defined in module fileread</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-fileread">18.2. Functions defined in module fileread</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="geomtools.html"
-                        title="previous chapter">16. <tt class="docutils literal"><span class="pre">geomtools</span></tt> &#8212; Basic geometrical operations.</a></p>
+                        title="previous chapter">17. <tt class="docutils literal"><span class="pre">geomtools</span></tt> &#8212; Basic geometrical operations.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="filewrite.html"
-                        title="next chapter">18. <tt class="docutils literal"><span class="pre">filewrite</span></tt> &#8212; Write geometry to file in a whole number of formats.</a></p>
+                        title="next chapter">19. <tt class="docutils literal docutils literal"><span class="pre">filewrite</span></tt> &#8212; Write geometry to file in a whole number of formats.</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -141,15 +150,18 @@
           <div class="body">
             
   <div class="section" id="module-fileread">
-<span id="fileread-read-geometry-from-file-in-a-whole-number-of-formats"></span><span id="sec-ref-fileread"></span><h1>17. <a class="reference internal" href="#module-fileread" title="fileread: Read geometry from file in a whole number of formats."><tt class="xref py py-mod docutils literal"><span class="pre">fileread</span></tt></a> &#8212; Read geometry from file in a whole number of formats.<a class="headerlink" href="#module-fileread" title="Permalink to this headline">¶</a></h1>
+<span id="fileread-read-geometry-from-file-in-a-whole-number-of-formats"></span><span id="sec-ref-fileread"></span><h1>18. <a class="reference internal" href="#module-fileread" title="fileread: Read geometry from file in a whole number of formats."><tt class="xref py py-mod docutils literal"><span class="pre">fileread</span></tt></a> &#8212; Read geometry from file in a whole number of formats.<a class="headerlink" href="#module-fileread" title="Permalink to this headline">¶</a></h1>
 <p>This module defines basic routines to read geometrical data
 from a file and the specialized importers to read files in a number of
 well known standardized formats.</p>
 <p>The basic routines are very versatile as well as optimized (using the version
 in the pyFormex C-library) and allow to easily create new exporters for
 other formats.</p>
-<p><tt class="docutils literal"><span class="pre">Classes</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">fileread</span></tt></p>
-<p><tt class="docutils literal"><span class="pre">Functions</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">fileread</span></tt></p>
+<div class="section" id="classes-defined-in-module-fileread">
+<h2>18.1. Classes defined in module fileread<a class="headerlink" href="#classes-defined-in-module-fileread" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="functions-defined-in-module-fileread">
+<h2>18.2. Functions defined in module fileread<a class="headerlink" href="#functions-defined-in-module-fileread" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="fileread.getParams">
 <tt class="descclassname">fileread.</tt><tt class="descname">getParams</tt><big>(</big><em>line</em><big>)</big><a class="headerlink" href="#fileread.getParams" title="Permalink to this definition">¶</a></dt>
@@ -220,6 +232,13 @@ Returns a nodes,elems tuple.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="fileread.read_gts">
+<tt class="descclassname">fileread.</tt><tt class="descname">read_gts</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#fileread.read_gts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a GTS surface mesh.</p>
+<p>Return a coords,edges,faces tuple.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="fileread.read_stl_bin">
 <tt class="descclassname">fileread.</tt><tt class="descname">read_stl_bin</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#fileread.read_stl_bin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a binary stl.</p>
@@ -244,6 +263,7 @@ Returns a nodes,elems tuple.</p>
 </dd></dl>
 
 </div>
+</div>
 
 
           </div>
@@ -261,10 +281,10 @@ Returns a nodes,elems tuple.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="filewrite.html" title="18. filewrite — Write geometry to file in a whole number of formats."
+          <a href="filewrite.html" title="19. filewrite — Write geometry to file in a whole number of formats."
              >next</a> |</li>
         <li class="right" >
-          <a href="geomtools.html" title="16. geomtools — Basic geometrical operations."
+          <a href="geomtools.html" title="17. geomtools — Basic geometrical operations."
              >previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
@@ -274,7 +294,7 @@ Returns a nodes,elems tuple.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Nov 30, 2013.
+      Last updated on Feb 06, 2014.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

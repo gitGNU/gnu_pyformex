@@ -97,7 +97,7 @@ def deprecation(message):
 class Process(subprocess.Popen):
     """A subprocess for running an external command.
 
-    This is a subclass of Python's :class`subprocess.Popen` class, providing
+    This is a subclass of Python's :class:`subprocess.Popen` class, providing
     some extra functionality:
 
     - It stores the specified command
@@ -129,7 +129,7 @@ class Process(subprocess.Popen):
       continue, but it will not be able to retrieve the standard output
       and standard error of the process.
 
-    Any other parameters are passed to the :class`subprocess.Popen`
+    Any other parameters are passed to the :class:`subprocess.Popen`
     initialization. See the Python documentation for details.
     Some interesting ones:
 
@@ -138,10 +138,10 @@ class Process(subprocess.Popen):
       poses a security risk.
     - `executable`: string. The full path name of the program to be executed.
       This can be used to specify the real executable if the program specified
-      in `cmd` is not in your PATH, or, with `shell`==True, if you want
+      in `cmd` is not in your PATH, or, with `shell == True`, if you want
       to use another shell than the default. Note that Process uses a default
-      shell equal to the SHELL variable, while Python uses '/bin/sh' by default.
-    - `stdout`,`stderr`: Standard output and error output. See Python docs
+      shell equal to the SHELL variable, while Python uses `/bin/sh` by default.
+    - `stdout`, `stderr`: Standard output and error output. See Python docs
       for subprocess.Popen. Here, they default to PIPE, allowing the caller
       to grab the output of the command. Set them to an open file object to
       redirect output to that file.
@@ -471,7 +471,7 @@ def splitFileDescription(fdesc,compr=False):
     A file descriptor is a string consisting of an initial part followed
     by a second part enclosed in parentheses.
     The second part is a space separated list of glob patterns. An example
-    file descriptor is 'file type text (*.ext1 *.ext2)'.
+    file descriptor is 'file type text (\*.ext1 \*.ext2)'.
     The values of :attr:`utils.file_description` all have this format.
 
     This function splits the file descriptor in two parts: the leading text
@@ -570,7 +570,7 @@ def fileDescription(ftype,compr=False):
       the strings in it. Each input string is converted to lower case
       and represents a file type. It can be one of the following:
 
-      - a key in the :var:`file_description` dict: the corresponding value
+      - a key in the :attr:`file_description` dict: the corresponding value
         will be returned (see Examples below).
       - a string of only alphanumerical characters: it will be interpreted
         as a file extension and the corresponding return value is

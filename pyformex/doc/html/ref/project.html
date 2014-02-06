@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>14. project — project.py &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>15. project — project.py &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -54,8 +54,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="15. utils — A collection of miscellaneous utility functions." href="utils.html" />
-    <link rel="prev" title="13. simple — Predefined geometries with a simple shape." href="simple.html" />
+    <link rel="next" title="16. geomfile — Handling pyFormex Geometry Files" href="geomfile.html" />
+    <link rel="prev" title="14. simple — Predefined geometries with a simple shape." href="simple.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -78,10 +78,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="utils.html" title="15. utils — A collection of miscellaneous utility functions."
+          <a href="geomfile.html" title="16. geomfile — Handling pyFormex Geometry Files"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="simple.html" title="13. simple — Predefined geometries with a simple shape."
+          <a href="simple.html" title="14. simple — Predefined geometries with a simple shape."
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
@@ -100,13 +100,22 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">15. <tt class="docutils literal"><span class="pre">project</span></tt> &#8212; project.py</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-project">15.1. Classes defined in module project</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-project">15.2. Functions defined in module project</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="simple.html"
-                        title="previous chapter">13. <tt class="docutils literal docutils literal"><span class="pre">simple</span></tt> &#8212; Predefined geometries with a simple shape.</a></p>
+                        title="previous chapter">14. <tt class="docutils literal docutils literal"><span class="pre">simple</span></tt> &#8212; Predefined geometries with a simple shape.</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="utils.html"
-                        title="next chapter">15. <tt class="docutils literal docutils literal"><span class="pre">utils</span></tt> &#8212; A collection of miscellaneous utility functions.</a></p>
+  <p class="topless"><a href="geomfile.html"
+                        title="next chapter">16. <tt class="docutils literal docutils literal docutils literal"><span class="pre">geomfile</span></tt> &#8212; Handling pyFormex Geometry Files</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -141,12 +150,13 @@
           <div class="body">
             
   <div class="section" id="module-project">
-<span id="project-project-py"></span><span id="sec-ref-project"></span><h1>14. <a class="reference internal" href="#module-project" title="project: project.py"><tt class="xref py py-mod docutils literal"><span class="pre">project</span></tt></a> &#8212; project.py<a class="headerlink" href="#module-project" title="Permalink to this headline">¶</a></h1>
+<span id="project-project-py"></span><span id="sec-ref-project"></span><h1>15. <a class="reference internal" href="#module-project" title="project: project.py"><tt class="xref py py-mod docutils literal"><span class="pre">project</span></tt></a> &#8212; project.py<a class="headerlink" href="#module-project" title="Permalink to this headline">¶</a></h1>
 <p>Functions for managing a project in pyFormex.</p>
-<p><tt class="docutils literal"><span class="pre">Classes</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">project</span></tt></p>
+<div class="section" id="classes-defined-in-module-project">
+<h2>15.1. Classes defined in module project<a class="headerlink" href="#classes-defined-in-module-project" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="project.Project">
-<em class="property">class </em><tt class="descclassname">project.</tt><tt class="descname">Project</tt><big>(</big><em>filename=None</em>, <em>access='wr'</em>, <em>convert=True</em>, <em>signature='pyFormex 1.0.0~a1 (1.0.0~a1)'</em>, <em>compression=5</em>, <em>binary=True</em>, <em>data={}</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#project.Project" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">project.</tt><tt class="descname">Project</tt><big>(</big><em>filename=None</em>, <em>access='wr'</em>, <em>convert=True</em>, <em>signature=u'pyFormex 1.0.0~a1 (release-0.9.1-501-g5a8c834)'</em>, <em>compression=5</em>, <em>binary=True</em>, <em>data={}</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#project.Project" title="Permalink to this definition">¶</a></dt>
 <dd><p>Project: a persistent storage of pyFormex data.</p>
 <p>A pyFormex Project is a regular Python dict that can contain named data
 of any kind, and can be saved to a file to create persistence over
@@ -286,9 +296,7 @@ may override values read from the file.</p>
 </ul>
 <p>Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">d</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span><span class="n">e</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;f&#39;</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span><span class="s">&#39;g&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">tempfile</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mktemp</span><span class="p">(</span><span class="s">&#39;.pyf&#39;</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="n">Project</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="n">Project</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">P</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="nb">dict</span><span class="o">.</span><span class="n">__str__</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
 <span class="go">{&#39;a&#39;: 1, &#39;c&#39;: 3, &#39;b&#39;: 2, &#39;e&#39;: {&#39;g&#39;: 5, &#39;f&#39;: 4}, &#39;d&#39;: [1, 2, 3]}</span>
@@ -325,7 +333,7 @@ Returns the open file if succesfull.</p>
 
 <dl class="method">
 <dt id="project.Project.load">
-<tt class="descname">load</tt><big>(</big><em>try_resolve=False</em>, <em>quiet=False</em><big>)</big><a class="headerlink" href="#project.Project.load" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">load</tt><big>(</big><em>try_resolve=True</em>, <em>quiet=False</em><big>)</big><a class="headerlink" href="#project.Project.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load a project from file.</p>
 <p>The loaded definitions will update the current project.</p>
 </dd></dl>
@@ -383,7 +391,9 @@ of the data inside.</p>
 
 </dd></dl>
 
-<p><tt class="docutils literal"><span class="pre">Functions</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">project</span></tt></p>
+</div>
+<div class="section" id="functions-defined-in-module-project">
+<h2>15.2. Functions defined in module project<a class="headerlink" href="#functions-defined-in-module-project" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="project.find_global">
 <tt class="descclassname">project.</tt><tt class="descname">find_global</tt><big>(</big><em>module</em>, <em>name</em><big>)</big><a class="headerlink" href="#project.find_global" title="Permalink to this definition">¶</a></dt>
@@ -396,6 +406,7 @@ of the data inside.</p>
 <dd><p>Load data from pickle file f.</p>
 </dd></dl>
 
+</div>
 </div>
 
 
@@ -414,10 +425,10 @@ of the data inside.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="utils.html" title="15. utils — A collection of miscellaneous utility functions."
+          <a href="geomfile.html" title="16. geomfile — Handling pyFormex Geometry Files"
              >next</a> |</li>
         <li class="right" >
-          <a href="simple.html" title="13. simple — Predefined geometries with a simple shape."
+          <a href="simple.html" title="14. simple — Predefined geometries with a simple shape."
              >previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
@@ -427,7 +438,7 @@ of the data inside.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Nov 30, 2013.
+      Last updated on Feb 06, 2014.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

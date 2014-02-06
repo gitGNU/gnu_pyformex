@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>23. decors — 2D decorations for the OpenGL canvas. &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>77. decors — 2D decorations for the OpenGL canvas. &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -54,8 +54,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="24. marks — OpenGL marks for annotating 3D actors." href="marks.html" />
-    <link rel="prev" title="22. actors — OpenGL actors for populating the 3D scene." href="actors.html" />
+    <link rel="next" title="78. marks — OpenGL marks for annotating 3D actors." href="marks.html" />
+    <link rel="prev" title="76. actors — OpenGL actors for populating the 3D scene." href="actors.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -78,10 +78,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="marks.html" title="24. marks — OpenGL marks for annotating 3D actors."
+          <a href="marks.html" title="78. marks — OpenGL marks for annotating 3D actors."
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="actors.html" title="22. actors — OpenGL actors for populating the 3D scene."
+          <a href="actors.html" title="76. actors — OpenGL actors for populating the 3D scene."
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
@@ -100,13 +100,22 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">77. <tt class="docutils literal"><span class="pre">decors</span></tt> &#8212; 2D decorations for the OpenGL canvas.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-decors">77.1. Classes defined in module decors</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-decors">77.2. Functions defined in module decors</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="actors.html"
-                        title="previous chapter">22. <tt class="docutils literal docutils literal docutils literal"><span class="pre">actors</span></tt> &#8212; OpenGL actors for populating the 3D scene.</a></p>
+                        title="previous chapter">76. <tt class="docutils literal docutils literal"><span class="pre">actors</span></tt> &#8212; OpenGL actors for populating the 3D scene.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="marks.html"
-                        title="next chapter">24. <tt class="docutils literal"><span class="pre">marks</span></tt> &#8212; OpenGL marks for annotating 3D actors.</a></p>
+                        title="next chapter">78. <tt class="docutils literal"><span class="pre">marks</span></tt> &#8212; OpenGL marks for annotating 3D actors.</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -141,10 +150,11 @@
           <div class="body">
             
   <div class="section" id="module-decors">
-<span id="decors-2d-decorations-for-the-opengl-canvas"></span><span id="sec-ref-decors"></span><h1>23. <a class="reference internal" href="#module-decors" title="decors: 2D decorations for the OpenGL canvas."><tt class="xref py py-mod docutils literal"><span class="pre">decors</span></tt></a> &#8212; 2D decorations for the OpenGL canvas.<a class="headerlink" href="#module-decors" title="Permalink to this headline">¶</a></h1>
+<span id="decors-2d-decorations-for-the-opengl-canvas"></span><span id="sec-ref-decors"></span><h1>77. <a class="reference internal" href="#module-decors" title="decors: 2D decorations for the OpenGL canvas."><tt class="xref py py-mod docutils literal"><span class="pre">decors</span></tt></a> &#8212; 2D decorations for the OpenGL canvas.<a class="headerlink" href="#module-decors" title="Permalink to this headline">¶</a></h1>
 <p>2D decorations are objects that are drawn in 2D on the flat canvas
 instead of through the 3D OpenGL engine.</p>
-<p><tt class="docutils literal"><span class="pre">Classes</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">decors</span></tt></p>
+<div class="section" id="classes-defined-in-module-decors">
+<h2>77.1. Classes defined in module decors<a class="headerlink" href="#classes-defined-in-module-decors" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="decors.Decoration">
 <em class="property">class </em><tt class="descclassname">decors.</tt><tt class="descname">Decoration</tt><big>(</big><em>x</em>, <em>y</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#decors.Decoration" title="Permalink to this definition">¶</a></dt>
@@ -356,7 +366,7 @@ current canvas line width is used.</li>
 If &gt; 0, labels will be displayed at <cite>nlabel</cite> interval borders, if
 possible. The number of labels displayed thus will be <tt class="docutils literal"><span class="pre">nlabel+1</span></tt>,
 or less if the labels would otherwise be too close or overlapping.
-If 0, no labels are shown. 
+If 0, no labels are shown.
 If &lt; 0 (default), a default number of labels is shown.</li>
 <li><cite>font</cite>, <cite>size</cite>: font and size to be used for the labels</li>
 <li><cite>dec</cite>: int: number of decimals to be used in the labels</li>
@@ -578,7 +588,9 @@ string or a tuple of 3 strings.</li>
 
 </dd></dl>
 
-<p><tt class="docutils literal"><span class="pre">Functions</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">decors</span></tt></p>
+</div>
+<div class="section" id="functions-defined-in-module-decors">
+<h2>77.2. Functions defined in module decors<a class="headerlink" href="#functions-defined-in-module-decors" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="decors.drawDot">
 <tt class="descclassname">decors.</tt><tt class="descname">drawDot</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#decors.drawDot" title="Permalink to this definition">¶</a></dt>
@@ -615,6 +627,7 @@ ny=0 draws 1 horizontal line (at y1). ny=-1 draws no horizontal lines.</p>
 </dd></dl>
 
 </div>
+</div>
 
 
           </div>
@@ -632,10 +645,10 @@ ny=0 draws 1 horizontal line (at y1). ny=-1 draws no horizontal lines.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="marks.html" title="24. marks — OpenGL marks for annotating 3D actors."
+          <a href="marks.html" title="78. marks — OpenGL marks for annotating 3D actors."
              >next</a> |</li>
         <li class="right" >
-          <a href="actors.html" title="22. actors — OpenGL actors for populating the 3D scene."
+          <a href="actors.html" title="76. actors — OpenGL actors for populating the 3D scene."
              >previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
@@ -645,7 +658,7 @@ ny=0 draws 1 horizontal line (at y1). ny=-1 draws no horizontal lines.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Nov 30, 2013.
+      Last updated on Feb 06, 2014.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

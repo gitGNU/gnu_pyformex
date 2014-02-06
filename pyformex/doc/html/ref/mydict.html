@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>70. mydict — &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>81. mydict — &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -54,8 +54,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="71. odict — Specialized dictionary type structures." href="odict.html" />
-    <link rel="prev" title="69. olist — Some convenient shortcuts for common list operations." href="olist.html" />
+    <link rel="next" title="82. odict — Specialized dictionary types." href="odict.html" />
+    <link rel="prev" title="80. olist — Some convenient shortcuts for common list operations." href="olist.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -78,10 +78,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="odict.html" title="71. odict — Specialized dictionary type structures."
+          <a href="odict.html" title="82. odict — Specialized dictionary types."
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="olist.html" title="69. olist — Some convenient shortcuts for common list operations."
+          <a href="olist.html" title="80. olist — Some convenient shortcuts for common list operations."
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
@@ -100,13 +100,22 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">81. <tt class="docutils literal"><span class="pre">mydict</span></tt> &#8212;</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-mydict">81.1. Classes defined in module mydict</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-mydict">81.2. Functions defined in module mydict</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="olist.html"
-                        title="previous chapter">69. <tt class="docutils literal"><span class="pre">olist</span></tt> &#8212; Some convenient shortcuts for common list operations.</a></p>
+                        title="previous chapter">80. <tt class="docutils literal docutils literal"><span class="pre">olist</span></tt> &#8212; Some convenient shortcuts for common list operations.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="odict.html"
-                        title="next chapter">71. <tt class="docutils literal docutils literal"><span class="pre">odict</span></tt> &#8212; Specialized dictionary type structures.</a></p>
+                        title="next chapter">82. <tt class="docutils literal docutils literal"><span class="pre">odict</span></tt> &#8212; Specialized dictionary types.</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -141,12 +150,13 @@
           <div class="body">
             
   <div class="section" id="module-mydict">
-<span id="mydict"></span><span id="sec-ref-mydict"></span><h1>70. <a class="reference internal" href="#module-mydict" title="mydict"><tt class="xref py py-mod docutils literal"><span class="pre">mydict</span></tt></a> &#8212;<a class="headerlink" href="#module-mydict" title="Permalink to this headline">¶</a></h1>
+<span id="mydict"></span><span id="sec-ref-mydict"></span><h1>81. <a class="reference internal" href="#module-mydict" title="mydict"><tt class="xref py py-mod docutils literal"><span class="pre">mydict</span></tt></a> &#8212;<a class="headerlink" href="#module-mydict" title="Permalink to this headline">¶</a></h1>
 <p>CDict is a Dict with lookup cascading into the next level Dict&#8217;s
 if the key is not found in the CDict itself.</p>
 <p>(C) 2005,2008 Benedict Verhegghe
 Distributed under the GNU GPL version 3 or later</p>
-<p><tt class="docutils literal"><span class="pre">Classes</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">mydict</span></tt></p>
+<div class="section" id="classes-defined-in-module-mydict">
+<h2>81.1. Classes defined in module mydict<a class="headerlink" href="#classes-defined-in-module-mydict" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="mydict.Dict">
 <em class="property">class </em><tt class="descclassname">mydict.</tt><tt class="descname">Dict</tt><big>(</big><em>data={}</em>, <em>default=None</em><big>)</big><a class="headerlink" href="#mydict.Dict" title="Permalink to this definition">¶</a></dt>
@@ -224,7 +234,7 @@ default value if get found a KeyError.</p>
 
 <dl class="class">
 <dt id="mydict.CDict">
-<em class="property">class </em><tt class="descclassname">mydict.</tt><tt class="descname">CDict</tt><big>(</big><em>data={}</em>, <em>default=&lt;function returnNone at 0x2c9a1b8&gt;</em><big>)</big><a class="headerlink" href="#mydict.CDict" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">mydict.</tt><tt class="descname">CDict</tt><big>(</big><em>data={}</em>, <em>default=&lt;function returnNone at 0x9fd6f50&gt;</em><big>)</big><a class="headerlink" href="#mydict.CDict" title="Permalink to this definition">¶</a></dt>
 <dd><p>A cascading Dict: properties not in Dict are searched in all Dicts.</p>
 <p>This is equivalent to the Dict class, except that if a key is not found
 and the CDict has items with values that are themselves instances
@@ -260,22 +270,9 @@ default value if get found a KeyError.</p>
 
 </dd></dl>
 
-<p><tt class="docutils literal"><span class="pre">Functions</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">mydict</span></tt></p>
-<dl class="function">
-<dt id="mydict.formatDict">
-<tt class="descclassname">mydict.</tt><tt class="descname">formatDict</tt><big>(</big><em>d</em><big>)</big><a class="headerlink" href="#mydict.formatDict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Format a dict in Python source representation.</p>
-<p>Each (key,value) pair is formatted on a line of the form:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">key</span> <span class="o">=</span> <span class="n">value</span>
-</pre></div>
 </div>
-<p>If all the keys are strings containing only characters that are
-allowed in Python variable names, the resulting text is a legal
-Python script to define the items in the dict. It can be stored
-on a file and executed.</p>
-<p>This format is the storage format of the Config class.</p>
-</dd></dl>
-
+<div class="section" id="functions-defined-in-module-mydict">
+<h2>81.2. Functions defined in module mydict<a class="headerlink" href="#functions-defined-in-module-mydict" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="mydict.cascade">
 <tt class="descclassname">mydict.</tt><tt class="descname">cascade</tt><big>(</big><em>d</em>, <em>key</em><big>)</big><a class="headerlink" href="#mydict.cascade" title="Permalink to this definition">¶</a></dt>
@@ -298,6 +295,7 @@ and the first matching key found is returned.</p>
 </dd></dl>
 
 </div>
+</div>
 
 
           </div>
@@ -315,10 +313,10 @@ and the first matching key found is returned.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="odict.html" title="71. odict — Specialized dictionary type structures."
+          <a href="odict.html" title="82. odict — Specialized dictionary types."
              >next</a> |</li>
         <li class="right" >
-          <a href="olist.html" title="69. olist — Some convenient shortcuts for common list operations."
+          <a href="olist.html" title="80. olist — Some convenient shortcuts for common list operations."
              >previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
@@ -328,7 +326,7 @@ and the first matching key found is returned.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Nov 30, 2013.
+      Last updated on Feb 06, 2014.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

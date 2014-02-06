@@ -32,7 +32,6 @@ import pyformex as pf
 from pyformex.coords import *
 from pyformex import utils
 import os
-from pyformex.plugins.trisurface import TriSurface
 from pyformex.multi import multitask
 
 if not utils.hasExternal('gts-bin'):
@@ -124,6 +123,8 @@ def gtsset(self,surf,op,filt='',ext='.tmp',curve=False,check=False,verbose=False
     Returns the resulting TriSurface (curve=False), or a plex-2 Formex
     (curve=True), or None if the input surfaces do not intersect.
     """
+    # import here to avoid circular import
+    from pyformex.plugins.trisurface import TriSurface
     op = {'+':'union', '-':'diff', '*':'inter'}[op]
     options = ''
     if curve:

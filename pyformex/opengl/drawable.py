@@ -78,7 +78,7 @@ class Drawable(Attributes):
     This is the basic drawable object. It can not have extras nor
     children. The geometry is initialized by a coords,elems
     tuple. This class is normally not added directly to renderer,
-    but through one of the *Actor classes.
+    but through one of the \*Actor classes.
     The passed parameters should at least contain vbo.
     """
 

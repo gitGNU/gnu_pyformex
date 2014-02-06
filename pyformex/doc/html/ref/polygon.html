@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>55. polygon — Polygonal facets. &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>54. polygon — Polygonal facets. &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -54,8 +54,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="56. polynomial — Polynomials" href="polynomial.html" />
-    <link rel="prev" title="54. plot2d — plot2d.py" href="plot2d.html" />
+    <link rel="next" title="55. polynomial — Polynomials" href="polynomial.html" />
+    <link rel="prev" title="53. plot2d — plot2d.py" href="plot2d.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -78,10 +78,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="polynomial.html" title="56. polynomial — Polynomials"
+          <a href="polynomial.html" title="55. polynomial — Polynomials"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="plot2d.html" title="54. plot2d — plot2d.py"
+          <a href="plot2d.html" title="53. plot2d — plot2d.py"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
@@ -100,13 +100,22 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">54. <tt class="docutils literal"><span class="pre">polygon</span></tt> &#8212; Polygonal facets.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-polygon">54.1. Classes defined in module polygon</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-polygon">54.2. Functions defined in module polygon</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="plot2d.html"
-                        title="previous chapter">54. <tt class="docutils literal docutils literal docutils literal"><span class="pre">plot2d</span></tt> &#8212; plot2d.py</a></p>
+                        title="previous chapter">53. <tt class="docutils literal docutils literal docutils literal"><span class="pre">plot2d</span></tt> &#8212; plot2d.py</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="polynomial.html"
-                        title="next chapter">56. <tt class="docutils literal"><span class="pre">polynomial</span></tt> &#8212; Polynomials</a></p>
+                        title="next chapter">55. <tt class="docutils literal"><span class="pre">polynomial</span></tt> &#8212; Polynomials</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -141,8 +150,9 @@
           <div class="body">
             
   <div class="section" id="module-polygon">
-<span id="polygon-polygonal-facets"></span><span id="sec-ref-polygon"></span><h1>55. <a class="reference internal" href="#module-polygon" title="polygon: Polygonal facets."><tt class="xref py py-mod docutils literal"><span class="pre">polygon</span></tt></a> &#8212; Polygonal facets.<a class="headerlink" href="#module-polygon" title="Permalink to this headline">¶</a></h1>
-<p><tt class="docutils literal"><span class="pre">Classes</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">polygon</span></tt></p>
+<span id="polygon-polygonal-facets"></span><span id="sec-ref-polygon"></span><h1>54. <a class="reference internal" href="#module-polygon" title="polygon: Polygonal facets."><tt class="xref py py-mod docutils literal"><span class="pre">polygon</span></tt></a> &#8212; Polygonal facets.<a class="headerlink" href="#module-polygon" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="classes-defined-in-module-polygon">
+<h2>54.1. Classes defined in module polygon<a class="headerlink" href="#classes-defined-in-module-polygon" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="polygon.Polygon">
 <em class="property">class </em><tt class="descclassname">polygon.</tt><tt class="descname">Polygon</tt><big>(</big><em>border</em>, <em>normal=2</em>, <em>holes=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#polygon.Polygon" title="Permalink to this definition">¶</a></dt>
@@ -655,19 +665,78 @@ the maximum size are not rescaled.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="polygon.Polygon.addField">
+<tt class="descname">addField</tt><big>(</big><em>fldtype</em>, <em>data</em>, <em>fldname</em><big>)</big><a class="headerlink" href="#polygon.Polygon.addField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a data field to the geometry.</p>
+<p>Add a scalar or vectorial field defined over the domain of the
+Geometry. This creates a <tt class="xref py py-class docutils literal"><span class="pre">Field</span></tt> instance with the specified
+parameters and adds it to the Geometry object.
+Fields stored inside a Geometry object are exported to PGF file
+whenever the object is exported.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>fldtype</cite>, <cite>data</cite>, <cite>fldname</cite>: are passed together with the
+Geometry object to the Field initialization. See <tt class="xref py py-class docutils literal"><span class="pre">Field</span></tt>
+for details.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="polygon.Polygon.add_field">
+<tt class="descname">add_field</tt><big>(</big><em>field</em><big>)</big><a class="headerlink" href="#polygon.Polygon.add_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Low level function to add a Field</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="polygon.Polygon.convertField">
+<tt class="descname">convertField</tt><big>(</big><em>fldname</em>, <em>totype</em>, <em>toname</em><big>)</big><a class="headerlink" href="#polygon.Polygon.convertField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the data field with the specified name.</p>
+<p>If the data field does not exist, returns None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="polygon.Polygon.getField">
+<tt class="descname">getField</tt><big>(</big><em>fldname</em><big>)</big><a class="headerlink" href="#polygon.Polygon.getField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the data field with the specified name.</p>
+<p>If the data field does not exist, returns None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="polygon.Polygon.delField">
+<tt class="descname">delField</tt><big>(</big><em>fldname</em><big>)</big><a class="headerlink" href="#polygon.Polygon.delField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the Field with the given name.</p>
+<p>A nonexisting name is silently ignored.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="polygon.Polygon.write">
-<tt class="descname">write</tt><big>(</big><em>fil</em>, <em>sep=' '</em>, <em>mode='w'</em><big>)</big><a class="headerlink" href="#polygon.Polygon.write" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write</tt><big>(</big><em>filename</em>, <em>sep=' '</em>, <em>mode='w'</em><big>)</big><a class="headerlink" href="#polygon.Polygon.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a Geometry to a .pgf file.</p>
-<p>If fil is a string, a file with that name is opened. Else fil should
-be an open file.
-The Geometry is then written to that file in a native format, using
-sep as separator between the coordinates.
-If fil is a string, the file is closed prior to returning.</p>
+<p>This writes the Geometry to a pyFormex Geometry File (PGF) with
+the specified name.</p>
+<p>It is a convenient shorthand for:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">script</span><span class="o">.</span><span class="n">writeGeomFile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="polygon.Polygon.read">
+<em class="property">classmethod </em><tt class="descname">read</tt><big>(</big><em>clas</em>, <em>filename</em><big>)</big><a class="headerlink" href="#polygon.Polygon.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a Geometry from a PGF file.</p>
+<p>This reads a single object (the object) from a PGF file
+and returns it.</p>
+<p>It is a convenient shorthand for:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">script</span><span class="o">.</span><span class="n">readGeomFile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </dd></dl>
 
-<p><tt class="docutils literal"><span class="pre">Functions</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">polygon</span></tt></p>
+</div>
+<div class="section" id="functions-defined-in-module-polygon">
+<h2>54.2. Functions defined in module polygon<a class="headerlink" href="#functions-defined-in-module-polygon" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="polygon.projected">
 <tt class="descclassname">polygon.</tt><tt class="descname">projected</tt><big>(</big><em>X</em>, <em>N</em><big>)</big><a class="headerlink" href="#polygon.projected" title="Permalink to this definition">¶</a></dt>
@@ -676,14 +745,7 @@ If fil is a string, the file is closed prior to returning.</p>
 The last coordinate will however (approximately) be zero.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="polygon.delaunay">
-<tt class="descclassname">polygon.</tt><tt class="descname">delaunay</tt><big>(</big><em>X</em><big>)</big><a class="headerlink" href="#polygon.delaunay" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Delaunay triangulation of the specified Coords.</p>
-<p>While the Coords are 3d, only the first 2 components are used.</p>
-<p>Returns a TriSurface with the Delaunay trinagulation in the x-y plane.</p>
-</dd></dl>
-
+</div>
 </div>
 
 
@@ -702,10 +764,10 @@ The last coordinate will however (approximately) be zero.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="polynomial.html" title="56. polynomial — Polynomials"
+          <a href="polynomial.html" title="55. polynomial — Polynomials"
              >next</a> |</li>
         <li class="right" >
-          <a href="plot2d.html" title="54. plot2d — plot2d.py"
+          <a href="plot2d.html" title="53. plot2d — plot2d.py"
              >previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
@@ -715,7 +777,7 @@ The last coordinate will however (approximately) be zero.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Nov 30, 2013.
+      Last updated on Feb 06, 2014.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

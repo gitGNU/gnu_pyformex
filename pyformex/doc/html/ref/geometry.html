@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7. geometry — A generic interface to the Coords transformation methods &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>8. geometry — A generic interface to the Coords transformation methods &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -54,8 +54,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="8. mesh — Finite element meshes in pyFormex." href="mesh.html" />
-    <link rel="prev" title="6. colors — Playing with colors." href="colors.html" />
+    <link rel="next" title="9. connectivity — A class and functions for handling nodal connectivity." href="connectivity.html" />
+    <link rel="prev" title="7. mesh — Finite element meshes in pyFormex." href="mesh.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -78,10 +78,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="mesh.html" title="8. mesh — Finite element meshes in pyFormex."
+          <a href="connectivity.html" title="9. connectivity — A class and functions for handling nodal connectivity."
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="colors.html" title="6. colors — Playing with colors."
+          <a href="mesh.html" title="7. mesh — Finite element meshes in pyFormex."
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
@@ -100,13 +100,22 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">8. <tt class="docutils literal"><span class="pre">geometry</span></tt> &#8212; A generic interface to the Coords transformation methods</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-geometry">8.1. Classes defined in module geometry</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-geometry">8.2. Functions defined in module geometry</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="colors.html"
-                        title="previous chapter">6. <tt class="docutils literal docutils literal docutils literal"><span class="pre">colors</span></tt> &#8212; Playing with colors.</a></p>
-  <h4>Next topic</h4>
   <p class="topless"><a href="mesh.html"
-                        title="next chapter">8. <tt class="docutils literal docutils literal"><span class="pre">mesh</span></tt> &#8212; Finite element meshes in pyFormex.</a></p>
+                        title="previous chapter">7. <tt class="docutils literal docutils literal"><span class="pre">mesh</span></tt> &#8212; Finite element meshes in pyFormex.</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="connectivity.html"
+                        title="next chapter">9. <tt class="docutils literal docutils literal docutils literal"><span class="pre">connectivity</span></tt> &#8212; A class and functions for handling nodal connectivity.</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -141,11 +150,12 @@
           <div class="body">
             
   <div class="section" id="module-geometry">
-<span id="geometry-a-generic-interface-to-the-coords-transformation-methods"></span><span id="sec-ref-geometry"></span><h1>7. <a class="reference internal" href="#module-geometry" title="geometry: A generic interface to the Coords transformation methods"><tt class="xref py py-mod docutils literal"><span class="pre">geometry</span></tt></a> &#8212; A generic interface to the Coords transformation methods<a class="headerlink" href="#module-geometry" title="Permalink to this headline">¶</a></h1>
+<span id="geometry-a-generic-interface-to-the-coords-transformation-methods"></span><span id="sec-ref-geometry"></span><h1>8. <a class="reference internal" href="#module-geometry" title="geometry: A generic interface to the Coords transformation methods"><tt class="xref py py-mod docutils literal"><span class="pre">geometry</span></tt></a> &#8212; A generic interface to the Coords transformation methods<a class="headerlink" href="#module-geometry" title="Permalink to this headline">¶</a></h1>
 <p>This module defines a generic Geometry superclass which adds all the
 possibilities of coordinate transformations offered by the
 Coords class to the derived classes.</p>
-<p><tt class="docutils literal"><span class="pre">Classes</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">geometry</span></tt></p>
+<div class="section" id="classes-defined-in-module-geometry">
+<h2>8.1. Classes defined in module geometry<a class="headerlink" href="#classes-defined-in-module-geometry" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="geometry.Geometry">
 <em class="property">class </em><tt class="descclassname">geometry.</tt><tt class="descname">Geometry</tt><a class="headerlink" href="#geometry.Geometry" title="Permalink to this definition">¶</a></dt>
@@ -676,19 +686,79 @@ the maximum size are not rescaled.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="geometry.Geometry.addField">
+<tt class="descname">addField</tt><big>(</big><em>fldtype</em>, <em>data</em>, <em>fldname</em><big>)</big><a class="headerlink" href="#geometry.Geometry.addField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a data field to the geometry.</p>
+<p>Add a scalar or vectorial field defined over the domain of the
+Geometry. This creates a <tt class="xref py py-class docutils literal"><span class="pre">Field</span></tt> instance with the specified
+parameters and adds it to the Geometry object.
+Fields stored inside a Geometry object are exported to PGF file
+whenever the object is exported.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>fldtype</cite>, <cite>data</cite>, <cite>fldname</cite>: are passed together with the
+Geometry object to the Field initialization. See <tt class="xref py py-class docutils literal"><span class="pre">Field</span></tt>
+for details.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="geometry.Geometry.add_field">
+<tt class="descname">add_field</tt><big>(</big><em>field</em><big>)</big><a class="headerlink" href="#geometry.Geometry.add_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Low level function to add a Field</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="geometry.Geometry.convertField">
+<tt class="descname">convertField</tt><big>(</big><em>fldname</em>, <em>totype</em>, <em>toname</em><big>)</big><a class="headerlink" href="#geometry.Geometry.convertField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the data field with the specified name.</p>
+<p>If the data field does not exist, returns None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="geometry.Geometry.getField">
+<tt class="descname">getField</tt><big>(</big><em>fldname</em><big>)</big><a class="headerlink" href="#geometry.Geometry.getField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the data field with the specified name.</p>
+<p>If the data field does not exist, returns None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="geometry.Geometry.delField">
+<tt class="descname">delField</tt><big>(</big><em>fldname</em><big>)</big><a class="headerlink" href="#geometry.Geometry.delField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the Field with the given name.</p>
+<p>A nonexisting name is silently ignored.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="geometry.Geometry.write">
-<tt class="descname">write</tt><big>(</big><em>fil</em>, <em>sep=' '</em>, <em>mode='w'</em><big>)</big><a class="headerlink" href="#geometry.Geometry.write" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write</tt><big>(</big><em>filename</em>, <em>sep=' '</em>, <em>mode='w'</em><big>)</big><a class="headerlink" href="#geometry.Geometry.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a Geometry to a .pgf file.</p>
-<p>If fil is a string, a file with that name is opened. Else fil should
-be an open file.
-The Geometry is then written to that file in a native format, using
-sep as separator between the coordinates.
-If fil is a string, the file is closed prior to returning.</p>
+<p>This writes the Geometry to a pyFormex Geometry File (PGF) with
+the specified name.</p>
+<p>It is a convenient shorthand for:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">script</span><span class="o">.</span><span class="n">writeGeomFile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="geometry.Geometry.read">
+<em class="property">classmethod </em><tt class="descname">read</tt><big>(</big><em>clas</em>, <em>filename</em><big>)</big><a class="headerlink" href="#geometry.Geometry.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a Geometry from a PGF file.</p>
+<p>This reads a single object (the object) from a PGF file
+and returns it.</p>
+<p>It is a convenient shorthand for:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">script</span><span class="o">.</span><span class="n">readGeomFile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </dd></dl>
 
-<p><tt class="docutils literal"><span class="pre">Functions</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">geometry</span></tt></p>
+</div>
+<div class="section" id="functions-defined-in-module-geometry">
+<h2>8.2. Functions defined in module geometry<a class="headerlink" href="#functions-defined-in-module-geometry" title="Permalink to this headline">¶</a></h2>
+</div>
 </div>
 
 
@@ -707,10 +777,10 @@ If fil is a string, the file is closed prior to returning.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="mesh.html" title="8. mesh — Finite element meshes in pyFormex."
+          <a href="connectivity.html" title="9. connectivity — A class and functions for handling nodal connectivity."
              >next</a> |</li>
         <li class="right" >
-          <a href="colors.html" title="6. colors — Playing with colors."
+          <a href="mesh.html" title="7. mesh — Finite element meshes in pyFormex."
              >previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
@@ -720,7 +790,7 @@ If fil is a string, the file is closed prior to returning.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Nov 30, 2013.
+      Last updated on Feb 06, 2014.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

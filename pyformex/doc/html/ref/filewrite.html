@@ -34,7 +34,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>18. filewrite — Write geometry to file in a whole number of formats. &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>19. filewrite — Write geometry to file in a whole number of formats. &mdash; pyFormex 1.0.0~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -54,8 +54,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="19. widgets — A collection of custom widgets used in the pyFormex GUI" href="widgets.html" />
-    <link rel="prev" title="17. fileread — Read geometry from file in a whole number of formats." href="fileread.html" />
+    <link rel="next" title="20. coordsys — Coordinate Systems." href="coordsys.html" />
+    <link rel="prev" title="18. fileread — Read geometry from file in a whole number of formats." href="fileread.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -78,10 +78,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="widgets.html" title="19. widgets — A collection of custom widgets used in the pyFormex GUI"
+          <a href="coordsys.html" title="20. coordsys — Coordinate Systems."
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="fileread.html" title="17. fileread — Read geometry from file in a whole number of formats."
+          <a href="fileread.html" title="18. fileread — Read geometry from file in a whole number of formats."
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
@@ -100,13 +100,22 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">19. <tt class="docutils literal"><span class="pre">filewrite</span></tt> &#8212; Write geometry to file in a whole number of formats.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-filewrite">19.1. Classes defined in module filewrite</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-filewrite">19.2. Functions defined in module filewrite</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="fileread.html"
-                        title="previous chapter">17. <tt class="docutils literal docutils literal"><span class="pre">fileread</span></tt> &#8212; Read geometry from file in a whole number of formats.</a></p>
+                        title="previous chapter">18. <tt class="docutils literal docutils literal"><span class="pre">fileread</span></tt> &#8212; Read geometry from file in a whole number of formats.</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="widgets.html"
-                        title="next chapter">19. <tt class="docutils literal"><span class="pre">widgets</span></tt> &#8212; A collection of custom widgets used in the pyFormex GUI</a></p>
+  <p class="topless"><a href="coordsys.html"
+                        title="next chapter">20. <tt class="docutils literal docutils literal docutils literal"><span class="pre">coordsys</span></tt> &#8212; Coordinate Systems.</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -141,15 +150,18 @@
           <div class="body">
             
   <div class="section" id="module-filewrite">
-<span id="filewrite-write-geometry-to-file-in-a-whole-number-of-formats"></span><span id="sec-ref-filewrite"></span><h1>18. <a class="reference internal" href="#module-filewrite" title="filewrite: Write geometry to file in a whole number of formats."><tt class="xref py py-mod docutils literal"><span class="pre">filewrite</span></tt></a> &#8212; Write geometry to file in a whole number of formats.<a class="headerlink" href="#module-filewrite" title="Permalink to this headline">¶</a></h1>
+<span id="filewrite-write-geometry-to-file-in-a-whole-number-of-formats"></span><span id="sec-ref-filewrite"></span><h1>19. <a class="reference internal" href="#module-filewrite" title="filewrite: Write geometry to file in a whole number of formats."><tt class="xref py py-mod docutils literal"><span class="pre">filewrite</span></tt></a> &#8212; Write geometry to file in a whole number of formats.<a class="headerlink" href="#module-filewrite" title="Permalink to this headline">¶</a></h1>
 <p>This module defines bothe the basic routines to write geometrical data
 to a file and the specialized exporters to write files in a number of
 well known standardized formats.</p>
 <p>The basic routines are very versatile as well as optimized (using the version
 in the pyFormex C-library) and allow to easily create new exporters for
 other formats.</p>
-<p><tt class="docutils literal"><span class="pre">Classes</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">filewrite</span></tt></p>
-<p><tt class="docutils literal"><span class="pre">Functions</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">module</span> <span class="pre">filewrite</span></tt></p>
+<div class="section" id="classes-defined-in-module-filewrite">
+<h2>19.1. Classes defined in module filewrite<a class="headerlink" href="#classes-defined-in-module-filewrite" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="functions-defined-in-module-filewrite">
+<h2>19.2. Functions defined in module filewrite<a class="headerlink" href="#functions-defined-in-module-filewrite" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="filewrite.writeData">
 <tt class="descclassname">filewrite.</tt><tt class="descname">writeData</tt><big>(</big><em>fil</em>, <em>data</em>, <em>sep=''</em>, <em>fmt=None</em>, <em>end=''</em><big>)</big><a class="headerlink" href="#filewrite.writeData" title="Permalink to this definition">¶</a></dt>
@@ -201,15 +213,25 @@ value is a newline character.</p>
 
 <dl class="function">
 <dt id="filewrite.writeOFF">
-<tt class="descclassname">filewrite.</tt><tt class="descname">writeOFF</tt><big>(</big><em>fn</em>, <em>coords</em>, <em>elems</em><big>)</big><a class="headerlink" href="#filewrite.writeOFF" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">filewrite.</tt><tt class="descname">writeOFF</tt><big>(</big><em>fn</em>, <em>mesh</em><big>)</big><a class="headerlink" href="#filewrite.writeOFF" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a mesh of polygons to a file in OFF format.</p>
 <p>Parameters:</p>
 <ul class="simple">
 <li><cite>fn</cite>: file name, by preference ending on &#8216;.off&#8217;</li>
-<li><cite>coords</cite>: float array with shape (ncoords,3), with the coordinates of
-<cite>ncoords</cite> vertices.</li>
-<li><cite>elems</cite>: int array with shape (nelems,nplex), with the definition of
-<cite>nelems</cite> polygon elements.</li>
+<li><cite>mesh</cite>: a Mesh</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="filewrite.writeOBJ">
+<tt class="descclassname">filewrite.</tt><tt class="descname">writeOBJ</tt><big>(</big><em>fn</em>, <em>mesh</em>, <em>name=None</em><big>)</big><a class="headerlink" href="#filewrite.writeOBJ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a mesh of polygons to a file in OBJ format.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>fn</cite>: file name, by preference ending on &#8216;.obj&#8217;</li>
+<li><cite>mesh</cite>: a Mesh</li>
+<li><cite>name</cite>: name of the Mesh to be written into the file. If None, and the
+Mesh has an .attrib.name, that name will be used.</li>
 </ul>
 </dd></dl>
 
@@ -277,6 +299,7 @@ triangles</li>
 </dd></dl>
 
 </div>
+</div>
 
 
           </div>
@@ -294,10 +317,10 @@ triangles</li>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="widgets.html" title="19. widgets — A collection of custom widgets used in the pyFormex GUI"
+          <a href="coordsys.html" title="20. coordsys — Coordinate Systems."
              >next</a> |</li>
         <li class="right" >
-          <a href="fileread.html" title="17. fileread — Read geometry from file in a whole number of formats."
+          <a href="fileread.html" title="18. fileread — Read geometry from file in a whole number of formats."
              >previous</a> |</li>
         <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
@@ -307,7 +330,7 @@ triangles</li>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Nov 30, 2013.
+      Last updated on Feb 06, 2014.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>
