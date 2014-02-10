@@ -28,7 +28,7 @@ from __future__ import print_function
 
 
 import pyformex as pf
-from pyformex.gui.drawable import *
+from pyformex.opengl.sanitize import *
 from pyformex.gui import colors
 from OpenGL import GL
 from OpenGL.arrays.vbo import VBO
@@ -39,8 +39,9 @@ from pyformex.mesh import Mesh
 from pyformex.elements import elementType, _default_eltype
 from pyformex import geomtools as gt
 from pyformex import arraytools as at
-import numpy as np
 from pyformex import utils
+import numpy as np
+from numpy import int32,float32
 
 
 ### Drawable Objects ###############################################

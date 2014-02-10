@@ -574,7 +574,7 @@ class Canvas(object):
         self.background = None
         self.settings = CanvasSettings(**settings)
         self.mode2D = False
-        self.rendermode = pf.cfg['draw/rendermode']
+        self.rendermode = None
         self.setRenderMode(pf.cfg['draw/rendermode'])
         self.resetLighting()
         #print("INIT: %s, %s" %(self.rendermode,self.settings.fill))
@@ -676,18 +676,15 @@ class Canvas(object):
         is set, the canvas is re-initialized according to the newly set mode,
         and everything is redrawn with the new mode.
         """
-        print("Setting rendermode to %s" % mode)
         if mode not in CanvasSettings.RenderProfiles:
             raise ValueError("Invalid render mode %s" % mode)
 
         self.settings.update(CanvasSettings.RenderProfiles[mode])
-        #print(self.settings)
         if lighting is None:
             lighting = self.settings.lighting
 
         if self.camera:
             if mode != self.rendermode or lighting != self.settings.lighting:
-                print("SWITCHING MODE")
                 self.rendermode = mode
                 self.scene.changeMode(self, mode)
 

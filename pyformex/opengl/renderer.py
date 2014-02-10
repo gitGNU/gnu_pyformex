@@ -92,7 +92,6 @@ class Renderer(object):
 
     def setDefaults(self):
         """Set the GL context and the shader uniforms to default values."""
-        # FIRST, the context
         GL.glLineWidth(self.canvas.settings.linewidth)
         # Enable setting pointsize in the shader
         # Maybe we should do pointsize with gl context?
