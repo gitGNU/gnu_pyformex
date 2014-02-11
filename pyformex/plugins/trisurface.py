@@ -2425,6 +2425,7 @@ TriSurface.webgl = webgl.surface2webgl
 def read_vtk_surface(fn):
     try:
         from pyformex.plugins import vtk_itf
+        return vtk_itf.read_vtk_surface(fn)
     except:
         utils.warn("I could not import VTK. This probably means that Python"
                    "VTK bindings are not installed on your machine.")
