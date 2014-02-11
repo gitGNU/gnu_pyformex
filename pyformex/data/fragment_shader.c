@@ -30,11 +30,13 @@ precision mediump float;
 
 varying vec3 fragmentColor;
 varying vec4 fragColor;
+varying bool fDiscard;
 
 uniform float alpha;
 
 void main(void) {
-
+  if ( fDiscard)
+    discard;
   gl_FragColor = fragColor;
 }
 
