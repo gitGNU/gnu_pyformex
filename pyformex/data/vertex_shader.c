@@ -80,6 +80,7 @@ varying vec3 fTransformedVertexNormal;
 
 void main()
 {
+  fDiscard = false;
   // Set color
   if (picking) {
     fragmentColor = vec3(0.,0.,0.);
