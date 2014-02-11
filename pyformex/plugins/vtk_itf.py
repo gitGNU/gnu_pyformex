@@ -997,6 +997,28 @@ def read_vtk_surface(fn):
     return TriSurface(*data)
 
 
+
+
+
+
+#FI Probably other features can be read from the obj (normals, vertices, colors etc)
+# I did not check for the moment imports only the mesh
+def importOBJ(fn):
+    """Import a surface from a .obj file.
+
+    Parameters:
+
+    - `fn`: filename (.obj)
+    """
+    from vtk import vtkOBJReader
+    reader = vtkOBJReader()
+    reader.SetFileName(fn)
+    reader.Update()
+    obj=reader.GetOutput()
+    [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = convertFromVPD(vpd=obj,samePlex=True)
+    return Mesh(coords,polys)
+
+
 def import3ds(fn, vtkcolor='color', verbose=True):
     """Import an object from a .3ds file and returns a list of colored meshes.
 
@@ -1015,7 +1037,7 @@ def import3ds(fn, vtkcolor='color', verbose=True):
     """
     from vtk import vtk3DSImporter
     importer = vtk3DSImporter()
-    importer.ComputeNormalsOn()
+    #~ importer.ComputeNormalsOn()
     importer.SetFileName(fn)
     importer.Read()
     ren = importer.GetRenderer()
