@@ -86,6 +86,7 @@ class Shader(object):
         'specular',
         'shininess',
         'alpha',
+        'bkalpha',
         ]
 
     uniforms_vec3 = [

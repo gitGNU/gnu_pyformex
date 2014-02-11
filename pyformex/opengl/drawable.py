@@ -738,15 +738,16 @@ class GeomActor(Attributes):
     def setAlpha(self,alpha,bkalpha=None):
         """Set the Actors alpha value."""
         try:
-            self.alpha = float(alpha)
+            self.alpha = self.bkalpha = float(alpha)
         except:
             del self.alpha
+            del self.bkalpha
         try:
             self.bkalpha = float(bkalpha)
         except:
-            del self.bkalpha
+            pass
         if self.opak is None:
-            self.opak = (self.alpha == 1.0) or (self.bkalpha == 1.0 )
+            self.opak = (self.alpha == 1.0) and (self.bkalpha == 1.0 )
 
 
     def setLineWidth(self, linewidth):

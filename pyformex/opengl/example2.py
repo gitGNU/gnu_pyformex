@@ -24,20 +24,20 @@
 #
 #
 
-#from opengl.drawable import *
-
 
 if not pf.options.opengl2:
     warning("This example only runs with the new opengl2 engine!")
 
+resetAll()
 clear()
+smooth()
+transparent()
 
 
 def modified(obj):
     pf.canvas.renderer.shader.loadUniforms(obj)
 
 
-#transparent()
 
 from pyformex.simple import sphere
 from OpenGL import GL
@@ -47,11 +47,13 @@ S = S.toSurface().fixNormals().toFormex()
 T = Formex('4:0123').replic2(2, 3).toMesh().align('-00')
 
 S1 = S.scale(0.5)
-S2 = S1.trl([0., 0., -2.])
-draw(S1,name='red_sphere', color=red, opak=False, alpha=0.7)#,bkalpha=0.7,bkcolor=red)
+S2 = S.scale(0.25)
+S2 = S2.trl([0., 0., -2.]) +  S2.trl([0., 0., 2.])
+
+draw(S1,name='red_sphere', color=red, opak=False, alpha=0.5)
 draw(S2,name='blue_sphere', color=blue, opak=True, alpha=1.0)
-draw(T,name='rectangular_plate', color=green, bkcolor=darkgreen,alpha=1.0)
-draw(S,name='yellow_sphere', color=yellow, alpha=0.7)#,bkalpha=0.7,bkcolor=yellow)
+draw(S,name='yellow_sphere', color=yellow, alpha=0.5)
+draw(T,name='rectangular_plate', color=green, bkcolor=darkgreen,alpha=0.99,bkalpha=0.5)
 
 zoomAll()
 pf.app.processEvents()

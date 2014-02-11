@@ -150,7 +150,11 @@ void main()
 
       // Add in opacity
       if (alphablend) {
-	fragColor = vec4(fragmentColor,0.5);
+	if (drawface == -1) {
+	  fragColor = vec4(fragmentColor,bkalpha);
+	} else {
+	  fragColor = vec4(fragmentColor,alpha);
+	}
       }	else {
       	fragColor = vec4(fragmentColor,1.);
       }
