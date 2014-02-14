@@ -76,7 +76,21 @@ def deprec(message,stacklevel=4,data=None):
     warn(message, level=DeprecationWarning, stacklevel=stacklevel, data=data)
 
 
-def deprecation(message):
+def deprecated(message):
+    """Decorator to deprecate a function.
+
+    Adding this decorator to a function will warn the user with the
+    supplied message when the decorated function gets executed for
+    the first time in a session.
+    An option is provided to switch off this warning in future sessions.
+
+    Decorating a function is done as follows::
+
+      @utils.deprecated('This is the message shown to the user')
+      def function(args):
+          ...
+
+    """
     def decorator(func):
         def wrapper(*_args,**_kargs):
             deprec(message)
@@ -87,6 +101,26 @@ def deprecation(message):
             return func(*_args,**_kargs)
         return wrapper
     return decorator
+
+def deprecated_by(old,new):
+    """Decorator to deprecate a function by another one.
+
+    Adding this decorator to a function will warn the user with a
+    message that the `old` function is deprecated in favor of `new`,
+    at the first execution of `old`.
+
+    See also: :func:`deprecated`.
+    """
+    return deprecated("%s is deprecated: used %s instead" % (old,new))
+
+def deprecated_future():
+    """Decorator to warn that a function may be deprecated in future.
+
+    See also: :func:`deprecated`.
+    """
+    from pyformex.messages import _future_deprecation
+    return deprecated(_future_deprecation)
+
 
 
 ##########################################################################
@@ -379,7 +413,7 @@ def lastCommandReport():
     return s
 
 
-@deprecation("utils.runCommand is deprecated: use utils.command instead. Add 'shell=True' to start the command in a new shell.")
+@deprecated_by('utils.runCommand','utils.command')
 def runCommand(cmd,timeout=None,shell=True,**kargs):
     """Run an external command in a user friendly way.
 
@@ -392,7 +426,7 @@ def runCommand(cmd,timeout=None,shell=True,**kargs):
 
 # DEPRECATED, REMOVED in 1.0.0
 # currently activated by --commands option
-## @deprecation("system1 is deprecated: use system instead")
+## @deprecated_by('utils.system1','utils.system')
 ## def system1(cmd):
 ##     """Execute an external command."""
 ##     import commands

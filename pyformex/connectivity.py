@@ -34,11 +34,10 @@ adjacency of elements can easily be detected from common node numbers.
 from __future__ import print_function
 
 from pyformex import zip
+from pyformex import utils
 
 from pyformex.arraytools import *
 from pyformex.adjacency import *
-from pyformex.utils import deprecation
-from pyformex.messages import _future_deprecation
 
 
 # BV: Should we make an InverseConnectivity class?
@@ -1498,82 +1497,6 @@ def connectedLineElems(elems,return_indices=False):
         return parts
 
 
-
-############################################################################
-#
-# Deprecated
-#
-
-
-@deprecation(_future_deprecation)
-def connected(index, i):
-    """Return the list of elements connected to element i.
-
-    index is a (nr,nc) shaped integer array.
-    An element j of index is said to be connected to element i, if element j
-    has at least one (non-negative) value in common with element i.
-
-    The result is a sorted list of unique element numbers, not containing
-    the element number i itself.
-    """
-    adj = concatenate([ where(ind==j)[0] for j in ind[i] if j >= 0 ])
-    return unique(adj[adj != i])
-
-
-@deprecation(_future_deprecation)
-def enmagic2(cols,magic=0):
-    """Encode two integer values into a single integer.
-
-    cols is a (n,2) array of non-negative integers smaller than 2**31.
-    The result is an (n) array of type int64, where each value is
-    unique for each row of values in the input.
-    The original input can be restored with demagic2.
-
-    If a magic value larger than the maximum integer in the table is
-    given, it will be used. If not, it will be taken as the maximum+1.
-    A negative magic value triggers a fastencode scheme.
-
-    The return value is a tuple with the codes and the magic used.
-
-    *The use of this function is deprecated.*
-    """
-    cmax = cols.max()
-    if cmax >= 2**31 or cols.min() < 0:
-        raise ValueError("Integer value too high (>= 2**31) in enmagic2")
-
-    if cols.ndim != 2 or cols.shape[1] != 2:
-        raise ValueError("Invalid array (type %s, shape %s) in enmagic2" % (cols.dtype, cols.shape))
-
-    if magic < 0:
-        magic = -1
-        cols = array(cols, copy=True, dtype=int32, order='C')
-        codes = cols.view(int64)
-    else:
-        if magic <= cmax:
-            magic = cmax + 1
-        codes = cols[:, 0].astype(int64) * magic + cols[:, 1]
-    return codes, magic
-
-
-@deprecation(_future_deprecation)
-def demagic2(codes, magic):
-    """Decode an integer number into two integers.
-
-    The arguments `codes` and `magic` are the result of an enmagic2() operation.
-    This will restore the original two values for the codes.
-
-    A negative magic value flags the fastencode option.
-
-    *The use of this function is deprecated.*
-    """
-    if magic < 0:
-        cols = codes.view(int32).reshape(-1, 2)
-    else:
-        cols = column_stack([codes/magic, codes%magic]).astype(int32)
-    return cols
-
-
-
 #
 # BV: the following functions have to be checked for their need
 # and opportunity, and replaced by more general infrastrucuture
@@ -1636,6 +1559,84 @@ def adjacencyArrays(elems,nsteps=1):
         adj.append(nodes)
         step += 1
     return adj
+
+
+############################################################################
+#
+# Deprecated
+#
+## from pyformex.messages import _future_deprecation
+
+# REMOVED IN 1.0.0
+
+## @utils.deprecated(_future_deprecation)
+## def connected(index, i):
+##     """Return the list of elements connected to element i.
+
+##     index is a (nr,nc) shaped integer array.
+##     An element j of index is said to be connected to element i, if element j
+##     has at least one (non-negative) value in common with element i.
+
+##     The result is a sorted list of unique element numbers, not containing
+##     the element number i itself.
+##     """
+##     adj = concatenate([ where(ind==j)[0] for j in ind[i] if j >= 0 ])
+##     return unique(adj[adj != i])
+
+
+## @utils.deprecated(_future_deprecation)
+## def enmagic2(cols,magic=0):
+##     """Encode two integer values into a single integer.
+
+##     cols is a (n,2) array of non-negative integers smaller than 2**31.
+##     The result is an (n) array of type int64, where each value is
+##     unique for each row of values in the input.
+##     The original input can be restored with demagic2.
+
+##     If a magic value larger than the maximum integer in the table is
+##     given, it will be used. If not, it will be taken as the maximum+1.
+##     A negative magic value triggers a fastencode scheme.
+
+##     The return value is a tuple with the codes and the magic used.
+
+##     *The use of this function is deprecated.*
+##     """
+##     cmax = cols.max()
+##     if cmax >= 2**31 or cols.min() < 0:
+##         raise ValueError("Integer value too high (>= 2**31) in enmagic2")
+
+##     if cols.ndim != 2 or cols.shape[1] != 2:
+##         raise ValueError("Invalid array (type %s, shape %s) in enmagic2" % (cols.dtype, cols.shape))
+
+##     if magic < 0:
+##         magic = -1
+##         cols = array(cols, copy=True, dtype=int32, order='C')
+##         codes = cols.view(int64)
+##     else:
+##         if magic <= cmax:
+##             magic = cmax + 1
+##         codes = cols[:, 0].astype(int64) * magic + cols[:, 1]
+##     return codes, magic
+
+
+## @utils.deprecated(_future_deprecation)
+## def demagic2(codes, magic):
+##     """Decode an integer number into two integers.
+
+##     The arguments `codes` and `magic` are the result of an enmagic2() operation.
+##     This will restore the original two values for the codes.
+
+##     A negative magic value flags the fastencode option.
+
+##     *The use of this function is deprecated.*
+##     """
+##     if magic < 0:
+##         cols = codes.view(int32).reshape(-1, 2)
+##     else:
+##         cols = column_stack([codes/magic, codes%magic]).astype(int32)
+##     return cols
+
+
 
 
 if __name__ == "__main__":

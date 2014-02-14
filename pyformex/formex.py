@@ -32,7 +32,6 @@ from __future__ import print_function
 from pyformex import zip
 
 from pyformex.coords import *
-from pyformex.utils import deprecation, deprec, warn
 from pyformex.geometry import Geometry
 from pyformex.attributes import Attributes
 import re
@@ -762,10 +761,11 @@ maxprop  = %s
         return Formex(self.coords.reshape((-1, 1, 3)))
 
 
-    # retained for compatibility, deprecated
-    @deprecation('depr_vertices')
-    def vertices(self):
-        return self.points()
+    # REMOVED 1.0.0
+    ## # retained for compatibility, deprecated
+    ## @deprecated('depr_vertices')
+    ## def vertices(self):
+    ##     return self.points()
 
 
     def remove(self, F):
@@ -789,13 +789,13 @@ maxprop  = %s
             p = self.prop[flag>0]
         return Formex(self.coords[flag>0], p, self.eltype)
 
-    @deprecation("Formex.withProp is deprecated. Use selectProp instead.")
+
+    @utils.deprecated_by('Formex.withProp','Formex.selectProp')
     def withProp(self, val):
         return self.selectProp(val)
 
-    #
-    # TODO: this can be deprecated? Use bboxes() instead
-    #
+
+    @utils.deprecated_by('Formex.elbbox','Formex.bboxes')
     def elbbox(self):
         """Return a Formex where each element is replaced by its bbox.
 
@@ -822,8 +822,8 @@ maxprop  = %s
         ind, ok = M.elems.testDuplicate()
         return self.select(ind[ok])
 
-
-    unique = removeDuplicate
+    # REMOVED IN 1.0.0
+    ## unique = removeDuplicate
 
 
 #############################
@@ -1494,78 +1494,6 @@ def lpattern(s,connect=True):
     return l
 
 
-# REMOVED in 0.9.1
-
-## @deprecation('depr_mpattern')
-## def mpattern(s):
-##     """This is like pattern, but allowing lists with more than 2 points.
-
-##     Subsequent points are included in the same list until a '-' occurs.
-##     A '+' or '-' character splits lists. After a '-', the list starts at the
-##     last point of the previous list. After a '+', the list starts again
-##     at the origin.
-##     All lists should have equal length if you want to use the resulting
-##     list to initialize a Formex.
-##     """
-##     x = y = z = 0
-##     li = [[x,y,z]]
-##     l = []
-##     connect=True
-##     for c in s:
-##         if c == '/':
-##             connect = False
-##             continue
-##         elif c == '+':
-##             l.append(li)
-##             li = []
-##             x = y = z = 0
-##         elif c == '-':
-##             l.append(li)
-##             li = []
-##         elif c == '0':
-##             x = y = z = 0
-##         else:
-##             i = ord(c)
-##             d = i/16
-##             if d == 3:
-##                 pass
-##             elif d == 4:
-##                 z += 1
-##             elif d == 6:
-##                 z -= 1
-##             else:
-##                 raise RuntimeError("Unknown pattern character %c ignored" % c
-##             i %= 16
-##             if i == 1:
-##                 x += 1
-##             elif i == 2:
-##                 y += 1
-##             elif i == 3:
-##                 x -= 1
-##             elif i == 4:
-##                 y -= 1
-##             elif i == 5:
-##                 x += 1
-##                 y += 1
-##             elif i == 6:
-##                 x -= 1
-##                 y += 1
-##             elif i == 7:
-##                 x -= 1
-##                 y -= 1
-##             elif i == 8:
-##                 x += 1
-##                 y -= 1
-##             elif i == 9:
-##                 pass
-##             else:
-##                 raise RuntimeError("Unknown pattern character %c ignored" % c
-##         if connect:
-##             li.append([x,y,z])
-##     l.append(li)
-##     return l
-
-
 def pointsAt(F, t):
     """Return the points of a plex-2 Formex at times t.
 
@@ -2066,65 +1994,5 @@ def cutElements3AtPlane(F,p,n,newprops=None,side='',atol=0.):
     else:
         return [ cut_pos, cut_neg ]
 
-
-##############################################################################
-#
-#  Testing
-#
-
-
-if __name__ == "__main__":
-
-    def test_module():
-        """Run some additional examples.
-
-        This is intended for tests during development. This can be changed
-        at will.
-        """
-        Formex.setPrintFunction(Formex.asFormexWithProp)
-        A = Formex()
-        print("An empty formex", A)
-        F = Formex([[[1, 0], [0, 1]], [[0, 1], [1, 2]]])
-        print("F =", F)
-        F1 = F.translate(0, 6)
-        F1.setProp(5)
-        print("F1 =", F1)
-        F2 = F.reflect(0, 2.)
-        print("F2 =", F2)
-        F3 = F.reflect(0, 1.5).translate(1, 2)
-        F3.setProp([1, 2])
-        G = F1+F3+F2+F3
-        print("F1+F3+F2+F3 =", G)
-        H = Formex.concatenate([F1, F3, F2, F3])
-        print("F1+F3+F2+F3 =", H)
-        print("elbbox:", G.elbbox())
-        print("met prop 1:", G.selectProp(1))
-        print("unique:", G.unique())
-        print("asPoints:", G.asPoints())
-        print("points:", G.points())
-        print("unique points:", G.points().unique())
-        print("diagonal size:", G.dsize())
-        F = Formex([[[0, 0]], [[1, 0]], [[1, 1]], [[0, 1]]])
-        G = connect([F, F], bias=[0, 1])
-        print(G)
-        G = connect([F, F], bias=[0, 1], loop=True)
-        print(G)
-        print(G[1])
-        print(G.feModel())
-        print(F)
-        print(F.bbox())
-        print(F.center(), F.centroid())
-        print(F.bsphere())
-        F = Formex([[[0, 0], [1, 0], [0, 1]], [[1, 0], [1, 1], [0, 1]]])
-        print(F)
-        print(F.reverse())
-        Formex.setPrintFunction(Formex.asArray)
-        print(F)
-        F.fprint()
-        F.fprint("%10.3f %10.4f %10.5f")
-        F.fprint(fmt="%10.4f %10.5f %10.6f")
-        print(type(F))
-
-    test_module()
 
 # End

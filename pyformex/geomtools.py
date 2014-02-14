@@ -24,529 +24,30 @@
 """Basic geometrical operations.
 
 This module defines some basic operations on simple geometrical entities
-such as lines, triangles, circles, planes.
+such as points, lines, planes, vectors, segments, triangles, circles.
+
+The operations include intersection, projection, distance computing.
+
+Many of the functions in this module are exported as methods on the
+Coords and Geometry classes and subclasses.
 """
 from __future__ import print_function
 
 
+from pyformex import utils
 from pyformex.coords import *
+
+
+class Line(object):
+    def __init__(self, P, n):
+        self.coords = Coords.concatenate([P, normalize(n)])
 
 class Plane(object):
     def __init__(self, P, n):
         self.coords = Coords.concatenate([P, normalize(n)])
 
 
-def areaNormals(x):
-    """Compute the area and normal vectors of a collection of triangles.
-
-    x is an (ntri,3,3) array with the coordinates of the vertices of ntri
-    triangles.
-
-    Returns a tuple (areas,normals) with the areas and the normals of the
-    triangles. The area is always positive. The normal vectors are normalized.
-    """
-    x = x.reshape(-1, 3, 3)
-    area, normals = vectorPairAreaNormals(x[:, 1]-x[:, 0], x[:, 2]-x[:, 1])
-    area *= 0.5
-    return area, normals
-
-
-def degenerate(area, normals):
-    """Return a list of the degenerate faces according to area and normals.
-
-    area,normals are equal sized arrays with the areas and normals of a
-    list of faces, such as the output of the :func:`areaNormals` function.
-
-    A face is degenerate if its area is less or equal to zero or the
-    normal has a nan (not-a-number) value.
-
-    Returns a list of the degenerate element numbers as a sorted array.
-    """
-    return unique(concatenate([where(area<=0)[0], where(isnan(normals))[0]]))
-
-
-def levelVolumes(x):
-    """Compute the level volumes of a collection of elements.
-
-    x is an (nelems,nplex,3) array with the coordinates of the nplex vertices
-    of nelems elements, with nplex equal to 2, 3 or 4.
-
-    If nplex == 2, returns the lengths of the straight line segments.
-    If nplex == 3, returns the areas of the triangle elements.
-    If nplex == 4, returns the signed volumes of the tetraeder elements.
-    Positive values result if vertex 3 is at the positive side of the plane
-    defined by the vertices (0,1,2). Negative volumes are reported for
-    tetraeders having reversed vertex order.
-
-    For any other value of nplex, raises an error.
-    If succesful, returns an (nelems,) shaped float array.
-    """
-    nplex = x.shape[1]
-    if nplex == 2:
-        return length(x[:, 1]-x[:, 0])
-    elif nplex == 3:
-        return vectorPairArea(x[:, 1]-x[:, 0], x[:, 2]-x[:, 1]) / 2
-    elif nplex == 4:
-        return vectorTripleProduct(x[:, 1]-x[:, 0], x[:, 2]-x[:, 1], x[:, 3]-x[:, 0]) / 6
-    else:
-        raise ValueError("Plexitude should be one of 2, 3 or 4; got %s" % nplex)
-
-
-def smallestDirection(x,method='inertia',return_size=False):
-    """Return the direction of the smallest dimension of a Coords
-
-    - `x`: a Coords-like array
-    - `method`: one of 'inertia' or 'random'
-    - return_size: if True and `method` is 'inertia', a tuple of a direction
-      vector and the size  along that direction and the cross directions;
-      else, only return the direction vector.
-    """
-    x = x.reshape(-1, 3)
-    if method == 'inertia':
-        # The idea is to take the smallest dimension in a coordinate
-        # system aligned with the global axes.
-        C, r, Ip, I = x.inertia()
-        X = x.trl(-C).rot(r)
-        sizes = X.sizes()
-        i = sizes.argmin()
-        # r gives the directions as column vectors!
-        # TODO: maybe we should change that
-        N = r[:, i]
-        if return_size:
-            return N, sizes[i]
-        else:
-            return N
-    elif method == 'random':
-        # Take the mean of the normals on randomly created triangles
-        from pyformex.plugins.trisurface import TriSurface
-        n = x.shape[0]
-        m = 3 * (n // 3)
-        e = arange(m)
-        random.shuffle(e)
-        if n > m:
-            e = concatenate([e, [0, 1, n-1]])
-        el = e[-3:]
-        S = TriSurface(x, e.reshape(-1, 3))
-        A, N = S.areaNormals()
-        ok = where(isnan(N).sum(axis=1) == 0)[0]
-        N = N[ok]
-        N = N*N
-        N = N.mean(axis=0)
-        N = sqrt(N)
-        N = normalize(N)
-        return N
-
-
-def distance(X, Y):
-    """Returns the distance of all points of X to those of Y.
-
-    Parameters:
-
-    - `X`: (nX,3) shaped array of points.
-    - `Y`: (nY,3) shaped array of points.
-
-    Returns an (nX,nT) shaped array with the distances between all points of
-    X and Y.
-    """
-    X = asarray(X).reshape(-1,3)
-    X = asarray(Y).reshape(-1,3)
-    return length(X[:, newaxis]-Y)
-
-
-def closest(X,Y=None,return_dist=False):
-    """Find the point of Y closest to each of the points of X.
-
-    Parameters:
-
-    - `X`: (nX,3) shaped array of points
-    - `Y`: (nY,3) shaped array of points. If None, Y is taken equal to X,
-      allowing to search for the closest point in a single set. In the latter
-      case, the point itself is excluded from the search (as otherwise
-      that would obviously be the closest one).
-    - `return_dist`: bool. If True, also returns the distances of the closest
-      points.
-
-    Returns:
-
-    - `ind`: (nX,) int array with the index of the closest point in Y to the
-      points of X
-    - `dist`: (nX,) float array with the distance of the closest point. This
-      is equal to length(X-Y[ind]). It is only returned if return_dist is True.
-    """
-    if Y is None:
-        dist = distance(X, X)   # Compute all distances
-        ar = arange(X.shape[0])
-        dist[ar,ar] = dist.max()+1.
-    else:
-        dist = distance(X, Y)   # Compute all distances
-    ind = dist.argmin(-1)       # Locate the smallest distances
-    if return_dist:
-        return ind, dist[arange(dist.shape[0]), ind]
-    else:
-        return ind
-
-
-def closestPair(X, Y):
-    """Find the closest pair of points from X and Y.
-
-    Parameters:
-
-    - `X`: (nX,3) shaped array of points
-    - `Y`: (nY,3) shaped array of points
-
-    Returns a tuple (i,j,d) where i,j are the indices in X,Y identifying
-    the closest points, and d is the distance between them.
-    """
-    dist = distance(X, Y)   # Compute all distances
-    ind = dist.argmin()     # Locate the smallest distances
-    i, j = divmod(ind, Y.shape[0])
-    return i, j, dist[i, j]
-
-
-def projectedArea(x, dir):
-    """Compute projected area inside a polygon.
-
-    Parameters:
-
-    - `x`: (npoints,3) Coords with the ordered vertices of a
-      (possibly nonplanar) polygonal contour.
-    - `dir`: either a global axis number (0, 1 or 2) or a direction vector
-      consisting of 3 floats, specifying the projection direction.
-
-    Returns a single float value with the area inside the polygon projected
-    in the specified direction.
-
-    Note that if the polygon is planar and the specified direction is that
-    of the normal on its plane, the returned area is that of the planar
-    figure inside the polygon. If the polygon is nonplanar however, the area
-    inside the polygon is not defined. The projected area in a specified
-    direction is, since the projected polygon is a planar one.
-    """
-    if x.shape[0] < 3:
-        return 0.0
-    if isinstance(dir, int):
-        dir = unitVector(dir)
-    else:
-        dir = normalize(dir)
-    x1 = roll(x, -1, axis=0)
-    area = vectorTripleProduct(Coords(dir), x, x1)
-    return 0.5 * area.sum()
-
-
-def polygonNormals(x):
-    """Compute normals in all points of polygons in x.
-
-    x is an (nel,nplex,3) coordinate array representing nel (possibly nonplanar)
-    polygons.
-
-    The return value is an (nel,nplex,3) array with the unit normals on the
-    two edges ending in each point.
-    """
-    if x.shape[1] < 3:
-        #raise ValueError("Cannot compute normals for plex-2 elements"
-        n = zeros_like(x)
-        n[:,:, 2] = -1.
-        return n
-
-    ni = arange(x.shape[1])
-    nj = roll(ni, 1)
-    nk = roll(ni, -1)
-    v1 = x-x[:, nj]
-    v2 = x[:, nk]-x
-    n = vectorPairNormals(v1.reshape(-1, 3), v2.reshape(-1, 3)).reshape(x.shape)
-    return n
-
-
-def averageNormals(coords,elems,atNodes=False,treshold=None):
-    """Compute average normals at all points of elems.
-
-    coords is a (ncoords,3) array of nodal coordinates.
-    elems is an (nel,nplex) array of element connectivity.
-
-    The default return value is an (nel,nplex,3) array with the averaged
-    unit normals in all points of all elements.
-    If atNodes == True, a more compact array with the unique averages
-    at the nodes is returned.
-    """
-    n = polygonNormals(coords[elems])
-    n = nodalSum(n, elems, return_all=not atNodes, direction_treshold=treshold)
-    return normalize(n)
-
-
-def triangleInCircle(x):
-    """Compute the incircles of the triangles x
-
-    The incircle of a triangle is the largest circle that can be inscribed
-    in the triangle.
-
-    x is a Coords array with shape (ntri,3,3) representing ntri triangles.
-
-    Returns a tuple r,C,n with the radii, Center and unit normals of the
-    incircles.
-    """
-    checkArray(x, shape=(-1, 3, 3))
-    # Edge vectors
-    v = roll(x, -1, axis=1) - x
-    v = normalize(v)
-    # create bisecting lines in x0 and x1
-    b0 = v[:, 0]-v[:, 2]
-    b1 = v[:, 1]-v[:, 0]
-    # find intersection => center point of incircle
-    center = lineIntersection(x[:, 0], b0, x[:, 1], b1)
-    # find distance to any side => radius
-    radius = center.distanceFromLine(x[:, 0], v[:, 0])
-    # normals
-    normal = cross(v[:, 0], v[:, 1])
-    normal /= length(normal).reshape(-1, 1)
-    return radius, center, normal
-
-
-def triangleCircumCircle(x,bounding=False):
-    """Compute the circumcircles of the triangles x
-
-    x is a Coords array with shape (ntri,3,3) representing ntri triangles.
-
-    Returns a tuple r,C,n with the radii, Center and unit normals of the
-    circles going through the vertices of each triangle.
-
-    If bounding=True, this returns the triangle bounding circle.
-    """
-    checkArray(x, shape=(-1, 3, 3))
-    # Edge vectors
-    v = x - roll(x, -1, axis=1)
-    vv = dotpr(v, v)
-    # Edge lengths
-    lv = sqrt(vv)
-    n = cross(v[:, 0], v[:, 1])
-    nn = dotpr(n, n)
-    # Radius
-    N = sqrt(nn)
-    r = asarray(lv.prod(axis=-1) / N / 2)
-    # Center
-    w = -dotpr(roll(v, 1, axis=1), roll(v, 2, axis=1))
-    a = w * vv
-    C = a.reshape(-1, 3, 1) * roll(x, 1, axis=1)
-    C = C.sum(axis=1) / nn.reshape(-1, 1) / 2
-    # Unit normals
-    n = n / N.reshape(-1, 1)
-    # Bounding circle
-    if bounding:
-        # Modify for obtuse triangles
-        for i, j, k in [[0, 1, 2], [1, 2, 0], [2, 0, 1]]:
-            obt = vv[:, i] >= vv[:, j]+vv[:, k]
-            r[obt] = 0.5 * lv[obt, i]
-            C[obt] = 0.5 * (x[obt, i] + x[obt, j])
-
-    return r, C, n
-
-
-def triangleBoundingCircle(x):
-    """Compute the bounding circles of the triangles x
-
-    The bounding circle is the smallest circle in the plane of the triangle
-    such that all vertices of the triangle are on or inside the circle.
-    If the triangle is acute, this is equivalent to the triangle's
-    circumcircle. It the triangle is obtuse, the longest edge is the
-    diameter of the bounding circle.
-
-    x is a Coords array with shape (ntri,3,3) representing ntri triangles.
-
-    Returns a tuple r,C,n with the radii, Center and unit normals of the
-    bounding circles.
-    """
-    return triangleCircumCircle(x, bounding=True)
-
-
-def triangleObtuse(x):
-    """Checks for obtuse triangles
-
-    x is a Coords array with shape (ntri,3,3) representing ntri triangles.
-
-    Returns an (ntri) array of True/False values indicating whether the
-    triangles are obtuse.
-    """
-    checkArray(x, shape=(-1, 3, 3))
-    # Edge vectors
-    v = x - roll(x, -1, axis=1)
-    vv = dotpr(v, v)
-    return (vv[:, 0] > vv[:, 1]+vv[:, 2]) + (vv[:, 1] > vv[:, 2]+vv[:, 0]) + (vv[:, 2] > vv[:, 0]+vv[:, 1])
-
-
-def lineIntersection(P1, D1, P2, D2):
-    """Finds the intersection of 2 coplanar lines.
-
-    The lines (P1,D1) and (P2,D2) are defined by a point and a direction
-    vector. Let a and b be unit vectors along the lines, and c = P2-P1,
-    let ld and d be the length and the unit vector of the cross product a*b,
-    the intersection point X is then given by X = 0.5(P1+P2+sa*a+sb*b)
-    where sa = det([c,b,d])/ld and sb = det([c,a,d])/ld
-    """
-    P1 = asarray(P1).reshape((-1, 3)).astype(float64)
-    D1 = asarray(D1).reshape((-1, 3)).astype(float64)
-    P2 = asarray(P2).reshape((-1, 3)).astype(float64)
-    D2 = asarray(D2).reshape((-1, 3)).astype(float64)
-    N = P1.shape[0]
-    # a,b,c,d
-    la, a = vectorNormalize(D1)
-    lb, b = vectorNormalize(D2)
-    c = (P2-P1)
-    d = cross(a, b)
-    ld, d = vectorNormalize(d)
-    # sa,sb
-    a = a.reshape((-1, 1, 3))
-    b = b.reshape((-1, 1, 3))
-    c = c.reshape((-1, 1, 3))
-    d = d.reshape((-1, 1, 3))
-    m1 = concatenate([c, b, d], axis=-2)
-    m2 = concatenate([c, a, d], axis=-2)
-    # This may still be optimized
-    sa = zeros((N, 1))
-    sb = zeros((N, 1))
-    for i in range(P1.shape[0]):
-        sa[i] = linalg.det(m1[i]) / ld[i]
-        sb[i] = linalg.det(m2[i]) / ld[i]
-    # X
-    a = a.reshape((-1, 3))
-    b = b.reshape((-1, 3))
-    X = 0.5 * ( P1 + sa*a + P2 + sb*b )
-    return Coords(X)
-
-
-def displaceLines(A, N, C, d):
-    """Move all lines (A,N) over a distance a in the direction of point C.
-
-    A,N are arrays with points and directions defining the lines.
-    C is a point.
-    d is a scalar or a list of scalars.
-    All line elements of F are translated in the plane (line,C)
-    over a distance d in the direction of the point C.
-    Returns a new set of lines (A,N).
-    """
-    l, v = vectorNormalize(N)
-    w = C - A
-    vw = (v*w).sum(axis=-1).reshape((-1, 1))
-    Y = A + vw*v
-    l, v = vectorNormalize(C-Y)
-    return A + d*v, N
-
-
-def segmentOrientation(vertices,vertices2=None,point=None):
-    """Determine the orientation of a set of line segments.
-
-    vertices and vertices2 are matching sets of points.
-    point is a single point.
-    All arguments are Coords objects.
-
-    Line segments run between corresponding points of vertices and vertices2.
-    If vertices2 is None, it is obtained by rolling the vertices one position
-    foreward, thus corresponding to a closed polygon through the vertices).
-    If point is None, it is taken as the center of vertices.
-
-    The orientation algorithm checks whether the line segments turn
-    positively around the point.
-
-    Returns an array with +1/-1 for positive/negative oriented segments.
-    """
-    if vertices2 is None:
-        vertices2 = roll(vertices, -1, axis=0)
-    if point is None:
-        point = vertices.center()
-
-    w = cross(vertices, vertices2)
-    orient = sign(dotpr(point, w)).astype(Int)
-    return orient
-
-
-def rotationAngle(A,B,m=None,angle_spec=DEG):
-    """Return rotation angles and vectors for rotations of A to B.
-
-    A and B are (n,3) shaped arrays where each line represents a vector.
-    This function computes the rotation from each vector of A to the
-    corresponding vector of B.
-    If m is None, the return value is a tuple of an (n,) shaped array with
-    rotation angles (by default in degrees) and an (n,3) shaped array with
-    unit vectors along the rotation axis.
-    If m is a (n,3) shaped array with vectors along the rotation axis, the
-    return value is a (n,) shaped array with rotation angles.
-    Specify angle_spec=RAD to get the angles in radians.
-    """
-    A = asarray(A).reshape(-1, 3)
-    B = asarray(B).reshape(-1, 3)
-    if m is None:
-        A = normalize(A)
-        B = normalize(B)
-        n = cross(A, B) # vectors perpendicular to A and B
-        t = length(n) == 0.
-        if t.any(): # some vectors A and B are parallel
-            if A.shape[0] >=  B.shape[0]:
-                temp = A[t]
-            else:
-                temp = B[t]
-            n[t] = anyPerpendicularVector(temp)
-        n = normalize(n)
-        c = dotpr(A, B)
-        angle = arccosd(c.clip(min=-1., max=1.), angle_spec)
-        return angle, n
-    else:
-        m = asarray(m).reshape(-1, 3)
-        # project vectors on plane
-        A = projectionVOP(A, m)
-        B = projectionVOP(B, m)
-        angle, n = rotationAngle(A, B, angle_spec=angle_spec)
-        # check sign of the angles
-        m = normalize(m)
-        inv = isClose(dotpr(n, m), [-1.])
-        angle[inv] *= -1.
-        return angle
-
-
-def anyPerpendicularVector(A):
-    """Return arbitrary vectors perpendicular to vectors of A.
-
-    A is a (n,3) shaped array of vectors.
-    The return value is a (n,3) shaped array of perpendicular vectors.
-
-    The returned vector is always a vector in the x,y plane. If the original
-    is the z-axis, the result is the x-axis.
-    """
-    A = asarray(A).reshape(-1, 3)
-    x, y, z = hsplit(A, [1, 2])
-    n = zeros(x.shape, dtype=Float)
-    i = ones(x.shape, dtype=Float)
-    t = (x==0.)*(y==0.)
-    B = where(t, column_stack([i, n, n]), column_stack([-y, x, n]))
-    # B = where(t,column_stack([-z,n,x]),column_stack([-y,x,n]))
-    return B
-
-
-def perpendicularVector(A, B):
-    """Return vectors perpendicular on both A and B."""
-    return cross(A, B)
-
-
-def projectionVOV(A, B):
-    """Return the projection of vector of A on vector of B."""
-    L = projection(A, B)
-    B = normalize(B)
-    shape = list(L.shape)
-    shape.append(1)
-    return L.reshape(shape)*B
-
-
-def projectionVOP(A, n):
-    """Return the projection of vector of A on plane of B."""
-    Aperp = projectionVOV(A, n)
-    return A-Aperp
-
-
-################## intersection tools ###############
-#
-#  IT SHOULD BE CLEARLY DOCUMENTED WHETHER NORMALS ARE REQUIRED
-#  TO BE NORMALIZED OR NOT
-#  svc: plane normals and line vectors are not required to be normalized
-#
-#  MAYBE WE SHOULD ADOPT CONVENTION TO USE m,n FOR NORMALIZED
-#  VECTORS, AND u,v,w for (possibly) unnormalized
+################## intersection #######################
 #
 
 def pointsAtLines(q, m, t):
@@ -619,7 +120,7 @@ def intersectionTimesLWL(q1,m1,q2,m2,mode='all'):
     return t1, t2
 
 
-def intersectionPointsLWL(q1,m1,q2,m2,mode='all'):
+def intersectLineWithLine(q1,m1,q2,m2,mode='all'):
     """Return the intersection points of lines (q1,m1) and lines (q2,m2)
 
     with the perpendiculars between them.
@@ -679,10 +180,12 @@ def intersectionPointsLWP(q,m,p,n,mode='all'):
 def intersectionTimesSWP(S,p,n,mode='all'):
     """Return the intersection of line segments S with planes (p,n).
 
+    This is like intersectionTimesLWP, but the lines are defined by two points
+    instead of by a point and a vector.
     Parameters:
 
     - `S`: (nS,2,3) shaped array (`mode=all`) or broadcast compatible array
-      (`mode=pair`), defining a single line segment or a set of line segments.
+      (`mode=pair`), defining one or more line segments.
     - `p`,`n`: (np,3) shaped arrays of points and normals (`mode=all`)
       or broadcast compatible arrays (`mode=pair`), defining a single plane
       or a set of planes.
@@ -692,9 +195,6 @@ def intersectionTimesSWP(S,p,n,mode='all'):
     Returns a (nS,np) shaped (`mode=all`) array of parameter values t,
     such that the intersection points are given by
     `(1-t)*S[...,0,:] + t*S[...,1,:]`.
-
-    This function is comparable to intersectionTimesLWP, but ensures that
-    parameter values 0<=t<=1 are points inside the line segments.
     """
     q0 = S[..., 0,:]
     q1 = S[..., 1,:]
@@ -737,7 +237,6 @@ def intersectionSWP(S,p,n,mode='all',return_all=False,atol=0.):
     n = asanyarray(n).reshape(-1, 3)
     # Find intersection parameters
     t = intersectionTimesSWP(S, p, n, mode)
-    #~ print("S.shape: %s; p.shape: %s; n.shape: %s; t.shape: %s" % (S.shape,p.shape,n.shape,t.shape))
 
     if not return_all:
         # Find points inside segments
@@ -978,6 +477,26 @@ def intersectionLinesPWP(p1,n1,p2,n2,mode='all'):
     return q, m
 
 
+def intersectionSphereSphere(R, r, d):
+    """Intersection of two spheres (or two circles in the x,y plane).
+
+    Computes the intersection of two spheres with radii R, resp. r, having
+    their centres at distance d <= R+r. The intersection is a circle with
+    its center on the segment connecting the two sphere centers at a distance
+    x from the first sphere, and having a radius y. The return value is a
+    tuple x,y.
+    """
+    if d > R+r:
+        raise ValueError("d (%s) should not be larger than R+r (%s)" % (d, R+r))
+    dd = R**2-r**2+d**2
+    d2 = 2*d
+    x = dd/d2
+    y = sqrt(d2**2*R**2 - dd**2) / d2
+    return x, y
+
+
+########## projection #############################################
+
 def intersectionTimesPOP(X,p,n,mode='all'):
     """Return the intersection of perpendiculars from points X on planes (p,n).
 
@@ -1044,25 +563,488 @@ def intersectionPointsPOL(X,q,m,mode='all'):
     return pointsAtLines(q, m, t)
 
 
-def intersectionSphereSphere(R, r, d):
-    """Intersection of two spheres (or two circles in the x,y plane).
+################ deprecated old names ###########################
 
-    Computes the intersection of two spheres with radii R, resp. r, having
-    their centres at distance d <= R+r. The intersection is a circle with
-    its center on the segment connecting the two sphere centers at a distance
-    x from the first sphere, and having a radius y. The return value is a
-    tuple x,y.
+
+intersectionPointsLWL = intersectLineWithLine
+
+
+################ other functions #################################
+
+def areaNormals(x):
+    """Compute the area and normal vectors of a collection of triangles.
+
+    x is an (ntri,3,3) array with the coordinates of the vertices of ntri
+    triangles.
+
+    Returns a tuple (areas,normals) with the areas and the normals of the
+    triangles. The area is always positive. The normal vectors are normalized.
     """
-    if d > R+r:
-        raise ValueError("d (%s) should not be larger than R+r (%s)" % (d, R+r))
-    dd = R**2-r**2+d**2
-    d2 = 2*d
-    x = dd/d2
-    y = sqrt(d2**2*R**2 - dd**2) / d2
-    return x, y
+    x = x.reshape(-1, 3, 3)
+    area, normals = vectorPairAreaNormals(x[:, 1]-x[:, 0], x[:, 2]-x[:, 1])
+    area *= 0.5
+    return area, normals
 
 
-#################### distance tools ###############
+def degenerate(area, normals):
+    """Return a list of the degenerate faces according to area and normals.
+
+    area,normals are equal sized arrays with the areas and normals of a
+    list of faces, such as the output of the :func:`areaNormals` function.
+
+    A face is degenerate if its area is less or equal to zero or the
+    normal has a nan (not-a-number) value.
+
+    Returns a list of the degenerate element numbers as a sorted array.
+    """
+    return unique(concatenate([where(area<=0)[0], where(isnan(normals))[0]]))
+
+
+def levelVolumes(x):
+    """Compute the level volumes of a collection of elements.
+
+    x is an (nelems,nplex,3) array with the coordinates of the nplex vertices
+    of nelems elements, with nplex equal to 2, 3 or 4.
+
+    If nplex == 2, returns the lengths of the straight line segments.
+    If nplex == 3, returns the areas of the triangle elements.
+    If nplex == 4, returns the signed volumes of the tetraeder elements.
+    Positive values result if vertex 3 is at the positive side of the plane
+    defined by the vertices (0,1,2). Negative volumes are reported for
+    tetraeders having reversed vertex order.
+
+    For any other value of nplex, raises an error.
+    If succesful, returns an (nelems,) shaped float array.
+    """
+    nplex = x.shape[1]
+    if nplex == 2:
+        return length(x[:, 1]-x[:, 0])
+    elif nplex == 3:
+        return vectorPairArea(x[:, 1]-x[:, 0], x[:, 2]-x[:, 1]) / 2
+    elif nplex == 4:
+        return vectorTripleProduct(x[:, 1]-x[:, 0], x[:, 2]-x[:, 1], x[:, 3]-x[:, 0]) / 6
+    else:
+        raise ValueError("Plexitude should be one of 2, 3 or 4; got %s" % nplex)
+
+
+def smallestDirection(x,method='inertia',return_size=False):
+    """Return the direction of the smallest dimension of a Coords
+
+    - `x`: a Coords-like array
+    - `method`: one of 'inertia' or 'random'
+    - return_size: if True and `method` is 'inertia', a tuple of a direction
+      vector and the size  along that direction and the cross directions;
+      else, only return the direction vector.
+    """
+    x = x.reshape(-1, 3)
+    if method == 'inertia':
+        # The idea is to take the smallest dimension in a coordinate
+        # system aligned with the global axes.
+        C, r, Ip, I = x.inertia()
+        X = x.trl(-C).rot(r)
+        sizes = X.sizes()
+        i = sizes.argmin()
+        # r gives the directions as column vectors!
+        # TODO: maybe we should change that
+        N = r[:, i]
+        if return_size:
+            return N, sizes[i]
+        else:
+            return N
+    elif method == 'random':
+        # Take the mean of the normals on randomly created triangles
+        from pyformex.plugins.trisurface import TriSurface
+        n = x.shape[0]
+        m = 3 * (n // 3)
+        e = arange(m)
+        random.shuffle(e)
+        if n > m:
+            e = concatenate([e, [0, 1, n-1]])
+        el = e[-3:]
+        S = TriSurface(x, e.reshape(-1, 3))
+        A, N = S.areaNormals()
+        ok = where(isnan(N).sum(axis=1) == 0)[0]
+        N = N[ok]
+        N = N*N
+        N = N.mean(axis=0)
+        N = sqrt(N)
+        N = normalize(N)
+        return N
+
+# todo: add parameter mode = 'all' or 'pair'
+def distance(X, Y):
+    """Returns the distance of all points of X to those of Y.
+
+    Parameters:
+
+    - `X`: (nX,3) shaped array of points.
+    - `Y`: (nY,3) shaped array of points.
+
+    Returns an (nX,nT) shaped array with the distances between all points of
+    X and Y.
+    """
+    X = asarray(X).reshape(-1,3)
+    X = asarray(Y).reshape(-1,3)
+    return length(X[:, newaxis]-Y)
+
+
+def closest(X,Y=None,return_dist=False):
+    """Find the point of Y closest to each of the points of X.
+
+    Parameters:
+
+    - `X`: (nX,3) shaped array of points
+    - `Y`: (nY,3) shaped array of points. If None, Y is taken equal to X,
+      allowing to search for the closest point in a single set. In the latter
+      case, the point itself is excluded from the search (as otherwise
+      that would obviously be the closest one).
+    - `return_dist`: bool. If True, also returns the distances of the closest
+      points.
+
+    Returns:
+
+    - `ind`: (nX,) int array with the index of the closest point in Y to the
+      points of X
+    - `dist`: (nX,) float array with the distance of the closest point. This
+      is equal to length(X-Y[ind]). It is only returned if return_dist is True.
+    """
+    if Y is None:
+        dist = distance(X, X)   # Compute all distances
+        ar = arange(X.shape[0])
+        dist[ar,ar] = dist.max()+1.
+    else:
+        dist = distance(X, Y)   # Compute all distances
+    ind = dist.argmin(-1)       # Locate the smallest distances
+    if return_dist:
+        return ind, dist[arange(dist.shape[0]), ind]
+    else:
+        return ind
+
+
+def closestPair(X, Y):
+    """Find the closest pair of points from X and Y.
+
+    Parameters:
+
+    - `X`: (nX,3) shaped array of points
+    - `Y`: (nY,3) shaped array of points
+
+    Returns a tuple (i,j,d) where i,j are the indices in X,Y identifying
+    the closest points, and d is the distance between them.
+    """
+    dist = distance(X, Y)   # Compute all distances
+    ind = dist.argmin()     # Locate the smallest distances
+    i, j = divmod(ind, Y.shape[0])
+    return i, j, dist[i, j]
+
+
+def projectedArea(x, dir):
+    """Compute projected area inside a polygon.
+
+    Parameters:
+
+    - `x`: (npoints,3) Coords with the ordered vertices of a
+      (possibly nonplanar) polygonal contour.
+    - `dir`: either a global axis number (0, 1 or 2) or a direction vector
+      consisting of 3 floats, specifying the projection direction.
+
+    Returns a single float value with the area inside the polygon projected
+    in the specified direction.
+
+    Note that if the polygon is planar and the specified direction is that
+    of the normal on its plane, the returned area is that of the planar
+    figure inside the polygon. If the polygon is nonplanar however, the area
+    inside the polygon is not defined. The projected area in a specified
+    direction is, since the projected polygon is a planar one.
+    """
+    if x.shape[0] < 3:
+        return 0.0
+    if isinstance(dir, int):
+        dir = unitVector(dir)
+    else:
+        dir = normalize(dir)
+    x1 = roll(x, -1, axis=0)
+    area = vectorTripleProduct(Coords(dir), x, x1)
+    return 0.5 * area.sum()
+
+
+def polygonNormals(x):
+    """Compute normals in all points of polygons in x.
+
+    x is an (nel,nplex,3) coordinate array representing nel (possibly nonplanar)
+    polygons.
+
+    The return value is an (nel,nplex,3) array with the unit normals on the
+    two edges ending in each point.
+    """
+    if x.shape[1] < 3:
+        #raise ValueError("Cannot compute normals for plex-2 elements"
+        n = zeros_like(x)
+        n[:,:, 2] = -1.
+        return n
+
+    ni = arange(x.shape[1])
+    nj = roll(ni, 1)
+    nk = roll(ni, -1)
+    v1 = x-x[:, nj]
+    v2 = x[:, nk]-x
+    n = vectorPairNormals(v1.reshape(-1, 3), v2.reshape(-1, 3)).reshape(x.shape)
+    return n
+
+
+def averageNormals(coords,elems,atNodes=False,treshold=None):
+    """Compute average normals at all points of elems.
+
+    coords is a (ncoords,3) array of nodal coordinates.
+    elems is an (nel,nplex) array of element connectivity.
+
+    The default return value is an (nel,nplex,3) array with the averaged
+    unit normals in all points of all elements.
+    If atNodes == True, a more compact array with the unique averages
+    at the nodes is returned.
+    """
+    n = polygonNormals(coords[elems])
+    n = nodalSum(n, elems, return_all=not atNodes, direction_treshold=treshold)
+    return normalize(n)
+
+
+def triangleInCircle(x):
+    """Compute the incircles of the triangles x
+
+    The incircle of a triangle is the largest circle that can be inscribed
+    in the triangle.
+
+    x is a Coords array with shape (ntri,3,3) representing ntri triangles.
+
+    Returns a tuple r,C,n with the radii, Center and unit normals of the
+    incircles.
+    """
+    checkArray(x, shape=(-1, 3, 3))
+    # Edge vectors
+    v = roll(x, -1, axis=1) - x
+    v = normalize(v)
+    # create bisecting lines in x0 and x1
+    b0 = v[:, 0]-v[:, 2]
+    b1 = v[:, 1]-v[:, 0]
+    # find intersection => center point of incircle
+    center = intersectLineWithLine(x[:, 0], b0, x[:, 1], b1)
+    # find distance to any side => radius
+    radius = center.distanceFromLine(x[:, 0], v[:, 0])
+    # normals
+    normal = cross(v[:, 0], v[:, 1])
+    normal /= length(normal).reshape(-1, 1)
+    return radius, center, normal
+
+
+def triangleCircumCircle(x,bounding=False):
+    """Compute the circumcircles of the triangles x
+
+    x is a Coords array with shape (ntri,3,3) representing ntri triangles.
+
+    Returns a tuple r,C,n with the radii, Center and unit normals of the
+    circles going through the vertices of each triangle.
+
+    If bounding=True, this returns the triangle bounding circle.
+    """
+    checkArray(x, shape=(-1, 3, 3))
+    # Edge vectors
+    v = x - roll(x, -1, axis=1)
+    vv = dotpr(v, v)
+    # Edge lengths
+    lv = sqrt(vv)
+    n = cross(v[:, 0], v[:, 1])
+    nn = dotpr(n, n)
+    # Radius
+    N = sqrt(nn)
+    r = asarray(lv.prod(axis=-1) / N / 2)
+    # Center
+    w = -dotpr(roll(v, 1, axis=1), roll(v, 2, axis=1))
+    a = w * vv
+    C = a.reshape(-1, 3, 1) * roll(x, 1, axis=1)
+    C = C.sum(axis=1) / nn.reshape(-1, 1) / 2
+    # Unit normals
+    n = n / N.reshape(-1, 1)
+    # Bounding circle
+    if bounding:
+        # Modify for obtuse triangles
+        for i, j, k in [[0, 1, 2], [1, 2, 0], [2, 0, 1]]:
+            obt = vv[:, i] >= vv[:, j]+vv[:, k]
+            r[obt] = 0.5 * lv[obt, i]
+            C[obt] = 0.5 * (x[obt, i] + x[obt, j])
+
+    return r, C, n
+
+
+def triangleBoundingCircle(x):
+    """Compute the bounding circles of the triangles x
+
+    The bounding circle is the smallest circle in the plane of the triangle
+    such that all vertices of the triangle are on or inside the circle.
+    If the triangle is acute, this is equivalent to the triangle's
+    circumcircle. It the triangle is obtuse, the longest edge is the
+    diameter of the bounding circle.
+
+    x is a Coords array with shape (ntri,3,3) representing ntri triangles.
+
+    Returns a tuple r,C,n with the radii, Center and unit normals of the
+    bounding circles.
+    """
+    return triangleCircumCircle(x, bounding=True)
+
+
+def triangleObtuse(x):
+    """Checks for obtuse triangles
+
+    x is a Coords array with shape (ntri,3,3) representing ntri triangles.
+
+    Returns an (ntri) array of True/False values indicating whether the
+    triangles are obtuse.
+    """
+    checkArray(x, shape=(-1, 3, 3))
+    # Edge vectors
+    v = x - roll(x, -1, axis=1)
+    vv = dotpr(v, v)
+    return (vv[:, 0] > vv[:, 1]+vv[:, 2]) + (vv[:, 1] > vv[:, 2]+vv[:, 0]) + (vv[:, 2] > vv[:, 0]+vv[:, 1])
+
+
+@utils.deprecated_by('geomtools.lineIntersection','geomtools.intersectLineWithLine')
+def lineIntersection(P0, N0, P1, N1):
+    """Finds the intersection of 2 (sets of) lines.
+
+    This relies on the lines being pairwise coplanar.
+    """
+    Y0,Y1 = intersectionPointsLWL(P0,N0,P1,N1,mode='pair')
+    return Y0
+
+
+def displaceLines(A, N, C, d):
+    """Move all lines (A,N) over a distance a in the direction of point C.
+
+    A,N are arrays with points and directions defining the lines.
+    C is a point.
+    d is a scalar or a list of scalars.
+    All line elements of F are translated in the plane (line,C)
+    over a distance d in the direction of the point C.
+    Returns a new set of lines (A,N).
+    """
+    l, v = vectorNormalize(N)
+    w = C - A
+    vw = (v*w).sum(axis=-1).reshape((-1, 1))
+    Y = A + vw*v
+    l, v = vectorNormalize(C-Y)
+    return A + d*v, N
+
+
+def segmentOrientation(vertices,vertices2=None,point=None):
+    """Determine the orientation of a set of line segments.
+
+    vertices and vertices2 are matching sets of points.
+    point is a single point.
+    All arguments are Coords objects.
+
+    Line segments run between corresponding points of vertices and vertices2.
+    If vertices2 is None, it is obtained by rolling the vertices one position
+    foreward, thus corresponding to a closed polygon through the vertices).
+    If point is None, it is taken as the center of vertices.
+
+    The orientation algorithm checks whether the line segments turn
+    positively around the point.
+
+    Returns an array with +1/-1 for positive/negative oriented segments.
+    """
+    if vertices2 is None:
+        vertices2 = roll(vertices, -1, axis=0)
+    if point is None:
+        point = vertices.center()
+
+    w = cross(vertices, vertices2)
+    orient = sign(dotpr(point, w)).astype(Int)
+    return orient
+
+
+def rotationAngle(A,B,m=None,angle_spec=DEG):
+    """Return rotation angles and vectors for rotations of A to B.
+
+    A and B are (n,3) shaped arrays where each line represents a vector.
+    This function computes the rotation from each vector of A to the
+    corresponding vector of B.
+    If m is None, the return value is a tuple of an (n,) shaped array with
+    rotation angles (by default in degrees) and an (n,3) shaped array with
+    unit vectors along the rotation axis.
+    If m is a (n,3) shaped array with vectors along the rotation axis, the
+    return value is a (n,) shaped array with rotation angles.
+    Specify angle_spec=RAD to get the angles in radians.
+    """
+    A = asarray(A).reshape(-1, 3)
+    B = asarray(B).reshape(-1, 3)
+    if m is None:
+        A = normalize(A)
+        B = normalize(B)
+        n = cross(A, B) # vectors perpendicular to A and B
+        t = length(n) == 0.
+        if t.any(): # some vectors A and B are parallel
+            if A.shape[0] >=  B.shape[0]:
+                temp = A[t]
+            else:
+                temp = B[t]
+            n[t] = anyPerpendicularVector(temp)
+        n = normalize(n)
+        c = dotpr(A, B)
+        angle = arccosd(c.clip(min=-1., max=1.), angle_spec)
+        return angle, n
+    else:
+        m = asarray(m).reshape(-1, 3)
+        # project vectors on plane
+        A = projectionVOP(A, m)
+        B = projectionVOP(B, m)
+        angle, n = rotationAngle(A, B, angle_spec=angle_spec)
+        # check sign of the angles
+        m = normalize(m)
+        inv = isClose(dotpr(n, m), [-1.])
+        angle[inv] *= -1.
+        return angle
+
+
+def anyPerpendicularVector(A):
+    """Return arbitrary vectors perpendicular to vectors of A.
+
+    A is a (n,3) shaped array of vectors.
+    The return value is a (n,3) shaped array of perpendicular vectors.
+
+    The returned vector is always a vector in the x,y plane. If the original
+    is the z-axis, the result is the x-axis.
+    """
+    A = asarray(A).reshape(-1, 3)
+    x, y, z = hsplit(A, [1, 2])
+    n = zeros(x.shape, dtype=Float)
+    i = ones(x.shape, dtype=Float)
+    t = (x==0.)*(y==0.)
+    B = where(t, column_stack([i, n, n]), column_stack([-y, x, n]))
+    # B = where(t,column_stack([-z,n,x]),column_stack([-y,x,n]))
+    return B
+
+
+def perpendicularVector(A, B):
+    """Return vectors perpendicular on both A and B."""
+    return cross(A, B)
+
+
+def projectionVOV(A, B):
+    """Return the projection of vector of A on vector of B."""
+    L = projection(A, B)
+    B = normalize(B)
+    shape = list(L.shape)
+    shape.append(1)
+    return L.reshape(shape)*B
+
+
+def projectionVOP(A, n):
+    """Return the projection of vector of A on plane of B."""
+    Aperp = projectionVOV(A, n)
+    return A-Aperp
+
+
+#################### distance ##############################
 
 def distancesPFL(X,q,m,mode='all'):
     """Return the distances of points X from lines (q,m).
@@ -1103,29 +1085,6 @@ def distancesPFS(X,S,mode='all'):
     q0 = S[..., 0,:]
     q1 = S[..., 1,:]
     return distancesPFL(X, q0, q1-q0, mode)
-
-
-def insideTriangle(x,P,method='bary'):
-    """Checks whether the points P are inside triangles x.
-
-    x is a Coords array with shape (ntri,3,3) representing ntri triangles.
-    P is a Coords array with shape (npts,ntri,3) representing npts points
-    in each of the ntri planes of the triangles.
-    This function checks whether the points of P fall inside the corresponding
-    triangles.
-
-    Returns an array with (npts,ntri) bool values.
-    """
-    if method == 'bary':
-        return insideSimplex(baryCoords(x, P))
-    else:
-        # Older, slower algorithm
-        xP = x[newaxis, ...] - P[:,:, newaxis,:]
-        xx = [ cross(xP[:,:, i], xP[:,:, j]) for (i, j) in ((0, 1), (1, 2), (2, 0)) ]
-        xy = (xx[0]*xx[1]).sum(axis=-1)
-        yz = (xx[1]*xx[2]).sum(axis=-1)
-        d = dstack([xy, yz])
-        return (d > 0).all(axis=-1)
 
 
 def faceDistance(X,Fp,return_points=False):
@@ -1243,6 +1202,7 @@ def vertexDistance(X,Vp,return_points=False):
 
 #################### barycentric coordinates ###############
 
+
 def baryCoords(S, P):
     """Compute the barycentric coordinates of points  P wrt. simplexes S.
 
@@ -1293,6 +1253,30 @@ def insideSimplex(BC,bound=True):
     else:
         return (BC > 0.).all(0)
 
+
+
+def insideTriangle(x,P,method='bary'):
+    """Checks whether the points P are inside triangles x.
+
+    x is a Coords array with shape (ntri,3,3) representing ntri triangles.
+    P is a Coords array with shape (npts,ntri,3) representing npts points
+    in each of the ntri planes of the triangles.
+    This function checks whether the points of P fall inside the corresponding
+    triangles.
+
+    Returns an array with (npts,ntri) bool values.
+    """
+    if method == 'bary':
+        return insideSimplex(baryCoords(x, P))
+    else:
+        # Older, slower algorithm
+        # TODO: This can be removed?
+        xP = x[newaxis, ...] - P[:,:, newaxis,:]
+        xx = [ cross(xP[:,:, i], xP[:,:, j]) for (i, j) in ((0, 1), (1, 2), (2, 0)) ]
+        xy = (xx[0]*xx[1]).sum(axis=-1)
+        yz = (xx[1]*xx[2]).sum(axis=-1)
+        d = dstack([xy, yz])
+        return (d > 0).all(axis=-1)
 
 
 if __name__ == "__main__":

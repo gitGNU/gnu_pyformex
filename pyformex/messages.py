@@ -65,11 +65,10 @@ You can convert your scripts automatically with the command::
 """
 
 
+_future_deprecation = "This functionality is deprecated and will probably be removed in future, unless you explain to the developers why they should retain it."
 
 
 warn_viewport_linking = "Linking viewports is an experimental feature and is not fully functional yet."
-
-_future_deprecation = "This functionality is deprecated and will probably be removed in future, unless you explain to the developers why they should retain it."
 warn_default_gl = """..
 
 GL2 now default
@@ -140,24 +139,17 @@ depr_adjacencyArrays = "adjacencyArrays is deprecated. Use Adjacency.frontWalk()
 depr_image2numpy_arg = "The use of the `expand` parameter in image2numpy is deprecated. Use the `indexed` parameter instead."
 depr_mesh_getlowerentities_unique = "The use of the unique argument is deprecated. Use Mesh.insertLevel() instead."
 depr_pathextension = "patchextension is deprecated. Use border().extrude() instead."
-depr_trisurface_Sphere = "trisurface.Sphere is deprecated: use simple.sphere(ndiv=2**(level-1)) instead"
 depr_vertices = "vertices is deprecated. Use points() instead."
 
-# removed in 0.9.1
-## depr_tabs = "widgets.Tabs is deprecated. Use InputDialog instead."
-## depr_tabledialog = "widgets.TableDialog is deprecated. Use InputDialog with a 'table' inputitem instead."
 depr_getResult = "InputDialog.getResult is deprecated. Use getResults instead."
-depr_checkarraydim = "checkArrayDim is deprecated. Use checkArray with ndim argument."
+#depr_checkarraydim = "checkArrayDim is deprecated. Use checkArray with ndim argument."
 
 PolyLine_distanceOfPoints = "PolyLine.distanceOfPoints is deprecated"
 PolyLine_distanceOfPolyline = "PolyLine.distanceOfPolyline is deprecated"
 
-depr_facetarea = "TriSurface.facetArea is deprecated: use TriSurface.areas instead"
-
 depr_abqdata_outres = "The use of the `res` and `out` arguments in AbqData is deprecated. Set them inside your Steps instead."
 depr_avgNodalScalarOnAdjacentNodes = "avgNodalScalarOnAdjacentNodes is deprecated. It may be removed in future, unless someone can prove its virtue, generalize, cleanup and document the code and provide an example. See the source code for more comments."
 depr_connectionSteps1 = "connectionSteps is deprecated and has been removed. Use frontWalk instead. See the FrontWalk example: walk 3 gives an equivalent result, though you might prefer the simpler solution of walk 2."
-depr_vtk_readVTP = "readVTP is deprecated. Use readVTKObject instead."
 
 VTK_strips = "There are strips in the VTK object (not yet supported in pyFormex). I will convert it to triangles."
 

@@ -37,11 +37,12 @@ While the user will mostly use the higher level classes, he might occasionally
 find good reason to use the :class:`Coords` class directly as well.
 """
 from __future__ import print_function
+
 from pyformex import zip
+from pyformex import utils
 
 from pyformex.arraytools import *
 from pyformex.lib import misc
-from pyformex.utils import deprecation, warn
 
 
 ###########################################################################

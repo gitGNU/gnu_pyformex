@@ -979,7 +979,7 @@ class PolyLine(Curve):
 
     # BV: I'm not sure what this does and if it belongs here
 
-    @utils.deprecation("PolyLine_distanceOfPoints")
+    @utils.deprecated("PolyLine_distanceOfPoints")
     def distanceOfPoints(self,p,n,return_points=False):
         """_Find the distances of points p, perpendicular to the vectors n.
 
@@ -1014,7 +1014,7 @@ class PolyLine(Curve):
 
     # BV: same remark: what is this distance?
 
-    @utils.deprecation("PolyLine_distanceOfPolyline")
+    @utils.deprecated("PolyLine_distanceOfPolyline")
     def distanceOfPolyLine(self,PL,ds,return_points=False):
         """_Find the distances of the PolyLine PL.
 
@@ -1939,26 +1939,5 @@ def convertFormexToCurve(self,closed=False):
 
 Formex.toCurve = convertFormexToCurve
 
-
-##############################################################################
-#
-# DEPRECATED; REMOVED in 0.9.0
-#
-## class Polygon(PolyLine):
-##     @utils.deprecation('depr_polygon')
-##     def __init__(self,coords=[]):
-##         PolyLine.__init__(self,coords,closed=True)
-
-##     def area(self,project=None):
-##         from geomtools import polygonArea
-##         return polygonArea(self.coords,project)
-
-
-## class QuadBezierSpline(BezierSpline):
-##     @utils.deprecation('depr_quadbezier')
-##     def __init__(self,coords,**kargs):
-##         """Create a natural spline through the given points."""
-##         kargs['degree'] = 2
-##         BezierSpline.__init__(self,coords,**kargs)
 
 # End

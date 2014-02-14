@@ -962,13 +962,15 @@ def checkArray1D(a,kind=None,allow=None,size=None):
     return checkArray(a, kind=kind, allow=allow, size=size).ravel()
 
 
+# REMOVED IN 1.0.0
 # DEPRECATED IN 0.9.1
-def checkArrayDim(a,ndim=-1):
-    from pyformex import utils
-    utils.deprec("depr_checkarraydim")
-    if ndim < 0:
-        ndim = None
-    return checkArray(a, ndim=ndim)
+## @utils.deprecated_by('arraytools.checkArrayDim','arraytools.checkArray')
+## def checkArrayDim(a,ndim=-1):
+##     from pyformex import utils
+##     utils.deprec("depr_checkarraydim")
+##     if ndim < 0:
+##         ndim = None
+##     return checkArray(a, ndim=ndim)
 
 
 def checkUniqueNumbers(nrs,nmin=0,nmax=None):

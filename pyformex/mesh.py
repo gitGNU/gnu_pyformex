@@ -558,7 +558,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
     ## Entity selection and mesh traversal ##
 
 
-    @utils.deprecation("Mesh.getLowerEntitiesSelector is deprecated. Use Element.getEntities instead.")
+    @utils.deprecated_by('Mesh.getLowerEntitiesSelector','Element.getEntities')
     def getLowerEntitiesSelector(self,level=-1):
         """Get the entities of a lower dimensionality.
 
@@ -834,7 +834,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return self.getFreeEntitiesMesh(level=1, compact=compact)
 
 
-    @utils.deprecation("mesh_connectedTo")
+    @utils.deprecated("mesh_connectedTo")
     def connectedTo(self,entities,level=0):
         """Select the elements connected to specific lower entities.
 
@@ -851,7 +851,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return elems.connectedTo(entities)
 
 
-    @utils.deprecation("mesh_notConnectedTo")
+    @utils.deprecated("mesh_notConnectedTo")
     def notConnectedTo(self, nodes):
         pass
 
@@ -1401,12 +1401,12 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return Mesh(self.coords, elems, prop=prop, eltype=eltype)
 
 
-    @utils.deprecation("Mesh.withProp is deprecated. Use selectProp instead.")
+    @utils.deprecated_by('Mesh.withProp','Mesh.selectProp')
     def withProp(self, val):
         return self.selectProp(val, compact=False)
 
 
-    @utils.deprecation("Mesh.withoutProp is deprecated. Use Geometry.cselectProp instead.")
+    @utils.deprecated_by('Mesh.withoutProp','Mesh.cselectProp')
     def withoutProp(self, val):
         return self.cselectProp(val, compact=False)
 
@@ -2943,6 +2943,8 @@ def quarterCircle(n1, n2):
 # coordinate data
 # It could be used in a general Mesh checking/fixing utility
 
+
+@utils.deprecated_future()
 def correctHexMeshOrientation(hm):
     """_hexahedral elements have an orientation.
 

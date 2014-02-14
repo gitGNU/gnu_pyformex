@@ -2146,23 +2146,6 @@ def resetGUI():
     pf.GUI.enableButtons(pf.GUI.actions, ['Continue', 'Stop'], False)
 
 
-## REMOVED in 0.9.1
-
-#  deprecated alternative spellings
-## from utils import deprecated,deprecation
-## @deprecated(zoomAll)
-## def zoomall(*args,**kargs):
-##     pass
-## @deprecated(drawText)
-## def drawtext(*args,**kargs):
-##     pass
-
-
-## @utils.deprecation("`drawNormals` is deprecated: use `drawVectors` instead.\nNotice that the argument order is different!")
-## def drawNormals(v,P,size=None,**drawOptions):
-##     drawVectors(P,v,size=size,**drawOptions)
-
-
 ###########################################################################
 # import opengl2 overrides for public functions
 #

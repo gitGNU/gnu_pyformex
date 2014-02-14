@@ -2198,89 +2198,13 @@ Quality: %s .. %s
         return res['tetgen.ele']
 
 
-    @utils.deprecation("depr_facetarea")
+    @utils.deprecated_by('TriSurface.facetArea','TriSurface.areas')
     def facetArea(self):
         return self.areas()
 
 
 ##########################################################################
 ################# Non-member and obsolete functions ######################
-
-
-## def read_error(cnt, line):
-##     """Raise an error on reading the stl file."""
-##     raise RuntimeError("Invalid .stl format while reading line %s\n%s" % (cnt, line))
-
-
-## def read_stla(fn,dtype=Float,large=False,guess=True):
-##     """Read an ascii .stl file into an [n,3,3] float array.
-
-##     If the .stl is large, read_ascii_large() is recommended, as it is
-##     a lot faster.
-##     """
-##     if large:
-##         return read_ascii_large(fn, dtype=dtype)
-##     if guess:
-##         n = utils.countLines(fn) / 7 # ASCII STL has 7 lines per triangle
-##     else:
-##         n = 100
-##     f = open(fn, 'r')
-##     a = zeros(shape=[n, 3, 3], dtype=dtype)
-##     x = zeros(shape=[3, 3], dtype=dtype)
-##     i = 0
-##     j = 0
-##     cnt = 0
-##     finished = False
-##     for line in f:
-##         cnt += 1
-##         s = line.strip().split()
-##         if s[0] == 'vertex':
-##             if j >= 3:
-##                 read_error(cnt, line)
-##             x[j] = [float(_s) for _s in s[1:4]]
-##             j += 1
-##         elif s[0] == 'outer':
-##             j = 0
-##         elif s[0] == 'endloop':
-##             a[i] = x
-##         elif s[0] == 'facet':
-##             if i >= a.shape[0]:
-##                 # increase the array size
-##                 a.resize([2*a.shape[0], 3, 3])
-##         elif s[0] == 'endfacet':
-##             i += 1
-##         elif s[0] == 'solid':
-##             pass
-##         elif s[0] == 'endsolid':
-##             finished = True
-##             break
-##     if f:
-##         f.close()
-##     if finished:
-##         return a[:i]
-##     raise RuntimeError("Incorrect stl file: read %d lines, %d facets" % (cnt, i))
-
-
-## def read_ascii_large(fn,dtype=Float):
-##     """Read an ascii .stl file into an [n,3,3] float array.
-
-##     This is an alternative for read_ascii, which is a lot faster on large
-##     STL models.
-##     It requires the 'awk' command though, so is probably only useful on
-##     Linux/UNIX. It works by first transforming the input file to a
-##     .nodes file and then reading it through numpy's fromfile() function.
-##     """
-##     tmp = '%s.nodes' % fn
-##     utils.command("awk '/^[ ]*vertex[ ]+/{print $2,$3,$4}' '%s' | d2u > '%s'" % (fn, tmp), shell=True)
-##     nodes = fromfile(tmp, sep=' ', dtype=dtype).reshape((-1, 3, 3))
-##     return nodes
-
-
-## def off_to_tet(fn):
-##     """Transform an .off model to tetgen (.node/.smesh) format."""
-##     pf.message("Transforming .OFF model %s to tetgen .smesh" % fn)
-##     nodes,elems = read_off(fn)
-##     write_node_smesh(utils.changeExt(fn,'.smesh'),nodes,elems)
 
 
 def find_row(mat,row,nmatch=None):
@@ -2387,21 +2311,22 @@ def Cube():
     return TriSurface(faces)
 
 
-@utils.deprecation('depr_trisurface_Sphere')
+####### Deprecated function #######################
+
+
+@utils.deprecated_by('trisurface.Sphere','simple.sphere')
 def Sphere(level=4,verbose=False,filename=None):
     from pyformex import simple
     return simple.sphere(ndiv=2**(level-1))
 
-
-####### Unsupported functions needing cleanup #######################
-
-@utils.deprecation("intersectSurfaceWithLines has been removed: use intersectionWithLines instead")
+@utils.deprecated_by('trisurface.intersectSurfaceWithLines','trisurface.intersectionWithLines')
 def intersectSurfaceWithLines(ts, qli, mli, atol=1.e-5):
     pass
 ##this function has been removed. You can get the same results using:
 ##      P,X=intersectionWithLines(self, q, m, q2,atol=1.e-5)
 ##      P,L,T = P[X[:, 0]], X[:, 1], X[:, 2]
-@utils.deprecation("intersectSurfaceWithSegments has been removed: use intersectionWithLines instead")
+
+@utils.deprecated_by('trisurface.intersectSurfaceWithSegments','trisurface.intersectionWithLines')
 def intersectSurfaceWithSegments(s1, segm, atol=1.e-5):
     pass
 ##this function has been removed. You can get the same results using:

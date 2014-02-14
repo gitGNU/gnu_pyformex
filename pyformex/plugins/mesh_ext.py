@@ -37,7 +37,7 @@ from pyformex import utils
 ##############################################################################
 
 
-# Deprecated: to be removed soon
+# REMOVED IN 1.0.0
 
 # The use of both nodesource and elemsource is rather unprobable.
 # And when using both, there are two choices: the elements connected
@@ -45,9 +45,9 @@ from pyformex import utils
 # Thus it is better to let the user decide what he wants.
 # See the FrontWalk example
 
-@utils.deprecation("depr_connectionSteps1")
-def connectionSteps(self, nodesource=[], elemsource=[], maxstep=-1):
-    pass
+## @utils.deprecated("depr_connectionSteps1")
+## def connectionSteps(self, nodesource=[], elemsource=[], maxstep=-1):
+##     pass
     ## """_Return the elems connected to some sources via multiple nodal steps.
 
     ## - 'nsources' : are node sources,
@@ -259,7 +259,7 @@ def nodalAveraging(self, val, iter=1, mask=None,includeself=False):
 
 
 # BV: REMOVED in 1.0.0
-## @utils.deprecation("depr_correctNegativeVolumes")
+## @utils.deprecated("depr_correctNegativeVolumes")
 ## def correctNegativeVolumes(self):
 ##     """_Modify the connectivity of negative-volume elements to make
 ##     positive-volume elements.
@@ -282,7 +282,7 @@ def nodalAveraging(self, val, iter=1, mask=None,includeself=False):
 #
 # Install
 #
-Mesh.connectionSteps = connectionSteps
+#Mesh.connectionSteps = connectionSteps
 Mesh.scaledJacobian = scaledJacobian
 Mesh.elementToNodal = elementToNodal
 Mesh.nodalAveraging = nodalAveraging

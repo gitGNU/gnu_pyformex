@@ -28,6 +28,8 @@
 if not pf.options.opengl2:
     warning("This example only runs with the new opengl2 engine!")
 
+pf.cfg['render/experimental'] = False
+
 resetAll()
 clear()
 smooth()
@@ -52,36 +54,10 @@ S2 = S2.trl([0., 0., -2.]) +  S2.trl([0., 0., 2.])
 
 draw(S1,name='red_sphere', color=red, opak=False, alpha=0.5)
 draw(S2,name='blue_sphere', color=blue, opak=True, alpha=1.0)
+draw(T,name='rectangular_plate', color=green, bkcolor=darkgreen,alpha=0.9,bkalpha=0.5)
 draw(S,name='yellow_sphere', color=yellow, alpha=0.5)
-draw(T,name='rectangular_plate', color=green, bkcolor=darkgreen,alpha=0.99,bkalpha=0.5)
 
 zoomAll()
-pf.app.processEvents()
 
-exit()
-
-print((S.npoints()))
-col = [red, red]*81
-print((len(col)))
-SA = GeomActor(S, ambient=0.0, diffuse=1.0, specular=0.0, color=red, alpha=0.7, light=(0., 1., 1.), shininess=20)
-
-TA = GeomActor(T, ambient=0.5, diffuse=0.5, color=blue, bkcolor=green, alpha=0.9, light=(0., 1., 1.))
-
-#SA.children.append(TA)
-
-#drawActor(SA)
-
-draw(S, color=red)
-draw(T, color=blue, bkcolor=green, lighting=False)
-
-zoomAll()
-#pf.app.processEvents()
-
-## n = 10
-## for x in arange(n+1) / float(n):
-##     print(x)
-##     TA.objColor = red + x * green
-##     modified(TA)
-##     sleep(1)
 
 # End
