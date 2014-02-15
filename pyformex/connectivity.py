@@ -72,7 +72,7 @@ class Connectivity(ndarray):
 
     A new Connectivity object is created with the following syntax ::
 
-      Connectivity(data=[],dtyp=None,copy=False,nplex=0)
+      Connectivity(data=[],dtyp=None,copy=False,nplex=0,eltype=None)
 
     Parameters:
 
@@ -108,7 +108,7 @@ class Connectivity(ndarray):
     # Because we have a __new__ constructor here and no __init__,
     # we have to list the arguments explicitely in the docstring above.
     #
-    def __new__(self,data=[],dtyp=None,copy=False,nplex=0,eltype=None,allow_negative=False):
+    def __new__(self,data=[],dtyp=None,copy=False,nplex=0,eltype=None):
         """Create a new Connectivity object."""
         if isinstance(data, Connectivity):
             if nplex == 0:
@@ -140,7 +140,7 @@ class Connectivity(ndarray):
         # Check values
         if ar.size > 0:
             maxval = ar.max()
-            if maxval > 2**31-1 or (ar.min() < 0 and not allow_negative):
+            if maxval > 2**31-1 or (ar.min() < 0):
                 raise ValueError("Negative or too large positive value in data")
             if nplex > 0 and ar.shape[1] != nplex:
                 raise ValueError("Expected data of plexitude %s" % nplex)
@@ -1178,19 +1178,109 @@ class Connectivity(ndarray):
         return self
 
 
-    def sharedNodes(self, elist):
+    def sharedNodes(self, elist=None):
         """Return the list of nodes shared by all elements in elist
 
         Parameters:
 
-        - `elist`: an integer list-like with element numbers.
+        - `elist`: an integer list-like with element numbers. If not specified,
+          all elements are considered.
 
         Returns a 1-D integer array with the list of nodes that are
         common to all elements in the specified list. This array may be
         empty.
+
+        Example:
+
+        >>> a = Connectivity([[0,1,2],[0,2,1],[0,3,2]])
+        >>> a.sharedNodes()
+        Connectivity([0, 2])
+        >>> a.sharedNodes([0,1])
+        Connectivity([0, 1, 2])
+
         """
-        m, u = multiplicity(self[elist].ravel())
-        return u[m==len(elist)]
+        if elist is None:
+            elems = self
+        else:
+            elems = self[elist]
+        m, u = multiplicity(elems.ravel())
+        return u[m==len(elems)]
+
+
+    def replic(self, n, inc):
+        """Repeat a Connectivity with increasing node numbers.
+
+        Parameters:
+
+        - `n: integer: number of copies to make
+        - `inc`: integer: increment in node numbers for each copy
+
+
+        Returns a Connectivity with the concatenation of `n` replicas of
+        `self`, where the first replica is identical to self and each
+        next one has its node numbers increased by `inc`.
+
+        Example:
+
+        >>> Connectivity([[0,1,2],[0,2,3]]).replic(2,4)
+        Connectivity([[0, 1, 2],
+               [0, 2, 3],
+               [4, 5, 6],
+               [4, 6, 7]])
+
+        """
+        return Connectivity(concatenate([self+i*inc for i in range(n)]), eltype=self.eltype)
+
+
+    def extrude(self, nnod, degree):
+        """Extrude a Connectivity to a higher level Connectivity.
+
+        This method is only available if the Connectivity has an
+        element type and the element type is extrudable. See
+        :mod:`elements` for more details.
+
+        Parameters:
+
+        - `nnod`: integer: should be larger than the highest node number in self
+        - `degree`: integer: degree of extrusion (currently 1 or 2)
+
+        The extrusion adds `degree` planes of nodes, each with an node increment
+        `nnod`, to the original Connectivity `e` and then selects the target
+        nodes from it as defined by the `self.eltype.extruded[degree]` value.
+
+        Returns a Connectivity for the extruded element.
+
+        Example:
+
+        >>> from pyformex.elements import Line2,Line3
+        >>> a = Connectivity([[0,1],[1,2]],eltype=Line2).extrude(3,1)
+        >>> print(a)
+        [[0 1 4 3]
+         [1 2 5 4]]
+        >>> print(a.eltype.name())
+        quad4
+        >>> a = Connectivity([[0,1,2],[0,2,3]],eltype=Line3).extrude(4,2)
+        >>> print(a)
+        [[ 0  2 10  8  1  6  9  4  5]
+         [ 0  3 11  8  2  7 10  4  6]]
+        >>> print(a.eltype.name())
+        quad9
+
+        """
+        try:
+            eltype, reorder = self.eltype.extruded[degree]
+        except:
+            try:
+                eltype = self.eltype.name()
+            except:
+                eltype = None
+            raise ValueError("I don't know how to extrude a Connectivity of eltype '%s' in degree %s" % (eltype, degree))
+        # create hypermesh Connectivity
+        elems = concatenate([self+i*nnod for i in range(degree+1)], axis=-1)
+        # Reorder nodes if necessary
+        if len(reorder) > 0:
+            elems = elems[:, reorder]
+        return Connectivity(elems, eltype=eltype)
 
 
 #######################################################################

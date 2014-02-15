@@ -28,7 +28,7 @@ This example illustrates Mesh extrusion using quadratic elements.
 
 First, a Mesh is created consisting of a single point.
 The point is extruded in the x-direction, resulting in a line.
-The line is further extrude in y-direction to yield a quadratic surface.
+The line is further extruded in y-direction to yield a quadratic surface.
 A final extrusion in the z-direction delivers a quadratic volume.
 """
 from __future__ import print_function

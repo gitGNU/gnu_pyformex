@@ -1963,8 +1963,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         nnod = self.ncoords()
         nrep = (x.shape[0]//nnod - 1) // degree
         ## print("NREP %s" % nrep)
-        e = extrudeConnectivity(self.elems, nnod, degree)
-        e = replicConnectivity(e, nrep, nnod*degree)
+        e = self.elems.extrude(nnod, degree).replic(nrep, nnod*degree)
 
         # Create the Mesh
         M = Mesh(x, e).setProp(self.prop)
@@ -2437,12 +2436,16 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
 ##########################################
     ## Field values ##
 
+    @utils.deprecated_by('Mesh.nodalToElement','Field.convert')
     def nodalToElement(self, val):
         """Compute element values from nodal values.
 
         Given scalar values defined on nodes,
         finds the average values at elements.
         NB. It now works with scalar. It could be extended to vectors.
+
+        This method is deprecated: you should use the
+        :class:`Fields` class.
         """
         return val[self.elems].mean(axis=1)
 
@@ -2482,49 +2485,6 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
 
 
 ######################## Functions #####################
-
-# BV: THESE SHOULD GO TO connectivity MODULE
-
-def extrudeConnectivity(e, nnod, degree):
-    """_Extrude a Connectivity to a higher level Connectivity.
-
-    e: Connectivity
-    nnod: a number > highest node number
-    degree: degree of extrusion (currently 1 or 2)
-
-    The extrusion adds `degree` planes of nodes, each with an node increment
-    `nnod`, to the original Connectivity `e` and then selects the target nodes
-    from it as defined by the e.eltype.extruded[degree] value.
-
-    Currently returns an integer array, not a Connectivity!
-    """
-    try:
-        eltype, reorder = e.eltype.extruded[degree]
-    except:
-        try:
-            eltype = e.eltype.name()
-        except:
-            eltype = None
-        raise ValueError("I don't know how to extrude a Connectivity of eltype '%s' in degree %s" % (eltype, degree))
-    # create hypermesh Connectivity
-    e = concatenate([e+i*nnod for i in range(degree+1)], axis=-1)
-    # Reorder nodes if necessary
-    if len(reorder) > 0:
-        e = e[:, reorder]
-    return Connectivity(e, eltype=eltype)
-
-
-def replicConnectivity(e, n, inc):
-    """_Repeat a Connectivity with increasing node numbers.
-
-    e: a Connectivity
-    n: integer: number of copies to make
-    inc: integer: increment in node numbers for each copy
-
-    Returns the concatenation of n connectivity tables, which are each copies
-    of the original e, but having the node numbers increased by inc.
-    """
-    return Connectivity(concatenate([e+i*inc for i in range(n)]), eltype=e.eltype)
 
 
 def mergeNodes(nodes,fuse=True,**kargs):
