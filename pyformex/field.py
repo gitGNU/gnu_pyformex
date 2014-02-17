@@ -149,6 +149,17 @@ class Field(object):
     def convert(self,totype,toname=None):
         """Convert a Field to another type.
 
+        Parameters:
+
+        - `totype`: string: target field type. Can be any of the available
+          field types. See :class:`Field` class. If the target type is equal
+          to the source type, a copy of the original Field will result.
+          This may or may not be a shallow copy.
+
+        - `toname`: string: the name of the target field. If not specified,
+          a autoname is generated.
+
+        Returns a Field of type `totype`.
         """
         data = None
         if totype in self.geometry.fieldtypes:
@@ -156,7 +167,7 @@ class Field(object):
                 if totype == 'elemn':
                     data = self.data[:,self.geometry.elems]
                 elif totype == 'elemc':
-                    data = self.convert('elemn').convert('elemc')
+                    return self.convert('elemn').convert('elemc',toname)
             elif self.fldtype == 'elemn':
                 if totype == 'elemc':
                     data = self.data.mean(axis=-1)
@@ -168,12 +179,18 @@ class Field(object):
                 if totype == 'elemn':
                     data = repeat(data,self.geometry.nplex(),axis=-1)
                 elif totype == 'node':
-                    data = self.convert('elemn').convert('node')
+                    return self.convert('elemn').convert('node',toname)
 
         if data is None:
             raise ValueError("Can not convert %s field data from '%s' to '%s'" % (self.geometry.__class__.__name__,fromtype,totype))
 
         return Field(self.geometry,totype,data,toname)
 
+
+    def __str__(self):
+        s = "Field '%s', type '%s', nnodes=%s, nelems=%s, nplex=%s\n" % \
+            ( self.fldname,self.fldtype,self.geometry.nnodes(),
+              self.geometry.nelems(),self.geometry.nplex(),)
+        return s + str(self.data)
 
 # End
