@@ -684,7 +684,7 @@ def distance(X, Y):
     X and Y.
     """
     X = asarray(X).reshape(-1,3)
-    X = asarray(Y).reshape(-1,3)
+    Y = asarray(Y).reshape(-1,3)
     return length(X[:, newaxis]-Y)
 
 
