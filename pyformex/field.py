@@ -102,15 +102,100 @@ class Field(object):
     - `data`: an array with the field values defined at the specified
       points. The required shape of the array depends on `fldtype`:
 
-      - 'node':  ( nnodes, ) or ( nval, nnodes )
-      - 'elemc': ( nelems, ) or ( nval, nelems )
-      - 'elemn': ( nelems, nplex ) or  (nval, nelems, nplex )
-      - 'elemg': ( nelems, ngp ) or  (nval, nelems, ngp )
+      - 'node':  ( nnodes, ) or ( nnodes, nval )
+      - 'elemc': ( nelems, ) or ( nelems, nval )
+      - 'elemn': ( nelems, nplex ) or  (nelems, nplex, nval )
+      - 'elemg': ( nelems, ngp ) or  (nelems, ngp, nval )
 
     - `fldname`: string: the name used to identify the field. Fields
       stored in a Geometry object can be retrieved using this name. See
       :func:`Geometry.getField`. If no name is specified, one is generated.
 
+    Example:
+
+    >>> M = Formex('4:0123').replic(2).toMesh()
+    >>> print(M.coords)
+    [[ 0.  0.  0.]
+     [ 0.  1.  0.]
+     [ 1.  0.  0.]
+     [ 1.  1.  0.]
+     [ 2.  0.  0.]
+     [ 2.  1.  0.]]
+    >>> print(M.elems)
+    [[0 2 3 1]
+     [2 4 5 3]]
+    >>> d = M.coords.distanceFromPlane([0.,0.,0.],[1.,0.,0.])
+    >>> f1 = Field(M,'node',d)
+    >>> print(f1)
+    Field 'Field-0', type 'node', shape (6,), nnodes=6, nelems=2, nplex=4
+    [ 0.  0.  1.  1.  2.  2.]
+    >>> f2 = f1.convert('elemn')
+    >>> print(f2)
+    Field 'Field-1', type 'elemn', shape (2, 4), nnodes=6, nelems=2, nplex=4
+    [[ 0.  1.  1.  0.]
+     [ 1.  2.  2.  1.]]
+    >>> f3 = f2.convert('elemc')
+    >>> print(f3)
+    Field 'Field-2', type 'elemc', shape (2,), nnodes=6, nelems=2, nplex=4
+    [ 0.5  1.5]
+    >>> d1 = M.coords.distanceFromPlane([0.,0.,0.],[0.,1.,0.])
+    >>> f4 = Field(M,'node',at.column_stack([d,d1]))
+    >>> print(f4)
+    Field 'Field-3', type 'node', shape (6, 2), nnodes=6, nelems=2, nplex=4
+    [[ 0.  0.]
+     [ 0.  1.]
+     [ 1.  0.]
+     [ 1.  1.]
+     [ 2.  0.]
+     [ 2.  1.]]
+    >>> f5 = f4.convert('elemn')
+    >>> print(f5)
+    Field 'Field-4', type 'elemn', shape (2, 4, 2), nnodes=6, nelems=2, nplex=4
+    [[[ 0.  0.]
+      [ 1.  0.]
+      [ 1.  1.]
+      [ 0.  1.]]
+    <BLANKLINE>
+     [[ 1.  0.]
+      [ 2.  0.]
+      [ 2.  1.]
+      [ 1.  1.]]]
+    >>> f6 = f5.convert('elemc')
+    >>> print(f6)
+    Field 'Field-5', type 'elemc', shape (2, 2), nnodes=6, nelems=2, nplex=4
+    [[ 0.5  0.5]
+     [ 1.5  0.5]]
+    >>> print(f3.convert('elemn'))
+    Field 'Field-6', type 'elemn', shape (2, 4), nnodes=6, nelems=2, nplex=4
+    [[ 0.5  0.5  0.5  0.5]
+     [ 1.5  1.5  1.5  1.5]]
+    >>> print(f3.convert('node'))
+    Field 'Field-8', type 'node', shape (6, 1), nnodes=6, nelems=2, nplex=4
+    [[ 0.5]
+     [ 0.5]
+     [ 1. ]
+     [ 1. ]
+     [ 1.5]
+     [ 1.5]]
+    >>> print(f6.convert('elemn'))
+    Field 'Field-9', type 'elemn', shape (2, 4, 2), nnodes=6, nelems=2, nplex=4
+    [[[ 0.5  0.5]
+      [ 0.5  0.5]
+      [ 0.5  0.5]
+      [ 0.5  0.5]]
+    <BLANKLINE>
+     [[ 1.5  0.5]
+      [ 1.5  0.5]
+      [ 1.5  0.5]
+      [ 1.5  0.5]]]
+    >>> print(f6.convert('node'))
+    Field 'Field-11', type 'node', shape (6, 2), nnodes=6, nelems=2, nplex=4
+    [[ 0.5  0.5]
+     [ 0.5  0.5]
+     [ 1.   0.5]
+     [ 1.   0.5]
+     [ 1.5  0.5]
+     [ 1.5  0.5]]
     """
 
     _autoname = utils.NameSequence('Field-0')
@@ -124,16 +209,16 @@ class Field(object):
             raise ValueError("Can not add field of type '%s' to a %s" % (fldtype,geometry.__class__.__name__))
 
         if fldtype == 'node':
-            datashape = (-1,geometry.nnodes(),)
+            datashape = (geometry.nnodes(),-1)
         elif fldtype == 'elemc':
-            datashape = (-1,geometry.nelems(),)
+            datashape = (geometry.nelems(),-1)
         elif fldtype == 'elemn':
-            datashape = (-1,geometry.nelems(),geometry.nplex())
+            datashape = (geometry.nelems(),geometry.nplex(),-1)
         elif fldtype == 'elemg':
-            datashape = (-1,geometry.nelems(),-1)
+            datashape = (geometry.nelems(),-1,-1)
 
         if len(data.shape) < len(datashape):
-            data = data.reshape((-1,)+data.shape)
+            datashape = datashape[:-1]
         data = at.checkArray(data,shape=datashape)
 
         if fldname is None:
@@ -165,19 +250,19 @@ class Field(object):
         if totype in self.geometry.fieldtypes:
             if self.fldtype == 'node':
                 if totype == 'elemn':
-                    data = self.data[:,self.geometry.elems]
+                    data = self.data[self.geometry.elems]
                 elif totype == 'elemc':
                     return self.convert('elemn').convert('elemc',toname)
             elif self.fldtype == 'elemn':
                 if totype == 'elemc':
-                    data = self.data.mean(axis=-1)
+                    data = self.data.mean(axis=1)
                 elif totype == 'node':
-                    data = nodalSum(data,self.geometry.elems,avg=True,return_all=False)
-                    if data.shape[-1] < self.geometry.nnodes():
-                        data = growAxis(data,self.geometry.nnodes()-data.shape[-1])
+                    data = at.nodalSum(self.data,self.geometry.elems,avg=True,return_all=False)
+                    if data.shape[0] < self.geometry.nnodes():
+                        data = at.growAxis(data,self.geometry.nnodes()-data.shape[0],axis=0)
             elif self.fldtype == 'elemc':
                 if totype == 'elemn':
-                    data = repeat(data,self.geometry.nplex(),axis=-1)
+                    data = at.multiplex(self.data,self.geometry.nplex(),axis=1)
                 elif totype == 'node':
                     return self.convert('elemn').convert('node',toname)
 
@@ -188,8 +273,8 @@ class Field(object):
 
 
     def __str__(self):
-        s = "Field '%s', type '%s', nnodes=%s, nelems=%s, nplex=%s\n" % \
-            ( self.fldname,self.fldtype,self.geometry.nnodes(),
+        s = "Field '%s', type '%s', shape %s, nnodes=%s, nelems=%s, nplex=%s\n" % \
+            ( self.fldname,self.fldtype,self.data.shape,self.geometry.nnodes(),
               self.geometry.nelems(),self.geometry.nplex(),)
         return s + str(self.data)
 
