@@ -753,6 +753,9 @@ def multiplex(a,n,axis=-1):
     Example:
 
         >>> a = arange(6).reshape(2,3)
+        >>> print(a)
+        [[0 1 2]
+         [3 4 5]]
         >>> for i in range(-a.ndim,a.ndim+1):
         ...     c = multiplex(a,4,i)
         ...     print("%s: %s" % (i,c.shape))
@@ -2116,13 +2119,13 @@ def nodalSum(val,elems,avg=False,return_all=True,direction_treshold=None):
     else, returns an array with shape (maxnodenr+1,3). In the latter case,
     nodes not occurring in elems will have all zero values.
 
-    If a direction_tolerance is specified and nval > 1, values will only be
+    If a direction_treshold is specified and nval > 1, values will only be
     summed if their direction is close (projection of one onto the other is
     higher than the specified tolerance).
     """
     from pyformex.lib import misc
     if val.ndim != 3:
-        val.reshape(val.shape+(1,))
+        val = val.reshape(val.shape+(1,))
     if elems.shape != val.shape[:2]:
         raise RuntimeError("shape of val and elems does not match")
     val = val.astype(float32)
