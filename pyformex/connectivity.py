@@ -1212,7 +1212,7 @@ class Connectivity(ndarray):
 
         Parameters:
 
-        - `n: integer: number of copies to make
+        - `n`: integer: number of copies to make
         - `inc`: integer: increment in node numbers for each copy
 
 

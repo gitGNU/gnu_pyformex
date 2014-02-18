@@ -441,7 +441,7 @@ UNIX-like shell command to select all the generated file names.</p>
 
 <dl class="method">
 <dt id="utils.NameSequence.files">
-<tt class="descname">files</tt><big>(</big><em>sort=&lt;function hsorted at 0xc003a28&gt;</em><big>)</big><a class="headerlink" href="#utils.NameSequence.files" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">files</tt><big>(</big><em>sort=&lt;function hsorted at 0x8a379b0&gt;</em><big>)</big><a class="headerlink" href="#utils.NameSequence.files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a (sorted) list of files matching the name pattern.</p>
 <p>A function may be specified to sort/filter the list of file names.
 The function should take a list of filenames as input. The output
@@ -500,6 +500,39 @@ the filenames in a human order.</p>
 </div>
 <div class="section" id="functions-defined-in-module-utils">
 <h2>11.2. Functions defined in module utils<a class="headerlink" href="#functions-defined-in-module-utils" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="utils.deprecated">
+<tt class="descclassname">utils.</tt><tt class="descname">deprecated</tt><big>(</big><em>message</em><big>)</big><a class="headerlink" href="#utils.deprecated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator to deprecate a function.</p>
+<p>Adding this decorator to a function will warn the user with the
+supplied message when the decorated function gets executed for
+the first time in a session.
+An option is provided to switch off this warning in future sessions.</p>
+<p>Decorating a function is done as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="nd">@utils.deprecated</span><span class="p">(</span><span class="s">&#39;This is the message shown to the user&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.deprecated_by">
+<tt class="descclassname">utils.</tt><tt class="descname">deprecated_by</tt><big>(</big><em>old</em>, <em>new</em><big>)</big><a class="headerlink" href="#utils.deprecated_by" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator to deprecate a function by another one.</p>
+<p>Adding this decorator to a function will warn the user with a
+message that the <cite>old</cite> function is deprecated in favor of <cite>new</cite>,
+at the first execution of <cite>old</cite>.</p>
+<p>See also: <a class="reference internal" href="#utils.deprecated" title="utils.deprecated"><tt class="xref py py-func docutils literal"><span class="pre">deprecated()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.deprecated_future">
+<tt class="descclassname">utils.</tt><tt class="descname">deprecated_future</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.deprecated_future" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator to warn that a function may be deprecated in future.</p>
+<p>See also: <a class="reference internal" href="#utils.deprecated" title="utils.deprecated"><tt class="xref py py-func docutils literal"><span class="pre">deprecated()</span></tt></a>.</p>
+</dd></dl>
+
 <dl class="function">
 <dt id="utils.system">
 <tt class="descclassname">utils.</tt><tt class="descname">system</tt><big>(</big><em>cmd</em>, <em>timeout=None</em>, <em>wait=True</em>, <em>verbose=False</em>, <em>raise_error=False</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#utils.system" title="Permalink to this definition">¶</a></dt>
@@ -1516,7 +1549,7 @@ To search other containers, add handlers to iterate over their contents:</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Feb 06, 2014.
+      Last updated on Feb 18, 2014.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

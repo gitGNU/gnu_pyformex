@@ -178,7 +178,7 @@ numbers are called <cite>degenerate</cite> elements.
 Rows containing the same node sets, albeit different permutations thereof,
 are called duplicates.</p>
 <p>A new Connectivity object is created with the following syntax</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">Connectivity</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[],</span><span class="n">dtyp</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">nplex</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Connectivity</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[],</span><span class="n">dtyp</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">nplex</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">eltype</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Parameters:</p>
@@ -870,15 +870,80 @@ pairs. In each element the nodes are sorted.</p>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.sharedNodes">
-<tt class="descname">sharedNodes</tt><big>(</big><em>elist</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.sharedNodes" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">sharedNodes</tt><big>(</big><em>elist=None</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.sharedNodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the list of nodes shared by all elements in elist</p>
 <p>Parameters:</p>
 <ul class="simple">
-<li><cite>elist</cite>: an integer list-like with element numbers.</li>
+<li><cite>elist</cite>: an integer list-like with element numbers. If not specified,
+all elements are considered.</li>
 </ul>
 <p>Returns a 1-D integer array with the list of nodes that are
 common to all elements in the specified list. This array may be
 empty.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">sharedNodes</span><span class="p">()</span>
+<span class="go">Connectivity([0, 2])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">sharedNodes</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">Connectivity([0, 1, 2])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="connectivity.Connectivity.replic">
+<tt class="descname">replic</tt><big>(</big><em>n</em>, <em>inc</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.replic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Repeat a Connectivity with increasing node numbers.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>n</cite>: integer: number of copies to make</li>
+<li><cite>inc</cite>: integer: increment in node numbers for each copy</li>
+</ul>
+<p>Returns a Connectivity with the concatenation of <cite>n</cite> replicas of
+<cite>self</cite>, where the first replica is identical to self and each
+next one has its node numbers increased by <cite>inc</cite>.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span><span class="o">.</span><span class="n">replic</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">Connectivity([[0, 1, 2],</span>
+<span class="go">       [0, 2, 3],</span>
+<span class="go">       [4, 5, 6],</span>
+<span class="go">       [4, 6, 7]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="connectivity.Connectivity.extrude">
+<tt class="descname">extrude</tt><big>(</big><em>nnod</em>, <em>degree</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.extrude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extrude a Connectivity to a higher level Connectivity.</p>
+<p>This method is only available if the Connectivity has an
+element type and the element type is extrudable. See
+<a class="reference internal" href="elements.html#module-elements" title="elements: Definition of elements."><tt class="xref py py-mod docutils literal"><span class="pre">elements</span></tt></a> for more details.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nnod</cite>: integer: should be larger than the highest node number in self</li>
+<li><cite>degree</cite>: integer: degree of extrusion (currently 1 or 2)</li>
+</ul>
+<p>The extrusion adds <cite>degree</cite> planes of nodes, each with an node increment
+<cite>nnod</cite>, to the original Connectivity <cite>e</cite> and then selects the target
+nodes from it as defined by the <cite>self.eltype.extruded[degree]</cite> value.</p>
+<p>Returns a Connectivity for the extruded element.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyformex.elements</span> <span class="kn">import</span> <span class="n">Line2</span><span class="p">,</span><span class="n">Line3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]],</span><span class="n">eltype</span><span class="o">=</span><span class="n">Line2</span><span class="p">)</span><span class="o">.</span><span class="n">extrude</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">[[0 1 4 3]</span>
+<span class="go"> [1 2 5 4]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">eltype</span><span class="o">.</span><span class="n">name</span><span class="p">())</span>
+<span class="go">quad4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span><span class="n">eltype</span><span class="o">=</span><span class="n">Line3</span><span class="p">)</span><span class="o">.</span><span class="n">extrude</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">[[ 0  2 10  8  1  6  9  4  5]</span>
+<span class="go"> [ 0  3 11  8  2  7 10  4  6]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">eltype</span><span class="o">.</span><span class="n">name</span><span class="p">())</span>
+<span class="go">quad9</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -1086,7 +1151,7 @@ This is: [adj0, adj1, ..., adjj, ... , adjn] with n=nsteps.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Feb 06, 2014.
+      Last updated on Feb 18, 2014.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

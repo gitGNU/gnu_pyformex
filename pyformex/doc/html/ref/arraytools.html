@@ -621,6 +621,9 @@ specified axis (if positive) or the specified axis minus one (if negative).</p>
 axis is the last one. To multiplex on the last dimension, use axis=a.ndim.</p>
 <p>Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">[[0 1 2]</span>
+<span class="go"> [3 4 5]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">a</span><span class="o">.</span><span class="n">ndim</span><span class="p">,</span><span class="n">a</span><span class="o">.</span><span class="n">ndim</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">c</span> <span class="o">=</span> <span class="n">multiplex</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">c</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
@@ -1576,7 +1579,7 @@ If avg=True, the values are replaced with the average instead.
 If return_all==True(default), returns an array with shape (nelems,nplex,3),
 else, returns an array with shape (maxnodenr+1,3). In the latter case,
 nodes not occurring in elems will have all zero values.</p>
-<p>If a direction_tolerance is specified and nval &gt; 1, values will only be
+<p>If a direction_treshold is specified and nval &gt; 1, values will only be
 summed if their direction is close (projection of one onto the other is
 higher than the specified tolerance).</p>
 </dd></dl>
@@ -1635,7 +1638,7 @@ that issue and prints the full array nicely aligned.</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Feb 06, 2014.
+      Last updated on Feb 18, 2014.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>

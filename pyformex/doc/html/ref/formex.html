@@ -576,29 +576,8 @@ avoid it where possible.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="formex.Formex.elbbox">
-<tt class="descname">elbbox</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.elbbox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Formex where each element is replaced by its bbox.</p>
-<p>The returned Formex has two points for each element: the two corners
-of the bbox with the minimal and maximal coordinates.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="formex.Formex.removeDuplicate">
 <tt class="descname">removeDuplicate</tt><big>(</big><em>permutations=True</em>, <em>rtol=0.0001</em>, <em>atol=1e-06</em><big>)</big><a class="headerlink" href="#formex.Formex.removeDuplicate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Formex which holds only the unique elements.</p>
-<p>Two elements are considered equal when all its points are (nearly)
-coincident. By default any permutation of point order is also allowed.</p>
-<p>Two coordinate value are considered equal if they are both small
-compared to atol or if their difference divided by the second value
-is small compared to rtol.</p>
-<p>If permutations is set False, two elements are not considered equal
-if one&#8217;s points are a permutation of the other&#8217;s.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.unique">
-<tt class="descname">unique</tt><big>(</big><em>permutations=True</em>, <em>rtol=0.0001</em>, <em>atol=1e-06</em><big>)</big><a class="headerlink" href="#formex.Formex.unique" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a Formex which holds only the unique elements.</p>
 <p>Two elements are considered equal when all its points are (nearly)
 coincident. By default any permutation of point order is also allowed.</p>
@@ -908,12 +887,6 @@ of 3. The default is to read all the coordinates in the string.
 does not contain the expected number of values.</li>
 </ul>
 <p>The return value is a <tt class="xref py py-class docutils literal"><span class="pre">Coords</span></tt> object.</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="formex.Formex.fromfile">
-<em class="property">classmethod </em><tt class="descname">fromfile</tt><big>(</big><em>clas</em>, <em>fil</em>, <em>sep=' '</em>, <em>nplex=1</em><big>)</big><a class="headerlink" href="#formex.Formex.fromfile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read the coordinates of a Formex from a file</p>
 </dd></dl>
 
 <dl class="method">
@@ -1404,6 +1377,12 @@ and returns it.</p>
 </div>
 </dd></dl>
 
+<dl class="classmethod">
+<dt id="formex.Formex.fromfile">
+<em class="property">classmethod </em><tt class="descname">fromfile</tt><big>(</big><em>clas</em>, <em>fil</em>, <em>sep=' '</em>, <em>nplex=1</em><big>)</big><a class="headerlink" href="#formex.Formex.fromfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the coordinates of a Formex from a file</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="formex.Formex.nnodes">
 <tt class="descname">nnodes</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.nnodes" title="Permalink to this definition">¶</a></dt>
@@ -1620,7 +1599,7 @@ side is either &#8216;+&#8217;, &#8216;-&#8216; or &#8216;&#8217;</p>
     <span class="left">
         &copy; Copyright 2004-2012, Benedict Verhegghe.
     </span>
-      Last updated on Feb 06, 2014.
+      Last updated on Feb 18, 2014.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </span>
