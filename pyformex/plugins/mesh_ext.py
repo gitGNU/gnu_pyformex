@@ -160,13 +160,12 @@ def elementToNodal(self, val):
     Returns the average values at the (maxnodenr+1) nodes.
     Nodes not occurring in elems will have all zero values.
     NB. It now works with scalar. It could be extended to vectors.
-    
-    self.addField(fldtype='elemc',data=val,fldname='eval')
-    self.convertField(fldname='eval',totype='node',toname='nval')
-    return self.fields['nval'].data.reshape(-1)
 
     This method is deprecated: you should use the
-    :class:`Fields` class.
+    :class:`Fields` class::
+
+      Field(aMesh,fldtype='elemc',data=val).convert('node')
+
     """
     eval = val.reshape(-1, 1, 1)
     #
@@ -186,10 +185,13 @@ def elementToNodal(self, val):
 
 #GDS:
 # - this is an image-processing function: see http://www.markschulze.net/java/meanmed.html
-# - it should probably be renamed Field.mean() or Field.meanFilter() and placed in fields.py 
+# - it should probably be renamed Field.mean() or Field.meanFilter() and placed in fields.py
 # - it should be working also for fields defined at elem centers
 # - leter a similar function can be added: medianFilter()
 
+# BV: this looks like a smoothing function. Is it?
+#     If so, it should be merged with other smoothing filters
+#
 
 def nodalAveraging(self, val, iter=1, mask=None,includeself=False):
     """_Replace a nodal value with the mean value of the adjacent nodes.

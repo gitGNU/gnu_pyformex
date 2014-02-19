@@ -2438,19 +2438,16 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
 
     @utils.deprecated_by('Mesh.nodalToElement','Field.convert')
     def nodalToElement(self, val):
-        """Compute element values from nodal values.
+        """_Compute element values from nodal values.
 
         Given scalar values defined on nodes,
         finds the average values at elements.
-        NB. It now works with scalar. It could be extended to vectors.
-        
-        self.addField(fldtype='node',data=VAL,fldname='nval')
-        self.convertField(fldname='nval',totype='elemc',toname='eval')
-        return self.fields['eval'].data.reshape(-1)
 
         This method is deprecated: you should use the
-        :class:`Fields` class.
-        
+        :class:`Fields` class::
+
+          Field(aMesh,fldtype='node',data=val).convert('elemc')
+
 
         """
         return val[self.elems].mean(axis=1)
