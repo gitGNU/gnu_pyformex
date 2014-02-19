@@ -151,12 +151,7 @@ def scaledJacobian(self,scaled=True,blksize=100000):
         return Jscaled.min(axis=1)
 
 
-# BV: What is a value defined on an element? a constant for the element,
-# a value at the center (what is the center?)
-# Usually, values are defined at one or more integration points,
-# and nodal values could be derived from using the correct
-# interpolation formulas.
-
+@utils.deprecated_by('mesh_ext Mesh.elementToNodal','Field.convert')
 def elementToNodal(self, val):
     """_Compute nodal values from element values.
 
@@ -165,6 +160,13 @@ def elementToNodal(self, val):
     Returns the average values at the (maxnodenr+1) nodes.
     Nodes not occurring in elems will have all zero values.
     NB. It now works with scalar. It could be extended to vectors.
+    
+    self.addField(fldtype='elemc',data=val,fldname='eval')
+    self.convertField(fldname='eval',totype='node',toname='nval')
+    return self.fields['nval'].data.reshape(-1)
+
+    This method is deprecated: you should use the
+    :class:`Fields` class.
     """
     eval = val.reshape(-1, 1, 1)
     #
@@ -181,6 +183,13 @@ def elementToNodal(self, val):
 #   the example directory, as a pyFormex example
 # - should be generalized: not only adjacency over edges
 # - should be merged with smooth method
+
+#GDS:
+# - this is an image-processing function: see http://www.markschulze.net/java/meanmed.html
+# - it should probably be renamed Field.mean() or Field.meanFilter() and placed in fields.py 
+# - it should be working also for fields defined at elem centers
+# - leter a similar function can be added: medianFilter()
+
 
 def nodalAveraging(self, val, iter=1, mask=None,includeself=False):
     """_Replace a nodal value with the mean value of the adjacent nodes.

@@ -528,7 +528,7 @@ def writeVTPmany(fn,items):
     writer.Write()
 
 
-@utils.deprecated('vtk_itf.readVTP','vtk_itf.readVTKObject')
+@utils.deprecated('vtk_itf.readVTP. Use vtk_itf.readVTKObject')
 def readVTP(fn):
     return readVTKObject(fn)
 
