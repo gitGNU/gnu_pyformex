@@ -24,18 +24,20 @@
 
 // Fragment shader
 
+#version 130
+
 #ifdef GL_ES
 precision mediump float;
 #endif
 
 varying vec3 fragmentColor;
 varying vec4 fragColor;
-varying bool fDiscard;
+varying int fDiscard;
 
 uniform float alpha;
 
 void main(void) {
-  if ( fDiscard)
+  if (fDiscard)
     discard;
   gl_FragColor = fragColor;
 }

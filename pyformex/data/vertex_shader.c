@@ -27,6 +27,7 @@
 // If you add a uniform value to the shader, you should also add it
 // in shader.py, in order to allow setting the uniform value.
 
+#version 130
 
 #define MAX_LIGHTS 4
 
@@ -69,7 +70,7 @@ uniform vec3 diffcolor[MAX_LIGHTS];    // Colors of diffuse light
 uniform vec3 speccolor[MAX_LIGHTS];    // Colors of reflected light
 uniform vec3 lightdir[MAX_LIGHTS];     // Light directions
 
-varying bool fDiscard;
+varying int fDiscard;
 varying vec4 fvertexPosition;
 varying vec3 fvertexNormal;
 varying vec4 fragColor;        // Final fragment color, including opacity
@@ -80,7 +81,7 @@ varying vec3 fTransformedVertexNormal;
 
 void main()
 {
-  fDiscard = false;
+  fDiscard = 0;
   // Set color
   if (picking) {
     fragmentColor = vec3(0.,0.,0.);
@@ -121,7 +122,7 @@ void main()
         if (drawface == -1 && nNormal[2] < 0.0) {
 	  nNormal = -nNormal;
 	}
-	fDiscard = (nNormal[2] < 0.0);
+	if (nNormal[2] < 0.0) fDiscard = 1;
 
 	vec3 fcolor = fragmentColor;
 
