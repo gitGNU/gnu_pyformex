@@ -44,6 +44,15 @@ from pyformex.opengl.scene import Scene, ItemList
 from numpy import *
 from OpenGL import GL, GLU
 
+from OpenGL import GL
+
+def glVersion():
+    vendor = GL.glGetString(GL.GL_VENDOR)
+    renderer = GL.glGetString(GL.GL_RENDERER)
+    version = GL.glGetString(GL.GL_VERSION)
+    glsl_version = GL.glGetString(GL.GL_SHADING_LANGUAGE_VERSION)
+    return vendor,renderer,version,glsl_version
+
 libGL = None
 
 def loadLibGL():
@@ -582,6 +591,8 @@ class Canvas(object):
         self.cursor = None
         self.focus = False
         pf.debug("Canvas Setting:\n%s"% self.settings, pf.DEBUG.DRAW)
+        self.makeCurrent()  # we need correct OpenGL context
+        print("CANVAS",glVersion())
 
 
     @property
@@ -935,7 +946,6 @@ class Canvas(object):
         """Initialize the rendering engine.
 
         """
-        #print("INITIALIZE RENDERING ENGINE")
         self.reset()
 
 
