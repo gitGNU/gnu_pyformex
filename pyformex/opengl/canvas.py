@@ -46,12 +46,17 @@ from OpenGL import GL, GLU
 
 from OpenGL import GL
 
-def glVersion():
+
+def glVersion(mode='all'):
     vendor = GL.glGetString(GL.GL_VENDOR)
     renderer = GL.glGetString(GL.GL_RENDERER)
     version = GL.glGetString(GL.GL_VERSION)
     glsl_version = GL.glGetString(GL.GL_SHADING_LANGUAGE_VERSION)
-    return vendor,renderer,version,glsl_version
+    if mode == 'all':
+        return vendor,renderer,version,glsl_version
+    if mode == 'vendor+version':
+        return vendor.split()[0], version.split()[0]
+
 
 libGL = None
 

@@ -39,6 +39,26 @@ from OpenGL.GL import shaders
 import pyformex as pf
 
 
+def defaultShaders():
+    """Determine the default shader programs"""
+    from pyformex.opengl.canvas import glVersion
+    from pyformex.gui import viewport
+    from pyformex.software import SaneVersion
+    vendor,version = glVersion('vendor+version')
+    vmajor,vminor = version.split('.')[:2]
+    fmt = viewport.opengl_format
+    major,minor = fmt.majorVersion(), fmt.minorVersion()
+    print("Vendor: %s; Available version: %s.%s; Active version %s.%s" % (vendor,vmajor,vminor,major,minor))
+    version = "%s.%s" % (major,minor)
+    # Default shaders
+    dirname = os.path.join(pf.pyformexdir,'data')
+    vertexshader = os.path.join(dirname, "vertex_shader.c")
+    fragmentshader = os.path.join(dirname, "fragment_shader.c")
+    if vendor == 'NVIDIA' and SaneVersion(version) <= SaneVersion('3.1'):
+        vertexshader = vertexshader.replace('.c','_nvidia_3.1.c')
+        fragmentshader = fragmentshader.replace('.c','_nvidia_3.1.c')
+    return vertexshader,fragmentshader
+
 class Shader(object):
     """An OpenGL shader consisting of a vertex and a fragment shader pair.
 
@@ -48,17 +68,12 @@ class Shader(object):
       By default, a basic shader supporting vertex positions and vertex colors
       is defined
 
-    - `_fragmentshaderSource` : the fragment shader source.
+    - `_fragmentshader` : the fragment shader source.
       By default, a basic shader supporting fragment colors is defined.
 
     - `attributes`: the shaders' vertex attributes.
     - `uniforms`: the shaders' uniforms.
     """
-
-    # Default shaders
-    _dirname = os.path.join(pf.pyformexdir,'data')
-    _vertexshader_filename = os.path.join(_dirname, "vertex_shader.c")
-    _fragmentshader_filename = os.path.join(_dirname, "fragment_shader.c")
 
     # Default attributes and uniforms
     attributes = [
@@ -106,13 +121,16 @@ class Shader(object):
     ]
 
     def __init__(self,vshader=None,fshader=None,attributes=None,uniforms=None):
+        _vertexshader, _fragmentshader = defaultShaders()
         if vshader is None:
-            vshader = Shader._vertexshader_filename
+            vshader = _vertexshader
+        print("Using vertex shader %s" % vshader)
         with open(vshader) as f:
             VertexShader = f.read()
 
         if fshader is None:
-            fshader = Shader._fragmentshader_filename
+            fshader = _fragmentshader
+        print("Using fragment shader %s" % fshader)
         with open(fshader) as f:
             FragmentShader = f.read()
 
