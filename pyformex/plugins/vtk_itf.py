@@ -528,11 +528,6 @@ def writeVTPmany(fn,items):
     writer.Write()
 
 
-@utils.deprecatedby('vtk_itf.readVTP','vtk_itf.readVTKObject')
-def readVTP(fn):
-    return readVTKObject(fn)
-
-
 def readVTKObject(fn,verbose=True,samePlex=True):
     """Read a .vtp file
 
@@ -702,6 +697,7 @@ def _vtkCutter(self,vtkif):
     - `mesh`: a Mesh.
     - `vtkif`: a vtk implicit function.
 
+    In vtk `cut` means intersection: mesh dimension is reduced by one.
     Returns a mesh of points if self is a line2 mesh,
     a mesh of lines if self is a surface tri3 or quad4 mesh,
     a triangular mesh if self is tet4 or hex8 mesh.
@@ -728,42 +724,68 @@ def _vtkCutter(self,vtkif):
         return None #no intersection found
 
 
-def vtkCutWithPlane(self,p,n):
-    """Cut a Mesh with a plane (p,n).
+def _vtkClipper(self,vtkif, insideout):
+    """Clip a Mesh with a vtk implicit function.
 
     Parameters:
 
     - `mesh`: a Mesh.
-    - `p`, `n`: a point and normal vector defining the cutting plane.
+    - `vtkif`: a vtk implicit function.
 
-    Returns a mesh of points if self is a line2 mesh,
-    a mesh of lines if self is a surface tri3 or quad4 mesh,
-    a triangular mesh if self is tet4 or hex8 mesh.
-    If there is no intersection returns None.
+    In vtk `clip` means intersection and get a part of a mesh.
+    Returns 3 meshes (line2, tri3, quad4):
+    a line2 mesh if self is a line2 mesh,
+    a tri3 mesh if self is a tri3 mesh,
+    both tri3 and quad4 mesh is self is a quad4 mesh.
+    None is returned if a mesh does not exist (e.g. not intersecting).
+    It has not been tested with volume meshes.
+    This functions should not be used by the user.   
     """
+    from vtk import vtkClipPolyData
+    from pyformex.plugins.vtk_itf import convert2VPD,  convertFromVPD
+    if self.elName() not in ['line2','tri3','quad4']:
+        warning('vtkClipper has not been tested with this element type %s'%self.elName())
+    vtkobj = convert2VPD(self)   
+    clipper = vtkClipPolyData()
+    clipper.SetInput(vtkobj)
+    clipper.SetClipFunction(vtkif)
+    if insideout == True:
+        clipper.InsideOutOn()
+    clipper.Update()
+    clipper = clipper.GetOutput()  
+    [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = convertFromVPD(vpd=clipper,verbose=True,samePlex=False)
+    l2, t3, q4 = None, None, None
+    if cells != None or verts != None:
+        raise ValueError, 'unexpected output: please report it to developers!'
+    if lines != None:
+        l2 = Mesh(coords, lines.toArray())
+    if polys != None:
+        va = polys
+        va = [va.select(va.lengths==l).toArray() for l in unique(va.lengths)]
+        for ar in va:
+            if ar.shape[1] == 3:
+                t3 = Mesh(coords, ar)
+            elif ar.shape[1] == 4:#could it also be a tet4?
+                q4 = Mesh(coords, ar)
+            else:
+               raise ValueError, 'unexpected output: please report it to developers!'
+    return l2, t3, q4
+
+
+def _vtkPlane(p, n):
     from vtk import vtkPlane
     plane = vtkPlane()
     plane.SetOrigin(p)
     plane.SetNormal(n)
-    return _vtkCutter(self,plane)
+    return plane
 
 
-def vtkCutWithSphere(self,c,r):
-    """Cut a Mesh with a sphere (c,r).
-
-    Parameters:
-
-    - `mesh`: a Mesh.
-    - `c`, `r`: center and radiues defining a sphere.
-
-    See vtkCutWithPlane.
-    """
+def _vtkSphere(c, r):
     from vtk import vtkSphere
     sphere = vtkSphere()
     sphere.SetCenter(c)
     sphere.SetRadius(r)
-    return _vtkCutter(self,sphere)
-
+    return sphere
 
 ##trf2CS is needed by setVTKbox
 def trf2CS(CS, angle_spec=DEG):
@@ -797,7 +819,7 @@ def trf2CS(CS, angle_spec=DEG):
 
 ##When 4x4 matrices will be added to pyFormex, the box
 ##could be also sheared by first rotating and then scaling.
-def setVTKbox(p=None, trMat4x4=None):
+def _vtkBox(p=None, trMat4x4=None):
     """Return scaled an positioned vtkBox.
 
     Parameters:
@@ -842,19 +864,75 @@ def setVTKbox(p=None, trMat4x4=None):
         return box
 
 
-def vtkCutWithBox(self, box):
-    """Cut a Mesh with a box (or cuboid).
+def vtkCut(self, p=None, n=None, c=None, r=None, box=None):
+    """Cut (get intersection of) a Mesh with a plane, a sphere or a box.
 
     Parameters:
 
-    - `self`: a Mesh.
+    - `mesh`: a Mesh.
+    - `p`, `n`: a point and normal vector defining the cutting plane.
+    - `c`, `r`: center and radius defining a sphere.
     - `box`, either a 4x4 matrix to apply affine transformation (not yet implemented)
-     or a box defined by 4 points, a formex or a mesh. See setVTKbox.
+     or a box (cuboid) defined by 4 points, a formex or a mesh. See _vtkBox.
 
-    See vtkCutWithPlane.
+    Either (p,n) or (c,r) or box should be given.
+    Cutting reduces the mesh dimension by one.
+    Returns a mesh of points if self is a line2 mesh,
+    a mesh of lines if self is a surface tri3 or quad4 mesh,
+    a triangular mesh if self is tet4 or hex8 mesh.
+    If there is no intersection returns None.
     """
-    vbox = setVTKbox(box)
-    return _vtkCutter(self,vbox)
+    if c == r == box == None:
+        if p!=None and n!=None:
+            print("cutting mesh of type %s with plane"%self.elName())
+            return _vtkCutter(self,_vtkPlane(p,n))
+    elif p == n == box == None:
+        if c!=None and r!=None:
+            print("cutting mesh of type %s with sphere"%self.elName())
+            return _vtkCutter(self,_vtkSphere(c, r))
+    elif p == n == c == r == None:
+        if box!=None:
+            print("cutting mesh of type %s with box"%self.elName())
+            return _vtkCutter(self,_vtkBox(box))
+    else:
+        raise ValueError, 'implicit object for cutting not well specified'
+    
+
+def vtkClip(self, p=None, n=None, c=None, r=None, box=None,insideout=False):
+    """Clip (split) a Mesh with a plane, a sphere or a box.
+
+    Parameters:
+
+    - `mesh`: a Mesh (line2,tri3,quad4).
+    - `p`, `n`: a point and normal vector defining the cutting plane.
+    - `c`, `r`: center and radius defining a sphere.
+    - `box`, either a 4x4 matrix to apply affine transformation (not yet implemented)
+     or a box (cuboid) defined by 4 points, a formex or a mesh. See _vtkBox.
+
+    Either (p,n) or (c,r) or box should be given.
+    Clipping does not reduce the mesh dimension.
+    Returns always 3 meshes (line2, tri3, quad4):
+    a line2 mesh if self is a line2 mesh,
+    a tri3 mesh if self is a tri3 mesh,
+    both tri3 and quad4 mesh is self is a quad4 mesh.
+    None is returned if a mesh does not exist (e.g. clipping with
+    a box which is outside the mesh).
+    It has not been tested with volume meshes.
+    """
+    if c == r == box == None:
+        if p!=None and n!=None:
+            print("clipping mesh of type %s with plane"%self.elName())
+            return _vtkClipper(self,_vtkPlane(p,n),insideout)
+    elif p == n == box == None:
+        if c!=None and r!=None:
+            print("clipping mesh of type %s with sphere"%self.elName())
+            return _vtkClipper(self,_vtkSphere(c, r),insideout)
+    elif p == n == c == r == None:
+        if box!=None:
+            print("clipping mesh of type %s with box"%self.elName())
+            return _vtkClipper(self,_vtkBox(box),insideout)
+    else:
+        raise ValueError, 'implicit object for cutting not well specified'
 
 
 def octree(surf,tol=0.0,npts=1.):
@@ -1074,6 +1152,15 @@ def install_trisurface_methods():
     trisurface.TriSurface.decimate = decimate
     trisurface.TriSurface.findElemContainingPoint = findElemContainingPoint
 
+def install_mesh_methods():
+    """Install extra Mesh methods
+
+    """
+    from pyformex import mesh
+    mesh.Mesh.vtkCut = vtkCut
+    mesh.Mesh.vtkClip = vtkClip
+
 install_trisurface_methods()
+install_mesh_methods()
 
 # End
