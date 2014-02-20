@@ -24,27 +24,25 @@
 
 // Vertex shader
 
-// If you add a uniform value to the shader, you should also add it
-// in shader.py, in order to allow setting the uniform value.
-
-
 #define MAX_LIGHTS 4
 
 #ifdef GL_ES                   // This is True in WebGL shader
 precision mediump float;
 #endif
 
-attribute vec3 vertexPosition;
-attribute vec3 vertexNormal;
-attribute vec3 vertexColor;
-attribute vec2 vertexTexturePos;
-attribute float vertexScalar;
+// If you add a uniform value to the shader, you should also add it
+// in shader.py, in order to allow setting the uniform value.
+
+in vec3 vertexPosition;
+in vec3 vertexNormal;
+in vec3 vertexColor;
+in vec2 vertexTexturePos;
+in float vertexScalar;
 
 uniform bool pyformex;              // Is the shader being used in pyFormex
 uniform mat4 modelview;
 uniform mat4 projection;
 uniform mat4 pickmat;
-//uniform mat4 objectTransform;
 uniform float pointsize;
 uniform bool highlight;
 uniform bool picking;
@@ -69,7 +67,6 @@ uniform vec3 diffcolor[MAX_LIGHTS];    // Colors of diffuse light
 uniform vec3 speccolor[MAX_LIGHTS];    // Colors of reflected light
 uniform vec3 lightdir[MAX_LIGHTS];     // Light directions
 
-varying bool fDiscard;
 varying vec4 fvertexPosition;
 varying vec3 fvertexNormal;
 varying vec4 fragColor;        // Final fragment color, including opacity
@@ -80,7 +77,6 @@ varying vec3 fTransformedVertexNormal;
 
 void main()
 {
-  fDiscard = false;
   // Set color
   if (picking) {
     fragmentColor = vec3(0.,0.,0.);
@@ -121,7 +117,6 @@ void main()
         if (drawface == -1 && nNormal[2] < 0.0) {
 	  nNormal = -nNormal;
 	}
-	fDiscard = (nNormal[2] < 0.0);
 
 	vec3 fcolor = fragmentColor;
 
