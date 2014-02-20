@@ -67,13 +67,11 @@ uniform vec3 diffcolor[MAX_LIGHTS];    // Colors of diffuse light
 uniform vec3 speccolor[MAX_LIGHTS];    // Colors of reflected light
 uniform vec3 lightdir[MAX_LIGHTS];     // Light directions
 
-varying vec4 fvertexPosition;
 varying vec3 fvertexNormal;
-varying vec4 fragColor;        // Final fragment color, including opacity
 varying vec3 fragmentColor;
 varying vec2 fragmentTexturePos;
-varying vec3 fTransformedVertexNormal;
 
+out varying vec4 fragColor;        // Final fragment color, including opacity
 
 void main()
 {
@@ -105,14 +103,9 @@ void main()
       if (lighting) {
 
 	fvertexNormal = vertexNormal;
-	fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * fvertexNormal;
+	vec3 fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * fvertexNormal;
 
 	vec3 nNormal = normalize(fTransformedVertexNormal);
-
-        /* if (drawface == 0 && nNormal[2] < 0.0) { */
-	/*   nNormal = -nNormal; */
-	/* } */
-
 
         if (drawface == -1 && nNormal[2] < 0.0) {
 	  nNormal = -nNormal;
@@ -124,7 +117,6 @@ void main()
 	fragmentColor = fcolor * ambicolor * ambient;
 
 	// add diffuse and specular for each light
-	//fragmentColor = vec3(0.3,0.,0.);
 	for (int i=0; i<MAX_LIGHTS; ++i) {
 	  if (i < nlights) {
 	    vec3 nlight = normalize(lightdir[i]);
@@ -134,10 +126,6 @@ void main()
 	    float nspecular = specular*pow(max(dot(reflectionDirection,eyeDirection), 0.0), shininess);
 	    float ndiffuse = diffuse * max(dot(nNormal,nlight),0.0);
 	    vec3 diffcol = vec3(1.,1.,0.);
-	    //fragmentColor += fcolor * (diffcolor[i] * ndiffuse + speccolor[i] * nspecular);
-	    //fragmentColor += (fcolor + diffcolor[i]) * ndiffuse / 2;
-	    //fragmentColor += (fcolor + speccolor[i]) * nspecular / 2;
-	    // Beware! Use /2. instrad of /2  (needed for WebGL!)
 	    fragmentColor += (fcolor + diffcolor[i])/2. * ndiffuse;
 	    fragmentColor += (fcolor + speccolor[i])/2. * nspecular;
 	  }
@@ -162,7 +150,7 @@ void main()
   }
 
   // Transforming the vertex coordinates
-  fvertexPosition = vec4(vertexPosition,1.0);
+  vec4 fvertexPosition = vec4(vertexPosition,1.0);
 
   if (picking) {
     gl_Position = pickmat * projection * modelview * fvertexPosition;
