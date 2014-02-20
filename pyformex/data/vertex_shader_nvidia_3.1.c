@@ -71,7 +71,8 @@ varying vec3 fvertexNormal;
 varying vec3 fragmentColor;
 varying vec2 fragmentTexturePos;
 
-out varying vec4 fragColor;        // Final fragment color, including opacity
+out varying vec4 fragColor;     // Final fragment color, including opacity
+out varying vec3 nNormal;        // normalized transformed normal
 
 void main()
 {
@@ -105,7 +106,7 @@ void main()
 	fvertexNormal = vertexNormal;
 	vec3 fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * fvertexNormal;
 
-	vec3 nNormal = normalize(fTransformedVertexNormal);
+	nNormal = normalize(fTransformedVertexNormal);
 
         if (drawface == -1 && nNormal[2] < 0.0) {
 	  nNormal = -nNormal;

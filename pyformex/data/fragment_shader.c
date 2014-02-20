@@ -28,14 +28,12 @@
 precision mediump float;
 #endif
 
-varying vec3 fragmentColor;
-varying vec4 fragColor;
-varying bool fDiscard;
+in vec4 fragColor;
+in vec3 nNormal;        // normalized transformed normal
 
-uniform float alpha;
 
 void main(void) {
-  if ( fDiscard)
+  if (nNormal[2] < 0.0)
     discard;
   gl_FragColor = fragColor;
 }
