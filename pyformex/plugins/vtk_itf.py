@@ -908,6 +908,7 @@ def vtkClip(self, p=None, n=None, c=None, r=None, box=None,insideout=False):
     - `c`, `r`: center and radius defining a sphere.
     - `box`, either a 4x4 matrix to apply affine transformation (not yet implemented)
      or a box (cuboid) defined by 4 points, a formex or a mesh. See _vtkBox.
+    - `insideout`:boolean to choose which side of the mesh should be returned.
 
     Either (p,n) or (c,r) or box should be given.
     Clipping does not reduce the mesh dimension.
