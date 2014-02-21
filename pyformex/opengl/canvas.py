@@ -114,11 +114,12 @@ def glLineStipple(factor, pattern):
 
     If factor <= 0, the stippling is disabled.
     """
-    if factor > 0:
-        GL.glLineStipple(factor, pattern)
-        GL.glEnable(GL.GL_LINE_STIPPLE)
-    else:
-        GL.glDisable(GL.GL_LINE_STIPPLE)
+    print("Line stipple is currently not supported with gl2 engine")
+    ## if factor > 0:
+    ##     GL.glLineStipple(factor, pattern)
+    ##     GL.glEnable(GL.GL_LINE_STIPPLE)
+    ## else:
+    ##     GL.glDisable(GL.GL_LINE_STIPPLE)
 
 def glSmooth(smooth=True):
     """Enable smooth shading"""
@@ -164,8 +165,10 @@ def glCulling(onoff=True):
 def glNoCulling():
     glCulling(False)
 
+
 def glLighting(onoff):
-    glEnable(GL.GL_LIGHTING, onoff)
+    print("glLighting: Light switching is deprecated")
+    ## glEnable(GL.GL_LIGHTING, onoff)
 
 
 def glPolygonFillMode(mode):
@@ -517,7 +520,8 @@ class CanvasSettings(Dict):
             if k in ['fgcolor', 'transparency']:
                 c = settings.get('fgcolor', default.fgcolor)
                 t = settings.get('transparency', default.transparency)
-                glColor(c, t)
+                print("glOverride: default color setting deprecated")
+                #glColor(c, t)
             elif k == 'linestipple':
                 glLineStipple(*settings[k])
             elif k in ['smooth', 'fill', 'lighting', 'linewidth', 'pointsize']:
@@ -616,15 +620,13 @@ class Canvas(object):
 
     def enable_lighting(self, state):
         """Toggle OpenGL lighting on/off."""
-        if state:
-            GL.glEnable(GL.GL_LIGHTING)
-        else:
-            GL.glDisable(GL.GL_LIGHTING)
+        glLighting(state)
 
 
     def has_lighting(self):
         """Return the status of the lighting."""
-        return GL.glIsEnabled(GL.GL_LIGHTING)
+        print("has_lighting:GL_LIGHT is deprecated")
+        #return GL.glIsEnabled(GL.GL_LIGHTING)
 
 
     def resetDefaults(self,dict={}):
