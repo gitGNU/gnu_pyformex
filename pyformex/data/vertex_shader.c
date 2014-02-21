@@ -24,7 +24,7 @@
 
 // Vertex shader
 
-#define MAX_LIGHTS 4
+#version 330
 
 #ifdef GL_ES                   // This is True in WebGL shader
 precision mediump float;
@@ -32,6 +32,8 @@ precision mediump float;
 
 // If you add a uniform value to the shader, you should also add it
 // in shader.py, in order to allow setting the uniform value.
+
+#define MAX_LIGHTS 4
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
@@ -67,15 +69,16 @@ uniform vec3 diffcolor[MAX_LIGHTS];    // Colors of diffuse light
 uniform vec3 speccolor[MAX_LIGHTS];    // Colors of reflected light
 uniform vec3 lightdir[MAX_LIGHTS];     // Light directions
 
-varying vec3 fvertexNormal;
-varying vec3 fragmentColor;
-varying vec2 fragmentTexturePos;
+//varying vec3 fvertexNormal;
+//varying vec3 fragmentColor;
+//varying vec2 fragmentTexturePos;
 
-out varying vec4 fragColor;     // Final fragment color, including opacity
-out varying vec3 nNormal;        // normalized transformed normal
+varying out vec4 fragColor;     // Final fragment color, including opacity
+varying out vec3 nNormal;        // normalized transformed normal
 
 void main()
 {
+  vec3 fragmentColor;
   // Set color
   if (picking) {
     fragmentColor = vec3(0.,0.,0.);
@@ -103,8 +106,7 @@ void main()
 
       if (lighting) {
 
-	fvertexNormal = vertexNormal;
-	vec3 fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * fvertexNormal;
+	vec3 fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * vertexNormal;
 
 	nNormal = normalize(fTransformedVertexNormal);
 
