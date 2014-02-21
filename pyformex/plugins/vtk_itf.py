@@ -340,10 +340,11 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
                     print('Saved cells connectivity varray')
 
     # getting Strips
-    if vpd.GetStrips().GetData().GetNumberOfTuples():
-        if verbose:
-            utils.warn("VTK_strips")
-        vpd = convertVPD2Triangles(vpd)
+    if vtkdtype not in [4]: # this list need to be updated according to the data type
+        if vpd.GetStrips().GetData().GetNumberOfTuples():
+            if verbose:
+                utils.warn("VTK_strips")
+            vpd = convertVPD2Triangles(vpd)
 
     # getting Polygons
     if vtkdtype not in [4]: # this list need to be updated according to the data type
