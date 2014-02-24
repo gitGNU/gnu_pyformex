@@ -5,7 +5,7 @@
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  https://savannah.nongnu.org/projects/pyformex/
-##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -79,7 +79,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'pyFormex'
-copyright = u'2010, Benedict Verhegghe'
+copyright = u'2010-2014, Benedict Verhegghe'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -249,7 +249,7 @@ def setup(app):
     app.connect('autodoc-process-docstring', cut_lines(2, what=['module']))
 ##     app.connect('autodoc-skip-member', autodoc_skip_member1)
 
-    
+
 ## def autodoc_skip_member1(app,what,name,obj,skip,options):
 ##     #from sphinx.ext.autodoc import autodoc_skip_member
 ##     print obj
