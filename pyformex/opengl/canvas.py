@@ -166,11 +166,6 @@ def glNoCulling():
     glCulling(False)
 
 
-def glLighting(onoff):
-    print("glLighting: Light switching is deprecated")
-    ## glEnable(GL.GL_LIGHTING, onoff)
-
-
 def glPolygonFillMode(mode):
     if isinstance(mode, str):
         mode = mode.lower()
@@ -524,7 +519,7 @@ class CanvasSettings(Dict):
                 #glColor(c, t)
             elif k == 'linestipple':
                 glLineStipple(*settings[k])
-            elif k in ['smooth', 'fill', 'lighting', 'linewidth', 'pointsize']:
+            elif k in ['smooth', 'fill', 'linewidth', 'pointsize']:
                 func = globals()['gl'+k.capitalize()]
                 func(settings[k])
             ## else:
@@ -536,7 +531,7 @@ def glSettings(settings):
     pf.debug("GL SETTINGS: %s" % settings, pf.DEBUG.DRAW)
     glShadeModel(settings.get('Shading', None))
     glCulling(settings.get('Culling', None))
-    glLighting(settings.get('Lighting', None))
+    #glLighting(settings.get('Lighting', None))
     glLineSmooth(onOff(settings.get('Line Smoothing', None)))
     glPolygonFillMode(settings.get('Polygon Fill', None))
     glPolygonMode(settings.get('Polygon Mode', None))
@@ -618,15 +613,9 @@ class Canvas(object):
         return bbox(self.scene.actors)
 
 
-    def enable_lighting(self, state):
-        """Toggle OpenGL lighting on/off."""
-        glLighting(state)
-
-
-    def has_lighting(self):
-        """Return the status of the lighting."""
-        print("has_lighting:GL_LIGHT is deprecated")
-        #return GL.glIsEnabled(GL.GL_LIGHTING)
+    ## def enable_lighting(self, state):
+    ##     """Toggle OpenGL lighting on/off."""
+    ##     glLighting(state)
 
 
     def resetDefaults(self,dict={}):
@@ -920,7 +909,7 @@ class Canvas(object):
     def setDefaults(self):
         """Activate the canvas settings in the GL machine."""
         self.settings.activate()
-        self.enable_lighting(self.settings.lighting)
+        #self.enable_lighting(self.settings.lighting)
         GL.glDepthFunc(GL.GL_LESS)
 
 
@@ -1102,7 +1091,7 @@ class Canvas(object):
         GL.glLoadIdentity()
         self.zoom_2D()
         GL.glDisable(GL.GL_DEPTH_TEST)
-        self.enable_lighting(False)
+        #self.enable_lighting(False)
         self.mode2D = True
 
 
@@ -1115,7 +1104,7 @@ class Canvas(object):
             GL.glPopMatrix()
             GL.glMatrixMode(GL.GL_MODELVIEW)
             GL.glPopMatrix()
-            self.enable_lighting(self.settings.lighting)
+            #self.enable_lighting(self.settings.lighting)
             self.mode2D = False
 
 
