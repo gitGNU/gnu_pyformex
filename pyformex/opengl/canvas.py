@@ -509,21 +509,10 @@ class CanvasSettings(Dict):
 
     @staticmethod
     def glOverride(settings, default):
-        #if settings != default:
-        #print("OVERRIDE CANVAS SETINGS %s" % settings['fill'])
         for k in settings:
-            if k in ['fgcolor', 'transparency']:
-                c = settings.get('fgcolor', default.fgcolor)
-                t = settings.get('transparency', default.transparency)
-                print("glOverride: default color setting deprecated")
-                #glColor(c, t)
-            elif k == 'linestipple':
-                glLineStipple(*settings[k])
-            elif k in ['smooth', 'fill', 'linewidth', 'pointsize']:
+            if k in ['smooth', 'fill', 'linewidth', 'pointsize']:
                 func = globals()['gl'+k.capitalize()]
                 func(settings[k])
-            ## else:
-            ##     print("CAN NOT SET %s" % k)
 
 
 ### OLD: to be rmoved (still used in viewport)
@@ -536,7 +525,6 @@ def glSettings(settings):
     glPolygonFillMode(settings.get('Polygon Fill', None))
     glPolygonMode(settings.get('Polygon Mode', None))
     pf.canvas.update()
-
 
 
 def extractCanvasSettings(d):
