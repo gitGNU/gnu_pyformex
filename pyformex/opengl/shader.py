@@ -54,9 +54,9 @@ def defaultShaders():
     dirname = os.path.join(pf.pyformexdir,'data')
     vertexshader = os.path.join(dirname, "vertex_shader.c")
     fragmentshader = os.path.join(dirname, "fragment_shader.c")
-    if vendor == 'NVIDIA' and SaneVersion(version) <= SaneVersion('3.0'):
-        vertexshader = vertexshader.replace('.c','_nvidia_3.1.c')
-        fragmentshader = fragmentshader.replace('.c','_nvidia_3.1.c')
+    ## if vendor == 'NVIDIA' and SaneVersion(version) <= SaneVersion('3.0'):
+    ##     vertexshader = vertexshader.replace('.c','_nvidia_3.1.c')
+    ##     fragmentshader = fragmentshader.replace('.c','_nvidia_3.1.c')
     return vertexshader,fragmentshader
 
 class Shader(object):
