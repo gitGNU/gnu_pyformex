@@ -44,7 +44,7 @@ def defaultShaders():
     from pyformex.opengl.canvas import glVersion
     from pyformex.gui import viewport
     from pyformex.software import SaneVersion
-    vendor,version = glVersion('vendor+version')
+    vendor,renderer,version,glsl_version = glVersion()
     vmajor,vminor = version.split('.')[:2]
     fmt = viewport.opengl_format
     major,minor = fmt.majorVersion(), fmt.minorVersion()
@@ -52,11 +52,20 @@ def defaultShaders():
     version = "%s.%s" % (major,minor)
     # Default shaders
     dirname = os.path.join(pf.pyformexdir,'data')
-    vertexshader = os.path.join(dirname, "vertex_shader.c")
-    fragmentshader = os.path.join(dirname, "fragment_shader.c")
-    ## if vendor == 'NVIDIA' and SaneVersion(version) <= SaneVersion('3.0'):
+    vertexshader = os.path.join(dirname, "vertex_shader")
+    fragmentshader = os.path.join(dirname, "fragment_shader")
+    if not pf.options.shader:
+        if 'Mesa' in renderer:
+            pf.options.shader = '_mesa_30'
+## if vendor == 'NVIDIA' and SaneVersion(version) <= SaneVersion('3.0'):
     ##     vertexshader = vertexshader.replace('.c','_nvidia_3.1.c')
     ##     fragmentshader = fragmentshader.replace('.c','_nvidia_3.1.c')
+    
+    if pf.options.shader:
+        vertexshader += str(pf.options.shader)
+        fragmentshader += str(pf.options.shader)
+    vertexshader += '.c'
+    fragmentshader += '.c'
     return vertexshader,fragmentshader
 
 class Shader(object):
