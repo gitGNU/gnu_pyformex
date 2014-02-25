@@ -74,8 +74,8 @@ def setBgColor():
         if res:
             setBackground(**res)
 
-    def changeImage(fn):
-        fn = draw.askImageFile(fn)
+    def changeImage(field):
+        fn = draw.askImageFile(field.text())
         if fn:
             viewer.showImage(fn)
         return fn
@@ -361,7 +361,7 @@ def showObjectDialog(show=True):
         if dia and show:
             dia.show()
         return dia
-    
+
 
 
 MenuData = [
