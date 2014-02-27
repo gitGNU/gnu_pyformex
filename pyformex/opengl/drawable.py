@@ -33,6 +33,7 @@ from pyformex.gui import colors
 from OpenGL import GL
 from OpenGL.arrays.vbo import VBO
 from pyformex.opengl.shader import Shader
+from pyformex.opengl.texture import Texture
 from pyformex.attributes import Attributes
 from pyformex.formex import Formex
 from pyformex.mesh import Mesh
@@ -45,8 +46,6 @@ from numpy import int32,float32
 
 
 ### Drawable Objects ###############################################
-
-
 
 
 def glObjType(nplex):
@@ -88,7 +87,8 @@ class Drawable(Attributes):
     attributes = [
         'cullface', 'subelems', 'color', 'name', 'highlight', 'opak',
         'linewidth', 'pointsize', 'lighting', 'offset', 'vbo', 'nbo', 'ibo',
-        'alpha', 'drawface', 'objectColor', 'useObjectColor'
+        'alpha', 'drawface', 'objectColor', 'useObjectColor',
+        'texture', 'texcoords',
         ]
 
     def __init__(self,parent,**kargs):
@@ -111,6 +111,11 @@ class Drawable(Attributes):
         self.prepareColor()
         #self.prepareNormals()  # The normals are currently always vertex
         self.prepareSubelems()
+
+        if self.texture is not None:
+            if self.texcoords is None:
+                self.texcoords = array([[0., 0.], [1., 0.], [1., 1.], [0., 1.]])[:self.nplex]
+                self.useTexture = 1  # single texcoords
 
 
     ## def bbox(self):
@@ -164,7 +169,7 @@ class Drawable(Attributes):
         #  Creating a dummy color buffer seems to solve that problem
         #
         if self.cbo is None:
-            print("ADD FAKE CBO for useColor %s (%s)" % (self.useObjectColor,self.name))
+            #print("ADD FAKE CBO for useColor %s (%s)" % (self.useObjectColor,self.name))
             self.cbo = VBO(array(red))
 
 
@@ -502,6 +507,7 @@ class GeomActor(Attributes):
                     self.bkcolor = None
 
         self.setAlpha(self.alpha, self.bkalpha)
+        self.setTexture(self.texture,self.texcoords)
         self.setLineWidth(self.linewidth)
         self.setLineStipple(self.linestipple)
 
@@ -748,6 +754,19 @@ class GeomActor(Attributes):
             pass
         if self.opak is None:
             self.opak = (self.alpha == 1.0) and (self.bkalpha == 1.0 )
+
+
+    def setTexture(self,texture,texcoords=None):
+        """Set the texture data of the Drawable."""
+        if texture is not None:
+            if not isinstance(texture, Texture):
+                try:
+                    texture = Texture(texture)
+                    print("Create Texture")
+                except:
+                    texture = None
+        self.texture = texture
+
 
 
     def setLineWidth(self, linewidth):

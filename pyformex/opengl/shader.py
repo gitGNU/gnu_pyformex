@@ -60,7 +60,7 @@ def defaultShaders():
 ## if vendor == 'NVIDIA' and SaneVersion(shortversion) <= SaneVersion('3.0'):
     ##     vertexshader = vertexshader.replace('.c','_nvidia_3.1.c')
     ##     fragmentshader = fragmentshader.replace('.c','_nvidia_3.1.c')
-    
+
     if pf.options.shader:
         vertexshader += str(pf.options.shader)
         fragmentshader += str(pf.options.shader)
@@ -97,6 +97,7 @@ class Shader(object):
     uniforms_int = [
         'highlight',
         'useObjectColor',
+        'useTexture',
         'alphablend',
         'drawface',
         'lighting',

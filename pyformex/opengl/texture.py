@@ -48,10 +48,13 @@ def glTexture(texture,mode='*'):
 class Texture(object):
     """An OpenGL 2D Texture.
 
-    image: raw image data (unsigned byte RGBA data)
+    Parameters:
+
+    - `image`: raw image data (unsigned byte RGBA data)
+
     """
 
-    def __init__(self,image,flip=False):
+    def __init__(self,image):
         self.tex = None
         image = np.asarray(image)
         # print "Texture: type %s, size %s" % (image.dtype, image.shape)

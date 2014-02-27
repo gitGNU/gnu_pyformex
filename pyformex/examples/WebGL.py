@@ -104,7 +104,7 @@ def createGeometry():
 def run():
     reset()
     clear()
-    smooth()
+    #smooth()
     transparent()
     bgcolor(white)
     view('right')

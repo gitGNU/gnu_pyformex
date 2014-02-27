@@ -1042,6 +1042,7 @@ class Canvas(object):
         pf.debug("draw foreground decorations in 2D mode", pf.DEBUG.DRAW)
         self.begin_2D_drawing()
         for actor in self.scene.front_decors():
+            ## print("FRONT DECOR")
             self.setDefaults()
             ## if hasattr(actor,'zoom'):
             ##     self.zoom_2D(actor.zoom)

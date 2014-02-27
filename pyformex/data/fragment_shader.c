@@ -35,8 +35,8 @@ in vec3 nNormal;        // normalized transformed normal
 
 
 void main(void) {
-  if (nNormal[2] < 0.0)
-    discard;
+  //if (nNormal[2] < 0.0)
+  //  discard;
   gl_FragColor = fragColor;
 }
 
