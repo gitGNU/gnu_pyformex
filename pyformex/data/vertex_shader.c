@@ -54,7 +54,8 @@ uniform int drawface;        // Which side of the face to draw (0,1,2)
 uniform int useObjectColor;  // 0 = no, 1 = single color, 2 = twosided color
 uniform vec3 objectColor;    // front and back color (1) or front color (2)
 uniform vec3 objectBkColor;  // back color (2)
-uniform bool useTexture;   // true if a texture is given
+uniform int useTexture;    // 0: no texture, 1: single texture
+
 
 uniform float ambient;     // Material ambient value
 uniform float diffuse;     // Material diffuse value
@@ -163,7 +164,7 @@ void main()
     gl_Position = projection * modelview * fvertexPosition;
   }
 
-  if (useTexture) {
+  if (useTexture > 0) {
     texCoord = vertexTexturePos;
   }
 }

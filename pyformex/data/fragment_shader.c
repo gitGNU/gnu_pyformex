@@ -24,7 +24,7 @@
 
 // Fragment shader
 
-#version 130
+#version 110
 
 #ifdef GL_ES
 precision mediump float;
@@ -32,12 +32,34 @@ precision mediump float;
 
 in vec4 fragColor;
 in vec3 nNormal;        // normalized transformed normal
+in vec2 texCoord;
+
+uniform int useTexture;    // 0: no texture, 1: single texture
+uniform int textureMode;   // 0: GL_REPLACE, 1: GL_MODULATE, 2: GL_DECAL
+
+uniform sampler2D tex;
 
 
 void main(void) {
+
   //if (nNormal[2] < 0.0)
   //  discard;
-  gl_FragColor = fragColor;
+
+  if (useTexture > 0) {
+    vec4 texColor = texture2D(tex,texCoord);
+    if (textureMode == 0) {
+      // GL_REPLACE
+      gl_FragColor = texColor;
+    } else if (textureMode == 1) {
+      // GL_MODULATE
+      gl_FragColor = fragColor * texColor;
+    } else if (textureMode == 2) {
+      // GL_DECAL
+      gl_FragColor = vec4( fragColor.rgb * (1.0-texColor.a) + texColor.rgb * texColor.a, fragColor.a);
+    }
+  } else {
+    gl_FragColor = fragColor;
+  }
 }
 
 // End

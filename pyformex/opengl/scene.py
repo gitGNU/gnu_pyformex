@@ -303,7 +303,7 @@ def sane_bbox(bb):
     try:
         bb = at.nan_to_num(bb)
     except:
-        pf.message("Invalid Bbox: %s" % bb)
+        print("Invalid Bbox: %s" % bb)
     # make sure bbox size is nonzero in all directions
     sz = bb[1]-bb[0]
     ds = 0.01 * at.length(sz)

@@ -137,7 +137,7 @@ class Drawable(Attributes):
             elif self.color.ndim == 2:
                 self.useObjectColor = 0
                 self.vertexColor = at.multiplex(self.color, self.object.nplex())
-                pf.debug("Multiplexing colors: %s -> %s " % (self.color.shape, self.vertexColor.shape),pf.DEBUG.OPENGL2)
+                #pf.debug("Multiplexing colors: %s -> %s " % (self.color.shape, self.vertexColor.shape),pf.DEBUG.OPENGL2)
             elif self.color.ndim == 3:
                 self.useObjectColor = 0
                 self.vertexColor = self.color
@@ -160,14 +160,16 @@ class Drawable(Attributes):
 
     def prepareTexture(self):
         """Prepare texture and texture coords"""
-        if self.texcoords is None:
-            self.texcoords = array([[0., 0.], [1., 0.], [1., 1.], [0., 1.]])[:self.nplex]
-            self.useTexture = 1  # single texcoords
-
+        print("Drawable.prepareTexture")
+        print(self.useTexture,self.texture,self.texcoords)
         if self.useTexture == 1:
             curshape = self.texcoords.shape
-            self.texcoords = at.multiplex(self.texcoords, self.object.nplex())
-            pf.debug("Multiplexing texture coords: %s -> %s " % (curshape, self.texcoords.shape),pf.DEBUG.OPENGL2)
+            self.texcoords = at.multiplex(self.texcoords, self.object.nelems(),axis=-2)
+            print("Multiplexing texture coords: %s -> %s " % (curshape, self.texcoords.shape))
+            print(self.texcoords)
+            print(self.vbo.shape)
+        self.tbo = VBO(self.texcoords.astype(float32))
+        print(self.tbo.shape)
 
 
     def prepareSubelems(self):
@@ -215,6 +217,11 @@ class Drawable(Attributes):
             GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexColor'])
             GL.glVertexAttribPointer(renderer.shader.attribute['vertexColor'], 3, GL.GL_FLOAT, False, 0, self.cbo)
 
+        if self.tbo:
+            self.tbo.bind()
+            GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexTexturePos'])
+            GL.glVertexAttribPointer(renderer.shader.attribute['vertexTexturePos'], 2, GL.GL_FLOAT, False, 0, self.tbo)
+
         if self.cullface == 'front':
             # Draw back faces
             GL.glEnable(GL.GL_CULL_FACE)
@@ -237,6 +244,9 @@ class Drawable(Attributes):
         if self.cbo:
             self.cbo.unbind()
             GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexColor'])
+        if self.tbo:
+            self.tbo.unbind()
+            GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexTexturePos'])
         if self.nbo:
             self.nbo.unbind()
             GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
@@ -762,7 +772,22 @@ class GeomActor(Attributes):
                 except:
                     print("Error while creating Texture from type(texture)")
                     texture = None
-        self.texture = texture
+            if texture is not None:
+                if texcoords is None:
+                    if (self.eltype is not None and self.eltype.ndim == 2):
+                        texcoords = array(self.eltype.vertices[...,:2])
+                    else:
+                        print("Texture not allowed for eltype %s" % self.eltype)
+                        self.texture = self.texcoords = None
+                        return
+                if texcoords.shape[:2] != (self.eltype.nplex(),2):
+                    print("Shape of texcoords does not match: %s" % str(texcoords.shape))
+                    texcoords = texture = None
+
+        if texture is not None:
+            self.useTexture = 1
+            self.texture = texture
+            self.texcoords = texcoords
 
 
     def setLineWidth(self, linewidth):
