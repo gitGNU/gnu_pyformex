@@ -111,23 +111,8 @@ class Drawable(Attributes):
         self.prepareColor()
         #self.prepareNormals()  # The normals are currently always vertex
         self.prepareSubelems()
-
         if self.texture is not None:
-            if self.texcoords is None:
-                self.texcoords = array([[0., 0.], [1., 0.], [1., 1.], [0., 1.]])[:self.nplex]
-                self.useTexture = 1  # single texcoords
-
-
-    ## def bbox(self):
-    ##     print("WHY DO YOU NEED MY BBOX?")
-    ##     return self._coords.bbox()
-
-
-    ## def __del__(self):
-    ##     for buf in 'vbo', 'ibo', 'nbo', 'cbo':
-    ##         if self[buf] is not None:
-    ##             self[buf].unbind()
-    ##             self[buf] = None
+            self.prepareTexture()
 
 
     def prepareColor(self):
@@ -171,6 +156,18 @@ class Drawable(Attributes):
         if self.cbo is None:
             #print("ADD FAKE CBO for useColor %s (%s)" % (self.useObjectColor,self.name))
             self.cbo = VBO(array(red))
+
+
+    def prepareTexture(self):
+        """Prepare texture and texture coords"""
+        if self.texcoords is None:
+            self.texcoords = array([[0., 0.], [1., 0.], [1., 1.], [0., 1.]])[:self.nplex]
+            self.useTexture = 1  # single texcoords
+
+        if self.useTexture == 1:
+            curshape = self.texcoords.shape
+            self.texcoords = at.multiplex(self.texcoords, self.object.nplex())
+            pf.debug("Multiplexing texture coords: %s -> %s " % (curshape, self.texcoords.shape),pf.DEBUG.OPENGL2)
 
 
     def prepareSubelems(self):
@@ -762,11 +759,10 @@ class GeomActor(Attributes):
             if not isinstance(texture, Texture):
                 try:
                     texture = Texture(texture)
-                    print("Create Texture")
                 except:
+                    print("Error while creating Texture from type(texture)")
                     texture = None
         self.texture = texture
-
 
 
     def setLineWidth(self, linewidth):

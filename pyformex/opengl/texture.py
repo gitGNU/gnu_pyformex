@@ -58,7 +58,7 @@ class Texture(object):
         self.tex = None
         image = np.asarray(image)
         # print "Texture: type %s, size %s" % (image.dtype, image.shape)
-        image = require(image, dtype='ubyte', requirements='C')
+        image = np.require(image, dtype='ubyte', requirements='C')
         # print "Converted to: type %s, size %s" % (image.dtype, image.shape)
         ny, nx = image.shape[:2]
 
