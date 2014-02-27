@@ -44,9 +44,9 @@ def run():
     image = image2numpy(imagefile, indexed=False)
 
     from pyformex import simple
-    F = simple.cuboid().centered()
+    F = simple.cuboid().centered().toMesh()
     G = Formex('4:0123').replic2(3, 2).toMesh().setProp(arange(1, 7)).centered()
-    draw([F, G], texture=image)
+    draw([F,G], texture=image)
     view('iso')
     zoom(0.5)
 

@@ -234,11 +234,11 @@ class FeResult(object):
             self.inc = None
             self.R = None
         export({self.name:self, self._name_:self})
-        pf.message("Read %d nodes, %d elements" % (self.nnodes, self.nelems))
+        print("Read %d nodes, %d elements" % (self.nnodes, self.nelems))
         if self.res is None:
-            pf.message("No results")
+            print("No results")
         else:
-            pf.message("Steps: %s" % self.res.keys())
+            print("Steps: %s" % self.res.keys())
 
     def do_nothing(*arg,**kargs):
         """A do nothing function to stand in for as yet undefined functions."""

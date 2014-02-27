@@ -243,9 +243,9 @@ class Objects(object):
         if objects:
             for n, o in zip(self.names, objects):
                 bb = o.bbox()
-                pf.message("* %s (%s): bbox [%s, %s]" % (n, o.__class__.__name__, bb[0], bb[1]))
+                print("* %s (%s): bbox [%s, %s]" % (n, o.__class__.__name__, bb[0], bb[1]))
             if len(self.names) > 1:
-                pf.message("** Overal bbox: [%s, %s]" % (bb[0], bb[1]))
+                print("** Overal bbox: [%s, %s]" % (bb[0], bb[1]))
 
 
     def writeToFile(self, filename):

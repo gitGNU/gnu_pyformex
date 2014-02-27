@@ -1825,7 +1825,7 @@ class Step(Dict):
 
         prop = propDB.getProp('n', tag=self.tags, attr=['bound'])
         if prop:
-            pf.message("  Writing step boundary conditions")
+            print("  Writing step boundary conditions")
             writeBoundaries(fil, prop)
 
         for pname, aname in [
@@ -1835,27 +1835,27 @@ class Step(Dict):
             ]:
             prop = propDB.getProp('n', tag=self.tags, attr=[pname])
             if prop:
-                pf.message("  Writing step %s" % aname.lower())
+                print("  Writing step %s" % aname.lower())
                 writeDisplacements(fil, prop, dtype=aname)
 
         prop = propDB.getProp('n', tag=self.tags, attr=['cload'])
         if prop:
-            pf.message("  Writing step cloads")
+            print("  Writing step cloads")
             writeCloads(fil, prop)
 
         prop = propDB.getProp('e', tag=self.tags, attr=['dload'])
         if prop:
-            pf.message("  Writing step dloads")
+            print("  Writing step dloads")
             writeDloads(fil, prop)
 
         prop = propDB.getProp('', tag=self.tags, attr=['dsload'])
         if prop:
-            pf.message("  Writing step dsloads")
+            print("  Writing step dsloads")
             writeDsloads(fil, prop)
 
         prop = propDB.getProp('', tag=self.tags)
         if prop:
-            pf.message("  Writing step model props")
+            print("  Writing step model props")
             writeModelProps(fil, prop)
 
         for i in out + self.out:
@@ -2036,7 +2036,7 @@ class AbqData(object):
         else:
             jobname, filename = abqInputNames(jobname)
             fil = open(filename, 'w')
-            pf.message("Writing to file %s" % (filename))
+            print("Writing to file %s" % (filename))
 
         fil.write(fmtHeading("""Model: %s     Date: %s      Created by pyFormex
 Script: %s
@@ -2047,10 +2047,10 @@ Script: %s
             fil.write("*PART, name=Part-0\n")
 
         nnod = self.model.nnodes()
-        pf.message("Writing %s nodes" % nnod)
+        print("Writing %s nodes" % nnod)
         writeNodes(fil, self.model.coords)
 
-        pf.message("Writing node sets")
+        print("Writing node sets")
         for p in self.prop.getProp('n', attr=['set']):
             print("NODE SET", p)
             if p.set is not None:
@@ -2069,11 +2069,11 @@ Script: %s
             setname = nsetName(p)
             writeSet(fil, 'NSET', setname, set)
 
-        pf.message("Writing coordinate transforms")
+        print("Writing coordinate transforms")
         for p in self.prop.getProp('n', attr=['csys']):
             fil.write(fmtTransform(p.name, p.csys))
 
-        pf.message("Writing element sets")
+        print("Writing element sets")
         telems = self.model.celems[-1]
         nelems = 0
         for p in self.prop.getProp('e'):
@@ -2101,7 +2101,7 @@ Script: %s
                     subsetname = Eset(p.nr, 'grp', i, setname)
                     nels = len(els)
                     if nels > 0:
-                        pf.message("Writing %s elements from group %s" % (nels, i))
+                        print("Writing %s elements from group %s" % (nels, i))
                         writeElems(fil, els, p.eltype, name=subsetname, eid=elnrs)
                         nelems += nels
                         if group_by_eset:
@@ -2111,16 +2111,16 @@ Script: %s
             else:
                 writeSet(fil, 'ELSET', p.name, p.set)
 
-        pf.message("Total number of elements: %s" % telems)
+        print("Total number of elements: %s" % telems)
         if nelems != telems:
-            pf.message("!! Number of elements written: %s !!" % nelems)
+            print("!! Number of elements written: %s !!" % nelems)
 
         ## # Now process the sets without eltype
         ## for p in self.prop.getProp('e',noattr=['eltype']):
         ##     setname = esetName(p)
         ##     writeSet(fil,'ELSET',setname,p.set)
 
-        pf.message("Writing element sections")
+        print("Writing element sections")
         for p in self.prop.getProp('e', attr=['section', 'eltype']):
             writeSection(fil, p)
 
@@ -2131,80 +2131,80 @@ Script: %s
             fil.write("*END INSTANCE\n")
             fil.write("*END ASSEMBLY\n")
 
-        pf.message("Writing global model properties")
+        print("Writing global model properties")
 
         prop = self.prop.getProp('', attr=['mass'])
         if prop:
-            pf.message("Writing masses")
+            print("Writing masses")
             fil.write(fmtMass(prop))
 
         prop = self.prop.getProp('', attr=['inertia'])
         if prop:
-            pf.message("Writing rotary inertia")
+            print("Writing rotary inertia")
             fil.write(fmtInertia(prop))
 
         prop = self.prop.getProp('', attr=['amplitude'])
         if prop:
-            pf.message("Writing amplitudes")
+            print("Writing amplitudes")
             writeAmplitude(fil, prop)
 
         prop = self.prop.getProp('', attr=['orientation'])
         if prop:
-            pf.message("Writing orientations")
+            print("Writing orientations")
             fil.write(fmtOrientation(prop))
 
         prop = self.prop.getProp('', attr=['ConnectorBehavior'])
         if prop:
-            pf.message("Writing Connector Behavior")
+            print("Writing Connector Behavior")
             fil.write(fmtConnectorBehavior(prop))
 
         prop = self.prop.getProp('n', attr=['equation'])
         if prop:
-            pf.message("Writing constraint equations")
+            print("Writing constraint equations")
             fil.write(fmtEquation(prop))
 
         prop = self.prop.getProp('', attr=['surftype'])
         if prop:
-            pf.message("Writing surfaces")
+            print("Writing surfaces")
             fil.write(fmtSurface(prop))
 
         prop = self.prop.getProp('', attr=['analyticalsurface'])
         if prop:
-            pf.message("Writing analytical surfaces")
+            print("Writing analytical surfaces")
             fil.write(fmtAnalyticalSurface(prop))
 
         prop = self.prop.getProp('', attr=['interaction'])
         if prop:
-            pf.message("Writing contact pairs")
+            print("Writing contact pairs")
             fil.write(fmtContactPair(prop))
 
         prop = self.prop.getProp('', attr=['generalinteraction'])
         if prop:
-                pf.message("Writing general contact")
+                print("Writing general contact")
                 fil.write(fmtGeneralContact(prop))
 
         prop = self.prop.getProp('', attr=['constraint'])
         if prop:
-                pf.message("Writing constraints")
+                print("Writing constraints")
                 fil.write(fmtConstraint(prop))
 
         prop = self.prop.getProp('', attr=['initialcondition'])
         if prop:
-                pf.message("Writing initial conditions")
+                print("Writing initial conditions")
                 fil.write(fmtInitialConditions(prop))
 
         prop = self.prop.getProp('n', tag=self.bound, attr=['bound'])
         if prop:
-            pf.message("Writing initial boundary conditions")
+            print("Writing initial boundary conditions")
             writeBoundaries(fil, prop)
 
-        pf.message("Writing steps")
+        print("Writing steps")
         for step in self.steps:
             step.write(fil, self.prop, self.out, self.res, resfreq=Result.nintervals, timemarks=Result.timemarks)
 
         if filename is not None:
             fil.close()
-        pf.message("Wrote Abaqus input file %s" % filename)
+        print("Wrote Abaqus input file %s" % filename)
 
 
 
@@ -2231,7 +2231,7 @@ def exportMesh(filename,mesh,eltype=None,header=''):
     writeNodes(fil, mesh.coords)
     writeElems(fil, mesh.elems, eltype, nofs=1)
     fil.close()
-    pf.message("Abaqus file %s written." % filename)
+    print("Abaqus file %s written." % filename)
 
 
 ##################################################

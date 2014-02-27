@@ -79,13 +79,13 @@ class Model(Geometry):
         nplex = [ m.nplex() for m in meshes ]
         self.cnodes = cumsum([0]+nnodes)
         self.celems = cumsum([0]+nelems)
-        pf.message("Finite Element Model")
-        pf.message("Number of nodes: %s" % self.coords.shape[0])
-        pf.message("Number of elements: %s" % self.celems[-1])
-        pf.message("Number of element groups: %s" % len(nelems))
-        #pf.message("Number of nodes per group: %s" % nnodes)
-        pf.message("Number of elements per group: %s" % nelems)
-        pf.message("Plexitude of each group: %s" % nplex)
+        print("Finite Element Model")
+        print("Number of nodes: %s" % self.coords.shape[0])
+        print("Number of elements: %s" % self.celems[-1])
+        print("Number of element groups: %s" % len(nelems))
+        #print("Number of nodes per group: %s" % nnodes)
+        print("Number of elements per group: %s" % nelems)
+        print("Plexitude of each group: %s" % nplex)
 
 
     def meshes(self):
@@ -233,13 +233,13 @@ class FEModel(Geometry):
         self.meshes = meshes
         self.cnodes = cumsum([0]+nnodes)
         self.celems = cumsum([0]+nelems)
-        pf.message("Finite Element Model")
-        pf.message("Number of nodes: %s" % self.coords.shape[0])
-        pf.message("Number of elements: %s" % self.celems[-1])
-        pf.message("Number of element groups: %s" % len(nelems))
-        #pf.message("Number of nodes per group: %s" % nnodes)
-        pf.message("Number of elements per group: %s" % nelems)
-        pf.message("Plexitude of each group: %s" % nplex)
+        print("Finite Element Model")
+        print("Number of nodes: %s" % self.coords.shape[0])
+        print("Number of elements: %s" % self.celems[-1])
+        print("Number of element groups: %s" % len(nelems))
+        #print("Number of nodes per group: %s" % nnodes)
+        print("Number of elements per group: %s" % nelems)
+        print("Plexitude of each group: %s" % nplex)
 
 
 def mergedModel(meshes,**kargs):

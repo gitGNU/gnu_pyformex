@@ -57,7 +57,7 @@ def showBbox():
     FL = selection.check()
     if FL:
         bb = bbox(FL)
-        pf.message("Bbox of selection: %s" % bb)
+        print("Bbox of selection: %s" % bb)
         nx = array([4, 4, 4])
         _bbox = actors.CoordPlaneActor(nx=nx, ox=bb[0], dx=(bb[1]-bb[0])/nx)
         pf.canvas.addAnnotation(_bbox)
@@ -233,9 +233,9 @@ def partitionSelection():
         return
 
     name = selection[0]
-    pf.message("Partitioning Formex '%s'" % name)
+    print("Partitioning Formex '%s'" % name)
     cuts = partition.partition(F)
-    pf.message("Subsequent cutting planes: %s" % cuts)
+    print("Subsequent cutting planes: %s" % cuts)
     if ack('Save cutting plane data?'):
         types = [ 'Text Files (*.txt)', 'All Files (*)' ]
         fn = askNewFilename(pf.cfg['workdir'], types)
@@ -263,14 +263,14 @@ def sectionizeSelection():
         return
 
     name = selection[0]
-    pf.message("Sectionizing Formex '%s'" % name)
+    print("Sectionizing Formex '%s'" % name)
     ns, th, segments = sectionize.createSegments(F)
     if not ns:
         return
 
     sections, ctr, diam = sectionize.sectionize(F, segments, th)
-    #pf.message("Centers: %s" % ctr)
-    #pf.message("Diameters: %s" % diam)
+    #print("Centers: %s" % ctr)
+    #print("Diameters: %s" % diam)
     if ack('Save section data?'):
         types = [ 'Text Files (*.txt)', 'All Files (*)' ]
         fn = askNewFilename(pf.cfg['workdir'], types)

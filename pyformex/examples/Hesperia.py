@@ -93,7 +93,7 @@ def createGeometry():
 
     # Modular size
     a, b, c = A.sizes()
-    pf.message("Cell width: %s; height: %s" % (a, b))
+    print("Cell width: %s; height: %s" % (a, b))
 
     # Create a mirrored triangle
     B = A.reflect(1)
@@ -121,7 +121,7 @@ def createGeometry():
     # Ratio of the height of the isosceles triangle over the icosaeder edge length.
     c = 0.5*tand(54.)
     angle = arccosd(tand(54.)/sqrt(3.))
-    pf.message("Rotation Ratio: %s; Angle: %s degrees" % (c, angle))
+    print("Rotation Ratio: %s; Angle: %s degrees" % (c, angle))
     F = F.rotate(angle, 0)
     clear()
     draw(F, colormap=['black', 'magenta', 'yellow', 'black'])
@@ -130,7 +130,7 @@ def createGeometry():
     # The sphere has radius ru
     golden_ratio = 0.5 * (1. + sqrt(5.))
     ru = 0.5 * a * sqrt(golden_ratio * sqrt(5.))
-    pf.message("Radius of circumscribed sphere: %s" % ru)
+    print("Radius of circumscribed sphere: %s" % ru)
 
     ru *= n
     C = [0., 0., -ru]
@@ -138,7 +138,7 @@ def createGeometry():
     draw(F)
 
     hx, hy, h = F.sizes()
-    pf.message("Height of the dome: %s" % h)
+    print("Height of the dome: %s" % h)
 
     # The base circle goes through bottom corner of n-th row,
     # which will be the first point of the first triangle of the n-th row.
@@ -187,7 +187,7 @@ def createGeometry():
 
     # Scale to the real geometry
     scale = 7000. / F.sizes()[2]
-    pf.message("Applying scale factor %s " % scale)
+    print("Applying scale factor %s " % scale)
     print(F.bbox())
     F = F.scale(scale)
     print(F.bbox())
@@ -431,7 +431,7 @@ def createFrameModel():
     # Get support nodes
     botnodes = where(isClose(nodes[:, 2], 0.0))[0]
     bot = nodes[botnodes]
-    pf.message("There are %s support nodes." % bot.shape[0])
+    print("There are %s support nodes." % bot.shape[0])
 
     # Upper structure
     nnodes = nodes.shape[0]              # node number offset
@@ -567,7 +567,7 @@ def createShellModel():
     # Get support nodes
     botnodes = where(isClose(nodes[:, 2], 0.0))[0]
     bot = nodes[botnodes].reshape((-1, 1, 3))
-    pf.message("There are %s support nodes." % bot.shape[0])
+    print("There are %s support nodes." % bot.shape[0])
 
     botofs = bot + [ 0., 0., -0.2]
     bbot2 = concatenate([bot, botofs], axis=1)

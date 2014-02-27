@@ -46,7 +46,7 @@ def run():
 
     a = Formex([[[0, 0, 0], [1, 0, 0]], [[1, 0, 0], [2, 0, 0]]])
     b = Formex([[[0, 1, 0], [1, 1, 0]], [[1, 1, 0], [2, 1, 0]]])
-    message("Two lines")
+    print("Two lines")
     draw(a+b)
     drawNumbers(a+b)
 
@@ -57,7 +57,7 @@ def run():
     pause()
     c = interpolate(a, b, v)
     c.setProp(p)
-    message("Interpolate between the two")
+    print("Interpolate between the two")
     draw(c)
     drawNumbers(c)
 
@@ -65,7 +65,7 @@ def run():
     d = interpolate(a, b, v, swap=True)
     d.setProp(p)
     clear()
-    message("Interpolate again with swapped order")
+    print("Interpolate again with swapped order")
     draw(d)
     drawNumbers(d)
     #return
@@ -74,7 +74,7 @@ def run():
     f = c.divide(v)
     f.setProp((1, 2))
     clear()
-    message("Divide the set of lines")
+    print("Divide the set of lines")
     draw(f)
     drawNumbers(f)
 

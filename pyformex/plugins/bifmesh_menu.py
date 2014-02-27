@@ -831,7 +831,7 @@ def inputControlLines():
     BA = []
     perspective(False)
     for i in range(6):
-        pf.message("Input Branch %s" % i)
+        print("Input Branch %s" % i)
         if i % 2 == 0:
             coords = None
         else:

@@ -83,7 +83,7 @@ def centerline(F,dir,nx=2,mode=2,th=0.2):
 def createSegments(F,ns=None,th=None):
     """Create segments along 0 axis for sectionizing the Formex F."""
     bb = F.bbox()
-    pf.message("Bounding box = %s" % bb)
+    print("Bounding box = %s" % bb)
     if ns is None or th is None:
         res = askItems([['number of sections', 20],
                         ['relative thickness', 0.1]],
@@ -98,7 +98,7 @@ def createSegments(F,ns=None,th=None):
         A = [ xmin, ygem, zgem ]
         B = [ xmax, ygem, zgem ]
         segments = Formex([[A, B]]).divide(ns)
-        pf.message("Segments: %s" % segments)
+        print("Segments: %s" % segments)
         return ns, th, segments
     return 0, 0, []
 
@@ -141,7 +141,7 @@ def sectionize(F,segments,th=0.1,visual=True):
         print(G)
         C = G.center()
         D = 2 * G.distanceFromLine(C, n).mean()
-        pf.message("Section Center: %s; Diameter: %s" % (C, D))
+        print("Section Center: %s; Diameter: %s" % (C, D))
         sections.append(G)
         ctr.append(C)
         diam.append(D)

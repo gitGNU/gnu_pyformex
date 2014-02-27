@@ -104,14 +104,14 @@ def run():
     for s, t in zip(sel, txt):
         prop[s] = i
         F.setProp(prop)
-        message('%s (%s): %s' % (color[i], sum(s), t))
+        print('%s (%s): %s' % (color[i], sum(s), t))
         draw(F)
         i += 1
 
-    message('Clip Formex to last selection')
+    print('Clip Formex to last selection')
     draw(F.clip(s), view=None)
 
-    message('Clip complement')
+    print('Clip complement')
     draw(F.cclip(s))
 
 if __name__ == 'draw':

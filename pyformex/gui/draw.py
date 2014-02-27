@@ -479,10 +479,6 @@ def printMessage(s):
     pf.GUI.update()
     pf.app.processEvents()
 
-# message is the preferred function to send text info to the user.
-# The default message handler is set here.
-message = printMessage
-
 
 ############################## drawing functions ########################
 
@@ -869,8 +865,8 @@ def setDrawOptions(kargs0={},**kargs):
 
 
 def showDrawOptions():
-    pf.message("Current Drawing Options: %s" % pf.canvas.drawoptions)
-    pf.message("Current Viewport Settings: %s" % pf.canvas.settings)
+    print("Current Drawing Options: %s" % pf.canvas.drawoptions)
+    print("Current Viewport Settings: %s" % pf.canvas.settings)
 
 
 def reset():
@@ -1336,7 +1332,7 @@ def colorindex(color):
         return i[0]
     else:
         i = len(cmap)
-        pf.message("Add color %s = %s to viewport colormap" % (i, color))
+        print("Add color %s = %s to viewport colormap" % (i, color))
         color = color.reshape(1, 3)
         pf.canvas.settings.colormap = concatenate([cmap, color], axis=0)
     return i
@@ -1645,7 +1641,7 @@ def sleep(duration,granularity=0.01):
 
 
 def printbbox():
-    pf.message(pf.canvas.bbox)
+    print(pf.canvas.bbox)
 
 def printviewportsettings():
     pf.GUI.viewports.printSettings()
@@ -1942,7 +1938,7 @@ def pick(mode='actor',filter=None,oneshot=False,func=None):
 
     if func is None:
         func = pf.canvas.highlight_funcs.get(mode, None)
-    pf.message("Select %s %s" % (filter, mode))
+    print("Select %s %s" % (filter, mode))
 
     pf.GUI.statusbar.addWidget(pick_buttons)
     pf.GUI.statusbar.addWidget(filter_combo)
@@ -2046,7 +2042,7 @@ def exportWebGL(fn,createdby=50,**kargs):
     if not pf.options.opengl2:
         return
     from pyformex.plugins.webgl import WebGL
-    pf.message("Exporting current scene to %s" % fn)
+    print("Exporting current scene to %s" % fn)
     pf.GUI.setBusy()
     if os.path.isabs(fn):
         chdir(os.path.dirname(fn))

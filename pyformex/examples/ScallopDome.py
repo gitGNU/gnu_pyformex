@@ -45,15 +45,15 @@ def run():
         pf.canvas.update()
 
     # Here we go
-    message("Create a triangular pattern in the first octant")
+    print("Create a triangular pattern in the first octant")
     f1 = Formex([[[0, 0], [1, 0]], [[1, 0], [1, 1]]]).replic2(8, 8, 1, 1, 0, 1, 1, -1) + Formex([[[1, 0], [2, 1]]]).replic2(7, 7, 1, 1, 0, 1, 1, -1)
     show(f1)
     #
-    message("Remove some of the bars")
+    print("Remove some of the bars")
     f1 = f1.remove(Formex([[[2, 0], [3, 1]]]).replic(3, 2, 0))
     show(f1)
     #
-    message("Transform the octant into a circular sector")
+    print("Transform the octant into a circular sector")
     f2 = f1.circulize1()
     f1.setProp(1)
     f2.setProp(2)
@@ -62,7 +62,7 @@ def run():
     #draw(f2)
 
     #
-    message("Make circular copies to obtain a full circle")
+    print("Make circular copies to obtain a full circle")
     show(f1+f2.rosette(6, 60.))
     # Create and display a scallop dome using the following parameters:
     # n = number of repetitions of the base module in circumference (this does not
@@ -77,10 +77,10 @@ def run():
         a=360./n
         f3 = f2.toCylindrical([0, 1, 2]).scale([1., 1./60., 1.])
         f4 = f3.map(func).cylindrical([0, 1, 2], [1., a, 1.]).rosette(n, a)
-        message("Scallop Dome with n=%d, f=%d, c=%f, r=%f" % (n, f, c, r))
+        print("Scallop Dome with n=%d, f=%d, c=%f, r=%f" % (n, f, c, r))
         return f4
 
-    message("Create a dome from the circular layout")
+    print("Create a dome from the circular layout")
     f2.setProp(3)
     pf.canvas.camera.setAngles([0., -45.])
     show(scallop(6, 1, 2, 0), None, False)

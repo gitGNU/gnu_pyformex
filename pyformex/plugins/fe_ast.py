@@ -408,7 +408,7 @@ class AstData(object):
         else:
             jobname, filename = astInputNames(jobname, extension='mail')
             fil = open(filename, 'w')
-            pf.message("Writing mesh to file %s" % (filename))
+            print("Writing mesh to file %s" % (filename))
 
         fil.write(fmtHeadingMesh("""Model: %s     Date: %s      Created by pyFormex
 Script: %s
@@ -417,12 +417,12 @@ Script: %s
 
         # write coords
         nnod = self.model.nnodes()
-        pf.message("Writing %s nodes" % nnod)
+        print("Writing %s nodes" % nnod)
         writeNodes(fil, self.model.coords, self.type)
 
 
         # write elements
-        pf.message("Writing elements and element sets")
+        print("Writing elements and element sets")
         telems = self.model.celems[-1]
         nelems = 0
         for p in self.prop.getProp('e'):
@@ -454,16 +454,16 @@ Script: %s
                         nelems += nels
                 writeElems(fil, els, p.eltype, name=setname, eid=set)
 
-            pf.message("Writing element sets")
+            print("Writing element sets")
             writeSet(fil, 'ELSET', setname, set)
 
-        pf.message("Total number of elements: %s" % telems)
+        print("Total number of elements: %s" % telems)
         if nelems != telems:
-            pf.message("!! Number of elements written: %s !!" % nelems)
+            print("!! Number of elements written: %s !!" % nelems)
 
 
         # write node sets
-        pf.message("Writing node sets")
+        print("Writing node sets")
         for p in self.prop.getProp('n', attr=['set']):
             if p.set is not None:
                 # set is directly specified
@@ -482,7 +482,7 @@ Script: %s
 
 
         ## # write element sets
-        ## pf.message("Writing element sets")
+        ## print("Writing element sets")
         ## for p in self.prop.getProp('e',noattr=['eltype']):
             ## if p.set is not None:
                 ## # element set is directly specified
@@ -504,7 +504,7 @@ Script: %s
 
         if filename is not None:
             fil.close()
-        pf.message("Wrote Code Aster mesh file (.mail) %s" % filename)
+        print("Wrote Code Aster mesh file (.mail) %s" % filename)
 
 
     def writeComm(self,jobname=None,header=''):
@@ -520,7 +520,7 @@ Script: %s
         else:
             jobname, filename = astInputNames(jobname, extension='comm')
             fil = open(filename, 'w')
-            pf.message("Writing command to file %s" % (filename))
+            print("Writing command to file %s" % (filename))
 
         fil.write(fmtHeadingComm("""Model: %s     Date: %s      Created by pyFormex
 # Script: %s
@@ -533,28 +533,28 @@ Script: %s
 
         prop = self.prop.getProp('e', attr=['section', 'eltype'])
         if prop:
-            pf.message("Writing element sections")
+            print("Writing element sections")
             fil.write(fmtSections(prop))
 
         prop = self.prop.getProp('n', attr=['displ'], noattr=['local'])
         if prop:
-            pf.message("Writing displacement boundary conditions")
+            print("Writing displacement boundary conditions")
             fil.write(fmtDisplacements(prop))
 
         prop = self.prop.getProp('n', attr=['local'])
         if prop:
-            pf.message("Writing local displacement boundary conditions")
+            print("Writing local displacement boundary conditions")
             fil.write(fmtLocalDisplacements(prop))
 
         prop = self.prop.getProp('n', attr=['equation'])
         if prop:
-            pf.message("Writing constraint equations")
+            print("Writing constraint equations")
             fil.write(fmtEquation(prop))
 
         fil.write('FIN();\n')
 
         if filename is not None:
             fil.close()
-        pf.message("Wrote Code Aster command file (.comm) %s" % filename)
+        print("Wrote Code Aster command file (.comm) %s" % filename)
 
 # End

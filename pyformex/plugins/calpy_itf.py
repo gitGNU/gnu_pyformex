@@ -49,7 +49,7 @@ def detect(trypaths=None):
     if not calpy:
         return
 
-    pf.message("You have calpy version %s" % calpy)
+    print("You have calpy version %s" % calpy)
     path = ''
     calpy = calpy.split('-')[0]  # trim the version trailer
     if utils.checkVersion('calpy', '0.3.4-rev3', external=True) >= 0:
@@ -70,7 +70,7 @@ def detect(trypaths=None):
                 path = ''
     if path:
         #path += '/calpy'
-        pf.message("I found calpy in '%s'" % path)
+        print("I found calpy in '%s'" % path)
         sys.path.append(path)
 
     calpy_path = path

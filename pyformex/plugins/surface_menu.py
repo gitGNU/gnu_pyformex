@@ -99,10 +99,10 @@ selection = SurfaceObjects()
 ##################### select, read and write ##########################
 
 def read_Surface(fn,exportName=True):
-    pf.message("Reading file %s" % fn)
+    print("Reading file %s" % fn)
     t = timer.Timer()
     S = TriSurface.read(fn)
-    pf.message("Read surface with %d vertices, %d edges, %d triangles in %s seconds" % (S.ncoords(), S.nedges(), S.nelems(), t.seconds()))
+    print("Read surface with %d vertices, %d edges, %d triangles in %s seconds" % (S.ncoords(), S.nedges(), S.nelems(), t.seconds()))
     if exportName:
         name = utils.projectName(fn)
         export({name:S})
@@ -130,7 +130,7 @@ def readSelection(select=True,draw=True,multi=True):
         pf.GUI.setBusy(False)
         export2(names, surfaces)
         if select:
-            pf.message("Set selection to %s" % str(names))
+            print("Set selection to %s" % str(names))
             selection.set(names)
             if draw:
                 if max([named(s).nfaces() for s in selection]) < 100000 or ack("""
@@ -145,34 +145,34 @@ Shall I proceed with the drawing now?
 def printSize():
     for s in selection.names:
         S = named(s)
-        pf.message("Surface %s has %d vertices, %s edges and %d faces" %
+        print("Surface %s has %d vertices, %s edges and %d faces" %
                    (s, S.ncoords(), S.nedges(), S.nelems()))
 
 def printType():
     for s in selection.names:
         S = named(s)
         if S.isClosedManifold():
-            pf.message("Surface %s is a closed manifold" % s)
+            print("Surface %s is a closed manifold" % s)
         elif S.isManifold():
-            pf.message("Surface %s is an open manifold" % s)
+            print("Surface %s is an open manifold" % s)
         else:
-            pf.message("Surface %s is not a manifold" % s)
+            print("Surface %s is not a manifold" % s)
 
 def printArea():
     for s in selection.names:
         S = named(s)
-        pf.message("Surface %s has area %s" % (s, S.area()))
+        print("Surface %s has area %s" % (s, S.area()))
 
 def printVolume():
     for s in selection.names:
         S = named(s)
-        pf.message("Surface %s has volume %s" % (s, S.volume()))
+        print("Surface %s has volume %s" % (s, S.volume()))
 
 
 def printStats():
     for s in selection.names:
         S = named(s)
-        pf.message("Statistics for surface %s" % s)
+        print("Statistics for surface %s" % s)
         print(S.stats())
 
 def toFormex(suffix=''):
@@ -347,7 +347,7 @@ def export_surface(types=['surface', 'gts', 'stl', 'off', 'neu', 'smesh', 'vtp',
         if fn:
             if ftype is None:
                 ftype = utils.fileTypeFromExt(fn)
-            pf.message("Exporting surface model to %s (%s)" % (fn, ftype.upper()))
+            print("Exporting surface model to %s (%s)" % (fn, ftype.upper()))
             pf.GUI.setBusy()
             F.write(fn, ftype)
             pf.GUI.setBusy(False)
@@ -374,7 +374,7 @@ def export_stl():
         else:
             color = None
         print("Stored color is %s" % color)
-        pf.message("Exporting surface model to %s (%s)" % (fn, ftype.upper()))
+        print("Exporting surface model to %s (%s)" % (fn, ftype.upper()))
         pf.GUI.setBusy()
         F.write(fn, ftype, color)
         pf.GUI.setBusy(False)
@@ -385,7 +385,7 @@ def export_webgl():
     if F:
         fn = askNewFilename(pf.cfg['workdir'], 'stl')
         if fn:
-            pf.message("Exporting surface model to %s" % fn)
+            print("Exporting surface model to %s" % fn)
             pf.GUI.setBusy()
             F.webgl(fn)
             pf.GUI.setBusy(False)
@@ -1270,7 +1270,7 @@ def show_volume():
         return
     nodes, elems = PF['volume']
     F = Formex(nodes[elems], eltype='tet4')
-    pf.message("BBOX = %s" % F.bbox())
+    print("BBOX = %s" % F.bbox())
     clear()
     draw(F, color='random')
     PF['vol_model'] = F
@@ -1306,7 +1306,7 @@ def check():
     S = selection.check(single=True)
     if S:
         sta, out = S.check()
-        pf.message((sta, out))
+        print((sta, out))
         if sta == 3:
             clear()
             draw(S.select(out), color='red')
@@ -1316,7 +1316,7 @@ def check():
 def split():
     S = selection.check(single=True)
     if S:
-        pf.message(S.split(base=selection[0], verbose=True))
+        print(S.split(base=selection[0], verbose=True))
 
 
 def coarsen():

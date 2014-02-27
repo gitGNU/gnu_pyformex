@@ -84,7 +84,7 @@ def analysis(stent):
 
     outfilename = 'WireStent_calpy.out'
     outfile = open(outfilename, 'w')
-    message("Output is written to file '%s' in %s" % (outfilename, os.getcwd()))
+    print("Output is written to file '%s' in %s" % (outfilename, os.getcwd()))
     stdout_saved = sys.stdout
     sys.stdout = outfile
     print("# File created by pyFormex on %s" % time.ctime())
@@ -94,7 +94,7 @@ def analysis(stent):
     print("Number of elements: %s" % nel)
     print("Original number of nodes: %s" % stent.nnodes())
     # Create FE model
-    message("Creating Finite Element model: this may take some time.")
+    print("Creating Finite Element model: this may take some time.")
     nodes, elems = stent.fuse(ppb=1)
 
     nnod = nodes.shape[0]

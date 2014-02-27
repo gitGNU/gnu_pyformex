@@ -166,7 +166,7 @@ def run():
     for n in edge:
         loads[:, 0] = fe_util.AssembleVector(loads[:, 0], [ 0.0, 0.0, Q/2 ], bcon[n,:])
 
-    message("Performing analysis: this may take some time")
+    print("Performing analysis: this may take some time")
 
     # Find a candidate for the output file
     fullname = os.path.splitext(__file__)[0] + '.out'
@@ -185,7 +185,7 @@ def run():
         return
 
     outfile = open(outfilename, 'w')
-    message("Output is written to file '%s'" % os.path.realpath(outfilename))
+    print("Output is written to file '%s'" % os.path.realpath(outfilename))
     stdout_saved = sys.stdout
     sys.stdout = outfile
     print("# File created by pyFormex on %s" % time.ctime())

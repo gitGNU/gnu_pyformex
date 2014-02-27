@@ -2106,7 +2106,7 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
                         a[i]=-2
                 adj[externals] = a.reshape(adj[externals].shape)
             else:
-                message('Failed to recognize external points.\nShrinkage may be considerable.')
+                print('Failed to recognize external points.\nShrinkage may be considerable.')
         w = ones(adj.shape, dtype=float)
 
         if weight == 'inversedistance':

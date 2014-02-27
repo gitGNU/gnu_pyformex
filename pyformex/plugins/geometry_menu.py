@@ -110,7 +110,7 @@ def set_selection(clas='geometry'):
             return
 
         if not sel.names:
-            message("Nothing selected")
+            print("Nothing selected")
 
         selection.set(sel.names)
         selection.draw()
@@ -220,7 +220,7 @@ def importGeometry(select=True,draw=True,ftype=None,compr=False):
     cur = pf.cfg['workdir']
     fn = askFilename(cur=cur, filter=ftype, compr=compr)
     if fn:
-        message("Reading geometry file %s" % fn)
+        print("Reading geometry file %s" % fn)
         res = readGeometry(fn)
         export(res)
         print("Items read: %s" % ', '.join([ "'%s'(%s)" % (k, res[k].__class__.__name__) for k in res]))
@@ -338,9 +338,9 @@ def exportGeometry(types=['pgf', 'all'],mode='multi',sep=' ',shortlines=False,co
     cur = pf.cfg['workdir']
     fn = askNewFilename(cur=cur, filter=types,compr=compr)
     if fn:
-        message("Writing geometry file %s" % fn)
+        print("Writing geometry file %s" % fn)
         res = writeGeometry(selection.odict(), fn, sep=sep, shortlines=shortlines,compr=compr)
-        pf.message("Contents: %s" % res)
+        print("Contents: %s" % res)
 
 
 def exportPgf():
@@ -361,7 +361,7 @@ def convertGeometryFile():
     fn = askFilename(cur=cur, filter=['pgf', 'all'])
     if fn:
         from pyformex.geomfile import GeometryFile
-        message("Converting geometry file %s to version %s" % (fn, GeometryFile._version_))
+        print("Converting geometry file %s to version %s" % (fn, GeometryFile._version_))
         GeometryFile(fn).rewrite()
 
 ##################### properties ##########################
@@ -406,7 +406,7 @@ def printDataSize():
             size = S.info()
         except:
             size = 'no info available'
-        pf.message("* %s (%s): %s" % (s, S.__class__.__name__, size))
+        print("* %s (%s): %s" % (s, S.__class__.__name__, size))
 
 
 ##################### conversion ##########################
@@ -746,10 +746,10 @@ def showPrincipal():
     # compute the axes
     data = F.inertia()
     C, Iaxes, Iprin, I = data
-    pf.message("Center of gravity: %s" % C)
-    pf.message("Principal Directions:\n %s" % Iaxes)
-    pf.message("Principal Values: %s" % Iprin)
-    pf.message("Inertia tensor: %s" % I)
+    print("Center of gravity: %s" % C)
+    print("Principal Directions:\n %s" % Iaxes)
+    print("Principal Values: %s" % Iprin)
+    print("Inertia tensor: %s" % I)
     # display the axes
     CS = coordsys.CoordinateSystem(origin=C, axes=Iaxes.transpose())
     size = 0.6*F.dsize()

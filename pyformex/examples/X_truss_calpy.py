@@ -131,10 +131,10 @@ def run():
     loads=zeros((ndof, nlc), Float)
     loads[:, 0]=AssembleVector(loads[:, 0], [ 0.0, -50.0, 0.0 ], bcon[nr_loaded,:])
 
-    message("Performing analysis: this may take some time")
+    print("Performing analysis: this may take some time")
     outfilename = os.path.splitext(os.path.basename(pf.scriptName))[0] + '.out'
     outfile = open(outfilename, 'w')
-    message("Output is written to file '%s' in %s" % (outfilename, os.getcwd()))
+    print("Output is written to file '%s' in %s" % (outfilename, os.getcwd()))
     stdout_saved = sys.stdout
     sys.stdout = outfile
     print("# File created by pyFormex on %s" % time.ctime())

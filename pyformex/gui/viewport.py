@@ -1384,7 +1384,7 @@ class NewiMultiCanvas(QtGui.QGridLayout):
 
     def printSettings(self):
         for i, v in enumerate(self.all):
-            pf.message("""
+            print("""
 ## VIEWPORTS ##
 Viewport %s;  Current:%s;  Settings:
 %s
@@ -1583,7 +1583,7 @@ class MultiCanvas(FramedGridLayout):
 
     def printSettings(self):
         for i, v in enumerate(self.all):
-            pf.message("""
+            print("""
 ## VIEWPORTS ##
 Viewport %s;  Current:%s;  Settings:
 %s

@@ -66,7 +66,7 @@ def close_loop_example():
     print("Original elements:", M.elems)
     conn = connectivity.connectedLineElems(M.elems)
     if len(conn) > 1:
-        message("This curve is not a closed circumference")
+        print("This curve is not a closed circumference")
         return None
     
     sorted = conn[0]

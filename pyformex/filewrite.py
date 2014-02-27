@@ -243,7 +243,7 @@ def write_stl_bin(fn,x,color=None):
         x[i].tofile(fil)
         fil.write('\x00\x00')
 
-    pf.message("Writing binary STL %s" % fn)
+    print("Writing binary STL %s" % fn)
     ver = pf.fullVersion()
     if len(ver) > 50:
         ver = ver[:50]
@@ -251,17 +251,17 @@ def write_stl_bin(fn,x,color=None):
         color = ''
     else:
         color = "COLOR=%4s" % color.tostring()
-        pf.message("Adding %s to the header" % color)
+        print("Adding %s to the header" % color)
 
     with open(fn, 'wb') as fil:
         head = "%-50s%-30s" % (ver, color)
         fil.write(head)
         ntri = x.shape[0]
-        pf.message("Number of triangles: %s" % ntri)
+        print("Number of triangles: %s" % ntri)
         np.array(ntri).astype(np.int32).tofile(fil)
         x = x.astype(np.float32)
         [ addTriangle(i) for i in range(ntri) ]
-    pf.message("Finished writing binary STL, %s bytes" % utils.fileSize(fn))
+    print("Finished writing binary STL, %s bytes" % utils.fileSize(fn))
 
 
 def write_stl_asc(fn, x):
@@ -276,7 +276,7 @@ def write_stl_asc(fn, x):
     if not x.shape[1:] == (4, 3):
         raise ValueError("Expected an (ntri,4,3) array, got %s" % x.shape)
 
-    pf.message("Writing ascii STL %s" % fn)
+    print("Writing ascii STL %s" % fn)
     with open(fn, 'wb') as fil:
 
         fil.write("solid  Created by %s\n" % pf.fullVersion())
@@ -288,7 +288,7 @@ def write_stl_asc(fn, x):
             fil.write("    endloop\n")
             fil.write("  endfacet\n")
         fil.write("endsolid\n")
-    pf.message("Finished writing ascii STL, %s bytes" % utils.fileSize(fn))
+    print("Finished writing ascii STL, %s bytes" % utils.fileSize(fn))
 
 
 # End

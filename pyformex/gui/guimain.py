@@ -1368,7 +1368,7 @@ pyFormex comes with ABSOLUTELY NO WARRANTY. This is free software, and you are w
         cfg['warnings/popup'] = False
         """
         full_message = warnings.formatwarning(message, category, filename, lineno, line)
-        pf.message(full_message)
+        print(full_message)
         res, check = draw.showMessage(full_message, level='warning', check="Do not show this warning anymore in future sessions")
         if check[0]:
             utils.filterWarning(str(message))
@@ -1378,7 +1378,7 @@ pyFormex comes with ABSOLUTELY NO WARRANTY. This is free software, and you are w
         warnings.showwarning = show_warning
 
 
-    pf.message = draw.message
+    print = draw.message
     pf.warning = draw.warning
     pf.error = draw.error
 
@@ -1503,7 +1503,7 @@ pyFormex comes with ABSOLUTELY NO WARRANTY. This is free software, and you are w
                 # Avoid crashes from a faulty project file
                 # TODO: should we push this up to fileMenu.readProjectFile ?
                 #
-                pf.message("Could not load the current project %s" % fn)
+                print("Could not load the current project %s" % fn)
     #
     pf.debug("GUI Started", pf.DEBUG.GUI)
     return 0

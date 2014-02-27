@@ -51,7 +51,7 @@ def run():
         drawText(text, x, y)
         y -=20
 
-    pf.message('Click Step to continue')
+    print('Click Step to continue')
 
     say('A Horse Story...')
     y -= 10

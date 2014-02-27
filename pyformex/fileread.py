@@ -58,7 +58,7 @@ def readNodes(fil):
 
 def readElems(fil, nplex):
     """Read a set of elems of plexitude nplex from an open mesh file"""
-    pf.message("Reading elements of plexitude %s" % nplex)
+    print("Reading elements of plexitude %s" % nplex)
     e = fromfile(fil, sep=" ", dtype=Int).reshape(-1, nplex)
     e = Connectivity(e)
     return e
@@ -99,7 +99,7 @@ def readMeshFile(fn):
         elif mode == 'esets':
             d['esets'] = readEsets(dfil)
         else:
-            pf.message("Skipping unrecognized line: %s" % line)
+            print("Skipping unrecognized line: %s" % line)
         dfil.close()
 
     fil.close()
@@ -141,24 +141,24 @@ def readInpFile(filename):
     from pyformex.plugins import ccxinp, fe
     ccxinp.skip_unknown_eltype = True
     model = ccxinp.readInput(filename)
-    pf.message("Number of parts: %s" % len(model.parts))
+    print("Number of parts: %s" % len(model.parts))
     fem = {}
     for part in model.parts:
         try:
             coords = Coords(part['coords'])
             nodid = part['nodid']
             nodpos = inverseUniqueIndex(nodid)
-            pf.message("nnodes = %s" % coords.shape[0])
-            pf.message("nodid: %s" % nodid)
-            pf.message("nodpos: %s" % nodpos)
+            print("nnodes = %s" % coords.shape[0])
+            print("nodid: %s" % nodid)
+            print("nodpos: %s" % nodpos)
             for e in part['elems']:
-                pf.message("Orig els %s" % e[1])
-                pf.message("Trl els %s" % nodpos[e[1]])
+                print("Orig els %s" % e[1])
+                print("Trl els %s" % nodpos[e[1]])
             elems = [ Connectivity(nodpos[e], eltype=t) for (t, e) in part['elems'] ]
-            pf.message('ELEM TYPES: %s' % [e.eltype for e in elems])
+            print('ELEM TYPES: %s' % [e.eltype for e in elems])
             fem[part['name']] = fe.Model(coords, elems)
         except:
-            pf.message("Skipping part %s" % part['name'])
+            print("Skipping part %s" % part['name'])
     return fem
 
 
@@ -168,17 +168,17 @@ def read_off(fn):
     The mesh should consist of only triangles!
     Returns a nodes,elems tuple.
     """
-    pf.message("Reading .OFF %s" % fn)
+    print("Reading .OFF %s" % fn)
     with utils.File(fn, 'r') as fil:
         head = fil.readline().strip()
         if head != "OFF":
-            pf.message("%s is not an OFF file!" % fn)
+            print("%s is not an OFF file!" % fn)
             return None, None
         nnodes, nelems, nedges = [int(i) for i in fil.readline().split()]
         nodes = fromfile(file=fil, dtype=Float, count=3*nnodes, sep=' ')
         # elems have number of vertices + 3 vertex numbers
         elems = fromfile(file=fil, dtype=int32, count=4*nelems, sep=' ')
-    pf.message("Read %d nodes and %d elems" % (nnodes, nelems))
+    print("Read %d nodes and %d elems" % (nnodes, nelems))
     return nodes.reshape((-1, 3)), elems.reshape((-1, 4))[:, 1:]
 
 
@@ -187,7 +187,7 @@ def read_gts(fn):
 
     Return a coords,edges,faces tuple.
     """
-    pf.message("Reading GTS file %s" % fn)
+    print("Reading GTS file %s" % fn)
     with utils.File(fn, 'r') as fil:
         header = fil.readline().split()
         ncoords, nedges, nfaces = [int(i) for i in header[:3]]
@@ -199,11 +199,11 @@ def read_gts(fn):
         coords = fromfile(fil, dtype=Float, count=3*ncoords, sep=sep).reshape(-1, 3)
         edges = fromfile(fil, dtype=int32, count=2*nedges, sep=' ').reshape(-1, 2) - 1
         faces = fromfile(fil, dtype=int32, count=3*nfaces, sep=' ').reshape(-1, 3) - 1
-    pf.message("Read %d coords, %d edges, %d faces" % (ncoords, nedges, nfaces))
+    print("Read %d coords, %d edges, %d faces" % (ncoords, nedges, nfaces))
     if coords.shape[0] != ncoords or \
        edges.shape[0] != nedges or \
        faces.shape[0] != nfaces:
-        pf.message("Error while reading GTS file: the file is probably incorrect!")
+        print("Error while reading GTS file: the file is probably incorrect!")
     return coords, edges, faces
 
 
@@ -217,7 +217,7 @@ def read_stl_bin(fn):
         x[i] = fromfile(file=fil, dtype=Float, count=12).reshape(4, 3)
         fil.read(2)
 
-    pf.message("Reading binary .STL %s" % fn)
+    print("Reading binary .STL %s" % fn)
     fil = open(fn, 'rb')
     head = fil.read(80)
     if head[:5] == 'solid':
@@ -229,11 +229,11 @@ def read_stl_bin(fn):
         color = None
 
     ntri = fromfile(file=fil, dtype=Int, count=1)[0]
-    pf.message("Number of triangles: %s" % ntri)
+    print("Number of triangles: %s" % ntri)
     x = zeros((ntri, 4, 3), dtype=Float)
     nbytes = 12*4 + 2
     [ addTriangle(i) for i in range(ntri) ]
-    pf.message("Finished reading binary stl")
+    print("Finished reading binary stl")
     x = Coords(x)
     if color is not None:
         from pyformex.gui.colors import GLcolor
@@ -263,7 +263,7 @@ def read_gambit_neutral_hex(fn):
     Returns a nodes,elems tuple.
     """
     scr = os.path.join(pf.cfg['bindir'], 'gambit-neu-hex ')
-    pf.message("%s '%s'" % (scr, fn))
+    print("%s '%s'" % (scr, fn))
     utils.command("%s '%s'" % (scr, fn))
     nodesf = utils.changeExt(fn, '.nodes')
     elemsf = utils.changeExt(fn, '.elems')

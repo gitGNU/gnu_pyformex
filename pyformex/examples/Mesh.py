@@ -153,7 +153,7 @@ def run():
     clear()
     draw(e)
     drawNumbers(e)
-    message("border elements inherit the properties")
+    print("border elements inherit the properties")
 
 if __name__ == 'draw':
     run()

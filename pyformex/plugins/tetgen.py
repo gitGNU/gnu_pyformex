@@ -493,7 +493,7 @@ def tetgenConvexHull(pts):
     writeNodes(fn=tmp+'.node', coords=pts, offset=0)
     P = utils.command('tetgen %s'%(tmp+'.node'))
     if P.sta:
-        pf.message(P.out)
+        print(P.out)
     tetconvhull = readTetgen(tmp+'.1.ele').values()[0]
     try:
         os.remove(tmp+'.node')
@@ -515,15 +515,15 @@ def checkSelfIntersectionsWithTetgen(self,verbose=False):
     from pyformex.plugins.tetgen import writeSurface
     cmd = 'tetgen -d '
     tmp = utils.tempName()
-    pf.message("Writing temp file %s" % tmp)
+    print("Writing temp file %s" % tmp)
     writeSurface(tmp, self.coords, self.elems)
     if verbose:
         cmd += '-V '
     cmd=cmd+ tmp
-    pf.message("Checking with command\n %s" % cmd)
+    print("Checking with command\n %s" % cmd)
     P = utils.command(cmd)
     if P.sta:
-        pf.message('Tetgen got an error')
+        print('Tetgen got an error')
         return P.sta
     try:
         os.remove(tmp+'.node')
@@ -533,7 +533,7 @@ def checkSelfIntersectionsWithTetgen(self,verbose=False):
     except:
         pass
     if P.sta or verbose:
-        pf.message(P.out)
+        print(P.out)
     return asarray( [int(l.split(' ')[0]) for l in out.split('acet #')[1:]]).reshape(-1, 2)-1
 
 

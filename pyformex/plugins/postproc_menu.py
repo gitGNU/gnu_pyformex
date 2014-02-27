@@ -415,7 +415,7 @@ def animateScenes(scenes,count=1,sleeptime=None):
 ##             cmd = "%s/lib/postabq %s > %s" % (pf.cfg['pyformexdir'],fn,post)
 ##             P = utils.command(cmd,shell=True)
 ##             if P.sta:
-##                 pf.message(P.out)
+##                 print(P.out)
 
 
 

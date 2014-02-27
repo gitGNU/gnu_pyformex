@@ -106,7 +106,7 @@ def turn(x=0,y=0,action=0):
         busy = False
         element = selectElement(pf.canvas, x, y, 2, 2)
         if element == [-1]:
-            message('No element selected.\nPlease select an element of the cube.')
+            print('No element selected.\nPlease select an element of the cube.')
 #        else:
 #            draw(cube[element], color=red, bbox='last', linewidth=5.0)
         busy = False
@@ -229,10 +229,10 @@ def shuffle():
     refresh()
 
 def permutations():
-    message('The total number of permutations of a %sx%s cube is:' % (n, n))
+    print('The total number of permutations of a %sx%s cube is:' % (n, n))
     N = str(perm(n))
-    message(N)
-    message('or roughly %s.%se%s' % (N[0], N[1:4], len(N)-1))
+    print(N)
+    print('or roughly %s.%se%s' % (N[0], N[1:4], len(N)-1))
 
 def close():
     pf.canvas.resetMouse(LEFT, SHIFT)

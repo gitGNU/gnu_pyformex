@@ -96,9 +96,9 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
     tmp = utils.tempFile(suffix='.stl').name
     tmp1 = utils.tempFile(suffix='.vtp').name
     tmp2 = utils.tempFile(suffix='.dat').name
-    pf.message("Writing temp file %s" % tmp)
+    print("Writing temp file %s" % tmp)
     self.write(tmp, 'stl')
-    pf.message("Computing centerline using VMTK")
+    print("Computing centerline using VMTK")
     cmds=[]
     cmd = 'vmtk vmtkcenterlines -seedselector %s -ifile %s -ofile %s'%(seedselector, tmp, tmp1)
     if seedselector in ['pointlist', 'idlist']:
@@ -126,8 +126,8 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
     for c in cmds:
         P = utils.command(c)
         if P.sta:
-            pf.message("An error occurred during the centerline computing")
-            pf.message(P.out)
+            print("An error occurred during the centerline computing")
+            print(P.out)
             return None
     data, header = readVmtkCenterlineDat(tmp2)
     os.remove(tmp)
@@ -231,14 +231,14 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
         cmd += ' -preserveboundary 1'
     if self.prop is not None:
         cmd += ' -entityidsarray prop'
-    pf.message("Writing temp file %s" % tmp)
+    print("Writing temp file %s" % tmp)
     writeVTP(mesh=self, fn=tmp, pointdata=pointdata)
-    pf.message("Remeshing with command\n %s" % cmd)
+    print("Remeshing with command\n %s" % cmd)
     P = utils.command(cmd)
     os.remove(tmp)
     if P.sta:
-        pf.message("An error occurred during the remeshing.")
-        pf.message(P.out)
+        print("An error occurred during the remeshing.")
+        print(P.out)
         return None
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = readVTKObject(tmp1)
     S = TriSurface(coords, polys)
@@ -272,8 +272,8 @@ def vmtkDistanceOfSurface(self, S, tryfixsign=True):
     os.remove(tmp)
     os.remove(tmp1)
     if P.sta:
-        pf.message("An error occurred during the distance calculation.")
-        pf.message(P.out)
+        print("An error occurred during the distance calculation.")
+        print(P.out)
         return None
     from pyformex.plugins.vtk_itf import readVTKObject
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = readVTKObject(tmp2)

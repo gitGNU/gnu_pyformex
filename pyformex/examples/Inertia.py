@@ -49,8 +49,8 @@ def showPrincipal1(F):
     """Show the principal axes."""
     clear()
     C, I = inertia.inertia(F.coords)
-    pf.message("Center: %s" % C)
-    pf.message("Inertia tensor: %s" % I)
+    print("Center: %s" % C)
+    print("Inertia tensor: %s" % I)
     Iprin, Iaxes = inertia.principal(I)
     pf.debug("Principal Values: %s" % Iprin)
     pf.debug("Principal Directions:\n%s" % Iaxes)

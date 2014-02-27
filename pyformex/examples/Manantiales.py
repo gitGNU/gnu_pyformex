@@ -58,7 +58,7 @@ def scallop(F, sx, sy, n, f, c, r):
     - `c`: elevation at the center of the dome.
     - `r`: maximum elevation at the circumference.
     """
-    message("Scallop Dome with n=%d, f=%d, c=%f, r=%f" % (n, f, c, r))
+    print("Scallop Dome with n=%d, f=%d, c=%f, r=%f" % (n, f, c, r))
     F = F.scale([1./sx, 1./sy, 1.])
     F = F.map(lambda x, y, z: [x, y, c*(1.-x*x)+r*x*x*power(4*(1.-y)*y, f)])
     a = 360./n

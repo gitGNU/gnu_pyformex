@@ -367,7 +367,7 @@ def save(filename=None,window=False,multi=False,hotkey=True,autosave=False,borde
 
     # Leave multisave mode if no filename or starting new multisave mode
     if multisave and (filename is None or multi):
-        pf.message("Leave multisave mode")
+        print("Leave multisave mode")
         if multisave[6]:
             pf.GUI.signals.SAVE.disconnect(saveNext)
         multisave = None
@@ -387,7 +387,7 @@ def save(filename=None,window=False,multi=False,hotkey=True,autosave=False,borde
         names = utils.NameSequence(name, ext)
         if os.path.exists(names.peek()):
             next = names.next()
-        pf.message("Start multisave mode to files: %s (%s)" % (names.name, format))
+        print("Start multisave mode to files: %s (%s)" % (names.name, format))
         if hotkey:
              pf.GUI.signals.SAVE.connect(saveNext)
              if verbose:
@@ -409,7 +409,7 @@ def save(filename=None,window=False,multi=False,hotkey=True,autosave=False,borde
         if sta:
             pf.debug("Error while saving image %s" % filename, pf.DEBUG.IMAGE)
         else:
-            pf.message("Image file %s written" % filename)
+            print("Image file %s written" % filename)
         return
 
 

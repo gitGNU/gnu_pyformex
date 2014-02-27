@@ -704,7 +704,7 @@ pyFormex Warning
 
         if res:
             if pf.options.gui:
-                pf.message("There was an error while executing a script")
+                print("There was an error while executing a script")
             else:
                 return res # EXIT
 

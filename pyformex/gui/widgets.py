@@ -2544,7 +2544,7 @@ class FileSelection(QtGui.QFileDialog):
 ##                 urls.append(QtCore.QUrl.fromLocalFile(f))
 ##             self.setSidebarUrls(urls)
 ##         for p in self.sidebarUrls():
-##             pf.message(p.toString())
+##             print(p.toString())
 
 
     def show(self,timeout=None,timeoutfunc=None,modal=False):

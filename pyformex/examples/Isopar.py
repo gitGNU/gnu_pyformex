@@ -110,7 +110,7 @@ def run():
         F = F.trl(i, 0.5)
 
     transparent()
-    message('This is the initial Formex')
+    print('This is the initial Formex')
     FA=draw(F)
     sz = F.sizes()
 
@@ -119,9 +119,9 @@ def run():
     x1 = x1.scale(sz)
 
     if res['Show trf points']:
-        message('This is the set of nodes in natural coordinates')
+        print('This is the set of nodes in natural coordinates')
         draw(x0, color=blue, nolights=True)
-        message('This is the set of nodes in cartesian coordinates')
+        print('This is the set of nodes in cartesian coordinates')
         draw(x1, color=red, nolights=True)
         drawNumbers(x1, color=red)
         drawNumbers(x1)
@@ -130,7 +130,7 @@ def run():
     G=F.isopar(eltype.name(), x1.points(), x0.points())
     G.setProp(1)
 
-    message('This is the transformed Formex')
+    print('This is the transformed Formex')
     draw(G)
 
     pause()

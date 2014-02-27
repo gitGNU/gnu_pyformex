@@ -1887,11 +1887,11 @@ Quality: %s .. %s
             return self
         tmp = utils.tempName('.stl')
         tmp1 = utils.tempName('.off')
-        pf.message("Writing temp file %s" % tmp)
+        print("Writing temp file %s" % tmp)
         self.write(tmp, 'stl')
-        pf.message("Fixing surface while converting to OFF format %s" % tmp1)
+        print("Fixing surface while converting to OFF format %s" % tmp1)
         stlConvert(tmp, tmp1)
-        pf.message("Reading result from %s" % tmp1)
+        print("Reading result from %s" % tmp1)
         S = TriSurface.read(tmp1)
         os.remove(tmp)
         os.remove(tmp1)
@@ -1939,18 +1939,18 @@ Quality: %s .. %s
         cmd = "gtscheck -v < %s" % tmp
         P = utils.system(cmd)
         if verbose:
-            pf.message(P.sta)
+            print(P.sta)
         os.remove(tmp)
         if P.sta == 0:
-            pf.message('The surface is an orientable non self-intersecting manifold')
+            print('The surface is an orientable non self-intersecting manifold')
             return P.sta, None
         if P.sta==2:
-            pf.message('The surface is not an orientable manifold (this may be due to badly oriented normals)')
+            print('The surface is not an orientable manifold (this may be due to badly oriented normals)')
             return P.sta, None
         if P.sta==3:
-            pf.message('The surface is an orientable manifold but is self-intersecting')
+            print('The surface is an orientable manifold but is self-intersecting')
             tmp = utils.tempName('.gts')
-            pf.message("Writing temp file %s" % tmp)
+            print("Writing temp file %s" % tmp)
             fil = open(tmp, 'w')
             fil.write(P.out)
             fil.close()
@@ -1961,7 +1961,7 @@ Quality: %s .. %s
             else:
                 return P.sta, Si
         else:
-            pf.message('Status of gtscheck not understood')
+            print('Status of gtscheck not understood')
             return P.sta, None
 
 
@@ -1980,14 +1980,14 @@ Quality: %s .. %s
         if verbose:
             cmd += ' -v'
         tmp = utils.tempName('.gts')
-        pf.message("Writing temp file %s" % tmp)
+        print("Writing temp file %s" % tmp)
         self.write(tmp, 'gts')
-        pf.message("Splitting with command\n %s" % cmd)
+        print("Splitting with command\n %s" % cmd)
         cmd += ' < %s' % tmp
         P = utils.command(cmd, shell=True)
         os.remove(tmp)
         if P.sta or verbose:
-            pf.message(P.out)
+            print(P.out)
         #
         # TODO: WE SHOULD READ THIS FILES BACK !!!
         #
@@ -2046,14 +2046,14 @@ Quality: %s .. %s
             cmd += ' -v'
         tmp = utils.tempName('.gts')
         tmp1 = utils.tempName('.gts')
-        pf.message("Writing temp file %s" % tmp)
+        print("Writing temp file %s" % tmp)
         self.write(tmp, 'gts')
-        pf.message("Coarsening with command\n %s" % cmd)
+        print("Coarsening with command\n %s" % cmd)
         P = utils.command(cmd, stdin=tmp, stdout=tmp1)
         os.remove(tmp)
         if P.sta or verbose:
-            pf.message(P.out)
-        pf.message("Reading coarsened model from %s" % tmp1)
+            print(P.out)
+        print("Reading coarsened model from %s" % tmp1)
         S = TriSurface.read(tmp1)
         os.remove(tmp1)
         return S
@@ -2092,14 +2092,14 @@ Quality: %s .. %s
             cmd += ' -v'
         tmp = utils.tempName('.gts')
         tmp1 = utils.tempName('.gts')
-        pf.message("Writing temp file %s" % tmp)
+        print("Writing temp file %s" % tmp)
         self.write(tmp, 'gts')
-        pf.message("Refining with command\n %s" % cmd)
+        print("Refining with command\n %s" % cmd)
         P = utils.command(cmd, stdin=tmp, stdout=tmp1)
         os.remove(tmp)
         if P.sta or verbose:
-            pf.message(P.out)
-        pf.message("Reading refined model from %s" % tmp1)
+            print(P.out)
+        print("Reading refined model from %s" % tmp1)
         S = TriSurface.read(tmp1)
         os.remove(tmp1)
         return S
@@ -2129,14 +2129,14 @@ Quality: %s .. %s
             cmd += ' -v'
         tmp = utils.tempName('.gts')
         tmp1 = utils.tempName('.gts')
-        pf.message("Writing temp file %s" % tmp)
+        print("Writing temp file %s" % tmp)
         self.write(tmp, 'gts')
-        pf.message("Smoothing with command\n %s" % cmd)
+        print("Smoothing with command\n %s" % cmd)
         P = utils.command(cmd, stdin=tmp, stdout=tmp1)
         os.remove(tmp)
         if P.sta or verbose:
-            pf.message(P.out)
-        pf.message("Reading smoothed model from %s" % tmp1)
+            print(P.out)
+        print("Reading smoothed model from %s" % tmp1)
         S = TriSurface.read(tmp1)
         os.remove(tmp1)
         return S
@@ -2270,7 +2270,7 @@ def remove_triangles(elems, remove):
     Returns a (nelems-nremove,3) integer array with the triangles of
     nelems where the triangles of remove have been removed.
     """
-    pf.message("Removing %s out of %s triangles" % (remove.shape[0], elems.shape[0]))
+    print("Removing %s out of %s triangles" % (remove.shape[0], elems.shape[0]))
     magic = elems.max()+1
 
     mag1 = enmagic3(elems, magic)
@@ -2286,7 +2286,7 @@ def remove_triangles(elems, remove):
     mag1 = mag1[mag1 >= 0]
 
     elems = demagic3(mag1, magic)
-    pf.message("Actually removed %s triangles, leaving %s" % (nelems-mag1.shape[0], elems.shape[0]))
+    print("Actually removed %s triangles, leaving %s" % (nelems-mag1.shape[0], elems.shape[0]))
 
     return elems
 

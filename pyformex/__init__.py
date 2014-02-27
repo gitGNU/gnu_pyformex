@@ -238,12 +238,9 @@ scriptlock = set()
 scriptMode = None
 
 
-# define last rescue versions of message, warning and debug
-def message(s):
-    print(s)
-
-warning = message
-error = message
+# define default of warning and error
+warning = print
+error = print
 
 class DebugLevels(object):
     """A class with debug levels.

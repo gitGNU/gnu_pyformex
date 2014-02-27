@@ -226,7 +226,6 @@ def warning(message):
 def showInfo(message):
     print("pyFormex Info: "+message)
 
-message = pf.message
 
 system = utils.system
 command = utils.command
@@ -272,7 +271,7 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
     # (We only allow one script executing at a time!)
     # and scripts are non-reentrant
     if len(pf.scriptlock) > 0:
-        pf.message("!!Not executing because a script lock has been set: %s" % pf.scriptlock)
+        print("!!Not executing because a script lock has been set: %s" % pf.scriptlock)
         #print(pf.scriptlock)
         return
 
@@ -363,7 +362,7 @@ def breakpt(msg=None):
     global exitrequested
     if exitrequested:
         if msg is not None:
-            pf.message(msg)
+            print(msg)
         exitrequested = False # reset for next time
         raise SystemExit
 
@@ -440,7 +439,7 @@ there may be other errors.
                 if ans == 'Convert now':
                     print(ans)
                     if convertPrintSyntax(filename):
-                        message("Script properly converted, now running the converted script")
+                        print("Script properly converted, now running the converted script")
                         return filename
                 raise
 
@@ -460,7 +459,7 @@ def runScript(fn,argv=[]):
         pf.GUI.scripthistory.add(fn)
         pf.GUI.board.write(msg, color='red')
     else:
-        message(msg)
+        print(msg)
     pf.debug("  Executing with arguments: %s" % argv, pf.DEBUG.SCRIPT)
     pye = fn.endswith('.pye')
     if pf.GUI and getcfg('check_print'):
@@ -476,21 +475,21 @@ def runScript(fn,argv=[]):
     if pf.GUI:
         pf.GUI.board.write(msg, color='red')
     else:
-        message(msg)
+        print(msg)
     return res
 
 
 def runApp(appname,argv=[],refresh=False,lock=True,check=True):
     global exitrequested
     if check and len(pf.scriptlock) > 0:
-        pf.message("!!Not executing because a script lock has been set: %s" % pf.scriptlock)
+        print("!!Not executing because a script lock has been set: %s" % pf.scriptlock)
         #print(pf.scriptlock)
         return
 
     from pyformex import apps
     from pyformex.timer import Timer
     t = Timer()
-    pf.message("Loading application %s with refresh=%s" % (appname, refresh))
+    print("Loading application %s with refresh=%s" % (appname, refresh))
     app = apps.load(appname, refresh=refresh)
     if app is None:
         errmsg = "An  error occurred while loading application %s" % appname
@@ -533,7 +532,7 @@ def runApp(appname,argv=[],refresh=False,lock=True,check=True):
         pf.GUI.apphistory.add(appname)
         pf.GUI.board.write(msg, color='green')
     else:
-        message(msg)
+        print(msg)
     pf.debug("  Passing arguments: %s" % argv, pf.DEBUG.SCRIPT)
     app._args_ = argv
     try:
@@ -561,7 +560,7 @@ def runApp(appname,argv=[],refresh=False,lock=True,check=True):
     if pf.GUI:
         pf.GUI.board.write(msg, color='green')
     else:
-        message(msg)
+        print(msg)
     pf.debug("Memory: %s" % vmSize(), pf.DEBUG.MEM)
 
 
@@ -648,11 +647,11 @@ def processArgs(args):
         if fn.endswith('.pye'):
             pass
         elif not os.path.exists(fn) or not utils.is_pyFormex(fn):
-            pf.message("Skipping %s: does not exist or is not a pyFormex script" % fn)
+            print("Skipping %s: does not exist or is not a pyFormex script" % fn)
             continue
         res = runScript(fn, args)
         if res and pf.GUI:
-            pf.message("Error during execution of script %s" % fn)
+            print("Error during execution of script %s" % fn)
 
     return res
 
@@ -779,7 +778,7 @@ def pwdir():
     """Print the current working directory.
 
     """
-    pf.message("Current workdir is %s" % os.getcwd())
+    print("Current workdir is %s" % os.getcwd())
 
 
 def mkdir(path):
@@ -917,5 +916,12 @@ def readGeomFile(filename,count=-1):
 
 import code
 pf.interpreter = code.InteractiveInterpreter(Globals())
+
+
+############# deprecated functions ##################
+
+@utils.deprecated_by('script.message','print')
+def message(*args):
+    print(*args)
 
 #### End

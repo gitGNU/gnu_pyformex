@@ -46,7 +46,7 @@ def run():
     FA = None
     setDrawOptions({'bbox':None})
     for n, p in simple.Pattern.items():
-        message("%s = %s" % (n, p))
+        print("%s = %s" % (n, p))
         FB = draw(Formex(p), bbox=None, color='red')
         if FA:
             undraw(FA)

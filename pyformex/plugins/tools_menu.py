@@ -162,7 +162,7 @@ def dos2unix():
     fn = askFilename(multi=True)
     if fn:
         for f in fn:
-            message("Converting file to UNIX: %s" % f)
+            print("Converting file to UNIX: %s" % f)
             utils.dos2unix(f)
 
 
@@ -170,7 +170,7 @@ def unix2dos():
     fn = askFilename(multi=True)
     if fn:
         for f in fn:
-            message("Converting file to DOS: %s" % f)
+            print("Converting file to DOS: %s" % f)
             utils.unix2dos(f)
 
 
@@ -484,7 +484,7 @@ def sendMail():
     if not res:
         return
 
-    msg = sendmail.message(**res)
+    msg = sendmail.print(**res)
     print(msg)
     to = res['to'].split(',')
     cc = res['cc'].split(',')
