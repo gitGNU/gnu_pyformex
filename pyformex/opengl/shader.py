@@ -49,15 +49,15 @@ def defaultShaders():
     fmt = viewport.opengl_format
     major,minor = fmt.majorVersion(), fmt.minorVersion()
     print("Vendor: %s; Available version: %s.%s; Active version %s.%s" % (vendor,vmajor,vminor,major,minor))
-    version = "%s.%s" % (major,minor)
+    shortversion = "%s.%s" % (major,minor)
     # Default shaders
     dirname = os.path.join(pf.pyformexdir,'data')
     vertexshader = os.path.join(dirname, "vertex_shader")
     fragmentshader = os.path.join(dirname, "fragment_shader")
     if not pf.options.shader:
-        if 'Mesa' in renderer:
+        if 'Mesa' in renderer or 'Mesa' in version:
             pf.options.shader = '_mesa_30'
-## if vendor == 'NVIDIA' and SaneVersion(version) <= SaneVersion('3.0'):
+## if vendor == 'NVIDIA' and SaneVersion(shortversion) <= SaneVersion('3.0'):
     ##     vertexshader = vertexshader.replace('.c','_nvidia_3.1.c')
     ##     fragmentshader = fragmentshader.replace('.c','_nvidia_3.1.c')
     
