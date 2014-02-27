@@ -765,6 +765,8 @@ class GeomActor(Attributes):
 
     def setTexture(self,texture,texcoords=None):
         """Set the texture data of the Drawable."""
+        self.useTexture = 0
+        self.textureMode = 1
         if texture is not None:
             if not isinstance(texture, Texture):
                 try:
