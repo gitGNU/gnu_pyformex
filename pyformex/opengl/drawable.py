@@ -154,22 +154,17 @@ class Drawable(Attributes):
         #  Creating a dummy color buffer seems to solve that problem
         #
         if self.cbo is None:
-            #print("ADD FAKE CBO for useColor %s (%s)" % (self.useObjectColor,self.name))
             self.cbo = VBO(array(red))
 
 
     def prepareTexture(self):
         """Prepare texture and texture coords"""
-        print("Drawable.prepareTexture")
-        print(self.useTexture,self.texture,self.texcoords)
         if self.useTexture == 1:
             curshape = self.texcoords.shape
             self.texcoords = at.multiplex(self.texcoords, self.object.nelems(),axis=-2)
-            print("Multiplexing texture coords: %s -> %s " % (curshape, self.texcoords.shape))
-            print(self.texcoords)
-            print(self.vbo.shape)
+            #print("Multiplexing texture coords: %s -> %s " % (curshape, self.texcoords.shape))
         self.tbo = VBO(self.texcoords.astype(float32))
-        print(self.tbo.shape)
+        self.texture.activate()
 
 
     def prepareSubelems(self):
@@ -514,7 +509,7 @@ class GeomActor(Attributes):
                     self.bkcolor = None
 
         self.setAlpha(self.alpha, self.bkalpha)
-        self.setTexture(self.texture,self.texcoords)
+        self.setTexture(self.texture,self.texcoords,self.texmode)
         self.setLineWidth(self.linewidth)
         self.setLineStipple(self.linestipple)
 
@@ -763,10 +758,9 @@ class GeomActor(Attributes):
             self.opak = (self.alpha == 1.0) and (self.bkalpha == 1.0 )
 
 
-    def setTexture(self,texture,texcoords=None):
+    def setTexture(self,texture,texcoords=None,texmode=None):
         """Set the texture data of the Drawable."""
         self.useTexture = 0
-        self.textureMode = 1
         if texture is not None:
             if not isinstance(texture, Texture):
                 try:
@@ -785,11 +779,15 @@ class GeomActor(Attributes):
                 if texcoords.shape[:2] != (self.eltype.nplex(),2):
                     print("Shape of texcoords does not match: %s" % str(texcoords.shape))
                     texcoords = texture = None
+            if texmode is None:
+                texmode = 1
 
         if texture is not None:
+            # everything ok, store the texture params
             self.useTexture = 1
             self.texture = texture
             self.texcoords = texcoords
+            self.texmode = texmode
 
 
     def setLineWidth(self, linewidth):

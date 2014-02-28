@@ -33,17 +33,6 @@ import numpy as np
 
 ### Textures ###############################################
 
-def glTexture(texture,mode='*'):
-    """Render-time texture environment setup"""
-    texmode = {'*': GL.GL_MODULATE, '1': GL.GL_DECAL}[mode]
-    # Configure the texture rendering parameters
-    GL.glEnable(GL.GL_TEXTURE_2D)
-    GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST)
-    GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST)
-    GL.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, texmode)
-    # Re-select the texture
-    GL.glBindTexture(GL.GL_TEXTURE_2D, texture.tex)
-
 
 class Texture(object):
     """An OpenGL 2D Texture.
@@ -54,7 +43,7 @@ class Texture(object):
 
     """
 
-    def __init__(self,image):
+    def __init__(self,image,mode=1):
         self.tex = None
         image = np.asarray(image)
         # print "Texture: type %s, size %s" % (image.dtype, image.shape)
@@ -73,6 +62,24 @@ class Texture(object):
         GL.glTexImage2D(GL.GL_TEXTURE_2D, 0, 4, nx, ny, 0,
                         GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, image)
         self.tex = tex
+        self.mode = mode
+
+
+    def activate(self,mode=None):
+        """Render-time texture environment setup"""
+        if mode is None:
+            mode = self.mode
+        texmode = { 0: GL.GL_REPLACE,
+                    1: GL.GL_MODULATE,
+                    2: GL.GL_DECAL,
+                    }[mode]
+        # Configure the texture rendering parameters
+        GL.glEnable(GL.GL_TEXTURE_2D)
+        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST)
+        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST)
+        GL.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, texmode)
+        # Re-select the texture
+        GL.glBindTexture(GL.GL_TEXTURE_2D, self.tex)
 
 
     def __del__(self):

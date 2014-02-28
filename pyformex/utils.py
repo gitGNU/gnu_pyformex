@@ -479,7 +479,7 @@ file_description = OrderedDict([
     ('gts', 'GTS files (*.gts)'),
     ('html', 'Web pages (*.html)'),
     ('icon', 'Icons (*.xpm)'),
-    ('img', 'Images (*.png *.jpg *.eps *.gif *.bmp)'),
+    ('img', 'Images (*.png *.jpg *.jpeg *.eps *.gif *.bmp)'),
     ('inp', 'Abaqus or CalCuliX input files (*.inp)'),
     ('neu', 'Gambit Neutral files (*.neu)'),
     ('obj', 'Wavefront OBJ files (*.obj)'),

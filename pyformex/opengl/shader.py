@@ -98,7 +98,7 @@ class Shader(object):
         'highlight',
         'useObjectColor',
         'useTexture',
-        'textureMode',
+        'texmode',
         'alphablend',
         'drawface',
         'lighting',

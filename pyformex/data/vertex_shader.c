@@ -24,7 +24,7 @@
 
 // Vertex shader
 
-#version 130
+#version 110
 
 #ifdef GL_ES                   // This is True in WebGL shader
 precision mediump float;
