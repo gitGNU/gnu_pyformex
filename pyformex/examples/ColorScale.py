@@ -37,6 +37,7 @@ _techniques = ['dialog', 'color']
 from pyformex.gui.draw import *
 from pyformex.gui.colorscale import *
 from pyformex.gui.gluttext import GLUTFONTS
+from pyformex.gui import decors
 
 input_data = [
     _I('valrange', text='Value range type', itemtype='select', choices=['Minimum-Medium-Maximum', 'Minimum-Maximum']),

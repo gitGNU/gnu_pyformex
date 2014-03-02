@@ -26,7 +26,6 @@
 
 """
 from __future__ import print_function
-from pyformex import zip
 
 _status = 'checked'
 _level = 'beginner'
@@ -34,11 +33,12 @@ _topics = ['geometry']
 _techniques = ['color']
 
 from pyformex.gui.draw import *
-from pyformex.simple import rectangle
+from pyformex import zip
+from pyformex import simple
 
 # A square domain of triangles
 n = 16
-F = rectangle(n,n,diag='d')
+F = simple.rectangle(n,n,diag='d')
 
 # Novation (Spots)
 m = 4

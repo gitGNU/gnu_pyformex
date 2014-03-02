@@ -30,13 +30,15 @@ import pyformex as pf
 
 from pyformex import utils, coords
 from pyformex import arraytools as at
-from pyformex.gui import colors, views, decors, marks
+from pyformex.gui import colors, views, marks
 
 from pyformex.mydict import Dict
 from pyformex.collection import Collection
 from pyformex.attributes import Attributes
 from pyformex.formex import Formex
-from pyformex.gui.drawable import saneColor, glColor
+from pyformex.simple import cuboid2d
+from pyformex.opengl.drawable import GeomActor
+from pyformex.opengl.sanitize import saneColor,saneColorArray
 from pyformex.opengl.camera import Camera
 from pyformex.opengl.renderer import Renderer
 from pyformex.opengl.scene import Scene, ItemList
@@ -572,7 +574,6 @@ class Canvas(object):
         self.highlights = ItemList(self)
         self.camera = None
         self.triade = None
-        self.background = None
         self.settings = CanvasSettings(**settings)
         self.mode2D = False
         self.rendermode = None
@@ -803,23 +804,18 @@ class Canvas(object):
         color = self.settings.bgcolor
         if color.ndim == 1 and not self.settings.bgimage:
             pf.debug("Clearing fancy background", pf.DEBUG.DRAW)
-            self.background = None
+            self.scene.background = None
         else:
             self.createBackground()
-            #glSmooth()
-            #glFill()
         self.clear()
         self.redrawAll()
-        #self.update()
 
 
     def createBackground(self):
         """Create the background object."""
-        x1, y1 = 0, 0
-        x2, y2 = self.getSize()
-        from pyformex.gui.drawable import saneColorArray
-        color = saneColorArray(self.settings.bgcolor, (4,))
-        #print color.shape,color
+        F = cuboid2d(xmin=[-1.,-1.],xmax=[1.,1.])
+        # TODO: Currently need a Mesh for texture
+        F = F.toMesh()
         image = None
         if self.settings.bgimage:
             from pyformex.plugins.imagearray import image2numpy
@@ -827,8 +823,9 @@ class Canvas(object):
                 image = image2numpy(self.settings.bgimage, indexed=False)
             except:
                 pass
-        #print("BACKGROUN %s,%s"%(x2,y2))
-        self.background = decors.Rectangle(x1, y1, x2, y2, color=color, texture=image)
+        actor = GeomActor(F,color=self.settings.bgcolor,texture=image,rendertype=2,opak=True,lighting=False)
+        self.scene.addBackground(actor)
+        print(len(actor.drawable))
 
 
     def setFgColor(self, color):
@@ -882,9 +879,9 @@ class Canvas(object):
         GL.glViewport(0, 0, w, h)
         self.aspect = float(w)/h
         self.camera.setLens(aspect=self.aspect)
-        if self.background:
-            # recreate the background to match the current size
-            self.createBackground()
+        ## if self.scene.background:
+        ##     # recreate the background to match the current size
+        ##     self.createBackground()
         self.display()
 
 
@@ -979,30 +976,8 @@ class Canvas(object):
         self.makeCurrent()
 
         self.clear()
-
-        # draw background decorations in 2D mode
-        self.begin_2D_drawing()
-
-        background = self.scene.background
-        if background is None:
-            background = self.background
-
-        if background:
-            #pf.debug("Displaying background",pf.DEBUG.DRAW)
-            # If we have a shaded background, we need smooth/fill anyhow
-            glSmooth()
-            glFill()
-            background.draw(mode='smooth')
-
-        # background decorations
-        pf.debug("background decorations", pf.DEBUG.DRAW)
-        for actor in self.scene.back_decors():
-            self.setDefaults()
-            ## if hasattr(actor,'zoom'):
-            ##     self.zoom_2D(actor.zoom)
-            actor.draw(canvas=self)
-            ## if hasattr(actor,'zoom'):
-            ##     self.zoom_2D()
+        glSmooth()
+        glFill()
 
         # draw the focus rectangle if more than one viewport
         if len(pf.GUI.viewports.all) > 1 and pf.cfg['gui/showfocus']:
@@ -1010,8 +985,6 @@ class Canvas(object):
                 self.draw_focus_rectangle(0, color=colors.blue)
             if self.focus:      # pyFormex DRAW focus
                 self.draw_focus_rectangle(2, color=colors.red)
-
-        self.end_2D_drawing()
 
         # start 3D drawing
         self.camera.set3DMatrices()
@@ -1029,6 +1002,9 @@ class Canvas(object):
 
         # Draw the opengl1 actors
         pf.debug("opengl1 rendering of old actors", pf.DEBUG.DRAW)
+        GL.glEnable(GL.GL_CULL_FACE)
+        GL.glEnable(GL.GL_DEPTH_TEST)
+        GL.glDepthMask (GL.GL_TRUE)
         self.draw_sorted_objects(self.scene.oldactors, self.settings.alphablend)
 
         # Draw the opengl2 actors
@@ -1038,18 +1014,6 @@ class Canvas(object):
         # draw the front annotations
         pf.debug("draw front annotations", pf.DEBUG.DRAW)
         self.draw_sorted_objects(self.scene.front_annot(), self.settings.alphablend)
-
-        pf.debug("draw foreground decorations in 2D mode", pf.DEBUG.DRAW)
-        self.begin_2D_drawing()
-        for actor in self.scene.front_decors():
-            ## print("FRONT DECOR")
-            self.setDefaults()
-            ## if hasattr(actor,'zoom'):
-            ##     self.zoom_2D(actor.zoom)
-            actor.draw(canvas=self)
-            ## if hasattr(actor,'zoom'):
-            ##     self.zoom_2D()
-        self.end_2D_drawing()
 
         # make sure canvas is updated
         GL.glFlush()

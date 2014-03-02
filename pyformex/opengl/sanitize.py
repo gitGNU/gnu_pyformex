@@ -42,21 +42,16 @@ from pyformex.gui.colors import *
 
 ### Sanitize settings ###############################################
 
-def saneLineWidth(linewidth):
-    """Return a sane value for the line width.
+def saneFloat(value):
+    """Return a float value or None.
 
-    A sane value is one that will be usable by the draw method.
-    It can be either of the following:
-
-    - a float value indicating the line width to be set by draw()
-    - None: indicating that the default line width is to be used
-
-    The line width is used in wireframe mode if plex > 1
-    and in rendering mode if plex==2.
+    If value can be converted to float, the float is returned, else None.
     """
-    if linewidth is not None:
-        linewidth = float(linewidth)
-    return linewidth
+    try:
+        value = float(value)
+    except:
+        value = None
+    return value
 
 
 def saneLineStipple(stipple):

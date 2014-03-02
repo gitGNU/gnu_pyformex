@@ -2290,26 +2290,6 @@ def remove_triangles(elems, remove):
 
     return elems
 
-#####################################################################
-### Some simple surfaces ###
-### Should go to simple module ?
-
-def Rectangle(nx, ny):
-    """Create a plane rectangular surface consisting of a nx,ny grid."""
-    F = Formex('3:012934').replic2(nx, ny, 1, 1)
-    return TriSurface(F)
-
-def Cube():
-    """Create the surface of a cube
-
-    Returns a TriSurface representing the surface of a unit cube.
-    Each face of the cube is represented by two triangles.
-    """
-    back = Formex('3:012934')
-    fb = back.reverse() + back.translate(2, 1)
-    faces = fb + fb.rollAxes(1) + fb.rollAxes(2)
-    return TriSurface(faces)
-
 
 ####### Deprecated function #######################
 

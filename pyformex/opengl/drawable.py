@@ -293,23 +293,75 @@ class Drawable(Attributes):
         self.vbo.unbind()
         GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
 
-
-def polygonFaceIndex(n):
-    i0 = (n-1) * ones(n-2, dtype=int)
-    i1 = arange(n-2)
-    i2 = i1+1
-    return column_stack([i0, i1, i2])
+########################################################################
 
 
-def polygonEdgeIndex(n):
-    i0 = arange(n)
-    i1 = roll(i0, -1)
-    return column_stack([i0, i1])
+class Base(Attributes):
+    """Base class for all drawable objects in pyFormex.
+
+    This defines the interface for all drawable objects, but does not
+    implement any drawable objects.
+    Drawable objects should be instantiated from the derived classes.
+    Currently, we have the following derived classes:
+      Actor: a 3-D object positioned and oriented in the 3D scene. Defined
+             in actors.py.
+      Mark: an object positioned in 3D scene but not undergoing the camera
+             axis rotations and translations. It will always appear the same
+             to the viewer, but will move over the screen according to its
+             3D position. Defined in marks.py.
+      Decor: an object drawn in 2D viewport coordinates. It will unchangeably
+             stick on the viewport until removed. Defined in decors.py.
+
+    The Base class is just an Attributes dict storing all the rendering
+    parameters, and providing defaults from the current canvas drawoptions
+    for the essential parameters that are not specified.
+
+    Additional parameters can be set at init time or later using the
+    update method. The specified parameters are sanitized before being
+    stored.
+
+    Arguments processed by the base class:
+
+    - `marksize`: force to float and also copied as `pointsize`
+
+    """
+
+    def __init__(self,**kargs):
+        """Initialize the Base class."""
+        Attributes.__init__(self, pf.canvas.drawoptions)
+        if kargs:
+            self.update(**kargs)
+            self.setLineWidth(self.linewidth)
+            self.setLineStipple(self.linestipple)
+            self.setColor(self.color,self.colormap)
+            self.setTexture(self.texture)
+
+    def setLineWidth(self, linewidth):
+        """Set the linewidth of the Drawable."""
+        self.linewidth = saneFloat(linewidth)
+
+    def setLineStipple(self, linestipple):
+        """Set the linewidth of the Drawable."""
+        self.linestipple = saneLineStipple(linestipple)
+
+    def setColor(self,color=None,colormap=None,ncolors=1):
+        """Set the color of the Drawable."""
+        self.color, self.colormap = saneColorSet(color, colormap, shape=(ncolors,))
+
+    def setTexture(self, texture):
+        """Set the texture data of the Drawable."""
+        if texture is not None:
+            if not isinstance(texture, Texture):
+                try:
+                    texture = Texture(texture)
+                except:
+                    texture = None
+        self.texture = texture
 
 
 ########################################################################
 
-class GeomActor(Attributes):
+class GeomActor(Base):
     """Proposal for drawn objects
 
     __init__:  store all static values: attributes, geometry, vbo's
@@ -336,7 +388,7 @@ class GeomActor(Attributes):
 
     def __init__(self,obj,**kargs):
 
-        Attributes.__init__(self, pf.canvas.drawoptions)
+        Base.__init__(self)
 
         # Check it is something we can draw
         if not isinstance(obj, Mesh) and not isinstance(obj, Formex):
@@ -367,6 +419,8 @@ class GeomActor(Attributes):
         # Acknowledge all object attributes and passed parameters
         self.update(obj.attrib)
         self.update(kargs)
+        if self.rendertype is None:
+            self.rendertype = 0
 
         # copy marksize as pointsize for gl2 shader
         if 'marksize' in self:
@@ -609,12 +663,11 @@ class GeomActor(Attributes):
                 drawface = self.drawface
             name = self.name
 
-            if pf.cfg['render/experimental'] and self.opak:
+            if self.rendertype == 2 or self.drawface == 0:
 
                 # Draw front and back at once, without culling
                 # Beware: this does not work with different front/back color
                 # as our Drawable currently has only one color
-                print("OPAK ACTOR")
                 self.drawable.append(Drawable(self,subelems=elems,name=name,cullface='',drawface=0))
 
             else:
@@ -790,14 +843,14 @@ class GeomActor(Attributes):
             self.texmode = texmode
 
 
-    def setLineWidth(self, linewidth):
-        """Set the linewidth of the Drawable."""
-        self.linewidth = saneLineWidth(linewidth)
+    ## def setLineWidth(self, linewidth):
+    ##     """Set the linewidth of the Drawable."""
+    ##     self.linewidth = saneLineWidth(linewidth)
 
 
-    def setLineStipple(self, linestipple):
-        """Set the linewidth of the Drawable."""
-        self.linestipple = saneLineStipple(linestipple)
+    ## def setLineStipple(self, linestipple):
+    ##     """Set the linewidth of the Drawable."""
+    ##     self.linestipple = saneLineStipple(linestipple)
 
 
     def render(self, renderer):
@@ -811,9 +864,6 @@ class GeomActor(Attributes):
         pf.debug("Render %s drawables for %s" % (len(self.drawable), self.name), pf.DEBUG.DRAW)
         for obj in self.drawable:
             pf.debug("Render %s" % obj.name, pf.DEBUG.DRAW)
-            #print("LOAD DRAWABLE uniforms")
-            #print(obj.keys())
-            #renderer.shader.loadUniforms(obj)
             renderer.setDefaults()
             renderer.shader.loadUniforms(self)
             obj.render(renderer)
@@ -897,5 +947,23 @@ class GeomActor(Attributes):
         else:
             return ok
 
+
+########################################################################
+
+
+def polygonFaceIndex(n):
+    i0 = (n-1) * ones(n-2, dtype=int)
+    i1 = arange(n-2)
+    i2 = i1+1
+    return column_stack([i0, i1, i2])
+
+
+def polygonEdgeIndex(n):
+    i0 = arange(n)
+    i1 = roll(i0, -1)
+    return column_stack([i0, i1])
+
+
+########################################################################
 
 ### End

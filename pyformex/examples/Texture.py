@@ -35,6 +35,7 @@ _techniques = ['texture']
 
 from pyformex.gui.draw import *
 from pyformex.plugins.imagearray import image2numpy
+from pyformex import simple
 
 def run():
     clear()
@@ -43,16 +44,13 @@ def run():
     imagefile = os.path.join(pf.cfg['pyformexdir'], 'data', 'butterfly.png')
     image = image2numpy(imagefile, indexed=False)
 
-    from pyformex import simple
     F = simple.cuboid().centered().toMesh()
-    G = Formex('4:0123').replic2(3, 2).toMesh().setProp(arange(1, 7)).centered()
-    draw([F,G], texture=image)
+    G = Formex('4:0123')
+    H = G.replic2(3, 2).toMesh().setProp(arange(1, 7)).centered()
+    G.attrib(color=yellow,rendertype=2)
+    draw([F,G,H], texture=image)
     view('iso')
     zoom(0.5)
-
-    from pyformex.gui.decors import Rectangle
-    R = Rectangle(100, 100, 400, 300, color=yellow, texture=image)
-    decorate(R)
 
     bgcolor(color=white, image=imagefile)
 

@@ -30,10 +30,10 @@ import pyformex as pf
 from pyformex import utils
 from pyformex import arraytools as at
 from pyformex import coords
-from pyformex.gui import actors
-from pyformex.gui import decors
+from pyformex.opengl.drawable import GeomActor
+from pyformex.gui import actors as oldactors
+from pyformex.gui import actors as olddecors
 from pyformex.gui import marks
-from pyformex.opengl import drawable
 
 
 class ItemList(list):
@@ -160,7 +160,10 @@ class Scene(object):
 
 
     def back_decors(self):
-        return [ a for a in self.decorations if not a.ontop ]
+        b = [ a for a in self.decorations if not a.ontop ]
+        if self.background:
+            b = [self.background] + b
+        return b
     def front_decors(self):
         return [ a for a in self.decorations if a.ontop ]
     def back_annot(self):
@@ -173,38 +176,6 @@ class Scene(object):
         return [ a for a in self.actors if a.ontop ]
 
 
-    ## def add(self,obj,**kargs):
-    ##     actor = GeomActor(obj,**kargs)
-    ##     self.actors.add(actor)
-
-
-    def addActor(self, actor):
-        """Add an actor or a list of actors to the scene"""
-        self.actors.add(actor)
-        actor.prepare(self.canvas)
-        actor.changeMode(self.canvas)
-        self._bbox = None #coords.bbox([actor,self.bbox])
-        self.canvas.camera.focus = self.bbox.center()
-
-
-    def removeActor(self, actor):
-        """Remove an actor or a list of actors from the scene"""
-        self.actors.delete(actor)
-        self._bbox = None
-        self.canvas.camera.focus = self.bbox.center()
-
-
-    ## def prepare(self,canvas):
-    ##     """Prepare the actors for rendering onto the canvas"""
-    ##     print("RENDERER.prepare %s to %s" % (canvas.rendermode))
-    ##     for a in self.actors:
-    ##         actor.prepare(canvas)
-    ##         actor.changeMode(canvas)
-    ##     self._bbox = None
-    ##     self.canvas.camera.focus = self.bbox.center()
-    ##     #print("NEW BBOX: %s" % self.bbox
-
-
     def changeMode(self,canvas,mode=None):
         """This function is called when the rendering mode is changed
 
@@ -213,6 +184,15 @@ class Scene(object):
         """
         for a in self.actors:
             a.changeMode(canvas)
+
+
+    def addBackground(self, actor):
+        """Add a background to the scene.
+
+        """
+        self.background = actor
+        actor.prepare(self.canvas)
+        actor.changeMode(self.canvas)
 
 
     def addAny(self, actor):
@@ -225,14 +205,21 @@ class Scene(object):
         """
         if isinstance(actor, list):
             [ self.addActor(a) for a in actor ]
-        elif isinstance(actor, drawable.GeomActor):
-            self.addActor(actor)
-        elif isinstance(actor, actors.Actor):
+        elif isinstance(actor, oldactors.Actor):
             self.oldactors.add(actor)
         elif isinstance(actor, marks.Mark):
             self.annotations.add(actor)
-        elif isinstance(actor, decors.Decoration):
-            self.decorations.add(actor)
+        elif isinstance(actor, GeomActor):
+            if actor.rendertype == 0:
+                self.actors.add(actor)
+            elif actor.rendertype == 1:
+                self.annotations.add(actor)
+            elif actor.rendertype == 2:
+                self.decorations.add(actor)
+            actor.prepare(self.canvas)
+            actor.changeMode(self.canvas)
+            self._bbox = None #coords.bbox([actor,self.bbox])
+            self.canvas.camera.focus = self.bbox.center()
 
 
     def removeAny(self, actor):
@@ -245,14 +232,19 @@ class Scene(object):
         """
         if isinstance(actor, list):
             [ self.removeActor(a) for a in actor ]
-        elif isinstance(actor, drawable.GeomActor):
-            self.removeActor(actor)
-        elif isinstance(actor, actors.Actor):
+        elif isinstance(actor, oldactors.Actor):
             self.oldactors.delete(actor)
         elif isinstance(actor, marks.Mark):
             self.annotations.delete(actor)
-        elif isinstance(actor, decors.Decoration):
-            self.decorations.delete(actor)
+        elif isinstance(actor, GeomActor):
+            if actor.rendertype == 0:
+                self.actors.delete(actor)
+            elif actor.rendertype == 1:
+                self.annotations.delete(actor)
+            elif actor.rendertype == 2:
+                self.decorations.delete(actor)
+            self._bbox = None
+            self.canvas.camera.focus = self.bbox.center()
 
 
     def clear(self):

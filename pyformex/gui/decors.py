@@ -146,33 +146,33 @@ class Decoration(Drawable):
         Drawable.__init__(self,**kargs)
 
 
-# Marks database: a dict with mark name and a function to draw
-# the mark. The
-_marks_ = {
-    'dot': drawDot,
-    }
+## # Marks database: a dict with mark name and a function to draw
+## # the mark. The
+## _marks_ = {
+##     'dot': drawDot,
+##     }
 
-class Mark(Decoration):
-    """A mark at a fixed position on the canvas."""
-    def __init__(self,x,y,mark='dot',color=None,linewidth=None,**kargs):
-        Decoration.__init__(self,x,y,**kargs)
-        self.x = x
-        self.y = y
-        if not mark in _marks_:
-            raise ValueError("Unknown mark: %s" % mark)
-        self.mark = mark
-        self.color = saneColor(color)
-        self.linewidth = saneLineWidth(linewidth)
+## class Mark(Decoration):
+##     """A mark at a fixed position on the canvas."""
+##     def __init__(self,x,y,mark='dot',color=None,linewidth=None,**kargs):
+##         Decoration.__init__(self,x,y,**kargs)
+##         self.x = x
+##         self.y = y
+##         if not mark in _marks_:
+##             raise ValueError("Unknown mark: %s" % mark)
+##         self.mark = mark
+##         self.color = saneColor(color)
+##         self.linewidth = saneLineWidth(linewidth)
 
 
-    def drawGL(self,**kargs):
-        from pyformex.gui.canvas import glFill
-        glFill()
-        if self.color is not None:
-            GL.glColor3fv(self.color)
-        if self.linewidth is not None:
-            GL.glLineWidth(self.linewidth)
-        _marks_[self.mark](self.x, self.y)
+##     def drawGL(self,**kargs):
+##         from pyformex.gui.canvas import glFill
+##         glFill()
+##         if self.color is not None:
+##             GL.glColor3fv(self.color)
+##         if self.linewidth is not None:
+##             GL.glLineWidth(self.linewidth)
+##         _marks_[self.mark](self.x, self.y)
 
 
 class Line(Decoration):
