@@ -154,6 +154,18 @@ def rectangle(nx=1,ny=1,b=None,h=None,bias=0.,diag=None):
     return base.replic2(nx, ny, bias=bias).scale([sx, sy, 0.])
 
 
+def Cube():
+    """Create the surface of a cube
+
+    Returns a TriSurface representing the surface of a unit cube.
+    Each face of the cube is represented by two triangles.
+    """
+    back = Formex('3:012934')
+    fb = back.reverse() + back.translate(2, 1)
+    faces = fb + fb.rollAxes(1) + fb.rollAxes(2)
+    return TriSurface(faces)
+
+
 def circle(a1=2.,a2=0.,a3=360.,r=None,n=None,c=None,eltype='line2'):
     """A polygonal approximation of a circle or arc.
 
@@ -389,12 +401,12 @@ def cylinder(D,L,nt,nl,D1=None,angle=360.,bias=0.,diag=None):
 
 
 def boxes(x):
-    """Create a set of rectangular boxes.
+    """Create a set of cuboid boxes.
 
     `x`: Coords with shape (nelems,2,3), usually with x[:,0,:] < x[:,1,:]
 
     Returns a Formex with shape (nelems,8,3) and of type 'hex8',
-    where each element is the rectangular box which has x[:,0,:]
+    where each element is the cuboid box which has x[:,0,:]
     as its minimum coordinates and x[:,1,:] as the maximum ones.
     Note that the elements may be degenerate or reverted if the minimum
     coordinates are not smaller than the maximum ones.
@@ -416,6 +428,31 @@ def boxes(x):
     return Formex(x[:, i, j], eltype='hex8')
 
 
+def boxes2d(x):
+    """Create a set of rectangular boxes.
+
+    `x`: Coords with shape (nelems,2,3), usually with x[:,0,:] < x[:,1,:]
+    and x[:,:,2] == 0.
+
+    Returns a Formex with shape (nelems,4,3) and of type 'quad4',
+    where each element is the rectangular box which has x[:,0,:]
+    as its minimum coordinates and x[:,1,:] as the maximum ones.
+    Note that the elements may be degenerate or reverted if the minimum
+    coordinates are not smaller than the maximum ones.
+
+    This function is a 2D version of :func:`bboxes`().
+    """
+    x = Coords(x).reshape(-1, 2, 3)
+    i = [ [0, 0, 0],
+          [1, 0, 0],
+          [1, 1, 0],
+          [0, 1, 0]]
+
+    j = [ 0, 1, 2 ]
+
+    return Formex(x[:, i, j], eltype='quad4')
+
+
 def cuboid(xmin=[0., 0., 0.],xmax=[1., 1., 1.]):
     """Create a rectangular prism
 
@@ -425,6 +462,18 @@ def cuboid(xmin=[0., 0., 0.],xmax=[1., 1., 1.]):
     Returns a single element Formex with eltype 'hex8'.
     """
     return boxes([xmin, xmax])
+
+
+def cuboid2d(xmin=[0., 0., 0.],xmax=[1., 1., 0.]):
+    """Create a rectangle.
+
+    Creates a rectangle with sides parallel to the global y-axis
+    and global xz-plane, and having the points xmin and xmax as
+    opposite corner points.
+
+    Returns a single element Formex with eltype 'quad4'.
+    """
+    return boxes2d([xmin, xmax])
 
 
 # End
