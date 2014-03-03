@@ -690,6 +690,28 @@ def sweepingMesher():
         [draw(Formex(smesh), linewidth=3, color='red') for smesh in named('outer_surface_mesh') ]
 
 
+def writeMeshFile():
+    cfd = named('CFD_lumen_model')
+    n, E = cfd.coords, cfd.elems
+    cfdmesh = Mesh(n, concatenate(E)).reverse()#all elements had negative volume!
+    from pyformex.plugins.neu_exp import write_neu
+    types = ['pgf','neu', 'inp']
+    fn = askNewFilename(pf.cfg['workdir'], types)
+    if fn:
+        ftype = utils.fileTypeFromExt(fn)
+        print("Exporting surface model to %s (%s)" % (fn, ftype.upper()))
+        pf.GUI.setBusy()
+        if ftype == 'pgf':
+            writeGeomFile(fn,[cfdmesh],sep=' ',mode='w',shortlines=False)
+        if ftype == 'inp':
+            from pyformex.plugins.fe_abq import exportMesh
+            exportMesh(fn,cfdmesh,'C3D8R')
+        if ftype == 'neu':
+            from pyformex.plugins.neu_exp import write_neu
+            write_neu(fil=fn, mesh=cfdmesh, bcsets=None, heading='generated with pyFormex')
+        pf.GUI.setBusy(False)
+
+
 def surfMesh():
     spc = getData('cross_splines')
     Fspc = [[ci.toFormex() for ci in c] for c in spc]
@@ -863,6 +885,7 @@ color_half_branch = ['red', 'cyan', 'green', 'magenta', 'blue', 'yellow']
 def drawSurface():
     S = named('surface')
     draw(S, color='red', alpha=0.3)
+    zoomAll()
 
 def drawHelperLines():
      branch = named('branch')
@@ -1042,6 +1065,10 @@ def example():
     sweepingMesher()
     setDrawOptions({'bbox':'auto'})
 
+    if not nextStep('9. Write mesh to file'):
+        return
+    writeMeshFile()
+
 
 def updateData(data, newdata):
     """Update the input data fields with new data values"""
@@ -1084,6 +1111,7 @@ def create_menu():
         ("&7b. Seed Longitudinal Splines", seedLongitudinalSplines),
         ("&8a. Input Meshing Parameters", inputMeshingParameters),
         ("&8b. Sweeping Mesher", sweepingMesher),
+        ("&9. Write mesh to file", writeMeshFile),
         ("---", None),
         ("&Create Surface Mesh", surfMesh),
         ("---", None),
@@ -1098,7 +1126,7 @@ def create_menu():
             ("&Cross Sections", drawCrossSections),
             ("&Cross Splines", drawCrossSplines),
             ("&Long Splines", drawLongSplines),
-            ("&SurfaceMesh", drawSurfaceMesh),
+            #("&SurfaceMesh", drawSurfaceMesh),
             ("&Surface Spline_Mesh", drawSurfMesh),
             ("Set Draw Options", inputDrawOptions),
             ]),
