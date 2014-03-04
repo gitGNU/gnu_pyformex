@@ -39,12 +39,12 @@ from pyformex.opengl.decors import Grid
 def run():
     clear()
     lights(False)
-    canvasSize(500,500)
-    G = Grid(-0.5, -0.5, 0.5, 0.5, 2,2)
-    drawActor(G)
-    H = Grid(0,0,500,500, 8, 8, rendertype=3,color=red)
+    #canvasSize(500,500)
+    F = Grid(-1., -1., 1., 1., 4,4,linewidth=4, rendertype=3,color=blue)
+    drawActor(F)
+    H = Grid(0,0,500,500, 8, 8, rendertype=2,color=red,linewidth=2)
     drawActor(H)
-    I = Grid(100,100,500,500, 2, 2, rendertype=0,color=green)
+    I = Grid(100,100,500,500, 2, 2, rendertype=0,color=green,linewidth=6)
     drawActor(I)
     return
 

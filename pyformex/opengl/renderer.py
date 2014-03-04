@@ -194,25 +194,21 @@ class Renderer(object):
             GL.glDisable (GL.GL_BLEND)
 
 
-    def renderBG(self,actors):
-        """Render 2D background objects.
+    def render2D(self,actors):
+        """Render 2D decorations.
 
         """
         if not actors:
             return
 
         # Set modelview/projection
-        modelview = projection = Matrix4()
-
+        modelview = Matrix4()
         self.shader.uniformMat4('modelview', modelview.gl())
-        self.shader.uniformMat4('projection', projection.gl())
 
-        self.canvas.zoom_2D()  # should be combined with above
-
-        left = -0.5
-        right = float(self.canvas.width())+0.5
-        bottom = -0.5
-        top = float(self.canvas.height())+0.5
+        left = 0. # -0.5
+        right = float(self.canvas.width()) # -0.5
+        bottom = 0. # -0.5
+        top = float(self.canvas.height()) # -0.5
         near = -10.
         far = 10.
         projection = orthogonal_matrix(left, right, bottom, top, near, far)
@@ -222,8 +218,8 @@ class Renderer(object):
         self.renderObjects(actors)
 
 
-    def render2D(self,actors):
-        """Render 2D objects.
+    def renderBG(self,actors):
+        """Render 2D background actors.
 
         """
         if not actors:

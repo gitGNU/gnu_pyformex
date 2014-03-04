@@ -249,8 +249,8 @@ class Rectangle(GeomActor):
 class Grid(GeomActor):
     """A 2D-grid on the canvas."""
     def __init__(self,x1,y1,x2,y2,nx=1,ny=1,lighting=False,rendertype=2,**kargs):
-        F = Formex([[[x1,y1],[x1,y2]]]).replic(nx+1,step=(x2-x1)/nx,dir=0) + \
-            Formex([[[x1,y1],[x2,y1]]]).replic(ny+1,step=(y2-y1)/ny,dir=1)
+        F = Formex([[[x1,y1],[x1,y2]]]).replic(nx+1,step=float(x2-x1)/nx,dir=0) + \
+            Formex([[[x1,y1],[x2,y1]]]).replic(ny+1,step=float(y2-y1)/ny,dir=1)
         GeomActor.__init__(self,F,rendertype=rendertype,lighting=lighting,**kargs)
 
 
