@@ -523,7 +523,7 @@ def splitFileDescription(fdesc,compr=False):
     - `ext`: a list of strings each starting with a '.'.
 
     >>> splitFileDescription(file_description['img'])
-    ('Images ', ['.png', '.jpg', '.eps', '.gif', '.bmp'])
+    ('Images ', ['.png', '.jpg', '.jpeg', '.eps', '.gif', '.bmp'])
     >>> splitFileDescription(file_description['pgf'],compr=True)
     ('pyFormex geometry files ', ['.pgf', '.pgf.gz', '.pgf.bz2'])
     """
@@ -625,10 +625,11 @@ def fileDescription(ftype,compr=False):
     gts = 'GTS files (*.gts)'
     html = 'Web pages (*.html)'
     icon = 'Icons (*.xpm)'
-    img = 'Images (*.png *.jpg *.eps *.gif *.bmp)'
+    img = 'Images (*.png *.jpg *.jpeg *.eps *.gif *.bmp)'
     inp = 'Abaqus or CalCuliX input files (*.inp)'
     neu = 'Gambit Neutral files (*.neu)'
-    off = 'OFF files (*.off)'
+    obj = 'Wavefront OBJ files (*.obj)'
+    off = 'Geomview object files (*.off)'
     pgf = 'pyFormex geometry files (*.pgf)'
     png = 'PNG images (*.png)'
     postproc = 'Postproc scripts (*_post.py *.post)'
@@ -643,7 +644,7 @@ def fileDescription(ftype,compr=False):
     vtp = 'vtkPolyData file (*.vtp)'
     <BLANKLINE>
     >>> fileDescription('img')
-    'Images (*.png *.jpg *.eps *.gif *.bmp)'
+    'Images (*.png *.jpg *.jpeg *.eps *.gif *.bmp)'
     >>> fileDescription(['stl','all'])
     ['STL files (*.stl)', 'All files (*)']
     >>> fileDescription('doc')
@@ -1110,6 +1111,73 @@ def grepSource(pattern,options='',relative=True):
         return P.out
 
 
+def diskSpace(path,units=None,ndigits=2):
+    """Returns the amount of diskspace of a file system.
+
+    Parameters:
+
+    - `path`: a path name inside the file system to be probed.
+    - `units`,`ndigits`: if `untis` is specified, the sizes will be reported
+      in this units. See :func:`humanSize` for details`.
+      The default is to report the number of bytes.
+
+    Returns the total, used and available disk space for the
+    file system containing the given path.
+
+    Notice that used + available does not necessarily equals total,
+    because a file system may (and usually does) have reserved blocks.
+    """
+    stat = os.statvfs(os.path.realpath(path))
+    total = stat.f_blocks * stat.f_frsize
+    avail = stat.f_bavail * stat.f_frsize
+    used = (stat.f_blocks - stat.f_bfree) * stat.f_frsize
+    if units:
+        total = humanSize(total,units,ndigits)
+        avail = humanSize(avail,units,ndigits)
+        used = humanSize(used,units,ndigits)
+    return total, used, avail
+
+
+def humanSize(size,units,ndigits=None):
+    """Convert a number to a human size.
+
+    Large numbers are often represented in a more human readable
+    form using k, M, G prefixes. This function returns the input
+    size as a number with the specified prefix.
+
+    Parameters:
+
+    - `size`: a number (integer or float)
+    - `units`: string specifying the target units. The first character should
+      be one of k,K,M,G,T,P,E,Z,Y. 'k' and 'K' are equivalent. A second
+      character 'i' can be added to use binary (K=1024) prefixes instead of
+      decimal (k=1000).
+    - `ndigits`: integer. If specified, the result is rounded to
+      the specified number of digits.
+
+    Returns: a float value rounded to `ndigits` digits.
+
+    Example:
+
+    >>> humanSize(1234567890,'k')
+    1234567.89
+    >>> humanSize(1234567890,'M',0)
+    1235.0
+    >>> humanSize(1234567890,'G',3)
+    1.235
+    >>> humanSize(1234567890,'Gi',3)
+    1.15
+    """
+    size = float(size)
+    order = '.KMGTPEZY'.find(units[0].upper())
+    if units[1:2] == 'i':
+        scale = 1024.
+    else:
+        scale = 1000.
+    size = size / scale**order
+    if ndigits >= 0:
+        size = round(size,ndigits)
+    return size
 
 
 ##########################################################################
