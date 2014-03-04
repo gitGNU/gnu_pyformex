@@ -56,38 +56,40 @@ class ItemList(list):
         else:
             self.append(item)
 
-    def delete(self, item):
-        """Remove an item or a list thereof from an ItemList.
 
-        A special value item==None will remove all items from the list.
+    def delete(self, items, sticky=False):
+        """Remove item(s) from an ItemList.
+
+        Parameters:
+
+        - `items`: a single item or a list or tuple of items
+        - `sticky`: bool: if True, also sticky items are removed.
+          The default is to not remove sticky items.
+          Sticky items are items having an attribute sticky=True.
+
         """
-        if item is None:
-            self.clear()
+        if not type(items) in (list, tuple):
+            items = [ items ]
+        if sticky:
+            self[:] = [ a for a in self if a not in items ]
         else:
-            if not type(item) in (list, tuple):
-                item = [ item ]
-            for a in item:
-                if a in self:
-                    self.remove(a)
+            self[:] = [ a for a in self if a.sticky or a not in items ]
 
-    def clear(self):
-        """Clear the list
 
-        Removes all items from the ItemList.
+    def clear(self, sticky=False):
+        """Clear the list.
+
+        Parameters:
+
+        - `sticky`: bool: if True, also sticky items are removed.
+          The default is to not remove sticky items.
+          Sticky items are items having an attribute sticky=True.
+
         """
-        del self[:]
-
-
-    ## def redraw(self):
-    ##     """Redraw all items in the list.
-
-    ##     This redraws the specified items (recreating their display list).
-    ##     This could e.g. be used after changing an item's properties.
-    ##     """
-    ##     for item in self:
-    ##         item.redraw()
-
-
+        if sticky:
+            del self[:]
+        else:
+            self[:] = [ a for a in self if a.sticky ]
 
 
 
@@ -225,12 +227,13 @@ class Scene(object):
             self.canvas.camera.focus = self.bbox.center()
 
 
-    def clear(self):
+    def clear(self,sticky=False):
         """Clear the whole scene"""
-        self.actors.clear()
-        self.oldactors.clear()
-        self.annotations.clear()
-        self.decorations.clear()
+        self.actors.clear(sticky)
+        self.oldactors.clear(sticky)
+        self.annotations.clear(sticky)
+        self.decorations.clear(sticky)
+        self.backgrounds.clear(sticky)
 
 
     ## def highlight(self, actors):

@@ -1486,16 +1486,16 @@ def canvasSize(width, height):
     pf.canvas.changeSize(width, height)
 
 
-def clear_canvas():
-    """Clear the canvas.
+# This is not intended for the user
+def clear_canvas(sticky=False):
+    if pf.options.opengl2:
+        pf.canvas.removeAll(sticky)
+    else:
+        pf.canvas.removeAll()
+    pf.canvas.clearCanvas()
 
-    This is a low level function not intended for the user.
-    """
-    pf.canvas.removeAll()
-    pf.canvas.clear()
 
-
-def clear():
+def clear(sticky=False):
     """Clear the canvas.
 
     Removes everything from the current scene and displays an empty

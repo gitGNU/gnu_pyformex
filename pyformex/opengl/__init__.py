@@ -37,22 +37,7 @@ from pyformex import coords
 from pyformex.attributes import Attributes
 
 
-
-### Override some configuration settings
-
-#pf.cfg['canvas/linewidth'] = 2
-
-
 #### Definitions to be imported in gui.draw #####
-
-
-def clear_canvas():
-    """Clear the canvas.
-
-    This is a low level function not intended for the user.
-    """
-    pf.canvas.scene.clear()
-    pf.canvas.clear()
 
 #
 # TODO: Note that the option 'clear' in the draw statement

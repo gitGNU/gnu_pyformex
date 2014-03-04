@@ -201,8 +201,6 @@ class Renderer(object):
         if not actors:
             return
 
-        print("Background: %s" % len(actors))
-
         # Set modelview/projection
         modelview = projection = Matrix4()
 

@@ -37,6 +37,7 @@ from pyformex.collection import Collection
 from pyformex.attributes import Attributes
 from pyformex.formex import Formex
 from pyformex.simple import cuboid2d
+from pyformex.opengl import decors
 from pyformex.opengl.drawable import GeomActor
 from pyformex.opengl.sanitize import saneColor,saneColorArray
 from pyformex.opengl.camera import Camera
@@ -807,7 +808,7 @@ class Canvas(object):
             self.scene.background = None
         else:
             self.createBackground()
-        self.clear()
+        self.clearCanvas()
         self.redrawAll()
 
 
@@ -863,10 +864,7 @@ class Canvas(object):
         self.renderer = Renderer(self)
 
 
-
-    # TODO: This is a misnamer: should be clearbg or something like that
-    # clear() should also clear the scene
-    def clear(self):
+    def clearCanvas(self):
         """Clear the canvas to the background color."""
         self.settings.setMode()
         self.setDefaults()
@@ -912,7 +910,7 @@ class Canvas(object):
         """
         self.setDefaults()
         self.setBackground(self.settings.bgcolor, self.settings.bgimage)
-        self.clear()
+        self.clearCanvas()
         GL.glClearDepth(1.0)	       # Enables Clearing Of The Depth Buffer
         GL.glEnable(GL.GL_DEPTH_TEST)	       # Enables Depth Testing
         #GL.glEnable(GL.GL_CULL_FACE)
@@ -976,7 +974,7 @@ class Canvas(object):
         #pf.debugt("UPDATING CURRENT OPENGL CANVAS",pf.DEBUG.DRAW)
         self.makeCurrent()
 
-        self.clear()
+        self.clearCanvas()
         glSmooth()
         glFill()
 
@@ -1084,20 +1082,11 @@ class Canvas(object):
     def removeAny(self, itemlist):
         self.scene.removeAny(itemlist)
 
-
-    def removeActor(self,itemlist=None):
-        self.scene.actors.delete(itemlist)
-        self.scene.oldactors.delete(itemlist)
-
-    def removeAnnotation(self,itemlist=None):
-        self.scene.annotations.delete(itemlist)
-
-    def removeDecoration(self,itemlist=None):
-        self.scene.decorations.delete(itemlist)
+    removeActor = removeAnnotation = removeDecoration = removeAny
 
 
-    def removeAll(self):
-        self.scene.clear()
+    def removeAll(self,sticky=False):
+        self.scene.clear(sticky)
         self.highlights.clear()
 
 
@@ -1294,14 +1283,16 @@ class Canvas(object):
         """Show the saved buffer"""
         pass
 
+
     def draw_focus_rectangle(self,ofs=0,color=colors.pyformex_pink):
         """Draw the focus rectangle.
 
         The specified width is HALF of the line width
         """
         w, h = self.width(), self.height()
-        self._focus = decors.Grid(1+ofs, ofs, w-ofs, h-1-ofs, color=color, linewidth=1)
-        self._focus.draw()
+        _focus = decors.Grid(-1,-1,1,1, color=color, linewidth=1, rendertype=3)
+        self.addAny(_focus)
+
 
     def draw_cursor(self, x, y):
         """draw the cursor"""
@@ -1311,6 +1302,7 @@ class Canvas(object):
         col = pf.cfg.get('pick/color', 'yellow')
         self.cursor = decors.Grid(x-w/2, y-h/2, x+w/2, y+h/2, color=col, linewidth=1)
         self.addDecoration(self.cursor)
+
 
     def draw_rectangle(self, x, y):
         if self.cursor:
