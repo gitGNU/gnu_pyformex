@@ -37,6 +37,7 @@ import pyformex as pf
 from pyformex.coords import bbox
 from pyformex.attributes import Attributes
 from pyformex.opengl.matrix import Matrix4
+from pyformex.opengl.camera import orthogonal_matrix
 from pyformex.opengl.shader import Shader
 from pyformex.opengl.drawable import GeomActor
 
@@ -129,13 +130,16 @@ class Renderer(object):
             GL.glPopName()
 
 
-    def render3D(self,scene,pick=None):
+    def render3D(self,actors,pick=None):
         """Render the 3D actors in the scene.
 
         """
+        if not actors:
+            return
         # Get the current modelview*projection matrix
         modelview = self.camera.modelview
         projection = self.camera.projection
+        #print(projection)
 
         # Propagate the matrices to the uniforms of the shader
         self.shader.uniformMat4('modelview', modelview.gl())
@@ -146,8 +150,8 @@ class Renderer(object):
             pickmat = camera.pick_matrix(*pick)
             self.shader.uniformMat4('pickmat', pickmat.gl())
 
-        # draw the scene actors (sorted)
-        actors = scene.back_actors() + scene.front_actors()
+        # sort actors in back and front, and select visible
+        actors = back(actors) + front(actors)
         actors =  [ o for o in actors if o.visible is not False ]
 
         GL.glEnable(GL.GL_DEPTH_TEST)
@@ -190,10 +194,15 @@ class Renderer(object):
             GL.glDisable (GL.GL_BLEND)
 
 
-    def render2D(self,objects):
-        """Render 2D objects.
+    def renderBG(self,actors):
+        """Render 2D background objects.
 
         """
+        if not actors:
+            return
+
+        print("Background: %s" % len(actors))
+
         # Set modelview/projection
         modelview = projection = Matrix4()
 
@@ -202,10 +211,54 @@ class Renderer(object):
 
         self.canvas.zoom_2D()  # should be combined with above
 
+        left = -0.5
+        right = float(self.canvas.width())+0.5
+        bottom = -0.5
+        top = float(self.canvas.height())+0.5
+        near = -10.
+        far = 10.
+        projection = orthogonal_matrix(left, right, bottom, top, near, far)
+        self.shader.uniformMat4('projection', projection.gl())
+
         GL.glDisable(GL.GL_DEPTH_TEST)
-        self.canvas.mode2D = True
-        self.renderObjects(objects)
-        self.canvas.mode2D = False
+        self.renderObjects(actors)
+
+
+    def render2D(self,actors):
+        """Render 2D objects.
+
+        """
+        if not actors:
+            return
+       # Set modelview/projection
+        modelview = projection = Matrix4()
+
+        self.shader.uniformMat4('modelview', modelview.gl())
+        self.shader.uniformMat4('projection', projection.gl())
+
+        self.canvas.zoom_2D()  # should be combined with above
+
+        # in clip space
+        GL.glDisable(GL.GL_DEPTH_TEST)
+        self.renderObjects(actors)
+
+
+    # TODO: this is here for compatibility reasons
+    # should be removed after complete transition to shaders
+    def renderGL1(self,actors):
+        """Draw 3D actors through the fixed pipeline"""
+        if not actors:
+            return
+
+        # start 3D drawing
+        self.canvas.camera.set3DMatrices()
+
+        # Draw the opengl1 actors
+        pf.debug("opengl1 rendering of old actors", pf.DEBUG.DRAW)
+        GL.glEnable(GL.GL_CULL_FACE)
+        GL.glEnable(GL.GL_DEPTH_TEST)
+        GL.glDepthMask (GL.GL_TRUE)
+        self.canvas.draw_sorted_objects(actors, self.canvas.settings.alphablend)
 
 
     def render(self,scene,pick=None):
@@ -213,17 +266,43 @@ class Renderer(object):
         self.shader.bind(picking=bool(pick))
         try:
 
+            # The back backgrounds
+            self.renderBG(back(scene.backgrounds))
+
             # The 2D back decorations
-            #print(scene.back_decors())
-            self.render2D(scene.back_decors())
+            self.render2D(back(scene.decorations))
+
+            ## # The back annotations
+            ## self.renderAN(scene.back(scene.annotations))
+
+            # The old 3D actors
+            self.renderGL1(scene.oldactors)
 
             # The 3D actors
-            self.render3D(scene,pick)
+            self.render3D(scene.actors,pick)
+
+            ## # The front annotations
+            ## self.renderAN(scene.back(scene.annotations))
 
             # The 2D front decorations
-            self.render2D(scene.front_decors())
+            self.render2D(front(scene.decorations))
+
+            # The front backgrounds
+            self.renderBG(front(scene.backgrounds))
 
         finally:
             self.shader.unbind()
+
+
+
+def front(actorlist):
+    """Return the actors from the list that have ontop=True"""
+    return [ a for a in actorlist if a.ontop ]
+
+
+def back(actorlist):
+    """Return the actors from the list that have ontop=False"""
+    return [ a for a in actorlist if not a.ontop ]
+
 
 # End

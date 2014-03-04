@@ -110,7 +110,7 @@ class Scene(object):
         self.oldactors = ItemList(self)
         self.annotations = ItemList(self)
         self.decorations = ItemList(self)
-        self.background = None
+        self.backgrounds = ItemList(self)
         self._bbox = None
 
 
@@ -159,23 +159,6 @@ class Scene(object):
         self._bbox = sane_bbox(coords.bbox(bb))
 
 
-    def back_decors(self):
-        b = [ a for a in self.decorations if not a.ontop ]
-        if self.background:
-            b = [self.background] + b
-        return b
-    def front_decors(self):
-        return [ a for a in self.decorations if a.ontop ]
-    def back_annot(self):
-        return [ a for a in self.annotations if not a.ontop ]
-    def front_annot(self):
-        return [ a for a in self.annotations if a.ontop ]
-    def back_actors(self):
-        return [ a for a in self.actors if not a.ontop ]
-    def front_actors(self):
-        return [ a for a in self.actors if a.ontop ]
-
-
     def changeMode(self,canvas,mode=None):
         """This function is called when the rendering mode is changed
 
@@ -184,15 +167,6 @@ class Scene(object):
         """
         for a in self.actors:
             a.changeMode(canvas)
-
-
-    def addBackground(self, actor):
-        """Add a background to the scene.
-
-        """
-        self.background = actor
-        actor.prepare(self.canvas)
-        actor.changeMode(self.canvas)
 
 
     def addAny(self, actor):
@@ -216,6 +190,8 @@ class Scene(object):
                 self.annotations.add(actor)
             elif actor.rendertype == 2:
                 self.decorations.add(actor)
+            elif actor.rendertype == 3:
+                self.backgrounds.add(actor)
             actor.prepare(self.canvas)
             actor.changeMode(self.canvas)
             self._bbox = None #coords.bbox([actor,self.bbox])
@@ -243,6 +219,8 @@ class Scene(object):
                 self.annotations.delete(actor)
             elif actor.rendertype == 2:
                 self.decorations.delete(actor)
+            elif actor.rendertype == 3:
+                self.backgounds.delete(actor)
             self._bbox = None
             self.canvas.camera.focus = self.bbox.center()
 

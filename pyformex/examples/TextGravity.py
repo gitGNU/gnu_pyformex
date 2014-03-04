@@ -39,9 +39,13 @@ from pyformex.opengl.decors import Grid
 def run():
     clear()
     lights(False)
-
-    G = Grid(-0.5, -0.5, 0.5, 0.5, 2, 2)
-    decorate(G)
+    canvasSize(500,500)
+    G = Grid(-0.5, -0.5, 0.5, 0.5, 2,2)
+    drawActor(G)
+    H = Grid(0,0,500,500, 8, 8, rendertype=3,color=red)
+    drawActor(H)
+    I = Grid(100,100,500,500, 2, 2, rendertype=0,color=green)
+    drawActor(I)
     return
 
     delay(2)
