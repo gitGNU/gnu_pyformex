@@ -34,17 +34,15 @@ _topics = []
 _techniques = ['text']
 
 from pyformex.gui.draw import *
-from pyformex.gui.decors import Grid
+from pyformex.opengl.decors import Grid
 
 def run():
     clear()
     lights(False)
-    x = pf.canvas.width()//2
-    y = pf.canvas.height()//2
 
-    s = 100
-    G = Grid(x-s, y-s, x+s, y+s, 2, 2)
+    G = Grid(-0.5, -0.5, 0.5, 0.5, 2, 2)
     decorate(G)
+    return
 
     delay(2)
     for g in [ 'NW', 'N', 'NE', 'W', 'C', 'E', 'SW', 'S', 'SE']:
@@ -60,7 +58,7 @@ def run():
         wait()
         undecorate(S)
         undecorate(T)
-    
+
 if __name__ == 'draw':
     run()
 # End
