@@ -2172,15 +2172,13 @@ Quality: %s .. %s
     def tetgen(self,quality=True,volume=None,filename=None,format='.off'):
         """Create a tetrahedral mesh inside the surface
 
-        - `surfacefile`: a file representing a surface. It can be an .off or
-          .stl file (or other?)
         - `quality`: if True, the output will be a quality mesh
           The circumradius-to-shortest-edge ratio can be constrained by
           specifying a float value for quality (default is 2.0)
           - `volume`: float: applies a maximum tetrahedron volume constraint
-        - `outputdir`: if specified, the results surface model and the tet
-          model files will be placed in this directory. Else, a temporary
-          directory will be used.
+        - `filename`: if specified, the surface model will be saved on this
+          file and the tetgen models will be named likewise. If unspecified,
+          temporary file names will be used.
 
         If the creation of the tetrahedral model is succesful, the
         resulting tetrahedral mesh is returned.
