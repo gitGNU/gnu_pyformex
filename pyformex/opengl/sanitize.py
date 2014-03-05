@@ -54,6 +54,9 @@ def saneFloat(value):
     return value
 
 
+saneLineWidth = saneFloat
+
+
 def saneLineStipple(stipple):
     """Return a sane line stipple tuple.
 

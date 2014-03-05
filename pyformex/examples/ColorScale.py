@@ -37,7 +37,7 @@ _techniques = ['dialog', 'color']
 from pyformex.gui.draw import *
 from pyformex.gui.colorscale import *
 from pyformex.gui.gluttext import GLUTFONTS
-from pyformex.gui import decors
+from pyformex.opengl import decors
 
 input_data = [
     _I('valrange', text='Value range type', itemtype='select', choices=['Minimum-Medium-Maximum', 'Minimum-Maximum']),
@@ -85,15 +85,10 @@ def show():
     """Accept the data and draw according to them"""
     global medval, medcol, palet, minexp, grid, nlabels, dialog
 
-    print("SHOW", dialog)
     clear()
-    print("CLEARED")
     lights(False)
-    print("ACCEPT DATA")
     dialog.acceptData()
-    print("GET REUSLTS")
     res = dialog.results
-    print(res)
     globals().update(res)
 
 
@@ -124,7 +119,7 @@ def drawColorScale(palet, minval, maxval, medval, maxexp, minexp, ncolors, dec, 
     CS = ColorScale(palet, minval, maxval, midval=medval, exp=maxexp, exp2=minexp)
     CL = ColorLegend(CS, ncolors)
     CLA = decors.ColorLegend(CL, x, y, w, h, ngrid=ngrid, linewidth=linewidth, nlabel=nlabel, font=font, dec=dec, scale=scale, lefttext=lefttext)
-    decorate(CLA)
+    drawActor(CLA)
 
 
 def close():

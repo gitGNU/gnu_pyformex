@@ -1287,11 +1287,10 @@ class Canvas(object):
     def draw_focus_rectangle(self,ofs=0,color=colors.pyformex_pink):
         """Draw the focus rectangle.
 
-        The specified width is HALF of the line width
         """
         w, h = self.width(), self.height()
-        _focus = decors.Grid(-1,-1,1,1, color=color, linewidth=1, rendertype=3)
-        self.addAny(_focus)
+        self._focus = decors.Grid(-1.,-1.,1.,1., color=color, linewidth=2, rendertype=3)
+        self.addAny(self._focus)
 
 
     def draw_cursor(self, x, y):
