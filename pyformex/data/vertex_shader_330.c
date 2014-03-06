@@ -24,7 +24,7 @@
 
 // Vertex shader
 
-#define MAX_LIGHTS 4
+#version 330 core
 
 #ifdef GL_ES                   // This is True in WebGL shader
 precision mediump float;
@@ -32,6 +32,8 @@ precision mediump float;
 
 // If you add a uniform value to the shader, you should also add it
 // in shader.py, in order to allow setting the uniform value.
+
+#define MAX_LIGHTS 4
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
@@ -52,6 +54,8 @@ uniform int drawface;        // Which side of the face to draw (0,1,2)
 uniform int useObjectColor;  // 0 = no, 1 = single color, 2 = twosided color
 uniform vec3 objectColor;    // front and back color (1) or front color (2)
 uniform vec3 objectBkColor;  // back color (2)
+uniform int useTexture;    // 0: no texture, 1: single texture
+
 
 uniform float ambient;     // Material ambient value
 uniform float diffuse;     // Material diffuse value
@@ -67,15 +71,17 @@ uniform vec3 diffcolor[MAX_LIGHTS];    // Colors of diffuse light
 uniform vec3 speccolor[MAX_LIGHTS];    // Colors of reflected light
 uniform vec3 lightdir[MAX_LIGHTS];     // Light directions
 
-varying vec3 fvertexNormal;
-varying vec3 fragmentColor;
-varying vec2 fragmentTexturePos;
+//varying vec3 fvertexNormal;
+//varying vec3 fragmentColor;
+//varying vec2 fragmentTexturePos;
 
-out varying vec4 fragColor;     // Final fragment color, including opacity
-out varying vec3 nNormal;        // normalized transformed normal
+varying out vec4 fragColor;     // Final fragment color, including opacity
+varying out vec3 nNormal;       // normalized transformed normal
+varying out vec2 texCoord;      // Pass texture coordinate
 
 void main()
 {
+  vec3 fragmentColor;
   // Set color
   if (picking) {
     fragmentColor = vec3(0.,0.,0.);
@@ -103,8 +109,7 @@ void main()
 
       if (lighting) {
 
-	fvertexNormal = vertexNormal;
-	vec3 fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * fvertexNormal;
+	vec3 fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * vertexNormal;
 
 	nNormal = normalize(fTransformedVertexNormal);
 
@@ -157,6 +162,10 @@ void main()
     gl_Position = pickmat * projection * modelview * fvertexPosition;
   } else {
     gl_Position = projection * modelview * fvertexPosition;
+  }
+
+  if (useTexture > 0) {
+    texCoord = vertexTexturePos;
   }
 }
 
