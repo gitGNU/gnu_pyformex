@@ -801,15 +801,13 @@ class Canvas(object):
           four colors.
         - `image`: an image to be set.
         """
+        self.scene.backgrounds.clear()
         self.settings.update(dict(bgcolor=color, bgimage=image))
         color = self.settings.bgcolor
         if color.ndim == 1 and not self.settings.bgimage:
             pf.debug("Clearing fancy background", pf.DEBUG.DRAW)
-            self.scene.background = None
         else:
             self.createBackground()
-        self.clearCanvas()
-        self.redrawAll()
 
 
     def createBackground(self):
@@ -985,9 +983,6 @@ class Canvas(object):
             if self.focus:      # pyFormex DRAW focus
                 self.draw_focus_rectangle(2, color=colors.red)
 
-        ## start 3D drawing
-        ## self.camera.set3DMatrices()
-
         # draw the highlighted actors
         pf.debug("draw highlights", pf.DEBUG.DRAW)
         if self.highlights:
@@ -995,24 +990,9 @@ class Canvas(object):
                 self.setDefaults()
                 actor.draw(canvas=self)
 
-        ## # draw the back annotations
-        ## pf.debug("draw back annotations", pf.DEBUG.DRAW)
-        ## self.draw_sorted_objects(self.scene.back_annot(), self.settings.alphablend)
-
-        # Draw the opengl1 actors
-        pf.debug("opengl1 rendering of old actors", pf.DEBUG.DRAW)
-        GL.glEnable(GL.GL_CULL_FACE)
-        GL.glEnable(GL.GL_DEPTH_TEST)
-        GL.glDepthMask (GL.GL_TRUE)
-        self.draw_sorted_objects(self.scene.oldactors, self.settings.alphablend)
-
         # Draw the opengl2 actors
         pf.debug("opengl2 shader rendering", pf.DEBUG.DRAW)
         self.renderer.render(self.scene)
-
-        ## # draw the front annotations
-        ## pf.debug("draw front annotations", pf.DEBUG.DRAW)
-        ## self.draw_sorted_objects(self.scene.front_annot(), self.settings.alphablend)
 
         # make sure canvas is updated
         GL.glFlush()
@@ -1024,40 +1004,60 @@ class Canvas(object):
         GLU.gluOrtho2D(*zoom)
 
 
-    ## def begin_2D_drawing(self):
-    ##     """Set up the canvas for 2D drawing on top of 3D canvas.
+    def begin_2D_drawing(self):
+        """Set up the canvas for 2D drawing on top of 3D canvas.
 
-    ##     The 2D drawing operation should be ended by calling end_2D_drawing.
-    ##     It is assumed that you will not try to change/refresh the normal
-    ##     3D drawing cycle during this operation.
-    ##     """
-    ##     #pf.debug("Start 2D drawing",pf.DEBUG.DRAW)
-    ##     if self.mode2D:
-    ##         #pf.debug("WARNING: ALREADY IN 2D MODE",pf.DEBUG.DRAW)
-    ##         return
-    ##     GL.glMatrixMode(GL.GL_MODELVIEW)
-    ##     GL.glPushMatrix()
-    ##     GL.glLoadIdentity()
-    ##     GL.glMatrixMode(GL.GL_PROJECTION)
-    ##     GL.glPushMatrix()
-    ##     GL.glLoadIdentity()
-    ##     self.zoom_2D()
-    ##     GL.glDisable(GL.GL_DEPTH_TEST)
-    ##     #self.enable_lighting(False)
-    ##     self.mode2D = True
+        The 2D drawing operation should be ended by calling end_2D_drawing.
+        It is assumed that you will not try to change/refresh the normal
+        3D drawing cycle during this operation.
+        """
+        #pf.debug("Start 2D drawing",pf.DEBUG.DRAW)
+        if self.mode2D:
+            #pf.debug("WARNING: ALREADY IN 2D MODE",pf.DEBUG.DRAW)
+            return
+        GL.glMatrixMode(GL.GL_MODELVIEW)
+        GL.glPushMatrix()
+        GL.glLoadIdentity()
+        GL.glMatrixMode(GL.GL_PROJECTION)
+        GL.glPushMatrix()
+        GL.glLoadIdentity()
+        self.zoom_2D()
+        GL.glDisable(GL.GL_DEPTH_TEST)
+        #self.enable_lighting(False)
+        self.mode2D = True
 
 
-    ## def end_2D_drawing(self):
-    ##     """Cancel the 2D drawing mode initiated by begin_2D_drawing."""
-    ##     #pf.debug("End 2D drawing",pf.DEBUG.DRAW)
-    ##     if self.mode2D:
-    ##         GL.glEnable(GL.GL_DEPTH_TEST)
-    ##         GL.glMatrixMode(GL.GL_PROJECTION)
-    ##         GL.glPopMatrix()
-    ##         GL.glMatrixMode(GL.GL_MODELVIEW)
-    ##         GL.glPopMatrix()
-    ##         #self.enable_lighting(self.settings.lighting)
-    ##         self.mode2D = False
+    def end_2D_drawing(self):
+        """Cancel the 2D drawing mode initiated by begin_2D_drawing."""
+        #pf.debug("End 2D drawing",pf.DEBUG.DRAW)
+        if self.mode2D:
+            GL.glEnable(GL.GL_DEPTH_TEST)
+            GL.glMatrixMode(GL.GL_PROJECTION)
+            GL.glPopMatrix()
+            GL.glMatrixMode(GL.GL_MODELVIEW)
+            GL.glPopMatrix()
+            #self.enable_lighting(self.settings.lighting)
+            self.mode2D = False
+
+
+    def drawGL1(self):
+        # The old 3D actors
+        if self.scene.oldactors:
+            # start 3D drawing
+            self.camera.set3DMatrices()
+            # Draw the opengl1 actors
+            GL.glEnable(GL.GL_CULL_FACE)
+            GL.glEnable(GL.GL_DEPTH_TEST)
+            GL.glDepthMask (GL.GL_TRUE)
+            self.draw_sorted_objects(self.scene.oldactors, self.settings.alphablend)
+
+        # The old 2D actors
+        if hasattr(self.scene,'olddecors') and self.scene.olddecors:
+            self.begin_2D_drawing()
+            for obj in self.scene.olddecors:
+                self.setDefaults()
+                obj.draw()
+            self.end_2D_drawing()
 
 
     def addHighlight(self, itemlist):

@@ -201,6 +201,8 @@ class Renderer(object):
         if not actors:
             return
 
+        #print("Render %s decorations" % len(actors))
+
         # Set modelview/projection
         modelview = Matrix4()
         self.shader.uniformMat4('modelview', modelview.gl())
@@ -209,12 +211,13 @@ class Renderer(object):
         right = float(self.canvas.width()) # -0.5
         bottom = 0. # -0.5
         top = float(self.canvas.height()) # -0.5
-        near = -10.
-        far = 10.
+        near = -1.
+        far = 1.
         projection = orthogonal_matrix(left, right, bottom, top, near, far)
         self.shader.uniformMat4('projection', projection.gl())
 
         GL.glDisable(GL.GL_DEPTH_TEST)
+        GL.glDisable(GL.GL_CULL_FACE)
         self.renderObjects(actors)
 
 
@@ -224,7 +227,10 @@ class Renderer(object):
         """
         if not actors:
             return
-       # Set modelview/projection
+
+        #print("Render %s backgrounds" % len(actors))
+
+        # Set modelview/projection
         modelview = projection = Matrix4()
 
         self.shader.uniformMat4('modelview', modelview.gl())
@@ -235,24 +241,6 @@ class Renderer(object):
         # in clip space
         GL.glDisable(GL.GL_DEPTH_TEST)
         self.renderObjects(actors)
-
-
-    # TODO: this is here for compatibility reasons
-    # should be removed after complete transition to shaders
-    def renderGL1(self,actors):
-        """Draw 3D actors through the fixed pipeline"""
-        if not actors:
-            return
-
-        # start 3D drawing
-        self.canvas.camera.set3DMatrices()
-
-        # Draw the opengl1 actors
-        pf.debug("opengl1 rendering of old actors", pf.DEBUG.DRAW)
-        GL.glEnable(GL.GL_CULL_FACE)
-        GL.glEnable(GL.GL_DEPTH_TEST)
-        GL.glDepthMask (GL.GL_TRUE)
-        self.canvas.draw_sorted_objects(actors, self.canvas.settings.alphablend)
 
 
     def render(self,scene,pick=None):
@@ -269,9 +257,6 @@ class Renderer(object):
             ## # The back annotations
             ## self.renderAN(scene.back(scene.annotations))
 
-            # The old 3D actors
-            self.renderGL1(scene.oldactors)
-
             # The 3D actors
             self.render3D(scene.actors,pick)
 
@@ -287,6 +272,7 @@ class Renderer(object):
         finally:
             self.shader.unbind()
 
+        self.canvas.drawGL1()
 
 
 def front(actorlist):

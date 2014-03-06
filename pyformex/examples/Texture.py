@@ -34,25 +34,26 @@ _topics = ['Image', 'Geometry']
 _techniques = ['texture']
 
 from pyformex.gui.draw import *
-from pyformex.plugins.imagearray import image2numpy
 from pyformex import simple
 
 def run():
     clear()
     smooth()
 
-    imagefile = os.path.join(pf.cfg['pyformexdir'], 'data', 'butterfly.png')
-    image = image2numpy(imagefile, indexed=False)
+    image = os.path.join(pf.cfg['pyformexdir'], 'data', 'butterfly.png')
 
     F = simple.cuboid().centered().toMesh()
     G = Formex('4:0123')
     H = G.replic2(3, 2).toMesh().setProp(arange(1, 7)).centered()
-    G.attrib(color=yellow,rendertype=2)
-    draw([F,G,H], texture=image)
+    K = G.scale(200).toMesh()
+    K.attrib(color=yellow,rendertype=2, texture=image)
+    draw([F,H,K], texture=image)
+
     view('iso')
+    zoomAll()
     zoom(0.5)
 
-    bgcolor(color=white, image=imagefile)
+    bgcolor(color=white,image=image)
 
 if __name__ == 'draw':
     run()

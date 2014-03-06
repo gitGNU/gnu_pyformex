@@ -160,9 +160,10 @@ class Drawable(Attributes):
     def prepareTexture(self):
         """Prepare texture and texture coords"""
         if self.useTexture == 1:
-            curshape = self.texcoords.shape
-            self.texcoords = at.multiplex(self.texcoords, self.object.nelems(),axis=-2)
-            #print("Multiplexing texture coords: %s -> %s " % (curshape, self.texcoords.shape))
+            if self.texcoords.ndim == 2:
+                curshape = self.texcoords.shape
+                self.texcoords = at.multiplex(self.texcoords, self.object.nelems(),axis=-2)
+                print("Multiplexing texture coords: %s -> %s " % (curshape, self.texcoords.shape))
         self.tbo = VBO(self.texcoords.astype(float32))
         self.texture.activate()
 
@@ -292,6 +293,10 @@ class Drawable(Attributes):
             self.ibo.unbind()
         self.vbo.unbind()
         GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
+
+    def __str__(self):
+        keys = sorted(set(self.keys()) - set(('_default_dict_',)))
+        return utils.formatDict(utils.selectDict(self,keys))
 
 ########################################################################
 
@@ -663,7 +668,7 @@ class GeomActor(Base):
                 drawface = self.drawface
             name = self.name
 
-            if self.rendertype == 2 or self.drawface == 0:
+            if self.rendertype > 1 or self.drawface == 0:
 
                 # Draw front and back at once, without culling
                 # Beware: this does not work with different front/back color
@@ -819,7 +824,8 @@ class GeomActor(Base):
                 try:
                     texture = Texture(texture)
                 except:
-                    print("Error while creating Texture from type(texture)")
+                    print("Error while creating Texture from %s" % type(texture))
+                    raise
                     texture = None
             if texture is not None:
                 if texcoords is None:
@@ -829,7 +835,8 @@ class GeomActor(Base):
                         print("Texture not allowed for eltype %s" % self.eltype)
                         self.texture = self.texcoords = None
                         return
-                if texcoords.shape[:2] != (self.eltype.nplex(),2):
+                if texcoords.shape[-2:] != (self.eltype.nplex(),2):
+                    print(self.eltype.nplex())
                     print("Shape of texcoords does not match: %s" % str(texcoords.shape))
                     texcoords = texture = None
             if texmode is None:
@@ -946,6 +953,15 @@ class GeomActor(Base):
             return ok, depth
         else:
             return ok
+
+
+    def __str__(self):
+        keys = sorted(set(self.keys()) - set(('drawable',)))
+        s = utils.formatDict(utils.selectDict(self,keys))
+        for i,d in enumerate(self.drawable):
+            s += "** Drawable %s **\n" % i
+            s += d.__str__()
+        return s
 
 
 ########################################################################

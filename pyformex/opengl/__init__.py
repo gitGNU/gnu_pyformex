@@ -130,7 +130,7 @@ def draw(F,
             if view == 'last':
                 view = pf.canvas.drawoptions['view']
             if bbox == 'auto':
-                bbox = coords.bbox(FL)
+                bbox = pf.canvas.scene.bbox
             if bbox == 'last':
                 bbox = None
 

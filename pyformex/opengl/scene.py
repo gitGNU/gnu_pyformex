@@ -73,7 +73,7 @@ class ItemList(list):
         if sticky:
             self[:] = [ a for a in self if a not in items ]
         else:
-            self[:] = [ a for a in self if a.sticky or a not in items ]
+            self[:] = [ a for a in self if (hasattr(a,'sticky') and a.sticky) or a not in items ]
 
 
     def clear(self, sticky=False):
@@ -89,7 +89,7 @@ class ItemList(list):
         if sticky:
             del self[:]
         else:
-            self[:] = [ a for a in self if a.sticky ]
+            self[:] = [ a for a in self if (hasattr(a,'sticky') and a.sticky) ]
 
 
 
