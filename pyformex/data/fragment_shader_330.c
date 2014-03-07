@@ -24,18 +24,46 @@
 
 // Fragment shader
 
+#version 330 core
+
 #ifdef GL_ES
 precision mediump float;
 #endif
 
 in vec4 fragColor;
 in vec3 nNormal;        // normalized transformed normal
+in vec2 texCoord;
+
+uniform int useTexture;    // 0: no texture, 1: single texture
+uniform int texmode;       // 0: GL_REPLACE, 1: GL_MODULATE, 2: GL_DECAL
+uniform float alpha;       // Material opacity
+
+uniform sampler2D tex;
 
 
 void main(void) {
-  if (nNormal[2] < 0.0)
-    discard;
-  gl_FragColor = fragColor;
+
+  //if (nNormal[2] < 0.0)
+  //  discard;
+
+  if (useTexture > 0) {
+    vec4 texColor = texture2D(tex,texCoord);
+    if (texmode == 0) {
+      // GL_REPLACE
+      gl_FragColor = texColor;
+    } else if (texmode == 1) {
+      // GL_MODULATE
+      gl_FragColor = fragColor * texColor;
+    } else if (texmode == 2) {
+      // GL_DECAL
+      gl_FragColor = vec4( fragColor.rgb * (1.0-texColor.a) + texColor.rgb * texColor.a, fragColor.a);
+    } else if (texmode == 3) {
+      // Our own mixture using the object alpha
+      gl_FragColor = vec4( fragColor.rgb * alpha + texColor.rgb * (1.-alpha), fragColor.a);
+    }
+  } else {
+    gl_FragColor = fragColor;
+  }
 }
 
 // End

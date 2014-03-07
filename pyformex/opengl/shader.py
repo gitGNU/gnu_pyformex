@@ -57,9 +57,10 @@ def defaultShaders():
     if not pf.options.shader:
         if 'Mesa' in renderer or 'Mesa' in version:
             pf.options.shader = '_mesa_30'
-## if vendor == 'NVIDIA' and SaneVersion(shortversion) <= SaneVersion('3.0'):
-    ##     vertexshader = vertexshader.replace('.c','_nvidia_3.1.c')
-    ##     fragmentshader = fragmentshader.replace('.c','_nvidia_3.1.c')
+
+        if pf.options.opengl is not None:
+            if SaneVersion(pf.options.opengl) >= SaneVersion('3.3'):
+                pf.options.shader = '_330'
 
     if pf.options.shader:
         vertexshader += str(pf.options.shader)

@@ -80,8 +80,14 @@ def catchAndDisplay(expression):
 
 def opengl():
     """Display the OpenGL format description."""
-    s = viewport.OpenGLFormat(pf.canvas.format())
-    draw.showText(viewport.OpenGLFormat(pf.canvas.format()))
+    if pf.options.opengl2:
+        from pyformex.opengl import canvas
+        s = str(canvas.glVersion()) + '\n'
+    else:
+        s = ''
+ 
+    s += viewport.OpenGLFormat(pf.canvas.format())
+    draw.showText(s)
 
 def detected():
     """Display the detected software components."""
