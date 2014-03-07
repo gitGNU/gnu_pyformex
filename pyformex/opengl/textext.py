@@ -30,12 +30,16 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import utils
+from pyformex.formex import Formex
 from pyformex.opengl.drawable import Base, GeomActor
 from pyformex.opengl.texture import Texture
 from pyformex.opengl.sanitize import *
 
+
 from OpenGL import GL
 import freetype as ft
+import numpy
+
 
 def is_mono_font(fontfile,size=24):
     "Test whether a fontfile is a fixed width font or not"""
@@ -44,7 +48,7 @@ def is_mono_font(fontfile,size=24):
     return face.is_fixed_width
 
 
-def list_mono_fonts():
+def listMonoFonts():
     fonts = [ f for f in utils.listFontFiles() if f.endswith('.ttf') ]
     fonts = [ f for f in fonts if is_mono_font(f) ]
     return sorted(fonts)
@@ -100,28 +104,6 @@ default_font_size = 36
 default_font = FontTexture(default_font_file,default_font_size)
 
 
-## class TextMark(Mark):
-##     """A text drawn at a 3D position."""
-
-##     def __init__(self,pos,text,color=None,fonttex='',size=18,gravity=None,**kargs):
-##         Mark.__init__(self,pos,**kargs)
-##         self.text = text
-##         self.color = saneColor(color)
-##         if not fonttex:
-##             fonttex = default_font
-##         self.tex = fonttex
-##         self.tex.bind()
-##         print(self.tex.texid)
-
-
-##     def drawGL(self,**kargs):
-
-##         if self.color is not None:
-##             GL.glColor3fv(self.color)
-##         GL.glRasterPos3fv(self.pos)
-##         self.tex.render(self.text,0,0)
-
-
 class Text(GeomActor):
     """A text drawn at a 2D position."""
 
@@ -142,34 +124,8 @@ class Text(GeomActor):
             x0,y0 = i*dx,j*dy
             texcoords.append([[x0,y0+dy],[x0+dx,y0+dy],[x0+dx,y0],[x0,y0]])
         texcoords = array(texcoords)
-        print(texcoords)
         F = Formex('4:0123').replic(n).scale(size).trl([x,y,0.])
-        GeomActor.__init__(self,F,rendertype=2,texture=fonttex,texmode=2,texcoords=texcoords,**kargs)
+        GeomActor.__init__(self,F,rendertype=2,texture=default_font,texmode=0,texcoords=texcoords,opak=False,ontop=True,**kargs)
 
 
-
-if __name__ == "draw":
-
-    image = os.path.join(pf.cfg['pyformexdir'], 'data', 'butterfly.png')
-    image = default_font
-
-    resetAll()
-    clear()
-    view('front')
-    smooth()
-    transparent()
-    fonts = list_mono_fonts()
-    for f in fonts:
-        print(f)
-
-    F = Formex('4:0123').toMesh()
-    G = F.scale(600).trl([200,200,0])
-    #A = draw(F.scale(400),color=yellow,texture=image,texcoords=array([[0,1],[1,1],[1,0],[0,0]]),texmode=2)
-    #B = draw(F,color=yellow,texture=image,texcoords=array([[0,1],[1,1],[1,0],[0,0]]),rendertype=3,opak=False,lighting=True,alpha=0.5)
-    #C = draw(F.scale(400),color=yellow,texture=image,texcoords=array([[0,1],[1,1],[1,0],[0,0]]),rendertype=2,texmode=2)
-
-
-    T = Text("Hegemony!",100,100,size=50,color=red)
-    decorate(T)
-    decorate(Text("Hegemony!",20,20,size=20,color=None))
 # End

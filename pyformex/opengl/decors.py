@@ -29,6 +29,7 @@ instead of through the 3D OpenGL engine.
 from __future__ import print_function
 
 from pyformex import simple
+from pyformex.formex import Formex
 from pyformex.opengl.drawable import GeomActor
 from pyformex.opengl.sanitize import *
 

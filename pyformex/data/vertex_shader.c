@@ -166,6 +166,7 @@ void main()
 
   if (useTexture > 0) {
     texCoord = vertexTexturePos;
+    gl_FrontColor = gl_Color;
   }
 }
 

@@ -802,7 +802,10 @@ class Canvas(object):
         - `image`: an image to be set.
         """
         self.scene.backgrounds.clear()
-        self.settings.update(dict(bgcolor=color, bgimage=image))
+        if color is not None:
+            self.settings.update(dict(bgcolor=color))
+        if image is not None:
+            self.settings.update(dict(bgimage=image))
         color = self.settings.bgcolor
         if color.ndim == 1 and not self.settings.bgimage:
             pf.debug("Clearing fancy background", pf.DEBUG.DRAW)

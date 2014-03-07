@@ -167,6 +167,7 @@ class Renderer(object):
 
         else:
             # ALPHABLEND
+            # 2D actors are by default transparent!
             opaque = [ a for a in actors if a.opak ]
             transp = [ a for a in actors if not a.opak ]
 
@@ -190,6 +191,8 @@ class Renderer(object):
                 GL.glBlendFunc(GL.GL_ZERO, GL.GL_SRC_COLOR)
             elif pf.cfg['render/alphablend'] == 'add':
                 GL.glBlendFunc(GL.GL_ONE, GL.GL_ONE)
+            elif pf.cfg['render/alphablend'] == 'trad1':
+                GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE)
             self.renderObjects(transp)
             GL.glDisable (GL.GL_BLEND)
 
@@ -218,7 +221,38 @@ class Renderer(object):
 
         GL.glDisable(GL.GL_DEPTH_TEST)
         GL.glDisable(GL.GL_CULL_FACE)
-        self.renderObjects(actors)
+        GL.glDepthMask (GL.GL_FALSE)
+
+        # ALPHABLEND
+        #
+        # We need blending for text rendering!
+        #
+        # 2D actors are by default opak!
+        opaque = [ a for a in actors if a.opak is None or a.opak ]
+        transp = [ a for a in actors if a.opak is False]
+
+        # First render the opaque objects
+        self.renderObjects(opaque)
+
+        # Then the transparent ones
+        # Disable writing to the depth buffer
+        # as everything behind the transparent object
+        # also needs to be drawn
+
+        GL.glEnable(GL.GL_BLEND)
+        GL.glBlendEquation(GL.GL_FUNC_ADD)
+        if pf.cfg['render/textblend'] in ['trad','sort']:
+            GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+        elif pf.cfg['render/textblend'] == 'mult':
+            GL.glBlendFunc(GL.GL_ZERO, GL.GL_SRC_COLOR)
+        elif pf.cfg['render/textblend'] == 'add':
+            GL.glBlendFunc(GL.GL_ONE, GL.GL_ONE)
+        elif pf.cfg['render/textblend'] == 'trad1':
+            GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE)
+        elif pf.cfg['render/textblend'] == 'zero':
+            GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ZERO)
+        self.renderObjects(transp)
+        GL.glDisable (GL.GL_BLEND)
 
 
     def renderBG(self,actors):

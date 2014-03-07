@@ -40,7 +40,6 @@ uniform float alpha;       // Material opacity
 
 uniform sampler2D tex;
 
-
 void main(void) {
 
   //if (nNormal[2] < 0.0)

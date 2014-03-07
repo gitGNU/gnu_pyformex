@@ -32,8 +32,8 @@ from pyformex import arraytools as at
 from pyformex import coords
 from pyformex.opengl.drawable import GeomActor
 from pyformex.gui import actors as oldactors
-from pyformex.gui import actors as olddecors
-from pyformex.gui import marks
+from pyformex.gui import decors as olddecors
+from pyformex.gui import marks as oldmarks
 
 
 class ItemList(list):
@@ -110,6 +110,7 @@ class Scene(object):
         self.canvas = canvas
         self.actors = ItemList(self)
         self.oldactors = ItemList(self)
+        self.olddecors = ItemList(self)
         self.annotations = ItemList(self)
         self.decorations = ItemList(self)
         self.backgrounds = ItemList(self)
@@ -183,8 +184,10 @@ class Scene(object):
             [ self.addActor(a) for a in actor ]
         elif isinstance(actor, oldactors.Actor):
             self.oldactors.add(actor)
-        elif isinstance(actor, marks.Mark):
-            self.annotations.add(actor)
+        elif isinstance(actor, oldmarks.Mark):
+            self.oldactors.add(actor)
+        elif isinstance(actor, olddecors.Decoration):
+            self.olddecors.add(actor)
         elif isinstance(actor, GeomActor):
             if actor.rendertype == 0:
                 self.actors.add(actor)
@@ -212,8 +215,10 @@ class Scene(object):
             [ self.removeActor(a) for a in actor ]
         elif isinstance(actor, oldactors.Actor):
             self.oldactors.delete(actor)
-        elif isinstance(actor, marks.Mark):
-            self.annotations.delete(actor)
+        elif isinstance(actor, oldmarks.Mark):
+            self.oldactors.delete(actor)
+        elif isinstance(actor, olddecors.Decoration):
+            self.olddecors.delete(actor)
         elif isinstance(actor, GeomActor):
             if actor.rendertype == 0:
                 self.actors.delete(actor)
