@@ -32,6 +32,7 @@ from pyformex import simple
 from pyformex.formex import Formex
 from pyformex.opengl.drawable import GeomActor
 from pyformex.opengl.sanitize import *
+from pyformex.gui import colorscale as cs
 
 ### Decorations ###############################################
 
@@ -83,16 +84,17 @@ class ColorLegend(GeomActor):
 
     Parameters:
 
-    - `colorlegend`: a :class:`colorscale.ColorLegend` instance providing
+    - `colorscale`: a :class:`colorscale.ColorScale` instance providing
       conversion between numerical values and colors
+    - `colorlegend`: int: the number of different colors to use.
     - `x,y,w,h`: four integers specifying the position and size of the
       color bar rectangle
     - `ngrid`: int: number of intervals for the grid lines to be shown.
       If > 0, grid lines are drawn around the color bar and between the
       ``ngrid`` intervals.
       If = 0, no grid lines are drawn.
-      If < 0 (default), the value is set equal to the number of colors (as
-      set in the ``colorlegend``) or to 0 if this number is higher than 50.
+      If < 0 (default), the value is set equal to the number of colors
+      or to 0 if this number is higher than 50.
     - `linewidth`: float: width of the grid lines. If not specified, the
       current canvas line width is used.
     - `nlabel`: int: number of intervals for the labels to be shown.
@@ -130,34 +132,34 @@ class ColorLegend(GeomActor):
     The `ColorScale` example script provides opportunity to experiment with
     different settings.
     """
-    def __init__(self,colorlegend,x,y,w,h,ngrid=0,linewidth=None,nlabel=-1,font=None,size=None,dec=2,scale=0,lefttext=False,**kargs):
+    def __init__(self,colorscale,ncolors,x,y,w,h,ngrid=0,linewidth=None,nlabel=-1,font=None,size=None,dec=2,scale=0,lefttext=False,**kargs):
         """Initialize the ColorLegend."""
-        self.cl = colorlegend
+        self.cl = cs.ColorLegend(colorscale,ncolors)
         self.x = float(x)
         self.y = float(y)
         self.w = float(w)
         self.h = float(h)
         self.ngrid = int(ngrid)
         if self.ngrid < 0:
-            self.ngrid = len(self.cl.colors)
+            self.ngrid = ncolors
             if self.ngrid > 50:
                 self.ngrid = 0
         self.linewidth = saneLineWidth(linewidth)
         self.nlabel = int(nlabel)
         if self.nlabel < 0:
-            self.nlabel = len(self.cl.colors)
-        #self.font = gluttext.glutSelectFont(font, size)
+            if self.ngrid > 0:
+                self.nlabel = self.ngrid
+            else:
+                self.nlabel = ncolors
         self.dec = dec   # number of decimals
         self.scale = 10 ** scale # scale all numbers with 10**scale
         self.lefttext = lefttext
         self.xgap = 4  # hor. gap between color bar and labels
         self.ygap = 4  # (min) vert. gap between labels
 
-        self.decorations = []
-        n = len(self.cl.colors)
-        pf.debug("NUMBER OF COLORS: %s" % n)
+        #pf.debug("NUMBER OF COLORS: %s" % n,pf.DEBUG.DRAW)
 
-        F = simple.rectangle(1,n,self.w,self.h).trl([self.x,self.y,0.])
+        F = simple.rectangle(1,ncolors,self.w,self.h).trl([self.x,self.y,0.])
         GeomActor.__init__(self,F,rendertype=2,lighting=False,color=self.cl.colors,**kargs)
 
         if self.ngrid > 0:
@@ -165,42 +167,47 @@ class ColorLegend(GeomActor):
             G = GeomActor(F,rendertype=2,lighting=False,color=black,linewidth=self.linewidth,mode='wireframe')
             self.children.append(G)
 
+        # labels
+        print("LABELS: %s" % self.nlabel)
+        if self.nlabel > 0:
+            from pyformex.opengl import textext
+            from pyformex.coords import Coords
 
-        ## # labels
-        ## if self.nlabel > 0:
-        ##     fh = gluttext.glutFontHeight(self.font)
-        ##     pf.debug("FONT HEIGHT %s" % fh)
-        ##     # minimum label distance
-        ##     dh = fh + self.ygap
-        ##     maxlabel = float(self.h)/dh # maximum n umber of labels
-        ##     if self.nlabel <= maxlabel:
-        ##         dh = float(self.h)/self.nlabel # respect requested number
+            self.font = textext.default_font
+            fh = self.font.height
+            pf.debug("FONT HEIGHT %s" % fh,pf.DEBUG.DRAW)
 
-        ##     if self.lefttext:
-        ##         x1 = x1 - self.xgap
-        ##         gravity = 'W'
-        ##     else:
-        ##         x1 = x2 + self.xgap
-        ##         gravity = 'E'
+            # minimum label distance
+            dh = fh + self.ygap
+            da = self.h / self.nlabel
 
-        ##     # FOR 3-VALUE SCALES THIS SHOULD BE DONE IN TWO PARTS,
-        ##     # FROM THE CENTER OUTWARDS, AND THEN ADDING THE
-        ##     # MIN AND MAX VALUES
-        ##     for i, v in enumerate(self.cl.limits):
-        ##         y2 = y0 + i*dy
-        ##         if y2 >= y1 or i == 0 or i == len(self.cl.limits)-1:
-        ##             if y2 >= self.y+self.h-dh/2 and i < len(self.cl.limits)-1:
-        ##                 continue
-        ##             t = Text(("%%.%df" % self.dec) % (v*self.scale), x1, round(y2), font=self.font, gravity=gravity)
-        ##             self.decorations.append(t)
-        ##             t.drawGL(**kargs)
-        ##             y1 = y2 + dh
+            if self.lefttext:
+                x = F.coords[0,0,0] - self.xgap
+                gravity = 'W'
+            else:
+                x = F.coords[0,1,0] + self.xgap
+                gravity = 'E'
 
+            # Check if labels will fit
+            if self.nlabel == self.ngrid and da > dh:
+                pass
+            else:
+                # create new colorlegend
+                nlabel = int(self.h/dh)
+                da = self.h / self.nlabel
 
-    def use_list(self):
-        Decoration.use_list(self)
-        for t in self.decorations:
-            t.use_list()
+            vals = cs.ColorLegend(colorscale,nlabel).limits
+            print("VALS",vals)
+
+            ypos = self.y + da * arange(nlabel+1)
+
+            yok = self.y - 0.01*dh
+            for (y,v) in zip (ypos,vals):
+                print(y,v,yok)
+                if y >= yok:
+                    t = textext.Text(("%%.%df" % self.dec) % (v*self.scale), x, y, font=self.font)
+                    self.children.append(t)
+                    yok = y + dh
 
 
 ## class LineDrawing(Decoration):

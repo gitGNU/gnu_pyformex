@@ -78,6 +78,7 @@ class FontTexture(Texture):
         height = ascender+descender
 
         # Generate texture data
+        self.width, self.height = width,height
         image = numpy.zeros((height*6, width*16), dtype=numpy.ubyte)
         for j in range(6):
             for i in range(16):
@@ -109,6 +110,8 @@ class Text(GeomActor):
 
     def __init__(self,text,x,y,fonttex=None,size=18,gravity=None,**kargs):
         self.text = text
+        self.x,self.y = x,y
+        self.size = size
         if not fonttex:
             fonttex = default_font
         if gravity is None:

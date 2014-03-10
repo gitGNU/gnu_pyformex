@@ -123,8 +123,7 @@ def show():
 def drawColorScale(palet, minval, maxval, medval, maxexp, minexp, ncolors, dec, scale, ngrid, linewidth, nlabel, lefttext, font, x, y, w, h):
     """Draw a color scale with the specified parameters"""
     CS = ColorScale(palet, minval, maxval, midval=medval, exp=maxexp, exp2=minexp)
-    CL = ColorLegend(CS, ncolors)
-    CLA = decors.ColorLegend(CL, x, y, w, h, ngrid=ngrid, linewidth=linewidth, nlabel=nlabel, font=font, dec=dec, scale=scale, lefttext=lefttext)
+    CLA = decors.ColorLegend(CS, ncolors,x, y, w, h, ngrid=ngrid, linewidth=linewidth, nlabel=nlabel, font=font, dec=dec, scale=scale, lefttext=lefttext)
     drawActor(CLA)
 
 
