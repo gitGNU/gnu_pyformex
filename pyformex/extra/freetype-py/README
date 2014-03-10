@@ -1,4 +1,4 @@
-# $Id$
+#
 ##
 ##  This file is part of pyFormex 0.9.1  (Tue Oct 15 21:05:25 CEST 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
@@ -21,37 +21,17 @@
 ##  You should have received a copy of the GNU General Public License
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
-
-#
-# needs packages:  libboost-python-dev libftgl-dev
 #
 
-PKG_NAME=PyFTGL
-PKG_VERSION=0.5c
-PKG_FULLNAME=$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE=$(PKG_FULLNAME).tar.bz2
-PKG_URL=http://pyftgl.googlecode.com/files/$(PKG_SOURCE)
-PKG_DIR=$(PKG_FULLNAME)
+This Makefile can be used to install Python bindings for the freetype
+library.
 
-.PHONY: all download unpack build install clean
+To install, execute the following in this directory::
 
-all: build
+  make
 
-download: $(PKG_SOURCE)
+and then, with superuser permissions:
 
-$(PKG_SOURCE):
-	wget $(PKG_URL)
+   make install
 
-unpack: $(PKG_DIR)
-
-$(PKG_DIR): $(PKG_SOURCE)
-	tar xvjf $<
-
-build: $(PKG_DIR)
-	cd $(PKG_DIR); python setup.py build
-
-install:
-	cd $(PKG_DIR); python setup.py install
-
-clean:
-	rm -rf $(PKG_SOURCE) $(PKG_DIR)
+# End
