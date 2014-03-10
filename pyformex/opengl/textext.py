@@ -97,6 +97,7 @@ class FontTexture(Texture):
 
         Returns the texture id.
         """
+        GL.glEnable(GL.GL_BLEND)
         Texture.activate(self,filtr=1)
 
 
@@ -114,6 +115,7 @@ class Text(GeomActor):
         self.size = size
         if not fonttex:
             fonttex = default_font
+        #fonttex.activate()
         if gravity is None:
             gravity = 'E'
         self.gravity = gravity

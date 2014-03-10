@@ -82,6 +82,7 @@ class Texture(object):
         texfiltr = { 0: GL.GL_NEAREST,
                      1: GL.GL_LINEAR,
                      }[filtr]
+
         # Configure the texture rendering parameters
         GL.glEnable(GL.GL_TEXTURE_2D)
         GL.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, texmode)

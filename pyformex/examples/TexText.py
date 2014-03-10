@@ -41,7 +41,6 @@ from pyformex.opengl.textext import Text, default_font, listMonoFonts
 def run():
     resetAll()
     clear()
-    transparent(True)
     view('front')
     smooth()
     fonts = listMonoFonts()
@@ -64,6 +63,7 @@ def run():
     # Also, the color is currently not honoured.
     decorate(Text("Hegemony!",0,10,size=20,color=red))
     decorate(Text("Hegemony!",5,30,size=20,color=red))
+
 
 if __name__ == 'draw':
     run()

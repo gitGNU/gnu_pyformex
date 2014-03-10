@@ -185,14 +185,14 @@ class Renderer(object):
 
             GL.glEnable(GL.GL_BLEND)
             GL.glBlendEquation(GL.GL_FUNC_ADD)
-            if pf.cfg['render/alphablend'] in ['trad','sort']:
-                GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-            elif pf.cfg['render/alphablend'] == 'mult':
+            if pf.cfg['render/alphablend'] == 'mult':
                 GL.glBlendFunc(GL.GL_ZERO, GL.GL_SRC_COLOR)
             elif pf.cfg['render/alphablend'] == 'add':
                 GL.glBlendFunc(GL.GL_ONE, GL.GL_ONE)
             elif pf.cfg['render/alphablend'] == 'trad1':
                 GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE)
+            else:
+                GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
             self.renderObjects(transp)
             GL.glDisable (GL.GL_BLEND)
 
@@ -243,9 +243,7 @@ class Renderer(object):
 
         GL.glEnable(GL.GL_BLEND)
         GL.glBlendEquation(GL.GL_FUNC_ADD)
-        if pf.cfg['render/textblend'] in ['trad','sort']:
-            GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-        elif pf.cfg['render/textblend'] == 'mult':
+        if pf.cfg['render/textblend'] == 'mult':
             GL.glBlendFunc(GL.GL_ZERO, GL.GL_SRC_COLOR)
         elif pf.cfg['render/textblend'] == 'add':
             GL.glBlendFunc(GL.GL_ONE, GL.GL_ONE)
@@ -253,6 +251,8 @@ class Renderer(object):
             GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE)
         elif pf.cfg['render/textblend'] == 'zero':
             GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ZERO)
+        else:
+             GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
         self.renderObjects(transp)
         GL.glDisable (GL.GL_BLEND)
         GL.glDepthMask (GL.GL_TRUE)

@@ -717,7 +717,7 @@ class Canvas(object):
         Furthermore, if a Canvas method do_ATTR is defined, it will be called
         with the old and new toggle state as a parameter.
         """
-        #print("CANVAS.setTogggle %s = %s"%(attr,state))
+        print("CANVAS.setTogggle %s = %s"%(attr,state))
         oldstate = self.settings[attr]
         if state not in [True, False]:
             state = not oldstate
@@ -727,8 +727,6 @@ class Canvas(object):
             func(state, oldstate)
         except:
             pass
-
-        #print("SETTINGS",self.settings)
 
 
     def setLighting(self, onoff):
@@ -747,9 +745,9 @@ class Canvas(object):
 
     def do_alphablend(self, state, oldstate):
         """Toggle alphablend on/off."""
-        #print("CANVAS.do_alphablend: %s -> %s"%(state,oldstate))
+        print("CANVAS.do_alphablend: %s -> %s"%(state,oldstate))
         if state != oldstate:
-            self.renderer.changeMode(self)
+            #self.renderer.changeMode(self)
             self.scene.changeMode(self)
             self.display()
 
