@@ -196,6 +196,8 @@ class Renderer(object):
             self.renderObjects(transp)
             GL.glDisable (GL.GL_BLEND)
 
+        GL.glDepthMask (GL.GL_TRUE)
+
 
     def render2D(self,actors):
         """Render 2D decorations.
@@ -253,6 +255,7 @@ class Renderer(object):
             GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ZERO)
         self.renderObjects(transp)
         GL.glDisable (GL.GL_BLEND)
+        GL.glDepthMask (GL.GL_TRUE)
 
 
     def renderBG(self,actors):
