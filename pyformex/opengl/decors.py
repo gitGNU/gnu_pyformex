@@ -132,7 +132,7 @@ class ColorLegend(GeomActor):
     The `ColorScale` example script provides opportunity to experiment with
     different settings.
     """
-    def __init__(self,colorscale,ncolors,x,y,w,h,ngrid=0,linewidth=None,nlabel=-1,font=None,size=None,dec=2,scale=0,lefttext=False,**kargs):
+    def __init__(self,colorscale,ncolors,x,y,w,h,ngrid=0,linewidth=None,nlabel=-1,size=18,dec=2,scale=0,lefttext=False,**kargs):
         """Initialize the ColorLegend."""
         self.cl = cs.ColorLegend(colorscale,ncolors)
         self.x = float(x)
@@ -157,8 +157,6 @@ class ColorLegend(GeomActor):
         self.xgap = 4  # hor. gap between color bar and labels
         self.ygap = 4  # (min) vert. gap between labels
 
-        #pf.debug("NUMBER OF COLORS: %s" % n,pf.DEBUG.DRAW)
-
         F = simple.rectangle(1,ncolors,self.w,self.h).trl([self.x,self.y,0.])
         GeomActor.__init__(self,F,rendertype=2,lighting=False,color=self.cl.colors,**kargs)
 
@@ -177,10 +175,6 @@ class ColorLegend(GeomActor):
             fh = self.font.height
             pf.debug("FONT HEIGHT %s" % fh,pf.DEBUG.DRAW)
 
-            # minimum label distance
-            dh = fh + self.ygap
-            da = self.h / self.nlabel
-
             if self.lefttext:
                 x = F.coords[0,0,0] - self.xgap
                 gravity = 'W'
@@ -188,24 +182,26 @@ class ColorLegend(GeomActor):
                 x = F.coords[0,1,0] + self.xgap
                 gravity = 'E'
 
+            # minimum label distance
+            dh = fh + self.ygap
+            da = self.h / self.nlabel
+
             # Check if labels will fit
-            if self.nlabel == self.ngrid and da > dh:
-                pass
-            else:
-                # create new colorlegend
-                nlabel = int(self.h/dh)
+            if da < dh and self.nlabel == ncolors:
+                # reduce number of labels
+                self.nlabel = int(self.h/dh)
                 da = self.h / self.nlabel
 
-            vals = cs.ColorLegend(colorscale,nlabel).limits
-            print("VALS",vals)
+            vals = cs.ColorLegend(colorscale,self.nlabel).limits
+            #print("VALS",vals)
 
-            ypos = self.y + da * arange(nlabel+1)
+            ypos = self.y + da * arange(self.nlabel+1)
 
             yok = self.y - 0.01*dh
             for (y,v) in zip (ypos,vals):
-                print(y,v,yok)
+                #print(y,v,yok)
                 if y >= yok:
-                    t = textext.Text(("%%.%df" % self.dec) % (v*self.scale), x, y, font=self.font)
+                    t = textext.Text(("%%.%df" % self.dec) % (v*self.scale), x, y, size=size, gravity=gravity)
                     self.children.append(t)
                     yok = y + dh
 

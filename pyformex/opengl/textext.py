@@ -109,13 +109,16 @@ default_font = FontTexture(default_font_file,default_font_size)
 class Text(GeomActor):
     """A text drawn at a 2D position."""
 
-    def __init__(self,text,x,y,fonttex=None,size=18,gravity=None,**kargs):
+    def __init__(self,text,x,y,size=18,width=None,fonttex=None,gravity=None,**kargs):
         self.text = text
         self.x,self.y = x,y
         self.size = size
         if not fonttex:
             fonttex = default_font
-        #fonttex.activate()
+        if not width:
+            aspect = float(fonttex.width) / fonttex.height
+            width = size * aspect
+        self.width = width
         if gravity is None:
             gravity = 'E'
         self.gravity = gravity
@@ -129,7 +132,20 @@ class Text(GeomActor):
             x0,y0 = i*dx,j*dy
             texcoords.append([[x0,y0+dy],[x0+dx,y0+dy],[x0+dx,y0],[x0,y0]])
         texcoords = array(texcoords)
-        F = Formex('4:0123').replic(n).scale(size).trl([x,y,0.])
+        F = Formex('4:0123').replic(n).scale([width,size,0.])
+
+        alignment = ['0','0','0']
+        if 'W' in gravity:
+            alignment[0] = '+'
+        elif 'E' in gravity:
+            alignment[0] = '-'
+        if 'S' in gravity:
+            alignment[1] = '+'
+        elif 'N' in gravity:
+            alignment[1] = '-'
+        alignment = ''.join(alignment)
+        print("Gravity %s = aligment %s" % (gravity,alignment))
+        F = F.align(alignment,[x,y,0.])
         GeomActor.__init__(self,F,rendertype=2,texture=default_font,texmode=0,texcoords=texcoords,opak=False,ontop=True,**kargs)
 
 

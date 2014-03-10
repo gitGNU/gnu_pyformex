@@ -37,7 +37,6 @@ _techniques = ['dialog', 'color']
 import pyformex as pf
 from pyformex.gui.draw import *
 from pyformex.gui.colorscale import *
-from pyformex.gui.gluttext import GLUTFONTS
 if pf.options.opengl2:
     from pyformex.opengl import decors
 else:
@@ -64,7 +63,7 @@ input_data = [
         _I('dec', 2, text='Decimals'),
         _I('scale', 0, text='Scaling exponent'),
         _I('lefttext', True, text='Text left of colorscale'),
-        _I('font', 'hv18', text='Font', choices=GLUTFONTS.keys()),
+        _I('textsize', 18, text='Text height'),
         _I('header', 'Currently not displayed', text='Header', enabled=False),
         _I('gravity', 'Notused', text='Gravity', enabled=False),
         ]),
@@ -117,13 +116,13 @@ def show():
 
 
     # ok, now draw it
-    drawColorScale(palet, minval, maxval, medval, maxexp, minexp, ncolors, dec, scale, ngrid, linewidth, nlabel, lefttext, font, x, y, w, h)
+    drawColorScale(palet, minval, maxval, medval, maxexp, minexp, ncolors, dec, scale, ngrid, linewidth, nlabel, lefttext, textsize, x, y, w, h)
 
 
-def drawColorScale(palet, minval, maxval, medval, maxexp, minexp, ncolors, dec, scale, ngrid, linewidth, nlabel, lefttext, font, x, y, w, h):
+def drawColorScale(palet, minval, maxval, medval, maxexp, minexp, ncolors, dec, scale, ngrid, linewidth, nlabel, lefttext, textsize, x, y, w, h):
     """Draw a color scale with the specified parameters"""
     CS = ColorScale(palet, minval, maxval, midval=medval, exp=maxexp, exp2=minexp)
-    CLA = decors.ColorLegend(CS, ncolors,x, y, w, h, ngrid=ngrid, linewidth=linewidth, nlabel=nlabel, font=font, dec=dec, scale=scale, lefttext=lefttext)
+    CLA = decors.ColorLegend(CS, ncolors,x, y, w, h, ngrid=ngrid, linewidth=linewidth, nlabel=nlabel, size=textsize, dec=dec, scale=scale, lefttext=lefttext)
     drawActor(CLA)
 
 
