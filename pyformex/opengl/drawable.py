@@ -515,6 +515,8 @@ class GeomActor(Attributes):
 
         #### CHILDREN ####
         for child in self.children:
+            print("Preparing child")
+            print(child)
             child.prepare(canvas)
 
 
@@ -525,18 +527,22 @@ class GeomActor(Attributes):
         self._prepareNormals(canvas)
         # ndim >= 2
         if (self.eltype is not None and self.eltype.ndim >= 2) or (self.eltype is None and self.object.nplex() >= 3):
-            if canvas.rendermode == 'wireframe':
+            if self.mode:
+                rendermode = self.mode
+            else:
+                rendermode = canvas.rendermode
+            if rendermode == 'wireframe':
                 # Draw the colored edges
-                self._addEdges(canvas.renderer)
+                self._addEdges()
             else:
                 # Draw the colored faces
-                self._addFaces(canvas.renderer)
+                self._addFaces()
                 # Overlay the black edges (or not)
-                self._addWires(canvas.renderer)
+                self._addWires()
         # ndim < 2
         else:
             # Draw the colored faces
-            self._addFaces(canvas.renderer)
+            self._addFaces()
 
         #### CHILDREN ####
         for child in self.children:
@@ -595,9 +601,8 @@ class GeomActor(Attributes):
             return elems
 
 
-    def _addFaces(self, renderer):
+    def _addFaces(self):
         """Draw the elems"""
-        #print("ADDFACES %s" % self.faces)
         elems = self.subElems(nsel=self.faces)
 
         if (self.eltype is not None and self.eltype.ndim >= 2) or (self.eltype is None and self.object.nplex() >= 3):
@@ -634,19 +639,16 @@ class GeomActor(Attributes):
             self.drawable.append(Drawable(self, subelems=elems, name=self.name+"_faces", lighting=False))
 
 
-    def _addEdges(self, renderer):
+    def _addEdges(self):
         """Draw the edges"""
-        #print("ADDEDGES %s" % self.edges)
         if self.edges is not None:
             elems = self.subElems(nsel=self.edges)
-            #if elems is not None:
-                #print("ADDEDGES SIZE %s" % (elems.shape,))
             self.drawable.append(Drawable(self, subelems=elems, name=self.name+"_edges", lighting=False))
 
 
-    def _addWires(self, renderer):
+    def _addWires(self):
         """Add or remove the edges depending on rendering mode"""
-        wiremode = renderer.canvas.settings.wiremode
+        wiremode = pf.canvas.settings.wiremode
         elems = None
         if wiremode > 0 and self.edges is not None:
             if wiremode == 1:
