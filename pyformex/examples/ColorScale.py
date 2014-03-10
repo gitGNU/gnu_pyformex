@@ -34,10 +34,14 @@ _level = 'normal'
 _topics = ['FEA']
 _techniques = ['dialog', 'color']
 
+import pyformex as pf
 from pyformex.gui.draw import *
 from pyformex.gui.colorscale import *
 from pyformex.gui.gluttext import GLUTFONTS
-from pyformex.opengl import decors
+if pf.options.opengl2:
+    from pyformex.opengl import decors
+else:
+    from pyformex.gui import decors
 
 input_data = [
     _I('valrange', text='Value range type', itemtype='select', choices=['Minimum-Medium-Maximum', 'Minimum-Maximum']),
@@ -88,6 +92,8 @@ def show():
     clear()
     lights(False)
     dialog.acceptData()
+    pf.PF['_ColorScale_data_'] = dialog.results
+
     res = dialog.results
     globals().update(res)
 
@@ -165,6 +171,10 @@ def run():
 
     # Create the modeless dialog widget
     dialog = Dialog(input_data, enablers=input_enablers, caption='ColorScale Dialog', actions = [('Close', close), ('Show', show)], default='Show')
+
+    # Update its data from stored values
+    if '_ColorScale_data_' in pf.PF:
+        dialog.updateData(pf.PF['_ColorScale_data_'])
 
     # Examples style requires a timeout action
     dialog.timeout = timeOut

@@ -605,6 +605,8 @@ class GeomActor(Base):
 
         #### CHILDREN ####
         for child in self.children:
+            print("Changemode child")
+            print(child)
             child.changeMode(canvas)
 
         pf.debug("GEOMACTOR.changeMode create %s drawables" % len(self.drawable), pf.DEBUG.DRAW)

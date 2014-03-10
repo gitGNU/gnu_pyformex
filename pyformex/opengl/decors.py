@@ -63,44 +63,6 @@ class Rectangle(GeomActor):
 ##         drawLine(self.x1, self.y1, self.x2, self.y2)
 
 
-## class GlutText(Decoration):
-##     """A viewport decoration showing a text string.
-
-##     - text: a simple string, a multiline string or a list of strings. If it is
-##       a string, it will be splitted on the occurrence of '\\n' characters.
-##     - x,y: insertion position on the canvas
-##     - gravity: a string that determines the adjusting of the text with
-##       respect to the insert position. It can be a combination of one of the
-##       characters 'N or 'S' to specify the vertical positon, and 'W' or 'E'
-##       for the horizontal. The default(empty) string will center the text.
-
-##     """
-
-##     def __init__(self,text,x,y,font='9x15',size=None,gravity=None,color=None,zoom=None,**kargs):
-##         """Create a text actor"""
-##         Decoration.__init__(self,x,y,**kargs)
-##         self.text = str(text)
-##         self.font = gluttext.glutSelectFont(font, size)
-
-##         if gravity is None:
-##             gravity = 'E'
-##         self.gravity = gravity
-##         self.color = saneColor(color)
-##         self.zoom = zoom
-
-##     def drawGL(self,**kargs):
-##         """Draw the text."""
-##         ## if self.zoom:
-##         ##     pf.canvas.zoom_2D(self.zoom)
-##         if self.color is not None:
-##             GL.glColor3fv(self.color)
-##         gluttext.glutDrawText(self.text, self.x, self.y, font=self.font, gravity=self.gravity)
-##         ## if self.zoom:
-##         ##     pf.canvas.zoom_2D()
-
-## Text = GlutText
-
-
 class Grid(GeomActor):
     """A 2D-grid on the canvas."""
     def __init__(self,x1,y1,x2,y2,nx=1,ny=1,lighting=False,rendertype=2,**kargs):
@@ -198,8 +160,11 @@ class ColorLegend(GeomActor):
         F = simple.rectangle(1,n,self.w,self.h).trl([self.x,self.y,0.])
         GeomActor.__init__(self,F,rendertype=2,lighting=False,color=self.cl.colors,**kargs)
 
-        ## if self.nlabel > 0 or self.ngrid > 0:
-        ##     GL.glColor3f(*colors.black)
+        if self.ngrid > 0:
+            F = simple.rectangle(1,self.ngrid,self.w,self.h).trl([self.x,self.y,0.])
+            G = GeomActor(F,rendertype=2,lighting=False,color=black,linewidth=self.linewidth,mode='wireframe')
+            self.children.append(G)
+
 
         ## # labels
         ## if self.nlabel > 0:
@@ -230,12 +195,6 @@ class ColorLegend(GeomActor):
         ##             self.decorations.append(t)
         ##             t.drawGL(**kargs)
         ##             y1 = y2 + dh
-
-        ## # grid: after values, to be on top
-        ## if self.ngrid > 0:
-        ##     if self.linewidth is not None:
-        ##         GL.glLineWidth(self.linewidth)
-        ##     drawGrid(self.x, self.y, self.x+self.w, self.y+self.h, 1, self.ngrid)
 
 
     def use_list(self):
