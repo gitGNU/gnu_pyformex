@@ -41,26 +41,41 @@ import pyformex as pf
 
 def defaultShaders():
     """Determine the default shader programs"""
-    from pyformex.opengl.canvas import glVersion
+    from pyformex.opengl import canvas
     from pyformex.gui import viewport
     from pyformex.software import SaneVersion
-    vendor,renderer,version,glsl_version = glVersion()
-    vmajor,vminor = version.split('.')[:2]
+    glversion = canvas.glVersion()
+    vendor = glversion['vendor']
+    renderer = glversion['renderer']
+    version = glversion['version']
+    vmajor,vminor = glversion['version'].split('.')[:2]
     fmt = viewport.opengl_format
     major,minor = fmt.majorVersion(), fmt.minorVersion()
-    print("Vendor: %s; Available version: %s.%s; Active version %s.%s" % (vendor,vmajor,vminor,major,minor))
+    availversion = "%s.%s" % (vmajor,vminor)
+    activeversion = "%s.%s" % (major,minor)
+    print("Vendor: %s; Renderer: %s; Available version: %s; Active version %s" % (vendor,renderer,availversion,activeversion))
     shortversion = "%s.%s" % (major,minor)
     # Default shaders
     dirname = os.path.join(pf.pyformexdir,'data')
     vertexshader = os.path.join(dirname, "vertex_shader")
     fragmentshader = os.path.join(dirname, "fragment_shader")
     if not pf.options.shader:
-        if 'Mesa' in renderer or 'Mesa' in version:
-            pf.options.shader = '_mesa_30'
 
         if pf.options.opengl is not None:
             if SaneVersion(pf.options.opengl) >= SaneVersion('3.3'):
                 pf.options.shader = '_330'
+
+        # Default shaders for some hardware
+
+        print("Selecting best default shader")
+
+        if 'Mesa' in renderer or 'Mesa' in version:
+            pf.options.shader = '_mesa_30'
+
+        # For Radeon, select _330 if available
+        if 'Radeon' in renderer and SaneVersion(availversion) >= SaneVersion('3.3'):
+            pf.options.shader = '_330'
+
 
     if pf.options.shader:
         vertexshader += str(pf.options.shader)

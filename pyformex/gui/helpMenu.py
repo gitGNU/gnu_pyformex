@@ -82,10 +82,10 @@ def opengl():
     """Display the OpenGL format description."""
     if pf.options.opengl2:
         from pyformex.opengl import canvas
-        s = str(canvas.glVersion()) + '\n'
+        s = utils.formatDict(canvas.glVersion()) + '\n'
     else:
         s = ''
- 
+
     s += viewport.OpenGLFormat(pf.canvas.format())
     draw.showText(s)
 

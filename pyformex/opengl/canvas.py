@@ -33,6 +33,7 @@ from pyformex import arraytools as at
 from pyformex.gui import colors, views, marks
 
 from pyformex.mydict import Dict
+from pyformex.odict import OrderedDict
 from pyformex.collection import Collection
 from pyformex.attributes import Attributes
 from pyformex.formex import Formex
@@ -47,18 +48,14 @@ from pyformex.opengl.scene import Scene, ItemList
 from numpy import *
 from OpenGL import GL, GLU
 
-from OpenGL import GL
-
 
 def glVersion(mode='all'):
-    vendor = GL.glGetString(GL.GL_VENDOR)
-    renderer = GL.glGetString(GL.GL_RENDERER)
-    version = GL.glGetString(GL.GL_VERSION)
-    glsl_version = GL.glGetString(GL.GL_SHADING_LANGUAGE_VERSION)
-    if mode == 'all':
-        return vendor,renderer,version,glsl_version
-    if mode == 'vendor+version':
-        return vendor.split()[0], version.split()[0]
+    return OrderedDict([
+        ('vendor', GL.glGetString(GL.GL_VENDOR)),
+        ('renderer', GL.glGetString(GL.GL_RENDERER)),
+        ('version', GL.glGetString(GL.GL_VERSION)),
+        ('glsl_version', GL.glGetString(GL.GL_SHADING_LANGUAGE_VERSION)),
+        ])
 
 
 libGL = None
@@ -586,7 +583,7 @@ class Canvas(object):
         self.focus = False
         pf.debug("Canvas Setting:\n%s"% self.settings, pf.DEBUG.DRAW)
         self.makeCurrent()  # we need correct OpenGL context
-        print("CANVAS",glVersion())
+        #print("CANVAS",glVersion())
 
 
     @property
