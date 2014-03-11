@@ -22,15 +22,11 @@
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
 
-#
-# needs packages:  libboost-python-dev libftgl-dev
-#
-
-PKG_NAME=PyFTGL
-PKG_VERSION=0.5c
+PKG_NAME=freetype-py
+PKG_VERSION=0.4.1
 PKG_FULLNAME=$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE=$(PKG_FULLNAME).tar.bz2
-PKG_URL=http://pyftgl.googlecode.com/files/$(PKG_SOURCE)
+PKG_SOURCE=$(PKG_FULLNAME).tar.gz
+PKG_URL=http://freetype-py.googlecode.com/files/$(PKG_SOURCE)
 PKG_DIR=$(PKG_FULLNAME)
 
 .PHONY: all download unpack build install clean
@@ -45,13 +41,16 @@ $(PKG_SOURCE):
 unpack: $(PKG_DIR)
 
 $(PKG_DIR): $(PKG_SOURCE)
-	tar xvjf $<
+	tar xvzf $<
+	patch -p0 < freetype.patch
 
 build: $(PKG_DIR)
 	cd $(PKG_DIR); python setup.py build
 
-install:
+install: $(PKG_DIR)
 	cd $(PKG_DIR); python setup.py install
 
 clean:
 	rm -rf $(PKG_SOURCE) $(PKG_DIR)
+
+# End

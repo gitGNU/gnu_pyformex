@@ -139,11 +139,12 @@ class Renderer(object):
         # Get the current modelview*projection matrix
         modelview = self.camera.modelview
         projection = self.camera.projection
-        #print(projection)
+        transinv = self.camera.modelview.transinv().rot
 
         # Propagate the matrices to the uniforms of the shader
         self.shader.uniformMat4('modelview', modelview.gl())
         self.shader.uniformMat4('projection', projection.gl())
+        self.shader.uniformMat3('normalstransform', transinv.flatten().astype(np.float32))
 
         if pick:
             from pyformex.opengl import camera

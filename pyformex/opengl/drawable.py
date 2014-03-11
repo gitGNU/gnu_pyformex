@@ -574,6 +574,8 @@ class GeomActor(Base):
 
         #### CHILDREN ####
         for child in self.children:
+            print("Preparing child")
+            print(child)
             child.prepare(canvas)
 
 
