@@ -45,8 +45,12 @@ def run():
 
     from pyformex import simple
     F = simple.cuboid().centered().toMesh()
-    G = Formex('4:0123').replic2(3, 2).toMesh().setProp(arange(1, 7)).centered()
-    draw([F,G], texture=image)
+    G = Formex('4:0123')
+    H = G.replic2(3, 2).toMesh().setProp(arange(1, 7)).centered()
+    #K = G.scale(200).toMesh()
+    #K.attrib(color=yellow,rendertype=2, texture=image)
+    draw([F,H], texture=image)
+
     view('iso')
     zoom(0.5)
 

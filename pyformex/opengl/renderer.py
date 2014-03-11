@@ -140,6 +140,7 @@ class Renderer(object):
             # Propagate the matrices to the uniforms of the shader
             self.shader.uniformMat4('modelview', modelview.gl())
             self.shader.uniformMat4('projection', projection.gl())
+            self.shader.uniformMat3('normalstransform', modelview.transinv().rot.flatten().astype(np.float32))
             if pick:
                 from pyformex.opengl import camera
                 pickmat = camera.pick_matrix(*pick)

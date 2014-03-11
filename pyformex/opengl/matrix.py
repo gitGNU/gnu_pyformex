@@ -282,4 +282,9 @@ class Matrix4(np.matrix):
         """
         return Vector4(x) * self.inverse()
 
+
+    def transinv(self):
+        """Return the transpose of the inverse."""
+        return self.inverse().transpose()
+
 # End

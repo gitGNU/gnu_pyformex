@@ -128,6 +128,8 @@ class Shader(object):
     uniforms = uniforms_int + uniforms_float +  uniforms_vec3 + [
         'modelview',
         'projection',
+        'modelviewprojection',
+        'normalstransform',
         'pickmat',
         'picking',
     ]
@@ -198,6 +200,12 @@ class Shader(object):
         """Load a uniform mat4 into the shader"""
         loc = self.uniform[name]
         GL.glUniformMatrix4fv(loc, 1, False, value)
+
+
+    def uniformMat3(self, name, value):
+        """Load a uniform mat3 into the shader"""
+        loc = self.uniform[name]
+        GL.glUniformMatrix3fv(loc, 1, False, value)
 
 
     def bind(self,picking=False):
