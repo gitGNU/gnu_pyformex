@@ -53,8 +53,8 @@ def run():
     # - use the full character set in the default font as a texture
     # - the font textures are currently upside down, therefore we need
     #   to specify texcoords to flip the image
-    F = Formex('4:0123').toMesh()
-    A = draw(F.scale(200),color=yellow,texture=default_font,texcoords=array([[0,1],[1,1],[1,0],[0,0]]),texmode=2)
+    F = Formex('4:0123').scale(200).toMesh()
+    A = draw(F,color=yellow,texture=default_font,texcoords=array([[0,1],[1,1],[1,0],[0,0]]),texmode=2)
 
     # draw a string using the default_font texture
     T = Text("Hegemony!",(100,100),size=50,offset=(0.0,0.0,1))
@@ -65,6 +65,14 @@ def run():
     # Also, the color is currently not honoured.
     decorate(Text("Hegemony!",(0,10),size=20,color=red))
     decorate(Text("Hegemony!",(10,30),size=20,color=red))
+    for i,txt in [
+        (0,"Lower left corner"),
+        (1,"Lower right corner"),
+        (2,"Upper right corner"),
+        (3,"Upper left corner"),
+        ]:
+        j = F.elems[0,i]
+        decorate(Text(txt,F.coords[j],size=30,color=red))
 
 
 if __name__ == 'draw':

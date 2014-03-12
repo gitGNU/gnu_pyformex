@@ -114,8 +114,11 @@ class Text(Actor):
         if len(pos) == 2:
             rendertype = 2
             pos = [pos[0],pos[1],0.]
+            offset3d = None
         else:
             rendertype = 1
+            offset3d = pos
+            pos = [.0,.0,0.]
         self.size = size
         if not fonttex:
             fonttex = default_font
@@ -152,7 +155,7 @@ class Text(Actor):
         print("Gravity %s = aligment %s on point %s" % (gravity,alignment,pos))
         F = F.align(alignment,pos)
         print("Text bbox: %s" % str(F.bbox()))
-        Actor.__init__(self,F,rendertype=rendertype,texture=default_font,texmode=0,texcoords=texcoords,opak=False,ontop=True,**kargs)
+        Actor.__init__(self,F,rendertype=rendertype,texture=default_font,texmode=0,texcoords=texcoords,opak=False,ontop=True,offset3d=offset3d,**kargs)
 
 
 # For compatibility

@@ -196,8 +196,9 @@ class Drawable(Attributes):
 
         renderer.shader.loadUniforms(self)
 
-        if self.pixeloffset:
-            self.shader.uniformVec3('offset', self.pixeloffset)
+        if self.offset3d is not None:
+            offset = renderer.camera.toNDC(self.offset3d)
+            renderer.shader.uniformVec3('offset', (1.+offset[0],1.+offset[1],0.,0.))
 
         self.vbo.bind()
         GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
@@ -971,7 +972,6 @@ class Actor(Base):
 
 # for comp[atibility
 GeomActor = Actor
-
 
 ########################################################################
 

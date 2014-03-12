@@ -36,6 +36,7 @@ from pyformex.gui import colorscale as cs
 
 ### Decorations ###############################################
 
+
 class BboxActor(Actor):
     """Draws a bounding bbox.
 

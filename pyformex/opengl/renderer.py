@@ -39,7 +39,6 @@ from pyformex.attributes import Attributes
 from pyformex.opengl.matrix import Matrix4
 from pyformex.opengl.camera import orthogonal_matrix
 from pyformex.opengl.shader import Shader
-from pyformex.opengl.drawable import GeomActor
 
 import numpy as np
 from OpenGL import GL
@@ -290,19 +289,13 @@ class Renderer(object):
             self.renderBG(back(scene.backgrounds))
 
             # The 2D back decorations
-            self.render2D(back(scene.decorations))
-
-            ## # The back annotations
-            #self.renderAN(scene.back(scene.annotations))
+            self.render2D(back(scene.decorations)+back(scene.annotations))
 
             # The 3D actors
-            self.render3D(scene.actors+scene.annotations,pick)
-
-            ## # The front annotations
-            #self.renderAN(scene.back(scene.annotations))
+            self.render3D(scene.actors,pick)
 
             # The 2D front decorations
-            self.render2D(front(scene.decorations))
+            self.render2D(front(scene.annotations)+front(scene.decorations))
 
             # The front backgrounds
             self.renderBG(front(scene.backgrounds))
