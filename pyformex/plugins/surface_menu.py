@@ -30,16 +30,17 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import zip, simple, timer
-from pyformex.gui import actors, colors, decors, widgets, menu
+from pyformex.gui import actors, colors, widgets, menu
 from pyformex.plugins import plot2d, formex_menu, fe_abq
 
 from pyformex.odict import OrderedDict
 from pyformex.arraytools import niceLogSize
-from pyformex.gui.colorscale import ColorScale, ColorLegend
+from pyformex.gui.colorscale import ColorScale
 from pyformex.gui.draw import *
 from pyformex.plugins.trisurface import *
 from pyformex.plugins.objects import DrawableObjects
 from pyformex.plugins.tools import Plane
+from pyformex.opengl.decors import ColorLegend
 
 import os
 
@@ -635,9 +636,8 @@ def showSurfaceValue(S, txt, val, onEdges):
         draw(F, color=cval)
     else:
         draw(S, color=cval)
-    CL = ColorLegend(CS, 100)
-    CLA = decors.ColorLegend(CL, 10, 10, 30, 200, dec=dec)
-    pf.canvas.addDecoration(CLA)
+    CLA = ColorLegend(CS, 100, 10, 20, 30, 200, dec=dec)
+    decorate(CLA)
     drawText(txt, 10, 230, font='hv18')
 
 

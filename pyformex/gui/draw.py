@@ -1225,10 +1225,17 @@ def setTriade(on=None,pos='lb',siz=100):
     pf.app.processEvents()
 
 
-def drawText(text,x,y,gravity='E',font='helvetica',size=14,color=None,zoom=None):
+def drawText(text,x,y,gravity='E',font=None,size=14,color=None):
     """Show a text at position x,y using font."""
-    TA = decors.Text(text, x, y, gravity=gravity, font=font, size=size, color=color, zoom=zoom)
-    decorate(TA)
+    if pf.options.opengl2:
+        from pyformex.opengl.textext import Text
+        TA = Text(text, (x,y), gravity=gravity, font=font, size=size, color=color)
+    else:
+        from pyformex.gui.decors import Text
+        if font is None:
+            font = 'helvetica'
+        TA = Text(text, x,y, gravity=gravity, font=font, size=size, color=color)
+    drawActor(TA)
     return TA
 
 

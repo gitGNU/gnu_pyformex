@@ -181,7 +181,7 @@ class Scene(object):
         to the proper list.
         """
         if isinstance(actor, list):
-            [ self.addActor(a) for a in actor ]
+            [ self.addAny(a) for a in actor ]
         elif isinstance(actor, oldactors.Actor):
             self.oldactors.add(actor)
         elif isinstance(actor, oldmarks.Mark):
@@ -236,6 +236,7 @@ class Scene(object):
         """Clear the whole scene"""
         self.actors.clear(sticky)
         self.oldactors.clear(sticky)
+        self.olddecors.clear(sticky)
         self.annotations.clear(sticky)
         self.decorations.clear(sticky)
         self.backgrounds.clear(sticky)

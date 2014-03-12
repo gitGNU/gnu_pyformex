@@ -93,7 +93,7 @@ def draw(F,
     pf.GUI.drawlock.wait()
 
     if opts.clear_:
-        clear_canvas()
+        gui.draw.clear_canvas()
 
     if opts.view is not None and opts.view != 'last':
         pf.debug("SETTING VIEW to %s" % opts.view, pf.DEBUG.DRAW)

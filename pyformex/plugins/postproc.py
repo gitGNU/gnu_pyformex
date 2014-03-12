@@ -97,8 +97,8 @@ def drawField(mesh,fldtype,data,scale='RAINBOW',symmetric_scale=False):
       not do a lot of error checking yet.
     """
     import pyformex as pf
-    from pyformex.gui.colorscale import ColorScale, ColorLegend
-    from pyformex.gui import decors
+    from pyformex.gui.colorscale import ColorScale
+    from pyformex.opengl.decors import ColorLegend
     from pyformex.gui import draw
 
     # create a colorscale and draw the colorlegend
@@ -125,9 +125,8 @@ def drawField(mesh,fldtype,data,scale='RAINBOW',symmetric_scale=False):
     CS = ColorScale('RAINBOW', vmin, vmax, vmid, 1., 1.)
     cval = array([CS.color(v) for v in data.flat])
     cval = cval.reshape(data.shape+(3,))
-    CL = ColorLegend(CS,256)
-    CLA = decors.ColorLegend(CL, 20, 20, 30, 200, scale=multiplier)
-    pf.canvas.addDecoration(CLA)
+    CLA = ColorLegend(CS, 256, 20, 20, 30, 200, scale=multiplier)
+    draw.drawActor(CLA)
     draw.draw(mesh, color=cval)
 
 

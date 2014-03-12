@@ -83,8 +83,9 @@ def run():
 
     # Show upright
     createView('myview1', (0., -90., 0.))
-    clear();linewidth(1);draw(F, view='myview1')
-
+    clear()
+    linewidth(1)
+    draw(F, view='myview1')
 
     ############
     #Creating FE-model
@@ -202,12 +203,11 @@ def run():
     if pf.options.gui:
 
         from pyformex.plugins.postproc import niceNumber, frameScale
-        from pyformex.gui import colorscale as cs
-        from pyformex.gui import decors
+        from pyformex.gui.colorscale import ColorScale
+        from pyformex.opengl.decors import ColorLegend
 
 
         def showOutput():
-            #showText(file(outfilename).read())
             showFile(outfilename)
 
 
@@ -221,15 +221,13 @@ def run():
             # vector val.
             val = frc[:, 0, 0]
             # create a colorscale
-            CS = cs.ColorScale([blue, yellow, red], val.min(), val.max(), 0., 2., 2.)
+            CS = ColorScale([blue, yellow, red], val.min(), val.max(), 0., 2., 2.)
             cval = array([CS.color(v) for v in val])
-            #aprint(cval,header=['Red','Green','Blue'])
             clear()
             linewidth(3)
             draw(mesh, color=cval)
-            drawText('Normal force in the truss members', 300, 50, size=24)
-            CL = cs.ColorLegend(CS, 100)
-            CLA = decors.ColorLegend(CL, 10, 10, 30, 200, size=24)
+            drawText('Normal force in the truss members', 300, 50, size=14)
+            CLA = ColorLegend(CS, 100, 10, 10, 30, 200, size=14)
             decorate(CLA)
 
 

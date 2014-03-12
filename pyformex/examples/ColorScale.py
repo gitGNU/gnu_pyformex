@@ -36,11 +36,8 @@ _techniques = ['dialog', 'color']
 
 import pyformex as pf
 from pyformex.gui.draw import *
-from pyformex.gui.colorscale import *
-if pf.options.opengl2:
-    from pyformex.opengl import decors
-else:
-    from pyformex.gui import decors
+from pyformex.gui.colorscale import ColorScale
+from pyformex.opengl.decors import ColorLegend
 
 input_data = [
     _I('valrange', text='Value range type', itemtype='select', choices=['Minimum-Medium-Maximum', 'Minimum-Maximum']),
@@ -122,7 +119,7 @@ def show():
 def drawColorScale(palet, minval, maxval, medval, maxexp, minexp, ncolors, dec, scale, ngrid, linewidth, nlabel, lefttext, textsize, x, y, w, h):
     """Draw a color scale with the specified parameters"""
     CS = ColorScale(palet, minval, maxval, midval=medval, exp=maxexp, exp2=minexp)
-    CLA = decors.ColorLegend(CS, ncolors,x, y, w, h, ngrid=ngrid, linewidth=linewidth, nlabel=nlabel, size=textsize, dec=dec, scale=scale, lefttext=lefttext)
+    CLA = ColorLegend(CS, ncolors,x, y, w, h, ngrid=ngrid, linewidth=linewidth, nlabel=nlabel, size=textsize, dec=dec, scale=scale, lefttext=lefttext)
     drawActor(CLA)
 
 
