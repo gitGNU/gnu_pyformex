@@ -88,7 +88,7 @@ class FontTexture(Texture):
                 y = j*height + ascender - face.glyph.bitmap_top
                 image[y:y+bitmap.rows,x:x+bitmap.width].flat = bitmap.buffer
 
-        print(image.shape,image.dtype)
+        #print(image.shape,image.dtype)
         Texture.__init__(self,image,format=GL.GL_ALPHA,texformat=GL.GL_ALPHA)
 
 
@@ -140,7 +140,7 @@ class Text(Actor):
             texcoords.append([[x0,y0+dy],[x0+dx,y0+dy],[x0+dx,y0],[x0,y0]])
         texcoords = array(texcoords)
         F = Formex('4:0123').replic(n).scale([width,size,0.])
-        print("Initial bbox: %s" % str(F.bbox()))
+        #print("Initial bbox: %s" % str(F.bbox()))
 
         alignment = ['0','0','0']
         if 'W' in gravity:
@@ -152,9 +152,9 @@ class Text(Actor):
         elif 'N' in gravity:
             alignment[1] = '-'
         alignment = ''.join(alignment)
-        print("Gravity %s = aligment %s on point %s" % (gravity,alignment,pos))
+        #print("Gravity %s = aligment %s on point %s" % (gravity,alignment,pos))
         F = F.align(alignment,pos)
-        print("Text bbox: %s" % str(F.bbox()))
+        #print("Text bbox: %s" % str(F.bbox()))
         Actor.__init__(self,F,rendertype=rendertype,texture=default_font,texmode=0,texcoords=texcoords,opak=False,ontop=True,offset3d=offset3d,**kargs)
 
 
@@ -163,7 +163,52 @@ class Text(Actor):
 TextMark = Text
 
 
+class MarkList(Text):
+    """A list of numbers drawn at 3D positions.
 
+    pos is an (N,3) array of positions.
+    val is an (N,) array of marks to be plot at those positions.
+
+    While intended to plot integer numbers, val can be any object
+    that allows index operations for the required length N and allows
+    its items to be formatted as a string.
+
+    """
+
+    def __init__(self,pos,val,leader='',**kargs):
+        """Create a MarkList."""
+        if len(val) != len(pos):
+            raise ValueError("pos and val should have same length")
+
+        # Make sure we have strings
+        val = [ leader+str(v) for v in val ]
+        cs = cumsum([0,] + [ len(v) for v in val ])
+        val = ''.join(val)
+        # Create a text with the concatenation
+        Text.__init__(self,val,[0.,0.,0.],invisible=True,**kargs)
+        #
+        # TODO: we should transform this to using different offsets
+        # for the partial strings, instead of using children
+        #
+        # Create a text for each mark
+        for p,v in zip(pos,val):
+            t = Text(v,p,**kargs)
+            self.children.append(t)
+
+
+
+class Mark(Actor):
+    """A 2D drawing inserted at a 3D position of the scene.
+
+    The minimum attributes and methods are:
+
+    - `pos` : 3D point where the mark will be drawn
+    """
+
+    def __init__(self,pos,tex,size,**kargs):
+        self.pos = pos
+        F = Formex([[[0,0],[1,0],[1,1],[0,1]]]).align('000')
+        Actor.__init__(self,F,rendertype=1,texture=tex,offset3d=pos,**kargs)
 
 
 # End

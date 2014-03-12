@@ -874,12 +874,13 @@ class Actor(Base):
         ##     renderer.shader.loadUniforms(self)
         ##     self.modified = False
 
-        pf.debug("Render %s drawables for %s" % (len(self.drawable), self.name), pf.DEBUG.DRAW)
-        for obj in self.drawable:
-            pf.debug("Render %s" % obj.name, pf.DEBUG.DRAW)
-            renderer.setDefaults()
-            renderer.shader.loadUniforms(self)
-            obj.render(renderer)
+        if not self.invisible:
+            pf.debug("Render %s drawables for %s" % (len(self.drawable), self.name), pf.DEBUG.DRAW)
+            for obj in self.drawable:
+                pf.debug("Render %s" % obj.name, pf.DEBUG.DRAW)
+                renderer.setDefaults()
+                renderer.shader.loadUniforms(self)
+                obj.render(renderer)
 
         for obj in self.children:
             renderer.setDefaults()

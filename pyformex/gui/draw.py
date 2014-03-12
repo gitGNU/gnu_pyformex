@@ -945,10 +945,16 @@ def drawMarks(X,M,color='black',leader='',ontop=True):
     if len(M) > _large_:
         if not ack("You are trying to draw marks at %s points. This may take a long time, and the results will most likely not be readible anyway. If you insist on drawing these marks, anwer YES." % len(M)):
             return None
-    M = marks.MarkList(X, M, color=color, leader=leader, ontop=ontop)
-    pf.canvas.addAnnotation(M)
-    pf.canvas.numbers = M
-    pf.canvas.update()
+    if pf.options.opengl2:
+        from pyformex.opengl.textext import MarkList
+        M = MarkList(X, M, color=color, leader=leader)
+        drawActor(M)
+    else:
+        from pyformex.gui.marks import MarkList
+        M = MarkList(X, M, color=color, leader=leader, ontop=ontop)
+        pf.canvas.addAnnotation(M)
+        pf.canvas.numbers = M
+        pf.canvas.update()
     return M
 
 

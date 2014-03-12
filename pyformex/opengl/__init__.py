@@ -171,7 +171,6 @@ def drawBbox(F,color='black',linewidth=None):
     gui.draw.drawActor(B)
     return B
 
-
 #### Other definitions should start with _ ####
 
 

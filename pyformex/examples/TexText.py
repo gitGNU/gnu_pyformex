@@ -36,7 +36,7 @@ _techniques = ['texture']
 import pyformex as pf
 from pyformex.gui.draw import *
 
-from pyformex.opengl.textext import Text, default_font, listMonoFonts
+from pyformex.opengl.textext import *
 
 def run():
     #
@@ -73,6 +73,14 @@ def run():
         ]:
         j = F.elems[0,i]
         decorate(Text(txt,F.coords[j],size=30,color=red))
+
+
+    drawViewportAxes3D((0.,0.,0.),color=blue)
+    print(len(pf.canvas.scene.oldactors))
+    decorate(Text('+',(100,100,0),gravity='',size=100,color=red))
+
+    image = os.path.join(pf.cfg['pyformexdir'], 'data', 'mark_cross.png')
+    drawActor(Mark((100,100,0),image,size=40,color=red))
 
 
 if __name__ == 'draw':

@@ -55,24 +55,11 @@ class Rectangle(Actor):
         Actor.__init__(self,F,rendertype=2,**kargs)
 
 
-## class Line(Decoration):
-##     """A straight line on the canvas."""
-##     def __init__(self,x1,y1,x2,y2,color=None,linewidth=None,**kargs):
-##         Decoration.__init__(self,x1,y1,**kargs)
-##         self.x1 = x1
-##         self.y1 = y1
-##         self.x2 = x2
-##         self.y2 = y2
-##         self.color = saneColor(color)
-##         self.linewidth = saneLineWidth(linewidth)
-
-
-##     def drawGL(self,**kargs):
-##         if self.color is not None:
-##             GL.glColor3fv(self.color)
-##         if self.linewidth is not None:
-##             GL.glLineWidth(self.linewidth)
-##         drawLine(self.x1, self.y1, self.x2, self.y2)
+class Line(Actor):
+    """A 2D-line on the canvas."""
+    def __init__(self,x1,y1,x2,y2,**kargs):
+        F = Formex([[[x1,y1],[x2,y2]]])
+        Actor.__init__(self,F,rendertype=2,**kargs)
 
 
 class Grid(Actor):
