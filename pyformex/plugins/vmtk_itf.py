@@ -323,18 +323,24 @@ def vmtkDistanceOfPoints(self, X, tryfixsign=True, nproc=1):
         vdist, sdist = list(zip(*ind))
         return concatenate(vdist), concatenate(sdist)
 
-def vmtkDistancePointsToSegments(X, L):
+def vmtkDistancePointsToSegments(X, L, atol=1.e-4):
     """Find the shortest distances from points X to segments L.
 
     X is a (nX,3) shaped array of points.
     L is a line2 Mesh.
+    atol is the height of the triangles built from lines L (use lines as non-degenerated triangles to vmtk)
 
     Retuns a tuple of vector and scalar distances for all points.
-    Points and lines are first converted into degenerate triangles
+    Points and lines are first converted into nearly degenerate triangles
     which are then used by vmtkDistanceOfSurface.
     """
     SX = TriSurface(X, arange(X.shape[0]).reshape(-1, 1)*ones(3, dtype=int).reshape(1, -1))
-    SL = TriSurface(L.convert('line3').setType('tri3'))#from line2 to degenerate tri3 by adding the centroids.
+    from geomtools import anyPerpendicularVector
+    Lf = L.coords[L.elems]
+    L0, L1 = Lf[:, 0], Lf[:, 1]    
+    perp = anyPerpendicularVector(L1-L0)    
+    L2=0.5*(L0+L1) + normalize(perp)*atol
+    SL=TriSurface(concatenate([L0,L1,L2], axis=1).reshape(-1, 3, 3))#NB they should not be fully degenerate otherwise VMTK will not consider them!
     vdist, dist = vmtkDistanceOfSurface(SL, SX, tryfixsign=False)
     return vdist, abs(dist)
 
