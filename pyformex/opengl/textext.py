@@ -31,7 +31,7 @@ from __future__ import print_function
 import pyformex as pf
 from pyformex import utils
 from pyformex.formex import Formex
-from pyformex.opengl.drawable import Base, GeomActor
+from pyformex.opengl.drawable import Base, Actor
 from pyformex.opengl.texture import Texture
 from pyformex.opengl.sanitize import *
 
@@ -106,12 +106,16 @@ default_font_size = 36
 default_font = FontTexture(default_font_file,default_font_size)
 
 
-class Text(GeomActor):
-    """A text drawn at a 2D position."""
+class Text(Actor):
+    """A text drawn at a 2D or 3D position."""
 
-    def __init__(self,text,x,y,size=18,width=None,fonttex=None,gravity=None,**kargs):
+    def __init__(self,text,pos,size=18,width=None,fonttex=None,gravity=None,**kargs):
         self.text = text
-        self.x,self.y = x,y
+        if len(pos) == 2:
+            rendertype = 2
+            pos = [pos[0],pos[1],0.]
+        else:
+            rendertype = 1
         self.size = size
         if not fonttex:
             fonttex = default_font
@@ -133,6 +137,7 @@ class Text(GeomActor):
             texcoords.append([[x0,y0+dy],[x0+dx,y0+dy],[x0+dx,y0],[x0,y0]])
         texcoords = array(texcoords)
         F = Formex('4:0123').replic(n).scale([width,size,0.])
+        print("Initial bbox: %s" % str(F.bbox()))
 
         alignment = ['0','0','0']
         if 'W' in gravity:
@@ -144,9 +149,18 @@ class Text(GeomActor):
         elif 'N' in gravity:
             alignment[1] = '-'
         alignment = ''.join(alignment)
-        print("Gravity %s = aligment %s" % (gravity,alignment))
-        F = F.align(alignment,[x,y,0.])
-        GeomActor.__init__(self,F,rendertype=2,texture=default_font,texmode=0,texcoords=texcoords,opak=False,ontop=True,**kargs)
+        print("Gravity %s = aligment %s on point %s" % (gravity,alignment,pos))
+        F = F.align(alignment,pos)
+        print("Text bbox: %s" % str(F.bbox()))
+        Actor.__init__(self,F,rendertype=rendertype,texture=default_font,texmode=0,texcoords=texcoords,opak=False,ontop=True,**kargs)
+
+
+# For compatibility
+
+TextMark = Text
+
+
+
 
 
 # End

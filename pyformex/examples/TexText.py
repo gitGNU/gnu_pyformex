@@ -39,7 +39,9 @@ from pyformex.gui.draw import *
 from pyformex.opengl.textext import Text, default_font, listMonoFonts
 
 def run():
-    resetAll()
+    #
+    # TODO: RESETALL does not properly layout the canvas in the viewport
+    #resetAll()
     clear()
     view('front')
     smooth()
@@ -55,14 +57,14 @@ def run():
     A = draw(F.scale(200),color=yellow,texture=default_font,texcoords=array([[0,1],[1,1],[1,0],[0,0]]),texmode=2)
 
     # draw a string using the default_font texture
-    T = Text("Hegemony!",100,100,size=50)
+    T = Text("Hegemony!",(100,100),size=50,offset=(0.0,0.0,1))
     decorate(T)
 
     # the text is currently adjusted horizontally left, vertically centered
     # on the specified point. Adjustement using gravity will be added later.
     # Also, the color is currently not honoured.
-    decorate(Text("Hegemony!",0,10,size=20,color=red))
-    decorate(Text("Hegemony!",5,30,size=20,color=red))
+    decorate(Text("Hegemony!",(0,10),size=20,color=red))
+    decorate(Text("Hegemony!",(10,30),size=20,color=red))
 
 
 if __name__ == 'draw':

@@ -196,6 +196,9 @@ class Drawable(Attributes):
 
         renderer.shader.loadUniforms(self)
 
+        if self.pixeloffset:
+            self.shader.uniformVec3('offset', self.pixeloffset)
+
         self.vbo.bind()
         GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
         GL.glVertexAttribPointer(renderer.shader.attribute['vertexPosition'], 3, GL.GL_FLOAT, False, 0, self.vbo)
@@ -366,7 +369,7 @@ class Base(Attributes):
 
 ########################################################################
 
-class GeomActor(Base):
+class Actor(Base):
     """Proposal for drawn objects
 
     __init__:  store all static values: attributes, geometry, vbo's
@@ -964,6 +967,10 @@ class GeomActor(Base):
             s += "** Drawable %s **\n" % i
             s += d.__str__()
         return s
+
+
+# for comp[atibility
+GeomActor = Actor
 
 
 ########################################################################

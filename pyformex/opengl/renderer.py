@@ -293,13 +293,13 @@ class Renderer(object):
             self.render2D(back(scene.decorations))
 
             ## # The back annotations
-            ## self.renderAN(scene.back(scene.annotations))
+            #self.renderAN(scene.back(scene.annotations))
 
             # The 3D actors
-            self.render3D(scene.actors,pick)
+            self.render3D(scene.actors+scene.annotations,pick)
 
             ## # The front annotations
-            ## self.renderAN(scene.back(scene.annotations))
+            #self.renderAN(scene.back(scene.annotations))
 
             # The 2D front decorations
             self.render2D(front(scene.decorations))

@@ -115,6 +115,7 @@ class Shader(object):
         'useObjectColor',
         'useTexture',
         'texmode',
+        'rendertype',
         'alphablend',
         'drawface',
         'lighting',
@@ -138,6 +139,7 @@ class Shader(object):
         'diffcolor',
         'speccolor',
         'lightdir',
+        'offset'
     ]
 
     uniforms = uniforms_int + uniforms_float +  uniforms_vec3 + [

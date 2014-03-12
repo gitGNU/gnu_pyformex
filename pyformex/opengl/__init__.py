@@ -35,6 +35,8 @@ from pyformex import utils
 from pyformex import gui
 from pyformex import coords
 from pyformex.attributes import Attributes
+#from pyformex.opengl import drawable
+#from pyformex.opengl import decors
 
 
 #### Definitions to be imported in gui.draw #####
@@ -156,6 +158,18 @@ def draw(F,
         return actors
     else:
         return actors[0]
+
+
+def drawBbox(F,color='black',linewidth=None):
+    """Draw the bounding box of the geometric object F.
+
+    F is any object that has a `bbox` method.
+    Returns the drawn Annotation.
+    """
+    from pyformex.opengl import decors
+    B = decors.BboxActor(F.bbox(), color=color, linewidth=linewidth)
+    gui.draw.drawActor(B)
+    return B
 
 
 #### Other definitions should start with _ ####

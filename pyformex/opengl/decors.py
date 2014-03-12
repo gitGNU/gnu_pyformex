@@ -21,27 +21,37 @@
 ##  You should have received a copy of the GNU General Public License
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
-"""2D decorations for the OpenGL canvas.
+"""Decorations for the OpenGL canvas.
 
-2D decorations are objects that are drawn in 2D on the flat canvas
-instead of through the 3D OpenGL engine.
+This module contains a collection of predefined decorations that
+can be useful additions to a geometry scene rendering.
 """
 from __future__ import print_function
 
 from pyformex import simple
 from pyformex.formex import Formex
-from pyformex.opengl.drawable import GeomActor
+from pyformex.opengl.drawable import Actor
 from pyformex.opengl.sanitize import *
 from pyformex.gui import colorscale as cs
 
 ### Decorations ###############################################
 
+class BboxActor(Actor):
+    """Draws a bounding bbox.
 
-class Rectangle(GeomActor):
+    A bounding box is a hexaeder in global axes. The heaxeder is
+    drawn in wireframe mode with default color black.
+    """
+    def __init__(self,bbox,color=black,**kargs):
+        F = simple.cuboid(*bbox)
+        Actor.__init__(self,F,rendertype=1,mode='wireframe',color=red,lighting=False,opak=True,**kargs)
+
+
+class Rectangle(Actor):
     """A 2D-rectangle on the canvas."""
     def __init__(self,x1,y1,x2,y2,**kargs):
         F = Formex([[[x1,y1],[x2,y1],[x2,y2],[x1,y2]]])
-        GeomActor.__init__(self,F,rendertype=2,**kargs)
+        Actor.__init__(self,F,rendertype=2,**kargs)
 
 
 ## class Line(Decoration):
@@ -64,15 +74,15 @@ class Rectangle(GeomActor):
 ##         drawLine(self.x1, self.y1, self.x2, self.y2)
 
 
-class Grid(GeomActor):
+class Grid(Actor):
     """A 2D-grid on the canvas."""
     def __init__(self,x1,y1,x2,y2,nx=1,ny=1,lighting=False,rendertype=2,**kargs):
         F = Formex([[[x1,y1],[x1,y2]]]).replic(nx+1,step=float(x2-x1)/nx,dir=0) + \
             Formex([[[x1,y1],[x2,y1]]]).replic(ny+1,step=float(y2-y1)/ny,dir=1)
-        GeomActor.__init__(self,F,rendertype=rendertype,lighting=lighting,**kargs)
+        Actor.__init__(self,F,rendertype=rendertype,lighting=lighting,**kargs)
 
 
-class ColorLegend(GeomActor):
+class ColorLegend(Actor):
     """A labeled colorscale legend.
 
     When showing the distribution of some variable over a domain by means
@@ -158,11 +168,11 @@ class ColorLegend(GeomActor):
         self.ygap = 4  # (min) vert. gap between labels
 
         F = simple.rectangle(1,ncolors,self.w,self.h).trl([self.x,self.y,0.])
-        GeomActor.__init__(self,F,rendertype=2,lighting=False,color=self.cl.colors,**kargs)
+        Actor.__init__(self,F,rendertype=2,lighting=False,color=self.cl.colors,**kargs)
 
         if self.ngrid > 0:
             F = simple.rectangle(1,self.ngrid,self.w,self.h).trl([self.x,self.y,0.])
-            G = GeomActor(F,rendertype=2,lighting=False,color=black,linewidth=self.linewidth,mode='wireframe')
+            G = Actor(F,rendertype=2,lighting=False,color=black,linewidth=self.linewidth,mode='wireframe')
             self.children.append(G)
 
         # labels
@@ -201,7 +211,7 @@ class ColorLegend(GeomActor):
             for (y,v) in zip (ypos,vals):
                 #print(y,v,yok)
                 if y >= yok:
-                    t = textext.Text(("%%.%df" % self.dec) % (v*self.scale), x, y, size=size, gravity=gravity)
+                    t = textext.Text(("%%.%df" % self.dec) % (v*self.scale), (x,y), size=size, gravity=gravity)
                     self.children.append(t)
                     yok = y + dh
 
@@ -236,10 +246,6 @@ class ColorLegend(GeomActor):
 ##             GL.glVertex2fv(e[1])
 ##         GL.glEnd()
 
-
-## # Not really a decoration, though it could be made into one
-## # Can this be merged with actors.AxesActor ?
-## #
 
 ## class Triade(Drawable):
 ##     """An OpenGL actor representing a triade of global axes.
