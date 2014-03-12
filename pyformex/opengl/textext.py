@@ -191,8 +191,8 @@ class MarkList(Text):
         # for the partial strings, instead of using children
         #
         # Create a text for each mark
-        for p,v in zip(pos,val):
-            t = Text(v,p,**kargs)
+        for p,i,j in zip(pos,cs[:-1],cs[1:]):
+            t = Text(val[i:j],p,**kargs)
             self.children.append(t)
 
 
