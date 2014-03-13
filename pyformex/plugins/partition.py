@@ -28,11 +28,14 @@ from __future__ import print_function
 
 
 import pyformex as pf
-from pyformex.gui import decors, colors
-from pyformex.gui.camera import inverse
+from pyformex.gui import colors
+from pyformex.opengl import decors
 from pyformex.gui.draw import *
 from pyformex.formex import *
 from pyformex import geomtools
+
+import numpy
+inverse = numpy.linalg.linalg.inv
 
 VA=None
 

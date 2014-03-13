@@ -41,11 +41,11 @@ from pyformex.gui import (
 try:
     opengl2 = pf.options.opengl2
 except:
-    opengl2 = False
+    opengl2 = True
 if opengl2:
     from pyformex.opengl import canvas
 else:
-    from pyformex.gui import canvas
+    from pyformex.legacy import canvas
 
 from pyformex.collection import Collection
 from pyformex.coords import Coords
