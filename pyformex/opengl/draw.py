@@ -347,10 +347,8 @@ def drawMarks(X,M,color='black',leader='',ontop=True):
 
 def drawFreeEdges(M,color='black'):
     """Draw the feature edges of a Mesh"""
-    #print "DRAW FREE EDGES"
     B = M.getFreeEdgesMesh()
-    #print B
-    draw(B, color=color, nolight=True)
+    return draw(B, color=color, nolight=True)
 
 
 def drawNumbers(F,numbers=None,color='black',trl=None,offset=0,leader='',ontop=None):
@@ -438,9 +436,16 @@ def drawText3D(P,text,color=None,size=18,font=None,ontop=True):
 
 def drawText(text,x,y,gravity='E',font=None,size=14,color=None):
     """Show a text at position x,y using font."""
-    TA = textext.Text(text, (x,y), gravity=gravity, fonttex=font, size=size, color=color)
-    drawActor(TA)
-    return TA
+    A = textext.Text(text, (x,y), gravity=gravity, fonttex=font, size=size, color=color)
+    drawActor(A)
+    return A
+
+
+def drawViewportAxes3D(pos,color=None):
+    """Draw two viewport axes at a 3D position."""
+    A = texText.Mark((0,200,0),image,size=40,color=red)
+    drawActor(A)
+    return A
 
 
 def drawAxes(CS=None,*args,**kargs):
@@ -454,8 +459,8 @@ def drawAxes(CS=None,*args,**kargs):
     this function gives a better result because it has specialized color
     and annotation settings and provides reasonable deafults.
     """
-    from pyformex.coordsys import CoordinateSystem
     if CS is None:
+        from pyformex.coordsys import CoordinateSystem
         CS = CoordinateSystem()
     A = actors.AxesActor(CS,*args,**kargs)
     drawActor(A)
@@ -551,12 +556,6 @@ def drawImage(image,w=0,h=0,x=-1,y=-1,color=colors.white,ontop=False):
     decorate(R)
     return R
 
-
-def drawViewportAxes3D(pos,color=None):
-    """Draw two viewport axes at a 3D position."""
-    M = marks.AxesMark(pos, color)
-    annotate(M)
-    return M
 
 def drawActor(A):
     """Draw an actor and update the screen."""

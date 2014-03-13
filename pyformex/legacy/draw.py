@@ -510,16 +510,11 @@ def drawMarks(X,M,color='black',leader='',ontop=True):
     if len(M) > _large_:
         if not ack("You are trying to draw marks at %s points. This may take a long time, and the results will most likely not be readible anyway. If you insist on drawing these marks, anwer YES." % len(M)):
             return None
-    if pf.options.opengl2:
-        from pyformex.opengl.textext import MarkList
-        M = MarkList(X, M, color=color, leader=leader)
-        drawActor(M)
-    else:
-        from pyformex.gui.marks import MarkList
-        M = MarkList(X, M, color=color, leader=leader, ontop=ontop)
-        pf.canvas.addAnnotation(M)
-        pf.canvas.numbers = M
-        pf.canvas.update()
+    from pyformex.legacy.marks import MarkList
+    M = MarkList(X, M, color=color, leader=leader, ontop=ontop)
+    pf.canvas.addAnnotation(M)
+    pf.canvas.numbers = M
+    pf.canvas.update()
     return M
 
 
@@ -792,14 +787,10 @@ def setTriade(on=None,pos='lb',siz=100):
 
 def drawText(text,x,y,gravity='E',font=None,size=14,color=None):
     """Show a text at position x,y using font."""
-    if pf.options.opengl2:
-        from pyformex.opengl.textext import Text
-        TA = Text(text, (x,y), gravity=gravity, font=font, size=size, color=color)
-    else:
-        from pyformex.gui.decors import Text
-        if font is None:
-            font = 'helvetica'
-        TA = Text(text, x,y, gravity=gravity, font=font, size=size, color=color)
+    from pyformex.legacy.decors import Text
+    if font is None:
+        font = 'helvetica'
+    TA = Text(text, x,y, gravity=gravity, font=font, size=size, color=color)
     drawActor(TA)
     return TA
 
@@ -1062,10 +1053,7 @@ def canvasSize(width, height):
 
 # This is not intended for the user
 def clear_canvas(sticky=False):
-    if pf.options.opengl2:
-        pf.canvas.removeAll(sticky)
-    else:
-        pf.canvas.removeAll()
+    pf.canvas.removeAll()
     pf.canvas.clearCanvas()
 
 
@@ -1087,11 +1075,5 @@ def redraw():
     pf.canvas.redrawAll()
     pf.canvas.update()
 
-
-###########################################################################
-# Make _I, _G and _T be included when doing 'from gui.draw import *'
-#
-
-__all__ = [ n for n in globals().keys() if not n.startswith('_')] + ['_I', '_G', '_T']
 
 #### End
