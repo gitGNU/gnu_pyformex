@@ -27,7 +27,7 @@
 from __future__ import print_function
 
 
-_status = 'unchecked'
+_status = 'checked'
 _level = 'advanced'
 _topics = ['FEA']
 _techniques = ['color', 'persistence']
@@ -149,8 +149,8 @@ def run():
     #Using pyFormex as postprocessor
     ################################
 
-    from pyformex.gui import colorscale as cs
-    from pyformex.gui import decors
+    from pyformex.gui.colorscale import ColorScale
+    from pyformex.opengl.decors import ColorLegend
 
     # Creating a formex for displaying results is fairly easy
     results = Formex(coords[elems], arange(nelems))
@@ -163,7 +163,7 @@ def run():
     # vector val.
     val = frc[:, 0, 0]
     # create a colorscale
-    CS = cs.ColorScale([blue, yellow, red], val.min(), val.max(), 0., 2., 2.)
+    CS = ColorScale([blue, yellow, red], val.min(), val.max(), 0., 2., 2.)
     cval = array([CS.color(v) for v in val])
     #aprint(cval,header=['Red','Green','Blue'])
     clear()
@@ -172,8 +172,7 @@ def run():
     bgcolor('lightgreen')
     linewidth(3)
     drawText('Normal force in the truss members', 400, 100, size=12)
-    CL = cs.ColorLegend(CS, 256)
-    CLA = decors.ColorLegend(CL, 10, 10, 30, 200)
+    CLA = ColorLegend(CS, 256, 10, 20, 30, 200)
     decorate(CLA)
 
     # and a deformed plot

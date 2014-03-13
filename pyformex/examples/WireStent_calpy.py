@@ -202,8 +202,8 @@ def analysis(stent):
 def postproc(coords, elements, displ, frc):
     """Display the results of the analysis."""
 
-    from pyformex.gui.colorscale import ColorScale, ColorLegend
-    from pyformex.gui import decors
+    from pyformex.gui.colorscale import ColorScale
+    from pyformex.opengl.decors import ColorLegend
 
     # Creating a formex for displaying results is fairly easy
     elems = elements[:, :2]-1
@@ -230,8 +230,7 @@ def postproc(coords, elements, displ, frc):
     linewidth(3)
     x = pf.canvas.width()//2
     TA = drawText('Normal force in the members', x, 100, font='tr32')
-    CL = ColorLegend(CS, 100)
-    CLA = decors.ColorLegend(CL, 10, 10, 30, 200)
+    CLA = ColorLegend(CS, 100, 10, 20, 30, 200)
     decorate(CLA)
     sleep(3)
 
@@ -249,8 +248,6 @@ def postproc(coords, elements, displ, frc):
         deformed = Formex(dcoords[elems])
         draw(deformed, color=cval)
         drawText('Deformed geometry (scale %.2f)' % dscale, x, 70)
-
-
 
 
 def run():

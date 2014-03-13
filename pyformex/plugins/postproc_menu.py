@@ -32,7 +32,8 @@ from pyformex.gui import menu, QtCore
 
 from pyformex.odict import OrderedDict
 from pyformex.formex import *
-from pyformex.gui.colorscale import ColorScale, ColorLegend
+from pyformex.gui.colorscale import ColorScale
+from pyformex.opengl.decors import ColorLegend
 from pyformex.gui.draw import *
 from pyformex.gui.colors import *
 from pyformex.plugins.postproc import *
@@ -298,9 +299,8 @@ def showResults(nodes,elems,displ,text,val,showref=False,dscale=100.,
 
         CS = ColorScale('RAINBOW', vmin, vmax, vmid, 1., 1.)
         cval = array([CS.color(v) for v in val])
-        CL = ColorLegend(CS, 100)
-        CLA = decors.ColorLegend(CL, 20, 20, 30, 200, scale=multiplier)
-        pf.canvas.addDecoration(CLA)
+        CLA = ColorLegend(CS, 100, 20, 20, 30, 200, scale=multiplier)
+        drawActor(CLA)
 
     # the supplied text
     if text:

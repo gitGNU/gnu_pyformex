@@ -21,48 +21,13 @@
 ##  You should have received a copy of the GNU General Public License
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
-"""TextGravity
+"""pyFormex legacy modules.
 
-Show the use of the text gravity parameter.
+The modules in this directory are deprecated and should no longer
+be used. They are here for compatibility reasons, to ease the
+transition to the newer replacement modules, and as an emrgency
+rescue for cases where the new modules are not working yet.
+
+Do not remove this file. It is used by pyFormex to flag the parent
+directory as a Python package.
 """
-from __future__ import print_function
-
-
-_status = 'checked'
-_level = 'beginner'
-_topics = []
-_techniques = ['text']
-
-from pyformex.gui.draw import *
-from pyformex.opengl.decors import Grid
-
-def run():
-    clear()
-    lights(False)
-    #canvasSize(500,500)
-    F = Grid(-1., -1., 1., 1., 4,4,linewidth=4, rendertype=3,color=blue)
-    drawActor(F)
-    H = Grid(0,0,500,500, 8, 8, rendertype=2,color=red,linewidth=2)
-    drawActor(H)
-    I = Grid(100,100,500,500, 2, 2, rendertype=0,color=green,linewidth=6)
-    drawActor(I)
-    return
-
-    delay(2)
-    for g in [ 'NW', 'N', 'NE', 'W', 'C', 'E', 'SW', 'S', 'SE']:
-        T = drawText("XXX  %s  XXX"%g, x, y, gravity=g)
-        wait()
-        undecorate(T)
-
-    delay(1)
-    from pyformex.gui.gluttext import GLUTFONTS
-    for f in GLUTFONTS.keys():
-        S = drawText(f, 20, 20, font='hv18')
-        T = drawText('X', x, y, font=f, gravity='C')
-        wait()
-        undecorate(S)
-        undecorate(T)
-
-if __name__ == 'draw':
-    run()
-# End

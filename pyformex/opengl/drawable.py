@@ -160,9 +160,10 @@ class Drawable(Attributes):
     def prepareTexture(self):
         """Prepare texture and texture coords"""
         if self.useTexture == 1:
-            curshape = self.texcoords.shape
-            self.texcoords = at.multiplex(self.texcoords, self.object.nelems(),axis=-2)
-            #print("Multiplexing texture coords: %s -> %s " % (curshape, self.texcoords.shape))
+            if self.texcoords.ndim == 2:
+                curshape = self.texcoords.shape
+                self.texcoords = at.multiplex(self.texcoords, self.object.nelems(),axis=-2)
+                print("Multiplexing texture coords: %s -> %s " % (curshape, self.texcoords.shape))
         self.tbo = VBO(self.texcoords.astype(float32))
         self.texture.activate()
 
@@ -194,6 +195,10 @@ class Drawable(Attributes):
             GL.glLineWidth(self.linewidth)
 
         renderer.shader.loadUniforms(self)
+
+        if self.offset3d is not None:
+            offset = renderer.camera.toNDC(self.offset3d)
+            renderer.shader.uniformVec3('offset', (1.+offset[0],1.+offset[1],0.,0.))
 
         self.vbo.bind()
         GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
@@ -231,6 +236,10 @@ class Drawable(Attributes):
         # Specifiy the depth comparison function
         if self.ontop:
             GL.glDepthFunc(GL.GL_ALWAYS)
+
+        # Bind the texture
+        if self.texture:
+            self.texture.bind()
 
         render_geom()
 
@@ -293,23 +302,79 @@ class Drawable(Attributes):
         self.vbo.unbind()
         GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
 
+    def __str__(self):
+        keys = sorted(set(self.keys()) - set(('_default_dict_',)))
+        return utils.formatDict(utils.selectDict(self,keys))
 
-def polygonFaceIndex(n):
-    i0 = (n-1) * ones(n-2, dtype=int)
-    i1 = arange(n-2)
-    i2 = i1+1
-    return column_stack([i0, i1, i2])
+########################################################################
 
 
-def polygonEdgeIndex(n):
-    i0 = arange(n)
-    i1 = roll(i0, -1)
-    return column_stack([i0, i1])
+class Base(Attributes):
+    """Base class for all drawable objects in pyFormex.
+
+    This defines the interface for all drawable objects, but does not
+    implement any drawable objects.
+    Drawable objects should be instantiated from the derived classes.
+    Currently, we have the following derived classes:
+      Actor: a 3-D object positioned and oriented in the 3D scene. Defined
+             in actors.py.
+      Mark: an object positioned in 3D scene but not undergoing the camera
+             axis rotations and translations. It will always appear the same
+             to the viewer, but will move over the screen according to its
+             3D position. Defined in marks.py.
+      Decor: an object drawn in 2D viewport coordinates. It will unchangeably
+             stick on the viewport until removed. Defined in decors.py.
+
+    The Base class is just an Attributes dict storing all the rendering
+    parameters, and providing defaults from the current canvas drawoptions
+    for the essential parameters that are not specified.
+
+    Additional parameters can be set at init time or later using the
+    update method. The specified parameters are sanitized before being
+    stored.
+
+    Arguments processed by the base class:
+
+    - `marksize`: force to float and also copied as `pointsize`
+
+    """
+
+    def __init__(self,**kargs):
+        """Initialize the Base class."""
+        Attributes.__init__(self, pf.canvas.drawoptions)
+        if kargs:
+            self.update(**kargs)
+            self.setLineWidth(self.linewidth)
+            self.setLineStipple(self.linestipple)
+            self.setColor(self.color,self.colormap)
+            self.setTexture(self.texture)
+
+    def setLineWidth(self, linewidth):
+        """Set the linewidth of the Drawable."""
+        self.linewidth = saneFloat(linewidth)
+
+    def setLineStipple(self, linestipple):
+        """Set the linewidth of the Drawable."""
+        self.linestipple = saneLineStipple(linestipple)
+
+    def setColor(self,color=None,colormap=None,ncolors=1):
+        """Set the color of the Drawable."""
+        self.color, self.colormap = saneColorSet(color, colormap, shape=(ncolors,))
+
+    def setTexture(self, texture):
+        """Set the texture data of the Drawable."""
+        if texture is not None:
+            if not isinstance(texture, Texture):
+                try:
+                    texture = Texture(texture)
+                except:
+                    texture = None
+        self.texture = texture
 
 
 ########################################################################
 
-class GeomActor(Attributes):
+class Actor(Base):
     """Proposal for drawn objects
 
     __init__:  store all static values: attributes, geometry, vbo's
@@ -336,7 +401,7 @@ class GeomActor(Attributes):
 
     def __init__(self,obj,**kargs):
 
-        Attributes.__init__(self, pf.canvas.drawoptions)
+        Base.__init__(self)
 
         # Check it is something we can draw
         if not isinstance(obj, Mesh) and not isinstance(obj, Formex):
@@ -367,6 +432,8 @@ class GeomActor(Attributes):
         # Acknowledge all object attributes and passed parameters
         self.update(obj.attrib)
         self.update(kargs)
+        if self.rendertype is None:
+            self.rendertype = 0
 
         # copy marksize as pointsize for gl2 shader
         if 'marksize' in self:
@@ -614,12 +681,11 @@ class GeomActor(Attributes):
                 drawface = self.drawface
             name = self.name
 
-            if pf.cfg['render/experimental'] and self.opak:
+            if self.rendertype > 1 or self.drawface == 0:
 
                 # Draw front and back at once, without culling
                 # Beware: this does not work with different front/back color
                 # as our Drawable currently has only one color
-                print("OPAK ACTOR")
                 self.drawable.append(Drawable(self,subelems=elems,name=name,cullface='',drawface=0))
 
             else:
@@ -768,7 +834,8 @@ class GeomActor(Attributes):
                 try:
                     texture = Texture(texture)
                 except:
-                    print("Error while creating Texture from type(texture)")
+                    print("Error while creating Texture from %s" % type(texture))
+                    raise
                     texture = None
             if texture is not None:
                 if texcoords is None:
@@ -778,7 +845,8 @@ class GeomActor(Attributes):
                         print("Texture not allowed for eltype %s" % self.eltype)
                         self.texture = self.texcoords = None
                         return
-                if texcoords.shape[:2] != (self.eltype.nplex(),2):
+                if texcoords.shape[-2:] != (self.eltype.nplex(),2):
+                    print(self.eltype.nplex())
                     print("Shape of texcoords does not match: %s" % str(texcoords.shape))
                     texcoords = texture = None
             if texmode is None:
@@ -792,14 +860,14 @@ class GeomActor(Attributes):
             self.texmode = texmode
 
 
-    def setLineWidth(self, linewidth):
-        """Set the linewidth of the Drawable."""
-        self.linewidth = saneLineWidth(linewidth)
+    ## def setLineWidth(self, linewidth):
+    ##     """Set the linewidth of the Drawable."""
+    ##     self.linewidth = saneLineWidth(linewidth)
 
 
-    def setLineStipple(self, linestipple):
-        """Set the linewidth of the Drawable."""
-        self.linestipple = saneLineStipple(linestipple)
+    ## def setLineStipple(self, linestipple):
+    ##     """Set the linewidth of the Drawable."""
+    ##     self.linestipple = saneLineStipple(linestipple)
 
 
     def render(self, renderer):
@@ -810,15 +878,13 @@ class GeomActor(Attributes):
         ##     renderer.shader.loadUniforms(self)
         ##     self.modified = False
 
-        pf.debug("Render %s drawables for %s" % (len(self.drawable), self.name), pf.DEBUG.DRAW)
-        for obj in self.drawable:
-            pf.debug("Render %s" % obj.name, pf.DEBUG.DRAW)
-            #print("LOAD DRAWABLE uniforms")
-            #print(obj.keys())
-            #renderer.shader.loadUniforms(obj)
-            renderer.setDefaults()
-            renderer.shader.loadUniforms(self)
-            obj.render(renderer)
+        if not self.invisible:
+            pf.debug("Render %s drawables for %s" % (len(self.drawable), self.name), pf.DEBUG.DRAW)
+            for obj in self.drawable:
+                pf.debug("Render %s" % obj.name, pf.DEBUG.DRAW)
+                renderer.setDefaults()
+                renderer.shader.loadUniforms(self)
+                obj.render(renderer)
 
         for obj in self.children:
             renderer.setDefaults()
@@ -899,5 +965,35 @@ class GeomActor(Attributes):
         else:
             return ok
 
+
+    def __str__(self):
+        keys = sorted(set(self.keys()) - set(('drawable',)))
+        s = utils.formatDict(utils.selectDict(self,keys))
+        for i,d in enumerate(self.drawable):
+            s += "** Drawable %s **\n" % i
+            s += d.__str__()
+        return s
+
+
+# for comp[atibility
+GeomActor = Actor
+
+########################################################################
+
+
+def polygonFaceIndex(n):
+    i0 = (n-1) * ones(n-2, dtype=int)
+    i1 = arange(n-2)
+    i2 = i1+1
+    return column_stack([i0, i1, i2])
+
+
+def polygonEdgeIndex(n):
+    i0 = arange(n)
+    i1 = roll(i0, -1)
+    return column_stack([i0, i1])
+
+
+########################################################################
 
 ### End

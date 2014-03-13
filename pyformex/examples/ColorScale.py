@@ -34,9 +34,10 @@ _level = 'normal'
 _topics = ['FEA']
 _techniques = ['dialog', 'color']
 
+import pyformex as pf
 from pyformex.gui.draw import *
-from pyformex.gui.colorscale import *
-from pyformex.gui.gluttext import GLUTFONTS
+from pyformex.gui.colorscale import ColorScale
+from pyformex.opengl.decors import ColorLegend
 
 input_data = [
     _I('valrange', text='Value range type', itemtype='select', choices=['Minimum-Medium-Maximum', 'Minimum-Maximum']),
@@ -59,7 +60,7 @@ input_data = [
         _I('dec', 2, text='Decimals'),
         _I('scale', 0, text='Scaling exponent'),
         _I('lefttext', True, text='Text left of colorscale'),
-        _I('font', 'hv18', text='Font', choices=GLUTFONTS.keys()),
+        _I('textsize', 18, text='Text height'),
         _I('header', 'Currently not displayed', text='Header', enabled=False),
         _I('gravity', 'Notused', text='Gravity', enabled=False),
         ]),
@@ -84,15 +85,12 @@ def show():
     """Accept the data and draw according to them"""
     global medval, medcol, palet, minexp, grid, nlabels, dialog
 
-    print("SHOW", dialog)
     clear()
-    print("CLEARED")
     lights(False)
-    print("ACCEPT DATA")
     dialog.acceptData()
-    print("GET REUSLTS")
+    pf.PF['_ColorScale_data_'] = dialog.results
+
     res = dialog.results
-    print(res)
     globals().update(res)
 
 
@@ -115,15 +113,14 @@ def show():
 
 
     # ok, now draw it
-    drawColorScale(palet, minval, maxval, medval, maxexp, minexp, ncolors, dec, scale, ngrid, linewidth, nlabel, lefttext, font, x, y, w, h)
+    drawColorScale(palet, minval, maxval, medval, maxexp, minexp, ncolors, dec, scale, ngrid, linewidth, nlabel, lefttext, textsize, x, y, w, h)
 
 
-def drawColorScale(palet, minval, maxval, medval, maxexp, minexp, ncolors, dec, scale, ngrid, linewidth, nlabel, lefttext, font, x, y, w, h):
+def drawColorScale(palet, minval, maxval, medval, maxexp, minexp, ncolors, dec, scale, ngrid, linewidth, nlabel, lefttext, textsize, x, y, w, h):
     """Draw a color scale with the specified parameters"""
     CS = ColorScale(palet, minval, maxval, midval=medval, exp=maxexp, exp2=minexp)
-    CL = ColorLegend(CS, ncolors)
-    CLA = decors.ColorLegend(CL, x, y, w, h, ngrid=ngrid, linewidth=linewidth, nlabel=nlabel, font=font, dec=dec, scale=scale, lefttext=lefttext)
-    decorate(CLA)
+    CLA = ColorLegend(CS, ncolors,x, y, w, h, ngrid=ngrid, linewidth=linewidth, nlabel=nlabel, size=textsize, dec=dec, scale=scale, lefttext=lefttext)
+    drawActor(CLA)
 
 
 def close():
@@ -169,6 +166,10 @@ def run():
 
     # Create the modeless dialog widget
     dialog = Dialog(input_data, enablers=input_enablers, caption='ColorScale Dialog', actions = [('Close', close), ('Show', show)], default='Show')
+
+    # Update its data from stored values
+    if '_ColorScale_data_' in pf.PF:
+        dialog.updateData(pf.PF['_ColorScale_data_'])
 
     # Examples style requires a timeout action
     dialog.timeout = timeOut

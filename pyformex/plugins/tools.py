@@ -32,7 +32,6 @@ from pyformex import zip
 import pyformex as pf
 from pyformex.coords import *
 from pyformex.collection import Collection
-from pyformex.gui.actors import GeomActor
 from pyformex.mesh import Mesh
 from pyformex.formex import Formex
 from pyformex.plugins.trisurface import TriSurface

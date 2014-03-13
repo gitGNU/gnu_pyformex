@@ -146,53 +146,53 @@ class Decoration(Drawable):
         Drawable.__init__(self,**kargs)
 
 
-# Marks database: a dict with mark name and a function to draw
-# the mark. The
-_marks_ = {
-    'dot': drawDot,
-    }
+## # Marks database: a dict with mark name and a function to draw
+## # the mark. The
+## _marks_ = {
+##     'dot': drawDot,
+##     }
 
-class Mark(Decoration):
-    """A mark at a fixed position on the canvas."""
-    def __init__(self,x,y,mark='dot',color=None,linewidth=None,**kargs):
-        Decoration.__init__(self,x,y,**kargs)
-        self.x = x
-        self.y = y
-        if not mark in _marks_:
-            raise ValueError("Unknown mark: %s" % mark)
-        self.mark = mark
-        self.color = saneColor(color)
-        self.linewidth = saneLineWidth(linewidth)
-
-
-    def drawGL(self,**kargs):
-        from pyformex.gui.canvas import glFill
-        glFill()
-        if self.color is not None:
-            GL.glColor3fv(self.color)
-        if self.linewidth is not None:
-            GL.glLineWidth(self.linewidth)
-        _marks_[self.mark](self.x, self.y)
+## class Mark(Decoration):
+##     """A mark at a fixed position on the canvas."""
+##     def __init__(self,x,y,mark='dot',color=None,linewidth=None,**kargs):
+##         Decoration.__init__(self,x,y,**kargs)
+##         self.x = x
+##         self.y = y
+##         if not mark in _marks_:
+##             raise ValueError("Unknown mark: %s" % mark)
+##         self.mark = mark
+##         self.color = saneColor(color)
+##         self.linewidth = saneLineWidth(linewidth)
 
 
-class Line(Decoration):
-    """A straight line on the canvas."""
-    def __init__(self,x1,y1,x2,y2,color=None,linewidth=None,**kargs):
-        Decoration.__init__(self,x1,y1,**kargs)
-        self.x1 = x1
-        self.y1 = y1
-        self.x2 = x2
-        self.y2 = y2
-        self.color = saneColor(color)
-        self.linewidth = saneLineWidth(linewidth)
+##     def drawGL(self,**kargs):
+##         from pyformex.gui.canvas import glFill
+##         glFill()
+##         if self.color is not None:
+##             GL.glColor3fv(self.color)
+##         if self.linewidth is not None:
+##             GL.glLineWidth(self.linewidth)
+##         _marks_[self.mark](self.x, self.y)
 
 
-    def drawGL(self,**kargs):
-        if self.color is not None:
-            GL.glColor3fv(self.color)
-        if self.linewidth is not None:
-            GL.glLineWidth(self.linewidth)
-        drawLine(self.x1, self.y1, self.x2, self.y2)
+## class Line(Decoration):
+##     """A straight line on the canvas."""
+##     def __init__(self,x1,y1,x2,y2,color=None,linewidth=None,**kargs):
+##         Decoration.__init__(self,x1,y1,**kargs)
+##         self.x1 = x1
+##         self.y1 = y1
+##         self.x2 = x2
+##         self.y2 = y2
+##         self.color = saneColor(color)
+##         self.linewidth = saneLineWidth(linewidth)
+
+
+##     def drawGL(self,**kargs):
+##         if self.color is not None:
+##             GL.glColor3fv(self.color)
+##         if self.linewidth is not None:
+##             GL.glLineWidth(self.linewidth)
+##         drawLine(self.x1, self.y1, self.x2, self.y2)
 
 
 ## ## class QText(Decoration):
@@ -258,152 +258,152 @@ class GlutText(Decoration):
 Text = GlutText
 
 
-class ColorLegend(Decoration):
-    """A labeled colorscale legend.
+## class ColorLegend(Decoration):
+##     """A labeled colorscale legend.
 
-    When showing the distribution of some variable over a domain by means
-    of a color encoding, the viewer expects some labeled colorscale as a
-    guide to decode the colors. The ColorLegend decoration provides
-    such a color legend. This class only provides the visual details of
-    the scale. The conversion of the numerical values to the matching colors
-    is provided by the :class:`colorscale.ColorLegend` class.
+##     When showing the distribution of some variable over a domain by means
+##     of a color encoding, the viewer expects some labeled colorscale as a
+##     guide to decode the colors. The ColorLegend decoration provides
+##     such a color legend. This class only provides the visual details of
+##     the scale. The conversion of the numerical values to the matching colors
+##     is provided by the :class:`colorscale.ColorLegend` class.
 
-    Parameters:
+##     Parameters:
 
-    - `colorlegend`: a :class:`colorscale.ColorLegend` instance providing
-      conversion between numerical values and colors
-    - `x,y,w,h`: four integers specifying the position and size of the
-      color bar rectangle
-    - `ngrid`: int: number of intervals for the grid lines to be shown.
-      If > 0, grid lines are drawn around the color bar and between the
-      ``ngrid`` intervals.
-      If = 0, no grid lines are drawn.
-      If < 0 (default), the value is set equal to the number of colors (as
-      set in the ``colorlegend``) or to 0 if this number is higher than 50.
-    - `linewidth`: float: width of the grid lines. If not specified, the
-      current canvas line width is used.
-    - `nlabel`: int: number of intervals for the labels to be shown.
-      If > 0, labels will be displayed at `nlabel` interval borders, if
-      possible. The number of labels displayed thus will be ``nlabel+1``,
-      or less if the labels would otherwise be too close or overlapping.
-      If 0, no labels are shown.
-      If < 0 (default), a default number of labels is shown.
-    - `font`, `size`: font and size to be used for the labels
-    - `dec`: int: number of decimals to be used in the labels
-    - `scale`: int: exponent of 10 for the scaling factor of the label values.
-      The displayed values will be equal to the real values multiplied with
-      ``10**scale``.
-    - `lefttext`: bool: if True, the labels will be drawn to the left of the
-      color bar. The default is to draw the labels at the right.
+##     - `colorlegend`: a :class:`colorscale.ColorLegend` instance providing
+##       conversion between numerical values and colors
+##     - `x,y,w,h`: four integers specifying the position and size of the
+##       color bar rectangle
+##     - `ngrid`: int: number of intervals for the grid lines to be shown.
+##       If > 0, grid lines are drawn around the color bar and between the
+##       ``ngrid`` intervals.
+##       If = 0, no grid lines are drawn.
+##       If < 0 (default), the value is set equal to the number of colors (as
+##       set in the ``colorlegend``) or to 0 if this number is higher than 50.
+##     - `linewidth`: float: width of the grid lines. If not specified, the
+##       current canvas line width is used.
+##     - `nlabel`: int: number of intervals for the labels to be shown.
+##       If > 0, labels will be displayed at `nlabel` interval borders, if
+##       possible. The number of labels displayed thus will be ``nlabel+1``,
+##       or less if the labels would otherwise be too close or overlapping.
+##       If 0, no labels are shown.
+##       If < 0 (default), a default number of labels is shown.
+##     - `font`, `size`: font and size to be used for the labels
+##     - `dec`: int: number of decimals to be used in the labels
+##     - `scale`: int: exponent of 10 for the scaling factor of the label values.
+##       The displayed values will be equal to the real values multiplied with
+##       ``10**scale``.
+##     - `lefttext`: bool: if True, the labels will be drawn to the left of the
+##       color bar. The default is to draw the labels at the right.
 
-    Some practical guidelines:
+##     Some practical guidelines:
 
-    - The number of colors is defined by the ``colorlegend`` argument.
-    - Large numbers of colors result inb a quasi continuous color scheme.
-    - With a high number of colors, grid lines disturb the image, so either
-      use ``ngrid=0`` or ``ngrid=`` to only draw a border around the colors.
-    - With a small number of colors, set ``ngrid = len(colorlegend.colors)``
-      to add gridlines between each color.
-      Without it, the individual colors in the color bar may seem to be not
-      constant, due to an optical illusion. Adding the grid lines reduces
-      this illusion.
-    - When using both grid lines and labels, set both ``ngrid`` and ``nlabel``
-      to the same number or make one a multiple of the other. Not doing so
-      may result in a very confusing picture.
-    - The best practices are to use either a low number of colors (<=20) and
-      the default ``ngrid`` and ``nlabel``, or a high number of colors (>=200)
-      and the default values or a low value for ``nlabel``.
+##     - The number of colors is defined by the ``colorlegend`` argument.
+##     - Large numbers of colors result inb a quasi continuous color scheme.
+##     - With a high number of colors, grid lines disturb the image, so either
+##       use ``ngrid=0`` or ``ngrid=`` to only draw a border around the colors.
+##     - With a small number of colors, set ``ngrid = len(colorlegend.colors)``
+##       to add gridlines between each color.
+##       Without it, the individual colors in the color bar may seem to be not
+##       constant, due to an optical illusion. Adding the grid lines reduces
+##       this illusion.
+##     - When using both grid lines and labels, set both ``ngrid`` and ``nlabel``
+##       to the same number or make one a multiple of the other. Not doing so
+##       may result in a very confusing picture.
+##     - The best practices are to use either a low number of colors (<=20) and
+##       the default ``ngrid`` and ``nlabel``, or a high number of colors (>=200)
+##       and the default values or a low value for ``nlabel``.
 
-    The `ColorScale` example script provides opportunity to experiment with
-    different settings.
-    """
-    def __init__(self,colorlegend,x,y,w,h,ngrid=0,linewidth=None,nlabel=-1,font=None,size=None,dec=2,scale=0,lefttext=False,**kargs):
-        """Initialize the ColorLegend."""
-        Decoration.__init__(self,x,y,**kargs)
-        self.cl = colorlegend
-        self.w = int(w)
-        self.h = int(h)
-        self.ngrid = int(ngrid)
-        if self.ngrid < 0:
-            self.ngrid = len(self.cl.colors)
-            if self.ngrid > 50:
-                self.ngrid = 0
-        self.linewidth = saneLineWidth(linewidth)
-        self.nlabel = int(nlabel)
-        if self.nlabel < 0:
-            self.nlabel = len(self.cl.colors)
-        self.font = gluttext.glutSelectFont(font, size)
-        self.dec = dec   # number of decimals
-        self.scale = 10 ** scale # scale all numbers with 10**scale
-        self.lefttext = lefttext
-        self.xgap = 4  # hor. gap between color bar and labels
-        self.ygap = 4  # (min) vert. gap between labels
-
-
-    def drawGL(self,**kargs):
-        from pyformex.gui.canvas import glFill
-        glFill()
-        self.decorations = []
-        n = len(self.cl.colors)
-        pf.debug("NUMBER OF COLORS: %s" % n)
-        x1 = float(self.x)
-        x2 = float(self.x+self.w)
-        y0 = float(self.y)
-        dy = float(self.h)/n
-
-        # colors
-        y1 = y0
-        #GL.glLineWidth(1.5)
-        for i, c in enumerate(self.cl.colors):
-            y2 = y0 + (i+1)*dy
-            GL.glColor3f(*c)
-            GL.glRectf(x1, y1, x2, y2)
-            y1 = y2
-
-        if self.nlabel > 0 or self.ngrid > 0:
-            GL.glColor3f(*colors.black)
-
-        # labels
-        if self.nlabel > 0:
-            fh = gluttext.glutFontHeight(self.font)
-            pf.debug("FONT HEIGHT %s" % fh)
-            # minimum label distance
-            dh = fh + self.ygap
-            maxlabel = float(self.h)/dh # maximum n umber of labels
-            if self.nlabel <= maxlabel:
-                dh = float(self.h)/self.nlabel # respect requested number
-
-            if self.lefttext:
-                x1 = x1 - self.xgap
-                gravity = 'W'
-            else:
-                x1 = x2 + self.xgap
-                gravity = 'E'
-
-            # FOR 3-VALUE SCALES THIS SHOULD BE DONE IN TWO PARTS,
-            # FROM THE CENTER OUTWARDS, AND THEN ADDING THE
-            # MIN AND MAX VALUES
-            for i, v in enumerate(self.cl.limits):
-                y2 = y0 + i*dy
-                if y2 >= y1 or i == 0 or i == len(self.cl.limits)-1:
-                    if y2 >= self.y+self.h-dh/2 and i < len(self.cl.limits)-1:
-                        continue
-                    t = Text(("%%.%df" % self.dec) % (v*self.scale), x1, round(y2), font=self.font, gravity=gravity)
-                    self.decorations.append(t)
-                    t.drawGL(**kargs)
-                    y1 = y2 + dh
-
-        # grid: after values, to be on top
-        if self.ngrid > 0:
-            if self.linewidth is not None:
-                GL.glLineWidth(self.linewidth)
-            drawGrid(self.x, self.y, self.x+self.w, self.y+self.h, 1, self.ngrid)
+##     The `ColorScale` example script provides opportunity to experiment with
+##     different settings.
+##     """
+##     def __init__(self,colorlegend,x,y,w,h,ngrid=0,linewidth=None,nlabel=-1,font=None,size=None,dec=2,scale=0,lefttext=False,**kargs):
+##         """Initialize the ColorLegend."""
+##         Decoration.__init__(self,x,y,**kargs)
+##         self.cl = colorlegend
+##         self.w = int(w)
+##         self.h = int(h)
+##         self.ngrid = int(ngrid)
+##         if self.ngrid < 0:
+##             self.ngrid = len(self.cl.colors)
+##             if self.ngrid > 50:
+##                 self.ngrid = 0
+##         self.linewidth = saneLineWidth(linewidth)
+##         self.nlabel = int(nlabel)
+##         if self.nlabel < 0:
+##             self.nlabel = len(self.cl.colors)
+##         self.font = gluttext.glutSelectFont(font, size)
+##         self.dec = dec   # number of decimals
+##         self.scale = 10 ** scale # scale all numbers with 10**scale
+##         self.lefttext = lefttext
+##         self.xgap = 4  # hor. gap between color bar and labels
+##         self.ygap = 4  # (min) vert. gap between labels
 
 
-    def use_list(self):
-        Decoration.use_list(self)
-        for t in self.decorations:
-            t.use_list()
+##     def drawGL(self,**kargs):
+##         from pyformex.gui.canvas import glFill
+##         glFill()
+##         self.decorations = []
+##         n = len(self.cl.colors)
+##         pf.debug("NUMBER OF COLORS: %s" % n)
+##         x1 = float(self.x)
+##         x2 = float(self.x+self.w)
+##         y0 = float(self.y)
+##         dy = float(self.h)/n
+
+##         # colors
+##         y1 = y0
+##         #GL.glLineWidth(1.5)
+##         for i, c in enumerate(self.cl.colors):
+##             y2 = y0 + (i+1)*dy
+##             GL.glColor3f(*c)
+##             GL.glRectf(x1, y1, x2, y2)
+##             y1 = y2
+
+##         if self.nlabel > 0 or self.ngrid > 0:
+##             GL.glColor3f(*colors.black)
+
+##         # labels
+##         if self.nlabel > 0:
+##             fh = gluttext.glutFontHeight(self.font)
+##             pf.debug("FONT HEIGHT %s" % fh)
+##             # minimum label distance
+##             dh = fh + self.ygap
+##             maxlabel = float(self.h)/dh # maximum n umber of labels
+##             if self.nlabel <= maxlabel:
+##                 dh = float(self.h)/self.nlabel # respect requested number
+
+##             if self.lefttext:
+##                 x1 = x1 - self.xgap
+##                 gravity = 'W'
+##             else:
+##                 x1 = x2 + self.xgap
+##                 gravity = 'E'
+
+##             # FOR 3-VALUE SCALES THIS SHOULD BE DONE IN TWO PARTS,
+##             # FROM THE CENTER OUTWARDS, AND THEN ADDING THE
+##             # MIN AND MAX VALUES
+##             for i, v in enumerate(self.cl.limits):
+##                 y2 = y0 + i*dy
+##                 if y2 >= y1 or i == 0 or i == len(self.cl.limits)-1:
+##                     if y2 >= self.y+self.h-dh/2 and i < len(self.cl.limits)-1:
+##                         continue
+##                     t = Text(("%%.%df" % self.dec) % (v*self.scale), x1, round(y2), font=self.font, gravity=gravity)
+##                     self.decorations.append(t)
+##                     t.drawGL(**kargs)
+##                     y1 = y2 + dh
+
+##         # grid: after values, to be on top
+##         if self.ngrid > 0:
+##             if self.linewidth is not None:
+##                 GL.glLineWidth(self.linewidth)
+##             drawGrid(self.x, self.y, self.x+self.w, self.y+self.h, 1, self.ngrid)
+
+
+##     def use_list(self):
+##         Decoration.use_list(self)
+##         for t in self.decorations:
+##             t.use_list()
 
 
 class Rectangle(Decoration):

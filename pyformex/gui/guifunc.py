@@ -32,6 +32,7 @@ from __future__ import print_function
 
 
 import pyformex as pf
+
 from pyformex.gui import draw
 
 ######## decorator function #############

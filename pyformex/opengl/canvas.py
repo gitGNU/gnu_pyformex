@@ -30,13 +30,17 @@ import pyformex as pf
 
 from pyformex import utils, coords
 from pyformex import arraytools as at
-from pyformex.gui import colors, views, decors, marks
+from pyformex.gui import colors, views, marks
 
 from pyformex.mydict import Dict
+from pyformex.odict import OrderedDict
 from pyformex.collection import Collection
 from pyformex.attributes import Attributes
 from pyformex.formex import Formex
-from pyformex.gui.drawable import saneColor, glColor
+from pyformex.simple import cuboid2d
+from pyformex.opengl import decors
+from pyformex.opengl.drawable import GeomActor
+from pyformex.opengl.sanitize import saneColor,saneColorArray
 from pyformex.opengl.camera import Camera
 from pyformex.opengl.renderer import Renderer
 from pyformex.opengl.scene import Scene, ItemList
@@ -44,18 +48,14 @@ from pyformex.opengl.scene import Scene, ItemList
 from numpy import *
 from OpenGL import GL, GLU
 
-from OpenGL import GL
-
 
 def glVersion(mode='all'):
-    vendor = GL.glGetString(GL.GL_VENDOR)
-    renderer = GL.glGetString(GL.GL_RENDERER)
-    version = GL.glGetString(GL.GL_VERSION)
-    glsl_version = GL.glGetString(GL.GL_SHADING_LANGUAGE_VERSION)
-    if mode == 'all':
-        return vendor,renderer,version,glsl_version
-    if mode == 'vendor+version':
-        return vendor.split()[0], version.split()[0]
+    return OrderedDict([
+        ('vendor', GL.glGetString(GL.GL_VENDOR)),
+        ('renderer', GL.glGetString(GL.GL_RENDERER)),
+        ('version', GL.glGetString(GL.GL_VERSION)),
+        ('glsl_version', GL.glGetString(GL.GL_SHADING_LANGUAGE_VERSION)),
+        ])
 
 
 libGL = None
@@ -572,7 +572,6 @@ class Canvas(object):
         self.highlights = ItemList(self)
         self.camera = None
         self.triade = None
-        self.background = None
         self.settings = CanvasSettings(**settings)
         self.mode2D = False
         self.rendermode = None
@@ -584,7 +583,7 @@ class Canvas(object):
         self.focus = False
         pf.debug("Canvas Setting:\n%s"% self.settings, pf.DEBUG.DRAW)
         self.makeCurrent()  # we need correct OpenGL context
-        print("CANVAS",glVersion())
+        #print("CANVAS",glVersion())
 
 
     @property
@@ -718,7 +717,7 @@ class Canvas(object):
         Furthermore, if a Canvas method do_ATTR is defined, it will be called
         with the old and new toggle state as a parameter.
         """
-        #print("CANVAS.setTogggle %s = %s"%(attr,state))
+        print("CANVAS.setTogggle %s = %s"%(attr,state))
         oldstate = self.settings[attr]
         if state not in [True, False]:
             state = not oldstate
@@ -728,8 +727,6 @@ class Canvas(object):
             func(state, oldstate)
         except:
             pass
-
-        #print("SETTINGS",self.settings)
 
 
     def setLighting(self, onoff):
@@ -748,9 +745,9 @@ class Canvas(object):
 
     def do_alphablend(self, state, oldstate):
         """Toggle alphablend on/off."""
-        #print("CANVAS.do_alphablend: %s -> %s"%(state,oldstate))
+        print("CANVAS.do_alphablend: %s -> %s"%(state,oldstate))
         if state != oldstate:
-            self.renderer.changeMode(self)
+            #self.renderer.changeMode(self)
             self.scene.changeMode(self)
             self.display()
 
@@ -799,27 +796,23 @@ class Canvas(object):
           four colors.
         - `image`: an image to be set.
         """
-        self.settings.update(dict(bgcolor=color, bgimage=image))
+        self.scene.backgrounds.clear()
+        if color is not None:
+            self.settings.update(dict(bgcolor=color))
+        if image is not None:
+            self.settings.update(dict(bgimage=image))
         color = self.settings.bgcolor
         if color.ndim == 1 and not self.settings.bgimage:
             pf.debug("Clearing fancy background", pf.DEBUG.DRAW)
-            self.background = None
         else:
             self.createBackground()
-            #glSmooth()
-            #glFill()
-        self.clear()
-        self.redrawAll()
-        #self.update()
 
 
     def createBackground(self):
         """Create the background object."""
-        x1, y1 = 0, 0
-        x2, y2 = self.getSize()
-        from pyformex.gui.drawable import saneColorArray
-        color = saneColorArray(self.settings.bgcolor, (4,))
-        #print color.shape,color
+        F = cuboid2d(xmin=[-1.,-1.],xmax=[1.,1.])
+        # TODO: Currently need a Mesh for texture
+        F = F.toMesh()
         image = None
         if self.settings.bgimage:
             from pyformex.plugins.imagearray import image2numpy
@@ -827,8 +820,8 @@ class Canvas(object):
                 image = image2numpy(self.settings.bgimage, indexed=False)
             except:
                 pass
-        #print("BACKGROUN %s,%s"%(x2,y2))
-        self.background = decors.Rectangle(x1, y1, x2, y2, color=color, texture=image)
+        actor = GeomActor(F,color=self.settings.bgcolor,texture=image,rendertype=3,opak=True,lighting=False)
+        self.scene.addAny(actor)
 
 
     def setFgColor(self, color):
@@ -867,10 +860,7 @@ class Canvas(object):
         self.renderer = Renderer(self)
 
 
-
-    # TODO: This is a misnamer: should be clearbg or something like that
-    # clear() should also clear the scene
-    def clear(self):
+    def clearCanvas(self):
         """Clear the canvas to the background color."""
         self.settings.setMode()
         self.setDefaults()
@@ -882,9 +872,9 @@ class Canvas(object):
         GL.glViewport(0, 0, w, h)
         self.aspect = float(w)/h
         self.camera.setLens(aspect=self.aspect)
-        if self.background:
-            # recreate the background to match the current size
-            self.createBackground()
+        ## if self.scene.background:
+        ##     # recreate the background to match the current size
+        ##     self.createBackground()
         self.display()
 
 
@@ -916,7 +906,7 @@ class Canvas(object):
         """
         self.setDefaults()
         self.setBackground(self.settings.bgcolor, self.settings.bgimage)
-        self.clear()
+        self.clearCanvas()
         GL.glClearDepth(1.0)	       # Enables Clearing Of The Depth Buffer
         GL.glEnable(GL.GL_DEPTH_TEST)	       # Enables Depth Testing
         #GL.glEnable(GL.GL_CULL_FACE)
@@ -938,8 +928,10 @@ class Canvas(object):
         GL.glFlush()
 
 
+    # TODO: this is here for compatibility reasons
+    # should be removed after complete transition to shaders
     def draw_sorted_objects(self, objects, alphablend):
-        """Draw a list of sorted objects.
+        """Draw a list of sorted objects through the fixed pipeline.
 
         If alphablend is True, objects are separated in opaque
         and transparent ones, and the opaque are drawn first.
@@ -978,31 +970,9 @@ class Canvas(object):
         #pf.debugt("UPDATING CURRENT OPENGL CANVAS",pf.DEBUG.DRAW)
         self.makeCurrent()
 
-        self.clear()
-
-        # draw background decorations in 2D mode
-        self.begin_2D_drawing()
-
-        background = self.scene.background
-        if background is None:
-            background = self.background
-
-        if background:
-            #pf.debug("Displaying background",pf.DEBUG.DRAW)
-            # If we have a shaded background, we need smooth/fill anyhow
-            glSmooth()
-            glFill()
-            background.draw(mode='smooth')
-
-        # background decorations
-        pf.debug("background decorations", pf.DEBUG.DRAW)
-        for actor in self.scene.back_decors():
-            self.setDefaults()
-            ## if hasattr(actor,'zoom'):
-            ##     self.zoom_2D(actor.zoom)
-            actor.draw(canvas=self)
-            ## if hasattr(actor,'zoom'):
-            ##     self.zoom_2D()
+        self.clearCanvas()
+        glSmooth()
+        glFill()
 
         # draw the focus rectangle if more than one viewport
         if len(pf.GUI.viewports.all) > 1 and pf.cfg['gui/showfocus']:
@@ -1011,11 +981,6 @@ class Canvas(object):
             if self.focus:      # pyFormex DRAW focus
                 self.draw_focus_rectangle(2, color=colors.red)
 
-        self.end_2D_drawing()
-
-        # start 3D drawing
-        self.camera.set3DMatrices()
-
         # draw the highlighted actors
         pf.debug("draw highlights", pf.DEBUG.DRAW)
         if self.highlights:
@@ -1023,33 +988,9 @@ class Canvas(object):
                 self.setDefaults()
                 actor.draw(canvas=self)
 
-        # draw the back annotations
-        pf.debug("draw back annotations", pf.DEBUG.DRAW)
-        self.draw_sorted_objects(self.scene.back_annot(), self.settings.alphablend)
-
-        # Draw the opengl1 actors
-        pf.debug("opengl1 rendering of old actors", pf.DEBUG.DRAW)
-        self.draw_sorted_objects(self.scene.oldactors, self.settings.alphablend)
-
         # Draw the opengl2 actors
         pf.debug("opengl2 shader rendering", pf.DEBUG.DRAW)
         self.renderer.render(self.scene)
-
-        # draw the front annotations
-        pf.debug("draw front annotations", pf.DEBUG.DRAW)
-        self.draw_sorted_objects(self.scene.front_annot(), self.settings.alphablend)
-
-        pf.debug("draw foreground decorations in 2D mode", pf.DEBUG.DRAW)
-        self.begin_2D_drawing()
-        for actor in self.scene.front_decors():
-            ## print("FRONT DECOR")
-            self.setDefaults()
-            ## if hasattr(actor,'zoom'):
-            ##     self.zoom_2D(actor.zoom)
-            actor.draw(canvas=self)
-            ## if hasattr(actor,'zoom'):
-            ##     self.zoom_2D()
-        self.end_2D_drawing()
 
         # make sure canvas is updated
         GL.glFlush()
@@ -1097,6 +1038,26 @@ class Canvas(object):
             self.mode2D = False
 
 
+    def drawGL1(self):
+        # The old 3D actors
+        if self.scene.oldactors:
+            # start 3D drawing
+            self.camera.set3DMatrices()
+            # Draw the opengl1 actors
+            GL.glEnable(GL.GL_CULL_FACE)
+            GL.glEnable(GL.GL_DEPTH_TEST)
+            GL.glDepthMask (GL.GL_TRUE)
+            self.draw_sorted_objects(self.scene.oldactors, self.settings.alphablend)
+
+        # The old 2D actors
+        if hasattr(self.scene,'olddecors') and self.scene.olddecors:
+            self.begin_2D_drawing()
+            for obj in self.scene.olddecors:
+                self.setDefaults()
+                obj.draw()
+            self.end_2D_drawing()
+
+
     def addHighlight(self, itemlist):
         """Add a highlight or a list thereof to the 3D scene."""
         self.highlights.add(itemlist)
@@ -1119,20 +1080,11 @@ class Canvas(object):
     def removeAny(self, itemlist):
         self.scene.removeAny(itemlist)
 
-
-    def removeActor(self,itemlist=None):
-        self.scene.actors.delete(itemlist)
-        self.scene.oldactors.delete(itemlist)
-
-    def removeAnnotation(self,itemlist=None):
-        self.scene.annotations.delete(itemlist)
-
-    def removeDecoration(self,itemlist=None):
-        self.scene.decorations.delete(itemlist)
+    removeActor = removeAnnotation = removeDecoration = removeAny
 
 
-    def removeAll(self):
-        self.scene.clear()
+    def removeAll(self,sticky=False):
+        self.scene.clear(sticky)
         self.highlights.clear()
 
 
@@ -1329,14 +1281,15 @@ class Canvas(object):
         """Show the saved buffer"""
         pass
 
+
     def draw_focus_rectangle(self,ofs=0,color=colors.pyformex_pink):
         """Draw the focus rectangle.
 
-        The specified width is HALF of the line width
         """
         w, h = self.width(), self.height()
-        self._focus = decors.Grid(1+ofs, ofs, w-ofs, h-1-ofs, color=color, linewidth=1)
-        self._focus.draw()
+        self._focus = decors.Grid(-1.,-1.,1.,1., color=color, linewidth=2, rendertype=3)
+        self.addAny(self._focus)
+
 
     def draw_cursor(self, x, y):
         """draw the cursor"""
@@ -1346,6 +1299,7 @@ class Canvas(object):
         col = pf.cfg.get('pick/color', 'yellow')
         self.cursor = decors.Grid(x-w/2, y-h/2, x+w/2, y+h/2, color=col, linewidth=1)
         self.addDecoration(self.cursor)
+
 
     def draw_rectangle(self, x, y):
         if self.cursor:

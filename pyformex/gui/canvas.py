@@ -191,7 +191,7 @@ class ActorList(list):
     Currently the implementation does not check that the objects are of
     the proper type.
     """
- 
+
     def __init__(self, canvas):
         self.canvas = canvas
         list.__init__(self)
@@ -224,7 +224,7 @@ class ActorList(list):
         """
         del self[:]
 
-        
+
     def redraw(self):
         """Redraw all actors in the list.
 
@@ -823,7 +823,7 @@ class Canvas(object):
             self.createBackground()
             #glSmooth()
             #glFill()
-        self.clear()
+        self.clearCanvas()
         self.redrawAll()
         #self.update()
 
@@ -881,7 +881,7 @@ class Canvas(object):
             self.camera.projection_callback = print_camera
 
 
-    def clear(self):
+    def clearCanvas(self):
         """Clear the canvas to the background color."""
         self.settings.setMode()
         self.setDefaults()
@@ -927,7 +927,7 @@ class Canvas(object):
         """
         self.setDefaults()
         self.setBackground(self.settings.bgcolor, self.settings.bgimage)
-        self.clear()
+        self.clearCanvas()
         GL.glClearDepth(1.0)	       # Enables Clearing Of The Depth Buffer
         GL.glEnable(GL.GL_DEPTH_TEST)	       # Enables Depth Testing
         #GL.glEnable(GL.GL_CULL_FACE)
@@ -950,7 +950,7 @@ class Canvas(object):
         """
         #pf.debugt("UPDATING CURRENT OPENGL CANVAS",pf.DEBUG.DRAW)
         self.makeCurrent()
-        self.clear()
+        self.clearCanvas()
 
         # draw background decorations in 2D mode
         self.begin_2D_drawing()

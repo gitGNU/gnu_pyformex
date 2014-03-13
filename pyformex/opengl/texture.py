@@ -27,6 +27,7 @@ This module defines tools for texture rendering in pyFormex.
 """
 from __future__ import print_function
 
+from pyformex.plugins.imagearray import image2numpy
 
 from OpenGL import GL
 import numpy as np
@@ -39,33 +40,42 @@ class Texture(object):
 
     Parameters:
 
-    - `image`: raw image data (unsigned byte RGBA data)
+    - `image`: raw image data (unsigned byte RGBA data) or image file name
+    - `format`: format of the image data
+    - `texformat`: format of the texture data
 
     """
+    max_texture_units = GL.glGetIntegerv(GL.GL_MAX_TEXTURE_UNITS)
+    #active_textures =
 
-    def __init__(self,image,mode=1):
-        self.tex = None
-        image = np.asarray(image)
-        # print "Texture: type %s, size %s" % (image.dtype, image.shape)
+    def __init__(self,image,mode=1,format=GL.GL_RGBA,texformat=GL.GL_RGBA):
+        self.texid = None
+        if isinstance(image,(str,unicode)):
+            image = image2numpy(image, indexed=False)
+        else:
+            image = np.asarray(image)
+        print("Texture: type %s, size %s" % (image.dtype, image.shape))
         image = np.require(image, dtype='ubyte', requirements='C')
-        # print "Converted to: type %s, size %s" % (image.dtype, image.shape)
+        print("Converted to: type %s, size %s" % (image.dtype, image.shape))
         ny, nx = image.shape[:2]
 
         # Generate a texture id
-        tex = GL.glGenTextures(1)
+        self.texid = GL.glGenTextures(1)
+        self.texun = None
         # Make our new texture the current 2D texture
         GL.glEnable(GL.GL_TEXTURE_2D)
         #GL.glTexEnvf(GL.GL_TEXTURE_ENV,GL.GL_TEXTURE_ENV_MODE,GL.GL_MODULATE)
-        GL.glBindTexture(GL.GL_TEXTURE_2D, tex)
+        # select texture unit 0
+        GL.glActiveTexture(GL.GL_TEXTURE0)
+        GL.glBindTexture(GL.GL_TEXTURE_2D, self.texid)
         GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
         # Copy the texture data into the current texture
-        GL.glTexImage2D(GL.GL_TEXTURE_2D, 0, 4, nx, ny, 0,
-                        GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, image)
-        self.tex = tex
+        GL.glTexImage2D(GL.GL_TEXTURE_2D, 0, texformat, nx, ny, 0,
+                        format, GL.GL_UNSIGNED_BYTE, image)
         self.mode = mode
 
 
-    def activate(self,mode=None):
+    def activate(self,mode=None,filtr=0):
         """Render-time texture environment setup"""
         if mode is None:
             mode = self.mode
@@ -73,18 +83,26 @@ class Texture(object):
                     1: GL.GL_MODULATE,
                     2: GL.GL_DECAL,
                     }[mode]
+        texfiltr = { 0: GL.GL_NEAREST,
+                     1: GL.GL_LINEAR,
+                     }[filtr]
+
         # Configure the texture rendering parameters
         GL.glEnable(GL.GL_TEXTURE_2D)
-        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST)
-        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST)
         GL.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, texmode)
+        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, texfiltr)
+        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, texfiltr)
         # Re-select the texture
-        GL.glBindTexture(GL.GL_TEXTURE_2D, self.tex)
+        GL.glBindTexture(GL.GL_TEXTURE_2D, self.texid)
+
+
+    def bind(self):
+        GL.glBindTexture(GL.GL_TEXTURE_2D, self.texid)
 
 
     def __del__(self):
-        if self.tex:
-            GL.glDeleteTextures(self.tex)
+        if self.texid:
+            GL.glDeleteTextures(self.texid)
 
 
 ### End

@@ -36,8 +36,9 @@ from __future__ import print_function
 import pyformex as pf
 from pyformex.coords import bbox
 from pyformex.attributes import Attributes
+from pyformex.opengl.matrix import Matrix4
+from pyformex.opengl.camera import orthogonal_matrix
 from pyformex.opengl.shader import Shader
-from pyformex.opengl.drawable import GeomActor
 
 import numpy as np
 from OpenGL import GL
@@ -128,72 +129,191 @@ class Renderer(object):
             GL.glPopName()
 
 
+    def render3D(self,actors,pick=None):
+        """Render the 3D actors in the scene.
+
+        """
+        if not actors:
+            return
+        # Get the current modelview*projection matrix
+        modelview = self.camera.modelview
+        projection = self.camera.projection
+        transinv = self.camera.modelview.transinv().rot
+
+        # Propagate the matrices to the uniforms of the shader
+        self.shader.uniformMat4('modelview', modelview.gl())
+        self.shader.uniformMat4('projection', projection.gl())
+        self.shader.uniformMat3('normalstransform', transinv.flatten().astype(np.float32))
+
+        if pick:
+            from pyformex.opengl import camera
+            pickmat = camera.pick_matrix(*pick)
+            self.shader.uniformMat4('pickmat', pickmat.gl())
+
+        # sort actors in back and front, and select visible
+        actors = back(actors) + front(actors)
+        actors =  [ o for o in actors if o.visible is not False ]
+
+        GL.glEnable(GL.GL_DEPTH_TEST)
+        GL.glDepthMask (GL.GL_TRUE)
+
+        if pick:
+            # PICK MODE
+            self.pickObjects(actors)
+
+        elif not self.canvas.settings.alphablend:
+            # NO ALPHABLEND
+            self.renderObjects(actors)
+
+        else:
+            # ALPHABLEND
+            # 2D actors are by default transparent!
+            opaque = [ a for a in actors if a.opak ]
+            transp = [ a for a in actors if not a.opak ]
+
+            # First render the opaque objects
+            self.renderObjects(opaque)
+
+            # Then the transparent ones
+            # Disable writing to the depth buffer
+            # as everything behind the transparent object
+            # also needs to be drawn
+            GL.glDepthMask (GL.GL_FALSE)
+
+            if pf.cfg['render/transp_nocull']:
+                GL.glDisable(GL.GL_CULL_FACE)
+
+            GL.glEnable(GL.GL_BLEND)
+            GL.glBlendEquation(GL.GL_FUNC_ADD)
+            if pf.cfg['render/alphablend'] == 'mult':
+                GL.glBlendFunc(GL.GL_ZERO, GL.GL_SRC_COLOR)
+            elif pf.cfg['render/alphablend'] == 'add':
+                GL.glBlendFunc(GL.GL_ONE, GL.GL_ONE)
+            elif pf.cfg['render/alphablend'] == 'trad1':
+                GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE)
+            else:
+                GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+            self.renderObjects(transp)
+            GL.glDisable (GL.GL_BLEND)
+
+        GL.glDepthMask (GL.GL_TRUE)
+
+
+    def render2D(self,actors):
+        """Render 2D decorations.
+
+        """
+        if not actors:
+            return
+
+        #print("Render %s decorations" % len(actors))
+
+        # Set modelview/projection
+        modelview = Matrix4()
+        self.shader.uniformMat4('modelview', modelview.gl())
+
+        left = 0. # -0.5
+        right = float(self.canvas.width()) # -0.5
+        bottom = 0. # -0.5
+        top = float(self.canvas.height()) # -0.5
+        near = -1.
+        far = 1.
+        projection = orthogonal_matrix(left, right, bottom, top, near, far)
+        self.shader.uniformMat4('projection', projection.gl())
+
+        GL.glDisable(GL.GL_DEPTH_TEST)
+        GL.glDisable(GL.GL_CULL_FACE)
+        GL.glDepthMask (GL.GL_FALSE)
+
+        # ALPHABLEND
+        #
+        # We need blending for text rendering!
+        #
+        # 2D actors are by default opak!
+        opaque = [ a for a in actors if a.opak is None or a.opak ]
+        transp = [ a for a in actors if a.opak is False]
+
+        # First render the opaque objects
+        self.renderObjects(opaque)
+
+        # Then the transparent ones
+        # Disable writing to the depth buffer
+        # as everything behind the transparent object
+        # also needs to be drawn
+
+        GL.glEnable(GL.GL_BLEND)
+        GL.glBlendEquation(GL.GL_FUNC_ADD)
+        if pf.cfg['render/textblend'] == 'mult':
+            GL.glBlendFunc(GL.GL_ZERO, GL.GL_SRC_COLOR)
+        elif pf.cfg['render/textblend'] == 'add':
+            GL.glBlendFunc(GL.GL_ONE, GL.GL_ONE)
+        elif pf.cfg['render/textblend'] == 'trad1':
+            GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE)
+        elif pf.cfg['render/textblend'] == 'zero':
+            GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ZERO)
+        else:
+             GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+        self.renderObjects(transp)
+        GL.glDisable (GL.GL_BLEND)
+        GL.glDepthMask (GL.GL_TRUE)
+
+
+    def renderBG(self,actors):
+        """Render 2D background actors.
+
+        """
+        if not actors:
+            return
+
+        #print("Render %s backgrounds" % len(actors))
+
+        # Set modelview/projection
+        modelview = projection = Matrix4()
+
+        self.shader.uniformMat4('modelview', modelview.gl())
+        self.shader.uniformMat4('projection', projection.gl())
+
+        self.canvas.zoom_2D()  # should be combined with above
+
+        # in clip space
+        GL.glDisable(GL.GL_DEPTH_TEST)
+        self.renderObjects(actors)
+
+
     def render(self,scene,pick=None):
         """Render the geometry for the scene."""
         self.shader.bind(picking=bool(pick))
         try:
 
-            # Get the current modelview*projection matrix
-            modelview = self.camera.modelview
-            projection = self.camera.projection
+            # The back backgrounds
+            self.renderBG(back(scene.backgrounds))
 
-            # Propagate the matrices to the uniforms of the shader
-            self.shader.uniformMat4('modelview', modelview.gl())
-            self.shader.uniformMat4('projection', projection.gl())
-            self.shader.uniformMat3('normalstransform', modelview.transinv().rot.flatten().astype(np.float32))
-            if pick:
-                from pyformex.opengl import camera
-                pickmat = camera.pick_matrix(*pick)
-                self.shader.uniformMat4('pickmat', pickmat.gl())
+            # The 2D back decorations
+            self.render2D(back(scene.decorations)+back(scene.annotations))
 
-            # draw the scene actors (sorted)
-            actors = scene.back_actors() + scene.front_actors()
-            actors =  [ o for o in actors if o.visible is not False ]
-            if pick:
-                # PICK MODE
-                self.pickObjects(actors)
+            # The 3D actors
+            self.render3D(scene.actors,pick)
 
-            elif not self.canvas.settings.alphablend:
-                # NO ALPHABLEND
-                self.renderObjects(actors)
+            # The 2D front decorations
+            self.render2D(front(scene.annotations)+front(scene.decorations))
 
-            else:
-                # ALPHABLEND
-                opaque = [ a for a in actors if a.opak ]
-                transp = [ a for a in actors if not a.opak ]
-
-                # First render the opaque objects
-                self.renderObjects(opaque)
-
-                # Then render the transparent ones
-                # Enable depth testing (it really should always be on)
-                # so that opaque in front come out unblended
-                GL.glEnable(GL.GL_DEPTH_TEST)
-                # Disable writing to the depth buffer
-                # as everything behind the opaque object
-                # also needs to be drawn
-                GL.glDepthMask (GL.GL_FALSE)
-
-                if pf.cfg['render/transp_nocull']:
-                    GL.glDisable(GL.GL_CULL_FACE)
-
-                GL.glEnable(GL.GL_BLEND)
-                GL.glBlendEquation(GL.GL_FUNC_ADD)
-                if pf.cfg['render/alphablend'] in ['trad','sort']:
-                    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-                elif pf.cfg['render/alphablend'] == 'mult':
-                    GL.glBlendFunc(GL.GL_ZERO, GL.GL_SRC_COLOR)
-                elif pf.cfg['render/alphablend'] == 'add':
-                    GL.glBlendFunc(GL.GL_ONE, GL.GL_ONE)
-                self.renderObjects(transp)
-
-                GL.glDisable (GL.GL_BLEND)
-                GL.glEnable(GL.GL_CULL_FACE)
-                GL.glEnable(GL.GL_DEPTH_TEST)
-                GL.glDepthMask (GL.GL_TRUE)
+            # The front backgrounds
+            self.renderBG(front(scene.backgrounds))
 
         finally:
             self.shader.unbind()
+
+        self.canvas.drawGL1()
+
+
+def front(actorlist):
+    """Return the actors from the list that have ontop=True"""
+    return [ a for a in actorlist if a.ontop ]
+
+
+def back(actorlist):
+    """Return the actors from the list that have ontop=False"""
+    return [ a for a in actorlist if not a.ontop ]
 
 
 # End

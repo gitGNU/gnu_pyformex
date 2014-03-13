@@ -30,10 +30,10 @@ import pyformex as pf
 from pyformex import utils
 from pyformex import arraytools as at
 from pyformex import coords
-from pyformex.gui import actors
-from pyformex.gui import decors
-from pyformex.gui import marks
-from pyformex.opengl import drawable
+from pyformex.opengl.drawable import GeomActor
+from pyformex.gui import actors as oldactors
+from pyformex.gui import decors as olddecors
+from pyformex.gui import marks as oldmarks
 
 
 class ItemList(list):
@@ -56,38 +56,40 @@ class ItemList(list):
         else:
             self.append(item)
 
-    def delete(self, item):
-        """Remove an item or a list thereof from an ItemList.
 
-        A special value item==None will remove all items from the list.
+    def delete(self, items, sticky=False):
+        """Remove item(s) from an ItemList.
+
+        Parameters:
+
+        - `items`: a single item or a list or tuple of items
+        - `sticky`: bool: if True, also sticky items are removed.
+          The default is to not remove sticky items.
+          Sticky items are items having an attribute sticky=True.
+
         """
-        if item is None:
-            self.clear()
+        if not type(items) in (list, tuple):
+            items = [ items ]
+        if sticky:
+            self[:] = [ a for a in self if a not in items ]
         else:
-            if not type(item) in (list, tuple):
-                item = [ item ]
-            for a in item:
-                if a in self:
-                    self.remove(a)
+            self[:] = [ a for a in self if (hasattr(a,'sticky') and a.sticky) or a not in items ]
 
-    def clear(self):
-        """Clear the list
 
-        Removes all items from the ItemList.
+    def clear(self, sticky=False):
+        """Clear the list.
+
+        Parameters:
+
+        - `sticky`: bool: if True, also sticky items are removed.
+          The default is to not remove sticky items.
+          Sticky items are items having an attribute sticky=True.
+
         """
-        del self[:]
-
-
-    ## def redraw(self):
-    ##     """Redraw all items in the list.
-
-    ##     This redraws the specified items (recreating their display list).
-    ##     This could e.g. be used after changing an item's properties.
-    ##     """
-    ##     for item in self:
-    ##         item.redraw()
-
-
+        if sticky:
+            del self[:]
+        else:
+            self[:] = [ a for a in self if (hasattr(a,'sticky') and a.sticky) ]
 
 
 
@@ -108,9 +110,10 @@ class Scene(object):
         self.canvas = canvas
         self.actors = ItemList(self)
         self.oldactors = ItemList(self)
+        self.olddecors = ItemList(self)
         self.annotations = ItemList(self)
         self.decorations = ItemList(self)
-        self.background = None
+        self.backgrounds = ItemList(self)
         self._bbox = None
 
 
@@ -159,52 +162,6 @@ class Scene(object):
         self._bbox = sane_bbox(coords.bbox(bb))
 
 
-    def back_decors(self):
-        return [ a for a in self.decorations if not a.ontop ]
-    def front_decors(self):
-        return [ a for a in self.decorations if a.ontop ]
-    def back_annot(self):
-        return [ a for a in self.annotations if not a.ontop ]
-    def front_annot(self):
-        return [ a for a in self.annotations if a.ontop ]
-    def back_actors(self):
-        return [ a for a in self.actors if not a.ontop ]
-    def front_actors(self):
-        return [ a for a in self.actors if a.ontop ]
-
-
-    ## def add(self,obj,**kargs):
-    ##     actor = GeomActor(obj,**kargs)
-    ##     self.actors.add(actor)
-
-
-    def addActor(self, actor):
-        """Add an actor or a list of actors to the scene"""
-        self.actors.add(actor)
-        actor.prepare(self.canvas)
-        actor.changeMode(self.canvas)
-        self._bbox = None #coords.bbox([actor,self.bbox])
-        self.canvas.camera.focus = self.bbox.center()
-
-
-    def removeActor(self, actor):
-        """Remove an actor or a list of actors from the scene"""
-        self.actors.delete(actor)
-        self._bbox = None
-        self.canvas.camera.focus = self.bbox.center()
-
-
-    ## def prepare(self,canvas):
-    ##     """Prepare the actors for rendering onto the canvas"""
-    ##     print("RENDERER.prepare %s to %s" % (canvas.rendermode))
-    ##     for a in self.actors:
-    ##         actor.prepare(canvas)
-    ##         actor.changeMode(canvas)
-    ##     self._bbox = None
-    ##     self.canvas.camera.focus = self.bbox.center()
-    ##     #print("NEW BBOX: %s" % self.bbox
-
-
     def changeMode(self,canvas,mode=None):
         """This function is called when the rendering mode is changed
 
@@ -224,15 +181,26 @@ class Scene(object):
         to the proper list.
         """
         if isinstance(actor, list):
-            [ self.addActor(a) for a in actor ]
-        elif isinstance(actor, drawable.GeomActor):
-            self.addActor(actor)
-        elif isinstance(actor, actors.Actor):
+            [ self.addAny(a) for a in actor ]
+        elif isinstance(actor, oldactors.Actor):
             self.oldactors.add(actor)
-        elif isinstance(actor, marks.Mark):
-            self.annotations.add(actor)
-        elif isinstance(actor, decors.Decoration):
-            self.decorations.add(actor)
+        elif isinstance(actor, oldmarks.Mark):
+            self.oldactors.add(actor)
+        elif isinstance(actor, olddecors.Decoration):
+            self.olddecors.add(actor)
+        elif isinstance(actor, GeomActor):
+            if actor.rendertype == 0:
+                self.actors.add(actor)
+            elif actor.rendertype == 1:
+                self.annotations.add(actor)
+            elif actor.rendertype == 2:
+                self.decorations.add(actor)
+            elif actor.rendertype == 3:
+                self.backgrounds.add(actor)
+            actor.prepare(self.canvas)
+            actor.changeMode(self.canvas)
+            self._bbox = None #coords.bbox([actor,self.bbox])
+            self.canvas.camera.focus = self.bbox.center()
 
 
     def removeAny(self, actor):
@@ -245,22 +213,33 @@ class Scene(object):
         """
         if isinstance(actor, list):
             [ self.removeActor(a) for a in actor ]
-        elif isinstance(actor, drawable.GeomActor):
-            self.removeActor(actor)
-        elif isinstance(actor, actors.Actor):
+        elif isinstance(actor, oldactors.Actor):
             self.oldactors.delete(actor)
-        elif isinstance(actor, marks.Mark):
-            self.annotations.delete(actor)
-        elif isinstance(actor, decors.Decoration):
-            self.decorations.delete(actor)
+        elif isinstance(actor, oldmarks.Mark):
+            self.oldactors.delete(actor)
+        elif isinstance(actor, olddecors.Decoration):
+            self.olddecors.delete(actor)
+        elif isinstance(actor, GeomActor):
+            if actor.rendertype == 0:
+                self.actors.delete(actor)
+            elif actor.rendertype == 1:
+                self.annotations.delete(actor)
+            elif actor.rendertype == 2:
+                self.decorations.delete(actor)
+            elif actor.rendertype == 3:
+                self.backgounds.delete(actor)
+            self._bbox = None
+            self.canvas.camera.focus = self.bbox.center()
 
 
-    def clear(self):
+    def clear(self,sticky=False):
         """Clear the whole scene"""
-        self.actors.clear()
-        self.oldactors.clear()
-        self.annotations.clear()
-        self.decorations.clear()
+        self.actors.clear(sticky)
+        self.oldactors.clear(sticky)
+        self.olddecors.clear(sticky)
+        self.annotations.clear(sticky)
+        self.decorations.clear(sticky)
+        self.backgrounds.clear(sticky)
 
 
     ## def highlight(self, actors):

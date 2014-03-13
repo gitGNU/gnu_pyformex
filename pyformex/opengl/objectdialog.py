@@ -79,7 +79,7 @@ def objectDialog(obj=None,unlike='object_'):
     # process obj
     if obj is None:
         obj = pf.canvas.actors
-        
+
     if isinstance(obj,GeomActor):
         items = objectItems(obj)
 
