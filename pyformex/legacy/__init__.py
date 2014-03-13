@@ -1,11 +1,11 @@
 # $Id$
 ##
-##  This file is part of the pyFormex project.
+##  This file is part of pyFormex 0.9.1  (Tue Oct 15 21:05:25 CEST 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
+##  Copyright 2004-2013 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##  This program is free software: you can redistribute it and/or modify
@@ -21,33 +21,13 @@
 ##  You should have received a copy of the GNU General Public License
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
-"""Initialization of the pyFormex opengl module.
+"""pyFormex legacy modules.
 
-The opengl module contains everything related to the new OpenGL2 engine
-of pyFormex. The initialization can make changes to the other
-pyFormex modules in order to keep them working with the new engine.
+The modules in this directory are deprecated and should no longer
+be used. They are here for compatibility reasons, to ease the
+transition to the newer replacement modules, and as an emrgency
+rescue for cases where the new modules are not working yet.
+
+Do not remove this file. It is used by pyFormex to flag the parent
+directory as a Python package.
 """
-from __future__ import print_function
-
-#### Set the Formex and Mesh actor method ####
-
-def _set_actors():
-    def actor(self,**kargs):
-
-        if self.nelems() == 0:
-            return None
-
-        from pyformex.opengl.drawable import Actor
-
-        return Actor(self,**kargs)
-
-    from pyformex import formex
-    formex.Formex.actor = actor
-    from pyformex import mesh
-    mesh.Mesh.actor = actor
-
-_set_actors()
-
-#### Set the WebGL format_actor method
-
-# End

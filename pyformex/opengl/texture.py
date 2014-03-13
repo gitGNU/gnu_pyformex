@@ -45,6 +45,8 @@ class Texture(object):
     - `texformat`: format of the texture data
 
     """
+    max_texture_units = GL.glGetIntegerv(GL.GL_MAX_TEXTURE_UNITS)
+    #active_textures =
 
     def __init__(self,image,mode=1,format=GL.GL_RGBA,texformat=GL.GL_RGBA):
         self.texid = None
@@ -58,16 +60,18 @@ class Texture(object):
         ny, nx = image.shape[:2]
 
         # Generate a texture id
-        texid = GL.glGenTextures(1)
+        self.texid = GL.glGenTextures(1)
+        self.texun = None
         # Make our new texture the current 2D texture
         GL.glEnable(GL.GL_TEXTURE_2D)
         #GL.glTexEnvf(GL.GL_TEXTURE_ENV,GL.GL_TEXTURE_ENV_MODE,GL.GL_MODULATE)
-        GL.glBindTexture(GL.GL_TEXTURE_2D, texid)
+        # select texture unit 0
+        GL.glActiveTexture(GL.GL_TEXTURE0)
+        GL.glBindTexture(GL.GL_TEXTURE_2D, self.texid)
         GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
         # Copy the texture data into the current texture
         GL.glTexImage2D(GL.GL_TEXTURE_2D, 0, texformat, nx, ny, 0,
                         format, GL.GL_UNSIGNED_BYTE, image)
-        self.texid = texid
         self.mode = mode
 
 
@@ -89,6 +93,10 @@ class Texture(object):
         GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, texfiltr)
         GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, texfiltr)
         # Re-select the texture
+        GL.glBindTexture(GL.GL_TEXTURE_2D, self.texid)
+
+
+    def bind(self):
         GL.glBindTexture(GL.GL_TEXTURE_2D, self.texid)
 
 

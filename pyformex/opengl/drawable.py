@@ -237,6 +237,10 @@ class Drawable(Attributes):
         if self.ontop:
             GL.glDepthFunc(GL.GL_ALWAYS)
 
+        # Bind the texture
+        if self.texture:
+            self.texture.bind()
+
         render_geom()
 
         if self.ibo:

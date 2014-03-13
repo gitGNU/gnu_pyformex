@@ -101,9 +101,14 @@ class FontTexture(Texture):
         Texture.activate(self,filtr=1)
 
 
-default_font_file = '/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf'
-default_font_size = 36
-default_font = FontTexture(default_font_file,default_font_size)
+    default_font = None
+    @classmethod
+    def default(clas):
+        if clas.default_font is None:
+            default_font_file = '/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf'
+            default_font_size = 36
+            clas.default_font = FontTexture(default_font_file,default_font_size)
+        return clas.default_font
 
 
 class Text(Actor):
@@ -121,7 +126,7 @@ class Text(Actor):
             pos = [.0,.0,0.]
         self.size = size
         if not fonttex:
-            fonttex = default_font
+            fonttex = FontTexture.default()
         if not width:
             aspect = float(fonttex.width) / fonttex.height
             width = size * aspect
@@ -155,7 +160,7 @@ class Text(Actor):
         #print("Gravity %s = aligment %s on point %s" % (gravity,alignment,pos))
         F = F.align(alignment,pos)
         #print("Text bbox: %s" % str(F.bbox()))
-        Actor.__init__(self,F,rendertype=rendertype,texture=default_font,texmode=0,texcoords=texcoords,opak=False,ontop=True,offset3d=offset3d,**kargs)
+        Actor.__init__(self,F,rendertype=rendertype,texture=FontTexture.default(),texmode=0,texcoords=texcoords,opak=False,ontop=True,offset3d=offset3d,**kargs)
 
 
 # For compatibility
@@ -207,8 +212,8 @@ class Mark(Actor):
 
     def __init__(self,pos,tex,size,**kargs):
         self.pos = pos
-        F = Formex([[[0,0],[1,0],[1,1],[0,1]]]).align('000')
-        Actor.__init__(self,F,rendertype=1,texture=tex,offset3d=pos,**kargs)
+        F = Formex([[[0,0],[1,0],[1,1],[0,1]]]).scale(size).align('000')
+        Actor.__init__(self,F,rendertype=1,texture=tex,texmode=0,offset3d=pos,opak=False,ontop=True,**kargs)
 
 
 # End

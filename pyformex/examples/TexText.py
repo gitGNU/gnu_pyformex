@@ -54,7 +54,7 @@ def run():
     # - the font textures are currently upside down, therefore we need
     #   to specify texcoords to flip the image
     F = Formex('4:0123').scale(200).toMesh()
-    A = draw(F,color=yellow,texture=default_font,texcoords=array([[0,1],[1,1],[1,0],[0,0]]),texmode=2)
+    A = draw(F,color=yellow,texture=FontTexture.default(),texcoords=array([[0,1],[1,1],[1,0],[0,0]]),texmode=2)
 
     # draw a string using the default_font texture
     T = Text("Hegemony!",(100,100),size=50,offset=(0.0,0.0,1))
@@ -75,12 +75,24 @@ def run():
         decorate(Text(txt,F.coords[j],size=30,color=red))
 
 
-    drawViewportAxes3D((0.,0.,0.),color=blue)
+    #drawViewportAxes3D((0.,0.,0.),color=blue)
     print(len(pf.canvas.scene.oldactors))
-    decorate(Text('+',(100,100,0),gravity='',size=100,color=red))
+    #decorate(Text('+',(100,100,0),gravity='',size=100,color=red))
 
     image = os.path.join(pf.cfg['pyformexdir'], 'data', 'mark_cross.png')
-    drawActor(Mark((100,100,0),image,size=40,color=red))
+    from pyformex.plugins.imagearray import image2numpy
+    image = image2numpy(image, indexed=False)
+    print(image.shape)
+    image1 = image[14:18]
+    print(image1[...,0])
+    print(image1[...,1])
+    print(image1[...,2])
+    print(image1[...,3])
+    #F = Formex('4:0123').scale(40).toMesh().trl([200,200,0])
+    #draw(F,texture=image,texcoords=array([[0,1],[1,1],[1,0],[0,0]]),texmode=0,rendertype=2,opak=False,ontop=True)
+    F = Formex('4:0123').scale(40).toMesh().align('000')
+    draw(F,texture=image,texcoords=array([[0,1],[1,1],[1,0],[0,0]]),texmode=0,rendertype=1,opak=False,ontop=True,offset3d=(200.,200.,0.))
+    drawActor(Mark((0,200,0),image,size=40,color=red))
 
 
 if __name__ == 'draw':
