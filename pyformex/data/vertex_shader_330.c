@@ -44,18 +44,21 @@ in float vertexScalar;
 uniform bool pyformex;              // Is the shader being used in pyFormex
 uniform mat4 modelview;
 uniform mat4 projection;
+uniform mat4 modelviewprojection;
+uniform mat3 normalstransform;
 uniform mat4 pickmat;
 uniform float pointsize;
 uniform bool highlight;
 uniform bool picking;
 uniform bool alphablend;   // Switch transparency on/off
+uniform int rendertype;
+uniform vec3 offset;       // offset for rendertype 1
 
 uniform int drawface;        // Which side of the face to draw (0,1,2)
 uniform int useObjectColor;  // 0 = no, 1 = single color, 2 = twosided color
 uniform vec3 objectColor;    // front and back color (1) or front color (2)
 uniform vec3 objectBkColor;  // back color (2)
 uniform int useTexture;    // 0: no texture, 1: single texture
-
 
 uniform float ambient;     // Material ambient value
 uniform float diffuse;     // Material diffuse value
@@ -70,10 +73,6 @@ uniform vec3 ambicolor;                // Total ambient color
 uniform vec3 diffcolor[MAX_LIGHTS];    // Colors of diffuse light
 uniform vec3 speccolor[MAX_LIGHTS];    // Colors of reflected light
 uniform vec3 lightdir[MAX_LIGHTS];     // Light directions
-
-//varying vec3 fvertexNormal;
-//varying vec3 fragmentColor;
-//varying vec2 fragmentTexturePos;
 
 varying out vec4 fragColor;     // Final fragment color, including opacity
 varying out vec3 nNormal;       // normalized transformed normal
@@ -109,11 +108,15 @@ void main()
 
       if (lighting) {
 
-	vec3 fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * vertexNormal;
+	vec3 fTransformedVertexNormal = normalstransform * vertexNormal;
 
 	nNormal = normalize(fTransformedVertexNormal);
 
-        if (drawface == -1 && nNormal[2] < 0.0) {
+        /* if (drawface == -1 && nNormal[2] < 0.0) { */
+	/*   nNormal = -nNormal; */
+	/* } */
+
+        if (drawface == -1) {
 	  nNormal = -nNormal;
 	}
 
@@ -131,7 +134,6 @@ void main()
 	    vec3 reflectionDirection = reflect(-nlight, nNormal);
 	    float nspecular = specular*pow(max(dot(reflectionDirection,eyeDirection), 0.0), shininess);
 	    float ndiffuse = diffuse * max(dot(nNormal,nlight),0.0);
-	    vec3 diffcol = vec3(1.,1.,0.);
 	    fragmentColor += (fcolor + diffcolor[i])/2. * ndiffuse;
 	    fragmentColor += (fcolor + speccolor[i])/2. * nspecular;
 	  }
@@ -163,9 +165,16 @@ void main()
   } else {
     gl_Position = projection * modelview * fvertexPosition;
   }
+  if (rendertype == 1) {
+    gl_Position.x += offset.x;
+    gl_Position.y += offset.y;
+  }
+
 
   if (useTexture > 0) {
     texCoord = vertexTexturePos;
+    // FAILS ON RADEON
+    //gl_FrontColor = gl_Color;
   }
 }
 

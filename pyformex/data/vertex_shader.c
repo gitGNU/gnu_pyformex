@@ -108,12 +108,6 @@ void main()
 
       if (lighting) {
 
-	//vec3 fTransformedVertexNormal = mat3(modelview[0].xyz,modelview[1].xyz,modelview[2].xyz) * vertexNormal;
-
-	//vec4 vNormal = vec4(vertexNormal,1.0);
-	//vec4 fNormal = modelview * vNormal;
-	//vec3 fTransformedVertexNormal = fNormal.xyz;
-
 	vec3 fTransformedVertexNormal = normalstransform * vertexNormal;
 
 	nNormal = normalize(fTransformedVertexNormal);
