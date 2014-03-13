@@ -340,8 +340,9 @@ def drawMarks(X,M,color='black',leader='',ontop=True):
         if not ack("You are trying to draw marks at %s points. This may take a long time, and the results will most likely not be readible anyway. If you insist on drawing these marks, anwer YES." % len(M)):
             return None
     from pyformex.opengl.textext import MarkList
-    M = MarkList(X, M, color=color, leader=leader)
-    drawActor(M)
+    A = textext.MarkList(X, M, color=color, leader=leader)
+    drawActor(A)
+    return A
 
 
 def drawFreeEdges(M,color='black'):
@@ -411,9 +412,9 @@ def drawBbox(F,color='black',linewidth=None):
     F is any object that has a `bbox` method.
     Returns the drawn Annotation.
     """
-    B = decors.BboxActor(F.bbox(), color=color, linewidth=linewidth)
-    drawActor(B)
-    return B
+    A = decors.BboxActor(F.bbox(), color=color, linewidth=linewidth)
+    drawActor(A)
+    return A
 
 
 def drawPrincipal(F,weight=None):
@@ -423,17 +424,23 @@ def drawPrincipal(F,weight=None):
     If specified, weight is an array of weights attributed to the points
     of F. It should have the same length as `F.coords`.
     """
-    B = actors.PrincipalActor(F, weight)
-    drawActor(B)
-    return B
+    A = actors.PrincipalActor(F, weight)
+    drawActor(A)
+    return A
 
 
-def drawText3D(P,text,color=None,font='sans',size=18,ontop=True):
+def drawText3D(P,text,color=None,size=18,font=None,ontop=True):
     """Draw a text at a 3D point P."""
-    M = marks.TextMark(P, text, color=color, font=font, size=size, ontop=ontop)
-    pf.canvas.addAnnotation(M)
-    pf.canvas.update()
-    return M
+    A = textext.Text(text,P, color=color, size=size, font=font, ontop=ontop)
+    drawActor(A)
+    return A
+
+
+def drawText(text,x,y,gravity='E',font=None,size=14,color=None):
+    """Show a text at position x,y using font."""
+    TA = textext.Text(text, (x,y), gravity=gravity, fonttex=font, size=size, color=color)
+    drawActor(TA)
+    return TA
 
 
 def drawAxes(CS=None,*args,**kargs):
@@ -551,7 +558,6 @@ def drawViewportAxes3D(pos,color=None):
     annotate(M)
     return M
 
-
 def drawActor(A):
     """Draw an actor and update the screen."""
     pf.canvas.addActor(A)
@@ -608,13 +614,6 @@ def setTriade(on=None,pos='lb',siz=100):
     pf.canvas.setTriade(on, pos, siz)
     pf.canvas.update()
     pf.app.processEvents()
-
-
-def drawText(text,x,y,gravity='E',font=None,size=14,color=None):
-    """Show a text at position x,y using font."""
-    TA = Text(text, (x,y), gravity=gravity, font=font, size=size, color=color)
-    drawActor(TA)
-    return TA
 
 
 def annotate(annot):

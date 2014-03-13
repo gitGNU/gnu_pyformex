@@ -30,10 +30,8 @@ import pyformex as pf
 from pyformex import utils
 from pyformex import arraytools as at
 from pyformex import coords
-from pyformex.opengl.drawable import GeomActor
+from pyformex.opengl.drawable import Actor
 from pyformex.gui import actors as oldactors
-from pyformex.gui import decors as olddecors
-from pyformex.gui import marks as oldmarks
 
 
 class ItemList(list):
@@ -57,7 +55,7 @@ class ItemList(list):
             self.append(item)
 
 
-    def delete(self, items, sticky=False):
+    def delete(self, items, sticky=True):
         """Remove item(s) from an ItemList.
 
         Parameters:
@@ -68,12 +66,11 @@ class ItemList(list):
           Sticky items are items having an attribute sticky=True.
 
         """
-        if not type(items) in (list, tuple):
+        if not isinstance(items,(list, tuple)):
             items = [ items ]
-        if sticky:
-            self[:] = [ a for a in self if a not in items ]
-        else:
-            self[:] = [ a for a in self if (hasattr(a,'sticky') and a.sticky) or a not in items ]
+        for a in items:
+            if a in self:
+                self.remove(a)
 
 
     def clear(self, sticky=False):
@@ -110,7 +107,6 @@ class Scene(object):
         self.canvas = canvas
         self.actors = ItemList(self)
         self.oldactors = ItemList(self)
-        self.olddecors = ItemList(self)
         self.annotations = ItemList(self)
         self.decorations = ItemList(self)
         self.backgrounds = ItemList(self)
@@ -184,11 +180,7 @@ class Scene(object):
             [ self.addAny(a) for a in actor ]
         elif isinstance(actor, oldactors.Actor):
             self.oldactors.add(actor)
-        elif isinstance(actor, oldmarks.Mark):
-            self.oldactors.add(actor)
-        elif isinstance(actor, olddecors.Decoration):
-            self.olddecors.add(actor)
-        elif isinstance(actor, GeomActor):
+        elif isinstance(actor, Actor):
             if actor.rendertype == 0:
                 self.actors.add(actor)
             elif actor.rendertype == 1:
@@ -215,11 +207,7 @@ class Scene(object):
             [ self.removeActor(a) for a in actor ]
         elif isinstance(actor, oldactors.Actor):
             self.oldactors.delete(actor)
-        elif isinstance(actor, oldmarks.Mark):
-            self.oldactors.delete(actor)
-        elif isinstance(actor, olddecors.Decoration):
-            self.olddecors.delete(actor)
-        elif isinstance(actor, GeomActor):
+        elif isinstance(actor, Actor):
             if actor.rendertype == 0:
                 self.actors.delete(actor)
             elif actor.rendertype == 1:
@@ -236,7 +224,6 @@ class Scene(object):
         """Clear the whole scene"""
         self.actors.clear(sticky)
         self.oldactors.clear(sticky)
-        self.olddecors.clear(sticky)
         self.annotations.clear(sticky)
         self.decorations.clear(sticky)
         self.backgrounds.clear(sticky)

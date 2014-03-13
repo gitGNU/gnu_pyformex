@@ -112,10 +112,20 @@ class FontTexture(Texture):
 
 
 class Text(Actor):
-    """A text drawn at a 2D or 3D position."""
+    """A text drawn at a 2D or 3D position.
+
+    Parameters:
+
+    - `text`: string: the text to display. If not a string, the string
+      representation of the object will be drawn.
+    - `pos`: a 2D or 3D position. If 2D, the values are measured in pixels.
+      If 3D, it is a point in global 3D space.
+
+    The text is drawn in 2D, inserted at the specified position.
+    """
 
     def __init__(self,text,pos,size=18,width=None,fonttex=None,gravity=None,**kargs):
-        self.text = text
+        self.text = str(text)
         if len(pos) == 2:
             rendertype = 2
             pos = [pos[0],pos[1],0.]
@@ -145,7 +155,6 @@ class Text(Actor):
             texcoords.append([[x0,y0+dy],[x0+dx,y0+dy],[x0+dx,y0],[x0,y0]])
         texcoords = array(texcoords)
         F = Formex('4:0123').replic(n).scale([width,size,0.])
-        #print("Initial bbox: %s" % str(F.bbox()))
 
         alignment = ['0','0','0']
         if 'W' in gravity:
@@ -160,12 +169,7 @@ class Text(Actor):
         #print("Gravity %s = aligment %s on point %s" % (gravity,alignment,pos))
         F = F.align(alignment,pos)
         #print("Text bbox: %s" % str(F.bbox()))
-        Actor.__init__(self,F,rendertype=rendertype,texture=FontTexture.default(),texmode=0,texcoords=texcoords,opak=False,ontop=True,offset3d=offset3d,**kargs)
-
-
-# For compatibility
-
-TextMark = Text
+        Actor.__init__(self,F,rendertype=rendertype,texture=fonttex,texmode=0,texcoords=texcoords,opak=False,ontop=True,offset3d=offset3d,**kargs)
 
 
 class MarkList(Text):
@@ -199,7 +203,6 @@ class MarkList(Text):
         for p,i,j in zip(pos,cs[:-1],cs[1:]):
             t = Text(val[i:j],p,**kargs)
             self.children.append(t)
-
 
 
 class Mark(Actor):

@@ -34,31 +34,29 @@ _topics = []
 _techniques = ['text']
 
 from pyformex.gui.draw import *
-from pyformex.opengl.decors import Grid
+from pyformex.opengl.actors import *
+from pyformex.opengl.textext import *
 
 def run():
     clear()
     lights(False)
-    #canvasSize(500,500)
-    F = Grid(-1., -1., 1., 1., 4,4,linewidth=4, rendertype=3,color=blue)
-    drawActor(F)
-    H = Grid(0,0,500,500, 8, 8, rendertype=2,color=red,linewidth=2)
+    x,y = pf.canvas.width()/2,pf.canvas.height()/2
+    H = Grid(x-200,y-200,x+200,y+200, 2,2,rendertype=2,color=red,linewidth=2)
     drawActor(H)
-    I = Grid(100,100,500,500, 2, 2, rendertype=0,color=green,linewidth=6)
-    drawActor(I)
-    return
+
 
     delay(2)
-    for g in [ 'NW', 'N', 'NE', 'W', 'C', 'E', 'SW', 'S', 'SE']:
-        T = drawText("XXX  %s  XXX"%g, x, y, gravity=g)
+    for g in [ 'NW', 'N', 'NE', 'W', 'C', 'E', 'SW', 'S', 'SE' ]:
+        T = drawText("XXX  %s  XXX"%g, x,y, gravity=g, size=24)
         wait()
         undecorate(T)
 
     delay(1)
-    from pyformex.gui.gluttext import GLUTFONTS
-    for f in GLUTFONTS.keys():
-        S = drawText(f, 20, 20, font='hv18')
-        T = drawText('X', x, y, font=f, gravity='C')
+    for f in listMonoFonts():
+        print(f)
+        font = FontTexture(f,24)
+        S = drawText(f, 20, 20, font=font,size=24)
+        T = drawText('X', x, y, font=font,size=48, gravity='')
         wait()
         undecorate(S)
         undecorate(T)
