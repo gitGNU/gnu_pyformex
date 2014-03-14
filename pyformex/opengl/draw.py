@@ -45,7 +45,7 @@ from pyformex.opengl import drawable
 from pyformex.opengl import decors
 from pyformex.opengl import textext
 
-from pyformex.script import getcfg
+from pyformex.script import getcfg, named
 
 import numpy
 
