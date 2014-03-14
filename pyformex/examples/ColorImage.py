@@ -145,7 +145,7 @@ def run():
         clear()
         print("Drawing Colored grid")
         draw(G, color=color, colormap=colortable)
-        drawText('Created with pyFormex', 20, 20, size=24)
+        drawText('Created with pyFormex', (20, 20), size=24)
 
     drawTransform(transform)
     zoomAll()

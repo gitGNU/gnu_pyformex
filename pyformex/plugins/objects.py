@@ -270,7 +270,7 @@ from pyformex.gui.draw import *
 
 def draw_object_name(n):
     """Draw the name of an object at its center."""
-    return drawText3D(named(n).center(), n)
+    return drawText3D(n, named(n).center())
 
 def draw_elem_numbers(n):
     """Draw the numbers of an object's elements."""

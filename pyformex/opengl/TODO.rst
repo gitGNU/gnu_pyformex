@@ -114,8 +114,18 @@ Connect
 .......
 - FAILS!
 
+ConnectClosest
+..............
+- OK
+
 ConnectMesh
+...........
+- OK
+
 Cube
+....
+- OK
+
 Curves
 Cylinder
 DataInterpolation

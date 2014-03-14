@@ -82,7 +82,7 @@ imagefile = os.path.join(pf.cfg['pyformexdir'],'data','butterfly.png')
 
 def drawNames(F):
     for Fi in F:
-        drawText3D(Fi.bbox()[0] + (-0.5,0.5,0.), Fi.attrib.name,color=black)
+        drawText(Fi.attrib.name,Fi.bbox()[0] + (-0.5,0.5,0.),color=black)
 
 
 def run():

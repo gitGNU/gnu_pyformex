@@ -224,7 +224,7 @@ def showResults(hscale):
         drawDeformed(M, u, r)
         fi = freq[i]
         mi = fi/freq[0]
-        drawText('%s Hz = %.2f f0' % (fi, mi), 20, 20, size=20)
+        drawText('%s Hz = %.2f f0' % (fi, mi), (20, 20), size=20)
 
 
 def run():

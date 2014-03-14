@@ -46,7 +46,7 @@ def atExit():
 def drawMesh(M):
     clear()
     draw(M)
-    drawText("%s %s elements" % (M.nelems(), M.elName()), 20, 20, size=20)
+    drawText("%s %s elements" % (M.nelems(), M.elName()), (20, 20), size=20)
 
 def run():
     # make sure this is a good aspect ratio if you want a movie

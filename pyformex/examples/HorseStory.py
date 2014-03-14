@@ -48,7 +48,7 @@ def run():
 
     def say(text):
         global y
-        drawText(text, x, y)
+        drawText(text, (x, y))
         y -=20
 
     print('Click Step to continue')

@@ -48,7 +48,7 @@ colors = [black, blue, yellow, red]
 def showElement(eltype, options):
     print(eltype)
     clear()
-    drawText("Element type: %s" %eltype, 100, 200, font='times', size=18, color=black)
+    drawText("Element type: %s" %eltype, (100, 200), size=18, color=black)
     el = elementType(eltype)
     print(el)
 

@@ -427,18 +427,14 @@ def drawPrincipal(F,weight=None):
     return A
 
 
-def drawText3D(P,text,color=None,size=18,font=None,ontop=True):
-    """Draw a text at a 3D point P."""
-    A = textext.Text(text,P, color=color, size=size, font=font, ontop=ontop)
-    drawActor(A)
-    return A
-
-
-def drawText(text,x,y,gravity='E',font=None,size=14,color=None):
+def drawText(text,pos,**kargs):
     """Show a text at position x,y using font."""
-    A = textext.Text(text, (x,y), gravity=gravity, fonttex=font, size=size, color=color)
+    utils.warn("warn_drawText")
+    A = textext.Text(text, pos, **kargs)
     drawActor(A)
     return A
+
+drawText3D = drawText
 
 
 def drawViewportAxes3D(pos,color=None):

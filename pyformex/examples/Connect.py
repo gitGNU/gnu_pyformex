@@ -51,7 +51,7 @@ def run():
     print([ Gi.nelems() for Gi in G ])
 
     def annot(char):
-        [ drawText3D(G[i][0, 0]+[-0.5, 0., 0.], "%s%s"%(char, i)) for i, Gi in enumerate(G) ]
+        [ drawText("%s%s"%(char, i), G[i][0, 0]+[-0.5, 0., 0.]) for i, Gi in enumerate(G) ]
 
     # Apply a general mapping function : x,y,x -> [ newx, newy, newz ]
     G = [ Gi.map(lambda x, y, z:[x, y+0.01*float(i+1)**1.5*x**2, z]) for i, Gi in enumerate(G) ]
@@ -65,7 +65,7 @@ def run():
     H1 = connect([G[0], G[1]])
     draw(H1, color=blue)
 
-    # Connect G1 with G2 with a 2-element bias 
+    # Connect G1 with G2 with a 2-element bias
     H2 = connect([G[1], G[2]], bias=[0, 2])
     draw(H2, color=green)
 
@@ -77,15 +77,15 @@ def run():
     clear()
     draw(G)
     annot('G')
-    # Connect Gi[j] with Gi[j+1] to create horizontals   
+    # Connect Gi[j] with Gi[j+1] to create horizontals
     K1 = [ connect([i, i], bias=[0, 1]) for i in G ]
     draw(K1, color=blue)
 
-    # Connect Gi[j] with Gi+1[j] to create verticals 
+    # Connect Gi[j] with Gi+1[j] to create verticals
     K2 = [ connect([i, j]) for i, j in zip(G[:-1], G[1:]) ]
     draw(K2, color=red)
 
-    # Connect Gi[j+1] with Gi+1[j] to create diagonals 
+    # Connect Gi[j+1] with Gi+1[j] to create diagonals
     K3 = [ connect([i, j], bias=[1, 0]) for i, j in zip(G[:-1], G[1:]) ]
     draw(K3, color=green)
 
@@ -94,18 +94,18 @@ def run():
     draw(G)
     annot('G')
 
-    L1 = [ connect([i, i, j], bias=[0, 1, 0]) for i, j in zip(G[:-1], G[1:]) ] 
+    L1 = [ connect([i, i, j], bias=[0, 1, 0]) for i, j in zip(G[:-1], G[1:]) ]
     draw(L1, color=red)
-    L2 = [ connect([i, j, j], bias=[1, 0, 1]) for i, j in zip(G[:-1], G[1:]) ] 
+    L2 = [ connect([i, j, j], bias=[1, 0, 1]) for i, j in zip(G[:-1], G[1:]) ]
     draw(L2, color=green)
 
     # Connecting multiplex Formices using bias
     clear()
     annot('K')
     draw(K1)
-    L1 = [ connect([i, i, j], bias=[0, 1, 0]) for i, j in zip(K1[:-1], K1[1:]) ] 
+    L1 = [ connect([i, i, j], bias=[0, 1, 0]) for i, j in zip(K1[:-1], K1[1:]) ]
     draw(L1, color=red)
-    L2 = [ connect([i, j, j], bias=[1, 0, 1]) for i, j in zip(K1[:-1], K1[1:]) ] 
+    L2 = [ connect([i, j, j], bias=[1, 0, 1]) for i, j in zip(K1[:-1], K1[1:]) ]
     draw(L2, color=green)
 
     # Connecting multiplex Formices using nodid
@@ -114,7 +114,7 @@ def run():
     annot('K')
     L1 = [ connect([i, i, j], nodid=[0, 1, 0]) for i, j in zip(K1[:-1], K1[1:]) ]
     draw(L1, color=red)
-    L2 = [ connect([i, j, j], nodid=[1, 0, 1]) for i, j in zip(K1[:-1], K1[1:]) ] 
+    L2 = [ connect([i, j, j], nodid=[1, 0, 1]) for i, j in zip(K1[:-1], K1[1:]) ]
     draw(L2, color=green)
 
     # Add the missing end triangles
@@ -134,7 +134,7 @@ def run():
     draw(M, color=yellow, mode='flatwire')
     drawNumbers(M)
     draw(M.getBorderMesh(), color=black, linewidth=6)
-    
+
 
     # Convert to a surface
     from pyformex.plugins.trisurface import TriSurface

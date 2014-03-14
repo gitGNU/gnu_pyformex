@@ -82,6 +82,7 @@ You can still get the old engine by using a command line option::
   pyformex --gl1
 """
 warn_drawImage_changed = "The `drawImage` function has changed: it now draws an image in 2D on the canvas. Use `drawImage3D` to get the old behavior of drawing a 3D grid colored like the image."
+warn_drawText = "The `drawText` and `drawText3D` have changed: both are now unified under a single name `drawText(text,pos,**kargs)`. If pos is a 2-tuple, positioning is in 2D (pixel) coordinates. If pos is a 3-tuple, positioning is in 3D world coordinates. All other parameters of the Text class can be passed."
 warn_dxf_export = "Objects of type '%s' can not be exported to DXF file"
 warn_dxf_noparser = """..
 

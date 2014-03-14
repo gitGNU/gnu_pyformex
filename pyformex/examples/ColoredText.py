@@ -51,11 +51,13 @@ _topics = []
 _techniques = ['color', 'text', 'random', 'animation']
 
 from pyformex.gui.draw import *
+from pyformex.opengl.textext import *
 
 def run():
     n = 40
     T = ['Python', 'NumPy', 'OpenGL', 'QT4', 'pyFormex']
-    fonts = ['times', 'helvetica', 'fixed']
+    fonts = listMonoFonts()
+
     ftmin, ftmax = 12, 48
 
     r = random.random((n, 8))
@@ -71,8 +73,9 @@ def run():
     lights(False)
     TA = None
 
-    for i in range(n):
-        TB = drawText(T[t[i]], a[i][0], a[i][1], font=fonts[f[i]], size=size[i], color=list(colors[i]))
+
+    for i,s in enumerate(size):
+        TB = drawText(T[t[i]], a[i], font=fonts[f[i]], size=s, color=list(colors[i]))
         sleep(0.5)
         breakpt()
         if i < n/2:

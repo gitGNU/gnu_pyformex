@@ -64,7 +64,7 @@ def drawCurve(ctype,dset,closed,degree,endcond,curl,ndiv,ntot,extend,spread,appr
     text = "%s %s with %s points" % (open_or_closed[closed], ctype.lower(), len(P))
     if TA is not None:
         undecorate(TA)
-    TA = drawText(text, 10, 20, font='sans', size=20)
+    TA = drawText(text, (10, 20), size=20)
     draw(P, color='black', nolight=True)
     drawNumbers(Formex(P))
     if ctype == 'PolyLine':

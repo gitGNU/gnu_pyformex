@@ -105,7 +105,7 @@ def show(i,L,turtle_cmds,clear=True,text=True,color=0,lw=1.):
             undraw(FA)
         FA = FB
         if text:
-            TB = drawText("Generation %d"%i, 40, 40, size=24)
+            TB = drawText("Generation %d"%i, (40, 40), size=24)
             undecorate(TA)
             TA = TB
 
@@ -121,7 +121,7 @@ def grow(rule='',clearing=True,text=True,ngen=-1,colors=True,viewports=False):
         return
 
     if text:
-        drawText(rule, 40, 60, size=24)
+        drawText(rule, (40, 60), size=24)
 
     a, r, g, t = limas[rule]
     if ngen >= 0:

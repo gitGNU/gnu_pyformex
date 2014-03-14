@@ -309,7 +309,7 @@ def showResults(nodes,elems,displ,text,val,showref=False,dscale=100.,
         text = text.replace('%I', str(DB.inc))
         if multiplier != 0:
             text = text.replace('%M', ' (* 10**%s)' % -multiplier)
-        drawText(text, 200, 30)
+        drawText(text, (200, 30))
 
     smooth()
     lights(False)
@@ -337,7 +337,7 @@ def showResults(nodes,elems,displ,text,val,showref=False,dscale=100.,
         else:
             #print([ df.report() + "\nCOLORS %s" % str(cval[el].shape)  for df,el in zip(deformed,elems) ])
             F = [ draw(df, color=cval[el], view=None, bbox='last', wait=False) for df, el in zip(deformed, elems) ]
-        T = drawText('Deformation scale = %s' % dsc, 200, 10)
+        T = drawText('Deformation scale = %s' % dsc, (200, 10))
 
         # remove the last frame
         # This is a clever trick: we remove the old drawings only after

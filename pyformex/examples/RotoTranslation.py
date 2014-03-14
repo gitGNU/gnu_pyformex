@@ -67,7 +67,7 @@ def createScene(text=None,caged=True,color=None,move=0):
     H.setProp(color)
     horse = draw(H)
     if text:
-        drawText(text, 20, line, size=20)
+        drawText(text, (20, line), size=20)
         line += line_inc
     axes = drawAxes(CS, size=0.4, draw_planes=False)
     zoomAll()
@@ -131,7 +131,7 @@ def run():
 
     # The problem
     T = "But alas, it couldn't remember how it got there!!!"
-    drawText(T, 20, line, size=20)
+    drawText(T, (20, line), size=20)
     line += line_inc
     for s in script[:-2]:
         #sleep(0.1)
@@ -140,7 +140,7 @@ def run():
 
     # The solution
     T = "But thanks to pyFormex's orientation,\nit could go back in a single step, straight through the bushes."
-    drawText(T, 20, line, size=20)
+    drawText(T, (20, line), size=20)
     line += line_inc
     H = H.transformCS(CS0, CS)
     draw(Formex([[CS[3], CS0[3]]]))

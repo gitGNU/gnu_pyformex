@@ -47,7 +47,7 @@ def run():
 
     delay(2)
     for g in [ 'NW', 'N', 'NE', 'W', 'C', 'E', 'SW', 'S', 'SE' ]:
-        T = drawText("XXX  %s  XXX"%g, x,y, gravity=g, size=24)
+        T = drawText("XXX  %s  XXX"%g, (x,y), gravity=g, size=24)
         wait()
         undecorate(T)
 
@@ -55,8 +55,8 @@ def run():
     for f in listMonoFonts():
         print(f)
         font = FontTexture(f,24)
-        S = drawText(f, 20, 20, font=font,size=24)
-        T = drawText('X', x, y, font=font,size=48, gravity='')
+        S = drawText(f, (20, 20), font=font,size=24)
+        T = drawText('X', (x, y), font=font,size=48, gravity='')
         wait()
         undecorate(S)
         undecorate(T)

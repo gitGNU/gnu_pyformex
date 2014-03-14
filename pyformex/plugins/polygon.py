@@ -1,4 +1,4 @@
-# $Id$ pyformex
+# $Id$
 ##
 ##  This file is part of pyFormex 0.9.1  (Tue Oct 15 21:05:25 CEST 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
@@ -291,7 +291,7 @@ if __name__ == 'draw':
         S = PG.fill()
         draw(S, color=red)
         #drawNumbers(S)
-        drawText(S.check(), 100, 20)
+        drawText(S.check(), (100, 20))
 
     run()
 

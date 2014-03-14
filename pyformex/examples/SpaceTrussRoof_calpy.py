@@ -226,7 +226,7 @@ def run():
             clear()
             linewidth(3)
             draw(mesh, color=cval)
-            drawText('Normal force in the truss members', 300, 50, size=14)
+            drawText('Normal force in the truss members', (300, 50), size=14)
             CLA = ColorLegend(CS, 100, 10, 10, 30, 200, size=14)
             decorate(CLA)
 
@@ -238,7 +238,7 @@ def run():
             dnodes = mesh.coords + dscale * displ[:,:, 0]
             deformed = Mesh(dnodes, mesh.elems, mesh.prop)
             FA = draw(deformed, bbox='last', view=None, wait=False)
-            TA = drawText('Deformed geometry (scale %.2f)' % dscale, 300, 50, size=24)
+            TA = drawText('Deformed geometry (scale %.2f)' % dscale, (300, 50), size=24)
             return FA, TA
 
         def animate_deformed_plot(amplitude,sleeptime=1,count=1):

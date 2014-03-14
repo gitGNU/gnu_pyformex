@@ -406,7 +406,7 @@ def showBorder():
             draw(coloredB, linewidth=3)
             for i, b in enumerate(coloredB):
                 c = roll(pf.canvas.settings.colormap, i+1, axis=0)
-                drawText3D(b.center(), str(i), color=c, font='sans', size=18, ontop=True)
+                drawText(str(i), b.center(), color=c, size=18, ontop=True)
             export({'border':coloredB})
         else:
             warning("The surface %s does not have a border" % selection[0])
@@ -638,7 +638,7 @@ def showSurfaceValue(S, txt, val, onEdges):
         draw(S, color=cval)
     CLA = ColorLegend(CS, 100, 10, 20, 30, 200, dec=dec)
     decorate(CLA)
-    drawText(txt, 10, 230, font='hv18')
+    drawText(txt, (10, 230), size=18)
 
 
 def colorByFront():

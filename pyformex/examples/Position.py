@@ -39,7 +39,7 @@ from pyformex.gui.draw import *
 
 def drawObjectWithName(obj, name):
     """Draw an object and show its name at the center"""
-    drawText3D(obj.center(), name, size=40)
+    drawText(name, obj.center(), size=40)
     draw(obj)
 
 def drawPointsNumbered(pts, color, prefix):

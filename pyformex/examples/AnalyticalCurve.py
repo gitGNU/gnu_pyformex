@@ -137,13 +137,13 @@ def Curve(func, trange, args, closed, degree, npoints):
     A = AnalyticalCurve(func, trange, args, closed)
     X = A.points(npoints)
     N = globalInterpolationCurve(X, degree=degree)
-    drawText(func.__name__, 80, y0, size=18)
+    drawText(func.__name__, (80, y0), size=18)
     return N
 
 
 def drawCurve(*args,**kargs):
     draw(Curve(*args),**kargs)
-    drawText(args[0].__name__, 80, y0, size=18, color=kargs.get('color', None))
+    drawText(args[0].__name__, (80, y0), size=18, color=kargs.get('color', None))
 
 
 def run():

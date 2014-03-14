@@ -171,7 +171,7 @@ def run():
 
     bgcolor('lightgreen')
     linewidth(3)
-    drawText('Normal force in the truss members', 400, 100, size=12)
+    drawText('Normal force in the truss members', (400, 100), size=12)
     CLA = ColorLegend(CS, 256, 10, 20, 30, 200)
     decorate(CLA)
 
@@ -186,8 +186,8 @@ def run():
     draw(results, color='darkgreen')
     linewidth(3)
     draw(deformed, color=cval)
-    drawText('Normal force in the truss members', 400, 100, size=14)
-    drawText('Deformed geometry (scale %.2f)' % dscale, 400, 130, size=12)
+    drawText('Normal force in the truss members', (400, 100), size=14)
+    drawText('Deformed geometry (scale %.2f)' % dscale, (400, 130), size=12)
 
     if ack("Show the output file?"):
         showFile(outfilename)

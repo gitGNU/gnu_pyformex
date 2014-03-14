@@ -61,9 +61,10 @@ class FontTexture(Texture):
     def __init__(self,filename,size):
         """Initialize a FontTexture"""
 
+        print("Creating FontTexture(%s) in size %s" % (filename,size))
         # Load font  and check it is monotype
-        face = ft.Face(filename)
-        face.set_char_size( size*64 )
+        face = ft.Face(str(filename))
+        face.set_char_size(int(size*64))
         if not face.is_fixed_width:
             raise RuntimeError,'Font is not monotype'
 
@@ -124,7 +125,7 @@ class Text(Actor):
     The text is drawn in 2D, inserted at the specified position.
     """
 
-    def __init__(self,text,pos,size=18,width=None,fonttex=None,gravity=None,**kargs):
+    def __init__(self,text,pos,size=18,width=None,font=None,gravity=None,**kargs):
         self.text = str(text)
         if len(pos) == 2:
             rendertype = 2
@@ -135,10 +136,12 @@ class Text(Actor):
             offset3 = pos
             pos = [.0,.0,0.]
         self.size = size
-        if not fonttex:
-            fonttex = FontTexture.default()
-        if not width:
-            aspect = float(fonttex.width) / fonttex.height
+        if font is None:
+            font = FontTexture.default()
+        if isinstance(font,(str,unicode)):
+            font = FontTexture(font,size)
+        if width is None:
+            aspect = float(font.width) / font.height
             width = size * aspect
         self.width = width
         if gravity is None:
@@ -169,7 +172,7 @@ class Text(Actor):
         #print("Gravity %s = aligment %s on point %s" % (gravity,alignment,pos))
         F = F.align(alignment,pos)
         #print("Text bbox: %s" % str(F.bbox()))
-        Actor.__init__(self,F,rendertype=rendertype,texture=fonttex,texmode=0,texcoords=texcoords,opak=False,ontop=True,offset3=offset3,**kargs)
+        Actor.__init__(self,F,rendertype=rendertype,texture=font,texmode=0,texcoords=texcoords,opak=False,ontop=True,offset3=offset3,**kargs)
 
 
 class MarkList(Text):

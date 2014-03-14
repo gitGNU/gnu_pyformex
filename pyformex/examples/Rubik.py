@@ -269,7 +269,7 @@ def run():
     cube = createCube()
     busy = False
     refresh()
-    drawText("Rotate a row by moving the mouse with left button pressed.\nUse ALT button to rotate the whole cube.", 20, 40, color=blue, font='f', size=20)
+    drawText("Rotate a row by moving the mouse with left button pressed.\nUse ALT button to rotate the whole cube.", (20, 40), color=blue, size=20)
     pf.canvas.setMouse(LEFT, turn)
     dia.timeout = timeOut
     dia.show()

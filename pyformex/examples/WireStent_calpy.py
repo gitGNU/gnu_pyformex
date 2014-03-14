@@ -229,7 +229,7 @@ def postproc(coords, elements, displ, frc):
     bgcolor('lightgreen')
     linewidth(3)
     x = pf.canvas.width()//2
-    TA = drawText('Normal force in the members', x, 100, font='tr32')
+    TA = drawText('Normal force in the members', (x, 100), font='tr32')
     CLA = ColorLegend(CS, 100, 10, 20, 30, 200)
     decorate(CLA)
     sleep(3)
@@ -247,7 +247,7 @@ def postproc(coords, elements, displ, frc):
         linewidth(3)
         deformed = Formex(dcoords[elems])
         draw(deformed, color=cval)
-        drawText('Deformed geometry (scale %.2f)' % dscale, x, 70)
+        drawText('Deformed geometry (scale %.2f)' % dscale, (x, 70))
 
 
 def run():

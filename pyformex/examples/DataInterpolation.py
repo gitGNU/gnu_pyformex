@@ -101,7 +101,7 @@ def run():
     lights(False)
     draw(M, color=endata)
     drawNumbers(M.coords)
-    drawText("Per element interpolation", 20, 20, font='9x15')
+    drawText("Per element interpolation", (20, 20))
 
     viewport(1)
     clear()
@@ -109,7 +109,7 @@ def run():
     lights(False)
     draw(M, color=colors)
     drawNumbers(M.coords)
-    drawText("Averaged nodal values", 20, 20, font='9x15')
+    drawText("Averaged nodal values", (20, 20))
 
 if __name__ == 'draw':
     run()
