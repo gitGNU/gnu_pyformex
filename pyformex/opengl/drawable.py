@@ -198,7 +198,7 @@ class Drawable(Attributes):
 
         if self.offset3d is not None:
             offset = renderer.camera.toNDC(self.offset3d)
-            renderer.shader.uniformVec3('offset', (1.+offset[0],1.+offset[1],0.,0.))
+            renderer.shader.uniformVec3('offset3', (1.+offset[0],1.+offset[1],0.,0.))
 
         if self.rendertype == -2:
             # This is currently a special code for the Triade

@@ -139,7 +139,7 @@ class Shader(object):
         'diffcolor',
         'speccolor',
         'lightdir',
-        'offset'
+        'offset3'
     ]
 
     uniforms = uniforms_int + uniforms_float +  uniforms_vec3 + [

@@ -52,7 +52,7 @@ uniform bool highlight;
 uniform bool picking;
 uniform bool alphablend;   // Switch transparency on/off
 uniform int rendertype;
-uniform vec3 offset;       // offset for rendertype 1
+uniform vec3 offset3;       // offset for rendertype 1
 
 uniform int drawface;        // Which side of the face to draw (0,1,2)
 uniform int useObjectColor;  // 0 = no, 1 = single color, 2 = twosided color
@@ -166,8 +166,8 @@ void main()
     gl_Position = projection * modelview * fvertexPosition;
   }
   if (rendertype == 1) {
-    gl_Position.x += offset.x;
-    gl_Position.y += offset.y;
+    gl_Position.x += offset3.x;
+    gl_Position.y += offset3.y;
   }
 
   if (useTexture > 0) {
