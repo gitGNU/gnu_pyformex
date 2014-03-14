@@ -163,7 +163,7 @@ class Drawable(Attributes):
             if self.texcoords.ndim == 2:
                 curshape = self.texcoords.shape
                 self.texcoords = at.multiplex(self.texcoords, self.object.nelems(),axis=-2)
-                print("Multiplexing texture coords: %s -> %s " % (curshape, self.texcoords.shape))
+                #print("Multiplexing texture coords: %s -> %s " % (curshape, self.texcoords.shape))
         self.tbo = VBO(self.texcoords.astype(float32))
         self.texture.activate()
 
@@ -196,8 +196,8 @@ class Drawable(Attributes):
 
         renderer.shader.loadUniforms(self)
 
-        if self.offset3d is not None:
-            offset = renderer.camera.toNDC(self.offset3d)
+        if self.offset3 is not None:
+            offset = renderer.camera.toNDC(self.offset3)
             renderer.shader.uniformVec3('offset3', (1.+offset[0],1.+offset[1],0.,0.))
 
         if self.rendertype == -2:

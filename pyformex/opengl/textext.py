@@ -129,10 +129,10 @@ class Text(Actor):
         if len(pos) == 2:
             rendertype = 2
             pos = [pos[0],pos[1],0.]
-            offset3d = None
+            offset3 = None
         else:
             rendertype = 1
-            offset3d = pos
+            offset3 = pos
             pos = [.0,.0,0.]
         self.size = size
         if not fonttex:
@@ -169,7 +169,7 @@ class Text(Actor):
         #print("Gravity %s = aligment %s on point %s" % (gravity,alignment,pos))
         F = F.align(alignment,pos)
         #print("Text bbox: %s" % str(F.bbox()))
-        Actor.__init__(self,F,rendertype=rendertype,texture=fonttex,texmode=0,texcoords=texcoords,opak=False,ontop=True,offset3d=offset3d,**kargs)
+        Actor.__init__(self,F,rendertype=rendertype,texture=fonttex,texmode=0,texcoords=texcoords,opak=False,ontop=True,offset3=offset3,**kargs)
 
 
 class MarkList(Text):
@@ -213,10 +213,10 @@ class Mark(Actor):
     - `pos` : 3D point where the mark will be drawn
     """
 
-    def __init__(self,pos,tex,size,opak=True,ontop=True,**kargs):
+    def __init__(self,pos,tex,size,opak=False,ontop=True,**kargs):
         self.pos = pos
         F = Formex([[[0,0],[1,0],[1,1],[0,1]]]).scale(size).align('000')
-        Actor.__init__(self,F,rendertype=1,texture=tex,texmode=0,offset3d=pos,opak=opak,ontop=ontop,lighting=False,**kargs)
+        Actor.__init__(self,F,rendertype=1,texture=tex,texmode=0,offset3=pos,opak=opak,ontop=ontop,lighting=False,**kargs)
 
 
 # End

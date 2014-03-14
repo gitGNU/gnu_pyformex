@@ -54,9 +54,9 @@ class Texture(object):
             image = image2numpy(image, indexed=False)
         else:
             image = np.asarray(image)
-        print("Texture: type %s, size %s" % (image.dtype, image.shape))
+        s = "Texture: type %s, size %s" % (image.dtype, image.shape)
         image = np.require(image, dtype='ubyte', requirements='C')
-        print("Converted to: type %s, size %s" % (image.dtype, image.shape))
+        print(s+"; Converted to: type %s, size %s" % (image.dtype, image.shape))
         ny, nx = image.shape[:2]
 
         # Generate a texture id

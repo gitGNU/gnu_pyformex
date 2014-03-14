@@ -46,8 +46,8 @@ def run():
     view('front')
     smooth()
     fonts = listMonoFonts()
-    for f in fonts:
-        print(f)
+    ## for f in fonts:
+    ##     print(f)
 
     # - draw a square
     # - use the full character set in the default font as a texture
@@ -82,16 +82,16 @@ def run():
     image = os.path.join(pf.cfg['pyformexdir'], 'data', 'mark_cross.png')
     from pyformex.plugins.imagearray import image2numpy
     image = image2numpy(image, indexed=False)
-    print(image.shape)
-    image1 = image[14:18]
-    print(image1[...,0])
-    print(image1[...,1])
-    print(image1[...,2])
-    print(image1[...,3])
+    ## print(image.shape)
+    ## image1 = image[14:18]
+    ## print(image1[...,0])
+    ## print(image1[...,1])
+    ## print(image1[...,2])
+    ## print(image1[...,3])
     #F = Formex('4:0123').scale(40).toMesh().trl([200,200,0])
     #draw(F,texture=image,texcoords=array([[0,1],[1,1],[1,0],[0,0]]),texmode=0,rendertype=2,opak=False,ontop=True)
     F = Formex('4:0123').scale(40).toMesh().align('000')
-    draw(F,texture=image,texcoords=array([[0,1],[1,1],[1,0],[0,0]]),texmode=0,rendertype=1,opak=False,ontop=True,offset3d=(200.,200.,0.))
+    draw(F,texture=image,texcoords=array([[0,1],[1,1],[1,0],[0,0]]),texmode=0,rendertype=1,opak=False,ontop=True,offset3=(200.,200.,0.))
     drawActor(Mark((0,200,0),image,size=40,color=red))
 
 
