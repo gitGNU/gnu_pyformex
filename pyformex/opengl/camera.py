@@ -1020,7 +1020,7 @@ class Camera(object):
         else:
             # Orthogonal projection
             # This is not tested yet!!!
-            x = Coords(x[:, :3])
+            x = Coords(x[..., :3])
         return x
 
 
