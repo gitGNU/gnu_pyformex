@@ -834,7 +834,7 @@ class Canvas(object):
         self.settings.slcolor = colors.GLcolor(color)
 
 
-    def setTriade(self,on=None,pos='lb',siz=100):
+    def setTriade(self,on=None,pos='lb',siz=50):
         """Toggle the display of the global axes on or off.
 
         If on is True, a triade of global axes is displayed, if False it is
@@ -844,11 +844,11 @@ class Canvas(object):
             on = self.triade is None
         pf.debug("SETTING TRIADE %s" % on, pf.DEBUG.DRAW)
         if self.triade:
-            self.removeAnnotation(self.triade)
+            self.removeAny(self.triade)
             self.triade = None
         if on:
             self.triade = decors.Triade(pos, siz)
-            self.addAnnotation(self.triade)
+            self.addAny(self.triade)
 
 
     def initCamera(self):

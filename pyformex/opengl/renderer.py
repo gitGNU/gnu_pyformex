@@ -37,7 +37,7 @@ import pyformex as pf
 from pyformex.coords import bbox
 from pyformex.attributes import Attributes
 from pyformex.opengl.matrix import Matrix4
-from pyformex.opengl.camera import orthogonal_matrix
+from pyformex.opengl.camera import orthogonal_matrix,perspective_matrix
 from pyformex.opengl.shader import Shader
 
 import numpy as np
@@ -122,10 +122,8 @@ class Renderer(object):
     def pickObjects(self, objects):
         """Draw a list of objects in picking mode"""
         for i, obj in enumerate(objects):
-            #print("PUSH %s" % i)
             GL.glPushName(i)
             obj.render(self)
-            #print("POP %s" % i)
             GL.glPopName()
 
 
@@ -135,6 +133,11 @@ class Renderer(object):
         """
         if not actors:
             return
+
+        ## # Split off rendertype 1
+        ## actors1 = [ a for a in actors if a.rendertype == -1 ]
+        ## actors = [ a for a in actors if a.rendertype != -1 ]
+
         # Get the current modelview*projection matrix
         modelview = self.camera.modelview
         projection = self.camera.projection
@@ -195,6 +198,16 @@ class Renderer(object):
                 GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
             self.renderObjects(transp)
             GL.glDisable (GL.GL_BLEND)
+
+        ## if actors1:
+        ##     modelview = Matrix4()
+        ##     modelview[:3,:3] = self.camera.modelview.rot
+        ##     projection = perspective_matrix(-1, 0.5, -1, 0.5, 0.1, 10.)
+
+        ##     #self.shader.uniformMat4('modelview', modelview.gl())
+        ##     self.shader.uniformMat4('projection', projection.gl())
+        ##     self.renderObjects(actors1)
+
 
         GL.glDepthMask (GL.GL_TRUE)
 

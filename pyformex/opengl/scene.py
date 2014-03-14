@@ -181,14 +181,14 @@ class Scene(object):
         elif isinstance(actor, oldactors.Actor):
             self.oldactors.add(actor)
         elif isinstance(actor, Actor):
-            if actor.rendertype == 0:
-                self.actors.add(actor)
-            elif actor.rendertype == 1:
+            if actor.rendertype == 1:
                 self.annotations.add(actor)
-            elif actor.rendertype == 2:
+            elif abs(actor.rendertype) == 2:
                 self.decorations.add(actor)
             elif actor.rendertype == 3:
                 self.backgrounds.add(actor)
+            else:
+                self.actors.add(actor)
             actor.prepare(self.canvas)
             actor.changeMode(self.canvas)
             self._bbox = None #coords.bbox([actor,self.bbox])
@@ -208,14 +208,14 @@ class Scene(object):
         elif isinstance(actor, oldactors.Actor):
             self.oldactors.delete(actor)
         elif isinstance(actor, Actor):
-            if actor.rendertype == 0:
-                self.actors.delete(actor)
-            elif actor.rendertype == 1:
+            if actor.rendertype == 1:
                 self.annotations.delete(actor)
-            elif actor.rendertype == 2:
+            elif abs(actor.rendertype) == 2:
                 self.decorations.delete(actor)
             elif actor.rendertype == 3:
                 self.backgounds.delete(actor)
+            else:
+                self.actors.delete(actor)
             self._bbox = None
             self.canvas.camera.focus = self.bbox.center()
 

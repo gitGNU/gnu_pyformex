@@ -30,6 +30,8 @@ from __future__ import print_function
 
 from pyformex import simple
 from pyformex.formex import Formex
+from OpenGL import GL
+from OpenGL.arrays.vbo import VBO
 from pyformex.opengl.drawable import Actor
 from pyformex.opengl.sanitize import *
 from pyformex.gui import colorscale as cs
@@ -40,12 +42,12 @@ from pyformex.gui import colorscale as cs
 class BboxActor(Actor):
     """Draws a bounding bbox.
 
-    A bounding box is a hexaeder in global axes. The heaxeder is
+    A bounding box is a hexaeder in global axes. The hexaeder is
     drawn in wireframe mode with default color black.
     """
     def __init__(self,bbox,color=black,**kargs):
         F = simple.cuboid(*bbox)
-        Actor.__init__(self,F,rendertype=1,mode='wireframe',color=red,lighting=False,opak=True,**kargs)
+        Actor.__init__(self,F,mode='wireframe',color=red,lighting=False,opak=True,**kargs)
 
 
 class Rectangle(Actor):
@@ -235,124 +237,63 @@ class ColorLegend(Actor):
 ##         GL.glEnd()
 
 
-## class Triade(Drawable):
-##     """An OpenGL actor representing a triade of global axes.
+class Triade(Actor):
+    """An OpenGL actor representing a triade of global axes.
 
-##     - `pos`: position on the canvas: two characters, of which first sets
-##       horizontal position ('l', 'c' or 'r') and second sets vertical
-##       position ('b', 'c' or 't').
+    - `pos`: position on the canvas: two characters, of which first sets
+      horizontal position ('l', 'c' or 'r') and second sets vertical
+      position ('b', 'c' or 't').
 
-##     - `size`: size in pixels of the zone displaying the triade.
+    - `size`: size in pixels of the zone displaying the triade.
 
-##     - `pat`: shape to be drawn in the coordinate planes. Default is a square.
-##       '16' givec a triangle. '' disables the planes.
+    - `pat`: shape to be drawn in the coordinate planes. Default is a square.
+      '3:016' gives a triangle. '' disables the planes.
 
-##     - `legend`: text symbols to plot at the end of the axes. A 3-character
-##       string or a tuple of 3 strings.
+    - `legend`: text symbols to plot at the end of the axes. A 3-character
+      string or a tuple of 3 strings.
 
-##     """
+    """
 
-##     def __init__(self,pos='lb',siz=100,pat='3:012934',legend='xyz',color=[red, green, blue, cyan, magenta, yellow],**kargs):
-##         Drawable.__init__(self,**kargs)
-##         self.pos = pos
-##         self.siz = siz
-##         self.pat = pat
-##         self.legend = legend
-##         self.color = color
+    def __init__(self,pos='lb',size=100,pat='4:0123',legend='xyz',color=[red, green, blue, cyan, magenta, yellow],**kargs):
+        self.pos = pos
+        self.size = size
+        self.pat = pat
+        self.legend = legend
+        self.color = color
+        x, y, w, h = GL.glGetIntegerv(GL.GL_VIEWPORT)
+        if self.pos[0] == 'l':
+            x0 = x + size
+        elif self.pos[0] =='r':
+            x0 = x + w - size
+        else:
+            x0 = x + w / 2
+        if self.pos[1] == 'b':
+            y0 = y + size
+        elif self.pos[1] =='t':
+            y0 = y + h - size
+        else:
+            y0 = y + h / 2
+        self.x,self.y = x0,y0
 
+        F = Formex('2:01020I').scale(size)
+        Actor.__init__(self,F,rendertype=-2,lighting=False,opak=True,linewidth=2,color=color[:3],**kargs)
 
-##     def _draw_me(self):
-##         """Draw the triade components."""
-##         GL.glBegin(GL.GL_LINES)
-##         pts = Formex('1').coords.reshape(-1, 3)
-##         GL.glColor3f(*black)
-##         for i in range(3):
-##             #GL.glColor(*self.color[i])
-##             for x in pts:
-##                 GL.glVertex3f(*x)
-##             pts = pts.rollAxes(1)
-##         GL.glEnd()
-##         # Coord planes
-##         if self.pat:
-##             GL.glBegin(GL.GL_TRIANGLES)
-##             pts = Formex(self.pat)
-##             #pts += pts.reverse()
-##             pts = pts.scale(0.5).coords.reshape(-1, 3)
-##             for i in range(3):
-##                 pts = pts.rollAxes(1)
-##                 GL.glColor3f(*self.color[i])
-##                 for x in pts:
-##                     GL.glVertex3f(*x)
-##             GL.glEnd()
-##         # Coord axes denomination
-##         for i, x in enumerate(self.legend):
-##             p = unitVector(i)*1.1
-##             t = TextMark(p, x)
-##             t.drawGL()
-
-
-##     def _draw_relative(self):
-##         """Draw the triade in the origin and with the size of the 3D space."""
-##         GL.glMatrixMode(GL.GL_MODELVIEW)
-##         GL.glPushMatrix()
-##         GL.glTranslatef (*self.pos)
-##         GL.glScalef (self.size, self.size, self.size)
-##         self._draw_me()
-##         GL.glMatrixMode(GL.GL_MODELVIEW)
-##         GL.glPopMatrix()
-
-
-##     def _draw_absolute(self):
-##         """Draw the triade in the lower left corner."""
-##         GL.glMatrixMode(GL.GL_MODELVIEW)
-##         GL.glPushMatrix()
-##         # Cancel the translations
-##         rot = GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX)
-##         rot[3, 0:3] = [0., 0., 0.]
-##         GL.glLoadMatrixf(rot)
-##         vp = GL.glGetIntegerv(GL.GL_VIEWPORT)
-##         x, y, w, h = vp
-##         w0, h0 = self.siz, self.siz # we force aspect ratio 1
-##         if self.pos[0] == 'l':
-##             x0 = x
-##         elif self.pos[0] =='r':
-##             x0 = x + w-w0
-##         else:
-##             x0 = x + (w-w0)/2
-##         if self.pos[1] == 'b':
-##             y0 = y
-##         elif self.pos[1] =='t':
-##             y0 = y + h-h0
-##         else:
-##             y0 = y + (h-h0)/2
-##         GL.glViewport(x0, y0, w0, h0)
-##         GL.glMatrixMode(GL.GL_PROJECTION)
-##         GL.glPushMatrix()
-##         GL.glLoadIdentity()
-##         fovy = 45.
-##         fv = tand(fovy*0.5)
-##         fv *= 4.
-##         fh = fv
-##         # BEWARE: near/far should be larger than size, but not very large
-##         # or the depth sort will fail
-##         frustum = (-fh, fh, -fv, fv, -3., 100.)
-##         GL.glOrtho(*frustum)
-##         GL.glDisable(GL.GL_LIGHTING)
-##         GL.glDisable (GL.GL_BLEND)
-##         GL.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL)
-##         GL.glDisable(GL.GL_CULL_FACE)
-##         GL.glClearDepth(1.0)
-##         GL.glDepthMask (GL.GL_TRUE)
-##         GL.glDepthFunc(GL.GL_LESS)
-##         GL.glEnable(GL.GL_DEPTH_TEST)
-##         self._draw_me()
-##         GL.glViewport(*vp)
-##         GL.glMatrixMode(GL.GL_PROJECTION)
-##         GL.glPopMatrix()
-##         GL.glMatrixMode(GL.GL_MODELVIEW)
-##         GL.glPopMatrix()
-
-##     def draw(self,**kargs):
-##         self._draw_absolute()
+    ##     # Coord planes
+    ##     if self.pat:
+    ##         GL.glBegin(GL.GL_TRIANGLES)
+    ##         pts = Formex(self.pat)
+    ##         #pts += pts.reverse()
+    ##         pts = pts.scale(0.5).coords.reshape(-1, 3)
+    ##         for i in range(3):
+    ##             pts = pts.rollAxes(1)
+    ##             GL.glColor3f(*self.color[i])
+    ##             for x in pts:
+    ##                 GL.glVertex3f(*x)
+    ##         GL.glEnd()
+    ##     # Coord axes denomination
+    ##     for i, x in enumerate(self.legend):
+    ##         p = unitVector(i)*1.1
+    ##         t = TextMark(p, x)
+    ##         t.drawGL()
 
 # End

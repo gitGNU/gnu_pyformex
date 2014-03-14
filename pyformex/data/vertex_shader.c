@@ -170,10 +170,9 @@ void main()
     gl_Position.y += offset.y;
   }
 
-
   if (useTexture > 0) {
     texCoord = vertexTexturePos;
-    gl_FrontColor = gl_Color;
+    //gl_FrontColor = gl_Color;
   }
 }
 

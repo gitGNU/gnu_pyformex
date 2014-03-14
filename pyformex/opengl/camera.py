@@ -1024,6 +1024,22 @@ class Camera(object):
         return x
 
 
+    def toNDC1(self,x,rect=None):
+        """This is like toNDC without the perspective divide
+
+        This function is useful to compute the vertex position of a
+        3D point as computed by the vertex shader.
+
+        """
+        m = self.modelview*self.projection
+        if rect is not None:
+            m = m*self.pickMatrix(rect)
+        x = Coords4(x)
+        x = Coords4(np.dot(x, m))
+        x = Coords(x[..., :3])
+        return x
+
+
     def project(self, x):
         """Map the world coordinates (x,y,z) to window coordinates."""
         m = self.modelview*self.projection

@@ -38,14 +38,14 @@ from gettext import gettext as _
 def setTriade():
     try:
         pos = pf.canvas.triade.pos
-        siz = pf.canvas.triade.siz
+        size = pf.canvas.triade.size
     except:
         pos = 'lb'
-        siz = 100
+        size = 50
     res = draw.askItems([
         _I('triade', True),
         _I('pos', pos, choices=['lt', 'lc', 'lb', 'ct', 'cc', 'cb', 'rt', 'rc', 'rb']),
-        _I('size', siz),
+        _I('size', size),
         ])
     if res:
         draw.setTriade(res['triade'], res['pos'], res['size'])

@@ -200,6 +200,19 @@ class Drawable(Attributes):
             offset = renderer.camera.toNDC(self.offset3d)
             renderer.shader.uniformVec3('offset', (1.+offset[0],1.+offset[1],0.,0.))
 
+        if self.rendertype == -2:
+            # This is currently a special code for the Triade
+            #print("HEBBES")
+            rot = renderer.camera.modelview.rot
+            #print(rot)
+            x = zeros((3,2,3),dtype=float32)
+            x[:,1,:] = rot*self.size
+            x[:,:,0] += self.x
+            x[:,:,1] += self.y
+            x[:,:,2] = 0
+            #print(x)
+            self.vbo = VBO(x)
+
         self.vbo.bind()
         GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
         GL.glVertexAttribPointer(renderer.shader.attribute['vertexPosition'], 3, GL.GL_FLOAT, False, 0, self.vbo)

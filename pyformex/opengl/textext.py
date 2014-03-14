@@ -213,10 +213,10 @@ class Mark(Actor):
     - `pos` : 3D point where the mark will be drawn
     """
 
-    def __init__(self,pos,tex,size,**kargs):
+    def __init__(self,pos,tex,size,opak=True,ontop=True,**kargs):
         self.pos = pos
         F = Formex([[[0,0],[1,0],[1,1],[0,1]]]).scale(size).align('000')
-        Actor.__init__(self,F,rendertype=1,texture=tex,texmode=0,offset3d=pos,opak=False,ontop=True,**kargs)
+        Actor.__init__(self,F,rendertype=1,texture=tex,texmode=0,offset3d=pos,opak=opak,ontop=ontop,lighting=False,**kargs)
 
 
 # End
