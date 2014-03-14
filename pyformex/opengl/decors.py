@@ -33,6 +33,7 @@ from pyformex.formex import Formex
 from OpenGL import GL
 from OpenGL.arrays.vbo import VBO
 from pyformex.opengl.drawable import Actor
+from pyformex.opengl.textext import FontTexture
 from pyformex.opengl.sanitize import *
 from pyformex.gui import colorscale as cs
 
@@ -103,7 +104,10 @@ class ColorLegend(Actor):
       or less if the labels would otherwise be too close or overlapping.
       If 0, no labels are shown.
       If < 0 (default), a default number of labels is shown.
-    - `font`, `size`: font and size to be used for the labels
+    - `size`: font size to be used for the labels
+    - `font`: font to be used for the labels. It can be a
+      :class:`textext.FontTexture` or a string with the path to a monotype
+      .ttf font. If unspecified, the default font is used.
     - `dec`: int: number of decimals to be used in the labels
     - `scale`: int: exponent of 10 for the scaling factor of the label values.
       The displayed values will be equal to the real values multiplied with
@@ -132,7 +136,7 @@ class ColorLegend(Actor):
     The `ColorScale` example script provides opportunity to experiment with
     different settings.
     """
-    def __init__(self,colorscale,ncolors,x,y,w,h,ngrid=0,linewidth=None,nlabel=-1,size=18,dec=2,scale=0,lefttext=False,**kargs):
+    def __init__(self,colorscale,ncolors,x,y,w,h,ngrid=0,linewidth=None,nlabel=-1,size=18,font=None,dec=2,scale=0,lefttext=False,**kargs):
         """Initialize the ColorLegend."""
         self.cl = cs.ColorLegend(colorscale,ncolors)
         self.x = float(x)
@@ -171,7 +175,11 @@ class ColorLegend(Actor):
             from pyformex.opengl import textext
             from pyformex.coords import Coords
 
-            self.font = textext.default_font
+            if font is None:
+                font = FontTexture.default()
+            elif isinstance(font,(str,unicode)):
+                font = FontTexture(font,size)
+            self.font = font
             fh = self.font.height
             pf.debug("FONT HEIGHT %s" % fh,pf.DEBUG.DRAW)
 

@@ -204,7 +204,7 @@ class Scene(object):
         If None is specified, all items from all lists will be removed.
         """
         if isinstance(actor, list):
-            [ self.removeActor(a) for a in actor ]
+            [ self.removeAny(a) for a in actor ]
         elif isinstance(actor, oldactors.Actor):
             self.oldactors.delete(actor)
         elif isinstance(actor, Actor):

@@ -9,12 +9,10 @@ opengl engine can be removed.
 
 Missing GL2 engine functionality
 --------------------------------
-- All 2D actors (decorations and annotations) still use the old engine.
 - The following 3D actors are still using the old engine:
   Actor, TranslatedActor, RotatedActor, CubeActor, SphereActor,
-  BboxActor, AxesActor, GridActor, CoordPlaneActor, PlaneActor,
+  AxesActor, CoordPlaneActor, PlaneActor,
   Text3DActor, NurbsActor
-- Texture drawing is not yet implemented
 
 
 Minor/possible improvements
@@ -79,18 +77,43 @@ Circle
 - ends with other orientation (after flyalong)
 
 CircumCircle
-.........
+............
 - OK
 
 Clip
+....
+- OK
+
 Clock
+
 ColorImage
+..........
+- OK
+
 ColorScale
+..........
+- OK
+
 Colored
+.......
+- Vertex color mode goves all black!
+
 ColoredText
+...........
+- FAILS!
+
 Cone
+....
+- OK
+
 Cones
+.....
+- OK
+
 Connect
+.......
+- FAILS!
+
 ConnectMesh
 Cube
 Curves

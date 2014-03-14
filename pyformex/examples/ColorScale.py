@@ -36,7 +36,7 @@ _techniques = ['dialog', 'color']
 
 import pyformex as pf
 from pyformex.gui.draw import *
-from pyformex.gui.colorscale import ColorScale
+from pyformex.gui.colorscale import ColorScale, Palette
 from pyformex.opengl.decors import ColorLegend
 
 input_data = [
