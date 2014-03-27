@@ -31,7 +31,6 @@ from pyformex import utils
 from pyformex import arraytools as at
 from pyformex import coords
 from pyformex.opengl.drawable import Actor
-from pyformex.gui import actors as oldactors
 
 
 class ItemList(list):
@@ -176,6 +175,7 @@ class Scene(object):
         an item to the scene, because it makes sure that each item is added
         to the proper list.
         """
+        from pyformex.legacy import actors as oldactors
         if isinstance(actor, list):
             [ self.addAny(a) for a in actor ]
         elif isinstance(actor, oldactors.Actor):
@@ -203,6 +203,7 @@ class Scene(object):
         itemlist can also be a single item instead of a list.
         If None is specified, all items from all lists will be removed.
         """
+        from pyformex.legacy import actors as oldactors
         if isinstance(actor, list):
             [ self.removeAny(a) for a in actor ]
         elif isinstance(actor, oldactors.Actor):

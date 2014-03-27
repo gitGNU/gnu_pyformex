@@ -30,7 +30,7 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import zip, simple, timer
-from pyformex.gui import actors, colors, widgets, menu
+from pyformex.gui import colors, widgets, menu
 from pyformex.plugins import plot2d, formex_menu, fe_abq
 
 from pyformex.odict import OrderedDict

@@ -30,7 +30,7 @@ import pyformex as pf
 
 from pyformex import utils, coords
 from pyformex import arraytools as at
-from pyformex.gui import colors, views, marks
+from pyformex.gui import colors, views
 
 from pyformex.mydict import Dict
 from pyformex.odict import OrderedDict
@@ -236,7 +236,6 @@ class Material(object):
     emission: %s
     shininess: %s
 """ % (self.name, self.ambient, self.diffuse, self.specular, self.emission, self.shininess)
-
 
 
 def getMaterials():

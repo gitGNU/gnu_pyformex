@@ -35,7 +35,7 @@ from pyformex.gui import colors
 
 from pyformex.gui.drawable import *
 from pyformex.gui.text import *
-from pyformex.gui.marks import TextMark
+from pyformex.legacy.marks import TextMark
 
 
 import sys

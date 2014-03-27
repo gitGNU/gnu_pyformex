@@ -33,19 +33,11 @@ from __future__ import print_function
 import pyformex as pf
 from pyformex import zip, utils
 
+from pyformex.gui import canvas
 from pyformex.gui import (
     QtCore, QtGui, QtOpenGL,
-    decors, image, toolbar,
+    image, toolbar,
     )
-
-try:
-    opengl2 = pf.options.opengl2
-except:
-    opengl2 = True
-if opengl2:
-    from pyformex.opengl import canvas
-else:
-    from pyformex.legacy import canvas
 
 from pyformex.collection import Collection
 from pyformex.coords import Coords
@@ -1049,8 +1041,9 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
 
     def draw_state_rect(self, x, y):
         """Store the pos and draw a rectangle to it."""
+        from pyformex.legacy.decors import drawRect
         self.state = x, y
-        decors.drawRect(self.statex, self.statey, x, y)
+        drawRect(self.statex, self.statey, x, y)
 
 
     def mouse_pick(self, x, y, action):
@@ -1096,8 +1089,9 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
 
     def draw_state_line(self, x, y):
         """Store the pos and draw a line to it."""
+        from pyformex.legacy.decors import drawLine
         self.state = x, y
-        decors.drawLine(self.statex, self.statey, x, y)
+        drawLine(self.statex, self.statey, x, y)
 
 
     def mouse_draw_line(self, x, y, action):

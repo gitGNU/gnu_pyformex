@@ -39,7 +39,7 @@ from pyformex.mesh import Mesh
 
 from pyformex.plugins.trisurface import TriSurface
 from pyformex.plugins.nurbs import NurbsCurve, NurbsSurface
-from pyformex.gui.marks import TextMark
+from pyformex.legacy.marks import TextMark
 
 from pyformex import timer
 

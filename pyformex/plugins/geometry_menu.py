@@ -44,7 +44,7 @@ from pyformex.mesh import Mesh, mergeMeshes
 from pyformex.plugins.trisurface import TriSurface, Sphere
 from pyformex.elements import elementType
 
-from pyformex.gui import actors, menu
+from pyformex.gui import menu
 from pyformex.gui.draw import *
 
 from pyformex.plugins import (

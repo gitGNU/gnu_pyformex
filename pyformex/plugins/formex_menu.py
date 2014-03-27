@@ -32,7 +32,7 @@ import pyformex as pf
 from pyformex import zip, utils
 from pyformex.formex import *
 
-from pyformex.gui import actors, menu
+from pyformex.gui import menu
 from pyformex.gui.draw import *
 
 from pyformex.plugins import objects, trisurface, partition, sectionize
@@ -53,13 +53,14 @@ _bbox = None
 
 def showBbox():
     """Draw the bbox on the current selection."""
+    from pyformex.legacy.actors import CoordPlaneActor
     global _bbox
     FL = selection.check()
     if FL:
         bb = bbox(FL)
         print("Bbox of selection: %s" % bb)
         nx = array([4, 4, 4])
-        _bbox = actors.CoordPlaneActor(nx=nx, ox=bb[0], dx=(bb[1]-bb[0])/nx)
+        _bbox = CoordPlaneActor(nx=nx, ox=bb[0], dx=(bb[1]-bb[0])/nx)
         pf.canvas.addAnnotation(_bbox)
         pf.canvas.update()
 

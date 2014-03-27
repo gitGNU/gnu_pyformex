@@ -85,4 +85,15 @@ except:
     pf.X11 = False
 
 
+try:
+    opengl2 = pf.options.opengl2
+except:
+    opengl2 = True
+
+if opengl2:
+    from pyformex.opengl import canvas
+else:
+    from pyformex.legacy import canvas
+
+
 # End

@@ -29,7 +29,8 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import utils
-from pyformex.gui import canvas, widgets, draw, prefMenu
+from pyformex.gui import widgets, draw, prefMenu
+from pyformex.opengl import canvas
 from pyformex.gui.draw import _I
 
 from gettext import gettext as _
