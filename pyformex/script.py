@@ -564,7 +564,7 @@ def runApp(appname,argv=[],refresh=False,lock=True,check=True):
     pf.debug("Memory: %s" % vmSize(), pf.DEBUG.MEM)
 
 
-def runAny(appname=None,argv=[],step=False,refresh=False):
+def runAny(appname=None,argv=[],step=False,refresh=False,remember=True):
     """Run the current pyFormex application or script file.
 
     Parameters:
@@ -588,7 +588,7 @@ def runAny(appname=None,argv=[],step=False,refresh=False):
     if scriptInit:
         scriptInit()
 
-    if pf.GUI:
+    if pf.GUI and remember:
         pf.GUI.setcurfile(appname)
 
     if utils.is_script(appname):
@@ -632,14 +632,8 @@ def processArgs(args):
     res = 0
     while len(args) > 0:
         fn = args.pop(0)
-#        if fn.endswith('.pye'):
-#            pass
-#        elif not os.path.exists(fn) or not utils.is_pyFormex(fn):
-#            print("Skipping %s: does not exist or is not a pyFormex script" % fn)
-#            continue
-#        res = runScript(fn, args)
-        res = runAny(fn, args)
-        if res and pf.GUI:
+        res = runAny(fn, args,remember=False)
+        if res:
             print("Error during execution of script/app %s" % fn)
 
     return res
