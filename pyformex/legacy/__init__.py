@@ -31,3 +31,27 @@ rescue for cases where the new modules are not working yet.
 Do not remove this file. It is used by pyFormex to flag the parent
 directory as a Python package.
 """
+from __future__ import print_function
+
+#### Set the Formex and Mesh actor method ####
+
+## def _set_actors():
+##     def actor(self,**kargs):
+
+##         if self.nelems() == 0:
+##             return None
+
+##         from pyformex.legacy.actors import GeomActor
+
+##         return GeomActor(self,**kargs)
+
+##     from pyformex import formex
+##     formex.Formex.actor = actor
+##     from pyformex import mesh
+##     mesh.Mesh.actor = actor
+
+## _set_actors()
+
+#### Set the WebGL format_actor method
+
+# End

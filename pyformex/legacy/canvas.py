@@ -32,12 +32,16 @@ from OpenGL import GL, GLU
 
 import pyformex as pf
 from pyformex import coords, utils
-from pyformex.gui import colors, views, actors, decors, marks
+from pyformex.gui import colors, views
 
 from pyformex.mydict import Dict
 from pyformex.formex import Formex
 from pyformex.gui.drawable import saneColor, glColor
 from pyformex.gui.camera import Camera
+
+from pyformex.legacy import actors
+from pyformex.legacy import decors
+from pyformex.legacy import marks
 
 libGL = None
 
