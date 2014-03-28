@@ -96,7 +96,7 @@ ColorScale
 
 Colored
 .......
-- Vertex color mode goves all black!
+- Vertex color mode goes all black!
 
 ColoredText
 ...........
@@ -147,10 +147,21 @@ Formex
 Ftgl
 Geodesic
 Grid
+
 Helix
+....
+- OK
+
 Hesperia
+
 HorseSlice
+..........
+- OK
+
 HorseStory
+..........
+- OK
+
 HorseTorse
 Hyparcap
 Icons

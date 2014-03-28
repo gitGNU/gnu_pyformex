@@ -33,8 +33,8 @@ from OpenGL import GL
 from pyformex.gui import QtOpenGL
 from pyformex.gui import colors
 
-from pyformex.gui.drawable import *
-from pyformex.gui.text import *
+from pyformex.legacy.drawable import *
+from pyformex.legacy.text import *
 from pyformex.legacy.marks import TextMark
 
 
@@ -42,7 +42,7 @@ import sys
 if (sys.hexversion & 0xFFFF0000) < 0x03000000:
     # GLUT currently fails with Python3
     # We should remove GLUT anyways
-    from pyformex.gui import gluttext
+    from pyformex.legacy import gluttext
 
 
 ### Some drawing functions ###############################################

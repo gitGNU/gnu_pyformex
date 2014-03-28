@@ -28,7 +28,7 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import zip,utils
-from pyformex.gui import widgets, toolbar, draw, canvas
+from pyformex.gui import widgets, toolbar, draw
 from pyformex.main import savePreferences
 from pyformex.gui.draw import _I, _G, _T
 
@@ -97,6 +97,7 @@ def settings():
     Creates a dialog to change (most of) the pyformex user configuration.
     To change the canvas setttings, use viewportMenu.canvasSettings.
     """
+    from pyformex.gui import canvas
     from pyformex import plugins
     from pyformex import sendmail
     from pyformex.elements import elementTypes

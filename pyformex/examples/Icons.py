@@ -39,7 +39,7 @@ _techniques = ['image', 'icon']
 
 from pyformex.gui.draw import *
 
-from pyformex.gui.actors import CubeActor
+from pyformex.legacy.actors import CubeActor
 from pyformex.gui.image import saveIcon
 from pyformex.plugins.curve import *
 from pyformex.simple import rectangle

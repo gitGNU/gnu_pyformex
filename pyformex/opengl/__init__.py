@@ -46,7 +46,7 @@ def _set_actors():
     from pyformex import mesh
     mesh.Mesh.actor = actor
 
-_set_actors()
+#_set_actors()
 
 #### Set the WebGL format_actor method
 

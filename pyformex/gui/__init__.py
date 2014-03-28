@@ -95,5 +95,4 @@ if opengl2:
 else:
     from pyformex.legacy import canvas
 
-
 # End

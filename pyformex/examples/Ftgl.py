@@ -77,7 +77,7 @@ def showSquare():
 def showText(text, font, fonttype, facesize, color, pos):
     utils.warn("Text3DActor is currently inactive")
     return
-    from pyformex.gui.actors import Text3DActor, TranslatedActor
+    from pyformex.legacy.actors import Text3DActor, TranslatedActor
     font = fonttypes[fonttype](font)
     t = Text3DActor(text, font, facesize, color, pos)
     t.nolight=True

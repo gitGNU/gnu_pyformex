@@ -33,11 +33,7 @@ _topics = ['surface']
 _techniques = ['color']
 
 from pyformex.gui.draw import *
-
-if pf.options.opengl2:
-    from pyformex.opengl.drawable import GeomActor
-else:
-    from pyformex.gui.actors import *
+from pyformex.opengl.drawable import GeomActor
 
 
 def run():

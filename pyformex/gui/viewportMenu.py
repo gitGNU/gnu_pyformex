@@ -55,7 +55,7 @@ def setTriade():
 def setBgColor():
     """Interactively set the viewport background colors."""
     global bgcolor_dialog
-    from pyformex.gui.drawable import saneColorArray
+    from pyformex.opengl.sanitixe import saneColorArray
     from numpy import resize
     from pyformex.gui import colors
     import os

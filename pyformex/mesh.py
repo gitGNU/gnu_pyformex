@@ -2483,7 +2483,7 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
         if self.nelems() == 0:
             return None
 
-        from pyformex.gui.actors import GeomActor
+        from pyformex.opengl.drawable import GeomActor
         return GeomActor(self,**kargs)
 
 

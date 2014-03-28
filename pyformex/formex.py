@@ -1299,7 +1299,7 @@ maxprop  = %s
 
 
     def actor(self,**kargs):
-        from pyformex.gui.actors import GeomActor
+        from pyformex.opengl.drawable import GeomActor
 
         if self.nelems() == 0:
             return None

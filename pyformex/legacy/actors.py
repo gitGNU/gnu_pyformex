@@ -32,7 +32,7 @@ from pyformex import arraytools as at
 import sys
 from OpenGL import GL
 
-from pyformex.gui.drawable import *
+from pyformex.legacy.drawable import *
 from pyformex.formex import *
 from pyformex.elements import elementType
 from pyformex.mesh import Mesh
@@ -411,7 +411,7 @@ class Text3DActor(Actor):
         self.font.FaceSize(a, b)
 
     def setColor(self, color):
-        from pyformex.gui.drawable import saneColor
+        from pyformex.legacy.drawable import saneColor
         self.color = saneColor(color)
 
     def bbox(self):
@@ -847,7 +847,7 @@ class GeomActor(Actor):
 class NurbsActor(Actor):
 
     def __init__(self,data,color=None,colormap=None,bkcolor=None,bkcolormap=None,**kargs):
-        from pyformex.gui.drawable import saneColor
+        from pyformex.legacy.drawable import saneColor
         Actor.__init__(self,**kargs)
         self.object = data
         self.setColor(color, colormap)

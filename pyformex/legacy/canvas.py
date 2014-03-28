@@ -36,7 +36,7 @@ from pyformex.gui import colors, views
 
 from pyformex.mydict import Dict
 from pyformex.formex import Formex
-from pyformex.gui.drawable import saneColor, glColor
+from pyformex.legacy.drawable import saneColor, glColor
 from pyformex.gui.camera import Camera
 
 from pyformex.legacy import actors
@@ -836,7 +836,7 @@ class Canvas(object):
         """Create the background object."""
         x1, y1 = 0, 0
         x2, y2 = self.getSize()
-        from pyformex.gui.drawable import saneColorArray
+        from pyformex.legacy.drawable import saneColorArray
         color = saneColorArray(self.settings.bgcolor, (4,))
         #print color.shape,color
         image = None

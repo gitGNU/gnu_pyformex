@@ -707,7 +707,7 @@ def drawImage(image,w=0,h=0,x=-1,y=-1,color=colors.white,ontop=False):
     """
     utils.warn("warn_drawImage_changed")
     from pyformex.plugins.imagearray import image2numpy
-    from pyformex.gui.decors import Rectangle
+    from pyformex.legacy.decors import Rectangle
 
     image = image2numpy(image, resize=(w, h), indexed=False)
     w, h = image.shape[:2]

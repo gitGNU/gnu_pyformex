@@ -41,10 +41,10 @@ from pyformex.plugins.trisurface import TriSurface
 def run():
     global y
     reset()
-    wireframe()
+    smooth()
 
     x = 20
-    y = pf.canvas.height()-20
+    y = pf.canvas.height()-100
 
     def say(text):
         global y
@@ -60,7 +60,6 @@ def run():
     pause()
 
     say('It\'s rather sad, but')
-    smooth()
     pause()
 
 

@@ -503,7 +503,7 @@ class NurbsCurve(Geometry4):
 
     def actor(self,**kargs):
         """Graphical representation"""
-        from pyformex.gui.actors import NurbsActor
+        from pyformex.legacy.actors import NurbsActor
         return NurbsActor(self,**kargs)
 
 
@@ -673,7 +673,7 @@ class NurbsSurface(Geometry4):
 
     def actor(self,**kargs):
         """Graphical representation"""
-        from pyformex.gui.actors import NurbsActor
+        from pyformex.legacy.actors import NurbsActor
         return NurbsActor(self,**kargs)
 
 
