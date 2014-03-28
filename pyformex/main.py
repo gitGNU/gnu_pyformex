@@ -695,7 +695,7 @@ pyFormex Warning
     if ar and os.path.exists(ar):
         args[0:0] = [ ar ]
 
-    # remaining args are interpreted as scripts and their parameters
+    # remaining args are interpreted as scripts/apps and their parameters
     res = 0
     if args:
         pf.debug("Remaining args: %s" % args, pf.DEBUG.INFO)

@@ -567,6 +567,13 @@ def runApp(appname,argv=[],refresh=False,lock=True,check=True):
 def runAny(appname=None,argv=[],step=False,refresh=False):
     """Run the current pyFormex application or script file.
 
+    Parameters:
+
+    - `appname`: either the name of a pyFormex application (app) or a file
+      containing a pyFormex script. An app name is specified in Python
+      module syntax (package.subpackage.module) and the path to the package
+      should be in the configured app paths.
+
     This function does nothing if no appname/filename is passed or no current
     script/app was set.
     If arguments are given, they are passed to the script. If `step` is True,
@@ -578,35 +585,16 @@ def runAny(appname=None,argv=[],step=False,refresh=False):
     if not appname:
         return
 
-    #print "RUNNING %s" % appname
     if scriptInit:
-        #print "INITFUNC"
         scriptInit()
 
     if pf.GUI:
         pf.GUI.setcurfile(appname)
 
     if utils.is_script(appname):
-        #print "RUNNING SCRIPT %s" % appname
         return runScript(appname, argv)
     else:
-        #print "RUNNING APP %s" % appname
         return runApp(appname, argv, refresh)
-
-
-## def runAll(applist,refresh=False):
-##     """Run all the scripts/apps in given list."""
-##     pf.GUI.enableButtons(pf.GUI.actions,['Stop'],True)
-##     for f in applist:
-##         while pf.scriptlock:
-##             #print(pf.scriptlock)
-##             print("WAITING BECAUSE OF SCRIPT LOCK")
-##             time.sleep(5)
-##         runAny(f,refresh=refresh)
-##         if exitrequested:
-##             break
-##     pf.GUI.enableButtons(pf.GUI.actions,['Stop'],False)
-
 
 
 def exit(all=False):
@@ -644,14 +632,15 @@ def processArgs(args):
     res = 0
     while len(args) > 0:
         fn = args.pop(0)
-        if fn.endswith('.pye'):
-            pass
-        elif not os.path.exists(fn) or not utils.is_pyFormex(fn):
-            print("Skipping %s: does not exist or is not a pyFormex script" % fn)
-            continue
-        res = runScript(fn, args)
+#        if fn.endswith('.pye'):
+#            pass
+#        elif not os.path.exists(fn) or not utils.is_pyFormex(fn):
+#            print("Skipping %s: does not exist or is not a pyFormex script" % fn)
+#            continue
+#        res = runScript(fn, args)
+        res = runAny(fn, args)
         if res and pf.GUI:
-            print("Error during execution of script %s" % fn)
+            print("Error during execution of script/app %s" % fn)
 
     return res
 
