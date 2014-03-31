@@ -181,7 +181,7 @@ class Scene(object):
         elif isinstance(actor, oldactors.Actor):
             self.oldactors.add(actor)
         elif isinstance(actor, Actor):
-            if actor.rendertype == 1:
+            if abs(actor.rendertype) == 1:
                 self.annotations.add(actor)
             elif abs(actor.rendertype) == 2:
                 self.decorations.add(actor)
@@ -209,7 +209,7 @@ class Scene(object):
         elif isinstance(actor, oldactors.Actor):
             self.oldactors.delete(actor)
         elif isinstance(actor, Actor):
-            if actor.rendertype == 1:
+            if abs(actor.rendertype) == 1:
                 self.annotations.delete(actor)
             elif abs(actor.rendertype) == 2:
                 self.decorations.delete(actor)

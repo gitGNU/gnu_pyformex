@@ -35,9 +35,10 @@ precision mediump float;
 
 #define MAX_LIGHTS 4
 
-in vec3 vertexPosition;
+in vec3 vertexCoords;
 in vec3 vertexNormal;
 in vec3 vertexColor;
+in vec3 vertexOffset;       // offset for rendertype -1
 in vec2 vertexTexturePos;
 in float vertexScalar;
 
@@ -129,7 +130,6 @@ void main()
 	for (int i=0; i<MAX_LIGHTS; ++i) {
 	  if (i < nlights) {
 	    vec3 nlight = normalize(lightdir[i]);
-	    //vec3 eyeDirection = normalize(-vertexPosition);
 	    vec3 eyeDirection = normalize(vec3(0.,0.,1.));
 	    vec3 reflectionDirection = reflect(-nlight, nNormal);
 	    float nspecular = specular*pow(max(dot(reflectionDirection,eyeDirection), 0.0), shininess);
@@ -158,16 +158,19 @@ void main()
   }
 
   // Transforming the vertex coordinates
-  vec4 fvertexPosition = vec4(vertexPosition,1.0);
+  vec4 position = vec4(vertexCoords,1.0);
 
   if (picking) {
-    gl_Position = pickmat * projection * modelview * fvertexPosition;
+    gl_Position = pickmat * projection * modelview * position;
   } else {
-    gl_Position = projection * modelview * fvertexPosition;
+    gl_Position = projection * modelview * position;
   }
   if (rendertype == 1) {
     gl_Position.x += offset3.x;
     gl_Position.y += offset3.y;
+  } else if (rendertype == -1) {
+    gl_Position.x += vertexOffset.x;
+    gl_Position.y += vertexOffset.y;
   }
 
   if (useTexture > 0) {

@@ -46,8 +46,6 @@ def run():
     view('front')
     smooth()
     fonts = listMonoFonts()
-    ## for f in fonts:
-    ##     print(f)
 
     # - draw a square
     # - use the full character set in the default font as a texture
@@ -56,42 +54,34 @@ def run():
     F = Formex('4:0123').scale(200).toMesh()
     A = draw(F,color=yellow,texture=FontTexture.default(),texcoords=array([[0,1],[1,1],[1,0],[0,0]]),texmode=2)
 
+    # draw a cross at the center of the square
+    # pos is 3D, therefore values are world coordinates
+    decorate(Text('+',pos=(100,100,0),gravity='',size=100,color=red))
+
     # draw a string using the default_font texture
-    T = Text("Hegemony!",(100,100),size=50,offset=(0.0,0.0,1))
-    decorate(T)
+    # pos is 2D, therefore values are pixel coordinates
+    decorate(Text("Hegemony!",pos=(100,100),size=50,offset=(0.0,0.0,1)))
 
     # the text is currently adjusted horizontally left, vertically centered
     # on the specified point. Adjustement using gravity will be added later.
     # Also, the color is currently not honoured.
     decorate(Text("Hegemony!",(0,10),size=20,color=red))
     decorate(Text("Hegemony!",(10,30),size=20,color=red))
-    for i,txt in [
-        (0,"Lower left corner"),
-        (1,"Lower right corner"),
-        (2,"Upper right corner"),
-        (3,"Upper left corner"),
-        ]:
-        j = F.elems[0,i]
-        decorate(Text(txt,F.coords[j],size=30,color=red))
 
+    # use a TextArray to draw text at the corners of the square
+    U = TextArray(["Lower left corner","Lower right corner","Upper right corner","Upper left corner"],pos=F.coords[F.elems[0]],size=30,gravity='NE')
+    decorate(U)
 
     #drawViewportAxes3D((0.,0.,0.),color=blue)
-    print(len(pf.canvas.scene.oldactors))
-    #decorate(Text('+',(100,100,0),gravity='',size=100,color=red))
 
+    # draw a cross at the upper corners using an image file
     image = os.path.join(pf.cfg['pyformexdir'], 'data', 'mark_cross.png')
     from pyformex.plugins.imagearray import image2numpy
     image = image2numpy(image, indexed=False)
-    ## print(image.shape)
-    ## image1 = image[14:18]
-    ## print(image1[...,0])
-    ## print(image1[...,1])
-    ## print(image1[...,2])
-    ## print(image1[...,3])
-    #F = Formex('4:0123').scale(40).toMesh().trl([200,200,0])
-    #draw(F,texture=image,texcoords=array([[0,1],[1,1],[1,0],[0,0]]),texmode=0,rendertype=2,opak=False,ontop=True)
     F = Formex('4:0123').scale(40).toMesh().align('000')
-    draw(F,texture=image,texcoords=array([[0,1],[1,1],[1,0],[0,0]]),texmode=0,rendertype=1,opak=False,ontop=True,offset3=(200.,200.,0.))
+    # at the right corner using direct texture drawing techniques
+    draw(F,texture=image,texcoords=array([[0,1],[1,1],[1,0],[0,0]]),texmode=0,rendertype=-1,opak=False,ontop=True,offset3d=[(200.,200.,0.),(200.,200.,0.),(200.,200.,0.),(200.,200.,0.),])
+    # at the left corner, using a Mark
     drawActor(Mark((0,200,0),image,size=40,color=red))
 
 

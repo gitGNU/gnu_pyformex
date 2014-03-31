@@ -30,6 +30,7 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import utils
+from pyformex.coords import Coords
 from pyformex.formex import Formex
 from pyformex.opengl.drawable import Base, Actor
 from pyformex.opengl.texture import Texture
@@ -102,6 +103,19 @@ class FontTexture(Texture):
         Texture.activate(self,filtr=1)
 
 
+    def texCoords(self,ord):
+        """Return the texture coordinates for ascii character position ord.
+
+        ord is an integer in the range 32..127
+        Returns the font texture coordinates of the square containing the
+        character with the ordinal number ord.
+        """
+        dx,dy = 1./16,1./6
+        k = ord-32
+        x0,y0 = (k%16)*dx, (k//16)*dy
+        return (x0,y0+dy), (x0+dx,y0+dy), (x0+dx,y0), (x0,y0)
+
+
     default_font = None
     @classmethod
     def default(clas):
@@ -125,17 +139,23 @@ class Text(Actor):
     The text is drawn in 2D, inserted at the specified position.
     """
 
-    def __init__(self,text,pos,size=18,width=None,font=None,gravity=None,**kargs):
+    def __init__(self,text,pos,size=18,width=None,font=None,gravity=None,grid=None,**kargs):
         self.text = str(text)
-        if len(pos) == 2:
+        pos = checkArray(pos)
+        if pos.shape[-1] == 2:
             rendertype = 2
             pos = [pos[0],pos[1],0.]
-            offset3 = None
+            offset3d = None
         else:
             rendertype = 1
-            offset3 = pos
-            pos = [.0,.0,0.]
-        self.size = size
+            offset3d = Coords(pos)
+            pos = [0.,0.,0.]
+            if offset3d.ndim > 1:
+                if offset3d.shape[0] != len(text):
+                    raise ValueError("Length of text(%s) and pos(%s) should match!" % (len(text),len(pos)))
+                # Flag vertex offset to shader
+                rendertype = -1
+
         if font is None:
             font = FontTexture.default()
         if isinstance(font,(str,unicode)):
@@ -146,18 +166,11 @@ class Text(Actor):
         self.width = width
         if gravity is None:
             gravity = 'E'
-        self.gravity = gravity
 
-        n = len(text)
-        dx,dy = 1./16,1./6
-        texcoords = []
-        for c in text:
-            k = ord(c)-32
-            i,j = k%16, k//16
-            x0,y0 = i*dx,j*dy
-            texcoords.append([[x0,y0+dy],[x0+dx,y0+dy],[x0+dx,y0],[x0,y0]])
-        texcoords = array(texcoords)
-        F = Formex('4:0123').replic(n).scale([width,size,0.])
+        texcoords = array([ font.texCoords(ord(c)) for c in text ])
+
+        if grid is None:
+            grid = Formex('4:0123').replic(len(text))
 
         alignment = ['0','0','0']
         if 'W' in gravity:
@@ -169,10 +182,57 @@ class Text(Actor):
         elif 'N' in gravity:
             alignment[1] = '-'
         alignment = ''.join(alignment)
-        #print("Gravity %s = aligment %s on point %s" % (gravity,alignment,pos))
-        F = F.align(alignment,pos)
-        #print("Text bbox: %s" % str(F.bbox()))
-        Actor.__init__(self,F,rendertype=rendertype,texture=font,texmode=0,texcoords=texcoords,opak=False,ontop=True,offset3=offset3,**kargs)
+
+        grid = grid.scale([width,size,0.]).align(alignment,pos)
+
+        ## print("TEXT")
+        ## print("  width,size = %s,%s" % (width,size))
+        ## print("  grid = %s" % grid)
+        ## print("  rendertype = %s" % rendertype)
+        ## print("  offset3d = %s" % offset3d)
+        ## print("  texcoords = %s" % texcoords)
+        ## print("  shape",grid.shape,offset3d.shape,texcoords.shape)
+        Actor.__init__(self,grid,rendertype=rendertype,texture=font,texmode=0,texcoords=texcoords,opak=False,ontop=True,offset3d=offset3d,**kargs)
+
+
+class TextArray(Text):
+    """A array of texts drawn at a 2D or 3D positions.
+
+    Parameters:
+
+    - `text`: a list of N strings: the texts to display. If an item is
+      not a string, the string representation of the object will be drawn.
+    - `pos`: either an [N,2] or [N,3] shaped array of 2D or 3D positions.
+      If 2D, the values are measured in pixels. If 3D, it is a point in
+      global 3D space.
+
+    The text is drawn in 2D, inserted at the specified position, with
+    alignment specified by the gravity.
+    """
+
+    def __init__(self,val,pos,leader='',**kargs):
+        # Make sure we have strings
+        val = [ str(i) for i in val ]
+        pos = checkArray(pos,shape=(len(val),-1))
+        if len(val) != pos.shape[0]:
+            raise ValueError("val and pos should have same length")
+
+        # concatenate all strings
+        val = [ leader+str(v) for v in val ]
+        cs = cumsum([0,] + [ len(v) for v in val ])
+        val = ''.join(val)
+        nc = cs[1:] - cs[:-1]
+
+        pos = [ multiplex(p,n,0) for p,n in zip(pos,nc) ]
+        pos = concatenate(pos,axis=0)
+        pos = multiplex(pos,4,1)
+
+        # Create the grids for the strings
+        F = Formex('4:0123')
+        grid = Formex.concatenate([ F.replic(n) for n in nc ])
+
+        # Create a text with the concatenation
+        Text.__init__(self,val,pos=pos,grid=grid,**kargs)
 
 
 class MarkList(Text):
@@ -219,7 +279,7 @@ class Mark(Actor):
     def __init__(self,pos,tex,size,opak=False,ontop=True,**kargs):
         self.pos = pos
         F = Formex([[[0,0],[1,0],[1,1],[0,1]]]).scale(size).align('000')
-        Actor.__init__(self,F,rendertype=1,texture=tex,texmode=0,offset3=pos,opak=opak,ontop=ontop,lighting=False,**kargs)
+        Actor.__init__(self,F,rendertype=1,texture=tex,texmode=0,offset3d=pos,opak=opak,ontop=ontop,lighting=False,**kargs)
 
 
 # End

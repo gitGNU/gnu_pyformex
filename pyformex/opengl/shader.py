@@ -102,11 +102,12 @@ class Shader(object):
 
     # Default attributes and uniforms
     attributes = [
-    'vertexPosition',
+    'vertexCoords',
     'vertexNormal',
     'vertexColor',
     'vertexTexturePos',
     'vertexScalar',
+    'vertexOffset',
     ]
 
     # int and bool uniforms

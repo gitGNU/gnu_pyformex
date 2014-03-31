@@ -196,26 +196,42 @@ class Drawable(Attributes):
 
         renderer.shader.loadUniforms(self)
 
-        if self.offset3 is not None:
-            offset = renderer.camera.toNDC(self.offset3)
-            renderer.shader.uniformVec3('offset3', (1.+offset[0],1.+offset[1],0.,0.))
+        if self.offset3d is not None:
+            offset = renderer.camera.toNDC(self.offset3d)
+            offset[...,2] = 0.
+            offset += (1.,1.,0.)
+
+            #print(self.rendertype)
+            #print("OFFSET=",offset)
+            #print("COORDS=",self.vbo.data)
+            if offset.shape == (3,):
+                renderer.shader.uniformVec3('offset3',offset)
+            elif offset.ndim > 1:
+                self.obo = VBO(offset.astype(float32))
+                #self.obo = VBO(self._default_dict_.fcoords+offset)
+                #print(self._default_dict_.fcoords)
+                #print(offset)
+                #print(self.obo.data.shape,self.vbo.data.shape)
+
+                self.obo.bind()
+                GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexOffset'])
+                GL.glVertexAttribPointer(renderer.shader.attribute['vertexOffset'], 3, GL.GL_FLOAT, False, 0, self.obo)
+
 
         if self.rendertype == -2:
             # This is currently a special code for the Triade
-            #print("HEBBES")
             rot = renderer.camera.modelview.rot
-            #print(rot)
             x = zeros((3,2,3),dtype=float32)
             x[:,1,:] = rot*self.size
             x[:,:,0] += self.x
             x[:,:,1] += self.y
             x[:,:,2] = 0
-            #print(x)
             self.vbo = VBO(x)
 
+
         self.vbo.bind()
-        GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
-        GL.glVertexAttribPointer(renderer.shader.attribute['vertexPosition'], 3, GL.GL_FLOAT, False, 0, self.vbo)
+        GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexCoords'])
+        GL.glVertexAttribPointer(renderer.shader.attribute['vertexCoords'], 3, GL.GL_FLOAT, False, 0, self.vbo)
 
         if self.ibo:
             self.ibo.bind()
@@ -258,6 +274,11 @@ class Drawable(Attributes):
 
         if self.ibo:
             self.ibo.unbind()
+
+        if self.obo:
+            self.obo.unbind()
+            GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexOffset'])
+
         if self.cbo:
             self.cbo.unbind()
             GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexColor'])
@@ -268,7 +289,7 @@ class Drawable(Attributes):
             self.nbo.unbind()
             GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexNormal'])
         self.vbo.unbind()
-        GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
+        GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexCoords'])
         if self.offset:
             pf.debug("POLYGON OFFSET RESET", pf.DEBUG.DRAW)
             GL.glPolygonOffset(0.0, 0.0)
@@ -287,8 +308,8 @@ class Drawable(Attributes):
         renderer.shader.loadUniforms(self)
 
         self.vbo.bind()
-        GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
-        GL.glVertexAttribPointer(renderer.shader.attribute['vertexPosition'], 3, GL.GL_FLOAT, False, 0, self.vbo)
+        GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexCoords'])
+        GL.glVertexAttribPointer(renderer.shader.attribute['vertexCoords'], 3, GL.GL_FLOAT, False, 0, self.vbo)
 
         if self.ibo:
             self.ibo.bind()
@@ -313,7 +334,7 @@ class Drawable(Attributes):
         if self.ibo:
             self.ibo.unbind()
         self.vbo.unbind()
-        GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexPosition'])
+        GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexCoords'])
 
     def __str__(self):
         keys = sorted(set(self.keys()) - set(('_default_dict_',)))
