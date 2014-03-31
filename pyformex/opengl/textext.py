@@ -235,37 +235,37 @@ class TextArray(Text):
         Text.__init__(self,val,pos=pos,grid=grid,**kargs)
 
 
-class MarkList(Text):
-    """A list of numbers drawn at 3D positions.
+## class MarkList(Text):
+##     """A list of numbers drawn at 3D positions.
 
-    pos is an (N,3) array of positions.
-    val is an (N,) array of marks to be plot at those positions.
+##     pos is an (N,3) array of positions.
+##     val is an (N,) array of marks to be plot at those positions.
 
-    While intended to plot integer numbers, val can be any object
-    that allows index operations for the required length N and allows
-    its items to be formatted as a string.
+##     While intended to plot integer numbers, val can be any object
+##     that allows index operations for the required length N and allows
+##     its items to be formatted as a string.
 
-    """
+##     """
 
-    def __init__(self,pos,val,leader='',**kargs):
-        """Create a MarkList."""
-        if len(val) != len(pos):
-            raise ValueError("pos and val should have same length")
+##     def __init__(self,pos,val,leader='',**kargs):
+##         """Create a MarkList."""
+##         if len(val) != len(pos):
+##             raise ValueError("pos and val should have same length")
 
-        # Make sure we have strings
-        val = [ leader+str(v) for v in val ]
-        cs = cumsum([0,] + [ len(v) for v in val ])
-        val = ''.join(val)
-        # Create a text with the concatenation
-        Text.__init__(self,val,[0.,0.,0.],invisible=True,**kargs)
-        #
-        # TODO: we should transform this to using different offsets
-        # for the partial strings, instead of using children
-        #
-        # Create a text for each mark
-        for p,i,j in zip(pos,cs[:-1],cs[1:]):
-            t = Text(val[i:j],p,**kargs)
-            self.children.append(t)
+##         # Make sure we have strings
+##         val = [ leader+str(v) for v in val ]
+##         cs = cumsum([0,] + [ len(v) for v in val ])
+##         val = ''.join(val)
+##         # Create a text with the concatenation
+##         Text.__init__(self,val,[0.,0.,0.],invisible=True,**kargs)
+##         #
+##         # TODO: we should transform this to using different offsets
+##         # for the partial strings, instead of using children
+##         #
+##         # Create a text for each mark
+##         for p,i,j in zip(pos,cs[:-1],cs[1:]):
+##             t = Text(val[i:j],p,**kargs)
+##             self.children.append(t)
 
 
 class Mark(Actor):

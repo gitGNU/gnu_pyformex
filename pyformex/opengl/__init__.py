@@ -48,6 +48,6 @@ def _set_actors():
 
 #_set_actors()
 
-#### Set the WebGL format_actor method
+
 
 # End

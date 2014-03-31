@@ -339,8 +339,7 @@ def drawMarks(X,M,color='black',leader='',ontop=True):
     if len(M) > _large_:
         if not ack("You are trying to draw marks at %s points. This may take a long time, and the results will most likely not be readible anyway. If you insist on drawing these marks, anwer YES." % len(M)):
             return None
-    from pyformex.opengl.textext import MarkList
-    A = textext.MarkList(X, M, color=color, leader=leader)
+    A = textext.TextArray(val=M, pos=X, color=color, leader=leader)
     drawActor(A)
     return A
 
