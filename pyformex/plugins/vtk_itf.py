@@ -383,39 +383,46 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
             if verbose:
                 print('Saved verts connectivity array')
 
+    def builddatadict(data, verbose):
+        'It helps finding empty and non-empty array data (field, cell and point)'
+        arraynm = [data.GetArrayName(i) for i in range(data.GetNumberOfArrays())]
+        #first get the None data
+        emptyarraynm = [an for an in arraynm if data.GetArray(an) is None ]
+        emptydata = [data.GetArray(an) for an in emptyarraynm]
+        emptydata = dict(zip(emptyarraynm, emptydata))
+        #then get the non-None data (ie. with an array)
+        arraynm = [an for an in arraynm if data.GetArray(an) is not None ]
+        ntypes = [gnat(data.GetArray(an).GetDataType()) for an in arraynm]
+        okdata = [asarray(v2n(data.GetArray(an)), dtype=ntype) for ntype, an in zip(ntypes, arraynm)]
+        okdata = dict(zip(arraynm, okdata))
+        #now merge the empty and non-empty data
+        okdata.update(emptydata)
+        if verbose:
+            print ('Non-empty Data Arrays:%s'% arraynm)
+            print ('Empty Data Arrays:%s'% emptyarraynm)
+        return okdata
+
     # getting Fields
     if vpd.GetFieldData().GetNumberOfArrays():
-        fielddata = vpd.GetFieldData() # get field arrays
-        arraynm = [fielddata.GetArrayName(i) for i in range(fielddata.GetNumberOfArrays())]
-        ntypes = [gnat(fielddata.GetArray(an).GetDataType()) for an in arraynm]
-        fielddata = [asarray(v2n(fielddata.GetArray(an)), dtype=ntype) for ntype, an in zip(ntypes, arraynm)]
-        fielddata = dict(zip(arraynm, fielddata)) # dictionary of array names
+        fielddata = vpd.GetFieldData()
         if verbose:
-            print(('Field Data Arrays: '+''.join(['%s, '%nm for nm in arraynm])))
-
+            print ('*Field Data Arrays')
+        fielddata = builddatadict(fielddata, verbose=verbose)
 
     # getting cells data
     if vpd.GetCellData().GetNumberOfArrays():
-        celldata = vpd.GetCellData() # get cell arrays
-        arraynm = [celldata.GetArrayName(i) for i in range(celldata.GetNumberOfArrays())]
-        ntypes = [gnat(celldata.GetArray(an).GetDataType()) for an in arraynm]
-        celldata = [asarray(v2n(celldata.GetArray(an)), dtype=ntype) for ntype, an in zip(ntypes, arraynm)]
-        celldata = dict(zip(arraynm, celldata)) # dictionary of array names
+        celldata = vpd.GetCellData()
         if verbose:
-            print(('Cell Data Arrays: '+''.join(['%s, '%nm for nm in arraynm])))
-
+            print ('*Cell Data Arrays')        
+        celldata = builddatadict(celldata, verbose=verbose)
 
     # getting points data
     if vpd.GetPointData().GetNumberOfArrays():
-        pointdata = vpd.GetPointData() # get point arrays
-        arraynm = [pointdata.GetArrayName(i) for i in range(pointdata.GetNumberOfArrays())]
-        ntypes = [gnat(pointdata.GetArray(an).GetDataType()) for an in arraynm]
-        pointdata = [asarray(v2n(pointdata.GetArray(an)), dtype=ntype) for ntype, an in zip(ntypes, arraynm)]
-        pointdata = dict(zip(arraynm, pointdata)) # dictionary of array names
+        pointdata = vpd.GetPointData()
         if verbose:
-            print(('Point Data Arrays: '+''.join(['%s, '%nm for nm in arraynm])))
-
-
+            print ('*Point Data Arrays')        
+        pointdata = builddatadict(pointdata, verbose=verbose)
+ 
     return [coords, cells, polys, lines, verts], fielddata, celldata, pointdata
 
 
@@ -529,10 +536,10 @@ def writeVTPmany(fn,items):
     writer.Write()
 
 
-def readVTKObject(fn,verbose=True,samePlex=True):
-    """Read a .vtp file
+def readVTKObject(fn,verbose=True,samePlex=True, readernm=None):
+    """Read a vtp/vtk file
 
-    Read a .vtp file and return coords, list of elems, and a dict of arrays.
+    Read a vtp/vtk file and return coords, list of elems, and a dict of arrays.
 
     Parameters
 
@@ -550,14 +557,39 @@ def readVTKObject(fn,verbose=True,samePlex=True):
     Returns None for the missing data.
     The dictionary of arrays can include the elements ids (e.g. properties).
     """
-    ftype = utils.fileTypeFromExt(fn)
-    if ftype=='vtp':
-        reader = vtkXMLPolyDataReader()
-    if ftype=='vtk':
-        reader = vtkDataSetReader()
+    allreadersnm = 'vtkXMLPolyDataReader, vtkDataSetReader, vtkUnstructuredGridReader, vtkPolyDataReader,vtkStructuredPointsReader, vtkStructuredGridReader, vtkRectilinearGridReader' 
+    if readernm == None:
+        ftype = utils.fileTypeFromExt(fn)
+        if ftype=='vtp':
+            reader, readernm = vtk.vtkXMLPolyDataReader(), 'vtkXMLPolyDataReader'
+        if ftype=='vtk':
+            reader, readernm = vtk.vtkDataSetReader(), 'vtkDataSetReader'
+    else:
+        if readernm == 'vtkXMLPolyDataReader':
+            reader = vtk.vtkXMLPolyDataReader()
+        elif readernm == 'vtkDataSetReader':
+            reader = vtk.vtkDataSetReader()
+        elif readernm == 'vtkUnstructuredGridReader':
+            reader = vtk.vtkUnstructuredGridReader()
+        elif readernm == 'vtkPolyDataReader':
+            reader = vtk.vtkPolyDataReader()
+        elif readernm == 'vtkStructuredPointsReader':
+            reader = vtk.vtkStructuredPointsReader()
+        elif readernm == 'vtkStructuredGridReader':
+            reader = vtk.vtkStructuredGridReaderr()
+        elif readernm == 'vtkRectilinearGridReaderr':
+            reader = vtk.vtkRectilinearGridReader()
+        else:
+            raise ValueError, 'unknown reader %s, please specify an alternative reader: %s'%(readernm, allreadersnm)
+            
     reader.SetFileName(fn)
     reader.Update()
-    vpd = reader.GetOutput() # vtk polydata object
+    if reader.GetErrorCode()!=0:
+        utils.warn('the default vtk reader %s raised an error, please specify an alternative reader: %s'%(readernm, allreadersnm))
+    vpd = reader.GetOutput() # vtk object
+    if vpd == None:
+        utils.warn('vpd is undefined (None),  please check vtk filename and vtk reader')
+    print ('file %s read with vtk reader: %s'%(fn, readernm))
     return convertFromVPD(vpd, verbose=verbose, samePlex=samePlex)
 
 
