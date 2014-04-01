@@ -590,7 +590,7 @@ def view(v,wait=True):
     if v != 'last':
         angles = pf.canvas.view_angles.get(v)
         if not angles:
-            warning("A view named '%s' has not been created yet" % v)
+            utils.warn("A view named '%s' has not been created yet" % v)
             return
         pf.canvas.setCamera(None, angles)
     setView(v)
