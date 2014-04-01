@@ -526,12 +526,15 @@ def fmtConnectorSection(el, setname):
 
     - `behavior` : connector behavior name
     - `orient`  : connector orientation
+    - `elimination` : 'NO' (default), 'YES'
     """
     out = ""
     if el.sectiontype.upper() != 'GENERAL':
         out += '*CONNECTOR SECTION, ELSET=%s' % setname
         if el.behavior:
             out += ', BEHAVIOR=%s' % el.behavior
+        if el.elimination:
+            out += ', ELIMINATION=%s' % el.elimination
         out += '\n%s\n' % el.sectiontype.upper()
         if el.orient:
             out += '%s\n' % el.orient
@@ -542,25 +545,63 @@ def fmtConnectorSection(el, setname):
 def fmtConnectorBehavior(prop):
     """ Write a connector behavior.
     Implemented: Elasticity,  Stop
+    
+    Optional parameter:
+    - `extrapolation`: extrapolation method for all subcomponents of the behavior.
+                       'CONSTANT' (default) or 'LINEAR'
+    
     Examples:
+    ---------
+    
     Elasticity
-    P.Prop(name='connbehavior1',ConnectorBehavior='',Elasticity=dict(
-    component=[1,2,3,4,5,6],value=[1,1,1,1,1,1]))
+    ''''''''''
+    elasticity = dict(component=[1,2,3,4,5,6], value=[1,1,1,1,1,1])
+    P.Prop(name='connbehavior1', ConnectorBehavior='', Elasticity=elasticity, extrapolation='LINEAR')
+    
+    Optional parameter for Elasticity dictionary:
+    - `nonlinear`: use nonlinear elasticity data. Can be False (default) or True.
+    
     Stop:
-    P.Prop(name='connbehavior3',ConnectorBehavior='',Stop=dict(
-    component=[1,2,3,4,5,6],lowerlimit=[1,1,1,1,1,1], upperlimit=[2, 2, 2, 2,2,2]))
+    '''''
+    stop = dict(component=[1,2,3,4,5,6],lowerlimit=[1,1,1,1,1,1], upperlimit=[2, 2, 2, 2,2,2])
+    P.Prop(name='connbehavior3',ConnectorBehavior='',Stop=stop)
     """
     out = ''
     for p in prop:
-        out += '*CONNECTOR BEHAVIOR, NAME=%s\n' % p.name
+        out += '*CONNECTOR BEHAVIOR, NAME=%s' % p.name
+        if p.extrapolation:
+            out += ', EXTRAPOLATION=%s\n' % p.extrapolation
+        else:
+            out += '\n'
         if p.Elasticity:
-            for j in range(len(p.Elasticity['component'])):
-                out += '*CONNECTOR ELASTICITY, COMPONENT=%s\n' % p.Elasticity['component'][j]
-                out += '%s ,\n' % p.Elasticity['value'][j]
+            out += fmtConnectorElasticity(p.Elasticity)
         if p.Stop:
-            for j in range(len(p.Stop['component'])):
-                out += '*CONNECTOR STOP, COMPONENT=%s\n' % p.Stop['component'][j]
-                out += '%s , %s\n'% (p.Stop['lowerlimit'][j], p.Stop['upperlimit'][j])
+            out += fmtConnectorStop(p.Stop)
+    return out
+
+
+def fmtConnectorElasticity(elas):
+    """Format connector elasticity behavior."""
+    out = ''
+    for j in range(len(elas['component'])):
+        out += '*CONNECTOR ELASTICITY, COMPONENT=%s' % elas['component'][j]
+        try:
+            if elas['nonlinear']:
+                out += ', NONLINEAR\n'
+            else:
+                out += '\n'
+        except:
+            out += '\n'
+        out += '%s ,\n' % elas['value'][j]
+    return out
+
+
+def fmtConnectorStop(stop):
+    """Format connector stop behavior."""
+    out = ''
+    for j in range(len(stop['component'])):
+        out += '*CONNECTOR STOP, COMPONENT=%s\n' % stop['component'][j]
+        out += '%s , %s\n'% (p.Stop['lowerlimit'][j], stop['upperlimit'][j])
     return out
 
 
@@ -1062,6 +1103,7 @@ def writeSet(fil,type,name,set,ofs=1):
     if fl:
         fil.write("\n")            
 
+pointmass_elems = ['MASS']
 spring_elems = ['SPRINGA', ]
 dashpot_elems = ['DASHPOTA', ]
 connector_elems = ['CONN3D2', 'CONN2D2']
@@ -1223,8 +1265,15 @@ def writeSection(fil, prop):
                 out += "\n%s" % el.thickness
             out += '\n'
             fil.write(out)
-
-
+    
+    ############
+    ## POINT MASS elements
+    ##########################
+    elif eltype in pointmass_elems:
+        if el.sectiontype.upper() == 'MASS':
+            if el.mass:
+                fil.write("*MASS, ELSET=%s\n%s\n" % (setname, el.mass))
+    
     ############
     ## UNSUPPORTED elements
     ##########################
