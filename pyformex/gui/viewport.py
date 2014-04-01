@@ -334,7 +334,8 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
             self.setMouse(LEFT, self.dynarot, mod)
             self.setMouse(MIDDLE, self.dynapan, mod)
             self.setMouse(RIGHT, self.dynazoom, mod)
-        self.selection_mode = None
+        self.pick_mode = None
+        self.pick_mode_subsel = 'any'
         self.selection = Collection()
         self.trackfunc = None
         self.pick_func = {
@@ -504,8 +505,8 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         this can be used to change the filter method.
         """
         pf.debug("START SELECTION", pf.DEBUG.GUI)
-        pf.debug("Mode is %s" % self.selection_mode, pf.DEBUG.GUI)
-        if self.selection_mode is None:
+        pf.debug("Mode is %s" % self.pick_mode, pf.DEBUG.GUI)
+        if self.pick_mode is None:
             self.setMouse(LEFT, self.mouse_pick)
             self.setMouse(LEFT, self.mouse_pick, SHIFT)
             self.setMouse(LEFT, self.mouse_pick, CTRL)
@@ -513,7 +514,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
             self.setMouse(RIGHT, self.emit_cancel, SHIFT)
             self.DONE.connect(self.accept_selection)
             self.CANCEL.connect(self.cancel_selection)
-            self.selection_mode = mode
+            self.pick_mode = mode
             self.selection_front = None
 
         if filter == 'none':
@@ -522,7 +523,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         if filter is None:
             self.selection_front = None
         self.selection.clear()
-        self.selection.setType(self.selection_mode)
+        self.selection.setType(self.pick_mode)
         pf.debug("START SELECTION DONE", pf.DEBUG.GUI)
 
 
@@ -547,7 +548,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         self.resetMouse(RIGHT, SHIFT)
         self.DONE.disconnect(self.accept_selection)
         self.CANCEL.disconnect(self.cancel_selection)
-        self.selection_mode = None
+        self.pick_mode = None
         pf.debug("FINISH SELECTION DONE", pf.DEBUG.GUI)
 
 
@@ -602,7 +603,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
             self.wait_selection()
             if not self.selection_canceled:
                 # selection by mouse_picking
-                self.pick_func[self.selection_mode]()
+                self.pick_func[self.pick_mode]()
                 #print("PICKED")
                 #print(self.picked)
                 #print("CLOSEST PICK")

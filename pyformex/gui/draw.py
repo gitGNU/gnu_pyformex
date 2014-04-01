@@ -865,6 +865,7 @@ def pick(mode='actor',filter=None,oneshot=False,func=None):
       activated on entering the pick mode. All available filters are
       presented in a combobox.
     """
+    subsel_values = { 'any': 'any vertex', 'all': 'all vertices' }
 
     def _set_selection_filter(s):
         """Set the selection filter mode
@@ -874,11 +875,24 @@ def pick(mode='actor',filter=None,oneshot=False,func=None):
         s is one of the strings in selection_filters.
         """
         s = str(s)
-        if pf.canvas.selection_mode is not None and s in pf.canvas.selection_filters:
+        if pf.canvas.pick_mode is not None and s in pf.canvas.selection_filters:
             pf.canvas.start_selection(None, s)
 
 
-    if pf.canvas.selection_mode is not None:
+    ## def _toggle_subsel_mode(fld):
+    ##     """Toggle the value of the subsel mode"""
+    ##     val = fld.value()
+    ##     ind = 1 - subsel_values.index(val)
+    ##     val = subsel_values[ind]
+    ##     pf.canvas.pick_mode_subsel = val[:3]   # 'any' or 'all'
+    ##     return val
+
+    def _set_subsel_mode(val):
+        """Toggle the value of the subsel mode"""
+        pf.canvas.pick_mode_subsel = str(val)[:3]
+
+
+    if pf.canvas.pick_mode is not None:
         warning("You need to finish the previous picking operation first!")
         return
 
@@ -896,20 +910,31 @@ def pick(mode='actor',filter=None,oneshot=False,func=None):
     if filter is not None and filter in pf.canvas.selection_filters:
         filter_combo.setValue(filter)
 
+    if mode in [ 'actor', 'element', 'face', 'edge' ]:
+        txt = subsel_values[pf.canvas.pick_mode_subsel]
+        #subsel_button = widgets.ButtonBox('Pick by ', [(txt, _toggle_subsel_mode), ])
+        subsel_button = widgets.InputCombo('Pick by ', txt, choices=subsel_values.values(), onselect=_set_subsel_mode)
+    else:
+        subsel_button = None
+
     if func is None:
         func = pf.canvas.highlight_funcs.get(mode, None)
     print("Select %s %s" % (filter, mode))
 
     pf.GUI.statusbar.addWidget(pick_buttons)
     pf.GUI.statusbar.addWidget(filter_combo)
+    if subsel_button:
+        pf.GUI.statusbar.addWidget(subsel_button)
     try:
         sel = pf.canvas.pick(mode, oneshot, func, filter)
     finally:
         # cleanup
-        if pf.canvas.selection_mode is not None:
+        if pf.canvas.pick_mode is not None:
             pf.canvas.finish_selection()
         pf.GUI.statusbar.removeWidget(pick_buttons)
         pf.GUI.statusbar.removeWidget(filter_combo)
+        if subsel_button:
+            pf.GUI.statusbar.removeWidget(subsel_button)
     return sel
 
 

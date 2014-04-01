@@ -1355,11 +1355,11 @@ class Canvas(object):
         else:
             pickable = self.pickable
 
-        self.picked = Collection(self.selection_mode)
+        self.picked = Collection(self.pick_mode)
         self.closest_pick = None
         for i, a in enumerate(pickable):
-            picked = a.inside(self.camera, rect=self.pick_window[:4], mode=self.selection_mode, sel='any', return_depth=store_closest)
-            #print("PICK_PARTS %s" % self.selection_mode)
+            picked = a.inside(self.camera, rect=self.pick_window[:4], mode=self.pick_mode, sel=self.pick_mode_subsel, return_depth=store_closest)
+            #print("PICK_PARTS %s" % self.pick_mode)
             #print(picked)
             if store_closest:
                 picked,zdepth = picked
