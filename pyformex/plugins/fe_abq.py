@@ -651,6 +651,7 @@ def fmtSolidSection(el, setname, matname):
     Optional:
 
     - orientation
+    - thickness
     - controls
 
     `controls` is a dict with name, options and data keys. Options is
@@ -660,7 +661,9 @@ def fmtSolidSection(el, setname, matname):
 
     Example::
 
-     P.elemProp(set='STENT',eltype='C3D8R',section=ElemSection(section=stentSec,material=steel,controls=dict(name='StentControl',hourglass='enhanced'))
+     mycontrol = Dict({'name':'StentControl', 'options':'HOURGLASS=enhanced','data':[1., 1., 1.]})
+     mysection = ElemSection(section=stentSec, material=steel,controls=mycontrol)
+     P.elemProp(set='STENT',name='Name',eltype='C3D8R',section=mysection)
     """
     out = "*SOLID SECTION, ELSET=%s, MATERIAL=%s" % (setname, matname)
     if el.orientation is not None:
