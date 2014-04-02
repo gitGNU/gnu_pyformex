@@ -456,7 +456,17 @@ class Camera(object):
     @property
     def upvector(self):
         """Return the camera up vector"""
-        return self.modelview.rot[:3, 1].reshape((3,))
+        return self.modelview.rot[:, 1].reshape((3,))
+
+
+    @property
+    def axis(self):
+        """Return a unit vector along the camera axis.
+
+        The camera axis points from the focus towards the camera.
+        """
+        # this is the same as: at.normalize(self.eye-self.focus)
+        return self.modelview.rot[:, 2].reshape((3,))
 
 
     def setAngles(self, angles):
@@ -502,15 +512,18 @@ class Camera(object):
     def report(self):
         """Return a report of the current camera settings."""
         return """Camera Settings:
+  Eye: %s
   Focus: %s
   Distance: %s
+  Axis: %s
+  UpVector: %s
   Rotation Matrix:
   %s
   Field of View y: %s
   Aspect Ratio: %s
   Area: %s, %s
   Near/Far Clip: %s, %s
-""" % (self.focus, self.dist, self.rot, self.fovy, self.aspect, self.area[0], self.area[1], self.near, self.far)
+""" % (self.eye, self.focus, self.dist, self.axis, self.upvector, self.rot, self.fovy, self.aspect, self.area[0], self.area[1], self.near, self.far)
 
 
     def dolly(self, val):
