@@ -35,9 +35,10 @@ precision mediump float;
 
 #define MAX_LIGHTS 4
 
-in vec3 vertexPosition;
+in vec3 vertexCoords;
 in vec3 vertexNormal;
 in vec3 vertexColor;
+in vec3 vertexOffset;       // offset for rendertype -1
 in vec2 vertexTexturePos;
 in float vertexScalar;
 
@@ -52,7 +53,7 @@ uniform bool highlight;
 uniform bool picking;
 uniform bool alphablend;   // Switch transparency on/off
 uniform int rendertype;
-uniform vec3 offset;       // offset for rendertype 1
+uniform vec3 offset3;       // offset for rendertype 1
 
 uniform int drawface;        // Which side of the face to draw (0,1,2)
 uniform int useObjectColor;  // 0 = no, 1 = single color, 2 = twosided color
@@ -129,7 +130,6 @@ void main()
 	for (int i=0; i<MAX_LIGHTS; ++i) {
 	  if (i < nlights) {
 	    vec3 nlight = normalize(lightdir[i]);
-	    //vec3 eyeDirection = normalize(-vertexPosition);
 	    vec3 eyeDirection = normalize(vec3(0.,0.,1.));
 	    vec3 reflectionDirection = reflect(-nlight, nNormal);
 	    float nspecular = specular*pow(max(dot(reflectionDirection,eyeDirection), 0.0), shininess);
@@ -158,22 +158,23 @@ void main()
   }
 
   // Transforming the vertex coordinates
-  vec4 fvertexPosition = vec4(vertexPosition,1.0);
+  vec4 position = vec4(vertexCoords,1.0);
 
   if (picking) {
-    gl_Position = pickmat * projection * modelview * fvertexPosition;
+    gl_Position = pickmat * projection * modelview * position;
   } else {
-    gl_Position = projection * modelview * fvertexPosition;
+    gl_Position = projection * modelview * position;
   }
   if (rendertype == 1) {
-    gl_Position.x += offset.x;
-    gl_Position.y += offset.y;
+    gl_Position.x += offset3.x;
+    gl_Position.y += offset3.y;
+  } else if (rendertype == -1) {
+    gl_Position.x += vertexOffset.x;
+    gl_Position.y += vertexOffset.y;
   }
-
 
   if (useTexture > 0) {
     texCoord = vertexTexturePos;
-    // FAILS ON RADEON
     //gl_FrontColor = gl_Color;
   }
 }
