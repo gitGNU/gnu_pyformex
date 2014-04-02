@@ -37,6 +37,7 @@ in vec2 texCoord;
 uniform int useTexture;    // 0: no texture, 1: single texture
 uniform int texmode;       // 0: GL_REPLACE, 1: GL_MODULATE, 2: GL_DECAL
 uniform float alpha;       // Material opacity
+uniform vec3 objectColor;  // front and back color (1) or front color (2)
 
 uniform sampler2D tex;
 
@@ -59,6 +60,10 @@ void main(void) {
     } else if (texmode == 3) {
       // Our own mixture using the object alpha
       gl_FragColor = vec4( fragColor.rgb * alpha + texColor.rgb * (1.-alpha), fragColor.a);
+    } else if (texmode == 4) {
+      // Color text
+      //gl_FragColor = vec4(fragColor.xyz,texColor.a);
+      gl_FragColor = vec4(objectColor.xyz,texColor.a);
     }
   } else {
     gl_FragColor = fragColor;

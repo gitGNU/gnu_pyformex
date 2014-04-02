@@ -327,7 +327,7 @@ def drawPlane(P,N,size,**drawOptions):
     return draw(p,bbox='last',**drawOptions)
 
 
-def drawMarks(X,M,color='black',leader='',ontop=True):
+def drawMarks(X,M,color='black',leader='',ontop=True,**kargs):
     """Draw a list of marks at points X.
 
     X is a Coords array.
@@ -339,7 +339,7 @@ def drawMarks(X,M,color='black',leader='',ontop=True):
     if len(M) > _large_:
         if not ack("You are trying to draw marks at %s points. This may take a long time, and the results will most likely not be readible anyway. If you insist on drawing these marks, anwer YES." % len(M)):
             return None
-    A = textext.TextArray(val=M, pos=X, color=color, leader=leader)
+    A = textext.TextArray(val=M, pos=X, color=color, leader=leader,**kargs)
     drawActor(A)
     return A
 
@@ -350,7 +350,7 @@ def drawFreeEdges(M,color='black'):
     return draw(B, color=color, nolight=True)
 
 
-def drawNumbers(F,numbers=None,color='black',trl=None,offset=0,leader='',ontop=None):
+def drawNumbers(F,numbers=None,color='black',trl=None,offset=0,leader='',ontop=None,**kargs):
     """Draw numbers on all elements of F.
 
     numbers is an array with F.nelems() integer numbers.
@@ -372,7 +372,7 @@ def drawNumbers(F,numbers=None,color='black',trl=None,offset=0,leader='',ontop=N
     X = X.reshape(-1, 3)
     if numbers is None:
         numbers = numpy.arange(X.shape[0])
-    return drawMarks(X, numbers+offset, color=color, leader=leader, ontop=ontop)
+    return drawMarks(X, numbers+offset, color=color, leader=leader, ontop=ontop,**kargs)
 
 
 def drawPropNumbers(F,**kargs):

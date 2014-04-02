@@ -139,7 +139,7 @@ class Text(Actor):
     The text is drawn in 2D, inserted at the specified position.
     """
 
-    def __init__(self,text,pos,size=18,width=None,font=None,gravity=None,grid=None,**kargs):
+    def __init__(self,text,pos,size=18,width=None,font=None,gravity=None,grid=None,texmode=4,**kargs):
         self.text = str(text)
         pos = checkArray(pos)
         if pos.shape[-1] == 2:
@@ -192,7 +192,7 @@ class Text(Actor):
         ## print("  offset3d = %s" % offset3d)
         ## print("  texcoords = %s" % texcoords)
         ## print("  shape",grid.shape,offset3d.shape,texcoords.shape)
-        Actor.__init__(self,grid,rendertype=rendertype,texture=font,texmode=0,texcoords=texcoords,opak=False,ontop=True,offset3d=offset3d,**kargs)
+        Actor.__init__(self,grid,rendertype=rendertype,texture=font,texmode=texmode,texcoords=texcoords,opak=False,ontop=True,offset3d=offset3d,**kargs)
 
 
 class TextArray(Text):
@@ -279,7 +279,7 @@ class Mark(Actor):
     def __init__(self,pos,tex,size,opak=False,ontop=True,**kargs):
         self.pos = pos
         F = Formex([[[0,0],[1,0],[1,1],[0,1]]]).scale(size).align('000')
-        Actor.__init__(self,F,rendertype=1,texture=tex,texmode=0,offset3d=pos,opak=opak,ontop=ontop,lighting=False,**kargs)
+        Actor.__init__(self,F,rendertype=1,texture=tex,texmode=4,offset3d=pos,opak=opak,ontop=ontop,lighting=False,**kargs)
 
 
 # End
