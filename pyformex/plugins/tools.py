@@ -132,8 +132,7 @@ def reportPoints(K):
         v = K[k]
         A = pf.canvas.actors[k]
         s += "Actor %s (type %s); Points %s\n" % (k, A.getType(), v)
-        #x = A.points()
-        x = A.coords
+        x = A.points()
         for p in v:
             s += "  Point %s: %s\n" % (p, x[p])
     return s
@@ -194,7 +193,6 @@ def reportAngles(K):
             v = x[:, 1,:] - x[:, 0,:]
             v = normalize(v)
             cosa = dotpr(v[0], v[1])
-            #print(cosa)
             a = arccosd(cosa)
             s += "  a = %s" % a
         else:
@@ -211,8 +209,7 @@ def getObjectItems(obj, items, mode):
             return obj.object.select(items)
     elif mode == 'point':
         if hasattr(obj, 'points'):
-            #return obj.points()[items]
-            return obj.coords[items]
+            return obj.object.points()[items]
     return None
 
 

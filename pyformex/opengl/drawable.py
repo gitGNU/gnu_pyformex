@@ -487,6 +487,7 @@ class Actor(Base):
         # Currently do everything in Formex model
         # And we always need this one
         self.vbo = VBO(self.fcoords)
+        print("SHAPE %s" % str(self.fcoords.shape))
 
 
     def getType(self):
@@ -507,6 +508,11 @@ class Actor(Base):
                 raise ValueError("Object has neither _coords nor _fcoords")
             self._fcoords_fuse()
         return self._coords
+
+
+    def points(self):
+        """Return the coords of the geometry as a 2D array"""
+        return self.object.points()
 
 
     def bbox(self):
@@ -956,10 +962,10 @@ class Actor(Base):
         value of all the objects inside.
 
         """
-        ins = camera.inside(self.coords, rect, return_depth)
+        ins = camera.inside(self.points(), rect, return_depth)
         if return_depth:
             ins,depth = ins
-            print("INS,DEPTHS",ins,depth)
+            #print("INS,DEPTHS",ins,depth)
 
         if mode == 'point':
             ok = where(ins)[0]
@@ -1009,7 +1015,7 @@ class Actor(Base):
         return s
 
 
-# for comp[atibility
+# for compatibility
 GeomActor = Actor
 
 ########################################################################
