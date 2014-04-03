@@ -573,8 +573,15 @@ class TriSurface(Mesh):
         should be the normal filename with '.gz' or '.bz2' appended.
         These files are uncompressed on the fly during the reading and
         the uncompressed versions are deleted after reading.
+
+        The file type can be specified explicitely to handle file names
+        where the extension does not directly specify the file type.
         """
-        ftype,compr = utils.fileTypeComprFromExt(fn)
+        if ftype is None:
+            ftype,compr = utils.fileTypeComprFromExt(fn)
+        else:
+            ftype,compr = utils.fileTypeComprFromExt('a.'+ftype)
+
         if ftype == 'off':
             data = fileread.read_off(fn)
         elif ftype == 'gts':
@@ -613,15 +620,13 @@ class TriSurface(Mesh):
         to force ascii or binary STL format.
         The color is only useful for 'stlb' format.
         """
-        ftype,compr = utils.fileTypeComprFromExt(fname)
-        if compr:
-            raise ValueError("Compressed surface export is currently not active")
         if ftype is None:
-            ftype = os.path.splitext(fname)[1]
-        if ftype == '':
-            ftype = 'off'
+            ftype,compr = utils.fileTypeComprFromExt(fn)
         else:
-            ftype = ftype.strip('.').lower()
+            ftype,compr = utils.fileTypeComprFromExt('a.'+ftype)
+
+        if compr:
+            raise ValueError("Compressed surface export is not active (yet)")
 
         print("Writing surface to file %s (%s)" % (fname, ftype))
         if ftype == 'pgf':

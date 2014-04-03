@@ -950,7 +950,7 @@ class Actor(Base):
         - `sel`: either 'all' or 'any'. This is not used with 'point' mode.
           It specifies whether all or any of the points of the actor,
           element, ... should be inside the rectangle in order to be flagged
-          as a[positive.
+          as a positive.
 
         The return value depends on the mode:
 
