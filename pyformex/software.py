@@ -50,6 +50,7 @@ known_modules = {
     'calpy': (),
     'dicom': (),
     'docutils': (),
+    'freetype': ('', 'freetype', 'version'),
     'gdcm': ('', '', 'GDCM_VERSION'),
     'gl2ps': ('', '', 'GL2PS_VERSION'),
     'gnuplot': ('Gnuplot',),
@@ -196,7 +197,6 @@ def checkAllModules():
     """Check the existence of all known modules.
 
     """
-    #print("CHECKING ALL MODULES")
     [ checkModule(n, quiet=True) for n in known_modules ]
 
 
@@ -247,12 +247,18 @@ def checkModule(name,ver=(),fatal=False,quiet=False):
             raise
         m = ''
 
-    #print("Module %s: Version %s" % (name,m))
+    ## if name=='freetype':
+    ##     print("Module %s: Version %s" % (name,m))
 
+    # If the attribute is a callable, call it
+    if callable(m):
+        m = m()
+        # if a tuple is returned, turned it into a string
+        if isinstance(m,tuple):
+            m = '.'.join(map(str,m))
     # make sure version is a string (e.g. gl2ps uses a float!)
     m = str(m)
     _congratulations(name, m, 'module', fatal, quiet=quiet)
-    #if version:
     the_version[name] = m
     return m
 

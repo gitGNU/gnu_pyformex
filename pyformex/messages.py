@@ -135,6 +135,9 @@ warn_writevtp_shape2 = "The number of array points should be equal to the number
 error_widgets_enableitem = "Error in a dialog item enabler. This should not happen! Please file a bug report."
 error_no_gts_bin = "I am missing the gts binary programs on your system.\nTherefore, some surface operations will not be available or fail.\n\nOn Debian, you can install the missing programs with `apt-get install libgts-bin`.\n"
 error_no_gts_extra = "I am missing the gts binary programs on your system.\nTherefore, some surface operations will not be available or fail.\n\nOn Debian, you can install the missing programs with `apt-get install pyformex-extra`.\n"
+error_no_freetype = "I am missing the freetype Python bindings on your system.\nThe directory %s/extra/freetype-py\ncontains information and a tool to install it.\n" % pf.cfg['pyformexdir']
+
+
 
 depr_adjacencyArrays = "adjacencyArrays is deprecated. Use Adjacency.frontWalk() instead."
 depr_image2numpy_arg = "The use of the `expand` parameter in image2numpy is deprecated. Use the `indexed` parameter instead."
