@@ -70,7 +70,7 @@ def defaultShaders():
         print("Selecting best default shader")
 
         if 'Mesa' in renderer or 'Mesa' in version:
-            pf.options.shader = '_mesa_30'
+            pf.options.shader = '_mesa'
 
         # For Radeon, select _330 if available
         if 'Radeon' in renderer and SaneVersion(availversion) >= SaneVersion('3.3'):
