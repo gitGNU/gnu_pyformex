@@ -621,7 +621,7 @@ class TriSurface(Mesh):
         The color is only useful for 'stlb' format.
         """
         if ftype is None:
-            ftype,compr = utils.fileTypeComprFromExt(fn)
+            ftype,compr = utils.fileTypeComprFromExt(fname)
         else:
             ftype,compr = utils.fileTypeComprFromExt('a.'+ftype)
 
