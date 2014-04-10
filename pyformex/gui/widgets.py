@@ -34,7 +34,7 @@ from pyformex import zip
 import os, types
 from pyformex.gui import QtCore, QtGui, Slot
 import pyformex as pf
-from pyformex.gui import colors
+from pyformex.opengl import colors
 from pyformex import mydict, olist
 from pyformex import utils
 from pyformex import arraytools as at

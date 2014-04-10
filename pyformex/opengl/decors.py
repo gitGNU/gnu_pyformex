@@ -30,12 +30,11 @@ from __future__ import print_function
 
 from pyformex import simple
 from pyformex.formex import Formex
+from pyformex.opengl.drawable import Actor
+from pyformex.opengl.textext import FontTexture, Text
+from pyformex.opengl.sanitize import *
 from OpenGL import GL
 from OpenGL.arrays.vbo import VBO
-from pyformex.opengl.drawable import Actor
-from pyformex.opengl.textext import FontTexture
-from pyformex.opengl.sanitize import *
-from pyformex.gui import colorscale as cs
 
 ### Decorations ###############################################
 
@@ -46,9 +45,9 @@ class BboxActor(Actor):
     A bounding box is a hexaeder in global axes. The hexaeder is
     drawn in wireframe mode with default color black.
     """
-    def __init__(self,bbox,color=black,**kargs):
+    def __init__(self,bbox,**kargs):
         F = simple.cuboid(*bbox)
-        Actor.__init__(self,F,mode='wireframe',color=red,lighting=False,opak=True,**kargs)
+        Actor.__init__(self,F,mode='wireframe',lighting=False,opak=True,**kargs)
 
 
 class Rectangle(Actor):
@@ -138,6 +137,7 @@ class ColorLegend(Actor):
     """
     def __init__(self,colorscale,ncolors,x,y,w,h,ngrid=0,linewidth=None,nlabel=-1,size=18,font=None,dec=2,scale=0,lefttext=False,**kargs):
         """Initialize the ColorLegend."""
+        from pyformex.gui import colorscale as cs
         self.cl = cs.ColorLegend(colorscale,ncolors)
         self.x = float(x)
         self.y = float(y)
@@ -262,46 +262,93 @@ class Triade(Actor):
 
     """
 
-    def __init__(self,pos='lb',size=100,pat='4:0123',legend='xyz',color=[red, green, blue, cyan, magenta, yellow],**kargs):
-        self.pos = pos
-        self.size = size
-        self.pat = pat
-        self.legend = legend
-        self.color = color
+    def __init__(self,pos='lb',size=100,pat='4:0123',legend='xyz',color=[red, green, blue, cyan, magenta, yellow],reverse=False,**kargs):
+        """Create an Actor representing an axes Triade."""
+
         x, y, w, h = GL.glGetIntegerv(GL.GL_VIEWPORT)
-        if self.pos[0] == 'l':
+        if pos[0] == 'l':
             x0 = x + size
-        elif self.pos[0] =='r':
+        elif pos[0] =='r':
             x0 = x + w - size
         else:
             x0 = x + w / 2
-        if self.pos[1] == 'b':
+        if pos[1] == 'b':
             y0 = y + size
-        elif self.pos[1] =='t':
+        elif pos[1] =='t':
             y0 = y + h - size
         else:
             y0 = y + h / 2
+
+        # Save some values for drawing
+        self.size = size
         self.x,self.y = x0,y0
 
         F = Formex('2:01020I').scale(size)
-        Actor.__init__(self,F,rendertype=-2,lighting=False,opak=True,linewidth=2,color=color[:3],**kargs)
+        ## if reverse:
+        ##     F += Formex('2:03040i').scale(size)
+        Actor.__init__(self,F,rendertype=-2,lighting=False,opak=True,linewidth=2,color=color,**kargs)
 
-    ##     # Coord planes
-    ##     if self.pat:
-    ##         GL.glBegin(GL.GL_TRIANGLES)
-    ##         pts = Formex(self.pat)
-    ##         #pts += pts.reverse()
-    ##         pts = pts.scale(0.5).coords.reshape(-1, 3)
-    ##         for i in range(3):
-    ##             pts = pts.rollAxes(1)
-    ##             GL.glColor3f(*self.color[i])
-    ##             for x in pts:
-    ##                 GL.glVertex3f(*x)
-    ##         GL.glEnd()
-    ##     # Coord axes denomination
-    ##     for i, x in enumerate(self.legend):
-    ##         p = unitVector(i)*1.1
-    ##         t = TextMark(p, x)
-    ##         t.drawGL()
+        ## # Coord planes
+        ## if pat:
+        ##     F = Formex(pat)
+        ##     pts = pts.scale(0.5).coords.reshape(-1, 3)
+        ##     for i in range(3):
+        ##         pts = pts.rollAxes(1)
+        ##         GL.glColor3f(*self.color[i])
+        ##         for x in pts:
+        ##             GL.glVertex3f(*x)
+        ##     GL.glEnd()
+
+        ## # Coord axes denomination
+        ## for i, x in enumerate(self.legend):
+        ##     p = unitVector(i)*1.1
+        ##     self.children.append(Text(x,p))
+
+
+## class AxesActor(Actor):
+##     """An actor showing the three axes of a coordinate system.
+
+##     If no coordinate system is specified, the global coordinate system is drawn.
+
+##     The default actor consists of three colored lines of unit length along
+##     the unit vectors of the axes and three colored triangles representing the
+##     coordinate planes. This can be modified by the following parameters:
+
+##     size: scale factor for the unit vectors.
+##     color: a set of three colors to use for x,y,z axes.
+##     colored_axes = False: draw black axes.
+##     draw_planes = False: do not draw the coordinate planes.
+##     """
+##     from pyformex import coordsys
+
+##     def __init__(self,cs=None,size=1.0,psize=0.5,color=[red, green, blue],colored_axes=True,draw_planes=True,draw_reverse=True,linewidth=2,alpha=0.5,**kargs):
+##         Actor.__init__(self,**kargs)
+##         if cs is None:
+##             cs = coordsys.CoordinateSystem()
+##         self.cs = cs
+##         self.color = saneColorArray(saneColor(color), (3, 1))
+##         self.alpha = alpha
+##         self.opak = False
+##         self.nolight = True
+##         self.colored_axes = colored_axes
+##         self.draw_planes = draw_planes
+##         self.draw_reverse = draw_reverse
+##         self.linewidth = linewidth
+##         self.setSize(size, psize)
+
+##     def bbox(self):
+##         origin = self.cs[3]
+##         return array([origin-self.size, origin+self.size])
+
+##     def setSize(self, size, psize):
+##         self.size = 1.0
+##         size = float(size)
+##         if size > 0.0:
+##             self.size = size
+##         if psize is None:
+##             self.psize = 0.5 * self.size
+##         psize = float(psize)
+##         if psize > 0.0:
+##             self.psize = psize
 
 # End

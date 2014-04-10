@@ -37,7 +37,7 @@ from pyformex import coords
 
 from pyformex.gui import toolbar
 from pyformex.gui import image
-from pyformex.gui import colors
+from pyformex.opengl import colors
 
 from pyformex.legacy import actors
 from pyformex.legacy import decors

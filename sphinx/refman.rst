@@ -141,7 +141,6 @@ These modules create the components of the pyFormex GUI. They are located under 
    ref/viewport
    ref/image
    ref/imageViewer
-   ref/imagearray
    ref/appMenu
    ref/toolbar
 
@@ -172,6 +171,7 @@ path, these modules are in no way different from other pyFormex modules.
    ref/fe_abq
    ref/fe_post
    ref/flavia
+   ref/imagearray
    ref/inertia
    ref/isopar
    ref/isosurface
@@ -222,30 +222,17 @@ These modules are responsible for rendering the 3D models and depend on OpenGL. 
 
    ref/camera
    ref/canvas
+   ref/decors
    ref/drawable
    ref/objectdialog
    ref/renderer
+   ref/sanitize
    ref/scene
    ref/shader
+   ref/textext
+   ref/texture
 
 ..   ref/matrix  Does not work due to inherited methodes from numpy
-
-The old OpenGL engine resides under pyformex/gui. As the functionality is
-being transfered to the new engine, these modules are sheduled to be removed
-in future.
-
-.. mytoctree::
-   :maxdepth: 1
-   :numbered:
-   :numberedfrom: -1
-
-   ref/actors
-   ref/decors
-   ref/marks
-   ref/gluttext
-
-..  ref/camera  clashing with opengl modules!!!
-..  ref/canvas
 
 .. _sec:menu-modules:
 

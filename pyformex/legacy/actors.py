@@ -734,7 +734,7 @@ class GeomActor(Actor):
         if mode.startswith('smooth'):
             if hasattr(self, 'specular'):
                 fill_mode = GL.GL_FRONT
-                from pyformex.gui import colors
+                from pyformex.opengl import colors
                 if color is not None:
                     spec = color * self.specular# *  pf.canvas.specular
                     spec = append(spec, 1.)

@@ -53,7 +53,7 @@ def run():
     zoomAll()
     zoom(0.5)
 
-    bgcolor(color=white,image=image)
+    bgcolor(color=[white,yellow,yellow,white],image=image)
 
 if __name__ == 'draw':
     run()

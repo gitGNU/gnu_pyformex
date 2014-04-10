@@ -29,7 +29,7 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex.opengl.sanitize import *
-from pyformex.gui import colors
+from pyformex.opengl import colors
 from OpenGL import GL
 from OpenGL.arrays.vbo import VBO
 from pyformex.opengl.shader import Shader
@@ -129,6 +129,7 @@ class Drawable(Attributes):
             self.objectColor = array(red)
 
         elif self.color is not None:
+            print("COLOR",self.color)
             if self.color.ndim == 1:
                 # here we only accept a single color for front and back
                 # different colors should have been handled before
@@ -155,6 +156,9 @@ class Drawable(Attributes):
         #
         if self.cbo is None:
             self.cbo = VBO(array(red))
+
+        if self.rendertype == 3:
+            print("CBO DATA %s\n" % self.name,self.cbo.data)
 
 
     def prepareTexture(self):
@@ -487,7 +491,7 @@ class Actor(Base):
         # Currently do everything in Formex model
         # And we always need this one
         self.vbo = VBO(self.fcoords)
-        print("SHAPE %s" % str(self.fcoords.shape))
+        #print("GEOM SHAPE %s" % str(self.fcoords.shape))
 
 
     def getType(self):
@@ -638,6 +642,7 @@ class Actor(Base):
                 rendermode = self.mode
             else:
                 rendermode = canvas.rendermode
+            print("RENDERMODE",rendermode)
             if rendermode == 'wireframe':
                 # Draw the colored edges
                 self._addEdges()
@@ -645,7 +650,8 @@ class Actor(Base):
                 # Draw the colored faces
                 self._addFaces()
                 # Overlay the black edges (or not)
-                self._addWires()
+                if rendermode.endswith('wire'):
+                    self._addWires()
         # ndim < 2
         else:
             # Draw the colored faces
@@ -754,6 +760,7 @@ class Actor(Base):
 
     def _addWires(self):
         """Add or remove the edges depending on rendering mode"""
+        print("ADDWIRES")
         wiremode = pf.canvas.settings.wiremode
         elems = None
         if wiremode > 0 and self.edges is not None:

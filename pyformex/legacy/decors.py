@@ -31,7 +31,7 @@ from pyformex import zip
 
 from OpenGL import GL
 from pyformex.gui import QtOpenGL
-from pyformex.gui import colors
+from pyformex.opengl import colors
 
 from pyformex.legacy.drawable import *
 from pyformex.legacy.text import *

@@ -30,9 +30,9 @@ import pyformex as pf
 
 from pyformex import utils, coords
 from pyformex import arraytools as at
-from pyformex.gui import colors, views
 
 from pyformex.mydict import Dict
+
 from pyformex.odict import OrderedDict
 from pyformex.collection import Collection
 from pyformex.attributes import Attributes
@@ -44,6 +44,7 @@ from pyformex.opengl.sanitize import saneColor,saneColorArray
 from pyformex.opengl.camera import Camera
 from pyformex.opengl.renderer import Renderer
 from pyformex.opengl.scene import Scene, ItemList
+from pyformex.opengl import colors
 
 from numpy import *
 from OpenGL import GL, GLU
@@ -491,14 +492,14 @@ class CanvasSettings(Dict):
         return utils.formatDict(self)
 
 
-    def setMode(self):
-        """Activate the mode canvas settings in the GL machine."""
-        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
-        if self.bgcolor.ndim > 1:
-            color = self.bgcolor[0]
-        else:
-            color = self.bgcolor
-        GL.glClearColor(*colors.RGBA(color))
+    ## def setMode(self):
+    ##     """Activate the mode canvas settings in the GL machine."""
+    ##     GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+    ##     if self.bgcolor.ndim > 1:
+    ##         color = self.bgcolor[0]
+    ##     else:
+    ##         color = self.bgcolor
+    ##     GL.glClearColor(*colors.RGBA(color))
 
 
     def activate(self):
@@ -566,6 +567,7 @@ class Canvas(object):
 
     def __init__(self,settings={}):
         """Initialize an empty canvas with default settings."""
+        from pyformex.gui import views
         loadLibGL()
         self.scene = Scene(self)
         self.highlights = ItemList(self)
@@ -819,7 +821,7 @@ class Canvas(object):
                 image = image2numpy(self.settings.bgimage, indexed=False)
             except:
                 pass
-        actor = GeomActor(F,color=self.settings.bgcolor,texture=image,rendertype=3,opak=True,lighting=False)
+        actor = GeomActor(F,name='background',rendermode='smooth',color=[self.settings.bgcolor],texture=image,rendertype=3,opak=True,lighting=False)
         self.scene.addAny(actor)
 
 
@@ -861,7 +863,11 @@ class Canvas(object):
 
     def clearCanvas(self):
         """Clear the canvas to the background color."""
-        self.settings.setMode()
+        color = self.settings.bgcolor
+        if color.ndim > 1:
+            color = color[0]
+        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+        GL.glClearColor(*colors.RGBA(color))
         self.setDefaults()
 
 

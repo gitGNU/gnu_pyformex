@@ -27,7 +27,6 @@ This module defines tools for texture rendering in pyFormex.
 """
 from __future__ import print_function
 
-from pyformex.plugins.imagearray import image2numpy
 
 from OpenGL import GL
 import numpy as np
@@ -51,6 +50,7 @@ class Texture(object):
     def __init__(self,image,mode=1,format=GL.GL_RGBA,texformat=GL.GL_RGBA):
         self.texid = None
         if isinstance(image,(str,unicode)):
+            from pyformex.plugins.imagearray import image2numpy
             image = image2numpy(image, indexed=False)
         else:
             image = np.asarray(image)

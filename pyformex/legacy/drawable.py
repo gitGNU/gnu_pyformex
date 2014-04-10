@@ -31,7 +31,7 @@ import pyformex as pf
 from pyformex import utils, olist, simple, geomtools
 from pyformex.lib import drawgl
 from pyformex.formex import *
-from pyformex.gui.colors import *
+from pyformex.opengl.colors import *
 
 from OpenGL import GL, GLU
 

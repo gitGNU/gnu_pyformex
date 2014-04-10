@@ -32,12 +32,11 @@ from OpenGL import GL, GLU
 
 import pyformex as pf
 from pyformex import coords, utils
-from pyformex.gui import colors, views
+from pyformex.opengl import colors
 
 from pyformex.mydict import Dict
 from pyformex.formex import Formex
 from pyformex.legacy.drawable import saneColor, glColor
-from pyformex.gui.camera import Camera
 
 from pyformex.legacy import actors
 from pyformex.legacy import decors
@@ -624,6 +623,7 @@ class Canvas(object):
 
     def __init__(self,settings={}):
         """Initialize an empty canvas with default settings."""
+        from pyformex.gui import views
         loadLibGL()
         self.actors = ActorList(self)
         self.highlights = ActorList(self)
@@ -878,6 +878,7 @@ class Canvas(object):
 
 
     def initCamera(self):
+        from pyformex.legacy.camera import Camera
         self.makeCurrent()  # we need correct OpenGL context for camera
         self.camera = Camera()
         if pf.options.testcamera:

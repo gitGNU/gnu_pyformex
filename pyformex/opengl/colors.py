@@ -53,7 +53,6 @@ from __future__ import print_function
 
 
 import pyformex as pf
-from pyformex.gui import QtCore, QtGui
 from pyformex.arraytools import array, isInt, Int, concatenate
 from pyformex.odict import OrderedDict
 
@@ -86,6 +85,7 @@ def GLcolor(color):
     >>> GLcolor(0.6)
     (0.6, 0.6, 0.6)
     """
+    from pyformex.gui import QtCore, QtGui
     col = color
 
     # as of Qt4.5, QtGui.Qcolor no longer raises an error if given
@@ -208,6 +208,7 @@ def luminance(color,gamma=True):
 
 
 def createColorDict():
+    from pyformex.gui import QtGui
     for c in QtGui.QColor.colorNames():
         col = QtGui.QColor
         print("Color %s = %s" % (c, colorName(c)))

@@ -236,7 +236,7 @@ def read_stl_bin(fn):
     print("Finished reading binary stl")
     x = Coords(x)
     if color is not None:
-        from pyformex.gui.colors import GLcolor
+        from pyformex.opengl.colors import GLcolor
         color = GLcolor(color[:3])
     return x, color
 

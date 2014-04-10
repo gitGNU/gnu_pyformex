@@ -28,7 +28,7 @@ from __future__ import print_function
 
 
 import pyformex as pf
-from pyformex.gui import colors
+from pyformex.opengl import colors
 from pyformex.opengl import decors
 from pyformex.gui.draw import *
 from pyformex.formex import *

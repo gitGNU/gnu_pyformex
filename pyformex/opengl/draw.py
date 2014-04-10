@@ -39,7 +39,7 @@ from pyformex.formex import Formex
 
 from pyformex.gui import toolbar
 from pyformex.gui import image
-from pyformex.gui import colors
+from pyformex.opengl import colors
 
 from pyformex.opengl import drawable
 from pyformex.opengl import decors

@@ -47,7 +47,8 @@ try:
 except ImportError:
     warning("You do not have FTGL and its Python bindings (pyftgl).\nSee the pyformex/extra/pyftgl directory in the pyFormex source tree for instructions.")
 
-from pyformex.gui import colors, image
+from pyformex.opengl import colors
+from pyformex.gui import image
 from pyformex.odict import OrderedDict
 
 

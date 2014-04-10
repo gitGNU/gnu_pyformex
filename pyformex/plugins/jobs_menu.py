@@ -33,7 +33,7 @@ from pyformex.gui import menu
 from numpy import *
 from pyformex.formex import *
 from pyformex.gui.draw import *
-from pyformex.gui.colors import *
+from pyformex.opengl.colors import *
 
 import os
 

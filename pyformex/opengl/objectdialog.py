@@ -33,7 +33,7 @@ from __future__ import print_function
 import pyformex as pf
 from pyformex.opengl.drawable import GeomActor
 from pyformex.gui.draw import _T, _G, _I, Dialog
-from pyformex.gui.colors import GLcolor
+from pyformex.opengl.colors import GLcolor
 
 
 def objectDialog(obj=None,unlike='object_'):

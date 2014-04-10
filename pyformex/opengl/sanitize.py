@@ -36,7 +36,7 @@ from __future__ import print_function
 
 
 from pyformex.arraytools import *
-from pyformex.gui.colors import *
+from pyformex.opengl.colors import *
 
 
 

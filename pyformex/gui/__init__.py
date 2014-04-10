@@ -88,7 +88,7 @@ except:
 try:
     opengl2 = pf.options.opengl2
 except:
-    opengl2 = True
+    opengl2 = pf.options.opengl2 = True
 
 if opengl2:
     from pyformex.opengl import canvas

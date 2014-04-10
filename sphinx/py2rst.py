@@ -95,6 +95,7 @@ def do_module(filename):
     modname = inspect.getmodulename(filename)
     #print "MODULE %s" % modname
     #print inspect.getmoduleinfo(filename)
+    #print("SYSPATH: %s" % sys.path)
     module = __import__(modname)
     classes = [ c for c in inspect.getmembers(module,inspect.isclass) if c[1].__module__ == modname ]
     classes = filter_names(classes)
@@ -138,13 +139,16 @@ def indent(s,n):
 
 
 def split_doc(docstring):
-    s = docstring.split('\n')
-    shortdoc = s[0]
-    if len(s) > 2:
-        longdoc = '\n'.join(s[2:])
-    else:
-        longdoc = ''
-    return shortdoc.strip('"'),longdoc.strip('"')
+    try:
+        s = docstring.split('\n')
+        shortdoc = s[0]
+        if len(s) > 2:
+            longdoc = '\n'.join(s[2:])
+        else:
+            longdoc = ''
+        return shortdoc.strip('"'),longdoc.strip('"')
+    except:
+        return '',''
 
 
 def sanitize(s):

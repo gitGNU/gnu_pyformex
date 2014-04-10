@@ -39,7 +39,7 @@ import OpenGL.GLUT as GLUT
 # Needed to initialize the fonts
 GLUT.glutInit([])
 
-from pyformex.gui import colors
+from pyformex.opengl import colors
 
 ### Some drawing functions ###############################################
 

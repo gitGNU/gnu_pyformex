@@ -37,14 +37,15 @@ COREMODULES= adjacency arraytools attributes \
   geometry geomfile geomtools \
   mesh multi mydict odict olist project \
   script sendmail simple software timer utils varray
-GUIMODULES= actors colors colorscale decors draw gluttext \
-  image imageViewer imagearray marks menu\
-  appMenu toolbar viewport widgets
-OPENGLMODULES= camera canvas drawable objectdialog \
-  renderer scene shader
+GUIMODULES= appMenu colorscale draw \
+  image imageViewer menu\
+  toolbar viewport widgets
+OPENGLMODULES= camera canvas colors decors drawable \
+  matrix objectdialog renderer sanitize scene shader \
+  textext texture
 PLUGINMODULES= calpy_itf cameratools ccxdat ccxinp curve datareader dxf export \
   fe fe_abq fe_post flavia \
-  inertia isopar isosurface lima neu_exp nurbs objects \
+  imagearray inertia isopar isosurface lima neu_exp nurbs objects \
   partition plot2d polygon polynomial \
   postproc properties pyformex_gts section2d sectionize \
   tetgen tools trisurface turtle units vascularsweepingmesher web webgl

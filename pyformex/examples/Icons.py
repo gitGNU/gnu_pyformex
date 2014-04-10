@@ -39,15 +39,15 @@ _techniques = ['image', 'icon']
 
 from pyformex.gui.draw import *
 
-from pyformex.legacy.actors import CubeActor
 from pyformex.gui.image import saveIcon
 from pyformex.plugins.curve import *
 from pyformex.simple import rectangle
+from examples.Cube import cube_quad
 
 def icon_smooth():
     view('iso')
-    F = CubeActor()
-    drawActor(F)
+    F, color = cube_quad(color='Face')
+    draw(F,color=color)
     smooth()
     zoom(0.8)
 

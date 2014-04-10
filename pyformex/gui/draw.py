@@ -46,7 +46,7 @@ from pyformex.gui import toolbar
 from pyformex.gui import image
 from pyformex.plugins import trisurface, tools, fe
 from pyformex.script import *
-from pyformex.gui.colors import *
+from pyformex.opengl.colors import *
 from pyformex.coordsys import CoordinateSystem
 
 import numpy

@@ -36,7 +36,7 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import utils
-from pyformex.gui import colors
+from pyformex.opengl import colors
 from pyformex.olist import List, intersection
 from pyformex.mydict import Dict
 from pyformex.arraytools import checkFloat, checkArray, checkInt

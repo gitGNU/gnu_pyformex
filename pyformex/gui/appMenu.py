@@ -32,7 +32,6 @@ from pyformex import apps
 from pyformex import utils
 from pyformex import  olist
 from pyformex import script
-from pyformex.gui import draw
 from pyformex.gui import menu
 
 import os, random
@@ -563,6 +562,7 @@ class AppMenu(menu.Menu):
 #       This is likely related to the scriptlock feature
 
     def runAllApps(self):
+        from pyformex.gui import draw
         res =draw.askItems([
             ('timeout', True),
             ('random', False),

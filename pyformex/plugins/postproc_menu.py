@@ -28,14 +28,14 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import zip, utils
-from pyformex.gui import menu, QtCore
+from pyformex.gui import menu, QtGui, QtCore
 
 from pyformex.odict import OrderedDict
 from pyformex.formex import *
 from pyformex.gui.colorscale import ColorScale
 from pyformex.opengl.decors import ColorLegend
 from pyformex.gui.draw import *
-from pyformex.gui.colors import *
+from pyformex.opengl.colors import *
 from pyformex.plugins.postproc import *
 from pyformex.plugins.fe_post import FeResult
 from pyformex.plugins.objects import Objects
