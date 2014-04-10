@@ -165,33 +165,41 @@ You should probably exit pyFormex, fix the problem first and then restart pyForm
 
 # Set the proper revision number when running from git sources
 if installtype=='G':
-    branch = None
-    from pyformex import utils
-    try:
+
+    def run_cmd(cmd):
+        """Run command"""
+        import subprocess
+        P = subprocess.Popen(cmd,stdout=subprocess.PIPE,shell=True)
+        out,err = P.communicate()
+        return P.returncode,out,err
+
+    def set_revision():
+        global __revision__
         #print("Check whether %s is a git source" % pyformexdir)
         cmd = 'cd %s && git describe --always' % pyformexdir
         #print(cmd)
-        P = utils.system(cmd,shell=True)
-        #print(P.sta,P.out,P.err)
-        if P.sta == 0:
-            __revision__ = P.out.split('\n')[0].strip()
-    except:
-        print("Could not set revision number")
-        pass
+        sta,out,err = run_cmd(cmd)
+        if sta == 0:
+            #print(out)
+            __revision__ = out.split('\n')[0].strip()
+            #print("Revision: %s" % __revision__)
+        else:
+            print("Could not set revision")
 
-    # Set branch name if we are in a git repository
-    branch = cmd = P = None
-    try:
-        cmd = 'cd %s && git symbolic-ref --short -q HEAD' % pyformexdir
-        P = utils.system(cmd, shell=True)
-        if P.sta == 0:
-            branch = P.out.split('\n')[0]
-    except:
-        print("Could not set branch name")
-        pass
+    def set_branch():
+        #print("Set branch name")
+        cmd = 'cd %s && git symbolic-ref -q HEAD' % pyformexdir
+        #print(cmd)
+        sta,out,err = run_cmd(cmd)
+        if sta == 0:
+            #print(out)
+            branch = out.split('\n')[0].split('/')[-1]
+            #print("Branch: %s" % branch)
+        else:
+            print("Could not set branch name")
 
-
-    del branch, cmd, P
+    set_revision()
+    set_branch()
 
 
 def Version():
