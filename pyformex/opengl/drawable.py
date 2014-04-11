@@ -100,6 +100,12 @@ class Drawable(Attributes):
         #print("ATTRIBUTES STORED IN DRAWABLE",self)
         #print("ATTRIBUTES STORED IN PARENT",parent)
 
+        # Default lighting parameter:
+        # rendertype 0 (3D) follows canvas lighting
+        # other rendertypes set lighting=False by default
+        if self.rendertype != 0 and self.lighting is None:
+            self.lighting = False
+
         # The final plexitude of the drawn objects
         if self.subelems is not None:
             self.nplex = self.subelems.shape[-1]
