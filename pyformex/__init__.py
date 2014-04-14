@@ -33,10 +33,10 @@ from __future__ import print_function
 import os, sys
 import time, datetime
 
-__version__ = "1.0.0~a1"
+__version__ = "1.0.0~a2"
 __revision__ = __version__
 
-Copyright = 'Copyright (C) 2004-2013 Benedict Verhegghe'
+Copyright = 'Copyright (C) 2004-2014 Benedict Verhegghe'
 Url = 'http://pyformex.org'
 Description = "pyFormex is a tool for generating, manipulating and transforming large geometrical models of 3D structures by sequences of mathematical transformations."
 
