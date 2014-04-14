@@ -2,3 +2,4 @@
 *.c 	filter=idexpansion
 *.conf 	filter=idexpansion
 *.rst   filter=idexpansion
+Makefile filter=idexpansion

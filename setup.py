@@ -54,7 +54,7 @@ elif sys.version_info >= (3, 0):
 from manifest import *
 
 # pyFormex release
-__RELEASE__ = '1.0.0~a2'
+__RELEASE__ = '1.0.0~a3'
 
 # The acceleration libraries
 LIB_MODULES = [ 'drawgl_', 'misc_', 'nurbs_' ]
@@ -179,7 +179,8 @@ def run_setup(with_cext):
               'pyformex.lib',
               'pyformex.opengl',
               'pyformex.plugins',
-              'pyformex.examples'
+              'pyformex.examples',
+              'pyformex.legacy'
               ],
           package_data={ 'pyformex': PKG_DATA },
           scripts=['pyformex/pyformex'],

@@ -33,7 +33,7 @@ from __future__ import print_function
 import os, sys
 import time, datetime
 
-__version__ = "1.0.0~a2"
+__version__ = "1.0.0~a3"
 __revision__ = __version__
 
 Copyright = 'Copyright (C) 2004-2014 Benedict Verhegghe'
