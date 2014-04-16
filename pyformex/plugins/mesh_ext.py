@@ -36,6 +36,45 @@ from pyformex import utils
 
 ##############################################################################
 
+def reachableFrom(self,startat,level=0,mask=None,optim_mem=False):
+    """Return the elements reachable from startat.
+
+    Finds the elements which can be reached from startat by walking along 
+    a mask (a subset of elements). Walking is possible over nodes, edges or faces, 
+    as specified in level.
+    
+    - `startat`: int or array_like, int.
+    - `level`: int. Specify how elements can be reached: 
+      via node (0), edge (1) or face (2).
+    - `mask`: either None or a boolean array or index flagging the elements
+      which are to be considered walkable. If None, all elements are considered walkable.
+    """
+    startat = asarray(startat)
+    if length(intersect1d(startat, arange(self.nelems()))) < length(startat):
+        raise ValueError, 'wrong elem index found in startat, outside range 0 - %d'%self.nelems()
+
+    if mask is None:
+        p = self.frontWalk(level=level,startat=startat,frontinc=0,partinc=1,maxval=1,optim_mem=optim_mem)
+        return where(p==0)[0]
+
+    if mask.dtype == bool:
+        if length(mask)!=self.nelems():
+            raise ValueError, 'if it is an array of boolean mask should have all elements: %d'%self.nelems()
+        mask = where(mask)[0]
+    if length(intersect1d(mask, arange(self.nelems()))) < length(mask):
+        raise ValueError, 'wrong elem index found in mask, outside range 0 - %d'%self.nelems()
+        
+    startat = intersect1d(startat, mask)
+    if length(startat) == 0:
+        return []
+        
+    startat = matchIndex(mask, startat)
+    return mask[self.select(mask).reachableFrom(startat=startat,level=level,mask=None,optim_mem=optim_mem)]
+
+
+@utils.deprecated_by('mesh_ext Mesh.connectedElements','Mesh.reachableFrom')
+def connectedElements(self,startat,mask=None):
+    return self.reachableFrom(startat=startat,mask=mask)
 
 # REMOVED IN 1.0.0
 
@@ -297,7 +336,6 @@ def nodalAveraging(self, val, iter=1, mask=None,includeself=False):
 Mesh.scaledJacobian = scaledJacobian
 Mesh.elementToNodal = elementToNodal
 Mesh.nodalAveraging = nodalAveraging
-
-
-
+Mesh.reachableFrom = reachableFrom
+Mesh.connectedElements = connectedElements
 # End

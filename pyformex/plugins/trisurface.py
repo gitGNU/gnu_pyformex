@@ -1472,21 +1472,6 @@ Quality: %s .. %s
             return TriSurface(R).fixNormals()
 
 
-    def connectedElements(self,target,elemlist=None):
-        """Return the elements from list connected with target"""
-        if elemlist is None:
-            A = self
-            elemlist = arange(self.nelems())
-        else:
-            A = self.select(elemlist)
-        if target not in elemlist:
-            return []
-
-        p = A.partitionByConnection()
-        prop = p[elemlist == target]
-        return elemlist[p==prop]
-
-
     ## UNDOCUMENTED! BECAUSE OF BAD FORMATTING
     ##
     ## LARGE CODE EXAMPLES SHOULD NOT GO IN THE DOCSTRINGS
