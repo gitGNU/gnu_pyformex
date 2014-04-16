@@ -50,22 +50,23 @@ def reachableFrom(self,startat,level=0,mask=None,optim_mem=False):
       which are to be considered walkable. If None, all elements are considered walkable.
     """
     startat = asarray(startat)
-    if length(intersect1d(startat, arange(self.nelems()))) < length(startat):
+    if len(intersect1d(startat, arange(self.nelems()))) < len(startat):
         raise ValueError, 'wrong elem index found in startat, outside range 0 - %d'%self.nelems()
 
     if mask is None:
         p = self.frontWalk(level=level,startat=startat,frontinc=0,partinc=1,maxval=1,optim_mem=optim_mem)
         return where(p==0)[0]
 
+    mask = asarray(mask)
     if mask.dtype == bool:
-        if length(mask)!=self.nelems():
-            raise ValueError, 'if it is an array of boolean mask should have all elements: %d'%self.nelems()
+        if len(mask)!=self.nelems():
+            raise ValueError, 'if it is an array of boolean mask should have all elements %d, got %d'%(self.nelems(), len(mask))
         mask = where(mask)[0]
-    if length(intersect1d(mask, arange(self.nelems()))) < length(mask):
+    if len(intersect1d(mask, arange(self.nelems()))) < len(mask):
         raise ValueError, 'wrong elem index found in mask, outside range 0 - %d'%self.nelems()
         
     startat = intersect1d(startat, mask)
-    if length(startat) == 0:
+    if len(startat) == 0:
         return []
         
     startat = matchIndex(mask, startat)
