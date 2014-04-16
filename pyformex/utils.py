@@ -76,8 +76,8 @@ def deprec(message,stacklevel=4,data=None):
     warn(message, level=DeprecationWarning, stacklevel=stacklevel, data=data)
 
 
-def deprecated(message):
-    """Decorator to deprecate a function.
+def warning(message,level=UserWarning,stacklevel=3):
+    """Decorator to add a warning to a function.
 
     Adding this decorator to a function will warn the user with the
     supplied message when the decorated function gets executed for
@@ -86,14 +86,14 @@ def deprecated(message):
 
     Decorating a function is done as follows::
 
-      @utils.deprecated('This is the message shown to the user')
+      @utils.warning('This is the message shown to the user')
       def function(args):
           ...
 
     """
     def decorator(func):
         def wrapper(*_args,**_kargs):
-            deprec(message)
+            warn(message,level=level,stacklevel=stacklevel)
             # For some reason these messages are not auto-appended to
             # the filters for the currently running program
             # Therefore we do it here explicitely
@@ -101,6 +101,15 @@ def deprecated(message):
             return func(*_args,**_kargs)
         return wrapper
     return decorator
+
+
+def deprecated(message):
+    """Decorator to deprecate a function
+
+    This is like :func:`warning`, but the level is set to DeprecationWarning.
+    """
+    return warning(message,level=DeprecationWarning,stacklevel=4)
+
 
 def deprecated_by(old,new):
     """Decorator to deprecate a function by another one.

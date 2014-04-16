@@ -1381,7 +1381,7 @@ pyFormex comes with ABSOLUTELY NO WARRANTY. This is free software, and you are w
         warnings.showwarning = show_warning
 
 
-    print = draw.message
+    #print = draw.message
     pf.warning = draw.warning
     pf.error = draw.error
 
