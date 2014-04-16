@@ -834,7 +834,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return self.getFreeEntitiesMesh(level=1, compact=compact)
 
 
-    @utils.deprecated("mesh_connectedTo")
+    @utils.warning("mesh_connectedTo")
     def connectedTo(self,entities,level=0):
         """Select the elements connected to specific lower entities.
 
@@ -867,6 +867,21 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         over nodes, edges or faces, depending on the `level`.
         """
         return where(self.frontWalk(startat=elements, level=level, maxval=1, optim_mem=True) == 1)[0]
+
+
+    def reachableFrom(self,elements,level=0):
+        """Select the elements reachable from the specified elements.
+
+        - `elements`: int or array_like, int. Element selector.
+        - `level`: int. Specify how elements can be reached:
+          via node (0), edge (1) or face (2).
+
+        Returns a list of all the elements in the Mesh reachable from
+        any of the specified elements by walking over entities of the
+        specified level. The list will include the original set of elements.
+        """
+        return where(self.frontWalk(startat=elements, level=level, frontinc=0, partinc=1, maxval=1) == 0)[0]
+
 
 #############################################################################
     # Adjacency #
