@@ -49,7 +49,7 @@ def reachableFrom(self,startat,level=0,mask=None,optim_mem=False):
     - `mask`: either None or a boolean array or index flagging the elements
       which are to be considered walkable. If None, all elements are considered walkable.
     """
-    startat = asarray(startat)
+    startat = asarray(startat).reshape(-1)
     if len(intersect1d(startat, arange(self.nelems()))) < len(startat):
         raise ValueError, 'wrong elem index found in startat, outside range 0 - %d'%self.nelems()
 
