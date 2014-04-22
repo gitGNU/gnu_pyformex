@@ -35,7 +35,15 @@ _level = 'normal'
 _topics = ['geometry']
 _techniques = ['dialog', 'persistence', 'color']
 
+_mydata = '_WireStent_data_'
+
 from pyformex.gui.draw import *
+
+def drawFull(M):
+    draw(M)
+    drawNumbers(M,color=red)
+    draw(M.coords)
+    drawNumbers(M.coords,gravity='NE')
 
 class DoubleHelixStent(object):
     """Constructs a double helix wire stent.
@@ -45,11 +53,11 @@ class DoubleHelixStent(object):
     in two directions.
     The geometry is defined by the following parameters:
       L  : approximate length of the stent
-      De : external diameter of the stent 
+      De : external diameter of the stent
       D  : average stent diameter
       d  : wire diameter
       be : pitch angle (degrees)
-      p  : pitch  
+      p  : pitch
       nx : number of wires in one spiral set
       ny : number of modules in axial direction
       ds : extra distance between the wires (default is 0.0 for
@@ -57,7 +65,7 @@ class DoubleHelixStent(object):
       dz : maximal distance of wire center to average cilinder
       nb : number of elements in a strut (a part of a wire between two
            crossings), default 4
-    The stent is created around the z-axis. 
+    The stent is created around the z-axis.
     By default, there will be connectors between the wires at each
     crossing. They can be switched off in the constructor.
     The returned formex has one set of wires with property 1, the
@@ -117,7 +125,8 @@ class DoubleHelixStent(object):
         M = self.F.toMesh()
         ML = [ M.selectProp(i) for i in [1, 3] ]
         wires = [ connectivity.connectedLineElems(Mi.elems) for Mi in ML ]
-        wireaxes = [ [ Formex(M.coords[wi]).toCurve() for wi in wiresi ] for wiresi in wires ]
+        wireaxes = [ [ Formex(Mi.coords[wi]) for wi in wiresi ] for Mi,wiresi in zip(ML,wires) ]
+        wireaxes = [ [ w.toCurve() for w in wi ] for wi in wireaxes ]
         return wireaxes
 
 
@@ -126,7 +135,7 @@ def run():
     wireframe()
     reset()
 
-    res = askItems([
+    dia = Dialog([
         _I('L', 80., text='Length of the stent'),
         _I('D', 10., text='Diameter of the stent'),
         _I('n', 12, text='Total number of wires'),
@@ -135,6 +144,12 @@ def run():
         _I('show', itemtype='radio', choices=['Formex', 'Curves']),
         ])
 
+    if _mydata in pf.PF:
+        dia.updateData(pf.PF[_mydata])
+
+    res = dia.getResults()
+    pf.PF[_mydata] = res
+
     if not res:
         return
 
@@ -142,18 +157,22 @@ def run():
     if (n % 2) != 0:
         warning('Number of wires must be even!')
         return
-    
-    H = DoubleHelixStent(D, L, d, n, b)
+
+    nx = n // 2
+
+    H = DoubleHelixStent(D, L, d, nx, b)
     clear()
-    
+
     if show=='Formex':
         draw(H.getFormex(), view='iso')
 
     else:
         view('iso')
-        for w, c in zip(H.getWireAxes(), ['black', 'magenta']):
-            draw(w, color=c)
-    
+        wires = H.getWireAxes()
+        # Draw the clockwise and anticlockwise wires with different color
+        draw(wires[0],color='black')
+        draw(wires[1],color='magenta')
+
 if __name__ == 'draw':
     run()
 # End
