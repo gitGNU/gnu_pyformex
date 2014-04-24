@@ -591,34 +591,16 @@ maxprop  = %s
 
 ##############################################################################
 #
-#  These are the only functions that change a Formex !
+#  These are the methods that change a Formex !
 #
 ##############################################################################
-
-    ## def setProp(self,p=None):
-    ##     """Create or destroy the property array for the Formex.
-
-    ##     A property array is a rank-1 integer array with dimension equal
-    ##     to the number of elements in the Formex (first dimension of data).
-    ##     You can specify a single value or a list/array of integer values.
-    ##     If the number of passed values is less than the number of elements,
-    ##     they wil be repeated. If you give more, they will be ignored.
-
-    ##     If a value None is given, the properties are removed from the Formex.
-    ##     """
-    ##     if p is None:
-    ##         self.prop = None
-    ##     else:
-    ##         p = array(p).astype(Int)
-    ##         self.prop = resize(p,self.coords.shape[:1])
-    ##     return self
 
 
     def append(self, F):
         """Append the members of Formex F to this one.
 
-        This function changes the original one! Use __add__ if you want to
-        get a copy with the sum.
+        This function changes (and returns) the original object!
+        Use __add__ if what you want is a copy with the sum.
 
         >>> F = Formex([[[1.0,1.0,1.0]]])
         >>> G = F.append(F)

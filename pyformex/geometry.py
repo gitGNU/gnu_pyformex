@@ -188,6 +188,12 @@ class Geometry(object):
         return 0
 
 
+##############################################################################
+#
+#  These are the methods that change a Geometry !
+#
+##############################################################################
+
     def setProp(self,prop=None,blocks=None):
         """Create or destroy the property array for the Geometry.
 
@@ -218,6 +224,11 @@ class Geometry(object):
           they wil be repeated. If you give more, they will be ignored.
           Every prop will be repeated the corresponding number of times
           specified in blocks.
+
+        Returns the Geometry with the new properties inserted or with the
+          properties deleted (if argument is None).
+          Notice that unlike most other Geometry methods, this method changes
+          (and returns) the existing object.
         """
         if prop is None:
             self.prop = None
@@ -236,6 +247,12 @@ class Geometry(object):
             self.prop = self.toProp(prop)
         return self
 
+
+##############################################################################
+#
+#  All other methods leave the object untouched, and return a copy instead.
+#
+##############################################################################
 
     def toProp(self, prop):
         """Converts the argument into a legal set of properties for the object.
@@ -676,7 +693,7 @@ class Geometry(object):
             return self._fields
         else:
             return {}
-        
+
 
     def write(self,filename,sep=' ',mode='w'):
         """Write a Geometry to a .pgf file.
