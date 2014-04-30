@@ -126,7 +126,8 @@ def highlightDrawing(points, mode):
 
     pts is an array of points.
     """
-    from pyformex.gui import actors
+    #from pyformex.gui import actors
+    from pyformex.legacy import actors
     pf.canvas.removeHighlight()
     #print points[-1]
     PA = actors.GeomActor(Formex(points))

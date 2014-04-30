@@ -610,8 +610,8 @@ def pointInsideObject(S,P,tol=0.):
 
     from vtk import vtkSelectEnclosedPoints
 
-    vpp = convert2VPD(P)
-    vps = convert2VPD(S, clean=False)
+    vpp = convert2VPD(P,verbose=False)
+    vps = convert2VPD(S, clean=False,verbose=False)
 
     enclosed_pts = vtkSelectEnclosedPoints()
     enclosed_pts.SetInput(vpp)
