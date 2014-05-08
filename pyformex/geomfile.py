@@ -282,63 +282,24 @@ class GeometryFile(object):
         return 0
 
 
-    def writeFormex(self,F,name=None,sep=None):
-        """Write a Formex to the geometry file.
+    ## def writeFormex(self,F,name=None,sep=None):
+    ##     """Write a Formex to the geometry file.
 
-        `F` is a Formex. The coords attribute of the Formex is written as
-        an array to the geometry file. If the Formex has a props attribute,
-        it is also written.
-        """
-        if sep is None:
-            sep = self.sep
-        hasprop = F.prop is not None
-        head = "# objtype='Formex'; nelems=%r; nplex=%r; props=%r; eltype=%r; sep=%r" % (F.nelems(), F.nplex(), hasprop, F.eltype, sep)
-        if name:
-            head += "; name='%s'" % name
-        self.fil.write(head+'\n')
-        self.writeData(F.coords, sep)
-        if hasprop:
-            self.writeData(F.prop, sep)
-
-
-    ## def writeDict(self,F,name=None,sep=None,objtype='Mesh'):
-    ##     """Write a dict to a pyFormex geometry file.
-
-    ##     This is equivalent to the Mesh write, but input
-    ##     is a WebGL object dict
+    ##     `F` is a Formex. The coords attribute of the Formex is written as
+    ##     an array to the geometry file. If the Formex has a props attribute,
+    ##     it is also written.
     ##     """
-    ##     if objtype is None:
-    ##         objtype = 'Mesh'
     ##     if sep is None:
     ##         sep = self.sep
-    ##     color = ''
-    ##     if hasattr(F, 'color'):
-    ##         Fc = F.color
-    ##         if isinstance(Fc, ndarray):
-    ##             if Fc.shape == (3,):
-    ##                 color = tuple(Fc)
-    ##             elif Fc.shape == (F.nelems(), 3):
-    ##                 color = 'element'
-    ##             elif Fc.shape == (F.nelems(), F.nplex(), 3):
-    ##                 color = 'vertex'
-    ##             else:
-    ##                 raise ValueError("Incorrect color shape: %s" % Fc.shape)
-
-    ##     # Now take the object
-    ##     F = F.obj
     ##     hasprop = F.prop is not None
-    ##     hasnorm = hasattr(F, 'normals') and isinstance(F.normals, ndarray) and F.normals.shape == (F.nelems(), F.nplex(), 3)
-    ##     head = "# objtype='%s'; ncoords=%s; nelems=%s; nplex=%s; props=%s; eltype='%s'; normals=%s; color=%s; sep='%s'" % (objtype, F.ncoords(), F.nelems(), F.nplex(), hasprop, F.elName(), hasnorm, repr(color), sep)
+
+    ##     head = "# objtype='Formex'; nelems=%s; nplex=%s; props=%s; eltype='%s'; sep='%s'" % (F.nelems(), F.nplex(), hasprop, F.eltype, sep)
     ##     if name:
     ##         head += "; name='%s'" % name
     ##     self.fil.write(head+'\n')
     ##     self.writeData(F.coords, sep)
-    ##     self.writeData(F.elems, sep)
     ##     if hasprop:
     ##         self.writeData(F.prop, sep)
-    ##     if hasnorm:
-    ##         self.writeData(F.normals, sep)
-    ##     return 1
 
 
     def writeMesh(self,F,name=None,sep=None,objtype='Mesh'):
@@ -364,22 +325,30 @@ class GeometryFile(object):
             if isinstance(Fc,(str,unicode)):
                 color = Fc
             else:
-                Fc = checkArray(Fc,kind='f')
-                if Fc.shape == (3,):
+                try:
+                    Fc = checkArray(Fc,kind='f')
+                    colormap = None
+                    colorshape = Fc.shape
+                except:
+                    Fc = checkArray(Fc,kind='i')
+                    colormap = 'default'
+                    colorshape = Fc.shape + (3,)
+                if colorshape == (3,):
                     color = tuple(Fc)
-                elif Fc.shape == (F.nelems(), 3):
+                elif colorshape == (F.nelems(), 3):
                     color = 'element'
-                elif Fc.shape == (F.nelems(), F.nplex(), 3):
+                elif colorshape == (F.nelems(), F.nplex(), 3):
                     color = 'vertex'
                 else:
-                    raise ValueError("Incorrect color shape: %s" % Fc.shape)
+                    raise ValueError("Incorrect color shape: %s" % str(colorshape))
 
-        head = "# objtype='%s'; ncoords=%s; nelems=%s; nplex=%s; props=%s; eltype='%s'; normals=%s; color=%r; sep='%s'" % (objtype, F.ncoords(), F.nelems(), F.nplex(), hasprop, F.elName(), hasnorm, color, sep)
+        head = "# objtype='%s'; ncoords=%s; nelems=%s; nplex=%s; props=%s; eltype='%s'; normals=%s; color=%r; colormap=%r; sep='%s'" % (objtype, F.npoints(), F.nelems(), F.nplex(), hasprop, F.elName(), hasnorm, color, colormap, sep)
         if name:
             head += "; name='%s'" % name
         self.fil.write(head+'\n')
         self.writeData(F.coords, sep)
-        self.writeData(F.elems, sep)
+        if not objtype == 'Formex':
+            self.writeData(F.elems, sep)
         if hasprop:
             self.writeData(F.prop, sep)
         if hasnorm:
@@ -391,6 +360,14 @@ class GeometryFile(object):
             head = "# field='%s'; fldtype='%s'; shape=%r; sep='%s'" % (fld.fldname, fld.fldtype,fld.data.shape, sep)
             self.fil.write(head+'\n')
             self.writeData(fld.data, sep)
+
+
+    def writeFormex(self,F,name=None,sep=None):
+        """Write a Formex to the geometry file.
+
+        This is equivalent to writeMesh(F,name,sep,objtype='Formex')
+        """
+        self.writeMesh(F, name=name, sep=sep, objtype='Formex')
 
 
     def writeTriSurface(self,F,name=None,sep=None):

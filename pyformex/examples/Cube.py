@@ -60,7 +60,8 @@ def cube_tri(color=None):
     elif color == 'Full':
         color = array([[4, 5, 7], [7, 6, 4], [7, 3, 2], [2, 6, 7], [7, 5, 1], [1, 3, 7],
                        [3, 1, 0], [0, 2, 3], [0, 1, 5], [5, 4, 0], [0, 4, 6], [6, 2, 0]])
-    return faces, color
+    faces.attrib(color=color)
+    return faces
 
 
 def cube_quad(color=None):
@@ -74,18 +75,17 @@ def cube_quad(color=None):
         color = [4, 1, 5, 2, 6, 3]
     elif color == 'Full':
         color = array([7, 6, 4, 5, 3, 2, 0, 1])[f]
-    return faces, color
+    faces.attrib(color=color)
+    return faces
 
 
 def showCube(base, color):
-    #print base,color
     if base == 'Triangle':
         cube = cube_tri
     else:
         cube = cube_quad
-    cube, color = cube(color)
-    clear()
-    draw(cube, color=color)
+    cube = cube(color)
+    draw(cube,clear=True)
     export({'cube':cube})
 #    zoomAll()
 

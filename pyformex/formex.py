@@ -297,7 +297,6 @@ class Formex(Geometry):
             del state['f']
         self.__dict__.update(state)
 
-
     def element(self, i):
         """Return element i of the Formex"""
         return self.coords[i]
@@ -353,6 +352,9 @@ class Formex(Geometry):
         return self.coords.shape[0]*self.coords.shape[1]
 
 
+    ncoords = npoints
+
+
     # Making this a property so it can be used as (constant) attribute
     @property
     def shape(self):
@@ -362,6 +364,24 @@ class Formex(Geometry):
         i.e. a tuple (nelems, nplex, ndim).
         """
         return self.coords.shape
+
+
+    def elType(self):
+        """Return the element type, or None"""
+        from pyformex.elements import elementType
+        if self.eltype is not None:
+            return elementType(self.eltype)
+        else:
+            return None
+
+
+    def elName(self):
+        """Return the element type name, or None"""
+        et = self.elType()
+        if et:
+            return et.name()
+        else:
+            return None
 
 
     def level(self):
@@ -384,9 +404,9 @@ class Formex(Geometry):
         one for plexitudes up to 3, an equal to 2 for any higher plexitude
         (since the default is to interprete a higher plexitude as a polygon).
         """
-        from pyformex.elements import elementType
-        if self.eltype is not None:
-            return elementType(self.eltype).ndim
+        et = self.elType()
+        if et:
+            return et.ndim
         else:
             if self.nplex() > 2:
                 return 2
