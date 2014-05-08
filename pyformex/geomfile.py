@@ -320,6 +320,7 @@ class GeometryFile(object):
         hasprop = F.prop is not None
         hasnorm = hasattr(F, 'normals') and isinstance(F.normals, ndarray) and F.normals.shape == (F.nelems(), F.nplex(), 3)
         color = ''
+        colormap = None
         Fc = F.attrib['color']
         if Fc is not None:
             if isinstance(Fc,(str,unicode)):
@@ -342,9 +343,14 @@ class GeometryFile(object):
                 else:
                     raise ValueError("Incorrect color shape: %s" % str(colorshape))
 
-        head = "# objtype='%s'; ncoords=%s; nelems=%s; nplex=%s; props=%s; eltype='%s'; normals=%s; color=%r; colormap=%r; sep='%s'" % (objtype, F.npoints(), F.nelems(), F.nplex(), hasprop, F.elName(), hasnorm, color, colormap, sep)
+        head = "# objtype='%s'; ncoords=%s; nelems=%s; nplex=%s; props=%s; normals=%s; color=%r; sep='%s'" % (objtype, F.npoints(), F.nelems(), F.nplex(), hasprop, hasnorm, color, sep)
         if name:
             head += "; name='%s'" % name
+        if F.elName():
+            head += "; eltype='%s'" % F.elName()
+        if colormap:
+            head += "; colormap='%s'" % colormap
+
         self.fil.write(head+'\n')
         self.writeData(F.coords, sep)
         if not objtype == 'Formex':
@@ -601,27 +607,35 @@ class GeometryFile(object):
                     elif color == 'vertex':
                         colorshape = (nelems,nplex,)
                     else:
-                        # should be a string with color name
+                        # string should be a color name
                         colorshape = None
-                else:
-                    # A single color encoded in the attribute
-                    colorshape = ()
-                if colorshape:
-                    if colormap == 'default':
-                        colortype = Int
-                    else:
-                        colortype = Float
-                        colorshape += ( 3,)
 
-                    try:
-                        if len(colorshape) > 1:
+                    if colorshape:
+                        if colormap == 'default':
+                            colortype = Int
+                        else:
+                            colortype = Float
+                            colorshape += ( 3,)
+
+                        try:
                             # Read the color array
                             color = readArray(self.fil, colortype, colorshape, sep=sep)
-                        else:
-                            color = checkArray(color, colorshape, colortype.kind)
+                        except Exception, e:
+                            print("Invalid color array on PGF file: skipped. Traceback: %s" % e)
+                            color = None
+
+                else:
+                    # A single color encoded in the attribute
+                    if colormap == 'default':
+                        colortype = 'i'
+                    else:
+                        colortype = 'f'
+                    colorshape = (3,)
+                    try:
+                        color = checkArray(color, colorshape, colortype)
                     except Exception, e:
-                        print("Invalid color on PGF file: skipped. Traceback: %s" % e)
-                        pass
+                        print("Invalid color attribute on PGF file: skipped. Traceback: %s" % e)
+                    color = None
 
 
             obj.attrib(color=color)

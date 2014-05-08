@@ -135,7 +135,7 @@ class Drawable(Attributes):
             self.objectColor = array(red)
 
         elif self.color is not None:
-            print("COLOR",self.color)
+            #print("COLOR",self.color)
             if self.color.ndim == 1:
                 # here we only accept a single color for front and back
                 # different colors should have been handled before
@@ -163,8 +163,8 @@ class Drawable(Attributes):
         if self.cbo is None:
             self.cbo = VBO(array(red))
 
-        if self.rendertype == 3:
-            print("CBO DATA %s\n" % self.name,self.cbo.data)
+        #if self.rendertype == 3:
+        #    print("CBO DATA %s\n" % self.name,self.cbo.data)
 
 
     def prepareTexture(self):
@@ -632,8 +632,8 @@ class Actor(Base):
 
         #### CHILDREN ####
         for child in self.children:
-            print("Preparing child")
-            print(child)
+            #print("Preparing child")
+            #print(child)
             child.prepare(canvas)
 
 
@@ -648,7 +648,7 @@ class Actor(Base):
                 rendermode = self.mode
             else:
                 rendermode = canvas.rendermode
-            print("RENDERMODE",rendermode)
+            #print("RENDERMODE",rendermode)
             if rendermode == 'wireframe':
                 # Draw the colored edges
                 self._addEdges()

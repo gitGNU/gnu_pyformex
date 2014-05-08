@@ -43,21 +43,29 @@ def run():
     colormode = ['None', 'Single', 'Face', 'Full']
     n = len(colormode)
     obj = {}
-    layout(1*n,4)
+    layout(2*n,4)
     for vp,color in enumerate(colormode):
-        cube = cube_quad(color)
         viewport(vp)
         clear()
         reset()
         smooth()
         view('iso')
-        draw(cube)
-        obj[color] = cube
+        obj[color] = cube_quad(color)
+        draw(obj[color])
 
     writeGeomFile('test.pgf', obj, sep=' ')
 
-    ## obj = readGeomFile('test.pgf')
-    ## print(obj.keys())
+    oobj = readGeomFile('test.pgf')
+    for vp,color in enumerate(colormode[:4]):
+        #print(color)
+        #print(oobj[color])
+        viewport(vp+n)
+        clear()
+        reset()
+        smooth()
+        view('iso')
+        draw(oobj[color])
+
 
 if __name__ == 'draw':
     run()
