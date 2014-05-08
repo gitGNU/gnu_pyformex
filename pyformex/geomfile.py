@@ -569,7 +569,7 @@ class GeometryFile(object):
         self.header_done = True
 
 
-    def readGeometry(self,objtype='Formex',name=None,nelems=None,ncoords=None,nplex=None,props=None,eltype=None,normals=None,color=None,closed=None,degree=None,nknots=None,sep=None,**kargs):
+    def readGeometry(self,objtype='Formex',name=None,nelems=None,ncoords=None,nplex=None,props=None,eltype=None,normals=None,color=None,colormap=None,closed=None,degree=None,nknots=None,sep=None,**kargs):
         """Read a geometry record of a pyFormex geometry file.
 
         If an object was succesfully read, it is set in self.geometry
@@ -594,13 +594,37 @@ class GeometryFile(object):
 
         if obj is not None:
             if color is not None:
-                if not isinstance(color,str):
+                if isinstance(color,str):
+                    # Check for special values:
+                    if color == 'element':
+                        colorshape = (nelems,)
+                    elif color == 'vertex':
+                        colorshape = (nelems,nplex,)
+                    else:
+                        # should be a string with color name
+                        colorshape = None
+                else:
+                    # A single color encoded in the attribute
+                    colorshape = ()
+                if colorshape:
+                    if colormap == 'default':
+                        colortype = Int
+                    else:
+                        colortype = Float
+                        colorshape += ( 3,)
+
                     try:
-                        color = checkArray(color, (3,), 'f')
-                        color = tuple(color)
-                    except:
+                        if len(colorshape) > 1:
+                            # Read the color array
+                            color = readArray(self.fil, colortype, colorshape, sep=sep)
+                        else:
+                            color = checkArray(color, colorshape, colortype.kind)
+                    except Exception, e:
+                        print("Invalid color on PGF file: skipped. Traceback: %s" % e)
                         pass
-                obj.attrib(color=color)
+
+
+            obj.attrib(color=color)
 
             # store the geometry object, and remember as last
             if name is None:
