@@ -93,6 +93,42 @@ import os
 #~ VTK_PISTON_DATA_OBJECT 34
 #~ VTK_PATH 35
 
+
+def getVTKtype(a):
+    """Converts the  data type from a numpy to a vtk array """
+    return gvat(a.dtype)
+    
+def getNtype(a):
+    """Converts the  data type from a  vtk to a numpy array """
+    return gnat(a.GetDataType())
+
+def array2VTK(a,vtype=None):
+    """Convert a numpy array to a vtk array
+
+    Parameters
+
+    - `a`: numpy array nx2
+    - `vtype`: vtk output array type. If None the type is derived from
+        the numpy array type
+    """
+    if vtype is None:
+        vtype=getVTKtype(a)
+    return n2v(asarray(a, order='C'), deep=1, array_type=vtype) # .copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
+
+def array2N(a,ntype=None):
+    """Convert a vtk array to a numpy array
+    
+        Parameters
+
+    - `a`: a vtk array
+    - `ntype`: numpy output array type. If None the type is derived from
+        the vtk array type
+    """
+    if ntype is None:
+        ntype=getNtype(a)
+    return asarray(v2n(a), dtype=ntype)
+
+    
 def cleanVPD(vpd):
     """Clean the vtkPolydata
 
@@ -136,8 +172,8 @@ def coords2VTK(coords):
     # creating  vtk coords
     from vtk import vtkPoints
     pts = vtkPoints()
-    ntype = gnat(pts.GetDataType())
-    coordsv = n2v(asarray(coords, order='C', dtype=ntype), deep=1) # .copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
+    vtype = pts.GetData().GetDataType()
+    coordsv = array2VTK(coords,vtype) # .copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
     pts.SetNumberOfPoints(len(coords))
     pts.SetData(coordsv)
     return pts
@@ -148,15 +184,12 @@ def elems2VTK(elems):
     from vtk import vtkIdTypeArray, vtkCellArray
     # create vtk connectivity
     Nelems = len(elems)
-    elms = vtkIdTypeArray()
-    ntype = gnat(vtkIdTypeArray().GetDataType())
     Ncxel = len(elems[0])
     elmsv = concatenate([Ncxel*ones(Nelems).reshape(-1, 1), elems], axis=1)
-    elmsv = n2v(asarray(elmsv, order='C', dtype=ntype), deep=1) # .copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
-    elms.DeepCopy(elmsv)
+    elmsv = array2VTK(elmsv,vtkIdTypeArray().GetDataType())
     # set vtk Cell data
     datav = vtkCellArray()
-    datav.SetCells(Nelems, elms)
+    datav.SetCells(Nelems, elmsv)
     return datav
 
 
@@ -319,8 +352,7 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
 
     # getting points coords
     if  vpd.GetPoints().GetData().GetNumberOfTuples():
-        ntype = gnat(vpd.GetPoints().GetDataType())
-        coords = Coords(asarray(v2n(vpd.GetPoints().GetData()), dtype=ntype))
+        coords = Coords(array2N(vpd.GetPoints().GetData()))
         if verbose:
             print('Saved points coordinates array')
 
@@ -329,13 +361,12 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
     if vtkdtype not in [0]: # this list need to be updated according to the data type
         if  vpd.GetCells().GetData().GetNumberOfTuples():
             if samePlex == True:
-                ntype = gnat(vpd.GetCells().GetData().GetDataType())
                 Nplex = vpd.GetCells().GetMaxCellSize()
-                cells = asarray(v2n(vpd.GetCells().GetData()), dtype=ntype).reshape(-1, Nplex+1)[:, 1:]
+                cells = array2N(vpd.GetCells().GetData()).reshape(-1, Nplex+1)[:, 1:]
                 if verbose:
                     print('Saved polys connectivity array')
             else:
-                cells =  Varray(asarray(v2n(vpd.GetCells().GetData())))#vtkCellArray to varray
+                cells =  Varray(array2N(vpd.GetCells().GetData()))#vtkCellArray to varray
                 if verbose:
                     print('Saved cells connectivity varray')
 
@@ -350,13 +381,12 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
     if vtkdtype not in [4]: # this list need to be updated according to the data type
         if  vpd.GetPolys().GetData().GetNumberOfTuples():
             if samePlex == True:
-                ntype = gnat(vpd.GetPolys().GetData().GetDataType())
                 Nplex = vpd.GetPolys().GetMaxCellSize()
-                polys = asarray(v2n(vpd.GetPolys().GetData()), dtype=ntype).reshape(-1, Nplex+1)[:, 1:]
+                polys = array2N(vpd.GetPolys().GetData()).reshape(-1, Nplex+1)[:, 1:]
                 if verbose:
                     print('Saved polys connectivity array')
             else:
-                polys =  Varray(asarray(v2n(vpd.GetPolys().GetData())))#vtkCellArray to varray
+                polys =  Varray(array2N(vpd.GetPolys().GetData()))#vtkCellArray to varray
                 if verbose:
                     print('Saved polys connectivity varray')
 
@@ -364,22 +394,20 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
     if vtkdtype not in [4]: # this list need to be updated according to the data type
         if  vpd.GetLines().GetData().GetNumberOfTuples():
             if samePlex == True:
-                ntype = gnat(vpd.GetLines().GetData().GetDataType())
                 Nplex = vpd.GetLines().GetMaxCellSize()
-                lines = asarray(v2n(vpd.GetLines().GetData()), dtype=ntype).reshape(-1, Nplex+1)[:, 1:]
+                lines = array2N(vpd.GetLines().GetData()).reshape(-1, Nplex+1)[:, 1:]
                 if verbose:
                     print('Saved lines connectivity array')
             else:
-                lines =  Varray(asarray(v2n(vpd.GetLines().GetData())))#this is the case of polylines
+                lines =  Varray(array2N(vpd.GetLines().GetData()))#this is the case of polylines
                 if verbose:
                     print('Saved lines connectivity varray')
 
     # getting Vertices
     if vtkdtype not in [4]: # this list need to be updated acoorind to the data type
         if  vpd.GetVerts().GetData().GetNumberOfTuples():
-            ntype = gnat(vpd.GetVerts().GetData().GetDataType())
             Nplex = vpd.GetVerts().GetMaxCellSize()
-            verts = asarray(v2n(vpd.GetVerts().GetData()), dtype=ntype).reshape(-1, Nplex+1)[:, 1:]
+            verts = array2N(vpd.GetVerts().GetData()).reshape(-1, Nplex+1)[:, 1:]
             if verbose:
                 print('Saved verts connectivity array')
 
@@ -392,8 +420,7 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
         emptydata = dict(zip(emptyarraynm, emptydata))
         #then get the non-None data (ie. with an array)
         arraynm = [an for an in arraynm if data.GetArray(an) is not None ]
-        ntypes = [gnat(data.GetArray(an).GetDataType()) for an in arraynm]
-        okdata = [asarray(v2n(data.GetArray(an)), dtype=ntype) for ntype, an in zip(ntypes, arraynm)]
+        okdata = [array2N(data.GetArray(an)) for an in arraynm]
         okdata = dict(zip(arraynm, okdata))
         #now merge the empty and non-empty data
         okdata.update(emptydata)
@@ -470,31 +497,31 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
         raise ValueError ('extension not recongnized')
 
     if mesh.prop is not None: # convert prop numbers into vtk array
-        ntype = gnat(vtkIntArray().GetDataType())
-        vtkprop = n2v(asarray(mesh.prop, order='C', dtype=ntype), deep=1)
+        vtype = vtkIntArray().GetDataType()
+        vtkprop = array2VTK(mesh.prop,vtype)
         vtkprop.SetName('prop')
         lvtk.GetCellData().AddArray(vtkprop)
     for k in fielddata.keys(): # same numbering of mesh.elems??
-        ntype = gnat(vtkDoubleArray().GetDataType())
+        vtype = vtkDoubleArray().GetDataType()
         if fielddata[k].shape[0]!=mesh.nelems():
             print((fielddata[k].shape,))
-        fielddata = n2v(asarray(fielddata[k], order='C', dtype=ntype), deep=1)
+        fielddata = array2VTK(fielddata[k],vtype)
         fielddata.SetName(k)
         lvtk.GetFieldData().AddArray(fielddata)
     for k in celldata.keys(): # same numbering of mesh.elems
-        ntype = gnat(vtkDoubleArray().GetDataType())
+        vtype = vtkDoubleArray().GetDataType()
         if celldata[k].shape[0]!=mesh.nelems():
             print((celldata[k].shape, mesh.nelems()))
             utils.warn("warn_writevtp_shape")
-        celldata = n2v(asarray(celldata[k], order='C', dtype=ntype), deep=1)
+        celldata = array2VTK(celldata[k],vtype)
         celldata.SetName(k)
         lvtk.GetCellData().AddArray(celldata)
     for k in pointdata.keys(): # same numbering of mesh.coords
-        ntype = gnat(vtkDoubleArray().GetDataType())
+        vtype = vtkDoubleArray().GetDataType()
         if pointdata[k].shape[0]!=mesh.ncoords(): # mesh should be clean!!
             print((pointdata[k].shape, mesh.ncoords()))
             utils.warn("warn_writevtp_shape2")
-        pointdata = n2v(asarray(pointdata[k], order='C', dtype=ntype), deep=1)
+        pointdata = array2VTK(pointdata[k],vtype)
         pointdata.SetName(k)
         lvtk.GetPointData().AddArray(pointdata)
     print(('************lvtk', lvtk))
@@ -623,7 +650,7 @@ def pointInsideObject(S,P,tol=0.):
     enclosed_pts.ReleaseDataFlagOn()
     enclosed_pts.Complete()
     del enclosed_pts
-    return asarray(v2n(inside_arr), 'bool')
+    return array2N(inside_arr, 'bool')
 
 
 def inside(surf,pts,tol='auto'):
@@ -675,7 +702,7 @@ def intersectWithSegment(surf,lines,tol=0.0):
         loc.IntersectWithLine(lines.coords[lines.elems][i][1], lines.coords[lines.elems][i][0], ptstmp, cellidstmp)
         if cellidstmp.GetNumberOfIds():
             cellids[i] = [cellidstmp.GetId(j) for j in range(cellidstmp.GetNumberOfIds())]
-            pts[i] = Coords(v2n(ptstmp.GetData()).squeeze())
+            pts[i] = Coords(array2N(ptstmp.GetData()).squeeze())
     loc.FreeSearchStructure()
     del loc
     return pts, cellids
@@ -775,7 +802,7 @@ def _vtkClipper(self,vtkif, insideout):
     This functions should not be used by the user.   
     """
     from vtk import vtkClipPolyData
-    from pyformex.plugins.vtk_itf import convert2VPD,  convertFromVPD
+    
     if self.elName() not in ['line2','tri3','quad4']:
         warning('vtkClipper has not been tested with this element type %s'%self.elName())
     vtkobj = convert2VPD(self)   
