@@ -870,8 +870,8 @@ def _vtkBoxPlanes(box):
     
     Returns the vtkPlanes implicit function of the box.
     """
-    from simple import cuboid
-    from arraytools import checkArray
+    from pyformex.simple import cuboid
+    from pyformex.arraytools import checkArray
     if isinstance(box,Coords):
         box = checkArray(box,shape=(2,3))
         box=cuboid(*box)

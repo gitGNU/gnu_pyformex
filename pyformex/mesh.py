@@ -2685,7 +2685,7 @@ def gridpoints(seed0,seed1=None,seed2=None):
         if isinstance(seed0, int):
             seed0 = seed(seed0)
         sh = 1
-        pts = seed0
+        pts = asarray(seed0)
     if seed1 is not None:
         if isinstance(seed1, int):
             seed1 = seed(seed1)
@@ -2704,6 +2704,26 @@ def gridpoints(seed0,seed1=None,seed2=None):
         pts = dstack([dstack([outer(pts[:,:, ipts], zz) for ipts in range(pts.shape[2])]) for zz in [z0, z1] ])
     return pts.reshape(-1, sh).squeeze()
 
+
+def line2_wts(seed0):
+    """ Create weights for line2 subdivision.
+
+        Parameters:
+
+        - 'seed0' : int or list of floats . It specifies divisions along the
+          first parametric direction of the element
+
+        If these parametes are integer values the divisions will be equally spaced between  0 and 1
+
+    """
+    wts = gridpoints(seed0)
+    return column_stack([wts,1-wts]) 
+
+
+def line2_els(nx):
+    n = nx+1
+    els = [ array([0, 1]) + i for i in range(nx) ]
+    return row_stack(els)
 
 # TODO: can be removed, this is equivalent to gridpoints(seed(nx),seed(ny))
 def quad4_wts(seed0, seed1):
