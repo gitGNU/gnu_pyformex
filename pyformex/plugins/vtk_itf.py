@@ -206,6 +206,9 @@ def convert2VPD(M,clean=False,verbose=True):
     - `clean`: if True, the resulting vtkPolyData will be cleaned by calling
       cleanVPD.
 
+    If the Mesh has a prop array the properties are added as cell data array in an array called prop.
+    This name should be protected from the user to allow to convert properties from/to the vtk interface.
+    
     Returns a vtkPolyData.
     """
     from vtk import vtkPolyData, vtkPoints, vtkIdTypeArray, vtkCellArray
@@ -253,6 +256,13 @@ def convert2VPD(M,clean=False,verbose=True):
             vpd.SetPolys(datav)
         except:
             raise ValueError("Error in saving  POLYS")
+            
+    if M.prop is not None: # convert prop numbers into vtk array
+        vtype = vtkIntArray().GetDataType()
+        vprop = array2VTK(M.prop,vtype)
+        vprop.SetName('prop')
+        vpd.GetCellData().AddArray(vprop)
+    
     vpd.Update()
     if clean:
         vpd = cleanVPD(vpd)
@@ -818,18 +828,24 @@ def _vtkClipper(self,vtkif, insideout):
     l2, t3, q4 = None, None, None
     if cells != None or verts != None:
         raise ValueError, 'unexpected output: please report it to developers!'
+    
+    prop = None
+    if celldata.has_key('prop'):
+        prop = celldata['prop']
+    
     if lines != None:
-        l2 = Mesh(coords, lines.toArray())
+        l2 = Mesh(coords, lines.toArray()).setProp(prop)
     if polys != None:
         va = polys
         va = [va.select(va.lengths==l).toArray() for l in unique(va.lengths)]
         for ar in va:
             if ar.shape[1] == 3:
-                t3 = Mesh(coords, ar)
+                t3 = Mesh(coords, ar).setProp(prop)
             elif ar.shape[1] == 4:#could it also be a tet4?
-                q4 = Mesh(coords, ar)
+                q4 = Mesh(coords, ar).setProp(prop)
             else:
                raise ValueError, 'unexpected output: please report it to developers!'
+    
     return l2, t3, q4
 
 
