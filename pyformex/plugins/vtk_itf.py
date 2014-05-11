@@ -791,6 +791,8 @@ def _vtkClipper(self,vtkif, insideout):
 
     - `mesh`: a Mesh.
     - `vtkif`: a vtk implicit function.
+    - `insideout`: bool or boolean integer(0 or 1) to selet the select the side
+        of the selection
 
     In vtk `clip` means intersection and get a part of a mesh.
     Returns 3 meshes (line2, tri3, quad4):
@@ -809,8 +811,7 @@ def _vtkClipper(self,vtkif, insideout):
     clipper = vtkClipPolyData()
     clipper.SetInput(vtkobj)
     clipper.SetClipFunction(vtkif)
-    if insideout == True:
-        clipper.InsideOutOn()
+    clipper.SetInsideOut(int(insideout))
     clipper.Update()
     clipper = clipper.GetOutput()  
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = convertFromVPD(vpd=clipper,verbose=True,samePlex=False)
@@ -847,7 +848,7 @@ def _vtkPlanes(p,n):
      Parameters:
 
     - `p` : points of the planes
-    - `n`: correspondent normals o the planes
+    - `n`: correspondent normals of the planes
     """
     from vtk import vtkPlanes
     planes = vtkPlanes()
@@ -862,22 +863,23 @@ def _vtkBoxPlanes(box):
 
     - `box` : Coords, Formex or Mesh objects. 
     
-        - Coords array of shape (2,3) : the first point contains the
-            minimal coordinates, the second has the maximal ones.
-        - Formex or Mesh specifying one hexahedron
+        - Coords array of shape (2,3) : the first point containing the
+            minimal coordinates, the second the maximal ones.
+        - Formex or Mesh specifying one hexahedron.
         
     
-    Returns the vtkPlanes implicit function of the box
+    Returns the vtkPlanes implicit function of the box.
     """
     from simple import cuboid
+    from arraytools import checkArray
     if isinstance(box,Coords):
-        box=checkArray(box,shape=(2,3))
+        box = checkArray(box,shape=(2,3))
         box=cuboid(*box)
-    box=box.toMesh()
-    box=Mesh(box.coords,box.getFaces())
+    box = box.toMesh()
+    box = Mesh(box.coords,box.getFaces())
     box.setNormals('auto')
-    p=box.centroids()
-    n=box.normals.mean(axis=1)
+    p = box.centroids()
+    n = box.normals.mean(axis=1)
     return _vtkPlanes(p,n)
     
 def _vtkSphere(c, r):
@@ -1021,7 +1023,7 @@ def vtkClip(self, implicitdata, method=None, insideout=False):
         `box` to select the correspondent implicit functions by providing the 
         `implicitdata` parameters. If None a vtkImplicitFunction must be passed directly
         in `implicitdata`
-    - `insideout`:boolean to choose which side of the mesh should be returned.
+    - `insideout`:boolean or an integer with values 0 or 1 to choose which side of the mesh should be returned.
     
     Clipping does not reduce the mesh dimension.
     Returns always 3 meshes (line2, tri3, quad4):
