@@ -105,27 +105,27 @@ def getNtype(a):
 def array2VTK(a,vtype=None):
     """Convert a numpy array to a vtk array
 
-    Parameters
+    Parameters:
 
     - `a`: numpy array nx2
     - `vtype`: vtk output array type. If None the type is derived from
         the numpy array type
     """
     if vtype is None:
-        vtype=getVTKtype(a)
+        vtype = getVTKtype(a)
     return n2v(asarray(a, order='C'), deep=1, array_type=vtype) # .copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
 
 def array2N(a,ntype=None):
     """Convert a vtk array to a numpy array
     
-        Parameters
+    Parameters:
 
     - `a`: a vtk array
     - `ntype`: numpy output array type. If None the type is derived from
         the vtk array type
     """
     if ntype is None:
-        ntype=getNtype(a)
+        ntype = getNtype(a)
     return asarray(v2n(a), dtype=ntype)
 
     
@@ -832,6 +832,8 @@ def _vtkClipper(self,vtkif, insideout):
     return l2, t3, q4
 
 
+
+# Implicit Functions
 def _vtkPlane(p, n):
     from vtk import vtkPlane
     plane = vtkPlane()
@@ -839,7 +841,45 @@ def _vtkPlane(p, n):
     plane.SetNormal(n)
     return plane
 
+def _vtkPlanes(p,n):
+    """ Set a vtkPlanes implicit function.
+    
+     Parameters:
 
+    - `p` : points of the planes
+    - `n`: correspondent normals o the planes
+    """
+    from vtk import vtkPlanes
+    planes = vtkPlanes()
+    planes.SetNormals(array2VTK(n))
+    planes.SetPoints(coords2VTK(p))
+    return planes
+
+def _vtkBoxPlanes(box):
+    """ Set a box with vtkPlanes implicit function.
+    
+     Parameters:
+
+    - `box` : Coords, Formex or Mesh objects. 
+    
+        - Coords array of shape (2,3) : the first point contains the
+            minimal coordinates, the second has the maximal ones.
+        - Formex or Mesh specifying one hexahedron
+        
+    
+    Returns the vtkPlanes implicit function of the box
+    """
+    from simple import cuboid
+    if isinstance(box,Coords):
+        box=checkArray(box,shape=(2,3))
+        box=cuboid(*box)
+    box=box.toMesh()
+    box=Mesh(box.coords,box.getFaces())
+    box.setNormals('auto')
+    p=box.centroids()
+    n=box.normals.mean(axis=1)
+    return _vtkPlanes(p,n)
+    
 def _vtkSphere(c, r):
     from vtk import vtkSphere
     sphere = vtkSphere()
@@ -899,6 +939,7 @@ def _vtkBox(p=None, trMat4x4=None):
     """
     from vtk import vtkBox
     box = vtkBox()
+    
     if trMat4x4 is not None:
         if p is not None:
             raise ValueError, 'a box cannot be defined both by coordinates and matrix'
@@ -958,19 +999,30 @@ def vtkCut(self, p=None, n=None, c=None, r=None, box=None):
         raise ValueError, 'implicit object for cutting not well specified'
     
 
-def vtkClip(self, p=None, n=None, c=None, r=None, box=None,insideout=False):
+def vtkClip(self, implicitdata, method=None, insideout=False):
     """Clip (split) a Mesh with a plane, a sphere or a box.
 
     Parameters:
 
-    - `mesh`: a Mesh (line2,tri3,quad4).
-    - `p`, `n`: a point and normal vector defining the cutting plane.
-    - `c`, `r`: center and radius defining a sphere.
-    - `box`, either a 4x4 matrix to apply affine transformation (not yet implemented)
-     or a box (cuboid) defined by 4 points, a formex or a mesh. See _vtkBox.
+    - `self`: a Mesh (line2,tri3,quad4).
+    - `implicitdata`: list or vtkImplicitFunction. If list it must contains the 
+        parameter for the predefined implicit functions:
+        
+        -  method ==  `plane` : a point and normal vector defining the cutting plane.
+        -  method ==  `sphere` :  center and radius defining a sphere.
+        -  method ==  `box`  : either a 4x4 matrix to apply affine transformation (not yet implemented)
+            or a box (cuboid) defined by 4 points, a formex or a mesh. See _vtkBox.
+        -  method ==  `boxplanes`  : Coords, Mesh or Formex. Coords array of shape (2,3) specifying
+            minimal  and coordinates of the box. Formex or Mesh specifying one hexahedron. See _vtkPlanesBox.
+        -  method ==  `planes`  : points array-like of shape (npoints,3) and
+                normal vectors array-like of shape (npoints,3) defining the cutting planes.
+        
+    - `method`: str or None. If string allowed values are `plane`,`planes`, `sphere`,
+        `box` to select the correspondent implicit functions by providing the 
+        `implicitdata` parameters. If None a vtkImplicitFunction must be passed directly
+        in `implicitdata`
     - `insideout`:boolean to choose which side of the mesh should be returned.
-
-    Either (p,n) or (c,r) or box should be given.
+    
     Clipping does not reduce the mesh dimension.
     Returns always 3 meshes (line2, tri3, quad4):
     a line2 mesh if self is a line2 mesh,
@@ -980,18 +1032,28 @@ def vtkClip(self, p=None, n=None, c=None, r=None, box=None,insideout=False):
     a box which is outside the mesh).
     It has not been tested with volume meshes.
     """
-    if c == r == box == None:
-        if p!=None and n!=None:
-            print("clipping mesh of type %s with plane"%self.elName())
-            return _vtkClipper(self,_vtkPlane(p,n),insideout)
-    elif p == n == box == None:
-        if c!=None and r!=None:
-            print("clipping mesh of type %s with sphere"%self.elName())
-            return _vtkClipper(self,_vtkSphere(c, r),insideout)
-    elif p == n == c == r == None:
-        if box!=None:
-            print("clipping mesh of type %s with box"%self.elName())
-            return _vtkClipper(self,_vtkBox(box),insideout)
+    if method=='plane':
+        p,n = implicitdata
+        print("clipping mesh of type %s with plane"%self.elName())
+        return _vtkClipper(self,_vtkPlane(p,n),insideout)
+    elif method=='sphere':
+        c,r = implicitdata
+        print("clipping mesh of type %s with sphere"%self.elName())
+        return _vtkClipper(self,_vtkSphere(c, r),insideout)
+    elif method=='box':
+        box = implicitdata
+        print("clipping mesh of type %s with box"%self.elName())
+        return _vtkClipper(self,_vtkBox(box),insideout)
+    elif method=='boxplanes':
+        box = implicitdata
+        print("clipping mesh of type %s with box"%self.elName())
+        return _vtkClipper(self,_vtkBoxPlanes(box),insideout)
+    elif method=='planes':
+        p,n = implicitdata
+        print("clipping mesh of type %s with planes"%self.elName())
+        return _vtkClipper(self,_vtkPlanes(p,n),insideout)
+    elif method is None:
+        return _vtkClipper(self,implicitdata,insideout)
     else:
         raise ValueError, 'implicit object for cutting not well specified'
 
