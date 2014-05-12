@@ -1438,14 +1438,14 @@ class Canvas(object):
         colormap is a list of two colors, for the actors not in, resp. in
         the Collection K.
         """
-        print("HIGHLIGHT_ACTORS", K)
+        #print("HIGHLIGHT_ACTORS", K)
         self.scene.removeHighlight()
         for i in K.get(-1, []):
             self.scene.actors[i].addHighlight()
 
 
     def highlightElements(self, K):
-        print("HIGHLIGHT_ELEMENTS", K)
+        #print("HIGHLIGHT_ELEMENTS", K)
         self.scene.removeHighlight()
         for i in K.keys():
             pf.debug("Actor %s: Selection %s" % (i, K[i]), pf.DEBUG.DRAW)

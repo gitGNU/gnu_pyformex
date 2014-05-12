@@ -766,7 +766,7 @@ class Actor(Base):
 
     def _addWires(self):
         """Add or remove the edges depending on rendering mode"""
-        print("ADDWIRES")
+        #print("ADDWIRES")
         wiremode = pf.canvas.settings.wiremode
         elems = None
         if wiremode > 0 and self.edges is not None:

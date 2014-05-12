@@ -73,8 +73,8 @@ def draw2D(mode='point',npoints=-1,zplane=0.,coords=None,func=None):
     This function differs in that it provides default displaying
     during the drawing operation and a button to stop the drawing operation.
 
-    The drawing can be edited using the methods 'undo', 'clear' and 'close', which
-    are presented in a combobox.
+    The drawing can be edited using the methods 'undo', 'clear' and 'close',
+    which are presented in a combobox.
     """
     if pf.canvas.drawmode is not None:
         warning("You need to finish the previous drawing operation first!")
@@ -126,26 +126,32 @@ def highlightDrawing(points, mode):
 
     pts is an array of points.
     """
-    #from pyformex.gui import actors
-    from pyformex.legacy import actors
+    from pyformex.gui import actors
     pf.canvas.removeHighlight()
-    #print points[-1]
-    PA = actors.GeomActor(Formex(points))
-    PA.specular=0.0
-    pf.canvas.addHighlight(PA)
+    PA = draw(points)
+    PA.addHighlight()
     obj = drawnObject(points, mode=mode)
     if obj is not None:
-        if mode == 'nurbs':
-            OA = obj.actor(color=pf.canvas.settings.slcolor)
-        else:
-            if hasattr(obj, 'toFormex'):
-                F = obj.toFormex()
-            else:
-                F = Formex(obj)
-            OA = actors.GeomActor(F, color=pf.canvas.settings.slcolor)
-        OA.specular=0.0
-        pf.canvas.addHighlight(OA)
-    pf.canvas.update()
+        OA = draw(obj)
+        OA.addHighlight()
+
+    ## #print points[-1]
+    ## PA = actors.GeomActor(Formex(points))
+    ## PA.specular=0.0
+    ## pf.canvas.addHighlight(PA)
+    ## obj = drawnObject(points, mode=mode)
+    ## if obj is not None:
+    ##     if mode == 'nurbs':
+    ##         OA = obj.actor(color=pf.canvas.settings.slcolor)
+    ##     else:
+    ##         if hasattr(obj, 'toFormex'):
+    ##             F = obj.toFormex()
+    ##         else:
+    ##             F = Formex(obj)
+    ##         OA = actors.GeomActor(F, color=pf.canvas.settings.slcolor)
+    ##     OA.specular=0.0
+    ##     pf.canvas.addHighlight(OA)
+    ## pf.canvas.update()
 
 
 def drawPoints2D(mode,npoints=-1,zvalue=0.,coords=None):
