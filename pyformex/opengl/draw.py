@@ -35,7 +35,8 @@ import pyformex as pf
 from pyformex import utils
 from pyformex import coords
 from pyformex.attributes import Attributes
-from pyformex.formex import Formex
+from pyformex.formex import Formex,connect
+from pyformex.arraytools import normalize
 
 from pyformex.gui import toolbar
 from pyformex.gui import image

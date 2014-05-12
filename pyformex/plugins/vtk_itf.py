@@ -93,6 +93,42 @@ import os
 #~ VTK_PISTON_DATA_OBJECT 34
 #~ VTK_PATH 35
 
+
+def getVTKtype(a):
+    """Converts the  data type from a numpy to a vtk array """
+    return gvat(a.dtype)
+    
+def getNtype(a):
+    """Converts the  data type from a  vtk to a numpy array """
+    return gnat(a.GetDataType())
+
+def array2VTK(a,vtype=None):
+    """Convert a numpy array to a vtk array
+
+    Parameters:
+
+    - `a`: numpy array nx2
+    - `vtype`: vtk output array type. If None the type is derived from
+        the numpy array type
+    """
+    if vtype is None:
+        vtype = getVTKtype(a)
+    return n2v(asarray(a, order='C'), deep=1, array_type=vtype) # .copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
+
+def array2N(a,ntype=None):
+    """Convert a vtk array to a numpy array
+    
+    Parameters:
+
+    - `a`: a vtk array
+    - `ntype`: numpy output array type. If None the type is derived from
+        the vtk array type
+    """
+    if ntype is None:
+        ntype = getNtype(a)
+    return asarray(v2n(a), dtype=ntype)
+
+    
 def cleanVPD(vpd):
     """Clean the vtkPolydata
 
@@ -136,8 +172,8 @@ def coords2VTK(coords):
     # creating  vtk coords
     from vtk import vtkPoints
     pts = vtkPoints()
-    ntype = gnat(pts.GetDataType())
-    coordsv = n2v(asarray(coords, order='C', dtype=ntype), deep=1) # .copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
+    vtype = pts.GetData().GetDataType()
+    coordsv = array2VTK(coords,vtype) # .copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
     pts.SetNumberOfPoints(len(coords))
     pts.SetData(coordsv)
     return pts
@@ -148,15 +184,12 @@ def elems2VTK(elems):
     from vtk import vtkIdTypeArray, vtkCellArray
     # create vtk connectivity
     Nelems = len(elems)
-    elms = vtkIdTypeArray()
-    ntype = gnat(vtkIdTypeArray().GetDataType())
     Ncxel = len(elems[0])
     elmsv = concatenate([Ncxel*ones(Nelems).reshape(-1, 1), elems], axis=1)
-    elmsv = n2v(asarray(elmsv, order='C', dtype=ntype), deep=1) # .copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
-    elms.DeepCopy(elmsv)
+    elmsv = array2VTK(elmsv,vtkIdTypeArray().GetDataType())
     # set vtk Cell data
     datav = vtkCellArray()
-    datav.SetCells(Nelems, elms)
+    datav.SetCells(Nelems, elmsv)
     return datav
 
 
@@ -173,6 +206,9 @@ def convert2VPD(M,clean=False,verbose=True):
     - `clean`: if True, the resulting vtkPolyData will be cleaned by calling
       cleanVPD.
 
+    If the Mesh has a prop array the properties are added as cell data array in an array called prop.
+    This name should be protected from the user to allow to convert properties from/to the vtk interface.
+    
     Returns a vtkPolyData.
     """
     from vtk import vtkPolyData, vtkPoints, vtkIdTypeArray, vtkCellArray
@@ -220,6 +256,13 @@ def convert2VPD(M,clean=False,verbose=True):
             vpd.SetPolys(datav)
         except:
             raise ValueError("Error in saving  POLYS")
+            
+    if M.prop is not None: # convert prop numbers into vtk array
+        vtype = vtkIntArray().GetDataType()
+        vprop = array2VTK(M.prop,vtype)
+        vprop.SetName('prop')
+        vpd.GetCellData().AddArray(vprop)
+    
     vpd.Update()
     if clean:
         vpd = cleanVPD(vpd)
@@ -319,8 +362,7 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
 
     # getting points coords
     if  vpd.GetPoints().GetData().GetNumberOfTuples():
-        ntype = gnat(vpd.GetPoints().GetDataType())
-        coords = Coords(asarray(v2n(vpd.GetPoints().GetData()), dtype=ntype))
+        coords = Coords(array2N(vpd.GetPoints().GetData()))
         if verbose:
             print('Saved points coordinates array')
 
@@ -329,13 +371,12 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
     if vtkdtype not in [0]: # this list need to be updated according to the data type
         if  vpd.GetCells().GetData().GetNumberOfTuples():
             if samePlex == True:
-                ntype = gnat(vpd.GetCells().GetData().GetDataType())
                 Nplex = vpd.GetCells().GetMaxCellSize()
-                cells = asarray(v2n(vpd.GetCells().GetData()), dtype=ntype).reshape(-1, Nplex+1)[:, 1:]
+                cells = array2N(vpd.GetCells().GetData()).reshape(-1, Nplex+1)[:, 1:]
                 if verbose:
                     print('Saved polys connectivity array')
             else:
-                cells =  Varray(asarray(v2n(vpd.GetCells().GetData())))#vtkCellArray to varray
+                cells =  Varray(array2N(vpd.GetCells().GetData()))#vtkCellArray to varray
                 if verbose:
                     print('Saved cells connectivity varray')
 
@@ -350,13 +391,12 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
     if vtkdtype not in [4]: # this list need to be updated according to the data type
         if  vpd.GetPolys().GetData().GetNumberOfTuples():
             if samePlex == True:
-                ntype = gnat(vpd.GetPolys().GetData().GetDataType())
                 Nplex = vpd.GetPolys().GetMaxCellSize()
-                polys = asarray(v2n(vpd.GetPolys().GetData()), dtype=ntype).reshape(-1, Nplex+1)[:, 1:]
+                polys = array2N(vpd.GetPolys().GetData()).reshape(-1, Nplex+1)[:, 1:]
                 if verbose:
                     print('Saved polys connectivity array')
             else:
-                polys =  Varray(asarray(v2n(vpd.GetPolys().GetData())))#vtkCellArray to varray
+                polys =  Varray(array2N(vpd.GetPolys().GetData()))#vtkCellArray to varray
                 if verbose:
                     print('Saved polys connectivity varray')
 
@@ -364,22 +404,20 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
     if vtkdtype not in [4]: # this list need to be updated according to the data type
         if  vpd.GetLines().GetData().GetNumberOfTuples():
             if samePlex == True:
-                ntype = gnat(vpd.GetLines().GetData().GetDataType())
                 Nplex = vpd.GetLines().GetMaxCellSize()
-                lines = asarray(v2n(vpd.GetLines().GetData()), dtype=ntype).reshape(-1, Nplex+1)[:, 1:]
+                lines = array2N(vpd.GetLines().GetData()).reshape(-1, Nplex+1)[:, 1:]
                 if verbose:
                     print('Saved lines connectivity array')
             else:
-                lines =  Varray(asarray(v2n(vpd.GetLines().GetData())))#this is the case of polylines
+                lines =  Varray(array2N(vpd.GetLines().GetData()))#this is the case of polylines
                 if verbose:
                     print('Saved lines connectivity varray')
 
     # getting Vertices
     if vtkdtype not in [4]: # this list need to be updated acoorind to the data type
         if  vpd.GetVerts().GetData().GetNumberOfTuples():
-            ntype = gnat(vpd.GetVerts().GetData().GetDataType())
             Nplex = vpd.GetVerts().GetMaxCellSize()
-            verts = asarray(v2n(vpd.GetVerts().GetData()), dtype=ntype).reshape(-1, Nplex+1)[:, 1:]
+            verts = array2N(vpd.GetVerts().GetData()).reshape(-1, Nplex+1)[:, 1:]
             if verbose:
                 print('Saved verts connectivity array')
 
@@ -392,8 +430,7 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
         emptydata = dict(zip(emptyarraynm, emptydata))
         #then get the non-None data (ie. with an array)
         arraynm = [an for an in arraynm if data.GetArray(an) is not None ]
-        ntypes = [gnat(data.GetArray(an).GetDataType()) for an in arraynm]
-        okdata = [asarray(v2n(data.GetArray(an)), dtype=ntype) for ntype, an in zip(ntypes, arraynm)]
+        okdata = [array2N(data.GetArray(an)) for an in arraynm]
         okdata = dict(zip(arraynm, okdata))
         #now merge the empty and non-empty data
         okdata.update(emptydata)
@@ -470,31 +507,31 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
         raise ValueError ('extension not recongnized')
 
     if mesh.prop is not None: # convert prop numbers into vtk array
-        ntype = gnat(vtkIntArray().GetDataType())
-        vtkprop = n2v(asarray(mesh.prop, order='C', dtype=ntype), deep=1)
+        vtype = vtkIntArray().GetDataType()
+        vtkprop = array2VTK(mesh.prop,vtype)
         vtkprop.SetName('prop')
         lvtk.GetCellData().AddArray(vtkprop)
     for k in fielddata.keys(): # same numbering of mesh.elems??
-        ntype = gnat(vtkDoubleArray().GetDataType())
+        vtype = vtkDoubleArray().GetDataType()
         if fielddata[k].shape[0]!=mesh.nelems():
             print((fielddata[k].shape,))
-        fielddata = n2v(asarray(fielddata[k], order='C', dtype=ntype), deep=1)
+        fielddata = array2VTK(fielddata[k],vtype)
         fielddata.SetName(k)
         lvtk.GetFieldData().AddArray(fielddata)
     for k in celldata.keys(): # same numbering of mesh.elems
-        ntype = gnat(vtkDoubleArray().GetDataType())
+        vtype = vtkDoubleArray().GetDataType()
         if celldata[k].shape[0]!=mesh.nelems():
             print((celldata[k].shape, mesh.nelems()))
             utils.warn("warn_writevtp_shape")
-        celldata = n2v(asarray(celldata[k], order='C', dtype=ntype), deep=1)
+        celldata = array2VTK(celldata[k],vtype)
         celldata.SetName(k)
         lvtk.GetCellData().AddArray(celldata)
     for k in pointdata.keys(): # same numbering of mesh.coords
-        ntype = gnat(vtkDoubleArray().GetDataType())
+        vtype = vtkDoubleArray().GetDataType()
         if pointdata[k].shape[0]!=mesh.ncoords(): # mesh should be clean!!
             print((pointdata[k].shape, mesh.ncoords()))
             utils.warn("warn_writevtp_shape2")
-        pointdata = n2v(asarray(pointdata[k], order='C', dtype=ntype), deep=1)
+        pointdata = array2VTK(pointdata[k],vtype)
         pointdata.SetName(k)
         lvtk.GetPointData().AddArray(pointdata)
     print(('************lvtk', lvtk))
@@ -623,7 +660,7 @@ def pointInsideObject(S,P,tol=0.):
     enclosed_pts.ReleaseDataFlagOn()
     enclosed_pts.Complete()
     del enclosed_pts
-    return asarray(v2n(inside_arr), 'bool')
+    return array2N(inside_arr, 'bool')
 
 
 def inside(surf,pts,tol='auto'):
@@ -675,7 +712,7 @@ def intersectWithSegment(surf,lines,tol=0.0):
         loc.IntersectWithLine(lines.coords[lines.elems][i][1], lines.coords[lines.elems][i][0], ptstmp, cellidstmp)
         if cellidstmp.GetNumberOfIds():
             cellids[i] = [cellidstmp.GetId(j) for j in range(cellidstmp.GetNumberOfIds())]
-            pts[i] = Coords(v2n(ptstmp.GetData()).squeeze())
+            pts[i] = Coords(array2N(ptstmp.GetData()).squeeze())
     loc.FreeSearchStructure()
     del loc
     return pts, cellids
@@ -764,6 +801,8 @@ def _vtkClipper(self,vtkif, insideout):
 
     - `mesh`: a Mesh.
     - `vtkif`: a vtk implicit function.
+    - `insideout`: bool or boolean integer(0 or 1) to selet the select the side
+        of the selection
 
     In vtk `clip` means intersection and get a part of a mesh.
     Returns 3 meshes (line2, tri3, quad4):
@@ -775,36 +814,43 @@ def _vtkClipper(self,vtkif, insideout):
     This functions should not be used by the user.   
     """
     from vtk import vtkClipPolyData
-    from pyformex.plugins.vtk_itf import convert2VPD,  convertFromVPD
+    
     if self.elName() not in ['line2','tri3','quad4']:
         warning('vtkClipper has not been tested with this element type %s'%self.elName())
     vtkobj = convert2VPD(self)   
     clipper = vtkClipPolyData()
     clipper.SetInput(vtkobj)
     clipper.SetClipFunction(vtkif)
-    if insideout == True:
-        clipper.InsideOutOn()
+    clipper.SetInsideOut(int(insideout))
     clipper.Update()
     clipper = clipper.GetOutput()  
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = convertFromVPD(vpd=clipper,verbose=True,samePlex=False)
     l2, t3, q4 = None, None, None
     if cells != None or verts != None:
         raise ValueError, 'unexpected output: please report it to developers!'
+    
+    prop = None
+    if celldata.has_key('prop'):
+        prop = celldata['prop']
+    
     if lines != None:
-        l2 = Mesh(coords, lines.toArray())
+        l2 = Mesh(coords, lines.toArray()).setProp(prop)
     if polys != None:
         va = polys
         va = [va.select(va.lengths==l).toArray() for l in unique(va.lengths)]
         for ar in va:
             if ar.shape[1] == 3:
-                t3 = Mesh(coords, ar)
+                t3 = Mesh(coords, ar).setProp(prop)
             elif ar.shape[1] == 4:#could it also be a tet4?
-                q4 = Mesh(coords, ar)
+                q4 = Mesh(coords, ar).setProp(prop)
             else:
                raise ValueError, 'unexpected output: please report it to developers!'
+    
     return l2, t3, q4
 
 
+
+# Implicit Functions
 def _vtkPlane(p, n):
     from vtk import vtkPlane
     plane = vtkPlane()
@@ -812,7 +858,46 @@ def _vtkPlane(p, n):
     plane.SetNormal(n)
     return plane
 
+def _vtkPlanes(p,n):
+    """ Set a vtkPlanes implicit function.
+    
+     Parameters:
 
+    - `p` : points of the planes
+    - `n`: correspondent normals of the planes
+    """
+    from vtk import vtkPlanes
+    planes = vtkPlanes()
+    planes.SetNormals(array2VTK(n))
+    planes.SetPoints(coords2VTK(p))
+    return planes
+
+def _vtkBoxPlanes(box):
+    """ Set a box with vtkPlanes implicit function.
+    
+     Parameters:
+
+    - `box` : Coords, Formex or Mesh objects. 
+    
+        - Coords array of shape (2,3) : the first point containing the
+            minimal coordinates, the second the maximal ones.
+        - Formex or Mesh specifying one hexahedron.
+        
+    
+    Returns the vtkPlanes implicit function of the box.
+    """
+    from pyformex.simple import cuboid
+    from pyformex.arraytools import checkArray
+    if isinstance(box,Coords):
+        box = checkArray(box,shape=(2,3))
+        box=cuboid(*box)
+    box = box.toMesh()
+    box = Mesh(box.coords,box.getFaces())
+    box.setNormals('auto')
+    p = box.centroids()
+    n = box.normals.mean(axis=1)
+    return _vtkPlanes(p,n)
+    
 def _vtkSphere(c, r):
     from vtk import vtkSphere
     sphere = vtkSphere()
@@ -872,6 +957,7 @@ def _vtkBox(p=None, trMat4x4=None):
     """
     from vtk import vtkBox
     box = vtkBox()
+    
     if trMat4x4 is not None:
         if p is not None:
             raise ValueError, 'a box cannot be defined both by coordinates and matrix'
@@ -931,19 +1017,30 @@ def vtkCut(self, p=None, n=None, c=None, r=None, box=None):
         raise ValueError, 'implicit object for cutting not well specified'
     
 
-def vtkClip(self, p=None, n=None, c=None, r=None, box=None,insideout=False):
+def vtkClip(self, implicitdata, method=None, insideout=False):
     """Clip (split) a Mesh with a plane, a sphere or a box.
 
     Parameters:
 
-    - `mesh`: a Mesh (line2,tri3,quad4).
-    - `p`, `n`: a point and normal vector defining the cutting plane.
-    - `c`, `r`: center and radius defining a sphere.
-    - `box`, either a 4x4 matrix to apply affine transformation (not yet implemented)
-     or a box (cuboid) defined by 4 points, a formex or a mesh. See _vtkBox.
-    - `insideout`:boolean to choose which side of the mesh should be returned.
-
-    Either (p,n) or (c,r) or box should be given.
+    - `self`: a Mesh (line2,tri3,quad4).
+    - `implicitdata`: list or vtkImplicitFunction. If list it must contains the 
+        parameter for the predefined implicit functions:
+        
+        -  method ==  `plane` : a point and normal vector defining the cutting plane.
+        -  method ==  `sphere` :  center and radius defining a sphere.
+        -  method ==  `box`  : either a 4x4 matrix to apply affine transformation (not yet implemented)
+            or a box (cuboid) defined by 4 points, a formex or a mesh. See _vtkBox.
+        -  method ==  `boxplanes`  : Coords, Mesh or Formex. Coords array of shape (2,3) specifying
+            minimal  and coordinates of the box. Formex or Mesh specifying one hexahedron. See _vtkPlanesBox.
+        -  method ==  `planes`  : points array-like of shape (npoints,3) and
+                normal vectors array-like of shape (npoints,3) defining the cutting planes.
+        
+    - `method`: str or None. If string allowed values are `plane`,`planes`, `sphere`,
+        `box` to select the correspondent implicit functions by providing the 
+        `implicitdata` parameters. If None a vtkImplicitFunction must be passed directly
+        in `implicitdata`
+    - `insideout`:boolean or an integer with values 0 or 1 to choose which side of the mesh should be returned.
+    
     Clipping does not reduce the mesh dimension.
     Returns always 3 meshes (line2, tri3, quad4):
     a line2 mesh if self is a line2 mesh,
@@ -953,18 +1050,28 @@ def vtkClip(self, p=None, n=None, c=None, r=None, box=None,insideout=False):
     a box which is outside the mesh).
     It has not been tested with volume meshes.
     """
-    if c == r == box == None:
-        if p!=None and n!=None:
-            print("clipping mesh of type %s with plane"%self.elName())
-            return _vtkClipper(self,_vtkPlane(p,n),insideout)
-    elif p == n == box == None:
-        if c!=None and r!=None:
-            print("clipping mesh of type %s with sphere"%self.elName())
-            return _vtkClipper(self,_vtkSphere(c, r),insideout)
-    elif p == n == c == r == None:
-        if box!=None:
-            print("clipping mesh of type %s with box"%self.elName())
-            return _vtkClipper(self,_vtkBox(box),insideout)
+    if method=='plane':
+        p,n = implicitdata
+        print("clipping mesh of type %s with plane"%self.elName())
+        return _vtkClipper(self,_vtkPlane(p,n),insideout)
+    elif method=='sphere':
+        c,r = implicitdata
+        print("clipping mesh of type %s with sphere"%self.elName())
+        return _vtkClipper(self,_vtkSphere(c, r),insideout)
+    elif method=='box':
+        box = implicitdata
+        print("clipping mesh of type %s with box"%self.elName())
+        return _vtkClipper(self,_vtkBox(box),insideout)
+    elif method=='boxplanes':
+        box = implicitdata
+        print("clipping mesh of type %s with box"%self.elName())
+        return _vtkClipper(self,_vtkBoxPlanes(box),insideout)
+    elif method=='planes':
+        p,n = implicitdata
+        print("clipping mesh of type %s with planes"%self.elName())
+        return _vtkClipper(self,_vtkPlanes(p,n),insideout)
+    elif method is None:
+        return _vtkClipper(self,implicitdata,insideout)
     else:
         raise ValueError, 'implicit object for cutting not well specified'
 
