@@ -162,12 +162,14 @@ def run():
 
     H = DoubleHelixStent(D, L, d, nx, b)
     clear()
+    smooth()
+    view('iso')
 
     if show=='Formex':
-        draw(H.getFormex(), view='iso')
+        F = H.getFormex()
+        draw(F)
 
     else:
-        view('iso')
         wires = H.getWireAxes()
         # Draw the clockwise and anticlockwise wires with different color
         draw(wires[0],color='black')

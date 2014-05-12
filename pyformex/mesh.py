@@ -103,34 +103,18 @@ class Mesh(Geometry):
     ###################################################################
     ## DEVELOPERS: ATTENTION
     ##
-    ## Because the TriSurface is derived from Mesh, all methods which
-    ## return a Mesh and will also work correctly on a TriSurface,
-    ## should use self.__class__ to return the proper class, and they
-    ## should specify the prop and eltype arguments using keywords
-    ## (because only the first two arguments match).
+    ## The Mesh class is intended to be subclassable: TriSurface is an
+    ## example of a class derived from Mesh.
+    ## Therefore, all methods returning a Mesh and also operating correctly
+    ## on a subclass, should use self.__class__ to return the proper class.
+    ## The self.__class__ initiator should be called with the 'prop' and
+    ## 'eltype' arguments, using keyword arguments, because only the first
+    ## two arguments ('coords', 'elems') are guaranteed.
     ## See the copy() method for an example.
     ###################################################################
 
 
     fieldtypes = ['node','elemc','elemn']
-
-
-
-    # BV: This is not used anymore
-    ## def _formex_transform(func):
-    ##     """Perform a Formex transformation on the .coords attribute of the object.
-
-    ##     This is a decorator function. It should be used only for Formex methods
-    ##     which are not Geometry methods as well.
-    ##     """
-    ##     formex_func = getattr(Formex, func.__name__)
-    ##     def newf(self,*args,**kargs):
-    ##         """Performs the Formex %s transformation on the coords attribute"""
-    ##         F = Formex(self.coords).formex_func(self.coords,*args,**kargs)
-    ##         return self._set_coords(coords_func(self.coords,*args,**kargs))
-    ##     newf.__name__ = func.__name__
-    ##     newf.__doc__ = coords_func.__doc__
-    ##     return newf
 
 
     def __init__(self,coords=None,elems=None,prop=None,eltype=None):
@@ -236,25 +220,6 @@ class Mesh(Geometry):
 
         """
         return self.elType().name()
-
-
-    ## def setProp(self,prop=None):
-    ##     """Create or destroy the property array for the Mesh.
-
-    ##     A property array is a rank-1 integer array with dimension equal
-    ##     to the number of elements in the Mesh.
-    ##     You can specify a single value or a list/array of integer values.
-    ##     If the number of passed values is less than the number of elements,
-    ##     they wil be repeated. If you give more, they will be ignored.
-
-    ##     If a value None is given, the properties are removed from the Mesh.
-    ##     """
-    ##     if prop is None:
-    ##         self.prop = None
-    ##     else:
-    ##         prop = array(prop).astype(Int)
-    ##         self.prop = resize(prop,(self.nelems(),))
-    ##     return self
 
 
     def setNormals(self,normals=None):
