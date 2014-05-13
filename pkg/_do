@@ -138,7 +138,7 @@ uploadlocal() {
 publocal() {
     CHANGES=$(getchanges)
     echo Publishing ${CHANGES}
-    ssh ${REPOHOST} reprepro -b ${REPOPATH} include sid ${REPOPATH}/incoming/${CHANGES}
+    ssh ${REPOHOST} reprepro -b ${REPOPATH} --ignore=missingfile include sid ${REPOPATH}/incoming/${CHANGES}
 }
 
 
