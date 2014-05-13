@@ -627,6 +627,26 @@ def levelVolumes(x):
         raise ValueError("Plexitude should be one of 2, 3 or 4; got %s" % nplex)
 
 
+def inertialDirections(x):
+    """Return the directions of the dimension of a Coords based of inertia.
+    
+    - `x`: a Coords-like array
+    
+    Returns a tuple of the direction vectors and the sizes  along the direction 
+    and the cross directions. The arrays are ordered from the smallest to the largest direction.
+    
+    """
+    # Dimension in a coordinate system aligned with the global axes.
+    C, r, Ip, I = x.inertia()
+    X = x.trl(-C).rot(r)
+    sizes = X.sizes()
+    i=argsort(sizes)
+    # r gives the directions as column vectors!
+    # TODO: maybe we should change that
+    N = r[:,i].T
+    return N, sizes[i]
+
+
 def smallestDirection(x,method='inertia',return_size=False):
     """Return the direction of the smallest dimension of a Coords
 
@@ -640,17 +660,11 @@ def smallestDirection(x,method='inertia',return_size=False):
     if method == 'inertia':
         # The idea is to take the smallest dimension in a coordinate
         # system aligned with the global axes.
-        C, r, Ip, I = x.inertia()
-        X = x.trl(-C).rot(r)
-        sizes = X.sizes()
-        i = sizes.argmin()
-        # r gives the directions as column vectors!
-        # TODO: maybe we should change that
-        N = r[:, i]
+        N,sizes=inertialDirections(x)
         if return_size:
-            return N, sizes[i]
+            return N[0], sizes[0]
         else:
-            return N
+            return N[0]
     elif method == 'random':
         # Take the mean of the normals on randomly created triangles
         from pyformex.plugins.trisurface import TriSurface
@@ -670,6 +684,23 @@ def smallestDirection(x,method='inertia',return_size=False):
         N = sqrt(N)
         N = normalize(N)
         return N
+
+
+def largestDirection(x,return_size=False):
+    """Return the direction of the largest dimension of a Coords.
+
+    - `x`: a Coords-like array
+    - return_size: if True and `method` is 'inertia', a tuple of a direction
+      vector and the size  along that direction and the cross directions;
+      else, only return the direction vector.
+    """
+    x = x.reshape(-1, 3)
+    N,sizes = inertialDirections(x)
+    if return_size:
+        return N[2], sizes[2]
+    else:
+        return N[2]
+
 
 # todo: add parameter mode = 'all' or 'pair'
 def distance(X, Y):
