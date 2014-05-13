@@ -883,24 +883,6 @@ maxprop  = %s
         return asarray(T)
 
 
-    def clip(self, t):
-        """Return a Formex with all the elements where t>0.
-
-        t should be a 1-D integer array with length equal to the number
-        of elements of the formex.
-        The resulting Formex will contain all elements where t > 0.
-        This is a convenience function for the user, equivalent to
-        F.select(t>0).
-        """
-        return self.select(t>0)
-
-
-    def cclip(self, t):
-        """This is the complement of clip, returning a Formex where t<=0.
-        """
-        return self.select(t<=0)
-
-
 ##############################################################################
 #
 #   Transformations that preserve the topology (but change coordinates)

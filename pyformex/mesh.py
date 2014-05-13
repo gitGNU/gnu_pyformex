@@ -2224,23 +2224,6 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
         return asarray(T)
 
 
-    def clip(self,t,compact=True):
-        """Return a Mesh with all the elements where t>0.
-
-        t should be a 1-D integer array with length equal to the number
-        of elements of the Mesh.
-        The resulting Mesh will contain all elements where t > 0.
-        """
-        return self.select(t>0, compact=compact)
-
-
-    def cclip(self,t,compact=True):
-        """This is the complement of clip, returning a Mesh where t<=0.
-
-        """
-        return self.select(t<=0, compact=compact)
-
-
     def clipAtPlane(self,p,n,nodes='any',side='+'):
         """Return the Mesh clipped at plane (p,n).
 

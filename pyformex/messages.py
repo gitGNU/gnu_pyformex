@@ -68,7 +68,7 @@ You can convert your scripts automatically with the command::
 _future_deprecation = "This functionality is deprecated and will probably be removed in future, unless you explain to the developers why they should retain it."
 
 
-warn_viewport_linking = "Linking viewports is an experimental feature and is not fully functional yet."
+warn_clip_changed = "The clip and cclip methods have changed. If the selector contains negative numbers, these will be selected as in the (c)select methods."
 warn_default_gl = """..
 
 GL2 now default
@@ -126,6 +126,7 @@ warn_project_legacy = "The legacy=True argument has become superfluous"
 warn_properties_setname = "!! 'setname' is deprecated, please use 'name'"
 warn_widgets_updatedialogitems = "gui.widgets.updateDialogItems now expects data in the new InputItem format. Use gui.widgets.updateOldDialogItems for use with old data format."
 warn_radio_enabler = "A 'radio' type input item can currently not be used as an enabler for other input fields."
+warn_viewport_linking = "Linking viewports is an experimental feature and is not fully functional yet."
 warn_vmtk_includeprop = "includeprop %s are in the property set %s. Remesh will not have any effect."
 warn_writevtp_notclean = "Mesh is not clean: vtk will alter the nodes. To clean: mesh.fuse().compact().renumber()"
 warn_writevtp_shape = "The number of array cells should be equal to the number of elements"

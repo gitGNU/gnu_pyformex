@@ -30,6 +30,7 @@ Coords class to the derived classes.
 from __future__ import print_function
 
 from pyformex import zip
+from pyformex import utils
 from pyformex.coords import Coords, Int
 from pyformex.odict import OrderedDict
 import pyformex.arraytools as at
@@ -277,12 +278,12 @@ class Geometry(object):
         return np.array([], dtype=Int)
 
 
-    def select(self,selected,compact=True):
+    def select(self,sel,compact=True):
         """Return a Geometry only containing the selected elements.
 
         Parameters:
 
-        - `selected`: an object that can be used as an index in an array:
+        - `sel`: an object that can be used as an index in an array:
 
           - a single element number
           - a list, or array, of element numbers
@@ -298,15 +299,15 @@ class Geometry(object):
 
         See :meth:`cselect` for the complementary operation.
         """
-        return self._select(selected, compact=compact)
+        return self._select(sel, compact=compact)
 
 
-    def cselect(self,selected,compact=True):
+    def cselect(self,sel,compact=True):
         """Return a Geometry with the selected elements removed.
 
         Parameters:
 
-        - `selected`: an object that can be used as an index in an array:
+        - `sel`: an object that can be used as an index in an array:
 
           - a single element number
           - a list, or array, of element numbers
@@ -317,7 +318,7 @@ class Geometry(object):
           If True (default), the returned Mesh will be compacted, i.e.
           the unused nodes are removed and the nodes are renumbered from
           zero. If False, returns the node set and numbers unchanged.
-        - `selected`: an object that can be used as an index in the
+        - `sel`: an object that can be used as an index in the
           `elems` array, such as
 
           - a single element number
@@ -334,7 +335,33 @@ class Geometry(object):
 
         This is the complimentary operation of :meth:`select`.
         """
-        return self._select(at.complement(selected, self.nelems()), compact=compact)
+        return self._select(at.complement(sel, self.nelems()), compact=compact)
+
+
+    @utils.warning("warn_clip_changed")
+    def clip(self, sel):
+        """Return a Geometry only containing the selected elements.
+
+        For a Formex, this is equivalent with select(sel).
+        For a Mesh, this is equivalent with select(sel,compact=True).
+
+        See :meth:`select` for more information.
+        """
+        return self.select(sel, compact=True)
+
+
+    @utils.warning("warn_clip_changed")
+    def cclip(self, sel):
+        """Return a Geometry with the selected elements removed.
+
+        For a Formex, this is equivalent with cselect(sel).
+        For a Mesh, this is equivalent with cselect(sel,compact=True).
+
+        See :meth:`cselect` for more information.
+
+        This is the complimentary operation of :meth:`clip`.
+        """
+        return self.cselect(sel, compact=True)
 
 
     def selectProp(self,val,compact=True):
