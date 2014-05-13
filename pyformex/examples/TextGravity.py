@@ -41,7 +41,7 @@ def run():
     clear()
     lights(False)
     x,y = pf.canvas.width()/2,pf.canvas.height()/2
-    H = Grid(x-200,y-200,x+200,y+200, 2,2,rendertype=2,color=red,linewidth=2)
+    H = Grid2D(x-200,y-200,x+200,y+200, 2,2,rendertype=2,color=red,linewidth=2)
     drawActor(H)
 
 

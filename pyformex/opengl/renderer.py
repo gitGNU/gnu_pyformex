@@ -116,7 +116,11 @@ class Renderer(object):
         for obj in objects:
             GL.glDepthFunc(GL.GL_LESS)
             self.setDefaults()
+            if obj.trl or obj.rot or obj.trl0:
+                self.loadMatrices(rot=self.rot,trl=self.trl,trl0=self.trl0)
             obj.render(self)
+            if obj.trl or obj.rot or obj.trl0:
+                self.loadMatrices()
 
 
     def pickObjects(self, objects):
@@ -125,6 +129,29 @@ class Renderer(object):
             GL.glPushName(i)
             obj.render(self)
             GL.glPopName()
+
+
+    def loadMatrices(self,rot=None,trl=None,trl0=None):
+        """Load the rendering matrices.
+
+        rot, trl, trl0 are additional rotation, translation and
+        pre-translation for the object.
+        """
+        # Get the current modelview*projection matrix
+        modelview = self.camera.modelview
+        if trl0:
+            modelview.translate(trl0)
+        if rot:
+            modelview.rotate(rot)
+        if trl:
+            modelview.translate(trl)
+        projection = self.camera.projection
+        transinv = self.camera.modelview.transinv().rot
+
+        # Propagate the matrices to the uniforms of the shader
+        self.shader.uniformMat4('modelview', modelview.gl())
+        self.shader.uniformMat4('projection', projection.gl())
+        self.shader.uniformMat3('normalstransform', transinv.flatten().astype(np.float32))
 
 
     def render3D(self,actors,pick=None):
@@ -148,11 +175,6 @@ class Renderer(object):
         self.shader.uniformMat4('projection', projection.gl())
         self.shader.uniformMat3('normalstransform', transinv.flatten().astype(np.float32))
 
-        if pick:
-            from pyformex.opengl import camera
-            pickmat = camera.pick_matrix(*pick)
-            self.shader.uniformMat4('pickmat', pickmat.gl())
-
         # sort actors in back and front, and select visible
         actors = back(actors) + front(actors)
         actors =  [ o for o in actors if o.visible is not False ]
@@ -162,6 +184,10 @@ class Renderer(object):
 
         if pick:
             # PICK MODE
+            from pyformex.opengl import camera
+            pickmat = camera.pick_matrix(*pick)
+            self.shader.uniformMat4('pickmat', pickmat.gl())
+
             self.pickObjects(actors)
 
         elif not self.canvas.settings.alphablend:

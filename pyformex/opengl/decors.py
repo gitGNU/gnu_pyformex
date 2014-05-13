@@ -64,7 +64,7 @@ class Line(Actor):
         Actor.__init__(self,F,rendertype=2,**kargs)
 
 
-class Grid(Actor):
+class Grid2D(Actor):
     """A 2D-grid on the canvas."""
     def __init__(self,x1,y1,x2,y2,nx=1,ny=1,lighting=False,rendertype=2,**kargs):
         F = Formex([[[x1,y1],[x1,y2]]]).replic(nx+1,step=float(x2-x1)/nx,dir=0) + \
@@ -350,5 +350,68 @@ class Triade(Actor):
 ##         psize = float(psize)
 ##         if psize > 0.0:
 ##             self.psize = psize
+
+
+def Grid(nx=(1, 1, 1),ox=(0.0, 0.0, 0.0),dx=(1.0, 1.0, 1.0),lines='b',planes='b',linecolor=black,planecolor=white,alpha=0.3,**kargs):
+    """Creates a (set of) grid(s) in (some of) the coordinate planes.
+
+    Parameters:
+
+    - `nx`: a list of 3 integers, specifying the number of divisions of the
+      grid in the three coordinate directions. A zero value may be specified
+      to avoid the grid to extend in that direction. Thus, setting the last
+      value to zero will result in a planar grid in the xy-plane.
+    - `ox`: a list of 3 floats: the origin of the grid.
+    - `dx`: a list of 3 floats: the step size in each coordinate direction.
+    - `planes`: one of 'first', 'box', 'all', 'no' (the string can be
+      shortened to the first chartacter): specifies how many planes are
+      drawn in each direction: 'f' only draws the first, 'b' draws the first
+      and the last, resulting in a box, 'a' draws all planes,
+      'n' draws no planes.
+
+    Returns a list with up to two Meshes: the planes, and the lines.
+
+    """
+    from pyformex import simple
+    from pyformex.olist import List
+    from pyformex.mesh import Mesh
+    G = List()
+
+    planes = planes[:1].lower()
+    P = []
+    L = []
+    for i in range(3):
+        n0,n1,n2 = roll(nx,i)
+        d0,d1,d2 = roll(dx,i)
+        if n0*n1:
+            if planes != 'n':
+                M = simple.rectangle(b=n0*d0,h=n1*d1)
+                if n2:
+                    if planes == 'b':
+                        M = M.replic(2,dir=2,step=n2*d2)
+                    elif planes == 'a':
+                        M = M.replic(n2+1,dir=2,step=d2)
+                P.append(M.rollAxes(-i).toMesh())
+            if lines != 'n':
+                M = Formex('1').scale(n0*d0).replic(n1+1,dir=1,step=d1) + \
+                    Formex('2').scale(n1*d1).replic(n0+1,dir=0,step=d0)
+                if n2:
+                    if lines == 'b':
+                        M = M.replic(2,dir=2,step=n2*d2)
+                    elif lines == 'a':
+                        M = M.replic(n2+1,dir=2,step=d2)
+
+                L.append(M.rollAxes(-i).toMesh())
+
+    if P:
+        M = Mesh.concatenate(P)
+        M.attrib(name='__grid_planes__',mode='flat',lighting=False,color=planecolor,alpha=alpha,**kargs)
+        G.append(M)
+    if L:
+        M = Mesh.concatenate(L)
+        M.attrib(name='__grid_lines__',mode='flat',lighting=False,color=linecolor,alpha=0.6,**kargs)
+        G.append(M)
+
+    return G.trl(ox)
 
 # End

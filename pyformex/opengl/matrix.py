@@ -113,7 +113,9 @@ class Matrix4(np.matrix):
 
         Returns the (4,4) Matrix as a rowwise flattened array of type float32.
 
-        >>> Transform().gl()
+        >>> Matrix4().gl()
+        matrix([ 1.,  0.,  0.,  0.,  0.,  1.,  0.,  0.,  0.,  0.,  1.,  0.,  0.,
+                 0.,  0.,  1.], dtype=float32)
         """
         if self._gl is None:
             self._gl = self.flatten().astype(np.float32)
@@ -167,17 +169,24 @@ class Matrix4(np.matrix):
         """
         vector = at.checkArray(vector, (3,), 'f')
         self.trl += vector*self.rot
+        return self
 
 
     def rotate(self,angle,axis=None):
-        """Rotate a 4x4 matrix by an angle around an axis.
+        """Rotate a Matrix4.
+
+        The rotation can be specified by
+        - an angle and axis,
+        - a 3x3 rotation matrix,
+        - a 4x4 trtransformation matrix (Matrix4).
 
         Parameters:
 
-        - `angle`: float: the rotation angle.
+        - `angle`: float: the rotation angle. A 3x3 or 4x4 matrix may be
+           give instead, to directly specify the roation matrix.
         - `axis`: int or (3,) float: the axis to rotate around
 
-        Changes the Matrix in place and also returns the result
+        Changes the Matrix in place and also returns the result.
 
         Example:
 
@@ -205,6 +214,7 @@ class Matrix4(np.matrix):
                 angle = at.checkFloat(angle)
                 rot = np.matrix(at.rotationMatrix(angle, axis))
         self.rot = rot*self.rot
+        return self
 
 
     def scale(self, vector):
@@ -226,6 +236,7 @@ class Matrix4(np.matrix):
         for i in range(3):
             self[i, i] *= vector[i]
         self._gl = None
+        return self
 
 
     # Do we need these?

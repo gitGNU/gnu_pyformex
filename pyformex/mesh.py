@@ -2628,7 +2628,7 @@ def tri3_els(ndiv):
 
 
 def gridpoints(seed0,seed1=None,seed2=None):
-    """Create weigths for 1D, 2D or 3D element coordinates.
+    """Create weights for 1D, 2D or 3D element coordinates.
 
     Parameters:
 
@@ -2680,7 +2680,7 @@ def line2_wts(seed0):
 
     """
     wts = gridpoints(seed0)
-    return column_stack([wts,1-wts]) 
+    return column_stack([wts,1-wts])
 
 
 def line2_els(nx):
@@ -2712,7 +2712,7 @@ def quad4_els(nx, ny):
     return row_stack(els)
 
 
-def quadgrid(seed0, seed1):
+def quadgrid(seed0, seed1, roll=0):
     """Create a quadrilateral mesh of unit size with the specified seeds.
 
     The seeds are a monotonously increasing series of parametric values
@@ -2724,10 +2724,14 @@ def quadgrid(seed0, seed1):
     The seeds are usually generated with the seed() function.
     """
     from pyformex.elements import Quad4
+    seed0 = smartSeed(seed0)
+    seed1 = smartSeed(seed1)
     wts = gridpoints(seed0, seed1)
     n0 = len(seed0)-1
     n1 = len(seed1)-1
     E = Quad4.toMesh()
+    if roll:
+        E = E.rollAxes(roll)
     X = E.coords.reshape(-1, 4, 3)
     U = dot(wts, X).transpose([1, 0, 2]).reshape(-1, 3)
     els = quad4_els(n0, n1)

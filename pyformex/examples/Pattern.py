@@ -35,13 +35,14 @@ _techniques = ['color', 'pattern']
 
 from pyformex.gui.draw import *
 from pyformex import simple
+from pyformex.opengl.decors import Grid
 
 
 def run():
     reset()
     setDrawOptions(dict(view='front', linewidth=5, fgcolor='red'))
-    grid = actors.GridActor(nx=(4, 4, 0), ox=(-2.0, -2.0, 0.0), dx=(1.0, 1.0, 1.0), planes=False, linewidth=1)
-    drawActor(grid)
+    grid = Grid(nx=(4, 4, 0), ox=(-2.0, -2.0, 0.0), dx=(1.0, 1.0, 1.0), planes='n', linewidth=1)
+    draw(grid)
     linewidth(3)
     FA = None
     setDrawOptions({'bbox':None})

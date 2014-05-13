@@ -33,7 +33,7 @@ _topics = ['geometry']
 _techniques = ['dialog', 'actor']
 
 from pyformex.gui.draw import *
-from pyformex.gui import actors
+from pyformex.opengl.decors import Grid
 
 
 def run():
@@ -53,14 +53,11 @@ def run():
     gridtype = res['Grid type']
     alpha = res['alpha']
 
-    if gridtype == 'Box':
-        GA = actors.GridActor(nx=nx, linewidth=0.2, alpha=alpha)
-    else:
-        GA = actors.CoordPlaneActor(nx=nx, linewidth=0.2, alpha=alpha)
+    t = 'b' if gridtype == 'Box' else 'f'
+    GA = Grid(nx=nx, linewidth=0.2, alpha=alpha, lines=t, planes=t)
 
     smooth()
-    drawActor(GA)
-    zoomBbox(GA.bbox())
+    draw(GA)
 
 if __name__ == 'draw':
     run()

@@ -124,7 +124,7 @@ class Drawable(Attributes):
     def prepareColor(self):
         """Prepare the colors for the shader."""
         #
-        # This should probably be moved to GeomActor
+        # This should probably be moved to Actor
         #
         if self.highlight:
             # we set single highlight color in shader
@@ -484,7 +484,7 @@ class Actor(Base):
             self['pointsize'] = self['marksize']
 
         if self.name is None:
-            self.name = GeomActor.defaultname.next()
+            self.name = Actor.defaultname.next()
 
         # Store minimal data
         coords = coords.astype(float32)
@@ -1026,6 +1026,8 @@ class Actor(Base):
             s += "** Drawable %s **\n" % i
             s += d.__str__()
         return s
+
+
 
 
 # for compatibility
