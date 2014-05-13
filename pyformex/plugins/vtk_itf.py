@@ -983,42 +983,63 @@ def _vtkBox(p=None, trMat4x4=None):
         return box
 
 
-def vtkCut(self, p=None, n=None, c=None, r=None, box=None):
-    """Cut (get intersection of) a Mesh with a plane, a sphere or a box.
+def vtkCut(self, implicitdata, method=None):
+    """Cut (get intersection of) a Mesh with plane(s), a sphere or a box.
 
     Parameters:
 
-    - `mesh`: a Mesh.
-    - `p`, `n`: a point and normal vector defining the cutting plane.
-    - `c`, `r`: center and radius defining a sphere.
-    - `box`, either a 4x4 matrix to apply affine transformation (not yet implemented)
-     or a box (cuboid) defined by 4 points, a formex or a mesh. See _vtkBox.
-
-    Either (p,n) or (c,r) or box should be given.
+    - `self`: a Mesh (line2,tri3,quad4).
+    - `implicitdata`: list or vtkImplicitFunction. If list it must contains the 
+        parameter for the predefined implicit functions:
+        
+        -  method ==  `plane` : a point and normal vector defining the cutting plane.
+        -  method ==  `sphere` :  center and radius defining a sphere.
+        -  method ==  `box`  : either a 4x4 matrix to apply affine transformation (not yet implemented)
+            or a box (cuboid) defined by 4 points, a formex or a mesh. See _vtkBox.
+        -  method ==  `boxplanes`  : Coords, Mesh or Formex. Coords array of shape (2,3) specifying
+            minimal  and coordinates of the box. Formex or Mesh specifying one hexahedron. See _vtkPlanesBox.
+        -  method ==  `planes`  : points array-like of shape (npoints,3) and
+                normal vectors array-like of shape (npoints,3) defining the cutting planes.
+        
+    - `method`: str or None. If string allowed values are `plane`,`planes`, `sphere`,
+        `box` to select the correspondent implicit functions by providing the 
+        `implicitdata` parameters. If None a vtkImplicitFunction must be passed directly
+        in `implicitdata`
+        
     Cutting reduces the mesh dimension by one.
     Returns a mesh of points if self is a line2 mesh,
     a mesh of lines if self is a surface tri3 or quad4 mesh,
     a triangular mesh if self is tet4 or hex8 mesh.
     If there is no intersection returns None.
     """
-    if c == r == box == None:
-        if p!=None and n!=None:
-            print("cutting mesh of type %s with plane"%self.elName())
-            return _vtkCutter(self,_vtkPlane(p,n))
-    elif p == n == box == None:
-        if c!=None and r!=None:
-            print("cutting mesh of type %s with sphere"%self.elName())
-            return _vtkCutter(self,_vtkSphere(c, r))
-    elif p == n == c == r == None:
-        if box!=None:
-            print("cutting mesh of type %s with box"%self.elName())
-            return _vtkCutter(self,_vtkBox(box))
+    if method=='plane':
+        p,n = implicitdata
+        print("cutting mesh of type %s with plane"%self.elName())
+        return _vtkCutter(self,_vtkPlane(p,n))
+    elif method=='sphere':
+        c,r = implicitdata
+        print("cutting mesh of type %s with sphere"%self.elName())
+        return _vtkCutter(self,_vtkSphere(c, r))
+    elif method=='box':
+        box = implicitdata
+        print("cutting mesh of type %s with box"%self.elName())
+        return _vtkCutter(self,_vtkBox(box))
+    elif method=='boxplanes':
+        box = implicitdata
+        print("cutting mesh of type %s with box"%self.elName())
+        return _vtkCutter(self,_vtkBoxPlanes(box))
+    elif method=='planes':
+        p,n = implicitdata
+        print("cutting mesh of type %s with planes"%self.elName())
+        return _vtkCutter(self,_vtkPlanes(p,n))
+    elif method is None:
+        return _vtkCutter(self,implicitdata)
     else:
         raise ValueError, 'implicit object for cutting not well specified'
     
 
 def vtkClip(self, implicitdata, method=None, insideout=False):
-    """Clip (split) a Mesh with a plane, a sphere or a box.
+    """Clip (split) a Mesh with plane(s), a sphere or a box.
 
     Parameters:
 
