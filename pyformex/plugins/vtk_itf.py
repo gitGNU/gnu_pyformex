@@ -304,11 +304,20 @@ def convert2VTU(M):
     datav = elems2VTK(M.elems)
     # find vtu cell type
     vtuCellType = eltype2VTU(M.elName())
+    
+
     # create the vtu
     from vtk import vtkUnstructuredGrid
     vtu = vtkUnstructuredGrid()
     vtu.SetPoints(pts)
     vtu.SetCells(vtuCellType, datav)
+    
+    if M.prop is not None: # convert prop numbers into vtk array
+        vtype = vtkIntArray().GetDataType()
+        vprop = array2VTK(M.prop,vtype)
+        vprop.SetName('prop')
+        vtu.GetCellData().AddArray(vprop)
+    
     vtu.Update()
     return vtu
 
@@ -784,12 +793,17 @@ def _vtkCutter(self,vtkif):
     cutter.Update()
     cutter = cutter.GetOutput()
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata=convertFromVPD(cutter,verbose=True,samePlex=True)
+
+    prop=None
+    if celldata.has_key('prop'):
+        prop = celldata['prop']
+
     if verts is not None: #self was a line mesh
         return Mesh(coords, verts)
     elif lines is not None: #self was a surface mesh
-        return Mesh(coords, lines)
+        return Mesh(coords, lines).setProp(prop)
     elif polys is not None: #self was a volume mesh
-        return Mesh(coords, polys)
+        return Mesh(coords, polys).setProp(prop)
     else:
         return None #no intersection found
 
