@@ -166,6 +166,14 @@ class Coords(ndarray):
         the structure of the points.
         """
         return self.reshape((-1, 3))
+        
+    @property
+    def coords(self):
+        """Returns the `Coords` object .
+
+        This is added for consistence with other classes.
+        """
+        return self
 
     def pshape(self):
         """Returns the shape of the :class:`Coords` object.
