@@ -692,39 +692,61 @@ def inside(surf,pts,tol='auto'):
     return where(pointInsideObject(surf, pts, tol))[0]
 
 
-def intersectWithSegment(surf,lines,tol=0.0):
+def intersectWithSegment(surf,lines,tol=0.0,closest=False):
     """Compute the intersection of surf with lines.
 
     Parameters:
 
     - `surf`: Formex, Mesh or TriSurface
     - `lines`: a mesh of segments
-
+    - `tol`:  tolerance
+    - `closest`:  boolean. If True returns only the closest point to the first point of each segment.
+    
     Returns a list of the intersection points lists and of the element number
     of surf where the point lies.
     The position in the list is equal to the line number. If there is no
     intersection with the correspondent lists are empty
     """
     from vtk import vtkOBBTree, vtkPoints, vtkIdList
-
+    from arraytools import vectorLength,inverseIndex
+    
+    if tol:
+        surf=surf.toFormex().shrink(1+tol).toMesh()
+    
     vsurf = convert2VPD(surf, clean=False)
     loc = vtkOBBTree()
     loc.SetDataSet(vsurf)
-    loc.SetTolerance(tol)
+    loc.SetTolerance(0)
     loc.BuildLocator()
     loc.Update()
-    cellids = [[],]*lines.nelems()
-    pts = [[],]*lines.nelems()
-    for i in range(lines.nelems()):
-        ptstmp = vtkPoints()
-        cellidstmp = vtkIdList()
-        loc.IntersectWithLine(lines.coords[lines.elems][i][1], lines.coords[lines.elems][i][0], ptstmp, cellidstmp)
-        if cellidstmp.GetNumberOfIds():
-            cellids[i] = [cellidstmp.GetId(j) for j in range(cellidstmp.GetNumberOfIds())]
-            pts[i] = Coords(array2N(ptstmp.GetData()).squeeze())
+    
+    cellids = []
+    pts = []
+    
+    cellidstmp = [vtkIdList() for i in range(lines.nelems())]
+    ptstmp = [vtkPoints() for i in range(lines.nelems())]
+    
+    [loc.IntersectWithLine(lines.coords[lines.elems][i][1], lines.coords[lines.elems][i][0], ptstmp[i], cellidstmp[i] ) for i in range(lines.nelems())]
+    
     loc.FreeSearchStructure()
     del loc
-    return pts, cellids
+    
+    [[cellids.append(cellidstmp[i].GetId(j)) for j in range(cellidstmp[i].GetNumberOfIds())] for i in range(lines.nelems()) ]
+    [[lineids.append(i) for j in range(cellidstmp[i].GetNumberOfIds())] for i in range(lines.nelems()) ]
+    [[pts.append(ptstmp[i].GetData().GetTuple3(j)) for j in range(ptstmp[i].GetData().GetNumberOfTuples())] for i in range(lines.nelems()) ]
+    
+    if closest:
+        d = vectorLength(pts-lines.coords[lines.elems][:,0][lineids])
+        ind = ma.masked_values(inverseIndex(asarray(lineids).reshape(-1,1)),-1)
+        d = ma.array(d[ind],mask=ind<0).argmin(axis=1)
+        ind = invid[arange(ind.shape[0]),d]
+        
+        pts = asarray(pts)[ind]
+        lineids = asarray(lineids)[ind]
+        cellids = asarray(cellids)[ind]
+    
+    pts, j=Coords(pts).fuse()
+    return pts,column_stack([j,lineids,cellids])
 
 
 def convertTransform4x4FromVtk(transform):
