@@ -1292,7 +1292,7 @@ class Canvas(object):
 
         """
         w, h = self.width(), self.height()
-        self._focus = decors.Grid(-1.,-1.,1.,1., color=color, linewidth=2, rendertype=3)
+        self._focus = decors.Grid2D(-1.,-1.,1.,1., color=color, linewidth=2, rendertype=3)
         self.addAny(self._focus)
 
 
@@ -1302,7 +1302,7 @@ class Canvas(object):
             self.removeDecoration(self.cursor)
         w, h = pf.cfg.get('draw/picksize', (20, 20))
         col = pf.cfg.get('pick/color', 'yellow')
-        self.cursor = decors.Grid(x-w/2, y-h/2, x+w/2, y+h/2, color=col, linewidth=1)
+        self.cursor = decors.Grid2D(x-w/2, y-h/2, x+w/2, y+h/2, color=col, linewidth=1)
         self.addDecoration(self.cursor)
 
 
@@ -1310,7 +1310,7 @@ class Canvas(object):
         if self.cursor:
             self.removeDecoration(self.cursor)
         col = pf.cfg.get('pick/color', 'yellow')
-        self.cursor = decors.Grid(self.statex, self.statey, x, y, color=col, linewidth=1)
+        self.cursor = decors.Grid2D(self.statex, self.statey, x, y, color=col, linewidth=1)
         self.addDecoration(self.cursor)
 
 
