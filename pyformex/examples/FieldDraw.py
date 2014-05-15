@@ -64,6 +64,8 @@ def run():
     # 3. convert to field constant over elements
     M.convertField('distn','elemc','distc')
 
+    print(M.fieldReport())
+
     # draw two fields
     viewport(0)
     drawField(M,'elemn',M.getField('distn').data[0])

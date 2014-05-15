@@ -66,7 +66,7 @@ class Field(object):
     change anymore. This means that for Formex type, the shape of the
     `coords` attribute should not be changed, and for Mesh type, the
     shape of `coords` and the full contents of `elems` should not be
-    changed. It is therefore best ot only add filed data to geometry
+    changed. It is therefore best ot only add field data to geometry
     objects that will not be changed in place.
     Nearly all methods in pyFormex return a copy of the object, and the
     copy currently looses all the fields defined on the parent.

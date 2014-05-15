@@ -722,6 +722,14 @@ class Geometry(object):
             return {}
 
 
+    def fieldReport(self):
+        """Print a short report of the stored fields"""
+        return '\n'.join([
+            "Field '%s', fldtype '%s', dtype %s, shape %s" % \
+            (f.fldname,f.fldtype,f.data.dtype,f.data.shape) \
+            for f in self.fields.values() ])
+
+
     def write(self,filename,sep=' ',mode='w'):
         """Write a Geometry to a .pgf file.
 
