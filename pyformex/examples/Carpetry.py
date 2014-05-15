@@ -103,8 +103,8 @@ def run():
         export({'surface':S})
         surface_menu.selection.set(['surface'])
         surface_menu.showSurfaceValue(S, str(conversions), val, False)
-        pf.canvas.removeDecoration()
-
+        for a in pf.canvas.scene.decorations+pf.canvas.scene.annotations:
+            undraw(a)
 
     clear()
     flatwire()
@@ -115,9 +115,15 @@ def run():
         canvasSize(nx*200, ny*200)
         #canvasSize(720,576)
         print("running interactively")
-        n = ask("How many?", ['0', '1000', '100', '10', '1'])
-        n = int(n)
-        save = ack("Save images?")
+        res = askItems([
+            _I('n',1,text='Number of carpets'),
+            _I('save',False,text='Save images'),
+            ])
+        if not res:
+            return
+
+        n = res['n']
+        save = res['save']
         if save:
             from pyformex.gui import image
             image.save(filename='Carpetry-000.jpg', window=False, multi=True, hotkey=False, autosave=False, border=False, rootcrop=False, format=None, quality=95, verbose=False)
