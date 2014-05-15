@@ -553,6 +553,58 @@ def drawImage(image,w=0,h=0,x=-1,y=-1,color=colors.white,ontop=False):
     return R
 
 
+def drawField(fld,comp=0,scale='RAINBOW',symmetric_scale=False):
+    """Draw intensity of a scalar field over a Mesh.
+
+    Parameters:
+
+    - `fld`: a Field, specifying some value over a Geometry.
+    - `comp`: int: if fld is a vectorial Field, specifies the component
+      that is to be drawn.
+    - `scale`: one of the color palettes defined in :mod:`colorscale`.
+      If an empty string is specified, the scale is not drawn.
+
+    Draws the Field's Geometry with the Field data converted to colors.
+    A color legend is added to convert colors to values.
+    NAN data are converted to numerical values using numpy.nan_to_num.
+
+    """
+    from pyformex.gui.colorscale import ColorScale
+    from pyformex.opengl.decors import ColorLegend
+    import numpy as np
+
+    # Get the data
+    data = np.nan_to_num(fld.comp(comp))
+
+    # create a colorscale and draw the colorlegend
+    vmin, vmax = data.min(), data.max()
+    if vmin*vmax < 0.0 and not symmetric_scale:
+        vmid = 0.0
+    else:
+        vmid = 0.5*(vmin+vmax)
+
+    scalev = [vmin, vmid, vmax]
+    if max(scalev) > 0.0:
+        logv = [ abs(a) for a in scalev if a != 0.0 ]
+        logs = np.log10(logv)
+        logma = int(logs.max())
+    else:
+        # All data = 0.0
+        logma = 0
+
+    if logma < 0:
+        multiplier = 3 * ((2 - logma) / 3 )
+    else:
+        multiplier = 0
+
+    CS = ColorScale('RAINBOW', vmin, vmax, vmid, 1., 1.)
+    cval = np.array([CS.color(v) for v in data.flat])
+    cval = cval.reshape(data.shape+(3,))
+    CLA = ColorLegend(CS, 256, 20, 20, 30, 200, scale=multiplier)
+    drawActor(CLA)
+    draw(fld.geometry, color=cval)
+
+
 def drawActor(A):
     """Draw an actor and update the screen."""
     pf.canvas.addActor(A)

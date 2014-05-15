@@ -217,7 +217,8 @@ class Field(object):
         elif fldtype == 'elemg':
             datashape = (geometry.nelems(),-1,-1)
 
-        if len(data.shape) < len(datashape):
+        scalar = len(data.shape) < len(datashape)
+        if scalar:
             datashape = datashape[:-1]
         data = at.checkArray(data,shape=datashape)
 
@@ -229,6 +230,24 @@ class Field(object):
         self.fldname = fldname
         self.fldtype = fldtype
         self.data = data
+        self.scalar = scalar
+
+
+    def comp(self,i):
+        """Return the data component i of a vectorial Field.
+
+        Parameters:
+
+        - `i`: int: component number of a vectorial Field. If the Field is a
+          scalar one, any value will return the full scalar data.
+
+        Returns an array representing the scalar data over the
+        Geometry.
+        """
+        if self.scalar:
+            return self.data
+        else:
+            return self.data[:,i]
 
 
     def convert(self,totype,toname=None):

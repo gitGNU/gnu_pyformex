@@ -37,7 +37,6 @@ from pyformex.gui.draw import *
 
 from pyformex import simple
 from pyformex import geomfile
-from pyformex.plugins.postproc import drawField
 
 
 def run():
@@ -68,10 +67,10 @@ def run():
 
     # draw two fields
     viewport(0)
-    drawField(M,'elemn',M.getField('distn').data[0])
+    drawField(M.getField('distn'))
     zoom(1.25)
     viewport(1)
-    drawField(M,'elemc',M.getField('distc').data[0])
+    drawField(M.getField('distc'))
     zoom(1.25)
 
 

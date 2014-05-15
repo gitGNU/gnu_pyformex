@@ -620,26 +620,35 @@ def showStatisticsDialog():
 
 
 def showSurfaceValue(S, txt, val, onEdges):
-    val = nan_to_num(val)
-    mi, ma = val.min(), val.max()
-    # Test: replace min with max
-    dec = min(abs(mi), abs(ma))
-    if dec > 0.0:
-        dec = max(0, 3-int(log10(dec)))
-    else:
-        dec = 2
-    # create a colorscale and draw the colorlegend
-    CS = ColorScale('RAINBOW', mi, ma, 0.5*(mi+ma), 1.)
-    cval = array([CS.color(v) for v in ravel(val)])
-    cval = cval.reshape(append(val.shape, cval.shape[-1]))
+    """Display a scalar value on the surface or its edges"""
+    from pyformex.field import Field
+    print("VAL",val.min(),val.max())
+    ## val = nan_to_num(val)
+    ## mi, ma = val.min(), val.max()
+    ## # Test: replace min with max
+    ## dec = min(abs(mi), abs(ma))
+    ## if dec > 0.0:
+    ##     dec = max(0, 3-int(log10(dec)))
+    ## else:
+    ##     dec = 2
+    ## # create a colorscale and draw the colorlegend
+    ## CS = ColorScale('RAINBOW', mi, ma, 0.5*(mi+ma), 1.)
+    ## cval = array([CS.color(v) for v in ravel(val)])
+    ## cval = cval.reshape(append(val.shape, cval.shape[-1]))
+    ## if onEdges:
+    ##     M = Mesh(S.coords,S.getEdges())
+    ##     draw(M, color=cval)
+    ## else:
+    ##     draw(S, color=cval)
+    ## CLA = ColorLegend(CS, 100, 10, 20, 30, 200, dec=dec)
+    ## decorate(CLA)
     if onEdges:
-        F = Formex(S.coords[S.getEdges()])
-        draw(F, color=cval)
+        M = Mesh(S.coords,S.getEdges())
     else:
-        draw(S, color=cval)
-    CLA = ColorLegend(CS, 100, 10, 20, 30, 200, dec=dec)
-    decorate(CLA)
-    drawText(txt, (10, 230), size=18)
+        M = S
+    fld = Field(M,'elemc',val)
+    drawField(fld)
+    drawText(txt, (10, 240), size=18)
 
 
 def colorByFront():

@@ -170,7 +170,7 @@ class ColorLegend(Actor):
             self.children.append(G)
 
         # labels
-        print("LABELS: %s" % self.nlabel)
+        # print("LABELS: %s" % self.nlabel)
         if self.nlabel > 0:
             from pyformex.opengl import textext
             from pyformex.coords import Coords
