@@ -1304,7 +1304,7 @@ maxprop  = %s
 #    Functions which are not Formex class methods
 #
 
-def connect(Flist,nodid=None,bias=None,loop=False):
+def connect(Flist,nodid=None,bias=None,loop=False,eltype=None):
     """Return a Formex which connects the Formices in list.
 
     Flist is a list of formices, nodid is an optional list of nod ids and
@@ -1348,7 +1348,7 @@ def connect(Flist,nodid=None,bias=None,loop=False):
         if loop and k > 0:
             v = concatenate([v, Flist[i].coords[:k, j,:]])
         f[:, i,:] = resize(v, (n, 3))
-    return Formex(f)
+    return Formex(f,eltype=eltype)
 
 
 def interpolate(F,G,div,swap=False,concat=True):

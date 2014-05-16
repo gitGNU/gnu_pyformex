@@ -32,7 +32,8 @@ vtk and pyFormex.
 """
 from __future__ import print_function
 
-from pyformex import utils
+
+from pyformex import utils,warning
 utils.requireModule('vtk')
 
 from pyformex import zip
@@ -215,6 +216,9 @@ def convert2VPD(M,clean=False,verbose=True):
 
     if verbose:
         print(('STARTING CONVERSION FOR DATA OF TYPE %s '%type(M)))
+    
+    if isinstance(M, Formex):
+        M = M.toMesh()
 
     if isinstance(M, Coords):
         M = Mesh(M, arange(M.ncoords()))
@@ -692,13 +696,14 @@ def inside(surf,pts,tol='auto'):
     return where(pointInsideObject(surf, pts, tol))[0]
 
 
-def intersectWithSegment(surf,lines,tol=0.0,closest=False,reorder=True):
+def intersectWithSegment(self,q,q2,tol=0.0,method='segments',closest=False,reorder=False):
     """Compute the intersection of surf with lines.
 
     Parameters:
 
-    - `surf`: Formex, Mesh or TriSurface
-    - `lines`: a mesh of segments
+    - `self`: Formex, Mesh or TriSurface
+    - `q`,`q2`: (...,3) shaped arrays of points, defining
+          a set of lines.
     - `tol`:  tolerance
     - `closest`:  boolean. If True returns only the closest point to the first point of each segment.
     - `reorder`:  boolean. If True reorder the points according to the the line order.
@@ -709,12 +714,47 @@ def intersectWithSegment(surf,lines,tol=0.0,closest=False,reorder=True):
     intersection with the correspondent lists are empty
     """
     from vtk import vtkOBBTree, vtkPoints, vtkIdList
-    from arraytools import vectorLength,inverseIndex
+    from pyformex.arraytools import vectorLength,inverseIndex,checkArray
+    from pyformex.geomtools import distance
+    from pyformex.simple import cuboid
+    from pyformex.formex import connect
+    from pyformex.gui.draw import draw
     
+    checkArray(q,shape=q2.shape)
+    
+    if method=='lines':
+        # expand the segments to ensure to be in the bbox of self.
+        # The idea is to check the max distance between the bboxes of lines and self
+        # then scale usin shrink all the segments of the relative factor between the distance
+        # and the minimum segment. The set of lines is cut and the 2 points corresponding to a single line are used as 
+        # new q and q2.
+        # NOTE THE ALGORYTHM IS VERY DEPENDENT ON THE SEGMENT'S SIZES. FOR THIS REASON IS CLIPPED
+        # ON THE TARGET BBOX
+        lines=connect([q,q2],eltype='line2')
+        off=lines.toMesh().lengths().min()
+        bbl=cuboid(*lines.bbox())
+        bbs=cuboid(*self.bbox()).scale(1.+tol)
+        d=distance(bbs.coords, bbl.coords).max()
+
+        lines=lines.shrink((d+off)/off).toMesh().setProp(prop='range').subdivide(int(40*(d+off)/off/bbs.sizes().max()))
+        verts=vtkCut(lines,implicitdata=bbs,method='boxplanes')
+        if verts is None
+            return 
+            
+        idprops=inverseIndex(verts.prop[...,None])
+        idprops=idprops[(idprops==-1).sum(axis=1)==0,:]
+
+        q = verts.coords[verts.elems[idprops[:,0]]].squeeze()
+        q2 = verts.coords[verts.elems[idprops[:,1]]].squeeze()
+        #~ lines=connect([q,q2],eltype='line2').toMesh()
+        #~ draw(lines,color='red')
+        #~ draw(self)
+        #~ exit()
+
     if tol:
-        surf=surf.toFormex().shrink(1+tol).toMesh()
-    
-    vsurf = convert2VPD(surf, clean=False)
+        self=self.toFormex().shrink(1+tol).toMesh()
+
+    vsurf = convert2VPD(self, clean=False)
     loc = vtkOBBTree()
     loc.SetDataSet(vsurf)
     loc.SetTolerance(0)
@@ -728,17 +768,17 @@ def intersectWithSegment(surf,lines,tol=0.0,closest=False,reorder=True):
     cellidstmp = [vtkIdList() for i in range(lines.nelems())]
     ptstmp = [vtkPoints() for i in range(lines.nelems())]
     
-    [loc.IntersectWithLine(lines.coords[lines.elems][i][1], lines.coords[lines.elems][i][0], ptstmp[i], cellidstmp[i] ) for i in range(lines.nelems())]
+    [loc.IntersectWithLine(q[i], q2[i], ptstmp[i], cellidstmp[i] ) for i in range(q.shape[0])]
     
     loc.FreeSearchStructure()
     del loc
     
-    [[cellids.append(cellidstmp[i].GetId(j)) for j in range(cellidstmp[i].GetNumberOfIds())] for i in range(lines.nelems()) ]
-    [[lineids.append(i) for j in range(cellidstmp[i].GetNumberOfIds())] for i in range(lines.nelems()) ]
-    [[pts.append(ptstmp[i].GetData().GetTuple3(j)) for j in range(ptstmp[i].GetData().GetNumberOfTuples())] for i in range(lines.nelems()) ]
+    [[cellids.append(cellidstmp[i].GetId(j)) for j in range(cellidstmp[i].GetNumberOfIds())] for i in range(q.shape[0]) ]
+    [[lineids.append(i) for j in range(cellidstmp[i].GetNumberOfIds())] for i in range(q.shape[0]) ]
+    [[pts.append(ptstmp[i].GetData().GetTuple3(j)) for j in range(ptstmp[i].GetData().GetNumberOfTuples())] for i in range(q.shape[0]) ]
     
     if closest:
-        d = vectorLength(pts-lines.coords[lines.elems][:,0][lineids])
+        d = vectorLength((pts-q)[lineids])
         ind = ma.masked_values(inverseIndex(asarray(lineids).reshape(-1,1)),-1)
         d = ma.array(d[ind],mask=ind<0).argmin(axis=1)
         ind = ind[arange(ind.shape[0]),d]
@@ -746,16 +786,14 @@ def intersectWithSegment(surf,lines,tol=0.0,closest=False,reorder=True):
         pts = asarray(pts)[ind]
         lineids = asarray(lineids)[ind]
         cellids = asarray(cellids)[ind]
-    
-    
-    
+
     pts, j=Coords(pts).fuse()
     
-    # This optio has been tested onnly witth closest=True
+    # This option has been tested only with closest=True
     if reorder:
-        hitsxline = inverseIndex(lineids.reshape(-1,1))
+        hitsxline = inverseIndex(asarray(lineids).reshape(-1,1))
         j = j[hitsxline[where(hitsxline>-1)]]
-        linedis = linedis[hitsxline[where(hitsxline>-1)]]
+        lineids = lineids[hitsxline[where(hitsxline>-1)]]
         cellids = cellids[hitsxline[where(hitsxline>-1)]]
         pts=pts[j]
     return pts,column_stack([j,lineids,cellids])
@@ -833,7 +871,7 @@ def _vtkCutter(self,vtkif):
         prop = celldata['prop']
 
     if verts is not None: #self was a line mesh
-        return Mesh(coords, verts)
+        return Mesh(coords, verts).setProp(prop)
     elif lines is not None: #self was a surface mesh
         return Mesh(coords, lines).setProp(prop)
     elif polys is not None: #self was a volume mesh
