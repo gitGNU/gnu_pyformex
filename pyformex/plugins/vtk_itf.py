@@ -692,7 +692,7 @@ def inside(surf,pts,tol='auto'):
     return where(pointInsideObject(surf, pts, tol))[0]
 
 
-def intersectWithSegment(surf,lines,tol=0.0,closest=False):
+def intersectWithSegment(surf,lines,tol=0.0,closest=False,reorder=True):
     """Compute the intersection of surf with lines.
 
     Parameters:
@@ -701,6 +701,7 @@ def intersectWithSegment(surf,lines,tol=0.0,closest=False):
     - `lines`: a mesh of segments
     - `tol`:  tolerance
     - `closest`:  boolean. If True returns only the closest point to the first point of each segment.
+    - `reorder`:  boolean. If True reorder the points according to the the line order.
     
     Returns a list of the intersection points lists and of the element number
     of surf where the point lies.
@@ -721,6 +722,7 @@ def intersectWithSegment(surf,lines,tol=0.0,closest=False):
     loc.Update()
     
     cellids = []
+    lineids = []
     pts = []
     
     cellidstmp = [vtkIdList() for i in range(lines.nelems())]
@@ -739,13 +741,23 @@ def intersectWithSegment(surf,lines,tol=0.0,closest=False):
         d = vectorLength(pts-lines.coords[lines.elems][:,0][lineids])
         ind = ma.masked_values(inverseIndex(asarray(lineids).reshape(-1,1)),-1)
         d = ma.array(d[ind],mask=ind<0).argmin(axis=1)
-        ind = invid[arange(ind.shape[0]),d]
+        ind = ind[arange(ind.shape[0]),d]
         
         pts = asarray(pts)[ind]
         lineids = asarray(lineids)[ind]
         cellids = asarray(cellids)[ind]
     
+    
+    
     pts, j=Coords(pts).fuse()
+    
+    # This optio has been tested onnly witth closest=True
+    if reorder:
+        hitsxline = inverseIndex(lineids.reshape(-1,1))
+        j = j[hitsxline[where(hitsxline>-1)]]
+        linedis = linedis[hitsxline[where(hitsxline>-1)]]
+        cellids = cellids[hitsxline[where(hitsxline>-1)]]
+        pts=pts[j]
     return pts,column_stack([j,lineids,cellids])
 
 
