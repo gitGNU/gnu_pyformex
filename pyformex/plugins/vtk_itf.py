@@ -696,7 +696,7 @@ def inside(surf,pts,tol='auto'):
     return where(pointInsideObject(surf, pts, tol))[0]
 
 
-def intersectWithSegment(self,q,q2,tol=0.0,method='segments',closest=False,reorder=False):
+def intersectionWithLines(self,q,q2,method='line',atol=1e-6,closest=False,reorder=False):
     """Compute the intersection of surf with lines.
 
     Parameters:
@@ -704,14 +704,16 @@ def intersectWithSegment(self,q,q2,tol=0.0,method='segments',closest=False,reord
     - `self`: Formex, Mesh or TriSurface
     - `q`,`q2`: (...,3) shaped arrays of points, defining
           a set of lines.
-    - `tol`:  tolerance
+    - `atol`:  tolerance
+    - `method`: a string (line) defining if the line, is a full-line. Otherwise  the provided segments 
+            are used for the intersections
     - `closest`:  boolean. If True returns only the closest point to the first point of each segment.
     - `reorder`:  boolean. If True reorder the points according to the the line order.
     
-    Returns a list of the intersection points lists and of the element number
-    of surf where the point lies.
-    The position in the list is equal to the line number. If there is no
-    intersection with the correspondent lists are empty
+    Returns:
+    - a fused set of intersection points (Coords)
+    - a (1,3) array with the indices of intersection point, line and
+      triangle
     """
     from vtk import vtkOBBTree, vtkPoints, vtkIdList
     from pyformex.arraytools import vectorLength,inverseIndex,checkArray
@@ -720,9 +722,9 @@ def intersectWithSegment(self,q,q2,tol=0.0,method='segments',closest=False,reord
     from pyformex.formex import connect
     from pyformex.gui.draw import draw
     
-    checkArray(q,shape=q2.shape)
     
-    if method=='lines':
+    
+    if method=='line':
         # expand the segments to ensure to be in the bbox of self.
         # The idea is to check the max distance between the bboxes of lines and self
         # then scale usin shrink all the segments of the relative factor between the distance
@@ -730,19 +732,22 @@ def intersectWithSegment(self,q,q2,tol=0.0,method='segments',closest=False,reord
         # new q and q2.
         # NOTE THE ALGORYTHM IS VERY DEPENDENT ON THE SEGMENT'S SIZES. FOR THIS REASON IS CLIPPED
         # ON THE TARGET BBOX
-        lines=connect([q,q2],eltype='line2')
-        off=lines.toMesh().lengths().min()
-        bbl=cuboid(*lines.bbox())
-        bbs=cuboid(*self.bbox()).scale(1.+tol)
-        d=distance(bbs.coords, bbl.coords).max()
+        # The subdivision is NECESSARY as the implicit function do not work well with vtkLines with low resolution
+        #giving rounded corners of the box function or no lines in return. the values of 20 minimum points per line within the 
+        # target bbox has been chosen after various resolution tests
+        lines = connect([q,q2],eltype='line2')
+        off = lines.toMesh().lengths().min()
+        bbl = lines.principalBbox()
+        bbs = self.principalBbox().scale(1.+atol)
+        d = distance(bbs.coords, bbl.coords).max()
 
-        lines=lines.shrink((d+off)/off).toMesh().setProp(prop='range').subdivide(int(40*(d+off)/off/bbs.sizes().max()))
-        verts=vtkCut(lines,implicitdata=bbs,method='boxplanes')
-        if verts is None
+        lines = lines.shrink((d+off)/off).toMesh().setProp(prop='range').subdivide(int(20*2*(d+off)/off/bbs.sizes().max()))
+        verts = vtkCut(lines,implicitdata=bbs,method='boxplanes')
+        if verts is None:
             return 
             
-        idprops=inverseIndex(verts.prop[...,None])
-        idprops=idprops[(idprops==-1).sum(axis=1)==0,:]
+        idprops = inverseIndex(verts.prop[...,None])
+        idprops = idprops[(idprops==-1).sum(axis=1)==0,:]
 
         q = verts.coords[verts.elems[idprops[:,0]]].squeeze()
         q2 = verts.coords[verts.elems[idprops[:,1]]].squeeze()
@@ -750,9 +755,11 @@ def intersectWithSegment(self,q,q2,tol=0.0,method='segments',closest=False,reord
         #~ draw(lines,color='red')
         #~ draw(self)
         #~ exit()
-
-    if tol:
-        self=self.toFormex().shrink(1+tol).toMesh()
+    
+    checkArray(q,shape=q2.shape)
+    
+    if atol:
+        self = self.toFormex().shrink(1+atol).toMesh()
 
     vsurf = convert2VPD(self, clean=False)
     loc = vtkOBBTree()
@@ -765,8 +772,8 @@ def intersectWithSegment(self,q,q2,tol=0.0,method='segments',closest=False,reord
     lineids = []
     pts = []
     
-    cellidstmp = [vtkIdList() for i in range(lines.nelems())]
-    ptstmp = [vtkPoints() for i in range(lines.nelems())]
+    cellidstmp = [vtkIdList() for i in range(q.shape[0])]
+    ptstmp = [vtkPoints() for i in range(q.shape[0])]
     
     [loc.IntersectWithLine(q[i], q2[i], ptstmp[i], cellidstmp[i] ) for i in range(q.shape[0])]
     
@@ -777,25 +784,33 @@ def intersectWithSegment(self,q,q2,tol=0.0,method='segments',closest=False,reord
     [[lineids.append(i) for j in range(cellidstmp[i].GetNumberOfIds())] for i in range(q.shape[0]) ]
     [[pts.append(ptstmp[i].GetData().GetTuple3(j)) for j in range(ptstmp[i].GetData().GetNumberOfTuples())] for i in range(q.shape[0]) ]
     
+    cellids=asarray(cellids)
+    lineids=asarray(lineids)
+    pts=asarray(pts)
+    
     if closest:
-        d = vectorLength((pts-q)[lineids])
-        ind = ma.masked_values(inverseIndex(asarray(lineids).reshape(-1,1)),-1)
+        d = vectorLength((pts-q[lineids]))
+        ind = ma.masked_values(inverseIndex(lineids.reshape(-1,1)),-1)
         d = ma.array(d[ind],mask=ind<0).argmin(axis=1)
-        ind = ind[arange(ind.shape[0]),d]
-        
-        pts = asarray(pts)[ind]
-        lineids = asarray(lineids)[ind]
-        cellids = asarray(cellids)[ind]
+        ind = ind[arange(ind.shape[0]),d].compressed()
+        pts = pts[ind]
+        lineids = lineids[ind]
+        cellids = cellids[ind]
 
     pts, j=Coords(pts).fuse()
-    
+
     # This option has been tested only with closest=True
     if reorder:
-        hitsxline = inverseIndex(asarray(lineids).reshape(-1,1))
+        hitsxline = inverseIndex(lineids.reshape(-1,1))
         j = j[hitsxline[where(hitsxline>-1)]]
         lineids = lineids[hitsxline[where(hitsxline>-1)]]
         cellids = cellids[hitsxline[where(hitsxline>-1)]]
         pts=pts[j]
+        
+        
+    if method=='line':
+        lineids=verts.prop[idprops[:,0]][lineids]
+        
     return pts,column_stack([j,lineids,cellids])
 
 
