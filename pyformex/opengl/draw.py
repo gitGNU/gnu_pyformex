@@ -776,7 +776,7 @@ def colorindex(color):
 
 def renderModes():
     """Return a list of predefined render profiles."""
-    return canvas.CanvasSettings.RenderProfiles.keys()
+    return pf.canvas.settings.keys()
 
 
 def renderMode(mode,light=None):
