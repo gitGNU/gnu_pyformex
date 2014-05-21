@@ -776,7 +776,8 @@ def colorindex(color):
 
 def renderModes():
     """Return a list of predefined render profiles."""
-    return pf.canvas.settings.keys()
+    from pyformex.opengl.canvas import CanvasSettings
+    return CanvasSettings.RenderProfiles.keys()
 
 
 def renderMode(mode,light=None):
