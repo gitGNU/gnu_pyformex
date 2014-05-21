@@ -1402,8 +1402,7 @@ Viewport %s;  Current:%s;  Settings:
             oldvp.close()
             self.showWidget(newvp)
             vp = newvp
-            vp.actors = to.actors
-            vp.bbox = to.bbox
+            vp.scene = to.scene
             vp.show()
             vp.setCamera()
             vp.redrawAll()
@@ -1655,8 +1654,7 @@ Viewport %s;  Current:%s;  Settings:
             oldvp.close()
             self.showWidget(newvp)
             vp = newvp
-            vp.actors = to.actors
-            vp.bbox = to.bbox
+            vp.scene.actors = to.scene.actors
             vp.show()
             vp.setCamera()
             vp.redrawAll()

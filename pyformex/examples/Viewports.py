@@ -50,7 +50,7 @@ def run():
     FA = draw(F, view='front')
     drawText('Viewport 0', (20, 20), size=20)
 
-    pause(msg='NEXT: Create Viewport 1')
+    pause(msg='NEXT: Create Empty Viewport 1')
     layout(2)
     drawText('Viewport 1', (20, 20), size=20)
     pf.GUI.viewports.updateAll()

@@ -686,6 +686,10 @@ class Canvas(object):
             self.settings.lighting = lighting
             self.reset()
 
+        else:
+            print("NO camera, but setting rendermode anyways")
+            self.rendermode = mode
+
 
     def setWireMode(self,state,mode=None):
         """Set the wire mode.
