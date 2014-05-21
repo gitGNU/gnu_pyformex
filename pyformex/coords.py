@@ -166,7 +166,7 @@ class Coords(ndarray):
         the structure of the points.
         """
         return self.reshape((-1, 3))
-        
+
     @property
     def coords(self):
         """Returns the `Coords` object .
@@ -2058,7 +2058,7 @@ def testBbox(A,bb,dirs=[0, 1, 2],nodes='any',atol=0.):
     bounding box.
     """
     test = [ A.test(nodes=nodes, dir=i, min=bb[0][i], max=bb[1][i], atol=atol) for i in dirs ]
-    return stack(test).prod(axis=0).astype(bool)
+    return stack(test).all(axis=0)
 
 
 def origin():

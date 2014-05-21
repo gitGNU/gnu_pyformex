@@ -1732,14 +1732,14 @@ def cut3AtPlane(F,p,n,side='',atol=None,newprops=None):
     p = asarray(p).reshape(-1, 3)
     n = asarray(n).reshape(-1, 3)
     nplanes = len(p)
-    test = row_stack([F.test('any', n[i], p[i], atol=atol) for i in range(nplanes)]).all(axis=0) # elements having part at positive side of all planes
+    test = stack([F.test('any', n[i], p[i], atol=atol) for i in range(nplanes)]).all(axis=0) # elements having part at positive side of all planes
     F_pos = F.clip(test) # save elements having part at positive side of all planes
     if side in '-': # Dirty trick: this also includes side='' !
         F_neg = F.cclip(test) # save elements completely at negative side of one of the planes
     else:
         F_neg = None
     if F_pos.nelems() != 0:
-        test = row_stack([F_pos.test('all', n[i], p[i], atol=-atol) for i in range(nplanes)]).all(axis=0) # elements completely at positive side of all planes
+        test = stack([F_pos.test('all', n[i], p[i], atol=-atol) for i in range(nplanes)]).all(axis=0) # elements completely at positive side of all planes
         F_cut = F_pos.cclip(test) # save elements that will be cut by one of the planes
         F_pos = F_pos.clip(test)  # save elements completely at positive side of all planes
         if F_cut.nelems() != 0:
