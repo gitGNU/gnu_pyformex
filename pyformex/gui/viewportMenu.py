@@ -99,7 +99,8 @@ def setBgColor():
             ('mode', 'horizontal', 'color2'),
             ('mode', 'full', 'color2', 'color3', 'color4'),
             ('showimage', True, 'image'),
-            ]
+            ('mode', 'solid', '_save_'),
+           ]
         )
     res = bgcolor_dialog.getResults()
     if res:
@@ -116,10 +117,14 @@ def setBackground(mode, color1, color2, color3, color4, showimage, image, _save_
     else:
         color = [color1, color2, color3, color4]
     if not showimage:
-        image = None
+        image = ''
     pf.canvas.setBackground(color=color, image=image)
     pf.canvas.update()
     if _save_:
+        if mode != 'solid':
+            pf.warning("Due to a bug, currently only 'solid' background settings can be saved.")
+            return
+
         prefMenu.updateSettings({
             'canvas/bgmode':mode,
             'canvas/bgcolor':color,
