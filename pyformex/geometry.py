@@ -278,7 +278,8 @@ class Geometry(object):
         return np.array([], dtype=Int)
 
 
-    def select(self,sel,compact=True):
+    @utils.warning("warn_select_changed")
+    def select(self,sel,compact=False):
         """Return a Geometry only containing the selected elements.
 
         Parameters:
@@ -302,7 +303,8 @@ class Geometry(object):
         return self._select(sel, compact=compact)
 
 
-    def cselect(self,sel,compact=True):
+    @utils.warning("warn_select_changed")
+    def cselect(self,sel,compact=False):
         """Return a Geometry with the selected elements removed.
 
         Parameters:

@@ -48,6 +48,7 @@ def run():
     K = G.scale(200).toMesh()
     K.attrib(color=yellow,rendertype=2, texture=image)
     draw([F,H,K], texture=image)
+    drawText(image, (200, 20), size=20)
 
     view('iso')
     zoomAll()

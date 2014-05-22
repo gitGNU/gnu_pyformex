@@ -1072,7 +1072,7 @@ Quality: %s .. %s
         To reduce the coordinate set, set the compact argument to True
         or use the :meth:`compact` method afterwards.
         """
-        return self.cselect(self.degenerate(), compact=False)
+        return self.cselect(self.degenerate(), compact=compact)
 
 
 ##################  Transform surface #############################
@@ -1546,14 +1546,14 @@ Quality: %s .. %s
               could replace this function.
             """
             m=normalize(m)
-            
+
             def distancePFL(P, q, m):
                 """distance of MANY points from ONE single line.
                 NB: this is faster than:geomtools.distancesPFL(P,q,m,mode='pair')
                 """
                 pq = P-q
                 return sqrt(pow(length(pq),2)-pow(dotpr(pq, m),2))
-                
+
             cand= [where(distancePFL(p, q[i], m[i])<=dtresh)[0] for i in range(q.shape[0])]
             il = concatenate([[i]*len(ca) for i, ca in enumerate(cand)]).astype(int)
             ip = concatenate(cand)

@@ -52,8 +52,12 @@ def run():
 
     pause(msg='NEXT: Create Empty Viewport 1')
     layout(2)
+    smooth()
+    FA = draw(F, view='front')
     drawText('Viewport 1', (20, 20), size=20)
     pf.GUI.viewports.updateAll()
+    pause()
+    return
 
     pause(msg='NEXT: Create Viewport 2 and draw in green')
     layout(3)

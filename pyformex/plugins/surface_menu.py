@@ -460,7 +460,7 @@ def deleteTriangles():
             #print picked
             if len(picked) > 0:
                 #print S.nelems()
-                S = S.cselect(picked)
+                S = S.cclip(picked)
                 #print "DELETE",type(S)
                 name = selection.names[0]
                 #print name
