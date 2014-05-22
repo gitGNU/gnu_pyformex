@@ -1561,6 +1561,8 @@ def runGUI():
     else:
         # Save the current dir as workdir
         prefMenu.updateSettings({'workdir':os.getcwd(),'_save_':True})
+    # correctly display the current workdir
+    pf.GUI.setcurdir()
 
     pf.interactive = True
     pf.debug("Start main loop", pf.DEBUG.INFO)
