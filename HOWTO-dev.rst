@@ -144,12 +144,14 @@ have internet connection from your Linux system.
   `~/.gitconfig` file::
 
     [alias]
-        st = status -uno
-        su = status
+	su = status
+	st = status -uno
 	co = checkout
 	ci = commit
 	br = branch
 	last = log -1 HEAD
+	df = diff --ignore-space-change
+	find = log --pretty=\"format:%Cgreen%H %Cblue%s\" --name-status --grep
 
 
 - If you want to work on the documentation (and as a developer you really
