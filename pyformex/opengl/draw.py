@@ -610,22 +610,23 @@ def drawActor(A):
     pf.canvas.addActor(A)
     pf.canvas.update()
 
+
 def drawAny(A):
     """Draw an Actor/Annotation/Decoration and update the screen."""
     pf.canvas.addAny(A)
     pf.canvas.update()
 
-def undraw(itemlist):
+
+def undraw(items):
     """Remove an item or a number of items from the canvas.
 
     Use the return value from one of the draw... functions to remove
     the item that was drawn from the canvas.
     A single item or a list of items may be specified.
     """
-    if itemlist:
-        pf.canvas.removeAny(itemlist)
+    pf.canvas.removeAny(items)
     pf.canvas.update()
-    pf.app.processEvents()
+#    pf.app.processEvents()
 
 
 def view(v,wait=True):

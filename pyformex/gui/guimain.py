@@ -1401,6 +1401,11 @@ pyFormex comes with ABSOLUTELY NO WARRANTY. This is free software, and you are w
     #
     draw.reset()
 
+    # set canvas background
+    # (does not work before a draw.reset, do not know why)
+    pf.canvas.setBackground(color=pf.cfg['canvas/bgcolor'], image=pf.cfg['canvas/bgimage'])
+    pf.canvas.update()
+
     # setup the status bar
     pf.debug("Setup status bar", pf.DEBUG.GUI)
     pf.GUI.addInputBox()
@@ -1459,6 +1464,7 @@ pyFormex comes with ABSOLUTELY NO WARRANTY. This is free software, and you are w
     pf.debug("Showing the GUI", pf.DEBUG.GUI)
     if splash is not None:
         splash.showMessage("Show the GUI");
+
     pf.GUI.show()
 
     if splash is not None:

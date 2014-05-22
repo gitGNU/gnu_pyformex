@@ -65,9 +65,14 @@ class ItemList(list):
           Sticky items are items having an attribute sticky=True.
 
         """
+        print(items)
         if not isinstance(items,(list, tuple)):
             items = [ items ]
         for a in items:
+            print(type(a))
+            print(type(self))
+            print(id(a))
+            print([id(i) for i in self])
             if a in self:
                 self.remove(a)
 
@@ -212,6 +217,7 @@ class Scene(object):
             if abs(actor.rendertype) == 1:
                 self.annotations.delete(actor)
             elif abs(actor.rendertype) == 2:
+                print(type(actor))
                 self.decorations.delete(actor)
             elif actor.rendertype == 3:
                 self.backgounds.delete(actor)

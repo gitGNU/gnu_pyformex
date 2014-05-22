@@ -535,11 +535,13 @@ def extractCanvasSettings(d):
     """
     return utils.select(d, pf.refcfg['canvas']), utils.remove(d, pf.refcfg['canvas'])
 
-
-##################################################################
+#############################################################################
+#############################################################################
 #
 #  The Canvas
 #
+#############################################################################
+#############################################################################
 
 def print_camera(self):
     print(self.report())
@@ -567,6 +569,7 @@ class Canvas(object):
 
     def __init__(self,settings={}):
         """Initialize an empty canvas with default settings."""
+        #print("NEW CANVAS %s" % id(self))
         from pyformex.gui import views
         loadLibGL()
         self.scene = Scene(self)
@@ -825,8 +828,12 @@ class Canvas(object):
                 image = image2numpy(self.settings.bgimage, indexed=False)
             except:
                 pass
-        actor = GeomActor(F,name='background',rendermode='smooth',color=[self.settings.bgcolor],texture=image,rendertype=3,opak=True,lighting=False)
+        actor = GeomActor(F,name='background',rendermode='smooth',color=[self.settings.bgcolor],texture=image,rendertype=3,opak=True,lighting=False,view='front')
+        #print("SCENE %s" % id(self.scene))
         self.scene.addAny(actor)
+        #print(self.scene.backgrounds[0])
+        self.update()
+
 
 
     def setFgColor(self, color):
@@ -1303,19 +1310,19 @@ class Canvas(object):
     def draw_cursor(self, x, y):
         """draw the cursor"""
         if self.cursor:
-            self.removeDecoration(self.cursor)
+            self.removeAny(self.cursor)
         w, h = pf.cfg.get('draw/picksize', (20, 20))
         col = pf.cfg.get('pick/color', 'yellow')
         self.cursor = decors.Grid2D(x-w/2, y-h/2, x+w/2, y+h/2, color=col, linewidth=1)
-        self.addDecoration(self.cursor)
+        self.addAny(self.cursor)
 
 
     def draw_rectangle(self, x, y):
         if self.cursor:
-            self.removeDecoration(self.cursor)
+            self.removeAny(self.cursor)
         col = pf.cfg.get('pick/color', 'yellow')
         self.cursor = decors.Grid2D(self.statex, self.statey, x, y, color=col, linewidth=1)
-        self.addDecoration(self.cursor)
+        self.addAny(self.cursor)
 
 
     def pick_actors(self):
