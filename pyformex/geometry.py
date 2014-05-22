@@ -279,6 +279,97 @@ class Geometry(object):
         return np.array([], dtype=Int)
 
 
+    ########### Return information about the coords #################
+
+    def getCoords(self):
+        """Get the coords data.
+
+        Returns the full array of coordinates stored in the Geometry object.
+        Note that subclasses may store more points in this array than are used
+        to define the geometry.
+        """
+        return self.coords
+
+
+    def points(self):
+        return self.coords.points()
+    def x(self):
+        return self.coords.x()
+    def y(self):
+        return self.coords.y()
+    def z(self):
+        return self.coords.z()
+    def bbox(self):
+        return self.coords.bbox()
+    def center(self):
+        return self.coords.center()
+    def bboxPoint(self,*args,**kargs):
+        return self.coords.bboxPoint(*args,**kargs)
+    def centroid(self):
+        return self.coords.centroid()
+    def sizes(self):
+        return self.coords.sizes()
+    def dsize(self):
+        return self.coords.dsize()
+    def bsphere(self):
+        return self.coords.bsphere()
+    def bboxes(self):
+        return self.coords.bboxes()
+    def inertia(self,*args,**kargs):
+        return self.coords.inertia(*args,**kargs)
+    def orientedBbox(self,*args,**kargs):
+        return self.coords.orientedBbox()
+    def principalBbox(self):
+        return self.coords.principalBbox()
+
+    def convexHull(self,compact=True):
+        """Return the convex hull of the geometry.
+
+        The convex hull is a closed TriSurface enclosing all points
+        of the geometry.
+        """
+        from pyformex.plugins.trisurface import TriSurface
+        X = self.coords
+        hull = TriSurface(X, X.convexHull())
+        if compact:
+            hull = hull.compact()
+        return hull
+
+
+    def info(self):
+        return "Geometry: coords shape = %s; level = %s" % (self.coords.shape, self.level())
+    def level(self):
+        """Return the dimensionality of the Geometry, or -1 if unknown"""
+        return -1
+
+    def distanceFromPlane(self,*args,**kargs):
+        return self.coords.distanceFromPlane(*args,**kargs)
+    def distanceFromLine(self,*args,**kargs):
+        return self.coords.distanceFromLine(*args,**kargs)
+    def distanceFromPoint(self,*args,**kargs):
+        return self.coords.distanceFromPoint(*args,**kargs)
+    def directionalSize(self,*args,**kargs):
+        return self.coords.directionalSize(*args,**kargs)
+    def directionalWidth(self,*args,**kargs):
+        return self.coords.directionalWidth(*args,**kargs)
+    def directionalExtremes(self,*args,**kargs):
+        return self.coords.directionalExtremes(*args,**kargs)
+
+    def __str__(self):
+        return self.coords.__str__()
+
+    ########### Return a copy or selection #################
+
+    def copy(self):
+        """Return a deep copy of the Geometry  object.
+
+        The returned object is an exact copy of the input, but has
+        all of its data independent of the former.
+        """
+        from copy import deepcopy
+        return deepcopy(self)
+
+
     @utils.warning("warn_select_changed")
     def select(self,sel,compact=False):
         """Return a Geometry only containing the selected elements.
@@ -398,97 +489,6 @@ class Geometry(object):
             return self.copy()
         else:
             return self.cselect(self.whereProp(val), compact=compact)
-
-
-    ########### Return information about the coords #################
-
-    def getCoords(self):
-        """Get the coords data.
-
-        Returns the full array of coordinates stored in the Geometry object.
-        Note that subclasses may store more points in this array than are used
-        to define the geometry.
-        """
-        return self.coords
-
-
-    def points(self):
-        return self.coords.points()
-    def x(self):
-        return self.coords.x()
-    def y(self):
-        return self.coords.y()
-    def z(self):
-        return self.coords.z()
-    def bbox(self):
-        return self.coords.bbox()
-    def center(self):
-        return self.coords.center()
-    def bboxPoint(self,*args,**kargs):
-        return self.coords.bboxPoint(*args,**kargs)
-    def centroid(self):
-        return self.coords.centroid()
-    def sizes(self):
-        return self.coords.sizes()
-    def dsize(self):
-        return self.coords.dsize()
-    def bsphere(self):
-        return self.coords.bsphere()
-    def bboxes(self):
-        return self.coords.bboxes()
-    def inertia(self,*args,**kargs):
-        return self.coords.inertia(*args,**kargs)
-    def orientedBbox(self,*args,**kargs):
-        return self.coords.orientedBbox()
-    def principalBbox(self):
-        return self.coords.principalBbox()
-
-    def convexHull(self,compact=True):
-        """Return the convex hull of the geometry.
-
-        The convex hull is a closed TriSurface enclosing all points
-        of the geometry.
-        """
-        from pyformex.plugins.trisurface import TriSurface
-        X = self.coords
-        hull = TriSurface(X, X.convexHull())
-        if compact:
-            hull = hull.compact()
-        return hull
-
-
-    def info(self):
-        return "Geometry: coords shape = %s; level = %s" % (self.coords.shape, self.level())
-    def level(self):
-        """Return the dimensionality of the Geometry, or -1 if unknown"""
-        return -1
-
-    def distanceFromPlane(self,*args,**kargs):
-        return self.coords.distanceFromPlane(*args,**kargs)
-    def distanceFromLine(self,*args,**kargs):
-        return self.coords.distanceFromLine(*args,**kargs)
-    def distanceFromPoint(self,*args,**kargs):
-        return self.coords.distanceFromPoint(*args,**kargs)
-    def directionalSize(self,*args,**kargs):
-        return self.coords.directionalSize(*args,**kargs)
-    def directionalWidth(self,*args,**kargs):
-        return self.coords.directionalWidth(*args,**kargs)
-    def directionalExtremes(self,*args,**kargs):
-        return self.coords.directionalExtremes(*args,**kargs)
-
-    def __str__(self):
-        return self.coords.__str__()
-
-    ########### Return a copy or selection #################
-
-    def copy(self):
-        """Return a deep copy of the Geometry  object.
-
-        The returned object is an exact copy of the input, but has
-        all of its data independent of the former.
-        """
-        from copy import deepcopy
-        return deepcopy(self)
 
 
     def splitProp(self,prop=None,compact=False):
