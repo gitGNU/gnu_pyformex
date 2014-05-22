@@ -385,7 +385,11 @@ class Base(Attributes):
 
     def __init__(self,**kargs):
         """Initialize the Base class."""
-        Attributes.__init__(self, pf.canvas.drawoptions)
+        #try:
+        #    print(pf.canvas.drawoptions)
+        #except:
+        #    pass
+        Attributes.__init__(self, pf.canvas.drawoptions if pf.canvas else {})
         if kargs:
             self.update(**kargs)
             self.setLineWidth(self.linewidth)
