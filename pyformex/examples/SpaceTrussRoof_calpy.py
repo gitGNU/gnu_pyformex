@@ -249,10 +249,7 @@ def run():
                 count -= 1
                 for s in amplitude:
                     F, T = deformed_plot(s)
-                    if FA:
-                        pf.canvas.removeActor(FA)
-                    if TA:
-                        pf.canvas.removeDecoration(TA)
+                    undraw([FA,TA])
                     TA, FA = T, F
                     sleep(sleeptime)
 
