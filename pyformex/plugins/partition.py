@@ -89,19 +89,17 @@ def colorCut(F, P, N, prop):
     return F
 
 
-def splitProp(F, name):
-    """Partition a Formex according to its prop values.
+def splitProp(G, name):
+    """Partition a Formex according to its prop values and export the results.
 
-    Returns a dict with the partitions, named like name-prop and exports
-    these named Formex instances.
-    It the Formex has no props, the whole Formex is given the name.
+    If G has property numbers, the structure is split and according
+    to the property values, and the (compacted) parts are exported
+    with names 'name-propnumber'.
     """
-    if F.prop is None:
-        d = { name:F }
-    else:
-        d = dict([['%s-%s' % (name, p), F.selectProp(p)] for p in F.propSet()])
-    export(d)
-    return d
+    split = G.splitProp(compact=True)
+    if split:
+        names = [ '%s-%s' % (name, i) for i in unique(G.prop) ]
+        export2(names,split)
 
 
 waiting = True
@@ -203,9 +201,7 @@ def savePartitions(F):
         F = readFormex('part.fmx')
         draw(F)
 
-
-    d = splitProp(F, 'part')
-    export(d)
+    splitProp(F, 'part')
 
     if ack("Save the partitions separately?"):
         for (k, v) in d.iteritems():

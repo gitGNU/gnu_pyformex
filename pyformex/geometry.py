@@ -33,6 +33,7 @@ from pyformex import zip
 from pyformex import utils
 from pyformex.coords import Coords, Int
 from pyformex.odict import OrderedDict
+from pyformex.olist import List
 import pyformex.arraytools as at
 import numpy as np
 
@@ -366,7 +367,7 @@ class Geometry(object):
         return self.cselect(sel, compact=True)
 
 
-    def selectProp(self,val,compact=True):
+    def selectProp(self, val, compact=False):
         """Return an object which holds only the elements with property val.
 
         val is either a single integer, or a list/array of integers.
@@ -382,7 +383,7 @@ class Geometry(object):
             return self._select(self.whereProp(val), compact=compact)
 
 
-    def cselectProp(self, val,compact=True):
+    def cselectProp(self, val, compact=False):
         """Return an object without the elements with property `val`.
 
         This is the complementary method of selectProp.
@@ -490,7 +491,7 @@ class Geometry(object):
         return deepcopy(self)
 
 
-    def splitProp(self,prop=None):
+    def splitProp(self,prop=None,compact=False):
         """Partition a Geometry (Formex/Mesh) according to the values in prop.
 
         Parameters:
@@ -512,9 +513,10 @@ class Geometry(object):
         else:
             prop = self.toProp(prop)
         if prop is None:
-            return []
+            split = []
         else:
-            return [ self.select(prop==p) for p in np.unique(prop) ]
+            split = [ self.select(prop==p,compact=compact) for p in np.unique(prop) ]
+        return List(split)
 
 
     ########### Coords transformations #################
