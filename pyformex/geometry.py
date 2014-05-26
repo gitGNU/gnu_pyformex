@@ -491,7 +491,7 @@ class Geometry(object):
             return self.cselect(self.whereProp(val), compact=compact)
 
 
-    def splitProp(self,prop=None,compact=False):
+    def splitProp(self,prop=None,compact=True):
         """Partition a Geometry (Formex/Mesh) according to the values in prop.
 
         Parameters:
