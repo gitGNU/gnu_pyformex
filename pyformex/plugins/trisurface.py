@@ -778,6 +778,11 @@ class TriSurface(Mesh):
         return stype[0] and stype[1]
 
 
+    def isConvexManifold(self):
+        """Check whether the TriSurface is a convex manifold."""
+        return self.isManifold() and self.edgeSignedAngles().min()>=0.
+
+
     def checkBorder(self):
         """Return the border of TriSurface.
 
@@ -888,6 +893,39 @@ class TriSurface(Mesh):
     def edgeAngles(self):
         """Return the angles over all edges (in degrees). It is the angle (0 to 180) between 2 face normals."""
         return arccosd(self.edgeCosAngles())
+
+
+    def edgeSignedAngles(self,return_mask=False):
+        """Return the signed angles over all edges (in degrees). It is the angle (-180 to 180) between 2 face normals.
+        
+        Positive/negative angles are associated to convexity/concavity at that edge.
+        The border edges attached to one triangle have angle 0.
+        NB: The sign of the angle is relevant if the surface has fixed normals. Should
+        this check be done?
+        """
+        # get connections of edges to faces
+        conn = self.getElemEdges().inverse()
+        if conn.shape[1] > 2:
+            raise RuntimeError("The TriSurface is not a manifold")
+        # get normals on all faces
+        n = self.areaNormals()[1]
+        # Flag edges that connect two faces
+        conn2 = (conn >= 0).sum(axis=-1) == 2
+        # get adjacent facet normals for 2-connected edges
+        n = n[conn[conn2]]
+        edg = self.coords[self.getEdges()]
+        edg = edg[:, 1]-edg[:, 0]
+        ang = geomtools.rotationAngle(n[:, 0], n[:, 1],m=edg[conn2], angle_spec=DEG)
+        # Initialize signed angles to all 0. values
+        sangles = ones((conn.shape[0],))
+        sangles[conn2] = ang
+        # Clip to the -180...+180. range
+        sangles = sangles.clip(min=-180., max=180.)
+        # Return results
+        if return_mask:
+            return sangles, conn2
+        else:
+            return sangles
 
 
     def _compute_data(self):
