@@ -22,6 +22,7 @@ prepfix : change the changelog file to minor fix to a package
   final : sign-build the Debian packages for the current release
  upload : upload the Debian packages to Debian mentors
  pkglst : create list of files in the packages
+install : install the packages
 
 
 The normal chain in creating the packages is:

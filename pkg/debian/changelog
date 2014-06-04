@@ -1,6 +1,6 @@
 pyformex (0.9.1-3) unstable; urgency=low
 
-  * Change debian/rules to fix build problems
+  * Move architecture and Python version independent files to /usr/share
 
  -- Benedict Verhegghe <benedict.verhegghe@ugent.be>  Tue, 03 Jun 2014 14:24:06 +0200
 
