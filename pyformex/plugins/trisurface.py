@@ -1665,7 +1665,7 @@ Quality: %s .. %s
         d_ele = d[self.elems]
         ele_all_up = (d_ele > 0.).all(axis=1)
         ele_all_do = (d_ele < 0.).all(axis=1)
-        S = self.cclip(ele_all_up+ele_all_do, compact=False)
+        S = self.cselect(ele_all_up+ele_all_do, compact=False)
 
         # If there is no intersection, we're done
         if S.nelems() == 0:
