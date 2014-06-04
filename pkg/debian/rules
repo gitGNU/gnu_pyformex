@@ -59,10 +59,10 @@ override_dh_python2:
 		; done; fi
 	# Link documentation
 	set -e; if [ -d "debian/pyformex" ]; then \
-		mkdir $(CURDIR)/debian/pyformex/usr/share/pyshared/pyformex/doc; \
+		mkdir -p $(CURDIR)/debian/pyformex/usr/share/pyshared/pyformex/doc; \
 		ln -sf /usr/share/doc/pyformex/html $(CURDIR)/debian/pyformex/usr/share/pyshared/pyformex/doc/html; \
 		for py in $(shell pyversions -s); do \
-		mkdir $(CURDIR)/debian/pyformex/usr/lib/$$py/dist-packages/pyformex/doc; \
+		mkdir -p $(CURDIR)/debian/pyformex/usr/lib/$$py/dist-packages/pyformex/doc; \
 		ln -sf /usr/share/doc/pyformex/html $(CURDIR)/debian/pyformex/usr/lib/$$py/dist-packages/pyformex/doc/html; \
 		done; fi
 

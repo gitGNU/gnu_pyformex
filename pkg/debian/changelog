@@ -1,12 +1,18 @@
+pyformex (0.9.1-3) unstable; urgency=low
+
+  * Change debian/rules to fix build problems
+
+ -- Benedict Verhegghe <benedict.verhegghe@ugent.be>  Tue, 03 Jun 2014 14:24:06 +0200
+
 pyformex (0.9.1-2) unstable; urgency=low
 
-  * Upgrade to standards 3.9.4 
+  * Upgrade to standards 3.9.4
 
  -- Benedict Verhegghe <benedict.verhegghe@ugent.be>  Fri, 25 Oct 2013 10:56:06 +0200
 
 pyformex (0.9.1-1) unstable; urgency=low
 
-  * New upstream release 
+  * New upstream release
 
  -- Benedict Verhegghe <benedict.verhegghe@ugent.be>  Thu, 24 Oct 2013 23:26:41 +0200
 

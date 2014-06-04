@@ -29,10 +29,13 @@ The normal chain in creating the packages is:
   _do unpack
   _do build
 
-When starting on a new release, use:
+To start working on a new debian version number (bug fix), do:
+  _do prepfix
+and then continue as above.
+
+To start working on a new pyFormex release, do:
   _do prepare
-  _do unpack
-  _do build
+and then continue as above.
 
 When the packages are ready, create the final with:
   _do clean
