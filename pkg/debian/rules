@@ -16,6 +16,11 @@ include /usr/share/dpkg/buildflags.mk
 build:
 	@echo "=== Patching ==="
 	sed -i "s/installtype =.*/installtype = 'D'/" $(CURDIR)/pyformex/pyformex
+	# Remove privacy issues from docs
+	set -e; for f in $$(find $(CURDIR)//pyformex/doc/html -name '*.html'); do echo $$f; \
+		awk '/<a .*validator.w3.org/{getline;getline;}/<form.*www.paypal.com/{for(i=0;i<6;i++)getline;}/<a href=.*www.fsf.org/{getline;}{print}' $$f > $$f.tmp; mv $$f.tmp $$f; \
+		done
+
 	@echo "=== Building ==="
 	dh_auto_build
 	@echo "=== Building extra ==="
@@ -36,13 +41,16 @@ binary-arch:
 override_dh_auto_install:
 	dh_auto_install
 	# Move architecture independent files to /usr/share
-	install -d $(CURDIR)/debian/tmp/usr/share/pyformex
-	install -d $(CURDIR)/debian/tmp/usr/share/doc/pyformex
 	set -e; for py in $(shell pyversions -s); do \
-			mv $(CURDIR)/debian/tmp/usr/lib/$$py/dist-packages/pyformex/icons $(CURDIR)/debian/tmp/usr/share/pyformex; \
-			mv $(CURDIR)/debian/tmp/usr/lib/$$py/dist-packages/pyformex/data $(CURDIR)/debian/tmp/usr/share/pyformex; \
-			mv $(CURDIR)/debian/tmp/usr/lib/$$py/dist-packages/pyformex/doc/* $(CURDIR)/debian/tmp/usr/share/doc/pyformex; \
+		rm -rf $(CURDIR)/debian/tmp/usr/share/pyformex; \
+		rm -rf $(CURDIR)/debian/tmp/usr/share/doc/pyformex; \
+		install -d $(CURDIR)/debian/tmp/usr/share/pyformex; \
+		install -d $(CURDIR)/debian/tmp/usr/share/doc/pyformex; \
+		mv $(CURDIR)/debian/tmp/usr/lib/$$py/dist-packages/pyformex/icons $(CURDIR)/debian/tmp/usr/share/pyformex; \
+		mv $(CURDIR)/debian/tmp/usr/lib/$$py/dist-packages/pyformex/data $(CURDIR)/debian/tmp/usr/share/pyformex; \
+		mv $(CURDIR)/debian/tmp/usr/lib/$$py/dist-packages/pyformex/doc/* $(CURDIR)/debian/tmp/usr/share/doc/pyformex; \
 		done
+
 	DESTDIR=$(CURDIR)/debian/tmp make -C $(CURDIR)/pyformex/extra install prefix=/usr
 
 
