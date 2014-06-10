@@ -877,7 +877,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         if level == 0:
             elems = self.elems
         else:
-            elems, lo = self.elems.insertLevel(level)
+            elems = self.elems.insertLevel(level)[0]
         return elems.adjacency()
 
 
@@ -907,7 +907,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
             if level == 0:
                 elems = self.elems
             else:
-                elems, lo = self.elems.insertLevel(level)
+                elems = self.elems.insertLevel(level)[0]
             return elems.frontWalk(startat=startat, frontinc=frontinc, partinc=partinc, maxval=maxval)
 
         else:
@@ -1214,7 +1214,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         mesh = Mesh(mesh.coords, mesh.getLowerEntities(level, unique=True))
         c = fm.matchCentroids(mesh)
         hiinv = hiinv[c]
-        hpos = matchIndex(c, hi).reshape(hi.shape)
+        hpos = findIndex(c, hi).reshape(hi.shape)
         enr =  unique(hiinv[hiinv >= 0])  # element number
         fnr=column_stack(where(hpos!=-1)) # face number
         return enr, fnr
