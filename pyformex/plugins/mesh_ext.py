@@ -36,6 +36,9 @@ from pyformex import utils
 
 ##############################################################################
 
+#
+# Should we create some general 'masked mesh' class?
+#
 def connectedElements(self,startat,mask,level=0):
     """Return the elements reachable from startat.
 
@@ -65,59 +68,9 @@ def connectedElements(self,startat,mask,level=0):
     if len(startat) == 0:
         return []
 
-    startat = matchIndex(mask, startat)
+    startat = findIndex(mask, startat)
     return mask[self.select(mask).reachableFrom(startat,level=level)]
 
-
-# REMOVED IN 1.0.0
-
-# The use of both nodesource and elemsource is rather unprobable.
-# And when using both, there are two choices: the elements connected
-# to the startnodes are added in step 0, or step 1.
-# Thus it is better to let the user decide what he wants.
-# See the FrontWalk example
-
-## @utils.deprecated("depr_connectionSteps1")
-## def connectionSteps(self, nodesource=[], elemsource=[], maxstep=-1):
-##     pass
-    ## """_Return the elems connected to some sources via multiple nodal steps.
-
-    ## - 'nsources' : are node sources,
-    ## - 'esource' : are elem sources,
-    ## - 'maxstep' : is the max number of walked elements. If negative (default),
-    ##  all rings are returned.
-
-    ## Returns a list of elem indices at each nodal connection step:
-    ## elemATstep1 are elem connected to esource or nsource via a node;
-    ## elemATstep2 are elem connected to elemATstep1
-    ## elemATstep3 are elem connected to elemATstep2
-    ## ...
-    ## The last member of the list is either the connection after walking `maxstep` edges
-    ## or the last possible connection (meaning that one more step would
-    ## not find any connected elem).
-    ## If the user would like elemsource as first list's item:
-    ## [checkArray1D(elemsource)]+self.connectionSteps(nodesource, elemsource, maxstep)
-
-    ## Todo:
-    ## -add a connection 'level' to extend to edge and face connections
-    ## -add a edgesource and facesource.
-
-
-    ## """
-    ## L = []
-    ## ns = unique(concatenate([self.elems[elemsource].ravel(), nodesource]))
-    ## if maxstep<0:
-    ##     maxstep = self.nelems()
-    ## for i in range(maxstep):
-    ##     xsource = self.elems.connectedTo(ns)
-    ##     mult, bins = multiplicity(concatenate([xsource, elemsource]))
-    ##     newring = bins[mult==1]
-    ##     if len(newring)==0:
-    ##         return L
-    ##     L.append(newring)
-    ##     elemsource = xsource
-    ##     ns = unique(self.elems[elemsource])
-    ## return L
 
 
 #
@@ -325,9 +278,8 @@ def nodalAveraging(self, val, iter=1, mask=None,includeself=False):
 #
 # Install
 #
-#Mesh.connectionSteps = connectionSteps
 Mesh.scaledJacobian = scaledJacobian
-Mesh.elementToNodal = elementToNodal
+#Mesh.elementToNodal = elementToNodal
 Mesh.nodalAveraging = nodalAveraging
 Mesh.connectedElements = connectedElements
 # End

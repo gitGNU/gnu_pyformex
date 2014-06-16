@@ -1613,7 +1613,7 @@ def inverseIndexOld(index,maxcon=4):
     return inverse
 
 
-def matchIndex(target, values):
+def findIndex(target, values):
     """Find position of values in target.
 
     This function finds the position in the array `target` of the elements
@@ -1634,14 +1634,14 @@ def matchIndex(target, values):
       If an element from `values` occurs more than once in `target`, it is
       currently undefined which of those positions is returned.
 
-    Remark that after ``m = matchIndex(target,values)`` the equality
+    Remark that after ``m = findIndex(target,values)`` the equality
     ``target[m] == values`` holds in all the non-negative positions of `m`.
 
     Example:
 
       >>> A = array([1,3,4,5,7,8,9])
       >>> B = array([0,6,7,1,2])
-      >>> matchIndex(A,B)
+      >>> findIndex(A,B)
       array([-1, -1,  4,  0, -1], dtype=int32)
     """
     target = target.reshape(-1, 1)
@@ -1651,6 +1651,10 @@ def matchIndex(target, values):
     if diff > 0:
         inv = concatenate([inv, -ones((diff,), dtype=Int)])
     return inv[values]
+
+
+# for compatibility
+matchIndex=findIndex
 
 
 def groupPositions(gid, values):

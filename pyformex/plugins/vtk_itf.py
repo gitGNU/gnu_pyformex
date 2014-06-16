@@ -966,12 +966,22 @@ def _vtkPlanes(p,n):
 
     - `p` : points of the planes
     - `n`: correspondent normals of the planes
+    
+    In vtkPlanes p and n need to define a convex set of planes,
+    and the normals must point outside of the convex region.
     """
     from vtk import vtkPlanes
     planes = vtkPlanes()
     planes.SetNormals(array2VTK(n))
     planes.SetPoints(coords2VTK(p))
     return planes
+
+def _vtkSurfacePlanes(self):
+    """ Convert a convex closed manifold surface into vtkPlanes"""
+    if self.isClosedManifold() and self.isConvexManifold():
+            return _vtkPlanes(p=self.centroids(),n=self.areaNormals()[1])
+    else:
+        raise ValueError, 'the input should be a convex closed manifold TriSurface'
 
 def _vtkBoxPlanes(box):
     """ Set a box with vtkPlanes implicit function.
@@ -1101,9 +1111,10 @@ def vtkCut(self, implicitdata, method=None):
             minimal  and coordinates of the box. Formex or Mesh specifying one hexahedron. See _vtkPlanesBox.
         -  method ==  `planes`  : points array-like of shape (npoints,3) and
                 normal vectors array-like of shape (npoints,3) defining the cutting planes.
+        -  method ==  `surface`  : a closed convex manifold trisurface.
         
-    - `method`: str or None. If string allowed values are `plane`,`planes`, `sphere`,
-        `box` to select the correspondent implicit functions by providing the 
+    - `method`: str or None. If string allowed values are `plane`, `sphere`,
+        `box`, `boxplanes`, `planes`, `surface` to select the correspondent implicit functions by providing the 
         `implicitdata` parameters. If None a vtkImplicitFunction must be passed directly
         in `implicitdata`
         
@@ -1133,6 +1144,10 @@ def vtkCut(self, implicitdata, method=None):
         p,n = implicitdata
         print("cutting mesh of type %s with planes"%self.elName())
         return _vtkCutter(self,_vtkPlanes(p,n))
+    elif method=='surface':
+        s = implicitdata
+        print("cutting mesh of type %s with a closed convex manifold surface"%self.elName())
+        return _vtkCutter(self,_vtkSurfacePlanes(s))
     elif method is None:
         return _vtkCutter(self,implicitdata)
     else:
@@ -1192,6 +1207,10 @@ def vtkClip(self, implicitdata, method=None, insideout=False):
         p,n = implicitdata
         print("clipping mesh of type %s with planes"%self.elName())
         return _vtkClipper(self,_vtkPlanes(p,n),insideout)
+    elif method=='surface':
+        s = implicitdata
+        print("clipping mesh of type %s with a closed convex manifold surface"%self.elName())
+        return _vtkClipper(self,_vtkSurfacePlanes(s),insideout)
     elif method is None:
         return _vtkClipper(self,implicitdata,insideout)
     else:

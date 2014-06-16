@@ -1811,7 +1811,7 @@ class Coords(ndarray):
         x = Coords.concatenate([self.points(), coords.points()])
         c, e = x.fuse(**kargs)
         e0, e1 = e[:self.npoints()], e[self.npoints():]
-        matches = matchIndex(e0, e1)
+        matches = findIndex(e0, e1)
         if clean:
             matches=matches[matches>-1]
         return matches
