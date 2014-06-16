@@ -4,10 +4,10 @@ usr/share/applications
 usr/lib/python2*/dist-packages/pyformex/pyformex.conf
 usr/lib/python2*/dist-packages/pyformex/*.py
 usr/lib/python2*/dist-packages/pyformex/bin
-usr/lib/python2*/dist-packages/pyformex/data
+usr/share/pyformex/data
 usr/lib/python2*/dist-packages/pyformex/examples
 usr/lib/python2*/dist-packages/pyformex/gui
-usr/lib/python2*/dist-packages/pyformex/icons
+usr/share/pyformex/icons
 usr/lib/python2*/dist-packages/pyformex/lib
 usr/lib/python2*/dist-packages/pyformex/plugins
 usr/lib/python2*/dist-packages/pyformex/extra/calpy

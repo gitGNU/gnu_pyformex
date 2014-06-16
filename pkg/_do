@@ -20,8 +20,10 @@ prepfix : change the changelog file to minor fix to a package
  unpack : Unpacks the current .tar.gz release from dist
   build : test-build the Debian packages for the current release
   final : sign-build the Debian packages for the current release
+ final2 : same as final, but does not include the source. Use for fixes
  upload : upload the Debian packages to Debian mentors
  pkglst : create list of files in the packages
+install : install the packages
 
 
 The normal chain in creating the packages is:
@@ -29,10 +31,13 @@ The normal chain in creating the packages is:
   _do unpack
   _do build
 
-When starting on a new release, use:
+To start working on a new debian version number (bug fix), do:
+  _do prepfix
+and then continue as above.
+
+To start working on a new pyFormex release, do:
   _do prepare
-  _do unpack
-  _do build
+and then continue as above.
 
 When the packages are ready, create the final with:
   _do clean
@@ -102,7 +107,15 @@ pkglst() {
     debc pyformex_${PKGVER}_amd64.changes > pkglst
 }
 
+
 final() {
+    pushd $PYFDIR
+    debuild -sa
+    popd
+}
+
+# This will not include the original source
+final2() {
     pushd $PYFDIR
     debuild
     popd

@@ -16,6 +16,11 @@ include /usr/share/dpkg/buildflags.mk
 build:
 	@echo "=== Patching ==="
 	sed -i "s/installtype =.*/installtype = 'D'/" $(CURDIR)/pyformex/pyformex
+	# Remove privacy issues from docs
+	set -e; for f in $$(find $(CURDIR)//pyformex/doc/html -name '*.html'); do echo $$f; \
+		awk '/<a .*validator.w3.org/{getline;getline;}/<form.*www.paypal.com/{for(i=0;i<6;i++)getline;}/<a href=.*www.fsf.org/{getline;}{print}' $$f | sed 's|http://www.nongnu.org/pyformex/_static|_static|' > $$f.tmp; mv $$f.tmp $$f; \
+		done
+
 	@echo "=== Building ==="
 	dh_auto_build
 	@echo "=== Building extra ==="
@@ -35,6 +40,17 @@ binary-arch:
 
 override_dh_auto_install:
 	dh_auto_install
+	# Move architecture independent files to /usr/share
+	set -e; for py in $(shell pyversions -s); do \
+		rm -rf $(CURDIR)/debian/tmp/usr/share/pyformex; \
+		rm -rf $(CURDIR)/debian/tmp/usr/share/doc/pyformex; \
+		install -d $(CURDIR)/debian/tmp/usr/share/pyformex; \
+		install -d $(CURDIR)/debian/tmp/usr/share/doc/pyformex; \
+		mv $(CURDIR)/debian/tmp/usr/lib/$$py/dist-packages/pyformex/icons $(CURDIR)/debian/tmp/usr/share/pyformex; \
+		mv $(CURDIR)/debian/tmp/usr/lib/$$py/dist-packages/pyformex/data $(CURDIR)/debian/tmp/usr/share/pyformex; \
+		mv $(CURDIR)/debian/tmp/usr/lib/$$py/dist-packages/pyformex/doc/* $(CURDIR)/debian/tmp/usr/share/doc/pyformex; \
+		done
+
 	DESTDIR=$(CURDIR)/debian/tmp make -C $(CURDIR)/pyformex/extra install prefix=/usr
 
 
@@ -46,26 +62,20 @@ override_dh_install:
 override_dh_python2:
 	dh_numpy
 	dh_python2
-	# Remove some extraneous files
+	# Link architecture independent files to keep pyformex happy
 	set -e; if [ -d "debian/pyformex" ]; then \
-		for FILENAME in arraytools.html.gz draw2d.html formian.html imagecolor.html track.html wrl.html; do \
-		find $(CURDIR)/debian/pyformex -name $$FILENAME -exec rm -f {} \; \
-		; done; fi
+		for py in $(shell pyversions -s); do \
+			ln -sf /usr/share/doc/pyformex $(CURDIR)/debian/pyformex/usr/lib/$$py/dist-packages/pyformex/doc; \
+			ln -sf /usr/share/pyformex/data $(CURDIR)/debian/pyformex/usr/lib/$$py/dist-packages/pyformex/data; \
+			ln -sf /usr/share/pyformex/icons $(CURDIR)/debian/pyformex/usr/lib/$$py/dist-packages/pyformex/icons; \
+		done; fi
+
 	# Replace embedded Javascript libraries with symlinks
 	set -e; if [ -d "debian/pyformex" ]; then \
 		for FILENAME in jquery underscore; do \
 		find $(CURDIR)/debian/pyformex -name $$FILENAME.js -print \
-                -exec ln -sf /usr/share/javascript/$$FILENAME/$$FILENAME.js {} \; \
-		; done; fi
-	# Link documentation
-	set -e; if [ -d "debian/pyformex" ]; then \
-		mkdir $(CURDIR)/debian/pyformex/usr/share/pyshared/pyformex/doc; \
-		ln -sf /usr/share/doc/pyformex/html $(CURDIR)/debian/pyformex/usr/share/pyshared/pyformex/doc/html; \
-		for py in $(shell pyversions -s); do \
-		mkdir $(CURDIR)/debian/pyformex/usr/lib/$$py/dist-packages/pyformex/doc; \
-		ln -sf /usr/share/doc/pyformex/html $(CURDIR)/debian/pyformex/usr/lib/$$py/dist-packages/pyformex/doc/html; \
+                -exec ln -sf /usr/share/javascript/$$FILENAME/$$FILENAME.js {} \; ;\
 		done; fi
-
 
 
 # End
