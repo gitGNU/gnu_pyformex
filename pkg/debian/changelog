@@ -1,3 +1,9 @@
+pyformex (0.9.1-5) unstable; urgency=low
+
+  * Remove more lintian errors (privacy-breach-generic) 
+
+ -- Benedict Verhegghe <benedict.verhegghe@ugent.be>  Thu, 05 Jun 2014 15:07:29 +0200
+
 pyformex (0.9.1-4) unstable; urgency=low
 
   * Upgrade to standards 3.9.5

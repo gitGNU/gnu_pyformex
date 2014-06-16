@@ -18,7 +18,7 @@ build:
 	sed -i "s/installtype =.*/installtype = 'D'/" $(CURDIR)/pyformex/pyformex
 	# Remove privacy issues from docs
 	set -e; for f in $$(find $(CURDIR)//pyformex/doc/html -name '*.html'); do echo $$f; \
-		awk '/<a .*validator.w3.org/{getline;getline;}/<form.*www.paypal.com/{for(i=0;i<6;i++)getline;}/<a href=.*www.fsf.org/{getline;}{print}' $$f > $$f.tmp; mv $$f.tmp $$f; \
+		awk '/<a .*validator.w3.org/{getline;getline;}/<form.*www.paypal.com/{for(i=0;i<6;i++)getline;}/<a href=.*www.fsf.org/{getline;}{print}' $$f | sed 's|http://www.nongnu.org/pyformex/_static|_static|' > $$f.tmp; mv $$f.tmp $$f; \
 		done
 
 	@echo "=== Building ==="
