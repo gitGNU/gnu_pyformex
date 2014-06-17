@@ -254,6 +254,145 @@ def nodalAveraging(self, val, iter=1, mask=None,includeself=False):
     return avgval
 
 
+# GDS: below an implementation of fixNormals using connectivity and adjacency only. To be tested on tri3.
+# GDS: it could be extended also to other faces (quad)
+
+def edgeSpin(edges, elems, check=True):
+    """Check if edges spin like the face normals.
+    
+    elems is the connectivity of a surface mesh.
+    edges is the connectivity of edges of a surface mesh.
+    
+    True means that edge is spinning like the face normal,
+    False means that edge is spinning opposite to the face normal.
+    If check is True, it raises an error in case of
+    extraneous edges (edges that are not part of the surface),
+    instead of returning False.
+    
+    edgeSpin([[3,0],...],[[0,2,3]]) is [True,...]
+    edgeSpin([[0,3],...],[[0,2,3],..]) is [False,...]
+    """       
+    n = range(elems.shape[1])
+    n0 = column_stack([n,roll(n, -1, 0)] )
+    spinok = [(edges == elems[:, i]).sum(axis=1)==2 for i in n0]
+    spinok = array(sum(spinok, axis=0), dtype=bool)
+    if check: # check that edges are valid edges
+        n1 = n0[:, ::-1]
+        spinbad = [(edges == elems[:, i]).sum(axis=1)==2 for i in n1]
+        spinbad = array(sum(spinbad, axis=0), dtype=bool)
+        diff = sum(spinok==spinbad)
+        if diff>0:
+            raise ValueError,  'there are %d edges which are not in elems'%diff
+    return spinok
+
+def doubleSpinEdges(self,return_mask=False):
+    """Find the edges which are adjacent to two triangles with different spin.
+    
+    Return True if the 2 adjacent elems have different spin.
+    If return_mask == True, a second return value is a boolean array
+    with the edges that connect two faces.
+    
+    spin2, mask = doubleSpinEdges(S, True)
+    draw(Mesh(S.coords, S.getEdges()[mask][spin2]), color='blue', linewidth=4)
+    """
+    conn = self.getElemEdges().inverse()   
+    conn2 = (conn >= 0).sum(axis=-1) == 2
+    conn = conn[conn2]#remove border edges
+    e2 = self.getEdges()[conn2]
+    spin0 = edgeSpin(e2, self.elems[conn[:, 0]]) 
+    spin1 = edgeSpin(e2, self.elems[conn[:, 1]]) 
+    spin2 = spin0 == spin1
+    if return_mask:
+        return spin2, conn2
+    else:
+        return spin2
+
+def frontWalkEdge(self, maskedge, **kargs):
+    """Front walk over elems connected by edges not in maskedge"""
+    adj = self.adjacency(level=1)
+    cadj = self.getElemEdges().inverse()[maskedge]
+    cadj = concatenate([cadj, cadj[:, ::-1]])
+    cpos = adj[cadj[:, 0]] == cadj[:, 1].reshape(-1, 1)
+    adj[cadj[:, 0], where(cpos)[1]]=-1 
+    return adj.frontWalk(**kargs)
+
+def findSpinFaces(self):
+    """Find a set of differently spinning faces of a surface.
+    
+    By looking at the edge adjacency it detects differently spinning triangles.
+    The algorithm works like that:
+
+    - find spinedges (edge adjacent to triangles with opposite spin)
+    - select a triangle without spinedges as a start (i0)
+    - from i0 does a front walk without crossing the spinedges
+    - add one frontinc, and store it a set of elems with bad normals
+    - reverse the triangles in the frontinc
+    # A
+    - find spinedges
+    - from i0 does a front walk without crossing the spinedges
+    - add one frontinc, and store it a set of elems with bad normals
+    - reverse the triangles in the frontinc, modifying the surface
+    # B
+    - repeat from A to B until there no more spinedges
+    
+    If self is not a single edge-connected part, the function is called
+    on each part.
+    """
+    s = self.copy()
+    parts = s.partitionByConnection(level=1)
+    maxpart = parts.max()
+    if maxpart > 0: # to handle multiple edge-connected parts
+        prev = [findSpinFaces(self.select(parts==pi)) for pi in range(maxpart+1)]
+        pw = [where(parts==pi)[0] for pi in range(maxpart+1)]
+        rev = [iw[irev] for iw, irev in zip(pw, prev) if len(irev)>0]
+        return concatenate(rev)
+
+    spin2, mask = doubleSpinEdges(s, True)
+    if all(~spin2):
+        return array([])
+    espin = where(mask)[0][spin2]#spin edges
+    p0 = s.connectedTo(espin, level=1)
+    i0 = delete(range(s.nelems()), p0, 0)[0]#this face is chosen as the start for the correct normals
+    p = frontWalkEdge(s, maskedge=espin, startat=i0, frontinc=0, partinc=0, maxval=1)
+    oldfront = where(p==0)[0]
+    p = s.adjacency(level=1).frontWalk(startat=oldfront, frontinc=1, partinc=0, maxval=1)
+    tmpRev = where(p==1)[0]
+    rev = [tmpRev]
+    completed = False
+    while(completed==False):
+        s = s.reverse(tmpRev)
+        spin2, mask = doubleSpinEdges(s, True)
+        if any(spin2):
+            espin = where(mask)[0][spin2]
+            p = frontWalkEdge(s, maskedge=espin, startat=i0, frontinc=0, partinc=1, maxval=1)
+            p = s.adjacency(level=1).frontWalk(startat=where(p==0)[0], frontinc=1, partinc=1, maxval=1)
+            tmpRev = where(p==1)[0]
+            rev.append(tmpRev)
+        else:
+            completed = True
+    return concatenate(rev)
+
+def fixNormals2(self,outwards=True):
+    """Fix the orientation of the normals.
+        
+    Parameters:
+
+    - `outwards`: boolean: if True (default), a test is done whether
+      the surface is a closed manifold, and if so, the normals are
+      oriented outwards. Setting this value to False will skip this
+      test and the (possible) reversal of the normals.
+    """
+    S = self.reverse(findSpinFaces(self))
+    if outwards:
+        s = S.copy()
+        parts = s.partitionByConnection(level=0)
+        for p in range(parts.max()+1):
+            s1 = s.select(parts==p).compact()
+            if s1.isClosedManifold() and s1.volume() < 0.:
+                S = S.reverse(where(parts==p)[0])
+    return S
+
+
 # BV: REMOVED in 1.0.0
 ## @utils.deprecated("depr_correctNegativeVolumes")
 ## def correctNegativeVolumes(self):
@@ -282,4 +421,5 @@ Mesh.scaledJacobian = scaledJacobian
 #Mesh.elementToNodal = elementToNodal
 Mesh.nodalAveraging = nodalAveraging
 Mesh.connectedElements = connectedElements
+Mesh.fixNormals2 = fixNormals2
 # End
