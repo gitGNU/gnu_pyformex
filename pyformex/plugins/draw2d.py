@@ -126,7 +126,7 @@ def highlightDrawing(points, mode):
 
     pts is an array of points.
     """
-    from pyformex.gui import actors
+    from pyformex.opengl import actors
     pf.canvas.removeHighlight()
     PA = draw(points)
     PA.addHighlight()
