@@ -1128,7 +1128,7 @@ Quality: %s .. %s
 
 
     def dualMesh(self, method='median'):
-        """Return the dual mesh of a triangulated surface.
+        """Return the dual mesh of a compacted triangulated surface.
 
         It creates a new triangular mesh where all triangles with prop `p`
         represent the dual mesh region around the original surface node `p`.
@@ -1143,6 +1143,9 @@ Quality: %s .. %s
           original surface area.
         - `method` = 'voronoi': the Voronoi polyeders and a None.
         """
+        if self.ncoords()!=self.compact().ncoords():
+            raise ValueError("Expected a compacted surface")
+        Q = self.convert('quad4', fuse=False)
         Q = self.convert('quad4')
         if method == 'voronoi':
             from pyformex.geomtools import triangleCircumCircle
