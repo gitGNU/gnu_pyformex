@@ -80,7 +80,9 @@ def classify(appdir,pkg,nmax=0):
 
         #col['all'].update([appname])
         try:
-            app = apps.load(pkg+'.'+appname)
+            app = apps.load(pkg+'.'+appname,strict=True)
+            if app is None:
+                raise RuntimeError,"app has no run method"
         except:
             app = failed
             print("Failed to load app '%s'" % (str(pkg)+'.'+appname))
@@ -605,9 +607,9 @@ class AppMenu(menu.Menu):
         if strict:
             if self.mode == 'app':
                 appname = self.fullAppName(name)
-                app = apps.load(appname)
+                app = apps.load(appname,strict=strict)
                 if app is None:
-                    print("%s is NO MODULE!" % appname)
+                    print("%s is not a pyFormex app!" % appname)
                     return
             else:
                 if not utils.is_pyFormex(name):

@@ -40,7 +40,7 @@ class AppDir(object):
     """Application directory
 
     An AppDir is a directory containing pyFormex applications.
-    When creatig an AppDir, its path is added to sys.path
+    When creating an AppDir, its path is added to sys.path
     """
     known_dirs = {
         'examples': pf.cfg.get('examplesdir', {}),
@@ -148,7 +148,7 @@ def findAppDir(path):
             return p
 
 
-def load(appname,refresh=False):
+def load(appname,refresh=False,strict=False):
     """Load the named app
 
     If refresh is True, the module will be reloaded if it was already loaded
@@ -166,6 +166,9 @@ def load(appname,refresh=False):
         app = sys.modules[appname]
         if refresh:
             reload(app)
+        if strict:
+            if not hasattr(app,'run') or not callable(app.run):
+                return None
         return app
     except:
         import traceback
@@ -230,12 +233,31 @@ def listLoaded():
 
 
 def detect(appdir):
+    """Detect the apps present in the specified appdir.
+
+    Parameters:
+
+    - `appdir`: path to an appdir (i.e. a directory containing a file
+      '__init__.py'
+
+    Return a list with all the pyFormex apps in that appdir.
+
+    If a file '.apps.dir' exists in the appdir, the returned list is the
+    contents of that file. Otherwise the list contains all '.py' files
+    in the directory, without the '.py' extension and sorted.
+    """
     # Detect, but do not load!!!!
     # because we are using this on import (before some applications can load)
-    files = utils.listTree(appdir, listdirs=False, excludedirs=['.*'], includefiles=['.*\.py$'])
-    apps = [ os.path.basename(f) for f in files ]
-    apps = [ os.path.splitext(f)[0] for f in apps if f[0] not in '._' ]
-    return sorted(apps)
+    appsdir = os.path.join(appdir,'.apps.dir')
+    if os.path.exists(appsdir):
+        with open(appsdir,'r') as fil:
+            apps = fil.readlines()
+            return [ a.strip('\n').strip() for a in apps ]
+    else:
+        files = utils.listTree(appdir, listdirs=False, excludedirs=['.*'], includefiles=['.*\.py$'])
+        apps = [ os.path.basename(f) for f in files ]
+        apps = [ os.path.splitext(f)[0] for f in apps if f[0] not in '._' ]
+        return sorted(apps)
 
 
 _available_apps = detect(os.path.dirname(__file__))
