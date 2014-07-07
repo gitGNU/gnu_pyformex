@@ -808,36 +808,41 @@ def startGui(args=[]):
             guimain.runGUI()
 
 
-def checkRevision(rev,comp='>='):
-    """Check the pyFormex revision number.
+#
+# OBSOLETE : we do not have a revision number anymore
+#
+## def checkRevision(rev,comp='>='):
+##     """Check the pyFormex revision number.
 
-    - rev: a positive integer.
-    - comp: a string specifying a comparison operator.
+##     - rev: a positive integer.
+##     - comp: a string specifying a comparison operator.
 
-    By default, this function returns True if the pyFormex revision
-    number is equal or larger than the specified number.
+##     By default, this function returns True if the pyFormex revision
+##     number is equal or larger than the specified number.
 
-    The comp argument may specify another comparison operator.
+##     The comp argument may specify another comparison operator.
 
-    If pyFormex is unable to find its revision number (this is the
-    case on very old versions) the test returns False.
-    """
-    try:
-        cur = int(utils.splitStartDigits(pf.__revision__)[0])
-        return eval("%s %s %s" % (cur, comp, rev))
-    except:
-        return False
+##     If pyFormex is unable to find its revision number (this is the
+##     case on very old versions) the test returns False.
+##     """
+##     try:
+##         cur = int(utils.splitStartDigits(pf.__revision__)[0])
+##         return eval("%s %s %s" % (cur, comp, rev))
+##     except:
+##         return False
 
 
-def requireRevision(rev,comp='>='):
-    """Require a specified pyFormex revision number.
+## def requireRevision(rev,comp='>='):
+##     """Require a specified pyFormex revision number.
 
-    The arguments are like checkRevision. However, this function will
-    raise an error if the requirement fails.
-    """
-    if not checkRevision(rev, comp):
-        raise RuntimeError("Your current pyFormex revision (%s) does not pass the test %s %s" % (pf.__revision__, comp, rev))
+##     The arguments are like checkRevision. However, this function will
+##     raise an error if the requirement fails.
+##     """
+##     if not checkRevision(rev, comp):
+##         raise RuntimeError("Your current pyFormex revision (%s) does not pass the test %s %s" % (pf.__revision__, comp, rev))
 
+
+## print("REVISION: %s" % pf.__revision__)
 
 
 ################### read and write files #################################

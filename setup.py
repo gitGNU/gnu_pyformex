@@ -180,7 +180,9 @@ def run_setup(with_cext):
               'pyformex.opengl',
               'pyformex.plugins',
               'pyformex.examples',
-              'pyformex.legacy'
+              'pyformex.legacy',
+              'pyformex.freetype',
+              'pyformex.freetype.ft_enums',
               ],
           package_data={ 'pyformex': PKG_DATA },
           scripts=['pyformex/pyformex'],

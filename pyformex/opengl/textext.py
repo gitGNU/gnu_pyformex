@@ -38,10 +38,14 @@ from pyformex.opengl.sanitize import *
 
 
 from OpenGL import GL
-if not utils.hasModule('freetype'):
+if utils.hasModule('freetype'):
+    import freetype as ft
+else:
     utils.warn('error_no_freetype')
-utils.requireModule('freetype')
-import freetype as ft
+    #utils.requireModule('freetype')
+    from pyformex import freetype as ft
+
+
 import numpy
 
 

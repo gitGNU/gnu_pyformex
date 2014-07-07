@@ -153,17 +153,18 @@ EXTRA_FILES = listTree(
     includedirs=[
         'calpy',
         'dxfparser',
+###        'freetype-py',  now included in pyformex
         'gts',
         'postabq',
         'pygl2ps',
-        'tetgen'
+        'tetgen',
         ],
     excludefiles=['.*~$','.*\.1\.rst'],
     includefiles=[
         'README',
         'Makefile',
         '.*\.sh$',
-        '.*\.rst$'
+        '.*\.rst$',
         '.*\.patch$',
         '.*\.c$',
         '.*\.cc$',
@@ -172,6 +173,7 @@ EXTRA_FILES = listTree(
         '.*\.py$',
         '.*\.1$',
         '.*\.pc$',
+#        'freetype-py-0.4.1.tar.gz',
         ],
     )
 
@@ -203,6 +205,10 @@ DIST_FILES = [
              includedirs=['gui','plugins','opengl','legacy'],
              includefiles=['.*\.py$','pyformex(rc)?$','pyformex.conf$'],
              excludefiles=['core.py','curvetools.py','backports.py', 'compat_3k.py'],
+             ) + \
+    listTree('pyformex/freetype',listdirs=False,sorted=True,
+             includedirs=['ft_enums'],
+             includefiles=['.*\.py$'],
              ) + \
     listTree('pyformex/icons',listdirs=False,sorted=True,
              includefiles=['README','.*\.xpm$','pyformex.*\.png$']

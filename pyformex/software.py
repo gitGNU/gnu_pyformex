@@ -141,17 +141,22 @@ def hasModule(name,check=False):
         return checkModule(name)
 
 
-def requireModule(name,version=None):
+def requireModule(name,version=None,comp='ge'):
     """Ensure that the named Python module/version is available.
 
     Checks that the specified module is available, and that its version
     number is not lower than the specified version.
     If no version is specified, any version is ok.
 
+    The default comparison operator 'ge' can be replaced with one of:
+    'eq', 'ge', 'gt', 'le', 'lt', 'ne'.
+
     Returns if the required module/version could be loaded, else an
     error is raised.
     """
-    if not hasModule(name):
+    import operator
+    ver = hasModule(name)
+    if not ver:
         if name in known_modules:
             # Get the correct name, if different from our alias
             try:
@@ -178,17 +183,15 @@ Probably it is not installed on your system.
 
     else:
         if version is not None:
-            if checkVersion(name, version) < 0:
-                # Version too old
+            op = getattr(operator,comp)
+            if not op(checkVersion(name, version),0):
                 errmsg = """..
 
-**Module %s is too old!**
+**Version of module %s (%s) does not meet requirements (%s %s)!**
 
-You activated some functionality requiring
-the Python module '%s'.
-However, the module '%s' could not be loaded.
-Probably it is not installed on your system.
-""" % (name, name, name)
+You activated some functionality using the Python module '%s'.
+However, the required version for that module could not be loaded.
+""" % (name, ver, comp, version, name)
                 pf.error(errmsg)
                 raise ValueError(errmsg)
 

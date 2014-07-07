@@ -23,6 +23,10 @@
 ##
 #
 
+The freetype-py source code is obtained from
+http://freetype-py.googlecode.com/files/freetype-py-0.4.1.tar.gz
+and is licensed under the revised BSD license
+
 This Makefile can be used to install Python bindings for the freetype
 library.
 
