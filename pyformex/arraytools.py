@@ -33,6 +33,7 @@ everything from this module::
 from __future__ import print_function
 from pyformex import zip
 
+import numpy as np
 from numpy import *
 
 import sys
@@ -1899,10 +1900,14 @@ def histogram2(a,bins,range=None):
       Input data. The histogram is computed over the flattened array.
 
     - `bins`: int or sequence of scalars.
-      If bins is an int, it defines the number of equal-width bins
-      in the given range. If bins is a sequence, it defines the bin edges,
-      allowing for non-uniform bin widths. Both the leftmost and rightmost
-      edges are included, thus the number of bins is len(bins)-1.
+      If `bins` is an int, it defines the number of equal-width bins
+      in the given range (nbins).
+      If `bins` is a sequence, it defines the bin edges, including the
+      rightmost edge, allowing for non-uniform bin widths. The number of
+      bins (nbins) is then equal to `len(bins) - 1`.
+      A value `v` will be sorted in bin `i` if
+      `bins[i] <= v < bins[i+1]`, except for the last bin, which will also
+      contain the values equal to the right bin edge.
 
     - `range`: (float, float), optional. The lower and upper range of the bins.
       If not provided, range is simply (a.min(), a.max()). Values outside the
@@ -1910,16 +1915,16 @@ def histogram2(a,bins,range=None):
 
     Returns:
 
-    - `hist`: integer array with length nbins, holding the number of elements
-      in each bin,
+    - `hist`: array of dtype int and with length equal to the number of bins.
+      Returns the number of elements from `a` sorted in each of the bins.
     - `ind`: a sequence of nbins integer arrays, each holding the indices of
       the elements fitting in the respective bins,
-    - `xbins`: array of same type as data and with length nbins+1:
-      returns the bin edges.
+    - `bin_edges`: array of dtype float [ len(hist)+1 ].
+      Returns the bin edges.
 
     Example:
 
-      >>> hist,ind,xbins = histogram2([1,2,3,4,2,3,1],[1,2,3,4,5])
+      >>> hist,ind,bins = histogram2([1,2,3,4,2,3,1],[1,2,3,4,5])
       >>> print(hist)
       [2 2 2 1]
       >>> for i in ind: print(i)
@@ -1927,20 +1932,56 @@ def histogram2(a,bins,range=None):
       [1 4]
       [2 5]
       [3]
-      >>> print(xbins)
+      >>> print(bins)
       [1 2 3 4 5]
+      >>> hist,bins = histogram([1,2,3,4,2,3,1],5)
+      >>> print(hist)
+      [2 2 0 2 1]
+      >>> hist,ind,bins = histogram2([1,2,3,4,2,3,1],5)
+      >>> print(hist)
+      [2 2 0 2 1]
+      >>> for i in ind: print(i)
+      [0 6]
+      [1 4]
+      []
+      [2 5]
+      [3]
     """
-    ar = asarray(a)
-    if array(bins).size == 1:
-        nbins = bins
-        xbins = linspace(a.min(), a.max(), nbins+1)
+    a = asarray(a)
+    if iterable(bins):
+        bins = asarray(bins)
+        if (np.diff(bins) < 0).any():
+            raise ValueError("`bins` must increase monotonically.")
     else:
-        xbins = asarray(bins)
-        nbins = len(xbins)-1
-    d = digitize(ar, xbins)
-    ind = [ where(d==i)[0] for i in arange(1, nbins+1) ]
+        if not isInt(bins) or bins < 1:
+            raise ValueError("`bins` should be a positive integer.")
+        if range is None:
+            if a.size == 0:
+                # handle empty arrays. Can't determine range, so use 0-1.
+                range = (0, 1)
+            else:
+                range = (a.min(), a.max())
+
+            mn, mx = [mi+0.0 for mi in range]
+            if mn == mx:
+                mn -= 0.5
+                mx += 0.5
+                bins = 1
+
+        else:
+            mn, mx = range
+            if mn >= mx:
+                raise ValueError('max must be larger than min in `range` parameter.')
+        bins = np.linspace(mn, mx, bins+1, endpoint=True)
+
+        # Make sure to include the right edge of the last bin
+        mx = bins[-1]
+        bins[-1] = np.nextafter(mx,mx+0.5)
+
+    d = digitize(a, bins)
+    ind = [ where(d==i)[0] for i in arange(1, len(bins)) ]
     hist = asarray([ i.size for i in ind ])
-    return hist, ind, xbins
+    return hist, ind, bins
 
 
 def movingView(a, size):
