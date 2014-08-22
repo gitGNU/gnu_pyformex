@@ -121,8 +121,7 @@ def fmtData1D(data,npl=8,sep=', ',linesep='\n'):
     formatted in lines with maximum npl items, separated by sep.
     Lines are separated by linesep.
     """
-    data = asarray(data)
-    data = data.flat
+    data = atleast_1d(data).flat
     return linesep.join([
         sep.join(map(str, data[i:i+npl])) for i in range(0, len(data), npl)
         ])
@@ -135,9 +134,12 @@ def fmtData(data,npl=8,sep=', ',linesep='\n'):
     Then the data are formatted in lines with maximum npl items, separated
     by sep. Lines are separated by linesep.
     """
-    data = asarray(data)
-    data = data.reshape(-1, data.shape[-1])
-    return linesep.join([fmtData1D(row, npl, sep, linesep) for row in data])+linesep
+    data = atleast_2d(data)
+    if data.size > 0:
+        data = data.reshape(-1, data.shape[-1])
+        return linesep.join([fmtData1D(row, npl, sep, linesep) for row in data])+linesep
+    else:
+        return linesep
 
 
 def fmtOptions(options):
@@ -321,7 +323,7 @@ def fmtMaterial(mat):
         out += fmtData(mat.plastic)
 
     if mat.damping is not None:
-        if mat.damping == 'yes':
+        if mat.damping.lower() == 'yes':
             out += "*DAMPING"
             if mat.alpha is not None:
                 out +=", ALPHA = %s" %mat.alpha
@@ -713,14 +715,14 @@ def fmtShellSection(el, setname, matname):
     out = ''
     if el.sectiontype.upper() == 'SHELL':
         if matname is not None:
-            out += """*SHELL SECTION, ELSET=%s, MATERIAL=%s"""%(setname, matname)
+            out += "*SHELL SECTION, ELSET=%s, MATERIAL=%s"%(setname, matname)
             if el.offset is not None:
-                out += """, OFFSET=%s"""%el.offset
+                out += ", OFFSET=%s"%el.offset
             if el.thicknessmodulus is not None:
-                out += """, THICKNESS MODULUS=%f"""%el.thicknessmodulus
+                out += ", THICKNESS MODULUS=%f" % el.thicknessmodulus
             if el.poisson is not None:
-                out += """, POISSON=%f"""%el.poisson
-            out += """\n%s \n""" % float(el.thickness)
+                out += ", POISSON=%f" % el.poisson
+            out += "\n%s \n" % float(el.thickness)
     if el.transverseshearstiffness is not None:
         out += "*TRANSVERSE SHEAR STIFFNESS\n" + fmtData(el.transverseshearstiffness)
     return out
@@ -1196,6 +1198,7 @@ def writeSection(fil, prop):
     eltype = prop.eltype.upper()
     mat = el.material
     if mat is not None:
+        print(" Writing material %s" % mat.name)
         fil.write(fmtMaterial(mat))
 
     if eltype in connector_elems:
@@ -1704,9 +1707,65 @@ def writeStepExtra(fil, extra):
             if l.data is not None:
                 cmd+=fmtData(l.data)
         fil.write(cmd.upper())
+
+
+
 ##################################################
 ## Some classes to store all the required information
 ##################################################
+
+
+#
+# This is TOO complex. We should restrict the way users can specify things.
+#
+class Interaction(Dict):
+    """A Dict for setting surface interactions
+
+    Required:
+
+    - `name`: str name of the surface interaction
+
+    Optional: (congrats to anyone understanding this)
+
+    - `friction`: Dict , float, or arraylike. If Dict needs to store all
+      friction options as 'abaqus_option_name': 'value'.
+      An empty string can be set for parameters with no value.
+      If float or arraylike a default friction keyword Dict
+      is created with nop other *friction options.
+    - `surfacebehavior`: Dict storing all *SURFACE BEHAVIOUR options as
+      'abaqus_option_name': 'value'.
+      An empty string can be set for parameters with no value.
+      If float or arraylike a default friction keyword Dict
+      is created with nop other *friction options.
+    - `surfaceinteraction`: Dict storing all *SURFACE INTERACTIONS options
+      as 'abaqus_option_name': 'value'.
+      An empty string can be set for parameters with no value.
+      If float or arraylike a default friction keyword Dict
+      is created with nop other *friction options.
+    - `extra`: Dict or list of Dict of any additional abaqus keyword lines
+      to be passed via fmtExtra.
+      See fmtExtra for more details.
+
+    """
+    def __init__(self, name, friction=None, surfacebehavior=None, surfaceinteraction=None, extra=None):
+        utils.warn('warn_Interaction_changed')
+
+        self.name = name
+
+        self.friction=None
+        if friction is not None:
+            if isinstance(friction,dict):
+                self.friction=friction
+            else:
+                if isinstance(friction,(int,float)):
+                    friction=asarray([friction],float)
+                self.friction=Dict()
+                self.friction.data=friction
+
+        self.surfacebehavior = surfacebehavior
+        self.surfaceinteraction=surfaceinteraction
+        self.extra = extra
+
 
 #FI- SBD The Step Class has been changed. most of the keywords have been removed.
 # we kept the analysis values has they were before, but we added three new kewords
@@ -1744,6 +1803,7 @@ class Step(Dict):
       - a list  of 4 values: time inc, step time, min. time inc, max. time inc (all the other cases)
       - for LANCZOS: a list of 5 values
       - for RIKS: a list of 8 values
+
       In most cases, only the step time should be specified.
 
     - `nlgeom`: True or False (default). If True, the analysis will be
@@ -1807,7 +1867,7 @@ class Step(Dict):
     """
 
     analysis_types = [ 'STATIC', 'DYNAMIC', 'EXPLICIT', \
-                       'PERTURBATION', 'BUCKLE', 'RIKS' ]
+                       'PERTURBATION', 'BUCKLE', 'RIKS', 'ANNEAL' ]
 
     def __init__(self,analysis='STATIC',time=[0., 0., 0., 0.],nlgeom=False,
                  subheading=None,tags=None,name=None,out=[],res=[],
@@ -1881,6 +1941,8 @@ class Step(Dict):
             fil.write("*STATIC")
         elif self.analysis == 'RIKS':
             fil.write("*STATIC, RIKS")
+        elif self.analysis == 'ANNEAL':
+            fil.write("*ANNEAL")
 
         cmd=''
         if self.analysisOptions is not None:
@@ -1888,7 +1950,6 @@ class Step(Dict):
         cmd+='\n'
         fil.write(cmd)
 
-        #~ fil.write(("%s"+",%s"*(len(self.time)-1)+'\n') % tuple(self.time))
         fil.write(fmtData(self.time))
 
         if self.extra is not None:
@@ -1929,6 +1990,7 @@ class Step(Dict):
             print("  Writing step model props")
             writeModelProps(fil, prop)
 
+        print("  Writing output")
         for i in out + self.out:
             if i.kind is None:
                 fil.write(i.fmt())
@@ -2038,22 +2100,6 @@ class Result(Dict):
                             'freq':freq})
         self.update(dict(**kargs))
 
-
-class Interaction(Dict):
-    """A Dict for setting surface interactions
-    pressureoverclosure is an array = ['hard'/'soft','linear'/'nonlinear'/'exponential'/'tabular'/.., value1,value2,value3,... ]
-    Leave empty for default hard contact
-    'hard' will set penalty contact, either 'linear' or 'nonlinear'
-    'soft' will set soft pressure-overclosure, combine with 'linear'/'exponential'/'tabular'/'scale factor'
-    for needed values on dataline: see abaqus keyword manual
-    """
-    def __init__(self, name=None, cross_section=1, friction=0.0, surfacebehavior = None, noseparation = False, pressureoverclosure = None):
-        self.name = name
-        self.cross_section = cross_section
-        self.friction =friction
-        self.surfacebehavior = surfacebehavior
-        self.noseparation = noseparation
-        self.pressureoverclosure = pressureoverclosure
 
 ############################################################ AbqData
 
@@ -2272,10 +2318,12 @@ Script: %s
         prop = self.prop.getProp('n', tag=self.initial, attr=['bound'])
         if prop:
             print("Writing initial boundary conditions")
+            fil.write(fmtSectionHeading("BOUNDARY CONDITIONS"))
             writeBoundaries(fil, prop)
 
         print("Writing steps")
         for step in self.steps:
+            fil.write(fmtSectionHeading("STEP %s" % (step.name if step.name else '')))
             step.write(fil, self.prop, out=self.out, res=self.res, resfreq=Result.nintervals, timemarks=Result.timemarks)
 
         if filename is not None:

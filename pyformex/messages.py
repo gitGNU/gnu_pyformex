@@ -100,6 +100,7 @@ If you are running pyFormex from SVN sources and you can get root access, you ca
 warn_flat_removed = "The 'flat=True' parameter of the draw function has been replaced with 'nolight=True'."
 warn_formex_eltype = "Formex eltype currently needs to be a string!"
 warn_fuse_arg_rename = "The 'nodesperbox' argument has been renamed to 'ppb'. Please stop using the old name."
+warn_Interaction_changed="Class fe_abq.Interaction has been changed, only allowed parameters are name, friction, surfacebehavior, surfaceinteraction, extra (see doc)."
 warn_mesh_extrude = "Mesh.extrude has changed. The step parameter has been removed and there is now a (total) length parameter."
 warn_mesh_connect = "Mesh.connect does no longer automatically compact the Meshes. You may have to use the Mesh.compact method to do so."
 mesh_connectedTo = "Mesh.connectedTo has changed! It now returns a list of element numbers instead of a Mesh. Use the select method on the result to extract the corresponding Mesh: Mesh.select(Mesh.connectedTo(...)."
