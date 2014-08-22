@@ -239,7 +239,7 @@ def run():
     # !! currently output/result request are global to all steps
     # !! this will be changed in future
     #
-    data = AbqData(M, prop=P, steps=[step1, step2], bound=['init'])
+    data = AbqData(M, prop=P, steps=[step1, step2], initial=['init'])
 
     if ack('Export this model in ABAQUS input format?', default='No'):
         fn = askNewFilename(filter='inp')

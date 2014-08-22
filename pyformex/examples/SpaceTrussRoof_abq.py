@@ -30,7 +30,7 @@ from __future__ import print_function
 _status = 'checked'
 _level = 'advanced'
 _topics = ['FEA']
-_techniques = ['color'] 
+_techniques = ['color']
 
 from pyformex.gui.draw import *
 from pyformex.plugins.properties import *
@@ -44,8 +44,8 @@ def run():
 
     dx = 1800 # Modular size [mm]
     ht = 900  # Deck height [mm]
-    nx = 4     # number of bottom deck modules in x direction 
-    ny = 5   # number of bottom deck modules in y direction 
+    nx = 4     # number of bottom deck modules in x direction
+    ny = 5   # number of bottom deck modules in y direction
 
     q = -0.005 #distributed load [N/mm^2]
 
@@ -124,7 +124,7 @@ def run():
 
     # Since all elements have same characteristics, we could just have used:
     #   P.elemProp(section=circ20,elemtype='T3D2')
-    # But putting the elems in three sets allows for separate postprocessing 
+    # But putting the elems in three sets allows for separate postprocessing
 
 
     # Print node and element property databases
@@ -140,7 +140,7 @@ def run():
     ###################
 
     step = Step(
-        out = [ Output(type='field', variable='preselect') ],
+        out = [ Output(type='field') ],
         res = [ Result(kind='element', keys=['S']),
                 Result(kind='node', keys=['U'])
                 ]

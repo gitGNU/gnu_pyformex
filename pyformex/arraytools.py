@@ -2172,7 +2172,7 @@ def nodalSum(val,elems,avg=False,return_all=True,direction_treshold=None):
     if val.ndim != 3:
         val = val.reshape(val.shape+(1,))
     if elems.shape != val.shape[:2]:
-        raise RuntimeError("shape of val and elems does not match")
+        raise RuntimeError("shapes of val %s and elems %s do not match"%(elems.shape, val.shape[:2]))
     val = val.astype(float32)
     elems = elems.astype(int32)
     if val.shape[2] > 1 and direction_treshold is not None:

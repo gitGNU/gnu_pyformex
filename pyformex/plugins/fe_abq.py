@@ -166,6 +166,15 @@ def fmtHeading(text=''):
 """ % (pf.Version(), pf.Url, text)
     return out
 
+
+def fmtSectionHeading(text=''):
+    """Format a section heading of the Abaqus input file."""
+    return """**
+**  %s
+**
+""" %text
+
+
 def fmtPart(name='Part-1'):
     """Start a new Part."""
     out = """**  Abaqus input file created by %s (%s)
@@ -545,22 +554,22 @@ def fmtConnectorSection(el, setname):
 def fmtConnectorBehavior(prop):
     """ Write a connector behavior.
     Implemented: Elasticity,  Stop
-    
+
     Optional parameter:
     - `extrapolation`: extrapolation method for all subcomponents of the behavior.
                        'CONSTANT' (default) or 'LINEAR'
-    
+
     Examples:
     ---------
-    
+
     Elasticity
     ''''''''''
     elasticity = dict(component=[1,2,3,4,5,6], value=[1,1,1,1,1,1])
     P.Prop(name='connbehavior1', ConnectorBehavior='', Elasticity=elasticity, extrapolation='LINEAR')
-    
+
     Optional parameter for Elasticity dictionary:
     - `nonlinear`: use nonlinear elasticity data. Can be False (default) or True.
-    
+
     Stop:
     '''''
     stop = dict(component=[1,2,3,4,5,6],lowerlimit=[1,1,1,1,1,1], upperlimit=[2, 2, 2, 2,2,2])
@@ -1058,6 +1067,16 @@ def writeNodes(fil,nodes,name='Nall',nofs=1):
         fil.write('*NSET, NSET=Nall\n%s\n' % name)
 
 
+#
+# Translation of element connectivity from pyFormex to Abaqus
+#
+# TODO: Shouldn't the key be the Abaqus element name??
+#
+AbqConnectivity = {
+    'tet10': (0,1,2,3,4,7,5,6,9,8)
+    }
+
+
 def writeElems(fil,elems,type,name='Eall',eid=None,eofs=1,nofs=1):
     """Write element group of given type.
 
@@ -1104,7 +1123,7 @@ def writeSet(fil,type,name,set,ofs=1):
                 fil.write("\n")
                 fl = False
     if fl:
-        fil.write("\n")            
+        fil.write("\n")
 
 pointmass_elems = ['MASS']
 spring_elems = ['SPRINGA', ]
@@ -1268,7 +1287,7 @@ def writeSection(fil, prop):
                 out += "\n%s" % el.thickness
             out += '\n'
             fil.write(out)
-    
+
     ############
     ## POINT MASS elements
     ##########################
@@ -1276,7 +1295,7 @@ def writeSection(fil, prop):
         if el.sectiontype.upper() == 'MASS':
             if el.mass:
                 fil.write("*MASS, ELSET=%s\n%s\n" % (setname, el.mass))
-    
+
     ############
     ## UNSUPPORTED elements
     ##########################
@@ -2038,6 +2057,7 @@ class Interaction(Dict):
 
 ############################################################ AbqData
 
+
 class AbqData(object):
     """Contains all data required to write the Abaqus input file.
 
@@ -2046,25 +2066,23 @@ class AbqData(object):
     - `nprop` : the node property numbers to be used for by-prop properties.
     - `eprop` : the element property numbers to be used for by-prop properties.
     - `steps` : a list of `Step` instances.
-    - `res` : a list of `Result` instances (deprecated: set inside Step).
-    - `out` : a list of `Output` instances (deprecated: set inside Step).
-    - `bound` : a tag or alist of the initial boundary conditions.
-      The default is to apply ALL boundary conditions initially.
+    - `res` : a list of `Result` instances to be applied on all steps.
+    - `out` : a list of `Output` instances to be applied on all steps.
+    - `initial` : a tag or alist of the initial data, such as boundary
+      conditions. The default is to apply ALL boundary conditions initially.
       Specify a (possibly non-existing) tag to override the default.
     """
 
-    def __init__(self,model,prop,nprop=None,eprop=None,steps=[],res=[],out=[],bound=None):
+    def __init__(self,model,prop,nprop=None,eprop=None,steps=[],res=[],out=[],initial=None):
         """Create new AbqData."""
         if not isinstance(model, Model) or not isinstance(prop, PropertyDB):
             raise ValueError("Invalid arguments: expected Model and PropertyDB, got %s and %s" % (type(model), type(prop)))
 
-        if res or out:
-            utils.warn("depr_abqdata_outres")
         self.model = model
         self.prop = prop
         self.nprop = nprop
         self.eprop = eprop
-        self.bound = bound
+        self.initial = initial
         self.steps = steps
         self.res = res
         self.out = out
@@ -2103,6 +2121,7 @@ Script: %s
         writeNodes(fil, self.model.coords)
 
         print("Writing node sets")
+        fil.write(fmtSectionHeading("NODE SETS"))
         for p in self.prop.getProp('n', attr=['set']):
             print("NODE SET", p)
             if p.set is not None:
@@ -2112,7 +2131,7 @@ Script: %s
                 # set is specified by nprop nrs
                 if self.nprop is None:
                     print(p)
-                    raise ValueError("nodeProp has a 'prop' field but no 'nprop'was specified")
+                    raise ValueError("nodeProp has a 'prop' field but no 'nprop' was specified")
                 set = where(self.nprop == p.prop)[0]
             else:
                 # default is all nodes
@@ -2126,6 +2145,7 @@ Script: %s
             fil.write(fmtTransform(p.name, p.csys))
 
         print("Writing element sets")
+        fil.write(fmtSectionHeading("ELEMENT SETS"))
         telems = self.model.celems[-1]
         nelems = 0
         for p in self.prop.getProp('e'):
@@ -2136,7 +2156,7 @@ Script: %s
                 # element set is specified by eprop nrs
                 if self.eprop is None:
                     print(p)
-                    raise ValueError("elemProp has a 'prop' field but no 'eprop'was specified")
+                    raise ValueError("elemProp has a 'prop' field but no 'eprop' was specified")
                 set = where(self.eprop == p.prop)[0]
             else:
                 # default is all elements
@@ -2152,6 +2172,9 @@ Script: %s
                     grpname = Eset('grp', i, setname)
                     subsetname = Eset(p.nr, 'grp', i, setname)
                     nels = len(els)
+                    # Translate element connectivity to Abaqus order
+                    if els.eltype in AbqConnectivity:
+                        els = els[:,AbqConnectivity[els.eltype]]
                     if nels > 0:
                         print("Writing %s elements from group %s" % (nels, i))
                         writeElems(fil, els, p.eltype, name=subsetname, eid=elnrs)
@@ -2173,6 +2196,7 @@ Script: %s
         ##     writeSet(fil,'ELSET',setname,p.set)
 
         print("Writing element sections")
+        fil.write(fmtSectionHeading("SECTIONS"))
         for p in self.prop.getProp('e', attr=['section', 'eltype']):
             writeSection(fil, p)
 
@@ -2198,7 +2222,7 @@ Script: %s
         prop = self.prop.getProp('', attr=['amplitude'])
         if prop:
             print("Writing amplitudes")
-            writeAmplitude(fil, prop)
+            writeAmplitude(fil,prop)
 
         prop = self.prop.getProp('', attr=['orientation'])
         if prop:
@@ -2245,14 +2269,14 @@ Script: %s
                 print("Writing initial conditions")
                 fil.write(fmtInitialConditions(prop))
 
-        prop = self.prop.getProp('n', tag=self.bound, attr=['bound'])
+        prop = self.prop.getProp('n', tag=self.initial, attr=['bound'])
         if prop:
             print("Writing initial boundary conditions")
             writeBoundaries(fil, prop)
 
         print("Writing steps")
         for step in self.steps:
-            step.write(fil, self.prop, self.out, self.res, resfreq=Result.nintervals, timemarks=Result.timemarks)
+            step.write(fil, self.prop, out=self.out, res=self.res, resfreq=Result.nintervals, timemarks=Result.timemarks)
 
         if filename is not None:
             fil.close()

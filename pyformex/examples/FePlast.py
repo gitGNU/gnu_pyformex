@@ -234,7 +234,7 @@ def run():
     # The tags refer to the property database
     simsteps = [ Step('STATIC', time=[1., 1., 0.01, 1.], tags=[step]) for step in steps ]
 
-    data = AbqData(FEM, prop=P, steps=simsteps, res=result, bound=['init'])
+    data = AbqData(FEM, prop=P, steps=simsteps, res=result, initial=['init'])
 
     fn = askNewFilename(pf.cfg['workdir']+'/feplast.inp', filter='inp')
 

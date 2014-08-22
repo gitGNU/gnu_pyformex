@@ -81,8 +81,8 @@ def run():
     # Create a solid sphere
     BolSurface = simple.sphere().scale(scale)
     try:
-        # tetmesh may not be available
-        Bol = BolSurface.tetmesh(quality=True).setProp(pbol)
+        # tetgen may not be available
+        Bol = BolSurface.tetgen(quality=True).setProp(pbol)
     except:
         return
     draw(Bol)
@@ -184,6 +184,7 @@ def run():
 
     from pyformex.plugins.fe_abq import Interaction
     P.Prop(tag='init', generalinteraction=Interaction(name='interaction1', friction=0.1))
+    P.Prop(tag='init', generalcontact='interaction1')
 
     print("Element properties")
     for p in P.getProp('e'):
@@ -214,10 +215,10 @@ def run():
     # Define steps (default is static)
     step1 = Step('DYNAMIC', time=[1., 1., 0.01, 1.], tags=['step1'])
 
-    data = AbqData(M, prop=P, steps=[step1], res=res, bound=['init'])
+    data = AbqData(M, prop=P, steps=[step1], res=res, initial=['init'])
 
     if ack('Export this model in ABAQUS input format?', default='No'):
-        fn = askNewFilename(filter='*.inp')
+        fn = askNewFilename(filter='inp')
         if fn:
             data.write(jobname=fn, group_by_group=True)
 
