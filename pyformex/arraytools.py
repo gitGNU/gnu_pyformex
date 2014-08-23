@@ -2249,4 +2249,21 @@ def fmtData1d(data,npl=8,sep=', ',linesep='\n',fmt=str):
         ])
 
 
+
+def isqrt(n):
+    """Compute the square root of an integer number.
+
+    If the input integer is a perfect square, the (integer) square
+    root is returned. Else, an error is raised.
+
+    Examples:
+      >>> isqrt(36)
+      6
+    """
+    import math
+    i = int(math.sqrt(n) + 0.5)
+    if i*i != n:
+        raise ValueError('Input is not a perfect square: %s' % n)
+    return i
+
 # End

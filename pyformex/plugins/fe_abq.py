@@ -55,7 +55,7 @@ import pyformex as pf
 from datetime import datetime
 import os, sys
 from pyformex import utils
-from pyformex.arraytools import isInt, fmtData1d
+from pyformex.arraytools import isInt, fmtData1d, isqrt
 
 ##################################################
 ## Some Abaqus .inp format output routines
@@ -176,127 +176,153 @@ def fmtPart(name='Part-1'):
 
 materialswritten=[]
 
-#FI   few lines of documentation about plastic and the damping needed
 def fmtMaterial(mat):
     """Write a material section.
 
     `mat` is the property dict of the material. The following keys are
-    recognized and output accordingly:
+    recognized and output accordingly. The keys labeled (opt) are optional.
 
-    - `name`: if specified, and a material with this name has already been
+    - name: if specified, and a material with this name has already been
       written, this function does nothing.
 
-    - `elasticity`: one of 'LINEAR', 'HYPERELASTIC', 'ANISOTROPIC HYPERELASTIC',
-      'USER'. Default is 'LINEAR'. Defines the elastic behavior class of the
-      material. The requirements for the other keys depend on this type. The
-      fields labeled (opt) are optional.
+    - elasticity: one of 'LINEAR', 'HYPERELASTIC', 'ANISOTROPIC HYPERELASTIC',
+      'USER' or another string specifying a valid material command.
+      Default is 'LINEAR'.
+      Defines the elastic behavior class of the material. The required and
+      recognized keys depend on this parameter (see below).
 
-    - 'LINEAR':
+    - constants: arraylike, float. The material constants to be used in the
+      model. In the case of 'LINEAR', it is optional and the constant may be
+      specified by other keys (see below).
 
-      - young_modulus
-      - shear_modulus
-      - (opt) poisson_ratio: it is calculated if None
+    - options (opt): string: will be added to the material command as is.
 
-    - 'HYERELASTIC':
+    - extra (opt): (multiline) string: will be added to the material data as is.
 
-      required:
+    - plastic (opt): arraylike, float, shape (N,2). Definition of the
+      material plasticity law. Each row contains a tuple of a yield stress
+      value and the corresponding equivalent plastic strain.
 
-      - model: one of 'ogden', 'polynomial' or 'reduced polynomial'
-      - constants: list of all parameter required for the model
-        (see Abaqus documentation)
+    - damping (opt): tuple (alpha,beta). Adds damping into the material.
+      See Abaqus manual for the meaning of alpha and beta. Either of them
+      can be a float or None.
 
-      optional:
+    - field (opt): boolean. If True, a keyword "USER DEFINED FIELD" is added.
 
-      - order: order of the model. If blank will be automatically calculated
-        from the len of the constants list
+    'LINEAR': allows the specification of the material constants using the
+    following keys:
 
-        example::
+    - young_modulus: float
+    - shear_modulus (opt): float
+    - poisson_ratio (opt): float: if not specified, it is calculated from
+      the above two values.
 
-          intimaMat = {
+    'HYPERELASTIC': has a required key 'model':
+
+    - model: one of 'OGDEN', 'POLYNOMIAL' or 'REDUCED POLYNOMIAL'
+    - order (opt): order of the model. If omitted, it is calculated from the
+      number of constants specified.
+
+    'ANISOTROPIC HYPERELASTIC': has a required key 'model':
+
+    - model: one of 'FUNG-ANISOTROPIC', 'FUNG-ORTHOTROPIC', 'HOLZAPFEL' or
+      'USER'.
+    - depvar (opt): see below ('USER')
+    - localdir (opt): int: number of local directions.
+
+    'USER':
+    - depvar (opt): list of tuples specifying the solution-dependent state
+      variables. Each item in the list is a tuple of a variable number and
+      the variable name, e.g. `[[ 1,' var1'],[ 2,' var2']]`.
+
+    Examples::
+
+        steel = {
+            'name': 'steel',
+            'young_modulus': 207000e-6,
+            'poisson_ratio': 0.3,
+            'density': 7.85e-9,
+            }
+
+        intimaMat = {
             'name': 'intima',
-            'density': 0.1, # Not Used, but Abaqus does not like a material without
+            'density': 0.1,
             'elasticity':'hyperelastic',
             'type':'reduced polynomial',
             'constants': [6.79E-03, 5.40E-01, -1.11, 10.65, -7.27, 1.63, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-          }
-
-    - 'ANISOTROPIC HYPERELASTIC':
-
-    - 'USER':
+            }
 
     """
 
-    ## ========================
-
-    ## ANISOTROPIC HYPERELASTIC
-    ## elasticity=anisotropic hyperelastic
-    ## model= holzapfel
-    ## constants= ist  of int sorted abaqus parameter
-
-    ## ========================
-
-    ## USER MATERIAL
-    ## depvar = nr of dependand variables (24 for the nitinol umat)
-    ## elasticity=user
-    ## constants= list  of int sorted abaqus parameter
-
-    ## ============================
-    ## Additional parametrer
-    ## plastic: list([yield stress, eq. plastic strain])
-    ## """
     if mat.name is None or mat.name in materialswritten:
         return ""
 
     out ="*MATERIAL, NAME=%s\n" % mat.name
     materialswritten.append(mat.name)
-    print(materialswritten)
 
-    if mat.elasticity is None or mat.elasticity == 'linear':
-        if mat.poisson_ratio is None and mat.shear_modulus is not None:
-            mat.poisson_ratio = 0.5 * mat.young_modulus / mat.shear_modulus - 1.0
+    if mat.field:
+        out+='*USER DEFINED FIELD\n'
 
-        out += '*ELASTIC\n%s,%s\n' % (float(mat.young_modulus), float(mat.poisson_ratio))
+    if mat.depvar is not None:
+        out += "*DEPVAR\n%s\n" % len(mat.depvar) # Is this correct ??
+        out += fmtData1d(mat.depvar,npl=2)
 
-    elif mat.elasticity.lower() == 'hyperelastic':
-        out += "*HYPERELASTIC, %s" % mat.type.upper()
+    # Default elasticity type
+    if mat.elasticity is None:
+        elasticity = 'linear'
+    else:
+        elasticity =  mat.elasticity.lower()
+    constants = mat.constants
 
-        if mat.type.lower() == 'ogden':
-            if 'order' in mat:
-                order=mat.order
-            else:
-                order=len(mat.constants)/3.
-            if order%3!=0 :
-                raise ValueError("Wrong number of parameters")
+    if elasticity == 'linear':
+        out += '*ELASTIC'
 
-        if mat.type.lower() == 'polynomial':
-            ord=(-5. + (25.+8.*len(mat.constants))**0.5)/2. # Nparameters = ((N+1)*(N+2))/2 + N-1 --> Inverse to find order N
-            if 'order' in mat:
-                order=mat.order
-            else:
-                order=ord
-            if int(ord)!=order:
-                    raise ValueError("Wrong number of parameters")
+        if constants is None:
+            if mat.poisson_ratio is None and mat.shear_modulus is not None:
+                mat.poisson_ratio = 0.5 * mat.young_modulus / mat.shear_modulus - 1.0
+            constants = (float(mat.young_modulus), float(mat.poisson_ratio))
 
-        if mat.type.lower() == 'reduced polynomial':
-            if 'order' in mat:
-                order=mat.order
-            else:
-                order=len(mat.constants)/2.
-            if len(mat.constants)%2!=0:
-                raise ValueError("Wrong number of parameters")
+    elif elasticity == 'hyperelastic':
+        out += "*HYPERELASTIC, %s" % mat.model
+
+        model = mat.model.lower()
+        order = mat.order
+        if not order:
+            nconst = len(constants)
+            if model == 'ogden':
+                order = nconst // 3
+                mconst = 3*order
+
+            elif model == 'polynomial':
+                order = (isqrt(25+8*nconst)-5) // 2
+                mconst = ((order+1)*(order+2)) // 2 + order - 1
+
+            elif model  == 'reduced polynomial':
+                order = nconst // 2
+                mconst = 2*order
+
+            if mconst != nconst:
+                raise ValueError("Wrong number of material constants (%s) for order (%s) of %s model" % (nconst,mconst,model))
 
         out += ", N=%i\n" %order
-        out += fmtData1d(mat.constants) + '\n'
 
-    elif mat.elasticity.lower() == 'anisotropic hyperelastic':
-        out += "*ANISOTROPIC HYPERELASTIC, HOLZAPFEL\n"
-        #TO DO: add possibility to define local orientations!!!"
+    elif elasticity == 'anisotropic hyperelastic':
+        out += "*ANISOTROPIC HYPERELASTIC, %s" % mat.model
+        if mat.localdir is not None:
+            out += ', LOCAL DIRECTIONS=%i'%mat.localdir
 
-    elif mat.elasticity.lower() == 'user':
-        if mat.depvar is not None:
-            out += "*DEPVAR\n%s\n" % mat.depvar
+    elif elasticity == 'user':
         out += "*USER MATERIAL, CONSTANTS=%s\n" % len(mat.constants)
-        out += fmtData1d(mat.constants) + '\n'
+
+    elif elasticity is not None:
+        out += "%s\n" % elasticity.upper()
+
+    # complete the command
+    if mat.options is not None:
+        out += mat.options
+    out += '\n'
+    out += fmtData1d(constants)
+    out += '\n'
 
     if mat.density is not None:
         out += "*DENSITY\n%s\n" % float(mat.density)
@@ -309,13 +335,17 @@ def fmtMaterial(mat):
         out += fmtData1d(mat.plastic) + '\n'
 
     if mat.damping is not None:
-        if mat.damping.lower() == 'yes':
-            out += "*DAMPING"
-            if mat.alpha is not None:
-                out +=", ALPHA = %s" %mat.alpha
-            if mat.beta is not None:
-                out +=", BETA = %s" %mat.beta
-            out += '\n'
+        alpha,beta = mat.damping
+        out += "*DAMPING"
+        if alpha:
+            out +=", ALPHA = %s" % alpha
+        if beta:
+            out +=", BETA = %s" % beta
+        out += '\n'
+
+    if mat.extra is not None:
+        out += mat.extra
+        out += '\n'
 
     return out
 
@@ -2241,6 +2271,9 @@ Script: %s
             fil.write("*INSTANCE, name=Part-0-0, part=Part-0\n")
             fil.write("*END INSTANCE\n")
             fil.write("*END ASSEMBLY\n")
+
+        print('Materials written:\n  ')
+        print('\n  '.join(materialswritten)+'\n')
 
         print("Writing global model properties")
 
