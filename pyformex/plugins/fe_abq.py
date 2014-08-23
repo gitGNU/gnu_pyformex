@@ -114,20 +114,20 @@ def fmtCmd(cmd='*'):
     return '*'+cmd+'\n'
 
 
-def fmtData(data,npl=8,sep=', ',linesep='\n'):
-    """Format numerical data in lines with maximum npl items.
+## def fmtData(data,npl=8,sep=', ',linesep='\n'):
+##     """Format numerical data in lines with maximum npl items.
 
-    data is a numeric array, which is coerced to be a 2D array, either by
-    adding a first axis or by collapsing the first ndim-1 axies.
-    Then the data are formatted in lines with maximum npl items, separated
-    by sep. Lines are separated by linesep.
-    """
-    data = atleast_2d(data)
-    if data.size > 0:
-        data = data.reshape(-1, data.shape[-1])
-        return linesep.join([fmtData1d(row, npl, sep, linesep) for row in data])+linesep
-    else:
-        return linesep
+##     data is a numeric array, which is coerced to be a 2D array, either by
+##     adding a first axis or by collapsing the first ndim-1 axies.
+##     Then the data are formatted in lines with maximum npl items, separated
+##     by sep. Lines are separated by linesep.
+##     """
+##     data = atleast_2d(data)
+##     if data.size > 0:
+##         data = data.reshape(-1, data.shape[-1])
+##         return linesep.join([fmtData1d(row, npl, sep, linesep) for row in data])+linesep
+##     else:
+##         return linesep
 
 
 def fmtOptions(options):
@@ -286,7 +286,7 @@ def fmtMaterial(mat):
                 raise ValueError("Wrong number of parameters")
 
         out += ", N=%i\n" %order
-        out += fmtData(mat.constants)
+        out += fmtData1d(mat.constants) + '\n'
 
     elif mat.elasticity.lower() == 'anisotropic hyperelastic':
         out += "*ANISOTROPIC HYPERELASTIC, HOLZAPFEL\n"
@@ -296,7 +296,7 @@ def fmtMaterial(mat):
         if mat.depvar is not None:
             out += "*DEPVAR\n%s\n" % mat.depvar
         out += "*USER MATERIAL, CONSTANTS=%s\n" % len(mat.constants)
-        out += fmtData(mat.constants)
+        out += fmtData1d(mat.constants) + '\n'
 
     if mat.density is not None:
         out += "*DENSITY\n%s\n" % float(mat.density)
@@ -306,9 +306,7 @@ def fmtMaterial(mat):
         mat.plastic = asarray(mat.plastic)
         if mat.plastic.ndim != 2:
             raise ValueError("Plastic data should be 2-dim array")
-        ## if mat.plastic.shape[1] > 8:
-        ##     raise ValueError("Plastic data array should have max. 8 columns"
-        out += fmtData(mat.plastic)
+        out += fmtData1d(mat.plastic) + '\n'
 
     if mat.damping is not None:
         if mat.damping.lower() == 'yes':
@@ -329,7 +327,7 @@ def fmtTransform(setname, csys):
     - `csys` is a CoordSystem.
     """
     out = "*TRANSFORM, NSET=%s, TYPE=%s\n" % (setname, csys.sys)
-    out += fmtData(csys.data.reshape(-1))
+    out += fmtData1d(csys.data.reshape(-1)) + '\n'
     return out
 
 
@@ -385,11 +383,11 @@ def fmtFrameSection(el, setname):
         out += "%s, %s\n" % (float(el.width), float(el.height))
 
     if el.orientation != None:
-        out += fmtData(el.orientation)
+        out += fmtData1d(el.orientation) + '\n'
     else:
         out += '\n'
 
-    out += fmtData([float(el.young_modulus), float(el.shear_modulus)])
+    out += fmtData1d([float(el.young_modulus), float(el.shear_modulus)]) + '\n'
 
     return out
 
@@ -509,7 +507,7 @@ def fmtBeamSection(el, setname):
         out += "\n"
 
     if el.transverseshearstiffness != None:
-        out += "*TRANSVERSE SHEAR STIFFNESS\n" + fmtData(el.transverseshearstiffness)
+        out += "*TRANSVERSE SHEAR STIFFNESS\n" + fmtData1d(el.transverseshearstiffness) + '\n'
 
     return out
 
@@ -682,7 +680,7 @@ def fmtSolidSection(el, setname, matname):
         out += '\n'
 
         if el.controls.data is not None:
-           out += fmtData(el.controls.data)
+           out += fmtData1d(el.controls.data) + '\n'
 
     return out
 
@@ -712,7 +710,7 @@ def fmtShellSection(el, setname, matname):
                 out += ", POISSON=%f" % el.poisson
             out += "\n%s \n" % float(el.thickness)
     if el.transverseshearstiffness is not None:
-        out += "*TRANSVERSE SHEAR STIFFNESS\n" + fmtData(el.transverseshearstiffness)
+        out += "*TRANSVERSE SHEAR STIFFNESS\n" + fmtData1d(el.transverseshearstiffness) + '\n'
     return out
 
 
@@ -806,10 +804,10 @@ def fmtSurfaceInteraction(prop):
             if p.pressureoverclosure:
                 if p.pressureoverclosure[0] == 'soft':
                     out += ", pressure-overclosure=%s\n" % p.pressureoverclosure[1]
-                    out += "%s" % fmtData(p.pressureoverclosure[2:])
+                    out += "%s" % fmtData1d(p.pressureoverclosure[2:]) + '\n'
                 elif p.pressureoverclosure[0] == 'hard':
                     out += ", penalty=%s\n" % p.pressureoverclosure[1]
-                    out += "%s" % fmtData(p.pressureoverclosure[2:])
+                    out += "%s" % fmtData1d(p.pressureoverclosure[2:]) + '\n'
             else:
                 out += "\n"
     return out
@@ -970,7 +968,7 @@ def fmtOrientation(prop):
             data = tuple(p.a)
             if p.b is not None:
                 data += tuple(p.b)
-            out += fmtData(data)
+            out += fmtData1d(data) + '\n'
         else:
             raise ValueError("Orientation needs at least point a")
     return out
@@ -1675,14 +1673,14 @@ def writeModelProps(fil, prop):
             if isinstance(p.extra, str):
                 fil.write(p.extra)
             elif isinstance(p.extra, list):
-                cmd=''
+                cmd = ''
                 for l in p.extra:
-                    l=CDict(l) # to avoid keyerrors if l.data is not a key
-                    cmd+='*%s'%l['keyword']
-                    cmd+=fmtOptions(utils.removeDict(l, ['keyword', 'data']))
-                    cmd+='\n'
+                    l = CDict(l) # to avoid keyerrors if l.data is not a key
+                    cmd += '*%s'%l['keyword']
+                    cmd += fmtOptions(utils.removeDict(l, ['keyword', 'data']))
+                    cmd += '\n'
                     if l.data is not None:
-                        cmd+=fmtData(l.data)
+                        cmd += fmtData1d(l.data) + '\n'
                 fil.write(cmd.upper())
 
 #~ FI see comments for writeModelProps
@@ -1690,14 +1688,14 @@ def writeStepExtra(fil, extra):
     if isinstance(extra, str):
         fil.write(extra)
     elif isinstance(extra, list):
-        cmd=''
+        cmd = ''
         for l in extra:
-            l=CDict(l) # to avoid keyerrors if l.data is not a key
-            cmd+='*%s'%l['keyword']
-            cmd+=fmtOptions(utils.removeDict(l, ['keyword', 'data']))
-            cmd+='\n'
+            l = CDict(l) # to avoid keyerrors if l.data is not a key
+            cmd += '*%s'%l['keyword']
+            cmd += fmtOptions(utils.removeDict(l, ['keyword', 'data']))
+            cmd += '\n'
             if l.data is not None:
-                cmd+=fmtData(l.data)
+                cmd += fmtData1d(l.data) + '\n'
         fil.write(cmd.upper())
 
 
@@ -1942,7 +1940,7 @@ class Step(Dict):
         cmd+='\n'
         fil.write(cmd)
 
-        fil.write(fmtData(self.time))
+        fil.write(fmtData1d(self.time) + '\n')
 
         if self.extra is not None:
             writeStepExtra(fil, self.extra)
@@ -2000,8 +1998,7 @@ class Step(Dict):
                 writeElemResult(fil,**i)
         fil.write("*END STEP\n")
 
-#FI-SDB Remove **options the OUTPUT class
-# should be used only extra but examples are needed
+
 class Output(Dict):
     """A request for output to .odb and history.
 
