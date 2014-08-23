@@ -1678,7 +1678,6 @@ def writeFileOutput(fil,resfreq=1,timemarks=False):
 #~ Fi this function works like the previous one(if extra is a str)
 # but now extra can be also a list of Dict .This is more convenient  if more addictional lines
 # need to be written at the step level for type history.
-# This function is very similar to writeStepExtra maybe can be merged
 def writeModelProps(fil, prop):
     """_ BAD STRUCTURE Write model props for this step
 
@@ -1712,22 +1711,6 @@ def writeModelProps(fil, prop):
                     if l.data is not None:
                         cmd += fmtData1d(l.data) + '\n'
                 fil.write(cmd.upper())
-
-#~ FI see comments for writeModelProps
-def writeStepExtra(fil, extra):
-    if isinstance(extra, str):
-        fil.write(extra)
-    elif isinstance(extra, list):
-        cmd = ''
-        for l in extra:
-            l = CDict(l) # to avoid keyerrors if l.data is not a key
-            cmd += '*%s'%l['keyword']
-            cmd += fmtOptions(utils.removeDict(l, ['keyword', 'data']))
-            cmd += '\n'
-            if l.data is not None:
-                cmd += fmtData1d(l.data) + '\n'
-        fil.write(cmd.upper())
-
 
 
 ##################################################
@@ -1786,18 +1769,6 @@ class Interaction(Dict):
         self.surfaceinteraction=surfaceinteraction
         self.extra = extra
 
-
-#FI- SBD The Step Class has been changed. most of the keywords have been removed.
-# we kept the analysis values has they were before, but we added three new kewords
-# in which to store all the parameter (see Example).The default values for riks buckle have been removed
-# but we left infos in the documentation.
-#At the moment we didn t find any exception at least for what we used so far
-#but maybe the stepOption=Dict(),analysisOption=Dict(),extra=str added keywords
-# can be all tuple (Dict, list/array) for any additional line of values to be added.
-# lines
-#         if res and self.analysis == 'EXPLICIT':
-#            writeFileOutput(fil,resfreq,timemarks)
-# should be removed and change also the OUTPUT class (see comments)
 
 class Step(Dict):
     """_VERY badly structured docstring
@@ -1890,10 +1861,9 @@ class Step(Dict):
                        'PERTURBATION', 'BUCKLE', 'RIKS', 'ANNEAL' ]
 
     def __init__(self,analysis='STATIC',time=[0., 0., 0., 0.],nlgeom=False,
-                 subheading=None,tags=None,name=None,out=[],res=[],
-                 stepOptions=None,analysisOptions=None,extra=None):
+                 heading=None,tags=None,name=None,out=[],res=[],
+                 options=None,analysisOptions=None,extra=None):
         """Create a new analysis step."""
-
 
         self.analysis = analysis.upper()
 
@@ -1915,14 +1885,14 @@ class Step(Dict):
         self.tags = tags
         self.out = out
         self.res = res
-        self.stepOptions=stepOptions
-        self.analysisOptions=analysisOptions
-        self.subheading=subheading
-        self.extra=extra
+        self.options = options
+        self.analysisOptions = analysisOptions
+        self.heading = heading
+        self.extra = extra
 
 
     def write(self,fil,propDB,out=[],res=[],resfreq=1,timemarks=False):
-        """Write a load step.
+        """Write a simulation step.
 
         propDB is the properties database to use.
 
@@ -1941,13 +1911,13 @@ class Step(Dict):
         if self.nlgeom:
             cmd += ', NLGEOM=%s' % self.nlgeom
 
-        if self.stepOptions is not None:
-            cmd+=fmtOptions(self.stepOptions)
+        if self.options is not None:
+            cmd += self.options
         cmd += '\n'
         fil.write(cmd)
 
-        if self.subheading is not None:
-            fil.write(self.subheading+'\n')
+        if self.heading is not None:
+            fil.write(self.heading+'\n')
 
         if self.analysis =='STATIC':
             fil.write("*STATIC")
@@ -1964,16 +1934,16 @@ class Step(Dict):
         elif self.analysis == 'ANNEAL':
             fil.write("*ANNEAL")
 
-        cmd=''
         if self.analysisOptions is not None:
-            cmd+=fmtOptions(self.analysisOptions)
-        cmd+='\n'
-        fil.write(cmd)
+            fil.write(self.analysisOptions)
+        fil.write('\n')
 
-        fil.write(fmtData1d(self.time) + '\n')
+        fil.write(fmtData1d(self.time))
+        fil.write('\n')
 
         if self.extra is not None:
-            writeStepExtra(fil, self.extra)
+            fil.write(self.extra)
+            fil.write('\n')
 
         prop = propDB.getProp('n', tag=self.tags, attr=['bound'])
         if prop:
