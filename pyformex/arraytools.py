@@ -2211,4 +2211,42 @@ def pprint(a,label=''):
         print(dummy+l)
 
 
+def fmtData1d(data,npl=8,sep=', ',linesep='\n',fmt=str):
+    """Format data in lines with maximum npl items.
+
+    Parameters:
+
+    - `data`: list or array. If an array, if will be flattened. The data
+      items are converted to strings using the `fmt` function, concatened
+      in groups of `npl` items using `sep` as a separator between them, and
+      the groups are concatenated with a `linesep` separator.
+    - `npl`: int: (maximum) number of items to appear in a group.
+      The last group may contain less items.
+    - `sep`: string: separator between individual items of a group.
+    - `linesep`: string: separator between groups. The default (`\n`) will
+      put each group of `npl` items on a separate line.
+    - `fmt`: callable: used to convert a single item to a string. Default
+      is Python's built in string converter.
+
+    Returns a string with the formatted data.
+
+    Examples:
+      >>> print(fmtData1d(arange(10)))
+      0, 1, 2, 3, 4, 5, 6, 7
+      8, 9
+      >>> print(fmtData1d([1.25, 3, 'no', 2.50, 4, 'yes'],npl=3))
+      1.25, 3, no
+      2.5, 4, yes
+      >>> myformat = lambda x: "%10s" % str(x)
+      >>> print(fmtData1d([1.25, 3, 'no', 2.50, 4, 'yes'],npl=3,fmt=myformat))
+            1.25,          3,         no
+             2.5,          4,        yes
+    """
+    if isinstance(data,ndarray):
+        data = data.flat
+    return linesep.join([
+        sep.join(map(fmt, data[i:i+npl])) for i in range(0, len(data), npl)
+        ])
+
+
 # End

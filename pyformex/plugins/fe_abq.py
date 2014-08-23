@@ -55,7 +55,7 @@ import pyformex as pf
 from datetime import datetime
 import os, sys
 from pyformex import utils
-from pyformex.arraytools import isInt
+from pyformex.arraytools import isInt, fmtData1d
 
 ##################################################
 ## Some Abaqus .inp format output routines
@@ -114,18 +114,6 @@ def fmtCmd(cmd='*'):
     return '*'+cmd+'\n'
 
 
-def fmtData1D(data,npl=8,sep=', ',linesep='\n'):
-    """Format numerical data in lines with maximum npl items.
-
-    data is a numeric array. The array is flattened and then the data are
-    formatted in lines with maximum npl items, separated by sep.
-    Lines are separated by linesep.
-    """
-    data = atleast_1d(data).flat
-    return linesep.join([
-        sep.join(map(str, data[i:i+npl])) for i in range(0, len(data), npl)
-        ])
-
 def fmtData(data,npl=8,sep=', ',linesep='\n'):
     """Format numerical data in lines with maximum npl items.
 
@@ -137,7 +125,7 @@ def fmtData(data,npl=8,sep=', ',linesep='\n'):
     data = atleast_2d(data)
     if data.size > 0:
         data = data.reshape(-1, data.shape[-1])
-        return linesep.join([fmtData1D(row, npl, sep, linesep) for row in data])+linesep
+        return linesep.join([fmtData1d(row, npl, sep, linesep) for row in data])+linesep
     else:
         return linesep
 
@@ -776,9 +764,10 @@ def fmtAnalyticalSurface(prop):
     - surftype: 'ELEMENT' or 'NODE'
     - label: face or edge identifier (only required for surftype = 'NODE')
 
-    Example:
+    Example::
 
-    >>> P.Prop(name='AnalySurf', nodeset = 'REFNOD', analyticalsurface='')
+      P.Prop(name='AnalySurf', nodeset = 'REFNOD', analyticalsurface='')
+
     """
     out = ''
     for p in prop:
@@ -842,9 +831,9 @@ def fmtGeneralContact(prop):
 
         extra = "*CONTACT CONTROLS ASSIGNMENT, TYPE=SCALE PENALTY\\n, , 1.e3\\n"
 
-    Example:
+    Example::
 
-      >>> P.Prop(generalinteraction=Interaction(name ='contactprop1'),exl =[
+      P.Prop(generalinteraction=Interaction(name ='contactprop1'),exl =[
       ['surf11', 'surf12'],['surf21',surf22]])
 
     """
@@ -877,11 +866,12 @@ def fmtContactPair(prop):
     - slave: slave surface
     - interaction: interaction properties : name or Dict
 
-    Example:
+    Example::
 
-    >>> P.Prop(name='contact0',interaction=Interaction(name ='contactprop',
-    surfacebehavior=True, pressureoverclosure=['hard','linear',0.0, 0.0, 0.001]),
-    master ='quadtubeINTSURF1',  slave='hexstentEXTSURF', contacttype='NODE TO SURFACE')
+      P.Prop(name='contact0',interaction=Interaction(name ='contactprop',
+      surfacebehavior=True, pressureoverclosure=['hard','linear',0.0, 0.0, 0.001]),
+      master ='quadtubeINTSURF1',  slave='hexstentEXTSURF', contacttype='NODE TO SURFACE')
+
     """
     out = ''
     for p in prop:
@@ -916,10 +906,11 @@ def fmtConstraint(prop):
     -no rotation
     -tiednset (it cannot be used in combination with positiontolerance)
 
-    Example:
+    Example::
 
-    >>> P.Prop(constraint='1', name = 'constr1', adjust = 'no',
-    master = 'hexstentbarSURF', slave = 'hexstentEXTSURF',type='NODE TO SURFACE')
+      P.Prop(constraint='1', name = 'constr1', adjust = 'no',
+      master = 'hexstentbarSURF', slave = 'hexstentEXTSURF',type='NODE TO SURFACE')
+
     """
     out =''
     for p in prop:
@@ -1033,6 +1024,7 @@ def fmtMass(prop):
         out +='{0}\n'.format(p.mass)
     return out
 
+
 def fmtInertia(prop):
     """Format rotary inertia
 
@@ -1044,7 +1036,7 @@ def fmtInertia(prop):
     out = ''
     for p in prop:
         out +='*ROTARY INERTIA, ELSET={0}\n'.format(p.name)
-        out += fmtData1D(p.inertia,  6)
+        out += fmtData1d(p.inertia,  6)
         out += '\n'
     return out
 
@@ -2356,26 +2348,6 @@ def exportMesh(filename,mesh,eltype=None,header=''):
     writeElems(fil, mesh.elems, eltype, nofs=1)
     fil.close()
     print("Abaqus file %s written." % filename)
-
-
-##################################################
-## Test
-##################################################
-
-if __name__ == "script" or __name__ == "draw":
-
-    def TestwriteFormatLines():
-        a = arange(27)
-        print(fmtData1D(a))
-        print(fmtData1D(a, 5))
-        print(fmtData1D(a, 12))
-
-        a = a.reshape(3, 9)
-        print(fmtData(a))
-        print(fmtData(a, 5))
-        print(fmtData(a, 12))
-
-    TestwriteFormatLines()
 
 
 # End
