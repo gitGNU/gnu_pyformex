@@ -761,7 +761,8 @@ def fmtSolidSection(el, setname, matname):
         out += '\n'
 
         if el.controls.data is not None:
-           out += fmtData1d(el.controls.data) + '\n'
+           out += fmtData1d(el.controls.data)
+           out += '\n'
 
     return out
 
@@ -780,6 +781,9 @@ def fmtShellSection(el, setname, matname):
     - offset (for contact surface SPOS or 0.5, SNEG or -0.5)
     """
     out = ''
+    #
+    # BV: ARE THESE TESTS RELEVANT?
+    #
     if el.sectiontype.upper() == 'SHELL':
         if matname is not None:
             out += "*SHELL SECTION, ELSET=%s, MATERIAL=%s"%(setname, matname)
@@ -789,9 +793,14 @@ def fmtShellSection(el, setname, matname):
                 out += ", THICKNESS MODULUS=%f" % el.thicknessmodulus
             if el.poisson is not None:
                 out += ", POISSON=%f" % el.poisson
-            out += "\n%s \n" % float(el.thickness)
+            if el.options is not None:
+                out += el.options
+            out += "\n"
+            out += " %s \n" % float(el.thickness)
     if el.transverseshearstiffness is not None:
-        out += "*TRANSVERSE SHEAR STIFFNESS\n" + fmtData1d(el.transverseshearstiffness) + '\n'
+        out += "*TRANSVERSE SHEAR STIFFNESS\n"
+        out += fmtData1d(el.transverseshearstiffness)
+        out += '\n'
     return out
 
 
@@ -852,6 +861,7 @@ def fmtAnalyticalSurface(prop):
     for p in prop:
         out += "*RIGID BODY, ANALYTICAL SURFACE = %s, REFNOD=%s\n" % (p.name, p.nodeset)
     return out
+
 
 def fmtSurfaceInteraction(prop):
     """Format the interactions.
@@ -1053,6 +1063,7 @@ def fmtOrientation(prop):
         else:
             raise ValueError("Orientation needs at least point a")
     return out
+
 
 def fmtEquation(prop):
     """Format multi-point constraint using an equation
@@ -1376,63 +1387,63 @@ def writeSection(fil, prop):
     else:
         pf.warning('Sorry, element type %s is not yet supported' % eltype)
 
-#~ FI  writeDisplacements  has been included in writeBoundaries
-# the previous one didnt allow to add option like 'USER' for disp subroutine
-# in this way the function is more general as it  allows also other kind of boundary conditions
-# i. e type= velocity or type = acceleration to be added in the extra Dict
-#~ the op option has been removed it needs to be included in extra.
-# the previous default parameter (OP= MOD) is also deflaut to abaqus and
-# does not need to be specified
-#~ the key ampl can be also icluded in extra but has not been removed
-# I will suggest to remove writeDisplacements or set this function equal to writeBoundaries
+
+#
+# TODO: should we remove option of specifying nonzero bound values?
+#
 def writeBoundaries(fil, prop):
-    """_ BAD STRUCTURE! Write nodal boundary conditions.
+    """Write nodal boundary conditions.
 
-    prop is a list of node property records that should be scanned for
-    bound attributes to write. prop contains
+    prop is a list of node property records having the 'bound' key.
 
-    REQUIRED
-    -bound  : a string (for prescribed conditions)
-                : a list of 6 integer (of values 0 or 1). where 1 the boundary is written
-                : a list of tuple ( )
-    OPTIONAL
-    -ampl     : an amplitude name
-    -op       : 'NEW' to remove previous conditions; 'MOD' to add to and/or modify previous conditions
-    -extra    : Dict type.It has keys name equal to the ABAQUS keywords and value equal to parameter setting
-                if an ABAQUS keyword does not have a value to be the Dict value must be an empty string
+    Recognized keys:
 
-    By default, the boundary conditions are applied as a modification of the
-    existing boundary conditions, i.e. initial conditions and conditions from
-    previous steps remain in effect.
+    - bound : either of:
+      - a string, representing a standard set of boundary conditions
+      - a list of 6 integer values (0 or 1) corresponding with the 6
+        degrees of freedom UX,UY,UZ,RX,RY,RZ. The dofs corresponding
+        to the 1's will be restrained (given a value 0.0).
+      - a list of tuples (dofid, value) : this allows for nonzero
+        boundary values to be specified. NOTE: this can also be
+        achieved by a 'displ' keyword (see writeDisplacements) and
+        that is the prefered way of specifying nonzero boundary conditions.
 
-    EXAMPLES
-    P.nodeProp(tag='init',set=arange(100),name='catheter',bound='pinned')
+    - op (opt): 'MOD' (default) or 'NEW'. By default, the boundary conditions
+      are applied as a modification of the existing boundary conditions, i.e.
+      initial conditions and conditions from previous steps remain in effect.
+      The user can set op='NEW' to remove the previous conditions.
+      This will also remove initial conditions.
 
-    P.nodeProp(tag='init',set=arange(100),name='catheter',bound=[0,1,1,0,0,0])
+    - ampl (opt): string: specifies the name of an amplitude that is to be
+      multiplied with the values to have the time history of the variable.
+      Only relevant if bound specifies nonzero values. Its use is
+      discouraged (see above).
 
-    !!!!This works like writeDisplacements
-    ampname='amp'
-    times = [0,1];values = [0,1]
-    amp = Amplitude(data=column_stack([times,values]))
-    P.Prop(amplitude=amp,name=ampname)
-    P.nodeProp(tag='step1',set='catheter',bound=[(0,5.3),(1,3.5)],ampl=ampname)
+    - options (opt): string that is added as is to the command line.
 
-    extra= Dict({'user':''})
-    P.nodeProp(tag='step1',set='catheter',bound=[(0,5.4),(1,3.5)],extra=extra)
+    Examples::
+
+      # The following are quivalent
+      P.nodeProp(tag='init',set='setA',name='pinned_nodes',bound='pinned')
+      P.nodeProp(tag='init',set='setA',name='pinned_nodes',bound=[1,1,1,0,0,0])
+
+      # this is possible, but discouraged
+      P.nodeProp(tag='init',set='setB',name='forced_displ',bound=[(1,3.0)])
+      # it is better to use:
+      P.nodeProp(tag='step0',set='setB',name='forced_displ',displ=[(1,3.0)])
+
     """
     for p in prop:
         setname = nsetName(p)
         fil.write("*BOUNDARY")
-
+        if p.op is None:
+            fil.write(", OP=MOD")
+        else:
+            fil.write(", OP=%s" % p.op)
         if p.ampl is not None:
             fil.write(", AMPLITUDE=%s" % p.ampl)
-
-        if p.op is not None:
-            fil.write(", OP=%s" % p.op)
-
-        if p.extra is not None:
-           fil.write(fmtOptions(p.extra))
-
+        if p.options is not None:
+            fil.write(p.options)
         fil.write("\n")
 
         if isinstance(p.bound, str):
@@ -1444,33 +1455,53 @@ def writeBoundaries(fil, prop):
         elif isinstance(p.bound[0], tuple):
             for b in p.bound:
                 dof = b[0]+1
-#                fil.write(fmtData(setname,dof,dof,b[1]))
-                fil.write("{0}, {1}, {1}, {2}\n".format(setname,  dof,  b[1]))
+                fil.write("%s, %s, %s, %s\n" % (setname, dof, dof, b[1]))
 
-#~ FI see writeBoundaries comments
-def writeDisplacements(fil,prop,dtype='DISPLACEMENT'):
-    """Write boundary conditions of type BOUNDARY, TYPE=DISPLACEMENT
 
-    prop is a list of node property records that should be scanned for
-    displ attributes to write.
+def writeDisplacements(fil,prop,btype):
+    """Write prescribed displacements, velocities or accelerations
 
-    By default, the boundary conditions are applied as a modification of the
-    existing boundary conditions, i.e. initial conditions and conditions from
-    previous steps remain in effect.
-    The user can set op='NEW' to remove the previous conditions.
-    This will also remove initial conditions!
+    Parameters:
+
+    - `prop` is a list of node property records containing one (or more)
+      of the keys 'displ', 'veloc' 'accel'.
+    - `btype` is the boundary type: one of 'displacement', 'velocity' or
+      'acceleration'
+
+    Recognized property keys:
+
+    - displ, veloc, accel: each is optional and is a list of tuples
+      (dofid, value), for respectively the displacement, velocity or
+      acceleration.
+
+    - op (opt): 'NEW' (default) or 'MOD'. By default, the boundary conditions
+      are applied as new values in the current step.
+      The user can set op='MOD' to add the specified conditions to the already
+      existing ones.
+
+    - ampl (opt): string: specifies the name of an amplitude that is to be
+      multiplied with the values to have the time history of the variable.
+
+    - options (opt): string that is added to the command line.
+
     """
     for p in prop:
         setname = nsetName(p)
-        fil.write("*BOUNDARY, TYPE=%s" % dtype)
-        if p.op is not None:
+        fil.write("*BOUNDARY, TYPE=%s" % btype.upper())
+        if p.op is None:
+            fil.write(", OP=NEW")
+        else:
             fil.write(", OP=%s" % p.op)
         if p.ampl is not None:
             fil.write(", AMPLITUDE=%s" % p.ampl)
+        if p.options is not None:
+            fil.write(p.options)
         fil.write("\n")
-        for v in p.displ:
-            dof = v[0]+1
-            fil.write("%s, %s, %s, %s\n" % (setname, dof, dof, v[1]))
+        data = p[btype[:5]]
+        if data:
+            for v in data:
+                dof = v[0]+1
+                fil.write("%s, %s, %s, %s\n" % (setname, dof, dof, v[1]))
 
 
 def writeCloads(fil, prop):
@@ -2001,15 +2032,12 @@ class Step(Dict):
             print("  Writing step boundary conditions")
             writeBoundaries(fil, prop)
 
-        for pname, aname in [
-            ('displ', 'DISPLACEMENT'),
-            ('veloc', 'VELOCITY'),
-            ('accel', 'ACCELERATION')
-            ]:
-            prop = propDB.getProp('n', tag=self.tags, attr=[pname])
+        for btype in [ 'displacement', 'velocity', 'acceleration' ]:
+            shorttype = btype[:5]
+            prop = propDB.getProp('n', tag=self.tags, attr=[shorttype])
             if prop:
-                print("  Writing step %s" % aname.lower())
-                writeDisplacements(fil, prop, dtype=aname)
+                print("  Writing step prescribed %s" % btype)
+                writeDisplacements(fil, prop, btype)
 
         prop = propDB.getProp('n', tag=self.tags, attr=['cload'])
         if prop:
