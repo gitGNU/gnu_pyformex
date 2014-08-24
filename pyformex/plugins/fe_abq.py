@@ -1457,7 +1457,9 @@ def writeBoundaries(fil, prop):
                 dof = b[0]+1
                 fil.write("%s, %s, %s, %s\n" % (setname, dof, dof, b[1]))
 
-
+#
+# TODO: explaine what 'resetting' a condition means.
+#
 def writeDisplacements(fil,prop,btype):
     """Write prescribed displacements, velocities or accelerations
 
@@ -1472,7 +1474,8 @@ def writeDisplacements(fil,prop,btype):
 
     - displ, veloc, accel: each is optional and is a list of tuples
       (dofid, value), for respectively the displacement, velocity or
-      acceleration.
+      acceleration. A special value 'reset' may also be specified to
+      reset  the prescribed condition for these variables.
 
     - op (opt): 'NEW' (default) or 'MOD'. By default, the boundary conditions
       are applied as new values in the current step.

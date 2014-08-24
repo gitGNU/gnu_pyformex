@@ -367,7 +367,7 @@ def checkIdValue(values):
 
 
 def checkArrayOrIdValue(values):
-    """Check that a variable is an list of values or (id,value) tuples
+    """Check that a variable is a list of values or (id,value) tuples
 
     This convenience function checks that the argument is either:
 
@@ -376,16 +376,50 @@ def checkArrayOrIdValue(values):
       value to a float.
 
     If ok, return the values as a list of (int,float) tuples.
+
+    Examples:
+      >>> checkArrayOrIdValue([0,3,4,0,0,0])
+      [(1, 3.0), (2, 4.0)]
+      >>> checkArrayOrIdValue([(1,3.0),(2,4.0)])
+      [(1, 3.0), (2, 4.0)]
+
     """
-    ##print("VALUES IN: %s" % values)
     try:
         v = checkArray(values, (6,), 'f', 'i')
         w = where(v != 0.0)[0]
         values = [ (i, v[i]) for i in w ]
     except:
         values = checkIdValue(values)
-    ##print("VALUES OUT: %s" % values)
     return values
+
+
+def checkArrayOrIdValueOrEmpty(values):
+    """Check that a variable is a list of values or (id,value) tuples or empty.
+
+    This convenience function checks that the argument is either:
+
+    - a list of 6 float values (or convertible to it), or
+    - a list of (id,value) tuples where id is convertible to an int,
+      value to a float.
+    - something representing an empty list
+
+    If ok, return the values as a list of (int,float) tuples.
+
+    Examples:
+      >>> checkArrayOrIdValueOrEmpty([0,3,4,0,0,0])
+      [(1, 3.0), (2, 4.0)]
+      >>> checkArrayOrIdValueOrEmpty([(1,3.0),(2,4.0)])
+      [(1, 3.0), (2, 4.0)]
+      >>> checkArrayOrIdValueOrEmpty([])
+      []
+
+    """
+    try:
+        if len(values) == 0:
+            return []
+    except:
+        pass
+    return checkArrayOrIdValue(values)
 
 
 def checkString(a, valid):
@@ -662,11 +696,11 @@ class PropertyDB(Dict):
             if cload is not None:
                 d['cload'] = checkArrayOrIdValue(cload)
             if displ is not None:
-                d['displ'] = checkArrayOrIdValue(displ)
+                d['displ'] = checkArrayOrIdValueOrEmpty(displ)
             if veloc is not None:
-                d['veloc'] = checkArrayOrIdValue(veloc)
+                d['veloc'] = checkArrayOrIdValueOrEmpty(veloc)
             if accel is not None:
-                d['accel'] = checkArrayOrIdValue(accel)
+                d['accel'] = checkArrayOrIdValueOrEmpty(accel)
             if bound is not None:
                 if isinstance(bound, str):
                     d['bound'] = checkString(bound, self.bound_strings)
