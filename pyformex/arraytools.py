@@ -91,6 +91,17 @@ def isFloat(obj):
     return isinstance(obj, (float, floating))
 
 
+def isNum(obj):
+    """Test if an object is an integer or a floating point number
+
+    Returns True if the object is a single integer or floating point
+    number, else False.
+    The type of the object can be either a Python int/float or a
+    numpy integer or floating type.
+    """
+    return isInt(obj) or isFloat(obj)
+
+
 def powers(x, n):
     """Compute all the powers of x from zero up to n
 
