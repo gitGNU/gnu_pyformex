@@ -114,22 +114,6 @@ def fmtCmd(cmd='*'):
     return '*'+cmd+'\n'
 
 
-## def fmtData(data,npl=8,sep=', ',linesep='\n'):
-##     """Format numerical data in lines with maximum npl items.
-
-##     data is a numeric array, which is coerced to be a 2D array, either by
-##     adding a first axis or by collapsing the first ndim-1 axies.
-##     Then the data are formatted in lines with maximum npl items, separated
-##     by sep. Lines are separated by linesep.
-##     """
-##     data = atleast_2d(data)
-##     if data.size > 0:
-##         data = data.reshape(-1, data.shape[-1])
-##         return linesep.join([fmtData1d(row, npl, sep, linesep) for row in data])+linesep
-##     else:
-##         return linesep
-
-
 def fmtOptions(options):
     """Format the options of an Abaqus command line.
 
@@ -357,7 +341,8 @@ def fmtTransform(setname, csys):
     - `csys` is a CoordSystem.
     """
     out = "*TRANSFORM, NSET=%s, TYPE=%s\n" % (setname, csys.sys)
-    out += fmtData1d(csys.data.reshape(-1)) + '\n'
+    out += fmtData1d(csys.data.reshape(-1))
+    out += '\n'
     return out
 
 
@@ -413,11 +398,11 @@ def fmtFrameSection(el, setname):
         out += "%s, %s\n" % (float(el.width), float(el.height))
 
     if el.orientation != None:
-        out += fmtData1d(el.orientation) + '\n'
-    else:
-        out += '\n'
+        out += fmtData1d(el.orientation)
+    out += '\n'
 
-    out += fmtData1d([float(el.young_modulus), float(el.shear_modulus)]) + '\n'
+    out += fmtData1d([float(el.young_modulus), float(el.shear_modulus)])
+    out += '\n'
 
     return out
 
@@ -425,7 +410,8 @@ def fmtFrameSection(el, setname):
 def fmtGeneralBeamSection(el, setname):
     """Write a general beam section for the named element set.
 
-    To specify a beam section when numerical integration over the section is not required.
+    This specifies a beam section when numerical integration over the section
+    is not required. See also `func:fmtBeamSection`.
 
     Recognized data fields in the property record:
 
@@ -472,9 +458,11 @@ def fmtGeneralBeamSection(el, setname):
         out += "%s, %s\n" % (float(el.width), float(el.height))
 
     if el.orientation != None:
-        out += "%s,%s,%s\n" % tuple(el.orientation)
-    else:
-        out += '\n'
+        out += fmtData1d(el.orientation)
+
+    if el.orientation != None:
+        out += fmtData1d(el.orientation)
+    out += '\n'
 
     out += "%s, %s \n" % (float(el.young_modulus), float(el.shear_modulus))
 
@@ -484,7 +472,8 @@ def fmtGeneralBeamSection(el, setname):
 def fmtBeamSection(el, setname):
     """Write a beam section for the named element set.
 
-    To specify a beam section when numerical integration over the section is required.
+    This specifies a beam section when numerical integration over the section
+    is required. See also `func:fmtGeneralBeamSection`.
 
     Recognized data fields in the property record:
 
@@ -501,14 +490,14 @@ def fmtBeamSection(el, setname):
     - sectiontype CIRC:
 
       - radius
-      - intpoints1 (number of integration points in the first direction) optional
-      - intpoints2 (number of integration points in the second direction) optional
+      - intpoints1 (opt): number of integration points in the first direction
+      - intpoints2 (opt): number of integration points in the second direction
 
     - sectiontype RECT:
 
       - width, height
-      - intpoints1 (number of integration points in the first direction) optional
-      - intpoints2 (number of integration points in the second direction) optional
+      - intpoints1 (opt): number of integration points in the first direction
+      - intpoints2 (opt): number of integration points in the second direction
 
     """
     out = ""
@@ -526,9 +515,8 @@ def fmtBeamSection(el, setname):
         out += "%s, %s\n" % (float(el.width), float(el.height))
 
     if el.orientation != None:
-        out += "%s,%s,%s\n" % tuple(el.orientation)
-    else:
-        out += '\n'
+        out += fmtData1d(el.orientation)
+    out += '\n'
 
     if el.intpoints1 != None:
         out += "%s" % el.intpoints1
@@ -537,7 +525,9 @@ def fmtBeamSection(el, setname):
         out += "\n"
 
     if el.transverseshearstiffness != None:
-        out += "*TRANSVERSE SHEAR STIFFNESS\n" + fmtData1d(el.transverseshearstiffness) + '\n'
+        out += "*TRANSVERSE SHEAR STIFFNESS\n"
+        out += fmtData1d(el.transverseshearstiffness)
+        out += '\n'
 
     return out
 
@@ -664,9 +654,70 @@ def fmtDashpot(el, setname):
     return out
 
 
-#
-# BV: removed composite, if anyone uses it: create a fmtCompositeSection
-#
+def fmtAnySection(el,setname,matname):
+    """Format any SECTION keyword.
+
+    The name should be derived from the ELTYPE_elems list
+    to automatically set the section type
+
+    Required:
+
+    - setname
+    - matname
+
+    Optional:
+    - options:
+    - controls:
+    - orientation:
+    - sectiondata:
+    -extra:
+
+    """
+    out = ''
+    try:
+        section_elems=globals()[el.sectiontype.lower()+'_elems']
+    except:
+        raise ValueError("element section '%s' not yet implemented" % el.sectiontype.lower())
+
+    out += '*%s SECTION, ELSET=%s'%( el.sectiontype.upper(),setname)
+
+    if matname is not None:
+        out += ', MATERIAL=%s'%(matname)
+
+    if el.density:
+        out += ', DENSITY=%s'%(el.density)
+
+    if el.options is not None:
+        out += fmtOptions(el.options)
+
+    if el.controls is not None:
+            out += ", CONTROLS=%s" %(el.controls.name)
+
+    if el.orientation is not None:
+        out += ", ORIENTATION=%s" %(el.orientation.name)
+
+    out += '\n'
+
+    if el.sectiondata is not None:
+        out += fmtData(el.sectiondata)
+        out += '\n'
+
+    if el.controls is not None:
+        controls=CDict(el.controls)
+        out += "*SECTION CONTROLS, NAME=%s" %el.controls.name
+        out += fmtOptions(utils.removeDict(el.controls,['name','data']))
+        out += '\n'
+        if controls.data is not None:
+           out += fmtData(controls.data)
+        out += '\n'
+
+    if el.extra is not None:
+        extra = CDict(extra)
+        out += fmtExtra(extra)
+        out += '\n'
+    return out
+
+
 def fmtSolidSection(el, setname, matname):
     """Format the SOLID SECTION keyword.
 

@@ -650,10 +650,10 @@ class PropertyDB(Dict):
         - cload: a concentrated load: a list of 6 float values
           [FX,FY,FZ,MX,MY,MZ] or a list of (dofid,value) tuples.
         - displ,veloc,accel: prescribed displacement, velocity or
-          acceleration: a list of 6 float values
-          [UX,UY,UZ,RX,RY,RZ] or  a list of tuples (dofid,value)
-        - bound: a boundary condition: a str, a list of 6 codes (0/1), or
-          a list of tuples (what??)
+          acceleration: a list of 6 float values [UX,UY,UZ,RX,RY,RZ] or
+          a list of tuples (dofid,value)
+        - bound: a boundary condition: a string, a list of 6 codes (0/1), or
+          a list of tuples (dofid, 0/1)
         - csys: a CoordSystem
         - ampl: the name of an Amplitude
         """
