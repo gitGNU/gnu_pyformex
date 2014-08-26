@@ -112,7 +112,7 @@ def esetName(p):
 def fmtKeyword(keyword,options='',data=None,extra='',**kargs):
     """Format any keyword block in INP file.
 
-    - `keyword`: string, keyword name
+    - `keyword`: string, keyword command, possibly including options
     - `options`: string, will be added as is to the command line
     - `data`: numerical data, will be formatted with maximum 8 values per line
     - `extra`: string: will be added as is below the command and data
@@ -126,7 +126,7 @@ def fmtKeyword(keyword,options='',data=None,extra='',**kargs):
       P.elemProp(set='STENT',name='Name',eltype='C3D8R',section=section0, options='controls=StentControl')
 
     """
-    out = "*%s" % keyword.upper()
+    out = '*' + keyword
     if options:
         out += ', '
         out += options
@@ -186,7 +186,11 @@ def fmtPart(name='Part-1'):
 """ % (name)
     return out
 
-
+#########################################################
+#
+#  MATERIALS
+#
+#########################################################
 materialswritten=[]
 
 def fmtMaterial(mat):
@@ -266,10 +270,6 @@ def fmtMaterial(mat):
             }
 
     """
-
-    if mat.name is None or mat.name in materialswritten:
-        return ""
-
     out ="*MATERIAL, NAME=%s\n" % mat.name
     materialswritten.append(mat.name)
 
@@ -363,230 +363,8 @@ def fmtMaterial(mat):
     return out
 
 
-def fmtTransform(setname, csys):
-    """Write transform command for the given set.
 
-    - `setname` is the name of a node set
-    - `csys` is a CoordSystem.
-    """
-    out = "*TRANSFORM, NSET=%s, TYPE=%s\n" % (setname, csys.sys)
-    out += fmtData1d(csys.data.reshape(-1))
-    out += '\n'
-    return out
-
-
-def fmtFrameSection(el, setname):
-    """Write a frame section for the named element set.
-
-    Recognized data fields in the property record:
-
-    - sectiontype GENERAL:
-
-      - cross_section
-      - moment_inertia_11
-      - moment_inertia_12
-      - moment_inertia_22
-      - torsional_constant
-
-    - sectiontype CIRC:
-
-      - radius
-
-    - sectiontype RECT:
-
-      - width
-      - height
-
-    - all sectiontypes:
-
-      - young_modulus
-      - shear_modulus
-
-    - optional:
-
-      - density: density of the material
-      - yield_stress: yield stress of the material
-      - orientation: a vector specifying the direction cosines of the 1 axis
-    """
-    out = ""
-    extra = ''
-    if el.density:
-        extra += ', DENSITY=%s' % float(el.density)
-    if el.yield_stress:
-            extra += ', PLASTIC DEFAULTS, YIELD STRESS=%s' % float(el.yield_stress)
-    if el.shear_modulus is None and el.poisson_ratio is not None:
-        el.shear_modulus = el.young_modulus / 2. / (1.+float(el.poisson_ratio))
-
-    sectiontype = el.sectiontype.upper()
-    out += "*FRAME SECTION, ELSET=%s, SECTION=%s%s\n" % (setname, sectiontype, extra)
-    if sectiontype == 'GENERAL':
-        out += "%s, %s, %s, %s, %s \n" % (float(el.cross_section), float(el.moment_inertia_11), float(el.moment_inertia_12), float(el.moment_inertia_22), float(el.torsional_constant))
-    elif sectiontype == 'CIRC':
-        out += "%s \n" % float(el.radius)
-    elif sectiontype == 'RECT':
-        out += "%s, %s\n" % (float(el.width), float(el.height))
-
-    if el.orientation != None:
-        out += fmtData1d(el.orientation)
-    out += '\n'
-
-    out += fmtData1d([float(el.young_modulus), float(el.shear_modulus)])
-    out += '\n'
-
-    return out
-
-
-def fmtGeneralBeamSection(el, setname):
-    """Write a general beam section for the named element set.
-
-    This specifies a beam section when numerical integration over the section
-    is not required. See also `func:fmtBeamSection`.
-
-    Recognized data fields in the property record:
-
-    - sectiontype GENERAL:
-
-      - cross_section
-      - moment_inertia_11
-      - moment_inertia_12
-      - moment_inertia_22
-      - torsional_constant
-
-    - sectiontype CIRC:
-
-      - radius
-
-    - sectiontype RECT:
-
-      - width, height
-
-    - all sectiontypes:
-
-      - young_modulus
-      - shear_modulus or poisson_ration
-
-    - optional:
-
-      - density: density of the material (required in Abaqus/Explicit)
-    """
-    out = ""
-    extra = ''
-    if el.density:
-        extra += ', DENSITY=%s' % float(el.density)
-
-    if el.shear_modulus is None and el.poisson_ratio is not None:
-        el.shear_modulus = el.young_modulus / 2. / (1.+float(el.poisson_ratio))
-
-    sectiontype = el.sectiontype.upper()
-    out += "*BEAM GENERAL SECTION, ELSET=%s, SECTION=%s%s\n" % (setname, sectiontype, extra)
-    if sectiontype == 'GENERAL':
-        out += "%s, %s, %s, %s, %s \n" % (float(el.cross_section), float(el.moment_inertia_11), float(el.moment_inertia_12), float(el.moment_inertia_22), float(el.torsional_constant))
-    elif sectiontype == 'CIRC':
-        out += "%s \n" % float(el.radius)
-    elif sectiontype == 'RECT':
-        out += "%s, %s\n" % (float(el.width), float(el.height))
-
-    if el.orientation != None:
-        out += fmtData1d(el.orientation)
-
-    if el.orientation != None:
-        out += fmtData1d(el.orientation)
-    out += '\n'
-
-    out += "%s, %s \n" % (float(el.young_modulus), float(el.shear_modulus))
-
-    return out
-
-
-def fmtBeamSection(el, setname):
-    """Write a beam section for the named element set.
-
-    This specifies a beam section when numerical integration over the section
-    is required. See also `func:fmtGeneralBeamSection`.
-
-    Recognized data fields in the property record:
-
-    - all sectiontypes: material
-
-    - sectiontype GENERAL:
-
-      - cross_section
-      - moment_inertia_11
-      - moment_inertia_12
-      - moment_inertia_22
-      - torsional_constant
-
-    - sectiontype CIRC:
-
-      - radius
-      - intpoints1 (opt): number of integration points in the first direction
-      - intpoints2 (opt): number of integration points in the second direction
-
-    - sectiontype RECT:
-
-      - width, height
-      - intpoints1 (opt): number of integration points in the first direction
-      - intpoints2 (opt): number of integration points in the second direction
-
-    """
-    out = ""
-
-    sectiontype = el.sectiontype.upper()
-    out += "*BEAM SECTION, ELSET=%s, MATERIAL=%s, SECTION=%s" % (setname, el.material.name, sectiontype)
-    if el.poisson != None:
-        out += ", POISSON=%s"% (float(el.poisson))
-    out += "\n"
-    if sectiontype == 'GENERAL':
-        out += "%s, %s, %s, %s, %s \n" % (float(el.cross_section), float(el.moment_inertia_11), float(el.moment_inertia_12), float(el.moment_inertia_22), float(el.torsional_constant))
-    elif sectiontype == 'CIRC':
-        out += "%s \n" % float(el.radius)
-    elif sectiontype == 'RECT':
-        out += "%s, %s\n" % (float(el.width), float(el.height))
-
-    if el.orientation != None:
-        out += fmtData1d(el.orientation)
-    out += '\n'
-
-    if el.intpoints1 != None:
-        out += "%s" % el.intpoints1
-        if el.intpoints2 != None:
-            out += ", %s" % el.intpoints2
-        out += "\n"
-
-    if el.transverseshearstiffness != None:
-        out += "*TRANSVERSE SHEAR STIFFNESS\n"
-        out += fmtData1d(el.transverseshearstiffness)
-        out += '\n'
-
-    return out
-
-
-def fmtConnectorSection(el, setname):
-    """Write a connector section.
-
-    Required:
-
-    - `sectiontype`: JOIN, HINGE, ...
-
-    Optional data:
-
-    - `behavior` : connector behavior name
-    - `orient`  : connector orientation
-    - `elimination` : 'NO' (default), 'YES'
-    """
-    out = ""
-    if el.sectiontype.upper() != 'GENERAL':
-        out += '*CONNECTOR SECTION, ELSET=%s' % setname
-        if el.behavior:
-            out += ', BEHAVIOR=%s' % el.behavior
-        if el.elimination:
-            out += ', ELIMINATION=%s' % el.elimination
-        out += '\n%s\n' % el.sectiontype.upper()
-        if el.orient:
-            out += '%s\n' % el.orient
-
-    return out
-
+# TODO : THESE NEED TO BE UNIFIED
 
 def fmtConnectorBehavior(prop):
     """ Write a connector behavior.
@@ -651,85 +429,101 @@ def fmtConnectorStop(stop):
     return out
 
 
-def fmtSpring(el, setname):
-    """Write a spring of type spring.
 
-    Optional data:
+#########################################
+#
+#  ELEMENT LIBRARY
+#
+#########################################
+#
+# For each key in the library, there should be a corresponding
+#   fmtKeySection function
+#
+element_library = dict(
+    mass = ['MASS'],
+    spring = ['SPRINGA', ],
+    dashpot = ['DASHPOTA', ],
+    connector = ['CONN3D2', 'CONN2D2'],
+    frame = ['FRAME3D', 'FRAME2D'],
+    truss = [
+        'T2D2', 'T2D2H', 'T2D3', 'T2D3H',
+        'T3D2', 'T3D2H', 'T3D3', 'T3D3H'],
+    beam = [
+        'B21', 'B21H', 'B22', 'B22H', 'B23', 'B23H',
+        'B31', 'B31H', 'B32', 'B32H', 'B33', 'B33H'],
+    membrane = [
+        'M3D3',
+        'M3D4', 'M3D4R',
+        'M3D6', 'M3D8',
+        'M3D8R',
+        'M3D9', 'M3D9R'],
+    solid2d = [
+        # plane stress
+        'CPS3',
+        'CPS4', 'CPS4I', 'CPS4R',
+        'CPS6', 'CPS6M',
+        'CPS8', 'CPS8R', 'CPS8M'] + [
+        # plane strain
+        'CPE3', 'CPE3H',
+        'CPE4', 'CPE4H', 'CPE4I', 'CPE4IH', 'CPE4R', 'CPE4RH',
+        'CPE6', 'CPE6H', 'CPE6M', 'CPE6MH',
+        'CPE8', 'CPE8H', 'CPE8R', 'CPE8RH'] + [
+        # generalized_plane_strain
+        'CPEG3', 'CPEG3H',
+        'CPEG4', 'CPEG4H', 'CPEG4I', 'CPEG4IH', 'CPEG4R', 'CPEG4RH',
+        'CPEG6', 'CPEG6H', 'CPEG6M', 'CPEG6MH',
+        'CPEG8', 'CPEG8H', 'CPEG8R', 'CPEG8RH'],
+    shell = [
+        'S3', 'S3R', 'S3RS',
+        'S4', 'S4R', 'S4RS', 'S4RSW', 'S4R5',
+        'S8R', 'S8R5',
+        'S9R5',
+        'STRI3',
+        'STRI65',
+        'SC8R'],
+    surface = [
+        'SFM3D3',
+        'SFM3D4', 'SFM3D4R',
+        'SFM3D6',
+        'SFM3D8', 'SFM3D8R'],
+    solid3d = [
+        'C3D4', 'C3D4H',
+        'C3D6', 'C3D6H',
+        'C3D8', 'C3D8I', 'C3D8H', 'C3D8R', 'C3D8RH', 'C3D10',
+        'C3D10H', 'C3D10M', 'C3D10MH',
+        'C3D15', 'C3D15H',
+        'C3D20', 'C3D20H', 'C3D20R', 'C3D20RH',],
+    rigid = [
+        'R2D2', 'RB2D2', 'RB3D2', 'RAX2', 'R3D3', 'R3D4',
+        ],
+    )
 
-    - `springstiffness` : spring stiffness (force (S11) per relative displacement (E11))
-    """
-    out = ""
-    #if el.sectiontype.upper() != 'GENERAL':
-    out += '*SPRING, ELSET=%s\n' % setname
-    if el.springstiffness:
-        out += '\n%s\n' % float(el.springstiffness)
 
-    return out
+def elementClass(eltype):
+    """Find the general element class for Abaqus eltype"""
+    for k,v in element_library.iteritems():
+        if eltype.upper() in v:
+            return k
+    return ''
 
 
-def fmtDashpot(el, setname):
-    """Write a dashpot.
-
-    Optional data:
-
-    - `dashpotcoefficient` : dashpot coefficient (force (S11) per relative velocity (ER11, only produced in Standard))
-    """
-    out = ""
-    #if el.sectiontype.upper() != 'GENERAL':
-    out += '*DASHPOT, ELSET=%s\n' % setname
-    if el.dashpotcoefficient:
-        out += '\n%s\n' % float(el.dashpotcoefficient)
-
-    return out
+#########################################################
+#
+#  SECTIONS
+#
+#########################################################
 
 
-def fmtShellSection(el, setname, matname):
-    """Format the shell SHELL SECTION keyword.
-
-    Required:
-
-    - setname
-    - matname
-
-    Optional:
-
-    - transverseshearstiffness
-    - offset (for contact surface SPOS or 0.5, SNEG or -0.5)
-    """
-    out = ''
-    #
-    # BV: ARE THESE TESTS RELEVANT?
-    #
-    if el.sectiontype.upper() == 'SHELL':
-        if matname is not None:
-            out += "*SHELL SECTION, ELSET=%s, MATERIAL=%s"%(setname, matname)
-            if el.offset is not None:
-                out += ", OFFSET=%s"%el.offset
-            if el.thicknessmodulus is not None:
-                out += ", THICKNESS MODULUS=%f" % el.thicknessmodulus
-            if el.poisson is not None:
-                out += ", POISSON=%f" % el.poisson
-            if el.options is not None:
-                out += el.options
-            out += "\n"
-            out += " %s \n" % float(el.thickness)
-    if el.transverseshearstiffness is not None:
-        out += "*TRANSVERSE SHEAR STIFFNESS\n"
-        out += fmtData1d(el.transverseshearstiffness)
-        out += '\n'
-    return out
-
-
-def fmtSolidSection(p, setname, matname):
-    """Format the SOLID SECTION keyword.
+def fmtSolidSection(section ,setname):
+    """Format a solid section for the named element set.
 
     Parameters:
 
-    - `p`: property record
-    - `setname`:
-    - `matname`:
+    - `section`: dict: section properties
+    - `setname`: string: element set name for which these section properties
+      are to be applied.
 
-    Recognized property keys:
+    Recognized keys in the section dict:
 
     - orientation
     - thickness
@@ -737,68 +531,553 @@ def fmtSolidSection(p, setname, matname):
     """
     cmd = "SOLID SECTION"
     data = None
-    options = "ELSET=%s, MATERIAL=%s" % (setname, matname)
+    options = "ELSET=%s, MATERIAL=%s" % (setname, section.matname)
 
-    if p.orientation is not None:
-        options += ", ORIENTATION=%s" % p.orientation.name
+    if section.orientation is not None:
+        options += ", ORIENTATION=%s" % section.orientation.name
 
-    if p.options:
-        options += p.options
+    if section.options:
+        options += section.options
 
-    if p.thickness is not None:
-        data = [ float(p.thickness) ]
+    if section.thickness is not None:
+        data = [ float(section.thickness) ]
 
-    return fmtKeyword(cmd,options,data,p.extra)
+    return fmtKeyword(cmd,options,data,section.extra)
 
 
-def fmtAnySection(el,setname,matname):
-    """Format any SECTION keyword.
+fmtSolid2dSection = fmtSolid3dSection = fmtSolidSection
 
-    The name should be derived from the ELTYPE_elems list
-    to automatically set the section type
 
-    Required:
+def fmtShellSection(section, setname):
+    """Format a SHELL SECTION keyword.
 
-    - setname
-    - matname
+    Parameters: see `func:fmtSolidSection`.
 
-    Optional:
-    - options:
-    - orientation:
-    - sectiondata:
-    -extra:
+    Recognized keys in the section dict:
+
+    - thickness
+    - offset (opt): for contact surface SPOS or 0.5, SNEG or -0.5
+    - transverseshearstiffness (opt):
+    - poisson (opt): ?? CLASH WITH MATERIAL ??
+    - thicknessmodulus (opt):
+    """
+    cmd = "SHELL SECTION"
+    data = [ float(section.thickness) ]
+    options = "ELSET=%s, MATERIAL=%s" % (setname, section.matname)
+
+    if section.offset is not None:
+        options += ", OFFSET=%s"%section.offset
+
+    if section.thicknessmodulus is not None:
+        options += ", THICKNESS MODULUS=%f" % section.thicknessmodulus
+
+    if section.poisson is not None:
+        options += ", POISSON=%f" % section.poisson
+
+    if section.options is not None:
+        options += section.options
+
+    out = fmtKeyword(cmd,options,data,section.extra)
+
+    if section.transverseshearstiffness is not None:
+        out += fmtKeyword('TRANSVERSE SHEAR STIFFNESS','',section.transverseshearstiffness,'')
+
+    return out
+
+
+def fmtMembraneSection(section, setname):
+    """Format a MEMBRANE SECTION keyword.
+
+    Parameters: see `func:fmtSolidSection`.
+
+    Recognized keys in the section dict:
+
+    - thickness: float
 
     """
-    out = ''
-    try:
-        section_elems=globals()[el.sectiontype.lower()+'_elems']
-    except:
-        raise ValueError("element section '%s' not yet implemented" % el.sectiontype.lower())
+    cmd = "MEMBRANE SECTION, ELSET=%s, MATERIAL=%s" % (setname, section.matname)
+    data = [ float(section.thickness) ]
+    return fmtKeyword(cmd,section.options,data,section.extra)
 
-    out += '*%s SECTION, ELSET=%s'%( el.sectiontype.upper(),setname)
 
-    if matname is not None:
-        out += ', MATERIAL=%s'%(matname)
+def fmtSurfaceSection(section, setname):
+    """Format a SURFACE SECTION keyword.
 
-    if el.density:
-        out += ', DENSITY=%s'%(el.density)
+    Parameters: see `func:fmtSolidSection`.
 
-    if el.options is not None:
-        out += fmtOptions(el.options)
+    Recognized keys in the section dict:
 
-    if el.orientation is not None:
-        out += ", ORIENTATION=%s" %(el.orientation.name)
+    - density (opt): float
 
+    """
+    cmd = "SURFACE SECTION, ELSET=%s" % (setname)
+    if section.density:
+        cmd += ", DENSITY=%s""" % float(section.density)
+    return fmtKeyword(cmd,section.options,None,section.extra)
+
+
+def fmtBeamSection(section, setname):
+    """Write a beam section for the named element set.
+
+    Note that there are two Beam section keywords:
+    - BEAM SECTION
+    - BEAM GENERAL SECTION: this is formatted by a separate function,
+      currently selected if not material name is specified
+
+    Parameters: see `func:fmtSolidSection`.
+
+    The following holds for the BEAM SECTION:
+
+    Recognized keys:
+
+    - all sectiontypes:
+
+      - sectiontype (opt): 'GENERAL' (default), 'CIRC' or 'RECT'
+      - material
+
+    - sectiontype GENERAL: this is pre-integrated
+
+      - cross_section
+      - moment_inertia_11
+      - moment_inertia_12
+      - moment_inertia_22
+      - torsional_constant
+
+    - sectiontype CIRC: this may be integrated at runtime
+
+      - radius
+      - intpoints1 (opt): number of integration points in the first direction
+      - intpoints2 (opt): number of integration points in the second direction
+
+    - sectiontype RECT: this may be integrated at runtime
+
+      - width, height
+      - intpoints1 (opt): number of integration points in the first direction
+      - intpoints2 (opt): number of integration points in the second direction
+
+    """
+    if section.matname is None:
+        return fmtGeneralBeamSection(section, setname)
+
+    cmd = "BEAM SECTION, ELSET=%s, MATERIAL=%s" % (setname, section.matname)
+
+    sectiontype = section.sectiontype.upper()
+    options = "SECTION=%s" % sectiontype
+
+    if section.poisson is not None:
+        options += ", POISSON=%s"% (float(section.poisson))
+
+    if section.options:
+        options += section.options
+
+    if sectiontype == 'CIRC':
+        data = [ float(section.radius) ]
+    elif sectiontype == 'RECT':
+        data = [ float(section.width), float(section.height) ]
+    else:
+        data = map(float,[ section.cross_section, section.moment_inertia_11, section.moment_inertia_12, section.moment_inertia_22, section.torsional_constant ])
+
+    out = fmtKeyword(cmd,options,data,'')
+
+    if section.orientation is not None:
+        out += fmtData1d(section.orientation)
+        out += '\n'
+
+    if section.intpoints1 is not None:
+        data = [ section.intpoints1 ]
+        if section.intpoints2 is not None:
+            data.append(section.intpoints2)
+        out += fmtData1d(data)
+        out += "\n"
+
+    if section.extra:
+        out += section.extra
+        out += '\n'
+
+    if section.transverseshearstiffness is not None:
+        out += "*TRANSVERSE SHEAR STIFFNESS\n"
+        out += fmtData1d(section.transverseshearstiffness)
+        out += '\n'
+
+    return out
+
+
+def fmtGeneralBeamSection(section, setname):
+    """Write a general beam section for the named element set.
+
+    This specifies a beam section when numerical integration over the section
+    is not required and the material constants are specified directly.
+    See also `func:fmtBeamSection`.
+
+    Parameters: see `func:fmtSolidSection`.
+
+    Recognized keys:
+
+    - all sectiontypes:
+
+      - sectiontype (opt): 'GENERAL' (default), 'CIRC' or 'RECT'
+      - young_modulus
+      - shear_modulus or poisson_ration
+      - density (opt): density of the material (required in Abaqus/Explicit)
+
+    - sectiontype GENERAL:
+
+      - cross_section
+      - moment_inertia_11
+      - moment_inertia_12
+      - moment_inertia_22
+      - torsional_constant
+
+    - sectiontype CIRC:
+
+      - radius
+
+    - sectiontype RECT:
+
+      - width, height
+
+    """
+    cmd = "BEAM GENERAL SECTION, ELSET=%s" % setname
+
+    sectiontype = section.sectiontype.upper()
+    options = "SECTION=%s" % sectiontype
+
+    if section.density:
+        options += ', DENSITY=%s' % float(section.density)
+
+    if section.options:
+        options += section.options
+
+    if sectiontype == 'CIRC':
+        data = [ float(section.radius) ]
+    elif sectiontype == 'RECT':
+        data = [ float(section.width), float(section.height) ]
+    else:
+        data = map(float,[ section.cross_section, section.moment_inertia_11, section.moment_inertia_12, section.moment_inertia_22, section.torsional_constant ])
+
+    out = fmtKeyword(cmd,options,data,'')
+
+    if section.orientation is not None:
+        out += fmtData1d(section.orientation)
+        out += '\n'
+
+    if section.shear_modulus is None and section.poisson_ratio is not None:
+        section.shear_modulus = section.young_modulus / 2. / (1.+float(section.poisson_ratio))
+    out += fmtData1d([float(section.young_modulus), float(section.shear_modulus)])
     out += '\n'
 
-    if el.sectiondata is not None:
-        out += fmtData(el.sectiondata)
+    if section.extra:
+        out += section.extra
         out += '\n'
 
-    if el.extra is not None:
-        extra = CDict(extra)
-        out += fmtExtra(extra)
+    return out
+
+
+def fmtTrussSection(section,setname):
+    """Write a truss section for the named element set.
+
+    Parameters: see `func:fmtSolidSection`.
+
+    Recognized keys:
+
+    - all sectiontypes:
+
+      - sectiontype (opt): 'GENERAL' (default), 'CIRC' or 'RECT'
+      - material
+
+    - sectiontype GENERAL:
+
+      - cross_section
+
+    - sectiontype CIRC:
+
+      - radius
+
+    - sectiontype RECT:
+
+      - width
+      - height
+
+    """
+    cmd = "SOLID SECTION, ELSET=%s, MATERIAL=%s" % (setname, section.matname)
+
+    sectiontype = section.sectiontype.upper()
+    if sectiontype == 'CIRC':
+        cross_section = float(section.radius)**2*pi
+    elif sectiontype == 'RECT':
+        cross_section = float(section.width)*float(section.height)
+    else:
+        cross_section = float(section.cross_section)
+
+    return fmtKeyword(cmd,section.options,data,section.extra)
+
+
+def fmtFrameSection(section,setname):
+    """Write a frame section for the named element set.
+
+    Parameters: see `func:fmtSolidSection`.
+
+    Recognized keys:
+
+    - all sectiontypes:
+
+      - sectiontype (opt): 'GENERAL' (default), 'CIRC' or 'RECT'
+      - young_modulus
+      - shear_modulus
+      - density (opt): density of the material
+      - yield_stress (opt): yield stress of the material
+      - orientation (opt): a vector with the direction cosines of the 1 axis
+
+    - sectiontype GENERAL:
+
+      - cross_section
+      - moment_inertia_11
+      - moment_inertia_12
+      - moment_inertia_22
+      - torsional_constant
+
+    - sectiontype CIRC:
+
+      - radius
+
+    - sectiontype RECT:
+
+      - width
+      - height
+
+    """
+    cmd = "FRAME SECTION"
+
+    sectiontype = section.sectiontype.upper()
+
+    options = "ELSET=%s, SECTION=%s" % (setname, sectiontype)
+
+    if section.density:
+        options += ', DENSITY=%s' % float(section.density)
+    if section.yield_stress:
+        options += ', PLASTIC DEFAULTS, YIELD STRESS=%s' % float(section.yield_stress)
+    if section.options:
+        options += section.options
+
+    if sectiontype == 'CIRC':
+        data = [ float(section.radius) ]
+    elif sectiontype == 'RECT':
+        data = [ float(section.width), float(section.height) ]
+    else:
+        data = map(float,[ section.cross_section, section.moment_inertia_11, section.moment_inertia_12, section.moment_inertia_22, section.torsional_constant ])
+
+    out = fmtKeyword(cmd,options,data,'')
+
+    if section.orientation is not None:
+        out += fmtData1d(section.orientation)
         out += '\n'
+
+    if section.shear_modulus is None and section.poisson_ratio is not None:
+        section.shear_modulus = section.young_modulus / 2. / (1.+float(section.poisson_ratio))
+    out += fmtData1d([float(section.young_modulus), float(section.shear_modulus)])
+    out += '\n'
+
+    if section.extra:
+        out += section.extra
+        out += '\n'
+
+    return out
+
+
+def fmtConnectorSection(section, setname):
+    """Write a connector section.
+
+    Parameters: see `func:fmtSolidSection`.
+
+    Recognized keys:
+
+    - sectiontype: 'JOIN', 'HINGE', ...
+    - behavior (opt): connector behavior name
+    - orientation (opt): connector orientation
+    - elimination (opt): 'NO' (default), 'YES'
+
+    """
+    cmd = "CONNECTOR SECTION, ELSET=%s" % setname
+    options = ''
+    sectiontype = section.sectiontype.upper()
+    data = [ sectiontype ]
+
+    if section.behavior is not None:
+        options += ', BEHAVIOR=%s' % section.behavior
+
+    if section.elimination is not None:
+        options += ', ELIMINATION=%s' % section.elimination
+
+    if section.options:
+        options += section.options
+
+    return fmtKeyword(cmd,options,data,sections.extra)
+
+
+def fmtSpringOrDashpot(eltype, section, setname):
+    """Write a section of type spring or dashpot.
+
+    Parameters (see also `func:fmtSolidSection`):
+
+    - `eltype`: 'SPRING' or 'DASHPOT'
+
+    Recognized keys:
+
+    - stiffness: float: spring or dashpot stiffness. For SPRING type, this
+      is the force per relative displacement; for DASHPOT type, the force
+      per relative velocity.
+
+    """
+    cmd = "%s, ELSET=%s" % (eltype,setname)
+    data = [ float(section.stiffness) ]
+    return fmtKeyword(cmd,section.options,data,section.extra)
+
+
+def fmtSpringSection(section, setname):
+    """Shorthand for `fmtSpringOrDashpot("SPRING", section, setname)`"""
+    return fmtSpringOrDashpot("SPRING", section, setname)
+
+
+def fmtDashpotSection(section, setname):
+    """Shorthand for `fmtSpringOrDashpot("SPRING", section, setname)`"""
+    return fmtSpringOrDashpot("DASHPOT", section, setname)
+
+
+def fmtMassSection(prop):
+    """Write a section of type mass.
+
+    Parameters: see `func:fmtSolidSection`
+
+    Recognized keys:
+
+    - mass: float: mass magnitude
+
+    """
+    cmd = "MASS, ELSET=%s" % setname
+    data = [ float(section.mass) ]
+    return fmtKeyword(cmd,section.options,data,section.extra)
+
+
+def fmtRigidSection(section,setname):
+    """Write rigid body sectiontype.
+
+    Parameters: see `func:fmtSolidSection`
+
+    Recognized keys:
+
+    - refnode: string (set name) or integer (node number)
+    - density (opt): float:
+    - density (opt): float:
+
+    """
+    refnode = section.refnode
+    if isInt(refnode):
+        refnode += + 1  # increment for Abaqus base 1 node numbering
+
+    cmd = "RIGID BODY, ELSET=%s, REFNODE=%s" % (setname, section.refnode)
+    if section.density is not None:
+        cmd += ", DENSITY=%s" % section.density
+    if section.thickness is not None:
+        data = [ float(section.thickness) ]
+    return fmtKeyword(cmd,section.options,data,section.extra)
+
+#
+# TODO: SHOULD BE REVIEWED
+#
+## def fmtAnySection(section,setname,matname):
+##     """Format any SECTION keyword.
+
+##     The name should be derived from the ELTYPE_elems list
+##     to automatically set the section type
+
+##     Required:
+
+##     - setname
+##     - matname
+
+##     Optional:
+##     - options:
+##     - orientation:
+##     - sectiondata:
+##     -extra:
+
+##     """
+##     out = ''
+##     try:
+##         section_elems=globals()[section.sectiontype.lower()+'_elems']
+##     except:
+##         raise ValueError("element section '%s' not yet implemented" % section.sectiontype.lower())
+
+##     out += '*%s SECTION, ELSET=%s'%( section.sectiontype.upper(),setname)
+
+##     if matname is not None:
+##         out += ', MATERIAL=%s'%(matname)
+
+##     if section.density:
+##         out += ', DENSITY=%s'%(section.density)
+
+##     if section.options is not None:
+##         out += fmtOptions(section.options)
+
+##     if section.orientation is not None:
+##         out += ", ORIENTATION=%s" %(section.orientation.name)
+
+##     out += '\n'
+
+##     if section.sectiondata is not None:
+##         out += fmtData(section.sectiondata)
+##         out += '\n'
+
+##     if section.extra is not None:
+##         extra = CDict(extra)
+##         out += fmtExtra(extra)
+##         out += '\n'
+##     return out
+
+#########################################################
+#
+#  OTHER
+#
+#########################################################
+
+
+def fmtTransform(csys,setname):
+    """Format a coordinate transfor for the given set.
+
+    - `setname` is the name of a node set
+    - `csys` is a CoordSystem.
+    """
+    return fmtKeyword(
+        "TRANSFORM, NSET=%s, TYPE=%s" % (setname, csys.sys),
+        data = csys.data
+        )
+
+
+def fmtOrientation(prop):
+    """Format the orientation.
+
+    Optional:
+
+    - definition
+    - system: coordinate system
+    - a: a first point
+    - b: a second point
+    """
+    out = ''
+    for p in prop:
+        out += "*ORIENTATION, NAME=%s" % (p.name)
+        if p.definition is not None:
+            out += ", definition=%s" % p.definition
+        if p.system is not None:
+            out += ", SYSTEM=%s" % p.system
+        out += "\n"
+        if p.a is not None:
+            data = tuple(p.a)
+            if p.b is not None:
+                data += tuple(p.b)
+            out += fmtData1d(data) + '\n'
+        else:
+            raise ValueError("Orientation needs at least point a")
     return out
 
 
@@ -1035,34 +1314,6 @@ def fmtInitialConditions(prop):
     return out
 
 
-def fmtOrientation(prop):
-    """Format the orientation.
-
-    Optional:
-
-    - definition
-    - system: coordinate system
-    - a: a first point
-    - b: a second point
-    """
-    out = ''
-    for p in prop:
-        out += "*ORIENTATION, NAME=%s" % (p.name)
-        if p.definition is not None:
-            out += ", definition=%s" % p.definition
-        if p.system is not None:
-            out += ", SYSTEM=%s" % p.system
-        out += "\n"
-        if p.a is not None:
-            data = tuple(p.a)
-            if p.b is not None:
-                data += tuple(p.b)
-            out += fmtData1d(data) + '\n'
-        else:
-            raise ValueError("Orientation needs at least point a")
-    return out
-
-
 def fmtEquation(prop):
     """Format multi-point constraint using an equation
 
@@ -1096,23 +1347,6 @@ def fmtEquation(prop):
     return out
 
 
-
-
-def fmtMass(prop):
-    """Format mass
-
-    Required:
-
-    - mass : mass magnitude
-    - set : name of the element set on which mass is applied
-    """
-    out = ''
-    for p in prop:
-        out +='*MASS, ELSET={0}\n'.format(p.name)
-        out +='{0}\n'.format(p.mass)
-    return out
-
-
 def fmtInertia(prop):
     """Format rotary inertia
 
@@ -1128,10 +1362,51 @@ def fmtInertia(prop):
         out += '\n'
     return out
 
+#########################################################
+#
+#  OUTPUT FUNCTIONS
+#
+#########################################################
 
-## The following output sections with possibly large data
-## are written directly to file.
-##########################################################
+
+## The section data are limited in size and are
+## first formatted and then written
+################################################
+
+def writeSection(fil, prop):
+    """Write an element section.
+
+    prop is an element property record with a section and eltype attribute
+    """
+    utils.warn('warn_fe_abq_write_section')
+    print("WRITE SECTION %s" % prop)
+    out = ""
+    setname = esetName(prop)
+    section = prop.section
+    eltype = prop.eltype.upper()
+
+    mat = section.material
+    if mat is not None:
+        # Provide default matname ???
+        #if mat.name is None:
+
+        if mat.name not in materialswritten:
+            print(" Writing material %s" % mat.name)
+            fil.write(fmtMaterial(mat))
+
+        section.matname = mat.name
+
+    elclass = elementClass(eltype)
+    formatter = globals().get("fmt"+elclass.capitalize()+'Section',None)
+    if not callable(formatter):
+        pf.warning('Sorry, element type %s is not yet supported' % eltype)
+        return
+
+    fil.write(formatter(section,setname))
+
+## The following output sections with possibly
+## large data sets are written directly to file
+################################################
 
 def writeNodes(fil,nodes,name='Nall',nofs=1):
     """Write nodal coordinates.
@@ -1206,184 +1481,6 @@ def writeSet(fil,type,name,set,ofs=1):
                 fl = False
     if fl:
         fil.write("\n")
-
-pointmass_elems = ['MASS']
-spring_elems = ['SPRINGA', ]
-dashpot_elems = ['DASHPOTA', ]
-connector_elems = ['CONN3D2', 'CONN2D2']
-frame_elems = ['FRAME3D', 'FRAME2D']
-truss_elems = [
-    'T2D2', 'T2D2H', 'T2D3', 'T2D3H',
-    'T3D2', 'T3D2H', 'T3D3', 'T3D3H']
-beam_elems = [
-    'B21', 'B21H', 'B22', 'B22H', 'B23', 'B23H',
-    'B31', 'B31H', 'B32', 'B32H', 'B33', 'B33H']
-membrane_elems = [
-    'M3D3',
-    'M3D4', 'M3D4R',
-    'M3D6', 'M3D8',
-    'M3D8R',
-    'M3D9', 'M3D9R']
-plane_stress_elems = [
-    'CPS3',
-    'CPS4', 'CPS4I', 'CPS4R',
-    'CPS6', 'CPS6M',
-    'CPS8', 'CPS8R', 'CPS8M']
-plane_strain_elems = [
-    'CPE3', 'CPE3H',
-    'CPE4', 'CPE4H', 'CPE4I', 'CPE4IH', 'CPE4R', 'CPE4RH',
-    'CPE6', 'CPE6H', 'CPE6M', 'CPE6MH',
-    'CPE8', 'CPE8H', 'CPE8R', 'CPE8RH']
-generalized_plane_strain_elems = [
-    'CPEG3', 'CPEG3H',
-    'CPEG4', 'CPEG4H', 'CPEG4I', 'CPEG4IH', 'CPEG4R', 'CPEG4RH',
-    'CPEG6', 'CPEG6H', 'CPEG6M', 'CPEG6MH',
-    'CPEG8', 'CPEG8H', 'CPEG8R', 'CPEG8RH']
-solid2d_elems = plane_stress_elems + \
-                plane_strain_elems + \
-                generalized_plane_strain_elems
-shell_elems = [
-    'S3', 'S3R', 'S3RS',
-    'S4', 'S4R', 'S4RS', 'S4RSW', 'S4R5',
-    'S8R', 'S8R5',
-    'S9R5',
-    'STRI3',
-    'STRI65',
-    'SC8R']
-surface_elems = [
-    'SFM3D3',
-    'SFM3D4', 'SFM3D4R',
-    'SFM3D6',
-    'SFM3D8', 'SFM3D8R']
-solid3d_elems = [
-    'C3D4', 'C3D4H',
-    'C3D6', 'C3D6H',
-    'C3D8', 'C3D8I', 'C3D8H', 'C3D8R', 'C3D8RH', 'C3D10',
-    'C3D10H', 'C3D10M', 'C3D10MH',
-    'C3D15', 'C3D15H',
-    'C3D20', 'C3D20H', 'C3D20R', 'C3D20RH',]
-rigid_elems = [
-    'R2D2', 'RB2D2', 'RB3D2', 'RAX2', 'R3D3', 'R3D4',
-    ]
-
-def writeSection(fil, prop):
-    """Write an element section.
-
-    prop is a an element property record with a section and eltype attribute
-    """
-    print("WRITE SECTION %s" % prop)
-    out = ""
-    setname = esetName(prop)
-    el = prop.section
-    eltype = prop.eltype.upper()
-    mat = el.material
-    if mat is not None:
-        print(" Writing material %s" % mat.name)
-        fil.write(fmtMaterial(mat))
-
-    if eltype in connector_elems:
-        fil.write(fmtConnectorSection(el, setname))
-
-    elif eltype in spring_elems:
-        fil.write(fmtSpring(el, setname))
-
-    elif eltype in dashpot_elems:
-        fil.write(fmtDashpot(el, setname))
-
-    elif eltype in frame_elems:
-        fil.write(fmtFrameSection(el, setname))
-
-    elif eltype in truss_elems:
-        if el.sectiontype.upper() == 'GENERAL':
-            fil.write("""*SOLID SECTION, ELSET=%s, MATERIAL=%s
-%s
-""" %(setname, el.material.name, float(el.cross_section)))
-        elif el.sectiontype.upper() == 'CIRC':
-            fil.write("""*SOLID SECTION, ELSET=%s, MATERIAL=%s
-%s
-""" %(setname, el.material.name, float(el.radius)**2*pi))
-
-    ############
-    ##BEAM elements
-    ##########################
-    elif eltype in beam_elems:
-        if el.integrate:
-            fil.write(fmtBeamSection(el, setname))
-        else:
-            fil.write(fmtGeneralBeamSection(el, setname))
-
-    ############
-    ## SHELL elements
-    ##########################
-    elif eltype in shell_elems:
-        fil.write(fmtShellSection(el, setname, mat.name))
-
-    ############
-    ## SURFACE elements
-    ##########################
-    elif eltype in surface_elems:
-        if el.sectiontype.upper() == 'SURFACE':
-            if el.density:
-                fil.write("""*SURFACE SECTION, ELSET=%s, DENSITY=%s \n""" % (setname, el.density))
-            else:
-                fil.write("""*SURFACE SECTION, ELSET=%s \n""" % setname)
-
-    ############
-    ## MEMBRANE elements
-    ##########################
-    elif eltype in membrane_elems:
-        if el.sectiontype.upper() == 'MEMBRANE':
-            if mat is not None:
-                fil.write("""*MEMBRANE SECTION, ELSET=%s, MATERIAL=%s
-%s \n""" % (setname, mat.name, float(el.thickness)))
-
-
-    ############
-    ## 3DSOLID elements
-    ##########################
-    elif eltype in solid3d_elems:
-        if el.sectiontype.upper() == 'SOLID':
-            if mat is not None:
-                fil.write(fmtSolidSection(el, setname, mat.name))
-
-    ############
-    ## 2D SOLID elements
-    ##########################
-    elif eltype in solid2d_elems:
-        if el.sectiontype.upper() == 'SOLID':
-            if mat is not None:
-                fil.write(fmtSolidSection(el, setname, mat.name))
-
-    ############
-    ## RIGID elements
-    ##########################
-    elif eltype in rigid_elems:
-        if el.sectiontype.upper() == 'RIGID':
-            # refnode can be setname or number
-            # do not test for int type, because it might be np.intx
-            if not isinstance(el.refnode, str):
-                el.refnode += 1
-            out = "*RIGID BODY, ELSET=%s, REFNODE=%s" % (setname, el.refnode)
-            if el.density is not None:
-                out += ", DENSITY=%s" % el.density
-            if el.thickness is not None:
-                out += "\n%s" % el.thickness
-            out += '\n'
-            fil.write(out)
-
-    ############
-    ## POINT MASS elements
-    ##########################
-    elif eltype in pointmass_elems:
-        if el.sectiontype.upper() == 'MASS':
-            if el.mass:
-                fil.write("*MASS, ELSET=%s\n%s\n" % (setname, el.mass))
-
-    ############
-    ## UNSUPPORTED elements
-    ##########################
-    else:
-        pf.warning('Sorry, element type %s is not yet supported' % eltype)
 
 
 #
@@ -2231,12 +2328,12 @@ Script: %s
         if create_part:
             fil.write("*PART, name=Part-0\n")
 
+        fil.write(fmtSectionHeading("NODES"))
         nnod = self.model.nnodes()
         print("Writing %s nodes" % nnod)
         writeNodes(fil, self.model.coords)
 
         print("Writing node sets")
-        fil.write(fmtSectionHeading("NODE SETS"))
         for p in self.prop.getProp('n', attr=['set']):
             print("NODE SET", p)
             if p.set is not None:
@@ -2257,10 +2354,10 @@ Script: %s
 
         print("Writing coordinate transforms")
         for p in self.prop.getProp('n', attr=['csys']):
-            fil.write(fmtTransform(p.name, p.csys))
+            fil.write(fmtTransform(p.csys, p.name))
 
-        print("Writing element sets")
-        fil.write(fmtSectionHeading("ELEMENT SETS"))
+        print("Writing elements and element sets")
+        fil.write(fmtSectionHeading("ELEMENTS"))
         telems = self.model.celems[-1]
         nelems = 0
         for p in self.prop.getProp('e'):

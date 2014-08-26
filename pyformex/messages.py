@@ -96,11 +96,14 @@ I can not import .DXF format on your machine, because I can not find the require
 
 *dxfparser* comes with pyFormex, so this probably means that it just was not (properly) installed. The pyFormex install manual describes how to do it.
 """
+
 if pf.installtype in 'SG':
     warn_dxf_noparser += """
 If you are running pyFormex from SVN sources and you can get root access, you can go to the directory `...pyformex/extra/dxfparser/` and follow the instructions there, or you can just try the **Install externals** menu option of the **Help** menu.
 """
     warn_exit_all = "exit(all=True) is no longer supported."
+
+warn_fe_abq_write_section = "The output of materials and section properties by the fe_abq interface has been drastically changed. There are added, removed and changed features. Please check your output carefully, consult the docstrings in the fe_abq functions if needed, and report any malfunctioning."
 warn_flat_removed = "The 'flat=True' parameter of the draw function has been replaced with 'nolight=True'."
 warn_formex_eltype = "Formex eltype currently needs to be a string!"
 warn_fuse_arg_rename = "The 'nodesperbox' argument has been renamed to 'ppb'. Please stop using the old name."
