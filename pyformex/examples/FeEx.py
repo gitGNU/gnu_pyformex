@@ -208,8 +208,7 @@ def createModel():
 
 def drawModel(offset=0):
     """Draw the merged parts"""
-    if model is None:
-        warning("You should first merge the parts!")
+    if not checkModel():
         return
     flatwire()
     transparent(True)
@@ -250,6 +249,17 @@ def printModel():
     print("model:", model)
 
 
+def checkModel():
+    """Check that merged model exists and if not ask to do a merge
+
+    Returns True if merged model exists
+    """
+    if model is None:
+        if ack("You should merge the parts into a single model before you can continue. Shall I merge all the parts for you now?"):
+            createModel()
+    return model is not None
+
+
 ################# Add properties ######################
 
 # Plane stress element types for Abaqus
@@ -258,9 +268,6 @@ abq_eltype = {
     'quad8': 'CPS8',
     'quad9': 'CPS9',
     }
-
-def warn():
-   warning("You should first merge the parts!")
 
 material = OrderedDict([
     ('name', 'steel'),
@@ -279,8 +286,7 @@ section = OrderedDict([
 def setMaterial():
     """Set the material"""
     global section, material
-    if model is None:
-        warn()
+    if not checkModel():
         return
     removeHighlight()
     hicolor('purple')
@@ -320,8 +326,7 @@ ycon = True
 def setBoundary():
     """Pick the points with boundary condition."""
     global PDB, xcon, ycon
-    if model is None:
-        warn()
+    if not checkModel():
         return
     removeHighlight()
     res = askItems([('x-constraint', xcon), ('y-constraint', ycon)])
@@ -350,8 +355,7 @@ step = 1
 def setCLoad():
     """Pick the points with load condition."""
     global xload, yload, nsteps, step
-    if model is None:
-        warn()
+    if not checkModel():
         return
     removeHighlight()
     res = askItems([
@@ -381,8 +385,7 @@ edge_load = {'x':0., 'y':0.}
 def setELoad():
     """Pick the edges with load condition."""
     global edge_load, nsteps, step
-    if model is None:
-        warn()
+    if not checkModel():
         return
     removeHighlight()
     edge_load = askItems([
@@ -471,9 +474,7 @@ def createCalixInput():
     """Write the Calix input file."""
 
     checkWorkdir()
-
-    if model is None:
-        warn()
+    if not checkModel():
         return
 
     # ask job name from user
@@ -776,9 +777,7 @@ def runCalpyAnalysis(jobname=None,verbose=False,flavia=False):
     ############################
 
     checkWorkdir()
-
-    if model is None:
-        warn()
+    if not checkModel():
         return
 
     if jobname is None:

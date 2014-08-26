@@ -211,7 +211,7 @@ def submitToCluster(filename=None):
         jobname = os.path.basename(filename)[:-4]
         res = askItems([
             _I('ncpus', 4, text='Number of cpus', min=1, max=1024),
-            _I('abqver', '6.10', text='Abaqus Version', choices=['6.8', '6.9', '6.10', '6.11']),
+            _I('abqver', 'default', text='Abaqus Version', choices=pf.cfg['jobs/abqver']),
             _I('postabq', False, text='Run postabq on the results?'),
             ])
         if res:
