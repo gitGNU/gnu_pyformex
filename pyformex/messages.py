@@ -30,6 +30,13 @@ from __future__ import print_function
 
 import pyformex as pf
 
+#
+# Note: if you use pf.cfg in a message, get the value as
+#   pf.cfg.get(key)   instead of   pf.cfg[key]
+# Because this file is also loaded when building sphinx docs, but the pf.cfg
+# is empty then.
+#
+
 
 _message_data = None
 
@@ -63,9 +70,6 @@ You can convert your scripts automatically with the command::
   2to3 -f print -wn SCRIPTFILE
 
 """
-
-
-_future_deprecation = "This functionality is deprecated and will probably be removed in future, unless you explain to the developers why they should retain it."
 
 
 warn_clip_changed = "The clip and cclip methods have changed. If the selector contains negative numbers, these will be selected as in the (c)select methods."
@@ -138,7 +142,7 @@ warn_writevtp_shape2 = "The number of array points should be equal to the number
 error_widgets_enableitem = "Error in a dialog item enabler. This should not happen! Please file a bug report."
 error_no_gts_bin = "I am missing the gts binary programs on your system.\nTherefore, some surface operations will not be available or fail.\n\nOn Debian, you can install the missing programs with `apt-get install libgts-bin`.\n"
 error_no_gts_extra = "I am missing the gts binary programs on your system.\nTherefore, some surface operations will not be available or fail.\n\nOn Debian, you can install the missing programs with `apt-get install pyformex-extra`.\n"
-error_no_freetype = "I am missing the freetype Python bindings on your system.\nThe directory %s/extra/freetype-py\ncontains information and a tool to install it.\n" % pf.cfg['pyformexdir']
+error_no_freetype = "I am missing the freetype Python bindings on your system.\nThe directory %s/extra/freetype-py\ncontains information and a tool to install it.\n" % pf.cfg.get('pyformexdir','')
 
 
 

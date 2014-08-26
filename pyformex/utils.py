@@ -122,13 +122,13 @@ def deprecated_by(old,new):
     """
     return deprecated("%s is deprecated: used %s instead" % (old,new))
 
+
 def deprecated_future():
     """Decorator to warn that a function may be deprecated in future.
 
     See also: :func:`deprecated`.
     """
-    from pyformex.messages import _future_deprecation
-    return deprecated(_future_deprecation)
+    return deprecated("This functionality is deprecated and will probably be removed in future, unless you explain to the developers why they should retain it.")
 
 
 

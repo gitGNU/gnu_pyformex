@@ -1655,11 +1655,9 @@ def adjacencyArrays(elems,nsteps=1):
 #
 # Deprecated
 #
-## from pyformex.messages import _future_deprecation
 
 # REMOVED IN 1.0.0
 
-## @utils.deprecated(_future_deprecation)
 ## def connected(index, i):
 ##     """Return the list of elements connected to element i.
 
@@ -1674,7 +1672,6 @@ def adjacencyArrays(elems,nsteps=1):
 ##     return unique(adj[adj != i])
 
 
-## @utils.deprecated(_future_deprecation)
 ## def enmagic2(cols,magic=0):
 ##     """Encode two integer values into a single integer.
 
@@ -1709,13 +1706,11 @@ def adjacencyArrays(elems,nsteps=1):
 ##     return codes, magic
 
 
-## @utils.deprecated(_future_deprecation)
 ## def demagic2(codes, magic):
 ##     """Decode an integer number into two integers.
 
 ##     The arguments `codes` and `magic` are the result of an enmagic2() operation.
 ##     This will restore the original two values for the codes.
-
 ##     A negative magic value flags the fastencode option.
 
 ##     *The use of this function is deprecated.*
@@ -1727,19 +1722,4 @@ def adjacencyArrays(elems,nsteps=1):
 ##     return cols
 
 
-
-
-if __name__ == "__main__":
-
-    C = Connectivity([[0, 1], [2, 3]], eltype='line2')
-    print(C)
-    print(C.eltype)
-    print(C.report())
-    print(C[0].report())
-    print(C.selectNodes([1]))
-    print(C.selectNodes([]))
-
-    print(Connectivity().report())
-
-    print(connectedLineElems([[0, 1], [0, 2], [0, 3], [4, 5]]))
 # End

@@ -36,7 +36,7 @@ from __future__ import print_function
 
 
 from pyformex import utils
-#utils.hasExternal('units')
+utils.hasExternal('units')
 
 
 def convertUnits(From, To):
@@ -44,15 +44,27 @@ def convertUnits(From, To):
 
     This function converts the units 'From' to units 'To'. The units should
     be conformable. The 'From' argument can (and usually does) include a value.
-    The return value is the converted value without units. Thus:
+    The return value is a string with the converted value without units. Thus:
     convertUnits('3.45 kg','g') will return '3450'.
     This function is merely a wrapper around the GNU 'units' command, which
     should be installed for this function to work.
+
+    Examples:
+
+      >>> convertUnits('25.4cm', 'in')
+      '10'
+      >>> convertUnits('31e6mg', 'kg')
+      '31'
+      >>> convertUnits('1 lightyear', 'km')
+      '9.4607305e+12'
+      >>> convertUnits('21000 kN/cm**2', 'MPa')
+      '210000'
+
     """
     P = utils.system('units \"%s\" \"%s\"' % (From, To))
     if P.sta:
         raise RuntimeError('Could not convert units from \"%s\" to \"%s\"' % (From, To))
-    return P.out.split()[1]
+    return str(P.out.split()[1])
 
 
 class UnitsSystem(object):
@@ -75,6 +87,7 @@ class UnitsSystem(object):
     'model' : defines the length unit used in the geometrical model
     'problem' : defines the unit system to be used in the problem.
     Defaults are: model='m', problem='international'.
+
     """
 
     def __init__(self,system='international'):
@@ -140,6 +153,7 @@ class UnitsSystem(object):
                 print("Ignoring line : %s" % line)
         fil.close()
 
+
     def Get(self, ent):
         """Get units list for the specified entitities.
 
@@ -161,14 +175,5 @@ class UnitsSystem(object):
             else:
                 return ent
 
-
-if __name__ == '__main__':
-
-    test = (('21cm', 'in'),
-            ('31e6mg', 'kg'),
-            ('1 lightyear', 'km'),
-            )
-    for f, t in test:
-        print("%s = %s %s" % (f, convertUnits(f, t), t))
 
 ### End
