@@ -103,11 +103,9 @@ eltype = 'quad'
 def createRectPart(res=None):
     """Create a rectangular domain from user input"""
     global x0, y0, x2, y2, nx, ny, eltype
-    if model is not None:
-        if ask('You have already merged the parts! I can not add new parts anymore.\nYou should first delete everything and recreate the parts.', ['Delete', 'Cancel']) == 'Delete':
-            deleteAll()
-        else:
-            return
+    if not checkNoModel():
+        return
+
     if res is None:
         res = askItems([
             _I('x0', x0, tooltip='The x-value of one of the corners'),
@@ -130,11 +128,9 @@ def createRectPart(res=None):
 def createQuadPart(res=None):
     """Create a quadrilateral domain from user input"""
     global x0, y0, x1, y1, x2, y2, x3, y3, nx, ny, eltype
-    if model is not None:
-        if ask('You have already merged the parts! I can not add new parts anymore.\nYou should first delete everything and recreate the parts.', ['Delete', 'Cancel']) == 'Delete':
-            deleteAll()
-        else:
-            return
+    if not checkNoModel():
+        return
+
     if res is None:
         res = askItems([
             _I('Vertex 0', (x0, y0)),
@@ -257,6 +253,17 @@ def checkModel():
     if model is None:
         if ack("You should merge the parts into a single model before you can continue. Shall I merge all the parts for you now?"):
             createModel()
+    return model is not None
+
+
+def checkNoModel():
+    """Check that no merged model exists and if so, ask to delete it
+
+    Returns True if merged model exists
+    """
+    if model is not None:
+        if ask('You have already merged the parts! I can not add new parts anymore.\nYou should first delete everything and recreate the parts.', ['Delete', 'Cancel']) == 'Delete':
+            deleteAll()
     return model is not None
 
 
