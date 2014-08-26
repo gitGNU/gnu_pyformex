@@ -109,9 +109,38 @@ def esetName(p):
 ###############################################
 
 
-def fmtCmd(cmd='*'):
-    """Format a command."""
-    return '*'+cmd+'\n'
+def fmtKeyword(keyword,options='',data=None,extra='',**kargs):
+    """Format any keyword block in INP file.
+
+    - `keyword`: string, keyword name
+    - `options`: string, will be added as is to the command line
+    - `data`: numerical data, will be formatted with maximum 8 values per line
+    - `extra`: string: will be added as is below the command and data
+
+    Example::
+
+      P.Prop(keyword='SECTION CONTROLS',
+             options='NAME=StentControl, HOURGLASS=enhanced',
+             data=[1., 1., 1.])
+      section0 = ElemSection(section=stentSec, material=steel)
+      P.elemProp(set='STENT',name='Name',eltype='C3D8R',section=section0, options='controls=StentControl')
+
+    """
+    out = "*%s" % keyword.upper()
+    if options:
+        out += ', '
+        out += options
+    out += '\n'
+
+    if data is not None:
+        out += fmtData1d(data)
+        out += '\n'
+
+    if extra:
+        out += extra
+        out += '\n'
+
+    return out
 
 
 def fmtOptions(options):
@@ -654,119 +683,6 @@ def fmtDashpot(el, setname):
     return out
 
 
-def fmtAnySection(el,setname,matname):
-    """Format any SECTION keyword.
-
-    The name should be derived from the ELTYPE_elems list
-    to automatically set the section type
-
-    Required:
-
-    - setname
-    - matname
-
-    Optional:
-    - options:
-    - controls:
-    - orientation:
-    - sectiondata:
-    -extra:
-
-    """
-    out = ''
-    try:
-        section_elems=globals()[el.sectiontype.lower()+'_elems']
-    except:
-        raise ValueError("element section '%s' not yet implemented" % el.sectiontype.lower())
-
-    out += '*%s SECTION, ELSET=%s'%( el.sectiontype.upper(),setname)
-
-    if matname is not None:
-        out += ', MATERIAL=%s'%(matname)
-
-    if el.density:
-        out += ', DENSITY=%s'%(el.density)
-
-    if el.options is not None:
-        out += fmtOptions(el.options)
-
-    if el.controls is not None:
-            out += ", CONTROLS=%s" %(el.controls.name)
-
-    if el.orientation is not None:
-        out += ", ORIENTATION=%s" %(el.orientation.name)
-
-    out += '\n'
-
-    if el.sectiondata is not None:
-        out += fmtData(el.sectiondata)
-        out += '\n'
-
-    if el.controls is not None:
-        controls=CDict(el.controls)
-        out += "*SECTION CONTROLS, NAME=%s" %el.controls.name
-        out += fmtOptions(utils.removeDict(el.controls,['name','data']))
-        out += '\n'
-        if controls.data is not None:
-           out += fmtData(controls.data)
-        out += '\n'
-
-    if el.extra is not None:
-        extra = CDict(extra)
-        out += fmtExtra(extra)
-        out += '\n'
-    return out
-
-
-def fmtSolidSection(el, setname, matname):
-    """Format the SOLID SECTION keyword.
-
-    Required:
-
-    - setname
-    - matname
-
-    Optional:
-
-    - orientation
-    - thickness
-    - controls
-
-    `controls` is a dict with name, options and data keys. Options is
-    a string which is added as is to the command. Data are added below
-    the command. All other items besides name, options and data are formatted
-    as extra command options.
-
-    Example::
-
-     mycontrol = Dict({'name':'StentControl', 'options':'HOURGLASS=enhanced','data':[1., 1., 1.]})
-     mysection = ElemSection(section=stentSec, material=steel,controls=mycontrol)
-     P.elemProp(set='STENT',name='Name',eltype='C3D8R',section=mysection)
-    """
-    out = "*SOLID SECTION, ELSET=%s, MATERIAL=%s" % (setname, matname)
-    if el.orientation is not None:
-        out += ", ORIENTATION=%s" % el.orientation.name
-    if el.controls is not None:
-        out += ", CONTROLS=%s" % el.controls.name
-    out += '\n'
-
-    if el.thickness is not None:
-        out += '%s\n'%float(el.thickness)
-
-    if el.controls is not None:
-        out += "*SECTION CONTROLS, NAME=%s" % el.controls.name
-        if el.controls.options is not None:
-            out += ", "+str(el.controls.options)
-        out += fmtOptions(utils.removeDict(el.controls, ['name', 'options', 'data']))
-        out += '\n'
-
-        if el.controls.data is not None:
-           out += fmtData1d(el.controls.data)
-           out += '\n'
-
-    return out
-
-
 def fmtShellSection(el, setname, matname):
     """Format the shell SHELL SECTION keyword.
 
@@ -800,6 +716,88 @@ def fmtShellSection(el, setname, matname):
     if el.transverseshearstiffness is not None:
         out += "*TRANSVERSE SHEAR STIFFNESS\n"
         out += fmtData1d(el.transverseshearstiffness)
+        out += '\n'
+    return out
+
+
+def fmtSolidSection(p, setname, matname):
+    """Format the SOLID SECTION keyword.
+
+    Parameters:
+
+    - `p`: property record
+    - `setname`:
+    - `matname`:
+
+    Recognized property keys:
+
+    - orientation
+    - thickness
+
+    """
+    cmd = "SOLID SECTION"
+    data = None
+    options = "ELSET=%s, MATERIAL=%s" % (setname, matname)
+
+    if p.orientation is not None:
+        options += ", ORIENTATION=%s" % p.orientation.name
+
+    if p.options:
+        options += p.options
+
+    if p.thickness is not None:
+        data = [ float(p.thickness) ]
+
+    return fmtKeyword(cmd,options,data,p.extra)
+
+
+def fmtAnySection(el,setname,matname):
+    """Format any SECTION keyword.
+
+    The name should be derived from the ELTYPE_elems list
+    to automatically set the section type
+
+    Required:
+
+    - setname
+    - matname
+
+    Optional:
+    - options:
+    - orientation:
+    - sectiondata:
+    -extra:
+
+    """
+    out = ''
+    try:
+        section_elems=globals()[el.sectiontype.lower()+'_elems']
+    except:
+        raise ValueError("element section '%s' not yet implemented" % el.sectiontype.lower())
+
+    out += '*%s SECTION, ELSET=%s'%( el.sectiontype.upper(),setname)
+
+    if matname is not None:
+        out += ', MATERIAL=%s'%(matname)
+
+    if el.density:
+        out += ', DENSITY=%s'%(el.density)
+
+    if el.options is not None:
+        out += fmtOptions(el.options)
+
+    if el.orientation is not None:
+        out += ", ORIENTATION=%s" %(el.orientation.name)
+
+    out += '\n'
+
+    if el.sectiondata is not None:
+        out += fmtData(el.sectiondata)
+        out += '\n'
+
+    if el.extra is not None:
+        extra = CDict(extra)
+        out += fmtExtra(extra)
         out += '\n'
     return out
 
@@ -2286,8 +2284,10 @@ Script: %s
                 gl, gr = self.model.splitElems(set)
                 elems = self.model.getElems(gr)
                 for i, elnrs, els in zip(range(len(gl)), gl, elems):
-                    grpname = Eset('grp', i, setname)
+                    grpname = Eset('grp', i)
                     subsetname = Eset(p.nr, 'grp', i, setname)
+                    print("GROUP NAME %s" % grpname)
+                    print("SUBSET NAME %s" % subsetname)
                     nels = len(els)
                     # Translate element connectivity to Abaqus order
                     if els.eltype in AbqConnectivity:
@@ -2299,6 +2299,7 @@ Script: %s
                         if group_by_eset:
                             writeSet(fil, 'ELSET', setname, [subsetname])
                         if group_by_group:
+                            print("write grpset %s: %s" % (grpname, subsetname))
                             writeSet(fil, 'ELSET', grpname, [subsetname])
             else:
                 writeSet(fil, 'ELSET', p.name, p.set)
@@ -2328,6 +2329,12 @@ Script: %s
         print('\n  '.join(materialswritten)+'\n')
 
         print("Writing global model properties")
+
+        prop = self.prop.getProp('', attr=['keyword'])
+        if prop:
+            print("Writing general keywords")
+            for p in prop:
+                fil.write(fmtKeyword(**p))
 
         prop = self.prop.getProp('', attr=['mass'])
         if prop:
@@ -2419,7 +2426,7 @@ def exportMesh(filename,mesh,eltype=None,header=''):
     This just writes the nodes and elements specified in the mesh to
     the file with the specified name. The resulting file  can then be
     imported in Abaqus/CAE or manual be edited to create a full model.
-    If an eltype is specified, it will oerride the value stored in the mesh.
+    If an eltype is specified, it will override the value stored in the mesh.
     This should be used to set a correct Abaqus element type matchin the mesh.
     """
     fil = open(filename, 'w')
