@@ -229,7 +229,6 @@ def run():
             Result(kind='ELEMENT', keys=['S'], output='PRINT'),
             ]
 
-
     # Define the simulation steps
     # The tags refer to the property database
     simsteps = [ Step('STATIC', time=[1., 1., 0.01, 1.], tags=[step]) for step in steps ]
@@ -279,6 +278,7 @@ def run():
 
 
 if __name__ == 'draw':
+    smoothwire()
     run()
 
 # End

@@ -1530,16 +1530,12 @@ def writeBoundaries(fil, prop):
     """
     for p in prop:
         setname = nsetName(p)
-        fil.write("*BOUNDARY")
-        if p.op is None:
-            fil.write(", OP=MOD")
-        else:
-            fil.write(", OP=%s" % p.op)
+        cmd = "BOUNDARY"
+        if p.op is not None:
+            cmd += ", OP=%s" % p.op
         if p.ampl is not None:
-            fil.write(", AMPLITUDE=%s" % p.ampl)
-        if p.options is not None:
-            fil.write(p.options)
-        fil.write("\n")
+            cmd += ", AMPLITUDE=%s" % p.ampl
+        fil.write(fmtKeyword(cmd,options=p.options))
 
         if isinstance(p.bound, str):
             fil.write("%s, %s\n" % (setname, p.bound))
@@ -1551,6 +1547,9 @@ def writeBoundaries(fil, prop):
             for b in p.bound:
                 dof = b[0]+1
                 fil.write("%s, %s, %s, %s\n" % (setname, dof, dof, b[1]))
+
+        if p.extra:
+            fil.write(p.extra)
 
 #
 # TODO: explaine what 'resetting' a condition means.
@@ -1585,21 +1584,21 @@ def writeDisplacements(fil,prop,btype):
     """
     for p in prop:
         setname = nsetName(p)
-        fil.write("*BOUNDARY, TYPE=%s" % btype.upper())
-        if p.op is None:
-            fil.write(", OP=NEW")
-        else:
-            fil.write(", OP=%s" % p.op)
+        cmd = "*BOUNDARY, TYPE=%s" % btype.upper()
+        if p.op is not None:
+            cmd += ", OP=%s" % p.op
         if p.ampl is not None:
-            fil.write(", AMPLITUDE=%s" % p.ampl)
-        if p.options is not None:
-            fil.write(p.options)
-        fil.write("\n")
+            cmd += ", AMPLITUDE=%s" % p.ampl
+        fil.write(fmtKeyword(cmd,options=p.options))
+
         data = p[btype[:5]]
         if data:
             for v in data:
                 dof = v[0]+1
                 fil.write("%s, %s, %s, %s\n" % (setname, dof, dof, v[1]))
+
+        if p.extra:
+            fil.write(p.extra)
 
 
 def writeCloads(fil, prop):
