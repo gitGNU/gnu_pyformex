@@ -185,7 +185,7 @@ def run():
 
     P.nodeProp(tag='init', set=bnodes, bound=[1, 1, 0, 0, 0, 0])
     P.nodeProp(tag='step1', set=lnodes, name='Loaded', cload=[-10., 0., 0., 0., 0., 0.])
-    P.nodeProp(tag='step2', set='Loaded', cload=[-10., 10., 0., 0., 0., 0.])
+    P.nodeProp(tag='step2', set='Loaded', cload=[-10., 0., 0., 0., 0., 0.])
 
     # Coloring the nodes gets easier using a Formex
     F = Formex(M.coords)

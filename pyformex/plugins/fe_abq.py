@@ -1584,7 +1584,7 @@ def writeDisplacements(fil,prop,btype):
     """
     for p in prop:
         setname = nsetName(p)
-        cmd = "*BOUNDARY, TYPE=%s" % btype.upper()
+        cmd = "BOUNDARY, TYPE=%s" % btype.upper()
         if p.op is not None:
             cmd += ", OP=%s" % p.op
         if p.ampl is not None:
@@ -1610,24 +1610,22 @@ def writeCloads(fil, prop):
     By default, the loads are applied as new values in the current step.
     The user can set op='MOD' to add the loads to already existing ones.
     """
+    utils.warn('warn_fe_abq_write_load')
     for p in prop:
         setname = nsetName(p)
-        fil.write("*CLOAD")
-        if p.op is None:
-            fil.write(", OP=NEW")
+        cmd = "CLOAD"
         if p.op is not None:
-            fil.write(", OP=%s" % p.op)
+            cmd += ", OP=%s" % p.op
         if p.ampl is not None:
-            fil.write(", AMPLITUDE=%s" % p.ampl)
-        fil.write("\n")
+            cmd += ", AMPLITUDE=%s" % p.ampl
+        fil.write(fmtKeyword(cmd,options=p.options))
+
         for v in p.cload:
             dof = v[0]+1
             fil.write("%s, %s, %s\n" % (setname, dof, v[1]))
 
-
-def writeCommaList(fil,*args):
-    """Write a list of values comma-separated to fil"""
-    fil.write(', '.join([str(i) for i in args]))
+        if p.extra:
+            fil.write(p.extra)
 
 
 def writeDloads(fil, prop):
@@ -1638,21 +1636,16 @@ def writeDloads(fil, prop):
     By default, the loads are applied as new values in the current step.
     The user can set op='MOD' to add the loads to already existing ones.
     """
+    utils.warn('warn_fe_abq_write_load')
     for p in prop:
         setname = esetName(p)
-        fil.write("*DLOAD")
-        if p.op is None:
-            fil.write(", OP=NEW")
+        cmd = "DLOAD"
         if p.op is not None:
-            fil.write(", OP=%s" % p.op)
+            cmd += ", OP=%s" % p.op
         if p.ampl is not None:
-            fil.write(", AMPLITUDE=%s" % p.ampl)
-        fil.write("\n")
+            cmd += ", AMPLITUDE=%s" % p.ampl
         data = [setname, p.dload.label, p.dload.value]
-        if p.dload.dir is not None:
-            data += p.dload.dir
-        writeCommaList(fil,*data)
-        fil.write('\n')
+        fil.write(fmtKeyword(cmd,options=p.options,data=data))
 
 
 def writeDsloads(fil, prop):
@@ -1663,16 +1656,16 @@ def writeDsloads(fil, prop):
     By default, the loads are applied as new values in the current step.
     The user can set op='MOD' to add the loads to already existing ones.
     """
+    utils.warn('warn_fe_abq_write_load')
     for p in prop:
-        fil.write("*DSLOAD")
-        if p.op is None:
-            fil.write(", OP=NEW")
+        cmd = "DLOAD"
         if p.op is not None:
-            fil.write(", OP=%s" % p.op)
+            cmd += ", OP=%s" % p.op
         if p.ampl is not None:
-            fil.write(", AMPLITUDE=%s" % p.ampl)
-        fil.write("\n")
-        fil.write("%s, %s, %s\n" % (p.dsload.surface, p.dsload.label, p.dsload.value))
+            cmd += ", AMPLITUDE=%s" % p.ampl
+        data = [ p.dsload.surface, p.dsload.label, p.dsload.value ]
+        fil.write(fmtKeyword(cmd,options=p.options,data=data))
+
 
 #######################################################
 # General model data

@@ -103,6 +103,7 @@ If you are running pyFormex from SVN sources and you can get root access, you ca
 """
     warn_exit_all = "exit(all=True) is no longer supported."
 
+warn_fe_abq_write_load = "The output of load properties by the fe_abq interface has been changed: OP=MOD is now the default. This is in line with the Abaqus default and with the output of boundary condition proiperties."
 warn_fe_abq_write_section = "The output of materials and section properties by the fe_abq interface has been drastically changed. There are added, removed and changed features. Please check your output carefully, consult the docstrings in the fe_abq functions if needed, and report any malfunctioning."
 warn_flat_removed = "The 'flat=True' parameter of the draw function has been replaced with 'nolight=True'."
 warn_formex_eltype = "Formex eltype currently needs to be a string!"
