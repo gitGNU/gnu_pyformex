@@ -1013,6 +1013,18 @@ def matchAll(regexps, target):
     return matchCount(regexps, target) == len(regexps)
 
 
+def listDir(path):
+    """Return the contents of the specified directory path.
+
+    This is like os.listdir, but will return an empty list if the path
+    does not exist or is not accessible (instead of raising an error).
+    """
+    try:
+        return os.listdir(path)
+    except:
+        return []
+
+
 def listTree(path,listdirs=True,topdown=True,sorted=False,excludedirs=[],excludefiles=[],includedirs=[],includefiles=[],symlinks=True):
     """List all files in path.
 

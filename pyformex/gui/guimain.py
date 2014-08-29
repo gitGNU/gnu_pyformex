@@ -1554,11 +1554,11 @@ def runGUI():
             egg = ''.join(egg)
         draw.playScript(egg, pye=True)
 
-    if os.path.isdir(pf.cfg['workdir']):
+    try:
         # Make the workdir the current dir
         os.chdir(pf.cfg['workdir'])
         pf.debug("Setting workdir to %s" % pf.cfg['workdir'], pf.DEBUG.INFO)
-    else:
+    except:
         # Save the current dir as workdir
         prefMenu.updateSettings({'workdir':os.getcwd(),'_save_':True})
     # correctly display the current workdir

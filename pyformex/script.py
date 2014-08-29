@@ -750,11 +750,14 @@ def chdir(path,create=False):
     else:
         if not create or not mkdir(path):
             raise ValueError("The path %s does not exist" % path)
-    os.chdir(path)
-    setPrefs({'workdir':path}, save=True)
+    try:
+        os.chdir(path)
+        setPrefs({'workdir':path}, save=True)
+    except:
+        pass
+    pwdir()
     if pf.GUI:
         pf.GUI.setcurdir()
-    pwdir()
 
 
 def pwdir():
