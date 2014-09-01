@@ -1571,7 +1571,7 @@ def writeDisplacements(fil,prop,btype):
       acceleration. A special value 'reset' may also be specified to
       reset  the prescribed condition for these variables.
 
-    - op (opt): 'NEW' (default) or 'MOD'. By default, the boundary conditions
+    - op (opt): 'MOD' (default) or 'NEW'. By default, the boundary conditions
       are applied as new values in the current step.
       The user can set op='MOD' to add the specified conditions to the already
       existing ones.
@@ -1650,20 +1650,38 @@ def writeDloads(fil, prop):
 
 def writeDsloads(fil, prop):
     """Write Dsloads.
+    
+      Parameters:
 
-    prop is a list property records having an attribute dsload
-
-    By default, the loads are applied as new values in the current step.
-    The user can set op='MOD' to add the loads to already existing ones.
+    - `prop` is a list of node property records containing one (or more)
+      of the keys 'displ', 'veloc' 'accel'.
+  
+     Recognized property keys:
+    - dsload: Dict. Keyword datalines. If it have key `data` is value is
+        a list of the abaqus  data to be written as is. If `data` is not 
+        specified it needs 3 keys :
+        - surface : str. Surface neme
+        - label: str. Abaqus Dsload label
+        - value: float. Dsload value
+        
+    - op (opt): str of values 'MOD' or 'NEW' to modify or remove Dsloads.
+    
+    - ampl (opt): str. Amplitude name
+    
+    - options (opt): string that is added to the command line.
+    
     """
     utils.warn('warn_fe_abq_write_load')
     for p in prop:
-        cmd = "DLOAD"
-        if p.op is not None:
+        cmd = "DSLOAD"
+        if 'op' in p:
             cmd += ", OP=%s" % p.op
-        if p.ampl is not None:
+        if 'ampl' in p:
             cmd += ", AMPLITUDE=%s" % p.ampl
-        data = [ p.dsload.surface, p.dsload.label, p.dsload.value ]
+        if 'data' in p.dsload:
+            data = p.dsload.data
+        else:
+            data = [ p.dsload.surface, p.dsload.label, p.dsload.value ]
         fil.write(fmtKeyword(cmd,options=p.options,data=data))
 
 
