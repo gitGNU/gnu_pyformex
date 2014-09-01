@@ -173,6 +173,7 @@ class WebGL(object):
                  htmlheader=None,
                  jsheader=None,
                  pgfheader=None,
+                 sep='',
                  dataformat='.pgf.gz',
                  urlprefix=None,
                  gui=True,
@@ -213,6 +214,7 @@ class WebGL(object):
         self.htmlheader = htmlheader
         self.jsheader = jsheader
         self.pgfheader = pgfheader
+        self.sep = sep
         self.dataformat = dataformat
         self.urlprefix = urlprefix
         self.scenes = []
@@ -303,7 +305,7 @@ class WebGL(object):
                         color = np.asarray(attrib.cbo).reshape(-1, 3)
                         obj.attrib(color=color[elems])
                 #print("WRITING %s" % attrib.name)
-                Geometry.write(obj, attrib.file, '')
+                Geometry.write(obj, attrib.file, sep=self.sep)
 
             # add missing attributes
             if attrib.lighting is None:
