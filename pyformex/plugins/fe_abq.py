@@ -651,7 +651,7 @@ def fmtSurfaceSection(section, setname):
 
 
 def fmtBeamSection(section, setname):
-    """Write a beam section for the named element set.
+    """Format a beam section for the named element set.
 
     Note that there are two Beam section keywords:
     - BEAM SECTION
@@ -737,7 +737,7 @@ def fmtBeamSection(section, setname):
 
 
 def fmtGeneralBeamSection(section, setname):
-    """Write a general beam section for the named element set.
+    """Format a general beam section for the named element set.
 
     This specifies a beam section when numerical integration over the section
     is not required and the material constants are specified directly.
@@ -808,7 +808,7 @@ def fmtGeneralBeamSection(section, setname):
 
 
 def fmtTrussSection(section,setname):
-    """Write a truss section for the named element set.
+    """Format a truss section for the named element set.
 
     Parameters: see `func:fmtSolidSection`.
 
@@ -847,7 +847,7 @@ def fmtTrussSection(section,setname):
 
 
 def fmtFrameSection(section,setname):
-    """Write a frame section for the named element set.
+    """Format a frame section for the named element set.
 
     Parameters: see `func:fmtSolidSection`.
 
@@ -919,7 +919,7 @@ def fmtFrameSection(section,setname):
 
 
 def fmtConnectorSection(section, setname):
-    """Write a connector section.
+    """Format a connector section.
 
     Parameters: see `func:fmtSolidSection`.
 
@@ -949,7 +949,7 @@ def fmtConnectorSection(section, setname):
 
 
 def fmtSpringOrDashpot(eltype, section, setname):
-    """Write a section of type spring or dashpot.
+    """Format a section of type spring or dashpot.
 
     Parameters (see also `func:fmtSolidSection`):
 
@@ -978,7 +978,7 @@ def fmtDashpotSection(section, setname):
 
 
 def fmtMassSection(prop):
-    """Write a section of type mass.
+    """Format a section of type mass.
 
     Parameters: see `func:fmtSolidSection`
 
@@ -993,7 +993,7 @@ def fmtMassSection(prop):
 
 
 def fmtRigidSection(section,setname):
-    """Write rigid body sectiontype.
+    """Format rigid body sectiontype.
 
     Parameters: see `func:fmtSolidSection`
 
@@ -1540,8 +1540,8 @@ def writeBoundaries(fil, prop):
     - op (opt): 'MOD' (default) or 'NEW'. By default, the boundary conditions
       are applied as a modification of the existing boundary conditions, i.e.
       initial conditions and conditions from previous steps remain in effect.
-      The user can set op='NEW' to remove the previous conditions.
-      This will also remove initial conditions.
+      The user can set op='NEW' to remove the previous conditions. This will
+      remove ALL conditions of the same type.
 
     - ampl (opt): string: specifies the name of an amplitude that is to be
       multiplied with the values to have the time history of the variable.
@@ -1585,9 +1585,7 @@ def writeBoundaries(fil, prop):
         if p.extra:
             fil.write(p.extra)
 
-#
-# TODO: explaine what 'resetting' a condition means.
-#
+
 def writeDisplacements(fil,prop,btype):
     """Write prescribed displacements, velocities or accelerations
 
@@ -1606,9 +1604,10 @@ def writeDisplacements(fil,prop,btype):
       reset  the prescribed condition for these variables.
 
     - op (opt): 'MOD' (default) or 'NEW'. By default, the boundary conditions
-      are applied as new values in the current step.
-      The user can set op='MOD' to add the specified conditions to the already
-      existing ones.
+      are applied as a modification of the existing boundary conditions, i.e.
+      initial conditions and conditions from previous steps remain in effect.
+      The user can set op='NEW' to remove the previous conditions. This will
+      remove ALL conditions of the same type.
 
     - ampl (opt): string: specifies the name of an amplitude that is to be
       multiplied with the values to have the time history of the variable.
@@ -1635,116 +1634,61 @@ def writeDisplacements(fil,prop,btype):
             fil.write(p.extra)
 
 
-def writeCloads(fil, prop):
-    """Write cloads.
+def fmtLoad(key,prop):
+    """Format a load input block.
 
     Parameters:
 
-    - `prop` is a list of node property records containing the key cload.
+    - `key`: load type, one of: 'cload', 'dload' or 'dsload'
+    - `prop`: a node property record containing the specified key.
 
-    Recognized property keys:
+    Recognized keys:
+    - op (opt): string: 'MOD' or 'NEW'. See `func:writeDisplacements`.
+    - ampl (opt): string: amplitude name. See `func:writeDisplacements`.
+    - options (opt): string: see `func:fmtKeyWord`
+    - extra (opt): string: see `func:fmtKeyWord`
 
-    - cload: arraylike in the form [degree_of_freedom,magnitude] for keyword datalines
+    For load type 'cload':
 
-    - op (opt): str of values 'MOD' (default) or 'NEW' to modify or remove cloads.
+    - set: node set on which to apply the load
+    - cload: list of tuples (dofid, magnitude)
 
-    - ampl (opt): str. Amplitude name.
+    For load type 'dload':
 
-    - options (opt): string that is added to the command line.
+    - set: element set on which to apply the load
+    - dload: ElemLoad or data
 
-    - extra (opt): string: will be added as is below the command and data
+    For load type 'dsload':
 
-    """
-    utils.warn('warn_fe_abq_write_load')
-    for p in prop:
-        setname = nsetName(p)
-        cmd = "CLOAD"
-        if 'op' in p:
-            cmd += ", OP=%s" % p.op
-        if 'ampl' in p:
-            cmd += ", AMPLITUDE=%s" % p.ampl
-        fil.write(fmtKeyword(cmd,options=p.options))
-
-        for v in p.cload:
-            dof = v[0]+1
-            fil.write("%s, %s, %s\n" % (setname, dof, v[1]))
-
-        if 'extra' in p:
-            fil.write(p.extra)
-
-
-def writeDloads(fil, prop):
-    """Write Dloads.
-
-    Parameters:
-
-    - `prop` is a list of elem property records containing the key dload.
-
-    Recognized property keys:
-
-    - dload: Dict. Keyword datalines. If it has key `data` its value is
-        a list of the abaqus  data to be written as is. If `data` is not
-        specified it needs 2 keys :
-        - label: str. Abaqus Dload label.
-        - value: float. Dload magnitude.
-
-    - op (opt): str of values 'MOD' (default) or 'NEW' to modify or remove Dloads.
-
-    - ampl (opt): str. Amplitude name.
-
-    - options (opt): string that is added to the command line.
+    - surface: string: name of surface on which to apply the load
+    - dsload: ElemLoad or data
 
     """
-    utils.warn('warn_fe_abq_write_load')
-    for p in prop:
-        setname = esetName(p)
-        cmd = "DLOAD"
-        if 'op' in p:
-            cmd += ", OP=%s" % p.op
-        if 'ampl' in p:
-            cmd += ", AMPLITUDE=%s" % p.ampl
+    cmd = key.upper()
 
-        data = [setname, p.dload.label, p.dload.value]
-        fil.write(fmtKeyword(cmd,options=p.options,data=data))
+    if cmd == 'CLOAD':
+        setname = nsetName(prop)
+        data = [ (setname, v[0]+1, v[1]) for v in prop.cload ]
 
-
-
-
-def writeDsloads(fil, prop):
-    """Write Dsloads.
-
-    Parameters:
-
-    - `prop` is a list of property records containing the key dsload.
-
-    Recognized property keys:
-
-    - dsload: Dict. Keyword datalines. If it has key `data` its value is
-        a list of the abaqus  data to be written as is. If `data` is not
-        specified it needs 3 keys :
-        - surface : str. Surface name.
-        - label: str. Abaqus Dsload label.
-        - value: float. Dsload magnitude.
-
-    - op (opt): str of values 'MOD'  (default) or 'NEW' to modify or redefine Dsloads.
-
-    - ampl (opt): str. Amplitude name.
-
-    - options (opt): string that is added to the command line.
-
-    """
-    utils.warn('warn_fe_abq_write_load')
-    for p in prop:
-        cmd = "DSLOAD"
-        if 'op' in p:
-            cmd += ", OP=%s" % p.op
-        if 'ampl' in p:
-            cmd += ", AMPLITUDE=%s" % p.ampl
-        if 'data' in p.dsload:
-            data = p.dsload.data
+    elif cmd == 'DLOAD':
+        setname = esetName(prop)
+        if isinstance(prop.dload,ElemLoad):
+            data = [setname, prop.dload.label, prop.dload.value]
         else:
-            data = [ p.dsload.surface, p.dsload.label, p.dsload.value ]
-        fil.write(fmtKeyword(cmd,options=p.options,data=data))
+            data = prop.dload
+
+    elif cmd == 'DSLOAD':
+        if isinstance(prop.dload,ElemLoad):
+            data = [setname, prop.dload.label, prop.dload.value]
+        else:
+            data = prop.dload
+
+    if 'op' in prop:
+        cmd += ", OP=%s" % prop.op
+    if 'ampl' in prop:
+        cmd += ", AMPLITUDE=%s" % prop.ampl
+
+    return fmtKeyword(cmd,prop.options,data,prop.extra)
 
 
 #######################################################
@@ -2209,20 +2153,12 @@ class Step(Dict):
                 print("  Writing step prescribed %s" % btype)
                 writeDisplacements(fil, prop, btype)
 
-        prop = propDB.getProp('n', tag=self.tags, attr=['cload'])
-        if prop:
-            print("  Writing step cloads")
-            writeCloads(fil, prop)
-
-        prop = propDB.getProp('e', tag=self.tags, attr=['dload'])
-        if prop:
-            print("  Writing step dloads")
-            writeDloads(fil, prop)
-
-        prop = propDB.getProp('', tag=self.tags, attr=['dsload'])
-        if prop:
-            print("  Writing step dsloads")
-            writeDsloads(fil, prop)
+        for kind,attr in [ ('n','cload'), ('e','dload'), ('','dsload') ]:
+            prop = propDB.getProp(kind, tag=self.tags, attr=[attr])
+            if prop:
+                print("  Writing step data: %s" % attr.upper())
+                for p in prop:
+                    fil.write(fmtLoad(attr,p))
 
         prop = propDB.getProp('', tag=self.tags)
         if prop:

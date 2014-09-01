@@ -687,7 +687,7 @@ class PropertyDB(Dict):
           acceleration: a list of 6 float values [UX,UY,UZ,RX,RY,RZ] or
           a list of tuples (dofid,value)
         - bound: a boundary condition: a string, a list of 6 codes (0/1), or
-          a list of tuples (dofid, 0/1)
+          a list of tuples (dofid, value)
         - csys: a CoordSystem
         - ampl: the name of an Amplitude
         """
