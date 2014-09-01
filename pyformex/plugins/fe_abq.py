@@ -1603,20 +1603,31 @@ def writeDisplacements(fil,prop,btype):
 
 def writeCloads(fil, prop):
     """Write cloads.
+    
+    Parameters:
 
-    prop is a list of node property records that should be scanned for
-    displ attributes to write.
-
-    By default, the loads are applied as new values in the current step.
-    The user can set op='MOD' to add the loads to already existing ones.
+    - `prop` is a list of node property records containing the key cload.
+    
+    Recognized property keys:
+    
+    - cload: arraylike in the form [degree_of_freedom,magnitude] for keyword datalines
+        
+    - op (opt): str of values 'MOD' (default) or 'NEW' to modify or remove cloads.
+    
+    - ampl (opt): str. Amplitude name.
+    
+    - options (opt): string that is added to the command line.
+    
+    - extra (opt): string: will be added as is below the command and data
+    
     """
     utils.warn('warn_fe_abq_write_load')
     for p in prop:
         setname = nsetName(p)
         cmd = "CLOAD"
-        if p.op is not None:
+        if 'op' in p:
             cmd += ", OP=%s" % p.op
-        if p.ampl is not None:
+        if 'ampl' in p:
             cmd += ", AMPLITUDE=%s" % p.ampl
         fil.write(fmtKeyword(cmd,options=p.options))
 
@@ -1624,49 +1635,66 @@ def writeCloads(fil, prop):
             dof = v[0]+1
             fil.write("%s, %s, %s\n" % (setname, dof, v[1]))
 
-        if p.extra:
+        if 'extra' in p:
             fil.write(p.extra)
 
 
 def writeDloads(fil, prop):
     """Write Dloads.
+    
+    Parameters:
 
-    prop is a list of elem property records having an attribute dload.
-
-    By default, the loads are applied as new values in the current step.
-    The user can set op='MOD' to add the loads to already existing ones.
+    - `prop` is a list of elem property records containing the key dload.
+  
+    Recognized property keys:
+    
+    - dload: Dict. Keyword datalines. If it has key `data` its value is
+        a list of the abaqus  data to be written as is. If `data` is not 
+        specified it needs 2 keys :
+        - label: str. Abaqus Dload label.
+        - value: float. Dload magnitude.
+        
+    - op (opt): str of values 'MOD' (default) or 'NEW' to modify or remove Dloads.
+    
+    - ampl (opt): str. Amplitude name.
+    
+    - options (opt): string that is added to the command line.
+    
     """
     utils.warn('warn_fe_abq_write_load')
     for p in prop:
         setname = esetName(p)
         cmd = "DLOAD"
-        if p.op is not None:
+        if 'op' in p:
             cmd += ", OP=%s" % p.op
-        if p.ampl is not None:
+        if 'ampl' in p:
             cmd += ", AMPLITUDE=%s" % p.ampl
+
         data = [setname, p.dload.label, p.dload.value]
         fil.write(fmtKeyword(cmd,options=p.options,data=data))
+
+
 
 
 def writeDsloads(fil, prop):
     """Write Dsloads.
     
-      Parameters:
+    Parameters:
 
-    - `prop` is a list of node property records containing one (or more)
-      of the keys 'displ', 'veloc' 'accel'.
+    - `prop` is a list of property records containing the key dsload.
   
-     Recognized property keys:
-    - dsload: Dict. Keyword datalines. If it have key `data` is value is
+    Recognized property keys:
+    
+    - dsload: Dict. Keyword datalines. If it has key `data` its value is
         a list of the abaqus  data to be written as is. If `data` is not 
         specified it needs 3 keys :
-        - surface : str. Surface neme
-        - label: str. Abaqus Dsload label
-        - value: float. Dsload value
+        - surface : str. Surface name.
+        - label: str. Abaqus Dsload label.
+        - value: float. Dsload magnitude.
         
-    - op (opt): str of values 'MOD' or 'NEW' to modify or remove Dsloads.
+    - op (opt): str of values 'MOD'  (default) or 'NEW' to modify or redefine Dsloads.
     
-    - ampl (opt): str. Amplitude name
+    - ampl (opt): str. Amplitude name.
     
     - options (opt): string that is added to the command line.
     
