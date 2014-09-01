@@ -108,32 +108,66 @@ def esetName(p):
 ## and should be written to file by the caller.
 ###############################################
 
+def fmtData2d(data,linesep='\n'):
+    """Format 2D data.
+
+    `data`: list.
+
+    Each item of data is formatted using fmtData1D and the resulting
+    strings are joined with linesep.
+
+    Examples:
+
+      >>> print(fmtData2d([('set0',1,5.0),('set1',2,10.0)]))
+      set0, 1, 5.0
+      set1, 2, 10.0
+
+    """
+    return linesep.join([fmtData1d(d) for d in data])
+
+
+#      P.Prop(keyword='SECTION CONTROLS',
+#             options='NAME=StentControl, HOURGLASS=enhanced',
+#             data=[1., 1., 1.])
+#      section0 = ElemSection(section=stentSec, material=steel)
+#      P.elemProp(set='STENT',name='Name',eltype='C3D8R',section=section0, options='controls=StentControl')
+
 
 def fmtKeyword(keyword,options='',data=None,extra='',**kargs):
     """Format any keyword block in INP file.
 
     - `keyword`: string, keyword command, possibly including options
     - `options`: string, will be added as is to the command line
-    - `data`: numerical data, will be formatted with maximum 8 values per line
+    - `data`: numerical data: will be formatted with maximum 8 values per line,
+      or a list of tuples: each tuple will be formatted on a line
     - `extra`: string: will be added as is below the command and data
 
-    Example::
+    All other arguments will be formatted with fmtOptions on the command line,
+    between `keyword` and `options`.
 
-      P.Prop(keyword='SECTION CONTROLS',
-             options='NAME=StentControl, HOURGLASS=enhanced',
-             data=[1., 1., 1.])
-      section0 = ElemSection(section=stentSec, material=steel)
-      P.elemProp(set='STENT',name='Name',eltype='C3D8R',section=section0, options='controls=StentControl')
+    Examples:
+
+      >>> print(fmtKeyword('KEY',set='Set1',options='material=steel',data=[1,2,3,4.0,'last'],extra='*AnotherKey, opt=optionalSet1,\\n 1, 4.7'))
+      *KEY, SET=Set1, material=steel
+      1, 2, 3, 4.0, last
+      *AnotherKey, opt=optionalSet1,
+       1, 4.7
+      <BLANKLINE>
 
     """
     out = '*' + keyword
+    if kargs:
+        out += fmtOptions(kargs)
     if options:
         out += ', '
         out += options
     out += '\n'
 
     if data is not None:
-        out += fmtData1d(data)
+        if isinstance(data,list) and isinstance(data[0],tuple):
+            out += fmtData2d(data)
+        else:
+            out += fmtData1d(data)
         out += '\n'
 
     if extra:
@@ -1603,23 +1637,23 @@ def writeDisplacements(fil,prop,btype):
 
 def writeCloads(fil, prop):
     """Write cloads.
-    
+
     Parameters:
 
     - `prop` is a list of node property records containing the key cload.
-    
+
     Recognized property keys:
-    
+
     - cload: arraylike in the form [degree_of_freedom,magnitude] for keyword datalines
-        
+
     - op (opt): str of values 'MOD' (default) or 'NEW' to modify or remove cloads.
-    
+
     - ampl (opt): str. Amplitude name.
-    
+
     - options (opt): string that is added to the command line.
-    
+
     - extra (opt): string: will be added as is below the command and data
-    
+
     """
     utils.warn('warn_fe_abq_write_load')
     for p in prop:
@@ -1641,25 +1675,25 @@ def writeCloads(fil, prop):
 
 def writeDloads(fil, prop):
     """Write Dloads.
-    
+
     Parameters:
 
     - `prop` is a list of elem property records containing the key dload.
-  
+
     Recognized property keys:
-    
+
     - dload: Dict. Keyword datalines. If it has key `data` its value is
-        a list of the abaqus  data to be written as is. If `data` is not 
+        a list of the abaqus  data to be written as is. If `data` is not
         specified it needs 2 keys :
         - label: str. Abaqus Dload label.
         - value: float. Dload magnitude.
-        
+
     - op (opt): str of values 'MOD' (default) or 'NEW' to modify or remove Dloads.
-    
+
     - ampl (opt): str. Amplitude name.
-    
+
     - options (opt): string that is added to the command line.
-    
+
     """
     utils.warn('warn_fe_abq_write_load')
     for p in prop:
@@ -1678,26 +1712,26 @@ def writeDloads(fil, prop):
 
 def writeDsloads(fil, prop):
     """Write Dsloads.
-    
+
     Parameters:
 
     - `prop` is a list of property records containing the key dsload.
-  
+
     Recognized property keys:
-    
+
     - dsload: Dict. Keyword datalines. If it has key `data` its value is
-        a list of the abaqus  data to be written as is. If `data` is not 
+        a list of the abaqus  data to be written as is. If `data` is not
         specified it needs 3 keys :
         - surface : str. Surface name.
         - label: str. Abaqus Dsload label.
         - value: float. Dsload magnitude.
-        
+
     - op (opt): str of values 'MOD'  (default) or 'NEW' to modify or redefine Dsloads.
-    
+
     - ampl (opt): str. Amplitude name.
-    
+
     - options (opt): string that is added to the command line.
-    
+
     """
     utils.warn('warn_fe_abq_write_load')
     for p in prop:
