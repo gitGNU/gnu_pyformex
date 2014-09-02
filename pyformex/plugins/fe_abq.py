@@ -1130,18 +1130,18 @@ def fmtSurface(prop):
 
     Recognized keys:
 
-    - set: str, list of str or list of int.
-        - str : name of an existing set.
-        - list of int: list of elements/nodes of the surface.
-        - list of str: list of existing set names.
+    - set: string, list of strings or list of integers.
+        - string : name of an existing set.
+        - list of integers: list of elements/nodes of the surface.
+        - list of strings: list of existing set names.
         
-    - name: str. The surface name.
+    - name: string. The surface name.
     
-    - surftype: str. Can assume values 'ELEMENT' or 'NODE' or other abaqus
+    - surftype: string. Can assume values 'ELEMENT' or 'NODE' or other abaqus
         surface types.
     
-    - label (opt): str, or a list of str storing the abaqus face or edge identifier
-        It is only required for surftype = 'ELEMENT'.
+    - label (opt): string, or a list of strings storing the abaqus face or edge identifier
+        It is only required for surftype == 'ELEMENT'.
         
     - options (opt): string that is added as is to the command line.
 
@@ -1150,8 +1150,8 @@ def fmtSurface(prop):
       # This allow specifying a surface from an existing set of surface elements
       P.Prop(set='quad_set'  ,name='quad_surface',surftype='element',label='SPOS')
       
-      # This allow specifying a surface from more then already existing sets of brick elements
-      # using different identifiers per each set
+      # This allow specifying a surface from already existing sets of brick elements
+      # using different label identifiers per each set
       P.Prop(set=['hex_set1, 'hex_set2']  ,name='quad_surface',surftype='element',label=['S1','S2'])
     
        #This allows to use different identifiers for the different elements in the surface
@@ -1173,7 +1173,7 @@ def fmtSurface(prop):
         for i, e in enumerate(p.set):
             if e.dtype.kind != 'S':
                 e += 1
-            if p.label is None:
+            if 'label' not in p:
                 out += "%s\n" % e
             elif isinstance(p.label, str):
                 out += "%s, %s\n" % (e, p.label)
