@@ -1119,6 +1119,8 @@ def fmtOrientation(prop):
     return out
 
 
+# TODO : update list of abaqus surface types
+
 def fmtSurface(prop):
     """Format the surface definitions.
     
@@ -1128,17 +1130,20 @@ def fmtSurface(prop):
 
     Recognized keys:
 
-    - set: str, list of strings or list of integers.
-        - str : name of an existing set
-        - list of integers: list of elements/nodes in the surface
-        - list of string: list of existing set names
+    - set: str, list of str or list of int.
+        - str : name of an existing set.
+        - list of int: list of elements/nodes of the surface.
+        - list of str: list of existing set names.
         
-    - name: the surface name
+    - name: str. The surface name.
     
-    - surftype: 'ELEMENT' or 'NODE'
+    - surftype: str. Can assume values 'ELEMENT' or 'NODE' or other abaqus
+        surface types.
     
-    - label (opt): string, or a list of strings storing the abaqus face or edge identifier
-        It is (only required for surftype = 'ELEMENT').
+    - label (opt): str, or a list of str storing the abaqus face or edge identifier
+        It is only required for surftype = 'ELEMENT'.
+        
+    - options (opt): string that is added as is to the command line.
 
     Examples::
 
@@ -1160,9 +1165,9 @@ def fmtSurface(prop):
         3, S1
         7, S3
     """
-    out = ''
     for p in prop:
-        out += "*SURFACE, NAME=%s, TYPE=%s\n" % (p.name, p.surftype)
+        cmd = "SURFACE, NAME=%s, TYPE=%s\n" % (p.name, p.surftype)
+        out = fmtKeyword(cmd,options=p.options)
         if isinstance(p.set,str):
             p.set = asarray([p.set]) # handles single string for set name 
         for i, e in enumerate(p.set):
