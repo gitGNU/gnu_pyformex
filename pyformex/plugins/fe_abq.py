@@ -157,7 +157,7 @@ def fmtKeyword(keyword,options='',data=None,extra='',**kargs):
     """
     out = '*' + keyword.upper()
     if kargs:
-        out += ', '
+        #out += ', '
         out += fmtOptions(**kargs)
     if options:
         out += ', '
@@ -178,6 +178,15 @@ def fmtKeyword(keyword,options='',data=None,extra='',**kargs):
     return out
 
 
+def fmtOption(key,value):
+    """Format a single option.
+
+    """
+    key = key.replace('_',' ').upper()
+    value = "=%s" % value if value else ''
+    return ", %s%s" % (key,value)
+
+
 def fmtOptions(**kargs):
     """Format the options of an Abaqus command line.
 
@@ -191,17 +200,38 @@ def fmtOptions(**kargs):
     The string does not have a leading or trailing comma.
 
     Note that if you specified two arguments whose keyword only differs
-    by case, both will collapse into one and it is unpredictable which
-    one will be in the output.
+    by case, both will appear in the output with the same keyword.
+    Also note that the order in which the options appear is unspecified.
 
     Examples:
       >>> print(fmtOptions(var_a = 123., var_B = '123.', Var_C = ''))
-      VAR B=123., VAR C, VAR A=123.0
+      , VAR C, VAR B=123., VAR A=123.0
 
     """
-    kargs = dict([(k.replace('_',' ').upper(),str(v)) for k,v in kargs.iteritems()])
-    fmtargs = [ "%s=%s" % (k,v) if v != '' else k for k,v in kargs.iteritems() ]
-    return ', '.join(fmtargs)
+    return ''.join([ fmtOption(k,v) for k,v in kargs.iteritems() ])
+
+
+class Options(object):
+    """A class to format options on an Abaqus command line
+
+    Examples:
+      >>> o = Options(var_a = 123., var_B = '123.', Var_C = '')
+      >>> print(o)
+      , VAR C, VAR B=123., VAR A=123.0
+      >>> o.add(var_a = 'hello')
+      >>> print(o)
+      , VAR C, VAR B=123., VAR A=123.0, VAR A=hello
+
+    """
+    def __init__(self,**kargs):
+        self.out = ''
+        self.add(**kargs)
+
+    def add(self,**kargs):
+        self.out += fmtOptions(**kargs)
+
+    def __str__(self):
+        return self.out
 
 
 def fmtHeading(text=''):
