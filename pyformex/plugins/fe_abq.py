@@ -196,11 +196,12 @@ def fmtOptions(**kargs):
 
     Examples:
       >>> print(fmtOptions(var_a = 123., var_B = '123.', Var_C = ''))
-      VAR B=123., VAR C=, VAR A=123.0
+      VAR B=123., VAR C, VAR A=123.0
 
     """
     kargs = dict([(k.replace('_',' ').upper(),str(v)) for k,v in kargs.iteritems()])
-    return ', '.join(["%s=%s" % (k,v) for k,v in kargs.iteritems()])
+    fmtargs = [ "%s=%s" % (k,v) if v != '' else k for k,v in kargs.iteritems() ]
+    return ', '.join(fmtargs)
 
 
 def fmtHeading(text=''):
