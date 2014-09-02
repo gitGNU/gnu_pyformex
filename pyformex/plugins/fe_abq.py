@@ -147,7 +147,7 @@ def fmtKeyword(keyword,options='',data=None,extra='',**kargs):
 
     Examples:
 
-      >>> print(fmtKeyword('KEY',set='Set1',options='material=steel',data=[1,2,3,4.0,'last'],extra='*AnotherKey, opt=optionalSet1,\\n 1, 4.7'))
+      >>> print(fmtKeyword('Key',set='Set1',options='material=steel',data=[1,2,3,4.0,'last'],extra='*AnotherKey, opt=optionalSet1,\\n 1, 4.7'))
       *KEY, SET=Set1, material=steel
       1, 2, 3, 4.0, last
       *AnotherKey, opt=optionalSet1,
@@ -155,9 +155,10 @@ def fmtKeyword(keyword,options='',data=None,extra='',**kargs):
       <BLANKLINE>
 
     """
-    out = '*' + keyword
+    out = '*' + keyword.upper()
     if kargs:
-        out += fmtOptions(kargs)
+        out += ', '
+        out += fmtOptions(**kargs)
     if options:
         out += ', '
         out += options
@@ -177,21 +178,29 @@ def fmtKeyword(keyword,options='',data=None,extra='',**kargs):
     return out
 
 
-def fmtOptions(options):
+def fmtOptions(**kargs):
     """Format the options of an Abaqus command line.
 
-    - `options`: a dict with ABAQUS command keywords and values. If the keyword
-      does not take any value, the value in the dict should be an empty string.
+    Each key,value pair in the argument list is foramted into s string
+    'KEY=value', or just 'KEY' if the value is an empty string.
+    The key is always converted to upper case, and any underscore in the
+    key is replaced with a space.
+    The resulting strings are joined with ', ' between them.
 
     Returns a comma-separated string of 'keyword' or 'keyword=value' fields.
-    The string includes an initial comma.
+    The string does not have a leading or trailing comma.
+
+    Note that if you specified two arguments whose keyword only differs
+    by case, both will collapse into one and it is unpredictable which
+    one will be in the output.
+
+    Examples:
+      >>> print(fmtOptions(var_a = 123., var_B = '123.', Var_C = ''))
+      VAR B=123., VAR C=, VAR A=123.0
+
     """
-    s = ''
-    for k in options:
-        s += ", %s" % k.upper()
-        if options[k] != '':
-            s += "=%s" % options[k]
-    return s
+    kargs = dict([(k.replace('_',' ').upper(),str(v)) for k,v in kargs.iteritems()])
+    return ', '.join(["%s=%s" % (k,v) for k,v in kargs.iteritems()])
 
 
 def fmtHeading(text=''):
@@ -245,7 +254,7 @@ def fmtMaterial(mat):
     - constants : arraylike, float or None. The material constants to be used in the
       model. In the case of 'LINEAR', it is optional and the constant may be
       specified by other keys (see below). In some cases (like in case of
-      'HYPERELASTIC' with option 'TEST INPUT DATA') the dataline is not specified and 
+      'HYPERELASTIC' with option 'TEST INPUT DATA') the dataline is not specified and
       constants must be None.
 
     - options (opt): string: will be added to the material command as is.
@@ -370,7 +379,7 @@ def fmtMaterial(mat):
     if mat.options is not None:
         out += mat.options
         out += '\n'
-    
+
     if constants is not None:
         out += fmtData1d(constants)
         out += '\n'
@@ -1123,7 +1132,7 @@ def fmtOrientation(prop):
 
 def fmtSurface(prop):
     """Format the surface definitions.
-    
+
     Parameters:
 
     - `prop`: a property record containing the key `surftype`.
@@ -1134,26 +1143,27 @@ def fmtSurface(prop):
         - string : name of an existing set.
         - list of integers: list of elements/nodes of the surface.
         - list of strings: list of existing set names.
-        
+
     - name: string. The surface name.
-    
+
     - surftype: string. Can assume values 'ELEMENT' or 'NODE' or other abaqus
         surface types.
-    
+
     - label (opt): string, or a list of strings storing the abaqus face or edge identifier
         It is only required for surftype == 'ELEMENT'.
-        
+
     - options (opt): string that is added as is to the command line.
 
     Examples::
 
       # This allow specifying a surface from an existing set of surface elements
       P.Prop(set='quad_set'  ,name='quad_surface',surftype='element',label='SPOS')
-      
+
       # This allow specifying a surface from already existing sets of brick elements
       # using different label identifiers per each set
+
       P.Prop(set=['hex_set1, 'hex_set2']  ,name='quad_surface',surftype='element',label=['S1','S2'])
-    
+
        #This allows to use different identifiers for the different elements in the surface
        Prop(name='mysurf',set=[0,1,2,6],surftype='element',label=['S1','S2','S1','S3')
 
@@ -1169,7 +1179,7 @@ def fmtSurface(prop):
         cmd = "SURFACE, NAME=%s, TYPE=%s\n" % (p.name, p.surftype)
         out = fmtKeyword(cmd,options=p.options)
         if isinstance(p.set,str):
-            p.set = asarray([p.set]) # handles single string for set name 
+            p.set = asarray([p.set]) # handles single string for set name
         for i, e in enumerate(p.set):
             if e.dtype.kind != 'S':
                 e += 1
@@ -1933,7 +1943,7 @@ def writeModelProps(fil, prop):
                 for l in p.extra:
                     l = CDict(l) # to avoid keyerrors if l.data is not a key
                     cmd += '*%s'%l['keyword']
-                    cmd += fmtOptions(utils.removeDict(l, ['keyword', 'data']))
+                    cmd += fmtOptions(**utils.removeDict(l, ['keyword', 'data']))
                     cmd += '\n'
                     if l.data is not None:
                         cmd += fmtData1d(l.data) + '\n'
