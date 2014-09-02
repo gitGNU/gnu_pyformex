@@ -1117,30 +1117,50 @@ def fmtOrientation(prop):
 
 def fmtSurface(prop):
     """Format the surface definitions.
+    
+    Parameters:
 
-    Required:
+    - `prop`: a property record containing the key `surftype`.
 
-    - set: the elements/nodes in the surface, either numbers or a set name.
+    Recognized keys:
+
+    - set: str, list of strings or list of integers.
+        - str : name of an existing set
+        - list of integers: list of elements/nodes in the surface
+        - list of string: list of existing set names
+        
     - name: the surface name
+    
     - surftype: 'ELEMENT' or 'NODE'
-    - label: face or edge identifier (only required for surftype = 'ELEMENT')
+    
+    - label (opt): string, or a list of strings storing the abaqus face or edge identifier
+        It is (only required for surftype = 'ELEMENT').
 
-    This label can be a string, or a list of strings. This allows to use
-    different identifiers for the different elements in the surface. Thus::
+    Examples::
 
-      Prop(name='mysurf',set=[0,1,2,6],surftype='element',label=['S1','S2','S1','S3')
+      # This allow specifying a surface from an existing set of surface elements
+      P.Prop(set='quad_set'  ,name='quad_surface',surftype='element',label='SPOS')
+      
+      # This allow specifying a surface from more then already existing sets of brick elements
+      # using different identifiers per each set
+      P.Prop(set=['hex_set1, 'hex_set2']  ,name='quad_surface',surftype='element',label=['S1','S2'])
+    
+       #This allows to use different identifiers for the different elements in the surface
+       Prop(name='mysurf',set=[0,1,2,6],surftype='element',label=['S1','S2','S1','S3')
 
-    will get exported to Abaqus as::
+       will get exported to Abaqus as::
 
-      *SURFACE, NAME=mysurf, TYPE=element
-      1, S1
-      2, S2,
-      3, S1
-      7, S3
+       *SURFACE, NAME=mysurf, TYPE=element
+        1, S1
+        2, S2,
+        3, S1
+        7, S3
     """
     out = ''
     for p in prop:
         out += "*SURFACE, NAME=%s, TYPE=%s\n" % (p.name, p.surftype)
+        if isinstance(p.set,str):
+            p.set = asarray([p.set]) # handles single string for set name 
         for i, e in enumerate(p.set):
             if e.dtype.kind != 'S':
                 e += 1
@@ -1148,8 +1168,10 @@ def fmtSurface(prop):
                 out += "%s\n" % e
             elif isinstance(p.label, str):
                 out += "%s, %s\n" % (e, p.label)
-            else:
+            elif isinstance(p.label, list):
                 out += "%s, %s\n" % (e, p.label[i])
+            else:
+                raise ValueError("Data type %s not allowed for key 'label' "%(type(p.label)))
     return out
 
 
