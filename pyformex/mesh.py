@@ -944,13 +944,26 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
     # BV: DO WE NEED THE nparts ?
     def partitionByConnection(self,level=0,startat=0,sort='number',nparts=-1):
         """Detect the connected parts of a Mesh.
+    
+        Parameters:
+        
+        - sort`: str. Weighted sorting method. It can assume values 'number' (default),
+            'length', 'area', 'volume'.
+        -`nparts`: is the equivalent of parameter `maxval` in :meth:`Mesh.frontWalk`. 
+            Maximum frontal value. If negative (default) the walk will
+            continue until all elements have been reached. If non-negative,
+            walking will stop as soon as the frontal value reaches this
+            maximum.
+        
+        The remainder of the parameters are like in
+        :meth:`Mesh.frontWalk`.
 
         The Mesh is partitioned in parts in which all elements are
         connected. Two elements are connected if it is possible to draw a
         continuous (poly)line from a point in one element to a point in
         the other element without leaving the Mesh.
         The partitioning is returned as a integer array having a value
-        for ech element corresponding to the part number it belongs to.
+        for each element corresponding to the part number it belongs to.
 
         By default the parts are sorted in decreasing order of the number
         of elements. If you specify nparts, you may wish to switch off the
@@ -958,10 +971,13 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         """
         p = self.frontWalk(level=level, startat=startat, frontinc=0, partinc=1, maxval=nparts)
         if sort=='number':
-            p = sortSubsets(p)
-        #
-        # TODO: add weighted sorting methods
-        #
+            p = sortSubsets(p)  
+        if sort=='length':
+            p = sortSubsets(p, self.lengths())
+        if sort=='area':
+            p = sortSubsets(p, self.areas())
+        if sort=='volume':
+            p = sortSubsets(p, self.volumes())
         return p
 
 
