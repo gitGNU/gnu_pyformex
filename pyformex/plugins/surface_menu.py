@@ -973,7 +973,7 @@ def cutSelectionByPlanes():
         warning("You have to define some planes first.")
         return
 
-    res1 = widgets.ListSelection(planes, caption='Known %sobjects' % selection.object_type(), sort=True).getResult()
+    res1 = widgets.ListSelection(planes, caption='Known %sobjects' % selection.object_type(), sort=True).getResults()
     if res1:
         res2 = askItems([_I('Tolerance', 0.),
                          _I('Color by', 'side', itemtype='radio', choices=['side', 'element type']),

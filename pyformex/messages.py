@@ -156,8 +156,6 @@ depr_mesh_getlowerentities_unique = "The use of the unique argument is deprecate
 depr_pathextension = "patchextension is deprecated. Use border().extrude() instead."
 depr_vertices = "vertices is deprecated. Use points() instead."
 
-depr_getResult = "InputDialog.getResult is deprecated. Use getResults instead."
-#depr_checkarraydim = "checkArrayDim is deprecated. Use checkArray with ndim argument."
 
 PolyLine_distanceOfPoints = "PolyLine.distanceOfPoints is deprecated"
 PolyLine_distanceOfPolyline = "PolyLine.distanceOfPolyline is deprecated"

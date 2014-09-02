@@ -200,7 +200,7 @@ class Objects(object):
             caption='Known %sobjects' % self.object_type(),
             choices=self.listAll(),
             default=self.names,
-            sort=True).getResult()
+            sort=True).getResults()
         if res is None:
             res = []
         self.set(res)

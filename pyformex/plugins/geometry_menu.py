@@ -344,11 +344,11 @@ def exportGeometry(types=['pgf', 'all'],mode='multi',sep=' ',shortlines=False,co
 
 
 def exportPgf():
-    exportGeometry(['pgf'], compr=True)
+    exportGeometry('pgf', compr=True)
 def exportPgfShortlines():
-    exportGeometry(['pgf'], shortlines=True,compr=True)
+    exportGeometry('pgf', shortlines=True,compr=True)
 def exportPgfBinary():
-    exportGeometry(['pgf'], sep='',compr=True)
+    exportGeometry('pgf', sep='',compr=True)
 def exportOff():
     exportGeometry(['off'], mode='single')
 def exportObj():

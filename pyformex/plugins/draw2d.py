@@ -173,7 +173,7 @@ def selectObject(mode=None):
     res = widgets.ListSelection(
         selection.listAll(),
         caption='Known %ss' % mode,
-        sort=True).getResult()
+        sort=True).getResults()
     # UNFINISHED
 
 ###################################

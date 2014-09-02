@@ -66,7 +66,7 @@ def openProject(fn=None,exist=False,access=['wr', 'rw', 'w', 'r'],default=None):
     if isinstance(access, str):
         access = [access]
     cur = fn if fn else '.'
-    res = widgets.ProjectSelection(cur, ['pyf', 'all'], exist=exist, access=access, default=default, convert=True).getResult()
+    res = widgets.ProjectSelection(cur, ['pyf', 'all'], exist=exist, access=access, default=default, convert=True).getResults()
     if not res:
         return
 
@@ -438,7 +438,7 @@ def saveImage(multi=False):
      - do nothing
     """
     dia = widgets.SaveImageDialog(pf.cfg['workdir'], ['img', 'icon', 'all'], multi=multi)
-    opt = dia.getResult()
+    opt = dia.getResults()
     if opt:
         if opt.fm == 'From Extension':
             if utils.fileTypeFromExt(opt.fn) == '':

@@ -1775,7 +1775,7 @@ class InputDialog(QtGui.QDialog):
 
         For a non-modal dialog, the user has to call this function to
         display the dialog.
-        For a modal dialog, this is implicitely executed by getResult().
+        For a modal dialog, this is implicitely executed by getResults().
 
         If a timeout is given, start the timeout timer.
         """
@@ -1871,11 +1871,6 @@ class InputDialog(QtGui.QDialog):
         pf.app.processEvents()
         self._pos = self.saveGeometry()
         return self.results
-
-    # for compatibility, TODO: should be deprecated
-    def getResult(self,*args,**kargs):
-        utils.deprec("depr_getResult")
-        return self.getResults(*args,**kargs)
 
 
 
@@ -2567,19 +2562,101 @@ class FileSelection(QtGui.QFileDialog):
         return ret
 
 
-    def getFilename(self,timeout=None):
-        """Ask for a filename by user interaction.
+    def getResults(self,timeout=None):
+        """Ask the user to fill in the dialog.
 
-        Return the filename selected by the user.
-        If the user hits CANCEL or ESC, None is returned.
+        Returns a dict.
+        If the user accepts the results, the dict has a single entry with
+         key 'fn' and the selected filename(s) as value.
+        If the user hits CANCEL or ESC, an empty dict is returned.
         """
         self.show(timeout, modal=True)
         self.exec_()
         if self.result() == ACCEPTED:
-            return self.value()
+            res = mydict.Dict()
+            res.fn = self.value()
         else:
             # user canceled
-            return None
+            res = {}
+        return res
+
+
+    def getFilename(self,timeout=None):
+        """Ask for filename(s) by user interaction.
+
+        Returns the filename(s) selected by the user if the user
+        accepts the selection. This is equivalent with
+        `self.getResults(timeout)['fn']`.
+        Returns None if the user hits CANCEL or ESC.
+        """
+        res = self.getResults(timeout)
+        if res:
+            return res['fn']
+
+
+class GeometryFileSelection(FileSelection):
+    """A file selection dialog specialized for opening pgf files.
+
+    """
+    def __init__(self,path=None,pattern=None,exist=False,
+                 sep=' ', compression=4,
+                 access=None,default=None,convert=True,
+                 **kargs):
+        """Create the dialog."""
+        if path is None:
+            path = pf.cfg['workdir']
+        if pattern is None:
+            pattern = 'pgf'
+        FileSelection.__init__(self, path, pattern, exist, **kargs)
+        grid = self.layout()
+        nr, nc = grid.rowCount(), grid.columnCount()
+
+        if access is None:
+            access = [ 'rw', 'r' ] if exist else [ 'wr', 'rw', 'w', 'r' ]
+        self.acc = InputRadio("Access Mode", default, choices=access)
+        self.acc.setToolTip("wr=read if exist; rw=must exist; w=overwrite; r=readonly")
+        grid.addWidget(self.acc, nr, 0, 1, -1)
+        nr += 1
+
+        ## if exist:
+        ##     self.cvt = InputBool("Automatically convert file to latest format", convert)
+        ##     self.cvt.setToolTip("It is recommended to automatically convert your project files to the latest format, to avoid future compatibility problems. The only reason to not convert is if you still need to read your files with older versions of pyFormex. The conversion will not be performed if pyFormex can not correctly read your file.")
+        ##     grid.addWidget(self.cvt, nr, 0, 1, -1)
+        ##     nr += 1
+
+        if not exist:
+            self.sep = InputString("Data separator (empty means binary)", sep,tooltip="This string will be used as separator between any two data. Standard is a single blank, for ascii format. Specifying an empty string will force binary format.")
+            grid.addWidget(self.sep, nr, 0, 1, -1)
+            nr += 1
+
+            self.cpr = InputSlider("Compression level (0-9)", compression, min=0, max=9, ticks=1)
+            self.cpr.setToolTip("Higher compression levels result in smaller files, but higher load and save times.")
+            grid.addWidget(self.cpr, nr, 0, 1, -1)
+            nr += 1
+
+
+    def getResults(self,timeout=None):
+        """Ask the user to fill in the dialog.
+
+        Returns a Dict or dict.
+        If the user accepts the results, a Dict with the following entries
+        is returned: fn, acc, and optional sep, cpr, cvt
+        If the user hits CANCEL or ESC, an empty dict is returned.
+        """
+        res = FileSelection.getResults(self,timeout)
+        if res:
+            res.acc = self.acc.value()
+            if hasattr(self, 'sep'):
+                res.sep = self.sep.value()
+            if hasattr(self, 'cpr'):
+                res.cpr = self.cpr.value()
+            if hasattr(self, 'cvt'):
+                res.cvt = self.cvt.value()
+            print(res)
+            return res
+
+        else:
+            return {}
 
 
 class ProjectSelection(FileSelection):
@@ -2604,7 +2681,7 @@ class ProjectSelection(FileSelection):
 
         if exist:
             self.cvt = InputBool("Automatically convert file to latest format", convert)
-            self.cvt.setToolTip("It is recommended to automatically convert your project files to the latest format, to avoid future compatibility problems. The only reason to not convert is if you still need to read your files with olde versions of pyFormex. The conversion will not be performed if pyFormex can not correctly read your file.")
+            self.cvt.setToolTip("It is recommended to automatically convert your project files to the latest format, to avoid future compatibility problems. The only reason to not convert is if you still need to read your files with older versions of pyFormex. The conversion will not be performed if pyFormex can not correctly read your file.")
             grid.addWidget(self.cvt, nr, 0, 1, -1)
             nr += 1
 
@@ -2615,7 +2692,7 @@ class ProjectSelection(FileSelection):
             nr += 1
 
 
-    def getResult(self):
+    def getResults(self):
         self.exec_()
         if self.result() == ACCEPTED:
             opt = mydict.Dict()
@@ -2694,7 +2771,7 @@ class SaveImageDialog(FileSelection):
         grid.addWidget(self.aut, nr, 2)
 
 
-    def getResult(self):
+    def getResults(self):
         self.exec_()
         if self.result() == ACCEPTED:
             opt = mydict.Dict()
@@ -2758,7 +2835,7 @@ class ListSelection(InputDialog):
         return self['input'].value()
 
 
-    def getResult(self):
+    def getResults(self):
         """Show the modal dialog and return the list of selected values.
 
         If the user cancels the selection operation, the return value is None.
@@ -2955,7 +3032,7 @@ class MessageBox(QtGui.QMessageBox):
       created which can be used to exit the dialog and remove the message.
       By default there is a single button labeled 'OK'.
 
-    When the MessageBox is displayed with the :meth:`getResult()` method,
+    When the MessageBox is displayed with the :meth:`getResults()` method,
     a modal dialog is created, i.e. the user will have to click a button
     or hit the ESC key before he can continue.
 
@@ -3010,7 +3087,7 @@ class MessageBox(QtGui.QMessageBox):
         QtGui.QMessageBox.show(self)
 
 
-    def getResult(self):
+    def getResults(self):
         """Display the message box and wait for user to click a button.
 
         This will show the message box as a modal dialog, so that the
@@ -3058,7 +3135,7 @@ class WarningBox(QtGui.QMessageBox):
       created which can be used to exit the dialog and remove the message.
       By default there is a single button labeled 'OK'.
 
-    When the MessageBox is displayed with the :meth:`getResult()` method,
+    When the MessageBox is displayed with the :meth:`getResults()` method,
     a modal
     dialog is created, i.e. the user will have to click a button or hit the
     ESC key before he can continue.
@@ -3102,7 +3179,7 @@ class TextBox(QtGui.QDialog):
 
         addTimeOut(self, timeout, self.accept)
 
-    def getResult(self):
+    def getResults(self):
         return self.exec_() == ACCEPTED
 
     def updateText(self,text,format=''):

@@ -90,7 +90,7 @@ def showMessage(text,actions=['OK'],level='info',modal=True,align='00',**kargs):
     if align == '--':
         w.move(100, 100)
     if modal:
-        return w.getResult()
+        return w.getResults()
     else:
         w.show()
         return None
@@ -367,12 +367,16 @@ def askFilename(cur=None,filter='all',exist=True,multi=False,compr=False,change=
     else:
         fn = os.path.basename(cur)
         cur = os.path.dirname(cur)
-    w = widgets.FileSelection(cur, filter, exist, multi, compr=compr,caption=caption)
+    if filter == 'pgf':
+        w = widgets.GeometryFileSelection(cur, filter, exist, compr=compr, caption=caption)
+    else:
+        w = widgets.FileSelection(cur, filter, exist, multi=multi, compr=compr, caption=caption)
     if fn:
         w.selectFile(fn)
-    fn = w.getFilename(timeout)
-    if not fn:
+    res = w.getResults(timeout)
+    if not res:
         return None
+    fn = res.fn
     fs = w.selectedNameFilter()
     if not exist and not multi:
         # Check and force extension for single new file
