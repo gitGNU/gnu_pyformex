@@ -242,9 +242,11 @@ def fmtMaterial(mat):
       Defines the elastic behavior class of the material. The required and
       recognized keys depend on this parameter (see below).
 
-    - constants: arraylike, float. The material constants to be used in the
+    - constants : arraylike, float or None. The material constants to be used in the
       model. In the case of 'LINEAR', it is optional and the constant may be
-      specified by other keys (see below).
+      specified by other keys (see below). In some cases (like in case of
+      'HYPERELASTIC' with option 'TEST INPUT DATA') the dataline is not specified and 
+      constants must be None.
 
     - options (opt): string: will be added to the material command as is.
 
@@ -359,7 +361,7 @@ def fmtMaterial(mat):
             out += ', LOCAL DIRECTIONS=%i'%mat.localdir
 
     elif elasticity == 'user':
-        out += "*USER MATERIAL, CONSTANTS=%s\n" % len(mat.constants)
+        out += "*USER MATERIAL, CONSTANTS=%s\n" % len(constants)
 
     elif elasticity is not None:
         out += "%s\n" % elasticity.upper()
@@ -367,9 +369,11 @@ def fmtMaterial(mat):
     # complete the command
     if mat.options is not None:
         out += mat.options
-    out += '\n'
-    out += fmtData1d(constants)
-    out += '\n'
+        out += '\n'
+    
+    if constants is not None:
+        out += fmtData1d(constants)
+        out += '\n'
 
     if mat.density is not None:
         out += "*DENSITY\n%s\n" % float(mat.density)
