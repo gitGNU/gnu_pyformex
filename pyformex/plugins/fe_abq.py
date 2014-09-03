@@ -1287,6 +1287,102 @@ def fmtSurfaceInteraction(prop):
     return out
 
 
+def fmtContact(prop):
+    """Format a contact property record.
+
+    Parameters:
+
+    - `prop`: a Property record having a key 'contact'
+
+    Recognized keys:
+
+    - contact: string, one of 'GENERAL' or 'PAIR'
+    - interaction: string, the name of a surface interaction
+
+    For 'GENERAL' contact:
+
+    - include: tuple or list of tuples (surf1,surf2). surf1 and surf2 are
+      the names of defined surfaces or an empty string. If surf1 is empty,
+      a surface containing all exterior surfaces defined in the model is used.
+      If surf2 is empty, it is equal to surf1 a case of self-contact results.
+      If both are empty, self contact between all surfaces is modeled.
+
+    - exclude (opt): tuple or list of tuples (surf1,surf2). Specifies names of
+      surfaces on which no contact is to be modeled.
+
+    For 'PAIR' contact:
+
+    - include: tuple or list of tuples (slave,master).
+      slave and master are the names of defined surfaces.
+      Each tuple can optionally contain one or two more values, with the
+      orientation of the tangential slip directions for the slave, resp.
+      master surface. They are strings with the name of defined orientations.
+
+    Examples:
+      >>> PDB = PropertyDB()
+      >>> p1 = PDB.Prop(contact='pair',include=('s1','m1'),interaction='i1')
+      >>> print(fmtContact(p1))
+      *CONTACT PAIR, INTERACTION=I1
+      s1, m1
+      <BLANKLINE>
+
+      >>> p2 = PDB.Prop(contact='pair',include=[('s1','m1'),('s2','m2')],interaction='i1')
+      >>> print(fmtContact(p2))
+      *CONTACT PAIR, INTERACTION=I1
+      s1, m1
+      s2, m2
+      <BLANKLINE>
+
+      >>> g1 = PDB.Prop(contact='general',include=('s1','m1'),interaction='i1')
+      >>> print(fmtContact(g1))
+      *CONTACT
+      *CONTACT INCLUSIONS
+      s1, m1
+      *CONTACT PROPERTY ASSIGNMENT
+      s1, m1, i1
+      <BLANKLINE>
+
+      >>> g2 = PDB.Prop(contact='general',include=[('s1','m1'),('s2','m2')],interaction='i1')
+      >>> print(fmtContact(g2))
+      *CONTACT
+      *CONTACT INCLUSIONS
+      s1, m1
+      s2, m2
+      *CONTACT PROPERTY ASSIGNMENT
+      s1, m1, i1
+      s2, m2, i1
+      <BLANKLINE>
+
+    """
+    contact = prop.contact.upper()
+
+    if contact=='GENERAL':
+
+        out = fmtKeyword('CONTACT',prop.options)
+        out += fmtKeyword('CONTACT INCLUSIONS',data=prop.include)
+        if 'exclude' in prop:
+            out += fmtKeyword('CONTACT EXCLUSIONS',data=prop.exclude)
+        data = prop.include
+        if not isinstance(data,list):
+            data = [ data ]
+        data = [ d + (prop.interaction,) for d in data ]
+        out += fmtKeyword('CONTACT PROPERTY ASSIGNMENT',data=data)
+
+    elif contact=='PAIR':
+
+        options = fmtOptions(interaction=prop.interaction)
+        out = fmtKeyword('CONTACT PAIR'+options,options=prop.options,data=prop.include)
+
+    else:
+        raise ValueError('Invalid value for contact parameter')
+
+    if 'extra' in prop:
+        out += extra
+
+    return out
+
+
+
 def fmtGeneralContact(prop):
     """Format the general contact.
 
