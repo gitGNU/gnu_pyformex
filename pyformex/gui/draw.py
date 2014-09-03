@@ -330,7 +330,7 @@ def dialogTimedOut():
     return _dialog_result == widgets.TIMEOUT
 
 
-def askFilename(cur=None,filter='all',exist=True,multi=False,compr=False,change=True,timeout=None,caption=None):
+def askFile(cur=None,filter='all',exist=True,multi=False,compr=False,change=True,timeout=None,caption=None):
     """Ask for a file name or multiple file names using a file dialog.
 
     Parameters:
@@ -356,9 +356,11 @@ def askFilename(cur=None,filter='all',exist=True,multi=False,compr=False,change=
     - `timeout`: float. If specified, the dialog will timeout after the
       specified number of seconds.
 
-    Returns nothing if the user cancels the operation. Else, a single file
-    name is returned if `multi` is False, or a list of file names if
-    `multi` is True.
+    Returns the result of the file dialog. If the user accepted the selection,
+    this will be a Dict with at least a key 'fn' holding the selected
+    filename(s): a single file name is if `multi` is False, or a list of file
+    names if `multi` is True. If the user canceled the selection process,
+    an empty dict is returned.
     """
     if cur is None:
         cur = pf.cfg['workdir']
@@ -374,31 +376,48 @@ def askFilename(cur=None,filter='all',exist=True,multi=False,compr=False,change=
     if fn:
         w.selectFile(fn)
     res = w.getResults(timeout)
-    if not res:
-        return None
-    fn = res.fn
-    fs = w.selectedNameFilter()
-    if not exist and not multi:
-        # Check and force extension for single new file
-        okext = utils.fileExtensionsFromFilter(fs)
-        print("Accepted extensions: %s" % okext)
-        ok = False
-        for ext in okext:
-            if fn.endswith(ext):
-                ok = True
-                break
-        if not ok:
-            fn += okext[0]
-    if fn and change:
-        if multi:
-            cur = fn[0]
-        else:
-            cur = fn
-        cur = os.path.dirname(cur)
-        chdir(cur)
+    if res:
+
+        fn = res.fn
+        fs = w.selectedNameFilter()
+        if not exist and not multi:
+            # Check and force extension for single new file
+            okext = utils.fileExtensionsFromFilter(fs)
+            print("Accepted extensions: %s" % okext)
+            ok = False
+            for ext in okext:
+                if fn.endswith(ext):
+                    ok = True
+                    break
+            if not ok:
+                fn += okext[0]
+            res['fn'] = fn
+
+        if fn and change:
+            if multi:
+                cur = fn[0]
+            else:
+                cur = fn
+            cur = os.path.dirname(cur)
+            chdir(cur)
     pf.GUI.update()
     pf.app.processEvents()
-    return fn
+    return res
+
+
+def askFilename(*args,**kargs):
+    """Ask for a file name or multiple file names using a file dialog.
+
+    This functions takes the same parameters as :func:`askFile`, and is
+    functionally equivalent to it. However, in case of an accepted dialog
+    it only returns the filename(s) and in case of a canceled dialog it
+    returns None.
+    """
+    res = askFile(*args,**kargs)
+    if res:
+        return res['fn']
+    else:
+        return None
 
 
 def askNewFilename(cur=None,filter="All files (*.*)",compr=False,timeout=None,caption=None):
