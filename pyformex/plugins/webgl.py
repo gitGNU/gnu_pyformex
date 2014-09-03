@@ -135,6 +135,8 @@ class WebGL(object):
     - `description`, `keywords`, `author`: strings: if specified, these
       will be added as meta tags to the generated .html file. The first two
       have defaults if not specified.
+    - `htmlheader`: string: a string to be included in the header section
+      of the exported html file. It should be  al legal html string.
     - `jsheader`: string: a string to be included at the start of
       the javascript file. It should be a legal javascript text.
       Usually, it is only used to insert comments, in which case
@@ -619,7 +621,7 @@ def createdBy(width=0):
 
 def createWebglHtml(name,scripts=[],bgcolor='white',body='',
                     description='WebGL model', keywords="pyFormex, WebGL",
-                    author='', title='pyFormex WebGL model'):
+                    author='', title='pyFormex WebGL model',header=''):
     """Create a html file for a WebGL model.
 
     Returns the absolute pathname to the created HTML file.
@@ -628,12 +630,16 @@ def createWebglHtml(name,scripts=[],bgcolor='white',body='',
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="generator" content="%s">
-<meta name="description" content="%s">
-<meta name="keywords" content="%s">
-""" % (pf.fullVersion(), description, keywords)
+""" % pf.fullVersion()
+    if description:
+        s += '<meta name="description" content="%s">\n' % description
+    if keywords:
+        s += '<meta name="keywords" content="%s">\n' % keywords
     if author:
         s += '<meta name="author" content="%s">\n' % author
     s += "<title>%s</title>\n" % title
+    if header:
+        s += header
 
     for scr in scripts:
         s += '<script type="text/javascript" src="%s"></script>\n' % scr
