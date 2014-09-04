@@ -1864,15 +1864,34 @@ def fmtLoad(key,prop):
 #
 
 def writeAmplitude(fil, prop):
-    for p in prop:
-        fil.write("*AMPLITUDE, NAME=%s, DEFINITION=%s, TIME=%s\n" % (p.name, p.amplitude.type, p.amplitude.atime))
-        for i, v in enumerate(p.amplitude.data):
-            fil.write("%s, %s," % tuple(v))
-            if i % 4 == 3:
-                fil.write("\n")
-        if i % 4 != 3:
-            fil.write("\n")
+    """Write Amplitude.
 
+    Parameters:
+    
+    -`prop`: list of property records having an attribute amplitude.
+    
+    Recognized keys:
+    
+    - name: str. the name of the amplitude.
+    
+    - amplitude: class Amplitude (see plugins.property).
+    
+    - options (opt): string that is added as is to the command line.
+
+    
+    Examples:
+    
+    P=propertyDB()
+    t=[0,1]
+    a=[0,0.5]
+    amp = Amplitude(data=column_stack([t,a]))
+    P.Prop(amplitude=amp,name='ampl1',options='definition=TABULAR,smooth=0.1')
+    
+    """
+    
+    for p in prop:
+        cmd = "AMPLITUDE, NAME=%s" % (p.name)
+        fil.write(fmtKeyword(cmd,p.options,data=p.amplitude.data))
 
 ### Output requests ###################################
 # Output: goes to the .odb file (for postprocessing with Abaqus/CAE)
