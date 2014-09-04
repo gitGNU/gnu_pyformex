@@ -1129,7 +1129,7 @@ def fmtTransform(csys,setname):
         "TRANSFORM, NSET=%s, TYPE=%s" % (setname, csys.sys),
         data = csys.data
         )
-
+        
 
 def fmtOrientation(prop):
     """Format the orientation.
@@ -1685,6 +1685,40 @@ def writeSet(fil,type,name,set,ofs=1):
         fil.write("\n")
 
 
+
+def writeDistribution(fil,prop):
+    """Write a distribution table.
+
+    Parameters:
+
+    - `prop`: a Property record having with the key `distribution`.
+
+    Recognized keys:
+    
+    - distribution: string. Name of the distribution.
+    
+    - location:string. can assume values 'ELEMENT','NODE' or 'NONE'
+    
+    - table: arraylike. The array needs to be passed as should be written in the 
+        abaqus data line. Every row is a new line and it is in the form [element_or_node_number,data1,data2, ...].
+        NB For the first line used in Abaqus as default, the element_or_node_number should be an empty string.
+        
+    - format: list of strings. Every string is  an abaqus `word` to be used in the distribution table. 
+        See Abaqus documentation for allowed `words`.
+        
+    - options (opt): string that is added as is to the command line.
+    
+    The name  of the distribution table (required) is derived from the name of the distribution.
+    
+    """
+    
+    nameTable = prop.name+'_TABLE' # automatically create a distribution table name
+    cmd = 'DISTRIBUTION TABLE, NAME=%s\n' %nameTable
+    fil.write(fmtKeyword(cmd,data=prop.format))
+    
+    cmd = 'DISTRIBUTION, NAME=%s, LOCATION=%s, TABLE=%s\n'%(prop.distribution,prop.location,nameTable)
+    fil.write(fmtKeyword(cmd,prop.options,data=prop.table))
+
 #
 # TODO: should we remove option of specifying nonzero bound values?
 #
@@ -1868,11 +1902,11 @@ def writeAmplitude(fil, prop):
 
     Parameters:
     
-    -`prop`: list of property records having an attribute amplitude.
+    -`prop`: list of property records having an attribute `amplitude`.
     
     Recognized keys:
     
-    - name: str. the name of the amplitude.
+    - name: string. The name of the amplitude.
     
     - amplitude: class Amplitude (see plugins.property).
     
@@ -1881,7 +1915,7 @@ def writeAmplitude(fil, prop):
     
     Examples:
     
-    P=propertyDB()
+    P=PropertyDB()
     t=[0,1]
     a=[0,0.5]
     amp = Amplitude(data=column_stack([t,a]))
@@ -1891,7 +1925,7 @@ def writeAmplitude(fil, prop):
     
     for p in prop:
         cmd = "AMPLITUDE, NAME=%s" % (p.name)
-        fil.write(fmtKeyword(cmd,p.options,data=p.amplitude.data))
+        fil.write(fmtKeyword(cmd,p.options,p.amplitude.data))
 
 ### Output requests ###################################
 # Output: goes to the .odb file (for postprocessing with Abaqus/CAE)
@@ -2604,6 +2638,11 @@ Script: %s
         ## for p in self.prop.getProp('e',noattr=['eltype']):
         ##     setname = esetName(p)
         ##     writeSet(fil,'ELSET',setname,p.set)
+        
+        print("Writing distribution tables")
+        fil.write(fmtSectionHeading("DISTRIBUTIONS"))
+        for p in self.prop.getProp('', attr=['distribution']):
+            writeDistribution(fil, p)
 
         print("Writing element sections")
         fil.write(fmtSectionHeading("SECTIONS"))
@@ -2622,7 +2661,7 @@ Script: %s
 
         print("Writing global model properties")
 
-        prop = self.prop.getProp('', attr=['keyword'])
+        prop = self.prop.getProp(attr=['keyword'])
         if prop:
             print("Writing general keywords")
             for p in prop:
