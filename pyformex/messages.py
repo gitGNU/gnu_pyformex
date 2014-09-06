@@ -128,6 +128,7 @@ Old project format
 ------------------
 This is an old format project file. Unless you need to read this project file from an older pyFormex version, we strongly advise you to convert the project file to the latest format. Otherwise future versions of pyFormex might not be able to read it back.
 """
+warn_Output_changed = "The fe_abq.Output class has changed! Both the 'variable' and 'keys' arguments have been replaced by the single argument 'vars'. Its value is either 'PRESELECT' or 'ALL' or a list of output keys. See the docstring for more info."
 warn_pickPolygonEdges = "pickPolygonEdges IS NOT IMPLEMENTED YET!"
 warn_project_compression = "The contents of the file does not appear to be compressed."
 warn_project_create = "The create=True argument should be replaced with access='w'"

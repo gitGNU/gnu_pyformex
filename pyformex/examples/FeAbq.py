@@ -137,7 +137,7 @@ def run():
         'name': 'steel',
         'young_modulus': 207000,
         'poisson_ratio': 0.3,
-        'density': 0.1, # Not Used, but Abaqus does not like a material without
+        'density': 7.85e-9, # Not Used, but Abaqus does not like a material without
         }
     thin_plate = {
         'name': 'thin_plate',
@@ -215,7 +215,7 @@ def run():
     # Thus, all elements of part B will end up in Eset('grp',1)
     out = [ Output(type='history'),
             Output(type='field'),
-            Output(type='field', kind='element', set=Eset('grp', 1), keys=['S']),
+            Output(type='field', kind='element', set=Eset('grp', 1), vars=['S']),
             ]
 
     # Create requests for output to the .fil file.

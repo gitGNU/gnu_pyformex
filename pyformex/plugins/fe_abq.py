@@ -126,18 +126,13 @@ def fmtData2d(data,linesep='\n'):
     return linesep.join([fmtData1d(d) for d in data])
 
 
-#      P.Prop(keyword='SECTION CONTROLS',
-#             options='NAME=StentControl, HOURGLASS=enhanced',
-#             data=[1., 1., 1.])
-#      section0 = ElemSection(section=stentSec, material=steel)
-#      P.elemProp(set='STENT',name='Name',eltype='C3D8R',section=section0, options='controls=StentControl')
-
-
 def fmtKeyword(keyword,options='',data=None,extra='',**kargs):
     """Format any keyword block in INP file.
 
     - `keyword`: string, keyword command, possibly including options
-    - `options`: string, will be added as is to the command line
+    - `options`: string or Options. The argument is first converted to str.
+      If the result starts with a comma, it is added as is to the command line;
+      otherwise it is added with interposition of ', '.
     - `data`: numerical data: will be formatted with maximum 8 values per line,
       or a list of tuples: each tuple will be formatted on a line
     - `extra`: string: will be added as is below the command and data
@@ -157,10 +152,11 @@ def fmtKeyword(keyword,options='',data=None,extra='',**kargs):
     """
     out = '*' + keyword.upper()
     if kargs:
-        #out += ', '
         out += fmtOptions(**kargs)
     if options:
-        out += ', '
+        options = str(options)
+        if options[0] != ',':
+            out += ', '
         out += options
     out += '\n'
 
@@ -197,7 +193,7 @@ def fmtOptions(**kargs):
     The resulting strings are joined with ', ' between them.
 
     Returns a comma-separated string of 'keyword' or 'keyword=value' fields.
-    The string does not have a leading or trailing comma.
+    The string has a leading but no trailing comma.
 
     Note that if you specified two arguments whose keyword only differs
     by case, both will appear in the output with the same keyword.
@@ -223,8 +219,8 @@ class Options(object):
       , VAR C, VAR B=123., VAR A=123.0, VAR A=hello
 
     """
-    def __init__(self,**kargs):
-        self.out = ''
+    def __init__(self,opts='',**kargs):
+        self.out = opts
         self.add(**kargs)
 
     def add(self,**kargs):
@@ -282,11 +278,10 @@ def fmtMaterial(mat):
       Defines the elastic behavior class of the material. The required and
       recognized keys depend on this parameter (see below).
 
-    - constants : arraylike, float or None. The material constants to be used in the
-      model. In the case of 'LINEAR', it is optional and the constant may be
-      specified by other keys (see below). In some cases (like in case of
-      'HYPERELASTIC' with option 'TEST INPUT DATA') the dataline is not specified and
-      constants must be None.
+    - constants : list of floats or None.
+      The material constants to be used in the model.
+      For 'LINEAR' elasticity, these may alternatively be specified by other
+      keywords (see below).
 
     - options (opt): string: will be added to the material command as is.
 
@@ -301,6 +296,8 @@ def fmtMaterial(mat):
       can be a float or None.
 
     - field (opt): boolean. If True, a keyword "USER DEFINED FIELD" is added.
+
+    Recognized keys depending on model:
 
     'LINEAR': allows the specification of the material constants using the
     following keys:
@@ -328,28 +325,45 @@ def fmtMaterial(mat):
       variables. Each item in the list is a tuple of a variable number and
       the variable name, e.g. `[[ 1,' var1'],[ 2,' var2']]`.
 
-    Examples::
+    Examples:
 
-        steel = {
-            'name': 'steel',
-            'young_modulus': 207000e-6,
-            'poisson_ratio': 0.3,
-            'density': 7.85e-9,
-            }
+      >>> steel = {
+      ...      'name': 'steel',
+      ...      'young_modulus': 207000,
+      ...      'poisson_ratio': 0.3,
+      ...      'density': 7.85e-9,
+      ...      }
+      >>> from pyformex.attributes import Attributes
+      >>> print(fmtMaterial(Attributes(steel)))
+      *MATERIAL, NAME=steel
+      *ELASTIC
+      207000.0, 0.3
+      *DENSITY
+      7.85e-09
+      <BLANKLINE>
 
-        intimaMat = {
-            'name': 'intima',
-            'density': 0.1,
-            'elasticity':'hyperelastic',
-            'type':'reduced polynomial',
-            'constants': [6.79E-03, 5.40E-01, -1.11, 10.65, -7.27, 1.63, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-            }
+      >>> intima = {
+      ...      'name': 'intima',
+      ...      'density': 0.1,
+      ...      'elasticity':'hyperelastic',
+      ...      'model':'reduced polynomial',
+      ...      'constants': [6.79E-03, 5.40E-01, -1.11, 10.65, -7.27, 1.63, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      ...      }
+      >>> print(fmtMaterial(Attributes(intima)))
+      *MATERIAL, NAME=intima
+      *HYPERELASTIC, reduced polynomial, N=6
+      <BLANKLINE>
+      0.00679, 0.54, -1.11, 10.65, -7.27, 1.63, 0.0, 0.0
+      0.0, 0.0, 0.0, 0.0
+      *DENSITY
+      0.1
+      <BLANKLINE>
 
     """
-    out ="*MATERIAL, NAME=%s\n" % mat.name
+    out = fmtKeyword('MATERIAL',name=mat.name)
     materialswritten.append(mat.name)
 
-    if mat.field:
+    if mat.field is not None:
         out+='*USER DEFINED FIELD\n'
 
     if mat.depvar is not None:
@@ -409,7 +423,8 @@ def fmtMaterial(mat):
     # complete the command
     if mat.options is not None:
         out += mat.options
-        out += '\n'
+
+    out += '\n'
 
     if constants is not None:
         out += fmtData1d(constants)
@@ -1059,58 +1074,6 @@ def fmtRigidSection(section,setname):
         data = [ float(section.thickness) ]
     return fmtKeyword(cmd,section.options,data,section.extra)
 
-#
-# TODO: SHOULD BE REVIEWED
-#
-## def fmtAnySection(section,setname,matname):
-##     """Format any SECTION keyword.
-
-##     The name should be derived from the ELTYPE_elems list
-##     to automatically set the section type
-
-##     Required:
-
-##     - setname
-##     - matname
-
-##     Optional:
-##     - options:
-##     - orientation:
-##     - sectiondata:
-##     -extra:
-
-##     """
-##     out = ''
-##     try:
-##         section_elems=globals()[section.sectiontype.lower()+'_elems']
-##     except:
-##         raise ValueError("element section '%s' not yet implemented" % section.sectiontype.lower())
-
-##     out += '*%s SECTION, ELSET=%s'%( section.sectiontype.upper(),setname)
-
-##     if matname is not None:
-##         out += ', MATERIAL=%s'%(matname)
-
-##     if section.density:
-##         out += ', DENSITY=%s'%(section.density)
-
-##     if section.options is not None:
-##         out += fmtOptions(section.options)
-
-##     if section.orientation is not None:
-##         out += ", ORIENTATION=%s" %(section.orientation.name)
-
-##     out += '\n'
-
-##     if section.sectiondata is not None:
-##         out += fmtData(section.sectiondata)
-##         out += '\n'
-
-##     if section.extra is not None:
-##         extra = CDict(extra)
-##         out += fmtExtra(extra)
-##         out += '\n'
-##     return out
 
 #########################################################
 #
@@ -1129,7 +1092,7 @@ def fmtTransform(csys,setname):
         "TRANSFORM, NSET=%s, TYPE=%s" % (setname, csys.sys),
         data = csys.data
         )
-        
+
 
 def fmtOrientation(prop):
     """Format the orientation.
@@ -1694,28 +1657,28 @@ def writeDistribution(fil,prop):
     - `prop`: a Property record having with the key `distribution`.
 
     Recognized keys:
-    
+
     - distribution: string. Name of the distribution.
-    
+
     - location:string. can assume values 'ELEMENT','NODE' or 'NONE'
-    
-    - table: arraylike. The array needs to be passed as should be written in the 
+
+    - table: arraylike. The array needs to be passed as should be written in the
         abaqus data line. Every row is a new line and it is in the form [element_or_node_number,data1,data2, ...].
         NB For the first line used in Abaqus as default, the element_or_node_number should be an empty string.
-        
-    - format: list of strings. Every string is  an abaqus `word` to be used in the distribution table. 
+
+    - format: list of strings. Every string is  an abaqus `word` to be used in the distribution table.
         See Abaqus documentation for allowed `words`.
-        
+
     - options (opt): string that is added as is to the command line.
-    
+
     The name  of the distribution table (required) is derived from the name of the distribution.
-    
+
     """
-    
+
     nameTable = prop.name+'_TABLE' # automatically create a distribution table name
     cmd = 'DISTRIBUTION TABLE, NAME=%s\n' %nameTable
     fil.write(fmtKeyword(cmd,data=prop.format))
-    
+
     cmd = 'DISTRIBUTION, NAME=%s, LOCATION=%s, TABLE=%s\n'%(prop.distribution,prop.location,nameTable)
     fil.write(fmtKeyword(cmd,prop.options,data=prop.table))
 
@@ -1897,32 +1860,84 @@ def fmtLoad(key,prop):
 # General model data
 #
 
+
+#
+# This is TOO complex. We should restrict the way users can specify things.
+#
+class Interaction(Dict):
+    """A Dict for setting surface interactions
+
+    Required:
+
+    - `name`: str name of the surface interaction
+
+    Optional: (congrats to anyone understanding this)
+
+    - `friction`: Dict , float, or arraylike. If Dict needs to store all
+      friction options as 'abaqus_option_name': 'value'.
+      An empty string can be set for parameters with no value.
+      If float or arraylike a default friction keyword Dict
+      is created with nop other *friction options.
+    - `surfacebehavior`: Dict storing all *SURFACE BEHAVIOUR options as
+      'abaqus_option_name': 'value'.
+      An empty string can be set for parameters with no value.
+      If float or arraylike a default friction keyword Dict
+      is created with nop other *friction options.
+    - `surfaceinteraction`: Dict storing all *SURFACE INTERACTIONS options
+      as 'abaqus_option_name': 'value'.
+      An empty string can be set for parameters with no value.
+      If float or arraylike a default friction keyword Dict
+      is created with nop other *friction options.
+    - `extra`: Dict or list of Dict of any additional abaqus keyword lines
+      to be passed via fmtExtra.
+      See fmtExtra for more details.
+
+    """
+    def __init__(self, name, friction=None, surfacebehavior=None, surfaceinteraction=None, extra=None):
+        utils.warn('warn_Interaction_changed')
+
+        self.name = name
+
+        self.friction=None
+        if friction is not None:
+            if isinstance(friction,dict):
+                self.friction=friction
+            else:
+                if isinstance(friction,(int,float)):
+                    friction=asarray([friction],float)
+                self.friction=Dict()
+                self.friction.data=friction
+
+        self.surfacebehavior = surfacebehavior
+        self.surfaceinteraction=surfaceinteraction
+        self.extra = extra
+
 def writeAmplitude(fil, prop):
     """Write Amplitude.
 
     Parameters:
-    
+
     -`prop`: list of property records having an attribute `amplitude`.
-    
+
     Recognized keys:
-    
+
     - name: string. The name of the amplitude.
-    
+
     - amplitude: class Amplitude (see plugins.property).
-    
+
     - options (opt): string that is added as is to the command line.
 
-    
+
     Examples:
-    
+
     P=PropertyDB()
     t=[0,1]
     a=[0,0.5]
     amp = Amplitude(data=column_stack([t,a]))
     P.Prop(amplitude=amp,name='ampl1',options='definition=TABULAR,smooth=0.1')
-    
+
     """
-    
+
     for p in prop:
         cmd = "AMPLITUDE, NAME=%s" % (p.name)
         fil.write(fmtKeyword(cmd,p.options,p.amplitude.data))
@@ -1931,28 +1946,6 @@ def writeAmplitude(fil, prop):
 # Output: goes to the .odb file (for postprocessing with Abaqus/CAE)
 # Result: goes to the .fil file (for postprocessing with other means)
 #######################################################
-
-
-def writeNodeOutput(fil,kind,keys,set='Nall'):
-    """ Write a request for nodal result output to the .odb file.
-
-    - `keys`: a list of NODE output identifiers
-    - `set`: a single item or a list of items, where each item is either
-      a property number or a node set name for which the results should
-      be written
-    """
-    output = 'OUTPUT'
-    if isinstance(set, str) or isInt(set):
-        set = [ set ]
-    for i in set:
-        if isInt(i):
-            setname = Nset(str(i))
-        else:
-            setname = i
-        s = "*NODE %s, NSET=%s" % (output, setname)
-        fil.write("%s\n" % s)
-        for key in keys:
-            fil.write("%s\n" % key)
 
 
 def writeNodeResult(fil,kind,keys,set='Nall',output='FILE',freq=1,
@@ -2000,29 +1993,6 @@ def writeNodeResult(fil,kind,keys,set='Nall',output='FILE',freq=1,
                 s += ", SUMMARY=YES"
             if total:
                 s += ", TOTAL=YES"
-        fil.write("%s\n" % s)
-        for key in keys:
-            fil.write("%s\n" % key)
-
-
-def writeElemOutput(fil,kind,keys,set='Eall'):
-    """ Write a request for element output to the .odb file.
-
-    - `keys`: a list of ELEMENT output identifiers
-    - `set`: a single item or a list of items, where each item is either
-      a property number or an element set name for which the results should
-      be written
-    """
-    output = 'OUTPUT'
-
-    if isinstance(set, str) or isInt(set):
-        set = [ set ]
-    for i in set:
-        if isInt(i):
-            setname = Eset(str(i))
-        else:
-            setname = i
-        s = "*ELEMENT %s, ELSET=%s" % (output, setname)
         fil.write("%s\n" % s)
         for key in keys:
             fil.write("%s\n" % key)
@@ -2092,99 +2062,145 @@ def writeFileOutput(fil,resfreq=1,timemarks=False):
 
 
 
-#~ Fi this function works like the previous one(if extra is a str)
-# but now extra can be also a list of Dict .This is more convenient  if more addictional lines
-# need to be written at the step level for type history.
-def writeModelProps(fil, prop):
-    """_ BAD STRUCTURE Write model props for this step
-
-    extra : str
-             : list of Dict. each Dict is a new line.Only 2 keys are dedicated
-
-                REQUIRED
-                    -keyword =  abaqus keyword name
-
-                OPTIONAL
-                    -data = list or array of numerical data for any additional data line
-
-                    All other keys have name equal to the ABAQUS keywords and value equal to parameter setting
-                    if an ABAQUS keyword does not have a value to be the Dict value must be an empty string
-
-                EXAMPLE
-                P.Prop(tag='step1',extra='*CONTACT CONTROLS , AUTOMATIC TOLERANCES\n')
-                P.Prop(tag='step1',extra=[Dict({'keyword':'CONTACT CONTROLS','AUTOMATIC TOLERANCES':''})])
-    """
-    for p in prop:
-        if p.extra:
-            if isinstance(p.extra, str):
-                fil.write(p.extra)
-            elif isinstance(p.extra, list):
-                cmd = ''
-                for l in p.extra:
-                    l = CDict(l) # to avoid keyerrors if l.data is not a key
-                    cmd += '*%s'%l['keyword']
-                    cmd += fmtOptions(**utils.removeDict(l, ['keyword', 'data']))
-                    cmd += '\n'
-                    if l.data is not None:
-                        cmd += fmtData1d(l.data) + '\n'
-                fil.write(cmd.upper())
-
-
 ##################################################
 ## Some classes to store all the required information
 ##################################################
 
 
-#
-# This is TOO complex. We should restrict the way users can specify things.
-#
-class Interaction(Dict):
-    """A Dict for setting surface interactions
+class Output(Dict):
+    """A request for output to .odb.
 
-    Required:
+    Parameters:
 
-    - `name`: str name of the surface interaction
+    - `type`: 'FIELD' (default), 'HISTORY' or None.
+    - `kind`: string: one of '', 'N', 'NODE', 'E', 'ELEMENT'.
+      'N' and 'E' are abbreviations for 'NODE', 'ELEMENT', respectively.
+    - `vars`: 'ALL', 'PRESELECT' or, if `kind` != None, a list of output
+      identifiers compatible with the specified `kind`.
+    - `set`: a single set name or a list of node/element set names.
+      This can not be specified for kind==''.
+      If no set is specified, the default is 'Nall' for kind=='NODE' and
+      'Eall' for kind='ELEMENT'
+    - `options`: (opt) options string to be added to the keyword line.
+    - `extra`: (opt)  extra string to be added below the keyword line
+      and optional data.
 
-    Optional: (congrats to anyone understanding this)
+    Examples::
 
-    - `friction`: Dict , float, or arraylike. If Dict needs to store all
-      friction options as 'abaqus_option_name': 'value'.
-      An empty string can be set for parameters with no value.
-      If float or arraylike a default friction keyword Dict
-      is created with nop other *friction options.
-    - `surfacebehavior`: Dict storing all *SURFACE BEHAVIOUR options as
-      'abaqus_option_name': 'value'.
-      An empty string can be set for parameters with no value.
-      If float or arraylike a default friction keyword Dict
-      is created with nop other *friction options.
-    - `surfaceinteraction`: Dict storing all *SURFACE INTERACTIONS options
-      as 'abaqus_option_name': 'value'.
-      An empty string can be set for parameters with no value.
-      If float or arraylike a default friction keyword Dict
-      is created with nop other *friction options.
-    - `extra`: Dict or list of Dict of any additional abaqus keyword lines
-      to be passed via fmtExtra.
-      See fmtExtra for more details.
+      >>> out1 = Output(type='field')
+      >>> out2 = Output(type='field', kind='e', vars=['S','SP'])
+      >>> out3 = Output(type='field', kind='e', vars=['S','SP'], set=['set1','set2'])
+      >>> print(out1.fmt())
+      *OUTPUT, FIELD, VARIABLE=PRESELECT
+      <BLANKLINE>
+      >>> print(out2.fmt())
+      *ELEMENT OUTPUT, ELSET=Eall
+      S, SP
+      <BLANKLINE>
+      >>> print(out3.fmt())
+      *ELEMENT OUTPUT, ELSET=set1
+      S, SP
+      *ELEMENT OUTPUT, ELSET=set2
+      S, SP
+      <BLANKLINE>
 
     """
-    def __init__(self, name, friction=None, surfacebehavior=None, surfaceinteraction=None, extra=None):
-        utils.warn('warn_Interaction_changed')
 
-        self.name = name
+    def __init__(self,kind='',vars='PRESELECT',set=None,type='FIELD',options='',extra='',variable=None,keys=None):
+        """ Create a new output request."""
+        if keys is not None or variable is not None:
+            utils.warn('warn_Output_changed')
+            if keys is not None:
+                vars = keys
+            if variable is not None:
+                vars = variable
 
-        self.friction=None
-        if friction is not None:
-            if isinstance(friction,dict):
-                self.friction=friction
-            else:
-                if isinstance(friction,(int,float)):
-                    friction=asarray([friction],float)
-                self.friction=Dict()
-                self.friction.data=friction
+        if type:
+            type = type.upper()
+        Dict.__init__(self,{'kind':'','type':type,'vars':vars,'options':options,'extra':extra})
+        if kind:
+            kind = kind.upper()
+            if kind == 'N':
+                kind = 'NODE'
+            elif kind == 'E':
+                kind = 'ELEMENT'
+            if set is None and kind in ['NODE','ELEMENT']:
+                set = "%sall" % kind[0]
+            if set is not None and not isinstance(set, list):
+                set = [ set ]
+            self.update({'kind':kind,'set':set})
+        #print(self)
 
-        self.surfacebehavior = surfacebehavior
-        self.surfaceinteraction=surfaceinteraction
-        self.extra = extra
+
+    def fmt(self):
+        """Format an output request.
+
+        Return a string with the formatted output command.
+        """
+        if self.kind == '':
+            cmd = 'OUTPUT'
+            options = Options(self.type)
+            if isinstance(self.vars,str):
+                options.add(variable=self.vars)
+            out = fmtKeyword(cmd,options,extra=self.extra)
+
+        elif self.kind in ['NODE','ELEMENT']:
+            cmd = '%s OUTPUT' % self.kind
+            out = ''
+            for setname in self.set:
+                if self.kind == 'NODE':
+                    options = Options(nset=setname)
+                elif self.kind == 'ELEMENT':
+                    options = Options(elset=setname)
+                else:
+                    options = Options()
+                if isinstance(self.vars,str):
+                    options.add(variable=self.vars)
+                    data = None
+                else:
+                    data = self.vars
+                out += fmtKeyword(cmd,options,data=data,extra=self.extra)
+
+        return out
+
+
+#
+# TODO : this should be restructured like Output, and include a fmt() method
+#
+class Result(Dict):
+    """A request for output of results on nodes or elements.
+
+    Parameters:
+
+    - `kind`: 'NODE' or 'ELEMENT' (first character suffices)
+    - `keys`: a list of output identifiers (compatible with kind type)
+    - `set`: a single item or a list of items, where each item is either
+      a property number or a node/element set name for which the results
+      should be written. If no set is specified, the default is 'Nall'
+      for kind=='NODE' and 'Eall' for kind='ELEMENT'
+    - `output` is either ``FILE`` (for .fil output) or ``PRINT`` (for .dat
+      output)(Abaqus/Standard only)
+    - `freq` is the output frequency in increments (0 = no output)
+
+    Extra keyword arguments are available: see the `writeNodeResults` and
+    `writeElemResults` methods for details.
+
+    """
+
+    # The following values can be changed to set the output frequency
+    # for Abaqus/Explicit
+    nintervals = 1
+    timemarks = False
+
+    def __init__(self,kind,keys,set=None,output='FILE',freq=1,time=False,
+                 **kargs):
+        """Create new result request."""
+        kind = kind[0].upper()
+        if set is None:
+            set = "%sall" % kind
+        Dict.__init__(self, {'keys':keys,'kind':kind,'set':set,'output':output,
+                            'freq':freq})
+        self.update(dict(**kargs))
 
 
 class Step(Dict):
@@ -2381,119 +2397,25 @@ class Step(Dict):
                 for p in prop:
                     fil.write(fmtLoad(attr,p))
 
-        prop = propDB.getProp('', tag=self.tags)
+        prop = propDB.getProp(tag=self.tags,attr=['keyword'])
         if prop:
-            print("  Writing step model props")
-            writeModelProps(fil, prop)
+            print("Writing general keywords")
+            for p in prop:
+                fil.write(fmtKeyword(**p))
 
         print("  Writing output")
         for i in out + self.out:
-            if i.kind is None:
-                fil.write(i.fmt())
-            if i.kind == 'N':
-                writeNodeOutput(fil,**i)
-            elif i.kind == 'E':
-                writeElemOutput(fil,**i)
+            fil.write(i.fmt())
 
         if res and self.analysis == 'EXPLICIT':
             writeFileOutput(fil, resfreq, timemarks)
+
         for i in res + self.res:
             if i.kind == 'N':
                 writeNodeResult(fil,**i)
             elif i.kind == 'E':
                 writeElemResult(fil,**i)
         fil.write("*END STEP\n")
-
-
-class Output(Dict):
-    """A request for output to .odb and history.
-
-    Parameters:
-
-    - `type`: 'FIELD' or 'HISTORY'
-    - `kind`: None, 'NODE', or 'ELEMENT' (first character suffices)
-    - `extra`: an extra string to be added to the command line. This
-      allows to add Abaqus options not handled by this constructor.
-      The string will be appended to the command line preceded by a comma.
-
-    For kind=='':
-
-    - `variable`: 'ALL', 'PRESELECT' or ''
-
-    For kind=='NODE' or 'ELEMENT':
-
-    - `keys`: a list of output identifiers (compatible with kind type)
-    - `set`: a single item or a list of items, where each item is either
-      a property number or a node/element set name for which the results
-      should be written. If no set is specified, the default is 'Nall'
-      for kind=='NODE' and 'Eall' for kind='ELEMENT'
-    """
-
-    def __init__(self,kind=None,keys=None,set=None,type='FIELD',variable='PRESELECT',extra='',**options):
-        """ Create a new output request."""
-        if 'history' in options:
-            pf.warning("The `history` argument in an output request is deprecated.\nPlease use `type='history'` instead.")
-        if 'numberinterval' in options:
-            pf.warning("The `numberinterval` argument in an output request is deprecated.\nPlease use the `extra` argument instead.")
-
-        if kind:
-            kind = kind[0].upper()
-        if set is None:
-            set = "%sall" % kind
-        Dict.__init__(self, {'kind':kind})
-        if kind is None:
-            self.update({'type':type,'variable':variable,'extra':extra})
-        else:
-            self.update({'keys':keys,'set':set})
-
-
-    def fmt(self):
-        """Format an output request.
-
-        Return a string with the formatted output command.
-        """
-        out = ['*OUTPUT', self.type.upper()]
-        if self.variable:
-            out.append('VARIABLE=%s' % self.variable.upper())
-        if self.extra:
-            out.append(self.extra)
-        return ', '.join(out)+'\n'
-
-
-class Result(Dict):
-    """A request for output of results on nodes or elements.
-
-    Parameters:
-
-    - `kind`: 'NODE' or 'ELEMENT' (first character suffices)
-    - `keys`: a list of output identifiers (compatible with kind type)
-    - `set`: a single item or a list of items, where each item is either
-      a property number or a node/element set name for which the results
-      should be written. If no set is specified, the default is 'Nall'
-      for kind=='NODE' and 'Eall' for kind='ELEMENT'
-    - `output` is either ``FILE`` (for .fil output) or ``PRINT`` (for .dat
-      output)(Abaqus/Standard only)
-    - `freq` is the output frequency in increments (0 = no output)
-
-    Extra keyword arguments are available: see the `writeNodeResults` and
-    `writeElemResults` methods for details.
-
-    """
-
-    # The following values can be changed to set the output frequency
-    # for Abaqus/Explicit
-    nintervals = 1
-    timemarks = False
-
-    def __init__(self,kind,keys,set=None,output='FILE',freq=1,time=False,
-                 **kargs):
-        """Create new result request."""
-        kind = kind[0].upper()
-        if set is None:
-            set = "%sall" % kind
-        Dict.__init__(self, {'keys':keys,'kind':kind,'set':set,'output':output,
-                            'freq':freq})
-        self.update(dict(**kargs))
 
 
 ############################################################ AbqData
@@ -2638,9 +2560,8 @@ Script: %s
         ## for p in self.prop.getProp('e',noattr=['eltype']):
         ##     setname = esetName(p)
         ##     writeSet(fil,'ELSET',setname,p.set)
-        
+
         print("Writing distribution tables")
-        fil.write(fmtSectionHeading("DISTRIBUTIONS"))
         for p in self.prop.getProp('', attr=['distribution']):
             writeDistribution(fil, p)
 
