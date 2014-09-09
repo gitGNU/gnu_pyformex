@@ -126,7 +126,22 @@ def fmtData2d(data,linesep='\n'):
     return linesep.join([fmtData1d(d) for d in data])
 
 
-def fmtKeyword(keyword,options='',data=None,extra='',**kargs):
+def fmtData(data,linesep='\n'):
+    """Format the data section
+
+    Examples:
+
+      >>> fmtData([1,2,3,4.0,'last'])
+      '1, 2, 3, 4.0, last'
+
+    """
+    if isinstance(data,list) and isinstance(data[0],tuple):
+        return fmtData2d(data,linesep=linesep)
+    else:
+        return fmtData1d(data,linesep=linesep)
+
+
+def fmtKeyword(keyword,options='',data=None,extra='',*args,**kargs):
     """Format any keyword block in INP file.
 
     - `keyword`: string, keyword command, possibly including options
@@ -150,21 +165,19 @@ def fmtKeyword(keyword,options='',data=None,extra='',**kargs):
       <BLANKLINE>
 
     """
-    out = '*' + keyword.upper()
+    out = '*'
+    out += ', '.join([ str(v).upper() for v in (keyword,) + args ])
     if kargs:
         out += fmtOptions(**kargs)
     if options:
         options = str(options)
-        if options[0] != ',':
+        if options[:1] != ',':
             out += ', '
         out += options
     out += '\n'
 
     if data is not None:
-        if isinstance(data,list) and isinstance(data[0],tuple):
-            out += fmtData2d(data)
-        else:
-            out += fmtData1d(data)
+        out += fmtData(data)
         out += '\n'
 
     if extra:
@@ -186,7 +199,7 @@ def fmtOption(key,value):
 def fmtOptions(**kargs):
     """Format the options of an Abaqus command line.
 
-    Each key,value pair in the argument list is foramted into s string
+    Each key,value pair in the argument list is formated into s string
     'KEY=value', or just 'KEY' if the value is an empty string.
     The key is always converted to upper case, and any underscore in the
     key is replaced with a space.
@@ -228,6 +241,107 @@ class Options(object):
 
     def __str__(self):
         return self.out
+
+
+class Command(object):
+    """A class to format a keyword block in an INP file.
+
+    Parameters (all are optional, except for `cmd`):
+    - `cmd`: string, starting with an Abaqus keyword. The `cmd` string may
+      include already formatted options. It will be converted to upper case
+      and put as is after the initial '*' character.
+    - `options`: a string or Options. The argument is first converted to str.
+      If the result starts with a comma, it is added as is to the command line;
+      otherwise it is added with interposition of ', '.
+    - `data`: list-like or list of tuple. Specifies the data to be put below
+      the command line. A list of tuples will be formatted with one tuple
+      per line. Any other data type will be transformed to a flat sequence
+      and be formatted with maximum 8 values per line. Each individual item
+      is converted to str type, so the data sequence may contain numerical
+      (float or int) as well as string data.
+    - `extra`: string: will be added as is below the command and data. This
+      may be a multiline string and can be used to add complete preformatted
+      sections to the output.
+    - `args`: any other non-keyword arguments are added as options to the
+      command line, after conversion to string and upper case.
+    - `kargs`: any other keyword arguments are added to the command line as
+      options of the form 'KEY=value'. The keys are converted to upper case,
+      the values not.
+
+    After initial construction, the :func:`add` method can be used to add
+    more parts to the command.
+
+    Remark: there is no check whether a certain option contains multiple
+      occurrences of the same option.
+
+    Examples:
+
+      >>> cmd1 = Command('Key','material=plastic',options='material=steel',material='wood',data=[1,2,3,4.0,'last'],extra='*AnotherKey, opt=optionalSet1,\\n 1, 4.7')
+      >>> print(cmd1)
+      *KEY, MATERIAL=PLASTIC, MATERIAL=wood, material=steel
+      1, 2, 3, 4.0, last
+      *AnotherKey, opt=optionalSet1,
+       1, 4.7
+      <BLANKLINE>
+
+    """
+    def __init__(self,cmd,*args,**kargs):
+        """Initialize the Command"""
+        self.cmd = '*' + str(cmd).upper()
+        self.data = None
+        self.extra = ''
+        self.add(*args,**kargs)
+
+
+    def add(self,*args,**kargs):
+        """Add more parts to the Command.
+
+        This method takes all the parameters as the initializer,
+        except for `cmd`. Specifying `data` will overwrite any
+        previously defined data for the command. All other parameters
+        will be added to the already existing.
+        """
+
+        if 'data' in kargs:
+            self.data = kargs['data']
+            del kargs['data']
+
+        if 'extra' in kargs:
+            self.extra += kargs['extra']
+            del kargs['extra']
+
+        if 'options' in kargs:
+            options = kargs['options']
+            del kargs['options']
+        else:
+            options = None
+
+        if args:
+            self.cmd += ', '
+            self.cmd += ', '.join([ str(v).upper() for v in args ])
+        if kargs:
+            self.cmd += fmtOptions(**kargs)
+        if options:
+            options = str(options)
+            if options[:1] != ',':
+                self.cmd += ', '
+            self.cmd += options
+
+
+    def __str__(self):
+        """Format the full command block"""
+        out = self.cmd
+        out += '\n'
+
+        if self.data is not None:
+            out += fmtData(self.data)
+            out += '\n'
+
+        if self.extra:
+            out += self.extra
+            out += '\n'
+
+        return out
 
 
 def fmtHeading(text=''):
@@ -2072,8 +2186,9 @@ class Output(Dict):
 
     Parameters:
 
-    - `type`: 'FIELD' (default), 'HISTORY' or None.
-    - `kind`: string: one of '', 'N', 'NODE', 'E', 'ELEMENT'.
+    - `type`: 'FIELD' (default), 'HISTORY' or ''.
+    - `kind`: string: one of '', 'N', 'NODE', 'E', 'ELEMENT', 'ENERGY',
+      'CONTACT'.
       'N' and 'E' are abbreviations for 'NODE', 'ELEMENT', respectively.
     - `vars`: 'ALL', 'PRESELECT' or, if `kind` != None, a list of output
       identifiers compatible with the specified `kind`.
@@ -2088,25 +2203,35 @@ class Output(Dict):
     Examples::
 
       >>> out1 = Output(type='field')
-      >>> out2 = Output(type='field', kind='e', vars=['S','SP'])
-      >>> out3 = Output(type='field', kind='e', vars=['S','SP'], set=['set1','set2'])
       >>> print(out1.fmt())
       *OUTPUT, FIELD, VARIABLE=PRESELECT
       <BLANKLINE>
-      >>> print(out2.fmt())
+
+      >>> out0 = Output(vars=None)
+      >>> out2 = Output(type='field', kind='e', vars=['S','SP'])
+      >>> print(out0.fmt()+out2.fmt())
+      *OUTPUT, FIELD
       *ELEMENT OUTPUT, ELSET=Eall
       S, SP
       <BLANKLINE>
-      >>> print(out3.fmt())
+
+      >>> out3 = Output(type='field', kind='e', vars=['S','SP'], set=['set1','set2'])
+      >>> print(out0.fmt()+out3.fmt())
+      *OUTPUT, FIELD
       *ELEMENT OUTPUT, ELSET=set1
       S, SP
       *ELEMENT OUTPUT, ELSET=set2
       S, SP
       <BLANKLINE>
 
+      >>> out4 = Output(type='',diagnostic='yes')
+      >>> print(out4.fmt())
+      *OUTPUT, DIAGNOSTIC=yes
+      <BLANKLINE>
+
     """
 
-    def __init__(self,kind='',vars='PRESELECT',set=None,type='FIELD',options='',extra='',variable=None,keys=None):
+    def __init__(self,kind='',vars='PRESELECT',set=None,type='FIELD',options='',extra='',variable=None,keys=None,*args,**kargs):
         """ Create a new output request."""
         if keys is not None or variable is not None:
             utils.warn('warn_Output_changed')
@@ -2115,9 +2240,7 @@ class Output(Dict):
             if variable is not None:
                 vars = variable
 
-        if type:
-            type = type.upper()
-        Dict.__init__(self,{'kind':'','type':type,'vars':vars,'options':options,'extra':extra})
+        Dict.__init__(self,{'kind':'','otype':type.upper(),'vars':vars,'options':options,'extra':extra,'args':args,'kargs':kargs})
         if kind:
             kind = kind.upper()
             if kind == 'N':
@@ -2129,7 +2252,6 @@ class Output(Dict):
             if set is not None and not isinstance(set, list):
                 set = [ set ]
             self.update({'kind':kind,'set':set})
-        #print(self)
 
 
     def fmt(self):
@@ -2138,28 +2260,27 @@ class Output(Dict):
         Return a string with the formatted output command.
         """
         if self.kind == '':
-            cmd = 'OUTPUT'
-            options = Options(self.type)
-            if isinstance(self.vars,str):
-                options.add(variable=self.vars)
-            out = fmtKeyword(cmd,options,extra=self.extra)
+            cmd = Command('OUTPUT',*self.args,options=self.options,extra=self.extra,**self.kargs)
+            if self.otype:
+                cmd.add(self.otype)
+                if isinstance(self.vars,str):
+                    cmd.add(variable=self.vars)
+            out = str(cmd)
+
 
         elif self.kind in ['NODE','ELEMENT']:
-            cmd = '%s OUTPUT' % self.kind
             out = ''
             for setname in self.set:
-                if self.kind == 'NODE':
-                    options = Options(nset=setname)
-                elif self.kind == 'ELEMENT':
-                    options = Options(elset=setname)
-                else:
-                    options = Options()
+                cmd = Command('%s OUTPUT' % self.kind,options=self.options,extra=self.extra)
+                if self.kind in ['NODE', 'CONTACT']:
+                    cmd.add(nset=setname)
+                elif self.kind in ['ELEMENT', 'ENERGY']:
+                    cmd.add(elset=setname)
                 if isinstance(self.vars,str):
-                    options.add(variable=self.vars)
-                    data = None
+                    cmd.add(variable=self.vars)
                 else:
-                    data = self.vars
-                out += fmtKeyword(cmd,options,data=data,extra=self.extra)
+                    cmd.add(data = self.vars)
+                out += str(cmd)
 
         return out
 
