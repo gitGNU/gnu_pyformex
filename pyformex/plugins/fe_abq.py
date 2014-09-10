@@ -328,6 +328,12 @@ class Command(object):
             self.cmd += options
 
 
+    @property
+    def out(self):
+        """The formatted command as a string"""
+        return self.__str__()
+
+
     def __str__(self):
         """Format the full command block"""
         out = self.cmd
@@ -465,7 +471,7 @@ def fmtMaterial(mat):
       ...      }
       >>> print(fmtMaterial(Attributes(intima)))
       *MATERIAL, NAME=intima
-      *HYPERELASTIC, reduced polynomial, N=6
+      *HYPERELASTIC, REDUCED POLYNOMIAL, N=6
       <BLANKLINE>
       0.00679, 0.54, -1.11, 10.65, -7.27, 1.63, 0.0, 0.0
       0.0, 0.0, 0.0, 0.0
@@ -474,14 +480,14 @@ def fmtMaterial(mat):
       <BLANKLINE>
 
     """
-    out = fmtKeyword('MATERIAL',name=mat.name)
+    out = Command('MATERIAL',name=mat.name).out
     materialswritten.append(mat.name)
 
     if mat.field is not None:
-        out+='*USER DEFINED FIELD\n'
+        out += Command('USER DEFINED FIELD').out
 
     if mat.depvar is not None:
-        out += "*DEPVAR\n%s\n" % len(mat.depvar) # Is this correct ??
+        out += Command('DEPVAR',data=[ len(mat.depvar) ]).out
         out += fmtData1d(mat.depvar,npl=2)
 
     # Default elasticity type
@@ -492,16 +498,14 @@ def fmtMaterial(mat):
     constants = mat.constants
 
     if elasticity == 'linear':
-        out += '*ELASTIC'
+        cmd = Command('ELASTIC')
 
         if constants is None:
             if mat.poisson_ratio is None and mat.shear_modulus is not None:
                 mat.poisson_ratio = 0.5 * mat.young_modulus / mat.shear_modulus - 1.0
-            constants = (float(mat.young_modulus), float(mat.poisson_ratio))
+            constants = [float(mat.young_modulus), float(mat.poisson_ratio)]
 
     elif elasticity == 'hyperelastic':
-        out += "*HYPERELASTIC, %s" % mat.model
-
         model = mat.model.lower()
         order = mat.order
         if not order:
@@ -521,47 +525,47 @@ def fmtMaterial(mat):
             if mconst != nconst:
                 raise ValueError("Wrong number of material constants (%s) for order (%s) of %s model" % (nconst,mconst,model))
 
-        out += ", N=%i\n" %order
+        cmd = Command('HYPERELASTIC',mat.model,N=order)
+        #
+        # TODO: need to check: do we need a blank line here??
+        #
 
     elif elasticity == 'anisotropic hyperelastic':
-        out += "*ANISOTROPIC HYPERELASTIC, %s" % mat.model
+        cmd = Command('ANISOTROPIC HYPERELASTIC',mat.model)
         if mat.localdir is not None:
-            out += ', LOCAL DIRECTIONS=%i'%mat.localdir
+            cmd.add(LOCAL_DIRECTIONS=mat.localdir)
 
     elif elasticity == 'user':
-        out += "*USER MATERIAL, CONSTANTS=%s\n" % len(constants)
+        cmd = Command('USER MATERIAL',CONSTANTS=len(constants))
 
     elif elasticity is not None:
-        out += "%s\n" % elasticity.upper()
+        cmd = Command(elasticity)
 
-    # complete the command
     if mat.options is not None:
-        out += mat.options
-
-    out += '\n'
+        cmd.add(mat.options)
 
     if constants is not None:
-        out += fmtData1d(constants)
-        out += '\n'
+        cmd.add(data=constants)
+
+    out += cmd.out
 
     if mat.density is not None:
-        out += "*DENSITY\n%s\n" % float(mat.density)
+        out += Command('DENSITY',data=[float(mat.density)]).out
 
     if mat.plastic is not None:
-        out += "*PLASTIC\n"
         mat.plastic = asarray(mat.plastic)
         if mat.plastic.ndim != 2:
             raise ValueError("Plastic data should be 2-dim array")
-        out += fmtData1d(mat.plastic) + '\n'
+        out += Command('PLASTIC',data=mat.plastic).out
 
     if mat.damping is not None:
         alpha,beta = mat.damping
-        out += "*DAMPING"
+        cmd = Command('DAMPING')
         if alpha:
-            out +=", ALPHA = %s" % alpha
+            cmd.add(ALPHA=alpha)
         if beta:
-            out +=", BETA = %s" % beta
-        out += '\n'
+            cmd.add(BETA=beta)
+        out += cmd.out
 
     if mat.extra is not None:
         out += mat.extra
@@ -735,21 +739,28 @@ def fmtSolidSection(section ,setname):
     - orientation
     - thickness
 
+    Examples:
+
+      >>> sec1 = dict(matname='steel',thickness=0.12)
+      >>> from pyformex.attributes import Attributes
+      >>> print(fmtSolidSection(Attributes(sec1),'section1'))
+      *SOLID SECTION, ELSET=section1, MATERIAL=steel
+      0.12
+      <BLANKLINE>
+
     """
-    cmd = "SOLID SECTION"
-    data = None
-    options = "ELSET=%s, MATERIAL=%s" % (setname, section.matname)
+    cmd = Command('SOLID SECTION',ELSET=setname,MATERIAL=section.matname)
 
     if section.orientation is not None:
-        options += ", ORIENTATION=%s" % section.orientation.name
+        cmd.add(ORIENTATION=section.orientation.name)
 
     if section.options:
-        options += section.options
+        cmd.add(section.options)
 
     if section.thickness is not None:
-        data = [ float(section.thickness) ]
+        cmd.add(data=[ float(section.thickness) ])
 
-    return fmtKeyword(cmd,options,data,section.extra)
+    return cmd.out
 
 
 fmtSolid2dSection = fmtSolid3dSection = fmtSolidSection
