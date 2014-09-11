@@ -157,13 +157,6 @@ def fmtKeyword(keyword,options='',data=None,extra='',*args,**kargs):
 
     Examples:
 
-      >>> print(fmtKeyword('Key',set='Set1',options='material=steel',data=[1,2,3,4.0,'last'],extra='*AnotherKey, opt=optionalSet1,\\n 1, 4.7'))
-      *KEY, SET=Set1, material=steel
-      1, 2, 3, 4.0, last
-      *AnotherKey, opt=optionalSet1,
-       1, 4.7
-      <BLANKLINE>
-
     """
     out = '*'
     out += ', '.join([ str(v).upper() for v in (keyword,) + args ])
@@ -220,29 +213,6 @@ def fmtOptions(**kargs):
     return ''.join([ fmtOption(k,v) for k,v in kargs.iteritems() ])
 
 
-class Options(object):
-    """A class to format options on an Abaqus command line
-
-    Examples:
-      >>> o = Options(var_a = 123., var_B = '123.', Var_C = '')
-      >>> print(o)
-      , VAR C, VAR B=123., VAR A=123.0
-      >>> o.add(var_a = 'hello')
-      >>> print(o)
-      , VAR C, VAR B=123., VAR A=123.0, VAR A=hello
-
-    """
-    def __init__(self,opts='',**kargs):
-        self.out = opts
-        self.add(**kargs)
-
-    def add(self,**kargs):
-        self.out += fmtOptions(**kargs)
-
-    def __str__(self):
-        return self.out
-
-
 class Command(object):
     """A class to format a keyword block in an INP file.
 
@@ -250,9 +220,10 @@ class Command(object):
     - `cmd`: string, starting with an Abaqus keyword. The `cmd` string may
       include already formatted options. It will be converted to upper case
       and put as is after the initial '*' character.
-    - `options`: a string or Options. The argument is first converted to str.
-      If the result starts with a comma, it is added as is to the command line;
-      otherwise it is added with interposition of ', '.
+    - `options`: string. String to be added to the command line after any
+      other `args` and `kargs` keyword options have been formatted (even those
+      added later with the :func:`add` method). If the string does not
+      start with a comma, a ', ' will be interposed.
     - `data`: list-like or list of tuple. Specifies the data to be put below
       the command line. A list of tuples will be formatted with one tuple
       per line. Any other data type will be transformed to a flat sequence
@@ -276,7 +247,8 @@ class Command(object):
 
     Examples:
 
-      >>> cmd1 = Command('Key','material=plastic',options='material=steel',material='wood',data=[1,2,3,4.0,'last'],extra='*AnotherKey, opt=optionalSet1,\\n 1, 4.7')
+      >>> cmd1 = Command('Key','material=plastic',options='material=steel',data=[1,2,3,4.0,'last'],extra='*AnotherKey, opt=optionalSet1,\\n 1, 4.7')
+      >>> cmd1.add(material='wood')
       >>> print(cmd1)
       *KEY, MATERIAL=PLASTIC, MATERIAL=wood, material=steel
       1, 2, 3, 4.0, last
@@ -289,6 +261,7 @@ class Command(object):
         """Initialize the Command"""
         self.cmd = '*' + str(cmd).upper()
         self.data = None
+        self.options = ''
         self.extra = ''
         self.add(*args,**kargs)
 
@@ -306,26 +279,26 @@ class Command(object):
             self.data = kargs['data']
             del kargs['data']
 
-        if 'extra' in kargs:
-            self.extra += kargs['extra']
-            del kargs['extra']
-
         if 'options' in kargs:
             options = kargs['options']
             del kargs['options']
-        else:
-            options = None
+            if isinstance(options,str):
+                if len(options) > 0 and options[0] != ',':
+                    self.options += ', '
+                self.options += options
+
+        if 'extra' in kargs:
+            extra = kargs['extra']
+            del kargs['extra']
+            if isinstance(extra,str):
+                self.extra += extra
 
         if args:
             self.cmd += ', '
             self.cmd += ', '.join([ str(v).upper() for v in args ])
         if kargs:
             self.cmd += fmtOptions(**kargs)
-        if options:
-            options = str(options)
-            if options[:1] != ',':
-                self.cmd += ', '
-            self.cmd += options
+
 
 
     @property
@@ -337,6 +310,10 @@ class Command(object):
     def __str__(self):
         """Format the full command block"""
         out = self.cmd
+
+        if self.options:
+            out += self.options
+
         out += '\n'
 
         if self.data is not None:
@@ -432,6 +409,7 @@ def fmtMaterial(mat):
     - model: one of 'OGDEN', 'POLYNOMIAL' or 'REDUCED POLYNOMIAL'
     - order (opt): order of the model. If omitted, it is calculated from the
       number of constants specified.
+    - testdata:
 
     'ANISOTROPIC HYPERELASTIC': has a required key 'model':
 
@@ -472,7 +450,6 @@ def fmtMaterial(mat):
       >>> print(fmtMaterial(Attributes(intima)))
       *MATERIAL, NAME=intima
       *HYPERELASTIC, REDUCED POLYNOMIAL, N=6
-      <BLANKLINE>
       0.00679, 0.54, -1.11, 10.65, -7.27, 1.63, 0.0, 0.0
       0.0, 0.0, 0.0, 0.0
       *DENSITY
@@ -526,9 +503,6 @@ def fmtMaterial(mat):
                 raise ValueError("Wrong number of material constants (%s) for order (%s) of %s model" % (nconst,mconst,model))
 
         cmd = Command('HYPERELASTIC',mat.model,N=order)
-        #
-        # TODO: need to check: do we need a blank line here??
-        #
 
     elif elasticity == 'anisotropic hyperelastic':
         cmd = Command('ANISOTROPIC HYPERELASTIC',mat.model)
@@ -749,14 +723,10 @@ def fmtSolidSection(section ,setname):
       <BLANKLINE>
 
     """
-    cmd = Command('SOLID SECTION',ELSET=setname,MATERIAL=section.matname)
+    cmd = Command('SOLID SECTION',ELSET=setname,MATERIAL=section.matname,options=section.options,extra=section.extra)
 
     if section.orientation is not None:
         cmd.add(ORIENTATION=section.orientation.name)
-
-    if section.options:
-        cmd.add(section.options)
-
     if section.thickness is not None:
         cmd.add(data=[ float(section.thickness) ])
 
@@ -779,26 +749,21 @@ def fmtShellSection(section, setname):
     - poisson (opt): ?? CLASH WITH MATERIAL ??
     - thicknessmodulus (opt):
     """
-    cmd = "SHELL SECTION"
-    data = [ float(section.thickness) ]
-    options = "ELSET=%s, MATERIAL=%s" % (setname, section.matname)
+    cmd = Command('SHELL SECTION',ELSET=setname,MATERIAL=section.matname,options=section.options,extra=section.extra)
 
     if section.offset is not None:
-        options += ", OFFSET=%s"%section.offset
-
+        cmd.add(offset=section.offset)
     if section.thicknessmodulus is not None:
-        options += ", THICKNESS MODULUS=%f" % section.thicknessmodulus
-
+        cmd.add(thickness_modulus=float(section.thicknessmodulus))
     if section.poisson is not None:
-        options += ", POISSON=%f" % section.poisson
+        cmd.add(poisson=float(section.poisson))
+    if section.thickness is not None:
+        cmd.add(data=[ float(section.thickness) ])
 
-    if section.options is not None:
-        options += section.options
-
-    out = fmtKeyword(cmd,options,data,section.extra)
+    out = cmd.out
 
     if section.transverseshearstiffness is not None:
-        out += fmtKeyword('TRANSVERSE SHEAR STIFFNESS','',section.transverseshearstiffness,'')
+        out += Command('TRANSVERSE SHEAR STIFFNESS',data=[section.transverseshearstiffness]).out
 
     return out
 
@@ -813,9 +778,8 @@ def fmtMembraneSection(section, setname):
     - thickness: float
 
     """
-    cmd = "MEMBRANE SECTION, ELSET=%s, MATERIAL=%s" % (setname, section.matname)
-    data = [ float(section.thickness) ]
-    return fmtKeyword(cmd,section.options,data,section.extra)
+    cmd = Command('MEMBRANE SECTION',ELSET=setname,MATERIAL=section.matname,data = [ float(section.thickness) ],options=section.options,extra=section.extra)
+    return cmd.out
 
 
 def fmtSurfaceSection(section, setname):
@@ -828,10 +792,10 @@ def fmtSurfaceSection(section, setname):
     - density (opt): float
 
     """
-    cmd = "SURFACE SECTION, ELSET=%s" % (setname)
+    cmd = Command('SURFACE SECTION',ELSETsetname)
     if section.density:
-        cmd += ", DENSITY=%s""" % float(section.density)
-    return fmtKeyword(cmd,section.options,None,section.extra)
+        cmd.add(density=float(section.density))
+    return cmd.out
 
 
 def fmtBeamSection(section, setname):
@@ -840,7 +804,7 @@ def fmtBeamSection(section, setname):
     Note that there are two Beam section keywords:
     - BEAM SECTION
     - BEAM GENERAL SECTION: this is formatted by a separate function,
-      currently selected if not material name is specified
+      currently selected if no material name is specified
 
     Parameters: see `func:fmtSolidSection`.
 
@@ -848,74 +812,26 @@ def fmtBeamSection(section, setname):
 
     Recognized keys:
 
-    - all sectiontypes:
-
-      - sectiontype (opt): 'GENERAL' (default), 'CIRC' or 'RECT'
-      - material
-
-    - sectiontype GENERAL: this is pre-integrated
-
-      - cross_section
-      - moment_inertia_11
-      - moment_inertia_12
-      - moment_inertia_22
-      - torsional_constant
-
-    - sectiontype CIRC: this may be integrated at runtime
-
-      - radius
-      - intpoints1 (opt): number of integration points in the first direction
-      - intpoints2 (opt): number of integration points in the second direction
-
-    - sectiontype RECT: this may be integrated at runtime
-
-      - width, height
-      - intpoints1 (opt): number of integration points in the first direction
-      - intpoints2 (opt): number of integration points in the second direction
+    - sectiontype: 'ARBITRARY', 'BOX', 'CIRC', 'HEX', 'I', 'L', 'PIPE',
+      'RECT', 'TRAPEZOID' or 'ELBOW'
+    - material:
+    - data: list of tuples: data corresponding with the sectiontype.
+      See Abaqus manual.
+    - transverseshearstiffness (opt):
 
     """
     if section.matname is None:
         return fmtGeneralBeamSection(section, setname)
 
-    cmd = "BEAM SECTION, ELSET=%s, MATERIAL=%s" % (setname, section.matname)
-
-    sectiontype = section.sectiontype.upper()
-    options = "SECTION=%s" % sectiontype
+    cmd = Command('BEAM SECTION',ELSET=setname,MATERIAL=section.matname,SECTION=section.sectiontype,data=section.data,options=section.options,extra=section.extra)
 
     if section.poisson is not None:
-        options += ", POISSON=%s"% (float(section.poisson))
+        cmd.add(POISSON=section.poisson)
 
-    if section.options:
-        options += section.options
-
-    if sectiontype == 'CIRC':
-        data = [ float(section.radius) ]
-    elif sectiontype == 'RECT':
-        data = [ float(section.width), float(section.height) ]
-    else:
-        data = map(float,[ section.cross_section, section.moment_inertia_11, section.moment_inertia_12, section.moment_inertia_22, section.torsional_constant ])
-
-    out = fmtKeyword(cmd,options,data,'')
-
-    if section.orientation is not None:
-        out += fmtData1d(section.orientation)
-        out += '\n'
-
-    if section.intpoints1 is not None:
-        data = [ section.intpoints1 ]
-        if section.intpoints2 is not None:
-            data.append(section.intpoints2)
-        out += fmtData1d(data)
-        out += "\n"
-
-    if section.extra:
-        out += section.extra
-        out += '\n'
+    out = cmd.out
 
     if section.transverseshearstiffness is not None:
-        out += "*TRANSVERSE SHEAR STIFFNESS\n"
-        out += fmtData1d(section.transverseshearstiffness)
-        out += '\n'
+        out += Command('TRANSVERSE SHEAR STIFFNESS',data=[section.transverseshearstiffness]).out
 
     return out
 
@@ -934,9 +850,13 @@ def fmtGeneralBeamSection(section, setname):
     - all sectiontypes:
 
       - sectiontype (opt): 'GENERAL' (default), 'CIRC' or 'RECT'
-      - young_modulus
-      - shear_modulus or poisson_ration
+      - data (opt): list of tuples: section data (see Abaqus Manual).
+        For some sections, the data may be specified by other arguments
+        instead (see below).
       - density (opt): density of the material (required in Abaqus/Explicit)
+      - transverseshearstiffness (opt):
+
+    Data specifying keys (only used if 'data' is not specified):
 
     - sectiontype GENERAL:
 
@@ -954,80 +874,48 @@ def fmtGeneralBeamSection(section, setname):
 
       - width, height
 
-    """
-    cmd = "BEAM GENERAL SECTION, ELSET=%s" % setname
+    - sectiontype GENERAL, CIRC or RECT:
+      - orientation (opt): a vector with the direction cosines of the 1 axis
+      - young_modulus
+      - shear_modulus or poisson_ratio
 
+    """
     sectiontype = section.sectiontype.upper()
-    options = "SECTION=%s" % sectiontype
+    if section.data is None:
+        if sectiontype == 'CIRC':
+            data = ( section.radius, )
+        elif sectiontype == 'RECT':
+            data = ( section.width, section.height)
+        elif sectiontype == 'GENERAL':
+            data = ( section.cross_section, section.moment_inertia_11, section.moment_inertia_12, section.moment_inertia_22, section.torsional_constant )
+        else:
+            raise ValueError("For sectiontype '%s', a data field should be specified.")
+        data = [data]
+
+        if section.orientation is not None:
+            data.append(section.orientation)
+        else:
+            data.append( (' ',) )
+
+        if section.shear_modulus is None and section.poisson_ratio is not None:
+            section.shear_modulus = section.young_modulus / 2. / (1.+float(section.poisson_ratio))
+        data.append( (section.young_modulus, section.shear_modulus) )
+
+    else:
+        # User should specify all data
+        data = section.data
+
+    cmd = Command('BEAM GENERAL SECTION',ELSET=setname,SECTION=sectiontype,data=data,options=section.options,extra=section.extra)
 
     if section.density:
-        options += ', DENSITY=%s' % float(section.density)
+        cmd.add(density=section.density)
 
-    if section.options:
-        options += section.options
+    out = cmd.out
 
-    if sectiontype == 'CIRC':
-        data = [ float(section.radius) ]
-    elif sectiontype == 'RECT':
-        data = [ float(section.width), float(section.height) ]
-    else:
-        data = map(float,[ section.cross_section, section.moment_inertia_11, section.moment_inertia_12, section.moment_inertia_22, section.torsional_constant ])
-
-    out = fmtKeyword(cmd,options,data,'')
-
-    if section.orientation is not None:
-        out += fmtData1d(section.orientation)
-        out += '\n'
-
-    if section.shear_modulus is None and section.poisson_ratio is not None:
-        section.shear_modulus = section.young_modulus / 2. / (1.+float(section.poisson_ratio))
-    out += fmtData1d([float(section.young_modulus), float(section.shear_modulus)])
-    out += '\n'
-
-    if section.extra:
-        out += section.extra
-        out += '\n'
+    if section.transverseshearstiffness is not None:
+        out += Command('TRANSVERSE SHEAR STIFFNESS',data=[section.transverseshearstiffness]).out
 
     return out
-
-
-def fmtTrussSection(section,setname):
-    """Format a truss section for the named element set.
-
-    Parameters: see `func:fmtSolidSection`.
-
-    Recognized keys:
-
-    - all sectiontypes:
-
-      - sectiontype (opt): 'GENERAL' (default), 'CIRC' or 'RECT'
-      - material
-
-    - sectiontype GENERAL:
-
-      - cross_section
-
-    - sectiontype CIRC:
-
-      - radius
-
-    - sectiontype RECT:
-
-      - width
-      - height
-
-    """
-    cmd = "SOLID SECTION, ELSET=%s, MATERIAL=%s" % (setname, section.matname)
-
-    sectiontype = section.sectiontype.upper()
-    if sectiontype == 'CIRC':
-        cross_section = float(section.radius)**2*pi
-    elif sectiontype == 'RECT':
-        cross_section = float(section.width)*float(section.height)
-    else:
-        cross_section = float(section.cross_section)
-
-    return fmtKeyword(cmd,section.options,data,section.extra)
 
 
 def fmtFrameSection(section,setname):
@@ -1064,42 +952,73 @@ def fmtFrameSection(section,setname):
       - height
 
     """
-    cmd = "FRAME SECTION"
-
     sectiontype = section.sectiontype.upper()
+    if section.data is None:
+        if sectiontype == 'GENERAL':
+            data = ( section.cross_section, section.moment_inertia_11, section.moment_inertia_12, section.moment_inertia_22, section.torsional_constant )
+        else:
+            raise ValueError("For sectiontype '%s', a data field should be specified.")
+        data = [data]
 
-    options = "ELSET=%s, SECTION=%s" % (setname, sectiontype)
+        if section.orientation is not None:
+            data.append(section.orientation)
+        else:
+            data.append( (' ',) )
+
+        if section.shear_modulus is None and section.poisson_ratio is not None:
+            section.shear_modulus = section.young_modulus / 2. / (1.+float(section.poisson_ratio))
+        data.append( (section.young_modulus, section.shear_modulus) )
+
+    else:
+        # User should specify all data
+        data = section.data
+
+    cmd = Command('FRAME SECTION',ELSET=setname,SECTION=sectiontype,data=data,options=section.options,extra=section.extra)
 
     if section.density:
-        options += ', DENSITY=%s' % float(section.density)
+        cmd.add(density=float(section.density))
     if section.yield_stress:
-        options += ', PLASTIC DEFAULTS, YIELD STRESS=%s' % float(section.yield_stress)
-    if section.options:
-        options += section.options
+        cmd.add('plastic defaults',yield_stress=float(section.yield_stress))
 
+    return cmd.out
+
+
+def fmtTrussSection(section,setname):
+    """Format a truss section for the named element set.
+
+    Parameters: see `func:fmtSolidSection`.
+
+    Recognized keys:
+
+    - all sectiontypes:
+
+      - sectiontype (opt): 'GENERAL' (default), 'CIRC' or 'RECT'
+      - material
+
+    - sectiontype GENERAL:
+
+      - cross_section
+
+    - sectiontype CIRC:
+
+      - radius
+
+    - sectiontype RECT:
+
+      - width
+      - height
+
+    """
+    sectiontype = section.sectiontype.upper()
     if sectiontype == 'CIRC':
-        data = [ float(section.radius) ]
+        cross_section = float(section.radius)**2*pi
     elif sectiontype == 'RECT':
-        data = [ float(section.width), float(section.height) ]
+        cross_section = float(section.width)*float(section.height)
     else:
-        data = map(float,[ section.cross_section, section.moment_inertia_11, section.moment_inertia_12, section.moment_inertia_22, section.torsional_constant ])
+        cross_section = float(section.cross_section)
 
-    out = fmtKeyword(cmd,options,data,'')
-
-    if section.orientation is not None:
-        out += fmtData1d(section.orientation)
-        out += '\n'
-
-    if section.shear_modulus is None and section.poisson_ratio is not None:
-        section.shear_modulus = section.young_modulus / 2. / (1.+float(section.poisson_ratio))
-    out += fmtData1d([float(section.young_modulus), float(section.shear_modulus)])
-    out += '\n'
-
-    if section.extra:
-        out += section.extra
-        out += '\n'
-
-    return out
+    cmd = Command('SOLID SECTION',ELSET=setname,MATERIAL=section.matname,data=[cross_section],options=section.options,extra=section.extra)
+    return cmd.out
 
 
 def fmtConnectorSection(section, setname):
@@ -1115,21 +1034,15 @@ def fmtConnectorSection(section, setname):
     - elimination (opt): 'NO' (default), 'YES'
 
     """
-    cmd = "CONNECTOR SECTION, ELSET=%s" % setname
-    options = ''
-    sectiontype = section.sectiontype.upper()
-    data = [ sectiontype ]
+    cmd = Command('CONNECTOR SECTION',ELSET=setname,data=[section.sectiontype],options=section.options,extra=section.extra)
 
     if section.behavior is not None:
-        options += ', BEHAVIOR=%s' % section.behavior
+        cmd.add(behavior=section.behavior)
 
     if section.elimination is not None:
-        options += ', ELIMINATION=%s' % section.elimination
+        cmd.add(elimination=section.elimination)
 
-    if section.options:
-        options += section.options
-
-    return fmtKeyword(cmd,options,data,sections.extra)
+    return cmd.out
 
 
 def fmtSpringOrDashpot(eltype, section, setname):
@@ -1146,9 +1059,8 @@ def fmtSpringOrDashpot(eltype, section, setname):
       per relative velocity.
 
     """
-    cmd = "%s, ELSET=%s" % (eltype,setname)
-    data = [ float(section.stiffness) ]
-    return fmtKeyword(cmd,section.options,data,section.extra)
+    cmd = Command(eltype,elset=setname,data=[float(section.stiffness)],options=section.options,extra=section.extra)
+    return cmd.out
 
 
 def fmtSpringSection(section, setname):
@@ -1171,9 +1083,8 @@ def fmtMassSection(prop):
     - mass: float: mass magnitude
 
     """
-    cmd = "MASS, ELSET=%s" % setname
-    data = [ float(section.mass) ]
-    return fmtKeyword(cmd,section.options,data,section.extra)
+    cmd = Command('MASS',elset=setname,data=[float(section.mass)],options=section.options,extra=section.extra)
+    return cmd.out
 
 
 def fmtRigidSection(section,setname):
@@ -1192,12 +1103,12 @@ def fmtRigidSection(section,setname):
     if isInt(refnode):
         refnode += + 1  # increment for Abaqus base 1 node numbering
 
-    cmd = "RIGID BODY, ELSET=%s, REFNODE=%s" % (setname, section.refnode)
+    cmd = Command('RIGID BODY',elset=setname,refnode=section.refnode,options=section.options,extra=section.extra)
     if section.density is not None:
-        cmd += ", DENSITY=%s" % section.density
+        cmd.add(density=section.density)
     if section.thickness is not None:
-        data = [ float(section.thickness) ]
-    return fmtKeyword(cmd,section.options,data,section.extra)
+        cmd.add(data=[float(section.thickness)])
+    return cmd.out
 
 
 #########################################################
@@ -1213,10 +1124,8 @@ def fmtTransform(csys,setname):
     - `setname` is the name of a node set
     - `csys` is a CoordSystem.
     """
-    return fmtKeyword(
-        "TRANSFORM, NSET=%s, TYPE=%s" % (setname, csys.sys),
-        data = csys.data
-        )
+    cmd = Command('TRANSFORM',nset=setname,type=csys.sys,data=csys.data)
+    return cmd.out
 
 
 def fmtOrientation(prop):
@@ -1609,32 +1518,44 @@ def fmtEquation(prop):
 
     Required:
 
-    - equation
+    - equation: list of tuples (node,dof,coeff), where
 
-    Equation should be a list, which contains the different terms of the equation.
-    Each term is again a list with three values:
-
-    - First value: node number
-    - Second value: degree of freedom
-    - Third value: coefficient
+      - node: is a node number or node set name
+      - dof: is the number of the degree of freedom (0 based)
+      - coeff: is the coefficient for this variable in the equation
 
     Example::
 
-      P.nodeProp(equation=[[209,1,1],[32,1,-1]])
+      >>> P = PropertyDB()
+      >>> eq1 = P.Prop(equation=[(9,1,1.),(32,2,-1.)])
+      >>> eq2 = P.Prop(equation=[('seta',0,1)])
 
-    This forces the displacement in Y-direction of nodes 209 and 32 to
-    be equal.
+      The first equation forces the Z-displacement of node 32 to be equal
+      to the Y-displacement of node 9. The second forces the sum of the
+      X-displacement of all nodes in node set 'seta' to be equal to zero.
+
+      >>> print(fmtEquation(eq1)+fmtEquation(eq2))
+      *EQUATION
+      2
+      10, 2, 1.0
+      33, 3, -1.0
+      *EQUATION
+      1
+      seta, 1, 1
+      <BLANKLINE>
+
     """
-
-    out = ''
     nofs = 1
-    for p in prop:
-        out += "*EQUATION\n"
-        out += "%s\n" % asarray(p.equation).shape[0]
-        for i in p.equation:
-            dof = i[1]+1
-            out += "%s, %s, %s\n" % (i[0]+nofs, dof, i[2])
-    return out
+    data = [ (len(prop.equation),) ]
+    for i in prop.equation:
+        if isInt(i[0]):
+            node = i[0] + nofs
+        else:
+            node = i[0]
+        dof = i[1] + 1
+        data.append( (node,dof,i[2]) )
+    cmd = Command('EQUATION',data=data)
+    return cmd.out
 
 
 def fmtInertia(prop):
@@ -1645,12 +1566,72 @@ def fmtInertia(prop):
     - inertia : inertia tensor i11, i22, i33, i12, i13, i23
     - set : name of the element set on which inertia is applied
     """
-    out = ''
-    for p in prop:
-        out +='*ROTARY INERTIA, ELSET={0}\n'.format(p.name)
-        out += fmtData1d(p.inertia,  6)
-        out += '\n'
-    return out
+    cmd = Command('ROTARY INERTIA',elset=prop.name,data=prop.inertia)
+    return cmd.out
+
+
+def fmtBoundary(prop):
+    """Format nodal boundary conditions.
+
+    prop is a node property record having the 'bound' key.
+
+    Recognized keys:
+
+    - bound : either of:
+      - a string, representing a standard set of boundary conditions
+      - a list of 6 integer values (0 or 1) corresponding with the 6
+        degrees of freedom UX,UY,UZ,RX,RY,RZ. The dofs corresponding
+        to the 1's will be restrained (given a value 0.0).
+      - a list of tuples (dofid, value) : this allows for nonzero
+        boundary values to be specified. NOTE: this can also be
+        achieved by a 'displ' keyword (see writeDisplacements) and
+        that is the prefered way of specifying nonzero boundary conditions.
+
+    - op (opt): 'MOD' (default) or 'NEW'. By default, the boundary conditions
+      are applied as a modification of the existing boundary conditions, i.e.
+      initial conditions and conditions from previous steps remain in effect.
+      The user can set op='NEW' to remove the previous conditions. This will
+      remove ALL conditions of the same type.
+
+    - ampl (opt): string: specifies the name of an amplitude that is to be
+      multiplied with the values to have the time history of the variable.
+      Only relevant if bound specifies nonzero values. Its use is
+      discouraged (see above).
+
+    - options (opt): string that is added as is to the command line.
+
+    Examples::
+
+      # The following are quivalent
+      P.nodeProp(tag='init',set='setA',name='pinned_nodes',bound='pinned')
+      P.nodeProp(tag='init',set='setA',name='pinned_nodes',bound=[1,1,1,0,0,0])
+
+      # this is possible, but discouraged
+      P.nodeProp(tag='init',set='setB',name='forced_displ',bound=[(1,3.0)])
+      # it is better to use:
+      P.nodeProp(tag='step0',set='setB',name='forced_displ',displ=[(1,3.0)])
+
+    """
+    setname = nsetName(prop)
+    if isinstance(prop.bound, str):
+        data = [setname, prop.bound]
+    elif isInt(prop.bound[0]):
+        data = []
+        for b in range(6):
+            if prop.bound[b]==1:
+                data.append((setname, b+1))
+    else:
+        data = []
+        for b in prop.bound:
+            dof = b[0]+1
+            data.append((setname, dof, dof, b[1]))
+    cmd = Command('BOUNDARY',data=data,options=prop.options,extra=prop.extra)
+    if prop.op is not None:
+        cmd.add(op=prop.op)
+    if prop.ampl is not None:
+        cmd.add(amplitude=prop.ampl)
+
+    return cmd.out
 
 #########################################################
 #
@@ -1687,7 +1668,7 @@ def writeSection(fil, prop):
         section.matname = mat.name
 
     elclass = elementClass(eltype)
-    formatter = globals().get("fmt"+elclass.capitalize()+'Section',None)
+    formatter = globals().get("fmt"+elclass.capitalize()+'Section',"fmtAnySection")
     if not callable(formatter):
         pf.warning('Sorry, element type %s is not yet supported' % eltype)
         return
@@ -1810,70 +1791,6 @@ def writeDistribution(fil,prop):
 #
 # TODO: should we remove option of specifying nonzero bound values?
 #
-def writeBoundaries(fil, prop):
-    """Write nodal boundary conditions.
-
-    prop is a list of node property records having the 'bound' key.
-
-    Recognized keys:
-
-    - bound : either of:
-      - a string, representing a standard set of boundary conditions
-      - a list of 6 integer values (0 or 1) corresponding with the 6
-        degrees of freedom UX,UY,UZ,RX,RY,RZ. The dofs corresponding
-        to the 1's will be restrained (given a value 0.0).
-      - a list of tuples (dofid, value) : this allows for nonzero
-        boundary values to be specified. NOTE: this can also be
-        achieved by a 'displ' keyword (see writeDisplacements) and
-        that is the prefered way of specifying nonzero boundary conditions.
-
-    - op (opt): 'MOD' (default) or 'NEW'. By default, the boundary conditions
-      are applied as a modification of the existing boundary conditions, i.e.
-      initial conditions and conditions from previous steps remain in effect.
-      The user can set op='NEW' to remove the previous conditions. This will
-      remove ALL conditions of the same type.
-
-    - ampl (opt): string: specifies the name of an amplitude that is to be
-      multiplied with the values to have the time history of the variable.
-      Only relevant if bound specifies nonzero values. Its use is
-      discouraged (see above).
-
-    - options (opt): string that is added as is to the command line.
-
-    Examples::
-
-      # The following are quivalent
-      P.nodeProp(tag='init',set='setA',name='pinned_nodes',bound='pinned')
-      P.nodeProp(tag='init',set='setA',name='pinned_nodes',bound=[1,1,1,0,0,0])
-
-      # this is possible, but discouraged
-      P.nodeProp(tag='init',set='setB',name='forced_displ',bound=[(1,3.0)])
-      # it is better to use:
-      P.nodeProp(tag='step0',set='setB',name='forced_displ',displ=[(1,3.0)])
-
-    """
-    for p in prop:
-        setname = nsetName(p)
-        cmd = "BOUNDARY"
-        if p.op is not None:
-            cmd += ", OP=%s" % p.op
-        if p.ampl is not None:
-            cmd += ", AMPLITUDE=%s" % p.ampl
-        fil.write(fmtKeyword(cmd,options=p.options))
-
-        if isinstance(p.bound, str):
-            fil.write("%s, %s\n" % (setname, p.bound))
-        elif isInt(p.bound[0]):
-            for b in range(6):
-                if p.bound[b]==1:
-                    fil.write("%s, %s\n" % (setname, b+1))
-        elif isinstance(p.bound[0], tuple):
-            for b in p.bound:
-                dof = b[0]+1
-                fil.write("%s, %s, %s, %s\n" % (setname, dof, dof, b[1]))
-
-        if p.extra:
-            fil.write(p.extra)
 
 
 def writeDisplacements(fil,prop,btype):
@@ -2513,7 +2430,8 @@ class Step(Dict):
         prop = propDB.getProp('n', tag=self.tags, attr=['bound'])
         if prop:
             print("  Writing step boundary conditions")
-            writeBoundaries(fil, prop)
+            for p in prop:
+                fil.write(fmtBoundary(p))
 
         for btype in [ 'displacement', 'velocity', 'acceleration' ]:
             shorttype = btype[:5]
@@ -2784,7 +2702,8 @@ Script: %s
         if prop:
             print("Writing initial boundary conditions")
             fil.write(fmtSectionHeading("BOUNDARY CONDITIONS"))
-            writeBoundaries(fil, prop)
+            for p in prop:
+                fil.write(fmtBoundary(p))
 
         print("Writing steps")
         for step in self.steps:
