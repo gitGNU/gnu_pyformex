@@ -71,6 +71,7 @@ def flatten(a,recurse=False):
     [[3.0, 2], 6.5, 5, 6, 'hi']
     >>> flatten([[[3.,2,],6.5,],[5],6,'hi'],True)
     [3.0, 2, 6.5, 5, 6, 'hi']
+
     """
     r = []
     for i in a:
@@ -83,7 +84,27 @@ def flatten(a,recurse=False):
             r.append(i)
     return r
 
-    
+
+def group(a,n):
+    """Group a list by sequences of maximum n items.
+
+    Parameters:
+
+    - `a`: list
+    - `n`: integer
+
+    Returns a list of lists. Each sublist has length n, except for
+    the last one, which may be shorter.
+
+    Examples:
+
+      >>> group( [3.0, 2, 6.5, 5, 'hi'],2)
+      [[3.0, 2], [6.5, 5], ['hi']]
+
+    """
+    return [ a[i:i+n] for i in range(0,len(a),n) ]
+
+
 def select(a, b):
     """Return a subset of items from a list.
 
@@ -109,8 +130,8 @@ def toFront(l, i):
     if i in l:
         l.remove(i)
     l[0:0] = [ i ]
-    
-    
+
+
 
 
 def collectOnLength(items,return_indices=False):
@@ -171,7 +192,7 @@ if __name__ == "__main__":
     print(concatenate([a, b, a]))
     print(flatten([1, 2, a, [a]]))
     print(flatten([1, 2, a, [a]], recurse=True))
-      
+
 
 
     class String(str):
@@ -188,5 +209,5 @@ if __name__ == "__main__":
     print(L.upper())
 
     print(L.Len())
-    
+
 # End
