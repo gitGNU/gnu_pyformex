@@ -362,7 +362,7 @@ def checkExternal(name,command=None,answer=None,quiet=False):
         version = m.group(1)
     _congratulations(name, version, 'program', quiet=quiet)
     the_external[name] = version
-    return version
+    return str(version)
 
 
 def _congratulations(name,version,typ='module',fatal=False,quiet=False,severity=2):
@@ -441,6 +441,50 @@ def reportSoftware(soft=None,header=None):
     return s
 
 
+def fmtDict(d,name=None):
+    s = str(d)
+    out = ''
+    if name:
+        out += name
+        out += ' = '
+    i = j = ind = 0
+    while j < len(s):
+        print(i,j,s[i:j+1])
+        if s[j] == '{':
+            out += s[i:j+1]
+            ind += 4
+            out += '\n' + ' '*ind
+            i = j+1
+        j = j + 1
+    return out
+
+
+def formatDict(d,indent=4):
+    """Format a dict in nicely formatted Python source representation.
+
+    Each (key,value) pair is formatted on a line of the form::
+
+       key = value
+
+    If all the keys are strings containing only characters that are
+    allowed in Python variable names, the resulting text is a legal
+    Python script to define the items in the dict. It can be stored
+    on a file and executed.
+
+    This format is the storage format of the Config class.
+    """
+    s = "{\n"
+    for k, v in d.iteritems():
+        s += "%s'%s' : " % (' '*indent,k)
+        if isinstance(v, dict):
+            s += formatDict(v,indent+4)
+        else:
+            s += "%r" % v
+        s += ",\n"
+    s += "%s}" % (' '*indent)
+    return s
+
+
 def checkItem(has, want):
     if has == want:
         return 'Matching'
@@ -503,9 +547,12 @@ def config2soft(conf):
     return soft
 
 
-def storeSoftware(soft,fn,mode='python'):
+def storeSoftware(soft,fn,mode='pretty'):
     """Store the software collection on file."""
-    if mode == 'python':
+    if mode == 'pretty':
+        with open(fn, 'w') as fil:
+            fil.write("soft = "+formatDict(soft)+'\n')
+    elif mode == 'python':
         with open(fn, 'w') as fil:
             fil.write("soft=%r\n" % soft)
     elif mode == 'config':
@@ -520,6 +567,7 @@ def storeSoftware(soft,fn,mode='python'):
 def readSoftware(fn,mode='python'):
     """Read the software collection from file.
 
+    - `mode` = 'pretty': readable, editable
     - `mode` = 'python': readable, editable
     - `mode` = 'config': readable, editable
     - `mode` = 'pickle': binary
@@ -539,7 +587,7 @@ def readSoftware(fn,mode='python'):
 
 #### execute as pyFormex script for testing ########
 
-if __name__ == "draw":
+if __name__ in ["draw","script"] :
 
     Required = {
         'System': {
@@ -556,7 +604,7 @@ if __name__ == "draw":
         }
 
     soft = detectedSoftware()
-    print((reportSoftware(header="Found Software")))
+    print((reportSoftware(header="Detected Software")))
     print('\n ')
     print((reportSoftware(Required, header="Required Software")))
     print('\n ')
@@ -565,11 +613,13 @@ if __name__ == "draw":
 
     reg = registerSoftware(Required)
     print("REGISTER")
-    print(reg)
+    print(formatDict(reg))
 
     storeSoftware(reg, 'checksoft.py')
     req = readSoftware('checksoft.py')
-    print(req)
+    print('CHECK')
+    print(formatDict(req))
+
     checkSoftware(req)
 
 

@@ -2010,7 +2010,7 @@ def formatDict(d):
     """
     s = ""
     if isinstance(d, dict):
-        for k, v in d.items():
+        for k, v in d.iteritems():
             if isinstance(v, (str,unicode)):
                 s += '%s = %r\n' % (k, v)
             else:
