@@ -369,6 +369,79 @@ class Curve(Geometry):
         utils.warn('curve_approximate_changed')
         at = self.atApproximate(self,nseg,equidistant,npre)
         return self.approxAt(at)
+        
+    
+    def simplifyPoints(self, tol=1e-3): 
+        """ Reduces number of points based on the Douglas-Peucker 
+        line simplification/generalization.
+        
+        This algorythm is an iterative method which reduces the numbers of points
+        based on the maximum distance between the original curve and the simplified curve. 
+        The simplified curve consists of a subset of the points that defined the original curve.
+        
+        Parameter:
+        
+        - `tol`: absolut maximum distance tolerance of the simplified PolyLine
+        
+        Retuns a Polyline with the reduced nunber of coordinates.
+        
+        This code was a 3D curve adaptation of  the code of Schuyler Erle
+        <schuyler@nocat.net> ,  which can be find at 
+        http://mappinghacks.com/code/dp.py.txt
+        """
+        
+        pts = self.coords
+        anchor  = 0
+        floater = pts.ncoords() - 1
+        stack   = []
+        keep    = []
+
+        stack.append((anchor, floater))  
+        while stack:
+            anchor, floater = stack.pop()
+          
+            # initialize line segment
+            if (pts[floater] - pts[anchor]).any():
+                anchorpt = pts[floater] - pts[anchor]
+                seg_len = length(anchorpt)
+                # get the unit vector
+                anchorpt /= seg_len
+            else:
+                anchorpt = zeros(3)
+                seg_len = 0.
+        
+            # inner loop:
+            max_dist = 0.
+            farthest = anchor + 1
+            for i in range(anchor + 1, floater):
+                dist_to_seg = 0.
+                # compare to anchor
+                vec = pts[i] - pts[anchor]
+                # dot product:
+                proj = dotpr(vec,anchorpt)
+                if proj < 0.:
+                    dist_to_seg = length(vec)
+                else: 
+                    # compare to floater
+                    vec = pts[i] - pts[floater]
+                    seg_len = length(vec)
+                    # dot product:
+                    proj = dotpr(vec,-anchorpt)
+                    if proj < 0.:
+                        dist_to_seg = seg_len
+                    else:  # calculate perpendicular distance to line (pythagorean theorem):
+                        dist_to_seg = sqrt(abs(seg_len ** 2 - proj ** 2))
+                    if max_dist < dist_to_seg:
+                        max_dist = dist_to_seg
+                        farthest = i
+
+            if max_dist <= tol: # use line segment
+                keep+=[anchor,floater]
+            else:
+                stack+=[(anchor, farthest),(farthest, floater)]
+
+        keep = unique(keep)
+        return PolyLine(pts[keep])
 
 
     def frenet(self,ndiv=None,ntot=None,upvector=None,avgdir=True,compensate=False):
