@@ -750,6 +750,27 @@ def addAxis(a,axis=0):
     return a.reshape(s)
 
 
+def interleave(a,b):
+    """Interleave two 1D arrays.
+
+    The type of the arrays should be the same.
+    The size of array a should be equal to that of array a, or 1 less.
+
+    Returns a 1D array with intereaved values from a and b.
+
+    Examples:
+
+      >>> interleave(arange(4), 10*arange(3))
+      array([ 0,  0,  1, 10,  2, 20,  3])
+    """
+    a = asarray(a)
+    b = asarray(b)
+    c = empty(a.size+b.size,dtype=a.dtype)
+    c[0::2] = a
+    c[1::2] = b
+    return c
+
+
 def multiplex(a,n,axis=-1):
     """Multiplex an array over a length n in direction of a new axis.
 
