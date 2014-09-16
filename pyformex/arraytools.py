@@ -751,9 +751,10 @@ def addAxis(a,axis=0):
 
 
 def interleave(a,b):
-    """Interleave two 1D arrays.
+    """Interleave two arrays along their first axis.
 
-    The type of the arrays should be the same.
+    The type of the arrays should be the same and all of their axes except
+    for the first one should have the same length. The first.
     The size of array a should be equal to that of array a, or 1 less.
 
     Returns a 1D array with intereaved values from a and b.
@@ -762,10 +763,17 @@ def interleave(a,b):
 
       >>> interleave(arange(4), 10*arange(3))
       array([ 0,  0,  1, 10,  2, 20,  3])
+      >>> a = arange(8).reshape(2,4)
+      >>> print(interleave(a,10*a))
+      [[ 0  1  2  3]
+       [ 0 10 20 30]
+       [ 4  5  6  7]
+       [40 50 60 70]]
+
     """
     a = asarray(a)
     b = asarray(b)
-    c = empty(a.size+b.size,dtype=a.dtype)
+    c = empty((a.shape[0]+b.shape[0],)+a.shape[1:],dtype=a.dtype)
     c[0::2] = a
     c[1::2] = b
     return c
