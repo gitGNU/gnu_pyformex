@@ -306,7 +306,6 @@ class Curve(Geometry):
             X = PL.pointsAt(at)
             PL = PolyLine(X, closed=PL.closed)
         return PL.setProp(self.prop)
-        return X, T, N, B
 
 
     def atApproximate(self,nseg,equidistant=False,npre=100):
@@ -328,11 +327,47 @@ class Curve(Geometry):
         if equidistant:
             S = self.approximate(npre, equidistant=False)
             at = S.atLength(nseg)
+
         else:
             S = self
             at = arange(nseg+1) * float(S.nparts) / nseg
         if self.closed:
             at = at[:-1]
+        return at
+
+
+    def atChordal(self,chordal=0.01):
+        """Return parameter values to approximate within given chordal error.
+
+        Returns a list of parameter values that create a PolyLine
+        approximate for the curve, such that the chordal error is
+        everywhere smaller than the give value. The chordal error
+        is defined as the distance from a point of the curve to the
+        chord.
+        """
+        # Create first approximation
+        at = self.atApproximate(nseg=self.nparts*self.degree)
+
+        # Split in handled and to-be-handled
+        at,bt = list(at[:1]),list(at[1:])
+
+        # Handle segment by segment
+        while len(bt) > 0:
+            c0,c2 = at[-1],bt[0]
+            if c2 > c0:
+                c1 = 0.5*(c0+c2)
+                X = self.pointsAt([c0,c1,c2])
+                XM = 0.5*(X[0]+X[2])
+                d = length(X[1]-XM) / length(X[0]-X[2])
+
+                if d >= chordal:
+                    # need refinement: put new point in front of todo list
+                    bt = [c1] + bt
+                    continue
+
+            # move on
+            at.append(bt.pop(0))
+
         return at
 
 
@@ -350,98 +385,34 @@ class Curve(Geometry):
         return PL.setProp(self.prop)
 
 
-    def approximate(self,nseg,equidistant=False,npre=100):
+    def approximate(self,nseg=None,chordal=0.001,equidistant=False,npre=100):
         """Approximate a Curve with a PolyLine of n segments
 
         Parameters:
 
-        - `nseg`: number of straight segments of the resulting PolyLine
-        - `equidistant`: if True the points are spaced almost
-          equidistantly over the curve. If False (default), the points
-          are spread equally over the parameter space.
-        - `npre`: only used when `equidistant` is True: number of segments
-          per part of the curve used in the pre-approximation. This pre-
-          approximation is currently required to compute curve lengths.
+        - `nseg`: number of straight segments of the resulting PolyLine. If
+          not specified, the 'chordal error' method will be used and the
+          number of segments is dependent on the value of 'chordal'
+        - `chordal`: accuracy of the approximation when using the 'chordal
+          error' method.
+
+        - `equidistant`: only used if `nseg` is not None: if True the points
+          are spaced almost equidistantly over the curve. If False (default),
+          the points are spread equally over the parameter space.
+        - `npre`: only used if `nseg` is not None and `equidistant` is True:
+          number of segments per part of the curve used in the
+          pre-approximation. This pre-approximation is currently required to
+          compute curve lengths.
 
         .. note:: This is an alternative for Curve.approx, and may replace it
            in future.
         """
         utils.warn('curve_approximate_changed')
-        at = self.atApproximate(self,nseg,equidistant,npre)
+        if nseg is None:
+            at = self.atChordal(chordal)
+        else:
+            at = self.atApproximate(nseg,equidistant,npre)
         return self.approxAt(at)
-        
-    
-    def simplifyPoints(self, tol=1e-3): 
-        """ Reduces number of points based on the Douglas-Peucker 
-        line simplification/generalization.
-        
-        This algorythm is an iterative method which reduces the numbers of points
-        based on the maximum distance between the original curve and the simplified curve. 
-        The simplified curve consists of a subset of the points that defined the original curve.
-        
-        Parameter:
-        
-        - `tol`: absolut maximum distance tolerance of the simplified PolyLine
-        
-        Retuns a Polyline with the reduced nunber of coordinates.
-        
-        This code was a 3D curve adaptation of  the code of Schuyler Erle
-        <schuyler@nocat.net> ,  which can be find at 
-        http://mappinghacks.com/code/dp.py.txt
-        """
-        
-        pts = self.coords
-        anchor  = 0
-        floater = pts.ncoords() - 1
-        stack   = []
-        keep    = []
-
-        stack.append((anchor, floater))  
-        while stack:
-            anchor, floater = stack.pop()
-          
-            # initialize line segment
-            if (pts[floater] - pts[anchor]).any():
-                anchorpt = pts[floater] - pts[anchor]
-                seg_len = length(anchorpt)
-                # get the unit vector
-                anchorpt /= seg_len
-            else:
-                anchorpt = zeros(3)
-                seg_len = 0.
-        
-            # inner loop:
-            max_dist = 0.
-            farthest = anchor + 1
-            for i in range(anchor + 1, floater):
-                dist_to_seg = 0.
-                # compare to anchor
-                vec = pts[i] - pts[anchor]
-                # dot product:
-                proj = dotpr(vec,anchorpt)
-                if proj < 0.:
-                    dist_to_seg = length(vec)
-                else: 
-                    # compare to floater
-                    vec = pts[i] - pts[floater]
-                    seg_len = length(vec)
-                    # dot product:
-                    proj = dotpr(vec,-anchorpt)
-                    if proj < 0.:
-                        dist_to_seg = seg_len
-                    else:  # calculate perpendicular distance to line (pythagorean theorem):
-                        dist_to_seg = sqrt(abs(seg_len ** 2 - proj ** 2))
-                    if max_dist < dist_to_seg:
-                        max_dist = dist_to_seg
-                        farthest = i
-
-            if max_dist <= tol: # use line segment
-                keep+=[anchor,floater]
-            else:
-                stack+=[(anchor, farthest),(farthest, floater)]
-
-        keep = unique(keep)
-        return PolyLine(pts[keep])
 
 
     def frenet(self,ndiv=None,ntot=None,upvector=None,avgdir=True,compensate=False):
@@ -488,6 +459,7 @@ class Curve(Geometry):
         PL = self.approx(ndiv, ntot)
         X = PL.coords
         T, N, B = PL._movingFrenet(upvector=upvector, avgdir=avgdir, compensate=compensate)
+        return X, T, N, B
 
 
     def toFormex(self,*args,**kargs):
@@ -1049,6 +1021,79 @@ class PolyLine(Curve):
     # allow syntax PL1 + PL2
     __add__ = append
 
+
+
+    def simplifyPoints(self, tol=1e-3):
+        """ Reduces number of points based on the Douglas-Peucker
+        line simplification/generalization.
+
+        This algorythm is an iterative method which reduces the numbers of points
+        based on the maximum distance between the original curve and the simplified curve.
+        The simplified curve consists of a subset of the points that defined the original curve.
+
+        Parameter:
+
+        - `tol`: absolut maximum distance tolerance of the simplified PolyLine
+
+        Retuns a Polyline with the reduced nunber of coordinates.
+
+        This code was a 3D curve adaptation of  the code of Schuyler Erle
+        <schuyler@nocat.net> ,  which can be find at
+        http://mappinghacks.com/code/dp.py.txt
+        """
+
+        pts = self.coords
+        anchor  = 0
+        floater = pts.ncoords() - 1
+        stack   = []
+        keep    = []
+
+        stack.append((anchor, floater))
+        while stack:
+            anchor, floater = stack.pop()
+
+            # initialize line segment
+            if (pts[floater] - pts[anchor]).any():
+                anchorpt = pts[floater] - pts[anchor]
+                seg_len = length(anchorpt)
+                # get the unit vector
+                anchorpt /= seg_len
+            else:
+                anchorpt = zeros(3)
+                seg_len = 0.
+
+            # inner loop:
+            max_dist = 0.
+            farthest = anchor + 1
+            for i in range(anchor + 1, floater):
+                dist_to_seg = 0.
+                # compare to anchor
+                vec = pts[i] - pts[anchor]
+                # dot product:
+                proj = dotpr(vec,anchorpt)
+                if proj < 0.:
+                    dist_to_seg = length(vec)
+                else:
+                    # compare to floater
+                    vec = pts[i] - pts[floater]
+                    seg_len = length(vec)
+                    # dot product:
+                    proj = dotpr(vec,-anchorpt)
+                    if proj < 0.:
+                        dist_to_seg = seg_len
+                    else:  # calculate perpendicular distance to line (pythagorean theorem):
+                        dist_to_seg = sqrt(abs(seg_len ** 2 - proj ** 2))
+                    if max_dist < dist_to_seg:
+                        max_dist = dist_to_seg
+                        farthest = i
+
+            if max_dist <= tol: # use line segment
+                keep+=[anchor,floater]
+            else:
+                stack+=[(anchor, farthest),(farthest, floater)]
+
+        keep = unique(keep)
+        return PolyLine(pts[keep])
 
 
     # BV: I'm not sure what this does and if it belongs here
@@ -1919,7 +1964,7 @@ class Arc(Curve):
         Approximates the Arc by a sequence of inscribed straight line
         segments.
 
-        If `ndiv` is specified, the arc is divided in pecisely `ndiv`
+        If `ndiv` is specified, the arc is divided in precisely `ndiv`
         segments.
 
         If `ndiv` is not given, the number of segments is determined

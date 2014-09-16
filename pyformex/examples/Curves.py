@@ -58,7 +58,10 @@ curvetypes = [
 ]
 
 
-def drawCurve(ctype,dset,closed,degree,endcond,curl,ndiv,ntot,extend,spread,approx,cutWP=False,scale=None,frenet=False,avgdir=True,upvector=None):
+
+
+
+def drawCurve(ctype,dset,closed,degree,endcond,curl,nseg,chordal,method,approx,extend,cutWP=False,scale=None,frenet=False,avgdir=True,upvector=None):
     global S, TA
     P = dataset[dset]
     text = "%s %s with %s points" % (open_or_closed[closed], ctype.lower(), len(P))
@@ -90,10 +93,11 @@ def drawCurve(ctype,dset,closed,degree,endcond,curl,ndiv,ntot,extend,spread,appr
     #draw(S.coords,color=red,nolight=True)
 
     if approx:
-        if spread:
-            PL = S.approx(ndiv=ndiv, ntot=ntot)
-        else:
-            PL = S.approx(ndiv=ndiv)
+        print(method)
+        if method == 'chordal':
+            nseg = None
+
+        PL = S.approximate(nseg=nseg,chordal=chordal,equidistant=method=='equidistant')
 
         if cutWP:
             PC = PL.cutWithPlane([0., 0.42, 0.], [0., 1., 0.])
@@ -104,8 +108,9 @@ def drawCurve(ctype,dset,closed,degree,endcond,curl,ndiv,ntot,extend,spread,appr
         draw(PL.pointsOn(), color=black)
 
     else:
-        draw(S, color=ctype_color[im], nolight=True)
-
+        #draw(S, color=ctype_color[im], nolight=True)
+        # Currently direct drawing of Curve is disable: draw approx
+        draw(S.approximate(),color=red)
 
     ## if directions:
     ##     t = arange(2*S.nparts+1)*0.5
@@ -156,9 +161,9 @@ _items = [
     _I('Curl', 1./3.),
     _I('EndCurvatureZero', False),
     _G('Approximation', [
-        _I('Ndiv', 4),
-        _I('SpreadEvenly', False),
-        _I('Ntot', 40),
+        _I('Method', choices=['chordal','parametric','equidistant']),
+        _I('Chordal', 0.01),
+        _I('Nseg', 4),
         ], checked=False),
     _I('ExtendAtStart', 0.0),
     _I('ExtendAtEnd', 0.0),
@@ -174,7 +179,9 @@ _items = [
 
 _enablers = [
     ('CurveType', 'BezierSpline', 'Degree', 'Curl', 'EndCurvatureZero'),
-    ('SpreadEvenly', True, 'Ntot'),
+    ('Method', 'chordal', 'Chordal'),
+    ('Method', 'parametric', 'Nseg'),
+    ('Method', 'equidistant', 'Nseg'),
     ('AutoUpVector', False, 'UpVector'),
     ]
 
@@ -188,7 +195,10 @@ dialog = None
 
 from pyformex import script
 
-
+#
+# TODO: closing the window (by a button) should also
+#       call a function to release the scriptlock!
+#
 def close():
     global dialog
     if dialog:
@@ -214,7 +224,7 @@ def show(all=False):
         Types = [CurveType]
     setDrawOptions({'bbox':'auto'})
     for Type in Types:
-        drawCurve(Type, int(DataSet), Closed, Degree, EndCurvatureZero, Curl, Ndiv, Ntot, [ExtendAtStart, ExtendAtEnd], SpreadEvenly, Approximation, CutWithPlane, Scale, FrenetFrame, AvgDirections, UpVector)
+        drawCurve(Type, int(DataSet), Closed, Degree, EndCurvatureZero, Curl, Nseg, Chordal, Method, Approximation, [ExtendAtStart, ExtendAtEnd], CutWithPlane, Scale, FrenetFrame, AvgDirections, UpVector)
         setDrawOptions({'bbox':None})
 
 def showAll():
