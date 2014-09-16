@@ -293,6 +293,8 @@ class Curve(Geometry):
         over the total length of the curve. This produces more equally
         sized segments, but the internal end points of the curve parts may
         not be on the approximating Polyline.
+
+        See also :func:`approximate` for an alternate approximation method.
         """
         if ndiv is None:
             ndiv = self.N_approx
@@ -304,6 +306,69 @@ class Curve(Geometry):
             X = PL.pointsAt(at)
             PL = PolyLine(X, closed=PL.closed)
         return PL.setProp(self.prop)
+        return X, T, N, B
+
+
+    def atApproximate(self,nseg,equidistant=False,npre=100):
+        """Return parameter values for approximating a Curve with a PolyLine.
+
+        Parameters:
+
+        - `nseg`: number of segments of the resulting PolyLine. The number
+          of returned parameter values is `nseg` if the curve is closed,
+          else `nseg+1`.
+        - `equidistant`: if True, the points are spaced almost equidistantly
+          over the curve. If False (default), the points are spread
+          equally over the parameter space.
+        - `npre`: only used when `equidistant` is True: number of segments
+          per part of the curve used in the pre-approximation. This pre-
+          approximation is currently required to compute curve lengths.
+
+        """
+        if equidistant:
+            S = self.approximate(npre, equidistant=False)
+            at = S.atLength(nseg)
+        else:
+            S = self
+            at = arange(nseg+1) * float(S.nparts) / nseg
+        if self.closed:
+            at = at[:-1]
+        return at
+
+
+    def approxAt(self,at):
+        """Create a PolyLine approximation with specified parameter values.
+
+        Parameters:
+
+        - `at`: a list of parameter values in the curve parameter range.
+          The Curve points at these parameter values are connected with
+          straight segments to form a PolyLine approximation.
+        """
+        X = self.pointsAt(at)
+        PL = PolyLine(X, closed=self.closed)
+        return PL.setProp(self.prop)
+
+
+    def approximate(self,nseg,equidistant=False,npre=100):
+        """Approximate a Curve with a PolyLine of n segments
+
+        Parameters:
+
+        - `nseg`: number of straight segments of the resulting PolyLine
+        - `equidistant`: if True the points are spaced almost
+          equidistantly over the curve. If False (default), the points
+          are spread equally over the parameter space.
+        - `npre`: only used when `equidistant` is True: number of segments
+          per part of the curve used in the pre-approximation. This pre-
+          approximation is currently required to compute curve lengths.
+
+        .. note:: This is an alternative for Curve.approx, and may replace it
+           in future.
+        """
+        utils.warn('curve_approximate_changed')
+        at = self.atApproximate(self,nseg,equidistant,npre)
+        return self.approxAt(at)
 
 
     def frenet(self,ndiv=None,ntot=None,upvector=None,avgdir=True,compensate=False):
@@ -350,36 +415,6 @@ class Curve(Geometry):
         PL = self.approx(ndiv, ntot)
         X = PL.coords
         T, N, B = PL._movingFrenet(upvector=upvector, avgdir=avgdir, compensate=compensate)
-        return X, T, N, B
-
-
-    def approximate(self,nseg,equidistant=True,npre=100):
-        """Approximate a Curve with a PolyLine of n segments
-
-        Parameters:
-
-        - `nseg`: number of straight segments of the resulting PolyLine
-        - `equidistant`: if True (default) the points are spaced almost
-          equidistantly over the curve. If False, the points are spread
-          equally over the parameter space.
-        - `npre`: only used when `equidistant` is True: number of segments
-          per part of the curve used in the pre-approximation. This pre-
-          approximation is currently required to compute curve lengths.
-
-        .. note:: This is an alternative for Curve.approx, and may replace it
-           in future.
-        """
-        if equidistant:
-            S = self.approximate(npre, equidistant=False)
-            at = S.atLength(nseg)
-        else:
-            S = self
-            at = arange(nseg+1) * float(S.nparts) / nseg
-        if self.closed:
-            at = at[:-1]
-        X = S.pointsAt(at)
-        PL = PolyLine(X, closed=S.closed)
-        return PL.setProp(self.prop)
 
 
     def toFormex(self,*args,**kargs):
@@ -395,15 +430,16 @@ class Curve(Geometry):
 
 
     def setProp(self,p=None):
-        """Create or destroy the property array for the Formex.
+        """Create or destroy the property number for the Curve.
 
-        A property array is a rank-1 integer array with dimension equal
-        to the number of elements in the Formex (first dimension of data).
-        You can specify a single value or a list/array of integer values.
-        If the number of passed values is less than the number of elements,
-        they wil be repeated. If you give more, they will be ignored.
+        A curve can have a single integer as property number.
+        If it is set, derived curves and approximations will inherit it.
+        Use this method to set or remove the property.
 
-        If a value None is given, the properties are removed from the Formex.
+        Parameters:
+
+        - `p`: integer or None. If a value None is given, the property is
+          removed from the Curve.
         """
         try:
             self.prop = int(p)
@@ -609,36 +645,6 @@ class PolyLine(Curve):
             return d, w
         else:
             return d
-
-
-    def approximate(self,nseg,equidistant=True,npre=100):
-        """Approximate a PolyLine with a PolyLine of n segments
-
-        Parameters:
-
-        - `nseg`: number of straight segments of the resulting PolyLine
-        - `equidistant`: if True (default) the points are spaced almost
-          equidistantly over the curve. If False, the points are spread
-          equally over the parameter space.
-        - `npre`: only used when `equidistant` is True: number of segments
-          per part of the curve used in the pre-approximation. This pre-
-          approximation is currently required to compute curve lengths.
-
-        .. note:: This is an alternative for Curve.approx, and may replace it
-           in future.
-        """
-        if equidistant:
-            S = self.approximate(npre, equidistant=False)
-            at = S.atLength(nseg)
-        else:
-            S = self
-            at = arange(nseg+1) * float(S.nparts) / nseg
-        if self.closed:
-            at = at[:-1]
-        print("AT VALUES: %s" % at)
-        X = S.pointsAt(at)
-        PL = PolyLine(X, closed=S.closed)
-        return PL.setProp(self.prop)
 
 
     def _compensate(self,end=0,cosangle=0.5):
@@ -936,17 +942,12 @@ class PolyLine(Curve):
         inserted points in the new PolyLine.
         """
         X, i, t = self.pointsAt(t, normalized=normalized, return_position=True)
-        #print(X.shape,i.shape,t.shape)
-        #print(X,i,t)
         Xc = self.coords.copy()
         if return_indices:
             ind = -ones(len(Xc))
         # Loop in descending order to avoid recomputing parameters
         for j in argsort(i)[::-1]:
-            #print(X[j].shape)
             Xi, ii = X[j].reshape(-1, 3), i[j]+1
-            #print(Xi.shape)
-            #print("Insert point in segment %s" % (ii-1))
             Xc = Coords.concatenate([Xc[:ii], Xi, Xc[ii:]])
             if return_indices:
                 ind = concatenate([ind[:ii], [j], ind[ii:]])
@@ -979,60 +980,60 @@ class PolyLine(Curve):
 
     # BV: I'm not sure what this does and if it belongs here
 
-    @utils.deprecated("PolyLine_distanceOfPoints")
-    def distanceOfPoints(self,p,n,return_points=False):
-        """_Find the distances of points p, perpendicular to the vectors n.
+    ## @utils.deprecated("PolyLine_distanceOfPoints")
+    ## def distanceOfPoints(self,p,n,return_points=False):
+    ##     """_Find the distances of points p, perpendicular to the vectors n.
 
-        p is a (np,3) shaped array of points.
-        n is a (np,3) shaped array of vectors.
+    ##     p is a (np,3) shaped array of points.
+    ##     n is a (np,3) shaped array of vectors.
 
-        The return value is a tuple OKpid,OKdist,OKpoints where:
-        - OKpid is an array with the point numbers having a distance;
-        - OKdist is an array with the distances for these points;
-        - OKpoints is an array with the footpoints for these points
-        and is only returned if return_points = True.
-        """
-        q = self.pointsOn()
-        if not self.closed:
-            q = q[:-1]
-        m = self.vectors()
-        t = gt.intersectionTimesLWP(q, m, p, n)
-        t = t.transpose((1, 0))
-        x = q[newaxis,:] + t[:,:, newaxis] * m[newaxis,:]
-        inside = (t >= 0.) * (t <= 1.)
-        pid = where(inside)[0]
-        p = p[pid]
-        x = x[inside]
-        dist = length(x-p)
-        OKpid = unique(pid)
-        OKdist = array([ dist[pid == i].min() for i in OKpid ])
-        if return_points:
-            minid = array([ dist[pid == i].argmin() for i in OKpid ])
-            OKpoints = array([ x[pid == i][j] for i, j in zip(OKpid, minid) ]).reshape(-1, 3)
-            return OKpid, OKdist, OKpoints
-        return OKpid, OKdist
+    ##     The return value is a tuple OKpid,OKdist,OKpoints where:
+    ##     - OKpid is an array with the point numbers having a distance;
+    ##     - OKdist is an array with the distances for these points;
+    ##     - OKpoints is an array with the footpoints for these points
+    ##     and is only returned if return_points = True.
+    ##     """
+    ##     q = self.pointsOn()
+    ##     if not self.closed:
+    ##         q = q[:-1]
+    ##     m = self.vectors()
+    ##     t = gt.intersectionTimesLWP(q, m, p, n)
+    ##     t = t.transpose((1, 0))
+    ##     x = q[newaxis,:] + t[:,:, newaxis] * m[newaxis,:]
+    ##     inside = (t >= 0.) * (t <= 1.)
+    ##     pid = where(inside)[0]
+    ##     p = p[pid]
+    ##     x = x[inside]
+    ##     dist = length(x-p)
+    ##     OKpid = unique(pid)
+    ##     OKdist = array([ dist[pid == i].min() for i in OKpid ])
+    ##     if return_points:
+    ##         minid = array([ dist[pid == i].argmin() for i in OKpid ])
+    ##         OKpoints = array([ x[pid == i][j] for i, j in zip(OKpid, minid) ]).reshape(-1, 3)
+    ##         return OKpid, OKdist, OKpoints
+    ##     return OKpid, OKdist
 
     # BV: same remark: what is this distance?
 
-    @utils.deprecated("PolyLine_distanceOfPolyline")
-    def distanceOfPolyLine(self,PL,ds,return_points=False):
-        """_Find the distances of the PolyLine PL.
+    ## @utils.deprecated("PolyLine_distanceOfPolyline")
+    ## def distanceOfPolyLine(self,PL,ds,return_points=False):
+    ##     """_Find the distances of the PolyLine PL.
 
-        PL is first discretised by calculating a set of points p and direction
-        vectors n at equal distance of approximately ds along PL. The
-        distance of PL is then calculated as the distances of the set (p,n).
+    ##     PL is first discretised by calculating a set of points p and direction
+    ##     vectors n at equal distance of approximately ds along PL. The
+    ##     distance of PL is then calculated as the distances of the set (p,n).
 
-        If return_points = True, two extra values are returned: an array
-        with the points p and an array with the footpoints matching p.
-        """
-        ntot = int(ceil(PL.length()/ds))
-        t = PL.atLength(ntot)
-        p = PL.pointsAt(t)
-        n = PL.directionsAt(t)
-        res = self.distanceOfPoints(p, n, return_points)
-        if return_points:
-            return res[1], p[res[0]], res[2]
-        return res[1]
+    ##     If return_points = True, two extra values are returned: an array
+    ##     with the points p and an array with the footpoints matching p.
+    ##     """
+    ##     ntot = int(ceil(PL.length()/ds))
+    ##     t = PL.atLength(ntot)
+    ##     p = PL.pointsAt(t)
+    ##     n = PL.directionsAt(t)
+    ##     res = self.distanceOfPoints(p, n, return_points)
+    ##     if return_points:
+    ##         return res[1], p[res[0]], res[2]
+    ##     return res[1]
 
 
 
