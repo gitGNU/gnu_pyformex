@@ -479,14 +479,14 @@ class NurbsCurve(Geometry4):
         return NurbsCurve(newP, degree=self.degree, knots=newU, closed=self.closed)
 
 
-    def approx(self,ndiv=None,ntot=None):
+    def approx(self,ndiv=None,nseg=None,**kargs):
         """Return a PolyLine approximation of the Nurbs curve
 
-        If no `ntot` is given, the curve is approximated by a PolyLine
+        If no `nseg` is given, the curve is approximated by a PolyLine
         through equidistant `ndiv+1` point in parameter space. These points
         may be far from equidistant in Cartesian space.
 
-        If `ntot` is given, a second approximation is computed with `ntot`
+        If `nseg` is given, a second approximation is computed with `nseg`
         straight segments of nearly equal length. The lengths are computed
         based on the first approximation with `ndiv` segments.
         """
@@ -495,8 +495,8 @@ class NurbsCurve(Geometry4):
             ndiv = self.N_approx
         u = arange(ndiv+1)*1.0/ndiv
         PL = PolyLine(self.pointsAt(u))
-        if ntot is not None:
-            u = PL.atLength(ntot)
+        if nseg is not None:
+            u = PL.atLength(nseg)
             PL = PolyLine(PL.pointsAt(u))
         return PL#.setProp(self.prop)
 

@@ -178,7 +178,7 @@ def charCurves(fontfile, character):
 
 def drawCurve(curve,color,fill=None,with_border=True,with_points=True):
     if fill is not None:
-        border = curve.approx(24)
+        border = curve.approx(ndiv=24)
         if with_border:
             draw(border, color=red)
         drawNumbers(border.coords, color=red)

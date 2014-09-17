@@ -279,9 +279,9 @@ def sliceBranch(S, cp, s0, s1, cl, nslices):
     """
     visual = drawOption('visual')
 
-    cl = cl.approx(ntot=nslices)
-    s0 = s0.approx(ntot=nslices)
-    s1 = s1.approx(ntot=nslices)
+    cl = cl.approx(nseg=nslices)
+    s0 = s0.approx(nseg=nslices)
+    s1 = s1.approx(nseg=nslices)
 
     h0 = slicer(S, s0, cl, cutat=-1, visual=visual)
     if visual:
@@ -355,7 +355,7 @@ def splineIt():
     cs = getData('cross_sections')
 
     # cross splines
-    spc = [[ ci.approx(ntot=niso) for ci in c ] for c in cs]
+    spc = [[ ci.approx(nseg=niso) for ci in c ] for c in cs]
     export({'cross_splines':spc})
     clear()
     drawCrossSplines()
@@ -363,7 +363,7 @@ def splineIt():
     # axis spline
     [hi0,  hi1, hi2, hi3, hi4, hi5]=[array([h.coords for h in hi]) for hi in spc]
     clv=[ PolyLine( (hi[:, 0]+hi[:, -1])*0.5  ) for hi in [hi0, hi2, hi4] ]
-    axis = [BezierSpline(c.coords, curl=1./3.).approx(ntot=nsl) for c, nsl in zip(clv, nslice)]
+    axis = [BezierSpline(c.coords, curl=1./3.).approx(nseg=nsl) for c, nsl in zip(clv, nslice)]
     export({'axis_splines':axis})
     drawAxisSplines()
 
@@ -732,7 +732,7 @@ def divideControlLines():
         slice_data = _slice_data
         print("2", slice_data)
     npcent = slice_data['nslice']
-    cl = [ br[i].approx(ntot=npcent[i//2]) for i in range(len(br))]
+    cl = [ br[i].approx(nseg=npcent[i//2]) for i in range(len(br))]
 
     export({'control_lines':cl})
     if drawOption('visual'):

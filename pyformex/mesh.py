@@ -951,17 +951,17 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
     # BV: DO WE NEED THE nparts ?
     def partitionByConnection(self,level=0,startat=0,sort='number',nparts=-1):
         """Detect the connected parts of a Mesh.
-    
+
         Parameters:
-        
+
         - sort`: str. Weighted sorting method. It can assume values 'number' (default),
             'length', 'area', 'volume'.
-        -`nparts`: is the equivalent of parameter `maxval` in :meth:`Mesh.frontWalk`. 
+        -`nparts`: is the equivalent of parameter `maxval` in :meth:`Mesh.frontWalk`.
             Maximum frontal value. If negative (default) the walk will
             continue until all elements have been reached. If non-negative,
             walking will stop as soon as the frontal value reaches this
             maximum.
-        
+
         The remainder of the parameters are like in
         :meth:`Mesh.frontWalk`.
 
@@ -978,7 +978,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         """
         p = self.frontWalk(level=level, startat=startat, frontinc=0, partinc=1, maxval=nparts)
         if sort=='number':
-            p = sortSubsets(p)  
+            p = sortSubsets(p)
         if sort=='length':
             p = sortSubsets(p, self.lengths())
         if sort=='area':
@@ -2871,15 +2871,15 @@ def quarterCircle(n1, n2):
     P2 = P1.rot(45.)
     P3 = P1.rot(90.)
     # Kernel is a quadrilateral
-    C0 = PolyLine([P0, P1]).approx(n1).toMesh()
-    C1 = PolyLine([P3, P2]).approx(n1).toMesh()
+    C0 = PolyLine([P0, P1]).approx(ndiv=n1).toMesh()
+    C1 = PolyLine([P3, P2]).approx(ndiv=n1).toMesh()
     M0 = C0.connect(C1, div=n1)
     # Border meshes
-    C0 = Arc(center=P0, radius=1., angles=(0., 45.)).approx(n1).toMesh()
-    C1 = PolyLine([P1, P2]).approx(n1).toMesh()
+    C0 = Arc(center=P0, radius=1., angles=(0., 45.)).approx(ndiv=n1).toMesh()
+    C1 = PolyLine([P1, P2]).approx(ndiv=n1).toMesh()
     M1 = C0.connect(C1, div=n2)
-    C0 = Arc(center=P0, radius=1., angles=(45., 90.)).approx(n1).toMesh()
-    C1 = PolyLine([P2, P3]).approx(n1).toMesh()
+    C0 = Arc(center=P0, radius=1., angles=(45., 90.)).approx(ndiv=n1).toMesh()
+    C1 = PolyLine([P2, P3]).approx(ndiv=n1).toMesh()
     M2 = C0.connect(C1, div=n2)
     return M0+M1+M2
 

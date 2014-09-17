@@ -73,7 +73,8 @@ You can convert your scripts automatically with the command::
 
 
 warn_clip_changed = "The clip and cclip methods have changed. If the selector contains negative numbers, these will be selected as in the (c)select methods."
-warn_curve_approximate_changed = "Curve.approximate now defaults to equidistant=False"
+warn_curve_approx = "Curve.approx has been changed. It is now an alias for Curve.approximate. To get the same results as with the old ndiv parameter, you can still specify ndiv as a keyword parameter. The old parameter ntot should be replaced with nseg."
+warn_curve_approximate = "Curve.approximate now defaults to equidistant=False"
 warn_default_gl = """..
 
 GL2 now default

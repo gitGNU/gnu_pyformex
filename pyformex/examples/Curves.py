@@ -97,7 +97,7 @@ def drawCurve(ctype,dset,closed,degree,endcond,curl,nseg,chordal,method,approx,e
         if method == 'chordal':
             nseg = None
 
-        PL = S.approximate(nseg=nseg,chordal=chordal,equidistant=method=='equidistant')
+        PL = S.approx(nseg=nseg,chordal=chordal,equidistant=method=='equidistant')
 
         if cutWP:
             PC = PL.cutWithPlane([0., 0.42, 0.], [0., 1., 0.])
@@ -110,7 +110,7 @@ def drawCurve(ctype,dset,closed,degree,endcond,curl,nseg,chordal,method,approx,e
     else:
         #draw(S, color=ctype_color[im], nolight=True)
         # Currently direct drawing of Curve is disable: draw approx
-        draw(S.approximate(),color=red)
+        draw(S.approx(),color=red)
 
     ## if directions:
     ##     t = arange(2*S.nparts+1)*0.5

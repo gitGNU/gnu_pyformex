@@ -148,7 +148,7 @@ class SplineSurface(Geometry):
         if nv is None:
             nv = self.curves[0].nparts
 
-        CA = [ C.approx(ntot=nu) for C in self.curves ]
+        CA = [ C.approx(nseg=nu) for C in self.curves ]
         print("Curves have %s points" % CA[0].coords.shape[0])
         print("There are %s curves" % len(CA))
         if not self.uclosed:
@@ -346,7 +346,7 @@ def run():
     export({'splines':CL})
     print("Number of points in the curves:", [ Ci.coords.shape[0] for Ci in CL])
 
-    PL = [Ci.approx(1) for Ci in CL]
+    PL = [Ci.approx(ndiv=1) for Ci in CL]
 
     createPL = False
     if createPL:

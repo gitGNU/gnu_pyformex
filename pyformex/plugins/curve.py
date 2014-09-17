@@ -64,7 +64,7 @@ class Curve(Geometry):
     - `pointsOn()`: the defining points placed on the curve
     - `pointsOff()`: the defining points placeded off the curve (control points)
     - `parts(j,k)`:
-    - `approx(ndiv,ntot)`:
+    - `approx(ndiv=None,nseg=None,chordal=None)`:
 
     Furthermore it may define, for efficiency reasons, the following methods:
 
@@ -72,8 +72,6 @@ class Curve(Geometry):
     - `sub_directions_2`
 
     """
-
-    N_approx = 10
 
     def __init__(self):
         Geometry.__init__(self)
@@ -132,6 +130,13 @@ class Curve(Geometry):
 
     def lengths(self):
         raise NotImplementedError
+
+
+    def charLength(self):
+        try:
+            return self.lengths().mean()
+        except:
+            return self.bbox().dsize()
 
 
     def localParam(self, t):
@@ -275,39 +280,6 @@ class Curve(Geometry):
         return self.lengths().sum()
 
 
-    def approx(self,ndiv=None,ntot=None):
-        """Return a PolyLine approximation of the curve
-
-        Parameters:
-
-        - `ndiv`: int: number of straight segments to use over each part
-          of the curve. This is only used if
-        - `ntot`: int: number of straight segments to use over the total
-          length of the curve.
-
-        Returns a PolyLine approximation for the curve.
-        `C.approx(ndiv=n)` returns an approximation with `ndiv` segments
-        over each part of the curve. This may results in segments with
-        very different lengths.
-        `C.approx(ntot=n)` returns an approximation with `ntot` segments
-        over the total length of the curve. This produces more equally
-        sized segments, but the internal end points of the curve parts may
-        not be on the approximating Polyline.
-
-        See also :func:`approximate` for an alternate approximation method.
-        """
-        if ndiv is None:
-            ndiv = self.N_approx
-        PL = PolyLine(self.subPoints(ndiv), closed=self.closed)
-        if ntot is not None:
-            at = PL.atLength(ntot)
-            if self.closed:
-                at = at[:-1]
-            X = PL.pointsAt(at)
-            PL = PolyLine(X, closed=PL.closed)
-        return PL.setProp(self.prop)
-
-
     def atApproximate(self,nseg,equidistant=False,npre=100):
         """Return parameter values for approximating a Curve with a PolyLine.
 
@@ -336,8 +308,13 @@ class Curve(Geometry):
         return at
 
 
-    def atChordal(self,chordal=0.01):
+    def atChordal(self,chordal=0.01,div=None):
         """Return parameter values to approximate within given chordal error.
+
+        Parameters:
+
+        - chordal: relative tolerance on the distance of the chord to the
+          curve. The tolerance is relative to the curve's charLength().
 
         Returns a list of parameter values that create a PolyLine
         approximate for the curve, such that the chordal error is
@@ -347,6 +324,7 @@ class Curve(Geometry):
         """
         # Create first approximation
         at = self.atApproximate(nseg=self.nparts*self.degree)
+        charlen = self.approxAt(at).charLength()
 
         # Split in handled and to-be-handled
         at,bt = list(at[:1]),list(at[1:])
@@ -358,7 +336,7 @@ class Curve(Geometry):
                 c1 = 0.5*(c0+c2)
                 X = self.pointsAt([c0,c1,c2])
                 XM = 0.5*(X[0]+X[2])
-                d = length(X[1]-XM) / length(X[0]-X[2])
+                d = length(X[1]-XM) / charlen
 
                 if d >= chordal:
                     # need refinement: put new point in front of todo list
@@ -385,7 +363,8 @@ class Curve(Geometry):
         return PL.setProp(self.prop)
 
 
-    def approximate(self,nseg=None,chordal=0.001,equidistant=False,npre=100):
+    @utils.warning('warn_curve_approximate')
+    def approximate(self,nseg=None,ndiv=None,chordal=0.01,equidistant=False,npre=100):
         """Approximate a Curve with a PolyLine of n segments
 
         Parameters:
@@ -393,6 +372,9 @@ class Curve(Geometry):
         - `nseg`: number of straight segments of the resulting PolyLine. If
           not specified, the 'chordal error' method will be used and the
           number of segments is dependent on the value of 'chordal'
+        - `ndiv`: number of straight segments of each segment. This is a
+          convenient way of specifying nseg = ndiv * self.nparts and
+          equidistant = False.
         - `chordal`: accuracy of the approximation when using the 'chordal
           error' method.
 
@@ -407,19 +389,27 @@ class Curve(Geometry):
         .. note:: This is an alternative for Curve.approx, and may replace it
            in future.
         """
-        utils.warn('curve_approximate_changed')
-        if nseg is None:
-            at = self.atChordal(chordal)
-        else:
+        if ndiv is not None:
+            nseg = ndiv * self.nparts
+            equidistant = False
+        if nseg is not None:
             at = self.atApproximate(nseg,equidistant,npre)
+        else:
+            at = self.atChordal(chordal)
         return self.approxAt(at)
 
 
-    def frenet(self,ndiv=None,ntot=None,upvector=None,avgdir=True,compensate=False):
+    @utils.warning('warn_curve_approx')
+    def approx(self,**kargs):
+        return self.approximate(**kargs)
+
+
+    def frenet(self,ndiv=None,nseg=None,chordal=0.01,upvector=None,avgdir=True,compensate=False):
         """Return points and Frenet frame along the curve.
 
         A PolyLine approximation for the curve is constructed, using the
-        :meth:`Curve.approx()` method with the arguments `ndiv` and `ntot`.
+        :meth:`Curve.approx()` method with the arguments `ndiv`, `nseg`
+        and `chordal`.
         Then Frenet frames are constructed with :meth:`PolyLine.movingFrenet`
         using the remaining arguments.
         The resulting PolyLine points and Frenet frames are returned.
@@ -456,7 +446,7 @@ class Curve(Geometry):
         - `N`: normalized normal vector to the curve at `npts` points
         - `B`: normalized binormal vector to the curve at `npts` points
         """
-        PL = self.approx(ndiv, ntot)
+        PL = self.approx(ndiv=ndiv, nseg=nseg, chordal=chordal)
         X = PL.coords
         T, N, B = PL._movingFrenet(upvector=upvector, avgdir=avgdir, compensate=compensate)
         return X, T, N, B
@@ -690,6 +680,46 @@ class PolyLine(Curve):
             return d, w
         else:
             return d
+
+
+    def atApproximate(self,nseg,equidistant=False,**kargs):
+        """Return parameter values for subdividing a PolyLine.
+
+        Parameters:
+
+        - `nseg`: number of segments of the resulting PolyLine. The number
+          of returned parameter values is `nseg` if the curve is closed,
+          else `nseg+1`.
+        - `equidistant`: if True, the points are spaced almost equidistantly
+          over the curve. If False (default), the points are spread
+          equally over the parameter space.
+
+        """
+        if equidistant:
+            at = S.atLength(nseg)
+        else:
+            S = self
+            at = arange(nseg+1) * float(S.nparts) / nseg
+        if self.closed:
+            at = at[:-1]
+        return at
+
+
+    def approx(self,ndiv=None,nseg=None,equidistant = False,**kargs):
+        """Create a subdivided PolyLine.
+
+        The name is approx so it can perform the same functionality
+        as other Curve.approx methods.
+        It does not have the chordal method: ndiv=1 is the default
+        setting.
+        """
+        if ndiv is None and nseg is None:
+            ndiv = 1
+        if ndiv is not None:
+            nseg = ndiv * self.nparts
+            equidistant = False
+        at = self.atApproximate(nseg,equidistant)
+        return self.approxAt(at)
 
 
     def _compensate(self,end=0,cosangle=0.5):
@@ -1565,52 +1595,53 @@ Most likely because 'python-scipy' is not installed on your system.""")
 
 
     # BV: This should go as a specialization in the approx() method
-    def approx_by_subdivision(self,tol=1.e-3):
-        """Return a PolyLine approximation of the curve.
+    # BV: Obsoleted by approx(chordal)
+    ## def approx_by_subdivision(self,tol=1.e-3):
+    ##     """Return a PolyLine approximation of the curve.
 
-        tol is a tolerance value for the flatness of the curve.
-        The flatness of each part is calculated as the maximum
-        orthogonal distance of its intermediate control points
-        from the straight segment through its end points.
+    ##     tol is a tolerance value for the flatness of the curve.
+    ##     The flatness of each part is calculated as the maximum
+    ##     orthogonal distance of its intermediate control points
+    ##     from the straight segment through its end points.
 
-        Parts for which the distance is larger than tol are subdivided
-        using de Casteljau's algorithm. The subdivision stops
-        if all parts are sufficiently flat. The return value is a PolyLine
-        connecting the end points of all parts.
-        """
-        # get the control points (nparts,degree+1,3)
-        P = array([ self.part(j) for j in range(self.nparts) ])
-        T = resize(True, self.nparts)
-        while T.any():
-            EP = P[T][:, [0, -1]] # end points (...,2,3)
-            IP = P[T][:, 1:-1] # intermediate points (...,degree-1,3)
-            # compute maximum orthogonal distance of IP from line EP
-            q, m = EP[:, 0].reshape(-1, 1, 3), (EP[:, 1]-EP[:, 0]).reshape(-1, 1, 3)
-            t = (dotpr(IP, m) - dotpr(q, m)) / dotpr(m, m)
-            X = q + t[:,:, newaxis] * m
-            d = length(X-IP).max(axis=1)
-            # subdivide parts for which distance is larger than tol
-            T[T] *= d > tol
-            if T.any():
-                # apply de Casteljau's algorithm for t = 0.5
-                M = [ P[T] ]
-                for i in range(self.degree):
-                    M.append( (M[-1][:, :-1]+M[-1][:, 1:])/2 )
-                # compute new control points
-                Q1 = stack([ Mi[:, 0] for Mi in M ], axis=1)
-                Q2 = stack([ Mi[:, -1] for Mi in M[::-1] ], axis=1)
-                # concatenate the parts
-                P = P[~T]
-                indQ = T.cumsum()-1
-                indP = (1-T).cumsum()-1
-                P = [ [Q1[i], Q2[i]] if Ti else [P[j]] for i, j, Ti in zip(indQ, indP, T) ]
-                P = Coords(concatenate(P, axis=0))
-                T = [ [Ti, Ti] if Ti else [Ti] for Ti in T ]
-                T = concatenate(T, axis=0)
-        # create PolyLine through end points
-        P = Coords.concatenate([P[:, 0], P[-1, -1]], axis=0)
-        PL = PolyLine(P, closed=self.closed)
-        return PL
+    ##     Parts for which the distance is larger than tol are subdivided
+    ##     using de Casteljau's algorithm. The subdivision stops
+    ##     if all parts are sufficiently flat. The return value is a PolyLine
+    ##     connecting the end points of all parts.
+    ##     """
+    ##     # get the control points (nparts,degree+1,3)
+    ##     P = array([ self.part(j) for j in range(self.nparts) ])
+    ##     T = resize(True, self.nparts)
+    ##     while T.any():
+    ##         EP = P[T][:, [0, -1]] # end points (...,2,3)
+    ##         IP = P[T][:, 1:-1] # intermediate points (...,degree-1,3)
+    ##         # compute maximum orthogonal distance of IP from line EP
+    ##         q, m = EP[:, 0].reshape(-1, 1, 3), (EP[:, 1]-EP[:, 0]).reshape(-1, 1, 3)
+    ##         t = (dotpr(IP, m) - dotpr(q, m)) / dotpr(m, m)
+    ##         X = q + t[:,:, newaxis] * m
+    ##         d = length(X-IP).max(axis=1)
+    ##         # subdivide parts for which distance is larger than tol
+    ##         T[T] *= d > tol
+    ##         if T.any():
+    ##             # apply de Casteljau's algorithm for t = 0.5
+    ##             M = [ P[T] ]
+    ##             for i in range(self.degree):
+    ##                 M.append( (M[-1][:, :-1]+M[-1][:, 1:])/2 )
+    ##             # compute new control points
+    ##             Q1 = stack([ Mi[:, 0] for Mi in M ], axis=1)
+    ##             Q2 = stack([ Mi[:, -1] for Mi in M[::-1] ], axis=1)
+    ##             # concatenate the parts
+    ##             P = P[~T]
+    ##             indQ = T.cumsum()-1
+    ##             indP = (1-T).cumsum()-1
+    ##             P = [ [Q1[i], Q2[i]] if Ti else [P[j]] for i, j, Ti in zip(indQ, indP, T) ]
+    ##             P = Coords(concatenate(P, axis=0))
+    ##             T = [ [Ti, Ti] if Ti else [Ti] for Ti in T ]
+    ##             T = concatenate(T, axis=0)
+    ##     # create PolyLine through end points
+    ##     P = Coords.concatenate([P[:, 0], P[-1, -1]], axis=0)
+    ##     PL = PolyLine(P, closed=self.closed)
+    ##     return PL
 
 
     def extend(self,extend=[1., 1.]):
@@ -1976,7 +2007,7 @@ class Arc(Curve):
             phi = 2.*arccos(1.-chordal)
             rng = abs(self._angles[1] - self._angles[0])
             ndiv = int(ceil(rng/phi))
-        return Curve.approx(self, ndiv)
+        return Curve.approx(self, ndiv=ndiv)
 
 
 def arc2points(x0,x1,R,pos='-'):
