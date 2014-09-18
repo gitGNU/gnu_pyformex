@@ -93,7 +93,7 @@ known_externals = {
 
 # versions of detected modules
 the_version = {
-    'pyformex': pf.__version__,
+    'pyformex': pf.__version__.split()[0],
     'python': sys.version.split()[0],
     }
 # versions of detected external commands
@@ -485,6 +485,61 @@ def formatDict(d,indent=4):
     return s
 
 
+import operator
+comparators = {
+    '==': operator.__eq__,
+    '!=': operator.__ne__,
+    '>' : operator.__gt__,
+    '>=': operator.__ge__,
+    '<' : operator.__lt__,
+    '<=': operator.__le__,
+    }
+
+import re
+re_Required = re.compile('(?P<cmp>(==|!=|([<>]=?)))? *(?P<require>.*)')
+
+def compareVersion(has,want):
+    """Check whether a detected version matches the requirements.
+
+    has is the version string detected.
+    want is the required version string, possibly preceded by one
+    of the doubly underscored comparison operators: __gt__, etc.
+    If no comparison operator is specified, '__eq__' is assumed.
+
+    Note that any tail behind x.y.z version is considered to be later
+    version than x.y.z.
+
+    Returns the result of the comparison: True or False
+    Examples:
+
+      >>> compareVersion('2.7','2.4.3')
+      False
+      >>> compareVersion('2.7','>2.4.3')
+      True
+      >>> compareVersion('2.7','>= 2.4.3')
+      True
+      >>> compareVersion('2.7','>= 2.7-rc3')
+      False
+      >>> compareVersion('2.7-rc4','>= 2.7-rc3')
+      True
+
+    """
+    if not has:
+        return False
+    m = re_Required.match(want)
+    if not m:
+        return False
+
+    d = m.groupdict()
+    want = d['require']
+    comp = d['cmp']
+    if comp is None:
+        comp = '=='
+    has = SaneVersion(has)
+    want = SaneVersion(want)
+    return comparators[comp](has,want)
+
+
 def checkItem(has, want):
     if has == want:
         return 'Matching'
@@ -503,20 +558,38 @@ def checkItem(has, want):
         return 'Too Recent'
 
 
+def checkItem2(has,want):
+    if compareVersion(has,want):
+        return 'OK'
+    else:
+        return 'FAIL'
+
+
 def checkDict(has, want):
-    return [ (k, has[k], want[k], checkItem(has[k], want[k])) for k in want.keys()]
+    return [ (k, has[k], want[k], checkItem2(has[k], want[k])) for k in want.keys()]
 
 
-def checkSoftware(req):
-    """Check that we have the matching components"""
+def checkSoftware(req,report=False):
+    """Check that we have the matching components
+
+    Returns True or False.
+    If report=True, also returns a string with a full report.
+    """
     from pyformex import utils
     soft = detectedSoftware()
     comp = []
     for k in req:
         comp.extend(checkDict(soft[k], req[k]))
-    print((utils.underlineHeader("%30s %15s %15s %10s" % ("Item", "Found", "Required", "OK"))))
-    for item in comp:
-        print(("%30s %15s %15s %10s" % item))
+    print(comp)
+    result = all([ s[3] == 'OK' for s in comp ])
+    if report:
+        s = utils.underlineHeader("%30s %15s %15s %10s\n" % ("Item", "Found", "Required", "OK?"))
+        for item in comp:
+            s += "%30s %15s %15s %10s\n" % item
+        s += "RESULT=%s\n" % ('OK' if result else 'FAIL')
+        return result,s
+    else:
+        return result
 
 
 def registerSoftware(req):
@@ -594,12 +667,12 @@ if __name__ in ["draw","script"] :
             'pyFormex_installtype': 'R',
             },
         'Modules': {
-            'pyformex': '0.9.1',
-            'python': '2.7.3',
+            'pyformex': '>= 0.9.1',
+            'python': '>= 2.7.3',
             'matplotlib': '1.1.1',
             },
         'Externals': {
-            'admesh': '0.95',
+            'admesh': '>= 0.95',
             },
         }
 
@@ -609,7 +682,9 @@ if __name__ in ["draw","script"] :
     print((reportSoftware(Required, header="Required Software")))
     print('\n ')
 
-    checkSoftware(Required)
+    print('CHECK')
+    ok,report = checkSoftware(Required,True)
+    print(report)
 
     reg = registerSoftware(Required)
     print("REGISTER")
@@ -617,10 +692,11 @@ if __name__ in ["draw","script"] :
 
     storeSoftware(reg, 'checksoft.py')
     req = readSoftware('checksoft.py')
-    print('CHECK')
+    print('CHECK REGISTERED')
     print(formatDict(req))
 
-    checkSoftware(req)
+    ok,report = checkSoftware(req,True)
+    print(report)
 
 
 # End
