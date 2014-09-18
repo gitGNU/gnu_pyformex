@@ -359,7 +359,7 @@ def checkExternal(name,command=None,answer=None,quiet=False):
     if m is None and P.err:
         m = re.match(answer, P.err)
     if m:
-        version = m.group(1)
+        version = str(m.group(1))
     _congratulations(name, version, 'program', quiet=quiet)
     the_external[name] = version
     return str(version)
