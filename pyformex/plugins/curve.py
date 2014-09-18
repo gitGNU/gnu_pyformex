@@ -1051,9 +1051,69 @@ class PolyLine(Curve):
     # allow syntax PL1 + PL2
     __add__ = append
 
-    # TODO:
+   
+    def _coarsenSimple(self,tol=0.001,maxlen=None):
+        """ Reduce the number of points of the PolyLine.
+
+        It iteratively reduces the numbers of points based on the maximum
+        distance between the original PolyLine and the coarsened one.
+        The latter consists of a subset of the points from the original.
+        This procedure , though more computational  expensive,
+        provides a better approximation for subsequent segments.
+        
+        Parameters:
+
+        - `tol`: maximum relative distance of the coarsened PolyLine to the
+          original. The value is relative to the curve's characteristic
+          length as obtained from :func:`charLength().
+        - `maxlen`: absolut maximum segment length tolerance of the 
+           segments of the simplified PolyLine. If None the maximum 
+           allowed length is the total length of the the curve.
+
+
+        Retuns a Polyline with a reduced number of points.
+        """
+        if maxlen is None:
+            maxlen = self.length()
+        if maxlen <= self.lengths().min():
+            raise ValueError("The maximum allowed length is lower \
+            than the minimum segment length")
+        if maxlen <= self.lengths().max():
+            pf.warning("The maximum allowed length is comparable to \
+            length of the elements of the curve. This may produce poor coarsening results")
+        
+        tol /= self.charLength()
+        pts = self.coords
+        a  = 0
+        npts = pts.ncoords()
+        
+        keep    = [a]
+        far = a+1
+        
+        while far!=npts-1:
+            a = keep[-1]
+            # initialize maximum distance ,farthest indices
+            far = a+1
+            max_dist = 0.
+            for i in range(far, npts): 
+                # compare to anchor
+                avec = pts[i] - pts[a]
+                lavec = length(avec)
+                dist = pts[a:i].distanceFromLine(pts[a],avec)
+                if dist.max() <= tol:
+                    if lavec <=maxlen:
+                        far = i
+                        if far == npts-1:
+                            keep.append(far)
+                else:
+                    keep.append(far)
+                    break
+
+        return PolyLine(pts[asarray(keep)])
+    
+     # TODO:
     #remove the loop and manage with arrays
-    def coarsen(self, tol=0.001,maxlen=None):
+    def _coarsenDouglas(self,tol=0.001,maxlen=None):
         """ Reduce the number of points of the PolyLine.
 
         The algorithm is based on the Douglas-Peucker line
@@ -1120,7 +1180,7 @@ class PolyLine(Curve):
             for i in range(a + 1, f): 
                 # compare to anchor
                 avec = pts[i] - pts[a]
-                lavec=length(avec)
+                lavec = length(avec)
 
                 proj = dotpr(avec,vec)
                 if proj > 0.:
@@ -1153,8 +1213,28 @@ class PolyLine(Curve):
         
         keep = unique(keep)
         return PolyLine(pts[keep])
+  
+    def coarsen(self, method= 'douglas',**kargs):
+        """ Reduce the number of points of the PolyLine.
 
+        The algorithm is based on the Douglas-Peucker line
+        simplification/generalization.
+        It iteratively reduces the numbers of points based on the maximum
+        distance between the original PolyLine and the coarsened one.
+        The latter consists of a subset of the points from the original.
 
+        Parameters:
+
+        - `method`: string. It can assume values 'douglas' (default) and 'simple'
+            to select the appropriate method
+        Retuns a Polyline with a reduced number of points.
+        """
+        if method == 'douglas':
+            return self._coarsenDouglas(**kargs)
+        if method == 'simple':
+            return self._coarsenSimple(**kargs)
+            
+        
     # BV: I'm not sure what this does and if it belongs here
 
     ## @utils.deprecated("PolyLine_distanceOfPoints")
@@ -1213,7 +1293,8 @@ class PolyLine(Curve):
     ##     return res[1]
 
 
-
+    
+    
 ##############################################################################
 #
 class Line(PolyLine):
