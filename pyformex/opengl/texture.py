@@ -27,7 +27,6 @@ This module defines tools for texture rendering in pyFormex.
 """
 from __future__ import print_function
 
-
 from OpenGL import GL
 import numpy as np
 
@@ -44,7 +43,8 @@ class Texture(object):
     - `texformat`: format of the texture data
 
     """
-    max_texture_units = GL.glGetIntegerv(GL.GL_MAX_TEXTURE_UNITS)
+    # This fails on mesa: probably too early
+    #max_texture_units = GL.glGetIntegerv(GL.GL_MAX_TEXTURE_UNITS)
     #active_textures =
 
     def __init__(self,image,mode=1,format=GL.GL_RGBA,texformat=GL.GL_RGBA):
