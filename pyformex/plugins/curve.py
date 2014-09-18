@@ -1051,8 +1051,9 @@ class PolyLine(Curve):
     # allow syntax PL1 + PL2
     __add__ = append
 
-
-    def coarsen(self, tol=0.001):
+    # TODO:
+    #remove the loop and manage with arrays
+    def coarsen(self, tol=0.001,maxlen=None):
         """ Reduce the number of points of the PolyLine.
 
         The algorithm is based on the Douglas-Peucker line
@@ -1066,6 +1067,10 @@ class PolyLine(Curve):
         - `tol`: maximum relative distance of the coarsened PolyLine to the
           original. The value is relative to the curve's characteristic
           length as obtained from :func:`charLength().
+        - `maxlen`: absolut maximum segment length tolerance of the 
+           segments of the simplified PolyLine. If None the maximum 
+           allowed length is the total length of the the curve.
+
 
         Retuns a Polyline with a reduced number of points.
 
@@ -1073,57 +1078,79 @@ class PolyLine(Curve):
         <schuyler@nocat.net>, which can be found at
         http://mappinghacks.com/code/dp.py.txt
         """
+        
+        if maxlen is None:
+            maxlen = self.length()
+        if maxlen <= self.lengths().min():
+            raise ValueError("The maximum allowed length is lower than \
+            the minimum segment length")
+        if maxlen <= self.lengths().max():
+            pf.warning("The maximum allowed length is comparable to \
+            length of the elements of the curve. This may produce poor coarsening results")
+        
         tol /= self.charLength()
         pts = self.coords
-        anchor  = 0
-        floater = pts.ncoords() - 1
+        a  = 0
+        f = pts.ncoords() -1
         stack   = []
         keep    = []
-
-        stack.append((anchor, floater))
+        
+        stack.append((a, f))
+        
         while stack:
-            anchor, floater = stack.pop()
+            # get the anchor and the floater
+            a, f = stack.pop()
 
-            # initialize line segment
-            if (pts[floater] - pts[anchor]).any():
-                anchorpt = pts[floater] - pts[anchor]
-                seg_len = length(anchorpt)
-                # get the unit vector
-                anchorpt /= seg_len
-            else:
-                anchorpt = zeros(3)
-                seg_len = 0.
-
+            # initialize the main line segment and get segment lenght
+            vec = pts[f] - pts[a]
+            lvec = length(vec)
+            
+            # unit vector
+            vec = normalize(vec,ignore_zeros=True)
+        
             # inner loop:
+            # initialize maximum distance ,farthest and maximim farthest indices , and 
+            # farm and lmax handles maximum length constraints
+            
             max_dist = 0.
-            farthest = anchor + 1
-            for i in range(anchor + 1, floater):
-                dist_to_seg = 0.
+            far = a + 1
+            farm = a + 1
+            lmax = lvec
+            
+            for i in range(a + 1, f): 
                 # compare to anchor
-                vec = pts[i] - pts[anchor]
-                # dot product:
-                proj = dotpr(vec,anchorpt)
-                if proj < 0.:
-                    dist_to_seg = length(vec)
-                else:
+                avec = pts[i] - pts[a]
+                lavec=length(avec)
+
+                proj = dotpr(avec,vec)
+                if proj > 0.:
                     # compare to floater
-                    vec = pts[i] - pts[floater]
-                    seg_len = length(vec)
-                    # dot product:
-                    proj = dotpr(vec,-anchorpt)
-                    if proj < 0.:
-                        dist_to_seg = seg_len
-                    else:  # calculate perpendicular distance to line (pythagorean theorem):
-                        dist_to_seg = sqrt(abs(seg_len ** 2 - proj ** 2))
-                    if max_dist < dist_to_seg:
-                        max_dist = dist_to_seg
-                        farthest = i
+                    fvec = pts[i] - pts[f]
+                    lfvec = length(fvec)
 
+                    # projection on the main line segment
+                    proj = dotpr(fvec,-vec)
+
+                    if proj > 0.: # pitaghorean distance
+                        dist = sqrt(abs(lfvec ** 2 - proj ** 2))
+                    else:
+                        dist = lfvec
+                    if max_dist < dist:
+                        max_dist = dist
+                        far = i
+                        # check if the current segment needs to be further refined
+                        if lavec <= maxlen:
+                            farm = i
+           
             if max_dist <= tol: # use line segment
-                keep+=[anchor,floater]
+                if  lmax <= maxlen:
+                    keep+=[a,f]
+                else:            
+                    keep+=[a,farm]
+                    stack+=[(farm,f)]
             else:
-                stack+=[(anchor, farthest),(farthest, floater)]
-
+                stack+=[(a, far),(far, f)]
+        
         keep = unique(keep)
         return PolyLine(pts[keep])
 
