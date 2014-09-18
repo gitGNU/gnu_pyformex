@@ -1052,26 +1052,28 @@ class PolyLine(Curve):
     __add__ = append
 
 
+    def coarsen(self, tol=0.001):
+        """ Reduce the number of points of the PolyLine.
 
-    def simplifyPoints(self, tol=1e-3):
-        """ Reduces number of points based on the Douglas-Peucker
-        line simplification/generalization.
+        The algorithm is based on the Douglas-Peucker line
+        simplification/generalization.
+        It iteratively reduces the numbers of points based on the maximum
+        distance between the original PolyLine and the coarsened one.
+        The latter consists of a subset of the points from the original.
 
-        This algorythm is an iterative method which reduces the numbers of points
-        based on the maximum distance between the original curve and the simplified curve.
-        The simplified curve consists of a subset of the points that defined the original curve.
+        Parameters:
 
-        Parameter:
+        - `tol`: maximum relative distance of the coarsened PolyLine to the
+          original. The value is relative to the curve's characteristic
+          length as obtained from :func:`charLength().
 
-        - `tol`: absolut maximum distance tolerance of the simplified PolyLine
+        Retuns a Polyline with a reduced number of points.
 
-        Retuns a Polyline with the reduced nunber of coordinates.
-
-        This code was a 3D curve adaptation of  the code of Schuyler Erle
-        <schuyler@nocat.net> ,  which can be find at
+        This code was a 3D curve adaptation of the code of Schuyler Erle
+        <schuyler@nocat.net>, which can be found at
         http://mappinghacks.com/code/dp.py.txt
         """
-
+        tol /= self.charLength()
         pts = self.coords
         anchor  = 0
         floater = pts.ncoords() - 1
