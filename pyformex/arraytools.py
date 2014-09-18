@@ -275,7 +275,7 @@ def length(A,axis=-1):
     return sqrt((A*A).sum(axis))
 
 
-def normalize(A,axis=-1,ignore_zeros=True):
+def normalize(A,axis=-1,ignore_zeros=False):
     """Normalize the vectors of A in the direction of axis.
 
     The components of the vectors are stored along the specified array axis
