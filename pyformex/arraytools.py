@@ -275,7 +275,7 @@ def length(A,axis=-1):
     return sqrt((A*A).sum(axis))
 
 
-def normalize(A,axis=-1):
+def normalize(A,axis=-1,ignore_zeros=True):
     """Normalize the vectors of A in the direction of axis.
 
     The components of the vectors are stored along the specified array axis
@@ -285,6 +285,8 @@ def normalize(A,axis=-1):
     shape = list(A.shape)
     shape[axis] = 1
     Al = length(A, axis).reshape(shape)
+    if ignore_zeros:
+        Al[Al==0.]=1.
 #    if (Al == 0.).any():
 #        raise ValueError("Normalization of zero vector."
     return A/Al
