@@ -388,7 +388,7 @@ class Mesh(Geometry):
         return TriSurface(obj)
 
 
-    def toCurve(self):
+    def toCurve(self,connect=False):
         """Convert a Mesh to a Curve.
 
         If the element type is one of 'line*' types, the Mesh is converted
@@ -399,22 +399,32 @@ class Mesh(Geometry):
         - 'line3': BezierSpline (degree 2),
         - 'line4': BezierSpline (degree 3)
 
-        This is equivalent with ::
+        If connect is False, this is equivalent with ::
 
           self.toFormex().toCurve()
 
         Any other type will raise an exception.
         """
-        from connectivity import connectedLineElems
         if self.elName() in ['line2', 'line3', 'line4']:
-            elems = connectedLineElems(self.elems)
-            if len(elems)!=1:
-                raise ValueError("Can not convert a Mesh to a single continuos curve" )
+            if connect:
+                # BV: Does this work for all types?
+                from pyformex.connectivity import connectedLineElems
+
+                elems = connectedLineElems(self.elems)
+                if len(elems)!=1:
+                    # BV: We should return all connected parts
+                    raise ValueError("Can not convert a Mesh to a single continuos curve" )
+                else:
+                    elems=elems[0]
+                    closed = elems[-1, -1] == elems[0, 0]
+                    # BV: This should be done without conversion to Formex
+                    return Mesh(self.coords,elems,eltype=self.elType()).toFormex().toCurve(closed=closed)
+
+
             else:
-                elems=elems[0]
-                closed = elems[-1, -1] == elems[0, 0]
-                
-            return Mesh(self.coords,elems,eltype=self.elType()).toFormex().toCurve(closed=closed)
+                closed = self.elems[-1, -1] == self.elems[0, 0]
+                return self.toFormex().toCurve(closed=closed)
+
         else:
             raise ValueError("Can not convert a Mesh of type '%s' to a curve" % self.elName())
 
