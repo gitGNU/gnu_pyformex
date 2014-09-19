@@ -1076,12 +1076,8 @@ class PolyLine(Curve):
         if maxlen is None:
             maxlen = self.length()
         if maxlen <= self.lengths().min():
-            raise ValueError("The maximum allowed length is lower \
-            than the minimum segment length")
-        if maxlen <= self.lengths().max():
-            pf.warning("The maximum allowed length is comparable to \
-            length of the elements of the curve. This may produce poor coarsening results")
-        
+            return self
+            
         tol /= self.charLength()
         pts = self.coords
         a  = 0
@@ -1100,11 +1096,11 @@ class PolyLine(Curve):
                 avec = pts[i] - pts[a]
                 lavec = length(avec)
                 dist = pts[a:i].distanceFromLine(pts[a],avec)
-                if dist.max() <= tol:
-                    if lavec <=maxlen:
-                        far = i
-                        if far == npts-1:
-                            keep.append(far)
+                if (dist.max() <= tol and (lavec <=maxlen)) or \
+                    (i == a+1 and lavec >=maxlen): # this handles segments bigger than the maxlen
+                    far = i
+                    if far == npts-1:
+                        keep.append(far)
                 else:
                     keep.append(far)
                     break
@@ -1142,12 +1138,8 @@ class PolyLine(Curve):
         if maxlen is None:
             maxlen = self.length()
         if maxlen <= self.lengths().min():
-            raise ValueError("The maximum allowed length is lower than \
-            the minimum segment length")
-        if maxlen <= self.lengths().max():
-            pf.warning("The maximum allowed length is comparable to \
-            length of the elements of the curve. This may produce poor coarsening results")
-        
+            return self
+            
         tol /= self.charLength()
         pts = self.coords
         a  = 0
@@ -1177,7 +1169,7 @@ class PolyLine(Curve):
             farm = a + 1
             lmax = lvec
             
-            for i in range(a + 1, f): 
+            for i in range(far, f): 
                 # compare to anchor
                 avec = pts[i] - pts[a]
                 lavec = length(avec)
@@ -1199,7 +1191,7 @@ class PolyLine(Curve):
                         max_dist = dist
                         far = i
                         # check if the current segment needs to be further refined
-                        if lavec <= maxlen:
+                        if lavec <= maxlen or (lavec > maxlen and i == a+1): # this handles segments bigger than the maxlen
                             farm = i
            
             if max_dist <= tol: # use line segment
