@@ -1050,6 +1050,11 @@ class PolyLine(Curve):
 
     # allow syntax PL1 + PL2
     __add__ = append
+    
+#TODO
+#~ Things which may be improved: 
+#~ 1_corsenSimple can start the reduction from both sides maybe, to avoid ending with short segemnts on one end
+#~ 2 piecewise check according to curvature or angles 
 
    
     def _coarsenSimple(self,tol=0.001,maxlen=None):
@@ -1083,7 +1088,7 @@ class PolyLine(Curve):
         a  = 0
         npts = pts.ncoords()
         
-        keep    = [a]
+        keep = [a]
         far = a+1
         
         while far!=npts-1:
@@ -1096,8 +1101,8 @@ class PolyLine(Curve):
                 avec = pts[i] - pts[a]
                 lavec = length(avec)
                 dist = pts[a:i].distanceFromLine(pts[a],avec)
-                if (dist.max() <= tol and (lavec <=maxlen)) or \
-                    (i == a+1 and lavec >=maxlen): # this handles segments bigger than the maxlen
+                if (dist.max() <= tol and (lavec <= maxlen)) or \
+                    (i == a+1 and lavec >= maxlen): # this handles segments bigger than the maxlen
                     far = i
                     if far == npts-1:
                         keep.append(far)
@@ -1144,8 +1149,8 @@ class PolyLine(Curve):
         pts = self.coords
         a  = 0
         f = pts.ncoords() -1
-        stack   = []
-        keep    = []
+        stack = []
+        keep = []
         
         stack.append((a, f))
         
@@ -1196,12 +1201,12 @@ class PolyLine(Curve):
            
             if max_dist <= tol: # use line segment
                 if  lmax <= maxlen:
-                    keep+=[a,f]
+                    keep += [a,f]
                 else:            
-                    keep+=[a,farm]
-                    stack+=[(farm,f)]
+                    keep += [a,farm]
+                    stack += [(farm,f)]
             else:
-                stack+=[(a, far),(far, f)]
+                stack += [(a, far),(far, f)]
         
         keep = unique(keep)
         return PolyLine(pts[keep])
