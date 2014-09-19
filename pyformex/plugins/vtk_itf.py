@@ -1290,7 +1290,7 @@ def convexHull(object):
     return Mesh(chull[0][0], chull[0][1], eltype='tet4')
 
 def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True, verbose=False):
-    """decimate a surface (both tri3 or quad4) and returns a trisurface
+    """Decimate a surface (both tri3 or quad4) and returns a trisurface
 
     - `self` : is a tri3 or quad4 surface
     - `targetReduction` : float (from 0.0 to 1.0) : desired number of triangles relative to input number of triangles
@@ -1300,22 +1300,55 @@ def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True, verbose=Fal
     """
     from vtk import vtkDecimatePro
     from pyformex.plugins.trisurface import TriSurface
-
+    
+    
     vpd = convert2VPD(self, clean=True)#convert pyFormex surface to vpd
     vpd = convertVPD2Triangles(vpd)
     vpd = cleanVPD(vpd)
-    decimationFilter = vtkDecimatePro()#decimate the surface
-    decimationFilter.SetInput(vpd)
-    decimationFilter.SetTargetReduction(targetReduction)
-    decimationFilter.SetBoundaryVertexDeletion(boundaryVertexDeletion)
-    decimationFilter.PreserveTopologyOn()
-    decimationFilter.Update()
-    vpd = decimationFilter.GetOutput()
-    vpd=cleanVPD(vpd)
+    
+    filter = vtkDecimatePro()
+    filter.SetInput(vpd)
+    filter.SetTargetReduction(targetReduction)
+    filter.SetBoundaryVertexDeletion(boundaryVertexDeletion)
+    filter.PreserveTopologyOn()
+    filter.Update()
+    
+    vpd = filter.GetOutput()
+    vpd = cleanVPD(vpd)
+    
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata=convertFromVPD(vpd)#convert vpd to pyFormex surface
     if verbose:
         print(('%d faces decimated into %d triangles'%(self.nelems(), len(polys))))
     return TriSurface(coords, polys)
+
+
+# TODO 
+# add meshes line 2 , vtk handles polylines also with >2 elements conneted to a node
+def coarsenPolyLine(self, target=0.5, verbose=False):
+    """Coarsen a PolyLine.
+
+    - `self` : PolyLine
+    - `target` : float in range [0.0,1.0], percentage of coords to  be reduced.
+    
+    Returns a PolyLine with a reduced number of points.
+    """
+    from vtk import vtkDecimatePolylineFilter
+    from pyformex.plugins.curve import PolyLine
+
+    vpd = convert2VPD(self, clean=True)#convert pyFormex PolyLine to vpd
+    vpd = cleanVPD(vpd)
+    filter = vtkDecimatePolylineFilter()
+    filter.SetInput(vpd)
+    filter.SetTargetReduction(target)
+        
+    filter.Update()
+    vpd = filter.GetOutput()
+    vpd = cleanVPD(vpd)
+    
+    [coords, cells, polys, lines, verts], fielddata, celldata, pointdata=convertFromVPD(vpd)#convert vpd to pyFormex surface
+    if verbose:
+        print(('%d coords decimated into %d coords'%(self.ncoords()-1, len(lines))))
+    return PolyLine(coords)
 
 
 def findElemContainingPoint(self, pts, verbose=False):

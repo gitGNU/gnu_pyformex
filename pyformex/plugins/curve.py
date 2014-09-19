@@ -1217,22 +1217,23 @@ class PolyLine(Curve):
     def coarsen(self, method= 'douglas',**kargs):
         """ Reduce the number of points of the PolyLine.
 
-        The algorithm is based on the Douglas-Peucker line
-        simplification/generalization.
-        It iteratively reduces the numbers of points based on the maximum
-        distance between the original PolyLine and the coarsened one.
-        The latter consists of a subset of the points from the original.
-
         Parameters:
 
-        - `method`: string. It can assume values 'douglas' (default) and 'simple'
-            to select the appropriate method
+        - `method`: string of the name of the method to select. It can assume values
+            - 'douglas' (default) , uses Douglas-Peucker algorithm
+            - 'simple' , a simple iterative coarsening method
+            - 'vtk' , uses the vtkDecimatePolylineFilter
+            
+            
         Retuns a Polyline with a reduced number of points.
         """
         if method == 'douglas':
             return self._coarsenDouglas(**kargs)
         if method == 'simple':
             return self._coarsenSimple(**kargs)
+        if method == 'vtk':
+            from pyformex.plugins.vtk_itf import coarsenPolyLine
+            return coarsenPolyLine(self,**kargs)
             
         
     # BV: I'm not sure what this does and if it belongs here
