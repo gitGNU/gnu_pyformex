@@ -1050,249 +1050,80 @@ class PolyLine(Curve):
 
     # allow syntax PL1 + PL2
     __add__ = append
-    
-#TODO
-#~ Things which may be improved: 
-#~ 1_corsenSimple can start the reduction from both sides maybe, to avoid ending with short segemnts on one end
-#~ 2 piecewise check according to curvature or angles 
-
-   
-    def _coarsenSimple(self,tol=0.001,maxlen=None):
-        """ Reduce the number of points of the PolyLine.
-
-        It iteratively reduces the numbers of points based on the maximum
-        distance between the original PolyLine and the coarsened one.
-        The latter consists of a subset of the points from the original.
-        This procedure , though more computational  expensive,
-        provides a better approximation for subsequent segments.
-        
-        Parameters:
-
-        - `tol`: maximum relative distance of the coarsened PolyLine to the
-          original. The value is relative to the curve's characteristic
-          length as obtained from :func:`charLength().
-        - `maxlen`: absolut maximum segment length tolerance of the 
-           segments of the simplified PolyLine. If None the maximum 
-           allowed length is the total length of the the curve.
 
 
-        Retuns a Polyline with a reduced number of points.
+    def refine(self,maxlen):
+        """_ THIS IS UNFINISHED
+
+        Insert extra points in the PolyLine.
+
+        Extra points are inserted so as to make the maximum segment
+        length not larger than the given value.
+
+        Returns a PolyLine which is geometrically equivalent to the
+        input PolyLine.
         """
-        if maxlen is None:
-            maxlen = self.length()
-        if maxlen <= self.lengths().min():
-            return self
-            
-        tol /= self.charLength()
-        pts = self.coords
-        a  = 0
-        npts = pts.ncoords()
-        
-        keep = [a]
-        far = a+1
-        
-        while far!=npts-1:
-            a = keep[-1]
-            # initialize maximum distance ,farthest indices
-            far = a+1
-            max_dist = 0.
-            for i in range(far, npts): 
-                # compare to anchor
-                avec = pts[i] - pts[a]
-                lavec = length(avec)
-                dist = pts[a:i].distanceFromLine(pts[a],avec)
-                if (dist.max() <= tol and (lavec <= maxlen)) or \
-                    (i == a+1 and lavec >= maxlen): # this handles segments bigger than the maxlen
-                    far = i
-                    if far == npts-1:
-                        keep.append(far)
-                else:
-                    keep.append(far)
-                    break
-
-        return PolyLine(pts[asarray(keep)])
-    
-     # TODO:
-    #remove the loop and manage with arrays
-    def _coarsenDouglas(self,tol=0.001,maxlen=None):
-        """ Reduce the number of points of the PolyLine.
-
-        The algorithm is based on the Douglas-Peucker line
-        simplification/generalization.
-        It iteratively reduces the numbers of points based on the maximum
-        distance between the original PolyLine and the coarsened one.
-        The latter consists of a subset of the points from the original.
-
-        Parameters:
-
-        - `tol`: maximum relative distance of the coarsened PolyLine to the
-          original. The value is relative to the curve's characteristic
-          length as obtained from :func:`charLength().
-        - `maxlen`: absolut maximum segment length tolerance of the 
-           segments of the simplified PolyLine. If None the maximum 
-           allowed length is the total length of the the curve.
+        ndiv = int(ceil(self.lengths() / maxlen))
+        self.divide(ndiv)
 
 
-        Retuns a Polyline with a reduced number of points.
+    def vertexReductionDP(self,tol,keep=[0,-1]):
+        """Douglas-Peucker vertex reduction.
 
-        This code was a 3D curve adaptation of the code of Schuyler Erle
-        <schuyler@nocat.net>, which can be found at
-        http://mappinghacks.com/code/dp.py.txt
+        For any subpart of the PolyLine, if the distance of all its vertices to
+        the line connecting the endpoints is smaller than `tol`, the internal
+        points are removed.
+
+        Returns a bool array flagging the vertices to be kept in the reduced
+        form.
         """
-        
-        if maxlen is None:
-            maxlen = self.length()
-        if maxlen <= self.lengths().min():
-            return self
-            
-        tol /= self.charLength()
-        pts = self.coords
-        a  = 0
-        f = pts.ncoords() -1
-        stack = []
-        keep = []
-        
-        stack.append((a, f))
-        
-        while stack:
-            # get the anchor and the floater
-            a, f = stack.pop()
+        x = self.coords
+        n = len(x)
+        _keep = zeros(n,dtype=bool)
+        _keep[keep] = 1
 
-            # initialize the main line segment and get segment lenght
-            vec = pts[f] - pts[a]
-            lvec = length(vec)
-            
-            # unit vector
-            vec = normalize(vec,ignore_zeros=True)
-        
-            # inner loop:
-            # initialize maximum distance ,farthest and maximim farthest indices , and 
-            # farm and lmax handles maximum length constraints
-            
-            max_dist = 0.
-            far = a + 1
-            farm = a + 1
-            lmax = lvec
-            
-            for i in range(far, f): 
-                # compare to anchor
-                avec = pts[i] - pts[a]
-                lavec = length(avec)
+        def decimate(i,j):
+            """Recursive vertex decimation.
 
-                proj = dotpr(avec,vec)
-                if proj > 0.:
-                    # compare to floater
-                    fvec = pts[i] - pts[f]
-                    lfvec = length(fvec)
+            This will remove the vertices in the segment i-j
+            """
+            # Find point farthest from line through endpoints
+            d = x[i:j].distanceFromLine(x[i], x[j]-x[i])
+            k = argmax(d)
+            dmax = d[k]
+            k += i
+            if dmax > tol:
+                # Keep the farthest vertex, split the polyline at that vertex
+                # and recursively decimate the two parts
+                _keep[k] = 1
+                if k > i+1:
+                  decimate(i,k);
+                if k < j-1:
+                  decimate(k,j);
 
-                    # projection on the main line segment
-                    proj = dotpr(fvec,-vec)
+        # Compute vertices to keep
+        decimate(0,n-1)
+        return _keep
 
-                    if proj > 0.: # pitaghorean distance
-                        dist = sqrt(abs(lfvec ** 2 - proj ** 2))
-                    else:
-                        dist = lfvec
-                    if max_dist < dist:
-                        max_dist = dist
-                        far = i
-                        # check if the current segment needs to be further refined
-                        if lavec <= maxlen or (lavec > maxlen and i == a+1): # this handles segments bigger than the maxlen
-                            farm = i
-           
-            if max_dist <= tol: # use line segment
-                if  lmax <= maxlen:
-                    keep += [a,f]
-                else:            
-                    keep += [a,farm]
-                    stack += [(farm,f)]
-            else:
-                stack += [(a, far),(far, f)]
-        
-        keep = unique(keep)
-        return PolyLine(pts[keep])
-  
-    def coarsen(self, method= 'douglas',**kargs):
+
+    def coarsen(self,tol=0.01,keep=[0,-1]):
         """ Reduce the number of points of the PolyLine.
 
         Parameters:
 
-        - `method`: string of the name of the method to select. It can assume values
-            - 'douglas' (default) , uses Douglas-Peucker algorithm
-            - 'simple' , a simple iterative coarsening method
-            - 'vtk' , uses the vtkDecimatePolylineFilter
-            
-            
+        - `tol`: maximum relative distance of vertices to remove from the
+          chord of the segment. The value is relative to the total curve
+          length.
+        - `keep`: list of vertices to keep during the coarsening process.
+          (Not implemented yet).
+
         Retuns a Polyline with a reduced number of points.
         """
-        if method == 'douglas':
-            return self._coarsenDouglas(**kargs)
-        if method == 'simple':
-            return self._coarsenSimple(**kargs)
-        if method == 'vtk':
-            from pyformex.plugins.vtk_itf import coarsenPolyLine
-            return coarsenPolyLine(self,**kargs)
-            
-        
-    # BV: I'm not sure what this does and if it belongs here
-
-    ## @utils.deprecated("PolyLine_distanceOfPoints")
-    ## def distanceOfPoints(self,p,n,return_points=False):
-    ##     """_Find the distances of points p, perpendicular to the vectors n.
-
-    ##     p is a (np,3) shaped array of points.
-    ##     n is a (np,3) shaped array of vectors.
-
-    ##     The return value is a tuple OKpid,OKdist,OKpoints where:
-    ##     - OKpid is an array with the point numbers having a distance;
-    ##     - OKdist is an array with the distances for these points;
-    ##     - OKpoints is an array with the footpoints for these points
-    ##     and is only returned if return_points = True.
-    ##     """
-    ##     q = self.pointsOn()
-    ##     if not self.closed:
-    ##         q = q[:-1]
-    ##     m = self.vectors()
-    ##     t = gt.intersectionTimesLWP(q, m, p, n)
-    ##     t = t.transpose((1, 0))
-    ##     x = q[newaxis,:] + t[:,:, newaxis] * m[newaxis,:]
-    ##     inside = (t >= 0.) * (t <= 1.)
-    ##     pid = where(inside)[0]
-    ##     p = p[pid]
-    ##     x = x[inside]
-    ##     dist = length(x-p)
-    ##     OKpid = unique(pid)
-    ##     OKdist = array([ dist[pid == i].min() for i in OKpid ])
-    ##     if return_points:
-    ##         minid = array([ dist[pid == i].argmin() for i in OKpid ])
-    ##         OKpoints = array([ x[pid == i][j] for i, j in zip(OKpid, minid) ]).reshape(-1, 3)
-    ##         return OKpid, OKdist, OKpoints
-    ##     return OKpid, OKdist
-
-    # BV: same remark: what is this distance?
-
-    ## @utils.deprecated("PolyLine_distanceOfPolyline")
-    ## def distanceOfPolyLine(self,PL,ds,return_points=False):
-    ##     """_Find the distances of the PolyLine PL.
-
-    ##     PL is first discretised by calculating a set of points p and direction
-    ##     vectors n at equal distance of approximately ds along PL. The
-    ##     distance of PL is then calculated as the distances of the set (p,n).
-
-    ##     If return_points = True, two extra values are returned: an array
-    ##     with the points p and an array with the footpoints matching p.
-    ##     """
-    ##     ntot = int(ceil(PL.length()/ds))
-    ##     t = PL.atLength(ntot)
-    ##     p = PL.pointsAt(t)
-    ##     n = PL.directionsAt(t)
-    ##     res = self.distanceOfPoints(p, n, return_points)
-    ##     if return_points:
-    ##         return res[1], p[res[0]], res[2]
-    ##     return res[1]
+        atol = tol*self.length()
+        keep = self.vertexReductionDP(tol=atol,keep=keep)
+        return PolyLine(self.coords[keep],closed=self.closed)
 
 
-    
-    
 ##############################################################################
 #
 class Line(PolyLine):
@@ -2170,6 +2001,8 @@ class Spiral(Curve):
 
 ##############################################################################
 # Other functions
+
+
 
 def convertFormexToCurve(self,closed=False):
     """Convert a Formex to a Curve.
