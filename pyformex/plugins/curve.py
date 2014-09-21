@@ -696,7 +696,7 @@ class PolyLine(Curve):
 
         """
         if equidistant:
-            at = S.atLength(nseg)
+            at = self.atLength(nseg)
         else:
             S = self
             at = arange(nseg+1) * float(S.nparts) / nseg
