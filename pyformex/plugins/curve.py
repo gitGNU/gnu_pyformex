@@ -1058,10 +1058,8 @@ class PolyLine(Curve):
         Returns a PolyLine which is geometrically equivalent to the
         input PolyLine.
         """
-        print(maxlen,self.length(),self.lengths())
         maxlen *= self.length()
         ndiv = ceil(self.lengths() / maxlen).astype(Int)
-        print(maxlen,ndiv)
         return self.approx(ndiv=ndiv)
 
 
