@@ -1699,7 +1699,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         ML = []
 
         for eltype in strategies:
-
+            
             elems = []
             prop = []
             for conditions, selector in strategies[eltype]:
@@ -1727,9 +1727,10 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
             if m.nelems() == 0:
                 break
-
-        ML.append(m)
-
+        
+        if m.nelems()
+            ML.append(m)
+        
         return ML
 
 
