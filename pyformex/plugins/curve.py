@@ -344,6 +344,13 @@ class Curve(Geometry):
         at,bt = list(at[:1]),list(at[1:])
 
         # Handle segment by segment
+        #
+        # THIS SHOULD BE CHANGED:
+        #    insert NO points of degree 1 (always correct)
+        #    insert 1 point at 1/2 for degree 2  (current implementation)
+        #    insert 2 points at 1/3 and 2/3 for degree 3
+        #    etc...
+        #
         while len(bt) > 0:
             c0,c2 = at[-1],bt[0]
             if c2 > c0:
@@ -1053,7 +1060,7 @@ class PolyLine(Curve):
         self.divide(ndiv)
 
 
-    def vertexReductionDP(self,tol,keep=[0,-1]):
+    def vertexReductionDP(self,tol,maxlen=None,keep=[0,-1]):
         """Douglas-Peucker vertex reduction.
 
         For any subpart of the PolyLine, if the distance of all its vertices to
@@ -1071,13 +1078,14 @@ class PolyLine(Curve):
         def decimate(i,j):
             """Recursive vertex decimation.
 
-            This will remove the vertices in the segment i-j
+            This will remove all the vertices in the segment i-j that
+            are closer than tol to any chord.
             """
             # Find point farthest from line through endpoints
-            d = x[i:j].distanceFromLine(x[i], x[j]-x[i])
+            d = x[i+1:j].distanceFromLine(x[i], x[j]-x[i])
             k = argmax(d)
             dmax = d[k]
-            k += i
+            k += i+1
             if dmax > tol:
                 # Keep the farthest vertex, split the polyline at that vertex
                 # and recursively decimate the two parts
@@ -1087,12 +1095,35 @@ class PolyLine(Curve):
                 if k < j-1:
                   decimate(k,j);
 
+        def reanimate(i,j):
+            """Recursive vertex reanimation.
+
+            This will revive vertices in the segment i-j if the
+            segment is longer than maxlen.
+            """
+            if j > i+1 and length(x[i]-x[j]) > maxlen:
+                # too long: revive a point
+                d = length(x[i+1:j]-x[i])
+                w = where(d>maxlen)[0]
+                if len(w) > 0:
+                    k = w[0] + i+1
+                    _keep[k] = 1
+                    reanimate(k+1,j)
+
+
         # Compute vertices to keep
         decimate(0,n-1)
+
+        # Reanimate some vertices if maxlen specified
+        if maxlen is not None:
+            w = where(_keep)[0]
+            for i,j in zip(w[:-1],w[1:]):
+                reanimate(i,j)
+
         return _keep
 
 
-    def coarsen(self,tol=0.01,keep=[0,-1]):
+    def coarsen(self,tol=0.01,maxlen=None,keep=[0,-1]):
         """ Reduce the number of points of the PolyLine.
 
         Parameters:
@@ -1106,7 +1137,9 @@ class PolyLine(Curve):
         Retuns a Polyline with a reduced number of points.
         """
         atol = tol*self.length()
-        keep = self.vertexReductionDP(tol=atol,keep=keep)
+        if maxlen:
+            maxlen *= self.length()
+        keep = self.vertexReductionDP(tol=atol,maxlen=maxlen,keep=keep)
         return PolyLine(self.coords[keep],closed=self.closed)
 
 
