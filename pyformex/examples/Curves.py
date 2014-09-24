@@ -59,8 +59,6 @@ curvetypes = [
 
 
 
-
-
 def drawCurve(ctype,dset,closed,degree,endcond,curl,nseg,chordal,method,approx,extend,cutWP=False,scale=None,frenet=False,avgdir=True,upvector=None):
     global S, TA
     P = dataset[dset]
@@ -90,7 +88,7 @@ def drawCurve(ctype,dset,closed,degree,endcond,curl,nseg,chordal,method,approx,e
 
     im = curvetypes.index(ctype)
     print("%s control points" % S.coords.shape[0])
-    #draw(S.coords,color=red,nolight=True)
+    draw(S.approx(),color=black)
 
     if approx:
         print(method)
@@ -107,18 +105,6 @@ def drawCurve(ctype,dset,closed,degree,endcond,curl,nseg,chordal,method,approx,e
             draw(PL, color=ctype_color[im])
         draw(PL.pointsOn(), color=black)
 
-    else:
-        #draw(S, color=ctype_color[im], nolight=True)
-        # Currently direct drawing of Curve is disable: draw approx
-        draw(S.approx(),color=red)
-
-    ## if directions:
-    ##     t = arange(2*S.nparts+1)*0.5
-    ##     ipts = S.pointsAt(t)
-    ##     draw(ipts)
-    ##     idir = S.directionsAt(t)
-    ##     drawVectors(ipts,0.2*idir)
-
     if frenet:
         if approx:
             C = PL
@@ -133,7 +119,6 @@ def drawCurve(ctype,dset,closed,degree,endcond,curl,nseg,chordal,method,approx,e
             drawVectors(X, T, size=1., nolight=True, color='magenta')
             drawVectors(X, N, size=1., nolight=True, color='yellow')
             drawVectors(X, B, size=1., nolight=True, color='cyan')
-        #print(T,N,B)
 
 
 

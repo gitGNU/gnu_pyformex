@@ -64,7 +64,7 @@ class Curve(Geometry):
     - `pointsOn()`: the defining points placed on the curve
     - `pointsOff()`: the defining points placeded off the curve (control points)
     - `parts(j,k)`:
-    - `approx(ndiv=None,nseg=None,chordal=None)`:
+    - `approx(nseg=None,ndiv=None,chordal=None)`:
 
     Furthermore it may define, for efficiency reasons, the following methods:
 
@@ -280,7 +280,7 @@ class Curve(Geometry):
         return self.lengths().sum()
 
 
-    def atApproximate(self,nseg,equidistant=False,npre=100):
+    def atApproximate(self,nseg,equidistant=False,npre=None):
         """Return parameter values for approximating a Curve with a PolyLine.
 
         Parameters:
@@ -291,14 +291,17 @@ class Curve(Geometry):
         - `equidistant`: if True, the points are spaced almost equidistantly
           over the curve. If False (default), the points are spread
           equally over the parameter space.
-        - `npre`: only used when `equidistant` is True: number of segments
-          per part of the curve used in the pre-approximation. This pre-
-          approximation is currently required to compute curve lengths.
+        - `npre`: integer: only used when `equidistant` is True:
+          number of segments per part of the curve used in the
+          pre-approximation. This pre-approximation is currently
+          required to compute curve lengths.
 
         """
         if equidistant:
-            S = self.approximate(npre, equidistant=False)
-            at = S.atLength(nseg)
+            if npre is None:
+                npre = 100
+            S = self.approximate(ndiv=npre)
+            at = S.atLength(nseg) / npre
 
         else:
             S = self
@@ -308,13 +311,19 @@ class Curve(Geometry):
         return at
 
 
-    def atChordal(self,chordal=0.01,div=None):
+    def atChordal(self,chordal=0.01,at=None):
         """Return parameter values to approximate within given chordal error.
 
         Parameters:
 
         - chordal: relative tolerance on the distance of the chord to the
           curve. The tolerance is relative to the curve's charLength().
+        - at: list of floats: list of parameter values that need to be
+          included in the result. The list should contain increasing values
+          in the curve's parameter range. If not specified, a default is
+          set assuring that the curve is properly approximated. If you
+          specify this yourself, you may end up with bad approximations due
+          to bad choice of the initial values.
 
         Returns a list of parameter values that create a PolyLine
         approximate for the curve, such that the chordal error is
@@ -323,7 +332,12 @@ class Curve(Geometry):
         chord.
         """
         # Create first approximation
-        at = self.atApproximate(nseg=self.nparts*self.degree)
+        if at is None:
+            if hasattr(self,'degree'):
+                ndiv = self.degree
+            else:
+                ndiv = 1
+            at = self.atApproximate(nseg=ndiv*self.nparts)
         charlen = self.approxAt(at).charLength()
 
         # Split in handled and to-be-handled
@@ -363,45 +377,57 @@ class Curve(Geometry):
         return PL.setProp(self.prop)
 
 
-    @utils.warning('warn_curve_approximate')
-    def approximate(self,nseg=None,ndiv=None,chordal=0.01,equidistant=False,npre=100):
+    @utils.warning('warn_curve_approx')
+    def approx(self,nseg=None,ndiv=None,chordal=0.01,equidistant=False,npre=None):
         """Approximate a Curve with a PolyLine of n segments
+
+        If neither `nseg` nor `ndiv` are specified (default), a chordal method
+        is used limiting the chordal distance of the curve to the PolyLine
+        segments.
 
         Parameters:
 
-        - `nseg`: number of straight segments of the resulting PolyLine. If
-          not specified, the 'chordal error' method will be used and the
-          number of segments is dependent on the value of 'chordal'
-        - `ndiv`: number of straight segments of each segment. This is a
-          convenient way of specifying nseg = ndiv * self.nparts and
-          equidistant = False.
-        - `chordal`: accuracy of the approximation when using the 'chordal
-          error' method.
+        - `nseg`: integer: number of straight segments of the resulting
+          PolyLine. Only used if `ndiv` is not specified.
+        - `ndiv`: positive integer or a list thereof. If a single integer,
+          it specifies the number of straight segments in each part of the
+          curve, and is thus equivalent with `nseg = ndiv * self.nparts`.
+          If a list of integers, its length should be equal to the number
+          of parts in the curve and each integer in the list specifies the
+          number of segments the corresponding part.
+        - `chordal`: float: accuracy of the approximation when using the
+          'chordal error' method. This is the case if neither `nseg` nor
+          `ndiv` are specified (the default). The value is relative to the
+          curve's :func:`charLength`.
+        - `equidistant`: bool, only used if `nseg` is specified and `ndiv`
+          is not. If True the `nseg+1` points are spaced almost equidistantly
+          over the curve. If False (default), the points are spread equally
+          over the parameter space.
+        - `npre`: integer, only used if the `chordal` method is used or if
+          `nseg` is not None and `equidistant` is True: the number of segments
+          per part of the curve (like `ndiv`) used in a pre-approximation.
+          If not specified, it is set to the degree of the curve for the
+          `chordal` method (1 for PolyLine), and to 100 in the `equidistant`
+          method (where the pre-approximation is currently used to compute
+          accurate curve lengths).
 
-        - `equidistant`: only used if `nseg` is not None: if True the points
-          are spaced almost equidistantly over the curve. If False (default),
-          the points are spread equally over the parameter space.
-        - `npre`: only used if `nseg` is not None and `equidistant` is True:
-          number of segments per part of the curve used in the
-          pre-approximation. This pre-approximation is currently required to
-          compute curve lengths.
-
-        .. note:: This is an alternative for Curve.approx, and may replace it
-           in future.
         """
         if ndiv is not None:
-            nseg = ndiv * self.nparts
+            if isInt(ndiv):
+                nseg = ndiv * self.nparts
             equidistant = False
         if nseg is not None:
             at = self.atApproximate(nseg,equidistant,npre)
+        elif ndiv is not None:
+            at = concatenate([ i + unitDivisor(n) for n,i in enumerate(ndiv) ])
         else:
-            at = self.atChordal(chordal)
+            at = self.atChordal(chordal,npre)
+
         return self.approxAt(at)
 
 
-    @utils.warning('warn_curve_approx')
-    def approx(self,**kargs):
-        return self.approximate(**kargs)
+    # For compatibility/convenience
+    approximate = approx
 
 
     def frenet(self,ndiv=None,nseg=None,chordal=0.01,upvector=None,avgdir=True,compensate=False):
@@ -680,46 +706,6 @@ class PolyLine(Curve):
             return d, w
         else:
             return d
-
-
-    def atApproximate(self,nseg,equidistant=False,**kargs):
-        """Return parameter values for subdividing a PolyLine.
-
-        Parameters:
-
-        - `nseg`: number of segments of the resulting PolyLine. The number
-          of returned parameter values is `nseg` if the curve is closed,
-          else `nseg+1`.
-        - `equidistant`: if True, the points are spaced almost equidistantly
-          over the curve. If False (default), the points are spread
-          equally over the parameter space.
-
-        """
-        if equidistant:
-            at = self.atLength(nseg)
-        else:
-            S = self
-            at = arange(nseg+1) * float(S.nparts) / nseg
-        if self.closed:
-            at = at[:-1]
-        return at
-
-
-    def approx(self,ndiv=None,nseg=None,equidistant = False,**kargs):
-        """Create a subdivided PolyLine.
-
-        The name is approx so it can perform the same functionality
-        as other Curve.approx methods.
-        It does not have the chordal method: ndiv=1 is the default
-        setting.
-        """
-        if ndiv is None and nseg is None:
-            ndiv = 1
-        if ndiv is not None:
-            nseg = ndiv * self.nparts
-            equidistant = False
-        at = self.atApproximate(nseg,equidistant)
-        return self.approxAt(at)
 
 
     def _compensate(self,end=0,cosangle=0.5):
