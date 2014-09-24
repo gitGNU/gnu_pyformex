@@ -41,7 +41,7 @@ from pyformex.plugins.nurbs import *
 from pyformex.odict import OrderedDict
 
 
-def drawCurve(dset,closed,nseg,chordal,method,coarsen,tol,maxlen,numbers):
+def drawCurve(dset,closed,nseg,chordal,method,coarsen,tol,maxlen,refine,numbers):
     global S
     P = dataset[dset]
     S = BezierSpline(P, closed=closed)
@@ -57,8 +57,13 @@ def drawCurve(dset,closed,nseg,chordal,method,coarsen,tol,maxlen,numbers):
 
     if coarsen:
         PC = PL.coarsen(tol,maxlen)
-        print(PC)
+        print("Coarsened from %s to %s points" % (PL.npoints(),PC.npoints()))
+        if refine:
+            print(PC)
+            PC = PC.refine(maxlen)
+            print(PC)
         draw(PC,color=blue)
+        draw(PC.pointsOn(), color=blue, marksize=10)
 
 
 dataset = [
@@ -85,8 +90,10 @@ _items = [
     _I('Nseg', 4),
     _G('Coarsen', [
         _I('Tol', 0.01),
-        _I('Maxlen', 0.1, tooltip='Maximum relative segment length (None if <= 0)'),
-        ], checked=True),
+        _I('UseMaxlen', False),
+        _I('Maxlen', 0.1),
+        _I('Refine', False),
+        ], checked=False),
     _I('Clear', True),
     _I('ShowNumbers', True),
     ]
@@ -95,7 +102,7 @@ _enablers = [
     ('Method', 'chordal', 'Chordal'),
     ('Method', 'parametric', 'Nseg'),
     ('Method', 'equidistant', 'Nseg'),
-    ('Coarsen', True, 'Tol'),
+    ('UseMaxlen', True, 'Maxlen', 'Refine'),
     ]
 
 
@@ -127,13 +134,13 @@ def show():
     dialog.acceptData()
     res = dialog.results
     globals().update(res)
-    if Maxlen <= 0.0:
+    if not UseMaxlen:
         Maxlen = None
     export({'_Curves_data_':res})
     if Clear:
         clear()
     setDrawOptions({'bbox':'auto'})
-    drawCurve(int(DataSet), Closed, Nseg, Chordal, Method, Coarsen,Tol,Maxlen,ShowNumbers)
+    drawCurve(int(DataSet), Closed, Nseg, Chordal, Method, Coarsen,Tol,Maxlen,Refine,ShowNumbers)
     setDrawOptions({'bbox':None})
 
 

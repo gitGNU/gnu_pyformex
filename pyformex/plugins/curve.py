@@ -426,7 +426,9 @@ class Curve(Geometry):
         if nseg is not None:
             at = self.atApproximate(nseg,equidistant,npre)
         elif ndiv is not None:
-            at = concatenate([ i + unitDivisor(n) for n,i in enumerate(ndiv) ])
+            print("Refine to %s" % ndiv)
+            at = concatenate([ i + unitDivisor(n) for i,n in enumerate(ndiv) ])
+            print("At %s" % at)
         else:
             at = self.atChordal(chordal,npre)
 
@@ -1046,18 +1048,21 @@ class PolyLine(Curve):
 
 
     def refine(self,maxlen):
-        """_ THIS IS UNFINISHED
+        """Insert extra points in the PolyLine to reduce the segment length.
 
-        Insert extra points in the PolyLine.
+        Parameters:
 
-        Extra points are inserted so as to make the maximum segment
-        length not larger than the given value.
+        - `maxlen`: float: maximum length of the segments. The value is
+        relative to the total curve length.
 
         Returns a PolyLine which is geometrically equivalent to the
         input PolyLine.
         """
-        ndiv = int(ceil(self.lengths() / maxlen))
-        self.divide(ndiv)
+        print(maxlen,self.length(),self.lengths())
+        maxlen *= self.length()
+        ndiv = ceil(self.lengths() / maxlen).astype(Int)
+        print(maxlen,ndiv)
+        return self.approx(ndiv=ndiv)
 
 
     def vertexReductionDP(self,tol,maxlen=None,keep=[0,-1]):
