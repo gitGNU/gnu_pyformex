@@ -1728,8 +1728,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
             if m.nelems() == 0:
                 break
         
-        if m.nelems()
-            ML.append(m)
+        ML.append(m)
         
         return ML
 
