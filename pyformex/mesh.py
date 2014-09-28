@@ -1659,18 +1659,25 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return M
 
 
-    def reduceDegenerate(self,eltype=None):
+    def reduceDegenerate(self,eltype=None,return_indices=False):
         """Reduce degenerate elements to lower plexitude elements.
-
+        
         This will try to reduce the degenerate elements of the mesh to elements
-        of a lower plexitude. If a target element type is given, only the
-        matching reduce scheme is tried.
-        Else, all the target element types for which
-        a reduce scheme from the Mesh eltype is available, will be tried.
-
+        of a lower plexitude. 
+        
+        Parameters:
+        
+        -`eltype`: string. Element type name. If a target element
+            type is given, only the matching reduce scheme is tried.
+            Else, all the target element types for which a reduce 
+            scheme from the Mesh eltype is available, will be tried.
+        
+        -`return_indices`: bool. If True a list of indices of element positions
+            in the original Mesh(for every intermediate Mesh) is also returned.
+        
         The result is a list of Meshes of which the last one contains the
         elements that could not be reduced and may be empty.
-        Property numbers propagate to the children.
+        Property numbers propagate to the children. If return_indices
         """
         #
         # This duplicates a lot of the functionality of
@@ -1697,26 +1704,32 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
         m = self
         ML = []
-
+        w_all = resize(False,self.nelems())
+        all_indices = []
+        
         for eltype in strategies:
             
+            indices = asarray([],dtype=int)
             elems = []
             prop = []
+            
             for conditions, selector in strategies[eltype]:
-                e = m.elems
                 cond = array(conditions)
-                w = (e[:, cond[:, 0]] == e[:, cond[:, 1]]).all(axis=1)
+                w = (self.elems[:, cond[:, 0]] == self.elems[:, cond[:, 1]]).all(axis=1)
                 sel = where(w)[0]
-                if len(sel) > 0:
-                    elems.append(e[sel][:, selector])
-                    if m.prop is not None:
-                        prop.append(m.prop[sel])
+                indices=concatenate([indices,sel])
+                w_all += w
+                if len(sel):
+                    elems.append(self.elems[sel][:, selector])
+                    if self.prop is not None:
+                        prop.append(self.prop[sel])
                     # remove the reduced elems from m
-                    m = m.select(~w, compact=False)
-
+                    m = self.select(~(w_all), compact=False)
                     if m.nelems() == 0:
                         break
-
+                else:
+                    m = self.select(~(w_all), compact=False)
+                    
             if elems:
                 elems = concatenate(elems)
                 if prop:
@@ -1724,14 +1737,18 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
                 else:
                     prop = None
                 ML.append(Mesh(m.coords, elems, prop, eltype))
-
+                all_indices.append(indices)
+            
             if m.nelems() == 0:
+                all_indices.append(indices)
                 break
         
         ML.append(m)
-        
-        return ML
-
+        all_indices.append(where(~w_all))
+        if return_indices:
+            return ML, all_indices
+        else:
+            return ML
 
     def splitDegenerate(self,autofix=True):
         """Split a Mesh in degenerate and non-degenerate elements.
