@@ -117,12 +117,6 @@ have internet connection from your Linux system.
 
     apt-get install emacs python-mode.el
 
-  .. warning: Make sure you have python-mode 5, not 6. The 6 version is
-     really complete sh** and unusable/unuseful.
-
-
-
-
   Of course, many other editors will qualify as well.
 
 .. note:: We should add a list of other good editors here
@@ -263,6 +257,19 @@ Quick overview
 .. note: In case you only want to run/change some version of pyFormex and
    do not want to contribute any changes back to the pyFormex project, you
    can also clone the repository anonymously (see the install manual).
+
+- The .git directory in your repository also contains a config file,
+  where you can set configuration items special for this git repository.
+  The above mentioned ~/.gitconfig holds for all your git repositories.
+
+  Add the following section to your .git/config::
+
+    [filter "idexpansion"]
+	clean = id_clean
+	smudge = id_smudge
+
+  This will take care of transformation of `$Id$` fields (see further)
+  in the source code on checkout and commit.
 
 - See a status of what has changed (use it often!)::
 
@@ -759,17 +766,27 @@ General guidelines
 
     .. $Id$
 
+  On your next ``git checkout`` the ``$Id$`` fields will be sustituted
+  by the date, time and developer name of the last push operation.
+  Never edit this ``$Id$`` field information directly.
 
-- The ``$Id$`` will be sustituted by Subversion on your next updates. Never
-  edit this ``$Id$`` field directly.
+  This feature has to be activated by putting the following lines in your
+  .git/config file (see above)::
 
-- End your source and text files with a line::
+    [filter "idexpansion"]
+	clean = id_clean
+	smudge = id_smudge
+
+- Python source files should end with a line::
 
     # End
 
-  and .rst files with::
+  and .rst files should end with::
 
     .. End
+
+  These lines help us in detecting that no part of a file has been cut off
+  by accident.
 
 - In Python files, always use 4 blanks for indenting, never TABs. Use
   a decent Python-aware editor that allows you to configure this. The
