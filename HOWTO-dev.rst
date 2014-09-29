@@ -267,9 +267,12 @@ Quick overview
     [filter "idexpansion"]
 	clean = id_clean
 	smudge = id_smudge
+    [filter "idnoexpansion"]
+	clean = id_clean
 
   This will take care of transformation of `$Id$` fields (see further)
   in the source code on checkout and commit.
+
 
 - See a status of what has changed (use it often!)::
 
@@ -770,12 +773,10 @@ General guidelines
   by the date, time and developer name of the last push operation.
   Never edit this ``$Id$`` field information directly.
 
-  This feature has to be activated by putting the following lines in your
-  .git/config file (see above)::
-
-    [filter "idexpansion"]
-	clean = id_clean
-	smudge = id_smudge
+  This feature has to be activated by defining the 'idexpansion' filter
+  in your .git/config file (see above).
+  Files that have the idexpansion filter set (in .gitattributes) will see
+  translation of the `$Id$` field.
 
 - Python source files should end with a line::
 
