@@ -42,12 +42,11 @@ Dialog = widgets.InputDialog
 _I = widgets.simpleInputItem
 _G = widgets.groupInputItem
 _T = widgets.tabInputItem
-from pyformex.gui import toolbar
-from pyformex.gui import image
-from pyformex.plugins import trisurface, tools, fe
 from pyformex.script import *
 from pyformex.opengl.colors import *
-from pyformex.coordsys import CoordinateSystem
+from pyformex.gui.toolbar import timeout
+from pyformex.gui import image
+
 
 import numpy
 import os
@@ -491,10 +490,6 @@ def printMessage(s):
     pf.GUI.board.write(str(s))
     pf.GUI.update()
     pf.app.processEvents()
-
-
-def timeout(state=None):
-    toolbar.timeout(state)
 
 
 def delay(s=None):
