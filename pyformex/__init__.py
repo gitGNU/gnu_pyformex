@@ -169,32 +169,24 @@ if installtype=='G':
     def run_cmd(cmd):
         """Run command"""
         import subprocess
-        P = subprocess.Popen(cmd,stdout=subprocess.PIPE,shell=True)
+        P = subprocess.Popen(cmd,stdout=subprocess.PIPE,shell=True,universal_newlines=True)
         out,err = P.communicate()
         return P.returncode,out,err
 
     def set_revision():
         global __revision__
-        #print("Check whether %s is a git source" % pyformexdir)
         cmd = 'cd %s && git describe --always' % pyformexdir
-        #print(cmd)
         sta,out,err = run_cmd(cmd)
         if sta == 0:
-            #print(out)
             __revision__ = out.split('\n')[0].strip()
-            #print("Revision: %s" % __revision__)
         else:
             print("Could not set revision")
 
     def set_branch():
-        #print("Set branch name")
         cmd = 'cd %s && git symbolic-ref -q HEAD' % pyformexdir
-        #print(cmd)
         sta,out,err = run_cmd(cmd)
         if sta == 0:
-            #print(out)
             branch = out.split('\n')[0].split('/')[-1]
-            #print("Branch: %s" % branch)
         else:
             print("Could not set branch name")
 

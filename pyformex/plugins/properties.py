@@ -88,7 +88,7 @@ class Database(Dict):
         """
         mat = FlatDB(*args,**kargs)
         mat.readFile(filename)
-        for k, v in mat.iteritems():
+        for k, v in mat.items():
             self[k] = Dict(v)
 
 

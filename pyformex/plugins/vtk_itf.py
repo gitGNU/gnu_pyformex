@@ -98,7 +98,7 @@ import os
 def getVTKtype(a):
     """Converts the  data type from a numpy to a vtk array """
     return gvat(a.dtype)
-    
+
 def getNtype(a):
     """Converts the  data type from a  vtk to a numpy array """
     return gnat(a.GetDataType())
@@ -118,7 +118,7 @@ def array2VTK(a,vtype=None):
 
 def array2N(a,ntype=None):
     """Convert a vtk array to a numpy array
-    
+
     Parameters:
 
     - `a`: a vtk array
@@ -129,7 +129,7 @@ def array2N(a,ntype=None):
         ntype = getNtype(a)
     return asarray(v2n(a), dtype=ntype)
 
-    
+
 def cleanVPD(vpd):
     """Clean the vtkPolydata
 
@@ -209,14 +209,14 @@ def convert2VPD(M,clean=False,verbose=True):
 
     If the Mesh has a prop array the properties are added as cell data array in an array called prop.
     This name should be protected from the user to allow to convert properties from/to the vtk interface.
-    
+
     Returns a vtkPolyData.
     """
     from vtk import vtkPolyData, vtkPoints, vtkIdTypeArray, vtkCellArray
 
     if verbose:
         print(('STARTING CONVERSION FOR DATA OF TYPE %s '%type(M)))
-    
+
     if isinstance(M, Formex):
         M = M.toMesh()
 
@@ -260,13 +260,13 @@ def convert2VPD(M,clean=False,verbose=True):
             vpd.SetPolys(datav)
         except:
             raise ValueError("Error in saving  POLYS")
-            
+
     if M.prop is not None: # convert prop numbers into vtk array
         vtype = vtkIntArray().GetDataType()
         vprop = array2VTK(M.prop,vtype)
         vprop.SetName('prop')
         vpd.GetCellData().AddArray(vprop)
-    
+
     vpd.Update()
     if clean:
         vpd = cleanVPD(vpd)
@@ -301,27 +301,27 @@ def convert2VTU(M):
         elif elname == 'hex8':
             return vtk.VTK_HEXAHEDRON
         else:
-            raise ValueError ('conversion not yet implemented')
+            raise ValueError('conversion not yet implemented')
     # create vtk coords
     pts = coords2VTK(M.coords)
     # create vtk connectivity
     datav = elems2VTK(M.elems)
     # find vtu cell type
     vtuCellType = eltype2VTU(M.elName())
-    
+
 
     # create the vtu
     from vtk import vtkUnstructuredGrid
     vtu = vtkUnstructuredGrid()
     vtu.SetPoints(pts)
     vtu.SetCells(vtuCellType, datav)
-    
+
     if M.prop is not None: # convert prop numbers into vtk array
         vtype = vtkIntArray().GetDataType()
         vprop = array2VTK(M.prop,vtype)
         vprop.SetName('prop')
         vtu.GetCellData().AddArray(vprop)
-    
+
     vtu.Update()
     return vtu
 
@@ -463,16 +463,16 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
     if vpd.GetCellData().GetNumberOfArrays():
         celldata = vpd.GetCellData()
         if verbose:
-            print ('*Cell Data Arrays')        
+            print ('*Cell Data Arrays')
         celldata = builddatadict(celldata, verbose=verbose)
 
     # getting points data
     if vpd.GetPointData().GetNumberOfArrays():
         pointdata = vpd.GetPointData()
         if verbose:
-            print ('*Point Data Arrays')        
+            print ('*Point Data Arrays')
         pointdata = builddatadict(pointdata, verbose=verbose)
- 
+
     return [coords, cells, polys, lines, verts], fielddata, celldata, pointdata
 
 
@@ -517,7 +517,7 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
     elif ftype=='vtk':
         lvtk = convert2VTU(mesh)
     else:
-        raise ValueError ('extension not recongnized')
+        raise ValueError('extension not recongnized')
 
     if mesh.prop is not None: # convert prop numbers into vtk array
         vtype = vtkIntArray().GetDataType()
@@ -607,7 +607,7 @@ def readVTKObject(fn,verbose=True,samePlex=True, readernm=None):
     Returns None for the missing data.
     The dictionary of arrays can include the elements ids (e.g. properties).
     """
-    allreadersnm = 'vtkXMLPolyDataReader, vtkDataSetReader, vtkUnstructuredGridReader, vtkPolyDataReader,vtkStructuredPointsReader, vtkStructuredGridReader, vtkRectilinearGridReader' 
+    allreadersnm = 'vtkXMLPolyDataReader, vtkDataSetReader, vtkUnstructuredGridReader, vtkPolyDataReader,vtkStructuredPointsReader, vtkStructuredGridReader, vtkRectilinearGridReader'
     if readernm == None:
         ftype = utils.fileTypeFromExt(fn)
         if ftype=='vtp':
@@ -630,8 +630,8 @@ def readVTKObject(fn,verbose=True,samePlex=True, readernm=None):
         elif readernm == 'vtkRectilinearGridReaderr':
             reader = vtk.vtkRectilinearGridReader()
         else:
-            raise ValueError, 'unknown reader %s, please specify an alternative reader: %s'%(readernm, allreadersnm)
-            
+            raise ValueError('unknown reader %s, please specify an alternative reader: %s'%(readernm, allreadersnm))
+
     reader.SetFileName(fn)
     reader.Update()
     if reader.GetErrorCode()!=0:
@@ -705,11 +705,11 @@ def intersectionWithLines(self,q,q2,method='line',atol=1e-6,closest=False,reorde
     - `q`,`q2`: (...,3) shaped arrays of points, defining
           a set of lines.
     - `atol`:  tolerance
-    - `method`: a string (line) defining if the line, is a full-line. Otherwise  the provided segments 
+    - `method`: a string (line) defining if the line, is a full-line. Otherwise  the provided segments
             are used for the intersections
     - `closest`:  boolean. If True returns only the closest point to the first point of each segment.
     - `reorder`:  boolean. If True reorder the points according to the the line order.
-    
+
     Returns:
     - a fused set of intersection points (Coords)
     - a (1,3) array with the indices of intersection point, line and
@@ -721,19 +721,19 @@ def intersectionWithLines(self,q,q2,method='line',atol=1e-6,closest=False,reorde
     from pyformex.simple import cuboid
     from pyformex.formex import connect
     from pyformex.gui.draw import draw
-    
-    
-    
+
+
+
     if method=='line':
         # expand the segments to ensure to be in the bbox of self.
         # The idea is to check the max distance between the bboxes of lines and self
         # then scale usin shrink all the segments of the relative factor between the distance
-        # and the minimum segment. The set of lines is cut and the 2 points corresponding to a single line are used as 
+        # and the minimum segment. The set of lines is cut and the 2 points corresponding to a single line are used as
         # new q and q2.
         # NOTE THE ALGORYTHM IS VERY DEPENDENT ON THE SEGMENT'S SIZES. FOR THIS REASON IS CLIPPED
         # ON THE TARGET BBOX
         # The subdivision is NECESSARY as the implicit function do not work well with vtkLines with low resolution
-        #giving rounded corners of the box function or no lines in return. the values of 20 minimum points per line within the 
+        #giving rounded corners of the box function or no lines in return. the values of 20 minimum points per line within the
         # target bbox has been chosen after various resolution tests
         lines = connect([q,q2],eltype='line2')
         off = lines.toMesh().lengths().min()
@@ -744,8 +744,8 @@ def intersectionWithLines(self,q,q2,method='line',atol=1e-6,closest=False,reorde
         lines = lines.shrink((d+off)/off).toMesh().setProp(prop='range').subdivide(int(20*2*(d+off)/off/bbs.sizes().max()))
         verts = vtkCut(lines,implicitdata=bbs,method='boxplanes')
         if verts is None:
-            return 
-            
+            return
+
         idprops = inverseIndex(verts.prop[...,None])
         idprops = idprops[(idprops==-1).sum(axis=1)==0,:]
 
@@ -755,9 +755,9 @@ def intersectionWithLines(self,q,q2,method='line',atol=1e-6,closest=False,reorde
         #~ draw(lines,color='red')
         #~ draw(self)
         #~ exit()
-    
+
     checkArray(q,shape=q2.shape)
-    
+
     if atol:
         self = self.toFormex().shrink(1+atol).toMesh()
 
@@ -767,27 +767,27 @@ def intersectionWithLines(self,q,q2,method='line',atol=1e-6,closest=False,reorde
     loc.SetTolerance(0)
     loc.BuildLocator()
     loc.Update()
-    
+
     cellids = []
     lineids = []
     pts = []
-    
+
     cellidstmp = [vtkIdList() for i in range(q.shape[0])]
     ptstmp = [vtkPoints() for i in range(q.shape[0])]
-    
+
     [loc.IntersectWithLine(q[i], q2[i], ptstmp[i], cellidstmp[i] ) for i in range(q.shape[0])]
-    
+
     loc.FreeSearchStructure()
     del loc
-    
+
     [[cellids.append(cellidstmp[i].GetId(j)) for j in range(cellidstmp[i].GetNumberOfIds())] for i in range(q.shape[0]) ]
     [[lineids.append(i) for j in range(cellidstmp[i].GetNumberOfIds())] for i in range(q.shape[0]) ]
     [[pts.append(ptstmp[i].GetData().GetTuple3(j)) for j in range(ptstmp[i].GetData().GetNumberOfTuples())] for i in range(q.shape[0]) ]
-    
+
     cellids=asarray(cellids)
     lineids=asarray(lineids)
     pts=asarray(pts)
-    
+
     if closest:
         d = vectorLength((pts-q[lineids]))
         ind = ma.masked_values(inverseIndex(lineids.reshape(-1,1)),-1)
@@ -806,11 +806,11 @@ def intersectionWithLines(self,q,q2,method='line',atol=1e-6,closest=False,reorde
         lineids = lineids[hitsxline[where(hitsxline>-1)]]
         cellids = cellids[hitsxline[where(hitsxline>-1)]]
         pts=pts[j]
-        
-        
+
+
     if method=='line':
         lineids=verts.prop[idprops[:,0]][lineids]
-        
+
     return pts,column_stack([j,lineids,cellids])
 
 
@@ -912,28 +912,28 @@ def _vtkClipper(self,vtkif, insideout):
     both tri3 and quad4 mesh is self is a quad4 mesh.
     None is returned if a mesh does not exist (e.g. not intersecting).
     It has not been tested with volume meshes.
-    This functions should not be used by the user.   
+    This functions should not be used by the user.
     """
     from vtk import vtkClipPolyData
-    
+
     if self.elName() not in ['line2','tri3','quad4']:
         warning('vtkClipper has not been tested with this element type %s'%self.elName())
-    vtkobj = convert2VPD(self)   
+    vtkobj = convert2VPD(self)
     clipper = vtkClipPolyData()
     clipper.SetInput(vtkobj)
     clipper.SetClipFunction(vtkif)
     clipper.SetInsideOut(int(insideout))
     clipper.Update()
-    clipper = clipper.GetOutput()  
+    clipper = clipper.GetOutput()
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = convertFromVPD(vpd=clipper,verbose=True,samePlex=False)
     l2, t3, q4 = None, None, None
     if cells != None or verts != None:
-        raise ValueError, 'unexpected output: please report it to developers!'
-    
+        raise ValueError('unexpected output: please report it to developers!')
+
     prop = None
     if celldata.has_key('prop'):
         prop = celldata['prop']
-    
+
     if lines != None:
         l2 = Mesh(coords, lines.toArray()).setProp(prop)
     if polys != None:
@@ -945,8 +945,8 @@ def _vtkClipper(self,vtkif, insideout):
             elif ar.shape[1] == 4:#could it also be a tet4?
                 q4 = Mesh(coords, ar).setProp(prop)
             else:
-               raise ValueError, 'unexpected output: please report it to developers!'
-    
+               raise ValueError('unexpected output: please report it to developers!')
+
     return l2, t3, q4
 
 
@@ -961,12 +961,12 @@ def _vtkPlane(p, n):
 
 def _vtkPlanes(p,n):
     """ Set a vtkPlanes implicit function.
-    
+
      Parameters:
 
     - `p` : points of the planes
     - `n`: correspondent normals of the planes
-    
+
     In vtkPlanes p and n need to define a convex set of planes,
     and the normals must point outside of the convex region.
     """
@@ -981,20 +981,20 @@ def _vtkSurfacePlanes(self):
     if self.isClosedManifold() and self.isConvexManifold():
             return _vtkPlanes(p=self.centroids(),n=self.areaNormals()[1])
     else:
-        raise ValueError, 'the input should be a convex closed manifold TriSurface'
+        raise ValueError('the input should be a convex closed manifold TriSurface')
 
 def _vtkBoxPlanes(box):
     """ Set a box with vtkPlanes implicit function.
-    
+
      Parameters:
 
-    - `box` : Coords, Formex or Mesh objects. 
-    
+    - `box` : Coords, Formex or Mesh objects.
+
         - Coords array of shape (2,3) : the first point containing the
             minimal coordinates, the second the maximal ones.
         - Formex or Mesh specifying one hexahedron.
-        
-    
+
+
     Returns the vtkPlanes implicit function of the box.
     """
     from pyformex.simple import cuboid
@@ -1008,7 +1008,7 @@ def _vtkBoxPlanes(box):
     p = box.centroids()
     n = box.normals.mean(axis=1)
     return _vtkPlanes(p,n)
-    
+
 def _vtkSphere(c, r):
     from vtk import vtkSphere
     sphere = vtkSphere()
@@ -1038,7 +1038,7 @@ def trf2CS(CS, angle_spec=DEG):
                 return True
         return False
     if isOrthogonal(CS) == False:
-        raise ValueError, 'the coordinate system is not orthogonal'
+        raise ValueError('the coordinate system is not orthogonal')
     sz = length(CS[:3]-CS[3])#axes`s length
     j = [3, 0, 2]#z,x,o
     mat, t = trfMatrix(CoordinateSystem()[j], CS[j])
@@ -1068,10 +1068,10 @@ def _vtkBox(p=None, trMat4x4=None):
     """
     from vtk import vtkBox
     box = vtkBox()
-    
+
     if trMat4x4 is not None:
         if p is not None:
-            raise ValueError, 'a box cannot be defined both by coordinates and matrix'
+            raise ValueError('a box cannot be defined both by coordinates and matrix')
         else:
             vtkMat4x4 = convertTransform4x4ToVtk(trMat4x4)
             box.SetTransform(vtkMat4x4)
@@ -1100,9 +1100,9 @@ def vtkCut(self, implicitdata, method=None):
     Parameters:
 
     - `self`: a Mesh (line2,tri3,quad4).
-    - `implicitdata`: list or vtkImplicitFunction. If list it must contains the 
+    - `implicitdata`: list or vtkImplicitFunction. If list it must contains the
         parameter for the predefined implicit functions:
-        
+
         -  method ==  `plane` : a point and normal vector defining the cutting plane.
         -  method ==  `sphere` :  center and radius defining a sphere.
         -  method ==  `box`  : either a 4x4 matrix to apply affine transformation (not yet implemented)
@@ -1112,12 +1112,12 @@ def vtkCut(self, implicitdata, method=None):
         -  method ==  `planes`  : points array-like of shape (npoints,3) and
                 normal vectors array-like of shape (npoints,3) defining the cutting planes.
         -  method ==  `surface`  : a closed convex manifold trisurface.
-        
+
     - `method`: str or None. If string allowed values are `plane`, `sphere`,
-        `box`, `boxplanes`, `planes`, `surface` to select the correspondent implicit functions by providing the 
+        `box`, `boxplanes`, `planes`, `surface` to select the correspondent implicit functions by providing the
         `implicitdata` parameters. If None a vtkImplicitFunction must be passed directly
         in `implicitdata`
-        
+
     Cutting reduces the mesh dimension by one.
     Returns a mesh of points if self is a line2 mesh,
     a mesh of lines if self is a surface tri3 or quad4 mesh,
@@ -1151,8 +1151,8 @@ def vtkCut(self, implicitdata, method=None):
     elif method is None:
         return _vtkCutter(self,implicitdata)
     else:
-        raise ValueError, 'implicit object for cutting not well specified'
-    
+        raise ValueError('implicit object for cutting not well specified')
+
 
 def vtkClip(self, implicitdata, method=None, insideout=False):
     """Clip (split) a Mesh with plane(s), a sphere or a box.
@@ -1160,9 +1160,9 @@ def vtkClip(self, implicitdata, method=None, insideout=False):
     Parameters:
 
     - `self`: a Mesh (line2,tri3,quad4).
-    - `implicitdata`: list or vtkImplicitFunction. If list it must contains the 
+    - `implicitdata`: list or vtkImplicitFunction. If list it must contains the
         parameter for the predefined implicit functions:
-        
+
         -  method ==  `plane` : a point and normal vector defining the cutting plane.
         -  method ==  `sphere` :  center and radius defining a sphere.
         -  method ==  `box`  : either a 4x4 matrix to apply affine transformation (not yet implemented)
@@ -1171,13 +1171,13 @@ def vtkClip(self, implicitdata, method=None, insideout=False):
             minimal  and coordinates of the box. Formex or Mesh specifying one hexahedron. See _vtkPlanesBox.
         -  method ==  `planes`  : points array-like of shape (npoints,3) and
                 normal vectors array-like of shape (npoints,3) defining the cutting planes.
-        
+
     - `method`: str or None. If string allowed values are `plane`,`planes`, `sphere`,
-        `box` to select the correspondent implicit functions by providing the 
+        `box` to select the correspondent implicit functions by providing the
         `implicitdata` parameters. If None a vtkImplicitFunction must be passed directly
         in `implicitdata`
     - `insideout`:boolean or an integer with values 0 or 1 to choose which side of the mesh should be returned.
-    
+
     Clipping does not reduce the mesh dimension.
     Returns always 3 meshes (line2, tri3, quad4):
     a line2 mesh if self is a line2 mesh,
@@ -1214,7 +1214,7 @@ def vtkClip(self, implicitdata, method=None, insideout=False):
     elif method is None:
         return _vtkClipper(self,implicitdata,insideout)
     else:
-        raise ValueError, 'implicit object for cutting not well specified'
+        raise ValueError('implicit object for cutting not well specified')
 
 
 def octree(surf,tol=0.0,npts=1.):
@@ -1300,36 +1300,36 @@ def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True, verbose=Fal
     """
     from vtk import vtkDecimatePro
     from pyformex.plugins.trisurface import TriSurface
-    
-    
+
+
     vpd = convert2VPD(self, clean=True)#convert pyFormex surface to vpd
     vpd = convertVPD2Triangles(vpd)
     vpd = cleanVPD(vpd)
-    
+
     filter = vtkDecimatePro()
     filter.SetInput(vpd)
     filter.SetTargetReduction(targetReduction)
     filter.SetBoundaryVertexDeletion(boundaryVertexDeletion)
     filter.PreserveTopologyOn()
     filter.Update()
-    
+
     vpd = filter.GetOutput()
     vpd = cleanVPD(vpd)
-    
+
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata=convertFromVPD(vpd)#convert vpd to pyFormex surface
     if verbose:
         print(('%d faces decimated into %d triangles'%(self.nelems(), len(polys))))
     return TriSurface(coords, polys)
 
 
-# TODO 
+# TODO
 # add meshes line 2 , vtk handles polylines also with >2 elements conneted to a node
 def coarsenPolyLine(self, target=0.5, verbose=False):
     """Coarsen a PolyLine.
 
     - `self` : PolyLine
     - `target` : float in range [0.0,1.0], percentage of coords to  be reduced.
-    
+
     Returns a PolyLine with a reduced number of points.
     """
     from vtk import vtkDecimatePolylineFilter
@@ -1340,11 +1340,11 @@ def coarsenPolyLine(self, target=0.5, verbose=False):
     filter = vtkDecimatePolylineFilter()
     filter.SetInput(vpd)
     filter.SetTargetReduction(target)
-        
+
     filter.Update()
     vpd = filter.GetOutput()
     vpd = cleanVPD(vpd)
-    
+
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata=convertFromVPD(vpd)#convert vpd to pyFormex surface
     if verbose:
         print(('%d coords decimated into %d coords'%(self.ncoords()-1, len(lines))))
@@ -1445,7 +1445,7 @@ def import3ds(fn, vtkcolor='color', verbose=True):
         elif vtkcolor == 'specular':
             col = propOfActor.GetSpecularColor()
         else:
-            raise ValueError, 'the color you selected in not yet implemented'
+            raise ValueError('the color you selected in not yet implemented')
         obj = act.GetMapper()
         obj = obj.GetInputAsDataSet()
         obj.Update()

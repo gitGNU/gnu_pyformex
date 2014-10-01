@@ -29,7 +29,7 @@ It also defines a default palette of colors.
 The following table shows the colors of the default palette, with their name,
 RGB values in 0..1 range and luminance.
 
->>> for k,v in palette.iteritems():
+>>> for k,v in palette.items():
 ...     print("%12s = %s -> %0.3f" % (k,v,luminance(v)))
     darkgrey = (0.4, 0.4, 0.4) -> 0.133
          red = (1.0, 0.0, 0.0) -> 0.213

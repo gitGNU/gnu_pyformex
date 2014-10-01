@@ -210,7 +210,7 @@ def fmtOptions(**kargs):
       , VAR C, VAR B=123., VAR A=123.0
 
     """
-    return ''.join([ fmtOption(k,v) for k,v in kargs.iteritems() ])
+    return ''.join([ fmtOption(k,v) for k,v in kargs.items() ])
 
 
 class Command(object):
@@ -686,7 +686,7 @@ element_library = dict(
 
 def elementClass(eltype):
     """Find the general element class for Abaqus eltype"""
-    for k,v in element_library.iteritems():
+    for k,v in element_library.items():
         if eltype.upper() in v:
             return k
     return ''

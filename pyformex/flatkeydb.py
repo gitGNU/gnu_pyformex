@@ -388,7 +388,7 @@ class FlatDB(dict):
             outfile.writelines(header)
         for record in self.itervalues():
             s = self.beginrec+'\n'
-            for (k, v) in record.iteritems():
+            for (k, v) in record.items():
                 s += "  %s%s%s\n" % (k, self.key_sep, v)
             s += self.endrec+'\n'
             outfile.writelines(s)

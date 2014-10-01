@@ -204,7 +204,7 @@ def savePartitions(F):
     splitProp(F, 'part')
 
     if ack("Save the partitions separately?"):
-        for (k, v) in d.iteritems():
+        for (k, v) in d.items():
             writeFormex(v, "%s.fmx"%k)
 
 

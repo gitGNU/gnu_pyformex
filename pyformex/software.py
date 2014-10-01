@@ -474,7 +474,7 @@ def formatDict(d,indent=4):
     This format is the storage format of the Config class.
     """
     s = "{\n"
-    for k, v in d.iteritems():
+    for k, v in d.items():
         s += "%s'%s' : " % (' '*indent,k)
         if isinstance(v, dict):
             s += formatDict(v,indent+4)

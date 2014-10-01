@@ -343,9 +343,9 @@ class FeResult(object):
     def printSteps(self):
         """Print the steps/increments/resultcodes for which we have results."""
         if self.res is not None:
-            for i, step in self.res.iteritems():
-                for j, inc in step.iteritems():
-                    for k, v in inc.iteritems():
+            for i, step in self.res.items():
+                for j, inc in step.items():
+                    for k, v in inc.items():
                         if isinstance(v, ndarray):
                             data = "%s %s" % (v.dtype.kind, str(v.shape))
                         else:

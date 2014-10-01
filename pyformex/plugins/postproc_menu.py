@@ -219,7 +219,7 @@ def showModel(nodes=True,elems=True):
     transparent(True)
     clear()
     print('Elements in model:')
-    for k, v in DB.elems.iteritems():
+    for k, v in DB.elems.items():
         print("%s: %s" % (k, len(v)))
     M = [ Mesh(DB.nodes, el, eltype='quad%d'%el.shape[1], prop=i) for i, el in enumerate(DB.elems.itervalues()) ]
     if nodes:

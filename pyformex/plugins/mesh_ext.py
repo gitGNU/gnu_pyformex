@@ -54,15 +54,15 @@ def connectedElements(self,startat,mask,level=0):
     """
     startat = asarray(startat).reshape(-1)
     if len(intersect1d(startat, arange(self.nelems()))) < len(startat):
-        raise ValueError, 'wrong elem index found in startat, outside range 0 - %d'%self.nelems()
+        raise ValueError("wrong elem index found in startat, outside range 0 - %d" % self.nelems())
 
     mask = asarray(mask)
     if mask.dtype == bool:
         if len(mask)!=self.nelems():
-            raise ValueError, 'if it is an array of boolean mask should have all elements %d, got %d'%(self.nelems(), len(mask))
+            raise ValueError("if it is an array of boolean mask should have all elements %d, got %d" % (self.nelems(), len(mask)))
         mask = where(mask)[0]
     if len(intersect1d(mask, arange(self.nelems()))) < len(mask):
-        raise ValueError, 'wrong elem index found in mask, outside range 0 - %d'%self.nelems()
+        raise ValueError("wrong elem index found in mask, outside range 0 - %d" % self.nelems())
 
     startat = intersect1d(startat, mask)
     if len(startat) == 0:
@@ -259,19 +259,19 @@ def nodalAveraging(self, val, iter=1, mask=None,includeself=False):
 
 def edgeSpin(edges, elems, check=True):
     """Check if edges spin like the face normals.
-    
+
     elems is the connectivity of a surface mesh.
     edges is the connectivity of edges of a surface mesh.
-    
+
     True means that edge is spinning like the face normal,
     False means that edge is spinning opposite to the face normal.
     If check is True, it raises an error in case of
     extraneous edges (edges that are not part of the surface),
     instead of returning False.
-    
+
     edgeSpin([[3,0],...],[[0,2,3]]) is [True,...]
     edgeSpin([[0,3],...],[[0,2,3],..]) is [False,...]
-    """       
+    """
     n = range(elems.shape[1])
     n0 = column_stack([n,roll(n, -1, 0)] )
     spinok = [(edges == elems[:, i]).sum(axis=1)==2 for i in n0]
@@ -282,25 +282,25 @@ def edgeSpin(edges, elems, check=True):
         spinbad = array(sum(spinbad, axis=0), dtype=bool)
         diff = sum(spinok==spinbad)
         if diff>0:
-            raise ValueError,  'there are %d edges which are not in elems'%diff
+            raise ValueError("there are %d edges which are not in elems" % diff)
     return spinok
 
 def doubleSpinEdges(self,return_mask=False):
     """Find the edges which are adjacent to two triangles with different spin.
-    
+
     Return True if the 2 adjacent elems have different spin.
     If return_mask == True, a second return value is a boolean array
     with the edges that connect two faces.
-    
+
     spin2, mask = doubleSpinEdges(S, True)
     draw(Mesh(S.coords, S.getEdges()[mask][spin2]), color='blue', linewidth=4)
     """
-    conn = self.getElemEdges().inverse()   
+    conn = self.getElemEdges().inverse()
     conn2 = (conn >= 0).sum(axis=-1) == 2
     conn = conn[conn2]#remove border edges
     e2 = self.getEdges()[conn2]
-    spin0 = edgeSpin(e2, self.elems[conn[:, 0]]) 
-    spin1 = edgeSpin(e2, self.elems[conn[:, 1]]) 
+    spin0 = edgeSpin(e2, self.elems[conn[:, 0]])
+    spin1 = edgeSpin(e2, self.elems[conn[:, 1]])
     spin2 = spin0 == spin1
     if return_mask:
         return spin2, conn2
@@ -313,12 +313,12 @@ def frontWalkEdge(self, maskedge, **kargs):
     cadj = self.getElemEdges().inverse()[maskedge]
     cadj = concatenate([cadj, cadj[:, ::-1]])
     cpos = adj[cadj[:, 0]] == cadj[:, 1].reshape(-1, 1)
-    adj[cadj[:, 0], where(cpos)[1]]=-1 
+    adj[cadj[:, 0], where(cpos)[1]]=-1
     return adj.frontWalk(**kargs)
 
 def findSpinFaces(self):
     """Find a set of differently spinning faces of a surface.
-    
+
     By looking at the edge adjacency it detects differently spinning triangles.
     The algorithm works like that:
 
@@ -334,7 +334,7 @@ def findSpinFaces(self):
     - reverse the triangles in the frontinc, modifying the surface
     # B
     - repeat from A to B until there no more spinedges
-    
+
     If self is not a single edge-connected part, the function is called
     on each part.
     """
@@ -374,7 +374,7 @@ def findSpinFaces(self):
 
 def fixNormals2(self,outwards=True):
     """Fix the orientation of the normals.
-        
+
     Parameters:
 
     - `outwards`: boolean: if True (default), a test is done whether

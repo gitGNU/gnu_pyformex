@@ -80,12 +80,13 @@ def classify(appdir,pkg,nmax=0):
 
         #col['all'].update([appname])
         try:
-            app = apps.load(pkg+'.'+appname,strict=True)
+            fullname = str(pkg)+'.'+appname
+            app = apps.load(fullname,strict=True)
             if app is None:
-                raise RuntimeError,"app has no run method"
+                raise RuntimeError("App '%s' has no run method" % fullname)
         except:
             app = failed
-            print("Failed to load app '%s'" % (str(pkg)+'.'+appname))
+            print("Failed to load app '%s'" % fullname)
 
         for k in kat:
             if hasattr(app, '_'+k):

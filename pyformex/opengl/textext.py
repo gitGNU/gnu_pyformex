@@ -74,7 +74,7 @@ class FontTexture(Texture):
         face = ft.Face(str(filename))
         face.set_char_size(int(size*64))
         if not face.is_fixed_width:
-            raise RuntimeError,'Font is not monotype'
+            raise RuntimeError("Font is not monotype")
 
         # Determine largest glyph size
         width, height, ascender, descender = 0, 0, 0, 0
