@@ -883,7 +883,8 @@ Coding style
   http://www.python.org/dev/peps/pep-0008/#whitespace-in-expressions-and-statements.
   More precisely, do not put a whitespace directly inside delimiters
   or around mathematic operators.
-  But do put spaces around the assignment operator ('='), except in argument
+
+  But *do* put spaces around the assignment operator ('='), except in argument
   lists. Also put a blank after commas. Thus::
 
     def inc(x, y=1):
@@ -898,6 +899,25 @@ Coding style
 - Numpy often provides a choice of using an attribute, a method or a
   function to get to the same result. The preference ordering is:
   attribute > method > function. E.g. use ``A.shape`` and not ``shape(A)``.
+
+
+print
+-----
+All print statements should be replaced with print() function calls,
+and the import of print_function is required in all pyformex modules.
+
+raise Error
+-----------
+When raising an Error, the error message should be put in parentheses as
+an argument to the Error class::
+
+  raise SomeError('Some error occurred')
+
+iteritems
+---------
+dict.iteritems() should not be used: just use dict.items(). We know this is
+a (slight) performance hit, but it will help in porting to Python3.
+
 
 Docstrings
 ----------
