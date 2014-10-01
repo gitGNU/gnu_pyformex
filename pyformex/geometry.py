@@ -165,7 +165,8 @@ class Geometry(object):
         """Replace the current coords with new ones.
 
         """
-        if isinstance(coords, Coords) and coords.shape == self.coords.shape:
+        coords = Coords(coords)
+        if coords.shape == self.coords.shape:
             self.coords = coords
             return self
         else:
