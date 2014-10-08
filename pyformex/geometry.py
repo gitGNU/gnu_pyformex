@@ -308,8 +308,8 @@ class Geometry(object):
         return self.coords.bboxPoint(*args,**kargs)
     def centroid(self):
         return self.coords.centroid()
-    def sizes(self):
-        return self.coords.sizes()
+    def sizes(self,**kargs):
+        return self.coords.sizes(**kargs)
     def dsize(self):
         return self.coords.dsize()
     def bsphere(self):

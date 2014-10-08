@@ -367,7 +367,7 @@ class Coords(ndarray):
         return self
 
 
-    def sizes(self):
+    def sizes(self,method=None):
         """Returns the sizes of the :class:`Coords`.
 
         Returns an array with the length of the bbox along the 3 axes.
@@ -378,8 +378,13 @@ class Coords(ndarray):
           [ 3.  3.  0.]
 
         """
-        X0, X1 = self.bbox()
-        return X1-X0
+        if method == None:
+            X0, X1 = self.bbox()
+            return X1-X0
+        elif method == "principal":
+            ctr, rot = self.inertia()[:2] 
+            X = self.trl(-ctr).rot(rot)  # rotate data to align with axes
+            return X.sizes()
 
 
     def dsize(self):
