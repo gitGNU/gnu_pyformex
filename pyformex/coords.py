@@ -313,6 +313,16 @@ class Coords(ndarray):
         return Coords(pt)
 
 
+    def bboxPoints(self):
+        """Returns all the corners of the bounding box point of a Coords.
+
+        Returns a Coords (8,3). The points are in the order of a hex8
+        element.
+        """
+        from pyformex.simple import cuboid
+        return cuboid(*self.bbox()).coords
+
+
     def average(self,wts=None,axis=0):
         """Returns a (weighted) average of the :class:`Coords`.
 
@@ -931,6 +941,20 @@ class Coords(ndarray):
         if vec is not None:
             out += vec
         return out
+
+
+    def toCS(self,cs):
+        """Transform the coordinates to another CoordSys.
+
+        """
+        return self.trl(-cs.trl).rot(cs.rot)
+
+
+    def fromCS(self,cs):
+        """Transform the coordinates from another CoordSys.
+
+        """
+        return self.rot(cs.rot.transpose()).trl(cs.trl)
 
 
     def position(self, x, y):
@@ -2293,10 +2317,10 @@ def positionCoordsObj(objects,path,normal=0,upvector=2,avgdir=False,enddir=None)
 
     if isinstance(normal, int):
         normal = Coords(unitVector(normal))
-    
+
     if isinstance(upvector, int):
         upvector = Coords(unitVector(upvector))
-        
+
     sequence = [ object.rotate(vectorRotation(normal, d, upvector)).translate(p)
                  for object, d, p in zip(objects, directions, points)
                  ]
@@ -2320,7 +2344,7 @@ def sweepCoords(self,path,origin=[0.,0.,0.],scalex=None,scaley=None,scalez=None,
 
     The return value is a sequence of the transformed Coords objects.
     """
-    
+
     if scalex is not None:
         if len(scalex) != path.ncoords():
             raise ValueError("The number of scale values in x-direction differs from the number of copies that will be created.")
@@ -2338,7 +2362,7 @@ def sweepCoords(self,path,origin=[0.,0.,0.],scalex=None,scaley=None,scalez=None,
             raise ValueError("The number of scale values in y-direction differs from the number of copies that will be created.")
     else:
         scalez = ones(path.ncoords())
-    
+
     base = self.translate(-Coords(origin))
     sequence = [ base.scale([scx, scy, scz]) for scx, scy, scz in zip(scalex, scaley, scalez) ]
     sequence = positionCoordsObj(sequence,path,**kwargs)

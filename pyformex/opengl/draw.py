@@ -422,7 +422,8 @@ def drawPrincipal(F,weight=None):
     If specified, weight is an array of weights attributed to the points
     of F. It should have the same length as `F.coords`.
     """
-    A = actors.PrincipalActor(F, weight)
+    from pyformex.legacy.actors import PrincipalActor
+    A = PrincipalActor(F, weight)
     drawActor(A)
     return A
 
@@ -455,10 +456,11 @@ def drawAxes(CS=None,*args,**kargs):
     this function gives a better result because it has specialized color
     and annotation settings and provides reasonable deafults.
     """
+    from pyformex.legacy.actors import AxesActor
     if CS is None:
         from pyformex.coordsys import CoordinateSystem
         CS = CoordinateSystem()
-    A = actors.AxesActor(CS,*args,**kargs)
+    A = AxesActor(CS,*args,**kargs)
     drawActor(A)
     return A
 
