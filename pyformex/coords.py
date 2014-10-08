@@ -370,8 +370,15 @@ class Coords(ndarray):
     def sizes(self,method=None):
         """Returns the sizes of the :class:`Coords`.
 
-        Returns an array with the length of the bbox along the 3 axes.
+        Parameters :
+        
+            - `method`: None or string. if method==None returns the 
+            length of the bbox along the 3 axes. If method==`principal` returns
+            the length of the bbox along the 3 axes oriented with the 
+            principal axis.
 
+        Returns an array with the length of the bbox along the 3 axes.
+        
         Example:
 
           >>> print(Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]]).sizes())
