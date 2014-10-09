@@ -142,6 +142,24 @@ class Geometry(object):
     :meth:`trl`.
     """
 
+    ########### Information from the coords #################
+
+    def _coords_method(func):
+        """Call a method on the .coords attribute of the object.
+
+        This is a decorator function.
+        """
+        coords_func = getattr(Coords, func.__name__)
+        def newf(self,*args,**kargs):
+            """Call the Coords %s method on the coords attribute"""
+            return coords_func(self.coords,*args,**kargs)
+        newf.__name__ = func.__name__
+        newf.__doc__ ="""Call '%s' method on the coords attribute of the Geometry object.
+
+        See :meth:`coords.Coords.%s` for details.
+""" % (func.__name__, func.__name__)
+        return newf
+
     ########### Change the coords #################
 
     def _coords_transform(func):
@@ -318,8 +336,10 @@ class Geometry(object):
         return self.coords.bboxes()
     def inertia(self,*args,**kargs):
         return self.coords.inertia(*args,**kargs)
-    def orientedBbox(self,*args,**kargs):
-        return self.coords.orientedBbox()
+    def prinCS(self,*args,**kargs):
+        return self.coords.prinCS(*args,**kargs)
+    def principalSizes(self):
+        return self.coords.principalSizes()
     def principalBbox(self):
         return self.coords.principalBbox()
 
@@ -564,6 +584,12 @@ class Geometry(object):
         pass
     @_coords_transform
     def affine(self,*args,**kargs):
+        pass
+    @_coords_transform
+    def toCS(self,*args,**kargs):
+        pass
+    @_coords_transform
+    def fromCS(self,*args,**kargs):
         pass
     @_coords_transform
     def position(self,*args,**kargs):

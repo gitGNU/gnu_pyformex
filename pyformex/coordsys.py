@@ -83,7 +83,7 @@ class CoordSys(object):
             if trl is None:
                 trl = np.zeros((3,))
         else:
-            rot = points[:3] - points[3]
+            rot = (points[:3] - points[3]).transpose()
             trl = points[3]
 
         self.rot = at.checkArray(rot,shape=(3,3),kind='f')
@@ -91,7 +91,7 @@ class CoordSys(object):
 
 
     def points(self):
-        return Coords.concatenate([self.trl + self.rot,self.trl])
+        return Coords.concatenate([self.trl + self.rot.transpose(),self.trl])
 
 
 class CoordinateSystem(Coords):
@@ -132,5 +132,7 @@ class CoordinateSystem(Coords):
         """Return the axes of the CoordinateSystem."""
         return Coords(self[:3]-self[3])
 
+    def points(self):
+        return self
 
 ### End

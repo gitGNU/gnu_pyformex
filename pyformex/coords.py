@@ -459,32 +459,47 @@ class Coords(ndarray):
         return (ctr, Iaxes, Iprin, I)
 
 
-    def orientedBbox(self, ctr, rot):
-        """Returns an oriented bounding box of a set of points.
+    def prinCS(self,mass=None):
+        """Returns a CoordSys formed by the principal axes of inertia
 
         Parameters:
 
-        - `ctr` : array_like (3,). Center of the the bounding box
-        - `rot` : array_like (3,3). Rotation matrix of the the bounding box
+        - `mass`: float array with ncoords weight values. The default is to
+          attribute a weight 1.0 to each point.
 
-        Returns a single hexahedral Formex object.
         """
+        from pyformex.coordsys import CoordSys
+        ctr,axes = self.inertia()[:2]
+        return CoordSys(rot=axes,trl=ctr)
+
+
+    def principalSizes(self):
+        """Return the sizes in the principal directions of the Coords.
+
+        Returns an array with the length of the bbox along the 3
+        principal axes. This is a convenient shorthand for::
+
+          self.toCS(self.prinCS()).sizes()
+
+        Example:
+
+          >>> print(Coords([[[0.,0.,0.],[3.,0.,0.]]]).rotate(30,2).principalSizes())
+          [  0.00e+00   2.33e-08   3.00e+00]
+
+        """
+        return self.toCS(self.prinCS()).sizes()
+
+
+    @utils.deprecated("depr_orientedBbox")
+    def orientedBbox(self,ctr,rot):
         from pyformex.simple import cuboid
-        X = self.trl(-ctr).rot(rot)  # rotate data to align with axes
-        bb = cuboid(*X.bbox())  # get the bbox and make a hex8
-        bb = bb.rot(rot.transpose()).trl(ctr) # transform back to global coordinates
+        X = self.trl(-ctr).rot(rot)
+        bb = cuboid(*X.bbox())
+        bb = bb.rot(rot.transpose()).trl(ctr)
         return bb
 
-
     def principalBbox(self):
-        """Returns a bounding box aligned with the inertia principal axes.
-
-        Computes the orientedBbox aligned with the principal axes of the
-        set of points, as obtained from :func:`inertia`.
-
-        Returns a single hexahedral Formex object.
-        """
-        ctr, rot = self.inertia()[:2]  # get the center and principal axes
+        ctr, rot = self.inertia()[:2]
         return self.orientedBbox(ctr, rot)
 
 

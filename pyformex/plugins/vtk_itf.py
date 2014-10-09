@@ -718,7 +718,7 @@ def intersectionWithLines(self,q,q2,method='line',atol=1e-6,closest=False,reorde
     from vtk import vtkOBBTree, vtkPoints, vtkIdList
     from pyformex.arraytools import vectorLength,inverseIndex,checkArray
     from pyformex.geomtools import distance
-    from pyformex.simple import cuboid
+    from pyformex.simple import cuboid, principalBbox
     from pyformex.formex import connect
     from pyformex.gui.draw import draw
 
@@ -737,8 +737,8 @@ def intersectionWithLines(self,q,q2,method='line',atol=1e-6,closest=False,reorde
         # target bbox has been chosen after various resolution tests
         lines = connect([q,q2],eltype='line2')
         off = lines.toMesh().lengths().min()
-        bbl = lines.principalBbox()
-        bbs = self.principalBbox().scale(1.+atol)
+        bbl = principalBbox(lines)
+        bbs = principalBbox(self).scale(1.+atol)
         d = distance(bbs.coords, bbl.coords).max()
 
         lines = lines.shrink((d+off)/off).toMesh().setProp(prop='range').subdivide(int(20*2*(d+off)/off/bbs.sizes().max()))

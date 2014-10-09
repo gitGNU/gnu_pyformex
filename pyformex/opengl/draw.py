@@ -445,22 +445,28 @@ def drawViewportAxes3D(pos,color=None):
     return A
 
 
-def drawAxes(CS=None,*args,**kargs):
+def drawAxes(cs=None,*args,**kargs):
     """Draw the axes of a CoordinateSystem.
 
-    CS is a CoordinateSystem. If not specified, the global coordinate system
-    is used. Other arguments can be added just like in the
-    :class:`AxesActor` class.
+    Parameters:
 
-    While you can draw a CoordinateSystem using the :func:`draw` function,
-    this function gives a better result because it has specialized color
-    and annotation settings and provides reasonable deafults.
+    - `cs`: a :class:`coordsys.CoordSys`, a
+      :class:`coordsys.CoordinateSystem`, or a Coords(4,3)
+    If not specified, the global coordinate system is used.
+
+    Other arguments can be added just like in the :class:`AxesActor` class.
+
+    By default this draws the positive parts of the axes in the colors R,G,B
+    and the negative parts in C,M,Y.
     """
     from pyformex.legacy.actors import AxesActor
-    if CS is None:
-        from pyformex.coordsys import CoordinateSystem
-        CS = CoordinateSystem()
-    A = AxesActor(CS,*args,**kargs)
+    from pyformex.coordsys import CoordSys,CoordinateSystem
+    if cs is None:
+        cs = CoordSys()
+    if not isinstance(cs,CoordSys):
+        cs = CoordinateSystem(cs)
+
+    A = AxesActor(cs.points(),*args,**kargs)
     drawActor(A)
     return A
 

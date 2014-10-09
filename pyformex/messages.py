@@ -154,6 +154,7 @@ error_no_freetype = "I am missing the freetype Python bindings on your system.\n
 
 
 depr_adjacencyArrays = "adjacencyArrays is deprecated. Use Adjacency.frontWalk() instead."
+depr_orientedBbox = "orientedBbox and principalBbox have been deprecated. obj.orientedBbox(ctr,rot) can be replaced with simple.boundingBox(obj,cs=CoordSys(rot,ctr)). obj.principalBbox() can be replaced with simple.principalBbox(obj)."
 depr_image2numpy_arg = "The use of the `expand` parameter in image2numpy is deprecated. Use the `indexed` parameter instead."
 depr_mesh_getlowerentities_unique = "The use of the unique argument is deprecated. Use Mesh.insertLevel() instead."
 depr_pathextension = "patchextension is deprecated. Use border().extrude() instead."

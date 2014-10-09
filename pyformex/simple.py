@@ -453,15 +453,26 @@ def boxes2d(x):
     return Formex(x[:, i, j], eltype='quad4')
 
 
-def cuboid(xmin=[0., 0., 0.],xmax=[1., 1., 1.]):
-    """Create a rectangular prism
+def cuboid(xmin=[0., 0., 0.],xmax=[1., 1., 1.], cs=None):
+    """Create a rectangular prism.
 
-    Creates a rectangular prism with faces parallel to the global
-    axes through the points xmin and xmax.
+    Create a rectangular prism from two opposite corners. The vertices
+    are specified in the global or a given coordinate system. The faces
+    faces are parallel to the coordinate planes.
+
+    Parameters:
+
+    - `xmin`: float(3): minimum coordinates
+    - `xmax`: float(3): maximum coordinates
+    - `cs`: CoordSys: if specified, the cuboid is constructed in this
+      coordinate system, and then transformed back to global axes.
 
     Returns a single element Formex with eltype 'hex8'.
     """
-    return boxes([xmin, xmax])
+    F = boxes([xmin, xmax])
+    if cs:
+        F = F.fromCS(cs)
+    return F
 
 
 def cuboid2d(xmin=[0., 0., 0.],xmax=[1., 1., 0.]):
@@ -474,6 +485,24 @@ def cuboid2d(xmin=[0., 0., 0.],xmax=[1., 1., 0.]):
     Returns a single element Formex with eltype 'quad4'.
     """
     return boxes2d([xmin, xmax])
+
+
+def boundingBox(obj,cs=None):
+    """Returns a cuboid that is the bounding box of some geometry
+
+    The boundingBox is computed in the specified coordinate system.
+    The default is the global axes.
+
+    Returns a single hexahedral Formex object.
+    """
+    if cs:
+        obj = obj.toCS(cs)
+    xmin,xmax = obj.bbox()
+    return cuboid(xmin,xmax,cs)
+
+
+def principalBbox(obj):
+    return boundingBox(obj,cs=obj.prinCS())
 
 
 # End
