@@ -127,7 +127,14 @@ class FontTexture(Texture):
     @classmethod
     def default(clas):
         if clas.default_font is None:
-            default_font_file = '/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf'
+            fonts = listMonoFonts()
+            if not fonts:
+                raise ValueError("I could not find any font file on your system")
+            default_font_file = fonts[0]
+            for f in fonts:
+                if f.endswith('DejaVuSansMono.ttf'):
+                    default_font_file = f
+                    break
             default_font_size = 36
             clas.default_font = FontTexture(default_font_file,default_font_size)
         return clas.default_font
