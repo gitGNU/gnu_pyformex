@@ -1216,15 +1216,11 @@ class BezierSpline(Curve):
       in between two subsequent points. A value curl=0.0 results in
       straight segments. The higher the value, the more the curve becomes
       curled.
-    - `control` : array(nparts,2,3) or array(ncontrol,3)
-      If `coords` was specified, this should be a (nparts,2,3) array with
-      the intermediate control points, two for each part.
-
+    - `control` : array(nparts,d-1,3) or array(ncontrol,3)
+      If `coords` was specified and d > 1, this should be a (nparts,d-1,3) array with
+      the intermediate control points, `d-1` for each part.
       If `coords` was not specified, this should be the full array of
-      `ncontrol` control points for the curve. The number of points should
-      be a multiple of 3 plus 1. If the curve is closed, the last point is
-      equal to the first and does not need to a multiple of 3 is
-      also allowed, in which case the first point will be appended as last.
+      `ncontrol` control points for the curve.
 
       If not specified, the control points are generated automatically from
       the `coords`, `deriv` and `curl` arguments.
