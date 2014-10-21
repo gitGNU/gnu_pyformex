@@ -151,6 +151,14 @@ class Varray(object):
     >>> print(Va[1])
     [1 2]
 
+    This is equivalent with
+    >>> print(Va.row(1))
+    [1 2]
+
+    Extracted columns are filled with -1 values where needed
+    >>> print(Va.col(1))
+    [-1  2  2  2]
+
     Indexing with an iterable of integers returns a new Varray:
 
     >>> print(Va[[1,3]])
@@ -246,6 +254,8 @@ class Varray(object):
         # We also store the width because it is often needed and
         # may be expensive to compute
         self.width = max(self.lengths) if len(self.lengths) > 0 else 0
+        # And the current row, for use in iterators
+        self._row = 0
 
 
     def replace_data(self, va):
@@ -286,6 +296,21 @@ class Varray(object):
         return self.ind[i+1]-self.ind[i]
 
 
+    def row(self,i):
+        """Return the data for row i"""
+        return self.data[self.ind[i]:self.ind[i+1]]
+
+
+    def col(self,i):
+        """Return the data for column i
+
+        This always returns a list of length nrows.
+        For rows where the column index i is missing, a value -1 is returned.
+        """
+        return array([ r[i] if i in range(-len(r),len(r)) else -1 for r in self ])
+
+
+
     def __getitem__(self, i):
         """Return the data for the row or rows i.
 
@@ -301,9 +326,9 @@ class Varray(object):
           whose index occurs in `i`.
         """
         if isInt(i):
-            return self.data[self.ind[i]:self.ind[i+1]]
+            return self.row(i)
         else:
-            return Varray([ self[j] for j in i ])
+            return Varray([ self.row(j) for j in i ])
         # Shall we also add a tuple as index?
         # to allow self[i,j] instead of i[i][j]
 
@@ -330,21 +355,22 @@ class Varray(object):
 
     def __iter__(self):
         """Return an iterator for the Varray"""
-        self.row = 0
+        self._row = 0
         return self
 
 
     def __next__(self):
         """_Return the next row of the Varray"""
-        if self.row >= self.nrows:
+        if self._row >= self.nrows:
             raise StopIteration
-        row = self[self.row]
-        self.row += 1
+        row = self[self._row]
+        self._row += 1
         return row
 
     if (sys.hexversion) < 0x03000000:
         # In Python2 the next method is used instead of __next__
         next = __next__
+
 
     def index(self, sel):
         """Convert a selector to an index
