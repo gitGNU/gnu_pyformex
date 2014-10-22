@@ -867,7 +867,6 @@ class InputPush(InputItem):
             self.hbox = QtGui.QHBoxLayout()
             self.hbox.setContentsMargins(5, 0, 5, 0)
         else:
-            print('Direction %s, count %s' % (direction,count))
             self.hbox = QtGui.QGridLayout()
 
         self.hbox.setSpacing(0)
@@ -898,7 +897,6 @@ class InputPush(InputItem):
                 self.hbox.addWidget(b)
             else:
                 r,c = divmod(i,count)
-                print("%s = (%s,%s)" % (i,r,c))
                 self.hbox.addWidget(b,r,c)
 
         self.input.setLayout(self.hbox)

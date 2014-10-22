@@ -155,6 +155,10 @@ class Varray(object):
     >>> print(Va.row(1))
     [1 2]
 
+    Negative numbers are allowed:
+    >>> print(Va.row(-1))
+    [0 2]
+
     Extracted columns are filled with -1 values where needed
     >>> print(Va.col(1))
     [-1  2  2  2]
@@ -298,6 +302,8 @@ class Varray(object):
 
     def row(self,i):
         """Return the data for row i"""
+        if i < 0:
+            i += self.nrows
         return self.data[self.ind[i]:self.ind[i+1]]
 
 
