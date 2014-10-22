@@ -2151,6 +2151,14 @@ def unitDivisor(div,start=0):
     Returns: If `div` is a an integer, returns the floating point values
     dividing the unit interval in div equal parts. If `div` is a list,
     just returns `div` as a 1D array.
+
+    Example:
+
+    >>> unitDivisor(4)
+    array([ 0.  ,  0.25,  0.5 ,  0.75,  1.  ])
+
+    >>> unitDivisor(4,1)
+    array([ 0.25,  0.5 ,  0.75,  1.  ])
     """
     div = asarray(div).ravel()
     if div.size == 1 and div.dtype.kind=='i':
