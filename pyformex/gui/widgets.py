@@ -836,12 +836,21 @@ class InputPush(InputItem):
     If value is not in the choices list, it is prepended.
     If value is None, the first item of choices is taken as the default.
 
-    The choices are presented to the user as a hbox with radio buttons,
+    The choices are presented to the user as a hbox with push buttons,
     of which the default will initially be selected.
     If direction == 'v', the options are in a vbox.
+
+    Extra parameters:
+
+    - `func`: the function to call when the button is clicked. The function
+      receives the input field as argument. From this argument, the fields
+      attributes like name, value, text, can be retrieved.
+      The function should return the value to be set, or None if it is to be
+      unchanged. If no function is specified, the value can not be changed.
+
     """
 
-    def __init__(self,name,value=None,choices=[],direction='h',icon=None,iconsonly=False,*args,**kargs):
+    def __init__(self,name,value=None,choices=[],direction='h',count=0,icon=None,iconsonly=False,func=None,*args,**kargs):
         """Initialize the input item."""
         if value is None:
             value = choices[0]
@@ -851,13 +860,18 @@ class InputPush(InputItem):
         self.input.setStyleSheet("QGroupBox { border: 0px;}")
         InputItem.__init__(self,name,*args,**kargs)
         self.input.setFlat(True)
-        if direction == 'v':
+        if direction == 'v' and count <= 0:
             self.hbox = QtGui.QVBoxLayout()
             self.hbox.setContentsMargins(0, 10, 0, 10)
-        else:
+        elif direction == 'h' and count <= 0:
             self.hbox = QtGui.QHBoxLayout()
             self.hbox.setContentsMargins(5, 0, 5, 0)
+        else:
+            print('Direction %s, count %s' % (direction,count))
+            self.hbox = QtGui.QGridLayout()
+
         self.hbox.setSpacing(0)
+        self.func = func
 
         self.bg = QtGui.QButtonGroup()
         for i, v in enumerate(choices):
@@ -872,11 +886,20 @@ class InputPush(InputItem):
                 b = QtGui.QPushButton(v)
                 if icon:
                     b.setIcon(pyformexIcon(icon[i]))
+
+            if self.func:
+                b.clicked.connect(self.doFunc)
+
             b.setCheckable(True)
             if v == value:
                 b.setChecked(True)
             self.bg.addButton(b, i)
-            self.hbox.addWidget(b)
+            if count <= 0:
+                self.hbox.addWidget(b)
+            else:
+                r,c = divmod(i,count)
+                print("%s = (%s,%s)" % (i,r,c))
+                self.hbox.addWidget(b,r,c)
 
         self.input.setLayout(self.hbox)
         self.layout().insertWidget(1, self.input)
@@ -898,6 +921,10 @@ class InputPush(InputItem):
         val = str(val)
         for b in self.bg.buttons():
             b.setChecked(b.text() == val)
+
+    def doFunc(self):
+        """Set the value by calling the button's func"""
+        self.func(self)
 
 
 class InputInteger(InputItem):
