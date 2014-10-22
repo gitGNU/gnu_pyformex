@@ -39,6 +39,7 @@ from pyformex.formex import Formex, connect
 from pyformex.mesh import Mesh
 from pyformex import geomtools as gt
 from pyformex import utils
+from pyformex.varray import Varray
 
 ##############################################################################
 
@@ -280,15 +281,22 @@ class Curve(Geometry):
         return self.lengths().sum()
 
 
-    def atApproximate(self,nseg,equidistant=False,npre=None):
+    def atApproximate(self,nseg=None,ndiv=None,equidistant=False,npre=None):
         """Return parameter values for approximating a Curve with a PolyLine.
 
         Parameters:
 
         - `nseg`: number of segments of the resulting PolyLine. The number
           of returned parameter values is `nseg` if the curve is closed,
-          else `nseg+1`.
-        - `equidistant`: if True, the points are spaced almost equidistantly
+          else `nseg+1`. Only used if `ndiv` is not specified.
+        - `ndiv`: positive integer or a list thereof. If a single integer,
+          it specifies the number of straight segments in each part of the
+          curve, and is thus equivalent with `nseg = ndiv * self.nparts`.
+          If a list of integers, its length should be equal to the number
+          of parts in the curve and each integer in the list specifies the
+          number of segments the corresponding part.
+        - `equidistant`: bool, only used if ndiv is not specified.
+          If True, the points are spaced almost equidistantly
           over the curve. If False (default), the points are spread
           equally over the parameter space.
         - `npre`: integer: only used when `equidistant` is True:
@@ -297,15 +305,25 @@ class Curve(Geometry):
           required to compute curve lengths.
 
         """
+        if ndiv is not None:
+            if isInt(ndiv):
+                nseg = ndiv * self.nparts
+                ndiv = None
+            equidistant = False
         if equidistant:
             if npre is None:
                 npre = 100
             S = self.approximate(ndiv=npre)
             at = S.atLength(nseg) / npre
 
+        elif ndiv is not None:
+            at = concatenate([[ 0. ]] + [ i + unitDivisor(n,1) for i,n in enumerate(ndiv) ])
+
         else:
-            S = self
-            at = arange(nseg+1) * float(S.nparts) / nseg
+            if nseg is None:
+                nseg = self.nparts
+            at = arange(nseg+1) * float(self.nparts) / nseg
+
         if self.closed:
             at = at[:-1]
         return at
@@ -419,18 +437,10 @@ class Curve(Geometry):
           accurate curve lengths).
 
         """
-        if ndiv is not None:
-            if isInt(ndiv):
-                nseg = ndiv * self.nparts
-            equidistant = False
-        if nseg is not None:
-            at = self.atApproximate(nseg,equidistant,npre)
-        elif ndiv is not None:
-            print("Refine to %s" % ndiv)
-            at = concatenate([ i + unitDivisor(n) for i,n in enumerate(ndiv) ])
-            print("At %s" % at)
+        if nseg or ndiv or equidistant:
+            at = atApproximate(nseg,ndiv,equidistant,npre)
         else:
-            at = self.atChordal(chordal,npre)
+            at = self.atChordal(chordal)
 
         return self.approxAt(at)
 
@@ -1640,6 +1650,109 @@ Most likely because 'python-scipy' is not installed on your system.""")
         control = reverseAxis(self.coords, axis=0)
         return BezierSpline(control=control, closed=self.closed, degree=self.degree)
 
+
+##############################################################################
+#
+
+class Contour(Curve):
+    """A class for storing a contour.
+
+    The contour class stores a continuous (usually closed) curve which consists of
+    a sequence of strokes, each stroke either being a straight segment or a quadratic
+    or cubic Bezier curve. A stroke is thus defined by 2, 3 or 4 points.
+    The contour is defined by a list of points and a Varray of element connectivity.
+    This format is well suited to store contours of scalable fonts. The contours are
+    in that case usually 2D.
+    """
+    def __init__(self,coords,elems):
+        Geometry.__init__(self)
+        self.prop = None
+        self.coords = Coords(checkArray(coords,(-1,3),'f'))
+        self.elems = Varray(elems)
+        first = self.elems.col(0)
+        last = self.elems.col(-1)
+        if (first[1:] != last[:-1]).any():
+            raise ValueError("elems do not form a continuous contour")
+        self.nparts = self.elems.shape[0]
+        self.closed = self.elems[0][0] == self.elems[-1][-1]
+
+    def pointsOn(self):
+        ind = self.elems.col(0)
+        if not self.closed:
+            ind = concatenate([ind,[self.elems[-1][-1]]])
+        return self.coords[ind]
+
+    def pointsOff(self):
+        ind = unique(concatenate([r[1:-1] for  r in self.elems]))
+        return self.coords[ind]
+
+    def ncoords(self):
+        return self.coords.shape[0]
+
+    def npoints(self):
+        return self.pointsOn().shape[0]
+
+    def endPoints(self):
+        """Return start and end points of the curve.
+
+        Returns a Coords with two points, or None if the curve is closed.
+        """
+        if self.closed:
+            return None
+        else:
+            return self.coords[[0, -1]]
+
+
+    def part(self, i):
+        """Returns the points defining part j of the curve."""
+        return self.coords[self.elems[i]]
+
+
+    def stroke(self,i):
+        """Return curve for part i"""
+        X = self.part(i)
+        degree = len(X) - 1
+        if len(X) == 1:
+            return PolyLine(X)
+        else:
+            return BezierSpline(control=X,degree=degree)
+
+
+    def sub_points(self, t, j):
+        """Return the points at values t in part j
+
+        t can be an array of parameter values, j is a single segment number.
+        """
+        j = int(j)
+        t = asarray(t).reshape(-1, 1)
+        return self.stroke(j).sub_points(t,0)
+
+
+    def sub_directions(self, t, j):
+        """Return the directions at values t in part j
+
+        t can be an array of parameter values, j is a single segment number.
+        """
+        j = int(j)
+        t = asarray(t).reshape(-1, 1)
+        return self.stroke(j).sub_points(t,0)
+
+
+    def lengths(self):
+        return [ self.stroke(i).length() for i in range(self.nparts) ]
+
+
+    def atChordal(self,chordal=0.01,at=None):
+        # Define specialized preapproximation
+        if at is None:
+            at = self.atApproximate(ndiv=self.elems.lengths)
+        return Curve.atChordal(self,chordal,at)
+
+
+    def toMesh(self):
+        """Convert the Contour to a Mesh."""
+        print("Convert to mesh")
+        return [ self.stroke(i).toMesh() for i in range(self.nparts) ]
 
 ##############################################################################
 #
