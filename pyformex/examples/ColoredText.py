@@ -56,7 +56,7 @@ from pyformex.opengl.textext import *
 def run():
     n = 40
     T = ['Python', 'NumPy', 'OpenGL', 'QT4', 'pyFormex']
-    fonts = listMonoFonts()
+    fonts = utils.listMonoFonts()
 
     ftmin, ftmax = 12, 48
 

@@ -45,7 +45,7 @@ def run():
     clear()
     view('front')
     smooth()
-    fonts = listMonoFonts()
+    fonts = utils.listMonoFonts()
 
     # - draw a square
     # - use the full character set in the default font as a texture

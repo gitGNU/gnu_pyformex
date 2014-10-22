@@ -52,7 +52,7 @@ def run():
         undecorate(T)
 
     delay(1)
-    for f in listMonoFonts():
+    for f in utils.listMonoFonts():
         print(f)
         font = FontTexture(f,24)
         S = drawText(f, (20, 20), font=font,size=24)

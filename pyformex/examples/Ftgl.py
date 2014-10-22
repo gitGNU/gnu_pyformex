@@ -50,13 +50,14 @@ except ImportError:
 from pyformex.opengl import colors
 from pyformex.gui import image
 from pyformex.odict import OrderedDict
+from pyformex.opengl.actors import Text3DActor
 
 
 extra_fonts = [
     getcfg('datadir')+"/blippok.ttf",
     ]
 
-fonts = [ f for f in utils.listFontFiles() if f.endswith('.ttf') ]
+fonts = [ f for f in utils.listAllFonts() if f.endswith('.ttf') ]
 fonts += [ f for f in extra_fonts if os.path.exists(f) ]
 fonts.sort()
 print("Number of available fonts: %s" % len(fonts))
@@ -76,9 +77,8 @@ def showSquare():
 
 
 def showText(text, font, fonttype, facesize, color, pos):
-    utils.warn("Text3DActor is currently inactive")
-    return
-    from pyformex.legacy.actors import Text3DActor, TranslatedActor
+    #utils.warn("Text3DActor is currently inactive")
+    #return
     font = fonttypes[fonttype](font)
     t = Text3DActor(text, font, facesize, color, pos)
     t.nolight=True
@@ -129,8 +129,6 @@ def show(all=False):
 
     clear()
     print(dialog.results)
-    F = Formex('3:012').replic2(10, 6).align('+-0')
-    draw(F, color='yellow')
     showText(**dialog.results)
     zoomAll()
 

@@ -2097,7 +2097,7 @@ def stuur(x,xval,yval,exp=2.5):
         return ymax
 
 
-def listFontFiles():
+def listAllFonts():
     """List all fonts known to the system.
 
     Returns a list of path names to all the font files found on the system.
@@ -2108,6 +2108,31 @@ def listFontFiles():
         warning("fc-list could not find your font files.\nMaybe you do not have fontconfig installed?")
     else:
         return [ f.strip() for f in P.out.split('\n') ]
+
+
+def is_mono_font(fontfile,size=24):
+    "Test whether a fontfile is a fixed width font or not"""
+    face = ft.Face(fontfile)
+    #face.set_char_size(size*64)
+    return face.is_fixed_width
+
+
+def listMonoFonts():
+    """List all monospace fonts files found on the system."""
+    fonts = [ f for f in utils.listAllFonts() if f.endswith('.ttf') ]
+    fonts = [ f for f in fonts if is_mono_font(f) ]
+    return sorted(fonts)
+
+
+def defaultMonoFont():
+    """Return a default monospace font for the system."""
+    fonts = listMonoFontFiles()
+    if not fonts:
+        raise ValueError("I could not find any monospace font file on your system")
+    for f in fonts:
+        if f.endswith('DejaVuSansMono.ttf'):
+            return f
+    return fonts[0]
 
 
 ###########################################################################

@@ -255,7 +255,7 @@ def run():
 
     global fonts
     if not fonts:
-        fonts = utils.listFontFiles() + [
+        fonts = utils.listAllFonts() + [
             f for f in extra_fonts if os.path.exists(f) ]
 
     fonts.sort()
