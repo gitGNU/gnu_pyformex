@@ -1163,27 +1163,47 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return unique(concat(nm))
 
 
-    def fuse(self,**kargs):
+    def fuse(self,parts=None,**kargs):
         """Fuse the nodes of a Meshes.
 
-        All nodes that are within the tolerance limits of each other
+        Nodes that are within the tolerance limits of each other
         are merged into a single node.
 
-        The merging operation can be tuned by specifying extra arguments
-        that will be passed to :meth:`Coords:fuse`.
+        Parameters:
+
+        - `parts`: int array-like with length equal to number of elements.
+          If specified, it will be used to split the Mesh into parts (see
+          :func:`splitProp`) and do the fuse operation per part.
+          Elements for which the value of `nparts` is negative will not
+          be involved in the fuse operations.
+        - Extra arguments for tuning the fuse operation are passed to the
+          :meth:`Coords:fuse` method.
+
         """
-        coords, index = self.coords.fuse(**kargs)
-        return self.__class__(coords, index[self.elems], prop=self.prop, eltype=self.elType())
+        if parts is None:
+            coords, index = self.coords.fuse(**kargs)
+            return self.__class__(coords, index[self.elems], prop=self.prop, eltype=self.elType())
+        else:
+            parts = checkArray(parts,(self.nelems(),),'i')
+            ML = self.splitProp(parts)
+            if parts.min() >= 0:
+                n = (unique(parts) < 0).sum()
+            else:
+                n = 0
+            ML = ML[:n] + [ M.fuse(**kargs) for M in ML[n:] ]
+            return Mesh.concatenate(ML,fuse=False)
 
 
     def matchCoords(self,coords,**kargs):
         """Match nodes of coords with nodes of self.
 
         coords can be a Coords or a Mesh object
-        This is a convenience function equivalent to::
+        This is a convenience function equivalent to ::
 
            self.coords.match(mesh.coords,**kargs)
-           or
+
+        or ::
+
            self.coords.match(coords,**kargs)
 
         See also :meth:`Coords.match`
