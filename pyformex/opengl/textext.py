@@ -57,7 +57,7 @@ def is_mono_font(fontfile,size=24):
 
 
 def listMonoFonts():
-    fonts = [ f for f in utils.listFontFiles() if f.endswith('.ttf') ]
+    fonts = [ f for f in utils.listAllFonts() if f.endswith('.ttf') ]
     fonts = [ f for f in fonts if is_mono_font(f) ]
     return sorted(fonts)
 
