@@ -2152,7 +2152,7 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
 
 
     @classmethod
-    def concatenate(clas,meshes,**kargs):
+    def concatenate(clas,meshes,fuse=True,**kargs):
         """Concatenate a list of meshes of the same plexitude and eltype
 
         All Meshes in the list should have the same plexitude.
@@ -2194,7 +2194,7 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
         else:
             prop = concatenate(prop)
 
-        coords, elems = mergeMeshes(meshes,**kargs)
+        coords, elems = mergeMeshes(meshes,fuse=fuse,**kargs)
         elems = concatenate(elems, axis=0)
         return clas(coords, elems, prop=prop, eltype=eltype.pop())
 
