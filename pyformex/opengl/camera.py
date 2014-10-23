@@ -1003,6 +1003,7 @@ class Camera(object):
         # This is only correct when glDepthRange(0.0, 1.0)
         # We should not change the depth range
         vp = gl_viewport()
+        x = at.checkArray(x,(-1,3),'f')
         return normalize(x[:, :3], [[vp[0], vp[1], 0], [vp[2], vp[3], 1]])
 
 

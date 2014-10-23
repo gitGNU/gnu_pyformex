@@ -109,10 +109,12 @@ class PyConsole(QtGui.QPlainTextEdit):
 
 
     def getCommand(self):
+        print("getCommand")
         doc = self.document()
         curr_line = str(doc.findBlockByLineNumber(doc.lineCount() - 1).text())
         curr_line = curr_line.rstrip()
         curr_line = curr_line[len(self.prompt):]
+        print(curr_line)
         return curr_line
 
 
@@ -179,33 +181,12 @@ class PyConsole(QtGui.QPlainTextEdit):
             self.moveCursor(QtGui.QTextCursor.Right)
 
 
-    ## def runSource(self,command):
-    ##     try:
-    ##         print("EVAL")
-    ##         result = eval(command, self.namespace, self.namespace)
-    ##         if result != None:
-    ##             self.appendPlainText(repr(result))
-    ##     except SyntaxError:
-    ##         print("EXEC")
-    ##         exec command in self.namespace
-
-
-    ## def runSource(self,command):
-    ##     try:
-    ##         print("EVAL")
-    ##         res = self.interpreter.runsource(command,'<console>','eval')
-    ##         print("RES=%s" % res)
-    ##     except SyntaxError:
-    ##         print("EXEC")
-    ##         res = self.interpreter.runsource(command,'<console>','single')
-    ##         print("RES=%s" % res)
-
-
     def runSource(self, command):
         res = self.interpreter.runsource(command, '<console>', 'single')
 
 
     def runCommand(self):
+        print("runcommand")
         command = self.getCommand()
         self.addToHistory(command)
 
@@ -239,6 +220,7 @@ class PyConsole(QtGui.QPlainTextEdit):
                 self.appendPlainText('\n'.join(traceback_lines))
             sys.stdout = tmp_stdout
         self.showPrompt()
+
 
     def keyPressEvent(self, event):
         if self.boardmode:

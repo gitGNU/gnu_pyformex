@@ -46,6 +46,8 @@ from pyformex.opengl.renderer import Renderer
 from pyformex.opengl.scene import Scene, ItemList
 from pyformex.opengl import colors
 
+import numpy as np
+
 from numpy import *
 from OpenGL import GL, GLU
 
@@ -1215,34 +1217,38 @@ class Canvas(object):
 
     def project(self,x,y,z,locked=False):
         "Map the object coordinates (x,y,z) to window coordinates."""
-        locked=False
-        if locked:
-            model, proj, view = self.projection_matrices
-        else:
-            self.makeCurrent()
-            self.camera.loadProjection()
-            model = GL.glGetDoublev(GL.GL_MODELVIEW_MATRIX)
-            proj = GL.glGetDoublev(GL.GL_PROJECTION_MATRIX)
-            view = GL.glGetIntegerv(GL.GL_VIEWPORT)
-        winx, winy, winz = GLU.gluProject(x, y, z, model, proj, view)
-        return winx, winy, winz
-        return self.camera.project(x, y, z)
+        ## locked=False
+        ## if locked:
+        ##     model, proj, view = self.projection_matrices
+        ## else:
+        ##     self.makeCurrent()
+        ##     self.camera.loadProjection()
+        ##     model = GL.glGetDoublev(GL.GL_MODELVIEW_MATRIX)
+        ##     proj = GL.glGetDoublev(GL.GL_PROJECTION_MATRIX)
+        ##     view = GL.glGetIntegerv(GL.GL_VIEWPORT)
+        ## winx, winy, winz = GLU.gluProject(x, y, z, model, proj, view)
+        ## return winx, winy, winz
+        X = self.camera.project([[x, y, z]])
+        #print(X,X.size)
+        return X[0]
 
 
     def unProject(self,x,y,z,locked=False):
         "Map the window coordinates (x,y,z) to object coordinates."""
-        locked=False
-        if locked:
-            model, proj, view = self.projection_matrices
-        else:
-            self.makeCurrent()
-            self.camera.loadProjection()
-            model = GL.glGetDoublev(GL.GL_MODELVIEW_MATRIX)
-            proj = GL.glGetDoublev(GL.GL_PROJECTION_MATRIX)
-            view = GL.glGetIntegerv(GL.GL_VIEWPORT)
-        objx, objy, objz = GLU.gluUnProject(x, y, z, model, proj, view)
-        return (objx, objy, objz)
-        return self.camera.unProject(x, y, z)
+        ## locked=False
+        ## if locked:
+        ##     model, proj, view = self.projection_matrices
+        ## else:
+        ##     self.makeCurrent()
+        ##     self.camera.loadProjection()
+        ##     model = GL.glGetDoublev(GL.GL_MODELVIEW_MATRIX)
+        ##     proj = GL.glGetDoublev(GL.GL_PROJECTION_MATRIX)
+        ##     view = GL.glGetIntegerv(GL.GL_VIEWPORT)
+        ## objx, objy, objz = GLU.gluUnProject(x, y, z, model, proj, view)
+        ## return (objx, objy, objz)
+        X = self.camera.unProject([[x,y,z]])
+        #print(X)
+        return X
 
 
     def zoom(self,f,dolly=True):

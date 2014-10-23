@@ -30,6 +30,7 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import utils
+from pyformex import freetype as ft
 from pyformex.coords import Coords
 from pyformex.formex import Formex
 from pyformex.opengl.drawable import Base, Actor
@@ -39,13 +40,6 @@ from pyformex.opengl.sanitize import *
 from OpenGL import GL
 
 import numpy
-
-if utils.hasModule('freetype'):
-    import freetype as ft
-else:
-    utils.warn('error_no_freetype')
-    #utils.requireModule('freetype')
-    from pyformex import freetype as ft
 
 
 class FontTexture(Texture):

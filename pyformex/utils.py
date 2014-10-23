@@ -2112,13 +2112,8 @@ def listAllFonts():
 
 def is_mono_font(fontfile,size=24):
     "Test whether a fontfile is a fixed width font or not"""
-    if hasModule('freetype'):
-        import freetype as ft
-    else:
-        utils.warn('error_no_freetype')
-        from pyformex import freetype as ft
+    from pyformex import freetype as ft
     face = ft.Face(fontfile)
-    #face.set_char_size(size*64)
     return face.is_fixed_width
 
 

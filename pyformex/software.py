@@ -50,7 +50,6 @@ known_modules = {
     'calpy': (),
     'dicom': (),
     'docutils': (),
-    'freetype': ('', 'freetype', 'version'),
     'gdcm': ('', '', 'GDCM_VERSION'),
     'gl2ps': ('', '', 'GL2PS_VERSION'),
     'gnuplot': ('Gnuplot',),
@@ -79,6 +78,7 @@ known_externals = {
     'calpy': ('calpy --version', 'Calpy (\S+)'),
     'dxfparser': ('pyformex-dxfparser --version', 'dxfparser (\S+)'),
     'ffmpeg': ('ffmpeg -version', '[fF][fF]mpeg version (\S+)'),
+    'freetype': ('freetype-config --ftversion', '(\S+)'),
     'gts': ('gtsset -h', 'Usage(:) '),
     'gts-bin': ('gts2stl -h', 'Usage(:) '),
     'gts-extra': ('gtsinside -h', 'Usage(:) '),
@@ -249,9 +249,6 @@ def checkModule(name,ver=(),fatal=False,quiet=False):
         if fatal:
             raise
         m = ''
-
-    ## if name=='freetype':
-    ##     print("Module %s: Version %s" % (name,m))
 
     # If the attribute is a callable, call it
     if callable(m):

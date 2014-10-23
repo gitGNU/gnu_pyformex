@@ -1055,4 +1055,48 @@ def polygonEdgeIndex(n):
 
 ########################################################################
 
+from pyformex.legacy.actors import Actor as OldActor
+from pyformex import arraytools as at
+
+class Text3DActor(OldActor):
+    """A text as a 3D object.
+
+    This class provides an Actor representing a text as an object
+    in 3D space.
+    """
+    def __init__(self, text, font, facesize, color, trl):
+        OldActor.__init__(self)
+        self.text = text
+        self.font = font
+        self.setFaceSize(*facesize)
+        self.setColor(color)
+        self.trl = at.checkArray(trl, (3,), 'f')
+
+    def setFaceSize(self, a, b):
+        self.font.FaceSize(a, b)
+
+    def setColor(self, color):
+        from pyformex.opengl.sanitize import saneColor
+        self.color = saneColor(color)
+
+    def bbox(self):
+        bb = self.font.BBox(self.text)
+        return [bb[:3], bb[3:]]
+
+    def render(self, renderer):
+        """Render the geometry of this object"""
+        GL.glMatrixMode(GL.GL_MODELVIEW)
+        GL.glPushMatrix()
+        GL.glTranslate(*self.trl)
+        GL.glColor3fv(self.color)
+        self.font.Render(self.text)
+        GL.glMatrixMode(GL.GL_MODELVIEW)
+        GL.glPopMatrix()
+        # Because of the way font.Render works, we need an update here
+        #pf.canvas.update()
+
+
+    def draw(self,canvas):
+        self.render(None)
+
 ### End
