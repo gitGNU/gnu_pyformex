@@ -1163,27 +1163,16 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return unique(concat(nm))
 
 
-    def fuse(self,elems=None,**kargs):
+    def fuse(self,**kargs):
         """Fuse the nodes of a Meshes.
-               
-        All selected nodes that are within the tolerance limits of each other
+
+        All nodes that are within the tolerance limits of each other
         are merged into a single node.
 
-        Parameters:
-        
-            - `elems`: None or array of integers. If None the fusing is
-            performed on the whole mesh. If the elements indices are specified
-            only the nodes belonging to these elements are fused.
- 
         The merging operation can be tuned by specifying extra arguments
         that will be passed to :meth:`Coords:fuse`.
         """
         coords, index = self.coords.fuse(**kargs)
-        if elems is not  None:
-            coordsnew = self.coords
-            coordsnew[arange(self.ncoords())[unique(self.elems[elems])]]=coords[index[unique(self.elems[elems])]]
-            coords, index = coordsnew.fuse(atol=0.)
-            
         return self.__class__(coords, index[self.elems], prop=self.prop, eltype=self.elType())
 
 
