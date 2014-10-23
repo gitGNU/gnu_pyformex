@@ -2112,6 +2112,11 @@ def listAllFonts():
 
 def is_mono_font(fontfile,size=24):
     "Test whether a fontfile is a fixed width font or not"""
+    if hasModule('freetype'):
+        import freetype as ft
+    else:
+        utils.warn('error_no_freetype')
+        from pyformex import freetype as ft
     face = ft.Face(fontfile)
     #face.set_char_size(size*64)
     return face.is_fixed_width
@@ -2119,14 +2124,14 @@ def is_mono_font(fontfile,size=24):
 
 def listMonoFonts():
     """List all monospace fonts files found on the system."""
-    fonts = [ f for f in utils.listAllFonts() if f.endswith('.ttf') ]
+    fonts = [ f for f in listAllFonts() if f.endswith('.ttf') ]
     fonts = [ f for f in fonts if is_mono_font(f) ]
     return sorted(fonts)
 
 
 def defaultMonoFont():
     """Return a default monospace font for the system."""
-    fonts = listMonoFontFiles()
+    fonts = listMonoFonts()
     if not fonts:
         raise ValueError("I could not find any monospace font file on your system")
     for f in fonts:

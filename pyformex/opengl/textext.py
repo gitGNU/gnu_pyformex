@@ -36,30 +36,16 @@ from pyformex.opengl.drawable import Base, Actor
 from pyformex.opengl.texture import Texture
 from pyformex.opengl.sanitize import *
 
-
 from OpenGL import GL
+
+import numpy
+
 if utils.hasModule('freetype'):
     import freetype as ft
 else:
     utils.warn('error_no_freetype')
     #utils.requireModule('freetype')
     from pyformex import freetype as ft
-
-
-import numpy
-
-
-def is_mono_font(fontfile,size=24):
-    "Test whether a fontfile is a fixed width font or not"""
-    face = ft.Face(fontfile)
-    #face.set_char_size(size*64)
-    return face.is_fixed_width
-
-
-def listMonoFonts():
-    fonts = [ f for f in utils.listAllFonts() if f.endswith('.ttf') ]
-    fonts = [ f for f in fonts if is_mono_font(f) ]
-    return sorted(fonts)
 
 
 class FontTexture(Texture):
@@ -127,14 +113,7 @@ class FontTexture(Texture):
     @classmethod
     def default(clas):
         if clas.default_font is None:
-            fonts = listMonoFonts()
-            if not fonts:
-                raise ValueError("I could not find any font file on your system")
-            default_font_file = fonts[0]
-            for f in fonts:
-                if f.endswith('DejaVuSansMono.ttf'):
-                    default_font_file = f
-                    break
+            default_font_file = utils.defaultMonoFont()
             default_font_size = 36
             clas.default_font = FontTexture(default_font_file,default_font_size)
         return clas.default_font

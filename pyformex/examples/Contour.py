@@ -125,8 +125,8 @@ def setFont(default):
 
 
 def run():
-    fonts = listMonoFonts()
-    default = defaultMonoFont()
+    fonts = utils.listMonoFonts()
+    default = utils.defaultMonoFont()
     setFont(default)
 
     while True:
