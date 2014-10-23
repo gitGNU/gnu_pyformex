@@ -438,7 +438,7 @@ class Curve(Geometry):
 
         """
         if nseg or ndiv or equidistant:
-            at = atApproximate(nseg,ndiv,equidistant,npre)
+            at = self.atApproximate(nseg,ndiv,equidistant,npre)
         else:
             at = self.atChordal(chordal)
 
