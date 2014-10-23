@@ -565,6 +565,9 @@ class Geometry(object):
 
 
     @_coords_transform
+    def adjust(self,*args,**kargs):
+        pass
+    @_coords_transform
     def translate(self,*args,**kargs):
         pass
     @_coords_transform

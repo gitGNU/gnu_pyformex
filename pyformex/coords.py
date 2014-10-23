@@ -1769,6 +1769,17 @@ class Coords(ndarray):
         Therefore, the most sensible way is to run the procedure twice, with
         a different shift value (they should differ more than the tolerance).
         Specifying repeat=True will automatically do this.
+
+        Example:
+
+          >>> X = Coords([[1.,1.,0.],[1.001,1.,0.],[1.1,1.,0.]])
+          >>> x,e = X.fuse(atol=0.01)
+          >>> print(x)
+          [[ 1.   1.   0. ]
+           [ 1.1  1.   0. ]]
+          >>> print(e)
+          [0 0 1]
+
         """
         if nodesperbox is not None:
             utils.warn('warn_fuse_arg_rename')
@@ -1821,6 +1832,30 @@ class Coords(ndarray):
         x = x[flag>0]          # extract unique nodes
         s = sel[argsort(srt)]  # and indices for old nodes
         return (x, s.reshape(self.shape[:-1]))
+
+
+    def adjust(self,**kargs):
+        """Find (almost) identical nodes and adjust them to be identical.
+
+        This function is very much like the :func:`fuse` operation, but
+        it does not fuse the close neigbours to a single point. Instead
+        it adjust the coordinates of the points to be identical.
+
+        The parameters are the same as for the :func:`fuse` method.
+
+        Returns a Coords with the same shape as the input.
+
+        Example:
+
+          >>> X = Coords([[1.,1.,0.],[1.001,1.,0.],[1.1,1.,0.]])
+          >>> print(X.adjust(atol=0.01))
+          [[ 1.   1.   0. ]
+           [ 1.   1.   0. ]
+           [ 1.1  1.   0. ]]
+
+        """
+        coords,elems = self.fuse(**kargs)
+        return coords[elems]
 
 
     def match(self,coords,clean=False,**kargs):
