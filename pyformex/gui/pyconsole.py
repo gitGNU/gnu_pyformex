@@ -109,12 +109,12 @@ class PyConsole(QtGui.QPlainTextEdit):
 
 
     def getCommand(self):
-        print("getCommand")
+        #print("getCommand")
         doc = self.document()
         curr_line = str(doc.findBlockByLineNumber(doc.lineCount() - 1).text())
         curr_line = curr_line.rstrip()
         curr_line = curr_line[len(self.prompt):]
-        print(curr_line)
+        #print(curr_line)
         return curr_line
 
 
@@ -186,7 +186,7 @@ class PyConsole(QtGui.QPlainTextEdit):
 
 
     def runCommand(self):
-        print("runcommand")
+        #print("runcommand")
         command = self.getCommand()
         self.addToHistory(command)
 
