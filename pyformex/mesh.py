@@ -1194,7 +1194,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
                 coords, fusindex = self.coords[nodes].fuse(**kargs)
                 coords = Coords.concatenate([self.coords[keep],coords])
                 index = -ones(self.nnodes(),dtype=Int)
-                index[keep] = arange(len(keep))
+                index[keep] = arange(len(keep),dtype=Int)
                 index[nodes] = len(keep) + fusindex
             return self.__class__(coords, index[self.elems], prop=self.prop, eltype=self.elType())
         else:
