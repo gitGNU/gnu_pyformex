@@ -41,8 +41,8 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import zip, utils
+from pyformex import arraytools as at
 
-from pyformex.arraytools import groupPositions
 from pyformex.coords import *
 from pyformex.formex import Formex
 from pyformex.connectivity import Connectivity
@@ -142,6 +142,8 @@ class Mesh(Geometry):
             # A single object was specified instead of (coords,elems) pair
             try:
                 # initialize from a single object
+                if isinstance(coords, Coords):
+                    coords = Formex(coords)
                 if isinstance(coords, Mesh):
                     M = coords
                 else:
@@ -1163,7 +1165,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return unique(concat(nm))
 
 
-    def fuse(self,parts=None,**kargs):
+    def fuse(self,parts=None,nodes=None,**kargs):
         """Fuse the nodes of a Meshes.
 
         Nodes that are within the tolerance limits of each other
@@ -1176,12 +1178,24 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
           :func:`splitProp`) and do the fuse operation per part.
           Elements for which the value of `nparts` is negative will not
           be involved in the fuse operations.
+        - `nodes`: int array-like: a list of nod numbers. If specified,
+          only these nodes will be involved in the fuse operation. This
+          option can not be specified together when the `parts` option
+          is used.
         - Extra arguments for tuning the fuse operation are passed to the
           :meth:`Coords:fuse` method.
 
         """
         if parts is None:
-            coords, index = self.coords.fuse(**kargs)
+            if nodes is None:
+                coords, index = self.coords.fuse(**kargs)
+            else:
+                keep = at.complement(nodes,self.nnodes())
+                coords, fusindex = self.coords[nodes].fuse(**kargs)
+                coords = Coords.concatenate([self.coords[keep],coords])
+                index = -ones(self.nnodes(),dtype=Int)
+                index[keep] = arange(len(keep))
+                index[nodes] = len(keep) + fusindex
             return self.__class__(coords, index[self.elems], prop=self.prop, eltype=self.elType())
         else:
             parts = checkArray(parts,(self.nelems(),),'i')
@@ -2334,7 +2348,7 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
 
         V = levelVolumes(M.coords[M.elems])
         if V is not None and M != self:
-            index = groupPositions(M.prop, arange(self.nelems()))
+            index = at.groupPositions(M.prop, arange(self.nelems()))
             V = array([ V[ind].sum() for ind in index ])
         return V
 

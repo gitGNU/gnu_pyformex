@@ -43,44 +43,61 @@ _topics = ['mesh']
 _techniques = ['fuse']
 
 from pyformex.gui.draw import *
+from pyformex import arraytools as at
+
 
 def run():
     clear()
-    # create 5 elements with a gap
-    M = Formex('l:1').toMesh().scale(0.9)
-    M = Mesh.concatenate([ M.trl([i*1.,0.,0.]) for i in range(5)],fuse=False)
-    M.setProp([1,1,2,3,3])
+    # create 9 elements with a gap
+    M = Formex('4:1234').toMesh().scale(0.9)
+    M = Mesh.concatenate([ M.trl([i*1.,j*1.,0.]) for i in range(3) for j in range(3) ],fuse=False)
+    M.setProp([1,2,3])
     print(M.coords)
     print(M.elems)
     draw(M)
-    draw(M.coords)
-    drawNumbers(M.coords)
-    pf.canvas.camera.lock()
-    sleep(1)
-    # fuse by parts
-    M = M.trl([0.,-0.2,0.])
-    M = M.fuse(M.prop,atol=0.2)
-    print(M.coords)
-    print(M.elems)
-    draw(M)
+    drawNumbers(M)
     draw(M.coords)
     drawNumbers(M.coords)
     sleep(1)
+
     # fuse by parts
-    M = M.trl([0.,-0.2,0.])
-    M = M.adjust(atol=0.2)
+    M = M.trl([3.5,0.0,0.])
+    M = M.fuse(parts=M.prop,atol=0.2)
     print(M.coords)
     print(M.elems)
     draw(M)
     draw(M.coords)
     drawNumbers(M.coords)
+    sleep(1)
+
+    # fuse between parts, but only in the right halve
+    M = M.trl([3.5,0.0,0.])
+    t = M.coords.test(min=M.coords.center()[0])
+    w = where(t)[0]
+    print("NODES TO FUSE: %s" % w)
+    M = M.fuse(nodes=w,atol=0.2)
+    print(M.coords)
+    print(M.elems)
+    draw(M)
+    draw(M.coords)
+    drawNumbers(M.coords)
+    sleep(1)
+
+    # adjust remaining nodes to close gaps, unfused
+    M = M.trl([3.5,0.,0.])
+    drawNumbers(M.coords)
+    M.coords = M.coords.adjust(atol=0.2)
+    print(M.coords)
+    print(M.elems)
+    draw(M)
+    draw(M.coords)
 
 
 if __name__ == 'draw':
     clear()
     resetAll()
-    wireframe()
-    lights(False)
+    smoothwire()
+    lights(True)
     run()
 
 
