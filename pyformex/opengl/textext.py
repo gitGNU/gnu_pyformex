@@ -121,12 +121,15 @@ class Text(Actor):
     - `text`: string: the text to display. If not a string, the string
       representation of the object will be drawn.
     - `pos`: a 2D or 3D position. If 2D, the values are measured in pixels.
-      If 3D, it is a point in global 3D space.
-
-    The text is drawn in 2D, inserted at the specified position.
+      If 3D, it is a point in global 3D space. The text is drawn in 2D,
+      inserted at the specified position.
+    - `gravity`: a string that determines the adjusting of the text with
+      respect to the insert position. It can be a combination of one of the
+      characters 'N or 'S' to specify the vertical positon, and 'W' or 'E'
+      for the horizontal. The default(empty) string will center the text.
     """
 
-    def __init__(self,text,pos,size=18,width=None,font=None,gravity=None,grid=None,texmode=4,**kargs):
+    def __init__(self,text,pos,gravity=None,size=18,width=None,font=None,grid=None,texmode=4,**kargs):
         self.text = str(text)
         pos = checkArray(pos)
         if pos.shape[-1] == 2:
