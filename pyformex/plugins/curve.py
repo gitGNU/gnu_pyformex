@@ -271,40 +271,6 @@ class Curve(Geometry):
         end = split + [self.nparts]
         return [ self.parts(j, k) for j, k in zip(start, end) ]
 
-    ## GDS draft!
-    def splitAtLength(self, L, relative=True, npre=100): 
-        """Split a curve at lenghts L into polylines 
-        
-        If relative is True L goes from 0. (start) to 1. (end)
-        otherwise it is interpreted as curvilinear distance from the start.
-        
-        # this example shows the function, but also that pointAt returns wrong points!
-        p = Coords([
-        [ 30.,50., 0.],
-        [ 20.,30., 0.], 
-        [ 30.,20., 0.], 
-        [ 20.,0., 0.],])
-        C = BezierSpline(p)
-        L0 = C.length()
-        T= [0.50,0.70]  # relative curvilinear positions
-        Cparts = C.splitAtLength(L=T, relative=True, npre=300) 
-        for i, c in enumerate(Cparts):
-            draw(c, color=i)
-            print (c.length()/L0) # THIS IS CORRECT
-        draw(C.pointsAt(t=T,normalized=True))# the second point is not in correct position, Why??
-        """
-        
-        L = asarray(L)
-        if relative == False:
-            L = L/self.length()
-        if L.min()<0. or L.max()>1.:
-            raise ValueError, 'The length should not be negative or exceed the (relative) curve length'
-        if self.degree > 1: # convert to PolyLine if the curve is not a polyline
-            PL = self.approximate(nseg=npre, equidistant=True)
-        else:
-            PL = self
-        return PL.splitAt(t=PL.atLength(div=L)) # list of polylines
-
 
     def length(self):
         """Return the total length of the curve.
@@ -936,7 +902,8 @@ class PolyLine(Curve):
         rlen = concatenate([[0.], lens/lens[-1]]) # relative length
         if isInt(div):
             div = arange(div+1) / float(div)
-        div = asarray(div)
+        else:
+            div = asarray(div)
         z = rlen.searchsorted(div)
         # we need interpolation
         wi = where(z>0)[0]
@@ -1044,6 +1011,10 @@ class PolyLine(Curve):
         return PolyLine(Coords.concatenate([self.coords, X]))
 
 
+    # allow syntax PL1 + PL2
+    __add__ = append
+
+
     def insertPointsAt(self,t,normalized=False,return_indices=False):
         """Insert new points at parameter values t.
 
@@ -1088,8 +1059,14 @@ class PolyLine(Curve):
         return PL.split(t)
 
 
-    # allow syntax PL1 + PL2
-    __add__ = append
+    def splitAtLength(self, L):
+        """Split a PolyLine at relative lenghts L.
+
+        This is a convenience function equivalent with::
+
+           self.splitAt(self.atLength(L))
+        """
+        return self.splitAt(self.atLength(L))
 
 
     def refine(self,maxlen):
