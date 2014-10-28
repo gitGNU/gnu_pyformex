@@ -169,12 +169,14 @@ class Curve(Geometry):
 
         If normalized is True, the parameter values are give in a normalized
         space where 0 is the start of the curve and 1 is the end.
+        ** This is currently incorrect **
 
         If return_position is True, also returns the part numbers on which
         the point are lying and the local parameter values.
         """
         t = array(t)
         if normalized:
+            pf.warning("Using the 'normalized=True' parameter currently yields incorrect results!")
             t *= float(self.nparts)
         i, t = self.localParam(t)
         try:
@@ -259,7 +261,7 @@ class Curve(Geometry):
         split is a list of integer values specifying the node numbers
         where the curve is to be split. As a convenience, a single int may
         be given if the curve is to be split at a single node, or None
-        to split all all nodes.
+        to split at all nodes.
 
         Returns a list of open curves of the same type as the original.
         """
@@ -1623,6 +1625,7 @@ Most likely because 'python-scipy' is not installed on your system.""")
     ##     return PL
 
 
+
     def extend(self,extend=[1., 1.]):
         """Extend the curve beyond its endpoints.
 
@@ -2144,7 +2147,6 @@ class Spiral(Curve):
 
 ##############################################################################
 # Other functions
-
 
 
 def convertFormexToCurve(self,closed=False):

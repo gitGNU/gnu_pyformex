@@ -22,9 +22,9 @@
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
 
-"""Casteljou
+"""Casteljau
 
-This example illustrates the deCasteljou algorithm for constructing a point
+This example illustrates the de Casteljau algorithm for constructing a point
 on a  Bezier curve.
 
 User input:
@@ -39,7 +39,7 @@ The pattern string defines a set of N points, where N is the length of the
 string. These N points define a Bezier Spline of degree N-1.
 
 The application first draws a PolyLine through the N points. Then it draws
-the subsequent steps of deCasteljou's algorithm to construct the point of
+the subsequent steps of de Casteljau's algorithm to construct the point of
 the Bezier Spline for the given parametric value.
 
 Finally it also draws a whole set of points on the Bezier Spline. These points
@@ -108,8 +108,8 @@ def run():
 
     setDrawOptions({'bbox':None})
 
-    # Compute and show the deCasteljou construction
-    Q = nurbs.deCasteljou(C.coords, value)
+    # Compute and show the deCasteljau construction
+    Q = nurbs.deCasteljau(C.coords, value)
     delay(1)
     wait()
     for q in Q[1:-1]:
