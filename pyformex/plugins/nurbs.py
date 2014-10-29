@@ -851,7 +851,7 @@ def pointsOnBezierCurve(P, u):
     ERROR: currently u is a single paramtric value!
 
     See also:
-    examples BezierCurve, Casteljou
+    examples BezierCurve, Casteljau
     """
     u = asarray(u).ravel()
     n = P.shape[0]-1
@@ -860,8 +860,8 @@ def pointsOnBezierCurve(P, u):
         for ui in u ], axis=0)
 
 
-def deCasteljou(P, u):
-    """Compute points on a Bezier curve using deCasteljou algorithm
+def deCasteljau(P, u):
+    """Compute points on a Bezier curve using deCasteljau algorithm
 
     Parameters:
 
@@ -870,7 +870,7 @@ def deCasteljou(P, u):
 
     Returns:
 
-    A list with point sets obtained in the subsequent deCasteljou
+    A list with point sets obtained in the subsequent deCasteljau
     approximations. The first one is the set of control points, the last one
     is the point on the Bezier curve.
 
@@ -883,6 +883,27 @@ def deCasteljou(P, u):
         Q = (1.-u) * Q[:-1] + u * Q[1:]
         C.append(Q)
     return C
+
+
+def splitBezierCurve(P, u):
+    """Split a Bezier curve at parametric values
+
+    Parameters:
+
+    P is an array with n+1 points defining a Bezier curve of degree n.
+    u is a single parameter value between 0 and 1.
+
+    Returns two arrays of n+1 points, defining the Bezier curves of degree n
+    obtained by splitting the input curve at parametric value u. These results
+    can be used with the control argument of BezierSpline to create the
+    corresponding curve.
+
+    """
+    C = deCasteljau(P, u)
+    L = stack([x[0] for x in C])
+    R = stack([x[-1] for x in C[::-1]])
+    return L,R
+
 
 
 def curveToNurbs(B):

@@ -331,7 +331,7 @@ class Curve(Geometry):
         return at
 
 
-    def atChordal(self,chordal=0.01,at=None):
+    def atChordal(self,chordal,at=None):
         """Return parameter values to approximate within given chordal error.
 
         Parameters:
@@ -405,7 +405,7 @@ class Curve(Geometry):
 
 
     @utils.warning('warn_curve_approx')
-    def approx(self,nseg=None,ndiv=None,chordal=0.01,equidistant=False,npre=None):
+    def approx(self,nseg=None,ndiv=None,chordal=0.001,equidistant=False,npre=None):
         """Approximate a Curve with a PolyLine of n segments
 
         If neither `nseg` nor `ndiv` are specified (default), a chordal method
@@ -1048,7 +1048,7 @@ class PolyLine(Curve):
             return PL
 
 
-    def splitAt(self,t,normalized=False):
+    def splitAt(self,t):
         """Split a PolyLine at parametric values t
 
         Parameter values are floating point values. Their integer part
@@ -1057,7 +1057,7 @@ class PolyLine(Curve):
 
         Returns a list of open Polylines.
         """
-        PL, t = self.insertPointsAt(t, normalized=normalized, return_indices=True)
+        PL, t = self.insertPointsAt(t, return_indices=True)
         return PL.split(t)
 
 
@@ -1467,10 +1467,16 @@ class BezierSpline(Curve):
             return Coords()
 
 
-    def part(self, j):
-        """Returns the points defining part j of the curve."""
+    def part(self, j, k=None):
+        """Returns the points defining parts [j:k] of the curve.
+
+        If k is None, it is set equal to j+1, resulting in a single
+        part with degree+1 points.
+        """
+        if k is None:
+            k = j+1
         start = self.degree * j
-        end = start + self.degree + 1
+        end = self.degree * k + 1
         return self.coords[start:end]
 
 
@@ -1539,9 +1545,30 @@ Most likely because 'python-scipy' is not installed on your system.""")
 
         The resulting curve is always open.
         """
-        start = self.degree * j
-        end = self.degree * k + 1
-        return BezierSpline(control=self.coords[start:end], degree=self.degree, closed=False)
+        return BezierSpline(control=self.part(j,k), degree=self.degree, closed=False)
+
+
+    def splitAt(self,t):
+        """Split a BezierSpline at parametric values.
+
+        Parameters:
+
+        - `t`: float: parametric value where the curve will be split.
+
+        Parameter values are floating point values. Their integer part
+        is interpreted as the curve segment number, and the decimal part
+        goes from 0 to 1 over the segment.
+
+        Returns a tuple of two BezierSplines.
+        """
+        from .nurbs import splitBezierCurve
+        j, t = self.localParam(t)
+        L,R = splitBezierCurve(self.part(j),t)
+        L = Coords.concatenate([self.part(0,j),L[1:]])
+        R = Coords.concatenate([R[:-1],self.part(j+1,self.nparts)])
+        L = BezierSpline(control=L, degree=self.degree, closed=False)
+        R = BezierSpline(control=R, degree=self.degree, closed=False)
+        return L,R
 
 
     def toMesh(self):
