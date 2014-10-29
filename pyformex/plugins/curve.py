@@ -151,14 +151,14 @@ class Curve(Geometry):
         numbers and t the local parameter values (between 0 and 1).
         """
         # Do not use asarray here! We change it, so need a copy!
-        t = array(t).ravel()
+        t = array(t).astype(Float).ravel()
         ti = floor(t).clip(min=0, max=self.nparts-1)
         t -= ti
-        i = ti.astype(Int)
+        i = ti.astype(int)
         return i, t
 
 
-    def pointsAt(self,t,normalized=False,return_position=False):
+    def pointsAt(self,t,return_position=False):
         """Return the points at parameter values t.
 
         Parameter values are floating point values. Their integer part
@@ -167,17 +167,10 @@ class Curve(Geometry):
 
         Returns a Coords with the coordinates of the points.
 
-        If normalized is True, the parameter values are give in a normalized
-        space where 0 is the start of the curve and 1 is the end.
-        ** This is currently incorrect **
-
         If return_position is True, also returns the part numbers on which
         the point are lying and the local parameter values.
         """
         t = array(t)
-        if normalized:
-            pf.warning("Using the 'normalized=True' parameter currently yields incorrect results!")
-            t *= float(self.nparts)
         i, t = self.localParam(t)
         try:
             allX = self.sub_points_2(t, i)
@@ -405,7 +398,7 @@ class Curve(Geometry):
 
 
     @utils.warning('warn_curve_approx')
-    def approx(self,nseg=None,ndiv=None,chordal=0.001,equidistant=False,npre=None):
+    def approx(self,nseg=None,ndiv=None,chordal=0.002,equidistant=False,npre=None):
         """Approximate a Curve with a PolyLine of n segments
 
         If neither `nseg` nor `ndiv` are specified (default), a chordal method
@@ -1017,7 +1010,7 @@ class PolyLine(Curve):
     __add__ = append
 
 
-    def insertPointsAt(self,t,normalized=False,return_indices=False):
+    def insertPointsAt(self,t,return_indices=False):
         """Insert new points at parameter values t.
 
         Parameter values are floating point values. Their integer part
@@ -1029,7 +1022,7 @@ class PolyLine(Curve):
         If return_indices is True, also returns the indices of the
         inserted points in the new PolyLine.
         """
-        X, i, t = self.pointsAt(t, normalized=normalized, return_position=True)
+        X, i, t = self.pointsAt(t, return_position=True)
         Xc = self.coords.copy()
         if return_indices:
             ind = -ones(len(Xc))
@@ -1548,27 +1541,81 @@ Most likely because 'python-scipy' is not installed on your system.""")
         return BezierSpline(control=self.part(j,k), degree=self.degree, closed=False)
 
 
-    def splitAt(self,t):
+    def insertPointsAt(self,t,split=False):
+        """Insert new points on the curve at parameter values t.
+
+        Parameters:
+
+        - `t`: float: parametric value where the new points will be
+          inserted. Parameter values are floating point values.
+          Their integer part is interpreted as the curve segment number,
+          and the decimal part goes from 0 to 1 over the segment.
+
+          * Currently there can only be one new point in each segment *
+
+        - `split`: bool: if True, this method behaves like the
+          :func:`split` method. Users should use the latter method instead
+          of the `split` parameter.
+
+        Returns a single BezierSpline (default). The result is equivalent
+        with the input curve, but has more points on the curve (and more
+        control points.
+        If `split` is True, the behavior is that of the :func:`split` method.
+        """
+        from .nurbs import splitBezierCurve
+        # Loop in descending order to avoid recomputing parameters
+        X = []
+        k = self.nparts # last full part
+        points = [] # points of left over parts
+        for i in argsort(t)[::-1]:
+            j, uu = self.localParam(t[i])
+            j = j[0]
+            uu = uu[0]
+            if j==k:
+                raise ValueError("Currently you can only have one split point per curve part!")
+            # Push the tail beyond current part
+            if k > j+1:
+                points[0:1] = self.part(j+1,k).tolist()
+            L,R = splitBezierCurve(self.part(j),uu)
+            # Push the right part
+            points[0:1] = R.tolist()
+            # Save the new segment
+            X.insert(0,Coords.concatenate(points))
+            # Save left part
+            points = L.tolist()
+            k = j
+        X.insert(0,Coords.concatenate(points))
+        if split:
+            return [ BezierSpline(control=x, degree=self.degree, closed=False) for x in X ]
+        else:
+            print(X)
+            X = Coords.concatenate([X[0]] + [xi[1:] for xi in X[1:]])
+            print(X)
+            return BezierSpline(control=X, degree=self.degree, closed=self.closed)
+
+
+    def splitAt(self,t,concat=False):
         """Split a BezierSpline at parametric values.
 
         Parameters:
 
-        - `t`: float: parametric value where the curve will be split.
+        - `t`: float: parametric value where the new points will be
+          inserted. Parameter values are floating point values.
+          Their integer part is interpreted as the curve segment number,
+          and the decimal part goes from 0 to 1 over the segment.
 
-        Parameter values are floating point values. Their integer part
-        is interpreted as the curve segment number, and the decimal part
-        goes from 0 to 1 over the segment.
+          * Currently there can only be one new point in each segment *
 
-        Returns a tuple of two BezierSplines.
+        - `split`: bool: if True, the curve will be split at the newly
+          inserted points, and a list of len(t)+1 open curves will be
+          returned. The default is to return a single curve equivalent
+          with the input, but with more points on the curve (and the
+          corresponding off-curve control points).
+
+        Returns a list of len(t)+1 open BezierSplines of the same degree
+        as the input.
         """
-        from .nurbs import splitBezierCurve
-        j, t = self.localParam(t)
-        L,R = splitBezierCurve(self.part(j),t)
-        L = Coords.concatenate([self.part(0,j),L[1:]])
-        R = Coords.concatenate([R[:-1],self.part(j+1,self.nparts)])
-        L = BezierSpline(control=L, degree=self.degree, closed=False)
-        R = BezierSpline(control=R, degree=self.degree, closed=False)
-        return L,R
+        return self.insertPointsAt(t,split=True)
 
 
     def toMesh(self):
