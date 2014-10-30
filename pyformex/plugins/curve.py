@@ -1541,6 +1541,33 @@ Most likely because 'python-scipy' is not installed on your system.""")
         return BezierSpline(control=self.part(j,k), degree=self.degree, closed=False)
 
 
+    def atLength(self, l, approx=20):
+        """Returns the parameter values at given relative curve length.
+
+        Parameters:
+
+        - `l`: list of relative curve lengths (from 0.0 to 1.0).
+          As a convenience, a single integer value may be specified,
+          in which case the relative curve lengths are found by dividing
+          the interval [0.0,1.0] in the specified number of subintervals.
+
+        - `approx`: int or None. If not None, an approximate result is
+          returned obtained by approximating the curve first by a
+          PolyLine with `approx` number of line segments per curve segment.
+          This is currently the only implemented method, and specifying
+          None will fail.
+
+        The function returns a list with the parameter values for the points
+        at the specified relative lengths.
+        """
+        if isInt(approx) and approx > 0:
+            P = self.approx(ndiv=approx)
+            return P.atLength(l) / approx
+        else:
+            raise ValueError("approx should be int and > 0")
+
+
+
     def insertPointsAt(self,t,split=False):
         """Insert new points on the curve at parameter values t.
 
