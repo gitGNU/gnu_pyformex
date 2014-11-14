@@ -35,7 +35,7 @@
 #include <assert.h>
 
 
-char* copyright = "postabq 0.1 (C) 2008 Benedict Verhegghe";
+char* copyright = "postabq 0.2 (C) 2008,2014 Benedict Verhegghe";
 
 FILE * fil;
 
@@ -83,6 +83,15 @@ int explicit = 0;  /* assume standard unless specified/detected */
 int verbose = 0;
 int fake = 0;
 
+/* Copy character data into the string buffer */
+/*
+  Copies character data from the current data buffer to the string buffer s.
+  k : start position of the data (in 8-byte words)
+  n : number of data to copy (in 8-byte words)
+  strip: if 1, trailing blanks will be stripped of. If 0, the length of the
+    resulting string will always be a multiple of 8 (padded with blanks at
+    the end).
+*/
 char* stripn(int64_t k,int64_t n,int strip) {
   s[0] = '\0';
   int64_t m = 8*n;
@@ -97,10 +106,14 @@ char* stripn(int64_t k,int64_t n,int strip) {
   return p;
 }
 
+/* Copy n words of character data into the string buffer */
+/* This is like stripn but without the stripping option */
 char* strn(int64_t k,int64_t n) {
   return stripn(k,n,0);
 }
 
+/* Copy one word of character data into the string buffer */
+/* This is like strn but copying a single 8-byte word only */
 char* str(int64_t k) {
   return strn(k,1);
 }
@@ -140,7 +153,7 @@ void do_outreq() {
 
 void do_abqver() {
   printf("D.Abqver('%s')\n",str(j++));
-  /* BEWARE ! Do not call str() multiple times in the same output instruction */
+  /* BEWARE ! Do not call str() multiple times in the same printf instruction */
   printf("D.Date('%s',",strn(j,2)); j += 2;
   printf("'%s')\n",str(j++));
   printf("D.Size(nelems=%d,nnodes=%d,length=%f)\n",data.i[j],data.i[j+1],data.d[j+2]);
