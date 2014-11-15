@@ -79,6 +79,7 @@ class Model(Geometry):
         nplex = [ m.nplex() for m in meshes ]
         self.cnodes = cumsum([0]+nnodes)
         self.celems = cumsum([0]+nelems)
+        self.cplex = cumsum([0]+nelems)
         print("Finite Element Model")
         print("Number of nodes: %s" % self.coords.shape[0])
         print("Number of elements: %s" % self.celems[-1])
@@ -104,9 +105,20 @@ class Model(Geometry):
         """Return the number of element groups in the model."""
         return len(self.elems)
 
-    def mplex(self):
-        """Return the maximum plexitude of the model."""
-        return max([e.nplex() for e in self.elems])
+    def mplex(self,method='max'):
+        """Return the plexitude of the model.
+        
+        Parameters:
+          - `flag` : string with values 'max'  and 'all'. If flag == 'max' (default) it will return
+          the maximum plexitude.  If flag == 'all' it will return a list with all
+          model plexitudes. 
+        
+        """
+        plex = [e.nplex() for e in self.elems]
+        if flag == 'max':
+            return max(plex)
+        elif flag == 'all':
+            return plex
 
 
     def splitElems(self, elems):
