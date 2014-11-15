@@ -115,9 +115,9 @@ class Model(Geometry):
         
         """
         plex = [e.nplex() for e in self.elems]
-        if flag == 'max':
+        if method == 'max':
             return max(plex)
-        elif flag == 'all':
+        elif method == 'all':
             return plex
 
 
