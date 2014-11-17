@@ -189,21 +189,41 @@ def rsyncFiles(srcdir, tgtdir, include=['*'], exclude=[], exclude_first=False, r
     if exclude_first:
         include,exclude = exclude,include
     cmd = "rsync -e '%s' --chmod=%s %s %s %s/ %s %s" % (rsh, chmod, include, exclude, srcdir, tgtdir, opts)
-    P = utils.command(cmd)
+    P = utils.command(cmd,shell=True)
     return P
 
 
-def submitJob(srcdir,tgtdir):
+def submitJob(srcdir,tgtdir,include=[],delete_old=True):
     """Submit a cluster job in srcdir to the tgtdir.
 
-    This will copy all files in srcdir to the tgtdir, making sure that
-    a file '*.request' is only copied after all other files have been copied.
+    This will copy the specified include files from srcdir to the tgtdir,
+    making sure that a file '*.request' is only copied after all other files
+    have been copied.
+    If no includes are given, all files in the srcdir are copied.
+
+    For example, to submit a simple abaqus job from a folder with
+    multiple job files, you can do::
+
+      submitJob('myjobdir','bumpfs1:bumper/requests/jobname',include=['*.inp'])
+
+    To submit a job having its own input folder equal to the job name, do::
+
+      submitJob('myjobdir/jobname','bumpfs1:bumper/requests/jobname')
+
     """
-    P = rsyncFiles(srcdir,tgtdir,exclude=['*.request'],exclude_first=True)
+    if delete_old:
+        P = rsyncFiles(srcdir,tgtdir,include=[],exclude=['*'],exclude_first=True,opts=' -rv --delete --delete-excluded')
+        if P.sta:
+            pf.warning("Could not delete old files from request folder!")
+
+    if include:
+        P = rsyncFiles(srcdir,tgtdir,include=include,exclude=['*'])
+    else:
+        P = rsyncFiles(srcdir,tgtdir,exclude=['*.request'],include=include,exclude_first=True)
     if P.sta:
         print(P.out)
     else:
-        P = rsyncFiles(srcdir,tgtdir,include=['*.request'])
+        P = rsyncFiles(srcdir,tgtdir,include=['*.request'],exclude=['*'])
     if P.sta:
         pf.warning("Some error occurred during file transfer!")
 
@@ -270,10 +290,12 @@ def submitToCluster(filename=None):
     if not filename:
         filename = askFilename(pf.cfg['workdir'], filter="Abaqus input files (*.inp)", exist=True)
     if filename:
-        if not filename.endswith('.inp'):
-            filename += '.inp'
         jobname = os.path.basename(filename)[:-4]
+        dirname = os.path.dirname(filename)
+        add_all = jobname == dirname
         res = askItems([
+            _I('jobname', jobname, text='Cluster job name/directory'),
+            _I('add_all', add_all, text='Include all the files in the input directory',tooltip='If unchecked, only the jobname.inp and jobname.request files comprise the job'),
             _I('ncpus', 4, text='Number of cpus', min=1, max=1024),
             _I('abqver', 'default', text='Abaqus Version', choices=pf.cfg['jobs/abqver']),
             _I('postabq', False, text='Run postabq on the results?'),
@@ -290,13 +312,13 @@ def submitToCluster(filename=None):
             with open(filereq,'w') as fil:
                 fil.write(reqtxt)
 
-            # TODO: it would be better to store the files in a
-            # separate subdirectory, so that we can use
-            # submitJob
             srcdir = os.path.dirname(filename)
-            tgtdir = "%s:%s" % (host, reqdir)
-            rsyncFiles(srcdir,tgtdir,include=['*.inp'])
-            rsyncFiles(srcdir,tgtdir,include=['*.request'])
+            tgtdir = "%s:%s/%s" % (host, reqdir,jobname)
+            if res['add_all']:
+                include = []
+            else:
+                include = ['*.inp']
+            submitJob(srcdir,tgtdir,include=include)
 
 
 def killClusterJob(jobname=None):
@@ -385,7 +407,7 @@ def getResultsFromServer(jobname=None,targetdir=None,ext=['.fil']):
         res = askItems(jobname_input + [
             _I('target dir', targetdir, itemtype='button', func=changeTargetDir),
             _I('create subdir', False, tooltip="Create subdir (with same name as remote) in target dir"),
-            ('.post', True),
+            ('_post.py', True),
             ('.fil', False),
             ('.odb', False),
             _I('other', [], tooltip="A list of '.ext' strings"),
@@ -398,7 +420,7 @@ def getResultsFromServer(jobname=None,targetdir=None,ext=['.fil']):
             if res['create subdir']:
                 targetdir = os.path.join(targetdir, jobname)
                 mkdir(targetdir)
-            ext = [ e for e in ['.fil', '.post', '.odb'] if res[e] ]
+            ext = [ e for e in ['.fil', '_post.py', '.odb'] if res[e] ]
             res += [ e for e in res['other'] if e.startswith('.') ]
     if jobname and ext:
         files = [ '%s%s' % (jobname, e) for e in ext ]
