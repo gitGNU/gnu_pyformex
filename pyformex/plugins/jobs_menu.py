@@ -144,6 +144,70 @@ def transferFiles(host, userdir, files, targetdir):
     return P.sta
 
 
+def rsyncFiles(srcdir, tgtdir, include=['*'], exclude=[], exclude_first=False, rsh='ssh -q', chmod='ug+rwX,o-rwx', opts='-rv'):
+    """Transfer files remotely using rsync
+
+    Parameters:
+
+    - `srcdir`: string: path from where to copy files. The path may be relative
+      or absolute, and it can containing a leading 'host:' part to specify a
+      remote directory (if `tgtdir` does not contain one).
+    - `tgtdir`: string: path where to copy files to. The path may be relative
+      or absolute, and it can containing a leading 'host:' part to specify a
+      If tgtdir does not exist, it is created (thought the parent should exist).
+      remote directory (if `srcdir` does not contain one).
+    - `include`: list of strings: files to include in the copying process.
+    - `exclude`: list of strings: files to exclude from the copying process.
+    - `rsh`: string: the remote shell command to be used.
+    - `chmod`: string: the permissions settings on the target system.
+    - `opts`: string: the
+
+    The includes are applied before the excludes. The first match will decide
+    the outcome. The default is to recursively copy all files from `srcdir` to
+    `tgtdir`. Other typical uses:
+
+    - Copy some files from srcdir to tgtdir::
+
+        rsyncFiles(src,tgt,include=['*.png','*.jpg'],exclude=['*'])
+
+    - Copy all but some files from srcdir to tgtdir::
+
+        rsyncFiles(src,tgt,exclude=['*.png','*.jpg'],exclude_first=True)
+
+    Returns the Process used to execute the command. If the -v option
+    is included in `opts`, then the Process.out atribute will contain
+    the list of files transfered.
+
+    Remarks:
+
+    - You need to have no-password ssh access to the remote systems
+    - You need to have rsync installed on source and target systems.
+
+    """
+    include = ' '.join(["--include '%s'" % i for i in include])
+    exclude = ' '.join(["--exclude '%s'" % i for i in exclude])
+    if exclude_first:
+        include,exclude = exclude,include
+    cmd = "rsync -e '%s' --chmod=%s %s %s %s/ %s %s" % (rsh, chmod, include, exclude, srcdir, tgtdir, opts)
+    P = utils.command(cmd)
+    return P
+
+
+def submitJob(srcdir,tgtdir):
+    """Submit a cluster job in srcdir to the tgtdir.
+
+    This will copy all files in srcdir to the tgtdir, making sure that
+    a file '*.request' is only copied after all other files have been copied.
+    """
+    P = rsyncFiles(srcdir,tgtdir,exclude=['*.request'],exclude_first=True)
+    if P.sta:
+        print(P.out)
+    else:
+        P = rsyncFiles(srcdir,tgtdir,include=['*.request'])
+    if P.sta:
+        pf.warning("Some error occurred during file transfer!")
+
+
 def remoteCommand(host=None,command=None):
     """Execute a remote command.
 
@@ -221,10 +285,18 @@ def submitToCluster(filename=None):
                 reqtxt += 'postproc=postabq\n'
             host = pf.cfg.get('jobs/host', 'bumpfs')
             reqdir = pf.cfg.get('jobs/inputdir', 'bumper/requests')
-            cmd = "scp %s %s:%s" % (filename, host, reqdir)
-            utils.command(cmd)
-            cmd = ['ssh', host, "echo '%s' > %s/%s.request" % (reqtxt, reqdir, jobname)]
-            utils.command(cmd)
+
+            filereq = utils.changeExt(filename,'.request')
+            with open(filereq,'w') as fil:
+                fil.write(reqtxt)
+
+            # TODO: it would be better to store the files in a
+            # separate subdirectory, so that we can use
+            # submitJob
+            srcdir = os.path.dirname(filename)
+            tgtdir = "%s:%s" % (host, reqdir)
+            rsyncFiles(srcdir,tgtdir,include=['*.inp'])
+            rsyncFiles(srcdir,tgtdir,include=['*.request'])
 
 
 def killClusterJob(jobname=None):
