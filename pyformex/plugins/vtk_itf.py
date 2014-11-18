@@ -100,10 +100,10 @@ def SetInput(vtkobj,data):
     """
     
     if vtk.VTK_MAJOR_VERSION <= 5:
-        return vtkobj.SetInput(data)
+        vtkobj.SetInput(data)
     else:
-        return vtkobj.SetInputData(data)
-        
+        vtkobj.SetInputData(data)
+    return vtkobj
     
 
 def Update(vtkobj):
@@ -112,9 +112,9 @@ def Update(vtkobj):
     """
     
     if vtk.VTK_MAJOR_VERSION <= 5:
-        return vtkobj.Update()
-    else:
-        return vtkobj
+        vtkobj.Update()
+    
+    return vtkobj
         
     
 def getVTKtype(a):
