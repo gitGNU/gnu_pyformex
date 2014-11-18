@@ -36,7 +36,6 @@ from __future__ import print_function
 from pyformex import utils,warning
 utils.requireModule('vtk')
 
-
 from pyformex import zip
 from pyformex.arraytools import DEG, RAD, normalize, length, trfMatrix, rotationAnglesFromMatrix
 from pyformex.coordsys import CoordinateSystem
@@ -47,10 +46,6 @@ from pyformex.varray import Varray
 from pyformex.plugins.curve import PolyLine
 
 import vtk
-if vtk.VTK_MAJOR_VERSION > 5:
-    ### Fixes for vtk 6
-    warning("You have vtk version 6! Some changes are needed to the interface.")
-
 from vtk.util.numpy_support import numpy_to_vtk as n2v
 from vtk.util.numpy_support import vtk_to_numpy as v2n
 from vtk.util.numpy_support import create_vtk_array as cva
@@ -60,18 +55,6 @@ from vtk import vtkXMLPolyDataReader, vtkXMLPolyDataWriter, vtkIntArray, vtkDoub
 
 from numpy import *
 import os
-
-
-def SetInput(obj,*args,**kargs):
-    if vtk.VTK_MAJOR_VERSION > 5:
-        return obj.setInputData(*args,**kargs)
-    else:
-        return obj.setInput(*args,**kargs)
-
-def Update(obj,*args,**kargs):
-    if vtk.VTK_MAJOR_VERSION <= 5 :
-        return obj.Update(*args,**kargs)
-
 
 # List of vtk data types
 #~ VTK_POLY_DATA 0
@@ -111,7 +94,29 @@ def Update(obj,*args,**kargs):
 #~ VTK_PISTON_DATA_OBJECT 34
 #~ VTK_PATH 35
 
+def SetInput(vtkobj,data):
+    """ Select SetInput method according to the vtk version. After version 5
+    vtkObjects need the inpuit through SetInputData, before SetInput.
+    """
+    
+    if vtk.VTK_MAJOR_VERSION <= 5:
+        return vtkobj.SetInput(data)
+    else:
+        return vtkobj.SetInputData(data)
+        
+    
 
+def Update(vtkobj):
+    """ Select Update method according to the vtk version. After version 5
+    Update is not needed for vtkObjects, oinly to vtkFilter and vtkAlgortythm classes.
+    """
+    
+    if vtk.VTK_MAJOR_VERSION <= 5:
+        return vtkobj.Update()
+    else:
+        return vtkobj
+        
+    
 def getVTKtype(a):
     """Converts the  data type from a numpy to a vtk array """
     return gvat(a.dtype)
@@ -164,7 +169,7 @@ def cleanVPD(vpd):
     """
     from vtk import vtkCleanPolyData
     cleaner = vtkCleanPolyData()
-    cleaner.SetInput(vpd)
+    cleaner=SetInput(cleaner,vpd)
     cleaner.Update()
     return  cleaner.GetOutput()
 
@@ -284,7 +289,7 @@ def convert2VPD(M,clean=False,verbose=True):
         vprop.SetName('prop')
         vpd.GetCellData().AddArray(vprop)
 
-    vpd.Update()
+    vpd = Update(vpd)
     if clean:
         vpd = cleanVPD(vpd)
     return vpd
@@ -339,7 +344,7 @@ def convert2VTU(M):
         vprop.SetName('prop')
         vtu.GetCellData().AddArray(vprop)
 
-    vtu.Update()
+    vtu = Update(vtu)
     return vtu
 
 
@@ -358,7 +363,7 @@ def convertVPD2Triangles(vpd):
     from vtk import vtkTriangleFilter
 
     triangles = vtkTriangleFilter()
-    triangles.SetInput(vpd)
+    triangles = SetInput(triangles,vpd)
     triangles.Update()
     return triangles.GetOutput()
 
@@ -569,7 +574,7 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
         writer = vtkXMLPolyDataWriter()
     if ftype=='vtk':
         writer = vtkDataSetWriter()
-    writer.SetInput(lvtk)
+    writer = SetInput(writer,lvtk)
     writer.SetFileName(fn)
     writer.Write()
 
@@ -598,7 +603,7 @@ def writeVTPmany(fn,items):
         vtkitems = [convert2VTU(M=m) for m in items]
     [apd.AddInput(lvtk) for lvtk in vtkitems]
     vtkobj = apd.GetOutput()
-    writer.SetInput(vtkobj)
+    writer = SetInput(writer,vtkobj)
     writer.SetFileName(fn)
     writer.Write()
 
@@ -681,7 +686,7 @@ def pointInsideObject(S,P,tol=0.):
     vps = convert2VPD(S, clean=False,verbose=False)
 
     enclosed_pts = vtkSelectEnclosedPoints()
-    enclosed_pts.SetInput(vpp)
+    enclosed_pts = SetInput(enclosed_pts,vpp)
     enclosed_pts.SetTolerance(tol)
     enclosed_pts.SetSurface(vps)
     enclosed_pts.SetCheckSurface(1)
@@ -866,7 +871,7 @@ def transform(source, trMat4x4):
     source = convert2VPD(source)
     trMat4x4 = convertTransform4x4ToVtk(trMat4x4)
     transformFilter = vtkTransformPolyDataFilter()
-    transformFilter.SetInput(source)
+    transformFilter = SetInput(transformFilter,source)
     transformFilter.SetTransform(trMat4x4)
     transformFilter.Update()
     return Coords(convertFromVPD(transformFilter.GetOutput())[0])
@@ -893,7 +898,7 @@ def _vtkCutter(self,vtkif):
     vtkobj = convert2VTU(self)
     cutter = vtkCutter()
     cutter.SetCutFunction(vtkif)
-    cutter.SetInput(vtkobj)
+    cutter = SetInput(cutter,vtkobj)
     cutter.Update()
     cutter = cutter.GetOutput()
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata=convertFromVPD(cutter,verbose=True,samePlex=True)
@@ -937,7 +942,7 @@ def _vtkClipper(self,vtkif, insideout):
         warning('vtkClipper has not been tested with this element type %s'%self.elName())
     vtkobj = convert2VPD(self)
     clipper = vtkClipPolyData()
-    clipper.SetInputData(vtkobj)
+    clipper = SetInput(clipper,vtkobj)
     clipper.SetClipFunction(vtkif)
     clipper.SetInsideOut(int(insideout))
     clipper.Update()
@@ -1300,8 +1305,8 @@ def convexHull(object):
 
     """
     from vtk import vtkDelaunay3D
-    chull=vtkDelaunay3D()
-    chull.SetInput(convert2VPD(object))
+    chull = vtkDelaunay3D()
+    chull = SetInput(chull,convert2VPD(object))
     chull.Update()
     chull=convertFromVPD(chull.GetOutput())
     return Mesh(chull[0][0], chull[0][1], eltype='tet4')
@@ -1324,7 +1329,7 @@ def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True, verbose=Fal
     vpd = cleanVPD(vpd)
 
     filter = vtkDecimatePro()
-    filter.SetInput(vpd)
+    filter = SetInput(filter,vpd)
     filter.SetTargetReduction(targetReduction)
     filter.SetBoundaryVertexDeletion(boundaryVertexDeletion)
     filter.PreserveTopologyOn()
@@ -1355,7 +1360,7 @@ def coarsenPolyLine(self, target=0.5, verbose=False):
     vpd = convert2VPD(self, clean=True)#convert pyFormex PolyLine to vpd
     vpd = cleanVPD(vpd)
     filter = vtkDecimatePolylineFilter()
-    filter.SetInput(vpd)
+    filter = SetInput(filter,vpd)
     filter.SetTargetReduction(target)
 
     filter.Update()
