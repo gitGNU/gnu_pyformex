@@ -36,6 +36,7 @@ from __future__ import print_function
 from pyformex import utils,warning
 utils.requireModule('vtk')
 
+
 from pyformex import zip
 from pyformex.arraytools import DEG, RAD, normalize, length, trfMatrix, rotationAnglesFromMatrix
 from pyformex.coordsys import CoordinateSystem
@@ -46,6 +47,10 @@ from pyformex.varray import Varray
 from pyformex.plugins.curve import PolyLine
 
 import vtk
+if vtk.VTK_MAJOR_VERSION > 5:
+    ### Fixes for vtk 6
+    warning("You have vtk version 6! Some changes are needed to the interface.")
+
 from vtk.util.numpy_support import numpy_to_vtk as n2v
 from vtk.util.numpy_support import vtk_to_numpy as v2n
 from vtk.util.numpy_support import create_vtk_array as cva
@@ -55,6 +60,18 @@ from vtk import vtkXMLPolyDataReader, vtkXMLPolyDataWriter, vtkIntArray, vtkDoub
 
 from numpy import *
 import os
+
+
+def SetInput(obj,*args,**kargs):
+    if vtk.VTK_MAJOR_VERSION > 5:
+        return obj.setInputData(*args,**kargs)
+    else:
+        return obj.setInput(*args,**kargs)
+
+def Update(obj,*args,**kargs):
+    if vtk.VTK_MAJOR_VERSION <= 5 :
+        return obj.Update(*args,**kargs)
+
 
 # List of vtk data types
 #~ VTK_POLY_DATA 0
@@ -920,7 +937,7 @@ def _vtkClipper(self,vtkif, insideout):
         warning('vtkClipper has not been tested with this element type %s'%self.elName())
     vtkobj = convert2VPD(self)
     clipper = vtkClipPolyData()
-    clipper.SetInput(vtkobj)
+    clipper.SetInputData(vtkobj)
     clipper.SetClipFunction(vtkif)
     clipper.SetInsideOut(int(insideout))
     clipper.Update()
