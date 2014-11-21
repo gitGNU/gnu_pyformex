@@ -81,6 +81,8 @@ def run():
 
         if len(fn) == 1:
             files = utils.NameSequence(fn[0]).files()
+        else:
+            files = fn
 
         print(files)
 
