@@ -86,6 +86,17 @@ def run():
 
         print(files)
 
+        # skip some files?
+        res = askItems([('file_step',1)])
+        if not res:
+            return
+
+        step = res['file_step']
+        if step > 1:
+            files = files[::step]
+            print(files)
+
+        pf.GUI.setBusy()
         if ans == 1:
             data = loadImages(files)
             scale = ones(3)
@@ -95,11 +106,13 @@ def run():
             # normalize
             dmin, dmax = data.min(), data.max()
             data = (data-dmin).astype(float32)/(dmax-dmin)
+        pf.GUI.setBusy(False)
 
         # level at which the isosurface is computed
         res = askItems([('isolevel', 0.5)])
         if not res:
             return
+
         level = res['isolevel']
         if level <= 0.0 or level >= 1.0:
             level = data.mean()
