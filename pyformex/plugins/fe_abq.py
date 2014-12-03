@@ -792,7 +792,7 @@ def fmtSurfaceSection(section, setname):
     - density (opt): float
 
     """
-    cmd = Command('SURFACE SECTION',ELSETsetname)
+    cmd = Command('SURFACE SECTION',ELSET=setname)
     if section.density:
         cmd.add(density=float(section.density))
     return cmd.out
@@ -1203,9 +1203,10 @@ def fmtSurface(prop):
         3, S1
         7, S3
     """
+    out = ''
     for p in prop:
-        cmd = "SURFACE, NAME=%s, TYPE=%s\n" % (p.name, p.surftype)
-        out = fmtKeyword(cmd,options=p.options)
+        cmd = "SURFACE, NAME=%s, TYPE=%s" % (p.name, p.surftype)
+        out += fmtKeyword(cmd,options=p.options)
         if isinstance(p.set,str):
             p.set = asarray([p.set]) # handles single string for set name
         for i, e in enumerate(p.set):
@@ -1218,7 +1219,7 @@ def fmtSurface(prop):
             elif isinstance(p.label, list):
                 out += "%s, %s\n" % (e, p.label[i])
             else:
-                raise ValueError("Data type %s not allowed for key 'label' "%(type(p.label)))
+                raise ValueError("Data type %s not allowed for key 'label' " % (type(p.label)))
     return out
 
 
@@ -2386,7 +2387,7 @@ class Step(Dict):
         """
         cmd = '*STEP'
         if self.name:
-            cmd += ',NAME = %s' % self.name
+            cmd += ', NAME=%s' % self.name
         if self.analysis == 'PERTURBATION':
             cmd += ', PERTURBATION'
 
