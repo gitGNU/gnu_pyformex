@@ -1059,7 +1059,7 @@ def fmtSpringOrDashpot(eltype, section, setname):
       per relative velocity.
 
     """
-    cmd = Command(eltype,elset=setname,data=[float(section.stiffness)],options=section.options,extra=section.extra)
+    cmd = Command(eltype,elset=setname,data=['\n%s' % float(section.stiffness)],options=section.options,extra=section.extra)
     return cmd.out
 
 
