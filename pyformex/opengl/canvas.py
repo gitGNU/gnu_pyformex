@@ -1113,6 +1113,7 @@ class Canvas(object):
 
 
     def setBbox(self, bbox):
+        #print("SETBBOX %s" % bbox)
         self.scene.bbox = bbox
 
 
@@ -1172,6 +1173,7 @@ class Canvas(object):
 
         # set camera distance and clipping planes
         if bbox is not None:
+            #print("SET CAMERA %s" % bbox)
             # Currently, we keep the default fovy/aspect
             # and change the camera distance to focus
             fovy = self.camera.fovy

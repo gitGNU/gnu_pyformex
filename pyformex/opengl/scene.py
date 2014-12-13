@@ -197,7 +197,6 @@ class Scene(object):
             actor.prepare(self.canvas)
             actor.changeMode(self.canvas)
             self._bbox = None #coords.bbox([actor,self.bbox])
-            self.canvas.camera.focus = self.bbox.center()
 
 
     def removeAny(self, actor):
@@ -224,7 +223,6 @@ class Scene(object):
             else:
                 self.actors.delete(actor)
             self._bbox = None
-            self.canvas.camera.focus = self.bbox.center()
 
 
     def clear(self,sticky=False):

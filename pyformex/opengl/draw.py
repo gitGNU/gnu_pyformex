@@ -196,6 +196,7 @@ def draw(F,
             if bbox == 'last':
                 bbox = None
 
+            #print('BBOX= %s' % bbox)
             pf.canvas.setCamera(bbox, view)
 
         # Update the rendering

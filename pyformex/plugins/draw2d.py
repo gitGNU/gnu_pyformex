@@ -128,11 +128,11 @@ def highlightDrawing(points, mode):
     """
     from pyformex.opengl import actors
     pf.canvas.removeHighlight()
-    PA = draw(points)
+    PA = draw(points,bbox='last')
     PA.addHighlight()
     obj = drawnObject(points, mode=mode)
     if obj is not None:
-        OA = draw(obj)
+        OA = draw(obj,bbox='last')
         OA.addHighlight()
 
     ## #print points[-1]
@@ -159,6 +159,7 @@ def drawPoints2D(mode,npoints=-1,zvalue=0.,coords=None):
     if mode not in draw_mode_2d:
         return
     x, y, z = pf.canvas.project(0., 0., zvalue)
+    print('Projected z = %s' % z)
     return draw2D(mode, npoints=npoints, zplane=z, coords=coords)
 
 
