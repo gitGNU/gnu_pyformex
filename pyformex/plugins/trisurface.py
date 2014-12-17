@@ -1146,7 +1146,6 @@ Quality: %s .. %s
         if self.ncoords()!=self.compact().ncoords():
             raise ValueError("Expected a compacted surface")
         Q = self.convert('quad4', fuse=False)
-        Q = self.convert('quad4')
         if method == 'voronoi':
             from pyformex.geomtools import triangleCircumCircle
             Q.coords[-self.nelems():] = triangleCircumCircle(self.coords[self.elems], bounding=False)[1]
