@@ -51,7 +51,7 @@ from vtk.util.numpy_support import vtk_to_numpy as v2n
 from vtk.util.numpy_support import create_vtk_array as cva
 from vtk.util.numpy_support import get_numpy_array_type as gnat
 from vtk.util.numpy_support import get_vtk_array_type as gvat
-from vtk import vtkXMLPolyDataReader, vtkXMLPolyDataWriter, vtkIntArray, vtkDoubleArray, vtkDataSetReader, vtkDataSetWriter
+from vtk import vtkXMLPolyDataReader, vtkXMLPolyDataWriter, vtkIntArray, vtkDoubleArray, vtkDataSetReader, vtkDataSetWriter, vtkPolyDataWriter
 
 from numpy import *
 import os
@@ -498,7 +498,7 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
     return [coords, cells, polys, lines, verts], fielddata, celldata, pointdata
 
 
-def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
+def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True,writernm=None):
     """Write a Mesh in .vtp or .vtk file format.
 
     - `fn`: a filename with .vtp or .vtk extension.
@@ -507,6 +507,8 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
     - `celldata`: dictionary of arrays associated to the elements.
     - `pointdata`: dictionary of arrays associated to the points (renumbered).
     - `checkMesh`: bool: if True, raises a warning if mesh is not clean.
+    - `writernm`: specify which vtk writer should be used. 
+     If None the writer is selected based on fn extension.
 
     If the Mesh has property numbers, they are stored in a vtk array named prop.
     Additional arrays can be added and will be written as type double.
@@ -534,12 +536,18 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
 
     ftype = os.path.splitext(fn)[1]
     ftype = ftype.strip('.').lower()
-    if ftype=='vtp':
-        lvtk = convert2VPD(mesh, clean=True) # also clean=False?
-    elif ftype=='vtk':
-        lvtk = convert2VTU(mesh)
-    else:
-        raise ValueError('extension not recongnized')
+    if writernm == None:
+        if ftype=='vtp':
+            writer = vtkXMLPolyDataWriter()
+            lvtk = convert2VPD(mesh, clean=True) # also clean=False?
+        elif ftype=='vtk':
+            writer = vtkDataSetWriter()
+            lvtk = convert2VTU(mesh)
+        else:
+            raise ValueError('extension not recongnized')
+    elif writernm == 'vtkPolyDataWriter':
+            writer = vtkPolyDataWriter()
+            lvtk = convert2VPD(mesh, clean=True) # also clean=False?
 
     if mesh.prop is not None: # convert prop numbers into vtk array
         vtype = vtkIntArray().GetDataType()
@@ -569,11 +577,7 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True):
         pointdata = array2VTK(pointdata[k],vtype)
         pointdata.SetName(k)
         lvtk.GetPointData().AddArray(pointdata)
-    print(('************lvtk', lvtk))
-    if ftype=='vtp':
-        writer = vtkXMLPolyDataWriter()
-    if ftype=='vtk':
-        writer = vtkDataSetWriter()
+    print(('************lvtk', lvtk))            
     writer = SetInput(writer,lvtk)
     writer.SetFileName(fn)
     writer.Write()
