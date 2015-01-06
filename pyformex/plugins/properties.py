@@ -33,6 +33,7 @@ import pyformex as pf
 from pyformex.flatkeydb import FlatDB
 from pyformex.mydict import Dict, CDict
 from pyformex.arraytools import *
+import copy
 
 #################################################################
 # This first part still needs to be changed.
@@ -764,6 +765,14 @@ class PropertyDB(Dict):
         except:
             raise ValueError("Invalid Elem Property\n  tag=%s,set=%s,name=%s,eltype=%s,section=%s,dload=%s,eload=%s" % (tag, set, name, eltype, section, dload, eload))
 
+
+    def __deepcopy__(self, memo):
+        """Create a deep copy of ourself."""
+        cls = self.__class__
+        newdict = cls.__new__(cls)
+        for k in self:
+            newdict[k] = copy.deepcopy(self[k], memo)
+        return newdict
 
 ##################################### Test ###########################
 
