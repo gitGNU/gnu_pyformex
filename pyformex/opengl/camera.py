@@ -493,9 +493,9 @@ class Camera(object):
 
 
     @eye.setter
-    def eye(self):
+    def eye(self,eye):
         """Set the position of the camera."""
-        return self.toWorld([0., 0., 0.])
+        return self.lookAt(eye=eye)
 
 
     def lock(self,onoff=True):
