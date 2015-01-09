@@ -984,7 +984,12 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
     def splitByConnection(self,level=0,startat=0,sort='number'):
         """Split the Mesh into connected parts.
-
+        
+        The parameters `level` and `startat` are like in
+        :meth:`Mesh.frontWalk`.
+        The parameter `sort` is like in
+        :meth:`Mesh.partitionByConnection`.
+        
         Returns a list of Meshes that each form a connected part.
         By default the parts are sorted in decreasing order of the number
         of elements.
