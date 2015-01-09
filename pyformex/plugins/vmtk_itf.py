@@ -30,13 +30,15 @@ and http://www.vmtk.org/VmtkScripts/vmtkscripts/
 from __future__ import print_function
 from pyformex import zip
 
+from pyformex import utils
+utils.requireExternal('vmtk')
+
 import pyformex as pf
 from pyformex.coords import *
 from pyformex.mesh import Mesh
 from pyformex.plugins.trisurface import TriSurface
-from pyformex import utils
+from pyformex import multi
 import os
-from pyformex.multi import multitask, cpu_count, splitar
 
 def readVmtkCenterlineDat(fn):
    """Read a .dat file containing the centerlines generated with vmtk.
@@ -82,7 +84,7 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
     - `capping`: boolean: closes open profile
     - `groupcl`: boolean: if True the points of the centerlines are merged and
       grouped to avoid repeated points and separate different branches
-  
+
       Note that when seedselector is `idlist`, the surface must be clenead converting
       it to a vtkPolyData using the function convert2VPD with flag clean=True and then
       converted back using convertFromVPD implemented in the vtk_itf plugin to avoid
@@ -93,24 +95,24 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
     used for the centerline computation, local coordinate system
     and various integers values to group the centerline points according to
     the branching). Every key contains a list of the attributes arrays grouped per centerline.
-    """    
+    """
     from pyformex.plugins.curve import PolyLine
     from pyformex.plugins.vtk_itf import readVTKObject
-    
+
     tmp1 = utils.tempFile(suffix='.stl').name
     tmp2 = utils.tempFile(suffix='.vtp').name
-    
+
     print("Writing temp files %s"%tmp1)
     self.write(tmp1, 'stl')
-    
+
     print("Computing centerline using VMTK")
     cmds = []
-    
+
     if capping or seedselector == 'pointlist':
         cmds.append('vmtk vmtksurfacecapper -method centerpoint -interactive 0 -ifile %s -ofile %s'%(tmp1, tmp1))
-        
+
     cmd = 'vmtk vmtkcenterlines -seedselector %s -ifile %s -ofile %s'%(seedselector, tmp1, tmp2)
-    
+
     if seedselector in ['pointlist', 'idlist']:
         if not(len(sourcepoints)) or not(len(targetpoints)):
             raise ValueError('sourcepoints and targetpoints cannot be an empty list when using seedselector= \'%s\''%seedselector)
@@ -129,9 +131,9 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
     cmd += ' -endpoints %i'%endpoints
 
     cmds.append(cmd)
-    
+
     cmds.append('vmtk vmtkcenterlineattributes -ifile %s -ofile %s\n'%(tmp2, tmp2))
-    if groupcl:    
+    if groupcl:
         cmds.append('vmtk vmtkbranchextractor -ifile %s -radiusarray@ MaximumInscribedSphereRadius -ofile %s\n'%(tmp2, tmp2))
         cmds.append('vmtk vmtkcenterlinemerge -ifile %s -ofile %s -radiusarray@ MaximumInscribedSphereRadius \
         -groupidsarray@ GroupIds -centerlineidsarray@ CenterlineIds -tractidsarray@ TractIds \
@@ -143,12 +145,12 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
         if P.sta:
             print("An error occurred during the centerline computing\n %s"%P.out)
             return None
-            
+
     datatmp = readVTKObject(tmp2,samePlex=0)
-    
+
     os.remove(tmp1)
     os.remove(tmp2)
-    
+
     cls = []
     data = {}
     for icl,clids in enumerate(datatmp[0][3]):
@@ -157,7 +159,7 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
             if not(icl): #initialize the array per every attribute
                 data[k] = []
             data[k].append(datatmp[3][k][clids])
-                
+
     return cls,data
 
 
@@ -275,9 +277,9 @@ def vmtkDistanceOfSurface(self, S, tryfixsign=True):
     If not vmtk cleans the mesh and the nodes of S are re-matched.
     The signed distance is positive if the distance vector and the surface
     normal have negative dot product, i.e. if node of S is outer with respect to self.
-    NB: the sign of sdist computed by vmtk can be wrong! This is a known bug of vmtk: 
-    If the endpoint of the distancevector is located on an edge of self, 
-    the normal is wrongly computed and the sign of sdist is wrong. 
+    NB: the sign of sdist computed by vmtk can be wrong! This is a known bug of vmtk:
+    If the endpoint of the distancevector is located on an edge of self,
+    the normal is wrongly computed and the sign of sdist is wrong.
     The option tryfixsign has been added to solve this bug by letting pyFormex re-computing the dot product.
     However, some wrong sign may still be wrong.
     """
@@ -330,15 +332,15 @@ def vmtkDistanceOfPoints(self, X, tryfixsign=True, nproc=1):
     normal have negative dot product, i.e. if X is outer with respect to self.
     """
     if nproc < 1:
-        nproc = cpu_count()
+        nproc = multi.cpu_count()
     if nproc==1:
         S = TriSurface(X, arange(X.shape[0]).reshape(-1, 1)*ones(3, dtype=int).reshape(1, -1))
         return vmtkDistanceOfSurface(self, S, tryfixsign)
     else:
-        datablocks = splitar(X, nproc, close=False)
+        datablocks = multi.splitar(X, nproc, close=False)
         print ('-----distance of %d points from %d triangles with %d proc'%(len(X), self.nelems(), nproc))
         tasks = [(vmtkDistanceOfPoints, (self, d, tryfixsign, 1)) for d in datablocks]
-        ind = multitask(tasks, nproc)
+        ind = multi.multitask(tasks, nproc)
         vdist, sdist = list(zip(*ind))
         return concatenate(vdist), concatenate(sdist)
 
@@ -356,8 +358,8 @@ def vmtkDistancePointsToSegments(X, L, atol=1.e-4):
     SX = TriSurface(X, arange(X.shape[0]).reshape(-1, 1)*ones(3, dtype=int).reshape(1, -1))
     from geomtools import anyPerpendicularVector
     Lf = L.coords[L.elems]
-    L0, L1 = Lf[:, 0], Lf[:, 1]    
-    perp = anyPerpendicularVector(L1-L0)    
+    L0, L1 = Lf[:, 0], Lf[:, 1]
+    perp = anyPerpendicularVector(L1-L0)
     L2=0.5*(L0+L1) + normalize(perp)*atol
     SL=TriSurface(concatenate([L0,L1,L2], axis=1).reshape(-1, 3, 3))#NB they should not be fully degenerate otherwise VMTK will not consider them!
     vdist, dist = vmtkDistanceOfSurface(SL, SX, tryfixsign=False)
@@ -368,7 +370,6 @@ def install_trisurface_methods():
     """Install extra TriSurface methods
 
     """
-    #from plugins.trisurface import TriSurface
     TriSurface.centerline = centerline
     TriSurface.remesh = remesh
     TriSurface.vmtkDistanceOfPoints = vmtkDistanceOfPoints
