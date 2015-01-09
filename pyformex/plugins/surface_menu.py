@@ -1374,7 +1374,7 @@ def boolean():
                     _I('operation', choices=ops),
                     _I('check self intersection', False),
                     _I('verbose', False),
-                    ], 'Boolean Operation')
+                    ], caption='Boolean Operation')
     if res:
         SA = pf.PF[res['surface 1']]
         SB = pf.PF[res['surface 2']]
@@ -1397,7 +1397,7 @@ def intersection():
                     _I('surface 2', choices=surfs),
                     _I('check self intersection', False),
                     _I('verbose', False),
-                    ], 'Intersection Curve')
+                    ], caption='Intersection Curve')
     if res:
         SA = pf.PF[res['surface 1']]
         SB = pf.PF[res['surface 2']]
@@ -1419,8 +1419,20 @@ def remesh():
 def centerline():
     S = selection.check(single=True)
     if S:
-        CL = S.centerline()
+        from pyformex.plugins.vmtk_itf import install_trisurface_methods
+        install_trisurface_methods()
+        
+        res = askItems([_I('Include endpoints', True),
+                    _I('Group centerlines', False),
+                    ], caption='Centerline settings')
+        
+        if res:
+            eps = res['Include endpoints']
+            grp = res['Group centerlines']
+        
+        CL,CLdata = S.centerline(endpoints=eps,groupcl=grp)
         export({'centerline':CL})
+        export({'centerline_data':CLdata})
         draw(CL, color=red, ontop=True, nolight=True)
 
 
