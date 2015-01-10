@@ -2026,6 +2026,30 @@ def histogram2(a,bins,range=None):
     return hist, ind, bins
 
 
+def stretch(a,range=[-1,1]):
+    """Nomalize an array a within range.
+    
+    Parameters:
+
+    - `a`: array_like.
+      Input data.
+
+    - `range`: array-like of shape (2), optional. The lower and upper range for the 
+      equalization. If not provided, data are normalized between -1 and 1.
+
+    Returns the normalized array of type float.
+    
+    Example:
+      >>> stretch(arange(9))
+      array([-1.  , -0.75, -0.5 , -0.25,  0.  ,  0.25,  0.5 ,  0.75,  1.  ])
+    """
+    a = asarray(a,Float)
+    mn, mx = asarray(range,Float)
+    if mn >= mx:
+        raise ValueError('max must be larger than min in `range` parameter.')
+    return ((a-a.min())/(a.max()-a.min()) * (mx-mn) + mn)
+
+
 def movingView(a, size):
     """Create a moving view along the first axis of an array
 
