@@ -84,22 +84,13 @@ def writeElems(fil, elems):
     #Gambit uses a different convention for the numbering of hex-8 elements
     if gamb_shape==4:  # hex-8
         elems = elems[:, (0, 1, 3, 2, 4, 5, 7, 6)]
+        fmt = '%8d %2d %2d %8d%8d%8d%8d%8d%8d%8d\n               %8d\n'
     elif gamb_shape==6:  # tet-4
-        elems = elems[:, (0,2,3,1)]           
+        elems = elems[:, (0,2,3,1)] 
+        fmt = '%8d %2d %2d %8d%8d%8d%8d\n'
         
-    # definition of element string
-    els = ''
-    for i in range(shape/7):
-        for j in range(7):
-            els += '%8d '
-        els+='\n               '
-    for i in range(shape%7):
-        els += '%8d'
-    els+='\n'
-
-    fil.write('      ELEMENTS/CELLS 2.4.6\n')
-    for i, e in enumerate(elems+nofs):
-        fil.write(('%8d %2d %2d '+els) % ((i+eofs, gamb_shape, shape)+tuple(e)))
+    for i,e in enumerate(elems+nofs):
+        fil.write(fmt%((i+eofs,gamb_shape,shape)+tuple(e)))
     fil.write('ENDOFSECTION\n')
 
 
