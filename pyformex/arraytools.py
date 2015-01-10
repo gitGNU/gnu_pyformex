@@ -292,6 +292,46 @@ def normalize(A,axis=-1,ignore_zeros=False):
     return A/Al
 
 
+def stretch(a,rng=(0,1),axis=None):
+    """Stretch the values of an array to fill the given range.
+
+    Parameters:
+
+    - `a`: array_like. Input data.
+
+    - `rng`: tuple (min,max). The lower and upper bounds of the range.
+       Default is (0,1).
+
+    - `axis`: if specified, each slice along the specified axis is
+      independently stretched to the give range.
+
+    Returns an array of the same type and size as the input array, but in which
+    the values have been linearly stretched to fill the specified range.
+
+    Example:
+
+      >>> stretch([1.,2.,3.])
+      array([ 0. ,  0.5,  1. ])
+      >>> stretch(arange(6).reshape(3,2),axis=0,rng=(20,30))
+      array([[20, 20],
+             [25, 25],
+             [30, 30]])
+    """
+    a = asarray(a)
+    atype = a.dtype
+    rmin,rmax = rng
+    if not rmin < rmax:
+        raise ValueError('max must be larger than min in `rng` parameter.')
+
+    amin = a.min(axis=axis)
+    amax = a.max(axis=axis)
+    sc = amax-amin
+    if atype.kind == 'i':
+        sc = sc.astype(Float)
+    b = (a-amin) / sc * (rmax-rmin) + rmin
+    return b.astype(atype)
+
+
 def projection(A,B,axis=-1):
     """Return the (signed) length of the projection of vector of A on B.
 
@@ -2024,30 +2064,6 @@ def histogram2(a,bins,range=None):
     ind = [ where(d==i)[0] for i in arange(1, len(bins)) ]
     hist = asarray([ i.size for i in ind ])
     return hist, ind, bins
-
-
-def stretch(a,range=[-1,1]):
-    """Nomalize an array a within range.
-    
-    Parameters:
-
-    - `a`: array_like.
-      Input data.
-
-    - `range`: array-like of shape (2), optional. The lower and upper range for the 
-      equalization. If not provided, data are normalized between -1 and 1.
-
-    Returns the normalized array of type float.
-    
-    Example:
-      >>> stretch(arange(9))
-      array([-1.  , -0.75, -0.5 , -0.25,  0.  ,  0.25,  0.5 ,  0.75,  1.  ])
-    """
-    a = asarray(a,Float)
-    mn, mx = asarray(range,Float)
-    if mn >= mx:
-        raise ValueError('max must be larger than min in `range` parameter.')
-    return ((a-a.min())/(a.max()-a.min()) * (mx-mn) + mn)
 
 
 def movingView(a, size):
