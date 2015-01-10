@@ -292,14 +292,14 @@ def normalize(A,axis=-1,ignore_zeros=False):
     return A/Al
 
 
-def stretch(a,rng=(0,1),axis=None):
+def stretch(a,range=(0,1),axis=None):
     """Stretch the values of an array to fill the given range.
 
     Parameters:
 
     - `a`: array_like. Input data.
 
-    - `rng`: tuple (min,max). The lower and upper bounds of the range.
+    - `range`: tuple (min,max). The lower and upper bounds of the range.
        Default is (0,1).
 
     - `axis`: if specified, each slice along the specified axis is
@@ -312,14 +312,14 @@ def stretch(a,rng=(0,1),axis=None):
 
       >>> stretch([1.,2.,3.])
       array([ 0. ,  0.5,  1. ])
-      >>> stretch(arange(6).reshape(3,2),axis=0,rng=(20,30))
+      >>> stretch(arange(6).reshape(3,2),axis=0,range=(20,30))
       array([[20, 20],
              [25, 25],
              [30, 30]])
     """
     a = asarray(a)
     atype = a.dtype
-    rmin,rmax = rng
+    rmin,rmax = range
     if not rmin < rmax:
         raise ValueError('max must be larger than min in `rng` parameter.')
 
@@ -329,6 +329,8 @@ def stretch(a,rng=(0,1),axis=None):
     if atype.kind == 'i':
         sc = sc.astype(Float)
     b = (a-amin) / sc * (rmax-rmin) + rmin
+    if atype.kind == 'i':
+        b = b.round()
     return b.astype(atype)
 
 
