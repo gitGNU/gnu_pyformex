@@ -1349,17 +1349,21 @@ def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True, verbose=Fal
     return TriSurface(coords, polys)
 
 
-def viewContour(object):
+def viewContour(object,rot=None):
     """Get the contour of an object with parallel perspective
     with view in the xy plane.
     
     Parameters:
 
-    - `object`: any object convertable to vtkPolyData
+      - `object`: any object convertable to vtkPolyData
+      - `rot`: rotation of the camera. If None (default) the rotation is taken from
+      from the current camera view.
     """
     from vtk import vtkActor,vtkPolyDataMapper,vtkRenderer,vtkRenderWindow,vtkWindowToImageFilter,vtkContourFilter
     
-    rot = pf.canvas.camera.rot
+    if rot is None:
+        rot = pf.canvas.camera.rot
+        
     object = object.rot(rot)
     vpd = convert2VPD(object)
     mapper_data = vtkPolyDataMapper()
