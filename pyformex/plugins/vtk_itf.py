@@ -169,8 +169,8 @@ def cleanVPD(vpd):
     """
     from vtk import vtkCleanPolyData
     cleaner = vtkCleanPolyData()
-    cleaner=SetInput(cleaner,vpd)
-    cleaner.Update()
+    cleaner = SetInput(cleaner,vpd)
+    cleaner = Update(cleaner)
     return  cleaner.GetOutput()
 
 
@@ -364,7 +364,7 @@ def convertVPD2Triangles(vpd):
 
     triangles = vtkTriangleFilter()
     triangles = SetInput(triangles,vpd)
-    triangles.Update()
+    triangles = Update(triangles)
     return triangles.GetOutput()
 
 
@@ -659,7 +659,7 @@ def readVTKObject(fn,verbose=True,samePlex=True, readernm=None):
             raise ValueError('unknown reader %s, please specify an alternative reader: %s'%(readernm, allreadersnm))
 
     reader.SetFileName(fn)
-    reader.Update()
+    reader = Update(reader)
     if reader.GetErrorCode()!=0:
         utils.warn('the default vtk reader %s raised an error, please specify an alternative reader: %s'%(readernm, allreadersnm))
     vpd = reader.GetOutput() # vtk object
@@ -694,7 +694,7 @@ def pointInsideObject(S,P,tol=0.):
     enclosed_pts.SetTolerance(tol)
     enclosed_pts.SetSurface(vps)
     enclosed_pts.SetCheckSurface(1)
-    enclosed_pts.Update()
+    enclosed_pts = Update(enclosed_pts)
     inside_arr = enclosed_pts.GetOutput().GetPointData().GetArray('SelectedPoints')
     enclosed_pts.ReleaseDataFlagOn()
     enclosed_pts.Complete()
@@ -792,7 +792,7 @@ def intersectionWithLines(self,q,q2,method='line',atol=1e-6,closest=False,reorde
     loc.SetDataSet(vsurf)
     loc.SetTolerance(0)
     loc.BuildLocator()
-    loc.Update()
+    loc = Update(loc)
 
     cellids = []
     lineids = []
@@ -877,7 +877,7 @@ def transform(source, trMat4x4):
     transformFilter = vtkTransformPolyDataFilter()
     transformFilter = SetInput(transformFilter,source)
     transformFilter.SetTransform(trMat4x4)
-    transformFilter.Update()
+    transformFilter = Update(transformFilter)
     return Coords(convertFromVPD(transformFilter.GetOutput())[0])
 
 
@@ -903,7 +903,7 @@ def _vtkCutter(self,vtkif):
     cutter = vtkCutter()
     cutter.SetCutFunction(vtkif)
     cutter = SetInput(cutter,vtkobj)
-    cutter.Update()
+    cutter = Update(cutter)
     cutter = cutter.GetOutput()
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata=convertFromVPD(cutter,verbose=True,samePlex=True)
 
@@ -949,7 +949,7 @@ def _vtkClipper(self,vtkif, insideout):
     clipper = SetInput(clipper,vtkobj)
     clipper.SetClipFunction(vtkif)
     clipper.SetInsideOut(int(insideout))
-    clipper.Update()
+    clipper = Update(clipper)
     clipper = clipper.GetOutput()
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = convertFromVPD(vpd=clipper,verbose=True,samePlex=False)
     l2, t3, q4 = None, None, None
@@ -1263,7 +1263,7 @@ def octree(surf,tol=0.0,npts=1.):
 
     loc.BuildLocator()
     rep = vtkPolyData()
-    loc.Update()
+    loc = Update(loc)
 
     regions = []
     ptsinregion = []
@@ -1311,7 +1311,7 @@ def convexHull(object):
     from vtk import vtkDelaunay3D
     chull = vtkDelaunay3D()
     chull = SetInput(chull,convert2VPD(object))
-    chull.Update()
+    chull = Update(chull)
     chull=convertFromVPD(chull.GetOutput())
     return Mesh(chull[0][0], chull[0][1], eltype='tet4')
 
@@ -1337,7 +1337,7 @@ def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True, verbose=Fal
     filter.SetTargetReduction(targetReduction)
     filter.SetBoundaryVertexDeletion(boundaryVertexDeletion)
     filter.PreserveTopologyOn()
-    filter.Update()
+    filter = Update(filter)
 
     vpd = filter.GetOutput()
     vpd = cleanVPD(vpd)
@@ -1367,7 +1367,7 @@ def coarsenPolyLine(self, target=0.5, verbose=False):
     filter = SetInput(filter,vpd)
     filter.SetTargetReduction(target)
 
-    filter.Update()
+    filter = Update(filter)
     vpd = filter.GetOutput()
     vpd = cleanVPD(vpd)
 
@@ -1432,7 +1432,7 @@ def importOBJ(fn):
     from vtk import vtkOBJReader
     reader = vtkOBJReader()
     reader.SetFileName(fn)
-    reader.Update()
+    reader = Update(reader)
     obj=reader.GetOutput()
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = convertFromVPD(vpd=obj,samePlex=True)
     return Mesh(coords,polys)
@@ -1474,7 +1474,7 @@ def import3ds(fn, vtkcolor='color', verbose=True):
             raise ValueError('the color you selected in not yet implemented')
         obj = act.GetMapper()
         obj = obj.GetInputAsDataSet()
-        obj.Update()
+        obj = Update(obj)
         [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = convertFromVPD(vpd=obj,verbose=verbose,samePlex=True)
         m = Mesh(coords, polys)
         m.attrib(color=col)
