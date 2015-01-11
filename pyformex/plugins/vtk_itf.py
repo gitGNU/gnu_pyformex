@@ -44,6 +44,7 @@ from pyformex.mesh import Mesh
 from pyformex.coords import Coords
 from pyformex.varray import Varray
 from pyformex.plugins.curve import PolyLine
+import pyformex as pf
 
 import vtk
 from vtk.util.numpy_support import numpy_to_vtk as n2v
@@ -1346,6 +1347,73 @@ def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True, verbose=Fal
     if verbose:
         print(('%d faces decimated into %d triangles'%(self.nelems(), len(polys))))
     return TriSurface(coords, polys)
+
+
+def viewContour(object):
+    """Get the contour of an object with parallel perspective
+    with view in the xy plane.
+    
+    Parameters:
+
+    - `object`: any object convertable to vtkPolyData
+    """
+    from vtk import vtkActor,vtkPolyDataMapper,vtkRenderer,vtkRenderWindow,vtkWindowToImageFilter,vtkContourFilter
+    
+    rot = pf.canvas.camera.rot
+    object = object.rot(rot)
+    vpd = convert2VPD(object)
+    mapper_data = vtkPolyDataMapper()
+    mapper_data = SetInput(mapper_data,vpd)
+    
+    actor_data = vtkActor()
+    actor_data.SetMapper(mapper_data)
+    actor_data.GetProperty().SetColor(0,0,0)
+     
+    tmp_rend = vtkRenderer()
+    tmp_rend.SetBackground(1,1,1) 
+     
+    tmp_rend.AddActor(actor_data)
+    tmp_rend.ResetCamera()
+    tmp_rend.GetActiveCamera().SetParallelProjection(1)
+
+    tmp_rW = vtkRenderWindow()
+    tmp_rW.SetOffScreenRendering( 1 ) 
+    tmp_rW.AddRenderer(tmp_rend)
+    tmp_rW.Render()
+
+    #Get a print of the window
+    windowToImageFilter =  vtkWindowToImageFilter()
+    windowToImageFilter = SetInput(windowToImageFilter,tmp_rW)
+    windowToImageFilter.SetMagnification(2) #image quality
+    windowToImageFilter = Update(windowToImageFilter)
+
+    #Killing the temporary window
+    tmp_rW.Finalize() 
+    del tmp_rW
+
+    #Extract the silhouette corresponding to the black limit of the image
+    # this could probably be a different function but I dont know how to deal with SetInputConnection
+    filter = vtkContourFilter()
+    filter = SetInput(filter,windowToImageFilter.GetOutput())
+    filter.SetValue(0,255)
+    filter = Update(filter)
+    
+    #Make the contour coincide with the data.
+    contour = filter.GetOutput()
+    contour = convertFromVPD(contour)[0]
+    contour = Mesh(contour[0],contour[3]).compact() # for some reason it alwais return a point in the origin, this will mess with the scaling that s why we compact
+
+    csize = contour.sizes()
+    dsize = object.sizes()
+    scx = (dsize[0]/csize[0])
+    scy = (dsize[1]/csize[1])
+    contour = contour.scale([scx,scy,1])
+    
+    dcenter = object.center()
+    ccenter = contour.center()
+    contour = contour.trl(-ccenter+dcenter)
+    
+    return contour
 
 
 # TODO
