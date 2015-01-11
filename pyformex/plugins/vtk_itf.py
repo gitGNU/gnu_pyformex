@@ -1384,7 +1384,7 @@ def viewContour(object):
     #Get a print of the window
     windowToImageFilter =  vtkWindowToImageFilter()
     windowToImageFilter = SetInput(windowToImageFilter,tmp_rW)
-    windowToImageFilter.SetMagnification(2) #image quality
+    windowToImageFilter.SetMagnification(15) #image quality
     windowToImageFilter = Update(windowToImageFilter)
 
     #Killing the temporary window
