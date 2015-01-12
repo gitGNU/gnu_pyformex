@@ -508,7 +508,7 @@ def vertexinterp(level, p1, p2, val1, val2):
         return p2
     if abs(val1-val2) < 0.00001:
         return p1
-    mu = (level - val1) / (val2 - val1)
+    mu = float(level - val1) / (val2 - val1)
     return p1 + mu * (p2-p1)
 
 
