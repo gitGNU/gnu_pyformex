@@ -514,6 +514,7 @@ def drawImage3D(image,nx=0,ny=0,pixel='dot'):
     else:
         F = Formex('1:0')
     F = F.replic2(nx, ny).centered()
+    F._imageshape_ = (nx,ny)
 
     # Draw the grid using the image colors
     FA = draw(F, color=color, colormap=colortable, nolight=True)
