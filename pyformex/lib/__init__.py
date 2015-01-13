@@ -75,19 +75,24 @@ if accelerate:
         except ImportError:
             pf.debug("Error while loading the pyFormex compiled drawgl library", pf.DEBUG.LIB)
 
+# Load Python libraries if acceleration libraries failed
+
 if misc is None:
     pf.debug("Using the (slower) Python misc functions", pf.DEBUG.LIB)
-    from pyformex.lib import misc
+    import misc
 
 if nurbs is None:
     pf.debug("Using the (slower) Python nurbs functions", pf.DEBUG.LIB)
-    from pyformex.lib import nurbs
+    import nurbs
 
 if gui and drawgl is None:
     pf.debug("Using the (slower) Python draw functions", pf.DEBUG.LIB)
-    from pyformex.lib import drawgl
+    import drawgl
 
 
 pf.debug("Accelerated: %s" % accelerated, pf.DEBUG.LIB|pf.DEBUG.INFO)
+pf.debug(misc, pf.DEBUG.LIB)
+pf.debug(nurbs, pf.DEBUG.LIB)
+pf.debug(drawgl, pf.DEBUG.LIB)
 
 # End
