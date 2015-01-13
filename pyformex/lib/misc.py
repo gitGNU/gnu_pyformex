@@ -95,6 +95,87 @@ def tofile_int32(val, fil, fmt):
 
 tofile_float32 = tofile_int32
 
+
+########## isoline #############################################
+
+from pyformex import olist
+
+linetable = (
+    (), (0,3), (0,1), (1,3), (1,2), (0,1,2,3), (0,2), (2,3),
+    (2,3), (0,2), (0,3,1,2), (1,2), (1,3), (0,1), (0,3), (),
+    )
+
+vertextable = [
+    [0, 1],
+    [1, 2],
+    [2, 3],
+    [3, 0],
+    ]
+
+def splitSquare(pos, val, level):
+    """Split a single square
+
+    """
+    from pyformex.lib.misc import vertexinterp
+
+    pos = pos.astype(np.float32)
+
+    # Determine the index into the edge table which
+    # tells us which vertices are inside of the surface
+
+    cubeindex = 0
+    for i in range(4):
+        if val[i] >= level:
+            cubeindex |= 1 << i
+
+    # Find the vertices where the surface intersects the cube
+    vertlist = []
+
+    for edges in olist.group(linetable[cubeindex],2):
+        for e in edges:
+            verts = vertextable[e]
+            p1, p2 = pos[verts]
+            val1, val2 = val[verts]
+            vert = vertexinterp(level, p1, p2, val1, val2)
+            vertlist.append(vert)
+
+    return vertlist
+
+
+def isoline(data, level):
+    """Create an isoline through data at given level.
+
+    - `data`: (nx,ny) shaped array of data values at points with
+      coordinates equal to their indices. This defines a 2D area
+      [0,nx-1], [0,ny-1],
+    - `level`: data value at which the isoline is to be constructed
+
+    Returns an (nseg,2,2) array defining the segments of the isoline.
+    The result may be empty (if level is outside the data range).
+    """
+    grid = np.array([
+        [0, 0],
+        [1, 0],
+        [1, 1],
+        [0, 1],
+        ])
+    segments=[]
+    def addSegments(x, y):
+        pos = grid + [x, y]
+        val = data[pos[:, 1], pos[:, 0]]
+        t = splitSquare(pos, val, level)
+        segments.extend(t)
+        return len(segments)
+
+    [ [ addSegments(x, y)
+        for x in range(data.shape[1]-1) ]
+      for y in range(data.shape[0]-1) ]
+
+    segments = np.asarray(segments).reshape(-1, 2, 2)
+    return segments
+
+########## isosurface #############################################
+
 #  edgeTable[256].  It corresponds to the 2^8 possible combinations of
 #  of the eight (n) vertices either existing inside or outside (2^n) of the
 #  surface.  A vertex is inside of a surface if the value at that vertex is
@@ -445,7 +526,7 @@ def polygoniseCube(pos, val, level):
     """Polygonise a single cube
 
     """
-    pos = pos.astype(float32)
+    pos = pos.astype(np.float32)
     # Determine the index into the edge table which
     # tells us which vertices are inside of the surface
 
@@ -548,7 +629,7 @@ def isosurface(data, level):
         for y in range(data.shape[1]-1) ]
       for z in range(data.shape[0]-1) ]
 
-    triangles = asarray(triangles).reshape(-1, 3, 3)
+    triangles = np.asarray(triangles).reshape(-1, 3, 3)
     return triangles
 
 
