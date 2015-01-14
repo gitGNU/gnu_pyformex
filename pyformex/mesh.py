@@ -630,6 +630,22 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return self.cells
 
 
+    def edgeMesh(self):
+        """Return a Mesh with the unique edges of the elements.
+
+        This can only be used with a Mesh of level >= 1.
+        """
+        return Mesh(self.coords,self.getEdges())
+
+
+    def faceMesh(self):
+        """Return a Mesh with the unique faces of the elements.
+
+        This can only be used with a Mesh of level >= 2.
+        """
+        return Mesh(self.coords,self.getFaces())
+
+
     def getElemEdges(self):
         """Defines the elements in function of its edges.
 
@@ -650,7 +666,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
         Returns a Connectivity table with the free entities of the
         specified level of the Mesh. Free entities are entities
-        that are only connected with a single element.
+        that are only connected to a single element.
 
         If return_indices==True, also returns an (nentities,2) index
         for inverse lookup of the higher entity (column 0) and its local
@@ -984,12 +1000,12 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
     def splitByConnection(self,level=0,startat=0,sort='number'):
         """Split the Mesh into connected parts.
-        
+
         The parameters `level` and `startat` are like in
         :meth:`Mesh.frontWalk`.
         The parameter `sort` is like in
         :meth:`Mesh.partitionByConnection`.
-        
+
         Returns a list of Meshes that each form a connected part.
         By default the parts are sorted in decreasing order of the number
         of elements.
