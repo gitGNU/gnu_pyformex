@@ -1022,6 +1022,21 @@ maxprop  = %s
         return Formex.concatenate(P)
 
 
+    def replicm(self,n,t=(1.0,1.0,1.0),d=(0,1,2)):
+        """Replicate repeatedly in many directions.
+
+        n: tuple: number of replications in subsequent directions
+        t: tuple: steps in subsequent directions
+        d: tuple: subsequent directions
+
+        The three tuples shouls have the same length.
+        """
+        P = self
+        for ni,ti,di in zip(n,t,d):
+            P = P.replic(ni,ti,di)
+        return P
+
+
     def rosette(self,n,angle,axis=2,point=[0., 0., 0.]):
         """Return a Formex with n rotational replications with angular
         step angle around an axis parallel with one of the coordinate axes
