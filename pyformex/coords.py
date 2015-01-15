@@ -590,19 +590,26 @@ class Coords(ndarray):
         return self.points()[d.argmin()]
 
 
-    def directionalSize(self,n,p=None,_points=False):
+    def directionalSize(self,n,p=None,points=False):
         """Returns the extreme distances from the plane p,n.
 
         Parameters:
 
         - `n`: the direction can be specified by a 3 component vector or by
-          a single integer 0..2 designing one of the coordinate axes.
+          a single integer 0..2 designating one of the coordinate axes.
 
-        - `p`: is any point in space. If not specified, it is taken as the
+        - `p`: is a point in space. If not specified, it is taken as the
           center() of the Coords.
 
-        The return value is a tuple of two float values specifying the
-        extreme distances from the plane p,n.
+        - `points`: bool. If True, returns the extremal tangent points
+          instead of the distances of the extremal tangent planes.
+
+        The default return value is a tuple of two float values specifying the
+        distances of the extremal tangent planes parallel with the plane (p,n)
+        to the said plane. If `point` is True, returns a tuple with the
+        extremal tangent points instead.
+
+        See also :meth:`directionalExtremes`
         """
         n = unitVector(n)
 
@@ -614,7 +621,7 @@ class Coords(ndarray):
         d = self.distanceFromPlane(p, n)
         dmin, dmax = d.min(), d.max()
 
-        if _points:
+        if points:
             return [p+dmin*n, p+dmax*n]
         else:
             return dmin, dmax
@@ -627,9 +634,12 @@ class Coords(ndarray):
 
         The return value is a list of two points on the line (p,n),
         such that the planes with normal n through these points define
-        the extremal planes of the Coords.
+        the extremal tangent planes of the Coords.
+
+        This is a shorthand for using :meth:`directionalSize` with the
+        `points` argument True.
         """
-        return self.directionalSize(n, p, _points=True)
+        return self.directionalSize(n, p, points=True)
 
 
     def directionalWidth(self, n):
