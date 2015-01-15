@@ -33,7 +33,7 @@ _topics = ['image', 'curve']
 _techniques = ['isoline', ]
 
 from pyformex.gui.draw import *
-from pyformex.lib.misc import isoline
+from pyformex.plugins.isosurface import isoline
 
 def run():
     resetAll()
@@ -45,17 +45,17 @@ def run():
     nx, ny = image.width(), image.height()
     color, colortable = image2glcolor(image)
     color = color.reshape(ny,nx,3)
-    color = color[100:160,100:160,:]
-    nx,ny = color.shape[:2]
+    ny,nx = color.shape[:2]   # pixels move fastest in x-direction!
     color = color.reshape(-1,3)
     F = Formex('1:0').replic2(nx, ny)
     FA = draw(F, color=color, colormap=colortable, nolight=True)
-    col = FA.color
     intens = FA.color.sum(axis=-1) / 3
     data = intens.reshape(ny,nx)
-    seg = isoline(data,0.5)
-    F = Formex(seg)
-    draw(F,color=red,linewidth=2)
+    level = 0.3
+    seg = isoline(data,level)
+    C = Formex(seg)
+    draw(C,color=red,linewidth=3)
+    transparent()
 
 if __name__ == 'draw':
     run()

@@ -608,6 +608,216 @@ static PyObject * averageDirectionIndexed(PyObject *dummy, PyObject *args)
 }
 
 
+/**************************************************** isoline ****/
+/* Create an isocontour through data at given level */
+/* args: data, level
+   data  : (nx,ny) shaped array of data values at points with
+           coordinates equal to their indices. This defines a 2D area
+           [0,nx-1], [0,ny-1]
+   level : data value at which the isocontour is to be constructed
+
+   Returns an (ntr,2,3) array defining the segments of the isocontour.
+   The result may be empty (if level is outside the data range).
+
+*/
+#define FLOAT float
+#define ABS fabs
+
+typedef struct {
+  FLOAT x;
+  FLOAT y;
+} XY;
+
+
+/*
+   Linearly interpolate the position where an isocontour cuts
+   an edge between two vertices, each with their own scalar value
+
+   p1,p2: coordinates of the two vertices
+   v1,v2: values at the vertices
+   level: isocontour level
+*/
+
+XY VertexInterp2(XY p1, XY p2, FLOAT v1, FLOAT v2, FLOAT level)
+{
+  FLOAT mu;
+  XY p;
+  //printf("INTERPOL [%f5.2, %f5.2], [%f5.2, %f5.2], %f5.2, %f5.2\n",p1.x,p1.y,p2.x,p2.y,v1,v2);
+  if (ABS(level-v1) < 0.00001) return(p1);
+  if (ABS(level-v2) < 0.00001) return(p2);
+  if (ABS(v1-v2) < 0.00001)    return(p1);
+  mu = (level - v1) / (v2 - v1);
+  p.x = p1.x + mu * (p2.x - p1.x);
+  p.y = p1.y + mu * (p2.y - p1.y);
+  //printf("POINT [%f5.2, %f5.2]\n",p.x,p.y);
+  return(p);
+}
+
+/*
+   Given a grid cell and an isolevel, calculate the line segments
+   required to represent the isoline through the cell.
+   Return the number of line segments. The array "segments"
+   will be loaded up with the vertices of at most 2 line segments.
+   0 will be returned if the grid cell is either totally above
+   of totally below the isolevel.
+*/
+int Polygonise2(FLOAT *segments, XY *pos, FLOAT *val, FLOAT level)
+{
+  int lineTable[16][4] = {
+    {-1,-1,-1,-1},
+    { 0, 3,-1,-1},
+    { 0, 1,-1,-1},
+    { 1, 3,-1,-1},
+    { 1, 2,-1,-1},
+    { 0, 1, 2, 3},
+    { 0, 2,-1,-1},
+    { 2, 3,-1,-1},
+    { 2, 3,-1,-1},
+    { 0, 2,-1,-1},
+    { 0, 3, 1, 2},
+    { 1, 2,-1,-1},
+    { 1, 3,-1,-1},
+    { 0, 1,-1,-1},
+    { 0, 3,-1,-1},
+    {-1,-1,-1,-1}
+  };
+
+  int vertexTable[4][2] = {
+    {0, 1},
+    {1, 2},
+    {2, 3},
+    {3, 0}
+  };
+
+  int e,i,j,k,nseg,nvert;
+  int cubeindex;
+  XY vert;
+
+  /*
+    Determine the index into the edge table which
+    tells us which vertices are on or above the level
+  */
+  cubeindex = 0;
+  for (i=0; i<4; i++)
+    if (val[i] >= level)
+      cubeindex |= 1 << i;
+
+  /* Find the vertices where the contour intersects the square */
+  nvert = 0;
+  for (i=0; i<4; i++) {
+    e = lineTable[cubeindex][i];
+    //printf("edge %d\n",e);
+    if (e < 0) break;
+    j = vertexTable[e][0];
+    k = vertexTable[e][1];
+    vert = VertexInterp2(pos[j],pos[k],val[j],val[k],level);
+    segments[i*2] = vert.x;
+    segments[i*2+1] = vert.y;
+    nvert = i+1;
+  }
+  nseg = nvert / 2;
+  //printf("NSEG = %d\n",nseg);
+  //for (i=0; i<nvert; i++) printf("  %d, %f5.2, %f5.2\n",i,segments[i*2],segments[i*2+1]);
+  return nseg;
+}
+
+
+static char isoline__doc__[] =
+  "Create an isocontour through data at given level.\n\
+\n\
+    - `data`: (nx,ny) shaped array of data values at points with\n\
+      coordinates equal to their indices. This defines a 2D area\n\
+      [0,nx-1], [0,ny-1]\n\
+    - `level`: data value at which the isocontour is to be constructed\n\
+\n\
+    Returns an (ntr,2,2) array defining the segments of the isocontour.\n\
+    The result may be empty (if level is outside the data range).\n\
+\n\
+    This function uses a marching square algorithm.\n\
+";
+
+static PyObject * isoline(PyObject *dummy, PyObject *args)
+{
+  PyObject *arg1=NULL;
+  PyObject *arr1=NULL;
+  float *data;
+  float level;
+  //printf("ISOLINE\n");
+  if (!PyArg_ParseTuple(args, "Of", &arg1, &level)) return NULL;
+  arr1 = PyArray_FROM_OTF(arg1, NPY_FLOAT, NPY_INOUT_ARRAY);
+  if (arr1 == NULL) return NULL;
+
+  npy_intp * dims;
+  int nx,ny;
+  dims = PyArray_DIMS(arg1);
+  ny = dims[0];
+  nx = dims[1];
+  data = (float *)PyArray_DATA(arr1);
+
+  /* allocate memory for segments */
+  int niseg = nx*ny; /* initial guess for number of segments */
+  int nseg = 0;   /* size of storage available */
+  int iseg = 0;   /* size of storage filled */
+  float *segments = NULL; /* pointer to storage size */
+
+  /* vertex coordinates with respect to ix,iy */
+  int grid[4][2] = {
+    {0,0},
+    {1,0},
+    {1,1},
+    {0,1},
+  };
+
+  /* data offsets with respect to first vertex data */
+  int i,ofs[4];
+  //printf("Data offsets\n");
+  for (i=0; i<4; i++) {
+    ofs[i] = grid[i][1] * nx + grid[i][0];
+    //printf("%d\n",ofs[i]);
+  }
+
+  /* loop over cells */
+  int mseg;
+  int ix,iy;
+  XY pos[4];   /* coordinates of the cell vertices */
+  FLOAT val[4]; /* data values at the cell vertices */
+  int iofs;     /* data offset of vertex ix,iy */
+  for (iy=0; iy<ny-1; iy++) {
+    for (i=0; i<4; i++) pos[i].y = iy + grid[i][1];
+    for (ix=0; ix<nx-1; ix++) {
+      for (i=0; i<4; i++) pos[i].x = ix + grid[i][0];
+      iofs = iy*nx + ix;
+      for (i=0; i<4; i++) val[i] = data[iofs + ofs[i]];
+      if (iseg+2 > nseg) {
+	/* need to enlarge storage */
+	nseg += niseg;
+	segments = (float*) realloc(segments,nseg*2*2*sizeof(float));
+      }
+      //printf("Values\n");
+      //for (i=0; i<4; i++) {
+      //	printf("%f, %f : %f\n",pos[i].x,pos[i].y,val[i]);
+      //}
+      mseg = Polygonise2(segments+iseg*2*2,pos,val,level);
+      iseg += mseg;
+      //printf("%d new segments; %d total segments; %d max segments\n",mseg,iseg,nseg);
+    }
+  }
+
+  /* create return array */
+  npy_intp dim[3];
+  dim[0] = iseg;
+  dim[1] = 2;
+  dim[2] = 2;
+  PyObject *ret = PyArray_SimpleNew(3,dim, NPY_FLOAT);
+  float *out = (float *)PyArray_DATA(ret);
+  memcpy(out,segments,iseg*2*2*sizeof(float));
+
+  /* Clean up and return */
+  Py_DECREF(arr1);
+  return ret;
+}
+
+
 /**************************************************** isosurface ****/
 /* Create an isosurface through data at given level */
 /* args: data, level
@@ -1054,9 +1264,6 @@ static PyObject * isosurface(PyObject *dummy, PyObject *args)
   int itri = 0;   /* size of storage filled */
   float *triangles = NULL; /* pointer to storage size */
 
-  /* create array to store triangles for one cell (max 5) */
-  /* TRIANGLE cubetri[5]; */
-
   /* vertex coordinates with respect to ix,iy,iz */
   int grid[8][3] = {
     {0,0,0},
@@ -1071,10 +1278,8 @@ static PyObject * isosurface(PyObject *dummy, PyObject *args)
 
   /* data offsets with respect to first vertex data */
   int i,ofs[8];
-  //printf("Data offsets\n");
   for (i=0; i<8; i++) {
     ofs[i] = ( grid[i][2]*ny + grid[i][1] )*nx + grid[i][0];
-    //printf("%d\n",ofs[i]);
   }
 
   /* loop over cells */
@@ -1096,13 +1301,10 @@ static PyObject * isosurface(PyObject *dummy, PyObject *args)
 	  ntri += nitri;
 	  triangles = (float*) realloc(triangles,ntri*3*3*sizeof(float));
 	}
-	//printf("Values\n");
 	for (i=0; i<8; i++) {
-	  //printf("%f, %f, %f : %f\n",pos[i].x,pos[i].y,pos[i].z,val[i]);
 	}
 	mtri = Polygonise(triangles+itri*3*3,pos,val,level);
 	itri += mtri;
-	//printf("%d new triangles; %d total triangles; %d max triangles\n",mtri,itri,ntri);
       }
     }
   }
@@ -1129,6 +1331,7 @@ static PyMethodDef _methods_[] = {
     {"nodalSum", nodalSum, METH_VARARGS, "Nodal sum."},
     {"averageDirection", averageDirection, METH_VARARGS, "Average directions."},
     {"averageDirectionIndexed", averageDirectionIndexed, METH_VARARGS, "Average directions."},
+    {"isoline", isoline, METH_VARARGS, isoline__doc__},
     {"isosurface", isosurface, METH_VARARGS, isosurface__doc__},
     {"tofile_float32", tofile_float32, METH_VARARGS, "Write float32 array to file."},
     {"tofile_int32", tofile_int32, METH_VARARGS, "Write int32 array to file."},

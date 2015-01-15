@@ -28,7 +28,7 @@ This module contains the marching cube algorithm.
 
 Some of the code is based on the example by Paul Bourke from
 http://paulbourke.net/geometry/polygonise/
-   
+
 """
 from __future__ import print_function
 from pyformex import zip
@@ -76,6 +76,48 @@ def isosurface(data,level,nproc=-1):
         tri = np.concatenate(tri, axis=0)
 
     return tri
+
+
+def isoline(data,level,nproc=1):
+    """Create an isocontour through data at given level.
+
+    - `data`: (nx,ny,nz) shaped array of data values at points with
+      coordinates equal to their indices. This defines a 2D area
+      [0,nx-1], [0,ny-1]
+    - `level`: data value at which the isocontour is to be constructed
+    - `nproc`: number of parallel processes to use. On multiprocessor machines
+      this may be used to speed up the processing. If <= 0 , the number of
+      processes will be set equal to the number of processors, to achieve
+      a maximal speedup.
+
+    Returns an (nseg,2,2) array defining the 2D coordinates of the
+    segments of the isocontour.
+    The result may be empty (if level is outside the data range).
+    """
+    if nproc < 1:
+        nproc = cpu_count()
+
+    if nproc == 1:
+        # Perform single process isoline (accelerated)
+        from pyformex.lib import misc
+        data = data.astype(np.float32)
+        level = np.float32(level)
+        seg = misc.isoline(data, level)
+
+    else:
+        # Perform parallel isoline
+        # 1. Split in blocks (and remember shift)
+        datablocks = splitar(data, nproc, close=True)
+        shift = (np.array([d.shape[0] for d in datablocks]) - 1).cumsum()
+        # 2. Solve blocks independently
+        tasks = [(isoline, (d, level, 1)) for d in datablocks]
+        seg = multitask(tasks, nproc)
+        # 3. Shift and merge blocks
+        for t, s in zip(seg[1:], shift[:-1]):
+            t[:,1] += s
+        seg = np.concatenate(seg, axis=0)
+
+    return seg
 
 
 

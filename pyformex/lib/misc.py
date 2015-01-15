@@ -132,11 +132,13 @@ def splitSquare(pos, val, level):
     vertlist = []
 
     for edges in olist.group(linetable[cubeindex],2):
+        print("edges: %s" % str(edges))
         for e in edges:
             verts = vertextable[e]
             p1, p2 = pos[verts]
-            val1, val2 = val[verts]
-            vert = vertexinterp(level, p1, p2, val1, val2)
+            v1, v2 = val[verts]
+            print("INTERPOL %s, %s, %s, %s" % (p1,p2,v1,v2))
+            vert = vertexinterp(level, p1, p2, v1, v2)
             vertlist.append(vert)
 
     return vertlist
@@ -163,8 +165,9 @@ def isoline(data, level):
     def addSegments(x, y):
         pos = grid + [x, y]
         val = data[pos[:, 1], pos[:, 0]]
-        t = splitSquare(pos, val, level)
-        segments.extend(t)
+        print("pos, val\n%s\n%s" % (pos,val))
+        verts = splitSquare(pos, val, level)
+        segments.extend(verts)
         return len(segments)
 
     [ [ addSegments(x, y)
