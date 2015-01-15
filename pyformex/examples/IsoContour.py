@@ -45,14 +45,15 @@ def run():
     nx, ny = image.width(), image.height()
     color, colortable = image2glcolor(image)
     color = color.reshape(ny,nx,3)
+    #color = color[130:176,100:146] # uncomment to pick a part from the image
     ny,nx = color.shape[:2]   # pixels move fastest in x-direction!
     color = color.reshape(-1,3)
     F = Formex('1:0').replic2(nx, ny)
     FA = draw(F, color=color, colormap=colortable, nolight=True)
     intens = FA.color.sum(axis=-1) / 3
     data = intens.reshape(ny,nx)
-    level = 0.3
-    seg = isoline(data,level)
+    level = 0.3 # change level to adjust contour position
+    seg = isoline(data,level,nproc=-1)
     C = Formex(seg)
     draw(C,color=red,linewidth=3)
     transparent()

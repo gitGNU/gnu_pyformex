@@ -78,7 +78,7 @@ def isosurface(data,level,nproc=-1):
     return tri
 
 
-def isoline(data,level,nproc=1):
+def isoline(data,level,nproc=-1):
     """Create an isocontour through data at given level.
 
     - `data`: (nx,ny,nz) shaped array of data values at points with
@@ -114,7 +114,7 @@ def isoline(data,level,nproc=1):
         seg = multitask(tasks, nproc)
         # 3. Shift and merge blocks
         for t, s in zip(seg[1:], shift[:-1]):
-            t[:,1] += s
+            t[:,:,1] += s
         seg = np.concatenate(seg, axis=0)
 
     return seg
