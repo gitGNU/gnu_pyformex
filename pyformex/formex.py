@@ -33,7 +33,6 @@ from pyformex import zip
 
 from pyformex.coords import *
 from pyformex.geometry import Geometry
-from pyformex.attributes import Attributes
 import re
 
 
@@ -195,7 +194,7 @@ class Formex(Geometry):
 
     def __init__(self,data=[],prop=None,eltype=None):
         """Create a new Formex."""
-        self.attrib = Attributes()
+        Geometry.__init__(self)
         if isinstance(data, Formex):
             if prop is None:
                 prop = data.prop

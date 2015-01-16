@@ -48,7 +48,6 @@ from pyformex.formex import Formex
 from pyformex.connectivity import Connectivity
 from pyformex.elements import elementType
 from pyformex.geometry import Geometry
-from pyformex.attributes import Attributes
 from pyformex.simple import regularGrid
 from pyformex.olist import List
 
@@ -120,7 +119,7 @@ class Mesh(Geometry):
 
     def __init__(self,coords=None,elems=None,prop=None,eltype=None):
         """Initialize a new Mesh."""
-        self.attrib = Attributes()
+        Geometry.__init__(self)
         self.coords = self.elems = self.prop = None
         self.ndim = -1
         self.nodes = self.edges = self.faces = self.cells = None

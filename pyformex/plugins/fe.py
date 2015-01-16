@@ -59,6 +59,7 @@ class Model(Geometry):
 
         The model can have node and element property numbers.
         """
+        Geometry.__init__(self)
         if meshes is not None:
             if coords is not None or elems is not None:
                 raise ValueError("You can not use nodes/elems together with meshes")
@@ -221,7 +222,7 @@ class FEModel(Geometry):
 
     def __init__(self, meshes):
         """Create a new FEModel."""
-
+        Geometry.__init__(self)
         if not isinstance(meshes, list):
             meshes = [ meshes ]
 

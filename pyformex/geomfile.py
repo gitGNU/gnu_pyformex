@@ -264,15 +264,17 @@ class GeometryFile(object):
         """
         self.checkWritable()
 
-        if name is None:
-            name = geom.attrib.name
-        if name is None:
-            name = self.autoname.next()
         try:
             writefunc = getattr(self, 'write'+geom.__class__.__name__)
         except:
             pf.warning("Can not (yet) write objects of type %s to geometry file: skipping" % type(geom))
             return 1
+
+        if name is None:
+            name = geom.attrib.name
+        if name is None:
+            name = self.autoname.next()
+
         try:
             writefunc(geom, name, sep)
         except:

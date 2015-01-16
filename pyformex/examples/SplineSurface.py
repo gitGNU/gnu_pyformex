@@ -126,6 +126,7 @@ class SplineSurface(Geometry):
     """
 
     def __init__(self,curves=None,nu=0,coords=None):
+        Geometry.__init__(self)
         self.curves = curves
         self.grid = None
         self.ccurves = None

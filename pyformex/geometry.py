@@ -32,6 +32,7 @@ from __future__ import print_function
 from pyformex import zip
 from pyformex import utils
 from pyformex.coords import Coords, Int
+from pyformex.attributes import Attributes
 from pyformex.odict import OrderedDict
 from pyformex.olist import List
 import pyformex.arraytools as at
@@ -47,15 +48,16 @@ class Geometry(object):
     through derived classes. Examples of derived classes are :class:`Formex`,
     :class:`Mesh`, :class:`Curve`.
 
-    There is no initialization to be done when constructing a new instance of
-    this class. The class just defines a set of methods which operate on
-    the attribute `coords`, which should be a Coords object.
+    The Geometry class defines a set of methods which
+    operate on the attribute `coords`, which should be a Coords object.
     Most of the transformation methods of the Coords class are thus exported
     through the Geometry class to its derived classes, and when called, will
     get executed on the `coords` attribute.
     The derived class constructor should make sure that the `coords` attribute
     exists, has the proper type and contains the coordinates of all the points
     that should get transformed under a Coords transformation.
+    The derived classes should also call the Geometry initializer to create the
+    'attrib' attribute.
 
     Derived classes can (and in most cases should) declare a method
     `_set_coords(coords)` returning an object that is identical to the
@@ -141,6 +143,11 @@ class Geometry(object):
     :meth:`rot`,
     :meth:`trl`.
     """
+
+    def __init__(self):
+        """Initialize a Geometry"""
+        self.attrib = Attributes()
+
 
     ########### Information from the coords #################
 

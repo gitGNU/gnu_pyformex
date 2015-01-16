@@ -50,7 +50,7 @@ class FontOutline(Geometry):
     """
     def __init__(self,filename,size):
         """Initialize a FontTexture"""
-
+        Geometry.__init__(self)
         print("Creating FontTexture(%s) in size %s" % (filename,size))
         # Load font  and check it is monotype
         face = ft.Face(str(filename))

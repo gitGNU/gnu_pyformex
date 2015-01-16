@@ -43,7 +43,7 @@ _topics = ['illustration']
 _techniques = ['animation']
 
 from pyformex.gui.draw import *
-   
+
 
 def circle(n=60):
     a1 = 360./n
@@ -58,6 +58,7 @@ def square():
 
 class Shape(Geometry):
     def __init__(self, shape, size, position, color):
+        Geometry.init(self)
         self.shape = shape
         self.size = resize(size, (3))
         self.position = position
@@ -125,9 +126,9 @@ def run():
         sun.move(1, -100./n)
         sun.redraw()
 
-        
+
     sun.hide()
-    
+
 if __name__ == 'draw':
     run()
 # End
