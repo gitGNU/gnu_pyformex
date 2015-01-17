@@ -53,9 +53,10 @@ from __future__ import print_function
 
 
 import pyformex as pf
-from pyformex.arraytools import array, isInt, Int, concatenate
+import pyformex.arraytools as at
 from pyformex.odict import OrderedDict
-
+import numpy as np
+#  Int, concatenate
 
 def GLcolor(color):
     """Convert a color to an OpenGL RGB color.
@@ -111,7 +112,7 @@ def GLcolor(color):
     try:
         col = tuple(col)
         if len(col) == 3:
-            if isInt(col[0]):
+            if at.isInt(col[0]):
                 # convert int values to float
                 col = [ c/255. for c in col ]
             col = [float(c) for c in col]
@@ -131,25 +132,120 @@ def GLcolor(color):
     # No success: raise an error
     raise ValueError("GLcolor: unexpected input of type %s: %s" % (type(color), color))
 
+
+def GLcolorA(color):
+    """Convert a color to an OpenGL RGB color.
+
+    The output is a tuple of three RGB float values ranging from 0.0 to 1.0.
+    The input can be any of the following:
+
+    - a QColor
+    - a string specifying the Xwindow name of the color
+    - a hex string '#RGB' with 1 to 4 hexadecimal digits per color
+    - a tuple or list of 3 integer values in the range 0..255
+    - a tuple or list of 3 float values in the range 0.0..1.0
+
+    Any other input may give unpredictable results.
+
+    Example:
+
+      >>> GLcolorA('indianred')
+      array([ 0.8 ,  0.36,  0.36], dtype=float32)
+      >>> print(GLcolorA('#ff0000'))
+      [ 1.  0.  0.]
+      >>> GLcolorA(red)
+      array([ 1.,  0.,  0.], dtype=float32)
+      >>> GLcolorA([200,200,255])
+      array([ 0.78,  0.78,  1.  ], dtype=float32)
+      >>> GLcolorA([1.,1.,1.])
+      array([ 1.,  1.,  1.], dtype=float32)
+      >>> GLcolorA(0.6)
+      array([ 0.6,  0.6,  0.6], dtype=float32)
+      >>> print(GLcolorA(['black','red','green','blue']))
+      [[ 0.  0.  0.]
+       [ 1.  0.  0.]
+       [ 0.  1.  0.]
+       [ 0.  0.  1.]]
+
+    """
+    from pyformex.gui import QtCore, QtGui
+    col = color
+    # as of Qt4.5, QtGui.Qcolor no longer raises an error if given
+    # erroneous input. Therefore, we check it ourselves
+
+    # Check if it is a palette color name
+    if isinstance(col, str) and col in palette:
+        col = palette[col]
+    # str or QtCore.Globalcolor: convert to QColor
+    if ( isinstance(col, str) or
+         isinstance(col, QtCore.Qt.GlobalColor) ):
+        try:
+            col = QtGui.QColor(col)
+        except:
+            pass
+
+    # QColor: convert to (r,g,b) tuple (0..255)
+    if isinstance(col, QtGui.QColor):
+        col = (col.red(), col.green(), col.blue())
+
+    # A single float value in the range 0..1 is converted to a grey value
+    if at.isFloat(col):
+        if col >= 0.0 and col <= 1.0:
+            col = grey(col)
+
+    # Convert to an array and check length
+    try:
+        cola = np.array(col)
+        if cola.dtype.kind in 'if' and cola.shape[-1] == 3:
+            isint = cola.dtype.kind == 'i'
+            # convert int values to float
+            cola = cola.astype(np.float32)
+            if isint:
+                cola /= 255.
+            return cola
+
+    except:
+        pass
+
+    if isinstance(col, (list,tuple)):
+        try:
+            col = GLcolorA([ GLcolorA(ci) for ci in col ])
+            return col
+        except:
+            pass
+
+    # No success: raise an error
+    raise ValueError("GLcolorA: unexpected input of type %s: %s" % (type(color), color))
+
+
 # TODO: Should convert result to Int8 ?
 def RGBcolor(color):
     """Return an RGB (0-255) tuple for a color
 
     color can be anything that is accepted by GLcolor.
-    Returns the corresponding RGB tuple.
+
+    Returns the corresponding RGB colors as a numpy array of type uint8
+    and shape (..,3).
+
+    Example:
+
+      >>> RGBcolor(red)
+      array([255,   0,   0], dtype=uint8)
     """
-    col = array(GLcolor(color))*255
-    return col.round().astype(Int)
+    col = np.array(GLcolor(color))*255
+    return col.round().astype(np.uint8)
 
 
 def RGBAcolor(color, alpha):
     """Return an RGBA (0-255) tuple for a color and alpha value.
 
     color can be anything that is accepted by GLcolor.
-    Returns the corresponding RGBA tuple.
+
+    Returns the corresponding RGBA colors as a numpy array of type uint8
+    and shape (..,4).
     """
-    col = concatenate([array(GLcolor(color)), [alpha]])*255
-    return col.round().astype(Int)
+    col = concatenate([np.array(GLcolor(color)), [alpha]])*255
+    return col.round().astype(np.uint8)
 
 
 def WEBcolor(color):
@@ -158,6 +254,11 @@ def WEBcolor(color):
     color can be anything that is accepted by GLcolor.
     Returns the corresponding WEB color, which is a hexadecimal string
     representation of the RGB components.
+
+    Example:
+
+      >>> WEBcolor(red)
+      '#ff0000'
     """
     col = RGBcolor(color)
     return "#%02x%02x%02x" % tuple(col)
@@ -170,13 +271,14 @@ def colorName(color):
     In the current implementation, the returned color name is the
     WEBcolor (hexadecimal string).
 
-    Examples:
-    >>> colorName('red')
-    '#ff0000'
-    >>> colorName('#ffddff')
-    '#ffddff'
-    >>> colorName([1.,0.,0.5])
-    '#ff0080'
+    Example:
+
+      >>> colorName('red')
+      '#ff0000'
+      >>> colorName('#ffddff')
+      '#ffddff'
+      >>> colorName([1.,0.,0.5])
+      '#ff0080'
     """
     return WEBcolor(color)
 
@@ -195,15 +297,17 @@ def luminance(color,gamma=True):
 
     Example:
 
-    >>> print([ "%0.2f" % luminance(c) for c in ['black','red','green','blue']])
-    ['0.00', '0.21', '0.72', '0.07']
+      >>> print([ "%0.2f" % luminance(c) for c in ['black','red','green','blue']])
+      ['0.00', '0.21', '0.72', '0.07']
+      >>> print(luminance(['black','red','green','blue']))
+      [ 0.    0.21  0.72  0.07]
     """
-    lum = lambda c: ((c+0.055)/1.055) ** 2.4 if c > 0.04045 else c/12.92
-    color = GLcolor(color)
+    color = GLcolorA(color)
+
     if gamma:
-        R, G, B = [lum(c) for c in color]
-    else:
-        R, G, B = color
+        color = np.where(color > 0.04045,((color+0.055)/1.055) ** 2.4,color/12.92)
+
+    R,G,B = color[...,0], color[...,1], color[...,2]
     return 0.2126 * R + 0.7152 * G + 0.0722 * B
 
 
