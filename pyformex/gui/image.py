@@ -143,6 +143,50 @@ def imageFormatFromExt(ext):
     return fmt
 
 
+def renderingImage(w=None,h=None,canvas=None):
+    """Return the current OpenGL rendering in an image format.
+
+    Returns the current OpenGL rendering as a QImage of the specified
+    size.
+    """
+    if canvas is None:
+        canvas = pf.canvas
+    wc,hc = pf.canvas.width(),pf.canvas.height()
+    if w is None:
+        w = wc
+    if h is None:
+        h = hc
+    vcanvas = QtOpenGL.QGLFramebufferObject(w, h)
+    vcanvas.bind()
+    canvas.resize(w, h)
+    canvas.display()
+    GL.glFlush()
+    qim = vcanvas.toImage()
+    vcanvas.release()
+    canvas.resize(wc, hc)
+    GL.glFlush()
+    del vcanvas
+    return qim
+
+
+def removeAlpha(qim):
+    """Remove the alpha channel from a QImage.
+
+    Directly saving a QImage grabbed from the OpenGL buffers always
+    results in an image with transparency.
+    See https://savannah.nongnu.org/bugs/?36995 .
+
+    This function will remove the alpha channel from the QImage, so
+    that it can be saved with opaque objects.
+
+    Note: we did not find a way to do this directly on the QImage,
+    so we go through a conversion to a numpy array and back.
+    """
+    from pyformex.plugins.imagearray import image2numpy, rgb2qimage
+    ar, cm = image2numpy(qim, flip=False)
+    return rgb2qimage(ar[..., :3])
+
+
 ##### LOW LEVEL FUNCTIONS ##########
 
 def save_canvas(canvas,fn,fmt='png',quality=-1,size=None):
@@ -167,31 +211,17 @@ def save_canvas(canvas,fn,fmt='png',quality=-1,size=None):
             w, h = wc, hc
         if (w, h) == (wc, hc):
             pf.debug("Saving image from canvas with size %sx%s" % (w, h), pf.DEBUG.IMAGE)
-            if (w, h) != (wc, hc):
-                canvas.resize(w, h)
+            ## if (w, h) != (wc, hc):
+            ##     canvas.resize(w, h)
             GL.glFlush()
             qim = canvas.grabFrameBuffer(withAlpha=False)
-            if (w, h) != (wc, hc):
-                canvas.resize(wc, hc)
+            ## if (w, h) != (wc, hc):
+            ##     canvas.resize(wc, hc)
         else:
             pf.debug("Saving image from virtual buffer with size %sx%s" % (w, h), pf.DEBUG.IMAGE)
-            vcanvas = QtOpenGL.QGLFramebufferObject(w, h)
-            vcanvas.bind()
-            canvas.resize(w, h)
-            canvas.display()
-            GL.glFlush()
-            qim = vcanvas.toImage()
-            ### REMOVE THE ALPHA CHANNEL (see bug #36995)
-            ### Since we did not find a way to do this directly on
-            ### the QImage, we got through an numpy array
-            from pyformex.plugins.imagearray import image2numpy, rgb2qimage
-            ar, cm = image2numpy(qim, flip=False)
-            qim = rgb2qimage(ar[..., :3])
-            ####
-            vcanvas.release()
-            canvas.resize(wc, hc)
-            GL.glFlush()
-            del vcanvas
+            qim = renderingImage(w,h,canvas)
+            qim = removeAlpha(qim)
+
 
         pf.debug("Image has alpha channel: %s" % qim.hasAlphaChannel())
         print("SAVING %s in format %s with quality %s" % (fn, fmt, quality))
