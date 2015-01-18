@@ -509,6 +509,10 @@ class Camera(object):
         self.locked = bool(onoff)
 
 
+    def unlock(self):
+        self.lock(False)
+
+
     def report(self):
         """Return a report of the current camera settings."""
         return """Camera Settings:
