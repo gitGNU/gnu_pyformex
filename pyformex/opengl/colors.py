@@ -196,8 +196,8 @@ def GLcolorA(color):
     # Convert to an array and check length
     try:
         cola = np.array(col)
-        if cola.dtype.kind in 'if' and cola.shape[-1] == 3:
-            isint = cola.dtype.kind == 'i'
+        if cola.dtype.kind in 'uif' and cola.shape[-1] == 3:
+            isint = cola.dtype.kind in 'ui'
             # convert int values to float
             cola = cola.astype(np.float32)
             if isint:
