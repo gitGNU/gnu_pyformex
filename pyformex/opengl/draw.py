@@ -155,7 +155,7 @@ def draw(F,
     if opts.clear_:
         clear_canvas()
 
-    if opts.view is not None and opts.view != 'last':
+    if opts.view not in [ None, 'last', 'cur']:
         pf.debug("SETTING VIEW to %s" % opts.view, pf.DEBUG.DRAW)
         setView(opts.view)
 
@@ -188,7 +188,7 @@ def draw(F,
         pf.debug(bbox, pf.DEBUG.OPENGL)
 
         # Adjust the camera
-        if view is not None or bbox not in [None, 'last']:
+        if view not in [None, 'cur'] or bbox not in [None, 'last']:
             if view == 'last':
                 view = pf.canvas.drawoptions['view']
             if bbox == 'auto':
@@ -196,7 +196,6 @@ def draw(F,
             if bbox == 'last':
                 bbox = None
 
-            #print('BBOX= %s' % bbox)
             pf.canvas.setCamera(bbox, view)
 
         # Update the rendering
