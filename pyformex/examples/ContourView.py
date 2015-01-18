@@ -31,12 +31,11 @@ from __future__ import print_function
 
 _status = 'checked'
 _level = 'normal'
-_topics = ['contour','vtk']
-_techniques = ['vtk']
+_topics = ['geometry','rendering']
+_techniques = ['outline','contour','vtk']
 
 from pyformex.gui.draw import *
 
-from pyformex.plugins.trisurface import TriSurface
 from pyformex.plugins.vtk_itf import *
 import pyformex as pf
 
@@ -46,12 +45,15 @@ def run():
     S = TriSurface.read(getcfg('datadir')+'/horse.off')
     perspective(state=False)
     draw(S)
+    G = pf.canvas.outline(800,600)
     pause()
     clear()
     rot=pf.canvas.camera.rot
     contour = viewContour(S)
-    draw(S.rot(rot),color=blue)
+    #draw(S.rot(rot),color=blue)
     draw(contour,view=None,color=red)
+
+    draw(G,color=black)
 
 
 if __name__ == 'draw':

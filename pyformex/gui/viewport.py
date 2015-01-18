@@ -432,6 +432,28 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         return ar
 
 
+    def outline(self, size=None, bgcolor=None):
+        """Return the outline of the current rendering
+
+        The outline is returned as a Formex of plexitude 2.
+        """
+        from pyformex.plugins.isosurface import isoline
+        from pyformex.formex import Formex
+        from pyformex.opengl.colors import luminance
+        self.camera.lock()
+        data = self.rgb()
+        shape = data.shape[:2]
+        data = luminance(data.reshape((-1,3))).reshape(shape)
+        bbox = self.bbox
+        ctr = self.camera.project((bbox[0]+bbox[1])*.05)
+        seg = isoline(data,0.5,1)
+        X = Coords(seg).trl([0.5,0.5,ctr[0][2]])
+        shape = X.shape
+        X = self.camera.unproject(X.reshape(-1,3)).reshape(shape)
+        self.camera.unlock()
+        return Formex(X)
+
+
     def getPickModes(self):
         return self.pick_func.keys()
 

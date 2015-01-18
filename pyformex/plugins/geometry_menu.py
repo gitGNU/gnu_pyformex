@@ -1064,6 +1064,12 @@ def getBorderMesh():
     selection.draw()
 
 
+def addOutline():
+    """Draw the outline of the current rendering"""
+    G = pf.canvas.outline()
+    draw(G,color=red,view='cur',bbox='last')
+
+
 
 ################### menu #################
 
@@ -1201,6 +1207,7 @@ def create_menu():
             ("&Get border mesh", getBorderMesh),
             ("&Peel off border", peelOffMesh),
             ]),
+        ("Outline", addOutline),
         ("---", None),
         ("&Reload menu", reload_menu),
         ("&Close", close_menu),
