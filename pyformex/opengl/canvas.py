@@ -1235,7 +1235,7 @@ class Canvas(object):
         return X[0]
 
 
-    def unProject(self,x,y,z,locked=False):
+    def unproject(self,x,y,z,locked=False):
         "Map the window coordinates (x,y,z) to object coordinates."""
         ## locked=False
         ## if locked:
@@ -1248,7 +1248,7 @@ class Canvas(object):
         ##     view = GL.glGetIntegerv(GL.GL_VIEWPORT)
         ## objx, objy, objz = GLU.gluUnProject(x, y, z, model, proj, view)
         ## return (objx, objy, objz)
-        X = self.camera.unProject([[x,y,z]])
+        X = self.camera.unproject([[x,y,z]])
         #print(X)
         return X
 

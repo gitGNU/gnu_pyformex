@@ -656,7 +656,7 @@ class Camera(object):
         return GLU.gluProject(x, y, z, self.m.astype(double), self.p, self.v)
 
 
-    def unProject(self, x, y, z):
+    def unproject(self, x, y, z):
         "Map the window coordinates (x,y,z) to object coordinates."""
         self.set3DMatrices()
         return GLU.gluUnProject(x, y, z, self.m.astype(double), self.p, self.v)

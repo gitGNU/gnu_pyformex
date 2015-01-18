@@ -780,13 +780,13 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
                 #pf.app.processEvents()
             if self.previewfunc:
                 self.swapBuffers()
-                self.drawn = self.unProject(x, y, self.zplane)
+                self.drawn = self.unproject(x, y, self.zplane)
                 self.drawn = Coords(self.drawn).reshape(-1, 3)
                 self.previewfunc(Coords.concatenate([self.drawing, self.drawn]), self.drawmode)
                 self.swapBuffers()
 
         elif action == RELEASE:
-            self.drawn = self.unProject(x, y, self.zplane)
+            self.drawn = self.unproject(x, y, self.zplane)
             self.selection_busy = False
 
 ##########################################################################

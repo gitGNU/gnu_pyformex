@@ -594,7 +594,7 @@ class Gui(QtGui.QMainWindow):
 
     def toggleCoordsTracker(self,onoff=None):
         def track(x, y, z):
-            X, Y, Z = pf.canvas.unProject(x, y, z, True)
+            X, Y, Z = pf.canvas.unproject(x, y, z, True)
             print("%s --> %s" % ((x, y, z), (X, Y, Z)))
             pf.GUI.coordsbox.setValues([X, Y, Z])
 

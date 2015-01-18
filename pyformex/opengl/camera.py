@@ -995,7 +995,7 @@ class Camera(object):
         # This is only correct when glDepthRange(0.0, 1.0)
         # We should not change the depth range
         vp = gl_viewport()
-        print([[vp[0], vp[1], 0], [vp[2], vp[3], 1]])
+        #print([[vp[0], vp[1], 0], [vp[2], vp[3], 1]])
         return denormalize(x[:, :3], [[vp[0], vp[1], 0], [vp[2], vp[3], 1]])
 
 
@@ -1075,7 +1075,7 @@ class Camera(object):
         return self.toWindow(x)
 
 
-    def unProject(self, x):
+    def unproject(self, x):
         """Map the window coordinates x to object coordinates."""
         m = self.modelview*self.projection
         #print("M*P",m)
