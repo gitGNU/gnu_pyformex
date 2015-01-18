@@ -432,7 +432,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         return ar
 
 
-    def outline(self, size=None, bgcolor=None):
+    def outline(self, size=None, level=0.5, bgcolor=None):
         """Return the outline of the current rendering
 
         The outline is returned as a Formex of plexitude 2.
@@ -441,16 +441,26 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         from pyformex.formex import Formex
         from pyformex.opengl.colors import luminance
         self.camera.lock()
-        if size is None:
-            size = (None,None)
-        data = self.rgb(*size)
+        if size is not None:
+            w,h = size
+        else:
+            w,h = None,None
+        data = self.rgb(w,h)
         shape = data.shape[:2]
         data = luminance(data.reshape((-1,3))).reshape(shape)
+        rng = data.max() - data.min()
         bbox = self.bbox
         ctr = self.camera.project((bbox[0]+bbox[1])*.05)
         axis = unitVector(self.camera.eye-self.camera.focus)
-        seg = isoline(data,0.5,1)
-        X = Coords(seg).trl([0.5,0.5,ctr[0][2]])
+        seg = isoline(data,data.min()+level*rng) + [0.5,0.5]
+        if size is not None:
+            wc,hc = pf.canvas.getSize()
+            sx = float(wc)/w
+            sy = float(hc)/h
+            #print("Post scaling %s,%s" % (sx,sy))
+            seg[...,0] *= sx
+            seg[...,1] *= sy
+        X = Coords(seg).trl([0.,0.,ctr[0][2]])
         shape = X.shape
         X = self.camera.unproject(X.reshape(-1,3)).reshape(shape)
         self.camera.unlock()
