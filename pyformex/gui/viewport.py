@@ -383,6 +383,55 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         self.resize(width, height)
 
 
+    def image(self,w=None,h=None,remove_alpha=True):
+        """Return the current OpenGL rendering in an image format.
+
+        Returns the current OpenGL rendering as a QImage of the specified
+        size.
+        """
+        if remove_alpha:
+            from pyformex.plugins.imagearray import removeAlpha
+            return removeAlpha(self.image(w,h,False))
+
+        self.makeCurrent()
+        wc,hc = self.getSize()
+        if w is None:
+            w = wc
+        if h is None:
+            h = hc
+        if w < 0:
+            w = int(round(h/hc*wc))
+        if h < 0:
+            h = int(round(w/wc*hc))
+
+        vcanvas = QtOpenGL.QGLFramebufferObject(w, h)
+        vcanvas.bind()
+        self.resize(w, h)
+        self.display()
+        GL.glFlush()
+        qim = vcanvas.toImage()
+        vcanvas.release()
+        self.resize(wc, hc)
+        GL.glFlush()
+        del vcanvas
+        return qim
+
+
+    def rgb(self,w=None,h=None,remove_alpha=True):
+        """Return the current OpenGL rendering in an array format.
+
+        Returns the current OpenGL rendering as a numpy array of
+        type uint and shape (w,h,3) if remove_alpha is True (default)
+        or shape (w,h,4) if remove_alpha is False.
+        """
+        from pyformex.plugins.imagearray import image2numpy
+        qim = self.image(w,h,False)
+        ar, cm = image2numpy(qim)
+        if remove_alpha:
+            ar = ar [...,:3]
+        return ar
+
+
     def getPickModes(self):
         return self.pick_func.keys()
 

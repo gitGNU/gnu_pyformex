@@ -1496,4 +1496,5 @@ class Canvas(object):
                         'edge': highlightEdges,
                         }
 
+
 ### End

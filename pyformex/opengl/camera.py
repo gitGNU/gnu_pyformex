@@ -1084,7 +1084,7 @@ class Camera(object):
         x = self.fromWindow(x)
         #print("NORMALIZED DEVICE COORDINATES:",x)
         x = Vector4(x)*m1
-        return x[:, :3] / x[:, 3]
+        return Coords(x[:, :3] / x[:, 3])
 
 
     def inside(self,x,rect=None,return_depth=False):

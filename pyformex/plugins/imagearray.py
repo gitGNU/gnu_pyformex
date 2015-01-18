@@ -266,6 +266,23 @@ def image2glcolor(image,resize=(0, 0)):
     return c, None
 
 
+def removeAlpha(qim):
+    """Remove the alpha channel from a QImage.
+
+    Directly saving a QImage grabbed from the OpenGL buffers always
+    results in an image with transparency.
+    See https://savannah.nongnu.org/bugs/?36995 .
+
+    This function will remove the alpha channel from the QImage, so
+    that it can be saved with opaque objects.
+
+    Note: we did not find a way to do this directly on the QImage,
+    so we go through a conversion to a numpy array and back.
+    """
+    ar, cm = image2numpy(qim, flip=False)
+    return rgb2qimage(ar[..., :3])
+
+
 # Import images using PIL
 
 def imagefile2string(filename):
