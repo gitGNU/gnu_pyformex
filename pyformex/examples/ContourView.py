@@ -36,24 +36,51 @@ _techniques = ['outline','contour','vtk']
 
 from pyformex.gui.draw import *
 
-from pyformex.plugins.vtk_itf import *
 import pyformex as pf
+
+def outlineBox(F,axis,dmin,dmax):
+    """Construct an outlinebox from an outline curve
+
+    F is a plex-2 Formex obtained from Canvas.outline()
+
+    Returns a plex-4 Formex obtained by connecting two translated
+    instance of the outline: one to the minimal z-value, one to the
+    maximal z-value.
+    """
+    G1 = F.trl(axis,dmin)
+    G2 = F.trl(axis,dmax)
+    draw([G1,G2],color=green)
+    H = connect([G1,G1,G2,G2],nodid=[0,1,1,0])
+    draw(H,color='orange')
 
 
 def run():
+    resetAll()
+    smooth()
     clear()
     S = TriSurface.read(getcfg('datadir')+'/horse.off')
-    perspective(state=False)
-    draw(S)
-    G = pf.canvas.outline(800,600)
+    perspective(False)
+    SA = draw(S)
+    setDrawOptions(view='cur',bbox=None)
     pause()
-    clear()
-    rot=pf.canvas.camera.rot
-    contour = viewContour(S)
-    #draw(S.rot(rot),color=blue)
-    draw(contour,view=None,color=red)
 
-    draw(G,color=black)
+    G = pf.canvas.outline()
+    draw(G,color=red)
+    pause()
+
+    if utils.hasModule('vtk'):
+        from pyformex.plugins.vtk_itf import viewContour
+        undraw(SA)
+        contour = viewContour(S).rot(pf.canvas.camera.rot.inverse())
+        draw(contour,color=blue)
+        pause()
+
+    axis = G.attrib.axis
+    dmin,dmax = S.directionalSize(axis)
+    outlineBox(G,axis,dmin,dmax)
+    if utils.hasModule('vtk'):
+        draw(S)
+    perspective()
 
 
 if __name__ == 'draw':

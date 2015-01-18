@@ -41,7 +41,7 @@ from pyformex.gui import (
 
 from pyformex.collection import Collection
 from pyformex.coords import Coords
-from pyformex.arraytools import isInt
+from pyformex.arraytools import isInt,unitVector
 
 import math
 from numpy import *
@@ -441,17 +441,22 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         from pyformex.formex import Formex
         from pyformex.opengl.colors import luminance
         self.camera.lock()
-        data = self.rgb()
+        if size is None:
+            size = (None,None)
+        data = self.rgb(*size)
         shape = data.shape[:2]
         data = luminance(data.reshape((-1,3))).reshape(shape)
         bbox = self.bbox
         ctr = self.camera.project((bbox[0]+bbox[1])*.05)
+        axis = unitVector(self.camera.eye-self.camera.focus)
         seg = isoline(data,0.5,1)
         X = Coords(seg).trl([0.5,0.5,ctr[0][2]])
         shape = X.shape
         X = self.camera.unproject(X.reshape(-1,3)).reshape(shape)
         self.camera.unlock()
-        return Formex(X)
+        F = Formex(X)
+        F.attrib(axis=axis)
+        return F
 
 
     def getPickModes(self):
