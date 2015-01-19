@@ -40,10 +40,10 @@ def run():
     clear()
     filename = getcfg('datadir')+'/leeuw24.png'
     # This is picked from pyformex.opengl.draw.drawImage3D
-    from pyformex.plugins.imagearray import image2glcolor, resizeImage
+    from pyformex.plugins.imagearray import qimage2glcolor, resizeImage
     image = resizeImage(filename, 0, 0)
     nx, ny = image.width(), image.height()
-    color, colortable = image2glcolor(image)
+    color, colortable = qimage2glcolor(image)
     color = color.reshape(ny,nx,3)
     #color = color[130:176,100:146] # uncomment to pick a part from the image
     ny,nx = color.shape[:2]   # pixels move fastest in x-direction!

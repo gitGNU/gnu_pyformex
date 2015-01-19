@@ -72,7 +72,7 @@ def run():
     #nx,ny = 200,200
 
     # Create the colors
-    color, colormap = image2glcolor(im.scaled(nx, ny))
+    color, colormap = qimage2glcolor(im.scaled(nx, ny))
     print("Size of colors: %s" % str(color.shape))
     if colormap is not None:
         print("Size of colormap: %s" % str(colormap.shape))

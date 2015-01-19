@@ -67,7 +67,7 @@ def resizeImage(image,w=0,h=0):
     return image
 
 
-def image2numpy(image,resize=(0, 0),order='RGBA',flip=True,indexed=None,expand=None):
+def qimage2numpy(image,resize=(0, 0),order='RGBA',flip=True,indexed=None,expand=None):
     """Transform an image to a Numpy array.
 
     Parameters:
@@ -125,7 +125,7 @@ def image2numpy(image,resize=(0, 0),order='RGBA',flip=True,indexed=None,expand=N
         and colortable is None.
     """
     if expand is not None:
-        utils.warn("depr_image2numpy_arg")
+        utils.warn("depr_qimage2numpy_arg")
         indexed = not expand
 
 
@@ -164,7 +164,7 @@ def image2numpy(image,resize=(0, 0),order='RGBA',flip=True,indexed=None,expand=N
         #print "IMAGE SHAPE IS %s" % str(ar.shape)
 
     else:
-        raise ValueError("image2numpy only supports 32bit and 8bit images")
+        raise ValueError("qimage2numpy only supports 32bit and 8bit images")
 
     # Put upright as expected
     if flip:
@@ -243,7 +243,7 @@ def rgb2qimage(rgb):
 
 
 
-def image2glcolor(image,resize=(0, 0)):
+def qimage2glcolor(image,resize=(0, 0)):
     """Convert a bitmap image to corresponding OpenGL colors.
 
     Parameters:
@@ -260,7 +260,7 @@ def image2glcolor(image,resize=(0, 0)):
     By default the image is flipped upside-down because the vertical
     OpenGL axis points upwards, while bitmap images are stored downwards.
     """
-    c = image2numpy(image, resize=resize, order='RGB', flip=True, indexed=False)
+    c = qimage2numpy(image, resize=resize, order='RGB', flip=True, indexed=False)
     c = c.reshape(-1, 3)
     c = c / 255.
     return c, None
@@ -279,21 +279,25 @@ def removeAlpha(qim):
     Note: we did not find a way to do this directly on the QImage,
     so we go through a conversion to a numpy array and back.
     """
-    ar, cm = image2numpy(qim, flip=False)
+    ar, cm = qimage2numpy(qim, flip=False)
     return rgb2qimage(ar[..., :3])
 
 
+####################################################################
 # Import images using PIL
 
-def imagefile2string(filename):
-    import Image
-    im = Image.open(filename)
-    nx, ny = im.size[0], im.size[1]
-    try:
-        data = im.tostring("raw", "RGBA", 0, -1)
-    except SystemError:
-        data = im.tostring("raw", "RGBX", 0, -1)
-    return nx, ny, data
+if utils.checkModule('pil'):
+
+    from PIL import Image
+
+    def imagefile2string(filename):
+        im = Image.open(filename)
+        nx, ny = im.size[0], im.size[1]
+        try:
+            data = im.tostring("raw", "RGBA", 0, -1)
+        except SystemError:
+            data = im.tostring("raw", "RGBX", 0, -1)
+        return nx, ny, data
 
 
 

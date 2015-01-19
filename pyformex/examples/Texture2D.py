@@ -75,7 +75,7 @@ _topics = ['color']
 _techniques = ['texture', 'image']
 
 from pyformex.gui.draw import *
-from pyformex.plugins.imagearray import image2numpy
+from pyformex.plugins.imagearray import qimage2numpy
 
 imagefile = os.path.join(pf.cfg['pyformexdir'],'data','butterfly.png')
 
@@ -95,7 +95,7 @@ def run():
     if not imagefile:
         return
 
-    image = image2numpy(imagefile, indexed=False)
+    image = qimage2numpy(imagefile, indexed=False)
     if image is None:
         return
 

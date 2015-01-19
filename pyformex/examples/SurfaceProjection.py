@@ -131,7 +131,7 @@ def run():
         return
 
     # Create the colors
-    color, colortable = image2glcolor(image.scaled(nx, ny))
+    color, colortable = qimage2glcolor(image.scaled(nx, ny))
     # Reorder by patch
     pcolor = color.reshape((py, ky, px, kx, 3)).swapaxes(1, 2).reshape(-1, kx*ky, 3)
     print("Shape of the colors array: %s" % str(pcolor.shape))

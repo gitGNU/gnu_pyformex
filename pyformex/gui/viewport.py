@@ -424,9 +424,9 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         type uint and shape (w,h,3) if remove_alpha is True (default)
         or shape (w,h,4) if remove_alpha is False.
         """
-        from pyformex.plugins.imagearray import image2numpy
+        from pyformex.plugins.imagearray import qimage2numpy
         qim = self.image(w,h,False)
-        ar, cm = image2numpy(qim)
+        ar, cm = qimage2numpy(qim)
         if remove_alpha:
             ar = ar [...,:3]
         return ar
@@ -439,7 +439,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         """
         from pyformex.plugins.isosurface import isoline
         from pyformex.formex import Formex
-        from pyformex.opengl.colors import luminance
+        from pyformex.opengl.colors import luminance, RGBcolor
         self.camera.lock()
         if size is not None:
             w,h = size
@@ -447,7 +447,20 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
             w,h = None,None
         data = self.rgb(w,h)
         shape = data.shape[:2]
-        data = luminance(data.reshape((-1,3))).reshape(shape)
+
+        if bgcolor:
+            bgcolor = RGBcolor(bgcolor)
+            print("bgcolor = %s" % (bgcolor,))
+            bg = (data==bgcolor).all(axis=-1)
+            print(bg)
+            #data[bg] = [0.,0.,0.]
+            data = luminance(data.reshape(-1,3)).reshape(shape) + 0.5
+            data[bg] = -0.5
+
+        else:
+            data = luminance(data.reshape(-1,3)).reshape(shape)
+
+        print(data[:2,:2])
         rng = data.max() - data.min()
         bbox = self.bbox
         ctr = self.camera.project((bbox[0]+bbox[1])*.05)

@@ -112,7 +112,7 @@ def drawSuperShape():
         print(im)
         print(im.isNull())
         nx, ny = grid_size
-        color, colormap = image2glcolor(im.scaled(nx, ny))[0]
+        color, colormap = qimage2glcolor(im.scaled(nx, ny))[0]
         print(color.shape)
 
     draw(F, color=color, colormap=colormap, bkcolor=bkcolor)

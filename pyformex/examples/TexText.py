@@ -76,8 +76,8 @@ def run():
 
     # draw a cross at the upper corners using an image file
     image = os.path.join(pf.cfg['pyformexdir'], 'data', 'mark_cross.png')
-    from pyformex.plugins.imagearray import image2numpy
-    image = image2numpy(image, indexed=False)
+    from pyformex.plugins.imagearray import qimage2numpy
+    image = qimage2numpy(image, indexed=False)
     F = Formex('4:0123').scale(40).toMesh().align('000')
     # at the right corner using direct texture drawing techniques
     draw(F,texture=image,texcoords=array([[0,1],[1,1],[1,0],[0,0]]),texmode=0,rendertype=-1,opak=False,ontop=True,offset3d=[(200.,200.,0.),(200.,200.,0.),(200.,200.,0.),(200.,200.,0.),])

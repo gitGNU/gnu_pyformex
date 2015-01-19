@@ -656,12 +656,12 @@ def drawImage3D(image,nx=0,ny=0,pixel='dot'):
     See also :func:`drawImage`.
     """
     pf.GUI.setBusy()
-    from pyformex.plugins.imagearray import image2glcolor, resizeImage
+    from pyformex.plugins.imagearray import qimage2glcolor, resizeImage
 
     # Create the colors
     image = resizeImage(image, nx, ny)
     nx, ny = image.width(), image.height()
-    color, colortable = image2glcolor(image)
+    color, colortable = qimage2glcolor(image)
 
     # Create a 2D grid of nx*ny elements
     # !! THIS CAN PROBABLY BE DONE FASTER
@@ -706,10 +706,10 @@ def drawImage(image,w=0,h=0,x=-1,y=-1,color=colors.white,ontop=False):
     fills the background.
     """
     utils.warn("warn_drawImage_changed")
-    from pyformex.plugins.imagearray import image2numpy
+    from pyformex.plugins.imagearray import qimage2numpy
     from pyformex.legacy.decors import Rectangle
 
-    image = image2numpy(image, resize=(w, h), indexed=False)
+    image = qimage2numpy(image, resize=(w, h), indexed=False)
     w, h = image.shape[:2]
     if x < 0:
         x = (pf.canvas.width() - w) // 2

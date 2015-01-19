@@ -825,9 +825,9 @@ class Canvas(object):
         F = F.toMesh()
         image = None
         if self.settings.bgimage:
-            from pyformex.plugins.imagearray import image2numpy
+            from pyformex.plugins.imagearray import qimage2numpy
             try:
-                image = image2numpy(self.settings.bgimage, indexed=False)
+                image = qimage2numpy(self.settings.bgimage, indexed=False)
             except:
                 pass
         actor = GeomActor(F,name='background',rendermode='smooth',color=[self.settings.bgcolor],texture=image,rendertype=3,opak=True,lighting=False,view='front')

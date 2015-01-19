@@ -42,7 +42,7 @@ from pyformex.plugins import imagearray as ia
 
 def loadImage(file,grey=True):
     """Load a grey image into a numpy array"""
-    im = ia.image2numpy(file, order='RGB', indexed=False)
+    im = ia.qimage2numpy(file, order='RGB', indexed=False)
     if grey:
         # Do type conversion because auto conversion produces float64
         im = im.sum(axis=-1).astype(Float) / 3.

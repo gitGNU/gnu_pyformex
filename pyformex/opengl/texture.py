@@ -50,8 +50,8 @@ class Texture(object):
     def __init__(self,image,mode=1,format=GL.GL_RGBA,texformat=GL.GL_RGBA):
         self.texid = None
         if isinstance(image,(str,unicode)):
-            from pyformex.plugins.imagearray import image2numpy
-            image = image2numpy(image, indexed=False)
+            from pyformex.plugins.imagearray import qimage2numpy
+            image = qimage2numpy(image, indexed=False)
         else:
             image = np.asarray(image)
         s = "Texture: type %s, size %s" % (image.dtype, image.shape)
