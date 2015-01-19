@@ -57,6 +57,7 @@ known_modules = {
     'ipython-qt': ('IPython.frontend.qt',),
     'matplotlib': (),
     'numpy': (),
+    'pil': ('PIL', 'PIL', 'VERSION'),
     'pyopengl': ('OpenGL',),
     'pyqt4': ('PyQt4.QtCore', 'PyQt4', 'QtCore', 'QT_VERSION_STR'),
     'pyqt4gl': ('PyQt4.QtOpenGL', 'PyQt4', 'QtCore', 'QT_VERSION_STR'),
