@@ -934,7 +934,7 @@ def fileTypeComprFromExt(fname):
 
 def projectName(fn):
     """Derive a project name from a file name.
-`
+
     The project name is the basename of the file without the extension.
     It is equivalent with splitFilename(fn)[1]
     """
@@ -951,12 +951,24 @@ def findIcon(name):
 
     If no icon file is found, returns the question mark icon.
     """
-    fname = buildFilename(pf.cfg['icondir'], name, pf.cfg['gui/icontype'])
-    if not os.path.exists(fname):
-        fname = buildFilename(pf.cfg['icondir'], 'question', pf.cfg['gui/icontype'])
+    for icondir in pf.cfg['icondirs']:
+        fname = buildFilename(icondir, name, pf.cfg['gui/icontype'])
+        if os.path.exists(fname):
+            return fname
 
-    return fname
+    return buildFilename(pf.cfg['icondir'], 'question', pf.cfg['gui/icontype'])
 
+
+def listIconNames(types=None):
+    """Return the list of available icons by their name."""
+    if types is None:
+        types = ['.+\\'+pf.cfg['gui/icontype']]
+    icons = []
+    for icondir in pf.cfg['icondirs']:
+        files = listFiles(icondir)
+        files = [ projectName(f) for f in files if matchAny(types, f) ]
+        icons.extend(files)
+    return icons
 
 ##########################################################################
 ## File lists ##
@@ -1014,15 +1026,41 @@ def matchAll(regexps, target):
 
 
 def listDir(path):
-    """Return the contents of the specified directory path.
+    """List the contents of the specified directory path.
 
-    This is like os.listdir, but will return an empty list if the path
-    does not exist or is not accessible (instead of raising an error).
+    Returns a tuple (dirs,files), where dirs is the list if subdirectories
+    in the path, and files is the list of files. Either of the lists can be
+    empty. If the path does not exist or is not accessible, two empty
+    lists are returned.
     """
     try:
-        return os.listdir(path)
+        return os.walk(path).next()[1:]
     except:
-        return []
+        return [],[]
+
+
+def listDirs(path):
+    """List the subdirectories in the specified directory path.
+
+    Returns a list with the names of all directory type entries in the
+    specified path. If there are no directories, or the path does not
+    exist or is not accessible, returns an empty list.
+
+    This is syntactic sugar for `listDir(path)[0]`.
+    """
+    return listDir(path)[0]
+
+
+def listFiles(path):
+    """Return the files of the specified directory path.
+
+    Returns a list with the names of all file type entries in the
+    specified path. If there are no files, or the path does not
+    exist or is not accessible, returns an empty list.
+
+    This is syntactic sugar for `listDir(path)[0]`.
+    """
+    return listDir(path)[1]
 
 
 def listTree(path,listdirs=True,topdown=True,sorted=False,excludedirs=[],excludefiles=[],includedirs=[],includefiles=[],symlinks=True):

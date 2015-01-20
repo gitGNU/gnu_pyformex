@@ -332,7 +332,7 @@ class AppMenu(menu.Menu):
 
     def loadSubmenus(self,dirs=[]):
         if not dirs:
-            dirs = utils.listDir(self.dir)
+            dirs = utils.listDirs(self.dir)
         filtr = lambda s:os.path.isdir(os.path.join(self.dir, s))
         dirs = [ d for d in dirs if filtr(d) ]
         filtr = lambda s: s[0]!='.' and s[0]!='_'
@@ -343,7 +343,7 @@ class AppMenu(menu.Menu):
 
     def getFiles(self):
         """Get a list of scripts in self.dir"""
-        files = utils.listDir(self.dir)
+        files = utils.listFiles(self.dir)
         filtr = lambda s: s[0]!='.' and s[0]!='_'
         files = [ f for f in files if filtr(f) ]
         if self.ext:
