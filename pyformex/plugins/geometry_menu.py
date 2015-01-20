@@ -1064,16 +1064,31 @@ def getBorderMesh():
     selection.draw()
 
 
+outline_linewidth = 2
+outline_color = 'red'
+
 def addOutline():
     """Draw the outline of the current rendering"""
     G = pf.canvas.outline()
-    draw(G,color=red,view='cur',bbox='last')
-
+    OA = draw(G,color=outline_color,view='cur',bbox='last',linewidth=outline_linewidth,flat=-True,ontop=True)
+    if OA:
+        OA = OA.object
+        export({'_outline_':OA})
 
 
 ################### menu #################
 
 _menu = 'Geometry'
+
+
+def mySettings():
+    res = askItems([
+        _I('outline_linewidth',outline_linewidth),
+        _I('outline_color',outline_color),
+        ])
+    if res:
+        globals().update(res)
+
 
 def loadDxfMenu():
     pass
@@ -1209,6 +1224,7 @@ def create_menu():
             ]),
         ("Outline", addOutline),
         ("---", None),
+        ("Geometry Settings", mySettings),
         ("&Reload menu", reload_menu),
         ("&Close", close_menu),
         ]
