@@ -2,7 +2,7 @@
 
 About p2to3
 -----------
-This directory is intended for development purposes
+This README is intended for development purposes
 on the Python3 version of pyFormex.
 
 Conversion is done byt the 2to3 fixers:
@@ -75,6 +75,7 @@ To see a list of possible fixes::
 
   2to3 -l
 
+
 To convert the code for s specific fixer::
 
   2to3 -f fixer pyformex
@@ -87,9 +88,16 @@ To avoid creating backup files::
 
   2to3 -f fixer -w -n pyformex
 
-It is a good practice to first run without -w, check the output to see what would be changed, and when ok to run with -n -w options. If not all changes are ok, you can run the command with the files that should be changed.
+It is a good practice to first run the above commands without -w option, check the output to see what would be changed, and when ok to run with -n and -w options. If not all changes are ok, you can run the command with the files that should be changed.
 
 
 Future code should avoid the use of filter, map, reduce
+
+
+Dependencies for pyformex-p3
+----------------------------
+python3-pyside
+libshiboken-py3-1.2
+
 
 .. End

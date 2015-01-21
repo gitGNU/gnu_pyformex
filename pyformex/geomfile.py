@@ -622,7 +622,7 @@ class GeometryFile(object):
                         try:
                             # Read the color array
                             color = readArray(self.fil, colortype, colorshape, sep=sep)
-                        except Exception, e:
+                        except Exception as e:
                             print("Invalid color array on PGF file: skipped. Traceback: %s" % e)
                             color = None
 
@@ -635,7 +635,7 @@ class GeometryFile(object):
                     colorshape = (3,)
                     try:
                         color = checkArray(color, colorshape, colortype)
-                    except Exception, e:
+                    except Exception as e:
                         print("Invalid color attribute on PGF file: skipped. Traceback: %s" % e)
                     color = None
 

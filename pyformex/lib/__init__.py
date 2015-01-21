@@ -79,15 +79,15 @@ if accelerate:
 
 if misc is None:
     pf.debug("Using the (slower) Python misc functions", pf.DEBUG.LIB)
-    import misc
+    from pyformex.lib import misc
 
 if nurbs is None:
     pf.debug("Using the (slower) Python nurbs functions", pf.DEBUG.LIB)
-    import nurbs
+    from pyformex.lib import nurbs
 
 if gui and drawgl is None:
     pf.debug("Using the (slower) Python draw functions", pf.DEBUG.LIB)
-    import drawgl
+    from pyformex.lib import drawgl
 
 
 pf.debug("Accelerated: %s" % accelerated, pf.DEBUG.LIB|pf.DEBUG.INFO)
