@@ -59,10 +59,16 @@ __builtins__['unicode'] = str
 
 import pickle
 
+
 def execFile(f,*args,**kargs):
     return exec(compile(open(f,'r').read(), f, 'exec'),*args,**kargs)
 
+
 def userInput(*args,**kargs):
     return input(*args,**kargs)
+
+
+print3 = print
+
 
 # End

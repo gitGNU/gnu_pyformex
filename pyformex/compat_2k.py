@@ -45,5 +45,8 @@ def userInput(*args,**kargs):
     return raw_input(*args,**kargs)
 
 
+def print3(s):
+    pass
+
 
 # End
