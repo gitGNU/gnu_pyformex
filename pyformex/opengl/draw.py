@@ -48,7 +48,7 @@ from pyformex.opengl import textext
 
 from pyformex.script import getcfg, named
 
-import numpy
+import numpy as np
 
 ############################## drawing functions ########################
 
@@ -372,7 +372,7 @@ def drawNumbers(F,numbers=None,color='black',trl=None,offset=0,leader='',ontop=N
         X = X.trl(trl)
     X = X.reshape(-1, 3)
     if numbers is None:
-        numbers = numpy.arange(X.shape[0])
+        numbers = np.arange(X.shape[0])
     return drawMarks(X, numbers+offset, color=color, leader=leader, ontop=ontop,**kargs)
 
 
@@ -401,7 +401,7 @@ def drawVertexNumbers(F,color='black',trl=None,ontop=False):
     FC = F.coords.reshape((-1, 3))
     if trl is not None:
         FC = FC.trl(trl)
-    return drawMarks(FC, numpy.resize(numpy.arange(F.coords.shape[-2]), (FC.shape[0])), color=color, ontop=ontop)
+    return drawMarks(FC, np.resize(np.arange(F.coords.shape[-2]), (FC.shape[0])), color=color, ontop=ontop)
 
 
 def drawBbox(F,color='black',linewidth=None):
@@ -498,11 +498,20 @@ def drawImage3D(image,nx=0,ny=0,pixel='dot'):
     """
     pf.GUI.setBusy()
     from pyformex.plugins.imagearray import qimage2glcolor, resizeImage
+    from pyformex.opengl.colors import GLcolorA
 
     # Create the colors
-    image = resizeImage(image, nx, ny)
-    nx, ny = image.width(), image.height()
-    color, colortable = qimage2glcolor(image)
+    #print("TYPE %s" % type(image))
+    if isinstance(image,np.ndarray):
+        # undocumented feature: allow direct draw of 2d array
+        color = GLcolorA(image)
+        nx,ny = color.shape[:2]
+        colortable = None
+        print(color)
+    else:
+        image = resizeImage(image, nx, ny)
+        nx, ny = image.width(), image.height()
+        color, colortable = qimage2glcolor(image)
 
     # Create a 2D grid of nx*ny elements
     # !! THIS CAN PROBABLY BE DONE FASTER
@@ -580,7 +589,6 @@ def drawField(fld,comp=0,scale='RAINBOW',symmetric_scale=False):
     """
     from pyformex.gui.colorscale import ColorScale
     from pyformex.opengl.decors import ColorLegend
-    import numpy as np
 
     # Get the data
     data = np.nan_to_num(fld.comp(comp))
