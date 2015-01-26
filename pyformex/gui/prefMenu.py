@@ -338,7 +338,6 @@ def setRendering():
     vp = pf.GUI.viewports.current
     dia = None
 
-
     def set_render_value(field):
         key = field.name()
         val = field.value()
@@ -383,7 +382,7 @@ def setRendering():
         else:
             res = utils.selectDict(dia.results, ['render/mode', 'render/lighting'])
         res['_save_'] = save
-        print("RES", res)
+        #print("RES", res)
         updateSettings(res)
         #print(pf.cfg)
         vp = pf.GUI.viewports.current

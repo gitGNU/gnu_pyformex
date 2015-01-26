@@ -1035,7 +1035,12 @@ class InputSlider(InputInteger):
     - `min`, `max`: range of the scale (integer)
     - `ticks`: step for the tick marks (default range length / 10)
     - `func`: an optional function to be called whenever the value is
-      changed. The function takes a float/integer argument.
+      changed. The function receives the input field as argument. With
+      this argument, the fields attributes like name, value, text, can
+      be retrieved.
+    - `tracking`: bool. If True (default), `func` is called repeatedly
+      while the slider is being dragged. If False, `func` is only called
+      when the user releases the slider.
     """
 
     def __init__(self,name,value,*args,**kargs):
@@ -1043,26 +1048,27 @@ class InputSlider(InputInteger):
         InputInteger.__init__(self,name,value,*args,**kargs)
         self.slider = QtGui.QSlider(QtCore.Qt.Horizontal)
         self.slider.setTickPosition(QtGui.QSlider.TicksBelow)
+        self.func = kargs.get('func', None)
+
         vmin = kargs.get('min', 0)
         vmax = kargs.get('max', 100)
-
         ticks = kargs.get('ticks', (vmax-vmin)/10)
+        tracking = kargs.get('tracking',True)
+
         self.slider.setTickInterval(ticks)
         self.slider.setMinimum(vmin)
         self.slider.setMaximum(vmax)
         self.slider.setValue(value)
         self.slider.setSingleStep(1)
-        #self.slider.setPageStep(5)
         self.slider.setTracking(1)
         self.slider.valueChanged.connect(self.set_value)
-        if 'func' in kargs:
-            # We could also call this func from set_value, like in FSlider
-            self.slider.valueChanged.connect(kargs['func'])
         self.layout().addWidget(self.slider)
 
     def set_value(self, val):
         val = int(val)
         self.input.setText(str(val))
+        if self.func:
+            self.func(self)
 
 
 class InputFSlider(InputFloat):
@@ -1077,6 +1083,9 @@ class InputFSlider(InputFloat):
       changed. The function receives the input field as argument. With
       this argument, the fields attributes like name, value, text, can
       be retrieved.
+    - `tracking`: bool. If True (default), `func` is called repeatedly
+      while the slider is being dragged. If False, `func` is only called
+      when the user releases the slider.
     """
 
     def __init__(self,name,value,*args,**kargs):
@@ -1090,20 +1099,21 @@ class InputFSlider(InputFloat):
         vmin = kargs.get('min', 0)
         vmax = kargs.get('max', 100)
         ticks = kargs.get('ticks', (vmax-vmin)/10)
+        tracking = kargs.get('tracking',True)
+
         self.slider.setTickInterval(ticks)
         self.slider.setMinimum(vmin)
         self.slider.setMaximum(vmax)
         self.slider.setValue(value/self.scale)
         self.slider.setSingleStep(1)
-        #self.slider.setPageStep(5)
-        self.slider.setTracking(1)
+        self.slider.setTracking(tracking)
         self.slider.valueChanged.connect(self.set_value)
         self.layout().addWidget(self.slider)
 
     def set_value(self, val):
         val = float(val)
         value = val*self.scale
-        pf.debug("  fslider: %s = %s" % (val, value), pf.DEBUG.GUI)
+        #pf.debug("  fslider: %s = %s" % (val, value), pf.DEBUG.GUI)
         self.input.setText(str(value))
         if self.func:
             self.func(self)
