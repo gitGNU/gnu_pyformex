@@ -89,7 +89,7 @@ known_externals = {
     'recordmydesktop': ('recordmydesktop --version', 'recordMyDesktop v(\S+)'),
     'tetgen': ("sh -c 'tetgen -h |fgrep Version'", 'Version (\S+)'),
     'units': ('units --version', 'GNU Units version (\S+)'),
-    'vmtk': ('vmtk --help', 'Usage: 	vmtk(\S+).*'),
+    'vmtk': ('vmtk --help', 'Usage(:)\s+vmtk.*'),
     }
 
 # versions of detected modules
