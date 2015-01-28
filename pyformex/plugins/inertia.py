@@ -61,11 +61,18 @@ def center(X,mass=None):
     return ctr
 
 
-def inertia(X,mass=None):
+def inertia(X,mass=None,ref=None):
     """Compute the inertia tensor of an array of points.
 
-    mass is an optional array of masses to be atributed to the
-    points. The default is to attribute a mass=1 to all points.
+    Parameters (all are optional, except for `X`):
+    
+    - `X`: array of shape (npoints,3)
+    - `mass`: array of shape (npoints,3) or None. Array of masses 
+       to be attributed to the points. The default is to attribute a mass=1 to 
+       all points.
+    - `ref`: array of shape (3,) or None. If specified it stores the coordinates
+       of the reference relative to which the inertia matrix has to computed 
+       using the parallel axis theorem.
 
     The result is a tuple of two float arrays:
 
@@ -73,19 +80,37 @@ def inertia(X,mass=None):
       - the inertia tensor: shape (6,) with the following values (in order):
         Ixx, Iyy, Izz, Ixy, Ixz, Iyz 
     """
+    
     X = X.reshape((-1, X.shape[-1]))
+    
     if mass is not None:
         mass = array(mass)
         ctr = (X*mass).sum(axis=0) / mass.sum()
     else:
         ctr = X.mean(axis=0)
+    
+    if ref is not None:
+        ref = checkArray(ref, shape=(3,)).astype('float')
+        d = (ref - ctr).reshape(-1,1)
+        tr = dot(d,d.T)
+    
     Xc = X - ctr
     x, y, z = Xc[:, 0], Xc[:, 1], Xc[:, 2]
     xx, yy, zz, yz, zx, xy = x*x, y*y, z*z, y*z, z*x, x*y
     I = column_stack([ yy+zz, zz+xx, xx+yy, -yz, -zx, -xy ])
     if mass is not None:
         I *= mass
-    return ctr, I.sum(axis=0)
+    I = I.sum(axis=0)
+    
+     if ref is not None:
+        if mass is not None:
+            tr *= mass.sum()
+        else:
+            tr *= X.shape[0]
+        r,c=asarray([(0,0), (1,1), (2,2), (0,1), (0,2), (1,2)]).T
+        tr = tr[r,c]
+        I -= tr
+    return ctr, I
 
 
 def principal(inertia,sort=False,right_handed=False):
