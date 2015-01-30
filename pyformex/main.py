@@ -363,6 +363,10 @@ def run(argv=[]):
        action="store_true", dest="opengl2", default=None,
        help="Use the new OpenGL rendering engine. This will become the default when it becomes fully functional.",
        ),
+    MO("--oldabq",
+       action="store_true", dest="oldabq", default=False,
+       help="Use the old fe_abq (from 1.0.0) interface. Default is to use the new one.",
+       ),
     MO("--unicode",
        action="store_true", dest="unicode", default=False,
        help="Allow unicode filenames. Beware: this is experimental!",
@@ -609,7 +613,8 @@ def run(argv=[]):
         pf.cfg['gui/startup_warning'] = None
 
     if pf.options.opengl2:
-        pf.__version__ += " (GL2)"
+        pass
+        #pf.__version__ += " (GL2)"
     else:
         pf.__version__ += " (old GL1 engine)"
 
