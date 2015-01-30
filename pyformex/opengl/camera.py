@@ -873,7 +873,7 @@ class Camera(object):
             else:
                 eye = at.checkArray(eye, (3,), 'f')
             if up is None:
-                up = self.up
+                up = self.upvector
             else:
                 up = at.normalize(at.checkArray(up, (3,), 'f'))
             vector = eye-focus
