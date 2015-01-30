@@ -102,7 +102,7 @@ def inertia(X,mass=None,ref=None):
         I *= mass
     I = I.sum(axis=0)
     
-    if ref is not None:
+     if ref is not None:
         if mass is not None:
             tr *= mass.sum()
         else:
