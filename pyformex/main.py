@@ -228,7 +228,7 @@ def test_module(module):
     # __import__ function always return the imported module
     # even if a dotted path is specified
     import numpy as np
-    np.set_printoptions(precision=2)
+    np.set_printoptions(precision=2,suppress=True)
     if not module.startswith('pyformex.'):
         module = 'pyformex.' + module
     mod = __import__(module, fromlist=[None])

@@ -25,10 +25,8 @@
 """A collection of numerical array utilities.
 
 These are general utility functions that depend only on the :mod:`numpy`
-array model. All pyformex modules needing :mod:`numpy` should import
-everything from this module::
+array model.
 
-  from pyformex.arraytools import *
 """
 from __future__ import print_function
 from pyformex import zip
@@ -374,6 +372,11 @@ def norm(v,n=2):
     if n <= 0:
         return abs(a).max()
     return
+
+
+def abat(a,b):
+    """Compute the matrix product a * b * at"""
+    return np.dot( np.dot(a,b) , a.T )
 
 
 def horner(a, u):

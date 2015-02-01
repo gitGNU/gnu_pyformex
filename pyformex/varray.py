@@ -316,7 +316,6 @@ class Varray(object):
         return array([ r[i] if i in range(-len(r),len(r)) else -1 for r in self ])
 
 
-
     def __getitem__(self, i):
         """Return the data for the row or rows i.
 
