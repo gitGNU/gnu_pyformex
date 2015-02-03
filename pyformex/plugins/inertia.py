@@ -270,30 +270,17 @@ class Inertia(Tensor):
         """Compute and store inertia tensor of points X
 
         """
-        X = Coords(X).reshape(-1, 3)
-        npoints = X.shape[0]
-        if mass is not None:
-            mass = at.checkArray(mass,shape=(npoints,),kind='f')
-            tmass = mass.sum()
-            xmass = (X*mass).sum(axis=0) / tmass
+        if isinstance(X,Tensor):
+            M,C,I = float(mass), Coords(ctr), X
         else:
-            tmass = float(npoints)
-            xmass = X.mean(axis=0)
-        Xc = X - xmass
-        x, y, z = Xc[:, 0], Xc[:, 1], Xc[:, 2]
-        xx, yy, zz, yz, zx, xy = x*x, y*y, z*z, y*z, z*x, x*y
-        I = np.column_stack([ yy+zz, zz+xx, xx+yy, -yz, -zx, -xy ])
-        self.mass = tmass
-        if mass is not None:
-            I *= mass
-        I = I.sum(axis=0)
+            M,C,I = inertia(X,mass)
         Tensor.__init__(self,I)
         if ctr is not None:
             ctr = at.checkArray(ctr,shape=(3,),kind='f')
-            self.translate(ctr-xmass,toG=True)
-            xmass = ctr
-        self.mass = tmass
-        self.ctr = xmass
+            self.translate(ctr-C,toG=True)
+            C = ctr
+        self.mass = M
+        self.ctr = C
 
 
     def translate(self,trl,toG=False):
@@ -309,67 +296,82 @@ class Inertia(Tensor):
         return self.tensor + self.mass * trf
 
 
-def center(X,mass=None):
-    """Compute the center of gravity of an array of points.
+def mcenter(X,mass=None):
+    """Compute the total mass and center of mass of an array of mass points.
 
-    mass is an optional array of masses to be atributed to the
-    points. The default is to attribute a mass=1 to all points.
+    Parameters:
 
-    If you also need the inertia tensor, it is more efficient to
-    use the inertia() function.
+    - `X`: a Coords with shape (npoints,3). Shapes (...,3) are accepted
+      but will be reshaped to (npoints,3).
+    - `mass`: optional, (npoints,) float array with the mass of the points.
+      If omitted, all points have mass 1.
+
+    Returns a tuple (M,C) where M is the total mass of all points and C is
+    the center of mass.
+
+    See also :meth:`inertia`.
     """
-    X = X.reshape((-1, X.shape[-1]))
+    X = Coords(X).reshape(-1, 3)
+    npoints = X.shape[0]
     if mass is not None:
-        mass = np.array(mass)
-        ctr = (X*mass).sum(axis=0) / mass.sum()
+        mass = at.checkArray(mass,shape=(npoints,),kind='f')
+        M = mass.sum()
+        C = (X*mass).sum(axis=0) / M
     else:
-        ctr = X.mean(axis=0)
-    return ctr
+        M = float(npoints)
+        C = X.mean(axis=0)
+    return M,C
 
 
-def inertia(self,X,mass=None):
-    """Compute the inertia tensor of an array of points.
+def inertia(X,mass=None):
+    """Compute the total mass, center of mass and inertia tensor mass points.
 
-    mass is an optional array of masses to be atributed to the
-    points. The default is to attribute a mass=1 to all points.
+    Parameters:
 
-    The result is a tuple of two float arrays:
+    - `X`: a Coords with shape (npoints,3). Shapes (...,3) are accepted
+      but will be reshaped to (npoints,3).
+    - `mass`: optional, (npoints,) float array with the mass of the points.
+      If omitted, all points have mass 1.
 
-      - the center of gravity: shape (3,)
-      - the inertia tensor: shape (6,) with the following values (in order):
-        Ixx, Iyy, Izz, Iyz, Izx, Ixy
+    Returns a tuple (M,C,I) where M is the total mass of all points, C is
+    the center of mass, and I is the inertia tensor in the central coordinate
+    system, i.e. a coordinate system with axes paralle to the global axes
+    but origin at the (computed) center of mass.
+
+    See :meth:`center` if you need the center of mass, but not the inertia
+    tensor.
     """
-    X = X.reshape((-1, X.shape[-1]))
+    X = Coords(X).reshape(-1, 3)
+    npoints = X.shape[0]
     if mass is not None:
-        mass = np.array(mass)
-        ctr = (X*mass).sum(axis=0) / mass.sum()
-    else:
-        ctr = X.mean(axis=0)
-    Xc = X - ctr
+        mass = at.checkArray(mass,shape=(npoints,),kind='f')
+    M,C = mcenter(X,mass)
+    Xc = X - C
     x, y, z = Xc[:, 0], Xc[:, 1], Xc[:, 2]
     xx, yy, zz, yz, zx, xy = x*x, y*y, z*z, y*z, z*x, x*y
     I = np.column_stack([ yy+zz, zz+xx, xx+yy, -yz, -zx, -xy ])
     if mass is not None:
         I *= mass
-    return ctr, I.sum(axis=0)
+    I = I.sum(axis=0)
+    return M,C,I
 
 
-def principal(inertia,sort=False,right_handed=False):
-    """Returns the principal values and axes of the inertia tensor.
+## def principal(inertia,sort=False,right_handed=False):
+##     """Returns the principal values and axes of the inertia tensor.
 
-    If sort is True, they are sorted (maximum comes first).
-    If right_handed is True, the axes define a right-handed coordinate system.
-    """
-    Ixx, Iyy, Izz, Iyz, Izx, Ixy = inertia
-    Itensor = np.array([ [Ixx, Ixy, Izx], [Ixy, Iyy, Iyz], [Izx, Iyz, Izz] ])
-    Iprin, Iaxes = np.linalg.eig(Itensor)
-    if sort:
-        s = Iprin.argsort()[::-1]
-        Iprin = Iprin[s]
-        Iaxes = Iaxes[:, s]
-    if right_handed and not at.allclose(normalize(cross(Iaxes[:, 0], Iaxes[:, 1])), Iaxes[:, 2]):
-        Iaxes[:, 2] = -Iaxes[:, 2]
-    return Iprin, Iaxes
+##     If sort is True, they are sorted (maximum comes first).
+##     If right_handed is True, the axes define a right-handed coordinate system.
+##     """
+##     Ixx, Iyy, Izz, Iyz, Izx, Ixy = inertia
+##     Itensor = np.array([ [Ixx, Ixy, Izx], [Ixy, Iyy, Iyz], [Izx, Iyz, Izz] ])
+##     Iprin, Iaxes = np.linalg.eig(Itensor)
+##     if sort:
+##         s = Iprin.argsort()[::-1]
+##         Iprin = Iprin[s]
+##         Iaxes = Iaxes[:, s]
+##     if right_handed and not at.allclose(normalize(cross(Iaxes[:, 0], Iaxes[:, 1])), Iaxes[:, 2]):
+##         Iaxes[:, 2] = -Iaxes[:, 2]
+##     return Iprin, Iaxes
 
 
 

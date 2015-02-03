@@ -33,7 +33,6 @@ _topics = ['geometry']
 _techniques = ['color', 'axes']
 
 from pyformex.gui.draw import *
-from pyformex.plugins import inertia
 
 def unitAxes():
     """Create a set of three axes."""
@@ -48,10 +47,12 @@ def unitAxes():
 def showPrincipal1(F):
     """Show the principal axes."""
     clear()
-    C, I = inertia.inertia(F.coords)
-    print("Center: %s" % C)
-    print("Inertia tensor: %s" % I)
-    Iprin, Iaxes = inertia.principal(I)
+    I = F.coords.inertia()
+    C = I.ctr
+    print("Total mass: %s" % I.mass)
+    print("Center: %s" % I.ctr)
+    print("Inertia tensor: %s" % I.tensor)
+    Iprin, Iaxes = I.principal()
     pf.debug("Principal Values: %s" % Iprin)
     pf.debug("Principal Directions:\n%s" % Iaxes)
 
@@ -60,7 +61,6 @@ def showPrincipal1(F):
     Ax, Ay, Az = Iaxes[:, 0], Iaxes[:, 1], Iaxes[:, 2]
     G = Formex([[C, C+Ax], [C, C+Ay], [C, C+Az]], 3)
     draw([F, G, H])
-    return C, I, Iprin, Iaxes
 
 
 def run():
@@ -74,11 +74,11 @@ def run():
     F = Formex([[[0, 0, 0]]]).replic(nx, dx, 0).replic(ny, dy, 1).replic(nz, dz, 2)
 
     Fr = F
-    C, I, Ip, Ia = showPrincipal1(Fr)
+    showPrincipal1(Fr)
 
     sleep(2)
     Fr = F.rotate(30, 0).rotate(45, 1).rotate(60, 2)
-    C, I, Ip, Ia = showPrincipal1(Fr)
+    showPrincipal1(Fr)
 
 
     ## sleep(2)

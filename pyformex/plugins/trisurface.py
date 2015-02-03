@@ -31,7 +31,7 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import fileread, filewrite, geomtools, utils, zip
-from pyformex.plugins import mesh_ext, inertia
+from pyformex.plugins import mesh_ext
 
 from pyformex.formex import *
 from pyformex.connectivity import Connectivity, connectedLineElems, adjacencyArrays
@@ -897,7 +897,7 @@ class TriSurface(Mesh):
 
     def edgeSignedAngles(self,return_mask=False):
         """Return the signed angles over all edges (in degrees). It is the angle (-180 to 180) between 2 face normals.
-        
+
         Positive/negative angles are associated to convexity/concavity at that edge.
         The border edges attached to one triangle have angle 0.
         NB: The sign of the angle is relevant if the surface has fixed normals. Should

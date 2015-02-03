@@ -110,6 +110,7 @@ warn_fe_abq_write_section = "The output of materials and section properties by t
 warn_flat_removed = "The 'flat=True' parameter of the draw function has been replaced with 'nolight=True'."
 warn_formex_eltype = "Formex eltype currently needs to be a string!"
 warn_fuse_arg_rename = "The 'nodesperbox' argument has been renamed to 'ppb'. Please stop using the old name."
+warn_inertia_changed = "The Coords.inertia method has changed: it now returns an inertia.Inertia class instance, with attributes mass, ctr, tensor, and method principal() returning (Iprin,Iaxes)."
 warn_Interaction_changed="Class fe_abq.Interaction has been changed, only allowed parameters are name, friction, surfacebehavior, surfaceinteraction, extra (see doc)."
 warn_mesh_extrude = "Mesh.extrude has changed. The step parameter has been removed and there is now a (total) length parameter."
 warn_mesh_connect = "Mesh.connect does no longer automatically compact the Meshes. You may have to use the Mesh.compact method to do so."
@@ -152,7 +153,7 @@ error_no_gts_extra = "I am missing the gts binary programs on your system.\nTher
 
 
 depr_adjacencyArrays = "adjacencyArrays is deprecated. Use Adjacency.frontWalk() instead."
-depr_orientedBbox = "orientedBbox and principalBbox have been deprecated. obj.orientedBbox(ctr,rot) can be replaced with simple.boundingBox(obj,cs=CoordSys(rot,ctr)). obj.principalBbox() can be replaced with simple.principalBbox(obj)."
+#depr_orientedBbox = "orientedBbox and principalBbox have been deprecated. obj.orientedBbox(ctr,rot) can be replaced with simple.boundingBox(obj,cs=CoordSys(rot,ctr)). obj.principalBbox() can be replaced with simple.principalBbox(obj)."
 depr_qimage2numpy_arg = "The use of the `expand` parameter in qimage2numpy is deprecated. Use the `indexed` parameter instead."
 depr_mesh_getlowerentities_unique = "The use of the unique argument is deprecated. Use Mesh.insertLevel() instead."
 depr_pathextension = "patchextension is deprecated. Use border().extrude() instead."

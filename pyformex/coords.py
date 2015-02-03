@@ -435,6 +435,7 @@ class Coords(ndarray):
 
     # Inertia
 
+    @utils.warning("warn_inertia_changed")
     def inertia(self,mass=None):
         """Returns inertia related quantities of the :class:`Coords`.
 
@@ -443,20 +444,15 @@ class Coords(ndarray):
         - `mass`: float array with ncoords weight values. The default is to
           attribute a weight 1.0 to each point.
 
-        Returns a tuple of:
+        Returns an :class:`inertia.Inertia` instance with attributes
 
-        - `center`: the center of mass: shape (3,)
-        - `axes`: the principal axes of the inertia tensor: shape (3,3)
-        - `principal`: the (prinicipal) moments of inertia: shape (3,)
-        - `tensor`: the full inertia tensor in the global axes: shape (3,3)
+        - `mass`: the total mass (float)
+        - `ctr`: the center of mass: float (3,)
+        - `tensor`: the inertia tensor in the central axes: shape (3,3)
 
         """
         from pyformex.plugins import inertia
-        if mass is not None:
-            mass = mass.reshape(self.npoints(), 1)
-        ctr, I = inertia.inertia(self.points(), mass)
-        Iprin, Iaxes = inertia.principal(I, sort=True, right_handed=True)
-        return (ctr, Iaxes, Iprin, I)
+        return inertia.Inertia(self.points(), mass)
 
 
     def prinCS(self,mass=None):
@@ -467,10 +463,15 @@ class Coords(ndarray):
         - `mass`: float array with ncoords weight values. The default is to
           attribute a weight 1.0 to each point.
 
+        Returns a Coord
+        - `axes`: the principal axes of the inertia tensor: shape (3,3)
+        - `principal`: the (prinicipal) moments of inertia: shape (3,)
+
         """
         from pyformex.coordsys import CoordSys
-        ctr,axes = self.inertia()[:2]
-        return CoordSys(rot=axes,trl=ctr)
+        I = self.inertia(mass)
+        prin, axes = I.principal()
+        return CoordSys(rot=axes,trl=I.ctr)
 
 
     def principalSizes(self):
@@ -490,17 +491,35 @@ class Coords(ndarray):
         return self.toCS(self.prinCS()).sizes()
 
 
-    @utils.deprecated("depr_orientedBbox")
-    def orientedBbox(self,ctr,rot):
-        from pyformex.simple import cuboid
-        X = self.trl(-ctr).rot(rot)
-        bb = cuboid(*X.bbox())
-        bb = bb.rot(rot.transpose()).trl(ctr)
-        return bb
+    def centralCS(self,mass=None):
+        """Returns the central coordinate system of the Coords.
 
-    def principalBbox(self):
-        ctr, rot = self.inertia()[:2]
-        return self.orientedBbox(ctr, rot)
+        Parameters:
+
+        - `mass`: float array with ncoords weight values. The default is to
+          attribute a weight 1.0 to each point.
+
+        Returns a CoordSys with origin at the center of mass of the
+        Coords and axes parallel to the global axes.
+
+        """
+        from pyformex.plugins.inertia import mcenter
+        from pyformex.coordsys import CoordSys
+        M,C = mcenter(self.points(),mass)
+        return CoordSys(trl=C)
+
+
+    ## @utils.deprecated("depr_orientedBbox")
+    ## def orientedBbox(self,ctr,rot):
+    ##     from pyformex.simple import cuboid
+    ##     X = self.trl(-ctr).rot(rot)
+    ##     bb = cuboid(*X.bbox())
+    ##     bb = bb.rot(rot.transpose()).trl(ctr)
+    ##     return bb
+
+    ## def principalBbox(self):
+    ##     ctr, rot = self.inertia()[:2]
+    ##     return self.orientedBbox(ctr, rot)
 
 
     #  Distance

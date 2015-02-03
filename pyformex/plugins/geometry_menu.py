@@ -744,15 +744,18 @@ def showPrincipal():
     if not F:
         return
     # compute the axes
-    data = F.inertia()
-    C, Iaxes, Iprin, I = data
+    I = F.inertia()
+    C = I.ctr
+    Iprin, Iaxes = I.principal()
     print("Center of gravity: %s" % C)
     print("Principal Directions:\n %s" % Iaxes)
     print("Principal Values: %s" % Iprin)
     print("Inertia tensor: %s" % I)
     # display the axes
     CS = coordsys.CoordSys(rot=Iaxes.transpose(),trl=C)
+    size = F.dsize()
     drawAxes(CS.points(), size=size, psize=0.1*size)
+    data = (I,Iprin,Iaxes)
     export({'_principal_data_':data})
     return data
 
@@ -765,7 +768,7 @@ def rotatePrincipal():
         data = showPrincipal()
     FL = selection.check()
     if FL:
-        ctr, rot = data[:2]
+        ctr, rot = data[0].ctr,data[2]
         selection.changeValues([ F.trl(-ctr).rot(rot).trl(ctr) for F in FL ])
         selection.drawChanges()
 
@@ -781,7 +784,7 @@ def transformPrincipal():
         data = showPrincipal()
     FL = selection.check()
     if FL:
-        ctr, rot = data[:2]
+        ctr, rot = data[0].ctr,data[2]
         selection.changeValues([ F.trl(-ctr).rot(rot) for F in FL ])
         selection.drawChanges()
 
