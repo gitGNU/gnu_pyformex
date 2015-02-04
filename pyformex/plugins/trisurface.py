@@ -30,6 +30,7 @@ a triangulated surface.
 from __future__ import print_function
 
 import pyformex as pf
+from pyformex import arraytools as at
 from pyformex import fileread, filewrite, geomtools, utils, zip
 from pyformex.plugins import mesh_ext
 
@@ -141,9 +142,12 @@ def surface_volume(x,pt=None):
     - `pt`: a point in space. If unspecified, it is taken equal to the
       center() of the coordinates `x`.
 
-    Returns an (ntri) shaped array with the volume of the tetraeders formed
-    by the triangles and the point `pt`. If `x` represents a closed surface,
-    the sum of this array will represent the volume inside the surface.
+    Returns an (ntri) shaped array with the volume of the tetrahedrons formed
+    by the triangles and the point `pt`. Triangles with an outer normal
+    pointing away from `pt` will generate positive tetrahral volumes, while
+    triangles having `pt` at the side of their positive normal will generate
+    negative volumes. In any case, if `x` represents a closed surface,
+    the algebraic sum of all the volumes is the total volume inside the surface.
     """
     if pt is None:
         pt = x.center()
@@ -154,6 +158,96 @@ def surface_volume(x,pt=None):
     # IS THIS ANY DIFFERENT FROM  e / 6.  ????
     v = sign(e) * abs(e)/6.
     return v
+
+
+def tetrahedral_volume(x):
+    """Compute the volume of tetrahedrons.
+
+    - `x`: an (ntet,4,3) shaped float array, representing ntet tetrahedrons.
+
+    Returns an (ntet,) shaped array with the volume of the tetrahedrons.
+    Depending on the ordering of the points, this volume may be positive
+    or negative. It will be negative if point 4 is on the side of the positive
+    normal formed by the first 3 points.
+    """
+    x = at.checkArray(x,shape=(-1,4,3),kind='f')
+    a, b, c = [ x[:,i,:] - x[:,3,:] for i in range(3) ]
+    d = cross(b, c)
+    e = (a*d).sum(axis=-1)
+    return e / 6
+
+
+def tetrahedral_center(x,density=None):
+    """Compute the center of mass of a collection of tetrahedrons.
+
+    - `x`: an (ntet,4,3) shaped float array, representing ntet tetrahedrons.
+    - `density`: optional mass density (ntet,) per tetrahedron. Default 1.
+
+    Returns a (3,) shaped array with the center of mass.
+    """
+    x = at.checkArray(x,shape=(-1,4,3),kind='f')
+    v = tetrahedral_volume(x)
+    if density:
+        #density = at.checkArray(density,shape=(x.shape[0],),kind='f')
+        v *= density
+    c = Formex(x).centroids()
+    return c*v / v.sum()
+
+
+def tetrahedral_inertia(x,density=None):
+    """Return the inertia of the volume of a 4-plex Formex.
+
+    - `x`: an (ntet,4,3) shaped float array, representing ntet tetrahedrons.
+    - `density`: optional mass density (ntet,) per tetrahedron
+
+    Formulas based on F. Tonon, J. Math & Stat, 1(1):8-11,2005
+
+    Example:
+
+    >>> x = Coords([
+    ...     [  8.33220, -11.86875,  0.93355 ],
+    ...     [  0.75523,   5.00000, 16.37072 ],
+    ...     [ 52.61236,   5.00000, -5.38580 ],
+    ...     [  2.000000,  5.00000,  3.00000 ],
+    ...     ])
+    >>> F = Formex([x])
+    >>> print(tetrahedral_center(F.coords))
+    [[ 15.92   0.78   3.73]]
+    >>> print(tetrahedral_volume(F.coords))
+    [-1873.23]
+    >>> print(tetrahedral_inertia(F.coords))
+
+    """
+    def K(x,y):
+        x1,x2,x3,x4 = x[:,0], x[:,1], x[:,2], x[:,3]
+        y1,y2,y3,y4 = y[:,0], y[:,1], y[:,2], y[:,3]
+        return x1 * (y1+y2+y3+y4) + \
+               x2 * (   y2+y3+y4) + \
+               x3 * (      y3+y4) + \
+               x4 * (         y4)
+
+    x = at.checkArray(x,shape=(-1,4,3),kind='f')
+    v = -tetrahedral_volume(x)
+    V = v.sum()
+    if density:
+        v *= density
+    c = Formex(x).centroids()
+    M = v.sum()
+    C = c*v / M
+
+    x -= C
+    aa = 2 * K(x,x) * v
+    aa = aa.sum(axis=0)
+    a0 = aa[1] + aa[2]
+    a1 = aa[0] + aa[2]
+    a2 = aa[0] + aa[1]
+    x0,x1,x2 = x[...,0],x[...,1],x[...,2]
+    a3 = (( K(x1,x2) + K(x2,x1) ) * v).sum(axis=0)
+    a4 = (( K(x2,x0) + K(x0,x2) ) * v).sum(axis=0)
+    a5 = (( K(x0,x1) + K(x1,x0) ) * v).sum(axis=0)
+    I = array([a0,a1,a2,a3,a4,a5]) / 20.
+    return V,M,C,I
+
 
 
 def curvature(coords,elems,edges,neighbours=1):
