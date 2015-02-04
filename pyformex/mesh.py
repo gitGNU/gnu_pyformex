@@ -757,6 +757,9 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return self.getFreeEntitiesMesh(level=-1, compact=compact)
 
 
+    borderMesh = getBorderMesh
+
+
     def getBorderElems(self):
         """Return the elements that are on the border of the Mesh.
 

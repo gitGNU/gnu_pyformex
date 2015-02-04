@@ -167,34 +167,17 @@ def tetrahedral_volume(x):
 
     Returns an (ntet,) shaped array with the volume of the tetrahedrons.
     Depending on the ordering of the points, this volume may be positive
-    or negative. It will be negative if point 4 is on the side of the positive
+    or negative. It will be positive if point 4 is on the side of the positive
     normal formed by the first 3 points.
     """
     x = at.checkArray(x,shape=(-1,4,3),kind='f')
     a, b, c = [ x[:,i,:] - x[:,3,:] for i in range(3) ]
     d = cross(b, c)
     e = (a*d).sum(axis=-1)
-    return e / 6
+    return -e / 6
 
 
-def tetrahedral_center(x,density=None):
-    """Compute the center of mass of a collection of tetrahedrons.
-
-    - `x`: an (ntet,4,3) shaped float array, representing ntet tetrahedrons.
-    - `density`: optional mass density (ntet,) per tetrahedron. Default 1.
-
-    Returns a (3,) shaped array with the center of mass.
-    """
-    x = at.checkArray(x,shape=(-1,4,3),kind='f')
-    v = tetrahedral_volume(x)
-    if density:
-        #density = at.checkArray(density,shape=(x.shape[0],),kind='f')
-        v *= density
-    c = Formex(x).centroids()
-    return c*v / v.sum()
-
-
-def tetrahedral_inertia(x,density=None):
+def tetrahedral_inertia(x,density=None,center_only=False):
     """Return the inertia of the volume of a 4-plex Formex.
 
     - `x`: an (ntet,4,3) shaped float array, representing ntet tetrahedrons.
@@ -227,16 +210,18 @@ def tetrahedral_inertia(x,density=None):
                x4 * (         y4)
 
     x = at.checkArray(x,shape=(-1,4,3),kind='f')
-    v = -tetrahedral_volume(x)
+    v = tetrahedral_volume(x)
     V = v.sum()
     if density:
         v *= density
     c = Formex(x).centroids()
     M = v.sum()
-    C = c*v / M
+    C = (c*v[:,newaxis]).sum(axis=0) / M
+    if center_only:
+        return C
 
     x -= C
-    aa = 2 * K(x,x) * v
+    aa = 2 * K(x,x) * v.reshape(-1,1)
     aa = aa.sum(axis=0)
     a0 = aa[1] + aa[2]
     a1 = aa[0] + aa[2]
@@ -247,6 +232,17 @@ def tetrahedral_inertia(x,density=None):
     a5 = (( K(x0,x1) + K(x1,x0) ) * v).sum(axis=0)
     I = array([a0,a1,a2,a3,a4,a5]) / 20.
     return V,M,C,I
+
+
+def tetrahedral_center(x,density=None):
+    """Compute the center of mass of a collection of tetrahedrons.
+
+    - `x`: an (ntet,4,3) shaped float array, representing ntet tetrahedrons.
+    - `density`: optional mass density (ntet,) per tetrahedron. Default 1.
+
+    Returns a (3,) shaped array with the center of mass.
+    """
+    return tetrahedral_inertia(x,density=None,center_only=True)
 
 
 
