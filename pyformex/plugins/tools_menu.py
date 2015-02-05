@@ -381,6 +381,45 @@ def setprop_selection():
         removeHighlight()
 
 
+def focus_selection(K=None):
+    """Focus on the specified or current selection.
+
+    """
+    if K is None:
+        K = selection
+    if K is None:
+        warning("You need to pick some points first.")
+        return
+    print(K)
+    if K.obj_type != 'point':
+        warning("You need to pick some points first.")
+        return
+    X = []
+    for k in K.keys():
+        a = pf.canvas.actors[k]
+        o = a.object
+        ## print "SETPROP ACTOR %s" % type(o)
+        ## print _drawables
+        ## n = _drawables.names[k]
+        ## print "SETPROP DRAWABLE %s" % n
+        ## O = named(n)
+        ## print 'From actor: %s' % id(o)
+        ## print 'From name: %s' % id(O)
+        ## if id(o) != id(O):
+        ##     raise RuntimeError("The id of the drawn object does not match the selection"
+        x = o.coords[K[k]]
+        X.append(x.center())
+    print(X)
+    X = Coords(X).center()
+    #pf.canvas.camera.resetArea()
+    print(pf.canvas.camera.report())
+    pf.canvas.camera.focus = X
+    pf.canvas.camera.setArea(0.,0.,1.,1.,True,center=True)
+    print(pf.canvas.camera.report())
+    removeHighlight()
+    pf.canvas.update()
+
+
 def grow_selection():
     if selection is None:
         warning("You need to pick something first.")
@@ -629,6 +668,7 @@ def create_menu():
             ('&Partition', partition_selection),
             ('&Get Partition', get_partition),
             ('&Export', export_selection),
+            ('&Focus', focus_selection),
             ('&Actor dialog', actor_dialog),
             ]),
         ('&Edit Points', edit_points),
