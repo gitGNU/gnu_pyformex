@@ -668,8 +668,8 @@ class Camera(object):
                 mean = (area[1]+area[0]) * 0.5
                 area += 0.5-mean
 
-            print("OLD ZOOM AREA %s (aspect %s)" % (self.area,self.aspect))
-            print("NEW ZOOM AREA %s" % (area))
+            #print("OLD ZOOM AREA %s (aspect %s)" % (self.area,self.aspect))
+            #print("NEW ZOOM AREA %s" % (area))
 
             self.area = area
             self.lensChanged = True
