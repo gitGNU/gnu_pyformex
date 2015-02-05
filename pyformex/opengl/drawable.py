@@ -823,9 +823,9 @@ class Actor(Base):
     def addHighlightElements(self,sel=None):
         """Add a highlight for the selected elements. Default is all."""
         self.removeHighlight()
-        print("ESEL",sel)
+        #print("ESEL",sel)
         elems = self.subElems(nsel=self.faces,esel=sel)
-        print("ELEMS",elems)
+        #print("ELEMS",elems)
         self._highlight = Drawable(self, subelems=elems, name=self.name+"_highlight", linewidth=10, lighting=False, color=array(yellow), opak=True)
         # Put at the front to make visible
         self.drawable.insert(0, self._highlight)
@@ -834,7 +834,7 @@ class Actor(Base):
     def addHighlightPoints(self,sel=None):
         """Add a highlight for the selected points. Default is all."""
         self.removeHighlight()
-        vbo = VBO(self.coords)
+        vbo = VBO(self.points())
         self._highlight = Drawable(self, vbo=vbo, subelems=sel.reshape(-1, 1), name=self.name+"_highlight", linewidth=10, lighting=False, color=array(yellow), opak=True, pointsize=10, offset=1.0)
         # Put at the front to make visible
         self.drawable.insert(0, self._highlight)
