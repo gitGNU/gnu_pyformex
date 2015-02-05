@@ -730,6 +730,14 @@ def zoomBbox(bb):
     pf.canvas.update()
 
 
+def zoomObj(object):
+    """Zoom thus that the specified object becomes visible.
+
+    object can be anything having a bbox() method or a list thereof.
+    """
+    zoomBbox(coords.bbox(object))
+
+
 def zoomAll():
     """Zoom thus that all actors become visible."""
     zoomBbox(pf.canvas.sceneBbox())
@@ -737,7 +745,28 @@ def zoomAll():
 
 # Can this be replaced with zoomIn/Out?
 def zoom(f):
+    """Zoom with a factor f
+
+    A factor > 1.0 zooms out, a factor < 1.0 zooms in.
+    """
     pf.canvas.zoom(f)
+    pf.canvas.update()
+
+
+def focus(point):
+    """Move the camera focus to the specified point.
+
+    Parameters:
+
+    - `point`: float(3,) or alike
+
+    The camera focus is set to the specified point, while keeping
+    a parallel camera direction and same zoom factor.
+    The specified point becomes the center of the screen and
+    the center of camera rotations.
+    """
+    pf.canvas.camera.focus = point
+    pf.canvas.camera.setArea(0.,0.,1.,1.,True,center=True)
     pf.canvas.update()
 
 

@@ -231,20 +231,6 @@ def _setFocus(object, bbox, view):
     pf.canvas.update()
 
 
-def focus(object):
-    """Move the camera thus that object comes fully into view.
-
-    object can be anything having a bbox() method or a list thereof.
-    if no view is given, the default is used.
-
-    The camera is moved with fixed axis directions to a place
-    where the whole object can be viewed using a 45. degrees lens opening.
-    This technique may change in future!
-    """
-    pf.canvas.setCamera(bbox=coords.bbox(object))
-    pf.canvas.update()
-
-
 def setDrawOptions(kargs0={},**kargs):
     """Set default values for the draw options.
 
