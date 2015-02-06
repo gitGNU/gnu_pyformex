@@ -985,6 +985,7 @@ def pick(mode='actor',filter=None,oneshot=False,func=None):
     return sel
 
 
+# These are undocumented, and deprecated: use pick() instead
 def pickActors(filter=None,oneshot=False,func=None):
     return pick('actor', filter, oneshot, func)
 
@@ -997,10 +998,30 @@ def pickPoints(filter=None,oneshot=False,func=None):
 def pickEdges(filter=None,oneshot=False,func=None):
     return pick('edge', filter, oneshot, func)
 
+
 def pickNumbers(marks=None):
     if marks:
         pf.canvas.numbers = marks
     return pf.canvas.pickNumbers()
+
+
+def pickFocus():
+    """Enter interactive focus setting.
+
+    This enters interactive point picking mode and
+    sets the focus to the center of the picked points.
+    """
+    K = pick('point',oneshot=True)
+    removeHighlight()
+    if K:
+        X = []
+        for k in K.keys():
+            a = pf.canvas.actors[k]
+            o = a.object
+            x = o.points()[K[k]]
+            X.append(x.center())
+        X = Coords(X).center()
+        focus(X)
 
 
 LineDrawing = None

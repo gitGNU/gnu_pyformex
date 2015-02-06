@@ -309,6 +309,7 @@ class Gui(QtGui.QMainWindow):
         ###############  CAMERA menu and toolbar #############
         if self.camerabar:
             toolbar.addCameraButtons(self.camerabar)
+            toolbar.addButton(self.camerabar,"Pick to focus",'focus',draw.pickFocus)
             toolbar.addPerspectiveButton(self.camerabar)
 
         ###############  RENDERMODE menu and toolbar #############
