@@ -64,7 +64,7 @@ def run():
     setDrawOptions(view='cur',bbox=None)
     pause()
 
-    G = pf.canvas.outline()
+    G = pf.canvas.outline(size=[-1,2000])
     draw(G,color=red)
     pause()
 

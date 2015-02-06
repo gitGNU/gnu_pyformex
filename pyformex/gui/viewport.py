@@ -382,6 +382,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
             width = int(round(float(height)/hc*wc))
         if height < 0:
             height = int(round(float(width)/wc*hc))
+        pf.debug("sanitized canvas %s %s" % (width, height), pf.DEBUG.GUI)
         return width, height
         
     # TODO: negative sizes should probably resize all viewports
@@ -455,6 +456,8 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         from pyformex.formex import Formex
         from pyformex.opengl.colors import luminance, RGBcolor
         self.camera.lock()
+        if size is None:
+            size = [None,None]
         w ,h =  self.sanitizeSize(*size)
         data = self.rgb(w,h)
         shape = data.shape[:2]
