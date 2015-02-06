@@ -98,6 +98,9 @@ import os
 def SetInput(vtkobj,data):
     """ Select SetInput method according to the vtk version. After version 5
     vtkObjects need the inpuit through SetInputData, before SetInput.
+    
+    Note that this applies only to vtkAlgorithm instances. In all other case 
+    the use of SetInput is kept. For these cases this function must not be used.
     """
     
     if vtk.VTK_MAJOR_VERSION <= 5:
@@ -110,6 +113,9 @@ def SetInput(vtkobj,data):
 def Update(vtkobj):
     """ Select Update method according to the vtk version. After version 5
     Update is not needed for vtkObjects, oinly to vtkFilter and vtkAlgortythm classes.
+
+    Note that this applies only to vtkAlgorithm instances. In all other case 
+    the use of Update is kept. For this cases this function must not be used.
     """
     
     if vtk.VTK_MAJOR_VERSION <= 5:
@@ -1387,9 +1393,9 @@ def viewContour(object,rot=None):
 
     #Get a print of the window
     windowToImageFilter =  vtkWindowToImageFilter()
-    windowToImageFilter = SetInput(windowToImageFilter,tmp_rW)
+    windowToImageFilter.SetInput(tmp_rW)
     windowToImageFilter.SetMagnification(15) #image quality
-    windowToImageFilter = Update(windowToImageFilter)
+    windowToImageFilter.Update()
 
     #Killing the temporary window
     tmp_rW.Finalize() 
