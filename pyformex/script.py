@@ -41,10 +41,12 @@ from pyformex.geometry import Geometry
 ########################
 # Imported here only to make available in scripts
 from pyformex.olist import List
+from pyformex.varray import Varray
 from pyformex.formex import *
 from pyformex.mesh import Mesh
 from pyformex.plugins.trisurface import TriSurface
 from pyformex.coordsys import CoordinateSystem
+from pyformex import simple
 
 ########################
 

@@ -362,29 +362,33 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         return Size(self)
 
 
-    def sanitizeSize(self,width=None, height=None):
-        """sanitize the size the canvas size measures.
-        
-        A None value will set the width (or heigth) to one the current canvas
-        A negative value will rescale the width (or heigth) will rescale the canvas
-        according to the non-negative value.
-        If both  width and heigth are negative, the canvas size are set as the
-        current canvas.
+    def saneSize(self, width=0, height=0):
+        """Return a cleverly resized canvas size.
+
+        Parameters:
+
+        - `width`: int: requested width in pixels. Set automatically if <= 0.
+        - `height`: int: requested height in pixels. Set automatically if <= 0.
+
+        Returns a tuple of positive integers (width,height).
+
+        If both specified values are positive, returns the values unchanged.
+        If only one of the values is positive, returns that value unchanged,
+        while the other one is determined automatically from the aspect ratio
+        of the current canvas.
+        If both values are <=0, returns the current canvas size.
         """
-        wc,hc = self.getSize()
-        if width<0 and height < 0:
-            width = height= None
-        if width is None:
-            width = wc
-        if height is None:
-            height = hc
-        if width < 0:
-            width = int(round(float(height)/hc*wc))
-        if height < 0:
-            height = int(round(float(width)/wc*hc))
-        pf.debug("sanitized canvas %s %s" % (width, height), pf.DEBUG.GUI)
+        if width<=0 or height <= 0:
+            wc,hc = self.getSize()
+            if height > 0:
+                width = int(round(float(height)/hc*wc))
+            elif width > 0:
+                height = int(round(float(width)/wc*hc))
+            else:
+                width,height = wc,hc
         return width, height
-        
+
+
     # TODO: negative sizes should probably resize all viewports
     # OR we need to implement frames
     def changeSize(self, width, height):
@@ -405,9 +409,17 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
                 height = h
         self.resize(width, height)
 
-    
+
     def image(self,w=None,h=None,remove_alpha=True):
         """Return the current OpenGL rendering in an image format.
+
+        Parameters:
+
+        - `w`, `h`: requested size (in pixels) of the image. The default
+          is to use the current canvas size. If only one is specified,
+          the aspect ratio of the current canvas is kept.
+        - `remove_alpha`: bool. If True (default), the alpha channel is
+          removed from the image.
 
         Returns the current OpenGL rendering as a QImage of the specified
         size.
@@ -418,15 +430,15 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
 
         self.makeCurrent()
         wc,hc = pf.canvas.getSize()
-        w ,h =  self.sanitizeSize(w,h)
-        vcanvas = QtOpenGL.QGLFramebufferObject(w, h)
+        w,h = self.saneSize(w,h)
+        vcanvas = QtOpenGL.QGLFramebufferObject(w,h)
         vcanvas.bind()
-        self.resize(w, h)
+        self.resize(w,h)
         self.display()
         GL.glFlush()
         qim = vcanvas.toImage()
         vcanvas.release()
-        self.resize(wc, hc)
+        self.resize(wc,hc)
         GL.glFlush()
         del vcanvas
         return qim
@@ -434,6 +446,14 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
 
     def rgb(self,w=None,h=None,remove_alpha=True):
         """Return the current OpenGL rendering in an array format.
+
+        Parameters:
+
+        - `w`, `h`: requested size (in pixels) of the image. The default
+          is to use the current canvas size. If only one is specified,
+          the aspect ratio of the current canvas is kept.
+        - `remove_alpha`: bool. If True (default), the alpha channel is
+          removed from the image.
 
         Returns the current OpenGL rendering as a numpy array of
         type uint and shape (w,h,3) if remove_alpha is True (default)
@@ -447,18 +467,34 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         return ar
 
 
-    def outline(self, size=None, level=0.5, bgcolor=None):
+    def outline(self, size=(0,0), profile='luminance', level=0.5, bgcolor=None, nproc=None):
         """Return the outline of the current rendering
 
-        The outline is returned as a Formex of plexitude 2.
+        Parameters:
+
+        - `size`: a tuple of ints (w,h) specifying the size of the image to
+          be used in outline detection. A non-positive value will be set
+          automatically from the current canvas size or aspect ratio.
+        - `profile`: the function used to translate pixel colors into a single
+          value. The default is to use the luminance of the pixel color.
+        - `level`: isolevel at which to construct the outline.
+        - `bgcolor`: a color that is to be interpreted as background color
+          and will get a pixel value -0.5.
+        - `nproc`: number of processors to be used in the image processing.
+          Default is to use as many as available.
+
+        Returns the outline as a Formex of plexitude 2.
+
+        Note:
+
+        - 'luminance' is currently the only profile implemented.
+        - `bgcolor` is currently experimental.
         """
         from pyformex.plugins.isosurface import isoline
         from pyformex.formex import Formex
         from pyformex.opengl.colors import luminance, RGBcolor
         self.camera.lock()
-        if size is None:
-            size = [None,None]
-        w ,h =  self.sanitizeSize(*size)
+        w,h = self.saneSize(*size)
         data = self.rgb(w,h)
         shape = data.shape[:2]
 
@@ -467,19 +503,22 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
             print("bgcolor = %s" % (bgcolor,))
             bg = (data==bgcolor).all(axis=-1)
             print(bg)
-            #data[bg] = [0.,0.,0.]
             data = luminance(data.reshape(-1,3)).reshape(shape) + 0.5
             data[bg] = -0.5
 
         else:
             data = luminance(data.reshape(-1,3)).reshape(shape)
 
-        print(data[:2,:2])
+        #print(data[:2,:2])
         rng = data.max() - data.min()
         bbox = self.bbox
         ctr = self.camera.project((bbox[0]+bbox[1])*.05)
         axis = unitVector(self.camera.eye-self.camera.focus)
-        seg = isoline(data,data.min()+level*rng) + [0.5,0.5]
+        #
+        # NOTE: the + [0.5,0.5] should be checked and then be
+        #       moved inside the isoline function!
+        #
+        seg = isoline(data,data.min()+level*rng,nproc=nproc) + [0.5,0.5]
         if size is not None:
             wc,hc = pf.canvas.getSize()
             sx = float(wc)/w

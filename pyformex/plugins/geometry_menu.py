@@ -1072,7 +1072,19 @@ outline_color = 'red'
 
 def addOutline():
     """Draw the outline of the current rendering"""
-    G = pf.canvas.outline()
+    w,h = pf.canvas.getSize()
+    res = askItems([
+        _I('w',w,text='Resolution width'),
+        _I('h',h,text='Resolution height'),
+        _I('level',0.5,text='Isoline level'),
+#        _I('Background color', 1),
+        _I('nproc',0,text='Number of processors'),
+        ])
+
+    if not res:
+        return
+
+    G = pf.canvas.outline(size=(res['w'],res['h']),level=res['level'],nproc=res['nproc'])
     OA = draw(G,color=outline_color,view='cur',bbox='last',linewidth=outline_linewidth,flat=-True,ontop=True)
     if OA:
         OA = OA.object

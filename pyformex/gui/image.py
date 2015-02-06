@@ -165,11 +165,6 @@ def save_canvas(canvas,fn,fmt='png',quality=-1,size=None):
             w, h = size
         except:
             w, h = wc, hc
-        ## if (w, h) == (wc, hc):
-        ##     pf.debug("Saving image from canvas with size %sx%s" % (w, h), pf.DEBUG.IMAGE)
-        ##     GL.glFlush()
-        ##     qim = canvas.grabFrameBuffer(withAlpha=False)
-        ## else:
         pf.debug("Saving image from virtual buffer with size %sx%s" % (w, h), pf.DEBUG.IMAGE)
         qim = canvas.image(w,h)
 
