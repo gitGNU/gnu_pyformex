@@ -32,6 +32,7 @@ contents.
 from __future__ import print_function
 
 from pyformex.arraytools import checkArray
+import numpy as np
 
 
 # Note: this could be combined with convertUnits function from
@@ -166,7 +167,7 @@ class UniaxialStrain(object):
         elif type == 'almansi':
             data = 1. / sqrt(1. - 2*data)
         elif type != 'stretch':
-            raise valueError("Invalid strain type: %s" % type)
+            raise ValueError("Invalid strain type: %s" % type)
 
         self.data = data
 
@@ -232,7 +233,7 @@ class UniaxialStress(object):
         elif type == 'pk2':
             data = data * stretch**2
         elif type != 'cauchy':
-            raise valueError("Invalid stress type: %s" % type)
+            raise ValueError("Invalid stress type: %s" % type)
 
         self.data = data
         self.strain = strain
@@ -247,9 +248,6 @@ class UniaxialStress(object):
         return self.data / self.strain.stretch()**2
 
 
-
-
-
 # maybe move this to the amplitude class?
 def smoothAmp(a,n=50):
     """ Compute a single abaqus smooth amplitude.
@@ -259,14 +257,14 @@ def smoothAmp(a,n=50):
     -`n`: int. number of of intervals for the time variable
     """
 
-    tc=linspace(a[0,0],a[1,0],n)
+    tc=np.linspace(a[0,0],a[1,0],n)
     eps=(tc-a[0,0])/ (a[1,0]-a[0,0])
     amp= a[0,1] + (a[1,1]-a[0,1]) *  eps**3 * (10.-15.*eps+6.*eps**2.)
-    return column_stack([tc,amp])
+    return np.column_stack([tc,amp])
 
 
 def ampSequence(a,n=100,f=smoothAmp):
-    """ Compute a single abaqus smooth amplitude.
+    """ Compute a final amplitude from a sequence of amplitudes.
 
     Parameters:
     -`a`: arraylike of floats. every row is a pair of subsequent initial and final amplitudes/time value
@@ -274,9 +272,9 @@ def ampSequence(a,n=100,f=smoothAmp):
     -`f`: function of the amplitude
     """
 
-    amp= empty((0,2))
+    amp= np.empty((0,2))
     for i  in range(len(a)-1):
-        amp=concatenate([amp,f(a[i:i+2],n=n)],axis=0)
+        amp=np.concatenate([amp,f(a[i:i+2],n=n)],axis=0)
     return amp
 
 
@@ -333,39 +331,53 @@ def transverseShear(E,nu,c,type='generalized'):
     return sh
 
 
-## if __name__ == "script" or __name__ == "draw":
+#~ if __name__ == "script" or __name__ == "draw":
 
-##     # Testing ampSequence
-##     t= [0.,0.1,1.1,1.3,1.8,5];a = [0.,0.,1,2,2,1]
+    #~ # Testing ampSequence
+    #~ t= [0.,0.1,1.1,1.3,1.8,5];a = [0.,0.,1,2,2,1]
 
-##     a=column_stack([t,a])
-##     amp=ampSequence(a)
+    #~ a=column_stack([t,a])
+    #~ amp=ampSequence(a)
 
-##     from matplotlib import pyplot
+    #~ from matplotlib import pyplot
 
-##     x = numpy.arange(10)
-##     y = numpy.array([5,3,4,2,7,5,4,6,3,2])
+    #~ x = numpy.arange(10)
+    #~ y = numpy.array([5,3,4,2,7,5,4,6,3,2])
 
-##     fig = pyplot.figure()
-##     ax = fig.add_subplot(111)
-##     off=abs((amp[:,1].max()-amp[:,1].min())/50.)
-##     ax.set_ylim(amp[:,1].min()-off,amp[:,1].max()+off)
-##     pyplot.plot(amp[:,0],amp[:,1])
-##     for i,j in a:
-##         ax.annotate(str(j),xy=(i,j))
+    #~ fig = pyplot.figure()
+    #~ ax = fig.add_subplot(111)
+    #~ off=abs((amp[:,1].max()-amp[:,1].min())/50.)
+    #~ ax.set_ylim(amp[:,1].min()-off,amp[:,1].max()+off)
+    #~ pyplot.plot(amp[:,0],amp[:,1])
+    #~ for i,j in a:
+        #~ ax.annotate(str(j),xy=(i,j))
 
-##     #~ pyplot.show()
+    #~ pyplot.show()
 
-##     # Testing isotropicelasticity
-##     mat = IsotropicElasticity(E=210000,nu=0.3)
-##     print(mat)
-##     mat1 = IsotropicElasticity(K=mat.K,G=mat.G)
-##     print(mat1)
-##     mat2 = IsotropicElasticity(lmbda=mat1.lmbda,nu=mat1.nu)
-##     print(mat2)
+    #~ # Testing isotropicelasticity
+    #~ mat = IsotropicElasticity(E=210000,nu=0.3)
+    #~ print(mat)
+    #~ mat1 = IsotropicElasticity(K=mat.K,G=mat.G)
+    #~ print(mat1)
+    #~ mat2 = IsotropicElasticity(lmbda=mat1.lmbda,nu=mat1.nu)
+    #~ print(mat2)
 
 
-##     # Testing shearStiffness
-##     sh = transverseShear(type='shell',c=0.3,E=210000,nu=0.3)
-##     print(sh)
+    #~ # Testing shearStiffness
+    #~ sh = transverseShear(type='shell',c=0.3,E=210000,nu=0.3)
+    #~ print(sh)
+
+    #~ # Testing UniaxialStress,UniaxialStrain
+    #~ strain = UniaxialStrain(np.linspace(1,1.5,4),type='stretch')
+    #~ stress = UniaxialStress(np.linspace(0,50,4),type='cauchy',strain=strain,straintype='stretch')
+    #~ print('strain type :stretch %s'%strain.stretch())
+    #~ print('strain type :nominal %s'%strain.nominal())
+    #~ print('strain type :log %s'%strain.log())
+    #~ print('strain type :green %s'%strain.green())
+    #~ print('strain type :almansi %s'%strain.almansi())
+    
+    #~ print('stress type :cauchy %s'%stress.cauchy())
+    #~ print('stress type :nominal %s'%stress.nominal())
+    #~ print('stress type :pk2 %s'%stress.pk2())
+
 # End
