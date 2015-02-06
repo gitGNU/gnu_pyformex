@@ -153,7 +153,7 @@ class UniaxialStrain(object):
     Internally, the data are stored as stretch values.
     """
 
-    def __init__(self,data):
+    def __init__(self,data,type):
         """Initialize the UniaxialStrain"""
 
         data = checkArray(data,shape=(-1,),kind='f')
