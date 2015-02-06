@@ -362,6 +362,28 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         return Size(self)
 
 
+    def sanitizeSize(self,width=None, height=None):
+        """sanitize the size the canvas size measures.
+        
+        A None value will set the width (or heigth) to one the current canvas
+        A negative value will rescale the width (or heigth) will rescale the canvas
+        according to the non-negative value.
+        If both  width and heigth are negative, the canvas size are set as the
+        current canvas.
+        """
+        wc,hc = self.getSize()
+        if width<0 and height < 0:
+            width = height= None
+        if width is None:
+            width = wc
+        if height is None:
+            height = hc
+        if width < 0:
+            width = int(round(float(height)/hc*wc))
+        if height < 0:
+            height = int(round(float(width)/wc*hc))
+        return width, height
+        
     # TODO: negative sizes should probably resize all viewports
     # OR we need to implement frames
     def changeSize(self, width, height):
@@ -382,7 +404,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
                 height = h
         self.resize(width, height)
 
-
+    
     def image(self,w=None,h=None,remove_alpha=True):
         """Return the current OpenGL rendering in an image format.
 
@@ -394,16 +416,8 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
             return removeAlpha(self.image(w,h,False))
 
         self.makeCurrent()
-        wc,hc = self.getSize()
-        if w is None:
-            w = wc
-        if h is None:
-            h = hc
-        if w < 0:
-            w = int(round(h/hc*wc))
-        if h < 0:
-            h = int(round(w/wc*hc))
-
+        wc,hc = pf.canvas.getSize()
+        w ,h =  self.sanitizeSize(w,h)
         vcanvas = QtOpenGL.QGLFramebufferObject(w, h)
         vcanvas.bind()
         self.resize(w, h)
@@ -441,10 +455,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         from pyformex.formex import Formex
         from pyformex.opengl.colors import luminance, RGBcolor
         self.camera.lock()
-        if size is not None:
-            w,h = size
-        else:
-            w,h = None,None
+        w ,h =  self.sanitizeSize(*size)
         data = self.rgb(w,h)
         shape = data.shape[:2]
 
