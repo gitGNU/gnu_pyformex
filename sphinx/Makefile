@@ -1,4 +1,4 @@
-# $Id$
+# $Id 4422e53 on Sat Feb 7 16:53:32 2015 +0100 by Benedict Verhegghe $
 ##
 ##  This file is part of pyFormex 0.9.1  (Tue Oct 15 21:05:25 CEST 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
@@ -24,8 +24,10 @@
 # Makefile for pyFormex documentation
 #
 # The pyFormex project uses Sphinx for building its documentation.
-# This Makefile was create with sphinx-quickstart and then hand-edited.
+# This Makefile was created with sphinx-quickstart and then hand-edited.
 #
+
+include ../RELEASE
 
 # You can set these variables from the command line.
 SPHINXOPTS    =
@@ -40,10 +42,12 @@ ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 
 RSYNC= rsync -v -e ssh
 
-PDF= pyformex.pdf
+PDF= pyformex-${VERSION}.pdf
 THE_PDF= _build/latex/${PDF}
-PKGDIR= ../dist
-PUBDIR= ${PKGDIR}/pyformex/doc
+
+# Directories where to place PDF and HTML files for publication
+PUBDIR_PDF= ../dist/pyformex/doc
+PUBDIR_HTML= ../www/doc-${DOCVERSION}
 
 FTPLOCAL= bumps.ugent.be:/var/ftp/pub/pyformex
 
@@ -193,7 +197,8 @@ incdoc:
 
 # Transfer the html docs to www for publication
 pubdoc:
-	${RSYNC} -a --exclude 'CVS' --exclude '.svn' --exclude '.buildinfo' --delete _build/html/ ../www/doc
+	mkdir -p ${PUBDIR_HTML}
+	${RSYNC} -a --exclude 'CVS' --exclude '.svn' --exclude '.buildinfo' --delete _build/html/ ${PUBDIR_HTML}
 
 # Publish the PDF manual
 
@@ -203,14 +208,14 @@ publocal: ${THE_PDF}
 
 # 2. on Savannah
 
-pubpdf: ${PUBDIR}/${PDF}.sig
+pubpdf: ${PUBDIR_PDF}/${PDF}.sig
 
-${PUBDIR}/${PDF}.sig: ${PUBDIR}/${PDF}
-	cd ${PUBDIR}; gpg -b --use-agent ${PDF}
+${PUBDIR_PDF}/${PDF}.sig: ${PUBDIR_PDF}/${PDF}
+	cd ${PUBDIR_PDF}; gpg -b --use-agent ${PDF}
 
-${PUBDIR}/${PDF}: ${THE_PDF}
-	mkdir -p ${PUBDIR}
-	cp ${THE_PDF} ${PUBDIR}
+${PUBDIR_PDF}/${PDF}: ${THE_PDF}
+	mkdir -p ${PUBDIR_PDF}
+	cp ${THE_PDF} ${PUBDIR_PDF}
 
 
 cvswww:
