@@ -505,7 +505,7 @@ def createDirsDialog(dircfg):
         title='Script paths'
 
     def insertRow():
-        ww = widgets.FileSelection(pf.cfg['workdir'], '*', exist=True, dir=True)
+        ww = widgets.FileDialog(pf.cfg['workdir'], '*', exist=True, dir=True)
         fn = ww.getFilename()
         if fn:
             _table.model().insertRows()

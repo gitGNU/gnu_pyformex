@@ -329,7 +329,7 @@ def dialogTimedOut():
     return _dialog_result == widgets.TIMEOUT
 
 
-def askFile(cur=None,filter='all',exist=True,multi=False,compr=False,change=True,timeout=None,caption=None):
+def askFile(cur=None,filter='all',exist=True,multi=False,compr=False,change=True,timeout=None,caption=None,sidebar=None):
     """Ask for a file name or multiple file names using a file dialog.
 
     Parameters:
@@ -354,6 +354,10 @@ def askFile(cur=None,filter='all',exist=True,multi=False,compr=False,change=True
       instead of the default one.
     - `timeout`: float. If specified, the dialog will timeout after the
       specified number of seconds.
+    - `caption`: string. If specified, it will be displayed as the FileDialog
+      title.
+    - `sidebar`: list of paths. If specified, these will be added to the
+      sidebar (in addition to the configured paths).
 
     Returns the result of the file dialog. If the user accepted the selection,
     this will be a Dict with at least a key 'fn' holding the selected
@@ -369,9 +373,9 @@ def askFile(cur=None,filter='all',exist=True,multi=False,compr=False,change=True
         fn = os.path.basename(cur)
         cur = os.path.dirname(cur)
     if filter == 'pgf':
-        w = widgets.GeometryFileSelection(cur, filter, exist, compr=compr, caption=caption)
+        w = widgets.GeometryFileDialog(cur, filter, exist, compr=compr, caption=caption,sidebar=sidebar)
     else:
-        w = widgets.FileSelection(cur, filter, exist, multi=multi, compr=compr, caption=caption)
+        w = widgets.FileDialog(cur, filter, exist, multi=multi, compr=compr, caption=caption, sidebar=sidebar)
     if fn:
         w.selectFile(fn)
     res = w.getResults(timeout)
@@ -419,13 +423,13 @@ def askFilename(*args,**kargs):
         return None
 
 
-def askNewFilename(cur=None,filter="All files (*.*)",compr=False,timeout=None,caption=None):
+def askNewFilename(cur=None,filter="All files (*.*)",compr=False,timeout=None,caption=None,sidebar=None):
     """Ask a single new filename.
 
     This is a convenience function for calling askFilename with the
     arguments exist=False.
     """
-    return askFilename(cur=cur, filter=filter, exist=False, multi=False, compr=compr, timeout=timeout, caption=caption)
+    return askFilename(cur=cur, filter=filter, exist=False, multi=False, compr=compr, timeout=timeout, caption=caption, sidebar=sidebar)
 
 
 def askDirname(path=None,change=True,byfile=False,caption=None):
@@ -446,7 +450,7 @@ def askDirname(path=None,change=True,byfile=False,caption=None):
         dirmode = 'auto'
     else:
         dirmode = True
-    fn = widgets.FileSelection(path, '*', dir=dirmode,caption=caption).getFilename()
+    fn = widgets.FileDialog(path, '*', dir=dirmode,caption=caption).getFilename()
     if fn:
         if not os.path.isdir(fn):
             fn = os.path.dirname(fn)
@@ -1164,7 +1168,7 @@ def showURL(url):
 def showHTML(fn=None):
     """Show a local .html file in the browser
 
-    - `fn`: name of a local .html file. If unspecified, a FileSelection
+    - `fn`: name of a local .html file. If unspecified, a FileDialog
       dialog is popped up to select a file.
     """
     if not fn:

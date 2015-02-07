@@ -1290,12 +1290,12 @@ class InputFont(InputItem):
 class InputFile(InputItem):
     """An input item to select a file.
 
-    The following arguments are passed to the FileSelection widget:
+    The following arguments are passed to the FileDialog widget:
     value,pattern,exist,multi,dir,compr.
     """
     def __init__(self,name,value,pattern='*',exist=False,multi=False,dir=False,compr=False,*args,**kargs):
         """Initialize the input item."""
-        self.input = FileSelection(value, pattern, exist, multi, dir, compr)
+        self.input = FileDialog(value, pattern, exist, multi, dir, compr)
         # remove the dialog buttons, since the widget is embedded
         for b in self.input.findChildren(QtGui.QPushButton):
             b.close()
@@ -2466,10 +2466,15 @@ class Table(QtGui.QTableView):
 
 ###################### File Selection Dialog #########################
 
-class FileSelection(QtGui.QFileDialog):
+def fileUrls(files):
+    """Transform a list of local file names to urls"""
+    return [ QtCore.QUrl.fromLocalFile(f) for f in files ]
+
+
+class FileDialog(QtGui.QFileDialog):
     """A file selection dialog.
 
-    The FileSelection dialog is a special purpose complex dialog widget
+    The FileDialog dialog is a special purpose complex dialog widget
     that allows to interactively select a file or directory from the file
     system, possibly even multiple files, create new files or directories.
 
@@ -2515,7 +2520,7 @@ class FileSelection(QtGui.QFileDialog):
     timeout = accept_any
 
 
-    def __init__(self,path='.',pattern='*',exist=False,multi=False,dir=False,compr=False,button=None,caption=None,**kargs):
+    def __init__(self,path='.',pattern='*',exist=False,multi=False,dir=False,compr=False,button=None,sidebar=None,caption=None,**kargs):
         """The constructor shows the widget."""
         QtGui.QFileDialog.__init__(self,**kargs)
         if os.path.isfile(path):
@@ -2568,13 +2573,10 @@ class FileSelection(QtGui.QFileDialog):
             else:
                 button = '&Save'
         self.setLabelText(QtGui.QFileDialog.Accept, button)
-#         if self.sidebar:
-##             urls = self.sidebarUrls()
-##             for f in self.sidebar:
-##                 urls.append(QtCore.QUrl.fromLocalFile(f))
-##             self.setSidebarUrls(urls)
-##         for p in self.sidebarUrls():
-##             print(p.toString())
+        sidebarfiles = pf.cfg['gui/sidebarfiles']
+        if sidebar:
+            sidebarfiles.extend(sidebar)
+        self.setSidebarUrls(fileUrls(sidebarfiles))
 
 
     def show(self,timeout=None,timeoutfunc=None,modal=False):
@@ -2629,7 +2631,7 @@ class FileSelection(QtGui.QFileDialog):
             return res['fn']
 
 
-class GeometryFileSelection(FileSelection):
+class GeometryFileDialog(FileDialog):
     """A file selection dialog specialized for opening pgf files.
 
     """
@@ -2642,7 +2644,7 @@ class GeometryFileSelection(FileSelection):
             path = pf.cfg['workdir']
         if pattern is None:
             pattern = 'pgf'
-        FileSelection.__init__(self, path, pattern, exist, **kargs)
+        FileDialog.__init__(self, path, pattern, exist, **kargs)
         grid = self.layout()
         nr, nc = grid.rowCount(), grid.columnCount()
 
@@ -2678,7 +2680,7 @@ class GeometryFileSelection(FileSelection):
         is returned: fn, acc, and optional sep, cpr, cvt
         If the user hits CANCEL or ESC, an empty dict is returned.
         """
-        res = FileSelection.getResults(self,timeout)
+        res = FileDialog.getResults(self,timeout)
         if res:
             res.acc = self.acc.value()
             if hasattr(self, 'sep'):
@@ -2694,7 +2696,7 @@ class GeometryFileSelection(FileSelection):
             return {}
 
 
-class ProjectSelection(FileSelection):
+class ProjectSelection(FileDialog):
     """A file selection dialog specialized for opening projects."""
     def __init__(self,path=None,pattern=None,exist=False,compression=4,
                  access=None,default=None,convert=True):
@@ -2703,7 +2705,7 @@ class ProjectSelection(FileSelection):
             path = pf.cfg['workdir']
         if pattern is None:
             pattern = 'pyf'
-        FileSelection.__init__(self, path, pattern, exist)
+        FileDialog.__init__(self, path, pattern, exist)
         grid = self.layout()
         nr, nc = grid.rowCount(), grid.columnCount()
 
@@ -2744,7 +2746,7 @@ class ProjectSelection(FileSelection):
             return {}
 
 
-class SaveImageDialog(FileSelection):
+class SaveImageDialog(FileDialog):
     """A dialog for saving to an image file.
 
     The dialog contains the normal file selection widget plus some
@@ -2766,7 +2768,7 @@ class SaveImageDialog(FileSelection):
             path = pf.cfg['workdir']
         if pattern is None:
             pattern = ['img', 'icon', 'all']
-        FileSelection.__init__(self, path, pattern, exist)
+        FileDialog.__init__(self, path, pattern, exist)
         grid = self.layout()
         nr, nc = grid.rowCount(), grid.columnCount()
         try:
@@ -3429,5 +3431,10 @@ class ImageView(QtGui.QLabel):
     def value(self):
         return self.filename
 
+
+# Deprecated aliases
+
+FileSelection = FileDialog
+GeometryFileSelection = GeometryFileDialog
 
 # End

@@ -375,7 +375,7 @@ def openScript(fn=None,exist=True,create=False):
             cur = pf.cfg['workdir']
         if cur is None:
             cur  = '.'
-        fn = widgets.FileSelection(cur, 'pyformex', exist=exist).getFilename()
+        fn = widgets.FileDialog(cur, 'pyformex', exist=exist).getFilename()
     if fn:
         if create:
             if not exist and os.path.exists(fn) and not draw.ack("The file %s already exists.\n Are you sure you want to overwrite it?" % fn):
