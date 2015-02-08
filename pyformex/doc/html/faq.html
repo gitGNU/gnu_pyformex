@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
 <!-- 
@@ -34,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyFormex FAQ ‘n TRICKS &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>pyFormex FAQ ‘n TRICKS &mdash; pyFormex 1.0.1~a2 documentation</title>
 
     
     <link rel="stylesheet" href="_static/pyformex.css" type="text/css" />
@@ -42,8 +41,8 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '1.0.0~a1',
+        URL_ROOT:    './',
+        VERSION:     '1.0.1~a2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,9 +51,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="index.html" />
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="index.html" />
     <link rel="next" title="pyFormex file formats" href="file_format.html" />
-    <link rel="prev" title="88. timer — A timer class." href="ref/timer.html" />
+    <link rel="prev" title="89. timer — A timer class." href="ref/timer.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -80,9 +79,9 @@
           <a href="file_format.html" title="pyFormex file formats"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="ref/timer.html" title="88. timer — A timer class."
+          <a href="ref/timer.html" title="89. timer — A timer class."
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li> 
+        <li><a href="index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -110,7 +109,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="ref/timer.html"
-                        title="previous chapter">88. <tt class="docutils literal"><span class="pre">timer</span></tt> &#8212; A timer class.</a></p>
+                        title="previous chapter">89. <tt class="docutils literal"><span class="pre">timer</span></tt> &#8212; A timer class.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="file_format.html"
                         title="next chapter">pyFormex file formats</a></p>
@@ -153,9 +152,9 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Date:</th><td class="field-body">February 06, 2014</td>
+<tr class="field-odd field"><th class="field-name">Date:</th><td class="field-body">February 08, 2015</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Version:</th><td class="field-body">1.0.0</td>
+<tr class="field-even field"><th class="field-name">Version:</th><td class="field-body">1.0.1</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Benedict Verhegghe &lt;<a class="reference external" href="mailto:benedict&#46;verhegghe&#37;&#52;&#48;ugent&#46;be">benedict<span>&#46;</span>verhegghe<span>&#64;</span>ugent<span>&#46;</span>be</a>&gt;</td>
 </tr>
@@ -179,7 +178,7 @@ of scripts to create logos. With newer versions (&gt;= 2.6) use the menu
 <em class="menuselection">Fille‣Create‣Logos‣Alien-neon</em>. With older
 versions (&lt;=2.4) use <em class="menuselection">Xtra‣Script-Fu‣Logos‣Alien-neon</em>.</p>
 <p>In the Alien Neon dialog specify the following data:</p>
-<div class="highlight-python"><pre>Text: pyFormex
+<div class="highlight-python"><div class="highlight"><pre>Text: pyFormex
 Font Size: 150
 Font: Blippo-Heavy
 Glow Color: 0xFF3366
@@ -187,7 +186,8 @@ Background Color: 0x000000
 Width of Bands: 2
 Width of Gaps: 2
 Number of Bands: 7
-Fade Away: Yes</pre>
+Fade Away: Yes
+</pre></div>
 </div>
 <p>Press <em class="guilabel">OK</em> to create the logo. Then switch off the background
 layer and save the image in PNG format.
@@ -316,10 +316,12 @@ by default on Windows machines.</p>
 <p>Suppose you have images in files <tt class="docutils literal"><span class="pre">image-000.png</span></tt>,
 <tt class="docutils literal"><span class="pre">image-001.png</span></tt>, ....  First, you should get the size of the
 images (they all should have the same size). The command</p>
-<div class="highlight-python"><pre>file image*.png</pre>
+<div class="highlight-python"><div class="highlight"><pre>file image*.png
+</pre></div>
 </div>
 <p>will tell you the size. Then create movie with the command</p>
-<div class="highlight-python"><pre>mencoder mf://image-*.png -mf w=796:h=516:fps=5:type=png -ovc copy -oac copy -o movie1.avi</pre>
+<div class="highlight-python"><div class="highlight"><pre>mencoder mf://image-*.png -mf w=796:h=516:fps=5:type=png -ovc copy -oac copy -o movie1.avi
+</pre></div>
 </div>
 <p>Fill in the correct width(w) and height(h) of the images, and set
 the frame rate(fps). The result will be a movie <tt class="docutils literal"><span class="pre">movie1.avi</span></tt>.</p>
@@ -328,7 +330,8 @@ the frame rate(fps). The result will be a movie <tt class="docutils literal"><sp
 compressed format saves a lot of space, this will be the prefered
 format if you have lots of image files. The quality of the
 compressed image movie will suffer somewhat, though.</p>
-<div class="highlight-python"><pre>ffmpeg -r 5 -b 800 -i image-%03d.jpg movie.mp4</pre>
+<div class="highlight-python"><div class="highlight"><pre>ffmpeg -r 5 -b 800 -i image-%03d.jpg movie.mp4
+</pre></div>
 </div>
 </li>
 </ul>
@@ -353,10 +356,11 @@ this (on Debian: <tt class="docutils literal"><span class="pre">apt-get</span> <
 <li><p class="first"><strong>Permission denied error when running calpy simulation</strong></p>
 <p>If you have no write permission in your current working directory,
 running a calpy simulation will result in an error like this:</p>
-<div class="highlight-python"><pre>fil = file(self.tempfilename,'w')
+<div class="highlight-python"><div class="highlight"><pre>fil = file(self.tempfilename,&#39;w&#39;)
 IOError
 :
-[Errno 13] Permission denied: 'calpy.tmp.part-0'</pre>
+[Errno 13] Permission denied: &#39;calpy.tmp.part-0&#39;
+</pre></div>
 </div>
 <p>You can fix this by changing your current working directory to a path
 where you have write permission (e.g. your home directory).
@@ -382,7 +386,8 @@ in formex.py and mesh.py respectively.</p>
 <p>If the problem comes from a relocation of a module (e.g. the mesh module
 was moved from plugins to the pyFormex core), you may get an error like
 this:</p>
-<div class="highlight-python"><pre>AttributeError: 'NoneType' object has no attribute 'Mesh'</pre>
+<div class="highlight-python"><div class="highlight"><pre>AttributeError: &#39;NoneType&#39; object has no attribute &#39;Mesh&#39;
+</pre></div>
 </div>
 <p>The reason is that the path recorded in the Project file pointed to the
 old location of the mesh module under <tt class="docutils literal"><span class="pre">plugins</span></tt> while the mesh module
@@ -397,7 +402,8 @@ new path. To take care of the above relocation of the mesh module,
 you could e.g. use the following command to convert your <tt class="docutils literal"><span class="pre">old.pyf</span></tt> to
 a <tt class="docutils literal"><span class="pre">new.pyf</span></tt> that can be properly read. It just replaces the old module
 path (<tt class="docutils literal"><span class="pre">plugins.mesh</span></tt>) with the current path (<tt class="docutils literal"><span class="pre">mesh</span></tt>):</p>
-<div class="highlight-python"><pre>sed 's|plugins.mesh|mesh|'g old.pyf &gt;new.pyf</pre>
+<div class="highlight-python"><div class="highlight"><pre>sed &#39;s|plugins.mesh|mesh|&#39;g old.pyf &gt;new.pyf
+</pre></div>
 </div>
 </li>
 </ul>
@@ -425,18 +431,18 @@ path (<tt class="docutils literal"><span class="pre">plugins.mesh</span></tt>) w
           <a href="file_format.html" title="pyFormex file formats"
              >next</a> |</li>
         <li class="right" >
-          <a href="ref/timer.html" title="88. timer — A timer class."
+          <a href="ref/timer.html" title="89. timer — A timer class."
              >previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li> 
+        <li><a href="index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
-        &copy; Copyright 2004-2012, Benedict Verhegghe.
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 18, 2014.
+      Last updated on Feb 08, 2015.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>
     </div>
   </body>

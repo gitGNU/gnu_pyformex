@@ -1,0 +1,771 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!-- 
+##
+##  This file is part of the pyFormex project.
+##  pyFormex is a tool for generating, manipulating and transforming 3D
+##  geometrical models by sequences of mathematical operations.
+##  Home page: http://pyformex.org
+##  Project page:  http://savannah.nongnu.org/projects/pyformex/
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Distributed under the GNU General Public License version 3 or later.
+##
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see http://www.gnu.org/licenses/.
+##
+-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>79. opengl.textext — Text rendering on the OpenGL canvas. &mdash; pyFormex 1.0.1~a2 documentation</title>
+
+    
+    <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1~a2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="up" title="pyFormex reference manual" href="../refman.html" />
+    <link rel="next" title="80. opengl.texture — Texture rendering." href="opengl.texture.html" />
+    <link rel="prev" title="78. opengl.shader — OpenGL shader programs" href="opengl.shader.html" />
+<link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
+
+  </head>
+  <body>
+
+<div class="header">
+  <a href="http://pyformex.org">
+  <img src="http://www.nongnu.org/pyformex/_static/scallop_dome_small.png" alt="scallop dome" border="0" hspace="20" vspace="12" align="left" />
+  <img src="http://www.nongnu.org/pyformex/_static/pyformex-logo-2.png" alt="pyformex logo" border="0" hspace="10" vspace="8" align="left" />
+  </a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="opengl.texture.html" title="80. opengl.texture — Texture rendering."
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="opengl.shader.html" title="78. opengl.shader — OpenGL shader programs"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center">
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick"/>
+<input type="hidden" name="hosted_button_id" value="P7J4AM4QULB4Q"/>
+<input type="image" src="https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif" name="submit" alt="PayPal - The safer, easier way to pay online!"/>
+<img alt="" border="0" src="https://www.paypal.com/nl_NL/i/scr/pixel.gif" width="1" height="1"/>
+</form>
+
+</div>
+   
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">79. <tt class="docutils literal"><span class="pre">opengl.textext</span></tt> &#8212; Text rendering on the OpenGL canvas.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-opengl-textext">79.1. Classes defined in module opengl.textext</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-opengl-textext">79.2. Functions defined in module opengl.textext</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="opengl.shader.html"
+                        title="previous chapter">78. <tt class="docutils literal"><span class="pre">opengl.shader</span></tt> &#8212; OpenGL shader programs</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="opengl.texture.html"
+                        title="next chapter">80. <tt class="docutils literal"><span class="pre">opengl.texture</span></tt> &#8212; Texture rendering.</a></p>
+  
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+<div align="center">
+  <p>
+  <a href="http://www.fsf.org/register_form?referrer=8491"><img src="http://www.nongnu.org/pyformex/_static/fsf-member8491.png" alt="[FSF Associate Member]" width="89" height="31"  /></a>
+  </p>
+  <p>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+      src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /></a>
+  </p>
+</div>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-opengl.textext">
+<span id="opengl-textext-text-rendering-on-the-opengl-canvas"></span><span id="sec-ref-opengl-textext"></span><h1>79. <a class="reference internal" href="#module-opengl.textext" title="opengl.textext: Text rendering on the OpenGL canvas."><tt class="xref py py-mod docutils literal"><span class="pre">opengl.textext</span></tt></a> &#8212; Text rendering on the OpenGL canvas.<a class="headerlink" href="#module-opengl.textext" title="Permalink to this headline">¶</a></h1>
+<p>This module uses textures on quads to render text on an OpenGL canvas.
+It is dependent on freetype and the Python bindings freetype-py.</p>
+<div class="section" id="classes-defined-in-module-opengl-textext">
+<h2>79.1. Classes defined in module opengl.textext<a class="headerlink" href="#classes-defined-in-module-opengl-textext" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="opengl.textext.FontTexture">
+<em class="property">class </em><tt class="descclassname">opengl.textext.</tt><tt class="descname">FontTexture</tt><big>(</big><em>filename</em>, <em>size</em><big>)</big><a class="headerlink" href="#opengl.textext.FontTexture" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Texture class for text rendering.</p>
+<dl class="method">
+<dt id="opengl.textext.FontTexture.activate">
+<tt class="descname">activate</tt><big>(</big><em>mode=None</em><big>)</big><a class="headerlink" href="#opengl.textext.FontTexture.activate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bind the texture and make it ready for use.</p>
+<p>Returns the texture id.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.FontTexture.texCoords">
+<tt class="descname">texCoords</tt><big>(</big><em>ord</em><big>)</big><a class="headerlink" href="#opengl.textext.FontTexture.texCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the texture coordinates for ascii character position ord.</p>
+<p>ord is an integer in the range 32..127
+Returns the font texture coordinates of the square containing the
+character with the ordinal number ord.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="opengl.textext.Text">
+<em class="property">class </em><tt class="descclassname">opengl.textext.</tt><tt class="descname">Text</tt><big>(</big><em>text</em>, <em>pos</em>, <em>gravity=None</em>, <em>size=18</em>, <em>width=None</em>, <em>font=None</em>, <em>grid=None</em>, <em>texmode=4</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#opengl.textext.Text" title="Permalink to this definition">¶</a></dt>
+<dd><p>A text drawn at a 2D or 3D position.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>text</cite>: string: the text to display. If not a string, the string
+representation of the object will be drawn.</li>
+<li><cite>pos</cite>: a 2D or 3D position. If 2D, the values are measured in pixels.
+If 3D, it is a point in global 3D space. The text is drawn in 2D,
+inserted at the specified position.</li>
+<li><cite>gravity</cite>: a string that determines the adjusting of the text with
+respect to the insert position. It can be a combination of one of the
+characters &#8216;N or &#8216;S&#8217; to specify the vertical positon, and &#8216;W&#8217; or &#8216;E&#8217;
+for the horizontal. The default(empty) string will center the text.</li>
+</ul>
+<dl class="method">
+<dt id="opengl.textext.Text.addHighlight">
+<tt class="descname">addHighlight</tt><big>(</big><big>)</big><a class="headerlink" href="#opengl.textext.Text.addHighlight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add full highlighting of the actor.</p>
+<p>This makes the whole actor being drawn in the highlight color.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Text.addHighlightElements">
+<tt class="descname">addHighlightElements</tt><big>(</big><em>sel=None</em><big>)</big><a class="headerlink" href="#opengl.textext.Text.addHighlightElements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a highlight for the selected elements. Default is all.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Text.addHighlightPoints">
+<tt class="descname">addHighlightPoints</tt><big>(</big><em>sel=None</em><big>)</big><a class="headerlink" href="#opengl.textext.Text.addHighlightPoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a highlight for the selected points. Default is all.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Text.changeMode">
+<tt class="descname">changeMode</tt><big>(</big><em>canvas</em><big>)</big><a class="headerlink" href="#opengl.textext.Text.changeMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify the actor according to the specified mode</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Text.fullElems">
+<tt class="descname">fullElems</tt><big>(</big><big>)</big><a class="headerlink" href="#opengl.textext.Text.fullElems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an elems index for the full coords set</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Text.get">
+<tt class="descname">get</tt><big>(</big><em>key</em>, <em>default</em><big>)</big><a class="headerlink" href="#opengl.textext.Text.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value for key or a default.</p>
+<p>This is the equivalent of the dict get method, except that it
+returns only the default value if the key was not found in self,
+and there is no _default_ method or it raised a KeyError.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Text.inside">
+<tt class="descname">inside</tt><big>(</big><em>camera</em>, <em>rect=None</em>, <em>mode='actor'</em>, <em>sel='any'</em>, <em>return_depth=False</em><big>)</big><a class="headerlink" href="#opengl.textext.Text.inside" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test whether the actor is rendered inside rect of camera.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>camera</cite>: a Camera that has been set up properly. Usually it
+will be the current canvas camera, pf.canvas.camera.</li>
+<li><cite>rect</cite>: a tuple of 4 values (x,y,w,h) specifying
+a rectangular subregion of the camera&#8217;s viewport. The default
+is the full camera viewport.</li>
+<li><cite>mode</cite>: the testing mode. Currently defined modes:<ul>
+<li>&#8216;actor&#8217; (default): test if the actor is (partly) inside</li>
+<li>&#8216;element&#8217;: test which elements of the actor are inside</li>
+<li>&#8216;point&#8217;: test which vertices of the actor are inside</li>
+</ul>
+</li>
+<li><cite>sel</cite>: either &#8216;all&#8217; or &#8216;any&#8217;. This is not used with &#8216;point&#8217; mode.
+It specifies whether all or any of the points of the actor,
+element, ... should be inside the rectangle in order to be flagged
+as a positive.</li>
+</ul>
+<p>The return value depends on the mode:</p>
+<ul class="simple">
+<li>&#8216;actor&#8217;: True or False</li>
+<li>&#8216;element&#8217;: the indices of the elements inside</li>
+<li>&#8216;point&#8217;: the indices of the vertices inside</li>
+</ul>
+<p>If <cite>return_depth</cite> is True, a second value is returned, with the z-depth
+value of all the objects inside.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Text.okColor">
+<tt class="descname">okColor</tt><big>(</big><em>color</em>, <em>colormap=None</em><big>)</big><a class="headerlink" href="#opengl.textext.Text.okColor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute a color usable by the shader.</p>
+<p>The shader only supports 3*float type of colors:</p>
+<ul class="simple">
+<li>None</li>
+<li>single color (separate for front and back faces)</li>
+<li>vertex colors</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Text.points">
+<tt class="descname">points</tt><big>(</big><big>)</big><a class="headerlink" href="#opengl.textext.Text.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the coords of the geometry as a 2D array</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Text.prepare">
+<tt class="descname">prepare</tt><big>(</big><em>canvas</em><big>)</big><a class="headerlink" href="#opengl.textext.Text.prepare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare the attributes for the renderer.</p>
+<p>This sanitizes and completes the attributes for the renderer.
+Since the attributes may be dependent on the rendering mode,
+this method is called on each mode change.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Text.removeHighlight">
+<tt class="descname">removeHighlight</tt><big>(</big><big>)</big><a class="headerlink" href="#opengl.textext.Text.removeHighlight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the highlight for the current actor.</p>
+<p>Remove the highlight (whether full or partial) from the actor.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Text.render">
+<tt class="descname">render</tt><big>(</big><em>renderer</em><big>)</big><a class="headerlink" href="#opengl.textext.Text.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the geometry of this object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Text.setAlpha">
+<tt class="descname">setAlpha</tt><big>(</big><em>alpha</em>, <em>bkalpha=None</em><big>)</big><a class="headerlink" href="#opengl.textext.Text.setAlpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the Actors alpha value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Text.setColor">
+<tt class="descname">setColor</tt><big>(</big><em>color=None</em>, <em>colormap=None</em>, <em>ncolors=1</em><big>)</big><a class="headerlink" href="#opengl.textext.Text.setColor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the color of the Drawable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Text.setLineStipple">
+<tt class="descname">setLineStipple</tt><big>(</big><em>linestipple</em><big>)</big><a class="headerlink" href="#opengl.textext.Text.setLineStipple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the linewidth of the Drawable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Text.setLineWidth">
+<tt class="descname">setLineWidth</tt><big>(</big><em>linewidth</em><big>)</big><a class="headerlink" href="#opengl.textext.Text.setLineWidth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the linewidth of the Drawable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Text.setTexture">
+<tt class="descname">setTexture</tt><big>(</big><em>texture</em>, <em>texcoords=None</em>, <em>texmode=None</em><big>)</big><a class="headerlink" href="#opengl.textext.Text.setTexture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the texture data of the Drawable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Text.setdefault">
+<tt class="descname">setdefault</tt><big>(</big><em>key</em>, <em>default</em><big>)</big><a class="headerlink" href="#opengl.textext.Text.setdefault" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replaces the setdefault function of a normal dictionary.</p>
+<p>This is the same as the get method, except that it also sets the
+default value if get found a KeyError.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Text.subElems">
+<tt class="descname">subElems</tt><big>(</big><em>nsel=None</em>, <em>esel=None</em><big>)</big><a class="headerlink" href="#opengl.textext.Text.subElems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an index for the drawable subelems</p>
+<p>This index always refers to the full coords (fcoords).</p>
+<p>The esel selects the elements to be used (default all).</p>
+<p>The nsel selects (possibly multiple) parts from each element.
+The selector is 2D (nsubelems, nsubplex). It is applied on all
+selected elements</p>
+<p>If both esel and esel are None, returns None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Text.update">
+<tt class="descname">update</tt><big>(</big><em>data={}</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#opengl.textext.Text.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a dictionary to the Dict object.</p>
+<p>The data can be a dict or Dict type object.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="opengl.textext.TextArray">
+<em class="property">class </em><tt class="descclassname">opengl.textext.</tt><tt class="descname">TextArray</tt><big>(</big><em>val</em>, <em>pos</em>, <em>leader=''</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#opengl.textext.TextArray" title="Permalink to this definition">¶</a></dt>
+<dd><p>A array of texts drawn at a 2D or 3D positions.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>text</cite>: a list of N strings: the texts to display. If an item is
+not a string, the string representation of the object will be drawn.</li>
+<li><cite>pos</cite>: either an [N,2] or [N,3] shaped array of 2D or 3D positions.
+If 2D, the values are measured in pixels. If 3D, it is a point in
+global 3D space.</li>
+</ul>
+<p>The text is drawn in 2D, inserted at the specified position, with
+alignment specified by the gravity.</p>
+<dl class="method">
+<dt id="opengl.textext.TextArray.addHighlight">
+<tt class="descname">addHighlight</tt><big>(</big><big>)</big><a class="headerlink" href="#opengl.textext.TextArray.addHighlight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add full highlighting of the actor.</p>
+<p>This makes the whole actor being drawn in the highlight color.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.TextArray.addHighlightElements">
+<tt class="descname">addHighlightElements</tt><big>(</big><em>sel=None</em><big>)</big><a class="headerlink" href="#opengl.textext.TextArray.addHighlightElements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a highlight for the selected elements. Default is all.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.TextArray.addHighlightPoints">
+<tt class="descname">addHighlightPoints</tt><big>(</big><em>sel=None</em><big>)</big><a class="headerlink" href="#opengl.textext.TextArray.addHighlightPoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a highlight for the selected points. Default is all.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.TextArray.changeMode">
+<tt class="descname">changeMode</tt><big>(</big><em>canvas</em><big>)</big><a class="headerlink" href="#opengl.textext.TextArray.changeMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify the actor according to the specified mode</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.TextArray.fullElems">
+<tt class="descname">fullElems</tt><big>(</big><big>)</big><a class="headerlink" href="#opengl.textext.TextArray.fullElems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an elems index for the full coords set</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.TextArray.get">
+<tt class="descname">get</tt><big>(</big><em>key</em>, <em>default</em><big>)</big><a class="headerlink" href="#opengl.textext.TextArray.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value for key or a default.</p>
+<p>This is the equivalent of the dict get method, except that it
+returns only the default value if the key was not found in self,
+and there is no _default_ method or it raised a KeyError.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.TextArray.inside">
+<tt class="descname">inside</tt><big>(</big><em>camera</em>, <em>rect=None</em>, <em>mode='actor'</em>, <em>sel='any'</em>, <em>return_depth=False</em><big>)</big><a class="headerlink" href="#opengl.textext.TextArray.inside" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test whether the actor is rendered inside rect of camera.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>camera</cite>: a Camera that has been set up properly. Usually it
+will be the current canvas camera, pf.canvas.camera.</li>
+<li><cite>rect</cite>: a tuple of 4 values (x,y,w,h) specifying
+a rectangular subregion of the camera&#8217;s viewport. The default
+is the full camera viewport.</li>
+<li><cite>mode</cite>: the testing mode. Currently defined modes:<ul>
+<li>&#8216;actor&#8217; (default): test if the actor is (partly) inside</li>
+<li>&#8216;element&#8217;: test which elements of the actor are inside</li>
+<li>&#8216;point&#8217;: test which vertices of the actor are inside</li>
+</ul>
+</li>
+<li><cite>sel</cite>: either &#8216;all&#8217; or &#8216;any&#8217;. This is not used with &#8216;point&#8217; mode.
+It specifies whether all or any of the points of the actor,
+element, ... should be inside the rectangle in order to be flagged
+as a positive.</li>
+</ul>
+<p>The return value depends on the mode:</p>
+<ul class="simple">
+<li>&#8216;actor&#8217;: True or False</li>
+<li>&#8216;element&#8217;: the indices of the elements inside</li>
+<li>&#8216;point&#8217;: the indices of the vertices inside</li>
+</ul>
+<p>If <cite>return_depth</cite> is True, a second value is returned, with the z-depth
+value of all the objects inside.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.TextArray.okColor">
+<tt class="descname">okColor</tt><big>(</big><em>color</em>, <em>colormap=None</em><big>)</big><a class="headerlink" href="#opengl.textext.TextArray.okColor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute a color usable by the shader.</p>
+<p>The shader only supports 3*float type of colors:</p>
+<ul class="simple">
+<li>None</li>
+<li>single color (separate for front and back faces)</li>
+<li>vertex colors</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.TextArray.points">
+<tt class="descname">points</tt><big>(</big><big>)</big><a class="headerlink" href="#opengl.textext.TextArray.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the coords of the geometry as a 2D array</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.TextArray.prepare">
+<tt class="descname">prepare</tt><big>(</big><em>canvas</em><big>)</big><a class="headerlink" href="#opengl.textext.TextArray.prepare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare the attributes for the renderer.</p>
+<p>This sanitizes and completes the attributes for the renderer.
+Since the attributes may be dependent on the rendering mode,
+this method is called on each mode change.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.TextArray.removeHighlight">
+<tt class="descname">removeHighlight</tt><big>(</big><big>)</big><a class="headerlink" href="#opengl.textext.TextArray.removeHighlight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the highlight for the current actor.</p>
+<p>Remove the highlight (whether full or partial) from the actor.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.TextArray.render">
+<tt class="descname">render</tt><big>(</big><em>renderer</em><big>)</big><a class="headerlink" href="#opengl.textext.TextArray.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the geometry of this object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.TextArray.setAlpha">
+<tt class="descname">setAlpha</tt><big>(</big><em>alpha</em>, <em>bkalpha=None</em><big>)</big><a class="headerlink" href="#opengl.textext.TextArray.setAlpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the Actors alpha value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.TextArray.setColor">
+<tt class="descname">setColor</tt><big>(</big><em>color=None</em>, <em>colormap=None</em>, <em>ncolors=1</em><big>)</big><a class="headerlink" href="#opengl.textext.TextArray.setColor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the color of the Drawable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.TextArray.setLineStipple">
+<tt class="descname">setLineStipple</tt><big>(</big><em>linestipple</em><big>)</big><a class="headerlink" href="#opengl.textext.TextArray.setLineStipple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the linewidth of the Drawable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.TextArray.setLineWidth">
+<tt class="descname">setLineWidth</tt><big>(</big><em>linewidth</em><big>)</big><a class="headerlink" href="#opengl.textext.TextArray.setLineWidth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the linewidth of the Drawable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.TextArray.setTexture">
+<tt class="descname">setTexture</tt><big>(</big><em>texture</em>, <em>texcoords=None</em>, <em>texmode=None</em><big>)</big><a class="headerlink" href="#opengl.textext.TextArray.setTexture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the texture data of the Drawable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.TextArray.setdefault">
+<tt class="descname">setdefault</tt><big>(</big><em>key</em>, <em>default</em><big>)</big><a class="headerlink" href="#opengl.textext.TextArray.setdefault" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replaces the setdefault function of a normal dictionary.</p>
+<p>This is the same as the get method, except that it also sets the
+default value if get found a KeyError.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.TextArray.subElems">
+<tt class="descname">subElems</tt><big>(</big><em>nsel=None</em>, <em>esel=None</em><big>)</big><a class="headerlink" href="#opengl.textext.TextArray.subElems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an index for the drawable subelems</p>
+<p>This index always refers to the full coords (fcoords).</p>
+<p>The esel selects the elements to be used (default all).</p>
+<p>The nsel selects (possibly multiple) parts from each element.
+The selector is 2D (nsubelems, nsubplex). It is applied on all
+selected elements</p>
+<p>If both esel and esel are None, returns None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.TextArray.update">
+<tt class="descname">update</tt><big>(</big><em>data={}</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#opengl.textext.TextArray.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a dictionary to the Dict object.</p>
+<p>The data can be a dict or Dict type object.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="opengl.textext.Mark">
+<em class="property">class </em><tt class="descclassname">opengl.textext.</tt><tt class="descname">Mark</tt><big>(</big><em>pos</em>, <em>tex</em>, <em>size</em>, <em>opak=False</em>, <em>ontop=True</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#opengl.textext.Mark" title="Permalink to this definition">¶</a></dt>
+<dd><p>A 2D drawing inserted at a 3D position of the scene.</p>
+<p>The minimum attributes and methods are:</p>
+<ul class="simple">
+<li><cite>pos</cite> : 3D point where the mark will be drawn</li>
+</ul>
+<dl class="method">
+<dt id="opengl.textext.Mark.addHighlight">
+<tt class="descname">addHighlight</tt><big>(</big><big>)</big><a class="headerlink" href="#opengl.textext.Mark.addHighlight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add full highlighting of the actor.</p>
+<p>This makes the whole actor being drawn in the highlight color.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Mark.addHighlightElements">
+<tt class="descname">addHighlightElements</tt><big>(</big><em>sel=None</em><big>)</big><a class="headerlink" href="#opengl.textext.Mark.addHighlightElements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a highlight for the selected elements. Default is all.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Mark.addHighlightPoints">
+<tt class="descname">addHighlightPoints</tt><big>(</big><em>sel=None</em><big>)</big><a class="headerlink" href="#opengl.textext.Mark.addHighlightPoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a highlight for the selected points. Default is all.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Mark.changeMode">
+<tt class="descname">changeMode</tt><big>(</big><em>canvas</em><big>)</big><a class="headerlink" href="#opengl.textext.Mark.changeMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify the actor according to the specified mode</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Mark.fullElems">
+<tt class="descname">fullElems</tt><big>(</big><big>)</big><a class="headerlink" href="#opengl.textext.Mark.fullElems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an elems index for the full coords set</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Mark.get">
+<tt class="descname">get</tt><big>(</big><em>key</em>, <em>default</em><big>)</big><a class="headerlink" href="#opengl.textext.Mark.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value for key or a default.</p>
+<p>This is the equivalent of the dict get method, except that it
+returns only the default value if the key was not found in self,
+and there is no _default_ method or it raised a KeyError.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Mark.inside">
+<tt class="descname">inside</tt><big>(</big><em>camera</em>, <em>rect=None</em>, <em>mode='actor'</em>, <em>sel='any'</em>, <em>return_depth=False</em><big>)</big><a class="headerlink" href="#opengl.textext.Mark.inside" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test whether the actor is rendered inside rect of camera.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>camera</cite>: a Camera that has been set up properly. Usually it
+will be the current canvas camera, pf.canvas.camera.</li>
+<li><cite>rect</cite>: a tuple of 4 values (x,y,w,h) specifying
+a rectangular subregion of the camera&#8217;s viewport. The default
+is the full camera viewport.</li>
+<li><cite>mode</cite>: the testing mode. Currently defined modes:<ul>
+<li>&#8216;actor&#8217; (default): test if the actor is (partly) inside</li>
+<li>&#8216;element&#8217;: test which elements of the actor are inside</li>
+<li>&#8216;point&#8217;: test which vertices of the actor are inside</li>
+</ul>
+</li>
+<li><cite>sel</cite>: either &#8216;all&#8217; or &#8216;any&#8217;. This is not used with &#8216;point&#8217; mode.
+It specifies whether all or any of the points of the actor,
+element, ... should be inside the rectangle in order to be flagged
+as a positive.</li>
+</ul>
+<p>The return value depends on the mode:</p>
+<ul class="simple">
+<li>&#8216;actor&#8217;: True or False</li>
+<li>&#8216;element&#8217;: the indices of the elements inside</li>
+<li>&#8216;point&#8217;: the indices of the vertices inside</li>
+</ul>
+<p>If <cite>return_depth</cite> is True, a second value is returned, with the z-depth
+value of all the objects inside.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Mark.okColor">
+<tt class="descname">okColor</tt><big>(</big><em>color</em>, <em>colormap=None</em><big>)</big><a class="headerlink" href="#opengl.textext.Mark.okColor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute a color usable by the shader.</p>
+<p>The shader only supports 3*float type of colors:</p>
+<ul class="simple">
+<li>None</li>
+<li>single color (separate for front and back faces)</li>
+<li>vertex colors</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Mark.points">
+<tt class="descname">points</tt><big>(</big><big>)</big><a class="headerlink" href="#opengl.textext.Mark.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the coords of the geometry as a 2D array</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Mark.prepare">
+<tt class="descname">prepare</tt><big>(</big><em>canvas</em><big>)</big><a class="headerlink" href="#opengl.textext.Mark.prepare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare the attributes for the renderer.</p>
+<p>This sanitizes and completes the attributes for the renderer.
+Since the attributes may be dependent on the rendering mode,
+this method is called on each mode change.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Mark.removeHighlight">
+<tt class="descname">removeHighlight</tt><big>(</big><big>)</big><a class="headerlink" href="#opengl.textext.Mark.removeHighlight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the highlight for the current actor.</p>
+<p>Remove the highlight (whether full or partial) from the actor.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Mark.render">
+<tt class="descname">render</tt><big>(</big><em>renderer</em><big>)</big><a class="headerlink" href="#opengl.textext.Mark.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the geometry of this object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Mark.setAlpha">
+<tt class="descname">setAlpha</tt><big>(</big><em>alpha</em>, <em>bkalpha=None</em><big>)</big><a class="headerlink" href="#opengl.textext.Mark.setAlpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the Actors alpha value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Mark.setColor">
+<tt class="descname">setColor</tt><big>(</big><em>color=None</em>, <em>colormap=None</em>, <em>ncolors=1</em><big>)</big><a class="headerlink" href="#opengl.textext.Mark.setColor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the color of the Drawable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Mark.setLineStipple">
+<tt class="descname">setLineStipple</tt><big>(</big><em>linestipple</em><big>)</big><a class="headerlink" href="#opengl.textext.Mark.setLineStipple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the linewidth of the Drawable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Mark.setLineWidth">
+<tt class="descname">setLineWidth</tt><big>(</big><em>linewidth</em><big>)</big><a class="headerlink" href="#opengl.textext.Mark.setLineWidth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the linewidth of the Drawable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Mark.setTexture">
+<tt class="descname">setTexture</tt><big>(</big><em>texture</em>, <em>texcoords=None</em>, <em>texmode=None</em><big>)</big><a class="headerlink" href="#opengl.textext.Mark.setTexture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the texture data of the Drawable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Mark.setdefault">
+<tt class="descname">setdefault</tt><big>(</big><em>key</em>, <em>default</em><big>)</big><a class="headerlink" href="#opengl.textext.Mark.setdefault" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replaces the setdefault function of a normal dictionary.</p>
+<p>This is the same as the get method, except that it also sets the
+default value if get found a KeyError.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Mark.subElems">
+<tt class="descname">subElems</tt><big>(</big><em>nsel=None</em>, <em>esel=None</em><big>)</big><a class="headerlink" href="#opengl.textext.Mark.subElems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an index for the drawable subelems</p>
+<p>This index always refers to the full coords (fcoords).</p>
+<p>The esel selects the elements to be used (default all).</p>
+<p>The nsel selects (possibly multiple) parts from each element.
+The selector is 2D (nsubelems, nsubplex). It is applied on all
+selected elements</p>
+<p>If both esel and esel are None, returns None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.textext.Mark.update">
+<tt class="descname">update</tt><big>(</big><em>data={}</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#opengl.textext.Mark.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a dictionary to the Dict object.</p>
+<p>The data can be a dict or Dict type object.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="functions-defined-in-module-opengl-textext">
+<h2>79.2. Functions defined in module opengl.textext<a class="headerlink" href="#functions-defined-in-module-opengl-textext" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="opengl.texture.html" title="80. opengl.texture — Texture rendering."
+             >next</a> |</li>
+        <li class="right" >
+          <a href="opengl.shader.html" title="78. opengl.shader — OpenGL shader programs"
+             >previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+    <span class="left">
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
+    </span>
+      Last updated on Feb 08, 2015.
+    <span class="right">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+    </span>
+    </div>
+  </body>
+</html>

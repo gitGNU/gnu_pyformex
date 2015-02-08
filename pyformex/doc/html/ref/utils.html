@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
 <!-- 
@@ -34,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>11. utils — A collection of miscellaneous utility functions. &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>11. utils — A collection of miscellaneous utility functions. &mdash; pyFormex 1.0.1~a2 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.0~a1',
+        VERSION:     '1.0.1~a2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +51,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="12. varray — Working with variable width tables." href="varray.html" />
     <link rel="prev" title="10. elements — Definition of elements." href="elements.html" />
@@ -83,7 +82,7 @@
         <li class="right" >
           <a href="elements.html" title="10. elements — Definition of elements."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -112,10 +111,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="elements.html"
-                        title="previous chapter">10. <tt class="docutils literal docutils literal docutils literal"><span class="pre">elements</span></tt> &#8212; Definition of elements.</a></p>
+                        title="previous chapter">10. <tt class="docutils literal"><span class="pre">elements</span></tt> &#8212; Definition of elements.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="varray.html"
-                        title="next chapter">12. <tt class="docutils literal docutils literal"><span class="pre">varray</span></tt> &#8212; Working with variable width tables.</a></p>
+                        title="next chapter">12. <tt class="docutils literal"><span class="pre">varray</span></tt> &#8212; Working with variable width tables.</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -202,6 +201,29 @@ to grab the output of the command. Set them to an open file object to
 redirect output to that file.</li>
 </ul>
 <dl class="method">
+<dt id="utils.Process.communicate">
+<tt class="descname">communicate</tt><big>(</big><em>input=None</em><big>)</big><a class="headerlink" href="#utils.Process.communicate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interact with process: Send data to stdin.  Read data from
+stdout and stderr, until end-of-file is reached.  Wait for
+process to terminate.  The optional input argument should be a
+string to be sent to the child process, or None, if no data
+should be sent to the child.</p>
+<p>communicate() returns a tuple (stdout, stderr).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.Process.kill">
+<tt class="descname">kill</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.Process.kill" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kill the process with SIGKILL</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.Process.pipe_cloexec">
+<tt class="descname">pipe_cloexec</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.Process.pipe_cloexec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a pipe with FDs set CLOEXEC.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="utils.Process.run">
 <tt class="descname">run</tt><big>(</big><em>timeout=None</em>, <em>wait=True</em><big>)</big><a class="headerlink" href="#utils.Process.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run a Process, optionally with timeout.</p>
@@ -219,6 +241,18 @@ Popen.communicate method.</li>
 <li><cite>timedout</cite>: True if a timeout was specified and the process timed
 out, otherwise False.</li>
 </ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.Process.send_signal">
+<tt class="descname">send_signal</tt><big>(</big><em>sig</em><big>)</big><a class="headerlink" href="#utils.Process.send_signal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a signal to the process</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.Process.terminate">
+<tt class="descname">terminate</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.Process.terminate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Terminate the process with SIGTERM</p>
 </dd></dl>
 
 <dl class="method">
@@ -241,45 +275,10 @@ process really terminated, and if not kills it.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="utils.Process.communicate">
-<tt class="descname">communicate</tt><big>(</big><em>input=None</em><big>)</big><a class="headerlink" href="#utils.Process.communicate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interact with process: Send data to stdin.  Read data from
-stdout and stderr, until end-of-file is reached.  Wait for
-process to terminate.  The optional input argument should be a
-string to be sent to the child process, or None, if no data
-should be sent to the child.</p>
-<p>communicate() returns a tuple (stdout, stderr).</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="utils.Process.pipe_cloexec">
-<tt class="descname">pipe_cloexec</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.Process.pipe_cloexec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a pipe with FDs set CLOEXEC.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="utils.Process.wait">
 <tt class="descname">wait</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.Process.wait" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wait for child process to terminate.  Returns returncode
 attribute.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="utils.Process.send_signal">
-<tt class="descname">send_signal</tt><big>(</big><em>sig</em><big>)</big><a class="headerlink" href="#utils.Process.send_signal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send a signal to the process</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="utils.Process.terminate">
-<tt class="descname">terminate</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.Process.terminate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Terminate the process with SIGTERM</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="utils.Process.kill">
-<tt class="descname">kill</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.Process.kill" title="Permalink to this definition">¶</a></dt>
-<dd><p>Kill the process with SIGKILL</p>
 </dd></dl>
 
 </dd></dl>
@@ -345,23 +344,6 @@ things to the file, and close it. The file can be read back similarly:</p>
 </pre></div>
 </div>
 <dl class="method">
-<dt id="utils.File.open">
-<tt class="descname">open</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.File.open" title="Permalink to this definition">¶</a></dt>
-<dd><p>Open the File in the requested mode.</p>
-<p>This can be used to open a File object outside a <cite>with</cite>
-statement. It returns a Python file object that can be used
-to read from or write to the File. It performs the following:</p>
-<ul class="simple">
-<li>If no compression is used, ope the file in the requested mode.</li>
-<li>For reading a compressed file, decompress the file to a temporary
-file and open the temporary file for reading.</li>
-<li>For writing a compressed file, open a tem[porary file for writing.</li>
-</ul>
-<p>See the documentation for the <a class="reference internal" href="#utils.File" title="utils.File"><tt class="xref py py-class docutils literal"><span class="pre">File</span></tt></a> class for an example of
-its use.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="utils.File.close">
 <tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.File.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close the File.</p>
@@ -373,6 +355,23 @@ its use.</p>
 requested, the file is compressed.</li>
 <li>If a temporary file was in use and delete_temp is True,
 the temporary file is deleted.</li>
+</ul>
+<p>See the documentation for the <a class="reference internal" href="#utils.File" title="utils.File"><tt class="xref py py-class docutils literal"><span class="pre">File</span></tt></a> class for an example of
+its use.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.File.open">
+<tt class="descname">open</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.File.open" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open the File in the requested mode.</p>
+<p>This can be used to open a File object outside a <cite>with</cite>
+statement. It returns a Python file object that can be used
+to read from or write to the File. It performs the following:</p>
+<ul class="simple">
+<li>If no compression is used, ope the file in the requested mode.</li>
+<li>For reading a compressed file, decompress the file to a temporary
+file and open the temporary file for reading.</li>
+<li>For writing a compressed file, open a tem[porary file for writing.</li>
 </ul>
 <p>See the documentation for the <a class="reference internal" href="#utils.File" title="utils.File"><tt class="xref py py-class docutils literal"><span class="pre">File</span></tt></a> class for an example of
 its use.</p>
@@ -419,15 +418,13 @@ names.</p>
 </pre></div>
 </div>
 <dl class="method">
-<dt id="utils.NameSequence.next">
-<tt class="descname">next</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.NameSequence.next" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the next name in the sequence</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="utils.NameSequence.peek">
-<tt class="descname">peek</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.NameSequence.peek" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the next name in the sequence without incrementing.</p>
+<dt id="utils.NameSequence.files">
+<tt class="descname">files</tt><big>(</big><em>sort=&lt;function hsorted at 0x2addf2b5fcf8&gt;</em><big>)</big><a class="headerlink" href="#utils.NameSequence.files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a (sorted) list of files matching the name pattern.</p>
+<p>A function may be specified to sort/filter the list of file names.
+The function should take a list of filenames as input. The output
+of the function is returned. The default sort function will sort
+the filenames in a human order.</p>
 </dd></dl>
 
 <dl class="method">
@@ -440,13 +437,15 @@ UNIX-like shell command to select all the generated file names.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="utils.NameSequence.files">
-<tt class="descname">files</tt><big>(</big><em>sort=&lt;function hsorted at 0x8a379b0&gt;</em><big>)</big><a class="headerlink" href="#utils.NameSequence.files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a (sorted) list of files matching the name pattern.</p>
-<p>A function may be specified to sort/filter the list of file names.
-The function should take a list of filenames as input. The output
-of the function is returned. The default sort function will sort
-the filenames in a human order.</p>
+<dt id="utils.NameSequence.next">
+<tt class="descname">next</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.NameSequence.next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the next name in the sequence</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.NameSequence.peek">
+<tt class="descname">peek</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.NameSequence.peek" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the next name in the sequence without incrementing.</p>
 </dd></dl>
 
 </dd></dl>
@@ -472,21 +471,9 @@ the filenames in a human order.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="utils.DictDiff.removed">
-<tt class="descname">removed</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.DictDiff.removed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the keys in past_dict but not in current_dict</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="utils.DictDiff.changed">
 <tt class="descname">changed</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.DictDiff.changed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the keys for which the value has changed</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="utils.DictDiff.unchanged">
-<tt class="descname">unchanged</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.DictDiff.unchanged" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the keys with same value in both dicts</p>
 </dd></dl>
 
 <dl class="method">
@@ -495,25 +482,44 @@ the filenames in a human order.</p>
 <dd><p>Return True if both dicts are equivalent</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="utils.DictDiff.removed">
+<tt class="descname">removed</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.DictDiff.removed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the keys in past_dict but not in current_dict</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.DictDiff.unchanged">
+<tt class="descname">unchanged</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.DictDiff.unchanged" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the keys with same value in both dicts</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
 <div class="section" id="functions-defined-in-module-utils">
 <h2>11.2. Functions defined in module utils<a class="headerlink" href="#functions-defined-in-module-utils" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="utils.deprecated">
-<tt class="descclassname">utils.</tt><tt class="descname">deprecated</tt><big>(</big><em>message</em><big>)</big><a class="headerlink" href="#utils.deprecated" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decorator to deprecate a function.</p>
+<dt id="utils.warning">
+<tt class="descclassname">utils.</tt><tt class="descname">warning</tt><big>(</big><em>message</em>, <em>level=&lt;type 'exceptions.UserWarning'&gt;</em>, <em>stacklevel=3</em><big>)</big><a class="headerlink" href="#utils.warning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator to add a warning to a function.</p>
 <p>Adding this decorator to a function will warn the user with the
 supplied message when the decorated function gets executed for
 the first time in a session.
 An option is provided to switch off this warning in future sessions.</p>
 <p>Decorating a function is done as follows:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="nd">@utils.deprecated</span><span class="p">(</span><span class="s">&#39;This is the message shown to the user&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="nd">@utils.warning</span><span class="p">(</span><span class="s">&#39;This is the message shown to the user&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="o">...</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.deprecated">
+<tt class="descclassname">utils.</tt><tt class="descname">deprecated</tt><big>(</big><em>message</em><big>)</big><a class="headerlink" href="#utils.deprecated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator to deprecate a function</p>
+<p>This is like <a class="reference internal" href="#utils.warning" title="utils.warning"><tt class="xref py py-func docutils literal"><span class="pre">warning()</span></tt></a>, but the level is set to DeprecationWarning.</p>
 </dd></dl>
 
 <dl class="function">
@@ -635,7 +641,7 @@ added.</li>
 <li><cite>ext</cite>: a list of strings each starting with a &#8216;.&#8217;.</li>
 </ul>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">splitFileDescription</span><span class="p">(</span><span class="n">file_description</span><span class="p">[</span><span class="s">&#39;img&#39;</span><span class="p">])</span>
-<span class="go">(&#39;Images &#39;, [&#39;.png&#39;, &#39;.jpg&#39;, &#39;.eps&#39;, &#39;.gif&#39;, &#39;.bmp&#39;])</span>
+<span class="go">(&#39;Images &#39;, [&#39;.png&#39;, &#39;.jpg&#39;, &#39;.jpeg&#39;, &#39;.eps&#39;, &#39;.gif&#39;, &#39;.bmp&#39;])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">splitFileDescription</span><span class="p">(</span><span class="n">file_description</span><span class="p">[</span><span class="s">&#39;pgf&#39;</span><span class="p">],</span><span class="n">compr</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="go">(&#39;pyFormex geometry files &#39;, [&#39;.pgf&#39;, &#39;.pgf.gz&#39;, &#39;.pgf.bz2&#39;])</span>
 </pre></div>
@@ -730,10 +736,11 @@ his filters himself.</li>
 <span class="go">gts = &#39;GTS files (*.gts)&#39;</span>
 <span class="go">html = &#39;Web pages (*.html)&#39;</span>
 <span class="go">icon = &#39;Icons (*.xpm)&#39;</span>
-<span class="go">img = &#39;Images (*.png *.jpg *.eps *.gif *.bmp)&#39;</span>
+<span class="go">img = &#39;Images (*.png *.jpg *.jpeg *.eps *.gif *.bmp)&#39;</span>
 <span class="go">inp = &#39;Abaqus or CalCuliX input files (*.inp)&#39;</span>
 <span class="go">neu = &#39;Gambit Neutral files (*.neu)&#39;</span>
-<span class="go">off = &#39;OFF files (*.off)&#39;</span>
+<span class="go">obj = &#39;Wavefront OBJ files (*.obj)&#39;</span>
+<span class="go">off = &#39;Geomview object files (*.off)&#39;</span>
 <span class="go">pgf = &#39;pyFormex geometry files (*.pgf)&#39;</span>
 <span class="go">png = &#39;PNG images (*.png)&#39;</span>
 <span class="go">postproc = &#39;Postproc scripts (*_post.py *.post)&#39;</span>
@@ -748,7 +755,7 @@ his filters himself.</li>
 <span class="go">vtp = &#39;vtkPolyData file (*.vtp)&#39;</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fileDescription</span><span class="p">(</span><span class="s">&#39;img&#39;</span><span class="p">)</span>
-<span class="go">&#39;Images (*.png *.jpg *.eps *.gif *.bmp)&#39;</span>
+<span class="go">&#39;Images (*.png *.jpg *.jpeg *.eps *.gif *.bmp)&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fileDescription</span><span class="p">([</span><span class="s">&#39;stl&#39;</span><span class="p">,</span><span class="s">&#39;all&#39;</span><span class="p">])</span>
 <span class="go">[&#39;STL files (*.stl)&#39;, &#39;All files (*)&#39;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fileDescription</span><span class="p">(</span><span class="s">&#39;doc&#39;</span><span class="p">)</span>
@@ -973,9 +980,8 @@ If the file was uncompressed, this is an empty string.</li>
 <dl class="function">
 <dt id="utils.projectName">
 <tt class="descclassname">utils.</tt><tt class="descname">projectName</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#utils.projectName" title="Permalink to this definition">¶</a></dt>
-<dd><p>Derive a project name from a file name.
-`
-The project name is the basename of the file without the extension.
+<dd><p>Derive a project name from a file name.</p>
+<p>The project name is the basename of the file without the extension.
 It is equivalent with splitFilename(fn)[1]</p>
 </dd></dl>
 
@@ -990,6 +996,12 @@ It is equivalent with splitFilename(fn)[1]</p>
 <tt class="descclassname">utils.</tt><tt class="descname">findIcon</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#utils.findIcon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the file name for an icon with given name.</p>
 <p>If no icon file is found, returns the question mark icon.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.listIconNames">
+<tt class="descclassname">utils.</tt><tt class="descname">listIconNames</tt><big>(</big><em>types=None</em><big>)</big><a class="headerlink" href="#utils.listIconNames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the list of available icons by their name.</p>
 </dd></dl>
 
 <dl class="function">
@@ -1045,8 +1057,38 @@ The changed files are guaranteed not to start with a &#8216;/&#8217;.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="utils.listDir">
+<tt class="descclassname">utils.</tt><tt class="descname">listDir</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#utils.listDir" title="Permalink to this definition">¶</a></dt>
+<dd><p>List the contents of the specified directory path.</p>
+<p>Returns a tuple (dirs,files), where dirs is the list if subdirectories
+in the path, and files is the list of files. Either of the lists can be
+empty. If the path does not exist or is not accessible, two empty
+lists are returned.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.listDirs">
+<tt class="descclassname">utils.</tt><tt class="descname">listDirs</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#utils.listDirs" title="Permalink to this definition">¶</a></dt>
+<dd><p>List the subdirectories in the specified directory path.</p>
+<p>Returns a list with the names of all directory type entries in the
+specified path. If there are no directories, or the path does not
+exist or is not accessible, returns an empty list.</p>
+<p>This is syntactic sugar for <cite>listDir(path)[0]</cite>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.listFiles">
+<tt class="descclassname">utils.</tt><tt class="descname">listFiles</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#utils.listFiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the files of the specified directory path.</p>
+<p>Returns a list with the names of all file type entries in the
+specified path. If there are no files, or the path does not
+exist or is not accessible, returns an empty list.</p>
+<p>This is syntactic sugar for <cite>listDir(path)[0]</cite>.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="utils.listTree">
-<tt class="descclassname">utils.</tt><tt class="descname">listTree</tt><big>(</big><em>path</em>, <em>listdirs=True</em>, <em>topdown=True</em>, <em>sorted=False</em>, <em>excludedirs=</em><span class="optional">[</span><span class="optional">]</span>, <em>excludefiles=</em><span class="optional">[</span><span class="optional">]</span>, <em>includedirs=</em><span class="optional">[</span><span class="optional">]</span>, <em>includefiles=</em><span class="optional">[</span><span class="optional">]</span>, <em>symlinks=True</em><big>)</big><a class="headerlink" href="#utils.listTree" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">utils.</tt><tt class="descname">listTree</tt><big>(</big><em>path</em>, <em>listdirs=True</em>, <em>topdown=True</em>, <em>sorted=False</em>, <em>excludedirs=[]</em>, <em>excludefiles=[]</em>, <em>includedirs=[]</em>, <em>includefiles=[]</em>, <em>symlinks=True</em><big>)</big><a class="headerlink" href="#utils.listTree" title="Permalink to this definition">¶</a></dt>
 <dd><p>List all files in path.</p>
 <p>If <tt class="docutils literal"><span class="pre">listdirs==False</span></tt>, directories are not listed.
 By default the tree is listed top down and entries in the same directory
@@ -1092,6 +1134,54 @@ pattern text in the pyFormex source .py files (including the examples).
 Extra options can be passed to the grep command. See <cite>man grep</cite> for
 more info.</p>
 <p>Returns the output of the grep command.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.diskSpace">
+<tt class="descclassname">utils.</tt><tt class="descname">diskSpace</tt><big>(</big><em>path</em>, <em>units=None</em>, <em>ndigits=2</em><big>)</big><a class="headerlink" href="#utils.diskSpace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the amount of diskspace of a file system.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>path</cite>: a path name inside the file system to be probed.</li>
+<li><cite>units</cite>,`ndigits`: if <cite>untis</cite> is specified, the sizes will be reported
+in this units. See <a class="reference internal" href="#utils.humanSize" title="utils.humanSize"><tt class="xref py py-func docutils literal"><span class="pre">humanSize()</span></tt></a> for details`.
+The default is to report the number of bytes.</li>
+</ul>
+<p>Returns the total, used and available disk space for the
+file system containing the given path.</p>
+<p>Notice that used + available does not necessarily equals total,
+because a file system may (and usually does) have reserved blocks.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.humanSize">
+<tt class="descclassname">utils.</tt><tt class="descname">humanSize</tt><big>(</big><em>size</em>, <em>units</em>, <em>ndigits=None</em><big>)</big><a class="headerlink" href="#utils.humanSize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a number to a human size.</p>
+<p>Large numbers are often represented in a more human readable
+form using k, M, G prefixes. This function returns the input
+size as a number with the specified prefix.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>size</cite>: a number (integer or float)</li>
+<li><cite>units</cite>: string specifying the target units. The first character should
+be one of k,K,M,G,T,P,E,Z,Y. &#8216;k&#8217; and &#8216;K&#8217; are equivalent. A second
+character &#8216;i&#8217; can be added to use binary (K=1024) prefixes instead of
+decimal (k=1000).</li>
+<li><cite>ndigits</cite>: integer. If specified, the result is rounded to
+the specified number of digits.</li>
+</ul>
+<p>Returns: a float value rounded to <cite>ndigits</cite> digits.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">humanSize</span><span class="p">(</span><span class="mi">1234567890</span><span class="p">,</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="go">1234567.89</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">humanSize</span><span class="p">(</span><span class="mi">1234567890</span><span class="p">,</span><span class="s">&#39;M&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">1235.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">humanSize</span><span class="p">(</span><span class="mi">1234567890</span><span class="p">,</span><span class="s">&#39;G&#39;</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">1.235</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">humanSize</span><span class="p">(</span><span class="mi">1234567890</span><span class="p">,</span><span class="s">&#39;Gi&#39;</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">1.15</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -1481,10 +1571,28 @@ is returned.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="utils.listFontFiles">
-<tt class="descclassname">utils.</tt><tt class="descname">listFontFiles</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.listFontFiles" title="Permalink to this definition">¶</a></dt>
+<dt id="utils.listAllFonts">
+<tt class="descclassname">utils.</tt><tt class="descname">listAllFonts</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.listAllFonts" title="Permalink to this definition">¶</a></dt>
 <dd><p>List all fonts known to the system.</p>
 <p>Returns a list of path names to all the font files found on the system.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.is_mono_font">
+<tt class="descclassname">utils.</tt><tt class="descname">is_mono_font</tt><big>(</big><em>fontfile</em>, <em>size=24</em><big>)</big><a class="headerlink" href="#utils.is_mono_font" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test whether a fontfile is a fixed width font or not</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.listMonoFonts">
+<tt class="descclassname">utils.</tt><tt class="descname">listMonoFonts</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.listMonoFonts" title="Permalink to this definition">¶</a></dt>
+<dd><p>List all monospace fonts files found on the system.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.defaultMonoFont">
+<tt class="descclassname">utils.</tt><tt class="descname">defaultMonoFont</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.defaultMonoFont" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a default monospace font for the system.</p>
 </dd></dl>
 
 <dl class="function">
@@ -1541,17 +1649,17 @@ To search other containers, add handlers to iterate over their contents:</p>
         <li class="right" >
           <a href="elements.html" title="10. elements — Definition of elements."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
-        &copy; Copyright 2004-2012, Benedict Verhegghe.
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 18, 2014.
+      Last updated on Feb 08, 2015.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>
     </div>
   </body>

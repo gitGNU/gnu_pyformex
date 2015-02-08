@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
 <!-- 
@@ -34,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>BuMPix Live GNU/Linux system &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>BuMPix Live GNU/Linux system &mdash; pyFormex 1.0.1~a2 documentation</title>
 
     
     <link rel="stylesheet" href="_static/pyformex.css" type="text/css" />
@@ -42,8 +41,8 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '1.0.0~a1',
+        URL_ROOT:    './',
+        VERSION:     '1.0.1~a2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +51,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="index.html" />
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="index.html" />
     <link rel="next" title="GNU GENERAL PUBLIC LICENSE" href="license.html" />
     <link rel="prev" title="pyFormex file formats" href="file_format.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
@@ -82,7 +81,7 @@
         <li class="right" >
           <a href="file_format.html" title="pyFormex file formats"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li> 
+        <li><a href="index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -213,7 +212,8 @@ USB stick will no longer be usable to store your files under Windows.</p>
 <h3>Create the BuMPix USB stick under GNU/Linux<a class="headerlink" href="#create-the-bumpix-usb-stick-under-gnu-linux" title="Permalink to this headline">¶</a></h3>
 <p>If you have an existing GNU/Linux system available, you can write the
 downloaded image to the USB-stick using the command:</p>
-<div class="highlight-python"><pre>dd if=bumpix-VERSION.img of=USBDEV</pre>
+<div class="highlight-python"><div class="highlight"><pre>dd if=bumpix-VERSION.img of=USBDEV
+</pre></div>
 </div>
 <p>where <tt class="docutils literal"><span class="pre">bumpix-VERSION.img</span></tt> is the downloaded file and USBDEV
 is the device corresponding to your USB key. This should be
@@ -242,7 +242,8 @@ you&#8217;ve got the correct harddisk designation (e.g. <tt class="docutils lite
 </li>
 <li><p class="first">Write the image to the USB stick with the command, substituting the
 harddisk designation found above:</p>
-<div class="highlight-python"><pre>dd if=c:\download\ddwrite\bumpix-0.4-b1.img of=\\?\device\harddisk1\partition0 bs=1M --progress</pre>
+<div class="highlight-python"><div class="highlight"><pre>dd if=c:\download\ddwrite\bumpix-0.4-b1.img of=\\?\device\harddisk1\partition0 bs=1M --progress
+</pre></div>
 </div>
 </li>
 </ul>
@@ -294,7 +295,8 @@ first hit <cite>ENTER</cite> and remove the USB stick when the screen goes black
 <li><p class="first">BuMPix 0.7.0 may contain a few user configuration files with incorrect
 owner settings. As a result some XFCE configuration may not be permanent.
 To solve the problem, you should run the following command in a terminal</p>
-<div class="highlight-python"><pre>sudo chown -R user:user /home/user</pre>
+<div class="highlight-python"><div class="highlight"><pre>sudo chown -R user:user /home/user
+</pre></div>
 </div>
 </li>
 <li><p class="first">For BuMPix 0.7.0 (featuring pyFormex 0.8.4) with XFCE desktop, some users
@@ -322,13 +324,15 @@ do this.</p>
 <ul>
 <li><p class="first">First, we need to fix some file ownerships. Open a Terminal and do
 the following</p>
-<div class="highlight-python"><pre>sudo -i
+<div class="highlight-python"><div class="highlight"><pre>sudo -i
 chown -R user:user /home/user
-exit</pre>
+exit
+</pre></div>
 </div>
 </li>
 <li><p class="first">Then, add your own bin directory to the PATH:</p>
-<div class="highlight-python"><pre>echo 'export PATH=~/bin:$PATH' &gt;&gt; ~/.bash_profile</pre>
+<div class="highlight-python"><div class="highlight"><pre>echo &#39;export PATH=~/bin:$PATH&#39; &gt;&gt; ~/.bash_profile
+</pre></div>
 </div>
 </li>
 <li><p class="first">Change the configuration of your teminal. Click
@@ -337,24 +341,28 @@ and check the option &#8216;Run command as a login shell&#8217;.</p>
 </li>
 <li><p class="first">Close the terminal and open a new one. Check that the previous
 operation went correct:</p>
-<div class="highlight-python"><pre>echo $PATH</pre>
+<div class="highlight-python"><div class="highlight"><pre>echo $PATH
+</pre></div>
 </div>
 </li>
 <li><p class="first">This should start with &#8216;/home/user/bin&#8217;. If ok, then do:</p>
-<div class="highlight-python"><pre>cd bin
+<div class="highlight-python"><div class="highlight"><pre>cd bin
 chmod +x pyformex-svn
-ls</pre>
+ls
+</pre></div>
 </div>
 </li>
 <li><p class="first">You should now see a green &#8216;pyformex-svn&#8217; script. Execute it as follows:</p>
-<div class="highlight-python"><pre>./pyformex-svn install makelib symlink
-ls</pre>
+<div class="highlight-python"><div class="highlight"><pre>./pyformex-svn install makelib symlink
+ls
+</pre></div>
 </div>
 </li>
 <li><p class="first">If everything went well, you should now also have a blue &#8216;pyformex&#8217;
 link. Test it:</p>
-<div class="highlight-python"><pre>cd ..
-pyformex</pre>
+<div class="highlight-python"><div class="highlight"><pre>cd ..
+pyformex
+</pre></div>
 </div>
 </li>
 <li><p class="first">The latest svn version of pyFormex should start. If ok, close it and
@@ -368,12 +376,14 @@ button in the top panel. Right click on the button, then
 <li><p class="first">Now you should always have the updated pyformex running, from the
 command line as well as from the panel button. Next time you want to
 upgrade (or downgrade), you can just do:</p>
-<div class="highlight-python"><pre>cd pyformex-svn
-svn up</pre>
+<div class="highlight-python"><div class="highlight"><pre>cd pyformex-svn
+svn up
+</pre></div>
 </div>
 </li>
 <li><p class="first">or, for a downgrade, add a specific revision number:</p>
-<div class="highlight-python"><pre>svn up -r 1833</pre>
+<div class="highlight-python"><div class="highlight"><pre>svn up -r 1833
+</pre></div>
 </div>
 </li>
 </ul>
@@ -401,16 +411,16 @@ svn up</pre>
         <li class="right" >
           <a href="file_format.html" title="pyFormex file formats"
              >previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li> 
+        <li><a href="index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
-        &copy; Copyright 2004-2012, Benedict Verhegghe.
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 18, 2014.
+      Last updated on Feb 08, 2015.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>
     </div>
   </body>

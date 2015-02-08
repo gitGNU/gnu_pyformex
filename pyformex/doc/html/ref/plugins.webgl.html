@@ -1,0 +1,417 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!-- 
+##
+##  This file is part of the pyFormex project.
+##  pyFormex is a tool for generating, manipulating and transforming 3D
+##  geometrical models by sequences of mathematical operations.
+##  Home page: http://pyformex.org
+##  Project page:  http://savannah.nongnu.org/projects/pyformex/
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Distributed under the GNU General Public License version 3 or later.
+##
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see http://www.gnu.org/licenses/.
+##
+-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>68. plugins.webgl — View and manipulate 3D models in your browser. &mdash; pyFormex 1.0.1~a2 documentation</title>
+
+    
+    <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1~a2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="up" title="pyFormex reference manual" href="../refman.html" />
+    <link rel="next" title="69. opengl.camera — OpenGL camera handling" href="opengl.camera.html" />
+    <link rel="prev" title="67. plugins.web — Tools to access files from the web" href="plugins.web.html" />
+<link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
+
+  </head>
+  <body>
+
+<div class="header">
+  <a href="http://pyformex.org">
+  <img src="http://www.nongnu.org/pyformex/_static/scallop_dome_small.png" alt="scallop dome" border="0" hspace="20" vspace="12" align="left" />
+  <img src="http://www.nongnu.org/pyformex/_static/pyformex-logo-2.png" alt="pyformex logo" border="0" hspace="10" vspace="8" align="left" />
+  </a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="opengl.camera.html" title="69. opengl.camera — OpenGL camera handling"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="plugins.web.html" title="67. plugins.web — Tools to access files from the web"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center">
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick"/>
+<input type="hidden" name="hosted_button_id" value="P7J4AM4QULB4Q"/>
+<input type="image" src="https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif" name="submit" alt="PayPal - The safer, easier way to pay online!"/>
+<img alt="" border="0" src="https://www.paypal.com/nl_NL/i/scr/pixel.gif" width="1" height="1"/>
+</form>
+
+</div>
+   
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">68. <tt class="docutils literal"><span class="pre">plugins.webgl</span></tt> &#8212; View and manipulate 3D models in your browser.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-plugins-webgl">68.1. Classes defined in module plugins.webgl</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-plugins-webgl">68.2. Functions defined in module plugins.webgl</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="plugins.web.html"
+                        title="previous chapter">67. <tt class="docutils literal"><span class="pre">plugins.web</span></tt> &#8212; Tools to access files from the web</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="opengl.camera.html"
+                        title="next chapter">69. <tt class="docutils literal"><span class="pre">opengl.camera</span></tt> &#8212; OpenGL camera handling</a></p>
+  
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+<div align="center">
+  <p>
+  <a href="http://www.fsf.org/register_form?referrer=8491"><img src="http://www.nongnu.org/pyformex/_static/fsf-member8491.png" alt="[FSF Associate Member]" width="89" height="31"  /></a>
+  </p>
+  <p>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+      src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /></a>
+  </p>
+</div>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-plugins.webgl">
+<span id="plugins-webgl-view-and-manipulate-3d-models-in-your-browser"></span><span id="sec-ref-plugins-webgl"></span><h1>68. <a class="reference internal" href="#module-plugins.webgl" title="plugins.webgl: View and manipulate 3D models in your browser."><tt class="xref py py-mod docutils literal"><span class="pre">plugins.webgl</span></tt></a> &#8212; View and manipulate 3D models in your browser.<a class="headerlink" href="#module-plugins.webgl" title="Permalink to this headline">¶</a></h1>
+<p>This module defines some classes and function to help with the creation
+of WebGL models. A WebGL model can be viewed directly from a compatible
+browser (see <a class="reference external" href="http://en.wikipedia.org/wiki/WebGL">http://en.wikipedia.org/wiki/WebGL</a>).</p>
+<p>A WebGL model typically consists out of an HTML file and a Javascript file,
+possibly also some geometry data files. The HTML file is loaded in the
+browser and starts the Javascript program, responsible for rendering the
+WebGL scene.</p>
+<div class="section" id="classes-defined-in-module-plugins-webgl">
+<h2>68.1. Classes defined in module plugins.webgl<a class="headerlink" href="#classes-defined-in-module-plugins-webgl" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="plugins.webgl.WebGL">
+<em class="property">class </em><tt class="descclassname">plugins.webgl.</tt><tt class="descname">WebGL</tt><big>(</big><em>name='Scene1'</em>, <em>scripts=None</em>, <em>bgcolor='white'</em>, <em>title=None</em>, <em>description=None</em>, <em>keywords=None</em>, <em>author=None</em>, <em>htmlheader=None</em>, <em>jsheader=None</em>, <em>pgfheader=None</em>, <em>sep=''</em>, <em>dataformat='.pgf.gz'</em>, <em>urlprefix=None</em>, <em>gui=True</em>, <em>cleanup=False</em><big>)</big><a class="headerlink" href="#plugins.webgl.WebGL" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class to export a 3D scene to WebGL.</p>
+<p>Exporting a WebGL model creates:</p>
+<ul class="simple">
+<li>a HTML file calling some Javascript files. This file can be viewed
+in a WebGL enabled browser (Firefox, Chrome, Safari)</li>
+<li>a Javascript file describing the model. This file relies an other
+Javascript files to do the actual rendering and provide control menus.
+The default rendering script is
+<a class="reference external" href="http://feops.ugent.be/pub/webgl/fewgl.js">http://feops.ugent.be/pub/webgl/fewgl.js</a> and the gui toolkit is
+<a class="reference external" href="http://get.goXTK.com/xtk_xdat.gui.js">http://get.goXTK.com/xtk_xdat.gui.js</a>.
+The user can replace them with scripts of his choice.</li>
+<li>a number of geometry files in pyFormex PGF format. These are normally
+created automatically by the exportScene method. The user can optionally
+add other files.</li>
+</ul>
+<p>An example of its usage can be found in the WebGL example.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>name</cite>: string: the base name for the created HTML and JS files.</li>
+<li><cite>scripts</cite>: a list of URLs pointing to scripts that will be needed
+for the rendering of the scene.</li>
+<li><cite>bgcolor</cite>: string: the background color of the rendered page. This
+can be the name of a color or a hexadecimal WEB color string like
+&#8216;#F0A0F0&#8217;.</li>
+<li><cite>title</cite>: string: an optional title to be set in the .html file. If not
+specified, the <cite>name</cite> is used.</li>
+<li><cite>description</cite>, <cite>keywords</cite>, <cite>author</cite>: strings: if specified, these
+will be added as meta tags to the generated .html file. The first two
+have defaults if not specified.</li>
+<li><cite>htmlheader</cite>: string: a string to be included in the header section
+of the exported html file. It should be  al legal html string.</li>
+<li><cite>jsheader</cite>: string: a string to be included at the start of
+the javascript file. It should be a legal javascript text.
+Usually, it is only used to insert comments, in which case
+all lines should start with &#8216;//&#8217;, or the whole text should
+be included in a &#8216;/<em>&#8216;, &#8216;</em>/&#8217; pair.</li>
+<li><cite>dataformat</cite>: string: the extension of the data files used for storing
+the geometry. This should be an extension supported by the webgl
+rendering script. The default (<a class="reference external" href="http://feops.ugent.be/pub/webgl/fewgl.js">http://feops.ugent.be/pub/webgl/fewgl.js</a>)
+will always support pyFormex native formats &#8216;.pgf&#8217; and &#8216;.pgf.gz&#8217;.
+Some other formats (like .stl) may also be supported, but the use of
+the native formats is prefered, because they are a lot smaller.
+Default is to use the compressed &#8216;.pgf.gz&#8217; format.</li>
+<li><cite>urlprefix</cite>: string: if specified, this string gets prepended to the
+exported .js filename in the .html file, and to the datafiles in the
+exported .js file. This can be used to serve the models from a web
+server, where the html code is generated dynamically and the model
+script and data can not be kept in the same location as the html.</li>
+<li><cite>gui</cite>: bool: if True, a gui will be added to the model,
+allowing some features to be changed interactively.</li>
+<li><cite>cleanup</cite>: bool: if True, files in the output directory (the current
+work directory) starting with the specified base name and having a name
+structure used by the exported, will be deleted from the file system.
+Currently, this includes files with name patterns NAME.html*, NAME.js*
+NAME_*.pgf* and NAME_*.stl*.</li>
+</ul>
+<dl class="method">
+<dt id="plugins.webgl.WebGL.addActor">
+<tt class="descname">addActor</tt><big>(</big><em>actor</em><big>)</big><a class="headerlink" href="#plugins.webgl.WebGL.addActor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an actor to the model.</p>
+<p>The actor&#8217;s drawable objects are added to the WebGL model
+as a list.
+The actor&#8217;s controller attributes are added to the controller gui.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.webgl.WebGL.addScene">
+<tt class="descname">addScene</tt><big>(</big><em>name=None</em>, <em>camera=True</em><big>)</big><a class="headerlink" href="#plugins.webgl.WebGL.addScene" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the current OpenGL scene to the WebGL model.</p>
+<p>This method adds all the geometry in the current viewport to
+the WebGL model. By default it will also add the current camera
+and export the scene as a completed WebGL model with the given
+name.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>name</cite>: a string with the name of the model for the current
+scene. When multiple scenes are exported, they will be identified
+by this name. This name is also used as the basename for the
+exported geometry files. For a single scene export, the name may
+be omitted, and will then be set equal to the name of the WebGL
+exporter. If no name is specified, the model is not exported.
+This allows the user to add more scenes to the same model, and
+then to explicitely export it with <a class="reference internal" href="#plugins.webgl.WebGL.exportScene" title="plugins.webgl.WebGL.exportScene"><tt class="xref py py-func docutils literal"><span class="pre">exportScene()</span></tt></a>.</li>
+<li><cite>camera</cite>: bool: if True, sets the current viewport camera as the
+camera in the WebGL model.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.webgl.WebGL.export">
+<tt class="descname">export</tt><big>(</big><em>body=''</em>, <em>createdby=-1</em><big>)</big><a class="headerlink" href="#plugins.webgl.WebGL.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finish the export by creating the html file.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>body</cite>: an HTML section to be put in the body</li>
+<li><cite>createdby</cite>: int. If not zero, a logo &#8216;Created by pyFormex&#8217;
+will appear on the page. If &gt; 0, it specifies the width of the
+logo field. If &lt; 0, the logo will be displayed on its natural
+width.</li>
+</ul>
+<p>Returns the full path of the create html file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.webgl.WebGL.exportScene">
+<tt class="descname">exportScene</tt><big>(</big><em>name=None</em><big>)</big><a class="headerlink" href="#plugins.webgl.WebGL.exportScene" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export the current OpenGL scene to the WebGL model.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>name</cite>: string: the name of the model in the current
+scene. When multiple scenes are exported, they will be identified
+by this name. This name is also used as the basename for the
+exported geometry files. For a single scene export, the name may
+be omitted, and will then be set equal to the name of the WebGL
+exporter.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.webgl.WebGL.format_actor">
+<tt class="descname">format_actor</tt><big>(</big><em>actor</em><big>)</big><a class="headerlink" href="#plugins.webgl.WebGL.format_actor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export an actor in Javascript format for fewgl.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.webgl.WebGL.format_gui">
+<tt class="descname">format_gui</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.webgl.WebGL.format_gui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the controller GUI script</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.webgl.WebGL.format_gui_controller">
+<tt class="descname">format_gui_controller</tt><big>(</big><em>name</em>, <em>attr</em><big>)</big><a class="headerlink" href="#plugins.webgl.WebGL.format_gui_controller" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format a single controller</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.webgl.WebGL.setCamera">
+<tt class="descname">setCamera</tt><big>(</big><em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.webgl.WebGL.setCamera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the camera position and direction.</p>
+<p>This takes two (optional) keyword parameters:</p>
+<ul class="simple">
+<li><cite>position=</cite>: specify a list of 3 coordinates. The camera will
+be positioned at that place, and be looking at the origin.
+This should be set to a proper distance from the scene to get
+a decent result on first display.</li>
+<li><cite>upvector=</cite>: specify a list of 3 components of a vector indicating
+the upwards direction of the camera. The default is [0.,1.,0.].</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.webgl.WebGL.start_js">
+<tt class="descname">start_js</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#plugins.webgl.WebGL.start_js" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export the start of the js file.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>name</cite>: string: the name of the model that will be shown
+by default when displaying the webgl html page</li>
+</ul>
+<p>This function should only be executed once, before any
+other export functions. It is called automatically by
+the first call to exportScene.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="functions-defined-in-module-plugins-webgl">
+<h2>68.2. Functions defined in module plugins.webgl<a class="headerlink" href="#functions-defined-in-module-plugins-webgl" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="plugins.webgl.saneSettings">
+<tt class="descclassname">plugins.webgl.</tt><tt class="descname">saneSettings</tt><big>(</big><em>k</em><big>)</big><a class="headerlink" href="#plugins.webgl.saneSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sanitize sloppy settings for JavaScript output</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.webgl.properties">
+<tt class="descclassname">plugins.webgl.</tt><tt class="descname">properties</tt><big>(</big><em>o</em><big>)</big><a class="headerlink" href="#plugins.webgl.properties" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return properties of an object</p>
+<p>properties are public attributes (not starting with an &#8216;_&#8217;) that
+are not callable.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.webgl.createdBy">
+<tt class="descclassname">plugins.webgl.</tt><tt class="descname">createdBy</tt><big>(</big><em>width=0</em><big>)</big><a class="headerlink" href="#plugins.webgl.createdBy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a div html element with the created by pyFormex logo</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.webgl.createWebglHtml">
+<tt class="descclassname">plugins.webgl.</tt><tt class="descname">createWebglHtml</tt><big>(</big><em>name</em>, <em>scripts=[]</em>, <em>bgcolor='white'</em>, <em>body=''</em>, <em>description='WebGL model'</em>, <em>keywords='pyFormex</em>, <em>WebGL'</em>, <em>author=''</em>, <em>title='pyFormex WebGL model'</em>, <em>header=''</em><big>)</big><a class="headerlink" href="#plugins.webgl.createWebglHtml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a html file for a WebGL model.</p>
+<p>Returns the absolute pathname to the created HTML file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.webgl.surface2webgl">
+<tt class="descclassname">plugins.webgl.</tt><tt class="descname">surface2webgl</tt><big>(</big><em>S</em>, <em>name</em>, <em>caption=None</em><big>)</big><a class="headerlink" href="#plugins.webgl.surface2webgl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a WebGL model of a surface</p>
+<ul class="simple">
+<li><cite>S</cite>: TriSurface</li>
+<li><cite>name</cite>: basename of the output files</li>
+<li><cite>caption</cite>: text to use as caption</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.webgl.createMultiWebGL">
+<tt class="descclassname">plugins.webgl.</tt><tt class="descname">createMultiWebGL</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.webgl.createMultiWebGL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a multimodel WebGL from single WebGL models</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="opengl.camera.html" title="69. opengl.camera — OpenGL camera handling"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="plugins.web.html" title="67. plugins.web — Tools to access files from the web"
+             >previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+    <span class="left">
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
+    </span>
+      Last updated on Feb 08, 2015.
+    <span class="right">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+    </span>
+    </div>
+  </body>
+</html>

@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
 <!-- 
@@ -34,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3. arraytools — A collection of numerical array utilities. &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>3. arraytools — A collection of numerical array utilities. &mdash; pyFormex 1.0.1~a2 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.0~a1',
+        VERSION:     '1.0.1~a2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +51,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="4. script — Basic pyFormex script functions" href="script.html" />
     <link rel="prev" title="2. formex — Formex algebra in Python" href="formex.html" />
@@ -83,7 +82,7 @@
         <li class="right" >
           <a href="formex.html" title="2. formex — Formex algebra in Python"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -152,11 +151,7 @@
   <div class="section" id="module-arraytools">
 <span id="arraytools-a-collection-of-numerical-array-utilities"></span><span id="sec-ref-arraytools"></span><h1>3. <a class="reference internal" href="#module-arraytools" title="arraytools: A collection of numerical array utilities."><tt class="xref py py-mod docutils literal"><span class="pre">arraytools</span></tt></a> &#8212; A collection of numerical array utilities.<a class="headerlink" href="#module-arraytools" title="Permalink to this headline">¶</a></h1>
 <p>These are general utility functions that depend only on the <tt class="xref py py-mod docutils literal"><span class="pre">numpy</span></tt>
-array model. All pyformex modules needing <tt class="xref py py-mod docutils literal"><span class="pre">numpy</span></tt> should import
-everything from this module:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyformex.arraytools</span> <span class="kn">import</span> <span class="o">*</span>
-</pre></div>
-</div>
+array model.</p>
 <div class="section" id="classes-defined-in-module-arraytools">
 <h2>3.1. Classes defined in module arraytools<a class="headerlink" href="#classes-defined-in-module-arraytools" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -178,6 +173,16 @@ numpy integer type.</p>
 <p>Returns True if the object is a single floating point number, else False.
 The type of the object can be either a Python float or a
 numpy floating type.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="arraytools.isNum">
+<tt class="descclassname">arraytools.</tt><tt class="descname">isNum</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#arraytools.isNum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if an object is an integer or a floating point number</p>
+<p>Returns True if the object is a single integer or floating point
+number, else False.
+The type of the object can be either a Python int/float or a
+numpy integer or floating type.</p>
 </dd></dl>
 
 <dl class="function">
@@ -324,10 +329,41 @@ A and B should be broadcast compatible.</p>
 
 <dl class="function">
 <dt id="arraytools.normalize">
-<tt class="descclassname">arraytools.</tt><tt class="descname">normalize</tt><big>(</big><em>A</em>, <em>axis=-1</em><big>)</big><a class="headerlink" href="#arraytools.normalize" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">arraytools.</tt><tt class="descname">normalize</tt><big>(</big><em>A</em>, <em>axis=-1</em>, <em>ignore_zeros=False</em><big>)</big><a class="headerlink" href="#arraytools.normalize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Normalize the vectors of A in the direction of axis.</p>
 <p>The components of the vectors are stored along the specified array axis
 (default axis is the last).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="arraytools.stretch">
+<tt class="descclassname">arraytools.</tt><tt class="descname">stretch</tt><big>(</big><em>a</em>, <em>range=(0</em>, <em>1)</em>, <em>axis=None</em><big>)</big><a class="headerlink" href="#arraytools.stretch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stretch the values of an array to fill the given range.</p>
+<p>Parameters:</p>
+<ul>
+<li><p class="first"><cite>a</cite>: array_like. Input data.</p>
+</li>
+<li><dl class="first docutils">
+<dt><cite>range</cite>: tuple (min,max). The lower and upper bounds of the range.</dt>
+<dd><p class="first last">Default is (0,1).</p>
+</dd>
+</dl>
+</li>
+<li><p class="first"><cite>axis</cite>: if specified, each slice along the specified axis is
+independently stretched to the give range.</p>
+</li>
+</ul>
+<p>Returns an array of the same type and size as the input array, but in which
+the values have been linearly stretched to fill the specified range.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">stretch</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">3.</span><span class="p">])</span>
+<span class="go">array([ 0. ,  0.5,  1. ])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stretch</span><span class="p">(</span><span class="n">arange</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">))</span>
+<span class="go">array([[20, 20],</span>
+<span class="go">       [25, 25],</span>
+<span class="go">       [30, 30]])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -353,6 +389,12 @@ A and B should be broadcast compatible.</p>
 <p>Default is the quadratic norm (vector length).
 <tt class="docutils literal"><span class="pre">n</span> <span class="pre">==</span> <span class="pre">1</span></tt> returns the sum.
 <tt class="docutils literal"><span class="pre">n&lt;=0</span></tt> returns the max absolute value.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="arraytools.abat">
+<tt class="descclassname">arraytools.</tt><tt class="descname">abat</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#arraytools.abat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the matrix product a * b * at</p>
 </dd></dl>
 
 <dl class="function">
@@ -405,7 +447,7 @@ method used if <tt class="docutils literal"><span class="pre">ndof&gt;4</span></
 <p>The return value is a boolean array with shape of <cite>values</cite> flagging
 where the values are close to target.
 Two values <cite>a</cite> and <cite>b</cite> are considered close if
-<img class="math" src="../_images/math/111bff3a77cd73fc555142c0ffd7b4af849562f6.png" alt="| a - b | &lt; atol + rtol * | b |"/></p>
+<img class="math" src="../_images/math/68e58a724f90b90b53d0f8d3f06007627d180d4f.png" alt="| a - b | &lt; atol + rtol * | b |"/></p>
 </dd></dl>
 
 <dl class="function">
@@ -607,6 +649,27 @@ an indexing operation:</p>
 add it at the front.</p>
 <p>Note that if the axis number is a constant, this effect can also be
 achieved with numpy&#8217;s newaxis feature.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="arraytools.interleave">
+<tt class="descclassname">arraytools.</tt><tt class="descname">interleave</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#arraytools.interleave" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interleave two arrays along their first axis.</p>
+<p>The type of the arrays should be the same and all of their axes except
+for the first one should have the same length. The first.
+The size of array a should be equal to that of array a, or 1 less.</p>
+<p>Returns a 1D array with intereaved values from a and b.</p>
+<p>Examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">interleave</span><span class="p">(</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="mi">10</span><span class="o">*</span><span class="n">arange</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="go">array([ 0,  0,  1, 10,  2, 20,  3])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">interleave</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="mi">10</span><span class="o">*</span><span class="n">a</span><span class="p">))</span>
+<span class="go">[[ 0  1  2  3]</span>
+<span class="go"> [ 0 10 20 30]</span>
+<span class="go"> [ 4  5  6  7]</span>
+<span class="go"> [40 50 60 70]]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -1179,6 +1242,37 @@ non-existing entries.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="arraytools.findIndex">
+<tt class="descclassname">arraytools.</tt><tt class="descname">findIndex</tt><big>(</big><em>target</em>, <em>values</em><big>)</big><a class="headerlink" href="#arraytools.findIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find position of values in target.</p>
+<p>This function finds the position in the array <cite>target</cite> of the elements
+from the array <cite>values</cite>.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>target</cite>: an index array with all non-negative values. If not 1-D, it
+will be flattened.</li>
+<li><cite>values</cite>: an index array with all non-negative values. If not 1-D, it
+will be flattened.</li>
+</ul>
+<p>Returns:</p>
+<blockquote>
+<div>An index array with the same size as <cite>values</cite>.
+For each number in <cite>values</cite>, the index contains the position of that value
+in the flattened <cite>target</cite>, or -1 if that number does not occur in <cite>target</cite>.
+If an element from <cite>values</cite> occurs more than once in <cite>target</cite>, it is
+currently undefined which of those positions is returned.</div></blockquote>
+<p>Remark that after <tt class="docutils literal"><span class="pre">m</span> <span class="pre">=</span> <span class="pre">findIndex(target,values)</span></tt> the equality
+<tt class="docutils literal"><span class="pre">target[m]</span> <span class="pre">==</span> <span class="pre">values</span></tt> holds in all the non-negative positions of <cite>m</cite>.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">findIndex</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+<span class="go">array([-1, -1,  4,  0, -1], dtype=int32)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="arraytools.matchIndex">
 <tt class="descclassname">arraytools.</tt><tt class="descname">matchIndex</tt><big>(</big><em>target</em>, <em>values</em><big>)</big><a class="headerlink" href="#arraytools.matchIndex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find position of values in target.</p>
@@ -1198,12 +1292,12 @@ For each number in <cite>values</cite>, the index contains the position of that 
 in the flattened <cite>target</cite>, or -1 if that number does not occur in <cite>target</cite>.
 If an element from <cite>values</cite> occurs more than once in <cite>target</cite>, it is
 currently undefined which of those positions is returned.</div></blockquote>
-<p>Remark that after <tt class="docutils literal"><span class="pre">m</span> <span class="pre">=</span> <span class="pre">matchIndex(target,values)</span></tt> the equality
+<p>Remark that after <tt class="docutils literal"><span class="pre">m</span> <span class="pre">=</span> <span class="pre">findIndex(target,values)</span></tt> the equality
 <tt class="docutils literal"><span class="pre">target[m]</span> <span class="pre">==</span> <span class="pre">values</span></tt> holds in all the non-negative positions of <cite>m</cite>.</p>
 <p>Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">matchIndex</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">findIndex</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
 <span class="go">array([-1, -1,  4,  0, -1], dtype=int32)</span>
 </pre></div>
 </div>
@@ -1393,25 +1487,29 @@ the bin index for each individual entry in the data set.</p>
 <li><cite>a</cite>: array_like.
 Input data. The histogram is computed over the flattened array.</li>
 <li><cite>bins</cite>: int or sequence of scalars.
-If bins is an int, it defines the number of equal-width bins
-in the given range. If bins is a sequence, it defines the bin edges,
-allowing for non-uniform bin widths. Both the leftmost and rightmost
-edges are included, thus the number of bins is len(bins)-1.</li>
+If <cite>bins</cite> is an int, it defines the number of equal-width bins
+in the given range (nbins).
+If <cite>bins</cite> is a sequence, it defines the bin edges, including the
+rightmost edge, allowing for non-uniform bin widths. The number of
+bins (nbins) is then equal to <cite>len(bins) - 1</cite>.
+A value <cite>v</cite> will be sorted in bin <cite>i</cite> if
+<cite>bins[i] &lt;= v &lt; bins[i+1]</cite>, except for the last bin, which will also
+contain the values equal to the right bin edge.</li>
 <li><cite>range</cite>: (float, float), optional. The lower and upper range of the bins.
 If not provided, range is simply (a.min(), a.max()). Values outside the
 range are ignored. This parameter is ignored if bins is a sequence.</li>
 </ul>
 <p>Returns:</p>
 <ul class="simple">
-<li><cite>hist</cite>: integer array with length nbins, holding the number of elements
-in each bin,</li>
+<li><cite>hist</cite>: array of dtype int and with length equal to the number of bins.
+Returns the number of elements from <cite>a</cite> sorted in each of the bins.</li>
 <li><cite>ind</cite>: a sequence of nbins integer arrays, each holding the indices of
 the elements fitting in the respective bins,</li>
-<li><cite>xbins</cite>: array of same type as data and with length nbins+1:
-returns the bin edges.</li>
+<li><cite>bin_edges</cite>: array of dtype float [ len(hist)+1 ].
+Returns the bin edges.</li>
 </ul>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">hist</span><span class="p">,</span><span class="n">ind</span><span class="p">,</span><span class="n">xbins</span> <span class="o">=</span> <span class="n">histogram2</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">hist</span><span class="p">,</span><span class="n">ind</span><span class="p">,</span><span class="n">bins</span> <span class="o">=</span> <span class="n">histogram2</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
 <span class="go">[2 2 2 1]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ind</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
@@ -1419,8 +1517,20 @@ returns the bin edges.</li>
 <span class="go">[1 4]</span>
 <span class="go">[2 5]</span>
 <span class="go">[3]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">xbins</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span>
 <span class="go">[1 2 3 4 5]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hist</span><span class="p">,</span><span class="n">bins</span> <span class="o">=</span> <span class="n">histogram</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
+<span class="go">[2 2 0 2 1]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hist</span><span class="p">,</span><span class="n">ind</span><span class="p">,</span><span class="n">bins</span> <span class="o">=</span> <span class="n">histogram2</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
+<span class="go">[2 2 0 2 1]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ind</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="go">[0 6]</span>
+<span class="go">[1 4]</span>
+<span class="go">[]</span>
+<span class="go">[2 5]</span>
+<span class="go">[3]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1535,6 +1645,15 @@ dividing the interval 0.0 toi 1.0 in div equal parts.</li>
 <p>Returns: If <cite>div</cite> is a an integer, returns the floating point values
 dividing the unit interval in div equal parts. If <cite>div</cite> is a list,
 just returns <cite>div</cite> as a 1D array.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">unitDivisor</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">array([ 0.  ,  0.25,  0.5 ,  0.75,  1.  ])</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">unitDivisor</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">array([ 0.25,  0.5 ,  0.75,  1.  ])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -1606,6 +1725,53 @@ that issue and prints the full array nicely aligned.</p>
 </div>
 </dd></dl>
 
+<dl class="function">
+<dt id="arraytools.fmtData1d">
+<tt class="descclassname">arraytools.</tt><tt class="descname">fmtData1d</tt><big>(</big><em>data</em>, <em>npl=8</em>, <em>sep='</em>, <em>'</em>, <em>linesep='\n'</em>, <em>fmt=&lt;type 'str'&gt;</em><big>)</big><a class="headerlink" href="#arraytools.fmtData1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format data in lines with maximum npl items.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>data</cite>: list or array. If an array, if will be flattened. The data
+items are converted to strings using the <cite>fmt</cite> function, concatened
+in groups of <cite>npl</cite> items using <cite>sep</cite> as a separator between them, and
+the groups are concatenated with a <cite>linesep</cite> separator.</li>
+<li><cite>npl</cite>: int: (maximum) number of items to appear in a group.
+The last group may contain less items.</li>
+<li><cite>sep</cite>: string: separator between individual items of a group.</li>
+<li><cite>linesep</cite>: string: separator between groups. The default (newline) will
+put each group of <cite>npl</cite> items on a separate line.</li>
+<li><cite>fmt</cite>: callable: used to convert a single item to a string. Default
+is the Python built-in string converter.</li>
+</ul>
+<p>Returns a string with the formatted data.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">fmtData1d</span><span class="p">(</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)))</span>
+<span class="go">0, 1, 2, 3, 4, 5, 6, 7</span>
+<span class="go">8, 9</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">fmtData1d</span><span class="p">([</span><span class="mf">1.25</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&#39;no&#39;</span><span class="p">,</span> <span class="mf">2.50</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="s">&#39;yes&#39;</span><span class="p">],</span><span class="n">npl</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+<span class="go">1.25, 3, no</span>
+<span class="go">2.5, 4, yes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">myformat</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">&quot;</span><span class="si">%10s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">fmtData1d</span><span class="p">([</span><span class="mf">1.25</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&#39;no&#39;</span><span class="p">,</span> <span class="mf">2.50</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="s">&#39;yes&#39;</span><span class="p">],</span><span class="n">npl</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="n">myformat</span><span class="p">))</span>
+<span class="go">      1.25,          3,         no</span>
+<span class="go">       2.5,          4,        yes</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="arraytools.isqrt">
+<tt class="descclassname">arraytools.</tt><tt class="descname">isqrt</tt><big>(</big><em>n</em><big>)</big><a class="headerlink" href="#arraytools.isqrt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the square root of an integer number.</p>
+<p>If the input integer is a perfect square, the (integer) square
+root is returned. Else, an error is raised.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">isqrt</span><span class="p">(</span><span class="mi">36</span><span class="p">)</span>
+<span class="go">6</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </div>
 </div>
 
@@ -1630,17 +1796,17 @@ that issue and prints the full array nicely aligned.</p>
         <li class="right" >
           <a href="formex.html" title="2. formex — Formex algebra in Python"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
-        &copy; Copyright 2004-2012, Benedict Verhegghe.
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 18, 2014.
+      Last updated on Feb 08, 2015.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>
     </div>
   </body>

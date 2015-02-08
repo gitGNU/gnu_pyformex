@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
 <!-- 
@@ -34,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Assigning properties to geometry &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>Assigning properties to geometry &mdash; pyFormex 1.0.1~a2 documentation</title>
 
     
     <link rel="stylesheet" href="_static/pyformex.css" type="text/css" />
@@ -42,8 +41,8 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '1.0.0~a1',
+        URL_ROOT:    './',
+        VERSION:     '1.0.1~a2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +51,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="index.html" />
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="index.html" />
     <link rel="up" title="pyFormex user guide" href="user-guide.html" />
     <link rel="next" title="Using Widgets" href="widgets.html" />
     <link rel="prev" title="Using Projects" href="projects.html" />
@@ -83,7 +82,7 @@
         <li class="right" >
           <a href="projects.html" title="Using Projects"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
+        <li><a href="index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
           <li><a href="user-guide.html" accesskey="U">pyFormex user guide</a> &gt;</li> 
       </ul>
     </div>
@@ -467,7 +466,7 @@ directly.</p>
 <p>The first two lines define two concentrated loads: <tt class="docutils literal"><span class="pre">P1</span></tt> consists of three
 point loads in each of the coordinate directions; P2 contains three force
 moments around the axes. The third line specifies a boundary condition where the
-first DOF (usually displacement in <img class="math" src="_images/math/26eeb5258ca5099acf8fe96b2a1049c48c89a5e6.png" alt="x"/>-direction) is constrained, while
+first DOF (usually displacement in <img class="math" src="_images/math/188c175aac0a8a9c22499336711b5d7256407254.png" alt="x"/>-direction) is constrained, while
 the remaining 5 DOF&#8217;s are free. The next line defines a local coordinate system,
 in this case a cylindrical coordinate system with axis pointing from point
 <tt class="docutils literal"><span class="pre">[0.,0.,0.]</span></tt> to point <tt class="docutils literal"><span class="pre">[0.,0.,1.]</span></tt>. The last line</p>
@@ -532,11 +531,11 @@ constructor takes two arguments:</p>
 <li>a string defining the type of coordinate system, either &#8216;Rectangular&#8217;,
 &#8216;Cylindrical&#8217; or &#8216;Spherical&#8217; (the first character suffices), and</li>
 <li>a list of 6 coordinates, specifying two points A and B. With &#8216;R&#8217;, A is on the
-new <img class="math" src="_images/math/26eeb5258ca5099acf8fe96b2a1049c48c89a5e6.png" alt="x"/>-axis and B is on the new &#8216;<img class="math" src="_images/math/092e364e1d9d19ad5fffb0b46ef4cc7f2da02c1c.png" alt="y"/> axis. With &#8216;C&#8217; and &#8216;S&#8217;, AB
+new <img class="math" src="_images/math/188c175aac0a8a9c22499336711b5d7256407254.png" alt="x"/>-axis and B is on the new &#8216;<img class="math" src="_images/math/b124ff74afb0914bb434e8fb849eb56d734412f8.png" alt="y"/> axis. With &#8216;C&#8217; and &#8216;S&#8217;, AB
 is the axis of the cylindrical/spherical coordinates.</li>
 </ul>
 <p>Thus, <tt class="docutils literal"><span class="pre">CoordSystem('C',[0.,0.,0.,0.,0.,1.])</span></tt> defines a cylindrical coordinate
-system with the global <img class="math" src="_images/math/b13f21416d84e13708696f34dea81026cda583c9.png" alt="z"/> as axis.</p>
+system with the global <img class="math" src="_images/math/84d7271dd9e78c1e05d6c3c6ecb60309ef7dfc73.png" alt="z"/> as axis.</p>
 <p><tt class="xref py py-class docutils literal"><span class="pre">ElemLoad</span></tt> is a distributed load on an element. Its constructor takes two
 arguments:</p>
 <ul class="simple">
@@ -545,7 +544,7 @@ arguments:</p>
 <li>optionally, the name of an amplitude curve.</li>
 </ul>
 <p>E.g., ElemLoad(&#8216;PZ&#8217;,2.5) defines a distributed load of value 2.5 in the
-direction of the <img class="math" src="_images/math/b13f21416d84e13708696f34dea81026cda583c9.png" alt="z"/>-axis.</p>
+direction of the <img class="math" src="_images/math/84d7271dd9e78c1e05d6c3c6ecb60309ef7dfc73.png" alt="z"/>-axis.</p>
 <p><tt class="xref py py-class docutils literal"><span class="pre">ElemSection</span></tt> can be used to set the material and section properties on
 the elements. It can hold:</p>
 <ul class="simple">
@@ -602,17 +601,17 @@ element section and an element type &#8216;CPS3&#8217; to all elements.</p>
         <li class="right" >
           <a href="projects.html" title="Using Projects"
              >previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
+        <li><a href="index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
           <li><a href="user-guide.html" >pyFormex user guide</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
-        &copy; Copyright 2004-2012, Benedict Verhegghe.
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 18, 2014.
+      Last updated on Feb 08, 2015.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>
     </div>
   </body>

@@ -1,0 +1,286 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!-- 
+##
+##  This file is part of the pyFormex project.
+##  pyFormex is a tool for generating, manipulating and transforming 3D
+##  geometrical models by sequences of mathematical operations.
+##  Home page: http://pyformex.org
+##  Project page:  http://savannah.nongnu.org/projects/pyformex/
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Distributed under the GNU General Public License version 3 or later.
+##
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see http://www.gnu.org/licenses/.
+##
+-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>76. opengl.sanitize — Sanitize data before rendering. &mdash; pyFormex 1.0.1~a2 documentation</title>
+
+    
+    <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1~a2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="up" title="pyFormex reference manual" href="../refman.html" />
+    <link rel="next" title="77. opengl.scene — This implements an OpenGL drawing widget for painting 3D scenes." href="opengl.scene.html" />
+    <link rel="prev" title="75. opengl.renderer — opengl/renderer.py" href="opengl.renderer.html" />
+<link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
+
+  </head>
+  <body>
+
+<div class="header">
+  <a href="http://pyformex.org">
+  <img src="http://www.nongnu.org/pyformex/_static/scallop_dome_small.png" alt="scallop dome" border="0" hspace="20" vspace="12" align="left" />
+  <img src="http://www.nongnu.org/pyformex/_static/pyformex-logo-2.png" alt="pyformex logo" border="0" hspace="10" vspace="8" align="left" />
+  </a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="opengl.scene.html" title="77. opengl.scene — This implements an OpenGL drawing widget for painting 3D scenes."
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="opengl.renderer.html" title="75. opengl.renderer — opengl/renderer.py"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center">
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick"/>
+<input type="hidden" name="hosted_button_id" value="P7J4AM4QULB4Q"/>
+<input type="image" src="https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif" name="submit" alt="PayPal - The safer, easier way to pay online!"/>
+<img alt="" border="0" src="https://www.paypal.com/nl_NL/i/scr/pixel.gif" width="1" height="1"/>
+</form>
+
+</div>
+   
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">76. <tt class="docutils literal"><span class="pre">opengl.sanitize</span></tt> &#8212; Sanitize data before rendering.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-opengl-sanitize">76.1. Classes defined in module opengl.sanitize</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-opengl-sanitize">76.2. Functions defined in module opengl.sanitize</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="opengl.renderer.html"
+                        title="previous chapter">75. <tt class="docutils literal"><span class="pre">opengl.renderer</span></tt> &#8212; opengl/renderer.py</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="opengl.scene.html"
+                        title="next chapter">77. <tt class="docutils literal"><span class="pre">opengl.scene</span></tt> &#8212; This implements an OpenGL drawing widget for painting 3D scenes.</a></p>
+  
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+<div align="center">
+  <p>
+  <a href="http://www.fsf.org/register_form?referrer=8491"><img src="http://www.nongnu.org/pyformex/_static/fsf-member8491.png" alt="[FSF Associate Member]" width="89" height="31"  /></a>
+  </p>
+  <p>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+      src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /></a>
+  </p>
+</div>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-opengl.sanitize">
+<span id="opengl-sanitize-sanitize-data-before-rendering"></span><span id="sec-ref-opengl-sanitize"></span><h1>76. <a class="reference internal" href="#module-opengl.sanitize" title="opengl.sanitize: Sanitize data before rendering."><tt class="xref py py-mod docutils literal"><span class="pre">opengl.sanitize</span></tt></a> &#8212; Sanitize data before rendering.<a class="headerlink" href="#module-opengl.sanitize" title="Permalink to this headline">¶</a></h1>
+<p>The pyFormex drawing functions were designed to require a minimal knowledge
+of OpenGL and rendering principles in general. They allow the user to specify
+rendering attributes in a simple, user-friendly, sometimes even sloppy way.
+This module contains some functions to sanitize the user input into the more
+strict attributes required by the OpenGl rendering engine.</p>
+<p>These functions are generally not intended for direct used by the user, but
+for use in the opengl rendering functions.</p>
+<div class="section" id="classes-defined-in-module-opengl-sanitize">
+<h2>76.1. Classes defined in module opengl.sanitize<a class="headerlink" href="#classes-defined-in-module-opengl-sanitize" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="functions-defined-in-module-opengl-sanitize">
+<h2>76.2. Functions defined in module opengl.sanitize<a class="headerlink" href="#functions-defined-in-module-opengl-sanitize" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="opengl.sanitize.saneFloat">
+<tt class="descclassname">opengl.sanitize.</tt><tt class="descname">saneFloat</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#opengl.sanitize.saneFloat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a float value or None.</p>
+<p>If value can be converted to float, the float is returned, else None.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="opengl.sanitize.saneLineWidth">
+<tt class="descclassname">opengl.sanitize.</tt><tt class="descname">saneLineWidth</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#opengl.sanitize.saneLineWidth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a float value or None.</p>
+<p>If value can be converted to float, the float is returned, else None.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="opengl.sanitize.saneLineStipple">
+<tt class="descclassname">opengl.sanitize.</tt><tt class="descname">saneLineStipple</tt><big>(</big><em>stipple</em><big>)</big><a class="headerlink" href="#opengl.sanitize.saneLineStipple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a sane line stipple tuple.</p>
+<p>A line stipple tuple is a tuple (factor,pattern) where
+pattern defines which pixels are on or off (maximum 16 bits),
+factor is a multiplier for each bit.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="opengl.sanitize.saneColor">
+<tt class="descclassname">opengl.sanitize.</tt><tt class="descname">saneColor</tt><big>(</big><em>color=None</em><big>)</big><a class="headerlink" href="#opengl.sanitize.saneColor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a sane color array derived from the input color.</p>
+<p>A sane color is one that will be usable by the draw method.
+The input value of color can be either of the following:</p>
+<ul class="simple">
+<li>None: indicates that the default color will be used,</li>
+<li>a single color value in a format accepted by colors.GLcolor,</li>
+<li>a tuple or list of such colors,</li>
+<li>an (3,) shaped array of RGB values, ranging from 0.0 to 1.0,</li>
+<li>an (n,3) shaped array of RGB values,</li>
+<li>an (n,) shaped array of integer color indices.</li>
+</ul>
+<p>The return value is one of the following:
+- None, indicating no color (current color will be used),
+- a float array with shape (3,), indicating a single color,
+- a float array with shape (n,3), holding a collection of colors,
+- an integer array with shape (n,), holding color index values.</p>
+<p>!! Note that a single color can not be specified as integer RGB values.
+A single list of integers will be interpreted as a color index !
+Turning the single color into a list with one item will work though.
+[[ 0, 0, 255 ]] will be the same as [ &#8216;blue&#8217; ], while
+[ 0,0,255 ] would be a color index with 3 values.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="opengl.sanitize.saneColorArray">
+<tt class="descclassname">opengl.sanitize.</tt><tt class="descname">saneColorArray</tt><big>(</big><em>color</em>, <em>shape</em><big>)</big><a class="headerlink" href="#opengl.sanitize.saneColorArray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes sure the shape of the color array is compatible with shape.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>color</cite>: set of colors</li>
+<li><cite>shape</cite>: (nelems,nplex) tuple</li>
+</ul>
+<p>A compatible color.shape is equal to shape or has either or both of its
+dimensions equal to 1.
+Compatibility is enforced in the following way:</p>
+<ul class="simple">
+<li>if color.shape[1] != nplex and color.shape[1] != 1: take out first
+plane in direction 1</li>
+<li>if color.shape[0] != nelems and color.shape[0] != 1: repeat the plane
+in direction 0 nelems times</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="opengl.sanitize.saneColorSet">
+<tt class="descclassname">opengl.sanitize.</tt><tt class="descname">saneColorSet</tt><big>(</big><em>color=None</em>, <em>colormap=None</em>, <em>shape=(1</em>, <em>)</em><big>)</big><a class="headerlink" href="#opengl.sanitize.saneColorSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a sane set of colors.</p>
+<p>A sane set of colors is one that guarantees correct use by the
+draw functions. This means either
+- no color (None)
+- a single color
+- at least as many colors as the shape argument specifies
+- a color index and a color map with enough colors to satisfy the index.
+The return value is a tuple color,colormap. colormap will be None,
+unless color is an integer array, meaning a color index.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="opengl.scene.html" title="77. opengl.scene — This implements an OpenGL drawing widget for painting 3D scenes."
+             >next</a> |</li>
+        <li class="right" >
+          <a href="opengl.renderer.html" title="75. opengl.renderer — opengl/renderer.py"
+             >previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+    <span class="left">
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
+    </span>
+      Last updated on Feb 08, 2015.
+    <span class="right">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+    </span>
+    </div>
+  </body>
+</html>

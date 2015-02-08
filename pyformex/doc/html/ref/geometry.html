@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
 <!-- 
@@ -34,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>8. geometry — A generic interface to the Coords transformation methods &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>8. geometry — A generic interface to the Coords transformation methods &mdash; pyFormex 1.0.1~a2 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.0~a1',
+        VERSION:     '1.0.1~a2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +51,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="9. connectivity — A class and functions for handling nodal connectivity." href="connectivity.html" />
     <link rel="prev" title="7. mesh — Finite element meshes in pyFormex." href="mesh.html" />
@@ -83,7 +82,7 @@
         <li class="right" >
           <a href="mesh.html" title="7. mesh — Finite element meshes in pyFormex."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -112,10 +111,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="mesh.html"
-                        title="previous chapter">7. <tt class="docutils literal docutils literal"><span class="pre">mesh</span></tt> &#8212; Finite element meshes in pyFormex.</a></p>
+                        title="previous chapter">7. <tt class="docutils literal"><span class="pre">mesh</span></tt> &#8212; Finite element meshes in pyFormex.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="connectivity.html"
-                        title="next chapter">9. <tt class="docutils literal docutils literal docutils literal"><span class="pre">connectivity</span></tt> &#8212; A class and functions for handling nodal connectivity.</a></p>
+                        title="next chapter">9. <tt class="docutils literal"><span class="pre">connectivity</span></tt> &#8212; A class and functions for handling nodal connectivity.</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -165,15 +164,16 @@ intended to make the Coords transformations available without explicit
 declaration. This class is not intended to be used directly, only
 through derived classes. Examples of derived classes are <tt class="xref py py-class docutils literal"><span class="pre">Formex</span></tt>,
 <tt class="xref py py-class docutils literal"><span class="pre">Mesh</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">Curve</span></tt>.</p>
-<p>There is no initialization to be done when constructing a new instance of
-this class. The class just defines a set of methods which operate on
-the attribute <cite>coords</cite>, which should be a Coords object.
+<p>The Geometry class defines a set of methods which
+operate on the attribute <cite>coords</cite>, which should be a Coords object.
 Most of the transformation methods of the Coords class are thus exported
 through the Geometry class to its derived classes, and when called, will
 get executed on the <cite>coords</cite> attribute.
 The derived class constructor should make sure that the <cite>coords</cite> attribute
 exists, has the proper type and contains the coordinates of all the points
-that should get transformed under a Coords transformation.</p>
+that should get transformed under a Coords transformation.
+The derived classes should also call the Geometry initializer to create the
+&#8216;attrib&#8217; attribute.</p>
 <p>Derived classes can (and in most cases should) declare a method
 <cite>_set_coords(coords)</cite> returning an object that is identical to the
 original, except for its coords being replaced by new ones with the
@@ -205,7 +205,7 @@ method applied on the <cite>coords</cite> attribute. Refer to the correponding
 <tt class="xref py py-meth docutils literal"><span class="pre">sizes()</span></tt>,
 <tt class="xref py py-meth docutils literal"><span class="pre">dsize()</span></tt>,
 <tt class="xref py py-meth docutils literal"><span class="pre">bsphere()</span></tt>,
-<a class="reference internal" href="inertia.html#module-inertia" title="inertia: inertia.py"><tt class="xref py py-meth docutils literal"><span class="pre">inertia()</span></tt></a>,
+<tt class="xref py py-meth docutils literal"><span class="pre">inertia()</span></tt>,
 <tt class="xref py py-meth docutils literal"><span class="pre">distanceFromPlane()</span></tt>,
 <tt class="xref py py-meth docutils literal"><span class="pre">distanceFromLine()</span></tt>,
 <tt class="xref py py-meth docutils literal"><span class="pre">distanceFromPoint()</span></tt>,
@@ -246,7 +246,7 @@ arguments of these methods:</p>
 <a class="reference internal" href="#geometry.Geometry.projectOnPlane" title="geometry.Geometry.projectOnPlane"><tt class="xref py py-meth docutils literal"><span class="pre">projectOnPlane()</span></tt></a>,
 <a class="reference internal" href="#geometry.Geometry.projectOnSphere" title="geometry.Geometry.projectOnSphere"><tt class="xref py py-meth docutils literal"><span class="pre">projectOnSphere()</span></tt></a>,
 <a class="reference internal" href="#geometry.Geometry.projectOnCylinder" title="geometry.Geometry.projectOnCylinder"><tt class="xref py py-meth docutils literal"><span class="pre">projectOnCylinder()</span></tt></a>,
-<a class="reference internal" href="isopar.html#module-isopar" title="isopar: Isoparametric transformations"><tt class="xref py py-meth docutils literal"><span class="pre">isopar()</span></tt></a>,
+<a class="reference internal" href="#geometry.Geometry.isopar" title="geometry.Geometry.isopar"><tt class="xref py py-meth docutils literal"><span class="pre">isopar()</span></tt></a>,
 <a class="reference internal" href="#geometry.Geometry.transformCS" title="geometry.Geometry.transformCS"><tt class="xref py py-meth docutils literal"><span class="pre">transformCS()</span></tt></a>,
 <a class="reference internal" href="#geometry.Geometry.addNoise" title="geometry.Geometry.addNoise"><tt class="xref py py-meth docutils literal"><span class="pre">addNoise()</span></tt></a>,
 <a class="reference internal" href="#geometry.Geometry.rot" title="geometry.Geometry.rot"><tt class="xref py py-meth docutils literal"><span class="pre">rot()</span></tt></a>,
@@ -288,6 +288,12 @@ Every prop will be repeated the corresponding number of times
 specified in blocks.</p>
 </li>
 </ul>
+<dl class="docutils">
+<dt>Returns the Geometry with the new properties inserted or with the</dt>
+<dd>properties deleted (if argument is None).
+Notice that unlike most other Geometry methods, this method changes
+(and returns) the existing object.</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -306,85 +312,6 @@ length self.nelems(), and converting the data type to integer.</p>
 The return value is an array holding all the numbers of all the
 elements that have the property val, resp. one of the values in val.</p>
 <p>If the object has no properties, a empty array is returned.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="geometry.Geometry.select">
-<tt class="descname">select</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#geometry.Geometry.select" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Geometry only containing the selected elements.</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
-<li>a single element number</li>
-<li>a list, or array, of element numbers</li>
-<li>a bool list, or array, of length self.nelems(), where True values
-flag the elements to be selected</li>
-</ul>
-</li>
-<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
-If True (default), the returned Mesh will be compacted, i.e.
-the unused nodes are removed and the nodes are renumbered from
-zero. If False, returns the node set and numbers unchanged.</li>
-</ul>
-<p>Returns a Geometry (or subclass) with only the selected elements.</p>
-<p>See <a class="reference internal" href="#geometry.Geometry.cselect" title="geometry.Geometry.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="geometry.Geometry.cselect">
-<tt class="descname">cselect</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#geometry.Geometry.cselect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Geometry with the selected elements removed.</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
-<li>a single element number</li>
-<li>a list, or array, of element numbers</li>
-<li>a bool list, or array, of length self.nelems(), where True values
-flag the elements to be selected</li>
-</ul>
-</li>
-<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
-If True (default), the returned Mesh will be compacted, i.e.
-the unused nodes are removed and the nodes are renumbered from
-zero. If False, returns the node set and numbers unchanged.</li>
-<li><cite>selected</cite>: an object that can be used as an index in the
-<cite>elems</cite> array, such as<ul>
-<li>a single element number</li>
-<li>a list, or array, of element numbers</li>
-<li>a bool list, or array, of length self.nelems(), where True values
-flag the elements to be selected</li>
-</ul>
-</li>
-<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
-If True (default), the returned Mesh will be compacted, i.e.
-the unused nodes are removed and the nodes are renumbered from
-zero. If False, returns the node set and numbers unchanged.</li>
-</ul>
-<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
-<p>This is the complimentary operation of <a class="reference internal" href="#geometry.Geometry.select" title="geometry.Geometry.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="geometry.Geometry.selectProp">
-<tt class="descname">selectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#geometry.Geometry.selectProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return an object which holds only the elements with property val.</p>
-<p>val is either a single integer, or a list/array of integers.
-The return value is a object holding all the elements that
-have the property val, resp. one of the values in val.
-The returned object inherits the matching properties.</p>
-<p>If the object has no properties, a copy with all elements is returned.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="geometry.Geometry.cselectProp">
-<tt class="descname">cselectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#geometry.Geometry.cselectProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return an object without the elements with property <cite>val</cite>.</p>
-<p>This is the complementary method of selectProp.
-val is either a single integer, or a list/array of integers.
-The return value is a object holding all the elements that do not
-have the property val, resp. one of the values in val.
-The returned object inherits the matching properties.</p>
-<p>If the object has no properties, a copy with all elements is returned.</p>
 </dd></dl>
 
 <dl class="method">
@@ -419,8 +346,31 @@ all of its data independent of the former.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="geometry.Geometry.selectProp">
+<tt class="descname">selectProp</tt><big>(</big><em>val</em>, <em>compact=False</em><big>)</big><a class="headerlink" href="#geometry.Geometry.selectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object which holds only the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="geometry.Geometry.cselectProp">
+<tt class="descname">cselectProp</tt><big>(</big><em>val</em>, <em>compact=False</em><big>)</big><a class="headerlink" href="#geometry.Geometry.cselectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object without the elements with property <cite>val</cite>.</p>
+<p>This is the complementary method of selectProp.
+val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that do not
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="geometry.Geometry.splitProp">
-<tt class="descname">splitProp</tt><big>(</big><em>prop=None</em><big>)</big><a class="headerlink" href="#geometry.Geometry.splitProp" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">splitProp</tt><big>(</big><em>prop=None</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#geometry.Geometry.splitProp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Partition a Geometry (Formex/Mesh) according to the values in prop.</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -452,6 +402,13 @@ three coordinate directions. If it is a single value, all directions
 are scaled to the same size.
 Directions for which the geometry has a size smaller than tol times
 the maximum size are not rescaled.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="geometry.Geometry.adjust">
+<tt class="descname">adjust</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#geometry.Geometry.adjust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply &#8216;adjust&#8217; transformation to the Geometry object.</p>
+<p>See <a class="reference internal" href="coords.html#coords.Coords.adjust" title="coords.Coords.adjust"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.adjust()</span></tt></a> for details.</p>
 </dd></dl>
 
 <dl class="method">
@@ -501,6 +458,20 @@ the maximum size are not rescaled.</p>
 <tt class="descname">affine</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#geometry.Geometry.affine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;affine&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.affine" title="coords.Coords.affine"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.affine()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="geometry.Geometry.toCS">
+<tt class="descname">toCS</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#geometry.Geometry.toCS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply &#8216;toCS&#8217; transformation to the Geometry object.</p>
+<p>See <a class="reference internal" href="coords.html#coords.Coords.toCS" title="coords.Coords.toCS"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.toCS()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="geometry.Geometry.fromCS">
+<tt class="descname">fromCS</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#geometry.Geometry.fromCS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply &#8216;fromCS&#8217; transformation to the Geometry object.</p>
+<p>See <a class="reference internal" href="coords.html#coords.Coords.fromCS" title="coords.Coords.fromCS"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.fromCS()</span></tt></a> for details.</p>
 </dd></dl>
 
 <dl class="method">
@@ -730,6 +701,12 @@ for details.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="geometry.Geometry.fieldReport">
+<tt class="descname">fieldReport</tt><big>(</big><big>)</big><a class="headerlink" href="#geometry.Geometry.fieldReport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print a short report of the stored fields</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="geometry.Geometry.write">
 <tt class="descname">write</tt><big>(</big><em>filename</em>, <em>sep=' '</em>, <em>mode='w'</em><big>)</big><a class="headerlink" href="#geometry.Geometry.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a Geometry to a .pgf file.</p>
@@ -782,17 +759,17 @@ and returns it.</p>
         <li class="right" >
           <a href="mesh.html" title="7. mesh — Finite element meshes in pyFormex."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
-        &copy; Copyright 2004-2012, Benedict Verhegghe.
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 18, 2014.
+      Last updated on Feb 08, 2015.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>
     </div>
   </body>

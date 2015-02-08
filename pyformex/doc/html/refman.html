@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
 <!-- 
@@ -34,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyFormex reference manual &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>pyFormex reference manual &mdash; pyFormex 1.0.1~a2 documentation</title>
 
     
     <link rel="stylesheet" href="_static/pyformex.css" type="text/css" />
@@ -42,8 +41,8 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '1.0.0~a1',
+        URL_ROOT:    './',
+        VERSION:     '1.0.1~a2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +51,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="index.html" />
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="index.html" />
     <link rel="next" title="1. coords — A structured collection of 3D coordinates." href="ref/coords.html" />
     <link rel="prev" title="pyFormex example scripts" href="examples.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
@@ -82,7 +81,7 @@
         <li class="right" >
           <a href="examples.html" title="pyFormex example scripts"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li> 
+        <li><a href="index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -101,25 +100,13 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">pyFormex reference manual</a><ul>
-<li><a class="reference internal" href="#autoloaded-modules">Autoloaded modules</a><ul>
-</ul>
-</li>
-<li><a class="reference internal" href="#other-pyformex-core-modules">Other pyFormex core modules</a><ul>
-</ul>
-</li>
-<li><a class="reference internal" href="#pyformex-gui-modules">pyFormex GUI modules</a><ul>
-</ul>
-</li>
-<li><a class="reference internal" href="#pyformex-plugins">pyFormex plugins</a><ul>
-</ul>
-</li>
-<li><a class="reference internal" href="#pyformex-opengl-modules">pyFormex OpenGL modules</a><ul>
-</ul>
-</li>
+<li><a class="reference internal" href="#autoloaded-modules">Autoloaded modules</a></li>
+<li><a class="reference internal" href="#other-pyformex-core-modules">Other pyFormex core modules</a></li>
+<li><a class="reference internal" href="#pyformex-gui-modules">pyFormex GUI modules</a></li>
+<li><a class="reference internal" href="#pyformex-plugins">pyFormex plugins</a></li>
+<li><a class="reference internal" href="#pyformex-opengl-modules">pyFormex OpenGL modules</a></li>
 <li><a class="reference internal" href="#pyformex-plugin-menus">pyFormex plugin menus</a></li>
-<li><a class="reference internal" href="#pyformex-tools">pyFormex tools</a><ul>
-</ul>
-</li>
+<li><a class="reference internal" href="#pyformex-tools">pyFormex tools</a></li>
 </ul>
 </li>
 </ul>
@@ -130,7 +117,7 @@
                         title="previous chapter">pyFormex example scripts</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="ref/coords.html"
-                        title="next chapter">1. <tt class="docutils literal docutils literal docutils literal"><span class="pre">coords</span></tt> &#8212; A structured collection of 3D coordinates.</a></p>
+                        title="next chapter">1. <tt class="docutils literal"><span class="pre">coords</span></tt> &#8212; A structured collection of 3D coordinates.</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -168,7 +155,7 @@
 <span id="id1"></span><h1>pyFormex reference manual<a class="headerlink" href="#cha-reference" title="Permalink to this headline">¶</a></h1>
 <div class="topic">
 <p class="topic-title first">Abstract</p>
-<p>This is the reference manual for pyFormex 1.0.0~a1.
+<p>This is the reference manual for pyFormex 1.0.1~a2.
 It describes most of the classes and functions
 defined in the pyFormex modules. It was built automatically from
 the pyFormex sources and is therefore the ultimate reference
@@ -191,7 +178,7 @@ functionality for specific applications.</li>
 </ul>
 <p>Some of the modules are loaded automatically when pyFormex is
 started. Currently this is the case with the modules
-<a class="reference internal" href="ref/coords.html#module-coords" title="coords: A structured collection of 3D coordinates."><tt class="xref py py-mod docutils literal"><span class="pre">coords</span></tt></a>, <a class="reference internal" href="ref/formex.html#module-formex" title="formex: Formex algebra in Python"><tt class="xref py py-mod docutils literal"><span class="pre">formex</span></tt></a>, <a class="reference internal" href="ref/arraytools.html#module-arraytools" title="arraytools: A collection of numerical array utilities."><tt class="xref py py-mod docutils literal"><span class="pre">arraytools</span></tt></a>, <a class="reference internal" href="ref/script.html#module-script" title="script: Basic pyFormex script functions"><tt class="xref py py-mod docutils literal"><span class="pre">script</span></tt></a> and, if the GUI is used, <a class="reference internal" href="ref/draw.html#module-draw" title="draw: Create 3D graphical representations."><tt class="xref py py-mod docutils literal"><span class="pre">draw</span></tt></a> and <a class="reference internal" href="ref/colors.html#module-colors" title="colors: Playing with colors."><tt class="xref py py-mod docutils literal"><span class="pre">colors</span></tt></a>.
+<a class="reference internal" href="ref/coords.html#module-coords" title="coords: A structured collection of 3D coordinates."><tt class="xref py py-mod docutils literal"><span class="pre">coords</span></tt></a>, <a class="reference internal" href="ref/formex.html#module-formex" title="formex: Formex algebra in Python"><tt class="xref py py-mod docutils literal"><span class="pre">formex</span></tt></a>, <a class="reference internal" href="ref/arraytools.html#module-arraytools" title="arraytools: A collection of numerical array utilities."><tt class="xref py py-mod docutils literal"><span class="pre">arraytools</span></tt></a>, <a class="reference internal" href="ref/script.html#module-script" title="script: Basic pyFormex script functions"><tt class="xref py py-mod docutils literal"><span class="pre">script</span></tt></a> and, if the GUI is used, <tt class="xref py py-mod docutils literal"><span class="pre">draw</span></tt> and <tt class="xref py py-mod docutils literal"><span class="pre">colors</span></tt>.
 All the public definitions in these modules are available to pyFormex
 scripts without explicitly importing them. Also available is the complete
 <tt class="xref py py-mod docutils literal"><span class="pre">numpy</span></tt> namespace, because it is imported by <a class="reference internal" href="ref/arraytools.html#module-arraytools" title="arraytools: A collection of numerical array utilities."><tt class="xref py py-mod docutils literal"><span class="pre">arraytools</span></tt></a>.</p>
@@ -207,8 +194,8 @@ the need to explicitely import them.</p>
 <li class="toctree-l1"><a class="reference internal" href="ref/formex.html">2. <tt class="docutils literal"><span class="pre">formex</span></tt> &#8212; Formex algebra in Python</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ref/arraytools.html">3. <tt class="docutils literal"><span class="pre">arraytools</span></tt> &#8212; A collection of numerical array utilities.</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ref/script.html">4. <tt class="docutils literal"><span class="pre">script</span></tt> &#8212; Basic pyFormex script functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/draw.html">5. <tt class="docutils literal"><span class="pre">draw</span></tt> &#8212; Create 3D graphical representations.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/colors.html">6. <tt class="docutils literal"><span class="pre">colors</span></tt> &#8212; Playing with colors.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/gui.draw.html">5. <tt class="docutils literal"><span class="pre">gui.draw</span></tt> &#8212; Create 3D graphical representations.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/opengl.colors.html">6. <tt class="docutils literal"><span class="pre">opengl.colors</span></tt> &#8212; Playing with colors.</a></li>
 </ul>
 </div>
 </div>
@@ -243,15 +230,14 @@ main pyformex path are considered to belong to the pyformex core functionality.<
 <p>These modules create the components of the pyFormex GUI. They are located under pyformex/gui. They depend on the Qt4 framework.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="ref/widgets.html">24. <tt class="docutils literal"><span class="pre">widgets</span></tt> &#8212; A collection of custom widgets used in the pyFormex GUI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/menu.html">25. <tt class="docutils literal"><span class="pre">menu</span></tt> &#8212; Menus for the pyFormex GUI.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/colorscale.html">26. <tt class="docutils literal"><span class="pre">colorscale</span></tt> &#8212; Color mapping of a range of values.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/viewport.html">27. <tt class="docutils literal"><span class="pre">viewport</span></tt> &#8212; Interactive OpenGL Canvas embedded in a Qt4 widget.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/image.html">28. <tt class="docutils literal"><span class="pre">image</span></tt> &#8212; Saving OpenGL renderings to image files.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/imageViewer.html">29. <tt class="docutils literal"><span class="pre">imageViewer</span></tt> &#8212; A general image viewer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/imagearray.html">30. <tt class="docutils literal"><span class="pre">imagearray</span></tt> &#8212; Convert bitmap images into numpy arrays.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/appMenu.html">31. <tt class="docutils literal"><span class="pre">appMenu</span></tt> &#8212; Menu with pyFormex apps.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/toolbar.html">32. <tt class="docutils literal"><span class="pre">toolbar</span></tt> &#8212; Toolbars for the pyFormex GUI.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/gui.widgets.html">24. <tt class="docutils literal"><span class="pre">gui.widgets</span></tt> &#8212; A collection of custom widgets used in the pyFormex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/gui.menu.html">25. <tt class="docutils literal"><span class="pre">gui.menu</span></tt> &#8212; Menus for the pyFormex GUI.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/gui.colorscale.html">26. <tt class="docutils literal"><span class="pre">gui.colorscale</span></tt> &#8212; Color mapping of a range of values.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/gui.viewport.html">27. <tt class="docutils literal"><span class="pre">gui.viewport</span></tt> &#8212; Interactive OpenGL Canvas embedded in a Qt4 widget.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/gui.image.html">28. <tt class="docutils literal"><span class="pre">gui.image</span></tt> &#8212; Saving OpenGL renderings to image files.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/gui.imageViewer.html">29. <tt class="docutils literal"><span class="pre">gui.imageViewer</span></tt> &#8212; A general image viewer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/gui.appMenu.html">30. <tt class="docutils literal"><span class="pre">gui.appMenu</span></tt> &#8212; Menu with pyFormex apps.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/gui.toolbar.html">31. <tt class="docutils literal"><span class="pre">gui.toolbar</span></tt> &#8212; Toolbars for the pyFormex GUI.</a></li>
 </ul>
 </div>
 </div>
@@ -262,42 +248,43 @@ specific applications. Apart from being located under the pyformex/plugins
 path, these modules are in no way different from other pyFormex modules.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="ref/calpy_itf.html">33. <tt class="docutils literal"><span class="pre">calpy_itf</span></tt> &#8212; Calpy interface for pyFormex.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/cameratools.html">34. <tt class="docutils literal"><span class="pre">cameratools</span></tt> &#8212; Camera tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/ccxdat.html">35. <tt class="docutils literal"><span class="pre">ccxdat</span></tt> &#8212;</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/ccxinp.html">36. <tt class="docutils literal"><span class="pre">ccxinp</span></tt> &#8212;</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/curve.html">37. <tt class="docutils literal"><span class="pre">curve</span></tt> &#8212; Definition of curves in pyFormex.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/datareader.html">38. <tt class="docutils literal"><span class="pre">datareader</span></tt> &#8212; Numerical data reader</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/dxf.html">39. <tt class="docutils literal"><span class="pre">dxf</span></tt> &#8212; Read/write geometry in DXF format.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/export.html">40. <tt class="docutils literal"><span class="pre">export</span></tt> &#8212; Classes and functions for exporting geometry in various formats.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/fe.html">41. <tt class="docutils literal"><span class="pre">fe</span></tt> &#8212; Finite Element Models in pyFormex.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/fe_abq.html">42. <tt class="docutils literal"><span class="pre">fe_abq</span></tt> &#8212; Exporting finite element models in Abaqus™ input file format.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/fe_post.html">43. <tt class="docutils literal"><span class="pre">fe_post</span></tt> &#8212; A class for holding results from Finite Element simulations.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/flavia.html">44. <tt class="docutils literal"><span class="pre">flavia</span></tt> &#8212;</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/inertia.html">45. <tt class="docutils literal"><span class="pre">inertia</span></tt> &#8212; inertia.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/isopar.html">46. <tt class="docutils literal"><span class="pre">isopar</span></tt> &#8212; Isoparametric transformations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/isosurface.html">47. <tt class="docutils literal"><span class="pre">isosurface</span></tt> &#8212; Isosurface: surface reconstruction algorithms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/lima.html">48. <tt class="docutils literal"><span class="pre">lima</span></tt> &#8212; Lindenmayer Systems</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/neu_exp.html">49. <tt class="docutils literal"><span class="pre">neu_exp</span></tt> &#8212; Gambit neutral file exporter.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/nurbs.html">50. <tt class="docutils literal"><span class="pre">nurbs</span></tt> &#8212; Using NURBS in pyFormex.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/objects.html">51. <tt class="docutils literal"><span class="pre">objects</span></tt> &#8212; Selection of objects from the global dictionary.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/partition.html">52. <tt class="docutils literal"><span class="pre">partition</span></tt> &#8212; Partitioning tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/plot2d.html">53. <tt class="docutils literal"><span class="pre">plot2d</span></tt> &#8212; plot2d.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/polygon.html">54. <tt class="docutils literal"><span class="pre">polygon</span></tt> &#8212; Polygonal facets.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/polynomial.html">55. <tt class="docutils literal"><span class="pre">polynomial</span></tt> &#8212; Polynomials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/postproc.html">56. <tt class="docutils literal"><span class="pre">postproc</span></tt> &#8212; Postprocessing functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/properties.html">57. <tt class="docutils literal"><span class="pre">properties</span></tt> &#8212; General framework for attributing properties to geometrical elements.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/pyformex_gts.html">58. <tt class="docutils literal"><span class="pre">pyformex_gts</span></tt> &#8212; Operations on triangulated surfaces using GTS functions.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/section2d.html">59. <tt class="docutils literal"><span class="pre">section2d</span></tt> &#8212; Some functions operating on 2D structures.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/sectionize.html">60. <tt class="docutils literal"><span class="pre">sectionize</span></tt> &#8212; sectionize.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/tetgen.html">61. <tt class="docutils literal"><span class="pre">tetgen</span></tt> &#8212; Interface with tetgen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/tools.html">62. <tt class="docutils literal"><span class="pre">tools</span></tt> &#8212; tools.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/trisurface.html">63. <tt class="docutils literal"><span class="pre">trisurface</span></tt> &#8212; Operations on triangulated surfaces.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/turtle.html">64. <tt class="docutils literal"><span class="pre">turtle</span></tt> &#8212; Turtle graphics for pyFormex</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/units.html">65. <tt class="docutils literal"><span class="pre">units</span></tt> &#8212; A Python wrapper for unit conversion of physical quantities.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/vascularsweepingmesher.html">66. <tt class="docutils literal"><span class="pre">vascularsweepingmesher</span></tt> &#8212; Vascular Sweeping Mesher</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/web.html">67. <tt class="docutils literal"><span class="pre">web</span></tt> &#8212; Tools to access files from the web</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/webgl.html">68. <tt class="docutils literal"><span class="pre">webgl</span></tt> &#8212; View and manipulate 3D models in your browser.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.bifmesh.html">32. <tt class="docutils literal"><span class="pre">plugins.bifmesh</span></tt> &#8212; Vascular Sweeping Mesher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.calpy_itf.html">33. <tt class="docutils literal"><span class="pre">plugins.calpy_itf</span></tt> &#8212; Calpy interface for pyFormex.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.cameratools.html">34. <tt class="docutils literal"><span class="pre">plugins.cameratools</span></tt> &#8212; Camera tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.ccxdat.html">35. <tt class="docutils literal"><span class="pre">plugins.ccxdat</span></tt> &#8212;</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.ccxinp.html">36. <tt class="docutils literal"><span class="pre">plugins.ccxinp</span></tt> &#8212;</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.curve.html">37. <tt class="docutils literal"><span class="pre">plugins.curve</span></tt> &#8212; Definition of curves in pyFormex.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.datareader.html">38. <tt class="docutils literal"><span class="pre">plugins.datareader</span></tt> &#8212; Numerical data reader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.dxf.html">39. <tt class="docutils literal"><span class="pre">plugins.dxf</span></tt> &#8212; Read/write geometry in DXF format.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.export.html">40. <tt class="docutils literal"><span class="pre">plugins.export</span></tt> &#8212; Classes and functions for exporting geometry in various formats.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.fe.html">41. <tt class="docutils literal"><span class="pre">plugins.fe</span></tt> &#8212; Finite Element Models in pyFormex.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.fe_abq.html">42. <tt class="docutils literal"><span class="pre">plugins.fe_abq</span></tt> &#8212;</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.fe_post.html">43. <tt class="docutils literal"><span class="pre">plugins.fe_post</span></tt> &#8212; A class for holding results from Finite Element simulations.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.flavia.html">44. <tt class="docutils literal"><span class="pre">plugins.flavia</span></tt> &#8212;</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.imagearray.html">45. <tt class="docutils literal"><span class="pre">plugins.imagearray</span></tt> &#8212; Convert bitmap images into numpy arrays.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.inertia.html">46. <tt class="docutils literal"><span class="pre">plugins.inertia</span></tt> &#8212; inertia.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.isopar.html">47. <tt class="docutils literal"><span class="pre">plugins.isopar</span></tt> &#8212; Isoparametric transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.isosurface.html">48. <tt class="docutils literal"><span class="pre">plugins.isosurface</span></tt> &#8212; Isosurface: surface reconstruction algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.lima.html">49. <tt class="docutils literal"><span class="pre">plugins.lima</span></tt> &#8212; Lindenmayer Systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.neu_exp.html">50. <tt class="docutils literal"><span class="pre">plugins.neu_exp</span></tt> &#8212; Gambit neutral file exporter.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.nurbs.html">51. <tt class="docutils literal"><span class="pre">plugins.nurbs</span></tt> &#8212; Using NURBS in pyFormex.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.objects.html">52. <tt class="docutils literal"><span class="pre">plugins.objects</span></tt> &#8212; Selection of objects from the global dictionary.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.partition.html">53. <tt class="docutils literal"><span class="pre">plugins.partition</span></tt> &#8212; Partitioning tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.plot2d.html">54. <tt class="docutils literal"><span class="pre">plugins.plot2d</span></tt> &#8212; plot2d.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.polygon.html">55. <tt class="docutils literal"><span class="pre">plugins.polygon</span></tt> &#8212; Polygonal facets.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.polynomial.html">56. <tt class="docutils literal"><span class="pre">plugins.polynomial</span></tt> &#8212; Polynomials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.postproc.html">57. <tt class="docutils literal"><span class="pre">plugins.postproc</span></tt> &#8212; Postprocessing functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.properties.html">58. <tt class="docutils literal"><span class="pre">plugins.properties</span></tt> &#8212; General framework for attributing properties to geometrical elements.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.pyformex_gts.html">59. <tt class="docutils literal"><span class="pre">plugins.pyformex_gts</span></tt> &#8212; Operations on triangulated surfaces using GTS functions.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.section2d.html">60. <tt class="docutils literal"><span class="pre">plugins.section2d</span></tt> &#8212; Some functions operating on 2D structures.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.sectionize.html">61. <tt class="docutils literal"><span class="pre">plugins.sectionize</span></tt> &#8212; sectionize.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.tetgen.html">62. <tt class="docutils literal"><span class="pre">plugins.tetgen</span></tt> &#8212; Interface with tetgen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.tools.html">63. <tt class="docutils literal"><span class="pre">plugins.tools</span></tt> &#8212; tools.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.trisurface.html">64. <tt class="docutils literal"><span class="pre">plugins.trisurface</span></tt> &#8212; Operations on triangulated surfaces.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.turtle.html">65. <tt class="docutils literal"><span class="pre">plugins.turtle</span></tt> &#8212; Turtle graphics for pyFormex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.units.html">66. <tt class="docutils literal"><span class="pre">plugins.units</span></tt> &#8212; A Python wrapper for unit conversion of physical quantities.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.web.html">67. <tt class="docutils literal"><span class="pre">plugins.web</span></tt> &#8212; Tools to access files from the web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/plugins.webgl.html">68. <tt class="docutils literal"><span class="pre">plugins.webgl</span></tt> &#8212; View and manipulate 3D models in your browser.</a></li>
 </ul>
 </div>
 </div>
@@ -306,24 +293,18 @@ path, these modules are in no way different from other pyFormex modules.</p>
 <p>These modules are responsible for rendering the 3D models and depend on OpenGL. Currently, pyFormex contains two rendering engines. The new engine&#8217;s modules are located under pyformex/opengl.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="ref/camera.html">69. <tt class="docutils literal"><span class="pre">camera</span></tt> &#8212; OpenGL camera handling</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/canvas.html">70. <tt class="docutils literal"><span class="pre">canvas</span></tt> &#8212; This implements an OpenGL drawing widget for painting 3D scenes.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/drawable.html">71. <tt class="docutils literal"><span class="pre">drawable</span></tt> &#8212; OpenGL rendering objects for the new OpenGL2 engine.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/objectdialog.html">72. <tt class="docutils literal"><span class="pre">objectdialog</span></tt> &#8212; Interactive modification of the rendered scene</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/renderer.html">73. <tt class="docutils literal"><span class="pre">renderer</span></tt> &#8212; opengl/renderer.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/scene.html">74. <tt class="docutils literal"><span class="pre">scene</span></tt> &#8212; This implements an OpenGL drawing widget for painting 3D scenes.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/shader.html">75. <tt class="docutils literal"><span class="pre">shader</span></tt> &#8212; OpenGL shader programs</a></li>
-</ul>
-</div>
-<p>The old OpenGL engine resides under pyformex/gui. As the functionality is
-being transfered to the new engine, these modules are sheduled to be removed
-in future.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="ref/actors.html">76. <tt class="docutils literal"><span class="pre">actors</span></tt> &#8212; OpenGL actors for populating the 3D scene.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/decors.html">77. <tt class="docutils literal"><span class="pre">decors</span></tt> &#8212; 2D decorations for the OpenGL canvas.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/marks.html">78. <tt class="docutils literal"><span class="pre">marks</span></tt> &#8212; OpenGL marks for annotating 3D actors.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/gluttext.html">79. <tt class="docutils literal"><span class="pre">gluttext</span></tt> &#8212; 2D text decorations using GLUT fonts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/opengl.camera.html">69. <tt class="docutils literal"><span class="pre">opengl.camera</span></tt> &#8212; OpenGL camera handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/opengl.canvas.html">70. <tt class="docutils literal"><span class="pre">opengl.canvas</span></tt> &#8212; This implements an OpenGL drawing widget for painting 3D scenes.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/opengl.decors.html">71. <tt class="docutils literal"><span class="pre">opengl.decors</span></tt> &#8212; Decorations for the OpenGL canvas.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/opengl.drawable.html">72. <tt class="docutils literal"><span class="pre">opengl.drawable</span></tt> &#8212; OpenGL rendering objects for the new OpenGL2 engine.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/opengl.matrix.html">73. <tt class="docutils literal"><span class="pre">matrix</span></tt> &#8212; opengl/matrix.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/opengl.objectdialog.html">74. <tt class="docutils literal"><span class="pre">opengl.objectdialog</span></tt> &#8212; Interactive modification of the rendered scene</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/opengl.renderer.html">75. <tt class="docutils literal"><span class="pre">opengl.renderer</span></tt> &#8212; opengl/renderer.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/opengl.sanitize.html">76. <tt class="docutils literal"><span class="pre">opengl.sanitize</span></tt> &#8212; Sanitize data before rendering.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/opengl.scene.html">77. <tt class="docutils literal"><span class="pre">opengl.scene</span></tt> &#8212; This implements an OpenGL drawing widget for painting 3D scenes.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/opengl.shader.html">78. <tt class="docutils literal"><span class="pre">opengl.shader</span></tt> &#8212; OpenGL shader programs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/opengl.textext.html">79. <tt class="docutils literal"><span class="pre">opengl.textext</span></tt> &#8212; Text rendering on the OpenGL canvas.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/opengl.texture.html">80. <tt class="docutils literal"><span class="pre">opengl.texture</span></tt> &#8212; Texture rendering.</a></li>
 </ul>
 </div>
 </div>
@@ -356,15 +337,15 @@ were used in the implementation of other modules, but can also be useful
 elsewhere.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="ref/olist.html">80. <tt class="docutils literal"><span class="pre">olist</span></tt> &#8212; Some convenient shortcuts for common list operations.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/mydict.html">81. <tt class="docutils literal"><span class="pre">mydict</span></tt> &#8212;</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/odict.html">82. <tt class="docutils literal"><span class="pre">odict</span></tt> &#8212; Specialized dictionary types.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/attributes.html">83. <tt class="docutils literal"><span class="pre">attributes</span></tt> &#8212; Attributes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/collection.html">84. <tt class="docutils literal"><span class="pre">collection</span></tt> &#8212; Tools for handling collections of elements belonging to multiple parts.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/config.html">85. <tt class="docutils literal"><span class="pre">config</span></tt> &#8212; A general yet simple configuration class.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/flatkeydb.html">86. <tt class="docutils literal"><span class="pre">flatkeydb</span></tt> &#8212; Flat Text File Database.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/sendmail.html">87. <tt class="docutils literal"><span class="pre">sendmail</span></tt> &#8212; sendmail.py: a simple program to send an email message</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref/timer.html">88. <tt class="docutils literal"><span class="pre">timer</span></tt> &#8212; A timer class.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/olist.html">81. <tt class="docutils literal"><span class="pre">olist</span></tt> &#8212; Some convenient shortcuts for common list operations.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/mydict.html">82. <tt class="docutils literal"><span class="pre">mydict</span></tt> &#8212;</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/odict.html">83. <tt class="docutils literal"><span class="pre">odict</span></tt> &#8212; Specialized dictionary types.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/attributes.html">84. <tt class="docutils literal"><span class="pre">attributes</span></tt> &#8212; Attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/collection.html">85. <tt class="docutils literal"><span class="pre">collection</span></tt> &#8212; Tools for handling collections of elements belonging to multiple parts.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/config.html">86. <tt class="docutils literal"><span class="pre">config</span></tt> &#8212; A general yet simple configuration class.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/flatkeydb.html">87. <tt class="docutils literal"><span class="pre">flatkeydb</span></tt> &#8212; Flat Text File Database.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/sendmail.html">88. <tt class="docutils literal"><span class="pre">sendmail</span></tt> &#8212; sendmail.py: a simple program to send an email message</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/timer.html">89. <tt class="docutils literal"><span class="pre">timer</span></tt> &#8212; A timer class.</a></li>
 </ul>
 </div>
 </div>
@@ -391,16 +372,16 @@ elsewhere.</p>
         <li class="right" >
           <a href="examples.html" title="pyFormex example scripts"
              >previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li> 
+        <li><a href="index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
-        &copy; Copyright 2004-2012, Benedict Verhegghe.
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 18, 2014.
+      Last updated on Feb 08, 2015.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>
     </div>
   </body>

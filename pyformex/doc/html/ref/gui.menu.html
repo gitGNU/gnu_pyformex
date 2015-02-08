@@ -1,0 +1,634 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!-- 
+##
+##  This file is part of the pyFormex project.
+##  pyFormex is a tool for generating, manipulating and transforming 3D
+##  geometrical models by sequences of mathematical operations.
+##  Home page: http://pyformex.org
+##  Project page:  http://savannah.nongnu.org/projects/pyformex/
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Distributed under the GNU General Public License version 3 or later.
+##
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see http://www.gnu.org/licenses/.
+##
+-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>25. gui.menu — Menus for the pyFormex GUI. &mdash; pyFormex 1.0.1~a2 documentation</title>
+
+    
+    <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1~a2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="up" title="pyFormex reference manual" href="../refman.html" />
+    <link rel="next" title="26. gui.colorscale — Color mapping of a range of values." href="gui.colorscale.html" />
+    <link rel="prev" title="24. gui.widgets — A collection of custom widgets used in the pyFormex GUI" href="gui.widgets.html" />
+<link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
+
+  </head>
+  <body>
+
+<div class="header">
+  <a href="http://pyformex.org">
+  <img src="http://www.nongnu.org/pyformex/_static/scallop_dome_small.png" alt="scallop dome" border="0" hspace="20" vspace="12" align="left" />
+  <img src="http://www.nongnu.org/pyformex/_static/pyformex-logo-2.png" alt="pyformex logo" border="0" hspace="10" vspace="8" align="left" />
+  </a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gui.colorscale.html" title="26. gui.colorscale — Color mapping of a range of values."
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="gui.widgets.html" title="24. gui.widgets — A collection of custom widgets used in the pyFormex GUI"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center">
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick"/>
+<input type="hidden" name="hosted_button_id" value="P7J4AM4QULB4Q"/>
+<input type="image" src="https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif" name="submit" alt="PayPal - The safer, easier way to pay online!"/>
+<img alt="" border="0" src="https://www.paypal.com/nl_NL/i/scr/pixel.gif" width="1" height="1"/>
+</form>
+
+</div>
+   
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">25. <tt class="docutils literal"><span class="pre">gui.menu</span></tt> &#8212; Menus for the pyFormex GUI.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-gui-menu">25.1. Classes defined in module gui.menu</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-gui-menu">25.2. Functions defined in module gui.menu</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="gui.widgets.html"
+                        title="previous chapter">24. <tt class="docutils literal"><span class="pre">gui.widgets</span></tt> &#8212; A collection of custom widgets used in the pyFormex GUI</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="gui.colorscale.html"
+                        title="next chapter">26. <tt class="docutils literal"><span class="pre">gui.colorscale</span></tt> &#8212; Color mapping of a range of values.</a></p>
+  
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+<div align="center">
+  <p>
+  <a href="http://www.fsf.org/register_form?referrer=8491"><img src="http://www.nongnu.org/pyformex/_static/fsf-member8491.png" alt="[FSF Associate Member]" width="89" height="31"  /></a>
+  </p>
+  <p>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+      src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /></a>
+  </p>
+</div>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-gui.menu">
+<span id="gui-menu-menus-for-the-pyformex-gui"></span><span id="sec-ref-gui-menu"></span><h1>25. <a class="reference internal" href="#module-gui.menu" title="gui.menu: Menus for the pyFormex GUI."><tt class="xref py py-mod docutils literal"><span class="pre">gui.menu</span></tt></a> &#8212; Menus for the pyFormex GUI.<a class="headerlink" href="#module-gui.menu" title="Permalink to this headline">¶</a></h1>
+<p>This modules implements specialized classes and functions for building
+the pyFormex GUI menu system.</p>
+<div class="section" id="classes-defined-in-module-gui-menu">
+<h2>25.1. Classes defined in module gui.menu<a class="headerlink" href="#classes-defined-in-module-gui-menu" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gui.menu.BaseMenu">
+<em class="property">class </em><tt class="descclassname">gui.menu.</tt><tt class="descname">BaseMenu</tt><big>(</big><em>title='AMenu'</em>, <em>parent=None</em>, <em>before=None</em>, <em>items=None</em><big>)</big><a class="headerlink" href="#gui.menu.BaseMenu" title="Permalink to this definition">¶</a></dt>
+<dd><p>A general menu class.</p>
+<p>A hierarchical menu that keeps a list of its item names and actions.
+The item names are normalized by removing all &#8216;&amp;&#8217; characters and
+converting the result to lower case.
+It thus becomes easy to search for an existing item in a menu.</p>
+<p>This class is not intended for direct use, but through subclasses.
+Subclasses should implement at least the following methods:</p>
+<ul class="simple">
+<li>addSeparator()</li>
+<li>insertSeperator(before)</li>
+<li>addAction(text,action)</li>
+<li>insertAction(before,text,action)</li>
+<li>addMenu(text,menu)</li>
+<li>insertMenu(before,text,menu)</li>
+</ul>
+<p>QtGui.Menu and QtGui.MenuBar provide these methods.</p>
+<dl class="method">
+<dt id="gui.menu.BaseMenu.actionList">
+<tt class="descname">actionList</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.menu.BaseMenu.actionList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with the current actions.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.actionsLike">
+<tt class="descname">actionsLike</tt><big>(</big><em>clas</em><big>)</big><a class="headerlink" href="#gui.menu.BaseMenu.actionsLike" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with the current actions of given class.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.subMenus">
+<tt class="descname">subMenus</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.menu.BaseMenu.subMenus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with the submenus</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.index">
+<tt class="descname">index</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#gui.menu.BaseMenu.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index of the specified item in the actionlist.</p>
+<p>If the requested item is not in the actionlist, -1 is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.action">
+<tt class="descname">action</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#gui.menu.BaseMenu.action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the action with specified text.</p>
+<p>First, a normal action is tried. If none is found,
+a separator is tried.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.item">
+<tt class="descname">item</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#gui.menu.BaseMenu.item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the item with specified text.</p>
+<p>For a normal action or a separator, an action is returned.
+For a menu action, a menu is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.nextitem">
+<tt class="descname">nextitem</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#gui.menu.BaseMenu.nextitem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the name of the next item.</p>
+<p>This can be used to replace the current item with another menu.
+If the item is the last, None is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.removeItem">
+<tt class="descname">removeItem</tt><big>(</big><em>item</em><big>)</big><a class="headerlink" href="#gui.menu.BaseMenu.removeItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove an item from this menu.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.insert_sep">
+<tt class="descname">insert_sep</tt><big>(</big><em>before=None</em><big>)</big><a class="headerlink" href="#gui.menu.BaseMenu.insert_sep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and insert a separator</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.insert_menu">
+<tt class="descname">insert_menu</tt><big>(</big><em>menu</em>, <em>before=None</em><big>)</big><a class="headerlink" href="#gui.menu.BaseMenu.insert_menu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert an existing menu.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.insert_action">
+<tt class="descname">insert_action</tt><big>(</big><em>action</em>, <em>before=None</em><big>)</big><a class="headerlink" href="#gui.menu.BaseMenu.insert_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert an action.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.create_insert_action">
+<tt class="descname">create_insert_action</tt><big>(</big><em>name</em>, <em>val</em>, <em>before=None</em><big>)</big><a class="headerlink" href="#gui.menu.BaseMenu.create_insert_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and insert an action.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.insertItems">
+<tt class="descname">insertItems</tt><big>(</big><em>items</em>, <em>before=None</em>, <em>debug=False</em><big>)</big><a class="headerlink" href="#gui.menu.BaseMenu.insertItems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert a list of items in the menu.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>items</cite>: a list of menuitem tuples. Each item is a tuple of two
+or three elements: (text, action, options):<ul>
+<li><cite>text</cite>: the text that will be displayed in the menu item.
+It is stored in a normalized way: all lower case and with
+&#8216;&amp;&#8217; removed.</li>
+<li><cite>action</cite>: can be any of the following:<ul>
+<li>a Python function or instance method : it will be called when the
+item is selected,</li>
+<li>a string with the name of a function/method,</li>
+<li>a list of Menu Items: a popup Menu will be created that will
+appear when the item is selected,</li>
+<li>an existing Menu,</li>
+<li>None : this will create a separator item with no action.</li>
+</ul>
+</li>
+<li><cite>options</cite>: optional dictionary with following honoured fields:<ul>
+<li><cite>icon</cite>: the name of an icon to be displayed with the item text.
+This name should be that of one of the icons in the pyFormex
+icondir.</li>
+<li><cite>shortcut</cite>: is an optional key combination to select the item.</li>
+<li><cite>tooltip</cite>: a text that is displayed as popup help.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><cite>before</cite>: if specified, should be the text <em>or</em> the action of one
+of the items in the Menu (not the items list!): the new list of
+items will be inserted before the specified item.</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gui.menu.Menu">
+<em class="property">class </em><tt class="descclassname">gui.menu.</tt><tt class="descname">Menu</tt><big>(</big><em>title='UserMenu'</em>, <em>parent=None</em>, <em>before=None</em>, <em>tearoff=False</em>, <em>items=None</em><big>)</big><a class="headerlink" href="#gui.menu.Menu" title="Permalink to this definition">¶</a></dt>
+<dd><p>A popup/pulldown menu.</p>
+<dl class="method">
+<dt id="gui.menu.Menu.action">
+<tt class="descname">action</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#gui.menu.Menu.action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the action with specified text.</p>
+<p>First, a normal action is tried. If none is found,
+a separator is tried.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.actionList">
+<tt class="descname">actionList</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.menu.Menu.actionList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with the current actions.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.actionsLike">
+<tt class="descname">actionsLike</tt><big>(</big><em>clas</em><big>)</big><a class="headerlink" href="#gui.menu.Menu.actionsLike" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with the current actions of given class.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.create_insert_action">
+<tt class="descname">create_insert_action</tt><big>(</big><em>name</em>, <em>val</em>, <em>before=None</em><big>)</big><a class="headerlink" href="#gui.menu.Menu.create_insert_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and insert an action.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.index">
+<tt class="descname">index</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#gui.menu.Menu.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index of the specified item in the actionlist.</p>
+<p>If the requested item is not in the actionlist, -1 is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.insertItems">
+<tt class="descname">insertItems</tt><big>(</big><em>items</em>, <em>before=None</em>, <em>debug=False</em><big>)</big><a class="headerlink" href="#gui.menu.Menu.insertItems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert a list of items in the menu.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>items</cite>: a list of menuitem tuples. Each item is a tuple of two
+or three elements: (text, action, options):<ul>
+<li><cite>text</cite>: the text that will be displayed in the menu item.
+It is stored in a normalized way: all lower case and with
+&#8216;&amp;&#8217; removed.</li>
+<li><cite>action</cite>: can be any of the following:<ul>
+<li>a Python function or instance method : it will be called when the
+item is selected,</li>
+<li>a string with the name of a function/method,</li>
+<li>a list of Menu Items: a popup Menu will be created that will
+appear when the item is selected,</li>
+<li>an existing Menu,</li>
+<li>None : this will create a separator item with no action.</li>
+</ul>
+</li>
+<li><cite>options</cite>: optional dictionary with following honoured fields:<ul>
+<li><cite>icon</cite>: the name of an icon to be displayed with the item text.
+This name should be that of one of the icons in the pyFormex
+icondir.</li>
+<li><cite>shortcut</cite>: is an optional key combination to select the item.</li>
+<li><cite>tooltip</cite>: a text that is displayed as popup help.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><cite>before</cite>: if specified, should be the text <em>or</em> the action of one
+of the items in the Menu (not the items list!): the new list of
+items will be inserted before the specified item.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.insert_action">
+<tt class="descname">insert_action</tt><big>(</big><em>action</em>, <em>before=None</em><big>)</big><a class="headerlink" href="#gui.menu.Menu.insert_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert an action.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.insert_menu">
+<tt class="descname">insert_menu</tt><big>(</big><em>menu</em>, <em>before=None</em><big>)</big><a class="headerlink" href="#gui.menu.Menu.insert_menu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert an existing menu.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.insert_sep">
+<tt class="descname">insert_sep</tt><big>(</big><em>before=None</em><big>)</big><a class="headerlink" href="#gui.menu.Menu.insert_sep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and insert a separator</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.item">
+<tt class="descname">item</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#gui.menu.Menu.item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the item with specified text.</p>
+<p>For a normal action or a separator, an action is returned.
+For a menu action, a menu is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.nextitem">
+<tt class="descname">nextitem</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#gui.menu.Menu.nextitem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the name of the next item.</p>
+<p>This can be used to replace the current item with another menu.
+If the item is the last, None is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.removeItem">
+<tt class="descname">removeItem</tt><big>(</big><em>item</em><big>)</big><a class="headerlink" href="#gui.menu.Menu.removeItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove an item from this menu.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.subMenus">
+<tt class="descname">subMenus</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.menu.Menu.subMenus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with the submenus</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gui.menu.MenuBar">
+<em class="property">class </em><tt class="descclassname">gui.menu.</tt><tt class="descname">MenuBar</tt><big>(</big><em>title='TopMenuBar'</em><big>)</big><a class="headerlink" href="#gui.menu.MenuBar" title="Permalink to this definition">¶</a></dt>
+<dd><p>A menu bar allowing easy menu creation.</p>
+<dl class="method">
+<dt id="gui.menu.MenuBar.action">
+<tt class="descname">action</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#gui.menu.MenuBar.action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the action with specified text.</p>
+<p>First, a normal action is tried. If none is found,
+a separator is tried.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.actionList">
+<tt class="descname">actionList</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.menu.MenuBar.actionList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with the current actions.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.actionsLike">
+<tt class="descname">actionsLike</tt><big>(</big><em>clas</em><big>)</big><a class="headerlink" href="#gui.menu.MenuBar.actionsLike" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with the current actions of given class.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.create_insert_action">
+<tt class="descname">create_insert_action</tt><big>(</big><em>name</em>, <em>val</em>, <em>before=None</em><big>)</big><a class="headerlink" href="#gui.menu.MenuBar.create_insert_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and insert an action.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.index">
+<tt class="descname">index</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#gui.menu.MenuBar.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index of the specified item in the actionlist.</p>
+<p>If the requested item is not in the actionlist, -1 is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.insertItems">
+<tt class="descname">insertItems</tt><big>(</big><em>items</em>, <em>before=None</em>, <em>debug=False</em><big>)</big><a class="headerlink" href="#gui.menu.MenuBar.insertItems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert a list of items in the menu.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>items</cite>: a list of menuitem tuples. Each item is a tuple of two
+or three elements: (text, action, options):<ul>
+<li><cite>text</cite>: the text that will be displayed in the menu item.
+It is stored in a normalized way: all lower case and with
+&#8216;&amp;&#8217; removed.</li>
+<li><cite>action</cite>: can be any of the following:<ul>
+<li>a Python function or instance method : it will be called when the
+item is selected,</li>
+<li>a string with the name of a function/method,</li>
+<li>a list of Menu Items: a popup Menu will be created that will
+appear when the item is selected,</li>
+<li>an existing Menu,</li>
+<li>None : this will create a separator item with no action.</li>
+</ul>
+</li>
+<li><cite>options</cite>: optional dictionary with following honoured fields:<ul>
+<li><cite>icon</cite>: the name of an icon to be displayed with the item text.
+This name should be that of one of the icons in the pyFormex
+icondir.</li>
+<li><cite>shortcut</cite>: is an optional key combination to select the item.</li>
+<li><cite>tooltip</cite>: a text that is displayed as popup help.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><cite>before</cite>: if specified, should be the text <em>or</em> the action of one
+of the items in the Menu (not the items list!): the new list of
+items will be inserted before the specified item.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.insert_action">
+<tt class="descname">insert_action</tt><big>(</big><em>action</em>, <em>before=None</em><big>)</big><a class="headerlink" href="#gui.menu.MenuBar.insert_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert an action.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.insert_menu">
+<tt class="descname">insert_menu</tt><big>(</big><em>menu</em>, <em>before=None</em><big>)</big><a class="headerlink" href="#gui.menu.MenuBar.insert_menu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert an existing menu.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.insert_sep">
+<tt class="descname">insert_sep</tt><big>(</big><em>before=None</em><big>)</big><a class="headerlink" href="#gui.menu.MenuBar.insert_sep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and insert a separator</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.item">
+<tt class="descname">item</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#gui.menu.MenuBar.item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the item with specified text.</p>
+<p>For a normal action or a separator, an action is returned.
+For a menu action, a menu is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.nextitem">
+<tt class="descname">nextitem</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#gui.menu.MenuBar.nextitem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the name of the next item.</p>
+<p>This can be used to replace the current item with another menu.
+If the item is the last, None is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.removeItem">
+<tt class="descname">removeItem</tt><big>(</big><em>item</em><big>)</big><a class="headerlink" href="#gui.menu.MenuBar.removeItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove an item from this menu.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.subMenus">
+<tt class="descname">subMenus</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.menu.MenuBar.subMenus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with the submenus</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gui.menu.DAction">
+<em class="property">class </em><tt class="descclassname">gui.menu.</tt><tt class="descname">DAction</tt><big>(</big><em>name</em>, <em>icon=None</em>, <em>data=None</em>, <em>signal=None</em><big>)</big><a class="headerlink" href="#gui.menu.DAction" title="Permalink to this definition">¶</a></dt>
+<dd><p>A DAction is a QAction that emits a signal with a string parameter.</p>
+<p>When triggered, this action sends a signal (default &#8216;CLICKED&#8217;) with a
+custom string as parameter. The connected slot can then act depending
+on this parameter.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="gui.menu.ActionList">
+<em class="property">class </em><tt class="descclassname">gui.menu.</tt><tt class="descname">ActionList</tt><big>(</big><em>actions=[]</em>, <em>function=None</em>, <em>menu=None</em>, <em>toolbar=None</em>, <em>icons=None</em>, <em>text=None</em><big>)</big><a class="headerlink" href="#gui.menu.ActionList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Menu and toolbar with named actions.</p>
+<p>An action list is a list of strings, each connected to some action.
+The actions can be presented in a menu and/or a toolbar.
+On activating one of the menu or toolbar buttons, a given signal is
+emitted with the button string as parameter. A fixed function can be
+connected to this signal to act dependent on the string value.</p>
+<dl class="method">
+<dt id="gui.menu.ActionList.add">
+<tt class="descname">add</tt><big>(</big><em>name</em>, <em>icon=None</em>, <em>text=None</em><big>)</big><a class="headerlink" href="#gui.menu.ActionList.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new name to the actions list and create a matching DAction.</p>
+<p>If the actions list has an associated menu or toolbar,
+a matching button will be inserted in each of these.
+If an icon is specified, it will be used on the menu and toolbar.
+The icon is either a filename or a QIcon object.
+If text is specified, it is displayed instead of the action&#8217;s name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.ActionList.names">
+<tt class="descname">names</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.menu.ActionList.names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an ordered list of names of the action items.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.ActionList.toolbar">
+<tt class="descname">toolbar</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#gui.menu.ActionList.toolbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new toolbar corresponding to the menu.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="functions-defined-in-module-gui-menu">
+<h2>25.2. Functions defined in module gui.menu<a class="headerlink" href="#functions-defined-in-module-gui-menu" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="gui.menu.resetWarnings">
+<tt class="descclassname">gui.menu.</tt><tt class="descname">resetWarnings</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.menu.resetWarnings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the warning filters to the default.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.menu.createMenuData">
+<tt class="descclassname">gui.menu.</tt><tt class="descname">createMenuData</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.menu.createMenuData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the default pyFormex GUI menu data.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gui.colorscale.html" title="26. gui.colorscale — Color mapping of a range of values."
+             >next</a> |</li>
+        <li class="right" >
+          <a href="gui.widgets.html" title="24. gui.widgets — A collection of custom widgets used in the pyFormex GUI"
+             >previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+    <span class="left">
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
+    </span>
+      Last updated on Feb 08, 2015.
+    <span class="right">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+    </span>
+    </div>
+  </body>
+</html>

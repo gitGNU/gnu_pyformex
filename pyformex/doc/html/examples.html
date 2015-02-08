@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
 <!-- 
@@ -34,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyFormex example scripts &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>pyFormex example scripts &mdash; pyFormex 1.0.1~a2 documentation</title>
 
     
     <link rel="stylesheet" href="_static/pyformex.css" type="text/css" />
@@ -42,8 +41,8 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '1.0.0~a1',
+        URL_ROOT:    './',
+        VERSION:     '1.0.1~a2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +51,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="index.html" />
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="index.html" />
     <link rel="next" title="pyFormex reference manual" href="refman.html" />
     <link rel="prev" title="Configuring pyFormex" href="config.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
@@ -82,7 +81,7 @@
         <li class="right" >
           <a href="config.html" title="Configuring pyFormex"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li> 
+        <li><a href="index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -478,17 +477,17 @@ its aim and functioning (lines 34-60).</p>
 <p>The constructor <tt class="docutils literal"><span class="pre">__init__</span></tt> of the <tt class="docutils literal"><span class="pre">DoubleHelixStent</span></tt> class requires 8
 arguments (line 61):</p>
 <ul class="simple">
-<li>stent external diameter <img class="math" src="_images/math/80c2d7b999148a9a1b9740bd873c5365df7f461a.png" alt="De"/> (mm).</li>
-<li>stent length <img class="math" src="_images/math/859ccf4cd60c7bc6b8fa1afc9a42dc811a826d6f.png" alt="L"/> (mm).</li>
-<li>wire diameter <img class="math" src="_images/math/96ab646de7704969b91c76a214126b45f2b07b25.png" alt="d"/> (mm).</li>
+<li>stent external diameter <img class="math" src="_images/math/6d5e9b9804fa0f7085832e3f6e1bb724e57b2d7b.png" alt="De"/> (mm).</li>
+<li>stent length <img class="math" src="_images/math/0a5711c7a37994043b2bc3bb374adca232491762.png" alt="L"/> (mm).</li>
+<li>wire diameter <img class="math" src="_images/math/425d86ba2f2979d75b7535c2bcf92c33ed6b285a.png" alt="d"/> (mm).</li>
 <li>Number of wires in one spiral set, i.e. wires with the same orientation,
-<img class="math" src="_images/math/435f3a43ae59ed41768ef39b59d4515a9f150105.png" alt="nx"/> (-).</li>
-<li>Pitch angle <img class="math" src="_images/math/fdb63b9e51abe6bbb16acfb5d7b773ddbb5bf4a8.png" alt="\beta"/> (<img class="math" src="_images/math/09ddb817441a1323731ea0677596957f28faea46.png" alt="\deg"/>).</li>
-<li>Extra radial distance between the crossing wires <img class="math" src="_images/math/804a8d1c4e19e5a78fd601c01cc26e9f07e44f66.png" alt="ds"/> (mm). By default,
-<img class="math" src="_images/math/804a8d1c4e19e5a78fd601c01cc26e9f07e44f66.png" alt="ds"/> is [0.0]mm for crossing wires, corresponding with a centre line
-distance between two crossing wires of exactly <img class="math" src="_images/math/96ab646de7704969b91c76a214126b45f2b07b25.png" alt="d"/>.</li>
+<img class="math" src="_images/math/4bddfa85ee989644f50d02863cd7159ee5869684.png" alt="nx"/> (-).</li>
+<li>Pitch angle <img class="math" src="_images/math/8ce03f78ed945f2ef3dac87c8799b55b393527e7.png" alt="\beta"/> (<img class="math" src="_images/math/c910041fc6f39f83426cc1a16df29e654e09316d.png" alt="\deg"/>).</li>
+<li>Extra radial distance between the crossing wires <img class="math" src="_images/math/62d803c2626c3ba3a351a14961833a0679efe880.png" alt="ds"/> (mm). By default,
+<img class="math" src="_images/math/62d803c2626c3ba3a351a14961833a0679efe880.png" alt="ds"/> is [0.0]mm for crossing wires, corresponding with a centre line
+distance between two crossing wires of exactly <img class="math" src="_images/math/425d86ba2f2979d75b7535c2bcf92c33ed6b285a.png" alt="d"/>.</li>
 <li>Number of elements in a strut, i.e. part of a wire between two crossings,
-<img class="math" src="_images/math/7597d11a42c06a95deb9a54a84b717f1571d7c2c.png" alt="nb"/> (-). As every base element is a straight line, multiple elements are
+<img class="math" src="_images/math/cba060345018181c569f34692e590002975ba669.png" alt="nb"/> (-). As every base element is a straight line, multiple elements are
 required to approximate the curvature of the stent wires. The default value of 4
 elements in a strut is a good assumption.</li>
 <li>If <tt class="docutils literal"><span class="pre">connectors=True</span></tt>, extra elements are created at the positions where
@@ -505,68 +504,68 @@ structure, which is easily parametric adaptable.</p>
 <h3>Creating the base module<a class="headerlink" href="#creating-the-base-module" title="Permalink to this headline">¶</a></h3>
 <p>(lines 63-71)</p>
 <p>Depending on the specified arguments in the constructor, the mean stent diameter
-<img class="math" src="_images/math/9ffb448918db29f2a72f8f87f421b3b3cad18f95.png" alt="D"/>, the average stent radius <img class="math" src="_images/math/b55ca7a0aa88ab7d58f4fc035317fdac39b17861.png" alt="r"/>, the <tt class="docutils literal"><span class="pre">bump</span></tt> or curvature of the
-wires <img class="math" src="_images/math/b4f7f56319a1ec5982ca6ee623972e083fcd0fba.png" alt="dz"/>, the pitch <img class="math" src="_images/math/36f73fc1312ee0349b3f3a0f3bd9eb5504339011.png" alt="p"/> and the number of base modules in the
-axial direction <img class="math" src="_images/math/46587de496607a13f873f771a0964285cbe8f638.png" alt="ny"/> are calculated with the following script. As the wire
+<img class="math" src="_images/math/9dfa31437b58c0473299320aa638151cd88cf61b.png" alt="D"/>, the average stent radius <img class="math" src="_images/math/2ede365ad144ab396916ec60458da03860803078.png" alt="r"/>, the <tt class="docutils literal"><span class="pre">bump</span></tt> or curvature of the
+wires <img class="math" src="_images/math/22d310710f88658cbfd4126b886f29ff2c8c7bf6.png" alt="dz"/>, the pitch <img class="math" src="_images/math/3eca8557203e86160952e1c0f735f7417f3285b1.png" alt="p"/> and the number of base modules in the
+axial direction <img class="math" src="_images/math/bc945c71ff743a1dbc3db0e31db9d32d6a46bcf5.png" alt="ny"/> are calculated with the following script. As the wire
 stent structure is obtained by braiding, the wires have an undulating course and
 the <tt class="docutils literal"><span class="pre">bump</span> <span class="pre">dz</span></tt> corresponds to the amplitude of the wave. If no extra distance
-<img class="math" src="_images/math/804a8d1c4e19e5a78fd601c01cc26e9f07e44f66.png" alt="ds"/> is specified, there will be exactly one wire diameter between the
+<img class="math" src="_images/math/62d803c2626c3ba3a351a14961833a0679efe880.png" alt="ds"/> is specified, there will be exactly one wire diameter between the
 centre lines of the crossing wires. The number of modules in the axial direction
-<img class="math" src="_images/math/46587de496607a13f873f771a0964285cbe8f638.png" alt="ny"/> is an integer, therefore, the actual length of the stent model might
-differ slightly from the specified, desired length <img class="math" src="_images/math/859ccf4cd60c7bc6b8fa1afc9a42dc811a826d6f.png" alt="L"/>. However, this
+<img class="math" src="_images/math/bc945c71ff743a1dbc3db0e31db9d32d6a46bcf5.png" alt="ny"/> is an integer, therefore, the actual length of the stent model might
+differ slightly from the specified, desired length <img class="math" src="_images/math/0a5711c7a37994043b2bc3bb374adca232491762.png" alt="L"/>. However, this
 difference has a negligible impact on the numerical results.</p>
 <p>Of now, all parameters to describe the stent geometry are specified and
 available to start the construction of the wire stent. Initially a simple Formex
 is created using the <tt class="docutils literal"><span class="pre">pattern()</span></tt>-function: a straigth line segment of length
-1 oriented along the X-axis (East or <img class="math" src="_images/math/dce34f4dfb2406144304ad0d6106c5382ddd1446.png" alt="1"/>-direction). The <tt class="docutils literal"><span class="pre">replic()</span></tt>-functionality replicates this line segment <img class="math" src="_images/math/7597d11a42c06a95deb9a54a84b717f1571d7c2c.png" alt="nb"/> times with step 1 in the
-X-direction (<img class="math" src="_images/math/bc1f9d9bf8a1b606a4188b5ce9a2af1809e27a89.png" alt="0"/>-direction). Subsequently, these <img class="math" src="_images/math/7597d11a42c06a95deb9a54a84b717f1571d7c2c.png" alt="nb"/> line
+1 oriented along the X-axis (East or <img class="math" src="_images/math/123e375e88da91240024aaf085abee194c4a2d06.png" alt="1"/>-direction). The <tt class="docutils literal"><span class="pre">replic()</span></tt>-functionality replicates this line segment <img class="math" src="_images/math/cba060345018181c569f34692e590002975ba669.png" alt="nb"/> times with step 1 in the
+X-direction (<img class="math" src="_images/math/74c081db590f3d35421c1f6b9afd4cdda36ee210.png" alt="0"/>-direction). Subsequently, these <img class="math" src="_images/math/cba060345018181c569f34692e590002975ba669.png" alt="nb"/> line
 segments form a new Formex which is given a one-dimensional <tt class="docutils literal"><span class="pre">bump</span></tt> with the
 <tt class="docutils literal"><span class="pre">bump1()</span></tt>-function. The Formex undergoes a deformation in the Z-direction
-(<img class="math" src="_images/math/41c544263a265ff15498ee45f7392c5f86c6d151.png" alt="2"/>-direction), forced by the point <tt class="docutils literal"><span class="pre">[0,0,dz]</span></tt>. The <tt class="docutils literal"><span class="pre">bump</span></tt>
+(<img class="math" src="_images/math/15c663954a3e059d1f876bc8a4621de376038c96.png" alt="2"/>-direction), forced by the point <tt class="docutils literal"><span class="pre">[0,0,dz]</span></tt>. The <tt class="docutils literal"><span class="pre">bump</span></tt>
 intensity is specified by the quadratic <tt class="docutils literal"><span class="pre">bump_z</span></tt> function and varies along the
-X-axis (<img class="math" src="_images/math/bc1f9d9bf8a1b606a4188b5ce9a2af1809e27a89.png" alt="0"/>-axis). The creation of this single bumped strut, oriented
+X-axis (<img class="math" src="_images/math/74c081db590f3d35421c1f6b9afd4cdda36ee210.png" alt="0"/>-axis). The creation of this single bumped strut, oriented
 along the X-axis is summarized in the next script and depicted in figures
 <a class="reference internal" href="#fig-straight"><em>A straight line segment</em></a>, <a class="reference internal" href="#fig-replicated"><em>The line segment with replications</em></a> and <a class="reference internal" href="#fig-bumped"><em>A bumped line segment</em></a>,.</p>
 <div class="figure align-center" id="fig-straight">
-<img alt="straight line segment" src="_images/WireStentDemot2Step01.png" style="width: 300px;" />
+<a class="reference internal image-reference" href="_images/WireStentDemot2Step01.png"><img alt="straight line segment" src="_images/WireStentDemot2Step01.png" style="width: 300px;" /></a>
 <p class="caption">A straight line segment</p>
 </div>
 <div class="figure align-center" id="fig-replicated">
-<img alt="line segment with replications" src="_images/WireStentDemot2Step02.png" style="width: 300px;" />
+<a class="reference internal image-reference" href="_images/WireStentDemot2Step02.png"><img alt="line segment with replications" src="_images/WireStentDemot2Step02.png" style="width: 300px;" /></a>
 <p class="caption">The line segment with replications</p>
 </div>
 <div class="figure align-center" id="fig-bumped">
-<img alt="bumped line segment" src="_images/WireStentDemot2Step03.png" style="width: 300px;" />
+<a class="reference internal image-reference" href="_images/WireStentDemot2Step03.png"><img alt="bumped line segment" src="_images/WireStentDemot2Step03.png" style="width: 300px;" /></a>
 <p class="caption">A bumped line segment</p>
 </div>
 <p>The single bumped strut (<tt class="docutils literal"><span class="pre">base</span></tt>) is rescaled homothetically in the XY-plane to
 size one with the <tt class="docutils literal"><span class="pre">scale()</span></tt>-function. Subsequently, the <tt class="docutils literal"><span class="pre">shear()</span></tt>-functionality generates a new <tt class="docutils literal"><span class="pre">NE</span></tt> Formex by skewing the <tt class="docutils literal"><span class="pre">base</span></tt> Formex in
-the Y-direction (<img class="math" src="_images/math/dce34f4dfb2406144304ad0d6106c5382ddd1446.png" alt="1"/>-direction) with a <tt class="docutils literal"><span class="pre">skew</span></tt> factor of <img class="math" src="_images/math/dce34f4dfb2406144304ad0d6106c5382ddd1446.png" alt="1"/> in
+the Y-direction (<img class="math" src="_images/math/123e375e88da91240024aaf085abee194c4a2d06.png" alt="1"/>-direction) with a <tt class="docutils literal"><span class="pre">skew</span></tt> factor of <img class="math" src="_images/math/123e375e88da91240024aaf085abee194c4a2d06.png" alt="1"/> in
 the YX-plane. As a result, the Y-coordinates of the <tt class="docutils literal"><span class="pre">base</span></tt> Formex are altered
-according to the following rule: <img class="math" src="_images/math/1976493054d4291e9f39a772ddeac0b5e7779389.png" alt="y_2 = y_1 + skew \* x_1"/>. Similarly a
+according to the following rule: <img class="math" src="_images/math/7e1e1431394b74e4cd6970afe513d8d331c1ff16.png" alt="y_2 = y_1 + skew \* x_1"/>. Similarly a
 <tt class="docutils literal"><span class="pre">SE</span></tt> Formex is generated by a <tt class="docutils literal"><span class="pre">shear()</span></tt> operation on a mirrored copy of the
 <tt class="docutils literal"><span class="pre">base</span></tt> Formex. The <tt class="docutils literal"><span class="pre">base</span></tt> copy, mirrored in the direction of the XY-plane
-(perpendicular to the <img class="math" src="_images/math/41c544263a265ff15498ee45f7392c5f86c6d151.png" alt="2"/>-axis), is obtained by the <tt class="docutils literal"><span class="pre">reflect()</span></tt>
+(perpendicular to the <img class="math" src="_images/math/15c663954a3e059d1f876bc8a4621de376038c96.png" alt="2"/>-axis), is obtained by the <tt class="docutils literal"><span class="pre">reflect()</span></tt>
 command. Both Formices are given a different property number by the
 <tt class="docutils literal"><span class="pre">setProp()</span></tt>-function, visualised by the different color codes in Figure
 <a class="reference internal" href="#fig-unit-cell"><em>Unit cell of crossing wires and connectors</em></a> This number can be used as an entry in a database, which holds some
 sort of property. The Formex and the database are two seperate entities, only
 linked by the property numbers. The <tt class="docutils literal"><span class="pre">rosette()</span></tt>-function creates a unit cell
-of crossing struts by <img class="math" src="_images/math/41c544263a265ff15498ee45f7392c5f86c6d151.png" alt="2"/> rotational replications with an angular step of
+of crossing struts by <img class="math" src="_images/math/15c663954a3e059d1f876bc8a4621de376038c96.png" alt="2"/> rotational replications with an angular step of
 [180]:math:<cite>deg</cite> around the Z-axis (the original Formex is the first of the
-<img class="math" src="_images/math/41c544263a265ff15498ee45f7392c5f86c6d151.png" alt="2"/> replicas). If specified in the constructor, an additional Formex with
-property <img class="math" src="_images/math/41c544263a265ff15498ee45f7392c5f86c6d151.png" alt="2"/> connects the first points of the <tt class="docutils literal"><span class="pre">NE</span></tt> and <tt class="docutils literal"><span class="pre">SE</span></tt> Formices.</p>
+<img class="math" src="_images/math/15c663954a3e059d1f876bc8a4621de376038c96.png" alt="2"/> replicas). If specified in the constructor, an additional Formex with
+property <img class="math" src="_images/math/15c663954a3e059d1f876bc8a4621de376038c96.png" alt="2"/> connects the first points of the <tt class="docutils literal"><span class="pre">NE</span></tt> and <tt class="docutils literal"><span class="pre">SE</span></tt> Formices.</p>
 <p>(lines 72-83)</p>
 <div class="figure align-center" id="fig-rescaled">
-<img alt="rescaled bumped line segment" src="_images/WireStentDemot2Step04.png" style="width: 300px;" />
+<a class="reference internal image-reference" href="_images/WireStentDemot2Step04.png"><img alt="rescaled bumped line segment" src="_images/WireStentDemot2Step04.png" style="width: 300px;" /></a>
 <p class="caption">Rescaled bumped strut</p>
 </div>
 <div class="figure align-center" id="fig-mirrored">
-<img alt="mirrored and skewed bumped strut" src="_images/WireStentDemot2Step07.png" style="width: 300px;" />
+<a class="reference internal image-reference" href="_images/WireStentDemot2Step07.png"><img alt="mirrored and skewed bumped strut" src="_images/WireStentDemot2Step07.png" style="width: 300px;" /></a>
 <p class="caption">Mirrored and skewed bumped strut</p>
 </div>
 <div class="figure align-center" id="fig-unit-cell">
-<img alt="unit cell of wires and connectors" src="_images/WireStentDemot2Step09.png" style="width: 300px;" />
+<a class="reference internal image-reference" href="_images/WireStentDemot2Step09.png"><img alt="unit cell of wires and connectors" src="_images/WireStentDemot2Step09.png" style="width: 300px;" /></a>
 <p class="caption">Unit cell of crossing wires and connectors</p>
 </div>
 </div>
@@ -583,11 +582,11 @@ use is impossible with local variables, such as for example the <tt class="docut
 <tt class="docutils literal"><span class="pre">SE</span></tt> Formices.</p>
 <p>(lines 84-89)</p>
 <div class="figure align-center" id="fig-mirrored-unit-cell">
-<img alt="mirrored unit cell" src="_images/WireStentDemot2Step10.png" style="width: 300px;" />
+<a class="reference internal image-reference" href="_images/WireStentDemot2Step10.png"><img alt="mirrored unit cell" src="_images/WireStentDemot2Step10.png" style="width: 300px;" /></a>
 <p class="caption">Mirrored unit cell</p>
 </div>
 <div class="figure align-center" id="fig-base-module">
-<img alt="completed base module" src="_images/WireStentDemot2Step11.png" style="width: 300px;" />
+<a class="reference internal image-reference" href="_images/WireStentDemot2Step11.png"><img alt="completed base module" src="_images/WireStentDemot2Step11.png" style="width: 300px;" /></a>
 <p class="caption">Completed base module</p>
 </div>
 </div>
@@ -595,38 +594,38 @@ use is impossible with local variables, such as for example the <tt class="docut
 <h3>Full nearly planar pattern<a class="headerlink" href="#full-nearly-planar-pattern" title="Permalink to this headline">¶</a></h3>
 <p>The fully nearly planar pattern is obtained by copying the base module in two
 directions and shown in Figure <a class="reference internal" href="#fig-full-plane"><em>Full planar topology</em></a>. <tt class="docutils literal"><span class="pre">replic2()</span></tt> generates this
-pattern with <img class="math" src="_images/math/435f3a43ae59ed41768ef39b59d4515a9f150105.png" alt="nx"/> and <img class="math" src="_images/math/46587de496607a13f873f771a0964285cbe8f638.png" alt="ny"/> replications with steps <img class="math" src="_images/math/953640113c8002037caa26af92570f9cb7d5773c.png" alt="dx"/> and
-<img class="math" src="_images/math/5a687ff25b068f70b5def1fdb4f1c49344997391.png" alt="dy"/> in respectively, the default X- and Y-direction.</p>
+pattern with <img class="math" src="_images/math/4bddfa85ee989644f50d02863cd7159ee5869684.png" alt="nx"/> and <img class="math" src="_images/math/bc945c71ff743a1dbc3db0e31db9d32d6a46bcf5.png" alt="ny"/> replications with steps <img class="math" src="_images/math/479c792ffdb607cb2ff6f299163ada14633a17af.png" alt="dx"/> and
+<img class="math" src="_images/math/c940063f2960c92469cf37fad9a79b852cccb612.png" alt="dy"/> in respectively, the default X- and Y-direction.</p>
 <p>(lines 90-93)</p>
 <div class="figure align-center" id="fig-full-plane">
-<img alt="Full planar topology" src="_images/WireStentDemot2Step12.png" style="width: 300px;" />
+<a class="reference internal image-reference" href="_images/WireStentDemot2Step12.png"><img alt="Full planar topology" src="_images/WireStentDemot2Step12.png" style="width: 300px;" /></a>
 <p class="caption">Full planar topology</p>
 </div>
 <div class="figure align-center" id="fig-full-plane-orthoview">
-<img alt="orthogonal view of the full planar topology" src="_images/WireStentDemot2Step13.png" style="width: 300px;" />
+<a class="reference internal image-reference" href="_images/WireStentDemot2Step13.png"><img alt="orthogonal view of the full planar topology" src="_images/WireStentDemot2Step13.png" style="width: 300px;" /></a>
 <p class="caption">Orthogonal view of the full planar topology</p>
 </div>
 </div>
 <div class="section" id="cylindrical-stent-structure">
 <h3>Cylindrical stent structure<a class="headerlink" href="#cylindrical-stent-structure" title="Permalink to this headline">¶</a></h3>
-<p>Finally the full pattern is translated over the stent radius <img class="math" src="_images/math/b55ca7a0aa88ab7d58f4fc035317fdac39b17861.png" alt="r"/> in
+<p>Finally the full pattern is translated over the stent radius <img class="math" src="_images/math/2ede365ad144ab396916ec60458da03860803078.png" alt="r"/> in
 Z-direction and transformed to the cylindrical stent structure by a coordinate
-transformation with the Z-coordinates as distance <img class="math" src="_images/math/b55ca7a0aa88ab7d58f4fc035317fdac39b17861.png" alt="r"/>, the X-coordinates
-as angle <img class="math" src="_images/math/52e8ed7a3ba22130ad3984eb2cd413406475a689.png" alt="\theta"/> and the Y-coordinates as height <img class="math" src="_images/math/b13f21416d84e13708696f34dea81026cda583c9.png" alt="z"/>. The
+transformation with the Z-coordinates as distance <img class="math" src="_images/math/2ede365ad144ab396916ec60458da03860803078.png" alt="r"/>, the X-coordinates
+as angle <img class="math" src="_images/math/a9cfbeb8ebee1f365919e147a79e242dcb67ee5d.png" alt="\theta"/> and the Y-coordinates as height <img class="math" src="_images/math/84d7271dd9e78c1e05d6c3c6ecb60309ef7dfc73.png" alt="z"/>. The
 <tt class="docutils literal"><span class="pre">scale()</span></tt>-operator rescales the stent structure to the correct circumference
 and length. The resulting stent geometry is depicted in Figure <a class="reference internal" href="#fig-stent"><em>Cylindrical stent</em></a>.
 (lines 94-96)</p>
 <p>In addition to the stent initialization, the <tt class="docutils literal"><span class="pre">DoubleHelixStent</span></tt> class script
 contains a function <tt class="docutils literal"><span class="pre">all()</span></tt> representing the complete stent Formex.
 Consequently, the <tt class="docutils literal"><span class="pre">DoubleHelixStent</span></tt> class has four attributes: the Formices
-<tt class="docutils literal"><span class="pre">cell1</span></tt>, <tt class="docutils literal"><span class="pre">cell2</span></tt> and <tt class="docutils literal"><span class="pre">all</span></tt>; and the number <img class="math" src="_images/math/46587de496607a13f873f771a0964285cbe8f638.png" alt="ny"/>.
+<tt class="docutils literal"><span class="pre">cell1</span></tt>, <tt class="docutils literal"><span class="pre">cell2</span></tt> and <tt class="docutils literal"><span class="pre">all</span></tt>; and the number <img class="math" src="_images/math/bc945c71ff743a1dbc3db0e31db9d32d6a46bcf5.png" alt="ny"/>.
 (lines 97-100)</p>
 <div class="figure align-center" id="fig-stent">
-<img alt="cylindrical stent" src="_images/WireStentDemot2Step16.png" style="width: 300px;" />
+<a class="reference internal image-reference" href="_images/WireStentDemot2Step16.png"><img alt="cylindrical stent" src="_images/WireStentDemot2Step16.png" style="width: 300px;" /></a>
 <p class="caption">Cylindrical stent</p>
 </div>
 <div class="figure align-center" id="fig-stent-ortho">
-<img alt="orthogonal view of thecylindrical stent" src="_images/WireStentDemot2Step15.png" style="width: 300px;" />
+<a class="reference internal image-reference" href="_images/WireStentDemot2Step15.png"><img alt="orthogonal view of thecylindrical stent" src="_images/WireStentDemot2Step15.png" style="width: 300px;" /></a>
 <p class="caption">Orthogonal view of the cylindrical stent</p>
 </div>
 </div>
@@ -637,40 +636,40 @@ generating lots of variations on the original geometry. This is a huge advantage
 for parametric analyses and illustrated in figures
 <a class="reference internal" href="#fig-stent-d16l40d22n6b25"><em>Stent variant with </em></a>: these wire
 stents are all created with the same script, but with other values of the
-parameters <img class="math" src="_images/math/80c2d7b999148a9a1b9740bd873c5365df7f461a.png" alt="De"/>, <img class="math" src="_images/math/435f3a43ae59ed41768ef39b59d4515a9f150105.png" alt="nx"/> and <img class="math" src="_images/math/fdb63b9e51abe6bbb16acfb5d7b773ddbb5bf4a8.png" alt="\beta"/>. As the script for building
+parameters <img class="math" src="_images/math/6d5e9b9804fa0f7085832e3f6e1bb724e57b2d7b.png" alt="De"/>, <img class="math" src="_images/math/4bddfa85ee989644f50d02863cd7159ee5869684.png" alt="nx"/> and <img class="math" src="_images/math/8ce03f78ed945f2ef3dac87c8799b55b393527e7.png" alt="\beta"/>. As the script for building
 the wire stent geometry is defined as a the <tt class="docutils literal"><span class="pre">DoubleHelixStent</span></tt> class in the
 (<tt class="file docutils literal"><span class="pre">WireStent.py</span></tt>) script, it can easily be imported for e.g. this purpose.</p>
 <div class="figure align-center" id="fig-stent-d16l40d22n6b25">
-<img alt="Stent variant" src="_images/WireStentD16L40d22n6b25.png" style="width: 300px;" />
-<p class="caption">Stent variant with <img class="math" src="_images/math/dd5e3857ae21daa6c9c4521d45e2e09454c847f0.png" alt="De=16, nx=6, \beta=25"/></p>
+<a class="reference internal image-reference" href="_images/WireStentD16L40d22n6b25.png"><img alt="Stent variant" src="_images/WireStentD16L40d22n6b25.png" style="width: 300px;" /></a>
+<p class="caption">Stent variant with <img class="math" src="_images/math/f6e8b7266b1113c827964922e2ccedb7195dc6ca.png" alt="De=16, nx=6, \beta=25"/></p>
 </div>
 <div class="figure align-center" id="fig-stent-d16l40d22n6b50">
-<img alt="Stent variant" src="_images/WireStentD16L40d22n6b50.png" style="width: 300px;" />
-<p class="caption">Stent variant with <img class="math" src="_images/math/a3dfc30029c4ca579f65947e1858a05ae1233659.png" alt="De=16, nx=6, \beta=50"/></p>
+<a class="reference internal image-reference" href="_images/WireStentD16L40d22n6b50.png"><img alt="Stent variant" src="_images/WireStentD16L40d22n6b50.png" style="width: 300px;" /></a>
+<p class="caption">Stent variant with <img class="math" src="_images/math/33c74d0a788ef200dee94c2b07a4a566d5dc992b.png" alt="De=16, nx=6, \beta=50"/></p>
 </div>
 <div class="figure align-center" id="fig-stent-d16l40d22n10b25">
-<img alt="Stent variant" src="_images/WireStentD16L40d22n10b25.png" style="width: 300px;" />
-<p class="caption">Stent variant with <img class="math" src="_images/math/9f3bdd8f54a9a2d46c769410f286bff8646a4d7a.png" alt="De=16, nx=10, \beta=25"/></p>
+<a class="reference internal image-reference" href="_images/WireStentD16L40d22n10b25.png"><img alt="Stent variant" src="_images/WireStentD16L40d22n10b25.png" style="width: 300px;" /></a>
+<p class="caption">Stent variant with <img class="math" src="_images/math/7e1bb8fcc1ae220f3575acc32f79f8b34e011c04.png" alt="De=16, nx=10, \beta=25"/></p>
 </div>
 <div class="figure align-center" id="fig-stent-d16l40d22n10b50">
-<img alt="Stent variant" src="_images/WireStentD16L40d22n10b50.png" style="width: 300px;" />
-<p class="caption">Stent variant with <img class="math" src="_images/math/55aaa8741e5126c197bd3a986f46165e15d7bf19.png" alt="De=16, nx=10, \beta=50"/></p>
+<a class="reference internal image-reference" href="_images/WireStentD16L40d22n10b50.png"><img alt="Stent variant" src="_images/WireStentD16L40d22n10b50.png" style="width: 300px;" /></a>
+<p class="caption">Stent variant with <img class="math" src="_images/math/31de0deefd06c349a96dd239c445f788962dde27.png" alt="De=16, nx=10, \beta=50"/></p>
 </div>
 <div class="figure align-center" id="fig-stent-d32l40d22n6b25">
-<img alt="Stent variant" src="_images/WireStentD32L40d22n6b25.png" style="width: 300px;" />
-<p class="caption">Stent variant with <img class="math" src="_images/math/6ab77f0909f9e9426fbe827c5e805a87aa1e6fa4.png" alt="De=32, nx=6, \beta=25"/></p>
+<a class="reference internal image-reference" href="_images/WireStentD32L40d22n6b25.png"><img alt="Stent variant" src="_images/WireStentD32L40d22n6b25.png" style="width: 300px;" /></a>
+<p class="caption">Stent variant with <img class="math" src="_images/math/833cc2d9418bd5536bfc1408b09ed306afc92e57.png" alt="De=32, nx=6, \beta=25"/></p>
 </div>
 <div class="figure align-center" id="fig-stent-d32l40d22n6b50">
-<img alt="Stent variant" src="_images/WireStentD32L40d22n6b50.png" style="width: 300px;" />
-<p class="caption">Stent variant with <img class="math" src="_images/math/2aeee926bd2d6bbe822ad1871a424e07bad899a5.png" alt="De=32, nx=6, \beta=50"/></p>
+<a class="reference internal image-reference" href="_images/WireStentD32L40d22n6b50.png"><img alt="Stent variant" src="_images/WireStentD32L40d22n6b50.png" style="width: 300px;" /></a>
+<p class="caption">Stent variant with <img class="math" src="_images/math/efde903a4f804759fb2ae1a1c57d689ebe8f5d68.png" alt="De=32, nx=6, \beta=50"/></p>
 </div>
 <div class="figure align-center" id="fig-stent-d32l40d22n10b25">
-<img alt="Stent variant" src="_images/WireStentD32L40d22n10b25.png" style="width: 300px;" />
-<p class="caption">Stent variant with <img class="math" src="_images/math/a6b32b71d40ef0cc4f92e0493a2f3db800b8d2a1.png" alt="De=32, nx=10, \beta=25"/></p>
+<a class="reference internal image-reference" href="_images/WireStentD32L40d22n10b25.png"><img alt="Stent variant" src="_images/WireStentD32L40d22n10b25.png" style="width: 300px;" /></a>
+<p class="caption">Stent variant with <img class="math" src="_images/math/f5e8d6d250b15139a7dc19c3953ba721cf3bf299.png" alt="De=32, nx=10, \beta=25"/></p>
 </div>
 <div class="figure align-center" id="fig-stent-d32l40d22n10b50">
-<img alt="Stent variant" src="_images/WireStentD32L40d22n10b50.png" style="width: 300px;" />
-<p class="caption">Stent variant with <img class="math" src="_images/math/03093f6aafd62c55673071ae075bcc438f87e571.png" alt="De=32, nx=10, \beta=50"/></p>
+<a class="reference internal image-reference" href="_images/WireStentD32L40d22n10b50.png"><img alt="Stent variant" src="_images/WireStentD32L40d22n10b50.png" style="width: 300px;" /></a>
+<p class="caption">Stent variant with <img class="math" src="_images/math/24d20d9f66ea9ad158c536fe40aef2b21f7727db.png" alt="De=32, nx=10, \beta=50"/></p>
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># $Id: e051f32 on Mon Mar 25 20:42:54 2013 +0100 by Benedict Verhegghe $   *** pyformex ***</span>
 <span class="c">##</span>
@@ -787,16 +786,16 @@ is 9.19 mm.</p>
         <li class="right" >
           <a href="config.html" title="Configuring pyFormex"
              >previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li> 
+        <li><a href="index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
-        &copy; Copyright 2004-2012, Benedict Verhegghe.
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 18, 2014.
+      Last updated on Feb 08, 2015.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>
     </div>
   </body>

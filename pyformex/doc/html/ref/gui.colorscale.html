@@ -1,0 +1,268 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!-- 
+##
+##  This file is part of the pyFormex project.
+##  pyFormex is a tool for generating, manipulating and transforming 3D
+##  geometrical models by sequences of mathematical operations.
+##  Home page: http://pyformex.org
+##  Project page:  http://savannah.nongnu.org/projects/pyformex/
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Distributed under the GNU General Public License version 3 or later.
+##
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see http://www.gnu.org/licenses/.
+##
+-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>26. gui.colorscale — Color mapping of a range of values. &mdash; pyFormex 1.0.1~a2 documentation</title>
+
+    
+    <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1~a2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="up" title="pyFormex reference manual" href="../refman.html" />
+    <link rel="next" title="27. gui.viewport — Interactive OpenGL Canvas embedded in a Qt4 widget." href="gui.viewport.html" />
+    <link rel="prev" title="25. gui.menu — Menus for the pyFormex GUI." href="gui.menu.html" />
+<link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
+
+  </head>
+  <body>
+
+<div class="header">
+  <a href="http://pyformex.org">
+  <img src="http://www.nongnu.org/pyformex/_static/scallop_dome_small.png" alt="scallop dome" border="0" hspace="20" vspace="12" align="left" />
+  <img src="http://www.nongnu.org/pyformex/_static/pyformex-logo-2.png" alt="pyformex logo" border="0" hspace="10" vspace="8" align="left" />
+  </a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gui.viewport.html" title="27. gui.viewport — Interactive OpenGL Canvas embedded in a Qt4 widget."
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="gui.menu.html" title="25. gui.menu — Menus for the pyFormex GUI."
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center">
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick"/>
+<input type="hidden" name="hosted_button_id" value="P7J4AM4QULB4Q"/>
+<input type="image" src="https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif" name="submit" alt="PayPal - The safer, easier way to pay online!"/>
+<img alt="" border="0" src="https://www.paypal.com/nl_NL/i/scr/pixel.gif" width="1" height="1"/>
+</form>
+
+</div>
+   
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">26. <tt class="docutils literal"><span class="pre">gui.colorscale</span></tt> &#8212; Color mapping of a range of values.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-gui-colorscale">26.1. Classes defined in module gui.colorscale</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-gui-colorscale">26.2. Functions defined in module gui.colorscale</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="gui.menu.html"
+                        title="previous chapter">25. <tt class="docutils literal"><span class="pre">gui.menu</span></tt> &#8212; Menus for the pyFormex GUI.</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="gui.viewport.html"
+                        title="next chapter">27. <tt class="docutils literal"><span class="pre">gui.viewport</span></tt> &#8212; Interactive OpenGL Canvas embedded in a Qt4 widget.</a></p>
+  
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+<div align="center">
+  <p>
+  <a href="http://www.fsf.org/register_form?referrer=8491"><img src="http://www.nongnu.org/pyformex/_static/fsf-member8491.png" alt="[FSF Associate Member]" width="89" height="31"  /></a>
+  </p>
+  <p>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+      src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /></a>
+  </p>
+</div>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-gui.colorscale">
+<span id="gui-colorscale-color-mapping-of-a-range-of-values"></span><span id="sec-ref-gui-colorscale"></span><h1>26. <a class="reference internal" href="#module-gui.colorscale" title="gui.colorscale: Color mapping of a range of values."><tt class="xref py py-mod docutils literal"><span class="pre">gui.colorscale</span></tt></a> &#8212; Color mapping of a range of values.<a class="headerlink" href="#module-gui.colorscale" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="classes-defined-in-module-gui-colorscale">
+<h2>26.1. Classes defined in module gui.colorscale<a class="headerlink" href="#classes-defined-in-module-gui-colorscale" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gui.colorscale.ColorScale">
+<em class="property">class </em><tt class="descclassname">gui.colorscale.</tt><tt class="descname">ColorScale</tt><big>(</big><em>palet='RAINBOW'</em>, <em>minval=0.0</em>, <em>maxval=1.0</em>, <em>midval=None</em>, <em>exp=1.0</em>, <em>exp2=None</em><big>)</big><a class="headerlink" href="#gui.colorscale.ColorScale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mapping floating point values into colors.</p>
+<p>A colorscale maps floating point values within a certain range
+into colors and can be used to provide visual representation
+of numerical values.
+This is e.g. quite useful in Finite Element postprocessing (see the
+postproc plugin).</p>
+<p>The ColorLegend class provides a way to make the ColorScale visible
+on the canvas.</p>
+<dl class="method">
+<dt id="gui.colorscale.ColorScale.scale">
+<tt class="descname">scale</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.colorscale.ColorScale.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scale a value to the range -1...1.</p>
+<p>If the ColorScale has only one exponent, values in the range
+mival..maxval are scaled to the range -1..+1.</p>
+<p>If two exponents were specified, scaling is done independently in
+the intervals minval..midval and midval..maxval, mapped resp. using
+exp2 and exp onto the intervals -1..0 and 0..1.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.colorscale.ColorScale.color">
+<tt class="descname">color</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.colorscale.ColorScale.color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the color representing a value val.</p>
+<p>The returned color is a tuple of three RGB values in the range 0-1.
+The color is obtained by first scaling the value to the -1..1 range
+using the &#8216;scale&#8217; method, and then using that result to pick a color
+value from the palet. A palet specifies the three colors corresponding
+to the -1, 0 and 1 values.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gui.colorscale.ColorLegend">
+<em class="property">class </em><tt class="descclassname">gui.colorscale.</tt><tt class="descname">ColorLegend</tt><big>(</big><em>colorscale</em>, <em>n</em><big>)</big><a class="headerlink" href="#gui.colorscale.ColorLegend" title="Permalink to this definition">¶</a></dt>
+<dd><p>A colorlegend divides a in a number of subranges.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>colorscale</cite>: a <a class="reference internal" href="#gui.colorscale.ColorScale" title="gui.colorscale.ColorScale"><tt class="xref py py-class docutils literal"><span class="pre">ColorScale</span></tt></a> instance</li>
+<li><cite>n</cite>: a positive integer</li>
+</ul>
+<p>For a <a class="reference internal" href="#gui.colorscale.ColorScale" title="gui.colorscale.ColorScale"><tt class="xref py py-class docutils literal"><span class="pre">ColorScale</span></tt></a> without <tt class="docutils literal"><span class="pre">midval</span></tt>, the full range is divided
+in <tt class="docutils literal"><span class="pre">n</span></tt> subranges; for a scale with <tt class="docutils literal"><span class="pre">midval</span></tt>, each of the two ranges
+is divided in <tt class="docutils literal"><span class="pre">n/2</span></tt> subranges. In each case the legend has <tt class="docutils literal"><span class="pre">n</span></tt>
+subranges limited by <tt class="docutils literal"><span class="pre">n+1</span></tt> values. The <tt class="docutils literal"><span class="pre">n</span></tt> colors of the legend
+correspond to the middle value of each subrange.</p>
+<dl class="method">
+<dt id="gui.colorscale.ColorLegend.overflow">
+<tt class="descname">overflow</tt><big>(</big><em>oflow=None</em><big>)</big><a class="headerlink" href="#gui.colorscale.ColorLegend.overflow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raise a runtime error if oflow == None, else return oflow.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.colorscale.ColorLegend.color">
+<tt class="descname">color</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.colorscale.ColorLegend.color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the color representing a value val.</p>
+<p>The color is that of the subrange holding the value. If the value
+matches a subrange limit, the lower range color is returned.
+If the value falls outside the colorscale range, a runtime error
+is raised, unless the corresponding underflowcolor or overflowcolor
+attribute has been set, in which case this attirbute is returned.
+Though these attributes can be set to any not None value, it will
+usually be set to some color value, that will be used to show
+overflow values.
+The returned color is a tuple of three RGB values in the range 0-1.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="functions-defined-in-module-gui-colorscale">
+<h2>26.2. Functions defined in module gui.colorscale<a class="headerlink" href="#functions-defined-in-module-gui-colorscale" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gui.viewport.html" title="27. gui.viewport — Interactive OpenGL Canvas embedded in a Qt4 widget."
+             >next</a> |</li>
+        <li class="right" >
+          <a href="gui.menu.html" title="25. gui.menu — Menus for the pyFormex GUI."
+             >previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+    <span class="left">
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
+    </span>
+      Last updated on Feb 08, 2015.
+    <span class="right">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+    </span>
+    </div>
+  </body>
+</html>

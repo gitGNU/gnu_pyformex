@@ -1,0 +1,308 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!-- 
+##
+##  This file is part of the pyFormex project.
+##  pyFormex is a tool for generating, manipulating and transforming 3D
+##  geometrical models by sequences of mathematical operations.
+##  Home page: http://pyformex.org
+##  Project page:  http://savannah.nongnu.org/projects/pyformex/
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Distributed under the GNU General Public License version 3 or later.
+##
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see http://www.gnu.org/licenses/.
+##
+-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>77. opengl.scene — This implements an OpenGL drawing widget for painting 3D scenes. &mdash; pyFormex 1.0.1~a2 documentation</title>
+
+    
+    <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1~a2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="up" title="pyFormex reference manual" href="../refman.html" />
+    <link rel="next" title="78. opengl.shader — OpenGL shader programs" href="opengl.shader.html" />
+    <link rel="prev" title="76. opengl.sanitize — Sanitize data before rendering." href="opengl.sanitize.html" />
+<link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
+
+  </head>
+  <body>
+
+<div class="header">
+  <a href="http://pyformex.org">
+  <img src="http://www.nongnu.org/pyformex/_static/scallop_dome_small.png" alt="scallop dome" border="0" hspace="20" vspace="12" align="left" />
+  <img src="http://www.nongnu.org/pyformex/_static/pyformex-logo-2.png" alt="pyformex logo" border="0" hspace="10" vspace="8" align="left" />
+  </a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="opengl.shader.html" title="78. opengl.shader — OpenGL shader programs"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="opengl.sanitize.html" title="76. opengl.sanitize — Sanitize data before rendering."
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center">
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick"/>
+<input type="hidden" name="hosted_button_id" value="P7J4AM4QULB4Q"/>
+<input type="image" src="https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif" name="submit" alt="PayPal - The safer, easier way to pay online!"/>
+<img alt="" border="0" src="https://www.paypal.com/nl_NL/i/scr/pixel.gif" width="1" height="1"/>
+</form>
+
+</div>
+   
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">77. <tt class="docutils literal"><span class="pre">opengl.scene</span></tt> &#8212; This implements an OpenGL drawing widget for painting 3D scenes.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-opengl-scene">77.1. Classes defined in module opengl.scene</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-opengl-scene">77.2. Functions defined in module opengl.scene</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="opengl.sanitize.html"
+                        title="previous chapter">76. <tt class="docutils literal"><span class="pre">opengl.sanitize</span></tt> &#8212; Sanitize data before rendering.</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="opengl.shader.html"
+                        title="next chapter">78. <tt class="docutils literal"><span class="pre">opengl.shader</span></tt> &#8212; OpenGL shader programs</a></p>
+  
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+<div align="center">
+  <p>
+  <a href="http://www.fsf.org/register_form?referrer=8491"><img src="http://www.nongnu.org/pyformex/_static/fsf-member8491.png" alt="[FSF Associate Member]" width="89" height="31"  /></a>
+  </p>
+  <p>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+      src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /></a>
+  </p>
+</div>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-opengl.scene">
+<span id="opengl-scene-this-implements-an-opengl-drawing-widget-for-painting-3d-scenes"></span><span id="sec-ref-opengl-scene"></span><h1>77. <a class="reference internal" href="#module-opengl.scene" title="opengl.scene: This implements an OpenGL drawing widget for painting 3D scenes."><tt class="xref py py-mod docutils literal"><span class="pre">opengl.scene</span></tt></a> &#8212; This implements an OpenGL drawing widget for painting 3D scenes.<a class="headerlink" href="#module-opengl.scene" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="classes-defined-in-module-opengl-scene">
+<h2>77.1. Classes defined in module opengl.scene<a class="headerlink" href="#classes-defined-in-module-opengl-scene" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="opengl.scene.ItemList">
+<em class="property">class </em><tt class="descclassname">opengl.scene.</tt><tt class="descname">ItemList</tt><big>(</big><em>canvas</em><big>)</big><a class="headerlink" href="#opengl.scene.ItemList" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of drawn objects of the same kind.</p>
+<p>This is used to collect the Actors, Decorations and Annotations
+in a scene.
+Currently the implementation does not check that the objects are of
+the proper type.</p>
+<dl class="method">
+<dt id="opengl.scene.ItemList.add">
+<tt class="descname">add</tt><big>(</big><em>item</em><big>)</big><a class="headerlink" href="#opengl.scene.ItemList.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an item or a list thereof to a ItemList.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.scene.ItemList.delete">
+<tt class="descname">delete</tt><big>(</big><em>items</em>, <em>sticky=True</em><big>)</big><a class="headerlink" href="#opengl.scene.ItemList.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove item(s) from an ItemList.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>items</cite>: a single item or a list or tuple of items</li>
+<li><cite>sticky</cite>: bool: if True, also sticky items are removed.
+The default is to not remove sticky items.
+Sticky items are items having an attribute sticky=True.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.scene.ItemList.clear">
+<tt class="descname">clear</tt><big>(</big><em>sticky=False</em><big>)</big><a class="headerlink" href="#opengl.scene.ItemList.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the list.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sticky</cite>: bool: if True, also sticky items are removed.
+The default is to not remove sticky items.
+Sticky items are items having an attribute sticky=True.</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="opengl.scene.Scene">
+<em class="property">class </em><tt class="descclassname">opengl.scene.</tt><tt class="descname">Scene</tt><big>(</big><em>canvas=None</em><big>)</big><a class="headerlink" href="#opengl.scene.Scene" title="Permalink to this definition">¶</a></dt>
+<dd><p>An OpenGL scene.</p>
+<p>The Scene is a class holding a collection of Actors, Decorations and
+Annotations. It can also have a background.</p>
+<dl class="method">
+<dt id="opengl.scene.Scene.set_bbox">
+<tt class="descname">set_bbox</tt><big>(</big><em>bb</em><big>)</big><a class="headerlink" href="#opengl.scene.Scene.set_bbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the bounding box of the scene.</p>
+<p>This can be used to set the scene bounding box to another value
+than the one autocomputed from all actors.</p>
+<p>bb is a (2,3) shaped array specifying a bounding box.
+A special value None may be given to force
+recomputing the bbox from all Actors.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.scene.Scene.changeMode">
+<tt class="descname">changeMode</tt><big>(</big><em>canvas</em>, <em>mode=None</em><big>)</big><a class="headerlink" href="#opengl.scene.Scene.changeMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is called when the rendering mode is changed</p>
+<p>This method should be called to update the actors on a rendering
+mode change.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.scene.Scene.addAny">
+<tt class="descname">addAny</tt><big>(</big><em>actor</em><big>)</big><a class="headerlink" href="#opengl.scene.Scene.addAny" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add any actor type or a list thereof.</p>
+<p>This will add any actor/annotation/decoration item or a list
+of any such items  to the scene. This is the prefered method to add
+an item to the scene, because it makes sure that each item is added
+to the proper list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.scene.Scene.removeAny">
+<tt class="descname">removeAny</tt><big>(</big><em>actor</em><big>)</big><a class="headerlink" href="#opengl.scene.Scene.removeAny" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a list of any actor/highlights/annotation/decoration items.</p>
+<p>This will remove the items from any of the canvas lists in which the
+item appears.
+itemlist can also be a single item instead of a list.
+If None is specified, all items from all lists will be removed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.scene.Scene.clear">
+<tt class="descname">clear</tt><big>(</big><em>sticky=False</em><big>)</big><a class="headerlink" href="#opengl.scene.Scene.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the whole scene</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.scene.Scene.removeHighlight">
+<tt class="descname">removeHighlight</tt><big>(</big><em>actors=None</em><big>)</big><a class="headerlink" href="#opengl.scene.Scene.removeHighlight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the highlight from the actors in the list.</p>
+<p>If no actors list is specified, all the highlights are removed.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="functions-defined-in-module-opengl-scene">
+<h2>77.2. Functions defined in module opengl.scene<a class="headerlink" href="#functions-defined-in-module-opengl-scene" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="opengl.scene.sane_bbox">
+<tt class="descclassname">opengl.scene.</tt><tt class="descname">sane_bbox</tt><big>(</big><em>bb</em><big>)</big><a class="headerlink" href="#opengl.scene.sane_bbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a sane nonzero bbox.</p>
+<p>bb should be a (2,3) float array or compatible
+Returns a (2,3) float array where the values of the second
+row are guaranteed larger than the first.
+A value 1 is added in the directions where the input bbox
+has zero size. Also, any NaNs will be transformed to numbers.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="opengl.shader.html" title="78. opengl.shader — OpenGL shader programs"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="opengl.sanitize.html" title="76. opengl.sanitize — Sanitize data before rendering."
+             >previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+    <span class="left">
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
+    </span>
+      Last updated on Feb 08, 2015.
+    <span class="right">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+    </span>
+    </div>
+  </body>
+</html>

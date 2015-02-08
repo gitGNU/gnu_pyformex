@@ -1,0 +1,393 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!-- 
+##
+##  This file is part of the pyFormex project.
+##  pyFormex is a tool for generating, manipulating and transforming 3D
+##  geometrical models by sequences of mathematical operations.
+##  Home page: http://pyformex.org
+##  Project page:  http://savannah.nongnu.org/projects/pyformex/
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Distributed under the GNU General Public License version 3 or later.
+##
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see http://www.gnu.org/licenses/.
+##
+-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>23. software — software.py &mdash; pyFormex 1.0.1~a2 documentation</title>
+
+    
+    <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1~a2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="up" title="pyFormex reference manual" href="../refman.html" />
+    <link rel="next" title="24. gui.widgets — A collection of custom widgets used in the pyFormex GUI" href="gui.widgets.html" />
+    <link rel="prev" title="22. multi — Framework for multi-processing in pyFormex" href="multi.html" />
+<link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
+
+  </head>
+  <body>
+
+<div class="header">
+  <a href="http://pyformex.org">
+  <img src="http://www.nongnu.org/pyformex/_static/scallop_dome_small.png" alt="scallop dome" border="0" hspace="20" vspace="12" align="left" />
+  <img src="http://www.nongnu.org/pyformex/_static/pyformex-logo-2.png" alt="pyformex logo" border="0" hspace="10" vspace="8" align="left" />
+  </a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gui.widgets.html" title="24. gui.widgets — A collection of custom widgets used in the pyFormex GUI"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="multi.html" title="22. multi — Framework for multi-processing in pyFormex"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center">
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick"/>
+<input type="hidden" name="hosted_button_id" value="P7J4AM4QULB4Q"/>
+<input type="image" src="https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif" name="submit" alt="PayPal - The safer, easier way to pay online!"/>
+<img alt="" border="0" src="https://www.paypal.com/nl_NL/i/scr/pixel.gif" width="1" height="1"/>
+</form>
+
+</div>
+   
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">23. <tt class="docutils literal"><span class="pre">software</span></tt> &#8212; software.py</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-software">23.1. Classes defined in module software</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-software">23.2. Functions defined in module software</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="multi.html"
+                        title="previous chapter">22. <tt class="docutils literal"><span class="pre">multi</span></tt> &#8212; Framework for multi-processing in pyFormex</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="gui.widgets.html"
+                        title="next chapter">24. <tt class="docutils literal"><span class="pre">gui.widgets</span></tt> &#8212; A collection of custom widgets used in the pyFormex GUI</a></p>
+  
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+<div align="center">
+  <p>
+  <a href="http://www.fsf.org/register_form?referrer=8491"><img src="http://www.nongnu.org/pyformex/_static/fsf-member8491.png" alt="[FSF Associate Member]" width="89" height="31"  /></a>
+  </p>
+  <p>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+      src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /></a>
+  </p>
+</div>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-software">
+<span id="software-software-py"></span><span id="sec-ref-software"></span><h1>23. <a class="reference internal" href="#module-software" title="software: software.py"><tt class="xref py py-mod docutils literal"><span class="pre">software</span></tt></a> &#8212; software.py<a class="headerlink" href="#module-software" title="Permalink to this headline">¶</a></h1>
+<p>A module to help with detecting required software and helper software,
+and to check the versions of it.</p>
+<p>This module is currently experimental. It contains some old functions
+moved here from utils.py.</p>
+<div class="section" id="classes-defined-in-module-software">
+<h2>23.1. Classes defined in module software<a class="headerlink" href="#classes-defined-in-module-software" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="functions-defined-in-module-software">
+<h2>23.2. Functions defined in module software<a class="headerlink" href="#functions-defined-in-module-software" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="software.checkVersion">
+<tt class="descclassname">software.</tt><tt class="descname">checkVersion</tt><big>(</big><em>name</em>, <em>version</em>, <em>external=False</em><big>)</big><a class="headerlink" href="#software.checkVersion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks a version of a program/module.</p>
+<p>name is either a module or an external program whose availability has
+been registered.
+Default is to treat name as a module. Add external=True for a program.</p>
+<p>Return value is -1, 0 or 1, depending on a version found that is
+&lt;, == or &gt; than the requested values.
+This should normally understand version numbers in the format 2.10.1
+Returns -2 if no version found.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="software.hasModule">
+<tt class="descclassname">software.</tt><tt class="descname">hasModule</tt><big>(</big><em>name</em>, <em>check=False</em><big>)</big><a class="headerlink" href="#software.hasModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if we have the named module available.</p>
+<p>Returns a nonzero (version) string if the module is available,
+or an empty string if it is not.</p>
+<p>By default, the module is only checked on the first call.
+The result is remembered in the the_version dict.
+The optional argument check==True forces a new detection.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="software.requireModule">
+<tt class="descclassname">software.</tt><tt class="descname">requireModule</tt><big>(</big><em>name</em>, <em>version=None</em>, <em>comp='ge'</em><big>)</big><a class="headerlink" href="#software.requireModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensure that the named Python module/version is available.</p>
+<p>Checks that the specified module is available, and that its version
+number is not lower than the specified version.
+If no version is specified, any version is ok.</p>
+<p>The default comparison operator &#8216;ge&#8217; can be replaced with one of:
+&#8216;eq&#8217;, &#8216;ge&#8217;, &#8216;gt&#8217;, &#8216;le&#8217;, &#8216;lt&#8217;, &#8216;ne&#8217;.</p>
+<p>Returns if the required module/version could be loaded, else an
+error is raised.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="software.checkAllModules">
+<tt class="descclassname">software.</tt><tt class="descname">checkAllModules</tt><big>(</big><big>)</big><a class="headerlink" href="#software.checkAllModules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the existence of all known modules.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="software.checkModule">
+<tt class="descclassname">software.</tt><tt class="descname">checkModule</tt><big>(</big><em>name</em>, <em>ver=()</em>, <em>fatal=False</em>, <em>quiet=False</em><big>)</big><a class="headerlink" href="#software.checkModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the named Python module is available, and record its version.</p>
+<p>ver is a tuple of:</p>
+<ul class="simple">
+<li>modname: name of the module to test import</li>
+<li>vername: name of the module holding the version string</li>
+<li>more fields are consecutive attributes leading to the version string</li>
+</ul>
+<p>The obtained version string is returned, empty if the module could not
+be loaded.
+The (name,version) pair is also inserted into the the_version dict.</p>
+<p>If fatal=True, pyFormex will abort if the module can not be loaded.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="software.hasExternal">
+<tt class="descclassname">software.</tt><tt class="descname">hasExternal</tt><big>(</big><em>name</em>, <em>force=False</em><big>)</big><a class="headerlink" href="#software.hasExternal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if we have the external command &#8216;name&#8217; available.</p>
+<p>Returns a nonzero string if the command is available,
+or an empty string if it is not.</p>
+<p>The external command is only checked on the first call.
+The result is remembered in the the_external dict.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="software.requireExternal">
+<tt class="descclassname">software.</tt><tt class="descname">requireExternal</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#software.requireExternal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensure that the named external program is available.</p>
+<p>If the module is not available, an error is raised.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="software.checkAllExternals">
+<tt class="descclassname">software.</tt><tt class="descname">checkAllExternals</tt><big>(</big><big>)</big><a class="headerlink" href="#software.checkAllExternals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the existence of all known externals.</p>
+<p>Returns a dict with all the known externals, detected or not.
+The detected ones have a non-zero value, usually the version number.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="software.checkExternal">
+<tt class="descclassname">software.</tt><tt class="descname">checkExternal</tt><big>(</big><em>name</em>, <em>command=None</em>, <em>answer=None</em>, <em>quiet=False</em><big>)</big><a class="headerlink" href="#software.checkExternal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the named external command is available on the system.</p>
+<p>name is the generic command name,
+command is the command as it will be executed to check its operation,
+answer is a regular expression to match positive answers from the command.
+answer should contain at least one group. In case of a match, the
+contents of the match will be stored in the the_external dict
+with name as the key. If the result does not match the specified answer,
+an empty value is inserted.</p>
+<p>Usually, command will contain an option to display the version, and
+the answer re contains a group to select the version string from
+the result.</p>
+<p>As a convenience, we provide a list of predeclared external commands,
+that can be checked by their name alone.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="software.detectedSoftware">
+<tt class="descclassname">software.</tt><tt class="descname">detectedSoftware</tt><big>(</big><em>all=True</em><big>)</big><a class="headerlink" href="#software.detectedSoftware" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dict with all detected helper software</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="software.formatDict">
+<tt class="descclassname">software.</tt><tt class="descname">formatDict</tt><big>(</big><em>d</em>, <em>indent=4</em><big>)</big><a class="headerlink" href="#software.formatDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format a dict in nicely formatted Python source representation.</p>
+<p>Each (key,value) pair is formatted on a line of the form:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">key</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+<p>If all the keys are strings containing only characters that are
+allowed in Python variable names, the resulting text is a legal
+Python script to define the items in the dict. It can be stored
+on a file and executed.</p>
+<p>This format is the storage format of the Config class.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="software.compareVersion">
+<tt class="descclassname">software.</tt><tt class="descname">compareVersion</tt><big>(</big><em>has</em>, <em>want</em><big>)</big><a class="headerlink" href="#software.compareVersion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether a detected version matches the requirements.</p>
+<p>has is the version string detected.
+want is the required version string, possibly preceded by one
+of the doubly underscored comparison operators: __gt__, etc.
+If no comparison operator is specified, &#8216;__eq__&#8217; is assumed.</p>
+<p>Note that any tail behind x.y.z version is considered to be later
+version than x.y.z.</p>
+<p>Returns the result of the comparison: True or False
+Examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">compareVersion</span><span class="p">(</span><span class="s">&#39;2.7&#39;</span><span class="p">,</span><span class="s">&#39;2.4.3&#39;</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">compareVersion</span><span class="p">(</span><span class="s">&#39;2.7&#39;</span><span class="p">,</span><span class="s">&#39;&gt;2.4.3&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">compareVersion</span><span class="p">(</span><span class="s">&#39;2.7&#39;</span><span class="p">,</span><span class="s">&#39;&gt;= 2.4.3&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">compareVersion</span><span class="p">(</span><span class="s">&#39;2.7&#39;</span><span class="p">,</span><span class="s">&#39;&gt;= 2.7-rc3&#39;</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">compareVersion</span><span class="p">(</span><span class="s">&#39;2.7-rc4&#39;</span><span class="p">,</span><span class="s">&#39;&gt;= 2.7-rc3&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="software.checkSoftware">
+<tt class="descclassname">software.</tt><tt class="descname">checkSoftware</tt><big>(</big><em>req</em>, <em>report=False</em><big>)</big><a class="headerlink" href="#software.checkSoftware" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that we have the matching components</p>
+<p>Returns True or False.
+If report=True, also returns a string with a full report.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="software.registerSoftware">
+<tt class="descclassname">software.</tt><tt class="descname">registerSoftware</tt><big>(</big><em>req</em><big>)</big><a class="headerlink" href="#software.registerSoftware" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register the current values of required software</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="software.soft2config">
+<tt class="descclassname">software.</tt><tt class="descname">soft2config</tt><big>(</big><em>soft</em><big>)</big><a class="headerlink" href="#software.soft2config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert software collection to config</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="software.config2soft">
+<tt class="descclassname">software.</tt><tt class="descname">config2soft</tt><big>(</big><em>conf</em><big>)</big><a class="headerlink" href="#software.config2soft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert software collection from config</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="software.storeSoftware">
+<tt class="descclassname">software.</tt><tt class="descname">storeSoftware</tt><big>(</big><em>soft</em>, <em>fn</em>, <em>mode='pretty'</em><big>)</big><a class="headerlink" href="#software.storeSoftware" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store the software collection on file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="software.readSoftware">
+<tt class="descclassname">software.</tt><tt class="descname">readSoftware</tt><big>(</big><em>fn</em>, <em>mode='python'</em><big>)</big><a class="headerlink" href="#software.readSoftware" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the software collection from file.</p>
+<ul class="simple">
+<li><cite>mode</cite> = &#8216;pretty&#8217;: readable, editable</li>
+<li><cite>mode</cite> = &#8216;python&#8217;: readable, editable</li>
+<li><cite>mode</cite> = &#8216;config&#8217;: readable, editable</li>
+<li><cite>mode</cite> = &#8216;pickle&#8217;: binary</li>
+</ul>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gui.widgets.html" title="24. gui.widgets — A collection of custom widgets used in the pyFormex GUI"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="multi.html" title="22. multi — Framework for multi-processing in pyFormex"
+             >previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+    <span class="left">
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
+    </span>
+      Last updated on Feb 08, 2015.
+    <span class="right">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+    </span>
+    </div>
+  </body>
+</html>

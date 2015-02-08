@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
 <!-- 
@@ -34,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>2. formex — Formex algebra in Python &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>2. formex — Formex algebra in Python &mdash; pyFormex 1.0.1~a2 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.0~a1',
+        VERSION:     '1.0.1~a2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +51,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="3. arraytools — A collection of numerical array utilities." href="arraytools.html" />
     <link rel="prev" title="1. coords — A structured collection of 3D coordinates." href="coords.html" />
@@ -83,7 +82,7 @@
         <li class="right" >
           <a href="coords.html" title="1. coords — A structured collection of 3D coordinates."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -112,10 +111,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="coords.html"
-                        title="previous chapter">1. <tt class="docutils literal docutils literal"><span class="pre">coords</span></tt> &#8212; A structured collection of 3D coordinates.</a></p>
+                        title="previous chapter">1. <tt class="docutils literal"><span class="pre">coords</span></tt> &#8212; A structured collection of 3D coordinates.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="arraytools.html"
-                        title="next chapter">3. <tt class="docutils literal docutils literal"><span class="pre">arraytools</span></tt> &#8212; A collection of numerical array utilities.</a></p>
+                        title="next chapter">3. <tt class="docutils literal"><span class="pre">arraytools</span></tt> &#8212; A collection of numerical array utilities.</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -159,7 +158,7 @@ syntax.</p>
 <h2>2.1. Classes defined in module formex<a class="headerlink" href="#classes-defined-in-module-formex" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="formex.Formex">
-<em class="property">class </em><tt class="descclassname">formex.</tt><tt class="descname">Formex</tt><big>(</big><em>data=</em><span class="optional">[</span><span class="optional">]</span>, <em>prop=None</em>, <em>eltype=None</em><big>)</big><a class="headerlink" href="#formex.Formex" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">formex.</tt><tt class="descname">Formex</tt><big>(</big><em>data=[]</em>, <em>prop=None</em>, <em>eltype=None</em><big>)</big><a class="headerlink" href="#formex.Formex" title="Permalink to this definition">¶</a></dt>
 <dd><p>A structured collection of points in 3D space.</p>
 <p>A Formex is a collection of points in the 3D space, that are structured
 into a set of elements all having the same number of points (e.g. a
@@ -346,6 +345,26 @@ with the number of nodes per element.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="formex.Formex.ncoords">
+<tt class="descname">ncoords</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.ncoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of points in the formex.</p>
+<p>This is the product of the number of elements in the formex
+with the number of nodes per element.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.elType">
+<tt class="descname">elType</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.elType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the element type, or None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.elName">
+<tt class="descname">elName</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.elName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the element type name, or None</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="formex.Formex.level">
 <tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.level" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the level (dimensionality) of the Formex.</p>
@@ -505,8 +524,8 @@ Formex.setPrintFunction(Formex.asArray).</p>
 <dt id="formex.Formex.append">
 <tt class="descname">append</tt><big>(</big><em>F</em><big>)</big><a class="headerlink" href="#formex.Formex.append" title="Permalink to this definition">¶</a></dt>
 <dd><p>Append the members of Formex F to this one.</p>
-<p>This function changes the original one! Use __add__ if you want to
-get a copy with the sum.</p>
+<p>This function changes (and returns) the original object!
+Use __add__ if what you want is a copy with the sum.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">Formex</span><span class="p">([[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">]]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
@@ -616,23 +635,6 @@ may be left unspecified.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="formex.Formex.clip">
-<tt class="descname">clip</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#formex.Formex.clip" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Formex with all the elements where t&gt;0.</p>
-<p>t should be a 1-D integer array with length equal to the number
-of elements of the formex.
-The resulting Formex will contain all elements where t &gt; 0.
-This is a convenience function for the user, equivalent to
-F.select(t&gt;0).</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.cclip">
-<tt class="descname">cclip</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#formex.Formex.cclip" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is the complement of clip, returning a Formex where t&lt;=0.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="formex.Formex.circulize">
 <tt class="descname">circulize</tt><big>(</big><em>angle</em><big>)</big><a class="headerlink" href="#formex.Formex.circulize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform a linear sector into a circular one.</p>
@@ -719,6 +721,16 @@ and [1.0,1.0,1.0], cutoff at the length of the specified n.</p>
 <p>n1,n2 number of replications with steps t1,t2 in directions d1,d2
 bias, taper : extra step and extra number of generations in direction
 d1 for each generation in direction d2</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.replicm">
+<tt class="descname">replicm</tt><big>(</big><em>n</em>, <em>t=(1.0</em>, <em>1.0</em>, <em>1.0)</em>, <em>d=(0</em>, <em>1</em>, <em>2)</em><big>)</big><a class="headerlink" href="#formex.Formex.replicm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replicate repeatedly in many directions.</p>
+<p>n: tuple: number of replications in subsequent directions
+t: tuple: steps in subsequent directions
+d: tuple: subsequent directions</p>
+<p>The three tuples shouls have the same length.</p>
 </dd></dl>
 
 <dl class="method">
@@ -890,10 +902,40 @@ does not contain the expected number of values.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="formex.Formex.addField">
+<tt class="descname">addField</tt><big>(</big><em>fldtype</em>, <em>data</em>, <em>fldname</em><big>)</big><a class="headerlink" href="#formex.Formex.addField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a data field to the geometry.</p>
+<p>Add a scalar or vectorial field defined over the domain of the
+Geometry. This creates a <tt class="xref py py-class docutils literal"><span class="pre">Field</span></tt> instance with the specified
+parameters and adds it to the Geometry object.
+Fields stored inside a Geometry object are exported to PGF file
+whenever the object is exported.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>fldtype</cite>, <cite>data</cite>, <cite>fldname</cite>: are passed together with the
+Geometry object to the Field initialization. See <tt class="xref py py-class docutils literal"><span class="pre">Field</span></tt>
+for details.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
 <dt id="formex.Formex.addNoise">
 <tt class="descname">addNoise</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.addNoise" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;addNoise&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.addNoise" title="coords.Coords.addNoise"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.addNoise()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.add_field">
+<tt class="descname">add_field</tt><big>(</big><em>field</em><big>)</big><a class="headerlink" href="#formex.Formex.add_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Low level function to add a Field</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.adjust">
+<tt class="descname">adjust</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.adjust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply &#8216;adjust&#8217; transformation to the Geometry object.</p>
+<p>See <a class="reference internal" href="coords.html#coords.Coords.adjust" title="coords.Coords.adjust"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.adjust()</span></tt></a> for details.</p>
 </dd></dl>
 
 <dl class="method">
@@ -939,10 +981,52 @@ does not contain the expected number of values.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="formex.Formex.convertField">
+<tt class="descname">convertField</tt><big>(</big><em>fldname</em>, <em>totype</em>, <em>toname</em><big>)</big><a class="headerlink" href="#formex.Formex.convertField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the data field with the specified name.</p>
+<p>If the data field does not exist, returns None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.convexHull">
+<tt class="descname">convexHull</tt><big>(</big><em>compact=True</em><big>)</big><a class="headerlink" href="#formex.Formex.convexHull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the convex hull of the geometry.</p>
+<p>The convex hull is a closed TriSurface enclosing all points
+of the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a deep copy of the Geometry  object.</p>
+<p>The returned object is an exact copy of the input, but has
+all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.cselectProp">
+<tt class="descname">cselectProp</tt><big>(</big><em>val</em>, <em>compact=False</em><big>)</big><a class="headerlink" href="#formex.Formex.cselectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object without the elements with property <cite>val</cite>.</p>
+<p>This is the complementary method of selectProp.
+val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that do not
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="formex.Formex.cylindrical">
 <tt class="descname">cylindrical</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.cylindrical" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;cylindrical&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.cylindrical" title="coords.Coords.cylindrical"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.cylindrical()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.delField">
+<tt class="descname">delField</tt><big>(</big><em>fldname</em><big>)</big><a class="headerlink" href="#formex.Formex.delField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the Field with the given name.</p>
+<p>A nonexisting name is silently ignored.</p>
 </dd></dl>
 
 <dl class="method">
@@ -953,10 +1037,45 @@ does not contain the expected number of values.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="formex.Formex.fieldReport">
+<tt class="descname">fieldReport</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.fieldReport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print a short report of the stored fields</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="formex.Formex.flare">
 <tt class="descname">flare</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.flare" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;flare&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.flare" title="coords.Coords.flare"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.flare()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.fromCS">
+<tt class="descname">fromCS</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.fromCS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply &#8216;fromCS&#8217; transformation to the Geometry object.</p>
+<p>See <a class="reference internal" href="coords.html#coords.Coords.fromCS" title="coords.Coords.fromCS"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.fromCS()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="formex.Formex.fromfile">
+<em class="property">classmethod </em><tt class="descname">fromfile</tt><big>(</big><em>clas</em>, <em>fil</em>, <em>sep=' '</em>, <em>nplex=1</em><big>)</big><a class="headerlink" href="#formex.Formex.fromfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the coordinates of a Formex from a file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.getCoords">
+<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.getCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the coords data.</p>
+<p>Returns the full array of coordinates stored in the Geometry object.
+Note that subclasses may store more points in this array than are used
+to define the geometry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.getField">
+<tt class="descname">getField</tt><big>(</big><em>fldname</em><big>)</big><a class="headerlink" href="#formex.Formex.getField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the data field with the specified name.</p>
+<p>If the data field does not exist, returns None</p>
 </dd></dl>
 
 <dl class="method">
@@ -1022,6 +1141,18 @@ does not contain the expected number of values.</li>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.projectOnSphere" title="coords.Coords.projectOnSphere"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.projectOnSphere()</span></tt></a> for details.</p>
 </dd></dl>
 
+<dl class="classmethod">
+<dt id="formex.Formex.read">
+<em class="property">classmethod </em><tt class="descname">read</tt><big>(</big><em>clas</em>, <em>filename</em><big>)</big><a class="headerlink" href="#formex.Formex.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a Geometry from a PGF file.</p>
+<p>This reads a single object (the object) from a PGF file
+and returns it.</p>
+<p>It is a convenient shorthand for:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">script</span><span class="o">.</span><span class="n">readGeomFile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="method">
 <dt id="formex.Formex.reflect">
 <tt class="descname">reflect</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.reflect" title="Permalink to this definition">¶</a></dt>
@@ -1034,6 +1165,17 @@ does not contain the expected number of values.</li>
 <tt class="descname">replace</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.replace" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;replace&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.replace" title="coords.Coords.replace"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.replace()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.resized">
+<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#formex.Formex.resized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the Geometry scaled to the given size.</p>
+<p>size can be a single value or a list of three values for the
+three coordinate directions. If it is a single value, all directions
+are scaled to the same size.
+Directions for which the geometry has a size smaller than tol times
+the maximum size are not rescaled.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1065,66 +1207,14 @@ does not contain the expected number of values.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="formex.Formex.shear">
-<tt class="descname">shear</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.shear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply &#8216;shear&#8217; transformation to the Geometry object.</p>
-<p>See <a class="reference internal" href="coords.html#coords.Coords.shear" title="coords.Coords.shear"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.shear()</span></tt></a> for details.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.spherical">
-<tt class="descname">spherical</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.spherical" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply &#8216;spherical&#8217; transformation to the Geometry object.</p>
-<p>See <a class="reference internal" href="coords.html#coords.Coords.spherical" title="coords.Coords.spherical"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.spherical()</span></tt></a> for details.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.superSpherical">
-<tt class="descname">superSpherical</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.superSpherical" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply &#8216;superSpherical&#8217; transformation to the Geometry object.</p>
-<p>See <a class="reference internal" href="coords.html#coords.Coords.superSpherical" title="coords.Coords.superSpherical"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.superSpherical()</span></tt></a> for details.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.swapAxes">
-<tt class="descname">swapAxes</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.swapAxes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply &#8216;swapAxes&#8217; transformation to the Geometry object.</p>
-<p>See <a class="reference internal" href="coords.html#coords.Coords.swapAxes" title="coords.Coords.swapAxes"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.swapAxes()</span></tt></a> for details.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.toCylindrical">
-<tt class="descname">toCylindrical</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.toCylindrical" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply &#8216;toCylindrical&#8217; transformation to the Geometry object.</p>
-<p>See <a class="reference internal" href="coords.html#coords.Coords.toCylindrical" title="coords.Coords.toCylindrical"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.toCylindrical()</span></tt></a> for details.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.toSpherical">
-<tt class="descname">toSpherical</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.toSpherical" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply &#8216;toSpherical&#8217; transformation to the Geometry object.</p>
-<p>See <a class="reference internal" href="coords.html#coords.Coords.toSpherical" title="coords.Coords.toSpherical"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.toSpherical()</span></tt></a> for details.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.transformCS">
-<tt class="descname">transformCS</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.transformCS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply &#8216;transformCS&#8217; transformation to the Geometry object.</p>
-<p>See <a class="reference internal" href="coords.html#coords.Coords.transformCS" title="coords.Coords.transformCS"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.transformCS()</span></tt></a> for details.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.translate">
-<tt class="descname">translate</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.translate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply &#8216;translate&#8217; transformation to the Geometry object.</p>
-<p>See <a class="reference internal" href="coords.html#coords.Coords.translate" title="coords.Coords.translate"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.translate()</span></tt></a> for details.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.trl">
-<tt class="descname">trl</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.trl" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply &#8216;translate&#8217; transformation to the Geometry object.</p>
-<p>See <a class="reference internal" href="coords.html#coords.Coords.translate" title="coords.Coords.translate"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.translate()</span></tt></a> for details.</p>
+<dt id="formex.Formex.selectProp">
+<tt class="descname">selectProp</tt><big>(</big><em>val</em>, <em>compact=False</em><big>)</big><a class="headerlink" href="#formex.Formex.selectProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object which holds only the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is a object holding all the elements that
+have the property val, resp. one of the values in val.
+The returned object inherits the matching properties.</p>
+<p>If the object has no properties, a copy with all elements is returned.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1156,133 +1246,31 @@ Every prop will be repeated the corresponding number of times
 specified in blocks.</p>
 </li>
 </ul>
+<dl class="docutils">
+<dt>Returns the Geometry with the new properties inserted or with the</dt>
+<dd>properties deleted (if argument is None).
+Notice that unlike most other Geometry methods, this method changes
+(and returns) the existing object.</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
-<dt id="formex.Formex.toProp">
-<tt class="descname">toProp</tt><big>(</big><em>prop</em><big>)</big><a class="headerlink" href="#formex.Formex.toProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts the argument into a legal set of properties for the object.</p>
-<p>The conversion involves resizing the argument to a 1D array of
-length self.nelems(), and converting the data type to integer.</p>
+<dt id="formex.Formex.shear">
+<tt class="descname">shear</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.shear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply &#8216;shear&#8217; transformation to the Geometry object.</p>
+<p>See <a class="reference internal" href="coords.html#coords.Coords.shear" title="coords.Coords.shear"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.shear()</span></tt></a> for details.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="formex.Formex.whereProp">
-<tt class="descname">whereProp</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#formex.Formex.whereProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the numbers of the elements with property val.</p>
-<p>val is either a single integer, or a list/array of integers.
-The return value is an array holding all the numbers of all the
-elements that have the property val, resp. one of the values in val.</p>
-<p>If the object has no properties, a empty array is returned.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.select">
-<tt class="descname">select</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#formex.Formex.select" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Geometry only containing the selected elements.</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
-<li>a single element number</li>
-<li>a list, or array, of element numbers</li>
-<li>a bool list, or array, of length self.nelems(), where True values
-flag the elements to be selected</li>
-</ul>
-</li>
-<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
-If True (default), the returned Mesh will be compacted, i.e.
-the unused nodes are removed and the nodes are renumbered from
-zero. If False, returns the node set and numbers unchanged.</li>
-</ul>
-<p>Returns a Geometry (or subclass) with only the selected elements.</p>
-<p>See <a class="reference internal" href="#formex.Formex.cselect" title="formex.Formex.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.cselect">
-<tt class="descname">cselect</tt><big>(</big><em>selected</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#formex.Formex.cselect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Geometry with the selected elements removed.</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>selected</cite>: an object that can be used as an index in an array:<ul>
-<li>a single element number</li>
-<li>a list, or array, of element numbers</li>
-<li>a bool list, or array, of length self.nelems(), where True values
-flag the elements to be selected</li>
-</ul>
-</li>
-<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
-If True (default), the returned Mesh will be compacted, i.e.
-the unused nodes are removed and the nodes are renumbered from
-zero. If False, returns the node set and numbers unchanged.</li>
-<li><cite>selected</cite>: an object that can be used as an index in the
-<cite>elems</cite> array, such as<ul>
-<li>a single element number</li>
-<li>a list, or array, of element numbers</li>
-<li>a bool list, or array, of length self.nelems(), where True values
-flag the elements to be selected</li>
-</ul>
-</li>
-<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
-If True (default), the returned Mesh will be compacted, i.e.
-the unused nodes are removed and the nodes are renumbered from
-zero. If False, returns the node set and numbers unchanged.</li>
-</ul>
-<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
-<p>This is the complimentary operation of <a class="reference internal" href="#formex.Formex.select" title="formex.Formex.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.selectProp">
-<tt class="descname">selectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#formex.Formex.selectProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return an object which holds only the elements with property val.</p>
-<p>val is either a single integer, or a list/array of integers.
-The return value is a object holding all the elements that
-have the property val, resp. one of the values in val.
-The returned object inherits the matching properties.</p>
-<p>If the object has no properties, a copy with all elements is returned.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.cselectProp">
-<tt class="descname">cselectProp</tt><big>(</big><em>val</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#formex.Formex.cselectProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return an object without the elements with property <cite>val</cite>.</p>
-<p>This is the complementary method of selectProp.
-val is either a single integer, or a list/array of integers.
-The return value is a object holding all the elements that do not
-have the property val, resp. one of the values in val.
-The returned object inherits the matching properties.</p>
-<p>If the object has no properties, a copy with all elements is returned.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.getCoords">
-<tt class="descname">getCoords</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.getCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coords data.</p>
-<p>Returns the full array of coordinates stored in the Geometry object.
-Note that subclasses may store more points in this array than are used
-to define the geometry.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.convexHull">
-<tt class="descname">convexHull</tt><big>(</big><em>compact=True</em><big>)</big><a class="headerlink" href="#formex.Formex.convexHull" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the convex hull of the geometry.</p>
-<p>The convex hull is a closed TriSurface enclosing all points
-of the geometry.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="formex.Formex.copy">
-<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#formex.Formex.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a deep copy of the Geometry  object.</p>
-<p>The returned object is an exact copy of the input, but has
-all of its data independent of the former.</p>
+<dt id="formex.Formex.spherical">
+<tt class="descname">spherical</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.spherical" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply &#8216;spherical&#8217; transformation to the Geometry object.</p>
+<p>See <a class="reference internal" href="coords.html#coords.Coords.spherical" title="coords.Coords.spherical"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.spherical()</span></tt></a> for details.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="formex.Formex.splitProp">
-<tt class="descname">splitProp</tt><big>(</big><em>prop=None</em><big>)</big><a class="headerlink" href="#formex.Formex.splitProp" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">splitProp</tt><big>(</big><em>prop=None</em>, <em>compact=True</em><big>)</big><a class="headerlink" href="#formex.Formex.splitProp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Partition a Geometry (Formex/Mesh) according to the values in prop.</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -1299,58 +1287,77 @@ list is returned.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="formex.Formex.resized">
-<tt class="descname">resized</tt><big>(</big><em>size=1.0</em>, <em>tol=1e-05</em><big>)</big><a class="headerlink" href="#formex.Formex.resized" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a copy of the Geometry scaled to the given size.</p>
-<p>size can be a single value or a list of three values for the
-three coordinate directions. If it is a single value, all directions
-are scaled to the same size.
-Directions for which the geometry has a size smaller than tol times
-the maximum size are not rescaled.</p>
+<dt id="formex.Formex.superSpherical">
+<tt class="descname">superSpherical</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.superSpherical" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply &#8216;superSpherical&#8217; transformation to the Geometry object.</p>
+<p>See <a class="reference internal" href="coords.html#coords.Coords.superSpherical" title="coords.Coords.superSpherical"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.superSpherical()</span></tt></a> for details.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="formex.Formex.addField">
-<tt class="descname">addField</tt><big>(</big><em>fldtype</em>, <em>data</em>, <em>fldname</em><big>)</big><a class="headerlink" href="#formex.Formex.addField" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a data field to the geometry.</p>
-<p>Add a scalar or vectorial field defined over the domain of the
-Geometry. This creates a <tt class="xref py py-class docutils literal"><span class="pre">Field</span></tt> instance with the specified
-parameters and adds it to the Geometry object.
-Fields stored inside a Geometry object are exported to PGF file
-whenever the object is exported.</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>fldtype</cite>, <cite>data</cite>, <cite>fldname</cite>: are passed together with the
-Geometry object to the Field initialization. See <tt class="xref py py-class docutils literal"><span class="pre">Field</span></tt>
-for details.</li>
-</ul>
+<dt id="formex.Formex.swapAxes">
+<tt class="descname">swapAxes</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.swapAxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply &#8216;swapAxes&#8217; transformation to the Geometry object.</p>
+<p>See <a class="reference internal" href="coords.html#coords.Coords.swapAxes" title="coords.Coords.swapAxes"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.swapAxes()</span></tt></a> for details.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="formex.Formex.add_field">
-<tt class="descname">add_field</tt><big>(</big><em>field</em><big>)</big><a class="headerlink" href="#formex.Formex.add_field" title="Permalink to this definition">¶</a></dt>
-<dd><p>Low level function to add a Field</p>
+<dt id="formex.Formex.toCS">
+<tt class="descname">toCS</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.toCS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply &#8216;toCS&#8217; transformation to the Geometry object.</p>
+<p>See <a class="reference internal" href="coords.html#coords.Coords.toCS" title="coords.Coords.toCS"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.toCS()</span></tt></a> for details.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="formex.Formex.convertField">
-<tt class="descname">convertField</tt><big>(</big><em>fldname</em>, <em>totype</em>, <em>toname</em><big>)</big><a class="headerlink" href="#formex.Formex.convertField" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert the data field with the specified name.</p>
-<p>If the data field does not exist, returns None</p>
+<dt id="formex.Formex.toCylindrical">
+<tt class="descname">toCylindrical</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.toCylindrical" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply &#8216;toCylindrical&#8217; transformation to the Geometry object.</p>
+<p>See <a class="reference internal" href="coords.html#coords.Coords.toCylindrical" title="coords.Coords.toCylindrical"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.toCylindrical()</span></tt></a> for details.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="formex.Formex.getField">
-<tt class="descname">getField</tt><big>(</big><em>fldname</em><big>)</big><a class="headerlink" href="#formex.Formex.getField" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the data field with the specified name.</p>
-<p>If the data field does not exist, returns None</p>
+<dt id="formex.Formex.toProp">
+<tt class="descname">toProp</tt><big>(</big><em>prop</em><big>)</big><a class="headerlink" href="#formex.Formex.toProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the argument into a legal set of properties for the object.</p>
+<p>The conversion involves resizing the argument to a 1D array of
+length self.nelems(), and converting the data type to integer.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="formex.Formex.delField">
-<tt class="descname">delField</tt><big>(</big><em>fldname</em><big>)</big><a class="headerlink" href="#formex.Formex.delField" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete the Field with the given name.</p>
-<p>A nonexisting name is silently ignored.</p>
+<dt id="formex.Formex.toSpherical">
+<tt class="descname">toSpherical</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.toSpherical" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply &#8216;toSpherical&#8217; transformation to the Geometry object.</p>
+<p>See <a class="reference internal" href="coords.html#coords.Coords.toSpherical" title="coords.Coords.toSpherical"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.toSpherical()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.transformCS">
+<tt class="descname">transformCS</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.transformCS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply &#8216;transformCS&#8217; transformation to the Geometry object.</p>
+<p>See <a class="reference internal" href="coords.html#coords.Coords.transformCS" title="coords.Coords.transformCS"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.transformCS()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.translate">
+<tt class="descname">translate</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply &#8216;translate&#8217; transformation to the Geometry object.</p>
+<p>See <a class="reference internal" href="coords.html#coords.Coords.translate" title="coords.Coords.translate"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.translate()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.trl">
+<tt class="descname">trl</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.trl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply &#8216;translate&#8217; transformation to the Geometry object.</p>
+<p>See <a class="reference internal" href="coords.html#coords.Coords.translate" title="coords.Coords.translate"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.translate()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.whereProp">
+<tt class="descname">whereProp</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#formex.Formex.whereProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the numbers of the elements with property val.</p>
+<p>val is either a single integer, or a list/array of integers.
+The return value is an array holding all the numbers of all the
+elements that have the property val, resp. one of the values in val.</p>
+<p>If the object has no properties, a empty array is returned.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1363,24 +1370,6 @@ the specified name.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">script</span><span class="o">.</span><span class="n">writeGeomFile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
 </pre></div>
 </div>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="formex.Formex.read">
-<em class="property">classmethod </em><tt class="descname">read</tt><big>(</big><em>clas</em>, <em>filename</em><big>)</big><a class="headerlink" href="#formex.Formex.read" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read a Geometry from a PGF file.</p>
-<p>This reads a single object (the object) from a PGF file
-and returns it.</p>
-<p>It is a convenient shorthand for:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">script</span><span class="o">.</span><span class="n">readGeomFile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="formex.Formex.fromfile">
-<em class="property">classmethod </em><tt class="descname">fromfile</tt><big>(</big><em>clas</em>, <em>fil</em>, <em>sep=' '</em>, <em>nplex=1</em><big>)</big><a class="headerlink" href="#formex.Formex.fromfile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read the coordinates of a Formex from a file</p>
 </dd></dl>
 
 <dl class="method">
@@ -1398,7 +1387,7 @@ with the number of nodes per element.</p>
 <h2>2.2. Functions defined in module formex<a class="headerlink" href="#functions-defined-in-module-formex" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="formex.connect">
-<tt class="descclassname">formex.</tt><tt class="descname">connect</tt><big>(</big><em>Flist</em>, <em>nodid=None</em>, <em>bias=None</em>, <em>loop=False</em><big>)</big><a class="headerlink" href="#formex.connect" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">formex.</tt><tt class="descname">connect</tt><big>(</big><em>Flist</em>, <em>nodid=None</em>, <em>bias=None</em>, <em>loop=False</em>, <em>eltype=None</em><big>)</big><a class="headerlink" href="#formex.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a Formex which connects the Formices in list.</p>
 <p>Flist is a list of formices, nodid is an optional list of nod ids and
 bias is an optional list of element bias values. All lists should have
@@ -1458,7 +1447,7 @@ Adding 16 to the ordinal of the character causes an extra move of +1 in
 the z-direction. Adding 48 causes an extra move of -1. This means that
 &#8216;ABCDEFGHI&#8217;, resp. &#8216;abcdefghi&#8217;, correspond with &#8216;123456789&#8217; with an extra
 z +/-= 1. This gives the following schema:</p>
-<div class="highlight-python"><pre>    z+=1             z unchanged            z -= 1
+<div class="highlight-python"><div class="highlight"><pre>    z+=1             z unchanged            z -= 1
 
 F    B    E          6    2    5         f    b    e
      |                    |                   |
@@ -1466,7 +1455,8 @@ F    B    E          6    2    5         f    b    e
 C----I----A          3----9----1         c----i----a
      |                    |                   |
      |                    |                   |
-G    D    H          7    4    8         g    d    h</pre>
+G    D    H          7    4    8         g    d    h
+</pre></div>
 </div>
 <p>The special character &#8216;/&#8217; can be put before any character to make the
 move without inserting an element.
@@ -1537,23 +1527,23 @@ elements filling up the parts at the positive/negative side.</li>
 <li>with side=&#8217;&#8216;: two Formices of the same plexitude, one representing
 the positive side and one representing the negative side.</li>
 </ul>
-<p>Let <img class="math" src="../_images/math/1c2bf95e3a347dc8b88814e23e3609308823d8da.png" alt="dist"/> be the signed distance of the vertices to a plane.
+<p>Let <img class="math" src="../_images/math/f7817bd91229a4cc83fdb952713a634fdeafe1ce.png" alt="dist"/> be the signed distance of the vertices to a plane.
 The elements located completely at the positive or negative side of
-a plane have three vertices for which <img class="math" src="../_images/math/fb7c0c71afd4978ee9eafe6a746339963cd4fa3f.png" alt="|dist|&gt;atol"/>.
+a plane have three vertices for which <img class="math" src="../_images/math/0385952d7e9c99ba28f8806602fca95fd752d50e.png" alt="|dist|&gt;atol"/>.
 The elements intersecting a plane can have one or more vertices for which
-<img class="math" src="../_images/math/809bd9510e9ce3c791a6dc6d549b907000fee69d.png" alt="|dist|&lt;atol"/>.
+<img class="math" src="../_images/math/0ff614a67c1888092b185b24dcbe3c1ad462211b.png" alt="|dist|&lt;atol"/>.
 These vertices are projected on the plane so that their distance is zero.</p>
 <p>If the Formex has a property set, the new elements will get the property
 numbers defined in newprops. This is a list of 7 property numbers flagging
 elements with following properties:</p>
 <ol class="arabic simple" start="0">
-<li>no vertices with <img class="math" src="../_images/math/809bd9510e9ce3c791a6dc6d549b907000fee69d.png" alt="|dist|&lt;atol"/>, triangle after cut</li>
-<li>no vertices with <img class="math" src="../_images/math/809bd9510e9ce3c791a6dc6d549b907000fee69d.png" alt="|dist|&lt;atol"/>, triangle 1 from quad after cut</li>
-<li>no vertices with <img class="math" src="../_images/math/809bd9510e9ce3c791a6dc6d549b907000fee69d.png" alt="|dist|&lt;atol"/>, triangle 2 from quad after cut</li>
-<li>one vertex with <img class="math" src="../_images/math/809bd9510e9ce3c791a6dc6d549b907000fee69d.png" alt="|dist|&lt;atol"/>, two vertices at pos. or neg. side</li>
-<li>one vertex with <img class="math" src="../_images/math/809bd9510e9ce3c791a6dc6d549b907000fee69d.png" alt="|dist|&lt;atol"/>, one vertex at pos. side, one at neg.</li>
-<li>two vertices with <img class="math" src="../_images/math/809bd9510e9ce3c791a6dc6d549b907000fee69d.png" alt="|dist|&lt;atol"/>, one vertex at pos. or neg. side</li>
-<li>three vertices with <img class="math" src="../_images/math/809bd9510e9ce3c791a6dc6d549b907000fee69d.png" alt="|dist|&lt;atol"/></li>
+<li>no vertices with <img class="math" src="../_images/math/0ff614a67c1888092b185b24dcbe3c1ad462211b.png" alt="|dist|&lt;atol"/>, triangle after cut</li>
+<li>no vertices with <img class="math" src="../_images/math/0ff614a67c1888092b185b24dcbe3c1ad462211b.png" alt="|dist|&lt;atol"/>, triangle 1 from quad after cut</li>
+<li>no vertices with <img class="math" src="../_images/math/0ff614a67c1888092b185b24dcbe3c1ad462211b.png" alt="|dist|&lt;atol"/>, triangle 2 from quad after cut</li>
+<li>one vertex with <img class="math" src="../_images/math/0ff614a67c1888092b185b24dcbe3c1ad462211b.png" alt="|dist|&lt;atol"/>, two vertices at pos. or neg. side</li>
+<li>one vertex with <img class="math" src="../_images/math/0ff614a67c1888092b185b24dcbe3c1ad462211b.png" alt="|dist|&lt;atol"/>, one vertex at pos. side, one at neg.</li>
+<li>two vertices with <img class="math" src="../_images/math/0ff614a67c1888092b185b24dcbe3c1ad462211b.png" alt="|dist|&lt;atol"/>, one vertex at pos. or neg. side</li>
+<li>three vertices with <img class="math" src="../_images/math/0ff614a67c1888092b185b24dcbe3c1ad462211b.png" alt="|dist|&lt;atol"/></li>
 </ol>
 </dd></dl>
 
@@ -1591,17 +1581,17 @@ side is either &#8216;+&#8217;, &#8216;-&#8216; or &#8216;&#8217;</p>
         <li class="right" >
           <a href="coords.html" title="1. coords — A structured collection of 3D coordinates."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
-        &copy; Copyright 2004-2012, Benedict Verhegghe.
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 18, 2014.
+      Last updated on Feb 08, 2015.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>
     </div>
   </body>

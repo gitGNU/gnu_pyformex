@@ -1,0 +1,288 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!-- 
+##
+##  This file is part of the pyFormex project.
+##  pyFormex is a tool for generating, manipulating and transforming 3D
+##  geometrical models by sequences of mathematical operations.
+##  Home page: http://pyformex.org
+##  Project page:  http://savannah.nongnu.org/projects/pyformex/
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Distributed under the GNU General Public License version 3 or later.
+##
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see http://www.gnu.org/licenses/.
+##
+-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>31. gui.toolbar — Toolbars for the pyFormex GUI. &mdash; pyFormex 1.0.1~a2 documentation</title>
+
+    
+    <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1~a2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="up" title="pyFormex reference manual" href="../refman.html" />
+    <link rel="next" title="32. plugins.bifmesh — Vascular Sweeping Mesher" href="plugins.bifmesh.html" />
+    <link rel="prev" title="30. gui.appMenu — Menu with pyFormex apps." href="gui.appMenu.html" />
+<link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
+
+  </head>
+  <body>
+
+<div class="header">
+  <a href="http://pyformex.org">
+  <img src="http://www.nongnu.org/pyformex/_static/scallop_dome_small.png" alt="scallop dome" border="0" hspace="20" vspace="12" align="left" />
+  <img src="http://www.nongnu.org/pyformex/_static/pyformex-logo-2.png" alt="pyformex logo" border="0" hspace="10" vspace="8" align="left" />
+  </a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plugins.bifmesh.html" title="32. plugins.bifmesh — Vascular Sweeping Mesher"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="gui.appMenu.html" title="30. gui.appMenu — Menu with pyFormex apps."
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center">
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick"/>
+<input type="hidden" name="hosted_button_id" value="P7J4AM4QULB4Q"/>
+<input type="image" src="https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif" name="submit" alt="PayPal - The safer, easier way to pay online!"/>
+<img alt="" border="0" src="https://www.paypal.com/nl_NL/i/scr/pixel.gif" width="1" height="1"/>
+</form>
+
+</div>
+   
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">31. <tt class="docutils literal"><span class="pre">gui.toolbar</span></tt> &#8212; Toolbars for the pyFormex GUI.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-gui-toolbar">31.1. Classes defined in module gui.toolbar</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-gui-toolbar">31.2. Functions defined in module gui.toolbar</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="gui.appMenu.html"
+                        title="previous chapter">30. <tt class="docutils literal"><span class="pre">gui.appMenu</span></tt> &#8212; Menu with pyFormex apps.</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="plugins.bifmesh.html"
+                        title="next chapter">32. <tt class="docutils literal"><span class="pre">plugins.bifmesh</span></tt> &#8212; Vascular Sweeping Mesher</a></p>
+  
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+<div align="center">
+  <p>
+  <a href="http://www.fsf.org/register_form?referrer=8491"><img src="http://www.nongnu.org/pyformex/_static/fsf-member8491.png" alt="[FSF Associate Member]" width="89" height="31"  /></a>
+  </p>
+  <p>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+      src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /></a>
+  </p>
+</div>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-gui.toolbar">
+<span id="gui-toolbar-toolbars-for-the-pyformex-gui"></span><span id="sec-ref-gui-toolbar"></span><h1>31. <a class="reference internal" href="#module-gui.toolbar" title="gui.toolbar: Toolbars for the pyFormex GUI."><tt class="xref py py-mod docutils literal"><span class="pre">gui.toolbar</span></tt></a> &#8212; Toolbars for the pyFormex GUI.<a class="headerlink" href="#module-gui.toolbar" title="Permalink to this headline">¶</a></h1>
+<p>This module defines the functions for creating the pyFormex window toolbars.</p>
+<div class="section" id="classes-defined-in-module-gui-toolbar">
+<h2>31.1. Classes defined in module gui.toolbar<a class="headerlink" href="#classes-defined-in-module-gui-toolbar" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="functions-defined-in-module-gui-toolbar">
+<h2>31.2. Functions defined in module gui.toolbar<a class="headerlink" href="#functions-defined-in-module-gui-toolbar" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="gui.toolbar.addButton">
+<tt class="descclassname">gui.toolbar.</tt><tt class="descname">addButton</tt><big>(</big><em>toolbar</em>, <em>tooltip</em>, <em>icon</em>, <em>func</em>, <em>repeat=False</em>, <em>toggle=False</em>, <em>checked=False</em>, <em>icon0=None</em>, <em>enabled=True</em><big>)</big><a class="headerlink" href="#gui.toolbar.addButton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a button to a toolbar.</p>
+<ul class="simple">
+<li><cite>toolbar</cite>: the toolbar where the button will be added</li>
+<li><cite>tooltip</cite>: the text to appear as tooltip</li>
+<li><cite>icon</cite>: name of the icon to be displayed on the button,</li>
+<li><cite>func</cite>: function to be called when the button is pressed,</li>
+<li><cite>repeat</cite>: if True, the <cite>func</cite> will repeatedly be called if button is
+held down.</li>
+<li><cite>toggle</cite>: if True, the button is a toggle and stays in depressed state
+until pressed again.</li>
+<li><cite>checked</cite>: initial state for a toggle buton.</li>
+<li><cite>icon1</cite>: for a toggle button, icon to display when button is not checked.</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.toolbar.removeButton">
+<tt class="descclassname">gui.toolbar.</tt><tt class="descname">removeButton</tt><big>(</big><em>toolbar</em>, <em>button</em><big>)</big><a class="headerlink" href="#gui.toolbar.removeButton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a button from a toolbar.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.toolbar.addActionButtons">
+<tt class="descclassname">gui.toolbar.</tt><tt class="descname">addActionButtons</tt><big>(</big><em>toolbar</em><big>)</big><a class="headerlink" href="#gui.toolbar.addActionButtons" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the script action buttons to the toolbar.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.toolbar.addCameraButtons">
+<tt class="descclassname">gui.toolbar.</tt><tt class="descname">addCameraButtons</tt><big>(</big><em>toolbar</em><big>)</big><a class="headerlink" href="#gui.toolbar.addCameraButtons" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the camera buttons to a toolbar.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.toolbar.toggleButton">
+<tt class="descclassname">gui.toolbar.</tt><tt class="descname">toggleButton</tt><big>(</big><em>attr</em>, <em>state=None</em><big>)</big><a class="headerlink" href="#gui.toolbar.toggleButton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the corresponding viewport attribute.</p>
+<p>This does not update the button state.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.toolbar.updateButton">
+<tt class="descclassname">gui.toolbar.</tt><tt class="descname">updateButton</tt><big>(</big><em>button</em>, <em>attr</em><big>)</big><a class="headerlink" href="#gui.toolbar.updateButton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the button to correct state.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.toolbar.updateWireButton">
+<tt class="descclassname">gui.toolbar.</tt><tt class="descname">updateWireButton</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.toolbar.updateWireButton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the wire button to correct state.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.toolbar.updateTransparencyButton">
+<tt class="descclassname">gui.toolbar.</tt><tt class="descname">updateTransparencyButton</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.toolbar.updateTransparencyButton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the transparency button to correct state.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.toolbar.updateLightButton">
+<tt class="descclassname">gui.toolbar.</tt><tt class="descname">updateLightButton</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.toolbar.updateLightButton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the light button to correct state.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.toolbar.updateNormalsButton">
+<tt class="descclassname">gui.toolbar.</tt><tt class="descname">updateNormalsButton</tt><big>(</big><em>state=True</em><big>)</big><a class="headerlink" href="#gui.toolbar.updateNormalsButton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the normals button to correct state.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.toolbar.updatePerspectiveButton">
+<tt class="descclassname">gui.toolbar.</tt><tt class="descname">updatePerspectiveButton</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.toolbar.updatePerspectiveButton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the normals button to correct state.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.toolbar.addTimeoutButton">
+<tt class="descclassname">gui.toolbar.</tt><tt class="descname">addTimeoutButton</tt><big>(</big><em>toolbar</em><big>)</big><a class="headerlink" href="#gui.toolbar.addTimeoutButton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add or remove the timeout button,depending on cfg.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.toolbar.timeout">
+<tt class="descclassname">gui.toolbar.</tt><tt class="descname">timeout</tt><big>(</big><em>onoff=None</em><big>)</big><a class="headerlink" href="#gui.toolbar.timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Programmatically toggle the timeout button</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plugins.bifmesh.html" title="32. plugins.bifmesh — Vascular Sweeping Mesher"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="gui.appMenu.html" title="30. gui.appMenu — Menu with pyFormex apps."
+             >previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+    <span class="left">
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
+    </span>
+      Last updated on Feb 08, 2015.
+    <span class="right">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+    </span>
+    </div>
+  </body>
+</html>

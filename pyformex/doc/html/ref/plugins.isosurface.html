@@ -1,0 +1,236 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!-- 
+##
+##  This file is part of the pyFormex project.
+##  pyFormex is a tool for generating, manipulating and transforming 3D
+##  geometrical models by sequences of mathematical operations.
+##  Home page: http://pyformex.org
+##  Project page:  http://savannah.nongnu.org/projects/pyformex/
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Distributed under the GNU General Public License version 3 or later.
+##
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see http://www.gnu.org/licenses/.
+##
+-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>48. plugins.isosurface — Isosurface: surface reconstruction algorithms &mdash; pyFormex 1.0.1~a2 documentation</title>
+
+    
+    <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1~a2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="up" title="pyFormex reference manual" href="../refman.html" />
+    <link rel="next" title="49. plugins.lima — Lindenmayer Systems" href="plugins.lima.html" />
+    <link rel="prev" title="47. plugins.isopar — Isoparametric transformations" href="plugins.isopar.html" />
+<link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
+
+  </head>
+  <body>
+
+<div class="header">
+  <a href="http://pyformex.org">
+  <img src="http://www.nongnu.org/pyformex/_static/scallop_dome_small.png" alt="scallop dome" border="0" hspace="20" vspace="12" align="left" />
+  <img src="http://www.nongnu.org/pyformex/_static/pyformex-logo-2.png" alt="pyformex logo" border="0" hspace="10" vspace="8" align="left" />
+  </a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plugins.lima.html" title="49. plugins.lima — Lindenmayer Systems"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="plugins.isopar.html" title="47. plugins.isopar — Isoparametric transformations"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center">
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick"/>
+<input type="hidden" name="hosted_button_id" value="P7J4AM4QULB4Q"/>
+<input type="image" src="https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif" name="submit" alt="PayPal - The safer, easier way to pay online!"/>
+<img alt="" border="0" src="https://www.paypal.com/nl_NL/i/scr/pixel.gif" width="1" height="1"/>
+</form>
+
+</div>
+   
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">48. <tt class="docutils literal"><span class="pre">plugins.isosurface</span></tt> &#8212; Isosurface: surface reconstruction algorithms</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-plugins-isosurface">48.1. Classes defined in module plugins.isosurface</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-plugins-isosurface">48.2. Functions defined in module plugins.isosurface</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="plugins.isopar.html"
+                        title="previous chapter">47. <tt class="docutils literal"><span class="pre">plugins.isopar</span></tt> &#8212; Isoparametric transformations</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="plugins.lima.html"
+                        title="next chapter">49. <tt class="docutils literal"><span class="pre">plugins.lima</span></tt> &#8212; Lindenmayer Systems</a></p>
+  
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+<div align="center">
+  <p>
+  <a href="http://www.fsf.org/register_form?referrer=8491"><img src="http://www.nongnu.org/pyformex/_static/fsf-member8491.png" alt="[FSF Associate Member]" width="89" height="31"  /></a>
+  </p>
+  <p>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+      src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /></a>
+  </p>
+</div>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-plugins.isosurface">
+<span id="plugins-isosurface-isosurface-surface-reconstruction-algorithms"></span><span id="sec-ref-plugins-isosurface"></span><h1>48. <a class="reference internal" href="#module-plugins.isosurface" title="plugins.isosurface: Isosurface: surface reconstruction algorithms"><tt class="xref py py-mod docutils literal"><span class="pre">plugins.isosurface</span></tt></a> &#8212; Isosurface: surface reconstruction algorithms<a class="headerlink" href="#module-plugins.isosurface" title="Permalink to this headline">¶</a></h1>
+<p>This module contains the marching cube algorithm.</p>
+<p>Some of the code is based on the example by Paul Bourke from
+<a class="reference external" href="http://paulbourke.net/geometry/polygonise/">http://paulbourke.net/geometry/polygonise/</a></p>
+<div class="section" id="classes-defined-in-module-plugins-isosurface">
+<h2>48.1. Classes defined in module plugins.isosurface<a class="headerlink" href="#classes-defined-in-module-plugins-isosurface" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="functions-defined-in-module-plugins-isosurface">
+<h2>48.2. Functions defined in module plugins.isosurface<a class="headerlink" href="#functions-defined-in-module-plugins-isosurface" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="plugins.isosurface.isosurface">
+<tt class="descclassname">plugins.isosurface.</tt><tt class="descname">isosurface</tt><big>(</big><em>data</em>, <em>level</em>, <em>nproc=-1</em><big>)</big><a class="headerlink" href="#plugins.isosurface.isosurface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an isosurface through data at given level.</p>
+<ul class="simple">
+<li><cite>data</cite>: (nx,ny,nz) shaped array of data values at points with
+coordinates equal to their indices. This defines a 3D volume
+[0,nx-1], [0,ny-1], [0,nz-1]</li>
+<li><cite>level</cite>: data value at which the isosurface is to be constructed</li>
+<li><cite>nproc</cite>: number of parallel processes to use. On multiprocessor machines
+this may be used to speed up the processing. If &lt;= 0 , the number of
+processes will be set equal to the number of processors, to achieve
+a maximal speedup.</li>
+</ul>
+<p>Returns an (ntr,3,3) array defining the triangles of the isosurface.
+The result may be empty (if level is outside the data range).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.isosurface.isoline">
+<tt class="descclassname">plugins.isosurface.</tt><tt class="descname">isoline</tt><big>(</big><em>data</em>, <em>level</em>, <em>nproc=-1</em><big>)</big><a class="headerlink" href="#plugins.isosurface.isoline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an isocontour through data at given level.</p>
+<ul class="simple">
+<li><cite>data</cite>: (nx,ny,nz) shaped array of data values at points with
+coordinates equal to their indices. This defines a 2D area
+[0,nx-1], [0,ny-1]</li>
+<li><cite>level</cite>: data value at which the isocontour is to be constructed</li>
+<li><cite>nproc</cite>: number of parallel processes to use. On multiprocessor machines
+this may be used to speed up the processing. If &lt;= 0 , the number of
+processes will be set equal to the number of processors, to achieve
+a maximal speedup.</li>
+</ul>
+<p>Returns an (nseg,2,2) array defining the 2D coordinates of the
+segments of the isocontour.
+The result may be empty (if level is outside the data range).</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plugins.lima.html" title="49. plugins.lima — Lindenmayer Systems"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="plugins.isopar.html" title="47. plugins.isopar — Isoparametric transformations"
+             >previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+    <span class="left">
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
+    </span>
+      Last updated on Feb 08, 2015.
+    <span class="right">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+    </span>
+    </div>
+  </body>
+</html>

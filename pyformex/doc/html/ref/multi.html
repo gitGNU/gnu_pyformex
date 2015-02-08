@@ -1,0 +1,258 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!-- 
+##
+##  This file is part of the pyFormex project.
+##  pyFormex is a tool for generating, manipulating and transforming 3D
+##  geometrical models by sequences of mathematical operations.
+##  Home page: http://pyformex.org
+##  Project page:  http://savannah.nongnu.org/projects/pyformex/
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Distributed under the GNU General Public License version 3 or later.
+##
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see http://www.gnu.org/licenses/.
+##
+-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>22. multi — Framework for multi-processing in pyFormex &mdash; pyFormex 1.0.1~a2 documentation</title>
+
+    
+    <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1~a2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="up" title="pyFormex reference manual" href="../refman.html" />
+    <link rel="next" title="23. software — software.py" href="software.html" />
+    <link rel="prev" title="21. field — Field data in pyFormex." href="field.html" />
+<link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
+
+  </head>
+  <body>
+
+<div class="header">
+  <a href="http://pyformex.org">
+  <img src="http://www.nongnu.org/pyformex/_static/scallop_dome_small.png" alt="scallop dome" border="0" hspace="20" vspace="12" align="left" />
+  <img src="http://www.nongnu.org/pyformex/_static/pyformex-logo-2.png" alt="pyformex logo" border="0" hspace="10" vspace="8" align="left" />
+  </a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="software.html" title="23. software — software.py"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="field.html" title="21. field — Field data in pyFormex."
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center">
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick"/>
+<input type="hidden" name="hosted_button_id" value="P7J4AM4QULB4Q"/>
+<input type="image" src="https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif" name="submit" alt="PayPal - The safer, easier way to pay online!"/>
+<img alt="" border="0" src="https://www.paypal.com/nl_NL/i/scr/pixel.gif" width="1" height="1"/>
+</form>
+
+</div>
+   
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">22. <tt class="docutils literal"><span class="pre">multi</span></tt> &#8212; Framework for multi-processing in pyFormex</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-multi">22.1. Classes defined in module multi</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-multi">22.2. Functions defined in module multi</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="field.html"
+                        title="previous chapter">21. <tt class="docutils literal"><span class="pre">field</span></tt> &#8212; Field data in pyFormex.</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="software.html"
+                        title="next chapter">23. <tt class="docutils literal"><span class="pre">software</span></tt> &#8212; software.py</a></p>
+  
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+<div align="center">
+  <p>
+  <a href="http://www.fsf.org/register_form?referrer=8491"><img src="http://www.nongnu.org/pyformex/_static/fsf-member8491.png" alt="[FSF Associate Member]" width="89" height="31"  /></a>
+  </p>
+  <p>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+      src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /></a>
+  </p>
+</div>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-multi">
+<span id="multi-framework-for-multi-processing-in-pyformex"></span><span id="sec-ref-multi"></span><h1>22. <a class="reference internal" href="#module-multi" title="multi: Framework for multi-processing in pyFormex"><tt class="xref py py-mod docutils literal"><span class="pre">multi</span></tt></a> &#8212; Framework for multi-processing in pyFormex<a class="headerlink" href="#module-multi" title="Permalink to this headline">¶</a></h1>
+<p>This module contains some functions to perform multiprocessing inside
+pyFormex in a unified way.</p>
+<div class="section" id="classes-defined-in-module-multi">
+<h2>22.1. Classes defined in module multi<a class="headerlink" href="#classes-defined-in-module-multi" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="functions-defined-in-module-multi">
+<h2>22.2. Functions defined in module multi<a class="headerlink" href="#functions-defined-in-module-multi" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="multi.dofunc">
+<tt class="descclassname">multi.</tt><tt class="descname">dofunc</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#multi.dofunc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function for the multitask function.</p>
+<p>It expects a tuple with (function,args) as single argument.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="multi.multitask">
+<tt class="descclassname">multi.</tt><tt class="descname">multitask</tt><big>(</big><em>tasks</em>, <em>nproc=-1</em><big>)</big><a class="headerlink" href="#multi.multitask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform tasks in parallel.</p>
+<p>Runs a number of tasks in parallel over a number of subprocesses.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>tasks</cite> : a list of (function,args) tuples, where function is a
+callable and args is a tuple with the arguments to be passed to the
+function.</li>
+<li>` nproc`: the number of subprocesses to be started. This may be
+different from the number of tasks to run: processes finishing a
+task will pick up a next one. There is no benefit in starting more
+processes than the number of tasks or the number of processing units
+available. The default will set <cite>nproc</cite> to the minimum of these two
+values.</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="multi.worker">
+<tt class="descclassname">multi.</tt><tt class="descname">worker</tt><big>(</big><em>input</em>, <em>output</em><big>)</big><a class="headerlink" href="#multi.worker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function for the multitask function.</p>
+<p>This is the function executed by any of the processes started
+by the multitask function. It takes tuples (function,args) from
+the input queue, computes the results of the call function(args),
+and pushes these results on the output queue.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>input</cite>: Queue holding the tasks to be performed</li>
+<li><cite>output</cite>: Queue where the results are to be delivered</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="multi.multitask2">
+<tt class="descclassname">multi.</tt><tt class="descname">multitask2</tt><big>(</big><em>tasks</em>, <em>nproc=-1</em><big>)</big><a class="headerlink" href="#multi.multitask2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform tasks in parallel.</p>
+<p>Runs a number of tasks in parallel over a number of subprocesses.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>tasks</cite> : a list of (function,args) tuples, where function is a
+callable and args is a tuple with the arguments to be passed to the
+function.</li>
+<li>` nproc`: the number of subprocesses to be started. This may be
+different from the number of tasks to run: processes finishing a
+task will pick up a next one. There is no benefit in starting more
+processes than the number of tasks or the number of processing units
+available. The default will set <cite>nproc</cite> to the minimum of these two
+values.</li>
+</ul>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="software.html" title="23. software — software.py"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="field.html" title="21. field — Field data in pyFormex."
+             >previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+    <span class="left">
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
+    </span>
+      Last updated on Feb 08, 2015.
+    <span class="right">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+    </span>
+    </div>
+  </body>
+</html>

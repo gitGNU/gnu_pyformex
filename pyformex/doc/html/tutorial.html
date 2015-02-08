@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
 <!-- 
@@ -34,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyFormex tutorial &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>pyFormex tutorial &mdash; pyFormex 1.0.1~a2 documentation</title>
 
     
     <link rel="stylesheet" href="_static/pyformex.css" type="text/css" />
@@ -42,8 +41,8 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '1.0.0~a1',
+        URL_ROOT:    './',
+        VERSION:     '1.0.1~a2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +51,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="index.html" />
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="index.html" />
     <link rel="next" title="pyFormex user guide" href="user-guide.html" />
     <link rel="prev" title="Installing pyFormex" href="install.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
@@ -82,7 +81,7 @@
         <li class="right" >
           <a href="install.html" title="Installing pyFormex"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li> 
+        <li><a href="index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -663,8 +662,8 @@ defined as a collection of points.  The number of points of an object
 is called the <em>plexitude</em> of the object.</p>
 <p id="index-2">A Formex is a collection of geometrical objects of the same plexitude. The
 objects in the collection are called the <em>elements</em> of the <tt class="xref py py-class docutils literal"><span class="pre">Formex</span></tt>. A
-<tt class="xref py py-class docutils literal"><span class="pre">Formex</span></tt> whose elements have plexitude <img class="math" src="_images/math/174fadd07fd54c9afe288e96558c92e0c1da733a.png" alt="n"/> is also called an
-<img class="math" src="_images/math/174fadd07fd54c9afe288e96558c92e0c1da733a.png" alt="n"/>-plex <tt class="xref py py-class docutils literal"><span class="pre">Formex</span></tt>. Internally, the coordinates of the points are
+<tt class="xref py py-class docutils literal"><span class="pre">Formex</span></tt> whose elements have plexitude <img class="math" src="_images/math/413f8a8e40062a9090d9d50b88bc7b551b314c26.png" alt="n"/> is also called an
+<img class="math" src="_images/math/413f8a8e40062a9090d9d50b88bc7b551b314c26.png" alt="n"/>-plex <tt class="xref py py-class docutils literal"><span class="pre">Formex</span></tt>. Internally, the coordinates of the points are
 stored in a NumPy <tt class="xref py py-class docutils literal"><span class="pre">ndarray</span></tt>  with three dimensions. The coordinates of a
 single point are stored along the last axis (2) of the <tt class="xref py py-class docutils literal"><span class="pre">Formex</span></tt>; all the
 points of an element are stored along the second axis (1); different elements
@@ -685,15 +684,15 @@ axis of a Formex.</p>
 only deals with 3D geometry. This means that the third axis of a
 <tt class="xref py py-class docutils literal"><span class="pre">Formex</span></tt> always has length 3. You can however import 2D
 geometry: all points will be given a third coordinate
-<img class="math" src="_images/math/5510380da19a236624ef45908d2da469f892b03e.png" alt="z=0.0"/>. If you restrict your operations to transformations in
-the <img class="math" src="_images/math/e53b1fe25be1c679117fb44a6a886fe1247d189a.png" alt="(x,y)"/>-plane, it suffices to extract just the first two
+<img class="math" src="_images/math/7ea98837be63ec6c6ee80a602553c86e14415b61.png" alt="z=0.0"/>. If you restrict your operations to transformations in
+the <img class="math" src="_images/math/5f81ea407dc24031569231ab2cd28222176f38ca.png" alt="(x,y)"/>-plane, it suffices to extract just the first two
 coordinates to get the transformed 2D geometry.</p>
-<p>The <tt class="xref py py-class docutils literal"><span class="pre">Formex</span></tt> object <tt class="docutils literal"><span class="pre">F</span></tt> can be indexed just like a <img class="math" src="_images/math/d915c944b3a7f2f094b4ceb88eaa658f3b8c754d.png" alt="NumPy"/>
-numerical array: <tt class="docutils literal"><span class="pre">F[i]</span></tt> returns the element with index <img class="math" src="_images/math/34857b3ba74ce5cd8607f3ebd23e9015908ada71.png" alt="i"/> (counting
-from <img class="math" src="_images/math/bc1f9d9bf8a1b606a4188b5ce9a2af1809e27a89.png" alt="0"/>). For a <tt class="xref py py-class docutils literal"><span class="pre">Formex</span></tt> with plexitude <img class="math" src="_images/math/174fadd07fd54c9afe288e96558c92e0c1da733a.png" alt="n"/>, the result will
-be an array with shape <img class="math" src="_images/math/5c541ab0141339afc82e2de9722cea4a35199b32.png" alt="(n,3)"/>, containing all the points of the element.
-Further, <tt class="docutils literal"><span class="pre">F[i][j]</span></tt> will be a <img class="math" src="_images/math/194898d001654fd8f1e45866c351b72f3abf7011.png" alt="(3,)"/>-shaped array containing the
-coordinates of point <img class="math" src="_images/math/8122aa89ea6e80784c6513d22787ad86e36ad0cc.png" alt="j"/> of element <img class="math" src="_images/math/34857b3ba74ce5cd8607f3ebd23e9015908ada71.png" alt="i"/>. Finally, <tt class="docutils literal"><span class="pre">F[i][j][k]</span></tt> is
+<p>The <tt class="xref py py-class docutils literal"><span class="pre">Formex</span></tt> object <tt class="docutils literal"><span class="pre">F</span></tt> can be indexed just like a <img class="math" src="_images/math/df9e59096c0ca9cc00eb0542d933c6e520cb9cbb.png" alt="NumPy"/>
+numerical array: <tt class="docutils literal"><span class="pre">F[i]</span></tt> returns the element with index <img class="math" src="_images/math/a581f053bbfa5115f42c13094857cdd12a37ec49.png" alt="i"/> (counting
+from <img class="math" src="_images/math/74c081db590f3d35421c1f6b9afd4cdda36ee210.png" alt="0"/>). For a <tt class="xref py py-class docutils literal"><span class="pre">Formex</span></tt> with plexitude <img class="math" src="_images/math/413f8a8e40062a9090d9d50b88bc7b551b314c26.png" alt="n"/>, the result will
+be an array with shape <img class="math" src="_images/math/9c06a13a6e638826a390c57157c02fc492d0d958.png" alt="(n,3)"/>, containing all the points of the element.
+Further, <tt class="docutils literal"><span class="pre">F[i][j]</span></tt> will be a <img class="math" src="_images/math/6697b7998f2b9adfaf841012c1019b76bb4799ae.png" alt="(3,)"/>-shaped array containing the
+coordinates of point <img class="math" src="_images/math/d32c78b759903e3f4bd4fd2ce0b86358f7500c5d.png" alt="j"/> of element <img class="math" src="_images/math/a581f053bbfa5115f42c13094857cdd12a37ec49.png" alt="i"/>. Finally, <tt class="docutils literal"><span class="pre">F[i][j][k]</span></tt> is
 a single floating point value representing one coordinate of that point.</p>
 <p>In the following sections of this tutorial, we will first learn you
 how to create simple geometry using the Formex data model and how to
@@ -870,8 +869,8 @@ menu or the <img alt="button-front" src="_images/front.png" /> button.</p>
 <tt class="docutils literal"><span class="pre">Front</span></tt>, <tt class="docutils literal"><span class="pre">Back</span></tt>, <tt class="docutils literal"><span class="pre">Left</span></tt>, <tt class="docutils literal"><span class="pre">Right</span></tt>, <tt class="docutils literal"><span class="pre">Top</span></tt>, <tt class="docutils literal"><span class="pre">Bottom</span></tt> and
 <tt class="docutils literal"><span class="pre">Iso</span></tt>. They can be set from the <em class="menuselection">Views</em> menu items or
 the corresponding view buttons in the toolbar.  The default <tt class="docutils literal"><span class="pre">Front</span></tt>
-corresponds to the camera looking in the <img class="math" src="_images/math/5f131a63bd792d941d6f8fd7da6ffb14f86989bf.png" alt="-z"/> direction, with
-the <img class="math" src="_images/math/26eeb5258ca5099acf8fe96b2a1049c48c89a5e6.png" alt="x"/> axis oriented to the right and the <img class="math" src="_images/math/092e364e1d9d19ad5fffb0b46ef4cc7f2da02c1c.png" alt="y"/> axis
+corresponds to the camera looking in the <img class="math" src="_images/math/e6d44b8f0407431802e1db91e0c10cb5ff5bba05.png" alt="-z"/> direction, with
+the <img class="math" src="_images/math/188c175aac0a8a9c22499336711b5d7256407254.png" alt="x"/> axis oriented to the right and the <img class="math" src="_images/math/b124ff74afb0914bb434e8fb849eb56d734412f8.png" alt="y"/> axis
 upward.</p>
 <p>We explicitely added the element type <tt class="docutils literal"><span class="pre">tet4</span></tt> when creating the
 pyramid. Without it, pyFormex would have interpreted the 4-plex Formex
@@ -907,7 +906,7 @@ y-axis up, we have the following basic moves:
 the z-direction. Adding 48 causes an extra move of -1. This means that
 &#8216;ABCDEFGHI&#8217;, resp. &#8216;abcdefghi&#8217;, correspond with &#8216;123456789&#8217; with an extra
 z +/-= 1. This gives the following schema:</p>
-<div class="highlight-python"><pre>    z+=1             z unchanged            z -= 1
+<div class="highlight-python"><div class="highlight"><pre>    z+=1             z unchanged            z -= 1
 
 F    B    E          6    2    5         f    b    e
      |                    |                   |
@@ -915,17 +914,19 @@ F    B    E          6    2    5         f    b    e
 C----I----A          3----9----1         c----i----a
      |                    |                   |
      |                    |                   |
-G    D    H          7    4    8         g    d    h</pre>
+G    D    H          7    4    8         g    d    h
+</pre></div>
 </div>
 <p>The special character &#8216;/&#8217; can be put before any character to make the
 move without inserting the new point. You need to start
 the string with a &#8216;0&#8217; or &#8216;9&#8217; to include the origin in the output.</p>
 <p>For example, the string &#8216;0123&#8217; will result in the following four points,
 on the corners of a unit square:</p>
-<div class="highlight-python"><pre>[[ 0.  0.  0.]
+<div class="highlight-python"><div class="highlight"><pre>[[ 0.  0.  0.]
  [ 1.  0.  0.]
  [ 1.  1.  0.]
- [ 0.  1.  0.]]</pre>
+ [ 0.  1.  0.]]
+</pre></div>
 </div>
 <p>Run the following simple script to check it:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">P</span> <span class="o">=</span> <span class="n">pattern</span><span class="p">(</span><span class="s">&#39;0123&#39;</span><span class="p">)</span>
@@ -1507,7 +1508,7 @@ The elements and their nodes are in the same order as in F.</li>
 the Mesh, and the connectivity of the elements. The connectivity is an
 integer array with the same shape as the first two dimensions of the
 Formex: (F.nelems(),F.nplex()):</p>
-<div class="highlight-python"><pre>Nodes
+<div class="highlight-python"><div class="highlight"><pre>Nodes
 [[ 0.  0.  0.]
  [ 1.  0.  0.]
  [ 0.  1.  0.]
@@ -1528,7 +1529,8 @@ Elements
  [4 5]
  [5 7]
  [7 6]
- [6 4]]</pre>
+ [6 4]]
+</pre></div>
 </div>
 <p>The inverse operation of transforming a Mesh model back into a Formex
 is also quite simple: <tt class="docutils literal"><span class="pre">Formex(nodes[elems])</span></tt> will indeed be identical to the
@@ -1564,16 +1566,16 @@ arrays are the same, within a small tolerance.</p>
         <li class="right" >
           <a href="install.html" title="Installing pyFormex"
              >previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li> 
+        <li><a href="index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
-        &copy; Copyright 2004-2012, Benedict Verhegghe.
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 18, 2014.
+      Last updated on Feb 08, 2015.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>
     </div>
   </body>

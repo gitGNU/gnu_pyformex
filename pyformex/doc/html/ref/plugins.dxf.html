@@ -1,0 +1,405 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!-- 
+##
+##  This file is part of the pyFormex project.
+##  pyFormex is a tool for generating, manipulating and transforming 3D
+##  geometrical models by sequences of mathematical operations.
+##  Home page: http://pyformex.org
+##  Project page:  http://savannah.nongnu.org/projects/pyformex/
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Distributed under the GNU General Public License version 3 or later.
+##
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see http://www.gnu.org/licenses/.
+##
+-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>39. plugins.dxf — Read/write geometry in DXF format. &mdash; pyFormex 1.0.1~a2 documentation</title>
+
+    
+    <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1~a2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="up" title="pyFormex reference manual" href="../refman.html" />
+    <link rel="next" title="40. plugins.export — Classes and functions for exporting geometry in various formats." href="plugins.export.html" />
+    <link rel="prev" title="38. plugins.datareader — Numerical data reader" href="plugins.datareader.html" />
+<link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
+
+  </head>
+  <body>
+
+<div class="header">
+  <a href="http://pyformex.org">
+  <img src="http://www.nongnu.org/pyformex/_static/scallop_dome_small.png" alt="scallop dome" border="0" hspace="20" vspace="12" align="left" />
+  <img src="http://www.nongnu.org/pyformex/_static/pyformex-logo-2.png" alt="pyformex logo" border="0" hspace="10" vspace="8" align="left" />
+  </a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plugins.export.html" title="40. plugins.export — Classes and functions for exporting geometry in various formats."
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="plugins.datareader.html" title="38. plugins.datareader — Numerical data reader"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center">
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick"/>
+<input type="hidden" name="hosted_button_id" value="P7J4AM4QULB4Q"/>
+<input type="image" src="https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif" name="submit" alt="PayPal - The safer, easier way to pay online!"/>
+<img alt="" border="0" src="https://www.paypal.com/nl_NL/i/scr/pixel.gif" width="1" height="1"/>
+</form>
+
+</div>
+   
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">39. <tt class="docutils literal"><span class="pre">plugins.dxf</span></tt> &#8212; Read/write geometry in DXF format.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-plugins-dxf">39.1. Classes defined in module plugins.dxf</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-plugins-dxf">39.2. Functions defined in module plugins.dxf</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="plugins.datareader.html"
+                        title="previous chapter">38. <tt class="docutils literal"><span class="pre">plugins.datareader</span></tt> &#8212; Numerical data reader</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="plugins.export.html"
+                        title="next chapter">40. <tt class="docutils literal"><span class="pre">plugins.export</span></tt> &#8212; Classes and functions for exporting geometry in various formats.</a></p>
+  
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+<div align="center">
+  <p>
+  <a href="http://www.fsf.org/register_form?referrer=8491"><img src="http://www.nongnu.org/pyformex/_static/fsf-member8491.png" alt="[FSF Associate Member]" width="89" height="31"  /></a>
+  </p>
+  <p>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+      src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /></a>
+  </p>
+</div>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-plugins.dxf">
+<span id="plugins-dxf-read-write-geometry-in-dxf-format"></span><span id="sec-ref-plugins-dxf"></span><h1>39. <a class="reference internal" href="#module-plugins.dxf" title="plugins.dxf: Read/write geometry in DXF format."><tt class="xref py py-mod docutils literal"><span class="pre">plugins.dxf</span></tt></a> &#8212; Read/write geometry in DXF format.<a class="headerlink" href="#module-plugins.dxf" title="Permalink to this headline">¶</a></h1>
+<p>This module allows to import and export some simple geometrical items
+in DXF format.</p>
+<div class="section" id="classes-defined-in-module-plugins-dxf">
+<h2>39.1. Classes defined in module plugins.dxf<a class="headerlink" href="#classes-defined-in-module-plugins-dxf" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="plugins.dxf.DxfExporter">
+<em class="property">class </em><tt class="descclassname">plugins.dxf.</tt><tt class="descname">DxfExporter</tt><big>(</big><em>filename</em>, <em>terminator='n'</em><big>)</big><a class="headerlink" href="#plugins.dxf.DxfExporter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export geometry in DXF format.</p>
+<p>While we certainly do not want to promote proprietary software,
+some of our users occasionally needed to export some model in
+DXF format.
+This class provides a minimum of functionality.</p>
+<dl class="method">
+<dt id="plugins.dxf.DxfExporter.write">
+<tt class="descname">write</tt><big>(</big><em>s</em><big>)</big><a class="headerlink" href="#plugins.dxf.DxfExporter.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a string to the dxf file.</p>
+<p>The string does not include the line terminator.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.dxf.DxfExporter.out">
+<tt class="descname">out</tt><big>(</big><em>code</em>, <em>data</em><big>)</big><a class="headerlink" href="#plugins.dxf.DxfExporter.out" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output a string data item to the dxf file.</p>
+<p>code is the group code,
+data holds the data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.dxf.DxfExporter.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.dxf.DxfExporter.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finalize and close the DXF file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.dxf.DxfExporter.section">
+<tt class="descname">section</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#plugins.dxf.DxfExporter.section" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start a new section</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.dxf.DxfExporter.endSection">
+<tt class="descname">endSection</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.dxf.DxfExporter.endSection" title="Permalink to this definition">¶</a></dt>
+<dd><p>End the current section</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.dxf.DxfExporter.entities">
+<tt class="descname">entities</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.dxf.DxfExporter.entities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the ENTITIES section</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.dxf.DxfExporter.layer">
+<tt class="descname">layer</tt><big>(</big><em>layer</em><big>)</big><a class="headerlink" href="#plugins.dxf.DxfExporter.layer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export the layer</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.dxf.DxfExporter.vertex">
+<tt class="descname">vertex</tt><big>(</big><em>x</em>, <em>layer=0</em><big>)</big><a class="headerlink" href="#plugins.dxf.DxfExporter.vertex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export a vertex.</p>
+<p>x is a (3,) shaped array</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.dxf.DxfExporter.line">
+<tt class="descname">line</tt><big>(</big><em>x</em>, <em>layer=0</em><big>)</big><a class="headerlink" href="#plugins.dxf.DxfExporter.line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export a line.</p>
+<p>x is a (2,3) shaped array</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.dxf.DxfExporter.polyline">
+<tt class="descname">polyline</tt><big>(</big><em>x</em>, <em>layer=0</em><big>)</big><a class="headerlink" href="#plugins.dxf.DxfExporter.polyline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export a polyline.</p>
+<p>x is a (nvertices,3) shaped array</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.dxf.DxfExporter.arc">
+<tt class="descname">arc</tt><big>(</big><em>C</em>, <em>R</em>, <em>a</em>, <em>layer=0</em><big>)</big><a class="headerlink" href="#plugins.dxf.DxfExporter.arc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export an arc.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="functions-defined-in-module-plugins-dxf">
+<h2>39.2. Functions defined in module plugins.dxf<a class="headerlink" href="#functions-defined-in-module-plugins-dxf" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="plugins.dxf.importDXF">
+<tt class="descclassname">plugins.dxf.</tt><tt class="descname">importDXF</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#plugins.dxf.importDXF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import (parts of) a DXF file into pyFormex.</p>
+<p>This function scans a DXF file for recognized entities and imports
+those entities as pyFormex objects. It is only a very partial importer,
+but has proven to be already very valuable for many users.</p>
+<p><cite>filename</cite>: name of a DXF file.
+The return value is a list of pyFormex objects.</p>
+<p>Importing a DXF file is done in two steps:</p>
+<ul class="simple">
+<li>First the DXF file is scanned and the recognized entities are
+formatted into a text with standard function calling syntax.
+See <a class="reference internal" href="#plugins.dxf.readDXF" title="plugins.dxf.readDXF"><tt class="xref py py-func docutils literal"><span class="pre">readDXF()</span></tt></a>.</li>
+<li>Then the created text is executed as a Python script, producing
+equivalent pyFormex objects.
+See <a class="reference internal" href="#plugins.dxf.convertDXF" title="plugins.dxf.convertDXF"><tt class="xref py py-func docutils literal"><span class="pre">convertDXF()</span></tt></a>.</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.dxf.readDXF">
+<tt class="descclassname">plugins.dxf.</tt><tt class="descname">readDXF</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#plugins.dxf.readDXF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a DXF file and extract the recognized entities.</p>
+<p><cite>filename</cite>: name of a .DXF file.</p>
+<p>Returns a multiline string with one line for each recognized entity,
+in a format that can directly be used by <a class="reference internal" href="#plugins.dxf.convertDXF" title="plugins.dxf.convertDXF"><tt class="xref py py-func docutils literal"><span class="pre">convertDXF()</span></tt></a>.</p>
+<p>This function requires the external program <cite>dxfparser</cite> which comes
+with the pyFormex distribution. It currently recognizes entities of
+type &#8216;Arc&#8217;, &#8216;Line&#8217;, &#8216;Polyline&#8217;, &#8216;Vertex&#8217;.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.dxf.convertDXF">
+<tt class="descclassname">plugins.dxf.</tt><tt class="descname">convertDXF</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#plugins.dxf.convertDXF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a textual representation of a DXF format to pyFormex objects.</p>
+<dl class="docutils">
+<dt><cite>text</cite> <span class="classifier-delimiter">:</span> <span class="classifier">a multiline text representation of the contents of a DXF file.</span></dt>
+<dd><p class="first">This text representation can e.g. be obtained by the function
+<a class="reference internal" href="#plugins.dxf.readDXF" title="plugins.dxf.readDXF"><tt class="xref py py-func docutils literal"><span class="pre">readDXF()</span></tt></a>. It contains lines defining DXF entities. A small
+example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Arc</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="o">-</span><span class="mf">90.</span><span class="p">,</span><span class="mf">90.</span><span class="p">)</span>
+<span class="n">Arc</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">3.0</span><span class="p">,</span><span class="o">-</span><span class="mf">90.</span><span class="p">,</span><span class="mf">90.</span><span class="p">)</span>
+<span class="n">Line</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="n">Polyline</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Vertex</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">3.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="n">Vertex</span><span class="p">(</span><span class="o">-</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">3.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="n">Vertex</span><span class="p">(</span><span class="o">-</span><span class="mf">2.0</span><span class="p">,</span><span class="o">-</span><span class="mf">7.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="n">Vertex</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="o">-</span><span class="mf">7.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="n">Vertex</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="o">-</span><span class="mf">3.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="last">Each line of the text defines a single entity or starts a multiple
+component entity. The text should be well aligned to constitute a
+proper Python script. Currently, the only defined entities are
+&#8216;Arc&#8217;, &#8216;Line&#8217;, &#8216;Polyline&#8217;, &#8216;Vertex&#8217;.</p>
+</dd>
+</dl>
+<p>Returns a list of pyFormex objects corresponding to the text. The
+returned objects are of the following type:</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">function name</th>
+<th class="head">object</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Arc</td>
+<td><a class="reference internal" href="plugins.curve.html#plugins.curve.Arc" title="plugins.curve.Arc"><tt class="xref py py-class docutils literal"><span class="pre">plugins.curve.Arc</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td>Line</td>
+<td><a class="reference internal" href="plugins.curve.html#plugins.curve.Line" title="plugins.curve.Line"><tt class="xref py py-class docutils literal"><span class="pre">plugins.curve.Line</span></tt></a></td>
+</tr>
+<tr class="row-even"><td>Polyline</td>
+<td><a class="reference internal" href="plugins.curve.html#plugins.curve.PolyLine" title="plugins.curve.PolyLine"><tt class="xref py py-class docutils literal"><span class="pre">plugins.curve.PolyLine</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>No object is returned for the <cite>Vertex</cite> function: they define the
+vertices of a PolyLine.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.dxf.collectByType">
+<tt class="descclassname">plugins.dxf.</tt><tt class="descname">collectByType</tt><big>(</big><em>entities</em><big>)</big><a class="headerlink" href="#plugins.dxf.collectByType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collect the dxf entities by type.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.dxf.toLines">
+<tt class="descclassname">plugins.dxf.</tt><tt class="descname">toLines</tt><big>(</big><em>coll</em>, <em>chordal=0.01</em>, <em>arcdiv=None</em><big>)</big><a class="headerlink" href="#plugins.dxf.toLines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the dxf entities in a dxf collection to a plex-2 Formex</p>
+<p>This converts Lines, Arcs and PolyLines to plex-2 elements and collects
+them in a single Formex.
+The chordal and arcdiv parameters are passed to <tt class="xref py py-meth docutils literal"><span class="pre">Arc.approx()</span></tt> to set
+the accuracy for the approximation of the Arc by line segments.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.dxf.exportDXF">
+<tt class="descclassname">plugins.dxf.</tt><tt class="descname">exportDXF</tt><big>(</big><em>filename</em>, <em>F</em><big>)</big><a class="headerlink" href="#plugins.dxf.exportDXF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export a Formex to a DXF file</p>
+<p>Currently, only plex-2 Formices can be exported to DXF.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.dxf.exportDxf">
+<tt class="descclassname">plugins.dxf.</tt><tt class="descname">exportDxf</tt><big>(</big><em>filename</em>, <em>coll</em><big>)</big><a class="headerlink" href="#plugins.dxf.exportDxf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export a collection of dxf parts a DXF file</p>
+<p>coll is a list of dxf objects</p>
+<p>Currently, only dxf objects of type &#8216;Line&#8217; and &#8216;Arc&#8217; can be exported.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.dxf.exportDxfText">
+<tt class="descclassname">plugins.dxf.</tt><tt class="descname">exportDxfText</tt><big>(</big><em>filename</em>, <em>parts</em><big>)</big><a class="headerlink" href="#plugins.dxf.exportDxfText" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export a set of dxf entities to a .dxftext file.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plugins.export.html" title="40. plugins.export — Classes and functions for exporting geometry in various formats."
+             >next</a> |</li>
+        <li class="right" >
+          <a href="plugins.datareader.html" title="38. plugins.datareader — Numerical data reader"
+             >previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+    <span class="left">
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
+    </span>
+      Last updated on Feb 08, 2015.
+    <span class="right">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+    </span>
+    </div>
+  </body>
+</html>

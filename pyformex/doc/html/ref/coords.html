@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
 <!-- 
@@ -34,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>1. coords — A structured collection of 3D coordinates. &mdash; pyFormex 1.0.0~a1 documentation</title>
+    <title>1. coords — A structured collection of 3D coordinates. &mdash; pyFormex 1.0.1~a2 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -43,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.0~a1',
+        VERSION:     '1.0.1~a2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -52,7 +51,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.0~a1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="2. formex — Formex algebra in Python" href="formex.html" />
     <link rel="prev" title="pyFormex reference manual" href="../refman.html" />
@@ -83,7 +82,7 @@
         <li class="right" >
           <a href="../refman.html" title="pyFormex reference manual"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -115,7 +114,7 @@
                         title="previous chapter">pyFormex reference manual</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="formex.html"
-                        title="next chapter">2. <tt class="docutils literal docutils literal"><span class="pre">formex</span></tt> &#8212; Formex algebra in Python</a></p>
+                        title="next chapter">2. <tt class="docutils literal"><span class="pre">formex</span></tt> &#8212; Formex algebra in Python</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -336,6 +335,14 @@ one of the following</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="coords.Coords.bboxPoints">
+<tt class="descname">bboxPoints</tt><big>(</big><big>)</big><a class="headerlink" href="#coords.Coords.bboxPoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all the corners of the bounding box point of a Coords.</p>
+<p>Returns a Coords (8,3). The points are in the order of a hex8
+element.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="coords.Coords.average">
 <tt class="descname">average</tt><big>(</big><em>wts=None</em>, <em>axis=0</em><big>)</big><a class="headerlink" href="#coords.Coords.average" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a (weighted) average of the <a class="reference internal" href="#coords.Coords" title="coords.Coords"><tt class="xref py py-class docutils literal"><span class="pre">Coords</span></tt></a>.</p>
@@ -429,42 +436,46 @@ along that axis.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="coords.Coords.inertia">
-<tt class="descname">inertia</tt><big>(</big><em>mass=None</em><big>)</big><a class="headerlink" href="#coords.Coords.inertia" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns inertia related quantities of the <a class="reference internal" href="#coords.Coords" title="coords.Coords"><tt class="xref py py-class docutils literal"><span class="pre">Coords</span></tt></a>.</p>
+<dt id="coords.Coords.prinCS">
+<tt class="descname">prinCS</tt><big>(</big><em>mass=None</em><big>)</big><a class="headerlink" href="#coords.Coords.prinCS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a CoordSys formed by the principal axes of inertia</p>
 <p>Parameters:</p>
 <ul class="simple">
 <li><cite>mass</cite>: float array with ncoords weight values. The default is to
 attribute a weight 1.0 to each point.</li>
 </ul>
-<p>Returns a tuple of:</p>
-<ul class="simple">
-<li><cite>center</cite>: the center of mass: shape (3,)</li>
-<li><cite>axes</cite>: the principal axes of the inertia tensor: shape (3,3)</li>
-<li><cite>principal</cite>: the (prinicipal) moments of inertia: shape (3,)</li>
-<li><cite>tensor</cite>: the full inertia tensor in the global axes: shape (3,3)</li>
-</ul>
+<p>Returns a Coord
+- <cite>axes</cite>: the principal axes of the inertia tensor: shape (3,3)
+- <cite>principal</cite>: the (prinicipal) moments of inertia: shape (3,)</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="coords.Coords.orientedBbox">
-<tt class="descname">orientedBbox</tt><big>(</big><em>ctr</em>, <em>rot</em><big>)</big><a class="headerlink" href="#coords.Coords.orientedBbox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns an oriented bounding box of a set of points.</p>
+<dt id="coords.Coords.principalSizes">
+<tt class="descname">principalSizes</tt><big>(</big><big>)</big><a class="headerlink" href="#coords.Coords.principalSizes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the sizes in the principal directions of the Coords.</p>
+<p>Returns an array with the length of the bbox along the 3
+principal axes. This is a convenient shorthand for:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">toCS</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prinCS</span><span class="p">())</span><span class="o">.</span><span class="n">sizes</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">Coords</span><span class="p">([[[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]]])</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">principalSizes</span><span class="p">())</span>
+<span class="go">[  0.00e+00   2.33e-08   3.00e+00]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="coords.Coords.centralCS">
+<tt class="descname">centralCS</tt><big>(</big><em>mass=None</em><big>)</big><a class="headerlink" href="#coords.Coords.centralCS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the central coordinate system of the Coords.</p>
 <p>Parameters:</p>
 <ul class="simple">
-<li><cite>ctr</cite> : array_like (3,). Center of the the bounding box</li>
-<li><cite>rot</cite> : array_like (3,3). Rotation matrix of the the bounding box</li>
+<li><cite>mass</cite>: float array with ncoords weight values. The default is to
+attribute a weight 1.0 to each point.</li>
 </ul>
-<p>Returns a single hexahedral Formex object.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="coords.Coords.principalBbox">
-<tt class="descname">principalBbox</tt><big>(</big><big>)</big><a class="headerlink" href="#coords.Coords.principalBbox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a bounding box aligned with the inertia principal axes.</p>
-<p>Computes the orientedBbox aligned with the principal axes of the
-set of points, as obtained from <a class="reference internal" href="inertia.html#module-inertia" title="inertia: inertia.py"><tt class="xref py py-func docutils literal"><span class="pre">inertia()</span></tt></a>.</p>
-<p>Returns a single hexahedral Formex object.</p>
+<p>Returns a CoordSys with origin at the center of mass of the
+Coords and axes parallel to the global axes.</p>
 </dd></dl>
 
 <dl class="method">
@@ -533,17 +544,22 @@ All distance values are positive or zero.</p>
 
 <dl class="method">
 <dt id="coords.Coords.directionalSize">
-<tt class="descname">directionalSize</tt><big>(</big><em>n</em>, <em>p=None</em>, <em>_points=False</em><big>)</big><a class="headerlink" href="#coords.Coords.directionalSize" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">directionalSize</tt><big>(</big><em>n</em>, <em>p=None</em>, <em>points=False</em><big>)</big><a class="headerlink" href="#coords.Coords.directionalSize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the extreme distances from the plane p,n.</p>
 <p>Parameters:</p>
 <ul class="simple">
 <li><cite>n</cite>: the direction can be specified by a 3 component vector or by
-a single integer 0..2 designing one of the coordinate axes.</li>
-<li><cite>p</cite>: is any point in space. If not specified, it is taken as the
+a single integer 0..2 designating one of the coordinate axes.</li>
+<li><cite>p</cite>: is a point in space. If not specified, it is taken as the
 center() of the Coords.</li>
+<li><cite>points</cite>: bool. If True, returns the extremal tangent points
+instead of the distances of the extremal tangent planes.</li>
 </ul>
-<p>The return value is a tuple of two float values specifying the
-extreme distances from the plane p,n.</p>
+<p>The default return value is a tuple of two float values specifying the
+distances of the extremal tangent planes parallel with the plane (p,n)
+to the said plane. If <cite>point</cite> is True, returns a tuple with the
+extremal tangent points instead.</p>
+<p>See also <a class="reference internal" href="#coords.Coords.directionalExtremes" title="coords.Coords.directionalExtremes"><tt class="xref py py-meth docutils literal"><span class="pre">directionalExtremes()</span></tt></a></p>
 </dd></dl>
 
 <dl class="method">
@@ -553,7 +569,9 @@ extreme distances from the plane p,n.</p>
 <p><cite>n</cite> and <cite>p</cite> have the same meaning as in <cite>directionalSize</cite>.</p>
 <p>The return value is a list of two points on the line (p,n),
 such that the planes with normal n through these points define
-the extremal planes of the Coords.</p>
+the extremal tangent planes of the Coords.</p>
+<p>This is a shorthand for using <a class="reference internal" href="#coords.Coords.directionalSize" title="coords.Coords.directionalSize"><tt class="xref py py-meth docutils literal"><span class="pre">directionalSize()</span></tt></a> with the
+<cite>points</cite> argument True.</p>
 </dd></dl>
 
 <dl class="method">
@@ -766,6 +784,18 @@ rotation origin is specified in the argument &#8216;around&#8217;.</p>
 <p>The returned object has coordinates given by <tt class="docutils literal"><span class="pre">self</span> <span class="pre">*</span> <span class="pre">mat</span> <span class="pre">+</span> <span class="pre">vec</span></tt>.
 If <cite>mat</cite> is a rotation matrix, than the operation performs a
 rigid rotation of the object plus a translation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="coords.Coords.toCS">
+<tt class="descname">toCS</tt><big>(</big><em>cs</em><big>)</big><a class="headerlink" href="#coords.Coords.toCS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform the coordinates to another CoordSys.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="coords.Coords.fromCS">
+<tt class="descname">fromCS</tt><big>(</big><em>cs</em><big>)</big><a class="headerlink" href="#coords.Coords.fromCS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform the coordinates from another CoordSys.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1100,7 +1130,7 @@ an isoparametric transformation. It is equivalent to:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">Isopar</span><span class="p">(</span><span class="n">eltype</span><span class="p">,</span><span class="n">coords</span><span class="p">,</span><span class="n">oldcoords</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>See <tt class="xref py py-mod docutils literal"><span class="pre">plugins.isopar</span></tt> for more details.</p>
+<p>See <a class="reference internal" href="plugins.isopar.html#module-plugins.isopar" title="plugins.isopar: Isoparametric transformations"><tt class="xref py py-mod docutils literal"><span class="pre">plugins.isopar</span></tt></a> for more details.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1113,10 +1143,11 @@ turns the initial coordinate system into the current coordinate system.</p>
 a coordinate system as described in <tt class="xref py py-class docutils literal"><span class="pre">CoordinateSystem</span></tt>.
 If initialCS is None, the global (x,y,z) axes are used.</p>
 <p>E.g. the default initialCS and currentCS equal to:</p>
-<div class="highlight-python"><pre> 0.  1.  0.
+<div class="highlight-python"><div class="highlight"><pre> 0.  1.  0.
 -1.  0.  0.
  0.  0.  1.
- 0.  0.  0.</pre>
+ 0.  0.  0.
+</pre></div>
 </div>
 <p>result in a rotation of 90 degrees around the z-axis.</p>
 <p>This is a convenience function equivalent to:</p>
@@ -1236,6 +1267,35 @@ two close nodes with the computed box limits is very small.
 Therefore, the most sensible way is to run the procedure twice, with
 a different shift value (they should differ more than the tolerance).
 Specifying repeat=True will automatically do this.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.001</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.1</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span><span class="n">e</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">fuse</span><span class="p">(</span><span class="n">atol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">[[ 1.   1.   0. ]</span>
+<span class="go"> [ 1.1  1.   0. ]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+<span class="go">[0 0 1]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="coords.Coords.adjust">
+<tt class="descname">adjust</tt><big>(</big><em>**kargs</em><big>)</big><a class="headerlink" href="#coords.Coords.adjust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find (almost) identical nodes and adjust them to be identical.</p>
+<p>This function is very much like the <a class="reference internal" href="#coords.Coords.fuse" title="coords.Coords.fuse"><tt class="xref py py-func docutils literal"><span class="pre">fuse()</span></tt></a> operation, but
+it does not fuse the close neigbours to a single point. Instead
+it adjust the coordinates of the points to be identical.</p>
+<p>The parameters are the same as for the <a class="reference internal" href="#coords.Coords.fuse" title="coords.Coords.fuse"><tt class="xref py py-func docutils literal"><span class="pre">fuse()</span></tt></a> method.</p>
+<p>Returns a Coords with the same shape as the input.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.001</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.1</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span><span class="n">atol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">))</span>
+<span class="go">[[ 1.   1.   0. ]</span>
+<span class="go"> [ 1.   1.   0. ]</span>
+<span class="go"> [ 1.1  1.   0. ]]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -1527,7 +1587,7 @@ y-axis up, we have the following basic moves:
 the z-direction. Adding 48 causes an extra move of -1. This means that
 &#8216;ABCDEFGHI&#8217;, resp. &#8216;abcdefghi&#8217;, correspond with &#8216;123456789&#8217; with an extra
 z +/-= 1. This gives the following schema:</p>
-<div class="highlight-python"><pre>    z+=1             z unchanged            z -= 1
+<div class="highlight-python"><div class="highlight"><pre>    z+=1             z unchanged            z -= 1
 
 F    B    E          6    2    5         f    b    e
      |                    |                   |
@@ -1535,7 +1595,8 @@ F    B    E          6    2    5         f    b    e
 C----I----A          3----9----1         c----i----a
      |                    |                   |
      |                    |                   |
-G    D    H          7    4    8         g    d    h</pre>
+G    D    H          7    4    8         g    d    h
+</pre></div>
 </div>
 <p>The special character &#8216;/&#8217; can be put before any character to make the
 move without inserting the new point. You need to start
@@ -1603,11 +1664,10 @@ of juxtaposing them.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="coords.sweepCoords">
-<tt class="descclassname">coords.</tt><tt class="descname">sweepCoords</tt><big>(</big><em>self, path, origin=[0.0, 0.0, 0.0], normal=0, upvector=2, avgdir=False, enddir=None, scalex=None, scaley=None, scalez=None</em><big>)</big><a class="headerlink" href="#coords.sweepCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sweep a Coords object along a path, returning a series of copies.</p>
-<p>origin and normal define the local path position and direction on the mesh.</p>
-<p>At each point of the curve, a copy of the Coords object is created, with
+<dt id="coords.positionCoordsObj">
+<tt class="descclassname">coords.</tt><tt class="descname">positionCoordsObj</tt><big>(</big><em>objects</em>, <em>path</em>, <em>normal=0</em>, <em>upvector=2</em>, <em>avgdir=False</em>, <em>enddir=None</em><big>)</big><a class="headerlink" href="#coords.positionCoordsObj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Position a list of Coords objects along a path.</p>
+<p>At each point of the curve, ao of the Coords object is created, with
 its origin in the curve&#8217;s point, and its normal along the curve&#8217;s direction.
 In case of a PolyLine, directions are pointing to the next point by default.
 If avgdir==True, average directions are taken at the intermediate points
@@ -1619,10 +1679,21 @@ enddir is a list of 2 array like values of shape (3). one of the two can
 also be an empty list.
 If the curve is closed, endpoints are treated as any intermediate point,
 and the user should normally not specify enddir.</p>
+<p>The return value is a sequence of the repositioned Coords objects.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="coords.sweepCoords">
+<tt class="descclassname">coords.</tt><tt class="descname">sweepCoords</tt><big>(</big><em>self, path, origin=[0.0, 0.0, 0.0], scalex=None, scaley=None, scalez=None, **kwargs</em><big>)</big><a class="headerlink" href="#coords.sweepCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sweep a Coords object along a path, returning a series of copies.</p>
+<p>origin and normal define the local path position and direction on the mesh.</p>
+<p>At each point of the curve, a copy of the Coords object is created, with
+its origin in the curve&#8217;s point.</p>
 <p>At each point of the curve, the original Coords object can be scaled in x
 and y direction by specifying scalex and scaley. The number of values
 specified in scalex and scaly should be equal to the number of points on
-the curve.</p>
+the curve.
+All the kwargs parameters are used to set <cite>positionCoordsObj</cite> function.</p>
 <p>The return value is a sequence of the transformed Coords objects.</p>
 </dd></dl>
 
@@ -1650,17 +1721,17 @@ the curve.</p>
         <li class="right" >
           <a href="../refman.html" title="pyFormex reference manual"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.0~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
-        &copy; Copyright 2004-2012, Benedict Verhegghe.
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 18, 2014.
+      Last updated on Feb 08, 2015.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>
     </div>
   </body>

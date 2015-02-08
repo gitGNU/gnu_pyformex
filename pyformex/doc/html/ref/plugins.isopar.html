@@ -1,0 +1,283 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!-- 
+##
+##  This file is part of the pyFormex project.
+##  pyFormex is a tool for generating, manipulating and transforming 3D
+##  geometrical models by sequences of mathematical operations.
+##  Home page: http://pyformex.org
+##  Project page:  http://savannah.nongnu.org/projects/pyformex/
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Distributed under the GNU General Public License version 3 or later.
+##
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see http://www.gnu.org/licenses/.
+##
+-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>47. plugins.isopar — Isoparametric transformations &mdash; pyFormex 1.0.1~a2 documentation</title>
+
+    
+    <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1~a2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="up" title="pyFormex reference manual" href="../refman.html" />
+    <link rel="next" title="48. plugins.isosurface — Isosurface: surface reconstruction algorithms" href="plugins.isosurface.html" />
+    <link rel="prev" title="46. plugins.inertia — inertia.py" href="plugins.inertia.html" />
+<link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
+
+  </head>
+  <body>
+
+<div class="header">
+  <a href="http://pyformex.org">
+  <img src="http://www.nongnu.org/pyformex/_static/scallop_dome_small.png" alt="scallop dome" border="0" hspace="20" vspace="12" align="left" />
+  <img src="http://www.nongnu.org/pyformex/_static/pyformex-logo-2.png" alt="pyformex logo" border="0" hspace="10" vspace="8" align="left" />
+  </a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plugins.isosurface.html" title="48. plugins.isosurface — Isosurface: surface reconstruction algorithms"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="plugins.inertia.html" title="46. plugins.inertia — inertia.py"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center">
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick"/>
+<input type="hidden" name="hosted_button_id" value="P7J4AM4QULB4Q"/>
+<input type="image" src="https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif" name="submit" alt="PayPal - The safer, easier way to pay online!"/>
+<img alt="" border="0" src="https://www.paypal.com/nl_NL/i/scr/pixel.gif" width="1" height="1"/>
+</form>
+
+</div>
+   
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">47. <tt class="docutils literal"><span class="pre">plugins.isopar</span></tt> &#8212; Isoparametric transformations</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-plugins-isopar">47.1. Classes defined in module plugins.isopar</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-plugins-isopar">47.2. Functions defined in module plugins.isopar</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="plugins.inertia.html"
+                        title="previous chapter">46. <tt class="docutils literal"><span class="pre">plugins.inertia</span></tt> &#8212; inertia.py</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="plugins.isosurface.html"
+                        title="next chapter">48. <tt class="docutils literal"><span class="pre">plugins.isosurface</span></tt> &#8212; Isosurface: surface reconstruction algorithms</a></p>
+  
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+<div align="center">
+  <p>
+  <a href="http://www.fsf.org/register_form?referrer=8491"><img src="http://www.nongnu.org/pyformex/_static/fsf-member8491.png" alt="[FSF Associate Member]" width="89" height="31"  /></a>
+  </p>
+  <p>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+      src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /></a>
+  </p>
+</div>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-plugins.isopar">
+<span id="plugins-isopar-isoparametric-transformations"></span><span id="sec-ref-plugins-isopar"></span><h1>47. <a class="reference internal" href="#module-plugins.isopar" title="plugins.isopar: Isoparametric transformations"><tt class="xref py py-mod docutils literal"><span class="pre">plugins.isopar</span></tt></a> &#8212; Isoparametric transformations<a class="headerlink" href="#module-plugins.isopar" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="classes-defined-in-module-plugins-isopar">
+<h2>47.1. Classes defined in module plugins.isopar<a class="headerlink" href="#classes-defined-in-module-plugins-isopar" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="plugins.isopar.Isopar">
+<em class="property">class </em><tt class="descclassname">plugins.isopar.</tt><tt class="descname">Isopar</tt><big>(</big><em>eltype</em>, <em>coords</em>, <em>oldcoords</em><big>)</big><a class="headerlink" href="#plugins.isopar.Isopar" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class representing an isoparametric transformation</p>
+<blockquote>
+<div>eltype is one of the keys in Isopar.isodata
+coords and oldcoords can be either arrays, Coords or Formex instances,
+but should be of equal shape, and match the number of atoms in the
+specified transformation type</div></blockquote>
+<p>The following three formulations are equivalent</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">trf</span> <span class="o">=</span> <span class="n">Isopar</span><span class="p">(</span><span class="n">eltype</span><span class="p">,</span><span class="n">coords</span><span class="p">,</span><span class="n">oldcoords</span><span class="p">)</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">isopar</span><span class="p">(</span><span class="n">trf</span><span class="p">)</span>
+
+<span class="n">trf</span> <span class="o">=</span> <span class="n">Isopar</span><span class="p">(</span><span class="n">eltype</span><span class="p">,</span><span class="n">coords</span><span class="p">,</span><span class="n">oldcoords</span><span class="p">)</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">trf</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">isopar</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="n">eltype</span><span class="p">,</span><span class="n">coords</span><span class="p">,</span><span class="n">oldcoords</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="plugins.isopar.Isopar.transform">
+<tt class="descname">transform</tt><big>(</big><em>X</em><big>)</big><a class="headerlink" href="#plugins.isopar.Isopar.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply isoparametric transform to a set of coordinates.</p>
+<p>Returns a Coords array with same shape as X</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="functions-defined-in-module-plugins-isopar">
+<h2>47.2. Functions defined in module plugins.isopar<a class="headerlink" href="#functions-defined-in-module-plugins-isopar" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="plugins.isopar.evaluate">
+<tt class="descclassname">plugins.isopar.</tt><tt class="descname">evaluate</tt><big>(</big><em>atoms</em>, <em>x</em>, <em>y=0</em>, <em>z=0</em><big>)</big><a class="headerlink" href="#plugins.isopar.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a matrix of functions of coords.</p>
+<ul class="simple">
+<li><cite>atoms</cite>: a list of text strings representing a mathematical function of
+<cite>x</cite>, and possibly of <cite>y</cite> and <cite>z</cite>.</li>
+<li><cite>x</cite>, <cite>y</cite>, <cite>z</cite>: a list of x- (and optionally y-, z-) values at which the
+<cite>atoms</cite> will be evaluated. The lists should have the same length.</li>
+</ul>
+<p>Returns a matrix with <cite>nvalues</cite> rows and <cite>natoms</cite> colums.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.isopar.exponents">
+<tt class="descclassname">plugins.isopar.</tt><tt class="descname">exponents</tt><big>(</big><em>n</em>, <em>layout='lag'</em><big>)</big><a class="headerlink" href="#plugins.isopar.exponents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create tuples of polynomial exponents.</p>
+<p>This function creates the exponents of polynomials in 1 to 3 dimensions
+which can be used to construct interpolation function over lagrangian,
+triangular or serendipity grids.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>n</cite>: a tuple of 1 to 3 integers, specifying the degree of the polynomials
+in the x up to z directions. For a lagrangian layout, this is one less
+than the number of points in each direction.</li>
+<li><cite>layout</cite>: string, specifying the layout of grid and the selection of
+monomials to be used. Should be one of &#8216;lagrangian&#8217;, &#8216;triangular&#8217;,
+&#8216;serendipity&#8217; or &#8216;border&#8217;. The string can be abbreviated to its
+first 3 characters.</li>
+</ul>
+<p>Returns an integer array of shape (ndim,npoints), where ndim = len(n)
+and npoints depends on the layout:</p>
+<ul class="simple">
+<li>lagrangian: npoints = prod(n). The point layout is a rectangular
+lagrangian grid form by n[i] points in direction i. As an example,
+specifying n=(3,2) uses a grid of 3 points in x-direction and 2 points
+in y-direction.</li>
+<li>triangular: requires that all values in n are equal. For ndim=2, the
+number of points is n*(n+1)/2.</li>
+<li>border: this is like the lagrangian grid with all internal points
+removed. For ndim=2, we have npoints = 2 * sum(n) - 4. For ndim=3 we
+have npoints = 2 * sum(nx*ny+ny*nz+nz*nx) - 4 * sum(n) + 8.
+Thus n=(3,3,3) will yield 2*3*3*3 - 4*(3+3+3) + 8 = 26</li>
+<li>serendipity: tries to use only the corner and edge nodes, but uses
+a convex domain of the monomials. This may require some nodes inside
+the faces or the volume. Currently works up to (4,4) in 2D or (3,3,3)
+in 3D.</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.isopar.interpoly">
+<tt class="descclassname">plugins.isopar.</tt><tt class="descname">interpoly</tt><big>(</big><em>n</em>, <em>layout='lag'</em><big>)</big><a class="headerlink" href="#plugins.isopar.interpoly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an interpolation polynomial</p>
+<p>parameters are like for exponents.</p>
+<p>Returns a Polynomial that can be used for interpolation over
+the element.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plugins.isosurface.html" title="48. plugins.isosurface — Isosurface: surface reconstruction algorithms"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="plugins.inertia.html" title="46. plugins.inertia — inertia.py"
+             >previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+    <span class="left">
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
+    </span>
+      Last updated on Feb 08, 2015.
+    <span class="right">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+    </span>
+    </div>
+  </body>
+</html>

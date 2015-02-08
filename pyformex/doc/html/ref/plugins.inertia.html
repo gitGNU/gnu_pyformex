@@ -1,0 +1,442 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!-- 
+##
+##  This file is part of the pyFormex project.
+##  pyFormex is a tool for generating, manipulating and transforming 3D
+##  geometrical models by sequences of mathematical operations.
+##  Home page: http://pyformex.org
+##  Project page:  http://savannah.nongnu.org/projects/pyformex/
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Distributed under the GNU General Public License version 3 or later.
+##
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see http://www.gnu.org/licenses/.
+##
+-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>46. plugins.inertia — inertia.py &mdash; pyFormex 1.0.1~a2 documentation</title>
+
+    
+    <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1~a2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="up" title="pyFormex reference manual" href="../refman.html" />
+    <link rel="next" title="47. plugins.isopar — Isoparametric transformations" href="plugins.isopar.html" />
+    <link rel="prev" title="45. plugins.imagearray — Convert bitmap images into numpy arrays." href="plugins.imagearray.html" />
+<link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
+
+  </head>
+  <body>
+
+<div class="header">
+  <a href="http://pyformex.org">
+  <img src="http://www.nongnu.org/pyformex/_static/scallop_dome_small.png" alt="scallop dome" border="0" hspace="20" vspace="12" align="left" />
+  <img src="http://www.nongnu.org/pyformex/_static/pyformex-logo-2.png" alt="pyformex logo" border="0" hspace="10" vspace="8" align="left" />
+  </a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plugins.isopar.html" title="47. plugins.isopar — Isoparametric transformations"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="plugins.imagearray.html" title="45. plugins.imagearray — Convert bitmap images into numpy arrays."
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center">
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick"/>
+<input type="hidden" name="hosted_button_id" value="P7J4AM4QULB4Q"/>
+<input type="image" src="https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif" name="submit" alt="PayPal - The safer, easier way to pay online!"/>
+<img alt="" border="0" src="https://www.paypal.com/nl_NL/i/scr/pixel.gif" width="1" height="1"/>
+</form>
+
+</div>
+   
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">46. <tt class="docutils literal"><span class="pre">plugins.inertia</span></tt> &#8212; inertia.py</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-plugins-inertia">46.1. Classes defined in module plugins.inertia</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-plugins-inertia">46.2. Functions defined in module plugins.inertia</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="plugins.imagearray.html"
+                        title="previous chapter">45. <tt class="docutils literal"><span class="pre">plugins.imagearray</span></tt> &#8212; Convert bitmap images into numpy arrays.</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="plugins.isopar.html"
+                        title="next chapter">47. <tt class="docutils literal"><span class="pre">plugins.isopar</span></tt> &#8212; Isoparametric transformations</a></p>
+  
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+<div align="center">
+  <p>
+  <a href="http://www.fsf.org/register_form?referrer=8491"><img src="http://www.nongnu.org/pyformex/_static/fsf-member8491.png" alt="[FSF Associate Member]" width="89" height="31"  /></a>
+  </p>
+  <p>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+      src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /></a>
+  </p>
+</div>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-plugins.inertia">
+<span id="plugins-inertia-inertia-py"></span><span id="sec-ref-plugins-inertia"></span><h1>46. <a class="reference internal" href="#module-plugins.inertia" title="plugins.inertia: inertia.py"><tt class="xref py py-mod docutils literal"><span class="pre">plugins.inertia</span></tt></a> &#8212; inertia.py<a class="headerlink" href="#module-plugins.inertia" title="Permalink to this headline">¶</a></h1>
+<p>Compute inertia related quantities of a Formex.
+This comprises: center of gravity, inertia tensor, principal axes</p>
+<p>Currently, these functions work on arrays of nodes, not on Formices!
+Use func(F,f) to operate on a Formex F.</p>
+<div class="section" id="classes-defined-in-module-plugins-inertia">
+<h2>46.1. Classes defined in module plugins.inertia<a class="headerlink" href="#classes-defined-in-module-plugins-inertia" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="plugins.inertia.Tensor">
+<em class="property">class </em><tt class="descclassname">plugins.inertia.</tt><tt class="descname">Tensor</tt><big>(</big><em>data</em>, <em>symmetric=True</em><big>)</big><a class="headerlink" href="#plugins.inertia.Tensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>A second order symmetric(!) shaped tensor in 3D vector space.</p>
+<p>This is a new class under design. Only use for developemnt!</p>
+<p>The Tensor class provides conversion between full matrix (3,3) shape
+and contracted vector (6,) shape.
+It can e.g. be used to store an inertia tensor or a stress or strain
+tensor.
+It provides methods to transform the tensor to other (cartesian)
+axes.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>data</cite>: array-like (float) of shape (3,3) or (6,)</li>
+<li><cite>symmetric</cite>: bool. If True (default), the tensor is forced to be
+symmetric by averaging the off-diagonal elements.</li>
+</ul>
+<p>Properties: a Tensor T has the following properties:</p>
+<ul class="simple">
+<li>T.xx, T.xy, T.xz, T.yx, T.yy, T.yz, T.zx, T.zy, T.zz: aliases for
+the nine components of the tensor</li>
+<li>T.contracted: the (6,) shaped contracted array with independent
+values of the tensor</li>
+<li>T.tensor: the full tensor as an (3,3) array</li>
+</ul>
+<p>Discussion:</p>
+<ul class="simple">
+<li>inertia and stres/strain tensors transform in the same way
+on rotations of axes. But differently on translations! Should we
+therefore store the purpose of the tensor??<ul>
+<li>Propose to leave it to the user to know what he is doing.</li>
+<li>Propose to have a separate class Inertia derived from Tensor,
+which implements computing the inertia tensor and translation.</li>
+</ul>
+</li>
+<li>should we allow non-symmetrical tensors? Then what with principal?<ul>
+<li>Propose to silently allow non-symm. Result of functions is what it is.
+Again, suppose the user knows what he is doing.</li>
+</ul>
+</li>
+</ul>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">contracted</span><span class="p">)</span>
+<span class="go">[ 1.  2.  3.  4.  5.  6.]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span>
+<span class="go">[[ 1.  6.  5.]</span>
+<span class="go"> [ 6.  2.  4.]</span>
+<span class="go"> [ 5.  4.  3.]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="go">[[ 1.  6.  5.]</span>
+<span class="go"> [ 6.  2.  4.]</span>
+<span class="go"> [ 5.  4.  3.]]</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="plugins.inertia.Tensor.principal">
+<tt class="descname">principal</tt><big>(</big><em>sort=True</em>, <em>right_handed=True</em><big>)</big><a class="headerlink" href="#plugins.inertia.Tensor.principal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the principal values and axes of the inertia tensor.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sort</cite>: bool. If True (default), the return values are sorted
+in order of decreasing principal values. Otherwise they are
+unsorted.</li>
+<li><cite>right_handed</cite>: bool. If True (default), the returned axis vectors
+are guaranteed to form a right-handed coordinate system.
+Otherwise, lef-handed systems may result)</li>
+</ul>
+<p>Returns a tuple (prin,axes) where</p>
+<ul class="simple">
+<li><cite>prin</cite>: is a (3,) array with the principal values,</li>
+<li><cite>axes</cite>: is a (3,3) array in which each column (or row?) is a
+unit(?) vector along the corresponding principal axis.</li>
+</ul>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="o">-</span><span class="mf">19.</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.3</span><span class="p">,</span> <span class="mf">11.8</span><span class="p">,</span> <span class="mf">6.45</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.7</span> <span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="p">,</span><span class="n">a</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">principal</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="go">[ 11.62  -9.   -25.32]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">[[-0.03 -0.62 -0.78]</span>
+<span class="go"> [ 0.86  0.38 -0.33]</span>
+<span class="go"> [ 0.5  -0.69  0.53]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.inertia.Tensor.rotate">
+<tt class="descname">rotate</tt><big>(</big><em>rot</em><big>)</big><a class="headerlink" href="#plugins.inertia.Tensor.rotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform the tensor on coordinate system rotation.</p>
+<p>Note: for an inertia tensor, the inertia should have been
+computed around axes through the center of mass.
+See also translate.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="o">-</span><span class="mf">19.</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.3</span><span class="p">,</span> <span class="mf">11.8</span><span class="p">,</span> <span class="mf">6.45</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.7</span> <span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="p">,</span><span class="n">a</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">principal</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
+<span class="go">[[ 11.62   0.     0.  ]</span>
+<span class="go"> [ -0.    -9.    -0.  ]</span>
+<span class="go"> [  0.    -0.   -25.32]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="plugins.inertia.Inertia">
+<em class="property">class </em><tt class="descclassname">plugins.inertia.</tt><tt class="descname">Inertia</tt><big>(</big><em>X</em>, <em>mass=None</em>, <em>ctr=None</em><big>)</big><a class="headerlink" href="#plugins.inertia.Inertia" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class for storing the inertia tensor of an array of points.</p>
+<p>Parameters:</p>
+<ul>
+<li><p class="first"><cite>X</cite>: a Coords with shape (npoints,3). Shapes (...,3) are accepted
+but will be reshaped to (npoints,3).</p>
+</li>
+<li><p class="first"><cite>mass</cite>: optional, (npoints,) float array with the mass of the points.
+If omitted, all points have mass 1.</p>
+<p>The result is a tuple of two float arrays:</p>
+<ul class="simple">
+<li>the center of gravity: shape (3,)</li>
+<li>the inertia tensor: shape (6,) with the following values (in order):
+Ixx, Iyy, Izz, Iyz, Izx, Ixy</li>
+</ul>
+</li>
+</ul>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span>    <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="p">],</span>
+<span class="gp">... </span>    <span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">I</span> <span class="o">=</span> <span class="n">Inertia</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">I</span><span class="p">)</span>
+<span class="go">[[ 1.5   0.25  0.25]</span>
+<span class="go"> [ 0.25  1.5   0.25]</span>
+<span class="go"> [ 0.25  0.25  1.5 ]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">I</span><span class="o">.</span><span class="n">ctr</span><span class="p">)</span>
+<span class="go">[ 0.25  0.25  0.25]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">I</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+<span class="go">4.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">I</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="o">-</span><span class="n">I</span><span class="o">.</span><span class="n">ctr</span><span class="p">))</span>
+<span class="go">[[ 2.  0.  0.]</span>
+<span class="go"> [ 0.  2.  0.]</span>
+<span class="go"> [ 0.  0.  2.]]</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="plugins.inertia.Inertia.principal">
+<tt class="descname">principal</tt><big>(</big><em>sort=True</em>, <em>right_handed=True</em><big>)</big><a class="headerlink" href="#plugins.inertia.Inertia.principal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the principal values and axes of the inertia tensor.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sort</cite>: bool. If True (default), the return values are sorted
+in order of decreasing principal values. Otherwise they are
+unsorted.</li>
+<li><cite>right_handed</cite>: bool. If True (default), the returned axis vectors
+are guaranteed to form a right-handed coordinate system.
+Otherwise, lef-handed systems may result)</li>
+</ul>
+<p>Returns a tuple (prin,axes) where</p>
+<ul class="simple">
+<li><cite>prin</cite>: is a (3,) array with the principal values,</li>
+<li><cite>axes</cite>: is a (3,3) array in which each column (or row?) is a
+unit(?) vector along the corresponding principal axis.</li>
+</ul>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="o">-</span><span class="mf">19.</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.3</span><span class="p">,</span> <span class="mf">11.8</span><span class="p">,</span> <span class="mf">6.45</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.7</span> <span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="p">,</span><span class="n">a</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">principal</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="go">[ 11.62  -9.   -25.32]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">[[-0.03 -0.62 -0.78]</span>
+<span class="go"> [ 0.86  0.38 -0.33]</span>
+<span class="go"> [ 0.5  -0.69  0.53]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.inertia.Inertia.rotate">
+<tt class="descname">rotate</tt><big>(</big><em>rot</em><big>)</big><a class="headerlink" href="#plugins.inertia.Inertia.rotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform the tensor on coordinate system rotation.</p>
+<p>Note: for an inertia tensor, the inertia should have been
+computed around axes through the center of mass.
+See also translate.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="o">-</span><span class="mf">19.</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.3</span><span class="p">,</span> <span class="mf">11.8</span><span class="p">,</span> <span class="mf">6.45</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.7</span> <span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="p">,</span><span class="n">a</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">principal</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
+<span class="go">[[ 11.62   0.     0.  ]</span>
+<span class="go"> [ -0.    -9.    -0.  ]</span>
+<span class="go"> [  0.    -0.   -25.32]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.inertia.Inertia.translate">
+<tt class="descname">translate</tt><big>(</big><em>trl</em>, <em>toG=False</em><big>)</big><a class="headerlink" href="#plugins.inertia.Inertia.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the inertia tensor around axes translated over vector trl.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="functions-defined-in-module-plugins-inertia">
+<h2>46.2. Functions defined in module plugins.inertia<a class="headerlink" href="#functions-defined-in-module-plugins-inertia" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="plugins.inertia.mcenter">
+<tt class="descclassname">plugins.inertia.</tt><tt class="descname">mcenter</tt><big>(</big><em>X</em>, <em>mass=None</em><big>)</big><a class="headerlink" href="#plugins.inertia.mcenter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the total mass and center of mass of an array of mass points.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>X</cite>: a Coords with shape (npoints,3). Shapes (...,3) are accepted
+but will be reshaped to (npoints,3).</li>
+<li><cite>mass</cite>: optional, (npoints,) float array with the mass of the points.
+If omitted, all points have mass 1.</li>
+</ul>
+<p>Returns a tuple (M,C) where M is the total mass of all points and C is
+the center of mass.</p>
+<p>See also <a class="reference internal" href="#plugins.inertia.inertia" title="plugins.inertia.inertia"><tt class="xref py py-meth docutils literal"><span class="pre">inertia()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.inertia.inertia">
+<tt class="descclassname">plugins.inertia.</tt><tt class="descname">inertia</tt><big>(</big><em>X</em>, <em>mass=None</em><big>)</big><a class="headerlink" href="#plugins.inertia.inertia" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the total mass, center of mass and inertia tensor mass points.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>X</cite>: a Coords with shape (npoints,3). Shapes (...,3) are accepted
+but will be reshaped to (npoints,3).</li>
+<li><cite>mass</cite>: optional, (npoints,) float array with the mass of the points.
+If omitted, all points have mass 1.</li>
+</ul>
+<p>Returns a tuple (M,C,I) where M is the total mass of all points, C is
+the center of mass, and I is the inertia tensor in the central coordinate
+system, i.e. a coordinate system with axes paralle to the global axes
+but origin at the (computed) center of mass.</p>
+<p>See <tt class="xref py py-meth docutils literal"><span class="pre">center()</span></tt> if you need the center of mass, but not the inertia
+tensor.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plugins.isopar.html" title="47. plugins.isopar — Isoparametric transformations"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="plugins.imagearray.html" title="45. plugins.imagearray — Convert bitmap images into numpy arrays."
+             >previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+    <span class="left">
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
+    </span>
+      Last updated on Feb 08, 2015.
+    <span class="right">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+    </span>
+    </div>
+  </body>
+</html>

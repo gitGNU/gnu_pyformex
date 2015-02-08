@@ -1,0 +1,378 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!-- 
+##
+##  This file is part of the pyFormex project.
+##  pyFormex is a tool for generating, manipulating and transforming 3D
+##  geometrical models by sequences of mathematical operations.
+##  Home page: http://pyformex.org
+##  Project page:  http://savannah.nongnu.org/projects/pyformex/
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Distributed under the GNU General Public License version 3 or later.
+##
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see http://www.gnu.org/licenses/.
+##
+-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>6. opengl.colors — Playing with colors. &mdash; pyFormex 1.0.1~a2 documentation</title>
+
+    
+    <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1~a2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="up" title="pyFormex reference manual" href="../refman.html" />
+    <link rel="next" title="7. mesh — Finite element meshes in pyFormex." href="mesh.html" />
+    <link rel="prev" title="5. gui.draw — Create 3D graphical representations." href="gui.draw.html" />
+<link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
+
+  </head>
+  <body>
+
+<div class="header">
+  <a href="http://pyformex.org">
+  <img src="http://www.nongnu.org/pyformex/_static/scallop_dome_small.png" alt="scallop dome" border="0" hspace="20" vspace="12" align="left" />
+  <img src="http://www.nongnu.org/pyformex/_static/pyformex-logo-2.png" alt="pyformex logo" border="0" hspace="10" vspace="8" align="left" />
+  </a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mesh.html" title="7. mesh — Finite element meshes in pyFormex."
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="gui.draw.html" title="5. gui.draw — Create 3D graphical representations."
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center">
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick"/>
+<input type="hidden" name="hosted_button_id" value="P7J4AM4QULB4Q"/>
+<input type="image" src="https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif" name="submit" alt="PayPal - The safer, easier way to pay online!"/>
+<img alt="" border="0" src="https://www.paypal.com/nl_NL/i/scr/pixel.gif" width="1" height="1"/>
+</form>
+
+</div>
+   
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">6. <tt class="docutils literal"><span class="pre">opengl.colors</span></tt> &#8212; Playing with colors.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-opengl-colors">6.1. Classes defined in module opengl.colors</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-opengl-colors">6.2. Functions defined in module opengl.colors</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="gui.draw.html"
+                        title="previous chapter">5. <tt class="docutils literal"><span class="pre">gui.draw</span></tt> &#8212; Create 3D graphical representations.</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="mesh.html"
+                        title="next chapter">7. <tt class="docutils literal"><span class="pre">mesh</span></tt> &#8212; Finite element meshes in pyFormex.</a></p>
+  
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+<div align="center">
+  <p>
+  <a href="http://www.fsf.org/register_form?referrer=8491"><img src="http://www.nongnu.org/pyformex/_static/fsf-member8491.png" alt="[FSF Associate Member]" width="89" height="31"  /></a>
+  </p>
+  <p>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+      src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /></a>
+  </p>
+</div>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-opengl.colors">
+<span id="opengl-colors-playing-with-colors"></span><span id="sec-ref-opengl-colors"></span><h1>6. <a class="reference internal" href="#module-opengl.colors" title="opengl.colors: Playing with colors."><tt class="xref py py-mod docutils literal"><span class="pre">opengl.colors</span></tt></a> &#8212; Playing with colors.<a class="headerlink" href="#module-opengl.colors" title="Permalink to this headline">¶</a></h1>
+<p>This module defines some colors and color conversion functions.
+It also defines a default palette of colors.</p>
+<p>The following table shows the colors of the default palette, with their name,
+RGB values in 0..1 range and luminance.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">palette</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%12s</span><span class="s"> = </span><span class="si">%s</span><span class="s"> -&gt; </span><span class="si">%0.3f</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">luminance</span><span class="p">(</span><span class="n">v</span><span class="p">)))</span>
+<span class="go">    darkgrey = (0.4, 0.4, 0.4) -&gt; 0.133</span>
+<span class="go">         red = (1.0, 0.0, 0.0) -&gt; 0.213</span>
+<span class="go">       green = (0.0, 1.0, 0.0) -&gt; 0.715</span>
+<span class="go">        blue = (0.0, 0.0, 1.0) -&gt; 0.072</span>
+<span class="go">        cyan = (0.0, 1.0, 1.0) -&gt; 0.787</span>
+<span class="go">     magenta = (1.0, 0.0, 1.0) -&gt; 0.285</span>
+<span class="go">      yellow = (1.0, 1.0, 0.0) -&gt; 0.928</span>
+<span class="go">       white = (1.0, 1.0, 1.0) -&gt; 1.000</span>
+<span class="go">       black = (0.0, 0.0, 0.0) -&gt; 0.000</span>
+<span class="go">     darkred = (0.5, 0.0, 0.0) -&gt; 0.046</span>
+<span class="go">   darkgreen = (0.0, 0.5, 0.0) -&gt; 0.153</span>
+<span class="go">    darkblue = (0.0, 0.0, 0.5) -&gt; 0.015</span>
+<span class="go">    darkcyan = (0.0, 0.5, 0.5) -&gt; 0.169</span>
+<span class="go"> darkmagenta = (0.5, 0.0, 0.5) -&gt; 0.061</span>
+<span class="go">  darkyellow = (0.5, 0.5, 0.0) -&gt; 0.199</span>
+<span class="go">   lightgrey = (0.8, 0.8, 0.8) -&gt; 0.604</span>
+</pre></div>
+</div>
+<div class="section" id="classes-defined-in-module-opengl-colors">
+<h2>6.1. Classes defined in module opengl.colors<a class="headerlink" href="#classes-defined-in-module-opengl-colors" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="functions-defined-in-module-opengl-colors">
+<h2>6.2. Functions defined in module opengl.colors<a class="headerlink" href="#functions-defined-in-module-opengl-colors" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="opengl.colors.GLcolor">
+<tt class="descclassname">opengl.colors.</tt><tt class="descname">GLcolor</tt><big>(</big><em>color</em><big>)</big><a class="headerlink" href="#opengl.colors.GLcolor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a color to an OpenGL RGB color.</p>
+<p>The output is a tuple of three RGB float values ranging from 0.0 to 1.0.
+The input can be any of the following:</p>
+<ul class="simple">
+<li>a QColor</li>
+<li>a string specifying the Xwindow name of the color</li>
+<li>a hex string &#8216;#RGB&#8217; with 1 to 4 hexadecimal digits per color</li>
+<li>a tuple or list of 3 integer values in the range 0..255</li>
+<li>a tuple or list of 3 float values in the range 0.0..1.0</li>
+</ul>
+<p>Any other input may give unpredictable results.</p>
+<p>Examples:
+&gt;&gt;&gt; GLcolor(&#8216;indianred&#8217;)
+(0.803921568627451, 0.3607843137254902, 0.3607843137254902)
+&gt;&gt;&gt; print(GLcolor(&#8216;#ff0000&#8217;))
+(1.0, 0.0, 0.0)
+&gt;&gt;&gt; GLcolor(red)
+(1.0, 0.0, 0.0)
+&gt;&gt;&gt; GLcolor([200,200,255])
+(0.7843137254901961, 0.7843137254901961, 1.0)
+&gt;&gt;&gt; GLcolor([1.,1.,1.])
+(1.0, 1.0, 1.0)
+&gt;&gt;&gt; GLcolor(0.6)
+(0.6, 0.6, 0.6)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="opengl.colors.GLcolorA">
+<tt class="descclassname">opengl.colors.</tt><tt class="descname">GLcolorA</tt><big>(</big><em>color</em><big>)</big><a class="headerlink" href="#opengl.colors.GLcolorA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a color to an OpenGL RGB color.</p>
+<p>The output is a tuple of three RGB float values ranging from 0.0 to 1.0.
+The input can be any of the following:</p>
+<ul class="simple">
+<li>a QColor</li>
+<li>a string specifying the Xwindow name of the color</li>
+<li>a hex string &#8216;#RGB&#8217; with 1 to 4 hexadecimal digits per color</li>
+<li>a tuple or list of 3 integer values in the range 0..255</li>
+<li>a tuple or list of 3 float values in the range 0.0..1.0</li>
+</ul>
+<p>Any other input may give unpredictable results.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">GLcolorA</span><span class="p">(</span><span class="s">&#39;indianred&#39;</span><span class="p">)</span>
+<span class="go">array([ 0.8 ,  0.36,  0.36], dtype=float32)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">GLcolorA</span><span class="p">(</span><span class="s">&#39;#ff0000&#39;</span><span class="p">))</span>
+<span class="go">[ 1.  0.  0.]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">GLcolorA</span><span class="p">(</span><span class="n">red</span><span class="p">)</span>
+<span class="go">array([ 1.,  0.,  0.], dtype=float32)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">GLcolorA</span><span class="p">([</span><span class="mi">200</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="mi">255</span><span class="p">])</span>
+<span class="go">array([ 0.78,  0.78,  1.  ], dtype=float32)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">GLcolorA</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">])</span>
+<span class="go">array([ 1.,  1.,  1.], dtype=float32)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">GLcolorA</span><span class="p">(</span><span class="mf">0.6</span><span class="p">)</span>
+<span class="go">array([ 0.6,  0.6,  0.6], dtype=float32)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">GLcolorA</span><span class="p">([</span><span class="s">&#39;black&#39;</span><span class="p">,</span><span class="s">&#39;red&#39;</span><span class="p">,</span><span class="s">&#39;green&#39;</span><span class="p">,</span><span class="s">&#39;blue&#39;</span><span class="p">]))</span>
+<span class="go">[[ 0.  0.  0.]</span>
+<span class="go"> [ 1.  0.  0.]</span>
+<span class="go"> [ 0.  1.  0.]</span>
+<span class="go"> [ 0.  0.  1.]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="opengl.colors.RGBcolor">
+<tt class="descclassname">opengl.colors.</tt><tt class="descname">RGBcolor</tt><big>(</big><em>color</em><big>)</big><a class="headerlink" href="#opengl.colors.RGBcolor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an RGB (0-255) tuple for a color</p>
+<p>color can be anything that is accepted by GLcolor.</p>
+<p>Returns the corresponding RGB colors as a numpy array of type uint8
+and shape (..,3).</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">RGBcolor</span><span class="p">(</span><span class="n">red</span><span class="p">)</span>
+<span class="go">array([255,   0,   0], dtype=uint8)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="opengl.colors.RGBAcolor">
+<tt class="descclassname">opengl.colors.</tt><tt class="descname">RGBAcolor</tt><big>(</big><em>color</em>, <em>alpha</em><big>)</big><a class="headerlink" href="#opengl.colors.RGBAcolor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an RGBA (0-255) tuple for a color and alpha value.</p>
+<p>color can be anything that is accepted by GLcolor.</p>
+<p>Returns the corresponding RGBA colors as a numpy array of type uint8
+and shape (..,4).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="opengl.colors.WEBcolor">
+<tt class="descclassname">opengl.colors.</tt><tt class="descname">WEBcolor</tt><big>(</big><em>color</em><big>)</big><a class="headerlink" href="#opengl.colors.WEBcolor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an RGB hex string for a color</p>
+<p>color can be anything that is accepted by GLcolor.
+Returns the corresponding WEB color, which is a hexadecimal string
+representation of the RGB components.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">WEBcolor</span><span class="p">(</span><span class="n">red</span><span class="p">)</span>
+<span class="go">&#39;#ff0000&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="opengl.colors.colorName">
+<tt class="descclassname">opengl.colors.</tt><tt class="descname">colorName</tt><big>(</big><em>color</em><big>)</big><a class="headerlink" href="#opengl.colors.colorName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a string designation for the color.</p>
+<p>color can be anything that is accepted by GLcolor.
+In the current implementation, the returned color name is the
+WEBcolor (hexadecimal string).</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">colorName</span><span class="p">(</span><span class="s">&#39;red&#39;</span><span class="p">)</span>
+<span class="go">&#39;#ff0000&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">colorName</span><span class="p">(</span><span class="s">&#39;#ffddff&#39;</span><span class="p">)</span>
+<span class="go">&#39;#ffddff&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">colorName</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.5</span><span class="p">])</span>
+<span class="go">&#39;#ff0080&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="opengl.colors.luminance">
+<tt class="descclassname">opengl.colors.</tt><tt class="descname">luminance</tt><big>(</big><em>color</em>, <em>gamma=True</em><big>)</big><a class="headerlink" href="#opengl.colors.luminance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the luminance of a color.</p>
+<p>Returns a floating point value in the range 0..1 representing the
+luminance of the color. The higher the value, the brighter the color
+appears to the human eye.</p>
+<p>This can be for example be used to derive a good contrasting
+foreground color to display text on a colored background.
+Values lower than 0.5 contrast well with white, larger value
+contrast better with black.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">([</span> <span class="s">&quot;</span><span class="si">%0.2f</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">luminance</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;black&#39;</span><span class="p">,</span><span class="s">&#39;red&#39;</span><span class="p">,</span><span class="s">&#39;green&#39;</span><span class="p">,</span><span class="s">&#39;blue&#39;</span><span class="p">]])</span>
+<span class="go">[&#39;0.00&#39;, &#39;0.21&#39;, &#39;0.72&#39;, &#39;0.07&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">luminance</span><span class="p">([</span><span class="s">&#39;black&#39;</span><span class="p">,</span><span class="s">&#39;red&#39;</span><span class="p">,</span><span class="s">&#39;green&#39;</span><span class="p">,</span><span class="s">&#39;blue&#39;</span><span class="p">]))</span>
+<span class="go">[ 0.    0.21  0.72  0.07]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="opengl.colors.closestColorName">
+<tt class="descclassname">opengl.colors.</tt><tt class="descname">closestColorName</tt><big>(</big><em>color</em><big>)</big><a class="headerlink" href="#opengl.colors.closestColorName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the closest color name.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="opengl.colors.RGBA">
+<tt class="descclassname">opengl.colors.</tt><tt class="descname">RGBA</tt><big>(</big><em>rgb</em>, <em>alpha=1.0</em><big>)</big><a class="headerlink" href="#opengl.colors.RGBA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an alpha channel to an RGB color</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="opengl.colors.GREY">
+<tt class="descclassname">opengl.colors.</tt><tt class="descname">GREY</tt><big>(</big><em>val</em>, <em>alpha=1.0</em><big>)</big><a class="headerlink" href="#opengl.colors.GREY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a grey OpenGL color of given intensity (0..1)</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mesh.html" title="7. mesh — Finite element meshes in pyFormex."
+             >next</a> |</li>
+        <li class="right" >
+          <a href="gui.draw.html" title="5. gui.draw — Create 3D graphical representations."
+             >previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+    <span class="left">
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
+    </span>
+      Last updated on Feb 08, 2015.
+    <span class="right">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+    </span>
+    </div>
+  </body>
+</html>

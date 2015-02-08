@@ -1,0 +1,300 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!-- 
+##
+##  This file is part of the pyFormex project.
+##  pyFormex is a tool for generating, manipulating and transforming 3D
+##  geometrical models by sequences of mathematical operations.
+##  Home page: http://pyformex.org
+##  Project page:  http://savannah.nongnu.org/projects/pyformex/
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Distributed under the GNU General Public License version 3 or later.
+##
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see http://www.gnu.org/licenses/.
+##
+-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>66. plugins.units — A Python wrapper for unit conversion of physical quantities. &mdash; pyFormex 1.0.1~a2 documentation</title>
+
+    
+    <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1~a2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="up" title="pyFormex reference manual" href="../refman.html" />
+    <link rel="next" title="67. plugins.web — Tools to access files from the web" href="plugins.web.html" />
+    <link rel="prev" title="65. plugins.turtle — Turtle graphics for pyFormex" href="plugins.turtle.html" />
+<link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
+
+  </head>
+  <body>
+
+<div class="header">
+  <a href="http://pyformex.org">
+  <img src="http://www.nongnu.org/pyformex/_static/scallop_dome_small.png" alt="scallop dome" border="0" hspace="20" vspace="12" align="left" />
+  <img src="http://www.nongnu.org/pyformex/_static/pyformex-logo-2.png" alt="pyformex logo" border="0" hspace="10" vspace="8" align="left" />
+  </a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plugins.web.html" title="67. plugins.web — Tools to access files from the web"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="plugins.turtle.html" title="65. plugins.turtle — Turtle graphics for pyFormex"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center">
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick"/>
+<input type="hidden" name="hosted_button_id" value="P7J4AM4QULB4Q"/>
+<input type="image" src="https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif" name="submit" alt="PayPal - The safer, easier way to pay online!"/>
+<img alt="" border="0" src="https://www.paypal.com/nl_NL/i/scr/pixel.gif" width="1" height="1"/>
+</form>
+
+</div>
+   
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">66. <tt class="docutils literal"><span class="pre">plugins.units</span></tt> &#8212; A Python wrapper for unit conversion of physical quantities.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-plugins-units">66.1. Classes defined in module plugins.units</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-plugins-units">66.2. Functions defined in module plugins.units</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="plugins.turtle.html"
+                        title="previous chapter">65. <tt class="docutils literal"><span class="pre">plugins.turtle</span></tt> &#8212; Turtle graphics for pyFormex</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="plugins.web.html"
+                        title="next chapter">67. <tt class="docutils literal"><span class="pre">plugins.web</span></tt> &#8212; Tools to access files from the web</a></p>
+  
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+<div align="center">
+  <p>
+  <a href="http://www.fsf.org/register_form?referrer=8491"><img src="http://www.nongnu.org/pyformex/_static/fsf-member8491.png" alt="[FSF Associate Member]" width="89" height="31"  /></a>
+  </p>
+  <p>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+      src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /></a>
+  </p>
+</div>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-plugins.units">
+<span id="plugins-units-a-python-wrapper-for-unit-conversion-of-physical-quantities"></span><span id="sec-ref-plugins-units"></span><h1>66. <a class="reference internal" href="#module-plugins.units" title="plugins.units: A Python wrapper for unit conversion of physical quantities."><tt class="xref py py-mod docutils literal"><span class="pre">plugins.units</span></tt></a> &#8212; A Python wrapper for unit conversion of physical quantities.<a class="headerlink" href="#module-plugins.units" title="Permalink to this headline">¶</a></h1>
+<p>This module uses the standard UNIX program &#8216;units&#8217; (available from
+<a class="reference external" href="http://www.gnu.org/software/units/units.html">http://www.gnu.org/software/units/units.html</a>) to do the actual conversions.
+Obviously, it will only work on systems that have this program available.</p>
+<p>If you really insist on running another OS lacking the units command,
+have a look at <a class="reference external" href="http://home.tiscali.be/be052320/Unum.html">http://home.tiscali.be/be052320/Unum.html</a> and make an
+implementation based on unum. If you GPL it and send it to me, I might
+include it in this distribution.</p>
+<div class="section" id="classes-defined-in-module-plugins-units">
+<h2>66.1. Classes defined in module plugins.units<a class="headerlink" href="#classes-defined-in-module-plugins-units" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="plugins.units.UnitsSystem">
+<em class="property">class </em><tt class="descclassname">plugins.units.</tt><tt class="descname">UnitsSystem</tt><big>(</big><em>system='international'</em><big>)</big><a class="headerlink" href="#plugins.units.UnitsSystem" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class for handling and converting units of physical quantities.</p>
+<p>The units class provides two built-in consistent units systems:
+International() and Engineering().
+International() returns the standard International Standard units.
+Engineering() returns a consistent engineering system,which is very
+practical for use in mechanical engineering. It uses &#8216;mm&#8217; for length
+and &#8216;MPa&#8217; for pressure and stress. To keep it consistent however,
+the density is rather unpractical: &#8216;t/mm^3&#8217;. If you want to use t/m^3,
+you can make a custom units system. Beware with non-consistent unit
+systems though!
+The better practice is to allow any unit to be specified at input
+(and eventually requested for output), and to convert everyting
+internally to a consistent system.
+Apart from the units for usual physical quantities, Units stores two
+special purpose values in its units dictionary:
+&#8216;model&#8217; : defines the length unit used in the geometrical model
+&#8216;problem&#8217; : defines the unit system to be used in the problem.
+Defaults are: model=&#8217;m&#8217;, problem=&#8217;international&#8217;.</p>
+<dl class="method">
+<dt id="plugins.units.UnitsSystem.Add">
+<tt class="descname">Add</tt><big>(</big><em>un</em><big>)</big><a class="headerlink" href="#plugins.units.UnitsSystem.Add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the units from dictionary un to the units system</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.units.UnitsSystem.Predefined">
+<tt class="descname">Predefined</tt><big>(</big><em>system</em><big>)</big><a class="headerlink" href="#plugins.units.UnitsSystem.Predefined" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the predefined units for the specified system</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.units.UnitsSystem.International">
+<tt class="descname">International</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.units.UnitsSystem.International" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the international units system.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.units.UnitsSystem.Engineering">
+<tt class="descname">Engineering</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.units.UnitsSystem.Engineering" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a consistent engineering units system.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.units.UnitsSystem.Read">
+<tt class="descname">Read</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#plugins.units.UnitsSystem.Read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read units from file with specified name.</p>
+<p>The units file is an ascii file where each line contains a couple of
+words separated by a colon and a blank. The first word is the type of
+quantity, the second is the unit to be used for this quantity.
+Lines starting with &#8216;#&#8217; are ignored.
+A &#8216;problem: system&#8217; line sets all units to the corresponding value of
+the specified units system.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.units.UnitsSystem.Get">
+<tt class="descname">Get</tt><big>(</big><em>ent</em><big>)</big><a class="headerlink" href="#plugins.units.UnitsSystem.Get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get units list for the specified entitities.</p>
+<p>If ent is a single entity, returns the corresponding unit if an entry
+ent exists in the current system or else returns ent unchanged.
+If ent is a list of entities, returns a list of corresponding units.
+Example: with the default units system:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Un</span> <span class="o">=</span> <span class="n">UnitsSystem</span><span class="p">()</span>
+<span class="n">Un</span><span class="o">.</span><span class="n">Get</span><span class="p">([</span><span class="s">&#39;length&#39;</span><span class="p">,</span><span class="s">&#39;mass&#39;</span><span class="p">,</span><span class="s">&#39;float&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>returns: <tt class="docutils literal"><span class="pre">['m',</span> <span class="pre">'kg',</span> <span class="pre">'float']</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="functions-defined-in-module-plugins-units">
+<h2>66.2. Functions defined in module plugins.units<a class="headerlink" href="#functions-defined-in-module-plugins-units" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="plugins.units.convertUnits">
+<tt class="descclassname">plugins.units.</tt><tt class="descname">convertUnits</tt><big>(</big><em>From</em>, <em>To</em><big>)</big><a class="headerlink" href="#plugins.units.convertUnits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts between conformable units.</p>
+<p>This function converts the units &#8216;From&#8217; to units &#8216;To&#8217;. The units should
+be conformable. The &#8216;From&#8217; argument can (and usually does) include a value.
+The return value is a string with the converted value without units. Thus:
+convertUnits(&#8216;3.45 kg&#8217;,&#8217;g&#8217;) will return &#8216;3450&#8217;.
+This function is merely a wrapper around the GNU &#8216;units&#8217; command, which
+should be installed for this function to work.</p>
+<p>Examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">convertUnits</span><span class="p">(</span><span class="s">&#39;25.4cm&#39;</span><span class="p">,</span> <span class="s">&#39;in&#39;</span><span class="p">)</span>
+<span class="go">&#39;10&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">convertUnits</span><span class="p">(</span><span class="s">&#39;31e6mg&#39;</span><span class="p">,</span> <span class="s">&#39;kg&#39;</span><span class="p">)</span>
+<span class="go">&#39;31&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">convertUnits</span><span class="p">(</span><span class="s">&#39;1 lightyear&#39;</span><span class="p">,</span> <span class="s">&#39;km&#39;</span><span class="p">)</span>
+<span class="go">&#39;9.4607305e+12&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">convertUnits</span><span class="p">(</span><span class="s">&#39;21000 kN/cm**2&#39;</span><span class="p">,</span> <span class="s">&#39;MPa&#39;</span><span class="p">)</span>
+<span class="go">&#39;210000&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plugins.web.html" title="67. plugins.web — Tools to access files from the web"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="plugins.turtle.html" title="65. plugins.turtle — Turtle graphics for pyFormex"
+             >previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+    <span class="left">
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
+    </span>
+      Last updated on Feb 08, 2015.
+    <span class="right">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+    </span>
+    </div>
+  </body>
+</html>

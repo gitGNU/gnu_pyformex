@@ -1,0 +1,550 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!-- 
+##
+##  This file is part of the pyFormex project.
+##  pyFormex is a tool for generating, manipulating and transforming 3D
+##  geometrical models by sequences of mathematical operations.
+##  Home page: http://pyformex.org
+##  Project page:  http://savannah.nongnu.org/projects/pyformex/
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Distributed under the GNU General Public License version 3 or later.
+##
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see http://www.gnu.org/licenses/.
+##
+-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>12. varray — Working with variable width tables. &mdash; pyFormex 1.0.1~a2 documentation</title>
+
+    
+    <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1~a2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="up" title="pyFormex reference manual" href="../refman.html" />
+    <link rel="next" title="13. adjacency — A class for storing and handling adjacency tables." href="adjacency.html" />
+    <link rel="prev" title="11. utils — A collection of miscellaneous utility functions." href="utils.html" />
+<link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
+
+  </head>
+  <body>
+
+<div class="header">
+  <a href="http://pyformex.org">
+  <img src="http://www.nongnu.org/pyformex/_static/scallop_dome_small.png" alt="scallop dome" border="0" hspace="20" vspace="12" align="left" />
+  <img src="http://www.nongnu.org/pyformex/_static/pyformex-logo-2.png" alt="pyformex logo" border="0" hspace="10" vspace="8" align="left" />
+  </a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="adjacency.html" title="13. adjacency — A class for storing and handling adjacency tables."
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="utils.html" title="11. utils — A collection of miscellaneous utility functions."
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center">
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick"/>
+<input type="hidden" name="hosted_button_id" value="P7J4AM4QULB4Q"/>
+<input type="image" src="https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif" name="submit" alt="PayPal - The safer, easier way to pay online!"/>
+<img alt="" border="0" src="https://www.paypal.com/nl_NL/i/scr/pixel.gif" width="1" height="1"/>
+</form>
+
+</div>
+   
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">12. <tt class="docutils literal"><span class="pre">varray</span></tt> &#8212; Working with variable width tables.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-varray">12.1. Classes defined in module varray</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-varray">12.2. Functions defined in module varray</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="utils.html"
+                        title="previous chapter">11. <tt class="docutils literal"><span class="pre">utils</span></tt> &#8212; A collection of miscellaneous utility functions.</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="adjacency.html"
+                        title="next chapter">13. <tt class="docutils literal"><span class="pre">adjacency</span></tt> &#8212; A class for storing and handling adjacency tables.</a></p>
+  
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+<div align="center">
+  <p>
+  <a href="http://www.fsf.org/register_form?referrer=8491"><img src="http://www.nongnu.org/pyformex/_static/fsf-member8491.png" alt="[FSF Associate Member]" width="89" height="31"  /></a>
+  </p>
+  <p>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+      src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /></a>
+  </p>
+</div>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-varray">
+<span id="varray-working-with-variable-width-tables"></span><span id="sec-ref-varray"></span><h1>12. <a class="reference internal" href="#module-varray" title="varray: Working with variable width tables."><tt class="xref py py-mod docutils literal"><span class="pre">varray</span></tt></a> &#8212; Working with variable width tables.<a class="headerlink" href="#module-varray" title="Permalink to this headline">¶</a></h1>
+<p>Mesh type geometries use tables of integer data to store the connectivity
+between different geometric entities. The basic connectivity table in a
+Mesh with elements of the same type is a table of constant width: the
+number of nodes connected to each element is constant.
+However, the inverse table (the elements connected to each node) does not
+have a constant width.</p>
+<p>Tables of constant width are usually stored as a 2D array, allowing fast
+indexing by row and/or column number. A variable width table can be stored
+(using arrays) in two ways:</p>
+<ul class="simple">
+<li>as a 2D array, with a width equal to the maximal row length.
+Unused positions in the row are then filled with an invalid value (-1).</li>
+<li>as a 1D array, storing a simple concatenation of the rows.
+An additional array then stores the position in that array of the first
+element of each row.</li>
+</ul>
+<p>In pyFormex, variable width tables were initially stored as 2D arrays:
+a remnant of the author&#8217;s past FORTRAN experience. With a growing
+professional use of pyFormex involving ever larger models, it became clear
+that there was a large memory and speed penalty related to the use of
+2D arrays. This is illustrated in the following table, obtained on the
+inversion of a connectivity table of 10000 rows and 25 columns.
+The table shows the memory size of the inverse table, the time needed to
+compute it, and the time to compute both tables. The latter involves an
+extra conversion of the stored array to the other data type.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="31%" />
+<col width="23%" />
+<col width="22%" />
+<col width="23%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Stored as:</th>
+<th class="head">2D (ndarray)</th>
+<th class="head">1D (Varray)</th>
+<th class="head">1D (Varray)</th>
+</tr>
+<tr class="row-even"><th class="head">Rows are sorted:</th>
+<th class="head">yes</th>
+<th class="head">yes</th>
+<th class="head">no</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td>Memory size</td>
+<td>450000</td>
+<td>250000</td>
+<td>250000</td>
+</tr>
+<tr class="row-even"><td>Time to create table</td>
+<td>128 ms</td>
+<td>49 ms</td>
+<td>25ms</td>
+</tr>
+<tr class="row-odd"><td>Time to create both</td>
+<td>169 ms</td>
+<td>82 ms</td>
+<td>57ms</td>
+</tr>
+</tbody>
+</table>
+<p>The memory and speed gains of using the Varray are important.
+The 2D array can even be faster generated by first creating the
+1D array, and then converting that to 2D.
+Not sorting the entries in the Varray provides a further gain.
+The Varray class defined below therefore does not sort the rows
+by default, but provides the methods to sort them when needed.</p>
+<div class="section" id="classes-defined-in-module-varray">
+<h2>12.1. Classes defined in module varray<a class="headerlink" href="#classes-defined-in-module-varray" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="varray.Varray">
+<em class="property">class </em><tt class="descclassname">varray.</tt><tt class="descname">Varray</tt><big>(</big><em>data=[]</em>, <em>ind=None</em><big>)</big><a class="headerlink" href="#varray.Varray" title="Permalink to this definition">¶</a></dt>
+<dd><p>A variable width 2D integer array</p>
+<p>This class provides an efficient way to store tables of
+nonnegative integers when the rows of the table may have
+different length.</p>
+<p>For large tables this may allow a serious memory saving
+compared to the full array as returned by
+<a class="reference internal" href="arraytools.html#arraytools.inverseIndex" title="arraytools.inverseIndex"><tt class="xref py py-func docutils literal"><span class="pre">arraytools.inverseIndex()</span></tt></a>. Data in the Varray are stored as
+a single 1D array, containing the concatenation of all rows.
+An index is kept with the start position of each row in the 1D array.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>data</cite>: can be one of the following:<ul>
+<li>another Varray instance: a shallow copy of the Varray is created.</li>
+<li>a list of lists of integers. Each item in the list contains
+one row of the table.</li>
+<li>a 2D ndarray of integer type. The nonnegative numbers on each row
+constitute the data for that row.</li>
+<li>a 1D array or list of integers, containing the concatenation of
+the rows. The second argument <cite>ind</cite> specifies the indices of the
+first element of each row.</li>
+<li>a 1D array or list of integers, containing the concatenation of
+the rows obtained by prepending each row with the row length.
+The caller should make sure the these 1D data are consistent.</li>
+</ul>
+</li>
+<li><cite>ind</cite>: only used when <cite>data</cite> is the pure concatenation of all rows.
+It is a 1D integer array or list specifying the position in <cite>data</cite> of
+the first element of each row. Its length should be equal to the
+number of rows (<cite>nrows</cite>) or <cite>nrows+1</cite>.
+It should be a non-decreasing series of integer values, starting with 0,
+and ending with the total number of elements in <cite>data</cite> in the position
+<cite>nrows+1</cite>. This last value may be omitted, and will then be added
+automatically. Note that two subsequent elements may be equal,
+corresponding with an empty row.</li>
+</ul>
+<p>Attributes:</p>
+<ul class="simple">
+<li><cite>nrows</cite>: the number of rows in the table</li>
+<li><cite>width</cite>: the maximum row length</li>
+<li><cite>size</cite>: the total number of entries in the table</li>
+</ul>
+<p>A Varray is by default printed in user-friendly format:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Va</span> <span class="o">=</span> <span class="n">Varray</span><span class="p">([[</span><span class="mi">0</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">Va</span><span class="p">)</span>
+<span class="go">Varray (4,3)</span>
+<span class="go">  [0]</span>
+<span class="go">  [1 2]</span>
+<span class="go">  [0 2 4]</span>
+<span class="go">  [0 2]</span>
+</pre></div>
+</div>
+<p>Other initialization methods resulting in the same Varray:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Vb</span> <span class="o">=</span> <span class="n">Varray</span><span class="p">(</span><span class="n">Va</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Vb</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">Va</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Vb</span> <span class="o">=</span> <span class="n">Varray</span><span class="p">(</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Vb</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">Va</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Vb</span> <span class="o">=</span> <span class="n">Varray</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="n">cumsum</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Vb</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">Va</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Vb</span> <span class="o">=</span> <span class="n">Varray</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Vb</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">Va</span><span class="p">))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Indexing: The data for any row can be obtained by simple indexing:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">Va</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">[1 2]</span>
+</pre></div>
+</div>
+<p>This is equivalent with
+&gt;&gt;&gt; print(Va.row(1))
+[1 2]</p>
+<p>Negative numbers are allowed:
+&gt;&gt;&gt; print(Va.row(-1))
+[0 2]</p>
+<p>Extracted columns are filled with -1 values where needed
+&gt;&gt;&gt; print(Va.col(1))
+[-1  2  2  2]</p>
+<p>Indexing with an iterable of integers returns a new Varray:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">Va</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span>
+<span class="go">Varray (2,2)</span>
+<span class="go">  [1 2]</span>
+<span class="go">  [0 2]</span>
+</pre></div>
+</div>
+<p>Select takes row numbers or bool:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">Va</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">]))</span>
+<span class="go">Varray (2,2)</span>
+<span class="go">  [1 2]</span>
+<span class="go">  [0 2]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">Va</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">Va</span><span class="o">.</span><span class="n">lengths</span><span class="o">==</span><span class="mi">2</span><span class="p">))</span>
+<span class="go">Varray (2,2)</span>
+<span class="go">  [1 2]</span>
+<span class="go">  [0 2]</span>
+</pre></div>
+</div>
+<p>Iterator: A Varray provides its own iterator:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">Va</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+<span class="go">[0]</span>
+<span class="go">[1 2]</span>
+<span class="go">[0 2 4]</span>
+<span class="go">[0 2]</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">Varray</span><span class="p">())</span>
+<span class="go">Varray (0,0)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="varray.Varray.replace_data">
+<tt class="descname">replace_data</tt><big>(</big><em>va</em><big>)</big><a class="headerlink" href="#varray.Varray.replace_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace the current data with data from another Varray</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="varray.Varray.length">
+<tt class="descname">length</tt><big>(</big><em>i</em><big>)</big><a class="headerlink" href="#varray.Varray.length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the length of row i</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="varray.Varray.row">
+<tt class="descname">row</tt><big>(</big><em>i</em><big>)</big><a class="headerlink" href="#varray.Varray.row" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the data for row i</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="varray.Varray.col">
+<tt class="descname">col</tt><big>(</big><em>i</em><big>)</big><a class="headerlink" href="#varray.Varray.col" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the data for column i</p>
+<p>This always returns a list of length nrows.
+For rows where the column index i is missing, a value -1 is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="varray.Varray.select">
+<tt class="descname">select</tt><big>(</big><em>sel</em><big>)</big><a class="headerlink" href="#varray.Varray.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select some rows from the Varray.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: specifies the requested row(s). It can be one of:<ul>
+<li>an iterable of ints, specifying the requested row numbers;</li>
+<li>an iterable of bools, flagging the requested rows.</li>
+</ul>
+</li>
+</ul>
+<p>Returns a Varray containing the requested rows.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="varray.Varray.index">
+<tt class="descname">index</tt><big>(</big><em>sel</em><big>)</big><a class="headerlink" href="#varray.Varray.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a selector to an index</p>
+<p>sel is either a list of element numbers or a bool array with
+length self.size</p>
+<p>Returns an index array with the selected numbers.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="varray.Varray.rowindex">
+<tt class="descname">rowindex</tt><big>(</big><em>sel</em><big>)</big><a class="headerlink" href="#varray.Varray.rowindex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the rowindex for the elements flagged by selector sel.</p>
+<p>sel is either a list of element numbers or a bool array with
+length self.size</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="varray.Varray.colindex">
+<tt class="descname">colindex</tt><big>(</big><em>sel</em><big>)</big><a class="headerlink" href="#varray.Varray.colindex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the column index for the elements flagged by selector sel.</p>
+<p>sel is either a list of element numbers or a bool array with
+length self.size</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="varray.Varray.where">
+<tt class="descname">where</tt><big>(</big><em>sel</em><big>)</big><a class="headerlink" href="#varray.Varray.where" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return row and column index of the selected elements</p>
+<p>sel is either a list of element numbers or a bool array with
+length self.size</p>
+<p>Returns a 2D array where the first column is the row index
+and the second column the corresponding column index of an
+element selected by sel</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="varray.Varray.index1d">
+<tt class="descname">index1d</tt><big>(</big><em>i</em>, <em>j</em><big>)</big><a class="headerlink" href="#varray.Varray.index1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the sequential index for the element with 2D index i,j</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="varray.Varray.sort">
+<tt class="descname">sort</tt><big>(</big><big>)</big><a class="headerlink" href="#varray.Varray.sort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort the Varray inplace.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="varray.Varray.toArray">
+<tt class="descname">toArray</tt><big>(</big><big>)</big><a class="headerlink" href="#varray.Varray.toArray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the Varray to a 2D array.</p>
+<p>Returns a 2D array with shape (self.nrows,self.width), containing
+the row data of the Varray.
+Rows which are shorter than width are padded at the start with
+values -1.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="varray.Varray.toList">
+<tt class="descname">toList</tt><big>(</big><big>)</big><a class="headerlink" href="#varray.Varray.toList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the Varray to a nested list.</p>
+<p>Returns a list of lists of integers.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="varray.Varray.inverse">
+<tt class="descname">inverse</tt><big>(</big><big>)</big><a class="headerlink" href="#varray.Varray.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the inverse of a Varray.</p>
+<p>The inverse of a Varray is again a Varray. Values k on a row i will
+become values i on row k. The number of data in both Varrays is thus
+the same.</p>
+<p>The inverse of the inverse is equal to the original. Two Varrays are
+equal if they have the same number of rows and all rows contain the
+same numbers, independent of their order.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Varray</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">4</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
+<span class="go">Varray (4,2)</span>
+<span class="go">  [0 1]</span>
+<span class="go">  [2 0]</span>
+<span class="go">  [1 2]</span>
+<span class="go">  [4]</span>
+<span class="go"> Varray (5,2)</span>
+<span class="go">  [0 1]</span>
+<span class="go">  [0 2]</span>
+<span class="go">  [1 2]</span>
+<span class="go">  []</span>
+<span class="go">  [3]</span>
+<span class="go"> Varray (4,2)</span>
+<span class="go">  [0 1]</span>
+<span class="go">  [0 2]</span>
+<span class="go">  [1 2]</span>
+<span class="go">  [4]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="functions-defined-in-module-varray">
+<h2>12.2. Functions defined in module varray<a class="headerlink" href="#functions-defined-in-module-varray" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="varray.inverseIndex">
+<tt class="descclassname">varray.</tt><tt class="descname">inverseIndex</tt><big>(</big><em>a</em>, <em>sort=False</em>, <em>expand=False</em><big>)</big><a class="headerlink" href="#varray.inverseIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the inverse of a 2D index array.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>a</cite>: a Varray or a 2D index array. A 2D index array is a 2D integer
+array where only nonnegative values are significant and negative
+values are silently ignored.
+While in most cases all values in a row are unique, this is not a
+requirement. Degenerate elements may have the same node number
+appearing multiple times in the same row.</li>
+<li></li>
+</ul>
+<p>Returns the inverse index, as a Varray (default) or as an ndarray (if
+expand is True). If sort is True, rows are sorted.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">inverseIndex</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">Varray (4,3)</span>
+<span class="go">  [0 1 3]</span>
+<span class="go">  [0 2]</span>
+<span class="go">  [1 2]</span>
+<span class="go">  [3]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="adjacency.html" title="13. adjacency — A class for storing and handling adjacency tables."
+             >next</a> |</li>
+        <li class="right" >
+          <a href="utils.html" title="11. utils — A collection of miscellaneous utility functions."
+             >previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+    <span class="left">
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
+    </span>
+      Last updated on Feb 08, 2015.
+    <span class="right">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+    </span>
+    </div>
+  </body>
+</html>

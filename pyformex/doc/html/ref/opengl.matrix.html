@@ -1,0 +1,389 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!-- 
+##
+##  This file is part of the pyFormex project.
+##  pyFormex is a tool for generating, manipulating and transforming 3D
+##  geometrical models by sequences of mathematical operations.
+##  Home page: http://pyformex.org
+##  Project page:  http://savannah.nongnu.org/projects/pyformex/
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Distributed under the GNU General Public License version 3 or later.
+##
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see http://www.gnu.org/licenses/.
+##
+-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>73. matrix — opengl/matrix.py &mdash; pyFormex 1.0.1~a2 documentation</title>
+
+    
+    <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1~a2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="up" title="pyFormex reference manual" href="../refman.html" />
+    <link rel="next" title="74. opengl.objectdialog — Interactive modification of the rendered scene" href="opengl.objectdialog.html" />
+    <link rel="prev" title="72. opengl.drawable — OpenGL rendering objects for the new OpenGL2 engine." href="opengl.drawable.html" />
+<link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
+
+  </head>
+  <body>
+
+<div class="header">
+  <a href="http://pyformex.org">
+  <img src="http://www.nongnu.org/pyformex/_static/scallop_dome_small.png" alt="scallop dome" border="0" hspace="20" vspace="12" align="left" />
+  <img src="http://www.nongnu.org/pyformex/_static/pyformex-logo-2.png" alt="pyformex logo" border="0" hspace="10" vspace="8" align="left" />
+  </a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="opengl.objectdialog.html" title="74. opengl.objectdialog — Interactive modification of the rendered scene"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="opengl.drawable.html" title="72. opengl.drawable — OpenGL rendering objects for the new OpenGL2 engine."
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center">
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick"/>
+<input type="hidden" name="hosted_button_id" value="P7J4AM4QULB4Q"/>
+<input type="image" src="https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif" name="submit" alt="PayPal - The safer, easier way to pay online!"/>
+<img alt="" border="0" src="https://www.paypal.com/nl_NL/i/scr/pixel.gif" width="1" height="1"/>
+</form>
+
+</div>
+   
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">73. <tt class="docutils literal"><span class="pre">matrix</span></tt> &#8212; opengl/matrix.py</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-matrix">73.1. Classes defined in module matrix</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="opengl.drawable.html"
+                        title="previous chapter">72. <tt class="docutils literal"><span class="pre">opengl.drawable</span></tt> &#8212; OpenGL rendering objects for the new OpenGL2 engine.</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="opengl.objectdialog.html"
+                        title="next chapter">74. <tt class="docutils literal"><span class="pre">opengl.objectdialog</span></tt> &#8212; Interactive modification of the rendered scene</a></p>
+  
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+<div align="center">
+  <p>
+  <a href="http://www.fsf.org/register_form?referrer=8491"><img src="http://www.nongnu.org/pyformex/_static/fsf-member8491.png" alt="[FSF Associate Member]" width="89" height="31"  /></a>
+  </p>
+  <p>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+      src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /></a>
+  </p>
+</div>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-matrix">
+<span id="matrix-opengl-matrix-py"></span><span id="sec-ref-matrix"></span><h1>73. <a class="reference internal" href="#module-matrix" title="matrix: opengl/matrix.py"><tt class="xref py py-mod docutils literal"><span class="pre">matrix</span></tt></a> &#8212; opengl/matrix.py<a class="headerlink" href="#module-matrix" title="Permalink to this headline">¶</a></h1>
+<p>Python OpenGL framework for pyFormex</p>
+<p>This OpenGL framework is intended to replace (in due time)
+the current OpenGL framework in pyFormex.</p>
+<ol class="upperalpha simple" start="3">
+<li>2013 Benedict Verhegghe and the pyFormex project.</li>
+</ol>
+<div class="section" id="classes-defined-in-module-matrix">
+<h2>73.1. Classes defined in module matrix<a class="headerlink" href="#classes-defined-in-module-matrix" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="matrix.Vector4">
+<em class="property">class </em><tt class="descclassname">matrix.</tt><tt class="descname">Vector4</tt><a class="headerlink" href="#matrix.Vector4" title="Permalink to this definition">¶</a></dt>
+<dd><p>One or more homogeneous coordinates</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="matrix.Matrix4">
+<em class="property">class </em><tt class="descclassname">matrix.</tt><tt class="descname">Matrix4</tt><a class="headerlink" href="#matrix.Matrix4" title="Permalink to this definition">¶</a></dt>
+<dd><p>A 4x4 transformation matrix for homogeneous coordinates.</p>
+<p>The matrix is to be used with post-multiplication on
+row vectors (i.e. OpenGL convention).</p>
+<ul class="simple">
+<li><cite>data</cite>: if specified, should be a (4,4) float array or compatible. Else
+a 4x4 identity matrix is created.</li>
+</ul>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">I</span> <span class="o">=</span> <span class="n">Matrix4</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">I</span><span class="p">)</span>
+<span class="go">[[ 1.  0.  0.  0.]</span>
+<span class="go"> [ 0.  1.  0.  0.]</span>
+<span class="go"> [ 0.  0.  1.  0.]</span>
+<span class="go"> [ 0.  0.  0.  1.]]</span>
+</pre></div>
+</div>
+<p>We can first scale and then rotate, or first rotate and then scale (with
+another scaling factor):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">I</span><span class="o">.</span><span class="n">scale</span><span class="p">([</span><span class="mf">4.</span><span class="p">,</span><span class="mf">4.</span><span class="p">,</span><span class="mf">4.</span><span class="p">])</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mf">45.</span><span class="p">,[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">I</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mf">45.</span><span class="p">,[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">])</span><span class="o">.</span><span class="n">scale</span><span class="p">([</span><span class="mf">2.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">2.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">[[  1.78e-15   4.00e+00   0.00e+00   0.00e+00]</span>
+<span class="go"> [ -4.00e+00   1.78e-15   0.00e+00   0.00e+00]</span>
+<span class="go"> [  0.00e+00   0.00e+00   8.00e+00   0.00e+00]</span>
+<span class="go"> [  0.00e+00   0.00e+00   0.00e+00   1.00e+00]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">a</span><span class="o">==</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="matrix.Matrix4.gl">
+<tt class="descname">gl</tt><big>(</big><big>)</big><a class="headerlink" href="#matrix.Matrix4.gl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the transformation matrix as a &#8216;ready-to-use&#8217;-gl version.</p>
+<p>Returns the (4,4) Matrix as a rowwise flattened array of type float32.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Matrix4</span><span class="p">()</span><span class="o">.</span><span class="n">gl</span><span class="p">()</span>
+<span class="go">matrix([ 1.,  0.,  0.,  0.,  0.,  1.,  0.,  0.,  0.,  0.,  1.,  0.,  0.,</span>
+<span class="go">         0.,  0.,  1.], dtype=float32)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="matrix.Matrix4.rot">
+<tt class="descname">rot</tt><a class="headerlink" href="#matrix.Matrix4.rot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the (3,3) rotation matrix</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="matrix.Matrix4.trl">
+<tt class="descname">trl</tt><a class="headerlink" href="#matrix.Matrix4.trl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the (3,) translation vector</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="matrix.Matrix4.identity">
+<tt class="descname">identity</tt><big>(</big><big>)</big><a class="headerlink" href="#matrix.Matrix4.identity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the matrix to a 4x4 identity matrix.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="matrix.Matrix4.translate">
+<tt class="descname">translate</tt><big>(</big><em>vector</em><big>)</big><a class="headerlink" href="#matrix.Matrix4.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate a 4x4 matrix by a (3,) vector.</p>
+<ul class="simple">
+<li><cite>vector</cite>: (3,) float array: the translation vector</li>
+</ul>
+<p>Changes the Matrix in place and also returns the result</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Matrix4</span><span class="p">()</span><span class="o">.</span><span class="n">translate</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">3.</span><span class="p">])</span>
+<span class="go">matrix([[ 1.,  0.,  0.,  0.],</span>
+<span class="go">        [ 0.,  1.,  0.,  0.],</span>
+<span class="go">        [ 0.,  0.,  1.,  0.],</span>
+<span class="go">        [ 1.,  2.,  3.,  1.]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="matrix.Matrix4.rotate">
+<tt class="descname">rotate</tt><big>(</big><em>angle</em>, <em>axis=None</em><big>)</big><a class="headerlink" href="#matrix.Matrix4.rotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate a Matrix4.</p>
+<p>The rotation can be specified by</p>
+<ul class="simple">
+<li>an angle and axis,</li>
+<li>a 3x3 rotation matrix,</li>
+<li>a 4x4 trtransformation matrix (Matrix4).</li>
+</ul>
+<p>Parameters:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>angle</cite>: float: the rotation angle. A 3x3 or 4x4 matrix may be</dt>
+<dd><p class="first last">give instead, to directly specify the roation matrix.</p>
+</dd>
+</dl>
+</li>
+<li><p class="first"><cite>axis</cite>: int or (3,) float: the axis to rotate around</p>
+</li>
+</ul>
+<p>Changes the Matrix in place and also returns the result.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Matrix4</span><span class="p">()</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mf">90.</span><span class="p">,[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">])</span>
+<span class="go">matrix([[  6.12e-17,   0.00e+00,  -1.00e+00,   0.00e+00],</span>
+<span class="go">        [  0.00e+00,   1.00e+00,   0.00e+00,   0.00e+00],</span>
+<span class="go">        [  1.00e+00,   0.00e+00,   6.12e-17,   0.00e+00],</span>
+<span class="go">        [  0.00e+00,   0.00e+00,   0.00e+00,   1.00e+00]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="matrix.Matrix4.scale">
+<tt class="descname">scale</tt><big>(</big><em>vector</em><big>)</big><a class="headerlink" href="#matrix.Matrix4.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scale a 4x4 matrix by a (3,) vector.</p>
+<ul class="simple">
+<li><cite>vector</cite>: (3,) float array: the scaling vector</li>
+</ul>
+<p>Changes the Matrix in place and also returns the result</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Matrix4</span><span class="p">()</span><span class="o">.</span><span class="n">scale</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">3.</span><span class="p">])</span>
+<span class="go">matrix([[ 1.,  0.,  0.,  0.],</span>
+<span class="go">        [ 0.,  2.,  0.,  0.],</span>
+<span class="go">        [ 0.,  0.,  3.,  0.],</span>
+<span class="go">        [ 0.,  0.,  0.,  1.]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="matrix.Matrix4.swapRows">
+<tt class="descname">swapRows</tt><big>(</big><em>row1</em>, <em>row2</em><big>)</big><a class="headerlink" href="#matrix.Matrix4.swapRows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Swap two rows.</p>
+<ul class="simple">
+<li><cite>row1</cite>, <cite>row2</cite>: index of the rows to swap</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="matrix.Matrix4.swapCols">
+<tt class="descname">swapCols</tt><big>(</big><em>col1</em>, <em>col2</em><big>)</big><a class="headerlink" href="#matrix.Matrix4.swapCols" title="Permalink to this definition">¶</a></dt>
+<dd><p>Swap two columns.</p>
+<ul class="simple">
+<li><cite>col1</cite>, <cite>col2</cite>: index of the columns to swap</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="matrix.Matrix4.inverse">
+<tt class="descname">inverse</tt><big>(</big><big>)</big><a class="headerlink" href="#matrix.Matrix4.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the inverse matrix</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="matrix.Matrix4.transform">
+<tt class="descname">transform</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#matrix.Matrix4.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform a vertex using this matrix.</p>
+<ul class="simple">
+<li><cite>x</cite>: a (3,) or (4,) vector.</li>
+</ul>
+<p>If the vector has length 4, it holds homogeneous coordinates, and
+the result is the dot product of the vector with the Matrix:  x * M.
+If the vector has length 3, the 4th homogeneous coordinate is
+assumed to be 1, and the product is computed in an optimized way.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="matrix.Matrix4.invtransform">
+<tt class="descname">invtransform</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#matrix.Matrix4.invtransform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform a vertex with the inverse of this matrix.</p>
+<ul class="simple">
+<li><cite>x</cite>: a (3,) or (4,) vector.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="matrix.Matrix4.transinv">
+<tt class="descname">transinv</tt><big>(</big><big>)</big><a class="headerlink" href="#matrix.Matrix4.transinv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the transpose of the inverse.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="opengl.objectdialog.html" title="74. opengl.objectdialog — Interactive modification of the rendered scene"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="opengl.drawable.html" title="72. opengl.drawable — OpenGL rendering objects for the new OpenGL2 engine."
+             >previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+    <span class="left">
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
+    </span>
+      Last updated on Feb 08, 2015.
+    <span class="right">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+    </span>
+    </div>
+  </body>
+</html>

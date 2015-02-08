@@ -1,0 +1,768 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!-- 
+##
+##  This file is part of the pyFormex project.
+##  pyFormex is a tool for generating, manipulating and transforming 3D
+##  geometrical models by sequences of mathematical operations.
+##  Home page: http://pyformex.org
+##  Project page:  http://savannah.nongnu.org/projects/pyformex/
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Distributed under the GNU General Public License version 3 or later.
+##
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see http://www.gnu.org/licenses/.
+##
+-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5. gui.draw — Create 3D graphical representations. &mdash; pyFormex 1.0.1~a2 documentation</title>
+
+    
+    <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1~a2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="up" title="pyFormex reference manual" href="../refman.html" />
+    <link rel="next" title="6. opengl.colors — Playing with colors." href="opengl.colors.html" />
+    <link rel="prev" title="4. script — Basic pyFormex script functions" href="script.html" />
+<link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
+
+  </head>
+  <body>
+
+<div class="header">
+  <a href="http://pyformex.org">
+  <img src="http://www.nongnu.org/pyformex/_static/scallop_dome_small.png" alt="scallop dome" border="0" hspace="20" vspace="12" align="left" />
+  <img src="http://www.nongnu.org/pyformex/_static/pyformex-logo-2.png" alt="pyformex logo" border="0" hspace="10" vspace="8" align="left" />
+  </a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="opengl.colors.html" title="6. opengl.colors — Playing with colors."
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="script.html" title="4. script — Basic pyFormex script functions"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center">
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick"/>
+<input type="hidden" name="hosted_button_id" value="P7J4AM4QULB4Q"/>
+<input type="image" src="https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif" name="submit" alt="PayPal - The safer, easier way to pay online!"/>
+<img alt="" border="0" src="https://www.paypal.com/nl_NL/i/scr/pixel.gif" width="1" height="1"/>
+</form>
+
+</div>
+   
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">5. <tt class="docutils literal"><span class="pre">gui.draw</span></tt> &#8212; Create 3D graphical representations.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-gui-draw">5.1. Classes defined in module gui.draw</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-gui-draw">5.2. Functions defined in module gui.draw</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="script.html"
+                        title="previous chapter">4. <tt class="docutils literal"><span class="pre">script</span></tt> &#8212; Basic pyFormex script functions</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="opengl.colors.html"
+                        title="next chapter">6. <tt class="docutils literal"><span class="pre">opengl.colors</span></tt> &#8212; Playing with colors.</a></p>
+  
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+<div align="center">
+  <p>
+  <a href="http://www.fsf.org/register_form?referrer=8491"><img src="http://www.nongnu.org/pyformex/_static/fsf-member8491.png" alt="[FSF Associate Member]" width="89" height="31"  /></a>
+  </p>
+  <p>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+      src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /></a>
+  </p>
+</div>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-gui.draw">
+<span id="gui-draw-create-3d-graphical-representations"></span><span id="sec-ref-gui-draw"></span><h1>5. <a class="reference internal" href="#module-gui.draw" title="gui.draw: Create 3D graphical representations."><tt class="xref py py-mod docutils literal"><span class="pre">gui.draw</span></tt></a> &#8212; Create 3D graphical representations.<a class="headerlink" href="#module-gui.draw" title="Permalink to this headline">¶</a></h1>
+<p>The draw module provides the basic user interface to the OpenGL
+rendering capabilities of pyFormex. The full contents of this module
+is available to scripts running in the pyFormex GUI without the need
+to import it.</p>
+<div class="section" id="classes-defined-in-module-gui-draw">
+<h2>5.1. Classes defined in module gui.draw<a class="headerlink" href="#classes-defined-in-module-gui-draw" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="functions-defined-in-module-gui-draw">
+<h2>5.2. Functions defined in module gui.draw<a class="headerlink" href="#functions-defined-in-module-gui-draw" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="gui.draw.closeGui">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">closeGui</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.draw.closeGui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the GUI.</p>
+<p>Calling this function from a script closes the GUI and terminates
+pyFormex.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.closeDialog">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">closeDialog</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#gui.draw.closeDialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the named dialog.</p>
+<p>Closes the InputDialog with the given name. If multiple dialogs are
+open with the same name, all these dialogs are closed.</p>
+<p>This only works for dialogs owned by the pyFormex GUI.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.showMessage">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">showMessage</tt><big>(</big><em>text, actions=['OK'], level='info', modal=True, align='00', **kargs</em><big>)</big><a class="headerlink" href="#gui.draw.showMessage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show a short message widget and wait for user acknowledgement.</p>
+<p>There are three levels of messages: &#8216;info&#8217;, &#8216;warning&#8217; and &#8216;error&#8217;.
+They differ only in the icon that is shown next to the test.
+By default, the message widget has a single button with the text &#8216;OK&#8217;.
+The dialog is closed if the user clicks a button.
+The return value is the button text.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.showInfo">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">showInfo</tt><big>(</big><em>text, actions=['OK'], modal=True</em><big>)</big><a class="headerlink" href="#gui.draw.showInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show an informational message and wait for user acknowledgement.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.warning">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">warning</tt><big>(</big><em>text, actions=['OK']</em><big>)</big><a class="headerlink" href="#gui.draw.warning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show a warning message and wait for user acknowledgement.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.error">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">error</tt><big>(</big><em>text, actions=['OK']</em><big>)</big><a class="headerlink" href="#gui.draw.error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show an error message and wait for user acknowledgement.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.ask">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">ask</tt><big>(</big><em>question</em>, <em>choices=None</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.draw.ask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ask a question and present possible answers.</p>
+<p>Return answer if accepted or default if rejected.
+The remaining arguments are passed to the InputDialog getResult method.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.ack">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">ack</tt><big>(</big><em>question</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.draw.ack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show a Yes/No question and return True/False depending on answer.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.showText">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">showText</tt><big>(</big><em>text, itemtype='text', actions=[('OK', None)], modal=True, mono=False</em><big>)</big><a class="headerlink" href="#gui.draw.showText" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display a text in a dialog window.</p>
+<p>Creates a dialog window displaying some text. The dialog can be modal
+(blocking user input to the main window) or modeless.
+Scrollbars are added if the text is too large to display at once.
+By default, the dialog has a single button to close the dialog.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>text</cite>: a multiline text to be displayed. It can be plain text or html
+or reStructuredText (starts with &#8216;..&#8217;).</li>
+<li><cite>itemtype</cite>: an InputItem type that can be used for text display. This
+should be either &#8216;text&#8217; of &#8216;info&#8217;.</li>
+<li><cite>actions</cite>: a list of action button definitions.</li>
+<li><cite>modal</cite>: bool: if True, a modal dialog is constructed. Else, the dialog
+is modeless.</li>
+<li><cite>mono</cite>: if True, a monospace font will be used. This is only useful for
+plain text, e.g. to show the output of an external command.</li>
+</ul>
+<p>Returns:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Modal dialog:</th><td class="field-body">the result of the dialog after closing.
+The result is a dictionary with a single key: &#8216;text&#8217; having the
+displayed text as a value. If an itemtype &#8216;text&#8217; was used, this may
+be a changed text.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Modeless dialog:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">the open dialog window itself.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.showFile">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">showFile</tt><big>(</big><em>filename</em>, <em>mono=True</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.draw.showFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display a text file.</p>
+<p>This will use the <a class="reference internal" href="#gui.draw.showText" title="gui.draw.showText"><tt class="xref py py-func docutils literal"><span class="pre">showText()</span></tt></a> function to display a text read
+from a file.
+By default this uses a monospaced font.
+Other arguments may also be passed to ShowText.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.showDoc">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">showDoc</tt><big>(</big><em>obj=None</em>, <em>rst=True</em>, <em>modal=False</em><big>)</big><a class="headerlink" href="#gui.draw.showDoc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show the docstring of an object.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>obj</cite>: any object (module, class, method, function) that has a
+__doc__ attribute. If None is specified, the docstring of the current
+application is shown.</li>
+<li><cite>rst</cite>: bool. If True (default) the docstring is treated as being
+reStructuredText and will be nicely formatted accordingly.
+If False, the docstring is shown as plain text.</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.editFile">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">editFile</tt><big>(</big><em>fn</em>, <em>exist=False</em><big>)</big><a class="headerlink" href="#gui.draw.editFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a file into the editor.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>fn</cite>: filename. The corresponding file is loaded into the editor.</li>
+<li><cite>exist</cite>: bool. If True, only existing filenames will be accepted.</li>
+</ul>
+<p>Loading a file in the editor is done by executing an external command with
+the filename as argument. The command to be used can be set in the
+configuration. If none is set, pyFormex will try to lok at the <cite>EDITOR</cite>
+and <cite>VISUAL</cite> environment settings.</p>
+<p>The main author of pyFormex uses &#8216;emacsclient&#8217; as editor command,
+to load the files in a running copy of Emacs.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.askItems">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">askItems</tt><big>(</big><em>items</em>, <em>timeout=None</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.draw.askItems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ask the value of some items to the user.</p>
+<p>Create an interactive widget to let the user set the value of some items.
+The items are specified as a list of dictionaries. Each dictionary
+contains the input arguments for a widgets.InputItem. It is often
+convenient to use one of the _I, _G, ot _T functions to create these
+dictionaries. These will respectively create the input for a
+simpleInputItem, a groupInputItem or a tabInputItem.</p>
+<p>For convenience, simple items can also be specified as a tuple.
+A tuple (key,value) will be transformed to a dict
+{&#8216;key&#8217;:key, &#8216;value&#8217;:value}.</p>
+<p>See the widgets.InputDialog class for complete description of the
+available input items.</p>
+<p>A timeout (in seconds) can be specified to have the input dialog
+interrupted automatically and return the default values.</p>
+<p>The remaining arguments are keyword arguments that are passed to the
+widgets.InputDialog.getResult method.</p>
+<p>Returns a dictionary with the results: for each input item there is a
+(key,value) pair. Returns an empty dictionary if the dialog was canceled.
+Sets the dialog timeout and accepted status in global variables.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.currentDialog">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">currentDialog</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.draw.currentDialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current dialog widget.</p>
+<p>This returns the dialog widget created by the askItems() function,
+while the dialog is still active. If no askItems() has been called
+or if the user already closed the dialog, None is returned.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.dialogAccepted">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">dialogAccepted</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.draw.dialogAccepted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if the last askItems() dialog was accepted.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.dialogRejected">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">dialogRejected</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.draw.dialogRejected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if the last askItems() dialog was rejected.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.dialogTimedOut">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">dialogTimedOut</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.draw.dialogTimedOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if the last askItems() dialog timed out.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.askFile">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">askFile</tt><big>(</big><em>cur=None</em>, <em>filter='all'</em>, <em>exist=True</em>, <em>multi=False</em>, <em>compr=False</em>, <em>change=True</em>, <em>timeout=None</em>, <em>caption=None</em>, <em>sidebar=None</em><big>)</big><a class="headerlink" href="#gui.draw.askFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ask for a file name or multiple file names using a file dialog.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>cur</cite>: directory or filename. Specifies the starting point of the
+selection dialog. All the files in the specified directory (or the
+file&#8217;s directory) matching the <cite>filter</cite> will be presented to the user.
+If cur is a file, it will be set as the initial selection.</li>
+<li><cite>filter</cite>: string or list of strings. Specifies a (set of) filter(s) to
+be applied on the files in the selected directory. This allows to
+narrow down the selection possibilities. The <cite>filter</cite> argument is passed
+through the <a class="reference internal" href="utils.html#utils.fileDescription" title="utils.fileDescription"><tt class="xref py py-func docutils literal"><span class="pre">utils.fileDescription()</span></tt></a> function to create the
+actual filter set. If multiple filters are included, the user can
+select the appropriate one from the dialog.</li>
+<li><cite>multi</cite>: bool. If True, allows the user to pick multiple file names
+in a single operation.</li>
+<li><cite>compr</cite>: bool. If True, the specified pattern will be extended with
+the corresponding compressed file types.</li>
+<li><cite>change</cite>: bool. If True (default), the current working directory will
+be changed to the parent directory of the selection.</li>
+<li><cite>caption</cite>: string. This string will be displayed as the dialog title
+instead of the default one.</li>
+<li><cite>timeout</cite>: float. If specified, the dialog will timeout after the
+specified number of seconds.</li>
+<li><cite>caption</cite>: string. If specified, it will be displayed as the FileDialog
+title.</li>
+<li><cite>sidebar</cite>: list of paths. If specified, these will be added to the
+sidebar (in addition to the configured paths).</li>
+</ul>
+<p>Returns the result of the file dialog. If the user accepted the selection,
+this will be a Dict with at least a key &#8216;fn&#8217; holding the selected
+filename(s): a single file name is if <cite>multi</cite> is False, or a list of file
+names if <cite>multi</cite> is True. If the user canceled the selection process,
+an empty dict is returned.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.askFilename">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">askFilename</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.draw.askFilename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ask for a file name or multiple file names using a file dialog.</p>
+<p>This functions takes the same parameters as <a class="reference internal" href="#gui.draw.askFile" title="gui.draw.askFile"><tt class="xref py py-func docutils literal"><span class="pre">askFile()</span></tt></a>, and is
+functionally equivalent to it. However, in case of an accepted dialog
+it only returns the filename(s) and in case of a canceled dialog it
+returns None.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.askNewFilename">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">askNewFilename</tt><big>(</big><em>cur=None</em>, <em>filter='All files (*.*)'</em>, <em>compr=False</em>, <em>timeout=None</em>, <em>caption=None</em>, <em>sidebar=None</em><big>)</big><a class="headerlink" href="#gui.draw.askNewFilename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ask a single new filename.</p>
+<p>This is a convenience function for calling askFilename with the
+arguments exist=False.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.askDirname">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">askDirname</tt><big>(</big><em>path=None</em>, <em>change=True</em>, <em>byfile=False</em>, <em>caption=None</em><big>)</big><a class="headerlink" href="#gui.draw.askDirname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interactively select a directory and change the current workdir.</p>
+<p>The user is asked to select a directory through the standard file
+dialog. Initially, the dialog shows all the subdirectories in the
+specified path, or by default in the current working directory.</p>
+<p>The selected directory becomes the new working directory, unless the
+user canceled the operation, or the change parameter was set to False.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.checkWorkdir">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">checkWorkdir</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.draw.checkWorkdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ask the user to change the current workdir if it is not writable.</p>
+<p>Returns True if the new workdir is writable.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.printMessage">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">printMessage</tt><big>(</big><em>s</em><big>)</big><a class="headerlink" href="#gui.draw.printMessage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print a message on the message board.</p>
+<p>If a logfile was opened, the message is also written to the log file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.delay">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">delay</tt><big>(</big><em>s=None</em><big>)</big><a class="headerlink" href="#gui.draw.delay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get/Set the draw delay time.</p>
+<p>Returns the current setting of the draw wait time (in seconds).
+This drawing delay is obeyed by drawing and viewing operations.</p>
+<p>A parameter may be given to set the delay time to a new value.
+It should be convertable to a float.
+The function still returns the old setting. This may be practical
+to save that value to restore it later.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.wait">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">wait</tt><big>(</big><em>relock=True</em><big>)</big><a class="headerlink" href="#gui.draw.wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until the drawing lock is released.</p>
+<p>This uses the drawing lock mechanism to pause. The drawing lock
+ensures that subsequent draws are retarded to give the user the time
+to view. The use of this function is prefered over that of
+<a class="reference internal" href="#gui.draw.pause" title="gui.draw.pause"><tt class="xref py py-func docutils literal"><span class="pre">pause()</span></tt></a> or <tt class="xref py py-func docutils literal"><span class="pre">sleep()</span></tt>, because it allows your script to
+continue the numerical computations while waiting to draw the next
+screen.</p>
+<p>This function can be used to retard other functions than <cite>draw</cite> and <cite>view</cite>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.play">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">play</tt><big>(</big><em>refresh=False</em><big>)</big><a class="headerlink" href="#gui.draw.play" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the current script or if already running, continue it.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.replay">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">replay</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.draw.replay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replay the current app.</p>
+<p>This works pretty much like the play() function, but will
+reload the current application prior to running it.
+This function is especially interesting during development
+of an application.
+If the current application is a script, then it is equivalent with
+play().</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.fforward">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">fforward</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.draw.fforward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Releases the drawing lock mechanism indefinely.</p>
+<p>Releasing the drawing lock indefinely means that the lock will not
+be set again and your script will execute till the end.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.pause">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">pause</tt><big>(</big><em>timeout=None</em>, <em>msg=None</em><big>)</big><a class="headerlink" href="#gui.draw.pause" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pause the execution until an external event occurs or timeout.</p>
+<p>When the pause statement is executed, execution of the pyformex script
+is suspended until some external event forces it to proceed again.
+Clicking the PLAY, STEP or CONTINUE button will produce such an event.</p>
+<ul class="simple">
+<li><cite>timeout</cite>: float: if specified, the pause will only last for this
+many seconds. It can still be interrupted by the STEP buttons.</li>
+<li><cite>msg</cite>: string: a message to write to the board to explain the user
+about the pause</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.zoomRectangle">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">zoomRectangle</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.draw.zoomRectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zoom a rectangle selected by the user.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.zoomBbox">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">zoomBbox</tt><big>(</big><em>bb</em><big>)</big><a class="headerlink" href="#gui.draw.zoomBbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zoom thus that the specified bbox becomes visible.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.zoomObj">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">zoomObj</tt><big>(</big><em>object</em><big>)</big><a class="headerlink" href="#gui.draw.zoomObj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zoom thus that the specified object becomes visible.</p>
+<p>object can be anything having a bbox() method or a list thereof.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.zoomAll">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">zoomAll</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.draw.zoomAll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zoom thus that all actors become visible.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.zoom">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">zoom</tt><big>(</big><em>f</em><big>)</big><a class="headerlink" href="#gui.draw.zoom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zoom with a factor f</p>
+<p>A factor &gt; 1.0 zooms out, a factor &lt; 1.0 zooms in.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.focus">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">focus</tt><big>(</big><em>point</em><big>)</big><a class="headerlink" href="#gui.draw.focus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the camera focus to the specified point.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>point</cite>: float(3,) or alike</li>
+</ul>
+<p>The camera focus is set to the specified point, while keeping
+a parallel camera direction and same zoom factor.
+The specified point becomes the center of the screen and
+the center of camera rotations.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.flyAlong">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">flyAlong</tt><big>(</big><em>path, upvector=[0.0, 1.0, 0.0], sleeptime=None</em><big>)</big><a class="headerlink" href="#gui.draw.flyAlong" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fly through the current scene along the specified path.</p>
+<ul class="simple">
+<li><cite>path</cite>: a plex-2 or plex-3 Formex (or convertibel to such Formex)
+specifying the paths of camera eye and center (and upvector).</li>
+<li><cite>upvector</cite>: the direction of the vertical axis of the camera, in case
+of a 2-plex camera path.</li>
+<li><cite>sleeptime</cite>: a delay between subsequent images, to slow down
+the camera movement.</li>
+</ul>
+<p>This function moves the camera through the subsequent elements of the
+Formex. For each element the first point is used as the center of the
+camera and the second point as the eye (the center of the scene looked at).
+For a 3-plex Formex, the third point is used to define the upvector
+(i.e. the vertical axis of the image) of the camera. For a 2-plex
+Formex, the upvector is constant as specified in the arguments.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.viewport">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">viewport</tt><big>(</big><em>n=None</em><big>)</big><a class="headerlink" href="#gui.draw.viewport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select the current viewport.</p>
+<p>n is an integer number in the range of the number of viewports,
+or is one of the viewport objects in pyformex.GUI.viewports</p>
+<p>if n is None, selects the current GUI viewport for drawing</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.nViewports">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">nViewports</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.draw.nViewports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of viewports.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.layout">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">layout</tt><big>(</big><em>nvps=None</em>, <em>ncols=None</em>, <em>nrows=None</em>, <em>pos=None</em>, <em>rstretch=None</em>, <em>cstretch=None</em><big>)</big><a class="headerlink" href="#gui.draw.layout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the viewports layout.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.addViewport">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">addViewport</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.draw.addViewport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new viewport.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.removeViewport">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">removeViewport</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.draw.removeViewport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the last viewport.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.linkViewport">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">linkViewport</tt><big>(</big><em>vp</em>, <em>tovp</em><big>)</big><a class="headerlink" href="#gui.draw.linkViewport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Link viewport vp to viewport tovp.</p>
+<p>Both vp and tovp should be numbers of viewports.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.updateGUI">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">updateGUI</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.draw.updateGUI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the GUI.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.highlightActor">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">highlightActor</tt><big>(</big><em>actor</em><big>)</big><a class="headerlink" href="#gui.draw.highlightActor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Highlight an actor in the scene.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.removeHighlight">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">removeHighlight</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.draw.removeHighlight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the highlights from the current viewport</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.pick">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">pick</tt><big>(</big><em>mode='actor'</em>, <em>filter=None</em>, <em>oneshot=False</em>, <em>func=None</em><big>)</big><a class="headerlink" href="#gui.draw.pick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enter interactive picking mode and return selection.</p>
+<p>See viewport.py for more details.
+This function differs in that it provides default highlighting
+during the picking operation, a button to stop the selection operation</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>mode</cite>: one of the pick modes</li>
+<li><cite>filter</cite>: one of the <cite>selection_filters</cite>. The default picking filter
+activated on entering the pick mode. All available filters are
+presented in a combobox.</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.pickFocus">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">pickFocus</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.draw.pickFocus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enter interactive focus setting.</p>
+<p>This enters interactive point picking mode and
+sets the focus to the center of the picked points.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.set_edit_mode">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">set_edit_mode</tt><big>(</big><em>s</em><big>)</big><a class="headerlink" href="#gui.draw.set_edit_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the drawing edit mode.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.drawLinesInter">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">drawLinesInter</tt><big>(</big><em>mode='line'</em>, <em>single=False</em>, <em>func=None</em><big>)</big><a class="headerlink" href="#gui.draw.drawLinesInter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enter interactive drawing mode and return the line drawing.</p>
+<p>See viewport.py for more details.
+This function differs in that it provides default displaying
+during the drawing operation and a button to stop the drawing operation.</p>
+<p>The drawing can be edited using the methods &#8216;undo&#8217;, &#8216;clear&#8217; and &#8216;close&#8217;, which
+are presented in a combobox.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.showLineDrawing">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">showLineDrawing</tt><big>(</big><em>L</em><big>)</big><a class="headerlink" href="#gui.draw.showLineDrawing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show a line drawing.</p>
+<p>L is usually the return value of an interactive draw operation, but
+might also be set by the user.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.exportWebGL">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">exportWebGL</tt><big>(</big><em>fn</em>, <em>createdby=50</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.draw.exportWebGL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export the current scene to WebGL.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>fn</cite> : string: the (relative or absolute) filename of the .html, .js
+and .pgf files comprising the WebGL model. It can contain a directory
+path and an any extension. The latter is dropped and not used.</li>
+<li><cite>createdby</cite>: int: width in pixels of the &#8216;Created by pyFormex&#8217; logo
+appearing on the page. If &lt; 0, the logo is displayed at its natural
+width. If 0, the logo is suppressed.</li>
+<li><cite>**kargs</cite>: any other keyword parameteris passed to the
+<tt class="xref py py-class docutils literal"><span class="pre">WebGL</span></tt> initialization. The <cite>name</cite> can not be specified: it
+is derived from the <cite>fn</cite> parameter.</li>
+</ul>
+<p>Returns the absolute pathname of the generated .html file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.multiWebGL">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">multiWebGL</tt><big>(</big><em>name=None</em>, <em>fn=None</em>, <em>title=None</em>, <em>description=None</em>, <em>keywords=None</em>, <em>author=None</em>, <em>createdby=50</em><big>)</big><a class="headerlink" href="#gui.draw.multiWebGL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export the current scene to WebGL.</p>
+<p>fn is the (relative or absolute) pathname of the .html and .js files to be
+created.</p>
+<p>When the export is finished, returns the absolute pathname of the
+generated .html file. Else, returns None.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.showURL">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">showURL</tt><big>(</big><em>url</em><big>)</big><a class="headerlink" href="#gui.draw.showURL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show an URL in the browser</p>
+<ul class="simple">
+<li><cite>url</cite>: url to load</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.showHTML">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">showHTML</tt><big>(</big><em>fn=None</em><big>)</big><a class="headerlink" href="#gui.draw.showHTML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show a local .html file in the browser</p>
+<ul class="simple">
+<li><cite>fn</cite>: name of a local .html file. If unspecified, a FileDialog
+dialog is popped up to select a file.</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.resetGUI">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">resetGUI</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.draw.resetGUI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the GUI to its default operating mode.</p>
+<p>When an exception is raised during the execution of a script, the GUI
+may be left in a non-consistent state.
+This function may be called to reset most of the GUI components
+to their default operating mode.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="opengl.colors.html" title="6. opengl.colors — Playing with colors."
+             >next</a> |</li>
+        <li class="right" >
+          <a href="script.html" title="4. script — Basic pyFormex script functions"
+             >previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+    <span class="left">
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
+    </span>
+      Last updated on Feb 08, 2015.
+    <span class="right">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+    </span>
+    </div>
+  </body>
+</html>

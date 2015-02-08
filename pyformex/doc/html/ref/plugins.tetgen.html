@@ -1,0 +1,419 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!-- 
+##
+##  This file is part of the pyFormex project.
+##  pyFormex is a tool for generating, manipulating and transforming 3D
+##  geometrical models by sequences of mathematical operations.
+##  Home page: http://pyformex.org
+##  Project page:  http://savannah.nongnu.org/projects/pyformex/
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Distributed under the GNU General Public License version 3 or later.
+##
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see http://www.gnu.org/licenses/.
+##
+-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>62. plugins.tetgen — Interface with tetgen &mdash; pyFormex 1.0.1~a2 documentation</title>
+
+    
+    <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1~a2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="up" title="pyFormex reference manual" href="../refman.html" />
+    <link rel="next" title="63. plugins.tools — tools.py" href="plugins.tools.html" />
+    <link rel="prev" title="61. plugins.sectionize — sectionize.py" href="plugins.sectionize.html" />
+<link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
+
+  </head>
+  <body>
+
+<div class="header">
+  <a href="http://pyformex.org">
+  <img src="http://www.nongnu.org/pyformex/_static/scallop_dome_small.png" alt="scallop dome" border="0" hspace="20" vspace="12" align="left" />
+  <img src="http://www.nongnu.org/pyformex/_static/pyformex-logo-2.png" alt="pyformex logo" border="0" hspace="10" vspace="8" align="left" />
+  </a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plugins.tools.html" title="63. plugins.tools — tools.py"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="plugins.sectionize.html" title="61. plugins.sectionize — sectionize.py"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center">
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick"/>
+<input type="hidden" name="hosted_button_id" value="P7J4AM4QULB4Q"/>
+<input type="image" src="https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif" name="submit" alt="PayPal - The safer, easier way to pay online!"/>
+<img alt="" border="0" src="https://www.paypal.com/nl_NL/i/scr/pixel.gif" width="1" height="1"/>
+</form>
+
+</div>
+   
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">62. <tt class="docutils literal"><span class="pre">plugins.tetgen</span></tt> &#8212; Interface with tetgen</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-plugins-tetgen">62.1. Classes defined in module plugins.tetgen</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-plugins-tetgen">62.2. Functions defined in module plugins.tetgen</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="plugins.sectionize.html"
+                        title="previous chapter">61. <tt class="docutils literal"><span class="pre">plugins.sectionize</span></tt> &#8212; sectionize.py</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="plugins.tools.html"
+                        title="next chapter">63. <tt class="docutils literal"><span class="pre">plugins.tools</span></tt> &#8212; tools.py</a></p>
+  
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+<div align="center">
+  <p>
+  <a href="http://www.fsf.org/register_form?referrer=8491"><img src="http://www.nongnu.org/pyformex/_static/fsf-member8491.png" alt="[FSF Associate Member]" width="89" height="31"  /></a>
+  </p>
+  <p>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+      src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /></a>
+  </p>
+</div>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-plugins.tetgen">
+<span id="plugins-tetgen-interface-with-tetgen"></span><span id="sec-ref-plugins-tetgen"></span><h1>62. <a class="reference internal" href="#module-plugins.tetgen" title="plugins.tetgen: Interface with tetgen"><tt class="xref py py-mod docutils literal"><span class="pre">plugins.tetgen</span></tt></a> &#8212; Interface with tetgen<a class="headerlink" href="#module-plugins.tetgen" title="Permalink to this headline">¶</a></h1>
+<p>A collection of functions to read/write tetgen files and to run the
+tetgen program</p>
+<p>tetgen is a quality tetrahedral mesh generator and a 3D Delaunay triangulator.
+See <a class="reference external" href="http://tetgen.org">http://tetgen.org</a></p>
+<div class="section" id="classes-defined-in-module-plugins-tetgen">
+<h2>62.1. Classes defined in module plugins.tetgen<a class="headerlink" href="#classes-defined-in-module-plugins-tetgen" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="functions-defined-in-module-plugins-tetgen">
+<h2>62.2. Functions defined in module plugins.tetgen<a class="headerlink" href="#functions-defined-in-module-plugins-tetgen" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="plugins.tetgen.readNodeFile">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">readNodeFile</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#plugins.tetgen.readNodeFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a tetgen .node file.</p>
+<p>Returns a tuple as described in readNodesBlock.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.readEleFile">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">readEleFile</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#plugins.tetgen.readEleFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a tetgen .ele file.</p>
+<p>Returns a tuple as described in readElemsBlock.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.readFaceFile">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">readFaceFile</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#plugins.tetgen.readFaceFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a tetgen .face file.</p>
+<p>Returns a tuple as described in readFacesBlock.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.readSmeshFile">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">readSmeshFile</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#plugins.tetgen.readSmeshFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a tetgen .smesh file.</p>
+<p>Returns an array of triangle elements.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.readPolyFile">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">readPolyFile</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#plugins.tetgen.readPolyFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a tetgen .poly file.</p>
+<p>Returns an array of triangle elements.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.readSurface">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">readSurface</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#plugins.tetgen.readSurface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a tetgen surface from a .node/.face file pair.</p>
+<p>The given filename is either the .node or .face file.
+Returns a tuple of (nodes,elems).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.skipComments">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">skipComments</tt><big>(</big><em>fil</em><big>)</big><a class="headerlink" href="#plugins.tetgen.skipComments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Skip comments and blank lines on a tetgen file.</p>
+<p>Reads from a file until the first non-comment and non-empty line.
+Then returns the non-empty, non-comment line, stripped from possible
+trailing comments.
+Returns None if end of file is reached.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.stripLine">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">stripLine</tt><big>(</big><em>line</em><big>)</big><a class="headerlink" href="#plugins.tetgen.stripLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Strip blanks, newline and comments from a line of text.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.getInts">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">getInts</tt><big>(</big><em>line</em>, <em>nint</em><big>)</big><a class="headerlink" href="#plugins.tetgen.getInts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a number of ints from a line, adding zero for omitted values.</p>
+<p>line is a string with b;anks separated integer values.
+Returns a list of nint integers. The trailing ones are set to zero
+if the strings contains less values.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.addElem">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">addElem</tt><big>(</big><em>elems</em>, <em>nrs</em>, <em>e</em>, <em>n</em>, <em>nplex</em><big>)</big><a class="headerlink" href="#plugins.tetgen.addElem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an element to a collection.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.readNodesBlock">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">readNodesBlock</tt><big>(</big><em>fil</em>, <em>npts</em>, <em>ndim</em>, <em>nattr</em>, <em>nbmark</em><big>)</big><a class="headerlink" href="#plugins.tetgen.readNodesBlock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a tetgen nodes block.</p>
+<p>Returns a tuple with:</p>
+<ul class="simple">
+<li>coords: Coords array with nodal coordinates</li>
+<li>nrs: node numbers</li>
+<li>attr: node attributes</li>
+<li>bmrk: node boundary marker</li>
+</ul>
+<p>The last two may be None.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.readElemsBlock">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">readElemsBlock</tt><big>(</big><em>fil</em>, <em>nelems</em>, <em>nplex</em>, <em>nattr</em><big>)</big><a class="headerlink" href="#plugins.tetgen.readElemsBlock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a tetgen elems block.</p>
+<p>Returns a tuple with:</p>
+<ul class="simple">
+<li>elems: Connectivity of type &#8216;tet4&#8217; or &#8216;tet10&#8217;</li>
+<li>nrs: the element numbers</li>
+<li>attr: the element attributes</li>
+</ul>
+<p>The last can be None.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.readFacesBlock">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">readFacesBlock</tt><big>(</big><em>fil</em>, <em>nelems</em>, <em>nbmark</em><big>)</big><a class="headerlink" href="#plugins.tetgen.readFacesBlock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a tetgen faces block.</p>
+<p>Returns a a tuple with:</p>
+<ul class="simple">
+<li>elems: Connectivity of type &#8216;tri3&#8217;</li>
+<li>nrs: face numbers</li>
+<li>bmrk: face boundary marker</li>
+</ul>
+<p>The last can be None.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.readSmeshFacetsBlock">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">readSmeshFacetsBlock</tt><big>(</big><em>fil</em>, <em>nfacets</em>, <em>nbmark</em><big>)</big><a class="headerlink" href="#plugins.tetgen.readSmeshFacetsBlock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a tetgen .smesh facets bock.</p>
+<p>Returns a tuple of dictionaries with plexitudes as keys:</p>
+<ul class="simple">
+<li>elems: for each plexitude a Connectivity array</li>
+<li>nrs: for each plexitude a list of element numbers in corresponding elems</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.readNeigh">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">readNeigh</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#plugins.tetgen.readNeigh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a tetgen .neigh file.</p>
+<p>Returns an arrays containing the tetrahedra neighbours:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.writeNodes">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">writeNodes</tt><big>(</big><em>fn</em>, <em>coords</em>, <em>offset=0</em><big>)</big><a class="headerlink" href="#plugins.tetgen.writeNodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a tetgen .node file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.writeSmesh">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">writeSmesh</tt><big>(</big><em>fn</em>, <em>facets</em>, <em>coords=None</em>, <em>holes=None</em>, <em>regions=None</em><big>)</big><a class="headerlink" href="#plugins.tetgen.writeSmesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a tetgen .smesh file.</p>
+<p>Currently it only writes the facets of a triangular surface mesh.
+Coords should be written independently to a .node file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.writeTmesh">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">writeTmesh</tt><big>(</big><em>fn</em>, <em>elems</em>, <em>offset=0</em><big>)</big><a class="headerlink" href="#plugins.tetgen.writeTmesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a tetgen .ele file.</p>
+<p>Writes elements of a tet4 mesh.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.writeSurface">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">writeSurface</tt><big>(</big><em>fn</em>, <em>coords</em>, <em>elems</em><big>)</big><a class="headerlink" href="#plugins.tetgen.writeSurface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a tetgen surface model to .node and .smesh files.</p>
+<p>The provided file name is either the .node or the .smesh filename,
+or else it is the basename where .node and .smesh extensions will
+be appended.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.writeTetMesh">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">writeTetMesh</tt><big>(</big><em>fn</em>, <em>coords</em>, <em>elems</em><big>)</big><a class="headerlink" href="#plugins.tetgen.writeTetMesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a tetgen tetrahedral mesh model to .node and .ele files.</p>
+<p>The provided file name is either the .node or the .smesh filename,
+or else it is the basename where .node and .ele extensions will
+be appended.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.nextFilename">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">nextFilename</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#plugins.tetgen.nextFilename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the next file name in a family of tetgen file names.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.runTetgen">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">runTetgen</tt><big>(</big><em>fn</em>, <em>options=''</em><big>)</big><a class="headerlink" href="#plugins.tetgen.runTetgen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run tetgen mesher on the specified file.</p>
+<p>The input file is a closed triangulated surface.
+tetgen will generate a volume tetraeder mesh inside the surface,
+and create a new approximation of the surface as a by-product.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.readTetgen">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">readTetgen</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#plugins.tetgen.readTetgen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read and draw a tetgen file.</p>
+<p>This is an experimental function for the geometry import menu.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.checkSelfIntersectionsWithTetgen">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">checkSelfIntersectionsWithTetgen</tt><big>(</big><em>self</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#plugins.tetgen.checkSelfIntersectionsWithTetgen" title="Permalink to this definition">¶</a></dt>
+<dd><p>check self intersections using tetgen</p>
+<p>Returns pairs of intersecting triangles</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.tetgen.tetMesh">
+<tt class="descclassname">plugins.tetgen.</tt><tt class="descname">tetMesh</tt><big>(</big><em>surfacefile</em>, <em>quality=False</em>, <em>volume=None</em>, <em>outputdir=None</em><big>)</big><a class="headerlink" href="#plugins.tetgen.tetMesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a tetrahedral mesh inside a surface</p>
+<ul class="simple">
+<li><cite>surfacefile</cite>: a file representing a surface. It can be an .off or
+.stl file (or other?)</li>
+<li><cite>quality</cite>: if True, the output will be a quality mesh
+The circumradius-to-shortest-edge ratio can be constrained by
+specifying a float value for quality (default is 2.0)</li>
+<li><cite>volume</cite>: float: applies a maximum tetrahedron volume constraint</li>
+<li><cite>outputdir</cite>: if specified, the results will be placed in this directory.
+The default is to place the results in the same directory as the input
+file.</li>
+</ul>
+<p>If the creation of the tetrahedral model is succesful, the results are
+read back using readTetgen and returned.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plugins.tools.html" title="63. plugins.tools — tools.py"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="plugins.sectionize.html" title="61. plugins.sectionize — sectionize.py"
+             >previous</a> |</li>
+        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+    <span class="left">
+        &copy; Copyright 2004-2015, Benedict Verhegghe.
+    </span>
+      Last updated on Feb 08, 2015.
+    <span class="right">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+    </span>
+    </div>
+  </body>
+</html>
