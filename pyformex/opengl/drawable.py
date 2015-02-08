@@ -360,14 +360,15 @@ class Base(Attributes):
     implement any drawable objects.
     Drawable objects should be instantiated from the derived classes.
     Currently, we have the following derived classes:
-      Actor: a 3-D object positioned and oriented in the 3D scene. Defined
-             in actors.py.
-      Mark: an object positioned in 3D scene but not undergoing the camera
-             axis rotations and translations. It will always appear the same
-             to the viewer, but will move over the screen according to its
-             3D position. Defined in marks.py.
-      Decor: an object drawn in 2D viewport coordinates. It will unchangeably
-             stick on the viewport until removed. Defined in decors.py.
+
+    Actor: a 3-D object positioned and oriented in the 3D scene. Defined
+           in actors.py.
+    Mark: an object positioned in 3D scene but not undergoing the camera
+          axis rotations and translations. It will always appear the same
+          to the viewer, but will move over the screen according to its
+          3D position. Defined in marks.py.
+    Decor: an object drawn in 2D viewport coordinates. It will unchangeably
+           stick on the viewport until removed. Defined in decors.py.
 
     The Base class is just an Attributes dict storing all the rendering
     parameters, and providing defaults from the current canvas drawoptions
@@ -1055,48 +1056,48 @@ def polygonEdgeIndex(n):
 
 ########################################################################
 
-from pyformex.legacy.actors import Actor as OldActor
-from pyformex import arraytools as at
+## from pyformex.legacy.actors import Actor as OldActor
+## from pyformex import arraytools as at
 
-class Text3DActor(OldActor):
-    """A text as a 3D object.
+## class Text3DActor(OldActor):
+##     """A text as a 3D object.
 
-    This class provides an Actor representing a text as an object
-    in 3D space.
-    """
-    def __init__(self, text, font, facesize, color, trl):
-        OldActor.__init__(self)
-        self.text = text
-        self.font = font
-        self.setFaceSize(*facesize)
-        self.setColor(color)
-        self.trl = at.checkArray(trl, (3,), 'f')
+##     This class provides an Actor representing a text as an object
+##     in 3D space.
+##     """
+##     def __init__(self, text, font, facesize, color, trl):
+##         OldActor.__init__(self)
+##         self.text = text
+##         self.font = font
+##         self.setFaceSize(*facesize)
+##         self.setColor(color)
+##         self.trl = at.checkArray(trl, (3,), 'f')
 
-    def setFaceSize(self, a, b):
-        self.font.FaceSize(a, b)
+##     def setFaceSize(self, a, b):
+##         self.font.FaceSize(a, b)
 
-    def setColor(self, color):
-        from pyformex.opengl.sanitize import saneColor
-        self.color = saneColor(color)
+##     def setColor(self, color):
+##         from pyformex.opengl.sanitize import saneColor
+##         self.color = saneColor(color)
 
-    def bbox(self):
-        bb = self.font.BBox(self.text)
-        return [bb[:3], bb[3:]]
+##     def bbox(self):
+##         bb = self.font.BBox(self.text)
+##         return [bb[:3], bb[3:]]
 
-    def render(self, renderer):
-        """Render the geometry of this object"""
-        GL.glMatrixMode(GL.GL_MODELVIEW)
-        GL.glPushMatrix()
-        GL.glTranslate(*self.trl)
-        GL.glColor3fv(self.color)
-        self.font.Render(self.text)
-        GL.glMatrixMode(GL.GL_MODELVIEW)
-        GL.glPopMatrix()
-        # Because of the way font.Render works, we need an update here
-        #pf.canvas.update()
+##     def render(self, renderer):
+##         """Render the geometry of this object"""
+##         GL.glMatrixMode(GL.GL_MODELVIEW)
+##         GL.glPushMatrix()
+##         GL.glTranslate(*self.trl)
+##         GL.glColor3fv(self.color)
+##         self.font.Render(self.text)
+##         GL.glMatrixMode(GL.GL_MODELVIEW)
+##         GL.glPopMatrix()
+##         # Because of the way font.Render works, we need an update here
+##         #pf.canvas.update()
 
 
-    def draw(self,canvas):
-        self.render(None)
+##     def draw(self,canvas):
+##         self.render(None)
 
 ### End

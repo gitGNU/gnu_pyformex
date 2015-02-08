@@ -41,132 +41,152 @@ _techniques = ['ftgl', 'font']
 
 from pyformex.gui.draw import *
 
-try:
-    import FTGL
-
-except ImportError:
-    warning("You do not have FTGL and its Python bindings (pyftgl).\nSee the pyformex/extra/pyftgl directory in the pyFormex source tree for instructions.")
-
-from pyformex.opengl import colors
-from pyformex.gui import image
-from pyformex.odict import OrderedDict
-from pyformex.opengl.actors import Text3DActor
+warning("The Ftgl example is not usable with the current pyFormex version")
 
 
-extra_fonts = [
-    getcfg('datadir')+"/blippok.ttf",
-    ]
+## try:
+##     import FTGL
 
-fonts = [ f for f in utils.listAllFonts() if f.endswith('.ttf') ]
-fonts += [ f for f in extra_fonts if os.path.exists(f) ]
-fonts.sort()
-print("Number of available fonts: %s" % len(fonts))
+## except ImportError:
+##     warning("You do not have FTGL and its Python bindings (pyftgl).\nSee the pyformex/extra/pyftgl directory in the pyFormex source tree for instructions.")
 
-fonttypes = OrderedDict([
-    ('polygon', FTGL.PolygonFont),
-    ('outline', FTGL.OutlineFont),
-    ('texture', FTGL.TextureFont),
-#    ('extrude',FTGL.ExtrudeFont),
-    ('bitmap', FTGL.BitmapFont),
-#    ('buffer',FTGL.BufferFont),
-    ])
-
-def showSquare():
-    F = Formex(pattern('1234'))
-    draw(F)
+## from pyformex.opengl import colors
+## from pyformex.gui import image
+## from pyformex.odict import OrderedDict
+## from pyformex.opengl.actors import Text3DActor
 
 
-def showText(text, font, fonttype, facesize, color, pos):
-    #utils.warn("Text3DActor is currently inactive")
-    #return
-    font = fonttypes[fonttype](font)
-    t = Text3DActor(text, font, facesize, color, pos)
-    t.nolight=True
-    drawAny(t)
-    zoomAll()  #  !! Removing this may cause errors
-    return t
+## extra_fonts = [
+##     getcfg('datadir')+"/blippok.ttf",
+##     ]
+
+## fonts = [ f for f in utils.listAllFonts() if f.endswith('.ttf') ]
+## fonts += [ f for f in extra_fonts if os.path.exists(f) ]
+## fonts.sort()
+## print("Number of available fonts: %s" % len(fonts))
+
+## fonttypes = OrderedDict([
+##     ('polygon', FTGL.PolygonFont),
+##     ('outline', FTGL.OutlineFont),
+##     ('texture', FTGL.TextureFont),
+## #    ('extrude',FTGL.ExtrudeFont),
+##     ('bitmap', FTGL.BitmapFont),
+## #    ('buffer',FTGL.BufferFont),
+##     ])
+
+## def showSquare():
+##     F = Formex(pattern('1234'))
+##     draw(F)
 
 
-def rotate():
-    sleeptime = 0.1
-    n = 1
-    m = 5
-    val = m * 360. / n
-    for i in range(n):
-        pf.canvas.camera.rotate(val, 0., 1., 0.)
-        pf.canvas.update()
-        sleep(sleeptime)
-        sleeptime *= 0.98
+## def showText(text, font, fonttype, facesize, color, pos):
+##     #utils.warn("Text3DActor is currently inactive")
+##     #return
+##     #font = fonttypes[fonttype](font)
+##     #t = Text3DActor(text, font, facesize, color, pos)
+##     #t.nolight=True
+##     #drawAny(t)
+##     #zoomAll()  #  !! Removing this may cause errors
+##     print(fonts)
+##     # - draw a square
+##     # - use the full character set in the default font as a texture
+##     # - the font textures are currently upside down, therefore we need
+##     #   to specify texcoords to flip the image
+##     from pyformex.opengl.textext import FontTexture
+##     F = Formex('4:0123').scale(200).toMesh()
+##     fontfile = getcfg('datadir')+"/blippok.ttf"
+##     tex = FontTexture.default()
+##     A = draw(F,color=yellow,texture=tex,texcoords=array([[0,1],[1,1],[1,0],[0,0]]),texmode=2)
+
+##     #return t
+
+
+## def rotate():
+##     sleeptime = 0.1
+##     n = 1
+##     m = 5
+##     val = m * 360. / n
+##     for i in range(n):
+##         pf.canvas.camera.rotate(val, 0., 1., 0.)
+##         pf.canvas.update()
+##         sleep(sleeptime)
+##         sleeptime *= 0.98
 
 
 
-_items = [
-    _I('text', 'pyFormex'),
-    _I('font', choices=fonts),
-    _I('fonttype', choices=fonttypes.keys()),
-    _I('facesize', (24, 36)),
-    _I('color', colors.pyformex_pink),
-    _I('pos', (0., 0., 0.)),
-    ]
+## _items = [
+##     _I('text', 'pyFormex'),
+##     _I('font', choices=fonts),
+##     _I('fonttype', choices=fonttypes.keys()),
+##     _I('facesize', (24, 36)),
+##     _I('color', colors.pyformex_pink),
+##     _I('pos', (0., 0., 0.)),
+##     ]
 
-dialog = None
-
-
-def close():
-    global dialog
-    if dialog:
-        dialog.close()
-        dialog = None
-    # Release script lock
-    scriptRelease(__file__)
+## dialog = None
 
 
-def show(all=False):
-    global text, font, facesize, color
-    dialog.acceptData()
-    globals().update(dialog.results)
-    export({'_Ftgl_data_':dialog.results})
-
-    clear()
-    print(dialog.results)
-    showText(**dialog.results)
-    zoomAll()
-
-    #image.save("test.eps")
+## def close():
+##     global dialog
+##     if dialog:
+##         dialog.close()
+##         dialog = None
+##     # Release script lock
+##     scriptRelease(__file__)
 
 
-def timeOut():
-    showAll()
-    wait()
-    close()
+## def show(all=False):
+##     global text, font, facesize, color
+##     dialog.acceptData()
+##     globals().update(dialog.results)
+##     export({'_Ftgl_data_':dialog.results})
 
+##     clear()
+##     print(dialog.results)
+##     view('front')
+##     showText(**dialog.results)
+##     zoomAll()
+
+##     #image.save("test.eps")
+
+
+## def timeOut():
+##     showAll()
+##     wait()
+##     close()
+
+
+## def run():
+##     global dialog
+##     dialog = Dialog(
+##         items=_items,
+## #        enablers=_enablers,
+##         caption='Ftgl parameters',
+##         actions = [('Close', close), ('Clear', clear), ('Show', show)],
+##         default='Show')
+
+##     if '_Ftgl_data_' in pf.PF:
+##         dialog.updateData(pf.PF['_Ftgl_data_'])
+
+##     dialog.timeout = timeOut
+##     dialog.show()
+##     # Block other scripts
+##     scriptLock(__file__)
+
+
+## if __name__ == 'draw':
+##     chdir(__file__)
+##     clear()
+##     reset()
+##     #view('iso')
+##     smooth()
+##     lights(False)
+##     run()
 
 def run():
-    global dialog
-    dialog = Dialog(
-        items=_items,
-#        enablers=_enablers,
-        caption='Ftgl parameters',
-        actions = [('Close', close), ('Clear', clear), ('Show', show)],
-        default='Show')
-
-    if '_Ftgl_data_' in pf.PF:
-        dialog.updateData(pf.PF['_Ftgl_data_'])
-
-    dialog.timeout = timeOut
-    dialog.show()
-    # Block other scripts
-    scriptLock(__file__)
-
+    pass
 
 if __name__ == 'draw':
-    chdir(__file__)
-    clear()
-    reset()
-    #view('iso')
-    smooth()
-    lights(False)
     run()
-
 
 # End

@@ -1,6 +1,6 @@
 import pyformex as pf
 
-if pf.options.oldabq:
+if pf.options and pf.options.oldabq:
     from fe_abq_old import *
 
 else:

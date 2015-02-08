@@ -224,6 +224,7 @@ These modules are responsible for rendering the 3D models and depend on OpenGL. 
    ref/canvas
    ref/decors
    ref/drawable
+   ref/matrix
    ref/objectdialog
    ref/renderer
    ref/sanitize

@@ -2318,14 +2318,15 @@ def fmtData1d(data,npl=8,sep=', ',linesep='\n',fmt=str):
     - `npl`: int: (maximum) number of items to appear in a group.
       The last group may contain less items.
     - `sep`: string: separator between individual items of a group.
-    - `linesep`: string: separator between groups. The default (`\n`) will
+    - `linesep`: string: separator between groups. The default ('\n') will
       put each group of `npl` items on a separate line.
     - `fmt`: callable: used to convert a single item to a string. Default
-      is Python's built in string converter.
+      is the Python built-in string converter.
 
     Returns a string with the formatted data.
 
-    Examples:
+    Example:
+
       >>> print(fmtData1d(arange(10)))
       0, 1, 2, 3, 4, 5, 6, 7
       8, 9
@@ -2336,6 +2337,7 @@ def fmtData1d(data,npl=8,sep=', ',linesep='\n',fmt=str):
       >>> print(fmtData1d([1.25, 3, 'no', 2.50, 4, 'yes'],npl=3,fmt=myformat))
             1.25,          3,         no
              2.5,          4,        yes
+
     """
     if isinstance(data,ndarray):
         data = data.flat
@@ -2351,7 +2353,8 @@ def isqrt(n):
     If the input integer is a perfect square, the (integer) square
     root is returned. Else, an error is raised.
 
-    Examples:
+    Example:
+
       >>> isqrt(36)
       6
     """

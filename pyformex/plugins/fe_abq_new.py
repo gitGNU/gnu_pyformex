@@ -423,7 +423,7 @@ def fmtMaterial(mat):
       variables. Each item in the list is a tuple of a variable number and
       the variable name, e.g. `[[ 1,' var1'],[ 2,' var2']]`.
 
-    Examples:
+    Example:
 
       >>> steel = {
       ...      'name': 'steel',
@@ -549,32 +549,30 @@ def fmtMaterial(mat):
 
 
 
-# TODO : THESE NEED TO BE UNIFIED
+# TODO : - THESE NEED TO BE UNIFIED
+#        - VERY BAD DOCSTRING !!!!
 
 def fmtConnectorBehavior(prop):
-    """ Write a connector behavior.
-    Implemented: Elasticity,  Stop
+    ## """_Write a connector behavior.
+    ## Implemented: Elasticity,  Stop
 
-    Optional parameter:
-    - `extrapolation`: extrapolation method for all subcomponents of the behavior.
-                       'CONSTANT' (default) or 'LINEAR'
+    ## Optional parameter:
+    ## - `extrapolation`: extrapolation method for all subcomponents of the behavior.
+    ##                    'CONSTANT' (default) or 'LINEAR'
 
-    Examples:
-    ---------
+    ## Example:
 
-    Elasticity
-    ''''''''''
-    elasticity = dict(component=[1,2,3,4,5,6], value=[1,1,1,1,1,1])
-    P.Prop(name='connbehavior1', ConnectorBehavior='', Elasticity=elasticity, extrapolation='LINEAR')
+    ## Elasticity
+    ## elasticity = dict(component=[1,2,3,4,5,6], value=[1,1,1,1,1,1])
+    ## P.Prop(name='connbehavior1', ConnectorBehavior='', Elasticity=elasticity, extrapolation='LINEAR')
 
-    Optional parameter for Elasticity dictionary:
-    - `nonlinear`: use nonlinear elasticity data. Can be False (default) or True.
+    ## Optional parameter for Elasticity dictionary:
+    ## - `nonlinear`: use nonlinear elasticity data. Can be False (default) or True.
 
-    Stop:
-    '''''
-    stop = dict(component=[1,2,3,4,5,6],lowerlimit=[1,1,1,1,1,1], upperlimit=[2, 2, 2, 2,2,2])
-    P.Prop(name='connbehavior3',ConnectorBehavior='',Stop=stop)
-    """
+    ## Stop:
+    ## stop = dict(component=[1,2,3,4,5,6],lowerlimit=[1,1,1,1,1,1], upperlimit=[2, 2, 2, 2,2,2])
+    ## P.Prop(name='connbehavior3',ConnectorBehavior='',Stop=stop)
+    ## """
     out = ''
     for p in prop:
         out += '*CONNECTOR BEHAVIOR, NAME=%s' % p.name
@@ -1182,7 +1180,7 @@ def fmtSurface(prop):
 
     - options (opt): string that is added as is to the command line.
 
-    Examples::
+    Example:
 
       # This allow specifying a surface from an existing set of surface elements
       P.Prop(set='quad_set'  ,name='quad_surface',surftype='element',label='SPOS')
@@ -1249,7 +1247,7 @@ def fmtSurfaceInteraction(prop):
 
     Required:
 
-    -name
+    - name
 
     Optional:
 
@@ -1380,9 +1378,10 @@ def fmtContact(prop):
     return out
 
 
+# TODO: BAD DOCSTRING
 
 def fmtGeneralContact(prop):
-    """Format the general contact.
+    """_Format the general contact.
 
     Only implemented on model level
 
@@ -1393,7 +1392,9 @@ def fmtGeneralContact(prop):
     Optional:
 
     - Exclusions (exl)
-    - Extra (extra). Example ::
+    - Extra (extra).
+
+    Example::
 
         extra = "*CONTACT CONTROLS ASSIGNMENT, TYPE=SCALE PENALTY\\n, , 1.e3\\n"
 
@@ -1455,22 +1456,23 @@ def fmtContactPair(prop):
         out += "%s, %s\n" % (p.slave, p.master)
     return out
 
+
 def fmtConstraint(prop):
     """Format Tie constraint
 
     Required:
 
-    -name
-    -adjust (yes or no)
-    -slave
-    -master
+    - name
+    - adjust (yes or no)
+    - slave
+    - master
 
     Optional:
 
-    -type (surf2surf, node2surf)
-    -positiontolerance
-    -no rotation
-    -tiednset (it cannot be used in combination with positiontolerance)
+    - type (surf2surf, node2surf)
+    - positiontolerance
+    - no rotation
+    - tiednset (it cannot be used in combination with positiontolerance)
 
     Example::
 
@@ -1499,9 +1501,9 @@ def fmtInitialConditions(prop):
 
     Required:
 
-    -type
-    -nodes
-    -data
+    - type
+    - nodes
+    - data
 
     Example::
 
@@ -1905,10 +1907,13 @@ def fmtLoad(key,prop):
 
 
 #
-# This is TOO complex. We should restrict the way users can specify things.
+# TODO:
+#   This is TOO complex. We should restrict the way users can specify things.
+#   Also, docstring does not compile in sphinx
 #
+
 class Interaction(Dict):
-    """A Dict for setting surface interactions
+    """_A Dict for setting surface interactions
 
     Required:
 

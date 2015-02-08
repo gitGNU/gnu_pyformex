@@ -966,13 +966,14 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
         Parameters:
 
-        - sort`: str. Weighted sorting method. It can assume values 'number' (default),
-            'length', 'area', 'volume'.
-        -`nparts`: is the equivalent of parameter `maxval` in :meth:`Mesh.frontWalk`.
-            Maximum frontal value. If negative (default) the walk will
-            continue until all elements have been reached. If non-negative,
-            walking will stop as soon as the frontal value reaches this
-            maximum.
+        - `sort`: str. Weighted sorting method. It can assume values
+          'number' (default), 'length', 'area', 'volume'.
+        - `nparts`: is the equivalent of parameter `maxval` in
+          :meth:`Mesh.frontWalk`.
+          Maximum frontal value. If negative (default) the walk will
+          continue until all elements have been reached. If non-negative,
+          walking will stop as soon as the frontal value reaches this
+          maximum.
 
         The remainder of the parameters are like in
         :meth:`Mesh.frontWalk`.

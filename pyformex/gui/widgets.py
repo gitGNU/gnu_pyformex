@@ -2604,7 +2604,7 @@ class FileDialog(QtGui.QFileDialog):
 
         Returns a dict.
         If the user accepts the results, the dict has a single entry with
-         key 'fn' and the selected filename(s) as value.
+        key 'fn' and the selected filename(s) as value.
         If the user hits CANCEL or ESC, an empty dict is returned.
         """
         self.show(timeout, modal=True)

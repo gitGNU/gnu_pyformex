@@ -437,8 +437,8 @@ def drawAxes(cs=None,*args,**kargs):
     Parameters:
 
     - `cs`: a :class:`coordsys.CoordSys`, a
-      :class:`coordsys.CoordinateSystem`, or a Coords(4,3)
-    If not specified, the global coordinate system is used.
+      :class:`coordsys.CoordinateSystem`, or a Coords(4,3).
+      If not specified, the global coordinate system is used.
 
     Other arguments can be added just like in the :class:`AxesActor` class.
 

@@ -38,7 +38,7 @@ from pyformex.collection import Collection
 from pyformex.attributes import Attributes
 from pyformex.formex import Formex
 from pyformex.simple import cuboid2d
-from pyformex.opengl import decors
+#from pyformex.opengl import decors
 from pyformex.opengl.drawable import GeomActor
 from pyformex.opengl.sanitize import saneColor,saneColorArray
 from pyformex.opengl.camera import Camera
@@ -854,6 +854,7 @@ class Canvas(object):
         If on is True, a triade of global axes is displayed, if False it is
         removed. The default (None) toggles between on and off.
         """
+        from . import decors
         if on is None:
             on = self.triade is None
         pf.debug("SETTING TRIADE %s" % on, pf.DEBUG.DRAW)
@@ -1310,6 +1311,7 @@ class Canvas(object):
         """Draw the focus rectangle.
 
         """
+        from . import decors
         w, h = self.width(), self.height()
         self._focus = decors.Grid2D(-1.,-1.,1.,1., color=color, linewidth=2, rendertype=3)
         self.addAny(self._focus)
@@ -1317,6 +1319,7 @@ class Canvas(object):
 
     def draw_cursor(self, x, y):
         """draw the cursor"""
+        from . import decors
         if self.cursor:
             self.removeAny(self.cursor)
         w, h = pf.cfg.get('draw/picksize', (20, 20))

@@ -41,7 +41,7 @@ GUIMODULES= appMenu colorscale draw \
   image imageViewer menu\
   toolbar viewport widgets
 OPENGLMODULES= camera canvas colors decors drawable \
-  matrix objectdialog renderer sanitize scene shader \
+  objectdialog renderer sanitize scene shader \
   textext texture
 PLUGINMODULES= calpy_itf cameratools ccxdat ccxinp curve datareader dxf export \
   fe fe_abq fe_post flavia \
@@ -53,7 +53,7 @@ PLUGINMODULES= calpy_itf cameratools ccxdat ccxinp curve datareader dxf export \
 AUTOREF= $(COREMODULES) $(GUIMODULES) $(OPENGLMODULES) $(PLUGINMODULES)
 AUTOSRC= $(addsuffix .rst, ${AUTOREF})
 
-MANUALREF = #geometry
+MANUALREF = matrix
 MANUALSRC = $(addsuffix .rst, ${MANUALREF})
 
 PY2RST=../py2rst.py

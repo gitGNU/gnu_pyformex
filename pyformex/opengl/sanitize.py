@@ -135,14 +135,20 @@ def saneColor(color=None):
 def saneColorArray(color, shape):
     """Makes sure the shape of the color array is compatible with shape.
 
-    shape is an (nelems,nplex) tuple
+    Parameters:
+
+    - `color`: set of colors
+    - `shape`: (nelems,nplex) tuple
+
     A compatible color.shape is equal to shape or has either or both of its
     dimensions equal to 1.
     Compatibility is enforced in the following way:
+
     - if color.shape[1] != nplex and color.shape[1] != 1: take out first
       plane in direction 1
     - if color.shape[0] != nelems and color.shape[0] != 1: repeat the plane
       in direction 0 nelems times
+
     """
     color = asarray(color)
     if color.ndim == 1:

@@ -431,8 +431,10 @@ def boxes(x):
 def boxes2d(x):
     """Create a set of rectangular boxes.
 
-    `x`: Coords with shape (nelems,2,3), usually with x[:,0,:] < x[:,1,:]
-    and x[:,:,2] == 0.
+    Parameters:
+
+    - `x`: Coords with shape (nelems,2,3), usually with x[:,0,:] < x[:,1,:]
+      and x[:,:,2] == 0.
 
     Returns a Formex with shape (nelems,4,3) and of type 'quad4',
     where each element is the rectangular box which has x[:,0,:]
@@ -440,7 +442,7 @@ def boxes2d(x):
     Note that the elements may be degenerate or reverted if the minimum
     coordinates are not smaller than the maximum ones.
 
-    This function is a 2D version of :func:`bboxes`().
+    This function is a 2D version of :meth:`bboxes`.
     """
     x = Coords(x).reshape(-1, 2, 3)
     i = [ [0, 0, 0],

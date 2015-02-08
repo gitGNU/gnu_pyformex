@@ -102,8 +102,8 @@ class Matrix4(np.matrix):
         """Finalize the new Matrix object.
 
         When a class is derived from numpy.ndarray and the constructor (the
-        __new__ method) defines new attributes, these atttributes need to be
-        reset in this method.
+        :meth:`__new__` method) defines new attributes, these atttributes
+        need to be reset in this method.
         """
         self._gl = getattr(obj, '_gl', None)
 
@@ -112,6 +112,8 @@ class Matrix4(np.matrix):
         """Get the transformation matrix as a 'ready-to-use'-gl version.
 
         Returns the (4,4) Matrix as a rowwise flattened array of type float32.
+
+        Example:
 
         >>> Matrix4().gl()
         matrix([ 1.,  0.,  0.,  0.,  0.,  1.,  0.,  0.,  0.,  0.,  1.,  0.,  0.,
@@ -130,6 +132,7 @@ class Matrix4(np.matrix):
 
     @rot.setter
     def rot(self, value):
+        """Set the rotation matrix to (3,3) value"""
         self[:3, :3] = value
         self._gl = None
 
@@ -142,6 +145,7 @@ class Matrix4(np.matrix):
 
     @trl.setter
     def trl(self, value):
+        """Set the translation vector to (3,) value"""
         self[3, :3] = value
         self._gl = None
 
@@ -176,6 +180,7 @@ class Matrix4(np.matrix):
         """Rotate a Matrix4.
 
         The rotation can be specified by
+
         - an angle and axis,
         - a 3x3 rotation matrix,
         - a 4x4 trtransformation matrix (Matrix4).
