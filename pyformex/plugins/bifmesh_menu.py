@@ -34,7 +34,7 @@ import pyformex as pf
 from pyformex import zip,olist
 
 from pyformex.plugins import (
-    vascularsweepingmesher as vsm,
+    bifmesh as vsm,
     geometry_menu as gm,
     surface_menu as sm,
     draw2d as d2,

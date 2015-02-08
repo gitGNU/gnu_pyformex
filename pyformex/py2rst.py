@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # $Id$
 ##
 ##  This file is part of pyFormex 0.9.1  (Tue Oct 15 21:05:25 CEST 2013)
@@ -107,7 +106,7 @@ def ship_module(name,docstring):
     shortdoc,longdoc = split_doc(docstring)
     ship(""".. $%s$  -*- rst -*-
 .. pyformex reference manual --- %s
-.. CREATED WITH py2rst.py: DO NOT EDIT
+.. CREATED WITH pyformex --docmodule: DO NOT EDIT
 
 .. include:: <isonum.txt>
 .. include:: ../defines.inc

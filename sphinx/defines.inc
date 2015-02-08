@@ -27,5 +27,5 @@
 .. common definitions for pyFormex documentation 
 
 .. |pyformex| replace:: pyFormex
-.. |year| replace:: 2012
+.. |year| replace:: 2015
 .. |latest| replace:: 0.8.6

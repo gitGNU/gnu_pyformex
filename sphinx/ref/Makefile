@@ -37,18 +37,24 @@ COREMODULES= adjacency arraytools attributes \
   geometry geomfile geomtools \
   mesh multi mydict odict olist project \
   script sendmail simple software timer utils varray
-GUIMODULES= appMenu colorscale draw \
-  image imageViewer menu\
-  toolbar viewport widgets
-OPENGLMODULES= camera canvas colors decors drawable \
+GUIMODULES= $(addprefix gui., \
+  appMenu colorscale draw \
+  image imageViewer menu \
+  toolbar viewport widgets \
+  )
+OPENGLMODULES= $(addprefix opengl., \
+   camera canvas colors decors drawable \
   objectdialog renderer sanitize scene shader \
-  textext texture
-PLUGINMODULES= calpy_itf cameratools ccxdat ccxinp curve datareader dxf export \
+  textext texture \
+  )
+PLUGINMODULES= $(addprefix plugins., \
+   calpy_itf cameratools ccxdat ccxinp curve datareader dxf export \
   fe fe_abq fe_post flavia \
   imagearray inertia isopar isosurface lima neu_exp nurbs objects \
   partition plot2d polygon polynomial \
   postproc properties pyformex_gts section2d sectionize \
-  tetgen tools trisurface turtle units vascularsweepingmesher web webgl
+  tetgen tools trisurface turtle units bifmesh web webgl \
+  )
 
 AUTOREF= $(COREMODULES) $(GUIMODULES) $(OPENGLMODULES) $(PLUGINMODULES)
 AUTOSRC= $(addsuffix .rst, ${AUTOREF})
@@ -56,15 +62,21 @@ AUTOSRC= $(addsuffix .rst, ${AUTOREF})
 MANUALREF = matrix
 MANUALSRC = $(addsuffix .rst, ${MANUALREF})
 
-PY2RST=../py2rst.py
-
 .PHONY: ref
 
 .SILENT:
 
-# where to search for source files
-PYFORMEXDIR=../pyformex
-vpath %.py $(addprefix ../../pyformex, / /opengl/ /gui/ /plugins/)
+# pyFormex root directory
+PYFORMEXDIR= ../../pyformex
+
+# the pyFormex executable
+PYFORMEX= ${PYFORMEXDIR}/pyformex
+
+# Where to search for the modules
+#
+# Note that if we have same names, we may pick up the wrong module!
+#
+# vpath %.py $(addprefix ${PYFORMEXDIR}, / /opengl/ /gui/ /plugins/)
 
 
 all: ${AUTOSRC}
@@ -72,8 +84,20 @@ all: ${AUTOSRC}
 clean:
 	rm -f ${AUTOSRC}
 
-%.rst: %.py
-	@${PY2RST} $< > $@
+%.rst: ${PYFORMEXDIR}/%.py
+	@echo "====== $* ======="
+	${PYFORMEX} --docmodule $* > $@
 
+gui.%.rst: ${PYFORMEXDIR}/gui/%.py
+	@echo "====== $* ======="
+	${PYFORMEX} --docmodule gui.$* > $@
+
+opengl.%.rst: ${PYFORMEXDIR}/opengl/%.py
+	@echo "====== $* ======="
+	${PYFORMEX} --docmodule opengl.$* > $@
+
+plugins.%.rst: ${PYFORMEXDIR}/plugins/%.py
+	@echo "====== $* ======="
+	${PYFORMEX} --docmodule plugins.$* > $@
 
 # End
