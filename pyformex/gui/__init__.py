@@ -85,7 +85,6 @@ except:
     pf.X11 = False
 
 
-assert(pf.options.opengl2)
 try:
     opengl2 = pf.options.opengl2
 except:

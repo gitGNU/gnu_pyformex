@@ -2318,7 +2318,7 @@ def fmtData1d(data,npl=8,sep=', ',linesep='\n',fmt=str):
     - `npl`: int: (maximum) number of items to appear in a group.
       The last group may contain less items.
     - `sep`: string: separator between individual items of a group.
-    - `linesep`: string: separator between groups. The default ('\n') will
+    - `linesep`: string: separator between groups. The default (newline) will
       put each group of `npl` items on a separate line.
     - `fmt`: callable: used to convert a single item to a string. Default
       is the Python built-in string converter.

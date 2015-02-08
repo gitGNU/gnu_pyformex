@@ -1,6 +1,12 @@
 import pyformex as pf
 
-if pf.options and pf.options.oldabq:
+# This trick is for Sphinx
+try:
+    oldabq = pf.options.oldabq
+except:
+    oldabq = False
+
+if oldabq:
     from fe_abq_old import *
 
 else:

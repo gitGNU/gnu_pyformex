@@ -75,6 +75,7 @@ class Matrix4(np.matrix):
 
     We can first scale and then rotate, or first rotate and then scale (with
     another scaling factor):
+
     >>> a = I.scale([4.,4.,4.]).rotate(45.,[0.,0.,1.])
     >>> b = I.rotate(45.,[0.,0.,1.]).scale([2.,2.,2.])
     >>> print(a)
@@ -202,14 +203,14 @@ class Matrix4(np.matrix):
                 [  0.00e+00,   0.00e+00,   0.00e+00,   1.00e+00]])
 
 
-        !! TRANSPOSE!!
-        x^2(1-c)+c     xy(1-c)-zs     xz(1-c)+ys     0
-         yx(1-c)+zs     y^2(1-c)+c     yz(1-c)-xs     0
-         xz(1-c)-ys     yz(1-c)+xs     z^2(1-c)+c     0
-              0              0               0        1
-
 
         """
+        ## !! TRANSPOSE!!
+        ## x^2(1-c)+c     xy(1-c)-zs     xz(1-c)+ys     0
+        ##  yx(1-c)+zs     y^2(1-c)+c     yz(1-c)-xs     0
+        ##  xz(1-c)-ys     yz(1-c)+xs     z^2(1-c)+c     0
+        ##       0              0               0        1
+
         try:
             rot = at.checkArray(angle, (4, 4), 'f')[:3, :3]
         except:

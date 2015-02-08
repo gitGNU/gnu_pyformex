@@ -88,7 +88,7 @@ the need to explicitely import them.
    ref/arraytools
    ref/script
    ref/gui.draw
-   ref/colors
+   ref/opengl.colors
 
 
 .. _sec:core-modules:

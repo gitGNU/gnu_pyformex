@@ -1070,7 +1070,7 @@ class PolyLine(Curve):
         Parameters:
 
         - `maxlen`: float: maximum length of the segments. The value is
-        relative to the total curve length.
+          relative to the total curve length.
 
         Returns a PolyLine which is geometrically equivalent to the
         input PolyLine.
