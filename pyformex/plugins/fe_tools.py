@@ -316,7 +316,7 @@ def transverseShear(E,nu,c,type='generalized'):
         'trapezoidal':0.822,\
         'shell': 5/6.}
 
-    if asarray(E).size == 1:
+    if np.asarray(E).size == 1:
         E = [E,E]
 
     sh = []
