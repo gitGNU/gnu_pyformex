@@ -707,7 +707,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         By default, the resulting Mesh is compacted. Compaction can be
         switched off by setting `compact=False`.
         """
-        if self.prop==None:
+        if self.prop is None:
             M = Mesh(self.coords, self.getFreeEntities(level=level))
 
         else:
