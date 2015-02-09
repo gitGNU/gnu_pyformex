@@ -637,13 +637,15 @@ def inertialDirections(x):
     
     """
     # Dimension in a coordinate system aligned with the global axes.
-    C, r, Ip, I = x.inertia()
-    X = x.trl(-C).rot(r)
+    I = x.inertia()
+    Iprin, Iaxes = I.principal()
+    C = I.ctr
+    X = x.trl(-C).rot(Iaxes)
     sizes = X.sizes()
     i=argsort(sizes)
-    # r gives the directions as column vectors!
+    # Iaxes gives the directions as column vectors!
     # TODO: maybe we should change that
-    N = r[:,i].T
+    N = Iaxes[:,i].T
     return N, sizes[i]
 
 
