@@ -79,7 +79,7 @@ def draw2D(mode='point',npoints=-1,zplane=0.,coords=None,func=None):
     if pf.canvas.drawmode is not None:
         warning("You need to finish the previous drawing operation first!")
         return
-    if func == None:
+    if func is None:
         func = highlightDrawing
     return pf.canvas.idraw(mode, npoints, zplane, func, coords, _preview)
 

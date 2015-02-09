@@ -202,7 +202,7 @@ class FlatDB(dict):
         This method can safely be overriden in subclasses.
         """
         OK = isinstance(record, dict) and self.checkKeys(record) and (
-            self.check_func == None or self.check_func(record) )
+            self.check_func is None or self.check_func(record) )
         if not OK:
             self.record_error_handler(record)
         return OK
@@ -300,12 +300,12 @@ class FlatDB(dict):
         if len(line) > 0 and line[-1] == '\n':
             line = line[:-1]
         if len(line) == 0:
-            if self.endrec != '' or self.record == None:
+            if self.endrec != '' or self.record is None:
                 # ignore empty lines in these cases
                 return 0
         w = firstWord(line)
         if w == self.endrec:
-            if self.record == None:
+            if self.record is None:
                 self.error_msg = "Found endrec without previous beginrec"
                 return 1
             else:
@@ -313,7 +313,7 @@ class FlatDB(dict):
                 self.record = None
                 return 0
         elif w == self.beginrec:
-            if self.record == None or self.endrec == '':
+            if self.record is None or self.endrec == '':
                 self.record = self.newRecord()
                 # parse rest of beginrec line, if not empty
                 # this allows fields or comments on the beginrec line
@@ -326,7 +326,7 @@ class FlatDB(dict):
                 self.error_msg = "Found beginrec without previous endrec"
                 return 1
         else:
-            if self.record == None:
+            if self.record is None:
                 if self.beginrec == '':
                     self.record = self.newRecord()
                 else:

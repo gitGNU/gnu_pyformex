@@ -307,7 +307,7 @@ class Menu(BaseMenu, QtGui.QMenu):
     def __init__(self,title='UserMenu',parent=None,before=None,tearoff=False,items=None):
         """Create a popup/pulldown menu.
 
-        If parent==None, the menu is a standalone popup menu.
+        If parent is None, the menu is a standalone popup menu.
         If parent is given, the menu will be inserted in the parent menu.
         If parent==pf.GUI, the menu is inserted in the main menu bar.
         If a parent is given, and tearoff==True, the menu can be teared-off.

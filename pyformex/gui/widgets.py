@@ -3237,7 +3237,7 @@ def addActionButtons(layout,actions=[('Cancel',), ('OK',)],default=None,
     If no function is specified, and name is one of 'ok' or 'cancel' (case
     is ignored), the button will be bound to the dialog's 'accept'
     or 'reject' slot.
-    If actions==None (default), it will be set to the default
+    If actions is None (default), it will be set to the default
     ``[('Cancel',),('OK',)]``.
 
     Specify actions=[] if you want an empty dialogDuttons.

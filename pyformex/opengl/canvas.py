@@ -1086,7 +1086,7 @@ class Canvas(object):
 
         Without argument, removes all highlights from the scene.
         """
-        if itemlist == None:
+        if itemlist is None:
             itemlist = self.highlights[:]
         self.highlights.delete(itemlist)
 

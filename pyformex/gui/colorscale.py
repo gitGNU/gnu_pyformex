@@ -89,11 +89,11 @@ class ColorScale(object):
             self.palet = Palette.get(palet.upper(), Palette['RGB'])
         else:
             self.palet = palet
-        if self.palet[1] == None:
+        if self.palet[1] is None:
             self.palet[1] = [ 0.5*(p+q) for p, q in zip(self.palet[0], self.palet[2]) ]
         self.xmin = minval
         self.xmax = maxval
-        if midval == None:
+        if midval is None:
             self.x0 = 0.5*(minval+maxval)
         else:
             self.x0 = midval
@@ -111,7 +111,7 @@ class ColorScale(object):
         the intervals minval..midval and midval..maxval, mapped resp. using
         exp2 and exp onto the intervals -1..0 and 0..1.
         """
-        if self.exp2 == None:
+        if self.exp2 is None:
             return stuur(val, [self.xmin, self.x0, self.xmax], [-1., 0., 1.], self.exp)
 
         if val < self.x0:
@@ -176,8 +176,8 @@ class ColorLegend(object):
 
 
     def overflow(self,oflow=None):
-        """Raise a runtime error if oflow == None, else return oflow."""
-        if oflow==None:
+        """Raise a runtime error if oflow is None, else return oflow."""
+        if oflow is None:
             raise RuntimeError("Value outside colorscale range")
         else:
             return oflow

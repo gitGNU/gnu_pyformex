@@ -214,7 +214,7 @@ class ElemSection(CDict):
             #print(section)
             _secDB[section['name']] = CDict(section)
             self.section = _secDB[section['name']]
-        elif section==None:
+        elif section is None:
             self.section = section
         else:
             raise ValueError("Expected a string or a dict")
@@ -253,7 +253,7 @@ class ElemSection(CDict):
         elif isinstance(material, dict):
             _matDB[material['name']] = CDict(material)
             self.material = _matDB[material['name']]
-        elif material==None:
+        elif material is None:
             self.material=material
         else:
             raise ValueError("Expected a string or a dict")

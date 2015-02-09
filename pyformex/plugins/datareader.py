@@ -147,7 +147,7 @@ def writeAsciiTable(fn, h, d, fmtdata='e'):
     ncol= len(h)-1#number of columns-1
     fmtH = '%s'+ncol*' %s' + '\n'
     fil.write(fmtH %(tuple(h )))#header
-    if fmtdata==None:fmtdata='e'
+    if fmtdata is None:fmtdata='e'
     if fmtdata=='e':
         fmtD = '%e'+ncol*' %e' + '\n'
     elif fmtdata=='f':

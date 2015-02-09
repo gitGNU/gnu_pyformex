@@ -543,7 +543,7 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True,writer
 
     ftype = os.path.splitext(fn)[1]
     ftype = ftype.strip('.').lower()
-    if writernm == None:
+    if writernm is None:
         if ftype=='vtp':
             writer = vtkXMLPolyDataWriter()
             lvtk = convert2VPD(mesh, clean=True) # also clean=False?
@@ -641,7 +641,7 @@ def readVTKObject(fn,verbose=True,samePlex=True, readernm=None):
     The dictionary of arrays can include the elements ids (e.g. properties).
     """
     allreadersnm = 'vtkXMLPolyDataReader, vtkDataSetReader, vtkUnstructuredGridReader, vtkPolyDataReader,vtkStructuredPointsReader, vtkStructuredGridReader, vtkRectilinearGridReader'
-    if readernm == None:
+    if readernm is None:
         ftype = utils.fileTypeFromExt(fn)
         if ftype=='vtp':
             reader, readernm = vtk.vtkXMLPolyDataReader(), 'vtkXMLPolyDataReader'
@@ -670,7 +670,7 @@ def readVTKObject(fn,verbose=True,samePlex=True, readernm=None):
     if reader.GetErrorCode()!=0:
         utils.warn('the default vtk reader %s raised an error, please specify an alternative reader: %s'%(readernm, allreadersnm))
     vpd = reader.GetOutput() # vtk object
-    if vpd == None:
+    if vpd is None:
         utils.warn('vpd is undefined (None),  please check vtk filename and vtk reader')
     print ('file %s read with vtk reader: %s'%(fn, readernm))
     return convertFromVPD(vpd, verbose=verbose, samePlex=samePlex)

@@ -1052,7 +1052,7 @@ def drawLinesInter(mode ='line',single=False,func=None):
     if pf.canvas.drawing_mode is not None:
         warning("You need to finish the previous drawing operation first!")
         return
-    if func == None:
+    if func is None:
         func = showLineDrawing
     drawing_buttons = widgets.ButtonBox('Drawing:', [('Cancel', pf.canvas.cancel_drawing), ('OK', pf.canvas.accept_drawing)])
     pf.GUI.statusbar.addWidget(drawing_buttons)

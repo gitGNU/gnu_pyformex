@@ -500,7 +500,7 @@ def rotationMatrix(angle,axis=None,angle_spec=DEG):
     """Return a rotation matrix over angle, optionally around axis.
 
     The angle is specified in degrees, unless angle_spec=RAD is specified.
-    If axis==None (default), a 2x2 rotation matrix is returned.
+    If axis is None (default), a 2x2 rotation matrix is returned.
     Else, axis should specifyi the rotation axis in a 3D world. It is either
     one of 0,1,2, specifying a global axis, or a vector with 3 components
     specifying an axis through the origin.
@@ -528,7 +528,7 @@ def rotationMatrix(angle,axis=None,angle_spec=DEG):
     a = angle*angle_spec
     c = cos(a)
     s = sin(a)
-    if axis==None:
+    if axis is None:
         f = [[c, s], [-s, c]]
     elif array(axis).size == 1:
         f = zeros((3,3))

@@ -294,7 +294,7 @@ def _shrink(F, factor):
 def drawVectors(P,v,size=None,nolight=True,**drawOptions):
     """Draw a set of vectors.
 
-    If size==None, draws the vectors v at the points P.
+    If size is None, draws the vectors v at the points P.
     If size is specified, draws the vectors size*normalize(v)
     P, v and size are single points
     or sets of points. If sets, they should be of the same size.

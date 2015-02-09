@@ -2239,7 +2239,7 @@ class Spiral(Curve):
 
     def __init__(self,turns=2.0,nparts=100,rfunc=None):
         Curve.__init__(self)
-        if rfunc == None:
+        if rfunc is None:
             rfunc = lambda x:x
         self.coords = Coords([0., 0., 0.]).replic(npoints+1).hypercylindrical()
         self.nparts = nparts

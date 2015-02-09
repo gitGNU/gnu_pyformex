@@ -203,7 +203,7 @@ def write_neu(fil, mesh, bcsets=None, heading='generated with pyFormex'):
     if not fil.endswith('.neu'):
         fil += '.neu'
     f = open(fil, 'w')
-    if bcsets == None:
+    if bcsets is None:
         nbsets =0
     else:
         nbsets=len(bcsets.keys())

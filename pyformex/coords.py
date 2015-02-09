@@ -1235,7 +1235,7 @@ class Coords(ndarray):
           modification. This function is then equivalent to bump2.
         """
         f = self.copy()
-        if dist == None:
+        if dist is None:
             dist = [0, 1, 2]
             dist.remove(dir)
         try:
@@ -1355,7 +1355,7 @@ class Coords(ndarray):
         maps ``E`` on a sphere with radius 10.
         """
         f = self.copy()
-        if dist == None:
+        if dist is None:
             dist = [0, 1, 2]
         try:
             l = len(dist)

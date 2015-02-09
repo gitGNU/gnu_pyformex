@@ -81,7 +81,7 @@ def findBisectrixUsingPlanes(cpx, centx):
 #    draw(Formex(cx))
 #    drawNumbers(Formex(cx))
 #    drawNumbers(Formex(cx[0]))
-    if centx==None:centx=cx.reshape(-1, 3).mean(axis=0)
+    if centx is None:centx=cx.reshape(-1, 3).mean(axis=0)
     #draw(Formex(centx))
     nx0=[]
     for i in range(cx.shape[0]):
@@ -206,7 +206,7 @@ def cpOneSection(hc, oc=None,isBranchingSection=False, verbos=False ):
     """hc is a numbers of points on the boundary line of 1 almost circular section. oc is the center point of the section. It returns 3 groups of control points: for the inner part, for the transitional part and for the boundary layer of one single section"""
 
     ##if the center is not given, it is calculated from the first and the half points of the section
-    if oc==None:oc=(hc[0]+hc[hc.shape[0]/2])*0.5
+    if oc is None:oc=(hc[0]+hc[hc.shape[0]/2])*0.5
 
     ##create control points for the boundary layer of 1 full section.
     if verbos:
