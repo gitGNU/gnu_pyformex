@@ -171,8 +171,6 @@ def settings():
         return fn
 
     cur = pf.cfg['gui/splash']
-#    if not cur:
-#        cur = pf.cfg.get('icondir','.')
     viewer = widgets.ImageView(cur, maxheight=200)
 
     def changeSplash(field):

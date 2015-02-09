@@ -477,7 +477,7 @@ class Gui(QtGui.QMainWindow):
             name = self.saved_views_name.next()
         self.saved_views[name] = (pf.canvas.camera.modelview, None)
         if name not in self.viewbtns.names():
-            iconpath = os.path.join(pf.cfg['icondir'], 'userview')+pf.cfg['gui/icontype']
+            iconpath = utils.findIcon('userview')
             self.viewbtns.add(name, iconpath)
 
 
@@ -503,7 +503,7 @@ class Gui(QtGui.QMainWindow):
         do not have the name yet.
         """
         if name not in self.viewbtns.names():
-            iconpath = os.path.join(pf.cfg['icondir'], 'userview')+pf.cfg['gui/icontype']
+            iconpath = utils.findIcon('userview')
             self.viewbtns.add(name, iconpath)
         views.view_angles[name] = angles
 
@@ -676,7 +676,8 @@ class Gui(QtGui.QMainWindow):
         self.enableButtons(self.actions, ['ReRun'], is_app and(self.canEdit or self.canPlay))
         self.enableButtons(self.actions, ['Step', 'Continue'], False)
         icon = 'ok' if self.canPlay else 'notok'
-        self.curfile.setIcon(QtGui.QIcon(QtGui.QPixmap(os.path.join(pf.cfg['icondir'], icon)+pf.cfg['gui/icontype'])), 1)
+        iconpath = utils.findIcon(icon)
+        self.curfile.setIcon(QtGui.QIcon(QtGui.QPixmap(iconpath)), 1)
 
 
     def setcurdir(self):

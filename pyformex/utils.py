@@ -951,20 +951,34 @@ def findIcon(name):
 
     If no icon file is found, returns the question mark icon.
     """
-    for icondir in pf.cfg['icondirs']:
-        fname = buildFilename(icondir, name, pf.cfg['gui/icontype'])
-        if os.path.exists(fname):
-            return fname
+    #print("Looking for icon %s" % name)
+    for icondir in pf.cfg['gui/icondirs']:
+        for icontype in pf.cfg['gui/icontypes']:
+            fname = buildFilename(icondir, name, icontype)
+            if os.path.exists(fname):
+                print("Found icon %s" % fname)
+                return fname
 
-    return buildFilename(pf.cfg['icondir'], 'question', pf.cfg['gui/icontype'])
+    #print("NOT FOUND: use default")
+    return buildFilename(pf.cfg['icondir'], 'question.xpm')
 
 
-def listIconNames(types=None):
-    """Return the list of available icons by their name."""
+def listIconNames(dirs=None,types=None):
+    """Return the list of available icons by their name.
+
+    - `dirs`: list of paths. If specified, only return names from these
+      directories.
+    - `types`: list of strings, each starting with a dot.
+      If specified, only return names of icons matching any of
+      these file types.
+    """
+    if dirs is None:
+        dirs = pf.cfg['gui/icondirs']
     if types is None:
-        types = ['.+\\'+pf.cfg['gui/icontype']]
+        types = pf.cfg['gui/icontypes']
+    types = [ '.+\\'+t for t in types]
     icons = []
-    for icondir in pf.cfg['icondirs']:
+    for icondir in dirs:
         files = listFiles(icondir)
         files = [ projectName(f) for f in files if matchAny(types, f) ]
         icons.extend(files)

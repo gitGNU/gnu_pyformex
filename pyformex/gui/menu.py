@@ -226,7 +226,7 @@ class BaseMenu(object):
 
             - `icon`: the name of an icon to be displayed with the item text.
               This name should be that of one of the icons in the pyFormex
-              icondir.
+              configured icon dirs.
             - `shortcut`: is an optional key combination to select the item.
             - `tooltip`: a text that is displayed as popup help.
 

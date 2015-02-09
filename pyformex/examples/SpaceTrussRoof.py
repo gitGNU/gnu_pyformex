@@ -39,7 +39,7 @@ roof = None
 
 def createRoof():
     global roof
-    
+
     dx = 180 # Modular size (cm)
     ht = 150 # Deck height
     nx = 14  # number of bottom deck modules in x direction (should be even)
@@ -73,20 +73,20 @@ def run():
 
     if roof is None:
         createRoof()
-        
+
     F = roof.rotate(-90, 0) # put the structure upright
     draw(F)
 
-    createView('myview1', (30., 0., 0.))
+    createView('myview1', (30., 0., 0.),True)
     view('myview1', True)
 
 
     setDrawOptions({'bbox':'last'})
     for i in range(19):
-        createView('myview2', (i*10., 20., 0.))
+        createView('myview2', (i*10., 20., 0.),True)
         view('myview2', True)
         delay(0.1)
-        
+
     # fly tru
     if ack("Do you want to fly through the structure?"):
         totaltime = 10
