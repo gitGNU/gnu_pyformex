@@ -211,7 +211,7 @@ DIST_FILES = [
              includefiles=['.*\.py$'],
              ) + \
     listTree('pyformex/icons',listdirs=False,sorted=True,
-             includefiles=['README','.*\.xpm$','pyformex.*\.png$']
+             includefiles=['README','.*\.xpm$','.*\.png$']
              ) + \
     listTree('pyformex/lib',listdirs=False,sorted=True,
              includefiles=['.*\.c$','.*\.py$']
@@ -222,8 +222,6 @@ DIST_FILES = [
     listTree('pyformex/examples',listdirs=False,sorted=True,
              excludedirs=['Demos'],
              excludefiles=['.*\.pyc','.*~$',
-#                           'NurbsCircle.py',  # missing nurbs
-#                           'NurbsSurface.py',     # idem
                            ],
              includefiles=['[_A-Z].*\.py$','apps.cat','README']
              ) + \
