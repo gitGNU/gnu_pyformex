@@ -86,6 +86,7 @@ class Renderer(object):
             'shininess': mat.shininess,
             'alphablend': self.canvas.settings.alphablend,
             'alpha': self.canvas.settings.transparency,
+            'bkalpha': self.canvas.settings.transparency,
             })
         #print("LIGHT PROFILE to shader: %s" % settings)
         self.shader.loadUniforms(settings)
