@@ -744,7 +744,11 @@ def showPrincipal():
     if not F:
         return
     # compute the axes
-    I = F.inertia()
+    if isinstance(F,TriSurface):
+        res = ask("Does the model represent a surface or a volume?", ["Surface","Volume"])
+        I = F.inertia(res == "Volume")
+    else:
+        I = F.inertia()
     C = I.ctr
     Iprin, Iaxes = I.principal()
     print("Center of gravity: %s" % C)

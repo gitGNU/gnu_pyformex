@@ -271,16 +271,20 @@ class Inertia(Tensor):
 
         """
         if isinstance(X,Tensor):
-            M,C,I = float(mass), Coords(ctr), X
+            # We need mass and ctr!
+            Tensor.__init__(self,X.tensor)
+            self.mass = float(mass)
+            ctr = at.checkArray(ctr,shape=(3,),kind='f')
+            self.ctr = Coords(ctr)
         else:
             M,C,I = inertia(X,mass)
-        Tensor.__init__(self,I)
-        if ctr is not None:
-            ctr = at.checkArray(ctr,shape=(3,),kind='f')
-            self.translate(ctr-C,toG=True)
-            C = ctr
-        self.mass = M
-        self.ctr = C
+            Tensor.__init__(self,I)
+            if ctr is not None:
+                ctr = at.checkArray(ctr,shape=(3,),kind='f')
+                self.translate(ctr-C,toG=True)
+                C = ctr
+            self.mass = M
+            self.ctr = C
 
 
     def translate(self,trl,toG=False):
@@ -345,6 +349,7 @@ def inertia(X,mass=None):
     npoints = X.shape[0]
     if mass is not None:
         mass = at.checkArray(mass,shape=(npoints,),kind='f')
+    mass = mass.reshape(-1,1)
     M,C = mcenter(X,mass)
     Xc = X - C
     x, y, z = Xc[:, 0], Xc[:, 1], Xc[:, 2]
