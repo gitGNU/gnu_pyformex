@@ -699,13 +699,14 @@ def createSphere():
         items = [
             _I('name', '__auto__'),
             _I('object type', itemtype='radio', choices=['TriSurface', 'Mesh', 'Formex']),
-            _I('method', choices=['icosa', 'geo']),
+            _I('method', choices=['icosa', 'octa', 'geo']),
             _I('ndiv', 8),
             _I('nx', 36),
             _I('ny', 18),
              ],
         enablers=[
             ('method', 'icosa', 'ndiv'),
+            ('method', 'octa', 'ndiv'),
             ('method', 'geo', 'nx', 'ny'),
             ],
         )
@@ -717,8 +718,8 @@ def createSphere():
         name = res['name']
         if name == '__auto__':
             name = autoName(res['object type']).next()
-        if res['method'] == 'icosa':
-            F = simple.sphere(res['ndiv'])
+        if res['method'] in [ 'icosa', 'octa' ]:
+            F = simple.sphere(res['ndiv'],base=res['method'])
             print("Surface has %s vertices and %s faces" % (F.ncoords(), F.nelems()))
             F = convert_Mesh_TriSurface(F, res['object type'])
         else:

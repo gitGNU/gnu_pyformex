@@ -160,6 +160,7 @@ def Cube():
     Returns a TriSurface representing the surface of a unit cube.
     Each face of the cube is represented by two triangles.
     """
+    from pyformex.plugins.trisurface import TriSurface
     back = Formex('3:012934')
     fb = back.reverse() + back.translate(2, 1)
     faces = fb + fb.rollAxes(1) + fb.rollAxes(2)
@@ -255,24 +256,37 @@ def quadraticCurve(x=None,n=8):
     return dot(H, x)
 
 
-def sphere(ndiv=6):
-    """Create a triangulated spherical surface.
+def sphere(ndiv=6,base='icosa',equiv='max'):
+    """Create a triangulated approximation of a spherical surface.
 
-    A high quality approximation of a spherical surface is constructed as
-    follows. First an icosahedron is constructed. Its triangular facets are
-    subdivided by dividing all edges in `ndiv` parts. The resulting mesh is
-    then projected on a sphere with unit radius. The higher `ndiv` is taken,
-    the better the approximation. `ndiv=1` results in an icosahedron.
+    A (possibly high quality) approximation of a spherical surface is
+    constructed as follows. First a simple base triangulated surface
+    is created. Its triangular facets are subdivided by dividing all
+    edges in `ndiv` parts. The resulting mesh is then projected on a
+    sphere with unit radius. The higher `ndiv` is taken,
+    the better the approximation. For `ndiv`=1, the base surface is
+    returned.
 
-    Returns:
+    Parameters:
 
-      A TriSurface, representing a triangulated approximation of a
-      spherical surface with radius 1 and center at the origin.
+    - `ndiv`: number of divisions along the edges of the base surface.
+    - `base`: the type of base surface. One of the following:
+
+      - 'icosa': icosahedron (20 faces): this offers the highest
+        quality with triangles of almost same size ans shape.
+      - 'octa': octahedron (8 faces): this model will have the same
+        mesh on each of the quadrants. The coordinate planes do not
+        cut any triangle. This model is this fit to be subdivided along
+        coordinate planes.
+
+    Returns a TriSurface, representing a triangulated approximation of a
+    spherical surface with radius 1 and center at the origin.
     """
-    from pyformex.elements import Icosa
+    from pyformex import elements
     from pyformex.plugins.trisurface import TriSurface
 
-    M = TriSurface(Icosa.vertices, Icosa.faces)
+    base = getattr(elements,base.capitalize())
+    M = TriSurface(base.vertices, base.faces)
     M = M.subdivide(ndiv).fuse()
     M = M.projectOnSphere()
     return M

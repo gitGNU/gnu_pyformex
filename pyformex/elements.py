@@ -980,13 +980,42 @@ Wedge6.degenerate = {
 
 
 ##########################################################
-# This element added just for fun, no practical importance
+# Some exotic elements not meant for Finite Element applications
+# Therefore we only have one of each, with minimal node sets
+
+Octa = createElementType(
+    'octa',
+    """An octahedron: a regular polyhedron with 8 triangular faces.
+
+    nfaces = 8, nedges = 12, nvertices = 6
+
+    All the faces are equilateral triangles.
+    All points of the octahedron lie on a sphere with unit radius.
+    """,
+    ndim = 3,
+    vertices = [ (  1.0,  0.0,  0.0 ),
+                 (  0.0,  1.0,  0.0 ),
+                 (  0.0,  0.0,  1.0 ),
+                 ( -1.0,  0.0,  0.0 ),
+                 (  0.0, -1.0,  0.0 ),
+                 (  0.0,  0.0, -1.0 ),
+                 ],
+    edges = ('line2', [ (0, 1),  (1, 3), (3, 4), (4, 0),
+                        (0, 5),  (5, 3), (3, 2), (2, 0),
+                        (1, 2),  (2, 4), (4, 5), (5, 1),
+                        ], ),
+    faces = ('tri3', [ (0, 1, 2),  (1, 3, 2), (3, 4, 2), (4, 0, 2),
+                       (1, 0, 5),  (3, 1, 5), (4, 3, 5), (0, 4, 5),
+                       ], ),
+    reversed = (3, 1, 2, 0, 4, 5),
+    )
+
 
 from pyformex.arraytools import golden_ratio as phi
 
 Icosa = createElementType(
     'icosa',
-    """An icosahedron: a regular polyhedron with 20 triangular surfaces.,
+    """An icosahedron: a regular polyhedron with 20 triangular faces.
 
     nfaces = 20, nedges = 30, nvertices = 12
 
