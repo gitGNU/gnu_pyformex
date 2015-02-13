@@ -349,7 +349,7 @@ def inertia(X,mass=None):
     npoints = X.shape[0]
     if mass is not None:
         mass = at.checkArray(mass,shape=(npoints,),kind='f')
-    mass = mass.reshape(-1,1)
+        mass = mass.reshape(-1,1)
     M,C = mcenter(X,mass)
     Xc = X - C
     x, y, z = Xc[:, 0], Xc[:, 1], Xc[:, 2]
