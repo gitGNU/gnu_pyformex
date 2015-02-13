@@ -834,7 +834,7 @@ class TriSurface(Mesh):
         return surface_volume(x).sum()
 
 
-    def volumeInertia(self):
+    def volumeInertia(self,density=1.0):
         """Return the inertia properties of the enclosed volume of the surface.
 
         The surface should be a closed manifold and is supposed to be
@@ -869,6 +869,8 @@ class TriSurface(Mesh):
         V,C,I = surface_volume_inertia(x)
         I = inertia.Tensor(I)
         I = inertia.Inertia(I,mass=V,ctr=C)
+        I.mass *= density
+        I._data *= density
         return I
 
 
@@ -885,7 +887,7 @@ class TriSurface(Mesh):
         return curv
 
 
-    def inertia(self,volume=False):
+    def inertia(self,volume=False,density=1.0):
         """Return inertia related quantities of the surface.
 
         This computes the inertia properties of the centroids of the
@@ -899,8 +901,12 @@ class TriSurface(Mesh):
         See also :meth:`volumeInertia`.
         """
         if volume:
-            return self.volumeInertia()
-        return self.centroids().inertia(mass=self.areas())
+            return self.volumeInertia(density=density)
+        else:
+            I = self.centroids().inertia(mass=self.areas())
+            I.mass *= density
+            I._data *= density
+            return I
 
 
     def surfaceType(self):
