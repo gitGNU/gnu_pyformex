@@ -436,6 +436,36 @@ along that axis.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="coords.Coords.inertia">
+<tt class="descname">inertia</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#coords.Coords.inertia" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns inertia related quantities of the <a class="reference internal" href="#coords.Coords" title="coords.Coords"><tt class="xref py py-class docutils literal"><span class="pre">Coords</span></tt></a>.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>mass</cite>: float array with ncoords weight values. The default is to
+attribute a weight 1.0 to each point.</li>
+</ul>
+<p>Returns an <tt class="xref py py-class docutils literal"><span class="pre">inertia.Inertia</span></tt> instance with attributes</p>
+<ul class="simple">
+<li><cite>mass</cite>: the total mass (float)</li>
+<li><cite>ctr</cite>: the center of mass: float (3,)</li>
+<li><cite>tensor</cite>: the inertia tensor in the central axes: shape (3,3)</li>
+</ul>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">elements</span> <span class="kn">import</span> <span class="n">Tet4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">I</span> <span class="o">=</span> <span class="n">Tet4</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">inertia</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">I</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span>
+<span class="go">[[ 1.5   0.25  0.25]</span>
+<span class="go"> [ 0.25  1.5   0.25]</span>
+<span class="go"> [ 0.25  0.25  1.5 ]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">I</span><span class="o">.</span><span class="n">ctr</span><span class="p">)</span>
+<span class="go">[ 0.25  0.25  0.25]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">I</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+<span class="go">4.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="coords.Coords.prinCS">
 <tt class="descname">prinCS</tt><big>(</big><em>mass=None</em><big>)</big><a class="headerlink" href="#coords.Coords.prinCS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a CoordSys formed by the principal axes of inertia</p>
@@ -460,7 +490,7 @@ principal axes. This is a convenient shorthand for:</p>
 </div>
 <p>Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">Coords</span><span class="p">([[[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]]])</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">principalSizes</span><span class="p">())</span>
-<span class="go">[  0.00e+00   2.33e-08   3.00e+00]</span>
+<span class="go">[ 0.  0.  3.]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1729,7 +1759,7 @@ All the kwargs parameters are used to set <cite>positionCoordsObj</cite> functio
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 08, 2015.
+      Last updated on Feb 14, 2015.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

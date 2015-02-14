@@ -292,6 +292,36 @@ The area is always positive.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.trisurface.TriSurface.volumeInertia">
+<tt class="descname">volumeInertia</tt><big>(</big><em>density=1.0</em><big>)</big><a class="headerlink" href="#plugins.trisurface.TriSurface.volumeInertia" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the inertia properties of the enclosed volume of the surface.</p>
+<p>The surface should be a closed manifold and is supposed to be
+the border of a volume of constant density 1.</p>
+<p>Returns an <tt class="xref py py-class docutils literal"><span class="pre">inertia.Inertia</span></tt> instance with attributes</p>
+<ul class="simple">
+<li><cite>mass</cite>: the total mass (float)</li>
+<li><cite>ctr</cite>: the center of mass: float (3,)</li>
+<li><cite>tensor</cite>: the inertia tensor in the central axes: shape (3,3)</li>
+</ul>
+<p>This will only be correct if the surface is a closed manifold.</p>
+<p>See <a class="reference internal" href="#plugins.trisurface.TriSurface.inertia" title="plugins.trisurface.TriSurface.inertia"><tt class="xref py py-meth docutils literal"><span class="pre">inertia()</span></tt></a> for the inertia of the surface.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyformex.simple</span> <span class="kn">import</span> <span class="n">sphere</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">sphere</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">I</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">volumeInertia</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">I</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+<span class="go">4.1526684761</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">I</span><span class="o">.</span><span class="n">ctr</span><span class="p">)</span>
+<span class="go">[-0. -0. -0.]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">I</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span>
+<span class="go">[[ 1.65 -0.   -0.  ]</span>
+<span class="go"> [-0.    1.65 -0.  ]</span>
+<span class="go"> [-0.   -0.    1.65]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.trisurface.TriSurface.curvature">
 <tt class="descname">curvature</tt><big>(</big><em>neighbours=1</em><big>)</big><a class="headerlink" href="#plugins.trisurface.TriSurface.curvature" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the curvature parameters at the nodes.</p>
@@ -304,7 +334,7 @@ principal directions.</p>
 
 <dl class="method">
 <dt id="plugins.trisurface.TriSurface.inertia">
-<tt class="descname">inertia</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.trisurface.TriSurface.inertia" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inertia</tt><big>(</big><em>volume=False</em>, <em>density=1.0</em><big>)</big><a class="headerlink" href="#plugins.trisurface.TriSurface.inertia" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return inertia related quantities of the surface.</p>
 <p>This computes the inertia properties of the centroids of the
 triangles, using the triangle area as a weight. The result is
@@ -312,6 +342,7 @@ therefore different from self.coords.inertia() and usually better
 suited for the surface, especially if the triangle areas differ a lot.</p>
 <p>Returns a tuple with the center of gravity, the principal axes of
 inertia, the principal moments of inertia and the inertia tensor.</p>
+<p>See also <a class="reference internal" href="#plugins.trisurface.TriSurface.volumeInertia" title="plugins.trisurface.TriSurface.volumeInertia"><tt class="xref py py-meth docutils literal"><span class="pre">volumeInertia()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1084,6 +1115,16 @@ switched off by setting <cite>compact=False</cite>.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.trisurface.TriSurface.cclip">
+<tt class="descname">cclip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.trisurface.TriSurface.cclip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>For a Formex, this is equivalent with cselect(sel).
+For a Mesh, this is equivalent with cselect(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.trisurface.TriSurface.cselect" title="plugins.trisurface.TriSurface.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for more information.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.trisurface.TriSurface.clip" title="plugins.trisurface.TriSurface.clip"><tt class="xref py py-meth docutils literal"><span class="pre">clip()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.trisurface.TriSurface.centered">
 <tt class="descname">centered</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.trisurface.TriSurface.centered" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;centered&#8217; transformation to the Geometry object.</p>
@@ -1097,6 +1138,15 @@ switched off by setting <cite>compact=False</cite>.</p>
 <p>The centroid of an element is the point whose coordinates
 are the mean values of all points of the element.
 The return value is a Coords object with nelems points.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.trisurface.TriSurface.clip">
+<tt class="descname">clip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.trisurface.TriSurface.clip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>For a Formex, this is equivalent with select(sel).
+For a Mesh, this is equivalent with select(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.trisurface.TriSurface.select" title="plugins.trisurface.TriSurface.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a> for more information.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1255,6 +1305,16 @@ which are to be considered walkable.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.trisurface.TriSurface.connectedTo">
+<tt class="descname">connectedTo</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.trisurface.TriSurface.connectedTo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select the elements connected to specific lower entities.</p>
+<p><cite>entities</cite>: int or array_like, int. Entity selector.
+<cite>level</cite>: int. Entity level. Default 0 (nodes).</p>
+<p>Returns a list of the numbers of the elements that contain at
+least one of the specified lower entities.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.trisurface.TriSurface.convert">
 <tt class="descname">convert</tt><big>(</big><em>totype</em>, <em>fuse=False</em><big>)</big><a class="headerlink" href="#plugins.trisurface.TriSurface.convert" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a Mesh to another element type.</p>
@@ -1309,6 +1369,40 @@ of the geometry.</p>
 <dd><p>Return a deep copy of the Geometry  object.</p>
 <p>The returned object is an exact copy of the input, but has
 all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.trisurface.TriSurface.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.trisurface.TriSurface.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>sel</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.trisurface.TriSurface.select" title="plugins.trisurface.TriSurface.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2250,6 +2344,28 @@ volumes and can be fixed with the correctNegativeVolumes.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.trisurface.TriSurface.select">
+<tt class="descname">select</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.trisurface.TriSurface.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#plugins.trisurface.TriSurface.cselect" title="plugins.trisurface.TriSurface.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.trisurface.TriSurface.selectNodes">
 <tt class="descname">selectNodes</tt><big>(</big><em>nodsel</em>, <em>eltype=None</em><big>)</big><a class="headerlink" href="#plugins.trisurface.TriSurface.selectNodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a mesh with subsets of the original nodes.</p>
@@ -2683,7 +2799,7 @@ intermediate format.</p>
 <ul class="simple">
 <li><cite>x</cite>: an (ntri,3,3) shaped float array, representing ntri triangles.</li>
 <li><cite>pt</cite>: a point in space. If unspecified, it is taken equal to the
-center() of the coordinates <cite>x</cite>.</li>
+origin of the global coordinate system ([0.,0.,0.]).</li>
 </ul>
 <p>Returns an (ntri) shaped array with the volume of the tetrahedrons formed
 by the triangles and the point <cite>pt</cite>. Triangles with an outer normal
@@ -2691,6 +2807,28 @@ pointing away from <cite>pt</cite> will generate positive tetrahral volumes, whi
 triangles having <cite>pt</cite> at the side of their positive normal will generate
 negative volumes. In any case, if <cite>x</cite> represents a closed surface,
 the algebraic sum of all the volumes is the total volume inside the surface.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.trisurface.surface_volume_inertia">
+<tt class="descclassname">plugins.trisurface.</tt><tt class="descname">surface_volume_inertia</tt><big>(</big><em>x</em>, <em>center_only=False</em><big>)</big><a class="headerlink" href="#plugins.trisurface.surface_volume_inertia" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the inertia of the volume inside a 3-plex Formex.</p>
+<ul class="simple">
+<li><cite>x</cite>: an (ntri,3,3) shaped float array, representing ntri triangles.</li>
+</ul>
+<p>This uses the same algorithm as tetrahedral_inertia using [0.,0.,0.]
+as the 4-th point for each tetrahedron.</p>
+<p>Returns a tuple (V,C,I) where V is the total volume,
+C is the center of mass (3,) and I is the inertia tensor (6,) of the
+tetrahedral model.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyformex.simple</span> <span class="kn">import</span> <span class="n">sphere</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">sphere</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">toFormex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">V</span><span class="p">,</span><span class="n">C</span><span class="p">,</span><span class="n">I</span> <span class="o">=</span> <span class="n">surface_volume_inertia</span><span class="p">(</span><span class="n">S</span><span class="o">.</span><span class="n">coords</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">C</span><span class="p">,</span><span class="n">I</span><span class="p">)</span>
+<span class="go">4.04701 [-0. -0. -0.] [ 1.58  1.58  1.58  0.    0.    0.  ]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -2710,11 +2848,18 @@ normal formed by the first 3 points.</p>
 <dt id="plugins.trisurface.tetrahedral_inertia">
 <tt class="descclassname">plugins.trisurface.</tt><tt class="descname">tetrahedral_inertia</tt><big>(</big><em>x</em>, <em>density=None</em>, <em>center_only=False</em><big>)</big><a class="headerlink" href="#plugins.trisurface.tetrahedral_inertia" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the inertia of the volume of a 4-plex Formex.</p>
+<p>Parameters:</p>
 <ul class="simple">
 <li><cite>x</cite>: an (ntet,4,3) shaped float array, representing ntet tetrahedrons.</li>
 <li><cite>density</cite>: optional mass density (ntet,) per tetrahedron</li>
+<li><cite>center_only</cite>: bool. If True, returns only the total volume, total mass
+and center of gravity. This may be used on large models when only these
+quantities are required.</li>
 </ul>
-<p>Formulas based on F. Tonon, J. Math &amp; Stat, 1(1):8-11,2005</p>
+<p>Returns a tuple (V,M,C,I) where V is the total volume, M is the total mass,
+C is the center of mass (3,) and I is the inertia tensor (6,) of the
+tetrahedral model.</p>
+<p>Formulas for inertia were based on F. Tonon, J. Math &amp; Stat, 1(1):8-11,2005</p>
 <p>Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([</span>
 <span class="gp">... </span>    <span class="p">[</span>  <span class="mf">8.33220</span><span class="p">,</span> <span class="o">-</span><span class="mf">11.86875</span><span class="p">,</span>  <span class="mf">0.93355</span> <span class="p">],</span>
@@ -2724,10 +2869,11 @@ normal formed by the first 3 points.</p>
 <span class="gp">... </span>    <span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">Formex</span><span class="p">([</span><span class="n">x</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">tetrahedral_center</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">coords</span><span class="p">))</span>
-<span class="go">[[ 15.92   0.78   3.73]]</span>
+<span class="go">[ 15.92   0.78   3.73]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">tetrahedral_volume</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">coords</span><span class="p">))</span>
-<span class="go">[-1873.23]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">tetrahedral_inertia</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">coords</span><span class="p">))</span>
+<span class="go">[ 1873.23]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="o">*</span><span class="n">tetrahedral_inertia</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">coords</span><span class="p">))</span>
+<span class="go">1873.23 1873.23 [ 15.92   0.78   3.73] [  43520.32  194711.28  191168.77    4417.66  -46343.16   11996.2 ]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -2872,7 +3018,7 @@ nelems where the triangles of remove have been removed.</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 08, 2015.
+      Last updated on Feb 14, 2015.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

@@ -473,7 +473,7 @@ or a 3-element array or compatible.</li>
 <tt class="descclassname">arraytools.</tt><tt class="descname">rotationMatrix</tt><big>(</big><em>angle</em>, <em>axis=None</em>, <em>angle_spec=0.017453292519943295</em><big>)</big><a class="headerlink" href="#arraytools.rotationMatrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a rotation matrix over angle, optionally around axis.</p>
 <p>The angle is specified in degrees, unless angle_spec=RAD is specified.
-If axis==None (default), a 2x2 rotation matrix is returned.
+If axis is None (default), a 2x2 rotation matrix is returned.
 Else, axis should specifyi the rotation axis in a 3D world. It is either
 one of 0,1,2, specifying a global axis, or a vector with 3 components
 specifying an axis through the origin.
@@ -1804,7 +1804,7 @@ root is returned. Else, an error is raised.</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 08, 2015.
+      Last updated on Feb 14, 2015.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>
