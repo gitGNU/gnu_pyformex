@@ -34,11 +34,10 @@ _techniques = ['inertia']
 
 from pyformex.gui.draw import *
 from pyformex.simple import sphere,cuboid
-from pyformex.plugins.trisurface import *
+from pyformex.plugins import inertia
 
 def run():
     smoothwire()
-
 
     print("======================")
     print("A cube with side = 1.0")
@@ -47,7 +46,7 @@ def run():
     draw(F.toMesh().getBorderMesh())
     print("Number of tetrahedrons: %s" % F.shape[0])
     print("Bounding box: %s" % F.bbox())
-    V,M,C,I = tetrahedral_inertia(F.coords)
+    V,M,C,I = inertia.tetrahedral_inertia(F.coords)
     # Analytical
     Va = 1.
     Ma = Va
@@ -68,7 +67,7 @@ def run():
     draw(F.toMesh().getBorderMesh())
     print("Number of tetrahedrons: %s" % F.shape[0])
     print("Bounding box: %s" % F.bbox())
-    V,M,C,I = tetrahedral_inertia(F.coords)
+    V,M,C,I = inertia.tetrahedral_inertia(F.coords)
     # Analytical
     Va = 4*pi/3
     Ma = Va

@@ -525,9 +525,6 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
     @utils.deprecated_by('Mesh.getLowerEntitiesSelector','Element.getEntities')
     def getLowerEntitiesSelector(self,level=-1):
-        """Get the entities of a lower dimensionality.
-
-        """
         return self.elType().getEntities(level)
 
 
@@ -2491,18 +2488,6 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
 
     @utils.deprecated_by('Mesh.nodalToElement','Field.convert')
     def nodalToElement(self, val):
-        """_Compute element values from nodal values.
-
-        Given scalar values defined on nodes,
-        finds the average values at elements.
-
-        This method is deprecated: you should use the
-        :class:`Fields` class::
-
-          Field(aMesh,fldtype='node',data=val).convert('elemc')
-
-
-        """
         return val[self.elems].mean(axis=1)
 
 

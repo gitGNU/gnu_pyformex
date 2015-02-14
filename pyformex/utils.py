@@ -134,7 +134,6 @@ def deprecated_future():
     return deprecated("This functionality is deprecated and will probably be removed in future, unless you explain to the developers why they should retain it.")
 
 
-
 ##########################################################################
 ## Running external commands ##
 ###############################

@@ -21,13 +21,21 @@
 ##  You should have received a copy of the GNU General Public License
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
-"""inertia.py
+"""Compute inertia related quantities of geometrical models.
 
-Compute inertia related quantities of a Formex.
-This comprises: center of gravity, inertia tensor, principal axes
+Inertia related quantities of a geometrical model comprise: the total mass,
+the center of mass, the inertia tensor, the principal axes of inertia.
 
-Currently, these functions work on arrays of nodes, not on Formices!
-Use func(F,f) to operate on a Formex F.
+This module defines some classes to store the inertia data:
+
+- :class:`Tensor`: a general second order tensor
+- :class:`Inertia`: a specialized second order tensor for inertia data
+
+This module also provides the basic functions to compute the inertia data
+of collections of simple geometric data: points, lines, triangles, tetrahedrons.
+
+The prefered way to compute inertia data of a geometric model is through the
+:meth:`Geometry.inertia` methods.
 """
 from __future__ import print_function
 
@@ -35,6 +43,8 @@ from __future__ import print_function
 import numpy as np
 from pyformex import arraytools as at
 from pyformex.coords import Coords
+from pyformex.formex import Formex
+from pyformex import utils
 
 
 class Tensor(object):
@@ -277,6 +287,10 @@ class Inertia(Tensor):
             ctr = at.checkArray(ctr,shape=(3,),kind='f')
             self.ctr = Coords(ctr)
         else:
+            utils.warn("""
+The usage of inertia.Inertia to compute the inertia of a set of points
+is deprecated. Use the Coords.inertia() method instead.
+""")
             M,C,I = inertia(X,mass)
             Tensor.__init__(self,I)
             if ctr is not None:
@@ -300,34 +314,7 @@ class Inertia(Tensor):
         return self.tensor + self.mass * trf
 
 
-def mcenter(X,mass=None):
-    """Compute the total mass and center of mass of an array of mass points.
-
-    Parameters:
-
-    - `X`: a Coords with shape (npoints,3). Shapes (...,3) are accepted
-      but will be reshaped to (npoints,3).
-    - `mass`: optional, (npoints,) float array with the mass of the points.
-      If omitted, all points have mass 1.
-
-    Returns a tuple (M,C) where M is the total mass of all points and C is
-    the center of mass.
-
-    See also :meth:`inertia`.
-    """
-    X = Coords(X).reshape(-1, 3)
-    npoints = X.shape[0]
-    if mass is not None:
-        mass = at.checkArray(mass,shape=(npoints,),kind='f')
-        M = mass.sum()
-        C = (X*mass).sum(axis=0) / M
-    else:
-        M = float(npoints)
-        C = X.mean(axis=0)
-    return M,C
-
-
-def inertia(X,mass=None):
+def point_inertia(X,mass=None,center_only=False):
     """Compute the total mass, center of mass and inertia tensor mass points.
 
     Parameters:
@@ -336,21 +323,30 @@ def inertia(X,mass=None):
       but will be reshaped to (npoints,3).
     - `mass`: optional, (npoints,) float array with the mass of the points.
       If omitted, all points have mass 1.
+    - `center_only`: bool: if True, only returns the total mass and center
+      of mass.
 
     Returns a tuple (M,C,I) where M is the total mass of all points, C is
     the center of mass, and I is the inertia tensor in the central coordinate
     system, i.e. a coordinate system with axes paralle to the global axes
-    but origin at the (computed) center of mass.
+    but origin at the (computed) center of mass. If `center_only` is True,
+    returns the tuple (M,C) only. On large models this is more effective
+    in case you do not need the inertia tensor.
 
-    See :meth:`center` if you need the center of mass, but not the inertia
-    tensor.
     """
     X = Coords(X).reshape(-1, 3)
     npoints = X.shape[0]
     if mass is not None:
         mass = at.checkArray(mass,shape=(npoints,),kind='f')
         mass = mass.reshape(-1,1)
-    M,C = mcenter(X,mass)
+        M = mass.sum()
+        C = (X*mass).sum(axis=0) / M
+    else:
+        M = float(npoints)
+        C = X.mean(axis=0)
+    if center_only:
+        return M,C
+
     Xc = X - C
     x, y, z = Xc[:, 0], Xc[:, 1], Xc[:, 2]
     xx, yy, zz, yz, zx, xy = x*x, y*y, z*z, y*z, z*x, x*y
@@ -361,23 +357,176 @@ def inertia(X,mass=None):
     return M,C,I
 
 
-## def principal(inertia,sort=False,right_handed=False):
-##     """Returns the principal values and axes of the inertia tensor.
+def surface_volume(x,pt=None):
+    """Return the volume inside a 3-plex Formex.
 
-##     If sort is True, they are sorted (maximum comes first).
-##     If right_handed is True, the axes define a right-handed coordinate system.
-##     """
-##     Ixx, Iyy, Izz, Iyz, Izx, Ixy = inertia
-##     Itensor = np.array([ [Ixx, Ixy, Izx], [Ixy, Iyy, Iyz], [Izx, Iyz, Izz] ])
-##     Iprin, Iaxes = np.linalg.eig(Itensor)
-##     if sort:
-##         s = Iprin.argsort()[::-1]
-##         Iprin = Iprin[s]
-##         Iaxes = Iaxes[:, s]
-##     if right_handed and not at.allclose(normalize(cross(Iaxes[:, 0], Iaxes[:, 1])), Iaxes[:, 2]):
-##         Iaxes[:, 2] = -Iaxes[:, 2]
-##     return Iprin, Iaxes
+    - `x`: an (ntri,3,3) shaped float array, representing ntri triangles.
+    - `pt`: a point in space. If unspecified, it is taken equal to the
+      origin of the global coordinate system ([0.,0.,0.]).
 
+    Returns an (ntri) shaped array with the volume of the tetrahedrons formed
+    by the triangles and the point `pt`. Triangles with an outer normal
+    pointing away from `pt` will generate positive tetrahral volumes, while
+    triangles having `pt` at the side of their positive normal will generate
+    negative volumes. In any case, if `x` represents a closed surface,
+    the algebraic sum of all the volumes is the total volume inside the surface.
+    """
+    x = at.checkArray(x,shape=(-1,3,3),kind='f')
+    if pt is not None:
+        x -= pt
+    a, b, c = [ x[:,i,:] for i in range(3) ]
+    d = np.cross(b, c)
+    e = (a*d).sum(axis=-1)
+    return e / 6
+
+
+def surface_volume_inertia(x,center_only=False):
+    """Return the inertia of the volume inside a 3-plex Formex.
+
+    - `x`: an (ntri,3,3) shaped float array, representing ntri triangles.
+
+    This uses the same algorithm as tetrahedral_inertia using [0.,0.,0.]
+    as the 4-th point for each tetrahedron.
+
+    Returns a tuple (V,C,I) where V is the total volume,
+    C is the center of mass (3,) and I is the inertia tensor (6,) of the
+    tetrahedral model.
+
+    Example:
+
+    >>> from pyformex.simple import sphere
+    >>> S = sphere(4).toFormex()
+    >>> V,C,I = surface_volume_inertia(S.coords)
+    >>> print(V,C,I)
+    4.04701 [-0. -0. -0.] [ 1.58  1.58  1.58  0.    0.    0.  ]
+
+    """
+    def K(x,y):
+        x1,x2,x3 = x[:,0], x[:,1], x[:,2]
+        y1,y2,y3 = y[:,0], y[:,1], y[:,2]
+        return x1 * (y1+y2+y3) + \
+               x2 * (   y2+y3) + \
+               x3 * (      y3)
+
+    x = at.checkArray(x,shape=(-1,3,3),kind='f')
+    v = surface_volume(x)
+    V = v.sum()
+    c = x.sum(axis=1) / 4.  # 4-th point is 0.,0.,0.
+    C = (c*v[:,np.newaxis]).sum(axis=0) / V
+    if center_only:
+        return V,C
+
+    x -= C
+    aa = 2 * K(x,x) * v.reshape(-1,1)
+    aa = aa.sum(axis=0)
+    a0 = aa[1] + aa[2]
+    a1 = aa[0] + aa[2]
+    a2 = aa[0] + aa[1]
+    x0,x1,x2 = x[...,0],x[...,1],x[...,2]
+    a3 = (( K(x1,x2) + K(x2,x1) ) * v).sum(axis=0)
+    a4 = (( K(x2,x0) + K(x0,x2) ) * v).sum(axis=0)
+    a5 = (( K(x0,x1) + K(x1,x0) ) * v).sum(axis=0)
+    I = np.array([a0,a1,a2,a3,a4,a5]) / 20.
+    return V,C,I
+
+
+def tetrahedral_volume(x):
+    """Compute the volume of tetrahedrons.
+
+    - `x`: an (ntet,4,3) shaped float array, representing ntet tetrahedrons.
+
+    Returns an (ntet,) shaped array with the volume of the tetrahedrons.
+    Depending on the ordering of the points, this volume may be positive
+    or negative. It will be positive if point 4 is on the side of the positive
+    normal formed by the first 3 points.
+    """
+    x = at.checkArray(x,shape=(-1,4,3),kind='f')
+    a, b, c = [ x[:,i,:] - x[:,3,:] for i in range(3) ]
+    d = np.cross(b, c)
+    e = (a*d).sum(axis=-1)
+    return -e / 6
+
+
+def tetrahedral_inertia(x,density=None,center_only=False):
+    """Return the inertia of the volume of a 4-plex Formex.
+
+    Parameters:
+
+    - `x`: an (ntet,4,3) shaped float array, representing ntet tetrahedrons.
+    - `density`: optional mass density (ntet,) per tetrahedron
+    - `center_only`: bool. If True, returns only the total volume, total mass
+      and center of gravity. This may be used on large models when only these
+      quantities are required.
+
+    Returns a tuple (V,M,C,I) where V is the total volume, M is the total mass,
+    C is the center of mass (3,) and I is the inertia tensor (6,) of the
+    tetrahedral model.
+
+    Formulas for inertia were based on F. Tonon, J. Math & Stat, 1(1):8-11,2005
+
+    Example:
+
+    >>> x = Coords([
+    ...     [  8.33220, -11.86875,  0.93355 ],
+    ...     [  0.75523,   5.00000, 16.37072 ],
+    ...     [ 52.61236,   5.00000, -5.38580 ],
+    ...     [  2.000000,  5.00000,  3.00000 ],
+    ...     ])
+    >>> F = Formex([x])
+    >>> print(tetrahedral_center(F.coords))
+    [ 15.92   0.78   3.73]
+    >>> print(tetrahedral_volume(F.coords))
+    [ 1873.23]
+    >>> print(*tetrahedral_inertia(F.coords))
+    1873.23 1873.23 [ 15.92   0.78   3.73] [  43520.32  194711.28  191168.77    4417.66  -46343.16   11996.2 ]
+
+    """
+    def K(x,y):
+        x1,x2,x3,x4 = x[:,0], x[:,1], x[:,2], x[:,3]
+        y1,y2,y3,y4 = y[:,0], y[:,1], y[:,2], y[:,3]
+        return x1 * (y1+y2+y3+y4) + \
+               x2 * (   y2+y3+y4) + \
+               x3 * (      y3+y4) + \
+               x4 * (         y4)
+
+    x = at.checkArray(x,shape=(-1,4,3),kind='f')
+    v = tetrahedral_volume(x)
+    V = v.sum()
+    if density:
+        v *= density
+    c = Formex(x).centroids()
+    M = v.sum()
+    C = (c*v[:,np.newaxis]).sum(axis=0) / M
+    if center_only:
+        return V,M,C
+
+    x -= C
+    aa = 2 * K(x,x) * v.reshape(-1,1)
+    aa = aa.sum(axis=0)
+    a0 = aa[1] + aa[2]
+    a1 = aa[0] + aa[2]
+    a2 = aa[0] + aa[1]
+    x0,x1,x2 = x[...,0],x[...,1],x[...,2]
+    a3 = (( K(x1,x2) + K(x2,x1) ) * v).sum(axis=0)
+    a4 = (( K(x2,x0) + K(x0,x2) ) * v).sum(axis=0)
+    a5 = (( K(x0,x1) + K(x1,x0) ) * v).sum(axis=0)
+    I = np.array([a0,a1,a2,a3,a4,a5]) / 20.
+    return V,M,C,I
+
+
+def tetrahedral_center(x,density=None):
+    """Compute the center of mass of a collection of tetrahedrons.
+
+    - `x`: an (ntet,4,3) shaped float array, representing ntet tetrahedrons.
+    - `density`: optional mass density (ntet,) per tetrahedron. Default 1.
+
+    Returns a (3,) shaped array with the center of mass.
+    """
+    return tetrahedral_inertia(x,density=None,center_only=True)[2]
+
+
+# Kept for compatibility
+inertia = point_inertia
 
 
 # End
