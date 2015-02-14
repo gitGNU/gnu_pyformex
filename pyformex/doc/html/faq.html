@@ -152,7 +152,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Date:</th><td class="field-body">February 08, 2015</td>
+<tr class="field-odd field"><th class="field-name">Date:</th><td class="field-body">February 14, 2015</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Version:</th><td class="field-body">1.0.1</td>
 </tr>
@@ -408,6 +408,39 @@ path (<tt class="docutils literal"><span class="pre">plugins.mesh</span></tt>) w
 </li>
 </ul>
 </li>
+<li><p class="first"><strong>Call a user function from a dialog widget</strong></p>
+<p>The pyFormex Dialog class provides a reduced interface to the Qt widget
+system. This helps users in creating quite complex interactive dialogs
+with a minimum effort. Sometimes however the user wants to change
+something in the working of some part of the Dialog.
+Since the full Qt system is accessible to pyFormex, it is quite easy
+to do such cutomizations.</p>
+<p>As an example, suppose the user wants to customize the &#8216;fslider&#8217; input
+item. The default allows to bind a user function to the slider, and to
+specify whether this function will be called during slider movement
+(tracking is True) or only at the end of the movement (tracking is False).
+Now suppose the user wants to bind different functions during slider
+movement (tracking True) and at the end of movement (when the slider is
+released). He could then use the provided function binding for the
+tracking function, and bind another function to the slider widget&#8217;s
+&#8216;sliderReleased&#8217; signal. The outline to do such a binding would be like
+the following:</p>
+<div class="highlight-python"><div class="highlight"><pre>def myfunc(*args,**kargs):
+    &quot;&quot;&quot;My function invoked on release of the slider&quot;
+    ...
+
+dialog = Dialog(items=[ _I(&#39;fieldname&#39;, itemtype=&#39;fslider&#39;, ...) ])
+item = dialog[&#39;fieldname&#39;]
+item.slider.sliderReleased.connect(myfunc)
+</pre></div>
+</div>
+<p>First, the function to be called is defined. The dialog is constructed
+and contains an &#8216;fslider&#8217; type input item. The InputItem instance can be
+found from the Dialog by indexing with the field name. This instance
+will actually be an InputFSlider subclass of InputItem, and have an
+attribute &#8216;slider&#8217; which is the QSlider widget. The last line then
+connects the &#8216;sliderReleased&#8217; signal of that widget to the user function.</p>
+</li>
 </ol>
 </div>
 </div>
@@ -440,7 +473,7 @@ path (<tt class="docutils literal"><span class="pre">plugins.mesh</span></tt>) w
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 08, 2015.
+      Last updated on Feb 14, 2015.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

@@ -974,10 +974,29 @@ for details.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="formex.Formex.cclip">
+<tt class="descname">cclip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.cclip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>For a Formex, this is equivalent with cselect(sel).
+For a Mesh, this is equivalent with cselect(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#formex.Formex.cselect" title="formex.Formex.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for more information.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#formex.Formex.clip" title="formex.Formex.clip"><tt class="xref py py-meth docutils literal"><span class="pre">clip()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="formex.Formex.centered">
 <tt class="descname">centered</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.centered" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;centered&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.centered" title="coords.Coords.centered"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.centered()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.clip">
+<tt class="descname">clip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.clip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>For a Formex, this is equivalent with select(sel).
+For a Mesh, this is equivalent with select(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#formex.Formex.select" title="formex.Formex.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a> for more information.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1001,6 +1020,40 @@ of the geometry.</p>
 <dd><p>Return a deep copy of the Geometry  object.</p>
 <p>The returned object is an exact copy of the input, but has
 all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>sel</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#formex.Formex.select" title="formex.Formex.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1204,6 +1257,28 @@ the maximum size are not rescaled.</p>
 <tt class="descname">scale</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;scale&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.scale" title="coords.Coords.scale"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.scale()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="formex.Formex.select">
+<tt class="descname">select</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#formex.Formex.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#formex.Formex.cselect" title="formex.Formex.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1589,7 +1664,7 @@ side is either &#8216;+&#8217;, &#8216;-&#8216; or &#8216;&#8217;</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 08, 2015.
+      Last updated on Feb 14, 2015.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

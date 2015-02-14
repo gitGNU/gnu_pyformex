@@ -700,7 +700,7 @@ class TriSurface(Mesh):
         I = inertia.Tensor(I)
         I = inertia.Inertia(I,mass=V,ctr=C)
         I.mass *= density
-        I._data *= density
+        I *= density
         return I
 
 
@@ -735,7 +735,7 @@ class TriSurface(Mesh):
         else:
             I = self.centroids().inertia(mass=self.areas())
             I.mass *= density
-            I._data *= density
+            I *= density
             return I
 
 

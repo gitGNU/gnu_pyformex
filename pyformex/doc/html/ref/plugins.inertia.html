@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>46. plugins.inertia — inertia.py &mdash; pyFormex 1.0.1~a2 documentation</title>
+    <title>46. plugins.inertia — Compute inertia related quantities of geometrical models. &mdash; pyFormex 1.0.1~a2 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -101,7 +101,7 @@
    
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">46. <tt class="docutils literal"><span class="pre">plugins.inertia</span></tt> &#8212; inertia.py</a><ul>
+<li><a class="reference internal" href="#">46. <tt class="docutils literal"><span class="pre">plugins.inertia</span></tt> &#8212; Compute inertia related quantities of geometrical models.</a><ul>
 <li><a class="reference internal" href="#classes-defined-in-module-plugins-inertia">46.1. Classes defined in module plugins.inertia</a></li>
 <li><a class="reference internal" href="#functions-defined-in-module-plugins-inertia">46.2. Functions defined in module plugins.inertia</a></li>
 </ul>
@@ -149,11 +149,18 @@
           <div class="body">
             
   <div class="section" id="module-plugins.inertia">
-<span id="plugins-inertia-inertia-py"></span><span id="sec-ref-plugins-inertia"></span><h1>46. <a class="reference internal" href="#module-plugins.inertia" title="plugins.inertia: inertia.py"><tt class="xref py py-mod docutils literal"><span class="pre">plugins.inertia</span></tt></a> &#8212; inertia.py<a class="headerlink" href="#module-plugins.inertia" title="Permalink to this headline">¶</a></h1>
-<p>Compute inertia related quantities of a Formex.
-This comprises: center of gravity, inertia tensor, principal axes</p>
-<p>Currently, these functions work on arrays of nodes, not on Formices!
-Use func(F,f) to operate on a Formex F.</p>
+<span id="plugins-inertia-compute-inertia-related-quantities-of-geometrical-models"></span><span id="sec-ref-plugins-inertia"></span><h1>46. <a class="reference internal" href="#module-plugins.inertia" title="plugins.inertia: Compute inertia related quantities of geometrical models."><tt class="xref py py-mod docutils literal"><span class="pre">plugins.inertia</span></tt></a> &#8212; Compute inertia related quantities of geometrical models.<a class="headerlink" href="#module-plugins.inertia" title="Permalink to this headline">¶</a></h1>
+<p>Inertia related quantities of a geometrical model comprise: the total mass,
+the center of mass, the inertia tensor, the principal axes of inertia.</p>
+<p>This module defines some classes to store the inertia data:</p>
+<ul class="simple">
+<li><a class="reference internal" href="#plugins.inertia.Tensor" title="plugins.inertia.Tensor"><tt class="xref py py-class docutils literal"><span class="pre">Tensor</span></tt></a>: a general second order tensor</li>
+<li><a class="reference internal" href="#plugins.inertia.Inertia" title="plugins.inertia.Inertia"><tt class="xref py py-class docutils literal"><span class="pre">Inertia</span></tt></a>: a specialized second order tensor for inertia data</li>
+</ul>
+<p>This module also provides the basic functions to compute the inertia data
+of collections of simple geometric data: points, lines, triangles, tetrahedrons.</p>
+<p>The prefered way to compute inertia data of a geometric model is through the
+<tt class="xref py py-meth docutils literal"><span class="pre">Geometry.inertia()</span></tt> methods.</p>
 <div class="section" id="classes-defined-in-module-plugins-inertia">
 <h2>46.1. Classes defined in module plugins.inertia<a class="headerlink" href="#classes-defined-in-module-plugins-inertia" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -306,6 +313,12 @@ Ixx, Iyy, Izz, Iyz, Izx, Ixy</li>
 </pre></div>
 </div>
 <dl class="method">
+<dt id="plugins.inertia.Inertia.translate">
+<tt class="descname">translate</tt><big>(</big><em>trl</em>, <em>toG=False</em><big>)</big><a class="headerlink" href="#plugins.inertia.Inertia.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the inertia tensor around axes translated over vector trl.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.inertia.Inertia.principal">
 <tt class="descname">principal</tt><big>(</big><em>sort=True</em>, <em>right_handed=True</em><big>)</big><a class="headerlink" href="#plugins.inertia.Inertia.principal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the principal values and axes of the inertia tensor.</p>
@@ -355,36 +368,14 @@ See also translate.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="plugins.inertia.Inertia.translate">
-<tt class="descname">translate</tt><big>(</big><em>trl</em>, <em>toG=False</em><big>)</big><a class="headerlink" href="#plugins.inertia.Inertia.translate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the inertia tensor around axes translated over vector trl.</p>
-</dd></dl>
-
 </dd></dl>
 
 </div>
 <div class="section" id="functions-defined-in-module-plugins-inertia">
 <h2>46.2. Functions defined in module plugins.inertia<a class="headerlink" href="#functions-defined-in-module-plugins-inertia" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="plugins.inertia.mcenter">
-<tt class="descclassname">plugins.inertia.</tt><tt class="descname">mcenter</tt><big>(</big><em>X</em>, <em>mass=None</em><big>)</big><a class="headerlink" href="#plugins.inertia.mcenter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the total mass and center of mass of an array of mass points.</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>X</cite>: a Coords with shape (npoints,3). Shapes (...,3) are accepted
-but will be reshaped to (npoints,3).</li>
-<li><cite>mass</cite>: optional, (npoints,) float array with the mass of the points.
-If omitted, all points have mass 1.</li>
-</ul>
-<p>Returns a tuple (M,C) where M is the total mass of all points and C is
-the center of mass.</p>
-<p>See also <tt class="xref py py-meth docutils literal"><span class="pre">inertia()</span></tt>.</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="plugins.inertia.point_inertia">
-<tt class="descclassname">plugins.inertia.</tt><tt class="descname">point_inertia</tt><big>(</big><em>X</em>, <em>mass=None</em><big>)</big><a class="headerlink" href="#plugins.inertia.point_inertia" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">plugins.inertia.</tt><tt class="descname">point_inertia</tt><big>(</big><em>X</em>, <em>mass=None</em>, <em>center_only=False</em><big>)</big><a class="headerlink" href="#plugins.inertia.point_inertia" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the total mass, center of mass and inertia tensor mass points.</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -392,13 +383,133 @@ the center of mass.</p>
 but will be reshaped to (npoints,3).</li>
 <li><cite>mass</cite>: optional, (npoints,) float array with the mass of the points.
 If omitted, all points have mass 1.</li>
+<li><cite>center_only</cite>: bool: if True, only returns the total mass and center
+of mass.</li>
 </ul>
 <p>Returns a tuple (M,C,I) where M is the total mass of all points, C is
 the center of mass, and I is the inertia tensor in the central coordinate
 system, i.e. a coordinate system with axes paralle to the global axes
-but origin at the (computed) center of mass.</p>
-<p>See <tt class="xref py py-meth docutils literal"><span class="pre">center()</span></tt> if you need the center of mass, but not the inertia
-tensor.</p>
+but origin at the (computed) center of mass. If <cite>center_only</cite> is True,
+returns the tuple (M,C) only. On large models this is more effective
+in case you do not need the inertia tensor.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.inertia.surface_volume">
+<tt class="descclassname">plugins.inertia.</tt><tt class="descname">surface_volume</tt><big>(</big><em>x</em>, <em>pt=None</em><big>)</big><a class="headerlink" href="#plugins.inertia.surface_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the volume inside a 3-plex Formex.</p>
+<ul class="simple">
+<li><cite>x</cite>: an (ntri,3,3) shaped float array, representing ntri triangles.</li>
+<li><cite>pt</cite>: a point in space. If unspecified, it is taken equal to the
+origin of the global coordinate system ([0.,0.,0.]).</li>
+</ul>
+<p>Returns an (ntri) shaped array with the volume of the tetrahedrons formed
+by the triangles and the point <cite>pt</cite>. Triangles with an outer normal
+pointing away from <cite>pt</cite> will generate positive tetrahral volumes, while
+triangles having <cite>pt</cite> at the side of their positive normal will generate
+negative volumes. In any case, if <cite>x</cite> represents a closed surface,
+the algebraic sum of all the volumes is the total volume inside the surface.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.inertia.surface_volume_inertia">
+<tt class="descclassname">plugins.inertia.</tt><tt class="descname">surface_volume_inertia</tt><big>(</big><em>x</em>, <em>center_only=False</em><big>)</big><a class="headerlink" href="#plugins.inertia.surface_volume_inertia" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the inertia of the volume inside a 3-plex Formex.</p>
+<ul class="simple">
+<li><cite>x</cite>: an (ntri,3,3) shaped float array, representing ntri triangles.</li>
+</ul>
+<p>This uses the same algorithm as tetrahedral_inertia using [0.,0.,0.]
+as the 4-th point for each tetrahedron.</p>
+<p>Returns a tuple (V,C,I) where V is the total volume,
+C is the center of mass (3,) and I is the inertia tensor (6,) of the
+tetrahedral model.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyformex.simple</span> <span class="kn">import</span> <span class="n">sphere</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">sphere</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">toFormex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">V</span><span class="p">,</span><span class="n">C</span><span class="p">,</span><span class="n">I</span> <span class="o">=</span> <span class="n">surface_volume_inertia</span><span class="p">(</span><span class="n">S</span><span class="o">.</span><span class="n">coords</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">C</span><span class="p">,</span><span class="n">I</span><span class="p">)</span>
+<span class="go">4.04701 [-0. -0. -0.] [ 1.58  1.58  1.58  0.    0.    0.  ]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.inertia.tetrahedral_volume">
+<tt class="descclassname">plugins.inertia.</tt><tt class="descname">tetrahedral_volume</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#plugins.inertia.tetrahedral_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the volume of tetrahedrons.</p>
+<ul class="simple">
+<li><cite>x</cite>: an (ntet,4,3) shaped float array, representing ntet tetrahedrons.</li>
+</ul>
+<p>Returns an (ntet,) shaped array with the volume of the tetrahedrons.
+Depending on the ordering of the points, this volume may be positive
+or negative. It will be positive if point 4 is on the side of the positive
+normal formed by the first 3 points.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.inertia.tetrahedral_inertia">
+<tt class="descclassname">plugins.inertia.</tt><tt class="descname">tetrahedral_inertia</tt><big>(</big><em>x</em>, <em>density=None</em>, <em>center_only=False</em><big>)</big><a class="headerlink" href="#plugins.inertia.tetrahedral_inertia" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the inertia of the volume of a 4-plex Formex.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>x</cite>: an (ntet,4,3) shaped float array, representing ntet tetrahedrons.</li>
+<li><cite>density</cite>: optional mass density (ntet,) per tetrahedron</li>
+<li><cite>center_only</cite>: bool. If True, returns only the total volume, total mass
+and center of gravity. This may be used on large models when only these
+quantities are required.</li>
+</ul>
+<p>Returns a tuple (V,M,C,I) where V is the total volume, M is the total mass,
+C is the center of mass (3,) and I is the inertia tensor (6,) of the
+tetrahedral model.</p>
+<p>Formulas for inertia were based on F. Tonon, J. Math &amp; Stat, 1(1):8-11,2005</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">[</span>  <span class="mf">8.33220</span><span class="p">,</span> <span class="o">-</span><span class="mf">11.86875</span><span class="p">,</span>  <span class="mf">0.93355</span> <span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span>  <span class="mf">0.75523</span><span class="p">,</span>   <span class="mf">5.00000</span><span class="p">,</span> <span class="mf">16.37072</span> <span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span> <span class="mf">52.61236</span><span class="p">,</span>   <span class="mf">5.00000</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.38580</span> <span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span>  <span class="mf">2.000000</span><span class="p">,</span>  <span class="mf">5.00000</span><span class="p">,</span>  <span class="mf">3.00000</span> <span class="p">],</span>
+<span class="gp">... </span>    <span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">Formex</span><span class="p">([</span><span class="n">x</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">tetrahedral_center</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">coords</span><span class="p">))</span>
+<span class="go">[ 15.92   0.78   3.73]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">tetrahedral_volume</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">coords</span><span class="p">))</span>
+<span class="go">[ 1873.23]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="o">*</span><span class="n">tetrahedral_inertia</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">coords</span><span class="p">))</span>
+<span class="go">1873.23 1873.23 [ 15.92   0.78   3.73] [  43520.32  194711.28  191168.77    4417.66  -46343.16   11996.2 ]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.inertia.tetrahedral_center">
+<tt class="descclassname">plugins.inertia.</tt><tt class="descname">tetrahedral_center</tt><big>(</big><em>x</em>, <em>density=None</em><big>)</big><a class="headerlink" href="#plugins.inertia.tetrahedral_center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the center of mass of a collection of tetrahedrons.</p>
+<ul class="simple">
+<li><cite>x</cite>: an (ntet,4,3) shaped float array, representing ntet tetrahedrons.</li>
+<li><cite>density</cite>: optional mass density (ntet,) per tetrahedron. Default 1.</li>
+</ul>
+<p>Returns a (3,) shaped array with the center of mass.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.inertia.inertia">
+<tt class="descclassname">plugins.inertia.</tt><tt class="descname">inertia</tt><big>(</big><em>X</em>, <em>mass=None</em>, <em>center_only=False</em><big>)</big><a class="headerlink" href="#plugins.inertia.inertia" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the total mass, center of mass and inertia tensor mass points.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>X</cite>: a Coords with shape (npoints,3). Shapes (...,3) are accepted
+but will be reshaped to (npoints,3).</li>
+<li><cite>mass</cite>: optional, (npoints,) float array with the mass of the points.
+If omitted, all points have mass 1.</li>
+<li><cite>center_only</cite>: bool: if True, only returns the total mass and center
+of mass.</li>
+</ul>
+<p>Returns a tuple (M,C,I) where M is the total mass of all points, C is
+the center of mass, and I is the inertia tensor in the central coordinate
+system, i.e. a coordinate system with axes paralle to the global axes
+but origin at the (computed) center of mass. If <cite>center_only</cite> is True,
+returns the tuple (M,C) only. On large models this is more effective
+in case you do not need the inertia tensor.</p>
 </dd></dl>
 
 </div>

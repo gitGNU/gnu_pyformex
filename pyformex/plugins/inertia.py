@@ -47,7 +47,7 @@ from pyformex.formex import Formex
 from pyformex import utils
 
 
-class Tensor(object):
+class Tensor(np.ndarray):
     """A second order symmetric(!) shaped tensor in 3D vector space.
 
     This is a new class under design. Only use for developemnt!
@@ -91,13 +91,13 @@ class Tensor(object):
     Example:
 
         >>> t = Tensor([1,2,3,4,5,6])
-        >>> print(t.contracted)
-        [ 1.  2.  3.  4.  5.  6.]
-        >>> print(t.tensor)
+        >>> print(t)
         [[ 1.  6.  5.]
          [ 6.  2.  4.]
          [ 5.  4.  3.]]
-        >>> s = Tensor(t.tensor)
+        >>> print(t.contracted)
+        [ 1.  2.  3.  4.  5.  6.]
+        >>> s = Tensor(t)
         >>> print(s)
         [[ 1.  6.  5.]
          [ 6.  2.  4.]
@@ -113,8 +113,8 @@ class Tensor(object):
         ])
 
 
-    def __init__(self,data,symmetric=True):
-        """Initialize the Tensor."""
+    def __new__(clas,data=None,symmetric=True):
+        """Create a new Tensor instance"""
         try:
             data = at.checkArray(data,shape=(3,3),kind='f',allow='if')
         except:
@@ -123,30 +123,39 @@ class Tensor(object):
             except:
                 raise ValueError("Data should have shape (3,3) or (6,)")
             data = data[Tensor._contracted_index]
+        ar = data.view(clas)
+        return ar
 
-        self._data = data
-        if symmetric:
-            self._data = self.sym
+
+    def __array_finalize__(self, obj):
+        """Finalize the new Matrix object.
+
+        When a class is derived from numpy.ndarray and the constructor (the
+        :meth:`__new__` method) defines new attributes, these atttributes
+        need to be reset in this method.
+        """
+        pass  # currently no new attributes defined in __new__
+        #self._newattr = getattr(obj, '_newattr', None)
 
 
     @property
     def xx(self):
-        return self._data[0,0]
+        return self[0,0]
     @property
     def yy(self):
-        return self._data[1,1]
+        return self[1,1]
     @property
     def zz(self):
-        return self._data[2,2]
+        return self[2,2]
     @property
     def yz(self):
-        return self._data[1,2]
+        return self[1,2]
     @property
     def zx(self):
-        return self._data[0,2]
+        return self[0,2]
     @property
     def xy(self):
-        return self._data[0,1]
+        return self[0,1]
 
     zy = yz
     xz = zx
@@ -155,16 +164,20 @@ class Tensor(object):
 
     @property
     def contracted(self):
+        """Returned the symmetric tensor data as a numpy array with shape (6,)
+
+        """
         return self.sym[zip(*Tensor._contracted_order)]
 
     @property
     def tensor(self):
-        return self._data
+        """Returned the tensor data as a numpy array with shape (3,3)"""
+        return np.asarray(self)
 
     @property
     def sym(self):
         """Return the symmetric part of the tensor."""
-        return (self._data+self._data.T) / 2
+        return (self+self.T) / 2
     @property
     def asym(self):
         """Return the antisymmetric part of the tensor."""
@@ -228,13 +241,8 @@ class Tensor(object):
          [  0.    -0.   -25.32]]
 
         """
-        data = self.tensor
         rot = at.checkArray(rot,shape=(3,3),kind='f')
-        return at.abat(rot,data)
-
-
-    def __str__(self):
-        return self._data.__str__()
+        return at.abat(rot,self)
 
 
 class Inertia(Tensor):
@@ -255,13 +263,14 @@ class Inertia(Tensor):
 
     Example:
 
-    >>> X = [
-    ...     [ 0., 0., 0., ],
-    ...     [ 1., 0., 0., ],
-    ...     [ 0., 1., 0., ],
-    ...     [ 0., 0., 1., ],
-    ...     ]
-    >>> I = Inertia(X)
+    >>> from ..elements import Tet4
+    >>> X = Tet4.vertices
+    >>> print(X)
+    [[ 0.  0.  0.]
+     [ 1.  0.  0.]
+     [ 0.  1.  0.]
+     [ 0.  0.  1.]]
+    >>> I = X.inertia()
     >>> print(I)
     [[ 1.5   0.25  0.25]
      [ 0.25  1.5   0.25]
@@ -276,29 +285,14 @@ class Inertia(Tensor):
      [ 0.  0.  2.]]
 
     """
-    def __init__(self,X,mass=None,ctr=None):
-        """Compute and store inertia tensor of points X
 
-        """
-        if isinstance(X,Tensor):
-            # We need mass and ctr!
-            Tensor.__init__(self,X.tensor)
-            self.mass = float(mass)
-            ctr = at.checkArray(ctr,shape=(3,),kind='f')
-            self.ctr = Coords(ctr)
-        else:
-            utils.warn("""
-The usage of inertia.Inertia to compute the inertia of a set of points
-is deprecated. Use the Coords.inertia() method instead.
-""")
-            M,C,I = inertia(X,mass)
-            Tensor.__init__(self,I)
-            if ctr is not None:
-                ctr = at.checkArray(ctr,shape=(3,),kind='f')
-                self.translate(ctr-C,toG=True)
-                C = ctr
-            self.mass = M
-            self.ctr = C
+    def __new__(clas,data,mass,ctr):
+        """Create a new Tensor instance"""
+        ar = Tensor.__new__(clas,data)
+        # We need mass and ctr!
+        ar.mass = float(mass)
+        ar.ctr = Coords(at.checkArray(ctr,shape=(3,),kind='f'))
+        return ar
 
 
     def translate(self,trl,toG=False):

@@ -1,5 +1,5 @@
 .. $Id$
-  
+
 ..
   This file is part of pyFormex 0.9.1  (Tue Oct 15 21:05:25 CEST 2013)
   pyFormex is a tool for generating, manipulating and transforming 3D
@@ -8,21 +8,21 @@
   Project page:  http://savannah.nongnu.org/projects/pyformex/
   Copyright 2004-2013 (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
   Distributed under the GNU General Public License version 3 or later.
-  
+
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see http://www.gnu.org/licenses/.
-  
-  
+
+
 
 .. include:: defines.inc
 .. include:: links.inc
@@ -58,13 +58,13 @@ FAQ
 
    We used the GNU Image Manipulation Program (`GIMP`_). It has a wide variety
    of scripts to create logos. With newer versions (>= 2.6) use the menu
-   :menuselection:`Fille-->Create-->Logos-->Alien-neon`. With older 
+   :menuselection:`Fille-->Create-->Logos-->Alien-neon`. With older
    versions (<=2.4) use :menuselection:`Xtra-->Script-Fu-->Logos-->Alien-neon`.
-   
+
    In the Alien Neon dialog specify the following data::
 
       Text: pyFormex
-      Font Size: 150 
+      Font Size: 150
       Font: Blippo-Heavy
       Glow Color: 0xFF3366
       Background Color: 0x000000
@@ -74,7 +74,7 @@ FAQ
       Fade Away: Yes
 
    Press :guilabel:`OK` to create the logo. Then switch off the background
-   layer and save the image in PNG format.  
+   layer and save the image in PNG format.
    Export the image with ``Save Background Color`` option switched off!
 
 
@@ -82,8 +82,8 @@ FAQ
    With FTGL, save as icon, handedited .xpm in emacs to set background color
    to None (transparent), then converted to .png and .ico with convert.
 
-   
-   .. _`faq:why_python`: 
+
+   .. _`faq:why_python`:
 
 #. **Why is pyFormex written in Python?**
 
@@ -95,13 +95,13 @@ FAQ
    Being a scripting language without the need for variable
    declaration, it allows for quick program development. On the other
    hand, Python provides numerous interfaces with established compiled
-   libraries, so it can be surprisingly fast. 
+   libraries, so it can be surprisingly fast.
 
 
 #. **Is an interpreted language like Python fast enough with large data models?**
 
    See the :ref:`question above <faq:why_python>`.
-   
+
    .. note::
 
       We should add something about NumPy and the pyFormex C-library.
@@ -124,7 +124,7 @@ TRICKS
 
 
 #. **Import modules from your own script directories**
-  
+
    In order for Python to find the modules in non-standard locations,
    you should add the directory path of the module to the ``sys.path``
    variable.
@@ -172,7 +172,7 @@ TRICKS
    The multiple viewports are ordered in a grid layout, and you can
    specify relative sizes for the different columns and/or rows of
    viewports. You can use setColumnStretch and setRowStretch to give
-   the columns a relative stretch compared toi the other ones. 
+   the columns a relative stretch compared toi the other ones.
    The following example produces 4 viewports in a 2x2
    layout, with the right column(1) having double width of the left
    one(0), while the bottom row has a height equal to 1.5 times the
@@ -241,14 +241,14 @@ TRICKS
 #. **Install the** :mod:`gl2ps` **extension**
 
    .. note::
-   
+
       This belongs in :doc:`install`
 
    Saving images in EPS format is done through the gl2ps library,
    which can be accessed from Python using wrapper functions.
    Recent versions of pyFormex come with an installation script
    that will also generate the required Python interface module.
-   
+
    .. warning::
 
       The older ``python-gl2ps-1.1.2.tar.gz`` available from the
@@ -265,11 +265,11 @@ TRICKS
 
      fil = file(self.tempfilename,'w')
      IOError
-     : 
+     :
      [Errno 13] Permission denied: 'calpy.tmp.part-0'
 
    You can fix this by changing your current working directory to a path
-   where you have write permission (e.g. your home directory). 
+   where you have write permission (e.g. your home directory).
    You can do this using the :menuselection:`File->Change workdir` menu option.
    The setting will be saved when you leave pyFormex (but other scripts
    might change the setting again).
@@ -298,12 +298,12 @@ TRICKS
    this::
 
      AttributeError: 'NoneType' object has no attribute 'Mesh'
-  
+
    The reason is that the path recorded in the Project file pointed to the
    old location of the mesh module under ``plugins`` while the mesh module
    is now in the top pyformex directory. This can be fixed in two ways:
 
-   - The easy (but discouraged) way is to add a symbolic link in the old 
+   - The easy (but discouraged) way is to add a symbolic link in the old
      position, linking to the new one. We do not encourage to use this
      method, because it sustains the dependency on legacy versions.
 
@@ -314,6 +314,43 @@ TRICKS
      path (``plugins.mesh``) with the current path (``mesh``)::
 
        sed 's|plugins.mesh|mesh|'g old.pyf >new.pyf
-  
+
+
+#. **Call a user function from a dialog widget**
+
+   The pyFormex Dialog class provides a reduced interface to the Qt widget
+   system. This helps users in creating quite complex interactive dialogs
+   with a minimum effort. Sometimes however the user wants to change
+   something in the working of some part of the Dialog.
+   Since the full Qt system is accessible to pyFormex, it is quite easy
+   to do such cutomizations.
+
+   As an example, suppose the user wants to customize the 'fslider' input
+   item. The default allows to bind a user function to the slider, and to
+   specify whether this function will be called during slider movement
+   (tracking is True) or only at the end of the movement (tracking is False).
+   Now suppose the user wants to bind different functions during slider
+   movement (tracking True) and at the end of movement (when the slider is
+   released). He could then use the provided function binding for the
+   tracking function, and bind another function to the slider widget's
+   'sliderReleased' signal. The outline to do such a binding would be like
+   the following::
+
+
+     def myfunc(*args,**kargs):
+         """My function invoked on release of the slider"
+	 ...
+
+     dialog = Dialog(items=[ _I('fieldname', itemtype='fslider', ...) ])
+     item = dialog['fieldname']
+     item.slider.sliderReleased.connect(myfunc)
+
+   First, the function to be called is defined. The dialog is constructed
+   and contains an 'fslider' type input item. The InputItem instance can be
+   found from the Dialog by indexing with the field name. This instance
+   will actually be an InputFSlider subclass of InputItem, and have an
+   attribute 'slider' which is the QSlider widget. The last line then
+   connects the 'sliderReleased' signal of that widget to the user function.
+
 
 .. End
