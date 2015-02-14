@@ -133,176 +133,6 @@ def read_stl(fn,intermediate=None):
         return fileread.read_gts(ofn)
 
 
-# Surface characteristics
-
-def surface_volume(x,pt=None):
-    """Return the volume inside a 3-plex Formex.
-
-    - `x`: an (ntri,3,3) shaped float array, representing ntri triangles.
-    - `pt`: a point in space. If unspecified, it is taken equal to the
-      origin of the global coordinate system ([0.,0.,0.]).
-
-    Returns an (ntri) shaped array with the volume of the tetrahedrons formed
-    by the triangles and the point `pt`. Triangles with an outer normal
-    pointing away from `pt` will generate positive tetrahral volumes, while
-    triangles having `pt` at the side of their positive normal will generate
-    negative volumes. In any case, if `x` represents a closed surface,
-    the algebraic sum of all the volumes is the total volume inside the surface.
-    """
-    x = at.checkArray(x,shape=(-1,3,3),kind='f')
-    if pt is not None:
-        x -= pt
-    a, b, c = [ x[:,i,:] for i in range(3) ]
-    d = cross(b, c)
-    e = (a*d).sum(axis=-1)
-    return e / 6
-
-
-def surface_volume_inertia(x,center_only=False):
-    """Return the inertia of the volume inside a 3-plex Formex.
-
-    - `x`: an (ntri,3,3) shaped float array, representing ntri triangles.
-
-    This uses the same algorithm as tetrahedral_inertia using [0.,0.,0.]
-    as the 4-th point for each tetrahedron.
-
-    Returns a tuple (V,C,I) where V is the total volume,
-    C is the center of mass (3,) and I is the inertia tensor (6,) of the
-    tetrahedral model.
-
-    Example:
-
-    >>> from pyformex.simple import sphere
-    >>> S = sphere(4).toFormex()
-    >>> V,C,I = surface_volume_inertia(S.coords)
-    >>> print(V,C,I)
-    4.04701 [-0. -0. -0.] [ 1.58  1.58  1.58  0.    0.    0.  ]
-
-    """
-    def K(x,y):
-        x1,x2,x3 = x[:,0], x[:,1], x[:,2]
-        y1,y2,y3 = y[:,0], y[:,1], y[:,2]
-        return x1 * (y1+y2+y3) + \
-               x2 * (   y2+y3) + \
-               x3 * (      y3)
-
-    x = at.checkArray(x,shape=(-1,3,3),kind='f')
-    v = surface_volume(x)
-    V = v.sum()
-    c = x.sum(axis=1) / 4.  # 4-th point is 0.,0.,0.
-    C = (c*v[:,newaxis]).sum(axis=0) / V
-    if center_only:
-        return V,C
-
-    x -= C
-    aa = 2 * K(x,x) * v.reshape(-1,1)
-    aa = aa.sum(axis=0)
-    a0 = aa[1] + aa[2]
-    a1 = aa[0] + aa[2]
-    a2 = aa[0] + aa[1]
-    x0,x1,x2 = x[...,0],x[...,1],x[...,2]
-    a3 = (( K(x1,x2) + K(x2,x1) ) * v).sum(axis=0)
-    a4 = (( K(x2,x0) + K(x0,x2) ) * v).sum(axis=0)
-    a5 = (( K(x0,x1) + K(x1,x0) ) * v).sum(axis=0)
-    I = array([a0,a1,a2,a3,a4,a5]) / 20.
-    return V,C,I
-
-
-def tetrahedral_volume(x):
-    """Compute the volume of tetrahedrons.
-
-    - `x`: an (ntet,4,3) shaped float array, representing ntet tetrahedrons.
-
-    Returns an (ntet,) shaped array with the volume of the tetrahedrons.
-    Depending on the ordering of the points, this volume may be positive
-    or negative. It will be positive if point 4 is on the side of the positive
-    normal formed by the first 3 points.
-    """
-    x = at.checkArray(x,shape=(-1,4,3),kind='f')
-    a, b, c = [ x[:,i,:] - x[:,3,:] for i in range(3) ]
-    d = cross(b, c)
-    e = (a*d).sum(axis=-1)
-    return -e / 6
-
-
-def tetrahedral_inertia(x,density=None,center_only=False):
-    """Return the inertia of the volume of a 4-plex Formex.
-
-    Parameters:
-
-    - `x`: an (ntet,4,3) shaped float array, representing ntet tetrahedrons.
-    - `density`: optional mass density (ntet,) per tetrahedron
-    - `center_only`: bool. If True, returns only the total volume, total mass
-      and center of gravity. This may be used on large models when only these
-      quantities are required.
-
-    Returns a tuple (V,M,C,I) where V is the total volume, M is the total mass,
-    C is the center of mass (3,) and I is the inertia tensor (6,) of the
-    tetrahedral model.
-
-    Formulas for inertia were based on F. Tonon, J. Math & Stat, 1(1):8-11,2005
-
-    Example:
-
-    >>> x = Coords([
-    ...     [  8.33220, -11.86875,  0.93355 ],
-    ...     [  0.75523,   5.00000, 16.37072 ],
-    ...     [ 52.61236,   5.00000, -5.38580 ],
-    ...     [  2.000000,  5.00000,  3.00000 ],
-    ...     ])
-    >>> F = Formex([x])
-    >>> print(tetrahedral_center(F.coords))
-    [ 15.92   0.78   3.73]
-    >>> print(tetrahedral_volume(F.coords))
-    [ 1873.23]
-    >>> print(*tetrahedral_inertia(F.coords))
-    1873.23 1873.23 [ 15.92   0.78   3.73] [  43520.32  194711.28  191168.77    4417.66  -46343.16   11996.2 ]
-
-    """
-    def K(x,y):
-        x1,x2,x3,x4 = x[:,0], x[:,1], x[:,2], x[:,3]
-        y1,y2,y3,y4 = y[:,0], y[:,1], y[:,2], y[:,3]
-        return x1 * (y1+y2+y3+y4) + \
-               x2 * (   y2+y3+y4) + \
-               x3 * (      y3+y4) + \
-               x4 * (         y4)
-
-    x = at.checkArray(x,shape=(-1,4,3),kind='f')
-    v = tetrahedral_volume(x)
-    V = v.sum()
-    if density:
-        v *= density
-    c = Formex(x).centroids()
-    M = v.sum()
-    C = (c*v[:,newaxis]).sum(axis=0) / M
-    if center_only:
-        return V,M,C
-
-    x -= C
-    aa = 2 * K(x,x) * v.reshape(-1,1)
-    aa = aa.sum(axis=0)
-    a0 = aa[1] + aa[2]
-    a1 = aa[0] + aa[2]
-    a2 = aa[0] + aa[1]
-    x0,x1,x2 = x[...,0],x[...,1],x[...,2]
-    a3 = (( K(x1,x2) + K(x2,x1) ) * v).sum(axis=0)
-    a4 = (( K(x2,x0) + K(x0,x2) ) * v).sum(axis=0)
-    a5 = (( K(x0,x1) + K(x1,x0) ) * v).sum(axis=0)
-    I = array([a0,a1,a2,a3,a4,a5]) / 20.
-    return V,M,C,I
-
-
-def tetrahedral_center(x,density=None):
-    """Compute the center of mass of a collection of tetrahedrons.
-
-    - `x`: an (ntet,4,3) shaped float array, representing ntet tetrahedrons.
-    - `density`: optional mass density (ntet,) per tetrahedron. Default 1.
-
-    Returns a (3,) shaped array with the center of mass.
-    """
-    return tetrahedral_inertia(x,density=None,center_only=True)[2]
-
-
 
 def curvature(coords,elems,edges,neighbours=1):
     """Calculate curvature parameters at the nodes.
@@ -831,10 +661,10 @@ class TriSurface(Mesh):
         This will only be correct if the surface is a closed manifold.
         """
         x = self.coords[self.elems]
-        return surface_volume(x).sum()
+        return inertia.surface_volume(x).sum()
 
 
-    def volumeInertia(self):
+    def volumeInertia(self,density=1.0):
         """Return the inertia properties of the enclosed volume of the surface.
 
         The surface should be a closed manifold and is supposed to be
@@ -866,9 +696,11 @@ class TriSurface(Mesh):
 
         """
         x = self.coords[self.elems]
-        V,C,I = surface_volume_inertia(x)
+        V,C,I = inertia.surface_volume_inertia(x)
         I = inertia.Tensor(I)
         I = inertia.Inertia(I,mass=V,ctr=C)
+        I.mass *= density
+        I *= density
         return I
 
 
@@ -885,7 +717,7 @@ class TriSurface(Mesh):
         return curv
 
 
-    def inertia(self,volume=False):
+    def inertia(self,volume=False,density=1.0):
         """Return inertia related quantities of the surface.
 
         This computes the inertia properties of the centroids of the
@@ -899,8 +731,12 @@ class TriSurface(Mesh):
         See also :meth:`volumeInertia`.
         """
         if volume:
-            return self.volumeInertia()
-        return self.centroids().inertia(mass=self.areas())
+            return self.volumeInertia(density=density)
+        else:
+            I = self.centroids().inertia(mass=self.areas())
+            I.mass *= density
+            I *= density
+            return I
 
 
     def surfaceType(self):

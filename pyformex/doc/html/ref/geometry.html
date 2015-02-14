@@ -346,6 +346,81 @@ all of its data independent of the former.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="geometry.Geometry.select">
+<tt class="descname">select</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#geometry.Geometry.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#geometry.Geometry.cselect" title="geometry.Geometry.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="geometry.Geometry.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#geometry.Geometry.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>sel</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#geometry.Geometry.select" title="geometry.Geometry.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="geometry.Geometry.clip">
+<tt class="descname">clip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#geometry.Geometry.clip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>For a Formex, this is equivalent with select(sel).
+For a Mesh, this is equivalent with select(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#geometry.Geometry.select" title="geometry.Geometry.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a> for more information.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="geometry.Geometry.cclip">
+<tt class="descname">cclip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#geometry.Geometry.cclip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>For a Formex, this is equivalent with cselect(sel).
+For a Mesh, this is equivalent with cselect(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#geometry.Geometry.cselect" title="geometry.Geometry.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for more information.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#geometry.Geometry.clip" title="geometry.Geometry.clip"><tt class="xref py py-meth docutils literal"><span class="pre">clip()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="geometry.Geometry.selectProp">
 <tt class="descname">selectProp</tt><big>(</big><em>val</em>, <em>compact=False</em><big>)</big><a class="headerlink" href="#geometry.Geometry.selectProp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an object which holds only the elements with property val.</p>
@@ -767,7 +842,7 @@ and returns it.</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 08, 2015.
+      Last updated on Feb 14, 2015.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

@@ -354,11 +354,81 @@ straight segments to form a PolyLine approximation.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.Curve.approx">
+<tt class="descname">approx</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Curve.approx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>If neither <cite>nseg</cite> nor <cite>ndiv</cite> are specified (default), a chordal method
+is used limiting the chordal distance of the curve to the PolyLine
+segments.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: integer: number of straight segments of the resulting
+PolyLine. Only used if <cite>ndiv</cite> is not specified.</li>
+<li><cite>ndiv</cite>: positive integer or a list thereof. If a single integer,
+it specifies the number of straight segments in each part of the
+curve, and is thus equivalent with <cite>nseg = ndiv * self.nparts</cite>.
+If a list of integers, its length should be equal to the number
+of parts in the curve and each integer in the list specifies the
+number of segments the corresponding part.</li>
+<li><cite>chordal</cite>: float: accuracy of the approximation when using the
+&#8216;chordal error&#8217; method. This is the case if neither <cite>nseg</cite> nor
+<cite>ndiv</cite> are specified (the default). The value is relative to the
+curve&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">charLength()</span></tt>.</li>
+<li><cite>equidistant</cite>: bool, only used if <cite>nseg</cite> is specified and <cite>ndiv</cite>
+is not. If True the <cite>nseg+1</cite> points are spaced almost equidistantly
+over the curve. If False (default), the points are spread equally
+over the parameter space.</li>
+<li><cite>npre</cite>: integer, only used if the <cite>chordal</cite> method is used or if
+<cite>nseg</cite> is not None and <cite>equidistant</cite> is True: the number of segments
+per part of the curve (like <cite>ndiv</cite>) used in a pre-approximation.
+If not specified, it is set to the degree of the curve for the
+<cite>chordal</cite> method (1 for PolyLine), and to 100 in the <cite>equidistant</cite>
+method (where the pre-approximation is currently used to compute
+accurate curve lengths).</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Curve.approximate">
+<tt class="descname">approximate</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Curve.approximate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>If neither <cite>nseg</cite> nor <cite>ndiv</cite> are specified (default), a chordal method
+is used limiting the chordal distance of the curve to the PolyLine
+segments.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: integer: number of straight segments of the resulting
+PolyLine. Only used if <cite>ndiv</cite> is not specified.</li>
+<li><cite>ndiv</cite>: positive integer or a list thereof. If a single integer,
+it specifies the number of straight segments in each part of the
+curve, and is thus equivalent with <cite>nseg = ndiv * self.nparts</cite>.
+If a list of integers, its length should be equal to the number
+of parts in the curve and each integer in the list specifies the
+number of segments the corresponding part.</li>
+<li><cite>chordal</cite>: float: accuracy of the approximation when using the
+&#8216;chordal error&#8217; method. This is the case if neither <cite>nseg</cite> nor
+<cite>ndiv</cite> are specified (the default). The value is relative to the
+curve&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">charLength()</span></tt>.</li>
+<li><cite>equidistant</cite>: bool, only used if <cite>nseg</cite> is specified and <cite>ndiv</cite>
+is not. If True the <cite>nseg+1</cite> points are spaced almost equidistantly
+over the curve. If False (default), the points are spread equally
+over the parameter space.</li>
+<li><cite>npre</cite>: integer, only used if the <cite>chordal</cite> method is used or if
+<cite>nseg</cite> is not None and <cite>equidistant</cite> is True: the number of segments
+per part of the curve (like <cite>ndiv</cite>) used in a pre-approximation.
+If not specified, it is set to the degree of the curve for the
+<cite>chordal</cite> method (1 for PolyLine), and to 100 in the <cite>equidistant</cite>
+method (where the pre-approximation is currently used to compute
+accurate curve lengths).</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.Curve.frenet">
 <tt class="descname">frenet</tt><big>(</big><em>ndiv=None</em>, <em>nseg=None</em>, <em>chordal=0.01</em>, <em>upvector=None</em>, <em>avgdir=True</em>, <em>compensate=False</em><big>)</big><a class="headerlink" href="#plugins.curve.Curve.frenet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return points and Frenet frame along the curve.</p>
 <p>A PolyLine approximation for the curve is constructed, using the
-<tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
+<a class="reference internal" href="#plugins.curve.Curve.approx" title="plugins.curve.Curve.approx"><tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt></a> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
 and <cite>chordal</cite>.
 Then Frenet frames are constructed with <tt class="xref py py-meth docutils literal"><span class="pre">PolyLine.movingFrenet()</span></tt>
 using the remaining arguments.
@@ -496,10 +566,29 @@ for details.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.Curve.cclip">
+<tt class="descname">cclip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Curve.cclip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>For a Formex, this is equivalent with cselect(sel).
+For a Mesh, this is equivalent with cselect(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.Curve.cselect" title="plugins.curve.Curve.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for more information.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.Curve.clip" title="plugins.curve.Curve.clip"><tt class="xref py py-meth docutils literal"><span class="pre">clip()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.Curve.centered">
 <tt class="descname">centered</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Curve.centered" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;centered&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.centered" title="coords.Coords.centered"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.centered()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Curve.clip">
+<tt class="descname">clip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Curve.clip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>For a Formex, this is equivalent with select(sel).
+For a Mesh, this is equivalent with select(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.Curve.select" title="plugins.curve.Curve.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a> for more information.</p>
 </dd></dl>
 
 <dl class="method">
@@ -523,6 +612,40 @@ of the geometry.</p>
 <dd><p>Return a deep copy of the Geometry  object.</p>
 <p>The returned object is an exact copy of the input, but has
 all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Curve.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Curve.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>sel</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.Curve.select" title="plugins.curve.Curve.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -734,6 +857,28 @@ the maximum size are not rescaled.</p>
 <tt class="descname">scale</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Curve.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;scale&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.scale" title="coords.Coords.scale"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.scale()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Curve.select">
+<tt class="descname">select</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Curve.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#plugins.curve.Curve.cselect" title="plugins.curve.Curve.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1155,6 +1300,41 @@ for details.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.PolyLine.approx">
+<tt class="descname">approx</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.PolyLine.approx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>If neither <cite>nseg</cite> nor <cite>ndiv</cite> are specified (default), a chordal method
+is used limiting the chordal distance of the curve to the PolyLine
+segments.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: integer: number of straight segments of the resulting
+PolyLine. Only used if <cite>ndiv</cite> is not specified.</li>
+<li><cite>ndiv</cite>: positive integer or a list thereof. If a single integer,
+it specifies the number of straight segments in each part of the
+curve, and is thus equivalent with <cite>nseg = ndiv * self.nparts</cite>.
+If a list of integers, its length should be equal to the number
+of parts in the curve and each integer in the list specifies the
+number of segments the corresponding part.</li>
+<li><cite>chordal</cite>: float: accuracy of the approximation when using the
+&#8216;chordal error&#8217; method. This is the case if neither <cite>nseg</cite> nor
+<cite>ndiv</cite> are specified (the default). The value is relative to the
+curve&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">charLength()</span></tt>.</li>
+<li><cite>equidistant</cite>: bool, only used if <cite>nseg</cite> is specified and <cite>ndiv</cite>
+is not. If True the <cite>nseg+1</cite> points are spaced almost equidistantly
+over the curve. If False (default), the points are spread equally
+over the parameter space.</li>
+<li><cite>npre</cite>: integer, only used if the <cite>chordal</cite> method is used or if
+<cite>nseg</cite> is not None and <cite>equidistant</cite> is True: the number of segments
+per part of the curve (like <cite>ndiv</cite>) used in a pre-approximation.
+If not specified, it is set to the degree of the curve for the
+<cite>chordal</cite> method (1 for PolyLine), and to 100 in the <cite>equidistant</cite>
+method (where the pre-approximation is currently used to compute
+accurate curve lengths).</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.PolyLine.approxAt">
 <tt class="descname">approxAt</tt><big>(</big><em>at</em><big>)</big><a class="headerlink" href="#plugins.curve.PolyLine.approxAt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a PolyLine approximation with specified parameter values.</p>
@@ -1163,6 +1343,41 @@ for details.</li>
 <li><cite>at</cite>: a list of parameter values in the curve parameter range.
 The Curve points at these parameter values are connected with
 straight segments to form a PolyLine approximation.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.PolyLine.approximate">
+<tt class="descname">approximate</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.PolyLine.approximate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>If neither <cite>nseg</cite> nor <cite>ndiv</cite> are specified (default), a chordal method
+is used limiting the chordal distance of the curve to the PolyLine
+segments.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: integer: number of straight segments of the resulting
+PolyLine. Only used if <cite>ndiv</cite> is not specified.</li>
+<li><cite>ndiv</cite>: positive integer or a list thereof. If a single integer,
+it specifies the number of straight segments in each part of the
+curve, and is thus equivalent with <cite>nseg = ndiv * self.nparts</cite>.
+If a list of integers, its length should be equal to the number
+of parts in the curve and each integer in the list specifies the
+number of segments the corresponding part.</li>
+<li><cite>chordal</cite>: float: accuracy of the approximation when using the
+&#8216;chordal error&#8217; method. This is the case if neither <cite>nseg</cite> nor
+<cite>ndiv</cite> are specified (the default). The value is relative to the
+curve&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">charLength()</span></tt>.</li>
+<li><cite>equidistant</cite>: bool, only used if <cite>nseg</cite> is specified and <cite>ndiv</cite>
+is not. If True the <cite>nseg+1</cite> points are spaced almost equidistantly
+over the curve. If False (default), the points are spread equally
+over the parameter space.</li>
+<li><cite>npre</cite>: integer, only used if the <cite>chordal</cite> method is used or if
+<cite>nseg</cite> is not None and <cite>equidistant</cite> is True: the number of segments
+per part of the curve (like <cite>ndiv</cite>) used in a pre-approximation.
+If not specified, it is set to the degree of the curve for the
+<cite>chordal</cite> method (1 for PolyLine), and to 100 in the <cite>equidistant</cite>
+method (where the pre-approximation is currently used to compute
+accurate curve lengths).</li>
 </ul>
 </dd></dl>
 
@@ -1236,10 +1451,29 @@ chord.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.PolyLine.cclip">
+<tt class="descname">cclip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.PolyLine.cclip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>For a Formex, this is equivalent with cselect(sel).
+For a Mesh, this is equivalent with cselect(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.PolyLine.cselect" title="plugins.curve.PolyLine.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for more information.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.PolyLine.clip" title="plugins.curve.PolyLine.clip"><tt class="xref py py-meth docutils literal"><span class="pre">clip()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.PolyLine.centered">
 <tt class="descname">centered</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.PolyLine.centered" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;centered&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.centered" title="coords.Coords.centered"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.centered()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.PolyLine.clip">
+<tt class="descname">clip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.PolyLine.clip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>For a Formex, this is equivalent with select(sel).
+For a Mesh, this is equivalent with select(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.PolyLine.select" title="plugins.curve.PolyLine.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a> for more information.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1263,6 +1497,40 @@ of the geometry.</p>
 <dd><p>Return a deep copy of the Geometry  object.</p>
 <p>The returned object is an exact copy of the input, but has
 all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.PolyLine.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.PolyLine.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>sel</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.PolyLine.select" title="plugins.curve.PolyLine.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1332,7 +1600,7 @@ goes from 0 to 1 over the segment.</p>
 <tt class="descname">frenet</tt><big>(</big><em>ndiv=None</em>, <em>nseg=None</em>, <em>chordal=0.01</em>, <em>upvector=None</em>, <em>avgdir=True</em>, <em>compensate=False</em><big>)</big><a class="headerlink" href="#plugins.curve.PolyLine.frenet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return points and Frenet frame along the curve.</p>
 <p>A PolyLine approximation for the curve is constructed, using the
-<tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
+<a class="reference internal" href="#plugins.curve.Curve.approx" title="plugins.curve.Curve.approx"><tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt></a> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
 and <cite>chordal</cite>.
 Then Frenet frames are constructed with <tt class="xref py py-meth docutils literal"><span class="pre">PolyLine.movingFrenet()</span></tt>
 using the remaining arguments.
@@ -1559,6 +1827,28 @@ the maximum size are not rescaled.</p>
 <tt class="descname">scale</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.PolyLine.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;scale&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.scale" title="coords.Coords.scale"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.scale()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.PolyLine.select">
+<tt class="descname">select</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.PolyLine.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#plugins.curve.PolyLine.cselect" title="plugins.curve.PolyLine.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1814,6 +2104,41 @@ cannot be concatenated.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.Line.approx">
+<tt class="descname">approx</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Line.approx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>If neither <cite>nseg</cite> nor <cite>ndiv</cite> are specified (default), a chordal method
+is used limiting the chordal distance of the curve to the PolyLine
+segments.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: integer: number of straight segments of the resulting
+PolyLine. Only used if <cite>ndiv</cite> is not specified.</li>
+<li><cite>ndiv</cite>: positive integer or a list thereof. If a single integer,
+it specifies the number of straight segments in each part of the
+curve, and is thus equivalent with <cite>nseg = ndiv * self.nparts</cite>.
+If a list of integers, its length should be equal to the number
+of parts in the curve and each integer in the list specifies the
+number of segments the corresponding part.</li>
+<li><cite>chordal</cite>: float: accuracy of the approximation when using the
+&#8216;chordal error&#8217; method. This is the case if neither <cite>nseg</cite> nor
+<cite>ndiv</cite> are specified (the default). The value is relative to the
+curve&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">charLength()</span></tt>.</li>
+<li><cite>equidistant</cite>: bool, only used if <cite>nseg</cite> is specified and <cite>ndiv</cite>
+is not. If True the <cite>nseg+1</cite> points are spaced almost equidistantly
+over the curve. If False (default), the points are spread equally
+over the parameter space.</li>
+<li><cite>npre</cite>: integer, only used if the <cite>chordal</cite> method is used or if
+<cite>nseg</cite> is not None and <cite>equidistant</cite> is True: the number of segments
+per part of the curve (like <cite>ndiv</cite>) used in a pre-approximation.
+If not specified, it is set to the degree of the curve for the
+<cite>chordal</cite> method (1 for PolyLine), and to 100 in the <cite>equidistant</cite>
+method (where the pre-approximation is currently used to compute
+accurate curve lengths).</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.Line.approxAt">
 <tt class="descname">approxAt</tt><big>(</big><em>at</em><big>)</big><a class="headerlink" href="#plugins.curve.Line.approxAt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a PolyLine approximation with specified parameter values.</p>
@@ -1822,6 +2147,41 @@ cannot be concatenated.</p>
 <li><cite>at</cite>: a list of parameter values in the curve parameter range.
 The Curve points at these parameter values are connected with
 straight segments to form a PolyLine approximation.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Line.approximate">
+<tt class="descname">approximate</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Line.approximate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>If neither <cite>nseg</cite> nor <cite>ndiv</cite> are specified (default), a chordal method
+is used limiting the chordal distance of the curve to the PolyLine
+segments.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: integer: number of straight segments of the resulting
+PolyLine. Only used if <cite>ndiv</cite> is not specified.</li>
+<li><cite>ndiv</cite>: positive integer or a list thereof. If a single integer,
+it specifies the number of straight segments in each part of the
+curve, and is thus equivalent with <cite>nseg = ndiv * self.nparts</cite>.
+If a list of integers, its length should be equal to the number
+of parts in the curve and each integer in the list specifies the
+number of segments the corresponding part.</li>
+<li><cite>chordal</cite>: float: accuracy of the approximation when using the
+&#8216;chordal error&#8217; method. This is the case if neither <cite>nseg</cite> nor
+<cite>ndiv</cite> are specified (the default). The value is relative to the
+curve&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">charLength()</span></tt>.</li>
+<li><cite>equidistant</cite>: bool, only used if <cite>nseg</cite> is specified and <cite>ndiv</cite>
+is not. If True the <cite>nseg+1</cite> points are spaced almost equidistantly
+over the curve. If False (default), the points are spread equally
+over the parameter space.</li>
+<li><cite>npre</cite>: integer, only used if the <cite>chordal</cite> method is used or if
+<cite>nseg</cite> is not None and <cite>equidistant</cite> is True: the number of segments
+per part of the curve (like <cite>ndiv</cite>) used in a pre-approximation.
+If not specified, it is set to the degree of the curve for the
+<cite>chordal</cite> method (1 for PolyLine), and to 100 in the <cite>equidistant</cite>
+method (where the pre-approximation is currently used to compute
+accurate curve lengths).</li>
 </ul>
 </dd></dl>
 
@@ -1921,10 +2281,29 @@ segment starting from the last.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.Line.cclip">
+<tt class="descname">cclip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Line.cclip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>For a Formex, this is equivalent with cselect(sel).
+For a Mesh, this is equivalent with cselect(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.Line.cselect" title="plugins.curve.Line.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for more information.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.Line.clip" title="plugins.curve.Line.clip"><tt class="xref py py-meth docutils literal"><span class="pre">clip()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.Line.centered">
 <tt class="descname">centered</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Line.centered" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;centered&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.centered" title="coords.Coords.centered"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.centered()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Line.clip">
+<tt class="descname">clip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Line.clip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>For a Formex, this is equivalent with select(sel).
+For a Mesh, this is equivalent with select(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.Line.select" title="plugins.curve.Line.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a> for more information.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1976,6 +2355,40 @@ of the geometry.</p>
 <dd><p>Return a deep copy of the Geometry  object.</p>
 <p>The returned object is an exact copy of the input, but has
 all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Line.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Line.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>sel</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.Line.select" title="plugins.curve.Line.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2072,7 +2485,7 @@ goes from 0 to 1 over the segment.</p>
 <tt class="descname">frenet</tt><big>(</big><em>ndiv=None</em>, <em>nseg=None</em>, <em>chordal=0.01</em>, <em>upvector=None</em>, <em>avgdir=True</em>, <em>compensate=False</em><big>)</big><a class="headerlink" href="#plugins.curve.Line.frenet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return points and Frenet frame along the curve.</p>
 <p>A PolyLine approximation for the curve is constructed, using the
-<tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
+<a class="reference internal" href="#plugins.curve.Curve.approx" title="plugins.curve.Curve.approx"><tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt></a> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
 and <cite>chordal</cite>.
 Then Frenet frames are constructed with <tt class="xref py py-meth docutils literal"><span class="pre">PolyLine.movingFrenet()</span></tt>
 using the remaining arguments.
@@ -2364,6 +2777,28 @@ the maximum size are not rescaled.</p>
 <tt class="descname">scale</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Line.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;scale&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.scale" title="coords.Coords.scale"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.scale()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Line.select">
+<tt class="descname">select</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Line.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#plugins.curve.Line.cselect" title="plugins.curve.Line.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2897,6 +3332,41 @@ for details.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.BezierSpline.approx">
+<tt class="descname">approx</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.BezierSpline.approx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>If neither <cite>nseg</cite> nor <cite>ndiv</cite> are specified (default), a chordal method
+is used limiting the chordal distance of the curve to the PolyLine
+segments.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: integer: number of straight segments of the resulting
+PolyLine. Only used if <cite>ndiv</cite> is not specified.</li>
+<li><cite>ndiv</cite>: positive integer or a list thereof. If a single integer,
+it specifies the number of straight segments in each part of the
+curve, and is thus equivalent with <cite>nseg = ndiv * self.nparts</cite>.
+If a list of integers, its length should be equal to the number
+of parts in the curve and each integer in the list specifies the
+number of segments the corresponding part.</li>
+<li><cite>chordal</cite>: float: accuracy of the approximation when using the
+&#8216;chordal error&#8217; method. This is the case if neither <cite>nseg</cite> nor
+<cite>ndiv</cite> are specified (the default). The value is relative to the
+curve&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">charLength()</span></tt>.</li>
+<li><cite>equidistant</cite>: bool, only used if <cite>nseg</cite> is specified and <cite>ndiv</cite>
+is not. If True the <cite>nseg+1</cite> points are spaced almost equidistantly
+over the curve. If False (default), the points are spread equally
+over the parameter space.</li>
+<li><cite>npre</cite>: integer, only used if the <cite>chordal</cite> method is used or if
+<cite>nseg</cite> is not None and <cite>equidistant</cite> is True: the number of segments
+per part of the curve (like <cite>ndiv</cite>) used in a pre-approximation.
+If not specified, it is set to the degree of the curve for the
+<cite>chordal</cite> method (1 for PolyLine), and to 100 in the <cite>equidistant</cite>
+method (where the pre-approximation is currently used to compute
+accurate curve lengths).</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.BezierSpline.approxAt">
 <tt class="descname">approxAt</tt><big>(</big><em>at</em><big>)</big><a class="headerlink" href="#plugins.curve.BezierSpline.approxAt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a PolyLine approximation with specified parameter values.</p>
@@ -2905,6 +3375,41 @@ for details.</li>
 <li><cite>at</cite>: a list of parameter values in the curve parameter range.
 The Curve points at these parameter values are connected with
 straight segments to form a PolyLine approximation.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.BezierSpline.approximate">
+<tt class="descname">approximate</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.BezierSpline.approximate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>If neither <cite>nseg</cite> nor <cite>ndiv</cite> are specified (default), a chordal method
+is used limiting the chordal distance of the curve to the PolyLine
+segments.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: integer: number of straight segments of the resulting
+PolyLine. Only used if <cite>ndiv</cite> is not specified.</li>
+<li><cite>ndiv</cite>: positive integer or a list thereof. If a single integer,
+it specifies the number of straight segments in each part of the
+curve, and is thus equivalent with <cite>nseg = ndiv * self.nparts</cite>.
+If a list of integers, its length should be equal to the number
+of parts in the curve and each integer in the list specifies the
+number of segments the corresponding part.</li>
+<li><cite>chordal</cite>: float: accuracy of the approximation when using the
+&#8216;chordal error&#8217; method. This is the case if neither <cite>nseg</cite> nor
+<cite>ndiv</cite> are specified (the default). The value is relative to the
+curve&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">charLength()</span></tt>.</li>
+<li><cite>equidistant</cite>: bool, only used if <cite>nseg</cite> is specified and <cite>ndiv</cite>
+is not. If True the <cite>nseg+1</cite> points are spaced almost equidistantly
+over the curve. If False (default), the points are spread equally
+over the parameter space.</li>
+<li><cite>npre</cite>: integer, only used if the <cite>chordal</cite> method is used or if
+<cite>nseg</cite> is not None and <cite>equidistant</cite> is True: the number of segments
+per part of the curve (like <cite>ndiv</cite>) used in a pre-approximation.
+If not specified, it is set to the degree of the curve for the
+<cite>chordal</cite> method (1 for PolyLine), and to 100 in the <cite>equidistant</cite>
+method (where the pre-approximation is currently used to compute
+accurate curve lengths).</li>
 </ul>
 </dd></dl>
 
@@ -2978,10 +3483,29 @@ chord.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.BezierSpline.cclip">
+<tt class="descname">cclip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.BezierSpline.cclip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>For a Formex, this is equivalent with cselect(sel).
+For a Mesh, this is equivalent with cselect(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.BezierSpline.cselect" title="plugins.curve.BezierSpline.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for more information.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.BezierSpline.clip" title="plugins.curve.BezierSpline.clip"><tt class="xref py py-meth docutils literal"><span class="pre">clip()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.BezierSpline.centered">
 <tt class="descname">centered</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.BezierSpline.centered" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;centered&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.centered" title="coords.Coords.centered"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.centered()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.BezierSpline.clip">
+<tt class="descname">clip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.BezierSpline.clip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>For a Formex, this is equivalent with select(sel).
+For a Mesh, this is equivalent with select(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.BezierSpline.select" title="plugins.curve.BezierSpline.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a> for more information.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3005,6 +3529,40 @@ of the geometry.</p>
 <dd><p>Return a deep copy of the Geometry  object.</p>
 <p>The returned object is an exact copy of the input, but has
 all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.BezierSpline.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.BezierSpline.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>sel</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.BezierSpline.select" title="plugins.curve.BezierSpline.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3074,7 +3632,7 @@ goes from 0 to 1 over the segment.</p>
 <tt class="descname">frenet</tt><big>(</big><em>ndiv=None</em>, <em>nseg=None</em>, <em>chordal=0.01</em>, <em>upvector=None</em>, <em>avgdir=True</em>, <em>compensate=False</em><big>)</big><a class="headerlink" href="#plugins.curve.BezierSpline.frenet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return points and Frenet frame along the curve.</p>
 <p>A PolyLine approximation for the curve is constructed, using the
-<tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
+<a class="reference internal" href="#plugins.curve.Curve.approx" title="plugins.curve.Curve.approx"><tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt></a> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
 and <cite>chordal</cite>.
 Then Frenet frames are constructed with <tt class="xref py py-meth docutils literal"><span class="pre">PolyLine.movingFrenet()</span></tt>
 using the remaining arguments.
@@ -3309,6 +3867,28 @@ the maximum size are not rescaled.</p>
 <tt class="descname">scale</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.BezierSpline.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;scale&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.scale" title="coords.Coords.scale"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.scale()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.BezierSpline.select">
+<tt class="descname">select</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.BezierSpline.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#plugins.curve.BezierSpline.cselect" title="plugins.curve.BezierSpline.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3614,6 +4194,41 @@ for details.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.Contour.approx">
+<tt class="descname">approx</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Contour.approx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>If neither <cite>nseg</cite> nor <cite>ndiv</cite> are specified (default), a chordal method
+is used limiting the chordal distance of the curve to the PolyLine
+segments.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: integer: number of straight segments of the resulting
+PolyLine. Only used if <cite>ndiv</cite> is not specified.</li>
+<li><cite>ndiv</cite>: positive integer or a list thereof. If a single integer,
+it specifies the number of straight segments in each part of the
+curve, and is thus equivalent with <cite>nseg = ndiv * self.nparts</cite>.
+If a list of integers, its length should be equal to the number
+of parts in the curve and each integer in the list specifies the
+number of segments the corresponding part.</li>
+<li><cite>chordal</cite>: float: accuracy of the approximation when using the
+&#8216;chordal error&#8217; method. This is the case if neither <cite>nseg</cite> nor
+<cite>ndiv</cite> are specified (the default). The value is relative to the
+curve&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">charLength()</span></tt>.</li>
+<li><cite>equidistant</cite>: bool, only used if <cite>nseg</cite> is specified and <cite>ndiv</cite>
+is not. If True the <cite>nseg+1</cite> points are spaced almost equidistantly
+over the curve. If False (default), the points are spread equally
+over the parameter space.</li>
+<li><cite>npre</cite>: integer, only used if the <cite>chordal</cite> method is used or if
+<cite>nseg</cite> is not None and <cite>equidistant</cite> is True: the number of segments
+per part of the curve (like <cite>ndiv</cite>) used in a pre-approximation.
+If not specified, it is set to the degree of the curve for the
+<cite>chordal</cite> method (1 for PolyLine), and to 100 in the <cite>equidistant</cite>
+method (where the pre-approximation is currently used to compute
+accurate curve lengths).</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.Contour.approxAt">
 <tt class="descname">approxAt</tt><big>(</big><em>at</em><big>)</big><a class="headerlink" href="#plugins.curve.Contour.approxAt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a PolyLine approximation with specified parameter values.</p>
@@ -3622,6 +4237,41 @@ for details.</li>
 <li><cite>at</cite>: a list of parameter values in the curve parameter range.
 The Curve points at these parameter values are connected with
 straight segments to form a PolyLine approximation.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Contour.approximate">
+<tt class="descname">approximate</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Contour.approximate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>If neither <cite>nseg</cite> nor <cite>ndiv</cite> are specified (default), a chordal method
+is used limiting the chordal distance of the curve to the PolyLine
+segments.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: integer: number of straight segments of the resulting
+PolyLine. Only used if <cite>ndiv</cite> is not specified.</li>
+<li><cite>ndiv</cite>: positive integer or a list thereof. If a single integer,
+it specifies the number of straight segments in each part of the
+curve, and is thus equivalent with <cite>nseg = ndiv * self.nparts</cite>.
+If a list of integers, its length should be equal to the number
+of parts in the curve and each integer in the list specifies the
+number of segments the corresponding part.</li>
+<li><cite>chordal</cite>: float: accuracy of the approximation when using the
+&#8216;chordal error&#8217; method. This is the case if neither <cite>nseg</cite> nor
+<cite>ndiv</cite> are specified (the default). The value is relative to the
+curve&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">charLength()</span></tt>.</li>
+<li><cite>equidistant</cite>: bool, only used if <cite>nseg</cite> is specified and <cite>ndiv</cite>
+is not. If True the <cite>nseg+1</cite> points are spaced almost equidistantly
+over the curve. If False (default), the points are spread equally
+over the parameter space.</li>
+<li><cite>npre</cite>: integer, only used if the <cite>chordal</cite> method is used or if
+<cite>nseg</cite> is not None and <cite>equidistant</cite> is True: the number of segments
+per part of the curve (like <cite>ndiv</cite>) used in a pre-approximation.
+If not specified, it is set to the degree of the curve for the
+<cite>chordal</cite> method (1 for PolyLine), and to 100 in the <cite>equidistant</cite>
+method (where the pre-approximation is currently used to compute
+accurate curve lengths).</li>
 </ul>
 </dd></dl>
 
@@ -3673,10 +4323,29 @@ required to compute curve lengths.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.Contour.cclip">
+<tt class="descname">cclip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Contour.cclip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>For a Formex, this is equivalent with cselect(sel).
+For a Mesh, this is equivalent with cselect(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.Contour.cselect" title="plugins.curve.Contour.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for more information.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.Contour.clip" title="plugins.curve.Contour.clip"><tt class="xref py py-meth docutils literal"><span class="pre">clip()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.Contour.centered">
 <tt class="descname">centered</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Contour.centered" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;centered&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.centered" title="coords.Coords.centered"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.centered()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Contour.clip">
+<tt class="descname">clip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Contour.clip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>For a Formex, this is equivalent with select(sel).
+For a Mesh, this is equivalent with select(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.Contour.select" title="plugins.curve.Contour.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a> for more information.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3700,6 +4369,40 @@ of the geometry.</p>
 <dd><p>Return a deep copy of the Geometry  object.</p>
 <p>The returned object is an exact copy of the input, but has
 all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Contour.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Contour.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>sel</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.Contour.select" title="plugins.curve.Contour.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3762,7 +4465,7 @@ goes from 0 to 1 over the segment.</p>
 <tt class="descname">frenet</tt><big>(</big><em>ndiv=None</em>, <em>nseg=None</em>, <em>chordal=0.01</em>, <em>upvector=None</em>, <em>avgdir=True</em>, <em>compensate=False</em><big>)</big><a class="headerlink" href="#plugins.curve.Contour.frenet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return points and Frenet frame along the curve.</p>
 <p>A PolyLine approximation for the curve is constructed, using the
-<tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
+<a class="reference internal" href="#plugins.curve.Curve.approx" title="plugins.curve.Curve.approx"><tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt></a> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
 and <cite>chordal</cite>.
 Then Frenet frames are constructed with <tt class="xref py py-meth docutils literal"><span class="pre">PolyLine.movingFrenet()</span></tt>
 using the remaining arguments.
@@ -3997,6 +4700,28 @@ the maximum size are not rescaled.</p>
 <tt class="descname">scale</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Contour.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;scale&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.scale" title="coords.Coords.scale"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.scale()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Contour.select">
+<tt class="descname">select</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Contour.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#plugins.curve.Contour.cselect" title="plugins.curve.Contour.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -4263,6 +4988,41 @@ for details.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.CardinalSpline.approx">
+<tt class="descname">approx</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.CardinalSpline.approx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>If neither <cite>nseg</cite> nor <cite>ndiv</cite> are specified (default), a chordal method
+is used limiting the chordal distance of the curve to the PolyLine
+segments.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: integer: number of straight segments of the resulting
+PolyLine. Only used if <cite>ndiv</cite> is not specified.</li>
+<li><cite>ndiv</cite>: positive integer or a list thereof. If a single integer,
+it specifies the number of straight segments in each part of the
+curve, and is thus equivalent with <cite>nseg = ndiv * self.nparts</cite>.
+If a list of integers, its length should be equal to the number
+of parts in the curve and each integer in the list specifies the
+number of segments the corresponding part.</li>
+<li><cite>chordal</cite>: float: accuracy of the approximation when using the
+&#8216;chordal error&#8217; method. This is the case if neither <cite>nseg</cite> nor
+<cite>ndiv</cite> are specified (the default). The value is relative to the
+curve&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">charLength()</span></tt>.</li>
+<li><cite>equidistant</cite>: bool, only used if <cite>nseg</cite> is specified and <cite>ndiv</cite>
+is not. If True the <cite>nseg+1</cite> points are spaced almost equidistantly
+over the curve. If False (default), the points are spread equally
+over the parameter space.</li>
+<li><cite>npre</cite>: integer, only used if the <cite>chordal</cite> method is used or if
+<cite>nseg</cite> is not None and <cite>equidistant</cite> is True: the number of segments
+per part of the curve (like <cite>ndiv</cite>) used in a pre-approximation.
+If not specified, it is set to the degree of the curve for the
+<cite>chordal</cite> method (1 for PolyLine), and to 100 in the <cite>equidistant</cite>
+method (where the pre-approximation is currently used to compute
+accurate curve lengths).</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.CardinalSpline.approxAt">
 <tt class="descname">approxAt</tt><big>(</big><em>at</em><big>)</big><a class="headerlink" href="#plugins.curve.CardinalSpline.approxAt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a PolyLine approximation with specified parameter values.</p>
@@ -4271,6 +5031,41 @@ for details.</li>
 <li><cite>at</cite>: a list of parameter values in the curve parameter range.
 The Curve points at these parameter values are connected with
 straight segments to form a PolyLine approximation.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.CardinalSpline.approximate">
+<tt class="descname">approximate</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.CardinalSpline.approximate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>If neither <cite>nseg</cite> nor <cite>ndiv</cite> are specified (default), a chordal method
+is used limiting the chordal distance of the curve to the PolyLine
+segments.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: integer: number of straight segments of the resulting
+PolyLine. Only used if <cite>ndiv</cite> is not specified.</li>
+<li><cite>ndiv</cite>: positive integer or a list thereof. If a single integer,
+it specifies the number of straight segments in each part of the
+curve, and is thus equivalent with <cite>nseg = ndiv * self.nparts</cite>.
+If a list of integers, its length should be equal to the number
+of parts in the curve and each integer in the list specifies the
+number of segments the corresponding part.</li>
+<li><cite>chordal</cite>: float: accuracy of the approximation when using the
+&#8216;chordal error&#8217; method. This is the case if neither <cite>nseg</cite> nor
+<cite>ndiv</cite> are specified (the default). The value is relative to the
+curve&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">charLength()</span></tt>.</li>
+<li><cite>equidistant</cite>: bool, only used if <cite>nseg</cite> is specified and <cite>ndiv</cite>
+is not. If True the <cite>nseg+1</cite> points are spaced almost equidistantly
+over the curve. If False (default), the points are spread equally
+over the parameter space.</li>
+<li><cite>npre</cite>: integer, only used if the <cite>chordal</cite> method is used or if
+<cite>nseg</cite> is not None and <cite>equidistant</cite> is True: the number of segments
+per part of the curve (like <cite>ndiv</cite>) used in a pre-approximation.
+If not specified, it is set to the degree of the curve for the
+<cite>chordal</cite> method (1 for PolyLine), and to 100 in the <cite>equidistant</cite>
+method (where the pre-approximation is currently used to compute
+accurate curve lengths).</li>
 </ul>
 </dd></dl>
 
@@ -4364,10 +5159,29 @@ at the specified relative lengths.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.CardinalSpline.cclip">
+<tt class="descname">cclip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.CardinalSpline.cclip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>For a Formex, this is equivalent with cselect(sel).
+For a Mesh, this is equivalent with cselect(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.CardinalSpline.cselect" title="plugins.curve.CardinalSpline.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for more information.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.CardinalSpline.clip" title="plugins.curve.CardinalSpline.clip"><tt class="xref py py-meth docutils literal"><span class="pre">clip()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.CardinalSpline.centered">
 <tt class="descname">centered</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.CardinalSpline.centered" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;centered&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.centered" title="coords.Coords.centered"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.centered()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.CardinalSpline.clip">
+<tt class="descname">clip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.CardinalSpline.clip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>For a Formex, this is equivalent with select(sel).
+For a Mesh, this is equivalent with select(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.CardinalSpline.select" title="plugins.curve.CardinalSpline.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a> for more information.</p>
 </dd></dl>
 
 <dl class="method">
@@ -4391,6 +5205,40 @@ of the geometry.</p>
 <dd><p>Return a deep copy of the Geometry  object.</p>
 <p>The returned object is an exact copy of the input, but has
 all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.CardinalSpline.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.CardinalSpline.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>sel</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.CardinalSpline.select" title="plugins.curve.CardinalSpline.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -4468,7 +5316,7 @@ after the last part by applying de Casteljau&#8217;s algorithm on this part.</p>
 <tt class="descname">frenet</tt><big>(</big><em>ndiv=None</em>, <em>nseg=None</em>, <em>chordal=0.01</em>, <em>upvector=None</em>, <em>avgdir=True</em>, <em>compensate=False</em><big>)</big><a class="headerlink" href="#plugins.curve.CardinalSpline.frenet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return points and Frenet frame along the curve.</p>
 <p>A PolyLine approximation for the curve is constructed, using the
-<tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
+<a class="reference internal" href="#plugins.curve.Curve.approx" title="plugins.curve.Curve.approx"><tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt></a> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
 and <cite>chordal</cite>.
 Then Frenet frames are constructed with <tt class="xref py py-meth docutils literal"><span class="pre">PolyLine.movingFrenet()</span></tt>
 using the remaining arguments.
@@ -4775,6 +5623,28 @@ the maximum size are not rescaled.</p>
 <tt class="descname">scale</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.CardinalSpline.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;scale&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.scale" title="coords.Coords.scale"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.scale()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.CardinalSpline.select">
+<tt class="descname">select</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.CardinalSpline.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#plugins.curve.CardinalSpline.cselect" title="plugins.curve.CardinalSpline.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -5086,6 +5956,41 @@ for details.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.CardinalSpline2.approx">
+<tt class="descname">approx</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.CardinalSpline2.approx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>If neither <cite>nseg</cite> nor <cite>ndiv</cite> are specified (default), a chordal method
+is used limiting the chordal distance of the curve to the PolyLine
+segments.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: integer: number of straight segments of the resulting
+PolyLine. Only used if <cite>ndiv</cite> is not specified.</li>
+<li><cite>ndiv</cite>: positive integer or a list thereof. If a single integer,
+it specifies the number of straight segments in each part of the
+curve, and is thus equivalent with <cite>nseg = ndiv * self.nparts</cite>.
+If a list of integers, its length should be equal to the number
+of parts in the curve and each integer in the list specifies the
+number of segments the corresponding part.</li>
+<li><cite>chordal</cite>: float: accuracy of the approximation when using the
+&#8216;chordal error&#8217; method. This is the case if neither <cite>nseg</cite> nor
+<cite>ndiv</cite> are specified (the default). The value is relative to the
+curve&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">charLength()</span></tt>.</li>
+<li><cite>equidistant</cite>: bool, only used if <cite>nseg</cite> is specified and <cite>ndiv</cite>
+is not. If True the <cite>nseg+1</cite> points are spaced almost equidistantly
+over the curve. If False (default), the points are spread equally
+over the parameter space.</li>
+<li><cite>npre</cite>: integer, only used if the <cite>chordal</cite> method is used or if
+<cite>nseg</cite> is not None and <cite>equidistant</cite> is True: the number of segments
+per part of the curve (like <cite>ndiv</cite>) used in a pre-approximation.
+If not specified, it is set to the degree of the curve for the
+<cite>chordal</cite> method (1 for PolyLine), and to 100 in the <cite>equidistant</cite>
+method (where the pre-approximation is currently used to compute
+accurate curve lengths).</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.CardinalSpline2.approxAt">
 <tt class="descname">approxAt</tt><big>(</big><em>at</em><big>)</big><a class="headerlink" href="#plugins.curve.CardinalSpline2.approxAt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a PolyLine approximation with specified parameter values.</p>
@@ -5094,6 +5999,41 @@ for details.</li>
 <li><cite>at</cite>: a list of parameter values in the curve parameter range.
 The Curve points at these parameter values are connected with
 straight segments to form a PolyLine approximation.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.CardinalSpline2.approximate">
+<tt class="descname">approximate</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.CardinalSpline2.approximate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>If neither <cite>nseg</cite> nor <cite>ndiv</cite> are specified (default), a chordal method
+is used limiting the chordal distance of the curve to the PolyLine
+segments.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: integer: number of straight segments of the resulting
+PolyLine. Only used if <cite>ndiv</cite> is not specified.</li>
+<li><cite>ndiv</cite>: positive integer or a list thereof. If a single integer,
+it specifies the number of straight segments in each part of the
+curve, and is thus equivalent with <cite>nseg = ndiv * self.nparts</cite>.
+If a list of integers, its length should be equal to the number
+of parts in the curve and each integer in the list specifies the
+number of segments the corresponding part.</li>
+<li><cite>chordal</cite>: float: accuracy of the approximation when using the
+&#8216;chordal error&#8217; method. This is the case if neither <cite>nseg</cite> nor
+<cite>ndiv</cite> are specified (the default). The value is relative to the
+curve&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">charLength()</span></tt>.</li>
+<li><cite>equidistant</cite>: bool, only used if <cite>nseg</cite> is specified and <cite>ndiv</cite>
+is not. If True the <cite>nseg+1</cite> points are spaced almost equidistantly
+over the curve. If False (default), the points are spread equally
+over the parameter space.</li>
+<li><cite>npre</cite>: integer, only used if the <cite>chordal</cite> method is used or if
+<cite>nseg</cite> is not None and <cite>equidistant</cite> is True: the number of segments
+per part of the curve (like <cite>ndiv</cite>) used in a pre-approximation.
+If not specified, it is set to the degree of the curve for the
+<cite>chordal</cite> method (1 for PolyLine), and to 100 in the <cite>equidistant</cite>
+method (where the pre-approximation is currently used to compute
+accurate curve lengths).</li>
 </ul>
 </dd></dl>
 
@@ -5167,10 +6107,29 @@ chord.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.CardinalSpline2.cclip">
+<tt class="descname">cclip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.CardinalSpline2.cclip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>For a Formex, this is equivalent with cselect(sel).
+For a Mesh, this is equivalent with cselect(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.CardinalSpline2.cselect" title="plugins.curve.CardinalSpline2.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for more information.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.CardinalSpline2.clip" title="plugins.curve.CardinalSpline2.clip"><tt class="xref py py-meth docutils literal"><span class="pre">clip()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.CardinalSpline2.centered">
 <tt class="descname">centered</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.CardinalSpline2.centered" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;centered&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.centered" title="coords.Coords.centered"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.centered()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.CardinalSpline2.clip">
+<tt class="descname">clip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.CardinalSpline2.clip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>For a Formex, this is equivalent with select(sel).
+For a Mesh, this is equivalent with select(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.CardinalSpline2.select" title="plugins.curve.CardinalSpline2.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a> for more information.</p>
 </dd></dl>
 
 <dl class="method">
@@ -5194,6 +6153,40 @@ of the geometry.</p>
 <dd><p>Return a deep copy of the Geometry  object.</p>
 <p>The returned object is an exact copy of the input, but has
 all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.CardinalSpline2.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.CardinalSpline2.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>sel</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.CardinalSpline2.select" title="plugins.curve.CardinalSpline2.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -5263,7 +6256,7 @@ goes from 0 to 1 over the segment.</p>
 <tt class="descname">frenet</tt><big>(</big><em>ndiv=None</em>, <em>nseg=None</em>, <em>chordal=0.01</em>, <em>upvector=None</em>, <em>avgdir=True</em>, <em>compensate=False</em><big>)</big><a class="headerlink" href="#plugins.curve.CardinalSpline2.frenet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return points and Frenet frame along the curve.</p>
 <p>A PolyLine approximation for the curve is constructed, using the
-<tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
+<a class="reference internal" href="#plugins.curve.Curve.approx" title="plugins.curve.Curve.approx"><tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt></a> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
 and <cite>chordal</cite>.
 Then Frenet frames are constructed with <tt class="xref py py-meth docutils literal"><span class="pre">PolyLine.movingFrenet()</span></tt>
 using the remaining arguments.
@@ -5498,6 +6491,28 @@ the maximum size are not rescaled.</p>
 <tt class="descname">scale</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.CardinalSpline2.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;scale&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.scale" title="coords.Coords.scale"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.scale()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.CardinalSpline2.select">
+<tt class="descname">select</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.CardinalSpline2.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#plugins.curve.CardinalSpline2.cselect" title="plugins.curve.CardinalSpline2.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -5765,6 +6780,41 @@ for details.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.NaturalSpline.approx">
+<tt class="descname">approx</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.NaturalSpline.approx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>If neither <cite>nseg</cite> nor <cite>ndiv</cite> are specified (default), a chordal method
+is used limiting the chordal distance of the curve to the PolyLine
+segments.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: integer: number of straight segments of the resulting
+PolyLine. Only used if <cite>ndiv</cite> is not specified.</li>
+<li><cite>ndiv</cite>: positive integer or a list thereof. If a single integer,
+it specifies the number of straight segments in each part of the
+curve, and is thus equivalent with <cite>nseg = ndiv * self.nparts</cite>.
+If a list of integers, its length should be equal to the number
+of parts in the curve and each integer in the list specifies the
+number of segments the corresponding part.</li>
+<li><cite>chordal</cite>: float: accuracy of the approximation when using the
+&#8216;chordal error&#8217; method. This is the case if neither <cite>nseg</cite> nor
+<cite>ndiv</cite> are specified (the default). The value is relative to the
+curve&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">charLength()</span></tt>.</li>
+<li><cite>equidistant</cite>: bool, only used if <cite>nseg</cite> is specified and <cite>ndiv</cite>
+is not. If True the <cite>nseg+1</cite> points are spaced almost equidistantly
+over the curve. If False (default), the points are spread equally
+over the parameter space.</li>
+<li><cite>npre</cite>: integer, only used if the <cite>chordal</cite> method is used or if
+<cite>nseg</cite> is not None and <cite>equidistant</cite> is True: the number of segments
+per part of the curve (like <cite>ndiv</cite>) used in a pre-approximation.
+If not specified, it is set to the degree of the curve for the
+<cite>chordal</cite> method (1 for PolyLine), and to 100 in the <cite>equidistant</cite>
+method (where the pre-approximation is currently used to compute
+accurate curve lengths).</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.NaturalSpline.approxAt">
 <tt class="descname">approxAt</tt><big>(</big><em>at</em><big>)</big><a class="headerlink" href="#plugins.curve.NaturalSpline.approxAt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a PolyLine approximation with specified parameter values.</p>
@@ -5773,6 +6823,41 @@ for details.</li>
 <li><cite>at</cite>: a list of parameter values in the curve parameter range.
 The Curve points at these parameter values are connected with
 straight segments to form a PolyLine approximation.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.NaturalSpline.approximate">
+<tt class="descname">approximate</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.NaturalSpline.approximate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>If neither <cite>nseg</cite> nor <cite>ndiv</cite> are specified (default), a chordal method
+is used limiting the chordal distance of the curve to the PolyLine
+segments.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: integer: number of straight segments of the resulting
+PolyLine. Only used if <cite>ndiv</cite> is not specified.</li>
+<li><cite>ndiv</cite>: positive integer or a list thereof. If a single integer,
+it specifies the number of straight segments in each part of the
+curve, and is thus equivalent with <cite>nseg = ndiv * self.nparts</cite>.
+If a list of integers, its length should be equal to the number
+of parts in the curve and each integer in the list specifies the
+number of segments the corresponding part.</li>
+<li><cite>chordal</cite>: float: accuracy of the approximation when using the
+&#8216;chordal error&#8217; method. This is the case if neither <cite>nseg</cite> nor
+<cite>ndiv</cite> are specified (the default). The value is relative to the
+curve&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">charLength()</span></tt>.</li>
+<li><cite>equidistant</cite>: bool, only used if <cite>nseg</cite> is specified and <cite>ndiv</cite>
+is not. If True the <cite>nseg+1</cite> points are spaced almost equidistantly
+over the curve. If False (default), the points are spread equally
+over the parameter space.</li>
+<li><cite>npre</cite>: integer, only used if the <cite>chordal</cite> method is used or if
+<cite>nseg</cite> is not None and <cite>equidistant</cite> is True: the number of segments
+per part of the curve (like <cite>ndiv</cite>) used in a pre-approximation.
+If not specified, it is set to the degree of the curve for the
+<cite>chordal</cite> method (1 for PolyLine), and to 100 in the <cite>equidistant</cite>
+method (where the pre-approximation is currently used to compute
+accurate curve lengths).</li>
 </ul>
 </dd></dl>
 
@@ -5846,10 +6931,29 @@ chord.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.NaturalSpline.cclip">
+<tt class="descname">cclip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.NaturalSpline.cclip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>For a Formex, this is equivalent with cselect(sel).
+For a Mesh, this is equivalent with cselect(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.NaturalSpline.cselect" title="plugins.curve.NaturalSpline.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for more information.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.NaturalSpline.clip" title="plugins.curve.NaturalSpline.clip"><tt class="xref py py-meth docutils literal"><span class="pre">clip()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.NaturalSpline.centered">
 <tt class="descname">centered</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.NaturalSpline.centered" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;centered&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.centered" title="coords.Coords.centered"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.centered()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.NaturalSpline.clip">
+<tt class="descname">clip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.NaturalSpline.clip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>For a Formex, this is equivalent with select(sel).
+For a Mesh, this is equivalent with select(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.NaturalSpline.select" title="plugins.curve.NaturalSpline.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a> for more information.</p>
 </dd></dl>
 
 <dl class="method">
@@ -5873,6 +6977,40 @@ of the geometry.</p>
 <dd><p>Return a deep copy of the Geometry  object.</p>
 <p>The returned object is an exact copy of the input, but has
 all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.NaturalSpline.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.NaturalSpline.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>sel</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.NaturalSpline.select" title="plugins.curve.NaturalSpline.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -5942,7 +7080,7 @@ goes from 0 to 1 over the segment.</p>
 <tt class="descname">frenet</tt><big>(</big><em>ndiv=None</em>, <em>nseg=None</em>, <em>chordal=0.01</em>, <em>upvector=None</em>, <em>avgdir=True</em>, <em>compensate=False</em><big>)</big><a class="headerlink" href="#plugins.curve.NaturalSpline.frenet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return points and Frenet frame along the curve.</p>
 <p>A PolyLine approximation for the curve is constructed, using the
-<tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
+<a class="reference internal" href="#plugins.curve.Curve.approx" title="plugins.curve.Curve.approx"><tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt></a> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
 and <cite>chordal</cite>.
 Then Frenet frames are constructed with <tt class="xref py py-meth docutils literal"><span class="pre">PolyLine.movingFrenet()</span></tt>
 using the remaining arguments.
@@ -6177,6 +7315,28 @@ the maximum size are not rescaled.</p>
 <tt class="descname">scale</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.NaturalSpline.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;scale&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.scale" title="coords.Coords.scale"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.scale()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.NaturalSpline.select">
+<tt class="descname">select</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.NaturalSpline.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#plugins.curve.NaturalSpline.cselect" title="plugins.curve.NaturalSpline.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -6444,6 +7604,41 @@ for details.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.Arc3.approx">
+<tt class="descname">approx</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Arc3.approx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>If neither <cite>nseg</cite> nor <cite>ndiv</cite> are specified (default), a chordal method
+is used limiting the chordal distance of the curve to the PolyLine
+segments.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: integer: number of straight segments of the resulting
+PolyLine. Only used if <cite>ndiv</cite> is not specified.</li>
+<li><cite>ndiv</cite>: positive integer or a list thereof. If a single integer,
+it specifies the number of straight segments in each part of the
+curve, and is thus equivalent with <cite>nseg = ndiv * self.nparts</cite>.
+If a list of integers, its length should be equal to the number
+of parts in the curve and each integer in the list specifies the
+number of segments the corresponding part.</li>
+<li><cite>chordal</cite>: float: accuracy of the approximation when using the
+&#8216;chordal error&#8217; method. This is the case if neither <cite>nseg</cite> nor
+<cite>ndiv</cite> are specified (the default). The value is relative to the
+curve&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">charLength()</span></tt>.</li>
+<li><cite>equidistant</cite>: bool, only used if <cite>nseg</cite> is specified and <cite>ndiv</cite>
+is not. If True the <cite>nseg+1</cite> points are spaced almost equidistantly
+over the curve. If False (default), the points are spread equally
+over the parameter space.</li>
+<li><cite>npre</cite>: integer, only used if the <cite>chordal</cite> method is used or if
+<cite>nseg</cite> is not None and <cite>equidistant</cite> is True: the number of segments
+per part of the curve (like <cite>ndiv</cite>) used in a pre-approximation.
+If not specified, it is set to the degree of the curve for the
+<cite>chordal</cite> method (1 for PolyLine), and to 100 in the <cite>equidistant</cite>
+method (where the pre-approximation is currently used to compute
+accurate curve lengths).</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.Arc3.approxAt">
 <tt class="descname">approxAt</tt><big>(</big><em>at</em><big>)</big><a class="headerlink" href="#plugins.curve.Arc3.approxAt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a PolyLine approximation with specified parameter values.</p>
@@ -6452,6 +7647,41 @@ for details.</li>
 <li><cite>at</cite>: a list of parameter values in the curve parameter range.
 The Curve points at these parameter values are connected with
 straight segments to form a PolyLine approximation.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Arc3.approximate">
+<tt class="descname">approximate</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Arc3.approximate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>If neither <cite>nseg</cite> nor <cite>ndiv</cite> are specified (default), a chordal method
+is used limiting the chordal distance of the curve to the PolyLine
+segments.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: integer: number of straight segments of the resulting
+PolyLine. Only used if <cite>ndiv</cite> is not specified.</li>
+<li><cite>ndiv</cite>: positive integer or a list thereof. If a single integer,
+it specifies the number of straight segments in each part of the
+curve, and is thus equivalent with <cite>nseg = ndiv * self.nparts</cite>.
+If a list of integers, its length should be equal to the number
+of parts in the curve and each integer in the list specifies the
+number of segments the corresponding part.</li>
+<li><cite>chordal</cite>: float: accuracy of the approximation when using the
+&#8216;chordal error&#8217; method. This is the case if neither <cite>nseg</cite> nor
+<cite>ndiv</cite> are specified (the default). The value is relative to the
+curve&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">charLength()</span></tt>.</li>
+<li><cite>equidistant</cite>: bool, only used if <cite>nseg</cite> is specified and <cite>ndiv</cite>
+is not. If True the <cite>nseg+1</cite> points are spaced almost equidistantly
+over the curve. If False (default), the points are spread equally
+over the parameter space.</li>
+<li><cite>npre</cite>: integer, only used if the <cite>chordal</cite> method is used or if
+<cite>nseg</cite> is not None and <cite>equidistant</cite> is True: the number of segments
+per part of the curve (like <cite>ndiv</cite>) used in a pre-approximation.
+If not specified, it is set to the degree of the curve for the
+<cite>chordal</cite> method (1 for PolyLine), and to 100 in the <cite>equidistant</cite>
+method (where the pre-approximation is currently used to compute
+accurate curve lengths).</li>
 </ul>
 </dd></dl>
 
@@ -6525,10 +7755,29 @@ chord.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.Arc3.cclip">
+<tt class="descname">cclip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Arc3.cclip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>For a Formex, this is equivalent with cselect(sel).
+For a Mesh, this is equivalent with cselect(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.Arc3.cselect" title="plugins.curve.Arc3.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for more information.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.Arc3.clip" title="plugins.curve.Arc3.clip"><tt class="xref py py-meth docutils literal"><span class="pre">clip()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.Arc3.centered">
 <tt class="descname">centered</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Arc3.centered" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;centered&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.centered" title="coords.Coords.centered"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.centered()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Arc3.clip">
+<tt class="descname">clip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Arc3.clip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>For a Formex, this is equivalent with select(sel).
+For a Mesh, this is equivalent with select(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.Arc3.select" title="plugins.curve.Arc3.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a> for more information.</p>
 </dd></dl>
 
 <dl class="method">
@@ -6552,6 +7801,40 @@ of the geometry.</p>
 <dd><p>Return a deep copy of the Geometry  object.</p>
 <p>The returned object is an exact copy of the input, but has
 all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Arc3.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Arc3.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>sel</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.Arc3.select" title="plugins.curve.Arc3.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -6621,7 +7904,7 @@ goes from 0 to 1 over the segment.</p>
 <tt class="descname">frenet</tt><big>(</big><em>ndiv=None</em>, <em>nseg=None</em>, <em>chordal=0.01</em>, <em>upvector=None</em>, <em>avgdir=True</em>, <em>compensate=False</em><big>)</big><a class="headerlink" href="#plugins.curve.Arc3.frenet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return points and Frenet frame along the curve.</p>
 <p>A PolyLine approximation for the curve is constructed, using the
-<tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
+<a class="reference internal" href="#plugins.curve.Curve.approx" title="plugins.curve.Curve.approx"><tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt></a> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
 and <cite>chordal</cite>.
 Then Frenet frames are constructed with <tt class="xref py py-meth docutils literal"><span class="pre">PolyLine.movingFrenet()</span></tt>
 using the remaining arguments.
@@ -6856,6 +8139,28 @@ the maximum size are not rescaled.</p>
 <tt class="descname">scale</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Arc3.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;scale&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.scale" title="coords.Coords.scale"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.scale()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Arc3.select">
+<tt class="descname">select</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Arc3.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#plugins.curve.Arc3.cselect" title="plugins.curve.Arc3.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -7141,6 +8446,41 @@ straight segments to form a PolyLine approximation.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.Arc.approximate">
+<tt class="descname">approximate</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Arc.approximate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>If neither <cite>nseg</cite> nor <cite>ndiv</cite> are specified (default), a chordal method
+is used limiting the chordal distance of the curve to the PolyLine
+segments.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: integer: number of straight segments of the resulting
+PolyLine. Only used if <cite>ndiv</cite> is not specified.</li>
+<li><cite>ndiv</cite>: positive integer or a list thereof. If a single integer,
+it specifies the number of straight segments in each part of the
+curve, and is thus equivalent with <cite>nseg = ndiv * self.nparts</cite>.
+If a list of integers, its length should be equal to the number
+of parts in the curve and each integer in the list specifies the
+number of segments the corresponding part.</li>
+<li><cite>chordal</cite>: float: accuracy of the approximation when using the
+&#8216;chordal error&#8217; method. This is the case if neither <cite>nseg</cite> nor
+<cite>ndiv</cite> are specified (the default). The value is relative to the
+curve&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">charLength()</span></tt>.</li>
+<li><cite>equidistant</cite>: bool, only used if <cite>nseg</cite> is specified and <cite>ndiv</cite>
+is not. If True the <cite>nseg+1</cite> points are spaced almost equidistantly
+over the curve. If False (default), the points are spread equally
+over the parameter space.</li>
+<li><cite>npre</cite>: integer, only used if the <cite>chordal</cite> method is used or if
+<cite>nseg</cite> is not None and <cite>equidistant</cite> is True: the number of segments
+per part of the curve (like <cite>ndiv</cite>) used in a pre-approximation.
+If not specified, it is set to the degree of the curve for the
+<cite>chordal</cite> method (1 for PolyLine), and to 100 in the <cite>equidistant</cite>
+method (where the pre-approximation is currently used to compute
+accurate curve lengths).</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.Arc.atApproximate">
 <tt class="descname">atApproximate</tt><big>(</big><em>nseg=None</em>, <em>ndiv=None</em>, <em>equidistant=False</em>, <em>npre=None</em><big>)</big><a class="headerlink" href="#plugins.curve.Arc.atApproximate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return parameter values for approximating a Curve with a PolyLine.</p>
@@ -7210,10 +8550,29 @@ chord.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.Arc.cclip">
+<tt class="descname">cclip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Arc.cclip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>For a Formex, this is equivalent with cselect(sel).
+For a Mesh, this is equivalent with cselect(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.Arc.cselect" title="plugins.curve.Arc.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for more information.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.Arc.clip" title="plugins.curve.Arc.clip"><tt class="xref py py-meth docutils literal"><span class="pre">clip()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.Arc.centered">
 <tt class="descname">centered</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Arc.centered" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;centered&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.centered" title="coords.Coords.centered"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.centered()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Arc.clip">
+<tt class="descname">clip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Arc.clip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>For a Formex, this is equivalent with select(sel).
+For a Mesh, this is equivalent with select(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.Arc.select" title="plugins.curve.Arc.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a> for more information.</p>
 </dd></dl>
 
 <dl class="method">
@@ -7237,6 +8596,40 @@ of the geometry.</p>
 <dd><p>Return a deep copy of the Geometry  object.</p>
 <p>The returned object is an exact copy of the input, but has
 all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Arc.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Arc.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>sel</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.Arc.select" title="plugins.curve.Arc.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -7306,7 +8699,7 @@ goes from 0 to 1 over the segment.</p>
 <tt class="descname">frenet</tt><big>(</big><em>ndiv=None</em>, <em>nseg=None</em>, <em>chordal=0.01</em>, <em>upvector=None</em>, <em>avgdir=True</em>, <em>compensate=False</em><big>)</big><a class="headerlink" href="#plugins.curve.Arc.frenet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return points and Frenet frame along the curve.</p>
 <p>A PolyLine approximation for the curve is constructed, using the
-<tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
+<a class="reference internal" href="#plugins.curve.Curve.approx" title="plugins.curve.Curve.approx"><tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt></a> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
 and <cite>chordal</cite>.
 Then Frenet frames are constructed with <tt class="xref py py-meth docutils literal"><span class="pre">PolyLine.movingFrenet()</span></tt>
 using the remaining arguments.
@@ -7541,6 +8934,28 @@ the maximum size are not rescaled.</p>
 <tt class="descname">scale</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Arc.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;scale&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.scale" title="coords.Coords.scale"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.scale()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Arc.select">
+<tt class="descname">select</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Arc.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#plugins.curve.Arc.cselect" title="plugins.curve.Arc.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -7815,6 +9230,41 @@ for details.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.Spiral.approx">
+<tt class="descname">approx</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Spiral.approx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>If neither <cite>nseg</cite> nor <cite>ndiv</cite> are specified (default), a chordal method
+is used limiting the chordal distance of the curve to the PolyLine
+segments.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: integer: number of straight segments of the resulting
+PolyLine. Only used if <cite>ndiv</cite> is not specified.</li>
+<li><cite>ndiv</cite>: positive integer or a list thereof. If a single integer,
+it specifies the number of straight segments in each part of the
+curve, and is thus equivalent with <cite>nseg = ndiv * self.nparts</cite>.
+If a list of integers, its length should be equal to the number
+of parts in the curve and each integer in the list specifies the
+number of segments the corresponding part.</li>
+<li><cite>chordal</cite>: float: accuracy of the approximation when using the
+&#8216;chordal error&#8217; method. This is the case if neither <cite>nseg</cite> nor
+<cite>ndiv</cite> are specified (the default). The value is relative to the
+curve&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">charLength()</span></tt>.</li>
+<li><cite>equidistant</cite>: bool, only used if <cite>nseg</cite> is specified and <cite>ndiv</cite>
+is not. If True the <cite>nseg+1</cite> points are spaced almost equidistantly
+over the curve. If False (default), the points are spread equally
+over the parameter space.</li>
+<li><cite>npre</cite>: integer, only used if the <cite>chordal</cite> method is used or if
+<cite>nseg</cite> is not None and <cite>equidistant</cite> is True: the number of segments
+per part of the curve (like <cite>ndiv</cite>) used in a pre-approximation.
+If not specified, it is set to the degree of the curve for the
+<cite>chordal</cite> method (1 for PolyLine), and to 100 in the <cite>equidistant</cite>
+method (where the pre-approximation is currently used to compute
+accurate curve lengths).</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.Spiral.approxAt">
 <tt class="descname">approxAt</tt><big>(</big><em>at</em><big>)</big><a class="headerlink" href="#plugins.curve.Spiral.approxAt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a PolyLine approximation with specified parameter values.</p>
@@ -7823,6 +9273,41 @@ for details.</li>
 <li><cite>at</cite>: a list of parameter values in the curve parameter range.
 The Curve points at these parameter values are connected with
 straight segments to form a PolyLine approximation.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Spiral.approximate">
+<tt class="descname">approximate</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Spiral.approximate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Curve with a PolyLine of n segments</p>
+<p>If neither <cite>nseg</cite> nor <cite>ndiv</cite> are specified (default), a chordal method
+is used limiting the chordal distance of the curve to the PolyLine
+segments.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>nseg</cite>: integer: number of straight segments of the resulting
+PolyLine. Only used if <cite>ndiv</cite> is not specified.</li>
+<li><cite>ndiv</cite>: positive integer or a list thereof. If a single integer,
+it specifies the number of straight segments in each part of the
+curve, and is thus equivalent with <cite>nseg = ndiv * self.nparts</cite>.
+If a list of integers, its length should be equal to the number
+of parts in the curve and each integer in the list specifies the
+number of segments the corresponding part.</li>
+<li><cite>chordal</cite>: float: accuracy of the approximation when using the
+&#8216;chordal error&#8217; method. This is the case if neither <cite>nseg</cite> nor
+<cite>ndiv</cite> are specified (the default). The value is relative to the
+curve&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">charLength()</span></tt>.</li>
+<li><cite>equidistant</cite>: bool, only used if <cite>nseg</cite> is specified and <cite>ndiv</cite>
+is not. If True the <cite>nseg+1</cite> points are spaced almost equidistantly
+over the curve. If False (default), the points are spread equally
+over the parameter space.</li>
+<li><cite>npre</cite>: integer, only used if the <cite>chordal</cite> method is used or if
+<cite>nseg</cite> is not None and <cite>equidistant</cite> is True: the number of segments
+per part of the curve (like <cite>ndiv</cite>) used in a pre-approximation.
+If not specified, it is set to the degree of the curve for the
+<cite>chordal</cite> method (1 for PolyLine), and to 100 in the <cite>equidistant</cite>
+method (where the pre-approximation is currently used to compute
+accurate curve lengths).</li>
 </ul>
 </dd></dl>
 
@@ -7896,10 +9381,29 @@ chord.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="plugins.curve.Spiral.cclip">
+<tt class="descname">cclip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Spiral.cclip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>For a Formex, this is equivalent with cselect(sel).
+For a Mesh, this is equivalent with cselect(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.Spiral.cselect" title="plugins.curve.Spiral.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for more information.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.Spiral.clip" title="plugins.curve.Spiral.clip"><tt class="xref py py-meth docutils literal"><span class="pre">clip()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="plugins.curve.Spiral.centered">
 <tt class="descname">centered</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Spiral.centered" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;centered&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.centered" title="coords.Coords.centered"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.centered()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Spiral.clip">
+<tt class="descname">clip</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Spiral.clip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>For a Formex, this is equivalent with select(sel).
+For a Mesh, this is equivalent with select(sel,compact=True).</p>
+<p>See <a class="reference internal" href="#plugins.curve.Spiral.select" title="plugins.curve.Spiral.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a> for more information.</p>
 </dd></dl>
 
 <dl class="method">
@@ -7923,6 +9427,40 @@ of the geometry.</p>
 <dd><p>Return a deep copy of the Geometry  object.</p>
 <p>The returned object is an exact copy of the input, but has
 all of its data independent of the former.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Spiral.cselect">
+<tt class="descname">cselect</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Spiral.cselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry with the selected elements removed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+<li><cite>sel</cite>: an object that can be used as an index in the
+<cite>elems</cite> array, such as<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with all but the selected elements.</p>
+<p>This is the complimentary operation of <a class="reference internal" href="#plugins.curve.Spiral.select" title="plugins.curve.Spiral.select"><tt class="xref py py-meth docutils literal"><span class="pre">select()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -7992,7 +9530,7 @@ goes from 0 to 1 over the segment.</p>
 <tt class="descname">frenet</tt><big>(</big><em>ndiv=None</em>, <em>nseg=None</em>, <em>chordal=0.01</em>, <em>upvector=None</em>, <em>avgdir=True</em>, <em>compensate=False</em><big>)</big><a class="headerlink" href="#plugins.curve.Spiral.frenet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return points and Frenet frame along the curve.</p>
 <p>A PolyLine approximation for the curve is constructed, using the
-<tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
+<a class="reference internal" href="#plugins.curve.Curve.approx" title="plugins.curve.Curve.approx"><tt class="xref py py-meth docutils literal"><span class="pre">Curve.approx()</span></tt></a> method with the arguments <cite>ndiv</cite>, <cite>nseg</cite>
 and <cite>chordal</cite>.
 Then Frenet frames are constructed with <tt class="xref py py-meth docutils literal"><span class="pre">PolyLine.movingFrenet()</span></tt>
 using the remaining arguments.
@@ -8227,6 +9765,28 @@ the maximum size are not rescaled.</p>
 <tt class="descname">scale</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Spiral.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;scale&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.scale" title="coords.Coords.scale"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.scale()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.curve.Spiral.select">
+<tt class="descname">select</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#plugins.curve.Spiral.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Geometry only containing the selected elements.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>sel</cite>: an object that can be used as an index in an array:<ul>
+<li>a single element number</li>
+<li>a list, or array, of element numbers</li>
+<li>a bool list, or array, of length self.nelems(), where True values
+flag the elements to be selected</li>
+</ul>
+</li>
+<li><cite>compact</cite>: boolean. Only useful for Mesh type Geometries.
+If True (default), the returned Mesh will be compacted, i.e.
+the unused nodes are removed and the nodes are renumbered from
+zero. If False, returns the node set and numbers unchanged.</li>
+</ul>
+<p>Returns a Geometry (or subclass) with only the selected elements.</p>
+<p>See <a class="reference internal" href="#plugins.curve.Spiral.cselect" title="plugins.curve.Spiral.cselect"><tt class="xref py py-meth docutils literal"><span class="pre">cselect()</span></tt></a> for the complementary operation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -8515,7 +10075,7 @@ along the chord from x0 to x1, creating an arc larger than a half-circle.</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 08, 2015.
+      Last updated on Feb 14, 2015.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

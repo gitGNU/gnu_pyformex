@@ -264,7 +264,7 @@ def sphere(ndiv=6,base='icosa',equiv='max'):
     is created. Its triangular facets are subdivided by dividing all
     edges in `ndiv` parts. The resulting mesh is then projected on a
     sphere with unit radius. The higher `ndiv` is taken,
-    the better the approximation. For `ndiv`=1, the base surface is
+    the better the approximation. For `ndiv=1`, the base surface is
     returned.
 
     Parameters:
@@ -281,6 +281,7 @@ def sphere(ndiv=6,base='icosa',equiv='max'):
 
     Returns a TriSurface, representing a triangulated approximation of a
     spherical surface with radius 1 and center at the origin.
+
     """
     from pyformex import elements
     from pyformex.plugins.trisurface import TriSurface

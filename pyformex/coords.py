@@ -450,9 +450,24 @@ class Coords(ndarray):
         - `ctr`: the center of mass: float (3,)
         - `tensor`: the inertia tensor in the central axes: shape (3,3)
 
+        Example:
+
+        >>> from elements import Tet4
+        >>> I = Tet4.vertices.inertia()
+        >>> print(I.tensor)
+        [[ 1.5   0.25  0.25]
+         [ 0.25  1.5   0.25]
+         [ 0.25  0.25  1.5 ]]
+        >>> print(I.ctr)
+        [ 0.25  0.25  0.25]
+        >>> print(I.mass)
+        4.0
+
         """
         from pyformex.plugins import inertia
-        return inertia.Inertia(self.points(), mass)
+        M,C,I = inertia.point_inertia(self.points(), mass)
+        I = inertia.Tensor(I)
+        return inertia.Inertia(I,ctr=C,mass=M)
 
 
     def prinCS(self,mass=None):
@@ -485,7 +500,7 @@ class Coords(ndarray):
         Example:
 
           >>> print(Coords([[[0.,0.,0.],[3.,0.,0.]]]).rotate(30,2).principalSizes())
-          [  0.00e+00   2.33e-08   3.00e+00]
+          [ 0.  0.  3.]
 
         """
         return self.toCS(self.prinCS()).sizes()
@@ -503,23 +518,10 @@ class Coords(ndarray):
         Coords and axes parallel to the global axes.
 
         """
-        from pyformex.plugins.inertia import mcenter
+        from pyformex.plugins import inertia
         from pyformex.coordsys import CoordSys
-        M,C = mcenter(self.points(),mass)
+        M,C = inertia.point_inertia(self.points(),mass)
         return CoordSys(trl=C)
-
-
-    ## @utils.deprecated("depr_orientedBbox")
-    ## def orientedBbox(self,ctr,rot):
-    ##     from pyformex.simple import cuboid
-    ##     X = self.trl(-ctr).rot(rot)
-    ##     bb = cuboid(*X.bbox())
-    ##     bb = bb.rot(rot.transpose()).trl(ctr)
-    ##     return bb
-
-    ## def principalBbox(self):
-    ##     ctr, rot = self.inertia()[:2]
-    ##     return self.orientedBbox(ctr, rot)
 
 
     #  Distance

@@ -91,6 +91,7 @@ def warning(message,level=UserWarning,stacklevel=3):
           ...
 
     """
+    import functools
     def decorator(func):
         def wrapper(*_args,**_kargs):
             warn(message,level=level,stacklevel=stacklevel)
@@ -99,6 +100,8 @@ def warning(message,level=UserWarning,stacklevel=3):
             # Therefore we do it here explicitely
             filterWarning(str(message))
             return func(*_args,**_kargs)
+        if level==UserWarning:
+            functools.update_wrapper(wrapper,func)
         return wrapper
     return decorator
 
@@ -129,7 +132,6 @@ def deprecated_future():
     See also: :func:`deprecated`.
     """
     return deprecated("This functionality is deprecated and will probably be removed in future, unless you explain to the developers why they should retain it.")
-
 
 
 ##########################################################################

@@ -798,11 +798,6 @@ maxprop  = %s
 
     @utils.deprecated_by('Formex.elbbox','Formex.bboxes')
     def elbbox(self):
-        """Return a Formex where each element is replaced by its bbox.
-
-        The returned Formex has two points for each element: the two corners
-        of the bbox with the minimal and maximal coordinates.
-        """
         return Formex(self.bboxes())
 
 

@@ -419,7 +419,7 @@ names.</p>
 </div>
 <dl class="method">
 <dt id="utils.NameSequence.files">
-<tt class="descname">files</tt><big>(</big><em>sort=&lt;function hsorted at 0x2addf2b5fcf8&gt;</em><big>)</big><a class="headerlink" href="#utils.NameSequence.files" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">files</tt><big>(</big><em>sort=&lt;function hsorted at 0x2b3b1d4be488&gt;</em><big>)</big><a class="headerlink" href="#utils.NameSequence.files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a (sorted) list of files matching the name pattern.</p>
 <p>A function may be specified to sort/filter the list of file names.
 The function should take a list of filenames as input. The output
@@ -1000,8 +1000,15 @@ It is equivalent with splitFilename(fn)[1]</p>
 
 <dl class="function">
 <dt id="utils.listIconNames">
-<tt class="descclassname">utils.</tt><tt class="descname">listIconNames</tt><big>(</big><em>types=None</em><big>)</big><a class="headerlink" href="#utils.listIconNames" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">utils.</tt><tt class="descname">listIconNames</tt><big>(</big><em>dirs=None</em>, <em>types=None</em><big>)</big><a class="headerlink" href="#utils.listIconNames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the list of available icons by their name.</p>
+<ul class="simple">
+<li><cite>dirs</cite>: list of paths. If specified, only return names from these
+directories.</li>
+<li><cite>types</cite>: list of strings, each starting with a dot.
+If specified, only return names of icons matching any of
+these file types.</li>
+</ul>
 </dd></dl>
 
 <dl class="function">
@@ -1657,7 +1664,7 @@ To search other containers, add handlers to iterate over their contents:</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 08, 2015.
+      Last updated on Feb 14, 2015.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

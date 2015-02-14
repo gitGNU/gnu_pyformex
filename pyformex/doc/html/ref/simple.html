@@ -294,17 +294,30 @@ in n segments.</p>
 
 <dl class="function">
 <dt id="simple.sphere">
-<tt class="descclassname">simple.</tt><tt class="descname">sphere</tt><big>(</big><em>ndiv=6</em><big>)</big><a class="headerlink" href="#simple.sphere" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a triangulated spherical surface.</p>
-<p>A high quality approximation of a spherical surface is constructed as
-follows. First an icosahedron is constructed. Its triangular facets are
-subdivided by dividing all edges in <cite>ndiv</cite> parts. The resulting mesh is
-then projected on a sphere with unit radius. The higher <cite>ndiv</cite> is taken,
-the better the approximation. <cite>ndiv=1</cite> results in an icosahedron.</p>
-<p>Returns:</p>
-<blockquote>
-<div>A TriSurface, representing a triangulated approximation of a
-spherical surface with radius 1 and center at the origin.</div></blockquote>
+<tt class="descclassname">simple.</tt><tt class="descname">sphere</tt><big>(</big><em>ndiv=6</em>, <em>base='icosa'</em>, <em>equiv='max'</em><big>)</big><a class="headerlink" href="#simple.sphere" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a triangulated approximation of a spherical surface.</p>
+<p>A (possibly high quality) approximation of a spherical surface is
+constructed as follows. First a simple base triangulated surface
+is created. Its triangular facets are subdivided by dividing all
+edges in <cite>ndiv</cite> parts. The resulting mesh is then projected on a
+sphere with unit radius. The higher <cite>ndiv</cite> is taken,
+the better the approximation. For <cite>ndiv=1</cite>, the base surface is
+returned.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>ndiv</cite>: number of divisions along the edges of the base surface.</li>
+<li><cite>base</cite>: the type of base surface. One of the following:<ul>
+<li>&#8216;icosa&#8217;: icosahedron (20 faces): this offers the highest
+quality with triangles of almost same size ans shape.</li>
+<li>&#8216;octa&#8217;: octahedron (8 faces): this model will have the same
+mesh on each of the quadrants. The coordinate planes do not
+cut any triangle. This model is this fit to be subdivided along
+coordinate planes.</li>
+</ul>
+</li>
+</ul>
+<p>Returns a TriSurface, representing a triangulated approximation of a
+spherical surface with radius 1 and center at the origin.</p>
 </dd></dl>
 
 <dl class="function">
@@ -477,7 +490,7 @@ The default is the global axes.</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 08, 2015.
+      Last updated on Feb 14, 2015.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>
