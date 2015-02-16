@@ -268,7 +268,7 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
     os.remove(tmp1)
     return S
 
-
+@utils.deprecated_by('vmtk_itf.vmtkDistanceOfSurface','vtk_itf.distance')
 def vmtkDistanceOfSurface(self, S, tryfixsign=True):
     """Find the distances of TriSurface S to the TriSurface self.
 
@@ -317,7 +317,7 @@ def vmtkDistanceOfSurface(self, S, tryfixsign=True):
         sdist[~notFound] = sdist1[~notFound]
     return vdist, sdist
 
-
+@utils.deprecated_by('vmtk_itf.vmtkDistanceOfPoints','vtk_itf.distance')
 def vmtkDistanceOfPoints(self, X, tryfixsign=True, nproc=1):
     """Find the distances of points X to the TriSurface self.
 
@@ -344,6 +344,7 @@ def vmtkDistanceOfPoints(self, X, tryfixsign=True, nproc=1):
         vdist, sdist = list(zip(*ind))
         return concatenate(vdist), concatenate(sdist)
 
+@utils.deprecated_by('vmtk_itf.vmtkDistancePointsToSegments','vtk_itf.distance')
 def vmtkDistancePointsToSegments(X, L, atol=1.e-4):
     """Find the shortest distances from points X to segments L.
 
