@@ -1,7 +1,6 @@
-# pyformex script/app template
 #
 ##
-##  Copyright (C) 2011 John Doe (j.doe@somewhere.org) 
+##  Copyright (C) 2011 John Doe (j.doe@somewhere.org)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##  This program is free software: you can redistribute it and/or modify
@@ -38,26 +37,39 @@ For more details, see the user guide under the `Scripting` section.
 The script starts by preference with a docstring (like this),
 composed of a short first line, then a blank line and
 one or more lines explaining the intention of the script.
+
+If you distribute your script/app, you should set the copyright holder
+at the start of the file and make sure that you (the copyright holder) has
+the intention/right to distribute the software under the specified
+copyright license (GPL3 or later).
 """
+# This helps in getting used to future Python print syntax
 from __future__ import print_function
 
+# The pyFormex modeling language is defined by everything in
+# the gui.draw module (if you use the GUI). For execution without
+# the GUI, you should import from pyformex.script instead.
+from pyformex.gui.draw import *
 
-from pyformex.gui.draw import *  # for an app we need to import explicitely
-
+# Definitions
 def run():
     """Main function.
 
-    This is executed on each run.
+    This is automatically executed on each run of an app.
     """
     print("This is the pyFormex template script/app")
 
 
-# Initialization code
+# Code in the outer scope:
+# - for an app, this is only executed on loading (module initialization).
+# - for a script, this is executed on each run.
 
 print("This is the initialization code of the pyFormex template script/app")
 
-
 # The following is to make script and app behavior alike
+# When executing a script in GUI mode, the global variable __name__ is set
+# to 'draw', thus the run method defined above will be executed.
+
 if __name__ == 'draw':
     print("Running as a script")
     run()

@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 # $Id$
+# -*- coding: utf-8 -*-
 ##
 ##  This file is part of pyFormex 0.9.1  (Tue Oct 15 21:05:25 CEST 2013)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D

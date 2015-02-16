@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # $Id$
 ##
 ##  This file is part of pyFormex 0.9.1  (Tue Oct 15 21:05:25 CEST 2013)

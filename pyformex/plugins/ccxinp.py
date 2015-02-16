@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # $Id$
 ##
 ##  This file is part of pyFormex 0.9.1  (Tue Oct 15 21:05:25 CEST 2013)
@@ -389,11 +388,5 @@ def readInput(fn):
     print("Number of parts in model: %s" % len(model.parts))
     return model
 
-
-if __name__ == "__main__":
-    import sys
-    for a in sys.argv[1:]:
-        readInput(a)
-        print(model)
 
 # End

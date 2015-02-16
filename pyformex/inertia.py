@@ -41,10 +41,10 @@ from __future__ import print_function
 
 
 import numpy as np
-from pyformex import arraytools as at
-from pyformex.coords import Coords
-from pyformex.formex import Formex
-from pyformex import utils
+from . import arraytools as at
+from . import utils
+from .coords import Coords
+from .formex import Formex
 
 
 class Tensor(np.ndarray):
@@ -263,7 +263,7 @@ class Inertia(Tensor):
 
     Example:
 
-    >>> from ..elements import Tet4
+    >>> from .elements import Tet4
     >>> X = Tet4.vertices
     >>> print(X)
     [[ 0.  0.  0.]
@@ -388,7 +388,7 @@ def surface_volume_inertia(x,center_only=False):
 
     Example:
 
-    >>> from pyformex.simple import sphere
+    >>> from .simple import sphere
     >>> S = sphere(4).toFormex()
     >>> V,C,I = surface_volume_inertia(S.coords)
     >>> print(V,C,I)
