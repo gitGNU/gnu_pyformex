@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # $Id$
 ##
 ##  This file is part of pyFormex 0.9.1  (Tue Oct 15 21:05:25 CEST 2013)
@@ -39,7 +38,25 @@ class Timer(object):
     Parameters:
 
     - `start`: a datetime object. If not specified, the time of the creation
-      of the Timer is used.    
+      of the Timer is used.
+
+    Example:
+
+    >>> import time
+    >>> t = Timer()
+    >>> time.sleep(1.534)
+    >>> r = t.read()
+    >>> print(r.days, r.seconds, r.microseconds)  # doctest: +ELLIPSIS
+    0 1 53...
+    >>> t.seconds()  # doctest: +ELLIPSIS
+    1.53...
+    >>> t.seconds(rounded=True)
+    2
+
+    Note that the precise result of microseconds will be slightly larger
+    than the input sleep time. The precise result is unknown, therefore
+    ellipses are shown.
+
     """
 
     def __init__(self,start=None):
@@ -75,8 +92,8 @@ class Timer(object):
         if reset:
             self.start = now
         return ret
-    
-    def seconds(self,reset=False,rounded=True):
+
+    def seconds(self,reset=False,rounded=False):
         """Return the timer readings in seconds.
 
         The default return value is a rounded integer number of seconds.
@@ -86,21 +103,10 @@ class Timer(object):
         If reset=True, the timer is reset at the time of reading.
         """
         e = self.read(reset)
-        tim = e.days*24*3600 + e.seconds + e.microseconds / 1000000.
+        sec = e.days*24*3600 + e.seconds + e.microseconds / 1000000.
         if rounded:
-            tim = int(round(tim))
-        return tim
-        
+            sec = int(round(sec))
+        return sec
 
-if __name__ == "__main__":
-
-    import time
-    
-    t = Timer()
-    time.sleep(14.2)
-    r = t.read()
-    print(r.days, r.seconds, r.microseconds)
-    print(t.seconds())
-    print(t.seconds(False))
 
 # End

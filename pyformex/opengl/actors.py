@@ -1,3 +1,5 @@
+# $Id$
+
 from pyformex.opengl.drawable import Actor
 from pyformex.opengl.decors import BboxActor, Rectangle, Line, \
      Grid, ColorLegend

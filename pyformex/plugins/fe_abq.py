@@ -1,3 +1,5 @@
+# $Id$
+
 import pyformex as pf
 
 # This trick is for Sphinx
