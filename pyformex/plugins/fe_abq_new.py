@@ -1071,7 +1071,7 @@ def fmtDashpotSection(section, setname):
     return fmtSpringOrDashpot("DASHPOT", section, setname)
 
 
-def fmtMassSection(prop):
+def fmtMassSection(section,setname):
     """Format a section of type mass.
 
     Parameters: see `func:fmtSolidSection`
