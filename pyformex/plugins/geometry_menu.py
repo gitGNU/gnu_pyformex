@@ -41,7 +41,7 @@ from pyformex.geomfile import GeometryFile
 from pyformex.formex import Formex
 from pyformex.connectivity import Connectivity
 from pyformex.mesh import Mesh, mergeMeshes
-from pyformex.plugins.trisurface import TriSurface, Sphere
+from pyformex.trisurface import TriSurface
 from pyformex.elements import elementType
 
 from pyformex.gui import menu

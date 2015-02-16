@@ -135,9 +135,7 @@ def run():
     drawNumbers(M)
     draw(M.getBorderMesh(), color=black, linewidth=6)
 
-
     # Convert to a surface
-    from pyformex.plugins.trisurface import TriSurface
     S = TriSurface(M)
     print("nelems = %s, nplex = %s, coords = %s" % (S.nelems(), S.nplex(), S.coords.shape))
     clear()

@@ -669,7 +669,7 @@ def smallestDirection(x,method='inertia',return_size=False):
             return N[0]
     elif method == 'random':
         # Take the mean of the normals on randomly created triangles
-        from pyformex.plugins.trisurface import TriSurface
+        from pyformex.trisurface import TriSurface
         n = x.shape[0]
         m = 3 * (n // 3)
         e = arange(m)

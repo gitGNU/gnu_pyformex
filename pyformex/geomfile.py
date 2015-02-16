@@ -684,7 +684,7 @@ class GeometryFile(object):
         an objtype is specified.
         """
         # Make sure to import the Mesh subclasses that can be read
-        from pyformex.plugins.trisurface import TriSurface
+        from pyformex.trisurface import TriSurface
 
         ndim = 3
         x = readArray(self.fil, Float, (ncoords, ndim), sep=sep)

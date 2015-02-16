@@ -39,7 +39,6 @@ _techniques = ['transform', 'projection', 'dialog', 'image', 'isopar']
 from pyformex.gui.draw import *
 from pyformex import elements
 from pyformex.gui.widgets import ImageView
-from pyformex.plugins.trisurface import TriSurface
 from pyformex.plugins.imagearray import *
 
 

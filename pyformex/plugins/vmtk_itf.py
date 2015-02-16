@@ -36,7 +36,7 @@ utils.requireExternal('vmtk')
 import pyformex as pf
 from pyformex.coords import *
 from pyformex.mesh import Mesh
-from pyformex.plugins.trisurface import TriSurface
+from pyformex.trisurface import TriSurface
 from pyformex import multi
 import os
 

@@ -39,7 +39,6 @@ _topics = ['surface']
 _techniques = ['color', 'widgets', 'animation']
 
 from pyformex.gui.draw import *
-from pyformex.plugins.trisurface import TriSurface
 
 def askSlices(bb):
     res = askItems([('Direction', 0),

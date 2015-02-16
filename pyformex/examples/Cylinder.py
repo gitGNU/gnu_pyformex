@@ -38,7 +38,6 @@ _techniques = ['import']
 
 from pyformex.gui.draw import *
 from pyformex import simple
-#from plugins.trisurface import TriSurface
 
 def run():
     n=12

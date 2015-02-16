@@ -359,7 +359,7 @@ class Mesh(Geometry):
         On success, returns a TriSurface corresponding with the input Mesh.
         If the Mesh can not be converted to a TriSurface, an error is raised.
         """
-        from pyformex.plugins.trisurface import TriSurface
+        from pyformex.trisurface import TriSurface
         if self.level() == 3:
             obj = self.getBorderMesh()
         elif self.level() == 2:
@@ -1052,7 +1052,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         Also, the 'quad4' partitioning method currently only works correctly
         if the quads are nearly planar.
         """
-        from pyformex.plugins.trisurface import TriSurface
+        from pyformex.trisurface import TriSurface
         if self.elName() not in [ 'tri3', 'quad4' ]:
             raise ValueError("partitionByAngle currently only works for 'tri3' and 'quad4' type Meshes.")
 

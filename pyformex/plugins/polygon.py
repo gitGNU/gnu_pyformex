@@ -32,7 +32,7 @@ import pyformex as pf
 from pyformex.formex import *
 from pyformex.geometry import Geometry
 from pyformex.plugins.curve import PolyLine
-from pyformex.plugins.trisurface import TriSurface
+from pyformex.trisurface import TriSurface
 from pyformex import utils
 
 ############################################################################
@@ -248,7 +248,7 @@ if __name__ == 'draw':
 
 
     def run():
-        from pyformex.plugins.trisurface import fillBorder
+        from pyformex.trisurface import fillBorder
         clear()
 
         ## layout(3,2)

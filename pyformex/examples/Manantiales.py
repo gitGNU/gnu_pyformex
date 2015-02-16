@@ -39,7 +39,7 @@ from pyformex.gui.draw import *
 clear()
 view('front')
 from pyformex import simple
-from pyformex.plugins.trisurface import *
+from pyformex.trisurface import *
 
 
 def scallop(F, sx, sy, n, f, c, r):

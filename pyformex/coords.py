@@ -464,7 +464,7 @@ class Coords(ndarray):
         4.0
 
         """
-        from pyformex.plugins import inertia
+        from . import inertia
         M,C,I = inertia.point_inertia(self.points(), mass)
         I = inertia.Tensor(I)
         return inertia.Inertia(I,ctr=C,mass=M)
@@ -518,7 +518,7 @@ class Coords(ndarray):
         Coords and axes parallel to the global axes.
 
         """
-        from pyformex.plugins import inertia
+        from . import inertia
         from pyformex.coordsys import CoordSys
         M,C = inertia.point_inertia(self.points(),mass)
         return CoordSys(trl=C)

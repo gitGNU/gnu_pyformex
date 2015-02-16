@@ -356,7 +356,7 @@ class Geometry(object):
         The convex hull is a closed TriSurface enclosing all points
         of the geometry.
         """
-        from pyformex.plugins.trisurface import TriSurface
+        from pyformex.trisurface import TriSurface
         X = self.coords
         hull = TriSurface(X, X.convexHull())
         if compact:

@@ -34,10 +34,11 @@ from __future__ import print_function
 import pyformex as pf
 import os
 from numpy import *
-from pyformex.plugins import trisurface, tetgen
+from pyformex.trisurface import TriSurface
 from pyformex import utils
 from pyformex import coords
 from pyformex import connectivity
+from pyformex.plugins import tetgen
 
 
 def det3(f):
@@ -104,7 +105,7 @@ def voronoi(fn):
     The voronoi diagram is determined by Tetgen.
     The output are the voronoi nodes and the corresponding radii of the voronoi spheres.
     """
-    S = trisurface.TriSurface.read(fn)
+    S = TriSurface.read(fn)
     fn, ftype = os.path.splitext(fn)
     ftype = ftype.strip('.').lower()
     if ftype != 'smesh':
@@ -127,7 +128,7 @@ def voronoiInner(fn):
     fn is the file name of a surface, including the extension (.off, .stl, .gts, .neu or .smesh)
     The output are the voronoi nodes and the corresponding radii of the voronoi spheres.
     """
-    S = trisurface.TriSurface.read(fn)
+    S = TriSurface.read(fn)
     fn, ftype = os.path.splitext(fn)
     ftype = ftype.strip('.').lower()
     if ftype != 'smesh':

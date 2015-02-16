@@ -35,7 +35,7 @@ _topics = ['mesh', 'illustration', 'surface']
 _techniques = ['color', 'random', 'image', 'movie', 'extrude']
 
 from pyformex.gui.draw import *
-from pyformex.plugins import trisurface, surface_menu
+from pyformex.plugins import surface_menu
 from pyformex.elements import *
 
 def atExit():
@@ -98,7 +98,7 @@ def run():
         key = possible_keys[random.randint(nkeys)]
         print("colored by %s" % key)
         func = V[key][0]
-        S = trisurface.TriSurface(M)
+        S = TriSurface(M)
         val = func(S)
         export({'surface':S})
         surface_menu.selection.set(['surface'])

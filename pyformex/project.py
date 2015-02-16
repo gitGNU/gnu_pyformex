@@ -40,7 +40,8 @@ _signature_ = pf.fullVersion()
 
 module_relocations = {
     'plugins.mesh': 'mesh',
-    'plugins.surface': 'plugins.trisurface',
+    'plugins.surface': 'trisurface',
+    'plugins.trisurface': 'trisurface',
 }
 
 class_relocations = {

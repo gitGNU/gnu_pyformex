@@ -35,7 +35,6 @@ _topics = ['surface']
 _techniques = ['animation', 'colors']
 
 from pyformex.gui.draw import *
-from pyformex.plugins.trisurface import TriSurface
 
 
 def run():
