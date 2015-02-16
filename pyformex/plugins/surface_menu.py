@@ -37,7 +37,7 @@ from pyformex.odict import OrderedDict
 from pyformex.arraytools import niceLogSize
 from pyformex.gui.colorscale import ColorScale
 from pyformex.gui.draw import *
-from pyformex.plugins.trisurface import *
+from pyformex.trisurface import *
 from pyformex.plugins.objects import DrawableObjects
 from pyformex.plugins.tools import Plane
 from pyformex.opengl.decors import ColorLegend

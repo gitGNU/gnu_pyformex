@@ -44,7 +44,7 @@ from pyformex.gui import menu
 from pyformex.connectivity import connectedLineElems
 from pyformex.gui.draw import *
 from pyformex.plugins.fe import mergedModel
-from pyformex.plugins.trisurface import fillBorder
+from pyformex.trisurface import fillBorder
 from pyformex.plugins.curve import *
 
 import sys

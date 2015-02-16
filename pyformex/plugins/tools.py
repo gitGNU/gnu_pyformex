@@ -34,7 +34,7 @@ from pyformex.coords import *
 from pyformex.collection import Collection
 from pyformex.mesh import Mesh
 from pyformex.formex import Formex
-from pyformex.plugins.trisurface import TriSurface
+from pyformex.trisurface import TriSurface
 from pyformex.plugins.nurbs import NurbsCurve, NurbsSurface
 
 class Plane(object):

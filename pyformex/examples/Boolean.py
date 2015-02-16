@@ -35,7 +35,7 @@ _techniques = ['boolean', 'intersection']
 from pyformex.gui.draw import *
 from pyformex.simple import cylinder
 from pyformex.connectivity import connectedLineElems
-from pyformex.plugins.trisurface import TriSurface, fillBorder
+from pyformex.trisurface import fillBorder
 
 
 def splitAlongPath(path,mesh,atol=0.0):

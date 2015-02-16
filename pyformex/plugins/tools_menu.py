@@ -37,7 +37,7 @@ from pyformex.formex import *
 from pyformex.gui.draw import *
 from pyformex.plugins.geometry_menu import autoName
 from pyformex.plugins.tools import *
-from pyformex.plugins.trisurface import TriSurface
+from pyformex.trisurface import TriSurface
 
 
 

@@ -1574,7 +1574,7 @@ Quality: %s .. %s
         R=regularGrid([0., 0., 0.],[0., 1., 1.],[1, levelL, levelL])
         L0=Coords(R.reshape(-1, 3)).scale([1., 2., 2.]).trl([-2., -1., -1.]).fuse()[0]
         L1=L0.trl([1., 0., 0.])
-        from pyformex.plugins.trisurface import intersectSurfaceWithLines
+        from pyformex.trisurface import intersectSurfaceWithLines
         from pyformex import timer
         timesec = timer.Timer()
         P, X=S.intersectionWithLines(q=L0,q2=L1,method='line',  atol=1.e-5)

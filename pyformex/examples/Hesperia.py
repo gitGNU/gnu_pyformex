@@ -37,7 +37,6 @@ from pyformex.gui.draw import *
 
 from pyformex import simple, utils
 from pyformex.connectivity import Connectivity
-from pyformex.plugins.trisurface import TriSurface
 from pyformex.plugins.properties import *
 from pyformex.plugins.fe_abq import *
 from pyformex.gui import menu

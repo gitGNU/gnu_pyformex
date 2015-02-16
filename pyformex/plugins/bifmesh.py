@@ -29,7 +29,7 @@ from __future__ import print_function
 from pyformex import zip
 
 from numpy import *
-from pyformex.plugins.trisurface import *
+from pyformex.trisurface import *
 from pyformex.formex import *
 from pyformex.coords import *
 from pyformex.simple import *

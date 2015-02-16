@@ -576,7 +576,7 @@ def install_more_trisurface_methods():
     """_
 
     """
-    from pyformex.plugins.trisurface import TriSurface
+    from pyformex.trisurface import TriSurface
     #TriSurface.tetmesh = meshInsideSurface
     TriSurface.checkSelfIntersectionsWithTetgen = checkSelfIntersectionsWithTetgen
 

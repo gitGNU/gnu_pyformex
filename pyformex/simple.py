@@ -160,7 +160,7 @@ def Cube():
     Returns a TriSurface representing the surface of a unit cube.
     Each face of the cube is represented by two triangles.
     """
-    from pyformex.plugins.trisurface import TriSurface
+    from pyformex.trisurface import TriSurface
     back = Formex('3:012934')
     fb = back.reverse() + back.translate(2, 1)
     faces = fb + fb.rollAxes(1) + fb.rollAxes(2)
@@ -284,7 +284,7 @@ def sphere(ndiv=6,base='icosa',equiv='max'):
 
     """
     from pyformex import elements
-    from pyformex.plugins.trisurface import TriSurface
+    from pyformex.trisurface import TriSurface
 
     base = getattr(elements,base.capitalize())
     M = TriSurface(base.vertices, base.faces)

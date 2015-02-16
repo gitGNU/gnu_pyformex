@@ -44,7 +44,7 @@ from pyformex.olist import List
 from pyformex.varray import Varray
 from pyformex.formex import *
 from pyformex.mesh import Mesh
-from pyformex.plugins.trisurface import TriSurface
+from pyformex.trisurface import TriSurface
 from pyformex.coordsys import CoordinateSystem
 from pyformex import simple
 

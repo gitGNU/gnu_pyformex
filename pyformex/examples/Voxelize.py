@@ -37,7 +37,6 @@ _techniques = ['voxelize', 'image']
 
 from pyformex.gui.draw import *
 from pyformex.plugins.imagearray import *
-from pyformex.plugins.trisurface import TriSurface
 from pyformex import simple
 
 
@@ -70,7 +69,7 @@ def run():
         ])
     if not res:
         return
-    
+
     nmax = res['Resolution']
     sz = bb1[1]-bb1[0]
     step = sz.max() / (nmax-1)
@@ -96,7 +95,7 @@ def run():
     if not checkWorkdir():
         print("Could not open a directory for writing. I have to stop here")
         return
-    
+
     fs = utils.NameSequence('horse', '.png')
     clear()
     flat()

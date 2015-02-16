@@ -98,32 +98,32 @@ import os
 def SetInput(vtkobj,data):
     """ Select SetInput method according to the vtk version. After version 5
     vtkObjects need the inpuit through SetInputData, before SetInput.
-    
-    Note that this applies only to vtkAlgorithm instances. In all other case 
+
+    Note that this applies only to vtkAlgorithm instances. In all other case
     the use of SetInput is kept. For these cases this function must not be used.
     """
-    
+
     if vtk.VTK_MAJOR_VERSION <= 5:
         vtkobj.SetInput(data)
     else:
         vtkobj.SetInputData(data)
     return vtkobj
-    
+
 
 def Update(vtkobj):
     """ Select Update method according to the vtk version. After version 5
     Update is not needed for vtkObjects, oinly to vtkFilter and vtkAlgortythm classes.
 
-    Note that this applies only to vtkAlgorithm instances. In all other case 
+    Note that this applies only to vtkAlgorithm instances. In all other case
     the use of Update is kept. For this cases this function must not be used.
     """
-    
+
     if vtk.VTK_MAJOR_VERSION <= 5:
         vtkobj.Update()
-    
+
     return vtkobj
-        
-    
+
+
 def getVTKtype(a):
     """Converts the  data type from a numpy to a vtk array """
     return gvat(a.dtype)
@@ -514,7 +514,7 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True,writer
     - `celldata`: dictionary of arrays associated to the elements.
     - `pointdata`: dictionary of arrays associated to the points (renumbered).
     - `checkMesh`: bool: if True, raises a warning if mesh is not clean.
-    - `writernm`: specify which vtk writer should be used. 
+    - `writernm`: specify which vtk writer should be used.
      If None the writer is selected based on fn extension.
 
     If the Mesh has property numbers, they are stored in a vtk array named prop.
@@ -584,7 +584,7 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True,writer
         pointdata = array2VTK(pointdata[k],vtype)
         pointdata.SetName(k)
         lvtk.GetPointData().AddArray(pointdata)
-    print(('************lvtk', lvtk))            
+    print(('************lvtk', lvtk))
     writer = SetInput(writer,lvtk)
     writer.SetFileName(fn)
     writer.Write()
@@ -1332,7 +1332,7 @@ def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True, verbose=Fal
     This function has been adapted from VMTK: vmtkScripts/vmtksurfacedecimation.py
     """
     from vtk import vtkDecimatePro
-    from pyformex.plugins.trisurface import TriSurface
+    from pyformex.trisurface import TriSurface
 
 
     vpd = convert2VPD(self, clean=True)#convert pyFormex surface to vpd
@@ -1358,7 +1358,7 @@ def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True, verbose=Fal
 def viewContour(object,rot=None):
     """Get the contour of an object with parallel perspective
     with view in the xy plane.
-    
+
     Parameters:
 
       - `object`: any object convertable to vtkPolyData
@@ -1366,28 +1366,28 @@ def viewContour(object,rot=None):
       from the current camera view.
     """
     from vtk import vtkActor,vtkPolyDataMapper,vtkRenderer,vtkRenderWindow,vtkWindowToImageFilter,vtkContourFilter
-    
+
     if rot is None:
         rot = pf.canvas.camera.rot
-        
+
     object = object.rot(rot)
     vpd = convert2VPD(object)
     mapper_data = vtkPolyDataMapper()
     mapper_data = SetInput(mapper_data,vpd)
-    
+
     actor_data = vtkActor()
     actor_data.SetMapper(mapper_data)
     actor_data.GetProperty().SetColor(0,0,0)
-     
+
     tmp_rend = vtkRenderer()
-    tmp_rend.SetBackground(1,1,1) 
-     
+    tmp_rend.SetBackground(1,1,1)
+
     tmp_rend.AddActor(actor_data)
     tmp_rend.ResetCamera()
     tmp_rend.GetActiveCamera().SetParallelProjection(1)
 
     tmp_rW = vtkRenderWindow()
-    tmp_rW.SetOffScreenRendering( 1 ) 
+    tmp_rW.SetOffScreenRendering( 1 )
     tmp_rW.AddRenderer(tmp_rend)
     tmp_rW.Render()
 
@@ -1398,7 +1398,7 @@ def viewContour(object,rot=None):
     windowToImageFilter.Update()
 
     #Killing the temporary window
-    tmp_rW.Finalize() 
+    tmp_rW.Finalize()
     del tmp_rW
 
     #Extract the silhouette corresponding to the black limit of the image
@@ -1407,7 +1407,7 @@ def viewContour(object,rot=None):
     filter = SetInput(filter,windowToImageFilter.GetOutput())
     filter.SetValue(0,255)
     filter = Update(filter)
-    
+
     #Make the contour coincide with the data.
     contour = filter.GetOutput()
     contour = convertFromVPD(contour)[0]
@@ -1418,11 +1418,11 @@ def viewContour(object,rot=None):
     scx = (dsize[0]/csize[0])
     scy = (dsize[1]/csize[1])
     contour = contour.scale([scx,scy,1])
-    
+
     dcenter = object.center()
     ccenter = contour.center()
     contour = contour.trl(-ccenter+dcenter)
-    
+
     return contour
 
 
@@ -1481,7 +1481,7 @@ def findElemContainingPoint(self, pts, verbose=False):
 
 
 def read_vtk_surface(fn):
-    from pyformex.plugins.trisurface import TriSurface
+    from pyformex.trisurface import TriSurface
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = readVTKObject(fn)
     if cells is None:
         data = (coords, polys)
@@ -1566,7 +1566,7 @@ def install_trisurface_methods():
     """Install extra TriSurface methods
 
     """
-    from pyformex.plugins import trisurface
+    from pyformex import trisurface
     trisurface.read_vtk_surface = read_vtk_surface
     trisurface.TriSurface.decimate = decimate
     trisurface.TriSurface.findElemContainingPoint = findElemContainingPoint

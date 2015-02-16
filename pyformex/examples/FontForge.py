@@ -40,7 +40,7 @@ from pyformex.gui.draw import *
 from pyformex.odict import OrderedDict
 from pyformex.plugins.curve import BezierSpline, PolyLine
 from pyformex.simple import connectCurves
-from pyformex.plugins.trisurface import fillBorder
+from pyformex.trisurface import fillBorder
 from pyformex.plugins.polygon import Polygon, delaunay
 from pyformex.geomtools import closestPair, intersectionSWP
 from pyformex import utils

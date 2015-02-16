@@ -124,7 +124,7 @@ def gtsset(self,surf,op,filt='',ext='.tmp',curve=False,check=False,verbose=False
     (curve=True), or None if the input surfaces do not intersect.
     """
     # import here to avoid circular import
-    from pyformex.plugins.trisurface import TriSurface
+    from pyformex.trisurface import TriSurface
     op = {'+':'union', '-':'diff', '*':'inter'}[op]
     options = ''
     if curve:

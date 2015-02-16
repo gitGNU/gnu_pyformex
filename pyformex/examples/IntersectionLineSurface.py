@@ -36,7 +36,7 @@ _topics = ['surface']
 _techniques = ['intersection']
 
 from pyformex.gui.draw import *
-from pyformex.plugins.trisurface import *
+from pyformex.trisurface import *
 from pyformex.simple import sphere, regularGrid
 
 

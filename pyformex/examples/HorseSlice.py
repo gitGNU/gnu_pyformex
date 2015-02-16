@@ -42,7 +42,6 @@ _topics = ['geometry', 'surface', 'mesh']
 _techniques = ['intersection', 'dialog']
 
 from pyformex.gui.draw import *
-from pyformex.plugins.trisurface import TriSurface
 
 def run():
     reset()
@@ -58,7 +57,7 @@ def run():
         ('color', 'red'),
         ('ontop', False),
         ('remove surface', False),
-        ]) 
+        ])
     if not res:
         return
 
@@ -70,12 +69,12 @@ def run():
     linewidth(2)
     draw(slices, color=c, view=None, bbox='last', nolight=True, ontop=res['ontop'])
     export({'_HorseSlice_slices':slices})
-    
+
     if res['remove surface']:
         undraw(SA)
-        
+
     zoomAll()
-    
+
 
 if __name__ == 'draw':
     run()

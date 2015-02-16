@@ -1526,7 +1526,7 @@ def createDatabases():
     from pyformex.geometry import Geometry
     from pyformex.formex import Formex
     from pyformex.mesh import Mesh
-    from pyformex.plugins.trisurface import TriSurface
+    from pyformex.trisurface import TriSurface
     from pyformex.plugins.curve import PolyLine, BezierSpline
     from pyformex.plugins.nurbs import NurbsCurve
     pf.GUI.database = objects.Objects()

@@ -34,7 +34,7 @@ _techniques = ['inertia']
 
 from pyformex.gui.draw import *
 from pyformex.simple import sphere,cuboid
-from pyformex.plugins import inertia
+from pyformex import inertia
 
 def run():
     smoothwire()
