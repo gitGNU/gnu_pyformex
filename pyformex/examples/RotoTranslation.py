@@ -71,13 +71,13 @@ def createScene(text=None,caged=True,color=None,move=0):
         line += line_inc * len(text.split('\n'))
     axes = drawAxes(CS, size=0.4, draw_planes=False)
     zoomAll()
-    zoom(0.7)
+    zoom(0.5)
     return horse, cage
 
 
 def run():
     global line, H, C, CS, savewait
-    savewait = delay(1.2)
+    savewait = delay(1.0)
     clear()
     lights(True)
     view('iso')
@@ -94,7 +94,7 @@ def run():
     xmin, xmax = F.bbox()
     H = F.scale(1./(xmax[0]-xmin[0])).rotate(180, 1)
     # create the global coordinate system
-    CS0 = CS = CoordinateSystem()
+    CS0 = CS = CoordSys()
     # some text
 
     # A storage for the scenes
@@ -142,7 +142,7 @@ def run():
     drawText(T, (20, line), size=20)
     line += 3*line_inc
     H = H.transformCS(CS0, CS)
-    draw(Formex([[CS[3], CS0[3]]]))
+    draw(Formex([[CS.points()[3], CS0.points()[3]]]))
     sleep(3)
 
     T = "And the horse lived happily ever after."

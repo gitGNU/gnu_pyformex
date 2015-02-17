@@ -448,7 +448,7 @@ def drawViewportAxes3D(pos,color=None):
 
 
 def drawAxes(cs=None,*args,**kargs):
-    """Draw the axes of a CoordinateSystem.
+    """Draw the axes of a coordinate system.
 
     Parameters:
 
@@ -462,11 +462,9 @@ def drawAxes(cs=None,*args,**kargs):
     and the negative parts in C,M,Y.
     """
     from pyformex.legacy.actors import AxesActor
-    from pyformex.coordsys import CoordSys,CoordinateSystem
+    from pyformex.coordsys import CoordSys
     if cs is None:
         cs = CoordSys()
-    if not isinstance(cs,CoordSys):
-        cs = CoordinateSystem(cs)
 
     A = AxesActor(cs.points(),*args,**kargs)
     drawActor(A)

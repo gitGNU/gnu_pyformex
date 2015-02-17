@@ -214,37 +214,6 @@ class ColorLegend(Actor):
                     yok = y + dh
 
 
-## class LineDrawing(Decoration):
-##     """A collection of straight lines on the canvas."""
-##     def __init__(self,data,color=None,linewidth=None,**kargs):
-##         """Initially a Line Drawing.
-
-##         data can be a 2-plex Formex or equivalent coordinate data.
-##         The z-coordinates of the Formex are unused.
-##         A (n,2,2) shaped array will do as well.
-##         """
-##         data = data.view()
-##         data = data.reshape((-1, 2, data.shape[-1]))
-##         data = data[:,:, :2]
-##         self.data = data.astype(Float)
-##         x1, y1 = self.data[0, 0]
-##         Decoration.__init__(self,x1,y1,**kargs)
-##         self.color = saneColor(color)
-##         self.linewidth = saneLineWidth(linewidth)
-
-
-##     def drawGL(self,**kargs):
-##         if self.color is not None:
-##             GL.glColor3fv(self.color)
-##         if self.linewidth is not None:
-##             GL.glLineWidth(self.linewidth)
-##         GL.glBegin(GL.GL_LINES)
-##         for e in self.data:
-##             GL.glVertex2fv(e[0])
-##             GL.glVertex2fv(e[1])
-##         GL.glEnd()
-
-
 class Triade(Actor):
     """An OpenGL actor representing a triade of global axes.
 
@@ -304,52 +273,6 @@ class Triade(Actor):
         ##     p = unitVector(i)*1.1
         ##     self.children.append(Text(x,p))
 
-
-## class AxesActor(Actor):
-##     """An actor showing the three axes of a coordinate system.
-
-##     If no coordinate system is specified, the global coordinate system is drawn.
-
-##     The default actor consists of three colored lines of unit length along
-##     the unit vectors of the axes and three colored triangles representing the
-##     coordinate planes. This can be modified by the following parameters:
-
-##     size: scale factor for the unit vectors.
-##     color: a set of three colors to use for x,y,z axes.
-##     colored_axes = False: draw black axes.
-##     draw_planes = False: do not draw the coordinate planes.
-##     """
-##     from pyformex import coordsys
-
-##     def __init__(self,cs=None,size=1.0,psize=0.5,color=[red, green, blue],colored_axes=True,draw_planes=True,draw_reverse=True,linewidth=2,alpha=0.5,**kargs):
-##         Actor.__init__(self,**kargs)
-##         if cs is None:
-##             cs = coordsys.CoordinateSystem()
-##         self.cs = cs
-##         self.color = saneColorArray(saneColor(color), (3, 1))
-##         self.alpha = alpha
-##         self.opak = False
-##         self.nolight = True
-##         self.colored_axes = colored_axes
-##         self.draw_planes = draw_planes
-##         self.draw_reverse = draw_reverse
-##         self.linewidth = linewidth
-##         self.setSize(size, psize)
-
-##     def bbox(self):
-##         origin = self.cs[3]
-##         return array([origin-self.size, origin+self.size])
-
-##     def setSize(self, size, psize):
-##         self.size = 1.0
-##         size = float(size)
-##         if size > 0.0:
-##             self.size = size
-##         if psize is None:
-##             self.psize = 0.5 * self.size
-##         psize = float(psize)
-##         if psize > 0.0:
-##             self.psize = psize
 
 
 def Grid(nx=(1, 1, 1),ox=(0.0, 0.0, 0.0),dx=(1.0, 1.0, 1.0),lines='b',planes='b',linecolor=black,planecolor=white,alpha=0.3,**kargs):

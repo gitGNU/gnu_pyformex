@@ -26,11 +26,11 @@
 """
 from __future__ import print_function
 
+from . import utils
+from . import arraytools as at
+from .coords import Coords
 
-from pyformex.coords import Coords
 import numpy as np
-from pyformex import arraytools as at
-
 
 ###########################################################################
 ##
@@ -40,10 +40,9 @@ from pyformex import arraytools as at
 #
 
 #
-# TODO: This should be redone:
+# TODO: This could be improved:
 #   - generalized: cartesian, cylindrical, spherical
 #   - different initializations: e.g. as in arraytools.trfMatrix, matrix
-#   - internal implementation is probably a 4x4 mat or (r,t) as in trfMatrix
 #
 
 class CoordSys(object):
@@ -68,11 +67,14 @@ class CoordSys(object):
 
     Example:
 
-      >>> print(CoordSys().points())
-      [[ 1.  0.  0.]
-       [ 0.  1.  0.]
-       [ 0.  0.  1.]
-       [ 0.  0.  0.]]
+    >>> C = CoordSys()
+    >>> print(C.points())
+    [[ 1.  0.  0.]
+     [ 0.  1.  0.]
+     [ 0.  0.  1.]
+     [ 0.  0.  0.]]
+    >>> print(C.origin())
+    [ 0.  0.  0.]
 
     """
     def __init__(self,rot=None,trl=None,points=None):
@@ -86,29 +88,85 @@ class CoordSys(object):
             rot = (points[:3] - points[3]).transpose()
             trl = points[3]
 
-        self.rot = at.checkArray(rot,shape=(3,3),kind='f')
-        self.trl = at.checkArray(trl,shape=(3,),kind='f')
+        self.rot = rot
+        self.trl = trl
 
+
+    @property
+    def trl(self):
+        """Return the origin as a (3,) vector"""
+        return self._trl
+
+    @trl.setter
+    def trl(self, value):
+        """Set the origin to (3,) value"""
+        self._trl =  at.checkArray(value,shape=(3,),kind='f')
+
+
+    @property
+    def rot(self):
+        """Return the (3,3) rotation matrix"""
+        return self._rot
+
+    @rot.setter
+    def rot(self, value):
+        """Set the rotation matrix to (3,3) value"""
+        self._rot = at.checkArray(value,shape=(3,3),kind='f')
+
+
+    # Simple transformation methods
+    # These return self so that they can be concatenated
+
+    def translate(self,trl):
+        self.trl = self.trl+trl
+        return self
+
+
+    def rotate(self,*args,**kargs):
+        """Rotate the CoordSys.
+
+        Parameters: either a single (3,3) rotation matrix, or parameters
+        like in the :meth:`coords.Coords.rotate` method.
+        """
+        if len(args)==1 and not kargs:
+            self.rot = np.dot(self.rot,rot)
+        else:
+            X = self.points().rotate(*args,**kargs)
+            self.__init__(points=X)
+        return self
+
+
+    # methods retained for compatibility with CoordinateSystem
+    def origin(self):
+        return self.trl
 
     def points(self):
         return Coords.concatenate([self.trl + self.rot.transpose(),self.trl])
 
 
 class CoordinateSystem(Coords):
-    """A CoordinateSystem defines a coordinate system in 3D space.
+    """_A CoordinateSystem defines a coordinate system in 3D space.
 
     The coordinate system is defined by and stored as a set of four points:
     three endpoints of the unit vectors along the axes at the origin, and
     the origin itself as fourth point.
 
     The constructor takes a (4,3) array as input. The default constructs
-    the standard global Cartesian axes system::
+    the standard global Cartesian axes system.
 
-      1.  0.  0.
-      0.  1.  0.
-      0.  0.  1.
-      0.  0.  0.
+    Example:
+
+    >>> C = CoordinateSystem()
+    >>> print(C.points())
+    [[ 1.  0.  0.]
+     [ 0.  1.  0.]
+     [ 0.  0.  1.]
+     [ 0.  0.  0.]]
+    >>> print(C.origin())
+    [ 0.  0.  0.]
+
     """
+    @utils.deprecated_by('CoordinateSystem','CoordSys')
     def __new__(clas,coords=None,origin=None,axes=None):
         """Initialize the CoordinateSystem"""
         if coords is None:

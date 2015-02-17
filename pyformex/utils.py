@@ -106,15 +106,15 @@ def warning(message,level=UserWarning,stacklevel=3):
     return decorator
 
 
-def deprecated(message):
+def deprecated(message,stacklevel=4):
     """Decorator to deprecate a function
 
     This is like :func:`warning`, but the level is set to DeprecationWarning.
     """
-    return warning(message,level=DeprecationWarning,stacklevel=4)
+    return warning(message,level=DeprecationWarning,stacklevel=stacklevel)
 
 
-def deprecated_by(old,new):
+def deprecated_by(old,new,stacklevel=4):
     """Decorator to deprecate a function by another one.
 
     Adding this decorator to a function will warn the user with a
@@ -123,7 +123,7 @@ def deprecated_by(old,new):
 
     See also: :func:`deprecated`.
     """
-    return deprecated("%s is deprecated: used %s instead" % (old,new))
+    return deprecated("%s is deprecated: used %s instead" % (old,new),stacklevel=stacklevel)
 
 
 def deprecated_future():

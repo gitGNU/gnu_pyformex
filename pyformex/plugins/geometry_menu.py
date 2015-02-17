@@ -759,7 +759,7 @@ def showPrincipal():
     # display the axes
     CS = coordsys.CoordSys(rot=Iaxes.transpose(),trl=C)
     size = F.dsize()
-    drawAxes(CS.points(), size=size, psize=0.1*size)
+    drawAxes(CS, size=size, psize=0.1*size)
     data = (I,Iprin,Iaxes)
     export({'_principal_data_':data})
     return data

@@ -1605,11 +1605,12 @@ class Coords(ndarray):
         This method transforms the Coords object by the transformation that
         turns the initial coordinate system into the current coordinate system.
 
-        currentCS and initialCS are (4,3) shaped Coords instances defining
-        a coordinate system as described in :class:`CoordinateSystem`.
-        If initialCS is None, the global (x,y,z) axes are used.
+        currentCS and initialCS can be either :class:`CoordSys` instances or
+        or (4,3) shaped Coords instances that can be used to initialize
+        a :class:`CoordSys` with the points argument.
 
-        E.g. the default initialCS and currentCS equal to::
+        If initialCS is None, the global (x,y,z) axes are used.
+        For example, the default initialCS and a currentCS equal to::
 
            0.  1.  0.
           -1.  0.  0.
@@ -1618,9 +1619,6 @@ class Coords(ndarray):
 
         result in a rotation of 90 degrees around the z-axis.
 
-        This is a convenience function equivalent to::
-
-          self.isopar('tet4',currentCS,initialCS)
         """
         # This is currently implemented using isopar, but could
         # obviously also be done using affine
