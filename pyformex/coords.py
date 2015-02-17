@@ -1624,7 +1624,7 @@ class Coords(ndarray):
         """
         # This is currently implemented using isopar, but could
         # obviously also be done using affine
-        return self.isopar('tet4', currentCS, initialCS)
+        return self.isopar('tet4', currentCS.points(), initialCS.points())
 
 
     def addNoise(self,rsize=0.05,asize=0.0):

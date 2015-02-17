@@ -840,28 +840,29 @@ def multiplex(a,n,axis=-1):
 
     Example:
 
-        >>> a = arange(6).reshape(2,3)
-        >>> print(a)
-        [[0 1 2]
-         [3 4 5]]
-        >>> for i in range(-a.ndim,a.ndim+1):
-        ...     c = multiplex(a,4,i)
-        ...     print("%s: %s" % (i,c.shape))
-        -2: (4, 2, 3)
-        -1: (2, 4, 3)
-        0: (4, 2, 3)
-        1: (2, 4, 3)
-        2: (2, 3, 4)
-        >>> print(multiplex(a,4))
-        [[[0 1 2]
-          [0 1 2]
-          [0 1 2]
-          [0 1 2]]
-        <BLANKLINE>
-         [[3 4 5]
-          [3 4 5]
-          [3 4 5]
-          [3 4 5]]]
+    >>> a = arange(6).reshape(2,3)
+    >>> print(a)
+    [[0 1 2]
+     [3 4 5]]
+    >>> for i in range(-a.ndim,a.ndim+1):
+    ...     c = multiplex(a,4,i)
+    ...     print("%s: %s" % (i,c.shape))
+    -2: (4, 2, 3)
+    -1: (2, 4, 3)
+    0: (4, 2, 3)
+    1: (2, 4, 3)
+    2: (2, 3, 4)
+    >>> print(multiplex(a,4))
+    [[[0 1 2]
+      [0 1 2]
+      [0 1 2]
+      [0 1 2]]
+    <BLANKLINE>
+     [[3 4 5]
+      [3 4 5]
+      [3 4 5]
+      [3 4 5]]]
+
     """
     a = addAxis(a, axis)
     if axis < 0:

@@ -600,7 +600,7 @@ def addCompressedTypes(ext):
     >>> addCompressedTypes(['.ccx','.inp'])
     ['.ccx', '.ccx.gz', '.ccx.bz2', '.inp', '.inp.gz', '.inp.bz2']
     """
-    import olist
+    from . import olist
     ext =  [ [e] + [ e+ec for ec in ['.gz','.bz2'] ] for e in ext ]
     return olist.flatten(ext)
 
