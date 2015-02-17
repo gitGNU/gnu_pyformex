@@ -415,7 +415,23 @@ def drawPrincipal(F,weight=None):
 
 
 def drawText(text,pos,**kargs):
-    """Show a text at position x,y using font."""
+    """Show a text at position pos.
+
+    Draws a text at a given position. The position can be either a 2D
+    canvas position, specified in pixel coordinates (int), or a 3D position,
+    specified in global world coordinates (float). In the latter case the
+    text will be displayed on the canvas at the projected world point, and
+    will move with that projection, while keeping the text unscaled and
+    oriented to the viewer. The 3D mode is especially useful to annotate
+    parts of the geometry with a label.
+
+    Parameters:
+
+    - `text`: string to be displayed.
+    - `pos`: (2,) int or (3,) float: canvas or world position.
+    - any other parameters are passed to :class:`opengl.textext.Text`.
+
+    """
     utils.warn("warn_drawText")
     A = textext.Text(text, pos, **kargs)
     drawActor(A)
