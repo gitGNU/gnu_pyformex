@@ -48,7 +48,7 @@ class ItemList(list):
 
     def add(self, item):
         """Add an item or a list thereof to a ItemList."""
-        if isinstance(item, list):
+        if isinstance(item, (tuple,list)):
             self.extend(item)
         else:
             self.append(item)
@@ -65,16 +65,25 @@ class ItemList(list):
           Sticky items are items having an attribute sticky=True.
 
         """
-        #print(items)
-        if not isinstance(items,(list, tuple)):
+        if not isinstance(items,(tuple,list)):
             items = [ items ]
         for a in items:
-            #print(type(a))
-            #print(type(self))
-            #print(id(a))
-            #print([id(i) for i in self])
-            if a in self:
+            #
+            ## TODO: we should probably standardize on using ids
+            ##
+            #
+            try:
                 self.remove(a)
+            except:
+                print("Could not remove object of type %s from list" % type(a))
+                ids = [id(i) for i in self]
+                ida = id(a)
+                ind = ids.index(id(a))
+                if ind < 0:
+                    print("The object is not in the list: skipping")
+                else:
+                    print("However, the object is in the list: removing it by id")
+                    del self[ind]
 
 
     def clear(self, sticky=False):
@@ -181,7 +190,7 @@ class Scene(object):
         to the proper list.
         """
         from pyformex.legacy import actors as oldactors
-        if isinstance(actor, list):
+        if isinstance(actor, (tuple,list)):
             [ self.addAny(a) for a in actor ]
         elif isinstance(actor, oldactors.Actor):
             self.oldactors.add(actor)
@@ -208,7 +217,7 @@ class Scene(object):
         If None is specified, all items from all lists will be removed.
         """
         from pyformex.legacy import actors as oldactors
-        if isinstance(actor, list):
+        if isinstance(actor, (tuple,list)):
             [ self.removeAny(a) for a in actor ]
         elif isinstance(actor, oldactors.Actor):
             self.oldactors.delete(actor)
