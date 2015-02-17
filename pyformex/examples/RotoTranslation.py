@@ -43,8 +43,8 @@ from pyformex import simple
 def atExit():
     delay(savewait)
 
-line = 300
 line_inc = -40
+line = pf.canvas.height()+line_inc
 
 def createScene(text=None,caged=True,color=None,move=0):
     """Create a scene of the story.
@@ -68,7 +68,7 @@ def createScene(text=None,caged=True,color=None,move=0):
     horse = draw(H)
     if text:
         drawText(text, (20, line), size=20)
-        line += line_inc
+        line += line_inc * len(text.split('\n'))
     axes = drawAxes(CS, size=0.4, draw_planes=False)
     zoomAll()
     zoom(0.7)
@@ -77,7 +77,7 @@ def createScene(text=None,caged=True,color=None,move=0):
 
 def run():
     global line, H, C, CS, savewait
-    savewait = delay(2.0)
+    savewait = delay(1.2)
     clear()
     lights(True)
     view('iso')
@@ -101,9 +101,9 @@ def run():
     script = []
 
     # Scene 0: The story starts idyllic
-    T = 'There once was a white horse running free in the wood.'
+    T = 'There once was a white horse running free in the forest.'
     script += [ createScene(text=T, caged=False, color=7) ]
-    sleep(5)
+    sleep(3)
 
     # Scene 1: Things turn out badly
     T = 'Some wicked pyFormex user caged the horse and transported it around.'
@@ -111,7 +111,7 @@ def run():
     H, CS = [ i.translate([0., 3., 6.]) for i in [H, CS] ]
     C = simple.cuboid(*H.bbox())
     script += [ createScene(text=T) ]
-    sleep(5)
+    sleep(3)
 
     # Scene 2..n: caged movements
     T = 'The angry horse randomly changed colour at each step.'
@@ -119,32 +119,31 @@ def run():
     m = len(script)
     n = 16
     script += [ createScene(move=i) for i in range(m, n, 1) ]
-    sleep(5)
-
+    sleep(3)
 
     # Scene n+1: the escape
-    T = 'Finally the horse managed to escape from the cage.\nIt wanted to go back home and turned black, so it would not be seen in the night.'
+    T = 'Finally the horse managed to escape from the cage.\nIt wanted to go back home and turned black,\nso it would not be seen in the night.'
     escape = script[-1]
     script += [ createScene(text=T, color=0, caged=False) ]
     undraw(escape)
-    sleep(5)
+    sleep(3)
 
     # The problem
     T = "But alas, it couldn't remember how it got there!!!"
     drawText(T, (20, line), size=20)
     line += line_inc
     for s in script[:-2]:
-        #sleep(0.1)
+        sleep(0.1)
         undraw(s)
-    sleep(5)
+    sleep(3)
 
     # The solution
-    T = "But thanks to pyFormex's orientation,\nit could go back in a single step, straight through the bushes."
+    T = "But thanks to pyFormex's orientation,\nit could go back in a single step,\nstraight through the bushes."
     drawText(T, (20, line), size=20)
-    line += line_inc
+    line += 3*line_inc
     H = H.transformCS(CS0, CS)
     draw(Formex([[CS[3], CS0[3]]]))
-    sleep(5)
+    sleep(3)
 
     T = "And the horse lived happily ever after."
     script += [ createScene(text=T, color=7, caged=False) ]

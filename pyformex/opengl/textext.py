@@ -105,10 +105,10 @@ class FontTexture(Texture):
 
     default_font = None
     @classmethod
-    def default(clas):
+    def default(clas,size=18):
         if clas.default_font is None:
             default_font_file = utils.defaultMonoFont()
-            default_font_size = 36
+            default_font_size = size
             clas.default_font = FontTexture(default_font_file,default_font_size)
         return clas.default_font
 
@@ -119,7 +119,10 @@ class Text(Actor):
     Parameters:
 
     - `text`: string: the text to display. If not a string, the string
-      representation of the object will be drawn.
+      representation of the object will be drawn. Newlines in the string
+      are supported. After a newline, the remainder of the string is continued
+      from a lower vertical position and the initial horizontal position.
+      The vertical line offset is determined from the font.
     - `pos`: a 2D or 3D position. If 2D, the values are measured in pixels.
       If 3D, it is a point in global 3D space. The text is drawn in 2D,
       inserted at the specified position.
@@ -127,10 +130,17 @@ class Text(Actor):
       respect to the insert position. It can be a combination of one of the
       characters 'N or 'S' to specify the vertical positon, and 'W' or 'E'
       for the horizontal. The default(empty) string will center the text.
+    - `size`: size of the font.
+
     """
 
-    def __init__(self,text,pos,gravity=None,size=18,width=None,font=None,grid=None,texmode=4,**kargs):
-        self.text = str(text)
+    def __init__(self,text,pos,gravity=None,size=18,width=None,font=None,lineskip=1.0,texmode=4,**kargs):
+        """Initialize the Text actor."""
+
+        # split the string on newlines
+        text = str(text).split('\n')
+
+        # set pos and offset3d depending on pos type (2D vs 3D rendering)
         pos = checkArray(pos)
         if pos.shape[-1] == 2:
             rendertype = 2
@@ -146,22 +156,19 @@ class Text(Actor):
                 # Flag vertex offset to shader
                 rendertype = -1
 
+        # set the font characteristics
         if font is None:
-            font = FontTexture.default()
+            font = FontTexture.default(size)
         if isinstance(font,(str,unicode)):
             font = FontTexture(font,size)
         if width is None:
             aspect = float(font.width) / font.height
             width = size * aspect
         self.width = width
+
+        # set the alignment
         if gravity is None:
             gravity = 'E'
-
-        texcoords = array([ font.texCoords(ord(c)) for c in text ])
-
-        if grid is None:
-            grid = Formex('4:0123').replic(len(text))
-
         alignment = ['0','0','0']
         if 'W' in gravity:
             alignment[0] = '+'
@@ -173,16 +180,28 @@ class Text(Actor):
             alignment[1] = '-'
         alignment = ''.join(alignment)
 
-        grid = grid.scale([width,size,0.]).align(alignment,pos)
+        # record the lengthts of the lines, join all characters
+        # together, create texture coordinates for all characters
+        # create a geometry grid for the longest line
+        lt = [ len(t) for t in text ]
+        text = ''.join(text)
+        texcoords = array([ font.texCoords(ord(c)) for c in text ])
+        grid = Formex('4:0123').replic(max(lt))
+        grid = grid.scale([width,size,0.])
 
-        ## print("TEXT")
-        ## print("  width,size = %s,%s" % (width,size))
-        ## print("  grid = %s" % grid)
-        ## print("  rendertype = %s" % rendertype)
-        ## print("  offset3d = %s" % offset3d)
-        ## print("  texcoords = %s" % texcoords)
-        ## print("  shape",grid.shape,offset3d.shape,texcoords.shape)
-        Actor.__init__(self,grid,rendertype=rendertype,texture=font,texmode=texmode,texcoords=texcoords,opak=False,ontop=True,offset3d=offset3d,**kargs)
+        # create the actor for the first line
+        l = lt[0]
+        g = grid.select(range(l)).align(alignment,pos)
+        Actor.__init__(self,g,rendertype=rendertype,texture=font,texmode=texmode,texcoords=texcoords[:l],opak=False,ontop=True,offset3d=offset3d,**kargs)
+
+        for k in lt[1:]:
+            # lower the canvas y-value
+            pos[1] -= font.height * lineskip
+            g = grid.select(range(k)).align(alignment,pos)
+            C = Actor(g,rendertype=rendertype,texture=font,texmode=texmode,texcoords=texcoords[l:l+k],opak=False,ontop=True,offset3d=offset3d,**kargs)
+            self.children.append(C)
+            # do next line
+            l += k
 
 
 class TextArray(Text):
@@ -223,39 +242,6 @@ class TextArray(Text):
 
         # Create a text with the concatenation
         Text.__init__(self,val,pos=pos,grid=grid,**kargs)
-
-
-## class MarkList(Text):
-##     """A list of numbers drawn at 3D positions.
-
-##     pos is an (N,3) array of positions.
-##     val is an (N,) array of marks to be plot at those positions.
-
-##     While intended to plot integer numbers, val can be any object
-##     that allows index operations for the required length N and allows
-##     its items to be formatted as a string.
-
-##     """
-
-##     def __init__(self,pos,val,leader='',**kargs):
-##         """Create a MarkList."""
-##         if len(val) != len(pos):
-##             raise ValueError("pos and val should have same length")
-
-##         # Make sure we have strings
-##         val = [ leader+str(v) for v in val ]
-##         cs = cumsum([0,] + [ len(v) for v in val ])
-##         val = ''.join(val)
-##         # Create a text with the concatenation
-##         Text.__init__(self,val,[0.,0.,0.],invisible=True,**kargs)
-##         #
-##         # TODO: we should transform this to using different offsets
-##         # for the partial strings, instead of using children
-##         #
-##         # Create a text for each mark
-##         for p,i,j in zip(pos,cs[:-1],cs[1:]):
-##             t = Text(val[i:j],p,**kargs)
-##             self.children.append(t)
 
 
 class Mark(Actor):
