@@ -245,6 +245,7 @@ def nodalAveraging(self, val, iter=1, mask=None,includeself=False):
     inadj = nadj>=0#False if == -1
     lnadj = inadj.sum(axis=1)#nr of adjacent nodes
     lnadj = lnadj.astype(Float)#NEEDED!!!, otherwise it becomes float64 and fails if mask is not None !
+    #### Why would float64 fail and float32 not???
     if mask is None:
         for j in range(iter):
             avgval = sum(avgval[nadj]*inadj, axis=1)/lnadj # multiplying by inadj set to zero the values where nadj==-1
@@ -253,6 +254,12 @@ def nodalAveraging(self, val, iter=1, mask=None,includeself=False):
             avgval[mask] = (sum(avgval[nadj]*inadj, axis=1)/lnadj)[mask]
     return avgval
 
+
+
+####
+###  TODO: remove this! this is way too complex,
+###        not clear what it is supposed to do: all just to fix normals????
+###
 
 # GDS: below an implementation of fixNormals using connectivity and adjacency only. To be tested on tri3.
 # GDS: it could be extended also to other faces (quad)

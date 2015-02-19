@@ -415,7 +415,23 @@ def drawPrincipal(F,weight=None):
 
 
 def drawText(text,pos,**kargs):
-    """Show a text at position x,y using font."""
+    """Show a text at position pos.
+
+    Draws a text at a given position. The position can be either a 2D
+    canvas position, specified in pixel coordinates (int), or a 3D position,
+    specified in global world coordinates (float). In the latter case the
+    text will be displayed on the canvas at the projected world point, and
+    will move with that projection, while keeping the text unscaled and
+    oriented to the viewer. The 3D mode is especially useful to annotate
+    parts of the geometry with a label.
+
+    Parameters:
+
+    - `text`: string to be displayed.
+    - `pos`: (2,) int or (3,) float: canvas or world position.
+    - any other parameters are passed to :class:`opengl.textext.Text`.
+
+    """
     utils.warn("warn_drawText")
     A = textext.Text(text, pos, **kargs)
     drawActor(A)
@@ -432,7 +448,7 @@ def drawViewportAxes3D(pos,color=None):
 
 
 def drawAxes(cs=None,*args,**kargs):
-    """Draw the axes of a CoordinateSystem.
+    """Draw the axes of a coordinate system.
 
     Parameters:
 
@@ -446,11 +462,9 @@ def drawAxes(cs=None,*args,**kargs):
     and the negative parts in C,M,Y.
     """
     from pyformex.legacy.actors import AxesActor
-    from pyformex.coordsys import CoordSys,CoordinateSystem
+    from pyformex.coordsys import CoordSys
     if cs is None:
         cs = CoordSys()
-    if not isinstance(cs,CoordSys):
-        cs = CoordinateSystem(cs)
 
     A = AxesActor(cs.points(),*args,**kargs)
     drawActor(A)

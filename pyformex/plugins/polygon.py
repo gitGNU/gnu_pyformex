@@ -38,7 +38,7 @@ from pyformex import utils
 ############################################################################
 
 #
-# TODO : this should be integrated with CoordinateSystem
+# TODO : this should be integrated with CoordSys
 #
 def projected(X, N):
     """Returns 2-D coordinates of a set of 3D coordinates.
