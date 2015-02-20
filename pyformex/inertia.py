@@ -45,6 +45,7 @@ from . import arraytools as at
 from . import utils
 from .coords import Coords
 from .formex import Formex
+from .coordsys import CoordSys
 
 
 class Tensor(np.ndarray):
@@ -64,6 +65,7 @@ class Tensor(np.ndarray):
     - `data`: array-like (float) of shape (3,3) or (6,)
     - `symmetric`: bool. If True (default), the tensor is forced to be
       symmetric by averaging the off-diagonal elements.
+    - `cs`: CoordSys. The coordinate system of the tensor.
 
     Properties: a Tensor T has the following properties:
 
@@ -113,7 +115,7 @@ class Tensor(np.ndarray):
         ])
 
 
-    def __new__(clas,data=None,symmetric=True):
+    def __new__(clas,data=None,symmetric=True,cs=None):
         """Create a new Tensor instance"""
         try:
             data = at.checkArray(data,shape=(3,3),kind='f',allow='if')
@@ -124,8 +126,13 @@ class Tensor(np.ndarray):
                 raise ValueError("Data should have shape (3,3) or (6,)")
             data = data[Tensor._contracted_index]
         ar = data.view(clas)
+        if cs is None:
+            cs = CoordSys()
+        if not(isinstance(cs,CoordSys)):
+            raise ValueError('Wrong Coordinate System')
+        ar.CS = cs
         return ar
-
+    
 
     def __array_finalize__(self, obj):
         """Finalize the new Matrix object.
@@ -134,9 +141,10 @@ class Tensor(np.ndarray):
         :meth:`__new__` method) defines new attributes, these atttributes
         need to be reset in this method.
         """
-        pass  # currently no new attributes defined in __new__
-        #self._newattr = getattr(obj, '_newattr', None)
-
+        if obj is None: return
+        self.CS = getattr(obj, 'cs', CoordSys())
+        #~ pass  # currently no new attributes defined in __new__
+        # self._newattr = getattr(obj, '_newattr', None)
 
     @property
     def xx(self):
@@ -223,7 +231,7 @@ class Tensor(np.ndarray):
             axes[:, 2] = -axes[:, 2]
         return prin, axes
 
-
+        
     def rotate(self,rot):
         """Transform the tensor on coordinate system rotation.
 
@@ -242,9 +250,9 @@ class Tensor(np.ndarray):
 
         """
         rot = at.checkArray(rot,shape=(3,3),kind='f')
-        return at.abat(rot,self)
-
-
+        return Tensor(at.abat(rot,self),self.CS.rotate(rot))
+    
+    
 class Inertia(Tensor):
     """A class for storing the inertia tensor of an array of points.
 
@@ -294,9 +302,17 @@ class Inertia(Tensor):
         ar.ctr = Coords(at.checkArray(ctr,shape=(3,),kind='f'))
         return ar
 
-
+ 
     def translate(self,trl,toG=False):
         """Return the inertia tensor around axes translated over vector trl.
+        
+        Parameters:
+        
+        - `trl`: arraylike (3,). Distance vector from the center of mass 
+          to the new reference point.
+        - `toG`: bool. If False (default) the inertia tensor is translated to the 
+          the  new reference point, otherwise it will be translated to its center
+          of mass
 
         """
         trl = at.checkArray(trl,shape=(3,),kind='f')
@@ -306,6 +322,31 @@ class Inertia(Tensor):
         if toG:
             trf = -trf
         return self.tensor + self.mass * trf
+
+    
+    def translateTo(self,ref,toG=False):
+        """Return the inertia tensor around axes translated to the reference
+        point ref.
+        
+        Parameters:
+        
+        - `ref`: arraylike (3,). The new reference point coordinates.
+        - `toG`: bool. If False (default) the inertia tensor is translated to the 
+          the  new reference point, otherwise it will be translated to its center
+          of mass
+
+        """
+
+        trl = at.checkArray(ref,shape=(3,),kind='f') - self.ctr
+        return self.translate(self,trl,toG=toG)
+
+
+   
+    def toCS(self,cs):
+        """Transform the coordinates to another CoordSys.
+
+        """
+        return self.tensor.translateTo(cs.trl) + self.tensor.rotate(dot(self.CS.rot.T,cs.rot))
 
 
 def point_inertia(X,mass=None,center_only=False):
