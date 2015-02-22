@@ -196,7 +196,7 @@ class Text(Actor):
         if isinstance(font,(str,unicode)):
             font = FontTexture(font,size)
         if width is None:
-            print("Font %s / %s" % (font.height,font.width))
+            #print("Font %s / %s" % (font.height,font.width))
             aspect = float(font.width) / font.height
             width = size * aspect
         self.width = width

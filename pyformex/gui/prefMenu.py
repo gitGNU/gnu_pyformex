@@ -252,6 +252,7 @@ def settings():
                     _I('gui/runalloption', pf.cfg['gui/runalloption']),
                     _I('gui/timeoutbutton', pf.cfg['gui/timeoutbutton']),
                     _I('gui/timeoutvalue', pf.cfg['gui/timeoutvalue']),
+                    _I('gui/easter_egg', pf.cfg['gui/easter_egg']),
                     ],
                  ),
                 ]),

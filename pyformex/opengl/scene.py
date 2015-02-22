@@ -78,12 +78,12 @@ class ItemList(list):
                 print("Could not remove object of type %s from list" % type(a))
                 ids = [id(i) for i in self]
                 ida = id(a)
-                ind = ids.index(id(a))
-                if ind < 0:
-                    print("The object is not in the list: skipping")
-                else:
+                try:
+                    ind = ids.index(id(a))
                     print("However, the object is in the list: removing it by id")
                     del self[ind]
+                except:
+                    print("The object is not in the list: skipping")
 
 
     def clear(self, sticky=False):

@@ -1541,20 +1541,12 @@ def createDatabases():
         'curve': objects.DrawableObjects(clas=BezierSpline),
         }
 
+
+easter_egg='CmNsZWFyKCkKdGV4dCA9ICdweUZvcm1leCBlYXN0ZXIgZWdnIDotKSAnKjMKRiA9IEZvcm1leCgn\nNDowMTIzJykucmVwbGljKGxlbih0ZXh0KSkKZGEgPSAwLjAwNQpuPTEwMApyID0gcmFuZ2UobikK\nRkEgPSBOb25lCmZvciBpIGluIHIgKyByWzo6LTFdOgogICAgYSA9IGkqZGEKICAgIHRvcnNlID0g\nbGFtYmRhIHgsIHksIHo6IFt4LCBjb3MoYSp4KSp5LXNpbihhKngpKnosIGNvcyhhKngpKnorc2lu\nKGEqeCkqeV0KICAgIEcgPSBGLm1hcCh0b3JzZSkKICAgIEdBID0gZHJhd1RleHQodGV4dCxzaXpl\nPTQwLHBvcz0oMTAsMjAwKSxncmlkPUcpCiAgICB1bmRyYXcoRkEpCiAgICBGQSA9IEdBCiAgICBz\nbGVlcCgwLjAxKQo=\n'
+
+
 def runGUI():
     """Go into interactive mode"""
-
-    egg = pf.cfg.get('gui/easter_egg', None)
-    pf.debug('EGG: %s' % str(egg), pf.DEBUG.INFO)
-    if egg:
-        pf.debug('EGG')
-        if isinstance(egg, str):
-            pye = egg.endswith('pye')
-            egg = open(egg).read()
-        else:
-            pye = True
-            egg = ''.join(egg)
-        draw.playScript(egg, pye=True)
 
     try:
         # Make the workdir the current dir
@@ -1569,11 +1561,12 @@ def runGUI():
     pf.interactive = True
     pf.debug("Start main loop", pf.DEBUG.INFO)
 
-    #utils.procInfo('runGUI')
-    #from multiprocessing import Process
-    #p = Process(target=pf.app.exec_)
-    #p.start()
-    #res = p.join()
+    if pf.cfg.get('gui/easter_egg', True):
+        try:
+            draw.playScript(easter_egg.decode('base64'))
+        except:
+            pass
+
     res = pf.app.exec_()
     pf.debug("Exit main loop with value %s" % res, pf.DEBUG.INFO)
     return res
