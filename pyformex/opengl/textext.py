@@ -134,7 +134,7 @@ class Text(Actor):
 
     """
 
-    def __init__(self,text,pos,gravity=None,size=18,width=None,font=None,lineskip=1.0,texmode=4,**kargs):
+    def __init__(self,text,pos,gravity=None,size=18,width=None,font=None,lineskip=1.0,texmode=4,grid=None,**kargs):
         """Initialize the Text actor."""
 
         # split the string on newlines
@@ -186,7 +186,8 @@ class Text(Actor):
         lt = [ len(t) for t in text ]
         text = ''.join(text)
         texcoords = array([ font.texCoords(ord(c)) for c in text ])
-        grid = Formex('4:0123').replic(max(lt))
+        if grid is None:
+            grid = Formex('4:0123').replic(max(lt))
         grid = grid.scale([width,size,0.])
 
         # create the actor for the first line
