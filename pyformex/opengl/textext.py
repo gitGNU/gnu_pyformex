@@ -151,7 +151,7 @@ class Text(Actor):
             offset3d = Coords(pos)
             pos = [0.,0.,0.]
             if offset3d.ndim > 1:
-                if offset3d.shape[0] != len(text):
+                if offset3d.shape[0] != len(text[0]):
                     raise ValueError("Length of text(%s) and pos(%s) should match!" % (len(text),len(pos)))
                 # Flag vertex offset to shader
                 rendertype = -1
