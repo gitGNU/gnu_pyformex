@@ -52,11 +52,10 @@ class FontOutline(Geometry):
         """Initialize a FontTexture"""
         Geometry.__init__(self)
         print("Creating FontTexture(%s) in size %s" % (filename,size))
-        # Load font  and check it is monotype
         face = ft.Face(str(filename))
         face.set_char_size(int(size*64))
         if not face.is_fixed_width:
-            raise RuntimeError("Font is not monotype")
+            raise RuntimeError("Font is not monospace")
         self.face = face
 
 

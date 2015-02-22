@@ -45,16 +45,26 @@ import numpy
 class FontTexture(Texture):
     """A Texture class for text rendering.
 
+    The FontTexture class is a texture containing the most important
+    characters of a font. This texture can then be used to draw text
+    on geometry.
+
+    Parameters:
+    - `filename`: path string. The font to be used. It should be the
+      full file path of an existing monospace font on the system.
+    - `size`: float: intended font heigth. The actual height might
+      differ a bit.
+
     """
     def __init__(self,filename,size):
         """Initialize a FontTexture"""
 
         print("Creating FontTexture(%s) in size %s" % (filename,size))
-        # Load font  and check it is monotype
+        # Load font  and check it is monospace
         face = ft.Face(str(filename))
         face.set_char_size(int(size*64))
         if not face.is_fixed_width:
-            raise RuntimeError("Font is not monotype")
+            raise RuntimeError("Font is not monospace")
 
         # Determine largest glyph size
         width, height, ascender, descender = 0, 0, 0, 0
@@ -106,6 +116,9 @@ class FontTexture(Texture):
     default_font = None
     @classmethod
     def default(clas,size=18):
+        """Set and return the default FontTexture.
+
+        """
         if clas.default_font is None:
             default_font_file = utils.defaultMonoFont()
             default_font_size = size
@@ -113,6 +126,10 @@ class FontTexture(Texture):
         return clas.default_font
 
 
+#
+# TODO: Docstring of Text should be extended (include grid parameter),
+# or TextArray should be merged into Text.
+#
 class Text(Actor):
     """A text drawn at a 2D or 3D position.
 
@@ -130,11 +147,28 @@ class Text(Actor):
       respect to the insert position. It can be a combination of one of the
       characters 'N or 'S' to specify the vertical positon, and 'W' or 'E'
       for the horizontal. The default(empty) string will center the text.
-    - `size`: size of the font.
+    - `size`: float: size (height) of the font. This is the displayed height.
+      The used font can have a different height and is scaled accordingly.
+    - `width`: float: width of the font. This is the displayed width o a single
+      character (currently only monospace fonts are supported).
+      The default is set from the `size` and the aspect ratio of the font.
+      Setting this to a different value allows the creation of condensed and
+      expanded font types. Condensed fonts are often used to save space.
+    - `font`: :class:`FontTexture` or string. The font to be used.
+      If a string, it is the filename of an existing monospace font on
+      the system.
+    - `lineskip`: float: distance in pixels between subsequent baselines
+      in case of multi-line text. Multi-line text results when the input
+      `text` contains newlines.
+    - `grid`: raster geometry for the text. This is the geometry where the
+      generate text will be rendered on as a texture. The default is a
+      grid of rectangles of size (`width`,`size`) which are juxtaposed
+      horizontally. Each rectangle will be rendered with a single character
+      on it.
 
     """
 
-    def __init__(self,text,pos,gravity=None,size=18,width=None,font=None,lineskip=1.0,texmode=4,grid=None,**kargs):
+    def __init__(self,text,pos,gravity=None,size=18,width=None,font=None,lineskip=1.0,grid=None,texmode=4,**kargs):
         """Initialize the Text actor."""
 
         # split the string on newlines
@@ -162,6 +196,7 @@ class Text(Actor):
         if isinstance(font,(str,unicode)):
             font = FontTexture(font,size)
         if width is None:
+            print("Font %s / %s" % (font.height,font.width))
             aspect = float(font.width) / font.height
             width = size * aspect
         self.width = width

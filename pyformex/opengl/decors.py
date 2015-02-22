@@ -105,7 +105,7 @@ class ColorLegend(Actor):
       If < 0 (default), a default number of labels is shown.
     - `size`: font size to be used for the labels
     - `font`: font to be used for the labels. It can be a
-      :class:`textext.FontTexture` or a string with the path to a monotype
+      :class:`textext.FontTexture` or a string with the path to a monospace
       .ttf font. If unspecified, the default font is used.
     - `dec`: int: number of decimals to be used in the labels
     - `scale`: int: exponent of 10 for the scaling factor of the label values.
