@@ -46,13 +46,25 @@ def run():
     view('front')
     smooth()
     fonts = utils.listMonoFonts()
+    ft = FontTexture.default()
 
     # - draw a square
     # - use the full character set in the default font as a texture
     # - the font textures are currently upside down, therefore we need
     #   to specify texcoords to flip the image
     F = Formex('4:0123').scale(200).toMesh()
-    A = draw(F,color=yellow,texture=FontTexture.default(),texcoords=array([[0,1],[1,1],[1,0],[0,0]]),texmode=2)
+    A = draw(F,color=yellow,texture=ft,texcoords=array([[0,1],[1,1],[1,0],[0,0]]),texmode=2)
+
+
+    # - draw 20 squares
+    # - fill with specific text
+    # - put this object on top
+    G = Formex('4:0123').replic2(10,2).scale(20).rot(30).trl([150,50,0])
+    text = [ ' pyFormex ','  rules!  ' ]
+    text = text[1] + text[0]
+    tc = FontTexture.default().texCoords(text)
+    draw(G,color=pyformex_pink,texture=ft,texcoords=tc,texmode=2,ontop=True)
+
 
     # draw a cross at the center of the square
     # pos is 3D, therefore values are world coordinates
@@ -78,12 +90,11 @@ def run():
     image = os.path.join(pf.cfg['pyformexdir'], 'data', 'mark_cross.png')
     from pyformex.plugins.imagearray import qimage2numpy
     image = qimage2numpy(image, indexed=False)
-    F = Formex('4:0123').scale(40).toMesh().align('000')
+    X = Formex('4:0123').scale(40).toMesh().align('000')
     # at the right corner using direct texture drawing techniques
-    draw(F,texture=image,texcoords=array([[0,1],[1,1],[1,0],[0,0]]),texmode=0,rendertype=-1,opak=False,ontop=True,offset3d=[(200.,200.,0.),(200.,200.,0.),(200.,200.,0.),(200.,200.,0.),])
+    draw(X,texture=image,texcoords=array([[0,1],[1,1],[1,0],[0,0]]),texmode=0,rendertype=-1,opak=False,ontop=True,offset3d=[(200.,200.,0.),(200.,200.,0.),(200.,200.,0.),(200.,200.,0.),])
     # at the left corner, using a Mark
     drawActor(Mark((0,200,0),image,size=40,color=red))
-
 
 if __name__ == 'draw':
     run()

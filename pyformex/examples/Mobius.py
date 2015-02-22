@@ -33,13 +33,14 @@ _topics = ['geometry', 'surface']
 _techniques = ['dialog', 'animation', 'color']
 
 from pyformex.gui.draw import *
+from pyformex.opengl.textext import *
 
 def run():
     reset()
     smoothwire()
 
     res = askItems([
-        _I('w', 2, text='width', tooltip='Number of unit squares along the width'),
+        _I('w', 3, text='width', tooltip='Number of unit squares along the width'),
         _I('l', 30, text='length', tooltip='Number of unit squares along the length'),
         _I('n', 1, text='number of turns', tooltip='Number of 180 degree turns to apply'),
         ])
@@ -48,9 +49,15 @@ def run():
 
     globals().update(res)
 
+    ft = FontTexture.default()
+    text = ' pyFormex ' * int(ceil(l*w/10.))
+    text = text[0:w*l]
+    tc = FontTexture.default().texCoords(text)
+    #print("%s * %s = %s = %s" % (l,w,l*w,len(text)))
     cell = Formex('4:0123')
     strip = cell.replic2(l, w, 1., 1.).translate(1, -0.5*w)
-    TA = draw(strip, color='orange', bkcolor='red')
+    TA = draw(strip, color='orange', bkcolor='red',texture=ft,texcoords=tc,texmode=2)
+
 
     sleep(1)
 
@@ -59,7 +66,7 @@ def run():
     for i in arange(nsteps+1):
         a = i*step
         torded = strip.map(lambda x, y, z: [x, y*cosd(x*a), y*sind(x*a)])
-        TB = draw(torded, color='orange', bkcolor='red')
+        TB = draw(torded, color='orange', bkcolor='red',texture=ft,texcoords=tc,texmode=2)
         undraw(TA)
         TA = TB
 
@@ -69,7 +76,7 @@ def run():
     step = 360./nsteps
     for i in arange(1, nsteps+1):
         ring = torded.trl(2, l*nsteps/pi/i).scale([i*step/l, 1., 1.]).trl(0, -90).cylindrical(dir=[2, 0, 1])
-        TB = draw(ring, color='orange', bkcolor='red')
+        TB = draw(ring, color='orange', bkcolor='red',texture=ft,texcoords=tc,texmode=2)
         undraw(TA)
         TA = TB
 
@@ -78,7 +85,7 @@ def run():
     step = 720./nsteps
     for i in arange(1, nsteps+1):
         mobius = ring.rotate(i*step, 1)
-        TB = draw(mobius, name='mobius',color='orange', bkcolor='red', bbox='last')
+        TB = draw(mobius, name='mobius',color='orange', bkcolor='red',texture=ft,texcoords=tc,texmode=2, bbox='last')
         undraw(TA)
         TA = TB
 

@@ -39,7 +39,7 @@ from pyformex.opengl.sanitize import *
 
 from OpenGL import GL
 
-import numpy
+import numpy as np
 
 
 class FontTexture(Texture):
@@ -47,9 +47,11 @@ class FontTexture(Texture):
 
     The FontTexture class is a texture containing the most important
     characters of a font. This texture can then be used to draw text
-    on geometry.
+    on geometry. In the current implementation only the characters with
+    ASCII ordinal in the range 32..127 are put in the texture.
 
     Parameters:
+
     - `filename`: path string. The font to be used. It should be the
       full file path of an existing monospace font on the system.
     - `size`: float: intended font heigth. The actual height might
@@ -59,7 +61,7 @@ class FontTexture(Texture):
     def __init__(self,filename,size):
         """Initialize a FontTexture"""
 
-        print("Creating FontTexture(%s) in size %s" % (filename,size))
+        pf.debug("Creating FontTexture(%s) in size %s" % (filename,size),pf.DEBUG.FONT)
         # Load font  and check it is monospace
         face = ft.Face(str(filename))
         face.set_char_size(int(size*64))
@@ -78,7 +80,7 @@ class FontTexture(Texture):
 
         # Generate texture data
         self.width, self.height = width,height
-        image = numpy.zeros((height*6, width*16), dtype=numpy.ubyte)
+        image = np.zeros((height*6, width*16), dtype=np.ubyte)
         for j in range(6):
             for i in range(16):
                 face.load_char(chr(32+j*16+i), ft.FT_LOAD_RENDER | ft.FT_LOAD_FORCE_AUTOHINT )
@@ -100,17 +102,36 @@ class FontTexture(Texture):
         Texture.activate(self,filtr=1)
 
 
-    def texCoords(self,ord):
-        """Return the texture coordinates for ascii character position ord.
+    def texCoords(self,char):
+        """Return the texture coordinates for a character or string.
 
-        ord is an integer in the range 32..127
-        Returns the font texture coordinates of the square containing the
-        character with the ordinal number ord.
+        Parameters:
+
+        - `char`: integer or ascii string. If an integer, it should be in the range
+          32..127 (printable ASCII characters). If a string, all its characters
+          should be ASCII printable characters (have an ordinal value in the
+          range 32..127).
+
+        If `char` is an integer, returns a tuple with the texture coordinates
+        in the FontTexture corresponding with the specified character. This is a
+        sequence of four (x,y) pairs corresponding respectively with the
+        lower left, lower right, upper right, upper left corners of the character
+        in the texture. Note that values for the lower corners are higher than those
+        for the upper corners. This is because the FontTextures are (currently)
+        stored from top to bottom, while opengl coordinates are from bottom to top.
+
+        If `char` is a string of length `ntext`, returns a float array with shape
+        (ntext,4,2) holding the texture coordinates needed to display
+        the given text on a grid of quad4 elements.
         """
-        dx,dy = 1./16,1./6
-        k = ord-32
-        x0,y0 = (k%16)*dx, (k//16)*dy
-        return (x0,y0+dy), (x0+dx,y0+dy), (x0+dx,y0), (x0,y0)
+        if isInt(char):
+            dx,dy = 1./16,1./6
+            k = char-32
+            x0,y0 = (k%16)*dx, (k//16)*dy
+            return (x0,y0+dy), (x0+dx,y0+dy), (x0+dx,y0), (x0,y0)
+
+        else:
+            return np.array([ self.texCoords(ord(c)) for c in char ])
 
 
     default_font = None
@@ -215,12 +236,12 @@ class Text(Actor):
             alignment[1] = '-'
         alignment = ''.join(alignment)
 
-        # record the lengthts of the lines, join all characters
+        # record the lengths of the lines, join all characters
         # together, create texture coordinates for all characters
         # create a geometry grid for the longest line
         lt = [ len(t) for t in text ]
         text = ''.join(text)
-        texcoords = array([ font.texCoords(ord(c)) for c in text ])
+        texcoords = font.texCoords(text)
         if grid is None:
             grid = Formex('4:0123').replic(max(lt))
         grid = grid.scale([width,size,0.])
