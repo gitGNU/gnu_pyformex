@@ -958,7 +958,7 @@ def findIcon(name):
         for icontype in pf.cfg['gui/icontypes']:
             fname = buildFilename(icondir, name, icontype)
             if os.path.exists(fname):
-                print("Found icon %s" % fname)
+                #print("Found icon %s" % fname)
                 return fname
 
     #print("NOT FOUND: use default")
