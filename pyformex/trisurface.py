@@ -31,8 +31,8 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import arraytools as at
-from pyformex import fileread, filewrite, geomtools, utils, zip
-from pyformex.plugins import mesh_ext, inertia
+from pyformex import fileread, filewrite, geomtools, inertia, utils, zip
+from pyformex.plugins import mesh_ext
 
 from pyformex.formex import *
 from pyformex.connectivity import Connectivity, connectedLineElems, adjacencyArrays

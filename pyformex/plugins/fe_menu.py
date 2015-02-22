@@ -29,7 +29,7 @@ Finite Element Plugin Menu for pyFormex.
 from __future__ import print_function
 
 
-from pyformex.plugins import formex_menu, trisurface
+from pyformex.plugins import formex_menu
 from pyformex import simple
 from pyformex.elements import Hex8
 
@@ -57,7 +57,7 @@ def readModel(fn):
     print(a.shape)
     x = Coords(a)
     print(x.shape)
-    e = fromfile(efn, sep=" ", dtype=Int).reshape(-1, 3) 
+    e = fromfile(efn, sep=" ", dtype=Int).reshape(-1, 3)
     print(e.shape)
 
     # convert to numpy offset
@@ -65,7 +65,7 @@ def readModel(fn):
         e -= noffset
 
     return x, e
-    
+
 
 def importModel(fn=None):
 
@@ -75,14 +75,14 @@ def importModel(fn=None):
             return
     if isinstance(fn, str):
         fn = [fn]
-        
+
     for i, f in enumerate(fn):
         x, e = readModel(f)
         modelname = os.path.basename(f).replace('nodes.txt', '')
         F = Formex(x[e], i)#,eltype='hex8')
         export({modelname:F})
         formex_menu.selection.append(modelname)
-        
+
     formex_menu.selection.draw()
 
 

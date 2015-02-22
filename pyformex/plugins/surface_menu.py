@@ -1415,21 +1415,24 @@ def remesh():
         selection.changeValues([S])
         selection.drawChanges()
 
-
+#
+# TODO This should be moved to vmtk_itf module,
+# a function writing a message could be kept here
+#
 def centerline():
     S = selection.check(single=True)
     if S:
         from pyformex.plugins.vmtk_itf import install_trisurface_methods
         install_trisurface_methods()
-        
+
         res = askItems([_I('Include endpoints', True),
                     _I('Group centerlines', False),
                     ], caption='Centerline settings')
-        
+
         if res:
             eps = res['Include endpoints']
             grp = res['Group centerlines']
-        
+
         CL,CLdata = S.centerline(endpoints=eps,groupcl=grp)
         export({'centerline':CL})
         export({'centerline_data':CLdata})

@@ -35,7 +35,7 @@ from pyformex.formex import *
 from pyformex.gui import menu
 from pyformex.gui.draw import *
 
-from pyformex.plugins import objects, trisurface, partition, sectionize
+from pyformex.plugins import objects, partition, sectionize
 
 
 
