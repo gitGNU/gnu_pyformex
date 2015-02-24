@@ -129,13 +129,22 @@ def fmtData2d(data,linesep='\n'):
 def fmtData(data,linesep='\n'):
     """Format the data section
 
+    If data is a list of tuples, or data is a 2D array, each item/row of
+    data will be formatted on a separate line.
+    Any other data will be formatted as a 1D sequence with 8 items per
+    line.
+    Lines are separated with linesep.
+
     Examples:
 
-      >>> fmtData([1,2,3,4.0,'last'])
-      '1, 2, 3, 4.0, last'
+    >>> print(fmtData([1,2,3,4.0,'last']))
+    1, 2, 3, 4.0, last
+    >>> print(fmtData([(1,2),(3,4.0,'last')]))
+    1, 2
+    3, 4.0, last
 
     """
-    if isinstance(data,list) and isinstance(data[0],tuple):
+    if (isinstance(data,list) and isinstance(data[0],tuple)) or (isinstance(data,ndarray) and data.ndim==2) :
         return fmtData2d(data,linesep=linesep)
     else:
         return fmtData1d(data,linesep=linesep)
@@ -425,36 +434,41 @@ def fmtMaterial(mat):
 
     Example:
 
-      >>> steel = {
-      ...      'name': 'steel',
-      ...      'young_modulus': 207000,
-      ...      'poisson_ratio': 0.3,
-      ...      'density': 7.85e-9,
-      ...      }
-      >>> from pyformex.attributes import Attributes
-      >>> print(fmtMaterial(Attributes(steel)))
-      *MATERIAL, NAME=steel
-      *ELASTIC
-      207000.0, 0.3
-      *DENSITY
-      7.85e-09
-      <BLANKLINE>
+    >>> steel = {
+    ...      'name': 'steel',
+    ...      'young_modulus': 207000,
+    ...      'poisson_ratio': 0.3,
+    ...      'density': 7.85e-9,
+    ...      'plastic': [(200.,0.), (900.,0.5)],
+    ...      }
+    >>> from pyformex.attributes import Attributes
+    >>> print(fmtMaterial(Attributes(steel)))
+    *MATERIAL, NAME=steel
+    *ELASTIC
+    207000.0, 0.3
+    *DENSITY
+    7.85e-09
+    *PLASTIC
+    200.0, 0.0
+    900.0, 0.5
+    <BLANKLINE>
 
-      >>> intima = {
-      ...      'name': 'intima',
-      ...      'density': 0.1,
-      ...      'elasticity':'hyperelastic',
-      ...      'model':'reduced polynomial',
-      ...      'constants': [6.79E-03, 5.40E-01, -1.11, 10.65, -7.27, 1.63, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-      ...      }
-      >>> print(fmtMaterial(Attributes(intima)))
-      *MATERIAL, NAME=intima
-      *HYPERELASTIC, REDUCED POLYNOMIAL, N=6
-      0.00679, 0.54, -1.11, 10.65, -7.27, 1.63, 0.0, 0.0
-      0.0, 0.0, 0.0, 0.0
-      *DENSITY
-      0.1
-      <BLANKLINE>
+    >>> intima = {
+    ...      'name': 'intima',
+    ...      'density': 0.1,
+    ...      'elasticity':'hyperelastic',
+    ...      'model':'reduced polynomial',
+    ...      'constants': [6.79E-03, 5.40E-01, -1.11, 10.65, -7.27, 1.63, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    ...      }
+    >>> print(fmtMaterial(Attributes(intima)))
+    *MATERIAL, NAME=intima
+    *HYPERELASTIC, REDUCED POLYNOMIAL, N=6
+    0.00679, 0.54, -1.11, 10.65, -7.27, 1.63, 0.0, 0.0
+    0.0, 0.0, 0.0, 0.0
+    *DENSITY
+    0.1
+    <BLANKLINE>
+
 
     """
     out = Command('MATERIAL',name=mat.name).out
