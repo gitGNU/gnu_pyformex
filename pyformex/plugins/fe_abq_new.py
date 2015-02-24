@@ -428,9 +428,11 @@ def fmtMaterial(mat):
     - localdir (opt): int: number of local directions.
 
     'USER':
-    - depvar (opt): list of tuples specifying the solution-dependent state
-      variables. Each item in the list is a tuple of a variable number and
-      the variable name, e.g. `[[ 1,' var1'],[ 2,' var2']]`.
+    - depvar (opt): list. The first item in the list is the number of solution
+      dependent variables. Further items are optional and are to specify
+      output names for (some of) solution dependent state variables. Each
+      item is a tuple of a variable number and the corresponding variable
+      name. See the examples below.
 
     Example:
 
@@ -469,6 +471,27 @@ def fmtMaterial(mat):
     0.1
     <BLANKLINE>
 
+    >>> nitinol = {
+    ...     'name': 'ABQ_SUPER_ELASTIC_N3D',
+    ...     'elasticity': 'user',
+    ...     'density': 6.5e-9,
+    ...     'depvar' : [24, (1,'VAR1'), (3,'DAMAGE')],
+    ...     'constants' : [10000., 0.3, 5000, 0.3, 0.03, 6.5, 200., 300.,
+    ...                    0.0, 6.5, 260., 100.,0., 0.03,  ]
+    ...     }
+    >>> print(fmtMaterial(Attributes(nitinol)))
+    *MATERIAL, NAME=ABQ_SUPER_ELASTIC_N3D
+    *DEPVAR
+    24
+    1, VAR1
+    3, DAMAGE
+    *USER MATERIAL, CONSTANTS=14
+    10000.0, 0.3, 5000, 0.3, 0.03, 6.5, 200.0, 300.0
+    0.0, 6.5, 260.0, 100.0, 0.0, 0.03
+    *DENSITY
+    6.5e-09
+    <BLANKLINE>
+
 
     """
     out = Command('MATERIAL',name=mat.name).out
@@ -478,8 +501,8 @@ def fmtMaterial(mat):
         out += Command('USER DEFINED FIELD').out
 
     if mat.depvar is not None:
-        out += Command('DEPVAR',data=[ len(mat.depvar) ]).out
-        out += fmtData1d(mat.depvar,npl=2)
+        data = [ (mat.depvar[0],)] + mat.depvar[1:]
+        out += Command('DEPVAR',data=data).out
 
     # Default elasticity type
     if mat.elasticity is None:

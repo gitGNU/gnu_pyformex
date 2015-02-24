@@ -1561,7 +1561,7 @@ def runGUI():
     pf.interactive = True
     pf.debug("Start main loop", pf.DEBUG.INFO)
 
-    if pf.cfg.get('gui/easter_egg', True):
+    if pf.cfg.get('gui/easter_egg', True) and False:
         try:
             draw.playScript(easter_egg.decode('base64'))
         except:
