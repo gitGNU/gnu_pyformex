@@ -42,8 +42,8 @@ class ItemList(list):
     the proper type.
     """
 
-    def __init__(self, canvas):
-        self.canvas = canvas
+    def __init__(self, scene):
+        self.scene = scene
         list.__init__(self)
 
     def add(self, item):
