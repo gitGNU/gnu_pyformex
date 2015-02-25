@@ -22,10 +22,10 @@
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
 
-"""Extended functionality of the Mesh class.
+"""Deprecated functionality of the Mesh class.
 
-The Mesh methods in this module are either deprecated or need some further
-work before they get added to the regular mesh.py module.
+The Mesh methods in this module are deprecated and will likely be removed in
+a future version of pyFormex. Their use is highly discouraged.
 """
 from __future__ import print_function
 
@@ -35,8 +35,17 @@ from pyformex import utils
 
 
 ##############################################################################
-def intersectionWithLines(self,**arg):
-    """Intersects a surface with lines.
+
+#
+# This is not correct for quad4! A quad4 is not guaranteed to be flat.
+# Therefore it is better to let the user do the approximation to tri3
+# first, like this:
+#
+#   p,i = M.toSurface().IntersectionWithLines(...)
+#
+
+def quad4MeshIntersectionWithLines(self,**arg):
+    """_Intersects a surface with lines.
 
     Parameters:
 
@@ -70,6 +79,7 @@ def intersectionWithLines(self,**arg):
         pr = column_stack([ar, ar]).flatten()
         i[:, 2] = pr[i[:, 2]]
         return p, i
+
 #
 # Should we create some general 'masked mesh' class?
 #
@@ -211,6 +221,7 @@ def elementToNodal(self, val):
 # BV: this looks like a smoothing function. Is it?
 #     If so, it should be merged with other smoothing filters
 #
+
 
 def nodalAveraging(self, val, iter=1, mask=None,includeself=False):
     """_Replace a nodal value with the mean value of the adjacent nodes.
@@ -434,33 +445,13 @@ def fixNormals2(self,outwards=True):
     return S
 
 
-# BV: REMOVED in 1.0.0
-## @utils.deprecated("depr_correctNegativeVolumes")
-## def correctNegativeVolumes(self):
-##     """_Modify the connectivity of negative-volume elements to make
-##     positive-volume elements.
-
-##     Negative-volume elements (hex or tet with inconsistent face orientation)
-##     may appear by error during geometrical trnasformations
-##     (e.g. reflect, sweep, extrude, revolve).
-##     This function fixes those elements.
-##     Currently it only works with linear tet and hex.
-##     """
-##     vol=self.volumes()<0.
-##     if self.elName()=='tet4':
-##         self.elems[vol]=self.elems[vol][:,  [0, 2, 1, 3]]
-##     if self.elName()=='hex8':
-##         self.elems[vol]=self.elems[vol][:,  [4, 5, 6, 7, 0, 1, 2, 3]]
-##     return self
 
 
 #####################################################
 #
 # Install
 #
-Mesh.intersectionWithLines = intersectionWithLines
 Mesh.scaledJacobian = scaledJacobian
-#Mesh.elementToNodal = elementToNodal
 Mesh.nodalAveraging = nodalAveraging
 Mesh.connectedElements = connectedElements
 Mesh.fixNormals2 = fixNormals2
