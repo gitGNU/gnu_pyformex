@@ -312,7 +312,9 @@ class CoordSystem(object):
             csys = csys[0].upper()
             if not csys in CoordSystem.valid_csys:
                 raise
-            cdata = asarray(cdata).reshape(2, 3)
+            cdata = asarray(cdata).flatten()
+            if len(cdata) != 6:
+                raise
         except:
             raise ValueError("Invalid initialization data for CoordSystem")
         self.sys = csys
