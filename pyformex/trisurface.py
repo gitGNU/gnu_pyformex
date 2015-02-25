@@ -1543,7 +1543,7 @@ Quality: %s .. %s
     ## LARGE CODE EXAMPLES SHOULD NOT GO IN THE DOCSTRINGS
     ## BUT IN AN EXAMPLE
     ##
-    def intersectionWithLines(self,q,q2, method='line',atol=1.e-6):
+    def intersectionWithLines(self,q,q2, method='line',atol=1.e-5):
         """_Intersects a surface with lines.
 
         Parameters:

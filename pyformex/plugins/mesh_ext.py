@@ -35,7 +35,41 @@ from pyformex import utils
 
 
 ##############################################################################
+def intersectionWithLines(self,**arg):
+    """Intersects a surface with lines.
 
+    Parameters:
+
+    - `q`,`q2`: (...,3) shaped arrays of points, defining
+      a set of lines.
+    - `method`: a string (line, segment or ray) defining if the line
+      is either a full-line or a line-segment (q-q2) or a line-ray (q->q2)
+    - `atol` : detected intersection points on the border edges (otherwise
+      geomtools.insideTriangle could fail)
+
+    Returns:
+    - a fused set of intersection points (Coords)
+    - a (1,3) array with the indices of intersection point, line and
+      face
+
+    NB: If a line is laying (parallel) on a face it will not generate
+    intersections.
+
+    Currently this only works for 'tri3' and 'quad4' type Meshes.
+    """
+    from pyformex.trisurface import TriSurface
+    if self.elName() not in [ 'tri3', 'quad4' ]:
+        raise ValueError("intersectionWithLines currently only works for 'tri3' and 'quad4' type Meshes.")
+
+    S = TriSurface(self.convert('tri3'))
+    p, i = S.intersectionWithLines(**arg)
+    if self.elName() == 'tri3':
+        return p, i
+    if self.elName() == 'quad4':
+        ar = range(self.nelems())
+        pr = column_stack([ar, ar]).flatten()
+        i[:, 2] = pr[i[:, 2]]
+        return p, i
 #
 # Should we create some general 'masked mesh' class?
 #
@@ -424,6 +458,7 @@ def fixNormals2(self,outwards=True):
 #
 # Install
 #
+Mesh.intersectionWithLines = intersectionWithLines
 Mesh.scaledJacobian = scaledJacobian
 #Mesh.elementToNodal = elementToNodal
 Mesh.nodalAveraging = nodalAveraging
