@@ -569,16 +569,16 @@ class Coords(ndarray):
 
         Example:
 
-          >>> X = Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]])
-          >>> print(X.distanceFromLine([0.,0.,0.],[1.,0.,0.]))
-          [[ 0.  0.  3.]]
+        >>> X = Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]])
+        >>> print(X.distanceFromLine([0.,0.,0.],[1.,0.,0.]))
+        [[ 0.  0.  3.]]
 
         """
-        p = asarray(p)#.reshape((3))
-        n = asarray(n)#.reshape((3))
-        t = cross(n, p-self)
-        d = sqrt(sum(t*t, -1)) / length(n)
-        return asarray(d)
+        p = asarray(p).reshape((3))
+        n = asarray(n).reshape((3))
+        xp = self-p
+        xpt = dotpr(xp,n)
+        return sqrt(dotpr(xp,xp)-xpt*xpt)
 
 
     def distanceFromPoint(self, p):
@@ -592,15 +592,13 @@ class Coords(ndarray):
 
         Example:
 
-          >>> X = Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]])
-          >>> print(X.distanceFromPoint([0.,0.,0.]))
-          [[ 0.  3.  3.]]
+        >>> X = Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]])
+        >>> print(X.distanceFromPoint([0.,0.,0.]))
+        [[ 0.  3.  3.]]
 
         """
         p = asarray(p).reshape((3))
-        d = self-p
-        d = sqrt(sum(d*d, -1))
-        return asarray(d)
+        return length(self-p)
 
 
     def closestToPoint(self, p):
