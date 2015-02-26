@@ -53,7 +53,7 @@ def intersection(F1, F2):
     if F1.nplex() != 2 or F2.nplex() != 2:
         raise ValueError("Can only interesect plex-2 Formices")
 
-    from pyformex.geomtools import intersectionTimesLWL
+    from pyformex import geomtools as gt
 
     errh = seterr(divide='ignore', invalid='ignore') # ignore division errors
     q1 = F1[:, 0]
@@ -62,7 +62,7 @@ def intersection(F1, F2):
     m2 = F2[:, 1]-F2[:, 0]
 
     # Compute all intersection points of the lines
-    t1, t2 = intersectionTimesLWL(q1, m1, q2, m2, mode='all')
+    t1, t2 = gt.intersectLineWithLineTimes(q1, m1, q2, m2, mode='all')
     X1 = pointsAtLines(q1[:, newaxis], m1[:, newaxis], t1)
     X2 = pointsAtLines(q2, m2, t2)
     seterr(**errh) # reactivate division errors

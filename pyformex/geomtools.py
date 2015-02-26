@@ -30,12 +30,70 @@ The operations include intersection, projection, distance computing.
 
 Many of the functions in this module are exported as methods on the
 Coords and Geometry classes and subclasses.
+
+Planned renaming of functions::
+
+    areaNormals
+    degenerate
+    levelVolumes
+    smallestDirection
+    distance                 -> distance
+    closest
+    closestPair
+    projectedArea
+    polygonNormals
+    averageNormals
+    triangleInCircle
+    triangleCircumCircle
+    triangleBoundingCircle
+    triangleObtuse
+    lineIntersection         -> to be removed (or intersect2DLineWithLine)
+    displaceLines
+    segmentOrientation
+    rotationAngle
+    anyPerpendicularVector
+    perpendicularVector
+    projectionVOV            -> projectVectorOnVector
+    projectionVOP            -> projectVectorOnPlane
+
+    pointsAtLines            -> pointOnLine
+    pointsAtSegments         -> pointOnSegment
+    intersectionTimesLWL     -> intersectLineWithLineTimes
+    intersectionPointsLWL    -> intersectLineWithLine (or intersectTwoLines)
+    intersectionTimesLWP     -> intersectLineWithPlaneTimes
+    intersectionPointsLWP    -> intersectLineWithPlane
+    intersectionTimesSWP     -> remove or intersectLineWithLineTimes2
+    intersectionSWP          -> intersectSegmentWithPlaneTimes
+    intersectionPointsSWP    -> intersectSegmentWithPlane
+    intersectionTimesLWT     -> intersectLineWithTriangleTimes
+    intersectionPointsLWT    -> intersectLineWithTriangle
+    intersectionTimesSWT     -> intersectSegmentWithTriangleTimes
+    intersectionPointsSWT    -> intersectSegmentWithTriangle
+    intersectionPointsPWP    -> intersectThreePlanes
+    intersectionLinesPWP     -> intersectTwoPlanes (or intersectPlaneWithPlane)
+    intersectionSphereSphere -> intersectTwoSpheres (or intersectSphereWithSphere)
+
+    distancesPFL             -> distanceFromLine
+    distancesPFS             -> distanceFromSegment
+
+    faceDistance             ->
+    edgeDistance             ->
+    vertexDistance           ->
+    baryCoords
+    insideSimplex
+    insideTriangle
+
 """
 from __future__ import print_function
 
 
 from pyformex import utils
 from pyformex.coords import *
+
+
+#
+#  TODO : these functions need doctests!
+#
 
 
 class Line(object):
@@ -340,6 +398,9 @@ def intersectionPointsLWT(q,m,F,mode='all',return_all=False):
         q, m, F = q[wl], m[wl], F[wt]
     t = intersectionTimesLWT(q, m, F, mode)
     if mode == 'all':
+        #
+        ## !!!!! CAN WE EVER GET HERE? only if return_all??
+        #
         q = q[:, newaxis]
         m = m[:, newaxis]
     x = pointsAtLines(q, m, t)
@@ -497,21 +558,80 @@ def intersectionSphereSphere(R, r, d):
 
 ########## projection #############################################
 
-def intersectionTimesPOP(X,p,n,mode='all'):
-    """Return the intersection of perpendiculars from points X on planes (p,n).
+    ## intersectionTimesPOP     -> projectPointOnPlaneTimes
+    ## intersectionPointsPOP    -> projectPointOnPlane
+    ## intersectionTimesPOL     -> projectPointOnLineTimes
+    ## intersectionPointsPOL    -> projectPointOnLine
+
+
+def projectPointOnPlane(X,p,n,mode='all'):
+    """Return the projection of points X on planes (p,n).
 
     Parameters:
 
-    - `X`: a (nX,3) shaped array of points (`mode=all`)
-      or broadcast compatible array (`mode=pair`).
-    - `p`,`n`: (np,3) shaped arrays of points and normals (`mode=all`)
-      or broadcast compatible arrays (`mode=pair`), defining a single plane
-      or a set of planes.
-    - `mode`: `all` to calculate the intersection for each point X with
-      all planes (p,n) or `pair` for pairwise intersections.
+    - `X`: a (nx,3) shaped array of points.
+    - `p`, `n`: (np,3) shaped arrays of points and normals defining `np` planes.
+    - `mode`: 'all' or 'pair:
 
-    Returns a (nX,np) shaped (`mode=all`) array of parameter values t,
-    such that the intersection points are given by X+t*n.
+      - if 'all', the projection of all points on all planes is computed;
+        `nx` and `np` can be different.
+      - if 'pair': `nx` and `np` should be equal and the projection of pairs
+        of point and plane are computed.
+
+    Returns a float array of size (nx,np,3) for mode 'all', or size (nx,3)
+    for mode 'pair'.
+
+    Example:
+
+    >>> X = Coords([[0.,1.,0.],[3.,0.,0.],[4.,3.,0.]])
+    >>> p,n = [[2.,0.,0.],[0.,1.,0.]], [[1.,0.,0.],[0.,1.,0.]]
+    >>> print(projectPointOnPlane(X,p,n))
+    [[[ 2.  1.  0.]
+      [ 0.  1.  0.]]
+    <BLANKLINE>
+     [[ 2.  0.  0.]
+      [ 3.  1.  0.]]
+    <BLANKLINE>
+     [[ 2.  3.  0.]
+      [ 4.  1.  0.]]]
+    >>> print(projectPointOnPlane(X[:2],p,n,mode='pair'))
+    [[ 2.  1.  0.]
+     [ 3.  1.  0.]]
+
+    """
+    X = asarray(X).reshape(-1, 3)
+    p = asarray(p).reshape(-1, 3)
+    n = asarray(n).reshape(-1, 3)
+    t =  projectPointOnPlaneTimes(X, p, n, mode)
+    if mode == 'all':
+        X = X[:, newaxis]
+    return pointsAtLines(X, n, t)
+
+
+def projectPointOnPlaneTimes(X,p,n,mode='all'):
+    """Return the projection of points X on planes (p,n).
+
+    This is like :meth:`projectPointOnPlane` but instead of returning
+    the projected points, returns the parametric values t along the
+    lines (X,n), such that the projection points can be computed from
+    X+t*n.
+
+    Parameters: see :meth:`projectPointOnPlane`.
+
+    Returns a float array of size (nx,np) for mode 'all', or size (nx,)
+    for mode 'pair'.
+
+    Example:
+
+    >>> X = Coords([[0.,1.,0.],[3.,0.,0.],[4.,3.,0.]])
+    >>> p,n = [[2.,0.,0.],[0.,1.,0.]], [[1.,0.,0.],[0.,1.,0.]]
+    >>> print(projectPointOnPlaneTimes(X,p,n))
+    [[ 2.  0.]
+     [-1.  1.]
+     [-2. -2.]]
+    >>> print(projectPointOnPlaneTimes(X[:2],p,n,mode='pair'))
+    [ 2.  1.]
+
     """
     if mode == 'all':
         return (dotpr(p, n) - inner(X, n)) / dotpr(n, n)
@@ -519,54 +639,83 @@ def intersectionTimesPOP(X,p,n,mode='all'):
         return (dotpr(p, n) - dotpr(X, n)) / dotpr(n, n)
 
 
-def intersectionPointsPOP(X,p,n,mode='all'):
-    """Return the intersection points of perpendiculars from points X on planes (p,n).
-
-    This is like intersectionTimesPOP but returns a (nX,np,3) shaped (`mode=all`)
-    array of intersection points instead of the parameter values.
-    """
-    t = intersectionTimesPOP(X, p, n, mode)
-    if mode == 'all':
-        X = X[:, newaxis]
-    return pointsAtLines(X, n, t)
-
-
-def intersectionTimesPOL(X,q,m,mode='all'):
-    """Return the intersection of perpendiculars from points X on lines (q,m).
+def projectPointOnLine(X,p,n,mode='all'):
+    """Return the projection of points X on lines (p,n).
 
     Parameters:
 
-    - `X`: a (nX,3) shaped array of points (`mode=all`)
-      or broadcast compatible array (`mode=pair`).
-    - `q`,`m`: (nq,3) shaped arrays of points and vectors (`mode=all`)
-      or broadcast compatible arrays (`mode=pair`), defining a single line
-      or a set of lines.
-    - `mode`: `all` to calculate the intersection for each point X with
-      all lines (q,m) or `pair` for pairwise intersections.
+    - `X`: a (nx,3) shaped array of points.
+    - `p`, `n`: (np,3) shaped arrays of points and normals defining `np` lines.
+    - `mode`: 'all' or 'pair:
 
-    Returns a (nX,nq) shaped (`mode=all`) array of parameter values t,
-      such that the intersection points are given by q+t*m.
+      - if 'all', the projection of all points on all lines is computed;
+        `nx` and `np` can be different.
+      - if 'pair': `nx` and `np` should be equal and the projection of pairs
+        of point and line are computed.
+
+    Returns a float array of size (nx,np,3) for mode 'all', or size (nx,3)
+    for mode 'pair'.
+
+    Example:
+
+    >>> X = Coords([[0.,1.,0.],[3.,0.,0.],[4.,3.,0.]])
+    >>> p,n = [[2.,0.,0.],[0.,1.,0.]], [[0.,1.,0.],[1.,0.,0.]]
+    >>> print(projectPointOnLine(X,p,n))
+    [[[ 2.  1.  0.]
+      [ 0.  1.  0.]]
+    <BLANKLINE>
+     [[ 2.  0.  0.]
+      [ 3.  1.  0.]]
+    <BLANKLINE>
+     [[ 2.  3.  0.]
+      [ 4.  1.  0.]]]
+    >>> print(projectPointOnLine(X[:2],p,n,mode='pair'))
+    [[ 2.  1.  0.]
+     [ 3.  1.  0.]]
+
+    """
+    X = asarray(X).reshape(-1, 3)
+    p = asarray(p).reshape(-1, 3)
+    n = asarray(n).reshape(-1, 3)
+    t = projectPointOnLineTimes(X, p, n, mode)
+    return pointsAtLines(p, n, t)
+
+
+def projectPointOnLineTimes(X,p,n,mode='all'):
+    """Return the projection of points X on lines (p,n).
+
+    This is like :meth:`projectPointOnLine` but instead of returning
+    the projected points, returns the parametric values t along the
+    lines (X,n), such that the projection points can be computed from
+    p+t*n.
+
+    Parameters: see :meth:`projectPointOnPlane`.
+
+    Returns a float array of size (nx,np) for mode 'all', or size (nx,)
+    for mode 'pair'.
+
+    Example:
+
+    >>> X = Coords([[0.,1.,0.],[3.,0.,0.],[4.,3.,0.]])
+    >>> p,n = [[2.,0.,0.],[0.,1.,0.]], [[0.,1.,0.],[1.,0.,0.]]
+    >>> print(projectPointOnLineTimes(X,p,n))
+    [[ 1.  0.]
+     [ 0.  3.]
+     [ 3.  4.]]
+    >>> print(projectPointOnLineTimes(X[:2],p,n,mode='pair'))
+    [ 1.  3.]
+
     """
     if mode == 'all':
-        return (inner(X, m) - dotpr(q, m)) / dotpr(m, m)
+        return (inner(X, n) - dotpr(p, n)) / dotpr(n, n)
     elif mode == 'pair':
-        return (dotpr(X, m) - dotpr(q, m)) / dotpr(m, m)
-
-
-def intersectionPointsPOL(X,q,m,mode='all'):
-    """Return the intersection points of perpendiculars from points X on lines (q,m).
-
-    This is like intersectionTimesPOL but returns a (nX,nq,3) shaped (`mode=all`)
-    array of intersection points instead of the parameter values.
-    """
-    t = intersectionTimesPOL(X, q, m, mode)
-    return pointsAtLines(q, m, t)
+        return (dotpr(X, n) - dotpr(p, n)) / dotpr(n, n)
 
 
 ################ deprecated old names ###########################
 
 
-intersectionPointsLWL = intersectLineWithLine
+  ## intersectionPointsLWL = intersectLineWithLine
 
 
 ################ other functions #################################
@@ -629,12 +778,12 @@ def levelVolumes(x):
 
 def inertialDirections(x):
     """Return the directions of the dimension of a Coords based of inertia.
-    
+
     - `x`: a Coords-like array
-    
-    Returns a tuple of the direction vectors and the sizes  along the direction 
+
+    Returns a tuple of the direction vectors and the sizes  along the direction
     and the cross directions. The arrays are ordered from the smallest to the largest direction.
-    
+
     """
     # Dimension in a coordinate system aligned with the global axes.
     I = x.inertia()
@@ -1093,8 +1242,15 @@ def distancesPFL(X,q,m,mode='all'):
       all lines (q,m) or `pair` for pairwise distances.
 
     Returns a (nX,nq) shaped (`mode=all`) array of distances.
+
+    Example:
+    >>> X = Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]])
+    >>> print(distancesPFL(X,[0.,0.,0.],[1.,0.,0.]))
+    [[ 0.  0.  3.]]
+    >>> X = Coords([[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]])
+    >>> print(distancesPFL(X,[0.,0.,0.],[1.,0.,0.]))
     """
-    Y = intersectionPointsPOL(X, q, m, mode)
+    Y = projectPointOnLine(X, q, m, mode)
     if mode == 'all':
         X = asarray(X).reshape(-1, 1, 3)
     return length(Y-X)
@@ -1140,8 +1296,8 @@ def faceDistance(X,Fp,return_points=False):
         raise ValueError("Currently this function only works for triangular faces.")
     # Compute normals on the faces
     Fn = cross(Fp[:, 1]-Fp[:, 0], Fp[:, 2]-Fp[:, 1])
-    # Compute intersection points of perpendiculars from X on facets F
-    Y = intersectionPointsPOP(X, Fp[:, 0,:], Fn)
+    # Compute projection of points X on facets F
+    Y = projectPointOnPlane(X, Fp[:, 0,:], Fn)
     # Find intersection points Y inside the facets
     inside = insideTriangle(Fp, Y)
     pid = where(inside)[0]
@@ -1184,8 +1340,8 @@ def edgeDistance(X,Ep,return_points=False):
     # Compute vectors along the edges
     En = Ep[:, 1] - Ep[:, 0]
     # Compute intersection points of perpendiculars from X on edges E
-    t = intersectionTimesPOL(X, Ep[:, 0], En)
-    Y = Ep[:, 0] + t[:,:, newaxis] * En
+    t = projectPointOnLineTimes(X, Ep[:, 0], En)
+    Y = pointsAtLines(Ep[:, 0], En, t)
     # Find intersection points Y inside the edges
     inside = (t >= 0.) * (t <= 1.)
     pid = where(inside)[0]
@@ -1312,12 +1468,7 @@ def insideTriangle(x,P,method='bary'):
         return (d > 0).all(axis=-1)
 
 
-if __name__ == "__main__":
+############# things that need fixing or be removed ##############
 
-    X = random.rand(6, 3)
-    Y = random.rand(4, 3)
-    print("DISTANCE", distance(X, Y))
-    print("SMALLEST DISTANCE", closest(X, Y))
-    print("CLOSEST PAIR", closestPair(X, Y))
 
 # End
