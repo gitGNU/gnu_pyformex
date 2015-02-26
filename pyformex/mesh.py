@@ -1041,30 +1041,24 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return where(p>=0)[0]
 
 
-    def partitionByAngle(self,**arg):
-        """Partition a surface Mesh by the angle between adjacent elements.
-
+    def partitionByAngle(self,**kargs):
+        """Partition a level-2 Mesh by the angle between adjacent elements.
+    
         The Mesh is partitioned in parts bounded by the sharp edges in the
         surface. The arguments and return value are the same as in
         :meth:`TriSurface.partitionByAngle`.
-
-        Currently this only works for 'tri3' and 'quad4' type Meshes.
-        Also, the 'quad4' partitioning method currently only works correctly
-        if the quads are nearly planar.
+    
+        For eltypes other than 'tri3', 
+        a conversion to 'tri3' is done before computing the partitions.
         """
-        from pyformex.trisurface import TriSurface
-        if self.elName() not in [ 'tri3', 'quad4' ]:
-            raise ValueError("partitionByAngle currently only works for 'tri3' and 'quad4' type Meshes.")
-
-        S = TriSurface(self.convert('tri3'))
-        p = S.partitionByAngle(**arg)
         if self.elName() == 'tri3':
-            return p
-        if self.elName() == 'quad4':
-            p = p.reshape(-1, 2)
-            if not (p[:, 0] == p[:, 1]).all():
-                utils.warn("warn_mesh_partitionbyangle")
-            return p[:, 0]
+            p = self.toSurface().partitionByAngle(**kargs)
+        else:
+            S = self.copy().setProp(arange(self.nelems())).toSurface()
+            p = S.partitionByAngle(**kargs)
+            j = unique(S.prop, return_index=True)[1]
+            p = p[j]
+        return p
 
 
 ###########################################################################
@@ -2321,6 +2315,36 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
             n = -n
         return self.clip(self.test(nodes=nodes, dir=n, min=p))
 
+    # GDS:
+    # 1) toSurface converts to tri3. This is not the best in case of quadratic faces:
+    #    e.g. each tri6 is converted into one single tri3, loosing the shape of it edges,
+    #    a solution could be to force toSurface to convert a tri6 to tri3-4, instead.
+    # 2) the Mesh.intersectionWithLines has the parameter `approximated` which is not
+    #    in the TriSurface.intersectionWithLines. Thus, if S is a TriSurface,
+    #    S.intersectionWithLines(q=p0,q2=p1,method='segment', approximated=True)
+    #    will raise an error.
+    def intersectionWithLines(self, approximated=True, **kargs):
+        """Return the intersections of a level-2 Mesh with lines.
+    
+        The Mesh is intersected with lines. The arguments and return values are 
+        the same as in :meth:`TriSurface.intersectionWithLines`, except for
+        the `approximated`.
+        
+        For a Mesh with eltype 'tri3', the intersections are exact. For other
+        eltypes, if `approximated` is True a conversion to 'tri3' is done before 
+        computing the intersections. This may produce an exact result, 
+        an approximate result or no result (if the conversion fails).
+        """
+        if self.elName() == 'tri3':
+            p, i = self.toSurface().intersectionWithLines(**kargs)
+        else:
+            if approximated:
+                S = self.copy().setProp(range(self.nelems())).toSurface()
+                p, i = S.intersectionWithLines(**kargs)
+                i[:, 2] = S.prop[i[:, 2]]
+            else:
+                raise ValueError, 'Exact intersectionWithLines not implemented for %s mesh'%self.elName()
+        return p, i
 
     def levelVolumes(self):
         """Return the level volumes of all elements in a Mesh.
