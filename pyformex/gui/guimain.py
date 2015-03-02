@@ -196,6 +196,52 @@ def toggleAppScript():
             pf.warning("I can not find the source file for this application.")
 
 
+
+#########################################################################
+## The File watcher ##
+######################
+
+class FileWatcher(QtCore.QFileSystemWatcher):
+    """Watch for changes in files and then execute the associated function.
+
+    """
+    def __init__(self,*args):
+        QtCore.QFileSystemWatcher.__init__(self,*args)
+        self.filesWatched = {}
+        self.dirsWatched = {}
+
+
+    def addWatch(self,path,func):
+        """Watch for changes in file and the execute func.
+
+        When the specified file is changed, func is executed.
+
+        Parameters:
+
+        - `path`: path of the file to be watched.
+        - `func`: function to be executed.
+        """
+        self.filesWatched[path] = func
+        self.addPath(path)
+        self.fileChanged.connect(self.onFileChanged)
+
+
+    def removeWatch(self,path):
+        """Remove the watch for file path"""
+        try:
+            del self.filesWatched[path]
+            self.removeWatch(path)
+        except:
+            pass
+
+
+    def onFileChanged(self,path):
+        print("FileWatcher: file %s has changed" % path)
+        f = self.filesWatched.get(path,None)
+        if f:
+            f(path)
+
+
 #########################################################################
 ## The GUI ##
 #############
@@ -418,11 +464,15 @@ class Gui(QtGui.QMainWindow):
         self.signals = signals.Signals()
         self.signals.FULLSCREEN.connect(self.fullScreen)
 
+        self.filewatch = FileWatcher()
+
+
         # Set up hot keys: hitting the key will emit the corresponding signal
         self.hotkey  = {
             QtCore.Qt.Key_F2: self.signals.SAVE,
             QtCore.Qt.Key_F5: self.signals.FULLSCREEN,
             }
+
 
 
     def createConsole(self, config):

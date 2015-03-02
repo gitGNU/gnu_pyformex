@@ -652,11 +652,52 @@ _activate_settings = {
 def setDrawWait():
     askConfigPreferences(['draw/wait'])
 
-def editPreferences():
-    draw.editFile(pf.preffile)
 
-def reloadPreferences():
+# We have a parameter here because it is used in a file watcher
+def reloadPreferences(preffile=None):
+    """Reload the preferences from the user preferences file"""
+    if preffile is None:
+        preffile = pf.preffile
     pf.prefcfg.read(pf.preffile)
+
+
+def editPreferences():
+    """Edit the preferences file
+
+    This allows the user to edit all his stored preferences through his
+    normal editor. The current preferences are saved to the user preferences
+    file before it is loaded in the editor. When the user saves the
+    preferences file, the stored preferences will be reloaded into
+    pyFormex. This will remain active until the user selects the
+    'File->Save Preferences Now' option from the GUI.
+    """
+    from ..main import savePreferences
+    if not savePreferences():
+        if pf.warning("Could not save to preferences file %s\nEdit the file anyway?" % pf.preffile) == 'Cancel':
+            return
+
+    pf.GUI.filewatch.addWatch(pf.preffile, reloadPreferences)
+    P = draw.editFile(pf.preffile)
+
+
+def saveAndUnwatchPreferences():
+    """Save the current preferences to the user preferences file.
+
+    This also has the side effect of no longer watching the preferences
+    file for changes, if the user has loaded it into the editor.
+    """
+    pf.GUI.filewatch.removeWatch(pf.preffile)
+    savePreferences()
+
+
+def reloadAndUnwatchPreferences():
+    """Reload the current preferences from the user preferences file.
+
+    This also has the side effect of no longer watching the preferences
+    file for changes, if the user has loaded it into the editor.
+    """
+    pf.GUI.filewatch.removeWatch(pf.preffile)
+    reloadPreferences()
 
 
 MenuData = [
@@ -669,9 +710,9 @@ MenuData = [
         (_('&Reset to My Defaults'), resetDefaults),
         (_('&Reset to Factory Defaults'), resetFactory),
         ('---', None),
-        (_('&Save Preferences Now'), savePreferences),
         (_('&Edit Preferences File'), editPreferences),
-        (_('&Reload Preferences'), reloadPreferences),
+        (_('&Save Preferences'), saveAndUnwatchPreferences),
+        (_('&Reload Preferences'), reloadAndUnwatchPreferences),
         ]),
     ]
 

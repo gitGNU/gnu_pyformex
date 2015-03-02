@@ -160,6 +160,7 @@ def savePreferences():
     except:
         res = "Could not save"
     pf.debug("%s preferences to file %s" % (res, pf.preffile), pf.DEBUG.CONFIG)
+    return res=="Saved"
 
 
 def apply_config_changes(cfg):
