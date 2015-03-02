@@ -73,9 +73,6 @@ Planned renaming of functions::
     intersectionLinesPWP     -> intersectTwoPlanes (or intersectPlaneWithPlane)
     intersectionSphereSphere -> intersectTwoSpheres (or intersectSphereWithSphere)
 
-    distancesPFL             -> distanceFromLine
-    distancesPFS             -> distanceFromSegment
-
     faceDistance             ->
     edgeDistance             ->
     vertexDistance           ->
@@ -386,12 +383,17 @@ def intersectionPointsLWT(q,m,F,mode='all',return_all=False):
         # Find lines passing through the bounding spheres of the triangles
         r, c, n = triangleBoundingCircle(F)
         if mode == 'all':
-##            d = distancesPFL(c,q,m,mode).transpose() # this is much slower for large arrays
             mode = 'pair'
-            d = row_stack([ distancesPFL(c, q[i], m[i], mode) for i in range(q.shape[0]) ])
+
+            #
+            # TODO: check if/why this is slower
+            # If so, we should move this into distanceFromLine
+            #
+##            d = distanceFromLine(c,(q,m),mode).transpose() # this is much slower for large arrays
+            d = row_stack([ distanceFromLine(c, (q[i],m[i]), mode) for i in range(q.shape[0]) ])
             wl, wt = where(d<=r)
         elif mode == 'pair':
-            d = distancesPFL(c, q, m, mode)
+            d = distanceFromLine(c, (q,m), mode)
             wl = wt = where(d<=r)[0]
         if wl.size == 0:
             return empty((0, 3,), dtype=float), wl, wt
@@ -399,6 +401,7 @@ def intersectionPointsLWT(q,m,F,mode='all',return_all=False):
     t = intersectionTimesLWT(q, m, F, mode)
     if mode == 'all':
         #
+        # TODO:
         ## !!!!! CAN WE EVER GET HERE? only if return_all??
         #
         q = q[:, newaxis]
@@ -460,12 +463,15 @@ def intersectionPointsSWT(S,F,mode='all',return_all=False):
         # Find lines passing through the bounding spheres of the triangles
         r, c, n = triangleBoundingCircle(F)
         if mode == 'all':
-##            d = distancesPFS(c,S,mode).transpose() # this is much slower for large arrays
+            #
+            # TODO: check why, if so move into distanceFromLine
+            #
+##            d = distanceFromLine(c,S,mode).transpose() # this is much slower for large arrays
             mode = 'pair'
-            d = row_stack([ distancesPFS(c, S[i], mode) for i in range(S.shape[0]) ])
+            d = row_stack([ distanceFromLine(c, S[i], mode) for i in range(S.shape[0]) ])
             wl, wt = where(d<=r)
         elif mode == 'pair':
-            d = distancesPFS(c, S, mode)
+            d = distanceFromLine(c, S, mode)
             wl = wt = where(d<=r)[0]
         if wl.size == 0:
             return empty((0, 3,), dtype=float), wl, wt
@@ -575,8 +581,9 @@ def projectPointOnPlane(X,p,n,mode='all'):
 
       - if 'all', the projection of all points on all planes is computed;
         `nx` and `np` can be different.
-      - if 'pair': `nx` and `np` should be equal and the projection of pairs
-        of point and plane are computed.
+      - if 'pair': `nx` and `np` should be equal (or 1) and the projection
+        of pairs of point and plane are computed (using broadcasting for
+        length 1 data).
 
     Returns a float array of size (nx,np,3) for mode 'all', or size (nx,3)
     for mode 'pair'.
@@ -645,13 +652,14 @@ def projectPointOnLine(X,p,n,mode='all'):
     Parameters:
 
     - `X`: a (nx,3) shaped array of points.
-    - `p`, `n`: (np,3) shaped arrays of points and normals defining `np` lines.
+    - `p`, `n`: (np,3) shaped arrays of points and vectors defining `np` lines.
     - `mode`: 'all' or 'pair:
 
       - if 'all', the projection of all points on all lines is computed;
         `nx` and `np` can be different.
-      - if 'pair': `nx` and `np` should be equal and the projection of pairs
-        of point and line are computed.
+      - if 'pair': `nx` and `np` should be equal (or 1) and the projection
+        of pairs of point and line are computed (using broadcasting for
+        length 1 data).
 
     Returns a float array of size (nx,np,3) for mode 'all', or size (nx,3)
     for mode 'pair'.
@@ -689,7 +697,7 @@ def projectPointOnLineTimes(X,p,n,mode='all'):
     lines (X,n), such that the projection points can be computed from
     p+t*n.
 
-    Parameters: see :meth:`projectPointOnPlane`.
+    Parameters: see :meth:`projectPointOnLine`.
 
     Returns a float array of size (nx,np) for mode 'all', or size (nx,)
     for mode 'pair'.
@@ -710,6 +718,175 @@ def projectPointOnLineTimes(X,p,n,mode='all'):
         return (inner(X, n) - dotpr(p, n)) / dotpr(n, n)
     elif mode == 'pair':
         return (dotpr(X, n) - dotpr(p, n)) / dotpr(n, n)
+
+
+#################### distance ##############################
+
+ #   distancesPFL             -> distanceFromLine
+ #   distancesPFS             -> distanceFromLine
+
+def distanceFromLine(X,lines,mode='all'):
+    """Return the distance of points X from lines (p,n).
+
+    Parameters:
+
+    - `X`: a (nx,3) shaped array of points.
+    - `lines`: one of the following definitions of the line(s):
+
+      - a tuple (p,n), where both p and n are (np,3) shaped arrays of
+        respectively points and vectors defining `np` lines;
+      - an (np,2,3) shaped array containing two points of each line.
+
+    - `mode`: 'all' or 'pair:
+
+      - if 'all', the distance of all points to all lines is computed;
+        `nx` and `np` can be different.
+      - if 'pair': `nx` and `np` should be equal (or 1) and the distance
+        of pairs of point and line are computed (using broadcasting for
+        length 1 data).
+
+    Returns a float array of size (nx,np) for mode 'all', or size (nx)
+    for mode 'pair'.
+
+    Example:
+    >>> X = Coords([[0.,1.,0.],[3.,0.,0.],[4.,3.,0.]])
+    >>> p,n = [[2.,0.,0.],[0.,1.,0.]], [[0.,1.,0.],[1.,0.,0.]]
+    >>> print(distanceFromLine(X,(p,n)))
+    [[ 2.  0.]
+     [ 1.  1.]
+     [ 2.  2.]]
+    >>> print(distanceFromLine(X[:2],(p,n),mode='pair'))
+    [ 2.  1.]
+    >>> lines = Coords([[[2.,0.,0.],[2.,2.,0.]], [[0.,1.,0.],[1.,1.,0.]]])
+    >>> print(distanceFromLine(X,lines))
+    [[ 2.  0.]
+     [ 1.  1.]
+     [ 2.  2.]]
+    >>> print(distanceFromLine(X[:2],lines,mode='pair'))
+    [ 2.  1.]
+    """
+    if isinstance(lines,tuple):
+        p,n = lines
+    else:
+        p = lines[..., 0,:]
+        n = lines[..., 1,:] - p
+    Y = projectPointOnLine(X, p, n, mode)
+    if mode == 'all':
+        X = asarray(X).reshape(-1, 1, 3)
+    return length(Y-X)
+
+
+def faceDistance(X,Fp,return_points=False):
+    """Compute the closest perpendicular distance to a set of triangles.
+
+    X is a (nX,3) shaped array of points.
+    Fp is a (nF,3,3) shaped array of triangles.
+
+    Note that some points may not have a normal with footpoint inside any
+    of the facets.
+
+    The return value is a tuple OKpid,OKdist,OKpoints where:
+
+    - OKpid is an array with the point numbers having a normal distance;
+    - OKdist is an array with the shortest distances for these points;
+    - OKpoints is an array with the closest footpoints for these points
+      and is only returned if return_points = True.
+    """
+    if not Fp.shape[1] == 3:
+        raise ValueError("Currently this function only works for triangular faces.")
+    # Compute normals on the faces
+    Fn = cross(Fp[:, 1]-Fp[:, 0], Fp[:, 2]-Fp[:, 1])
+    # Compute projection of points X on facets F
+    Y = projectPointOnPlane(X, Fp[:, 0,:], Fn)
+    # Find intersection points Y inside the facets
+    inside = insideTriangle(Fp, Y)
+    pid = where(inside)[0]
+    if pid.size == 0:
+        if return_points:
+            return [], [], []
+        else:
+            return [], []
+
+    # Compute the distances
+    X = X[pid]
+    Y = Y[inside]
+    dist = length(X-Y)
+    # Get the shortest distances
+    OKpid, OKpos = groupArgmin(dist, pid)
+    OKdist = dist[OKpos]
+    if return_points:
+        # Get the closest footpoints matching OKpid
+        OKpoints = Y[OKpos]
+        return OKpid, OKdist, OKpoints
+    return OKpid, OKdist
+
+
+def edgeDistance(X,Ep,return_points=False):
+    """Compute the closest perpendicular distance of points X to a set of edges.
+
+    X is a (nX,3) shaped array of points.
+    Ep is a (nE,2,3) shaped array of edge vertices.
+
+    Note that some points may not have a normal with footpoint inside any
+    of the edges.
+
+    The return value is a tuple OKpid,OKdist,OKpoints where:
+
+    - OKpid is an array with the point numbers having a normal distance;
+    - OKdist is an array with the shortest distances for these points;
+    - OKpoints is an array with the closest footpoints for these points
+      and is only returned if return_points = True.
+    """
+    # Compute vectors along the edges
+    En = Ep[:, 1] - Ep[:, 0]
+    # Compute intersection points of perpendiculars from X on edges E
+    t = projectPointOnLineTimes(X, Ep[:, 0], En)
+    Y = pointsAtLines(Ep[:, 0], En, t)
+    # Find intersection points Y inside the edges
+    inside = (t >= 0.) * (t <= 1.)
+    pid = where(inside)[0]
+    if pid.size == 0:
+        if return_points:
+            return [], [], []
+        else:
+            return [], []
+
+    # Compute the distances
+    X = X[pid]
+    Y = Y[inside]
+    dist = length(X-Y)
+    # Get the shortest distances
+    OKpid, OKpos = groupArgmin(dist, pid)
+    OKdist = dist[OKpos]
+    if return_points:
+        # Get the closest footpoints matching OKpid
+        OKpoints = Y[OKpos]
+        return OKpid, OKdist, OKpoints
+    return OKpid, OKdist
+
+
+def vertexDistance(X,Vp,return_points=False):
+    """Compute the closest distance of points X to a set of vertices.
+
+    X is a (nX,3) shaped array of points.
+    Vp is a (nV,3) shaped array of vertices.
+
+    The return value is a tuple OKdist,OKpoints where:
+
+    - OKdist is an array with the shortest distances for the points;
+    - OKpoints is an array with the closest vertices for the points
+      and is only returned if return_points = True.
+    """
+    # Compute the distances
+    dist = length(X[:, newaxis]-Vp)
+    # Get the shortest distances
+    OKdist = dist.min(-1)
+    if return_points:
+        # Get the closest points matching X
+        minid = dist.argmin(-1)
+        OKpoints = Vp[minid]
+        return OKdist, OKpoints
+    return OKdist,
 
 
 ################ deprecated old names ###########################
@@ -1224,169 +1401,6 @@ def projectionVOP(A, n):
     """Return the projection of vector of A on plane of B."""
     Aperp = projectionVOV(A, n)
     return A-Aperp
-
-
-#################### distance ##############################
-
-def distancesPFL(X,q,m,mode='all'):
-    """Return the distances of points X from lines (q,m).
-
-    Parameters:
-
-    - `X`: a (nX,3) shaped array of points (`mode=all`)
-      or broadcast compatible array (`mode=pair`).
-    - `q`,`m`: (nq,3) shaped arrays of points and vectors (`mode=all`)
-      or broadcast compatible arrays (`mode=pair`), defining a single line
-      or a set of lines.
-    - `mode`: `all` to calculate the distance of each point X from
-      all lines (q,m) or `pair` for pairwise distances.
-
-    Returns a (nX,nq) shaped (`mode=all`) array of distances.
-
-    Example:
-    >>> X = Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]])
-    >>> print(distancesPFL(X,[0.,0.,0.],[1.,0.,0.]))
-    [[ 0.  0.  3.]]
-    >>> X = Coords([[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]])
-    >>> print(distancesPFL(X,[0.,0.,0.],[1.,0.,0.]))
-    """
-    Y = projectPointOnLine(X, q, m, mode)
-    if mode == 'all':
-        X = asarray(X).reshape(-1, 1, 3)
-    return length(Y-X)
-
-
-def distancesPFS(X,S,mode='all'):
-    """Return the distances of points X from line segments S.
-
-    Parameters:
-
-    - `X`: a (nX,3) shaped array of points (`mode=all`)
-      or broadcast compatible array (`mode=pair`).
-    - `S`: (nS,2,3) shaped array of line segments (`mode=all`)
-      or broadcast compatible array (`mode=pair`), defining a single line
-      segment or a set of line segments.
-    - `mode`: `all` to calculate the distance of each point X from
-      all line segments S or `pair` for pairwise distances.
-
-    Returns a (nX,nS) shaped (`mode=all`) array of distances.
-    """
-    q0 = S[..., 0,:]
-    q1 = S[..., 1,:]
-    return distancesPFL(X, q0, q1-q0, mode)
-
-
-def faceDistance(X,Fp,return_points=False):
-    """Compute the closest perpendicular distance to a set of triangles.
-
-    X is a (nX,3) shaped array of points.
-    Fp is a (nF,3,3) shaped array of triangles.
-
-    Note that some points may not have a normal with footpoint inside any
-    of the facets.
-
-    The return value is a tuple OKpid,OKdist,OKpoints where:
-
-    - OKpid is an array with the point numbers having a normal distance;
-    - OKdist is an array with the shortest distances for these points;
-    - OKpoints is an array with the closest footpoints for these points
-      and is only returned if return_points = True.
-    """
-    if not Fp.shape[1] == 3:
-        raise ValueError("Currently this function only works for triangular faces.")
-    # Compute normals on the faces
-    Fn = cross(Fp[:, 1]-Fp[:, 0], Fp[:, 2]-Fp[:, 1])
-    # Compute projection of points X on facets F
-    Y = projectPointOnPlane(X, Fp[:, 0,:], Fn)
-    # Find intersection points Y inside the facets
-    inside = insideTriangle(Fp, Y)
-    pid = where(inside)[0]
-    if pid.size == 0:
-        if return_points:
-            return [], [], []
-        else:
-            return [], []
-
-    # Compute the distances
-    X = X[pid]
-    Y = Y[inside]
-    dist = length(X-Y)
-    # Get the shortest distances
-    OKpid, OKpos = groupArgmin(dist, pid)
-    OKdist = dist[OKpos]
-    if return_points:
-        # Get the closest footpoints matching OKpid
-        OKpoints = Y[OKpos]
-        return OKpid, OKdist, OKpoints
-    return OKpid, OKdist
-
-
-def edgeDistance(X,Ep,return_points=False):
-    """Compute the closest perpendicular distance of points X to a set of edges.
-
-    X is a (nX,3) shaped array of points.
-    Ep is a (nE,2,3) shaped array of edge vertices.
-
-    Note that some points may not have a normal with footpoint inside any
-    of the edges.
-
-    The return value is a tuple OKpid,OKdist,OKpoints where:
-
-    - OKpid is an array with the point numbers having a normal distance;
-    - OKdist is an array with the shortest distances for these points;
-    - OKpoints is an array with the closest footpoints for these points
-      and is only returned if return_points = True.
-    """
-    # Compute vectors along the edges
-    En = Ep[:, 1] - Ep[:, 0]
-    # Compute intersection points of perpendiculars from X on edges E
-    t = projectPointOnLineTimes(X, Ep[:, 0], En)
-    Y = pointsAtLines(Ep[:, 0], En, t)
-    # Find intersection points Y inside the edges
-    inside = (t >= 0.) * (t <= 1.)
-    pid = where(inside)[0]
-    if pid.size == 0:
-        if return_points:
-            return [], [], []
-        else:
-            return [], []
-
-    # Compute the distances
-    X = X[pid]
-    Y = Y[inside]
-    dist = length(X-Y)
-    # Get the shortest distances
-    OKpid, OKpos = groupArgmin(dist, pid)
-    OKdist = dist[OKpos]
-    if return_points:
-        # Get the closest footpoints matching OKpid
-        OKpoints = Y[OKpos]
-        return OKpid, OKdist, OKpoints
-    return OKpid, OKdist
-
-
-def vertexDistance(X,Vp,return_points=False):
-    """Compute the closest distance of points X to a set of vertices.
-
-    X is a (nX,3) shaped array of points.
-    Vp is a (nV,3) shaped array of vertices.
-
-    The return value is a tuple OKdist,OKpoints where:
-
-    - OKdist is an array with the shortest distances for the points;
-    - OKpoints is an array with the closest vertices for the points
-      and is only returned if return_points = True.
-    """
-    # Compute the distances
-    dist = length(X[:, newaxis]-Vp)
-    # Get the shortest distances
-    OKdist = dist.min(-1)
-    if return_points:
-        # Get the closest points matching X
-        minid = dist.argmin(-1)
-        OKpoints = Vp[minid]
-        return OKdist, OKpoints
-    return OKdist,
 
 
 #################### barycentric coordinates ###############
