@@ -96,10 +96,11 @@ class Line(object):
                 return
             P = checkArray(P,shape=(-1,2,3))
             P[:,1,:] -= P[:,0,:]
+            self.data = P
         else:
             P = checkArray(P,shape=(-1,3))
             n = checkArray(n,shape=(P.shape[0],3))
-        self.data = Coords(stack([P,n],axis=1))
+            self.data = stack([P,n],axis=1)
 
 
     @property
@@ -858,6 +859,33 @@ def distanceFromLine(X,lines,mode='all'):
     if mode == 'all':
         X = asarray(X).reshape(-1, 1, 3)
     return length(Y-X)
+
+
+def pointNearLine(X,lines,atol):
+    """Find the points from X that are near to lines.
+
+    Finds all the points from X that are closer than atol to any of the lines.
+
+    Parameters:
+
+    - `X`: a (nx,3) shaped array of points.
+    - `lines`: one of the following definitions of the line(s):
+
+      - a tuple (p,n), where both p and n are (np,3) shaped arrays of
+        respectively points and vectors defining `np` lines;
+      - an (np,2,3) shaped array containing two points of each line.
+
+    Returns a tuple (ip,il) with the indices of the nearby points and lines.
+    The indices are sorted in increasing order of the point number.
+
+    Example:
+    >>> X = Coords([[0.,1.,0.],[3.,0.,0.],[4.,3.,0.]])
+    >>> p,n = [[2.,0.,0.],[0.,1.,0.]], [[0.,3.,0.],[1.,0.,0.]]
+    >>> print(pointNearLine(X,(p,n),1.5))
+    (array([0, 1, 1]), array([1, 0, 1]))
+    """
+    d = distanceFromLine(X,lines)
+    return where(d<atol)
 
 
 def faceDistance(X,Fp,return_points=False):

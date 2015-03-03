@@ -1572,32 +1572,6 @@ Quality: %s .. %s
         this one seems faster.
         """
 
-        def closeLinesPoints(p, q, m, dtresh):
-            """Find points and lines which are closer than a treshold distance.
-
-            Parameters:
-            - `p`: a set of points
-            - `q`,`m`: (...,3) shaped arrays of points and vectors, defining
-              a set of lines.
-            - `dtresh`: 1D array of len(p) float, treshold distances
-
-            Returns:
-            - line index
-            - point index
-
-            For each point finds the lines closer than the dtresh corresponding to that point.
-            The distance point-line is calculated using Pitagora as it seems the fastest way.
-            NB:
-            - this function is inside intersectionWithLines because is not used anywhere else.
-            - this function is computationally expensive. In future, a faster implementation (e.g. using VTK)
-              could replace this function.
-            """
-            m=normalize(m)
-
-            cand= [where(distanceFromLine(p, (q[i],m[i]))<=dtresh)[0] for i in range(q.shape[0])]
-            il = concatenate([[i]*len(ca) for i, ca in enumerate(cand)]).astype(int)
-            ip = concatenate(cand)
-            return il, ip
 
         def insideLine(v,v0,v1,atol, method='segment'):
             """
@@ -1616,7 +1590,7 @@ Quality: %s .. %s
 
         r, C, n = geomtools.triangleBoundingCircle(self.coords[self.elems])#triangles' bounding sphere
         m = normalize(q2-q)
-        l, t=closeLinesPoints(C, q, m, r)#detects candidate lines/triangles (slow part)
+        t,l = geomtools.pointNearLine(C, (q, m), r)#detects candidate lines/triangles (slow part)
         p = geomtools.intersectionPointsLWP(q[l], m[l], C[t], self.areaNormals()[1][t],  mode='pair')#intersects candidate lines/triangles
         prl=where(sum(isinf(p) + isnan(p), axis=1)>0)[0]#remove nan/inf (lines parallel to triangles)
         i1 = complement(prl, len(p))
