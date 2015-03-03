@@ -578,7 +578,8 @@ class Coords(ndarray):
         n = asarray(n).reshape((3))
         xp = self-p
         xpt = dotpr(xp,n)
-        return sqrt(dotpr(xp,xp)-xpt*xpt)
+        a = dotpr(xp,xp)-xpt*xpt
+        return sqrt(a.clip(0))
 
 
     def distanceFromPoint(self, p):
