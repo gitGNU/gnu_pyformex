@@ -62,7 +62,7 @@ def intersection(F1, F2):
     m2 = F2[:, 1]-F2[:, 0]
 
     # Compute all intersection points of the lines
-    t1, t2 = gt.intersectLineWithLineTimes(q1, m1, q2, m2, mode='all')
+    t1, t2 = gt.intersectLineWithLine(q1, m1, q2, m2, mode='all', times=True)
     X1 = pointsAtLines(q1[:, newaxis], m1[:, newaxis], t1)
     X2 = pointsAtLines(q2, m2, t2)
     seterr(**errh) # reactivate division errors

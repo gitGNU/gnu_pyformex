@@ -58,10 +58,6 @@ Planned renaming of functions::
 
     pointsAtLines            -> pointOnLine
     pointsAtSegments         -> pointOnSegment
-    intersectionTimesLWL     -> intersectLineWithLineTimes
-    intersectionPointsLWL    -> intersectLineWithLine (or intersectTwoLines)
-    intersectionTimesLWP     -> intersectLineWithPlaneTimes
-    intersectionPointsLWP    -> intersectLineWithPlane
     intersectionTimesSWP     -> remove or intersectLineWithLineTimes2
     intersectionSWP          -> intersectSegmentWithPlaneTimes
     intersectionPointsSWP    -> intersectSegmentWithPlane
@@ -85,25 +81,45 @@ from __future__ import print_function
 
 
 from pyformex import utils
-from pyformex.coords import *
+from pyformex.formex import *
 
 
 #
 #  TODO : these functions need doctests!
 #
 
-
 class Line(object):
-    def __init__(self, P, n):
-        self.coords = Coords.concatenate([P, normalize(n)])
+    def __init__(self, P, n=None):
+        if n is None:
+            if isinstance(P,Line):
+                self.data = P.data
+                return
+            P = checkArray(P,shape=(-1,2,3))
+            P[:,1,:] -= P[:,0,:]
+        else:
+            P = checkArray(P,shape=(-1,3))
+            n = checkArray(n,shape=(P.shape[0],3))
+        self.data = Coords(stack([P,n],axis=1))
+
+
+    @property
+    def p(self):
+        return self.data[:,0,:]
+
+    @property
+    def n(self):
+        return self.data[:,1,:]
+
+    def toFormex(self):
+        P = self.data.copy()
+        P[:,1,:] += P[:,0,:]
+        return Formex(P)
+
 
 class Plane(object):
     def __init__(self, P, n):
         self.coords = Coords.concatenate([P, normalize(n)])
 
-
-################## intersection #######################
-#
 
 def pointsAtLines(q, m, t):
     """Return the points of lines (q,m) at parameter values t.
@@ -111,13 +127,15 @@ def pointsAtLines(q, m, t):
     Parameters:
 
     - `q`,`m`: (...,3) shaped arrays of points and vectors, defining
-      a single line or a set of lines.
+      a single line or a set of lines. The vectors do not need to
+      have unit length.
     - `t`: array of parameter values, broadcast compatible with `q` and `m`.
+      Parametric value 0 is at point q, parametric value 1 ia at q+m.
 
-    Returns an array with the points at parameter values t.
+    Returns a Coords array with the points at parameter values t.
     """
     t = t[..., newaxis]
-    return q+t*m
+    return Coords(q+t*m)
 
 
 def pointsAtSegments(S, t):
@@ -136,32 +154,109 @@ def pointsAtSegments(S, t):
     return pointsAtLines(q0, q1-q0, t)
 
 
-def intersectionTimesLWL(q1,m1,q2,m2,mode='all'):
+
+################## intersection #######################
+#
+
+#    intersectionPointsLWL    -> intersectLineWithLine
+#    intersectionTimesLWL     -> intersectLineWithLine
+#    intersectionPointsLWP    -> intersectLineWithPlane
+#    intersectionTimesLWP     -> intersectLineWithPlaneTimes
+
+
+def intersectLineWithLine(q1,m1,q2,m2,mode='all',times=False):
     """Find the common perpendicular of lines (q1,m1) and lines (q2,m2)
 
-    For non-intersecting lines, the base points of the common perpendicular
-    are found.
-    For intersecting lines, the common point of intersection is found.
-
-    Lines are defined by a point (q) and a vector (m).
+    Return the intersection points of lines (q1,m1) and lines (q2,m2)
+    with the perpendiculars between them. For intersecting lines, the
+    corresponding points will coincide.
 
     Parameters:
 
-    - `qi`,`mi` (i=1...2): (nqi,3) shaped arrays of points and vectors (`mode=all`)
-      or broadcast compatible arrays (`mode=pair`), defining a single line or a
-      set of lines.
-    - `mode`: `all` to calculate the intersection of each line (q1,m1) with all lines
-      (q2,m2) or `pair` for pairwise intersections.
+    - `qi`,`mi` (i=1,2): (nqi,3) shaped arrays of points and vectors defining
+      nqi lines.
+    - `mode`: 'all' or 'pair:
 
-    Returns a tuple of (nq1,nq2) shaped (`mode=all`) arrays of parameter
-    values t1 and t2, such that the intersection points are given by
-    ``q1+t1*m1`` and ``q2+t2*m2``.
+      - if 'all', the interesection of all lines q1,m1 with all lines q2,m2
+        is computed; `nq1` and `nq2` can be different.
+      - if 'pair': `nq1` and `nq2` should be equal (or 1) and the intersection
+        of pairs of lines are computed (using broadcasting for
+        length 1 data).
+    - `times`: bool: if True, returns the parameter values of the
+      intersection points instead of the intersection points themselves.
+
+    Returns two Coords arrays with the intersection points on lines (q1,m1)
+    and (q2,m2) respectively (or, if `times` is True, two float arrays
+    with the parameter values of these points).
+    The size of the Coords arrays is (nq1,nq2,3) for mode 'all' and (nq1,3)
+    for mode 'pair'. With `times` True, the size of the returned parameter
+    arrays is (nq1,nq2,3) for mode 'all' and size (nq1,3) for mode 'pair'.
+
+    Note: taking the intersection of two parallel lines will result in
+    nan values. These are not removed from the result. The user can do
+    it if he so wishes.
+
+    Example:
+
+    >>> q,m = [[0,0,0],[0,0,1],[0,0,3]], [[1,0,0],[1,1,0],[0,1,0]]
+    >>> p,n = [[2.,0.,0.],[0.,0.,0.]], [[0.,1.,0.],[0.,0.,1.]]
+
+    >>> x1,x2 = intersectLineWithLine(q,m,p,n)
+    >>> print(x1)
+    [[[  2.   0.   0.]
+      [  0.   0.   0.]]
+    <BLANKLINE>
+     [[  2.   2.   1.]
+      [  0.   0.   1.]]
+    <BLANKLINE>
+     [[ nan  nan  nan]
+      [  0.   0.   3.]]]
+    >>> print(x2)
+    [[[  2.   0.   0.]
+      [  0.   0.   0.]]
+    <BLANKLINE>
+     [[  2.   2.   0.]
+      [  0.   0.   1.]]
+    <BLANKLINE>
+     [[ nan  nan  nan]
+      [  0.   0.   3.]]]
+
+    >>> x1,x2 = intersectLineWithLine(q[:2],m[:2],p,n,mode='pair')
+    >>> print(x1)
+    [[ 2.  0.  0.]
+     [ 0.  0.  1.]]
+    >>> print(x2)
+    [[ 2.  0.  0.]
+     [ 0.  0.  1.]]
+
+    >>> t1,t2 = intersectLineWithLine(q,m,p,n,times=True)
+    >>> print(t1)
+    [[  2.  -0.]
+     [  2.  -0.]
+     [ nan  -0.]]
+    >>> print(t2)
+    [[ -0.  -0.]
+     [  2.   1.]
+     [ nan   3.]]
+
+    >>> t1,t2 = intersectLineWithLine(q[:2],m[:2],p,n,mode='pair',times=True)
+    >>> print(t1)
+    [ 2. -0.]
+    >>> print(t2)
+    [-0.  1.]
+
     """
     if mode == 'all':
         q1 = asarray(q1).reshape(-1, 1, 3)
         m1 = asarray(m1).reshape(-1, 1, 3)
         q2 = asarray(q2).reshape(1, -1, 3)
         m2 = asarray(m2).reshape(1, -1, 3)
+    else:
+        q1 = asarray(q1).reshape(-1, 3)
+        m1 = asarray(m1).reshape(-1, 3)
+        q2 = asarray(q2).reshape(-1, 3)
+        m2 = asarray(m2).reshape(-1, 3)
+
     dot11 = dotpr(m1, m1)
     dot22 = dotpr(m2, m2)
     dot12 = dotpr(m1, m2)
@@ -172,23 +267,10 @@ def intersectionTimesLWL(q1,m1,q2,m2,mode='all'):
     dot12 = dot12[..., newaxis]
     t1 = dotpr(q12, m2*dot12-m1*dot22) / denom
     t2 = dotpr(q12, m2*dot11-m1*dot12) / denom
-    return t1, t2
-
-
-def intersectLineWithLine(q1,m1,q2,m2,mode='all'):
-    """Return the intersection points of lines (q1,m1) and lines (q2,m2)
-
-    with the perpendiculars between them.
-
-    This is like intersectionTimesLWL but returns a tuple of (nq1,nq2,3)
-    shaped (`mode=all`) arrays of intersection points instead of the
-    parameter values.
-    """
-    t1, t2 = intersectionTimesLWL(q1, m1, q2, m2, mode)
-    if mode == 'all':
-        q1 = q1[:, newaxis]
-        m1 = m1[:, newaxis]
-    return pointsAtLines(q1, m1, t1), pointsAtLines(q2, m2, t2)
+    if times:
+        return t1, t2
+    else:
+        return pointsAtLines(q1, m1, t1), pointsAtLines(q2, m2, t2)
 
 
 def intersectionTimesLWP(q,m,p,n,mode='all'):
@@ -667,7 +749,7 @@ def projectPointOnLine(X,p,n,mode='all'):
     Example:
 
     >>> X = Coords([[0.,1.,0.],[3.,0.,0.],[4.,3.,0.]])
-    >>> p,n = [[2.,0.,0.],[0.,1.,0.]], [[0.,1.,0.],[1.,0.,0.]]
+    >>> p,n = [[2.,0.,0.],[0.,1.,0.]], [[0.,2.,0.],[1.,0.,0.]]
     >>> print(projectPointOnLine(X,p,n))
     [[[ 2.  1.  0.]
       [ 0.  1.  0.]]
@@ -725,6 +807,8 @@ def projectPointOnLineTimes(X,p,n,mode='all'):
  #   distancesPFL             -> distanceFromLine
  #   distancesPFS             -> distanceFromLine
 
+# TODO: we should extend the method of Coords.distanceFromLine
+
 def distanceFromLine(X,lines,mode='all'):
     """Return the distance of points X from lines (p,n).
 
@@ -750,7 +834,7 @@ def distanceFromLine(X,lines,mode='all'):
 
     Example:
     >>> X = Coords([[0.,1.,0.],[3.,0.,0.],[4.,3.,0.]])
-    >>> p,n = [[2.,0.,0.],[0.,1.,0.]], [[0.,1.,0.],[1.,0.,0.]]
+    >>> p,n = [[2.,0.,0.],[0.,1.,0.]], [[0.,3.,0.],[1.,0.,0.]]
     >>> print(distanceFromLine(X,(p,n)))
     [[ 2.  0.]
      [ 1.  1.]
@@ -888,11 +972,6 @@ def vertexDistance(X,Vp,return_points=False):
         return OKdist, OKpoints
     return OKdist,
 
-
-################ deprecated old names ###########################
-
-
-  ## intersectionPointsLWL = intersectLineWithLine
 
 
 ################ other functions #################################
@@ -1272,7 +1351,7 @@ def lineIntersection(P0, N0, P1, N1):
 
     This relies on the lines being pairwise coplanar.
     """
-    Y0,Y1 = intersectionPointsLWL(P0,N0,P1,N1,mode='pair')
+    Y0,Y1 = intersectLineWithLine(P0,N0,P1,N1,mode='pair')
     return Y0
 
 

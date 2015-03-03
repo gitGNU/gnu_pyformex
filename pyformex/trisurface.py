@@ -1538,11 +1538,17 @@ Quality: %s .. %s
             return TriSurface(R).fixNormals()
 
 
+# TODO:
     ## UNDOCUMENTED! BECAUSE OF BAD FORMATTING
     ##
     ## LARGE CODE EXAMPLES SHOULD NOT GO IN THE DOCSTRINGS
     ## BUT IN AN EXAMPLE
     ##
+    ## This should be in geomtools
+    ## if it is better than  geomtools.intersectionPointsLWT,
+    ## it sohuld replace oit.
+##
+
     def intersectionWithLines(self,q,q2, method='line',atol=1.e-5):
         """_Intersects a surface with lines.
 
@@ -1564,31 +1570,6 @@ Quality: %s .. %s
         intersections.
         There is a similar function in geomtools.intersectionPointsLWT but
         this one seems faster.
-        Test performance before making changes using the following example:
-
-        levelL = 49
-        levelS = 50
-
-        from pyformex.simple import sphere, regularGrid
-        S=sphere(levelS)
-        R=regularGrid([0., 0., 0.],[0., 1., 1.],[1, levelL, levelL])
-        L0=Coords(R.reshape(-1, 3)).scale([1., 2., 2.]).trl([-2., -1., -1.]).fuse()[0]
-        L1=L0.trl([1., 0., 0.])
-        from pyformex.trisurface import intersectSurfaceWithLines
-        from pyformex import timer
-        timesec = timer.Timer()
-        P, X=S.intersectionWithLines(q=L0,q2=L1,method='line',  atol=1.e-5)
-        print('levelL %d, levelS %d'%(levelL, levelS))
-        print('seconds:     %s'%timesec.seconds(reset=True,rounded = False))
-        print('%d lines X %d triangle -> %d intersections'%(len(L0), S.nelems(), P.ncoords()))
-
-        ##levelL 49, levelS 50
-        #seconds:     10.136684
-        #2500 lines X 50000 triangle -> 3752 intersections
-
-        ##levelL 40, levelS 20
-        #seconds:     1.252834
-        #1681 lines X 8000 triangle -> 2490 intersections
         """
 
         def closeLinesPoints(p, q, m, dtresh):
@@ -1613,14 +1594,7 @@ Quality: %s .. %s
             """
             m=normalize(m)
 
-            def distancePFL(P, q, m):
-                """distance of MANY points from ONE single line.
-                NB: this is faster than:geomtools.distancesPFL(P,q,m,mode='pair')
-                """
-                pq = P-q
-                return sqrt(pow(length(pq),2)-pow(dotpr(pq, m),2))
-
-            cand= [where(distancePFL(p, q[i], m[i])<=dtresh)[0] for i in range(q.shape[0])]
+            cand= [where(distanceFromLine(p, (q[i],m[i]))<=dtresh)[0] for i in range(q.shape[0])]
             il = concatenate([[i]*len(ca) for i, ca in enumerate(cand)]).astype(int)
             ip = concatenate(cand)
             return il, ip
@@ -1648,6 +1622,11 @@ Quality: %s .. %s
         i1 = complement(prl, len(p))
         if len(i1)==0:
             return Coords(), []
+        #
+        # TODO
+        # The use of shrink here is not a good technique!!!
+        # Better is to include a tolerance in geomtools.insideTriangle
+        #
         xt = self.select(t).toFormex().shrink(1.+atol)[:]#atol: insideTriangle sometimes fails on border!!
         xt, xp, xl = xt[i1], p[i1], l[i1]
         i2 = geomtools.insideTriangle(xt, xp[newaxis, ...]).reshape(-1)#remove intersections outside triangles
