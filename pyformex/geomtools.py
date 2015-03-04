@@ -860,8 +860,8 @@ def distanceFromLine(X,lines,mode='all'):
         X = asarray(X).reshape(-1, 1, 3)
     return length(Y-X)
 
-# GDS: memory usage explodes for large data
-def pointNearLine(X,lines,atol):
+
+def pointNearLine(X,lines,atol, nproc=-1):
     """Find the points from X that are near to lines.
 
     Finds all the points from X that are closer than pointwise atol to any of the lines.
@@ -887,38 +887,6 @@ def pointNearLine(X,lines,atol):
     """
     if isFloat(atol):
         atol = [atol]*len(X)
-    atol = checkArray1D(atol,kind=None,allow=None,size=len(X))
-    d = distanceFromLine(X,lines)
-    return where(d<atol.reshape(-1, 1))
-
-# GDS: memory usage does not change with data size
-def pointNearLine2(X,lines,atol):
-    """Same as pointNearLine but faster and with much less memory usage"""
-    if isFloat(atol):
-        atol = [atol]*len(X)
-    atol = checkArray1D(atol,kind=None,allow=None,size=len(X))
-    q, m = lines
-    m=normalize(m)
-    def distancePFL(X, q, m):
-        """distance of MANY points from ONE single line.
-        NB: this is faster than:geomtools.distancesPFL(P,q,m,mode='pair')
-        """
-        pq = X-q
-        return (abs(length(pq)**2.-dotpr(pq, m)**2.))**0.5
-    cand = [where(distancePFL(X, q[i], m[i])<=atol)[0] for i in range(q.shape[0])]
-    il = concatenate([[i]*len(ca) for i, ca in enumerate(cand)]).astype(int) 
-    ip = concatenate(cand)
-    return ip, il
-
-
-def pointNearLineM(X,lines,atol, nproc=-1, optim_mem=False):
-    """Same as pointNearLine but with multiprocessing.
-    
-    If optim_mem is True the pointNearLine2 is used,
-    which reduced the memory usage by 90%!
-    """
-    if isFloat(atol):
-        atol = [atol]*len(X)
     atol = checkArray1D(atol,kind=None,allow=None,size=len(X)).reshape(-1, 1)
     if nproc!=1:
         from pyformex import multi
@@ -927,22 +895,15 @@ def pointNearLineM(X,lines,atol, nproc=-1, optim_mem=False):
         datablocks1 = splitar(X, nproc, close=False)
         datablocks2 = splitar(atol, nproc, close=False)
         offset1 = append([0], cumsum([len(d) for d in datablocks1]))
-        if optim_mem:
-            print ('-----pointNearLine2 with %d proc'%(nproc))
-            tasks = [(pointNearLine2, (d,lines,r)) for d, r in zip(datablocks1, datablocks2)]
-        else:
-            print ('-----pointNearLine with %d proc'%(nproc))
-            tasks = [(pointNearLine, (d,lines,r)) for d, r in zip(datablocks1, datablocks2)]            
+        print ('-----pointNearLine with %d proc'%(nproc))
+        tasks = [(pointNearLine, (d,lines,r, 1)) for d, r in zip(datablocks1, datablocks2)]
         res = multi.multitask(tasks, nproc)
         res = list(zip(*res))
         ip = concatenate([ip+n for ip, n in zip(res[0], offset1)])    
         il = concatenate(res[1])
         return ip, il
-    else:
-        if optim_mem:
-            return pointNearLine2(X,lines,atol)
-        else:
-            return pointNearLine(X,lines,atol)
+    d = distanceFromLine(X,lines)
+    return where(d<atol)
 
 
 def faceDistance(X,Fp,return_points=False):
