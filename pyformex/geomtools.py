@@ -874,7 +874,7 @@ def pointNearLine(X,lines,atol, nproc=-1):
       - a tuple (p,n), where both p and n are (np,3) shaped arrays of
         respectively points and vectors defining `np` lines;
       - an (np,2,3) shaped array containing two points of each line.
-    - atol (nx) shaped array of pointwise tolerances
+    - `atol`: float or (nx) shaped array of pointwise tolerances
 
     Returns a tuple (ip,il) with the indices of the nearby points and lines.
     The indices are sorted in increasing order of the point number.
@@ -885,7 +885,9 @@ def pointNearLine(X,lines,atol, nproc=-1):
     >>> print(pointNearLine(X,(p,n),1.5))
     (array([0, 1, 1]), array([1, 0, 1]))
     """
-    atol = atol.reshape(-1, 1)
+    if isFloat(atol):
+        atol = [atol]*len(X)
+    atol = checkArray1D(atol,kind=None,allow=None,size=len(X)).reshape(-1, 1)
     if nproc!=1:
         from pyformex import multi
         if nproc<0:
