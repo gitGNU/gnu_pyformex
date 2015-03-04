@@ -891,10 +891,10 @@ def pointNearLine(X,lines,atol,nproc=1):
     (array([0, 1, 1]), array([1, 0, 1]))
     """
     if not isFloat(atol):
-        atol = checkArray1D(atol,size=X.shape[0]).reshape(-1, 1)
+        atol = checkArray1D(atol,size=X.shape[0])
     if nproc == 1:
-        d = distanceFromLine(X,lines)
-        return where(d<atol)
+        wnear = [where(distanceFromLine(X,line,mode='pair')<=atol)[0] for line in zip(*lines)]
+        return concatenate(wnear), concatenate([[i]*len(w) for i, w in enumerate(wnear)]).astype(int) 
 
     # multiprocessing
     args = multi.splitArgs((X,lines,atol),mask=(1,0,isinstance(atol,np.ndarray)),nproc=nproc)
