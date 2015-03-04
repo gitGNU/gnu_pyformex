@@ -108,6 +108,29 @@ def powers(x, n):
     return [ x ** i for i in range(n+1) ]
 
 
+def cumsum0(a):
+    """Return the cumulative sum of a list of numbers preprended with a 0.
+
+    Parameters:
+
+    - `a`: list of integers
+
+    Returns a list of len(a)+1 integers holding the cumulative sum of the
+    list [0] + a.
+
+    A common use case is when concatenating some blocks of different length.
+    If the list `a` holds the length of each block, the cumsum0(a) holds
+    the start and end of each block in the concatenation.
+
+    Example:
+
+    >>> cumsum0([2,4,3])
+    array([0, 2, 6, 9])
+
+    """
+    return cumsum([0]+a)
+
+
 ###########################################################################
 ##
 ##   some math functions
@@ -941,8 +964,8 @@ def splitar(ar,nblk,close=False):
     Returns a list of nblk arrays, unless the size of the array is smaller
     than nblk, in which case a list with the original array is returned.
 
-    If close==True, the elements where the array is split occur in both
-    blocks delimited by the element.
+    If close==True, the elements where the array is split are included
+    in both blocks delimited by the element.
 
     Example:
 

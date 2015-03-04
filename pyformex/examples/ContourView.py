@@ -68,18 +68,9 @@ def run():
     draw(G,color=red)
     pause()
 
-    #~ if utils.hasModule('vtk'):
-        #~ from pyformex.plugins.vtk_itf import viewContour
-        #~ undraw(SA)
-        #~ contour = viewContour(S).rot(pf.canvas.camera.rot.inverse())
-        #~ draw(contour,color=blue)
-        #~ pause()
-
     axis = G.attrib.axis
     dmin,dmax = S.directionalSize(axis)
     outlineBox(G,axis,dmin,dmax)
-    #~ if utils.hasModule('vtk'):
-        #~ draw(S)
     perspective()
 
 

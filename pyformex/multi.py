@@ -33,7 +33,96 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex.arraytools import splitar
+
 from multiprocessing import Pool, cpu_count, Process, Queue
+import numpy as np
+
+
+## def splitArgs(args,mask=None,nproc=-1,close=False):
+##     """Split a number of data blocks over multiple processors.
+
+##     Parameters:
+
+##     - `args`: a list or tuple of data blocks. All array items in the list
+##       should have the same first dimension.
+##     - `nproc`: number of processors intended. If negative (default),
+##       it is set equal to the number of processors detected.
+##     - `close`: bool. If True, the elements where the arrays are
+##       split are included in both blocks delimited by the element.
+
+##     Returns a list of `nproc` lists. Each sublist contains the same
+##     number of items as the input list and in the same order, whereby
+##     the arrays are replaced by a slice of the array along the first
+##     axes, and the non-array items are replicated as is.
+
+##     This function uses :meth:`arraytools.splitar` for the splitting
+##     of the arrays.
+
+##     Example:
+
+##     >>> for i in splitData([np.eye(5),'=>',np.arange(5)],3):
+##     ...     print("%s %s %s" % tuple(i))
+##     [[ 1.  0.  0.  0.  0.]
+##      [ 0.  1.  0.  0.  0.]] => [0 1]
+##     [[ 0.  0.  1.  0.  0.]] => [2]
+##     [[ 0.  0.  0.  1.  0.]
+##      [ 0.  0.  0.  0.  1.]] => [3 4]
+
+##     """
+##     if nproc < 0:
+##         nproc = cpu_count()
+##     split = [ splitar(d,nproc,close) if isinstance(d,np.ndarray) else [ d ] * nproc for d in data ]
+##     return zip(*split)
+
+
+def splitArgs(args,mask=None,nproc=-1,close=False):
+    """Split data blocks over multiple processors.
+
+    Parameters:
+
+    - `args`: a list or tuple of data blocks. All items in the list
+      that need to be split should be arrays with the same first dimension.
+    - `mask`: list of bool, with same length as `args`. It flags which
+      items in the `args` list are to be split. If not specified,
+      all array type items will be split.
+    - `nproc`: number of processors intended. If negative (default),
+      it is set equal to the number of processors detected.
+    - `close`: bool. If True, the elements where the arrays are
+      split are included in both blocks delimited by the element.
+
+    Returns a sequence of `nproc` tuples. Each tuple contains the same
+    number of items as the input `args` and in the same order, whereby
+    the (nonmasked) arrays are replaced by a slice of the array along
+    its first axis, and the masked and non-array items are replicated
+    as is.
+
+    This function uses :meth:`arraytools.splitar` for the splitting
+    of the arrays.
+
+    Example:
+
+    >>> for i in splitArgs([np.eye(5),'=>',np.arange(5)],nproc=3):
+    ...     print("%s %s %s" % i)
+    [[ 1.  0.  0.  0.  0.]
+     [ 0.  1.  0.  0.  0.]] => [0 1]
+    [[ 0.  0.  1.  0.  0.]] => [2]
+    [[ 0.  0.  0.  1.  0.]
+     [ 0.  0.  0.  0.  1.]] => [3 4]
+    >>> for i in splitArgs([np.eye(5),'=>',np.arange(5)],mask=[1,0,0],nproc=3):
+    ...     print("%s %s %s" % i)
+    [[ 1.  0.  0.  0.  0.]
+     [ 0.  1.  0.  0.  0.]] => [0 1 2 3 4]
+    [[ 0.  0.  1.  0.  0.]] => [0 1 2 3 4]
+    [[ 0.  0.  0.  1.  0.]
+     [ 0.  0.  0.  0.  1.]] => [0 1 2 3 4]
+
+    """
+    if nproc < 0:
+        nproc = cpu_count()
+    if mask is None:
+        mask = [ isinstance(a,np.ndarray) for a in args ]
+    split = [ splitar(a,nproc,close) if m else [ a ] * nproc for a,m in zip(args,mask) ]
+    return zip(*split)
 
 
 def dofunc(arg):

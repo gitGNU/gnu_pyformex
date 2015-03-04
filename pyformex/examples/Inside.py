@@ -143,7 +143,7 @@ def testInside(S, P, method, nproc, atol):
         datablocks = splitar(P, nproc)
         datalen = [0] + [d.shape[0] for d in datablocks]
         shift = array(datalen[:-1]).cumsum()
-        print("METH %s" % method)
+        #print("METH %s" % method)
         tasks = [(inside, (S, d, method, atol)) for d in datablocks]
         ind = multitask(tasks, nproc)
         ind = concatenate([ i+s for i, s in zip(ind, shift)])
