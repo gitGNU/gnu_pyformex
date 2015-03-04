@@ -861,10 +861,10 @@ def distanceFromLine(X,lines,mode='all'):
     return length(Y-X)
 
 
-def pointNearLine(X,lines,atol):
+def pointNearLine(X,lines,atol, nproc=-1):
     """Find the points from X that are near to lines.
 
-    Finds all the points from X that are closer than atol to any of the lines.
+    Finds all the points from X that are closer than pointwise atol to any of the lines.
 
     Parameters:
 
@@ -874,6 +874,7 @@ def pointNearLine(X,lines,atol):
       - a tuple (p,n), where both p and n are (np,3) shaped arrays of
         respectively points and vectors defining `np` lines;
       - an (np,2,3) shaped array containing two points of each line.
+    - atol (nx) shaped array of pointwise tolerances
 
     Returns a tuple (ip,il) with the indices of the nearby points and lines.
     The indices are sorted in increasing order of the point number.
@@ -884,6 +885,21 @@ def pointNearLine(X,lines,atol):
     >>> print(pointNearLine(X,(p,n),1.5))
     (array([0, 1, 1]), array([1, 0, 1]))
     """
+    atol = atol.reshape(-1, 1)
+    if nproc!=1:
+        from pyformex import multi
+        if nproc<0:
+            nproc = multi.cpu_count()
+        datablocks1 = splitar(X, nproc, close=False)
+        datablocks2 = splitar(atol, nproc, close=False)
+        offset1 = append([0], cumsum([len(d) for d in datablocks1]))
+        print ('-----pointNearLine with %d proc'%(nproc))
+        tasks = [(pointNearLine, (d,lines,r, 1)) for d, r in zip(datablocks1, datablocks2)]
+        res = multi.multitask(tasks, nproc)
+        res = list(zip(*res))
+        ip = concatenate([ip+n for ip, n in zip(res[0], offset1)])    
+        il = concatenate(res[1])
+        return ip, il
     d = distanceFromLine(X,lines)
     return where(d<atol)
 
