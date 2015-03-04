@@ -95,13 +95,14 @@ class Line(object):
             if isinstance(P,Line):
                 self.data = P.data
                 return
-            P = checkArray(P,shape=(-1,2,3))
-            P[:,1,:] -= P[:,0,:]
-            self.data = P
-        else:
-            P = checkArray(P,shape=(-1,3))
-            n = checkArray(n,shape=(P.shape[0],3))
-            self.data = stack([P,n],axis=1)
+            elif not isinstance(P,tuple):
+                P = checkArray(P,shape=(-1,2,3))
+                P[:,1,:] -= P[:,0,:]
+                self.data = P
+                return
+        P = checkArray(P,shape=(-1,3))
+        n = checkArray(n,shape=(P.shape[0],3))
+        self.data = stack([P,n],axis=1)
 
 
     @property
@@ -836,33 +837,30 @@ def distanceFromLine(X,lines,mode='all'):
 
     Example:
     >>> X = Coords([[0.,1.,0.],[3.,0.,0.],[4.,3.,0.]])
-    >>> p,n = [[2.,0.,0.],[0.,1.,0.]], [[0.,3.,0.],[1.,0.,0.]]
-    >>> print(distanceFromLine(X,(p,n)))
+    >>> L = Line([[2.,0.,0.],[0.,1.,0.]], [[0.,3.,0.],[1.,0.,0.]])
+    >>> print(distanceFromLine(X,L))
     [[ 2.  0.]
      [ 1.  1.]
      [ 2.  2.]]
-    >>> print(distanceFromLine(X[:2],(p,n),mode='pair'))
+    >>> print(distanceFromLine(X[:2],L,mode='pair'))
     [ 2.  1.]
-    >>> lines = Coords([[[2.,0.,0.],[2.,2.,0.]], [[0.,1.,0.],[1.,1.,0.]]])
-    >>> print(distanceFromLine(X,lines))
+    >>> L = Line([[[2.,0.,0.],[2.,2.,0.]], [[0.,1.,0.],[1.,1.,0.]]])
+    >>> print(distanceFromLine(X,L))
     [[ 2.  0.]
      [ 1.  1.]
      [ 2.  2.]]
-    >>> print(distanceFromLine(X[:2],lines,mode='pair'))
+    >>> print(distanceFromLine(X[:2],L,mode='pair'))
     [ 2.  1.]
     """
-    if isinstance(lines,tuple):
-        p,n = lines
-    else:
-        p = lines[..., 0,:]
-        n = lines[..., 1,:] - p
-    Y = projectPointOnLine(X, p, n, mode)
+    lines = Line(lines)
     if mode == 'all':
-        X = asarray(X).reshape(-1, 1, 3)
-    return length(Y-X)
+        return column_stack(X.distanceFromLine(p,n) for p,n in zip(lines.p,lines.n))
+    else:
+        Y = projectPointOnLine(X, lines.p, lines.n, mode)
+        return length(Y-X)
 
 
-def pointNearLine(X,lines,atol,nproc=1):
+def pointNearLine(X,lines,atol,return_both=False):
     """Find the points from X that are near to lines.
 
     Finds the points from X that are closer than atol to any of the lines.
@@ -877,33 +875,44 @@ def pointNearLine(X,lines,atol,nproc=1):
       - an (np,2,3) shaped array containing two points of each line.
 
     - `atol`: float or (nx,) shaped float array of pointwise tolerances
+    - `return_both`: bool. If True, returns a tuple of arrays (ip,il).
+      Default is to return a list of arrays with point indices for each
+      of the lines.
 
-    Returns a tuple (ip,il) with the indices of the nearby points and lines.
-    The indices are sorted in increasing order of the point number.
+    Returns a list of arrays with sorted point indices for each of the lines.
 
     Example:
 
     >>> X = Coords([[0.,1.,0.],[3.,0.,0.],[4.,3.,0.]])
     >>> p,n = [[2.,0.,0.],[0.,1.,0.]], [[0.,3.,0.],[1.,0.,0.]]
-    >>> print(pointNearLine(X,(p,n),1.5))
-    (array([0, 1, 1]), array([1, 0, 1]))
-    >>> print(pointNearLine(X,(p,n),1.5,nproc=2))
-    (array([0, 1, 1]), array([1, 0, 1]))
+    >>> print(pointNearLine(X,Line(p,n),1.5))
+    [array([1]), array([0, 1])]
+    >>> print(pointNearLine(X,Line(p,n),1.5,return_both=True))
+    (array([1, 0, 1]), array([0, 1, 1]))
     """
-    if not isFloat(atol):
-        atol = checkArray1D(atol,size=X.shape[0]).reshape(-1, 1)
-    if nproc == 1:
-        d = distanceFromLine(X,lines)
-        return where(d<atol)
+    ## if not isFloat(atol):
+    ##     atol = checkArray1D(atol,size=X.shape[0]).reshape(-1, 1)
+    ## if nproc == 1:
+    ##     d = distanceFromLine(X,lines)
+    ##     return where(d<atol)
 
-    # multiprocessing
-    args = multi.splitArgs((X,lines,atol),mask=(1,0,isinstance(atol,np.ndarray)),nproc=nproc)
-    offset = cumsum0([len(a[0]) for a in args])
-    tasks = [(pointNearLine, a) for a in args]
-    res = multi.multitask(tasks, nproc)
-    ip = concatenate([r[0]+n for r, n in zip(res, offset)])
-    il = concatenate([r[1] for r in res])
-    return ip, il
+    ## # multiprocessing
+    ## args = multi.splitArgs((X,lines,atol),mask=(1,0,isinstance(atol,np.ndarray)),nproc=nproc)
+    ## offset = cumsum0([len(a[0]) for a in args])
+    ## tasks = [(pointNearLine, a) for a in args]
+    ## res = multi.multitask(tasks, nproc)
+    ## ip = concatenate([r[0]+n for r, n in zip(res, offset)])
+    ## il = concatenate([r[1] for r in res])
+    ## return ip, il
+
+    # implementation using less memory
+    lines = Line(lines)
+    ip = [ where(X.distanceFromLine(p,n) < atol)[0] for p,n in zip(lines.p,lines.n) ]
+    if return_both:
+        il = [ [ i ] * len(ip[i]) for i in range(len(ip)) ]
+        return concatenate(ip),concatenate(il)
+    else:
+        return ip
 
 
 def faceDistance(X,Fp,return_points=False):

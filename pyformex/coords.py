@@ -583,7 +583,6 @@ class Coords(ndarray):
         return sqrt(a.clip(0))
 
 
-
     def distanceFromPoint(self, p):
         """Returns the distance of all points from the point p.
 
