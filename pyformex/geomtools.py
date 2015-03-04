@@ -910,7 +910,7 @@ def pointNearLine(X,lines,atol,return_both=False):
     ip = [ where(X.distanceFromLine(p,n) < atol)[0] for p,n in zip(lines.p,lines.n) ]
     if return_both:
         il = [ [ i ] * len(ip[i]) for i in range(len(ip)) ]
-        return concatenate(ip),concatenate(il)
+        return concatenate(ip),concatenate(il).astype(int)
     else:
         return ip
 
