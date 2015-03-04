@@ -569,17 +569,19 @@ class Coords(ndarray):
 
         Example:
 
-        >>> X = Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]])
-        >>> print(X.distanceFromLine([0.,0.,0.],[1.,0.,0.]))
-        [[ 0.  0.  3.]]
+        >>> X = Coords([[0.,0.,0.],[2.,0.,0.],[1.,3.,0.],[-1.,0.,0.]])
+        >>> print(X.distanceFromLine([0.,0.,0.],[1.,1.,0.]))
+        [ 0.    1.41  1.41  0.71]
 
         """
         p = asarray(p).reshape((3))
         n = asarray(n).reshape((3))
+        n = normalize(n)
         xp = self-p
         xpt = dotpr(xp,n)
         a = dotpr(xp,xp)-xpt*xpt
         return sqrt(a.clip(0))
+
 
 
     def distanceFromPoint(self, p):
