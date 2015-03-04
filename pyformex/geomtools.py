@@ -911,7 +911,7 @@ def pointNearLine2(X,lines,atol):
     return ip, il
 
 
-def pointNearLineM(X,lines,atol, nproc=-1, optim_mem=True):
+def pointNearLineM(X,lines,atol, nproc=-1, optim_mem=False):
     """Same as pointNearLine but with multiprocessing.
     
     If optim_mem is True the pointNearLine2 is used,
