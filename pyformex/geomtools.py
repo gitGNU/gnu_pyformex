@@ -860,59 +860,38 @@ def distanceFromLine(X,lines,mode='all'):
         return length(Y-X)
 
 
-def pointNearLine(X,lines,atol,return_both=False):
-    """Find the points from X that are near to lines.
+def pointNearLine(X,p,n,atol,nproc=1):
+    """Find the points from X that are near to lines (p,n).
 
-    Finds the points from X that are closer than atol to any of the lines.
+    Finds the points from X that are closer than atol to any of the lines (p,n).
 
     Parameters:
 
     - `X`: a (nx,3) shaped array of points.
-    - `lines`: one of the following definitions of the line(s):
-
-      - a tuple (p,n), where both p and n are (np,3) shaped arrays of
-        respectively points and vectors defining `np` lines;
-      - an (np,2,3) shaped array containing two points of each line.
-
+    - `p`, `n`: (np,3) shaped arrays of points and vectors defining `np` lines.
     - `atol`: float or (nx,) shaped float array of pointwise tolerances
-    - `return_both`: bool. If True, returns a tuple of arrays (ip,il).
-      Default is to return a list of arrays with point indices for each
-      of the lines.
-
     Returns a list of arrays with sorted point indices for each of the lines.
 
     Example:
 
     >>> X = Coords([[0.,1.,0.],[3.,0.,0.],[4.,3.,0.]])
     >>> p,n = [[2.,0.,0.],[0.,1.,0.]], [[0.,3.,0.],[1.,0.,0.]]
-    >>> print(pointNearLine(X,Line(p,n),1.5))
+    >>> print(pointNearLine(X,p,n,1.5))
     [array([1]), array([0, 1])]
-    >>> print(pointNearLine(X,Line(p,n),1.5,return_both=True))
-    (array([1, 0, 1]), array([0, 1, 1]))
+    >>> print(pointNearLine(X,p,n,1.5,2))
+    [array([1]), array([0, 1])]
     """
-    ## if not isFloat(atol):
-    ##     atol = checkArray1D(atol,size=X.shape[0]).reshape(-1, 1)
-    ## if nproc == 1:
-    ##     d = distanceFromLine(X,lines)
-    ##     return where(d<atol)
-
-    ## # multiprocessing
-    ## args = multi.splitArgs((X,lines,atol),mask=(1,0,isinstance(atol,np.ndarray)),nproc=nproc)
-    ## offset = cumsum0([len(a[0]) for a in args])
-    ## tasks = [(pointNearLine, a) for a in args]
-    ## res = multi.multitask(tasks, nproc)
-    ## ip = concatenate([r[0]+n for r, n in zip(res, offset)])
-    ## il = concatenate([r[1] for r in res])
-    ## return ip, il
-
-    # implementation using less memory
-    lines = Line(lines)
-    ip = [ where(X.distanceFromLine(p,n) < atol)[0] for p,n in zip(lines.p,lines.n) ]
-    if return_both:
-        il = [ [ i ] * len(ip[i]) for i in range(len(ip)) ]
-        return concatenate(ip),concatenate(il).astype(int)
-    else:
+    if isFloat(atol):
+         atol = [atol]*len(X)
+    atol = checkArray1D(atol,kind=None,allow=None,size=len(X))
+    if nproc == 1:
+        ip = [ where(X.distanceFromLine(p,n) < atol)[0] for p,n in zip(p,n) ]
         return ip
+    args = multi.splitArgs((X,p,n,atol),mask=(0,1,1,0),nproc=nproc)
+    tasks = [(pointNearLine, a) for a in args]
+    res = multi.multitask(tasks, nproc)     
+    from pyformex import olist
+    return olist.concatenate(res)
 
 
 def faceDistance(X,Fp,return_points=False):

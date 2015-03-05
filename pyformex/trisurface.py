@@ -1590,7 +1590,9 @@ Quality: %s .. %s
 
         r, C, n = geomtools.triangleBoundingCircle(self.coords[self.elems])#triangles' bounding sphere
         m = normalize(q2-q)
-        t,l = geomtools.pointNearLine(C, geomtools.Line(q,m), r,return_both=True)#detects candidate lines/triangles (slow part)
+        ip = geomtools.pointNearLine(C, q, m, r, -1)#detects candidate lines/triangles (slow part)
+        il = [ [ i ] * len(ip[i]) for i in range(len(ip)) ]
+        t, l = concatenate(ip),concatenate(il).astype(Int)
         p = geomtools.intersectionPointsLWP(q[l], m[l], C[t], self.areaNormals()[1][t],  mode='pair')#intersects candidate lines/triangles
         prl=where(sum(isinf(p) + isnan(p), axis=1)>0)[0]#remove nan/inf (lines parallel to triangles)
         i1 = complement(prl, len(p))
