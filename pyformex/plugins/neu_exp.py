@@ -88,7 +88,8 @@ def writeElems(fil, elems):
     elif gamb_shape==6:  # tet-4
         elems = elems[:, (0,2,3,1)] 
         fmt = '%8d %2d %2d %8d%8d%8d%8d\n'
-        
+
+    fil.write('      ELEMENTS/CELLS 2.4.6\n')
     for i,e in enumerate(elems+nofs):
         fil.write(fmt%((i+eofs,gamb_shape,shape)+tuple(e)))
     fil.write('ENDOFSECTION\n')
