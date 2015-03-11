@@ -590,8 +590,8 @@ def run(argv=[]):
 
 
     # process other options dependent on config
-    if pf.options.pyside is None:
-        pf.options.pyside = pf.cfg['gui/bindings'].lower() == 'pyside'
+    if pf.options.pyside is not None:
+        pf.cfg['gui/bindings'] = 'PySide' if pf.options.pyside else 'PyQt4'
 
     # process options that override the config
     if pf.options.redirect is not None:

@@ -147,10 +147,9 @@ def settings():
     # Use _ to avoid adding these items in the config
     plugin_items = [ _I('_plugins/'+name, name in pf.cfg['gui/plugins'], text=text) for name, text in plugins.pluginMenus() ]
 
-    bindings_choices = ['PyQt4', 'PySide']
-    bindings_current =  bindings_choices[ 1 if pf.options.pyside else 0 ]
-    #interpreter_choices = ['','Python'] # ,'IPython']
-    #interpreter_current = pf.cfg['gui/interpreter']
+    bindings_choices = ['any', 'PySide', 'PyQt4']
+    bindings_current = pf.cfg['gui/bindings']
+
     appearance = [
         _I('gui/style', pf.app.currentStyle(), choices=pf.app.getStyles()),
         _I('gui/font', pf.app.font().toString(), 'font'),

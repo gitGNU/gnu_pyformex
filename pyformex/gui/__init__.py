@@ -43,21 +43,16 @@ from pyformex import utils
 
 # We need this try to keep sphinx happy when building the docs
 # because pf.options is then not defined
-try:
-    pyside = pf.options.pyside
-except:
-    pyside = False
 
+bindings = pf.cfg['gui/bindings']
 
-if pyside:
-
-    utils.requireModule('pyside')
+if bindings != 'PyQt4' and utils.hasModule('pyside'):
     from PySide import QtCore, QtGui, QtOpenGL
     from PySide.QtCore import Signal
     from PySide.QtCore import Slot
+    pf.options.pyside = True
 
 else:
-
     import sip
     try:
         sip.setapi('QDate', 2)
@@ -74,6 +69,7 @@ else:
     from PyQt4 import QtCore, QtGui, QtOpenGL
     from PyQt4.QtCore import pyqtSignal as Signal
     from PyQt4.QtCore import pyqtSlot as Slot
+    pf.options.pyside = False
 
 
 try:
