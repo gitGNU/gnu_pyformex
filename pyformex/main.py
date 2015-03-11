@@ -589,11 +589,11 @@ def run(argv=[]):
         return
 
 
-    # process other options dependent on config
+    # process options that override the config
+
     if pf.options.pyside is not None:
         pf.cfg['gui/bindings'] = 'PySide' if pf.options.pyside else 'PyQt4'
 
-    # process options that override the config
     if pf.options.redirect is not None:
         pf.cfg['gui/redirect'] = pf.options.redirect
     delattr(pf.options, 'redirect') # avoid abuse
