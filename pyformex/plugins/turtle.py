@@ -155,7 +155,7 @@ def play(scr,glob=None):
 
 reset()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     def test(txt):
         l = play(txt)
         print("%s line segments" % len(l))

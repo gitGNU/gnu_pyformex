@@ -60,6 +60,6 @@ def run():
     H = F.rotate(30).projectOnCylinder(ny)
     draw(H, color=blue)
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

@@ -155,7 +155,8 @@ def multitask(tasks,nproc=-1):
         nproc = min(len(tasks), cpu_count())
 
     pf.debug("Multiprocessing using %s processors" % nproc, pf.DEBUG.MULTI)
-    if pf.scriptMode == 'script':
+#    if pf.scriptMode == 'script':
+    if __name__ == '__draw__':
         if pf.warning("""..
 
 Multiprocessing in 'script' mode

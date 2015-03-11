@@ -108,6 +108,6 @@ def run():
     drawNames(G)
     draw([F,G])
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

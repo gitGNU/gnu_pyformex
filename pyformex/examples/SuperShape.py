@@ -267,6 +267,6 @@ def run():
     dialog.show()
     scriptLock(__file__)
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

@@ -98,7 +98,7 @@ def run():
         draw(PL2, color=blue)
         draw(PL2.coords, color=blue)
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End
 

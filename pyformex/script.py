@@ -100,9 +100,9 @@ def Globals():
     g.update(formex.__dict__)
     # Set module correct
     if pf.GUI:
-        modname = 'draw'
+        modname = '__draw__'
     else:
-        modname = 'script'
+        modname = '__script__'
     g['__name__'] = modname
     return g
 

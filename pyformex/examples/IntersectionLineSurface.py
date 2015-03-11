@@ -83,6 +83,6 @@ def run():
 
 
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

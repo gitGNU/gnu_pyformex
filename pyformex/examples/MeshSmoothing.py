@@ -94,7 +94,7 @@ def run():
         noiseSmooth(M, noise, niter)
 
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     view('front')
     run()
 # End

@@ -54,7 +54,7 @@ def run():
     out = (e4+e5+e6).translate(2, -d)
     draw(out)
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End
 

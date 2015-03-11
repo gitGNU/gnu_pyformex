@@ -191,6 +191,6 @@ def run():
 _avail_icons = available_icons()
 
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

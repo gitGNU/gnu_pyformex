@@ -77,6 +77,6 @@ def run():
     undraw(A)
     delay(0)
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

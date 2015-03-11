@@ -223,7 +223,7 @@ def run():
             data.write(jobname=fn, group_by_group=True)
 
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 
 # End

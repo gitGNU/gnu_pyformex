@@ -123,7 +123,7 @@ def deprecated_by(old,new,stacklevel=4):
 
     See also: :func:`deprecated`.
     """
-    return deprecated("%s is deprecated: used %s instead" % (old,new),stacklevel=stacklevel)
+    return deprecated("%s is deprecated: use %s instead" % (old,new),stacklevel=stacklevel)
 
 
 def deprecated_future():

@@ -331,7 +331,7 @@ def transverseShear(E,nu,c,type='generalized'):
     return sh
 
 
-#~ if __name__ == "script" or __name__ == "draw":
+#~ if __name__ == '__script__' or __name__ == '__draw__':
 
     #~ # Testing ampSequence
     #~ t= [0.,0.1,1.1,1.3,1.8,5];a = [0.,0.,1,2,2,1]

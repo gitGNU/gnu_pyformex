@@ -123,7 +123,7 @@ def run():
     P = nurbs.pointsOnBezierCurve(C.coords, u)
     draw(Coords(P))
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End
 

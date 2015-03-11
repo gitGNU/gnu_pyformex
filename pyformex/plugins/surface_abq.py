@@ -52,7 +52,7 @@ def stl_to_abaqus(fn):
 
 # Processing starts here
 
-if __name__ == "script":
+if __name__ == '__script__':
     import sys
 
     for f in sys.argv[2:]:

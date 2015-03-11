@@ -90,7 +90,7 @@ If not, you would better cancel now.
             show3d(ranimals[res['animal']])
 
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 
 # End

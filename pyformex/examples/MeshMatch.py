@@ -83,6 +83,6 @@ def run():
     M1 = M.select(M1.connectedTo(n1))
     draw([M, M1])
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

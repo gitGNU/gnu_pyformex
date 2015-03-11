@@ -90,7 +90,7 @@ def run():
             draw(M, color=c[i], colormap=cm[i])
 
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 
 # End

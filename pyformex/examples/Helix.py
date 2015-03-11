@@ -54,6 +54,6 @@ def run():
     F = F.cylindrical([0, 2, 1], [1., 360./m, 1.]); draw(F)
     draw(F, view='right')
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

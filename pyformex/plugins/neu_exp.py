@@ -245,7 +245,7 @@ def testConverts():
     write_neu('test-tet4.neu', mesh)
 
 # This is special for pyFormex scripts !
-if __name__ == 'draw':
+if __name__ == '__draw__':
     testConverts()
 
 

@@ -175,6 +175,6 @@ def run():
         draw(wires[0],color='black')
         draw(wires[1],color='magenta')
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

@@ -96,7 +96,7 @@ def run():
     # at the left corner, using a Mark
     drawActor(Mark((0,200,0),image,size=40,color=red))
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 
 # End

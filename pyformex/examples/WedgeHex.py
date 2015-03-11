@@ -74,6 +74,6 @@ def run():
     ML = [ Mi.setProp(i+4) for i, Mi in enumerate(ML) ]
     draw(ML)
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

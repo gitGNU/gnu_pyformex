@@ -391,7 +391,7 @@ def exportDxfText(filename, parts):
 
 # An example
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     #chdir(__file__)
     from pyformex.simple import circle
     c = circle(360./20., 360./20., 360.)

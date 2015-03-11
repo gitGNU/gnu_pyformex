@@ -778,7 +778,7 @@ class PropertyDB(Dict):
 
 ##################################### Test ###########################
 
-if __name__ == "script" or  __name__ == "draw":
+if __name__ == '__script__' or  __name__ == '__draw__':
 
 
     if pf.GUI:

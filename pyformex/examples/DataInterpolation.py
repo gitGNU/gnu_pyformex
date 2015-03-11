@@ -111,6 +111,6 @@ def run():
     drawNumbers(M.coords)
     drawText("Averaged nodal values", (20, 20))
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

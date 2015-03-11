@@ -93,7 +93,7 @@ def run():
     draw(M.coords)
 
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     clear()
     resetAll()
     smoothwire()

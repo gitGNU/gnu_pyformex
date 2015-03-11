@@ -53,6 +53,6 @@ def run():
     view('iso')
     draw(S, color=red, bkcolor=black)
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

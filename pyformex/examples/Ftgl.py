@@ -174,7 +174,7 @@ warning("The Ftgl example is not usable with the current pyFormex version")
 ##     scriptLock(__file__)
 
 
-## if __name__ == 'draw':
+## if __name__ == '__draw__':
 ##     chdir(__file__)
 ##     clear()
 ##     reset()
@@ -186,7 +186,7 @@ warning("The Ftgl example is not usable with the current pyFormex version")
 def run():
     pass
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 
 # End

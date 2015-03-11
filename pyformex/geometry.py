@@ -802,7 +802,7 @@ class Geometry(object):
         return res.values()[0]
 
 
-if __name__ == "draw":
+if __name__ == '__draw__':
 
     from pyformex.gui.draw import draw
 

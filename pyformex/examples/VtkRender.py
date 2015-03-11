@@ -90,7 +90,7 @@ def run():
     S = TriSurface.read(getcfg('datadir')+'/horse.off')
     renderVTK(S,color=[0.1,0.4,0.2],bkg=[0,0,0])
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End
 

@@ -215,6 +215,6 @@ def run():
         draw(P, color=black, nolight=True, ontop=True)
 
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

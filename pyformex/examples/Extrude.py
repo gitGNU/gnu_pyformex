@@ -62,6 +62,6 @@ def run():
     d = c.extrude(7, 2, -1.)
     draw(d, color='yellow')
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

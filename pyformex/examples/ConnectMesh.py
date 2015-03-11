@@ -65,6 +65,6 @@ def run():
     clear()
     draw(m, color=red, view=None)
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

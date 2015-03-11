@@ -87,7 +87,7 @@ def test_menu():
 
 ####################################################################
 
-if __name__ == "draw":
+if __name__ == '__draw__':
     # If executed as a pyformex script
     reload_menu()
 

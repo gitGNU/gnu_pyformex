@@ -104,6 +104,6 @@ def run():
         G = connect([F, F], bias=[0, 1])
         draw(G)   
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

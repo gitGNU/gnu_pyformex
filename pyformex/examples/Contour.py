@@ -141,7 +141,7 @@ def run():
         drawChar(res['char'])
 
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     clear()
     reset()
     smooth()

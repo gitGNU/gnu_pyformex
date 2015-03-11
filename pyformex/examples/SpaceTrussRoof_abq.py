@@ -152,6 +152,6 @@ def run():
 
     AbqData(model, P, [step], eprop=F.prop).write('SpaceTruss')
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

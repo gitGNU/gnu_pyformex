@@ -95,6 +95,6 @@ def run():
         A = B
         sleep(0.5)
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

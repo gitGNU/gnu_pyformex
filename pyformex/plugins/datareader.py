@@ -167,5 +167,5 @@ def writeAsciiTable(fn, h, d, fmtdata='e'):
 
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     print(readData('12, 13, 14.5e3, 12 inch, 1hr, 5MPa', ['int', 'float', 'kg', 'cm', 's']))

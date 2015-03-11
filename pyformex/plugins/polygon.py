@@ -228,7 +228,7 @@ class Polygon(Geometry):
 
 
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
 
 
     def randomPL(n=5,r=0.7,noise=0.0):

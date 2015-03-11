@@ -102,6 +102,6 @@ def run():
     d=1.1*r
     draw(dome1+dome2.translate([d, 0, 0])+dome3.translate([0, d, 0])+dome4.translate([d, d, 0]))
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

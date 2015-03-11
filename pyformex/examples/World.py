@@ -94,6 +94,6 @@ def run():
     draw(G, color=color, colormap=colormap)
     drawText('Created with pyFormex', (10, 10))
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

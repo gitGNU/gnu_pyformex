@@ -134,6 +134,6 @@ def run():
     dialog.show()
 
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

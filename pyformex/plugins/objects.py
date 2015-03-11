@@ -479,11 +479,11 @@ class DrawableObjects(Objects):
 
 
 
-if __name__ == "draw":
+if __name__ == '__draw__':
     # If executed as a pyformex script
     pf.debug('Reloading module %s' % __file__)
 
-elif __name__ == "__main__":
+elif __name__ == '__main__':
     print(__doc__)
 
 # End

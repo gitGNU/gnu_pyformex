@@ -111,7 +111,7 @@ def showCameraTool():
     cam.modelview_callback = updateSettings
 
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     showCameraTool()
     dialog.timeout = close
 

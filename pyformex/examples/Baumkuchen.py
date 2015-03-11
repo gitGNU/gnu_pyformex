@@ -68,6 +68,6 @@ def run():
     draw(a4, view='bottom', color='blue')
     return
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

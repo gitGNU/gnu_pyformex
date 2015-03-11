@@ -477,7 +477,7 @@ def reload_menu():
 ####################################################################
 ######### What to do when the script is executed ###################
 
-if __name__ == "draw":
+if __name__ == '__draw__':
 
     reload_menu()
 

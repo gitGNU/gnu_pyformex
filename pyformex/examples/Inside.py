@@ -166,7 +166,7 @@ def run():
             testInside(S, P, method, nproc, atol)
 
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End
 

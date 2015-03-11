@@ -74,6 +74,6 @@ def run():
     zoom(1.25)
 
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

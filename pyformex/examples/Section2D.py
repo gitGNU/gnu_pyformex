@@ -103,6 +103,6 @@ def run():
         draw(G, bbox='last')
         showaxes([S['xG'], S['yG'], 0.], S['alpha'], F.dsize(), 'red')
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

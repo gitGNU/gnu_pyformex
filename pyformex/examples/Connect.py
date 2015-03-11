@@ -144,6 +144,6 @@ def run():
     export({'surface-1':S})
     setDrawOptions({'bbox':'auto'})
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

@@ -94,7 +94,7 @@ def check(trypaths=None):
 
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     print(__doc__)
 else:
     pf.debug("Loading plugin %s" % __file__)

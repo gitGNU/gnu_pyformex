@@ -57,6 +57,6 @@ A text in ReST
 
     print(ask("Answer this question with yes or no", ['Yes', 'No'])) 
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

@@ -91,7 +91,7 @@ def lima(axiom,rules,level,turtlecmds,glob=None):
     list = turtle.play(scr, glob)
     return list
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     def test():
         TurtleRules = { 'F' : 'fd();', '*' : 'ro(60);', '/' : 'ro(-60);' }
         print(lima("F", {"F":"F*F//F*F"}, 1, { 'F' : 'fd();', '*' : 'ro(60);', '/' : 'ro(-60);' }))

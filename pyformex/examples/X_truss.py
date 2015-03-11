@@ -153,6 +153,6 @@ def run():
         for vert in [True, False]:
             example(diag, vert)
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

@@ -672,7 +672,7 @@ class Camera(object):
 
 #############################################################################
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 
     from OpenGL.GLUT import *
     import sys

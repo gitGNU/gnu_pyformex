@@ -56,5 +56,5 @@ def run():
     draw(clippedOut,color=blue,alpha=1)
     draw(bbs,color=yellow)
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()

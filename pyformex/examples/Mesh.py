@@ -155,6 +155,6 @@ def run():
     drawNumbers(e)
     print("border elements inherit the properties")
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

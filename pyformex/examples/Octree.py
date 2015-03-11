@@ -67,6 +67,6 @@ def run():
     draw([lev.withoutProp(0) for lev in levels])
 
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

@@ -124,7 +124,7 @@ def run():
            if not ack("Want to try another one?"):
                return
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End
 

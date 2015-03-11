@@ -303,6 +303,6 @@ def run():
             if widgets.input_timeout > 0:  #timeout
                 break
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

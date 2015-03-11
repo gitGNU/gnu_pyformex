@@ -2290,7 +2290,7 @@ def exportMesh(filename,mesh,eltype=None,header=''):
 ## Test
 ##################################################
 
-if __name__ == "script" or __name__ == "draw":
+if __name__ == '__script__' or __name__ == '__draw__':
 
     def TestwriteFormatLines():
         a = arange(27)

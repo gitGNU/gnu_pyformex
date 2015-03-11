@@ -56,6 +56,6 @@ def run():
 
     bgcolor(color=[white,yellow,yellow,white],image=image)
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

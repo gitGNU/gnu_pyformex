@@ -177,7 +177,7 @@ class List(list):
         return on_all
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 
     a = [1, 2, 3, 5, 6, 7]
     b = [2, 3, 4, 7, 8, 9]

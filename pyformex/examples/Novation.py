@@ -98,6 +98,6 @@ def run():
         from pyformex.filewrite import writeSTL
         writeSTL('novation.stl', G.coords)
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

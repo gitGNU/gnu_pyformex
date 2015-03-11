@@ -70,7 +70,7 @@ print("This is the initialization code of the pyFormex template script/app")
 # When executing a script in GUI mode, the global variable __name__ is set
 # to 'draw', thus the run method defined above will be executed.
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     print("Running as a script")
     run()
 

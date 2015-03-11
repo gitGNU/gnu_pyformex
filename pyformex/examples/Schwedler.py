@@ -67,6 +67,6 @@ def run():
     h = g.selectProp([0, 3]) # only horizontals and meridionals
     draw(align([g, h], '|0-'))
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

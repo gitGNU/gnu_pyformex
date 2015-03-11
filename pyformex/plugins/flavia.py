@@ -217,7 +217,7 @@ def readFlavia(meshfile, resfile):
     return DB
 
 
-if __name__ == "draw":
+if __name__ == '__draw__':
     chdir('/home/bene/prj/pyformex')
     name = 'FeResult-001'
     meshfile = name+'.flavia.msh'

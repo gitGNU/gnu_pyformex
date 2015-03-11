@@ -79,7 +79,7 @@ def run():
     print("Center of mass = %s (corr. %s)" % (C,Ca))
     print("Inertia tensor = %s (corr. %s)" % (I,Ia))
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 
 # End

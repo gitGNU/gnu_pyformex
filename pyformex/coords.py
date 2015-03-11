@@ -2454,7 +2454,7 @@ def sweepCoords(self,path,origin=[0.,0.,0.],scalex=None,scaley=None,scalez=None,
 #  Testing
 #
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 
     def testX(X):
         """Run some tests on:class:`Coords` X."""

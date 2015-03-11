@@ -99,6 +99,6 @@ def run():
     draw(X, marksize=10, ontop=True)
 
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

@@ -60,6 +60,6 @@ def run():
     clear()
     draw(g)
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

@@ -156,7 +156,7 @@ def run():
 
 
 # The following is to make it work as a script
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 
 

@@ -86,6 +86,6 @@ def run():
     view('iso')
     draw(F, colormap=[color0, color1])
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

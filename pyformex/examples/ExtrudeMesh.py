@@ -116,6 +116,6 @@ def run():
     draw(d)
     export({'ExtrudeMesh':d})
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

@@ -62,6 +62,6 @@ def run():
     curve.coords = curve.coords.trl(0, -ctr[0]).scale(50./siz[0])
     draw(curve, color=pyformex_pink, linewidth=5)
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

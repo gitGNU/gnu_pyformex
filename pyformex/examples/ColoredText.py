@@ -82,6 +82,6 @@ def run():
             undecorate(TA)
         TA = TB
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

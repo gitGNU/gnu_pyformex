@@ -205,7 +205,7 @@ class ColorLegend(object):
         return self.colors[i-1]
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 
     for palet in [ 'RGB', 'BW' ]:
         CS = ColorScale(palet, -50., 250.)

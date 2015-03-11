@@ -45,6 +45,6 @@ def run():
     draw(align([F, G], '|00', offset=[1., 0., 0.]))
 
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

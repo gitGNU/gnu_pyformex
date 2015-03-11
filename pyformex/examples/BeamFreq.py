@@ -239,6 +239,6 @@ def run():
         layout(nshow, ncols=4)
         showResults(hscale = 0.5)
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 # End

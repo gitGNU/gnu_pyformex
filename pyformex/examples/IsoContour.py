@@ -58,7 +58,7 @@ def run():
     draw(C,color=red,linewidth=3)
     transparent()
 
-if __name__ == 'draw':
+if __name__ == '__draw__':
     run()
 
 # End
