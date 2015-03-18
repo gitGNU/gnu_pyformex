@@ -533,7 +533,7 @@ class Geometry(object):
         values in `prop`. The list is sorted in ascending order of their
         `prop` value.
 
-        It `prop` is None and the the object has no `prop` attribute, an empty
+        If `prop` is None and the the object has no `prop` attribute, an empty
         list is returned.
         """
         if prop is None:

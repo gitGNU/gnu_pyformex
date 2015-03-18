@@ -139,11 +139,11 @@ class Varray(object):
     >>> Vb = Varray(array([[-1,-1,0],[-1,1,2],[0,2,4],[-1,0,2]]))
     >>> print(str(Vb) == str(Va))
     True
-    >>> Vb = Varray([0,1,2,0,2,4,0,2],cumsum([0,1,2,3,2]))
-    >>> print(str(Vb) == str(Va))
+    >>> Vc = Varray([0,1,2,0,2,4,0,2],cumsum([0,1,2,3,2]))
+    >>> print(str(Vc) == str(Va))
     True
-    >>> Vb = Varray([1,0, 2,1,2, 3,0,2,4, 2,0,2])
-    >>> print(str(Vb) == str(Va))
+    >>> Vd = Varray([1,0, 2,1,2, 3,0,2,4, 2,0,2])
+    >>> print(str(Vd) == str(Va))
     True
 
     Indexing: The data for any row can be obtained by simple indexing:
@@ -197,6 +197,19 @@ class Varray(object):
     >>> print(Varray())
     Varray (0,0)
     <BLANKLINE>
+
+    >>> L,R = Va.sameLength()
+    >>> print(L)
+    [1 2 3]
+    >>> print(R)
+    [array([0]), array([1, 3]), array([2])]
+    >>> for a in Va.split():
+    ...     print(a)
+    [[0]]
+    [[1 2]
+     [0 2]]
+    [[0 2 4]]
+
 
     """
     def __init__(self,data=[],ind=None):
@@ -436,11 +449,28 @@ class Varray(object):
 
 
     def sorted(self):
+        """Returns a sorted Varray.
+
+        Returns a Varray with the same entries but where each
+        row is sorted.
+
+        This returns a copy of the data, and leaves the original
+        unchanged.
+
+        See also :meth:`sort` for sorting the rows inplace.
+        """
         return Varray([sorted(row) for row in self])
 
 
     def sort(self):
-        """Sort the Varray inplace."""
+        """Sort the Varray inplace.
+
+        Sorting a Varray sorts all the elements row by row.
+        The sorting is done inplace.
+
+        See also :meth:`sorted` for sorting the rows without
+        changing the original.
+        """
         [ row.sort() for row in self ]
 
 
@@ -459,14 +489,26 @@ class Varray(object):
         return a
 
 
+    def sameLength(self):
+        """Groups the rows according to their length.
+
+        Returns a tuple of two lists (lengths,rows):
+
+        - lengths: the sorted unique row lengths,
+        - rows: the indidces of the rows having the corresponding length.
+        """
+        lens = self.lengths
+        ulens = unique(lens)
+        return ulens,[ where(lens==l)[0] for l in ulens]
+
+
     def split(self):
         """Split the Varray into 2D arrays.
 
-        Returns a list of tuples containing the 2D arrays with the same number
+        Returns a list of 2D arrays with the same number
         of columns and the indices in the original Varray.
         """
-        return [(self.select(self.lengths==l).toArray(),arange(self.nrows)[self.lengths==l]) for l in unique(self.lengths)]
-        
+        return [ self.select(ind).toArray() for ind in self.sameLength()[1] ]
 
 
     def toList(self):
