@@ -465,12 +465,7 @@ class Varray(object):
         Returns a list of tuples containing the 2D arrays with the same number
         of columns and the indices in the original Varray.
         """
-        lens = self.lengths
-        a = []
-        for c in unique(lens):
-            ind = lens == c
-            a.append((self.select(ind).toArray(),arange(self.nrows)[ind]))
-        return a
+        return [(self.select(self.lengths==l).toArray(),arange(self.nrows)[self.lengths==l]) for l in unique(self.lengths)]
         
 
 
