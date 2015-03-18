@@ -459,6 +459,21 @@ class Varray(object):
         return a
 
 
+    def split(self):
+        """Split the Varray into 2D arrays.
+
+        Returns a list of tuples containing the 2D arrays with the same number
+        of columns and the indices in the original Varray.
+        """
+        lens = self.lengths
+        a = []
+        for c in unique(lens):
+            ind = lens == c
+            a.append((self.select(ind).toArray(),arange(self.nrows)[ind]))
+        return a
+        
+
+
     def toList(self):
         """Convert the Varray to a nested list.
 
