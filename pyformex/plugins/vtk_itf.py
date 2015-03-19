@@ -937,51 +937,55 @@ def _vtkClipper(self,vtkif, insideout):
     - `vtkif`: a vtk implicit function.
     - `insideout`: bool or boolean integer(0 or 1) to selet the select the side
         of the selection
-
-    In vtk `clip` means intersection and get a part of a mesh.
-    Returns 3 meshes (line2, tri3, quad4):
-    a line2 mesh if self is a line2 mesh,
-    a tri3 mesh if self is a tri3 mesh,
-    both tri3 and quad4 mesh is self is a quad4 mesh.
-    None is returned if a mesh does not exist (e.g. not intersecting).
-    It has not been tested with volume meshes.
+    
+    Returns:
+      - `m`: list of Mesh of different element types.
+    
+    In vtk `clip` means that the intersected elements are cut to
+    get a part of a mesh. Here vtkClipDataSet has been used.
+    More efficient functions are available for PolyData or volumes
+    but teh results are the same. Note that the quality of the cut depends
+    on the resolution of the input, and can give rounded corners of the clipped 
+    regiuon. This does not occur clipping with a vtkPlane. Maybe we should
+    find a way to use only this.
     This functions should not be used by the user.
     """
-    from vtk import vtkClipPolyData
-
-    if self.elName() not in ['line2','tri3','quad4']:
-        warning('vtkClipper has not been tested with this element type %s'%self.elName())
+    from vtk import vtkClipDataSet
+    from pyformex.elements import Tet4,_default_eltype
+    
+    if self.elType().ndim <= 2:
+        vtkobj = convert2VPD(self)
+    elif self.elType().ndim == 3:
+        vtkobj = convert2VTU(self)
+    
     vtkobj = convert2VPD(self)
-    clipper = vtkClipPolyData()
+    clipper = vtkClipDataSet()
     clipper = SetInput(clipper,vtkobj)
     clipper.SetClipFunction(vtkif)
     clipper.SetInsideOut(int(insideout))
     clipper = Update(clipper)
     clipper = clipper.GetOutput()
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = convertFromVPD(vpd=clipper,verbose=True,samePlex=False)
-    l2, t3, q4 = None, None, None
-    if cells != None or verts != None:
-        raise ValueError('unexpected output: please report it to developers!')
-
+   
     prop = None
     if celldata.has_key('prop'):
         prop = celldata['prop']
 
-    if lines != None:
-        l2 = Mesh(coords, lines.toArray()).setProp(prop)
-    if polys != None:
-        va = polys
-        va = [va.select(va.lengths==l).toArray() for l in unique(va.lengths)]
-        for ar in va:
-            if ar.shape[1] == 3:
-                t3 = Mesh(coords, ar).setProp(prop)
-            elif ar.shape[1] == 4:#could it also be a tet4?
-                q4 = Mesh(coords, ar).setProp(prop)
+    m = []
+    ulens,lens=cells.sameLength()
+    for c,ul,l in zip(cells.split(),ulens,lens):
+        if self.elType().ndim == 3 and ul == 4:
+            eltype = Tet4
+        else:
+            if ul in _default_eltype.keys():
+                eltype = _default_eltype[ul]
             else:
-               raise ValueError('unexpected output: please report it to developers!')
-
-    return l2, t3, q4
-
+                raise ValueError('Unexpected element type: please report it to developers!')
+              
+        m.append(Mesh(coords, c,eltype=eltype))
+        if prop is not None:
+            m[-1].setProp(prop[l])
+    return m 
 
 
 # Implicit Functions
