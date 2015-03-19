@@ -1012,10 +1012,9 @@ def _vtkPlanes(p,n):
 def _vtkSurfacePlanes(self):
     """ Convert a convex closed manifold surface into vtkPlanes"""
     if self.isClosedManifold() and self.isConvexManifold():
-            return _vtkPlanes(p=self.centroids(),n=self.areaNormals()[1])
-    else:
-        raise ValueError('the input should be a convex closed manifold TriSurface')
-
+        raise warning('The input should be a convex closed manifold TriSurface. Results may be incorrect.')
+    return _vtkPlanes(p=self.centroids(),n=self.areaNormals()[1])
+   
 def _vtkBoxPlanes(box):
     """ Set a box with vtkPlanes implicit function.
 
