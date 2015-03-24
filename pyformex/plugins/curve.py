@@ -1022,12 +1022,13 @@ class PolyLine(Curve):
         If return_indices is True, also returns the indices of the
         inserted points in the new PolyLine.
         """
+        t = sorted(t)
         X, i, t = self.pointsAt(t, return_position=True)
         Xc = self.coords.copy()
         if return_indices:
             ind = -ones(len(Xc))
         # Loop in descending order to avoid recomputing parameters
-        for j in argsort(i)[::-1]:
+        for j in range(len(i))[::-1]:
             Xi, ii = X[j].reshape(-1, 3), i[j]+1
             Xc = Coords.concatenate([Xc[:ii], Xi, Xc[ii:]])
             if return_indices:
