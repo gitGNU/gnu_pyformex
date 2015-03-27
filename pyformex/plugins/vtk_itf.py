@@ -223,7 +223,7 @@ def elems2VTK(elems):
     return datav
 
 
-def convert2VPD(M,clean=False,verbose=True):
+def convert2VPD(M,clean=False):
     """Convert pyFormex data to vtkPolyData.
 
     Convert a pyFormex Mesh or Coords or open PolyLine object into vtkPolyData.
@@ -243,8 +243,7 @@ def convert2VPD(M,clean=False,verbose=True):
     """
     from vtk import vtkPolyData, vtkPoints, vtkIdTypeArray, vtkCellArray
 
-    if verbose:
-        print(('STARTING CONVERSION FOR DATA OF TYPE %s '%type(M)))
+    pf.debug('STARTING CONVERSION FOR DATA OF TYPE %s '%type(M),pf.DEBUG.PLUGIN)
 
     if isinstance(M, Formex):
         M = M.toMesh()
@@ -270,22 +269,19 @@ def convert2VPD(M,clean=False,verbose=True):
 
     if M.nplex() == 1:#point mesh
         try:
-            if verbose:
-                print("setting VERTS for data with %s maximum number of point for cell "%plex)
+            pf.debug("setting VERTS for data with %s maximum number of point for cell "%plex,pf.DEBUG.PLUGIN)
             vpd.SetVerts(datav)
         except:
             raise ValueError("Error in saving  VERTS")
     elif M.nplex() == 2:#line2 mesh or polyline
         try:
-            if verbose:
-                print("setting LINES for data with %s maximum number of point for cell "%plex)
+            pf.debug("setting LINES for data with %s maximum number of point for cell "%plex,pf.DEBUG.PLUGIN)
             vpd.SetLines(datav)
         except:
             raise  ValueError("Error in saving  LINES")
     else:#polygons
         try:
-            if verbose:
-                print("setting POLYS for data with %s maximum number of point for cell "%plex)
+            pf.debug("setting POLYS for data with %s maximum number of point for cell "%plex,pf.DEBUG.PLUGIN)
             vpd.SetPolys(datav)
         except:
             raise ValueError("Error in saving  POLYS")
@@ -375,7 +371,7 @@ def convertVPD2Triangles(vpd):
     return triangles.GetOutput()
 
 
-def convertFromVPD(vpd,verbose=False,samePlex=True):
+def convertFromVPD(vpd,samePlex=True):
     """Convert a vtkPolyData into pyFormex objects.
 
     Parameters:
@@ -398,15 +394,13 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
     fielddata = celldata = pointdata = dict()
 
     if vpd is None:
-        if verbose:
-            print('The vtkPolyData is None')
+        pf.debug('The vtkPolyData is None',pf.DEBUG.PLUGIN)
         return [coords, cells, polys, lines, verts], fielddata, celldata, pointdata
 
     # getting points coords
     if  vpd.GetPoints().GetData().GetNumberOfTuples():
         coords = Coords(array2N(vpd.GetPoints().GetData()))
-        if verbose:
-            print('Saved points coordinates array')
+        pf.debug('Saved points coordinates array',pf.DEBUG.PLUGIN)
 
     vtkdtype = vpd.GetDataObjectType()
     # getting Cells
@@ -415,18 +409,15 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
             if samePlex == True:
                 Nplex = vpd.GetCells().GetMaxCellSize()
                 cells = array2N(vpd.GetCells().GetData()).reshape(-1, Nplex+1)[:, 1:]
-                if verbose:
-                    print('Saved polys connectivity array')
+                pf.debug('Saved cells connectivity array',pf.DEBUG.PLUGIN)
             else:
                 cells =  Varray(array2N(vpd.GetCells().GetData()))#vtkCellArray to varray
-                if verbose:
-                    print('Saved cells connectivity varray')
+                pf.debug('Saved cells connectivity varray',pf.DEBUG.PLUGIN)
 
     # getting Strips
     if vtkdtype not in [4]: # this list need to be updated according to the data type
         if vpd.GetStrips().GetData().GetNumberOfTuples():
-            if verbose:
-                utils.warn("VTK_strips")
+            utils.warn("VTK_strips")
             vpd = convertVPD2Triangles(vpd)
 
     # getting Polygons
@@ -435,36 +426,32 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
             if samePlex == True:
                 Nplex = vpd.GetPolys().GetMaxCellSize()
                 polys = array2N(vpd.GetPolys().GetData()).reshape(-1, Nplex+1)[:, 1:]
-                if verbose:
-                    print('Saved polys connectivity array')
+                pf.debug('Saved cells connectivity array',pf.DEBUG.PLUGIN)
             else:
                 polys =  Varray(array2N(vpd.GetPolys().GetData()))#vtkCellArray to varray
-                if verbose:
-                    print('Saved polys connectivity varray')
-
+                pf.debug('Saved cells connectivity varray',pf.DEBUG.PLUGIN)
+                
     # getting Lines
     if vtkdtype not in [4]: # this list need to be updated according to the data type
         if  vpd.GetLines().GetData().GetNumberOfTuples():
             if samePlex == True:
                 Nplex = vpd.GetLines().GetMaxCellSize()
                 lines = array2N(vpd.GetLines().GetData()).reshape(-1, Nplex+1)[:, 1:]
-                if verbose:
-                    print('Saved lines connectivity array')
+                pf.debug('Saved lines connectivity array',pf.DEBUG.PLUGIN)
             else:
                 lines =  Varray(array2N(vpd.GetLines().GetData()))#this is the case of polylines
-                if verbose:
-                    print('Saved lines connectivity varray')
+                pf.debug('Saved lines connectivity varray',pf.DEBUG.PLUGIN)
 
     # getting Vertices
     if vtkdtype not in [4]: # this list need to be updated acoorind to the data type
         if  vpd.GetVerts().GetData().GetNumberOfTuples():
             Nplex = vpd.GetVerts().GetMaxCellSize()
             verts = array2N(vpd.GetVerts().GetData()).reshape(-1, Nplex+1)[:, 1:]
-            if verbose:
-                print('Saved verts connectivity array')
+            pf.debug('Saved verts connectivity array',pf.DEBUG.PLUGIN)
 
-    def builddatadict(data, verbose):
-        'It helps finding empty and non-empty array data (field, cell and point)'
+    def builddatadict(data):
+        """It helps finding empty and non-empty array data (field, cell and point)
+        """
         arraynm = [data.GetArrayName(i) for i in range(data.GetNumberOfArrays())]
         #first get the None data
         emptyarraynm = [an for an in arraynm if data.GetArray(an) is None ]
@@ -476,31 +463,27 @@ def convertFromVPD(vpd,verbose=False,samePlex=True):
         okdata = dict(zip(arraynm, okdata))
         #now merge the empty and non-empty data
         okdata.update(emptydata)
-        if verbose:
-            print ('Non-empty Data Arrays:%s'% arraynm)
-            print ('Empty Data Arrays:%s'% emptyarraynm)
+        pf.debug('Non-empty Data Arrays:%s'% arraynm,pf.DEBUG.PLUGIN)
+        pf.debug('Empty Data Arrays:%s'% emptyarraynm,pf.DEBUG.PLUGIN)
         return okdata
 
     # getting Fields
     if vpd.GetFieldData().GetNumberOfArrays():
         fielddata = vpd.GetFieldData()
-        if verbose:
-            print ('*Field Data Arrays')
-        fielddata = builddatadict(fielddata, verbose=verbose)
+        pf.debug('*Field Data Arrays',pf.DEBUG.PLUGIN)
+        fielddata = builddatadict(fielddata)
 
     # getting cells data
     if vpd.GetCellData().GetNumberOfArrays():
         celldata = vpd.GetCellData()
-        if verbose:
-            print ('*Cell Data Arrays')
-        celldata = builddatadict(celldata, verbose=verbose)
+        pf.debug('*Cell Data Arrays',pf.DEBUG.PLUGIN)
+        celldata = builddatadict(celldata)
 
     # getting points data
     if vpd.GetPointData().GetNumberOfArrays():
         pointdata = vpd.GetPointData()
-        if verbose:
-            print ('*Point Data Arrays')
-        pointdata = builddatadict(pointdata, verbose=verbose)
+        pf.debug('*Point Data Arrays',pf.DEBUG.PLUGIN)
+        pointdata = builddatadict(pointdata)
 
     return [coords, cells, polys, lines, verts], fielddata, celldata, pointdata
 
@@ -565,13 +548,13 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True,writer
         vtype = vtkDoubleArray().GetDataType()
         if fielddata[k].shape[0]!=mesh.nelems():
             print((fielddata[k].shape,))
+            utils.warn("warn_writevtp_shape")
         fielddata = array2VTK(fielddata[k],vtype)
         fielddata.SetName(k)
         lvtk.GetFieldData().AddArray(fielddata)
     for k in celldata.keys(): # same numbering of mesh.elems
         vtype = vtkDoubleArray().GetDataType()
         if celldata[k].shape[0]!=mesh.nelems():
-            print((celldata[k].shape, mesh.nelems()))
             utils.warn("warn_writevtp_shape")
         celldata = array2VTK(celldata[k],vtype)
         celldata.SetName(k)
@@ -584,7 +567,7 @@ def writeVTP(fn,mesh,fielddata={},celldata={},pointdata={},checkMesh=True,writer
         pointdata = array2VTK(pointdata[k],vtype)
         pointdata.SetName(k)
         lvtk.GetPointData().AddArray(pointdata)
-    print(('************lvtk', lvtk))
+    #~ print(('************lvtk', lvtk))
     writer = SetInput(writer,lvtk)
     writer.SetFileName(fn)
     writer.Write()
@@ -619,7 +602,7 @@ def writeVTPmany(fn,items):
     writer.Write()
 
 
-def readVTKObject(fn,verbose=True,samePlex=True, readernm=None):
+def readVTKObject(fn,samePlex=True, readernm=None):
     """Read a vtp/vtk file
 
     Read a vtp/vtk file and return coords, list of elems, and a dict of arrays.
@@ -672,8 +655,8 @@ def readVTKObject(fn,verbose=True,samePlex=True, readernm=None):
     vpd = reader.GetOutput() # vtk object
     if vpd is None:
         utils.warn('vpd is undefined (None),  please check vtk filename and vtk reader')
-    print ('file %s read with vtk reader: %s'%(fn, readernm))
-    return convertFromVPD(vpd, verbose=verbose, samePlex=samePlex)
+    pf.debug('file %s read with vtk reader: %s'%(fn, readernm),)
+    return convertFromVPD(vpd, samePlex=samePlex)
 
 
 
@@ -693,8 +676,8 @@ def pointInsideObject(S,P,tol=0.):
 
     from vtk import vtkSelectEnclosedPoints
 
-    vpp = convert2VPD(P,verbose=False)
-    vps = convert2VPD(S, clean=False,verbose=False)
+    vpp = convert2VPD(P)
+    vps = convert2VPD(S, clean=False)
 
     enclosed_pts = vtkSelectEnclosedPoints()
     enclosed_pts = SetInput(enclosed_pts,vpp)
@@ -912,7 +895,7 @@ def _vtkCutter(self,vtkif):
     cutter = SetInput(cutter,vtkobj)
     cutter = Update(cutter)
     cutter = cutter.GetOutput()
-    [coords, cells, polys, lines, verts], fielddata, celldata, pointdata=convertFromVPD(cutter,verbose=True,samePlex=True)
+    [coords, cells, polys, lines, verts], fielddata, celldata, pointdata=convertFromVPD(cutter,samePlex=True)
 
     prop=None
     if celldata.has_key('prop'):
@@ -965,7 +948,7 @@ def _vtkClipper(self,vtkif, insideout):
     clipper.SetInsideOut(int(insideout))
     clipper = Update(clipper)
     clipper = clipper.GetOutput()
-    [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = convertFromVPD(vpd=clipper,verbose=True,samePlex=False)
+    [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = convertFromVPD(vpd=clipper,samePlex=False)
    
     prop = None
     if celldata.has_key('prop'):
@@ -1162,27 +1145,21 @@ def vtkCut(self, implicitdata, method=None):
     """
     if method=='plane':
         p,n = implicitdata
-        print("cutting mesh of type %s with plane"%self.elName())
         return _vtkCutter(self,_vtkPlane(p,n))
     elif method=='sphere':
         c,r = implicitdata
-        print("cutting mesh of type %s with sphere"%self.elName())
         return _vtkCutter(self,_vtkSphere(c, r))
     elif method=='box':
         box = implicitdata
-        print("cutting mesh of type %s with box"%self.elName())
         return _vtkCutter(self,_vtkBox(box))
     elif method=='boxplanes':
         box = implicitdata
-        print("cutting mesh of type %s with box"%self.elName())
         return _vtkCutter(self,_vtkBoxPlanes(box))
     elif method=='planes':
         p,n = implicitdata
-        print("cutting mesh of type %s with planes"%self.elName())
         return _vtkCutter(self,_vtkPlanes(p,n))
     elif method=='surface':
         s = implicitdata
-        print("cutting mesh of type %s with a closed convex manifold surface"%self.elName())
         return _vtkCutter(self,_vtkSurfacePlanes(s))
     elif method is None:
         return _vtkCutter(self,implicitdata)
@@ -1225,27 +1202,21 @@ def vtkClip(self, implicitdata, method=None, insideout=False):
     """
     if method=='plane':
         p,n = implicitdata
-        print("clipping mesh of type %s with plane"%self.elName())
         return _vtkClipper(self,_vtkPlane(p,n),insideout)
     elif method=='sphere':
         c,r = implicitdata
-        print("clipping mesh of type %s with sphere"%self.elName())
         return _vtkClipper(self,_vtkSphere(c, r),insideout)
     elif method=='box':
         box = implicitdata
-        print("clipping mesh of type %s with box"%self.elName())
         return _vtkClipper(self,_vtkBox(box),insideout)
     elif method=='boxplanes':
         box = implicitdata
-        print("clipping mesh of type %s with box"%self.elName())
         return _vtkClipper(self,_vtkBoxPlanes(box),insideout)
     elif method=='planes':
         p,n = implicitdata
-        print("clipping mesh of type %s with planes"%self.elName())
         return _vtkClipper(self,_vtkPlanes(p,n),insideout)
     elif method=='surface':
         s = implicitdata
-        print("clipping mesh of type %s with a closed convex manifold surface"%self.elName())
         return _vtkClipper(self,_vtkSurfacePlanes(s),insideout)
     elif method is None:
         return _vtkClipper(self,implicitdata,insideout)
@@ -1399,7 +1370,7 @@ def convexHull(object):
     chull=convertFromVPD(chull.GetOutput())
     return Mesh(chull[0][0], chull[0][1], eltype='tet4')
 
-def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True, verbose=False):
+def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True):
     """Decimate a surface (both tri3 or quad4) and returns a trisurface
 
     - `self` : is a tri3 or quad4 surface
@@ -1427,14 +1398,13 @@ def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True, verbose=Fal
     vpd = cleanVPD(vpd)
 
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata=convertFromVPD(vpd)#convert vpd to pyFormex surface
-    if verbose:
-        print(('%d faces decimated into %d triangles'%(self.nelems(), len(polys))))
+    pf.debug(('%d faces decimated into %d triangles'%(self.nelems(), len(polys))),pf.DEBUG.PLUGIN)
     return TriSurface(coords, polys)
 
 
 # TODO
 # add meshes line 2 , vtk handles polylines also with >2 elements conneted to a node
-def coarsenPolyLine(self, target=0.5, verbose=False):
+def coarsenPolyLine(self, target=0.5):
     """Coarsen a PolyLine.
 
     - `self` : PolyLine
@@ -1456,12 +1426,11 @@ def coarsenPolyLine(self, target=0.5, verbose=False):
     vpd = cleanVPD(vpd)
 
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata=convertFromVPD(vpd)#convert vpd to pyFormex surface
-    if verbose:
-        print(('%d coords decimated into %d coords'%(self.ncoords()-1, len(lines))))
+    pf.debug(('%d coords decimated into %d coords'%(self.ncoords()-1, len(lines))),pf.DEBUG.PLUGIN)
     return PolyLine(coords)
 
 
-def findElemContainingPoint(self, pts, verbose=False):
+def findElemContainingPoint(self, pts):
     """Find indices of elements containing points.
 
     Parameters:
@@ -1481,8 +1450,7 @@ def findElemContainingPoint(self, pts, verbose=False):
     cellLocator.SetDataSet(vpd)
     cellLocator.BuildLocator()
     cellids = array([cellLocator.FindCell(pts[i]) for i in range(len(pts))])
-    if verbose:
-        print ('%d (of %d) points have not been found inside any cell'%(sum(cellids==-1), len(pts)))
+    pf.debug('%d (of %d) points have not been found inside any cell'%(sum(cellids==-1), len(pts)),pf.DEBUG.PLUGIN)
     return cellids
 
 
@@ -1522,7 +1490,7 @@ def importOBJ(fn):
     return Mesh(coords,polys)
 
 
-def import3ds(fn, vtkcolor='color', verbose=True):
+def import3ds(fn, vtkcolor='color'):
     """Import an object from a .3ds file and returns a list of colored meshes.
 
     It reads and converts a .3ds file into a list of colored meshes,
@@ -1559,12 +1527,11 @@ def import3ds(fn, vtkcolor='color', verbose=True):
         obj = act.GetMapper()
         obj = obj.GetInputAsDataSet()
         obj = Update(obj)
-        [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = convertFromVPD(vpd=obj,verbose=verbose,samePlex=True)
+        [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = convertFromVPD(vpd=obj,samePlex=True)
         m = Mesh(coords, polys)
         m.attrib(color=col)
         ML.append(m)
-    if verbose == True:
-        print ('model contains %d objects with a total of %d triangles'%(len(ML), Mesh.concatenate(ML).nelems()))
+    pf.debug('model contains %d objects with a total of %d triangles'%(len(ML), Mesh.concatenate(ML).nelems()),pf.DEBUG.PLUGIN)
     return ML
 
 
