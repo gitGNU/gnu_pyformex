@@ -46,9 +46,10 @@ module_relocations = {
 
 class_relocations = {
     'coords.Coords': 'pyformex.coords.Coords',
-    'coords.BoundVectors': 'plugins.alt.BoundVectors',
-    'coords.CoordinateSystem': 'coordsys.CoordinateSystem',
-    'elements.Element': 'elements.ElementType',
+    'coords.BoundVectors': 'pyformex.plugins.alt.BoundVectors',
+    'coords.CoordinateSystem': 'pyformex.coordsys.CoordinateSystem',
+    'coordsys.CoordinateSystem': 'pyformex.coordsys.CoordinateSystem',
+    'elements.Element': 'pyformex.elements.ElementType',
     'elements.Line2': 'pyformex.elements.Line2',
     'elements.Tri3': 'pyformex.elements.Tri3',
     'elements.Quad4': 'pyformex.elements.Quad4',
