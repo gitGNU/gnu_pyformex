@@ -190,12 +190,12 @@ def rectangleWithHole(L,W,r,nr,nt,e0=0.0,eltype='quad4'):
 
     Returns a Mesh
     """
-    L = W
+    from pyformex.mesh import seed,quadgrid
     from pyformex import elements
     from pyformex.formex import interpolate
     base = elements.Quad9.vertices.scale([L, W, 1.])
     F0 = Formex([[[r, 0., 0.]]]).rosette(5, 90./4)
-    F2 = Formex([[[L, 0.]], [[L, W/2]], [[L, W]], [[L/2, W]], [[0, W]]])
+    F2 = Formex([[[L, 0.]], [[L, W/2.]], [[L, W]], [[L/2., W]], [[0., W]]])
     F1 = interpolate(F0, F2, div=[0.5])
     FL = [F0, F1, F2]
     X0, X1, X2 = [ F.coords.reshape(-1, 3) for F in FL ]
@@ -209,7 +209,7 @@ def rectangleWithHole(L,W,r,nr,nt,e0=0.0,eltype='quad4'):
     grid0 = grid.isopar('quad9', trf0, base)
     grid1 = grid.isopar('quad9', trf1, base)
     return (grid0+grid1).fuse()
-
+    
 
 def quadrilateral(x, n1, n2):
     """Create a quadrilateral mesh
