@@ -172,7 +172,7 @@ def rectangle1(L, W, nl, nw):
     - L,W: length,width of the rectangle.
 
     """
-    from Mesh import smartSeed
+    from pyformex.mesh import smartSeed, quadgrid
     sl = smartSeed(nl)
     sw = smartSeed(nw)
     return quadgrid(sl, sw).resized([L, W, 1.0])
