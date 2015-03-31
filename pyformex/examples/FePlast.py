@@ -44,7 +44,7 @@ from pyformex.plugins.properties import *
 from pyformex.plugins.fe_abq import Step, Output, Result, AbqData
 from pyformex.plugins import ccxdat
 from pyformex.plugins import postproc_menu
-from pyformex.mesh import *
+from pyformex.simple import rectangleWithHole,rectangle1
 
 
 def run():
@@ -97,9 +97,9 @@ def run():
 
     # Create geometry
     if res['geometry'] == 'Rectangle':
-        plate = rectangle(L2, B2, nl, nb)
+        plate = rectangle1(L2, B2, nl, nb)
     else:
-        plate = rectangleWithHole(L2, B2, r, nl, nb, e0)
+        plate = rectangleWithHole(L2, B2, r, nl,  nb, e0=e0)
 
 
     if res['eltype'].startswith('hex'):
