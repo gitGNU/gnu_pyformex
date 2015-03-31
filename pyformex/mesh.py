@@ -1043,12 +1043,12 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
 
     def partitionByAngle(self,**kargs):
         """Partition a level-2 Mesh by the angle between adjacent elements.
-    
+
         The Mesh is partitioned in parts bounded by the sharp edges in the
         surface. The arguments and return value are the same as in
         :meth:`TriSurface.partitionByAngle`.
-    
-        For eltypes other than 'tri3', 
+
+        For eltypes other than 'tri3',
         a conversion to 'tri3' is done before computing the partitions.
         """
         if self.elName() == 'tri3':
@@ -2325,14 +2325,14 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
     #    will raise an error.
     def intersectionWithLines(self, approximated=True, **kargs):
         """Return the intersections of a level-2 Mesh with lines.
-    
-        The Mesh is intersected with lines. The arguments and return values are 
+
+        The Mesh is intersected with lines. The arguments and return values are
         the same as in :meth:`TriSurface.intersectionWithLines`, except for
         the `approximated`.
-        
+
         For a Mesh with eltype 'tri3', the intersections are exact. For other
-        eltypes, if `approximated` is True a conversion to 'tri3' is done before 
-        computing the intersections. This may produce an exact result, 
+        eltypes, if `approximated` is True a conversion to 'tri3' is done before
+        computing the intersections. This may produce an exact result,
         an approximate result or no result (if the conversion fails).
         """
         if self.elName() == 'tri3':
@@ -2884,12 +2884,12 @@ def rectangleWithHole(L,W,r,nr,nt,e0=0.0,eltype='quad4'):
 
     Returns a Mesh
     """
-    L = W
+ #   L = W
     from pyformex import elements
     from pyformex.formex import interpolate
     base = elements.Quad9.vertices.scale([L, W, 1.])
     F0 = Formex([[[r, 0., 0.]]]).rosette(5, 90./4)
-    F2 = Formex([[[L, 0.]], [[L, W/2]], [[L, W]], [[L/2, W]], [[0, W]]])
+    F2 = Formex([[[L, 0.]], [[L, W/2.]], [[L, W]], [[L/2., W]], [[0., W]]])
     F1 = interpolate(F0, F2, div=[0.5])
     FL = [F0, F1, F2]
     X0, X1, X2 = [ F.coords.reshape(-1, 3) for F in FL ]
