@@ -243,7 +243,7 @@ def convert2VPD(M,clean=False):
     """
     from vtk import vtkPolyData, vtkPoints, vtkIdTypeArray, vtkCellArray
 
-    pf.debug('STARTING CONVERSION FOR DATA OF TYPE %s '%type(M),pf.DEBUG.VTK)
+    pf.debug('STARTING CONVERSION FOR DATA OF TYPE %s '%type(M),pf.DEBUG.PLUGIN)
 
     if isinstance(M, Formex):
         M = M.toMesh()
@@ -269,19 +269,19 @@ def convert2VPD(M,clean=False):
 
     if M.nplex() == 1:#point mesh
         try:
-            pf.debug("setting VERTS for data with %s maximum number of point for cell "%plex,pf.DEBUG.VTK)
+            pf.debug("setting VERTS for data with %s maximum number of point for cell "%plex,pf.DEBUG.PLUGIN)
             vpd.SetVerts(datav)
         except:
             raise ValueError("Error in saving  VERTS")
     elif M.nplex() == 2:#line2 mesh or polyline
         try:
-            pf.debug("setting LINES for data with %s maximum number of point for cell "%plex,pf.DEBUG.VTK)
+            pf.debug("setting LINES for data with %s maximum number of point for cell "%plex,pf.DEBUG.PLUGIN)
             vpd.SetLines(datav)
         except:
             raise  ValueError("Error in saving  LINES")
     else:#polygons
         try:
-            pf.debug("setting POLYS for data with %s maximum number of point for cell "%plex,pf.DEBUG.VTK)
+            pf.debug("setting POLYS for data with %s maximum number of point for cell "%plex,pf.DEBUG.PLUGIN)
             vpd.SetPolys(datav)
         except:
             raise ValueError("Error in saving  POLYS")
@@ -394,13 +394,13 @@ def convertFromVPD(vpd,samePlex=True):
     fielddata = celldata = pointdata = dict()
 
     if vpd is None:
-        pf.debug('The vtkPolyData is None',pf.DEBUG.VTK)
+        pf.debug('The vtkPolyData is None',pf.DEBUG.PLUGIN)
         return [coords, cells, polys, lines, verts], fielddata, celldata, pointdata
 
     # getting points coords
     if  vpd.GetPoints().GetData().GetNumberOfTuples():
         coords = Coords(array2N(vpd.GetPoints().GetData()))
-        pf.debug('Saved points coordinates array',pf.DEBUG.VTK)
+        pf.debug('Saved points coordinates array',pf.DEBUG.PLUGIN)
 
     vtkdtype = vpd.GetDataObjectType()
     # getting Cells
@@ -409,10 +409,10 @@ def convertFromVPD(vpd,samePlex=True):
             if samePlex == True:
                 Nplex = vpd.GetCells().GetMaxCellSize()
                 cells = array2N(vpd.GetCells().GetData()).reshape(-1, Nplex+1)[:, 1:]
-                pf.debug('Saved cells connectivity array',pf.DEBUG.VTK)
+                pf.debug('Saved cells connectivity array',pf.DEBUG.PLUGIN)
             else:
                 cells =  Varray(array2N(vpd.GetCells().GetData()))#vtkCellArray to varray
-                pf.debug('Saved cells connectivity varray',pf.DEBUG.VTK)
+                pf.debug('Saved cells connectivity varray',pf.DEBUG.PLUGIN)
 
     # getting Strips
     if vtkdtype not in [4]: # this list need to be updated according to the data type
@@ -426,10 +426,10 @@ def convertFromVPD(vpd,samePlex=True):
             if samePlex == True:
                 Nplex = vpd.GetPolys().GetMaxCellSize()
                 polys = array2N(vpd.GetPolys().GetData()).reshape(-1, Nplex+1)[:, 1:]
-                pf.debug('Saved cells connectivity array',pf.DEBUG.VTK)
+                pf.debug('Saved cells connectivity array',pf.DEBUG.PLUGIN)
             else:
                 polys =  Varray(array2N(vpd.GetPolys().GetData()))#vtkCellArray to varray
-                pf.debug('Saved cells connectivity varray',pf.DEBUG.VTK)
+                pf.debug('Saved cells connectivity varray',pf.DEBUG.PLUGIN)
                 
     # getting Lines
     if vtkdtype not in [4]: # this list need to be updated according to the data type
@@ -437,17 +437,17 @@ def convertFromVPD(vpd,samePlex=True):
             if samePlex == True:
                 Nplex = vpd.GetLines().GetMaxCellSize()
                 lines = array2N(vpd.GetLines().GetData()).reshape(-1, Nplex+1)[:, 1:]
-                pf.debug('Saved lines connectivity array',pf.DEBUG.VTK)
+                pf.debug('Saved lines connectivity array',pf.DEBUG.PLUGIN)
             else:
                 lines =  Varray(array2N(vpd.GetLines().GetData()))#this is the case of polylines
-                pf.debug('Saved lines connectivity varray',pf.DEBUG.VTK)
+                pf.debug('Saved lines connectivity varray',pf.DEBUG.PLUGIN)
 
     # getting Vertices
     if vtkdtype not in [4]: # this list need to be updated acoorind to the data type
         if  vpd.GetVerts().GetData().GetNumberOfTuples():
             Nplex = vpd.GetVerts().GetMaxCellSize()
             verts = array2N(vpd.GetVerts().GetData()).reshape(-1, Nplex+1)[:, 1:]
-            pf.debug('Saved verts connectivity array',pf.DEBUG.VTK)
+            pf.debug('Saved verts connectivity array',pf.DEBUG.PLUGIN)
 
     def builddatadict(data):
         """It helps finding empty and non-empty array data (field, cell and point)
@@ -463,26 +463,26 @@ def convertFromVPD(vpd,samePlex=True):
         okdata = dict(zip(arraynm, okdata))
         #now merge the empty and non-empty data
         okdata.update(emptydata)
-        pf.debug('Non-empty Data Arrays:%s'% arraynm,pf.DEBUG.VTK)
-        pf.debug('Empty Data Arrays:%s'% emptyarraynm,pf.DEBUG.VTK)
+        pf.debug('Non-empty Data Arrays:%s'% arraynm,pf.DEBUG.PLUGIN)
+        pf.debug('Empty Data Arrays:%s'% emptyarraynm,pf.DEBUG.PLUGIN)
         return okdata
 
     # getting Fields
     if vpd.GetFieldData().GetNumberOfArrays():
         fielddata = vpd.GetFieldData()
-        pf.debug('*Field Data Arrays',pf.DEBUG.VTK)
+        pf.debug('*Field Data Arrays',pf.DEBUG.PLUGIN)
         fielddata = builddatadict(fielddata)
 
     # getting cells data
     if vpd.GetCellData().GetNumberOfArrays():
         celldata = vpd.GetCellData()
-        pf.debug('*Cell Data Arrays',pf.DEBUG.VTK)
+        pf.debug('*Cell Data Arrays',pf.DEBUG.PLUGIN)
         celldata = builddatadict(celldata)
 
     # getting points data
     if vpd.GetPointData().GetNumberOfArrays():
         pointdata = vpd.GetPointData()
-        pf.debug('*Point Data Arrays',pf.DEBUG.VTK)
+        pf.debug('*Point Data Arrays',pf.DEBUG.PLUGIN)
         pointdata = builddatadict(pointdata)
 
     return [coords, cells, polys, lines, verts], fielddata, celldata, pointdata
@@ -1398,7 +1398,7 @@ def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True):
     vpd = cleanVPD(vpd)
 
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata=convertFromVPD(vpd)#convert vpd to pyFormex surface
-    pf.debug(('%d faces decimated into %d triangles'%(self.nelems(), len(polys))),pf.DEBUG.VTK)
+    pf.debug(('%d faces decimated into %d triangles'%(self.nelems(), len(polys))),pf.DEBUG.PLUGIN)
     return TriSurface(coords, polys)
 
 
@@ -1426,7 +1426,7 @@ def coarsenPolyLine(self, target=0.5):
     vpd = cleanVPD(vpd)
 
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata=convertFromVPD(vpd)#convert vpd to pyFormex surface
-    pf.debug(('%d coords decimated into %d coords'%(self.ncoords()-1, len(lines))),pf.DEBUG.VTK)
+    pf.debug(('%d coords decimated into %d coords'%(self.ncoords()-1, len(lines))),pf.DEBUG.PLUGIN)
     return PolyLine(coords)
 
 
@@ -1450,7 +1450,7 @@ def findElemContainingPoint(self, pts):
     cellLocator.SetDataSet(vpd)
     cellLocator.BuildLocator()
     cellids = array([cellLocator.FindCell(pts[i]) for i in range(len(pts))])
-    pf.debug('%d (of %d) points have not been found inside any cell'%(sum(cellids==-1), len(pts)),pf.DEBUG.VTK)
+    pf.debug('%d (of %d) points have not been found inside any cell'%(sum(cellids==-1), len(pts)),pf.DEBUG.PLUGIN)
     return cellids
 
 
@@ -1531,7 +1531,7 @@ def import3ds(fn, vtkcolor='color'):
         m = Mesh(coords, polys)
         m.attrib(color=col)
         ML.append(m)
-    pf.debug('model contains %d objects with a total of %d triangles'%(len(ML), Mesh.concatenate(ML).nelems()),pf.DEBUG.VTK)
+    pf.debug('model contains %d objects with a total of %d triangles'%(len(ML), Mesh.concatenate(ML).nelems()),pf.DEBUG.PLUGIN)
     return ML
 
 

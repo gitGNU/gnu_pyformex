@@ -256,8 +256,8 @@ class DebugLevels(object):
     NONE = 0
     INFO, WARNING, OPTION, CONFIG, DETECT, MEM, SCRIPT, GUI, MENU, DRAW, \
           CANVAS, OPENGL, LIB, MOUSE, APPS, IMAGE, MISC, ABQ, WIDGET, \
-          PROJECT, WEBGL, MULTI, LEGACY, OPENGL2, PLUGIN, UNICODE, FONT, VTK = \
-          [ 2 ** i for i in range(28) ]
+          PROJECT, WEBGL, MULTI, LEGACY, OPENGL2, PLUGIN, UNICODE, FONT, = \
+          [ 2 ** i for i in range(27) ]
 
 try:
     # Python2 stores the local variable 'i'
