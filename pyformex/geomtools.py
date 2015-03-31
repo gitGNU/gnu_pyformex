@@ -100,6 +100,8 @@ class Line(object):
                 P[:,1,:] -= P[:,0,:]
                 self.data = P
                 return
+            elif isinstance(P,tuple):
+                P, n = P
         P = checkArray(P,shape=(-1,3))
         n = checkArray(n,shape=(P.shape[0],3))
         self.data = stack([P,n],axis=1)
