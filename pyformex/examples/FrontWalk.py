@@ -42,9 +42,9 @@ def gradColor(n):
     return array([CS.color(i) for i in 1.*arange(n+1)])
 
 def run():
-    from pyformex.mesh import rectangle
+    from pyformex.simple import rectangle1
     clear()
-    M = rectangle(L=1, W=1, nl=50, nw=50)
+    M = rectangle1(L=1, W=1, nl=50, nw=50)
     draw(M)
 
     # Walk 0: start at elements 10 and 600
