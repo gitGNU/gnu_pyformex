@@ -1209,6 +1209,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         if action == PRESS:
             self.makeCurrent()
             self.update()
+            pf.app.processEvents()
             self.begin_2D_drawing()
             #self.swapBuffers()
             GL.glEnable(GL.GL_COLOR_LOGIC_OP)
