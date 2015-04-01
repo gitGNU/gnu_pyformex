@@ -2872,21 +2872,27 @@ def rectangle(L, W, nl, nw):
     return quadgrid(sl, sw).resized([L, W, 1.0])
 
 
-def rectangleWithHole(L,W,r,nr,nt,e0=0.0,eltype='quad4'):
+def rectangleWithHole(L,W,r,nr,nl,nw=None,e0=0.0,eltype='quad4'):
     """Create a quarter of rectangle with a central circular hole.
 
     Parameters:
 
-    - L,W: length,width of the (quarter) rectangle
-    - r: radius of the hole
-    - nr,nt: number of elements over radial,tangential direction
-    - e0: concentration factor for elements in the radial direction
+    - `L`: float. Length of the (quarter) rectangle
+    - `W`: float. Width of the (quarter) rectangle
+    - `r`: float. Radius of the hole
+    - `nr`: integer. Number of elements over radial direction
+    - `nl`: integer. Number of elements over tangential direction along L
+    - `nw`: integer. Number of elements over tangential direction along W.
+        If None (default), it will be set equal to nl.
+    -  `e0`: float. Concentration factor for elements in the radial direction
 
     Returns a Mesh
     """
  #   L = W
     from pyformex import elements
     from pyformex.formex import interpolate
+    if nw is None:
+        nw = nl
     base = elements.Quad9.vertices.scale([L, W, 1.])
     F0 = Formex([[[r, 0., 0.]]]).rosette(5, 90./4)
     F2 = Formex([[[L, 0.]], [[L, W/2.]], [[L, W]], [[L/2., W]], [[0., W]]])
@@ -2896,13 +2902,16 @@ def rectangleWithHole(L,W,r,nr,nt,e0=0.0,eltype='quad4'):
     trf0 = Coords([X0[0], X2[0], X2[2], X0[2], X1[0], X2[1], X1[2], X0[1], X1[1]])
     trf1 = Coords([X0[2], X2[2], X2[4], X0[4], X1[2], X2[3], X1[4], X0[3], X1[3]])
 
-    seed0 = seed(nr, e0)
-    seed1 = seed(nt)
-    grid = quadgrid(seed0, seed1).resized([L, W, 1.0])
+    seedr = seed(nr, e0)
+    seedl = seed(nl)
+    seedw = seed(nw)
+    gridl = quadgrid(seedr, seedl).resized([L, W, 1.0])
+    gridw = quadgrid(seedr, seedw).resized([L, W, 1.0])
 
-    grid0 = grid.isopar('quad9', trf0, base)
-    grid1 = grid.isopar('quad9', trf1, base)
-    return (grid0+grid1).fuse()
+    gridl = gridl.isopar('quad9', trf0, base)
+    gridw = gridw.isopar('quad9', trf1, base)
+    return (gridl+gridw).fuse()
+
 
 
 def quadrilateral(x, n1, n2):
