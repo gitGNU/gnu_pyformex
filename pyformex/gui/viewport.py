@@ -230,7 +230,7 @@ class CursorShapeHandler(object):
 
     def setCursorShapeFromFunc(self, func):
         """Set the cursor shape to shape"""
-        if func in [ self.mouse_rectangle_zoom, self.mouse_pick ]:
+        if func in [ self.mouse_rectangle, self.mouse_pick ]:
             shape = 'pick'
         else:
             shape = 'default'
@@ -549,7 +549,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
 
     def setCursorShapeFromFunc(self, func):
         """Set the cursor shape to shape"""
-        if func in [ self.mouse_rectangle_zoom, self.mouse_pick ]:
+        if func in [ self.mouse_rectangle, self.mouse_pick ]:
             shape = 'pick'
         elif func == self.mouse_draw:
             shape = 'draw'
@@ -584,16 +584,36 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         return self.mousefnc.get(int(self.mod), {}).get(self.button, None)
 
 
-    def start_rectangle_zoom(self):
-        self.setMouse(LEFT, self.mouse_rectangle_zoom)
+    def zoom_rectangle(self):
+        self.start_rectangle(func=self.zoomRectangle)
 
 
-    def finish_rectangle_zoom(self):
-        self.update()
+    def get_rectangle(self,):
+        self.start_rectangle(func=None)
+        self.selection_timer = QtCore.QThread
+        while not self.rectangle:
+            self.selection_timer.msleep(20)
+            pf.app.processEvents()
+        return self.rectangle
+
+
+    def start_rectangle(self,func=None):
+        self.rectangle = None
+        self.rectangle_func = func
+        self.setMouse(LEFT, self.mouse_rectangle)
+
+
+    def finish_rectangle(self):
         self.resetMouse(LEFT)
+        try:
+            self.rectangle_func(*self.rectangle)
+        except:
+            pass
+        self.update()
+        self.selection_timer = None
 
 
-    def mouse_rectangle_zoom(self, x, y, action):
+    def mouse_rectangle(self, x, y, action):
         """Process mouse events during interactive rectangle zooming.
 
         On PRESS, record the mouse position.
@@ -637,8 +657,8 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
             y0 = min(self.statey, y)
             x1 = max(self.statex, x)
             y1 = max(self.statey, y)
-            self.zoomRectangle(x0, y0, x1, y1)
-            self.finish_rectangle_zoom()
+            self.rectangle = x0,y0,x1,y1
+            self.finish_rectangle()
 
 ####################### INTERACTIVE PICKING ############################
 

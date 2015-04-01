@@ -724,7 +724,14 @@ def unlockCamera():
 
 def zoomRectangle():
     """Zoom a rectangle selected by the user."""
-    pf.canvas.start_rectangle_zoom()
+    pf.canvas.zoom_rectangle()
+    pf.canvas.update()
+
+
+def getRectangle():
+    """Zoom a rectangle selected by the user."""
+    r = pf.canvas.get_rectangle()
+    print(r)
     pf.canvas.update()
 
 
