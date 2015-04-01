@@ -527,6 +527,9 @@ def run(argv=[]):
         if os.path.exists(pf.cfg['localprefs']):
             userprefs.append(pf.cfg['localprefs'])
 
+    sysprefs = filter(os.path.exists, sysprefs)
+    userprefs = filter(os.path.exists, userprefs)
+
     if pf.options.config:
         userprefs.append(utils.tildeExpand(pf.options.config))
 
@@ -534,30 +537,39 @@ def run(argv=[]):
         # We should always have a place to store the user preferences
         userprefs = [ pf.cfg['userprefs'] ]
 
-    pf.preffile = os.path.abspath(userprefs[-1]) # Settings will be saved here
+    # Use last one to save preferences
+    pf.preffile = os.path.abspath(userprefs[-1])
 
-    # Read all but the last as reference
-    for f in filter(os.path.exists, sysprefs + userprefs[:-1]):
+    pf.debug("System Preference Files: %s" % sysprefs, pf.DEBUG.CONFIG)
+    pf.debug("User Preference Files: %s" % userprefs, pf.DEBUG.CONFIG)
+
+    # Read sysprefs as reference
+    for f in sysprefs:
         pf.debug("Reading config file %s" % f, pf.DEBUG.CONFIG)
         pf.cfg.read(f)
 
+    # Set this as reference config
     pf.refcfg = pf.cfg
     pf.debug("="*60, pf.DEBUG.CONFIG)
     pf.debug("RefConfig: %s" % pf.refcfg, pf.DEBUG.CONFIG)
+    pf.cfg = Config(default=refLookup)
 
-    # Use the last as place to save preferences
-    pf.prefcfg = Config(default=refLookup)
+    # Read userprefs as reference
+    for f in userprefs:
+        pf.debug("Reading config file %s" % f, pf.DEBUG.CONFIG)
+        pf.cfg.read(f)
     if os.path.exists(pf.preffile):
         pf.debug("Reading config file %s" % pf.preffile, pf.DEBUG.CONFIG)
-        pf.prefcfg.read(pf.preffile)
+        pf.cfg.read(pf.preffile)
+
+    # Set this as preferences config
+    pf.prefcfg = pf.cfg
     pf.debug("="*60, pf.DEBUG.CONFIG)
     pf.debug("Config: %s" % pf.prefcfg, pf.DEBUG.CONFIG)
+    pf.cfg = Config(default=prefLookup)
 
     # Fix incompatible changes in configuration
     apply_config_changes(pf.prefcfg)
-
-    # Create an empty one for the session settings
-    pf.cfg = Config(default=prefLookup)
 
     ####################################################################
     ## Post config initialization ##
