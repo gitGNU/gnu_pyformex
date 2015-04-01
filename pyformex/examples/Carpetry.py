@@ -126,7 +126,7 @@ def run():
         save = res['save']
         if save:
             from pyformex.gui import image
-            image.save(filename='Carpetry-000.jpg', window=False, multi=True, hotkey=False, autosave=False, border=False, rootcrop=False, format=None, quality=95, verbose=False)
+            image.save(filename='Carpetry-000.jpg', window=False, multi=True, hotkey=False, autosave=False, border=False, format=None, quality=95, verbose=False)
 
         A = None
         for i in range(n):

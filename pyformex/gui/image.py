@@ -36,6 +36,7 @@ import pyformex as pf
 from OpenGL import GL
 from pyformex.gui import QtCore, QtGui, QtOpenGL
 from pyformex import utils
+from pyformex.gui.qtutils import relPos
 import os
 
 
@@ -248,16 +249,19 @@ if gl2ps:
         return 0
 
 
-
-def save_window(filename,format,quality=-1,windowname=None):
+def save_window(filename,format,quality=-1,windowname=None,crop=None):
     """Save a window as an image file.
 
     This function needs a filename AND format.
     If a window is specified, the named window is saved.
     Else, the main pyFormex window is saved.
+
+    If crop is given, the specified rectangle is cropped.
+    If crop='canvas', windowname is set to main pyFormex window
+    and crop to canvas rectangle.
+
+    In all cases, the GUI and current canvas are raised.
     """
-    if windowname is None:
-        windowname = pf.GUI.windowTitle()
     pf.GUI.raise_()
     pf.GUI.repaint()
     pf.GUI.toolbar.repaint()
@@ -266,42 +270,79 @@ def save_window(filename,format,quality=-1,windowname=None):
     pf.canvas.raise_()
     pf.canvas.update()
     pf.app.processEvents()
-    cmd = 'import -window "%s" %s:%s' % (windowname, format, filename)
-    P = utils.command(cmd)
-    return P.sta
+
+    if crop == 'canvas':
+        windowname = pf.GUI.windowTitle()
+        x,y = relPos(pf.canvas)
+        crop = (x,y,pf.canvas.width(),pf.canvas.height())
+
+    if windowname is None:
+        windowname = pf.GUI.windowTitle()
+
+    return save_window_rect(filename, format, quality, windowname, crop)
 
 
-def save_main_window(filename,format,quality=-1,border=False):
-    """Save the main pyFormex window as an image file.
+def save_window_rect(filename,format,quality=-1,window='root',crop=None):
+    """Save a rectangular part of the screen to a an image file.
 
-    This function needs a filename AND format.
-    This is an alternative for save_window, by grabbin it from the root
-    window, using save_rect.
-    This allows us to grab the border as well.
+    crop: (x,y,w,h)
     """
-    pf.GUI.repaint()
-    pf.GUI.toolbar.repaint()
-    pf.GUI.update()
-    pf.canvas.update()
-    pf.app.processEvents()
-    if border:
-        geom = pf.GUI.frameGeometry()
-    else:
-        geom = pf.GUI.geometry()
-    x, y, w, h = geom.getRect()
-    return save_rect(x, y, w, h, filename, format, quality)
-
-
-def save_rect(x,y,w,h,filename,format,quality=-1):
-    """Save a rectangular part of the screen to a an image file."""
-    cmd = 'import -window root -crop "%sx%s+%s+%s" %s:%s' % (w, h, x, y, format, filename)
-    P = utils.command(cmd)
+    options = ''
+    if crop:
+        x,y,w,h = crop
+        options += ' -crop "%sx%s+%s+%s"' % (w, h, x, y)
+    cmd = 'import -window "%s" %s %s:%s' % (window, options, format, filename)
+    # We need to use shell=True because window name might contain spaces
+    # thus we need to add quotes, but these are not stripped off when
+    # splitting the command line.
+    # TODO: utils should probably be changed to strip quotes after splitting
+    P = utils.command(cmd,shell=True)
+    if P.sta:   # He, isn't this standard with utils.command?
+        print(P.sta)
+        print(P.err)
+        print(P.out)
     return P.sta
+
+
+## def save_main_window(filename,format,quality=-1,border=False,window=True):
+##     """Save the main pyFormex window as an image file.
+
+##     This function needs a filename AND format.
+##     This is an alternative for save_window, by grabbin it from the root
+##     window, using save_rect.
+##     This allows us to grab the border as well.
+##     """
+##     pf.GUI.repaint()
+##     pf.GUI.toolbar.repaint()
+##     pf.GUI.update()
+##     pf.canvas.update()
+##     printGeom("Frame",pf.GUI.frameGeometry())
+##     printGeom("Window",pf.GUI.geometry())
+##     printGeom("Canvas",pf.canvas.geometry())
+##     pf.app.processEvents()
+##     if border:
+##         x, y, w, h = pf.GUI.frameGeometry().getRect()
+##     else:
+##         x, y, w, h = pf.GUI.geometry().getRect()
+##         if not window:
+##             x0, y0, w0, h0 = pf.canvas.geometry().getRect()
+##             x += x0
+##             y += y0
+##             w,h = w0,h0
+
+##     return save_rect(x, y, w, h, filename, format, quality)
+
+
+## def save_rect(x,y,w,h,filename,format,quality=-1):
+##     """Save a rectangular part of the screen to a an image file."""
+##     cmd = 'import -window root -crop "%sx%s+%s+%s" %s:%s' % (w, h, x, y, format, filename)
+##     P = utils.command(cmd)
+##     return P.sta
 
 
 #### USER FUNCTIONS ################
 
-def save(filename=None,window=False,multi=False,hotkey=True,autosave=False,border=False,rootcrop=False,format=None,quality=-1,size=None,verbose=False):
+def save(filename=None,window=False,multi=False,hotkey=True,autosave=False,border=False,grab=False,format=None,quality=-1,size=None,verbose=False,rootcrop=None):
     """Saves an image to file or Starts/stops multisave mode.
 
     With a filename and multi==False (default), the current viewport rendering
@@ -324,6 +365,10 @@ def save(filename=None,window=False,multi=False,hotkey=True,autosave=False,borde
     If window and border are True, the window decorations will be included.
     If window is False, only the current canvas viewport is saved.
 
+    If grab is True, the external 'import' program is used to grab the
+    window from the screen buffers. This is required by the border and
+    window options.
+
     If hotkey is True, a new image will be saved by hitting the 'S' key.
     If autosave is True, a new image will be saved on each execution of
     the 'draw' function.
@@ -339,6 +384,9 @@ def save(filename=None,window=False,multi=False,hotkey=True,autosave=False,borde
     """
     #print "SAVE: quality=%s" % quality
     global multisave
+
+    if rootcrop is not None:
+        pf.warning("image.save does no longer support the 'rootcrop' option")
 
     # Leave multisave mode if no filename or starting new multisave mode
     if multisave and (filename is None or multi):
@@ -367,20 +415,41 @@ def save(filename=None,window=False,multi=False,hotkey=True,autosave=False,borde
              pf.GUI.signals.SAVE.connect(saveNext)
              if verbose:
                  pf.warning("Each time you hit the '%s' key,\nthe image will be saved to the next number." % pf.cfg['keys/save'])
-        multisave = (names, format, quality, size, window, border, hotkey, autosave, rootcrop)
+        multisave = (names, format, quality, size, window, border, hotkey, autosave, grab)
         print("MULTISAVE %s "% str(multisave))
         return multisave is None
 
-    else: # Save the image
-        if window:
-            if rootcrop:
-                sta = save_main_window(filename, format, quality, border=border)
+    else:
+        # Save the image
+        if grab:
+            # Grab from X server buffers (needs external)
+            #
+            # TODO: configure command to grab screen rectangle
+            #
+            if window:
+                windowname = None
+                crop = None
+            elif border:
+                windowname = 'root'
+                crop = pf.GUI.frameGeometry().getRect()
             else:
-                sta = save_window(filename, format, quality)
+                windowname = None
+                crop = 'canvas'
+
+            sta = save_window(filename, format, quality, windowname=windowname, crop=crop)
         else:
+            # Get from OpenGL rendering
             if size == pf.canvas.getSize():
+                # TODO:
+                # We could grab from the OpenGL buffers here!!
                 size = None
+            # Render in an off-screen buffer and grab from there
+            #
+            # TODO: the offscreen buffer should be properly initialized
+            # according to the current canvas
+            #
             sta = save_canvas(pf.canvas, filename, format, quality, size)
+
         if sta:
             pf.debug("Error while saving image %s" % filename, pf.DEBUG.IMAGE)
         else:
@@ -401,9 +470,9 @@ def saveNext():
     or not.
     """
     if multisave:
-        names, format, quality, size, window, border, hotkey, autosave, rootcrop = multisave
+        names, format, quality, size, window, border, hotkey, autosave, grab = multisave
         name = names.next()
-        save(name, window, False, hotkey, autosave, border, rootcrop, format, quality, size, False)
+        save(name, window, False, hotkey, autosave, border, grab, format, quality, size, False)
 
 
 def changeBackgroundColorXPM(fn, color):

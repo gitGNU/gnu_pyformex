@@ -45,55 +45,10 @@ from pyformex.gui import (
     toolbar, viewport, guifunc, draw, widgets, drawlock, views,
     )
 
+from pyformex.gui.qtutils import *
+
 import sys,os
 import warnings
-
-
-############### General Qt utility functions #######
-
-## might go to a qtutils module
-
-def Size(widget):
-    """Return the size of a widget as a tuple."""
-    s = widget.size()
-    return s.width(), s.height()
-
-def Pos(widget):
-    """Return the position of a widget as a tuple."""
-    p = widget.pos()
-    return p.x(), p.y()
-
-def relPos(w,parent=None):
-    """Return the position of a widget relative to a parent.
-
-    If no parent is specified, it is taken as the GUI main window.
-    """
-    if parent is None:
-        parent = pf.GUI
-    x,y = 0,0
-    while w != parent:
-        #print(w)
-        dx,dy = w.x(),w.y()
-        x += dx
-        y += dy
-        #print("rel pos = %s, %s; abs pos = %s, %s" % (dx,dy,x,y))
-        w = w.parent()
-        if not w:
-            break
-    return x,y
-
-def MaxSize(*args):
-    """Return the maximum of a list of sizes"""
-    return max([i[0] for i in args]), max([i[1] for i in args])
-
-def MinSize(*args):
-    """Return the maximum of a list of sizes"""
-    return min([i[0] for i in args]), min([i[1] for i in args])
-
-def printpos(w,t=None):
-    print("%s %s x %s" % (t, w.x(), w.y()))
-def sizeReport(w,t=None):
-    return "%s %s x %s" % (t, w.width(), w.height())
 
 
 def hasDRI():
