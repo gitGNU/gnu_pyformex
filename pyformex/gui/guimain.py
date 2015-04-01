@@ -63,6 +63,25 @@ def Pos(widget):
     p = widget.pos()
     return p.x(), p.y()
 
+def relPos(w,parent=None):
+    """Return the position of a widget relative to a parent.
+
+    If no parent is specified, it is taken as the GUI main window.
+    """
+    if parent is None:
+        parent = pf.GUI
+    x,y = 0,0
+    while w != parent:
+        #print(w)
+        dx,dy = w.x(),w.y()
+        x += dx
+        y += dy
+        #print("rel pos = %s, %s; abs pos = %s, %s" % (dx,dy,x,y))
+        w = w.parent()
+        if not w:
+            break
+    return x,y
+
 def MaxSize(*args):
     """Return the maximum of a list of sizes"""
     return max([i[0] for i in args]), max([i[1] for i in args])
