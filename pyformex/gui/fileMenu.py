@@ -456,7 +456,8 @@ def saveImage(multi=False):
                    hotkey=opt.hk,
                    autosave=opt.au,
                    border=opt.bo,
-                   grab=opt.gr
+                   grab=opt.gr,
+                   alpha=opt.al
                    )
 
 

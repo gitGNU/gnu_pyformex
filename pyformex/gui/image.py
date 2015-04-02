@@ -146,7 +146,7 @@ def imageFormatFromExt(ext):
 
 ##### LOW LEVEL FUNCTIONS ##########
 
-def save_canvas(canvas,fn,fmt='png',quality=-1,size=None):
+def save_canvas(canvas,fn,fmt='png',quality=-1,size=None,alpha=False):
     """Save the rendering on canvas as an image file.
 
     canvas specifies the qtcanvas rendering window.
@@ -161,13 +161,21 @@ def save_canvas(canvas,fn,fmt='png',quality=-1,size=None):
 
     if fmt in image_formats_qt:
         pf.debug("Image format can be saved by Qt", pf.DEBUG.IMAGE)
-        wc, hc = canvas.getSize()
-        try:
-            w, h = size
-        except:
-            w, h = wc, hc
-        pf.debug("Saving image from virtual buffer with size %sx%s" % (w, h), pf.DEBUG.IMAGE)
-        qim = canvas.image(w,h)
+        if size is None:
+            #
+            # Use direct grabbing from current buffer
+            #
+            GL.glFlush()
+            pf.debug("Saving image from opengl buffer with size %sx%s" % canvas.getSize(), pf.DEBUG.IMAGE)
+            qim = canvas.grabFrameBuffer(withAlpha=alpha)
+        else:
+            wc, hc = canvas.getSize()
+            try:
+                w, h = size
+            except:
+                w, h = wc, hc
+            pf.debug("Saving image from virtual buffer with size %sx%s" % (w, h), pf.DEBUG.IMAGE)
+            qim = canvas.image(w,h,remove_alpha=not alpha)
 
         pf.debug("Image has alpha channel: %s" % qim.hasAlphaChannel())
         print("SAVING %s in format %s with quality %s" % (fn, fmt, quality))
@@ -304,45 +312,9 @@ def save_window_rect(filename,format,quality=-1,window='root',crop=None):
     return P.sta
 
 
-## def save_main_window(filename,format,quality=-1,border=False,window=True):
-##     """Save the main pyFormex window as an image file.
-
-##     This function needs a filename AND format.
-##     This is an alternative for save_window, by grabbin it from the root
-##     window, using save_rect.
-##     This allows us to grab the border as well.
-##     """
-##     pf.GUI.repaint()
-##     pf.GUI.toolbar.repaint()
-##     pf.GUI.update()
-##     pf.canvas.update()
-##     printGeom("Frame",pf.GUI.frameGeometry())
-##     printGeom("Window",pf.GUI.geometry())
-##     printGeom("Canvas",pf.canvas.geometry())
-##     pf.app.processEvents()
-##     if border:
-##         x, y, w, h = pf.GUI.frameGeometry().getRect()
-##     else:
-##         x, y, w, h = pf.GUI.geometry().getRect()
-##         if not window:
-##             x0, y0, w0, h0 = pf.canvas.geometry().getRect()
-##             x += x0
-##             y += y0
-##             w,h = w0,h0
-
-##     return save_rect(x, y, w, h, filename, format, quality)
-
-
-## def save_rect(x,y,w,h,filename,format,quality=-1):
-##     """Save a rectangular part of the screen to a an image file."""
-##     cmd = 'import -window root -crop "%sx%s+%s+%s" %s:%s' % (w, h, x, y, format, filename)
-##     P = utils.command(cmd)
-##     return P.sta
-
-
 #### USER FUNCTIONS ################
 
-def save(filename=None,window=False,multi=False,hotkey=True,autosave=False,border=False,grab=False,format=None,quality=-1,size=None,verbose=False,rootcrop=None):
+def save(filename=None,window=False,multi=False,hotkey=True,autosave=False,border=False,grab=False,format=None,quality=-1,size=None,verbose=False,alpha=True,rootcrop=None):
     """Saves an image to file or Starts/stops multisave mode.
 
     With a filename and multi==False (default), the current viewport rendering
@@ -427,11 +399,12 @@ def save(filename=None,window=False,multi=False,hotkey=True,autosave=False,borde
             # TODO: configure command to grab screen rectangle
             #
             if window:
-                windowname = None
-                crop = None
-            elif border:
-                windowname = 'root'
-                crop = pf.GUI.frameGeometry().getRect()
+                if border:
+                    windowname = 'root'
+                    crop = pf.GUI.frameGeometry().getRect()
+                else:
+                    windowname = None
+                    crop = None
             else:
                 windowname = None
                 crop = 'canvas'
@@ -448,7 +421,7 @@ def save(filename=None,window=False,multi=False,hotkey=True,autosave=False,borde
             # TODO: the offscreen buffer should be properly initialized
             # according to the current canvas
             #
-            sta = save_canvas(pf.canvas, filename, format, quality, size)
+            sta = save_canvas(pf.canvas, filename, format, quality, size, alpha)
 
         if sta:
             pf.debug("Error while saving image %s" % filename, pf.DEBUG.IMAGE)
