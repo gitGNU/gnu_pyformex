@@ -388,7 +388,7 @@ def checkArrayOrIdValue(values):
 
     """
     try:
-        v = checkArray(values, (6,), 'f', 'i')
+        v = checkArray(values, 6, 'f', 'i')
         w = where(v != 0.0)[0]
         values = [ (i, v[i]) for i in w ]
     except:
