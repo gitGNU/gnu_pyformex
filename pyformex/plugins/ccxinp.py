@@ -357,13 +357,17 @@ def readInput(fn):
     - `elid`: int (nelems,) array: element numbers; default is arange(nelems)
     """
     global line, part, log, model
+    from os.path import splitext, basename, dirname, join
     model = InpModel()
     model.parts = []
     startPart('DEFAULT')
     cmd = ''
-    logname = fn.replace('.inp', 'ccxinp.log')
+    logname = splitext(basename(fn))[0] + 'ccxinp.log'
+    logname = join(dirname(fn),logname)
     with open(logname, 'w') as log:
         with open(fn) as fil:
+            data_cont = False
+            data = []
             for line in fil:
                 if len(line) == 0:
                     break
