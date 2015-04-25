@@ -248,7 +248,7 @@ def niceNumber(f,below=False):
 
     A number close to abs(f) but having only 1 significant digit is returned.
     By default, the value is above abs(f). Setting below=True returns a
-    value above.
+    value below.
 
     Example:
 
@@ -259,8 +259,8 @@ def niceNumber(f,below=False):
       ['0.08', '0.8', '8.0', '80.0', '90.0']
     """
     fa = abs(f)
-    s = "%.0e" % fa
-    m, n = [int(n) for n in s.split('e')]
+    s = "%.1e" % fa
+    m, n = [int(float(n)) for n in s.split('e')]
     if not below:
         m = m+1
     return m*10.**n
