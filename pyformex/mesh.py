@@ -2162,9 +2162,7 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
                 externals[expoints] = True
                 a = adj[externals].ravel()
                 inpoints = delete(arange(self.ncoords()), expoints)
-                for i in range(len(a)):
-                    if a[i] in inpoints:
-                        a[i]=-2
+                a[findIndex(inpoints,a) != -1] = -2
                 adj[externals] = a.reshape(adj[externals].shape)
             else:
                 print('Failed to recognize external points.\nShrinkage may be considerable.')
@@ -2182,8 +2180,8 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
         w = w.reshape(adj.shape[0], adj.shape[1], 1)
         c = self.coords.copy()
         for i in range(iterations):
-            c[incl] = (1.-lamb)*c[incl] + lamb*(w[incl]*c[adj][incl]).sum(1)
-            c[incl] = (1.-mu)*c[incl] + mu*(w[incl]*c[adj][incl]).sum(1)
+            c[incl] = (1.-lamb)*c[incl]  + lamb*(w[incl] *c[adj][incl] ).sum(1)
+            c[incl] = (1.-mu)*c[incl]  + mu*(w[incl] *c[adj][incl] ).sum(1)
         return self.__class__(c, self.elems, prop=self.prop, eltype=self.elType())
 
 
@@ -2788,6 +2786,8 @@ def quad4_els(nx, ny):
     els = [ row_stack([ array([0, 1, n+1, n]) + i for i in range(nx) ]) + j * n for j in range(ny) ]
     return row_stack(els)
 
+quad9_wts=quad4_wts
+quad9_els=quad4_els
 
 def quadgrid(seed0, seed1, roll=0):
     """Create a quadrilateral mesh of unit size with the specified seeds.
