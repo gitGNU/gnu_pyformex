@@ -241,28 +241,32 @@ def niceLogSize(f):
     return int(ceil(log10(abs(f))))
 
 
-def niceNumber(f,below=False):
-    """Return a nice number close to f.
+def niceNumber(f,round=ceil):
+    """Return a nice number close to abs(f).
 
-    f is a float number, whose sign is disregarded.
+    Parameters:
 
-    A number close to abs(f) but having only 1 significant digit is returned.
-    By default, the value is above abs(f). Setting below=True returns a
-    value below.
+    - `f`: a float number, whose sign is disregarded.
+    - `round`: callable, taking and returning a float number. This function
+      if used in 'rounding' the input number to a close nice number. Useful
+      functions ar ceil(default), floor and round from either the numpy or
+      math modules.
 
     Example:
 
-      >>> numbers = [ 0.0837, 0.837, 8.37, 83.7, 93.7]
-      >>> [ str(niceNumber(f)) for f in numbers ]
-      ['0.09', '0.9', '9.0', '90.0', '100.0']
-      >>> [ str(niceNumber(f,below=True)) for f in numbers ]
-      ['0.08', '0.8', '8.0', '80.0', '90.0']
+    >>> numbers = [ 0.0837, 0.867, 8.5, 83.7, 93.7]
+    >>> [ str(niceNumber(f)) for f in numbers ]
+    ['0.09', '0.9', '9.0', '90.0', '100.0']
+    >>> [ str(niceNumber(f,round=floor)) for f in numbers ]
+    ['0.08', '0.8', '8.0', '80.0', '90.0']
+    >>> [ str(niceNumber(f,round=round)) for f in numbers ]
+    ['0.08', '0.9', '9.0', '80.0', '90.0']
     """
     fa = abs(f)
     s = "%.1e" % fa
-    m, n = [int(float(n)) for n in s.split('e')]
-    if not below:
-        m = m+1
+    m, n = s.split('e')
+    m = int(round(float(m)))
+    n = int(n)
     return m*10.**n
 
 
