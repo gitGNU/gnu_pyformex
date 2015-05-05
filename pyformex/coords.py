@@ -722,7 +722,7 @@ class Coords(ndarray):
          [ 1.  0.  0.]
          [ 0.  2.  0.]]
 
-       """
+        """
         if min is None and max is None:
             raise ValueError("At least one of min or max have to be specified.")
 
@@ -801,10 +801,12 @@ class Coords(ndarray):
 
         Example:
 
-          >>> print(Coords([1.,1.,1.]).scale(2))
-          [ 2.  2.  2.]
-          >>> print(Coords([1.,1.,1.]).scale([2,3,4]))
-          [ 2.  3.  4.]
+        >>> print(Coords([1.,1.,1.]).scale(2))
+        [ 2.  2.  2.]
+        >>> print(Coords([1.,1.,1.]).scale([2,3,4]))
+        [ 2.  3.  4.]
+        >>> print(Coords([1.,1.,1.]).scale(2,dir=[1,2]))
+        [ 1.  2.  2.]
 
         """
         if center is not None:
@@ -844,15 +846,15 @@ class Coords(ndarray):
 
         Example:
 
-          >>> x = Coords([1.,1.,1.])
-          >>> print(x.translate(1))
-          [ 1.  2.  1.]
-          >>> print(x.translate(1,1.))
-          [ 1.  2.  1.]
-          >>> print(x.translate([0,1,0]))
-          [ 1.  2.  1.]
-          >>> print(x.translate([0,2,0],0.5))
-          [ 1.  2.  1.]
+        >>> x = Coords([1.,1.,1.])
+        >>> print(x.translate(1))
+        [ 1.  2.  1.]
+        >>> print(x.translate(1,1.))
+        [ 1.  2.  1.]
+        >>> print(x.translate([0,1,0]))
+        [ 1.  2.  1.]
+        >>> print(x.translate([0,2,0],0.5))
+        [ 1.  2.  1.]
 
         """
         if inplace:
