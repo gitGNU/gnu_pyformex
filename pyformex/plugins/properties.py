@@ -385,10 +385,12 @@ def checkArrayOrIdValue(values):
       [(1, 3.0), (2, 4.0)]
       >>> checkArrayOrIdValue([(1,3.0),(2,4.0)])
       [(1, 3.0), (2, 4.0)]
+      >>> checkArrayOrIdValue([(0,1.0),(2,4.0),(3,5.0),(4,4),(5,3.0),(1,4.0)])
+      [(0, 1.0), (2, 4.0), (3, 5.0), (4, 4.0), (5, 3.0), (1, 4.0)]
 
     """
     try:
-        v = checkArray(values, (6,), 'f', 'i')
+        v = checkArray(values, (6,), 'f', 'i', ndim=1)
         w = where(v != 0.0)[0]
         values = [ (i, v[i]) for i in w ]
     except:
