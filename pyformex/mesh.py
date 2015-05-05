@@ -2681,7 +2681,8 @@ def smartSeed(n,start=0):
         raise ValueError("Expected an integer, tuple or list; got %s = %s" % (type(n), n))
 
 #
-# Local utilities: move these to elements.py ??
+# Local utilities for support of the subdivide method:
+# TODO:   move these to elements.py ??
 #
 
 def tri3_wts(ndiv):
@@ -2743,6 +2744,7 @@ def gridpoints(seed0,seed1=None,seed2=None):
     return pts.reshape(-1, sh).squeeze()
 
 
+# TODO: remove or document in subdivide, fix docstring
 def line2_wts(seed0):
     """ Create weights for line2 subdivision.
 
@@ -2786,8 +2788,10 @@ def quad4_els(nx, ny):
     els = [ row_stack([ array([0, 1, n+1, n]) + i for i in range(nx) ]) + j * n for j in range(ny) ]
     return row_stack(els)
 
+# TODO: remove or document in subdivide
 quad9_wts=quad4_wts
 quad9_els=quad4_els
+
 
 def quadgrid(seed0, seed1, roll=0):
     """Create a quadrilateral mesh of unit size with the specified seeds.
