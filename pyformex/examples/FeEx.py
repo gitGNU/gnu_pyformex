@@ -36,6 +36,7 @@ from pyformex import utils
 from pyformex import zip
 from pyformex import GUI, PF
 from pyformex.gui import menu
+from pyformex import elements
 
 from pyformex.simple import rectangle
 from pyformex.plugins.fe import *
@@ -93,66 +94,83 @@ def deleteAll():
 
 ######################## parts ####################
 
-x0, y0 = 0., 0.
-x1, y1 = 1., 0.
-x2, y2 = 1., 1.
-x3, y3 = 0., 1.
+P = Coords(elements.Quad9.vertices)
+isopar = 'quad4'
 nx, ny = 4, 4
 eltype = 'quad'
 
+if '_FeEx_data_' in pf.PF:
+    globals().update(pf.PF['_FeEx_data_'])
+
+
+def storeData(res):
+    """Store data retrieved from user dialogs in the global variables."""
+    pf.PF['_FeEx_data_'] = res
+    for i in range(9):
+        k = 'P%s' % i
+        if res.has_key(k):
+             P[i].xy = res[k]
+    for k in [ 'nx','ny','eltype','isopar' ]:
+        if res.has_key(k):
+            globals()[k] = res[k]
+
+
 def createRectPart(res=None):
     """Create a rectangular domain from user input"""
-    global x0, y0, x2, y2, nx, ny, eltype
     if not checkNoModel():
         return
 
     if res is None:
         res = askItems([
-            _I('x0', x0, tooltip='The x-value of one of the corners'),
-            _I('y0', y0),
-            _I('x2', x2), _I('y2', y2),
-            _I('nx', nx), _I('ny', ny),
+            _I('P0', P[0], itemtype='point', ndim=2, tooltip='The x- and y-value of one of the corners'),
+            _I('P2', P[2], itemtype='point', ndim=2, tooltip='The x- and y-value of the opposite corner'),
+            _I('nx', nx, tooltip='Number of elements along side 0-1'),
+            _I('ny', ny, tooltip='Number of elements along side 1-2'),
             _I('eltype', eltype, itemtype='radio', choices=['quad', 'tri-u', 'tri-d']),
             ])
     if res:
-        globals().update(res)
-        if x0 > x2:
-            x0, x2 = x2, x0
-        if y0 > y2:
-            y0, y2 = y2, y0
+        storeData(res)
+        x,y = P.x, P.y
+        if x[0] > x[2]:
+            x[0], x[2] = x[2], x[0]
+        if y[0] > y[2]:
+            y[0], y[2] = y[2], y[0]
         diag = {'quad':'', 'tri-u':'u', 'tri-d':'d'}[eltype]
-        M = rectangle(nx, ny, x2-x0, y2-y0, diag=diag).toMesh().trl([x0, y0, 0])
+        M = rectangle(nx, ny, x[2]-x[0], y[2]-y[0], diag=diag).toMesh().trl([x[0], y[0], 0])
         addPart(M)
 
 
 def createQuadPart(res=None):
     """Create a quadrilateral domain from user input"""
-    global x0, y0, x1, y1, x2, y2, x3, y3, nx, ny, eltype
     if not checkNoModel():
         return
 
     if res is None:
         res = askItems([
-            _I('Vertex 0', (x0, y0)),
-            _I('Vertex 1', (x1, y1)),
-            _I('Vertex 2', (x2, y2)),
-            _I('Vertex 3', (x3, y3)),
+            _I('isopar',isopar,choices=['quad4','quad8','quad9'],tooltip='Isoparametric model'),
+            _I('P0', P[0], itemtype='point', ndim=2, tooltip='First corner'),
+            _I('P1', P[1], itemtype='point', ndim=2, tooltip='Second corner'),
+            _I('P2', P[2], itemtype='point', ndim=2, tooltip='Third corner'),
+            _I('P3', P[3], itemtype='point', ndim=2, tooltip='Fourth corner'),
+            _I('P4', P[4], itemtype='point', ndim=2, tooltip='Midside P0-P1'),
+            _I('P5', P[5], itemtype='point', ndim=2, tooltip='Midside P1-P2'),
+            _I('P6', P[6], itemtype='point', ndim=2, tooltip='Midside P2-P3'),
+            _I('P7', P[7], itemtype='point', ndim=2, tooltip='Midside P3-P4'),
+            _I('P8', P[8], itemtype='point', ndim=2, tooltip='Center point'),
             _I('nx', nx),
             _I('ny', ny),
             _I('eltype', eltype, itemtype='radio', choices=['quad', 'tri-u', 'tri-d']),
-            ])
+            ], enablers=[
+                ('isopar','quad8','P4','P5','P6','P7'),
+                ('isopar','quad9','P4','P5','P6','P7','P8'),
+                ])
     if res:
-        x0, y0 = res['Vertex 0']
-        x1, y1 = res['Vertex 1']
-        x2, y2 = res['Vertex 2']
-        x3, y3 = res['Vertex 3']
-        nx = res['nx']
-        ny = res['ny']
-        eltype = res['eltype']
+        storeData(res)
         diag = {'quad':'', 'tri-u':'u', 'tri-d':'d'}[eltype]
-        xold = rectangle(1, 1).coords
-        xnew = Coords([[x0, y0], [x1, y1], [x2, y2], [x3, y3]])
-        M = rectangle(nx, ny, 1., 1., diag=diag).toMesh().isopar('quad4', xnew, xold)
+        xold = Coords(getattr(elements,isopar.capitalize()).vertices)
+        np = int(isopar[-1])
+        xnew = P[:np]
+        M = rectangle(nx, ny, 1., 1., diag=diag).toMesh().isopar(isopar, xnew, xold)
         addPart(M)
 
 
@@ -168,16 +186,16 @@ def addPart(M):
     geometry_menu.selection.draw()
 
 
-def convertQuadratic(qtype='quad8'):
-    """Convert the parts to quadratic"""
-    global parts
-    parts = [ p.convert(qtype) for p in parts ]
-    geometry_menu.selection.changeValues(parts)
-    drawParts()
+## def convertQuadratic(qtype='quad8'):
+##     """Convert the parts to quadratic"""
+##     global parts
+##     parts = [ p.convert(qtype) for p in parts ]
+##     geometry_menu.selection.changeValues(parts)
+##     drawParts()
 
-def convertQuadratic9():
-    """Convert the parts to quadratic9"""
-    convertQuadratic(qtype='quad9')
+## def convertQuadratic9():
+##     """Convert the parts to quadratic9"""
+##     convertQuadratic(qtype='quad9')
 
 
 def drawParts():
@@ -264,7 +282,7 @@ def checkNoModel():
     if model is not None:
         if ask('You have already merged the parts! I can not add new parts anymore.\nYou should first delete everything and recreate the parts.', ['Delete', 'Cancel']) == 'Delete':
             deleteAll()
-    return model is not None
+    return model is None
 
 
 ################# Add properties ######################
@@ -1120,8 +1138,8 @@ def create_menu():
         ("&Delete All", deleteAll),
         ("&Create Rectangular Part", createRectPart),
         ("&Create QuadrilateralPart", createQuadPart),
-        ("&Convert to Quadratic-8", convertQuadratic),
-        ("&Convert to Quadratic-9", convertQuadratic9),
+        ## ("&Convert to Quadratic-8", convertQuadratic),
+        ## ("&Convert to Quadratic-9", convertQuadratic9),
         ("&Show All", drawParts),
         ("---", None),
         ("&Merge Parts into Model", createModel),
