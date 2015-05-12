@@ -118,9 +118,13 @@ class Coords(ndarray):
     >>> print(X)
     [[ 0.  1.  2.]
      [ 3.  4.  9.]]
-    >>> print(X.yz)
-    [[ 1.  2.]
-     [ 4.  9.]]
+    >>> print(X.xz)
+    [[ 0.  2.]
+     [ 3.  9.]]
+    >>> X.x = 0.
+    >>> print(X)
+    [[ 0.  1.  2.]
+     [ 0.  4.  9.]]
     """
     #
     # :DEV
@@ -252,6 +256,42 @@ class Coords(ndarray):
 
         """
         return self.view(type=ndarray)
+
+    ################ property setters ##############
+    @x.setter
+    def x(self, value):
+        """Set the X coordinates of the points"""
+        self[...,0] = value
+
+    @y.setter
+    def y(self, value):
+        """Set the Y coordinates of the points"""
+        self[...,1] = value
+
+    @z.setter
+    def z(self, value):
+        """Set the Z coordinates of the points"""
+        self[...,2] = value
+
+    @xy.setter
+    def xy(self, value):
+        """Set the XY coordinates of the points"""
+        self[...,:2] = value
+
+    @yz.setter
+    def yz(self, value):
+        """Set the YZ coordinates of the points"""
+        self[...,(0,2)] = value
+
+    @xz.setter
+    def xz(self, value):
+        """Set the XZ coordinates of the points"""
+        self[...,1:] = value
+
+    @xyz.setter
+    def xyz(self, value):
+        """Set the XYZ coordinates of the points"""
+        self = value
 
     ################ end property methods ##########
 
