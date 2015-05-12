@@ -632,7 +632,7 @@ def recordSession(stop=0):
     print("Recording your session to file %s" % fn)
     x, y, w, h = pf.GUI.XGeometry()
     cmd = "recordmydesktop -x %s -y %s --width %s --height %s --no-frame -o %s" % (x, y, w, h, fn)
-    P = utils.system(cmd)
+    P = utils.system(cmd,wait=False)
     print("Recording pid = %s" % P.pid)
     #
     # TODO: this should be replaced with storing the process P

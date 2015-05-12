@@ -54,7 +54,7 @@ def help(page=None):
     else:
         browser = pf.cfg['viewer']
     print([browser, page])
-    utils.system([browser, page])
+    utils.system([browser, page],wait=False)
 
 
 def catchAndDisplay(expression):
