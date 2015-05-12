@@ -1122,9 +1122,9 @@ class InputFSlider(InputFloat):
 class InputPoint(InputItem):
     """A 3D point/vector input item."""
 
-    def __init__(self,name,value,*args,**kargs):
+    def __init__(self,name,value,ndim,*args,**kargs):
         """Initialize the input item."""
-        self.input = CoordsBox()
+        self.input = CoordsBox(ndim=ndim)
         InputItem.__init__(self,name,*args,**kargs)
         self.layout().insertWidget(1, self.input)
         self.setValue(value)
