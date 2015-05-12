@@ -340,6 +340,27 @@ class Geometry(object):
     @property
     def xyz(self):
         return self.coords.xyz
+    @x.setter
+    def x(self, value):
+        self.coords.x = value
+    @y.setter
+    def y(self, value):
+        self.coords.y = value
+    @z.setter
+    def z(self, value):
+        self.coords.z = value
+    @xy.setter
+    def xy(self, value):
+        self.coords.xy = value
+    @yz.setter
+    def yz(self, value):
+        self.coords.yz = value
+    @xz.setter
+    def xz(self, value):
+        self.coords.xz = value
+    @xyz.setter
+    def xyz(self, value):
+        self.coords.xyz = value
     def bbox(self):
         return self.coords.bbox()
     def center(self):
