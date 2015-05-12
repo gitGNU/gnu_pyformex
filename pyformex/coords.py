@@ -63,7 +63,7 @@ class Coords(ndarray):
     and error handling.
 
     :class:`Coords` is implemented as a subclass of :class:`numpy.ndarray`,
-    and thus inherits all its methods.
+    and thus inherits all its methods and atttributes.
     The last axis of the :class:`Coords` always has a length equal to 3.
     Each set of 3 values along the last axis represents a single point
     in 3D cartesian space. The float datatype is only checked at creation
@@ -90,11 +90,37 @@ class Coords(ndarray):
       the original data if possible, e.g. if `data` is a correctly shaped and
       typed :class:`numpy.ndarray`.
 
+    The Coords class has the following 'property' methods:
+
+    - `x`: the X coordinates of the points
+    - `y`: the Y coordinates of the points
+    - `z`: the Z coordinates of the points
+    - `xy`: the X and Y coordinates of the points
+    - `xz`: the X and Z coordinates of the points
+    - `yz`: the Y and Z coordinates of the points
+    - `xyz`: all three coordinates of the points
+
+    These all provide ndarrays that are views on Coords object and can thus be
+    used to change (subsets of) the coordinates. They are merely a notational
+    convenience.
+
     Example:
 
-      >>> Coords([1.,0.])
-      Coords([ 1.,  0.,  0.], dtype=float32)
-
+    >>> Coords([1.,0.])
+    Coords([ 1.,  0.,  0.], dtype=float32)
+    >>> X = Coords(arange(6).reshape(2,3))
+    >>> print(X)
+    [[ 0.  1.  2.]
+     [ 3.  4.  5.]]
+    >>> print(X.y)
+    [ 1.  4.]
+    >>> X.z[1] = 9.
+    >>> print(X)
+    [[ 0.  1.  2.]
+     [ 3.  4.  9.]]
+    >>> print(X.yz)
+    [[ 1.  2.]
+     [ 4.  9.]]
     """
     #
     # :DEV
@@ -152,6 +178,84 @@ class Coords(ndarray):
         return ar
 
 
+    ################ property methods ##########
+    @property
+    def x(self):
+        """Returns the X-coordinates of all points.
+
+        Returns an ndarray with shape `self.pshape()`, providing a view
+        on the X-coordinates of all the points.
+
+        """
+        return self[..., 0].view(type=ndarray)
+
+    @property
+    def y(self):
+        """Returns the Y-coordinates of all points.
+
+        Returns an ndarray with shape `self.pshape()`, providing a view
+        on the Y-coordinates of all the points.
+
+        """
+        return self[..., 1].view(type=ndarray)
+
+    @property
+    def z(self):
+        """Returns the Z-coordinates of all points.
+
+        Returns an ndarray with shape `self.pshape()`, providing a view
+        on the Z-coordinates of all the points.
+
+        """
+        return self[..., 2].view(type=ndarray)
+
+    @property
+    def xy(self):
+        """Returns the X- and Y-coordinates of all points.
+
+        Returns an ndarray with shape `self.shape` except last axis
+        is reduced to 2, providing a view on the X- and Y-coordinates
+        of all the points.
+
+        """
+        return self[..., :2].view(type=ndarray)
+
+    @property
+    def xz(self):
+        """Returns the X- and Y-coordinates of all points.
+
+        Returns an ndarray with shape `self.shape` except last axis
+        is reduced to 2, providing a view on the X- and Z-coordinates
+        of all the points.
+
+        """
+        return self[..., (0,2)].view(type=ndarray)
+
+    @property
+    def yz(self):
+        """Returns the X- and Y-coordinates of all points.
+
+        Returns an ndarray with shape `self.shape` except last axis
+        is reduced to 2, providing a view on the Y- and Z-coordinates
+        of all the points.
+
+        """
+        return self[..., 1:].view(type=ndarray)
+
+    @property
+    def xyz(self):
+        """Returns the coordinates of all points as an ndarray.
+
+        Returns an ndarray with shape `self.shape` except last axis
+        is reduced to 2, providing a view on all the coordinates
+        of all the points.
+
+        """
+        return self.view(type=ndarray)
+
+    ################ end property methods ##########
+
+
 ###########################################################################
     #
     #   Methods that return information about a Coords object or other
@@ -186,45 +290,9 @@ class Coords(ndarray):
 
     def npoints(self):
         """Return the total number of points."""
-        return asarray(self.shape[:-1]).prod()
+        return array(self.shape[:-1]).prod()
 
     ncoords = npoints
-
-    def x(self):
-        """Returns the X-coordinates of all points.
-
-        Returns an array with all the X-coordinates in the Coords.
-        The returned array has the same shape as the Coords array along
-        its first ndim-1 axes.
-        This is equivalent with ::
-
-          asarray(self[...,0])
-        """
-        return asarray(self[..., 0])
-
-    def y(self):
-        """Return the Y-coordinates of all points.
-
-        Returns an array with all the Y-coordinates in the Coords.
-        The returned array has the same shape as the Coords array along
-        its first ndim-1 axes.
-        This is equivalent with ::
-
-          asarray(self[...,1])
-        """
-        return asarray(self[..., 1])
-
-    def z(self):
-        """Returns the Z-coordinates of all points.
-
-        Returns an array with all the Z-coordinates in the Coords.
-        The returned array has the same shape as the Coords array along
-        its first ndim-1 axes.
-        This is equivalent with ::
-
-          asarray(self[...,2])
-        """
-        return asarray(self[..., 2])
 
 
     # Size, Bounds
@@ -1308,7 +1376,7 @@ class Coords(ndarray):
         # we should probably do this for map1 and mapd too
         X = self.points()
         f = zeros_like(X)
-        f[..., 0], f[..., 1], f[..., 2] = func(X.x(), X.y(), X.z())
+        f[..., 0], f[..., 1], f[..., 2] = func(X.x, X.y, X.z)
         return f.reshape(self.shape)
 
 

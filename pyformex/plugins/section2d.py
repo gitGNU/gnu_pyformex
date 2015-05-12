@@ -86,7 +86,7 @@ def sectionChar(F):
     z axis to yield a positive surface.
 
     The return value is a dict with the following characteristics:
-    
+
     - `L`   : circumference,
     - `A`   : enclosed surface,
     - `Sx`  : first area moment around global x-axis
@@ -98,8 +98,8 @@ def sectionChar(F):
     if F.nplex() != 2:
         raise ValueError("Expected a plex-2 Formex!")
     #pf.debug("The circumference has %d segments" % F.nelems())
-    x = F.x()
-    y = F.y()
+    x = F.x
+    y = F.y
     x0 = x[:, 0]
     y0 = y[:, 0]
     x1 = x[:, 1]
@@ -153,7 +153,7 @@ def princTensor2D(Ixx, Iyy, Ixy):
     """Compute the principal values and directions of a 2D tensor.
 
     Returns a tuple with three values:
-    
+
     - `alpha` : angle (in radians) from x-axis to principal X-axis
     - `IXX,IYY` : principal values of the tensor
     """
@@ -165,6 +165,6 @@ def princTensor2D(Ixx, Iyy, Ixy):
     IYY = C-R
     alpha = atan2(Ixy, D) * 0.5
     return alpha, IXX, IYY
-    
+
 
 # End

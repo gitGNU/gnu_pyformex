@@ -319,12 +319,27 @@ class Geometry(object):
 
     def points(self):
         return self.coords.points()
+    @property
     def x(self):
-        return self.coords.x()
+        return self.coords.x
+    @property
     def y(self):
-        return self.coords.y()
+        return self.coords.y
+    @property
     def z(self):
-        return self.coords.z()
+        return self.coords.z
+    @property
+    def xy(self):
+        return self.coords.xy
+    @property
+    def yz(self):
+        return self.coords.yz
+    @property
+    def xz(self):
+        return self.coords.xz
+    @property
+    def xyz(self):
+        return self.coords.xyz
     def bbox(self):
         return self.coords.bbox()
     def center(self):

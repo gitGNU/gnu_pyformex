@@ -1968,7 +1968,6 @@ class NaturalSpline(Curve):
 
 
     def compute_coefficients(self):
-       # x, y, z = self.coords.x(),self.coords.y(),self.coords.z()
         n = self.nparts
         M = zeros([4*n, 4*n])
         B = zeros([4*n, 3])
