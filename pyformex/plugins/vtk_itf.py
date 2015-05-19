@@ -95,6 +95,19 @@ import os
 #~ VTK_PISTON_DATA_OBJECT 34
 #~ VTK_PATH 35
 
+#~ vtk cell type is an integer. See
+#~ http://davis.lbl.gov/Manuals/VTK-4.5/vtkCellType_8h-source.html
+
+VTUtypes = {
+    'point' : vtk.VTK_VERTEX,
+    'line2' : vtk.VTK_LINE,
+    'tri3' : vtk.VTK_TRIANGLE,
+    'quad4' : vtk.VTK_QUAD,
+    'tet4' : vtk.VTK_TETRA,
+    'wedge6' : vtk.VTK_WEDGE,
+    'hex8' : vtk.VTK_HEXAHEDRON,
+    }
+
 def SetInput(vtkobj,data):
     """ Select SetInput method according to the vtk version. After version 5
     vtkObjects need the inpuit through SetInputData, before SetInput.
@@ -304,35 +317,12 @@ def convert2VTU(M):
     Return a VTK unstructured grid (VTU) supports any element type and
     is therefore an equivalent of pyFormex class Mesh.
     """
-    def eltype2VTU(elname):
-        """convert the Mesh.elName() into vtk cell type
-
-        vtk cell type is an integer. See
-        http://davis.lbl.gov/Manuals/VTK-4.5/vtkCellType_8h-source.html
-        """
-        import vtk
-        if elname == 'point':
-            return vtk.VTK_VERTEX
-        if elname == 'line2':
-            return vtk.VTK_LINE
-        elif elname == 'tri3':
-            return vtk.VTK_TRIANGLE
-        elif elname == 'quad4':
-            return vtk.VTK_QUAD
-        elif elname == 'tet4':
-            return vtk.VTK_TETRA
-        elif elname == 'wedge6':
-            return vtk.VTK_WEDGE
-        elif elname == 'hex8':
-            return vtk.VTK_HEXAHEDRON
-        else:
-            raise ValueError('conversion not yet implemented')
     # create vtk coords
     pts = coords2VTK(M.coords)
     # create vtk connectivity
     datav = elems2VTK(M.elems)
     # find vtu cell type
-    vtuCellType = eltype2VTU(M.elName())
+    vtuCellType = VTUtypes[M.elName()]
 
 
     # create the vtu
