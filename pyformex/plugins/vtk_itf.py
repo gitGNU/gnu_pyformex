@@ -1285,7 +1285,40 @@ def distance(self,ref,normals=None,loctol=1e-3,normtol=1e-5):
     dist=[asarray(d) for d in dist]
 
     return dist
+    
 
+def meshQuality(self,measure):
+    """Compute the quality of the elements using a given metric.
+
+    Parameters:
+    
+    - `self`: a Geometry object.
+     
+    - `measure`: string defining the quality measure.
+      This parameter needs to complete the vtk command with the correct
+      capitalization.
+    
+    For the allowed quality metrics check :
+    http://www.vtk.org/doc/nightly/html/classvtkMeshQuality.html
+    
+    Example:
+
+    >>> from pyformex.elements import Hex8
+    >>> h=Hex8.toMesh()
+    >>> meshQuality(h,'MaxAspectFrobenius')
+    array([ 1.])
+    
+    """
+    from re import split
+    vtkobj = convert2VTU(self)
+    quality = vtk.vtkMeshQuality()
+    quality = SetInput(quality,vtkobj)
+    elname = split("\d+", self.elName())[0].capitalize()
+    if elname == 'Tri' :
+        elname ='Triangle' # only exception
+    eval('quality.Set' + elname + 'QualityMeasureTo' + measure +'()')
+    quality = Update(quality)
+    return array2N(quality.GetOutput().GetCellData().GetArray('Quality'))
 
 
 def octree(surf,tol=0.0,npts=1.):
