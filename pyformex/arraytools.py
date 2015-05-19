@@ -1915,12 +1915,34 @@ def vectorTripleProduct(vec1, vec2, vec3):
     vec1, vec2, vec3 are (n,3) shaped arrays holding collections of vectors.
     The result is a (n,) shaped array with the triple product of each set
     of corresponding vectors from vec1,vec2,vec3.
-    This is also the square of the volume of the parallellepid formex by
+    This is also twice the volume of the parallellepid formex by
     the 3 vectors.
     If vec1 is a unit normal, the result is also the area of the parallellogram
     (vec2,vec3) projected in the direction vec1.
+
+    This is functionally equivalent with `dotpr(vec1, cross(vec2, vec3))`
+    but is implement in a more efficient way, using the determinant formula.
+
+    Example:
+
+    >>> vectorTripleProduct([[1.,0.,0.],[2.,0.,0.]],
+    ...                     [[1.,1.,0.],[2.,2.,0.]],
+    ...                     [[1.,1.,1.],[2.,2.,2.]])
+    array([ 1.,  8.])
     """
-    return dotpr(vec1, cross(vec2, vec3))
+    vec1 = asarray(vec1)
+    vec2 = asarray(vec2)
+    vec3 = asarray(vec3)
+    a11 = vec1[...,0]
+    a12 = vec1[...,1]
+    a13 = vec1[...,2]
+    a21 = vec2[...,0]
+    a22 = vec2[...,1]
+    a23 = vec2[...,2]
+    a31 = vec3[...,0]
+    a32 = vec3[...,1]
+    a33 = vec3[...,2]
+    return a11*(a22*a33-a32*a23) + a12*(a23*a31-a33*a21) + a13*(a21*a32-a22*a31)
 
 
 def vectorPairCosAngle(v1, v2):
@@ -1945,6 +1967,81 @@ def vectorPairAngle(v1, v2):
     each pair of vectors (vec1,vec2).
     """
     return arccos(vectorPairCosAngle(v1, v2))
+
+
+def det2(a):
+    """Compute the determinant of 2x2 matrix
+
+    Parameters:
+
+    - `a`: float array(...,2,2)
+
+    Returns a float array(...) with the determinant of each of the
+    2x2 matrices in the input array.
+
+    This method is faster than the generic numpy.linalg.det.
+    """
+    a = asarray(a)
+    a11 = a[...,0,0]
+    a12 = a[...,0,1]
+    a21 = a[...,1,0]
+    a22 = a[...,1,1]
+    return a11*a22 - a12*a21
+
+
+def det3(a):
+    """Compute the determinant of 3x3 matrix
+
+    Parameters:
+
+    - `a`: float array(...,3,3)
+
+    Returns a float array(...) with the determinant of each of the
+    3x3 matrices in the input array.
+
+    This method is faster than the generic numpy.linalg.det.
+
+    Example:
+
+    >>> det3([[[1.,0.,0.],[1.,1.,0.],[1.,1.,1.]],
+    ...       [[2.,0.,0.],[2.,2.,0.],[2.,2.,2.]]])
+    array([ 1.,  8.])
+    >>> np.linalg.det([[[1.,0.,0.],[1.,1.,0.],[1.,1.,1.]],
+    ...       [[2.,0.,0.],[2.,2.,0.],[2.,2.,2.]]])
+    array([ 1.,  8.])
+    """
+    a = asarray(a)
+    return vectorTripleProduct(a[...,0,:],a[...,1,:],a[...,2,:])
+
+
+def det4(a):
+    """Compute the determinant of 4x4 matrix
+
+    Parameters:
+
+    - `a`: float array(...,4,4)
+
+    Returns a float array(...) with the determinant of each of the
+    4x4 matrices in the input array.
+
+    This method is faster than the generic numpy.linalg.det.
+
+    Example:
+
+    >>> det4([[[1.,0.,0.,0.],[1.,1.,0.,0.],[1.,1.,1.,0.],[1.,1.,1.,1.]],
+    ...       [[2.,0.,0.,0.],[2.,2.,0.,0.],[2.,2.,2.,0.],[2.,2.,2.,2.]]])
+    array([  1.,  16.])
+    """
+    a = asarray(a)
+    a00 = a[...,0,0]
+    a01 = a[...,0,1]
+    a02 = a[...,0,2]
+    a03 = a[...,0,3]
+    m00 = det3(a[...,1:,[1,2,3]])
+    m01 = det3(a[...,1:,[0,2,3]])
+    m02 = det3(a[...,1:,[0,1,3]])
+    m03 = det3(a[...,1:,[0,1,2]])
+    return a00*m00 - a01*m01 + a02*m02 - a03*m03
 
 
 def percentile(values,perc=[25., 50., 75.],wts=None):

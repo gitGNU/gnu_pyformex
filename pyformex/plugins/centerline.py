@@ -39,26 +39,7 @@ from pyformex import utils
 from pyformex import coords
 from pyformex import connectivity
 from pyformex.plugins import tetgen
-
-
-def det3(f):
-    """Calculate the determinant of each of the 3 by 3 arrays.
-
-    f is a (n,3,3) array.
-    The output is 1d array containing the n corresponding determinants.
-    """
-    det = f[:, 0, 0]*(f[:, 1, 1]*f[:, 2, 2]-f[:, 1, 2]*f[:, 2, 1]) - f[:, 0, 1]*(f[:, 1, 0]*f[:, 2, 2]-f[:, 1, 2]*f[:, 2, 0]) + f[:, 0, 2]*(f[:, 1, 0]*f[:, 2, 1]-f[:, 1, 1]*f[:, 2, 0])
-    return det
-
-
-def det4(f):
-    """Calculate the determinant of each of the 4 by 4 arrays.
-
-    f is a (n,4,4) array.
-    The output is 1d array containing the n corresponding determinants.
-    """
-    det = f[:, 0, 0]*det3(f[:, 1:, 1:])-f[:, 0, 1]*det3(f[:, 1:, [0, 2, 3]])+f[:, 0, 2]*det3(f[:, 1:, [0, 1, 3]])-f[:, 0, 3]*det3(f[:, 1:, [0, 1, 2]])
-    return det
+from pyformex.arraytools import det4
 
 
 def encode2(i, j, n):
