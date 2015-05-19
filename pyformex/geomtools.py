@@ -270,8 +270,10 @@ def intersectLineWithLine(q1,m1,q2,m2,mode='all',times=False):
     dot11 = dot11[..., newaxis]
     dot22 = dot22[..., newaxis]
     dot12 = dot12[..., newaxis]
+    errh = seterr(divide='ignore', invalid='ignore')
     t1 = dotpr(q12, m2*dot12-m1*dot22) / denom
     t2 = dotpr(q12, m2*dot11-m1*dot12) / denom
+    seterr(**errh)
     if times:
         return t1, t2
     else:
@@ -891,7 +893,7 @@ def pointNearLine(X,p,n,atol,nproc=1):
         return ip
     args = multi.splitArgs((X,p,n,atol),mask=(0,1,1,0),nproc=nproc)
     tasks = [(pointNearLine, a) for a in args]
-    res = multi.multitask(tasks, nproc)     
+    res = multi.multitask(tasks, nproc)
     from pyformex import olist
     return olist.concatenate(res)
 
@@ -1039,6 +1041,35 @@ def degenerate(area, normals):
     Returns a list of the degenerate element numbers as a sorted array.
     """
     return unique(concatenate([where(area<=0)[0], where(isnan(normals))[0]]))
+
+
+def hexVolume(x):
+    """Compute the volume of hexahedrons.
+
+    Parameters:
+
+    - `x`: float array (nelems,8,3)
+
+    Returns a float array (nelems) withe the approximate volume of the
+    hexahedrons formed by each 8-tuple of vertices. The volume is obained
+    by dividing the hexahedron in 24 tetrahedrons and using the formulas
+    from http://www.osti.gov/scitech/servlets/purl/632793
+
+    Example:
+
+    >>> from elements import Hex8
+    >>> X = Coords(Hex8.vertices).reshape(-1,8,3)
+    >>> print(hexVolume(X))
+
+    """
+    x = checkArray(x,shape=(-1,8,3),kind='f')
+    x71 = x[...,6,:] - x[...,1,:]
+    x60 = x[...,7,:] - x[...,0,:]
+    x72 = x[...,6,:] - x[...,3,:]
+    x30 = x[...,2,:] - x[...,0,:]
+    x50 = x[...,5,:] - x[...,0,:]
+    x74 = x[...,6,:] - x[...,4,:]
+    return (vectorTripleProduct(x71+x60,x72,x30) + vectorTripleProduct(x60,x72+x50,x74) + vectorTripleProduct(x71,x50,x74+x30)) / 12
 
 
 def levelVolumes(x):
