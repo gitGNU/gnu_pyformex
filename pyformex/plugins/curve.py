@@ -319,8 +319,8 @@ class Curve(Geometry):
                 nseg = self.nparts
             at = arange(nseg+1) * float(self.nparts) / nseg
 
-        if self.closed:
-            at = at[:-1]
+        #if self.closed:
+        #    at = at[:-1]
         return at
 
 
