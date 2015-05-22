@@ -26,9 +26,9 @@
 """
 from __future__ import print_function
 
-from . import utils
-from . import arraytools as at
-from .coords import Coords
+from pyformex import utils
+from pyformex import arraytools as at
+from pyformex.coords import Coords
 
 import numpy as np
 

@@ -840,6 +840,7 @@ def distanceFromLine(X,lines,mode='all'):
     for mode 'pair'.
 
     Example:
+
     >>> X = Coords([[0.,1.,0.],[3.,0.,0.],[4.,3.,0.]])
     >>> L = Line([[2.,0.,0.],[0.,1.,0.]], [[0.,3.,0.],[1.,0.,0.]])
     >>> print(distanceFromLine(X,L))
@@ -874,6 +875,7 @@ def pointNearLine(X,p,n,atol,nproc=1):
     - `X`: a (nx,3) shaped array of points.
     - `p`, `n`: (np,3) shaped arrays of points and vectors defining `np` lines.
     - `atol`: float or (nx,) shaped float array of pointwise tolerances
+
     Returns a list of arrays with sorted point indices for each of the lines.
 
     Example:

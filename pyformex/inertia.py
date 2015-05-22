@@ -39,14 +39,13 @@ The prefered way to compute inertia data of a geometric model is through the
 """
 from __future__ import print_function
 
+from pyformex import arraytools as at
+from pyformex import utils
+from pyformex.coords import Coords
+from pyformex.formex import Formex
+from pyformex.coordsys import CoordSys
 
 import numpy as np
-from . import arraytools as at
-from . import utils
-from .coords import Coords
-from .formex import Formex
-from .coordsys import CoordSys
-
 
 class Tensor(np.ndarray):
     """A second order symmetric(!) shaped tensor in 3D vector space.
@@ -132,7 +131,7 @@ class Tensor(np.ndarray):
             raise ValueError('Wrong Coordinate System')
         ar.CS = cs
         return ar
-    
+
 
     def __array_finalize__(self, obj):
         """Finalize the new Matrix object.
@@ -231,7 +230,7 @@ class Tensor(np.ndarray):
             axes[:, 2] = -axes[:, 2]
         return prin, axes
 
-        
+
     def rotate(self,rot):
         """Transform the tensor on coordinate system rotation.
 
@@ -251,8 +250,8 @@ class Tensor(np.ndarray):
         """
         rot = at.checkArray(rot,shape=(3,3),kind='f')
         return Tensor(at.abat(rot,self),self.CS.rotate(rot))
-    
-    
+
+
 class Inertia(Tensor):
     """A class for storing the inertia tensor of an array of points.
 
@@ -302,15 +301,15 @@ class Inertia(Tensor):
         ar.ctr = Coords(at.checkArray(ctr,shape=(3,),kind='f'))
         return ar
 
- 
+
     def translate(self,trl,toG=False):
         """Return the inertia tensor around axes translated over vector trl.
-        
+
         Parameters:
-        
-        - `trl`: arraylike (3,). Distance vector from the center of mass 
+
+        - `trl`: arraylike (3,). Distance vector from the center of mass
           to the new reference point.
-        - `toG`: bool. If False (default) the inertia tensor is translated to the 
+        - `toG`: bool. If False (default) the inertia tensor is translated to the
           the  new reference point, otherwise it will be translated to its center
           of mass
 
@@ -323,15 +322,15 @@ class Inertia(Tensor):
             trf = -trf
         return self.tensor + self.mass * trf
 
-    
+
     def translateTo(self,ref,toG=False):
         """Return the inertia tensor around axes translated to the reference
         point ref.
-        
+
         Parameters:
-        
+
         - `ref`: arraylike (3,). The new reference point coordinates.
-        - `toG`: bool. If False (default) the inertia tensor is translated to the 
+        - `toG`: bool. If False (default) the inertia tensor is translated to the
           the  new reference point, otherwise it will be translated to its center
           of mass
 
@@ -341,7 +340,7 @@ class Inertia(Tensor):
         return self.translate(self,trl,toG=toG)
 
 
-   
+
     def toCS(self,cs):
         """Transform the coordinates to another CoordSys.
 

@@ -144,9 +144,19 @@ def ship_section_init(secname,modname):
 
 ############# Info selection ##########################
 
+
+def filter_local(name,fullname):
+    """Filter definitions to include in doc
+
+    We only include names defined in the module itself, except
+    for the gui.draw module, where we also include the defines from
+    openg.draw
+    """
+    return name.__module__ == fullname or (fullname == 'pyformex.gui.draw' and name.__module__ == 'pyformex.opengl.draw')
+
+
 def filter_names(info):
     return [ i for i in info if not i[0].startswith('_') ]
-
 
 def filter_docstrings(info):
     return [ i for i in info if not (i[1].__doc__ is None or i[1].__doc__.startswith('_')) ]
@@ -178,6 +188,7 @@ def do_class(name,obj):
     ship_class(name,names)
 
 
+
 def do_module(modname):
     """Retrieve information from the parse tree of a source file.
 
@@ -199,7 +210,7 @@ def do_module(modname):
     #print inspect.getmoduleinfo(filename)
     #print(inspect.getmembers(module,inspect.isclass))
     #print([c[1].__module__ for c in inspect.getmembers(module,inspect.isclass)])
-    classes = [ c for c in inspect.getmembers(module,inspect.isclass) if c[1].__module__ == fullname ]
+    classes = [ c for c in inspect.getmembers(module,inspect.isclass) if filter_local(c[1],fullname) ]
     classes = filter_names(classes)
     classes = filter_docstrings(classes)
     #print classes
@@ -209,7 +220,7 @@ def do_module(modname):
     #print classes
 
     # Functions #
-    functions = [ c for c in inspect.getmembers(module,inspect.isfunction) if c[1].__module__ == fullname ]
+    functions = [ c for c in inspect.getmembers(module,inspect.isfunction) if filter_local(c[1],fullname) ]
     functions = filter_names(functions)
     functions = filter_docstrings(functions)
     functions = sorted(functions,key=function_key)

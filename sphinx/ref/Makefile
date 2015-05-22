@@ -34,26 +34,27 @@
 COREMODULES= adjacency arraytools attributes \
   collection config connectivity coords coordsys \
   elements field fileread filewrite flatkeydb formex \
-  geometry geomfile geomtools \
+  geometry geomfile geomtools inertia \
   mesh multi mydict odict olist project \
-  script sendmail simple software timer utils varray
+  script sendmail simple software timer trisurface utils varray
 GUIMODULES= $(addprefix gui., \
   appMenu colorscale draw \
   image imageViewer menu \
   toolbar viewport widgets \
   )
+# DO NOT ADD matrix HERE
 OPENGLMODULES= $(addprefix opengl., \
-   camera canvas colors decors drawable \
+  camera canvas colors decors drawable  \
   objectdialog renderer sanitize scene shader \
   textext texture \
   )
 PLUGINMODULES= $(addprefix plugins., \
    calpy_itf cameratools ccxdat ccxinp curve datareader dxf export \
   fe fe_abq fe_post flavia \
-  imagearray inertia isopar isosurface lima neu_exp nurbs objects \
+  imagearray isopar isosurface lima neu_exp nurbs objects \
   partition plot2d polygon polynomial \
   postproc properties pyformex_gts section2d sectionize \
-  tetgen tools trisurface turtle units bifmesh web webgl \
+  tetgen tools turtle units bifmesh web webgl \
   )
 
 AUTOREF= $(COREMODULES) $(GUIMODULES) $(OPENGLMODULES) $(PLUGINMODULES)
@@ -72,11 +73,6 @@ PYFORMEXDIR= ../../pyformex
 # the pyFormex executable
 PYFORMEX= ${PYFORMEXDIR}/pyformex
 
-# Where to search for the modules
-#
-# Note that if we have same names, we may pick up the wrong module!
-#
-# vpath %.py $(addprefix ${PYFORMEXDIR}, / /opengl/ /gui/ /plugins/)
 
 
 all: ${AUTOSRC}

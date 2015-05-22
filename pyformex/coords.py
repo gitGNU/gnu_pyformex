@@ -2445,6 +2445,9 @@ def align(L,align,offset=[0., 0., 0.]):
     of juxtaposing them.
 
     Returns: a list with the aligned objects.
+
+    See also the :meth:`Coords.align` method for aligning a single object
+    with respect to a point.
     """
     r = L[:1]
     al = am =''

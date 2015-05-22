@@ -304,4 +304,5 @@ class Matrix4(np.matrix):
         """Return the transpose of the inverse."""
         return self.inverse().transpose()
 
+
 # End

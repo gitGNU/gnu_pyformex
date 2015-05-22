@@ -35,10 +35,10 @@ the current OpenGL framework in pyFormex.
 from __future__ import print_function
 
 
-from .matrix import Matrix4, Vector4
-from .. import arraytools as at
-from ..coords import Coords
-from ..plugins.nurbs import Coords4
+from pyformex.opengl.matrix import Matrix4, Vector4
+from pyformex import arraytools as at
+from pyformex.coords import Coords
+from pyformex.plugins.nurbs import Coords4
 
 import numpy as np
 

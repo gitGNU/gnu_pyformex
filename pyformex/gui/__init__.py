@@ -42,9 +42,8 @@ import pyformex as pf
 from pyformex import utils
 
 # We need this try to keep sphinx happy when building the docs
-# because pf.options is then not defined
+bindings = pf.cfg.get('gui/bindings','PySide')
 
-bindings = pf.cfg['gui/bindings']
 
 if bindings != 'PyQt4' and utils.hasModule('pyside'):
     from PySide import QtCore, QtGui, QtOpenGL
