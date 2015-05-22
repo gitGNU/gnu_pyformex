@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>45. plugins.imagearray — Convert bitmap images into numpy arrays. &mdash; pyFormex 1.0.1~a2 documentation</title>
+    <title>47. plugins.imagearray — Convert bitmap images into numpy arrays. &mdash; pyFormex 1.0.2~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.1~a2',
+        VERSION:     '1.0.2~a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,10 +51,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="46. plugins.inertia — inertia.py" href="plugins.inertia.html" />
-    <link rel="prev" title="44. plugins.flavia —" href="plugins.flavia.html" />
+    <link rel="next" title="48. plugins.isopar — Isoparametric transformations" href="plugins.isopar.html" />
+    <link rel="prev" title="46. plugins.flavia —" href="plugins.flavia.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -77,12 +77,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="plugins.inertia.html" title="46. plugins.inertia — inertia.py"
+          <a href="plugins.isopar.html" title="48. plugins.isopar — Isoparametric transformations"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="plugins.flavia.html" title="44. plugins.flavia —"
+          <a href="plugins.flavia.html" title="46. plugins.flavia —"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -101,9 +101,9 @@
    
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">45. <tt class="docutils literal"><span class="pre">plugins.imagearray</span></tt> &#8212; Convert bitmap images into numpy arrays.</a><ul>
-<li><a class="reference internal" href="#classes-defined-in-module-plugins-imagearray">45.1. Classes defined in module plugins.imagearray</a></li>
-<li><a class="reference internal" href="#functions-defined-in-module-plugins-imagearray">45.2. Functions defined in module plugins.imagearray</a></li>
+<li><a class="reference internal" href="#">47. <tt class="docutils literal"><span class="pre">plugins.imagearray</span></tt> &#8212; Convert bitmap images into numpy arrays.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-plugins-imagearray">47.1. Classes defined in module plugins.imagearray</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-plugins-imagearray">47.2. Functions defined in module plugins.imagearray</a></li>
 </ul>
 </li>
 </ul>
@@ -111,10 +111,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="plugins.flavia.html"
-                        title="previous chapter">44. <tt class="docutils literal"><span class="pre">plugins.flavia</span></tt> &#8212;</a></p>
+                        title="previous chapter">46. <tt class="docutils literal"><span class="pre">plugins.flavia</span></tt> &#8212;</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="plugins.inertia.html"
-                        title="next chapter">46. <tt class="docutils literal"><span class="pre">plugins.inertia</span></tt> &#8212; inertia.py</a></p>
+  <p class="topless"><a href="plugins.isopar.html"
+                        title="next chapter">48. <tt class="docutils literal"><span class="pre">plugins.isopar</span></tt> &#8212; Isoparametric transformations</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -149,15 +149,15 @@
           <div class="body">
             
   <div class="section" id="module-plugins.imagearray">
-<span id="plugins-imagearray-convert-bitmap-images-into-numpy-arrays"></span><span id="sec-ref-plugins-imagearray"></span><h1>45. <a class="reference internal" href="#module-plugins.imagearray" title="plugins.imagearray: Convert bitmap images into numpy arrays."><tt class="xref py py-mod docutils literal"><span class="pre">plugins.imagearray</span></tt></a> &#8212; Convert bitmap images into numpy arrays.<a class="headerlink" href="#module-plugins.imagearray" title="Permalink to this headline">¶</a></h1>
+<span id="plugins-imagearray-convert-bitmap-images-into-numpy-arrays"></span><span id="sec-ref-plugins-imagearray"></span><h1>47. <a class="reference internal" href="#module-plugins.imagearray" title="plugins.imagearray: Convert bitmap images into numpy arrays."><tt class="xref py py-mod docutils literal"><span class="pre">plugins.imagearray</span></tt></a> &#8212; Convert bitmap images into numpy arrays.<a class="headerlink" href="#module-plugins.imagearray" title="Permalink to this headline">¶</a></h1>
 <p>This module contains functions to convert bitmap images into numpy
 arrays and vice versa.</p>
 <p>This code was based on ideas found on the PyQwt mailing list.</p>
 <div class="section" id="classes-defined-in-module-plugins-imagearray">
-<h2>45.1. Classes defined in module plugins.imagearray<a class="headerlink" href="#classes-defined-in-module-plugins-imagearray" title="Permalink to this headline">¶</a></h2>
+<h2>47.1. Classes defined in module plugins.imagearray<a class="headerlink" href="#classes-defined-in-module-plugins-imagearray" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="functions-defined-in-module-plugins-imagearray">
-<h2>45.2. Functions defined in module plugins.imagearray<a class="headerlink" href="#functions-defined-in-module-plugins-imagearray" title="Permalink to this headline">¶</a></h2>
+<h2>47.2. Functions defined in module plugins.imagearray<a class="headerlink" href="#functions-defined-in-module-plugins-imagearray" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="plugins.imagearray.resizeImage">
 <tt class="descclassname">plugins.imagearray.</tt><tt class="descname">resizeImage</tt><big>(</big><em>image</em>, <em>w=0</em>, <em>h=0</em><big>)</big><a class="headerlink" href="#plugins.imagearray.resizeImage" title="Permalink to this definition">¶</a></dt>
@@ -375,12 +375,12 @@ axis is the <cite>z</cite> value, the last the <cite>x</cite>.</li>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="plugins.inertia.html" title="46. plugins.inertia — inertia.py"
+          <a href="plugins.isopar.html" title="48. plugins.isopar — Isoparametric transformations"
              >next</a> |</li>
         <li class="right" >
-          <a href="plugins.flavia.html" title="44. plugins.flavia —"
+          <a href="plugins.flavia.html" title="46. plugins.flavia —"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -388,7 +388,7 @@ axis is the <cite>z</cite> value, the last the <cite>x</cite>.</li>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 08, 2015.
+      Last updated on May 22, 2015.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

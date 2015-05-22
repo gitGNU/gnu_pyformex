@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>79. opengl.textext — Text rendering on the OpenGL canvas. &mdash; pyFormex 1.0.1~a2 documentation</title>
+    <title>79. opengl.textext — Text rendering on the OpenGL canvas. &mdash; pyFormex 1.0.2~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.1~a2',
+        VERSION:     '1.0.2~a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,7 +51,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="80. opengl.texture — Texture rendering." href="opengl.texture.html" />
     <link rel="prev" title="78. opengl.shader — OpenGL shader programs" href="opengl.shader.html" />
@@ -82,7 +82,7 @@
         <li class="right" >
           <a href="opengl.shader.html" title="78. opengl.shader — OpenGL shader programs"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -158,6 +158,17 @@ It is dependent on freetype and the Python bindings freetype-py.</p>
 <dt id="opengl.textext.FontTexture">
 <em class="property">class </em><tt class="descclassname">opengl.textext.</tt><tt class="descname">FontTexture</tt><big>(</big><em>filename</em>, <em>size</em><big>)</big><a class="headerlink" href="#opengl.textext.FontTexture" title="Permalink to this definition">¶</a></dt>
 <dd><p>A Texture class for text rendering.</p>
+<p>The FontTexture class is a texture containing the most important
+characters of a font. This texture can then be used to draw text
+on geometry. In the current implementation only the characters with
+ASCII ordinal in the range 32..127 are put in the texture.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>filename</cite>: path string. The font to be used. It should be the
+full file path of an existing monospace font on the system.</li>
+<li><cite>size</cite>: float: intended font heigth. The actual height might
+differ a bit.</li>
+</ul>
 <dl class="method">
 <dt id="opengl.textext.FontTexture.activate">
 <tt class="descname">activate</tt><big>(</big><em>mode=None</em><big>)</big><a class="headerlink" href="#opengl.textext.FontTexture.activate" title="Permalink to this definition">¶</a></dt>
@@ -167,23 +178,46 @@ It is dependent on freetype and the Python bindings freetype-py.</p>
 
 <dl class="method">
 <dt id="opengl.textext.FontTexture.texCoords">
-<tt class="descname">texCoords</tt><big>(</big><em>ord</em><big>)</big><a class="headerlink" href="#opengl.textext.FontTexture.texCoords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the texture coordinates for ascii character position ord.</p>
-<p>ord is an integer in the range 32..127
-Returns the font texture coordinates of the square containing the
-character with the ordinal number ord.</p>
+<tt class="descname">texCoords</tt><big>(</big><em>char</em><big>)</big><a class="headerlink" href="#opengl.textext.FontTexture.texCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the texture coordinates for a character or string.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>char</cite>: integer or ascii string. If an integer, it should be in the range
+32..127 (printable ASCII characters). If a string, all its characters
+should be ASCII printable characters (have an ordinal value in the
+range 32..127).</li>
+</ul>
+<p>If <cite>char</cite> is an integer, returns a tuple with the texture coordinates
+in the FontTexture corresponding with the specified character. This is a
+sequence of four (x,y) pairs corresponding respectively with the
+lower left, lower right, upper right, upper left corners of the character
+in the texture. Note that values for the lower corners are higher than those
+for the upper corners. This is because the FontTextures are (currently)
+stored from top to bottom, while opengl coordinates are from bottom to top.</p>
+<p>If <cite>char</cite> is a string of length <cite>ntext</cite>, returns a float array with shape
+(ntext,4,2) holding the texture coordinates needed to display
+the given text on a grid of quad4 elements.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="opengl.textext.FontTexture.default">
+<em class="property">classmethod </em><tt class="descname">default</tt><big>(</big><em>clas</em>, <em>size=18</em><big>)</big><a class="headerlink" href="#opengl.textext.FontTexture.default" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set and return the default FontTexture.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="opengl.textext.Text">
-<em class="property">class </em><tt class="descclassname">opengl.textext.</tt><tt class="descname">Text</tt><big>(</big><em>text</em>, <em>pos</em>, <em>gravity=None</em>, <em>size=18</em>, <em>width=None</em>, <em>font=None</em>, <em>grid=None</em>, <em>texmode=4</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#opengl.textext.Text" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">opengl.textext.</tt><tt class="descname">Text</tt><big>(</big><em>text</em>, <em>pos</em>, <em>gravity=None</em>, <em>size=18</em>, <em>width=None</em>, <em>font=None</em>, <em>lineskip=1.0</em>, <em>grid=None</em>, <em>texmode=4</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#opengl.textext.Text" title="Permalink to this definition">¶</a></dt>
 <dd><p>A text drawn at a 2D or 3D position.</p>
 <p>Parameters:</p>
 <ul class="simple">
 <li><cite>text</cite>: string: the text to display. If not a string, the string
-representation of the object will be drawn.</li>
+representation of the object will be drawn. Newlines in the string
+are supported. After a newline, the remainder of the string is continued
+from a lower vertical position and the initial horizontal position.
+The vertical line offset is determined from the font.</li>
 <li><cite>pos</cite>: a 2D or 3D position. If 2D, the values are measured in pixels.
 If 3D, it is a point in global 3D space. The text is drawn in 2D,
 inserted at the specified position.</li>
@@ -191,6 +225,24 @@ inserted at the specified position.</li>
 respect to the insert position. It can be a combination of one of the
 characters &#8216;N or &#8216;S&#8217; to specify the vertical positon, and &#8216;W&#8217; or &#8216;E&#8217;
 for the horizontal. The default(empty) string will center the text.</li>
+<li><cite>size</cite>: float: size (height) of the font. This is the displayed height.
+The used font can have a different height and is scaled accordingly.</li>
+<li><cite>width</cite>: float: width of the font. This is the displayed width o a single
+character (currently only monospace fonts are supported).
+The default is set from the <cite>size</cite> and the aspect ratio of the font.
+Setting this to a different value allows the creation of condensed and
+expanded font types. Condensed fonts are often used to save space.</li>
+<li><cite>font</cite>: <a class="reference internal" href="#opengl.textext.FontTexture" title="opengl.textext.FontTexture"><tt class="xref py py-class docutils literal"><span class="pre">FontTexture</span></tt></a> or string. The font to be used.
+If a string, it is the filename of an existing monospace font on
+the system.</li>
+<li><cite>lineskip</cite>: float: distance in pixels between subsequent baselines
+in case of multi-line text. Multi-line text results when the input
+<cite>text</cite> contains newlines.</li>
+<li><cite>grid</cite>: raster geometry for the text. This is the geometry where the
+generate text will be rendered on as a texture. The default is a
+grid of rectangles of size (<cite>width</cite>,`size`) which are juxtaposed
+horizontally. Each rectangle will be rendered with a single character
+on it.</li>
 </ul>
 <dl class="method">
 <dt id="opengl.textext.Text.addHighlight">
@@ -754,7 +806,7 @@ selected elements</p>
         <li class="right" >
           <a href="opengl.shader.html" title="78. opengl.shader — OpenGL shader programs"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -762,7 +814,7 @@ selected elements</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 08, 2015.
+      Last updated on May 22, 2015.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3. arraytools — A collection of numerical array utilities. &mdash; pyFormex 1.0.1~a2 documentation</title>
+    <title>3. arraytools — A collection of numerical array utilities. &mdash; pyFormex 1.0.2~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.1~a2',
+        VERSION:     '1.0.2~a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,7 +51,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="4. script — Basic pyFormex script functions" href="script.html" />
     <link rel="prev" title="2. formex — Formex algebra in Python" href="formex.html" />
@@ -82,7 +82,7 @@
         <li class="right" >
           <a href="formex.html" title="2. formex — Formex algebra in Python"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -193,6 +193,26 @@ numpy integer or floating type.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="arraytools.cumsum0">
+<tt class="descclassname">arraytools.</tt><tt class="descname">cumsum0</tt><big>(</big><em>a</em><big>)</big><a class="headerlink" href="#arraytools.cumsum0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the cumulative sum of a list of numbers preprended with a 0.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>a</cite>: list of integers</li>
+</ul>
+<p>Returns a list of len(a)+1 integers holding the cumulative sum of the
+list [0] + a.</p>
+<p>A common use case is when concatenating some blocks of different length.
+If the list <cite>a</cite> holds the length of each block, the cumsum0(a) holds
+the start and end of each block in the concatenation.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cumsum0</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="go">array([0, 2, 6, 9])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="arraytools.sind">
 <tt class="descclassname">arraytools.</tt><tt class="descname">sind</tt><big>(</big><em>arg</em>, <em>angle_spec=0.017453292519943295</em><big>)</big><a class="headerlink" href="#arraytools.sind" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the sine of an angle in degrees.</p>
@@ -286,18 +306,24 @@ This returns an angle in the range ]-180,180].</p>
 
 <dl class="function">
 <dt id="arraytools.niceNumber">
-<tt class="descclassname">arraytools.</tt><tt class="descname">niceNumber</tt><big>(</big><em>f</em>, <em>below=False</em><big>)</big><a class="headerlink" href="#arraytools.niceNumber" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a nice number close to f.</p>
-<p>f is a float number, whose sign is disregarded.</p>
-<p>A number close to abs(f) but having only 1 significant digit is returned.
-By default, the value is above abs(f). Setting below=True returns a
-value above.</p>
+<tt class="descclassname">arraytools.</tt><tt class="descname">niceNumber</tt><big>(</big><em>f</em>, <em>round=&lt;ufunc 'ceil'&gt;</em><big>)</big><a class="headerlink" href="#arraytools.niceNumber" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a nice number close to abs(f).</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>f</cite>: a float number, whose sign is disregarded.</li>
+<li><cite>round</cite>: callable, taking and returning a float number. This function
+if used in &#8216;rounding&#8217; the input number to a close nice number. Useful
+functions ar ceil(default), floor and round from either the numpy or
+math modules.</li>
+</ul>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">numbers</span> <span class="o">=</span> <span class="p">[</span> <span class="mf">0.0837</span><span class="p">,</span> <span class="mf">0.837</span><span class="p">,</span> <span class="mf">8.37</span><span class="p">,</span> <span class="mf">83.7</span><span class="p">,</span> <span class="mf">93.7</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">numbers</span> <span class="o">=</span> <span class="p">[</span> <span class="mf">0.0837</span><span class="p">,</span> <span class="mf">0.867</span><span class="p">,</span> <span class="mf">8.5</span><span class="p">,</span> <span class="mf">83.7</span><span class="p">,</span> <span class="mf">93.7</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span> <span class="nb">str</span><span class="p">(</span><span class="n">niceNumber</span><span class="p">(</span><span class="n">f</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">numbers</span> <span class="p">]</span>
 <span class="go">[&#39;0.09&#39;, &#39;0.9&#39;, &#39;9.0&#39;, &#39;90.0&#39;, &#39;100.0&#39;]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span> <span class="nb">str</span><span class="p">(</span><span class="n">niceNumber</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">below</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">numbers</span> <span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span> <span class="nb">str</span><span class="p">(</span><span class="n">niceNumber</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="nb">round</span><span class="o">=</span><span class="n">floor</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">numbers</span> <span class="p">]</span>
 <span class="go">[&#39;0.08&#39;, &#39;0.8&#39;, &#39;8.0&#39;, &#39;80.0&#39;, &#39;90.0&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span> <span class="nb">str</span><span class="p">(</span><span class="n">niceNumber</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="nb">round</span><span class="o">=</span><span class="nb">round</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">numbers</span> <span class="p">]</span>
+<span class="go">[&#39;0.08&#39;, &#39;0.9&#39;, &#39;9.0&#39;, &#39;80.0&#39;, &#39;90.0&#39;]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -769,8 +795,8 @@ If n &lt;= nblk, returns range(n+1).</p>
 equal size.</p>
 <p>Returns a list of nblk arrays, unless the size of the array is smaller
 than nblk, in which case a list with the original array is returned.</p>
-<p>If close==True, the elements where the array is split occur in both
-blocks delimited by the element.</p>
+<p>If close==True, the elements where the array is split are included
+in both blocks delimited by the element.</p>
 <p>Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">splitar</span><span class="p">(</span><span class="n">arange</span><span class="p">(</span><span class="mi">7</span><span class="p">),</span><span class="mi">3</span><span class="p">)</span>
 <span class="go">[array([0, 1]), array([2, 3, 4]), array([5, 6])]</span>
@@ -1418,10 +1444,19 @@ each couple (edg1,edg2).</p>
 <p>vec1, vec2, vec3 are (n,3) shaped arrays holding collections of vectors.
 The result is a (n,) shaped array with the triple product of each set
 of corresponding vectors from vec1,vec2,vec3.
-This is also the square of the volume of the parallellepid formex by
+This is also twice the volume of the parallellepid formex by
 the 3 vectors.
 If vec1 is a unit normal, the result is also the area of the parallellogram
 (vec2,vec3) projected in the direction vec1.</p>
+<p>This is functionally equivalent with <cite>dotpr(vec1, cross(vec2, vec3))</cite>
+but is implement in a more efficient way, using the determinant formula.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">vectorTripleProduct</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]],</span>
+<span class="gp">... </span>                    <span class="p">[[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]],</span>
+<span class="gp">... </span>                    <span class="p">[[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">],[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">2.</span><span class="p">]])</span>
+<span class="go">array([ 1.,  8.])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -1440,6 +1475,60 @@ each pair of vectors (vec1,vec2).</p>
 <p>vec1 and vec2 are (n,3) shaped arrays holding collections of vectors.
 The result is an (n) shaped array with the angle between
 each pair of vectors (vec1,vec2).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="arraytools.det2">
+<tt class="descclassname">arraytools.</tt><tt class="descname">det2</tt><big>(</big><em>a</em><big>)</big><a class="headerlink" href="#arraytools.det2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the determinant of 2x2 matrix</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>a</cite>: float array(...,2,2)</li>
+</ul>
+<p>Returns a float array(...) with the determinant of each of the
+2x2 matrices in the input array.</p>
+<p>This method is faster than the generic numpy.linalg.det.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="arraytools.det3">
+<tt class="descclassname">arraytools.</tt><tt class="descname">det3</tt><big>(</big><em>a</em><big>)</big><a class="headerlink" href="#arraytools.det3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the determinant of 3x3 matrix</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>a</cite>: float array(...,3,3)</li>
+</ul>
+<p>Returns a float array(...) with the determinant of each of the
+3x3 matrices in the input array.</p>
+<p>This method is faster than the generic numpy.linalg.det.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">det3</span><span class="p">([[[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">]],</span>
+<span class="gp">... </span>      <span class="p">[[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">2.</span><span class="p">]]])</span>
+<span class="go">array([ 1.,  8.])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">([[[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">]],</span>
+<span class="gp">... </span>      <span class="p">[[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">2.</span><span class="p">]]])</span>
+<span class="go">array([ 1.,  8.])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="arraytools.det4">
+<tt class="descclassname">arraytools.</tt><tt class="descname">det4</tt><big>(</big><em>a</em><big>)</big><a class="headerlink" href="#arraytools.det4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the determinant of 4x4 matrix</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>a</cite>: float array(...,4,4)</li>
+</ul>
+<p>Returns a float array(...) with the determinant of each of the
+4x4 matrices in the input array.</p>
+<p>This method is faster than the generic numpy.linalg.det.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">det4</span><span class="p">([[[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">]],</span>
+<span class="gp">... </span>      <span class="p">[[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">2.</span><span class="p">]]])</span>
+<span class="go">array([  1.,  16.])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -1796,7 +1885,7 @@ root is returned. Else, an error is raised.</p>
         <li class="right" >
           <a href="formex.html" title="2. formex — Formex algebra in Python"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -1804,7 +1893,7 @@ root is returned. Else, an error is raised.</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 14, 2015.
+      Last updated on May 22, 2015.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

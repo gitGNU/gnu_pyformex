@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>47. plugins.isopar — Isoparametric transformations &mdash; pyFormex 1.0.1~a2 documentation</title>
+    <title>48. plugins.isopar — Isoparametric transformations &mdash; pyFormex 1.0.2~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.1~a2',
+        VERSION:     '1.0.2~a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,10 +51,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="48. plugins.isosurface — Isosurface: surface reconstruction algorithms" href="plugins.isosurface.html" />
-    <link rel="prev" title="46. plugins.inertia — inertia.py" href="plugins.inertia.html" />
+    <link rel="next" title="49. plugins.isosurface — Isosurface: surface reconstruction algorithms" href="plugins.isosurface.html" />
+    <link rel="prev" title="47. plugins.imagearray — Convert bitmap images into numpy arrays." href="plugins.imagearray.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -77,12 +77,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="plugins.isosurface.html" title="48. plugins.isosurface — Isosurface: surface reconstruction algorithms"
+          <a href="plugins.isosurface.html" title="49. plugins.isosurface — Isosurface: surface reconstruction algorithms"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="plugins.inertia.html" title="46. plugins.inertia — inertia.py"
+          <a href="plugins.imagearray.html" title="47. plugins.imagearray — Convert bitmap images into numpy arrays."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -101,20 +101,20 @@
    
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">47. <tt class="docutils literal"><span class="pre">plugins.isopar</span></tt> &#8212; Isoparametric transformations</a><ul>
-<li><a class="reference internal" href="#classes-defined-in-module-plugins-isopar">47.1. Classes defined in module plugins.isopar</a></li>
-<li><a class="reference internal" href="#functions-defined-in-module-plugins-isopar">47.2. Functions defined in module plugins.isopar</a></li>
+<li><a class="reference internal" href="#">48. <tt class="docutils literal"><span class="pre">plugins.isopar</span></tt> &#8212; Isoparametric transformations</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-plugins-isopar">48.1. Classes defined in module plugins.isopar</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-plugins-isopar">48.2. Functions defined in module plugins.isopar</a></li>
 </ul>
 </li>
 </ul>
 
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="plugins.inertia.html"
-                        title="previous chapter">46. <tt class="docutils literal"><span class="pre">plugins.inertia</span></tt> &#8212; inertia.py</a></p>
+  <p class="topless"><a href="plugins.imagearray.html"
+                        title="previous chapter">47. <tt class="docutils literal"><span class="pre">plugins.imagearray</span></tt> &#8212; Convert bitmap images into numpy arrays.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="plugins.isosurface.html"
-                        title="next chapter">48. <tt class="docutils literal"><span class="pre">plugins.isosurface</span></tt> &#8212; Isosurface: surface reconstruction algorithms</a></p>
+                        title="next chapter">49. <tt class="docutils literal"><span class="pre">plugins.isosurface</span></tt> &#8212; Isosurface: surface reconstruction algorithms</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -149,9 +149,9 @@
           <div class="body">
             
   <div class="section" id="module-plugins.isopar">
-<span id="plugins-isopar-isoparametric-transformations"></span><span id="sec-ref-plugins-isopar"></span><h1>47. <a class="reference internal" href="#module-plugins.isopar" title="plugins.isopar: Isoparametric transformations"><tt class="xref py py-mod docutils literal"><span class="pre">plugins.isopar</span></tt></a> &#8212; Isoparametric transformations<a class="headerlink" href="#module-plugins.isopar" title="Permalink to this headline">¶</a></h1>
+<span id="plugins-isopar-isoparametric-transformations"></span><span id="sec-ref-plugins-isopar"></span><h1>48. <a class="reference internal" href="#module-plugins.isopar" title="plugins.isopar: Isoparametric transformations"><tt class="xref py py-mod docutils literal"><span class="pre">plugins.isopar</span></tt></a> &#8212; Isoparametric transformations<a class="headerlink" href="#module-plugins.isopar" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="classes-defined-in-module-plugins-isopar">
-<h2>47.1. Classes defined in module plugins.isopar<a class="headerlink" href="#classes-defined-in-module-plugins-isopar" title="Permalink to this headline">¶</a></h2>
+<h2>48.1. Classes defined in module plugins.isopar<a class="headerlink" href="#classes-defined-in-module-plugins-isopar" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="plugins.isopar.Isopar">
 <em class="property">class </em><tt class="descclassname">plugins.isopar.</tt><tt class="descname">Isopar</tt><big>(</big><em>eltype</em>, <em>coords</em>, <em>oldcoords</em><big>)</big><a class="headerlink" href="#plugins.isopar.Isopar" title="Permalink to this definition">¶</a></dt>
@@ -182,7 +182,7 @@ specified transformation type</div></blockquote>
 
 </div>
 <div class="section" id="functions-defined-in-module-plugins-isopar">
-<h2>47.2. Functions defined in module plugins.isopar<a class="headerlink" href="#functions-defined-in-module-plugins-isopar" title="Permalink to this headline">¶</a></h2>
+<h2>48.2. Functions defined in module plugins.isopar<a class="headerlink" href="#functions-defined-in-module-plugins-isopar" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="plugins.isopar.evaluate">
 <tt class="descclassname">plugins.isopar.</tt><tt class="descname">evaluate</tt><big>(</big><em>atoms</em>, <em>x</em>, <em>y=0</em>, <em>z=0</em><big>)</big><a class="headerlink" href="#plugins.isopar.evaluate" title="Permalink to this definition">¶</a></dt>
@@ -261,12 +261,12 @@ the element.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="plugins.isosurface.html" title="48. plugins.isosurface — Isosurface: surface reconstruction algorithms"
+          <a href="plugins.isosurface.html" title="49. plugins.isosurface — Isosurface: surface reconstruction algorithms"
              >next</a> |</li>
         <li class="right" >
-          <a href="plugins.inertia.html" title="46. plugins.inertia — inertia.py"
+          <a href="plugins.imagearray.html" title="47. plugins.imagearray — Convert bitmap images into numpy arrays."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -274,7 +274,7 @@ the element.</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 08, 2015.
+      Last updated on May 22, 2015.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

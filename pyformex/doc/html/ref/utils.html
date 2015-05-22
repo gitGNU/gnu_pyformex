@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>11. utils — A collection of miscellaneous utility functions. &mdash; pyFormex 1.0.1~a2 documentation</title>
+    <title>12. utils — A collection of miscellaneous utility functions. &mdash; pyFormex 1.0.2~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.1~a2',
+        VERSION:     '1.0.2~a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,10 +51,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="12. varray — Working with variable width tables." href="varray.html" />
-    <link rel="prev" title="10. elements — Definition of elements." href="elements.html" />
+    <link rel="next" title="13. varray — Working with variable width tables." href="varray.html" />
+    <link rel="prev" title="11. trisurface — Operations on triangulated surfaces." href="trisurface.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -77,12 +77,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="varray.html" title="12. varray — Working with variable width tables."
+          <a href="varray.html" title="13. varray — Working with variable width tables."
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="elements.html" title="10. elements — Definition of elements."
+          <a href="trisurface.html" title="11. trisurface — Operations on triangulated surfaces."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -101,20 +101,20 @@
    
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">11. <tt class="docutils literal"><span class="pre">utils</span></tt> &#8212; A collection of miscellaneous utility functions.</a><ul>
-<li><a class="reference internal" href="#classes-defined-in-module-utils">11.1. Classes defined in module utils</a></li>
-<li><a class="reference internal" href="#functions-defined-in-module-utils">11.2. Functions defined in module utils</a></li>
+<li><a class="reference internal" href="#">12. <tt class="docutils literal"><span class="pre">utils</span></tt> &#8212; A collection of miscellaneous utility functions.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-utils">12.1. Classes defined in module utils</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-utils">12.2. Functions defined in module utils</a></li>
 </ul>
 </li>
 </ul>
 
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="elements.html"
-                        title="previous chapter">10. <tt class="docutils literal"><span class="pre">elements</span></tt> &#8212; Definition of elements.</a></p>
+  <p class="topless"><a href="trisurface.html"
+                        title="previous chapter">11. <tt class="docutils literal"><span class="pre">trisurface</span></tt> &#8212; Operations on triangulated surfaces.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="varray.html"
-                        title="next chapter">12. <tt class="docutils literal"><span class="pre">varray</span></tt> &#8212; Working with variable width tables.</a></p>
+                        title="next chapter">13. <tt class="docutils literal"><span class="pre">varray</span></tt> &#8212; Working with variable width tables.</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -149,9 +149,9 @@
           <div class="body">
             
   <div class="section" id="module-utils">
-<span id="utils-a-collection-of-miscellaneous-utility-functions"></span><span id="sec-ref-utils"></span><h1>11. <a class="reference internal" href="#module-utils" title="utils: A collection of miscellaneous utility functions."><tt class="xref py py-mod docutils literal"><span class="pre">utils</span></tt></a> &#8212; A collection of miscellaneous utility functions.<a class="headerlink" href="#module-utils" title="Permalink to this headline">¶</a></h1>
+<span id="utils-a-collection-of-miscellaneous-utility-functions"></span><span id="sec-ref-utils"></span><h1>12. <a class="reference internal" href="#module-utils" title="utils: A collection of miscellaneous utility functions."><tt class="xref py py-mod docutils literal"><span class="pre">utils</span></tt></a> &#8212; A collection of miscellaneous utility functions.<a class="headerlink" href="#module-utils" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="classes-defined-in-module-utils">
-<h2>11.1. Classes defined in module utils<a class="headerlink" href="#classes-defined-in-module-utils" title="Permalink to this headline">¶</a></h2>
+<h2>12.1. Classes defined in module utils<a class="headerlink" href="#classes-defined-in-module-utils" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="utils.Process">
 <em class="property">class </em><tt class="descclassname">utils.</tt><tt class="descname">Process</tt><big>(</big><em>cmd</em>, <em>timeout</em>, <em>wait</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#utils.Process" title="Permalink to this definition">¶</a></dt>
@@ -419,7 +419,7 @@ names.</p>
 </div>
 <dl class="method">
 <dt id="utils.NameSequence.files">
-<tt class="descname">files</tt><big>(</big><em>sort=&lt;function hsorted at 0x2b3b1d4be488&gt;</em><big>)</big><a class="headerlink" href="#utils.NameSequence.files" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">files</tt><big>(</big><em>sort=&lt;function hsorted at 0x7fcd84a788c0&gt;</em><big>)</big><a class="headerlink" href="#utils.NameSequence.files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a (sorted) list of files matching the name pattern.</p>
 <p>A function may be specified to sort/filter the list of file names.
 The function should take a list of filenames as input. The output
@@ -498,7 +498,7 @@ UNIX-like shell command to select all the generated file names.</p>
 
 </div>
 <div class="section" id="functions-defined-in-module-utils">
-<h2>11.2. Functions defined in module utils<a class="headerlink" href="#functions-defined-in-module-utils" title="Permalink to this headline">¶</a></h2>
+<h2>12.2. Functions defined in module utils<a class="headerlink" href="#functions-defined-in-module-utils" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="utils.warning">
 <tt class="descclassname">utils.</tt><tt class="descname">warning</tt><big>(</big><em>message</em>, <em>level=&lt;type 'exceptions.UserWarning'&gt;</em>, <em>stacklevel=3</em><big>)</big><a class="headerlink" href="#utils.warning" title="Permalink to this definition">¶</a></dt>
@@ -517,14 +517,14 @@ An option is provided to switch off this warning in future sessions.</p>
 
 <dl class="function">
 <dt id="utils.deprecated">
-<tt class="descclassname">utils.</tt><tt class="descname">deprecated</tt><big>(</big><em>message</em><big>)</big><a class="headerlink" href="#utils.deprecated" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">utils.</tt><tt class="descname">deprecated</tt><big>(</big><em>message</em>, <em>stacklevel=4</em><big>)</big><a class="headerlink" href="#utils.deprecated" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator to deprecate a function</p>
 <p>This is like <a class="reference internal" href="#utils.warning" title="utils.warning"><tt class="xref py py-func docutils literal"><span class="pre">warning()</span></tt></a>, but the level is set to DeprecationWarning.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="utils.deprecated_by">
-<tt class="descclassname">utils.</tt><tt class="descname">deprecated_by</tt><big>(</big><em>old</em>, <em>new</em><big>)</big><a class="headerlink" href="#utils.deprecated_by" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">utils.</tt><tt class="descname">deprecated_by</tt><big>(</big><em>old</em>, <em>new</em>, <em>stacklevel=4</em><big>)</big><a class="headerlink" href="#utils.deprecated_by" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator to deprecate a function by another one.</p>
 <p>Adding this decorator to a function will warn the user with a
 message that the <cite>old</cite> function is deprecated in favor of <cite>new</cite>,
@@ -1651,12 +1651,12 @@ To search other containers, add handlers to iterate over their contents:</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="varray.html" title="12. varray — Working with variable width tables."
+          <a href="varray.html" title="13. varray — Working with variable width tables."
              >next</a> |</li>
         <li class="right" >
-          <a href="elements.html" title="10. elements — Definition of elements."
+          <a href="trisurface.html" title="11. trisurface — Operations on triangulated surfaces."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -1664,7 +1664,7 @@ To search other containers, add handlers to iterate over their contents:</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 14, 2015.
+      Last updated on May 22, 2015.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

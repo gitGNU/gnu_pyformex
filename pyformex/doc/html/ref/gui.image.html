@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>28. gui.image — Saving OpenGL renderings to image files. &mdash; pyFormex 1.0.1~a2 documentation</title>
+    <title>30. gui.image — Saving OpenGL renderings to image files. &mdash; pyFormex 1.0.2~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.1~a2',
+        VERSION:     '1.0.2~a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,10 +51,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="29. gui.imageViewer — A general image viewer" href="gui.imageViewer.html" />
-    <link rel="prev" title="27. gui.viewport — Interactive OpenGL Canvas embedded in a Qt4 widget." href="gui.viewport.html" />
+    <link rel="next" title="31. gui.imageViewer — A general image viewer" href="gui.imageViewer.html" />
+    <link rel="prev" title="29. gui.viewport — Interactive OpenGL Canvas embedded in a Qt4 widget." href="gui.viewport.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -77,12 +77,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="gui.imageViewer.html" title="29. gui.imageViewer — A general image viewer"
+          <a href="gui.imageViewer.html" title="31. gui.imageViewer — A general image viewer"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="gui.viewport.html" title="27. gui.viewport — Interactive OpenGL Canvas embedded in a Qt4 widget."
+          <a href="gui.viewport.html" title="29. gui.viewport — Interactive OpenGL Canvas embedded in a Qt4 widget."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -101,9 +101,9 @@
    
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">28. <tt class="docutils literal"><span class="pre">gui.image</span></tt> &#8212; Saving OpenGL renderings to image files.</a><ul>
-<li><a class="reference internal" href="#classes-defined-in-module-gui-image">28.1. Classes defined in module gui.image</a></li>
-<li><a class="reference internal" href="#functions-defined-in-module-gui-image">28.2. Functions defined in module gui.image</a></li>
+<li><a class="reference internal" href="#">30. <tt class="docutils literal"><span class="pre">gui.image</span></tt> &#8212; Saving OpenGL renderings to image files.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-gui-image">30.1. Classes defined in module gui.image</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-gui-image">30.2. Functions defined in module gui.image</a></li>
 </ul>
 </li>
 </ul>
@@ -111,10 +111,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="gui.viewport.html"
-                        title="previous chapter">27. <tt class="docutils literal"><span class="pre">gui.viewport</span></tt> &#8212; Interactive OpenGL Canvas embedded in a Qt4 widget.</a></p>
+                        title="previous chapter">29. <tt class="docutils literal"><span class="pre">gui.viewport</span></tt> &#8212; Interactive OpenGL Canvas embedded in a Qt4 widget.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="gui.imageViewer.html"
-                        title="next chapter">29. <tt class="docutils literal"><span class="pre">gui.imageViewer</span></tt> &#8212; A general image viewer</a></p>
+                        title="next chapter">31. <tt class="docutils literal"><span class="pre">gui.imageViewer</span></tt> &#8212; A general image viewer</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -149,16 +149,16 @@
           <div class="body">
             
   <div class="section" id="module-gui.image">
-<span id="gui-image-saving-opengl-renderings-to-image-files"></span><span id="sec-ref-gui-image"></span><h1>28. <a class="reference internal" href="#module-gui.image" title="gui.image: Saving OpenGL renderings to image files."><tt class="xref py py-mod docutils literal"><span class="pre">gui.image</span></tt></a> &#8212; Saving OpenGL renderings to image files.<a class="headerlink" href="#module-gui.image" title="Permalink to this headline">¶</a></h1>
+<span id="gui-image-saving-opengl-renderings-to-image-files"></span><span id="sec-ref-gui-image"></span><h1>30. <a class="reference internal" href="#module-gui.image" title="gui.image: Saving OpenGL renderings to image files."><tt class="xref py py-mod docutils literal"><span class="pre">gui.image</span></tt></a> &#8212; Saving OpenGL renderings to image files.<a class="headerlink" href="#module-gui.image" title="Permalink to this headline">¶</a></h1>
 <p>This module defines some functions that can be used to save the
 OpenGL rendering and the pyFormex GUI to image files. There are even
 provisions for automatic saving to a series of files and creating
 a movie from these images.</p>
 <div class="section" id="classes-defined-in-module-gui-image">
-<h2>28.1. Classes defined in module gui.image<a class="headerlink" href="#classes-defined-in-module-gui-image" title="Permalink to this headline">¶</a></h2>
+<h2>30.1. Classes defined in module gui.image<a class="headerlink" href="#classes-defined-in-module-gui-image" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="functions-defined-in-module-gui-image">
-<h2>28.2. Functions defined in module gui.image<a class="headerlink" href="#functions-defined-in-module-gui-image" title="Permalink to this headline">¶</a></h2>
+<h2>30.2. Functions defined in module gui.image<a class="headerlink" href="#functions-defined-in-module-gui-image" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="gui.image.initialize">
 <tt class="descclassname">gui.image.</tt><tt class="descname">initialize</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.image.initialize" title="Permalink to this definition">¶</a></dt>
@@ -191,7 +191,7 @@ If the supplied extension is empty, the default format &#8216;png&#8217; is retu
 
 <dl class="function">
 <dt id="gui.image.save_canvas">
-<tt class="descclassname">gui.image.</tt><tt class="descname">save_canvas</tt><big>(</big><em>canvas</em>, <em>fn</em>, <em>fmt='png'</em>, <em>quality=-1</em>, <em>size=None</em><big>)</big><a class="headerlink" href="#gui.image.save_canvas" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gui.image.</tt><tt class="descname">save_canvas</tt><big>(</big><em>canvas</em>, <em>fn</em>, <em>fmt='png'</em>, <em>quality=-1</em>, <em>size=None</em>, <em>alpha=False</em><big>)</big><a class="headerlink" href="#gui.image.save_canvas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save the rendering on canvas as an image file.</p>
 <p>canvas specifies the qtcanvas rendering window.
 fn is the name of the file
@@ -199,33 +199,43 @@ fmt is the image file format</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="gui.image.save_PS">
+<tt class="descclassname">gui.image.</tt><tt class="descname">save_PS</tt><big>(</big><em>canvas</em>, <em>filename</em>, <em>filetype=None</em>, <em>title=''</em>, <em>producer=''</em>, <em>viewport=None</em><big>)</big><a class="headerlink" href="#gui.image.save_PS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export OpenGL rendering to PostScript/PDF/TeX format.</p>
+<p>Exporting OpenGL renderings to PostScript is based on the PS2GL
+library by Christophe Geuzaine (<a class="reference external" href="http://geuz.org/gl2ps/">http://geuz.org/gl2ps/</a>), linked
+to Python by Toby Whites&#8217;s wrapper
+(<a class="reference external" href="http://www.esc.cam.ac.uk/~twhi03/software/python-gl2ps-1.1.2.tar.gz">http://www.esc.cam.ac.uk/~twhi03/software/python-gl2ps-1.1.2.tar.gz</a>)</p>
+<p>This function is only defined if the gl2ps module is found.</p>
+<p>The filetype should be one of &#8216;ps&#8217;, &#8216;eps&#8217;, &#8216;pdf&#8217; or &#8216;tex&#8217;.
+If not specified, the type is derived from the file extension.
+In case of the &#8216;tex&#8217; filetype, two files are written: one with
+the .tex extension, and one with .eps extension.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="gui.image.save_window">
-<tt class="descclassname">gui.image.</tt><tt class="descname">save_window</tt><big>(</big><em>filename</em>, <em>format</em>, <em>quality=-1</em>, <em>windowname=None</em><big>)</big><a class="headerlink" href="#gui.image.save_window" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gui.image.</tt><tt class="descname">save_window</tt><big>(</big><em>filename</em>, <em>format</em>, <em>quality=-1</em>, <em>windowname=None</em>, <em>crop=None</em><big>)</big><a class="headerlink" href="#gui.image.save_window" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save a window as an image file.</p>
 <p>This function needs a filename AND format.
 If a window is specified, the named window is saved.
 Else, the main pyFormex window is saved.</p>
+<p>If crop is given, the specified rectangle is cropped.
+If crop=&#8217;canvas&#8217;, windowname is set to main pyFormex window
+and crop to canvas rectangle.</p>
+<p>In all cases, the GUI and current canvas are raised.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="gui.image.save_main_window">
-<tt class="descclassname">gui.image.</tt><tt class="descname">save_main_window</tt><big>(</big><em>filename</em>, <em>format</em>, <em>quality=-1</em>, <em>border=False</em><big>)</big><a class="headerlink" href="#gui.image.save_main_window" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save the main pyFormex window as an image file.</p>
-<p>This function needs a filename AND format.
-This is an alternative for save_window, by grabbin it from the root
-window, using save_rect.
-This allows us to grab the border as well.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="gui.image.save_rect">
-<tt class="descclassname">gui.image.</tt><tt class="descname">save_rect</tt><big>(</big><em>x</em>, <em>y</em>, <em>w</em>, <em>h</em>, <em>filename</em>, <em>format</em>, <em>quality=-1</em><big>)</big><a class="headerlink" href="#gui.image.save_rect" title="Permalink to this definition">¶</a></dt>
+<dt id="gui.image.save_window_rect">
+<tt class="descclassname">gui.image.</tt><tt class="descname">save_window_rect</tt><big>(</big><em>filename</em>, <em>format</em>, <em>quality=-1</em>, <em>window='root'</em>, <em>crop=None</em><big>)</big><a class="headerlink" href="#gui.image.save_window_rect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save a rectangular part of the screen to a an image file.</p>
+<p>crop: (x,y,w,h)</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="gui.image.save">
-<tt class="descclassname">gui.image.</tt><tt class="descname">save</tt><big>(</big><em>filename=None</em>, <em>window=False</em>, <em>multi=False</em>, <em>hotkey=True</em>, <em>autosave=False</em>, <em>border=False</em>, <em>rootcrop=False</em>, <em>format=None</em>, <em>quality=-1</em>, <em>size=None</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#gui.image.save" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gui.image.</tt><tt class="descname">save</tt><big>(</big><em>filename=None</em>, <em>window=False</em>, <em>multi=False</em>, <em>hotkey=True</em>, <em>autosave=False</em>, <em>border=False</em>, <em>grab=False</em>, <em>format=None</em>, <em>quality=-1</em>, <em>size=None</em>, <em>verbose=False</em>, <em>alpha=True</em>, <em>rootcrop=None</em><big>)</big><a class="headerlink" href="#gui.image.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Saves an image to file or Starts/stops multisave mode.</p>
 <p>With a filename and multi==False (default), the current viewport rendering
 is saved to the named file.</p>
@@ -243,6 +253,9 @@ number. Otherwise a numeric part &#8216;-000&#8217; will be added to the filenam
 <p>If window is True, the full pyFormex window is saved.
 If window and border are True, the window decorations will be included.
 If window is False, only the current canvas viewport is saved.</p>
+<p>If grab is True, the external &#8216;import&#8217; program is used to grab the
+window from the screen buffers. This is required by the border and
+window options.</p>
 <p>If hotkey is True, a new image will be saved by hitting the &#8216;S&#8217; key.
 If autosave is True, a new image will be saved on each execution of
 the &#8216;draw&#8217; function.
@@ -256,7 +269,7 @@ this function is called from the GUI.</p>
 
 <dl class="function">
 <dt id="gui.image.saveImage">
-<tt class="descclassname">gui.image.</tt><tt class="descname">saveImage</tt><big>(</big><em>filename=None</em>, <em>window=False</em>, <em>multi=False</em>, <em>hotkey=True</em>, <em>autosave=False</em>, <em>border=False</em>, <em>rootcrop=False</em>, <em>format=None</em>, <em>quality=-1</em>, <em>size=None</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#gui.image.saveImage" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gui.image.</tt><tt class="descname">saveImage</tt><big>(</big><em>filename=None</em>, <em>window=False</em>, <em>multi=False</em>, <em>hotkey=True</em>, <em>autosave=False</em>, <em>border=False</em>, <em>grab=False</em>, <em>format=None</em>, <em>quality=-1</em>, <em>size=None</em>, <em>verbose=False</em>, <em>alpha=True</em>, <em>rootcrop=None</em><big>)</big><a class="headerlink" href="#gui.image.saveImage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Saves an image to file or Starts/stops multisave mode.</p>
 <p>With a filename and multi==False (default), the current viewport rendering
 is saved to the named file.</p>
@@ -274,6 +287,9 @@ number. Otherwise a numeric part &#8216;-000&#8217; will be added to the filenam
 <p>If window is True, the full pyFormex window is saved.
 If window and border are True, the window decorations will be included.
 If window is False, only the current canvas viewport is saved.</p>
+<p>If grab is True, the external &#8216;import&#8217; program is used to grab the
+window from the screen buffers. This is required by the border and
+window options.</p>
 <p>If hotkey is True, a new image will be saved by hitting the &#8216;S&#8217; key.
 If autosave is True, a new image will be saved on each execution of
 the &#8216;draw&#8217; function.
@@ -374,12 +390,12 @@ each extra keyword parameter will be translated to an option
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="gui.imageViewer.html" title="29. gui.imageViewer — A general image viewer"
+          <a href="gui.imageViewer.html" title="31. gui.imageViewer — A general image viewer"
              >next</a> |</li>
         <li class="right" >
-          <a href="gui.viewport.html" title="27. gui.viewport — Interactive OpenGL Canvas embedded in a Qt4 widget."
+          <a href="gui.viewport.html" title="29. gui.viewport — Interactive OpenGL Canvas embedded in a Qt4 widget."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -387,7 +403,7 @@ each extra keyword parameter will be translated to an option
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 08, 2015.
+      Last updated on May 22, 2015.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

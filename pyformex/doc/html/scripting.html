@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyFormex scripting &mdash; pyFormex 1.0.1~a2 documentation</title>
+    <title>pyFormex scripting &mdash; pyFormex 1.0.2~a1 documentation</title>
 
     
     <link rel="stylesheet" href="_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0.1~a2',
+        VERSION:     '1.0.2~a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,7 +51,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="index.html" />
+    <link rel="top" title="pyFormex 1.0.2~a1 documentation" href="index.html" />
     <link rel="up" title="pyFormex user guide" href="user-guide.html" />
     <link rel="next" title="Modeling Geometry with pyFormex" href="geometry.html" />
     <link rel="prev" title="The Graphical User Interface" href="gui.html" />
@@ -82,7 +82,7 @@
         <li class="right" >
           <a href="gui.html" title="The Graphical User Interface"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+        <li><a href="index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
           <li><a href="user-guide.html" accesskey="U">pyFormex user guide</a> &gt;</li> 
       </ul>
     </div>
@@ -285,10 +285,21 @@ as a script or as an app, and with almost identical behavior.</p>
 63
 64
 65
-66</pre></div></td><td class="code"><div class="highlight"><pre><span class="c"># pyformex script/app template</span>
-<span class="c">#</span>
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78</pre></div></td><td class="code"><div class="highlight"><pre><span class="c">#</span>
 <span class="c">##</span>
-<span class="c">##  Copyright (C) 2011 John Doe (j.doe@somewhere.org) </span>
+<span class="c">##  Copyright (C) 2011 John Doe (j.doe@somewhere.org)</span>
 <span class="c">##  Distributed under the GNU General Public License version 3 or later.</span>
 <span class="c">##</span>
 <span class="c">##  This program is free software: you can redistribute it and/or modify</span>
@@ -325,27 +336,40 @@ as a script or as an app, and with almost identical behavior.</p>
 <span class="sd">The script starts by preference with a docstring (like this),</span>
 <span class="sd">composed of a short first line, then a blank line and</span>
 <span class="sd">one or more lines explaining the intention of the script.</span>
+
+<span class="sd">If you distribute your script/app, you should set the copyright holder</span>
+<span class="sd">at the start of the file and make sure that you (the copyright holder) has</span>
+<span class="sd">the intention/right to distribute the software under the specified</span>
+<span class="sd">copyright license (GPL3 or later).</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="c"># This helps in getting used to future Python print syntax</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
+<span class="c"># The pyFormex modeling language is defined by everything in</span>
+<span class="c"># the gui.draw module (if you use the GUI). For execution without</span>
+<span class="c"># the GUI, you should import from pyformex.script instead.</span>
+<span class="kn">from</span> <span class="nn">pyformex.gui.draw</span> <span class="kn">import</span> <span class="o">*</span>
 
-<span class="kn">from</span> <span class="nn">pyformex.gui.draw</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c"># for an app we need to import explicitely</span>
-
+<span class="c"># Definitions</span>
 <span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Main function.</span>
 
-<span class="sd">    This is executed on each run.</span>
+<span class="sd">    This is automatically executed on each run of an app.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">print</span><span class="p">(</span><span class="s">&quot;This is the pyFormex template script/app&quot;</span><span class="p">)</span>
 
 
-<span class="c"># Initialization code</span>
+<span class="c"># Code in the outer scope:</span>
+<span class="c"># - for an app, this is only executed on loading (module initialization).</span>
+<span class="c"># - for a script, this is executed on each run.</span>
 
 <span class="k">print</span><span class="p">(</span><span class="s">&quot;This is the initialization code of the pyFormex template script/app&quot;</span><span class="p">)</span>
 
-
 <span class="c"># The following is to make script and app behavior alike</span>
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;draw&#39;</span><span class="p">:</span>
+<span class="c"># When executing a script in GUI mode, the global variable __name__ is set</span>
+<span class="c"># to &#39;draw&#39;, thus the run method defined above will be executed.</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__draw__&#39;</span><span class="p">:</span>
     <span class="k">print</span><span class="p">(</span><span class="s">&quot;Running as a script&quot;</span><span class="p">)</span>
     <span class="n">run</span><span class="p">()</span>
 
@@ -381,7 +405,7 @@ intention and working of the script/app.</p>
         <li class="right" >
           <a href="gui.html" title="The Graphical User Interface"
              >previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+        <li><a href="index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
           <li><a href="user-guide.html" >pyFormex user guide</a> &gt;</li> 
       </ul>
     </div>
@@ -389,7 +413,7 @@ intention and working of the script/app.</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 08, 2015.
+      Last updated on May 22, 2015.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

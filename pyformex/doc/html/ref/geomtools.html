@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>17. geomtools — Basic geometrical operations. &mdash; pyFormex 1.0.1~a2 documentation</title>
+    <title>18. geomtools — Basic geometrical operations. &mdash; pyFormex 1.0.2~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.1~a2',
+        VERSION:     '1.0.2~a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,10 +51,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="18. fileread — Read geometry from file in a whole number of formats." href="fileread.html" />
-    <link rel="prev" title="16. geomfile — Handling pyFormex Geometry Files" href="geomfile.html" />
+    <link rel="next" title="19. inertia — Compute inertia related quantities of geometrical models." href="inertia.html" />
+    <link rel="prev" title="17. geomfile — Handling pyFormex Geometry Files" href="geomfile.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -77,12 +77,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="fileread.html" title="18. fileread — Read geometry from file in a whole number of formats."
+          <a href="inertia.html" title="19. inertia — Compute inertia related quantities of geometrical models."
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="geomfile.html" title="16. geomfile — Handling pyFormex Geometry Files"
+          <a href="geomfile.html" title="17. geomfile — Handling pyFormex Geometry Files"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -101,9 +101,9 @@
    
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">17. <tt class="docutils literal"><span class="pre">geomtools</span></tt> &#8212; Basic geometrical operations.</a><ul>
-<li><a class="reference internal" href="#classes-defined-in-module-geomtools">17.1. Classes defined in module geomtools</a></li>
-<li><a class="reference internal" href="#functions-defined-in-module-geomtools">17.2. Functions defined in module geomtools</a></li>
+<li><a class="reference internal" href="#">18. <tt class="docutils literal"><span class="pre">geomtools</span></tt> &#8212; Basic geometrical operations.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-geomtools">18.1. Classes defined in module geomtools</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-geomtools">18.2. Functions defined in module geomtools</a></li>
 </ul>
 </li>
 </ul>
@@ -111,10 +111,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="geomfile.html"
-                        title="previous chapter">16. <tt class="docutils literal"><span class="pre">geomfile</span></tt> &#8212; Handling pyFormex Geometry Files</a></p>
+                        title="previous chapter">17. <tt class="docutils literal"><span class="pre">geomfile</span></tt> &#8212; Handling pyFormex Geometry Files</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="fileread.html"
-                        title="next chapter">18. <tt class="docutils literal"><span class="pre">fileread</span></tt> &#8212; Read geometry from file in a whole number of formats.</a></p>
+  <p class="topless"><a href="inertia.html"
+                        title="next chapter">19. <tt class="docutils literal"><span class="pre">inertia</span></tt> &#8212; Compute inertia related quantities of geometrical models.</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -149,17 +149,62 @@
           <div class="body">
             
   <div class="section" id="module-geomtools">
-<span id="geomtools-basic-geometrical-operations"></span><span id="sec-ref-geomtools"></span><h1>17. <a class="reference internal" href="#module-geomtools" title="geomtools: Basic geometrical operations."><tt class="xref py py-mod docutils literal"><span class="pre">geomtools</span></tt></a> &#8212; Basic geometrical operations.<a class="headerlink" href="#module-geomtools" title="Permalink to this headline">¶</a></h1>
+<span id="geomtools-basic-geometrical-operations"></span><span id="sec-ref-geomtools"></span><h1>18. <a class="reference internal" href="#module-geomtools" title="geomtools: Basic geometrical operations."><tt class="xref py py-mod docutils literal"><span class="pre">geomtools</span></tt></a> &#8212; Basic geometrical operations.<a class="headerlink" href="#module-geomtools" title="Permalink to this headline">¶</a></h1>
 <p>This module defines some basic operations on simple geometrical entities
 such as points, lines, planes, vectors, segments, triangles, circles.</p>
 <p>The operations include intersection, projection, distance computing.</p>
 <p>Many of the functions in this module are exported as methods on the
 Coords and Geometry classes and subclasses.</p>
+<p>Planned renaming of functions:</p>
+<div class="highlight-python"><div class="highlight"><pre>areaNormals
+degenerate
+levelVolumes
+smallestDirection
+distance                 -&gt; distance
+closest
+closestPair
+projectedArea
+polygonNormals
+averageNormals
+triangleInCircle
+triangleCircumCircle
+triangleBoundingCircle
+triangleObtuse
+lineIntersection         -&gt; to be removed (or intersect2DLineWithLine)
+displaceLines
+segmentOrientation
+rotationAngle
+anyPerpendicularVector
+perpendicularVector
+projectionVOV            -&gt; projectVectorOnVector
+projectionVOP            -&gt; projectVectorOnPlane
+
+pointsAtLines            -&gt; pointOnLine
+pointsAtSegments         -&gt; pointOnSegment
+intersectionTimesSWP     -&gt; remove or intersectLineWithLineTimes2
+intersectionSWP          -&gt; intersectSegmentWithPlaneTimes
+intersectionPointsSWP    -&gt; intersectSegmentWithPlane
+intersectionTimesLWT     -&gt; intersectLineWithTriangleTimes
+intersectionPointsLWT    -&gt; intersectLineWithTriangle
+intersectionTimesSWT     -&gt; intersectSegmentWithTriangleTimes
+intersectionPointsSWT    -&gt; intersectSegmentWithTriangle
+intersectionPointsPWP    -&gt; intersectThreePlanes
+intersectionLinesPWP     -&gt; intersectTwoPlanes (or intersectPlaneWithPlane)
+intersectionSphereSphere -&gt; intersectTwoSpheres (or intersectSphereWithSphere)
+
+faceDistance             -&gt;
+edgeDistance             -&gt;
+vertexDistance           -&gt;
+baryCoords
+insideSimplex
+insideTriangle
+</pre></div>
+</div>
 <div class="section" id="classes-defined-in-module-geomtools">
-<h2>17.1. Classes defined in module geomtools<a class="headerlink" href="#classes-defined-in-module-geomtools" title="Permalink to this headline">¶</a></h2>
+<h2>18.1. Classes defined in module geomtools<a class="headerlink" href="#classes-defined-in-module-geomtools" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="functions-defined-in-module-geomtools">
-<h2>17.2. Functions defined in module geomtools<a class="headerlink" href="#functions-defined-in-module-geomtools" title="Permalink to this headline">¶</a></h2>
+<h2>18.2. Functions defined in module geomtools<a class="headerlink" href="#functions-defined-in-module-geomtools" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="geomtools.pointsAtLines">
 <tt class="descclassname">geomtools.</tt><tt class="descname">pointsAtLines</tt><big>(</big><em>q</em>, <em>m</em>, <em>t</em><big>)</big><a class="headerlink" href="#geomtools.pointsAtLines" title="Permalink to this definition">¶</a></dt>
@@ -167,10 +212,12 @@ Coords and Geometry classes and subclasses.</p>
 <p>Parameters:</p>
 <ul class="simple">
 <li><cite>q</cite>,`m`: (...,3) shaped arrays of points and vectors, defining
-a single line or a set of lines.</li>
-<li><cite>t</cite>: array of parameter values, broadcast compatible with <cite>q</cite> and <cite>m</cite>.</li>
+a single line or a set of lines. The vectors do not need to
+have unit length.</li>
+<li><cite>t</cite>: array of parameter values, broadcast compatible with <cite>q</cite> and <cite>m</cite>.
+Parametric value 0 is at point q, parametric value 1 ia at q+m.</li>
 </ul>
-<p>Returns an array with the points at parameter values t.</p>
+<p>Returns a Coords array with the points at parameter values t.</p>
 </dd></dl>
 
 <dl class="function">
@@ -187,34 +234,89 @@ a set of line segments.</li>
 </dd></dl>
 
 <dl class="function">
-<dt id="geomtools.intersectionTimesLWL">
-<tt class="descclassname">geomtools.</tt><tt class="descname">intersectionTimesLWL</tt><big>(</big><em>q1</em>, <em>m1</em>, <em>q2</em>, <em>m2</em>, <em>mode='all'</em><big>)</big><a class="headerlink" href="#geomtools.intersectionTimesLWL" title="Permalink to this definition">¶</a></dt>
+<dt id="geomtools.intersectLineWithLine">
+<tt class="descclassname">geomtools.</tt><tt class="descname">intersectLineWithLine</tt><big>(</big><em>q1</em>, <em>m1</em>, <em>q2</em>, <em>m2</em>, <em>mode='all'</em>, <em>times=False</em><big>)</big><a class="headerlink" href="#geomtools.intersectLineWithLine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find the common perpendicular of lines (q1,m1) and lines (q2,m2)</p>
-<p>For non-intersecting lines, the base points of the common perpendicular
-are found.
-For intersecting lines, the common point of intersection is found.</p>
-<p>Lines are defined by a point (q) and a vector (m).</p>
+<p>Return the intersection points of lines (q1,m1) and lines (q2,m2)
+with the perpendiculars between them. For intersecting lines, the
+corresponding points will coincide.</p>
 <p>Parameters:</p>
 <ul class="simple">
-<li><cite>qi</cite>,`mi` (i=1...2): (nqi,3) shaped arrays of points and vectors (<cite>mode=all</cite>)
-or broadcast compatible arrays (<cite>mode=pair</cite>), defining a single line or a
-set of lines.</li>
-<li><cite>mode</cite>: <cite>all</cite> to calculate the intersection of each line (q1,m1) with all lines
-(q2,m2) or <cite>pair</cite> for pairwise intersections.</li>
+<li><cite>qi</cite>,`mi` (i=1,2): (nqi,3) shaped arrays of points and vectors defining
+nqi lines.</li>
+<li><cite>mode</cite>: &#8216;all&#8217; or &#8216;pair:<ul>
+<li>if &#8216;all&#8217;, the interesection of all lines q1,m1 with all lines q2,m2
+is computed; <cite>nq1</cite> and <cite>nq2</cite> can be different.</li>
+<li>if &#8216;pair&#8217;: <cite>nq1</cite> and <cite>nq2</cite> should be equal (or 1) and the intersection
+of pairs of lines are computed (using broadcasting for
+length 1 data).</li>
 </ul>
-<p>Returns a tuple of (nq1,nq2) shaped (<cite>mode=all</cite>) arrays of parameter
-values t1 and t2, such that the intersection points are given by
-<tt class="docutils literal"><span class="pre">q1+t1*m1</span></tt> and <tt class="docutils literal"><span class="pre">q2+t2*m2</span></tt>.</p>
-</dd></dl>
+</li>
+<li><cite>times</cite>: bool: if True, returns the parameter values of the
+intersection points instead of the intersection points themselves.</li>
+</ul>
+<p>Returns two Coords arrays with the intersection points on lines (q1,m1)
+and (q2,m2) respectively (or, if <cite>times</cite> is True, two float arrays
+with the parameter values of these points).
+The size of the Coords arrays is (nq1,nq2,3) for mode &#8216;all&#8217; and (nq1,3)
+for mode &#8216;pair&#8217;. With <cite>times</cite> True, the size of the returned parameter
+arrays is (nq1,nq2,3) for mode &#8216;all&#8217; and size (nq1,3) for mode &#8216;pair&#8217;.</p>
+<p>Note: taking the intersection of two parallel lines will result in
+nan values. These are not removed from the result. The user can do
+it if he so wishes.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">q</span><span class="p">,</span><span class="n">m</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="p">,</span><span class="n">n</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">]]</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span> <span class="o">=</span> <span class="n">intersectLineWithLine</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>
+<span class="go">[[[  2.   0.   0.]</span>
+<span class="go">  [  0.   0.   0.]]</span>
 
-<dl class="function">
-<dt id="geomtools.intersectLineWithLine">
-<tt class="descclassname">geomtools.</tt><tt class="descname">intersectLineWithLine</tt><big>(</big><em>q1</em>, <em>m1</em>, <em>q2</em>, <em>m2</em>, <em>mode='all'</em><big>)</big><a class="headerlink" href="#geomtools.intersectLineWithLine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the intersection points of lines (q1,m1) and lines (q2,m2)</p>
-<p>with the perpendiculars between them.</p>
-<p>This is like intersectionTimesLWL but returns a tuple of (nq1,nq2,3)
-shaped (<cite>mode=all</cite>) arrays of intersection points instead of the
-parameter values.</p>
+<span class="go"> [[  2.   2.   1.]</span>
+<span class="go">  [  0.   0.   1.]]</span>
+
+<span class="go"> [[ nan  nan  nan]</span>
+<span class="go">  [  0.   0.   3.]]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span>
+<span class="go">[[[  2.   0.   0.]</span>
+<span class="go">  [  0.   0.   0.]]</span>
+
+<span class="go"> [[  2.   2.   0.]</span>
+<span class="go">  [  0.   0.   1.]]</span>
+
+<span class="go"> [[ nan  nan  nan]</span>
+<span class="go">  [  0.   0.   3.]]]</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span> <span class="o">=</span> <span class="n">intersectLineWithLine</span><span class="p">(</span><span class="n">q</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span><span class="n">m</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span><span class="n">p</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s">&#39;pair&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>
+<span class="go">[[ 2.  0.  0.]</span>
+<span class="go"> [ 0.  0.  1.]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span>
+<span class="go">[[ 2.  0.  0.]</span>
+<span class="go"> [ 0.  0.  1.]]</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span> <span class="o">=</span> <span class="n">intersectLineWithLine</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">times</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">t1</span><span class="p">)</span>
+<span class="go">[[  2.  -0.]</span>
+<span class="go"> [  2.  -0.]</span>
+<span class="go"> [ nan  -0.]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">t2</span><span class="p">)</span>
+<span class="go">[[ -0.  -0.]</span>
+<span class="go"> [  2.   1.]</span>
+<span class="go"> [ nan   3.]]</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span> <span class="o">=</span> <span class="n">intersectLineWithLine</span><span class="p">(</span><span class="n">q</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span><span class="n">m</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span><span class="n">p</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s">&#39;pair&#39;</span><span class="p">,</span><span class="n">times</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">t1</span><span class="p">)</span>
+<span class="go">[ 2. -0.]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">t2</span><span class="p">)</span>
+<span class="go">[-0.  1.]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -440,67 +542,242 @@ tuple x,y.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="geomtools.intersectionTimesPOP">
-<tt class="descclassname">geomtools.</tt><tt class="descname">intersectionTimesPOP</tt><big>(</big><em>X</em>, <em>p</em>, <em>n</em>, <em>mode='all'</em><big>)</big><a class="headerlink" href="#geomtools.intersectionTimesPOP" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the intersection of perpendiculars from points X on planes (p,n).</p>
+<dt id="geomtools.projectPointOnPlane">
+<tt class="descclassname">geomtools.</tt><tt class="descname">projectPointOnPlane</tt><big>(</big><em>X</em>, <em>p</em>, <em>n</em>, <em>mode='all'</em><big>)</big><a class="headerlink" href="#geomtools.projectPointOnPlane" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the projection of points X on planes (p,n).</p>
 <p>Parameters:</p>
 <ul class="simple">
-<li><cite>X</cite>: a (nX,3) shaped array of points (<cite>mode=all</cite>)
-or broadcast compatible array (<cite>mode=pair</cite>).</li>
-<li><cite>p</cite>,`n`: (np,3) shaped arrays of points and normals (<cite>mode=all</cite>)
-or broadcast compatible arrays (<cite>mode=pair</cite>), defining a single plane
-or a set of planes.</li>
-<li><cite>mode</cite>: <cite>all</cite> to calculate the intersection for each point X with
-all planes (p,n) or <cite>pair</cite> for pairwise intersections.</li>
+<li><cite>X</cite>: a (nx,3) shaped array of points.</li>
+<li><cite>p</cite>, <cite>n</cite>: (np,3) shaped arrays of points and normals defining <cite>np</cite> planes.</li>
+<li><cite>mode</cite>: &#8216;all&#8217; or &#8216;pair:<ul>
+<li>if &#8216;all&#8217;, the projection of all points on all planes is computed;
+<cite>nx</cite> and <cite>np</cite> can be different.</li>
+<li>if &#8216;pair&#8217;: <cite>nx</cite> and <cite>np</cite> should be equal (or 1) and the projection
+of pairs of point and plane are computed (using broadcasting for
+length 1 data).</li>
 </ul>
-<p>Returns a (nX,np) shaped (<cite>mode=all</cite>) array of parameter values t,
-such that the intersection points are given by X+t*n.</p>
+</li>
+</ul>
+<p>Returns a float array of size (nx,np,3) for mode &#8216;all&#8217;, or size (nx,3)
+for mode &#8216;pair&#8217;.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">4.</span><span class="p">,</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="p">,</span><span class="n">n</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">projectPointOnPlane</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">n</span><span class="p">))</span>
+<span class="go">[[[ 2.  1.  0.]</span>
+<span class="go">  [ 0.  1.  0.]]</span>
+
+<span class="go"> [[ 2.  0.  0.]</span>
+<span class="go">  [ 3.  1.  0.]]</span>
+
+<span class="go"> [[ 2.  3.  0.]</span>
+<span class="go">  [ 4.  1.  0.]]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">projectPointOnPlane</span><span class="p">(</span><span class="n">X</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span><span class="n">p</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s">&#39;pair&#39;</span><span class="p">))</span>
+<span class="go">[[ 2.  1.  0.]</span>
+<span class="go"> [ 3.  1.  0.]]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
-<dt id="geomtools.intersectionPointsPOP">
-<tt class="descclassname">geomtools.</tt><tt class="descname">intersectionPointsPOP</tt><big>(</big><em>X</em>, <em>p</em>, <em>n</em>, <em>mode='all'</em><big>)</big><a class="headerlink" href="#geomtools.intersectionPointsPOP" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the intersection points of perpendiculars from points X on planes (p,n).</p>
-<p>This is like intersectionTimesPOP but returns a (nX,np,3) shaped (<cite>mode=all</cite>)
-array of intersection points instead of the parameter values.</p>
+<dt id="geomtools.projectPointOnPlaneTimes">
+<tt class="descclassname">geomtools.</tt><tt class="descname">projectPointOnPlaneTimes</tt><big>(</big><em>X</em>, <em>p</em>, <em>n</em>, <em>mode='all'</em><big>)</big><a class="headerlink" href="#geomtools.projectPointOnPlaneTimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the projection of points X on planes (p,n).</p>
+<p>This is like <a class="reference internal" href="#geomtools.projectPointOnPlane" title="geomtools.projectPointOnPlane"><tt class="xref py py-meth docutils literal"><span class="pre">projectPointOnPlane()</span></tt></a> but instead of returning
+the projected points, returns the parametric values t along the
+lines (X,n), such that the projection points can be computed from
+X+t*n.</p>
+<p>Parameters: see <a class="reference internal" href="#geomtools.projectPointOnPlane" title="geomtools.projectPointOnPlane"><tt class="xref py py-meth docutils literal"><span class="pre">projectPointOnPlane()</span></tt></a>.</p>
+<p>Returns a float array of size (nx,np) for mode &#8216;all&#8217;, or size (nx,)
+for mode &#8216;pair&#8217;.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">4.</span><span class="p">,</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="p">,</span><span class="n">n</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">projectPointOnPlaneTimes</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">n</span><span class="p">))</span>
+<span class="go">[[ 2.  0.]</span>
+<span class="go"> [-1.  1.]</span>
+<span class="go"> [-2. -2.]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">projectPointOnPlaneTimes</span><span class="p">(</span><span class="n">X</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span><span class="n">p</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s">&#39;pair&#39;</span><span class="p">))</span>
+<span class="go">[ 2.  1.]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
-<dt id="geomtools.intersectionTimesPOL">
-<tt class="descclassname">geomtools.</tt><tt class="descname">intersectionTimesPOL</tt><big>(</big><em>X</em>, <em>q</em>, <em>m</em>, <em>mode='all'</em><big>)</big><a class="headerlink" href="#geomtools.intersectionTimesPOL" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the intersection of perpendiculars from points X on lines (q,m).</p>
+<dt id="geomtools.projectPointOnLine">
+<tt class="descclassname">geomtools.</tt><tt class="descname">projectPointOnLine</tt><big>(</big><em>X</em>, <em>p</em>, <em>n</em>, <em>mode='all'</em><big>)</big><a class="headerlink" href="#geomtools.projectPointOnLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the projection of points X on lines (p,n).</p>
 <p>Parameters:</p>
 <ul class="simple">
-<li><cite>X</cite>: a (nX,3) shaped array of points (<cite>mode=all</cite>)
-or broadcast compatible array (<cite>mode=pair</cite>).</li>
-<li><cite>q</cite>,`m`: (nq,3) shaped arrays of points and vectors (<cite>mode=all</cite>)
-or broadcast compatible arrays (<cite>mode=pair</cite>), defining a single line
-or a set of lines.</li>
-<li><cite>mode</cite>: <cite>all</cite> to calculate the intersection for each point X with
-all lines (q,m) or <cite>pair</cite> for pairwise intersections.</li>
+<li><cite>X</cite>: a (nx,3) shaped array of points.</li>
+<li><cite>p</cite>, <cite>n</cite>: (np,3) shaped arrays of points and vectors defining <cite>np</cite> lines.</li>
+<li><cite>mode</cite>: &#8216;all&#8217; or &#8216;pair:<ul>
+<li>if &#8216;all&#8217;, the projection of all points on all lines is computed;
+<cite>nx</cite> and <cite>np</cite> can be different.</li>
+<li>if &#8216;pair&#8217;: <cite>nx</cite> and <cite>np</cite> should be equal (or 1) and the projection
+of pairs of point and line are computed (using broadcasting for
+length 1 data).</li>
 </ul>
-<dl class="docutils">
-<dt>Returns a (nX,nq) shaped (<cite>mode=all</cite>) array of parameter values t,</dt>
-<dd>such that the intersection points are given by q+t*m.</dd>
-</dl>
+</li>
+</ul>
+<p>Returns a float array of size (nx,np,3) for mode &#8216;all&#8217;, or size (nx,3)
+for mode &#8216;pair&#8217;.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">4.</span><span class="p">,</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="p">,</span><span class="n">n</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">projectPointOnLine</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">n</span><span class="p">))</span>
+<span class="go">[[[ 2.  1.  0.]</span>
+<span class="go">  [ 0.  1.  0.]]</span>
+
+<span class="go"> [[ 2.  0.  0.]</span>
+<span class="go">  [ 3.  1.  0.]]</span>
+
+<span class="go"> [[ 2.  3.  0.]</span>
+<span class="go">  [ 4.  1.  0.]]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">projectPointOnLine</span><span class="p">(</span><span class="n">X</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span><span class="n">p</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s">&#39;pair&#39;</span><span class="p">))</span>
+<span class="go">[[ 2.  1.  0.]</span>
+<span class="go"> [ 3.  1.  0.]]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
-<dt id="geomtools.intersectionPointsPOL">
-<tt class="descclassname">geomtools.</tt><tt class="descname">intersectionPointsPOL</tt><big>(</big><em>X</em>, <em>q</em>, <em>m</em>, <em>mode='all'</em><big>)</big><a class="headerlink" href="#geomtools.intersectionPointsPOL" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the intersection points of perpendiculars from points X on lines (q,m).</p>
-<p>This is like intersectionTimesPOL but returns a (nX,nq,3) shaped (<cite>mode=all</cite>)
-array of intersection points instead of the parameter values.</p>
+<dt id="geomtools.projectPointOnLineTimes">
+<tt class="descclassname">geomtools.</tt><tt class="descname">projectPointOnLineTimes</tt><big>(</big><em>X</em>, <em>p</em>, <em>n</em>, <em>mode='all'</em><big>)</big><a class="headerlink" href="#geomtools.projectPointOnLineTimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the projection of points X on lines (p,n).</p>
+<p>This is like <a class="reference internal" href="#geomtools.projectPointOnLine" title="geomtools.projectPointOnLine"><tt class="xref py py-meth docutils literal"><span class="pre">projectPointOnLine()</span></tt></a> but instead of returning
+the projected points, returns the parametric values t along the
+lines (X,n), such that the projection points can be computed from
+p+t*n.</p>
+<p>Parameters: see <a class="reference internal" href="#geomtools.projectPointOnLine" title="geomtools.projectPointOnLine"><tt class="xref py py-meth docutils literal"><span class="pre">projectPointOnLine()</span></tt></a>.</p>
+<p>Returns a float array of size (nx,np) for mode &#8216;all&#8217;, or size (nx,)
+for mode &#8216;pair&#8217;.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">4.</span><span class="p">,</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="p">,</span><span class="n">n</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">projectPointOnLineTimes</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">n</span><span class="p">))</span>
+<span class="go">[[ 1.  0.]</span>
+<span class="go"> [ 0.  3.]</span>
+<span class="go"> [ 3.  4.]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">projectPointOnLineTimes</span><span class="p">(</span><span class="n">X</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span><span class="n">p</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s">&#39;pair&#39;</span><span class="p">))</span>
+<span class="go">[ 1.  3.]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
-<dt id="geomtools.intersectionPointsLWL">
-<tt class="descclassname">geomtools.</tt><tt class="descname">intersectionPointsLWL</tt><big>(</big><em>q1</em>, <em>m1</em>, <em>q2</em>, <em>m2</em>, <em>mode='all'</em><big>)</big><a class="headerlink" href="#geomtools.intersectionPointsLWL" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the intersection points of lines (q1,m1) and lines (q2,m2)</p>
-<p>with the perpendiculars between them.</p>
-<p>This is like intersectionTimesLWL but returns a tuple of (nq1,nq2,3)
-shaped (<cite>mode=all</cite>) arrays of intersection points instead of the
-parameter values.</p>
+<dt id="geomtools.distanceFromLine">
+<tt class="descclassname">geomtools.</tt><tt class="descname">distanceFromLine</tt><big>(</big><em>X</em>, <em>lines</em>, <em>mode='all'</em><big>)</big><a class="headerlink" href="#geomtools.distanceFromLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the distance of points X from lines (p,n).</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>X</cite>: a (nx,3) shaped array of points.</li>
+<li><cite>lines</cite>: one of the following definitions of the line(s):<ul>
+<li>a tuple (p,n), where both p and n are (np,3) shaped arrays of
+respectively points and vectors defining <cite>np</cite> lines;</li>
+<li>an (np,2,3) shaped array containing two points of each line.</li>
+</ul>
+</li>
+<li><cite>mode</cite>: &#8216;all&#8217; or &#8216;pair:<ul>
+<li>if &#8216;all&#8217;, the distance of all points to all lines is computed;
+<cite>nx</cite> and <cite>np</cite> can be different.</li>
+<li>if &#8216;pair&#8217;: <cite>nx</cite> and <cite>np</cite> should be equal (or 1) and the distance
+of pairs of point and line are computed (using broadcasting for
+length 1 data).</li>
+</ul>
+</li>
+</ul>
+<p>Returns a float array of size (nx,np) for mode &#8216;all&#8217;, or size (nx)
+for mode &#8216;pair&#8217;.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">4.</span><span class="p">,</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">L</span> <span class="o">=</span> <span class="n">Line</span><span class="p">([[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">distanceFromLine</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">L</span><span class="p">))</span>
+<span class="go">[[ 2.  0.]</span>
+<span class="go"> [ 1.  1.]</span>
+<span class="go"> [ 2.  2.]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">distanceFromLine</span><span class="p">(</span><span class="n">X</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span><span class="n">L</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s">&#39;pair&#39;</span><span class="p">))</span>
+<span class="go">[ 2.  1.]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">L</span> <span class="o">=</span> <span class="n">Line</span><span class="p">([[[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">distanceFromLine</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">L</span><span class="p">))</span>
+<span class="go">[[ 2.  0.]</span>
+<span class="go"> [ 1.  1.]</span>
+<span class="go"> [ 2.  2.]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">distanceFromLine</span><span class="p">(</span><span class="n">X</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span><span class="n">L</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s">&#39;pair&#39;</span><span class="p">))</span>
+<span class="go">[ 2.  1.]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="geomtools.pointNearLine">
+<tt class="descclassname">geomtools.</tt><tt class="descname">pointNearLine</tt><big>(</big><em>X</em>, <em>p</em>, <em>n</em>, <em>atol</em>, <em>nproc=1</em><big>)</big><a class="headerlink" href="#geomtools.pointNearLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the points from X that are near to lines (p,n).</p>
+<p>Finds the points from X that are closer than atol to any of the lines (p,n).</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>X</cite>: a (nx,3) shaped array of points.</li>
+<li><cite>p</cite>, <cite>n</cite>: (np,3) shaped arrays of points and vectors defining <cite>np</cite> lines.</li>
+<li><cite>atol</cite>: float or (nx,) shaped float array of pointwise tolerances</li>
+</ul>
+<p>Returns a list of arrays with sorted point indices for each of the lines.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">4.</span><span class="p">,</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="p">,</span><span class="n">n</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">pointNearLine</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="go">[array([1]), array([0, 1])]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">pointNearLine</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="go">[array([1]), array([0, 1])]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="geomtools.faceDistance">
+<tt class="descclassname">geomtools.</tt><tt class="descname">faceDistance</tt><big>(</big><em>X</em>, <em>Fp</em>, <em>return_points=False</em><big>)</big><a class="headerlink" href="#geomtools.faceDistance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the closest perpendicular distance to a set of triangles.</p>
+<p>X is a (nX,3) shaped array of points.
+Fp is a (nF,3,3) shaped array of triangles.</p>
+<p>Note that some points may not have a normal with footpoint inside any
+of the facets.</p>
+<p>The return value is a tuple OKpid,OKdist,OKpoints where:</p>
+<ul class="simple">
+<li>OKpid is an array with the point numbers having a normal distance;</li>
+<li>OKdist is an array with the shortest distances for these points;</li>
+<li>OKpoints is an array with the closest footpoints for these points
+and is only returned if return_points = True.</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="geomtools.edgeDistance">
+<tt class="descclassname">geomtools.</tt><tt class="descname">edgeDistance</tt><big>(</big><em>X</em>, <em>Ep</em>, <em>return_points=False</em><big>)</big><a class="headerlink" href="#geomtools.edgeDistance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the closest perpendicular distance of points X to a set of edges.</p>
+<p>X is a (nX,3) shaped array of points.
+Ep is a (nE,2,3) shaped array of edge vertices.</p>
+<p>Note that some points may not have a normal with footpoint inside any
+of the edges.</p>
+<p>The return value is a tuple OKpid,OKdist,OKpoints where:</p>
+<ul class="simple">
+<li>OKpid is an array with the point numbers having a normal distance;</li>
+<li>OKdist is an array with the shortest distances for these points;</li>
+<li>OKpoints is an array with the closest footpoints for these points
+and is only returned if return_points = True.</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="geomtools.vertexDistance">
+<tt class="descclassname">geomtools.</tt><tt class="descname">vertexDistance</tt><big>(</big><em>X</em>, <em>Vp</em>, <em>return_points=False</em><big>)</big><a class="headerlink" href="#geomtools.vertexDistance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the closest distance of points X to a set of vertices.</p>
+<p>X is a (nX,3) shaped array of points.
+Vp is a (nV,3) shaped array of vertices.</p>
+<p>The return value is a tuple OKdist,OKpoints where:</p>
+<ul class="simple">
+<li>OKdist is an array with the shortest distances for the points;</li>
+<li>OKpoints is an array with the closest vertices for the points
+and is only returned if return_points = True.</li>
+</ul>
 </dd></dl>
 
 <dl class="function">
@@ -522,6 +799,26 @@ list of faces, such as the output of the <a class="reference internal" href="#ge
 <p>A face is degenerate if its area is less or equal to zero or the
 normal has a nan (not-a-number) value.</p>
 <p>Returns a list of the degenerate element numbers as a sorted array.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="geomtools.hexVolume">
+<tt class="descclassname">geomtools.</tt><tt class="descname">hexVolume</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#geomtools.hexVolume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the volume of hexahedrons.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>x</cite>: float array (nelems,8,3)</li>
+</ul>
+<p>Returns a float array (nelems) withe the approximate volume of the
+hexahedrons formed by each 8-tuple of vertices. The volume is obained
+by dividing the hexahedron in 24 tetrahedrons and using the formulas
+from <a class="reference external" href="http://www.osti.gov/scitech/servlets/purl/632793">http://www.osti.gov/scitech/servlets/purl/632793</a></p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">elements</span> <span class="kn">import</span> <span class="n">Hex8</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">(</span><span class="n">Hex8</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">hexVolume</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -547,7 +844,7 @@ If succesful, returns an (nelems,) shaped float array.</p>
 <ul class="simple">
 <li><cite>x</cite>: a Coords-like array</li>
 </ul>
-<p>Returns a tuple of the direction vectors and the sizes  along the direction 
+<p>Returns a tuple of the direction vectors and the sizes  along the direction
 and the cross directions. The arrays are ordered from the smallest to the largest direction.</p>
 </dd></dl>
 
@@ -783,88 +1080,6 @@ is the z-axis, the result is the x-axis.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="geomtools.distancesPFL">
-<tt class="descclassname">geomtools.</tt><tt class="descname">distancesPFL</tt><big>(</big><em>X</em>, <em>q</em>, <em>m</em>, <em>mode='all'</em><big>)</big><a class="headerlink" href="#geomtools.distancesPFL" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the distances of points X from lines (q,m).</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>X</cite>: a (nX,3) shaped array of points (<cite>mode=all</cite>)
-or broadcast compatible array (<cite>mode=pair</cite>).</li>
-<li><cite>q</cite>,`m`: (nq,3) shaped arrays of points and vectors (<cite>mode=all</cite>)
-or broadcast compatible arrays (<cite>mode=pair</cite>), defining a single line
-or a set of lines.</li>
-<li><cite>mode</cite>: <cite>all</cite> to calculate the distance of each point X from
-all lines (q,m) or <cite>pair</cite> for pairwise distances.</li>
-</ul>
-<p>Returns a (nX,nq) shaped (<cite>mode=all</cite>) array of distances.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="geomtools.distancesPFS">
-<tt class="descclassname">geomtools.</tt><tt class="descname">distancesPFS</tt><big>(</big><em>X</em>, <em>S</em>, <em>mode='all'</em><big>)</big><a class="headerlink" href="#geomtools.distancesPFS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the distances of points X from line segments S.</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>X</cite>: a (nX,3) shaped array of points (<cite>mode=all</cite>)
-or broadcast compatible array (<cite>mode=pair</cite>).</li>
-<li><cite>S</cite>: (nS,2,3) shaped array of line segments (<cite>mode=all</cite>)
-or broadcast compatible array (<cite>mode=pair</cite>), defining a single line
-segment or a set of line segments.</li>
-<li><cite>mode</cite>: <cite>all</cite> to calculate the distance of each point X from
-all line segments S or <cite>pair</cite> for pairwise distances.</li>
-</ul>
-<p>Returns a (nX,nS) shaped (<cite>mode=all</cite>) array of distances.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="geomtools.faceDistance">
-<tt class="descclassname">geomtools.</tt><tt class="descname">faceDistance</tt><big>(</big><em>X</em>, <em>Fp</em>, <em>return_points=False</em><big>)</big><a class="headerlink" href="#geomtools.faceDistance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the closest perpendicular distance to a set of triangles.</p>
-<p>X is a (nX,3) shaped array of points.
-Fp is a (nF,3,3) shaped array of triangles.</p>
-<p>Note that some points may not have a normal with footpoint inside any
-of the facets.</p>
-<p>The return value is a tuple OKpid,OKdist,OKpoints where:</p>
-<ul class="simple">
-<li>OKpid is an array with the point numbers having a normal distance;</li>
-<li>OKdist is an array with the shortest distances for these points;</li>
-<li>OKpoints is an array with the closest footpoints for these points
-and is only returned if return_points = True.</li>
-</ul>
-</dd></dl>
-
-<dl class="function">
-<dt id="geomtools.edgeDistance">
-<tt class="descclassname">geomtools.</tt><tt class="descname">edgeDistance</tt><big>(</big><em>X</em>, <em>Ep</em>, <em>return_points=False</em><big>)</big><a class="headerlink" href="#geomtools.edgeDistance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the closest perpendicular distance of points X to a set of edges.</p>
-<p>X is a (nX,3) shaped array of points.
-Ep is a (nE,2,3) shaped array of edge vertices.</p>
-<p>Note that some points may not have a normal with footpoint inside any
-of the edges.</p>
-<p>The return value is a tuple OKpid,OKdist,OKpoints where:</p>
-<ul class="simple">
-<li>OKpid is an array with the point numbers having a normal distance;</li>
-<li>OKdist is an array with the shortest distances for these points;</li>
-<li>OKpoints is an array with the closest footpoints for these points
-and is only returned if return_points = True.</li>
-</ul>
-</dd></dl>
-
-<dl class="function">
-<dt id="geomtools.vertexDistance">
-<tt class="descclassname">geomtools.</tt><tt class="descname">vertexDistance</tt><big>(</big><em>X</em>, <em>Vp</em>, <em>return_points=False</em><big>)</big><a class="headerlink" href="#geomtools.vertexDistance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the closest distance of points X to a set of vertices.</p>
-<p>X is a (nX,3) shaped array of points.
-Vp is a (nV,3) shaped array of vertices.</p>
-<p>The return value is a tuple OKdist,OKpoints where:</p>
-<ul class="simple">
-<li>OKdist is an array with the shortest distances for the points;</li>
-<li>OKpoints is an array with the closest vertices for the points
-and is only returned if return_points = True.</li>
-</ul>
-</dd></dl>
-
-<dl class="function">
 <dt id="geomtools.baryCoords">
 <tt class="descclassname">geomtools.</tt><tt class="descname">baryCoords</tt><big>(</big><em>S</em>, <em>P</em><big>)</big><a class="headerlink" href="#geomtools.baryCoords" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the barycentric coordinates of points  P wrt. simplexes S.</p>
@@ -917,12 +1132,12 @@ triangles.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="fileread.html" title="18. fileread — Read geometry from file in a whole number of formats."
+          <a href="inertia.html" title="19. inertia — Compute inertia related quantities of geometrical models."
              >next</a> |</li>
         <li class="right" >
-          <a href="geomfile.html" title="16. geomfile — Handling pyFormex Geometry Files"
+          <a href="geomfile.html" title="17. geomfile — Handling pyFormex Geometry Files"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -930,7 +1145,7 @@ triangles.</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 14, 2015.
+      Last updated on May 22, 2015.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

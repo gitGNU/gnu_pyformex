@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>1. coords — A structured collection of 3D coordinates. &mdash; pyFormex 1.0.1~a2 documentation</title>
+    <title>1. coords — A structured collection of 3D coordinates. &mdash; pyFormex 1.0.2~a1 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.1~a2',
+        VERSION:     '1.0.2~a1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,7 +51,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.1~a2 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2~a1 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="2. formex — Formex algebra in Python" href="formex.html" />
     <link rel="prev" title="pyFormex reference manual" href="../refman.html" />
@@ -82,7 +82,7 @@
         <li class="right" >
           <a href="../refman.html" title="pyFormex reference manual"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -174,7 +174,7 @@ capabilities. Applications will mostly use the higher level
 classes, which usually have more elaborated consistency checking
 and error handling.</p>
 <p><a class="reference internal" href="#coords.Coords" title="coords.Coords"><tt class="xref py py-class docutils literal"><span class="pre">Coords</span></tt></a> is implemented as a subclass of <tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt>,
-and thus inherits all its methods.
+and thus inherits all its methods and atttributes.
 The last axis of the <a class="reference internal" href="#coords.Coords" title="coords.Coords"><tt class="xref py py-class docutils literal"><span class="pre">Coords</span></tt></a> always has a length equal to 3.
 Each set of 3 values along the last axis represents a single point
 in 3D cartesian space. The float datatype is only checked at creation
@@ -198,9 +198,39 @@ If <tt class="docutils literal"><span class="pre">True</span></tt>, the data are
 the original data if possible, e.g. if <cite>data</cite> is a correctly shaped and
 typed <tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt>.</li>
 </ul>
+<p>The Coords class has the following &#8216;property&#8217; methods:</p>
+<ul class="simple">
+<li><cite>x</cite>: the X coordinates of the points</li>
+<li><cite>y</cite>: the Y coordinates of the points</li>
+<li><cite>z</cite>: the Z coordinates of the points</li>
+<li><cite>xy</cite>: the X and Y coordinates of the points</li>
+<li><cite>xz</cite>: the X and Z coordinates of the points</li>
+<li><cite>yz</cite>: the Y and Z coordinates of the points</li>
+<li><cite>xyz</cite>: all three coordinates of the points</li>
+</ul>
+<p>These all provide ndarrays that are views on Coords object and can thus be
+used to change (subsets of) the coordinates. They are merely a notational
+convenience.</p>
 <p>Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Coords</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">])</span>
 <span class="go">Coords([ 1.,  0.,  0.], dtype=float32)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">(</span><span class="n">arange</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="go">[[ 0.  1.  2.]</span>
+<span class="go"> [ 3.  4.  5.]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+<span class="go">[ 1.  4.]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">9.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="go">[[ 0.  1.  2.]</span>
+<span class="go"> [ 3.  4.  9.]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">xz</span><span class="p">)</span>
+<span class="go">[[ 0.  2.]</span>
+<span class="go"> [ 3.  9.]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="go">[[ 0.  1.  2.]</span>
+<span class="go"> [ 0.  4.  9.]]</span>
 </pre></div>
 </div>
 <dl class="method">
@@ -230,45 +260,6 @@ its shape attribute.</p>
 <dt id="coords.Coords.ncoords">
 <tt class="descname">ncoords</tt><big>(</big><big>)</big><a class="headerlink" href="#coords.Coords.ncoords" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the total number of points.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="coords.Coords.x">
-<tt class="descname">x</tt><big>(</big><big>)</big><a class="headerlink" href="#coords.Coords.x" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the X-coordinates of all points.</p>
-<p>Returns an array with all the X-coordinates in the Coords.
-The returned array has the same shape as the Coords array along
-its first ndim-1 axes.
-This is equivalent with</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="coords.Coords.y">
-<tt class="descname">y</tt><big>(</big><big>)</big><a class="headerlink" href="#coords.Coords.y" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the Y-coordinates of all points.</p>
-<p>Returns an array with all the Y-coordinates in the Coords.
-The returned array has the same shape as the Coords array along
-its first ndim-1 axes.
-This is equivalent with</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="coords.Coords.z">
-<tt class="descname">z</tt><big>(</big><big>)</big><a class="headerlink" href="#coords.Coords.z" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the Z-coordinates of all points.</p>
-<p>Returns an array with all the Z-coordinates in the Coords.
-The returned array has the same shape as the Coords array along
-its first ndim-1 axes.
-This is equivalent with</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -444,7 +435,7 @@ along that axis.</p>
 <li><cite>mass</cite>: float array with ncoords weight values. The default is to
 attribute a weight 1.0 to each point.</li>
 </ul>
-<p>Returns an <tt class="xref py py-class docutils literal"><span class="pre">inertia.Inertia</span></tt> instance with attributes</p>
+<p>Returns an <a class="reference internal" href="inertia.html#inertia.Inertia" title="inertia.Inertia"><tt class="xref py py-class docutils literal"><span class="pre">inertia.Inertia</span></tt></a> instance with attributes</p>
 <ul class="simple">
 <li><cite>mass</cite>: the total mass (float)</li>
 <li><cite>ctr</cite>: the center of mass: float (3,)</li>
@@ -543,9 +534,9 @@ plane indicated by the positive normal.</p>
 each point to the line through p with direction n.
 All distance values are positive or zero.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([[[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">distanceFromLine</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]))</span>
-<span class="go">[[ 0.  0.  3.]]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">distanceFromLine</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]))</span>
+<span class="go">[ 0.    1.41  1.41  0.71]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -691,6 +682,8 @@ If a center is specified, the result is equivalent to:</p>
 <span class="go">[ 2.  2.  2.]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">Coords</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">])</span><span class="o">.</span><span class="n">scale</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]))</span>
 <span class="go">[ 2.  3.  4.]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">Coords</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">])</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="nb">dir</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]))</span>
+<span class="go">[ 1.  2.  2.]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1169,10 +1162,11 @@ an isoparametric transformation. It is equivalent to:</p>
 <dd><p>Perform a coordinate system transformation on the Coords.</p>
 <p>This method transforms the Coords object by the transformation that
 turns the initial coordinate system into the current coordinate system.</p>
-<p>currentCS and initialCS are (4,3) shaped Coords instances defining
-a coordinate system as described in <tt class="xref py py-class docutils literal"><span class="pre">CoordinateSystem</span></tt>.
-If initialCS is None, the global (x,y,z) axes are used.</p>
-<p>E.g. the default initialCS and currentCS equal to:</p>
+<p>currentCS and initialCS can be either <tt class="xref py py-class docutils literal"><span class="pre">CoordSys</span></tt> instances or
+or (4,3) shaped Coords instances that can be used to initialize
+a <tt class="xref py py-class docutils literal"><span class="pre">CoordSys</span></tt> with the points argument.</p>
+<p>If initialCS is None, the global (x,y,z) axes are used.
+For example, the default initialCS and a currentCS equal to:</p>
 <div class="highlight-python"><div class="highlight"><pre> 0.  1.  0.
 -1.  0.  0.
  0.  0.  1.
@@ -1180,10 +1174,6 @@ If initialCS is None, the global (x,y,z) axes are used.</p>
 </pre></div>
 </div>
 <p>result in a rotation of 90 degrees around the z-axis.</p>
-<p>This is a convenience function equivalent to:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">isopar</span><span class="p">(</span><span class="s">&#39;tet4&#39;</span><span class="p">,</span><span class="n">currentCS</span><span class="p">,</span><span class="n">initialCS</span><span class="p">)</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -1691,6 +1681,8 @@ while aligning them on their minimal coordinates in the y- and z- direction.</p>
 <p>An offset may be specified to create a space between the object, instead
 of juxtaposing them.</p>
 <p>Returns: a list with the aligned objects.</p>
+<p>See also the <a class="reference internal" href="#coords.Coords.align" title="coords.Coords.align"><tt class="xref py py-meth docutils literal"><span class="pre">Coords.align()</span></tt></a> method for aligning a single object
+with respect to a point.</p>
 </dd></dl>
 
 <dl class="function">
@@ -1751,7 +1743,7 @@ All the kwargs parameters are used to set <cite>positionCoordsObj</cite> functio
         <li class="right" >
           <a href="../refman.html" title="pyFormex reference manual"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.1~a2 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -1759,7 +1751,7 @@ All the kwargs parameters are used to set <cite>positionCoordsObj</cite> functio
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Feb 14, 2015.
+      Last updated on May 22, 2015.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>
