@@ -2264,7 +2264,7 @@ Script: %s
 ## Some convenience functions
 ##################################################
 
-def exportMesh(filename,mesh,eltype=None,header=''):
+def exportMesh(filename,mesh,eltype,header=''):
     """Export a finite element mesh in Abaqus .inp format.
 
     This is a convenience function to quickly export a mesh to Abaqus
@@ -2278,10 +2278,15 @@ def exportMesh(filename,mesh,eltype=None,header=''):
     """
     fil = open(filename, 'w')
     fil.write(fmtHeading(header))
-    if eltype is None:
-        eltype = mesh.eltype
     writeNodes(fil, mesh.coords)
-    writeElems(fil, mesh.elems, eltype, nofs=1)
+    if mesh.prop is None:
+        mesh = [mesh]
+    else:
+        mesh = mesh.splitProp(compact=False)
+    eofs = 1
+    for im,m in enumerate(mesh):
+        writeElems(fil, m.elems, eltype, name='ESET%s'%im, eofs=eofs, nofs=1)
+        eofs += m.nelems()
     fil.close()
     print("Abaqus file %s written." % filename)
 
