@@ -1321,17 +1321,21 @@ def meshQuality(self,measure):
     return array2N(quality.GetOutput().GetCellData().GetArray('Quality'))
 
 
-def octree(surf,tol=0.0,npts=1.):
+def octree(surf,tol=0.0,npts=1,return_levels = False):
     """Compute the octree structure of the surface.
 
     Returns the octree structure of surf according to the maximum
     tolerance tol and the maximum number of points npts in each octant.
-    It returns a list of hexahedral meshes of each level of the octree
+    It returns an hexahedral mesh containing all levels of the octree
     with property equal to the number of point of the in each region.
+    If return_levels is True, it also return a list of integer arrays
+    containing the location of all the hehahedroons of each level.
+    
     """
     from vtk import vtkOctreePointLocator, vtkPolyData
     from pyformex.formex import Formex
     from pyformex.connectivity import Connectivity
+    from pyformex.simple import cuboid
 
     vm = convert2VPD(surf, clean=False)
     loc = vtkOctreePointLocator()
@@ -1345,40 +1349,37 @@ def octree(surf,tol=0.0,npts=1.):
 
     regions = []
     ptsinregion = []
+    levels = []
+    
     for lf in range(loc.GetNumberOfLeafNodes()):
-        region = []
-        bounds = zeros(6)
-        loc.GetRegionBounds (lf, bounds)
-        if (bounds!=zeros(6)).all():
-            region.append(bounds[:, (0, 2, 4)])
-            region.append(bounds[:, (1, 2, 4)])
-            region.append(bounds[:, (1, 3, 4)])
-            region.append(bounds[:, (0, 3, 4)])
-
-            region.append(bounds[:, (0, 2, 5)])
-            region.append(bounds[:, (1, 2, 5)])
-            region.append(bounds[:, (1, 3, 5)])
-            region.append(bounds[:, (0, 3, 5)])
-
+        bds = zeros(6)
+        loc.GetRegionBounds(lf, bds)
+        bds = bds.reshape(3,2).T
+        region = cuboid(bds[0],bds[1],)
         ptsinregion.append(loc.GetPointsInRegion(lf).GetNumberOfTuples())
-        regions.append(Coords(region))
+        regions.append(region.coords[0])
 
     regions = Formex(regions).toMesh().setProp(asarray(ptsinregion, dtype=int32))
-
+    if not(return_levels):
+        loc.FreeSearchStructure()
+        del loc
+        return regions
+        
     pfrep = []
     for level in range(loc.GetLevel()+1):
         loc.GenerateRepresentation(level, rep)
-        reptmp = convertFromVPD(rep)
-        reptmp[1] = reptmp[1].reshape(-1, 6*4)[:, (0, 1, 2, 3, 9, 8, 11, 10)]
-        reptmp[0] = reptmp[0][Connectivity(reptmp[1]).renumber()[1]]
-
-        pfrep.append(Mesh(reptmp[0], reptmp[1]).setProp(0))
-        centroids = pfrep[-1].matchCentroids(regions)
-        pfrep[-1].prop[centroids[centroids>-1]] = regions.prop[centroids>-1]
-
+        reptmp = convertFromVPD(rep)[0]
+        reptmp[2] = reptmp[2].reshape(-1, 6*4)[:, (0, 1, 2, 3, 9, 8, 11, 10)]
+        reptmp[0] = reptmp[0][Connectivity(reptmp[2]).renumber()[1]]
+        lm = Mesh(reptmp[0], reptmp[2])
+        centroids = lm.matchCentroids(regions)
+        pfrep.append(where(centroids>-1))
+    
     loc.FreeSearchStructure()
     del loc
-    return pfrep
+    
+    return regions,pfrep
+    
 
 def convexHull(object):
     """Compute a tetralihzed convex hull of any pyFormex class.

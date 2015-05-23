@@ -51,20 +51,19 @@ transparent()
 def run():
     clear()
 
-    sf = sphere3(50, 50, bot=-90, top=90).scale(10).toMesh()
-    print(sf)
+    sf = sphere3(20, 20, bot=-90, top=90).scale(10).toMesh()
 
-    levels = octree(sf)
-
+    levels = octree(sf,return_levels=True)
+    
     A = draw(sf, color='yellow',)
     zoomAll()
-    for lev in levels:
-        B = draw(lev, alpha=0.5)
+    for lev in levels[1]:
+        B = draw(levels[0].select(lev), alpha=0.5)
         delay(1)
         wait()
         undraw(B)
 
-    draw([lev.withoutProp(0) for lev in levels])
+    draw(levels[0])
 
 
 if __name__ == '__draw__':
