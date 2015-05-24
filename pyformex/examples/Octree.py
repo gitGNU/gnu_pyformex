@@ -29,7 +29,7 @@ A sphere mesh is created and the octree octants are computed.
 Every level of the octree is repeatedly shown. The mesh properties of the
 octree correspond to the number of points in each octant.
 
-Finally all the octants of the octree which includes at least one point are
+Finally all the octants of the octree which include at least one point are
 shown.
 
 """
@@ -54,7 +54,7 @@ def run():
     sf = sphere3(20, 20, bot=-90, top=90).scale(10).toMesh()
 
     levels = octree(sf,return_levels=True)
-    
+
     A = draw(sf, color='yellow',)
     zoomAll()
     for lev in levels[1]:
@@ -63,7 +63,9 @@ def run():
         wait()
         undraw(B)
 
-    draw(levels[0])
+    transparent(False)
+    M = levels[0]
+    draw(M.select(M.prop>0))
 
 
 if __name__ == '__draw__':
