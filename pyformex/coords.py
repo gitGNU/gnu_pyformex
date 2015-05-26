@@ -694,9 +694,11 @@ class Coords(ndarray):
     def distanceFromPoint(self, p):
         """Returns the distance of all points from the point p.
 
-        p is a single point specified by 3 coordinates.
+        Parameters:
 
-        The return value is a [...] shaped array with the distance of
+        - `p`: array_like (3): coordinates of a point in space
+
+        Returns a [...] shaped array with the distance of
         each point to point p.
         All distance values are positive or zero.
 
@@ -711,12 +713,32 @@ class Coords(ndarray):
         return length(self-p)
 
 
-    def closestToPoint(self, p):
-        """Returns the point closest to point p.
+    def closestToPoint(self, p, return_dist=False):
+        """Returns the point closest to a given point p.
+
+        Parameters:
+
+        - `p`: array_like (3): coordinates of a point in space
+
+        Returns: int: the index of the point in the Coords that has the
+        minimal Euclidean distance to the point 'p'. Use this index
+        with self.points() to get the coordinates of that point.
+
+        Example:
+
+        >>> X = Coords([[[0.,0.,0.],[3.,0.,0.],[0.,3.,0.]]])
+        >>> X.closestToPoint([2.,0.,0.])
+        1
+        >>> X.closestToPoint([2.,0.,0.],True)
+        (1, 1.0)
 
         """
         d = self.distanceFromPoint(p)
-        return self.points()[d.argmin()]
+        i = d.argmin()
+        if return_dist:
+            return i,d.flat[i]
+        else:
+            return i
 
 
     def directionalSize(self,n,p=None,points=False):
