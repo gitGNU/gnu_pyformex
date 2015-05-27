@@ -2195,16 +2195,24 @@ class Coords(ndarray):
           in the specified viewing direction is returned. The default
           is to return the 3D convex hull.
         - `return_mesh`: bool. If True, returns the convex hull as a
-          Mesh. The default is to return a Connectivity with indices
-          into the flattened point array (self.points()).
+          Mesh instead of a Connectivity.
 
-        Returns a Connectivity containing the indices of the points
-        that constitute the convex hull of the Coords.
+        Returns a :class:`Connectivity` containing the indices of the points
+        that constitute the convex hull of the Coords. For a 3D hull,
+        the Connectivity has plexitude 3, and eltype 'tri3'; for a 2D
+        hull these are respectively 2 and 'line2'. The values in the
+        Connectivity refer to the flattened points array as obtained from
+        :meth:`points`.
+
+        If `return_mesh` is True, returns a compacted :class:`Mesh`
+        instead of the Connectivity. For a 3D hull, the Mesh will be a
+        TriSurface, otherwise a Mesh of 'line2' elements.
+
+        The returned Connectivity or Mesh will be empty if all the points
+        are in a plane (dir=None) or an a line in the viewing direction
+        (dir=0..2).
 
         This requires SciPy version 0.12.0 or higher.
-
-        An error is raised if all the points are in a plane (dir=None) or
-        on a line (dir=0..2).
 
         """
         from pyformex.plugins import scipy_itf
@@ -2215,10 +2223,12 @@ class Coords(ndarray):
             points = points[:,ind]
         hull = scipy_itf.convexHull(points)
         if return_mesh:
-            raise ValueError("return_mesh has not been implemented yet")
+            from pyformex.mesh import Mesh
+            hull = Mesh(self.points(),hull).compact()
+            if dir is not None and isInt(dir):
+                hull.coords[:,dir] = 0.0
 
-        else:
-            return hull
+        return hull
 
 
 
