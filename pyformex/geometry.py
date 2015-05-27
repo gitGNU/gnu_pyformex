@@ -386,15 +386,33 @@ class Geometry(object):
     def principalBbox(self):
         return self.coords.principalBbox()
 
-    def convexHull(self,compact=True):
+    def convexHull(self,dir=None,compact=True):
         """Return the convex hull of the geometry.
 
-        The convex hull is a closed TriSurface enclosing all points
-        of the geometry.
+        Parameters:
+
+        - `dir`: int (0..2): axis. If specified, the 2D convext hull in the specified
+          viewing direction is returned. THe default is to return the 3D convex hull.
+
+        The default (dir=None) returns a closed TriSurface enclosing all points
+        of the geometry. When `dir` is specified, returns a closed PolyLine enclosing all points
+        of the geometry when looking in the direction of the specified axis.
+        The returned Meshes will be empty if all the points are in a plane (dir=None) or an a line
+        in the viewing direction (dir=0..2).
         """
-        from pyformex.trisurface import TriSurface
-        X = self.coords
-        hull = TriSurface(X, X.convexHull())
+        from pyformex.mesh import Mesh
+        X = self.points()
+        eltype = 'tri3' if dir is None else 'line2'
+        try:
+            hull = X.convexHull(dir)
+            #print("dir %s shape %s" % (dir,hull.shape))
+        except ValueError:
+            from pyformex.connectivity import Connectivity
+            hull = Connectivity(nplex=3 if dir is None else 2)
+        hull = Mesh(X,hull,eltype=eltype)
+        if dir is None:
+            from pyformex.trisurface import TriSurface
+            hull = TriSurface(hull)
         if compact:
             hull = hull.compact()
         return hull

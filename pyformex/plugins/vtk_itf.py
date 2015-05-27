@@ -23,7 +23,7 @@
 ##
 """Interface with VTK.
 
-This module provides an interface with some function of the Python
+This module provides an interface with some functions of the Python
 Visualiztion Toolkit (VTK).
 Documentation for VTK can be found on http://www.vtk.org/
 
@@ -1285,29 +1285,29 @@ def distance(self,ref,normals=None,loctol=1e-3,normtol=1e-5):
     dist=[asarray(d) for d in dist]
 
     return dist
-    
+
 
 def meshQuality(self,measure):
     """Compute the quality of the elements using a given metric.
 
     Parameters:
-    
+
     - `self`: a Geometry object.
-     
+
     - `measure`: string defining the quality measure.
       This parameter needs to complete the vtk command with the correct
       capitalization.
-    
+
     For the allowed quality metrics check :
     http://www.vtk.org/doc/nightly/html/classvtkMeshQuality.html
-    
+
     Example:
 
     >>> from pyformex.elements import Hex8
     >>> h=Hex8.toMesh()
     >>> meshQuality(h,'MaxAspectFrobenius')
     array([ 1.])
-    
+
     """
     from re import split
     vtkobj = convert2VTU(self)
@@ -1330,7 +1330,7 @@ def octree(surf,tol=0.0,npts=1,return_levels = False):
     with property equal to the number of point of the in each region.
     If return_levels is True, it also return a list of integer arrays
     containing the location of all the hehahedroons of each level.
-    
+
     """
     from vtk import vtkOctreePointLocator, vtkPolyData
     from pyformex.formex import Formex
@@ -1350,7 +1350,7 @@ def octree(surf,tol=0.0,npts=1,return_levels = False):
     regions = []
     ptsinregion = []
     levels = []
-    
+
     for lf in range(loc.GetNumberOfLeafNodes()):
         bds = zeros(6)
         loc.GetRegionBounds(lf, bds)
@@ -1364,7 +1364,7 @@ def octree(surf,tol=0.0,npts=1,return_levels = False):
         loc.FreeSearchStructure()
         del loc
         return regions
-        
+
     pfrep = []
     for level in range(loc.GetLevel()+1):
         loc.GenerateRepresentation(level, rep)
@@ -1374,12 +1374,12 @@ def octree(surf,tol=0.0,npts=1,return_levels = False):
         lm = Mesh(reptmp[0], reptmp[2])
         centroids = lm.matchCentroids(regions)
         pfrep.append(where(centroids>-1))
-    
+
     loc.FreeSearchStructure()
     del loc
-    
+
     return regions,pfrep
-    
+
 
 def convexHull(object):
     """Compute a tetralihzed convex hull of any pyFormex class.

@@ -133,11 +133,21 @@ def draw_convex_hull(n):
     pf.PF['_convex_hull_'] = H = named(n).convexHull()
     draw(H, color='red')
 
-# add a toggle for drawing the convex hull
+def draw_convex_hull2D(n):
+    """Draw the 2D convex hulls of a Geometry.
+
+    """
+    pf.PF['_convex_hull_2D'] = H = [ named(n).convexHull(i) for i in range(3) ]
+    draw(H, color='green')
+
+# add a toggle for drawing the convex hulls
 def toggleConvexHull(self,onoff=None):
     self.toggleAnnotation(draw_convex_hull, onoff)
+def toggleConvexHull2D(self,onoff=None):
+    self.toggleAnnotation(draw_convex_hull2D, onoff)
 
 objects.DrawableObjects.toggleConvexHull = toggleConvexHull
+objects.DrawableObjects.toggleConvexHull2D = toggleConvexHull2D
 
 ##################### read and write ##########################
 
@@ -1171,6 +1181,7 @@ def create_menu():
             ("&Node Marks", selection.toggleNodes, dict(checkable=True, checked=selection.hasNodeMarks())),
             ('&Toggle Bbox', selection.toggleBbox, dict(checkable=True)),
             ('&Toggle Convex Hull', selection.toggleConvexHull, dict(checkable=True)),
+            ('&Toggle Convex Hull 2D', selection.toggleConvexHull2D, dict(checkable=True)),
             ('&Toggle Shrink Mode', shrink, dict(checkable=True)),
             ("&Toggle Numbers On Top", toggleNumbersOntop),
             ]),

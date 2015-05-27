@@ -2186,18 +2186,40 @@ class Coords(ndarray):
         return self + outer(div, X-self).reshape((-1,)+self.shape)
 
 
-    def convexHull(self):
-        """Return the convex hull of a Coords
+    def convexHull(self,dir=None,return_mesh=False):
+        """Return the convex hull of a Coords.
+
+        Parameters:
+
+        - `dir`: int (0..2): axis. If specified, the 2D convext hull
+          in the specified viewing direction is returned. The default
+          is to return the 3D convex hull.
+        - `return_mesh`: bool. If True, returns the convex hull as a
+          Mesh. The default is to return a Connectivity with indices
+          into the flattened point array (self.points()).
 
         Returns a Connectivity containing the indices of the points
         that constitute the convex hull of the Coords.
 
         This requires SciPy version 0.12.0 or higher.
+
+        An error is raised if all the points are in a plane (dir=None) or
+        on a line (dir=0..2).
+
         """
-        from pyformex.software import requireModule
-        requireModule('scipy', '0.12.0')
-        from scipy import spatial
-        return spatial.ConvexHull(self).simplices
+        from pyformex.plugins import scipy_itf
+        points = self.points()
+        if dir is not None and isInt(dir):
+            ind = range(3)
+            ind.remove(dir)
+            points = points[:,ind]
+        hull = scipy_itf.convexHull(points)
+        if return_mesh:
+            raise ValueError("return_mesh has not been implemented yet")
+
+        else:
+            return hull
+
 
 
     # Convenient shorter notations

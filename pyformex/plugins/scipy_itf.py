@@ -39,5 +39,40 @@ from __future__ import print_function
 from pyformex import utils
 utils.requireModule('scipy')
 
+from pyformex.connectivity import Connectivity
+import pyformex.arraytools as at
+
+
+def convexHull(points):
+    """Return the convex hull of a set of points.
+    Parameters:
+
+    - `points`: float array (npoints, 2|3): a set of 2D or 3D point coordinates.
+
+    Returns a :class:`Connectivity` containing the indices of the points that constitute the
+    convex hull of the given point set. The convex hull is the minimal set of simplices
+    enclosing all the points. For a 3D convex hull, the Connectivity will have plexitude 3
+    and an eltype 'tri3', while for 2D convex hulls, the Connectivity has plexitude 2 and
+    eltype 'line2'.
+
+    This requires SciPy version 0.12.0 or higher. If :func:`scipy.spatial.ConvexHull raises
+    an error, an empty connectivity is returned. This happens if all the points of a 3D set
+    are in a plane or all the points of a 2D set are on a line.
+
+    """
+    utils.requireModule('scipy', '0.12.0')
+    from scipy.spatial import ConvexHull
+
+    points = at.checkArray(points,ndim=2,kind='f')
+    ndim = points.shape[1]
+    if ndim not in [2,3]:
+        raise ValueError('Expected 2D or 3D coordinate array')
+
+    try:
+        hull = ConvexHull(points).simplices
+    except:
+        hull = []
+
+    return Connectivity(hull,nplex=ndim,eltype='tri3' if ndim==3 else 'line2')
 
 # End
