@@ -113,6 +113,8 @@ class BaseMenu(object):
 
         First, a normal action is tried. If none is found,
         a separator is tried.
+
+        See also :meth:`item`.
         """
         if text is None:
             return None
