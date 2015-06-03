@@ -859,6 +859,7 @@ class TriSurface(Mesh):
 
 
     def close(self,method='radial',dir=None):
+        """This method needs documentation!!!!"""
         border = self.fillBorder(method, dir, compact=method=='radial')
         if method == 'radial':
             return self.concatenate([self]+border)
@@ -1862,6 +1863,51 @@ Quality: %s .. %s
         edglen = length(self.coords[self.edges[:, 1]]-self.coords[self.edges[:, 0]])
         print(edglen)
         return self
+
+
+
+    def similarity(self,S):
+        """Compute the similarity with another TriSurface.
+
+        Compute a quantitative measure of the similarity of the volumes
+        enclosed by two TriSurfaces. Both the calling and the passed
+        TriSurface should be closed manifolds (see :meth:`isClosedManifold`).
+
+        Returns a tuple a tuple (jaccard, dice, overlap).
+        If A and B are two closed manifolds, VA and VB are their respective
+        volumes, VC is the volume of the intersection of A and B, and VD is
+        the volume of the union of A and B, then the following similarity
+        measures are defined:
+
+        - jaccard coefficient: VC / VD
+        - dice: 2 * VC / (VA + VB)
+        - overlap: VC / min(VA,VB)
+
+        Both jaccard and dice range from 0 when the surfaces are completely
+        disjoint to 1 when the surfaces are identical. The overlap coefficient
+        becomes 1 when one of the surfaces is completely inside the other.
+
+        This method uses gts library to compute the intersection or union.
+        If that fails, nan values are returned.
+        """
+        A,B = self,S
+        VA = A.volume()
+        VB = B.volume()
+        try:
+            VC = A.boolean(B,'*').volume()
+            VD = VA + VB - VC
+        except:
+            try:
+                VD = A.boolean(B,'+').volume()
+                VC = VA + VB - VC
+            except:
+                VC = VD = nan
+
+        dice = 2 * VC / (VA+VB)
+        overlap = VC / min([VA,VB])
+        jaccard = VC / VD
+        return  jaccard, dice, overlap
+
 
 
 ###################################################################
