@@ -425,7 +425,7 @@ class Mesh(Geometry):
         """Return the number of elements in the Mesh"""
         return self.elems.shape[0]
     def nplex(self):
-       """Return the plexitude of the elements in the Mesh"""
+        """Return the plexitude of the elements in the Mesh"""
         return self.elems.shape[1]
     def ncoords(self):
         """Return the number of nodes in the Mesh"""
