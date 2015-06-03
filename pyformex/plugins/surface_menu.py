@@ -407,7 +407,7 @@ def showBorder():
             draw(coloredB, linewidth=3)
             for i, b in enumerate(coloredB):
                 c = roll(pf.canvas.settings.colormap, i+1, axis=0)
-                drawText(str(i), b.center(), color=c, size=18, ontop=True)
+                drawText(str(i), b.center(), color=c, size=18) # ontop=True)
             export({'border':coloredB})
         else:
             warning("The surface %s does not have a border" % selection[0])
