@@ -160,15 +160,15 @@ bumpversion:
 	@OLD=$$(expr "${VERSION}" : '.*\([0-9])*\)$$'); \
 	 NEW=$$(expr $$OLD + 1); \
 	 DOC=$$(expr "${VERSION}" : '\(.*\)\.[^.]*'); \
-	 sed -i "/^VERSION=/s|$$OLD$$|$$NEW|;s|^DOCVERSION =.*|DOCVERSION = $$DOC|;/^RELEASE=/s|}.*|}~a1|" RELEASE
+	 sed -i "/^VERSION=/s|$$OLD$$|$$NEW|;s|^DOCVERSION =.*|DOCVERSION = $$DOC|;/^RELEASE=/s|}.*|}-a1|" RELEASE
 	make version
 	@echo "Bumped Version to $$(grep VERSION= RELEASE), $$(grep RELEASE= RELEASE)"
 
 # This increases the tail only: minor number or alpha number
 bumprelease:
-	@OLD=$$(expr "${RELEASE}" : '.*~a\([0-9])*\)$$'); \
+	@OLD=$$(expr "${RELEASE}" : '.*-a\([0-9])*\)$$'); \
 	 if [ -z "$$OLD" ]; then NEW=1; else NEW=$$(expr $$OLD + 1); fi; \
-	 sed -i "/^RELEASE=/s|}.*|}~a$$NEW|" RELEASE
+	 sed -i "/^RELEASE=/s|}.*|}-a$$NEW|" RELEASE
 	make version
 	@echo "Bumped Release to $$(grep VERSION= RELEASE), $$(grep RELEASE= RELEASE)"
 
@@ -249,7 +249,6 @@ manpages:
 # We should make a difference between official and interim releases!
 #
 publocal_int: ${PKGDIR}/${LATEST} ${PKGDIR}/${PKGVER}.sig
-	@echo "SHOULD REPLACE ~ with -"
 	rsync -ltv ${PKGDIR}/${PKGVER} ${PKGDIR}/${LATEST} ${PKGDIR}/${PKGVER}.sig ${FTPLOCAL}
 
 publocal_off: ${PUBDIR}/${LATEST} ${PUBDIR}/${PKGVER}.sig
