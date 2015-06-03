@@ -849,7 +849,7 @@ class TriSurface(Mesh):
         If the surface is already closed, an empty list is returned.
 
         There are three methods: 'radial', 'planar' and 'border',
-        corresponding to the methods of the surfaceInsideBorder function.
+        corresponding to the methods of the :func:`fillBorder` function.
         """
         if self.prop is None:
             mprop = 1
