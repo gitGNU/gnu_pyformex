@@ -415,12 +415,20 @@ class Mesh(Geometry):
     def ndim(self):
         return 3
     def level(self):
+        """Return the level of the elements in the Mesh
+
+        Returns the dimensionality of the elements: 0 (point), 1(line),
+        2 (surface), 3 (volume).
+        """
         return self.elType().ndim
     def nelems(self):
+        """Return the number of elements in the Mesh"""
         return self.elems.shape[0]
     def nplex(self):
+       """Return the plexitude of the elements in the Mesh"""
         return self.elems.shape[1]
     def ncoords(self):
+        """Return the number of nodes in the Mesh"""
         return self.coords.shape[0]
     nnodes = ncoords
     npoints = ncoords

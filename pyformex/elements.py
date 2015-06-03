@@ -71,9 +71,15 @@ class ElementType(object):
     - `name`: a string. It is capitalized before use, thus all ElementType
       subclasses have a name starting with an uppercase letter. Usually the
       name has a numeric last part, equal to the plexitude of the element.
+    - `doc`: a string with a longer description of the lement type.
+    - `ndim`: int (0..3): the dimensionality of the element:
+
+      - 0: point
+      - 1: line
+      - 2: surface
+      - 3: volume
 
     - `vertices`: the natural coordinates of its vertices,
-
     - `edges`: a list of edges, each defined by 2 or 3 node numbers,
     - `faces`: a list of faces, each defined by a list of minimum 3 node
       numbers,
