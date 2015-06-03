@@ -55,7 +55,7 @@ LIBDIR:= $(DESTDIR)$(libdir)
 DOCDIR:= $(DESTDIR)$(docdir)
 MANDIR:= $(DESTDIR)$(mandir)
 
-CC:= gcc $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS)
+CC:= g++ $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS)
 INSTALL:= $(SU) install
 INSTALLDIR:= $(INSTALL) -d
 INSTALLBIN:= $(INSTALL) -m 0755
