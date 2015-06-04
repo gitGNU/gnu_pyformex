@@ -783,6 +783,8 @@ class TriSurface(Mesh):
 
 
     # TODO: We should probably add optional sorting (# connections) here
+    # TODO: this could be moved into Mesh.nonManifoldEdges if it works
+    #       for all level 2 Meshes
     def nonManifoldEdges(self):
         """Return the non-manifold edges.
 
@@ -1148,6 +1150,39 @@ Quality: %s .. %s
         or use the :meth:`compact` method afterwards.
         """
         return self.cselect(self.degenerate(), compact=compact)
+
+
+    def collapseEdge(self,edg):
+        """Collapse an edge in a TriSurface.
+
+        Collapsing an edge removes all the triangles connected to the edge
+        and replaces the two vertices by a single one, placed at the center
+        of the edge. Triangles only having one of the edge vertices, will
+        all be connected to the new vertex.
+
+        Parameters:
+
+        - `edg`: the index of the edg to be removed. This is an index in the
+          array of edges as returned by :meth:`getElemEdges`.
+
+        Returns a TriSurface with the specified edge number removed.
+        """
+        # remove the elements connected to the collapsing edge
+        invee = self.getElemEdges().inverse()
+        els = invee[edg]
+        els = els[els>=0]
+        keep = complement(els,n=self.nelems())
+        elems = self.elems[keep]
+        prop = self.prop
+        if prop is not None:
+            prop = prop[keep]
+        # replace the first node with the mean of the two
+        node0,node1 = self.edges[edg]
+        #print("Collapsing nodes %s and %s" % (node0,node1))
+        elems[elems==node1] = node0
+        coords = self.coords.copy()
+        coords[node0] = 0.5 * ( coords[node0] + coords[node1] )
+        return TriSurface(coords,elems,prop=prop).compact()
 
 
 ##################  Transform surface #############################
