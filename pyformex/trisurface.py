@@ -742,7 +742,6 @@ class TriSurface(Mesh):
     def surfaceType(self):
         """Check whether the TriSurface is a manifold and if it's closed."""
         ncon = self.nEdgeConnected()
-        #nadj = self.nEdgeAdjacent()
         maxcon = ncon.max()
         mincon = ncon.min()
         manifold = maxcon == 2
@@ -783,14 +782,25 @@ class TriSurface(Mesh):
         return self.surfaceType()[0]
 
 
+    # TODO: We should probably add optional sorting (# connections) here
     def nonManifoldEdges(self):
+        """Return the non-manifold edges.
+
+        Non-manifold edges are edges having more than two triangles
+        connected to them.
+
+        Returns the indices of the non-manifold edges in a TriSurface.
         """
-        Finds edges and faces that are not Manifold.
+        return where(self.nEdgeConnected()>2)[0]
+
+
+    def nonManifoldEdgesFaces(self):
+        """Return the non-manifold edges and faces.
 
         Returns a tuple of:
 
-        - the edges that connect 3 or more faces,
-        - the faces connected to these edges.
+        - the list of edges that connect 3 or more faces,
+        - the list of faces connected to any of these edges.
         """
         conn = self.edgeConnections()
         ed = (conn!=-1).sum(axis=1)>2

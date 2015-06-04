@@ -1143,6 +1143,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         return unique(concat(nm))
 
 
+    # TODO: Explain how this is sorted
     def nonManifoldEdges(self):
         """Return the non-manifold edges of a Mesh.
 
@@ -1154,7 +1155,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         is lower than 3).
 
         As a side effect, this constructs the list of edges in the object.
-        The definition of the nonManifold edges in tgerms of the nodes can
+        The definition of the nonManifold edges in terms of the nodes can
         thus be got from ::
 
           self.edges[self.nonManifoldEdges()]
