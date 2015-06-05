@@ -773,6 +773,8 @@ class TriSurface(Mesh):
         return unique(border)
 
 
+    ####### MANIFOLD #################
+
     def isManifold(self):
         """Check whether the TriSurface is a manifold.
 
@@ -820,6 +822,28 @@ class TriSurface(Mesh):
         """Check whether the TriSurface is a convex manifold."""
         return self.isManifold() and self.edgeSignedAngles().min()>=0.
 
+
+    def removeNonManifold(self):
+        """Remove the non-manifold edges.
+
+        Removes the non-manifold edges by iteratively applying two
+        :meth:`removeDuplicate` and :meth:`collapseEdge` until no edge
+        has more than two connected triangles.
+
+        Returns the reduced surface.
+        """
+        S = self.removeDuplicate()
+        non_manifold_edges = self.nonManifoldEdges()
+        while non_manifold_edges.any():
+            maxcon = S.nEdgeConnected().max()
+            wmax = where(S.nEdgeConnected()==maxcon)[0]
+            S = S.collapseEdge(wmax[0])
+            S = S.removeDuplicate()
+            non_manifold_edges = S.nonManifoldEdges()
+        return S
+
+
+    ###### BORDER ######################
 
     def checkBorder(self):
         """Return the border of TriSurface.
