@@ -967,13 +967,24 @@ class TriSurface(Mesh):
             return sangles
 
 
+    def edgeLengths(self):
+        """Returns the lengths of all edges
+
+        Returns an array with the length of all the edges in the
+        surface. As a side effect, this stores the connectivities
+        of the edges to nodes and the elements to edges in the
+        attributes edges, resp. elem_edges.
+        """
+        edg = self.coords[self.getEdges()]
+        return length(edg[:, 1]-edg[:, 0])
+
+
     def _compute_data(self):
         """Compute data for all edges and faces."""
         if hasattr(self, 'edglen'):
             return
         self.areaNormals()
-        edg = self.coords[self.getEdges()]
-        edglen = length(edg[:, 1]-edg[:, 0])
+        edglen = self.edgeLengths()
         facedg = edglen[self.getElemEdges()]
         peri = facedg.sum(axis=-1)
         edgmin = facedg.min(axis=-1)
