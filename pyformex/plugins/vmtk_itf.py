@@ -163,6 +163,39 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
     return cls,data
 
 
+
+def distance2centerlines(S):
+    """Find the distances of the points of TriSurface S with open profiles
+    to its centerlines.
+
+    Retuns an array of  scalar distances for all nodes of S.
+    """
+    tmp = utils.tempFile(suffix='.vtp').name
+    tmp1 = utils.tempFile(suffix='.vtp').name
+    S.write(tmp, 'vtp')
+
+    cmd = "vmtk vmtksurfacereader -ifile %s --pipe vmtkcenterlines -endpoints 1  -seedselector profileidlist -sourceids 0\
+    --pipe vmtkdistancetocenterlines -useradius 1 -ofile %s "%(tmp,tmp1)
+
+    P = utils.command(cmd)
+    
+    if P.sta:
+        print("An error occurred during the distance calculation.")
+        print(P.out)
+        return None
+    from pyformex.plugins.vtk_itf import readVTKObject
+    [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = readVTKObject(tmp1)
+    cdist=pointdata['DistanceToCenterlines']
+    from pyformex.plugins.vtk_itf import checkClean
+    if not checkClean(S):
+        print('nodes need to be re-matched because surface was not clean')
+        reorderindex = Coords(coords).match(S.coords)
+        cdist = cdist[reorderindex]
+    os.remove(tmp)
+    os.remove(tmp1)
+    return cdist
+
+
 def remesh(self,elementsizemode='edgelength',edgelength=None,
            area=None, areaarray=None, aspectratio=None, excludeprop=None, includeprop=None, preserveboundary=False, conformal='border'):
     """Remesh a TriSurface.
