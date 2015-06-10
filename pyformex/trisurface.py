@@ -835,6 +835,7 @@ class TriSurface(Mesh):
         S = self.removeDuplicate()
         non_manifold_edges = self.nonManifoldEdges()
         while non_manifold_edges.any():
+            print("# nonmanifold edges: %s" % len(non_manifold_edges))
             maxcon = S.nEdgeConnected().max()
             wmax = where(S.nEdgeConnected()==maxcon)[0]
             S = S.collapseEdge(wmax[0])
@@ -1979,7 +1980,7 @@ Quality: %s .. %s
         except:
             try:
                 VD = A.boolean(B,'+').volume()
-                VC = VA + VB - VC
+                VC = VA + VB - VD
             except:
                 VC = VD = nan
 
