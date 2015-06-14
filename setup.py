@@ -105,10 +105,12 @@ class build_py(_build_py):
                 self.copy_file(
                     os.path.join(src_dir, filename), target,
                     preserve_mode = (
-                        filename.startswith('bin/') or
-                        filename.startswith('extra/')
+                        filename.startswith('bin/') # or
+#                        filename.startswith('extra/')
                         )
                     )
+        print("package data built!")
+        print(self.build_temp)
 
 
 
@@ -156,6 +158,7 @@ def run_setup(with_cext):
         'examples/apps.cat',
         'bin/*',
         'data/*',
+        'extra/Makefile',
         'extra/*/*',
         ]
 

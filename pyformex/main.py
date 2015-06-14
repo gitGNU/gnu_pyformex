@@ -96,6 +96,8 @@ You will need proper permissions to actually delete the files.
         utils.removeTree(pyformexdir)
         script = os.path.join(bindir, 'pyformex')
         scripts = glob.glob(script+'-*')
+        extra_gts = [ 'gtscoarsen', 'gtsinside', 'gtsrefine', 'gtsset', 'gtssmooth' ]
+        extra = [ os.path.join(bindir, p) for p in extra_gts ]
         egginfo = "%s-%s*.egg-info" % (pyformexdir, pf.__version__.replace('~', '_'))
         egginfo = glob.glob(egginfo)
         datadir = os.path.commonprefix(['/usr/local/share', pyformexdir])
@@ -104,7 +106,7 @@ You will need proper permissions to actually delete the files.
                                           'applications/pyformex.desktop',
                                           'pixmaps/pyformex-64x64.png',
                                           'pixmaps/pyformex.xpm'])
-        for f in [ script ] + scripts + egginfo + data:
+        for f in [ script ] + scripts + extra + egginfo + data:
             if os.path.exists(f):
                 print("Removing %s" % f)
                 os.remove(f)
