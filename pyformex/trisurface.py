@@ -2309,6 +2309,57 @@ Quality: %s .. %s
             return inside(self, pts, tol)
 
 
+    def voxelize(self,n,bbox=0.01,return_formex=False):
+        """Voxelize the volume inside a closed surface.
+
+        Parameters:
+
+        - `n`: int or (int, int, int): resolution, i.e. number of voxel cells
+          to use along the three axes.
+          If a single int is specified, the number of cells will be adapted
+          according to the surface's :meth:`sizes` (as the voxel cells are
+          always cubes). The specified number of voxels will be use along the
+          largest direction.
+        - `bbox`: float or (point,point): defines the bounding box of the volume
+          that needs to be voxelized. A float specifies a relative amount to add
+          to the surface's bounding box. Note that this defines the bounding box
+          of the centers of the voxels.
+        - `return_formex`: bool; if True, also returns a Formex with the centers
+          of the voxels.
+
+        Returns an int array of shape (nz,ny,nx) with value 1 for the voxels
+        whose center is inside the surface, else 0.
+        If `return_formex` is True, also returns a plex-1 Formex with the
+        centers of the voxels , and property values 0 or 1 if the point is
+        respectively outside or inside the surface. The voxel cell ordering
+        in the Formex is z-direction first, then y, then x.
+
+        """
+        if not self.isClosedManifold():
+            raise ValueError("The surface is non a closed manifold")
+
+        from pyformex import simple
+        if isFloat(bbox):
+            a,b = 1.0+bbox, bbox
+            bbox = self.bbox()
+            bbox = [ a*bbox[0]-b*bbox[1], a*bbox[1]-b*bbox[0]]
+        bbox = checkArray(bbox,shape=(2,3),kind='f')
+        if isInt(n):
+            sz = bbox[1]-bbox[0]
+            step = sz.max() / (n-1)
+            n = ceil(sz / step).astype(Int)
+        n = checkArray(n,shape=(3,),kind='i')
+        X = simple.regularGrid(bbox[0], bbox[0]+n*step, n)
+        ind = self.inside(X)
+        vox = zeros(n+1, dtype=uint8)
+        vox.ravel()[ind] = 1
+        if return_formex:
+            P = Formex(X.reshape(-1,3))
+            P.setProp(vox.ravel())
+            return vox,P
+        return vox
+
+
     def tetgen(self,quality=True,volume=None,filename=None,format='.off'):
         """Create a tetrahedral mesh inside the surface
 
