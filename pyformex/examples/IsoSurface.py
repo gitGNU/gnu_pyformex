@@ -65,6 +65,8 @@ def run():
     ans = ask("This IsoSurface example can either reconstruct a surface from a series of 2D images, or it can use data generated from a function. Use which data?", options)
     ans = options.index(ans)
 
+    tet = False
+
     if ans == 0:
         return
 
@@ -109,13 +111,18 @@ def run():
         pf.GUI.setBusy(False)
 
         # level at which the isosurface is computed
-        res = askItems([('isolevel', 0.5)])
+        res = askItems([
+            _I('isolevel', 0.5),
+            _I('algorithm', choices=['cubes','tetrahedrons']),
+            ])
         if not res:
             return
 
         level = res['isolevel']
         if level <= 0.0 or level >= 1.0:
             level = data.mean()
+
+        tet = res['algorithm'] == 'tetrahedrons'
 
     else:
         # data space: create a grid to visualize
@@ -145,7 +152,7 @@ def run():
     from pyformex.timer import Timer
     pf.GUI.setBusy()
     timer = Timer()
-    tri = sf.isosurface(data, level, nproc=4)
+    tri = sf.isosurface(data, level, nproc=4, tet=tet)
     sec = timer.seconds()
     print("Got %s triangles in %s seconds" % (len(tri), sec))
     if len(tri) > 0:

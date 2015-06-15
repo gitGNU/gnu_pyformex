@@ -607,7 +607,7 @@ grid = np.array([
     [0, 1, 1],
     ])
 
-def isosurface(data, level):
+def isosurface(data, level, tet=False):
     """Create an isosurface through data at given level.
 
     - `data`: (nx,ny,nz) shaped array of data values at points with
@@ -618,6 +618,8 @@ def isosurface(data, level):
     Returns an (ntr,3,3) array defining the triangles of the isosurface.
     The result may be empty (if level is outside the data range).
     """
+    if tet:
+        raise ValueError("Marching tetrahedrons has not been implemented yet in the emulation library. Use the acceleration library.")
     triangles=[]
     def addTriangles(x, y, z):
         pos = grid + [x, y, z]

@@ -37,7 +37,7 @@ import numpy as np
 from pyformex.multi import multitask, cpu_count, splitar
 
 
-def isosurface(data,level,nproc=-1):
+def isosurface(data,level,nproc=-1,tet=0):
     """Create an isosurface through data at given level.
 
     - `data`: (nx,ny,nz) shaped array of data values at points with
@@ -60,7 +60,7 @@ def isosurface(data,level,nproc=-1):
         from pyformex.lib import misc
         data = data.astype(np.float32)
         level = np.float32(level)
-        tri = misc.isosurface(data, level)
+        tri = misc.isosurface(data, level, tet)
 
     else:
         # Perform parallel isosurface
@@ -68,7 +68,7 @@ def isosurface(data,level,nproc=-1):
         datablocks = splitar(data, nproc, close=True)
         shift = (np.array([d.shape[0] for d in datablocks]) - 1).cumsum()
         # 2. Solve blocks independently
-        tasks = [(isosurface, (d, level, 1)) for d in datablocks]
+        tasks = [(isosurface, (d, level, 1, tet)) for d in datablocks]
         tri = multitask(tasks, nproc)
         # 3. Shift and merge blocks
         for t, s in zip(tri[1:], shift[:-1]):

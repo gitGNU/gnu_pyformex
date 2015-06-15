@@ -22,6 +22,9 @@
 //  along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
+// Use this to work on API cleanup
+//#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+
 #include <Python.h>
 #include <numpy/arrayobject.h>
 #include <math.h>
@@ -1226,6 +1229,165 @@ int Polygonise(FLOAT *triangles, XYZ *pos, FLOAT *val, FLOAT level)
 }
 
 
+/*
+   Polygonise a tetrahedron given its vertices within a cube
+   This is an alternative algorithm to polygonisegrid.
+   It results in a smoother surface but more triangular facets.
+
+                      + 0
+                     /|\
+                    / | \
+                   /  |  \
+                  /   |   \
+                 /    |    \
+                /     |     \
+               +-------------+ 1
+              3 \     |     /
+                 \    |    /
+                  \   |   /
+                   \  |  /
+                    \ | /
+                     \|/
+                      + 2
+
+   It's main purpose is still to polygonise a gridded dataset and
+   would normally be called 6 times, one for each tetrahedron making
+   up the grid cell.
+   Given the grid labelling as in PolygniseGrid one would call
+      PolygoniseTri(grid,iso,triangles,0,2,3,7);
+      PolygoniseTri(grid,iso,triangles,0,2,6,7);
+      PolygoniseTri(grid,iso,triangles,0,4,6,7);
+      PolygoniseTri(grid,iso,triangles,0,6,1,2);
+      PolygoniseTri(grid,iso,triangles,0,6,1,4);
+      PolygoniseTri(grid,iso,triangles,5,6,1,4);
+*/
+int PolygoniseTet1(FLOAT *triangles, XYZ *pos, FLOAT *val, FLOAT level, int* ind)
+{
+  int i,i0,i1,i2,i3,k;
+  int ntri = 0;
+  int tetindex;
+  POINT vert[6]; /* We have at most 2 triangles */
+
+  /*
+    Determine which of the 16 cases we have given which vertices
+    are above or below the isosurface
+  */
+  tetindex = 0;
+  for (i=0; i<4; i++)
+    if (val[ind[i]] < level)
+      tetindex |= 1 << i;
+
+  i0 = ind[0];
+  i1 = ind[1];
+  i2 = ind[2];
+  i3 = ind[3];
+
+   /* Form the vertices of the triangles for each case */
+   switch (tetindex) {
+   case 0x00:
+   case 0x0F:
+      break;
+   case 0x0E:
+   case 0x01:
+     vert[0].p = VertexInterp(pos[i0],pos[i1],val[i0],val[i1],level);
+     vert[1].p = VertexInterp(pos[i0],pos[i2],val[i0],val[i2],level);
+     vert[2].p = VertexInterp(pos[i0],pos[i3],val[i0],val[i3],level);
+     ntri++;
+     break;
+   case 0x0D:
+   case 0x02:
+     vert[0].p = VertexInterp(pos[i1],pos[i0],val[i1],val[i0],level);
+     vert[1].p = VertexInterp(pos[i1],pos[i3],val[i1],val[i3],level);
+     vert[2].p = VertexInterp(pos[i1],pos[i2],val[i1],val[i2],level);
+     ntri++;
+     break;
+   case 0x0C:
+   case 0x03:
+     vert[0].p = VertexInterp(pos[i0],pos[i3],val[i0],val[i3],level);
+     vert[1].p = VertexInterp(pos[i0],pos[i2],val[i0],val[i2],level);
+     vert[2].p = VertexInterp(pos[i1],pos[i3],val[i1],val[i3],level);
+     ntri++;
+     vert[3].p = vert[2].p;
+     vert[4].p = VertexInterp(pos[i1],pos[i2],val[i1],val[i2],level);
+     vert[5].p = vert[1].p;
+     ntri++;
+     break;
+   case 0x0B:
+   case 0x04:
+     vert[0].p = VertexInterp(pos[i2],pos[i0],val[i2],val[i0],level);
+     vert[1].p = VertexInterp(pos[i2],pos[i1],val[i2],val[i1],level);
+     vert[2].p = VertexInterp(pos[i2],pos[i3],val[i2],val[i3],level);
+     ntri++;
+     break;
+   case 0x0A:
+   case 0x05:
+     vert[0].p = VertexInterp(pos[i0],pos[i1],val[i0],val[i1],level);
+     vert[1].p = VertexInterp(pos[i2],pos[i3],val[i2],val[i3],level);
+     vert[2].p = VertexInterp(pos[i0],pos[i3],val[i0],val[i3],level);
+     ntri++;
+     vert[3].p = vert[2].p;
+     vert[4].p = VertexInterp(pos[i1],pos[i2],val[i1],val[i2],level);
+     vert[5].p = vert[1].p;
+     ntri++;
+     break;
+   case 0x09:
+   case 0x06:
+     vert[0].p = VertexInterp(pos[i0],pos[i1],val[i0],val[i1],level);
+     vert[1].p = VertexInterp(pos[i1],pos[i3],val[i1],val[i3],level);
+     vert[2].p = VertexInterp(pos[i2],pos[i3],val[i2],val[i3],level);
+     ntri++;
+     vert[3].p = vert[0].p;
+     vert[4].p = VertexInterp(pos[i0],pos[i2],val[i0],val[i2],level);
+     vert[5].p = vert[2].p;
+     break;
+   case 0x07:
+   case 0x08:
+     vert[0].p = VertexInterp(pos[i3],pos[i0],val[i3],val[i0],level);
+     vert[1].p = VertexInterp(pos[i3],pos[i2],val[i3],val[i2],level);
+     vert[2].p = VertexInterp(pos[i3],pos[i1],val[i3],val[i1],level);
+     ntri++;
+     break;
+   }
+
+   /* Create the triangles */
+   for (i=0; i<ntri*3; i++) { /* loop over vertices */
+     for (k=0; k<3; k++)  /* loop over coordinates */
+       *triangles++ = vert[i].x[k];
+   }
+   return(ntri);
+}
+
+
+/*
+   Given a grid cell and an isolevel, calculate the triangular
+   facets required to represent the isosurface through the cell.
+   For this purpose the cell is cut up into 6 tetrahedrons.
+   Return the number of triangular facets, the array "triangles"
+   will be loaded up with the vertices at most 12? triangular facets.
+   0 will be returned if the grid cell is either totally above
+   of totally below the isolevel.
+*/
+int PolygoniseTet(FLOAT *triangles, XYZ *pos, FLOAT *val, FLOAT level)
+{
+  /* definition of tetrahedrons in the cell */
+  int tetind[6][4] = {
+    {0,2,3,7},
+    {0,2,6,7},
+    {0,4,6,7},
+    {0,6,1,2},
+    {0,6,1,4},
+    {5,6,1,4},
+  };
+
+  int i, ntri, ntriangles = 0;
+  for (i=0; i<6; ++i) {
+    ntri = PolygoniseTet1(triangles+ntriangles*3*3,pos,val,level,tetind[i]);
+    ntriangles += ntri;
+  }
+  return ntriangles;
+}
+
+
 static char isosurface__doc__[] = "Create an isosurface through data at given level.\n\
 \n\
     - `data`: (nx,ny,nz) shaped array of data values at points with\n\
@@ -1233,11 +1395,15 @@ static char isosurface__doc__[] = "Create an isosurface through data at given le
       [0,nx-1], [0,ny-1], [0,nz-1]\n\
     - `level`: data value at which the isosurface is to be constructed\n\
 \n\
+    - `tet`: int: if zero, a marching cubes algiorithm is used. If nonzero,\n\
+      a marching tetrahedrons algorithm is used. The latter is slower and\n\
+      produces a lot more triangles, but results in a smoother surface.\n\
+\n\
     Returns an (ntr,3,3) array defining the triangles of the isosurface.\n\
     The result may be empty (if level is outside the data range).\n\
 \n\
-    The his function uses the marching cube algorithm for the reconstruction.\n\
-    See http://paulbourke.net/geometry/polygonise/\n\
+    The algorithms are adapted versions of those found on\n\
+    http://paulbourke.net/geometry/polygonise/ \n\
 ";
 
 static PyObject * isosurface(PyObject *dummy, PyObject *args)
@@ -1246,7 +1412,8 @@ static PyObject * isosurface(PyObject *dummy, PyObject *args)
   PyObject *arr1=NULL;
   float *data;
   float level;
-  if (!PyArg_ParseTuple(args, "Of", &arg1, &level)) return NULL;
+  int tet;
+  if (!PyArg_ParseTuple(args, "Ofi", &arg1, &level, &tet)) return NULL;
   arr1 = PyArray_FROM_OTF(arg1, NPY_FLOAT, NPY_INOUT_ARRAY);
   if (arr1 == NULL) return NULL;
 
@@ -1263,6 +1430,9 @@ static PyObject * isosurface(PyObject *dummy, PyObject *args)
   int ntri = 0;   /* size of storage available */
   int itri = 0;   /* size of storage filled */
   float *triangles = NULL; /* pointer to storage size */
+  int ktri; /* max number of triangles per voxel */
+  if (tet) ktri = 12;
+  else ktri = 5;
 
   /* vertex coordinates with respect to ix,iy,iz */
   int grid[8][3] = {
@@ -1296,14 +1466,14 @@ static PyObject * isosurface(PyObject *dummy, PyObject *args)
 	for (i=0; i<8; i++) pos[i].x = ix + grid[i][0];
 	iofs = (iz*ny + iy)*nx + ix;
 	for (i=0; i<8; i++) val[i] = data[iofs + ofs[i]];
-	if (itri+5 > ntri) {
+	if (itri+ktri > ntri) {
 	  /* need to enlarge storage */
+	  /* enlarge with same number as initial guess */
 	  ntri += nitri;
 	  triangles = (float*) realloc(triangles,ntri*3*3*sizeof(float));
 	}
-	for (i=0; i<8; i++) {
-	}
-	mtri = Polygonise(triangles+itri*3*3,pos,val,level);
+	if (tet) mtri = PolygoniseTet(triangles+itri*3*3,pos,val,level);
+	else mtri = Polygonise(triangles+itri*3*3,pos,val,level);
 	itri += mtri;
       }
     }
