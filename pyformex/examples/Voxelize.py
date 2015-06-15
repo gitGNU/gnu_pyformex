@@ -51,6 +51,55 @@ def saveBinaryImage(a, f):
     im.save(f)
 
 
+def voxelize(self,n,bbox=0.01,return_formex=False):
+    """Voxelize the volume inside a closed surface.
+
+    Parameters:
+
+    - `n`: int or (int, int, int): resolution, i.e. number of voxel cells
+      to use along the three axes.
+      If a single int is specified, the number of cells will be adapted
+      according to the surface's :meth:`sizes` (as the voxel cells are always
+      cubes). The specified number of voxels will be use along the largest
+      direction.
+    - `bbox`: float or (point,point): defines the bounding box of the volume
+      that needs to be voxelized. A float specifies a relative amount to add
+      to the surface's boundibng box. Note that this defines the bounding box
+      of the centers of the voxels.
+    - `return_formex`: bool; if True, also returns a Formex with the centers
+      of the voxels, and property 0 or 1 if the point is repsectively outside
+      or inside the surface.
+
+    Returns a plex-1 Formex with the centers of the voxels and property value
+    set to 0 for points outside the surface, and to 1 for points inside the
+    surface. The voxel cell ordering is in z-direction first, then y, then x.
+
+    """
+    if not self.isClosedManifold():
+        raise ValueError("The surface is non a closed manifold")
+
+    if isFloat(bbox):
+        a,b = 1.0+bbox, bbox
+        bbox = self.bbox()
+        bbox = [ a*bbox[0]-b*bbox[1], a*bbox[1]-b*bbox[0]]
+    bbox = checkArray(bbox,shape=(2,3),kind='f')
+
+    if isInt(n):
+        sz = bbox[1]-bbox[0]
+        step = sz.max() / (n-1)
+        n = ceil(sz / step).astype(Int)
+    n = checkArray(n,shape=(3,),kind='i')
+    X = simple.regularGrid(bbox[0], bbox[0]+n*step, n)
+    ind = self.inside(X)
+    vox = zeros(n+1, dtype=uint8)
+    vox.ravel()[ind] = 1
+    if return_formex:
+        P = Formex(X.reshape(-1,3))
+        P.setProp(vox)
+        return vox,P
+    return vox
+
+
 def run():
     reset()
     smooth()
@@ -59,37 +108,24 @@ def run():
     S = TriSurface.read(getcfg('datadir')+'/horse.off')
     SA = draw(S)
 
-    bb = S.bbox()
-    bb1 = [ 1.1*bb[0]-0.1*bb[1], 1.1*bb[1]-0.1*bb[0]]
-    print(bb)
-    print(bb1)
-
-    res = askItems([
-        _I('Resolution', 100),
+    store = pf.PF.get('_Voxelize_data_',{'Resolution':100})
+    res = askItems(store=store,items=[
+        _I('Resolution',),
         ])
     if not res:
         return
 
+    pf.PF['_Voxelize_data_'] = res
+
     nmax = res['Resolution']
-    sz = bb1[1]-bb1[0]
-    step = sz.max() / (nmax-1)
-    n = (sz / step).astype(Int)
-    print(n)
-    P = Formex(simple.regularGrid(bb1[0], bb1[0]+n*step, n).reshape(-1, 3))
-    draw(P, marksize=1, color='black')
-    #drawNumbers(P)
-    zoomAll()
-    ind = S.inside(P)
-    vox = zeros(n+1, dtype=uint8)
-    print(vox.shape)
-    vox1 = vox.reshape(-1)
-    print(vox1.shape, ind.max())
-    vox1[ind] = 1
-    print(vox.max())
-    P.setProp(vox1)
-    draw(P, marksize=8)
+    vox,P = voxelize(S,nmax,return_formex=True)
+    draw(P, marksize=5)
+    transparent()
 
     dirname = askDirname()
+    if not dirname:
+        return
+
     chdir(dirname)
     # Create output file
     if not checkWorkdir():
