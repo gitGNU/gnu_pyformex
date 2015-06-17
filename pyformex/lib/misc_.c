@@ -1268,6 +1268,19 @@ int PolygoniseTet1(FLOAT *triangles, XYZ *pos, FLOAT *val, FLOAT level, int* ind
   int tetindex;
   POINT vert[6]; /* We have at most 2 triangles */
 
+/*   int edgTable[8][6] = { */
+/*     {-1, -1, -1, -1, -1, -1}, */
+/*     {-1, -1, -1, -1, -1, -1}, */
+
+/* 0: */
+/* 1:(0,1),(0,2),(0,3) */
+/* 2:(1,0),(1,3),(1,2) */
+/* 3:(0,3),(0,2),(1,3) + (1,3),(1,2),(0,2) */
+/* 4:(2,0),(2,1),(2,3) */
+/* 5:(0,1),(2,3),(0,3) + (0,1),(1,2),(2,3) */
+/* 6:(0,1),(1,3),(2,3) + (0,1),(0,2),(2,3) */
+/* 7:(3,0),(3,2),(3,1)  */
+
   /*
     Determine which of the 16 cases we have given which vertices
     are above or below the isosurface
@@ -1277,6 +1290,8 @@ int PolygoniseTet1(FLOAT *triangles, XYZ *pos, FLOAT *val, FLOAT level, int* ind
     if (val[ind[i]] < level)
       tetindex |= 1 << i;
 
+  if (tetindex > 8) tetindex = 15-tetindex;
+
   i0 = ind[0];
   i1 = ind[1];
   i2 = ind[2];
@@ -1284,25 +1299,21 @@ int PolygoniseTet1(FLOAT *triangles, XYZ *pos, FLOAT *val, FLOAT level, int* ind
 
    /* Form the vertices of the triangles for each case */
    switch (tetindex) {
-   case 0x00:
-   case 0x0F:
+   case 0:
       break;
-   case 0x0E:
-   case 0x01:
+   case 1:
      vert[0].p = VertexInterp(pos[i0],pos[i1],val[i0],val[i1],level);
      vert[1].p = VertexInterp(pos[i0],pos[i2],val[i0],val[i2],level);
      vert[2].p = VertexInterp(pos[i0],pos[i3],val[i0],val[i3],level);
      ntri++;
      break;
-   case 0x0D:
-   case 0x02:
+   case 2:
      vert[0].p = VertexInterp(pos[i1],pos[i0],val[i1],val[i0],level);
      vert[1].p = VertexInterp(pos[i1],pos[i3],val[i1],val[i3],level);
      vert[2].p = VertexInterp(pos[i1],pos[i2],val[i1],val[i2],level);
      ntri++;
      break;
-   case 0x0C:
-   case 0x03:
+   case 3:
      vert[0].p = VertexInterp(pos[i0],pos[i3],val[i0],val[i3],level);
      vert[1].p = VertexInterp(pos[i0],pos[i2],val[i0],val[i2],level);
      vert[2].p = VertexInterp(pos[i1],pos[i3],val[i1],val[i3],level);
@@ -1312,26 +1323,23 @@ int PolygoniseTet1(FLOAT *triangles, XYZ *pos, FLOAT *val, FLOAT level, int* ind
      vert[5].p = vert[1].p;
      ntri++;
      break;
-   case 0x0B:
-   case 0x04:
+   case 4:
      vert[0].p = VertexInterp(pos[i2],pos[i0],val[i2],val[i0],level);
      vert[1].p = VertexInterp(pos[i2],pos[i1],val[i2],val[i1],level);
      vert[2].p = VertexInterp(pos[i2],pos[i3],val[i2],val[i3],level);
      ntri++;
      break;
-   case 0x0A:
-   case 0x05:
+   case 5:
      vert[0].p = VertexInterp(pos[i0],pos[i1],val[i0],val[i1],level);
      vert[1].p = VertexInterp(pos[i2],pos[i3],val[i2],val[i3],level);
      vert[2].p = VertexInterp(pos[i0],pos[i3],val[i0],val[i3],level);
      ntri++;
-     vert[3].p = vert[2].p;
+     vert[3].p = vert[0].p;
      vert[4].p = VertexInterp(pos[i1],pos[i2],val[i1],val[i2],level);
      vert[5].p = vert[1].p;
      ntri++;
      break;
-   case 0x09:
-   case 0x06:
+   case 6:
      vert[0].p = VertexInterp(pos[i0],pos[i1],val[i0],val[i1],level);
      vert[1].p = VertexInterp(pos[i1],pos[i3],val[i1],val[i3],level);
      vert[2].p = VertexInterp(pos[i2],pos[i3],val[i2],val[i3],level);
@@ -1339,9 +1347,9 @@ int PolygoniseTet1(FLOAT *triangles, XYZ *pos, FLOAT *val, FLOAT level, int* ind
      vert[3].p = vert[0].p;
      vert[4].p = VertexInterp(pos[i0],pos[i2],val[i0],val[i2],level);
      vert[5].p = vert[2].p;
+     ntri++;
      break;
-   case 0x07:
-   case 0x08:
+   case 7:
      vert[0].p = VertexInterp(pos[i3],pos[i0],val[i3],val[i0],level);
      vert[1].p = VertexInterp(pos[i3],pos[i2],val[i3],val[i2],level);
      vert[2].p = VertexInterp(pos[i3],pos[i1],val[i3],val[i1],level);
