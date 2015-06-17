@@ -32,6 +32,7 @@ from __future__ import print_function
 
 
 import pyformex as pf
+from pyformex import arraytools as at
 from pyformex.gui import QtGui
 QImage = QtGui.QImage
 QColor = QtGui.QColor
@@ -433,6 +434,26 @@ def dicom2numpy(files):
     pixar = np.dstack([ readDicom(f) for f in files ])
     scale = _dicom_spacing
     return pixar, scale
+
+
+def saveGreyImage(a, f, flip=True):
+    """Save a 2D int array as a grey image.
+
+    Parameters:
+
+    - `a`: int array (nx,ny) with values in the range 0..255. These are
+      the grey values of the pixels.
+    - `f`: filename
+    - `flip`: by default, the vertical axis is flipped, so that images are
+      stored starting at the top. If your data already have the vertical axis
+      downwards, use flip=False.
+
+    """
+    a = at.checkArray(a,ndim=2,kind='u',allow='i').astype(np.uint8)
+    c = np.flipud(a)
+    c = np.dstack([c, c, c])
+    im = numpy2qimage(c)
+    im.save(f)
 
 
 # End

@@ -36,19 +36,14 @@ _topics = ['surface']
 _techniques = ['voxelize', 'image']
 
 from pyformex.gui.draw import *
-from pyformex.plugins.imagearray import *
+from pyformex.plugins.imagearray import saveGreyImage
 from pyformex import simple
 
 
+# TODO: this should be merged with opengl.drawImage3D
 def showGreyImage(a):
     F = Formex('4:0123').rep([a.shape[1], a.shape[0]], [0, 1], [1., 1.]).setProp(a)
     return draw(F)
-
-def saveBinaryImage(a, f):
-    c = flipud(a)
-    c = dstack([c, c, c])
-    im = numpy2qimage(c)
-    im.save(f)
 
 
 def run():
@@ -88,8 +83,8 @@ def run():
     flat()
     A = None
     for frame in vox:
-        B = showGreyImage(frame)
-        saveBinaryImage(frame*255, fs.next())
+        B = showGreyImage(frame*7)
+        saveGreyImage(frame*255, fs.next())
         undraw(A)
         A = B
 
