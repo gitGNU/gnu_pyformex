@@ -1407,6 +1407,11 @@ def intersection():
         draw(SC, color=red, linewidth=3)
 
 
+def voxelize():
+    """Voxelize"""
+    pass
+
+
 def remesh():
     S = selection.check(single=True)
     if S:
@@ -1531,6 +1536,7 @@ def create_menu():
           ## ("&Smooth surface",smooth),
           ("&Boolean operation on two surfaces", boolean),
           ("&Intersection curve of two surfaces", intersection),
+          ("&Voxelize the volume insisde a surface", voxelize),
           ]),
         ('&VMTK functions',
          [('&Quality remesh surface', remesh),

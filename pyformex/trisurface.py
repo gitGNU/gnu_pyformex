@@ -2334,6 +2334,9 @@ Quality: %s .. %s
         respectively outside or inside the surface. The voxel cell ordering
         in the Formex is z-direction first, then y, then x.
 
+        See also example Voxelize, for saving the voxel values in a stack
+        of binary images.
+
         """
         if not self.isClosedManifold():
             raise ValueError("The surface is non a closed manifold")

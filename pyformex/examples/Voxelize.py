@@ -40,53 +40,111 @@ from pyformex.plugins.imagearray import saveGreyImage
 from pyformex import simple
 
 
+filename = os.path.join(getcfg('datadir'), 'horse.off')
+
+
+def selectSurfaceFile(field):
+    fn = askFilename(field.value(), filter='surface')
+    return fn
+
+
+def getData():
+    """Ask input data from the user."""
+    store = pf.PF.get('_Voxelize_data_',{
+        'surface':'file',
+        'filename':filename,
+        'grade':8,
+        'resolution':100,
+    })
+    res = askItems(caption="Voxelize example",store=store,items=[
+        _G('Model',[
+            _I('surface', choices=['file', 'sphere']),
+            _I('filename', text='Image file', itemtype='button', func=selectSurfaceFile),
+            _I('grade', 8),
+            ]),
+        _G('Scan', [
+            _I('resolution',),
+            ]),
+        ],
+        enablers = [
+        ( 'surface', 'file', 'filename', ),
+        ( 'surface', 'sphere', 'grade', ),
+        ],
+    )
+    if res:
+        pf.PF['_Voxelize_data_'] = res
+    return res
+
+
+def createSurface(surface,filename,grade,**kargs):
+    """Create and draw a closed surface from input data
+
+    """
+    if surface == 'file':
+        S = TriSurface.read(filename).centered()
+    elif surface == 'sphere':
+        S = simple.sphere(ndiv=grade)
+
+    draw(S)
+
+    if not S.isClosedManifold():
+        warning("This is not a closed manifold surface. Try another.")
+        return None
+    return S
+
+
 # TODO: this should be merged with opengl.drawImage3D
 def showGreyImage(a):
+    """Draw pixel array on the canvas"""
     F = Formex('4:0123').rep([a.shape[1], a.shape[0]], [0, 1], [1., 1.]).setProp(a)
     return draw(F)
 
 
+def saveScan(scandata,surface,filename,showimages=False,**kargs):
+    """Save the scandata for the surface"""
+    dirname = askDirname(caption="Directory where to store the images")
+    if not dirname:
+        return
+    chdir(dirname)
+    if not checkWorkdir():
+        print("Could not open directory for writing. I have to stop here")
+        return
+
+    if surface == 'sphere':
+        name = 'sphere'
+    else:
+        name = utils.projectName(filename)
+    fs = utils.NameSequence(name, '.png')
+
+    if showimages:
+        clear()
+        flat()
+        A = None
+    for frame in scandata:
+        if showimages:
+            B = showGreyImage(frame*7)
+            undraw(A)
+            A = B
+        saveGreyImage(frame*255, fs.next())
+
+
 def run():
-    reset()
+    resetAll()
+    clear()
     smooth()
     lights(True)
 
-    S = TriSurface.read(getcfg('datadir')+'/horse.off')
-    SA = draw(S)
+    res = getData()
+    if res:
+        S = createSurface(**res)
 
-    store = pf.PF.get('_Voxelize_data_',{'Resolution':100})
-    res = askItems(store=store,items=[
-        _I('Resolution',),
-        ])
-    if not res:
-        return
+    if S:
+        nmax = res['resolution']
+        vox,P = S.voxelize(nmax,return_formex=True)
+        draw(P, marksize=5)
+        transparent()
+        saveScan(vox,showimages=True,**res)
 
-    pf.PF['_Voxelize_data_'] = res
-
-    nmax = res['Resolution']
-    vox,P = S.voxelize(nmax,return_formex=True)
-    draw(P, marksize=5)
-    transparent()
-
-    dirname = askDirname()
-    if not dirname:
-        return
-
-    chdir(dirname)
-    # Create output file
-    if not checkWorkdir():
-        print("Could not open a directory for writing. I have to stop here")
-        return
-
-    fs = utils.NameSequence('horse', '.png')
-    clear()
-    flat()
-    A = None
-    for frame in vox:
-        B = showGreyImage(frame*7)
-        saveGreyImage(frame*255, fs.next())
-        undraw(A)
-        A = B
 
 # The following is to make it work as a script
 if __name__ == '__draw__':
