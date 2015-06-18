@@ -679,6 +679,9 @@ def createAppMenu(mode='app',parent=None,before=None):
     else:
         appdirs = pf.cfg['scriptdirs']
 
+
+    history = AppMenu('History', files=pf.cfg['gui/%shistory'%mode], max=pf.cfg['gui/history_max'], mode=mode, parent=appmenu, runall=False)
+
     # Fill in missing default locations : this enables the user
     # to keep the pyFormex installed examples in his config
     guessName = lambda n, s: s if len(s) > 0 else pf.cfg['%sdir' % n.lower()]
@@ -688,8 +691,6 @@ def createAppMenu(mode='app',parent=None,before=None):
     for name, path in appdirs:
         pf.debug("Loading menu %s from %s" % (name, path), pf.DEBUG.MENU)
         m = AppMenu(name, path, mode=mode, autoplay=True, parent=appmenu, runall=True)
-
-    history = AppMenu('%s History'%Mode, files=pf.cfg['gui/%shistory'%mode], max=pf.cfg['gui/history_max'], mode=mode, parent=appmenu, runall=False)
 
     setattr(pf.GUI, '%shistory'%mode, history)
 
