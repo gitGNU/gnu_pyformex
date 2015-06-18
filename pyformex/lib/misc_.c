@@ -1380,10 +1380,10 @@ int PolygoniseTet(FLOAT *triangles, XYZ *pos, FLOAT *val, FLOAT level)
   /* definition of tetrahedrons in the cell */
   int tetind[6][4] = {
     {0,2,3,7},
-    {0,2,6,7},
+    {0,2,7,6},
     {0,4,6,7},
     {0,6,1,2},
-    {0,6,1,4},
+    {0,6,4,1},
     {5,6,1,4},
   };
 
