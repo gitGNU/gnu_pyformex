@@ -184,6 +184,19 @@ def qimage2numpy(image,resize=(0, 0),order='RGBA',flip=True,indexed=None,expand=
 
 
 def numpy2qimage(array):
+        """Convert a 2D or 3D integer numpy array into a QImag
+
+        Parameters:
+
+        - `array`: 2D or 3D int array. If the input array is 2D, the array
+          is converted into a gray image. If the input array is 3D, the last
+          axis should have length 3 or 4 and represents the color channels in
+          order RGB or RGBA.
+
+        This is equivalent with calling :func:`gray2qimage` for a 2D array
+        and rgb2qimage for a 3D array.
+
+        """
         if np.ndim(array) == 2:
                 return gray2qimage(array)
         elif np.ndim(array) == 3:
