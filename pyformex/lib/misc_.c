@@ -1229,6 +1229,7 @@ int Polygonise(FLOAT *triangles, XYZ *pos, FLOAT *val, FLOAT level)
 }
 
 
+
 /*
    Polygonise a tetrahedron given its vertices within a cube
    This is an alternative algorithm to polygonisegrid.
@@ -1263,23 +1264,25 @@ int Polygonise(FLOAT *triangles, XYZ *pos, FLOAT *val, FLOAT level)
 */
 int PolygoniseTet1(FLOAT *triangles, XYZ *pos, FLOAT *val, FLOAT level, int* ind)
 {
-  int i,i0,i1,i2,i3,k;
+  int i,i0,i1,k,l,it;
   int ntri = 0;
-  int tetindex;
+  int tetindex,caseindex;
   POINT vert[6]; /* We have at most 2 triangles */
 
-/*   int edgTable[8][6] = { */
-/*     {-1, -1, -1, -1, -1, -1}, */
-/*     {-1, -1, -1, -1, -1, -1}, */
-
-/* 0: */
-/* 1:(0,1),(0,2),(0,3) */
-/* 2:(1,0),(1,3),(1,2) */
-/* 3:(0,3),(0,2),(1,3) + (1,3),(1,2),(0,2) */
-/* 4:(2,0),(2,1),(2,3) */
-/* 5:(0,1),(2,3),(0,3) + (0,1),(1,2),(2,3) */
-/* 6:(0,1),(1,3),(2,3) + (0,1),(0,2),(2,3) */
-/* 7:(3,0),(3,2),(3,1)  */
+  /* number of triangles for each case, cumulative */
+  int casetri[9] = { 0, 0, 1, 2, 4, 5, 7, 9, 10 };
+  int caseind[10][6] = {
+    {0,1,0,3,0,2},   // case 1
+    {1,0,1,2,1,3},   // case 2
+    {3,0,2,0,1,3},   // case 3
+    {2,0,2,1,1,3},   // case 3
+    {2,0,2,3,2,1},   // case 4
+    {3,0,1,2,1,0},   // case 5
+    {1,2,3,0,2,3},   // case 5
+    {0,1,0,2,1,3},   // case 6
+    {1,3,0,2,3,2},   // case 6
+    {3,0,3,2,3,1},   // case 7
+  };
 
   /*
     Determine which of the 16 cases we have given which vertices
@@ -1290,79 +1293,28 @@ int PolygoniseTet1(FLOAT *triangles, XYZ *pos, FLOAT *val, FLOAT level, int* ind
     if (val[ind[i]] < level)
       tetindex |= 1 << i;
 
-  if (tetindex > 8) tetindex = 15-tetindex;
+  if (tetindex < 8) caseindex = tetindex;
+  else caseindex = 15-tetindex;
 
-  i0 = ind[0];
-  i1 = ind[1];
-  i2 = ind[2];
-  i3 = ind[3];
+  /* Form the vertices of the triangles for each case */
+  i = 0;
+  for (it=casetri[caseindex]; it<casetri[caseindex+1]; ++it) {
+    for (k=0; k<6; k+=2) {
+      if (tetindex < 8) l = k;
+      else l = 4-k;
+      i0 = ind[caseind[it][l]];
+      i1 = ind[caseind[it][l+1]];
+      vert[i++].p = VertexInterp(pos[i0],pos[i1],val[i0],val[i1],level);
+    }
+    ntri++;
+  };
 
-   /* Form the vertices of the triangles for each case */
-   switch (tetindex) {
-   case 0:
-      break;
-   case 1:
-     vert[0].p = VertexInterp(pos[i0],pos[i1],val[i0],val[i1],level);
-     vert[1].p = VertexInterp(pos[i0],pos[i2],val[i0],val[i2],level);
-     vert[2].p = VertexInterp(pos[i0],pos[i3],val[i0],val[i3],level);
-     ntri++;
-     break;
-   case 2:
-     vert[0].p = VertexInterp(pos[i1],pos[i0],val[i1],val[i0],level);
-     vert[1].p = VertexInterp(pos[i1],pos[i3],val[i1],val[i3],level);
-     vert[2].p = VertexInterp(pos[i1],pos[i2],val[i1],val[i2],level);
-     ntri++;
-     break;
-   case 3:
-     vert[0].p = VertexInterp(pos[i0],pos[i3],val[i0],val[i3],level);
-     vert[1].p = VertexInterp(pos[i0],pos[i2],val[i0],val[i2],level);
-     vert[2].p = VertexInterp(pos[i1],pos[i3],val[i1],val[i3],level);
-     ntri++;
-     vert[3].p = vert[2].p;
-     vert[4].p = VertexInterp(pos[i1],pos[i2],val[i1],val[i2],level);
-     vert[5].p = vert[1].p;
-     ntri++;
-     break;
-   case 4:
-     vert[0].p = VertexInterp(pos[i2],pos[i0],val[i2],val[i0],level);
-     vert[1].p = VertexInterp(pos[i2],pos[i1],val[i2],val[i1],level);
-     vert[2].p = VertexInterp(pos[i2],pos[i3],val[i2],val[i3],level);
-     ntri++;
-     break;
-   case 5:
-     vert[0].p = VertexInterp(pos[i0],pos[i1],val[i0],val[i1],level);
-     vert[1].p = VertexInterp(pos[i2],pos[i3],val[i2],val[i3],level);
-     vert[2].p = VertexInterp(pos[i0],pos[i3],val[i0],val[i3],level);
-     ntri++;
-     vert[3].p = vert[0].p;
-     vert[4].p = VertexInterp(pos[i1],pos[i2],val[i1],val[i2],level);
-     vert[5].p = vert[1].p;
-     ntri++;
-     break;
-   case 6:
-     vert[0].p = VertexInterp(pos[i0],pos[i1],val[i0],val[i1],level);
-     vert[1].p = VertexInterp(pos[i1],pos[i3],val[i1],val[i3],level);
-     vert[2].p = VertexInterp(pos[i2],pos[i3],val[i2],val[i3],level);
-     ntri++;
-     vert[3].p = vert[0].p;
-     vert[4].p = VertexInterp(pos[i0],pos[i2],val[i0],val[i2],level);
-     vert[5].p = vert[2].p;
-     ntri++;
-     break;
-   case 7:
-     vert[0].p = VertexInterp(pos[i3],pos[i0],val[i3],val[i0],level);
-     vert[1].p = VertexInterp(pos[i3],pos[i2],val[i3],val[i2],level);
-     vert[2].p = VertexInterp(pos[i3],pos[i1],val[i3],val[i1],level);
-     ntri++;
-     break;
-   }
-
-   /* Create the triangles */
-   for (i=0; i<ntri*3; i++) { /* loop over vertices */
-     for (k=0; k<3; k++)  /* loop over coordinates */
-       *triangles++ = vert[i].x[k];
-   }
-   return(ntri);
+  /* Create the triangles */
+  for (i=0; i<ntri*3; i++) { /* loop over vertices */
+    for (k=0; k<3; k++)  /* loop over coordinates */
+      *triangles++ = vert[i].x[k];
+  }
+  return(ntri);
 }
 
 
@@ -1378,6 +1330,14 @@ int PolygoniseTet1(FLOAT *triangles, XYZ *pos, FLOAT *val, FLOAT level, int* ind
 int PolygoniseTet(FLOAT *triangles, XYZ *pos, FLOAT *val, FLOAT level)
 {
   /* definition of tetrahedrons in the cell */
+  /* int tetind[6][4] = { */
+  /*   {0,7,3,2}, */
+  /*   {0,7,2,6}, */
+  /*   {0,4,7,6}, */
+  /*   {0,1,6,2}, */
+  /*   {0,4,6,1}, */
+  /*   {5,1,6,4}, */
+  /* }; */
   int tetind[6][4] = {
     {0,2,3,7},
     {0,2,7,6},

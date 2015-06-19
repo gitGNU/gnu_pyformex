@@ -113,7 +113,7 @@ def run():
         # level at which the isosurface is computed
         res = askItems([
             _I('isolevel', 0.5),
-            _I('algorithm', choices=['cubes','tetrahedrons']),
+            _I('algorithm', itemtype='hradio',choices=['cubes','tetrahedrons']),
             ])
         if not res:
             return
@@ -157,8 +157,6 @@ def run():
     print("Got %s triangles in %s seconds" % (len(tri), sec))
     if len(tri) > 0:
         S = TriSurface(tri).scale(scale[::-1])
-        if tet:
-            S = S.fixNormals().close().fixNormals().setProp(0)
         draw(S,color=blue,bkcolor=red)
         export({'isosurf':S})
     pf.GUI.setBusy(False)
