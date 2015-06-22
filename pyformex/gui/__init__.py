@@ -41,17 +41,17 @@ from __future__ import print_function
 import pyformex as pf
 from pyformex import utils
 
-# We need this try to keep sphinx happy when building the docs
-bindings = pf.cfg.get('gui/bindings','PySide')
+# We need this to keep sphinx happy when building the docs
+bindings = pf.cfg.get('gui/bindings','pyside')
+#print("BINDINGS %s" % bindings)
 
-
-if bindings != 'PyQt4' and utils.hasModule('pyside'):
+if bindings.lower() != 'pyqt4' and utils.hasModule('pyside'):
     from PySide import QtCore, QtGui, QtOpenGL
     from PySide.QtCore import Signal
     from PySide.QtCore import Slot
     pf.options.pyside = True
 
-else:
+elif bindings.lower() != 'pyside' and utils.hasModule('pyqt4'):
     import sip
     try:
         sip.setapi('QDate', 2)
@@ -64,11 +64,13 @@ else:
     except ValueError as e:
         raise RuntimeError('Could not set PyQt4 API version (%s)' % e)
 
-    utils.requireModule('pyqt4')
     from PyQt4 import QtCore, QtGui, QtOpenGL
     from PyQt4.QtCore import pyqtSignal as Signal
     from PyQt4.QtCore import pyqtSlot as Slot
     pf.options.pyside = False
+
+else:
+    raise ValueError("\n"+"*"*40+"\nThe pyFormex GUI requires PySide or PyQt4.\nI could not find neither of them, so I can not continue.\nInstall PySide or PyQt4 (including its OpenGL component) and then retry."+"\n"+"*"*40)
 
 
 try:
