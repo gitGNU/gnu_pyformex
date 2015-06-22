@@ -1215,7 +1215,9 @@ def vtkClip(self, implicitdata, method=None, insideout=False):
 
 
 
-
+# TODO
+# - verify against vmtkDistanceOfPoints
+# - add the multiprocessing option like vmtkDistanceOfPoints
 def distance(self,ref,normals=None,loctol=1e-3,normtol=1e-5):
     """Computes the distance of object from a reference object ref
 
@@ -1228,7 +1230,7 @@ def distance(self,ref,normals=None,loctol=1e-3,normtol=1e-5):
     - `loctol`: float. Tolerance for the locator precision.
     - `normtol`: float. Tolerance for the signed distance vector.
 
-    Returns a tuple with the distances, distance vectors, and signed distance vectors.
+    Returns a tuple with the distances, distance vectors, and signed distances.
 
     """
     from vtk import mutable,vtkPolyDataNormals, vtkCellLocator, vtkGenericCell
