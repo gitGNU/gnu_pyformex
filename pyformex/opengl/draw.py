@@ -619,7 +619,10 @@ def drawField(fld,comp=0,scale='RAINBOW',symmetric_scale=False):
     cval = cval.reshape(data.shape+(3,))
     CLA = ColorLegend(CS, 256, 20, 20, 30, 200, scale=multiplier)
     drawActor(CLA)
-    draw(fld.geometry, color=cval)
+    if fld.fldtype == 'node':
+        draw(fld.geometry, color=cval[fld.geometry.elems])
+    else:
+        draw(fld.geometry, color=cval)
 
 
 def drawActor(A):

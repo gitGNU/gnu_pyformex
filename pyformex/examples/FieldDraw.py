@@ -43,7 +43,7 @@ def run():
 
     clear()
     smoothwire()
-    layout(2)
+    layout(3)
 
     F = simple.rectangle(4,3)
     M = F.toMesh()
@@ -71,6 +71,9 @@ def run():
     zoom(1.25)
     viewport(1)
     drawField(M.getField('distc'))
+    zoom(1.25)
+    viewport(2)
+    drawField(M.getField('dist'))
     zoom(1.25)
 
 
