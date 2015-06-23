@@ -161,7 +161,7 @@ class UniaxialStrain(object):
         if type == 'nominal':
             data = data + 1.
         elif type == 'log':
-            data = exp(data)
+            data = np.exp(data)
         elif type == 'green':
             data = sqrt(2*data + 1.)
         elif type == 'almansi':
