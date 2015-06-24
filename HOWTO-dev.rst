@@ -825,20 +825,26 @@ imports
 All import statements in the pyFormex Python source should use absolute
 imports, starting with the pyformex main package. Imports should by preference
 be ordered as in the following example, putting first (sub)package imports,
-then module imports, and finally individual define imports.
+then module imports, and finally individual definition imports.
 The subpackages should be in the order lib, gui, opengl, plugins, examples.
+By preference put only one import per line.
+
+Wildcard imports are should not be used. There are still a lot them for
+historical reasons, but we should remove them as much as possible.
+
 ::
 
     # Example of an extensive import list
     from __future__ import print_function
 
     import pyformex as pf
-    from pyformex import plugins   # import a subpackge
-    from pyformex import utils,zip,mesh    # import modules
-    from pyformex.gui import draw, image
-    from pyformex.plugins import geometry_menu, inertia
-    from pyformex.utils import system, command    # import individual defines
-    from pyformex.gui.draw import *
+    from pyformex import plugins           # import a subpackge
+    from pyformex import utils             # import module
+    from pyformex import arraytools as at  # import module with alias
+    from pyformex.gui import draw, image   # !!! DEPRECATED multiple import
+    from pyformex.plugins import geometry_menu
+    from pyformex.utils import command     # import individual function
+    from pyformex.gui.draw import *        # !!! DEPRECATED wildcard
     from pyformex.plugins.curve import Arc, PolyLine
 
     import os, sys               # import non-pyformex parts
@@ -1030,6 +1036,91 @@ Docstrings
 
   See also the documentation for arraytools.uniqueOrdered for another
   example.
+
+
+Automatic code style checking
+=============================
+
+In an effort to improve code quality, readability and maintainability, we
+promote the use of some specialized tools for code style checking and
+rewriting. Developers should install the following packages::
+
+  apt-get install pep8 python-autopep8 pylint
+
+In future we will use these tools to check all code automatically at commit
+time. For now, the tools are made available recommended configurations are
+tested and will lead to further instructions here. All of you can help with
+cleaning up the existing code.
+
+Checking with pep8
+------------------
+
+PEP8 is a Python Enhancement Proposal holding general recommendations
+for Python coding style. The *pep8* command will check conformance of
+your code to this guide. There is however no unanimous consent on what
+is good style. Therefore we will not enforce all recommendations.
+We will for example allow comments line starting with two hash marks (##),
+for the following reasons:
+
+- *emacs* uses '##' to comment out regions (which themselves might contain
+  comments) and to uncomment them again;
+- our custom *stamp* program responsible for adding the copyright section
+  at the start of files uses '##' to identify the stamped part.
+
+Therefore, the recommended way to execute pep8 is::
+
+  pep8 --ignore=E265 myfile.py
+
+This will produce a list of fixes (mostly whitespace) which you should
+implement. You can use *autopep8* to help you.
+
+Creating beautified code with autopep8
+--------------------------------------
+
+*autopep8* restructures your code according to pep8. It will mostly do
+whitespace corrections. While it can automatically change the code inplace,
+it is not recommended to do so. Instead, create the new code, compare it
+with the old, and port the changes one by one after your approval.
+There are diff tools available for most editors to help with that.
+The following command produces a cleaned source *myfile_pep8.py*::
+
+  autopep8 --ignore=E265,W6 myfile.py > myfile_pep8.py
+
+Do not feel forced to accept all changes! There might be reasons to
+divert from standard rules. The restructured file might break some
+nice vertical alignment, or break lines at strange places. If the result
+is not more readable than the original, do not change it.
+Also, autopep8 does not fix all the pep8 failures.
+
+Thus, for two files that were converted already (simple.py, varray.py),
+the first one still produces quite some message. This is no problem, as
+we consider the code better in that way, than in the conforming version.
+
+
+Checking with pylint
+--------------------
+
+The ultimate testing of the code will be done with *pylint*. Policy
+is set in the pylintrc configuration file. The command::
+
+  pylint myfile.py
+
+produces a long report with recommendations, and a global evaluation
+with a score on 10.
+Try to fix as many of the reported issues, and run the code again.
+The score will increase. The first file that was analyzed and fixed
+(varray.py) now has a score of 9.47/10. But do not worry if your initial
+score is *a lot* lower: varray.py started at a negative score, as will
+probably most of our modules. *simple.py* has at the time of this writing
+a score of -42.38 :( largely due to wildcard imports.
+
+Testing after changes
+---------------------
+
+Be sure to always retest the module after the changes you have made::
+
+  pyformex --testmodule pkg.myfile
+
 
 
 Creating pyFormex documentation

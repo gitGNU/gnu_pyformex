@@ -67,11 +67,15 @@ Not sorting the entries in the Varray provides a further gain.
 The Varray class defined below therefore does not sort the rows
 by default, but provides the methods to sort them when needed.
 """
+from __future__ import print_function
 
-from pyformex.arraytools import *
+from pyformex import arraytools as at
+import numpy as np
 import sys
 
+
 class Varray(object):
+
     """A variable width 2D integer array
 
     This class provides an efficient way to store tables of
@@ -136,10 +140,10 @@ class Varray(object):
     >>> Vb = Varray(Va)
     >>> print(str(Vb) == str(Va))
     True
-    >>> Vb = Varray(array([[-1,-1,0],[-1,1,2],[0,2,4],[-1,0,2]]))
+    >>> Vb = Varray(np.array([[-1,-1,0],[-1,1,2],[0,2,4],[-1,0,2]]))
     >>> print(str(Vb) == str(Va))
     True
-    >>> Vc = Varray([0,1,2,0,2,4,0,2],cumsum([0,1,2,3,2]))
+    >>> Vc = Varray([0,1,2,0,2,4,0,2],at.cumsum([0,1,2,3,2]))
     >>> print(str(Vc) == str(Va))
     True
     >>> Vd = Varray([1,0, 2,1,2, 3,0,2,4, 2,0,2])
@@ -212,7 +216,8 @@ class Varray(object):
 
 
     """
-    def __init__(self,data=[],ind=None):
+
+    def __init__(self, data=[], ind=None):
         """Initialize the Varray. See the class docstring."""
 
         # If data is a Varray, just use its data
@@ -222,28 +227,28 @@ class Varray(object):
 
         # Allow for empty Varray
         if len(data) <= 0:
-            data = array([],dtype=Int)
+            data = np.array([], dtype=at.Int)
 
         # If data is an array, convert to list of lists
         try:
-            data = checkArray(data, kind='i', ndim=2)
-            data = [ row[row>=0] for row in data ]
+            data = at.checkArray(data, kind='i', ndim=2)
+            data = [row[row >= 0] for row in data]
         except:
             pass
 
         # If data is a list of lists, concatenate and create index
         try:
             # construct row length array
-            rowlen = [ len(row) for row in data ]
-            ind = cumsum([0]+rowlen)
-            data = concatenate(data).astype(Int)
+            rowlen = [len(row) for row in data]
+            ind = at.cumsum([0] + rowlen)
+            data = np.concatenate(data).astype(at.Int)
         except:
             pass
 
         # data should now be 1D array
         # ind is also 1D array, unless initialized from inlined length data
         try:
-            data = checkArray(data, kind='i', ndim=1)
+            data = at.checkArray(data, kind='i', ndim=1)
             if ind is None:
                 # extract row lengths from data
                 i = 0
@@ -251,17 +256,17 @@ class Varray(object):
                 rowlen = []
                 while i < size:
                     rowlen.append(data[i])
-                    i += data[i]+1
+                    i += data[i] + 1
                 # create indices and remove row lengths from data
-                ind = cumsum([0]+rowlen)
-                data = delete(data,ind[:-1]+arange(len(rowlen)))
+                ind = at.cumsum([0] + rowlen)
+                data = np.delete(data, ind[:-1] + np.arange(len(rowlen)))
 
-            ind = checkArray(ind, kind='i', ndim=1)
+            ind = at.checkArray(ind, kind='i', ndim=1)
             ind.sort()
             if ind[0] != 0 or ind[-1] > len(data):
                 raise ValueError
             if ind[-1] != len(data):
-                ind = concatenate([ind, [len(data)]])
+                ind = np.concatenate([ind, [len(data)]])
         except:
             raise ValueError("Invalid input data for Varray")
 
@@ -274,7 +279,6 @@ class Varray(object):
         # And the current row, for use in iterators
         self._row = 0
 
-
     def replace_data(self, va):
         """Replace the current data with data from another Varray"""
         if not isinstance(va, Varray):
@@ -283,13 +287,12 @@ class Varray(object):
         self.ind = va.ind
         self.width = va.width
 
-
     # Attributes computed ad hoc, because cheap(er)
 
     @property
     def lengths(self):
         """Return the length of all rows of the Varray"""
-        return self.ind[1:]-self.ind[:-1]
+        return self.ind[1:] - self.ind[:-1]
 
     @property
     def nrows(self):
@@ -304,30 +307,27 @@ class Varray(object):
     @property
     def shape(self):
         """Return a tuple with the number of rows and maximum row length"""
-        return (self.nrows,self.width)
-
+        return (self.nrows, self.width)
 
     ## Do we need this? Yes, if we do not store lengths
     def length(self, i):
         """Return the length of row i"""
-        return self.ind[i+1]-self.ind[i]
+        return self.ind[i + 1] - self.ind[i]
 
-
-    def row(self,i):
+    def row(self, i):
         """Return the data for row i"""
         if i < 0:
             i += self.nrows
-        return self.data[self.ind[i]:self.ind[i+1]]
+        return self.data[self.ind[i]:self.ind[i + 1]]
 
-
-    def col(self,i):
+    def col(self, i):
         """Return the data for column i
 
         This always returns a list of length nrows.
         For rows where the column index i is missing, a value -1 is returned.
         """
-        return array([ r[i] if i in range(-len(r),len(r)) else -1 for r in self ])
-
+        return np.array([r[i] if i in range(-len(r), len(r)) else -1
+                         for r in self])
 
     def __getitem__(self, i):
         """Return the data for the row or rows i.
@@ -343,13 +343,12 @@ class Varray(object):
         - if `i` is an iterable of integers: a Varray only containing the rows
           whose index occurs in `i`.
         """
-        if isInt(i):
+        if at.isInt(i):
             return self.row(i)
         else:
-            return Varray([ self.row(j) for j in i ])
+            return Varray([self.row(j) for j in i])
         # Shall we also add a tuple as index?
         # to allow self[i,j] instead of i[i][j]
-
 
     # BV: Shall we add this to __getitem__ ?
     #     Or remove multiple values from __getitem__ ?
@@ -366,16 +365,14 @@ class Varray(object):
 
         Returns a Varray containing the requested rows.
         """
-        if len(sel) > 0 and not isInt(sel[0]):
-            sel = where(sel)[0]
-        return Varray([ self[j] for j in sel ])
-
+        if len(sel) > 0 and not at.isInt(sel[0]):
+            sel = np.where(sel)[0]
+        return Varray([self[j] for j in sel])
 
     def __iter__(self):
         """Return an iterator for the Varray"""
         self._row = 0
         return self
-
 
     def __next__(self):
         """_Return the next row of the Varray"""
@@ -389,7 +386,6 @@ class Varray(object):
         # In Python2 the next method is used instead of __next__
         next = __next__
 
-
     def index(self, sel):
         """Convert a selector to an index
 
@@ -399,12 +395,11 @@ class Varray(object):
         Returns an index array with the selected numbers.
         """
         try:
-            sel = checkArray(sel, shape=(self.size,), kind='b')
-            sel = where(sel)[0]
+            sel = at.checkArray(sel, shape=(self.size,), kind='b')
+            sel = np.where(sel)[0]
         except:
-            sel = checkArray(sel, kind='i')
+            sel = at.checkArray(sel, kind='i')
         return sel
-
 
     def rowindex(self, sel):
         """Return the rowindex for the elements flagged by selector sel.
@@ -413,8 +408,7 @@ class Varray(object):
         length self.size
         """
         sel = self.index(sel)
-        return self.ind.searchsorted(sel, side='right')-1
-
+        return self.ind.searchsorted(sel, side='right') - 1
 
     def colindex(self, sel):
         """Return the column index for the elements flagged by selector sel.
@@ -426,7 +420,6 @@ class Varray(object):
         ri = self.rowindex(sel)
         return sel - self.ind[ri]
 
-
     def where(self, sel):
         """Return row and column index of the selected elements
 
@@ -437,16 +430,14 @@ class Varray(object):
         and the second column the corresponding column index of an
         element selected by sel
         """
-        return column_stack([self.rowindex(sel), self.colindex(sel)])
-
+        return np.column_stack([self.rowindex(sel), self.colindex(sel)])
 
     def index1d(self, i, j):
         """Return the sequential index for the element with 2D index i,j"""
         if j >= 0 and j < self.length(i):
-            return self.ind[i]+j
+            return self.ind[i] + j
         else:
             raise IndexError("Index out of bounds")
-
 
     def sorted(self):
         """Returns a sorted Varray.
@@ -461,7 +452,6 @@ class Varray(object):
         """
         return Varray([sorted(row) for row in self])
 
-
     def sort(self):
         """Sort the Varray inplace.
 
@@ -471,8 +461,7 @@ class Varray(object):
         See also :meth:`sorted` for sorting the rows without
         changing the original.
         """
-        [ row.sort() for row in self ]
-
+        (row.sort() for row in self)
 
     def toArray(self):
         """Convert the Varray to a 2D array.
@@ -482,12 +471,11 @@ class Varray(object):
         Rows which are shorter than width are padded at the start with
         values -1.
         """
-        a = -ones((self.nrows, self.width), dtype=Int)
+        a = -np.ones((self.nrows, self.width), dtype=at.Int)
         for i, r in enumerate(self):
             if len(r) > 0:
                 a[i, -len(r):] = r
         return a
-
 
     def sameLength(self):
         """Groups the rows according to their length.
@@ -498,9 +486,8 @@ class Varray(object):
         - rows: the indidces of the rows having the corresponding length.
         """
         lens = self.lengths
-        ulens = unique(lens)
-        return ulens,[ where(lens==l)[0] for l in ulens]
-
+        ulens = np.unique(lens)
+        return ulens, [np.where(lens == l)[0] for l in ulens]
 
     def split(self):
         """Split the Varray into 2D arrays.
@@ -508,16 +495,14 @@ class Varray(object):
         Returns a list of 2D arrays with the same number
         of columns and the indices in the original Varray.
         """
-        return [ self.select(ind).toArray() for ind in self.sameLength()[1] ]
-
+        return [self.select(ind).toArray() for ind in self.sameLength()[1]]
 
     def toList(self):
         """Convert the Varray to a nested list.
 
         Returns a list of lists of integers.
         """
-        return [ r.tolist() for r in self ]
-
+        return [r.tolist() for r in self]
 
     def inverse(self):
         """Return the inverse of a Varray.
@@ -556,7 +541,6 @@ class Varray(object):
         """
         return inverseIndex(self)
 
-
     def __str__(self):
         """Nicely print the Varray"""
         s = "%s (%s,%s)\n" % (self.__class__.__name__, self.nrows, self.width)
@@ -565,7 +549,7 @@ class Varray(object):
         return s
 
 
-def inverseIndex(a,sort=False,expand=False):
+def inverseIndex(a, sort=False, expand=False):
     """Create the inverse of a 2D index array.
 
     Parameters:
@@ -576,8 +560,8 @@ def inverseIndex(a,sort=False,expand=False):
       While in most cases all values in a row are unique, this is not a
       requirement. Degenerate elements may have the same node number
       appearing multiple times in the same row.
-
-    -
+    - `sort`: bool. If True, rows are sorted.
+    - `expand`: bool. If True, an :class:`numpy.ndarray` is returned.
 
     Returns the inverse index, as a Varray (default) or as an ndarray (if
     expand is True). If sort is True, rows are sorted.
@@ -595,13 +579,13 @@ def inverseIndex(a,sort=False,expand=False):
     """
     if isinstance(a, Varray):
         a = a.toArray()
-    a = checkArray(a, ndim=2, kind='i')
-    b = resize(arange(a.shape[0]), a.shape[::-1])
-    c = stack([a, b.transpose()]).reshape(2, -1)
+    a = at.checkArray(a, ndim=2, kind='i')
+    b = np.resize(np.arange(a.shape[0]), a.shape[::-1])
+    c = at.stack([a, b.transpose()]).reshape(2, -1)
     s = c[0].argsort()
     t = c[0][s]
     u = c[1][s]
-    v = t.searchsorted(arange(t.max()+1))
+    v = t.searchsorted(np.arange(t.max() + 1))
     if v[0] > 0:
         # There were negative numbers: remove them
         u = u[v[0]:]
