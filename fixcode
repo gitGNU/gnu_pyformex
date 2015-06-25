@@ -1,0 +1,19 @@
+#!/bin/bash
+#
+# Run automatic fixers on Python code
+#
+
+autofix() {
+    autopep8 -i --select=E231,E302 $*
+}
+
+
+for f in "$@"; do
+    if [ -f "$f" ]; then
+	autofix $f
+    else
+	echo "No such file: $f"
+    fi
+done
+
+# End

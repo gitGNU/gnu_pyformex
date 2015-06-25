@@ -29,6 +29,7 @@ from __future__ import print_function
 
 from datetime import datetime
 
+
 class Timer(object):
     """A class for measuring elapsed time.
 
@@ -59,11 +60,11 @@ class Timer(object):
 
     """
 
-    def __init__(self,start=None):
+    def __init__(self, start=None):
         """Create and start a timer."""
         self.reset(start)
 
-    def reset(self,start=None):
+    def reset(self, start=None):
         """(Re)Start the timer.
 
         Sets the start time of the timer to the specified value, or to
@@ -79,7 +80,7 @@ class Timer(object):
         else:
             self.start = datetime.now()
 
-    def read(self,reset=False):
+    def read(self, reset=False):
         """Read the timer.
 
         Returns the elapsed time since the last reset (or the creation
@@ -93,7 +94,7 @@ class Timer(object):
             self.start = now
         return ret
 
-    def seconds(self,reset=False,rounded=False):
+    def seconds(self, reset=False, rounded=False):
         """Return the timer readings in seconds.
 
         The default return value is a rounded integer number of seconds.
