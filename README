@@ -1,5 +1,5 @@
 .. $Id:$    -*- rst -*-
-  
+
 ..
   This file is part of pyFormex 1.0.2  (Thu Jun 18 15:35:31 CEST 2015)
   pyFormex is a tool for generating, manipulating and transforming 3D
@@ -8,21 +8,21 @@
   Project page:  http://savannah.nongnu.org/projects/pyformex/
   Copyright 2004-2015 (C) Benedict Verhegghe (benedict.verhegghe@feops.com)
   Distributed under the GNU General Public License version 3 or later.
-  
+
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see http://www.gnu.org/licenses/.
-  
-  
+
+
 What is pyFormex?
 =================
 pyFormex is a tool for generating, manipulating and transforming large
@@ -60,8 +60,8 @@ Essential:
 - python: http://www.python.org  (version 2.4 or higher; 2.5 recommended)
 - numpy: /http://numpy.scipy.org/ (version 1.0 or higher; 1.1 recommended)
 - Qt4: http://www.trolltech.com/products/qt
-- PyQt4: http://www.riverbankcomputing.co.uk/pyqt/index.php
 - PyOpenGL: http://pyopengl.sourceforge.net/
+- PySide: http://www.pyside.org/
 
 To compile the acceleration library (highly recommended!), you will also
 need the appropriate header Python and OpenGL header files.
@@ -86,14 +86,14 @@ an install script is provided in this distribution.
 
 Easy way to install prerequisites on Debian GNU/Linux or Ubuntu
 ---------------------------------------------------------------
-On Debian (lenny) systems (and Debian-derivatives like Ubuntu) you can install
+On Debian systems (and Debian-derivatives like Ubuntu) you can install
 all basic prerequisites and their dependencies with the command::
 
-  apt-get install python-qt4-gl python-numpy
+  apt-get install python-pyside python-numpy
 
 If you want to compile the acceleration library (which is highly recommended) you also need the header files::
 
-  apt-get install python-dev libgl1-mesa-dev
+  apt-get install python-dev libgl1-mesa-dev libglu1-mesa-dev
 
 Install the extras::
 
@@ -181,16 +181,17 @@ with by executing it from within the subdirectory, with root privileges and with
   against the same numpy version as pyFormex itself.
 
 
-Running pyFormex from Subversion (SVN) sources
-----------------------------------------------
+Running pyFormex from sources
+-----------------------------
 If the officially released pyFormex packages are not suitable for your needs,
-you can try installing pyFormex from the Subversion sources. Besides the basic
-prerequisites (see above), you will also need to have 'Subversion' installed.
+you can try installing pyFormex from the source in the git repository.
+Besides the basic prerequisites (see above), you will also need to have
+git installed.
 
-The `SVN repository`_ on the developer site is accessible by anonymous SVN.
+The `GIT repository`_ on the developer site is accessible anonymously.
 The command ::
 
-  svn co svn://svn.savannah.nongnu.org/pyformex/trunk/pyformex MYDIR
+  git clone git://git.savannah.nongnu.org/pyformex.git MYDIR
 
 will checkout the source to a local directory ``MYDIR``. Provided you have all the prerequisites installed, pyFormex can then be run directly from the checked out source with the command::
 
@@ -206,7 +207,7 @@ Once you have a checked-out source tree, you can easily sync it to the latest
 repository version by just issuing the following command from your checkout
 directory::
 
-  svn up
+  git pull
 
 Documentation
 =============

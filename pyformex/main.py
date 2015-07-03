@@ -540,10 +540,9 @@ def run(argv=[]):
         userprefs = [ pf.cfg['userprefs'] ]
 
     # Use last one to save preferences
-    pf.preffile = os.path.abspath(userprefs[-1])
-
     pf.debug("System Preference Files: %s" % sysprefs, pf.DEBUG.CONFIG)
     pf.debug("User Preference Files: %s" % userprefs, pf.DEBUG.CONFIG)
+    pf.preffile = os.path.abspath(userprefs.pop())
 
     # Read sysprefs as reference
     for f in sysprefs:
@@ -558,11 +557,21 @@ def run(argv=[]):
 
     # Read userprefs as reference
     for f in userprefs:
-        pf.debug("Reading config file %s" % f, pf.DEBUG.CONFIG)
-        pf.cfg.read(f)
+        if os.path.exists(f):
+            pf.debug("Reading config file %s" % f, pf.DEBUG.CONFIG)
+            pf.cfg.read(f)
+        else:
+            pf.debug("Skip non-existing config file %s" % f, pf.DEBUG.CONFIG)
     if os.path.exists(pf.preffile):
         pf.debug("Reading config file %s" % pf.preffile, pf.DEBUG.CONFIG)
         pf.cfg.read(pf.preffile)
+    else:
+        # Create the config file
+        pf.debug("Creating config file %s" % pf.preffile, pf.DEBUG.CONFIG)
+        basedir = os.path.dirname(pf.preffile)
+        if not os.path.exists(basedir):
+            os.makedirs(basedir)
+        open(pf.preffile,'a').close()
 
     # Set this as preferences config
     pf.prefcfg = pf.cfg
