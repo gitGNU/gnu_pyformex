@@ -145,7 +145,7 @@ and then answering 'yes' to the question.
 
 
 Howto install the extra packages
------------------------------------
+--------------------------------
 pyFormex makes use of extra software components to enhance its functionality.
 While they are not required for the core operation of pyFormex, many users may
 want to install them. Some of these extras (admesh, units) can easily be
@@ -167,12 +167,16 @@ with by executing it from within the subdirectory, with root privileges and with
 
   (sudo) ./install.sh all
 
-- gts: Installs some programs to do operations on triangulated surfaces. You need to have the ``libgts`` and its header files installed. On Debian::
 
-    apt-get install libgts-dev
+Prerequisites: on Debian::
 
-- dxfparser: Installs the command ``pyformex-dxfparser``, to preprocesses AutoCAD .DXF
-  files for import into pyFormex.
+  apt-get install gcc g++ pkg-config make
+  apt-get install python-dev libglu1-mesa-dev
+  apt-get install libgts-dev libdxflib-dev
+
+
+- gts: Installs some programs to do operations on triangulated surfaces. You need to have the ``libgts`` and its header files installed.
+- dxfparser: Installs the command ``pyformex-dxfparser``, to preprocesses AutoCAD .DXF files for import into pyFormex. You need to have the ``libdxflib`` and its header files installed.
 - postabq: Installs the command ``pyformex-postabq``, to preprocess Abaqus output files (.fil) for import into pyFormex.
 - gl2ps: Image output to in vector formats (PS, EPS, PDF and SVG). Requires
   a Python interface, provided by our install procedure.

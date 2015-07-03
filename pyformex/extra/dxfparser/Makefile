@@ -77,7 +77,7 @@ $(PRG): $(SRC)
 	$(CC) $(FLAGS) $< -o $@
 
 install: $(PRG) $(MAN)
-	$(INSTALLDIR) $(BINDIR)
+	$(INSTALLDIR) $(BINDIR) $(MANDIR)
 	$(INSTALLBIN) $(PRG) $(BINDIR)/pyformex-$(PRG)
 	$(INSTALLDATA) $(MAN) $(MANDIR)/pyformex-$(MAN)
 
