@@ -141,7 +141,7 @@ def run():
     if S:
         nmax = res['resolution']
         vox,P = S.voxelize(nmax,return_formex=True)
-        scale = P.sizes() / array(vox.shape))
+        scale = P.sizes() / array(vox.shape)
         print("Boxsize: %s" % P.sizes())
         print("Data size: %s " % array(vox.shape))
         print("Scale: %s" % scale)
