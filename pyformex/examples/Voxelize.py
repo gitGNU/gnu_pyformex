@@ -142,9 +142,11 @@ def run():
         nmax = res['resolution']
         vox,P = S.voxelize(nmax,return_formex=True)
         scale = P.sizes() / array(vox.shape)
-        print("Boxsize: %s" % P.sizes())
+        origin = P.bbox()[0]
+        print("Box size: %s" % P.sizes())
         print("Data size: %s " % array(vox.shape))
         print("Scale: %s" % scale)
+        print("Origin: %s" % P.bbox()[0])
         draw(P, marksize=5)
         transparent()
         saveScan(vox,showimages=True,**res)
