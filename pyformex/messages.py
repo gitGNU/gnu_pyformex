@@ -109,7 +109,6 @@ warn_fe_abq_write_load = "The output of load properties by the fe_abq interface 
 warn_fe_abq_write_section = "The output of materials and section properties by the fe_abq interface has been drastically changed. There are added, removed and changed features. Please check your output carefully, consult the docstrings in the fe_abq functions if needed, and report any malfunctioning."
 warn_flat_removed = "The 'flat=True' parameter of the draw function has been replaced with 'nolight=True'."
 warn_formex_eltype = "Formex eltype currently needs to be a string!"
-warn_fuse_arg_rename = "The 'nodesperbox' argument has been renamed to 'ppb'. Please stop using the old name."
 warn_inertia_changed = "The Coords.inertia method has changed: it now returns an inertia.Inertia class instance, with attributes mass, ctr, tensor, and method principal() returning (Iprin,Iaxes)."
 warn_Interaction_changed="Class fe_abq.Interaction has been changed, only allowed parameters are name, friction, surfacebehavior, surfaceinteraction, extra (see doc)."
 warn_mesh_extrude = "Mesh.extrude has changed. The step parameter has been removed and there is now a (total) length parameter."

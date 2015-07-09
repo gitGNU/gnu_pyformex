@@ -1896,11 +1896,20 @@ class Coords(ndarray):
         return ox, dx, nx
 
 
-    def fuse(self,ppb=1,shift=0.5,rtol=1.e-5,atol=1.e-5,repeat=True,nodesperbox=None):
+    def fuse(self,ppb=1,shift=0.5,rtol=1.e-5,atol=1.e-5,repeat=True):
         """Find (almost) identical nodes and return a compressed set.
 
         This method finds the points that are very close and replaces them
         with a single point.
+
+        Parameters: (for explanation, see below: Method)
+
+        - `ppb`: int: targeted number of points per box.
+        - `shift`: float: relative shift to be applied on the boxes.
+        - `rtol`: float: relative tolerance to consider points for fusing.
+        - `atol`: float: absolute tolerance to consider points for fusing.
+        - `repeat`: bool: if True, repeat the procedure with a second shift
+          value.
 
         Returns a tuple of two arrays:
 
@@ -1911,6 +1920,8 @@ class Coords(ndarray):
           the index array is equal to the shape of the input coords array
           minus the last dimension (also given by self.pshape()).
 
+        Method:
+
         The procedure works by first dividing the 3D space in a number of
         equally sized boxes, with a mean population of ppb.
         The boxes are numbered in the 3 directions and a unique integer scalar
@@ -1919,7 +1930,7 @@ class Coords(ndarray):
         coordinates, using the numpy allclose() function. Two coordinates are
         considered close if they are within a relative tolerance rtol or
         absolute tolerance atol. See numpy for detail. The default atol is
-        set larger than in numpy, because pyformex typically runs with single
+        set larger than in numpy, because pyFormex typically runs with single
         precision.
         Close nodes are replaced by a single one.
 
@@ -1929,7 +1940,8 @@ class Coords(ndarray):
         two close nodes with the computed box limits is very small.
         Therefore, the most sensible way is to run the procedure twice, with
         a different shift value (they should differ more than the tolerance).
-        Specifying repeat=True will automatically do this.
+        Specifying repeat=True will automatically do this with a second
+        shift value equal to `shift`+0.25.
 
         Example:
 
@@ -1942,9 +1954,6 @@ class Coords(ndarray):
           [0 0 1]
 
         """
-        if nodesperbox is not None:
-            utils.warn('warn_fuse_arg_rename')
-            ppb = nodesperbox
         if self.size == 0:
             # allow empty coords sets
             return self, array([], dtype=Int).reshape(self.pshape())
