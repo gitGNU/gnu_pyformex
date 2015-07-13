@@ -986,21 +986,37 @@ class PolyLine(Curve):
             return res
 
 
-    def append(self,PL,fuse=True,**kargs):
-        """Append another PolyLine to this one.
+    def append(self,PL,fuse=True,smart=False,**kargs):
+        """Concatenate two open PolyLines.
 
-        Returns the concatenation of two open PolyLines. Closed PolyLines
+        This combines two open PolyLines into a single one. Closed PolyLines
         cannot be concatenated.
+
+        Parameters:
+
+        - `PL`: an open PolyLine, to be appended at the end of the current.
+        - `fuse`: bool. If True, the last point of `self` and the first point
+          of `PL` will be fused to a single point if they are close. Extra
+          parameters may be added to tune the fuse operation. See the
+          :meth:`Coords.fuse` method. The `ppb` parameter is not allowed.
+        - `smart`: bool. If True, `PL` will be connected to `self` by the
+          endpoint that is closest to the last point of self, thus possibly
+          reversing the sense of PL.
+
+        The same result (with the default parameter values) can also be
+        achieved using operator syntax: `PolyLine1 + PolyLine2`.
         """
         if self.closed or PL.closed:
             raise RuntimeError("Closed PolyLines cannot be concatenated.")
+        if smart:
+            d = PL.coords[[0,-1]].distanceFromPoint(self.coords[-1])
+            print("Dist: %s" % d)
+            if d[1] < d[0]:
+                PL = PL.reverse()
         X = PL.coords
         if fuse:
             x = Coords.concatenate([self.coords[-1], X[0]])
-            #print("NR points:%s" % len(x))
-            #print(x)
             x, e = x.fuse(ppb=3) # !!! YES ! > 2 !!!
-            #print(x,e)
             if e[0] == e[1]:
                 X = X[1:]
         return PolyLine(Coords.concatenate([self.coords, X]))
@@ -1008,6 +1024,25 @@ class PolyLine(Curve):
 
     # allow syntax PL1 + PL2
     __add__ = append
+
+
+    @staticmethod
+    def concatenate(PLlist,**kargs):
+        """Concatenate a list of :class:`PolyLine` objects.
+
+        Parameters:
+
+        - `PLlist`: a list of open PolyLines.
+        - Other parameters are like in :meth:`append`
+
+        Returns a PolyLine which is the concatenation of all the PolyLines
+        in `PLlist`
+
+        """
+        PL = PLlist[0]
+        for pl in PLlist[1:]:
+            PL = PL.append(pl,**kargs)
+        return PL
 
 
     def insertPointsAt(self,t,return_indices=False):
