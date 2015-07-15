@@ -2098,22 +2098,26 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
 
     def sweep(self,path,eltype=None,**kargs):
         """Sweep a mesh along a path, creating an extrusion
+        
+        Parameters:
 
-        Returns a new Mesh obtained by sweeping the given Mesh
-        over a path.
+        - `path`: Curve object. The path over which to sweep the Mesh.
+        - `eltype`: string. Name of the element type on the
+          returned Meshes.
+        - `**kargs`: keyword arguments that are passed to 
+          func:`coords.sweepCoords`, with the same meaning. 
+          Usually, you will need to at least set the `normal` parameter.
+
+        Returns a Mesh obtained by sweeping the given Mesh over a path.
         The returned Mesh has double plexitude of the original.
-
-        This method accepts all the parameters of :func:`coords.sweepCoords`,
-        with the same meaning. Usually, you will need to at least set the
-        `normal` parameter.
-        The `eltype` parameter can be used to set the element type on the
-        returned Meshes.
-
+        If `path` is a closed Curve connect back to the first.
+        
         This operation is similar to the extrude() method, but the path
         can be any 3D curve.
         """
+        loop = path.closed
         seq = sweepCoords(self.coords,path,**kargs)
-        return self.connect(seq, eltype=eltype)
+        return self.connect(seq, eltype=eltype,loop=loop)
 
 
     def smooth(self, iterations=1, lamb=0.5, k=0.1, edg=True, exclnod=[], exclelem=[],weight=None):
