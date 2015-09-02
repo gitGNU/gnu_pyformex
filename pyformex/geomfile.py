@@ -48,7 +48,7 @@ class GeometryFile(object):
     back in future versions. The format is simple and public, and hence
     also allows read back from other software.
 
-    See http://pyformex.org/documentation/file_format for a full description
+    See http://pyformex.org/doc/file_format for a full description
     of the file format(s). Older file formats are supported for reading.
 
     Other than just geometry, the pyFormex Geometry File format can also
