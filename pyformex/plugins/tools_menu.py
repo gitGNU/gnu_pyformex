@@ -280,9 +280,39 @@ def query_points():
 def query_edges():
     query('edge')
 
+#def query_distances():
+#    set_selection('point')
+#    print(reportDistances(selection))
+
+## GDS: in tools.py the reportDistances is no longer used
 def query_distances():
+    print ('pick one single point')
+    s = "Distance report \n"
+    s += "point: [x, y, z] magnitude \n"
+    K = pickPoints('single')
+    if len(K.keys())!=1:
+        raise ValueError, "You have to pick exactly one point."
+    k = K.keys()[0]
+    v = K[k]
+    if len(v)!=1:
+        raise ValueError, "You have to pick exactly one point."
+    A = pf.canvas.actors[k]
+    x = A.points()
+    p = v[0]
+    s += "    From Actor %s (type %s): \n%s\n" % (k, A.getType(), p)
+    pt = x[p]
+    print ('pick one or multiple points')
     set_selection('point')
-    print(reportDistances(selection))
+    K = selection
+    for k in K.keys():
+        v = K[k]
+        A = pf.canvas.actors[k]
+        s += "    To Actor %s (type %s): \n" % (k, A.getType())
+        x = A.points()
+        for p in v:
+            d = x[p] - pt
+            s += "%s: [%s, %s, %s] %s \n" % (p, d[0], d[1], d[2], length(d))
+    print (s)
 
 def query_angle():
     showInfo("Select two line elements.")
