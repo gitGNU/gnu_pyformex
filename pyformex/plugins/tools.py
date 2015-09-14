@@ -167,37 +167,37 @@ def reportPartitions(K):
     return s
 
 
-def reportDistances(K):
-    if K is None or not hasattr(K, 'obj_type') or K.obj_type != 'point':
-        return ''
-    s = "Distance report\n"
-    x = Coords.concatenate(getCollection(K))
-    s += "First point: %s %s\n" % (0, x[0])
-    d = x.distanceFromPoint(x[0])
-    for i, p in enumerate(zip(x, d)):
-        s += "Distance from point: %s %s: %s\n" % (i, p[0], p[1])
-    return s
-
-
-def reportAngles(K):
-    if K is None or not hasattr(K, 'obj_type') or K.obj_type != 'element':
-        return ''
-    s = "Angle report:\n"
-    for F in getCollection(K):
-        if isinstance(F, Mesh):
-            F=F.toFormex()
-        if isinstance(F, Formex):
-            x = F.coords
-            if len(x)!=2:
-                raise ValueError("You didn't select 2 elements")
-            v = x[:, 1,:] - x[:, 0,:]
-            v = normalize(v)
-            cosa = dotpr(v[0], v[1])
-            a = arccosd(cosa)
-            s += "  a = %s" % a
-        else:
-            raise TypeError("Angle measurement only possible with Formex or Mesh")
-    return s
+#def reportDistances(K):
+#    if K is None or not hasattr(K, 'obj_type') or K.obj_type != 'point':
+#        return ''
+#    s = "Distance report\n"
+#    x = Coords.concatenate(getCollection(K))
+#    s += "First point: %s %s\n" % (0, x[0])
+#    d = x.distanceFromPoint(x[0])
+#    for i, p in enumerate(zip(x, d)):
+#        s += "Distance from point: %s %s: %s\n" % (i, p[0], p[1])
+#    return s
+#
+#
+#def reportAngles(K):
+#    if K is None or not hasattr(K, 'obj_type') or K.obj_type != 'element':
+#        return ''
+#    s = "Angle report:\n"
+#    for F in getCollection(K):
+#        if isinstance(F, Mesh):
+#            F=F.toFormex()
+#        if isinstance(F, Formex):
+#            x = F.coords
+#            if len(x)!=2:
+#                raise ValueError("You didn't select 2 elements")
+#            v = x[:, 1,:] - x[:, 0,:]
+#            v = normalize(v)
+#            cosa = dotpr(v[0], v[1])
+#            a = arccosd(cosa)
+#            s += "  a = %s" % a
+#        else:
+#            raise TypeError("Angle measurement only possible with Formex or Mesh")
+#    return s
 
 
 def getObjectItems(obj, items, mode):

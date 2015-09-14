@@ -38,6 +38,7 @@ from pyformex.gui.draw import *
 from pyformex.plugins.geometry_menu import autoName
 from pyformex.plugins.tools import *
 from pyformex.trisurface import TriSurface
+from pyformex.geomtools import rotationAngle
 
 
 
@@ -280,44 +281,51 @@ def query_points():
 def query_edges():
     query('edge')
 
-#def query_distances():
-#    set_selection('point')
-#    print(reportDistances(selection))
+
+def pickSinglePoint():
+    """Pick a single point and return Actor index, Actor type, Point index and Point coordinates."""
+    print ('pick one single point')
+    while True:
+        K = pickPoints('single')
+        if len(K.keys()) == 1 and len(K[K.keys()[0]]) == 1:
+            k = K.keys()[0]
+            v = K[k]
+            p = v[0]
+            A = pf.canvas.actors[k]
+            x = A.points()
+            return k, A.getType(), p, x[p]
+        else:
+            showInfo("Invalid picking: try again to pick one single point")
 
 ## GDS: in tools.py the reportDistances is no longer used
 def query_distances():
-    print ('pick one single point')
-    s = "Distance report \n"
-    s += "point: [x, y, z] magnitude \n"
-    K = pickPoints('single')
-    if len(K.keys())!=1:
-        raise ValueError, "You have to pick exactly one point."
-    k = K.keys()[0]
-    v = K[k]
-    if len(v)!=1:
-        raise ValueError, "You have to pick exactly one point."
-    A = pf.canvas.actors[k]
-    x = A.points()
-    p = v[0]
-    s += "    From Actor %s (type %s): \n%s\n" % (k, A.getType(), p)
-    pt = x[p]
+    s = "*** Distance report *** \n"
+    Anum, Atype, Pnum, p0 = pickSinglePoint()
+    s += "From actor %s point %s\n" % (Anum, Pnum)
     print ('pick one or multiple points')
     set_selection('point')
     K = selection
+    s += "To points [x, y, z] magnitude: \n"
     for k in K.keys():
         v = K[k]
         A = pf.canvas.actors[k]
-        s += "    To Actor %s (type %s): \n" % (k, A.getType())
         x = A.points()
         for p in v:
-            d = x[p] - pt
-            s += "%s: [%s, %s, %s] %s \n" % (p, d[0], d[1], d[2], length(d))
+            d = x[p] - p0
+            s += "actor %s, point %s: [%s, %s, %s] %s \n" % (k, p, d[0], d[1], d[2], length(d))
     print (s)
 
+## GDS: in tools.py the reportAngles is no longer used
 def query_angle():
-    showInfo("Select two line elements.")
-    set_selection('element')
-    print(reportAngles(selection))
+    showInfo("Pick 3 points, one at a time")
+    Anum, Atype, Pnum, p0 = pickSinglePoint()
+    Anum, Atype, Pnum, p1 = pickSinglePoint()
+    Anum, Atype, Pnum, p2 = pickSinglePoint()
+    angle, n = rotationAngle(A=p0-p1,B=p2-p1,m=None,angle_spec=DEG)
+    angle, n = angle[0], n[0]
+    s = "*** Angle report ***\n"
+    s += '%s degrees around rotation axis [%s, %s, %s]'%(angle, n[0], n[1], n[2])
+    print (s)
 
 
 def report_selection():
