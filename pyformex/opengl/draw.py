@@ -439,7 +439,7 @@ def drawText(text,pos,**kargs):
 
 drawText3D = drawText
 
-
+# This function should be completed
 def drawViewportAxes3D(pos,color=None):
     """Draw two viewport axes at a 3D position."""
     A = texText.Mark((0,200,0),image,size=40,color=red)
@@ -619,6 +619,7 @@ def drawField(fld,comp=0,scale='RAINBOW',symmetric_scale=False):
     cval = cval.reshape(data.shape+(3,))
     CLA = ColorLegend(CS, 256, 20, 20, 30, 200, scale=multiplier)
     drawActor(CLA)
+    decorate(drawText(fld.fldname,(20, 250),size=18,color='black'))
     if fld.fldtype == 'node':
         draw(fld.geometry, color=cval[fld.geometry.elems])
     else:
