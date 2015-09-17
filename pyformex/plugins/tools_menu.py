@@ -251,10 +251,10 @@ def createPlaneVisual3Points():
 
 selection = None
 
-def set_selection(obj_type):
+def set_selection(obj_type, **kargs):
     global selection
     selection = None
-    selection = pick(obj_type)
+    selection = pick(obj_type, **kargs)
     print(selection)
 
 
@@ -267,8 +267,8 @@ def pick_actors():
 def pick_elements():
     print(_drawables.names)
     set_selection('element')
-def pick_points():
-    set_selection('point')
+def pick_points(**kargs):
+    set_selection('point',  **kargs)
 def pick_edges():
     set_selection('edge')
 
@@ -303,7 +303,7 @@ def query_distances():
     Anum, Atype, Pnum, p0 = pickSinglePoint()
     s += "From actor %s point %s\n" % (Anum, Pnum)
     print ('pick one or multiple points')
-    set_selection('point')
+    set_selection('point', filter='single')
     K = selection
     s += "To points [x, y, z] magnitude: \n"
     for k in K.keys():
