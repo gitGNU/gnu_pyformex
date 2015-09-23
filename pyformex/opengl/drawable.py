@@ -469,9 +469,13 @@ class Actor(Base):
             #
             # We always want an eltype for drawing
             #
-            if eltype is None and obj.nplex() <= 4:
-                # Set default eltype
-                eltype = _default_eltype[obj.nplex()]
+            if eltype is None:
+                if obj.nplex() <= 4:
+                    # Set default eltype
+                    eltype = _default_eltype[obj.nplex()]
+
+                else:
+                    raise ValueError("Drawing of Formex with undefined element type and plexitude > 4 is not supported yet")
 
         self.eltype = elementType(eltype)
 
