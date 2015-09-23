@@ -2075,9 +2075,7 @@ Quality: %s .. %s
         """
         tmp = utils.tempName('.gts')
         self.write(tmp, 'gts')
-
-        cmd = "gtscheck -v < %s" % tmp
-        P = utils.system(cmd)
+        P = utils.system("gtscheck -v",stdin=tmp)
         if verbose:
             print(P.sta)
         os.remove(tmp)
