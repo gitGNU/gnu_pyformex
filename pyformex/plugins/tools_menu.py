@@ -328,6 +328,34 @@ def query_angle():
     print (s)
 
 
+def query_distance2D(color='magenta'):
+    """2D distance between 2 points"""
+    import pyformex as pf
+    if pf.canvas.camera.perspective:
+        warning('You can not perform 2D measurements if perspective is on')
+        return
+    setDrawOptions({'bbox':'last', 'view':None})
+    print ('left click somewhere on the screen to start')
+    p0 = pf.canvas.idraw(mode='point', npoints=1, zplane=0., func=None, coords=None, preview=True)[0]
+    D0=draw(p0, color=color)
+    camaxis = pf.canvas.camera.axis
+    print ('left click somewhere on the screen to end')
+    p1 = pf.canvas.idraw(mode='point', npoints=1, zplane=0., func=None, coords=None, preview=True)[0]
+    D1=draw(p1, color=color)
+    if abs(pf.canvas.camera.axis - camaxis).sum(axis=0)>1.e-5:
+        warning('You can not perform 2D measurements if you rotate the camera')
+        [undraw(D) for D in [D0, D1]]
+        return
+    d = length(p1-p0)
+    D2=drawMarks([(p0+p1)*0.5], ['%.2e'%d], size=20, color=color)
+    D3=draw(Formex([[p0, p1]]), linewidth=3, color=color)
+    s = "*** Distance 2D report ***\n"
+    s += '%f'%d
+    print (s)
+    pause(2.0)
+    [undraw(D) for D in [D0, D1, D2, D3]]
+
+
 def report_selection():
     if selection is None:
         warning("You need to pick something first.")
@@ -703,6 +731,7 @@ def create_menu():
             ('&Points', query_points),
             ('&Edges', query_edges),
             ('&Distances', query_distances),
+            ('&Distance 2D', query_distance2D), 
             ('&Angle', query_angle),
             ]),
         ("---", None),
