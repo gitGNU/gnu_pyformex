@@ -31,6 +31,7 @@ import time
 import subprocess
 import threading
 import shlex
+import os
 
 class Process(subprocess.Popen):
     """A subprocess for running an external command.
