@@ -70,7 +70,7 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
     Parameters:
 
     - `seedselector`: str: seed point selection method, one of
-      [`pickpoint`,`openprofiles`,`carotidprofiles`,`pointlist`,`idlist`].
+      [`pickpoint`,`openprofiles`,`carotidprofiles`,`pointlist`,`idlist`,`profileidlist`].
       Note the `pointlist` option will not use the points defined in `sourcepoints`
       and `targetpoints` as end points of the centerline, but it will look
       for the closest surface point of the open profiles. To avoid this problem with
@@ -97,13 +97,13 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
     the branching). Every key contains a list of the attributes arrays grouped per centerline.
     """
     from pyformex.plugins.curve import PolyLine
-    from pyformex.plugins.vtk_itf import readVTKObject
+    from pyformex.plugins.vtk_itf import readVTKObject,writeVTP
 
-    tmp1 = utils.tempFile(suffix='.stl').name
+    tmp1 = utils.tempFile(suffix='.vtp').name
     tmp2 = utils.tempFile(suffix='.vtp').name
 
     print("Writing temp files %s"%tmp1)
-    self.write(tmp1, 'stl')
+    writeVTP(tmp1,self)
 
     print("Computing centerline using VMTK")
     cmds = []
@@ -113,20 +113,28 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
 
     cmd = 'vmtk vmtkcenterlines -seedselector %s -ifile %s -ofile %s'%(seedselector, tmp1, tmp2)
 
-    if seedselector in ['pointlist', 'idlist']:
-        if not(len(sourcepoints)) or not(len(targetpoints)):
-            raise ValueError('sourcepoints and targetpoints cannot be an empty list when using seedselector= \'%s\''%seedselector)
-        if seedselector=='pointlist':
+    if seedselector in ['pointlist', 'idlist','profileidlist']:
+        if not(len(sourcepoints)):
+            raise ValueError('sourcepoints cannot be an empty list when using seedselector= \'%s\''%seedselector)
+        if not(len(targetpoints)) and seedselector not in ['profileidlist']:
+            raise ValueError('targetpoints cannot be an empty list when using seedselector= \'%s\''%seedselector)
+        if seedselector in ['pointlist']:
             fmt=' %f'
             sourcepoints=asarray(sourcepoints).ravel()
             targetpoints=asarray(targetpoints).ravel()
-        if seedselector=='idlist':
+        if seedselector in ['idlist','profileidlist']:
             fmt=' %i'
-
-        cmd += ' -source%ss'%seedselector[:-4]
+            
+        if seedselector in ['pointlist']:
+            seedtype = 'points'
+        if seedselector in ['idlist','profileidlist']:
+            seedtype = 'ids'
+            
+        cmd += ' -source%s'%seedtype
         cmd += fmt*len(sourcepoints)%tuple(sourcepoints)
-        cmd += ' -target%ss'%seedselector[:-4]
-        cmd += fmt*len(targetpoints)%tuple(targetpoints)
+        if len(targetpoints):
+            cmd += ' -target%s'%seedtype
+            cmd += fmt*len(targetpoints)%tuple(targetpoints)
 
     cmd += ' -endpoints %i'%endpoints
 
@@ -161,7 +169,6 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
             data[k].append(datatmp[3][k][clids])
 
     return cls,data
-
 
 
 def distance2centerlines(S):
