@@ -2742,8 +2742,8 @@ def gridpoints(seed0,seed1=None,seed2=None):
         if isinstance(seed1, int):
             seed1 = seed(seed1)
         sh = 4
-        x1 = seed0
-        y1 = seed1
+        x1 = asarray(seed0)
+        y1 = asarray(seed1)
         x0 = 1.-x1
         y0 = 1.-y1
         pts = dstack([outer(y0, x0), outer(y0, x1), outer(y1, x1), outer(y1, x0)])
@@ -2751,7 +2751,7 @@ def gridpoints(seed0,seed1=None,seed2=None):
         if isinstance(seed2, int):
             seed2 = seed(seed2)
         sh = 8
-        z1 = seed2
+        z1 = asarray(seed2)
         z0 = 1.-z1
         pts = dstack([dstack([outer(pts[:,:, ipts], zz) for ipts in range(pts.shape[2])]) for zz in [z0, z1] ])
     return pts.reshape(-1, sh).squeeze()
