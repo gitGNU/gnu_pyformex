@@ -80,17 +80,14 @@ def run():
     im = QtGui.QImage(tmpimg)
     imar = qimage2numpy(im, resize=(0, 0) ,order='RGB',flip=True,indexed=None,expand=None)[0]
     
-    #~ Counting red, green, blue and white pixels
-    rp = (imar==[[255,0,0]]).all(axis=-1).sum()
-    gp = (imar==[[0,255,0]]).all(axis=-1).sum()
-    wp = (imar==[[255,255,255]]).all(axis=-1).sum()
-    bp = (imar==[[0,0,0]]).all(axis=-1).sum()
-    print(""" the image contains :
-    %s red pixels
-    %s green pixels
-    %s blue pixels
-    %s white pixels
-"""%(rp,gp,bp,wp))
+    #~ Counting the number of pixels per color
+    from pyformex.connectivity import Connectivity
+    colorTable = Connectivity(imar.reshape(-1, 3)) # table of no. of pixels x RGB
+    colordict = colorTable.testDuplicate(permutations=False,return_multiplicity=True)[2] # dictionary {'number of pixels': index of the pixels with the unique color}
+    for nopx in colordict.keys():
+        ind = colordict[nopx] # index of the pixels with the unique color
+        uniqcolor = colorTable[ind[0]]
+        print ('the image includes color RGB %s in %d pixels'%(uniqcolor, nopx))
 
     os.remove(tmpimg)
 
