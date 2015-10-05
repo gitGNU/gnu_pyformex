@@ -2307,6 +2307,10 @@ Quality: %s .. %s
             return inside(self, pts, tol)
 
 
+    def outside(self, pts, **kargs):
+        return complement(self.inside(pts, **kargs), len(pts))
+
+
     def voxelize(self,n,bbox=0.01,return_formex=False):
         """Voxelize the volume inside a closed surface.
 
