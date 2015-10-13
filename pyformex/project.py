@@ -39,9 +39,12 @@ import gzip
 _signature_ = pf.fullVersion()
 
 module_relocations = {
-    'plugins.mesh': 'mesh',
-    'plugins.surface': 'trisurface',
-    'plugins.trisurface': 'trisurface',
+    'plugins.mesh': 'pyformex.mesh',
+    'plugins.surface': 'pyformex.trisurface',
+    'plugins.trisurface': 'pyformex.trisurface',
+    'pyformex.plugins.mesh': 'pyformex.mesh',
+    'pyformex.plugins.surface': 'pyformex.trisurface',
+    'pyformex.plugins.trisurface': 'pyformex.trisurface',
 }
 
 class_relocations = {
