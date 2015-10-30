@@ -423,7 +423,9 @@ def setpropCollection(K, prop):
                 o.prop[K[k]] = prop
                 o.setProp(o.prop)
                 a.setColor(o.prop)
-                a.redraw(mode=pf.canvas.rendermode)
+                ## a.redraw(mode=pf.canvas.rendermode) # GDS this redraw does not exist
+                pf.canvas.removeActor([a]) # GDS
+                pf.canvas.addActor(a) # GDS
 
 
 def setprop_selection():
