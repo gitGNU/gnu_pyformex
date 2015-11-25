@@ -2222,7 +2222,7 @@ class Output(Dict):
                 kind = 'NODE'
             elif kind == 'E':
                 kind = 'ELEMENT'
-            if set is None and kind in ['NODE','ELEMENT']:
+            if set is None and kind in ['NODE','ELEMENT','CONTACT','ENERGY']:
                 set = "%sall" % kind[0]
             if set is not None and not isinstance(set, list):
                 set = [ set ]
