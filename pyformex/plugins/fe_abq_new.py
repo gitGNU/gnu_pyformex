@@ -2029,7 +2029,7 @@ def writeAmplitude(fil, prop):
 
     for p in prop:
         cmd = "AMPLITUDE, NAME=%s" % (p.name)
-        fil.write(fmtKeyword(cmd,p.options,p.amplitude.data))
+        fil.write(fmtKeyword(cmd,p.options,asarray(p.amplitude.data).ravel()))
 
 ### Output requests ###################################
 # Output: goes to the .odb file (for postprocessing with Abaqus/CAE)
