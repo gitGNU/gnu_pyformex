@@ -522,7 +522,7 @@ def fmtMaterial(mat):
     elif elasticity == 'hyperelastic':
         model = mat.model.lower()
         order = mat.order
-        if not order:
+        if order is not None:
             nconst = len(constants)
             if model == 'ogden':
                 order = nconst // 3
@@ -535,6 +535,10 @@ def fmtMaterial(mat):
             elif model  == 'reduced polynomial':
                 order = nconst // 2
                 mconst = 2*order
+            
+            else:
+                mconst = nconst
+                pf.warning('Sorry, number of constants for material %s is not checked' % model)
 
             if mconst != nconst:
                 raise ValueError("Wrong number of material constants (%s) for order (%s) of %s model" % (nconst,mconst,model))
