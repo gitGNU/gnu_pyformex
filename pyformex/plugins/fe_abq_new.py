@@ -2170,7 +2170,11 @@ class Output(Dict):
     - `set`: a single set name or a list of node/element set names.
       This can not be specified for kind==''.
       If no set is specified, the default is 'Nall' for kind=='NODE' and
-      'Eall' for kind='ELEMENT'
+      'Eall' for kind=='ELEMENT'
+    - `typeset`: string: it is equal to the corresponding abaqus
+      parameter to identify the kind of set. If not specified, the default 
+      is the default is 'NSET' for kind=='NODE' , 'CONTACT' and 
+      'ELSET' for kind=='ELEMENT' , 'ENERGY'
     - `options`: (opt) options string to be added to the keyword line.
     - `extra`: (opt)  extra string to be added below the keyword line
       and optional data.
@@ -2206,7 +2210,7 @@ class Output(Dict):
 
     """
 
-    def __init__(self,kind='',vars='PRESELECT',set=None,type='FIELD',options='',extra='',variable=None,keys=None,*args,**kargs):
+    def __init__(self,kind='',vars='PRESELECT',set=None,typeset=None,type='FIELD',options='',extra='',variable=None,keys=None,*args,**kargs):
         """ Create a new output request."""
         if keys is not None or variable is not None:
             utils.warn('warn_Output_changed')
@@ -2222,11 +2226,23 @@ class Output(Dict):
                 kind = 'NODE'
             elif kind == 'E':
                 kind = 'ELEMENT'
-            if set is None and kind in ['NODE','ELEMENT','CONTACT','ENERGY']:
-                set = "%sall" % kind[0]
+                
+            if set is None:
+                if kind in ['NODE','CONTACT']:
+                    set = "Nall" 
+                    typeset = 'nset'
+                if kind in ['ELEMENT','ENERGY']:
+                    set = "Eall" 
+                    typeset = 'elset'
+            elif set is not None and typeset is None:
+                if kind in ['NODE','CONTACT']:
+                    typeset = 'NSET'
+                if kind in ['ELEMENT','ENERGY']:
+                    typeset = 'ELSET'   
+            
             if set is not None and not isinstance(set, list):
                 set = [ set ]
-            self.update({'kind':kind,'set':set})
+            self.update({'kind':kind,'set':set,'typeset':typeset})
 
 
     def fmt(self):
@@ -2247,10 +2263,8 @@ class Output(Dict):
             out = ''
             for setname in self.set:
                 cmd = Command('%s OUTPUT' % self.kind,options=self.options,extra=self.extra)
-                if self.kind in ['NODE', 'CONTACT']:
-                    cmd.add(nset=setname)
-                elif self.kind in ['ELEMENT', 'ENERGY']:
-                    cmd.add(elset=setname)
+                if self.kind in ['NODE', 'CONTACT','ELEMENT', 'ENERGY']:
+                    cmd.add(options='%s=%s'%(self.typeset.upper(),setname))
                 if isinstance(self.vars,str):
                     cmd.add(variable=self.vars)
                 else:
