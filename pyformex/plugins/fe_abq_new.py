@@ -542,8 +542,10 @@ def fmtMaterial(mat):
 
             if mconst != nconst:
                 raise ValueError("Wrong number of material constants (%s) for order (%s) of %s model" % (nconst,mconst,model))
-
-        cmd = Command('HYPERELASTIC',mat.model,N=order)
+        
+        cmd = Command('HYPERELASTIC',mat.model)
+        if order is not None:
+            cmd.add(N=order)
 
     elif elasticity == 'anisotropic hyperelastic':
         cmd = Command('ANISOTROPIC HYPERELASTIC',mat.model)
