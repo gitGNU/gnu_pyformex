@@ -2243,7 +2243,7 @@ class Output(Dict):
             out = str(cmd)
 
 
-        elif self.kind in ['NODE','ELEMENT']:
+        elif self.kind in ['NODE','ELEMENT','CONTACT','ENERGY']:
             out = ''
             for setname in self.set:
                 cmd = Command('%s OUTPUT' % self.kind,options=self.options,extra=self.extra)
