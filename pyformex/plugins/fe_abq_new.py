@@ -1932,9 +1932,9 @@ def fmtLoad(key,prop):
 
     elif cmd == 'DSLOAD':
         if isinstance(prop.dload,ElemLoad):
-            data = [setname, prop.dload.label, prop.dload.value]
+            data = [setname, prop.dsload.label, prop.dsload.value]
         else:
-            data = prop.dload
+            data = prop.dsload
 
     if 'op' in prop:
         cmd += ", OP=%s" % prop.op
@@ -2230,19 +2230,19 @@ class Output(Dict):
                 kind = 'ELEMENT'
                 
             if set is None:
-                if kind in ['NODE','CONTACT']:
+                if kind in ['NODE']:
                     set = "Nall" 
                     typeset = 'nset'
                 if kind in ['ELEMENT','ENERGY']:
                     set = "Eall" 
                     typeset = 'elset'
             elif set is not None and typeset is None:
-                if kind in ['NODE','CONTACT']:
+                if kind in ['NODE']:
                     typeset = 'NSET'
                 if kind in ['ELEMENT','ENERGY']:
                     typeset = 'ELSET'   
             
-            if set is not None and not isinstance(set, list):
+            if not isinstance(set, list):
                 set = [ set ]
             self.update({'kind':kind,'set':set,'typeset':typeset})
 
@@ -2266,7 +2266,8 @@ class Output(Dict):
             for setname in self.set:
                 cmd = Command('%s OUTPUT' % self.kind,options=self.options,extra=self.extra)
                 if self.kind in ['NODE', 'CONTACT','ELEMENT', 'ENERGY']:
-                    cmd.add(options='%s=%s'%(self.typeset.upper(),setname))
+                    if setname is not None:
+                        cmd.add(options='%s=%s'%(self.typeset.upper(),setname))
                 if isinstance(self.vars,str):
                     cmd.add(variable=self.vars)
                 else:
