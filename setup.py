@@ -54,7 +54,7 @@ elif sys.version_info >= (3, 0):
 from manifest import *
 
 # pyFormex release
-__RELEASE__ = '1.0.2-a2'
+__RELEASE__ = '1.0.2-a3'
 
 # The acceleration libraries
 LIB_MODULES = [ 'drawgl_', 'misc_', 'nurbs_' ]

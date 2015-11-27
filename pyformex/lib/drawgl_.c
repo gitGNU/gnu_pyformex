@@ -37,7 +37,7 @@
 
 /****************** LIBRARY VERSION AND DOCSTRING *******************/
 
-static char *__version__ = "1.0.2-a2";
+static char *__version__ = "1.0.2-a3";
 static char *__doc__ = "drawgl_\n\
 \n\
 This module provides accelerated versions of the pyFormex basic\n\
