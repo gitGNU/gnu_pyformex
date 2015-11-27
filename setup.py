@@ -54,7 +54,7 @@ elif sys.version_info >= (3, 0):
 from manifest import *
 
 # pyFormex release
-__RELEASE__ = '1.0.2-a1'
+__RELEASE__ = '1.0.2-a2'
 
 # The acceleration libraries
 LIB_MODULES = [ 'drawgl_', 'misc_', 'nurbs_' ]
@@ -109,8 +109,8 @@ class build_py(_build_py):
 #                        filename.startswith('extra/')
                         )
                     )
-        print("package data built!")
-        print(self.build_temp)
+        print("Package data built!")
+        #print(self.build_temp)
 
 
 

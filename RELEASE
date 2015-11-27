@@ -8,5 +8,5 @@ DOCVERSION=1.0
 # NOTE: we do no longer use the ~ character, for sorting reasons
 # We should not create Debian packages for -a versions
 #
-RELEASE=${VERSION}-a1
+RELEASE=${VERSION}-a2
 
