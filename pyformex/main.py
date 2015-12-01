@@ -258,22 +258,32 @@ def run(argv=[]):
     configuration file(s), processing the command line options and starting
     the application.
 
-    The basic configuration file is 'pyformex.conf' located in the pyFormex
+    The basic configuration file is 'pyformexrc' located in the pyFormex
     main directory. It should always be present and be left unchanged.
     If you want to make changes, copy (parts of) this file to another location
     where you can change them. Then make sure pyFormex reads you modifications
-    file. By default, pyFormex will try to read the following extra
-    configuration files if they are present (and in this order):
-        default settings:     <pyformexdir>/pyformex.conf
+    file. By default, pyFormex will try to read the following
+    configuration files if they are present (and in this order)::
+
+        default settings:     <pyformexdir>/pyformexrc   (always loaded)
         system-wide settings: /etc/pyformex.conf
         user settings:        <configdir>/pyformex/pyformex.conf
         local settings        $PWD/.pyformexrc
-    Also, an extra config file can be specified in the command line.
-    Config file settings always override previous ones.
+
+    Also, an extra config file can be specified in the command line, using
+    the --config option. The system-wide and user settings can be skipped
+    by using the --nodefaultconfig option.
+
+    Config files are loaded in the above order. Settings always override
+    those loaded from a previous file.
 
     When pyFormex exits, the preferences that were changed are written to the
     last read config file. Changed settings are those that differ from the
-    settings in all but the last one.
+    settings obtained after loading all but the last config file.
+    If none of the optional config files exists, a new user settings file
+    will be created, and an error will occur if the <configdir> path is
+    not writable.
+
     """
 
     # Process options
@@ -450,7 +460,7 @@ def run(argv=[]):
     pf.cfg.read("homedir = '%s'\n" % homedir)
 
     # Read the defaults (before the options)
-    defaults = os.path.join(pf.pyformexdir, "pyformex.conf")
+    defaults = os.path.join(pf.pyformexdir, "pyformexrc")
     pf.cfg.read(defaults)
 
     # The default user config path (do not change!)
