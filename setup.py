@@ -150,7 +150,7 @@ def run_setup(with_cext):
         long_description = file.read()
 
     PKG_DATA = [
-        'pyformex.conf',
+        'pyformexrc',
         'icons/README',
         'icons/*.xpm',
         'icons/pyformex*.png',
