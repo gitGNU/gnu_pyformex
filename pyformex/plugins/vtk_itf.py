@@ -1234,7 +1234,7 @@ def distance(self,ref,normals=None,loctol=1e-3,normtol=1e-5):
 
     """
     from vtk import mutable,vtkPolyDataNormals, vtkCellLocator, vtkGenericCell
-    from arraytools import length
+    from pyformex.arraytools import length
 
     point = zeros([3])
 
@@ -1281,7 +1281,7 @@ def distance(self,ref,normals=None,loctol=1e-3,normtol=1e-5):
 
     dist[2] = asarray(dist[0]).copy()
     nxcell = asarray(nxcell)
-    from arraytools import dotpr
+    from pyformex.arraytools import dotpr
     dist[2][where(dotpr(nxcell,dist[1])<=normtol)]*=-1
 
     dist=[asarray(d) for d in dist]
@@ -1506,7 +1506,7 @@ def readOBJ(fn,samePlex=True):
     reader.SetFileName(fn)
     reader = Update(reader)
     vpd = reader.GetOutput()
-    return convertFromVPD(vpd,samePlex=samePlex) 
+    return convertFromVPD(vpd,samePlex=samePlex)
 
 
 def import3ds(fn, vtkcolor='color'):
