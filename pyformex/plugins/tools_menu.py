@@ -328,13 +328,22 @@ def query_angle():
     print (s)
 
 
-def pick_point2D():
+def pick_point2D(return_2Dpos=False):
     import pyformex as pf
-    if pf.canvas.camera.perspective:
+    cam = pf.canvas.camera
+    if cam.perspective:
         warning('You can not pick 2D points if perspective is on')
         return
     print ('left click somewhere on the screen')
     p = pf.canvas.idraw(mode='point', npoints=1, zplane=0., func=None, coords=None, preview=True)[0]
+    if return_2Dpos is True:
+        zcam = cam.axis
+        ycam = cam.upvector
+        xcam = cross(ycam,zcam)    
+        CS = CoordSys(points=Coords([xcam, ycam, zcam, [0.,0.,0.]]))
+        pcam = p.transformCS(CoordSys(), CS)
+        h, v = pcam[0],pcam[1]
+        return p, h, v, xcam, ycam
     return p
 
 
@@ -348,46 +357,45 @@ def query_point2D(color='magenta'):
     The vertical direction of the camera is the upvector. 
     """
     import pyformex as pf
-    p = pick_point2D()
-    cam = pf.canvas.camera
-    zcam = cam.axis
-    ycam = cam.upvector
-    xcam = cross(ycam,zcam)    
-    a = Coords([0., 0., 0.])
-    CS = CoordSys(points=Coords([xcam, ycam, zcam, a]))
-    pcam = p.transformCS(CoordSys(), CS)
-    h, v = pcam[0],pcam[1]
-    b, c, d = xcam*h, xcam*h + ycam*v, ycam*v
+    p, h, v, xcam, ycam = pick_point2D(return_2Dpos=True)
+    b, c, d = h*xcam, h*xcam + v*ycam, v*ycam
     D0 = draw(p, color=color, bbox='last', view=None)
+    a = Coords([0., 0., 0.])
     D1 = draw(Formex([[a, b], [b, c], [c, d], [d, a]]), color=color, bbox='last', view=None)
     D2 = drawMarks([b*0.5, d*0.5], ['%.2e'%h, '%.2e'%v], size=20, color=color, bbox='last', view=None)
     s = "*** Point 2D report ***\n"
-    s += '%f %f'%(h, v)
+    s += 'H %f V %f'%(h, v)
     print (s)
     pause(2.0)
     [undraw(D) for D in [D0, D1, D2]]
 
 
 def query_distance2D(color='magenta'):
-    """2D distance between 2 points based on current camera"""
+    """2D distance between 2 points based on current camera
+    
+    It prints the 2D distance and also the horizontal
+    and vertical components based on the current camera.
+    """
     import pyformex as pf
+    cam = pf.canvas.camera
     print ('starting point')
-    p0 = pick_point2D()
-    camaxis0 = pf.canvas.camera.axis
+    p0, h0, v0, xcam0, ycam0 = pick_point2D(return_2Dpos=True)
+    camaxis0 = cam.axis
     D0 = draw(p0, color=color, bbox='last', view=None)
     print ('end point')
-    p1 = pick_point2D()
-    camaxis1 = pf.canvas.camera.axis
+    p1, h1, v1, xcam1, ycam1 = pick_point2D(return_2Dpos=True)
+    camaxis1 = cam.axis
     D1 = draw(p1, color=color, bbox='last', view=None)
     if abs(camaxis1 - camaxis0).sum(axis=0)>1.e-5:
         warning('You can not perform 2D measurements if you rotate the camera')
         [undraw(D) for D in [D0, D1]]
         return
     d = length(p1-p0)
+    print (p0, p1)
     D2=drawMarks([(p0+p1)*0.5], ['%.2e'%d], size=20, color=color, bbox='last', view=None)
     D3=draw(Formex([[p0, p1]]), linewidth=3, color=color, bbox='last', view=None)
     s = "*** Distance 2D report ***\n"
-    s += '%f'%d
+    s += "[H %s, V %s] %s \n" % (h1-h0, v1-v0, d)
     print (s)
     pause(2.0)
     [undraw(D) for D in [D0, D1, D2, D3]]
@@ -396,12 +404,14 @@ def query_distance2D(color='magenta'):
 def query_angle2D(color='magenta'):
     print("Pick 3 points in 2D")
     print("Pick point on first ray")
+    import pyformex as pf
+    cam = pf.canvas.camera
     p0 = pick_point2D()
-    camaxis0 = pf.canvas.camera.axis
+    camaxis0 = cam.axis
     D0 = draw(p0, color=color, bbox='last', view=None)
     print("Pick the vertex")
     p1 = pick_point2D()
-    camaxis1 = pf.canvas.camera.axis
+    camaxis1 = cam.axis
     D1 = draw(p1, color=color, bbox='last', view=None)
     if abs(camaxis1 - camaxis0).sum(axis=0)>1.e-5:
         warning('You can not perform 2D measurements if you rotate the camera')
@@ -409,7 +419,7 @@ def query_angle2D(color='magenta'):
         return
     print("Pick point on second ray")
     p2 = pick_point2D()
-    camaxis2 = pf.canvas.camera.axis
+    camaxis2 = cam.axis
     D2 = draw(p2, color=color, bbox='last', view=None)
     if abs(camaxis2 - camaxis0).sum(axis=0)>1.e-5:
         warning('You can not perform 2D measurements if you rotate the camera')
