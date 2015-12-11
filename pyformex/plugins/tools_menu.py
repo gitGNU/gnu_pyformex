@@ -328,20 +328,58 @@ def query_angle():
     print (s)
 
 
-def query_distance2D(color='magenta'):
-    """2D distance between 2 points"""
+def pick_point2D():
     import pyformex as pf
     if pf.canvas.camera.perspective:
-        warning('You can not perform 2D measurements if perspective is on')
+        warning('You can not pick 2D points if perspective is on')
         return
-    print ('left click somewhere on the screen to start')
-    p0 = pf.canvas.idraw(mode='point', npoints=1, zplane=0., func=None, coords=None, preview=True)[0]
-    D0=draw(p0, color=color, bbox='last', view=None)
-    camaxis = pf.canvas.camera.axis
-    print ('left click somewhere on the screen to end')
-    p1 = pf.canvas.idraw(mode='point', npoints=1, zplane=0., func=None, coords=None, preview=True)[0]
-    D1=draw(p1, color=color, bbox='last', view=None)
-    if abs(pf.canvas.camera.axis - camaxis).sum(axis=0)>1.e-5:
+    print ('left click somewhere on the screen')
+    p = pf.canvas.idraw(mode='point', npoints=1, zplane=0., func=None, coords=None, preview=True)[0]
+    return p
+
+
+def query_point2D(color='magenta'):
+    """2D point coordinates based on current camera
+    
+    It prints the horizontal and vertical positions from the origin 
+    along the horizontal and vertical directions of the camera. 
+    The horizontal direction of the camera is the cross product of 
+    camera axis (focus-eye) and camera upvector. 
+    The vertical direction of the camera is the upvector. 
+    """
+    import pyformex as pf
+    p = pick_point2D()
+    cam = pf.canvas.camera
+    zcam = cam.axis
+    ycam = cam.upvector
+    xcam = cross(ycam,zcam)    
+    a = Coords([0., 0., 0.])
+    CS = CoordSys(points=Coords([xcam, ycam, zcam, a]))
+    pcam = p.transformCS(CoordSys(), CS)
+    h, v = pcam[0],pcam[1]
+    b, c, d = xcam*h, xcam*h + ycam*v, ycam*v
+    D0 = draw(p, color=color, bbox='last', view=None)
+    D1 = draw(Formex([[a, b], [b, c], [c, d], [d, a]]), color=color, bbox='last', view=None)
+    D2 = drawMarks([b*0.5, d*0.5], ['%.2e'%h, '%.2e'%v], size=20, color=color, bbox='last', view=None)
+    s = "*** Point 2D report ***\n"
+    s += '%f %f'%(h, v)
+    print (s)
+    pause(2.0)
+    [undraw(D) for D in [D0, D1, D2]]
+
+
+def query_distance2D(color='magenta'):
+    """2D distance between 2 points based on current camera"""
+    import pyformex as pf
+    print ('starting point')
+    p0 = pick_point2D()
+    camaxis0 = pf.canvas.camera.axis
+    D0 = draw(p0, color=color, bbox='last', view=None)
+    print ('end point')
+    p1 = pick_point2D()
+    camaxis1 = pf.canvas.camera.axis
+    D1 = draw(p1, color=color, bbox='last', view=None)
+    if abs(camaxis1 - camaxis0).sum(axis=0)>1.e-5:
         warning('You can not perform 2D measurements if you rotate the camera')
         [undraw(D) for D in [D0, D1]]
         return
@@ -354,6 +392,40 @@ def query_distance2D(color='magenta'):
     pause(2.0)
     [undraw(D) for D in [D0, D1, D2, D3]]
 
+
+def query_angle2D(color='magenta'):
+    print("Pick 3 points in 2D")
+    print("Pick point on first ray")
+    p0 = pick_point2D()
+    camaxis0 = pf.canvas.camera.axis
+    D0 = draw(p0, color=color, bbox='last', view=None)
+    print("Pick the vertex")
+    p1 = pick_point2D()
+    camaxis1 = pf.canvas.camera.axis
+    D1 = draw(p1, color=color, bbox='last', view=None)
+    if abs(camaxis1 - camaxis0).sum(axis=0)>1.e-5:
+        warning('You can not perform 2D measurements if you rotate the camera')
+        [undraw(D) for D in [D0, D1]]
+        return
+    print("Pick point on second ray")
+    p2 = pick_point2D()
+    camaxis2 = pf.canvas.camera.axis
+    D2 = draw(p2, color=color, bbox='last', view=None)
+    if abs(camaxis2 - camaxis0).sum(axis=0)>1.e-5:
+        warning('You can not perform 2D measurements if you rotate the camera')
+        [undraw(D) for D in [D0, D1, D2]]
+        return
+    angle = rotationAngle(A=p0-p1,B=p2-p1,m=camaxis0,angle_spec=DEG)
+    angle = angle[0]
+    D3=draw(Formex([[p0, p1]]), linewidth=3, color=color, bbox='last', view=None)
+    D4=draw(Formex([[p1, p2]]), linewidth=3, color=color, bbox='last', view=None)
+    D5=drawMarks([(p0+p2)*0.5], ['%.1f'%angle], size=20, color=color, bbox='last', view=None)
+    s = "*** Angle 2D report ***\n"
+    s += '%s degrees around camera axis'%angle
+    print (s)
+    pause(2.0)
+    [undraw(D) for D in [D0, D1, D2, D3, D4, D5]]
+ 
 
 def report_selection():
     if selection is None:
@@ -732,8 +804,10 @@ def create_menu():
             ('&Points', query_points),
             ('&Edges', query_edges),
             ('&Distances', query_distances),
-            ('&Distance 2D', query_distance2D), 
             ('&Angle', query_angle),
+            ('&Point 2D', query_point2D),
+            ('&Distance 2D', query_distance2D), 
+            ('&Angle 2D', query_angle2D), 
             ]),
         ("---", None),
         ('&Reload', reload_menu),
