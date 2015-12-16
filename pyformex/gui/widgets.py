@@ -1212,6 +1212,36 @@ class InputButton(InputItem):
             self.setValue(val)
 
 
+class InputFilename(InputButton):
+    """A filename input item.
+
+    This is a button input field displaying a file name.
+    Clicking on the button pops up a file dialog.
+
+    Extra parameters:
+
+    - `filter`: the filter for the filenames to accept.
+      See askFilename.
+
+    """
+    def __init__(self,name,value,filter='*',exist=False,**kargs):
+        """Initialize the input item."""
+        kargs['func'] = InputFilename.changeFilename
+        self._filter = filter
+        self._exist = exist
+        InputButton.__init__(self,name,value,**kargs)
+
+
+    def changeFilename(self,*args,**kargs):
+        """Pop up a FileDialog to change the filename"""
+        print('ARGS:',args)
+        print('KARGS:',kargs)
+        from pyformex.gui.draw import askFilename
+        fn = askFilename(self.value(), filter=self._filter, exist=self._exist)
+        if fn:
+            self.setValue(fn)
+
+
 class InputColor(InputItem):
     """A color input item.
     Creates a new color input field with a label in front.
