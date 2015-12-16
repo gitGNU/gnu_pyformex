@@ -32,31 +32,55 @@ from __future__ import print_function
 
 
 def roll(a,n=1):
-    """Roll the elements of a list n positions forward (backward if n < 0)"""
+    """Roll the elements of a list n positions forward (backward if n < 0)
+
+    >>> roll(range(5),2)
+    [2, 3, 4, 0, 1]
+    """
     return a[n:] + a[:n]
 
 def union(a, b):
-    """Return a list with all items in a or in b, in the order of a,b."""
+    """Return a list with all items in a or in b, in the order of a,b.
+
+    >>> union(range(3),range(1,4))
+    [0, 1, 2, 3]
+    """
     return a + [ i for i in b if i not in a ]
 
 
 def difference(a, b):
-    """Return a list with all items in a but not in b, in the order of a."""
+    """Return a list with all items in a but not in b, in the order of a.
+
+    >>> difference(range(3),range(1,4))
+    [0]
+    """
     return [ i for i in a if i not in b ]
 
 
 def symdifference(a, b):
-    """Return a list with all items in a or b but not in both."""
+    """Return a list with all items in a or b but not in both.
+
+    >>> symdifference(range(3),range(1,4))
+    [0, 3]
+    """
     return difference(a, b) + difference(b, a)
 
 
 def intersection (a, b):
-    """Return a list with all items in a and  in b, in the order of a."""
+    """Return a list with all items in a and  in b, in the order of a.
+
+    >>> intersection(range(3),range(1,4))
+    [1, 2]
+    """
     return [ i for i in a if i in b ]
 
 
 def concatenate(a):
-    """Concatenate a list of lists"""
+    """Concatenate a list of lists.
+
+    >>> concatenate([range(3),range(1,4)])
+    [0, 1, 2, 1, 2, 3]
+    """
     import functools
     return functools.reduce(list.__add__, a)
 
@@ -109,12 +133,19 @@ def select(a, b):
     """Return a subset of items from a list.
 
     Returns a list with the items of a for which the index is in b.
+
+    >>> select(range(2,6),[1,3])
+    [3, 5]
     """
     return [ a[i] for i in b ]
 
 
 def remove(a, b):
-    """Returns the complement of select(a,b)."""
+    """Returns the complement of select(a,b).
+
+    >>> remove(range(2,6),[1,3])
+    [2, 4]
+    """
     return [ ai for i, ai in enumerate(a) if i not in b ]
 
 
@@ -126,12 +157,15 @@ def toFront(l, i):
     Else i is added at the front of the list.
 
     This changes the list inplace and does not return a value.
+
+    >>> L = range(5)
+    >>> toFront(L,3)
+    >>> L
+    [3, 0, 1, 2, 4]
     """
     if i in l:
         l.remove(i)
     l[0:0] = [ i ]
-
-
 
 
 def collectOnLength(items,return_indices=False):
@@ -145,6 +179,11 @@ def collectOnLength(items,return_indices=False):
 
     If return_indices is True, a second dict is returned, with the same
     keys, holding the original indices of the items in the lists.
+
+    >>> collectOnLength(['a','bc','defg','hi','j','kl'])
+    {1: ['a', 'j'], 2: ['bc', 'hi', 'kl'], 4: ['defg']}
+    >>> collectOnLength(['a','bc','defg','hi','j','kl'],return_indices=True)[1]
+    {1: [0, 4], 2: [1, 3, 5], 4: [2]}
     """
     if return_indices:
         res, ind = {}, {}
@@ -169,45 +208,41 @@ def collectOnLength(items,return_indices=False):
 
 
 class List(list):
+    """A versatile list class.
+
+    This class extends the builtin list type with automatic calling
+    of a method for all items in the list.
+    Any method other than the ones defined here will return a new List
+    with the method applied to each of the items, using the same arguments.
+
+    As an exmaple, List([a,b]).len() will return List([a.len(),b.len()])
+
+    >>> L = List(['first','second'])
+    >>> L.upper()
+    ['FIRST', 'SECOND']
+    >>> import pickle
+    >>> with open('test.pickle','w') as f: pickle.dump(L,f)
+    >>> L = 'third'
+    >>> print(L)
+    third
+    >>> with open('test.pickle','r') as f: L = pickle.load(f)
+    >>> print(L)
+    ['first', 'second']
+
+    """
     def __init__(self,*args):
         list.__init__(self,*args)
     def __getattr__(self, attr):
+
         def on_all(*args, **kwargs):
             return List([ getattr(obj, attr)(*args, **kwargs) for obj in self ])
         return on_all
+    def __getstate__(self):
+        """Allow a List to be pickled."""
+        return list(self)
+    def __setstate__(self, state):
+        """Allow a List to be set from pickle"""
+        self.__init__(state)
 
-
-if __name__ == '__main__':
-
-    a = [1, 2, 3, 5, 6, 7]
-    b = [2, 3, 4, 7, 8, 9]
-    print(a)
-    print(b)
-    print(union(a, b))
-    print(difference(a, b))
-    print(difference(b, a))
-    print(symdifference(a, b))
-    print(intersection(a, b))
-    print(select(a, [1, 3]))
-    print(concatenate([a, b, a]))
-    print(flatten([1, 2, a, [a]]))
-    print(flatten([1, 2, a, [a]], recurse=True))
-
-
-
-    class String(str):
-        def __init__(self, s):
-            str.__init__(s)
-            self.length = len(s)
-        def Len(self):
-            return len(self)
-
-    A = String("aa")
-    B = String("bbbb")
-
-    L = List([A, B])
-    print(L.upper())
-
-    print(L.Len())
 
 # End
