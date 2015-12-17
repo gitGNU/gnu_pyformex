@@ -34,12 +34,15 @@ class Timer(object):
     """A class for measuring elapsed time.
 
     A Timer object measures elapsed real time since a specified time, which
-    by default is the time of the creation of the Timer.
+    by default is the time of the creation of the Timer. A builtin tag can
+    be used for identifying subsequent measurements.
 
     Parameters:
 
     - `start`: a datetime object. If not specified, the time of the creation
       of the Timer is used.
+    - `tag`: a string used as an identifier for the current measurement. It
+      is displayed when printing the Timer value
 
     Example:
 
@@ -58,27 +61,41 @@ class Timer(object):
     than the input sleep time. The precise result is unknown, therefore
     ellipses are shown.
 
+    >>> tim = Timer(tag="First")
+    >>> time.sleep(1.53)
+    >>> print(tim)
+    Timer: First: 1.53 sec.
+    >>> tim.reset(tag="Next")
+    >>> time.sleep(1.53)
+    >>> print(tim)
+    Timer: Next: 1.53 sec.
+
     """
 
-    def __init__(self, start=None):
-        """Create and start a timer."""
-        self.reset(start)
+    def __init__(self, start=None, tag=None):
+        """Create and reset the timer."""
+        self.reset(start,tag)
 
-    def reset(self, start=None):
+
+    def reset(self, start=None, tag=None):
         """(Re)Start the timer.
 
         Sets the start time of the timer to the specified value, or to
-        the current time by default.
+        the current time if not specified. Sets the tag to the specified
+        value or to 'None'.
 
         Parameters:
 
         - `start`: a datetime object. If not specified, the current time as
           returned by datetime.now() is used.
+        - `tag`: a string used as an identifier for the current measurement
         """
         if isinstance(start, datetime):
             self.start = start
         else:
             self.start = datetime.now()
+        self.tag = str(tag)
+
 
     def read(self, reset=False):
         """Read the timer.
@@ -94,6 +111,7 @@ class Timer(object):
             self.start = now
         return ret
 
+
     def seconds(self, reset=False, rounded=False):
         """Return the timer readings in seconds.
 
@@ -108,6 +126,16 @@ class Timer(object):
         if rounded:
             sec = int(round(sec))
         return sec
+
+
+    def report(self, format="%.2f sec."):
+        """Report the elapsed time in seconds since last reset"""
+        return ("Timer: %s: "+format) % (self.tag,self.seconds(False))
+
+
+    def __str__(self):
+        """Report the elapsed time in a standard format"""
+        return self.report()
 
 
 # End
