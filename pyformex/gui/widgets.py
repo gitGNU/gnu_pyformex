@@ -1222,24 +1222,31 @@ class InputFilename(InputButton):
 
     - `filter`: the filter for the filenames to accept.
       See askFilename.
+    - `exist`: boolean. Specifies whether the file should exist,
+      or a new one can be created (default).
+    - `preview`: an :class:`ImageView` widget, or another widget having
+      a `showImage` method. This can be used with image files to show a
+      preview of the selected file. In most cases the preview widget is
+      inserted in a dialog directly below the `InputFilename` field.
 
     """
-    def __init__(self,name,value,filter='*',exist=False,**kargs):
+    def __init__(self,name,value,filter='*',exist=False,preview=None,**kargs):
         """Initialize the input item."""
         kargs['func'] = InputFilename.changeFilename
         self._filter = filter
         self._exist = exist
+        self._preview = preview
         InputButton.__init__(self,name,value,**kargs)
 
 
-    def changeFilename(self,*args,**kargs):
+    def changeFilename(self):
         """Pop up a FileDialog to change the filename"""
-        print('ARGS:',args)
-        print('KARGS:',kargs)
         from pyformex.gui.draw import askFilename
         fn = askFilename(self.value(), filter=self._filter, exist=self._exist)
         if fn:
             self.setValue(fn)
+            if self._preview:
+                self._preview.showImage(fn)
 
 
 class InputColor(InputItem):

@@ -75,12 +75,6 @@ def setBgColor():
         if res:
             setBackground(**res)
 
-    def changeImage(field):
-        fn = draw.askImageFile(field.text())
-        if fn:
-            viewer.showImage(fn)
-        return fn
-
     bgcolor_dialog = widgets.InputDialog(
         [
             _I('mode', mode, choices=bgmodes),
@@ -89,7 +83,7 @@ def setBgColor():
             _I('color3', color[2], itemtype='color', func=changeColor, text='Background color 3 (Top Right)'),
             _I('color4', color[3], itemtype='color', func=changeColor, text='Background color 4 (Top Left'),
             _I('showimage', showimage, text='Show background image'),
-            _I('image', cur, text='Background image', itemtype='button', func=changeImage),
+            _I('image', cur, text='Background image', itemtype='filename', filter='img', exist=True, preview=viewer),
             viewer,
             _I('_save_', False, text='Save as default'),
             ],

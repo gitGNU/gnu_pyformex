@@ -164,22 +164,11 @@ def settings():
         _I('_gui/%sbutton'%t, t in pf.cfg['gui/actionbuttons'], text="%s Button" % t.capitalize()) for t in _actionbuttons
         ]
 
-
+    # Make sure splash image exists
     cur = pf.cfg['gui/splash']
     if not os.path.exists(cur):
         pf.cfg['gui/splash'] = cur = pf.refcfg['gui/splash']
-    viewer = widgets.ImageView(cur, maxheight=200)
-    # callback to set an imagename
-    #
-    # TODO: We should probably store this somewhere: it is also used in
-    # examples ColorImage and SurfaceProjection and in gui.viewportMenu
-    # and plugins.tools_menu
-    #
-    def changeSplash(field):
-        fn = draw.askImageFile(field.value())
-        if fn:
-            viewer.showImage(fn)
-        return fn
+    splashviewer = widgets.ImageView(cur, maxheight=200)
 
     mail_settings = [
         _I('mail/sender', pf.cfg.get('mail/sender', sendmail.mail), text="My mail address"),
@@ -241,8 +230,8 @@ def settings():
                 _I('_info_01_', 'The settings on this page will only become active after restarting pyFormex', itemtype='info'),
                 _I('gui/bindings', bindings_current, choices=bindings_choices, tooltip="The Python bindings for the Qt4 library"),
                 #_I('gui/interpreter',interpreter_current,choices=interpreter_choices,tooltip="The Python interpreter to use for the message board"),
-                _I('gui/splash', text='Splash image', itemtype='button', func=changeSplash),
-                viewer,
+                _I('gui/splash', text='Splash image', itemtype='filename', filter='img', exist=True, preview=splashviewer),
+                splashviewer,
                 ]),
             _T('GUI', [
                 _G('Appearance', appearance),

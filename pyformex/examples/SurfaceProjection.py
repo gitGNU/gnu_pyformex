@@ -42,14 +42,6 @@ from pyformex.gui.widgets import ImageView
 from pyformex.plugins.imagearray import *
 
 
-def selectImage(field):
-    global wviewer
-    fn = askImageFile(field.value())
-    if fn:
-        wviewer.showImage(fn)
-    return fn
-
-
 def loadImage(fn):
     global image, scaled_image
     image = QImage(fn)
@@ -80,7 +72,7 @@ def drawImage(grid, base, patch):
 
 
 def run():
-    global wviewer, pcolor, px, py
+    global viewer, pcolor, px, py
     clear()
     smooth()
     lights(True)
@@ -98,11 +90,11 @@ def run():
 
     # default image file
     dfilename = getcfg('datadir')+'/benedict_6.jpg'
-    wviewer = ImageView(dfilename, maxheight=200)
+    viewer = ImageView(dfilename, maxheight=200)
 
     res = askItems([
-        _I('filename', dfilename, text='Image file', itemtype='button', func=selectImage),
-        wviewer,
+        _I('filename', dfilename, text='Image file', itemtype='filename', filter='img', exist=True, preview=viewer),
+        viewer,
         _I('px', 4, text='Number of patches in x-direction'),
         _I('py', 6, text='Number of patches in y-direction'),
         _I('kx', 30, text='Width of a patch in pixels'),
