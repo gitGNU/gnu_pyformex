@@ -164,16 +164,17 @@ def settings():
         _I('_gui/%sbutton'%t, t in pf.cfg['gui/actionbuttons'], text="%s Button" % t.capitalize()) for t in _actionbuttons
         ]
 
-    # callback to set a filename
-    def changeFilename(field):
-        fn = draw.askFilename(field.value(),filter=field.data)
-        return fn
 
     cur = pf.cfg['gui/splash']
     if not os.path.exists(cur):
         pf.cfg['gui/splash'] = cur = pf.refcfg['gui/splash']
     viewer = widgets.ImageView(cur, maxheight=200)
-
+    # callback to set an imagename
+    #
+    # TODO: We should probably store this somewhere: it is also used in
+    # examples ColorImage and SurfaceProjection and in gui.viewportMenu
+    # and plugins.tools_menu
+    #
     def changeSplash(field):
         fn = draw.askImageFile(field.value())
         if fn:
@@ -201,7 +202,7 @@ def settings():
     guiscripts.append('local')
     webgl_settings = [
         _I('webgl/script', pf.cfg['webgl/script'], text='WebGL base script', choices=scripts),
-        _I('_webgl_script', '', text='URL for local WebGL base script', itemtype='button', func=changeFilename,data='js'),
+        _I('_webgl_script', '', text='URL for local WebGL base script', itemtype='filename', filter='js', exist=True),
         _I('webgl/guiscript', pf.cfg['webgl/guiscript'], text='GUI base script', choices=guiscripts),
         _I('_webgl_guiscript', '', text='URL for local GUI base script'),
         _I('webgl/autogui', pf.cfg['webgl/autogui'], text='Always add a standard GUI'),

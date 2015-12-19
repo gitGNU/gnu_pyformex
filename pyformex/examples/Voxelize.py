@@ -42,12 +42,6 @@ from pyformex import simple
 
 filename = os.path.join(getcfg('datadir'), 'horse.off')
 
-
-def selectSurfaceFile(field):
-    fn = askFilename(field.value(), filter='surface')
-    return fn
-
-
 def getData():
     """Ask input data from the user."""
     store = pf.PF.get('_Voxelize_data_',{
@@ -59,7 +53,7 @@ def getData():
     res = askItems(caption="Voxelize example",store=store,items=[
         _G('Model',[
             _I('surface', choices=['file', 'sphere']),
-            _I('filename', text='Image file', itemtype='button', func=selectSurfaceFile),
+            _I('filename', text='Image file', itemtype='filename', filter='surface', exist=True),
             _I('grade', 8),
             ]),
         _G('Scan', [

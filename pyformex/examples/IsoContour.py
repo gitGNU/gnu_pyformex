@@ -38,25 +38,40 @@ from pyformex.plugins.isosurface import isoline
 def run():
     resetAll()
     clear()
-    filename = getcfg('datadir')+'/leeuw24.png'
+    # Set default image filename
+    filename = getcfg('datadir')+'/butterfly.png'
+    # Give user a change to change it
+    filename = askImageFile(filename)
     # This is picked from pyformex.opengl.draw.drawImage3D
     from pyformex.plugins.imagearray import qimage2glcolor, resizeImage
     image = resizeImage(filename, 0, 0)
     nx, ny = image.width(), image.height()
+    print("Image size: %s x %s" % (nx,ny))
     color, colortable = qimage2glcolor(image)
+    #butterfly nx,ny = 376,327
+    #zonnebloem nx,ny = 176,173
     color = color.reshape(ny,nx,3)
     #color = color[130:176,100:146] # uncomment to pick a part from the image
     ny,nx = color.shape[:2]   # pixels move fastest in x-direction!
     color = color.reshape(-1,3)
     F = Formex('1:0').replic2(nx, ny)
     FA = draw(F, color=color, colormap=colortable, nolight=True)
+    FA.alpha = 0.6
+
     intens = FA.color.sum(axis=-1) / 3
     data = intens.reshape(ny,nx)
-    level = 0.3 # change level to adjust contour position
-    seg = isoline(data,level,nproc=-1)
-    C = Formex(seg)
-    draw(C,color=red,linewidth=3)
+
+    n = 10
+    levels = arange(1,n) * 1. / n # change levels to adjust number and position of contours
+    print(levels)
     transparent()
+    for col,level in enumerate(levels):
+        seg = isoline(data,level,nproc=-1)
+        C = Formex(seg)
+        draw(C,color=col+1,linewidth=3)
+
+    #sleep(2)
+    #undraw(FA)
 
 if __name__ == '__draw__':
     run()

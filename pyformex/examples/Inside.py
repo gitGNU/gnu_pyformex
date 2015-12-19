@@ -42,17 +42,12 @@ from pyformex.multi import *
 filename = os.path.join(getcfg('datadir'), 'horse.off')
 
 
-def selectSurfaceFile(field):
-    fn = askFilename(field.value(), filter='surface')
-    return fn
-
-
 def getData():
     """Ask input data from the user."""
     dia = Dialog(
         [ _G('Surface', [
             _I('surface', 'file', choices=['file', 'sphere']),
-            _I('filename', filename, text='Image file', itemtype='button', func=selectSurfaceFile),
+            _I('filename', filename, text='Image file', itemtype='filename', filter='surface', exist=True),
             _I('grade', 8),
             _I('refine', 0),
             ]),
@@ -169,5 +164,3 @@ def run():
 if __name__ == '__draw__':
     run()
 # End
-
-
