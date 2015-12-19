@@ -158,11 +158,19 @@ def qimage2numpy(image,resize=(0, 0),order='RGBA',flip=True,indexed=None,expand=
         if not pf.options.pyside:
             buf = buf.asstring(image.numBytes())
         ar = np.frombuffer(buf, dtype=np.uint8)
+        if ar.size % h == 0:
+            ar = ar.reshape(h, -1)
+            if ar.shape[1] > w:
+                # The QImage buffer always has a size corresponding
+                # with a width that is a multiple of 8. Here we strip
+                # off the padding pixels of the QImage buffer to the
+                # reported width.
+                ar = ar[:,:w]
+
         if ar.size != w*h:
+            # This should no longer happen, since we have now adjusted
+            # the numpy buffer width to the correct image width.
             pf.warning("Size of image data (%s) does not match the reported dimensions: %s x %s = %s" % (ar.size, w, h, w*h))
-            #ar = ar[:w*h]
-        ar = ar.reshape(h, -1)
-        #print "IMAGE SHAPE IS %s" % str(ar.shape)
 
     else:
         raise ValueError("qimage2numpy only supports 32bit and 8bit images")

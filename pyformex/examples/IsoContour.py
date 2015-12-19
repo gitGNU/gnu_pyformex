@@ -70,8 +70,8 @@ def run():
         C = Formex(seg)
         draw(C,color=col+1,linewidth=3)
 
-    #sleep(2)
-    #undraw(FA)
+    sleep(2)
+    undraw(FA)
 
 if __name__ == '__draw__':
     run()
