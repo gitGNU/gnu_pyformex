@@ -1682,7 +1682,7 @@ class Coords(ndarray):
         cuts = olist.select(cuts, okid)
 
         # find the points closest to self
-        cuts = [ p.closestToPoint(xi) for p, xi in zip(cuts, x[cutid]) ]
+        cuts = [ p.points()[p.closestToPoint(xi)] for p, xi in zip(cuts, x[cutid]) ]
         cuts = Coords.concatenate(cuts)
 
         if cuts.size == 0:
