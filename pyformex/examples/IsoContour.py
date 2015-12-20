@@ -51,7 +51,7 @@ def run():
         _I('levelmin', 0.0, text='Minimum level value'),
         _I('levelmax', 1.0, text='Maximum level value'),
         _I('npalette', 8, text='Number of different colors'),
-        _I('remove', False, text='Remove original image'),
+        _I('alpha', 0.5, text='Opacity of image (0.0 is invisible)'),
         ])
 
     if not res:
@@ -71,7 +71,7 @@ def run():
     color = color.reshape(-1,3)
     F = Formex('1:0').replic2(nx, ny)
     FA = draw(F, color=color, colormap=colortable, nolight=True)
-    FA.alpha = 0.6
+    FA.alpha = 0.5
 
     if value == 'luminance':
         data = luminance(FA.color)
@@ -92,10 +92,13 @@ def run():
     for col,level in enumerate(levels):
         seg = isoline(data,level,nproc=-1)
         C = Formex(seg)
-        draw(C,color=col+1,linewidth=3)
+        draw(C,color=col,linewidth=3)
 
-    if remove:
+    if alpha == 0.0:
         undraw(FA)
+    else:
+        FA.alpha = alpha
+
 
 if __name__ == '__draw__':
     run()
