@@ -1062,6 +1062,7 @@ def hexVolume(x):
     >>> from elements import Hex8
     >>> X = Coords(Hex8.vertices).reshape(-1,8,3)
     >>> print(hexVolume(X))
+    [ 1.]
 
     """
     x = checkArray(x,shape=(-1,8,3),kind='f')

@@ -129,7 +129,7 @@ class CoordSys(object):
         like in the :meth:`coords.Coords.rotate` method.
         """
         if len(args)==1 and not kargs:
-            self.rot = np.dot(self.rot,rot)
+            self.rot = np.dot(self.rot,args[0])
         else:
             X = self.points().rotate(*args,**kargs)
             self.__init__(points=X)

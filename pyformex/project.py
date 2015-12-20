@@ -193,14 +193,14 @@ class Project(TrackedDict):
       >>> d = dict(a=1,b=2,c=3,d=[1,2,3],e={'f':4,'g':5})
       >>> P = Project()
       >>> P.update(d)
-      >>> print dict.__str__(P)
+      >>> print(dict.__str__(P))
       {'a': 1, 'c': 3, 'b': 2, 'e': {'g': 5, 'f': 4}, 'd': [1, 2, 3]}
       >>> P.save(quiet=True)
       >>> P.clear()
-      >>> print dict.__str__(P)
+      >>> print(dict.__str__(P))
       {}
       >>> P.load(quiet=True)
-      >>> print dict.__str__(P)
+      >>> print(dict.__str__(P))
       {'a': 1, 'c': 3, 'b': 2, 'e': {'g': 5, 'f': 4}, 'd': [1, 2, 3]}
 
     """

@@ -52,7 +52,7 @@ track_methods = [
 
 def track_decorator(func):
     """Create a wrapper function for tracked class methods.
-    
+
     The wrapper function increases the 'hits' attribute of the
     class and then executes the wrapped method.
     Note that the class is passed as the first argument.
@@ -87,23 +87,23 @@ def track_class_factory(cls,methods= track_methods):
 
       >>> TrackedDict = track_class_factory(dict)
       >>> D = TrackedDict({'a':1,'b':2})
-      >>> print D.hits
+      >>> print(D.hits)
       0
       >>> D['c'] = 3
-      >>> print D.hits
+      >>> print(D.hits)
       1
       >>> D.hits = 0
-      >>> print D.hits
+      >>> print(D.hits)
       0
       >>> D.update({'d':1,'b':3})
       >>> del D['a']
-      >>> print D.hits
+      >>> print(D.hits)
       2
     """
     new_dct = cls.__dict__.copy()
     if 'hits' in new_dct:
         raise ValueError("The input class should not have an attribute 'hits'")
-    
+
     for key, value in new_dct.items():
         if key in track_methods:
             new_value = track_decorator(value)
