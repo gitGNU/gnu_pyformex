@@ -1004,6 +1004,20 @@ def grepSource(pattern,options='',relative=True):
         return P.out
 
 
+def moduleList(package='all'):
+    """Return a list of all pyFormex modules.
+    This is like :func:`listSource`, but returns the files in a
+    Python module syntax, and does not include the __init__ modules
+    in the packages.
+    """
+    modules = [ fn[:-3].replace('pyformex/','',1).replace('/','.') for fn in sourceFiles(relative=True) ]
+    if package == 'core':
+        modules = [ m for m in modules if not '.' in m ]
+    elif package != 'all':
+        modules = [ m for m in modules if m.startswith(package+'.') ]
+    return modules
+
+
 def diskSpace(path,units=None,ndigits=2):
     """Returns the amount of diskspace of a file system.
 
