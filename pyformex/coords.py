@@ -1644,6 +1644,21 @@ class Coords(ndarray):
           is True, also returns an index of the points that have a projection
           on the surface. This index is a sequential one, no matter what the
           shape of the input Coords is.
+
+        >>> import simple
+        >>> S = simple.sphere().scale(2)
+        >>> x = pattern('0123')
+        >>> print(x)
+        [[ 0.  0.  0.]
+         [ 1.  0.  0.]
+         [ 1.  1.  0.]
+         [ 0.  1.  0.]]
+        >>> xp = x.projectOnSurface(S,[0.,0.,1.])
+        >>> print(xp)
+        [[ 0.    0.    2.  ]
+         [ 1.    0.   -1.72]
+         [ 1.    1.   -1.4 ]
+         [ 0.    1.    1.73]]
         """
         from pyformex import olist
         from pyformex.geomtools import anyPerpendicularVector
