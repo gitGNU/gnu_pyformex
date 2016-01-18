@@ -788,7 +788,7 @@ def drawField(fld,comp=0,scale='RAINBOW',symmetric_scale=False,**kargs):
     else:
         multiplier = 0
 
-    CS = ColorScale('RAINBOW', vmin, vmax, vmid, 1., 1.)
+    CS = ColorScale(scale, vmin, vmax, vmid, 1., 1.)
     cval = np.array([CS.color(v) for v in data.flat])
     cval = cval.reshape(data.shape+(3,))
     CLA = ColorLegend(CS, 256, 20, 20, 30, 200, scale=multiplier)
