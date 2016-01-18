@@ -743,7 +743,7 @@ def drawImage(image,w=0,h=0,x=-1,y=-1,color=colors.white,ontop=False):
     return R
 
 
-def drawField(fld,comp=0,scale='RAINBOW',symmetric_scale=False):
+def drawField(fld,comp=0,scale='RAINBOW',symmetric_scale=False,**kargs):
     """Draw intensity of a scalar field over a Mesh.
 
     Parameters:
@@ -753,6 +753,8 @@ def drawField(fld,comp=0,scale='RAINBOW',symmetric_scale=False):
       that is to be drawn.
     - `scale`: one of the color palettes defined in :mod:`colorscale`.
       If an empty string is specified, the scale is not drawn.
+    - `**kargs`: any not-recognized keyword parameters are passed to the
+      draw function to draw the Geometry.
 
     Draws the Field's Geometry with the Field data converted to colors.
     A color legend is added to convert colors to values.
@@ -793,9 +795,9 @@ def drawField(fld,comp=0,scale='RAINBOW',symmetric_scale=False):
     drawActor(CLA)
     decorate(drawText(fld.fldname,(20, 250),size=18,color='black'))
     if fld.fldtype == 'node':
-        draw(fld.geometry, color=cval[fld.geometry.elems])
+        draw(fld.geometry, color=cval[fld.geometry.elems], **kargs)
     else:
-        draw(fld.geometry, color=cval)
+        draw(fld.geometry, color=cval, **kargs)
 
 
 def drawActor(A):
