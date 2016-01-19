@@ -244,7 +244,7 @@ def RGBAcolor(color, alpha):
     Returns the corresponding RGBA colors as a numpy array of type uint8
     and shape (..,4).
     """
-    col = concatenate([np.array(GLcolor(color)), [alpha]])*255
+    col = np.concatenate([np.array(GLcolor(color)), [alpha]])*255
     return col.round().astype(np.uint8)
 
 

@@ -237,8 +237,8 @@ def write_stl_bin(fn,x,color=None):
     """
     x = checkArray(x, shape=(-1, 4, 3), kind='f')
     if color is not None:
-        color = checkArray(color, shape=(4,), kind='i').astype(np.uint8)
-
+        #color = checkArray(color, shape=(4,), kind='i').astype(np.uint8)
+        color = checkArray(color, shape=(4,), kind='u', allow='i').astype(np.uint8)
     def addTriangle(i):
         x[i].tofile(fil)
         fil.write('\x00\x00')
