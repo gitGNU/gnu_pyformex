@@ -75,6 +75,12 @@ class Attributes(Dict):
     {}
     >>> print(B.color,B.alpha)
     green None
+    >>> B(color=None,alpha=1.0)
+    >>> print(B)
+    {'alpha': 1.0}
+    >>> B['alpha'] = None
+    >>> print(B)
+    {}
     """
 
     def __init__(self,data={},default=None):
@@ -92,17 +98,24 @@ class Attributes(Dict):
 
         Dict.__init__(self, data, default)
 
+
     def __call__(self,**kargs):
-        self.update(kargs)
+        for k in kargs:
+            setattr(self,k,kargs[k])
 
 
-    def __setattr__(self, key, value):
+#    update = __call__
+
+
+    def __setitem__(self, key, value):
         if value is None:
             if key in self:
                 del self[key]
         else:
-            self.__setitem__(key, value)
+            Dict.__setitem__(self, key, value)
 
+
+    __setattr__ = __setitem__
 
     def _return_default_(self, key):
         return self._default_dict_[key]
