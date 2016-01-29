@@ -251,7 +251,7 @@ class GeometryFile(object):
           Other types are skipped, and a message is written, but processing
           continues.
         - `name`: string: the name of the object to be stored in the file.
-          If not specified, and the object has an `attrib` dict contains
+          If not specified, and the object has an `attrib` dict containing
           a name, that value is used. Else an object name is generated
           from the file name.
           On readback, the object names are used as keys to store the objects
@@ -640,9 +640,9 @@ class GeometryFile(object):
                         color = checkArray(color, colorshape, colortype)
                     except Exception as e:
                         print("Invalid color attribute on PGF file: skipped. Traceback: %s" % e)
-                    color = None
+                        color = None
 
-            obj.attrib(color=color)
+            obj.attrib.color = color
 
             # store the geometry object, and remember as last
             if name is None:
