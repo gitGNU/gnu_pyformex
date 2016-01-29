@@ -41,15 +41,16 @@ from pyformex.gui.draw import *
 from pyformex import simple
 
 def run():
+    global Cone,B1,B2,B3
     reset()
     smooth()
     r=3.
     h=15.
     n=64
 
-    F = simple.sector(r, 360., n, n, h=h, diag=None)
-    F.setProp(0)
-    draw(F, view='bottom')
+    Cone = simple.sector(r, 360., n, n, h=h, diag=None)
+    #C.setProp(0)
+    draw(Cone, view='bottom')
     #setDrawOptions({'bbox':None})
 
     print([str(i) for i in range(4)])
