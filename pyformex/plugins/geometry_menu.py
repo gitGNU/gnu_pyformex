@@ -125,7 +125,6 @@ def shrink():
     selection.draw()
 
 
-
 def draw_convex_hull(n):
     """Draw the convex hull of a Geometry.
 
@@ -503,6 +502,33 @@ def toSurface(suffix=''):
 
     selection.set(surfaces.keys())
 
+
+#############################################
+### Perform operations on selection #########
+#############################################
+
+def getSelectedObjects():
+    """Return the currently selected objects.
+
+    If None, give the user a change to selected some.
+    """
+    print("CHECK SELECTED")
+    if not selection.check():
+        print("NOTHING SELECTED")
+        selection.ask()
+    return List([ named(n) for n in selection.names ])
+
+
+def scaleSelection():
+    """Scale the selection."""
+    FL = getSelectedObjects()
+    if FL:
+        res = askItems([['scale', 1.0]],
+                       caption = 'Scale Factor')
+        if res:
+            scale = float(res['scale'])
+            selection.changeValues(FL.scale(scale))
+            selection.drawChanges()
 
 #############################################
 ###  Property functions
@@ -1166,6 +1192,7 @@ def create_menu():
             ('NurbsCurve', set_selection, {'data':'nurbs'}),
             ]),
         ("&Draw Selection", selection.draw),
+        ("&Clear Selection", selection.clear),
         ("&Forget Selection", selection.forget),
         ("---", None),
         ("Print &Information ", [
@@ -1186,7 +1213,23 @@ def create_menu():
             ("&Toggle Numbers On Top", toggleNumbersOntop),
             ]),
         ("---", None),
-        ("&Convert", [
+        ("&Create Object", [
+            ('&Grid', createGrid),
+            ('&Rectangle', createRectangle),
+            ('&Cylinder, Cone, Truncated Cone', createCylinder),
+            ('&Circle, Sector, Cone', createCone),
+            ('&Sphere', createSphere),
+            ]),
+        ("&Transform Objects", [
+            ("&Scale Selection",scaleSelection),
+            ## ("&Scale non-uniformly",scale3Selection),
+            ## ("&Translate",translateSelection),
+            ## ("&Center",centerSelection),
+            ## ("&Rotate",rotateSelection),
+            ## ("&Rotate Around",rotateAround),
+            ## ("&Roll Axes",rollAxes),
+            ]),
+        ("&Convert Objects", [
             ("To &Formex", toFormex),
             ("To &Mesh", toMesh),
             ("To &TriSurface", toSurface),
@@ -1198,13 +1241,6 @@ def create_menu():
             ("&Set", selection.setProp),
             ("&Delete", selection.delProp),
             ("&Split", splitProp),
-            ]),
-        ("&Create Object", [
-            ('&Grid', createGrid),
-            ('&Rectangle', createRectangle),
-            ('&Cylinder, Cone, Truncated Cone', createCylinder),
-            ('&Circle, Sector, Cone', createCone),
-            ('&Sphere', createSphere),
             ]),
         ## ("&Shrink",shrink),
         ## ("&Bbox",
