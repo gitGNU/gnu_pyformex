@@ -105,7 +105,7 @@ class GeometryFile(object):
       but currently inactive.
     """
 
-    _version_ = '1.8'
+    _version_ = '1.9'
 
     def __init__(self,filename,mode=None,compr=None,level=5,delete_temp=True,
                  sep=' ',ifmt=' ',ffmt=' '):
@@ -321,7 +321,7 @@ class GeometryFile(object):
             sep = self.sep
         hasprop = F.prop is not None
         hasnorm = hasattr(F, 'normals') and isinstance(F.normals, ndarray) and F.normals.shape == (F.nelems(), F.nplex(), 3)
-        color = ''
+        color = None
         colormap = None
         Fc = F.attrib['color']
         if Fc is not None:
@@ -601,49 +601,48 @@ class GeometryFile(object):
             print("Can not (yet) read objects of type %s from geometry file: skipping" % objtype)
 
         if obj is not None:
-            if color == '':
-                del(obj.attrib['color'])
-            else:
-                if color is not None:
-                    if isinstance(color,str):
-                        # Check for special values:
-                        if color == 'element':
-                            colorshape = (nelems,)
-                        elif color == 'vertex':
-                            colorshape = (nelems,nplex,)
-                        else:
-                            # string should be a color name
-                            colorshape = None
-    
-                        if colorshape:
-                            if colormap == 'default':
-                                colortype = Int
-                            else:
-                                colortype = Float
-                                colorshape += ( 3,)
-    
-                            try:
-                                # Read the color array
-                                color = readArray(self.fil, colortype, colorshape, sep=sep)
-                            except Exception as e:
-                                print("Invalid color array on PGF file: skipped. Traceback: %s" % e)
-                                color = None
-    
+            if color is not None:
+                if isinstance(color,str):
+                    # Check for special values:
+                    if color == 'element':
+                        colorshape = (nelems,)
+                    elif color == 'vertex':
+                        colorshape = (nelems,nplex,)
+                    elif color == '':
+                        # Fix for pre 1.9 versions using color='' for no color
+                        color = colorshape = None
                     else:
-                        # A single color encoded in the attribute
+                        # string should be a color name
+                        colorshape = None
+
+                    if colorshape:
                         if colormap == 'default':
-                            colortype = 'i'
+                            colortype = Int
                         else:
-                            colortype = 'f'
-                        colorshape = (3,)
+                            colortype = Float
+                            colorshape += ( 3,)
+
                         try:
-                            color = checkArray(color, colorshape, colortype)
+                            # Read the color array
+                            color = readArray(self.fil, colortype, colorshape, sep=sep)
                         except Exception as e:
-                            print("Invalid color attribute on PGF file: skipped. Traceback: %s" % e)
-                        color = None
-    
-    
-                obj.attrib(color=color)
+                            print("Invalid color array on PGF file: skipped. Traceback: %s" % e)
+                            color = None
+
+                else:
+                    # A single color encoded in the attribute
+                    if colormap == 'default':
+                        colortype = 'i'
+                    else:
+                        colortype = 'f'
+                    colorshape = (3,)
+                    try:
+                        color = checkArray(color, colorshape, colortype)
+                    except Exception as e:
+                        print("Invalid color attribute on PGF file: skipped. Traceback: %s" % e)
+                    color = None
+
+            obj.attrib(color=color)
 
             # store the geometry object, and remember as last
             if name is None:
