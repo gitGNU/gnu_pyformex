@@ -334,10 +334,12 @@ class DrawableObjects(Objects):
     def draw(self,**kargs):
         clear()
         pf.debug("Drawing SELECTION: %s" % self.names, pf.DEBUG.DRAW)
+        pf.GUI.setBusy(True)
         self._actors = draw(self.names,clear=False,shrink=self.shrink,wait=False,**kargs)
         for f in self.annotations:
             pf.debug("Drawing ANNOTATION: %s" % f, pf.DEBUG.DRAW)
             self.drawAnnotation(f)
+        pf.GUI.setBusy(False)
 
 
     def drawChanges(self):
