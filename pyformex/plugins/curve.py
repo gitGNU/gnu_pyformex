@@ -308,7 +308,7 @@ class Curve(Geometry):
         if equidistant:
             if npre is None:
                 npre = 100
-            S = self.approximate(ndiv=npre)
+            S = self.approx(ndiv=npre)
             at = S.atLength(nseg) / npre
 
         elif ndiv is not None:
@@ -397,8 +397,7 @@ class Curve(Geometry):
         return PL.setProp(self.prop)
 
 
-    @utils.warning('warn_curve_approx')
-    def approx(self,nseg=None,ndiv=None,chordal=0.002,equidistant=False,npre=None):
+    def approx(self,nseg=None,ndiv=None,chordal=0.02,equidistant=False,npre=None):
         """Approximate a Curve with a PolyLine of n segments
 
         If neither `nseg` nor `ndiv` are specified (default), a chordal method
@@ -1710,57 +1709,6 @@ Most likely because 'python-scipy' is not installed on your system.""")
     ##       self.toMesh().toFormex()
     ##     """
     ##     return self.toMesh().toFormex()
-
-
-    # BV: This should go as a specialization in the approx() method
-    # BV: Obsoleted by approx(chordal)
-    ## def approx_by_subdivision(self,tol=1.e-3):
-    ##     """Return a PolyLine approximation of the curve.
-
-    ##     tol is a tolerance value for the flatness of the curve.
-    ##     The flatness of each part is calculated as the maximum
-    ##     orthogonal distance of its intermediate control points
-    ##     from the straight segment through its end points.
-
-    ##     Parts for which the distance is larger than tol are subdivided
-    ##     using de Casteljau's algorithm. The subdivision stops
-    ##     if all parts are sufficiently flat. The return value is a PolyLine
-    ##     connecting the end points of all parts.
-    ##     """
-    ##     # get the control points (nparts,degree+1,3)
-    ##     P = array([ self.part(j) for j in range(self.nparts) ])
-    ##     T = resize(True, self.nparts)
-    ##     while T.any():
-    ##         EP = P[T][:, [0, -1]] # end points (...,2,3)
-    ##         IP = P[T][:, 1:-1] # intermediate points (...,degree-1,3)
-    ##         # compute maximum orthogonal distance of IP from line EP
-    ##         q, m = EP[:, 0].reshape(-1, 1, 3), (EP[:, 1]-EP[:, 0]).reshape(-1, 1, 3)
-    ##         t = (dotpr(IP, m) - dotpr(q, m)) / dotpr(m, m)
-    ##         X = q + t[:,:, newaxis] * m
-    ##         d = length(X-IP).max(axis=1)
-    ##         # subdivide parts for which distance is larger than tol
-    ##         T[T] *= d > tol
-    ##         if T.any():
-    ##             # apply de Casteljau's algorithm for t = 0.5
-    ##             M = [ P[T] ]
-    ##             for i in range(self.degree):
-    ##                 M.append( (M[-1][:, :-1]+M[-1][:, 1:])/2 )
-    ##             # compute new control points
-    ##             Q1 = stack([ Mi[:, 0] for Mi in M ], axis=1)
-    ##             Q2 = stack([ Mi[:, -1] for Mi in M[::-1] ], axis=1)
-    ##             # concatenate the parts
-    ##             P = P[~T]
-    ##             indQ = T.cumsum()-1
-    ##             indP = (1-T).cumsum()-1
-    ##             P = [ [Q1[i], Q2[i]] if Ti else [P[j]] for i, j, Ti in zip(indQ, indP, T) ]
-    ##             P = Coords(concatenate(P, axis=0))
-    ##             T = [ [Ti, Ti] if Ti else [Ti] for Ti in T ]
-    ##             T = concatenate(T, axis=0)
-    ##     # create PolyLine through end points
-    ##     P = Coords.concatenate([P[:, 0], P[-1, -1]], axis=0)
-    ##     PL = PolyLine(P, closed=self.closed)
-    ##     return PL
-
 
 
     def extend(self,extend=[1., 1.]):
