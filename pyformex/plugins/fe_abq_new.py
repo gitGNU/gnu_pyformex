@@ -535,14 +535,14 @@ def fmtMaterial(mat):
             elif model  == 'reduced polynomial':
                 order = nconst // 2
                 mconst = 2*order
-            
+
             else:
                 mconst = nconst
                 pf.warning('Sorry, number of constants for material %s is not checked' % model)
 
             if mconst != nconst:
                 raise ValueError("Wrong number of material constants (%s) for order (%s) of %s model" % (nconst,mconst,model))
-        
+
         cmd = Command('HYPERELASTIC',mat.model)
         if order is not None:
             cmd.add(N=order)
@@ -667,6 +667,7 @@ def fmtConnectorStop(stop):
 #
 element_library = dict(
     mass = ['MASS'],
+    inertia = ['ROTARYI'],
     spring = ['SPRINGA', ],
     dashpot = ['DASHPOTA', ],
     connector = ['CONN3D2', 'CONN2D2'],
@@ -1128,6 +1129,20 @@ def fmtMassSection(section,setname):
     return cmd.out
 
 
+def fmtInertiaSection(section,setname):
+    """Format a section of type inertia.
+
+    Parameters: see `func:fmtSolidSection`
+
+    Recognized keys:
+
+    - inertia: list of six floats: [I11, I22, I33, I12, I13, I23]
+
+    """
+    cmd = Command('ROTARY INERTIA',elset=setname,data=map(float,section.inertia),options=section.options,extra=section.extra)
+    return cmd.out
+
+
 def fmtRigidSection(section,setname):
     """Format rigid body sectiontype.
 
@@ -1302,13 +1317,13 @@ def fmtSurfaceInteraction(prop):
     out = ''
     for p in prop:
         out += "*Surface Interaction, name=%s\n" % (p.name)
-        if p.cross_section is not None:
+        if hasattr(p, 'cross_section') and p.cross_section is not None:
             out += "%s\n" % p.cross_section
         if p.friction is not None:
-            if p.friction == 'rough':
+            if p.friction['data'][0] == 'rough':
                 out += "*FRICTION, ROUGH\n"
             else:
-                out += "*FRICTION\n%s\n" % float(p.friction)
+                out += "*FRICTION\n%s\n" % float(p.friction['data'][0])
         if p.surfacebehavior:
             out += "*Surface Behavior"
             print("writing Surface Behavior")
@@ -2174,8 +2189,8 @@ class Output(Dict):
       If no set is specified, the default is 'Nall' for kind=='NODE' and
       'Eall' for kind=='ELEMENT'
     - `typeset`: string: it is equal to the corresponding abaqus
-      parameter to identify the kind of set. If not specified, the default 
-      is the default is 'NSET' for kind=='NODE' , 'CONTACT' and 
+      parameter to identify the kind of set. If not specified, the default
+      is the default is 'NSET' for kind=='NODE' , 'CONTACT' and
       'ELSET' for kind=='ELEMENT' , 'ENERGY'
     - `options`: (opt) options string to be added to the keyword line.
     - `extra`: (opt)  extra string to be added below the keyword line
@@ -2228,20 +2243,20 @@ class Output(Dict):
                 kind = 'NODE'
             elif kind == 'E':
                 kind = 'ELEMENT'
-                
+
             if set is None:
                 if kind in ['NODE']:
-                    set = "Nall" 
+                    set = "Nall"
                     typeset = 'nset'
                 if kind in ['ELEMENT','ENERGY']:
-                    set = "Eall" 
+                    set = "Eall"
                     typeset = 'elset'
             elif set is not None and typeset is None:
                 if kind in ['NODE']:
                     typeset = 'NSET'
                 if kind in ['ELEMENT','ENERGY']:
-                    typeset = 'ELSET'   
-            
+                    typeset = 'ELSET'
+
             if not isinstance(set, list):
                 set = [ set ]
             self.update({'kind':kind,'set':set,'typeset':typeset})
