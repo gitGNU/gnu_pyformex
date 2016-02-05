@@ -479,7 +479,7 @@ def intersectionPointsLWT(q,m,F,mode='all',return_all=False):
             # If so, we should move this into distanceFromLine
             #
 ##            d = distanceFromLine(c,(q,m),mode).transpose() # this is much slower for large arrays
-            d = row_stack([ distanceFromLine(c, (q[i],m[i]), mode) for i in range(q.shape[0]) ])
+            d = row_stack([ distanceFromLine(c, ([q[i]],[m[i]]), mode) for i in range(q.shape[0]) ])
             wl, wt = where(d<=r)
         elif mode == 'pair':
             d = distanceFromLine(c, (q,m), mode)
