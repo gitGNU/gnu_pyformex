@@ -651,7 +651,7 @@ def fmtConnectorStop(stop):
     out = ''
     for j in range(len(stop['component'])):
         out += '*CONNECTOR STOP, COMPONENT=%s\n' % stop['component'][j]
-        out += '%s , %s\n'% (p.Stop['lowerlimit'][j], stop['upperlimit'][j])
+        out += '%s , %s\n'% (stop['lowerlimit'][j], stop['upperlimit'][j])
     return out
 
 
