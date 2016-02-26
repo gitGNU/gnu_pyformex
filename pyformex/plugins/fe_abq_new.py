@@ -1230,8 +1230,9 @@ def fmtSurface(prop):
 
     - name: string. The surface name.
 
-    - surftype: string. Can assume values 'ELEMENT' or 'NODE' or other abaqus
-        surface types.
+    - surftype: string. Can assume values 'ELEMENT' or 'NODE' , other abaqus
+        surface types  or an empty string for special cases that do not need
+        a 
 
     - label (opt): string, or a list of strings storing the abaqus face or edge identifier
         It is only required for surftype == 'ELEMENT'.
@@ -1261,7 +1262,9 @@ def fmtSurface(prop):
     """
     out = ''
     for p in prop:
-        cmd = "SURFACE, NAME=%s, TYPE=%s" % (p.name, p.surftype)
+        cmd = "SURFACE, NAME=%s" % (p.name)
+        if p.surftype:
+            cmd += ", TYPE=%s" % (p.surftype)
         out += fmtKeyword(cmd,options=p.options)
         if isinstance(p.set,str):
             p.set = asarray([p.set]) # handles single string for set name

@@ -1283,8 +1283,11 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         sel = self.elType().getEntities(level)
         hi, lo = self.elems.insertLevel(sel)
         hiinv = hi.inverse()
-        fm = Mesh(self.coords, self.getLowerEntities(level, unique=True))
-        mesh = Mesh(mesh.coords, mesh.getLowerEntities(level, unique=True))
+        #~ fm = Mesh(self.coords, self.getLowerEntities(level, unique=True))
+        #~ mesh = Mesh(mesh.coords, mesh.getLowerEntities(level, unique=True))
+        fm = Mesh(self.coords, lo)
+        sel1 = mesh.elType().getEntities(level)
+        mesh = Mesh(mesh.coords, mesh.elems.insertLevel(sel1)[1])
         c = fm.matchCentroids(mesh)
         hiinv = hiinv[c]
         hpos = findIndex(c, hi).reshape(hi.shape)
