@@ -754,6 +754,21 @@ def fmtSolidSection(section ,setname):
 
     - orientation
     - thickness
+    
+    See also `class:Command` for accepted parameters.
+
+    Instructions for use:
+    
+      mat1 = {'name':'mat1' , 'density':  1e-09 , 'elasticity': 'linear' , 'constants': [1000., 0.3]}
+      P = PropertyDB()
+      
+      control_name = 'SEC-CTRL'
+      sec_control_opt = 'CONTROLS=%s'%control_name
+      sec_control_extra = '*SECTION CONTROL , NAME=%s , HOURGLASS=ENHANCED\n1.,1.,1.'%control_name
+      
+      section1 = ElemSection(sectiontype='SOLID' , name='section1' , material=mat1 , \
+        options=sec_control_opt , extra=sec_control_extra)
+      P.elemProp(set=arange(10),name='elset1',eltype='C3D8R',section=section1)
 
     Examples:
 
