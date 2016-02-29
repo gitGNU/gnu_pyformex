@@ -1317,7 +1317,7 @@ def fmtAnalyticalSurface(prop):
         out += "*RIGID BODY, ANALYTICAL SURFACE = %s, REFNOD=%s\n" % (p.name, p.nodeset)
     return out
 
-
+# GDS: What should be in prop? Dictionary? Interaction? Before final change we should make sure that all the rest is working.
 def fmtSurfaceInteraction(prop):
     """Format the interactions.
 
@@ -1331,17 +1331,31 @@ def fmtSurfaceInteraction(prop):
     - friction : friction coeff or 'rough'
     - surface behavior: no separation
     - surface behavior: pressureoverclosure
+    
     """
     out = ''
     for p in prop:
-        out += "*Surface Interaction, name=%s\n" % (p.name)
-        if hasattr(p, 'cross_section') and p.cross_section is not None:
-            out += "%s\n" % p.cross_section
-        if p.friction is not None:
-            if p.friction['data'][0] == 'rough':
-                out += "*FRICTION, ROUGH\n"
-            else:
-                out += "*FRICTION\n%s\n" % float(p.friction['data'][0])
+        
+        if type(p) != Interaction: # Kept for compatibility, working with example in fmtContactPair
+            out += "*Surface Interaction, name=%s\n" % (p.name)
+            if p.cross_section is not None:
+                out += "%s\n" % p.cross_section
+            if p.friction is not None:
+                if p.friction == 'rough':
+                    out += "*FRICTION, ROUGH\n"
+                else:
+                    out += "*FRICTION\n%s\n" % float(p.friction)
+
+        else: # changed on 040216, NOT yet working with all option (see example in fmtContactPair)
+            out += "*Surface Interaction, name=%s\n" % (p.name)
+            if hasattr(p, 'cross_section') and p.cross_section is not None:
+                out += "%s\n" % p.cross_section
+            if p.friction is not None:
+                if p.friction['data'][0] == 'rough':
+                    out += "*FRICTION, ROUGH\n"
+                else:
+                    out += "*FRICTION\n%s\n" % float(p.friction['data'][0])
+                    
         if p.surfacebehavior:
             out += "*Surface Behavior"
             print("writing Surface Behavior")
@@ -1356,6 +1370,7 @@ def fmtSurfaceInteraction(prop):
                     out += "%s" % fmtData1d(p.pressureoverclosure[2:]) + '\n'
             else:
                 out += "\n"
+                    
     return out
 
 
