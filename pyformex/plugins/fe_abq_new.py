@@ -522,7 +522,7 @@ def fmtMaterial(mat):
     elif elasticity == 'hyperelastic':
         model = mat.model.lower()
         order = mat.order
-        if order is not None:
+        if order is None:
             nconst = len(constants)
             if model == 'ogden':
                 order = nconst // 3
