@@ -2833,7 +2833,7 @@ Script: %s
 ##################################################
 
 def exportMesh(filename,mesh,eltype,header=''):
- """Export a finite element mesh in Abaqus .inp format.
+    """Export a finite element mesh in Abaqus .inp format.
     
     This is a convenience function to quickly export a mesh to Abaqus
     without having to go through the whole setup of a complete
