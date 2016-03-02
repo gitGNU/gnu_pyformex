@@ -2832,26 +2832,34 @@ Script: %s
 ## Some convenience functions
 ##################################################
 
-def exportMesh(filename,mesh,eltype=None,header=''):
-    """Export a finite element mesh in Abaqus .inp format.
-
+def exportMesh(filename,mesh,eltype,header=''):
+ """Export a finite element mesh in Abaqus .inp format.
+    
     This is a convenience function to quickly export a mesh to Abaqus
     without having to go through the whole setup of a complete
     finite element model.
     This just writes the nodes and elements specified in the mesh to
-    the file with the specified name. The resulting file  can then be
-    imported in Abaqus/CAE or manual be edited to create a full model.
+    the file with the specified name. If the mesh has different properties,
+    the elements with the same properties, will be grouped in the same 
+    element set. The resulting file  can then be imported in Abaqus/CAE
+    or manual be edited to create a full model.
     If an eltype is specified, it will override the value stored in the mesh.
     This should be used to set a correct Abaqus element type matchin the mesh.
     """
     fil = open(filename, 'w')
     fil.write(fmtHeading(header))
-    if eltype is None:
-        eltype = mesh.eltype
     writeNodes(fil, mesh.coords)
-    writeElems(fil, mesh.elems, eltype, nofs=1)
+    if mesh.prop is None:
+        mesh = [mesh]
+    else:
+        mesh = mesh.splitProp(compact=False)
+    eofs = 1
+    for im,m in enumerate(mesh):
+        writeElems(fil, m.elems, eltype, name='ESET%s'%im, eofs=eofs, nofs=1)
+        eofs += m.nelems()
     fil.close()
     print("Abaqus file %s written." % filename)
+
 
 
 # End
