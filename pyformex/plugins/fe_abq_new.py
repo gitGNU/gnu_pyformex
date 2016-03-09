@@ -2596,9 +2596,13 @@ class AbqData(object):
     - `initial` : a tag or alist of the initial data, such as boundary
       conditions. The default is to apply ALL boundary conditions initially.
       Specify a (possibly non-existing) tag to override the default.
+    - `eofs` : integer defining the element offset for the abaqus numbering.
+      Default value is 1.
+    - `nofs` : integer defining the node offset for the abaqus numbering.
+      Default value is 1.
     """
 
-    def __init__(self,model,prop,nprop=None,eprop=None,steps=[],res=[],out=[],initial=None):
+    def __init__(self,model,prop,nprop=None,eprop=None,steps=[],res=[],out=[],initial=None,eofs=1,nofs=1):
         """Create new AbqData."""
         if not isinstance(model, Model) or not isinstance(prop, PropertyDB):
             raise ValueError("Invalid arguments: expected Model and PropertyDB, got %s and %s" % (type(model), type(prop)))
@@ -2611,6 +2615,8 @@ class AbqData(object):
         self.steps = steps
         self.res = res
         self.out = out
+        self.eofs = eofs
+        self.nofs = nofs
 
 
     def write(self,jobname=None,group_by_eset=True,group_by_group=False,header='',create_part=False):
@@ -2644,7 +2650,7 @@ Script: %s
         fil.write(fmtSectionHeading("NODES"))
         nnod = self.model.nnodes()
         print("Writing %s nodes" % nnod)
-        writeNodes(fil, self.model.coords)
+        writeNodes(fil, self.model.coords, nofs=self.nofs)
 
         print("Writing node sets")
         for p in self.prop.getProp('n', attr=['set']):
@@ -2663,7 +2669,7 @@ Script: %s
                 set = arange(self.model.nnodes())
 
             setname = nsetName(p)
-            writeSet(fil, 'NSET', setname, set)
+            writeSet(fil, 'NSET', setname, set, ofs=self.nofs)
 
         print("Writing coordinate transforms")
         for p in self.prop.getProp('n', attr=['csys']):
@@ -2704,7 +2710,7 @@ Script: %s
                         els = els[:,AbqConnectivity[els.eltype]]
                     if nels > 0:
                         print("Writing %s elements from group %s" % (nels, i))
-                        writeElems(fil, els, p.eltype, name=subsetname, eid=elnrs)
+                        writeElems(fil, els, p.eltype, name=subsetname, eid=elnrs, nofs=self.nofs, eofs=self.eofs)
                         nelems += nels
                         if group_by_eset:
                             writeSet(fil, 'ELSET', setname, [subsetname])
@@ -2712,7 +2718,7 @@ Script: %s
                             print("write grpset %s: %s" % (grpname, subsetname))
                             writeSet(fil, 'ELSET', grpname, [subsetname])
             else:
-                writeSet(fil, 'ELSET', p.name, p.set)
+                writeSet(fil, 'ELSET', p.name, p.set, ofs=self.eofs)
 
         print("Total number of elements: %s" % telems)
         if nelems != telems:
