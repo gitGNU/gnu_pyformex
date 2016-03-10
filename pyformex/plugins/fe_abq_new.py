@@ -1347,6 +1347,7 @@ def fmtSurfaceInteraction(prop):
                     out += "*FRICTION\n%s\n" % float(p.friction)
 
         else: # changed on 040216, NOT yet working with all option (see example in fmtContactPair)
+            # deepcopy of propertyDB with interaction fails
             out += "*Surface Interaction, name=%s\n" % (p.name)
             if hasattr(p, 'cross_section') and p.cross_section is not None:
                 out += "%s\n" % p.cross_section
