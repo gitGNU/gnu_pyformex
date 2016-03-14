@@ -2150,6 +2150,10 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
           `distance`. It allows to specify the weight of the adjancent points according
           to their distance to the point
         """
+        if self.elType().ndim == 1:
+            if edg == True:
+                raise ValueError("Cannot use edg=True with a line mesh")
+        
         if iterations < 1:
             return self
 
