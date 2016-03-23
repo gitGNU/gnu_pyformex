@@ -917,9 +917,9 @@ def _vtkClipper(self,vtkif, insideout):
     In vtk `clip` means that the intersected elements are cut to
     get a part of a mesh. Here vtkClipDataSet has been used.
     More efficient functions are available for PolyData or volumes
-    but teh results are the same. Note that the quality of the cut depends
+    but the results are the same. Note that the quality of the cut depends
     on the resolution of the input, and can give rounded corners of the clipped
-    regiuon. This does not occur clipping with a vtkPlane. Maybe we should
+    region. This does not occur clipping with a vtkPlane. Maybe we should
     find a way to use only this.
     This functions should not be used by the user.
     """
@@ -931,7 +931,6 @@ def _vtkClipper(self,vtkif, insideout):
     elif self.elType().ndim == 3:
         vtkobj = convert2VTU(self)
 
-    vtkobj = convert2VPD(self)
     clipper = vtkClipDataSet()
     clipper = SetInput(clipper,vtkobj)
     clipper.SetClipFunction(vtkif)
