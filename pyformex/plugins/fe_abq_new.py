@@ -764,7 +764,7 @@ def fmtSolidSection(section ,setname):
       
       control_name = 'SEC-CTRL'
       sec_control_opt = 'CONTROLS=%s'%control_name
-      sec_control_extra = '*SECTION CONTROL , NAME=%s , HOURGLASS=ENHANCED\n1.,1.,1.'%control_name
+      sec_control_extra = '*SECTION CONTROLS , NAME=%s , HOURGLASS=ENHANCED\n1.,1.,1.'%control_name
       
       section1 = ElemSection(sectiontype='SOLID' , name='section1' , material=mat1 , \
         options=sec_control_opt , extra=sec_control_extra)
