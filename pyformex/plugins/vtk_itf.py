@@ -931,7 +931,6 @@ def _vtkClipper(self,vtkif, insideout):
     elif self.elType().ndim == 3:
         vtkobj = convert2VTU(self)
 
-    vtkobj = convert2VPD(self)
     clipper = vtkClipDataSet()
     clipper = SetInput(clipper,vtkobj)
     clipper.SetClipFunction(vtkif)
@@ -1162,7 +1161,7 @@ def vtkClip(self, implicitdata, method=None, insideout=False):
 
     Parameters:
 
-    - `self`: a Mesh (line2,tri3,quad4).
+    - `self`: a Mesh.
     - `implicitdata`: list or vtkImplicitFunction. If list it must contains the
         parameter for the predefined implicit functions:
 
@@ -1174,7 +1173,8 @@ def vtkClip(self, implicitdata, method=None, insideout=False):
             minimal  and coordinates of the box. Formex or Mesh specifying one hexahedron. See _vtkPlanesBox.
         -  method ==  `planes`  : points array-like of shape (npoints,3) and
                 normal vectors array-like of shape (npoints,3) defining the cutting planes.
-
+        -  method ==  `surface`  : a closed convex manifold trisurface.
+        
     - `method`: str or None. If string allowed values are `plane`,`planes`, `sphere`,
         `box` to select the correspondent implicit functions by providing the
         `implicitdata` parameters. If None a vtkImplicitFunction must be passed directly
@@ -1182,13 +1182,11 @@ def vtkClip(self, implicitdata, method=None, insideout=False):
     - `insideout`:boolean or an integer with values 0 or 1 to choose which side of the mesh should be returned.
 
     Clipping does not reduce the mesh dimension.
-    Returns always 3 meshes (line2, tri3, quad4):
-    a line2 mesh if self is a line2 mesh,
-    a tri3 mesh if self is a tri3 mesh,
-    both tri3 and quad4 mesh is self is a quad4 mesh.
-    None is returned if a mesh does not exist (e.g. clipping with
-    a box which is outside the mesh).
-    It has not been tested with volume meshes.
+    Returns always a list of meshes, each one having the same element type.
+    None is returned if a mesh does not exist (e.g. clipping with a box which is outside the mesh).
+    The mesh density can influence the clipping results, especially with solid elements.
+    In this case the corner of the implicit function can be smoothed resulting in wrong clipping at these 
+    locations.
     """
     if method=='plane':
         p,n = implicitdata
