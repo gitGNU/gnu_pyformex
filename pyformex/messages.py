@@ -144,6 +144,14 @@ warn_vmtk_includeprop = "includeprop %s are in the property set %s. Remesh will 
 warn_writevtp_notclean = "Mesh is not clean: vtk will alter the nodes. To clean: mesh.fuse().compact().renumber()"
 warn_writevtp_shape = "The number of array cells should be equal to the number of elements"
 warn_writevtp_shape2 = "The number of array points should be equal to the number of points"
+warn_vtkboxplanes_removed = "The method boxplanes has been removed. If the implicit data are coordinates defining a bounding box use\n\n\
+from pyformex.simple import cuboid \n\
+vtkClip(mesh,implicitdata=cuboid(\*bbox).toSurface(),method='surface')\n\n\
+vtkCut(mesh,implicitdata=cuboid(\*bbox).toSurface(),method='surface')\n\n\
+If the implicit data are a hexahdral box use\n\n\
+vtkClip(mesh,implicitdata=box.toSurface(),method='surface')\n\n\
+vtkCut(mesh,implicitdata=box.toSurface(),method='surface')\n\n\
+"
 
 
 error_widgets_enableitem = "Error in a dialog item enabler. This should not happen! Please file a bug report."

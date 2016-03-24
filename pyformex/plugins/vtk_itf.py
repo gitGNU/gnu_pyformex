@@ -991,31 +991,6 @@ def _vtkSurfacePlanes(self):
         raise warning('The input should be a convex closed manifold TriSurface. Results may be incorrect.')
     return _vtkPlanes(p=self.centroids(),n=self.areaNormals()[1])
 
-def _vtkBoxPlanes(box):
-    """ Set a box with vtkPlanes implicit function.
-
-     Parameters:
-
-    - `box` : Coords, Formex or Mesh objects.
-
-        - Coords array of shape (2,3) : the first point containing the
-            minimal coordinates, the second the maximal ones.
-        - Formex or Mesh specifying one hexahedron.
-
-
-    Returns the vtkPlanes implicit function of the box.
-    """
-    from pyformex.simple import cuboid
-    from pyformex.arraytools import checkArray
-    if isinstance(box,Coords):
-        box = checkArray(box,shape=(2,3))
-        box=cuboid(*box)
-    box = box.toMesh()
-    box = Mesh(box.coords,box.getFaces())
-    box.setNormals('auto')
-    p = box.centroids()
-    n = box.normals.mean(axis=1)
-    return _vtkPlanes(p,n)
 
 def _vtkSphere(c, r):
     from vtk import vtkSphere
@@ -1144,9 +1119,10 @@ def vtkCut(self, implicitdata, method=None):
     elif method=='boxplanes':
         box = implicitdata
         return _vtkCutter(self,_vtkBoxPlanes(box))
-    elif method=='planes':
-        p,n = implicitdata
-        return _vtkCutter(self,_vtkPlanes(p,n))
+    elif method=='boxplanes':
+        utils.warn('warn_vtkboxplanes_removed')
+        raise ValueError('method boxplanes has been removed, use surface')
+        # TODO this has to be removed
     elif method=='surface':
         s = implicitdata
         return _vtkCutter(self,_vtkSurfacePlanes(s))
@@ -1198,8 +1174,9 @@ def vtkClip(self, implicitdata, method=None, insideout=False):
         box = implicitdata
         return _vtkClipper(self,_vtkBox(box),insideout)
     elif method=='boxplanes':
-        box = implicitdata
-        return _vtkClipper(self,_vtkBoxPlanes(box),insideout)
+        utils.warn('warn_vtkboxplanes_removed')
+        # TODO this has to be removed
+        raise ValueError('method boxplanes has been removed, use surface')
     elif method=='planes':
         p,n = implicitdata
         return _vtkClipper(self,_vtkPlanes(p,n),insideout)

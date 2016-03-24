@@ -47,10 +47,10 @@ def run():
     nsphere = 10
     S = sphere(nsphere)
     
-    bbs=cuboid(*S.bbox()).toMesh().scale([0.8,0.8,1]).rot(30,1).rot(20,0).shear(2,1,0.3)
+    bbs=cuboid(*S.bbox()).toMesh().scale([0.8,0.8,1]).rot(30,1).rot(20,0).shear(2,1,0.3).toSurface()
     
-    clippedIn=vtkClip(S,implicitdata=bbs,method='boxplanes',insideout=0)
-    clippedOut=vtkClip(S,implicitdata=bbs,method='boxplanes',insideout=1)
+    clippedIn=vtkClip(S,implicitdata=bbs,method='surface',insideout=0)
+    clippedOut=vtkClip(S,implicitdata=bbs,method='surface',insideout=1)
 
     draw(clippedIn,color=red,alpha=1)
     draw(clippedOut,color=blue,alpha=1)
