@@ -328,6 +328,29 @@ def query_angle():
     print (s)
 
 
+def pointToCameraCS(p):
+    """ Transform a point to the coordinate system of the camera
+    
+    Returns:
+    - the horizontal coordinate
+    - the vertical coordinate
+    - the horizontal axis
+    - the vertical axis
+    - the z axis (out of plane axis, pointing towards my eyes)
+    
+    The z coordinate is not returned because it is NOT determined by the user and therefore is not relevant.
+    
+    """
+    cam = pf.canvas.camera
+    zcam = cam.axis
+    ycam = cam.upvector
+    xcam = cross(ycam,zcam)    
+    CS = CoordSys(points=Coords([xcam, ycam, zcam, [0.,0.,0.]]))
+    pcam = p.transformCS(CoordSys(), CS)
+    h, v = pcam[0], pcam[1]
+    return  h, v, xcam, ycam, zcam
+        
+        
 def pick_point2D(return_2Dpos=False):
     import pyformex as pf
     cam = pf.canvas.camera
@@ -337,13 +360,8 @@ def pick_point2D(return_2Dpos=False):
     print ('left click somewhere on the screen')
     p = pf.canvas.idraw(mode='point', npoints=1, zplane=0., func=None, coords=None, preview=True)[0]
     if return_2Dpos is True:
-        zcam = cam.axis
-        ycam = cam.upvector
-        xcam = cross(ycam,zcam)    
-        CS = CoordSys(points=Coords([xcam, ycam, zcam, [0.,0.,0.]]))
-        pcam = p.transformCS(CoordSys(), CS)
-        h, v = pcam[0],pcam[1]
-        return p, h, v, xcam, ycam
+        h, v, xcam, ycam, zcam = pointToCameraCS(p)
+        return p, h, v, xcam, ycam, zcam
     return p
 
 
@@ -356,8 +374,7 @@ def query_point2D(color='magenta'):
     camera axis (focus-eye) and camera upvector. 
     The vertical direction of the camera is the upvector. 
     """
-    import pyformex as pf
-    p, h, v, xcam, ycam = pick_point2D(return_2Dpos=True)
+    p, h, v, xcam, ycam, zcam = pick_point2D(return_2Dpos=True)
     b, c, d = h*xcam, h*xcam + v*ycam, v*ycam
     D0 = draw(p, color=color, bbox='last', view=None)
     a = Coords([0., 0., 0.])
@@ -376,17 +393,13 @@ def query_distance2D(color='magenta'):
     It prints the 2D distance and also the horizontal
     and vertical components based on the current camera.
     """
-    import pyformex as pf
-    cam = pf.canvas.camera
     print ('starting point')
-    p0, h0, v0, xcam0, ycam0 = pick_point2D(return_2Dpos=True)
-    camaxis0 = cam.axis
+    p0, h0, v0, xcam0, ycam0, zcam0 = pick_point2D(return_2Dpos=True)
     D0 = draw(p0, color=color, bbox='last', view=None)
     print ('end point')
-    p1, h1, v1, xcam1, ycam1 = pick_point2D(return_2Dpos=True)
-    camaxis1 = cam.axis
+    p1, h1, v1, xcam1, ycam1, zcam1 = pick_point2D(return_2Dpos=True)
     D1 = draw(p1, color=color, bbox='last', view=None)
-    if abs(camaxis1 - camaxis0).sum(axis=0)>1.e-5:
+    if abs(zcam1 - zcam0).sum(axis=0)>1.e-5:
         warning('You can not perform 2D measurements if you rotate the camera')
         [undraw(D) for D in [D0, D1]]
         return
