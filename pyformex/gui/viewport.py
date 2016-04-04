@@ -306,6 +306,8 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
     def __init__(self,*args,**kargs):
         """Initialize an empty canvas."""
         QtOpenGL.QGLWidget.__init__(self,*args)
+        if pf.DEBUG.OPENGL:
+            print(OpenGLFormat(self.format()))
         # Define our privatee signals
         self.signals = self.Communicate()
         self.CANCEL = self.signals.CANCEL
@@ -1064,8 +1066,8 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         if pf.options.debuglevel & pf.DEBUG.GUI:
             p = self.sizePolicy()
             print("Size policy %s,%s,%s,%s" % (p.horizontalPolicy(), p.verticalPolicy(), p.horizontalStretch(), p.verticalStretch()))
-        self.initCamera()
         self.glinit()
+        self.initCamera()
         self.resizeGL(self.width(), self.height())
         self.setCamera()
 
