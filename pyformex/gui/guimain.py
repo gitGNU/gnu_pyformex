@@ -292,9 +292,10 @@ class Gui(QtGui.QMainWindow):
         self.central.setSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.MinimumExpanding)
         self.central.resize(*pf.cfg['gui/size'])
 
-        self.viewports = viewport.MultiCanvas(parent=self.central)
         self.centralgrid = QtGui.QGridLayout()
-        self.centralgrid.addLayout(self.viewports, 0, 0)
+        if pf.options.canvas:
+            self.viewports = viewport.MultiCanvas(parent=self.central)
+            self.centralgrid.addLayout(self.viewports, 0, 0)
         self.central.setLayout(self.centralgrid)
         self.splitter.addWidget(self.central)
 
@@ -1413,31 +1414,33 @@ pyFormex comes with ABSOLUTELY NO WARRANTY. This is free software, and you are w
 
 
     # setup the canvas
-    if splash is not None:
-        splash.showMessage("Creating the canvas");
-    pf.debug("Setting the canvas", pf.DEBUG.GUI)
-    pf.GUI.processEvents()
-    pf.GUI.viewports.changeLayout(1)
-    pf.GUI.viewports.setCurrent(0)
-    #pf.canvas = pf.GUI.viewports.current
-    pf.canvas.setRenderMode(pf.cfg['draw/rendermode'])
+    if pf.options.canvas:
+        if splash is not None:
+            splash.showMessage("Creating the canvas");
+        pf.debug("Setting the canvas", pf.DEBUG.GUI)
+        pf.GUI.processEvents()
+        pf.GUI.viewports.changeLayout(1)
+        pf.GUI.viewports.setCurrent(0)
+        #pf.canvas = pf.GUI.viewports.current
+        pf.canvas.setRenderMode(pf.cfg['draw/rendermode'])
 
-    #
-    # PYSIDE: raises (intercepted) exception on startup
-    #
-    draw.reset()
+        #
+        # PYSIDE: raises (intercepted) exception on startup
+        #
+        draw.reset()
 
-    # set canvas background
-    # (does not work before a draw.reset, do not know why)
-    pf.canvas.setBackground(color=pf.cfg['canvas/bgcolor'], image=pf.cfg['canvas/bgimage'])
-    pf.canvas.update()
+        # set canvas background
+        # (does not work before a draw.reset, do not know why)
+        pf.canvas.setBackground(color=pf.cfg['canvas/bgcolor'], image=pf.cfg['canvas/bgimage'])
+        pf.canvas.update()
 
     # setup the status bar
     pf.debug("Setup status bar", pf.DEBUG.GUI)
     pf.GUI.addInputBox()
     pf.GUI.toggleInputBox(False)
     pf.GUI.addCoordsTracker()
-    pf.GUI.toggleCoordsTracker(pf.cfg.get('gui/coordsbox', False))
+    if pf.options.canvas:
+        pf.GUI.toggleCoordsTracker(pf.cfg.get('gui/coordsbox', False))
     pf.debug("Using window name %s" % pf.GUI.windowTitle(), pf.DEBUG.GUI)
 
     # Script/App menu

@@ -285,7 +285,6 @@ def run(argv=[]):
     not writable.
 
     """
-
     # Process options
     import optparse
     from optparse import make_option as MO
@@ -297,6 +296,10 @@ def run(argv=[]):
     MO("--nogui",
        action="store_false", dest="gui", default=None,
        help="Do not start the GUI (this is the default when a scriptname argument is given)",
+       ),
+    MO("--nocanvas",
+       action="store_false", dest="canvas", default=True,
+       help="Do not add an OpenGL canvas to the GUI (this is for development purposes only!)",
        ),
     MO("--interactive",
        action="store_true", dest="interactive", default=False,
