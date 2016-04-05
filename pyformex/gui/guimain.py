@@ -912,11 +912,13 @@ class Gui(QtGui.QMainWindow):
         It is called by the application executor.
         """
         self.drawlock.allow()
-        pf.canvas.update()
+        if pf.options.canvas:
+            pf.canvas.update()
         self.enableButtons(self.actions, ['ReRun'], False)
         self.enableButtons(self.actions, ['Play', 'Step', 'Continue', 'Stop'], True)
         # by default, we run the script in the current GUI viewport
-        pf.canvas = pf.GUI.viewports.current
+        if pf.options.canvas:
+            pf.canvas = pf.GUI.viewports.current
         if pf.GUI.board == pf.GUI.console:
             pf.GUI.console.boardmode = True
         pf.app.processEvents()
@@ -1438,8 +1440,8 @@ pyFormex comes with ABSOLUTELY NO WARRANTY. This is free software, and you are w
     pf.debug("Setup status bar", pf.DEBUG.GUI)
     pf.GUI.addInputBox()
     pf.GUI.toggleInputBox(False)
-    pf.GUI.addCoordsTracker()
     if pf.options.canvas:
+        pf.GUI.addCoordsTracker()
         pf.GUI.toggleCoordsTracker(pf.cfg.get('gui/coordsbox', False))
     pf.debug("Using window name %s" % pf.GUI.windowTitle(), pf.DEBUG.GUI)
 
