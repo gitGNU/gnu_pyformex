@@ -265,10 +265,21 @@ def autoExport(g):
     """
     ag = g.get('autoglobals',True)
     if ag:
-        if not isinstance(ag,list):
-            ac = g.get('autoclasses',Geometry)
-            ag = listAll(clas=ac, dic=g)
-        pf.PF.update([(k, g[k]) for k in ag])
+        if ag is True:
+            # default autoglobals: all Geometry instances
+            ag = [ Geometry ]
+        an = []
+        for a in ag:
+            if type(a) is str and a in g:
+                an.append(a)
+            elif type(a) == type:
+                try:
+                    an.extend(listAll(clas=a, dic=g))
+                except:
+                    pass
+        an = sorted(list(set(an)))
+        print("Autoglobals: %s" % ', '.join(an))
+        pf.PF.update([(k, g[k]) for k in an])
 
 
 def scriptLock(id):
