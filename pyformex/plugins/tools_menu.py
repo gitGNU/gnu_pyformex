@@ -328,64 +328,92 @@ def query_angle():
     print (s)
 
 
-def pointToCameraCS(p):
-    """ Transform a point to the coordinate system of the camera
-    
-    Returns:
-    - the horizontal coordinate
-    - the vertical coordinate
-    - the horizontal axis
-    - the vertical axis
-    - the z axis (out of plane axis, pointing towards my eyes)
-    
-    The z coordinate is not returned because it is NOT determined by the user and therefore is not relevant.
-    
+def getCameraCS(origin='global'):
+    """Return the coordinate system of the camera
+
+    origin can be the origin of the global coordinate system (default)
+    or the focus of the camera
     """
     cam = pf.canvas.camera
-    zcam = cam.axis
-    ycam = cam.upvector
-    xcam = cross(ycam,zcam)    
-    CS = CoordSys(points=Coords([xcam, ycam, zcam, [0.,0.,0.]]))
-    pcam = p.transformCS(CoordSys(), CS)
-    h, v = pcam[0], pcam[1]
-    return  h, v, xcam, ycam, zcam
-        
+    cz = cam.axis
+    cy = cam.upvector
+    cx = cross(cy,cz)
+    CS = CoordSys(points=Coords([cx, cy, cz, [0.,0.,0.]]))
+    if origin == 'global':
+        return CS
+    elif origin == 'focus':
+        return CS.translate(cam.focus)
+    else:
+        raise ValueError, 'origin should be either global or focus'
+
+
+def toCameraCS(p):
+    """ Reposition a geometry from global to camera coordinate system
+    
+    Returns:
+    - the repositioned geometry
+    - the camera coordinate system
+    """ 
+    camCS = getCameraCS(origin='global')
+    return  p.transformCS(CoordSys(), camCS), camCS
+
+
+def fromCameraCS(p):
+    """ Reposition a geometry from camera to global coordinate system
+    
+    Returns:
+    - the repositioned geometry
+    - the camera coordinate system
+    """ 
+    camCS = getCameraCS(origin='global')
+    return p.transformCS(camCS,CoordSys()), camCS
+
 
 def isPerspective():
     import pyformex as pf
     cam = pf.canvas.camera
     return cam.perspective
+
+
+def create_point():
+    """Returns a point anywhere on the screen.
     
-    
-def pick_point2D(return_2Dpos=False):
+    You need the perspective OFF, otherwise it will set it OFF and re-run the function. 
+    """
+    from pyformex.plugins.tools_menu import isPerspective
     print ('left click somewhere on the screen')
-    p = pf.canvas.idraw(mode='point', npoints=1, zplane=0., func=None, coords=None, preview=True)[0]
+    print ('right click to exit')
+    try:
+        p = pf.canvas.idraw(mode='point', npoints=1, zplane=0., func=None, coords=None, preview=True)[0]
+    except:
+        print ('point not created')
+        return None
     if isPerspective():
-        warning('You can not pick 2D points if perspective is on')
-        return
-    if return_2Dpos is True:
-        h, v, xcam, ycam, zcam = pointToCameraCS(p)
-        return p, h, v, xcam, ycam, zcam
+        warning('You can not pick 2D points if perspective is on. Please re-pick now.')
+        perspective(False)
+        return create_point()
     return p
 
 
 def query_point2D(color='magenta'):
     """2D point coordinates based on current camera
     
-    It prints the horizontal and vertical positions from the origin 
+    It prints the horizontal and vertical positions from the global origin 
     along the horizontal and vertical directions of the camera. 
     The horizontal direction of the camera is the cross product of 
     camera axis (focus-eye) and camera upvector. 
     The vertical direction of the camera is the upvector. 
     """
-    p, h, v, xcam, ycam, zcam = pick_point2D(return_2Dpos=True)
-    b, c, d = h*xcam, h*xcam + v*ycam, v*ycam
-    D0 = draw(p, color=color, bbox='last', view=None)
-    a = Coords([0., 0., 0.])
-    D1 = draw(Formex([[a, b], [b, c], [c, d], [d, a]]), color=color, bbox='last', view=None)
-    D2 = drawMarks([b*0.5, d*0.5], ['%.2e'%h, '%.2e'%v], size=20, color=color, bbox='last', view=None)
+    P = create_point()
+    D0 = draw(P, color=color, bbox='last', view=None)
+    p, CS = toCameraCS(P)
+    v0, v1 = CS.points()[:2]
+    b, c, d = p[0]*v0, p[0]*v0 + p[1]*v1, p[1]*v1
+    o = Coords([0., 0., 0.])
+    D1 = draw(Formex([[o, b], [b, c], [c, d], [d, o]]), color=color, bbox='last', view=None)
+    D2 = drawMarks([b*0.5, d*0.5], ['%.2e'%p[0], '%.2e'%p[1]], size=20, color=color, bbox='last', view=None)
     s = "*** Point 2D report ***\n"
-    s += 'H %f V %f'%(h, v)
+    s += 'H %f V %f'%(p[0], p[1])
     print (s)
     pause(2.0)
     [undraw(D) for D in [D0, D1, D2]]
@@ -398,12 +426,18 @@ def query_distance2D(color='magenta'):
     and vertical components based on the current camera.
     """
     print ('starting point')
-    p0, h0, v0, xcam0, ycam0, zcam0 = pick_point2D(return_2Dpos=True)
+    p0 = create_point()
+    p0c, CS = toCameraCS(p0)
+    h0,v0 = p0c[:2]
+    [xcam0, ycam0, zcam0] = CS.points()[:3]
     D0 = draw(p0, color=color, bbox='last', view=None)
     print ('end point')
-    p1, h1, v1, xcam1, ycam1, zcam1 = pick_point2D(return_2Dpos=True)
+    p1 = create_point()
+    p1c, CS = toCameraCS(p1)
+    h1,v1 = p1c[:2]
+    [xcam1, ycam1, zcam1] = CS.points()[:3]
     D1 = draw(p1, color=color, bbox='last', view=None)
-    if abs(zcam1 - zcam0).sum(axis=0)>1.e-5:
+    if abs(zcam1 - zcam0).sum(axis=0)>1.e-5: # zcam is the camera axis
         warning('You can not perform 2D measurements if you rotate the camera')
         [undraw(D) for D in [D0, D1]]
         return
@@ -418,57 +452,23 @@ def query_distance2D(color='magenta'):
     [undraw(D) for D in [D0, D1, D2, D3]]
 
 
-def move_point2D(color='magenta'):
-    """Pick a 3D point and moves it on the camera plane
-
-    Returns:
-    - actor index
-    - actor type
-    - point index
-    - point coords
-    - new point coords
-    
-    """
-    print ('SELECT THE POINT TO TRANSLATE') ########
-    Aindex, Atype, Pindex ,P0 = pickSinglePoint()
-    D0 = draw(P0, color=color, bbox='last', view=None)
-    print ('CLICK WHERE YOU WANT TO TRANSLATE') ########
-    p1, h1, v1, xcam1, ycam1,zcam1 = pick_point2D(return_2Dpos=True)
-    h0,v0,xcam0,ycam0,zcam0 = pointToCameraCS(P0) # here, to keep same camera
-    D1 = draw(p1, color=color, bbox='last', view=None)
-    if abs(zcam1 - zcam0).sum(axis=0)>1.e-5:
-        warning('You can not perform 2D measurements if you rotate the camera')
-        [undraw(D) for D in [D0, D1]]
-        return
-    T = h1*xcam1 - h0*xcam0 + v1*ycam1-v0*ycam0 # translation vector
-    P1 = P0.trl(T)
-    draw(P1, marksize=10, color='black',bbox='last', view=None)
-    print ('POINT ON ACTOR: ',Aindex, Atype, Pindex)
-    print ('OLD POINT: ',P0)
-    print ('NEW POINT: ',P1)
-    print ('TRANSLATED BY VECTOR: ',T) 
-    return Aindex, Atype, Pindex ,P0,P1 # same output as pickSinglePoint() and P1
-
-
 def query_angle2D(color='magenta'):
     print("Pick 3 points in 2D")
     print("Pick point on first ray")
-    import pyformex as pf
-    cam = pf.canvas.camera
-    p0 = pick_point2D()
-    camaxis0 = cam.axis
+    p0 = create_point()
+    camaxis0 = getCameraCS().points()[2]
     D0 = draw(p0, color=color, bbox='last', view=None)
     print("Pick the vertex")
-    p1 = pick_point2D()
-    camaxis1 = cam.axis
+    p1 = create_point()
+    camaxis1 = getCameraCS().points()[2]
     D1 = draw(p1, color=color, bbox='last', view=None)
     if abs(camaxis1 - camaxis0).sum(axis=0)>1.e-5:
         warning('You can not perform 2D measurements if you rotate the camera')
         [undraw(D) for D in [D0, D1]]
         return
     print("Pick point on second ray")
-    p2 = pick_point2D()
-    camaxis2 = cam.axis
+    p2 = create_point()
+    camaxis2 = getCameraCS().points()[2]
     D2 = draw(p2, color=color, bbox='last', view=None)
     if abs(camaxis2 - camaxis0).sum(axis=0)>1.e-5:
         warning('You can not perform 2D measurements if you rotate the camera')
