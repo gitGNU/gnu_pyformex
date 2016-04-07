@@ -407,10 +407,8 @@ def query_point2D(color='magenta'):
     P = create_point()
     D0 = draw(P, color=color, bbox='last', view=None)
     p, CS = toCameraCS(P)
-    v0, v1 = CS.points()[:2]
-    b, c, d = p[0]*v0, p[0]*v0 + p[1]*v1, p[1]*v1
-    o = Coords([0., 0., 0.])
-    D1 = draw(Formex([[o, b], [b, c], [c, d], [d, o]]), color=color, bbox='last', view=None)
+    b, c, d = p[0]*CS.u, p[0]*CS.u + p[1]*CS.v, p[1]*CS.v
+    D1 = draw(Formex([[CS.o, b], [b, c], [c, d], [d, CS.o]]), color=color, bbox='last', view=None)
     D2 = drawMarks([b*0.5, d*0.5], ['%.2e'%p[0], '%.2e'%p[1]], size=20, color=color, bbox='last', view=None)
     s = "*** Point 2D report ***\n"
     s += 'H %f V %f'%(p[0], p[1])
@@ -427,17 +425,15 @@ def query_distance2D(color='magenta'):
     """
     print ('starting point')
     p0 = create_point()
-    p0c, CS = toCameraCS(p0)
+    p0c, CS0 = toCameraCS(p0)
     h0,v0 = p0c[:2]
-    [xcam0, ycam0, zcam0] = CS.points()[:3]
     D0 = draw(p0, color=color, bbox='last', view=None)
     print ('end point')
     p1 = create_point()
-    p1c, CS = toCameraCS(p1)
+    p1c, CS1 = toCameraCS(p1)
     h1,v1 = p1c[:2]
-    [xcam1, ycam1, zcam1] = CS.points()[:3]
     D1 = draw(p1, color=color, bbox='last', view=None)
-    if abs(zcam1 - zcam0).sum(axis=0)>1.e-5: # zcam is the camera axis
+    if abs(CS1.w - CS0.w).sum(axis=0)>1.e-5: # zcam is the camera axis
         warning('You can not perform 2D measurements if you rotate the camera')
         [undraw(D) for D in [D0, D1]]
         return
@@ -456,25 +452,25 @@ def query_angle2D(color='magenta'):
     print("Pick 3 points in 2D")
     print("Pick point on first ray")
     p0 = create_point()
-    camaxis0 = getCameraCS().points()[2]
+    w0 = getCameraCS().w
     D0 = draw(p0, color=color, bbox='last', view=None)
     print("Pick the vertex")
     p1 = create_point()
-    camaxis1 = getCameraCS().points()[2]
+    w1 = getCameraCS().w
     D1 = draw(p1, color=color, bbox='last', view=None)
-    if abs(camaxis1 - camaxis0).sum(axis=0)>1.e-5:
+    if abs(w1 - w0).sum(axis=0)>1.e-5:
         warning('You can not perform 2D measurements if you rotate the camera')
         [undraw(D) for D in [D0, D1]]
         return
     print("Pick point on second ray")
     p2 = create_point()
-    camaxis2 = getCameraCS().points()[2]
+    w2 = getCameraCS().w
     D2 = draw(p2, color=color, bbox='last', view=None)
-    if abs(camaxis2 - camaxis0).sum(axis=0)>1.e-5:
+    if abs(w2 - w0).sum(axis=0)>1.e-5:
         warning('You can not perform 2D measurements if you rotate the camera')
         [undraw(D) for D in [D0, D1, D2]]
         return
-    angle = rotationAngle(A=p0-p1,B=p2-p1,m=camaxis0,angle_spec=DEG)
+    angle = rotationAngle(A=p0-p1,B=p2-p1,m=w0,angle_spec=DEG)
     angle = angle[0]
     D3=draw(Formex([[p0, p1]]), linewidth=3, color=color, bbox='last', view=None)
     D4=draw(Formex([[p1, p2]]), linewidth=3, color=color, bbox='last', view=None)
