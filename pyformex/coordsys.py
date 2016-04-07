@@ -113,6 +113,31 @@ class CoordSys(object):
         """Set the rotation matrix to (3,3) value"""
         self._rot = at.checkArray(value,shape=(3,3),kind='f')
 
+    @property
+    def axes(self):
+        """Return the unit vectors along the axes of the CoordinateSystem."""
+        return self.rot.transpose()
+
+    @property
+    def u(self):
+        """Return unit vector along axis 0 (x)"""
+        return self.axes[0]
+
+    @property
+    def v(self):
+        """Return unit vector along axis 1 (y)"""
+        return self.axes[1]
+
+    @property
+    def w(self):
+        """Return unit vector along axis 2 (z)"""
+        return self.axes[2]
+
+    @property
+    def o(self):
+        """Return the origin"""
+        return self.trl
+
 
     # Simple transformation methods
     # These return self so that they can be concatenated
