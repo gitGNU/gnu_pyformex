@@ -24,12 +24,13 @@
 
 """BeamFreq
 
-This example shows the first natural vibration modes of an elastic beam.
-It requires an external program, calix, which can be downloaded from
-ftp://bumps.ugent.be/pub/calix/
-Make sure you have version 1.5-a8 or higher.
+This example computes the first natural vibration modes of an elastic beam.
+It demonstrates the use of some functions and classes in the fe subpackage.
 
+The example BeamFreq_calix provides comparable functionality, but based on
+the external program calix.
 """
+
 from __future__ import print_function
 
 
@@ -39,206 +40,94 @@ _topics = ['FEA', 'curve', 'drawing']
 _techniques = ['external', 'viewport']
 
 from pyformex.gui.draw import *
-from pyformex.plugins.curve import *
-from pyformex import simple
-
-def check_calix(version='1.5-a8'):
-    """Check that we have the required calix version"""
-    ok = utils.checkVersion('calix', version, True) >= 0
-    if not ok:
-        showText("""..
-
-Error
------
-An error occurred when I tried to find the program 'calix'.
-This probably means that calix is not installed on your system,
-or that the installed version is not one I can use for this example.
-
-Calix is a free program and you can install it as follows:
-
-- download calix (%s or higher) from ftp://bumps.ugent.be/pub/calix/
-- unpack, compile and install (as root)::
-
-   tar xvzf calix-%s.tar.gz
-   cd calix-1.5
-   make
-   (sudo) make install
-""" % (version, version))
-    return ok
+from pyformex.plugins.curve import PolyLine,BezierSpline,Curve
+from pyformex.fe.eigen import *
+from pyformex.fe.beam2d import *
 
 
-def geometry():
-    global M
-    n = 16
-    nshow = 4
-    bcons = ['cantilever', 'simply supported']
-    keep = False
-    verbose = False
-
-    res = askItems([
-        _I('n', n, text='number of elements along beam'),
-        _I('nshow', nshow, text='number of natural modes to show'),
-        _I('bcon', bcons[0], text='beam boundary conditions', choices=bcons),
-        _I('keep', keep, text='keep data and result files'),
-        _I('verbose', verbose, text='show intermediate information'),
-        ])
-    if not res:
-        return
-
-    globals().update(res)
-    F = simple.line([0., 0., 0.], [0., 1., 0.], n)
-    M = F.toMesh()
-    return M
+def header(s):
+    """Print a header"""
+    print('='*10 + s + '='*10)
 
 
-def compute():
-    global nshow, a, freq
-    nnod = M.ncoords()
-    nel = M.nelems()
-    nmat = 1
-    iout = 1
+def eigen(K,M,neig,method='subspace'):
+    """Compute first neig eigensolutions of (K,M)
 
-    # init
-    s=""";calix script written by pyFormex (example BeamFreq)
-start
-use program 'frame.cal'
-endtext
-"""
-
-    # params
-    s += " %s %s %s %s\n" % (nnod+1, nel, nmat, iout)
-    # nodes
-    for i, x in enumerate(M.coords):
-        s += "%5d%10.3e%10.3e%10.3e\n" %  ((i+1,)+tuple(x))
-    # orientation node
-    s += "%5d%10.3e%10.3e%10.3e\n\n" %  (nnod+1, 0.0, 0.0, 1.0)
-
-    # boundary conditions
-    s += "%5s    0    1    1    1    1    0%5s    1\n" %  (2, nnod-2)
-    s += "%5s    1    1    1    1    1    1\n" % (nnod+1)
-    if bcon == 'cantilever':
-        # boundary conditions for cantilever
-        s += "%5s    1    1    1    1    1    1\n" % (1)
-        s += "%5s    0    1    1    1    1    0\n" % (nnod)
-    else:
-        # boundary conditions for simply supported
-        s += "%5s    1    1    1    1    1    0\n" % (1)
-        s += "%5s    1    1    1    1    1    0\n" % (nnod)
-    s += '\n'
-    # material
-    s += "      3.d6     1.2d6      1.00     3000.      1.00     70.d4    110.d4\n"
-    # elems
-    fmt = "%5s"*(M.nplex()+3) + '\n'
-    for i, e in enumerate(M.elems+1):
-        s += fmt % ((i+1, 1)+tuple(e)+(nnod+1,))
-
-    # action and output in a format we can easily read back
-    s += """
-exec frame_ev
-endtext
-intvar name nnod 1
-intvar name ndof 7
-file open 'test.out' write seq 17
-user printf '(i5)' nnod $17
-user printf '(i5)' ndof $17
-user printf '(5g13.4)' EIG $17
-user printf '(5g13.4)' DISPL $17
-file close $17
-stop
-"""
-    import os
-    savedir = os.getcwd()
-    #    tmpdir = None
-    #    if not checkWorkdir():
-    tmpdir = utils.tempDir()
-    chdir(tmpdir)
-    print("Using a temporary directory: %s" % tmpdir)
-
-    fil = open('temp.dta', 'w')
-    fil.write(s)
-    fil.close()
-
-    if verbose:
-        # show calix input data
-        showFile('temp.dta')
-
-    # run calix
-    cmd = "calix temp.dta temp.res"
-    if os.path.exists('test.out'):
-        os.remove('test.out')
-
-    P = utils.command(cmd)
-
-    if verbose:
-        # show calix output
-        showText(P.out)
-        showFile('temp.res')
-        showFile('test.out')
-
-    # read results from eigenvalue analysis
-    fil = open('test.out', 'r')
-    nnod, ndof = fromfile(fil, sep=' ', count=2, dtype=int)
-    eig = fromfile(fil, sep=' ', count=4*ndof).reshape(ndof, 4)
-
-    nshow = min(nshow, ndof)
-    freq = eig[:nshow, 2]
-    basefreq = freq[0]
-    print("Frequencies: %s" % freq)
-    print("Multipliers: %s" % (freq/freq[0]))
-
-    a = fromfile(fil, sep=' ',).reshape(-1, nnod, 6)
-    # print a.shape
-    # remove the extra node
-    a = a[:, :-1,:]
-
-    chdir(savedir)
-    if not keep:
-        print("Removing temporary directory: %s" % tmpdir)
-        utils.removeTree(tmpdir)
+    K: stiffness matrix (n,n)
+    M: mass matrix (n,n)
+    neig: number of eigenfrequencies to compute
+    method: 'subspace', 'lanczos' or 'inverse'
+    """
+    solver = globals()[method]
+    header(' '+method+' ')
+    e,x = solver(K,M,neig)
+    f = sqrt(e)/2/pi
+    print("eigenvectors")
+    print(x)
+    print("eigenvalues")
+    print(e)
+    print("frequencies")
+    print(f)
+    return f,x
 
 
-def drawDeformed(M, u, r):
-    xd = M.coords.copy()
-    xd[:, 0] += u
-    c = NaturalSpline(xd)
-    draw(c, color=red)
-    draw(c.pointsOn())
+def drawBeam(x,u,d=None,color=black):
+    """Draw a deflected beam.
 
-
-def showResults(hscale):
-    for i in range(nshow):
-        viewport(i)
-        clear()
-        transparent(False)
-        lights(False)
-        linewidth(2)
-        draw(M)
-        ai = a[i]
-        u = ai[:, 0]
-        imax = argmax(abs(u))
-        r = ai[:, 5]
-        sc = hscale / u[imax]
-        u *= sc
-        r *= sc
-        # print u,r
-        drawDeformed(M, u, r)
-        fi = freq[i]
-        mi = fi/freq[0]
-        drawText('%s Hz = %.2f f0' % (fi, mi), (20, 20), size=20)
+    x: [2,3] coordinates of endpoints
+    u: [2,3] displacements at endpoints
+    d: [2,3] derivatives at endpoints
+    """
+    C = BezierSpline(x+u,deriv=d,degree=3)
+    draw(C.approx(ndiv=10),color=color,linewidth=2)
+    draw(C.pointsOn(),color=color)
 
 
 def run():
-    resetAll()
     clear()
-    if not check_calix():
-        return
 
-    M = geometry()
-    if M:
-        compute()
-        layout(nshow, ncols=4)
-        showResults(hscale = 0.5)
+    lt = 5.
+    nel = 40
+    neig = 4
+    maxu = 0.1*lt  # max deflexion
 
-if __name__ == '__draw__':
-    run()
+    F = Formex('l:1')
+    x = Formex('l:1').scale(lt).toCurve().approx(nel).coords
+    u = zeros((nel+1,3))
+    d = zeros((nel+1,3))
+
+    # Create the stiffness and mass matrix
+    K,M = createBeam(lt,nel,addbc=True)
+    # Compute the eigenfrquencies and modes
+    f,v = eigen(K,M,neig,method='subspace')
+
+    # Compute the theoretical eigenfrequencies (for comparison)
+    fth = cantilever_frequencies(IPE100.rho,IPE100.A,lt,steel.E,IPE100.I)
+    print("theoretical frequencies")
+    print(fth)
+
+    separate = True
+
+    if separate:
+        layout(neig)
+
+    for i in range(neig):
+        # split deflections and rotations
+        vi = asarray(v[:,i].reshape(-1,2))
+        # find maximum deflection ( in absolute value)
+        ind = argmax(abs(vi[:,0]))
+        # scale to make maximum = maxu
+        scale = maxu / vi[ind,0]
+        #print("scale = %s" % scale)
+        vi *= scale
+        # store deflections in u
+        u[:,1] = vi[:,0]
+        # compute direction vectors
+        d = Coords.concatenate([Coords([1.0,0.0,0.0]).rotate(ri) for ri in vi[:,1]/DEG ])
+        if separate:
+            viewport(i)
+            clear()
+        drawBeam(x,u=0.,d=None,color=black)
+        drawBeam(x,u,d,color=pf.canvas.settings.colormap[i+1])
+
 # End
