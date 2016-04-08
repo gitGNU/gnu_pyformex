@@ -306,8 +306,8 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
     def __init__(self,*args,**kargs):
         """Initialize an empty canvas."""
         QtOpenGL.QGLWidget.__init__(self,*args)
-        if pf.DEBUG.OPENGL:
-            print(OpenGLFormat(self.format()))
+        if pf.options.debuglevel & pf.DEBUG.OPENGL:
+            pf.debug("QtCanvas.__init__:\n"+OpenGLFormat(self.format()),pf.DEBUG.OPENGL)
         # Define our privatee signals
         self.signals = self.Communicate()
         self.CANCEL = self.signals.CANCEL

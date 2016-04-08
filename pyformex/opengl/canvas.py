@@ -692,7 +692,7 @@ class Canvas(object):
             self.reset()
 
         else:
-            print("NO camera, but setting rendermode anyways")
+            pf.debug("NO camera, but setting rendermode anyways",pf.DEBUG.OPENGL)
             self.rendermode = mode
 
 

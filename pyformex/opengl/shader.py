@@ -53,7 +53,7 @@ def defaultShaders():
     major,minor = fmt.majorVersion(), fmt.minorVersion()
     availversion = "%s.%s" % (vmajor,vminor)
     activeversion = "%s.%s" % (major,minor)
-    print("Vendor: %s; Renderer: %s; Available version: %s; Active version %s" % (vendor,renderer,availversion,activeversion))
+    pf.debug("Vendor: %s; Renderer: %s; Available version: %s; Active version %s" % (vendor,renderer,availversion,activeversion),pf.DEBUG.OPENGL)
     shortversion = "%s.%s" % (major,minor)
     # Default shaders
     dirname = os.path.join(pf.pyformexdir,'data')
@@ -67,7 +67,7 @@ def defaultShaders():
 
         # Default shaders for some hardware
 
-        print("Selecting best default shader")
+        pf.debug("Selecting best default shader",pf.DEBUG.OPENGL)
 
         if 'Mesa' in renderer or 'Mesa' in version:
             pf.options.shader = '_mesa'
@@ -156,13 +156,13 @@ class Shader(object):
         _vertexshader, _fragmentshader = defaultShaders()
         if vshader is None:
             vshader = _vertexshader
-        print("Using vertex shader %s" % vshader)
+        pf.debug("Using vertex shader %s" % vshader,pf.DEBUG.OPENGL)
         with open(vshader) as f:
             VertexShader = f.read()
 
         if fshader is None:
             fshader = _fragmentshader
-        print("Using fragment shader %s" % fshader)
+        pf.debug("Using fragment shader %s" % fshader,pf.DEBUG.OPENGL)
         with open(fshader) as f:
             FragmentShader = f.read()
 
@@ -244,7 +244,6 @@ class Shader(object):
             ]:
             for a in attribs:
                 v = D[a]
-                #print("LOAD %s = %s" % (a,v))
                 if v is not None:
                     func(a, v)
 
