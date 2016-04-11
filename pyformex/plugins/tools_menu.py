@@ -281,13 +281,49 @@ def query_points():
 def query_edges():
     query('edge')
 
-
+def pickPointsOrEsc(**args):
+    """This is a wrap around pickPoints to allow ESC.
+    
+    The pickPoints raises an error if you do Cancel on GUI or ESC on Keyboard.
+    With this wrap you can escape the picking and get a None.
+    Full functionality:
+    - Left mouse click to select points
+    - Right mouse click to confirm selection
+    - Cancel on GUI or ESC on Keyboard to return None
+    There are 3 possible outputs:
+    - if something is picked the picked points are returned
+    - if nothing is picked nothing is returned
+    - if Cancel or ESC are pushed a None is returned
+    """
+    try:
+        return pickPoints(**args)
+    except:
+        warning('you want to ESCAPE the picking functionality')
+        return None
+        
+    
 def pickSinglePoint():
-    """Pick a single point and return Actor index, Actor type, Point index and Point coordinates."""
+    """Pick a single point and return Actor index, Actor type, Point index and Point coordinates.
+    
+    This is wrap around pickPointsOrEsc to pick a single point.
+    A point is selected with left click and accepted (returned) with right click.
+    If your selection is empty it asks you to re-select until you get a valid selection.
+    You can escape the picking without selecting a point by pushing Cancel on GUI 
+    or ESC on Keyboard. In this case a None is returned.
+    
+    Examples:
+    
+    A = draw(obj)
+    pf.canvas.pickable  = [A] # you can only pick points of obj
+    pic = pickSinglePoint()
+    pf.canvas.pickable  = None
+    """
     print ('pick one single point')
     while True:
-        K = pickPoints('single')
-        if len(K.keys()) == 1 and len(K[K.keys()[0]]) == 1:
+        K = pickPointsOrEsc(filter='single')
+        if K == None:
+            return None
+        elif len(K.keys()) == 1 and len(K[K.keys()[0]]) == 1:
             k = K.keys()[0]
             v = K[k]
             p = v[0]
