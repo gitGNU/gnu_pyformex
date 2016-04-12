@@ -769,7 +769,10 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
             for Actors having a partitionByConnection method.
 
         When the picking operation is finished, the selection is returned.
-        The return value is always a Collection object.
+        The return value is always a Collection object, even if empty.
+        To know in which way the picking was finished check the pf.canvas.selection_accepted:
+        True means mouse right click, False means ESC button on keyboard.
+        NB: if oneshot=True the pf.canvas.selection_accepted is always True.
         """
         self.selection_canceled = False
         self.start_selection(mode, filter)
@@ -831,7 +834,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
             if oneshot:
                 self.accept_selection()
         if func and not self.selection_accepted:
-            func(self.selection)
+            func(self, self.selection)
         self.finish_selection()
         return self.selection
 
