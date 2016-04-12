@@ -914,7 +914,9 @@ def pick(mode='actor',filter=None,oneshot=False,func=None):
 
     See viewport.py for more details.
     This function differs in that it provides default highlighting
-    during the picking operation, a button to stop the selection operation
+    during the picking operation and a button (Cancel) to stop the selection operation.
+    To know in which way the picking was finished check the pf.canvas.selection_accepted:
+    True means mouse right click / ENTER / OK, False means ESC button on keyboard or Cancel.
 
     Parameters:
 

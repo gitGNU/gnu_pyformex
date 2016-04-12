@@ -771,8 +771,11 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         When the picking operation is finished, the selection is returned.
         The return value is always a Collection object, even if empty.
         To know in which way the picking was finished check the pf.canvas.selection_accepted:
-        True means mouse right click, False means ESC button on keyboard.
-        NB: if oneshot=True the pf.canvas.selection_accepted is always True.
+        True means mouse right click / ENTER, False means ESC button on keyboard.
+        
+        Small bugs:
+        - if oneshot=True the pf.canvas.selection_accepted is always True, even if you ESC
+        - the first time you pick the ESC does not work. You need at least to left click before.
         """
         self.selection_canceled = False
         self.start_selection(mode, filter)
