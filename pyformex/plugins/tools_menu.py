@@ -279,34 +279,12 @@ def query_elements():
 def query_points():
     query('point')
 def query_edges():
-    query('edge')
-
-def pickPointsOrEsc(**args):
-    """This is a wrap around pickPoints to allow ESC.
-    
-    The pickPoints raises an error if you do Cancel on GUI or ESC on Keyboard.
-    With this wrap you can escape the picking and get a None.
-    Full functionality:
-    - Left mouse click to select points
-    - Right mouse click to confirm selection
-    - Cancel on GUI or ESC on Keyboard to return None
-    There are 3 possible outputs:
-    - if something is picked the picked points are returned
-    - if nothing is picked nothing is returned
-    - if Cancel or ESC are pushed a None is returned
-    """
-    try:
-        return pickPoints(**args)
-    except:
-        warning('you want to ESCAPE the picking functionality')
-        return None
-        
+    query('edge')        
     
 def pickSinglePoint():
     """Pick a single point and return Actor index, Actor type, Point index and Point coordinates.
     
-    This is wrap around pickPointsOrEsc to pick a single point.
-    A point is selected with left click and accepted (returned) with right click.
+    A point is selected with left click and accepted (returned) with right click or ENTER.
     If your selection is empty it asks you to re-select until you get a valid selection.
     You can escape the picking without selecting a point by pushing Cancel on GUI 
     or ESC on Keyboard. In this case a None is returned.
@@ -318,10 +296,11 @@ def pickSinglePoint():
     pic = pickSinglePoint()
     pf.canvas.pickable  = None
     """
-    print ('pick one single point')
     while True:
-        K = pickPointsOrEsc(filter='single')
-        if K == None:
+        print ('pick one single point')
+        K = pickPoints(filter='single')
+        if pf.canvas.selection_accepted == False:
+            warning('you want to ESCAPE the picking functionality')
             return None
         elif len(K.keys()) == 1 and len(K[K.keys()[0]]) == 1:
             k = K.keys()[0]
@@ -331,37 +310,79 @@ def pickSinglePoint():
             x = A.points()
             return k, A.getType(), p, x[p]
         else:
-            showInfo("Invalid picking: try again to pick one single point")
+            showInfo("Invalid picking: try again")
+
 
 ## GDS: in tools.py the reportDistances is no longer used
-def query_distances():
-    s = "*** Distance report *** \n"
-    Anum, Atype, Pnum, p0 = pickSinglePoint()
-    s += "From actor %s point %s\n" % (Anum, Pnum)
-    print ('pick one or multiple points')
-    set_selection('point', filter='single')
-    K = selection
-    s += "To points [x, y, z] magnitude: \n"
-    for k in K.keys():
-        v = K[k]
-        A = pf.canvas.actors[k]
-        x = A.points()
-        for p in v:
-            d = x[p] - p0
-            s += "actor %s, point %s: [%s, %s, %s] %s \n" % (k, p, d[0], d[1], d[2], length(d))
-    print (s)
+def query_distances(color='magenta'):
+    """Distance of one to many points.
+    
+    The distance query is repeated until you push on ESC or click on Cancel
+    """
+    while True:
+        s = "*** Distance report *** \n"
+        out = pickSinglePoint()
+        if out == None:
+            break
+        Anum, Atype, Pnum, p0 = out
+        s += "From actor %s point %s\n" % (Anum, Pnum)
+        print ('pick one or multiple points or ESC')
+        set_selection('point', filter='single')
+        K = selection
+        if K == None:
+            break        
+        s += "To points [x, y, z] magnitude: \n"
+        D = []
+        for k in K.keys():
+            v = K[k]
+            A = pf.canvas.actors[k]
+            x = A.points()
+            for p in v:
+                d = x[p] - p0
+                ld = length(d)
+                s += "actor %s, point %s: [%s, %s, %s] %s \n" % (k, p, d[0], d[1], d[2], ld)
+                d=drawMarks([(p0+x[p])*0.5], ['%.2e'%ld], size=20, color=color, bbox='last', view=None)
+                D.append([d])
+                d=draw(Formex([[p0, x[p]]]), linewidth=3, color=color, bbox='last', view=None)
+                D.append([d])
+        print (s)
+        pause(2.0)
+        [undraw(d) for d in D]
 
 ## GDS: in tools.py the reportAngles is no longer used
-def query_angle():
-    showInfo("Pick 3 points, one at a time")
-    Anum, Atype, Pnum, p0 = pickSinglePoint()
-    Anum, Atype, Pnum, p1 = pickSinglePoint()
-    Anum, Atype, Pnum, p2 = pickSinglePoint()
-    angle, n = rotationAngle(A=p0-p1,B=p2-p1,m=None,angle_spec=DEG)
-    angle, n = angle[0], n[0]
-    s = "*** Angle report ***\n"
-    s += '%s degrees around rotation axis [%s, %s, %s]'%(angle, n[0], n[1], n[2])
-    print (s)
+def query_angle(color='magenta'):
+    """Angle defined by 3D points.
+    
+    The angle query is repeated until you push on ESC or click on Cancel
+    """
+    while True:
+        showInfo("Pick 3 points, one at a time or ESC")
+        out =  pickSinglePoint()
+        if out == None:
+            break
+        Anum, Atype, Pnum, p0 = out
+        out =  pickSinglePoint()
+        if out == None:
+            break
+        Anum, Atype, Pnum, p1 = out
+        out =  pickSinglePoint()
+        if out == None:
+            break
+        Anum, Atype, Pnum, p2 = out
+        angle, n = rotationAngle(A=p0-p1,B=p2-p1,m=None,angle_spec=DEG)
+        angle, n = angle[0], n[0]
+        s = "*** Angle report ***\n"
+        s += '%s degrees around rotation axis [%s, %s, %s]'%(angle, n[0], n[1], n[2])
+        print (s)
+        D = []
+        d=draw(Formex([[p0, p1]]), linewidth=3, color=color, bbox='last', view=None)
+        D.append([d])
+        d=draw(Formex([[p1, p2]]), linewidth=3, color=color, bbox='last', view=None)
+        D.append([d])
+        d=drawMarks([(p0+p2)*0.5], ['%.1f'%angle], size=20, color=color, bbox='last', view=None)
+        D.append([d])
+        pause(2.0)
+        [undraw(d) for d in D]
 
 
 def getCameraCS(origin='global'):
@@ -415,20 +436,27 @@ def create_point():
     """Returns a point anywhere on the screen.
     
     You need the perspective OFF, otherwise it will set it OFF and re-run the function. 
+    You can escape the create_point without creating a point by pushing ESC on Keyboard. 
+    In this case a None is returned. 
     """
     from pyformex.plugins.tools_menu import isPerspective
-    print ('left click somewhere on the screen')
-    print ('right click to exit')
-    try:
-        p = pf.canvas.idraw(mode='point', npoints=1, zplane=0., func=None, coords=None, preview=True)[0]
-    except:
-        print ('point not created')
-        return None
-    if isPerspective():
-        warning('You can not pick 2D points if perspective is on. Please re-pick now.')
-        perspective(False)
-        return create_point()
-    return p
+    while True:
+        print ('left click somewhere on the screen')
+        print ('ESC to escape')
+        p = pf.canvas.idraw(mode='point', npoints=1, zplane=0., func=None, coords=None, preview=True)
+        if pf.canvas.draw_accepted == False:
+            warning('you want to ESCAPE the drawing functionality')
+            return None
+        elif len(p) == 1:
+            p = p[0]
+            if isPerspective():
+                showInfo("You can not pick 2D points if perspective is on. Please re-pick now.")
+                perspective(False)
+                return create_point()
+            else:
+                return p
+        else:
+            showInfo("Invalid drawing: try again")
 
 
 def query_point2D(color='magenta'):
@@ -439,18 +467,22 @@ def query_point2D(color='magenta'):
     The horizontal direction of the camera is the cross product of 
     camera axis (focus-eye) and camera upvector. 
     The vertical direction of the camera is the upvector. 
+    Push on ESC to terminate, otherwise it repeats.
     """
-    P = create_point()
-    D0 = draw(P, color=color, bbox='last', view=None)
-    p, CS = toCameraCS(P)
-    b, c, d = p[0]*CS.u, p[0]*CS.u + p[1]*CS.v, p[1]*CS.v
-    D1 = draw(Formex([[CS.o, b], [b, c], [c, d], [d, CS.o]]), color=color, bbox='last', view=None)
-    D2 = drawMarks([b*0.5, d*0.5], ['%.2e'%p[0], '%.2e'%p[1]], size=20, color=color, bbox='last', view=None)
-    s = "*** Point 2D report ***\n"
-    s += 'H %f V %f'%(p[0], p[1])
-    print (s)
-    pause(2.0)
-    [undraw(D) for D in [D0, D1, D2]]
+    while True:
+        P = create_point()
+        if P==None:
+            break
+        D0 = draw(P, color=color, bbox='last', view=None)
+        p, CS = toCameraCS(P)
+        b, c, d = p[0]*CS.u, p[0]*CS.u + p[1]*CS.v, p[1]*CS.v
+        D1 = draw(Formex([[CS.o, b], [b, c], [c, d], [d, CS.o]]), color=color, bbox='last', view=None)
+        D2 = drawMarks([b*0.5, d*0.5], ['%.2e'%p[0], '%.2e'%p[1]], size=20, color=color, bbox='last', view=None)
+        s = "*** Point 2D report ***\n"
+        s += 'H %f V %f'%(p[0], p[1])
+        print (s)
+        pause(2.0)
+        [undraw(D) for D in [D0, D1, D2]]
 
 
 def query_distance2D(color='magenta'):
@@ -458,64 +490,82 @@ def query_distance2D(color='magenta'):
     
     It prints the 2D distance and also the horizontal
     and vertical components based on the current camera.
+    Push on ESC to terminate, otherwise it repeats.
     """
-    print ('starting point')
-    p0 = create_point()
-    p0c, CS0 = toCameraCS(p0)
-    h0,v0 = p0c[:2]
-    D0 = draw(p0, color=color, bbox='last', view=None)
-    print ('end point')
-    p1 = create_point()
-    p1c, CS1 = toCameraCS(p1)
-    h1,v1 = p1c[:2]
-    D1 = draw(p1, color=color, bbox='last', view=None)
-    if abs(CS1.w - CS0.w).sum(axis=0)>1.e-5: # zcam is the camera axis
-        warning('You can not perform 2D measurements if you rotate the camera')
-        [undraw(D) for D in [D0, D1]]
-        return
-    d = length(p1-p0)
-    print (p0, p1)
-    D2=drawMarks([(p0+p1)*0.5], ['%.2e'%d], size=20, color=color, bbox='last', view=None)
-    D3=draw(Formex([[p0, p1]]), linewidth=3, color=color, bbox='last', view=None)
-    s = "*** Distance 2D report ***\n"
-    s += "[H %s, V %s] %s \n" % (h1-h0, v1-v0, d)
-    print (s)
-    pause(2.0)
-    [undraw(D) for D in [D0, D1, D2, D3]]
+    while True:
+        print ('starting point')
+        p0 = create_point()
+        if p0==None:
+            break
+        p0c, CS0 = toCameraCS(p0)
+        h0,v0 = p0c[:2]
+        D0 = draw(p0, color=color, bbox='last', view=None)
+        print ('end point')
+        p1 = create_point()
+        if p1==None:
+            break
+        p1c, CS1 = toCameraCS(p1)
+        h1,v1 = p1c[:2]
+        D1 = draw(p1, color=color, bbox='last', view=None)
+        if abs(CS1.w - CS0.w).sum(axis=0)>1.e-5: # zcam is the camera axis
+            warning('You can not perform 2D measurements if you rotate the camera')
+            [undraw(D) for D in [D0, D1]]
+            return
+        d = length(p1-p0)
+        print (p0, p1)
+        D2=drawMarks([(p0+p1)*0.5], ['%.2e'%d], size=20, color=color, bbox='last', view=None)
+        D3=draw(Formex([[p0, p1]]), linewidth=3, color=color, bbox='last', view=None)
+        s = "*** Distance 2D report ***\n"
+        s += "[H %s, V %s] %s \n" % (h1-h0, v1-v0, d)
+        print (s)
+        pause(2.0)
+        [undraw(D) for D in [D0, D1, D2, D3]]
 
 
 def query_angle2D(color='magenta'):
-    print("Pick 3 points in 2D")
-    print("Pick point on first ray")
-    p0 = create_point()
-    w0 = getCameraCS().w
-    D0 = draw(p0, color=color, bbox='last', view=None)
-    print("Pick the vertex")
-    p1 = create_point()
-    w1 = getCameraCS().w
-    D1 = draw(p1, color=color, bbox='last', view=None)
-    if abs(w1 - w0).sum(axis=0)>1.e-5:
-        warning('You can not perform 2D measurements if you rotate the camera')
-        [undraw(D) for D in [D0, D1]]
-        return
-    print("Pick point on second ray")
-    p2 = create_point()
-    w2 = getCameraCS().w
-    D2 = draw(p2, color=color, bbox='last', view=None)
-    if abs(w2 - w0).sum(axis=0)>1.e-5:
-        warning('You can not perform 2D measurements if you rotate the camera')
-        [undraw(D) for D in [D0, D1, D2]]
-        return
-    angle = rotationAngle(A=p0-p1,B=p2-p1,m=w0,angle_spec=DEG)
-    angle = angle[0]
-    D3=draw(Formex([[p0, p1]]), linewidth=3, color=color, bbox='last', view=None)
-    D4=draw(Formex([[p1, p2]]), linewidth=3, color=color, bbox='last', view=None)
-    D5=drawMarks([(p0+p2)*0.5], ['%.1f'%angle], size=20, color=color, bbox='last', view=None)
-    s = "*** Angle 2D report ***\n"
-    s += '%s degrees around camera axis'%angle
-    print (s)
-    pause(2.0)
-    [undraw(D) for D in [D0, D1, D2, D3, D4, D5]]
+    """Planar angle based on current camera plane.
+    
+    It prints the planar angle on the current camera plane.
+    Push on ESC to terminate, otherwise it repeats.
+    """
+    while True:
+        print("Pick 3 points in 2D")
+        print("Pick point on first ray")
+        p0 = create_point()
+        if p0==None:
+            break
+        w0 = getCameraCS().w
+        D0 = draw(p0, color=color, bbox='last', view=None)
+        print("Pick the vertex")
+        p1 = create_point()
+        if p1==None:
+            break
+        w1 = getCameraCS().w
+        D1 = draw(p1, color=color, bbox='last', view=None)
+        if abs(w1 - w0).sum(axis=0)>1.e-5:
+            warning('You can not perform 2D measurements if you rotate the camera')
+            [undraw(D) for D in [D0, D1]]
+            return
+        print("Pick point on second ray")
+        p2 = create_point()
+        if p2==None:
+            break
+        w2 = getCameraCS().w
+        D2 = draw(p2, color=color, bbox='last', view=None)
+        if abs(w2 - w0).sum(axis=0)>1.e-5:
+            warning('You can not perform 2D measurements if you rotate the camera')
+            [undraw(D) for D in [D0, D1, D2]]
+            return
+        angle = rotationAngle(A=p0-p1,B=p2-p1,m=w0,angle_spec=DEG)
+        angle = angle[0]
+        D3=draw(Formex([[p0, p1]]), linewidth=3, color=color, bbox='last', view=None)
+        D4=draw(Formex([[p1, p2]]), linewidth=3, color=color, bbox='last', view=None)
+        D5=drawMarks([(p0+p2)*0.5], ['%.1f'%angle], size=20, color=color, bbox='last', view=None)
+        s = "*** Angle 2D report ***\n"
+        s += '%s degrees around camera axis'%angle
+        print (s)
+        pause(2.0)
+        [undraw(D) for D in [D0, D1, D2, D3, D4, D5]]
  
 
 def report_selection():

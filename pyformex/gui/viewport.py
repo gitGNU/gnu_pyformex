@@ -876,6 +876,8 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         has been reached, or when the user clicks the right mouse button or
         hits 'ENTER'.
         The return value is a (n,3) shaped Coords array.
+        To know in which way the drawing was finished check the pf.canvas.draw_accepted:
+        True means mouse right click / ENTER, False means ESC button on keyboard.
         """
         self.draw_canceled = False
         self.start_draw(mode, zplane, coords)
