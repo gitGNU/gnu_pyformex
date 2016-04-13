@@ -313,16 +313,33 @@ def pickSinglePoint():
             showInfo("Invalid picking: try again")
 
 
-## GDS: in tools.py the reportDistances is no longer used
-def query_distances(color='magenta'):
-    """Distance of one to many points.
-    
-    The distance query is repeated until you push on ESC or click on Cancel
+def mycolor(i):
+    """remove white and other not good looking colors from colors.palette.keys()  """   
+    mycolors = ['darkgrey', 'red', 'green', 'blue', 'cyan', 'magenta', 'yellow',  'black', 'darkred', 'darkgreen', 'darkblue', 'darkcyan', 'darkmagenta', ]
+    return mycolors[ i%(len(mycolors)) ]
+
+
+def cprint(txt,color='black'):
     """
+    Print on message board a  colored text
+    """
+    pf.GUI.board.write(txt,color=color)
+
+
+## GDS: in tools.py the reportDistances is no longer used
+def query_distances(color=0):
+    """Distances from one point to many points.
+    
+    The query distances is repeated until you push on ESC or click on Cancel
+    """
+    D = []
     while True:
+        col = mycolor(color)
+        drawopt = dict(color=col,bbox='last', view=None)
         s = "*** Distance report *** \n"
         out = pickSinglePoint()
         if out == None:
+            undraw(D)
             break
         Anum, Atype, Pnum, p0 = out
         s += "From actor %s point %s\n" % (Anum, Pnum)
@@ -330,9 +347,9 @@ def query_distances(color='magenta'):
         set_selection('point', filter='single')
         K = selection
         if K == None:
+            undraw(D)
             break        
         s += "To points [x, y, z] magnitude: \n"
-        D = []
         for k in K.keys():
             v = K[k]
             A = pf.canvas.actors[k]
@@ -341,48 +358,48 @@ def query_distances(color='magenta'):
                 d = x[p] - p0
                 ld = length(d)
                 s += "actor %s, point %s: [%s, %s, %s] %s \n" % (k, p, d[0], d[1], d[2], ld)
-                d=drawMarks([(p0+x[p])*0.5], ['%.2e'%ld], size=20, color=color, bbox='last', view=None)
-                D.append([d])
-                d=draw(Formex([[p0, x[p]]]), linewidth=3, color=color, bbox='last', view=None)
-                D.append([d])
-        print (s)
-        pause(2.0)
-        [undraw(d) for d in D]
+                D+=[drawMarks([(p0+x[p])*0.5], ['%.2e'%ld], size=20, mode='smooth',**drawopt)]
+                D+=[draw(Formex([[p0, x[p]]]), linewidth=3, **drawopt)]
+        cprint (s, color=col) # print in color on pyFormex message board
+        color+=1
 
 ## GDS: in tools.py the reportAngles is no longer used
-def query_angle(color='magenta'):
+def query_angle(color=0):
     """Angle defined by 3D points.
     
-    The angle query is repeated until you push on ESC or click on Cancel
+    The query angle is repeated until you push on ESC or click on Cancel
     """
+    D = []
     while True:
+        col = mycolor(color)
+        drawopt = dict(color=col,bbox='last', view=None)
         showInfo("Pick 3 points, one at a time or ESC")
         out =  pickSinglePoint()
         if out == None:
+            undraw(D)
             break
         Anum, Atype, Pnum, p0 = out
         out =  pickSinglePoint()
         if out == None:
+            undraw(D)
             break
         Anum, Atype, Pnum, p1 = out
+        D += [draw(Formex([[p0, p1]]), linewidth=3, **drawopt)]
         out =  pickSinglePoint()
         if out == None:
+            undraw(D)
             break
         Anum, Atype, Pnum, p2 = out
         angle, n = rotationAngle(A=p0-p1,B=p2-p1,m=None,angle_spec=DEG)
         angle, n = angle[0], n[0]
         s = "*** Angle report ***\n"
         s += '%s degrees around rotation axis [%s, %s, %s]'%(angle, n[0], n[1], n[2])
-        print (s)
-        D = []
-        d=draw(Formex([[p0, p1]]), linewidth=3, color=color, bbox='last', view=None)
-        D.append([d])
-        d=draw(Formex([[p1, p2]]), linewidth=3, color=color, bbox='last', view=None)
-        D.append([d])
-        d=drawMarks([(p0+p2)*0.5], ['%.1f'%angle], size=20, color=color, bbox='last', view=None)
-        D.append([d])
-        pause(2.0)
-        [undraw(d) for d in D]
+        cprint (s, color=col) # print in color on pyFormex message board
+        D += [
+        draw(Formex([[p1, p2]]), linewidth=3, **drawopt),
+        drawMarks([(p0+p2)*0.5], ['%.1f'%angle], size=20, mode='smooth',**drawopt)
+        ]
+        color+=1
 
 
 def getCameraCS(origin='global'):
@@ -459,7 +476,7 @@ def create_point():
             showInfo("Invalid drawing: try again")
 
 
-def query_point2D(color='magenta'):
+def query_point2D(color=0):
     """2D point coordinates based on current camera
     
     It prints the horizontal and vertical positions from the global origin 
@@ -469,104 +486,117 @@ def query_point2D(color='magenta'):
     The vertical direction of the camera is the upvector. 
     Push on ESC to terminate, otherwise it repeats.
     """
+    D = []
     while True:
+        col = mycolor(color)
+        drawopt = dict(color=col,bbox='last', view=None)
         P = create_point()
         if P==None:
+            undraw(D)
             break
-        D0 = draw(P, color=color, bbox='last', view=None)
         p, CS = toCameraCS(P)
         b, c, d = p[0]*CS.u, p[0]*CS.u + p[1]*CS.v, p[1]*CS.v
-        D1 = draw(Formex([[CS.o, b], [b, c], [c, d], [d, CS.o]]), color=color, bbox='last', view=None)
-        D2 = drawMarks([b*0.5, d*0.5], ['%.2e'%p[0], '%.2e'%p[1]], size=20, color=color, bbox='last', view=None)
         s = "*** Point 2D report ***\n"
         s += 'H %f V %f'%(p[0], p[1])
-        print (s)
-        pause(2.0)
-        [undraw(D) for D in [D0, D1, D2]]
+        cprint (s, color=col) # print in color on pyFormex message board
+        D+=[
+        draw(P, **drawopt),
+        draw(Formex([[CS.o, b], [b, c], [c, d], [d, CS.o]]), **drawopt),
+        drawMarks([b*0.5, d*0.5], ['%.2e'%p[0], '%.2e'%p[1]], size=20, mode='smooth',**drawopt) # smooth is needed for drawMarks
+        ]
+        color+=1
 
 
-def query_distance2D(color='magenta'):
+def query_distance2D(color=0):
     """2D distance between 2 points based on current camera
     
     It prints the 2D distance and also the horizontal
     and vertical components based on the current camera.
     Push on ESC to terminate, otherwise it repeats.
     """
+    D = []
     while True:
+        col = mycolor(color)
+        drawopt = dict(color=col,bbox='last', view=None)
         print ('starting point')
         p0 = create_point()
         if p0==None:
+            undraw(D)
             break
         p0c, CS0 = toCameraCS(p0)
         h0,v0 = p0c[:2]
-        D0 = draw(p0, color=color, bbox='last', view=None)
+        D += [draw(p0, **drawopt)]
         print ('end point')
         p1 = create_point()
         if p1==None:
+            undraw(D)
             break
         p1c, CS1 = toCameraCS(p1)
         h1,v1 = p1c[:2]
-        D1 = draw(p1, color=color, bbox='last', view=None)
+        D += [draw(p1, **drawopt)]
         if abs(CS1.w - CS0.w).sum(axis=0)>1.e-5: # zcam is the camera axis
             warning('You can not perform 2D measurements if you rotate the camera')
-            [undraw(D) for D in [D0, D1]]
-            return
+            undraw(D)
         d = length(p1-p0)
-        print (p0, p1)
-        D2=drawMarks([(p0+p1)*0.5], ['%.2e'%d], size=20, color=color, bbox='last', view=None)
-        D3=draw(Formex([[p0, p1]]), linewidth=3, color=color, bbox='last', view=None)
+        #~ print (p0, p1)
         s = "*** Distance 2D report ***\n"
         s += "[H %s, V %s] %s \n" % (h1-h0, v1-v0, d)
-        print (s)
-        pause(2.0)
-        [undraw(D) for D in [D0, D1, D2, D3]]
+        cprint (s, color=col) # print in color on pyFormex message board
+        D+=[
+        drawMarks([(p0+p1)*0.5], ['%.2e'%d], size=20, mode='smooth',**drawopt),
+        draw(Formex([[p0, p1]]), linewidth=3, **drawopt)
+        ]
+        color+=1
 
 
-def query_angle2D(color='magenta'):
+def query_angle2D(color=0):
     """Planar angle based on current camera plane.
     
     It prints the planar angle on the current camera plane.
     Push on ESC to terminate, otherwise it repeats.
     """
+    D = []
     while True:
+        col = mycolor(color)
+        drawopt = dict(color=col,bbox='last', view=None)
         print("Pick 3 points in 2D")
         print("Pick point on first ray")
         p0 = create_point()
         if p0==None:
+            undraw(D)
             break
         w0 = getCameraCS().w
-        D0 = draw(p0, color=color, bbox='last', view=None)
+        D += [draw(p0, **drawopt)]
         print("Pick the vertex")
         p1 = create_point()
         if p1==None:
+            undraw(D)
             break
         w1 = getCameraCS().w
-        D1 = draw(p1, color=color, bbox='last', view=None)
+        D += [draw(p1, **drawopt)]
         if abs(w1 - w0).sum(axis=0)>1.e-5:
             warning('You can not perform 2D measurements if you rotate the camera')
-            [undraw(D) for D in [D0, D1]]
+            undraw(D)
             return
         print("Pick point on second ray")
         p2 = create_point()
         if p2==None:
+            undraw(D)
             break
         w2 = getCameraCS().w
-        D2 = draw(p2, color=color, bbox='last', view=None)
+        D += [draw(p2, **drawopt)]
         if abs(w2 - w0).sum(axis=0)>1.e-5:
             warning('You can not perform 2D measurements if you rotate the camera')
-            [undraw(D) for D in [D0, D1, D2]]
-            return
+            undraw(D)
         angle = rotationAngle(A=p0-p1,B=p2-p1,m=w0,angle_spec=DEG)
         angle = angle[0]
-        D3=draw(Formex([[p0, p1]]), linewidth=3, color=color, bbox='last', view=None)
-        D4=draw(Formex([[p1, p2]]), linewidth=3, color=color, bbox='last', view=None)
-        D5=drawMarks([(p0+p2)*0.5], ['%.1f'%angle], size=20, color=color, bbox='last', view=None)
         s = "*** Angle 2D report ***\n"
         s += '%s degrees around camera axis'%angle
-        print (s)
-        pause(2.0)
-        [undraw(D) for D in [D0, D1, D2, D3, D4, D5]]
- 
+        cprint (s, color=col) # print in color on pyFormex message board
+        D += [draw(Formex([[p0, p1]]), linewidth=3, **drawopt)]
+        D += [draw(Formex([[p1, p2]]), linewidth=3, **drawopt)]
+        D += [drawMarks([(p0+p2)*0.5], ['%.1f'%angle], size=20, mode='smooth',**drawopt)]
+        color+=1 
 
 def report_selection():
     if selection is None:
