@@ -1473,7 +1473,8 @@ class Canvas(object):
             pf.debug("Actor %s: Selection %s" % (i, K[i]), pf.DEBUG.DRAW)
             self.actors[i].addHighlightElements(K[i])
 
-
+# GDS: this does not work with pickable
+# because K.keys are not referring to actors but to pickable!!!
     def highlightPoints(self, K):
         print("HIGHLIGHT_POINTS", K)
         self.scene.removeHighlight()

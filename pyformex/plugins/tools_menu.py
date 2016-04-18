@@ -298,7 +298,7 @@ def pickSinglePoint():
     """
     while True:
         print ('pick one single point')
-        K = pickPoints(filter='single')
+        K = pickPoints(filter='single') # NB highlight is wrong if pickable is specified
         if pf.canvas.selection_accepted == False:
             warning('you want to ESCAPE the picking functionality')
             return None
@@ -306,7 +306,10 @@ def pickSinglePoint():
             k = K.keys()[0]
             v = K[k]
             p = v[0]
-            A = pf.canvas.actors[k]
+            if  pf.canvas.pickable==None:
+                A = pf.canvas.actors[k]
+            else:
+                A = pf.canvas.pickable[k]
             x = A.points()
             return k, A.getType(), p, x[p]
         else:
@@ -447,14 +450,17 @@ def isPerspective():
     import pyformex as pf
     cam = pf.canvas.camera
     return cam.perspective
-
+                
 
 def create_point():
     """Returns a point anywhere on the screen.
     
-    You need the perspective OFF, otherwise it will set it OFF and re-run the function. 
-    You can escape the create_point without creating a point by pushing ESC on Keyboard. 
-    In this case a None is returned. 
+    You can exit in 3 ways:
+    - you can escape the create_point without creating a point by pushing ESC on Keyboard: None is returned
+    - right click or ENTER returns an empty list []
+    - left click returns a single point
+
+    You need the perspective OFF, otherwise it will set it OFF for you and re-run the function. 
     """
     from pyformex.plugins.tools_menu import isPerspective
     while True:
@@ -464,16 +470,21 @@ def create_point():
         if pf.canvas.draw_accepted == False:
             warning('you want to ESCAPE the drawing functionality')
             return None
-        elif len(p) == 1:
-            p = p[0]
-            if isPerspective():
-                showInfo("You can not pick 2D points if perspective is on. Please re-pick now.")
-                perspective(False)
-                return create_point()
-            else:
-                return p
         else:
-            showInfo("Invalid drawing: try again")
+            if len(p) == 0:
+                print ('this was a right click or ENTER')
+                return p
+            elif len(p) == 1:
+                p = p[0]
+                if isPerspective():
+                    showInfo("You can not pick 2D points if perspective is on. Please re-pick now.")
+                    perspective(False)
+                else:
+                    print ('one point created by left click')
+                    return p
+            else:
+                print (p)
+                raise ValueError, 'how did you get here?'
 
 
 def query_point2D(color=0):
