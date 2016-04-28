@@ -83,12 +83,13 @@ def createGeometry():
         caption = 'A cone',
         color = blue,
         alpha = 1.0,
+        pickable = False,
        )
 
     C.attrib(
         name = 'Cylinder',
         caption = 'A cylinder',
-        color = 'yellow',
+        color = 'cyan',
         bkcolor = 'green',
         alpha = 1.0,
         )
@@ -104,7 +105,7 @@ def createGeometry():
 def run():
     reset()
     clear()
-    #smooth()
+    smooth()
     transparent()
     bgcolor(white)
     view('right')

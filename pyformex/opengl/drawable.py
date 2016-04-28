@@ -482,6 +482,9 @@ class Actor(Base):
         self.drawable = []
         self.children = []
 
+        # By default, Actors are pickable
+        self.pickable = True
+
         # Acknowledge all object attributes and passed parameters
         self.update(obj.attrib)
         self.update(kargs)

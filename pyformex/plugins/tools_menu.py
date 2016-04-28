@@ -279,18 +279,20 @@ def query_elements():
 def query_points():
     query('point')
 def query_edges():
-    query('edge')        
-    
+    query('edge')
+
+
+# TODO: Should be adapted to new picked actor index !
 def pickSinglePoint():
     """Pick a single point and return Actor index, Actor type, Point index and Point coordinates.
-    
+
     A point is selected with left click and accepted (returned) with right click or ENTER.
     If your selection is empty it asks you to re-select until you get a valid selection.
-    You can escape the picking without selecting a point by pushing Cancel on GUI 
+    You can escape the picking without selecting a point by pushing Cancel on GUI
     or ESC on Keyboard. In this case a None is returned.
-    
+
     Examples:
-    
+
     A = draw(obj)
     pf.canvas.pickable  = [A] # you can only pick points of obj
     pic = pickSinglePoint()
@@ -317,7 +319,7 @@ def pickSinglePoint():
 
 
 def mycolor(i):
-    """remove white and other not good looking colors from colors.palette.keys()  """   
+    """remove white and other not good looking colors from colors.palette.keys()  """
     mycolors = ['darkgrey', 'red', 'green', 'blue', 'cyan', 'magenta', 'yellow',  'black', 'darkred', 'darkgreen', 'darkblue', 'darkcyan', 'darkmagenta', ]
     return mycolors[ i%(len(mycolors)) ]
 
@@ -332,7 +334,7 @@ def cprint(txt,color='black'):
 ## GDS: in tools.py the reportDistances is no longer used
 def query_distances(color=0):
     """Distances from one point to many points.
-    
+
     The query distances is repeated until you push on ESC or click on Cancel
     """
     D = []
@@ -351,7 +353,7 @@ def query_distances(color=0):
         K = selection
         if K == None:
             undraw(D)
-            break        
+            break
         s += "To points [x, y, z] magnitude: \n"
         for k in K.keys():
             v = K[k]
@@ -369,7 +371,7 @@ def query_distances(color=0):
 ## GDS: in tools.py the reportAngles is no longer used
 def query_angle(color=0):
     """Angle defined by 3D points.
-    
+
     The query angle is repeated until you push on ESC or click on Cancel
     """
     D = []
@@ -426,22 +428,22 @@ def getCameraCS(origin='global'):
 
 def toCameraCS(p):
     """ Reposition a geometry from global to camera coordinate system
-    
+
     Returns:
     - the repositioned geometry
     - the camera coordinate system
-    """ 
+    """
     camCS = getCameraCS(origin='global')
     return  p.transformCS(CoordSys(), camCS), camCS
 
 
 def fromCameraCS(p):
     """ Reposition a geometry from camera to global coordinate system
-    
+
     Returns:
     - the repositioned geometry
     - the camera coordinate system
-    """ 
+    """
     camCS = getCameraCS(origin='global')
     return p.transformCS(camCS,CoordSys()), camCS
 
@@ -450,17 +452,17 @@ def isPerspective():
     import pyformex as pf
     cam = pf.canvas.camera
     return cam.perspective
-                
+
 
 def create_point():
     """Returns a point anywhere on the screen.
-    
+
     You can exit in 3 ways:
     - you can escape the create_point without creating a point by pushing ESC on Keyboard: None is returned
     - right click or ENTER returns an empty list []
     - left click returns a single point
 
-    You need the perspective OFF, otherwise it will set it OFF for you and re-run the function. 
+    You need the perspective OFF, otherwise it will set it OFF for you and re-run the function.
     """
     from pyformex.plugins.tools_menu import isPerspective
     while True:
@@ -489,12 +491,12 @@ def create_point():
 
 def query_point2D(color=0):
     """2D point coordinates based on current camera
-    
-    It prints the horizontal and vertical positions from the global origin 
-    along the horizontal and vertical directions of the camera. 
-    The horizontal direction of the camera is the cross product of 
-    camera axis (focus-eye) and camera upvector. 
-    The vertical direction of the camera is the upvector. 
+
+    It prints the horizontal and vertical positions from the global origin
+    along the horizontal and vertical directions of the camera.
+    The horizontal direction of the camera is the cross product of
+    camera axis (focus-eye) and camera upvector.
+    The vertical direction of the camera is the upvector.
     Push on ESC to terminate, otherwise it repeats.
     """
     D = []
@@ -520,7 +522,7 @@ def query_point2D(color=0):
 
 def query_distance2D(color=0):
     """2D distance between 2 points based on current camera
-    
+
     It prints the 2D distance and also the horizontal
     and vertical components based on the current camera.
     Push on ESC to terminate, otherwise it repeats.
@@ -562,7 +564,7 @@ def query_distance2D(color=0):
 
 def query_angle2D(color=0):
     """Planar angle based on current camera plane.
-    
+
     It prints the planar angle on the current camera plane.
     Push on ESC to terminate, otherwise it repeats.
     """
@@ -607,7 +609,7 @@ def query_angle2D(color=0):
         D += [draw(Formex([[p0, p1]]), linewidth=3, **drawopt)]
         D += [draw(Formex([[p1, p2]]), linewidth=3, **drawopt)]
         D += [drawMarks([(p0+p2)*0.5], ['%.1f'%angle], size=20, mode='smooth',**drawopt)]
-        color+=1 
+        color+=1
 
 def report_selection():
     if selection is None:
@@ -988,8 +990,8 @@ def create_menu():
             ('&Distances', query_distances),
             ('&Angle', query_angle),
             ('&Point 2D', query_point2D),
-            ('&Distance 2D', query_distance2D), 
-            ('&Angle 2D', query_angle2D), 
+            ('&Distance 2D', query_distance2D),
+            ('&Angle 2D', query_angle2D),
             ]),
         ("---", None),
         ('&Reload', reload_menu),
