@@ -272,12 +272,16 @@ def pick_points(**kargs):
 def pick_edges():
     set_selection('edge')
 
+# GDS: the query_actors should be more interactive, like query_distances
 def query_actors():
     query('actor')
+# GDS: the query_elements should be more interactive, like query_distances
 def query_elements():
     query('element')
+# GDS: the query_points should be more interactive, like query_distances
 def query_points():
     query('point')
+# GDS: what is query_edges suppose to return? The 2 points of an edge and the element?
 def query_edges():
     query('edge')
 
@@ -292,15 +296,15 @@ def pickSinglePoint():
     or ESC on Keyboard. In this case a None is returned.
 
     Examples:
-
-    A = draw(obj)
-    pf.canvas.pickable  = [A] # you can only pick points of obj
-    pic = pickSinglePoint()
-    pf.canvas.pickable  = None
+    obj1.attrib.pickable = True # default
+    obj2.attrib(pickable=False) 
+    draw(obj1)
+    draw(obj2)
+    pic = pickSinglePoint() # you can only pick points of obj1
     """
     while True:
         print ('pick one single point')
-        K = pickPoints(filter='single') # NB highlight is wrong if pickable is specified
+        K = pickPoints(filter='single') 
         if pf.canvas.selection_accepted == False:
             warning('you want to ESCAPE the picking functionality')
             return None
@@ -308,10 +312,7 @@ def pickSinglePoint():
             k = K.keys()[0]
             v = K[k]
             p = v[0]
-            if  pf.canvas.pickable==None:
-                A = pf.canvas.actors[k]
-            else:
-                A = pf.canvas.pickable[k]
+            A = pf.canvas.actors[k]
             x = A.points()
             return k, A.getType(), p, x[p]
         else:
@@ -473,9 +474,9 @@ def create_point():
             warning('you want to ESCAPE the drawing functionality')
             return None
         else:
-            if len(p) == 0:
+            if len(p) == 0: # empty Coords
                 print ('this was a right click or ENTER')
-                return p
+                return []
             elif len(p) == 1:
                 p = p[0]
                 if isPerspective():
@@ -504,7 +505,7 @@ def query_point2D(color=0):
         col = mycolor(color)
         drawopt = dict(color=col,bbox='last', view=None)
         P = create_point()
-        if P==None:
+        if P==None or P == []:
             undraw(D)
             break
         p, CS = toCameraCS(P)
@@ -533,7 +534,7 @@ def query_distance2D(color=0):
         drawopt = dict(color=col,bbox='last', view=None)
         print ('starting point')
         p0 = create_point()
-        if p0==None:
+        if p0==None or p0 == []:
             undraw(D)
             break
         p0c, CS0 = toCameraCS(p0)
@@ -541,7 +542,7 @@ def query_distance2D(color=0):
         D += [draw(p0, **drawopt)]
         print ('end point')
         p1 = create_point()
-        if p1==None:
+        if p1==None or p1 == []:
             undraw(D)
             break
         p1c, CS1 = toCameraCS(p1)
@@ -575,14 +576,14 @@ def query_angle2D(color=0):
         print("Pick 3 points in 2D")
         print("Pick point on first ray")
         p0 = create_point()
-        if p0==None:
+        if p0==None or p0 == []:
             undraw(D)
             break
         w0 = getCameraCS().w
         D += [draw(p0, **drawopt)]
         print("Pick the vertex")
         p1 = create_point()
-        if p1==None:
+        if p1==None or p1 == []:
             undraw(D)
             break
         w1 = getCameraCS().w
@@ -593,7 +594,7 @@ def query_angle2D(color=0):
             return
         print("Pick point on second ray")
         p2 = create_point()
-        if p2==None:
+        if p2==None or p2 == []:
             undraw(D)
             break
         w2 = getCameraCS().w
