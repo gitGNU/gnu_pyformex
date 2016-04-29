@@ -83,7 +83,6 @@ def createGeometry():
         caption = 'A cone',
         color = blue,
         alpha = 1.0,
-        pickable = False,
        )
 
     C.attrib(

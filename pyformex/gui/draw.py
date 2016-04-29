@@ -909,7 +909,7 @@ def removeHighlight():
 
 
 
-def pick(mode='actor',filter=None,oneshot=False,func=None,pickable=None):
+def pick(mode='actor',filter=None,oneshot=False,func=None,pickable=None,prompt=None):
     """Enter interactive picking mode and return selection.
 
     See :func:`Canvas.pick` for more details.
@@ -936,6 +936,9 @@ def pick(mode='actor',filter=None,oneshot=False,func=None,pickable=None):
     - `pickable`: a list of Actors to pick from. The default is to use
       a list with all Actors having the pickable=True attribute (which is
       the default for newly constructed Actors).
+    - `prompt`: the text printed to prompt the user to start picking. If None,
+      a default prompt is printed. Specify an empty string to avoid printing
+      a prompt.
 
     Returns a (possibly empty) Collection with the picked items.
     After return, the value of the pf.canvas.selection_accepted variable
@@ -990,7 +993,11 @@ def pick(mode='actor',filter=None,oneshot=False,func=None,pickable=None):
 
     if func is None:
         func = pf.canvas.highlight_funcs.get(mode, None)
-    print("Select %s %s" % (filter, mode))
+
+    if prompt is None:
+        prompt = "Pick: Mode %s; Filter %s" % (mode,filter)
+    if prompt:
+        print(prompt)
 
     pf.GUI.statusbar.addWidget(pick_buttons)
     pf.GUI.statusbar.addWidget(filter_combo)
