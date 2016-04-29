@@ -77,7 +77,7 @@ def reload_menu():
     before = pf.GUI.menu.nextitem(_menu)
     print("Menu %s was before %s" % (_menu, before))
     close_menu()
-    plugins.refresh('draw2d')
+    plugins.refresh('draw2d_menu')
     show_menu(before=before)
     setDrawOptions({'bbox':'last'})
     print(pf.GUI.menu.actionList())

@@ -54,7 +54,7 @@ def refresh(plugin):
     if isinstance(module, ModuleType) and hasattr(module, 'show_menu'):
         reload(module)
     else:
-        error("No such module: %s" % plugin)
+        pf.error("No such module: %s" % plugin)
 
 
 def find_plugin_menus():
