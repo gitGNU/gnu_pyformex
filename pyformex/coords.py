@@ -1554,31 +1554,29 @@ class Coords(ndarray):
 
         - `n`: the normal direction to the plane. It can be specified either
           by a list of three floats, or by a single integer (0, 1 or 2) to
-          use one of the global axes.
-        - `P`: a point on the plane, by default the global origin.
-          If an int, the plane is the coordinate plane perpendicular to the
+          specify a plane perpendicular to one of the global axes.
+        - `P`: a point in the plane, by default the global origin.
 
-        .. note:: For planes parallel to a coordinate plane, it is far more
+        .. note:: For a plane parallel to a coordinate plane, it is far more
           efficient to specify the normal by an axis number than by a
           three component vector.
 
         .. note:: This method will also work if any or both of P and n have
-          a shape (ncoords,3), where ncoords is the total number of points
-          in the :class:`Coords`. This allows to project each point on an
-          individual plane.
+          the same shape as self, or can be reshaped to the same shape.
+          This allows to project each point on its individual plane.
 
-        Returns a :class:`Coords` with same shape as original, with all the
-        points projected on the specified plane(s).
+        Returns a :class:`Coords` with same shape as the original, with all
+        the points projected on the specified plane(s).
         """
+        x = self.reshape(-1,3).copy()
+        P = Coords(P).reshape(-1, 3)
         if isinstance(n, int):
-            x = self.copy()
-            x[..., n] = P[n]
-            return x
-
-        n = normalize(Coords(n).reshape(-1, 3))
-        x = self.reshape(-1, 3)
-        x = dotpr(n, (x-P)).reshape(-1, 1)
-        return self - x*n
+            x[:, n] = P[:, n]
+        else:
+            n = normalize(Coords(n).reshape(-1, 3))
+            d = dotpr(n, x-P).reshape(-1,1)
+            x -= d * n
+        return x.reshape(self.shape)
 
 
     def projectOnSphere(self,radius=1.,center=[0., 0., 0.]):
