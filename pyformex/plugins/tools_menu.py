@@ -332,6 +332,37 @@ def cprint(txt,color='black'):
     pf.GUI.board.write(txt,color=color)
 
 
+def pointlabels(color=0):
+    """Interactively write text labels on points.
+    
+    The point labelling is repeated until you push on ESC or click on Cancel
+    In the dialog you make choose to make the label temporary or permanent.
+    """
+    D = [] # list of not permanent labels
+    while True:
+        col = mycolor(color)
+        drawopt = dict(color=col,bbox='last', view=None)
+        out = pickSinglePoint()
+        if out == None:
+            undraw(D)
+            break
+        pos = out[3]
+        items = [  _I('label', "point-%s"%col),
+        _I('permanent', False, text='Permanent', tooltip='If checked, the label will not disappear after exiting'),
+        ]
+        res = askItems(items)
+        if len(res.keys())==0:
+            undraw(D)
+            break
+        label = res['label']
+        permanent =   res['permanent']     
+        from pyformex.opengl.textext import TextArray
+        d = drawMarks([pos], [label], size=20, mode='smooth',**drawopt)
+        if not permanent:
+            D+=[d]
+        color+=1
+
+
 ## GDS: in tools.py the reportDistances is no longer used
 def query_distances(color=0):
     """Distances from one point to many points.
@@ -993,6 +1024,7 @@ def create_menu():
             ('&Point 2D', query_point2D),
             ('&Distance 2D', query_distance2D),
             ('&Angle 2D', query_angle2D),
+            ('&Point labels',pointlabels)
             ]),
         ("---", None),
         ('&Reload', reload_menu),
