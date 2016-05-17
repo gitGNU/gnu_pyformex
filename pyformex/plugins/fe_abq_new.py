@@ -494,8 +494,11 @@ def fmtMaterial(mat):
 
 
     """
-    out = Command('MATERIAL',name=mat.name).out
     materialswritten.append(mat.name)
+    if mat.keys()==['name']:
+        return ''
+    
+    out = Command('MATERIAL',name=mat.name).out
 
     if mat.field is not None:
         out += Command('USER DEFINED FIELD').out
