@@ -133,6 +133,9 @@ def Update(vtkobj):
 
     if vtk.VTK_MAJOR_VERSION <= 5:
         vtkobj.Update()
+    if vtk.VTK_MAJOR_VERSION >= 7 and isinstance(vtkobj, vtk.vtkAlgorithm):
+        vtkobj.Update()
+
 
     return vtkobj
 
