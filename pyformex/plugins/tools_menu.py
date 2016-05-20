@@ -284,10 +284,8 @@ def query_points():
 # GDS: what is query_edges suppose to return? The 2 points of an edge and the element?
 def query_edges():
     query('edge')
-
-
 # TODO: Should be adapted to new picked actor index !
-def pickSinglePoint():
+def pickSinglePoint(pickable=None):
     """Pick a single point and return Actor index, Actor type, Point index and Point coordinates.
 
     A point is selected with left click and accepted (returned) with right click or ENTER.
@@ -301,10 +299,16 @@ def pickSinglePoint():
     draw(obj1)
     draw(obj2)
     pic = pickSinglePoint() # you can only pick points of obj1
+    
+    OR
+    
+    D = draw(obj)
+    pic = pickSinglePoint(pickable=[obj,]) 
+    
     """
     while True:
         print ('pick one single point')
-        K = pickPoints(filter='single') 
+        K = pick(mode='point',filter='single', oneshot=False, func=None, pickable=pickable, prompt=None)
         if pf.canvas.selection_accepted == False:
             warning('you want to ESCAPE the picking functionality')
             return None
