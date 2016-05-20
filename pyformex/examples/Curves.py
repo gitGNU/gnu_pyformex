@@ -122,7 +122,8 @@ def drawCurve(ctype,dset,closed,degree,endcond,curl,nseg,chordal,method,approx,e
             drawVectors(X, B, size=1., nolight=True, color='cyan')
 
     if sweep and isinstance(C,Curve):
-        F = Formex('l:i').mirror(2)
+        F = Formex('l:b').mirror(2)
+        draw(F)
         F = C.sweep(F.scale(0.05*C.dsize()))
         smoothwire()
         draw(F,color=red,mode='smoothwire')

@@ -508,6 +508,8 @@ class Curve(Geometry):
         Returns a list of Geometry/Coords objects.
         """
         X,T,N,B = self.frenet()
+        if csys:
+            geom = geom.fromCS(csys)
         return [ geom.fromCS(CoordSys(rot=column_stack([t,n,b]),trl=x)) for x,t,n,b in zip(X,T,N,B) ]
 
 
