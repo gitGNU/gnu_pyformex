@@ -59,7 +59,7 @@ curvetypes = [
 
 
 
-def drawCurve(ctype,dset,closed,degree,endcond,curl,nseg,chordal,method,approx,extend,cutWP=False,scale=None,frenet=False,avgdir=True,upvector=None):
+def drawCurve(ctype,dset,closed,degree,endcond,curl,nseg,chordal,method,approx,extend,scale=None,cutWP=False,frenet=False,avgdir=True,upvector=None,sweep=False):
     global S, TA
     P = dataset[dset]
     text = "%s %s with %s points" % (open_or_closed[closed], ctype.lower(), len(P))
@@ -105,11 +105,12 @@ def drawCurve(ctype,dset,closed,degree,endcond,curl,nseg,chordal,method,approx,e
             draw(PL, color=ctype_color[im])
         draw(PL.pointsOn(), color=black)
 
+    if approx:
+        C = PL
+    else:
+        C = S
+
     if frenet:
-        if approx:
-            C = PL
-        else:
-            C = S
         X, T, N, B = C.frenet(upvector=upvector, avgdir=avgdir)[:4]
         drawVectors(X, T, size=1., nolight=True, color='red')
         drawVectors(X, N, size=1., nolight=True, color='green')
@@ -120,6 +121,11 @@ def drawCurve(ctype,dset,closed,degree,endcond,curl,nseg,chordal,method,approx,e
             drawVectors(X, N, size=1., nolight=True, color='yellow')
             drawVectors(X, B, size=1., nolight=True, color='cyan')
 
+    if sweep and isinstance(C,Curve):
+        F = Formex('l:i').mirror(2)
+        F = C.sweep(F.scale(0.05*C.dsize()))
+        smoothwire()
+        draw(F,color=red,mode='smoothwire')
 
 
 dataset = [
@@ -136,6 +142,20 @@ dataset = [
     Coords([[0., 1., 0.], [0., 0.1, 0.], [0.1, 0., 0.],  [1., 0., 0.]]),
     Coords([[0., 1., 0.], [0., 0., 0.], [0., 0., 0.], [1., 0., 0.]]),
     Coords([[0., 0., 0.], [1., 0., 0.], [1., 1., 1.], [0., 1., 0.]]).scale(3),
+    Coords([
+[  1.49626994, 30.21483994,  17.10247993],
+[  9.15044022, 27.19248009, 15.05076027],
+[ 15.75351048, 24.26766014, 12.36573982],
+[ 13.35517025, 17.80452919,  9.27042007],
+[ 31.15517044, 18.58106995,  0.63323998],
+[ 27.05437088, -0.60475999, -2.6461401 ],
+[  7.66548014, -12.33625031, 17.51568985],
+[ -3.34934998, -12.35941029, 28.64728928],
+[ -9.86301041, -10.66467953, 38.48815918],
+[ -19.86301041, -10.66467953, 0.],
+[ -19.86301041, 10.66467953, 0.],
+[ -19.86301041, 10.66467953, 10.],
+]),
     ]
 
 _items = [
@@ -153,13 +173,14 @@ _items = [
     _I('ExtendAtStart', 0.0),
     _I('ExtendAtEnd', 0.0),
     _I('Scale', [1.0, 1.0, 1.0]),
+    _I('CutWithPlane', False),
     _I('Clear', True),
     _G('FrenetFrame', [
         _I('AvgDirections', True),
         _I('AutoUpVector', True),
         _I('UpVector', [0., 0., 1.]),
         ], checked=False),
-    _I('CutWithPlane', False),
+    _I('Sweep', False),
     ]
 
 _enablers = [
@@ -209,7 +230,7 @@ def show(all=False):
         Types = [CurveType]
     setDrawOptions({'bbox':'auto'})
     for Type in Types:
-        drawCurve(Type, int(DataSet), Closed, Degree, EndCurvatureZero, Curl, Nseg, Chordal, Method, Approximation, [ExtendAtStart, ExtendAtEnd], CutWithPlane, Scale, FrenetFrame, AvgDirections, UpVector)
+        drawCurve(Type, int(DataSet), Closed, Degree, EndCurvatureZero, Curl, Nseg, Chordal, Method, Approximation, [ExtendAtStart, ExtendAtEnd], Scale, CutWithPlane, FrenetFrame, AvgDirections, UpVector, Sweep)
         setDrawOptions({'bbox':None})
 
 def showAll():
