@@ -52,22 +52,25 @@ class CoordSys(object):
     vector.
 
     It can be initialized from a rotation matrix and translation vector,
-    or from a set of 4 points: the 3 endpoints of the unit vectors along
-    the axes, and the origin.
+    or from a set of 4 points: 1 point on each of the axes, plus the origin.
 
     Parameters:
 
     - `rot`: rotation matrix (3,3): default is identity matrix.
     - `trl`: translation vector (3,) or (1,3): default is [0,0,0].
-    - `points`: Coords-like (4,3): if specified, `rot` and `trl` arugments
-      are ignored and determined from::
+    - `points`: Coords-like (4,3): if specified, `rot` and `trl` arguments
+      are ignored and are determined from::
 
-         rot = points[:3] - points[3]
+         rot = :func:`arraytools.normalize`(points[:3] - points[3])
          trl = points[3]
 
     Example:
 
-    >>> C = CoordSys()
+    >>> C = CoordSys(points=[
+    ...    [ 4., 0., 0. ],
+    ...    [ 0., 2., 0. ],
+    ...    [ 0., 0., 3. ],
+    ...    [ 0., 0., 0. ]])
     >>> print(C.points())
     [[ 1.  0.  0.]
      [ 0.  1.  0.]
@@ -85,7 +88,8 @@ class CoordSys(object):
             if trl is None:
                 trl = np.zeros((3,))
         else:
-            rot = (points[:3] - points[3]).transpose()
+            points = at.checkArray(points,(4,3),'f')
+            rot = at.normalize(points[:3] - points[3]).transpose()
             trl = points[3]
 
         self.rot = rot
