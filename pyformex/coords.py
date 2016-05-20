@@ -2542,7 +2542,7 @@ def align(L,align,offset=[0., 0., 0.]):
 def positionCoordsObj(objects,path,normal=0,upvector=2,avgdir=False,enddir=None):
     """ Position a list of Coords objects along a path.
 
-    At each point of the curve, ao of the Coords object is created, with
+    At each point of the curve, a copy of the Coords object is created, with
     its origin in the curve's point, and its normal along the curve's direction.
     In case of a PolyLine, directions are pointing to the next point by default.
     If avgdir==True, average directions are taken at the intermediate points

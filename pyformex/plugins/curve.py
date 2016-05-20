@@ -449,7 +449,7 @@ class Curve(Geometry):
         A PolyLine approximation for the curve is constructed, using the
         :meth:`Curve.approx()` method with the arguments `ndiv`, `nseg`
         and `chordal`.
-        Then Frenet frames are constructed with :meth:`PolyLine.movingFrenet`
+        Then Frenet frames are constructed with :meth:`PolyLine._movingFrenet`
         using the remaining arguments.
         The resulting PolyLine points and Frenet frames are returned.
 
@@ -759,7 +759,7 @@ class PolyLine(Curve):
         the tangent (T), the normal (N) and the binormal (B).
         These vectors define a coordinate system that re-orients while walking
         along the polyline.
-        The movingFrenet method tries to minimize the twist angle.
+        The _movingFrenet method tries to minimize the twist angle.
 
         Parameters:
 
