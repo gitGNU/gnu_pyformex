@@ -1827,7 +1827,7 @@ class Coords(ndarray):
 
         The points are sorted based on their coordinate values. There is a
         maximum number of points (above 2 million) that can be sorted. If you
-        need to to sort more, first split up your data according to the first
+        need to sort more, first split up your data according to the first
         axis.
 
         Parameters:
@@ -1839,14 +1839,14 @@ class Coords(ndarray):
 
           An int array which is a permutation of range(self.npoints()).
           If taken in the specified order, it is guaranteed that no point can
-          have a coordinate that is larger that the corresponding coordinate
+          have a coordinate that is larger than the corresponding coordinate
           of the next point.
         """
         n = self.shape[0]
         nmax = iinfo('int64').max # max integer, a bit above 2 million
         if n > nmax:
             raise ValueError("I can only sort %s points" % nmax)
-        s0, s1, s2 = [ argsort(self[:, i]) for i in range(3) ]
+        s0, s1, s2 = [ argsort(self[..., i]) for i in range(3) ]
         i0, i1, i2 = [ inverseUniqueIndex(i) for i in [s0, s1, s2] ]
         val = i2 + n * (i1 + n * i0)
         return argsort(val)
@@ -2041,37 +2041,83 @@ class Coords(ndarray):
         return coords[elems]
 
 
-    def match(self,coords,clean=False,**kargs):
-        """Match points form another Coords object.
+    def match(self,coords,**kargs):
+        """Match points from another Coords object.
 
-        This method finds the points from `coords` that coincide with
+        Find the points from the passed `coords` object that coincide with
         (or are very close to) points of `self`.
+        This method works by concatenating the serialized point sets of
+        both Coords and then fusing them.
 
         Parameters:
 
         - `coords`: a Coords object
-        - `clean` :  boolean to return only matching indices
         - `**kargs`: keyword arguments that you want to pass to the
           :meth:`fuse` method.
 
-        This method works by concatenating the serialized point sets of
-        both Coords and then fusing them.
+        Returns a 1D int array of length `coords.npoints()` holding the
+        index of the points in `self` coinciding with those in `coords`.
+        If no point in `self` coincides, a value -1 is returned. If
+        multiple points in `self` coincide with the point in `coords`,
+        any of the coinciding indices may be returned. To avoid this
+        ambiguity, fuse() the Coords first.
 
-        Returns:
+        Example:
 
-        - `matches`: an Int array with shape (coords.shape[0]) if clean is False
-            where non matching positions have value -1 or an Int array
-            with shape (nmatches) if clean is True
+        >>> X = Coords([[1.],[2.],[3.],[1.]])
+        >>> Y = Coords([[1.],[2.00001],[4.]])
+        >>> print(X.match(Y))
+        [ 3  1 -1]
+        >>> print(X.fuse()[0].match(Y))
+        [ 0  1 -1]
+        >>> print(X.match(Y,clean=True))
+        [ 3  1 -1]
 
+        See also: :meth:`hasMatch`.
 
         """
+        if 'clean' in kargs:
+            utils.warn('warn_coords_match_changed')
+            del kargs['clean']
+
         x = Coords.concatenate([self.points(), coords.points()])
         c, e = x.fuse(**kargs)
         e0, e1 = e[:self.npoints()], e[self.npoints():]
-        matches = findIndex(e0, e1)
-        if clean:
-            matches=matches[matches>-1]
-        return matches
+        return findIndex(e0, e1)
+
+
+    def hasMatch(self,coords,**kargs):
+        """Find points also in another Coords object.
+
+        Find the points from the passed `coords` object that coincide with
+        (or are very close to) points of `self`.
+        This method is very similar to :meth:`match`, but does not give
+        information about which point of `self` matches which point of
+        `coords`.
+
+        Parameters:
+
+        - `coords`: a Coords object
+        - `**kargs`: keyword arguments that you want to pass to the
+          :meth:`fuse` method.
+
+        Returns a 1D int array with the uhnnique sorted indices of the points
+        in `self` that have a (nearly) matching point in `coords`.
+        If multiple points in `self` coincide with the same point in
+        `coords`, only one index will be returned for this case.
+
+        Example:
+
+        >>> X = Coords([[1.],[2.],[3.],[1.]])
+        >>> Y = Coords([[1.],[2.00001],[4.]])
+        >>> print(X.hasMatch(Y))
+        [1 3]
+
+        See also: :meth:`match`.
+
+        """
+        matches = self.match(coords,**kargs)
+        return unique(matches[matches>-1])
 
 
     def append(self, coords):
