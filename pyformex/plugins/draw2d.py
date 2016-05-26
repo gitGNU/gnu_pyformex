@@ -39,6 +39,7 @@ from pyformex.simple import circle
 from pyformex.plugins import objects
 from pyformex.plugins.geometry_menu import autoname, autoName, geomList
 from pyformex.gui.draw import *
+from pyformex.legacy.actors import CoordPlaneActor
 
 draw_mode_2d = ['point', 'polyline', 'curve', 'nurbs', 'circle']
 autoname['point'] = autoName('coords')
@@ -238,7 +239,7 @@ def objectName(actor):
     """Find the exported name corresponding to a canvas actor"""
     if hasattr(actor, 'object'):
         obj = actor.object
-        print("OBJECT", obj)
+        print("OBJECT", type(obj))
         for name in pf.PF:
             print(name)
             print(named(name))
@@ -251,14 +252,12 @@ def splitPolyLine(c):
     """Interactively split the specified polyline"""
     pf.options.debug = 1
     XA = draw(c.coords, clear=False, bbox='last', nolight=True)
-    pf.canvas.pickable = [XA]
-    #print "ACTORS",pf.canvas.actors
-    #print "PICKABLE",pf.canvas.pickable
-    k = pickPoints(filter='single', oneshot=True)
+    k = pickPoints(filter='single', oneshot=True, pickable=[XA])
     pf.canvas.pickable = None
     undraw(XA)
     if 0 in k:
         at = k[0]
+        print(at)
         return c.split(at)
     else:
         return []
@@ -266,15 +265,16 @@ def splitPolyLine(c):
 
 def split_curve():
     k = pickActors(filter='single', oneshot=True)
-    print(k)
-    print(k[-1])
-    if -1 not in k:
+    if -1 not in k.keys():
         return
     nr = k[-1][0]
+    print("Selecting actor %s" % nr)
     actor = pf.canvas.actors[nr]
+    print("Actor",actor)
     name = objectName(actor)
     print("Enter a point to split %s" % name)
-    c = named(name)
+    c = actor.object
+    print("Object",c)
     cs = splitPolyLine(c)
     if len(cs) == 2:
         draw(cs[0], color='red')
@@ -299,7 +299,7 @@ _grid_data = [
 
 def create_grid():
     global dx, dy
-    dia = dialog(_grid_data)
+    dia = Dialog(_grid_data)
     if hasattr(pf.canvas, '_grid'):
         if hasattr(pf.canvas, '_grid_data'):
             dia.updateData(pf.canvas._grid_data)
@@ -323,7 +323,7 @@ def create_grid():
             c = bbox(obj).center()
             ox = c + ox
 
-        grid = actors.CoordPlaneActor(nx=(nx, ny, 0), ox=ox, dx=(dx, dy, 0.), linewidth=lwidth, linecolor=lcolor, planes=showplane, planecolor=pcolor, alpha=0.3)
+        grid = CoordPlaneActor(nx=(nx, ny, 0), ox=ox, dx=(dx, dy, 0.), linewidth=lwidth, linecolor=lcolor, planes=showplane, planecolor=pcolor, alpha=0.3)
         remove_grid()
         drawActor(grid)
         pf.canvas._grid = grid

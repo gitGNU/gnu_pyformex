@@ -133,6 +133,9 @@ def Update(vtkobj):
 
     if vtk.VTK_MAJOR_VERSION <= 5:
         vtkobj.Update()
+    if vtk.VTK_MAJOR_VERSION >= 7 and isinstance(vtkobj, vtk.vtkAlgorithm):
+        vtkobj.Update()
+
 
     return vtkobj
 
@@ -991,31 +994,6 @@ def _vtkSurfacePlanes(self):
         raise warning('The input should be a convex closed manifold TriSurface. Results may be incorrect.')
     return _vtkPlanes(p=self.centroids(),n=self.areaNormals()[1])
 
-def _vtkBoxPlanes(box):
-    """ Set a box with vtkPlanes implicit function.
-
-     Parameters:
-
-    - `box` : Coords, Formex or Mesh objects.
-
-        - Coords array of shape (2,3) : the first point containing the
-            minimal coordinates, the second the maximal ones.
-        - Formex or Mesh specifying one hexahedron.
-
-
-    Returns the vtkPlanes implicit function of the box.
-    """
-    from pyformex.simple import cuboid
-    from pyformex.arraytools import checkArray
-    if isinstance(box,Coords):
-        box = checkArray(box,shape=(2,3))
-        box=cuboid(*box)
-    box = box.toMesh()
-    box = Mesh(box.coords,box.getFaces())
-    box.setNormals('auto')
-    p = box.centroids()
-    n = box.normals.mean(axis=1)
-    return _vtkPlanes(p,n)
 
 def _vtkSphere(c, r):
     from vtk import vtkSphere
@@ -1144,9 +1122,10 @@ def vtkCut(self, implicitdata, method=None):
     elif method=='boxplanes':
         box = implicitdata
         return _vtkCutter(self,_vtkBoxPlanes(box))
-    elif method=='planes':
-        p,n = implicitdata
-        return _vtkCutter(self,_vtkPlanes(p,n))
+    elif method=='boxplanes':
+        utils.warn('warn_vtkboxplanes_removed')
+        raise ValueError('method boxplanes has been removed, use surface')
+        # TODO this has to be removed
     elif method=='surface':
         s = implicitdata
         return _vtkCutter(self,_vtkSurfacePlanes(s))
@@ -1161,7 +1140,7 @@ def vtkClip(self, implicitdata, method=None, insideout=False):
 
     Parameters:
 
-    - `self`: a Mesh (line2,tri3,quad4).
+    - `self`: a Mesh.
     - `implicitdata`: list or vtkImplicitFunction. If list it must contains the
         parameter for the predefined implicit functions:
 
@@ -1173,7 +1152,8 @@ def vtkClip(self, implicitdata, method=None, insideout=False):
             minimal  and coordinates of the box. Formex or Mesh specifying one hexahedron. See _vtkPlanesBox.
         -  method ==  `planes`  : points array-like of shape (npoints,3) and
                 normal vectors array-like of shape (npoints,3) defining the cutting planes.
-
+        -  method ==  `surface`  : a closed convex manifold trisurface.
+        
     - `method`: str or None. If string allowed values are `plane`,`planes`, `sphere`,
         `box` to select the correspondent implicit functions by providing the
         `implicitdata` parameters. If None a vtkImplicitFunction must be passed directly
@@ -1181,13 +1161,11 @@ def vtkClip(self, implicitdata, method=None, insideout=False):
     - `insideout`:boolean or an integer with values 0 or 1 to choose which side of the mesh should be returned.
 
     Clipping does not reduce the mesh dimension.
-    Returns always 3 meshes (line2, tri3, quad4):
-    a line2 mesh if self is a line2 mesh,
-    a tri3 mesh if self is a tri3 mesh,
-    both tri3 and quad4 mesh is self is a quad4 mesh.
-    None is returned if a mesh does not exist (e.g. clipping with
-    a box which is outside the mesh).
-    It has not been tested with volume meshes.
+    Returns always a list of meshes, each one having the same element type.
+    None is returned if a mesh does not exist (e.g. clipping with a box which is outside the mesh).
+    The mesh density can influence the clipping results, especially with solid elements.
+    In this case the corner of the implicit function can be smoothed resulting in wrong clipping at these 
+    locations.
     """
     if method=='plane':
         p,n = implicitdata
@@ -1199,8 +1177,9 @@ def vtkClip(self, implicitdata, method=None, insideout=False):
         box = implicitdata
         return _vtkClipper(self,_vtkBox(box),insideout)
     elif method=='boxplanes':
-        box = implicitdata
-        return _vtkClipper(self,_vtkBoxPlanes(box),insideout)
+        utils.warn('warn_vtkboxplanes_removed')
+        # TODO this has to be removed
+        raise ValueError('method boxplanes has been removed, use surface')
     elif method=='planes':
         p,n = implicitdata
         return _vtkClipper(self,_vtkPlanes(p,n),insideout)

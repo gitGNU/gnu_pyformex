@@ -450,11 +450,14 @@ def autoName(base,*args):
 # The following are not used by the PropertyDB class,
 # but may be convenient for the user in applications
 
+Nset_prefix = 'Nset'
+Eset_prefix = 'Eset'
+
 def Nset(*args):
-    return autoName('Nset',*args)
+    return autoName(Nset_prefix,*args)
 
 def Eset(*args):
-    return autoName('Eset',*args)
+    return autoName(Eset_prefix,*args)
 
 #############################################################
 ##################### Properties Database ###################

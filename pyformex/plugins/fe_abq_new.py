@@ -494,8 +494,11 @@ def fmtMaterial(mat):
 
 
     """
-    out = Command('MATERIAL',name=mat.name).out
     materialswritten.append(mat.name)
+    if mat.keys()==['name']:
+        return ''
+    
+    out = Command('MATERIAL',name=mat.name).out
 
     if mat.field is not None:
         out += Command('USER DEFINED FIELD').out
@@ -764,7 +767,7 @@ def fmtSolidSection(section ,setname):
       
       control_name = 'SEC-CTRL'
       sec_control_opt = 'CONTROLS=%s'%control_name
-      sec_control_extra = '*SECTION CONTROL , NAME=%s , HOURGLASS=ENHANCED\n1.,1.,1.'%control_name
+      sec_control_extra = '*SECTION CONTROLS , NAME=%s , HOURGLASS=ENHANCED\n1.,1.,1.'%control_name
       
       section1 = ElemSection(sectiontype='SOLID' , name='section1' , material=mat1 , \
         options=sec_control_opt , extra=sec_control_extra)
@@ -2693,33 +2696,34 @@ Script: %s
             else:
                 # default is all elements
                 set = arange(telems)
+            
+            if len(p.set):
+                if 'eltype' in p:
+                    pf.debug('Elements of type %s: %s' % (p.eltype, set), pf.DEBUG.ABQ)
 
-            if 'eltype' in p:
-                pf.debug('Elements of type %s: %s' % (p.eltype, set), pf.DEBUG.ABQ)
-
-                setname = esetName(p)
-                gl, gr = self.model.splitElems(set)
-                elems = self.model.getElems(gr)
-                for i, elnrs, els in zip(range(len(gl)), gl, elems):
-                    grpname = Eset('grp', i)
-                    subsetname = Eset(p.nr, 'grp', i, setname)
-                    print("GROUP NAME %s" % grpname)
-                    print("SUBSET NAME %s" % subsetname)
-                    nels = len(els)
-                    # Translate element connectivity to Abaqus order
-                    if els.eltype in AbqConnectivity:
-                        els = els[:,AbqConnectivity[els.eltype]]
-                    if nels > 0:
-                        print("Writing %s elements from group %s" % (nels, i))
-                        writeElems(fil, els, p.eltype, name=subsetname, eid=elnrs, nofs=self.nofs, eofs=self.eofs)
-                        nelems += nels
-                        if group_by_eset:
-                            writeSet(fil, 'ELSET', setname, [subsetname])
-                        if group_by_group:
-                            print("write grpset %s: %s" % (grpname, subsetname))
-                            writeSet(fil, 'ELSET', grpname, [subsetname])
-            else:
-                writeSet(fil, 'ELSET', p.name, p.set, ofs=self.eofs)
+                    setname = esetName(p)
+                    gl, gr = self.model.splitElems(set)
+                    elems = self.model.getElems(gr)
+                    for i, elnrs, els in zip(range(len(gl)), gl, elems):
+                        grpname = Eset('grp', i)
+                        subsetname = Eset(p.nr, 'grp', i, setname)
+                        print("GROUP NAME %s" % grpname)
+                        print("SUBSET NAME %s" % subsetname)
+                        nels = len(els)
+                        # Translate element connectivity to Abaqus order
+                        if els.eltype in AbqConnectivity:
+                            els = els[:,AbqConnectivity[els.eltype]]
+                        if nels > 0:
+                            print("Writing %s elements from group %s" % (nels, i))
+                            writeElems(fil, els, p.eltype, name=subsetname, eid=elnrs, nofs=self.nofs, eofs=self.eofs)
+                            nelems += nels
+                            if group_by_eset:
+                                writeSet(fil, 'ELSET', setname, [subsetname])
+                            if group_by_group:
+                                print("write grpset %s: %s" % (grpname, subsetname))
+                                writeSet(fil, 'ELSET', grpname, [subsetname])
+                else:
+                    writeSet(fil, 'ELSET', p.name, p.set, ofs=self.eofs)
 
         print("Total number of elements: %s" % telems)
         if nelems != telems:

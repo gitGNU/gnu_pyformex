@@ -306,6 +306,8 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
     def __init__(self,*args,**kargs):
         """Initialize an empty canvas."""
         QtOpenGL.QGLWidget.__init__(self,*args)
+        if pf.options.debuglevel & pf.DEBUG.OPENGL:
+            pf.debug("QtCanvas.__init__:\n"+OpenGLFormat(self.format()),pf.DEBUG.OPENGL)
         # Define our privatee signals
         self.signals = self.Communicate()
         self.CANCEL = self.signals.CANCEL
@@ -662,15 +664,8 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
 
 ####################### INTERACTIVE PICKING ############################
 
-    def setPickable(self,nrs=None):
-        """Set the list of pickable actors"""
-        if nrs is None:
-            self.pickable = None
-        else:
-            self.pickable = [ self.actors[i] for i in nrs if i in range(len(self.actors))]
 
-
-    def start_selection(self, mode, filter):
+    def start_selection(self, mode, filter, pickable=None):
         """Start an interactive picking mode.
 
         If selection mode was already started, mode is disregarded and
@@ -687,6 +682,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
             self.DONE.connect(self.accept_selection)
             self.CANCEL.connect(self.cancel_selection)
             self.pick_mode = mode
+            self.pickable = pickable
             self.selection_front = None
 
         if filter == 'none':
@@ -721,6 +717,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         self.DONE.disconnect(self.accept_selection)
         self.CANCEL.disconnect(self.cancel_selection)
         self.pick_mode = None
+        self.pickable = None
         pf.debug("FINISH SELECTION DONE", pf.DEBUG.GUI)
 
 
@@ -741,7 +738,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         self.accept_selection(clear=True)
 
 
-    def pick(self,mode='actor',oneshot=False,func=None,filter=None):
+    def pick(self,mode='actor',oneshot=False,func=None,filter=None,pickable=None):
         """Interactively pick objects from the viewport.
 
         - `mode`: defines what to pick : one of
@@ -760,17 +757,27 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
           - None (default) will return the complete selection.
           - 'closest' will only keep the element closest to the user.
           - 'connected' will only keep elements connected to
+
             - the closest element (set picked)
             - what is already in the selection (add picked).
 
             Currently this only works when picking mode is 'element' and
             for Actors having a partitionByConnection method.
 
-        When the picking operation is finished, the selection is returned.
-        The return value is always a Collection object.
+
+        Returns a (possibly empty) Collection with the picked items.
+        After return, the value of the pf.canvas.selection_accepted variable
+        can be tested to find how the picking operation was exited:
+        True means accepted (right mouse click, ENTER key, or OK button),
+        False means canceled (ESC key, or Cancel button). In the latter case,
+        the returned Collection is always empty
+
+        Small bugs:
+        - if oneshot=True the pf.canvas.selection_accepted is always True, even if you ESC
+        - the first time you pick the ESC does not work. You need at least to left click before.
         """
         self.selection_canceled = False
-        self.start_selection(mode, filter)
+        self.start_selection(mode, filter, pickable)
         while not self.selection_canceled:
             self.wait_selection()
             if not self.selection_canceled:
@@ -829,7 +836,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
             if oneshot:
                 self.accept_selection()
         if func and not self.selection_accepted:
-            func(self.selection)
+            func(self, self.selection)
         self.finish_selection()
         return self.selection
 
@@ -868,6 +875,8 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         has been reached, or when the user clicks the right mouse button or
         hits 'ENTER'.
         The return value is a (n,3) shaped Coords array.
+        To know in which way the drawing was finished check the pf.canvas.draw_accepted:
+        True means mouse right click / ENTER, False means ESC button on keyboard.
         """
         self.draw_canceled = False
         self.start_draw(mode, zplane, coords)
@@ -1064,8 +1073,8 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         if pf.options.debuglevel & pf.DEBUG.GUI:
             p = self.sizePolicy()
             print("Size policy %s,%s,%s,%s" % (p.horizontalPolicy(), p.verticalPolicy(), p.horizontalStretch(), p.verticalStretch()))
-        self.initCamera()
         self.glinit()
+        self.initCamera()
         self.resizeGL(self.width(), self.height())
         self.setCamera()
 

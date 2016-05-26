@@ -21,40 +21,8 @@
 ##  You should have received a copy of the GNU General Public License
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
-"""ClippingBoxVTK
+"""pyFormex subpackage.
 
-Clips a mesh with sheared box using VTK.
+Do not remove this file. It is used by Python to mark the
+directory as a pyFormex subpackage.
 """
-from __future__ import print_function
-
-
-_status = 'checked'
-_level = 'normal'
-_topics = ['surface','mesh','vtk']
-_techniques = ['intersection','clip','cut','vtk']
-
-from pyformex.gui.draw import *
-from pyformex.simple import sphere,cuboid
-from pyformex.plugins.vtk_itf import vtkClip
-
-
-def run():
-    
-    clear()
-    transparent()
-    smoothwire
-    
-    nsphere = 10
-    S = sphere(nsphere)
-    
-    bbs=cuboid(*S.bbox()).toMesh().scale([0.8,0.8,1]).rot(30,1).rot(20,0).shear(2,1,0.3).toSurface()
-    
-    clippedIn=vtkClip(S,implicitdata=bbs,method='surface',insideout=0)
-    clippedOut=vtkClip(S,implicitdata=bbs,method='surface',insideout=1)
-
-    draw(clippedIn,color=red,alpha=1)
-    draw(clippedOut,color=blue,alpha=1)
-    draw(bbs,color=yellow)
-
-if __name__ == '__draw__':
-    run()

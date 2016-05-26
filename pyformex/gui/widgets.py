@@ -3132,9 +3132,9 @@ class MessageBox(QtGui.QMessageBox):
     or hit the ESC key before he can continue.
 
     If you want a modeless dialog, allowing the user to continue while the
-    message stays open, use the :meth:`show()` mehod to display it.
+    message stays open, use the :meth:`show()` method to display it.
     """
-    def __init__(self,text,format='',level='info',actions=['OK'],default=None,timeout=None,modal=None,parent=None,check=None):
+    def __init__(self,text,format='',level='info',actions=['OK'],default=None,timeout=None,modal=None,parent=None):
         if parent is None:
             parent = pf.GUI
         QtGui.QMessageBox.__init__(self, parent)
@@ -3147,15 +3147,19 @@ class MessageBox(QtGui.QMessageBox):
         if icon:
             self.setIcon(icon)
 
+        # Get the buttons layout
+        #layout = self.layout().itemAtPosition(2,0).widget().layout()
+        #self._buttons = addActionButtons(layout, actions)
+
         for a in actions:
             b = self.addButton(a, QtGui.QMessageBox.AcceptRole)
             if a == default:
                 self.setDefaultButton(b)
 
         addTimeOut(self, timeout, self.accept)
-        self.checks = []
-        if check:
-            self.checks.append(self.addCheck(check))
+        ## self.checks = []
+        ## if check:
+        ##     self.checks.append(self.addCheck(check))
 
     def getIcon(self, level='noicon'):
         if level == 'info':
@@ -3168,13 +3172,13 @@ class MessageBox(QtGui.QMessageBox):
             return self.Question
 
 
-    def addCheck(self, text):
-        """Add a check field at the bottom of the layout."""
-        grid = self.layout()
-        nr, nc = grid.rowCount(), grid.columnCount()
-        check = QtGui.QCheckBox(text)
-        grid.addWidget(check, nr, 1)
-        return check
+    ## def addCheck(self, text):
+    ##     """Add a check field at the bottom of the layout."""
+    ##     grid = self.layout()
+    ##     nr, nc = grid.rowCount(), grid.columnCount()
+    ##     check = QtGui.QCheckBox(text)
+    ##     grid.addWidget(check, nr, len(self.checks))
+    ##     return check
 
 
     def show(self,modal=False):
@@ -3199,45 +3203,14 @@ class MessageBox(QtGui.QMessageBox):
             res = str(b.text())
         else:
             res = ''
-        if self.checks:
-            return res, [c.isChecked() for c in self.checks]
-        else:
-            return res
+        ## if self.checks:
+        ##     return res, [c.isChecked() for c in self.checks]
+        ## else:
+        return res
 
 
     def updateText(self,text,format=''):
         updateText(self._t, text, format)
-
-
-class WarningBox(QtGui.QMessageBox):
-    """A message box is a widget displaying a short text for the user.
-
-    The message box displays a text, an optional icon depending on the level
-    and a number of push buttons.
-
-    - `text`: the text to be shown. This can be either plain text or html
-      or reStructuredText.
-    - `format`: the text format: either 'plain', 'html' or 'rest'.
-      Any other value will try automatic recognition.
-      Recognition of plain text and html is automatic.
-      A text is autorecognized to be reStructuredText if its first
-      line starts with '..' and is followed by a blank line.
-    - `level`: defines the icon that will be shown together with the text.
-      If one of 'question', 'info', 'warning' or 'error', a matching icon
-      will be shown to hint the user about the type of message. Any other
-      value will suppress the icon.
-    - `actions`: a list of strings. For each string a pushbutton will be
-      created which can be used to exit the dialog and remove the message.
-      By default there is a single button labeled 'OK'.
-
-    When the MessageBox is displayed with the :meth:`getResults()` method,
-    a modal
-    dialog is created, i.e. the user will have to click a button or hit the
-    ESC key before he can continue.
-
-    If you want a modeless dialog, allowing the user to continue while the
-    message stays open, use the :meth:`show()` mehod to display it.
-    """
 
 
 class TextBox(QtGui.QDialog):
@@ -3298,11 +3271,10 @@ def addActionButtons(layout,actions=[('Cancel',), ('OK',)],default=None,
     If actions is None (default), it will be set to the default
     ``[('Cancel',),('OK',)]``.
 
-    Specify actions=[] if you want an empty dialogDuttons.
     default is the name of the action to set as the default. If no default
     is given, it is set to the LAST button.
 
-    Returns a horizontal box layout with the buttons.
+    Returns a list of QPushButtons.
     """
     if not pf.options.pyside:
         # In pyqt4, the clicked signal always sends a bool

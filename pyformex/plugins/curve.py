@@ -34,6 +34,7 @@ from pyformex import zip
 
 import pyformex as pf
 from pyformex.coords import *
+from pyformex.coordsys import CoordSys
 from pyformex.geometry import Geometry
 from pyformex.formex import Formex, connect
 from pyformex.mesh import Mesh
@@ -449,7 +450,7 @@ class Curve(Geometry):
         A PolyLine approximation for the curve is constructed, using the
         :meth:`Curve.approx()` method with the arguments `ndiv`, `nseg`
         and `chordal`.
-        Then Frenet frames are constructed with :meth:`PolyLine.movingFrenet`
+        Then Frenet frames are constructed with :meth:`PolyLine._movingFrenet`
         using the remaining arguments.
         The resulting PolyLine points and Frenet frames are returned.
 
@@ -489,6 +490,53 @@ class Curve(Geometry):
         X = PL.coords
         T, N, B = PL._movingFrenet(upvector=upvector, avgdir=avgdir, compensate=compensate)
         return X, T, N, B
+
+
+    def position(self,geom,csys=None):
+        """ Position a Geometry object along a path.
+
+        Parameters:
+
+        - `geom`: Geometry or Coords.
+        - `csys`: CoordSys.
+
+        For each point of the curve, a copy of the Geometry/Coords object
+        is created, and positioned thus that the specified csys (default
+        the global axes) coincides with the curve's frenet axes at that
+        point.
+
+        Returns a list of Geometry/Coords objects.
+        """
+        X,T,N,B = self.frenet()
+        if csys:
+            geom = geom.fromCS(csys)
+        return [ geom.fromCS(CoordSys(rot=column_stack([t,n,b]),trl=x)) for x,t,n,b in zip(X,T,N,B) ]
+
+
+    def sweep(self,mesh,eltype=None,csys=None):
+        """Sweep a mesh along the curve, creating an extrusion.
+
+        Parameters:
+
+        - `mesh`: Mesh-like object. This is usually a planar object
+          that is swept in the direction normal to its plane.
+        - `eltype`: string. Name of the element type on the
+          returned Meshes.
+        - `**kargs`: keyword arguments that are passed to
+          func:`coords.sweepCoords`, with the same meaning.
+          Usually, you will need to at least set the `normal` parameter.
+
+        Returns a Mesh obtained by sweeping the given Mesh over a path.
+        The returned Mesh has double plexitude of the original.
+        If `path` is a closed Curve connect back to the first.
+
+        .. note:: Sweeping nonplanar objects and/or sweeping along very curly
+        curves may result in physically impossible geometries.
+        """
+        loop = self.closed
+        mesh = mesh.toMesh()
+        seq = self.position(mesh.coords,csys)
+        return mesh.connect(seq, eltype=eltype,loop=loop)
 
 
     def toFormex(self,*args,**kargs):
@@ -759,7 +807,7 @@ class PolyLine(Curve):
         the tangent (T), the normal (N) and the binormal (B).
         These vectors define a coordinate system that re-orients while walking
         along the polyline.
-        The movingFrenet method tries to minimize the twist angle.
+        The _movingFrenet method tries to minimize the twist angle.
 
         Parameters:
 

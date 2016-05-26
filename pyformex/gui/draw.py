@@ -1,4 +1,4 @@
-## $Id$
+# $Id$
 ##
 ##  This file is part of pyFormex 1.0.2  (Thu Jun 18 15:35:31 CEST 2015)
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
@@ -909,19 +909,43 @@ def removeHighlight():
 
 
 
-def pick(mode='actor',filter=None,oneshot=False,func=None):
+def pick(mode='actor',filter=None,oneshot=False,func=None,pickable=None,prompt=None):
     """Enter interactive picking mode and return selection.
 
-    See viewport.py for more details.
+    See :func:`Canvas.pick` for more details.
     This function differs in that it provides default highlighting
-    during the picking operation, a button to stop the selection operation
+    during the picking operation and a OK/Cancel buttons to stop
+    the picking operation.
 
     Parameters:
 
-    - `mode`: one of the pick modes
-    - `filter`: one of the `selection_filters`. The default picking filter
+    - `mode`: defines what to pick : one of 'actor', 'element', 'face',
+      'edge', 'point' or 'number'.
+      'face' and 'edge' are only available for Mesh type geometry.
+    - `filter`: one of the `selection_filters`. The default picking filter is
       activated on entering the pick mode. All available filters are
       presented in a combobox.
+    - `oneshot`: if True, the function returns as soon as the user ends
+      a picking operation. The default is to let the user
+      modify his selection and only to return after an explicit
+      cancel (ESC or right mouse button).
+    - `func`: if specified, this function will be called after each
+      atomic pick operation. The Collection with the currently selected
+      objects is passed as an argument. This can e.g. be used to highlight
+      the selected objects during picking.
+    - `pickable`: a list of Actors to pick from. The default is to use
+      a list with all Actors having the pickable=True attribute (which is
+      the default for newly constructed Actors).
+    - `prompt`: the text printed to prompt the user to start picking. If None,
+      a default prompt is printed. Specify an empty string to avoid printing
+      a prompt.
+
+    Returns a (possibly empty) Collection with the picked items.
+    After return, the value of the pf.canvas.selection_accepted variable
+    can be tested to find how the picking operation was exited:
+    True means accepted (right mouse click, ENTER key, or OK button),
+    False means canceled (ESC key, or Cancel button). In the latter case,
+    the returned Collection is always empty
     """
     subsel_values = { 'any': 'any vertex', 'all': 'all vertices' }
 
@@ -936,14 +960,6 @@ def pick(mode='actor',filter=None,oneshot=False,func=None):
         if pf.canvas.pick_mode is not None and s in pf.canvas.selection_filters:
             pf.canvas.start_selection(None, s)
 
-
-    ## def _toggle_subsel_mode(fld):
-    ##     """Toggle the value of the subsel mode"""
-    ##     val = fld.value()
-    ##     ind = 1 - subsel_values.index(val)
-    ##     val = subsel_values[ind]
-    ##     pf.canvas.pick_mode_subsel = val[:3]   # 'any' or 'all'
-    ##     return val
 
     def _set_subsel_mode(val):
         """Toggle the value of the subsel mode"""
@@ -977,14 +993,18 @@ def pick(mode='actor',filter=None,oneshot=False,func=None):
 
     if func is None:
         func = pf.canvas.highlight_funcs.get(mode, None)
-    print("Select %s %s" % (filter, mode))
+
+    if prompt is None:
+        prompt = "Pick: Mode %s; Filter %s" % (mode,filter)
+    if prompt:
+        print(prompt)
 
     pf.GUI.statusbar.addWidget(pick_buttons)
     pf.GUI.statusbar.addWidget(filter_combo)
     if subsel_button:
         pf.GUI.statusbar.addWidget(subsel_button)
     try:
-        sel = pf.canvas.pick(mode, oneshot, func, filter)
+        sel = pf.canvas.pick(mode, oneshot, func, filter, pickable)
     finally:
         # cleanup
         if pf.canvas.pick_mode is not None:

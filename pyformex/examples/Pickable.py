@@ -21,40 +21,49 @@
 ##  You should have received a copy of the GNU General Public License
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
-"""ClippingBoxVTK
 
-Clips a mesh with sheared box using VTK.
+"""Pickable
+
+This example illustrates the use of the pickable argument in pick functions
+and the pickable attribute of Actors.
 """
 from __future__ import print_function
 
 
 _status = 'checked'
 _level = 'normal'
-_topics = ['surface','mesh','vtk']
-_techniques = ['intersection','clip','cut','vtk']
+_topics = ['pick']
+_techniques = ['pickable']
 
 from pyformex.gui.draw import *
-from pyformex.simple import sphere,cuboid
-from pyformex.plugins.vtk_itf import vtkClip
+from pyformex.examples.WebGL import createGeometry
 
 
 def run():
-    
+    reset()
     clear()
-    transparent()
-    smoothwire
-    
-    nsphere = 10
-    S = sphere(nsphere)
-    
-    bbs=cuboid(*S.bbox()).toMesh().scale([0.8,0.8,1]).rot(30,1).rot(20,0).shear(2,1,0.3).toSurface()
-    
-    clippedIn=vtkClip(S,implicitdata=bbs,method='surface',insideout=0)
-    clippedOut=vtkClip(S,implicitdata=bbs,method='surface',insideout=1)
+    smoothwire()
+    bgcolor(white)
+    view('right')
 
-    draw(clippedIn,color=red,alpha=1)
-    draw(clippedOut,color=blue,alpha=1)
-    draw(bbs,color=yellow)
+    # Create some geometrical objects (sphere, cone, cylinder)
+    objects = createGeometry()
+
+    # Make the cone non-pickable
+    objects[1].attrib(pickable=False)
+
+    # draw the objects
+    actors = draw(objects)
+    zoomAll()
+
+    # pick elements
+    pick('element',prompt="Pick elements and notice that the cone is not pickable")
+
+    # force pick from sphere and cone!
+    pick('element',pickable=actors[:2],prompt="Pick elements and notice that this time only the sphere and the cone are pickable")
+
 
 if __name__ == '__draw__':
     run()
+
+# End

@@ -73,6 +73,8 @@ def objectDialog(obj=None,unlike='object_'):
             items.append(_I('objectBkColor', obj.objectBkColor, itemtype='color', min=0.0, max=100.0, scale=0.01, func=set_attr, data=obj))
         if 'alpha' in obj:
             items.append(_I('alpha', obj.alpha, itemtype='fslider', min=0.0, max=100.0, scale=0.01, func=set_attr, data=obj))
+        if 'pointsize' in obj:
+            items.append(_I('pointsize', obj.marksize, itemtype='fslider', min=0.0, max=100.0, scale=0.1, func=set_attr, data=obj))
 
         return items
 
@@ -84,8 +86,9 @@ def objectDialog(obj=None,unlike='object_'):
         items = objectItems(obj)
 
     elif isinstance(obj,list):
-        #print([type(o) for o in obj])
+        print([type(o) for o in obj])
         obj = [ o for o in obj if isinstance(o,GeomActor) ]
+        print([o.name for o in obj])
         if unlike:
             obj = [ o for o in obj if not o.name.startswith(unlike) ]
         items = [

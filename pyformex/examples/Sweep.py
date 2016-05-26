@@ -118,9 +118,9 @@ def createCrossSection():
         CS = CS.rotate(cross_rotate)
     if cross_scale:
         CS = CS.scale(cross_scale)
+    CS = CS.swapAxes(0, 2)
     # Convert to Mesh, because that has a sweep() method
-    CS = CS.swapAxes(0, 2).toMesh()
-    return CS
+    return CS.toMesh()
 
 
 def createSpiralCurve(turns, nmod):
@@ -145,7 +145,7 @@ def createSpiralCurve(turns, nmod):
     PL = curve.PolyLine(S[:, 0,:])
 
     return PL
-    
+
 
 
 def show():
@@ -206,8 +206,8 @@ def timeOut():
     """
     show()
     close()
-    
-        
+
+
 def createDialog():
     global dialog
 
@@ -238,4 +238,3 @@ def run():
 if __name__ == '__draw__':
     run()
 # End
-

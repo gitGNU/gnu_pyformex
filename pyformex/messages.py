@@ -73,6 +73,7 @@ You can convert your scripts automatically with the command::
 
 
 warn_clip_changed = "The clip and cclip methods have changed. If the selector contains negative numbers, these will be selected as in the (c)select methods."
+warn_coords_match_changed = "The Coords.match function has changed. The argument 'clean' has been removed. The behavior with clean=True can be obtained with the hasMatch method"
 warn_curve_approx = "Curve.approx has been changed. It is now an alias for Curve.approximate. To get the same results as with the old ndiv parameter, you can still specify ndiv as a keyword parameter. The old parameter ntot should be replaced with nseg."
 warn_curve_approximate = "Curve.approximate now defaults to equidistant=False"
 warn_default_gl = """..
@@ -144,6 +145,14 @@ warn_vmtk_includeprop = "includeprop %s are in the property set %s. Remesh will 
 warn_writevtp_notclean = "Mesh is not clean: vtk will alter the nodes. To clean: mesh.fuse().compact().renumber()"
 warn_writevtp_shape = "The number of array cells should be equal to the number of elements"
 warn_writevtp_shape2 = "The number of array points should be equal to the number of points"
+warn_vtkboxplanes_removed = "The method boxplanes has been removed. If the implicit data are coordinates defining a bounding box use\n\n\
+from pyformex.simple import cuboid \n\
+vtkClip(mesh,implicitdata=cuboid(\*bbox).toSurface(),method='surface')\n\n\
+vtkCut(mesh,implicitdata=cuboid(\*bbox).toSurface(),method='surface')\n\n\
+If the implicit data are a hexahdral box use\n\n\
+vtkClip(mesh,implicitdata=box.toSurface(),method='surface')\n\n\
+vtkCut(mesh,implicitdata=box.toSurface(),method='surface')\n\n\
+"
 
 
 error_widgets_enableitem = "Error in a dialog item enabler. This should not happen! Please file a bug report."

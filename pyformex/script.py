@@ -143,8 +143,8 @@ def listAll(clas=None,like=None,filtr=None,dic=None,sort=False):
     """Return a list of all objects in dictionay that match criteria.
 
     - dic: a dictionary object, defaults to pyformex.PF
-    - clas: a class name: if specified, only instances of this class will be
-      returned
+    - clas: a class or list of classes: if specified, only instances of
+      this/these class(es) will be returned
     - like: a string: if given, only object names starting with this string
       will be returned
     - filtr: a function taking an object name as parameter and returning True
@@ -241,6 +241,47 @@ starttime = 0.0
 scriptInit = None # can be set to execute something before each script
 
 
+def autoExport(g):
+    """Autoexport globals from script/app globals.
+
+    g: dict holding the globals dict from a script/app run enviroment.
+
+    This exports some objects from the script/app runtime globals
+    to the pf.PF session globals directory.
+    The default is to export all instances of class Geometry.
+
+    This can be customized in the script/app by setting the global
+    variable :var:`autoglobals`. If set to a value that evaluates to
+    False, no autoexport will be done. If set to True, the default
+    autoexport will be done: all instances of :class:`geometry`.
+    If set to a list of names, only the specified names will be exported.
+    Furthermore, a global variable :var:`autoclasses` may be set
+    to a list of class names. All global instances of the specified classes
+    will be exported.
+
+    Remember that the variables need to be globals in your script/app
+    in order to be autoexported, and that autoglobals feature needs to
+    be enabled in your configuration.
+    """
+    ag = g.get('autoglobals',True)
+    if ag:
+        if ag is True:
+            # default autoglobals: all Geometry instances
+            ag = [ Geometry ]
+        an = []
+        for a in ag:
+            if type(a) is str and a in g:
+                an.append(a)
+            elif type(a) == type:
+                try:
+                    an.extend(listAll(clas=a, dic=g))
+                except:
+                    pass
+        an = sorted(list(set(an)))
+        print("Autoglobals: %s" % ', '.join(an))
+        pf.PF.update([(k, g[k]) for k in an])
+
+
 def scriptLock(id):
     global _run_mode
     if id == '__auto/script__':
@@ -268,7 +309,7 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
     If filename is specified, set the global variable __file__ to it.
     """
     utils.warn('print_function')
-    global exportNames, starttime
+    global starttime
     global exitrequested
 
     # (We only allow one script executing at a time!)
@@ -303,7 +344,6 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
         scr = utils.mergeme(scr[:n], scr[n:])
 
     # Now we can execute the script using these collected globals
-    exportNames = []
     pf.scriptName = name
     exitall = False
 
@@ -336,8 +376,7 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
         if pf.cfg['autoglobals']:
             if pf.console:
                 g = pf.console.interpreter.locals
-            exportNames.extend(listAll(clas=Geometry, dic=g))
-        pf.PF.update([(k, g[k]) for k in exportNames])
+            autoExport(g)
         scriptRelease('__auto/script__') # release the lock
         if pf.GUI:
             pf.GUI.stopRun()
@@ -551,8 +590,7 @@ def runApp(appname,argv=[],refresh=False,lock=True,check=True):
             app.atExit()
         if pf.cfg['autoglobals']:
             g = app.__dict__
-            exportNames = listAll(clas=Geometry, dic=g)
-            pf.PF.update([(k, g[k]) for k in exportNames])
+            autoExport(g)
         if lock:
             scriptRelease('__auto/app__') # release the lock
         if pf.GUI:

@@ -692,7 +692,7 @@ class Canvas(object):
             self.reset()
 
         else:
-            print("NO camera, but setting rendermode anyways")
+            pf.debug("NO camera, but setting rendermode anyways",pf.DEBUG.OPENGL)
             self.rendermode = mode
 
 
@@ -1376,29 +1376,34 @@ class Canvas(object):
         """
         pf.debug('PICK_PARTS %s %s' % (obj_type, store_closest), pf.DEBUG.DRAW)
 
-        # This allows us to set a list of pickable actors.
-        # Or should we add a pickable attribute to actors instead?
+        # This allows us to set a list of pickable actors different
+        # from the default (the pickable actors)
+        # This is e.g. used in the draw2d plugin
+        # It should however not be set by the user
         if self.pickable is None:
-            pickable = self.actors
+            pickable = [ a for a in self.actors if a.pickable ]
         else:
             pickable = self.pickable
 
         self.picked = Collection(self.pick_mode)
         self.closest_pick = None
-        for i, a in enumerate(pickable):
-            picked = a.inside(self.camera, rect=self.pick_window[:4], mode=self.pick_mode, sel=self.pick_mode_subsel, return_depth=store_closest)
-            #print("PICK_PARTS %s" % self.pick_mode)
-            #print(picked)
-            if store_closest:
-                picked,zdepth = picked
-            self.picked.add(picked, key=i)
 
-            if store_closest and len(picked) > 0:
-                w = zdepth.argmin()
-                #print("PICK_PARTS CLOSEST: %s" % w)
-                if self.closest_pick is None or zdepth[w] < self.closest_pick[1]:
-                    self.closest_pick = ([i,picked[w]],zdepth[w])
-                #print("CLOSEST_PICK: " + str(self.closest_pick))
+        # Make sure we always return Actor index from self.actors
+        for i, a in enumerate(self.actors):
+            if a in pickable:
+                picked = a.inside(self.camera, rect=self.pick_window[:4], mode=self.pick_mode, sel=self.pick_mode_subsel, return_depth=store_closest)
+                #print("PICK_PARTS %s" % self.pick_mode)
+                #print(picked)
+                if store_closest:
+                    picked,zdepth = picked
+                self.picked.add(picked, key=i)
+
+                if store_closest and len(picked) > 0:
+                    w = zdepth.argmin()
+                    #print("PICK_PARTS CLOSEST: %s" % w)
+                    if self.closest_pick is None or zdepth[w] < self.closest_pick[1]:
+                        self.closest_pick = ([i,picked[w]],zdepth[w])
+                    #print("CLOSEST_PICK: " + str(self.closest_pick))
 
 
     # TODO: pick actors based on pick_parts
@@ -1473,7 +1478,8 @@ class Canvas(object):
             pf.debug("Actor %s: Selection %s" % (i, K[i]), pf.DEBUG.DRAW)
             self.actors[i].addHighlightElements(K[i])
 
-
+# GDS: this does not work with pickable
+# because K.keys are not referring to actors but to pickable!!!
     def highlightPoints(self, K):
         print("HIGHLIGHT_POINTS", K)
         self.scene.removeHighlight()
