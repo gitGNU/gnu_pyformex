@@ -38,7 +38,6 @@ from pyformex.collection import Collection
 from pyformex.attributes import Attributes
 from pyformex.formex import Formex
 from pyformex.simple import cuboid2d
-#from pyformex.opengl import decors
 from pyformex.opengl.drawable import GeomActor
 from pyformex.opengl.sanitize import saneColor,saneColorArray
 from pyformex.opengl.camera import Camera
@@ -848,13 +847,38 @@ class Canvas(object):
         self.settings.slcolor = colors.GLcolor(color)
 
 
-    def setTriade(self,on=None,pos='lb',siz=50):
+    def setTriade(self,on=None,pos='lb',siz=50,triade=None):
         """Toggle the display of the global axes on or off.
 
-        If on is True, a triade of global axes is displayed, if False it is
-        removed. The default (None) toggles between on and off.
+        This is a convenient feature to display the global axes
+        directions with rotating actor at fixed viewport size and
+        position.
+
+        Parameters:
+
+        - `on`: boolean. If True, the global axes triade is displayed. If
+          False, it is removed. The default (None) toggles between on and off.
+          The remaining parameters are only used on enabling the triade.
+        - `pos`: string of two characters. The characters define the horizontal
+          (one of 'l', 'c', or 'r') and vertical (one of 't', 'c', 'b') position
+          on the camera's viewport. Default is left-bottom.
+        - `siz`: size (in pixels) of the triade.
+        - `triade`: callable. Generates the Actor to be displayed as triade.
+          Default is :class:`decors.Triade`, which shows the positive axes
+          with the colors RGB.
+          This argument can be used to replace the default triade with a
+          customized version. It can be a function or a class name.
+          The call will be passed the `pos` and `siz` parameters.
+          It should return an Actor with its rendertype set to -2.
+          The Actor's coordinates should be scaled to pixel values,
+          and the Actor should be centered around the origin.
+          Also, the actor should have two attributes x,y set to the
+          position (in pixels) where the origin (center) of the actor will
+          be mapped.
+
+        .. warning: This is experimental and subject to changes!
+
         """
-        from . import decors
         if on is None:
             on = self.triade is None
         pf.debug("SETTING TRIADE %s" % on, pf.DEBUG.DRAW)
@@ -862,7 +886,11 @@ class Canvas(object):
             self.removeAny(self.triade)
             self.triade = None
         if on:
-            self.triade = decors.Triade(pos, siz)
+            if triade is None:
+                from . import decors
+                triade = decors.Triade
+                print("triade is %s" % triade)
+            self.triade = triade(pos, siz)
             self.addAny(self.triade)
 
 

@@ -229,6 +229,8 @@ class Triade(Actor):
     - `legend`: text symbols to plot at the end of the axes. A 3-character
       string or a tuple of 3 strings.
 
+    .. warning: This is experimental!
+
     """
 
     def __init__(self,pos='lb',size=100,pat='4:0123',legend='xyz',color=[red, green, blue, cyan, magenta, yellow],reverse=False,**kargs):
@@ -243,7 +245,7 @@ class Triade(Actor):
             x0 = x + w / 2
         if pos[1] == 'b':
             y0 = y + size
-        elif pos[1] =='t':
+        elif pos[1] == 't':
             y0 = y + h - size
         else:
             y0 = y + h / 2
@@ -252,9 +254,10 @@ class Triade(Actor):
         self.size = size
         self.x,self.y = x0,y0
 
-        F = Formex('2:01020I').scale(size)
-        ## if reverse:
-        ##     F += Formex('2:03040i').scale(size)
+        F = Formex('2:01020I')
+        if reverse:
+            F += Formex('2:03040i')
+        F = F.scale(size)
         Actor.__init__(self,F,rendertype=-2,lighting=False,opak=True,linewidth=2,color=color,**kargs)
 
         ## # Coord planes

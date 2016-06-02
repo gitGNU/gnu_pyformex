@@ -230,9 +230,13 @@ class Drawable(Attributes):
 
         if self.rendertype == -2:
             # This is currently a special code for the Triade
+            # It needs an object with coords in pixel values,
+            # centered around the origin
+            # and must have attributes x,y, set to the viewport
+            # position of the (0,0,0) point after rotation.
+            #
             rot = renderer.camera.modelview.rot
-            x = zeros((3,2,3),dtype=float32)
-            x[:,1,:] = rot*self.size
+            x = dot(self._fcoords.reshape(-1,3),rot).reshape(self._fcoords.shape)
             x[:,:,0] += self.x
             x[:,:,1] += self.y
             x[:,:,2] = 0

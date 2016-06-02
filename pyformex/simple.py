@@ -45,7 +45,8 @@ Pattern = {
     'rtriangle': 'l:164',
     'cube':      'l:1234I/aI/bI/cI/41234',
     'star':      'l:1+2+3+4+5+6+7+8',
-    'star3d':    'l:1+2+3+4+5+6+7+8+A+B+C+D+E+F+G+H+a+b+c+d+e+f+g+h'
+    'star3d':    'l:1+2+3+4+5+6+7+8+A+B+C+D+E+F+G+H+a+b+c+d+e+f+g+h',
+    'triade':    '2:01020I',
 }
 
 
