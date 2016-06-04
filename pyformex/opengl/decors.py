@@ -229,6 +229,11 @@ class Triade(Actor):
     - `legend`: text symbols to plot at the end of the axes. A 3-character
       string or a tuple of 3 strings.
 
+    - `color`: clist of 6 colors, to be used for the 3 positive and 3 negative
+      axes.
+
+    - `reverse`: bool. If True, also show the negative axes.
+
     .. warning: This is experimental!
 
     """

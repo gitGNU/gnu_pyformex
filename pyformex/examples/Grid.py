@@ -54,10 +54,10 @@ def run():
     alpha = res['alpha']
 
     t = 'b' if gridtype == 'Box' else 'f'
-    GA = Grid(nx=nx, linewidth=0.2, alpha=alpha, lines=t, planes=t)
+    G = Grid(nx=nx, linewidth=0.2, alpha=alpha, lines=t, planes=t)
 
     smooth()
-    draw(GA)
+    draw(G)
 
 if __name__ == '__draw__':
     run()

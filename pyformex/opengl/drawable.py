@@ -62,24 +62,88 @@ def glObjType(nplex):
 
 
 class Drawable(Attributes):
-    """Proposal for drawn objects
+    """Base class for objects that can be rendered by the OpenGL engine.
 
-    __init__:  store all static values: attributes, geometry, vbo's
-    prepare: creates sanitized and derived attributes/data
-    render: push values to shader and render the object
+    This is the basic drawable object in the pyFormex OpenGL rendering
+    engine. It collects all the data that are needed to properly described
+    any object to be rendered by the OpenGL shader programs.
+    It has a multitude of optional attributes allowing it to describe
+    many very different objects and rendering situations.
 
-    __init__ is only dependent on input attributes and geometry
+    This class is however not intended to be directly used to construct an
+    object for rendering. The :class:`Actor` class and its multiple
+    subclasses should be used for that purpose. The Actor classes provide
+    an easier and more logical interface, and more powerful at the same time,
+    since they can be compound: one Actor can hold multiple Drawables.
 
-    prepare may depend on current canvas settings:
-      mode, transparent, avgnormals
+    The elementary objects that can be directly drawn by the shader programs
+    are more simple, yet very diverse. The Drawable class collects all
+    the data that are needed by the OpenGL engine to do a proper
+    rendering of the object. It this represents a single, versatile
+    interface of the Actor classes with the GPU shader programs.
 
-    render depends on canvas and renderer
+    The versatility comes from the :class:`Attributes` base class, with
+    an unlimited set of attributes. Any undefined attribute just returns
+    None. Some of the most important attributes are described hereafter:
 
-    This is the basic drawable object. It can not have extras nor
-    children. The geometry is initialized by a coords,elems
-    tuple. This class is normally not added directly to renderer,
-    but through one of the \*Actor classes.
-    The passed parameters should at least contain vbo.
+    - `rendertype`: int: the type of rendering process that will be applied
+      by the rendering engine to the Drawable:
+
+      0: A full 3D Actor. The Drawable will be rendered in full 3D with
+         all active capabilities, such as camera rotation, projection,
+         rendermode, lighting. The full object undergoes the camera
+         transformations, and thus will appear as a 3D object in space.
+         The object's vertices are defined in 3D world coordinates.
+         Used in: :class:`Actor`.
+
+      1: A 2D object (often a text or an image) inserted at a 3D position.
+         The 2D object always keeps its orientation towards the camera.
+         When the camera changes, the object can change its position on
+         the viewport, but the oject itself looks the same.
+         This can be used to add annotations to (parts of) a 3D object.
+         The object is defined in viewport coordinates, the insertion
+         points are in 3D world coordinates.
+         Used in: :class:`textext.Text`.
+
+      2: A 2D object inserted at a 2D position. Both object and position
+         are defined in viewport coordinates. The object will take a fixed
+         position on the viewport. This can be use to add decorations to
+         the viewport (like color legends and background images).
+         Used in: :class:`decors.ColorLegend`.
+
+      3: Like 2, but with special purpose. These Drawables are not part of
+         the user scene, but used for system purposes (like setting the
+         background color, or adding an elastic rectangle during mouse picking).
+         Used in: :meth:`Canvas.createBackground`.
+
+      -1: Like 1, but with different insertion points for the multiple items
+          in the object. Used to place a list of marks at a list of points.
+          Used in: :class:`textext.Text`.
+
+      -2: A 3D object inserted at a 2D position. The 3D object will rotate
+          when the camera changes directions, but it will always be located
+          on the same position of the viewport. This is normally used to
+          display a helper object showing the global axis directions.
+          Used in: :class:`decors.Triade`.
+
+
+    The initialization of a Drawable takes a single parameter: `parent`,
+    which is the Actor that created the Drawable. All other parameters
+    should be keyword arguments, and are stored as attributes in the
+    Drawable.
+
+    Methods:
+
+    - `prepare...`: creates sanitized and derived attributes/data. Its action
+      pend on current canvas settings: mode, transparent, avgnormals
+
+    - `render`: push values to shader and render the object:
+      depends on canvas and renderer.
+
+    - `pick`: fake render to be used during pick operations
+
+    - `str`: format the full data set of the Drawable
+
     """
 
     # A list of acceptable attributes in the drawable
@@ -349,6 +413,7 @@ class Drawable(Attributes):
             self.ibo.unbind()
         self.vbo.unbind()
         GL.glDisableVertexAttribArray(renderer.shader.attribute['vertexCoords'])
+
 
     def __str__(self):
         keys = sorted(set(self.keys()) - set(('_default_dict_',)))
