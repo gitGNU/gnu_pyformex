@@ -615,8 +615,8 @@ def createdBy(width=0):
     else:
         width = ''
     return """<div id='pyformex' style='position:absolute;top:10px;left:10px;'>
-<a href='http://pyformex.org' target=_blank><img src='http://pyformex.org/images/pyformex_createdby.png' border=0%s></a>
-</div>""" % width
+<a href='%s' target=_blank><img src='%s' border=0%s></a>
+</div>""" % (pf.cfg['webgl/logo_link'],pf.cfg['webgl/logo'],width)
 
 
 def createWebglHtml(name,scripts=[],bgcolor='white',body='',
