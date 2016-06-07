@@ -76,18 +76,6 @@ warn_clip_changed = "The clip and cclip methods have changed. If the selector co
 warn_coords_match_changed = "The Coords.match function has changed. The argument 'clean' has been removed. The behavior with clean=True can be obtained with the hasMatch method"
 warn_curve_approx = "Curve.approx has been changed. It is now an alias for Curve.approximate. To get the same results as with the old ndiv parameter, you can still specify ndiv as a keyword parameter. The old parameter ntot should be replaced with nseg."
 warn_curve_approximate = "Curve.approximate now defaults to equidistant=False"
-warn_default_gl = """..
-
-GL2 now default
----------------
-The new GL2 rendering engine has been made the default. While there are some issues remaining with the new engine, it is already quite usable for most tasks, and provides a lot of new features and improvements over the old engine.
-
-However, if you find some rendering not working properly, you can help by filing a bug report at https://savannah.nongnu.org/bugs/?func=additem&group=pyformex.
-
-You can still get the old engine by using a command line option::
-
-  pyformex --gl1
-"""
 warn_drawImage_changed = "The `drawImage` function has changed: it now draws an image in 2D on the canvas. Use `drawImage3D` to get the old behavior of drawing a 3D grid colored like the image."
 warn_drawText = "The `drawText` and `drawText3D` have changed: both are now unified under a single name `drawText(text,pos,**kargs)`. If pos is a 2-tuple, positioning is in 2D (pixel) coordinates. If pos is a 3-tuple, positioning is in 3D world coordinates. All other parameters of the Text class can be passed."
 warn_dxf_export = "Objects of type '%s' can not be exported to DXF file"

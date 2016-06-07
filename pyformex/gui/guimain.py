@@ -36,11 +36,8 @@ from pyformex import utils
 # Check for OpenGL
 utils.checkModule('pyopengl', fatal=True)
 
-# Import the proper gl2/gl1 canvas module
-from pyformex.gui import canvas
-
 from pyformex.gui import (
-    signals, QtCore, QtGui,
+    signals, QtCore, QtGui, canvas,
     menu, cameraMenu, fileMenu, appMenu, prefMenu, viewportMenu,
     toolbar, viewport, guifunc, draw, widgets, drawlock, views,
     )

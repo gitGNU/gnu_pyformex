@@ -1102,7 +1102,7 @@ def showLineDrawing(L):
         undecorate(LineDrawing)
         LineDrawing = None
     if L.size != 0:
-        LineDrawing = decors.LineDrawing(L, color='yellow', linewidth=3)
+        LineDrawing = decors.Lines(L, color='yellow', linewidth=3)
         decorate(LineDrawing)
 
 

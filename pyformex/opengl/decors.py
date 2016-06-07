@@ -58,9 +58,32 @@ class Rectangle(Actor):
 
 
 class Line(Actor):
-    """A 2D-line on the canvas."""
+    """A 2D-line on the canvas.
+
+    Parameters:
+
+    - `x1, y1, x2, y2`: floats: the viewport coordinates of the
+      endpoints of the line
+    - `kargs`: keyword arguments to be passed to the :class:`Actor`.
+    """
     def __init__(self,x1,y1,x2,y2,**kargs):
         F = Formex([[[x1,y1],[x2,y2]]])
+        Actor.__init__(self,F,rendertype=2,**kargs)
+
+
+class Lines(Actor):
+    """A collection of straight lines on the canvas.
+
+    Parameters:
+
+    - `data`: data that can initialize a 2-plex Formex: the viewport coordinates
+      of the 2 endpoints of the n lines. The third coordinate is ignored.
+    - `kargs`: keyword arguments to be passed to the :class:`Actor`.
+
+    """
+    def __init__(self,data,color=None,linewidth=None,**kargs):
+        """Initialize a Lines."""
+        F = Formex(data)
         Actor.__init__(self,F,rendertype=2,**kargs)
 
 
