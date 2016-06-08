@@ -36,9 +36,6 @@ _techniques = ['draw']
 
 from pyformex.gui.draw import *
 
-def tmbbox(a):
-    return [[0.0, 0.0, 0.0], [1.0, 1.0, 1.0]]
-
 
 def drawAxis(len, dir, text):
     """Draw an axis of given length and direction annotated with text."""
@@ -60,8 +57,6 @@ def drawFrame(P):
 def run():
     clear()
     reset()
-
-    marks.TextMark.bbox = tmbbox
 
     drawAxis(30, 0, 'axis 2: coordinates (x,y,z): length = 3')
     drawAxis(30, -90, 'axis 1: points: length = self.nplex()')
