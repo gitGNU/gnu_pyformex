@@ -25,9 +25,6 @@
 #
 
 
-if not pf.options.opengl2:
-    warning("This example only runs with the new opengl2 engine!")
-
 pf.cfg['render/experimental'] = False
 
 resetAll()

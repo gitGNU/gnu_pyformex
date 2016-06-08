@@ -104,8 +104,7 @@ deprec = True  # Show deprecations
 filters = [('.*return_index.*','numpy')]
 
 [gui]
-
-bindings='any'   # other options are 'pyside' or 'pyqt4' to force one
+bindings = 'any'   # other options are 'pyside' or 'pyqt4' to force one
 
 #imagesfromeps = True
 fortune = False  # show a fortune cookie on startup

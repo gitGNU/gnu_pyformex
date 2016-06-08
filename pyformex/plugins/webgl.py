@@ -182,9 +182,6 @@ class WebGL(object):
                  cleanup=False,
                  ):
         """Create a new (empty) WebGL model."""
-        if not pf.options.opengl2:
-            utils.warn("WebGL export is no longer supported with the old OpenGL engine. Use the --gl2 command line option to activate the new OpenGL engine.")
-            return
 
         if not scripts:
             if pf.cfg['webgl/devel']:
@@ -444,16 +441,9 @@ the_controls = gui;
             if not caption:
                 caption = name
             s += "var %s = gui.addFolder('%s');\n" % (guiname, caption)
-            if pf.options.opengl2:
-                for objname, name, attr in attrs:
-                    cname = "%s_%s" % (guiname, "".join(name.split()))
-                    s += "var %s = %s.%s.name('%s');\n" % (cname, guiname, self.format_gui_controller(objname, attr), name)
-            else:
-                for attr in attrs:
-                    cname = "%s_%s" % (guiname, attr)
-                    s += "var %s = %s.%s;\n" % (cname, guiname, self.format_gui_controller(name, attr))
-            #s += "%s.open();\n" % guiname
-
+            for objname, name, attr in attrs:
+                cname = "%s_%s" % (guiname, "".join(name.split()))
+                s += "var %s = %s.%s.name('%s');\n" % (cname, guiname, self.format_gui_controller(objname, attr), name)
 
         # add camera controls
         guiname = "gui_camera"

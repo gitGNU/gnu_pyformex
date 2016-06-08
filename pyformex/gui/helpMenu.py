@@ -79,12 +79,8 @@ def catchAndDisplay(expression):
 
 def opengl():
     """Display the OpenGL format description."""
-    if pf.options.opengl2:
-        from pyformex.opengl import canvas
-        s = utils.formatDict(canvas.glVersion()) + '\n'
-    else:
-        s = ''
-
+    from pyformex.opengl import canvas
+    s = utils.formatDict(canvas.glVersion()) + '\n'
     s += viewport.OpenGLFormat(pf.canvas.format())
     draw.showText(s)
 
