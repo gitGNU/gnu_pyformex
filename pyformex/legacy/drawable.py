@@ -59,22 +59,6 @@ _nurbs_elements = [ 'line3', 'quad4', 'quad8', 'quad9', 'hex20' ]
 
 ### Some drawing functions ###############################################
 
-def glColor(color,alpha=None):
-    """Set the OpenGL color, possibly with transparency.
-
-    color is a tuple of 3 or 4 real values.
-    alpha is a single real value.
-    All values are between 0.0 and 1.0
-    """
-    if color is not None:
-        if len(color) == 3:
-            if alpha is None:
-                GL.glColor3fv(color)
-            else:
-                GL.glColor4fv(append(color, alpha))
-        else:
-            GL.glColor4fv(color)
-
 
 def glTexture(texture,mode='*'):
     """Render-time texture environment setup"""
@@ -798,59 +782,6 @@ def averageDirectionsOneNode(d, wi, tol):
     d[wi] = k
 
 
-# CANDIDATE FOR C LIBRARY
-def nodalSum2(val, elems, tol):
-    """Compute the nodal sum of values defined on elements.
-
-    val   : (nelems,nplex,nval) values at points of elements.
-    elems : (nelems,nplex) nodal ids of points of elements.
-    work  : a work space (unused)
-
-    The return value is a tuple of two arrays:
-    res:
-    cnt
-    On return each value is replaced with the sum of values at that node.
-    """
-    print("!!!!nodalSum2!!!!")
-    val[:] = normalize(val)
-    from pyformex import timer
-    from pyformex.lib import misc
-    t = timer.Timer()
-    nodes = unique(elems)
-    t.reset()
-    [ averageDirectionsOneNode(val, where(elems==i), tol) for i in nodes ]
-    ## for i in nodes:
-    ##     wi = where(elems==i)
-    ##     k = val[wi]
-    ##     #averageDirection(k,tol)
-    ##     misc.averageDirection(k,tol)
-    ##     val[wi] = k
-    print("TIME %s \n" % t.seconds())
-
-
-def drawCube(s,color=[red, cyan, green, magenta, blue, yellow]):
-    """Draws a centered cube with side 2*s and colored faces.
-
-    Colors are specified in the order [FRONT,BACK,RIGHT,LEFT,TOP,BOTTOM].
-    """
-    vertices = [[s, s, s], [-s, s, s], [-s, -s, s], [s, -s, s], [s, s, -s], [-s, s, -s], [-s, -s, -s], [s, -s, -s]]
-    planes = [[0, 1, 2, 3], [4, 5, 6, 7], [0, 3, 7, 4], [1, 2, 6, 5], [0, 1, 5, 4], [3, 2, 6, 7]]
-    GL.glBegin(GL.GL_QUADS)
-    for i in range(6):
-        #glNormal3d(0,1,0);
-        GL.glColor(*color[i])
-        for j in planes[i]:
-            GL.glVertex3f(*vertices[j])
-    GL.glEnd()
-
-
-def drawSphere(s,color=cyan,ndiv=8):
-    """Draws a centered sphere with radius s in given color."""
-    quad = GLU.gluNewQuadric()
-    GLU.gluQuadricNormals(quad, GLU.GLU_SMOOTH)
-    GL.glColor(*color)
-    GLU.gluSphere(quad, s, ndiv, ndiv)
-
 
 def drawGridLines(x0, x1, nx):
     """Draw a 3D rectangular grid of lines.
@@ -939,22 +870,6 @@ def pickPoints(x):
 # These are not intended for users but to sanitize user input
 #
 
-def saneLineWidth(linewidth):
-    """Return a sane value for the line width.
-
-    A sane value is one that will be usable by the draw method.
-    It can be either of the following:
-
-    - a float value indicating the line width to be set by draw()
-    - None: indicating that the default line width is to be used
-
-    The line width is used in wireframe mode if plex > 1
-    and in rendering mode if plex==2.
-    """
-    if linewidth is not None:
-        linewidth = float(linewidth)
-    return linewidth
-
 
 def saneLineStipple(stipple):
     """Return a sane line stipple tuple.
@@ -968,122 +883,6 @@ def saneLineStipple(stipple):
     except:
         stipple = None
     return stipple
-
-
-def saneColor(color=None):
-    """Return a sane color array derived from the input color.
-
-    A sane color is one that will be usable by the draw method.
-    The input value of color can be either of the following:
-
-    - None: indicates that the default color will be used,
-    - a single color value in a format accepted by colors.GLcolor,
-    - a tuple or list of such colors,
-    - an (3,) shaped array of RGB values, ranging from 0.0 to 1.0,
-    - an (n,3) shaped array of RGB values,
-    - an (n,) shaped array of integer color indices.
-
-    The return value is one of the following:
-    - None, indicating no color (current color will be used),
-    - a float array with shape (3,), indicating a single color,
-    - a float array with shape (n,3), holding a collection of colors,
-    - an integer array with shape (n,), holding color index values.
-
-    !! Note that a single color can not be specified as integer RGB values.
-    A single list of integers will be interpreted as a color index !
-    Turning the single color into a list with one item will work though.
-    [[ 0, 0, 255 ]] will be the same as [ 'blue' ], while
-    [ 0,0,255 ] would be a color index with 3 values.
-    """
-    if color is None:
-        # no color: use canvas color
-        return None
-
-    # detect color index
-    try:
-        c = asarray(color)
-        if c.dtype.kind == 'i':
-            # We have a color index
-            return c
-    except:
-        pass
-
-    # not a color index: it must be colors
-    try:
-        color = GLcolor(color)
-    except ValueError:
-
-        try:
-            color = [GLcolor(c) for c in color]
-        except ValueError:
-            pass
-
-    # Convert to array
-    try:
-        # REMOVED THE SQUEEZE: MAY BREAK SOME THINGS !!!
-        color = asarray(color)#.squeeze()
-        if color.dtype.kind == 'f' and color.shape[-1] == 3:
-            # Looks like we have a sane color array
-            return color.astype(float32)
-    except:
-        pass
-
-    return None
-
-
-def saneColorArray(color, shape):
-    """Makes sure the shape of the color array is compatible with shape.
-
-    shape is an (nelems,nplex) tuple
-    A compatible color.shape is equal to shape or has either or both of its
-    dimensions equal to 1.
-    Compatibility is enforced in the following way:
-    - if color.shape[1] != nplex and color.shape[1] != 1: take out first
-      plane in direction 1
-    - if color.shape[0] != nelems and color.shape[0] != 1: repeat the plane
-      in direction 0 nelems times
-    """
-    color = asarray(color)
-    if color.ndim == 1:
-        return color
-    if color.ndim == 3:
-        if color.shape[1] > 1 and color.shape[1] != shape[1]:
-            color = color[:, 0]
-    if color.shape[0] > 1 and color.shape[0] != shape[0]:
-        color = resize(color, (shape[0], color.shape[1]))
-    return color
-
-
-def saneColorSet(color=None,colormap=None,shape=(1,)):
-    """Return a sane set of colors.
-
-    A sane set of colors is one that guarantees correct use by the
-    draw functions. This means either
-    - no color (None)
-    - a single color
-    - at least as many colors as the shape argument specifies
-    - a color index and a color map with enough colors to satisfy the index.
-    The return value is a tuple color,colormap. colormap will be None,
-    unless color is an integer array, meaning a color index.
-    """
-    if isInt(shape):  # make sure we get a tuple
-        shape = (shape,)
-    color = saneColor(color)
-    if color is not None:
-        pf.debug("SANECOLORSET: color %s, shape %s" % (color.shape, shape), pf.DEBUG.DRAW)
-        if color.dtype.kind == 'i':
-            ncolors = color.max()+1
-            if colormap is None:
-                colormap = pf.canvas.settings.colormap
-            colormap = saneColor(colormap)
-            colormap = saneColorArray(colormap, (ncolors,))
-        else:
-            color = saneColorArray(color, shape)
-            colormap = None
-
-        pf.debug("SANECOLORSET RESULT: %s" % str(color.shape), pf.DEBUG.DRAW)
-    return color, colormap
-
 
 ### Drawable Objects ###############################################
 

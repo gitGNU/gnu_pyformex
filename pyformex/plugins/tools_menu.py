@@ -184,7 +184,7 @@ pname = autoName(Plane)
 def editPlane(plane, name):
     res = askItems([('Point', list(plane.point())),
                     ('Normal', list(plane.normal())),
-                    ('Size', (list(plane.size()[0]), list(plane.size()[1])))],
+                    ('Size', list(plane.size()))],
                    caption = 'Edit Plane')
     if res:
         plane.P = res['Point']
@@ -193,12 +193,16 @@ def editPlane(plane, name):
 
 Plane.edit = editPlane
 
+def exportDrawPlane(P,name):
+    export({name:P})
+    draw(P,name=name,mode='flatwire')
+
 
 def createPlaneCoordsPointNormal():
     res = askItems([('Name', pname.next()),
                     ('Point', (0., 0., 0.)),
                     ('Normal', (1., 0., 0.)),
-                    ('Size', ((1., 1.), (1., 1.)))],
+                    ('Size', (1., 1.))],
                    caption = 'Create a new Plane')
     if res:
         name = res['Name']
@@ -206,8 +210,7 @@ def createPlaneCoordsPointNormal():
         n = res['Normal']
         s = res['Size']
         P = Plane(p, n, s)
-        export({name:P})
-        draw(P)
+        exportDrawPlane(P,name)
 
 
 def createPlaneCoords3Points():
@@ -215,7 +218,7 @@ def createPlaneCoords3Points():
                     ('Point 1', (0., 0., 0.)),
                     ('Point 2', (0., 1., 0.)),
                     ('Point 3', (0., 0., 1.)),
-                    ('Size', ((1., 1.), (1., 1.)))],
+                    ('Size', (1., 1.))],
                    caption = 'Create a new Plane')
     if res:
         name = res['Name']
@@ -225,24 +228,23 @@ def createPlaneCoords3Points():
         s = res['Size']
         pts=[p1, p2, p3]
         P = Plane(pts, size=s)
-        export({name:P})
-        draw(P)
+        exportDrawPlane(P,name)
 
 
 def createPlaneVisual3Points():
     res = askItems([('Name', pname.next()),
-                    ('Size', ((1., 1.), (1., 1.)))],
+                    ('Size', (1., 1.))],
                    caption = 'Create a new Plane')
     if res:
         name = res['Name']
         s = res['Size']
         picked = pick('point')
         pts = getCollection(picked)
-        pts = asarray(pts).reshape(-1, 3)
+        print(pts)
+        pts = Coords.concatenate(pts).reshape(-1, 3)
         if len(pts) == 3:
             P = Plane(pts, size=s)
-            export({name:P})
-            draw(P)
+            exportDrawPlane(P,name)
         else:
             warning("You have to pick exactly three points.")
 
@@ -295,16 +297,16 @@ def pickSinglePoint(pickable=None):
 
     Examples:
     obj1.attrib.pickable = True # default
-    obj2.attrib(pickable=False) 
+    obj2.attrib(pickable=False)
     draw(obj1)
     draw(obj2)
     pic = pickSinglePoint() # you can only pick points of obj1
-    
+
     OR
-    
+
     D = draw(obj)
-    pic = pickSinglePoint(pickable=[obj,]) 
-    
+    pic = pickSinglePoint(pickable=[obj,])
+
     """
     while True:
         print ('pick one single point')
@@ -338,7 +340,7 @@ def cprint(txt,color='black'):
 
 def pointlabels(color=0):
     """Interactively write text labels on points.
-    
+
     The point labelling is repeated until you push on ESC or click on Cancel
     In the dialog you make choose to make the label temporary or permanent.
     """
@@ -359,7 +361,7 @@ def pointlabels(color=0):
             undraw(D)
             break
         label = res['label']
-        permanent =   res['permanent']     
+        permanent =   res['permanent']
         from pyformex.opengl.textext import TextArray
         d = drawMarks([pos], [label], size=20, mode='smooth',**drawopt)
         if not permanent:

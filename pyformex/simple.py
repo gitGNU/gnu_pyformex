@@ -64,7 +64,7 @@ def shape(name):
 
 
 def regularGrid(x0, x1, nx):
-    """Create a regular grid between points x0 and x1.
+    """Create a regular grid of points between two points x0 and x1.
 
     x0 and x1 are n-dimensional points (usually 1D, 2D or 3D).
     The space between x0 and x1 is divided in nx equal parts. nx should have
@@ -187,7 +187,7 @@ def circle(a1=2., a2=0., a3=360., r=None, n=None, c=None, eltype='line2'):
 
     The default values produce a full circle (approximately).
     If $a3 < 360$, the result is an arc.
-    Large values of `a1` and `a2` result in polygones. Thus
+    Large values of `a1` and `a2` result in polygons. Thus
     `circle(120.)` is an equilateral triangle and `circle(60.)`
     is regular hexagon.
 

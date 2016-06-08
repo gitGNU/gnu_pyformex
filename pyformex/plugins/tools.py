@@ -39,7 +39,7 @@ from pyformex.plugins.nurbs import NurbsCurve, NurbsSurface
 
 class Plane(object):
 
-    def __init__(self,points,normal=None,size=((1.0, 1.0), (1.0, 1.0))):
+    def __init__(self,points,normal=None,size=(1.0, 1.0)):
         pts = Coords(points)
         if pts.shape == (3,) and normal is not None:
             P = pts
@@ -51,8 +51,7 @@ class Plane(object):
             n = cross(pts[1]-pts[0], pts[2]-pts[0])
         else:
             raise ValueError("points has incorrect shape (%s)" % str(pts.shape))
-        size = asarray(size)
-        s = Coords([insert(size[0], 0, 0., -1), insert(size[1], 0, 0., -1)])
+        s = Coords(size)
         self.P = P
         self.n = n
         self.s = s
@@ -75,10 +74,8 @@ class Plane(object):
 
 
     def actor(self,**kargs):
-        from pyformex.gui import actors
-        actor = actors.PlaneActor(size=self.s,**kargs)
-        actor = actors.RotatedActor(actor,self.n,**kargs)
-        actor = actors.TranslatedActor(actor,self.P,**kargs)
+        from pyformex.opengl import actors
+        actor = actors.PlaneActor(n=self.n,P=self.P,**kargs)
         return actor
 
 

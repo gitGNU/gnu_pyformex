@@ -86,109 +86,6 @@ class Actor(Drawable):
         pass
 
 
-class TranslatedActor(Actor):
-    """An Actor translated to another position."""
-
-    def __init__(self,A,trl=(0., 0., 0.),**kargs):
-        Actor.__init__(self,**kargs)
-        self.actor = A
-        self.opak = A.opak
-        self.trl = asarray(trl)
-
-    def bbox(self):
-        return self.actor.bbox() + self.trl
-
-    def redraw(self,**kargs):
-        self.actor.redraw(**kargs)
-        Drawable.redraw(self,**kargs)
-
-    def prepare_list(self,**kargs):
-        self.actor.prepare_list(**kargs)
-        Drawable.prepare_list(self,**kargs)
-
-    def drawGL(self,**kargs):
-        GL.glMatrixMode(GL.GL_MODELVIEW)
-        GL.glPushMatrix()
-        GL.glTranslate(*self.trl)
-        self.actor.use_list()
-        GL.glMatrixMode(GL.GL_MODELVIEW)
-        GL.glPopMatrix()
-
-
-class RotatedActor(Actor):
-    """An Actor rotated to another position."""
-
-    def __init__(self,A,rot=(1., 0., 0.),twist=0.0,**kargs):
-        """Created a new rotated actor.
-
-        If rot is an array with shape (3,), the rotation is specified
-        by the direction of the local 0 axis of the actor.
-        If rot is an array with shape (4,4), the rotation is specified
-        by the direction of the local 0, 1 and 2 axes of the actor.
-        """
-        Actor.__init__(self,**kargs)
-        self.actor = A
-        self.opak = A.opak
-        if shape(rot) == (3,):
-            self.rot = rotMatrix(rot, n=4)
-        else:
-            self.rot = rot
-
-    def bbox(self):
-        return self.actor.bbox() # TODO : rotate the bbox !
-
-    def redraw(self,**kargs):
-        self.actor.redraw(**kargs)
-        Drawable.redraw(self,**kargs)
-
-    def prepare_list(self,**kargs):
-        self.actor.prepare_list(**kargs)
-        Drawable.prepare_list(self,**kargs)
-
-    def drawGL(self,**kargs):
-        GL.glMatrixMode(GL.GL_MODELVIEW)
-        GL.glPushMatrix()
-        GL.glMultMatrixf(self.rot)
-        self.actor.use_list()
-        GL.glMatrixMode(GL.GL_MODELVIEW)
-        GL.glPopMatrix()
-
-
-class CubeActor(Actor):
-    """An OpenGL actor with cubic shape and 6 colored sides."""
-
-    def __init__(self,size=1.0,color=[red, cyan, green, magenta, blue, yellow],**kargs):
-        Actor.__init__(self,**kargs)
-        self.size = size
-        self.color = color
-
-    def bbox(self):
-        return (0.5 * self.size) * array([[-1., -1., -1.], [1., 1., 1.]])
-
-    def drawGL(self,**kargs):
-        """Draw the cube."""
-        drawCube(self.size, self.color)
-
-
-class SphereActor(Actor):
-    """An OpenGL actor representing a sphere."""
-
-    def __init__(self,size=1.0,color=None,**kargs):
-        Actor.__init__(self)
-        self.size = size
-        self.color = color
-
-    def bbox(self):
-        return (0.5 * self.size) * array([[-1., -1., -1.], [1., 1., 1.]])
-
-    def drawGL(self,**kargs):
-        """Draw the cube."""
-        drawSphere(self.size, self.color)
-
-
-# This could be subclassed from GridActor
-
-
 class AxesActor(Actor):
     """An actor showing the three axes of a coordinate system.
 
@@ -257,39 +154,6 @@ class AxesActor(Actor):
             drawLines(x, e, 1.0-c)
 
 
-class GridActor(Actor):
-    """Draws a (set of) grid(s) in one of the coordinate planes."""
-
-    def __init__(self,nx=(1, 1, 1),ox=(0.0, 0.0, 0.0),dx=(1.0, 1.0, 1.0),linecolor=black,linewidth=None,planecolor=white,alpha=0.2,lines=True,planes=True,**kargs):
-        Actor.__init__(self,**kargs)
-        self.linecolor = saneColor(linecolor)
-        self.planecolor = saneColor(planecolor)
-        self.linewidth = linewidth
-        self.alpha = alpha
-        self.opak = False
-        self.lines = lines
-        self.planes = planes
-        self.nx = asarray(nx)
-        self.x0 = asarray(ox)
-        self.x1 = self.x0 + self.nx * asarray(dx)
-
-    def bbox(self):
-        return array([self.x0, self.x1])
-
-    def drawGL(self,**kargs):
-        """Draw the grid."""
-
-        if self.lines:
-            if self.linewidth:
-                GL.glLineWidth(self.linewidth)
-            glColor(self.linecolor)
-            drawGridLines(self.x0, self.x1, self.nx)
-
-        if self.planes:
-            glColor(self.planecolor, self.alpha)
-            drawGridPlanes(self.x0, self.x1, self.nx)
-
-
 class CoordPlaneActor(Actor):
     """Draws a set of 3 coordinate planes."""
 
@@ -325,50 +189,6 @@ class CoordPlaneActor(Actor):
             if self.planes:
                 glColor(self.planecolor, self.alpha)
                 drawGridPlanes(self.x0, self.x1, nx)
-
-
-class PlaneActor(Actor):
-    """A plane in a 3D scene."""
-
-    def __init__(self,nx=(2, 2, 2),ox=(0., 0., 0.),size=((0.0, 1.0, 1.0), (0.0, 1.0, 1.0)),linecolor=black,linewidth=None,planecolor=white,alpha=0.5,lines=True,planes=True,**kargs):
-        """A plane perpendicular to the x-axis at the origin."""
-        Actor.__init__(self,**kargs)
-        self.linecolor = saneColor(linecolor)
-        self.planecolor = saneColor(planecolor)
-        self.linewidth = linewidth
-        self.alpha = alpha
-        self.opak = False
-        self.lines = lines
-        self.planes = planes
-        self.nx = asarray(nx)
-        ox = asarray(ox)
-        sz = asarray(size)
-        self.x0, self.x1 = ox-sz[0], ox+sz[1]
-
-
-    def bbox(self):
-        return array([self.x0, self.x1])
-
-    def drawGL(self,**kargs):
-        """Draw the grid."""
-
-        for i in range(3):
-            nx = self.nx.copy()
-            nx[i] = 0
-
-            if self.lines:
-                if self.linewidth is not None:
-                    GL.glLineWidth(self.linewidth)
-                color = self.linecolor
-                if color is None:
-                    color = canvas.settings.fgcolor
-                glColor(color)
-                drawGridLines(self.x0, self.x1, nx)
-
-            if self.planes:
-                glColor(self.planecolor, self.alpha)
-                drawGridPlanes(self.x0, self.x1, nx)
-
 
 
 
