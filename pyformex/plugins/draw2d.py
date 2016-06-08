@@ -39,7 +39,7 @@ from pyformex.simple import circle
 from pyformex.plugins import objects
 from pyformex.plugins.geometry_menu import autoname, autoName, geomList
 from pyformex.gui.draw import *
-from pyformex.legacy.actors import CoordPlaneActor
+from pyformex.opengl.decors import Grid
 
 draw_mode_2d = ['point', 'polyline', 'curve', 'nurbs', 'circle']
 autoname['point'] = autoName('coords')
@@ -323,10 +323,10 @@ def create_grid():
             c = bbox(obj).center()
             ox = c + ox
 
-        grid = CoordPlaneActor(nx=(nx, ny, 0), ox=ox, dx=(dx, dy, 0.), linewidth=lwidth, linecolor=lcolor, planes=showplane, planecolor=pcolor, alpha=0.3)
+        planes = 'f' if showplanes else 'n'
+        grid = Grid(nx=(nx, ny, 0), ox=ox, dx=(dx, dy, 0.), linewidth=lwidth, linecolor=lcolor, planes=planes, planecolor=pcolor, alpha=0.3)
         remove_grid()
-        drawActor(grid)
-        pf.canvas._grid = grid
+        pf.canvas._grid = draw(grid)
 
 
 def remove_grid():

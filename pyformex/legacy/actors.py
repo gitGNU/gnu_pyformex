@@ -154,44 +154,6 @@ class AxesActor(Actor):
             drawLines(x, e, 1.0-c)
 
 
-class CoordPlaneActor(Actor):
-    """Draws a set of 3 coordinate planes."""
-
-    def __init__(self,nx=(1, 1, 1),ox=(0.0, 0.0, 0.0),dx=(1.0, 1.0, 1.0),linecolor=black,linewidth=None,planecolor=white,alpha=0.5,lines=True,planes=True,**kargs):
-        Actor.__init__(self,**kargs)
-        self.linecolor = saneColor(linecolor)
-        self.planecolor = saneColor(planecolor)
-        self.linewidth = linewidth
-        self.alpha = alpha
-        self.opak = False
-        self.lines = lines
-        self.planes = planes
-        self.nx = asarray(nx)
-        self.x0 = asarray(ox)
-        self.x1 = self.x0 + self.nx * asarray(dx)
-
-    def bbox(self):
-        return array([self.x0, self.x1])
-
-    def drawGL(self,**kargs):
-        """Draw the grid."""
-
-        for i in range(3):
-            nx = self.nx.copy()
-            nx[i] = 0
-
-            if self.lines:
-                if self.linewidth:
-                    GL.glLineWidth(self.linewidth)
-                glColor(self.linecolor)
-                drawGridLines(self.x0, self.x1, nx)
-
-            if self.planes:
-                glColor(self.planecolor, self.alpha)
-                drawGridPlanes(self.x0, self.x1, nx)
-
-
-
 class NurbsActor(Actor):
 
     def __init__(self,data,color=None,colormap=None,bkcolor=None,bkcolormap=None,**kargs):

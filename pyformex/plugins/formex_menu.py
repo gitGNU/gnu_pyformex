@@ -49,26 +49,27 @@ drawSelection = selection.draw
 
 #################### CoordPlanes ####################################
 
+# TODO: Merge this with bbox drawing in geometry menu
+
 _bbox = None
 
 def showBbox():
     """Draw the bbox on the current selection."""
-    from pyformex.legacy.actors import CoordPlaneActor
+    from pyformex.opengl.decors import Grid
     global _bbox
     FL = selection.check()
     if FL:
         bb = bbox(FL)
         print("Bbox of selection: %s" % bb)
         nx = array([4, 4, 4])
-        _bbox = CoordPlaneActor(nx=nx, ox=bb[0], dx=(bb[1]-bb[0])/nx)
-        pf.canvas.addAnnotation(_bbox)
-        pf.canvas.update()
+        G = Grid(nx=nx, ox=bb[0], dx=(bb[1]-bb[0])/nx, planes='f', name='__bbox__')
+        __bbox = draw(G)
 
 def removeBbox():
     """Remove the bbox of the current selection."""
     global _bbox
     if _bbox:
-        pf.canvas.removeAnnotation(_bbox)
+        undraw(_bbox)
         _bbox = None
 
 
@@ -371,4 +372,3 @@ if __name__ == '__draw__':
     reload_menu()
 
 # End
-
