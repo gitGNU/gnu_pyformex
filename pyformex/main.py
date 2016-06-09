@@ -363,7 +363,7 @@ def run(argv=[]):
        ),
     MO("--shader",
        action="store", dest="shader", default='',
-       help="An extra string to add into the name of the shader programs, located in pyformex/data. The valu will be added in before the '.c' extension.",
+       help="An extra string to add into the name of the shader programs, located in pyformex/data. The value will be added in before the '.c' extension.",
        ),
     MO("--newviewports",
        action="store_true", dest="newviewports", default=False,

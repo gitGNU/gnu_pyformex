@@ -84,6 +84,7 @@ def defaultShaders():
     fragmentshader += '.c'
     return vertexshader,fragmentshader
 
+
 class Shader(object):
     """An OpenGL shader consisting of a vertex and a fragment shader pair.
 
