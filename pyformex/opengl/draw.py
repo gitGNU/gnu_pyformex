@@ -496,7 +496,7 @@ def drawMarks(X,M,color='black',leader='',ontop=True,**kargs):
     if len(M) > _large_:
         if not ack("You are trying to draw marks at %s points. This may take a long time, and the results will most likely not be readible anyway. If you insist on drawing these marks, anwer YES." % len(M)):
             return None
-    A = textext.TextArray(val=M, pos=X, color=color, leader=leader,**kargs)
+    A = actors.TextArray(val=M, pos=X, color=color, leader=leader,**kargs)
     drawActor(A)
     return A
 
@@ -590,7 +590,7 @@ def drawText(text,pos,**kargs):
 
     """
     utils.warn("warn_drawText")
-    A = textext.Text(text, pos, **kargs)
+    A = actors.Text(text, pos, **kargs)
     drawActor(A)
     return A
 
@@ -600,7 +600,7 @@ drawText3D = drawText
 # This function should be completed
 def drawViewportAxes3D(pos,color=None):
     """Draw two viewport axes at a 3D position."""
-    A = texText.Mark((0,200,0),image,size=40,color=red)
+    A = actors.Mark((0,200,0),image,size=40,color=red)
     drawActor(A)
     return A
 
