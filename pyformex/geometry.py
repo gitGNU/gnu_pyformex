@@ -379,8 +379,8 @@ class Geometry(object):
         return self.coords.bboxes()
     def inertia(self,*args,**kargs):
         return self.coords.inertia(*args,**kargs)
-    def prinCS(self,*args,**kargs):
-        return self.coords.prinCS(*args,**kargs)
+    def principalCS(self,*args,**kargs):
+        return self.coords.principalCS(*args,**kargs)
     def principalSizes(self):
         return self.coords.principalSizes()
     def principalBbox(self):

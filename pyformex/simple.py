@@ -522,7 +522,7 @@ def boundingBox(obj, cs=None):
 
 
 def principalBbox(obj):
-    return boundingBox(obj, cs=obj.prinCS())
+    return boundingBox(obj, cs=obj.principalCS())
 
 
 # End

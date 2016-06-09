@@ -578,7 +578,7 @@ class Coords(ndarray):
         return inertia.Inertia(I,ctr=C,mass=M)
 
 
-    def prinCS(self,mass=None):
+    def principalCS(self,mass=None):
         """Returns a CoordSys formed by the principal axes of inertia
 
         Parameters:
@@ -603,7 +603,7 @@ class Coords(ndarray):
         Returns an array with the length of the bbox along the 3
         principal axes. This is a convenient shorthand for::
 
-          self.toCS(self.prinCS()).sizes()
+          self.toCS(self.principalCS()).sizes()
 
         Example:
 
@@ -611,7 +611,7 @@ class Coords(ndarray):
           [ 0.  0.  3.]
 
         """
-        return self.toCS(self.prinCS()).sizes()
+        return self.toCS(self.principalCS()).sizes()
 
 
     def centralCS(self,mass=None):
