@@ -550,8 +550,8 @@ def run(argv=[]):
         if os.path.exists(pf.cfg['localprefs']):
             userprefs.append(pf.cfg['localprefs'])
 
-    sysprefs = filter(os.path.exists, sysprefs)
-    userprefs = filter(os.path.exists, userprefs)
+    sysprefs = list(filter(os.path.exists, sysprefs))
+    userprefs = list(filter(os.path.exists, userprefs))
 
     if pf.options.config:
         userprefs.append(utils.tildeExpand(pf.options.config))
