@@ -1086,6 +1086,9 @@ class Coords(ndarray):
 
 
     # TODO: THIS SHOULD BE GENERALIZED TO TAKE SAME `dir` OPTIONS AS translate
+    # NOT SURE: now using dir=[0,1] or dir=[0,1,2] would mirror w.r.t an
+    # axis, resp. a point!
+    #
     def reflect(self,dir=0,pos=0.,inplace=False):
         """Reflect the coordinates in direction dir against plane at pos.
 

@@ -32,15 +32,147 @@ from pyformex import arraytools as at
 import sys
 from OpenGL import GL
 
-from pyformex.legacy.drawable import *
+from pyformex.legacy.drawable import drawNurbsCurves, drawNurbsSurfaces
+from pyformex.opengl.sanitize import saneColorSet
 from pyformex.formex import *
-from pyformex.elements import elementType
-from pyformex.mesh import Mesh
 
-from pyformex.trisurface import TriSurface
 from pyformex.plugins.nurbs import NurbsCurve, NurbsSurface
 
-from pyformex import timer
+
+### Drawable Objects ###############################################
+
+class Drawable(object):
+    """A Drawable is anything that can be drawn on the OpenGL Canvas.
+
+    This defines the interface for all drawbale objects, but does not
+    implement any drawable objects.
+    Drawable objects should be instantiated from the derived classes.
+    Currently, we have the following derived classes:
+      Actor: a 3-D object positioned and oriented in the 3D scene. Defined
+             in actors.py.
+      Mark: an object positioned in 3D scene but not undergoing the camera
+             axis rotations and translations. It will always appear the same
+             to the viewer, but will move over the screen according to its
+             3D position. Defined in marks.py.
+      Decor: an object drawn in 2D viewport coordinates. It will unchangeably
+             stick on the viewport until removed. Defined in decors.py.
+
+    A Drawable subclass should minimally reimplement the following methods:
+      bbox(): return the actors bounding box.
+      nelems(): return the number of elements of the actor.
+      drawGL(mode): to draw the object. Takes a mode argument so the
+        drawing function can act differently depending on the rendering mode.
+        There are currently 5 modes:
+           wireframe, flat, smooth, flatwire, smoothwire.
+        drawGL should only contain OpenGL calls that are allowed inside a
+        display list. This may include calling the display list of another
+        actor but *not* creating a new display list.
+    """
+
+    def __init__(self,nolight=False,ontop=False,**kargs):
+        self.list = None
+        self.listmode = None # stores mode of self.list: wireframe/smooth/flat
+        self.mode = None # subclasses can set a persistent drawing mode
+        self.opak = True
+        self.nolight = nolight
+        self.ontop = ontop
+        self.extra = [] # list of dependent Drawables
+
+
+    def __del__(self):
+        self.delete_list()
+
+
+    def drawGL(self,**kargs):
+        """Perform the OpenGL drawing functions to display the actor."""
+        pass
+
+    def pickGL(self,**kargs):
+        """Mimick the OpenGL drawing functions to pick (from) the actor."""
+        pass
+
+    def redraw(self,**kargs):
+        self.draw(**kargs)
+
+    def draw(self,**kargs):
+        self.prepare_list(**kargs)
+        self.use_list()
+
+    def prepare_list(self,**kargs):
+        mode = self.mode
+        if mode is None:
+            if 'mode' in kargs:
+                mode = kargs['mode']
+            else:
+                canvas = kargs.get('canvas', pf.canvas)
+                mode = canvas.rendermode
+
+        if mode.endswith('wire'):
+            mode = mode[:-4]
+
+        if self.list is None or mode != self.listmode:
+            kargs['mode'] = mode
+            self.delete_list()
+            self.list = self.create_list(**kargs)
+
+    def use_list(self):
+        if self.list:
+            GL.glCallList(self.list)
+        for i in self.extra:
+            i.use_list()
+
+    def create_list(self,**kargs):
+        displist = GL.glGenLists(1)
+        pf.debug("CREATE LIST %s" % displist, pf.DEBUG.OPENGL)
+        GL.glNewList(displist, GL.GL_COMPILE)
+        ok = False
+        try:
+            if self.nolight:
+                GL.glDisable(GL.GL_LIGHTING)
+            if self.ontop:
+                GL.glDepthFunc(GL.GL_ALWAYS)
+            self.drawGL(**kargs)
+            ok = True
+        finally:
+            if not ok:
+                pf.debug("Error while creating a display list", pf.DEBUG.DRAW)
+                displist = None
+            GL.glEndList()
+        self.listmode = kargs['mode']
+        return displist
+
+    def delete_list(self):
+        pf.debug("DELETE LIST %s" % self.list, pf.DEBUG.OPENGL)
+        if self.list:
+            GL.glDeleteLists(self.list, 1)
+            pf.debug("REALLY DELETED", pf.DEBUG.OPENGL)
+        else:
+            pf.debug("NOT REALLY DELETED", pf.DEBUG.OPENGL)
+        self.list = None
+
+
+    def setLineWidth(self, linewidth):
+        """Set the linewidth of the Drawable."""
+        self.linewidth = saneLineWidth(linewidth)
+
+    def setLineStipple(self, linestipple):
+        """Set the linewidth of the Drawable."""
+        self.linestipple = saneLineStipple(linestipple)
+
+    def setColor(self,color=None,colormap=None,ncolors=1):
+        """Set the color of the Drawable."""
+        self.color, self.colormap = saneColorSet(color, colormap, shape=(ncolors,))
+
+    def setTexture(self, texture):
+        """Set the texture data of the Drawable."""
+        from pyformex.opengl.texture import Texture
+        if texture is not None:
+            if not isinstance(texture, Texture):
+                try:
+                    texture = Texture(texture)
+                except:
+                    texture = None
+        self.texture = texture
 
 ### Actors ###############################################
 
@@ -86,78 +218,9 @@ class Actor(Drawable):
         pass
 
 
-class AxesActor(Actor):
-    """An actor showing the three axes of a coordinate system.
-
-    If no coordinate system is specified, the global coordinate system is drawn.
-
-    The default actor consists of three colored lines of unit length along
-    the unit vectors of the axes and three colored triangles representing the
-    coordinate planes. This can be modified by the following parameters:
-
-    size: scale factor for the unit vectors.
-    color: a set of three colors to use for x,y,z axes.
-    colored_axes = False: draw black axes.
-    draw_planes = False: do not draw the coordinate planes.
-    """
-    from pyformex import coordsys
-
-    def __init__(self,cs=None,size=1.0,psize=0.5,color=[red, green, blue],colored_axes=True,draw_planes=True,draw_reverse=True,linewidth=2,alpha=0.5,**kargs):
-        Actor.__init__(self,**kargs)
-        if cs is None:
-            cs = coordsys.CoordinateSystem()
-        self.cs = cs
-        self.color = saneColorArray(saneColor(color), (3, 1))
-        self.alpha = alpha
-        self.opak = False
-        self.nolight = True
-        self.colored_axes = colored_axes
-        self.draw_planes = draw_planes
-        self.draw_reverse = draw_reverse
-        self.linewidth = linewidth
-        self.setSize(size, psize)
-
-    def bbox(self):
-        origin = self.cs[3]
-        return array([origin-self.size, origin+self.size])
-
-    def setSize(self, size, psize):
-        self.size = 1.0
-        size = float(size)
-        if size > 0.0:
-            self.size = size
-        if psize is None:
-            self.psize = 0.5 * self.size
-        psize = float(psize)
-        if psize > 0.0:
-            self.psize = psize
-        self.delete_list()
-
-    def drawGL(self,**kargs):
-        """Draw the axes."""
-        if self.draw_planes:
-            x = self.cs.trl(-self.cs[3]).scale(self.psize).trl(self.cs[3])
-            e = array([[3, 1, 2], [3, 2, 0], [3, 0, 1]])
-            drawPolygons(x, e, color=self.color, alpha=self.alpha)
-
-        x = self.cs.trl(-self.cs[3]).scale(self.size).trl(self.cs[3])
-        e = array([[3, 0], [3, 1], [3, 2]])
-        if self.colored_axes:
-            c = self.color
-        else:
-            c = None
-        if self.linewidth:
-            GL.glLineWidth(self.linewidth)
-        drawLines(x, e, c)
-        if self.draw_reverse:
-            x[:3] = 2*x[3] - x[:3]
-            drawLines(x, e, 1.0-c)
-
-
 class NurbsActor(Actor):
 
     def __init__(self,data,color=None,colormap=None,bkcolor=None,bkcolormap=None,**kargs):
-        from pyformex.legacy.drawable import saneColor
         Actor.__init__(self,**kargs)
         self.object = data
         self.setColor(color, colormap)

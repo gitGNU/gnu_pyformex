@@ -206,8 +206,10 @@ class Tensor(np.ndarray):
         Returns a tuple (prin,axes) where
 
         - `prin`: is a (3,) array with the principal values,
-        - `axes`: is a (3,3) array in which each column (or row?) is a
-          unit(?) vector along the corresponding principal axis.
+        - `axes`: is a (3,3) array with the rotation matrix that
+          rotates the global axes to the principal axes. This also
+          means that the columns of axes are the unit vectors along
+          the principal directions.
 
         Example:
 
@@ -564,4 +566,3 @@ inertia = point_inertia
 
 
 # End
-

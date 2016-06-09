@@ -42,9 +42,7 @@ from pyformex.gui import toolbar
 from pyformex.gui import image
 from pyformex.opengl import colors
 
-from pyformex.opengl import drawable
-from pyformex.opengl import decors
-from pyformex.opengl import textext
+from pyformex.opengl import actors
 
 from pyformex.script import getcfg, named
 
@@ -568,20 +566,7 @@ def drawBbox(F,color='black',linewidth=None):
     F is any object that has a `bbox` method.
     Returns the drawn Annotation.
     """
-    A = decors.BboxActor(F.bbox(), color=color, linewidth=linewidth)
-    drawActor(A)
-    return A
-
-
-def drawPrincipal(F,weight=None):
-    """Draw the principal axes of the geometric object F.
-
-    F is any object that has a `coords` attribute.
-    If specified, weight is an array of weights attributed to the points
-    of F. It should have the same length as `F.coords`.
-    """
-    from pyformex.legacy.actors import PrincipalActor
-    A = PrincipalActor(F, weight)
+    A = actors.BboxActor(F.bbox(), color=color, linewidth=linewidth)
     drawActor(A)
     return A
 
@@ -611,6 +596,7 @@ def drawText(text,pos,**kargs):
 
 drawText3D = drawText
 
+
 # This function should be completed
 def drawViewportAxes3D(pos,color=None):
     """Draw two viewport axes at a 3D position."""
@@ -619,13 +605,12 @@ def drawViewportAxes3D(pos,color=None):
     return A
 
 
-def drawAxes(cs=None,*args,**kargs):
+def drawAxes(cs=None,**kargs):
     """Draw the axes of a coordinate system.
 
     Parameters:
 
-    - `cs`: a :class:`coordsys.CoordSys`, a
-      :class:`coordsys.CoordinateSystem`, or a Coords(4,3).
+    - `cs`: a :class:`coordsys.CoordSys`
       If not specified, the global coordinate system is used.
 
     Other arguments can be added just like in the :class:`AxesActor` class.
@@ -633,14 +618,25 @@ def drawAxes(cs=None,*args,**kargs):
     By default this draws the positive parts of the axes in the colors R,G,B
     and the negative parts in C,M,Y.
     """
-    from pyformex.legacy.actors import AxesActor
+    from pyformex.opengl.actors import AxesActor
     from pyformex.coordsys import CoordSys
     if cs is None:
         cs = CoordSys()
 
-    A = AxesActor(cs.points(),*args,**kargs)
+    A = AxesActor(cs,**kargs)
     drawActor(A)
     return A
+
+
+def drawPrincipal(F,weight=None,**kargs):
+    """Draw the principal axes of the geometric object F.
+
+    F is Coords or Geometry.
+    If weight is specified, it is an array of weights attributed to the points
+    of F. It should have the same length as `F.coords`.
+    Other parameter are drawing attributes passed to :func:`drawAxes`.
+    """
+    return drawAxes(F.principalCS(weight),**kargs)
 
 
 def drawImage3D(image,nx=0,ny=0,pixel='dot'):

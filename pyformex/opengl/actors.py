@@ -29,9 +29,8 @@ This module defines all OpenGL Actors that are directly available to the users.
 
 from pyformex import arraytools as at
 from pyformex.opengl.drawable import Actor
-from pyformex.opengl.decors import BboxActor, Rectangle, Line, \
-     Grid, ColorLegend
-from pyformex.opengl.textext import Text, TextArray, Mark
+from pyformex.opengl.decors import *
+from pyformex.opengl.textext import *
 
 
 #  TODO: this replaces legacy PlaneActor, but could probably be derived from
