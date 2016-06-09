@@ -674,6 +674,7 @@ class Actor(Base):
         if self._normals is None:
             self._normals = gt.polygonNormals(self.fcoords.astype(float32))
             #print("COMPUTED NORMALS: %s" % str(self._normals.shape))
+            #print(self._normals)
         return self._normals
 
 
@@ -684,6 +685,7 @@ class Actor(Base):
             tol = pf.cfg['render/avgnormaltreshold']
             self._avgnormals = gt.averageNormals(self.coords, self.elems, False, tol).astype(float32)
             #print("COMPUTE AVGNORMALS: %s" % str(self._avgnormals.shape))
+            #print(self._avgnormals)
         return self._avgnormals
 
 
