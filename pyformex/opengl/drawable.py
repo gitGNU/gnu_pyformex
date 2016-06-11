@@ -215,6 +215,7 @@ class Drawable(Attributes):
 
             if self.vertexColor is not None:
                 self.cbo = VBO(self.vertexColor.astype(float32))
+                print("VERTEX COLOR SHAPE = %s" % str(self.cbo.shape))
 
         #### TODO: should we make this configurable ??
         #
@@ -229,6 +230,15 @@ class Drawable(Attributes):
 
         #if self.rendertype == 3:
         #    print("CBO DATA %s\n" % self.name,self.cbo.data)
+
+
+    def changeVertexColor(self,color):
+        """Change the vertex color buffer of the object.
+
+        This is experimental!!!
+        Just make sure that the passed data have the correct shape!
+        """
+        self.cbo = VBO(color.astype(float32))
 
 
     def prepareTexture(self):
@@ -922,7 +932,7 @@ class Actor(Base):
     def okColor(self,color,colormap=None):
         """Compute a color usable by the shader.
 
-        The shader only supports 3*float type of colors:
+        The shader (currently) only supports 3*float type of colors:
 
         - None
         - single color (separate for front and back faces)
@@ -934,6 +944,14 @@ class Actor(Base):
             elif color == 'random':
                 # create random colors
                 color = np.random.rand(F.nelems(), 3)
+            elif color.startswith('fld:'):
+                # get colors from a named field
+                fld = self.object.getField(color[4:])
+                if fld and fld.fldtype == 'node':
+                    color = fld.data
+                    colormap = None
+                else:
+                    warning("Could not set color from field %s" % color)
 
         color, colormap = saneColorSet(color, colormap, self.fcoords.shape)
 
