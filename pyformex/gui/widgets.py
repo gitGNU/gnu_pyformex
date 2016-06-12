@@ -3135,7 +3135,9 @@ class MessageBox(QtGui.QMessageBox):
     If you want a modeless dialog, allowing the user to continue while the
     message stays open, use the :meth:`show()` method to display it.
     """
-    def __init__(self,text,format='',level='info',actions=['OK'],default=None,timeout=None,modal=None,parent=None):
+    # TODO: This could be replaced with a generic InputDialog
+    # Beware: the check option is used in warnings
+    def __init__(self,text,format='',level='info',actions=['OK'],default=None,timeout=None,modal=None,parent=None,check=None):
         if parent is None:
             parent = pf.GUI
         QtGui.QMessageBox.__init__(self, parent)
@@ -3158,9 +3160,9 @@ class MessageBox(QtGui.QMessageBox):
                 self.setDefaultButton(b)
 
         addTimeOut(self, timeout, self.accept)
-        ## self.checks = []
-        ## if check:
-        ##     self.checks.append(self.addCheck(check))
+        self.checks = []
+        if check:
+            self.checks.append(self.addCheck(check))
 
     def getIcon(self, level='noicon'):
         if level == 'info':
@@ -3173,13 +3175,13 @@ class MessageBox(QtGui.QMessageBox):
             return self.Question
 
 
-    ## def addCheck(self, text):
-    ##     """Add a check field at the bottom of the layout."""
-    ##     grid = self.layout()
-    ##     nr, nc = grid.rowCount(), grid.columnCount()
-    ##     check = QtGui.QCheckBox(text)
-    ##     grid.addWidget(check, nr, len(self.checks))
-    ##     return check
+    def addCheck(self, text):
+        """Add a check field at the bottom of the layout."""
+        grid = self.layout()
+        nr, nc = grid.rowCount(), grid.columnCount()
+        check = QtGui.QCheckBox(text)
+        grid.addWidget(check, nr, len(self.checks))
+        return check
 
 
     def show(self,modal=False):
@@ -3204,9 +3206,9 @@ class MessageBox(QtGui.QMessageBox):
             res = str(b.text())
         else:
             res = ''
-        ## if self.checks:
-        ##     return res, [c.isChecked() for c in self.checks]
-        ## else:
+        if self.checks:
+            return res, [c.isChecked() for c in self.checks]
+        else:
         return res
 
 

@@ -771,7 +771,10 @@ class Gui(QtGui.QMainWindow):
 
 
     def writeSettings(self):
-        """Store the GUI settings"""
+        """Store the GUI settings
+
+
+        """
         pf.debug('Store current settings', pf.DEBUG.CONFIG)
         # FIX QT4 BUG
         # Make sure QT4 has position right
@@ -785,6 +788,7 @@ class Gui(QtGui.QMainWindow):
                            'pos': Pos(pf.GUI),
                            'bdsize': Size(pf.GUI.board),
                            }, name='gui')
+
 
 # THESE FUNCTION SHOULD BECOME app FUNCTIONS
 
@@ -954,7 +958,8 @@ class Gui(QtGui.QMainWindow):
         """Override the close event handler.
 
         We override the default close event handler for the main
-        window, to allow the user to cancel the exit.
+        window, to allow the user to cancel the exit, and to save
+        the latest settings.
         """
         #
         # DEV: things going wrong during the event handler are hard to debug!
