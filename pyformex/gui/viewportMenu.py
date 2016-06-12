@@ -351,12 +351,11 @@ def showObjectDialog(show=True):
 
 
     """
-    if pf.options.opengl2:
-        from pyformex.opengl import objectdialog
-        dia = objectdialog.objectDialog(pf.canvas.actors)
-        if dia and show:
-            dia.show()
-        return dia
+    from pyformex.opengl import objectdialog
+    dia = objectdialog.objectDialog(pf.canvas.actors)
+    if dia and show:
+        dia.show()
+    return dia
 
 
 

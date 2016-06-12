@@ -45,7 +45,8 @@ Pattern = {
     'rtriangle': 'l:164',
     'cube':      'l:1234I/aI/bI/cI/41234',
     'star':      'l:1+2+3+4+5+6+7+8',
-    'star3d':    'l:1+2+3+4+5+6+7+8+A+B+C+D+E+F+G+H+a+b+c+d+e+f+g+h'
+    'star3d':    'l:1+2+3+4+5+6+7+8+A+B+C+D+E+F+G+H+a+b+c+d+e+f+g+h',
+    'triade':    '2:01020I',
 }
 
 
@@ -63,7 +64,7 @@ def shape(name):
 
 
 def regularGrid(x0, x1, nx):
-    """Create a regular grid between points x0 and x1.
+    """Create a regular grid of points between two points x0 and x1.
 
     x0 and x1 are n-dimensional points (usually 1D, 2D or 3D).
     The space between x0 and x1 is divided in nx equal parts. nx should have
@@ -186,7 +187,7 @@ def circle(a1=2., a2=0., a3=360., r=None, n=None, c=None, eltype='line2'):
 
     The default values produce a full circle (approximately).
     If $a3 < 360$, the result is an arc.
-    Large values of `a1` and `a2` result in polygones. Thus
+    Large values of `a1` and `a2` result in polygons. Thus
     `circle(120.)` is an equilateral triangle and `circle(60.)`
     is regular hexagon.
 
@@ -521,7 +522,7 @@ def boundingBox(obj, cs=None):
 
 
 def principalBbox(obj):
-    return boundingBox(obj, cs=obj.prinCS())
+    return boundingBox(obj, cs=obj.principalCS())
 
 
 # End

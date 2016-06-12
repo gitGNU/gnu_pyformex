@@ -348,7 +348,11 @@ if utils.checkModule('dicom'):
         import dicom
         global _dicom_spacing
         _dicom_spacing = None
-        dcm = dicom.read_file(filename)
+        try:
+            dcm = dicom.read_file(filename)
+        except:
+            print("While reading file '%s'" % filename)
+            raise
         pix = dcm.pixel_array
         _dicom_spacing = np.array(dcm.PixelSpacing + [dcm.SliceThickness])
         return pix
@@ -448,7 +452,7 @@ def dicom2numpy(files):
     - `scale`: a (3,) array with the scaling factors, in order (x,y,z).
     """
     if isinstance(files, str):
-        files = utils.listTree(fp, listdirs=False, includefiles="*.dcm")
+        files = utils.listTree(files, listdirs=False, includefiles="*.dcm")
     # read and stack the images
     print("Using %s to read DICOM files" % readDicom.__name__)
 

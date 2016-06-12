@@ -182,9 +182,6 @@ class WebGL(object):
                  cleanup=False,
                  ):
         """Create a new (empty) WebGL model."""
-        if not pf.options.opengl2:
-            utils.warn("WebGL export is no longer supported with the old OpenGL engine. Use the --gl2 command line option to activate the new OpenGL engine.")
-            return
 
         if not scripts:
             if pf.cfg['webgl/devel']:
@@ -444,16 +441,9 @@ the_controls = gui;
             if not caption:
                 caption = name
             s += "var %s = gui.addFolder('%s');\n" % (guiname, caption)
-            if pf.options.opengl2:
-                for objname, name, attr in attrs:
-                    cname = "%s_%s" % (guiname, "".join(name.split()))
-                    s += "var %s = %s.%s.name('%s');\n" % (cname, guiname, self.format_gui_controller(objname, attr), name)
-            else:
-                for attr in attrs:
-                    cname = "%s_%s" % (guiname, attr)
-                    s += "var %s = %s.%s;\n" % (cname, guiname, self.format_gui_controller(name, attr))
-            #s += "%s.open();\n" % guiname
-
+            for objname, name, attr in attrs:
+                cname = "%s_%s" % (guiname, "".join(name.split()))
+                s += "var %s = %s.%s.name('%s');\n" % (cname, guiname, self.format_gui_controller(objname, attr), name)
 
         # add camera controls
         guiname = "gui_camera"
@@ -615,8 +605,8 @@ def createdBy(width=0):
     else:
         width = ''
     return """<div id='pyformex' style='position:absolute;top:10px;left:10px;'>
-<a href='http://pyformex.org' target=_blank><img src='http://pyformex.org/images/pyformex_createdby.png' border=0%s></a>
-</div>""" % width
+<a href='%s' target=_blank><img src='%s' border=0%s></a>
+</div>""" % (pf.cfg['webgl/logo_link'],pf.cfg['webgl/logo'],width)
 
 
 def createWebglHtml(name,scripts=[],bgcolor='white',body='',

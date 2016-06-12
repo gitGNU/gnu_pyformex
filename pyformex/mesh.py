@@ -2101,20 +2101,20 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
 
     def sweep(self,path,eltype=None,**kargs):
         """Sweep a mesh along a path, creating an extrusion
-        
+
         Parameters:
 
         - `path`: Curve object. The path over which to sweep the Mesh.
         - `eltype`: string. Name of the element type on the
           returned Meshes.
-        - `**kargs`: keyword arguments that are passed to 
-          func:`coords.sweepCoords`, with the same meaning. 
+        - `**kargs`: keyword arguments that are passed to
+          func:`coords.sweepCoords`, with the same meaning.
           Usually, you will need to at least set the `normal` parameter.
 
         Returns a Mesh obtained by sweeping the given Mesh over a path.
         The returned Mesh has double plexitude of the original.
         If `path` is a closed Curve connect back to the first.
-        
+
         This operation is similar to the extrude() method, but the path
         can be any 3D curve.
         """
@@ -2153,7 +2153,7 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
         if self.elType().ndim == 1:
             if edg == True:
                 raise ValueError("Cannot use edg=True with a line mesh")
-        
+
         if iterations < 1:
             return self
 
@@ -2361,7 +2361,7 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
                 p, i = S.intersectionWithLines(**kargs)
                 i[:, 2] = S.prop[i[:, 2]]
             else:
-                raise ValueError, 'Exact intersectionWithLines not implemented for %s mesh'%self.elName()
+                raise ValueError('Exact intersectionWithLines not implemented for %s mesh'%self.elName())
         return p, i
 
     def levelVolumes(self):

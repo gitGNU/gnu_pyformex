@@ -379,8 +379,8 @@ class Geometry(object):
         return self.coords.bboxes()
     def inertia(self,*args,**kargs):
         return self.coords.inertia(*args,**kargs)
-    def prinCS(self,*args,**kargs):
-        return self.coords.prinCS(*args,**kargs)
+    def principalCS(self,*args,**kargs):
+        return self.coords.principalCS(*args,**kargs)
     def principalSizes(self):
         return self.coords.principalSizes()
     def principalBbox(self):
@@ -732,7 +732,7 @@ class Geometry(object):
         """Add a data field to the geometry.
 
         Add a scalar or vectorial field defined over the domain of the
-        Geometry. This creates a :class:`Field` instance with the specified
+        Geometry. This creates a :class:`field.Field` instance with the specified
         parameters and adds it to the Geometry object.
         Fields stored inside a Geometry object are exported to PGF file
         whenever the object is exported.
@@ -740,7 +740,7 @@ class Geometry(object):
         Parameters:
 
         - `fldtype`, `data`, `fldname`: are passed together with the
-          Geometry object to the Field initialization. See :class:`Field`
+          Geometry object to the Field initialization. See :class:`field.Field`
           for details.
 
         """
@@ -754,7 +754,7 @@ class Geometry(object):
 
 
     def add_field(self,field):
-        """Low level function to add a Field"""
+        """_Low level function to add a Field"""
         if not hasattr(self,'_fields'):
             self._fields = OrderedDict()
         self._fields[field.fldname] = field

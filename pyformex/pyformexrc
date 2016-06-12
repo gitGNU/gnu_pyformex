@@ -104,8 +104,7 @@ deprec = True  # Show deprecations
 filters = [('.*return_index.*','numpy')]
 
 [gui]
-
-bindings='any'   # other options are 'pyside' or 'pyqt4' to force one
+bindings = 'any'   # other options are 'pyside' or 'pyqt4' to force one
 
 #imagesfromeps = True
 fortune = False  # show a fortune cookie on startup
@@ -328,5 +327,7 @@ guiscript = "http://get.goXTK.com/xtk_xdat.gui.js"
 autogui = True
 devel = False
 devpath = os.path.join(pyformexdir,'opengl')
+logo = 'http://pyformex.org/images/pyformex_createdby.png'
+logo_link = 'http://pyformex.org'
 
 #End

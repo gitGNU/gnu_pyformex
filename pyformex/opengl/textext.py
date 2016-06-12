@@ -315,4 +315,6 @@ class Mark(Actor):
         Actor.__init__(self,F,rendertype=1,texture=tex,texmode=4,offset3d=pos,opak=opak,ontop=ontop,lighting=False,**kargs)
 
 
+__all__ = [ 'FontTexture', 'Text', 'TextArray', 'Mark' ]
+
 # End

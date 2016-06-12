@@ -206,6 +206,62 @@ def printOpenGLContext(ctxt):
         print("No OpenGL context yet!")
 
 
+### Some (OLD) drawing functions ############################################
+
+
+def drawDot(x, y):
+    """Draw a dot at canvas coordinates (x,y)."""
+    GL.glBegin(GL.GL_POINTS)
+    GL.glVertex2f(x, y)
+    GL.glEnd()
+
+
+def drawLine(x1, y1, x2, y2):
+    """Draw a straight line from (x1,y1) to (x2,y2) in canvas coordinates."""
+    GL.glBegin(GL.GL_LINES)
+    GL.glVertex2f(x1, y1)
+    GL.glVertex2f(x2, y2)
+    GL.glEnd()
+
+
+def drawGrid(x1, y1, x2, y2, nx, ny):
+    """Draw a rectangular grid of lines
+
+    The rectangle has (x1,y1) and and (x2,y2) as opposite corners.
+    There are (nx,ny) subdivisions along the (x,y)-axis. So the grid
+    has (nx+1) * (ny+1) lines. nx=ny=1 draws a rectangle.
+    nx=0 draws 1 vertical line (at x1). nx=-1 draws no vertical lines.
+    ny=0 draws 1 horizontal line (at y1). ny=-1 draws no horizontal lines.
+    """
+    GL.glBegin(GL.GL_LINES)
+    ix = range(nx+1)
+    if nx==0:
+        jx = [1]
+        nx = 1
+    else:
+        jx = ix[::-1]
+    for i, j in zip(ix, jx):
+        x = (i*x2+j*x1)/nx
+        GL.glVertex2f(x, y1)
+        GL.glVertex2f(x, y2)
+
+    iy = range(ny+1)
+    if ny==0:
+        jy = [1]
+        ny = 1
+    else:
+        jy = iy[::-1]
+    for i, j in zip(iy, jy):
+        y = (i*y2+j*y1)/ny
+        GL.glVertex2f(x1, y)
+        GL.glVertex2f(x2, y)
+    GL.glEnd()
+
+
+def drawRect(x1, y1, x2, y2):
+    """Draw the circumference of a rectangle."""
+    drawGrid(x1, y1, x2, y2, 1, 1)
+
 ################# Canvas Mouse Event Handler #########################
 
 class CursorShapeHandler(object):
@@ -1223,7 +1279,6 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
 
     def draw_state_rect(self, x, y):
         """Store the pos and draw a rectangle to it."""
-        from pyformex.legacy.decors import drawRect
         self.state = x, y
         drawRect(self.statex, self.statey, x, y)
 
@@ -1272,7 +1327,6 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
 
     def draw_state_line(self, x, y):
         """Store the pos and draw a line to it."""
-        from pyformex.legacy.decors import drawLine
         self.state = x, y
         drawLine(self.statex, self.statey, x, y)
 

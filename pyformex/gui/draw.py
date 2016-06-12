@@ -1102,7 +1102,7 @@ def showLineDrawing(L):
         undecorate(LineDrawing)
         LineDrawing = None
     if L.size != 0:
-        LineDrawing = decors.LineDrawing(L, color='yellow', linewidth=3)
+        LineDrawing = decors.Lines(L, color='yellow', linewidth=3)
         decorate(LineDrawing)
 
 
@@ -1123,8 +1123,6 @@ def exportWebGL(fn,createdby=50,**kargs):
 
     Returns the absolute pathname of the generated .html file.
     """
-    if not pf.options.opengl2:
-        return
     from pyformex.plugins.webgl import WebGL
     print("Exporting current scene to %s" % fn)
     pf.GUI.setBusy()
@@ -1229,14 +1227,8 @@ def resetGUI():
 ###########################################################################
 # import opengl specific drawing functions
 #
-try:
-    if pf.options.opengl2:
-        from pyformex.opengl.draw import *
-    else:
-        from pyformex.legacy.draw import *
-except:
-    raise
-    #pass
+from pyformex.opengl.draw import *
+
 
 ###########################################################################
 # Make _I, _G and _T be included when doing 'from gui.draw import *'

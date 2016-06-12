@@ -28,8 +28,10 @@ can be useful additions to a geometry scene rendering.
 """
 from __future__ import print_function
 
+from pyformex.coordsys import CoordSys
 from pyformex import simple
 from pyformex.formex import Formex
+from pyformex.mesh import Mesh
 from pyformex.opengl.drawable import Actor
 from pyformex.opengl.textext import FontTexture, Text
 from pyformex.opengl.sanitize import *
@@ -58,9 +60,32 @@ class Rectangle(Actor):
 
 
 class Line(Actor):
-    """A 2D-line on the canvas."""
+    """A 2D-line on the canvas.
+
+    Parameters:
+
+    - `x1, y1, x2, y2`: floats: the viewport coordinates of the
+      endpoints of the line
+    - `kargs`: keyword arguments to be passed to the :class:`Actor`.
+    """
     def __init__(self,x1,y1,x2,y2,**kargs):
         F = Formex([[[x1,y1],[x2,y2]]])
+        Actor.__init__(self,F,rendertype=2,**kargs)
+
+
+class Lines(Actor):
+    """A collection of straight lines on the canvas.
+
+    Parameters:
+
+    - `data`: data that can initialize a 2-plex Formex: the viewport coordinates
+      of the 2 endpoints of the n lines. The third coordinate is ignored.
+    - `kargs`: keyword arguments to be passed to the :class:`Actor`.
+
+    """
+    def __init__(self,data,color=None,linewidth=None,**kargs):
+        """Initialize a Lines."""
+        F = Formex(data)
         Actor.__init__(self,F,rendertype=2,**kargs)
 
 
@@ -229,6 +254,13 @@ class Triade(Actor):
     - `legend`: text symbols to plot at the end of the axes. A 3-character
       string or a tuple of 3 strings.
 
+    - `color`: clist of 6 colors, to be used for the 3 positive and 3 negative
+      axes.
+
+    - `reverse`: bool. If True, also show the negative axes.
+
+    .. warning: This is experimental!
+
     """
 
     def __init__(self,pos='lb',size=100,pat='4:0123',legend='xyz',color=[red, green, blue, cyan, magenta, yellow],reverse=False,**kargs):
@@ -243,7 +275,7 @@ class Triade(Actor):
             x0 = x + w / 2
         if pos[1] == 'b':
             y0 = y + size
-        elif pos[1] =='t':
+        elif pos[1] == 't':
             y0 = y + h - size
         else:
             y0 = y + h / 2
@@ -252,9 +284,10 @@ class Triade(Actor):
         self.size = size
         self.x,self.y = x0,y0
 
-        F = Formex('2:01020I').scale(size)
-        ## if reverse:
-        ##     F += Formex('2:03040i').scale(size)
+        F = Formex('2:01020I')
+        if reverse:
+            F += Formex('2:03040i')
+        F = F.scale(size)
         Actor.__init__(self,F,rendertype=-2,lighting=False,opak=True,linewidth=2,color=color,**kargs)
 
         ## # Coord planes
@@ -273,6 +306,49 @@ class Triade(Actor):
         ##     p = unitVector(i)*1.1
         ##     self.children.append(Text(x,p))
 
+
+class AxesActor(Actor):
+    """An actor showing the three axes of a coordinate system.
+
+    Parameters:
+
+    - `cs`: a :class:`coordsys.CoordSys`.
+      If not specified, the global coordinate system is used.
+
+    The default actor consists of three colored lines of unit length along
+    the unit vectors of the axes and three colored triangles representing the
+    coordinate planes. This can be modified by the following parameters:
+
+    size: scale factor for the unit vectors.
+    color: a set of three colors to use for x,y,z axes.
+    colored_axes = False: draw black axes.
+    draw_planes = False: do not draw the coordinate planes.
+
+    If reverse is True or psize > 0.0, the color set should have 6 colors,
+    else 3 will suffice
+    """
+
+    def __init__(self,cs,size=1.0,psize=0.5,pat='3:016',color=['red','green','blue','cyan','magenta','yellow'],reverse=True,linewidth=2,alpha=0.5,**kargs):
+        """Initialize the AxesActor"""
+        if not isinstance(cs,CoordSys):
+            raise ValueError("cs should be a CoordSys")
+        coords = cs.points().reshape(4,3)
+        lines = [[3,0],[3,1],[3,2]]
+        M = Mesh(coords.scale(size,center=coords[3]),lines)
+        col = color[:3]
+        if reverse:
+            M = Mesh.concatenate([M,M.reflect(dir=[0,1,2],pos=coords[3])])
+            col = color[:6]
+        Actor.__init__(self,M,lighting=False,opak=True,linewidth=linewidth,color=col,**kargs)
+
+        # Coord planes
+        if psize > 0.0:
+            planes = [[3,1,2],[3,2,0],[3,0,1]]
+            M = Mesh(coords.scale(psize,center=coords[3]),planes)
+            col = color[:3]
+            bkcol = color[3:6] if reverse else col
+            MA = Actor(M,lighting=False,alpha=alpha,color=col,bkcolor=bkcol)
+            self.children.append(MA)
 
 
 def Grid(nx=(1, 1, 1),ox=(0.0, 0.0, 0.0),dx=(1.0, 1.0, 1.0),lines='b',planes='b',linecolor=black,planecolor=white,alpha=0.3,**kargs):
@@ -336,5 +412,10 @@ def Grid(nx=(1, 1, 1),ox=(0.0, 0.0, 0.0),dx=(1.0, 1.0, 1.0),lines='b',planes='b'
         G.append(M)
 
     return G.trl(ox)
+
+
+__all__ = [ 'BboxActor', 'Rectangle', 'Line', 'Lines', 'Grid2D', 'ColorLegend',
+            'Triade', 'AxesActor', 'Grid' ]
+
 
 # End

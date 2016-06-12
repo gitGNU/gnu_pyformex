@@ -578,7 +578,7 @@ class Coords(ndarray):
         return inertia.Inertia(I,ctr=C,mass=M)
 
 
-    def prinCS(self,mass=None):
+    def principalCS(self,mass=None):
         """Returns a CoordSys formed by the principal axes of inertia
 
         Parameters:
@@ -603,7 +603,7 @@ class Coords(ndarray):
         Returns an array with the length of the bbox along the 3
         principal axes. This is a convenient shorthand for::
 
-          self.toCS(self.prinCS()).sizes()
+          self.toCS(self.principalCS()).sizes()
 
         Example:
 
@@ -611,7 +611,7 @@ class Coords(ndarray):
           [ 0.  0.  3.]
 
         """
-        return self.toCS(self.prinCS()).sizes()
+        return self.toCS(self.principalCS()).sizes()
 
 
     def centralCS(self,mass=None):
@@ -1086,6 +1086,9 @@ class Coords(ndarray):
 
 
     # TODO: THIS SHOULD BE GENERALIZED TO TAKE SAME `dir` OPTIONS AS translate
+    # NOT SURE: now using dir=[0,1] or dir=[0,1,2] would mirror w.r.t an
+    # axis, resp. a point!
+    #
     def reflect(self,dir=0,pos=0.,inplace=False):
         """Reflect the coordinates in direction dir against plane at pos.
 

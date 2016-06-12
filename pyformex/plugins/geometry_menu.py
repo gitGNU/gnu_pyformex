@@ -793,7 +793,7 @@ def showPrincipal():
     print("Principal Values: %s" % Iprin)
     print("Inertia tensor: %s" % I)
     # display the axes
-    CS = coordsys.CoordSys(rot=Iaxes.transpose(),trl=C)
+    CS = coordsys.CoordSys(rot=Iaxes,trl=C)
     size = F.dsize()
     drawAxes(CS, size=size, psize=0.1*size)
     data = (I,Iprin,Iaxes)

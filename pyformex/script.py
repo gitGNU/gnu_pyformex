@@ -558,8 +558,8 @@ def runApp(appname,argv=[],refresh=False,lock=True,check=True):
 
         return
 
-    if pf.options.opengl2 and hasattr(app, '_opengl2') and not app._opengl2:
-        pf.warning("This Example can not yet be run under the pyFormex opengl2 engine.\n You can run it when you start pyFormex with the '--gl1' command line options.")
+    if hasattr(app, '_opengl2') and not app._opengl2:
+        pf.warning("This Example can not yet be run under the pyFormex opengl2 engine.\n")
         return
 
     if hasattr(app, '_status') and app._status == 'unchecked':

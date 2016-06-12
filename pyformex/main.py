@@ -337,14 +337,14 @@ def run(argv=[]):
        action="store", dest="debuglevel", type="int", default=0,
        help="Display debugging info to sys.stdout. The value is an int with the bits of the requested debug levels set. A value of -1 switches on all debug info. If this option is used, it overrides the --debug option.",
        ),
-    MO("--gl1",
-       action="store_false", dest="opengl2", default=True,
-       help="Obsolete. Silently ignored.",
-       ),
-    MO("--gl2",
-       action="store_true", dest="opengl2", default=True,
-       help="Obsolete. Silently ignored.",
-       ),
+    ## MO("--gl1",
+    ##    action="store_false", dest="opengl2", default=True,
+    ##    help="Obsolete. Silently ignored.",
+    ##    ),
+    ## MO("--gl2",
+    ##    action="store_true", dest="opengl2", default=True,
+    ##    help="Obsolete. Silently ignored.",
+    ##    ),
     MO("--mesa",
        action="store_true", dest="mesa", default=False,
        help="Force the use of software 3D rendering through the mesa libs. The default is to use hardware accelerated rendering whenever possible. This flag can be useful when running pyFormex remotely on another host. The hardware accelerated version will not work over remote X.",
@@ -363,7 +363,7 @@ def run(argv=[]):
        ),
     MO("--shader",
        action="store", dest="shader", default='',
-       help="An extra string to add into the name of the shader programs, located in pyformex/data. The valu will be added in before the '.c' extension.",
+       help="An extra string to add into the name of the shader programs, located in pyformex/data. The value will be added in before the '.c' extension.",
        ),
     MO("--newviewports",
        action="store_true", dest="newviewports", default=False,
@@ -550,8 +550,8 @@ def run(argv=[]):
         if os.path.exists(pf.cfg['localprefs']):
             userprefs.append(pf.cfg['localprefs'])
 
-    sysprefs = filter(os.path.exists, sysprefs)
-    userprefs = filter(os.path.exists, userprefs)
+    sysprefs = list(filter(os.path.exists, sysprefs))
+    userprefs = list(filter(os.path.exists, userprefs))
 
     if pf.options.config:
         userprefs.append(utils.tildeExpand(pf.options.config))
@@ -676,17 +676,9 @@ def run(argv=[]):
             except:
                 print("Error while executing %s, we ignore it and continue" % source_clean)
 
-    if pf.options.opengl2 is None:
-        pf.options.opengl2 = True
-    else:
-        pf.cfg['gui/startup_warning'] = None
-
-    if pf.options.opengl2:
-        pass
-        #pf.__version__ += " (GL2)"
-    else:
-        pf.__version__ += " (old GL1 engine)"
-
+    # TODO:
+    # without this, we get a crash. Maybe config related?
+    pf.cfg['gui/startup_warning'] = None
 
     ###### We have the config and options all set up ############
     filterWarnings()

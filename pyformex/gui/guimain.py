@@ -36,11 +36,8 @@ from pyformex import utils
 # Check for OpenGL
 utils.checkModule('pyopengl', fatal=True)
 
-# Import the proper gl2/gl1 canvas module
-from pyformex.gui import canvas
-
 from pyformex.gui import (
-    signals, QtCore, QtGui,
+    signals, QtCore, QtGui, canvas,
     menu, cameraMenu, fileMenu, appMenu, prefMenu, viewportMenu,
     toolbar, viewport, guifunc, draw, widgets, drawlock, views,
     )
@@ -343,9 +340,7 @@ class Gui(QtGui.QMainWindow):
         pmenu.insertMenu(pmenu.item('background color'), mmenu)
 
         mmenu = QtGui.QMenu('Wire Mode')
-        modes = [ 'none', 'all' ]
-        if pf.options.opengl2:
-            modes.extend(['border', 'feature' ])
+        modes = [ 'none', 'all', 'border', 'feature' ]
         self.wmodebtns = menu.ActionList(
             modes, guifunc.wireMode, menu=mmenu, toolbar=None)
         pmenu.insertMenu(pmenu.item('background color'), mmenu)
@@ -363,7 +358,7 @@ class Gui(QtGui.QMainWindow):
         if self.modebar and pf.cfg['gui/shrinkbutton']:
             toolbar.addShrinkButton(self.modebar)
 
-        if self.modebar and pf.options.opengl2:
+        if self.modebar:
             toolbar.addButton(self.modebar,"Popup dialog to interactively change object rendering",'objects',viewportMenu.showObjectDialog)
 
         ###############  VIEWS menu ################
@@ -512,10 +507,7 @@ class Gui(QtGui.QMainWindow):
         """
         m, p = self.saved_views.get(name, (None, None))
         if m is not None:
-            if pf.options.opengl2:
-                self.viewports.current.camera.setModelview(m)
-            else:
-                self.viewports.current.camera.loadModelView(m)
+            self.viewports.current.camera.setModelview(m)
 
 
     def createView(self, name, angles):

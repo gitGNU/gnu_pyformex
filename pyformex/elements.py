@@ -242,29 +242,17 @@ class ElementType(object):
 
     @classmethod
     def getDrawEdges(self,quadratic=False):
-        if pf.options.opengl2:
-            if not hasattr(self, 'drawgl2edges'):
-                self.drawgl2edges = self.getEdges().reduceDegenerate()
-            return self.drawgl2edges
-        if quadratic and hasattr(self, 'drawedges2'):
-            return self.drawedges2
-        if not hasattr(self, 'drawedges'):
-            self.drawedges = self.getEdges().reduceDegenerate()
-        return self.drawedges
+        if not hasattr(self, 'drawgl2edges'):
+            self.drawgl2edges = self.getEdges().reduceDegenerate()
+        return self.drawgl2edges
 
 
     @classmethod
     def getDrawFaces(self,quadratic=False):
         """Returns the local connectivity for drawing the element's faces"""
-        if pf.options.opengl2:
-            if not hasattr(self, 'drawgl2faces'):
-                self.drawgl2faces = self.getFaces().reduceDegenerate()
-            return self.drawgl2faces
-        if quadratic and hasattr(self, 'drawfaces2'):
-            return self.drawfaces2
-        if not hasattr(self, 'drawfaces'):
-            self.drawfaces = self.getFaces().reduceDegenerate()
-        return self.drawfaces
+        if not hasattr(self, 'drawgl2faces'):
+            self.drawgl2faces = self.getFaces().reduceDegenerate()
+        return self.drawgl2faces
 
 
     @classmethod

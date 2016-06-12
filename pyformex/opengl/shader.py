@@ -56,7 +56,7 @@ def defaultShaders():
     pf.debug("Vendor: %s; Renderer: %s; Available version: %s; Active version %s" % (vendor,renderer,availversion,activeversion),pf.DEBUG.OPENGL)
     shortversion = "%s.%s" % (major,minor)
     # Default shaders
-    dirname = os.path.join(pf.pyformexdir,'data')
+    dirname = os.path.join(pf.pyformexdir,'glsl')
     vertexshader = os.path.join(dirname, "vertex_shader")
     fragmentshader = os.path.join(dirname, "fragment_shader")
     if not pf.options.shader:
@@ -83,6 +83,7 @@ def defaultShaders():
     vertexshader += '.c'
     fragmentshader += '.c'
     return vertexshader,fragmentshader
+
 
 class Shader(object):
     """An OpenGL shader consisting of a vertex and a fragment shader pair.
