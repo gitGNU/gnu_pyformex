@@ -325,6 +325,7 @@ if utils.checkModule('pil'):
 
 # Import images using dicom
 _dicom_spacing = None
+_dicom_origin = None
 
 if utils.checkModule('dicom'):
 
@@ -350,6 +351,7 @@ if utils.checkModule('dicom'):
         _dicom_spacing = None
         try:
             dcm = dicom.read_file(filename)
+            #print("%s %s %s %s" % (filename[-10:],dcm.PixelSpacing[0],dcm.PixelSpacing[1],dcm.SliceThickness))
         except:
             print("While reading file '%s'" % filename)
             raise
@@ -377,8 +379,9 @@ if utils.checkModule('gdcm'):
         Returns a 3D array with the pixel data of all the images. The first
           axis is the `z` value, the last the `x`.
 
-        As a side effect, this function sets the global variable `_dicom_spacing`
-        to a (3,) array with the pixel/slice spacing factors, in order (x,y,z).
+        As a side effect, this function sets the global variables
+        `_dicom_spacing` and `_dicom_origin` to a to a (3,) array with
+        the pixel/slice spacing factors, resp. the origin, in order (x,y,z).
         """
         import gdcm
 
@@ -422,15 +425,16 @@ if utils.checkModule('gdcm'):
             gdcm_array = image.GetBuffer()
             data = np.frombuffer(gdcm_array, dtype=dtype).reshape(shape)
             spacing = np.array(image.GetSpacing())
-            return data, spacing
+            origin = np.array(image.GetOrigin())
+            return data, spacing, origin
 
 
-        global _dicom_spacing
+        global _dicom_spacing, _dicom_origin
         r = gdcm.ImageReader()
         r.SetFileName(filename)
         if not r.Read():
             raise ValueError("Could not read image file '%s'" % filename)
-        pix, _dicom_spacing = gdcm_to_numpy(r.GetImage())
+        pix, _dicom_spacing, _dicom_origin = gdcm_to_numpy(r.GetImage())
         return pix
 
     readDicom = loadImage_gdcm
