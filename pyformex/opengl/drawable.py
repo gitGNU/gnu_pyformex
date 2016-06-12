@@ -215,7 +215,7 @@ class Drawable(Attributes):
 
             if self.vertexColor is not None:
                 self.cbo = VBO(self.vertexColor.astype(float32))
-                print("VERTEX COLOR SHAPE = %s" % str(self.cbo.shape))
+                #print("VERTEX COLOR SHAPE = %s" % str(self.cbo.shape))
 
         #### TODO: should we make this configurable ??
         #

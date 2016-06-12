@@ -1062,7 +1062,7 @@ class InputSlider(InputInteger):
         self.slider.setSingleStep(1)
         self.slider.setTracking(1)
         self.slider.valueChanged.connect(self.set_value)
-        self.layout().addWidget(self.slider)
+        self.layout().addWidget(self.slider,stretch=2)
 
     def set_value(self, val):
         val = int(val)
@@ -1108,7 +1108,8 @@ class InputFSlider(InputFloat):
         self.slider.setSingleStep(1)
         self.slider.setTracking(tracking)
         self.slider.valueChanged.connect(self.set_value)
-        self.layout().addWidget(self.slider)
+        self.layout().addWidget(self.slider,stretch=2)
+
 
     def set_value(self, val):
         val = float(val)
