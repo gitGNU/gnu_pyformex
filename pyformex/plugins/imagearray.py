@@ -440,6 +440,120 @@ if utils.checkModule('gdcm'):
     readDicom = loadImage_gdcm
 
 
+
+    class DicomStack(object):
+        """A stack of DICOM images.
+
+        The DicomStack class stores a collection of DICOM images
+        and provides conversion to ndarray.
+
+        The DicomStack is initialized by a list of file names.
+        All input files are scanned for DICOM image data and
+        non-DICOM files are skipped.
+        From the DICOM files, the pixel and slice spacing are read,
+        as well as the origin.
+        The DICOM files are sorted in order of ascending origin_z value.
+
+        While reading the DICOM files, the following attributes are set:
+        - `files`: a list of the valid DICOM files, in order of ascending
+          z-value.
+        - `pixel_spacing`: a dict with an (x,y) pixel spacing tuple as key
+          and a list of indices of the matching images as value.
+        - `slice_thickness`: a list of the slice thicknesses of the
+          images, in the same order as `files`.
+        - `xy_origin`: a dict with an (x,y) position the pixel (0,0) as key
+          and a list of indices of the matching images as value.
+        - `z_origin`: a list of the z positions of the images,
+          in the same order as `files`.
+        - `rejected`: list of rejected files.
+
+        """
+        class Object(object):
+            """_A dummy object to allow attributes"""
+            pass
+
+
+        def __init__(self,files,zsort=True,reverse=False):
+            """Initialize the DicomStack."""
+            ok = []
+            rejected = []
+            for fn in files:
+                obj = DicomStack.Object()
+                try:
+                    obj.fn = fn
+                    obj.image = loadImage_gdcm(fn)
+                    obj.spacing = _dicom_spacing
+                    obj.origin = _dicom_origin
+                    ok.append(obj)
+                except:
+                    rejected.append(obj)
+
+            if zsort:
+                ok.sort(key=lambda obj:obj.origin[2], reverse=reverse)
+
+            self.ok, self.rejected = ok,rejected
+
+
+        def nfiles(self):
+            """Return the number of accepted files."""
+            return len(self.ok)
+
+
+        def files(self):
+            """Return the list of accepted filenames"""
+            return [ obj.fn for obj in self.ok ]
+
+
+        def rejected(self):
+            """Return the list of rejected filenames"""
+            return [ obj.fn for obj in self.rejected ]
+
+
+        def spacing(self):
+            """Return the pixel spacing and slice thickness.
+
+            Return the pixel spacing (x,y) and the slice thickness (z)
+            in the accepted images.
+
+            Returns: a float array of shape (nfiles,3).
+            """
+            return np.array([ obj.spacing for obj in self.ok ])
+
+
+        def origin(self):
+            """Return the origin of all accepted images.
+
+            Return the world position of the pixel (0,0) in all accepted images.
+
+            Returns: a float array of shape (nfiles,3).
+            """
+            return np.array([ obj.origin for obj in self.ok ])
+
+
+        def zvalue(self):
+            """Return the zvalue of all accepted images.
+
+            The zvalue is the z value of the origin of the image.
+
+            Returns: a float array of shape (nfiles).
+            """
+            return np.array([ obj.origin[2] for obj in self.ok ])
+
+
+        def image(self,i):
+            """Return the image at index i"""
+            return self.ok[i].image
+
+
+        def pixar(self):
+            """Return the DicomStack as an array
+
+            Returns all images in a single array. This is only succesful
+            if all accepted images have the same size.
+            """
+            return np.dstack([ obj.image for obj in self.ok ])
+
+
 def dicom2numpy(files):
     """Read a set of DICOM image files.
 
