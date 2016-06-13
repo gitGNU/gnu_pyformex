@@ -3209,7 +3209,7 @@ class MessageBox(QtGui.QMessageBox):
         if self.checks:
             return res, [c.isChecked() for c in self.checks]
         else:
-        return res
+            return res
 
 
     def updateText(self,text,format=''):
