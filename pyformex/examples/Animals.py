@@ -21,17 +21,17 @@
 ##  You should have received a copy of the GNU General Public License
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
-"""Barrel Vault
+"""Animals
 
-Create a parametric barrel vault.
+Show models of animals retrieved over the web.
 """
 from __future__ import print_function
 
 
 _status = 'checked'
-_level = 'beginner'
-_topics = ['frame']
-_techniques = ['dialog']
+_level = 'advanced'
+_topics = ['geometry']
+_techniques = ['vtk', 'web']
 
 from pyformex import utils
 utils.requireModule('vtk')
