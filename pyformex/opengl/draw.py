@@ -613,18 +613,17 @@ def drawAxes(cs=None,**kargs):
     - `cs`: a :class:`coordsys.CoordSys`
       If not specified, the global coordinate system is used.
 
-    Other arguments can be added just like in the :class:`AxesActor` class.
+    Other arguments can be added just like in the :class:`candy.Axes` class.
 
     By default this draws the positive parts of the axes in the colors R,G,B
     and the negative parts in C,M,Y.
     """
-    from pyformex.opengl.actors import AxesActor
+    from pyformex.candy import Axes
     from pyformex.coordsys import CoordSys
     if cs is None:
         cs = CoordSys()
 
-    A = AxesActor(cs,**kargs)
-    drawActor(A)
+    A = draw(Axes(cs,**kargs))
     return A
 
 
