@@ -28,11 +28,11 @@ from __future__ import print_function
 
 
 import pyformex as pf
-from pyformex.opengl.sanitize import *
+from pyformex.opengl.sanitize import saneFloat, saneLineStipple, saneColorSet
 from pyformex.opengl import colors
 from OpenGL import GL
 from OpenGL.arrays.vbo import VBO
-from pyformex.opengl.shader import Shader
+#from pyformex.opengl.shader import Shader
 from pyformex.opengl.texture import Texture
 from pyformex.attributes import Attributes
 from pyformex.formex import Formex
@@ -196,7 +196,7 @@ class Drawable(Attributes):
             # And we always need this one
             self.avbo = VBO(self.fcoords)
             self.useObjectColor = 1
-            self.objectColor = array(red)
+            self.objectColor = np.array(colors.red)
 
         elif self.color is not None:
             #print("COLOR",self.color)
@@ -226,7 +226,7 @@ class Drawable(Attributes):
         #  Creating a dummy color buffer seems to solve that problem
         #
         if self.cbo is None:
-            self.cbo = VBO(array(red))
+            self.cbo = VBO(np.array(colors.red))
 
         #if self.rendertype == 3:
         #    print("CBO DATA %s\n" % self.name,self.cbo.data)
@@ -245,7 +245,7 @@ class Drawable(Attributes):
         """Prepare texture and texture coords"""
         if self.useTexture == 1:
             if self.texcoords.ndim == 2:
-                curshape = self.texcoords.shape
+                #curshape = self.texcoords.shape
                 self.texcoords = at.multiplex(self.texcoords, self.object.nelems(),axis=-2)
                 #print("Multiplexing texture coords: %s -> %s " % (curshape, self.texcoords.shape))
         self.tbo = VBO(self.texcoords.astype(float32))
@@ -269,7 +269,7 @@ class Drawable(Attributes):
             if self.ibo:
                 GL.glDrawElementsui(self.glmode, self.ibo)
             else:
-                GL.glDrawArrays(self.glmode, 0, asarray(self.vbo.shape[:-1]).prod())
+                GL.glDrawArrays(self.glmode, 0, np.asarray(self.vbo.shape[:-1]).prod())
 
         if self.offset:
             pf.debug("POLYGON OFFSET", pf.DEBUG.DRAW)
@@ -310,7 +310,7 @@ class Drawable(Attributes):
             # position of the (0,0,0) point after rotation.
             #
             rot = renderer.camera.modelview.rot
-            x = dot(self._fcoords.reshape(-1,3),rot).reshape(self._fcoords.shape)
+            x = np.dot(self._fcoords.reshape(-1,3),rot).reshape(self._fcoords.shape)
             x[:,:,0] += self.x
             x[:,:,1] += self.y
             x[:,:,2] = 0
@@ -391,7 +391,7 @@ class Drawable(Attributes):
             if self.ibo:
                 GL.glDrawElementsui(self.glmode, self.ibo)
             else:
-                GL.glDrawArrays(self.glmode, 0, asarray(self.vbo.shape[:-1]).prod())
+                GL.glDrawArrays(self.glmode, 0, np.asarray(self.vbo.shape[:-1]).prod())
 
         renderer.shader.loadUniforms(self)
 
@@ -427,7 +427,10 @@ class Drawable(Attributes):
 
     def __str__(self):
         keys = sorted(set(self.keys()) - set(('_default_dict_',)))
-        return utils.formatDict(utils.selectDict(self,keys))
+        print("Keys %s" % keys)
+        out = utils.formatDict(utils.selectDict(self,keys))
+        print(out)
+        return out
 
 ########################################################################
 
@@ -567,6 +570,10 @@ class Actor(Base):
         # Acknowledge all object attributes and passed parameters
         self.update(obj.attrib)
         self.update(kargs)
+        # Implement the default color='prop' if no color is set and
+        # the object has props
+        if self.color is None and hasattr(obj,'prop'):
+            self.color = 'prop'
         if self.rendertype is None:
             self.rendertype = 0
 
@@ -589,6 +596,7 @@ class Actor(Base):
         # And we always need this one
         self.vbo = VBO(self.fcoords)
         #print("GEOM SHAPE %s" % str(self.fcoords.shape))
+        
 
 
     def getType(self):
@@ -598,7 +606,7 @@ class Actor(Base):
     def _fcoords_fuse(self):
         self._coords, self._elems = self._fcoords.fuse()
         if self._elems.ndim != 2:
-            self._elems = self._elems[:, newaxis]
+            self._elems = self._elems[:, np.newaxis]
 
 
     @property
@@ -725,8 +733,6 @@ class Actor(Base):
 
         #### CHILDREN ####
         for child in self.children:
-            #print("Preparing child")
-            #print(child)
             child.prepare(canvas)
 
 
@@ -784,7 +790,7 @@ class Actor(Base):
     def fullElems(self):
         """Return an elems index for the full coords set"""
         nelems, nplex = self.fcoords.shape[:2]
-        return arange(nelems*nplex).reshape(nelems, nplex)
+        return np.arange(nelems*nplex).reshape(nelems, nplex)
 
 
     def subElems(self,nsel=None,esel=None):
@@ -820,10 +826,12 @@ class Actor(Base):
         if (self.eltype is not None and self.eltype.ndim >= 2) or (self.eltype is None and self.object.nplex() >= 3):
             # Drawing triangles
 
-            if self.drawface is None:
-                drawface = 0
-            else:
-                drawface = self.drawface
+            # TODO: what is the intention of this?
+#            if self.drawface is None:
+#                drawface = 0
+#            else:
+#                drawface = self.drawface
+                
             name = self.name
 
             if self.rendertype > 1 or self.drawface == 0:
@@ -831,7 +839,8 @@ class Actor(Base):
                 # Draw front and back at once, without culling
                 # Beware: this does not work with different front/back color
                 # as our Drawable currently has only one color
-                self.drawable.append(Drawable(self,subelems=elems,name=name,cullface='',drawface=0))
+                D = Drawable(self,subelems=elems,name=name,cullface='',drawface=0)
+                self.drawable.append(D)
 
             else:
 
@@ -847,7 +856,8 @@ class Actor(Base):
 
         else:
             # Drawing lines and points
-            self.drawable.append(Drawable(self, subelems=elems, name=self.name+"_faces", lighting=False))
+            D = Drawable(self, subelems=elems, name=self.name+"_faces", lighting=False)
+            self.drawable.append(D)
 
 
     def _addEdges(self):
@@ -883,7 +893,7 @@ class Actor(Base):
 
         if elems is not None and elems.size > 0:
             #print("ADDWIRES SIZE %s" % (elems.shape,))
-            wires = Drawable(self, subelems=elems, lighting=False, color=array(black), opak=True, name=self.name+"_wires")
+            wires = Drawable(self, subelems=elems, lighting=False, color=np.array(colors.black), opak=True, name=self.name+"_wires")
             # Put at the front to make visible
             # ontop will not help, because we only sort actors
             self.drawable.insert(0, wires)
@@ -915,7 +925,13 @@ class Actor(Base):
         #print("ESEL",sel)
         elems = self.subElems(nsel=self.faces,esel=sel)
         #print("ELEMS",elems)
-        self._highlight = Drawable(self, subelems=elems, name=self.name+"_highlight", linewidth=10, lighting=False, color=array(yellow), opak=True)
+        self._highlight = Drawable(self, 
+                                   subelems=elems, 
+                                   name=self.name+"_highlight", 
+                                   linewidth=10, 
+                                   lighting=False, 
+                                   color=np.array(colors.yellow), 
+opak=True)
         # Put at the front to make visible
         self.drawable.insert(0, self._highlight)
 
@@ -924,7 +940,7 @@ class Actor(Base):
         """Add a highlight for the selected points. Default is all."""
         self.removeHighlight()
         vbo = VBO(self.object.points())
-        self._highlight = Drawable(self, vbo=vbo, subelems=sel.reshape(-1, 1), name=self.name+"_highlight", linewidth=10, lighting=False, color=array(yellow), opak=True, pointsize=10, offset=1.0)
+        self._highlight = Drawable(self, vbo=vbo, subelems=sel.reshape(-1, 1), name=self.name+"_highlight", linewidth=10, lighting=False, color=np.array(colors.yellow), opak=True, pointsize=10, offset=1.0)
         # Put at the front to make visible
         self.drawable.insert(0, self._highlight)
 
@@ -943,7 +959,7 @@ class Actor(Base):
                 color = self.object.prop
             elif color == 'random':
                 # create random colors
-                color = np.random.rand(F.nelems(), 3)
+                color = np.random.rand(self.object.nelems(), 3)
             elif color.startswith('fld:'):
                 # get colors from a named field
                 fld = self.object.getField(color[4:])
@@ -951,7 +967,7 @@ class Actor(Base):
                     color = fld.data
                     colormap = None
                 else:
-                    warning("Could not set color from field %s" % color)
+                    pf.warning("Could not set color from field %s" % color)
 
         color, colormap = saneColorSet(color, colormap, self.fcoords.shape)
 
@@ -959,7 +975,7 @@ class Actor(Base):
             if color.dtype.kind == 'i':
                 # We have a color index
                 if colormap is None:
-                    colormap = array(colors.palette)
+                    colormap = np.array(colors.palette)
                 color = colormap[color]
 
         return color
@@ -994,7 +1010,7 @@ class Actor(Base):
             if texture is not None:
                 if texcoords is None:
                     if (self.eltype is not None and self.eltype.ndim == 2):
-                        texcoords = array(self.eltype.vertices[...,:2])
+                        texcoords = np.array(self.eltype.vertices[...,:2])
                     else:
                         print("Texture not allowed for eltype %s" % self.eltype)
                         self.texture = self.texcoords = None
@@ -1082,7 +1098,7 @@ class Actor(Base):
             #print("INS,DEPTHS",ins,depth)
 
         if mode == 'point':
-            ok = where(ins)[0]
+            ok = np.where(ins)[0]
             if return_depth:
                 depth = depth[ok]
 
@@ -1113,10 +1129,10 @@ class Actor(Base):
             if mode == 'actor':
                 ok = ok.any()
                 if return_depth:
-                    depth =  depth[unique(elems)].min()
+                    depth =  depth[np.unique(elems)].min()
 
             else:
-                ok = where(ok)[0]
+                ok = np.where(ok)[0]
                 elems = elems[ok]
                 if return_depth:
                     depth = depth[elems].min(axis=-1)
@@ -1145,16 +1161,16 @@ GeomActor = Actor
 
 
 def polygonFaceIndex(n):
-    i0 = (n-1) * ones(n-2, dtype=int)
-    i1 = arange(n-2)
+    i0 = (n-1) * np.ones(n-2, dtype=int)
+    i1 = np.arange(n-2)
     i2 = i1+1
-    return column_stack([i0, i1, i2])
+    return np.column_stack([i0, i1, i2])
 
 
 def polygonEdgeIndex(n):
-    i0 = arange(n)
-    i1 = roll(i0, -1)
-    return column_stack([i0, i1])
+    i0 = np.arange(n)
+    i1 = np.roll(i0, -1)
+    return np.column_stack([i0, i1])
 
 
 ########################################################################

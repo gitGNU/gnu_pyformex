@@ -113,25 +113,18 @@ def draw(F,
          ## wait=True,allviews=False,highlight=False,silent=True,
          # A trick to allow 'clear' argument, but not inside kargs
          clear=None,
+         single=False,
          **kargs):
-    """Draw object(s) with specified settings and options.
+    """Draw geometrical object(s) with specified drawing options and settings.
 
-    BEWARE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    This is the documentation for old versions (<= 0.9) of pyFormex.
-    While most of the arguments are still valid and the documentation
-    below is useful, there might be some slight changes in the behavior.
+    This is the generic drawing function in pyFormex.
+    The user can specifies the Geometry and optional drawing parameters.
+    The function returns the Actor(s) resulting from the drawing
+    operation. The Actors can further be used to change the rendering.
 
-    THIS DOCSTRING NEEDS TO BE UPDATED !
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    Parameters:
 
-    This is the main drawing function to get geometry rendered on the OpenGL
-    canvas. It has a whole slew of arguments, but in most cases you will only
-    need to use a few of them. We divide the arguments in three groups:
-    geometry, settings, options.
-
-    Geometry: specifies what objects will be drawn.
-
-    - `F`: all geometry to be drawn is specified in this single argument.
+    - `F`:  specifies all geometry that will be drawn in a single argument.
       It can be one of the following:
 
       - a drawable object (a Geometry object like Formex, Mesh or TriSurface,
@@ -144,8 +137,29 @@ def draw(F,
       is recursively flattened, replacing string values by the corresponding
       value from the pyFormex global variables dictionary, until a single list
       of drawable objects results. Next the undrawable items are removed
-      from the list. The resulting list of drawable objects will then be
-      drawn using the remaining settings and options arguments.
+      from the list. The resulting list of drawable objects are drawn in a
+      single pass, with the same options and default drawing attributes.
+    - `clear`: clear the scene before drawing.
+    - `single`: specifies the type of result if `F` is a list.
+      If False, a flat list with all Actors for all Geometries in F is returned.
+      It True, a single Actor corresponding with F[0] is returned, with the
+      Actors for F[1:] set as its children.
+
+    The remaining parameters are the default drawing parameters to be used.
+    They will apply unless overridden by attributes set in the Geometry
+    itself (see :meth:`geometry.Geometry.attrib`).
+    There is a long list of possible settings, but in most case only a few
+    will be needed.
+
+    BEWARE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    The remainder of this docstring is from the old version (<= 0.9)
+    of pyFormex.
+    While most of the arguments are still valid and the documentation
+    below is useful, there might be some slight changes in the behavior.
+
+    DEVS: THIS DOCSTRING NEEDS TO BE UPDATED !
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
     Settings: specify how the geometry will be drawn. These arguments will
       be passed to the corresponding Actor for the object. The Actor is the
@@ -286,7 +300,14 @@ def draw(F,
     The normalized color value is a tuple of three values in the range 0.0..1.0.
     The values are the contributions of the red, green and blue components.
     """
-    """New draw function for OpenGL2"""
+
+    def showActor(actor,highlight):
+        """Add an actor or a highlight to the scene"""
+        if highlight:
+            pf.canvas.addHighlight(actor)
+        else:
+            pf.canvas.addActor(actor)
+
 
     if clear is not None:
         kargs['clear_'] = clear
@@ -317,7 +338,7 @@ def draw(F,
 
     # Shrink the objects if requested
     if opts.shrink:
-        FL = [ _shrink(F, opts.shrink_factor) for F in FL ]
+        FL = [ _shrink(Fi, opts.shrink_factor) for Fi in FL ]
 
     ## # Execute the drawlock wait before doing first canvas change
     pf.GUI.drawlock.wait()
@@ -341,14 +362,29 @@ def draw(F,
 
             # Create the actor
             actor = F.actor(**kargs)
-            actors.append(actor)
+            if single and len(actors) > 0:
+                # append the new actor to the children of the first
+                actors[0].children.append(actor)
+            else:
+                # append the actor to the list of actors
+                actors.append(actor)
 
-            if actor is not None:
-                # Show the actor
-                if opts.highlight:
-                    pf.canvas.addHighlight(actor)
-                else:
-                    pf.canvas.addActor(actor)
+            if actor is not None and not single:
+                # Immediately show the new actor
+                showActor(actor,opts.highlight)
+
+        if single:
+            # Now draw all actors in a single shot
+            actor = actors[0]
+            showActor(actor,opts.highlight)
+
+        else:
+            if not isinstance(F, list):
+                # For a single input geometry, always return single actor
+                actor = actors[0]
+            else:
+                # Return the whole actor list
+                actor = actors
 
         view = opts.view
         bbox = opts.bbox
@@ -384,10 +420,8 @@ def draw(F,
     finally:
         pf.GUI.setBusy(False)
 
-    if isinstance(F, list) or len(actors) != 1:
-        return actors
-    else:
-        return actors[0]
+    # Return the created Actor(s)
+    return actor
 
 
 def _setFocus(object, bbox, view):
@@ -843,13 +877,16 @@ def view(v,wait=True):
         pf.GUI.drawlock.lock()
 
 
-def setTriade(on=None,pos='lb',siz=100):
+def setTriade(on=None,pos='lb',siz=100,triade=None):
     """Toggle the display of the global axes on or off.
 
     If on is True, the axes triade is displayed, if False it is
     removed. The default (None) toggles between on and off.
+
+    See :meth:`canvas.Canvas.setTriade` for full description of
+    parameters.
     """
-    pf.canvas.setTriade(on, pos, siz)
+    pf.canvas.setTriade(on, pos, siz, triade)
     pf.canvas.update()
     pf.app.processEvents()
 

@@ -84,25 +84,20 @@ def run():
     pause()
 
     # Set default Triade on
-    pf.canvas.setTriade(on=True)
-    pf.canvas.update()
+    setTriade(on=True)
     pause()
 
     # Set a wireframe cube as Triade, left top
-    _triade_geometry = Formex(simple.Pattern['cube']).setProp([1,2,1,2,3,3,3,3,1,2,1,2])
-    pf.canvas.setTriade(on=True,pos='lt',triade=geomTriade)
-    pf.canvas.update()
+    cube = Formex(simple.Pattern['cube']).setProp([1,2,1,2,3,3,3,3,1,2,1,2]).centered()
+    setTriade(on=True,pos='lt',triade=cube)
     pause()
 
     # Use the displayed geometry (F) itself as Triade, left center
-    _triade_geometry = F
-    pf.canvas.setTriade(on=True,pos='lc',triade=geomTriade)
-    pf.canvas.update()
+    setTriade(on=True,pos='lc',triade=F)
     pause()
 
     # Reset the original Triade, center top
-    pf.canvas.setTriade(on=True,pos='ct')
-    pf.canvas.update()
+    setTriade(on=True,pos='ct')
 
 
 

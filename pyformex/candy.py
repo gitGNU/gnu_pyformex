@@ -35,7 +35,6 @@ Contents:
 """
 from __future__ import print_function
 
-from pyformex.formex import *
 from pyformex.mesh import Mesh
 from pyformex.coordsys import CoordSys
 from pyformex.olist import List

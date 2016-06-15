@@ -40,13 +40,14 @@ from pyformex.collection import Collection
 from pyformex.simple import cuboid2d
 from pyformex.opengl import decors
 from pyformex.opengl.sanitize import saneColor
-from pyformex.opengl.drawable import GeomActor
+from pyformex.opengl.drawable import Actor
 from pyformex.opengl.camera import Camera
 from pyformex.opengl.renderer import Renderer
 from pyformex.opengl.scene import Scene, ItemList
 from pyformex.opengl import colors
 
 import numpy as np
+
 
 from OpenGL import GL, GLU
 
@@ -76,8 +77,7 @@ def gl_pickbuffer():
     buf = GL.glRenderMode(GL.GL_RENDER)
     return np.asarray([ r[2] for r in buf ])
 
-
-# Used in CanvasSettings.glOverride!
+# Used in CanvasSettings.glOverride !
 from OpenGL.GL import glLineWidth as glLinewidth, glPointSize as glPointsize
 
 fill_modes = [ GL.GL_FRONT_AND_BACK, GL.GL_FRONT, GL.GL_BACK ]
@@ -643,8 +643,8 @@ class Canvas(object):
             clear_ = False,     # Clear on each drawing action
             shrink = False,
             shrink_factor = 0.8,
-            marksize = 5.0,
-            color = 'prop',
+#            marksize = 5.0,
+#            color = 'prop',
             wait = True,
             silent = True
             )
@@ -709,7 +709,7 @@ class Canvas(object):
         If no mode is specified, the current wiremode is used. A negative
         value inverses the state.
         """
-        print("CANVAS.setWireMode %s %s" % (state, mode))
+        #print("CANVAS.setWireMode %s %s" % (state, mode))
         oldstate = self.settings.wiremode
         if mode is None:
             mode = abs(oldstate)
@@ -727,7 +727,7 @@ class Canvas(object):
         Furthermore, if a Canvas method do_ATTR is defined, it will be called
         with the old and new toggle state as a parameter.
         """
-        print("CANVAS.setTogggle %s = %s"%(attr,state))
+        #print("CANVAS.setTogggle %s = %s"%(attr,state))
         oldstate = self.settings[attr]
         if state not in [True, False]:
             state = not oldstate
@@ -745,17 +745,17 @@ class Canvas(object):
 
     def do_wiremode(self, state, oldstate):
         """Change the wiremode"""
-        print("CANVAS.do_wiremode: %s -> %s"%(oldstate, state))
+        #print("CANVAS.do_wiremode: %s -> %s"%(oldstate, state))
         if state != oldstate and (state>0 or oldstate>0):
             # switching between two <= modes does not change anything
-            print("Changemode %s" % self.settings.wiremode)
+            #print("Changemode %s" % self.settings.wiremode)
             self.scene.changeMode(self)
             self.display()
 
 
     def do_alphablend(self, state, oldstate):
         """Toggle alphablend on/off."""
-        print("CANVAS.do_alphablend: %s -> %s"%(state,oldstate))
+        #print("CANVAS.do_alphablend: %s -> %s"%(state,oldstate))
         if state != oldstate:
             #self.renderer.changeMode(self)
             self.scene.changeMode(self)
@@ -772,7 +772,7 @@ class Canvas(object):
 
 
     def do_avgnormals(self, state, oldstate):
-        print("CANVAS.do_avgnormals: %s -> %s" % (state, oldstate))
+        #print("CANVAS.do_avgnormals: %s -> %s" % (state, oldstate))
         if state!=oldstate and self.settings.lighting:
             self.scene.changeMode(self)
             self.display()
@@ -830,7 +830,7 @@ class Canvas(object):
                 image = qimage2numpy(self.settings.bgimage, indexed=False)
             except:
                 pass
-        actor = GeomActor(F,name='background',rendermode='smooth',color=[self.settings.bgcolor],texture=image,rendertype=3,opak=True,lighting=False,view='front')
+        actor = Actor(F,name='background',rendermode='smooth',color=[self.settings.bgcolor],texture=image,rendertype=3,opak=True,lighting=False,view='front')
         #print("SCENE %s" % id(self.scene))
         self.scene.addAny(actor)
         #print(self.scene.backgrounds[0])
@@ -864,20 +864,13 @@ class Canvas(object):
           (one of 'l', 'c', or 'r') and vertical (one of 't', 'c', 'b') position
           on the camera's viewport. Default is left-bottom.
         - `siz`: size (in pixels) of the triade.
-        - `triade`: callable. Generates the Actor to be displayed as triade.
-          Default is :class:`decors.Triade`, which shows the positive axes
-          with the colors RGB.
-          This argument can be used to replace the default triade with a
-          customized version. It can be a function or a class name.
-          The call will be passed the `pos` and `siz` parameters.
-          It should return an Actor with its rendertype set to -2.
-          The Actor's coordinates should be scaled to pixel values,
-          and the Actor should be centered around the origin.
-          Also, the actor should have two attributes x,y set to the
-          position (in pixels) where the origin (center) of the actor will
-          be mapped.
-
-        .. warning: This is experimental and subject to changes!
+        - `triade`: Geometry, graphical representation of the axes.
+          The default is :class:`candy.Axes`, but another geometry may be
+          specified. To be useful and properly displayed, the Geometry's
+          coordinates should be confined by a bbox [(-1,-1,-1),(1,1,1)].
+          Drawing attributes may be set on the Geometry to influence
+          the appearence. Useful settings may include:
+          lighting=False, opak=True, linewidth=2.
 
         """
         if on is None:
@@ -887,12 +880,36 @@ class Canvas(object):
             self.removeAny(self.triade)
             self.triade = None
         if on:
+            # Create the triade
             if triade is None:
-                from . import decors
-                triade = decors.Triade
-                print("triade is %s" % triade)
-            self.triade = triade(pos, siz)
-            self.addAny(self.triade)
+                from pyformex import candy
+                triade = candy.Axes(reverse=False)
+                for G in triade:
+                    G.coords = G.coords.scale(siz)
+            else:
+                triade = triade.scale(siz)
+
+            x, y, w, h = GL.glGetIntegerv(GL.GL_VIEWPORT)
+            if pos[0] == 'l':
+                x0 = x + siz
+            elif pos[0] =='r':
+                x0 = x + w - siz
+            else:
+                x0 = x + w / 2
+            if pos[1] == 'b':
+                y0 = y + siz
+            elif pos[1] == 't':
+                y0 = y + h - siz
+            else:
+                y0 = y + h / 2
+
+            # TODO: This should be replaced with Actor()
+            from pyformex.gui.draw import draw
+            A = draw(triade,rendertype=-2,single=True,size=siz,x=x0,y=y0,lighting=True)
+            #self.addAny(A)
+            # Store the Actor in the Canvas class
+            self.triade = A
+            #print("Triade is %s\n%s" % (type(A),A))
 
 
     def initCamera(self):
@@ -1508,10 +1525,9 @@ class Canvas(object):
             pf.debug("Actor %s: Selection %s" % (i, K[i]), pf.DEBUG.DRAW)
             self.actors[i].addHighlightElements(K[i])
 
-# GDS: this does not work with pickable
-# because K.keys are not referring to actors but to pickable!!!
+
     def highlightPoints(self, K):
-        print("HIGHLIGHT_POINTS", K)
+        #print("HIGHLIGHT_POINTS", K)
         self.scene.removeHighlight()
         for i in K.keys():
             pf.debug("Actor %s: Selection %s" % (i, K[i]), pf.DEBUG.DRAW)
