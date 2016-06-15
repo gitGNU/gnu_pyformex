@@ -610,10 +610,10 @@ class Actor(Base):
             self._fcoords_fuse()
         return self._coords
 
-
-    def points(self):
-        """Return the coords of the geometry as a 2D array"""
-        return self.object.points()
+#
+#    def points(self):
+#        """Return the coords of the geometry as a 2D array"""
+#        return self.object.points()
 
 
     def bbox(self):
@@ -923,7 +923,7 @@ class Actor(Base):
     def addHighlightPoints(self,sel=None):
         """Add a highlight for the selected points. Default is all."""
         self.removeHighlight()
-        vbo = VBO(self.points())
+        vbo = VBO(self.object.points())
         self._highlight = Drawable(self, vbo=vbo, subelems=sel.reshape(-1, 1), name=self.name+"_highlight", linewidth=10, lighting=False, color=array(yellow), opak=True, pointsize=10, offset=1.0)
         # Put at the front to make visible
         self.drawable.insert(0, self._highlight)
@@ -1076,7 +1076,7 @@ class Actor(Base):
         value of all the objects inside.
 
         """
-        ins = camera.inside(self.points(), rect, return_depth)
+        ins = camera.inside(self.object.points(), rect, return_depth)
         if return_depth:
             ins,depth = ins
             #print("INS,DEPTHS",ins,depth)
@@ -1088,7 +1088,14 @@ class Actor(Base):
 
         else:
             if mode in ['element','actor']:
-                elems = self.elems
+                if isinstance(self.object,Mesh):
+                    elems = self.elems
+                elif isinstance(self.object,Formex):
+                    elems = self.fullElems()
+                else:
+                    raise ValueError("Element picking on objects of type %s is not implemented" % type(self.object))
+
+                #print("PICK: elems\n",elems)
             elif mode == 'edge':
                 # TODO: add edges selector
                 #elems =

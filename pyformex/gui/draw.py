@@ -34,7 +34,6 @@ from __future__ import print_function
 import pyformex as pf
 
 from pyformex import utils
-from pyformex import messages
 from pyformex.gui import widgets
 
 # Things that we want in the scripting language
