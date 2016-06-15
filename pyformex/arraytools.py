@@ -2423,7 +2423,7 @@ def pprint(a,label=''):
                         [ 9 10 11]]
 
     """
-    import pprint
+ #   import pprint
     s = str(a).split('\n')
     print(label+s[0])
     dummy = ' '*len(label)

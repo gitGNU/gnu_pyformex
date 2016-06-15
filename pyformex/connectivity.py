@@ -34,10 +34,8 @@ adjacency of elements can easily be detected from common node numbers.
 from __future__ import print_function
 
 from pyformex import zip
-from pyformex import utils
 
 from pyformex.arraytools import *
-from pyformex.adjacency import *
 
 
 # BV: Should we make an InverseConnectivity class?

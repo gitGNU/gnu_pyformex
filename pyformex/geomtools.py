@@ -891,7 +891,7 @@ def pointNearLine(X,p,n,atol,nproc=1):
          atol = [atol]*len(X)
     atol = checkArray1D(atol,kind=None,allow=None,size=len(X))
     if nproc == 1:
-        ip = [ where(X.distanceFromLine(p,n) < atol)[0] for p,n in zip(p,n) ]
+        ip = [ where(X.distanceFromLine(pi,ni) < atol)[0] for pi,ni in zip(p,n) ]
         return ip
     args = multi.splitArgs((X,p,n,atol),mask=(0,1,1,0),nproc=nproc)
     tasks = [(pointNearLine, a) for a in args]
@@ -1151,7 +1151,7 @@ def smallestDirection(x,method='inertia',return_size=False):
         random.shuffle(e)
         if n > m:
             e = concatenate([e, [0, 1, n-1]])
-        el = e[-3:]
+        #el = e[-3:]
         S = TriSurface(x, e.reshape(-1, 3))
         A, N = S.areaNormals()
         ok = where(isnan(N).sum(axis=1) == 0)[0]

@@ -30,7 +30,6 @@ from __future__ import print_function
 
 
 from pyformex.mydict import Dict, returnNone
-from pyformex import utils
 
 
 class Attributes(Dict):

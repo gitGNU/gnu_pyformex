@@ -35,10 +35,20 @@ from __future__ import print_function
 from pyformex import zip
 
 import pyformex as pf
-from pyformex.mesh import *
+import pyformex.arraytools as at
+from pyformex.connectivity import Connectivity
+from pyformex.coords import Coords
+from pyformex.mesh import Mesh
 from pyformex import utils
-from pyformex.lib import misc
 import os
+import numpy as np
+
+
+# Global variables used by some funnctions
+filename = None
+mode = None
+nplex = None
+offset = None
 
 
 def getParams(line):
@@ -51,7 +61,7 @@ def getParams(line):
 
 def readNodes(fil):
     """Read a set of nodes from an open mesh file"""
-    a = fromfile(fil, sep=" ").reshape(-1, 3)
+    a = np.fromfile(fil, sep=" ").reshape(-1, 3)
     x = Coords(a)
     return x
 
@@ -59,7 +69,7 @@ def readNodes(fil):
 def readElems(fil, nplex):
     """Read a set of elems of plexitude nplex from an open mesh file"""
     print("Reading elements of plexitude %s" % nplex)
-    e = fromfile(fil, sep=" ", dtype=Int).reshape(-1, nplex)
+    e = np.fromfile(fil, sep=" ", dtype=np.Int).reshape(-1, nplex)
     e = Connectivity(e)
     return e
 
@@ -147,7 +157,7 @@ def readInpFile(filename):
         try:
             coords = Coords(part['coords'])
             nodid = part['nodid']
-            nodpos = inverseUniqueIndex(nodid)
+            nodpos = at.inverseUniqueIndex(nodid)
             print("nnodes = %s" % coords.shape[0])
             print("nodid: %s" % nodid)
             print("nodpos: %s" % nodpos)
@@ -175,9 +185,9 @@ def read_off(fn):
             print("%s is not an OFF file!" % fn)
             return None, None
         nnodes, nelems, nedges = [int(i) for i in fil.readline().split()]
-        nodes = fromfile(file=fil, dtype=Float, count=3*nnodes, sep=' ')
+        nodes = np.fromfile(file=fil, dtype=at.Float, count=3*nnodes, sep=' ')
         # elems have number of vertices + 3 vertex numbers
-        elems = fromfile(file=fil, dtype=int32, count=4*nelems, sep=' ')
+        elems = np.fromfile(file=fil, dtype=np.int32, count=4*nelems, sep=' ')
     print("Read %d nodes and %d elems" % (nnodes, nelems))
     return nodes.reshape((-1, 3)), elems.reshape((-1, 4))[:, 1:]
 
@@ -196,9 +206,9 @@ def read_gts(fn):
             sep=''
         else:
             sep=' '
-        coords = fromfile(fil, dtype=Float, count=3*ncoords, sep=sep).reshape(-1, 3)
-        edges = fromfile(fil, dtype=int32, count=2*nedges, sep=' ').reshape(-1, 2) - 1
-        faces = fromfile(fil, dtype=int32, count=3*nfaces, sep=' ').reshape(-1, 3) - 1
+        coords = np.fromfile(fil, dtype=at.Float, count=3*ncoords, sep=sep).reshape(-1, 3)
+        edges = np.fromfile(fil, dtype=np.int32, count=2*nedges, sep=' ').reshape(-1, 2) - 1
+        faces = np.fromfile(fil, dtype=np.int32, count=3*nfaces, sep=' ').reshape(-1, 3) - 1
     print("Read %d coords, %d edges, %d faces" % (ncoords, nedges, nfaces))
     if coords.shape[0] != ncoords or \
        edges.shape[0] != nedges or \
@@ -214,7 +224,7 @@ def read_stl_bin(fn):
     triangle is the normal, the other three are the vertices.
     """
     def addTriangle(i):
-        x[i] = fromfile(file=fil, dtype=Float, count=12).reshape(4, 3)
+        x[i] = np.fromfile(file=fil, dtype=at.Float, count=12).reshape(4, 3)
         fil.read(2)
 
     print("Reading binary .STL %s" % fn)
@@ -224,15 +234,15 @@ def read_stl_bin(fn):
         raise ValueError("%s looks like an ASCII STL file!" % fn)
     i = head.find('COLOR=')
     if i >= 0 and i <= 70:
-        color = fromstring(head[i+6:i+10], dtype=uint8, count=4)
+        color = np.fromstring(head[i+6:i+10], dtype=np.uint8, count=4)
     else:
         color = None
 
-    ntri = fromfile(file=fil, dtype=Int, count=1)[0]
+    ntri = np.fromfile(file=fil, dtype=at.Int, count=1)[0]
     print("Number of triangles: %s" % ntri)
-    x = zeros((ntri, 4, 3), dtype=Float)
-    nbytes = 12*4 + 2
-    [ addTriangle(i) for i in range(ntri) ]
+    x = np.zeros((ntri, 4, 3), dtype=np.Float)
+    #nbytes = 12*4 + 2
+    [ addTriangle(it) for it in range(ntri) ]
     print("Finished reading binary stl")
     x = Coords(x)
     if color is not None:
@@ -251,8 +261,8 @@ def read_gambit_neutral(fn):
     utils.command("%s '%s'" % (scr, fn))
     nodesf = utils.changeExt(fn, '.nodes')
     elemsf = utils.changeExt(fn, '.elems')
-    nodes = fromfile(nodesf, sep=' ', dtype=Float).reshape((-1, 3))
-    elems = fromfile(elemsf, sep=' ', dtype=int32).reshape((-1, 3))
+    nodes = np.fromfile(nodesf, sep=' ', dtype=at.Float).reshape((-1, 3))
+    elems = np.fromfile(elemsf, sep=' ', dtype=np.int32).reshape((-1, 3))
     return nodes, elems-1
 
 
@@ -267,8 +277,8 @@ def read_gambit_neutral_hex(fn):
     utils.command("%s '%s'" % (scr, fn))
     nodesf = utils.changeExt(fn, '.nodes')
     elemsf = utils.changeExt(fn, '.elems')
-    nodes = fromfile(nodesf, sep=' ', dtype=Float).reshape((-1, 3))
-    elems = fromfile(elemsf, sep=' ', dtype=int32).reshape((-1, 8))
+    nodes = np.fromfile(nodesf, sep=' ', dtype=at.Float).reshape((-1, 3))
+    elems = np.fromfile(elemsf, sep=' ', dtype=np.int32).reshape((-1, 8))
     elems = elems[:, (0, 1, 3, 2, 4, 5, 7, 6)]
     return nodes, elems-1
 

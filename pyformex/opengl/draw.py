@@ -574,7 +574,7 @@ def drawPropNumbers(F,**kargs):
     If the object F thus not have property numbers, -1 values are drawn.
     """
     if F.prop is None:
-        nrs = -ones(F.nelems(), dtype=Int)
+        nrs = -np.ones(F.nelems(), dtype=np.Int)
     else:
         nrs = F.prop
     drawNumbers(F,nrs,**kargs)
@@ -634,7 +634,7 @@ drawText3D = drawText
 # This function should be completed
 def drawViewportAxes3D(pos,color=None):
     """Draw two viewport axes at a 3D position."""
-    A = actors.Mark((0,200,0),image,size=40,color=red)
+    A = actors.Mark((0,200,0),image,size=40,color=colors.red)
     drawActor(A)
     return A
 
@@ -990,15 +990,15 @@ def colormap(color=None):
 def colorindex(color):
     """Return the index of a color in the current colormap"""
     cmap = pf.canvas.settings.colormap
-    color=array(color)
-    i = where((cmap==color).all(axis=1))[0]
+    color = np.array(color)
+    i = np.where((cmap==color).all(axis=1))[0]
     if len(i) > 0:
         return i[0]
     else:
         i = len(cmap)
         print("Add color %s = %s to viewport colormap" % (i, color))
         color = color.reshape(1, 3)
-        pf.canvas.settings.colormap = concatenate([cmap, color], axis=0)
+        pf.canvas.settings.colormap = np.concatenate([cmap, color], axis=0)
     return i
 
 

@@ -291,7 +291,7 @@ class Coords(ndarray):
     @xyz.setter
     def xyz(self, value):
         """Set the XYZ coordinates of the points"""
-        self = value
+        self[...] = value
 
     ################ end property methods ##########
 

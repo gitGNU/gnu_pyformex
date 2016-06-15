@@ -29,7 +29,7 @@ from __future__ import print_function
 
 
 import pyformex as pf
-from pyformex.arraytools import *
+import numpy as np
 
 ################# Collection of Actors or Actor Elements ###############
 
@@ -110,16 +110,16 @@ class Collection(object):
 
         if len(data) == 0:
             return
-        data = asarray(data)
+        data = np.asarray(data)
         if data.ndim == 2:
-            for key in unique(data[:, 0]):
+            for key in np.unique(data[:, 0]):
                 self.add(data[data[:, 0]==key, 1], key)
 
         else:
             key = int(key)
-            data = unique(data)
+            data = np.unique(data)
             if key in self.d:
-                self.d[key] = union1d(self.d[key], data)
+                self.d[key] = np.union1d(self.d[key], data)
             elif data.size > 0:
                 self.d[key] = data
 
@@ -144,15 +144,15 @@ class Collection(object):
             else:
                 raise ValueError("Cannot remove Collections with different object type")
 
-        data = asarray(data)
+        data = np.asarray(data)
         if data.ndim == 2:
-            for key in unique(data[:, 0]):
+            for key in np.unique(data[:, 0]):
                 self.remove(data[data[:, 0]==key, 1], key)
 
         else:
             key = int(key)
             if key in self.d:
-                data = setdiff1d(self.d[key], unique(data))
+                data = np.setdiff1d(self.d[key], np.unique(data))
                 if data.size > 0:
                     self.d[key] = data
                 else:
@@ -168,7 +168,7 @@ class Collection(object):
     def __setitem__(self, key, data):
         """Set new values for the given key."""
         key = int(key)
-        data = unique(data)
+        data = np.unique(data)
         if data.size > 0:
             self.d[key] = data
         else:
@@ -189,7 +189,7 @@ class Collection(object):
     def keys(self):
         """Return a sorted array with the keys"""
         keys = sorted(self.d.keys())
-        return asarray(keys)
+        return np.asarray(keys)
 
 
     def items(self):

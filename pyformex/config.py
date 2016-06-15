@@ -51,7 +51,6 @@ from __future__ import print_function
 
 from pyformex.mydict import Dict
 from pyformex.utils import formatDict
-import copy
 
 
 class Config(Dict):

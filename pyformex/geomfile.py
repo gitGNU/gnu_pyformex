@@ -32,10 +32,12 @@ from __future__ import print_function
 import pyformex as pf
 from pyformex import utils
 from pyformex import filewrite
+from pyformex.odict import OrderedDict
 from pyformex.arraytools import *
 from pyformex.formex import Formex
 from pyformex.mesh import Mesh
-from pyformex.odict import OrderedDict
+# We need to import the Mesh subclasses that can be read !
+from pyformex.trisurface import TriSurface
 
 import os
 
@@ -196,7 +198,7 @@ class GeometryFile(object):
         """
         if not self.writing:
             raise RuntimeError("File is not opened for writing")
-        kind = data.dtype.kind
+        #kind = data.dtype.kind
         #if fmt is None:
         #    fmt = self.fmt[kind]
         filewrite.writeData(self.fil, data, sep, end='\n')
@@ -685,8 +687,6 @@ class GeometryFile(object):
         Returns the Mesh constructed from these data, or a subclass if
         an objtype is specified.
         """
-        # Make sure to import the Mesh subclasses that can be read
-        from pyformex.trisurface import TriSurface
 
         ndim = 3
         x = readArray(self.fil, Float, (ncoords, ndim), sep=sep)
@@ -781,7 +781,7 @@ class GeometryFile(object):
         if not self.header_done:
             self.readHeader()
         eltype = None # for compatibility with pre 1.1 .formex files
-        ndim = 3
+        #ndim = 3
         while True:
             objtype = 'Formex' # the default obj type
             obj = None
