@@ -27,17 +27,12 @@
 from __future__ import print_function
 
 
-import os
-import re
 import sys
-import readline
-import atexit
 import traceback
 
 
 from pyformex.gui import QtGui, QtCore
 from pyformex.gui.guimain import Board
-from pyformex import utils
 
 if sys.hexversion < 0x03000000:
     range = xrange
@@ -46,7 +41,9 @@ if sys.hexversion < 0x03000000:
 ##########################################################################
 
 class PyConsole(QtGui.QPlainTextEdit):
-    def __init__(self,interpreter=None,prompt='>>> ',startup_message='pyFormex interactive Python console (EXPERIMENTAL!)',parent=None):
+    def __init__(self,interpreter=None,prompt='>>> ',
+                 startup_message='pyFormex interactive Python console (EXPERIMENTAL!)',
+parent=None):
         super(PyConsole, self).__init__(parent)
         self.prompt = prompt
         self.history = []
@@ -182,7 +179,7 @@ class PyConsole(QtGui.QPlainTextEdit):
 
 
     def runSource(self, command):
-        res = self.interpreter.runsource(command, '<console>', 'single')
+        return self.interpreter.runsource(command, '<console>', 'single')
 
 
     def runCommand(self):

@@ -327,7 +327,7 @@ if utils.checkModule('pil'):
 _dicom_spacing = None
 _dicom_origin = None
 
-if utils.checkModule('dicom'):
+if software.checkModule('dicom'):
 
     def loadImage_dicom(filename):
         """Load a DICOM image into a numpy array.

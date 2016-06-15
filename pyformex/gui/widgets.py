@@ -31,8 +31,8 @@ Qt widgets directly.
 from __future__ import print_function
 from pyformex import zip
 
-import os, types
-from pyformex.gui import QtCore, QtGui, Slot
+import os
+from pyformex.gui import QtCore, QtGui
 import pyformex as pf
 from pyformex.opengl import colors
 from pyformex import mydict, olist
@@ -434,9 +434,9 @@ class InputString(InputItem):
         self._is_string_ = isinstance(value, str)
         self.layout().insertWidget(1, self.input)
 
-    def show(self):
+    def show(self, *args):
         """Select all text on first display."""
-        InputItem.show(self,*args)
+        InputItem.show(self, *args)
         self.input.selectAll()
 
     def value(self):
@@ -502,7 +502,7 @@ class InputText(InputItem):
         return size
 
 
-    def show(self):
+    def show(self,*args):
         """Select all text on first display."""
         InputItem.show(self,*args)
         self.input.selectAll()
@@ -1060,7 +1060,7 @@ class InputSlider(InputInteger):
         self.slider.setMaximum(vmax)
         self.slider.setValue(value)
         self.slider.setSingleStep(1)
-        self.slider.setTracking(1)
+        self.slider.setTracking(tracking)
         self.slider.valueChanged.connect(self.set_value)
         self.layout().addWidget(self.slider,stretch=2)
 

@@ -29,9 +29,7 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import utils
-from pyformex.gui import QtCore, QtGui, widgets
-
-import os
+from pyformex.gui import QtGui, widgets
 
 
 ################### General Button Functions ###########

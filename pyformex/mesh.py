@@ -48,8 +48,6 @@ from pyformex.formex import Formex
 from pyformex.connectivity import Connectivity
 from pyformex.elements import elementType
 from pyformex.geometry import Geometry
-from pyformex.simple import regularGrid
-from pyformex.olist import List
 
 
 ##############################################################
@@ -2781,7 +2779,7 @@ def line2_wts(seed0):
 
 
 def line2_els(nx):
-    n = nx+1
+    #n = nx+1
     els = [ array([0, 1]) + i for i in range(nx) ]
     return row_stack(els)
 
@@ -2951,7 +2949,6 @@ def quadrilateral(x, n1, n2):
     points `x`.
     """
     from pyformex.elements import Quad4
-    from pyformex.plugins import isopar
     x = checkArray(x, (4, 3), 'f')
     M = rectangle(1., 1., nl, nw).isopar('quad4', x, Quad4.vertices)
     return M

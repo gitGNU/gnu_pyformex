@@ -33,7 +33,7 @@ import pyformex as pf
 from types import ModuleType
 
 # The following imports help with reading back old projects
-# (We moved these modules from pluginst to core)
+# (We moved these modules from plugins to core)
 from pyformex import project
 from pyformex import mesh
 

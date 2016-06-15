@@ -29,7 +29,8 @@ from pyformex import zip
 
 import pyformex as pf
 from pyformex.process import Process
-from pyformex.software import *
+# These are here to re-export them as utils functions
+from pyformex.software import hasModule, checkModule, hasExternal
 from pyformex.odict import OrderedDict
 
 import os
@@ -293,9 +294,9 @@ def execSource(script,glob={}):
 ## File types ##
 ################
 
-def all_image_extensions():
-    """Return a list with all known image extensions."""
-    imgfmt = []
+#def all_image_extensions():
+#    """Return a list with all known image extensions."""
+#    imgfmt = []
 
 
 file_description = OrderedDict([

@@ -30,13 +30,10 @@ a triangulated surface.
 from __future__ import print_function
 
 import pyformex as pf
-from pyformex import arraytools as at
-from pyformex import fileread, filewrite, geomtools, inertia, utils, zip
-from pyformex.plugins import mesh_ext
-
-from pyformex.formex import *
+from pyformex import fileread, filewrite, geomtools, inertia, utils
 from pyformex.connectivity import Connectivity, connectedLineElems, adjacencyArrays
 from pyformex.mesh import Mesh
+from pyformex.arraytools import *
 
 import os
 
@@ -194,7 +191,7 @@ def curvature(coords,elems,edges,neighbours=1):
     a = kmax
     a11 = nansum(cos(theta)**2*sin(theta)**2, -1)
     a12 = nansum(cos(theta)*sin(theta)**3, -1)
-    a21 = a12
+    #a21 = a12
     a22 = nansum(sin(theta)**4, -1)
     a13 = nansum((k-a[:, newaxis]*cos(theta)**2)*cos(theta)*sin(theta), -1)
     a23 = nansum((k-a[:, newaxis]*cos(theta)**2)*sin(theta)**2, -1)

@@ -26,9 +26,8 @@
 """
 from __future__ import print_function
 
-import pyformex as pf
 from pyformex.gui import draw, toolbar
-from pyformex.gui.guifunc import *
+from pyformex.gui.guifunc import viewport_function
 from pyformex.plugins.cameratools import showCameraTool
 
 from gettext import gettext as _

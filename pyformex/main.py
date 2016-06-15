@@ -33,8 +33,9 @@ from __future__ import print_function
 
 import sys, os
 import pyformex as pf
-from pyformex import utils
 from pyformex.config import Config
+from pyformex import utils
+from pyformex import software
 
 ###########################  main  ################################
 
@@ -497,7 +498,6 @@ def run(argv=[]):
         pf.options.debuglevel |= pf.DEBUG.INFO
 
     if pf.options.detect:
-        from pyformex import software
         print("Detecting installed helper software")
         print(software.reportSoftware())
 
@@ -665,9 +665,9 @@ def run(argv=[]):
     pf.print3("Trying to import the libraries")
     pf.print3(sys.path)
     from pyformex import lib
+    
     # If we run from a checked out source repository, we should
     # run the source_clean procedure.
-
     if pf.installtype in 'SG':
         source_clean = os.path.join(pf.pyformexdir, 'source_clean')
         if os.path.exists(source_clean):
@@ -713,7 +713,7 @@ pyFormex Warning
         warnings.formatwarning = _format_warning
 
 
-    utils.checkModule('numpy', fatal=True)
+    software.checkModule('numpy', fatal=True)
 
     # Make sure pf.PF is a Project
     from pyformex.project import Project

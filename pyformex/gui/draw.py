@@ -47,10 +47,6 @@ from pyformex.gui.toolbar import timeout
 from pyformex.gui import image
 
 
-import numpy
-import os
-import sys
-
 #################### Interacting with the user ###############################
 
 

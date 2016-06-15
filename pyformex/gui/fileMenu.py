@@ -28,7 +28,6 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import utils, project
-from pyformex import plugins
 
 from pyformex.gui import widgets, draw, image
 from pyformex.gui.draw import _I, _G

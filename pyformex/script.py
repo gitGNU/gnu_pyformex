@@ -50,9 +50,8 @@ from pyformex import simple
 
 ########################
 
-import threading
 import os
-import copy
+import sys
 import re
 import time
 

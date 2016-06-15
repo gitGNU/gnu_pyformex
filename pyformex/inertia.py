@@ -40,7 +40,6 @@ The prefered way to compute inertia data of a geometric model is through the
 from __future__ import print_function
 
 from pyformex import arraytools as at
-from pyformex import utils
 from pyformex.coords import Coords
 from pyformex.formex import Formex
 from pyformex.coordsys import CoordSys
@@ -347,7 +346,7 @@ class Inertia(Tensor):
         """Transform the coordinates to another CoordSys.
 
         """
-        return self.tensor.translateTo(cs.trl) + self.tensor.rotate(dot(self.CS.rot.T,cs.rot))
+        return self.tensor.translateTo(cs.trl) + self.tensor.rotate(np.dot(self.CS.rot.T,cs.rot))
 
 
 def point_inertia(X,mass=None,center_only=False):

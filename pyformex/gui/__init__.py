@@ -82,7 +82,7 @@ except:
     pf.X11 = False
 
 
-from pyformex.opengl import canvas
+#from pyformex.opengl import canvas
 
 
 # End
