@@ -35,11 +35,12 @@ from pyformex.mydict import Dict
 
 from pyformex.odict import OrderedDict
 from pyformex.collection import Collection
-from pyformex.attributes import Attributes
-from pyformex.formex import Formex
+#from pyformex.attributes import Attributes
+#from pyformex.formex import Formex
 from pyformex.simple import cuboid2d
+from pyformex.opengl import decors
+from pyformex.opengl.sanitize import saneColor
 from pyformex.opengl.drawable import GeomActor
-from pyformex.opengl.sanitize import saneColor,saneColorArray
 from pyformex.opengl.camera import Camera
 from pyformex.opengl.renderer import Renderer
 from pyformex.opengl.scene import Scene, ItemList
@@ -47,7 +48,6 @@ from pyformex.opengl import colors
 
 import numpy as np
 
-from numpy import *
 from OpenGL import GL, GLU
 
 
@@ -74,9 +74,10 @@ def loadLibGL():
 def gl_pickbuffer():
     "Return a list of the 2nd numbers in the openGL pick buffer."
     buf = GL.glRenderMode(GL.GL_RENDER)
-    return asarray([ r[2] for r in buf ])
+    return np.asarray([ r[2] for r in buf ])
 
 
+# Used in CanvasSettings.glOverride!
 from OpenGL.GL import glLineWidth as glLinewidth, glPointSize as glPointsize
 
 fill_modes = [ GL.GL_FRONT_AND_BACK, GL.GL_FRONT, GL.GL_BACK ]
@@ -1105,18 +1106,19 @@ class Canvas(object):
             self.end_2D_drawing()
 
 
-    def addHighlight(self, itemlist):
-        """Add a highlight or a list thereof to the 3D scene."""
-        self.highlights.add(itemlist)
+#    def addHighlight(self, itemlist):
+#        """Add a highlight or a list thereof to the 3D scene."""
+#        self.highlights.add(itemlist)
+#
+#    def removeHighlight(self,itemlist=None):
+#        """Remove a highlight or a list thereof from the 3D scene.
+#
+#        Without argument, removes all highlights from the scene.
+#        """
+#        if itemlist is None:
+#            itemlist = self.highlights[:]
+#        self.highlights.delete(itemlist)
 
-    def removeHighlight(self,itemlist=None):
-        """Remove a highlight or a list thereof from the 3D scene.
-
-        Without argument, removes all highlights from the scene.
-        """
-        if itemlist is None:
-            itemlist = self.highlights[:]
-        self.highlights.delete(itemlist)
 
     def addAny(self, itemlist):
         self.scene.addAny(itemlist)
@@ -1214,7 +1216,7 @@ class Canvas(object):
 
             from pyformex import simple
             bbix = simple.regularGrid(X0, X1, [1, 1, 1])
-            bbix = dot(bbix, self.camera.rot[:3, :3])
+            bbix = np.dot(bbix, self.camera.rot[:3, :3])
             bbox = coords.Coords(bbix).bbox()
             dx, dy, dz = bbox[1] - bbox[0]
             vsize = max(dx/self.aspect, dy)
@@ -1222,7 +1224,7 @@ class Canvas(object):
             offset = dz
             dist = (vsize/tf + offset) / correction
 
-            if dist == nan or dist == inf:
+            if dist == np.nan or dist == np.inf:
                 pf.debug("DIST: %s" % dist, pf.DEBUG.DRAW)
                 return
             if dist <= 0.0:
@@ -1237,10 +1239,10 @@ class Canvas(object):
             # print "near,far = %s, %s" % (near,far)
             #print (0.0001*vsize,0.01*dist,near)
             # make sure near is positive
-            near = max(near, 0.0001*vsize, 0.01*dist, finfo(coords.Float).tiny)
+            near = max(near, 0.0001*vsize, 0.01*dist, np.finfo(coords.Float).tiny)
             # make sure far > near
             if far <= near:
-                far += finfo(coords.Float).eps
+                far += np.finfo(coords.Float).eps
             #print "near,far = %s, %s" % (near,far)
             self.camera.setClip(near, far)
             self.camera.resetArea()
@@ -1340,7 +1342,7 @@ class Canvas(object):
 
         """
         from . import decors
-        w, h = self.width(), self.height()
+        #w, h = self.width(), self.height()
         self._focus = decors.Grid2D(-1.,-1.,1.,1., color=color, linewidth=2, rendertype=3)
         self.addAny(self._focus)
 
@@ -1380,7 +1382,7 @@ class Canvas(object):
                         self.selection_filter == 'closest'
         self.picked = []
         if selbuf[0] > 0:
-            buf = asarray(selbuf).reshape(-1, 3+selbuf[0])
+            buf = np.asarray(selbuf).reshape(-1, 3+selbuf[0])
             buf = buf[buf[:, 0] > 0]
             self.picked = buf[:, 3]
             if store_closest:
