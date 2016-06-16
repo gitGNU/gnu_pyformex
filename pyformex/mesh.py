@@ -182,7 +182,9 @@ class Mesh(Geometry):
         for the position of the coordinates.
         """
         if isinstance(coords, Coords) and coords.shape == self.coords.shape:
-            return self.__class__(coords, self.elems, prop=self.prop, eltype=self.elType())
+            M = self.__class__(coords, self.elems, prop=self.prop, eltype=self.elType())
+            M.attrib(**self.attrib)
+            return M
         else:
             raise ValueError("Invalid reinitialization of %s coords" % self.__class__)
 
