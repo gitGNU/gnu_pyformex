@@ -52,7 +52,6 @@ RGB values in 0..1 range and luminance.
 from __future__ import print_function
 
 
-import pyformex as pf
 import pyformex.arraytools as at
 from pyformex.odict import OrderedDict
 import numpy as np
@@ -311,10 +310,11 @@ def luminance(color,gamma=True):
     return 0.2126 * R + 0.7152 * G + 0.0722 * B
 
 
+# TODO: this seems pointless (unfinished)
 def createColorDict():
     from pyformex.gui import QtGui
     for c in QtGui.QColor.colorNames():
-        col = QtGui.QColor
+        #col = QtGui.QColor
         print("Color %s = %s" % (c, colorName(c)))
 
 

@@ -29,6 +29,7 @@ This module defines all OpenGL Actors that are directly available to the users.
 
 from pyformex import arraytools as at
 from pyformex.opengl.drawable import Actor
+# This is to make alle Actors available thorugh this module
 from pyformex.opengl.decors import *
 from pyformex.opengl.textext import *
 

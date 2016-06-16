@@ -26,8 +26,6 @@
 """
 from __future__ import print_function
 
-import pyformex as pf
-from pyformex import utils
 from pyformex import arraytools as at
 from pyformex import coords
 from pyformex.opengl.drawable import Actor
@@ -77,7 +75,6 @@ class ItemList(list):
             except:
                 print("Could not remove object of type %s from list" % type(a))
                 ids = [id(i) for i in self]
-                ida = id(a)
                 try:
                     ind = ids.index(id(a))
                     print("However, the object is in the list: removing it by id")

@@ -28,15 +28,15 @@ can be useful additions to a geometry scene rendering.
 """
 from __future__ import print_function
 
-from pyformex.coordsys import CoordSys
+import pyformex as pf
 from pyformex import simple
 from pyformex.formex import Formex
-from pyformex.mesh import Mesh
-from pyformex.opengl.drawable import Actor
-from pyformex.opengl.textext import FontTexture, Text
-from pyformex.opengl.sanitize import *
-from OpenGL import GL
-from OpenGL.arrays.vbo import VBO
+from . import colors
+from .drawable import Actor
+from .textext import FontTexture
+from .sanitize import saneLineWidth
+
+import numpy as np
 
 ### Decorations ###############################################
 
@@ -191,14 +191,13 @@ class ColorLegend(Actor):
 
         if self.ngrid > 0:
             F = simple.rectangle(1,self.ngrid,self.w,self.h).trl([self.x,self.y,0.])
-            G = Actor(F,rendertype=2,lighting=False,color=black,linewidth=self.linewidth,mode='wireframe')
+            G = Actor(F,rendertype=2,lighting=False,color=colors.black,linewidth=self.linewidth,mode='wireframe')
             self.children.append(G)
 
         # labels
         # print("LABELS: %s" % self.nlabel)
         if self.nlabel > 0:
             from pyformex.opengl import textext
-            from pyformex.coords import Coords
 
             if font is None:
                 font = FontTexture.default()
@@ -228,7 +227,7 @@ class ColorLegend(Actor):
             vals = cs.ColorLegend(colorscale,self.nlabel).limits
             #print("VALS",vals)
 
-            ypos = self.y + da * arange(self.nlabel+1)
+            ypos = self.y + da * np.arange(self.nlabel+1)
 
             yok = self.y - 0.01*dh
             for (y,v) in zip (ypos,vals):
@@ -239,75 +238,7 @@ class ColorLegend(Actor):
                     yok = y + dh
 
 
-class Triade(Actor):
-    """An OpenGL actor representing a triade of global axes.
-
-    - `pos`: position on the canvas: two characters, of which first sets
-      horizontal position ('l', 'c' or 'r') and second sets vertical
-      position ('b', 'c' or 't').
-
-    - `size`: size in pixels of the zone displaying the triade.
-
-    - `pat`: shape to be drawn in the coordinate planes. Default is a square.
-      '3:016' gives a triangle. '' disables the planes.
-
-    - `legend`: text symbols to plot at the end of the axes. A 3-character
-      string or a tuple of 3 strings.
-
-    - `color`: clist of 6 colors, to be used for the 3 positive and 3 negative
-      axes.
-
-    - `reverse`: bool. If True, also show the negative axes.
-
-    .. warning: This is experimental!
-
-    """
-
-    def __init__(self,pos='lb',size=100,pat='4:0123',legend='xyz',color=[red, green, blue, cyan, magenta, yellow],reverse=False,**kargs):
-        """Create an Actor representing an axes Triade."""
-
-        x, y, w, h = GL.glGetIntegerv(GL.GL_VIEWPORT)
-        if pos[0] == 'l':
-            x0 = x + size
-        elif pos[0] =='r':
-            x0 = x + w - size
-        else:
-            x0 = x + w / 2
-        if pos[1] == 'b':
-            y0 = y + size
-        elif pos[1] == 't':
-            y0 = y + h - size
-        else:
-            y0 = y + h / 2
-
-        # Save some values for drawing
-        self.size = size
-        self.x,self.y = x0,y0
-
-        F = Formex('2:01020I')
-        if reverse:
-            F += Formex('2:03040i')
-        F = F.scale(size)
-        Actor.__init__(self,F,rendertype=-2,lighting=False,opak=True,linewidth=2,color=color,**kargs)
-
-        ## # Coord planes
-        ## if pat:
-        ##     F = Formex(pat)
-        ##     pts = pts.scale(0.5).coords.reshape(-1, 3)
-        ##     for i in range(3):
-        ##         pts = pts.rollAxes(1)
-        ##         GL.glColor3f(*self.color[i])
-        ##         for x in pts:
-        ##             GL.glVertex3f(*x)
-        ##     GL.glEnd()
-
-        ## # Coord axes denomination
-        ## for i, x in enumerate(self.legend):
-        ##     p = unitVector(i)*1.1
-        ##     self.children.append(Text(x,p))
-
-
-def Grid(nx=(1, 1, 1),ox=(0.0, 0.0, 0.0),dx=(1.0, 1.0, 1.0),lines='b',planes='b',linecolor=black,planecolor=white,alpha=0.3,**kargs):
+def Grid(nx=(1, 1, 1),ox=(0.0, 0.0, 0.0),dx=(1.0, 1.0, 1.0),lines='b',planes='b',linecolor=colors.black,planecolor=colors.white,alpha=0.3,**kargs):
     """Creates a (set of) grid(s) in (some of) the coordinate planes.
 
     Parameters:
@@ -336,8 +267,8 @@ def Grid(nx=(1, 1, 1),ox=(0.0, 0.0, 0.0),dx=(1.0, 1.0, 1.0),lines='b',planes='b'
     P = []
     L = []
     for i in range(3):
-        n0,n1,n2 = roll(nx,i)
-        d0,d1,d2 = roll(dx,i)
+        n0,n1,n2 = np.roll(nx,i)
+        d0,d1,d2 = np.roll(dx,i)
         if n0*n1:
             if planes != 'n':
                 M = simple.rectangle(b=n0*d0,h=n1*d1)
@@ -371,7 +302,7 @@ def Grid(nx=(1, 1, 1),ox=(0.0, 0.0, 0.0),dx=(1.0, 1.0, 1.0),lines='b',planes='b'
 
 
 __all__ = [ 'BboxActor', 'Rectangle', 'Line', 'Lines', 'Grid2D', 'ColorLegend',
-            'Triade', 'Grid' ]
+            'Grid' ]
 
 
 # End
