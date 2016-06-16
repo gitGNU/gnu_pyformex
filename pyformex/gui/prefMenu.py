@@ -97,7 +97,7 @@ def settings():
     Creates a dialog to change (most of) the pyformex user configuration.
     To change the canvas setttings, use viewportMenu.canvasSettings.
     """
-    from pyformex.gui import canvas
+    from pyformex.opengl import canvas
     from pyformex import plugins
     from pyformex import sendmail
     from pyformex.elements import elementTypes
