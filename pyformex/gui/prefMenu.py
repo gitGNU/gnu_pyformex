@@ -176,7 +176,7 @@ def settings():
         ]
 
     scripts = [
-        "http://feops.ugent.be/pub/webgl/fewgl.js",
+        "https:///fewgl-0.2.js",
         "file://"+os.path.join(pf.cfg['datadir'],'fewgl.js'),
         ]
     if pf.installtype == 'G':
@@ -185,7 +185,7 @@ def settings():
             scripts += [ "file://"+os.path.join(fewgl_dir,f) for f in ['fewgl.js','fewgl_debug.js'] ]
     scripts.append('local')
     guiscripts = [
-        "http://get.goXTK.com/xtk_xdat.gui.js",
+        "https://net.feops.com/public/webgl/xtk_xdat.gui.js",
         "file://"+os.path.join(pf.cfg['datadir'],'xtk_xdat.js'),
         ]
     guiscripts.append('local')
@@ -396,7 +396,7 @@ def setRendering():
         mat = vp.material
         print("createDialog: %s" % vp.settings.lighting)
 
-        light0 = {'enabled':True,'ambient':0.0,'diffuse':0.6,'specular':0.4,'position':(1., 1., 2., 0.)}
+        #light0 = {'enabled':True,'ambient':0.0,'diffuse':0.6,'specular':0.4,'position':(1., 1., 2., 0.)}
         light_items = []
         for i in range(4):
             name = 'light%s' % i
@@ -669,6 +669,7 @@ def editPreferences():
 
     pf.GUI.filewatch.addWatch(pf.preffile, reloadPreferences)
     P = draw.editFile(pf.preffile)
+    # TODO: Unfinished, untested
 
 
 def saveAndUnwatchPreferences():

@@ -1,4 +1,4 @@
-# This is the default pyFormex config file. DO NOT CHANGE IT!  -*- PYTHON -*-
+# This is the default pyFormex config file. DO NOT CHANGE IT!  -*- Python -*-
 # $Id$
 ##
 ##  This file is part of pyFormex 1.0.2  (Thu Jun 18 15:35:31 CEST 2015)
@@ -203,7 +203,8 @@ bgimage = ''            # background image, filename
 fgcolor = 'black'       # default drawing color
 bkcolor = ''            # if defined, backsides of planes have this color
 slcolor = 'yellow'      # highlighting color
-colormap = ['darkgrey','red','green','blue','cyan','magenta','yellow','white','black','darkred','darkgreen','darkblue','darkcyan','darkmagenta','darkyellow','lightgrey']
+colormap = ['darkgrey','red','green','blue','cyan','magenta','yellow','white', \
+    'black','darkred','darkgreen','darkblue','darkcyan','darkmagenta','darkyellow','lightgrey']
 bkcolormap = colormap
 smooth = False              # smooth shading off
 fill = False                # polygon filling off
@@ -322,8 +323,8 @@ secdb = os.path.join(datadir,'sections.db')
 
 
 [webgl]
-script = "http://feops.ugent.be/pub/webgl/fewgl.js"
-guiscript = "http://get.goXTK.com/xtk_xdat.gui.js"
+script = "https://net.feops.com/public/webgl/fewgl-0.2.js"
+guiscript = "https://net.feops.com/public/webgl/xtk_xdat.gui.js"
 autogui = True
 devel = False
 devpath = os.path.join(pyformexdir,'opengl')

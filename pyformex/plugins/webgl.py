@@ -44,6 +44,7 @@ from pyformex.mesh import Mesh
 from pyformex.attributes import Attributes
 from pyformex.geometry import Geometry
 
+
 import numpy as np
 import os
 import glob
@@ -663,6 +664,7 @@ def surface2webgl(S,name,caption=None):
 
 def createMultiWebGL():
     """Creates a multimodel WebGL from single WebGL models"""
+    from pyformex.gui.draw import askFilename, askNewFilename, ack, showHTML
     models = askFilename(filter=['html','js'],multi=True)
     if not models:
         return
@@ -679,7 +681,7 @@ show%s()
 }
 """ % (pf.fullVersion(),utils.projectName(models[0])),file=fout)
 
-    body = webgl.createdBy()
+    body = createdBy()
     body += "<div style='position:absolute;top:150px;left:10px;'>"
     for model in models:
         name = utils.projectName(model)
@@ -712,7 +714,7 @@ var r = the_renderer;
     fout.close()
     body += "</div>"
 
-    fn = webgl.createWebglHtml(
+    fn = createWebglHtml(
         utils.changeExt(combined,'html'),
         scripts=[
             pf.cfg['webgl/script'],

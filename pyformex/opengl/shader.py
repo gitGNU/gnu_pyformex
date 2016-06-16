@@ -26,8 +26,8 @@
 
 Python OpenGL framework for pyFormex
 
-This OpenGL framework is intended to replace (in due time)
-the current OpenGL framework in pyFormex.
+This module is responsible for loading the shader programs
+and its data onto the graphics system.
 
 (C) 2013 Benedict Verhegghe and the pyFormex project.
 
@@ -54,7 +54,7 @@ def defaultShaders():
     availversion = "%s.%s" % (vmajor,vminor)
     activeversion = "%s.%s" % (major,minor)
     pf.debug("Vendor: %s; Renderer: %s; Available version: %s; Active version %s" % (vendor,renderer,availversion,activeversion),pf.DEBUG.OPENGL)
-    shortversion = "%s.%s" % (major,minor)
+    #shortversion = "%s.%s" % (major,minor)
     # Default shaders
     dirname = os.path.join(pf.pyformexdir,'glsl')
     vertexshader = os.path.join(dirname, "vertex_shader")
@@ -173,9 +173,9 @@ class Shader(object):
         if uniforms is None:
             uniforms = Shader.uniforms
 
-        vertex_shader = GL.shaders.compileShader(VertexShader, GL.GL_VERTEX_SHADER)
-        fragment_shader = GL.shaders.compileShader(FragmentShader, GL.GL_FRAGMENT_SHADER)
-        self.shader = GL.shaders.compileProgram(vertex_shader, fragment_shader)
+        vertex_shader = shaders.compileShader(VertexShader, GL.GL_VERTEX_SHADER)
+        fragment_shader = shaders.compileShader(FragmentShader, GL.GL_FRAGMENT_SHADER)
+        self.shader = shaders.compileProgram(vertex_shader, fragment_shader)
 
         self.attribute = self.locations(GL.glGetAttribLocation, attributes)
         self.uniform = self.locations(GL.glGetUniformLocation, uniforms)
@@ -228,16 +228,23 @@ class Shader(object):
 
 
     def bind(self,picking=False):
-        GL.shaders.glUseProgram(self.shader)
+        """Bind the shader program"""
+        shaders.glUseProgram(self.shader)
         self.uniformInt('picking', picking)
 
 
     def unbind(self):
-        GL.shaders.glUseProgram(0)
+        """Unbind the shader program"""
+        shaders.glUseProgram(0)
 
 
     def loadUniforms(self, D):
-        """Load the uniform attributes defined in D"""
+        """Load the uniform attributes defined in D
+
+        D is a dict with uniform attributes to be loaded into
+        the shader program. The attributes can be of type
+        int, float, or vec3.
+        """
         for attribs, func in [
             (self.uniforms_int, self.uniformInt),
             (self.uniforms_float, self.uniformFloat),
@@ -250,6 +257,10 @@ class Shader(object):
 
 
     def __del__(self):
+        """Delete a shader instance.
+
+        This will unbinf the shader program before deleting it.
+        """
         self.unbind()
 
 # End
