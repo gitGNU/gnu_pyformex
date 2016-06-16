@@ -31,7 +31,7 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import fileread, filewrite, geomtools, inertia, utils
-from pyformex.coords import *
+from pyformex.coords import Coords
 from pyformex.connectivity import Connectivity, connectedLineElems, adjacencyArrays
 from pyformex.mesh import Mesh
 from pyformex.arraytools import *
