@@ -435,11 +435,11 @@ class Drawable(Attributes):
 ########################################################################
 
 
-class Base(Attributes):
-    """Base class for all drawable objects in pyFormex.
+class BaseActor(Attributes):
+    """Base class for all drawn objects (Actors) in pyFormex.
 
-    This defines the interface for all drawable objects, but does not
-    implement any drawable objects.
+    This defines the interface for all drawn objects, but does not
+    implement any drawn objects.
     Drawable objects should be instantiated from the derived classes.
     Currently, we have the following derived classes:
 
@@ -452,7 +452,7 @@ class Base(Attributes):
     Decor: an object drawn in 2D viewport coordinates. It will unchangeably
            stick on the viewport until removed. Defined in decors.py.
 
-    The Base class is just an Attributes dict storing all the rendering
+    The BaseActor class is just an Attributes dict storing all the rendering
     parameters, and providing defaults from the current canvas drawoptions
     for the essential parameters that are not specified.
 
@@ -467,11 +467,7 @@ class Base(Attributes):
     """
 
     def __init__(self,**kargs):
-        """Initialize the Base class."""
-        #try:
-        #    print(pf.canvas.drawoptions)
-        #except:
-        #    pass
+        """Initialize the BaseActor class."""
         Attributes.__init__(self, pf.canvas.drawoptions if pf.canvas else {})
         if kargs:
             self.update(**kargs)
@@ -479,6 +475,26 @@ class Base(Attributes):
             self.setLineStipple(self.linestipple)
             self.setColor(self.color,self.colormap)
             self.setTexture(self.texture)
+
+
+    def __eq__(self,x):
+        """Compare BaseActor class instances
+
+        Because the BaseActor is dict which may contain very
+        different and large objects, comparison on all attributes
+        being equal would be very demanding (and possibly failing
+        in case of numpy arrays.)
+        Also, these objects should be unique representing objects
+        of OpenGL drawables. They are cosntructed once, stored,
+        and deleted, but not processed otherwise.
+        The reason for comparison is merely to be able to test
+        if they are in a given list of actors.
+        Therefore we compare BaseActors purely on them being
+        exactly the object, by id, without a need of comparing
+        the contents.
+        """
+        return self is x
+
 
     def setLineWidth(self, linewidth):
         """Set the linewidth of the Drawable."""
@@ -505,7 +521,7 @@ class Base(Attributes):
 
 ########################################################################
 
-class Actor(Base):
+class Actor(BaseActor):
     """Proposal for drawn objects
 
     __init__:  store all static values: attributes, geometry, vbo's
@@ -532,7 +548,7 @@ class Actor(Base):
 
     def __init__(self,obj,**kargs):
 
-        Base.__init__(self)
+        BaseActor.__init__(self)
 
         # Check it is something we can draw
         if not isinstance(obj, Mesh) and not isinstance(obj, Formex):
@@ -596,7 +612,7 @@ class Actor(Base):
         # And we always need this one
         self.vbo = VBO(self.fcoords)
         #print("GEOM SHAPE %s" % str(self.fcoords.shape))
-        
+
 
 
     def getType(self):
@@ -831,7 +847,7 @@ class Actor(Base):
 #                drawface = 0
 #            else:
 #                drawface = self.drawface
-                
+
             name = self.name
 
             if self.rendertype > 1 or self.drawface == 0:
@@ -925,12 +941,12 @@ class Actor(Base):
         #print("ESEL",sel)
         elems = self.subElems(nsel=self.faces,esel=sel)
         #print("ELEMS",elems)
-        self._highlight = Drawable(self, 
-                                   subelems=elems, 
-                                   name=self.name+"_highlight", 
-                                   linewidth=10, 
-                                   lighting=False, 
-                                   color=np.array(colors.yellow), 
+        self._highlight = Drawable(self,
+                                   subelems=elems,
+                                   name=self.name+"_highlight",
+                                   linewidth=10,
+                                   lighting=False,
+                                   color=np.array(colors.yellow),
 opak=True)
         # Put at the front to make visible
         self.drawable.insert(0, self._highlight)
