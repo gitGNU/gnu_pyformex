@@ -129,7 +129,7 @@ def reportPoints(K):
         v = K[k]
         A = pf.canvas.actors[k]
         s += "Actor %s (type %s); Points %s\n" % (k, A.getType(), v)
-        x = A.points()
+        x = A.object.points()
         for p in v:
             s += "  Point %s: %s\n" % (p, x[p])
     return s
