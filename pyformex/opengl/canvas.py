@@ -848,47 +848,37 @@ class Canvas(object):
         self.settings.slcolor = colors.GLcolor(color)
 
 
-    def setTriade(self,on=None,pos='lb',siz=50,triade=None):
-        """Toggle the display of the global axes on or off.
+    def setTriade(self,pos='lb',siz=100,triade=None):
+        """Set the Triade for this canvas.
 
-        This is a convenient feature to display the global axes
-        directions with rotating actor at fixed viewport size and
-        position.
+        Display the Triade on the current viewport.
+        The Triade is a reserved Actor displaying the orientation of
+        the global axes. It has special methods to show/hide it.
+        See also: :meth:`removeTriade`, :meth:`hasTriade`
 
         Parameters:
 
-        - `on`: boolean. If True, the global axes triade is displayed. If
-          False, it is removed. The default (None) toggles between on and off.
-          The remaining parameters are only used on enabling the triade.
         - `pos`: string of two characters. The characters define the horizontal
           (one of 'l', 'c', or 'r') and vertical (one of 't', 'c', 'b') position
           on the camera's viewport. Default is left-bottom.
-        - `siz`: size (in pixels) of the triade.
-        - `triade`: Geometry, graphical representation of the axes.
-          The default is :class:`candy.Axes`, but another geometry may be
-          specified. To be useful and properly displayed, the Geometry's
-          coordinates should be confined by a bbox [(-1,-1,-1),(1,1,1)].
+        - `siz`: float: intende size (in pixels) of the triade.
+        - `triade`: None or Geometry: defines the Geometry to be used for
+          representing the global axes.
+
+          If None, use the previously set triade, or set a default if no
+          previous.
+
+          If Geometry, use this to represent the axes. To be useful and properly
+          displayed, the Geometry's bbox should be around [(-1,-1,-1),(1,1,1)].
           Drawing attributes may be set on the Geometry to influence
-          the appearence. Useful settings may include:
-          lighting=False, opak=True, linewidth=2.
+          the appearence. This allows to fully customize the Triade.
 
         """
-        if on is None:
-            on = self.triade is None
-        pf.debug("SETTING TRIADE %s" % on, pf.DEBUG.DRAW)
         if self.triade:
-            self.removeAny(self.triade)
+            self.removeTriade()
+        if triade:
+            from pyformex.opengl.draw import draw
             self.triade = None
-        if on:
-            # Create the triade
-            if triade is None:
-                from pyformex import candy
-                triade = candy.Axes(reverse=False)
-                for G in triade:
-                    G.coords = G.coords.scale(siz)
-            else:
-                triade = triade.scale(siz)
-
             x, y, w, h = GL.glGetIntegerv(GL.GL_VIEWPORT)
             if pos[0] == 'l':
                 x0 = x + siz
@@ -902,14 +892,35 @@ class Canvas(object):
                 y0 = y + h - siz
             else:
                 y0 = y + h / 2
-
-            # TODO: This should be replaced with Actor()
-            from pyformex.gui.draw import draw
-            A = draw(triade,rendertype=-2,single=True,size=siz,x=x0,y=y0,lighting=True)
-            #self.addAny(A)
-            # Store the Actor in the Canvas class
+            A = draw(triade.scale(siz),rendertype=-2,single=True,size=siz,x=x0,y=y0)
             self.triade = A
-            #print("Triade is %s\n%s" % (type(A),A))
+        elif self.triade:
+            self.addAny(self.triade)
+
+
+    def removeTriade(self):
+        """Remove the Triade from the canvas.
+
+        Remove the Triade from the current viewport.
+        The Triade is a reserved Actor displaying the orientation of
+        the global axes. It has special methods to draw/undraw it.
+        See also: :meth:`setTriade`, :meth:`hasTriade`
+
+        """
+        if self.hasTriade():
+            self.removeAny(self.triade)
+
+
+    def hasTriade(self):
+        """Check if the canvas has a Triade displayed.
+
+        Return True if the Triade is currently displayed.
+        The Triade is a reserved Actor displaying the orientation of
+        the global axes.
+        See also: :meth:`setTriade`, :meth:`removeTriade`
+
+        """
+        return self.triade is not None and self.triade in self.scene.decorations
 
 
     def initCamera(self):

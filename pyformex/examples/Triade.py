@@ -37,68 +37,41 @@ from OpenGL import GL
 from pyformex.opengl.drawable import Actor
 
 
-def geomTriade(pos,size):
-    """A generic Triade Actor.
-
-    The function takes pos and size as parameters.
-    It should return an Actor with rendertype -2.
-    The Actor shoud save attributes 'size' and 'x','y' (the
-    actual canvas position of the origin for rotation).
-
-    This Triade Actor is customizable by setting _triade_geometry.
-    """
-    x, y, w, h = GL.glGetIntegerv(GL.GL_VIEWPORT)
-    if pos[0] == 'l':
-        x0 = x + size
-    elif pos[0] =='r':
-        x0 = x + w - size
-    else:
-        x0 = x + w / 2
-    if pos[1] == 'b':
-        y0 = y + size
-    elif pos[1] == 't':
-        y0 = y + h - size
-    else:
-        y0 = y + h / 2
-
-    F = _triade_geometry.centered().scale(size)
-    A = Actor(F,rendertype=-2,lighting=False,opak=True,linewidth=2)
-    # Save some values for drawing
-    A.size = size
-    A.x, A.y = x0,y0
-
-    return A
-
-
 def run():
     global _triade_geometry
 
-    # Clear
     clear()
-    reset()
+    resetAll()
     smoothwire()
 
-    # Draw something
+    print('Draw something')
     F = Formex.read(getcfg('datadir')+'/horse.pgf').scale(10)
     draw(F)
     pause()
 
-    # Set default Triade on
+    print('Set default Triade on')
     setTriade(on=True)
     pause()
 
-    # Set a wireframe cube as Triade, left top
+    print('Set Triade off')
+    setTriade(False)
+    pause()
+
+    print('Set a man as triade, right bottom')
+    setTriade(triade='man',pos='rb')
+    pause()
+
+    print('Set a cube as triade, left top')
     cube = Formex(simple.Pattern['cube']).setProp([1,2,1,2,3,3,3,3,1,2,1,2]).centered()
     setTriade(on=True,pos='lt',triade=cube)
     pause()
 
-    # Use the displayed geometry (F) itself as Triade, left center
+    print('Use the displayed geometry (F) itself as Triade, left center')
     setTriade(on=True,pos='lc',triade=F)
     pause()
 
-    # Reset the original Triade, center top
-    setTriade(on=True,pos='ct')
-
+    print('Reset the original Triade, center top')
+    setTriade(on=True,pos='ct',triade='axes')
 
 
 if __name__ == '__draw__':

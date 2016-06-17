@@ -47,6 +47,7 @@ from pyformex.opengl import actors
 from pyformex.script import getcfg, named
 
 import numpy as np
+import os
 
 ############################## drawing functions ########################
 
@@ -526,6 +527,7 @@ def drawMarks(X,M,color='black',leader='',ontop=True,**kargs):
     The string representation of the marks are drawn at the corresponding
     3D coordinate.
     """
+    from pyformex.gui.draw import ack
     _large_ = 20000
     if len(M) > _large_:
         if not ack("You are trying to draw marks at %s points. This may take a long time, and the results will most likely not be readible anyway. If you insist on drawing these marks, anwer YES." % len(M)):
@@ -877,16 +879,55 @@ def view(v,wait=True):
         pf.GUI.drawlock.lock()
 
 
-def setTriade(on=None,pos='lb',siz=100,triade=None):
+def setTriade(on=None,pos='lb',siz=50,triade=None):
     """Toggle the display of the global axes on or off.
 
-    If on is True, the axes triade is displayed, if False it is
-    removed. The default (None) toggles between on and off.
+    This is a convenient feature to display the global axes
+    directions with rotating actor at fixed viewport size and
+    position.
 
-    See :meth:`canvas.Canvas.setTriade` for full description of
-    parameters.
+    Parameters:
+
+    - `on`: boolean. If True, the global axes triade is displayed. If
+      False, it is removed. The default (None) toggles between on and off.
+      The remaining parameters are only used on enabling the triade.
+    - `pos`: string of two characters. The characters define the horizontal
+      (one of 'l', 'c', or 'r') and vertical (one of 't', 'c', 'b') position
+      on the camera's viewport. Default is left-bottom.
+    - `siz`: size (in pixels) of the triade.
+    - `triade`: None, Geometry or str: defines the Geometry to be used for
+      representing the global axes.
+
+      If None: use the previously set triade, or set a default if no
+      previous.
+
+      If Geometry: use this to represent the axes. To be useful and properly
+      displayed, the Geometry's bbox should be around [(-1,-1,-1),(1,1,1)].
+      Drawing attributes may be set on the Geometry to influence
+      the appearence. This allows to fully customize the Triade.
+
+      If str: use one of the predefined Triade Geometries. Currently, the
+      following are available:
+
+      - 'axes': axes and coordinate planes as in :class:`candy.Axes`
+      - 'man': a model of a man as in data file 'man.pgf'
+
     """
-    pf.canvas.setTriade(on, pos, siz, triade)
+    if on is None:
+        on = not pf.canvas.hasTriade()
+    if on:
+        if triade is None and pf.canvas.triade is None:
+            triade = 'axes'
+        if triade == 'axes':
+            from pyformex import candy
+            triade = candy.Axes(reverse=False)
+        elif triade == 'man':
+            triade = Formex.read(os.path.join(pf.cfg['datadir'],'man.pgf'))
+            print(type(triade))
+            print(triade.attrib)
+        pf.canvas.setTriade(pos,siz,triade)
+    else:
+        pf.canvas.removeTriade()
     pf.canvas.update()
     pf.app.processEvents()
 
@@ -1150,6 +1191,7 @@ def canvasSize(width, height):
 # This is not intended for the user
 def clear_canvas(sticky=False):
     pf.canvas.removeAll(sticky)
+    pf.canvas.triade = None
     pf.canvas.clearCanvas()
 
 
