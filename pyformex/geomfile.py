@@ -33,12 +33,14 @@ import pyformex as pf
 from pyformex import utils
 from pyformex import filewrite
 from pyformex.odict import OrderedDict
-from pyformex.arraytools import *
+from pyformex import arraytools as at
 from pyformex.formex import Formex
 from pyformex.mesh import Mesh
 # We need to import the Mesh subclasses that can be read !
 from pyformex.trisurface import TriSurface
 
+from distutils.version import StrictVersion as Version
+import numpy as np
 import os
 
 class GeometryFile(object):
@@ -105,13 +107,21 @@ class GeometryFile(object):
       See also :func:`numpy.tofile`.
     - `ifmt` and `ffmt` are present for historical and development reasons,
       but currently inactive.
+    - `version`: if specified, write according to old version standard.
+      Available: '1.9', '2.0'(default)
     """
 
-    _version_ = '1.9'
+    _version_ = '2.0'
 
     def __init__(self,filename,mode=None,compr=None,level=5,delete_temp=True,
-                 sep=' ',ifmt=' ',ffmt=' '):
+                 sep=' ',ifmt=' ',ffmt=' ',version=None):
         """Create the GeometryFile object."""
+        if version is None:
+            version = GeometryFile._version_
+        if not version in [ '1.9', '2.0' ]:
+            raise ValueError("Can not write GeometryFile of version %s" % version)
+        self.version = version
+
         if mode is None:
             if os.path.exists(filename):
                 mode = 'r'
@@ -184,7 +194,7 @@ class GeometryFile(object):
         - `sep`: the default separator to be used when not specified in
           the data block
         """
-        self.fil.write("# pyFormex Geometry File (http://pyformex.org) version='%s'; sep='%s'\n" % (self._version_, self.sep))
+        self.fil.write("# pyFormex Geometry File (http://pyformex.org) version='%s'; sep='%s'\n" % (self.version, self.sep))
         self.header_done = True
 
 
@@ -283,27 +293,16 @@ class GeometryFile(object):
             pf.warning("Error while writing objects of type %s to geometry file: skipping" % type(geom))
             raise
 
+        if geom.attrib and Version(self.version) >= Version('2.0'):
+            try:
+                if geom.attrib:
+                    self.fil.write("# attrib = %s\n" % geom.attrib)
+            except:
+                pf.warning("Error while writing objects of type %s to geometry file: skipping" % type(geom))
+                raise
+
+
         return 0
-
-
-    ## def writeFormex(self,F,name=None,sep=None):
-    ##     """Write a Formex to the geometry file.
-
-    ##     `F` is a Formex. The coords attribute of the Formex is written as
-    ##     an array to the geometry file. If the Formex has a props attribute,
-    ##     it is also written.
-    ##     """
-    ##     if sep is None:
-    ##         sep = self.sep
-    ##     hasprop = F.prop is not None
-
-    ##     head = "# objtype='Formex'; nelems=%s; nplex=%s; props=%s; eltype='%s'; sep='%s'" % (F.nelems(), F.nplex(), hasprop, F.eltype, sep)
-    ##     if name:
-    ##         head += "; name='%s'" % name
-    ##     self.fil.write(head+'\n')
-    ##     self.writeData(F.coords, sep)
-    ##     if hasprop:
-    ##         self.writeData(F.prop, sep)
 
 
     def writeMesh(self,F,name=None,sep=None,objtype='Mesh'):
@@ -322,7 +321,7 @@ class GeometryFile(object):
         if sep is None:
             sep = self.sep
         hasprop = F.prop is not None
-        hasnorm = hasattr(F, 'normals') and isinstance(F.normals, ndarray) and F.normals.shape == (F.nelems(), F.nplex(), 3)
+        hasnorm = hasattr(F, 'normals') and isinstance(F.normals, np.ndarray) and F.normals.shape == (F.nelems(), F.nplex(), 3)
         color = None
         colormap = None
         Fc = F.attrib['color']
@@ -331,11 +330,11 @@ class GeometryFile(object):
                 color = Fc
             else:
                 try:
-                    Fc = checkArray(Fc,kind='f')
+                    Fc = at.checkArray(Fc,kind='f')
                     colormap = None
                     colorshape = Fc.shape
                 except:
-                    Fc = checkArray(Fc,kind='i')
+                    Fc = at.checkArray(Fc,kind='i')
                     colormap = 'default'
                     colorshape = Fc.shape + (3,)
                 if colorshape == (3,):
@@ -370,6 +369,7 @@ class GeometryFile(object):
             head = "# field='%s'; fldtype='%s'; shape=%r; sep='%s'" % (fld.fldname, fld.fldtype,fld.data.shape, sep)
             self.fil.write(head+'\n')
             self.writeData(fld.data, sep)
+
 
 
     def writeFormex(self,F,name=None,sep=None):
@@ -497,10 +497,9 @@ class GeometryFile(object):
         self.results = OrderedDict()
         self.geometry = None # used to make sure fields follow geom block
 
-        from distutils.version import StrictVersion
-        if StrictVersion(self._version_) < StrictVersion('1.6'):
+        if Version(self.version) < Version('1.6'):
             if warn_version:
-                pf.warning("This is an old PGF format (%s). We recommend you to convert it to a newer format. The geometry import menu contains an item to upgrade a PGF file to the latest format (%s)." % (self._version_,GeometryFile._version_))
+                pf.warning("This is an old PGF format (%s). We recommend you to convert it to a newer format. The geometry import menu contains an item to upgrade a PGF file to the latest format (%s)." % (self.version,GeometryFile._version_))
             return self.readLegacy(count)
 
 
@@ -522,6 +521,9 @@ class GeometryFile(object):
 
                 elif s.startswith('field'):
                     self.readField(**self.decode(s))
+
+                elif s.startswith('attrib'):
+                    self.readAttrib(**self.decode(s))
 
                 elif s.startswith('pyFormex Geometry File'):
                     # we have a new header line
@@ -563,7 +565,7 @@ class GeometryFile(object):
         pos = s.rfind(')')
         s = s[pos+1:].strip()
         kargs = self.decode(s)
-        self._version_ = kargs['version']
+        self.version = kargs['version']
         self.sep = kargs['sep']
         self.header_done = True
 
@@ -574,7 +576,7 @@ class GeometryFile(object):
         Sets detected default values
         """
 
-        self._version_ = version
+        self.version = version
         self.sep = sep
         self.header_done = True
 
@@ -619,14 +621,14 @@ class GeometryFile(object):
 
                     if colorshape:
                         if colormap == 'default':
-                            colortype = Int
+                            colortype = at.Int
                         else:
-                            colortype = Float
+                            colortype = at.Float
                             colorshape += ( 3,)
 
                         try:
                             # Read the color array
-                            color = readArray(self.fil, colortype, colorshape, sep=sep)
+                            color = at.readArray(self.fil, colortype, colorshape, sep=sep)
                         except Exception as e:
                             print("Invalid color array on PGF file: skipped. Traceback: %s" % e)
                             color = None
@@ -639,7 +641,7 @@ class GeometryFile(object):
                         colortype = 'f'
                     colorshape = (3,)
                     try:
-                        color = checkArray(color, colorshape, colortype)
+                        color = at.checkArray(color, colorshape, colortype)
                     except Exception as e:
                         print("Invalid color attribute on PGF file: skipped. Traceback: %s" % e)
                         color = None
@@ -656,8 +658,23 @@ class GeometryFile(object):
         """Read a Field defined on the last read geometry.
 
         """
-        data = readArray(self.fil, Float, shape, sep=sep)
+        data = at.readArray(self.fil, at.Float, shape, sep=sep)
         self.geometry.addField(fldtype,data,field)
+
+
+    def readAttrib(self,attrib=None,**kargs):
+        """Read an Attributes dict defined on the last read geometry.
+
+        """
+#        s = ''
+#        for line in self.fil:
+#            if line.startswith('# end_attrib'):
+#                break
+#            s += line
+#        #print(s)
+#        attr = json.loads(s)
+#        #print(type(attr))
+        self.geometry.attrib(**attrib)
 
 
     def readFormex(self, nelems, nplex, props, eltype, sep):
@@ -668,9 +685,9 @@ class GeometryFile(object):
         From the coords and props a Formex is created and returned.
         """
         ndim = 3
-        f = readArray(self.fil, Float, (nelems, nplex, ndim), sep=sep)
+        f = at.readArray(self.fil, at.Float, (nelems, nplex, ndim), sep=sep)
         if props:
-            p = readArray(self.fil, Int, (nelems,), sep=sep)
+            p = at.readArray(self.fil, at.Int, (nelems,), sep=sep)
         else:
             p = None
         return Formex(f, p, eltype)
@@ -689,10 +706,10 @@ class GeometryFile(object):
         """
 
         ndim = 3
-        x = readArray(self.fil, Float, (ncoords, ndim), sep=sep)
-        e = readArray(self.fil, Int, (nelems, nplex), sep=sep)
+        x = at.readArray(self.fil, at.Float, (ncoords, ndim), sep=sep)
+        e = at.readArray(self.fil, at.Int, (nelems, nplex), sep=sep)
         if props:
-            p = readArray(self.fil, Int, (nelems,), sep=sep)
+            p = at.readArray(self.fil, at.Int, (nelems,), sep=sep)
         else:
             p = None
         M = Mesh(x, e, p, eltype)
@@ -703,7 +720,7 @@ class GeometryFile(object):
                 clas = globals()[objtype]
             M = clas(M)
         if normals:
-            n = readArray(self.fil, Float, (nelems, nplex, ndim), sep=sep)
+            n = at.readArray(self.fil, at.Float, (nelems, nplex, ndim), sep=sep)
             M.normals = n
         return M
 
@@ -716,7 +733,7 @@ class GeometryFile(object):
         """
         from pyformex.plugins.curve import PolyLine
         ndim = 3
-        coords = readArray(self.fil, Float, (ncoords, ndim), sep=sep)
+        coords = at.readArray(self.fil, at.Float, (ncoords, ndim), sep=sep)
         return PolyLine(control=coords, closed=closed)
 
 
@@ -728,7 +745,7 @@ class GeometryFile(object):
         """
         from pyformex.plugins.curve import BezierSpline
         ndim = 3
-        coords = readArray(self.fil, Float, (ncoords, ndim), sep=sep)
+        coords = at.readArray(self.fil, at.Float, (ncoords, ndim), sep=sep)
         return BezierSpline(control=coords, closed=closed, degree=degree)
 
 
@@ -741,8 +758,8 @@ class GeometryFile(object):
         """
         from pyformex.plugins.nurbs import NurbsCurve
         ndim = 4
-        coords = readArray(self.fil, Float, (ncoords, ndim), sep=sep)
-        knots = readArray(self.fil, Float, (nknots,), sep=sep)
+        coords = at.readArray(self.fil, at.Float, (ncoords, ndim), sep=sep)
+        knots = at.readArray(self.fil, at.Float, (nknots,), sep=sep)
         return NurbsCurve(control=coords, knots=knots, closed=closed)
 
 
@@ -756,9 +773,9 @@ class GeometryFile(object):
         """
         from pyformex.plugins.nurbs import NurbsSurface
         ndim = 4
-        coords = readArray(self.fil, Float, (ncoords, ndim), sep=sep)
-        uknots = readArray(self.fil, Float, (nuknots,), sep=sep)
-        vknots = readArray(self.fil, Float, (nvknots,), sep=sep)
+        coords = at.readArray(self.fil, at.Float, (ncoords, ndim), sep=sep)
+        uknots = at.readArray(self.fil, at.Float, (nuknots,), sep=sep)
+        vknots = at.readArray(self.fil, at.Float, (nvknots,), sep=sep)
         return NurbsSurface(control=coords, knots=(uknots, vknots), closed=(uclosed, vclosed))
 
 
@@ -786,11 +803,16 @@ class GeometryFile(object):
             objtype = 'Formex' # the default obj type
             obj = None
             nelems = None
+            nplex = None
             ncoords = None
             sep = self.sep
             name = None
             normals = None
             color = None
+            props = None
+            closed = None
+            nparts = None
+            nknots = None
             s = self.fil.readline()
 
             if len(s) == 0:   # end of file
@@ -845,7 +867,7 @@ class GeometryFile(object):
 
             if obj is not None:
                 try:
-                    color = checkArray(color, (3,), 'f')
+                    color = at.checkArray(color, (3,), 'f')
                     obj.color = color
                 except:
                     pass
@@ -871,8 +893,8 @@ class GeometryFile(object):
         """
         from pyformex.plugins.curve import BezierSpline
         ndim = 3
-        coords = readArray(self.fil, Float, (ncoords, ndim), sep=sep)
-        control = readArray(self.fil, Float, (nparts, 2, ndim), sep=sep)
+        coords = at.readArray(self.fil, at.Float, (ncoords, ndim), sep=sep)
+        control = at.readArray(self.fil, at.Float, (nparts, 2, ndim), sep=sep)
         return BezierSpline(coords, control=control, closed=closed)
 
 
@@ -885,7 +907,7 @@ class GeometryFile(object):
         """
         self.reopen('r')
         obj = self.read(warn_version=False)
-        self._version_ = GeometryFile._version_
+        self.version = GeometryFile._version_
         if obj is not None:
             self.reopen('w')
             self.write(obj)

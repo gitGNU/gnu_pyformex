@@ -6,7 +6,7 @@
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
 ##  Copyright 2004-2015 (C) Benedict Verhegghe (benedict.verhegghe@feops.com)
-##  Distributed under the GNU General Public License version 3 or later.
+##  Distributed under the GNU General Public License 3 or later.
 ##
 ##  This program is free software: you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -890,7 +890,7 @@ def startGui(args=[]):
 
 ################### read and write files #################################
 
-def writeGeomFile(filename,objects,sep=' ',mode='w',shortlines=False):
+def writeGeomFile(filename,objects,sep=' ',mode='w',shortlines=False,**kargs):
     """Save geometric objects to a pyFormex Geometry File.
 
     A pyFormex Geometry File can store multiple geometrical objects in a
@@ -908,11 +908,12 @@ def writeGeomFile(filename,objects,sep=' ',mode='w',shortlines=False):
     - `sep`: the string used to separate data. If set to an empty
       string, the data will be written in binary format and the resulting file
       will be smaller but less portable.
+    - `kargs`: more arguments are passed to :meth:`geomfile.GeometryFile.write`.
 
     Returns the number of objects written to the file.
     """
     print("Writing PGF file '%s'" % os.path.abspath(filename))
-    f = geomfile.GeometryFile(filename, mode, sep=sep)
+    f = geomfile.GeometryFile(filename, mode, sep=sep,**kargs)
     # TODO: shis option could goto into GeometryFile
     if shortlines:
         f.fmt = {'i':'%i ','f':'%f '}

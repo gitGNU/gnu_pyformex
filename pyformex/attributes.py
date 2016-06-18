@@ -125,4 +125,10 @@ class Attributes(Dict):
         from pyformex.utils import removeDict
         return dict.__str__(removeDict(self, ['_default_dict_']))
 
+
+    def __repr__(self):
+        from pyformex.utils import removeDict
+        return dict.__repr__(removeDict(self, ['_default_dict_']))
+
+
 # End
