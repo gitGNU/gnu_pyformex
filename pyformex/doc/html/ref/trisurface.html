@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>11. trisurface — Operations on triangulated surfaces. &mdash; pyFormex 1.0.2~a1 documentation</title>
+    <title>11. trisurface — Operations on triangulated surfaces. &mdash; pyFormex 1.0.2-a5 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2~a1',
+        VERSION:     '1.0.2-a5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,7 +51,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2~a1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="12. utils — A collection of miscellaneous utility functions." href="utils.html" />
     <link rel="prev" title="10. elements — Definition of elements." href="elements.html" />
@@ -82,7 +82,7 @@
         <li class="right" >
           <a href="elements.html" title="10. elements — Definition of elements."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -384,11 +384,20 @@ to a surface that can continously be deformed to an open disk.</p>
 <dl class="method">
 <dt id="trisurface.TriSurface.nonManifoldEdges">
 <tt class="descname">nonManifoldEdges</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.nonManifoldEdges" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds edges and faces that are not Manifold.</p>
+<dd><p>Return the non-manifold edges.</p>
+<p>Non-manifold edges are edges having more than two triangles
+connected to them.</p>
+<p>Returns the indices of the non-manifold edges in a TriSurface.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trisurface.TriSurface.nonManifoldEdgesFaces">
+<tt class="descname">nonManifoldEdgesFaces</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.nonManifoldEdgesFaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the non-manifold edges and faces.</p>
 <p>Returns a tuple of:</p>
 <ul class="simple">
-<li>the edges that connect 3 or more faces,</li>
-<li>the faces connected to these edges.</li>
+<li>the list of edges that connect 3 or more faces,</li>
+<li>the list of faces connected to any of these edges.</li>
 </ul>
 </dd></dl>
 
@@ -402,6 +411,16 @@ to a surface that can continously be deformed to an open disk.</p>
 <dt id="trisurface.TriSurface.isConvexManifold">
 <tt class="descname">isConvexManifold</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.isConvexManifold" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether the TriSurface is a convex manifold.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trisurface.TriSurface.removeNonManifold">
+<tt class="descname">removeNonManifold</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.removeNonManifold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the non-manifold edges.</p>
+<p>Removes the non-manifold edges by iteratively applying two
+<a class="reference internal" href="#trisurface.TriSurface.removeDuplicate" title="trisurface.TriSurface.removeDuplicate"><tt class="xref py py-meth docutils literal"><span class="pre">removeDuplicate()</span></tt></a> and <a class="reference internal" href="#trisurface.TriSurface.collapseEdge" title="trisurface.TriSurface.collapseEdge"><tt class="xref py py-meth docutils literal"><span class="pre">collapseEdge()</span></tt></a> until no edge
+has more than two connected triangles.</p>
+<p>Returns the reduced surface.</p>
 </dd></dl>
 
 <dl class="method">
@@ -435,7 +454,13 @@ the original will create a closed surface. The surfaces will have
 property values set above those used in the parent surface.
 If the surface is already closed, an empty list is returned.</p>
 <p>There are three methods: &#8216;radial&#8217;, &#8216;planar&#8217; and &#8216;border&#8217;,
-corresponding to the methods of the surfaceInsideBorder function.</p>
+corresponding to the methods of the <a class="reference internal" href="#trisurface.fillBorder" title="trisurface.fillBorder"><tt class="xref py py-func docutils literal"><span class="pre">fillBorder()</span></tt></a> function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trisurface.TriSurface.close">
+<tt class="descname">close</tt><big>(</big><em>method='radial'</em>, <em>dir=None</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method needs documentation!!!!</p>
 </dd></dl>
 
 <dl class="method">
@@ -464,6 +489,16 @@ elem_edges and edges attributes.</p>
 The border edges attached to one triangle have angle 0.
 NB: The sign of the angle is relevant if the surface has fixed normals. Should
 this check be done?</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trisurface.TriSurface.edgeLengths">
+<tt class="descname">edgeLengths</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.edgeLengths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the lengths of all edges</p>
+<p>Returns an array with the length of all the edges in the
+surface. As a side effect, this stores the connectivities
+of the edges to nodes and the elements to edges in the
+attributes edges, resp. elem_edges.</p>
 </dd></dl>
 
 <dl class="method">
@@ -547,6 +582,22 @@ By default, the coords set is unaltered and will still contain
 all points, even ones that are no longer connected to any element.
 To reduce the coordinate set, set the compact argument to True
 or use the <a class="reference internal" href="#trisurface.TriSurface.compact" title="trisurface.TriSurface.compact"><tt class="xref py py-meth docutils literal"><span class="pre">compact()</span></tt></a> method afterwards.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trisurface.TriSurface.collapseEdge">
+<tt class="descname">collapseEdge</tt><big>(</big><em>edg</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.collapseEdge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collapse an edge in a TriSurface.</p>
+<p>Collapsing an edge removes all the triangles connected to the edge
+and replaces the two vertices by a single one, placed at the center
+of the edge. Triangles only having one of the edge vertices, will
+all be connected to the new vertex.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>edg</cite>: the index of the edg to be removed. This is an index in the
+array of edges as returned by <a class="reference internal" href="#trisurface.TriSurface.getElemEdges" title="trisurface.TriSurface.getElemEdges"><tt class="xref py py-meth docutils literal"><span class="pre">getElemEdges()</span></tt></a>.</li>
+</ul>
+<p>Returns a TriSurface with the specified edge number removed.</p>
 </dd></dl>
 
 <dl class="method">
@@ -753,6 +804,30 @@ an edge is smaller</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="trisurface.TriSurface.similarity">
+<tt class="descname">similarity</tt><big>(</big><em>S</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.similarity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the similarity with another TriSurface.</p>
+<p>Compute a quantitative measure of the similarity of the volumes
+enclosed by two TriSurfaces. Both the calling and the passed
+TriSurface should be closed manifolds (see <a class="reference internal" href="#trisurface.TriSurface.isClosedManifold" title="trisurface.TriSurface.isClosedManifold"><tt class="xref py py-meth docutils literal"><span class="pre">isClosedManifold()</span></tt></a>).</p>
+<p>Returns a tuple a tuple (jaccard, dice, overlap).
+If A and B are two closed manifolds, VA and VB are their respective
+volumes, VC is the volume of the intersection of A and B, and VD is
+the volume of the union of A and B, then the following similarity
+measures are defined:</p>
+<ul class="simple">
+<li>jaccard coefficient: VC / VD</li>
+<li>dice: 2 * VC / (VA + VB)</li>
+<li>overlap: VC / min(VA,VB)</li>
+</ul>
+<p>Both jaccard and dice range from 0 when the surfaces are completely
+disjoint to 1 when the surfaces are identical. The overlap coefficient
+becomes 1 when one of the surfaces is completely inside the other.</p>
+<p>This method uses gts library to compute the intersection or union.
+If that fails, nan values are returned.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="trisurface.TriSurface.fixNormals">
 <tt class="descname">fixNormals</tt><big>(</big><em>outwards=True</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.fixNormals" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fix the orientation of the normals.</p>
@@ -905,6 +980,35 @@ of points as obtained from pts.points().</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="trisurface.TriSurface.voxelize">
+<tt class="descname">voxelize</tt><big>(</big><em>n</em>, <em>bbox=0.01</em>, <em>return_formex=False</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.voxelize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Voxelize the volume inside a closed surface.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>n</cite>: int or (int, int, int): resolution, i.e. number of voxel cells
+to use along the three axes.
+If a single int is specified, the number of cells will be adapted
+according to the surface&#8217;s <tt class="xref py py-meth docutils literal"><span class="pre">sizes()</span></tt> (as the voxel cells are
+always cubes). The specified number of voxels will be use along the
+largest direction.</li>
+<li><cite>bbox</cite>: float or (point,point): defines the bounding box of the volume
+that needs to be voxelized. A float specifies a relative amount to add
+to the surface&#8217;s bounding box. Note that this defines the bounding box
+of the centers of the voxels.</li>
+<li><cite>return_formex</cite>: bool; if True, also returns a Formex with the centers
+of the voxels.</li>
+</ul>
+<p>Returns an int array of shape (nz,ny,nx) with value 1 for the voxels
+whose center is inside the surface, else 0.
+If <cite>return_formex</cite> is True, also returns a plex-1 Formex with the
+centers of the voxels , and property values 0 or 1 if the point is
+respectively outside or inside the surface. The voxel cell ordering
+in the Formex is z-direction first, then y, then x.</p>
+<p>See also example Voxelize, for saving the voxel values in a stack
+of binary images.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="trisurface.TriSurface.tetgen">
 <tt class="descname">tetgen</tt><big>(</big><em>quality=True</em>, <em>volume=None</em>, <em>filename=None</em>, <em>format='.off'</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.tetgen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a tetrahedral mesh inside the surface</p>
@@ -926,14 +1030,14 @@ resulting tetrahedral mesh is returned.</p>
 <tt class="descname">addField</tt><big>(</big><em>fldtype</em>, <em>data</em>, <em>fldname</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.addField" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a data field to the geometry.</p>
 <p>Add a scalar or vectorial field defined over the domain of the
-Geometry. This creates a <tt class="xref py py-class docutils literal"><span class="pre">Field</span></tt> instance with the specified
+Geometry. This creates a <tt class="xref py py-class docutils literal"><span class="pre">pyformex.field.Field</span></tt> instance with the specified
 parameters and adds it to the Geometry object.
 Fields stored inside a Geometry object are exported to PGF file
 whenever the object is exported.</p>
 <p>Parameters:</p>
 <ul class="simple">
 <li><cite>fldtype</cite>, <cite>data</cite>, <cite>fldname</cite>: are passed together with the
-Geometry object to the Field initialization. See <tt class="xref py py-class docutils literal"><span class="pre">Field</span></tt>
+Geometry object to the Field initialization. See <tt class="xref py py-class docutils literal"><span class="pre">pyformex.field.Field</span></tt>
 for details.</li>
 </ul>
 </dd></dl>
@@ -963,12 +1067,6 @@ array. The result is a Mesh with plexitude <cite>self.nplex() + nnod</cite>.</p>
 <tt class="descname">addNoise</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.addNoise" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply &#8216;addNoise&#8217; transformation to the Geometry object.</p>
 <p>See <a class="reference internal" href="coords.html#coords.Coords.addNoise" title="coords.Coords.addNoise"><tt class="xref py py-meth docutils literal"><span class="pre">coords.Coords.addNoise()</span></tt></a> for details.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="trisurface.TriSurface.add_field">
-<tt class="descname">add_field</tt><big>(</big><em>field</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.add_field" title="Permalink to this definition">¶</a></dt>
-<dd><p>Low level function to add a Field</p>
 </dd></dl>
 
 <dl class="method">
@@ -1289,22 +1387,6 @@ a final conversion to the requested element type is attempted.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="trisurface.TriSurface.connectedElements">
-<tt class="descname">connectedElements</tt><big>(</big><em>startat</em>, <em>mask</em>, <em>level=0</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.connectedElements" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the elements reachable from startat.</p>
-<p>Finds the elements which can be reached from startat by walking along
-a mask (a subset of elements). Walking is possible over nodes, edges or faces,
-as specified in level.</p>
-<ul class="simple">
-<li><cite>startat</cite>: int or array_like, int.</li>
-<li><cite>level</cite>: int. Specify how elements can be reached:
-via node (0), edge (1) or face (2).</li>
-<li><cite>mask</cite>: a boolean array or index flagging the elements
-which are to be considered walkable.</li>
-</ul>
-</dd></dl>
-
-<dl class="method">
 <dt id="trisurface.TriSurface.connectedTo">
 <tt class="descname">connectedTo</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.connectedTo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select the elements connected to specific lower entities.</p>
@@ -1357,10 +1439,13 @@ for the current element type.</p>
 
 <dl class="method">
 <dt id="trisurface.TriSurface.convexHull">
-<tt class="descname">convexHull</tt><big>(</big><em>compact=True</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.convexHull" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the convex hull of the geometry.</p>
-<p>The convex hull is a closed TriSurface enclosing all points
-of the geometry.</p>
+<tt class="descname">convexHull</tt><big>(</big><em>dir=None</em>, <em>return_mesh=True</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.convexHull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the convex hull of a Coords.</p>
+<p>This works like <tt class="xref py py-meth docutils literal"><span class="pre">Coords.convexHull()</span></tt>, but has return_mesh=True
+as default. It is equivalent with:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">coords</span><span class="o">.</span><span class="n">convexHull</span><span class="p">(</span><span class="nb">dir</span><span class="p">,</span><span class="n">return_mesh</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -1500,19 +1585,6 @@ to the seeds specified by <cite>dir</cite>.</p>
 <dt id="trisurface.TriSurface.fieldReport">
 <tt class="descname">fieldReport</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.fieldReport" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print a short report of the stored fields</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="trisurface.TriSurface.fixNormals2">
-<tt class="descname">fixNormals2</tt><big>(</big><em>outwards=True</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.fixNormals2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fix the orientation of the normals.</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>outwards</cite>: boolean: if True (default), a test is done whether
-the surface is a closed manifold, and if so, the normals are
-oriented outwards. Setting this value to False will skip this
-test and the (possible) reversal of the normals.</li>
-</ul>
 </dd></dl>
 
 <dl class="method">
@@ -1881,6 +1953,14 @@ does not succeed.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="trisurface.TriSurface.level">
+<tt class="descname">level</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the level of the elements in the Mesh</p>
+<p>Returns the dimensionality of the elements: 0 (point), 1(line),
+2 (surface), 3 (volume).</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="trisurface.TriSurface.levelVolumes">
 <tt class="descname">levelVolumes</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.levelVolumes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the level volumes of all elements in a Mesh.</p>
@@ -2006,6 +2086,24 @@ of the node selector.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="trisurface.TriSurface.ncoords">
+<tt class="descname">ncoords</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.ncoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of nodes in the Mesh</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trisurface.TriSurface.nelems">
+<tt class="descname">nelems</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.nelems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of elements in the Mesh</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trisurface.TriSurface.nnodes">
+<tt class="descname">nnodes</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.nnodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of nodes in the Mesh</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="trisurface.TriSurface.nodeAdjacency">
 <tt class="descname">nodeAdjacency</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.nodeAdjacency" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find the elems adjacent to each elem via one or more nodes.</p>
@@ -2038,6 +2136,18 @@ are connected by a node but not by an edge.</p>
 <p>Returns an integer array with a sorted list of non-manifold node
 numbers. Possibly empty (always if the dimensionality of the Mesh
 is lower than 2).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trisurface.TriSurface.nplex">
+<tt class="descname">nplex</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.nplex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the plexitude of the elements in the Mesh</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trisurface.TriSurface.npoints">
+<tt class="descname">npoints</tt><big>(</big><big>)</big><a class="headerlink" href="#trisurface.TriSurface.npoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of nodes in the Mesh</p>
 </dd></dl>
 
 <dl class="method">
@@ -2321,29 +2431,6 @@ into volumes.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="trisurface.TriSurface.scaledJacobian">
-<tt class="descname">scaledJacobian</tt><big>(</big><em>scaled=True</em>, <em>blksize=100000</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.scaledJacobian" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute a quality measure for volume meshes.</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>scaled</cite>: if False returns the Jacobian at the corners of each
-element. If True, returns a quality metrics, being the
-minimum value of the scaled Jacobian in each element (at one corner,
-the Jacobian divided by the volume of a perfect brick).</li>
-<li><cite>blksize</cite>: int: to reduce the memory required for large meshes, the
-Mesh is split in blocks with this number of elements.
-If not positive, all elements are handled at once.</li>
-</ul>
-<p>If <cite>scaled</cite> is True each tet or hex element gets a value between
--1 and 1.
-Acceptable elements have a positive scaled Jacobian. However, good
-quality requires a minimum of 0.2.
-Quadratic meshes are first converted to linear.
-If the mesh contain mainly negative Jacobians, it probably has negative
-volumes and can be fixed with the correctNegativeVolumes.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="trisurface.TriSurface.select">
 <tt class="descname">select</tt><big>(</big><em>*_args</em>, <em>**_kargs</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.select" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a Geometry only containing the selected elements.</p>
@@ -2573,14 +2660,18 @@ and &#8216;quad4&#8217; and &#8216;hex8&#8217; and for the derived class &#8216;
 <dt id="trisurface.TriSurface.sweep">
 <tt class="descname">sweep</tt><big>(</big><em>path</em>, <em>eltype=None</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#trisurface.TriSurface.sweep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sweep a mesh along a path, creating an extrusion</p>
-<p>Returns a new Mesh obtained by sweeping the given Mesh
-over a path.
-The returned Mesh has double plexitude of the original.</p>
-<p>This method accepts all the parameters of <a class="reference internal" href="coords.html#coords.sweepCoords" title="coords.sweepCoords"><tt class="xref py py-func docutils literal"><span class="pre">coords.sweepCoords()</span></tt></a>,
-with the same meaning. Usually, you will need to at least set the
-<cite>normal</cite> parameter.
-The <cite>eltype</cite> parameter can be used to set the element type on the
-returned Meshes.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>path</cite>: Curve object. The path over which to sweep the Mesh.</li>
+<li><cite>eltype</cite>: string. Name of the element type on the
+returned Meshes.</li>
+<li><cite>**kargs</cite>: keyword arguments that are passed to
+func:<cite>coords.sweepCoords</cite>, with the same meaning.
+Usually, you will need to at least set the <cite>normal</cite> parameter.</li>
+</ul>
+<p>Returns a Mesh obtained by sweeping the given Mesh over a path.
+The returned Mesh has double plexitude of the original.
+If <cite>path</cite> is a closed Curve connect back to the first.</p>
 <p>This operation is similar to the extrude() method, but the path
 can be any 3D curve.</p>
 </dd></dl>
@@ -2913,7 +3004,7 @@ nelems where the triangles of remove have been removed.</p>
         <li class="right" >
           <a href="elements.html" title="10. elements — Definition of elements."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -2921,7 +3012,7 @@ nelems where the triangles of remove have been removed.</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on May 22, 2015.
+      Last updated on Jun 18, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

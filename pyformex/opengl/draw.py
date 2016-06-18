@@ -152,15 +152,12 @@ def draw(F,
     There is a long list of possible settings, but in most case only a few
     will be needed.
 
-    BEWARE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    The remainder of this docstring is from the old version (<= 0.9)
-    of pyFormex.
-    While most of the arguments are still valid and the documentation
-    below is useful, there might be some slight changes in the behavior.
+    .. warning:: The remainder of this docstring is from the old version
+       (<= 0.9) of pyFormex.
+       While most of the arguments are still valid and the documentation
+       below is useful, there might be some slight changes in the behavior.
 
-    DEVS: THIS DOCSTRING NEEDS TO BE UPDATED !
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+    .. note:: DEVS: TODO: THIS DOCSTRING NEEDS TO BE UPDATED !
 
     Settings: specify how the geometry will be drawn. These arguments will
       be passed to the corresponding Actor for the object. The Actor is the

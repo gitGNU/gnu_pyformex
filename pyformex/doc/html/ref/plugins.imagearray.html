@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>47. plugins.imagearray — Convert bitmap images into numpy arrays. &mdash; pyFormex 1.0.2~a1 documentation</title>
+    <title>46. plugins.imagearray — Convert bitmap images into numpy arrays. &mdash; pyFormex 1.0.2-a5 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2~a1',
+        VERSION:     '1.0.2-a5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,10 +51,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2~a1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="48. plugins.isopar — Isoparametric transformations" href="plugins.isopar.html" />
-    <link rel="prev" title="46. plugins.flavia —" href="plugins.flavia.html" />
+    <link rel="next" title="47. plugins.isopar — Isoparametric transformations" href="plugins.isopar.html" />
+    <link rel="prev" title="45. plugins.flavia —" href="plugins.flavia.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -77,12 +77,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="plugins.isopar.html" title="48. plugins.isopar — Isoparametric transformations"
+          <a href="plugins.isopar.html" title="47. plugins.isopar — Isoparametric transformations"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="plugins.flavia.html" title="46. plugins.flavia —"
+          <a href="plugins.flavia.html" title="45. plugins.flavia —"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -101,9 +101,9 @@
    
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">47. <tt class="docutils literal"><span class="pre">plugins.imagearray</span></tt> &#8212; Convert bitmap images into numpy arrays.</a><ul>
-<li><a class="reference internal" href="#classes-defined-in-module-plugins-imagearray">47.1. Classes defined in module plugins.imagearray</a></li>
-<li><a class="reference internal" href="#functions-defined-in-module-plugins-imagearray">47.2. Functions defined in module plugins.imagearray</a></li>
+<li><a class="reference internal" href="#">46. <tt class="docutils literal"><span class="pre">plugins.imagearray</span></tt> &#8212; Convert bitmap images into numpy arrays.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-plugins-imagearray">46.1. Classes defined in module plugins.imagearray</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-plugins-imagearray">46.2. Functions defined in module plugins.imagearray</a></li>
 </ul>
 </li>
 </ul>
@@ -111,10 +111,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="plugins.flavia.html"
-                        title="previous chapter">46. <tt class="docutils literal"><span class="pre">plugins.flavia</span></tt> &#8212;</a></p>
+                        title="previous chapter">45. <tt class="docutils literal"><span class="pre">plugins.flavia</span></tt> &#8212;</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="plugins.isopar.html"
-                        title="next chapter">48. <tt class="docutils literal"><span class="pre">plugins.isopar</span></tt> &#8212; Isoparametric transformations</a></p>
+                        title="next chapter">47. <tt class="docutils literal"><span class="pre">plugins.isopar</span></tt> &#8212; Isoparametric transformations</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -149,15 +149,100 @@
           <div class="body">
             
   <div class="section" id="module-plugins.imagearray">
-<span id="plugins-imagearray-convert-bitmap-images-into-numpy-arrays"></span><span id="sec-ref-plugins-imagearray"></span><h1>47. <a class="reference internal" href="#module-plugins.imagearray" title="plugins.imagearray: Convert bitmap images into numpy arrays."><tt class="xref py py-mod docutils literal"><span class="pre">plugins.imagearray</span></tt></a> &#8212; Convert bitmap images into numpy arrays.<a class="headerlink" href="#module-plugins.imagearray" title="Permalink to this headline">¶</a></h1>
+<span id="plugins-imagearray-convert-bitmap-images-into-numpy-arrays"></span><span id="sec-ref-plugins-imagearray"></span><h1>46. <a class="reference internal" href="#module-plugins.imagearray" title="plugins.imagearray: Convert bitmap images into numpy arrays."><tt class="xref py py-mod docutils literal"><span class="pre">plugins.imagearray</span></tt></a> &#8212; Convert bitmap images into numpy arrays.<a class="headerlink" href="#module-plugins.imagearray" title="Permalink to this headline">¶</a></h1>
 <p>This module contains functions to convert bitmap images into numpy
 arrays and vice versa.</p>
 <p>This code was based on ideas found on the PyQwt mailing list.</p>
 <div class="section" id="classes-defined-in-module-plugins-imagearray">
-<h2>47.1. Classes defined in module plugins.imagearray<a class="headerlink" href="#classes-defined-in-module-plugins-imagearray" title="Permalink to this headline">¶</a></h2>
+<h2>46.1. Classes defined in module plugins.imagearray<a class="headerlink" href="#classes-defined-in-module-plugins-imagearray" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="plugins.imagearray.DicomStack">
+<em class="property">class </em><tt class="descclassname">plugins.imagearray.</tt><tt class="descname">DicomStack</tt><big>(</big><em>files</em>, <em>zsort=True</em>, <em>reverse=False</em><big>)</big><a class="headerlink" href="#plugins.imagearray.DicomStack" title="Permalink to this definition">¶</a></dt>
+<dd><p>A stack of DICOM images.</p>
+<p>The DicomStack class stores a collection of DICOM images
+and provides conversion to ndarray.</p>
+<p>The DicomStack is initialized by a list of file names.
+All input files are scanned for DICOM image data and
+non-DICOM files are skipped.
+From the DICOM files, the pixel and slice spacing are read,
+as well as the origin.
+The DICOM files are sorted in order of ascending origin_z value.</p>
+<p>While reading the DICOM files, the following attributes are set:</p>
+<ul class="simple">
+<li><cite>files</cite>: a list of the valid DICOM files, in order of ascending
+z-value.</li>
+<li><cite>pixel_spacing</cite>: a dict with an (x,y) pixel spacing tuple as key
+and a list of indices of the matching images as value.</li>
+<li><cite>slice_thickness</cite>: a list of the slice thicknesses of the
+images, in the same order as <cite>files</cite>.</li>
+<li><cite>xy_origin</cite>: a dict with an (x,y) position the pixel (0,0) as key
+and a list of indices of the matching images as value.</li>
+<li><cite>z_origin</cite>: a list of the z positions of the images,
+in the same order as <cite>files</cite>.</li>
+<li><cite>rejected</cite>: list of rejected files.</li>
+</ul>
+<dl class="method">
+<dt id="plugins.imagearray.DicomStack.nfiles">
+<tt class="descname">nfiles</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.imagearray.DicomStack.nfiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of accepted files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.imagearray.DicomStack.files">
+<tt class="descname">files</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.imagearray.DicomStack.files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the list of accepted filenames</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.imagearray.DicomStack.rejected">
+<tt class="descname">rejected</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.imagearray.DicomStack.rejected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the list of rejected filenames</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.imagearray.DicomStack.spacing">
+<tt class="descname">spacing</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.imagearray.DicomStack.spacing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the pixel spacing and slice thickness.</p>
+<p>Return the pixel spacing (x,y) and the slice thickness (z)
+in the accepted images.</p>
+<p>Returns: a float array of shape (nfiles,3).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.imagearray.DicomStack.origin">
+<tt class="descname">origin</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.imagearray.DicomStack.origin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the origin of all accepted images.</p>
+<p>Return the world position of the pixel (0,0) in all accepted images.</p>
+<p>Returns: a float array of shape (nfiles,3).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.imagearray.DicomStack.zvalue">
+<tt class="descname">zvalue</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.imagearray.DicomStack.zvalue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the zvalue of all accepted images.</p>
+<p>The zvalue is the z value of the origin of the image.</p>
+<p>Returns: a float array of shape (nfiles).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.imagearray.DicomStack.image">
+<tt class="descname">image</tt><big>(</big><em>i</em><big>)</big><a class="headerlink" href="#plugins.imagearray.DicomStack.image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the image at index i</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.imagearray.DicomStack.pixar">
+<tt class="descname">pixar</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.imagearray.DicomStack.pixar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the DicomStack as an array</p>
+<p>Returns all images in a single array. This is only succesful
+if all accepted images have the same size.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="functions-defined-in-module-plugins-imagearray">
-<h2>47.2. Functions defined in module plugins.imagearray<a class="headerlink" href="#functions-defined-in-module-plugins-imagearray" title="Permalink to this headline">¶</a></h2>
+<h2>46.2. Functions defined in module plugins.imagearray<a class="headerlink" href="#functions-defined-in-module-plugins-imagearray" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="plugins.imagearray.resizeImage">
 <tt class="descclassname">plugins.imagearray.</tt><tt class="descname">resizeImage</tt><big>(</big><em>image</em>, <em>w=0</em>, <em>h=0</em><big>)</big><a class="headerlink" href="#plugins.imagearray.resizeImage" title="Permalink to this definition">¶</a></dt>
@@ -227,6 +312,21 @@ and colortable is None.</li>
 </ul>
 </li>
 </ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.imagearray.numpy2qimage">
+<tt class="descclassname">plugins.imagearray.</tt><tt class="descname">numpy2qimage</tt><big>(</big><em>array</em><big>)</big><a class="headerlink" href="#plugins.imagearray.numpy2qimage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a 2D or 3D integer numpy array into a QImag</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>array</cite>: 2D or 3D int array. If the input array is 2D, the array
+is converted into a gray image. If the input array is 3D, the last
+axis should have length 3 or 4 and represents the color channels in
+order RGB or RGBA.</li>
+</ul>
+<p>This is equivalent with calling <a class="reference internal" href="#plugins.imagearray.gray2qimage" title="plugins.imagearray.gray2qimage"><tt class="xref py py-func docutils literal"><span class="pre">gray2qimage()</span></tt></a> for a 2D array
+and rgb2qimage for a 3D array.</p>
 </dd></dl>
 
 <dl class="function">
@@ -315,8 +415,9 @@ equivalent using python-dicom.</p>
 <dt>Returns a 3D array with the pixel data of all the images. The first</dt>
 <dd>axis is the <cite>z</cite> value, the last the <cite>x</cite>.</dd>
 </dl>
-<p>As a side effect, this function sets the global variable <cite>_dicom_spacing</cite>
-to a (3,) array with the pixel/slice spacing factors, in order (x,y,z).</p>
+<p>As a side effect, this function sets the global variables
+<cite>_dicom_spacing</cite> and <cite>_dicom_origin</cite> to a to a (3,) array with
+the pixel/slice spacing factors, resp. the origin, in order (x,y,z).</p>
 </dd></dl>
 
 <dl class="function">
@@ -334,8 +435,9 @@ equivalent using python-dicom.</p>
 <dt>Returns a 3D array with the pixel data of all the images. The first</dt>
 <dd>axis is the <cite>z</cite> value, the last the <cite>x</cite>.</dd>
 </dl>
-<p>As a side effect, this function sets the global variable <cite>_dicom_spacing</cite>
-to a (3,) array with the pixel/slice spacing factors, in order (x,y,z).</p>
+<p>As a side effect, this function sets the global variables
+<cite>_dicom_spacing</cite> and <cite>_dicom_origin</cite> to a to a (3,) array with
+the pixel/slice spacing factors, resp. the origin, in order (x,y,z).</p>
 </dd></dl>
 
 <dl class="function">
@@ -353,6 +455,21 @@ DICOM images in the directory will be read.</li>
 <li><cite>pixar</cite>: a 3D array with the pixel data of all the images. The first
 axis is the <cite>z</cite> value, the last the <cite>x</cite>.</li>
 <li><cite>scale</cite>: a (3,) array with the scaling factors, in order (x,y,z).</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.imagearray.saveGreyImage">
+<tt class="descclassname">plugins.imagearray.</tt><tt class="descname">saveGreyImage</tt><big>(</big><em>a</em>, <em>f</em>, <em>flip=True</em><big>)</big><a class="headerlink" href="#plugins.imagearray.saveGreyImage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a 2D int array as a grey image.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>a</cite>: int array (nx,ny) with values in the range 0..255. These are
+the grey values of the pixels.</li>
+<li><cite>f</cite>: filename</li>
+<li><cite>flip</cite>: by default, the vertical axis is flipped, so that images are
+stored starting at the top. If your data already have the vertical axis
+downwards, use flip=False.</li>
 </ul>
 </dd></dl>
 
@@ -375,12 +492,12 @@ axis is the <cite>z</cite> value, the last the <cite>x</cite>.</li>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="plugins.isopar.html" title="48. plugins.isopar — Isoparametric transformations"
+          <a href="plugins.isopar.html" title="47. plugins.isopar — Isoparametric transformations"
              >next</a> |</li>
         <li class="right" >
-          <a href="plugins.flavia.html" title="46. plugins.flavia —"
+          <a href="plugins.flavia.html" title="45. plugins.flavia —"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -388,7 +505,7 @@ axis is the <cite>z</cite> value, the last the <cite>x</cite>.</li>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on May 22, 2015.
+      Last updated on Jun 18, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5. gui.draw — Create 3D graphical representations. &mdash; pyFormex 1.0.2~a1 documentation</title>
+    <title>5. gui.draw — Create 3D graphical representations. &mdash; pyFormex 1.0.2-a5 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2~a1',
+        VERSION:     '1.0.2-a5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,7 +51,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2~a1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="6. opengl.colors — Playing with colors." href="opengl.colors.html" />
     <link rel="prev" title="4. script — Basic pyFormex script functions" href="script.html" />
@@ -82,7 +82,7 @@
         <li class="right" >
           <a href="script.html" title="4. script — Basic pyFormex script functions"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -628,18 +628,41 @@ or is one of the viewport objects in pyformex.GUI.viewports</p>
 
 <dl class="function">
 <dt id="gui.draw.pick">
-<tt class="descclassname">gui.draw.</tt><tt class="descname">pick</tt><big>(</big><em>mode='actor'</em>, <em>filter=None</em>, <em>oneshot=False</em>, <em>func=None</em><big>)</big><a class="headerlink" href="#gui.draw.pick" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gui.draw.</tt><tt class="descname">pick</tt><big>(</big><em>mode='actor'</em>, <em>filter=None</em>, <em>oneshot=False</em>, <em>func=None</em>, <em>pickable=None</em>, <em>prompt=None</em><big>)</big><a class="headerlink" href="#gui.draw.pick" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enter interactive picking mode and return selection.</p>
-<p>See viewport.py for more details.
+<p>See <tt class="xref py py-func docutils literal"><span class="pre">Canvas.pick()</span></tt> for more details.
 This function differs in that it provides default highlighting
-during the picking operation, a button to stop the selection operation</p>
+during the picking operation and a OK/Cancel buttons to stop
+the picking operation.</p>
 <p>Parameters:</p>
 <ul class="simple">
-<li><cite>mode</cite>: one of the pick modes</li>
-<li><cite>filter</cite>: one of the <cite>selection_filters</cite>. The default picking filter
+<li><cite>mode</cite>: defines what to pick : one of &#8216;actor&#8217;, &#8216;element&#8217;, &#8216;face&#8217;,
+&#8216;edge&#8217;, &#8216;point&#8217; or &#8216;number&#8217;.
+&#8216;face&#8217; and &#8216;edge&#8217; are only available for Mesh type geometry.</li>
+<li><cite>filter</cite>: one of the <cite>selection_filters</cite>. The default picking filter is
 activated on entering the pick mode. All available filters are
 presented in a combobox.</li>
+<li><cite>oneshot</cite>: if True, the function returns as soon as the user ends
+a picking operation. The default is to let the user
+modify his selection and only to return after an explicit
+cancel (ESC or right mouse button).</li>
+<li><cite>func</cite>: if specified, this function will be called after each
+atomic pick operation. The Collection with the currently selected
+objects is passed as an argument. This can e.g. be used to highlight
+the selected objects during picking.</li>
+<li><cite>pickable</cite>: a list of Actors to pick from. The default is to use
+a list with all Actors having the pickable=True attribute (which is
+the default for newly constructed Actors).</li>
+<li><cite>prompt</cite>: the text printed to prompt the user to start picking. If None,
+a default prompt is printed. Specify an empty string to avoid printing
+a prompt.</li>
 </ul>
+<p>Returns a (possibly empty) Collection with the picked items.
+After return, the value of the pf.canvas.selection_accepted variable
+can be tested to find how the picking operation was exited:
+True means accepted (right mouse click, ENTER key, or OK button),
+False means canceled (ESC key, or Cancel button). In the latter case,
+the returned Collection is always empty</p>
 </dd></dl>
 
 <dl class="function">
@@ -766,8 +789,180 @@ converted,</li>
 
 <dl class="function">
 <dt id="gui.draw.draw">
-<tt class="descclassname">gui.draw.</tt><tt class="descname">draw</tt><big>(</big><em>F</em>, <em>clear=None</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.draw.draw" title="Permalink to this definition">¶</a></dt>
-<dd><p>New draw function for OpenGL2</p>
+<tt class="descclassname">gui.draw.</tt><tt class="descname">draw</tt><big>(</big><em>F</em>, <em>clear=None</em>, <em>single=False</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.draw.draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw geometrical object(s) with specified drawing options and settings.</p>
+<p>This is the generic drawing function in pyFormex.
+The user can specifies the Geometry and optional drawing parameters.
+The function returns the Actor(s) resulting from the drawing
+operation. The Actors can further be used to change the rendering.</p>
+<p>Parameters:</p>
+<ul>
+<li><p class="first"><cite>F</cite>:  specifies all geometry that will be drawn in a single argument.
+It can be one of the following:</p>
+<ul class="simple">
+<li>a drawable object (a Geometry object like Formex, Mesh or TriSurface,
+or another object having a proper <cite>actor</cite> method),</li>
+<li>the name of a global pyFormex variable refering to such an object,</li>
+<li>a list or nested list of any of the above items.</li>
+</ul>
+<p>The possibility of a nested list means that any complex collections
+of geometry can be drawn in a single operations. The (nested) list
+is recursively flattened, replacing string values by the corresponding
+value from the pyFormex global variables dictionary, until a single list
+of drawable objects results. Next the undrawable items are removed
+from the list. The resulting list of drawable objects are drawn in a
+single pass, with the same options and default drawing attributes.</p>
+</li>
+<li><p class="first"><cite>clear</cite>: clear the scene before drawing.</p>
+</li>
+<li><p class="first"><cite>single</cite>: specifies the type of result if <cite>F</cite> is a list.
+If False, a flat list with all Actors for all Geometries in F is returned.
+It True, a single Actor corresponding with F[0] is returned, with the
+Actors for F[1:] set as its children.</p>
+</li>
+</ul>
+<p>The remaining parameters are the default drawing parameters to be used.
+They will apply unless overridden by attributes set in the Geometry
+itself (see <tt class="xref py py-meth docutils literal"><span class="pre">geometry.Geometry.attrib()</span></tt>).
+There is a long list of possible settings, but in most case only a few
+will be needed.</p>
+<p>BEWARE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+The remainder of this docstring is from the old version (&lt;= 0.9)
+of pyFormex.
+While most of the arguments are still valid and the documentation
+below is useful, there might be some slight changes in the behavior.</p>
+<dl class="docutils">
+<dt>Settings: specify how the geometry will be drawn. These arguments will</dt>
+<dd><p class="first">be passed to the corresponding Actor for the object. The Actor is the
+graphical representation of the geometry. Not all Actors use all of
+the settings that can be specified here. But they all accept specifying
+any setting even if unused. The settings hereafter are thus a
+superset of the settings used by the different Actors.
+Settings have a default value per viewport, and if unspecified, most
+Actors will use the viewport default for that value.</p>
+<ul class="last simple">
+<li><cite>color</cite>, <cite>colormap</cite>: specifies the color of the object (see below)</li>
+<li><cite>alpha</cite>: float (0.0..1.0): alpha value to use in transparent mode</li>
+<li><cite>bkcolor</cite>, <cite>bkcolormap</cite>: color for the backside of surfaces, if
+different from the front side. Specification as for front color.</li>
+<li><cite>bkalpha</cite>: float (0.0..1.0): alpha value for back side.</li>
+<li><cite>linewidth</cite>: float, thickness of line drawing</li>
+<li><cite>linestipple</cite>: stipple pattern for line drawing</li>
+<li><cite>marksize</cite>: float: point size for dot drawing</li>
+<li><cite>nolight</cite>: bool: render object as unlighted in modes with lights on</li>
+<li><cite>ontop</cite>: bool: render object as if it is on top.
+This will make the object fully visible, even when it is hidden by
+other objects. If more than one objects is drawn with <cite>ontop=True</cite>
+the visibility of the object will depend on the order of drawing.</li>
+</ul>
+</dd>
+<dt>Options: these arguments modify the working of the draw functions.</dt>
+<dd><p class="first">If None, they are filled in from the current viewport drawing options.
+These can be changed with the <a class="reference internal" href="#gui.draw.setDrawOptions" title="gui.draw.setDrawOptions"><tt class="xref py py-func docutils literal"><span class="pre">setDrawOptions()</span></tt></a> function.
+The initial defaults are: view=&#8217;last&#8217;, bbox=&#8217;auto&#8217;, shrink=False,
+clear=False, shrinkfactor=0.8.</p>
+<ul class="last simple">
+<li><cite>view</cite>: is either the name of a defined view or &#8216;last&#8217; or
+None.  Predefined views are &#8216;front&#8217;, &#8216;back&#8217;, &#8216;top&#8217;, &#8216;bottom&#8217;,
+&#8216;left&#8217;, &#8216;right&#8217;, &#8216;iso&#8217;.  With view=None the camera settings
+remain unchanged (but might be changed interactively through
+the user interface). This may make the drawn object out of
+view!  With view=&#8217;last&#8217;, the camera angles will be set to the
+same camera angles as in the last draw operation, undoing any
+interactive changes.  On creation of a viewport, the initial
+default view is &#8216;front&#8217; (looking in the -z direction).</li>
+<li><cite>bbox</cite>: specifies the 3D volume at which the camera will be
+aimed (using the angles set by <cite>view</cite>). The camera position will
+be set so that the volume comes in view using the current lens
+(default 45 degrees).  bbox is a list of two points or
+compatible (array with shape (2,3)).  Setting the bbox to a
+volume not enclosing the object may make the object invisible
+on the canvas.  The special value bbox=&#8217;auto&#8217; will use the
+bounding box of the objects getting drawn (object.bbox()),
+thus ensuring that the camera will focus on these objects.
+The special value bbox=None will use the bounding box of the
+previous drawing operation, thus ensuring that the camera&#8217;s
+target volume remains unchanged.</li>
+<li><cite>shrink</cite>: bool: if specified, each object will be transformed
+by the <tt class="xref py py-meth docutils literal"><span class="pre">Coords.shrink()</span></tt> transformation (with the current
+set shrinkfactor as a parameter), thus showing all the elements
+of the object separately.  (Some other softwares call this an
+&#8216;exploded&#8217; view).</li>
+<li><cite>clear</cite>: bool. By default each new draw operation adds the newly
+drawn objects to the shown scene. Using <cite>clear=True</cite> will clear the
+scene before drawing and thus only show the objects of the current
+draw action.</li>
+<li><cite>wait</cite>: bool. If True (default) the draw action activates a
+locking mechanism for the next draw action, which will only be
+allowed after <cite>drawdelay</cite> seconds have
+elapsed. This makes it easier to see subsequent renderings and
+is far more efficient than adding an explicit sleep()
+operation, because the script processing can continue up to
+the next drawing instruction. The value of drawdelay can be changed
+in the user settings or using the <a class="reference internal" href="#gui.draw.delay" title="gui.draw.delay"><tt class="xref py py-func docutils literal"><span class="pre">delay()</span></tt></a> function.
+Setting this value to 0 will disable the waiting mechanism for all
+subsequent draw statements (until set &gt; 0 again). But often the user
+wants to specifically disable the waiting lock for some draw
+operation(s). This can be done without changing the <cite>drawdelay</cite>
+setting by specifyin <cite>wait=False</cite>. This means that the <em>next</em> draw
+operation does not have to wait.</li>
+<li><cite>allviews</cite>: currently not used</li>
+<li><cite>highlight</cite>: bool. If True, the object(s) will not be drawn as
+normal geometry, but as highlights (usually on top of other geometry),
+making them removeable by the remove highlight functions</li>
+<li><cite>silent</cite>: bool. If True (default), non-drawable objects will be
+silently ignored. If set False, an error is raised if an object
+is not drawable.</li>
+<li><cite>**kargs</cite>: any not-recognized keyword parameters are passed to the
+object&#8217;s Actor constructor. This allows the user to create
+customized Actors with new parameters.</li>
+</ul>
+</dd>
+</dl>
+<p>Specifying color:</p>
+<p>Color specification can take many different forms. Some Actors recognize
+up to six different color modes and the draw function adds even another
+mode (property color)</p>
+<ul class="simple">
+<li>no color: <cite>color=None</cite>. The object will be drawn in the current
+viewport foreground color.</li>
+<li>single color: the whole object is drawn with the specified color.</li>
+<li>element color: each element of the object has its own color. The
+specified color will normally contain precisely <cite>nelems</cite> colors,
+but will be resized to the required size if not.</li>
+<li>vertex color: each vertex of each element of the object has its color.
+In smooth shading modes intermediate points will get an interpolated
+color.</li>
+<li>element index color: like element color, but the color values are not
+specified directly, but as indices in a color table (the <cite>colormap</cite>
+argument).</li>
+<li>vertex index color: like vertex color, but the colors are indices in a
+color table (the <cite>colormap</cite> argument).</li>
+<li>property color: as an extra mode in the draw function, if <cite>color=&#8217;prop&#8217;</cite>
+is specified, and the object has an attribute &#8216;prop&#8217;, that attribute
+will be used as a color index and the object will be drawn in
+element index color mode. If the object has no such attribute, the
+object is drawn in no color mode.</li>
+</ul>
+<p>Element and vertex color modes are usually only used with a single object
+in the <cite>F</cite> parameter, because they require a matching set of colors.
+Though the color set will be automatically resized if not matching, the
+result will seldomly be what the user expects.
+If single colors are specified as a tuple of three float values
+(see below), the correct size of a color array for an object with
+<cite>nelems</cite> elements of plexitude <cite>nplex</cite> would be: (nelems,3) in element
+color mode, and (nelems,nplex,3) in vertex color mode. In the index modes,
+color would then be an integer array with shape respectively (nelems,) and
+(nelems,nplex). Their values are indices in the colormap array, which
+could then have shape (ncolors,3), where ncolors would be larger than the
+highest used value in the index. If the colormap is insufficiently large,
+it will again be wrapped around. If no colormap is specified, the current
+viewport colormap is used. The default contains eight colors: black=0,
+red=1, green=2, blue=3, cyan=4, magenta=5, yellow=6, white=7.</p>
+<p>A color value can be specified in multiple ways, but should be convertible
+to a normalized OpenGL color using the <tt class="xref py py-func docutils literal"><span class="pre">colors.GLcolor()</span></tt> function.
+The normalized color value is a tuple of three values in the range 0.0..1.0.
+The values are the contributions of the red, green and blue components.</p>
 </dd></dl>
 
 <dl class="function">
@@ -860,15 +1055,6 @@ Returns the drawn Annotation.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="gui.draw.drawPrincipal">
-<tt class="descclassname">gui.draw.</tt><tt class="descname">drawPrincipal</tt><big>(</big><em>F</em>, <em>weight=None</em><big>)</big><a class="headerlink" href="#gui.draw.drawPrincipal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw the principal axes of the geometric object F.</p>
-<p>F is any object that has a <cite>coords</cite> attribute.
-If specified, weight is an array of weights attributed to the points
-of F. It should have the same length as <cite>F.coords</cite>.</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="gui.draw.drawText">
 <tt class="descclassname">gui.draw.</tt><tt class="descname">drawText</tt><big>(</big><em>text</em>, <em>pos</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.draw.drawText" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show a text at position pos.</p>
@@ -914,17 +1100,26 @@ parts of the geometry with a label.</p>
 
 <dl class="function">
 <dt id="gui.draw.drawAxes">
-<tt class="descclassname">gui.draw.</tt><tt class="descname">drawAxes</tt><big>(</big><em>cs=None</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.draw.drawAxes" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gui.draw.</tt><tt class="descname">drawAxes</tt><big>(</big><em>cs=None</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.draw.drawAxes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw the axes of a coordinate system.</p>
 <p>Parameters:</p>
 <ul class="simple">
-<li><cite>cs</cite>: a <a class="reference internal" href="coordsys.html#coordsys.CoordSys" title="coordsys.CoordSys"><tt class="xref py py-class docutils literal"><span class="pre">coordsys.CoordSys</span></tt></a>, a
-<tt class="xref py py-class docutils literal"><span class="pre">coordsys.CoordinateSystem</span></tt>, or a Coords(4,3).
+<li><cite>cs</cite>: a <a class="reference internal" href="coordsys.html#coordsys.CoordSys" title="coordsys.CoordSys"><tt class="xref py py-class docutils literal"><span class="pre">coordsys.CoordSys</span></tt></a>
 If not specified, the global coordinate system is used.</li>
 </ul>
-<p>Other arguments can be added just like in the <tt class="xref py py-class docutils literal"><span class="pre">AxesActor</span></tt> class.</p>
+<p>Other arguments can be added just like in the <tt class="xref py py-class docutils literal"><span class="pre">candy.Axes</span></tt> class.</p>
 <p>By default this draws the positive parts of the axes in the colors R,G,B
 and the negative parts in C,M,Y.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.draw.drawPrincipal">
+<tt class="descclassname">gui.draw.</tt><tt class="descname">drawPrincipal</tt><big>(</big><em>F</em>, <em>weight=None</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.draw.drawPrincipal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the principal axes of the geometric object F.</p>
+<p>F is Coords or Geometry.
+If weight is specified, it is an array of weights attributed to the points
+of F. It should have the same length as <cite>F.coords</cite>.
+Other parameter are drawing attributes passed to <a class="reference internal" href="#gui.draw.drawAxes" title="gui.draw.drawAxes"><tt class="xref py py-func docutils literal"><span class="pre">drawAxes()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="function">
@@ -981,7 +1176,7 @@ fills the background.</p>
 
 <dl class="function">
 <dt id="gui.draw.drawField">
-<tt class="descclassname">gui.draw.</tt><tt class="descname">drawField</tt><big>(</big><em>fld</em>, <em>comp=0</em>, <em>scale='RAINBOW'</em>, <em>symmetric_scale=False</em><big>)</big><a class="headerlink" href="#gui.draw.drawField" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gui.draw.</tt><tt class="descname">drawField</tt><big>(</big><em>fld</em>, <em>comp=0</em>, <em>scale='RAINBOW'</em>, <em>symmetric_scale=False</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.draw.drawField" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw intensity of a scalar field over a Mesh.</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -990,6 +1185,8 @@ fills the background.</p>
 that is to be drawn.</li>
 <li><cite>scale</cite>: one of the color palettes defined in <tt class="xref py py-mod docutils literal"><span class="pre">colorscale</span></tt>.
 If an empty string is specified, the scale is not drawn.</li>
+<li><cite>**kargs</cite>: any not-recognized keyword parameters are passed to the
+draw function to draw the Geometry.</li>
 </ul>
 <p>Draws the Field&#8217;s Geometry with the Field data converted to colors.
 A color legend is added to convert colors to values.
@@ -1031,10 +1228,39 @@ and by default it will restart the lock to retard the next draing operation.</p>
 
 <dl class="function">
 <dt id="gui.draw.setTriade">
-<tt class="descclassname">gui.draw.</tt><tt class="descname">setTriade</tt><big>(</big><em>on=None</em>, <em>pos='lb'</em>, <em>siz=100</em><big>)</big><a class="headerlink" href="#gui.draw.setTriade" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gui.draw.</tt><tt class="descname">setTriade</tt><big>(</big><em>on=None</em>, <em>pos='lb'</em>, <em>siz=50</em>, <em>triade=None</em><big>)</big><a class="headerlink" href="#gui.draw.setTriade" title="Permalink to this definition">¶</a></dt>
 <dd><p>Toggle the display of the global axes on or off.</p>
-<p>If on is True, the axes triade is displayed, if False it is
-removed. The default (None) toggles between on and off.</p>
+<p>This is a convenient feature to display the global axes
+directions with rotating actor at fixed viewport size and
+position.</p>
+<p>Parameters:</p>
+<ul>
+<li><p class="first"><cite>on</cite>: boolean. If True, the global axes triade is displayed. If
+False, it is removed. The default (None) toggles between on and off.
+The remaining parameters are only used on enabling the triade.</p>
+</li>
+<li><p class="first"><cite>pos</cite>: string of two characters. The characters define the horizontal
+(one of &#8216;l&#8217;, &#8216;c&#8217;, or &#8216;r&#8217;) and vertical (one of &#8216;t&#8217;, &#8216;c&#8217;, &#8216;b&#8217;) position
+on the camera&#8217;s viewport. Default is left-bottom.</p>
+</li>
+<li><p class="first"><cite>siz</cite>: size (in pixels) of the triade.</p>
+</li>
+<li><p class="first"><cite>triade</cite>: None, Geometry or str: defines the Geometry to be used for
+representing the global axes.</p>
+<p>If None: use the previously set triade, or set a default if no
+previous.</p>
+<p>If Geometry: use this to represent the axes. To be useful and properly
+displayed, the Geometry&#8217;s bbox should be around [(-1,-1,-1),(1,1,1)].
+Drawing attributes may be set on the Geometry to influence
+the appearence. This allows to fully customize the Triade.</p>
+<p>If str: use one of the predefined Triade Geometries. Currently, the
+following are available:</p>
+<ul class="simple">
+<li>&#8216;axes&#8217;: axes and coordinate planes as in <tt class="xref py py-class docutils literal"><span class="pre">candy.Axes</span></tt></li>
+<li>&#8216;man&#8217;: a model of a man as in data file &#8216;man.pgf&#8217;</li>
+</ul>
+</li>
+</ul>
 </dd></dl>
 
 <dl class="function">
@@ -1220,7 +1446,7 @@ not reset it.</p>
         <li class="right" >
           <a href="script.html" title="4. script — Basic pyFormex script functions"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -1228,7 +1454,7 @@ not reset it.</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on May 22, 2015.
+      Last updated on Jun 18, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

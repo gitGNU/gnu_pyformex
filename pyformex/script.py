@@ -250,11 +250,11 @@ def autoExport(g):
     The default is to export all instances of class Geometry.
 
     This can be customized in the script/app by setting the global
-    variable :var:`autoglobals`. If set to a value that evaluates to
+    variable `autoglobals`. If set to a value that evaluates to
     False, no autoexport will be done. If set to True, the default
     autoexport will be done: all instances of :class:`geometry`.
     If set to a list of names, only the specified names will be exported.
-    Furthermore, a global variable :var:`autoclasses` may be set
+    Furthermore, a global variable `autoclasses` may be set
     to a list of class names. All global instances of the specified classes
     will be exported.
 

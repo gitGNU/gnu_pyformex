@@ -59,7 +59,6 @@ def run():
     view('front')
 
     # read an image from pyFormex data
-    datadir = getcfg('datadir')
     filename = os.path.join(getcfg('datadir'), 'butterfly')
     print(filename)
     im = QtGui.QImage(filename)

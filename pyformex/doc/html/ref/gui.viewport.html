@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>29. gui.viewport — Interactive OpenGL Canvas embedded in a Qt4 widget. &mdash; pyFormex 1.0.2~a1 documentation</title>
+    <title>29. gui.viewport — Interactive OpenGL Canvas embedded in a Qt4 widget. &mdash; pyFormex 1.0.2-a5 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2~a1',
+        VERSION:     '1.0.2-a5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,7 +51,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2~a1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="30. gui.image — Saving OpenGL renderings to image files." href="gui.image.html" />
     <link rel="prev" title="28. gui.colorscale — Color mapping of a range of values." href="gui.colorscale.html" />
@@ -82,7 +82,7 @@
         <li class="right" >
           <a href="gui.colorscale.html" title="28. gui.colorscale — Color mapping of a range of values."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -318,14 +318,8 @@ On RELEASE, zoom to the picked rectangle.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gui.viewport.QtCanvas.setPickable">
-<tt class="descname">setPickable</tt><big>(</big><em>nrs=None</em><big>)</big><a class="headerlink" href="#gui.viewport.QtCanvas.setPickable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the list of pickable actors</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="gui.viewport.QtCanvas.start_selection">
-<tt class="descname">start_selection</tt><big>(</big><em>mode</em>, <em>filter</em><big>)</big><a class="headerlink" href="#gui.viewport.QtCanvas.start_selection" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">start_selection</tt><big>(</big><em>mode</em>, <em>filter</em>, <em>pickable=None</em><big>)</big><a class="headerlink" href="#gui.viewport.QtCanvas.start_selection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start an interactive picking mode.</p>
 <p>If selection mode was already started, mode is disregarded and
 this can be used to change the filter method.</p>
@@ -358,7 +352,7 @@ this can be used to change the filter method.</p>
 
 <dl class="method">
 <dt id="gui.viewport.QtCanvas.pick">
-<tt class="descname">pick</tt><big>(</big><em>mode='actor'</em>, <em>oneshot=False</em>, <em>func=None</em>, <em>filter=None</em><big>)</big><a class="headerlink" href="#gui.viewport.QtCanvas.pick" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">pick</tt><big>(</big><em>mode='actor'</em>, <em>oneshot=False</em>, <em>func=None</em>, <em>filter=None</em>, <em>pickable=None</em><big>)</big><a class="headerlink" href="#gui.viewport.QtCanvas.pick" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interactively pick objects from the viewport.</p>
 <ul>
 <li><p class="first"><cite>mode</cite>: defines what to pick : one of
@@ -381,17 +375,26 @@ the selected objects during picking.</p>
 </li>
 <li><p class="first">&#8216;closest&#8217; will only keep the element closest to the user.</p>
 </li>
-<li><p class="first">&#8216;connected&#8217; will only keep elements connected to
-- the closest element (set picked)
-- what is already in the selection (add picked).</p>
+<li><p class="first">&#8216;connected&#8217; will only keep elements connected to</p>
+<ul class="simple">
+<li>the closest element (set picked)</li>
+<li>what is already in the selection (add picked).</li>
+</ul>
 <p>Currently this only works when picking mode is &#8216;element&#8217; and
 for Actors having a partitionByConnection method.</p>
 </li>
 </ul>
 </li>
 </ul>
-<p>When the picking operation is finished, the selection is returned.
-The return value is always a Collection object.</p>
+<p>Returns a (possibly empty) Collection with the picked items.
+After return, the value of the pf.canvas.selection_accepted variable
+can be tested to find how the picking operation was exited:
+True means accepted (right mouse click, ENTER key, or OK button),
+False means canceled (ESC key, or Cancel button). In the latter case,
+the returned Collection is always empty</p>
+<p>Small bugs:
+- if oneshot=True the pf.canvas.selection_accepted is always True, even if you ESC
+- the first time you pick the ESC does not work. You need at least to left click before.</p>
 </dd></dl>
 
 <dl class="method">
@@ -428,7 +431,9 @@ preview the result before a point is created.</li>
 <p>The drawing operation is finished when the number of requested points
 has been reached, or when the user clicks the right mouse button or
 hits &#8216;ENTER&#8217;.
-The return value is a (n,3) shaped Coords array.</p>
+The return value is a (n,3) shaped Coords array.
+To know in which way the drawing was finished check the pf.canvas.draw_accepted:
+True means mouse right click / ENTER, False means ESC button on keyboard.</p>
 </dd></dl>
 
 <dl class="method">
@@ -618,12 +623,6 @@ On RELEASE, add the line to the drawing.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gui.viewport.QtCanvas.addHighlight">
-<tt class="descname">addHighlight</tt><big>(</big><em>itemlist</em><big>)</big><a class="headerlink" href="#gui.viewport.QtCanvas.addHighlight" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a highlight or a list thereof to the 3D scene.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="gui.viewport.QtCanvas.begin_2D_drawing">
 <tt class="descname">begin_2D_drawing</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.viewport.QtCanvas.begin_2D_drawing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up the canvas for 2D drawing on top of 3D canvas.</p>
@@ -711,6 +710,16 @@ Else, the objects are drawn in the order submitted.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="gui.viewport.QtCanvas.hasTriade">
+<tt class="descname">hasTriade</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.viewport.QtCanvas.hasTriade" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the canvas has a Triade displayed.</p>
+<p>Return True if the Triade is currently displayed.
+The Triade is a reserved Actor displaying the orientation of
+the global axes.
+See also: <a class="reference internal" href="#gui.viewport.QtCanvas.setTriade" title="gui.viewport.QtCanvas.setTriade"><tt class="xref py py-meth docutils literal"><span class="pre">setTriade()</span></tt></a>, <a class="reference internal" href="#gui.viewport.QtCanvas.removeTriade" title="gui.viewport.QtCanvas.removeTriade"><tt class="xref py py-meth docutils literal"><span class="pre">removeTriade()</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
 <dt id="gui.viewport.QtCanvas.highlightActors">
 <tt class="descname">highlightActors</tt><big>(</big><em>K</em><big>)</big><a class="headerlink" href="#gui.viewport.QtCanvas.highlightActors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Highlight a selection of actors on the canvas.</p>
@@ -786,6 +795,16 @@ By default, the full actor list is used.</p>
 <tt class="descname">removeHighlight</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.viewport.QtCanvas.removeHighlight" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove a highlight or a list thereof from the 3D scene.</p>
 <p>Without argument, removes all highlights from the scene.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.removeTriade">
+<tt class="descname">removeTriade</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.viewport.QtCanvas.removeTriade" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the Triade from the canvas.</p>
+<p>Remove the Triade from the current viewport.
+The Triade is a reserved Actor displaying the orientation of
+the global axes. It has special methods to draw/undraw it.
+See also: <a class="reference internal" href="#gui.viewport.QtCanvas.setTriade" title="gui.viewport.QtCanvas.setTriade"><tt class="xref py py-meth docutils literal"><span class="pre">setTriade()</span></tt></a>, <a class="reference internal" href="#gui.viewport.QtCanvas.hasTriade" title="gui.viewport.QtCanvas.hasTriade"><tt class="xref py py-meth docutils literal"><span class="pre">hasTriade()</span></tt></a></p>
 </dd></dl>
 
 <dl class="method">
@@ -949,10 +968,30 @@ with the old and new toggle state as a parameter.</p>
 
 <dl class="method">
 <dt id="gui.viewport.QtCanvas.setTriade">
-<tt class="descname">setTriade</tt><big>(</big><em>on=None</em>, <em>pos='lb'</em>, <em>siz=50</em><big>)</big><a class="headerlink" href="#gui.viewport.QtCanvas.setTriade" title="Permalink to this definition">¶</a></dt>
-<dd><p>Toggle the display of the global axes on or off.</p>
-<p>If on is True, a triade of global axes is displayed, if False it is
-removed. The default (None) toggles between on and off.</p>
+<tt class="descname">setTriade</tt><big>(</big><em>pos='lb'</em>, <em>siz=100</em>, <em>triade=None</em><big>)</big><a class="headerlink" href="#gui.viewport.QtCanvas.setTriade" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the Triade for this canvas.</p>
+<p>Display the Triade on the current viewport.
+The Triade is a reserved Actor displaying the orientation of
+the global axes. It has special methods to show/hide it.
+See also: <a class="reference internal" href="#gui.viewport.QtCanvas.removeTriade" title="gui.viewport.QtCanvas.removeTriade"><tt class="xref py py-meth docutils literal"><span class="pre">removeTriade()</span></tt></a>, <a class="reference internal" href="#gui.viewport.QtCanvas.hasTriade" title="gui.viewport.QtCanvas.hasTriade"><tt class="xref py py-meth docutils literal"><span class="pre">hasTriade()</span></tt></a></p>
+<p>Parameters:</p>
+<ul>
+<li><p class="first"><cite>pos</cite>: string of two characters. The characters define the horizontal
+(one of &#8216;l&#8217;, &#8216;c&#8217;, or &#8216;r&#8217;) and vertical (one of &#8216;t&#8217;, &#8216;c&#8217;, &#8216;b&#8217;) position
+on the camera&#8217;s viewport. Default is left-bottom.</p>
+</li>
+<li><p class="first"><cite>siz</cite>: float: intende size (in pixels) of the triade.</p>
+</li>
+<li><p class="first"><cite>triade</cite>: None or Geometry: defines the Geometry to be used for
+representing the global axes.</p>
+<p>If None, use the previously set triade, or set a default if no
+previous.</p>
+<p>If Geometry, use this to represent the axes. To be useful and properly
+displayed, the Geometry&#8217;s bbox should be around [(-1,-1,-1),(1,1,1)].
+Drawing attributes may be set on the Geometry to influence
+the appearence. This allows to fully customize the Triade.</p>
+</li>
+</ul>
 </dd></dl>
 
 <dl class="method">
@@ -1226,6 +1265,35 @@ version and v is True or False.</p>
 <dd><p>Some information about the OpenGL format.</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="gui.viewport.drawDot">
+<tt class="descclassname">gui.viewport.</tt><tt class="descname">drawDot</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#gui.viewport.drawDot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a dot at canvas coordinates (x,y).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.viewport.drawLine">
+<tt class="descclassname">gui.viewport.</tt><tt class="descname">drawLine</tt><big>(</big><em>x1</em>, <em>y1</em>, <em>x2</em>, <em>y2</em><big>)</big><a class="headerlink" href="#gui.viewport.drawLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a straight line from (x1,y1) to (x2,y2) in canvas coordinates.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.viewport.drawGrid">
+<tt class="descclassname">gui.viewport.</tt><tt class="descname">drawGrid</tt><big>(</big><em>x1</em>, <em>y1</em>, <em>x2</em>, <em>y2</em>, <em>nx</em>, <em>ny</em><big>)</big><a class="headerlink" href="#gui.viewport.drawGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a rectangular grid of lines</p>
+<p>The rectangle has (x1,y1) and and (x2,y2) as opposite corners.
+There are (nx,ny) subdivisions along the (x,y)-axis. So the grid
+has (nx+1) * (ny+1) lines. nx=ny=1 draws a rectangle.
+nx=0 draws 1 vertical line (at x1). nx=-1 draws no vertical lines.
+ny=0 draws 1 horizontal line (at y1). ny=-1 draws no horizontal lines.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.viewport.drawRect">
+<tt class="descclassname">gui.viewport.</tt><tt class="descname">drawRect</tt><big>(</big><em>x1</em>, <em>y1</em>, <em>x2</em>, <em>y2</em><big>)</big><a class="headerlink" href="#gui.viewport.drawRect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the circumference of a rectangle.</p>
+</dd></dl>
+
 </div>
 </div>
 
@@ -1250,7 +1318,7 @@ version and v is True or False.</p>
         <li class="right" >
           <a href="gui.colorscale.html" title="28. gui.colorscale — Color mapping of a range of values."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -1258,7 +1326,7 @@ version and v is True or False.</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on May 22, 2015.
+      Last updated on Jun 18, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

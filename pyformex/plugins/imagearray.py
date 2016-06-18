@@ -327,7 +327,7 @@ if utils.checkModule('pil'):
 _dicom_spacing = None
 _dicom_origin = None
 
-if software.checkModule('dicom'):
+if utils.checkModule('dicom'):
 
     def loadImage_dicom(filename):
         """Load a DICOM image into a numpy array.
@@ -455,6 +455,7 @@ if utils.checkModule('gdcm'):
         The DICOM files are sorted in order of ascending origin_z value.
 
         While reading the DICOM files, the following attributes are set:
+
         - `files`: a list of the valid DICOM files, in order of ascending
           z-value.
         - `pixel_spacing`: a dict with an (x,y) pixel spacing tuple as key

@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>49. plugins.isosurface — Isosurface: surface reconstruction algorithms &mdash; pyFormex 1.0.2~a1 documentation</title>
+    <title>48. plugins.isosurface — Isosurface: surface reconstruction algorithms &mdash; pyFormex 1.0.2-a5 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2~a1',
+        VERSION:     '1.0.2-a5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,10 +51,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2~a1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="50. plugins.lima — Lindenmayer Systems" href="plugins.lima.html" />
-    <link rel="prev" title="48. plugins.isopar — Isoparametric transformations" href="plugins.isopar.html" />
+    <link rel="next" title="49. plugins.lima — Lindenmayer Systems" href="plugins.lima.html" />
+    <link rel="prev" title="47. plugins.isopar — Isoparametric transformations" href="plugins.isopar.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -77,12 +77,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="plugins.lima.html" title="50. plugins.lima — Lindenmayer Systems"
+          <a href="plugins.lima.html" title="49. plugins.lima — Lindenmayer Systems"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="plugins.isopar.html" title="48. plugins.isopar — Isoparametric transformations"
+          <a href="plugins.isopar.html" title="47. plugins.isopar — Isoparametric transformations"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -101,9 +101,9 @@
    
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">49. <tt class="docutils literal"><span class="pre">plugins.isosurface</span></tt> &#8212; Isosurface: surface reconstruction algorithms</a><ul>
-<li><a class="reference internal" href="#classes-defined-in-module-plugins-isosurface">49.1. Classes defined in module plugins.isosurface</a></li>
-<li><a class="reference internal" href="#functions-defined-in-module-plugins-isosurface">49.2. Functions defined in module plugins.isosurface</a></li>
+<li><a class="reference internal" href="#">48. <tt class="docutils literal"><span class="pre">plugins.isosurface</span></tt> &#8212; Isosurface: surface reconstruction algorithms</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-plugins-isosurface">48.1. Classes defined in module plugins.isosurface</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-plugins-isosurface">48.2. Functions defined in module plugins.isosurface</a></li>
 </ul>
 </li>
 </ul>
@@ -111,10 +111,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="plugins.isopar.html"
-                        title="previous chapter">48. <tt class="docutils literal"><span class="pre">plugins.isopar</span></tt> &#8212; Isoparametric transformations</a></p>
+                        title="previous chapter">47. <tt class="docutils literal"><span class="pre">plugins.isopar</span></tt> &#8212; Isoparametric transformations</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="plugins.lima.html"
-                        title="next chapter">50. <tt class="docutils literal"><span class="pre">plugins.lima</span></tt> &#8212; Lindenmayer Systems</a></p>
+                        title="next chapter">49. <tt class="docutils literal"><span class="pre">plugins.lima</span></tt> &#8212; Lindenmayer Systems</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -149,18 +149,18 @@
           <div class="body">
             
   <div class="section" id="module-plugins.isosurface">
-<span id="plugins-isosurface-isosurface-surface-reconstruction-algorithms"></span><span id="sec-ref-plugins-isosurface"></span><h1>49. <a class="reference internal" href="#module-plugins.isosurface" title="plugins.isosurface: Isosurface: surface reconstruction algorithms"><tt class="xref py py-mod docutils literal"><span class="pre">plugins.isosurface</span></tt></a> &#8212; Isosurface: surface reconstruction algorithms<a class="headerlink" href="#module-plugins.isosurface" title="Permalink to this headline">¶</a></h1>
+<span id="plugins-isosurface-isosurface-surface-reconstruction-algorithms"></span><span id="sec-ref-plugins-isosurface"></span><h1>48. <a class="reference internal" href="#module-plugins.isosurface" title="plugins.isosurface: Isosurface: surface reconstruction algorithms"><tt class="xref py py-mod docutils literal"><span class="pre">plugins.isosurface</span></tt></a> &#8212; Isosurface: surface reconstruction algorithms<a class="headerlink" href="#module-plugins.isosurface" title="Permalink to this headline">¶</a></h1>
 <p>This module contains the marching cube algorithm.</p>
 <p>Some of the code is based on the example by Paul Bourke from
 <a class="reference external" href="http://paulbourke.net/geometry/polygonise/">http://paulbourke.net/geometry/polygonise/</a></p>
 <div class="section" id="classes-defined-in-module-plugins-isosurface">
-<h2>49.1. Classes defined in module plugins.isosurface<a class="headerlink" href="#classes-defined-in-module-plugins-isosurface" title="Permalink to this headline">¶</a></h2>
+<h2>48.1. Classes defined in module plugins.isosurface<a class="headerlink" href="#classes-defined-in-module-plugins-isosurface" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="functions-defined-in-module-plugins-isosurface">
-<h2>49.2. Functions defined in module plugins.isosurface<a class="headerlink" href="#functions-defined-in-module-plugins-isosurface" title="Permalink to this headline">¶</a></h2>
+<h2>48.2. Functions defined in module plugins.isosurface<a class="headerlink" href="#functions-defined-in-module-plugins-isosurface" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="plugins.isosurface.isosurface">
-<tt class="descclassname">plugins.isosurface.</tt><tt class="descname">isosurface</tt><big>(</big><em>data</em>, <em>level</em>, <em>nproc=-1</em><big>)</big><a class="headerlink" href="#plugins.isosurface.isosurface" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">plugins.isosurface.</tt><tt class="descname">isosurface</tt><big>(</big><em>data</em>, <em>level</em>, <em>nproc=-1</em>, <em>tet=0</em><big>)</big><a class="headerlink" href="#plugins.isosurface.isosurface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an isosurface through data at given level.</p>
 <ul class="simple">
 <li><cite>data</cite>: (nx,ny,nz) shaped array of data values at points with
@@ -214,12 +214,12 @@ The result may be empty (if level is outside the data range).</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="plugins.lima.html" title="50. plugins.lima — Lindenmayer Systems"
+          <a href="plugins.lima.html" title="49. plugins.lima — Lindenmayer Systems"
              >next</a> |</li>
         <li class="right" >
-          <a href="plugins.isopar.html" title="48. plugins.isopar — Isoparametric transformations"
+          <a href="plugins.isopar.html" title="47. plugins.isopar — Isoparametric transformations"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -227,7 +227,7 @@ The result may be empty (if level is outside the data range).</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on May 22, 2015.
+      Last updated on Jun 18, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

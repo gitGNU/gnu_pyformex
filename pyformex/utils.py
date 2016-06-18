@@ -30,7 +30,7 @@ from pyformex import zip
 import pyformex as pf
 from pyformex.process import Process
 # These are here to re-export them as utils functions
-from pyformex.software import hasModule, checkModule, hasExternal
+from pyformex.software import hasModule, checkModule, hasExternal, checkExternal
 from pyformex.odict import OrderedDict
 
 import os

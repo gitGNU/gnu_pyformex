@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>26. gui.widgets — A collection of custom widgets used in the pyFormex GUI &mdash; pyFormex 1.0.2~a1 documentation</title>
+    <title>26. gui.widgets — A collection of custom widgets used in the pyFormex GUI &mdash; pyFormex 1.0.2-a5 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2~a1',
+        VERSION:     '1.0.2-a5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,7 +51,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2~a1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="27. gui.menu — Menus for the pyFormex GUI." href="gui.menu.html" />
     <link rel="prev" title="25. software — software.py" href="software.html" />
@@ -82,7 +82,7 @@
         <li class="right" >
           <a href="software.html" title="25. software — software.py"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -349,7 +349,7 @@ will be eval&#8217;ed before returning.</p>
 </ul>
 <dl class="method">
 <dt id="gui.widgets.InputString.show">
-<tt class="descname">show</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputString.show" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">show</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#gui.widgets.InputString.show" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select all text on first display.</p>
 </dd></dl>
 
@@ -390,7 +390,7 @@ ReStructuredText ot html.</p>
 before returning.</p>
 <dl class="method">
 <dt id="gui.widgets.InputText.show">
-<tt class="descname">show</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputText.show" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">show</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#gui.widgets.InputText.show" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select all text on first display.</p>
 </dd></dl>
 
@@ -901,8 +901,9 @@ when the user releases the slider.</li>
 
 <dl class="class">
 <dt id="gui.widgets.InputPoint">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputPoint</tt><big>(</big><em>name</em>, <em>value</em>, <em>ndim</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputPoint" title="Permalink to this definition">¶</a></dt>
-<dd><p>A 3D point/vector input item.</p>
+<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputPoint</tt><big>(</big><em>name</em>, <em>value</em>, <em>ndim=3</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputPoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>A 2D/3D point/vector input item.</p>
+<p>The default gives fields x, y and z. With ndim=2, only x and y.</p>
 <dl class="method">
 <dt id="gui.widgets.InputPoint.value">
 <tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputPoint.value" title="Permalink to this definition">¶</a></dt>
@@ -1002,6 +1003,61 @@ unchanged. If no function is specified, the value can not be changed.</li>
 <dt id="gui.widgets.InputButton.text">
 <tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputButton.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gui.widgets.InputFilename">
+<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputFilename</tt><big>(</big><em>name</em>, <em>value</em>, <em>filter='*'</em>, <em>exist=False</em>, <em>preview=None</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputFilename" title="Permalink to this definition">¶</a></dt>
+<dd><p>A filename input item.</p>
+<p>This is a button input field displaying a file name.
+Clicking on the button pops up a file dialog.</p>
+<p>Extra parameters:</p>
+<ul class="simple">
+<li><cite>filter</cite>: the filter for the filenames to accept.
+See askFilename.</li>
+<li><cite>exist</cite>: boolean. Specifies whether the file should exist,
+or a new one can be created (default).</li>
+<li><cite>preview</cite>: an <a class="reference internal" href="#gui.widgets.ImageView" title="gui.widgets.ImageView"><tt class="xref py py-class docutils literal"><span class="pre">ImageView</span></tt></a> widget, or another widget having
+a <cite>showImage</cite> method. This can be used with image files to show a
+preview of the selected file. In most cases the preview widget is
+inserted in a dialog directly below the <cite>InputFilename</cite> field.</li>
+</ul>
+<dl class="method">
+<dt id="gui.widgets.InputFilename.changeFilename">
+<tt class="descname">changeFilename</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFilename.changeFilename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pop up a FileDialog to change the filename</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.widgets.InputFilename.doFunc">
+<tt class="descname">doFunc</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFilename.doFunc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the value by calling the button&#8217;s func</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.widgets.InputFilename.name">
+<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFilename.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the name of the InputItem.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.widgets.InputFilename.setValue">
+<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputFilename.setValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the widget&#8217;s value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.widgets.InputFilename.text">
+<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFilename.text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the displayed text of the InputItem.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.widgets.InputFilename.value">
+<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFilename.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1871,7 +1927,7 @@ By default there is a single button labeled &#8216;OK&#8217;.</li>
 a modal dialog is created, i.e. the user will have to click a button
 or hit the ESC key before he can continue.</p>
 <p>If you want a modeless dialog, allowing the user to continue while the
-message stays open, use the <tt class="xref py py-meth docutils literal"><span class="pre">show()</span></tt> mehod to display it.</p>
+message stays open, use the <tt class="xref py py-meth docutils literal"><span class="pre">show()</span></tt> method to display it.</p>
 <dl class="method">
 <dt id="gui.widgets.MessageBox.addCheck">
 <tt class="descname">addCheck</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#gui.widgets.MessageBox.addCheck" title="Permalink to this definition">¶</a></dt>
@@ -1888,36 +1944,6 @@ Returns the text of the button that was clicked or
 an empty string if ESC was hit.</p>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="class">
-<dt id="gui.widgets.WarningBox">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">WarningBox</tt><a class="headerlink" href="#gui.widgets.WarningBox" title="Permalink to this definition">¶</a></dt>
-<dd><p>A message box is a widget displaying a short text for the user.</p>
-<p>The message box displays a text, an optional icon depending on the level
-and a number of push buttons.</p>
-<ul class="simple">
-<li><cite>text</cite>: the text to be shown. This can be either plain text or html
-or reStructuredText.</li>
-<li><cite>format</cite>: the text format: either &#8216;plain&#8217;, &#8216;html&#8217; or &#8216;rest&#8217;.
-Any other value will try automatic recognition.
-Recognition of plain text and html is automatic.
-A text is autorecognized to be reStructuredText if its first
-line starts with &#8216;..&#8217; and is followed by a blank line.</li>
-<li><cite>level</cite>: defines the icon that will be shown together with the text.
-If one of &#8216;question&#8217;, &#8216;info&#8217;, &#8216;warning&#8217; or &#8216;error&#8217;, a matching icon
-will be shown to hint the user about the type of message. Any other
-value will suppress the icon.</li>
-<li><cite>actions</cite>: a list of strings. For each string a pushbutton will be
-created which can be used to exit the dialog and remove the message.
-By default there is a single button labeled &#8216;OK&#8217;.</li>
-</ul>
-<p>When the MessageBox is displayed with the <tt class="xref py py-meth docutils literal"><span class="pre">getResults()</span></tt> method,
-a modal
-dialog is created, i.e. the user will have to click a button or hit the
-ESC key before he can continue.</p>
-<p>If you want a modeless dialog, allowing the user to continue while the
-message stays open, use the <tt class="xref py py-meth docutils literal"><span class="pre">show()</span></tt> mehod to display it.</p>
 </dd></dl>
 
 <dl class="class">
@@ -2171,10 +2197,9 @@ is ignored), the button will be bound to the dialog&#8217;s &#8216;accept&#8217;
 or &#8216;reject&#8217; slot.
 If actions is None (default), it will be set to the default
 <tt class="docutils literal"><span class="pre">[('Cancel',),('OK',)]</span></tt>.</p>
-<p>Specify actions=[] if you want an empty dialogDuttons.
-default is the name of the action to set as the default. If no default
+<p>default is the name of the action to set as the default. If no default
 is given, it is set to the LAST button.</p>
-<p>Returns a horizontal box layout with the buttons.</p>
+<p>Returns a list of QPushButtons.</p>
 </dd></dl>
 
 </div>
@@ -2201,7 +2226,7 @@ is given, it is set to the LAST button.</p>
         <li class="right" >
           <a href="software.html" title="25. software — software.py"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -2209,7 +2234,7 @@ is given, it is set to the LAST button.</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on May 22, 2015.
+      Last updated on Jun 18, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>
