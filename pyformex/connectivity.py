@@ -36,6 +36,7 @@ from __future__ import print_function
 from pyformex import zip
 
 from pyformex.arraytools import *
+from pyformex.adjacency import Adjacency
 
 
 # BV: Should we make an InverseConnectivity class?
