@@ -21,73 +21,57 @@
 ##  You should have received a copy of the GNU General Public License
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
-"""Animals
+"""SetTriade.py
 
-Show models of animals retrieved over the web.
+This example shows how to use a customized Triade
 """
 from __future__ import print_function
 
-
 _status = 'checked'
 _level = 'advanced'
-_topics = ['geometry']
-_techniques = ['vtk', 'web']
+_topics = ['decors']
+_techniques = ['setTriade']
 
-from pyformex import utils
-utils.requireModule('vtk')
 from pyformex.gui.draw import *
-from pyformex.plugins.web import show3d
-
-animals = {
-    'dd4e920d': 'Elephant',
-    'b0d8aa3a': 'Gorilla',
-    '9dce6c01': 'Flock',
-    '60d7244e': 'Seahorse',
-    '63227524': 'Snake',
-    'd24a0708': 'Dog',
-    '3a6640cd': 'Fish',
-    '21576988': 'Cow',
-    'b7ea04dd': 'Cat',
-    '8c63653f': 'Dinosaur',
-    'cc794c75': 'Fish',
-    '04ddea43': 'Camel',
-    '75d11d7b': 'Dog',
-    '5ca9a760': 'Turtle',
-    '917049e4': 'Leopard',
-    '6f77cd41': 'Rhino',
-    'a6f95afa': 'Cage',
-    '65d019e7': 'Cell',
-    '0316721c': 'Chicken',
-    'fb467425': 'Cage',
-    '13748c9a': 'Butterfly',
-    'c0cd1fcc': 'Seahorse',
-    '8bd611bf': 'Snake',
-    '943ffd34': 'Bird',
-}
+from OpenGL import GL
+from pyformex.opengl.drawable import Actor
 
 
 def run():
+    global _triade_geometry
+
+    clear()
     resetAll()
-    smooth()
-    res = ask("""..
+    smoothwire()
 
-Animals
--------
+    print('Draw something')
+    F = Formex.read(getcfg('datadir')+'/horse.pgf').scale(10)
+    draw(F)
+    pause()
 
-This example requires that you have
+    print('Set default Triade on')
+    setTriade(on=True)
+    pause()
 
-- python-vtk installed on your machine
-- a network connection to the internet
+    print('Set Triade off')
+    setTriade(False)
+    pause()
 
-If not, you would better cancel now.
-""",choices = ['Cancel','OK'])
+    print('Set a man as triade, right bottom')
+    setTriade(triade='man',pos='rb')
+    pause()
 
-    if res == 'OK':
-        ranimals = utils.inverseDict(animals)
+    print('Set a cube as triade, left top')
+    cube = Formex(simple.Pattern['cube']).setProp([1,2,1,2,3,3,3,3,1,2,1,2]).centered()
+    setTriade(on=True,pos='lt',triade=cube)
+    pause()
 
-        res = askItems([_I('animal',choices=list(ranimals.keys()))])
-        if res:
-            show3d(ranimals[res['animal']])
+    print('Use the displayed geometry (F) itself as Triade, left center')
+    setTriade(on=True,pos='lc',triade=F)
+    pause()
+
+    print('Reset the original Triade, center top')
+    setTriade(on=True,pos='ct',triade='axes')
 
 
 if __name__ == '__draw__':

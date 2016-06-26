@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>1. coords — A structured collection of 3D coordinates. &mdash; pyFormex 1.0.2~a1 documentation</title>
+    <title>1. coords — A structured collection of 3D coordinates. &mdash; pyFormex 1.0.2-a5 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2~a1',
+        VERSION:     '1.0.2-a5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,7 +51,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2~a1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="2. formex — Formex algebra in Python" href="formex.html" />
     <link rel="prev" title="pyFormex reference manual" href="../refman.html" />
@@ -82,7 +82,7 @@
         <li class="right" >
           <a href="../refman.html" title="pyFormex reference manual"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -457,8 +457,8 @@ attribute a weight 1.0 to each point.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="coords.Coords.prinCS">
-<tt class="descname">prinCS</tt><big>(</big><em>mass=None</em><big>)</big><a class="headerlink" href="#coords.Coords.prinCS" title="Permalink to this definition">¶</a></dt>
+<dt id="coords.Coords.principalCS">
+<tt class="descname">principalCS</tt><big>(</big><em>mass=None</em><big>)</big><a class="headerlink" href="#coords.Coords.principalCS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a CoordSys formed by the principal axes of inertia</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -476,7 +476,7 @@ attribute a weight 1.0 to each point.</li>
 <dd><p>Return the sizes in the principal directions of the Coords.</p>
 <p>Returns an array with the length of the bbox along the 3
 principal axes. This is a convenient shorthand for:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">toCS</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prinCS</span><span class="p">())</span><span class="o">.</span><span class="n">sizes</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">toCS</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">principalCS</span><span class="p">())</span><span class="o">.</span><span class="n">sizes</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Example:</p>
@@ -545,8 +545,11 @@ All distance values are positive or zero.</p>
 <dt id="coords.Coords.distanceFromPoint">
 <tt class="descname">distanceFromPoint</tt><big>(</big><em>p</em><big>)</big><a class="headerlink" href="#coords.Coords.distanceFromPoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the distance of all points from the point p.</p>
-<p>p is a single point specified by 3 coordinates.</p>
-<p>The return value is a [...] shaped array with the distance of
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>p</cite>: array_like (3): coordinates of a point in space</li>
+</ul>
+<p>Returns a [...] shaped array with the distance of
 each point to point p.
 All distance values are positive or zero.</p>
 <p>Example:</p>
@@ -559,8 +562,23 @@ All distance values are positive or zero.</p>
 
 <dl class="method">
 <dt id="coords.Coords.closestToPoint">
-<tt class="descname">closestToPoint</tt><big>(</big><em>p</em><big>)</big><a class="headerlink" href="#coords.Coords.closestToPoint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the point closest to point p.</p>
+<tt class="descname">closestToPoint</tt><big>(</big><em>p</em>, <em>return_dist=False</em><big>)</big><a class="headerlink" href="#coords.Coords.closestToPoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the point closest to a given point p.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>p</cite>: array_like (3): coordinates of a point in space</li>
+</ul>
+<p>Returns: int: the index of the point in the Coords that has the
+minimal Euclidean distance to the point &#8216;p&#8217;. Use this index
+with self.points() to get the coordinates of that point.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([[[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">3.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="o">.</span><span class="n">closestToPoint</span><span class="p">([</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">])</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="o">.</span><span class="n">closestToPoint</span><span class="p">([</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">(1, 1.0)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -1075,25 +1093,23 @@ the coordinates from. It should have the same dimensions.</p>
 <ul class="simple">
 <li><cite>n</cite>: the normal direction to the plane. It can be specified either
 by a list of three floats, or by a single integer (0, 1 or 2) to
-use one of the global axes.</li>
-<li><cite>P</cite>: a point on the plane, by default the global origin.
-If an int, the plane is the coordinate plane perpendicular to the</li>
+specify a plane perpendicular to one of the global axes.</li>
+<li><cite>P</cite>: a point in the plane, by default the global origin.</li>
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">For planes parallel to a coordinate plane, it is far more
+<p class="last">For a plane parallel to a coordinate plane, it is far more
 efficient to specify the normal by an axis number than by a
 three component vector.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">This method will also work if any or both of P and n have
-a shape (ncoords,3), where ncoords is the total number of points
-in the <a class="reference internal" href="#coords.Coords" title="coords.Coords"><tt class="xref py py-class docutils literal"><span class="pre">Coords</span></tt></a>. This allows to project each point on an
-individual plane.</p>
+the same shape as self, or can be reshaped to the same shape.
+This allows to project each point on its individual plane.</p>
 </div>
-<p>Returns a <a class="reference internal" href="#coords.Coords" title="coords.Coords"><tt class="xref py py-class docutils literal"><span class="pre">Coords</span></tt></a> with same shape as original, with all the
-points projected on the specified plane(s).</p>
+<p>Returns a <a class="reference internal" href="#coords.Coords" title="coords.Coords"><tt class="xref py py-class docutils literal"><span class="pre">Coords</span></tt></a> with same shape as the original, with all
+the points projected on the specified plane(s).</p>
 </dd></dl>
 
 <dl class="method">
@@ -1142,6 +1158,22 @@ have a projection on the surface.</li>
 is True, also returns an index of the points that have a projection
 on the surface. This index is a sequential one, no matter what the
 shape of the input Coords is.</div></blockquote>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">simple</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">simple</span><span class="o">.</span><span class="n">sphere</span><span class="p">()</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">pattern</span><span class="p">(</span><span class="s">&#39;0123&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">[[ 0.  0.  0.]</span>
+<span class="go"> [ 1.  0.  0.]</span>
+<span class="go"> [ 1.  1.  0.]</span>
+<span class="go"> [ 0.  1.  0.]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xp</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">projectOnSurface</span><span class="p">(</span><span class="n">S</span><span class="p">,[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">xp</span><span class="p">)</span>
+<span class="go">[[ 0.    0.    2.  ]</span>
+<span class="go"> [ 1.    0.   -1.72]</span>
+<span class="go"> [ 1.    1.   -1.4 ]</span>
+<span class="go"> [ 0.    1.    1.73]]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -1213,7 +1245,7 @@ Raises an error if self.ndim &lt; 2.</p>
 <dd><p>Sort points in the specified order of their coordinates.</p>
 <p>The points are sorted based on their coordinate values. There is a
 maximum number of points (above 2 million) that can be sorted. If you
-need to to sort more, first split up your data according to the first
+need to sort more, first split up your data according to the first
 axis.</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -1224,7 +1256,7 @@ the subsequent axes are used to sort the points.</li>
 <blockquote>
 <div>An int array which is a permutation of range(self.npoints()).
 If taken in the specified order, it is guaranteed that no point can
-have a coordinate that is larger that the corresponding coordinate
+have a coordinate that is larger than the corresponding coordinate
 of the next point.</div></blockquote>
 </dd></dl>
 
@@ -1256,10 +1288,19 @@ directions.</li>
 
 <dl class="method">
 <dt id="coords.Coords.fuse">
-<tt class="descname">fuse</tt><big>(</big><em>ppb=1</em>, <em>shift=0.5</em>, <em>rtol=1e-05</em>, <em>atol=1e-05</em>, <em>repeat=True</em>, <em>nodesperbox=None</em><big>)</big><a class="headerlink" href="#coords.Coords.fuse" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">fuse</tt><big>(</big><em>ppb=1</em>, <em>shift=0.5</em>, <em>rtol=1e-05</em>, <em>atol=1e-05</em>, <em>repeat=True</em><big>)</big><a class="headerlink" href="#coords.Coords.fuse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find (almost) identical nodes and return a compressed set.</p>
 <p>This method finds the points that are very close and replaces them
 with a single point.</p>
+<p>Parameters: (for explanation, see below: Method)</p>
+<ul class="simple">
+<li><cite>ppb</cite>: int: targeted number of points per box.</li>
+<li><cite>shift</cite>: float: relative shift to be applied on the boxes.</li>
+<li><cite>rtol</cite>: float: relative tolerance to consider points for fusing.</li>
+<li><cite>atol</cite>: float: absolute tolerance to consider points for fusing.</li>
+<li><cite>repeat</cite>: bool: if True, repeat the procedure with a second shift
+value.</li>
+</ul>
 <p>Returns a tuple of two arrays:</p>
 <ul class="simple">
 <li><cite>coords</cite>: the unique points as a <a class="reference internal" href="#coords.Coords" title="coords.Coords"><tt class="xref py py-class docutils literal"><span class="pre">Coords</span></tt></a> object with shape
@@ -1269,6 +1310,7 @@ coordinates array for each of the original nodes. The shape of
 the index array is equal to the shape of the input coords array
 minus the last dimension (also given by self.pshape()).</li>
 </ul>
+<p>Method:</p>
 <p>The procedure works by first dividing the 3D space in a number of
 equally sized boxes, with a mean population of ppb.
 The boxes are numbered in the 3 directions and a unique integer scalar
@@ -1277,7 +1319,7 @@ Then only nodes inside the same box are compared on almost equal
 coordinates, using the numpy allclose() function. Two coordinates are
 considered close if they are within a relative tolerance rtol or
 absolute tolerance atol. See numpy for detail. The default atol is
-set larger than in numpy, because pyformex typically runs with single
+set larger than in numpy, because pyFormex typically runs with single
 precision.
 Close nodes are replaced by a single one.</p>
 <p>Running the procedure once does not guarantee to find all close nodes:
@@ -1286,7 +1328,8 @@ testing adjacent boxes is rather high, and the probability of separating
 two close nodes with the computed box limits is very small.
 Therefore, the most sensible way is to run the procedure twice, with
 a different shift value (they should differ more than the tolerance).
-Specifying repeat=True will automatically do this.</p>
+Specifying repeat=True will automatically do this with a second
+shift value equal to shift+0.25.</p>
 <p>Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.001</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],[</span><span class="mf">1.1</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span><span class="n">e</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">fuse</span><span class="p">(</span><span class="n">atol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
@@ -1320,29 +1363,65 @@ it adjust the coordinates of the points to be identical.</p>
 
 <dl class="method">
 <dt id="coords.Coords.match">
-<tt class="descname">match</tt><big>(</big><em>coords</em>, <em>clean=False</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#coords.Coords.match" title="Permalink to this definition">¶</a></dt>
-<dd><p>Match points form another Coords object.</p>
-<p>This method finds the points from <cite>coords</cite> that coincide with
-(or are very close to) points of <cite>self</cite>.</p>
+<tt class="descname">match</tt><big>(</big><em>coords</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#coords.Coords.match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Match points from another Coords object.</p>
+<p>Find the points from the passed <cite>coords</cite> object that coincide with
+(or are very close to) points of <cite>self</cite>.
+This method works by concatenating the serialized point sets of
+both Coords and then fusing them.</p>
 <p>Parameters:</p>
 <ul class="simple">
 <li><cite>coords</cite>: a Coords object</li>
-<li><cite>clean</cite> :  boolean to return only matching indices</li>
 <li><cite>**kargs</cite>: keyword arguments that you want to pass to the
 <a class="reference internal" href="#coords.Coords.fuse" title="coords.Coords.fuse"><tt class="xref py py-meth docutils literal"><span class="pre">fuse()</span></tt></a> method.</li>
 </ul>
-<p>This method works by concatenating the serialized point sets of
-both Coords and then fusing them.</p>
-<p>Returns:</p>
-<ul>
-<li><dl class="first docutils">
-<dt><cite>matches</cite>: an Int array with shape (coords.shape[0]) if clean is False</dt>
-<dd><p class="first last">where non matching positions have value -1 or an Int array
-with shape (nmatches) if clean is True</p>
-</dd>
-</dl>
-</li>
+<p>Returns a 1D int array of length <cite>coords.npoints()</cite> holding the
+index of the points in <cite>self</cite> coinciding with those in <cite>coords</cite>.
+If no point in <cite>self</cite> coincides, a value -1 is returned. If
+multiple points in <cite>self</cite> coincide with the point in <cite>coords</cite>,
+any of the coinciding indices may be returned. To avoid this
+ambiguity, fuse() the Coords first.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([[</span><span class="mf">1.</span><span class="p">],[</span><span class="mf">2.</span><span class="p">],[</span><span class="mf">3.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([[</span><span class="mf">1.</span><span class="p">],[</span><span class="mf">2.00001</span><span class="p">],[</span><span class="mf">4.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">Y</span><span class="p">))</span>
+<span class="go">[ 3  1 -1]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">fuse</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">Y</span><span class="p">))</span>
+<span class="go">[ 0  1 -1]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">clean</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+<span class="go">[ 3  1 -1]</span>
+</pre></div>
+</div>
+<p>See also: <a class="reference internal" href="#coords.Coords.hasMatch" title="coords.Coords.hasMatch"><tt class="xref py py-meth docutils literal"><span class="pre">hasMatch()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="coords.Coords.hasMatch">
+<tt class="descname">hasMatch</tt><big>(</big><em>coords</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#coords.Coords.hasMatch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find points also in another Coords object.</p>
+<p>Find the points from the passed <cite>coords</cite> object that coincide with
+(or are very close to) points of <cite>self</cite>.
+This method is very similar to <a class="reference internal" href="#coords.Coords.match" title="coords.Coords.match"><tt class="xref py py-meth docutils literal"><span class="pre">match()</span></tt></a>, but does not give
+information about which point of <cite>self</cite> matches which point of
+<cite>coords</cite>.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>coords</cite>: a Coords object</li>
+<li><cite>**kargs</cite>: keyword arguments that you want to pass to the
+<a class="reference internal" href="#coords.Coords.fuse" title="coords.Coords.fuse"><tt class="xref py py-meth docutils literal"><span class="pre">fuse()</span></tt></a> method.</li>
 </ul>
+<p>Returns a 1D int array with the uhnnique sorted indices of the points
+in <cite>self</cite> that have a (nearly) matching point in <cite>coords</cite>.
+If multiple points in <cite>self</cite> coincide with the same point in
+<cite>coords</cite>, only one index will be returned for this case.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([[</span><span class="mf">1.</span><span class="p">],[</span><span class="mf">2.</span><span class="p">],[</span><span class="mf">3.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([[</span><span class="mf">1.</span><span class="p">],[</span><span class="mf">2.00001</span><span class="p">],[</span><span class="mf">4.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">hasMatch</span><span class="p">(</span><span class="n">Y</span><span class="p">))</span>
+<span class="go">[1 3]</span>
+</pre></div>
+</div>
+<p>See also: <a class="reference internal" href="#coords.Coords.match" title="coords.Coords.match"><tt class="xref py py-meth docutils literal"><span class="pre">match()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1448,10 +1527,28 @@ F.interpolate(G,arange(0,n+1)/float(n))</p>
 
 <dl class="method">
 <dt id="coords.Coords.convexHull">
-<tt class="descname">convexHull</tt><big>(</big><big>)</big><a class="headerlink" href="#coords.Coords.convexHull" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the convex hull of a Coords</p>
-<p>Returns a Connectivity containing the indices of the points
-that constitute the convex hull of the Coords.</p>
+<tt class="descname">convexHull</tt><big>(</big><em>dir=None</em>, <em>return_mesh=False</em><big>)</big><a class="headerlink" href="#coords.Coords.convexHull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the convex hull of a Coords.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>dir</cite>: int (0..2): axis. If specified, the 2D convext hull
+in the specified viewing direction is returned. The default
+is to return the 3D convex hull.</li>
+<li><cite>return_mesh</cite>: bool. If True, returns the convex hull as a
+Mesh instead of a Connectivity.</li>
+</ul>
+<p>Returns a <tt class="xref py py-class docutils literal"><span class="pre">Connectivity</span></tt> containing the indices of the points
+that constitute the convex hull of the Coords. For a 3D hull,
+the Connectivity has plexitude 3, and eltype &#8216;tri3&#8217;; for a 2D
+hull these are respectively 2 and &#8216;line2&#8217;. The values in the
+Connectivity refer to the flattened points array as obtained from
+<a class="reference internal" href="#coords.Coords.points" title="coords.Coords.points"><tt class="xref py py-meth docutils literal"><span class="pre">points()</span></tt></a>.</p>
+<p>If <cite>return_mesh</cite> is True, returns a compacted <tt class="xref py py-class docutils literal"><span class="pre">Mesh</span></tt>
+instead of the Connectivity. For a 3D hull, the Mesh will be a
+TriSurface, otherwise a Mesh of &#8216;line2&#8217; elements.</p>
+<p>The returned Connectivity or Mesh will be empty if all the points
+are in a plane (dir=None) or an a line in the viewing direction
+(dir=0..2).</p>
 <p>This requires SciPy version 0.12.0 or higher.</p>
 </dd></dl>
 
@@ -1689,7 +1786,7 @@ with respect to a point.</p>
 <dt id="coords.positionCoordsObj">
 <tt class="descclassname">coords.</tt><tt class="descname">positionCoordsObj</tt><big>(</big><em>objects</em>, <em>path</em>, <em>normal=0</em>, <em>upvector=2</em>, <em>avgdir=False</em>, <em>enddir=None</em><big>)</big><a class="headerlink" href="#coords.positionCoordsObj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Position a list of Coords objects along a path.</p>
-<p>At each point of the curve, ao of the Coords object is created, with
+<p>At each point of the curve, a copy of the Coords object is created, with
 its origin in the curve&#8217;s point, and its normal along the curve&#8217;s direction.
 In case of a PolyLine, directions are pointing to the next point by default.
 If avgdir==True, average directions are taken at the intermediate points
@@ -1743,7 +1840,7 @@ All the kwargs parameters are used to set <cite>positionCoordsObj</cite> functio
         <li class="right" >
           <a href="../refman.html" title="pyFormex reference manual"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -1751,7 +1848,7 @@ All the kwargs parameters are used to set <cite>positionCoordsObj</cite> functio
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on May 22, 2015.
+      Last updated on Jun 18, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

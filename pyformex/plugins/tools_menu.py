@@ -319,7 +319,7 @@ def pickSinglePoint(pickable=None):
             v = K[k]
             p = v[0]
             A = pf.canvas.actors[k]
-            x = A.points()
+            x = A.object.points()
             return k, A.getType(), p, x[p]
         else:
             showInfo("Invalid picking: try again")
@@ -396,7 +396,7 @@ def query_distances(color=0):
         for k in K.keys():
             v = K[k]
             A = pf.canvas.actors[k]
-            x = A.points()
+            x = A.object.points()
             for p in v:
                 d = x[p] - p0
                 ld = length(d)

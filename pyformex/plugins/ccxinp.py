@@ -281,7 +281,7 @@ def do_NODE(opts, data):
     """Read the nodal data"""
     nnodes = len(data)
     print("Read %s nodes" % nnodes)
-    ndata = 4
+    ndata = len(data[0].split())
     data = ','.join(data)
     with open('%s-NODE.data'%part['name'], 'w') as f:
         f.write(data)

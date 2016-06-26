@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>12. utils — A collection of miscellaneous utility functions. &mdash; pyFormex 1.0.2~a1 documentation</title>
+    <title>12. utils — A collection of miscellaneous utility functions. &mdash; pyFormex 1.0.2-a5 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2~a1',
+        VERSION:     '1.0.2-a5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,7 +51,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2~a1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="13. varray — Working with variable width tables." href="varray.html" />
     <link rel="prev" title="11. trisurface — Operations on triangulated surfaces." href="trisurface.html" />
@@ -82,7 +82,7 @@
         <li class="right" >
           <a href="trisurface.html" title="11. trisurface — Operations on triangulated surfaces."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -152,137 +152,6 @@
 <span id="utils-a-collection-of-miscellaneous-utility-functions"></span><span id="sec-ref-utils"></span><h1>12. <a class="reference internal" href="#module-utils" title="utils: A collection of miscellaneous utility functions."><tt class="xref py py-mod docutils literal"><span class="pre">utils</span></tt></a> &#8212; A collection of miscellaneous utility functions.<a class="headerlink" href="#module-utils" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="classes-defined-in-module-utils">
 <h2>12.1. Classes defined in module utils<a class="headerlink" href="#classes-defined-in-module-utils" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="utils.Process">
-<em class="property">class </em><tt class="descclassname">utils.</tt><tt class="descname">Process</tt><big>(</big><em>cmd</em>, <em>timeout</em>, <em>wait</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#utils.Process" title="Permalink to this definition">¶</a></dt>
-<dd><p>A subprocess for running an external command.</p>
-<p>This is a subclass of Python&#8217;s <tt class="xref py py-class docutils literal"><span class="pre">subprocess.Popen</span></tt> class, providing
-some extra functionality:</p>
-<ul class="simple">
-<li>It stores the specified command</li>
-<li>If a string is passed as command and shell is False, the string is
-automatically tokenized into an args list.</li>
-<li>stdout and stderr default to subprocess.PIPE instead of None.</li>
-<li>stdin, stdout and stderr can be file names. They will be replaced
-with the opened files (in mode &#8216;r&#8217; for stdin, &#8216;w&#8217; for the others).</li>
-<li>After the command has terminated, the Process instance has three
-attributes sta, out and err, providing the return code, standard
-output and standard error of the command.</li>
-<li>If &#8216;shell=True&#8217; is specified, and no executable is specified, it sets
-executable to the value of the environment variable &#8216;SHELL&#8217;.</li>
-</ul>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>cmd</cite>: string or args list. If a string, it is the command as it should
-entered in a shell. If an args list, args[0] is the executable to run
-and the remainder are the arguments to be passed.</li>
-<li><cite>timeout</cite>: float. If &gt; 0.0, the subprocess will be terminated
-or killed after this number of seconds have passed.</li>
-<li><cite>wait</cite>: bool. If True (default), the caller waits for the Process
-to terminate. Setting this value to False will allow the caller to
-continue, but it will not be able to retrieve the standard output
-and standard error of the process.</li>
-</ul>
-<p>Any other parameters are passed to the <tt class="xref py py-class docutils literal"><span class="pre">subprocess.Popen</span></tt>
-initialization. See the Python documentation for details.
-Some interesting ones:</p>
-<ul class="simple">
-<li><cite>shell</cite>: bool. Default False. If True, the command will be run in a
-new shell. This may cause problems with killing the command and also
-poses a security risk.</li>
-<li><cite>executable</cite>: string. The full path name of the program to be executed.
-This can be used to specify the real executable if the program specified
-in <cite>cmd</cite> is not in your PATH, or, with <cite>shell == True</cite>, if you want
-to use another shell than the default. Note that Process uses a default
-shell equal to the SHELL variable, while Python uses <cite>/bin/sh</cite> by default.</li>
-<li><cite>stdout</cite>, <cite>stderr</cite>: Standard output and error output. See Python docs
-for subprocess.Popen. Here, they default to PIPE, allowing the caller
-to grab the output of the command. Set them to an open file object to
-redirect output to that file.</li>
-</ul>
-<dl class="method">
-<dt id="utils.Process.communicate">
-<tt class="descname">communicate</tt><big>(</big><em>input=None</em><big>)</big><a class="headerlink" href="#utils.Process.communicate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interact with process: Send data to stdin.  Read data from
-stdout and stderr, until end-of-file is reached.  Wait for
-process to terminate.  The optional input argument should be a
-string to be sent to the child process, or None, if no data
-should be sent to the child.</p>
-<p>communicate() returns a tuple (stdout, stderr).</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="utils.Process.kill">
-<tt class="descname">kill</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.Process.kill" title="Permalink to this definition">¶</a></dt>
-<dd><p>Kill the process with SIGKILL</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="utils.Process.pipe_cloexec">
-<tt class="descname">pipe_cloexec</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.Process.pipe_cloexec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a pipe with FDs set CLOEXEC.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="utils.Process.run">
-<tt class="descname">run</tt><big>(</big><em>timeout=None</em>, <em>wait=True</em><big>)</big><a class="headerlink" href="#utils.Process.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run a Process, optionally with timeout.</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>timeout</cite>: float. If &gt; 0.0, the subprocess will be terminated
-or killed after this number of seconds have passed.</li>
-</ul>
-<p>On return, the following attributes of the Process are set:</p>
-<ul class="simple">
-<li><cite>sta</cite>: alias for the Popen.returncode (0 for normal exit, -15
-for terminated, -9 for killed).</li>
-<li><cite>out</cite>,`err`: the stdout and stderr as returned by the
-Popen.communicate method.</li>
-<li><cite>timedout</cite>: True if a timeout was specified and the process timed
-out, otherwise False.</li>
-</ul>
-</dd></dl>
-
-<dl class="method">
-<dt id="utils.Process.send_signal">
-<tt class="descname">send_signal</tt><big>(</big><em>sig</em><big>)</big><a class="headerlink" href="#utils.Process.send_signal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send a signal to the process</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="utils.Process.terminate">
-<tt class="descname">terminate</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.Process.terminate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Terminate the process with SIGTERM</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="utils.Process.terminate_on_timeout">
-<tt class="descname">terminate_on_timeout</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.Process.terminate_on_timeout" title="Permalink to this definition">¶</a></dt>
-<dd><p>Terminate or kill a Process, and set the timeout flag</p>
-<p>This method is primarily intended to be called by the timeout
-mechanism. It sets the timedout attribute of the Process to True,
-and then calls its terminate_or_kill method.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="utils.Process.terminate_or_kill">
-<tt class="descname">terminate_or_kill</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.Process.terminate_or_kill" title="Permalink to this definition">¶</a></dt>
-<dd><p>Terminate or kill a Process</p>
-<p>This is like Popen.terminate, but adds a check to see if the
-process really terminated, and if not kills it.</p>
-<p>Sets the returncode of the process to -15(terminate) or -9(kill).</p>
-<p>This does not do anything if the process was already stopped.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="utils.Process.wait">
-<tt class="descname">wait</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.Process.wait" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wait for child process to terminate.  Returns returncode
-attribute.</p>
-</dd></dl>
-
-</dd></dl>
-
 <dl class="class">
 <dt id="utils.File">
 <em class="property">class </em><tt class="descclassname">utils.</tt><tt class="descname">File</tt><big>(</big><em>filename</em>, <em>mode</em>, <em>compr=None</em>, <em>level=5</em>, <em>delete_temp=True</em><big>)</big><a class="headerlink" href="#utils.File" title="Permalink to this definition">¶</a></dt>
@@ -419,7 +288,7 @@ names.</p>
 </div>
 <dl class="method">
 <dt id="utils.NameSequence.files">
-<tt class="descname">files</tt><big>(</big><em>sort=&lt;function hsorted at 0x7fcd84a788c0&gt;</em><big>)</big><a class="headerlink" href="#utils.NameSequence.files" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">files</tt><big>(</big><em>sort=&lt;function hsorted at 0x7fca08d37d70&gt;</em><big>)</big><a class="headerlink" href="#utils.NameSequence.files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a (sorted) list of files matching the name pattern.</p>
 <p>A function may be specified to sort/filter the list of file names.
 The function should take a list of filenames as input. The output
@@ -576,7 +445,7 @@ be read from that file.</li>
 </ul>
 <p>Returns the Process used to run the command. This gives access to all
 its info, like the exit code, stdout and stderr, and whether the command
-timed out or not. See <a class="reference internal" href="#utils.Process" title="utils.Process"><tt class="xref py py-class docutils literal"><span class="pre">Process</span></tt></a> for more info.
+timed out or not. See <tt class="xref py py-class docutils literal"><span class="pre">Process</span></tt> for more info.
 This Process is also saved as the global variable
 <tt class="xref py py-attr docutils literal"><span class="pre">utils.last_command</span></tt> to allow checking the outcome of the command
 from other places but the caller.</p>
@@ -586,8 +455,16 @@ from other places but the caller.</p>
 <dt id="utils.command">
 <tt class="descclassname">utils.</tt><tt class="descname">command</tt><big>(</big><em>cmd</em>, <em>verbose=True</em>, <em>raise_error=True</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#utils.command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run an external command in a user friendly way.</p>
-<p>This is equivalent with the utils.system function but with
+<p>This is equivalent with the <a class="reference internal" href="#utils.system" title="utils.system"><tt class="xref py py-func docutils literal"><span class="pre">system()</span></tt></a> function but having
 verbose=True and raise_error=True by default.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.lastCommandReport">
+<tt class="descclassname">utils.</tt><tt class="descname">lastCommandReport</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.lastCommandReport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce a report about the last command.</p>
+<p>This is mostly useful in interactive work, to find out
+why a command failed.</p>
 </dd></dl>
 
 <dl class="function">
@@ -610,12 +487,6 @@ try to terminate the process. See &#8216;man kill&#8217; for more values.</li>
 <li><cite>glob</cite>: an optional gloabls dict specifying the environment in
 which the source code is executed.</li>
 </ul>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.all_image_extensions">
-<tt class="descclassname">utils.</tt><tt class="descname">all_image_extensions</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.all_image_extensions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a list with all known image extensions.</p>
 </dd></dl>
 
 <dl class="function">
@@ -1144,6 +1015,15 @@ more info.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="utils.moduleList">
+<tt class="descclassname">utils.</tt><tt class="descname">moduleList</tt><big>(</big><em>package='all'</em><big>)</big><a class="headerlink" href="#utils.moduleList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of all pyFormex modules.
+This is like <tt class="xref py py-func docutils literal"><span class="pre">listSource()</span></tt>, but returns the files in a
+Python module syntax, and does not include the __init__ modules
+in the packages.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="utils.diskSpace">
 <tt class="descclassname">utils.</tt><tt class="descname">diskSpace</tt><big>(</big><em>path</em>, <em>units=None</em>, <em>ndigits=2</em><big>)</big><a class="headerlink" href="#utils.diskSpace" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the amount of diskspace of a file system.</p>
@@ -1656,7 +1536,7 @@ To search other containers, add handlers to iterate over their contents:</p>
         <li class="right" >
           <a href="trisurface.html" title="11. trisurface — Operations on triangulated surfaces."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -1664,7 +1544,7 @@ To search other containers, add handlers to iterate over their contents:</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on May 22, 2015.
+      Last updated on Jun 18, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

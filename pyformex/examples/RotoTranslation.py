@@ -69,7 +69,7 @@ def createScene(text=None,caged=True,color=None,move=0):
     if text:
         drawText(text, (20, line), size=20)
         line += line_inc * len(text.split('\n'))
-    axes = drawAxes(CS, size=0.4, draw_planes=False)
+    drawAxes(CS, size=0.5, psize=0.0)
     zoomAll()
     zoom(0.5)
     return horse, cage
@@ -77,7 +77,7 @@ def createScene(text=None,caged=True,color=None,move=0):
 
 def run():
     global line, H, C, CS, savewait
-    savewait = delay(1.0)
+    savewait = delay(0.5)
     clear()
     lights(True)
     view('iso')
@@ -111,7 +111,7 @@ def run():
     H, CS = [ i.translate([0., 3., 6.]) for i in [H, CS] ]
     C = simple.cuboid(*H.bbox())
     script += [ createScene(text=T) ]
-    sleep(3)
+    sleep(2)
 
     # Scene 2..n: caged movements
     T = 'The angry horse randomly changed colour at each step.'
@@ -119,7 +119,7 @@ def run():
     m = len(script)
     n = 16
     script += [ createScene(move=i) for i in range(m, n, 1) ]
-    sleep(3)
+    sleep(2)
 
     # Scene n+1: the escape
     T = 'Finally the horse managed to escape from the cage.\nIt wanted to go back home and turned black,\nso it would not be seen in the night.'
@@ -153,14 +153,3 @@ def run():
 if __name__ == '__draw__':
     run()
 # End
-
-
-
-
-
-
-
-
-
-
-

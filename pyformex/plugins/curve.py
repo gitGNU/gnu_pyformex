@@ -531,7 +531,7 @@ class Curve(Geometry):
         If `path` is a closed Curve connect back to the first.
 
         .. note:: Sweeping nonplanar objects and/or sweeping along very curly
-        curves may result in physically impossible geometries.
+           curves may result in physically impossible geometries.
         """
         loop = self.closed
         mesh = mesh.toMesh()

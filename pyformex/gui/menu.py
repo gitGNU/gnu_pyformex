@@ -475,6 +475,7 @@ class ActionList(object):
 
     def toolbar(self, name):
         """Create a new toolbar corresponding to the menu."""
+        # TODO: Fix this error! 
         tb = QtGui.QToolBar(name)
         for n, a in self.actions:
             self.toolbar.addAction(a)

@@ -48,8 +48,6 @@ from pyformex.formex import Formex
 from pyformex.connectivity import Connectivity
 from pyformex.elements import elementType
 from pyformex.geometry import Geometry
-from pyformex.simple import regularGrid
-from pyformex.olist import List
 
 
 ##############################################################
@@ -184,7 +182,9 @@ class Mesh(Geometry):
         for the position of the coordinates.
         """
         if isinstance(coords, Coords) and coords.shape == self.coords.shape:
-            return self.__class__(coords, self.elems, prop=self.prop, eltype=self.elType())
+            M = self.__class__(coords, self.elems, prop=self.prop, eltype=self.elType())
+            M.attrib(**self.attrib)
+            return M
         else:
             raise ValueError("Invalid reinitialization of %s coords" % self.__class__)
 
@@ -2781,7 +2781,7 @@ def line2_wts(seed0):
 
 
 def line2_els(nx):
-    n = nx+1
+    #n = nx+1
     els = [ array([0, 1]) + i for i in range(nx) ]
     return row_stack(els)
 
@@ -2951,7 +2951,6 @@ def quadrilateral(x, n1, n2):
     points `x`.
     """
     from pyformex.elements import Quad4
-    from pyformex.plugins import isopar
     x = checkArray(x, (4, 3), 'f')
     M = rectangle(1., 1., nl, nw).isopar('quad4', x, Quad4.vertices)
     return M

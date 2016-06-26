@@ -493,7 +493,6 @@ comparators = {
     '<=': operator.__le__,
     }
 
-import re
 re_Required = re.compile('(?P<cmp>(==|!=|([<>]=?)))? *(?P<require>.*)')
 
 def compareVersion(has,want):
@@ -603,7 +602,8 @@ def registerSoftware(req):
 def soft2config(soft):
     """Convert software collection to config"""
     from pyformex import utils
-    conf = Config()
+    from pyformex import config
+    conf = config.Config()
     for k in soft:
         conf.update(utils.prefixDict(soft[k], k+'/'))
     return conf
@@ -643,12 +643,13 @@ def readSoftware(fn,mode='python'):
     - `mode` = 'config': readable, editable
     - `mode` = 'pickle': binary
     """
+    from pyformex import config
     if mode == 'python':
         print((os.path.abspath(fn)))
         with open(fn, 'r') as fil:
             exec(fil.read())
     elif mode == 'config':
-        conf = Config(fn)
+        conf = config.Config(fn)
         soft = config2soft(conf)
     elif mode == 'pickle':
         from pyformex import pickle

@@ -29,8 +29,8 @@ anywhere, causing attached functions to be executed.
 from __future__ import print_function
 
 
-import pyformex as pf
 from pyformex.gui import QtCore
+from pyformex.gui import Signal
 
 # These have to disappear
 SIGNAL = QtCore.SIGNAL
@@ -41,7 +41,6 @@ DONE   = SIGNAL("Done")     # accept and finish the operation
 TIMEOUT = SIGNAL("Timeout") # terminate what was going on
 
 
-from pyformex.gui import Signal
 
 class Signals(QtCore.QObject):
     """A class with all custom signals in pyFormex.

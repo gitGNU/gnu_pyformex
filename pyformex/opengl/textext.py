@@ -31,11 +31,11 @@ from __future__ import print_function
 import pyformex as pf
 from pyformex import utils
 from pyformex import freetype as ft
+from pyformex import arraytools as at
 from pyformex.coords import Coords
 from pyformex.formex import Formex
-from pyformex.opengl.drawable import Base, Actor
+from pyformex.opengl.drawable import Actor
 from pyformex.opengl.texture import Texture
-from pyformex.opengl.sanitize import *
 
 from OpenGL import GL
 
@@ -124,7 +124,7 @@ class FontTexture(Texture):
         (ntext,4,2) holding the texture coordinates needed to display
         the given text on a grid of quad4 elements.
         """
-        if isInt(char):
+        if at.isInt(char):
             dx,dy = 1./16,1./6
             k = char-32
             x0,y0 = (k%16)*dx, (k//16)*dy
@@ -196,7 +196,7 @@ class Text(Actor):
         text = str(text).split('\n')
 
         # set pos and offset3d depending on pos type (2D vs 3D rendering)
-        pos = checkArray(pos)
+        pos = at.checkArray(pos)
         if pos.shape[-1] == 2:
             rendertype = 2
             pos = [pos[0],pos[1],0.]
@@ -279,19 +279,19 @@ class TextArray(Text):
     def __init__(self,val,pos,leader='',**kargs):
         # Make sure we have strings
         val = [ str(i) for i in val ]
-        pos = checkArray(pos,shape=(len(val),-1))
+        pos = at.checkArray(pos,shape=(len(val),-1))
         if len(val) != pos.shape[0]:
             raise ValueError("val and pos should have same length")
 
         # concatenate all strings
         val = [ leader+str(v) for v in val ]
-        cs = cumsum([0,] + [ len(v) for v in val ])
+        cs = at.cumsum([0,] + [ len(v) for v in val ])
         val = ''.join(val)
         nc = cs[1:] - cs[:-1]
 
-        pos = [ multiplex(p,n,0) for p,n in zip(pos,nc) ]
-        pos = concatenate(pos,axis=0)
-        pos = multiplex(pos,4,1)
+        pos = [ at.multiplex(p,n,0) for p,n in zip(pos,nc) ]
+        pos = np.concatenate(pos,axis=0)
+        pos = at.multiplex(pos,4,1)
 
         # Create the grids for the strings
         F = Formex('4:0123')

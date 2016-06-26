@@ -34,15 +34,13 @@ the current OpenGL framework in pyFormex.
 from __future__ import print_function
 
 import pyformex as pf
-from pyformex.coords import bbox
 from pyformex.attributes import Attributes
 from pyformex.opengl.matrix import Matrix4
-from pyformex.opengl.camera import orthogonal_matrix,perspective_matrix
+from pyformex.opengl.camera import orthogonal_matrix
 from pyformex.opengl.shader import Shader
 
 import numpy as np
 from OpenGL import GL
-import os
 
 
 class Renderer(object):

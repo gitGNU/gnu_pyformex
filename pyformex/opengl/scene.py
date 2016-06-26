@@ -26,8 +26,6 @@
 """
 from __future__ import print_function
 
-import pyformex as pf
-from pyformex import utils
 from pyformex import arraytools as at
 from pyformex import coords
 from pyformex.opengl.drawable import Actor
@@ -68,22 +66,22 @@ class ItemList(list):
         if not isinstance(items,(tuple,list)):
             items = [ items ]
         for a in items:
-            #
-            ## TODO: we should probably standardize on using ids
-            ##
-            #
-            try:
+            if a in self:
                 self.remove(a)
-            except:
-                print("Could not remove object of type %s from list" % type(a))
-                ids = [id(i) for i in self]
-                ida = id(a)
-                try:
-                    ind = ids.index(id(a))
-                    print("However, the object is in the list: removing it by id")
-                    del self[ind]
-                except:
-                    print("The object is not in the list: skipping")
+#            #
+#            ## TODO: we should probably standardize on using ids
+#            ##
+#            #
+#            try:
+#            except:
+#                print("Could not remove object of type %s from list" % type(a))
+#                ids = [id(i) for i in self]
+#                try:
+#                    ind = ids.index(id(a))
+#                    print("However, the object is in the list: removing it by id")
+#                    del self[ind]
+#                except:
+#                    print("The object is not in the list: skipping")
 
 
     def clear(self, sticky=False):

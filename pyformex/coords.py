@@ -291,7 +291,7 @@ class Coords(ndarray):
     @xyz.setter
     def xyz(self, value):
         """Set the XYZ coordinates of the points"""
-        self = value
+        self[...] = value
 
     ################ end property methods ##########
 
@@ -1957,7 +1957,7 @@ class Coords(ndarray):
         Therefore, the most sensible way is to run the procedure twice, with
         a different shift value (they should differ more than the tolerance).
         Specifying repeat=True will automatically do this with a second
-        shift value equal to `shift`+0.25.
+        shift value equal to shift+0.25.
 
         Example:
 

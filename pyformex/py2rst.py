@@ -34,7 +34,7 @@ discussion of the operation of this code.
 
 Usage:  py2rst.py PYTHONFILE [> outputfile.tex]
 """
-import os,sys
+import sys
 
 _debug = False
 

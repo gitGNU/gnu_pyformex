@@ -35,6 +35,71 @@ from pyformex import utils
 
 
 ##############################################################################
+from pyformex.elements import _default_eltype
+linearElements = [_default_eltype[k].name() for k in _default_eltype] # ['line2','tri3','quad4','tet4','wedge6','hex8']
+
+def elNameLinear(elname):
+    """Return the linear element name
+    
+    E.g. quad8 -> quad4
+    """
+    i = [elname[:3] == l[:3] for l in linearElements]
+    i = where(i)[0][0]
+    return linearElements[i]     
+    
+def isLinear(self):
+    """Return True if the element is a linear element"""
+    return self.elName() in linearElements
+
+def convertToLinear(self,fuse=False):
+    """Return the linear conversion of the mesh
+    
+    E.g. if self.elName is quad8 the mesh is converted to quad4
+    """
+    return self.convert(totype=elNameLinear(self.elName()),fuse=fuse)
+
+def subdivideLinear(self,ndiv,fuse=True):
+    """Linear subdivision
+    
+    A supra-linear mesh is first converted to linear mesh, then subdivided and converted back.
+    """
+    if isLinear(self):
+        return self.subdivide(*ndiv,fuse=fuse)
+    elname = self.elName()
+    M = convertToLinear(self,fuse=fuse)
+    M = M.subdivide(*ndiv,fuse=fuse)
+    return M.convert(elname,fuse=fuse)
+
+## GDS: this should probably be the only sibdivide function exposed to the user!!!
+def subdivideIsopar(self, ndiv,totype=None,fuse=True):
+    """Isoparametric subdivision
+
+    A supra-linear mesh is subdivided using the isoparametric transformation.
+    The returned mesh is linear if totype is None.
+    totype should be the same shape: e.g. a quad cannot be subdivided with tri
+    
+    The fuse is passed to all functions that have it.
+    """
+    if totype!=None:
+        if elNameLinear(self.elName())!=elNameLinear(totype):
+            raise ValueError, 'you can only change element order in subdivideIsopar'
+    if isLinear(self):
+        M = self.subdivide(*ndiv,fuse=fuse)
+        if totype!=None :
+            M = M.convert(totype,fuse=fuse)
+        return M
+    else:
+        #entrance type define isopar
+        isop= self.elName()
+        #create the isopar
+        if totype==None:
+            totype = elNameLinear(self.elName())
+        v = Mesh(eltype=isop).coords
+        #create the patch
+        f = subdivideLinear(Mesh(eltype=totype),ndiv,fuse=fuse)
+        # map the patch
+        M = Mesh.concatenate([f.isopar(isop,h,v) for h in self.coords[self.elems]],fuse=fuse)
+        return M.setProp(self.prop,[prod(ndiv)])
 
 #
 # Should we create some general 'masked mesh' class?
@@ -411,4 +476,5 @@ Mesh.scaledJacobian = scaledJacobian
 Mesh.nodalAveraging = nodalAveraging
 Mesh.connectedElements = connectedElements
 Mesh.fixNormals2 = fixNormals2
+Mesh.subdivideIsopar = subdivideIsopar
 # End

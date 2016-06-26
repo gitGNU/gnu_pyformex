@@ -262,7 +262,9 @@ class Formex(Geometry):
         """
         coords = Coords(coords)
         if coords.shape == self.coords.shape:
-            return Formex(coords, self.prop, self.eltype)
+            F = Formex(coords, self.prop, self.eltype)
+            F.attrib(**self.attrib)
+            return F
         else:
             raise ValueError("Invalid reinitialization of Formex coords")
 

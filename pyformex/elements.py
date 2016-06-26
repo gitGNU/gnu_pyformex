@@ -32,11 +32,10 @@ should be done by the interface modules.
 from __future__ import print_function
 
 
-import pyformex as pf
 from pyformex.coords import Coords
 from pyformex.connectivity import Connectivity
 
-from numpy import array, arange, concatenate
+import numpy as np
 
 from pyformex.odict import OrderedDict
 
@@ -228,10 +227,10 @@ class ElementType(object):
             return Connectivity()
 
         if level == 0:
-            return Connectivity(arange(self.nplex()).reshape((-1, 1)), eltype='point')
+            return Connectivity(np.arange(self.nplex()).reshape((-1, 1)), eltype='point')
 
         elif level == self.ndim:
-            return Connectivity(arange(self.nplex()).reshape((1, -1)), eltype=self)
+            return Connectivity(np.arange(self.nplex()).reshape((1, -1)), eltype=self)
 
         elif level == 1:
             return self.edges
@@ -525,7 +524,7 @@ Tet10 = createElementType(
           ( 0.5, 0.0, 0.5 ),
           ]]),
     edges = ('line3', [ (0, 4, 1), (1, 7, 2), (2, 5, 0), (0, 6, 3), (1, 9, 3), (2, 8, 3) ],),
-    faces = ('tri3', array([(0, 2, 1, 5, 7, 4), (0, 1, 3, 4, 9, 6), (0, 3, 2, 6, 8, 5), (1, 2, 3, 2, 7, 8)])[:, [(0, 3, 5), (3, 1, 4), (4, 2, 5), (3, 4, 5)]].reshape(-1, 3)),
+    faces = ('tri3', np.array([(0, 2, 1, 5, 7, 4), (0, 1, 3, 4, 9, 6), (0, 3, 2, 6, 8, 5), (1, 2, 3, 2, 7, 8)])[:, [(0, 3, 5), (3, 1, 4), (4, 2, 5), (3, 4, 5)]].reshape(-1, 3)),
     reversed = (0, 1, 3, 2, 4, 6, 5, 9, 8, 7),
     )
 
@@ -543,7 +542,7 @@ Tet14 = createElementType(
           ( 1./3., 1./3., 1./3. ),
           ]]),
     edges = Tet10.edges,
-    faces = ('tri3', array([(0, 2, 1, 5, 7, 4, 10), (0, 1, 3, 4, 9, 6, 11), (0, 3, 2, 6, 8, 5, 12), (1, 2, 3, 2, 7, 8, 13)])[:, [(0, 3, 6), (3, 1, 6), (1, 4, 6), (4, 2, 6), (2, 5, 6), (5, 0, 6)]].reshape(-1, 3)),
+    faces = ('tri3', np.array([(0, 2, 1, 5, 7, 4, 10), (0, 1, 3, 4, 9, 6, 11), (0, 3, 2, 6, 8, 5, 12), (1, 2, 3, 2, 7, 8, 13)])[:, [(0, 3, 6), (3, 1, 6), (1, 4, 6), (4, 2, 6), (2, 5, 6), (5, 0, 6)]].reshape(-1, 3)),
     reversed = (0, 1, 3, 2, 4, 6, 5, 9, 8, 7, 12, 11, 10, 13),
     )
 

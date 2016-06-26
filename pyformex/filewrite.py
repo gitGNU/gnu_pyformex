@@ -40,7 +40,6 @@ import numpy as np
 from pyformex.lib import misc
 from pyformex.arraytools import checkArray
 from pyformex import utils
-import os
 
 
 #
@@ -112,7 +111,7 @@ def writeIData(data,fil,fmt,ind=1):
             raise ValueError("Index should have same length as data")
 
     if kind == 'i':
-        raise ImplementationError
+        raise RuntimeError("This is not implemented yet")
         misc.tofile_int32(val.astype(np.int32), fil, fmt)
     elif kind == 'f':
         misc.tofile_ifloat32(ind.astype(np.int32), val.astype(np.float32), fil, fmt)
@@ -177,7 +176,7 @@ def writeGTS(fn, coords, edges, faces):
       `nfaces` triangles in function of the edge indices
     """
     if coords.dtype.kind != 'f' or coords.ndim != 2 or coords.shape[1] != 3 or edges.dtype.kind != 'i' or edges.ndim != 2 or edges.shape[1] != 2 or faces.dtype.kind != 'i' or faces.ndim != 2 or faces.shape[1] != 3:
-        raise runtimeError("Invalid type or shape of argument(s)")
+        raise RuntimeError("Invalid type or shape of argument(s)")
 
     fil = open(fn, 'w')
     fil.write("%d %d %d\n" % (coords.shape[0], edges.shape[0], faces.shape[0]))

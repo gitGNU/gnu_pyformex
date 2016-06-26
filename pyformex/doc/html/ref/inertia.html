@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>19. inertia — Compute inertia related quantities of geometrical models. &mdash; pyFormex 1.0.2~a1 documentation</title>
+    <title>19. inertia — Compute inertia related quantities of geometrical models. &mdash; pyFormex 1.0.2-a5 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2~a1',
+        VERSION:     '1.0.2-a5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,7 +51,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2~a1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="20. fileread — Read geometry from file in a whole number of formats." href="fileread.html" />
     <link rel="prev" title="18. geomtools — Basic geometrical operations." href="geomtools.html" />
@@ -82,7 +82,7 @@
         <li class="right" >
           <a href="geomtools.html" title="18. geomtools — Basic geometrical operations."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -236,8 +236,10 @@ Otherwise, lef-handed systems may result)</li>
 <p>Returns a tuple (prin,axes) where</p>
 <ul class="simple">
 <li><cite>prin</cite>: is a (3,) array with the principal values,</li>
-<li><cite>axes</cite>: is a (3,3) array in which each column (or row?) is a
-unit(?) vector along the corresponding principal axis.</li>
+<li><cite>axes</cite>: is a (3,3) array with the rotation matrix that
+rotates the global axes to the principal axes. This also
+means that the columns of axes are the unit vectors along
+the principal directions.</li>
 </ul>
 <p>Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="o">-</span><span class="mf">19.</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.3</span><span class="p">,</span> <span class="mf">11.8</span><span class="p">,</span> <span class="mf">6.45</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.7</span> <span class="p">])</span>
@@ -364,8 +366,10 @@ Otherwise, lef-handed systems may result)</li>
 <p>Returns a tuple (prin,axes) where</p>
 <ul class="simple">
 <li><cite>prin</cite>: is a (3,) array with the principal values,</li>
-<li><cite>axes</cite>: is a (3,3) array in which each column (or row?) is a
-unit(?) vector along the corresponding principal axis.</li>
+<li><cite>axes</cite>: is a (3,3) array with the rotation matrix that
+rotates the global axes to the principal axes. This also
+means that the columns of axes are the unit vectors along
+the principal directions.</li>
 </ul>
 <p>Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="o">-</span><span class="mf">19.</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.3</span><span class="p">,</span> <span class="mf">11.8</span><span class="p">,</span> <span class="mf">6.45</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.7</span> <span class="p">])</span>
@@ -566,7 +570,7 @@ in case you do not need the inertia tensor.</p>
         <li class="right" >
           <a href="geomtools.html" title="18. geomtools — Basic geometrical operations."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -574,7 +578,7 @@ in case you do not need the inertia tensor.</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on May 22, 2015.
+      Last updated on Jun 18, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

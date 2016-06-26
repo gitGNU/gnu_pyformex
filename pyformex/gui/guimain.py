@@ -31,17 +31,18 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import utils
+from pyformex import software
 
 # If we get here, either PyQt4 or PySide are imported
 # Check for OpenGL
-utils.checkModule('pyopengl', fatal=True)
+software.checkModule('pyopengl', fatal=True)
 
 from pyformex.gui import (
-    signals, QtCore, QtGui, canvas,
+    signals, QtCore, QtGui,
     menu, cameraMenu, fileMenu, appMenu, prefMenu, viewportMenu,
     toolbar, viewport, guifunc, draw, widgets, drawlock, views,
     )
-
+from pyformex.opengl import canvas
 from pyformex.gui.qtutils import *
 
 import sys,os
@@ -1080,7 +1081,6 @@ def xwininfo(windowid=None,name=None):
 
     Either the windowid or the window name has to be specified.
     """
-    import re
     cmd = 'xwininfo %s'
     if windowid is not None:
         args = " -id %s" % windowid
@@ -1598,7 +1598,7 @@ def runGUI():
     return res
 
 
-def classify_examples():
-    m = pf.GUI.menu.item('Examples')
+#def classify_examples():
+#    m = pf.GUI.menu.item('Examples')
 
 #### End

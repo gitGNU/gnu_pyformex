@@ -33,7 +33,7 @@ from __future__ import print_function
 import pyformex as pf
 from pyformex import zip, utils
 
-from pyformex.gui import canvas
+from pyformex.opengl import canvas
 from pyformex.gui import (
     QtCore, QtGui, QtOpenGL,
     image, toolbar,

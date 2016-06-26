@@ -89,6 +89,8 @@ html: prereq
 	rsync images/README  $(BUILDDIR)/html/_images
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
+	@echo "Run 'make incdoc' to include the new docs in the dev version"
+	@echo "Run 'make pubdoc' to include the new docs in the website"
 
 dirhtml:
 	$(SPHINXBUILD) -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml

@@ -35,11 +35,12 @@ from pyformex.mydict import Dict
 
 from pyformex.odict import OrderedDict
 from pyformex.collection import Collection
-from pyformex.attributes import Attributes
-from pyformex.formex import Formex
+#from pyformex.attributes import Attributes
+#from pyformex.formex import Formex
 from pyformex.simple import cuboid2d
-from pyformex.opengl.drawable import GeomActor
-from pyformex.opengl.sanitize import saneColor,saneColorArray
+from pyformex.opengl import decors
+from pyformex.opengl.sanitize import saneColor
+from pyformex.opengl.drawable import Actor
 from pyformex.opengl.camera import Camera
 from pyformex.opengl.renderer import Renderer
 from pyformex.opengl.scene import Scene, ItemList
@@ -47,7 +48,7 @@ from pyformex.opengl import colors
 
 import numpy as np
 
-from numpy import *
+
 from OpenGL import GL, GLU
 
 
@@ -74,9 +75,9 @@ def loadLibGL():
 def gl_pickbuffer():
     "Return a list of the 2nd numbers in the openGL pick buffer."
     buf = GL.glRenderMode(GL.GL_RENDER)
-    return asarray([ r[2] for r in buf ])
+    return np.asarray([ r[2] for r in buf ])
 
-
+# Used in CanvasSettings.glOverride !
 from OpenGL.GL import glLineWidth as glLinewidth, glPointSize as glPointsize
 
 fill_modes = [ GL.GL_FRONT_AND_BACK, GL.GL_FRONT, GL.GL_BACK ]
@@ -642,8 +643,8 @@ class Canvas(object):
             clear_ = False,     # Clear on each drawing action
             shrink = False,
             shrink_factor = 0.8,
-            marksize = 5.0,
-            color = 'prop',
+#            marksize = 5.0,
+#            color = 'prop',
             wait = True,
             silent = True
             )
@@ -708,7 +709,7 @@ class Canvas(object):
         If no mode is specified, the current wiremode is used. A negative
         value inverses the state.
         """
-        print("CANVAS.setWireMode %s %s" % (state, mode))
+        #print("CANVAS.setWireMode %s %s" % (state, mode))
         oldstate = self.settings.wiremode
         if mode is None:
             mode = abs(oldstate)
@@ -726,7 +727,7 @@ class Canvas(object):
         Furthermore, if a Canvas method do_ATTR is defined, it will be called
         with the old and new toggle state as a parameter.
         """
-        print("CANVAS.setTogggle %s = %s"%(attr,state))
+        #print("CANVAS.setTogggle %s = %s"%(attr,state))
         oldstate = self.settings[attr]
         if state not in [True, False]:
             state = not oldstate
@@ -744,17 +745,17 @@ class Canvas(object):
 
     def do_wiremode(self, state, oldstate):
         """Change the wiremode"""
-        print("CANVAS.do_wiremode: %s -> %s"%(oldstate, state))
+        #print("CANVAS.do_wiremode: %s -> %s"%(oldstate, state))
         if state != oldstate and (state>0 or oldstate>0):
             # switching between two <= modes does not change anything
-            print("Changemode %s" % self.settings.wiremode)
+            #print("Changemode %s" % self.settings.wiremode)
             self.scene.changeMode(self)
             self.display()
 
 
     def do_alphablend(self, state, oldstate):
         """Toggle alphablend on/off."""
-        print("CANVAS.do_alphablend: %s -> %s"%(state,oldstate))
+        #print("CANVAS.do_alphablend: %s -> %s"%(state,oldstate))
         if state != oldstate:
             #self.renderer.changeMode(self)
             self.scene.changeMode(self)
@@ -771,7 +772,7 @@ class Canvas(object):
 
 
     def do_avgnormals(self, state, oldstate):
-        print("CANVAS.do_avgnormals: %s -> %s" % (state, oldstate))
+        #print("CANVAS.do_avgnormals: %s -> %s" % (state, oldstate))
         if state!=oldstate and self.settings.lighting:
             self.scene.changeMode(self)
             self.display()
@@ -829,7 +830,7 @@ class Canvas(object):
                 image = qimage2numpy(self.settings.bgimage, indexed=False)
             except:
                 pass
-        actor = GeomActor(F,name='background',rendermode='smooth',color=[self.settings.bgcolor],texture=image,rendertype=3,opak=True,lighting=False,view='front')
+        actor = Actor(F,name='background',rendermode='smooth',color=[self.settings.bgcolor],texture=image,rendertype=3,opak=True,lighting=False,view='front')
         #print("SCENE %s" % id(self.scene))
         self.scene.addAny(actor)
         #print(self.scene.backgrounds[0])
@@ -847,51 +848,79 @@ class Canvas(object):
         self.settings.slcolor = colors.GLcolor(color)
 
 
-    def setTriade(self,on=None,pos='lb',siz=50,triade=None):
-        """Toggle the display of the global axes on or off.
+    def setTriade(self,pos='lb',siz=100,triade=None):
+        """Set the Triade for this canvas.
 
-        This is a convenient feature to display the global axes
-        directions with rotating actor at fixed viewport size and
-        position.
+        Display the Triade on the current viewport.
+        The Triade is a reserved Actor displaying the orientation of
+        the global axes. It has special methods to show/hide it.
+        See also: :meth:`removeTriade`, :meth:`hasTriade`
 
         Parameters:
 
-        - `on`: boolean. If True, the global axes triade is displayed. If
-          False, it is removed. The default (None) toggles between on and off.
-          The remaining parameters are only used on enabling the triade.
         - `pos`: string of two characters. The characters define the horizontal
           (one of 'l', 'c', or 'r') and vertical (one of 't', 'c', 'b') position
           on the camera's viewport. Default is left-bottom.
-        - `siz`: size (in pixels) of the triade.
-        - `triade`: callable. Generates the Actor to be displayed as triade.
-          Default is :class:`decors.Triade`, which shows the positive axes
-          with the colors RGB.
-          This argument can be used to replace the default triade with a
-          customized version. It can be a function or a class name.
-          The call will be passed the `pos` and `siz` parameters.
-          It should return an Actor with its rendertype set to -2.
-          The Actor's coordinates should be scaled to pixel values,
-          and the Actor should be centered around the origin.
-          Also, the actor should have two attributes x,y set to the
-          position (in pixels) where the origin (center) of the actor will
-          be mapped.
+        - `siz`: float: intende size (in pixels) of the triade.
+        - `triade`: None or Geometry: defines the Geometry to be used for
+          representing the global axes.
 
-        .. warning: This is experimental and subject to changes!
+          If None, use the previously set triade, or set a default if no
+          previous.
+
+          If Geometry, use this to represent the axes. To be useful and properly
+          displayed, the Geometry's bbox should be around [(-1,-1,-1),(1,1,1)].
+          Drawing attributes may be set on the Geometry to influence
+          the appearence. This allows to fully customize the Triade.
 
         """
-        if on is None:
-            on = self.triade is None
-        pf.debug("SETTING TRIADE %s" % on, pf.DEBUG.DRAW)
         if self.triade:
-            self.removeAny(self.triade)
+            self.removeTriade()
+        if triade:
+            from pyformex.opengl.draw import draw
             self.triade = None
-        if on:
-            if triade is None:
-                from . import decors
-                triade = decors.Triade
-                print("triade is %s" % triade)
-            self.triade = triade(pos, siz)
+            x, y, w, h = GL.glGetIntegerv(GL.GL_VIEWPORT)
+            if pos[0] == 'l':
+                x0 = x + siz
+            elif pos[0] =='r':
+                x0 = x + w - siz
+            else:
+                x0 = x + w / 2
+            if pos[1] == 'b':
+                y0 = y + siz
+            elif pos[1] == 't':
+                y0 = y + h - siz
+            else:
+                y0 = y + h / 2
+            A = draw(triade.scale(siz),rendertype=-2,single=True,size=siz,x=x0,y=y0)
+            self.triade = A
+        elif self.triade:
             self.addAny(self.triade)
+
+
+    def removeTriade(self):
+        """Remove the Triade from the canvas.
+
+        Remove the Triade from the current viewport.
+        The Triade is a reserved Actor displaying the orientation of
+        the global axes. It has special methods to draw/undraw it.
+        See also: :meth:`setTriade`, :meth:`hasTriade`
+
+        """
+        if self.hasTriade():
+            self.removeAny(self.triade)
+
+
+    def hasTriade(self):
+        """Check if the canvas has a Triade displayed.
+
+        Return True if the Triade is currently displayed.
+        The Triade is a reserved Actor displaying the orientation of
+        the global axes.
+        See also: :meth:`setTriade`, :meth:`removeTriade`
+
+        """
+        return self.triade is not None and self.triade in self.scene.decorations
 
 
     def initCamera(self):
@@ -1105,18 +1134,19 @@ class Canvas(object):
             self.end_2D_drawing()
 
 
-    def addHighlight(self, itemlist):
-        """Add a highlight or a list thereof to the 3D scene."""
-        self.highlights.add(itemlist)
+#    def addHighlight(self, itemlist):
+#        """Add a highlight or a list thereof to the 3D scene."""
+#        self.highlights.add(itemlist)
+#
+#    def removeHighlight(self,itemlist=None):
+#        """Remove a highlight or a list thereof from the 3D scene.
+#
+#        Without argument, removes all highlights from the scene.
+#        """
+#        if itemlist is None:
+#            itemlist = self.highlights[:]
+#        self.highlights.delete(itemlist)
 
-    def removeHighlight(self,itemlist=None):
-        """Remove a highlight or a list thereof from the 3D scene.
-
-        Without argument, removes all highlights from the scene.
-        """
-        if itemlist is None:
-            itemlist = self.highlights[:]
-        self.highlights.delete(itemlist)
 
     def addAny(self, itemlist):
         self.scene.addAny(itemlist)
@@ -1214,7 +1244,7 @@ class Canvas(object):
 
             from pyformex import simple
             bbix = simple.regularGrid(X0, X1, [1, 1, 1])
-            bbix = dot(bbix, self.camera.rot[:3, :3])
+            bbix = np.dot(bbix, self.camera.rot[:3, :3])
             bbox = coords.Coords(bbix).bbox()
             dx, dy, dz = bbox[1] - bbox[0]
             vsize = max(dx/self.aspect, dy)
@@ -1222,7 +1252,7 @@ class Canvas(object):
             offset = dz
             dist = (vsize/tf + offset) / correction
 
-            if dist == nan or dist == inf:
+            if dist == np.nan or dist == np.inf:
                 pf.debug("DIST: %s" % dist, pf.DEBUG.DRAW)
                 return
             if dist <= 0.0:
@@ -1237,10 +1267,10 @@ class Canvas(object):
             # print "near,far = %s, %s" % (near,far)
             #print (0.0001*vsize,0.01*dist,near)
             # make sure near is positive
-            near = max(near, 0.0001*vsize, 0.01*dist, finfo(coords.Float).tiny)
+            near = max(near, 0.0001*vsize, 0.01*dist, np.finfo(coords.Float).tiny)
             # make sure far > near
             if far <= near:
-                far += finfo(coords.Float).eps
+                far += np.finfo(coords.Float).eps
             #print "near,far = %s, %s" % (near,far)
             self.camera.setClip(near, far)
             self.camera.resetArea()
@@ -1340,7 +1370,7 @@ class Canvas(object):
 
         """
         from . import decors
-        w, h = self.width(), self.height()
+        #w, h = self.width(), self.height()
         self._focus = decors.Grid2D(-1.,-1.,1.,1., color=color, linewidth=2, rendertype=3)
         self.addAny(self._focus)
 
@@ -1380,7 +1410,7 @@ class Canvas(object):
                         self.selection_filter == 'closest'
         self.picked = []
         if selbuf[0] > 0:
-            buf = asarray(selbuf).reshape(-1, 3+selbuf[0])
+            buf = np.asarray(selbuf).reshape(-1, 3+selbuf[0])
             buf = buf[buf[:, 0] > 0]
             self.picked = buf[:, 3]
             if store_closest:
@@ -1506,10 +1536,9 @@ class Canvas(object):
             pf.debug("Actor %s: Selection %s" % (i, K[i]), pf.DEBUG.DRAW)
             self.actors[i].addHighlightElements(K[i])
 
-# GDS: this does not work with pickable
-# because K.keys are not referring to actors but to pickable!!!
+
     def highlightPoints(self, K):
-        print("HIGHLIGHT_POINTS", K)
+        #print("HIGHLIGHT_POINTS", K)
         self.scene.removeHighlight()
         for i in K.keys():
             pf.debug("Actor %s: Selection %s" % (i, K[i]), pf.DEBUG.DRAW)

@@ -30,7 +30,6 @@ from __future__ import print_function
 
 
 from pyformex.mydict import Dict, returnNone
-from pyformex import utils
 
 
 class Attributes(Dict):
@@ -125,5 +124,11 @@ class Attributes(Dict):
     def __str__(self):
         from pyformex.utils import removeDict
         return dict.__str__(removeDict(self, ['_default_dict_']))
+
+
+    def __repr__(self):
+        from pyformex.utils import removeDict
+        return dict.__repr__(removeDict(self, ['_default_dict_']))
+
 
 # End

@@ -47,6 +47,7 @@ from pyformex.opengl import actors
 from pyformex.script import getcfg, named
 
 import numpy as np
+import os
 
 ############################## drawing functions ########################
 
@@ -113,25 +114,18 @@ def draw(F,
          ## wait=True,allviews=False,highlight=False,silent=True,
          # A trick to allow 'clear' argument, but not inside kargs
          clear=None,
+         single=False,
          **kargs):
-    """Draw object(s) with specified settings and options.
+    """Draw geometrical object(s) with specified drawing options and settings.
 
-    BEWARE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    This is the documentation for old versions (<= 0.9) of pyFormex.
-    While most of the arguments are still valid and the documentation
-    below is useful, there might be some slight changes in the behavior.
+    This is the generic drawing function in pyFormex.
+    The user can specifies the Geometry and optional drawing parameters.
+    The function returns the Actor(s) resulting from the drawing
+    operation. The Actors can further be used to change the rendering.
 
-    THIS DOCSTRING NEEDS TO BE UPDATED !
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    Parameters:
 
-    This is the main drawing function to get geometry rendered on the OpenGL
-    canvas. It has a whole slew of arguments, but in most cases you will only
-    need to use a few of them. We divide the arguments in three groups:
-    geometry, settings, options.
-
-    Geometry: specifies what objects will be drawn.
-
-    - `F`: all geometry to be drawn is specified in this single argument.
+    - `F`:  specifies all geometry that will be drawn in a single argument.
       It can be one of the following:
 
       - a drawable object (a Geometry object like Formex, Mesh or TriSurface,
@@ -144,8 +138,26 @@ def draw(F,
       is recursively flattened, replacing string values by the corresponding
       value from the pyFormex global variables dictionary, until a single list
       of drawable objects results. Next the undrawable items are removed
-      from the list. The resulting list of drawable objects will then be
-      drawn using the remaining settings and options arguments.
+      from the list. The resulting list of drawable objects are drawn in a
+      single pass, with the same options and default drawing attributes.
+    - `clear`: clear the scene before drawing.
+    - `single`: specifies the type of result if `F` is a list.
+      If False, a flat list with all Actors for all Geometries in F is returned.
+      It True, a single Actor corresponding with F[0] is returned, with the
+      Actors for F[1:] set as its children.
+
+    The remaining parameters are the default drawing parameters to be used.
+    They will apply unless overridden by attributes set in the Geometry
+    itself (see :meth:`geometry.Geometry.attrib`).
+    There is a long list of possible settings, but in most case only a few
+    will be needed.
+
+    .. warning:: The remainder of this docstring is from the old version
+       (<= 0.9) of pyFormex.
+       While most of the arguments are still valid and the documentation
+       below is useful, there might be some slight changes in the behavior.
+
+    .. note:: DEVS: TODO: THIS DOCSTRING NEEDS TO BE UPDATED !
 
     Settings: specify how the geometry will be drawn. These arguments will
       be passed to the corresponding Actor for the object. The Actor is the
@@ -286,7 +298,14 @@ def draw(F,
     The normalized color value is a tuple of three values in the range 0.0..1.0.
     The values are the contributions of the red, green and blue components.
     """
-    """New draw function for OpenGL2"""
+
+    def showActor(actor,highlight):
+        """Add an actor or a highlight to the scene"""
+        if highlight:
+            pf.canvas.addHighlight(actor)
+        else:
+            pf.canvas.addActor(actor)
+
 
     if clear is not None:
         kargs['clear_'] = clear
@@ -317,7 +336,7 @@ def draw(F,
 
     # Shrink the objects if requested
     if opts.shrink:
-        FL = [ _shrink(F, opts.shrink_factor) for F in FL ]
+        FL = [ _shrink(Fi, opts.shrink_factor) for Fi in FL ]
 
     ## # Execute the drawlock wait before doing first canvas change
     pf.GUI.drawlock.wait()
@@ -341,14 +360,29 @@ def draw(F,
 
             # Create the actor
             actor = F.actor(**kargs)
-            actors.append(actor)
+            if single and len(actors) > 0:
+                # append the new actor to the children of the first
+                actors[0].children.append(actor)
+            else:
+                # append the actor to the list of actors
+                actors.append(actor)
 
-            if actor is not None:
-                # Show the actor
-                if opts.highlight:
-                    pf.canvas.addHighlight(actor)
-                else:
-                    pf.canvas.addActor(actor)
+            if actor is not None and not single:
+                # Immediately show the new actor
+                showActor(actor,opts.highlight)
+
+        if single:
+            # Now draw all actors in a single shot
+            actor = actors[0]
+            showActor(actor,opts.highlight)
+
+        else:
+            if not isinstance(F, list):
+                # For a single input geometry, always return single actor
+                actor = actors[0]
+            else:
+                # Return the whole actor list
+                actor = actors
 
         view = opts.view
         bbox = opts.bbox
@@ -384,10 +418,8 @@ def draw(F,
     finally:
         pf.GUI.setBusy(False)
 
-    if isinstance(F, list) or len(actors) != 1:
-        return actors
-    else:
-        return actors[0]
+    # Return the created Actor(s)
+    return actor
 
 
 def _setFocus(object, bbox, view):
@@ -492,6 +524,7 @@ def drawMarks(X,M,color='black',leader='',ontop=True,**kargs):
     The string representation of the marks are drawn at the corresponding
     3D coordinate.
     """
+    from pyformex.gui.draw import ack
     _large_ = 20000
     if len(M) > _large_:
         if not ack("You are trying to draw marks at %s points. This may take a long time, and the results will most likely not be readible anyway. If you insist on drawing these marks, anwer YES." % len(M)):
@@ -540,7 +573,7 @@ def drawPropNumbers(F,**kargs):
     If the object F thus not have property numbers, -1 values are drawn.
     """
     if F.prop is None:
-        nrs = -ones(F.nelems(), dtype=Int)
+        nrs = -np.ones(F.nelems(), dtype=np.Int)
     else:
         nrs = F.prop
     drawNumbers(F,nrs,**kargs)
@@ -600,7 +633,7 @@ drawText3D = drawText
 # This function should be completed
 def drawViewportAxes3D(pos,color=None):
     """Draw two viewport axes at a 3D position."""
-    A = actors.Mark((0,200,0),image,size=40,color=red)
+    A = actors.Mark((0,200,0),image,size=40,color=colors.red)
     drawActor(A)
     return A
 
@@ -613,18 +646,17 @@ def drawAxes(cs=None,**kargs):
     - `cs`: a :class:`coordsys.CoordSys`
       If not specified, the global coordinate system is used.
 
-    Other arguments can be added just like in the :class:`AxesActor` class.
+    Other arguments can be added just like in the :class:`candy.Axes` class.
 
     By default this draws the positive parts of the axes in the colors R,G,B
     and the negative parts in C,M,Y.
     """
-    from pyformex.opengl.actors import AxesActor
+    from pyformex.candy import Axes
     from pyformex.coordsys import CoordSys
     if cs is None:
         cs = CoordSys()
 
-    A = AxesActor(cs,**kargs)
-    drawActor(A)
+    A = draw(Axes(cs,**kargs))
     return A
 
 
@@ -844,13 +876,55 @@ def view(v,wait=True):
         pf.GUI.drawlock.lock()
 
 
-def setTriade(on=None,pos='lb',siz=100):
+def setTriade(on=None,pos='lb',siz=50,triade=None):
     """Toggle the display of the global axes on or off.
 
-    If on is True, the axes triade is displayed, if False it is
-    removed. The default (None) toggles between on and off.
+    This is a convenient feature to display the global axes
+    directions with rotating actor at fixed viewport size and
+    position.
+
+    Parameters:
+
+    - `on`: boolean. If True, the global axes triade is displayed. If
+      False, it is removed. The default (None) toggles between on and off.
+      The remaining parameters are only used on enabling the triade.
+    - `pos`: string of two characters. The characters define the horizontal
+      (one of 'l', 'c', or 'r') and vertical (one of 't', 'c', 'b') position
+      on the camera's viewport. Default is left-bottom.
+    - `siz`: size (in pixels) of the triade.
+    - `triade`: None, Geometry or str: defines the Geometry to be used for
+      representing the global axes.
+
+      If None: use the previously set triade, or set a default if no
+      previous.
+
+      If Geometry: use this to represent the axes. To be useful and properly
+      displayed, the Geometry's bbox should be around [(-1,-1,-1),(1,1,1)].
+      Drawing attributes may be set on the Geometry to influence
+      the appearence. This allows to fully customize the Triade.
+
+      If str: use one of the predefined Triade Geometries. Currently, the
+      following are available:
+
+      - 'axes': axes and coordinate planes as in :class:`candy.Axes`
+      - 'man': a model of a man as in data file 'man.pgf'
+
     """
-    pf.canvas.setTriade(on, pos, siz)
+    if on is None:
+        on = not pf.canvas.hasTriade()
+    if on:
+        if triade is None and pf.canvas.triade is None:
+            triade = 'axes'
+        if triade == 'axes':
+            from pyformex import candy
+            triade = candy.Axes(reverse=False)
+        elif triade == 'man':
+            triade = Formex.read(os.path.join(pf.cfg['datadir'],'man.pgf'))
+            print(type(triade))
+            print(triade.attrib)
+        pf.canvas.setTriade(pos,siz,triade)
+    else:
+        pf.canvas.removeTriade()
     pf.canvas.update()
     pf.app.processEvents()
 
@@ -954,15 +1028,15 @@ def colormap(color=None):
 def colorindex(color):
     """Return the index of a color in the current colormap"""
     cmap = pf.canvas.settings.colormap
-    color=array(color)
-    i = where((cmap==color).all(axis=1))[0]
+    color = np.array(color)
+    i = np.where((cmap==color).all(axis=1))[0]
     if len(i) > 0:
         return i[0]
     else:
         i = len(cmap)
         print("Add color %s = %s to viewport colormap" % (i, color))
         color = color.reshape(1, 3)
-        pf.canvas.settings.colormap = concatenate([cmap, color], axis=0)
+        pf.canvas.settings.colormap = np.concatenate([cmap, color], axis=0)
     return i
 
 
@@ -1114,6 +1188,7 @@ def canvasSize(width, height):
 # This is not intended for the user
 def clear_canvas(sticky=False):
     pf.canvas.removeAll(sticky)
+    pf.canvas.triade = None
     pf.canvas.clearCanvas()
 
 

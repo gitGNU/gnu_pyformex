@@ -34,9 +34,10 @@ for use in the opengl rendering functions.
 """
 from __future__ import print_function
 
-
-from pyformex.arraytools import *
-from pyformex.opengl.colors import *
+import pyformex as pf
+from pyformex.opengl.colors import GLcolor
+import pyformex.arraytools as at
+import numpy as np
 
 
 
@@ -102,7 +103,7 @@ def saneColor(color=None):
 
     # detect color index
     try:
-        c = asarray(color)
+        c = np.asarray(color)
         if c.dtype.kind == 'i':
             # We have a color index
             return c
@@ -115,17 +116,17 @@ def saneColor(color=None):
     except ValueError:
 
         try:
-            color = [GLcolor(c) for c in color]
+            color = [GLcolor(co) for co in color]
         except ValueError:
             pass
 
     # Convert to array
     try:
         # REMOVED THE SQUEEZE: MAY BREAK SOME THINGS !!!
-        color = asarray(color)#.squeeze()
+        color = np.asarray(color)#.squeeze()
         if color.dtype.kind == 'f' and color.shape[-1] == 3:
             # Looks like we have a sane color array
-            return color.astype(float32)
+            return color.astype(np.float32)
     except:
         pass
 
@@ -150,14 +151,14 @@ def saneColorArray(color, shape):
       in direction 0 nelems times
 
     """
-    color = asarray(color)
+    color = np.asarray(color)
     if color.ndim == 1:
         return color
     if color.ndim == 3:
         if color.shape[1] > 1 and color.shape[1] != shape[1]:
             color = color[:, 0]
     if color.shape[0] > 1 and color.shape[0] != shape[0]:
-        color = resize(color, (shape[0], color.shape[1]))
+        color = np.resize(color, (shape[0], color.shape[1]))
     return color
 
 
@@ -173,7 +174,7 @@ def saneColorSet(color=None,colormap=None,shape=(1,)):
     The return value is a tuple color,colormap. colormap will be None,
     unless color is an integer array, meaning a color index.
     """
-    if isInt(shape):  # make sure we get a tuple
+    if at.isInt(shape):  # make sure we get a tuple
         shape = (shape,)
     color = saneColor(color)
     if color is not None:

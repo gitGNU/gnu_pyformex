@@ -34,7 +34,6 @@ from __future__ import print_function
 import pyformex as pf
 
 from pyformex import utils
-from pyformex import messages
 from pyformex.gui import widgets
 
 # Things that we want in the scripting language
@@ -47,10 +46,6 @@ from pyformex.opengl.colors import *
 from pyformex.gui.toolbar import timeout
 from pyformex.gui import image
 
-
-import numpy
-import os
-import sys
 
 #################### Interacting with the user ###############################
 

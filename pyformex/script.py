@@ -6,7 +6,7 @@
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
 ##  Copyright 2004-2015 (C) Benedict Verhegghe (benedict.verhegghe@feops.com)
-##  Distributed under the GNU General Public License version 3 or later.
+##  Distributed under the GNU General Public License 3 or later.
 ##
 ##  This program is free software: you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -50,9 +50,8 @@ from pyformex import simple
 
 ########################
 
-import threading
 import os
-import copy
+import sys
 import re
 import time
 
@@ -251,11 +250,11 @@ def autoExport(g):
     The default is to export all instances of class Geometry.
 
     This can be customized in the script/app by setting the global
-    variable :var:`autoglobals`. If set to a value that evaluates to
+    variable `autoglobals`. If set to a value that evaluates to
     False, no autoexport will be done. If set to True, the default
     autoexport will be done: all instances of :class:`geometry`.
     If set to a list of names, only the specified names will be exported.
-    Furthermore, a global variable :var:`autoclasses` may be set
+    Furthermore, a global variable `autoclasses` may be set
     to a list of class names. All global instances of the specified classes
     will be exported.
 
@@ -891,7 +890,7 @@ def startGui(args=[]):
 
 ################### read and write files #################################
 
-def writeGeomFile(filename,objects,sep=' ',mode='w',shortlines=False):
+def writeGeomFile(filename,objects,sep=' ',mode='w',shortlines=False,**kargs):
     """Save geometric objects to a pyFormex Geometry File.
 
     A pyFormex Geometry File can store multiple geometrical objects in a
@@ -909,11 +908,12 @@ def writeGeomFile(filename,objects,sep=' ',mode='w',shortlines=False):
     - `sep`: the string used to separate data. If set to an empty
       string, the data will be written in binary format and the resulting file
       will be smaller but less portable.
+    - `kargs`: more arguments are passed to :meth:`geomfile.GeometryFile.write`.
 
     Returns the number of objects written to the file.
     """
     print("Writing PGF file '%s'" % os.path.abspath(filename))
-    f = geomfile.GeometryFile(filename, mode, sep=sep)
+    f = geomfile.GeometryFile(filename, mode, sep=sep,**kargs)
     # TODO: shis option could goto into GeometryFile
     if shortlines:
         f.fmt = {'i':'%i ','f':'%f '}

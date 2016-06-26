@@ -788,14 +788,6 @@ class Geometry(object):
             del self.fields[fldname]
 
 
-    @property
-    def fields(self):
-        if hasattr(self,'_fields'):
-            return self._fields
-        else:
-            return {}
-
-
     def fieldReport(self):
         """Print a short report of the stored fields"""
         return '\n'.join([
@@ -804,7 +796,7 @@ class Geometry(object):
             for f in self.fields.values() ])
 
 
-    def write(self,filename,sep=' ',mode='w'):
+    def write(self,filename,sep=' ',mode='w', **kargs):
         """Write a Geometry to a .pgf file.
 
         This writes the Geometry to a pyFormex Geometry File (PGF) with
@@ -812,11 +804,11 @@ class Geometry(object):
 
         It is a convenient shorthand for::
 
-          script.writeGeomFile(filename, self, sep=sep, mode=mode)
+          writeGeomFile(filename, self, sep=sep, mode=mode, **kargs)
 
         """
         from pyformex.script import writeGeomFile
-        writeGeomFile(filename, self, sep=sep, mode=mode)
+        writeGeomFile(filename, self, sep=sep, mode=mode, **kargs)
 
 
     @classmethod
@@ -828,35 +820,12 @@ class Geometry(object):
 
         It is a convenient shorthand for::
 
-          script.readGeomFile(filename, 1).values()[0]
+          readGeomFile(filename, 1).values()[0]
         """
         from pyformex.script import readGeomFile
         res = readGeomFile(filename,1)
         return res.values()[0]
 
 
-if __name__ == '__draw__':
-
-    from pyformex.gui.draw import draw
-
-    def draw(self,*args,**kargs):
-        draw(self.coords,*args,**kargs)
-
-
-    clear()
-    F = Formex('4:0123')
-
-    G = Geometry()
-    G.coords = F.coords
-    G.draw(color='red')
-
-    G1 = G.scale(2).trl([0.2, 0.7, 0.])
-    G1.draw(color='green')
-
-    G2 = G.translate([0.5, 0.5, 0.5])
-    G2.draw(color='blue')
-
-    print(Geometry.scale.__doc__)
-    print(Coords.scale.__doc__)
 
 # End

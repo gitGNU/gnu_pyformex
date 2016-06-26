@@ -546,6 +546,7 @@ class Camera(object):
             self.viewChanged = True
 
 
+    # TODO: This is broken!
     def pan(self,val,axis=0):
         """Rotate the camera around axis through its eye.
 
@@ -560,12 +561,16 @@ class Camera(object):
             if axis==0 or axis ==1:
                 pos = self.eye
                 self.eye[axis] = (self.eye[axis] + val) % 360
+                print(self.report())
                 self.focus = diff(pos, sphericalToCartesian(self.eye))
+                print(self.report())
             elif axis==2:
+                print(self.report())
                 self.twist = (self.twist + val) % 360
             self.viewChanged = True
 
 
+    # TODO: THis depends on the broken pan!
     def tilt(self, val):
         """Rotate the camera up/down around its own horizontal axis.
 

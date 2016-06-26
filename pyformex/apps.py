@@ -91,16 +91,16 @@ def setAppDirs():
         pf.debug(str(p), pf.DEBUG.CONFIG)
 
 
-def addAppDir(d):
-    """Add the application directory d to the sys.path
-
-    d should be a valid path, chacked with checkAppdir
-    """
-
-    adddirs = [ a for a in adddirs if not a in sys.path ]
-    #print "appdir parents to add",adddirs
-    sys.path[1:1] = adddirs
-    return appdirs
+#def addAppDir(d):
+#    """Add the application directory d to the sys.path
+#
+#    d should be a valid path, chacked with checkAppdir
+#    """
+#
+#    adddirs = [ a for a in adddirs if not a in sys.path ]
+#    #print "appdir parents to add",adddirs
+#    sys.path[1:1] = adddirs
+#    return pf.appdirs
 
 
 def checkAppdir(d):

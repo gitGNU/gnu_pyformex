@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>72. opengl.drawable — OpenGL rendering objects for the new OpenGL2 engine. &mdash; pyFormex 1.0.2~a1 documentation</title>
+    <title>71. opengl.drawable — OpenGL rendering objects for the new OpenGL2 engine. &mdash; pyFormex 1.0.2-a5 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2~a1',
+        VERSION:     '1.0.2-a5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,10 +51,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2~a1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="73. opengl.matrix — opengl/matrix.py" href="opengl.matrix.html" />
-    <link rel="prev" title="71. opengl.decors — Decorations for the OpenGL canvas." href="opengl.decors.html" />
+    <link rel="next" title="72. opengl.matrix — opengl/matrix.py" href="opengl.matrix.html" />
+    <link rel="prev" title="70. opengl.decors — Decorations for the OpenGL canvas." href="opengl.decors.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -77,12 +77,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="opengl.matrix.html" title="73. opengl.matrix — opengl/matrix.py"
+          <a href="opengl.matrix.html" title="72. opengl.matrix — opengl/matrix.py"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="opengl.decors.html" title="71. opengl.decors — Decorations for the OpenGL canvas."
+          <a href="opengl.decors.html" title="70. opengl.decors — Decorations for the OpenGL canvas."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -101,9 +101,9 @@
    
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">72. <tt class="docutils literal"><span class="pre">opengl.drawable</span></tt> &#8212; OpenGL rendering objects for the new OpenGL2 engine.</a><ul>
-<li><a class="reference internal" href="#classes-defined-in-module-opengl-drawable">72.1. Classes defined in module opengl.drawable</a></li>
-<li><a class="reference internal" href="#functions-defined-in-module-opengl-drawable">72.2. Functions defined in module opengl.drawable</a></li>
+<li><a class="reference internal" href="#">71. <tt class="docutils literal"><span class="pre">opengl.drawable</span></tt> &#8212; OpenGL rendering objects for the new OpenGL2 engine.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-opengl-drawable">71.1. Classes defined in module opengl.drawable</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-opengl-drawable">71.2. Functions defined in module opengl.drawable</a></li>
 </ul>
 </li>
 </ul>
@@ -111,10 +111,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="opengl.decors.html"
-                        title="previous chapter">71. <tt class="docutils literal"><span class="pre">opengl.decors</span></tt> &#8212; Decorations for the OpenGL canvas.</a></p>
+                        title="previous chapter">70. <tt class="docutils literal"><span class="pre">opengl.decors</span></tt> &#8212; Decorations for the OpenGL canvas.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="opengl.matrix.html"
-                        title="next chapter">73. <tt class="docutils literal"><span class="pre">opengl.matrix</span></tt> &#8212; opengl/matrix.py</a></p>
+                        title="next chapter">72. <tt class="docutils literal"><span class="pre">opengl.matrix</span></tt> &#8212; opengl/matrix.py</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -149,31 +149,100 @@
           <div class="body">
             
   <div class="section" id="module-opengl.drawable">
-<span id="opengl-drawable-opengl-rendering-objects-for-the-new-opengl2-engine"></span><span id="sec-ref-opengl-drawable"></span><h1>72. <a class="reference internal" href="#module-opengl.drawable" title="opengl.drawable: OpenGL rendering objects for the new OpenGL2 engine."><tt class="xref py py-mod docutils literal"><span class="pre">opengl.drawable</span></tt></a> &#8212; OpenGL rendering objects for the new OpenGL2 engine.<a class="headerlink" href="#module-opengl.drawable" title="Permalink to this headline">¶</a></h1>
+<span id="opengl-drawable-opengl-rendering-objects-for-the-new-opengl2-engine"></span><span id="sec-ref-opengl-drawable"></span><h1>71. <a class="reference internal" href="#module-opengl.drawable" title="opengl.drawable: OpenGL rendering objects for the new OpenGL2 engine."><tt class="xref py py-mod docutils literal"><span class="pre">opengl.drawable</span></tt></a> &#8212; OpenGL rendering objects for the new OpenGL2 engine.<a class="headerlink" href="#module-opengl.drawable" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="classes-defined-in-module-opengl-drawable">
-<h2>72.1. Classes defined in module opengl.drawable<a class="headerlink" href="#classes-defined-in-module-opengl-drawable" title="Permalink to this headline">¶</a></h2>
+<h2>71.1. Classes defined in module opengl.drawable<a class="headerlink" href="#classes-defined-in-module-opengl-drawable" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="opengl.drawable.Drawable">
 <em class="property">class </em><tt class="descclassname">opengl.drawable.</tt><tt class="descname">Drawable</tt><big>(</big><em>parent</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#opengl.drawable.Drawable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Proposal for drawn objects</p>
-<p>__init__:  store all static values: attributes, geometry, vbo&#8217;s
-prepare: creates sanitized and derived attributes/data
-render: push values to shader and render the object</p>
-<p>__init__ is only dependent on input attributes and geometry</p>
+<dd><p>Base class for objects that can be rendered by the OpenGL engine.</p>
+<p>This is the basic drawable object in the pyFormex OpenGL rendering
+engine. It collects all the data that are needed to properly described
+any object to be rendered by the OpenGL shader programs.
+It has a multitude of optional attributes allowing it to describe
+many very different objects and rendering situations.</p>
+<p>This class is however not intended to be directly used to construct an
+object for rendering. The <a class="reference internal" href="#opengl.drawable.Actor" title="opengl.drawable.Actor"><tt class="xref py py-class docutils literal"><span class="pre">Actor</span></tt></a> class and its multiple
+subclasses should be used for that purpose. The Actor classes provide
+an easier and more logical interface, and more powerful at the same time,
+since they can be compound: one Actor can hold multiple Drawables.</p>
+<p>The elementary objects that can be directly drawn by the shader programs
+are more simple, yet very diverse. The Drawable class collects all
+the data that are needed by the OpenGL engine to do a proper
+rendering of the object. It this represents a single, versatile
+interface of the Actor classes with the GPU shader programs.</p>
+<p>The versatility comes from the <tt class="xref py py-class docutils literal"><span class="pre">Attributes</span></tt> base class, with
+an unlimited set of attributes. Any undefined attribute just returns
+None. Some of the most important attributes are described hereafter:</p>
+<ul>
+<li><p class="first"><cite>rendertype</cite>: int: the type of rendering process that will be applied
+by the rendering engine to the Drawable:</p>
 <dl class="docutils">
-<dt>prepare may depend on current canvas settings:</dt>
-<dd>mode, transparent, avgnormals</dd>
+<dt>0: A full 3D Actor. The Drawable will be rendered in full 3D with</dt>
+<dd><p class="first last">all active capabilities, such as camera rotation, projection,
+rendermode, lighting. The full object undergoes the camera
+transformations, and thus will appear as a 3D object in space.
+The object&#8217;s vertices are defined in 3D world coordinates.
+Used in: <a class="reference internal" href="#opengl.drawable.Actor" title="opengl.drawable.Actor"><tt class="xref py py-class docutils literal"><span class="pre">Actor</span></tt></a>.</p>
+</dd>
+<dt>1: A 2D object (often a text or an image) inserted at a 3D position.</dt>
+<dd><p class="first last">The 2D object always keeps its orientation towards the camera.
+When the camera changes, the object can change its position on
+the viewport, but the oject itself looks the same.
+This can be used to add annotations to (parts of) a 3D object.
+The object is defined in viewport coordinates, the insertion
+points are in 3D world coordinates.
+Used in: <tt class="xref py py-class docutils literal"><span class="pre">textext.Text</span></tt>.</p>
+</dd>
+<dt>2: A 2D object inserted at a 2D position. Both object and position</dt>
+<dd><p class="first last">are defined in viewport coordinates. The object will take a fixed
+position on the viewport. This can be use to add decorations to
+the viewport (like color legends and background images).
+Used in: <tt class="xref py py-class docutils literal"><span class="pre">decors.ColorLegend</span></tt>.</p>
+</dd>
+<dt>3: Like 2, but with special purpose. These Drawables are not part of</dt>
+<dd><p class="first last">the user scene, but used for system purposes (like setting the
+background color, or adding an elastic rectangle during mouse picking).
+Used in: <tt class="xref py py-meth docutils literal"><span class="pre">Canvas.createBackground()</span></tt>.</p>
+</dd>
+<dt>-1: Like 1, but with different insertion points for the multiple items</dt>
+<dd><p class="first last">in the object. Used to place a list of marks at a list of points.
+Used in: <tt class="xref py py-class docutils literal"><span class="pre">textext.Text</span></tt>.</p>
+</dd>
+<dt>-2: A 3D object inserted at a 2D position. The 3D object will rotate</dt>
+<dd><p class="first last">when the camera changes directions, but it will always be located
+on the same position of the viewport. This is normally used to
+display a helper object showing the global axis directions.
+Used in: <tt class="xref py py-class docutils literal"><span class="pre">decors.Triade</span></tt>.</p>
+</dd>
 </dl>
-<p>render depends on canvas and renderer</p>
-<p>This is the basic drawable object. It can not have extras nor
-children. The geometry is initialized by a coords,elems
-tuple. This class is normally not added directly to renderer,
-but through one of the *Actor classes.
-The passed parameters should at least contain vbo.</p>
+</li>
+</ul>
+<p>The initialization of a Drawable takes a single parameter: <cite>parent</cite>,
+which is the Actor that created the Drawable. All other parameters
+should be keyword arguments, and are stored as attributes in the
+Drawable.</p>
+<p>Methods:</p>
+<ul class="simple">
+<li><cite>prepare...</cite>: creates sanitized and derived attributes/data. Its action
+pend on current canvas settings: mode, transparent, avgnormals</li>
+<li><cite>render</cite>: push values to shader and render the object:
+depends on canvas and renderer.</li>
+<li><cite>pick</cite>: fake render to be used during pick operations</li>
+<li><cite>str</cite>: format the full data set of the Drawable</li>
+</ul>
 <dl class="method">
 <dt id="opengl.drawable.Drawable.prepareColor">
 <tt class="descname">prepareColor</tt><big>(</big><big>)</big><a class="headerlink" href="#opengl.drawable.Drawable.prepareColor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepare the colors for the shader.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.drawable.Drawable.changeVertexColor">
+<tt class="descname">changeVertexColor</tt><big>(</big><em>color</em><big>)</big><a class="headerlink" href="#opengl.drawable.Drawable.changeVertexColor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the vertex color buffer of the object.</p>
+<p>This is experimental!!!
+Just make sure that the passed data have the correct shape!</p>
 </dd></dl>
 
 <dl class="method">
@@ -229,11 +298,11 @@ default value if get found a KeyError.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="opengl.drawable.Base">
-<em class="property">class </em><tt class="descclassname">opengl.drawable.</tt><tt class="descname">Base</tt><big>(</big><em>**kargs</em><big>)</big><a class="headerlink" href="#opengl.drawable.Base" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base class for all drawable objects in pyFormex.</p>
-<p>This defines the interface for all drawable objects, but does not
-implement any drawable objects.
+<dt id="opengl.drawable.BaseActor">
+<em class="property">class </em><tt class="descclassname">opengl.drawable.</tt><tt class="descname">BaseActor</tt><big>(</big><em>**kargs</em><big>)</big><a class="headerlink" href="#opengl.drawable.BaseActor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for all drawn objects (Actors) in pyFormex.</p>
+<p>This defines the interface for all drawn objects, but does not
+implement any drawn objects.
 Drawable objects should be instantiated from the derived classes.
 Currently, we have the following derived classes:</p>
 <dl class="docutils">
@@ -246,7 +315,7 @@ to the viewer, but will move over the screen according to its
 <dt>Decor: an object drawn in 2D viewport coordinates. It will unchangeably</dt>
 <dd>stick on the viewport until removed. Defined in decors.py.</dd>
 </dl>
-<p>The Base class is just an Attributes dict storing all the rendering
+<p>The BaseActor class is just an Attributes dict storing all the rendering
 parameters, and providing defaults from the current canvas drawoptions
 for the essential parameters that are not specified.</p>
 <p>Additional parameters can be set at init time or later using the
@@ -257,32 +326,32 @@ stored.</p>
 <li><cite>marksize</cite>: force to float and also copied as <cite>pointsize</cite></li>
 </ul>
 <dl class="method">
-<dt id="opengl.drawable.Base.setLineWidth">
-<tt class="descname">setLineWidth</tt><big>(</big><em>linewidth</em><big>)</big><a class="headerlink" href="#opengl.drawable.Base.setLineWidth" title="Permalink to this definition">¶</a></dt>
+<dt id="opengl.drawable.BaseActor.setLineWidth">
+<tt class="descname">setLineWidth</tt><big>(</big><em>linewidth</em><big>)</big><a class="headerlink" href="#opengl.drawable.BaseActor.setLineWidth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the linewidth of the Drawable.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="opengl.drawable.Base.setLineStipple">
-<tt class="descname">setLineStipple</tt><big>(</big><em>linestipple</em><big>)</big><a class="headerlink" href="#opengl.drawable.Base.setLineStipple" title="Permalink to this definition">¶</a></dt>
+<dt id="opengl.drawable.BaseActor.setLineStipple">
+<tt class="descname">setLineStipple</tt><big>(</big><em>linestipple</em><big>)</big><a class="headerlink" href="#opengl.drawable.BaseActor.setLineStipple" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the linewidth of the Drawable.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="opengl.drawable.Base.setColor">
-<tt class="descname">setColor</tt><big>(</big><em>color=None</em>, <em>colormap=None</em>, <em>ncolors=1</em><big>)</big><a class="headerlink" href="#opengl.drawable.Base.setColor" title="Permalink to this definition">¶</a></dt>
+<dt id="opengl.drawable.BaseActor.setColor">
+<tt class="descname">setColor</tt><big>(</big><em>color=None</em>, <em>colormap=None</em>, <em>ncolors=1</em><big>)</big><a class="headerlink" href="#opengl.drawable.BaseActor.setColor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the color of the Drawable.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="opengl.drawable.Base.setTexture">
-<tt class="descname">setTexture</tt><big>(</big><em>texture</em><big>)</big><a class="headerlink" href="#opengl.drawable.Base.setTexture" title="Permalink to this definition">¶</a></dt>
+<dt id="opengl.drawable.BaseActor.setTexture">
+<tt class="descname">setTexture</tt><big>(</big><em>texture</em><big>)</big><a class="headerlink" href="#opengl.drawable.BaseActor.setTexture" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the texture data of the Drawable.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="opengl.drawable.Base.get">
-<tt class="descname">get</tt><big>(</big><em>key</em>, <em>default</em><big>)</big><a class="headerlink" href="#opengl.drawable.Base.get" title="Permalink to this definition">¶</a></dt>
+<dt id="opengl.drawable.BaseActor.get">
+<tt class="descname">get</tt><big>(</big><em>key</em>, <em>default</em><big>)</big><a class="headerlink" href="#opengl.drawable.BaseActor.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the value for key or a default.</p>
 <p>This is the equivalent of the dict get method, except that it
 returns only the default value if the key was not found in self,
@@ -290,16 +359,16 @@ and there is no _default_ method or it raised a KeyError.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="opengl.drawable.Base.setdefault">
-<tt class="descname">setdefault</tt><big>(</big><em>key</em>, <em>default</em><big>)</big><a class="headerlink" href="#opengl.drawable.Base.setdefault" title="Permalink to this definition">¶</a></dt>
+<dt id="opengl.drawable.BaseActor.setdefault">
+<tt class="descname">setdefault</tt><big>(</big><em>key</em>, <em>default</em><big>)</big><a class="headerlink" href="#opengl.drawable.BaseActor.setdefault" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replaces the setdefault function of a normal dictionary.</p>
 <p>This is the same as the get method, except that it also sets the
 default value if get found a KeyError.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="opengl.drawable.Base.update">
-<tt class="descname">update</tt><big>(</big><em>data={}</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#opengl.drawable.Base.update" title="Permalink to this definition">¶</a></dt>
+<dt id="opengl.drawable.BaseActor.update">
+<tt class="descname">update</tt><big>(</big><em>data={}</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#opengl.drawable.BaseActor.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a dictionary to the Dict object.</p>
 <p>The data can be a dict or Dict type object.</p>
 </dd></dl>
@@ -322,12 +391,6 @@ render: push values to shader and render the object</p>
 <p>If the actor does not have a name, it will be given a
 default one.</p>
 <p>The actor has the following attributes, initialized or computed on demand</p>
-<dl class="method">
-<dt id="opengl.drawable.Actor.points">
-<tt class="descname">points</tt><big>(</big><big>)</big><a class="headerlink" href="#opengl.drawable.Actor.points" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the coords of the geometry as a 2D array</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="opengl.drawable.Actor.prepare">
 <tt class="descname">prepare</tt><big>(</big><em>canvas</em><big>)</big><a class="headerlink" href="#opengl.drawable.Actor.prepare" title="Permalink to this definition">¶</a></dt>
@@ -400,7 +463,7 @@ and there is no _default_ method or it raised a KeyError.</p>
 <dt id="opengl.drawable.Actor.okColor">
 <tt class="descname">okColor</tt><big>(</big><em>color</em>, <em>colormap=None</em><big>)</big><a class="headerlink" href="#opengl.drawable.Actor.okColor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute a color usable by the shader.</p>
-<p>The shader only supports 3*float type of colors:</p>
+<p>The shader (currently) only supports 3*float type of colors:</p>
 <ul class="simple">
 <li>None</li>
 <li>single color (separate for front and back faces)</li>
@@ -501,7 +564,7 @@ value of all the objects inside.</p>
 
 </div>
 <div class="section" id="functions-defined-in-module-opengl-drawable">
-<h2>72.2. Functions defined in module opengl.drawable<a class="headerlink" href="#functions-defined-in-module-opengl-drawable" title="Permalink to this headline">¶</a></h2>
+<h2>71.2. Functions defined in module opengl.drawable<a class="headerlink" href="#functions-defined-in-module-opengl-drawable" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -521,12 +584,12 @@ value of all the objects inside.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="opengl.matrix.html" title="73. opengl.matrix — opengl/matrix.py"
+          <a href="opengl.matrix.html" title="72. opengl.matrix — opengl/matrix.py"
              >next</a> |</li>
         <li class="right" >
-          <a href="opengl.decors.html" title="71. opengl.decors — Decorations for the OpenGL canvas."
+          <a href="opengl.decors.html" title="70. opengl.decors — Decorations for the OpenGL canvas."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -534,7 +597,7 @@ value of all the objects inside.</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on May 22, 2015.
+      Last updated on Jun 18, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

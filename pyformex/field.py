@@ -38,11 +38,8 @@ scalar and vectorial field data over a geometrical domain.
 """
 from __future__ import print_function
 
-import pyformex as pf
 from pyformex import utils
 import pyformex.arraytools as at
-from pyformex.formex import Formex
-from pyformex.mesh import Mesh
 
 
 ##############################################################
@@ -291,7 +288,7 @@ class Field(object):
                     return self.convert('elemn').convert('node',toname)
 
         if data is None:
-            raise ValueError("Can not convert %s field data from '%s' to '%s'" % (self.geometry.__class__.__name__,fromtype,totype))
+            raise ValueError("Can not convert %s field data from '%s' to '%s'" % (self.geometry.__class__.__name__,self.fldtype,totype))
 
         return Field(self.geometry,totype,data,toname)
 

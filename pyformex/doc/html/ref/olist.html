@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>81. olist — Some convenient shortcuts for common list operations. &mdash; pyFormex 1.0.2~a1 documentation</title>
+    <title>80. olist — Some convenient shortcuts for common list operations. &mdash; pyFormex 1.0.2-a5 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2~a1',
+        VERSION:     '1.0.2-a5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,10 +51,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2~a1 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="82. mydict —" href="mydict.html" />
-    <link rel="prev" title="80. opengl.texture — Texture rendering." href="opengl.texture.html" />
+    <link rel="next" title="81. mydict —" href="mydict.html" />
+    <link rel="prev" title="79. opengl.texture — Texture rendering." href="opengl.texture.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -77,12 +77,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="mydict.html" title="82. mydict —"
+          <a href="mydict.html" title="81. mydict —"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="opengl.texture.html" title="80. opengl.texture — Texture rendering."
+          <a href="opengl.texture.html" title="79. opengl.texture — Texture rendering."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -101,9 +101,9 @@
    
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">81. <tt class="docutils literal"><span class="pre">olist</span></tt> &#8212; Some convenient shortcuts for common list operations.</a><ul>
-<li><a class="reference internal" href="#classes-defined-in-module-olist">81.1. Classes defined in module olist</a></li>
-<li><a class="reference internal" href="#functions-defined-in-module-olist">81.2. Functions defined in module olist</a></li>
+<li><a class="reference internal" href="#">80. <tt class="docutils literal"><span class="pre">olist</span></tt> &#8212; Some convenient shortcuts for common list operations.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-olist">80.1. Classes defined in module olist</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-olist">80.2. Functions defined in module olist</a></li>
 </ul>
 </li>
 </ul>
@@ -111,10 +111,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="opengl.texture.html"
-                        title="previous chapter">80. <tt class="docutils literal"><span class="pre">opengl.texture</span></tt> &#8212; Texture rendering.</a></p>
+                        title="previous chapter">79. <tt class="docutils literal"><span class="pre">opengl.texture</span></tt> &#8212; Texture rendering.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="mydict.html"
-                        title="next chapter">82. <tt class="docutils literal"><span class="pre">mydict</span></tt> &#8212;</a></p>
+                        title="next chapter">81. <tt class="docutils literal"><span class="pre">mydict</span></tt> &#8212;</a></p>
   
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -149,49 +149,97 @@
           <div class="body">
             
   <div class="section" id="module-olist">
-<span id="olist-some-convenient-shortcuts-for-common-list-operations"></span><span id="sec-ref-olist"></span><h1>81. <a class="reference internal" href="#module-olist" title="olist: Some convenient shortcuts for common list operations."><tt class="xref py py-mod docutils literal"><span class="pre">olist</span></tt></a> &#8212; Some convenient shortcuts for common list operations.<a class="headerlink" href="#module-olist" title="Permalink to this headline">¶</a></h1>
+<span id="olist-some-convenient-shortcuts-for-common-list-operations"></span><span id="sec-ref-olist"></span><h1>80. <a class="reference internal" href="#module-olist" title="olist: Some convenient shortcuts for common list operations."><tt class="xref py py-mod docutils literal"><span class="pre">olist</span></tt></a> &#8212; Some convenient shortcuts for common list operations.<a class="headerlink" href="#module-olist" title="Permalink to this headline">¶</a></h1>
 <p>While most of these functions look (and work) like set operations, their
 result differs from using Python builtin Sets in that they preserve the
 order of the items in the lists.</p>
 <div class="section" id="classes-defined-in-module-olist">
-<h2>81.1. Classes defined in module olist<a class="headerlink" href="#classes-defined-in-module-olist" title="Permalink to this headline">¶</a></h2>
+<h2>80.1. Classes defined in module olist<a class="headerlink" href="#classes-defined-in-module-olist" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="olist.List">
+<em class="property">class </em><tt class="descclassname">olist.</tt><tt class="descname">List</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#olist.List" title="Permalink to this definition">¶</a></dt>
+<dd><p>A versatile list class.</p>
+<p>This class extends the builtin list type with automatic calling
+of a method for all items in the list.
+Any method other than the ones defined here will return a new List
+with the method applied to each of the items, using the same arguments.</p>
+<p>As an exmaple, List([a,b]).len() will return List([a.len(),b.len()])</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">L</span> <span class="o">=</span> <span class="n">List</span><span class="p">([</span><span class="s">&#39;first&#39;</span><span class="p">,</span><span class="s">&#39;second&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">L</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+<span class="go">[&#39;FIRST&#39;, &#39;SECOND&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pickle</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;test.pickle&#39;</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span> <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">f</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">L</span> <span class="o">=</span> <span class="s">&#39;third&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+<span class="go">third</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;test.pickle&#39;</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span> <span class="n">L</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+<span class="go">[&#39;first&#39;, &#39;second&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </div>
 <div class="section" id="functions-defined-in-module-olist">
-<h2>81.2. Functions defined in module olist<a class="headerlink" href="#functions-defined-in-module-olist" title="Permalink to this headline">¶</a></h2>
+<h2>80.2. Functions defined in module olist<a class="headerlink" href="#functions-defined-in-module-olist" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="olist.roll">
 <tt class="descclassname">olist.</tt><tt class="descname">roll</tt><big>(</big><em>a</em>, <em>n=1</em><big>)</big><a class="headerlink" href="#olist.roll" title="Permalink to this definition">¶</a></dt>
 <dd><p>Roll the elements of a list n positions forward (backward if n &lt; 0)</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">roll</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">[2, 3, 4, 0, 1]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="olist.union">
 <tt class="descclassname">olist.</tt><tt class="descname">union</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#olist.union" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list with all items in a or in b, in the order of a,b.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">union</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="go">[0, 1, 2, 3]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="olist.difference">
 <tt class="descclassname">olist.</tt><tt class="descname">difference</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#olist.difference" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list with all items in a but not in b, in the order of a.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">difference</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="go">[0]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="olist.symdifference">
 <tt class="descclassname">olist.</tt><tt class="descname">symdifference</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#olist.symdifference" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list with all items in a or b but not in both.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">symdifference</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="go">[0, 3]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="olist.intersection">
 <tt class="descclassname">olist.</tt><tt class="descname">intersection</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#olist.intersection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list with all items in a and  in b, in the order of a.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">intersection</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="go">[1, 2]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="olist.concatenate">
 <tt class="descclassname">olist.</tt><tt class="descname">concatenate</tt><big>(</big><em>a</em><big>)</big><a class="headerlink" href="#olist.concatenate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Concatenate a list of lists</p>
+<dd><p>Concatenate a list of lists.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">concatenate</span><span class="p">([</span><span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">)])</span>
+<span class="go">[0, 1, 2, 1, 2, 3]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -231,12 +279,20 @@ the last one, which may be shorter.</p>
 <tt class="descclassname">olist.</tt><tt class="descname">select</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#olist.select" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a subset of items from a list.</p>
 <p>Returns a list with the items of a for which the index is in b.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">select</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">),[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="go">[3, 5]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="olist.remove">
 <tt class="descclassname">olist.</tt><tt class="descname">remove</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#olist.remove" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the complement of select(a,b).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">remove</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">),[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="go">[2, 4]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -247,6 +303,12 @@ the last one, which may be shorter.</p>
 If i is in the list, it is moved to the front of the list.
 Else i is added at the front of the list.</p>
 <p>This changes the list inplace and does not return a value.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">L</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">toFront</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">L</span>
+<span class="go">[3, 0, 1, 2, 4]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -259,6 +321,12 @@ The items are put in separate lists according to their length.</p>
 the values are lists of items with this length.</p>
 <p>If return_indices is True, a second dict is returned, with the same
 keys, holding the original indices of the items in the lists.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">collectOnLength</span><span class="p">([</span><span class="s">&#39;a&#39;</span><span class="p">,</span><span class="s">&#39;bc&#39;</span><span class="p">,</span><span class="s">&#39;defg&#39;</span><span class="p">,</span><span class="s">&#39;hi&#39;</span><span class="p">,</span><span class="s">&#39;j&#39;</span><span class="p">,</span><span class="s">&#39;kl&#39;</span><span class="p">])</span>
+<span class="go">{1: [&#39;a&#39;, &#39;j&#39;], 2: [&#39;bc&#39;, &#39;hi&#39;, &#39;kl&#39;], 4: [&#39;defg&#39;]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">collectOnLength</span><span class="p">([</span><span class="s">&#39;a&#39;</span><span class="p">,</span><span class="s">&#39;bc&#39;</span><span class="p">,</span><span class="s">&#39;defg&#39;</span><span class="p">,</span><span class="s">&#39;hi&#39;</span><span class="p">,</span><span class="s">&#39;j&#39;</span><span class="p">,</span><span class="s">&#39;kl&#39;</span><span class="p">],</span><span class="n">return_indices</span><span class="o">=</span><span class="bp">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">{1: [0, 4], 2: [1, 3, 5], 4: [2]}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
@@ -280,12 +348,12 @@ keys, holding the original indices of the items in the lists.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="mydict.html" title="82. mydict —"
+          <a href="mydict.html" title="81. mydict —"
              >next</a> |</li>
         <li class="right" >
-          <a href="opengl.texture.html" title="80. opengl.texture — Texture rendering."
+          <a href="opengl.texture.html" title="79. opengl.texture — Texture rendering."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2~a1 documentation</a> &gt;</li>
+        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
           <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
@@ -293,7 +361,7 @@ keys, holding the original indices of the items in the lists.</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on May 22, 2015.
+      Last updated on Jun 18, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
     </span>

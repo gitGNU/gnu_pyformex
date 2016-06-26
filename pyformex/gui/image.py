@@ -34,7 +34,7 @@ from __future__ import print_function
 import pyformex as pf
 
 from OpenGL import GL
-from pyformex.gui import QtCore, QtGui, QtOpenGL
+from pyformex.gui import QtGui
 from pyformex import utils
 from pyformex.gui.qtutils import relPos
 import os
@@ -46,11 +46,22 @@ image_formats_qtr = []
 image_formats_gl2ps = []
 image_formats_fromeps = []
 
-def imageFormats(type='w'):
-    if type == 'r':
+
+def imageFormats(mode='w'):
+    """Return a list of the valid image formats.
+
+    image formats are lower case strings as 'png', 'gif', 'ppm', 'eps', etc.
+    The available image formats are derived from the installed software.
+    
+    Parameters:
+
+    - `mode`: 'w' or 'r', for formats that can be written or read.    
+    """
+    if mode == 'r':
         return image_formats_qtr
     else:
         return image_formats_qt + image_formats_gl2ps + image_formats_fromeps
+
 
 
 # global parameters for multisave mode
@@ -96,17 +107,6 @@ Qt image types for saving: %s
 Qt image types for input: %s
 gl2ps image types: %s
 image types converted from EPS: %s""" % (image_formats_qt, image_formats_qtr, image_formats_gl2ps, image_formats_fromeps), pf.DEBUG.IMAGE|pf.DEBUG.INFO)
-
-
-def imageFormats():
-    """Return a list of the valid image formats.
-
-    image formats are lower case strings as 'png', 'gif', 'ppm', 'eps', etc.
-    The available image formats are derived from the installed software.
-    """
-    return image_formats_qt + \
-           image_formats_gl2ps + \
-           image_formats_fromeps
 
 
 def checkImageFormat(fmt,verbose=True):
