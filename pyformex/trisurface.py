@@ -34,6 +34,7 @@ from pyformex import fileread, filewrite, geomtools, inertia, utils
 from pyformex.coords import Coords
 from pyformex.connectivity import Connectivity, connectedLineElems, adjacencyArrays
 from pyformex.mesh import Mesh
+from pyformex.formex import Formex
 from pyformex.arraytools import *
 
 import os
