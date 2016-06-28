@@ -33,8 +33,8 @@ vtk and pyFormex.
 from __future__ import print_function
 
 
-from pyformex import utils,warning
-utils.requireModule('vtk')
+from pyformex import software,utils,warning
+software.requireModule('vtk')
 
 from pyformex import zip
 from pyformex.arraytools import DEG, RAD, normalize, length, trfMatrix, rotationAnglesFromMatrix

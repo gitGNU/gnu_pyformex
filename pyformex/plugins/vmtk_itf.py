@@ -30,8 +30,8 @@ and http://www.vmtk.org/VmtkScripts/vmtkscripts/
 from __future__ import print_function
 from pyformex import zip
 
-from pyformex import utils
-utils.requireExternal('vmtk')
+from pyformex import software,utils
+software.requireExternal('vmtk')
 
 import pyformex as pf
 from pyformex.coords import *
