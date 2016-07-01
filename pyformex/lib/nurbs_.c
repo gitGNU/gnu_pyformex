@@ -271,16 +271,15 @@ static void all_bernstein(int n, double u, double *B)
 static int find_last_occurrence(double *U, double u)
 {
   int i = 0;
-  while (U[i] <= u) ++i;
+  while (U[i] <= u + 1.e-5) ++i;
   return i-1;
 }
 
 /* Find multiplicity of u in U, where r is the last occurrence of u in U*/
 static int find_multiplicity(double *U, double u, int r)
 {
-  int i;
-  i = r;
-  while (U[i] == u) --i;
+  int i = r;
+  while (U[i] >= u - 1.e-5) --i;
   return r-i;
 }
 
@@ -757,7 +756,7 @@ Modified algorithm A5.8 from 'The NURBS Book' pg185.
 
 static int curve_knot_remove(double *P, int nc, int nd, double *U, int nk, double u, int num, double tol)
 {
-  int n,m,p,ord,fout,last,first,t,off,k,i,j,ii,jj,remflag,r,s,kk;
+  int n,m,p,ord,fout,last,first,t,off,i,j,ii,jj,k,kk,remflag,r,s;
   double alfi,alfj;
 
   n = nc - 1;
@@ -768,7 +767,9 @@ static int curve_knot_remove(double *P, int nc, int nd, double *U, int nk, doubl
   double *xtemp = (double*) malloc(nd*sizeof(double));
 
   r = find_last_occurrence(U,u);
+  //printf("Remove knot value %f, index %d\n",u,r);
   s = find_multiplicity(U,u,r);
+  //printf("Remove knot value %f, index %d, multiplicity %d\n",u,r,s);
 
   ord = p+1;
   fout = (2*r-s-p)/2;  /* First control point out */
@@ -796,13 +797,13 @@ static int curve_knot_remove(double *P, int nc, int nd, double *U, int nk, doubl
     /* Check if knot removable */
     if (j-i < t) {
       if (distance4d(temp+(ii-1)*nd,temp+(jj+1)*nd,nd) <= tol)
-	remflag = 1;
-    }
+    	remflag = 1;
+      }
     else {
       alfi = (u-U[i])/(U[i+ord+t]-U[i]);
       for (k=0; k<nd; ++k) xtemp[k] = alfi*temp[(ii+t+1)*nd+k] + (1.0-alfi)*temp[(ii-1)*nd+k];
       if (distance4d(P+i*nd,xtemp,nd) <= tol)
-	remflag = 1;
+	    remflag = 1;
     }
     if (remflag == 0)
       /* Cannot remove any more knots */
@@ -813,30 +814,31 @@ static int curve_knot_remove(double *P, int nc, int nd, double *U, int nk, doubl
       i = first;
       j = last;
       while (j-i > t) {
-	for (k=0; k<nd; ++k) P[i*nd+k] = temp[(i-off)*nd+k];
-	for (k=0; k<nd; ++k) P[j*nd+k] = temp[(j-off)*nd+k];
-	++i;
-	--j;
+	    for (k=0; k<nd; ++k) P[i*nd+k] = temp[(i-off)*nd+k];
+	    for (k=0; k<nd; ++k) P[j*nd+k] = temp[(j-off)*nd+k];
+	    ++i;
+	    --j;
       }
     }
     --first;
     ++last;
   }
-  if (t==0) return t;
-  /* Shift knots */
-  for (kk=r+1; kk<= m; ++kk) U[kk-t] = U[kk];
-  /* Pj thru Pi will be overwritten */
-  j = fout;
-  i = j;
-  for (kk=1; kk<t; ++kk) {
-  /*   if (kk % 2 == 1) */
-  /*     ++i; */
-  /*   else */
-  /*     --i; */
-  /* } */
-  /* for (kk=i+1; kk<=n ++kk) { /\* Shift *\/ */
-  /*   for (k=0; k<nd; ++k) P[j*nd+k] = P[kk*nd+k]; */
-  /*   ++j; */
+  if (t>0) {
+    /* Shift knots */
+    for (k=r+1; k<= m; ++k) U[k-t] = U[k];
+    /* Pj thru Pi will be overwritten */
+    j = fout;
+    i = j;
+    for (k=1; k<t; ++k) {
+      if (k % 2 == 1)
+        ++i;
+      else
+        --j;
+    }
+    for (k=i+1; k<=n; ++k) { /* Shift */
+      for (kk=0; kk<nd; ++kk) P[j*nd+kk] = P[k*nd+kk];
+      ++j;
+    }
   }
   return t;
 }
@@ -1819,7 +1821,7 @@ static PyObject * curveDecompose(PyObject *self, PyObject *args)
 }
 
 static char curveKnotRemove_doc[] =
-"Refine curve knot vector.\n\
+"Coarsen curve knot vector.\n\
 \n\
 Input:\n\
 \n\
@@ -1840,11 +1842,11 @@ static PyObject * curveKnotRemove(PyObject *self, PyObject *args)
 {
   int nd, nc, nk, num, t, i;
   npy_intp *P_dim, *U_dim, dim[2];
-  double *P, *U, u, tol, *newP;
+  double *P, *U, u, tol, *newP, *newU;
   PyObject *a1, *a2;
-  PyObject *arr1=NULL, *arr2=NULL, *ret=NULL;
+  PyObject *arr1=NULL, *arr2=NULL, *ret1 = NULL, *ret2 = NULL;
 
-  if(!PyArg_ParseTuple(args, "OOfif", &a1, &a2, &u, &num, &tol))
+  if(!PyArg_ParseTuple(args, "OOdid", &a1, &a2, &u, &num, &tol))
     return NULL;
   arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_IN_ARRAY);
   if(arr1 == NULL)
@@ -1862,20 +1864,28 @@ static PyObject * curveKnotRemove(PyObject *self, PyObject *args)
   U = (double *)PyArray_DATA(arr2);
 
   /* Compute */
+//  print_mat(P,nc,nd);
+//  print_mat(U,1,nk);
+//  printf("Remove knot value %f %d times\n",u,num);
   t = curve_knot_remove(P, nc, nd, U, nk, u, num, tol);
-  print_mat(P,nc-t,nd);
+//  print_mat(P,nc-t,nd);
+//  print_mat(U,1,nk-t);
 
   /* Create the return arrays */
   dim[0] = nc-t;
   dim[1] = nd;
-  ret = PyArray_SimpleNew(2,dim, NPY_DOUBLE);
-  newP = (double *)PyArray_DATA(ret);
+  ret1 = PyArray_SimpleNew(2,dim, NPY_DOUBLE);
+  newP = (double *)PyArray_DATA(ret1);
   for (i=0; i<dim[0]*dim[1]; ++i) newP[i] = P[i];
+  dim[0] = nk-t;
+  ret2 = PyArray_SimpleNew(1,dim, NPY_DOUBLE);
+  newU = (double *)PyArray_DATA(ret2);
+  for (i=0; i<dim[0]; ++i) newU[i] = U[i];
 
   /* Clean up and return */
   Py_DECREF(arr1);
   Py_DECREF(arr2);
-  return ret;
+  return Py_BuildValue("iOO",t,ret1,ret2);
 
  fail:
   //printf("error cleanup and return\n");

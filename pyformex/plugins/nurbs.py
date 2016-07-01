@@ -435,7 +435,7 @@ class NurbsCurve(Geometry4):
 
 
     def insertKnots(self, u):
-        """Insert a set of knots in the curve.
+        """Insert a set of knots in the Nurbs curve.
 
         u is a vector with knot parameter values to be inserted into the
         curve. The control points are adapted to keep the curve unchanged.
@@ -461,22 +461,32 @@ class NurbsCurve(Geometry4):
         return NurbsCurve(X, degree=self.degree, blended=False)
 
 
-    def removeKnots(self, u, tol):
-        """Remove a knots in the curve.
+    def removeKnot(self, u, m, tol):
+        """Remove a knot from the knot vector of the Nurbs curve.
 
-        u is a vector with knot parameter values to be inserted into the
-        curve. The control points are adapted to keep the curve unchanged.
+        u: knot value to remove
+        m: how many times to remove
 
         Returns:
 
-        A Nurbs curve equivalent with the original but with the
-        specified knot values inserted in the knot vector, and the control
-        points adapted.
+        A Nurbs curve equivalent with the original but with a knot vector
+        where the specified value has been removed m times, if possible,
+        or else as many times as possible. The control points are adapted
+        accordingly.
+
         """
         if self.closed:
-            raise ValueError("insertKnots currently does not work on closed curves")
-        newP, newU = nurbs.curveKnotRemove(self.coords, self.knots, u)
-        return NurbsCurve(newP, degree=self.degree, knots=newU, closed=self.closed)
+            raise ValueError("removeKnots currently does not work on closed curves")
+        # TODO: make sure the copy is not needed
+        coords = self.coords#.copy()
+        knots = self.knots#.copy()
+        t,newP,newU = nurbs.curveKnotRemove(coords, knots, u, m, tol)
+        if t > 0:
+            print("Removed the knot value %s %s times" % (u,t))
+            return NurbsCurve(newP, degree=self.degree, knots=newU, closed=self.closed)
+        else:
+            print("Can not remove the knot value %s" % u)
+            return self
 
 
     def approx(self,ndiv=None,nseg=None,**kargs):

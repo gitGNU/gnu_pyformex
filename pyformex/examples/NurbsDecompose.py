@@ -40,7 +40,7 @@ _techniques = ['nurbs']
 from pyformex.gui.draw import *
 from pyformex.plugins.nurbs import *
 from pyformex.plugins.curve import *
-from pyformex.plugins.nurbs_menu import _options, drawNurbs
+from pyformex.plugins.nurbs_menu import _options#, drawNurbs
 
 class _decors:
     ctrl_numbers = None
@@ -49,8 +49,15 @@ class _decors:
 def clearDecors():
     undraw(_decors.ctrl_numbers)
 
+# TODO: This function should be merged with plugins.nurbs_menu.drawNurbs
+def drawNurbs(N,**kargs):
+    """Draw the Nurbs curve N, with options"""
+    clear()
+    if not isinstance(N,NurbsCurve):
+        return
+    for k in kargs:
+        setattr(_options,k,kargs[k])
 
-def drawNurbs(N):
     clearDecors()
     draw(N, color=_options.color, nolight=True)
     if _options.ctrl:
@@ -67,13 +74,77 @@ def drawNurbs(N):
             drawMarks(N.knotPoints(), ["%f"%i for i in N.knots], leader='  --> ')
 
 
-def run():
-    clear()
-    flat()
+def createNurbs():
+    """Create a Nurbs curve."""
+    global N,dia
 
+    # TODO: these data could be customized from the dialog
     C = Formex('12141214').toCurve()
     #C = Formex('214').toCurve()
     degree = 4
+    N = NurbsCurve(C.coords, degree=degree)#,blended=False)
+    print(N)
+    drawNurbs(N,linewidth=1,color=magenta,knotsize=5)
+    zoomAll()
+
+
+def insertKnot():
+    """Insert a knot in the knot vector of Nurbs curve N."""
+    global N,dia
+
+    dia.acceptData()
+    res = dia.results
+    u = eval('[%s]' % res['u'])
+    N = N.insertKnots(u)
+    print(N)
+    drawNurbs(N,linewidth=5,color=blue,knotsize=5)
+    zoomAll()
+
+
+def removeKnot():
+    """Insert a knot in the knot vector of Nurbs curve N."""
+    global N,dia
+
+    dia.acceptData()
+    res = dia.results
+    ur = res['ur']
+    m = res['m']
+    N = N.removeKnot(ur,m,0.001)
+    print(N)
+    drawNurbs(N,linewidth=5,color=blue,knotsize=5)
+    zoomAll()
+
+
+def decompose():
+    """Decompose Nurbs curve N"""
+    global N,C,dia
+
+    N1 = N.decompose()
+    print(N1)
+    drawNurbs(N1,linewidth=5,color=red,knotsize=10,knot_values=False)
+    zoomAll()
+    C = BezierSpline(control=N1.coords.toCoords(), degree=N1.degree)
+    draw(C, color=blue)
+
+
+    for i,Ci in enumerate(C.split()):
+        Ci.setProp(i)
+        draw(Ci,color=i,linewidth=5)
+
+
+
+def close():
+    global dia
+    dia.close()
+    dia = None
+
+
+dia = None
+
+def run():
+    global N, dia
+    clear()
+    flat()
 
     clear()
     linewidth(1)
@@ -82,55 +153,26 @@ def run():
     _options.ctrl_polygon = True
     _options.knot_values = True
 
-    N = NurbsCurve(C.coords, degree=degree)#,blended=False)
-    print(N)
-    _options.linewidth = 1
-    _options.color = magenta
-    _options.knotsize = 5
-    drawNurbs(N)
-    zoomAll()
+    createNurbs()
 
-    while True:
-        res = askItems([
-            _I('u', 0.2, text='New knot values'),
-            ], default='Cancel')
-        if not res:
-            break;
+    if dia:
+        dia.close()
+    dia = Dialog([
+            _G('Knot Insertion',[
+                _I('u', 0.2, text='Knot value(s) to insert',tooltip='A single value or a comma separated sequence'),
+            ]),
+            _G('Knot Removal',[
+                _I('ur', 0.2, text='Knot value to remove'),
+                _I('m', 1, text='How many times to remove'),
+            ]),
+        ], actions=[
+            ('Close',close),
+            ('Insert Knot',insertKnot),
+            ('Remove Knot',removeKnot),
+            ('Decompose',decompose),
+        ])
+    dia.show()
 
-        u = eval('[%s]' % res['u'])
-        N = N.insertKnots(u)
-        _options.linewidth = 5
-        _options.color = blue
-        _options.knotsize = 10
-        drawNurbs(N)
-        zoomAll()
-
-    ## if ack("Remove knots?"):
-    ##     u = 0.5
-    ##     print N.removeKnots(u,1,0.001)
-
-        # Break from endless loop if an input timeout is active !
-        if widgets.input_timeout >= 0:
-            break
-
-
-    if ack("Decompose curve?"):
-
-        N1 = N.decompose()
-        print(N1)
-        _options.linewidth = 5
-        _options.color = red
-        _options.knotsize = 10
-        _options.knot_values = False
-        drawNurbs(N1)
-        zoomAll()
-        C = BezierSpline(control=N1.coords.toCoords(), degree=N1.degree)
-        draw(C, color=blue)
-
-
-        if ack("Shift decomposed parts?"):
-            CS = [ c.trl([0., 0.1*(-1)**i, 0.]) for i, c in enumerate(C.split()) ]
-            draw(CS)
 
 
 if __name__ == '__draw__':
