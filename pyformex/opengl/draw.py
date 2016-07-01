@@ -371,18 +371,16 @@ def draw(F,
                 # Immediately show the new actor
                 showActor(actor,opts.highlight)
 
-        if single:
-            # Now draw all actors in a single shot
-            actor = actors[0]
-            showActor(actor,opts.highlight)
-
+        if single or not isinstance(F, list):
+            # Return a single actor
+            actor = actors[0] if len(actors) > 0 else None
         else:
-            if not isinstance(F, list):
-                # For a single input geometry, always return single actor
-                actor = actors[0]
-            else:
-                # Return the whole actor list
-                actor = actors
+            # Return the whole actor list
+            actor = actors
+
+        if single and actor is not None:
+            # Draw all actors in a single shot
+            showActor(actor,opts.highlight)
 
         view = opts.view
         bbox = opts.bbox
