@@ -585,7 +585,6 @@ Output:
 
 Modified algorithm A5.4 from 'The NURBS Book' pg164.
 */
-
 static void curve_knot_refine(double *P, int nc, int nd, double *U, int nk, double *u, int nu, double *newP, double *newU)
 {
   int a, b, r, l, i, j, k, n, p, q, ind;
@@ -644,6 +643,7 @@ Input:
 - nc: number of control points = n+1
 - nd: dimension of the points (3 or 4)
 - U: knot sequence: U[0] .. U[m]   m = n+p+1 = nc+p
+- nk: number of knot values = m+1
 
 Output:
 
@@ -652,8 +652,6 @@ Output:
 
 Modified algorithm A5.6 from 'The NURBS Book' pg173.
 */
-
-
 static void curve_decompose(double *P, int nc, int nd, double *U, int nk, double *newP)
 {
   int i, j, k, p, s, m, r, a, b, mult, n, nb, ii, save;
@@ -676,7 +674,7 @@ static void curve_decompose(double *P, int nc, int nd, double *U, int nk, double
 
   // INITIALIZE r in case it would not happen below.
   // To AVOID COMPILER WARNING
-  // we should check THIS WITH THE nURBS BOOK
+  // we should check this with the Nurbs book
   r = 0;
 
   while (b < m) {
@@ -731,7 +729,6 @@ static void curve_decompose(double *P, int nc, int nd, double *U, int nk, double
 }
 
 
-
 /* curve_knot_remove */
 /*
 Refine curve knot vector.
@@ -743,6 +740,7 @@ Input:
 - nc: number of control points = n+1
 - nd: dimension of the points (3 or 4)
 - U: knot sequence: U[0] .. U[m]   m = n+p+1 = nc+p
+- nk: number of knot values = m+1
 - u: knot value to remove: U[0] <= u <= U[m]
 - num: number of times to remove u
 - tol: allowable tolerance for deviation of the curve. See NURBS book, p. 185
@@ -843,229 +841,220 @@ static int curve_knot_remove(double *P, int nc, int nd, double *U, int nk, doubl
   return t;
 }
 
-/* static char bspdegelev_doc[] = */
-/* "Degree elevate a B-Spline t times.\n\ */
-/* \n\ */
-/* INPUT:\n\ */
-/* \n\ */
-/*  n,p,U,Pw,t\n\ */
-/* \n\ */
-/* OUTPUT:\n\ */
-/* \n\ */
-/*  nh,Uh,Qw\n\ */
-/* \n\ */
-/* Modified version of Algorithm A5.9 from 'The NURBS BOOK' pg206.\n\ */
-/* "; */
 
+/* curve_degree_elevate */
+/*
+Degree elevate a curve t times.
 
-/* static void _bspdegelev(int p, double **P, int nd, int nc, double *U,  */
-/*                int t, int *nh, double **newP, double *newU) */
-/* { */
-/*   int i, j, q, s, m, ph, ph2, mpi, mh, r, a, b, cind, oldr, mult; */
-/*   int n, lbz, rbz, save, tr, kj, first, kind, last, bet, ii; */
-/*   double inv, ua, ub, numer, den, alf, gam; */
-/*   double **bezalfa, **bpts, **ebpts, **Nextbpts, *alfa;  */
+Input:
 
-/*   n = nc - 1; */
+- P: control points P(nc,nd)
+- nc: number of control points = n+1
+- nd: dimension of the points (3 or 4)
+- U: knot sequence: U[0] .. U[m]   m = n+p+1 = nc+p
+- nk: number of knot values = m+1
+- t: degree elevation
+- Pw: work space for new control points:
+- Uw: work space for new knots
 
-/*   bezalfa = newmatrix(d+1,p+t+1); */
-/*   bpts = newmatrix(nd,p+1); */
-/*   ebpts = newmatrix(nd,p+t+1); */
-/*   Nextbpts = newmatrix(nd,p); */
-/*   alfa = (double *) malloc(p*sizeof(double)); */
+Output:
+- Pw: new control points Pw(nq,nd)
+- Uw: new knot sequence: Uw[0] .. Uw[mh]   mh = nh+p+t+1 = nq+p+t
+- nq: number of new control points = nh+1
+- nu: number of new knots = mh+1
 
-/*   m = n + p + 1; */
-/*   ph = p + t; */
-/*   ph2 = ph / 2; */
+Modified algorithm A5.9 from 'The NURBS Book' pg206.
+*/
+static void curve_degree_elevate(double *P, int nc, int nd, double *U, int nk, int t, double *Pw, double* Uw, int *nq, int *nu)
+{
+  int n,m,p,mh,ph,ph2,i,j,mpi,kind,r,a,b,cind,kk,oldr,mult,lbz,rbz,numer,k,save,s,first,last,tr,kj;
+  double inv,ua,ub,den,alf,bet,gam;
 
-/*   // compute bezier degree elevation coefficeients   */
-/*   bezalfa[0][0] = bezalfa[p][ph] = 1.0; */
+  n = nc - 1;
+  m = nk - 1;
+  p = m - n - 1;
 
-/*   for (i = 1; i <= ph2; i++) */
-/*   { */
-/*     inv = 1.0 / _binomial(ph,i); */
-/*     mpi = min(p,i); */
+  ph = p+t;
+  ph2 = ph/2;
 
-/*     for (j = max(0,i-t); j <= mpi; j++) */
-/*       bezalfa[j][i] = inv * _binomial(p,j) * _binomial(t,i-j); */
-/*   }     */
+  /* Create local storage */
+  double **bezalfs = newmatrix(ph+1,p+1);
+  double *bpts = (double *) malloc((p+1)*nd*sizeof(double));
+  double *ebpts = (double *) malloc((ph+1)*nd*sizeof(double));
+  double *nbpts = (double *) malloc((p-1)*nd*sizeof(double));
+  double *alfs = (double *) malloc((p-1)*sizeof(double));
 
-/*   for (i = ph2+1; i <= ph-1; i++) */
-/*   { */
-/*     mpi = min(p, i); */
-/*     for (j = max(0,i-t); j <= mpi; j++) */
-/*       bezalfa[j][i] = bezalfa[p-j][ph-i]; */
-/*   }        */
+  /* Compute Bezier degree elevation coefficients */
+  printf("Bezier degree elevation coefficients\n");
+  // Added for testing
+  for (i=0;i<=ph;++i) for (j=0;j<=p;++j) bezalfs[i][j] = 0.0;
+  bezalfs[0][0] = bezalfs[ph][p] = 1.0;
 
-/*   mh = ph; */
-/*   kind = ph+1; */
-/*   r = -1; */
-/*   a = p; */
-/*   b = p+1; */
-/*   cind = 1; */
-/*   ua = U[0]; */
-/*   for (ii = 0; ii < nd; ii++) */
-/*     newP[ii][0] = P[ii][0]; */
+  for (i=1; i<=ph2; ++i) {
+    inv = 1.0 / _binomial(ph,i);
+    mpi = min(p,i);
 
-/*   for (i = 0; i <= ph; i++) */
-/*     newU[i] = ua; */
+    for (j=max(0,i-t); j<=mpi; ++j)
+      bezalfs[i][j] = inv * _binomial(p,j) * _binomial(t,i-j);
+  }
 
-/*   // initialise first bezier seg */
-/*   for (i = 0; i <= p; i++) */
-/*     for (ii = 0; ii < nd; ii++) */
-/*       bpts[ii][i] = P[ii][i];   */
+  for (i=ph2+1; i<=ph-1; ++i) {
+    mpi = min(p, i);
+    for (j=max(0,i-t); j<=mpi; ++j)
+      bezalfs[i][j] = bezalfs[ph-i][p-j];
+  }
+  for (i=0; i<=ph;++i)
+    print_mat(bezalfs[i],1,p+1);
 
-/*   // big loop thru knot vector */
-/*   while (b < m) */
-/*   { */
-/*     i = b; */
-/*     while (b < m && U[b] == U[b+1]) */
-/*       b++; */
+  mh = ph;
+  kind = ph+1;
+  r = -1;
+  a = p;
+  b = p+1;
+  cind = 1;
+  ua = U[0];
+  for (kk=0; kk<nd; ++kk) Pw[0*nd+kk] = P[0*nd+kk];
+  for (i=0; i<=ph; ++i) Uw[i] = ua;
 
-/*     mult = b - i + 1; */
-/*     mh += mult + t; */
-/*     ub = U[b]; */
-/*     oldr = r; */
-/*     r = p - mult; */
+  /* Initialize first bezier segment */
+  for (i=0; i<=p; ++i)
+    for (kk=0; kk<nd; ++kk) bpts[i*nd+kk] = P[i*nd+kk];
 
-/*     // insert knot u(b) r times */
-/*     if (oldr > 0) */
-/*       lbz = (oldr+2) / 2; */
-/*     else */
-/*       lbz = 1; */
+  /* Big loop thru knot vector */
+  while (b < m) {
+    printf("Big loop b = %d < m = %d\n",b,m);
+    i = b;
+    while (b < m && U[b] == U[b+1]) ++b;
 
-/*     if (r > 0) */
-/*       rbz = ph - (r+1)/2; */
-/*     else */
-/*       rbz = ph;   */
+    mult = b-i+1;
+    mh += mult+t;
+    ub = U[b];
+    oldr = r;
+    r = p-mult;
 
-/*     if (r > 0) */
-/*     { */
-/*       // insert knot to get bezier segment */
-/*       numer = ub - ua; */
-/*       for (q = p; q > mult; q--) */
-/*         alfa[q-mult-1] = numer / (U[a+q]-ua); */
-/*       for (j = 1; j <= r; j++)   */
-/*       { */
-/*         save = r - j; */
-/*         s = mult + j;             */
+    /* Insert knot u(b) r times */
+    printf("Insert knot %f %d times\n",ub,r);
+    if (oldr > 0)
+      lbz = (oldr+2)/2;
+    else
+      lbz = 1;
 
-/*         for (q = p; q >= s; q--) */
-/*           for (ii = 0; ii < nd; ii++) */
-/*             bpts[ii][q] = alfa[q-s]*bpts[ii][q]+(1.0-alfa[q-s])*bpts[ii][q-1]; */
+    if (r > 0)
+      rbz = ph-(r+1)/2;
+    else
+      rbz = ph;
 
-/*         for (ii = 0; ii < nd; ii++) */
-/*           Nextbpts[ii][save] = bpts[ii][p]; */
-/*       }   */
-/*     } */
-/*     // end of insert knot */
+    if (r > 0) {
+      /* Insert knot to get bezier segment */
+      printf("Insert knot to get bezier segment\n");
+      numer = ub-ua;
+      for (k=p; k>mult; --k)
+        alfs[k-mult-1] = numer / (U[a+k]-ua);
+      for (j=1; j<=r; ++j) {
+        save = r-j;
+        s = mult+j;
+        for (k=p; k>=s; --k)
+          for (kk=0; kk<nd; ++kk)
+            bpts[k*nd+kk] = alfs[k-s]*bpts[k*nd+kk]+(1.0-alfs[k-s])*bpts[(k-1)*nd+kk];
+        for (kk=0; kk<nd; ++kk)
+  	  nbpts[save*nd+kk] = bpts[p*nd+kk];
+      }
+    }
 
-/*     // degree elevate bezier */
-/*     for (i = lbz; i <= ph; i++) */
-/*     { */
-/*       for (ii = 0; ii < nd; ii++) */
-/*         ebpts[ii][i] = 0.0; */
-/*       mpi = min(p, i); */
-/*       for (j = max(0,i-t); j <= mpi; j++) */
-/*         for (ii = 0; ii < nd; ii++) */
-/*           ebpts[ii][i] = ebpts[ii][i] + bezalfa[j][i]*bpts[ii][j]; */
-/*     } */
-/*     // end of degree elevating bezier */
+    /* Degree elevate bezier */
+    printf("Degree elevate bezier %d..%d\n",lbz,ph);
+    for (i=lbz; i<=ph; ++i) {
+      /* Only points lbz..ph are used below */
+      for (kk=0; kk<nd; ++kk) ebpts[i*nd+kk] = 0.0;
+      mpi = min(p,i);
+      for (j=max(0,i-t); j<=mpi; ++j)
+        for (kk=0; kk<nd; ++kk)
+          ebpts[i*nd+kk] += bezalfs[i][j]*bpts[j*nd+kk];
+    }
 
-/*     if (oldr > 1) */
-/*     { */
-/*       // must remove knot u=U[a] oldr times */
-/*       first = kind - 2; */
-/*       last = kind; */
-/*       den = ub - ua; */
-/*       bet = (ub-newU[kind-1]) / den; */
+    if (oldr > 1) {
+      /* Must remove knot u=U[a] oldr times */
+      first = kind-2;
+      last = kind;
+      den = ub-ua;
+      bet = (ub-Uw[kind-1]) / den;
 
-/*       // knot removal loop */
-/*       for (tr = 1; tr < oldr; tr++) */
-/*       {         */
-/*         i = first; */
-/*         j = last; */
-/*         kj = j - kind + 1; */
-/*         while (j - i > tr) */
-/*         { */
-/*           // loop and compute the new control points */
-/*           // for one removal step */
-/*           if (i < cind) */
-/*           { */
-/*             alf = (ub-newU[i])/(ua-newU[i]); */
-/*             for (ii = 0; ii < nd; ii++) */
-/*               newP[ii][i] = alf * newP[ii][i] + (1.0-alf) * newP[ii][i-1]; */
-/*           }         */
-/*           if (j >= lbz) */
-/*           { */
-/*             if (j-tr <= kind-ph+oldr) */
-/*             {   */
-/*               gam = (ub-newU[j-tr]) / den; */
-/*               for (ii = 0; ii < nd; ii++) */
-/*                 ebpts[ii][kj] = gam*ebpts[ii][kj] + (1.0-gam)*ebpts[ii][kj+1]; */
-/*             } */
-/*             else */
-/*             { */
-/*               for (ii = 0; ii < nd; ii++) */
-/*                 ebpts[ii][kj] = bet*ebpts[ii][kj] + (1.0-bet)*ebpts[ii][kj+1]; */
-/*             } */
-/*           } */
-/*           i++; */
-/*           j--; */
-/*           kj--; */
-/*         }       */
+      /* Knot removal loop */
+      for (tr=1; tr<oldr; ++tr) {
+        i = first;
+        j = last;
+        kj = j-kind+1;
+        while (j-i > tr) {
+          /* Loop and compute the new control points for one removal step */
+          if (i < cind) {
+            alf = (ub-Uw[i])/(ua-Uw[i]);
+  	    for (kk=0; kk<nd; ++kk)
+              Pw[i*nd+kk] = alf * Pw[i*nd+kk] + (1.0-alf) * Pw[(i-1)*nd+kk];
+          }
+          if (j >= lbz) {
+            if (j-tr <= kind-ph+oldr) {
+              gam = (ub-Uw[j-tr]) / den;
+  	      for (kk=0; kk<nd; ++kk)
+                ebpts[kj*nd+kk] = gam*ebpts[kj*nd+kk] + (1.0-gam)*ebpts[(kj+1)*nd+kk];
+            } else {
+  	      for (kk=0; kk<nd; ++kk)
+                ebpts[kj*nd+kk] = bet*ebpts[kj*nd+kk] + (1.0-bet)*ebpts[(kj+1)*nd+kk];
+            }
+          }
+          i++;
+          j--;
+          kj--;
+        }
+        first--;
+        last++;
+      }
+    }
 
-/*         first--; */
-/*         last++; */
-/*       }                     */
-/*     } */
-/*     // end of removing knot n=U[a] */
+    if (a != p)
+      /* Load the knot ua */
+      for (i=0; i<ph-oldr; ++i) {
+        Uw[kind] = ua;
+        ++kind;
+      }
 
-/*     // load the knot ua */
-/*     if (a != p) */
-/*       for (i = 0; i < ph-oldr; i++) */
-/*       { */
-/*         newU[kind] = ua; */
-/*         kind++; */
-/*       } */
+    /* Load ctrl pts into Pw */
+    for (j=lbz; j<=rbz; ++j) {
+      for (kk=0; kk<nd; ++kk)
+        Pw[cind*nd+kk] = ebpts[j*nd+kk];
+      ++cind;
+    }
 
-/*     // load ctrl pts into ic */
-/*     for (j = lbz; j <= rbz; j++) */
-/*     { */
-/*       for (ii = 0; ii < nd; ii++) */
-/*         newP[ii][cind] = ebpts[ii][j]; */
-/*       cind++; */
-/*     } */
+    if (b < m) {
+      /* Set up for next pass thru loop */
+      for (j=0; j<r; ++j)
+        for (kk=0; kk<nd; ++kk)
+          bpts[j*nd+kk] = nbpts[j*nd+kk];
+      for (j=r; j<=p; ++j)
+        for (kk=0; kk<nd; ++kk)
+          bpts[j*nd+kk] = P[(b-p+j)*nd+kk];
+      a = b;
+      ++b;
+      ua = ub;
+    } else {
+      /* End knot */
+      for (i=0; i<=ph; ++i)
+        Uw[kind+i] = ub;
+    }
 
-/*     if (b < m) */
-/*     { */
-/*       // setup for next pass thru loop */
-/*       for (j = 0; j < r; j++) */
-/*         for (ii = 0; ii < nd; ii++) */
-/*           bpts[ii][j] = Nextbpts[ii][j]; */
-/*       for (j = r; j <= p; j++) */
-/*         for (ii = 0; ii < nd; ii++) */
-/*           bpts[ii][j] = P[ii][b-p+j]; */
-/*       a = b; */
-/*       b++; */
-/*       ua = ub; */
-/*     } */
-/*     else */
-/*       // end knot */
-/*       for (i = 0; i <= ph; i++) */
-/*         newU[kind+i] = ub; */
-/*   }                   */
-/*   // end while loop    */
+  } /* end of big while loop */
 
-/*   *nh = mh - ph - 1; */
+  *nq = mh-ph;
+  *nu = kind+ph+1;
+  print_mat(Pw,*nq,nd);
+  print_mat(Uw,1,*nu);
 
-/*   freematrix(bezalfa); */
-/*   freematrix(bpts); */
-/*   freematrix(ebpts); */
-/*   freematrix(Nextbpts); */
-/*   free(alfa); */
-/* } */
-
+  printf("Free the work spaces\n");
+  freematrix(bezalfs);
+  free(bpts);
+  free(ebpts);
+  free(nbpts);
+  free(alfs);
+}
 
 
 /* curve_global_interp_mat */
@@ -1434,8 +1423,8 @@ static PyObject * horner(PyObject *self, PyObject *args)
   for (i=0; i<nu; ++i)
     for (j=0; j<nd; ++j)
       *pnt++ = _horner(a+n*i, n-1, *u++);
-  printf("pnt(%d,%d)\n",nu,nd);
-  print_mat(pnt,nu,nd);
+  //printf("pnt(%d,%d)\n",nu,nd);
+  //print_mat(pnt,nu,nd);
 
   /* Clean up and return */
   Py_DECREF(arr1);
@@ -1654,7 +1643,6 @@ static PyObject * curveDerivs(PyObject *self, PyObject *args)
   return ret;
 
  fail:
-  //printf("error cleanup and return\n");
   Py_XDECREF(arr1);
   Py_XDECREF(arr2);
   Py_XDECREF(arr3);
@@ -1725,11 +1713,9 @@ static PyObject * curveKnotRefine(PyObject *self, PyObject *args)
   Py_DECREF(arr1);
   Py_DECREF(arr2);
   Py_DECREF(arr3);
-  //return ret1;
   return Py_BuildValue("(OO)", ret1, ret2);
 
  fail:
-  //printf("error cleanup and return\n");
   Py_XDECREF(arr1);
   Py_XDECREF(arr2);
   Py_XDECREF(arr3);
@@ -1785,15 +1771,12 @@ static PyObject * curveDecompose(PyObject *self, PyObject *args)
   int p = nk - nc - 1;
   int b = p + 1;
   int i,mult;
-  //printf("nc, nk, n, m, p = %d, %d, %d, %d, %d\n",nc,nk,nc-1,m,p);
   while (b < m) {
     i = b;
     while (b < m && U[b] == U[b+1]) b++;
     mult = b-i+1;
-    //printf("b, i, mult = %d, %d, %d\n",b,i,mult);
     if (mult < p) {
       count += (p-mult);
-      //printf("Count: %d\n",count);
     }
     b++;
   }
@@ -1806,7 +1789,7 @@ static PyObject * curveDecompose(PyObject *self, PyObject *args)
 
   /* Compute */
   curve_decompose(P, nc, nd, U, nk, newP);
-  print_mat(newP,nc+count,nd);
+  //print_mat(newP,nc+count,nd);
 
   /* Clean up and return */
   Py_DECREF(arr1);
@@ -1814,11 +1797,11 @@ static PyObject * curveDecompose(PyObject *self, PyObject *args)
   return ret;
 
  fail:
-  //printf("error cleanup and return\n");
   Py_XDECREF(arr1);
   Py_XDECREF(arr2);
   return NULL;
 }
+
 
 static char curveKnotRemove_doc[] =
 "Coarsen curve knot vector.\n\
@@ -1864,12 +1847,7 @@ static PyObject * curveKnotRemove(PyObject *self, PyObject *args)
   U = (double *)PyArray_DATA(arr2);
 
   /* Compute */
-//  print_mat(P,nc,nd);
-//  print_mat(U,1,nk);
-//  printf("Remove knot value %f %d times\n",u,num);
   t = curve_knot_remove(P, nc, nd, U, nk, u, num, tol);
-//  print_mat(P,nc-t,nd);
-//  print_mat(U,1,nk-t);
 
   /* Create the return arrays */
   dim[0] = nc-t;
@@ -1888,44 +1866,97 @@ static PyObject * curveKnotRemove(PyObject *self, PyObject *args)
   return Py_BuildValue("iOO",t,ret1,ret2);
 
  fail:
-  //printf("error cleanup and return\n");
   Py_XDECREF(arr1);
   Py_XDECREF(arr2);
   return NULL;
 }
 
 
-/* static PyObject * nurbs_bspdegelev(PyObject *self, PyObject *args) */
-/* { */
-/* 	int p, nd, nc, nk, t, nh, dim[2]; */
-/* 	double **ctrlmat, **icmat; */
-/* 	PyObject *arg2, *arg3; */
-/* 	PyArrayObject *ctrl, *k, *ic, *ik; */
-/* 	if(!PyArg_ParseTuple(args, "iOOi", &d, &arg2, &arg3, &t)) */
-/* 		return NULL; */
-/* 	ctrl = (PyArrayObject *) PyArray_ContiguousFromObject(arg2, PyArray_DOUBLE, 2, 2); */
-/* 	if(ctrl == NULL) */
-/* 		return NULL; */
-/* 	k = (PyArrayObject *) PyArray_ContiguousFromObject(arg3, PyArray_DOUBLE, 1, 1); */
-/* 	if(k == NULL) */
-/* 		return NULL; */
-/* 	nd = ctrl->dimensions[0]; */
-/* 	nc = ctrl->dimensions[1]; */
-/* 	nk = k->dimensions[0]; */
-/* 	dim[0] = nd; */
-/* 	dim[1] = nc*(t + 1); */
-/* 	ic = (PyArrayObject *) PyArray_FromDims(2, dim, PyArray_DOUBLE); */
-/* 	ctrlmat = vec2mat(ctrl->data, nd, nc); */
-/* 	icmat = vec2mat(ic->data, nd, nc*(t + 1)); */
-/* 	dim[0] = (t + 1)*nk; */
-/* 	ik = (PyArrayObject *) PyArray_FromDims(1, dim, PyArray_DOUBLE); */
-/* 	_bspdegelev(p, ctrlmat, nd, nc, (double *)k->data, nk, t, &nh, icmat, (double *)ik->data); */
-/* 	free(icmat); */
-/* 	free(ctrlmat); */
-/* 	Py_DECREF(ctrl); */
-/* 	Py_DECREF(k); */
-/* 	return Py_BuildValue("(OOi)", (PyObject *)ic, (PyObject *)ik, nh); */
-/* } */
+static char curveDegreeElevate_doc[] =
+"Degree elevate a curve t times.\n\
+\n\
+Input:\n\
+\n\
+- P: control points P(nc,nd)\n\
+- U: knot sequence: U[0] .. U[m]   m = n+p+1 = nc+p\n\
+- t: degree elevation\n\
+\n\
+Output:\n\
+- newP: new control points newP(nq,nd)\n\
+- nq: number of new control points = nh+1\n\
+- newU: new knot sequence: newU[0] .. newU[mh]   mh = nh+p+t+1 = nq+p+t\n\
+- nu: number of new knots = mh+1\n\
+\n\
+Modified algorithm A5.9 from 'The NURBS Book' pg206.\n\
+";
+
+static PyObject * curveDegreeElevate(PyObject *self, PyObject *args)
+{
+  int nd, nc, nk, t, nq, nu, i;
+  npy_intp *P_dim, *U_dim, dim[2];
+  double *P, *U, *newP, *newU;
+  PyObject *a1, *a2;
+  PyObject *arr1=NULL, *arr2=NULL, *ret1 = NULL, *ret2 = NULL;
+
+  if(!PyArg_ParseTuple(args, "OOi", &a1, &a2, &t))
+    return NULL;
+  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_IN_ARRAY);
+  if(arr1 == NULL)
+    return NULL;
+  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_IN_ARRAY);
+  if(arr2 == NULL)
+    goto fail;
+
+  P_dim = PyArray_DIMS(arr1);
+  U_dim = PyArray_DIMS(arr2);
+  nc = P_dim[0];
+  nd = P_dim[1];
+  nk = U_dim[0];
+  P = (double *)PyArray_DATA(arr1);
+  U = (double *)PyArray_DATA(arr2);
+
+  /* Create thework spaces */
+  nq = nc*(t+1);
+  nu = (t+1)*nk;
+  printf("Create work spaces for %d new control points and %d new knots\n",nq,nu);
+  double *Pw = (double*) malloc(nq*nd*sizeof(double));
+  double *Uw = (double*) malloc(nu*sizeof(double));
+
+  /* Compute */
+  curve_degree_elevate(P, nc, nd, U, nk, t, Pw, Uw, &nq, &nu);
+  printf("Computed %d new control points\n",nq);
+  print_mat(Pw,nq,nd);
+  printf("Computed %d new knots\n",nu);
+  print_mat(Uw,1,nu);
+
+  /* Create the return arrays */
+  dim[0] = nq;
+  dim[1] = nd;
+  printf("Create space for %d new control points\n",nq);
+  ret1 = PyArray_SimpleNew(2,dim, NPY_DOUBLE);
+  newP = (double *)PyArray_DATA(ret1);
+  dim[0] = nu;
+  ret2 = PyArray_SimpleNew(1,dim, NPY_DOUBLE);
+  printf("Create space for %d new knots\n",nu);
+  newU = (double *)PyArray_DATA(ret2);
+  for (i=0; i<nq*nd; ++i) newP[i] = Pw[i];
+  for (i=0; i<nu; ++i) newU[i] = Uw[i];
+
+  /* free thw work spaces */
+  free(Pw);
+  free(Uw);
+
+  /* Clean up and return */
+  Py_DECREF(arr1);
+  Py_DECREF(arr2);
+  return Py_BuildValue("OOii",ret1,ret2, nq-1, nu-1);
+
+ fail:
+  Py_XDECREF(arr1);
+  Py_XDECREF(arr2);
+  return NULL;
+}
+
 
 static char curveGlobalInterpolationMatrix_doc[] =
 "Compute the global curve interpolation matrix.\n\
@@ -2188,7 +2219,7 @@ static PyMethodDef _methods_[] =
 	{"curveKnotRefine", curveKnotRefine, METH_VARARGS, curveKnotRefine_doc},
 	{"curveDecompose", curveDecompose, METH_VARARGS, curveDecompose_doc},
 	{"curveKnotRemove", curveKnotRemove, METH_VARARGS, curveKnotRemove_doc},
-	/* {"bspdegelev", nurbs_bspdegelev, METH_VARARGS, bspdegelev_doc}, */
+	{"curveDegreeElevate", curveDegreeElevate, METH_VARARGS, curveDegreeElevate_doc},
 	{"curveGlobalInterpolationMatrix", curveGlobalInterpolationMatrix, METH_VARARGS, curveGlobalInterpolationMatrix_doc},
 	{"surfacePoints", surfacePoints, METH_VARARGS, surfacePoints_doc},
 	{"surfaceDerivs", surfaceDerivs, METH_VARARGS, surfaceDerivs_doc},
@@ -2206,5 +2237,3 @@ PyMODINIT_FUNC initnurbs_(void)
 }
 
 /* End */
-
-

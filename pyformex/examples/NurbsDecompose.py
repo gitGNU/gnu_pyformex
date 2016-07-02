@@ -27,7 +27,9 @@
 Illustrates some special techniques on Nurbs Curves:
 
 - inserting knots
+- removing knots
 - curve decomposing
+- degree elevation
 """
 from __future__ import print_function
 
@@ -74,15 +76,79 @@ def drawNurbs(N,**kargs):
             drawMarks(N.knotPoints(), ["%f"%i for i in N.knots], leader='  --> ')
 
 
+# Example curves from the Nurbs book
+nurbs_book_examples = {
+    '3.1': ([
+        [-12.0,-7.7],
+        [-10.5,-3.7],
+        [- 6.7,-3.0],
+        [- 4.3,-7.6],
+        ],
+        [0.,0.,0.,0.,1.,1.,1.,1.]),
+    '3.2': ([
+        [ 3.5,12.0 ],
+        [ 7.0,12.0 ],
+        [ 7.0,15.0 ],
+        [10.5,15.0 ],
+        [11.7,11.6 ],
+        [ 9.5, 9.5 ],
+        [ 7.0,10.7 ],
+        ],
+        [0.,0.,0.,0.,0.25,0.5,0.75,1.,1.,1.,1.]),
+    '3.3': ([
+        [-12.3,12.0 ],
+        [-11.5,14.3 ],
+        [ -8.2,14.7 ],
+        [ -9.7,10.3 ],
+        [ -5.0,10.3 ],
+        [ -6.6,13.2 ],
+        [ -4.2,13.6 ],
+        ],
+        [0.,0.,0.,0.2,0.4,0.6,0.8,1.,1.,1.]),
+    '5.37': ([
+        [ 4.5,-7.8],
+        [ 5.2,-3.5],
+        [ 7.5,-3.5],
+        [ 8.3,-6.2],
+        [10.8,-6.0],
+        [11.3,-2.5],
+        ],
+        [0.,0.,0.,0.,0.4,0.7,1.,1.,1.,1.]),
+    '5.39': ([
+        [ 6.2,-7.3],
+        [ 4.5,-6.7],
+        [ 4.0,-5.2],
+        [ 4.9,-3.5],
+        [ 7.6,-2.5],
+        [10.3,-3.3],
+        [11.2,-5.0],
+        [10.7,-6.7],
+        [ 9.0,-7.5],
+        ],
+        [0.,0.,0.,0.,0.,1/3.,1/3.,2/3.,2/3.,1.,1.,1.,1.,1.]),
+}
+
+
 def createNurbs():
     """Create a Nurbs curve."""
     global N,dia
 
-    # TODO: these data could be customized from the dialog
-    C = Formex('12141214').toCurve()
-    #C = Formex('214').toCurve()
-    degree = 4
-    N = NurbsCurve(C.coords, degree=degree)#,blended=False)
+    if dia:
+        dia.acceptData()
+        res = dia.results
+        curv = res['curv']
+    else:
+        curv = ''
+
+    if curv[:2] == 'ex':
+        key = curv[2:]
+        coords,knots = nurbs_book_examples[key]
+        N = NurbsCurve(coords,knots=knots)
+    else:
+        C = Formex('12141214').toCurve()
+        #C = Formex('214').toCurve()
+        degree = 4
+        N = NurbsCurve(C.coords, degree=degree)
     print(N)
     drawNurbs(N,linewidth=1,color=magenta,knotsize=5)
     zoomAll()
@@ -110,6 +176,19 @@ def removeKnot():
     ur = res['ur']
     m = res['m']
     N = N.removeKnot(ur,m,0.001)
+    print(N)
+    drawNurbs(N,linewidth=5,color=blue,knotsize=5)
+    zoomAll()
+
+
+def elevateDegree():
+    """Elevate the degree of the Nurbs curve N."""
+    global N,dia
+
+    dia.acceptData()
+    res = dia.results
+    nd = res['nd']
+    N = N.elevateDegree(nd)
     print(N)
     drawNurbs(N,linewidth=5,color=blue,knotsize=5)
     zoomAll()
@@ -153,11 +232,15 @@ def run():
     _options.ctrl_polygon = True
     _options.knot_values = True
 
+
     createNurbs()
 
     if dia:
         dia.close()
     dia = Dialog([
+            _G('Curve Selection',[
+                _I('curv', 'default', choices=['ex%s' % k for k in sorted(nurbs_book_examples.keys())]),
+            ]),
             _G('Knot Insertion',[
                 _I('u', 0.2, text='Knot value(s) to insert',tooltip='A single value or a comma separated sequence'),
             ]),
@@ -165,10 +248,15 @@ def run():
                 _I('ur', 0.2, text='Knot value to remove'),
                 _I('m', 1, text='How many times to remove'),
             ]),
+            _G('Degree Elevation',[
+                _I('nd', 1, text='How much to elevate the degree'),
+            ]),
         ], actions=[
             ('Close',close),
+            ('Select Curve',createNurbs),
             ('Insert Knot',insertKnot),
             ('Remove Knot',removeKnot),
+            ('Elevate Degree',elevateDegree),
             ('Decompose',decompose),
         ])
     dia.show()

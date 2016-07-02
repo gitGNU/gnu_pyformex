@@ -30,12 +30,15 @@ NURBS curves and surface in pyFormex.
 from __future__ import print_function
 
 
-from pyformex.coords import *
+from pyformex import arraytools as at
+from pyformex.coords import Coords
 from pyformex.lib import nurbs
 from pyformex.plugins import curve
-from pyformex import options
+#from pyformex import options
 from pyformex import utils
 from pyformex import olist
+
+from numpy import *
 
 
 ###########################################################################
@@ -97,7 +100,7 @@ class Coords4(ndarray):
       :class:`numpy.ndarray` is specified.
     """
 
-    def __new__(cls, data=None, w=None, dtyp=Float, copy=False):
+    def __new__(cls, data=None, w=None, dtyp=at.Float, copy=False):
         """Create a new instance of :class:`Coords4`."""
         if data is None:
             # create an empty array
@@ -110,7 +113,7 @@ class Coords4(ndarray):
             pass
         elif ar.shape[-1] in [1, 2]:
             # make last axis length 3, adding 0 values
-            ar = growAxis(ar, 3-ar.shape[-1], -1)
+            ar = at.growAxis(ar, 3-ar.shape[-1], -1)
         elif ar.shape[-1] == 0:
             # allow empty coords objects
             ar = ar.reshape(0, 3)
@@ -119,12 +122,12 @@ class Coords4(ndarray):
 
         # Make sure dtype is a float type
         if ar.dtype.kind != 'f':
-            ar = ar.astype(Float)
+            ar = ar.astype(at.Float)
 
         # We should now have a float array with last axis 3 or 4
         if ar.shape[-1] == 3:
             # Expand last axis to length 4, adding values 1
-            ar = growAxis(ar, 1, -1, 1.0)
+            ar = at.growAxis(ar, 1, -1, 1.0)
 
         # Denormalize if w is specified
         if w is not None:
@@ -229,33 +232,67 @@ class Geometry4(object):
 #######################################################
 ## NURBS CURVES ##
 
-#    3*0    -     2*1     -    3*2    : 8 = 5+3
 #    nctrl = nparts * degree + 1
 #    nknots = nctrl + degree + 1
 #    nknots = (nparts+1) * degree + 2
 #
-# degree  nparts  nctrl   nknots
-#    2      1       3        6
-#    2      2       5        8
-#    2      3       7       10
-#    2      4       9       12
-#    3      1       4        8
-#    3      2       7       11
-#    3      3      10       14
-#    3      4      13       17
-#    4      1       5       10
-#    4      2       9       14
-#    4      3      13       18
-#    5      1       6       12
-#    5      2      11       17
-#    5      3      16       22
-#    6      1       7       14
-#    6      2      13       20
-#    7      1       8       16
-#    8      1       9       18
 
-# This should be a valid combination of ntrl/degree
-# drawing is only done if degree <= 7
+class KnotVector(object):
+
+    """A knot vector
+
+    A knot vector is sequence of float values sorted in ascending order.
+    Values can occur multiple times. In they typical use case for this
+    class (Nurbs) most values do indeed occur multiple times, and the
+    multiplicity of the values is an important quantity.
+    Therefore, the knot vector is stored in two arrays of the same length:
+
+    - `v`: the unique float values, a strictly ascending sequence
+    - `m`: the multiplicity of each of the values
+
+    Example:
+
+    >>> K = KnotVector([0.,0.,0.,0.5,0.5,1.,1.,1.])
+    >>> print(K.val)
+    [ 0.   0.5  1. ]
+    >>> print(K.mul)
+    [3 2 3]
+    >>> print(K)
+    KnotVector: 0.0(3), 0.5(2), 1.0(3)
+    >>> print(K.knots())
+    [(0.0, 3), (0.5, 2), (1.0, 3)]
+    >>> print(K.values())
+    [ 0.   0.   0.   0.5  0.5  1.   1.   1. ]
+
+    """
+
+    def __init__(self,data,val=None,mul=None):
+        """Initialize a KnotVector"""
+        data = at.checkArray(data,(-1,),'f','i')
+        val,inv = unique(data,return_inverse=True)
+        mul,bins = at.multiplicity(inv)
+        self.val = val
+        self.mul = mul
+
+
+    def nknots(self):
+        """Return the total number of knots"""
+        return self.mul.sum()
+
+
+    def knots(self):
+        """Return the knots as a list of tuples (value,multiplicity)"""
+        return zip(self.val,self.mul)
+
+
+    def values(self):
+        """Return the full list of knot values"""
+        return concatenate([ [v]*m for v,m in self.knots()])
+
+
+    def __str__(self):
+        """Format the knot vector as a string."""
+        return "KnotVector: " + ", ".join(["%s(%s)" % (v,m) for v,m in self.knots()])
 
 
 class NurbsCurve(Geometry4):
@@ -263,7 +300,7 @@ class NurbsCurve(Geometry4):
     """A NURBS curve
 
     The Nurbs curve is defined by nctrl control points, a degree (>= 1) and
-    a knot vector with knots = nctrl+degree+1 parameter values.
+    a knot vector with nknots = nctrl+degree+1 parameter values.
 
     The knots vector should hold nknots values in ascending order. The values
     are only defined upon a multiplicative constant and will be normalized
@@ -272,8 +309,8 @@ class NurbsCurve(Geometry4):
     :func:`knotVector`.
 
     If no knots are given and no degree is specified, the degree is set to
-    the number of control points - 1 if the curve is blended. If not blended,
-    the degree is not set larger than 3.
+    the nctrl-1 if the curve is blended. If not blended, the degree is not
+    set larger than 3.
 
     """
 
@@ -336,13 +373,35 @@ class NurbsCurve(Geometry4):
 
 
         self.coords = control
-        self.knots = knots
+        self.knotv = KnotVector(knots)
         self.degree = degree
         self.closed = closed
 
 
+    @property
+    def knots(self):
+        """Return the full list of knot values"""
+        return self.knotv.values()
+
+    # This ic commented out because there is only 1 place where we set
+    # the knots: __init__
+#    @knots.setter
+#    def knots(self,value):
+#        """Set the knot values"""
+#        self.knotv = KnotVector(knots)
+
+
+    def nctrl(self):
+        """Return the number of control points"""
+        return self.coords.shape[0]
+
+    def nknots(self):
+        """Return the number of knots"""
+        return self.knotv.nknots()
+
     def order(self):
-        return len(self.knots)-len(self.coords)
+        """Return the order of the Nurbs curve"""
+        return self.nknots()-self.nctrl()
 
     def bbox(self):
         """Return the bounding box of the NURBS curve.
@@ -375,6 +434,9 @@ class NurbsCurve(Geometry4):
         knots = self.knots.astype(double)
         u = asarray(u).astype(double)
 
+        print(ctrl)
+        print(knots)
+        print(u)
         try:
             pts = nurbs.curvePoints(ctrl, knots, u)
             if isnan(pts).any():
@@ -431,6 +493,7 @@ class NurbsCurve(Geometry4):
 
         The multiplicity of the knots is retained in the points set.
         """
+        print(self.knots)
         return self.pointsAt(self.knots)
 
 
@@ -487,6 +550,24 @@ class NurbsCurve(Geometry4):
         else:
             print("Can not remove the knot value %s" % u)
             return self
+
+
+    def elevateDegree(self, nd):
+        """Elevate the degree of the Nurbs curve.
+
+        nd: how much to elevate the degree
+
+        Returns:
+
+        A Nurbs curve equivalent with the original but of a higher degree.
+        The control points and knot vector are enlarged.
+
+        """
+        if self.closed:
+            raise ValueError("elevateDegree currently does not work on closed curves")
+        # TODO: make sure the copy is not needed
+        newP,newU,nh,mh = nurbs.curveDegreeElevate(self.coords, self.knots, nd)
+        return NurbsCurve(newP, degree=self.degree+nd, knots=newU, closed=self.closed)
 
 
     def approx(self,ndiv=None,nseg=None,**kargs):
@@ -718,8 +799,8 @@ def globalInterpolationCurve(Q,degree=3,strategy=0.5):
     """
     from pyformex.plugins.curve import PolyLine
     # set the knot values at the points
-    nc = Q.shape[0]
-    n = nc-1
+    #nc = Q.shape[0]
+    #n = nc-1
 
     # chord length
     d = PolyLine(Q).lengths()
@@ -809,11 +890,11 @@ def knotVector(nctrl,degree,blended=True,closed=False):
 
     Example:
 
-    >>> print knotVector(7,3)
+    >>> print(knotVector(7,3))
     [ 0.    0.    0.    0.    0.25  0.5   0.75  1.    1.    1.    1.  ]
-    >>> print knotVector(7,3,closed=True)
+    >>> print(knotVector(7,3,closed=True))
     [ 0.   0.1  0.2  0.3  0.4  0.5  0.6  0.7  0.8  0.9  1. ]
-    >>> print knotVector(7,3,blended=False)
+    >>> print(knotVector(7,3,blended=False))
     [ 0.  0.  0.  0.  1.  1.  1.  2.  2.  2.  2.]
     """
     nknots = nctrl+degree+1
@@ -958,8 +1039,8 @@ def frenet(d1,d2,d3=None):
     e2 = d2 - dotpr(d2, e1).reshape(-1, 1)*e1
     k = length(e2)
     if k.min() == 0.0:
-        print("k is zero at %s" % where(k==0.0)[0])
-    w = where(k==0.0)[0]
+        w = where(k==0.0)[0]
+        print("k is zero at %s" % w)
     # where k = 0: set e2 to mean of previous and following
     e2 /= k.reshape(-1, 1)
     #e3 = normalize(ddd - dotpr(ddd,e1)*e1 - dotpr(ddd,e2)*e2)
