@@ -77,7 +77,7 @@ def insertKnot():
 
 
 def removeKnot():
-    """Insert a knot in the knot vector of Nurbs curve N."""
+    """Remove a knot from the knot vector of Nurbs curve N."""
     global N,dia
 
     dia.acceptData()
@@ -85,6 +85,16 @@ def removeKnot():
     ur = res['ur']
     m = res['m']
     N = N.removeKnot(ur,m,0.001)
+    print(N)
+    drawNurbs(N,linewidth=5,color=blue,knotsize=5)
+    zoomAll()
+
+
+def removeAllKnots():
+    """Remove all removable knots."""
+    global N,dia
+
+    N = N.removeAllKnots()
     print(N)
     drawNurbs(N,linewidth=5,color=blue,knotsize=5)
     zoomAll()
@@ -165,6 +175,7 @@ def run():
             ('Show Curve',showCurve),
             ('Insert Knot',insertKnot),
             ('Remove Knot',removeKnot),
+            ('Remove All',removeAllKnots),
             ('Elevate Degree',elevateDegree),
             ('Decompose',decompose),
         ])

@@ -588,7 +588,7 @@ class NurbsCurve(Geometry4):
         return NurbsCurve(X, degree=self.degree, blended=False)
 
 
-    def removeKnot(self, u, m, tol):
+    def removeKnot(self, u, m, tol=1.e-5):
         """Remove a knot from the knot vector of the Nurbs curve.
 
         u: knot value to remove
@@ -614,6 +614,22 @@ class NurbsCurve(Geometry4):
         else:
             print("Can not remove the knot value %s" % u)
             return self
+
+
+    def removeAllKnots(self,tol=1.e-5):
+        """Remove all removable knots"""
+        N = self
+        while True:
+            for u,m in N.knotv.knots():
+                NN = N.removeKnot(u,m,tol)
+                if NN is not N:
+                    break
+            if NN is N:
+                break
+            else:
+                N = NN
+        return N
+
 
 
     def elevateDegree(self, nd):
