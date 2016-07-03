@@ -31,24 +31,14 @@ from __future__ import print_function
 
 
 # There should be no other imports here but numpy
-from math import factorial
 from numpy import zeros
 import pyformex as pf
 
 __version__ = pf.__version__
 accelerated = False
 
-def binomial(n, k):
-    """Compute the binomial coefficient Cn,k.
 
-    This computes the binomial coefficient Cn,k = fac(n) / fac(k) / fac(n-k).
-
-    >>> print [ binomial(4,i) for i in range(5) ]
-    [1, 4, 6, 4, 1]
-    """
-    f = factorial
-    return f(n) / f(k) / f(n-k)
-
+from pyformex.plugins.curve import binomial
 
 def allBernstein(n, u):
     """Compute the value of all n-th degree Bernstein polynomials.
