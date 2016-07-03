@@ -415,7 +415,7 @@ class NurbsCurve(Geometry4):
   Control points:
 %s,
   knots = %s
-"""  % ( self.degree, len(self.coords), len(self.knots), self.coords, self.knots)
+"""  % ( self.degree, len(self.coords), len(self.knots), self.coords, self.knotv)
 
 
     def pointsAt(self, u):
@@ -434,9 +434,6 @@ class NurbsCurve(Geometry4):
         knots = self.knots.astype(double)
         u = asarray(u).astype(double)
 
-        print(ctrl)
-        print(knots)
-        print(u)
         try:
             pts = nurbs.curvePoints(ctrl, knots, u)
             if isnan(pts).any():
@@ -488,13 +485,17 @@ class NurbsCurve(Geometry4):
         return pts
 
 
-    def knotPoints(self):
+    def knotPoints(self,multiple=False):
         """Returns the points at the knot values.
 
-        The multiplicity of the knots is retained in the points set.
+        If multiple is True, points are returned with their multiplicity.
+        The default is to return all points just once.
         """
-        print(self.knots)
-        return self.pointsAt(self.knots)
+        if multiple:
+            val = self.knotv.knots
+        else:
+            val = self.knotv.val
+        return self.pointsAt(val)
 
 
     def insertKnots(self, u):
@@ -589,14 +590,18 @@ class NurbsCurve(Geometry4):
         if nseg is not None:
             u = PL.atLength(nseg)
             PL = PolyLine(PL.pointsAt(u))
-        return PL#.setProp(self.prop)
+        return PL
 
 
     def actor(self,**kargs):
         """Graphical representation"""
         from pyformex.legacy.actors import NurbsActor
-        return NurbsActor(self,**kargs)
-
+        from pyformex.opengl.actors import Actor
+        if self.degree <= 7:
+            return NurbsActor(self,**kargs)
+        else:
+            #B = self.decompose()
+            return Actor(self.approx(ndiv=100).toFormex(),**kargs)
 
 #######################################################
 ## NURBS Surface ##
