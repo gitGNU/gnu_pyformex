@@ -43,7 +43,7 @@ from pyformex.gui.draw import *
 from pyformex.plugins.nurbs import *
 from pyformex.plugins.curve import *
 from pyformex.plugins.nurbs_menu import _options#, drawNurbs
-from .NurbsCurveExamples import _decors, clearDecors, drawNurbs, nurbs_book_examples, createNurbs
+from pyformex.examples.NurbsCurveExamples import drawNurbs, nurbs_book_examples, createNurbs
 
 
 def showCurve():
@@ -158,25 +158,23 @@ def run():
         dia.close()
     dia = Dialog([
             _G('Curve Selection',[
-                _I('curv', 'default', choices=['ex%s' % k for k in sorted(nurbs_book_examples.keys())]),
+                _I('curv', 'default', choices=['ex%s' % k for k in sorted(nurbs_book_examples.keys())],
+                   buttons=[('Show Curve',showCurve)]),
             ]),
             _G('Knot Insertion',[
-                _I('u', 0.2, text='Knot value(s) to insert',tooltip='A single value or a comma separated sequence'),
+                _I('u', 0.5, text='Knot value(s) to insert',tooltip='A single value or a comma separated sequence',
+                   buttons=[('Insert Knot',insertKnot)]),
             ]),
             _G('Knot Removal',[
-                _I('ur', 0.2, text='Knot value to remove'),
-                _I('m', 1, text='How many times to remove'),
+                _I('ur', 0.5, text='Knot value to remove'),
+                _I('m', 1, text='How many times to remove',buttons=[('Remove Knot',removeKnot)]),
             ]),
             _G('Degree Elevation',[
-                _I('nd', 1, text='How much to elevate the degree'),
+                _I('nd', 1, text='How much to elevate the degree',buttons=[('Elevate Degree',elevateDegree)]),
             ]),
         ], actions=[
             ('Close',close),
-            ('Show Curve',showCurve),
-            ('Insert Knot',insertKnot),
-            ('Remove Knot',removeKnot),
-            ('Remove All',removeAllKnots),
-            ('Elevate Degree',elevateDegree),
+            ('Remove All Knots',removeAllKnots),
             ('Decompose',decompose),
         ])
     dia.show()
