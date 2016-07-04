@@ -59,7 +59,7 @@ def showCurve():
 
     N = createNurbs(curv)
     print(N)
-    drawNurbs(N,linewidth=1,color=magenta,knotsize=5)
+    drawNurbs(N,linewidth=1,color=blue,knotsize=5)
     zoomAll()
 
 
@@ -72,7 +72,7 @@ def insertKnot():
     u = eval('[%s]' % res['u'])
     N = N.insertKnots(u)
     print(N)
-    drawNurbs(N,linewidth=5,color=blue,knotsize=5)
+    drawNurbs(N,linewidth=5,color=red,knotsize=5)
     zoomAll()
 
 
@@ -84,7 +84,7 @@ def removeKnot():
     res = dia.results
     ur = res['ur']
     m = res['m']
-    N = N.removeKnot(ur,m,0.001)
+    N = N.removeKnot(ur,m,0.01)
     print(N)
     drawNurbs(N,linewidth=5,color=blue,knotsize=5)
     zoomAll()
@@ -109,7 +109,7 @@ def elevateDegree():
     nd = res['nd']
     N = N.elevateDegree(nd)
     print(N)
-    drawNurbs(N,linewidth=5,color=blue,knotsize=5)
+    drawNurbs(N,linewidth=5,color=green,knotsize=5)
     zoomAll()
 
 
@@ -119,7 +119,7 @@ def decompose():
 
     N1 = N.decompose()
     print(N1)
-    drawNurbs(N1,linewidth=5,color=red,knotsize=10,knot_values=False)
+    drawNurbs(N1,linewidth=5,color=black,knotsize=10,knot_values=False)
     zoomAll()
     C = BezierSpline(control=N1.coords.toCoords(), degree=N1.degree)
     draw(C, color=blue)
