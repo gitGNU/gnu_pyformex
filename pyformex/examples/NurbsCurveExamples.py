@@ -40,6 +40,8 @@ from pyformex.plugins.nurbs import *
 from pyformex.plugins.curve import *
 from pyformex.plugins.nurbs_menu import _options#, drawNurbs
 
+_options.pcolor = magenta
+
 class _decors:
     ctrl_numbers = None
 
@@ -59,9 +61,9 @@ def drawNurbs(N,**kargs):
     clearDecors()
     draw(N, color=_options.color, nolight=True)
     if _options.ctrl:
-        draw(N.coords.toCoords(), color=_options.color, nolight=True)
+        draw(N.coords.toCoords(), color=_options.pcolor, nolight=True)
         if _options.ctrl_polygon:
-            draw(PolyLine(N.coords.toCoords()), color=_options.color, nolight=True)
+            draw(PolyLine(N.coords.toCoords()), color=_options.pcolor, nolight=True)
         if _options.ctrl_numbers:
             _decors.ctrl_numbers = drawNumbers(N.coords.toCoords())
     if _options.knots:
@@ -223,6 +225,19 @@ nurbs_book_examples = {
         [  2.0,-6.0 ],
         ],3,
         [0.,0.,0.,0.,0.50,0.50,1.,1.,1.,1.]),
+   '5.29': ([
+        [ 3.6, 5.2],
+        [ 3.4, 6.5],
+        [ 4.5, 8.2],
+        [ 6.3, 8.7],
+        [ 7.0, 8.6],
+        [ 7.7, 8.5],
+        [ 8.1, 8.2],
+        [ 8.8, 6.7],
+        [ 8.6, 5.2],
+        [11.0, 5.2],
+        ],3,
+        [0.,0.,0.,0.,0.3,0.5,0.5,0.5,0.7,0.7,1.,1.,1.,1.]),
    '5.37': ([
         [ 4.5,-7.8],
         [ 5.2,-3.5],
