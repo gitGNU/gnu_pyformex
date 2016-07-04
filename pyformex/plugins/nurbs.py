@@ -275,8 +275,8 @@ class KnotVector(object):
         else:
             val = at.checkArray(val,(-1,),'f','i')
             mul = at.checkArray(mul,val.shape,'i')
-        self.val = val
-        self.mul = mul
+        self.val = val#.astype(at.float64)
+        self.mul = mul.astype(at.Int)
 
 
     def nknots(self):
@@ -575,7 +575,11 @@ class NurbsCurve(Geometry4):
         """
         if self.closed:
             raise ValueError("insertKnots currently does not work on closed curves")
-        newP, newU = nurbs.curveKnotRefine(self.coords, self.knots, u)
+        # sanitize arguments for library call
+        ctrl = self.coords.astype(double)
+        knots = self.knots.astype(double)
+        u = asarray(u).astype(double)
+        newP, newU = nurbs.curveKnotRefine(ctrl, knots, u)
         return NurbsCurve(newP, degree=self.degree, knots=newU, closed=self.closed)
 
 
@@ -584,7 +588,10 @@ class NurbsCurve(Geometry4):
 
         Returns an equivalent unblended Nurbs.
         """
-        X = nurbs.curveDecompose(self.coords, self.knots)
+        # sanitize arguments for library call
+        ctrl = self.coords
+        knots = self.knots.astype(double)
+        X = nurbs.curveDecompose(ctrl, knots)
         return NurbsCurve(X, degree=self.degree, blended=False)
 
 
@@ -592,7 +599,7 @@ class NurbsCurve(Geometry4):
         """Remove a knot from the knot vector of the Nurbs curve.
 
         u: knot value to remove
-        m: how many times to remove
+        m: how many times to remove (if negative, remove maximally)
 
         Returns:
 
@@ -604,10 +611,21 @@ class NurbsCurve(Geometry4):
         """
         if self.closed:
             raise ValueError("removeKnots currently does not work on closed curves")
-        # TODO: make sure the copy is not needed
-        coords = self.coords#.copy()
-        knots = self.knots#.copy()
-        t,newP,newU = nurbs.curveKnotRemove(coords, knots, u, m, tol)
+        P = self.coords.astype(double)
+        Uv = self.knotv.val.astype(double)
+        Um = self.knotv.mul.astype(at.Int)
+        w = where(isclose(Uv,u))[0]
+        if len(w) > 0:
+            i = w[0]
+        else:
+            print("No such knot value: %s" % u)
+            return self
+
+        if m < 0:
+            m = Um[i]
+
+        t,newP,newU = nurbs.curveKnotRemove(P,Uv,Um,i,m,tol)
+
         if t > 0:
             print("Removed the knot value %s %s times" % (u,t))
             return NurbsCurve(newP, degree=self.degree, knots=newU, closed=self.closed)
@@ -619,14 +637,22 @@ class NurbsCurve(Geometry4):
     def removeAllKnots(self,tol=1.e-5):
         """Remove all removable knots"""
         N = self
+        print(N)
         while True:
-            for u,m in N.knotv.knots():
-                NN = N.removeKnot(u,m,tol)
-                if NN is not N:
+            print(N)
+            for u in N.knotv.val:
+                print("Removing %s" % u)
+                NN = N.removeKnot(u,m=-1,tol=tol)
+                if NN is N:
+                    print("Can not remove")
+                    continue
+                else:
                     break
             if NN is N:
+                print("Done")
                 break
             else:
+                print("Cycle")
                 N = NN
         return N
 

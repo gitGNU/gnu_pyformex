@@ -56,6 +56,17 @@ int max(int a, int b)
   return a;
 }
 
+/* cumsum of a list of integer values */
+/* v and cs have same length */
+static void cumsum(int *v, int nv, int *cs)
+{
+  int i, sum = 0;
+  for (i=0; i<nv; ++i) {
+    sum += v[i];
+    cs[i] = sum;
+  }
+}
+
 /* Dot product of two vectors of length n */
 /* ia and ib are the strides of the elements addressed starting from a, b */
 static double dotprod(double *a, int ia, double *b, int ib, int n)
@@ -267,21 +278,22 @@ static void all_bernstein(int n, double u, double *B)
 
 
 
-/* Find last occurrence of u in U */
-static int find_last_occurrence(double *U, double u)
-{
-  int i = 0;
-  while (U[i] <= u + 1.e-5) ++i;
-  return i-1;
-}
+/* /\* Find last occurrence of u in U *\/ */
+/* static int find_last_occurrence(double *U, double u) */
+/* { */
+/*   int i = 0; */
+/*   while (U[i] <= u + 1.e-5) ++i; */
+/*   return i-1; */
+/* } */
 
-/* Find multiplicity of u in U, where r is the last occurrence of u in U*/
-static int find_multiplicity(double *U, double u, int r)
-{
-  int i = r;
-  while (U[i] >= u - 1.e-5) --i;
-  return r-i;
-}
+/* /\* Find multiplicity of u in U, where r is the last occurrence of u in U*\/ */
+/* static int find_multiplicity(double *U, double u, int r) */
+/* { */
+/*   int i = r; */
+/*   while (U[i] >= u - 1.e-5) --i; */
+/*   return r-i; */
+/* } */
+
 
 /* find_span */
 /*
@@ -743,6 +755,8 @@ Input:
 - nk: number of knot values = m+1
 - u: knot value to remove: U[0] <= u <= U[m]
 - num: number of times to remove u
+- r: index of last knot of value u
+- s: multiplicity of knot value u
 - tol: allowable tolerance for deviation of the curve. See NURBS book, p. 185
 
 Output:
@@ -751,10 +765,9 @@ P and U are replaced with the new control points and knot vector
 
 Modified algorithm A5.8 from 'The NURBS Book' pg185.
 */
-
-static int curve_knot_remove(double *P, int nc, int nd, double *U, int nk, double u, int num, double tol)
+static int curve_knot_remove(double *P, int nc, int nd, double *U, int nk, double u, int num, int r, int s, double tol)
 {
-  int n,m,p,ord,fout,last,first,t,off,i,j,ii,jj,k,kk,remflag,r,s;
+  int n,m,p,ord,fout,last,first,t,off,i,j,ii,jj,k,kk,remflag;
   double alfi,alfj;
 
   n = nc - 1;
@@ -764,10 +777,14 @@ static int curve_knot_remove(double *P, int nc, int nd, double *U, int nk, doubl
   double *temp = (double*) malloc((2*p+1)*nd*sizeof(double));
   double *xtemp = (double*) malloc(nd*sizeof(double));
 
-  r = find_last_occurrence(U,u);
-  //printf("Remove knot value %f, index %d\n",u,r);
-  s = find_multiplicity(U,u,r);
-  //printf("Remove knot value %f, index %d, multiplicity %d\n",u,r,s);
+
+  /* printf("Knots: "); */
+  /* for (i=0; i<nk; ++i) printf("%f, ",U[i]); */
+  /* printf("\n"); */
+  /* printf("Remove knot value %f, index %d, multiplicity %d\n",u,r,s); */
+  /* r = find_last_occurrence(U,u); */
+  /* s = find_multiplicity(U,u,r); */
+  /* printf("Remove knot value %f, index %d, multiplicity %d\n",u,r,s); */
 
   ord = p+1;
   fout = (2*r-s-p)/2;  /* First control point out */
@@ -784,7 +801,7 @@ static int curve_knot_remove(double *P, int nc, int nd, double *U, int nk, doubl
     jj = last-off;
     remflag = 0;
     while (j-i > t) {
-      /* Compute new control points for onr removeal step */
+      /* Compute new control points for one removal step */
       alfi = (u-U[i])/(U[i+ord+t]-U[i]);
       alfj = (u-U[j-t])/(U[j+ord]-U[j-t]);
       for (k=0; k<nd; ++k) temp[ii*nd+k] = (P[i*nd+k]-(1.0-alfi)*temp[(ii-1)*nd+k])/alfi;
@@ -803,11 +820,11 @@ static int curve_knot_remove(double *P, int nc, int nd, double *U, int nk, doubl
       if (distance4d(P+i*nd,xtemp,nd) <= tol)
 	    remflag = 1;
     }
-    if (remflag == 0)
+    if (remflag == 0) {
       /* Cannot remove any more knots */
       /* Get out of for-loop */
       break;
-    else {
+    } else {
       /* Succesful removal. Save new control points */
       i = first;
       j = last;
@@ -838,6 +855,10 @@ static int curve_knot_remove(double *P, int nc, int nd, double *U, int nk, doubl
       ++j;
     }
   }
+
+  free(temp);
+  free(xtemp);
+
   return t;
 }
 
@@ -1809,8 +1830,9 @@ static char curveKnotRemove_doc[] =
 Input:\n\
 \n\
 - P: control points P(nc,nd)\n\
-- U: knot sequence: U[0] .. U[m]   m = n+p+1 = nc+p\n\
-- u: knot value to remove: U[0] <= u <= U[m]\n\
+- Uv: knot values (nv)\n\
+- Um: knot multiplicities (nv): sum(Um) =  m = n+p+1 = nc+p\n\
+- iv: knot value index to remove: 0 <= iv < nv\n\
 - num: number of times to remove u\n\
 - tol: allowable tolerance for deviation of the curve. See NURBS book, p. 185\n\
 \n\
@@ -1823,13 +1845,13 @@ Modified algorithm A5.8 from 'The NURBS Book' pg185.\n\
 
 static PyObject * curveKnotRemove(PyObject *self, PyObject *args)
 {
-  int nd, nc, nk, num, t, i;
+  int *Um, iv, num, nd, nc, nv, nk, t, i, j, k, r, s;
   npy_intp *P_dim, *U_dim, dim[2];
-  double *P, *U, u, tol, *newP, *newU;
-  PyObject *a1, *a2;
-  PyObject *arr1=NULL, *arr2=NULL, *ret1 = NULL, *ret2 = NULL;
+  double *P, *Uv, tol, u, *newP, *newU;
+  PyObject *a1, *a2, *a3;
+  PyObject *arr1=NULL, *arr2=NULL, *arr3=NULL, *ret1 = NULL, *ret2 = NULL;
 
-  if(!PyArg_ParseTuple(args, "OOdid", &a1, &a2, &u, &num, &tol))
+  if(!PyArg_ParseTuple(args, "OOOiid", &a1, &a2, &a3, &iv, &num, &tol))
     return NULL;
   arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_IN_ARRAY);
   if(arr1 == NULL)
@@ -1837,17 +1859,41 @@ static PyObject * curveKnotRemove(PyObject *self, PyObject *args)
   arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_IN_ARRAY);
   if(arr2 == NULL)
     goto fail;
+  arr3 = PyArray_FROM_OTF(a3, NPY_INT, NPY_IN_ARRAY);
+  if(arr3 == NULL)
+    goto fail;
 
   P_dim = PyArray_DIMS(arr1);
-  U_dim = PyArray_DIMS(arr2);
   nc = P_dim[0];
   nd = P_dim[1];
-  nk = U_dim[0];
+  U_dim = PyArray_DIMS(arr2);
+  nv = U_dim[0];
   P = (double *)PyArray_DATA(arr1);
-  U = (double *)PyArray_DATA(arr2);
+  Uv = (double *)PyArray_DATA(arr2);
+  Um = (int *)PyArray_DATA(arr3);
+
+  /* Compute derived data as needed by curve_knot_remove */
+  int *Sm = (int*) malloc(nv*sizeof(int));
+  cumsum(Um,nv,Sm);
+  /* printf("Cumsum: "); */
+  /* for (i=0; i<nv; ++i) printf("%d, ",Sm[i]); */
+  /* printf("\n"); */
+  nk = Sm[nv-1];
+  double *U = (double*) malloc(nk*sizeof(double));
+  k = 0;
+  for (i=0; i<nv; ++i)
+    for (j=0; j<Um[i]; ++j)
+      U[k++] = Uv[i];
+  u = Uv[iv];
+  r = Sm[iv]-1;
+  s = Um[iv];
 
   /* Compute */
-  t = curve_knot_remove(P, nc, nd, U, nk, u, num, tol);
+  /* printf("Knots: "); */
+  /* for (i=0; i<nk; ++i) printf("%f, ",U[i]); */
+  /* printf("\n"); */
+  /* printf("Remove knot value %f, index %d, multiplicity %d\n",u,r,s); */
+  t = curve_knot_remove(P, nc, nd, U, nk, u, num, r, s, tol);
 
   /* Create the return arrays */
   dim[0] = nc-t;
@@ -1861,6 +1907,8 @@ static PyObject * curveKnotRemove(PyObject *self, PyObject *args)
   for (i=0; i<dim[0]; ++i) newU[i] = U[i];
 
   /* Clean up and return */
+  free(U);
+  free(Sm);
   Py_DECREF(arr1);
   Py_DECREF(arr2);
   return Py_BuildValue("iOO",t,ret1,ret2);

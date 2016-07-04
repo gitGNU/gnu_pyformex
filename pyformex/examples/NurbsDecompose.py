@@ -84,7 +84,8 @@ def removeKnot():
     res = dia.results
     ur = res['ur']
     m = res['m']
-    N = N.removeKnot(ur,m,0.01)
+    tol = res['tol']
+    N = N.removeKnot(ur,m,tol)
     print(N)
     drawNurbs(N,linewidth=5,color=blue,knotsize=5)
     zoomAll()
@@ -94,7 +95,10 @@ def removeAllKnots():
     """Remove all removable knots."""
     global N,dia
 
-    N = N.removeAllKnots()
+    dia.acceptData()
+    res = dia.results
+    tol = res['tol']
+    N = N.removeAllKnots(tol=tol)
     print(N)
     drawNurbs(N,linewidth=5,color=blue,knotsize=5)
     zoomAll()
@@ -168,13 +172,13 @@ def run():
             _G('Knot Removal',[
                 _I('ur', 0.5, text='Knot value to remove'),
                 _I('m', 1, text='How many times to remove',buttons=[('Remove Knot',removeKnot)]),
+                _I('tol', 0.001, text='Tolerance',buttons=[('Remove All Knots',removeAllKnots)]),
             ]),
             _G('Degree Elevation',[
                 _I('nd', 1, text='How much to elevate the degree',buttons=[('Elevate Degree',elevateDegree)]),
             ]),
         ], actions=[
             ('Close',close),
-            ('Remove All Knots',removeAllKnots),
             ('Decompose',decompose),
         ])
     dia.show()
