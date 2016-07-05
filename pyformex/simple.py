@@ -63,6 +63,13 @@ def shape(name):
     return Formex(Pattern[name])
 
 
+
+def randomPoints(n,bbox=[[0.,0.,0.],[1.,1.,1.]]):
+    """Create n random points in a specified bbox."""
+    bbox = array(bbox)
+    return Coords(at.randomNoise((n,3))).scale(bbox[1]-bbox[0]).trl(bbox[0])
+
+
 def regularGrid(x0, x1, nx):
     """Create a regular grid of points between two points x0 and x1.
 
