@@ -40,10 +40,9 @@ _topics = ['Geometry', 'Curve']
 _techniques = ['nurbs']
 
 from pyformex.gui.draw import *
-from pyformex.plugins.nurbs import *
-from pyformex.plugins.curve import *
 from pyformex.plugins.nurbs_menu import _options#, drawNurbs
 from pyformex.examples.NurbsCurveExamples import drawNurbs, nurbs_book_examples, createNurbs
+from pyformex import simple
 
 
 def showCurve():
@@ -134,6 +133,25 @@ def decompose():
         draw(Ci,color=i,linewidth=5)
 
 
+def projectPoints():
+    """Project points on the NurbsCurve N"""
+    global N,dia
+
+    dia.acceptData()
+    res = dia.results
+    npts = res['npts']
+    show_distance = res['show_distance']
+
+    X = simple.randomPoints(npts,N.bbox())
+    draw(X,marksize=5)
+
+    for Xi in X:
+        u,P = N.projectPoint(Xi)
+        draw(Formex([[P,Xi]]),color=red)
+        if show_distance:
+            d = at.length(P-Xi)
+            drawText("%s" %d, 0.5*(P+Xi))
+
 
 def close():
     global dia
@@ -176,6 +194,10 @@ def run():
             ]),
             _G('Degree Elevation',[
                 _I('nd', 1, text='How much to elevate the degree',buttons=[('Elevate Degree',elevateDegree)]),
+            ]),
+            _G('Point Projection',[
+                _I('npts', 10, text='How many points to project',buttons=[('Project Points',projectPoints)]),
+                _I('show_distance', True, text='Show distance'),
             ]),
         ], actions=[
             ('Close',close),

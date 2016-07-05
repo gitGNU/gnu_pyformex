@@ -495,7 +495,7 @@ class NurbsCurve(Geometry4):
         """
         ctrl = self.coords.astype(double)
         knots = self.knots.astype(double)
-        u = asarray(u).astype(double)
+        u = atleast_1d(u).astype(double)
 
         try:
             pts = nurbs.curvePoints(ctrl, knots, u)
@@ -512,17 +512,32 @@ class NurbsCurve(Geometry4):
         return pts
 
 
-    def derivs(self,at,d=1):
-        """Returns the points and derivatives up to d at parameter values at"""
-        if isinstance(at, int):
-            u = uniformParamValues(at, self.knots[0], self.knots[-1])
+    def derivs(self,u,d=1):
+        """Returns the points and derivatives up to d at parameter values at
+
+        Parameters:
+
+        - `u`: either of:
+
+          - int: number of points (npts) at which to evaluate the points
+            andderivatives. The points will be equally spaced in parameter space.
+
+          - float array (npts): parameter values at which to compute points
+            and derivatives.
+
+        - `d`: int: highest derivative to compute.
+
+        Returns a float array of shape (d+1,npts,3).
+        """
+        if isinstance(u, int):
+            u = at.uniformParamValues(u, self.knots[0], self.knots[-1])
         else:
-            u = at
+            u = at.checkArray(u, (-1,), 'f', 'i')
 
         # sanitize arguments for library call
         ctrl = self.coords.astype(double)
         knots = self.knots.astype(double)
-        u = asarray(u).astype(double)
+        u = atleast_1d(u).astype(double)
         d = int(d)
 
         try:
@@ -657,7 +672,6 @@ class NurbsCurve(Geometry4):
         return N
 
 
-
     def elevateDegree(self, nd):
         """Elevate the degree of the Nurbs curve.
 
@@ -666,14 +680,105 @@ class NurbsCurve(Geometry4):
         Returns:
 
         A Nurbs curve equivalent with the original but of a higher degree.
-        The control points and knot vector are enlarged.
 
         """
         if self.closed:
             raise ValueError("elevateDegree currently does not work on closed curves")
-        # TODO: make sure the copy is not needed
+
         newP,newU,nh,mh = nurbs.curveDegreeElevate(self.coords, self.knots, nd)
         return NurbsCurve(newP, degree=self.degree+nd, knots=newU, closed=self.closed)
+
+
+    def reduceDegree(self, nd):
+        """Reduce the degree of the Nurbs curve.
+
+        nd: how much to reduce the degree
+
+        Returns:
+
+        A Nurbs curve approximating the original but of a lower degree.
+
+        """
+        pass
+
+
+    # TODO: This might be implemented in C for efficiency
+    def projectPoint(self, P, eps1=1.e-5, eps2=1.e-5, maxit=20, nseed=20):
+        """Project a given point on the Nurbs curve.
+
+        This can also be used to determine the parameter value of a point
+        lying on the curve.
+
+        Parameters:
+
+        - `P`: Coords-like (npts,3): one or more points is space.
+
+        Returns a tuple (u,X):
+
+        - `u`: float: parameter value of the base point X of the projection
+          of P on the NurbsCurve.
+        - `X`: Coords (3,): the base point of the projection of P
+          on the NurbsCurve.
+
+        The algorithm is based on the from The Nurbs Book.
+
+        """
+        P = at.checkArray(P,(3,),'f','i')
+
+        # Determine start value from best match of nseed+1 points
+        umin,umax = self.knotv.val[[0,-1]]
+        u = at.uniformParamValues(nseed+1,umin,umax)
+        pts = self.pointsAt(u)
+        i = pts.distanceFromPoint(P).argmin()
+        u0,P0 = u[i],pts[i]
+        #print("Start at point %s : %s" % (u0,P0))
+
+        # Apply Newton's method to minimize distance
+        i = 0
+        ui = u0
+        while i < maxit:
+            i += 1
+            C = self.derivs([ui],2)
+            C0,C1,C2 = C[:,0]
+            CP = (C0-P)
+            CPxCP = dot(CP,CP)
+            C1xCP = dot(C1,CP)
+            C1xC1 = dot(C1,C1)
+            eps1sq = eps1*eps1
+            eps2sq = eps2*eps2
+            # Check convergence
+            chk1 = CPxCP <= eps1sq
+            chk2 = C1xCP / C1xC1 / CPxCP <= eps2sq
+
+            uj = ui - dot(C1,CP) / ( dot(C2,CP) + dot(C1,C1) )
+            # ensure that parameter stays in range
+            if self.closed:
+                while uj < umin:
+                    uj += umax - umin
+                while uj > umax:
+                    uj -= umax - umin
+            else:
+                if uj < umin:
+                    uj = umin
+                if uj > umax:
+                    uj = umax
+
+            # Check convergence
+            chk4 = (uj-ui)**2 * C1xC1 <= eps1sq
+            P0 = self.pointsAt([uj])[0]
+            #print("u[%s] = %s (P=%s) conv=%s" % (i,uj,P0,(chk1,chk2,chk4)))
+
+            if (chk1 or chk2) and chk4:
+                # Converged!
+                break
+            else:
+                # Prepare for next it
+                ui = uj
+
+        if i == maxit:
+            print("Convergence not reached after %s iterations" % maxit)
+
+        return u0,P0
 
 
     def approx(self,ndiv=None,nseg=None,**kargs):

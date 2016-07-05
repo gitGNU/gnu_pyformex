@@ -32,6 +32,7 @@ from __future__ import print_function
 from pyformex import zip
 
 from pyformex.formex import *
+from pyformex import arraytools as at
 
 # A collection of Formex string input patterns to construct some simple
 # geometrical shapes
