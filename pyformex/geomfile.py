@@ -355,7 +355,25 @@ class GeometryFile(object):
             head += "; colormap='%s'" % colormap
 
         self.fil.write(head+'\n')
+
+        # Apply a fix to avoid a fewgl bug
+        #
+        # pyFormex webgl exporter exports in pgf format.
+        # Unfortunately, due to a bug in fewgl pgf reader, geometries
+        # having a first value in the coords block that starts with a
+        # bit pattern corresponding with a '#' byte, (dec 35), can not
+        # be read back. The solution is to force the first bit (the least
+        # significant bit of the mantisse) to zero. This will make sure
+        # the bit pattern does not match dec 35 ('#'), and have a
+        # neglectable influence on the value. (Still the solution below
+        # resets the original value).
+        if pf.cfg['webgl/avoid_fewgl_read_pgf_bug']:
+            save_first = F.coords[0,0]
+            F.coords.view(np.int32)[0, 0] &= -2  # Force least significant bit of the first byte to zero
         self.writeData(F.coords, sep)
+        if pf.cfg['webgl/avoid_fewgl_read_pgf_bug']:
+            F.coords[0,0] = save_first
+
         if not objtype == 'Formex':
             self.writeData(F.elems, sep)
         if hasprop:
@@ -369,7 +387,6 @@ class GeometryFile(object):
             head = "# field='%s'; fldtype='%s'; shape=%r; sep='%s'" % (fld.fldname, fld.fldtype,fld.data.shape, sep)
             self.fil.write(head+'\n')
             self.writeData(fld.data, sep)
-
 
 
     def writeFormex(self,F,name=None,sep=None):

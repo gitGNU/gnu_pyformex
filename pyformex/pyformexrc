@@ -330,5 +330,6 @@ devel = False
 devpath = os.path.join(pyformexdir,'opengl')
 logo = 'http://pyformex.org/images/pyformex_createdby.png'
 logo_link = 'http://pyformex.org'
+avoid_fewgl_read_pgf_bug = True
 
 #End
