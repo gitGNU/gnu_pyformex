@@ -50,16 +50,15 @@ def clearDecors():
     undraw(_decors.ctrl_numbers)
 
 # TODO: This function should be merged with plugins.nurbs_menu.drawNurbs
-def drawNurbs(N,**kargs):
+def drawNurbs(N,clear=True,**kargs):
     """Draw the Nurbs curve N, with options"""
-    clear()
     if not isinstance(N,NurbsCurve):
         return
     for k in kargs:
         setattr(_options,k,kargs[k])
 
     clearDecors()
-    draw(N, color=_options.color, nolight=True)
+    draw(N, clear=clear, color=_options.color, nolight=True)
     if _options.ctrl:
         draw(N.coords.toCoords(), color=_options.pcolor, nolight=True)
         if _options.ctrl_polygon:
@@ -252,6 +251,15 @@ nurbs_book_examples = {
         [ 8.0,-6.1],
         ],3,
         [0.,0.,0.,0.,0.16,0.31,0.45,0.5501,0.702,0.8,0.901,1.,1.,1.,1.]),
+    '5.35': ([
+        [ 5.5,-7.4],
+        [ 4.5,-5.0],
+        [ 6.3,-2.5],
+        [ 9.8,-2.5],
+        [11.5,-4.6],
+        [10.5,-7.4],
+        ],3,
+        [0.,0.,0.,0.,0.3,0.7,1.,1.,1.,1.]),
     '5.37': ([
         [ 4.5,-7.8],
         [ 5.2,-3.5],

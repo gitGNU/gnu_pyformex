@@ -45,7 +45,7 @@ from pyformex.examples.NurbsCurveExamples import drawNurbs, nurbs_book_examples,
 from pyformex import simple
 
 
-def showCurve():
+def showCurve(reverse=False):
     """Select and show a Nurbs curve."""
     global N,dia
 
@@ -57,9 +57,15 @@ def showCurve():
         curv = ''
 
     N = createNurbs(curv)
+    if reverse:
+        N = N.reverse()
     print(N)
     drawNurbs(N,linewidth=1,color=blue,knotsize=5)
     zoomAll()
+
+
+def showReverse():
+    showCurve(reverse=True)
 
 
 def insertKnot():
@@ -112,7 +118,7 @@ def elevateDegree():
     nd = res['nd']
     N = N.elevateDegree(nd)
     print(N)
-    drawNurbs(N,linewidth=5,color=green,knotsize=5)
+    drawNurbs(N,clear=False,color=cyan,linewidth=5)
     zoomAll()
 
 
@@ -181,7 +187,7 @@ def run():
     dia = Dialog([
             _G('Curve Selection',[
                 _I('curv', 'default', choices=['ex%s' % k for k in sorted(nurbs_book_examples.keys())],
-                   buttons=[('Show Curve',showCurve)]),
+                   buttons=[('Show Curve',showCurve),('Show Reverse',showReverse)]),
             ]),
             _G('Knot Insertion',[
                 _I('u', 0.5, text='Knot value(s) to insert',tooltip='A single value or a comma separated sequence',
