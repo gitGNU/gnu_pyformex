@@ -1209,7 +1209,7 @@ class InputButton(InputItem):
     def doFunc(self):
         """Set the value by calling the button's func"""
         val = self.func(self)
-        if val:
+        if val is not None:
             self.setValue(val)
 
 
@@ -2172,9 +2172,9 @@ class TableModel(QtCore.QAbstractTableModel):
             else:
                 self.celltype = str
         if self.coltype:
-            self._data = [ [ coltype(i) for i, coltype in zip(r, self.coltype) ] for r in data ]
+            self._data = [ [ ct(i) for i, ct in zip(r, self.coltype) ] for r in data ]
         elif self.rowtype:
-            self._data = [ [ rowtype(i) for i in r ] for r, rowtype in zip(data, self.rowtype) ]
+            self._data = [ [ rt(i) for i in r ] for r, rt in zip(data, self.rowtype) ]
         else:
             self._data = [ [ self.celltype(i) for i in r ] for r in data ]
         self.headerdata = {QtCore.Qt.Horizontal:chead,QtCore.Qt.Vertical:rhead}
@@ -2322,9 +2322,9 @@ class ArrayModel(QtCore.QAbstractTableModel):
         self._data = np.asarray(data)
         self.generictype = _generic_nptype[self._data.dtype.kind]
         if rhead is None:
-            rhead = arange(data.shape[0])
+            rhead = np.arange(data.shape[0])
         if chead is None:
-            chead = arange(data.shape[1])
+            chead = np.arange(data.shape[1])
         self.headerdata = {QtCore.Qt.Horizontal:chead,QtCore.Qt.Vertical:rhead}
         self.makeEditable(edit)
 
@@ -2452,7 +2452,7 @@ class Table(QtGui.QTableView):
 
     def minimumSizeHint(self):
         #self.update()
-        minsize = size = QtGui.QTableView.sizeHint(self)
+        #minsize = size = QtGui.QTableView.sizeHint(self)
         #print("ORIG SIZE: %s, %s" % (size.width(),size.height()))
         size = self.size()
         #print("ACTUAL SIZE: %s, %s" % (size.width(),size.height()))
@@ -2687,7 +2687,7 @@ class GeometryFileDialog(FileDialog):
             pattern = 'pgf'
         FileDialog.__init__(self, path, pattern, exist, **kargs)
         grid = self.layout()
-        nr, nc = grid.rowCount(), grid.columnCount()
+        nr = grid.rowCount()
 
         if access is None:
             access = [ 'rw', 'r' ] if exist else [ 'wr', 'rw', 'w', 'r' ]
@@ -2748,7 +2748,7 @@ class ProjectSelection(FileDialog):
             pattern = 'pyf'
         FileDialog.__init__(self, path, pattern, exist)
         grid = self.layout()
-        nr, nc = grid.rowCount(), grid.columnCount()
+        nr = grid.rowCount()
 
         if access is None:
             access = [ 'rw', 'r' ] if exist else [ 'wr', 'rw', 'w', 'r' ]
@@ -2811,7 +2811,7 @@ class SaveImageDialog(FileDialog):
             pattern = ['img', 'icon', 'all']
         FileDialog.__init__(self, path, pattern, exist)
         grid = self.layout()
-        nr, nc = grid.rowCount(), grid.columnCount()
+        nr = grid.rowCount()
         try:
             w, h = SaveImageDialog.default_size
         except:
@@ -3178,7 +3178,7 @@ class MessageBox(QtGui.QMessageBox):
     def addCheck(self, text):
         """Add a check field at the bottom of the layout."""
         grid = self.layout()
-        nr, nc = grid.rowCount(), grid.columnCount()
+        nr = grid.rowCount()
         check = QtGui.QCheckBox(text)
         grid.addWidget(check, nr, len(self.checks))
         return check

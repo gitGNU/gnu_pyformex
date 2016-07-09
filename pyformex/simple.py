@@ -32,6 +32,7 @@ from __future__ import print_function
 from pyformex import zip
 
 from pyformex.formex import *
+from pyformex import arraytools as at
 
 # A collection of Formex string input patterns to construct some simple
 # geometrical shapes
@@ -61,6 +62,13 @@ def shape(name):
     See the Pattern example.
     """
     return Formex(Pattern[name])
+
+
+
+def randomPoints(n,bbox=[[0.,0.,0.],[1.,1.,1.]]):
+    """Create n random points in a specified bbox."""
+    bbox = array(bbox)
+    return Coords(at.randomNoise((n,3))).scale(bbox[1]-bbox[0]).trl(bbox[0])
 
 
 def regularGrid(x0, x1, nx):

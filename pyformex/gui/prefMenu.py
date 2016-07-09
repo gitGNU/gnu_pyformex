@@ -323,7 +323,7 @@ def setRendering():
     """Interactively change the render parameters.
 
     """
-    from pyformex.gui import canvas
+    from pyformex.opengl import canvas
 
     vp = pf.GUI.viewports.current
     dia = None

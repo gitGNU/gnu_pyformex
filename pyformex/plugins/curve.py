@@ -42,6 +42,8 @@ from pyformex import geomtools as gt
 from pyformex import utils
 from pyformex.varray import Varray
 
+import math
+
 ##############################################################################
 
 class Curve(Geometry):
@@ -1341,30 +1343,30 @@ class BezierSpline(Curve):
       This argument is ignored for a closed curve.
 
     """
-    coeffs = {
-        1: matrix([
-            [ 1.,  0.],
-            [-1.,  1.],
-            ]),
-        2: matrix([
-            [ 1.,  0.,  0.],
-            [-2.,  2.,  0.],
-            [ 1., -2.,  1.],
-            ]),
-        3: matrix([
-            [ 1.,  0.,  0.,  0.],
-            [-3.,  3.,  0.,  0.],
-            [ 3., -6.,  3.,  0.],
-            [-1.,  3., -3.,  1.],
-            ]),
-        4: matrix([
-            [ 1.,  0.,  0.,  0.,  0.],
-            [-4.,  4.,  0.,  0.,  0.],
-            [ 6., -12.,  6.,  0.,  0.],
-            [-4., 12., -12.,  4.,  0.],
-            [ 1., -4.,  6., -4.,  1.],
-            ]),
-        }
+#    coeffs = {
+#        1: matrix([
+#            [ 1.,  0.],
+#            [-1.,  1.],
+#            ]),
+#        2: matrix([
+#            [ 1.,  0.,  0.],
+#            [-2.,  2.,  0.],
+#            [ 1., -2.,  1.],
+#            ]),
+#        3: matrix([
+#            [ 1.,  0.,  0.,  0.],
+#            [-3.,  3.,  0.,  0.],
+#            [ 3., -6.,  3.,  0.],
+#            [-1.,  3., -3.,  1.],
+#            ]),
+#        4: matrix([
+#            [ 1.,  0.,  0.,  0.,  0.],
+#            [-4.,  4.,  0.,  0.,  0.],
+#            [ 6., -12.,  6.,  0.,  0.],
+#            [-4., 12., -12.,  4.,  0.],
+#            [ 1., -4.,  6., -4.,  1.],
+#            ]),
+#        }
 
     def __init__(self,coords=None,deriv=None,curl=1./3.,control=None,closed=False,degree=3,endzerocurv=False):
         """Create a BezierSpline curve."""
@@ -1506,7 +1508,7 @@ class BezierSpline(Curve):
                 control = Coords.concatenate([control, coords[last]])
 
         self.degree = degree
-        self.coeffs = BezierSpline.coeffs[degree]
+        self.coeffs = matrix(bezierPowerMatrix(degree))
         self.coords = control
         self.nparts = nparts
         self.closed = closed
@@ -2279,6 +2281,94 @@ class Spiral(Curve):
 
 ##############################################################################
 # Other functions
+
+def binomial(n, k):
+    """Compute the binomial coefficient Cn,k.
+
+    This computes the binomial coefficient Cn,k = fac(n) / fac(k) / fac(n-k).
+
+    Example:
+
+    >>> print([ binomial(3,i) for i in range(4) ])
+    [1, 3, 3, 1]
+    """
+    f = math.factorial
+    return f(n) / f(k) / f(n-k)
+
+
+_binomial_coeffs = {}
+_bezier_power_matrix = {}
+
+def binomialCoeffs(p):
+    """Compute all binomial coefficients for a given degree p.
+
+    Returns an array of p+1 values.
+
+    For efficiency reasons, the computed values are stored in the module,
+    in a dict with p as key. This allows easy and fast lookup of already
+    computed values.
+
+    Example:
+
+    >>> print(binomialCoeffs(4))
+    [1 4 6 4 1]
+
+    """
+    if p not in _binomial_coeffs:
+        _binomial_coeffs[p] = array([ binomial(p,i) for i in range(p+1) ])
+    return _binomial_coeffs[p]
+
+
+def bezierPowerMatrix(p):
+    """Compute the Bezier to power curve transformation matrix for degree p.
+
+    Bezier curve representations can be converted to power curve representations
+    using the coefficients in this matrix.
+
+    Returns a (p+1,p+1) shaped array with a zero upper triangular part.
+
+    For efficiency reasons, the computed values are stored in the module,
+    in a dict with p as key. This allows easy and fast lookup of already
+    computed values.
+
+    Example:
+
+    >>> print(bezierPowerMatrix(4))
+    [[  1.   0.   0.   0.   0.]
+     [ -4.   4.   0.   0.   0.]
+     [  6. -12.   6.   0.   0.]
+     [ -4.  12. -12.   4.   0.]
+     [  1.  -4.   6.  -4.   1.]]
+
+    >>> 4 in _bezier_power_matrix
+    True
+
+    """
+    if p in _bezier_power_matrix:
+        return _bezier_power_matrix[p]
+
+    M = zeros((p+1,p+1))
+    # Set corner elements
+    M[0,0] = M[p,p] = 1.0
+    M[p,0] = -1.0 if p % 2 else 1.0
+    # Compute first column, last row and diagonal
+    sign = -1.0
+    for i in range(1,p):
+        M[i,i] = binomialCoeffs(p)[i]
+        M[i,0] = M[p,p-i] = sign*M[i,i]
+        sign = -sign
+    # Compute remaining elements
+    k1 = (p+1)//2
+    pk = p-1
+    for k in range(1,k1):
+        sign = -1.0
+        for j in range(k+1,pk+1):
+            M[j,k] = M[pk,p-j] = sign * binomialCoeffs(p)[k] * binomialCoeffs(p-k)[j-k]
+            sign = -sign
+        pk -= 1
+
+    _bezier_power_matrix[p] = M
+    return M
 
 
 def convertFormexToCurve(self,closed=False):

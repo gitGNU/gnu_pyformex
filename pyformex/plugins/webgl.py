@@ -114,8 +114,9 @@ class WebGL(object):
     - a Javascript file describing the model. This file relies an other
       Javascript files to do the actual rendering and provide control menus.
       The default rendering script is
-      http://feops.ugent.be/pub/webgl/fewgl.js and the gui toolkit is
-      http://get.goXTK.com/xtk_xdat.gui.js.
+      https://net.feops.com/public/webgl/fewgl-0.2.js
+      and the gui toolkit is
+      https://net.feops.com/public/webgl/xtk_xdat.gui.js.
       The user can replace them with scripts of his choice.
     - a number of geometry files in pyFormex PGF format. These are normally
       created automatically by the exportScene method. The user can optionally
@@ -145,7 +146,8 @@ class WebGL(object):
       be included in a '/*', '*/' pair.
     - `dataformat`: string: the extension of the data files used for storing
       the geometry. This should be an extension supported by the webgl
-      rendering script. The default (http://feops.ugent.be/pub/webgl/fewgl.js)
+      rendering script.
+      The default (https://net.feops.com/public/webgl/fewgl-0.2.js")
       will always support pyFormex native formats '.pgf' and '.pgf.gz'.
       Some other formats (like .stl) may also be supported, but the use of
       the native formats is prefered, because they are a lot smaller.
