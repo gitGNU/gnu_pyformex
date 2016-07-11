@@ -702,7 +702,7 @@ class NurbsCurve(Geometry4):
         return N
 
 
-    def elevateDegree(self, t):
+    def elevateDegree(self, t=1):
         """Elevate the degree of the Nurbs curve.
 
         t: how much to elevate the degree
@@ -718,25 +718,36 @@ class NurbsCurve(Geometry4):
         P = self.coords.astype(double)
         #Uv = self.knotv.val.astype(double)
         #Um = self.knotv.mul.astype(at.Int)
-        newP,newU,nh,mh = nurbs.curveDegreeElevate(P, self.knots, t)
 
-        #Pw = self.coords
-        #newP,newU,nh,mh = curveDegreeElevate(Pw, self.knots, t)
 
         return NurbsCurve(newP, degree=self.degree+t, knots=newU, closed=self.closed)
 
 
-    def reduceDegree(self, nd):
+    def reduceDegree(self, t=1):
         """Reduce the degree of the Nurbs curve.
 
-        nd: how much to reduce the degree
+        t: how much to reduce the degree (max. = degree-1)
 
         Returns:
 
         A Nurbs curve approximating the original but of a lower degree.
 
         """
-        pass
+        from pyformex.lib.nurbs import curveDegreeReduce
+        if self.closed:
+            raise ValueError("reduceDegree currently does not work on closed curves")
+
+        if t >= self.degree:
+            raise ValueError("Can maximally reduce degree %s times" % self.degree-1)
+
+        N = self
+        while t > 0:
+            newP,newU,nh,mh,maxerr = curveDegreeReduce(N.coords, N.knots)
+            N = NurbsCurve(newP, degree=self.degree-1, closed=self.closed)
+            print("Reduced to degree %s with maxerr = %s" % (N.degree,maxerr))
+            t -= 1
+
+        return N
 
 
     # TODO: This might be implemented in C for efficiency
@@ -859,165 +870,6 @@ class NurbsCurve(Geometry4):
         """
         return NurbsCurve(control=self.coords[::-1], knots=self.knotv.reverse(), degree=self.degree, closed=self.closed)
 
-
-from pyformex.plugins.curve import binomial
-def curveDegreeElevate(Pw,U,t):
-    """Elevate the degree of the Nurbs curve.
-
-    t: how much to elevate the degree
-
-    Returns:
-
-    A Nurbs curve equivalent with the original but of a higher degree.
-
-    """
-    nk,nd = Pw.shape
-    n = nk-1
-    m = U.shape[0]-1
-    p = m-n-1
-    # Workspace for return arrays
-    Uh = np.zeros((U.shape[0]*(t+1)))
-    Qw = np.zeros((Pw.shape[0]*(t+1),nd))
-    # Workspaces
-    bezalfs = np.zeros((p+t+1,p+1))
-    bpts = np.zeros((p+1,nd))
-    ebpts = np.zeros((p+t+1,nd))
-    Nextbpts = np.zeros((p-1,nd))
-    alfs = np.zeros((p-1,))
-
-    ph = p+t
-    ph2 = ph//2
-#    print("New degree: %s" % ph)
-
-    bezalfs[0,0] = bezalfs[ph,p] = 1.0
-    for i in range(1,ph2+1):
-        inv = 1.0 / binomial(ph,i)
-        mpi = min(p,i)
-        for j in range(max(0,i-t),mpi+1):
-            bezalfs[i,j] = inv * binomial(p,j) * binomial(t,i-j)
-    for i in range(ph2+1,ph):
-        mpi = min(p,i)
-        for j in range(max(0,i-t),mpi+1):
-            bezalfs[i,j] = bezalfs[ph-i,p-j]
-#    print("bezalfs:",bezalfs)
-
-    mh = ph
-    kind = ph+1
-    r = -1
-    a = p
-    b = p+1
-    cind = 1
-    ua = U[0]
-    Qw[0] = Pw[0]
-    for i in range(ph+1):
-        Uh[i] = ua
-    for i in range(p+1):
-        bpts[i] = Pw[i]
-#    print("bpts =\n%s" % bpts[:p+1])
-
-    while (b < m):
-#        print("Big loop b = %s < m = %s" % (b,m))
-        i = b
-        while b < m and U[b] == U[b+1]:
-            b += 1;
-        mul = b-i+1
-        mh = mh+mul+t
-        ub = U[b]
-        oldr = r
-        r = p-mul
-
-#        print("Insert knot %s r=%s times (oldr=%s)" % (ub,r,oldr))
-        lbz = (oldr+2)//2 if oldr > 0 else 1
-        rbz = ph-(r+1)//2 if r > 0 else ph
-
-        if r > 0:
-#            print("Insert knot to get Bezier segment of degree %s mul %s" % (p,mul))
-            numer = ub-ua
-            for k in range(p,mul,-1):
-                alfs[k-mul-1] = numer / (U[a+k] - ua)
-#            print("alfs = %s" % alfs[:p])
-            for j in range(1,r+1):
-                save = r-j
-                s = mul+j
-                for k in range(p,s-1,-1):
-                    bpts[k] = alfs[k-s]*bpts[k] + (1.0-alfs[k-s])*bpts[k-1]
-                Nextbpts[save] = bpts[p]
-#                print("Nextbpts %s = %s" %(save,Nextbpts[save]))
-#            print("bpts =\n%s" % bpts[:p+1])
-            #X = Coords(bpts[:p+1,:3])
-            #draw(PolyLine(X))
-            #draw(X)
-
-#        print("Degree elevate Bezier")
-        for i in range(lbz,ph+1):
-            ebpts[i] = 0.0
-            mpi = min(p,i)
-            for j in range(max(0,i-t),mpi+1):
-                ebpts[i] += bezalfs[i,j]*bpts[j]
-#        print("ebpts =\n%s" % ebpts[lbz:ph+1])
-        #X = Coords(ebpts[lbz:ph+1,:3])
-        #draw(PolyLine(X),color='red')
-        #draw(X,color='red')
-
-        if oldr > 1:
-#            print("Must remove knot %s %s times" % (ua,oldr))
-            first = kind-2
-            last = kind
-            den = ub-ua
-            bet = (ub-Uh[kind-1]/den)
-            for tr in range(1,oldr):
-#                print("Knot removal loop %s, (first=%s, last=%s)" % (tr,first,last))
-                i = first
-                j = last
-                kj = j-kind+1
-                while j-i > tr:
-#                    print("Compute new control points (i=%s, j=%s)" % (i,j))
-                    if i < cind:
-                        alf = (ub-Uh[i]) / (ua-Uh[i])
-                        Qw[i] = alf*Qw[i] + (1.0-alf)*Qw[i-1]
-                    if j >= lbz:
-                        if j-tr <= kind-ph+oldr:
-                            gam = (ub-Uh[j-tr]) / den
-                            ebpts[kj] = gam*ebpts[kj] + (1.0-gam)*ebpts[kj+1]
-                        else:
-                            ebpts[kj] = bet*ebpts[kj] + (1.0-bet)*ebpts[kj+1]
-                    i += 1
-                    j -= 1
-                    kj -= 1
-                first -= 1
-                last +=1
-
-        if a != p:
-#            print("Load the knot ua")
-            for i in range(ph-oldr):
-                Uh[kind] = ua
-                kind += 1
-
-        for j in range(lbz,rbz+1):
-#            print("Load control point %s into Qw %s)" % (j,cind))
-            Qw[cind] = ebpts[j]
-            cind += 1
-#        print(Qw[:cind])
-
-#        print("Now b=%s, m=%s" % (b,m))
-        if b < m:
-#            print("Set up for next pass")
-            for j in range(r):
-                bpts[j] = Nextbpts[j]
-            for j in range(r,p+1):
-                bpts[j] = Pw[b-p+j]
-            a = b
-            b += 1
-            ua = ub
-        else:
-#            print("End knot")
-            for i in range(ph+1):
-                Uh[kind+i] = ub
-
-    nh = mh - ph - 1
-    Uh = Uh[:mh+1]
-    Qw = Qw[:nh+1]
-    return np.array(Qw), np.array(Uh), nh, mh
 
 
 

@@ -22,23 +22,54 @@
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
 #
-"""Python equivalents of the functions in lib.nurbs
+"""Python equivalents of the functions in lib.nurbs_
 
 The functions in this module should be exact emulations of the
-external functions in the compiled library.
+external functions in the compiled library. Currently however this
+module only contains a few of the functions in lib.nurbs_, making
+nurbs functionality in pyFormex currently only available when using
+the compiled lib.
 """
 from __future__ import print_function
 
 
 # There should be no other imports here but numpy
-from numpy import zeros
-import pyformex as pf
+import numpy as np
 
-__version__ = pf.__version__
+# And Set the version from pyformexld be defined
+import pyformex
+__version__ = pyformex.__version__
 accelerated = False
 
-
+# Since binomial is already defined in plugins.curve, we can just import it here.
 from pyformex.plugins.curve import binomial
+
+
+def length(A):
+    """Return the length of an ndim vector."""
+    return np.linalg.norm(A)
+
+
+def Bernstein(n,i,u):
+    """Compute the value of the Bernstein polynomial Bi,n at u.
+
+    Parameters:
+
+    - `n`: int: degree of the polynomials
+    - `i`: int: degree of the polynomials
+    - `u`: float, parametric value where the polynomials are evaluated
+
+    Returns: an (n+1,) shaped float array with the value of all n-th
+    degree Bernstein polynomials B(i,n) at parameter value u.
+
+    Algorithm A1.3 from 'The NURBS Book' p20.
+
+    >>> Bernstein(5,2,0.4)
+    0.34560000000000002
+    """
+    # THIS IS NOT OPTIMIZED !
+    return allBernstein(n,u)[i]
+
 
 def allBernstein(n, u):
     """Compute the value of all n-th degree Bernstein polynomials.
@@ -54,7 +85,7 @@ def allBernstein(n, u):
     Algorithm A1.3 from 'The NURBS Book' p20.
     """
     # THIS IS NOT OPTIMIZED FOR PYTHON.
-    B = zeros(n+1)
+    B = np.zeros(n+1)
     B[0] = 1.0
     u1 = 1.0-u
     for j in range(1, n+1):
@@ -65,5 +96,386 @@ def allBernstein(n, u):
             saved = u * temp
         B[j] = saved
     return B
+
+
+def curveDegreeElevate(Pw,U,t):
+    """Elevate the degree of the Nurbs curve.
+
+    Parameters:
+
+    - `Pw`: float array (nk,nd): nk=n+1 control points
+    - `U`: int array(nu): nu=m+1 knot values
+    - `t`: int: how much to elevate the degree
+
+    Returns a tuple:
+
+    - `Qw`: nh+1 new control points
+    - `Uh`: mh+1 new knot values
+    - `nh`: highest control point index
+    - `mh`: highest knot index
+
+    This is based on algorithm A5.9 from 'The NURBS Book' pg206.
+
+    """
+    nk,nd = Pw.shape
+    n = nk-1
+    m = U.shape[0]-1
+    p = m-n-1
+    # Workspace for return arrays
+    Uh = np.zeros((U.shape[0]*(t+1)))
+    Qw = np.zeros((Pw.shape[0]*(t+1),nd))
+    # Workspaces
+    bezalfs = np.zeros((p+t+1,p+1))
+    bpts = np.zeros((p+1,nd))
+    ebpts = np.zeros((p+t+1,nd))
+    Nextbpts = np.zeros((p-1,nd))
+    alfs = np.zeros((p-1,))
+
+    ph = p+t
+    ph2 = ph//2
+
+    # Compute Bezier degree elevation coefficients
+    bezalfs[0,0] = bezalfs[ph,p] = 1.0
+    for i in range(1,ph2+1):
+        inv = 1.0 / binomial(ph,i)
+        mpi = min(p,i)
+        for j in range(max(0,i-t),mpi+1):
+            bezalfs[i,j] = inv * binomial(p,j) * binomial(t,i-j)
+    for i in range(ph2+1,ph):
+        mpi = min(p,i)
+        for j in range(max(0,i-t),mpi+1):
+            bezalfs[i,j] = bezalfs[ph-i,p-j]
+#    print("bezalfs:",bezalfs)
+
+    mh = ph
+    kind = ph+1
+    r = -1
+    a = p
+    b = p+1
+    cind = 1
+    ua = U[0]
+    Qw[0] = Pw[0]
+    for i in range(ph+1):
+        Uh[i] = ua
+    # Initialize first Bezier segment
+    for i in range(p+1):
+        bpts[i] = Pw[i]
+#    print("bpts =\n%s" % bpts[:p+1])
+
+    # Big loop thru knot vector
+    while b < m:
+#        print("Big loop b = %s < m = %s" % (b,m))
+        i = b
+        while b < m and U[b] == U[b+1]:
+            b += 1;
+        mul = b-i+1
+        mh += mul+t
+        ub = U[b]
+        oldr = r
+        r = p-mul
+
+        # Insert knot ub r times
+        lbz = (oldr+2)//2 if oldr > 0 else 1
+        rbz = ph-(r+1)//2 if r > 0 else ph
+
+        if r > 0:
+            # Insert knot to get Bezier segment
+            numer = ub-ua
+            for k in range(p,mul,-1):
+                alfs[k-mul-1] = numer / (U[a+k] - ua)
+#            print("alfs = %s" % alfs[:p])
+            for j in range(1,r+1):
+                save = r-j
+                s = mul+j
+                for k in range(p,s-1,-1):
+                    bpts[k] = alfs[k-s]*bpts[k] + (1.0-alfs[k-s])*bpts[k-1]
+                Nextbpts[save] = bpts[p]
+#                print("Nextbpts %s = %s" %(save,Nextbpts[save]))
+#            print("bpts =\n%s" % bpts[:p+1])
+
+        # Degree elevate Bezier
+        for i in range(lbz,ph+1):
+            # Only points lbz..ph are used below
+            ebpts[i] = 0.0
+            mpi = min(p,i)
+            for j in range(max(0,i-t),mpi+1):
+                ebpts[i] += bezalfs[i,j]*bpts[j]
+#        print("ebpts =\n%s" % ebpts[lbz:ph+1])
+
+        if oldr > 1:
+            # Must remove knot U[a] oldr times
+            first = kind-2
+            last = kind
+            den = ub-ua
+            bet = (ub-Uh[kind-1]/den)
+            for tr in range(1,oldr):
+                # Knot removal loop
+                i = first
+                j = last
+                kj = j-kind+1
+                while j-i > tr:
+                    # Compute new control points
+                    if i < cind:
+                        alf = (ub-Uh[i]) / (ua-Uh[i])
+                        Qw[i] = alf*Qw[i] + (1.0-alf)*Qw[i-1]
+                    if j >= lbz:
+                        if j-tr <= kind-ph+oldr:
+                            gam = (ub-Uh[j-tr]) / den
+                            ebpts[kj] = gam*ebpts[kj] + (1.0-gam)*ebpts[kj+1]
+                        else:
+                            ebpts[kj] = bet*ebpts[kj] + (1.0-bet)*ebpts[kj+1]
+                    i += 1
+                    j -= 1
+                    kj -= 1
+                first -= 1
+                last +=1
+
+        if a != p:
+            # Load the knot ua
+            for i in range(ph-oldr):
+                Uh[kind] = ua
+                kind += 1
+
+        for j in range(lbz,rbz+1):
+            # Load control points into Qw
+            Qw[cind] = ebpts[j]
+            cind += 1
+#        print(Qw[:cind])
+
+#        print("Now b=%s, m=%s" % (b,m))
+        if b < m:
+            # Set up for next passcthru loop
+            for j in range(r):
+                bpts[j] = Nextbpts[j]
+            for j in range(r,p+1):
+                bpts[j] = Pw[b-p+j]
+            a = b
+            b += 1
+            ua = ub
+        else:
+            # End knot
+            for i in range(ph+1):
+                Uh[kind+i] = ub
+
+    nh = mh - ph - 1
+    Uh = Uh[:mh+1]
+    Qw = Qw[:nh+1]
+
+    return np.array(Pw), np.array(Uh), nh, mh
+
+
+
+def curveDegreeReduce(Qw,U):
+    """Reduce the degree of the Nurbs curve.
+
+    Parameters:
+
+    - `Qw`: float array (nk,nd): nk=n+1 control points
+    - `U`: int array(nu): nu=m+1 knot values
+
+    Returns a tuple:
+
+    - `Pw`: nh+1 new control points
+    - `Uh`: mh+1 new knot values
+    - `nh`: highest control point index
+    - `mh`: highest knot index
+    - `err`: error vector
+
+    This is based on algorithm A5.11 from 'The NURBS Book' pg223.
+
+    """
+    nk,nd = Qw.shape
+    n = nk-1
+    m = U.shape[0]-1
+    p = m-n-1
+    # Workspace for return arrays
+    Uh = np.zeros(U.shape)
+    Pw = np.zeros(Qw.shape)
+    # Set up workspaces
+    bpts = np.zeros((p+1,nd)) # Bezier control points of current segment
+    Nextbpts = np.zeros((p-1,nd)) # leftmost control points of next Bezier segment
+    rbpts = np.zeros((p,nd)) # degree reduced Bezier control points
+    alfs = np.zeros((p-1,)) # knot insertion alphas
+    err = np.zeros((m,)) # error vector
+
+    # Initialize some variables
+    ph = p-1
+    mh = ph
+    kind = ph+1
+    r = -1
+    a = p
+    b = p+1
+    cind = 1
+    mult = p
+    Pw[0] = Qw[0]
+    # Compute left end of knot vector
+    Uh[:ph+1] = U[0]
+    # Initialize first Bezier segment
+    bpts[:p+1] = Qw[:p+1]
+
+    # Loop through the knot vector
+    while b < m:
+        # Compute knot multiplicity
+        i = b
+        while b < m and U[b] == U[b+1]:
+            b += 1;
+        mult = b-i+1
+        mh += mult-1
+        oldr = r
+        r = p-mult
+        lbz = (oldr+2)//2 if oldr > 0 else 1
+
+        ua = U[a]
+        ub = U[b]
+
+        # Insert knot U[b] r times
+        if r > 0:
+            # Insert knot to get Bezier segment
+            numer = ub-ua
+            for k in range(p,mult-1,-1):
+                alfs[k-mult-1] = numer / (U[a+k] - ua)
+            print("alfs = %s" % alfs[:p])
+            for j in range(1,r+1):
+                save = r-j
+                s = mult+j
+                for k in range(p,s-1,-1):
+                    bpts[k] = alfs[k-s]*bpts[k] + (1.0-alfs[k-s])*bpts[k-1]
+                Nextbpts[save] = bpts[p]
+                print("Nextbpts %s = %s" %(save,Nextbpts[save]))
+            print("bpts =\n%s" % bpts[:p+1])
+
+        # Degree reducee Bezier segment
+        rbpts,maxErr = BezDegreeReduce(bpts)
+        print("Degree reduce error = %s"%maxErr)
+        err[a] += maxErr
+#        if err[a] > TOL:
+#            return None  # Curve not degree reducible
+
+        if oldr > 1:
+            # Must remove knot U[a] oldr times
+            first = kind
+            last = kind
+            for k in range(oldr):
+                i = first
+                j = last
+                kj = j-kind
+                while j-i > k:
+                    alfa = (ua-Uh[i-1]) / (ub-Uh[i-1])
+                    beta = (ua-Uh[j-k-1]) / (ub-Uh[j-k-1])
+                    Pw[i-1] = (Pw[i-1] - (1.0-alfa)*Pw[i-2]) / alfa
+                    rbpts[kj] = (rbpts[kj] - beta*rbpts[kj+1])/(1.0-beta)
+                    i += 1
+                    j -= 1
+                    kj -= 1
+
+
+
+                # Compute knot removal error bounds (Br)
+                if j-i < k:
+                    Br = length(Pw[i-2] - rbpts[kj+1])
+                else:
+                    delta = (ua-Uh[i-1]) / (ub-Uh[i-1])
+                    A = delta*rbpts[kj+1] + (1.0-delta)*Pw[i-2]
+                    Br = length(Pw[i-1] - A)
+                print("Knot removal error = %s" % Br)
+                # Update the error vector
+                K = a+oldr-k
+                q = (2*p-k+1)//2
+                L = K-q
+                for ii in range(L,a+1): # These knot spans were affected
+                    err[ii] += Br
+#                    if err[ii] > TOL:
+#                        return None
+
+                first -= 1
+                last +=1
+
+            cind = i-1
+
+        if a != p:
+            # Load the knot ua
+            for i in range(ph-oldr):
+                Uh[kind] = ua
+                kind += 1
+
+        for i in range(lbz,ph+1):
+            # Load control points into Pw
+            Pw[cind] = rbpts[i]
+            cind += 1
+#        print(Qw[:cind])
+
+        if b < m:
+            # Set up for next pass thru loop
+            for i in range(r):
+                bpts[j] = Nextbpts[i]
+            for i in range(r,p+1):
+                bpts[i] = Qw[b-p+i]
+            a = b
+            b += 1
+
+        else:
+            # End knot
+            for i in range(ph+1):
+                Uh[kind+i] = ub
+
+    nh = mh - ph - 1
+    Uh = Uh[:mh+1]
+    Pw = Pw[:nh+1]
+
+    return np.array(Pw), np.array(Uh), nh, mh, err
+
+
+def BezDegreeReduce(Q,return_errfunc=False):
+    """Degree reduce a Bezier curve.
+
+    Parameters:
+
+    - `Q`: float array (nk,nd): control points of a Bezier curve of degree
+      p = nk-1
+    - `return_errfunc`: bool: if True, also returns a function to evaluate the
+      error along the parametric values.
+
+    Returns a tuple:
+
+    - `P`: float array (nk-1,nd): control points of a Bezier curve of
+      degree p-1
+    - `maxerr`: float: an upper bound on the error introduced by the degree
+      reduction
+
+    Based on The NURBS Book.
+    """
+    nk,nd = Q.shape
+    p = nk - 1
+    r = (p-1) // 2
+    alfs = np.arange(p) / float(p)
+    P = np.zeros((p,nd))
+    P[0] = Q[0]
+    for i in range(1,r+1):
+        P[i] = ( Q[i] - alfs[i]*P[i-1] ) / (1.0-alfs[i])
+    P[p-1] = Q[p]
+    for i in range(p-2,r,-1):
+        P[i] = ( Q[i+1] - (1-alfs[i+1])*P[i+1] ) / alfs[i+1]
+    if p % 2 == 1:
+        PrR = ( Q[r+1] - (1-alfs[r+1])*P[r+1] ) / alfs[r+1]
+        Err = 0.5 * (1.0-alfs[r]) * length( P[r] - PrR )
+        P[r] = 0.5 * (P[r] + PrR)
+
+    # Max error
+    # Note that maximum of Bernstein polynom (i,p) is at i/p
+    if p % 2 == 0:
+        errfunc = lambda u: Bernstein(p,r+1,u) * length(Q[r+1]-0.5*(P[r]+P[r+1]))
+        # Note that maximum of Bernstein polynom (i,p) is at i/p
+        maxerr = errfunc((r+1.)/p)
+    else:
+        errfunc = lambda u: Err * (Bernstein(p,r,u) - Bernstein(p,r+1,u))
+        # We guess that maximum is close to middle of r/p and r+1/p
+        maxerr = errfunc((r+0.5)/p)
+
+    print("maxerr = %s" % maxerr)
+    if return_errfunc:
+        return P,maxerr,errfunc
+    else:
+        return P,maxerr
+
 
 # End

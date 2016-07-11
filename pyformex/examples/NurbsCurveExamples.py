@@ -44,10 +44,13 @@ _options.pcolor = magenta
 
 class _decors:
     ctrl_numbers = None
+    knot_values = None
 
 
 def clearDecors():
     undraw(_decors.ctrl_numbers)
+    undraw(_decors.knot_values)
+
 
 # TODO: This function should be merged with plugins.nurbs_menu.drawNurbs
 def drawNurbs(N,clear=True,**kargs):
@@ -64,13 +67,13 @@ def drawNurbs(N,clear=True,**kargs):
         if _options.ctrl_polygon:
             draw(PolyLine(N.coords.toCoords()), color=_options.pcolor, nolight=True)
         if _options.ctrl_numbers:
-            _decors.ctrl_numbers = drawNumbers(N.coords.toCoords())
+             _decors.ctrl_numbers = drawNumbers(N.coords.toCoords())
     if _options.knots:
         draw(N.knotPoints(), color=_options.color, marksize=_options.knotsize)
-        if _options.knot_numbers:
-            drawNumbers(N.knotPoints())
+#        if _options.knot_numbers:
+#           _decors.knot_numbers = drawNumbers(N.knotPoints())
         if _options.knot_values:
-            drawMarks(N.knotPoints(), ["%f(%s)"%(v,m) for v,m in N.knotv.knots()], leader='  --> ')
+           _decors.knot_values = drawMarks(N.knotPoints(), ["%f(%s)"%(v,m) for v,m in N.knotv.knots()], leader='  --> ')
 
 
 # Example curves from the Nurbs book
@@ -280,6 +283,27 @@ nurbs_book_examples = {
         [ 9.0,-7.5],
         ],4,
         [0.,0.,0.,0.,0.,1/3.,1/3.,2/3.,2/3.,1.,1.,1.,1.,1.]),
+    '5.40a': ([
+        [ 4.0,-7.8],
+        [ 4.0,-4.8],
+        [ 5.8,-4.8],
+        [ 5.8,-6.2],
+        [ 8.7,-6.2],
+        [ 8.7,-3.5],
+        [11.0,-3.5],
+        [11.0,-6.5],
+        ],7,
+        ),
+    '5.40b': ([
+        [ 4.2, 6.7],
+        [ 4.2,10.4],
+        [ 6.6,10.4],
+        [ 6.6, 8.0],
+        [11.0, 8.0],
+        [11.0,11.0],
+        [ 7.8,11.0],
+        ],6,
+        ),
 }
 
 
