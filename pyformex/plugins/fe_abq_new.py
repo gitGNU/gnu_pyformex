@@ -497,7 +497,7 @@ def fmtMaterial(mat):
     materialswritten.append(mat.name)
     if mat.keys()==['name']:
         return ''
-    
+
     out = Command('MATERIAL',name=mat.name).out
 
     if mat.field is not None:
@@ -757,18 +757,18 @@ def fmtSolidSection(section ,setname):
 
     - orientation
     - thickness
-    
+
     See also `class:Command` for accepted parameters.
 
     Instructions for use:
-    
+
       mat1 = {'name':'mat1' , 'density':  1e-09 , 'elasticity': 'linear' , 'constants': [1000., 0.3]}
       P = PropertyDB()
-      
+
       control_name = 'SEC-CTRL'
       sec_control_opt = 'CONTROLS=%s'%control_name
       sec_control_extra = '*SECTION CONTROLS , NAME=%s , HOURGLASS=ENHANCED\n1.,1.,1.'%control_name
-      
+
       section1 = ElemSection(sectiontype='SOLID' , name='section1' , material=mat1 , \
         options=sec_control_opt , extra=sec_control_extra)
       P.elemProp(set=arange(10),name='elset1',eltype='C3D8R',section=section1)
@@ -1250,7 +1250,7 @@ def fmtSurface(prop):
 
     - surftype: string. Can assume values 'ELEMENT' or 'NODE' , other abaqus
         surface types  or an empty string for special cases that do not need
-        a 
+        a
 
     - label (opt): string, or a list of strings storing the abaqus face or edge identifier
         It is only required for surftype == 'ELEMENT'.
@@ -1334,11 +1334,11 @@ def fmtSurfaceInteraction(prop):
     - friction : friction coeff or 'rough'
     - surface behavior: no separation
     - surface behavior: pressureoverclosure
-    
+
     """
     out = ''
     for p in prop:
-        
+
         if type(p) != Interaction: # Kept for compatibility, working with example in fmtContactPair
             out += "*Surface Interaction, name=%s\n" % (p.name)
             if p.cross_section is not None:
@@ -1359,7 +1359,7 @@ def fmtSurfaceInteraction(prop):
                     out += "*FRICTION, ROUGH\n"
                 else:
                     out += "*FRICTION\n%s\n" % float(p.friction['data'][0])
-                    
+
         if p.surfacebehavior:
             out += "*Surface Behavior"
             print("writing Surface Behavior")
@@ -1374,7 +1374,7 @@ def fmtSurfaceInteraction(prop):
                     out += "%s" % fmtData1d(p.pressureoverclosure[2:]) + '\n'
             else:
                 out += "\n"
-                    
+
     return out
 
 
@@ -2696,7 +2696,7 @@ Script: %s
             else:
                 # default is all elements
                 set = arange(telems)
-            
+
             if len(p.set):
                 if 'eltype' in p:
                     pf.debug('Elements of type %s: %s' % (p.eltype, set), pf.DEBUG.ABQ)
@@ -2786,10 +2786,11 @@ Script: %s
             print("Writing Connector Behavior")
             fil.write(fmtConnectorBehavior(prop))
 
-        prop = self.prop.getProp('n', attr=['equation'])
-        if prop:
+        props = self.prop.getProp('n', attr=['equation'])
+        if props:
             print("Writing constraint equations")
-            fil.write(fmtEquation(prop))
+            for prop in props:
+                fil.write(fmtEquation(prop))
 
         prop = self.prop.getProp('', attr=['surftype'])
         if prop:
@@ -2845,13 +2846,13 @@ Script: %s
 
 def exportMesh(filename,mesh,eltype,header=''):
     """Export a finite element mesh in Abaqus .inp format.
-    
+
     This is a convenience function to quickly export a mesh to Abaqus
     without having to go through the whole setup of a complete
     finite element model.
     This just writes the nodes and elements specified in the mesh to
     the file with the specified name. If the mesh has different properties,
-    the elements with the same properties, will be grouped in the same 
+    the elements with the same properties, will be grouped in the same
     element set. The resulting file  can then be imported in Abaqus/CAE
     or manual be edited to create a full model.
     If an eltype is specified, it will override the value stored in the mesh.
