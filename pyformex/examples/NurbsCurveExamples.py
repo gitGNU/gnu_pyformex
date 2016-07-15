@@ -44,34 +44,36 @@ _options.pcolor = magenta
 
 class _decors:
     ctrl_numbers = None
+    knot_values = None
 
 
 def clearDecors():
     undraw(_decors.ctrl_numbers)
+    undraw(_decors.knot_values)
+
 
 # TODO: This function should be merged with plugins.nurbs_menu.drawNurbs
-def drawNurbs(N,**kargs):
+def drawNurbs(N,clear=True,**kargs):
     """Draw the Nurbs curve N, with options"""
-    clear()
     if not isinstance(N,NurbsCurve):
         return
     for k in kargs:
         setattr(_options,k,kargs[k])
 
     clearDecors()
-    draw(N, color=_options.color, nolight=True)
+    draw(N, clear=clear, color=_options.color, nolight=True)
     if _options.ctrl:
         draw(N.coords.toCoords(), color=_options.pcolor, nolight=True)
         if _options.ctrl_polygon:
             draw(PolyLine(N.coords.toCoords()), color=_options.pcolor, nolight=True)
         if _options.ctrl_numbers:
-            _decors.ctrl_numbers = drawNumbers(N.coords.toCoords())
+             _decors.ctrl_numbers = drawNumbers(N.coords.toCoords())
     if _options.knots:
         draw(N.knotPoints(), color=_options.color, marksize=_options.knotsize)
-        if _options.knot_numbers:
-            drawNumbers(N.knotPoints())
+#        if _options.knot_numbers:
+#           _decors.knot_numbers = drawNumbers(N.knotPoints())
         if _options.knot_values:
-            drawMarks(N.knotPoints(), ["%f(%s)"%(v,m) for v,m in N.knotv.knots()], leader='  --> ')
+           _decors.knot_values = drawMarks(N.knotPoints(), ["%f(%s)"%(v,m) for v,m in N.knotv.knots()], leader='  --> ')
 
 
 # Example curves from the Nurbs book
@@ -252,6 +254,15 @@ nurbs_book_examples = {
         [ 8.0,-6.1],
         ],3,
         [0.,0.,0.,0.,0.16,0.31,0.45,0.5501,0.702,0.8,0.901,1.,1.,1.,1.]),
+    '5.35': ([
+        [ 5.5,-7.4],
+        [ 4.5,-5.0],
+        [ 6.3,-2.5],
+        [ 9.8,-2.5],
+        [11.5,-4.6],
+        [10.5,-7.4],
+        ],3,
+        [0.,0.,0.,0.,0.3,0.7,1.,1.,1.,1.]),
     '5.37': ([
         [ 4.5,-7.8],
         [ 5.2,-3.5],
@@ -272,6 +283,27 @@ nurbs_book_examples = {
         [ 9.0,-7.5],
         ],4,
         [0.,0.,0.,0.,0.,1/3.,1/3.,2/3.,2/3.,1.,1.,1.,1.,1.]),
+    '5.40a': ([
+        [ 4.0,-7.8],
+        [ 4.0,-4.8],
+        [ 5.8,-4.8],
+        [ 5.8,-6.2],
+        [ 8.7,-6.2],
+        [ 8.7,-3.5],
+        [11.0,-3.5],
+        [11.0,-6.5],
+        ],7,
+        ),
+    '5.40b': ([
+        [ 4.2, 6.7],
+        [ 4.2,10.4],
+        [ 6.6,10.4],
+        [ 6.6, 8.0],
+        [11.0, 8.0],
+        [11.0,11.0],
+        [ 7.8,11.0],
+        ],6,
+        ),
 }
 
 

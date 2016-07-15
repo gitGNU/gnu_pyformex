@@ -34,7 +34,7 @@
 
 /****************** LIBRARY VERSION AND DOCSTRING *******************/
 
-static char *__version__ = "1.0.2-a5";
+static char *__version__ = "1.0.2-a6";
 static char *__doc__ = "nurbs_ module\n\
 \n\
 This module provides accelerated versions of the pyFormex NURBS\n\
@@ -888,8 +888,8 @@ Modified algorithm A5.9 from 'The NURBS Book' pg206.
 */
 static void curve_degree_elevate(double *P, int nc, int nd, double *U, int nk, int t, double *Pw, double* Uw, int *nq, int *nu)
 {
-  int n,m,p,mh,ph,ph2,i,j,mpi,kind,r,a,b,cind,kk,oldr,mult,lbz,rbz,numer,k,save,s,first,last,tr,kj;
-  double inv,ua,ub,den,alf,bet,gam;
+  int n,m,p,mh,ph,ph2,i,j,mpi,kind,r,a,b,cind,kk,oldr,mul,lbz,rbz,k,save,s,first,last,tr,kj;
+  double inv,ua,ub,den,alf,bet,gam,numer;
 
   n = nc - 1;
   m = nk - 1;
@@ -906,7 +906,7 @@ static void curve_degree_elevate(double *P, int nc, int nd, double *U, int nk, i
   double *alfs = (double *) malloc((p-1)*sizeof(double));
 
   /* Compute Bezier degree elevation coefficients */
-  printf("Bezier degree elevation coefficients\n");
+  //printf("Bezier degree elevation coefficients\n");
   // Added for testing
   for (i=0;i<=ph;++i) for (j=0;j<=p;++j) bezalfs[i][j] = 0.0;
   bezalfs[0][0] = bezalfs[ph][p] = 1.0;
@@ -918,15 +918,16 @@ static void curve_degree_elevate(double *P, int nc, int nd, double *U, int nk, i
     for (j=max(0,i-t); j<=mpi; ++j)
       bezalfs[i][j] = inv * _binomial(p,j) * _binomial(t,i-j);
   }
-
   for (i=ph2+1; i<=ph-1; ++i) {
     mpi = min(p, i);
     for (j=max(0,i-t); j<=mpi; ++j)
       bezalfs[i][j] = bezalfs[ph-i][p-j];
   }
-  for (i=0; i<=ph;++i)
-    print_mat(bezalfs[i],1,p+1);
+//  for (i=0; i<=ph;++i)
+//    print_mat(bezalfs[i],1,p+1);
 
+//  printf("U\n");
+//  print_mat(U,1,nk);
   mh = ph;
   kind = ph+1;
   r = -1;
@@ -943,18 +944,18 @@ static void curve_degree_elevate(double *P, int nc, int nd, double *U, int nk, i
 
   /* Big loop thru knot vector */
   while (b < m) {
-    printf("Big loop b = %d < m = %d\n",b,m);
+//    printf("Big loop b = %d < m = %d\n",b,m);
     i = b;
     while (b < m && U[b] == U[b+1]) ++b;
 
-    mult = b-i+1;
-    mh += mult+t;
+    mul = b-i+1;
+    mh += mul+t;
     ub = U[b];
     oldr = r;
-    r = p-mult;
+    r = p-mul;
 
     /* Insert knot u(b) r times */
-    printf("Insert knot %f %d times\n",ub,r);
+//    printf("Insert knot %f %d times (oldr=%d)\n",ub,r,oldr);
     if (oldr > 0)
       lbz = (oldr+2)/2;
     else
@@ -967,23 +968,31 @@ static void curve_degree_elevate(double *P, int nc, int nd, double *U, int nk, i
 
     if (r > 0) {
       /* Insert knot to get bezier segment */
-      printf("Insert knot to get bezier segment\n");
+//      printf("Insert knot to get bezier segment of degree %d mul %d\n",p,mul);
       numer = ub-ua;
-      for (k=p; k>mult; --k)
-        alfs[k-mult-1] = numer / (U[a+k]-ua);
+//      printf("numer = %f\n",numer);
+      for (k=p; k>mul; --k) {
+        alfs[k-mul-1] = numer / (U[a+k]-ua);
+//        printf("alfs %d = %f\n",k-mul-1,alfs[k-mul-1]);
+      }
+//      printf("alfs = \n");
+//      print_mat(alfs,1,2);
+
       for (j=1; j<=r; ++j) {
         save = r-j;
-        s = mult+j;
+        s = mul+j;
         for (k=p; k>=s; --k)
           for (kk=0; kk<nd; ++kk)
             bpts[k*nd+kk] = alfs[k-s]*bpts[k*nd+kk]+(1.0-alfs[k-s])*bpts[(k-1)*nd+kk];
         for (kk=0; kk<nd; ++kk)
-  	  nbpts[save*nd+kk] = bpts[p*nd+kk];
+          nbpts[save*nd+kk] = bpts[p*nd+kk];
       }
+//      printf("bpts =\n");
+//      print_mat(bpts,p,nd);
     }
 
     /* Degree elevate bezier */
-    printf("Degree elevate bezier %d..%d\n",lbz,ph);
+//    printf("Degree elevate bezier %d..%d\n",lbz,ph);
     for (i=lbz; i<=ph; ++i) {
       /* Only points lbz..ph are used below */
       for (kk=0; kk<nd; ++kk) ebpts[i*nd+kk] = 0.0;
@@ -1066,10 +1075,10 @@ static void curve_degree_elevate(double *P, int nc, int nd, double *U, int nk, i
 
   *nq = mh-ph;
   *nu = kind+ph+1;
-  print_mat(Pw,*nq,nd);
-  print_mat(Uw,1,*nu);
+//  print_mat(Pw,*nq,nd);
+//  print_mat(Uw,1,*nu);
 
-  printf("Free the work spaces\n");
+//  printf("Free the work spaces\n");
   freematrix(bezalfs);
   free(bpts);
   free(ebpts);

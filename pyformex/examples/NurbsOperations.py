@@ -41,11 +41,12 @@ _techniques = ['nurbs']
 
 from pyformex.gui.draw import *
 from pyformex.plugins.nurbs_menu import _options#, drawNurbs
+from pyformex.plugins.curve import BezierSpline
 from pyformex.examples.NurbsCurveExamples import drawNurbs, nurbs_book_examples, createNurbs
 from pyformex import simple
 
 
-def showCurve():
+def showCurve(reverse=False):
     """Select and show a Nurbs curve."""
     global N,dia
 
@@ -57,9 +58,15 @@ def showCurve():
         curv = ''
 
     N = createNurbs(curv)
+    if reverse:
+        N = N.reverse()
     print(N)
     drawNurbs(N,linewidth=1,color=blue,knotsize=5)
     zoomAll()
+
+
+def showReverse():
+    showCurve(reverse=True)
 
 
 def insertKnot():
@@ -110,9 +117,14 @@ def elevateDegree():
     dia.acceptData()
     res = dia.results
     nd = res['nd']
-    N = N.elevateDegree(nd)
+    if nd > 0:
+        N = N.elevateDegree(nd)
+    elif nd < 0:
+        N = N.reduceDegree(-nd)
+    else:
+        return
     print(N)
-    drawNurbs(N,linewidth=5,color=green,knotsize=5)
+    drawNurbs(N,clear=False,color=cyan,linewidth=5)
     zoomAll()
 
 
@@ -122,13 +134,13 @@ def decompose():
 
     N1 = N.decompose()
     print(N1)
-    drawNurbs(N1,linewidth=5,color=black,knotsize=10,knot_values=False)
+    drawNurbs(N1,color=black,knotsize=10,knot_values=False)
     zoomAll()
     C = BezierSpline(control=N1.coords.toCoords(), degree=N1.degree)
-    draw(C, color=blue)
-
+    #draw(C, color=blue)
 
     for i,Ci in enumerate(C.split()):
+        print(Ci)
         Ci.setProp(i)
         draw(Ci,color=i,linewidth=5)
 
@@ -181,7 +193,7 @@ def run():
     dia = Dialog([
             _G('Curve Selection',[
                 _I('curv', 'default', choices=['ex%s' % k for k in sorted(nurbs_book_examples.keys())],
-                   buttons=[('Show Curve',showCurve)]),
+                   buttons=[('Show Curve',showCurve),('Show Reverse',showReverse)]),
             ]),
             _G('Knot Insertion',[
                 _I('u', 0.5, text='Knot value(s) to insert',tooltip='A single value or a comma separated sequence',
@@ -192,8 +204,8 @@ def run():
                 _I('m', 1, text='How many times to remove',buttons=[('Remove Knot',removeKnot)]),
                 _I('tol', 0.001, text='Tolerance',buttons=[('Remove All Knots',removeAllKnots)]),
             ]),
-            _G('Degree Elevation',[
-                _I('nd', 1, text='How much to elevate the degree',buttons=[('Elevate Degree',elevateDegree)]),
+            _G('Degree Elevation/Reduction',[
+                _I('nd', 1, text='How much to elevate/reduce the degree',buttons=[('Change Degree',elevateDegree)]),
             ]),
             _G('Point Projection',[
                 _I('npts', 10, text='How many points to project',buttons=[('Project Points',projectPoints)]),
