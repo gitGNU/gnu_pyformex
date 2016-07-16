@@ -288,9 +288,11 @@ def curveDegreeReduce(Qw,U):
     n = nk-1
     m = U.shape[0]-1
     p = m-n-1
+    print("Reduce degree of curve from %s to %s" % (p,p-1))
     # Workspace for return arrays
-    Uh = np.zeros(U.shape)
-    Pw = np.zeros(Qw.shape)
+    print("Workspace points: %s" % nk)
+    Uh = np.zeros((2*m+1,))
+    Pw = np.zeros((2*nk+1,nd))
     # Set up workspaces
     bpts = np.zeros((p+1,nd)) # Bezier control points of current segment
     Nextbpts = np.zeros((p-1,nd)) # leftmost control points of next Bezier segment
@@ -301,7 +303,7 @@ def curveDegreeReduce(Qw,U):
     # Initialize some variables
     ph = p-1
     mh = ph
-    kind = ph+1
+    kind = p
     r = -1
     a = p
     b = p+1
@@ -321,19 +323,21 @@ def curveDegreeReduce(Qw,U):
             b += 1;
         mult = b-i+1
         mh += mult-1
+        print("Big loop b=%s < m=%s (mult=%s, mh=%s, )" % (b,m,mult,mh))
         oldr = r
         r = p-mult
         lbz = (oldr+2)//2 if oldr > 0 else 1
-
-        ua = U[a]
-        ub = U[b]
+#
+#        ua = U[a]
+#        ub = U[b]
 
         # Insert knot U[b] r times
         if r > 0:
             # Insert knot to get Bezier segment
-            numer = ub-ua
+            print("Insert knot %s %s times" % (U[b],r))
+            numer = U[b]-U[a]
             for k in range(p,mult-1,-1):
-                alfs[k-mult-1] = numer / (U[a+k] - ua)
+                alfs[k-mult-1] = numer / (U[a+k] - U[a])
             print("alfs = %s" % alfs[:p])
             for j in range(1,r+1):
                 save = r-j
@@ -342,17 +346,24 @@ def curveDegreeReduce(Qw,U):
                     bpts[k] = alfs[k-s]*bpts[k] + (1.0-alfs[k-s])*bpts[k-1]
                 Nextbpts[save] = bpts[p]
                 print("Nextbpts %s = %s" %(save,Nextbpts[save]))
-            print("bpts =\n%s" % bpts[:p+1])
 
+        print("Bezier segment degree reduction")
+        print("bpts =\n",bpts[:p+1])
+        print("a=%s;b=%s;u[a]..u[b]=%s" % (a,b,U[a:b+1]))
         # Degree reducee Bezier segment
         rbpts,maxErr = BezDegreeReduce(bpts)
+        from pyformex.plugins.curve import PolyLine
+        from pyformex.gui.draw import draw
+        draw(PolyLine(rbpts[:,:3]),color='cyan')
+        draw(rbpts[:p,:3],color='cyan')
+        print("Reduced ctrl points: \n",rbpts[:p])
         print("Degree reduce error = %s"%maxErr)
         err[a] += maxErr
 #        if err[a] > TOL:
 #            return None  # Curve not degree reducible
 
-        if oldr > 1:
-            # Must remove knot U[a] oldr times
+        if oldr > 0:
+            print("Remove knot %s %s times" % (U[a],oldr))
             first = kind
             last = kind
             for k in range(oldr):
@@ -360,21 +371,19 @@ def curveDegreeReduce(Qw,U):
                 j = last
                 kj = j-kind
                 while j-i > k:
-                    alfa = (ua-Uh[i-1]) / (ub-Uh[i-1])
-                    beta = (ua-Uh[j-k-1]) / (ub-Uh[j-k-1])
+                    alfa = (U[a]-Uh[i-1]) / (U[b]-Uh[i-1])
+                    beta = (U[a]-Uh[j-k-1]) / (U[b]-Uh[j-k-1])
                     Pw[i-1] = (Pw[i-1] - (1.0-alfa)*Pw[i-2]) / alfa
                     rbpts[kj] = (rbpts[kj] - beta*rbpts[kj+1])/(1.0-beta)
                     i += 1
                     j -= 1
                     kj -= 1
 
-
-
                 # Compute knot removal error bounds (Br)
                 if j-i < k:
                     Br = length(Pw[i-2] - rbpts[kj+1])
                 else:
-                    delta = (ua-Uh[i-1]) / (ub-Uh[i-1])
+                    delta = (U[a]-Uh[i-1]) / (U[b]-Uh[i-1])
                     A = delta*rbpts[kj+1] + (1.0-delta)*Pw[i-2]
                     Br = length(Pw[i-1] - A)
                 print("Knot removal error = %s" % Br)
@@ -393,21 +402,26 @@ def curveDegreeReduce(Qw,U):
             cind = i-1
 
         if a != p:
-            # Load the knot ua
-            for i in range(ph-oldr):
-                Uh[kind] = ua
+            # Load the knot U[a]
+            for i in range(ph-oldr+1):
+                print("Load the knot ua=%s in Uh[%s]" % (U[a],kind))
+                Uh[kind] = U[a]
                 kind += 1
+        print("Uh is now (%s)" % kind)
+        print(Uh[:kind])
 
         for i in range(lbz,ph+1):
             # Load control points into Pw
+            print("Load control point %s from rbpts %s = %s" % (cind,i,rbpts[i]))
             Pw[cind] = rbpts[i]
             cind += 1
-#        print(Qw[:cind])
+        print("Pw is now (%s)" % cind)
+        print(Pw[:cind])
 
         if b < m:
             # Set up for next pass thru loop
             for i in range(r):
-                bpts[j] = Nextbpts[i]
+                bpts[i] = Nextbpts[i]
             for i in range(r,p+1):
                 bpts[i] = Qw[b-p+i]
             a = b
@@ -416,13 +430,18 @@ def curveDegreeReduce(Qw,U):
         else:
             # End knot
             for i in range(ph+1):
-                Uh[kind+i] = ub
+                Uh[kind+i] = U[b]
 
+    print("cind = %s; mh=%s; ph=%s" % (cind,mh,ph))
+    mh = kind-1
     nh = mh - ph - 1
+    print("nh = %s" % nh)
     Uh = Uh[:mh+1]
     Pw = Pw[:nh+1]
 
-    return np.array(Pw), np.array(Uh), nh, mh, err
+    print("New control points:\n",Pw)
+    print("New knot vector:\n",Uh)
+    return Pw, Uh, nh, mh, err
 
 
 def BezDegreeReduce(Q,return_errfunc=False):
@@ -459,19 +478,27 @@ def BezDegreeReduce(Q,return_errfunc=False):
         PrR = ( Q[r+1] - (1-alfs[r+1])*P[r+1] ) / alfs[r+1]
         Err = 0.5 * (1.0-alfs[r]) * length( P[r] - PrR )
         P[r] = 0.5 * (P[r] + PrR)
+    else:
+        Err = length(Q[r+1]-0.5*(P[r]+P[r+1]))
+    #print("Err = %s" % Err)
 
     # Max error
     # Note that maximum of Bernstein polynom (i,p) is at i/p
     if p % 2 == 0:
-        errfunc = lambda u: Bernstein(p,r+1,u) * length(Q[r+1]-0.5*(P[r]+P[r+1]))
+        errfunc = lambda u: Err * Bernstein(p,r+1,u)
         # Note that maximum of Bernstein polynom (i,p) is at i/p
+        #print("Bernstein(%s,%s,%s) = %s" %(p,r+1,(r+1.)/p,errfunc((r+1.)/p)))
         maxerr = errfunc((r+1.)/p)
     else:
-        errfunc = lambda u: Err * (Bernstein(p,r,u) - Bernstein(p,r+1,u))
+        #print("Bernstein(%s,%s,%s) = %s" %(p,r+1,(r+1.)/p,Bernstein(p,r+1,(r+1.)/p)))
+        #print("Bernstein(%s,%s,%s) = %s" %(p,r+1,(r+0.)/p,Bernstein(p,r+1,(r+0.)/p)))
+        #print("Bernstein(%s,%s,%s) = %s" %(p,r,(r+1.)/p,Bernstein(p,r,(r+1.)/p)))
+        #print("Bernstein(%s,%s,%s) = %s" %(p,r,(r+0.)/p,Bernstein(p,r,(r+0.)/p)))
+        errfunc = lambda u: Err * abs(Bernstein(p,r,u) - Bernstein(p,r+1,u))
         # We guess that maximum is close to middle of r/p and r+1/p
-        maxerr = errfunc((r+0.5)/p)
+        maxerr = max(errfunc(float(r)/p),errfunc(float(r+1)/p))
 
-    print("maxerr = %s" % maxerr)
+    #print("maxerr = %s" % maxerr)
     if return_errfunc:
         return P,maxerr,errfunc
     else:
