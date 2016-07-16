@@ -743,7 +743,7 @@ class NurbsCurve(Geometry4):
         N = self
         while t > 0:
             newP,newU,nh,mh,maxerr = curveDegreeReduce(N.coords, N.knots)
-            N = NurbsCurve(newP, degree=self.degree-1, closed=self.closed)
+            N = NurbsCurve(newP, degree=self.degree-1, knots=newU, closed=self.closed)
             print("Reduced to degree %s with maxerr = %s" % (N.degree,maxerr))
             t -= 1
 

@@ -196,8 +196,7 @@ def run():
                    buttons=[('Show Curve',showCurve),('Show Reverse',showReverse)]),
             ]),
             _G('Knot Insertion',[
-                _I('u', 0.5, text='Knot value(s) to insert',tooltip='A single value or a comma separated sequence',
-                   buttons=[('Insert Knot',insertKnot)]),
+                _I('u', 0.5, text='Knot value(s) to insert',                   buttons=[('Insert Knot',insertKnot)]),
             ]),
             _G('Knot Removal',[
                 _I('ur', 0.5, text='Knot value to remove'),
