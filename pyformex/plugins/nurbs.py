@@ -716,9 +716,8 @@ class NurbsCurve(Geometry4):
             raise ValueError("elevateDegree currently does not work on closed curves")
 
         P = self.coords.astype(double)
-        #Uv = self.knotv.val.astype(double)
-        #Um = self.knotv.mul.astype(at.Int)
 
+        newP,newU,nh,mh = nurbs.curveDegreeElevate(P, self.knots, t)
 
         return NurbsCurve(newP, degree=self.degree+t, knots=newU, closed=self.closed)
 
@@ -733,7 +732,7 @@ class NurbsCurve(Geometry4):
         A Nurbs curve approximating the original but of a lower degree.
 
         """
-        from pyformex.lib.nurbs import curveDegreeReduce
+        #from pyformex.lib.nurbs import curveDegreeReduce
         if self.closed:
             raise ValueError("reduceDegree currently does not work on closed curves")
 
@@ -742,9 +741,9 @@ class NurbsCurve(Geometry4):
 
         N = self
         while t > 0:
-            newP,newU,nh,mh,maxerr = curveDegreeReduce(N.coords, N.knots)
+            newP,newU,nh,mh = nurbs.curveDegreeReduce(N.coords, N.knots)
             N = NurbsCurve(newP, degree=self.degree-1, knots=newU, closed=self.closed)
-            print("Reduced to degree %s with maxerr = %s" % (N.degree,maxerr))
+            #print("Reduced to degree %s with maxerr = %s" % (N.degree,maxerr))
             t -= 1
 
         return N
