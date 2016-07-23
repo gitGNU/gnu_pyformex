@@ -2340,8 +2340,8 @@ def bbox(objects):
 
     Parameters:
 
-    - `objects`: a list of objects (which should probably have the method
-      :meth:`bbox`).
+    - `objects`: a list of objects which should all have the method
+      :meth:`bbox`, or a single such object.
 
     Returns:
 
@@ -2357,6 +2357,8 @@ def bbox(objects):
              [ 1.,  1.,  0.]], dtype=float32)
 
     """
+    if not isinstance(objects,list):
+        objects = [ objects ]
     bboxes = [f.bbox() for f in objects if hasattr(f, 'bbox') and not isnan(f.bbox()).any()]
     bboxes = [bb for bb in bboxes if bb is not None]
     if len(bboxes) == 0:
