@@ -106,10 +106,10 @@ class Coords4(np.ndarray):
         """Create a new instance of :class:`Coords4`."""
         if data is None:
             # create an empty array
-            ar = ndarray((0, 4), dtype=dtyp)
+            ar = np.ndarray((0, 4), dtype=dtyp)
         else:
             # turn the data into an array, and copy if requested
-            ar = array(data, dtype=dtyp, copy=copy)
+            ar = np.array(data, dtype=dtyp, copy=copy)
 
         if ar.shape[-1] in [3, 4]:
             pass
@@ -270,6 +270,12 @@ class KnotVector(object):
     [(0.0, 3), (0.5, 2), (1.0, 3)]
     >>> print(K.values())
     [ 0.   0.   0.   0.5  0.5  1.   1.   1. ]
+    >>> K.index(0.5)
+    1
+    >>> K.span(1.0)
+    5
+    >>> K.mult(0.5)
+    >>> K.mult(0.7)
 
     """
 
@@ -282,8 +288,8 @@ class KnotVector(object):
         else:
             val = at.checkArray(val,(-1,),'f','i')
             mul = at.checkArray(mul,val.shape,'i')
-        self.val = val#.astype(at.float64)
-        self.mul = mul.astype(at.Int)
+        self.val = val#.astype(at.Float)
+        self.mul = mul#.astype(at.Int)
 
 
     def nknots(self):
@@ -306,8 +312,41 @@ class KnotVector(object):
         return "KnotVector: " + ", ".join(["%s(%s)" % (v,m) for v,m in self.knots()])
 
 
+    def index(self,u):
+        """Find the (first) index of knot value u.
+
+        If the value does not exist, a ValueError is raised.
+        """
+        w = np.where(np.isclose(self.val,u))[0]
+        if len(w) <= 0:
+            raise ValueError("The value %s does not appear in the KnotVector" % u)
+        return w[0]
+
+
+    def mult(self,u):
+        """Return the multiplicity of knot value u.
+
+        Returns an int with the multiplicity of the knot value u, or 0 if
+        the value is not in the KNotVector.
+        """
+        try:
+            i = self.index(u)
+            return self.mul[i]
+        except:
+            return 0
+
+
+    def span(self,u):
+        """Find the (first) index of knot value u in the full knot values vector.
+
+        If the value does not exist, a ValueError is raised.
+        """
+        i = self.index(u)
+        return self.mul[:i].sum()
+
+
     def copy(self):
-        """Return a copy of self.
+        """Return a copy of the KnotVector.
 
         Changing the copy will not change the original.
         """
@@ -325,9 +364,6 @@ class KnotVector(object):
         """
         val = self.val.min() + self.val.max() - self.val
         return KnotVector(val=val[::-1],mul=self.mul[::-1])
-
-
-
 
 
 def genKnotVector(nctrl,degree,blended=True,closed=False):
@@ -379,14 +415,15 @@ def genKnotVector(nctrl,degree,blended=True,closed=False):
         mul = ones(nval,dtype=at.Int)
         if not closed:
             mul[0] = mul[-1] = degree+1
-        return KnotVector(val=val,mul=mul)
     else:
         nparts = (nctrl-1) / degree
         if nparts*degree+1 != nctrl:
             raise ValueError("Discrete knot vectors can only be used if the number of control points is a multiple of the degree, plus one.")
-        knots = [0.] + [ [float(i)]*degree for i in range(nparts+1) ] + [float(nparts)]
-        knots = olist.flatten(knots)
-        return KnotVector(knots)
+        val = arange(nparts+1).astype(at.Float)
+        mul = ones(nparts+1,dtype=at.Int) * degree
+        mul[0] = mul[-1] = degree+1
+
+    return KnotVector(val=val,mul=mul)
 
 
 class NurbsCurve(Geometry4):
@@ -399,9 +436,10 @@ class NurbsCurve(Geometry4):
     Parameters:
 
     - `control`: Coords-like (nctrl,3): the vertices of the control polygon.
-    - `degree`: int: the degree of the Nurbs curve.
+    - `degree`: int: the degree of the Nurbs curve. If not specified, it is
+      derived from the length of the knot vector (`knots`).
     - `wts`: float array (nctrl): weights to be attributed to the control
-      points. Default is toattribute a weight 1.0 to all points. Using
+      points. Default is to attribute a weight 1.0 to all points. Using
       different weights allows for more versatile modeling (like perfect
       circles and arcs.)
     - `knots`: KnotVector or an ascending list of nknots float values.
@@ -414,10 +452,12 @@ class NurbsCurve(Geometry4):
       set larger than 3.
     - `closed`: bool: determines whether the curve is closed. Default
       False. The use of closed NurbsCurves is currently very limited.
-    - `blended`: bool: determines that the curve is blended. A nonblended
-      curve is a chain of independent curves (Bezier curves if the weights
+    - `blended`: bool: determines that the curve is blended. Default is True.
+      Set blended==False to define a nonblended curve. This requires
+      A nonblended curve is a chain of independent curves (Bezier curves if the
+      weights
       are all ones). The number of control points should be a multiple of the
-      degree, plus one.
+      degree, plus one. This parameter is only used
       See also :meth:`decompose`.
 
     """
@@ -550,6 +590,15 @@ class NurbsCurve(Geometry4):
 """  % ( self.degree, len(self.coords), self.nknots(), self.coords, self.knotv,self.urange())
 
 
+
+    def copy(self):
+        """Return a (deep) copy of self.
+
+        Changing the copy will not change the original.
+        """
+        return NurbsCurve(control=self.coords.copy(),degree=self.degree,knots=self.knotv.copy(),closed=self.closed)
+
+
     def pointsAt(self, u):
         """Return the points on the Nurbs curve at given parametric values.
 
@@ -668,6 +717,104 @@ class NurbsCurve(Geometry4):
         return NurbsCurve(newP, degree=self.degree, knots=newU, closed=self.closed)
 
 
+    def requireKnots(self, val, mul):
+        """Insert knots until the required multiplicity reached.
+
+        Inserts knot values only if they are currently not there or their
+        multiplicity is lower than the required one.
+
+        Parameters:
+
+        - `val`: list of float (nval): knot values required in the knot vector.
+        - `mul`: list of int (nval): multiplicities required for the knot values `u`.
+
+        Returns:
+
+        A Nurbs curve equivalent with the original but where the knot vector
+        is guaranteed to contain the values in `u` with at least the
+        corresponding multiplicity in `m`. If all requirements were already
+        fulfilled at the beginning, returns self.
+
+        """
+        # get actual multiplicities
+        m = np.array([ self.knotv.mult(ui) for ui in val ])
+        # compute missing multiplicities
+        mul = mul - m
+        if (mul > 0).any():
+            # list of knots to insert
+            u = [ [ui]*mi for ui,mi in zip(val,mul) if mi > 0 ]
+            return self.insertKnots(np.concatenate(u))
+        else:
+            return self
+
+
+    def subCurve(self,u1,u2):
+        """Extract the subcurve between parameter values u1 and u2
+
+        Parameters:
+
+        - `u1`, `u2`: two parameter values (u1 < u2), delimiting the part of the
+          curve to extract. These values do not have to be knot values.
+
+        Returns a NurbsCurve containing only the part between u1 and u2.
+        """
+        p = self.degree
+        # Make sure we have the knots
+        N = self.requireKnots([u1,u2],[p+1,p+1])
+        j1 = N.knotv.index(u1)
+        j2 = N.knotv.index(u2)
+        knots = KnotVector(val=N.knotv.val[j1:j2+1],mul=N.knotv.mul[j1:j2+1])
+        k1 = N.knotv.span(u1)
+        nctrl = knots.nknots() - p - 1
+        ctrl = N.coords[k1:k1+nctrl]
+        return NurbsCurve(control=ctrl,degree=p,knots=knots,closed=self.closed)
+
+
+    def clamp(self):
+        """Clamp the knot vector of the curve.
+
+        A clamped knot vector starts and ends with multiplicities p-1.
+        See also :meth:`isClamped`.
+
+        Returns self if the curve is already clamped, else returns an
+        equivalent curve with clamped knot vector.
+
+        Note: The use of unclamped knot vectors is deprecated.
+        This method is provided only as a convenient method to import
+        curves from legacy systems using unclamped knot vectors.
+
+        """
+        if self.isClamped():
+            return self
+
+        else:
+            u1, u2 = self.knotv.val[[p,-1-p]]
+            return self.subCurve(u1,u2)
+
+
+    def unclamp(self):
+        """Unclamp the knot vector of the curve.
+
+        An unclamped knot vector starts and ends with multiplicities p-1.
+        See also :meth:`isClamped`.
+
+        Returns self if the curve is already clamped, else returns an
+        equivalent curve with clamped knot vector.
+
+        Note: The use of unclamped knot vectors is deprecated.
+        This method is provided as a convenient method to export
+        curves to legacy systems that only handle unclamped knot vectors.
+
+        """
+        if self.isClamped():
+            return self
+
+        else:
+            u1, u2 = self.knotv.val[[p,-1-p]]
+            return self.subCurve(u1,u2)
+
+
+    # TODO: This could better be called 'unblend'?
     def decompose(self):
         """Decomposes a curve in subsequent Bezier curves.
 
@@ -696,19 +843,15 @@ class NurbsCurve(Geometry4):
         """
         if self.closed:
             raise ValueError("removeKnots currently does not work on closed curves")
+
+        i = self.knotv.index(u)
+
+        if m < 0:
+            m = self.knotv.mul[i]
+
         P = self.coords.astype(double)
         Uv = self.knotv.val.astype(double)
         Um = self.knotv.mul.astype(at.Int)
-        w = where(isclose(Uv,u))[0]
-        if len(w) > 0:
-            i = w[0]
-        else:
-            print("No such knot value: %s" % u)
-            return self
-
-        if m < 0:
-            m = Um[i]
-
         t,newP,newU = nurbs.curveKnotRemove(P,Uv,Um,i,m,tol)
 
         if t > 0:

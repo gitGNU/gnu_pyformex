@@ -519,4 +519,40 @@ def curveDegreeReduce(Qw,U):
     return Pw, Uh, nh, mh, err
 
 
+def curveUnclamp(P,U):
+    """Unclamp a clamped curve.
+
+    Input: P,U
+    Output: P,U
+
+    Note: this changes P and U inplace.
+
+    Based on algorithm A12.1 of The NURBS Book.
+    """
+    n = P.shape[0] - 1
+    m = U.shape[0] - 1
+    p = m - n - 1
+    # Unclamp at left end
+    for i in range(p):
+        U[p-i-1] = U[p-i] - (U[n-i+1]-U[n-i])
+        if i == p-1:
+            break
+        k = p-1
+        for j in range(i,-1,-1):
+            alfa = (U[p]-U[k]) / (U[p+j+1]-U[k])
+            P[j] = (P[j] - alfa*P[j+1]) / (1.0-alfa)
+            k -= 1
+    # Unclamp at right end
+    for i in range(p):
+        U[n+i+2] = U[n+i+i] - (U[p+i+1]-U[p+i])
+        if i == p-1:
+            break
+        for j in range(i,-1,-1):
+            alfa = (U[n+1]-U[n-j]) / (U[n-j+i+2]-U[n-j])
+            P[n-j] = (P[n-j] - (1.0-alfa)*P[n-j-1]) / alfa
+
+    return P,U
+
+
+
 # End
