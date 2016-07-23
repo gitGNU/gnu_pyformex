@@ -1087,6 +1087,248 @@ static void curve_degree_elevate(double *P, int nc, int nd, double *U, int nk, i
 }
 
 
+/* bezier_degree_reduce */
+/*
+Degree reduce a Bezier curve.
+
+Input:
+
+- Q: control points Q(nc,nd)
+- nc: number of control points = p+1
+- nd: dimension of the points (3 or 4)
+
+Output:
+- P: new control points P(nc-1,nd)
+- maxerr: error bound for the degree reduction
+
+Based on eqs. 5.41 .. 5.46 from 'The NURBS Book' pg220.
+*/
+static void bezier_degree_reduce(double* Q, int nc, int nd, double* P, double *maxerr)
+{
+  int p, r, i, kk;
+  double PrR[4];
+
+  p = nc - 1;
+  r = (p-1) / 2;
+
+  /* Degree elevation coeffs for p-1 -> p */
+  double *alfs = (double *) malloc(p*sizeof(double));
+  for (i=0; i<p; ++i) alfs[i] = (double) i / p;
+  printf("Bezier alfs; p = %d; r = %d\n",p,r);
+  print_mat(alfs,1,p);
+  printf("Input Q\n");
+  print_mat(Q,nc,nd);
+  for (kk=0; kk<nd; ++kk)
+    P[0*nd+kk] = Q[0*nd+kk];
+  for (i=0; i<=r; ++i)
+    for (kk=0; kk<nd; ++kk)
+      P[i*nd+kk] = ( Q[i*nd+kk] - alfs[i]*P[(i-1)*nd+kk] ) / (1.0-alfs[i]);
+  for (kk=0; kk<nd; ++kk)
+    P[(p-1)*nd+kk] = Q[p*nd+kk];
+  for (i=p-2; i>r; --i)
+    for (kk=0; kk<nd; ++kk)
+      P[i*nd+kk] = ( Q[(i+1)*nd+kk] - (1-alfs[i+1])*P[(i+1)*nd+kk] ) / alfs[i+1];
+  if (p % 2 == 1) {
+    for (kk=0; kk<nd; ++kk) {
+      PrR[kk] = ( Q[(r+1)*nd+kk] - (1-alfs[r+1])*P[(r+1)*nd+kk] ) / alfs[r+1];
+    }
+    //Err = 0.5 * (1.0-alfs[r]) * length( P[r] - PrR );
+    for (kk=0; kk<nd; ++kk) {
+      P[r*nd+kk] = 0.5 * (P[r*nd+kk] + PrR[kk]);
+    }
+  } else {
+      //Err = length(Q[r+1]-0.5*(P[r]+P[r+1]));
+  }
+  printf("Output P\n");
+  print_mat(P,p,nd);
+
+}
+
+/* curve_degree_reduce */
+/*
+Degree reduce a curve.
+
+Input:
+
+- P: control points P(nc,nd)
+- nc: number of control points = n+1
+- nd: dimension of the points (3 or 4)
+- U: knot sequence: U[0] .. U[m]   m = n+p+1 = nc+p
+- nk: number of knot values = m+1
+- Pw: work space for new control points:
+- Uw: work space for new knots
+
+Output:
+- Pw: new control points Pw(nq,nd)
+- Uw: new knot sequence: Uw[0] .. Uw[mh]   mh = nh+p+t+1 = nq+p+t
+- nq: number of new control points = nh+1
+- nu: number of new knots = mh+1
+
+Modified algorithm A5.9 from 'The NURBS Book' pg206.
+*/
+static void curve_degree_reduce(double *P, int nc, int nd, double *U, int nk, double *Pw, double* Uw, int *nq, int *nu)
+{
+  int n,m,p,mh,ph,i,j,kind,r,a,b,cind,kk,oldr,mul,lbz,k,save,s,first,last,kj;
+  double ua,ub,alfa,beta,numer,maxerr;
+
+  n = nc - 1;
+  m = nk - 1;
+  p = m - n - 1;
+
+  ph = p-1;
+
+  /* Create local storage */
+  double *bpts = (double *) malloc((p+1)*nd*sizeof(double));
+  double *rbpts = (double *) malloc(p*nd*sizeof(double));
+  double *nbpts = (double *) malloc((p-1)*nd*sizeof(double));
+  double *alfs = (double *) malloc((p-1)*sizeof(double));
+  double *err = (double *) malloc(m*sizeof(double));
+
+  /* Initialize some variables */
+  mh = ph;
+  kind = ph+1;
+  r = -1;
+  a = p;
+  b = p+1;
+  cind = 1;
+  mul = p;
+  ua = U[0];
+  for (kk=0; kk<nd; ++kk) Pw[0*nd+kk] = P[0*nd+kk];
+  for (i=0; i<=ph; ++i) Uw[i] = ua;
+
+  /* Initialize first bezier segment */
+  for (i=0; i<=p; ++i)
+    for (kk=0; kk<nd; ++kk) bpts[i*nd+kk] = P[i*nd+kk];
+  /* Initialize error vector */
+  for (i=0; i<m; ++i) err[i] = 0.0;
+
+  /* Big loop thru knot vector */
+  while (b < m) {
+//    printf("Big loop b = %d < m = %d\n",b,m);
+    /* Compute knot multiplicity */
+    i = b;
+    while (b < m && U[b] == U[b+1]) ++b;
+
+    mul = b-i+1;
+    mh += mul+1;
+    ub = U[b];
+    oldr = r;
+    r = p-mul;
+
+    /* Insert knot u(b) r times */
+    if (oldr > 0)
+      lbz = (oldr+2)/2;
+    else
+      lbz = 1;
+
+    if (r > 0) {
+      /* Insert knot to get bezier segment */
+//      printf("Insert knot to get bezier segment of degree %d mul %d\n",p,mul);
+      numer = ub-ua;
+      for (k=p; k>mul; --k) {
+        alfs[k-mul-1] = numer / (U[a+k]-ua);
+      }
+
+      for (j=1; j<=r; ++j) {
+        save = r-j;
+        s = mul+j;
+        for (k=p; k>=s; --k)
+          for (kk=0; kk<nd; ++kk)
+            bpts[k*nd+kk] = alfs[k-s]*bpts[k*nd+kk]+(1.0-alfs[k-s])*bpts[(k-1)*nd+kk];
+        for (kk=0; kk<nd; ++kk)
+          nbpts[save*nd+kk] = bpts[p*nd+kk];
+      }
+      printf("bpts =\n");
+      print_mat(bpts,p,nd);
+    }
+
+    /* Degree reduce bezier */
+    bezier_degree_reduce(bpts,p+1,nd,rbpts,&maxerr);
+
+
+    if (oldr > 1) {
+      /* Remove knot u=U[a] oldr times */
+      first = kind;
+      last = kind;
+
+      /* Knot removal loop */
+      for (k=0; k<oldr; ++k) {
+        i = first;
+        j = last;
+        kj = j-kind;
+        while (j-i > k) {
+          /* Loop and compute the new control points for one removal step */
+          alfa = (ua-Uw[i-1]) / (U[b]-Uw[i-1]);
+          beta = (ua-Uw[j-k-1]) / (U[b]-Uw[j-k-1]);
+          for (kk=0; kk<nd; ++kk)
+            Pw[(i-1)*nd+kk] = (Pw[(i-1)*nd+kk] - (1.0-alfa) * Pw[(i-2)*nd+kk]) / alfa;
+  	      for (kk=0; kk<nd; ++kk)
+            rbpts[kj*nd+kk] = (rbpts[kj*nd+kk] - beta * rbpts[(kj+1)*nd+kk]) / (1.0-beta);
+          i++;
+          j--;
+          kj--;
+        }
+        first--;
+        last++;
+      }
+      cind = i-1;
+    }
+
+    if (a != p)
+      /* Load the knot ua */
+      for (i=0; i<ph-oldr; ++i) {
+        Uw[kind] = ua;
+        ++kind;
+      }
+
+    /* Load ctrl pts into Pw */
+    for (i=lbz; i<=ph-oldr; ++i) {
+      for (kk=0; kk<nd; ++kk)
+        Pw[cind*nd+kk] = rbpts[i*nd+kk];
+      ++cind;
+    }
+
+    if (b < m) {
+      /* Set up for next pass thru loop */
+      for (i=0; i<r; ++i)
+        for (kk=0; kk<nd; ++kk)
+          bpts[i*nd+kk] = nbpts[i*nd+kk];
+      for (i=r; i<=p; ++i)
+        for (kk=0; kk<nd; ++kk)
+          bpts[i*nd+kk] = P[(b-p+i)*nd+kk];
+      a = b;
+      ++b;
+      ua = ub;
+    } else {
+      /* End knot */
+      for (i=0; i<=ph; ++i) {
+        Uw[kind] = ub;
+	++kind;
+      }
+    }
+
+  } /* end of big while loop */
+
+  //  *nq = mh-ph;
+  //*nu = kind+ph+1;
+  *nu = kind;
+  *nq = *nu - ph - 1;
+
+  printf("Return arrays\n");
+  print_mat(Pw,*nq,nd);
+  print_mat(Uw,1,*nu);
+
+  printf("Free the work spaces\n");
+  free(bpts);
+  free(rbpts);
+  free(nbpts);
+  free(alfs);
+  free(err);
+}
+
+
+
+
 /* curve_global_interp_mat */
 /*
 Compute the global curve interpolation matrix.
@@ -2015,6 +2257,91 @@ static PyObject * curveDegreeElevate(PyObject *self, PyObject *args)
 }
 
 
+static char curveDegreeReduce_doc[] =
+"Degree reducee a curve.\n\
+\n\
+Input:\n\
+\n\
+- P: control points P(nc,nd)\n\
+- U: knot sequence: U[0] .. U[m]   m = n+p+1 = nc+p\n\
+\n\
+Output:\n\
+- newP: new control points newP(nq,nd)\n\
+- nq: number of new control points = nh+1\n\
+- newU: new knot sequence: newU[0] .. newU[mh]   mh = nh+p+t+1 = nq+p+t\n\
+- nu: number of new knots = mh+1\n\
+\n\
+Modified algorithm A5.9 from 'The NURBS Book' pg206.\n\
+";
+
+static PyObject * curveDegreeReduce(PyObject *self, PyObject *args)
+{
+  int nd, nc, nk, nq, nu, i;
+  npy_intp *P_dim, *U_dim, dim[2];
+  double *P, *U, *newP, *newU;
+  PyObject *a1, *a2;
+  PyObject *arr1=NULL, *arr2=NULL, *ret1 = NULL, *ret2 = NULL;
+
+  if(!PyArg_ParseTuple(args, "OO", &a1, &a2))
+    return NULL;
+  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_IN_ARRAY);
+  if(arr1 == NULL)
+    return NULL;
+  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_IN_ARRAY);
+  if(arr2 == NULL)
+    goto fail;
+
+  P_dim = PyArray_DIMS(arr1);
+  U_dim = PyArray_DIMS(arr2);
+  nc = P_dim[0];
+  nd = P_dim[1];
+  nk = U_dim[0];
+  P = (double *)PyArray_DATA(arr1);
+  U = (double *)PyArray_DATA(arr2);
+
+  /* Create the work spaces */
+  nq = nc*2;
+  nu = 2*nk;
+  printf("Create work spaces for %d new control points and %d new knots\n",nq,nu);
+  double *Pw = (double*) malloc(nq*nd*sizeof(double));
+  double *Uw = (double*) malloc(nu*sizeof(double));
+
+  /* Compute */
+  curve_degree_reduce(P, nc, nd, U, nk, Pw, Uw, &nq, &nu);
+  printf("Computed %d new control points\n",nq);
+  print_mat(Pw,nq,nd);
+  printf("Computed %d new knots\n",nu);
+  print_mat(Uw,1,nu);
+
+  /* Create the return arrays */
+  dim[0] = nq;
+  dim[1] = nd;
+  printf("Create space for %d new control points\n",nq);
+  ret1 = PyArray_SimpleNew(2,dim, NPY_DOUBLE);
+  newP = (double *)PyArray_DATA(ret1);
+  dim[0] = nu;
+  ret2 = PyArray_SimpleNew(1,dim, NPY_DOUBLE);
+  printf("Create space for %d new knots\n",nu);
+  newU = (double *)PyArray_DATA(ret2);
+  for (i=0; i<nq*nd; ++i) newP[i] = Pw[i];
+  for (i=0; i<nu; ++i) newU[i] = Uw[i];
+
+  /* free thw work spaces */
+  free(Pw);
+  free(Uw);
+
+  /* Clean up and return */
+  Py_DECREF(arr1);
+  Py_DECREF(arr2);
+  return Py_BuildValue("OOii",ret1,ret2, nq-1, nu-1);
+
+ fail:
+  Py_XDECREF(arr1);
+  Py_XDECREF(arr2);
+  return NULL;
+}
+
+
 static char curveGlobalInterpolationMatrix_doc[] =
 "Compute the global curve interpolation matrix.\n\
 \n\
@@ -2277,6 +2604,7 @@ static PyMethodDef _methods_[] =
 	{"curveDecompose", curveDecompose, METH_VARARGS, curveDecompose_doc},
 	{"curveKnotRemove", curveKnotRemove, METH_VARARGS, curveKnotRemove_doc},
 	{"curveDegreeElevate", curveDegreeElevate, METH_VARARGS, curveDegreeElevate_doc},
+	{"curveDegreeReduce", curveDegreeReduce, METH_VARARGS, curveDegreeReduce_doc},
 	{"curveGlobalInterpolationMatrix", curveGlobalInterpolationMatrix, METH_VARARGS, curveGlobalInterpolationMatrix_doc},
 	{"surfacePoints", surfacePoints, METH_VARARGS, surfacePoints_doc},
 	{"surfaceDerivs", surfaceDerivs, METH_VARARGS, surfaceDerivs_doc},

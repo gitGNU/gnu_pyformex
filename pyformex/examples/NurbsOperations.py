@@ -45,6 +45,10 @@ from pyformex.plugins.curve import BezierSpline
 from pyformex.examples.NurbsCurveExamples import drawNurbs, nurbs_book_examples, createNurbs
 from pyformex import simple
 
+from pyformex.lib.nurbs import BezDegreeReduce#, curveDegreeReduce
+from pyformex.lib import nurbs
+#nurbs.curveDegreeReduce = curveDegreeReduce
+
 
 def showCurve(reverse=False):
     """Select and show a Nurbs curve."""
@@ -61,7 +65,7 @@ def showCurve(reverse=False):
     if reverse:
         N = N.reverse()
     print(N)
-    drawNurbs(N,linewidth=1,color=blue,knotsize=5)
+    drawNurbs(N,color=blue,knotsize=5)
     zoomAll()
 
 
@@ -78,7 +82,7 @@ def insertKnot():
     u = eval('[%s]' % res['u'])
     N = N.insertKnots(u)
     print(N)
-    drawNurbs(N,linewidth=5,color=red,knotsize=5)
+    drawNurbs(N,color=red,knotsize=5)
     zoomAll()
 
 
@@ -93,7 +97,7 @@ def removeKnot():
     tol = res['tol']
     N = N.removeKnot(ur,m,tol)
     print(N)
-    drawNurbs(N,linewidth=5,color=blue,knotsize=5)
+    drawNurbs(N,color=blue,knotsize=5)
     zoomAll()
 
 
@@ -106,7 +110,7 @@ def removeAllKnots():
     tol = res['tol']
     N = N.removeAllKnots(tol=tol)
     print(N)
-    drawNurbs(N,linewidth=5,color=blue,knotsize=5)
+    drawNurbs(N,color=blue)
     zoomAll()
 
 
@@ -124,7 +128,7 @@ def elevateDegree():
     else:
         return
     print(N)
-    drawNurbs(N,clear=False,color=cyan,linewidth=5)
+    draw(N,color=cyan,linewidth=3)
     zoomAll()
 
 
@@ -192,7 +196,7 @@ def run():
         dia.close()
     dia = Dialog([
             _G('Curve Selection',[
-                _I('curv', 'default', choices=['ex%s' % k for k in sorted(nurbs_book_examples.keys())],
+                _I('curv', 'default', choices=sorted(nurbs_book_examples.keys()),
                    buttons=[('Show Curve',showCurve),('Show Reverse',showReverse)]),
             ]),
             _G('Knot Insertion',[

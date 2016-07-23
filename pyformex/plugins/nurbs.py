@@ -32,6 +32,7 @@ from __future__ import print_function
 
 from pyformex import arraytools as at
 from pyformex.coords import Coords
+from pyformex.attributes import Attributes
 from pyformex.lib import nurbs
 from pyformex.plugins import curve
 #from pyformex import options
@@ -225,6 +226,11 @@ class Coords4(np.ndarray):
 
 
 class Geometry4(object):
+
+    def __init__(self):
+        """Initialize a Geometry4"""
+        self.attrib = Attributes()
+
     def scale(self,*args,**kargs):
         self.coords[..., :3] = Coords(self.coords[..., :3]).scale(*args,**kargs)
         return self
@@ -298,6 +304,14 @@ class KnotVector(object):
     def __str__(self):
         """Format the knot vector as a string."""
         return "KnotVector: " + ", ".join(["%s(%s)" % (v,m) for v,m in self.knots()])
+
+
+    def copy(self):
+        """Return a copy of self.
+
+        Changing the copy will not change the original.
+        """
+        return KnotVector(val=self.val,mul=self.mul)
 
 
     def reverse(self):
@@ -420,6 +434,7 @@ class NurbsCurve(Geometry4):
 #      nintern =
 #
     def __init__(self,control,degree=None,wts=None,knots=None,closed=False,blended=True):
+        Geometry4.__init__(self)
         self.closed = closed
         nctrl = len(control)
         if knots is not None:
@@ -443,14 +458,18 @@ class NurbsCurve(Geometry4):
             control.deNormalize(wts.reshape(wts.shape[-1], 1))
 
         if closed:
+            # We need to wrap nwrap control points
             if knots is None:
-                nextra = degree
+                nwrap = degree
             else:
-                nextra = nknots - nctrl - order
-            nextra1 = (nextra+1) // 2
-            nextra2 = nextra-nextra1
-            print("extra %s = %s + %s" % (nextra, nextra1, nextra2))
-            control = Coords4(concatenate([control[-nextra1:], control, control[:nextra2]], axis=0))
+                nwrap = nknots - nctrl - order
+#            # We split them over the start and end
+#            nextra1 = (nwrap+1) // 2
+#            nextra2 = nwrap-nextra1
+#            print("extra %s = %s + %s" % (nwrap, nextra1, nextra2))
+#            control = Coords4(concatenate([control[-nextra1:], control, control[:nextra2]], axis=0))
+            # !! Changed: wrap at the end
+            control = Coords4(concatenate([control, control[:nwrap]], axis=0))
 
         nctrl = control.shape[0]
 
@@ -496,6 +515,25 @@ class NurbsCurve(Geometry4):
         """Return the order of the Nurbs curve"""
         return self.nknots()-self.nctrl()
 
+    def urange(self):
+        """Return the parameter range on which the curve is defined.
+
+        Returns a (2,) float array with the minimum and maximum parameter
+        value for which the curve is defined.
+        """
+        p = self.degree
+        #3Dp = 0
+        return self.knots[[p,-1-p]]
+
+    def isClamped(self):
+        """Return True if the NurbsCurve uses a clamped knot vector.
+
+        A clamped knot vector has a multiplicity p+1 for the first and
+        last knot. All our generated knot vectors are clamped.
+        """
+        return self.knotv.mul[0] == self.knotv.mul[-1] == (self.degree + 1)
+
+
     def bbox(self):
         """Return the bounding box of the NURBS curve.
 
@@ -508,7 +546,8 @@ class NurbsCurve(Geometry4):
   Control points:
 %s,
   knots = %s
-"""  % ( self.degree, len(self.coords), self.nknots(), self.coords, self.knotv)
+  range = %s
+"""  % ( self.degree, len(self.coords), self.nknots(), self.coords, self.knotv,self.urange())
 
 
     def pointsAt(self, u):
@@ -517,7 +556,8 @@ class NurbsCurve(Geometry4):
         Parameters:
 
         - `u`: (nu,) shaped float array, parametric values at which a point
-          is to be placed.
+          is to be placed. Note that valid points are only obtained for
+          parameter values in the range self.range().
 
         Returns (nu,3) shaped Coords with nu points at the specified
         parametric values.
@@ -525,7 +565,7 @@ class NurbsCurve(Geometry4):
         """
         ctrl = self.coords.astype(double)
         knots = self.knotv.values().astype(double)
-        u = atleast_1d(u).astype(double)
+        u = np.atleast_1d(u).astype(double)
 
         try:
             pts = nurbs.curvePoints(ctrl, knots, u)
@@ -732,7 +772,8 @@ class NurbsCurve(Geometry4):
         A Nurbs curve approximating the original but of a lower degree.
 
         """
-        #from pyformex.lib.nurbs import curveDegreeReduce
+        from pyformex.lib.nurbs import curveDegreeReduce
+#        from nurbs import curveDegreeReduce
         if self.closed:
             raise ValueError("reduceDegree currently does not work on closed curves")
 
@@ -741,9 +782,10 @@ class NurbsCurve(Geometry4):
 
         N = self
         while t > 0:
-            newP,newU,nh,mh = nurbs.curveDegreeReduce(N.coords, N.knots)
+            newP,newU,nh,mh,maxerr = curveDegreeReduce(N.coords, N.knots)
+            #newP,newU,nh,mh = nurbs.curveDegreeReduce(N.coords, N.knots)
             N = NurbsCurve(newP, degree=self.degree-1, knots=newU, closed=self.closed)
-            #print("Reduced to degree %s with maxerr = %s" % (N.degree,maxerr))
+            print("Reduced to degree %s with maxerr = %s" % (N.degree,maxerr))
             t -= 1
 
         return N
@@ -842,7 +884,8 @@ class NurbsCurve(Geometry4):
         from pyformex.plugins.curve import PolyLine
         if ndiv is None:
             ndiv = self.N_approx
-        u = arange(ndiv+1)*1.0/ndiv
+        umin,umax = self.urange()
+        u = at.uniformParamValues(ndiv,umin,umax)
         PL = PolyLine(self.pointsAt(u))
         if nseg is not None:
             u = PL.atLength(nseg)
@@ -852,13 +895,15 @@ class NurbsCurve(Geometry4):
 
     def actor(self,**kargs):
         """Graphical representation"""
-        from pyformex.legacy.actors import NurbsActor
+#        from pyformex.legacy.actors import NurbsActor
         from pyformex.opengl.actors import Actor
-        if self.degree <= 7:
-            return NurbsActor(self,**kargs)
-        else:
+#        if self.degree <= 7:
+#            return NurbsActor(self,**kargs)
+#        else:
             #B = self.decompose()
-            return Actor(self.approx(ndiv=100).toFormex(),**kargs)
+        G = self.approx(ndiv=100).toFormex()
+        G.attrib(**self.attrib)
+        return Actor(G,**kargs)
 
 
     def reverse(self):

@@ -264,13 +264,80 @@ def curveDegreeElevate(Pw,U,t):
     return np.array(Pw), np.array(Uh), nh, mh
 
 
+def BezDegreeReduce(Q,return_errfunc=False):
+    """Degree reduce a Bezier curve.
 
+    Parameters:
+
+    - `Q`: float array (nk,nd): control points of a Bezier curve of degree
+      p = nk-1
+    - `return_errfunc`: bool: if True, also returns a function to evaluate the
+      error along the parametric values.
+
+    Returns a tuple:
+
+    - `P`: float array (nk-1,nd): control points of a Bezier curve of
+      degree p-1
+    - `maxerr`: float: an upper bound on the error introduced by the degree
+      reduction
+
+    Based on The NURBS Book.
+    """
+    nk,nd = Q.shape
+    p = nk - 1
+    r = (p-1) // 2
+    alfs = np.arange(p) / float(p)
+    print("Bezier alfs: %s" % alfs)
+    print("Input Q")
+    print(Q)
+    P = np.zeros((p,nd))
+    P[0] = Q[0]
+    for i in range(1,r+1):
+        P[i] = ( Q[i] - alfs[i]*P[i-1] ) / (1.0-alfs[i])
+    P[p-1] = Q[p]
+    for i in range(p-2,r,-1):
+        P[i] = ( Q[i+1] - (1-alfs[i+1])*P[i+1] ) / alfs[i+1]
+    if p % 2 == 1:
+        PrR = ( Q[r+1] - (1-alfs[r+1])*P[r+1] ) / alfs[r+1]
+        Err = 0.5 * (1.0-alfs[r]) * length( P[r] - PrR )
+        P[r] = 0.5 * (P[r] + PrR)
+    else:
+        Err = length(Q[r+1]-0.5*(P[r]+P[r+1]))
+    #print("Err = %s" % Err)
+
+    # Max error
+    # Note that maximum of Bernstein polynom (i,p) is at i/p
+    if p % 2 == 0:
+        errfunc = lambda u: Err * Bernstein(p,r+1,u)
+        # Note that maximum of Bernstein polynom (i,p) is at i/p
+        #print("Bernstein(%s,%s,%s) = %s" %(p,r+1,(r+1.)/p,errfunc((r+1.)/p)))
+        maxerr = errfunc((r+1.)/p)
+    else:
+        #print("Bernstein(%s,%s,%s) = %s" %(p,r+1,(r+1.)/p,Bernstein(p,r+1,(r+1.)/p)))
+        #print("Bernstein(%s,%s,%s) = %s" %(p,r+1,(r+0.)/p,Bernstein(p,r+1,(r+0.)/p)))
+        #print("Bernstein(%s,%s,%s) = %s" %(p,r,(r+1.)/p,Bernstein(p,r,(r+1.)/p)))
+        #print("Bernstein(%s,%s,%s) = %s" %(p,r,(r+0.)/p,Bernstein(p,r,(r+0.)/p)))
+        errfunc = lambda u: Err * abs(Bernstein(p,r,u) - Bernstein(p,r+1,u))
+        # We guess that maximum is close to middle of r/p and r+1/p
+        maxerr = max(errfunc(float(r)/p),errfunc(float(r+1)/p))
+
+    #print("maxerr = %s" % maxerr)
+    print("Output P")
+    print(P)
+    if return_errfunc:
+        return P,maxerr,errfunc
+    else:
+        return P,maxerr
+
+
+from pyformex.coords import Coords
+from pyformex.gui.draw import pause
 def curveDegreeReduce(Qw,U):
     """Reduce the degree of the Nurbs curve.
 
     Parameters:
 
-    - `Qw`: float array (nk,nd): nk=n+1 control points
+    - `Qw`: float array (nc,nd): nc=n+1 control points
     - `U`: int array(nu): nu=m+1 knot values
 
     Returns a tuple:
@@ -284,15 +351,14 @@ def curveDegreeReduce(Qw,U):
     This is based on algorithm A5.11 from 'The NURBS Book' pg223.
 
     """
-    nk,nd = Qw.shape
-    n = nk-1
+    nc,nd = Qw.shape
+    n = nc-1
     m = U.shape[0]-1
     p = m-n-1
     print("Reduce degree of curve from %s to %s" % (p,p-1))
     # Workspace for return arrays
-    print("Workspace points: %s" % nk)
     Uh = np.zeros((2*m+1,))
-    Pw = np.zeros((2*nk+1,nd))
+    Pw = np.zeros((2*nc+1,nd))
     # Set up workspaces
     bpts = np.zeros((p+1,nd)) # Bezier control points of current segment
     Nextbpts = np.zeros((p-1,nd)) # leftmost control points of next Bezier segment
@@ -315,7 +381,9 @@ def curveDegreeReduce(Qw,U):
     # Initialize first Bezier segment
     bpts[:p+1] = Qw[:p+1]
 
-    # Loop through the knot vector
+    print("Initial Uh")
+    print(Uh[:ph+1])
+     # Loop through the knot vector
     while b < m:
         # Compute knot multiplicity
         i = b
@@ -324,9 +392,12 @@ def curveDegreeReduce(Qw,U):
         mult = b-i+1
         mh += mult-1
         print("Big loop b=%s < m=%s (mult=%s, mh=%s, )" % (b,m,mult,mh))
+        print("a=%s;b=%s;u[a]..u[b]=%s" % (a,b,U[a:b+1]))
+        print("Initial bpts\n",bpts)
         oldr = r
         r = p-mult
         lbz = (oldr+2)//2 if oldr > 0 else 1
+        print("oldr=%s; r=%s; lbz=%s" % (oldr,r,lbz))
 #
 #        ua = U[a]
 #        ub = U[b]
@@ -348,14 +419,13 @@ def curveDegreeReduce(Qw,U):
                 print("Nextbpts %s = %s" %(save,Nextbpts[save]))
 
         print("Bezier segment degree reduction")
-        print("bpts =\n",bpts[:p+1])
-        print("a=%s;b=%s;u[a]..u[b]=%s" % (a,b,U[a:b+1]))
+        print("bpts =\n",bpts)
         # Degree reducee Bezier segment
         rbpts,maxErr = BezDegreeReduce(bpts)
         from pyformex.plugins.curve import PolyLine
         from pyformex.gui.draw import draw
-        draw(PolyLine(rbpts[:,:3]),color='cyan')
-        draw(rbpts[:p,:3],color='cyan')
+        draw(PolyLine(rbpts[:,:3]),color='darkgreen')
+        draw(Coords(rbpts[:,:3]),color='black',marksize=5)
         print("Reduced ctrl points: \n",rbpts[:p])
         print("Degree reduce error = %s"%maxErr)
         err[a] += maxErr
@@ -417,9 +487,12 @@ def curveDegreeReduce(Qw,U):
             cind += 1
         print("Pw is now (%s)" % cind)
         print(Pw[:cind])
+        pause()
+        draw(Coords(Pw[:cind,:3]),color='black',marksize=5)
 
+        pause()
         if b < m:
-            # Set up for next pass thru loop
+            print("%s < %s: Set up for next pass thru loop" % (b,m))
             for i in range(r):
                 bpts[i] = Nextbpts[i]
             for i in range(r,p+1):
@@ -430,79 +503,20 @@ def curveDegreeReduce(Qw,U):
         else:
             # End knot
             for i in range(ph+1):
-                Uh[kind+i] = U[b]
+                Uh[kind] = U[b]
+                kind += 1
 
-    print("cind = %s; mh=%s; ph=%s" % (cind,mh,ph))
+    print("cind = %s; kind = %s; mh=%s; ph=%s" % (cind,kind,mh,ph))
     mh = kind-1
     nh = mh - ph - 1
     print("nh = %s" % nh)
     Uh = Uh[:mh+1]
     Pw = Pw[:nh+1]
 
+    draw(PolyLine(Pw[:,:3]),color='red',linewidth=3)
     print("New control points:\n",Pw)
     print("New knot vector:\n",Uh)
     return Pw, Uh, nh, mh, err
-
-
-def BezDegreeReduce(Q,return_errfunc=False):
-    """Degree reduce a Bezier curve.
-
-    Parameters:
-
-    - `Q`: float array (nk,nd): control points of a Bezier curve of degree
-      p = nk-1
-    - `return_errfunc`: bool: if True, also returns a function to evaluate the
-      error along the parametric values.
-
-    Returns a tuple:
-
-    - `P`: float array (nk-1,nd): control points of a Bezier curve of
-      degree p-1
-    - `maxerr`: float: an upper bound on the error introduced by the degree
-      reduction
-
-    Based on The NURBS Book.
-    """
-    nk,nd = Q.shape
-    p = nk - 1
-    r = (p-1) // 2
-    alfs = np.arange(p) / float(p)
-    P = np.zeros((p,nd))
-    P[0] = Q[0]
-    for i in range(1,r+1):
-        P[i] = ( Q[i] - alfs[i]*P[i-1] ) / (1.0-alfs[i])
-    P[p-1] = Q[p]
-    for i in range(p-2,r,-1):
-        P[i] = ( Q[i+1] - (1-alfs[i+1])*P[i+1] ) / alfs[i+1]
-    if p % 2 == 1:
-        PrR = ( Q[r+1] - (1-alfs[r+1])*P[r+1] ) / alfs[r+1]
-        Err = 0.5 * (1.0-alfs[r]) * length( P[r] - PrR )
-        P[r] = 0.5 * (P[r] + PrR)
-    else:
-        Err = length(Q[r+1]-0.5*(P[r]+P[r+1]))
-    #print("Err = %s" % Err)
-
-    # Max error
-    # Note that maximum of Bernstein polynom (i,p) is at i/p
-    if p % 2 == 0:
-        errfunc = lambda u: Err * Bernstein(p,r+1,u)
-        # Note that maximum of Bernstein polynom (i,p) is at i/p
-        #print("Bernstein(%s,%s,%s) = %s" %(p,r+1,(r+1.)/p,errfunc((r+1.)/p)))
-        maxerr = errfunc((r+1.)/p)
-    else:
-        #print("Bernstein(%s,%s,%s) = %s" %(p,r+1,(r+1.)/p,Bernstein(p,r+1,(r+1.)/p)))
-        #print("Bernstein(%s,%s,%s) = %s" %(p,r+1,(r+0.)/p,Bernstein(p,r+1,(r+0.)/p)))
-        #print("Bernstein(%s,%s,%s) = %s" %(p,r,(r+1.)/p,Bernstein(p,r,(r+1.)/p)))
-        #print("Bernstein(%s,%s,%s) = %s" %(p,r,(r+0.)/p,Bernstein(p,r,(r+0.)/p)))
-        errfunc = lambda u: Err * abs(Bernstein(p,r,u) - Bernstein(p,r+1,u))
-        # We guess that maximum is close to middle of r/p and r+1/p
-        maxerr = max(errfunc(float(r)/p),errfunc(float(r+1)/p))
-
-    #print("maxerr = %s" % maxerr)
-    if return_errfunc:
-        return P,maxerr,errfunc
-    else:
-        return P,maxerr
 
 
 # End
