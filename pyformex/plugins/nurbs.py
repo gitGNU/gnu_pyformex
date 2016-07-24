@@ -37,9 +37,7 @@ from pyformex.lib import nurbs
 from pyformex.plugins import curve
 #from pyformex import options
 from pyformex import utils
-from pyformex import olist
 
-from numpy import *
 import numpy as np
 
 
@@ -126,14 +124,14 @@ class Coords4(np.ndarray):
         if ar.dtype.kind != 'f':
             ar = ar.astype(at.Float)
 
+        # Normalize if w is specified
+        if w is not None:
+            ar /= w
+
         # We should now have a float array with last axis 3 or 4
         if ar.shape[-1] == 3:
             # Expand last axis to length 4, adding values 1
             ar = at.growAxis(ar, 1, -1, 1.0)
-
-        # Denormalize if w is specified
-        if w is not None:
-            self.deNormalize(w)
 
         # Transform 'subarr' from an ndarray to our new subclass.
         ar = ar.view(cls)
@@ -412,15 +410,15 @@ def genKnotVector(nctrl,degree,blended=True,closed=False):
         if not closed:
             nval -= 2*degree
         val = at.uniformParamValues(nval-1) # Returns nval values!
-        mul = ones(nval,dtype=at.Int)
+        mul = np.ones(nval,dtype=at.Int)
         if not closed:
             mul[0] = mul[-1] = degree+1
     else:
         nparts = (nctrl-1) / degree
         if nparts*degree+1 != nctrl:
             raise ValueError("Discrete knot vectors can only be used if the number of control points is a multiple of the degree, plus one.")
-        val = arange(nparts+1).astype(at.Float)
-        mul = ones(nparts+1,dtype=at.Int) * degree
+        val = np.arange(nparts+1).astype(at.Float)
+        mul = np.ones(nparts+1,dtype=at.Int) * degree
         mul[0] = mul[-1] = degree+1
 
     return KnotVector(val=val,mul=mul)
@@ -509,7 +507,7 @@ class NurbsCurve(Geometry4):
 #            print("extra %s = %s + %s" % (nwrap, nextra1, nextra2))
 #            control = Coords4(concatenate([control[-nextra1:], control, control[:nextra2]], axis=0))
             # !! Changed: wrap at the end
-            control = Coords4(concatenate([control, control[:nwrap]], axis=0))
+            control = Coords4(np.concatenate([control, control[:nwrap]], axis=0))
 
         nctrl = control.shape[0]
 
@@ -565,6 +563,7 @@ class NurbsCurve(Geometry4):
         #3Dp = 0
         return self.knots[[p,-1-p]]
 
+
     def isClamped(self):
         """Return True if the NurbsCurve uses a clamped knot vector.
 
@@ -572,6 +571,15 @@ class NurbsCurve(Geometry4):
         last knot. All our generated knot vectors are clamped.
         """
         return self.knotv.mul[0] == self.knotv.mul[-1] == (self.degree + 1)
+
+
+    def isUniform(self):
+        """Return True if the NurbsCurve has a uniform knot vector.
+
+        A uniform knot vector has a constant spacing between the knot values.
+        """
+        d = self.knotv.val[1:] - self.knotv.val[:-1]
+        return np.isclose(d[1:],d[0]).all()
 
 
     def bbox(self):
@@ -612,13 +620,13 @@ class NurbsCurve(Geometry4):
         parametric values.
 
         """
-        ctrl = self.coords.astype(double)
-        knots = self.knotv.values().astype(double)
-        u = np.atleast_1d(u).astype(double)
+        ctrl = self.coords.astype(np.double)
+        knots = self.knotv.values().astype(np.double)
+        u = np.atleast_1d(u).astype(np.double)
 
         try:
             pts = nurbs.curvePoints(ctrl, knots, u)
-            if isnan(pts).any():
+            if np.isnan(pts).any():
                 print("We got a NaN")
                 raise RuntimeError
         except:
@@ -654,14 +662,14 @@ class NurbsCurve(Geometry4):
             u = at.checkArray(u, (-1,), 'f', 'i')
 
         # sanitize arguments for library call
-        ctrl = self.coords.astype(double)
-        knots = self.knotv.values().astype(double)
-        u = atleast_1d(u).astype(double)
+        ctrl = self.coords.astype(np.double)
+        knots = self.knotv.values().astype(np.double)
+        u = np.atleast_1d(u).astype(np.double)
         d = int(d)
 
         try:
             pts = nurbs.curveDerivs(ctrl, knots, u, d)
-            if isnan(pts).any():
+            if np.isnan(pts).any():
                 print("We got a NaN")
                 print(pts)
                 raise RuntimeError
@@ -710,9 +718,9 @@ class NurbsCurve(Geometry4):
         if self.closed:
             raise ValueError("insertKnots currently does not work on closed curves")
         # sanitize arguments for library call
-        ctrl = self.coords.astype(double)
-        knots = self.knotv.values().astype(double)
-        u = asarray(u).astype(double)
+        ctrl = self.coords.astype(np.double)
+        knots = self.knotv.values().astype(np.double)
+        u = np.asarray(u).astype(np.double)
         newP, newU = nurbs.curveKnotRefine(ctrl, knots, u)
         return NurbsCurve(newP, degree=self.degree, knots=newU, closed=self.closed)
 
@@ -788,6 +796,7 @@ class NurbsCurve(Geometry4):
             return self
 
         else:
+            p = self.degree
             u1, u2 = self.knotv.val[[p,-1-p]]
             return self.subCurve(u1,u2)
 
@@ -807,11 +816,12 @@ class NurbsCurve(Geometry4):
 
         """
         if self.isClamped():
-            return self
+            from pyformex.lib.nurbs import curveUnclamp
+            P,U = curveUnclamp(self.coords,self.knotv.values)
+            return NurbsCurve(control=P,degree=self.degree,knots=U,cloased=self.closed)
 
         else:
-            u1, u2 = self.knotv.val[[p,-1-p]]
-            return self.subCurve(u1,u2)
+            return self
 
 
     # TODO: This could better be called 'unblend'?
@@ -822,7 +832,7 @@ class NurbsCurve(Geometry4):
         """
         # sanitize arguments for library call
         ctrl = self.coords
-        knots = self.knotv.values().astype(double)
+        knots = self.knotv.values().astype(np.double)
         X = nurbs.curveDecompose(ctrl, knots)
         return NurbsCurve(X, degree=self.degree, blended=False)
 
@@ -849,8 +859,8 @@ class NurbsCurve(Geometry4):
         if m < 0:
             m = self.knotv.mul[i]
 
-        P = self.coords.astype(double)
-        Uv = self.knotv.val.astype(double)
+        P = self.coords.astype(np.double)
+        Uv = self.knotv.val.astype(np.double)
         Um = self.knotv.mul.astype(at.Int)
         t,newP,newU = nurbs.curveKnotRemove(P,Uv,Um,i,m,tol)
 
@@ -898,7 +908,7 @@ class NurbsCurve(Geometry4):
         if self.closed:
             raise ValueError("elevateDegree currently does not work on closed curves")
 
-        P = self.coords.astype(double)
+        P = self.coords.astype(np.double)
 
         newP,newU,nh,mh = nurbs.curveDegreeElevate(P, self.knots, t)
 
@@ -973,16 +983,16 @@ class NurbsCurve(Geometry4):
             C = self.derivs([ui],2)
             C0,C1,C2 = C[:,0]
             CP = (C0-P)
-            CPxCP = dot(CP,CP)
-            C1xCP = dot(C1,CP)
-            C1xC1 = dot(C1,C1)
+            CPxCP = np.dot(CP,CP)
+            C1xCP = np.dot(C1,CP)
+            C1xC1 = np.dot(C1,C1)
             eps1sq = eps1*eps1
             eps2sq = eps2*eps2
             # Check convergence
             chk1 = CPxCP <= eps1sq
             chk2 = C1xCP / C1xC1 / CPxCP <= eps2sq
 
-            uj = ui - dot(C1,CP) / ( dot(C2,CP) + dot(C1,C1) )
+            uj = ui - np.dot(C1,CP) / ( np.dot(C2,CP) + np.dot(C1,C1) )
             # ensure that parameter stays in range
             if self.closed:
                 while uj < umin:
@@ -1121,7 +1131,7 @@ class NurbsSurface(Geometry4):
             if kn is None:
                 kn = genKnotVector(nctrl, deg, blended=bl, closed=cl).values()
             else:
-                kn = asarray(kn).ravel()
+                kn = np.asarray(kn).ravel()
 
             nknots = kn.shape[0]
 
@@ -1161,14 +1171,14 @@ class NurbsSurface(Geometry4):
         parametric values.
 
         """
-        ctrl = self.coords.astype(double)
-        U = self.vknots.astype(double)
-        V = self.uknots.astype(double)
-        u = asarray(u).astype(double)
+        ctrl = self.coords.astype(np.double)
+        U = self.vknots.astype(np.double)
+        V = self.uknots.astype(np.double)
+        u = np.asarray(u).astype(np.double)
 
         try:
             pts = nurbs.surfacePoints(ctrl, U, V, u)
-            if isnan(pts).any():
+            if np.isnan(pts).any():
                 print("We got a NaN")
                 raise RuntimeError
         except:
@@ -1199,17 +1209,17 @@ class NurbsSurface(Geometry4):
 
         """
         # sanitize arguments for library call
-        ctrl = self.coords.astype(double)
-        U = self.vknots.astype(double)
-        V = self.uknots.astype(double)
-        u = asarray(u).astype(double)
+        ctrl = self.coords.astype(np.double)
+        U = self.vknots.astype(np.double)
+        V = self.uknots.astype(np.double)
+        u = np.asarray(u).astype(np.double)
         mu, mv = m
         mu = int(mu)
         mv = int(mv)
 
         try:
             pts = nurbs.surfaceDerivs(ctrl, U, V, u, mu, mv)
-            if isnan(pts).any():
+            if np.isnan(pts).any():
                 print("We got a NaN")
                 raise RuntimeError
         except:
@@ -1268,7 +1278,7 @@ def globalInterpolationCurve(Q,degree=3,strategy=0.5):
     d = PolyLine(Q).lengths()
     if (d==0.0).any():
         utils.warn("warn_nurbs_gic")
-        Q = concatenate([Q[d!=0.0], Q[-1:]], axis=0)
+        Q = np.concatenate([Q[d!=0.0], Q[-1:]], axis=0)
         d = PolyLine(Q).lengths()
         if (d==0.0).any():
             raise ValueError("Double points in the data set are not allowed")
@@ -1276,12 +1286,12 @@ def globalInterpolationCurve(Q,degree=3,strategy=0.5):
     d = d ** strategy
     d = d.cumsum()
     d /= d[-1]
-    u = concatenate([[0.], d])
+    u = np.concatenate([[0.], d])
     #print "u = ",u
     U, A = nurbs.curveGlobalInterpolationMatrix(Q, u, degree)
     #print "U = ",U
     #print "A = ",A
-    P = linalg.solve(A, Q)
+    P = np.linalg.solve(A, Q)
     #print "P = ",P
     return NurbsCurve(P, knots=U, degree=degree)
 
@@ -1316,7 +1326,7 @@ def pointsOnBezierCurve(P, u):
     See also:
     examples BezierCurve, Casteljau
     """
-    u = asarray(u).ravel()
+    u = np.asarray(u).ravel()
     n = P.shape[0]-1
     return Coords.concatenate([
         (nurbs.allBernstein(n, ui).reshape(1, -1, 1) * P).sum(axis=1)
@@ -1363,8 +1373,8 @@ def splitBezierCurve(P, u):
 
     """
     C = deCasteljau(P, u)
-    L = stack([x[0] for x in C])
-    R = stack([x[-1] for x in C[::-1]])
+    L = np.stack([x[0] for x in C])
+    R = np.stack([x[-1] for x in C[::-1]])
     return L,R
 
 
@@ -1403,27 +1413,27 @@ def frenet(d1,d2,d3=None):
     - `t`: (only if `d3` was specified) torsion of the curve at `npts` points
 
     """
-    l = length(d1)
+    l = at.length(d1)
     # What to do when l is 0? same as with k?
     if l.min() == 0.0:
-        print("l is zero at %s" % where(l==0.0)[0])
+        print("l is zero at %s" % np.where(l==0.0)[0])
     e1 = d1 / l.reshape(-1, 1)
-    e2 = d2 - dotpr(d2, e1).reshape(-1, 1)*e1
-    k = length(e2)
+    e2 = d2 - at.dotpr(d2, e1).reshape(-1, 1)*e1
+    k = at.length(e2)
     if k.min() == 0.0:
-        w = where(k==0.0)[0]
+        w = np.where(k==0.0)[0]
         print("k is zero at %s" % w)
     # where k = 0: set e2 to mean of previous and following
     e2 /= k.reshape(-1, 1)
     #e3 = normalize(ddd - dotpr(ddd,e1)*e1 - dotpr(ddd,e2)*e2)
-    e3 = cross(e1, e2)
-    m = dotpr(cross(d1, d2), e3)
+    e3 = np.cross(e1, e2)
+    m = at.dotpr(np.cross(d1, d2), e3)
     #print "m",m
     k = m / l**3
     if d3 is None:
         return e1, e2, e3, k
     # compute torsion
-    t = dotpr(d1, cross(d2, d3)) / dotpr(d1, d2)
+    t = at.dotpr(d1, np.cross(d2, d3)) / at.dotpr(d1, d2)
     return e1, e2, e3, k, t
 
 
