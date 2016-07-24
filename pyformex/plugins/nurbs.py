@@ -35,7 +35,6 @@ from pyformex.coords import Coords
 from pyformex.attributes import Attributes
 from pyformex.lib import nurbs
 from pyformex.plugins import curve
-#from pyformex import options
 from pyformex import utils
 
 import numpy as np
@@ -224,6 +223,9 @@ class Coords4(np.ndarray):
 
 
 class Geometry4(object):
+    """This is a preliminary class intended to provide some transforms in 4D
+
+    """
 
     def __init__(self):
         """Initialize a Geometry4"""
@@ -233,14 +235,6 @@ class Geometry4(object):
         self.coords[..., :3] = Coords(self.coords[..., :3]).scale(*args,**kargs)
         return self
 
-
-#######################################################
-## NURBS CURVES ##
-
-#    nctrl = nparts * degree + 1
-#    nknots = nctrl + degree + 1
-#    nknots = (nparts+1) * degree + 2
-#
 
 class KnotVector(object):
 
@@ -582,6 +576,30 @@ class NurbsCurve(Geometry4):
         return np.isclose(d[1:],d[0]).all()
 
 
+    def isRational(self):
+        """Return True if the NurbsCurve is rational.
+
+        The curve is rational if the weights are not constant.
+        The curve is polygonal if the weights are constant.
+
+        Returns True for a rational curve, False for a polygonal curve.
+        """
+        w = self.coords[:,3]
+        return not np.isclose(w[1:],w[0]).all()
+
+
+    def isBlended(self):
+        """Return True if the NurbsCurve is blended.
+
+        The curve is blended if it is not decomposed.
+        An unblended or decomposed curve is a chain of Bezier curves.
+        It has multiplicity p for all internal knots and p+1 for the end knots.
+
+        Returns True for a blended curve, False for an unblended one.
+        """
+        return self.isClamped() and (self.knotv.mul[1:-1] == self.degree).all()
+
+
     def bbox(self):
         """Return the bounding box of the NURBS curve.
 
@@ -591,11 +609,12 @@ class NurbsCurve(Geometry4):
 
     def __str__(self):
         return """NURBS Curve, degree = %s, nctrl = %s, nknots = %s
+  closed: %s; clamped: %s; uniform: %s; rational: %s
   Control points:
 %s,
-  knots = %s
-  range = %s
-"""  % ( self.degree, len(self.coords), self.nknots(), self.coords, self.knotv,self.urange())
+  %s
+  urange = %s
+"""  % ( self.degree, len(self.coords), self.nknots(), self.closed, self.isClamped(), self.isUniform(), self.isRational(), self.coords, self.knotv, self.urange())
 
 
 
@@ -817,8 +836,8 @@ class NurbsCurve(Geometry4):
         """
         if self.isClamped():
             from pyformex.lib.nurbs import curveUnclamp
-            P,U = curveUnclamp(self.coords,self.knotv.values)
-            return NurbsCurve(control=P,degree=self.degree,knots=U,cloased=self.closed)
+            P,U = curveUnclamp(self.coords,self.knotv.values())
+            return NurbsCurve(control=P,degree=self.degree,knots=U,closed=self.closed)
 
         else:
             return self
@@ -909,8 +928,9 @@ class NurbsCurve(Geometry4):
             raise ValueError("elevateDegree currently does not work on closed curves")
 
         P = self.coords.astype(np.double)
+        U = self.knotv.values()
 
-        newP,newU,nh,mh = nurbs.curveDegreeElevate(P, self.knots, t)
+        newP,newU,nh,mh = nurbs.curveDegreeElevate(P, U, t)
 
         return NurbsCurve(newP, degree=self.degree+t, knots=newU, closed=self.closed)
 

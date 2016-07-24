@@ -79,6 +79,8 @@ def drawNurbs(N,clear=True,**kargs):
         if _options.knot_values:
            _decors.knot_values = drawMarks(N.knotPoints(), ["%f(%s)"%(v,m) for v,m in N.knotv.knots()], leader='  --> ')
 
+    zoomObj(N)
+
 
 # Example curves from the Nurbs book
 nurbs_book_examples = {
@@ -414,12 +416,11 @@ def run():
 
 
     res = askItems([
-            _I('curv', 'default', choices=['%s' % k for k in utils.hsorted(nurbs_book_examples.keys())]),
+            _I('curv', 'default', choices=utils.hsorted(nurbs_book_examples.keys())),
         ])
     if res:
         N = createNurbs(res['curv'])
         print(N)
-        print("This Nurbs uses a%sclamped knot vector" % (' ' if N.isClamped() else 'n un'))
         drawNurbs(N,linewidth=1,color=magenta,knotsize=5)
         zoomObj(N)
 

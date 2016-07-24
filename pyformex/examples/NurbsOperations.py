@@ -66,7 +66,7 @@ def showCurve(reverse=False):
         N = N.reverse()
     print(N)
     drawNurbs(N,color=blue,knotsize=5)
-    zoomAll()
+
 
 
 def showReverse():
@@ -149,6 +149,19 @@ def decompose():
         draw(Ci,color=i,linewidth=5)
 
 
+def unclamp():
+    """(Un)Clamp the curve N"""
+    global N,C,dia
+
+    if N.isClamped():
+        N = N.unclamp()
+    else:
+        N = N.clamp()
+    print(N)
+    drawNurbs(N,color=red,linewidth=3,clear=False)
+
+
+
 def projectPoints():
     """Project points on the NurbsCurve N"""
     global N,dia
@@ -196,7 +209,7 @@ def run():
         dia.close()
     dia = Dialog([
             _G('Curve Selection',[
-                _I('curv', 'default', choices=sorted(nurbs_book_examples.keys()),
+                _I('curv', 'default', choices=utils.hsorted(nurbs_book_examples.keys()),
                    buttons=[('Show Curve',showCurve),('Show Reverse',showReverse)]),
             ]),
             _G('Knot Insertion',[
@@ -216,6 +229,8 @@ def run():
             ]),
         ], actions=[
             ('Close',close),
+            ('Decompose',decompose),
+            ('(Un)Clamp',unclamp),
             ('Decompose',decompose),
         ])
     dia.show()

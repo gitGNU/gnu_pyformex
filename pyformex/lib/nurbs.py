@@ -529,6 +529,9 @@ def curveUnclamp(P,U):
 
     Based on algorithm A12.1 of The NURBS Book.
     """
+#    print("CURVE UNCLAMP INPUT")
+#    print(P)
+#    print(U)
     n = P.shape[0] - 1
     m = U.shape[0] - 1
     p = m - n - 1
@@ -544,13 +547,16 @@ def curveUnclamp(P,U):
             k -= 1
     # Unclamp at right end
     for i in range(p):
-        U[n+i+2] = U[n+i+i] - (U[p+i+1]-U[p+i])
+        U[n+i+2] = U[n+i+1] + (U[p+i+1]-U[p+i])
         if i == p-1:
             break
         for j in range(i,-1,-1):
             alfa = (U[n+1]-U[n-j]) / (U[n-j+i+2]-U[n-j])
             P[n-j] = (P[n-j] - (1.0-alfa)*P[n-j-1]) / alfa
 
+#    print("CURVE UNCLAMP OUTPUT")
+#    print(P)
+#    print(U)
     return P,U
 
 
