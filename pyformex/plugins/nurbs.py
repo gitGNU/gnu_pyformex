@@ -99,7 +99,7 @@ class Coords4(np.ndarray):
       :class:`numpy.ndarray` is specified.
     """
 
-    def __new__(cls, data=None, w=None, dtyp=at.Float, copy=False):
+    def __new__(cls, data=None, w=None, normalize=True, dtyp=at.Float, copy=False):
         """Create a new instance of :class:`Coords4`."""
         if data is None:
             # create an empty array
@@ -123,14 +123,17 @@ class Coords4(np.ndarray):
         if ar.dtype.kind != 'f':
             ar = ar.astype(at.Float)
 
-        # Normalize if w is specified
-        if w is not None:
-            ar /= w
-
         # We should now have a float array with last axis 3 or 4
         if ar.shape[-1] == 3:
             # Expand last axis to length 4, adding values 1
             ar = at.growAxis(ar, 1, -1, 1.0)
+
+        if w is not None:
+            if normalize:
+                ar[...,:3] /= w
+            else:
+                # Insert weight
+                ar[...,3] = w
 
         # Transform 'subarr' from an ndarray to our new subclass.
         ar = ar.view(cls)
@@ -267,7 +270,13 @@ class KnotVector(object):
     >>> K.span(1.0)
     5
     >>> K.mult(0.5)
+    2
     >>> K.mult(0.7)
+    0
+    >>> K[4],K[-1]
+    (0.5, 1.0)
+    >>> K[4:6]
+    array([ 0.5,  1. ], dtype=float32)
 
     """
 
@@ -280,8 +289,9 @@ class KnotVector(object):
         else:
             val = at.checkArray(val,(-1,),'f','i')
             mul = at.checkArray(mul,val.shape,'i')
-        self.val = val#.astype(at.Float)
-        self.mul = mul#.astype(at.Int)
+        self.val = val
+        self.mul = mul
+        self.csum = self.mul.cumsum() - 1
 
 
     def nknots(self):
@@ -305,7 +315,7 @@ class KnotVector(object):
 
 
     def index(self,u):
-        """Find the (first) index of knot value u.
+        """Find the index of knot value u.
 
         If the value does not exist, a ValueError is raised.
         """
@@ -335,6 +345,28 @@ class KnotVector(object):
         """
         i = self.index(u)
         return self.mul[:i].sum()
+
+#    def value(self,i):
+#        """Return knot i.
+#
+#        Returns the knot with the index i, taking into account
+#        the multiplicity of the knots.
+#        """
+#        ind = self.csum.searchsorted(i)
+#        return self.val[ind]
+#
+
+    def __getitem__(self,i):
+        """Return knot i.
+
+        Returns the knot with the index i, taking into account
+        the multiplicity of the knots.
+        """
+        if isinstance(i,slice):
+            i = np.arange(i.start,i.stop,i.step)
+        i %= self.nknots()
+        ind = self.csum.searchsorted(i)
+        return self.val[ind]
 
 
     def copy(self):
@@ -554,8 +586,7 @@ class NurbsCurve(Geometry4):
         value for which the curve is defined.
         """
         p = self.degree
-        #3Dp = 0
-        return self.knots[[p,-1-p]]
+        return [self.knotv[p],self.knotv[-1-p]]
 
 
     def isClamped(self):
@@ -1314,6 +1345,68 @@ def globalInterpolationCurve(Q,degree=3,strategy=0.5):
     P = np.linalg.solve(A, Q)
     #print "P = ",P
     return NurbsCurve(P, knots=U, degree=degree)
+
+
+def NurbsCircle(O=[0.,0.,0.],r=1.0,X=[1.,0.,0.],Y=[0.,1.,0.],ths=0.,the=360.):
+    """Create a NurbsCurve representing a perfect circle or arc.
+
+    Parameters:
+
+    - `O`: float (3,): center of the circle
+    - `r`: float: radius
+    - `X`: unit vector in the plane of the circle
+    - 'Y': unit vector in the plane of the circle and perpendicular to `X`
+    - `ths`: start angle, measured from the X axis, coungerclockwise in X-Y plane
+    - `the`: end angle, measured from the X axis
+
+    Returns a NurbsCurve that is a perfect circle or arc.
+    """
+    from pyformex.geomtools import intersectLineWithLine
+    if the < ths:
+        the += 360.
+    theta = the-ths
+    # Get the number of arcs
+    narcs = int(np.ceil(theta/90.))
+    dtheta = theta/narcs
+    n = 2*narcs   # n+1 control points
+    w1 = np.cos(dtheta/2.) # base angle
+    O,X,Y = ( Coords4(at.checkArray(x,(3,),'f','i')) for x in (O,X,Y) )
+    # Initialize start values
+    P0 = O + r*np.cos(ths)*X + r*np.sin(ths)*Y
+    T0 = -np.sin(ths)*X + np.cos(ths)*Y
+    Pw = np.zeros((n+1,4),dtype=at.Float)
+    Pw[0] = P0
+    index = 0
+    angle = ths
+    # create narcs segments
+    for i in range(1,narcs+1):
+        angle = angle+dtheta
+        P2 = O + r*np.cos(angle)*X + r*np.sin(angle)*Y
+        Pw[index+2] = P2
+        T2 = -np.sin(angle)*X + np.cos(angle)*Y
+        P1,P1b = intersectLineWithLine(P0,T0,P2,T2)
+        Pw[index+1] = w1*P1
+        index += 2
+        if i < narcs:
+            P0,T0 = P2,T2
+    # Load the knot vector
+    j= 2*narcs+1
+    Pw = np.zeros((j+3,),dtype=at.Float)
+    for i in range(3):
+        U[i] = 0.
+        U[i+j] = 1.
+    if narcs == 2:
+        U[3] = U[4] = 0.5
+    elif narcs == 3:
+        U[3] = U[4] = 1./3.
+        U[5] = U[6] = 2./3.
+    elif narcs == 4:
+        U[3] = U[4] = 0.25
+        U[5] = U[6] = 0.5
+        U[7] = U[8] = 0.75
+
+    return NurbsCurve(control=Pw,degree=2,knots=U)
+
 
 
 def toCoords4(x):
