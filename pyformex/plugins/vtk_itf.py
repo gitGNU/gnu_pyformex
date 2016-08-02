@@ -133,11 +133,11 @@ def Update(vtkobj):
 
     if vtk.VTK_MAJOR_VERSION <= 5:
         vtkobj.Update()
-    if vtk.VTK_MAJOR_VERSION > 5 and isinstance(vtkobj, vtk.vtkAlgorithm): # VTK6 has been included for pointInsideObject
+    if vtk.VTK_MAJOR_VERSION >= 7 and isinstance(vtkobj, vtk.vtkAlgorithm):
         vtkobj.Update()
 
+
     return vtkobj
-    
 
 
 def getVTKtype(a):
@@ -675,10 +675,7 @@ def pointInsideObject(S,P,tol=0.):
     enclosed_pts = vtkSelectEnclosedPoints()
     enclosed_pts = SetInput(enclosed_pts,vpp)
     enclosed_pts.SetTolerance(tol)
-    if vtk.VTK_MAJOR_VERSION == 6:
-        enclosed_pts.SetSurfaceData(vps)
-    else:
-        enclosed_pts.SetSurface(vps)
+    enclosed_pts.SetSurface(vps)
     enclosed_pts.SetCheckSurface(1)
     enclosed_pts = Update(enclosed_pts)
     inside_arr = enclosed_pts.GetOutput().GetPointData().GetArray('SelectedPoints')
