@@ -54,10 +54,10 @@ from OpenGL import GL, GLU
 
 def glVersion(mode='all'):
     return OrderedDict([
-        ('vendor', GL.glGetString(GL.GL_VENDOR)),
-        ('renderer', GL.glGetString(GL.GL_RENDERER)),
-        ('version', GL.glGetString(GL.GL_VERSION)),
-        ('glsl_version', GL.glGetString(GL.GL_SHADING_LANGUAGE_VERSION)),
+        ('vendor', str(GL.glGetString(GL.GL_VENDOR))),
+        ('renderer', str(GL.glGetString(GL.GL_RENDERER))),
+        ('version', str(GL.glGetString(GL.GL_VERSION))),
+        ('glsl_version', str(GL.glGetString(GL.GL_SHADING_LANGUAGE_VERSION))),
         ])
 
 
