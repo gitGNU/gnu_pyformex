@@ -34,13 +34,7 @@ from pyformex import zip
 import numpy as np
 from numpy import *
 
-import sys
-if sys.hexversion >= 0x02060000:
-    # We have combinations and permutations built in
-    from itertools import combinations, permutations
-else:
-    from pyformex.backports import combinations, permutations
-
+from itertools import combinations, permutations
 
 # Define a wrapper function for old versions of numpy
 

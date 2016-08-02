@@ -49,7 +49,8 @@ startup_warnings = ''  # may be overridden in compat_?k below
 #########  Check Python version #############
 
 # intended Python version
-minimal_version = 0x02060000
+# Dropping support for pre 2.7 will help migration to 3.x
+minimal_version = 0x02070000
 target_version = 0x02070000
 future_version = 0x03000000
 
