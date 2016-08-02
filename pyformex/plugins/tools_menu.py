@@ -461,7 +461,7 @@ def getCameraCS(origin='global'):
     elif origin == 'focus':
         return CS.translate(cam.focus)
     else:
-        raise ValueError, 'origin should be either global or focus'
+        raise ValueError('origin should be either global or focus')
 
 
 def toCameraCS(p):
@@ -524,7 +524,7 @@ def create_point():
                     return p
             else:
                 print (p)
-                raise ValueError, 'how did you get here?'
+                raise ValueError('how did you get here?')
 
 
 def query_point2D(color=0):
