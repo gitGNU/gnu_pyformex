@@ -622,11 +622,16 @@ class NurbsCurve(Geometry4):
     def isBlended(self):
         """Return True if the NurbsCurve is blended.
 
-        The curve is blended if it is not decomposed.
-        An unblended or decomposed curve is a chain of Bezier curves.
-        It has multiplicity p for all internal knots and p+1 for the end knots.
+        An clamped NurbsCurve is unblended (or decomposed) if it consists
+        of a chain of independent Bezier curves.
+        Such a curve has multiplicity p for all internal knots and p+1
+        for the end knots of an open curve.
+        Any other NurbsCurve is blended.
 
         Returns True for a blended curve, False for an unblended one.
+
+        Note: for testing whether an unclamped curve is blended or not,
+        first clamp it.
         """
         return self.isClamped() and (self.knotv.mul[1:-1] == self.degree).all()
 
@@ -874,8 +879,7 @@ class NurbsCurve(Geometry4):
             return self
 
 
-    # TODO: This could better be called 'unblend'?
-    def decompose(self):
+    def unblend(self):
         """Decomposes a curve in subsequent Bezier curves.
 
         Returns an equivalent unblended Nurbs.
@@ -885,6 +889,10 @@ class NurbsCurve(Geometry4):
         knots = self.knotv.values().astype(np.double)
         X = nurbs.curveDecompose(ctrl, knots)
         return NurbsCurve(X, degree=self.degree, blended=False)
+
+
+    # For compatibility
+    decompose = unblend
 
 
     def removeKnot(self, u, m, tol=1.e-5):
@@ -923,7 +931,16 @@ class NurbsCurve(Geometry4):
 
 
     def removeAllKnots(self,tol=1.e-5):
-        """Remove all removable knots"""
+        """Remove all removable knots
+
+        Parameters:
+
+        - `tol`: float: acceptable error (distance between old and new curve).
+
+        Returns an equivalent (if tol is small) NurbsCurve with all
+        extraneous knots removed.
+
+        """
         N = self
         print(N)
         while True:
@@ -943,6 +960,9 @@ class NurbsCurve(Geometry4):
                 print("Cycle")
                 N = NN
         return N
+
+
+    blend = removeAllKnots
 
 
     def elevateDegree(self, t=1):
