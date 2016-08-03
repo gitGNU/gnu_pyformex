@@ -1695,14 +1695,14 @@ Most likely because 'python-scipy' is not installed on your system.""")
             X.insert(0,Coords.concatenate(points))
             # Save left part
             points = L.tolist()
-            k = j
+            k = j        
         X.insert(0,Coords.concatenate(points))
+        if j >0:
+            X.insert(0,Coords.concatenate(self.part(0,j)))
         if split:
             return [ BezierSpline(control=x, degree=self.degree, closed=False) for x in X ]
         else:
-            print(X)
             X = Coords.concatenate([X[0]] + [xi[1:] for xi in X[1:]])
-            print(X)
             return BezierSpline(control=X, degree=self.degree, closed=self.closed)
 
 
