@@ -883,6 +883,8 @@ class NurbsCurve(Geometry4):
         """Decomposes a curve in subsequent Bezier curves.
 
         Returns an equivalent unblended Nurbs.
+
+        See also :meth:`toBezier`
         """
         # sanitize arguments for library call
         ctrl = self.coords
@@ -893,6 +895,45 @@ class NurbsCurve(Geometry4):
 
     # For compatibility
     decompose = unblend
+
+
+    def toCurve(self,force_Bezier=False):
+        """Convert a (nonrational) NurbsCurve to a BezierSpline or PolyLine.
+
+        This decomposes the curve in a chain of Bezier curves and converts
+        the chain to a BezierSpline or PolyLine.
+
+        This only works for nonrational NurbsCurves, as the
+        BezierSpline and PolyLine classes do not allow homogeneous
+        coordinates required for rational curves.
+
+        Returns a BezierSpline or PolyLine (if degree is 1) that is equivalent
+        with the NurbsCurve.
+
+        See also :meth:`unblend` which decomposes both rational and
+        nonrational NurbsCurves.
+
+        """
+        if self.isRational():
+            raise ValueError("Can not convert a rational NURBS ro Bezier")
+
+        ctrl = self.coords
+        knots = self.knotv.values()
+        X = nurbs.curveDecompose(ctrl, knots)
+        X = Coords4(X).toCoords()
+        if self.degree > 1 or force_Bezier:
+            return curve.BezierSpline(control=X,degree=self.degree,closed=self.closed)
+        else:
+            return curve.PolyLine(X,closed=self.closed)
+
+
+    def toBezier(self):
+        """Convert a (nonrational) NurbsCurve to a BezierSpline.
+
+        This is equivalent with toCurve(force_Bezier=True) and returns
+        a BezierSpline in all cases.
+        """
+        return self.toCurve(force_Bezier=True)
 
 
     def removeKnot(self, u, m, tol=1.e-5):
