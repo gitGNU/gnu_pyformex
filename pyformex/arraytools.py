@@ -31,6 +31,7 @@ array model.
 from __future__ import print_function
 from pyformex import zip
 
+
 import numpy as np
 from numpy import *
 
@@ -235,7 +236,7 @@ def niceLogSize(f):
     return int(ceil(log10(abs(f))))
 
 
-def niceNumber(f,round=ceil):
+def niceNumber(f,round=np.ceil):
     """Return a nice number close to abs(f).
 
     Parameters:
@@ -251,10 +252,10 @@ def niceNumber(f,round=ceil):
     >>> numbers = [ 0.0837, 0.867, 8.5, 83.7, 93.7]
     >>> [ str(niceNumber(f)) for f in numbers ]
     ['0.09', '0.9', '9.0', '90.0', '100.0']
-    >>> [ str(niceNumber(f,round=floor)) for f in numbers ]
+    >>> [ str(niceNumber(f,round=np.floor)) for f in numbers ]
     ['0.08', '0.8', '8.0', '80.0', '90.0']
-    >>> [ str(niceNumber(f,round=round)) for f in numbers ]
-    ['0.08', '0.9', '9.0', '80.0', '90.0']
+    >>> [ str(niceNumber(f,round=np.round)) for f in numbers ]
+    ['0.08', '0.9', '8.0', '80.0', '90.0']
     """
     fa = abs(f)
     s = "%.1e" % fa
