@@ -261,8 +261,9 @@ class Geometry(object):
         if prop is None:
             self.prop = None
         else:
-            if prop == 'range':
-                prop = np.arange(self.nelems())
+            if isinstance(prop,str):
+                if prop == 'range':
+                    prop = np.arange(self.nelems())
             else:
                 prop = np.array(prop)
 
