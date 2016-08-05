@@ -2013,7 +2013,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         # now we should have list of: ints, tuples or floatlists
         div = [ smartSeed(divi, start=1) for divi in div ]
         # check length
-        nsteps = (len(clist)-1)/degree
+        nsteps = (len(clist)-1) // degree
         if len(div) == 1:
             div = div * nsteps
         elif len(div)!=nsteps:
