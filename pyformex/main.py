@@ -440,11 +440,7 @@ def run(argv=[]):
         option_list=option_list)
     del option_list
 
-
     pf.options, args = parser.parse_args(argv)
-    ## print(pf.options)
-    ## print(args)
-    ## sys.exit()
     pf.print_help = parser.print_help
 
     # Set debug level
@@ -665,7 +661,7 @@ def run(argv=[]):
     pf.print3("Trying to import the libraries")
     pf.print3(sys.path)
     from pyformex import lib
-    
+
     # If we run from a checked out source repository, we should
     # run the source_clean procedure.
     if pf.installtype in 'SG':
