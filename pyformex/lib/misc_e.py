@@ -29,6 +29,7 @@ external functions in the compiled library.
 """
 from __future__ import print_function
 
+print("loading lib.misc")
 
 # There should be no other imports here than numpy and pyformex
 import pyformex as pf
@@ -116,8 +117,6 @@ def splitSquare(pos, val, level):
     """Split a single square
 
     """
-    from pyformex.lib.misc import vertexinterp
-
     pos = pos.astype(np.float32)
 
     # Determine the index into the edge table which

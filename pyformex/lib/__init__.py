@@ -28,7 +28,6 @@ to load with the (slower) Python versions.
 """
 from __future__ import print_function
 
-
 import pyformex as pf
 __all__ = [ 'misc', 'nurbs', 'drawgl', 'accelerated' ]
 
@@ -79,20 +78,23 @@ if accelerate:
 
 if misc is None:
     pf.debug("Using the (slower) Python misc functions", pf.DEBUG.LIB)
-    from pyformex.lib import misc
+    from pyformex.lib import misc_e as misc
 
 if nurbs is None:
     pf.debug("Using the (slower) Python nurbs functions", pf.DEBUG.LIB)
-    from pyformex.lib import nurbs
+    from pyformex.lib import nurbs_e as nurbs
 
 if gui and drawgl is None:
     pf.debug("Using the (slower) Python draw functions", pf.DEBUG.LIB)
-    from pyformex.lib import drawgl
-
+    from pyformex.lib import drawgl_e as drawgl
 
 pf.debug("Accelerated: %s" % accelerated, pf.DEBUG.LIB|pf.DEBUG.INFO)
 pf.debug(misc, pf.DEBUG.LIB)
 pf.debug(nurbs, pf.DEBUG.LIB)
 pf.debug(drawgl, pf.DEBUG.LIB)
+
+# make sure we could at least import one version
+assert(misc is not None)
+
 
 # End

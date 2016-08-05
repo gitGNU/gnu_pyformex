@@ -45,9 +45,7 @@ from pyformex.plugins.curve import BezierSpline
 from pyformex.examples.NurbsCurveExamples import drawNurbs, nurbs_book_examples, createNurbs
 from pyformex import simple
 
-from pyformex.lib.nurbs import BezDegreeReduce#, curveDegreeReduce
 from pyformex.lib import nurbs
-#nurbs.curveDegreeReduce = curveDegreeReduce
 
 
 def showCurve(reverse=False):

@@ -29,7 +29,7 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import utils, olist, simple, geomtools
-from pyformex.lib.drawgl import glColor
+from pyformex.lib.drawgl_e import glColor
 from pyformex.formex import *
 from pyformex.opengl.colors import *
 

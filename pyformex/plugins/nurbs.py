@@ -871,7 +871,7 @@ class NurbsCurve(Geometry4):
 
         """
         if self.isClamped():
-            from pyformex.lib.nurbs import curveUnclamp
+            from pyformex.lib.nurbs_e import curveUnclamp
             P,U = curveUnclamp(self.coords,self.knotv.values())
             return NurbsCurve(control=P,degree=self.degree,knots=U,closed=self.closed)
 
@@ -1037,7 +1037,7 @@ class NurbsCurve(Geometry4):
         A Nurbs curve approximating the original but of a lower degree.
 
         """
-        from pyformex.lib.nurbs import curveDegreeReduce
+        from pyformex.lib.nurbs_e import curveDegreeReduce
 #        from nurbs import curveDegreeReduce
         if self.closed:
             raise ValueError("reduceDegree currently does not work on closed curves")
