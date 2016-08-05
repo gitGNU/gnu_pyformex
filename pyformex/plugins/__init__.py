@@ -115,12 +115,12 @@ def loadConfiguredPlugins(ok_plugins=None):
         ok_plugins = pf.cfg['gui/plugins']
         pf.debug("Configured plugins: %s" % ok_plugins,pf.DEBUG.PLUGIN)
     for p in plugin_menus:
-        pf.debug("Plugin menu: %s" % p)
+        pf.debug("Plugin menu: %s" % p,pf.DEBUG.PLUGIN)
         if p in ok_plugins:
-            pf.debug("  Loading plugin menu: %s" % p)
+            pf.debug("  Loading plugin menu: %s" % p,pf.DEBUG.PLUGIN)
             load(p)
         else:
-            pf.debug("  Closing plugin menu: %s" % p)
+            pf.debug("  Closing plugin menu: %s" % p,pf.DEBUG.PLUGIN)
             module = globals().get(p, None)
             if hasattr(module, 'close_menu'):
                 module.close_menu()
