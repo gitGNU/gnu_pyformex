@@ -92,6 +92,14 @@ known_externals = {
     'vmtk': ('vmtk --help', 'Usage(:)\s+vmtk.*'),
     }
 
+
+if sys.hexversion >= 0x03000000:
+    # Some detect commands fail on Python3
+    del known_externals['calculix']
+    del known_externals['postabq']
+    del known_externals['recordmydesktop']
+    del known_externals['vmtk']
+
 # versions of detected modules
 the_version = {
     'pyformex': pf.__version__.split()[0],

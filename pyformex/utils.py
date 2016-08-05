@@ -1052,7 +1052,7 @@ def diskSpace(path,units=None,ndigits=2):
     return total, used, avail
 
 
-def humanSize(size,units,ndigits=None):
+def humanSize(size,units,ndigits=-1):
     """Convert a number to a human size.
 
     Large numbers are often represented in a more human readable
@@ -1066,8 +1066,8 @@ def humanSize(size,units,ndigits=None):
       be one of k,K,M,G,T,P,E,Z,Y. 'k' and 'K' are equivalent. A second
       character 'i' can be added to use binary (K=1024) prefixes instead of
       decimal (k=1000).
-    - `ndigits`: integer. If specified, the result is rounded to
-      the specified number of digits.
+    - `ndigits`: integer. If >= 0, the result is rounded to
+      the specified number of decimal digits.
 
     Returns: a float value rounded to `ndigits` digits.
 
@@ -1115,7 +1115,7 @@ def tempName(*args,**kargs):
     Example:
 
     >>> tmp = tempName('.txt')
-    >>> open(tmp,'w').write('hallo')
+    >>> s = open(tmp,'w').write('hallo')
     >>> s = open(tmp,'r').read()
     >>> os.remove(tmp)
     >>> print(s)
