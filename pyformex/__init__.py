@@ -280,19 +280,8 @@ def debugLevel(sl):
     return lev
 
 
-def debug(s,level):
-    """Print a debug message
-
-    Parameters:
-
-    - `s`: a string or anything that can be converted to it
-    - `level`: unsigned integer. It is a bit filed that can be build by
-      ORing the constants from DebugLevels class.
-      The message will only be printed if any bit in the level is also in the
-      pf.options.debuglevel value.
-      A value -1 will make the message be printed for any debug level.
-
-    """
+def debug(s,level=DEBUG.ALL):
+    """Print a debug message"""
     try: # to make sure that debug() can be used before options are set
         if options.debuglevel & level:
             raise
