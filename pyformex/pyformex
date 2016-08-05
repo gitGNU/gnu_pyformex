@@ -57,9 +57,12 @@ $ECHO "Python interpreter: $python"
 
 startup=$(dirname $script)/startup.py
 
-cmd="$python $startup $@"
-$ECHO "executing command: $cmd"
+if [ "$ECHO" = "echo" ]; then
+    printf "Executing command: exec $python $startup "
+    printf '"%b" ' "$@"
+    printf '\n'
+fi
 
-exec $cmd
+exec $python $startup "$@"
 
 # End
