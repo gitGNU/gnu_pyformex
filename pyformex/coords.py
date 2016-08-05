@@ -42,7 +42,6 @@ from pyformex import zip
 from pyformex import utils
 
 from pyformex.arraytools import *
-from pyformex.lib import misc
 
 
 ###########################################################################
@@ -560,7 +559,7 @@ class Coords(ndarray):
 
         Example:
 
-        >>> from elements import Tet4
+        >>> from pyformex.elements import Tet4
         >>> I = Tet4.vertices.inertia()
         >>> print(I.tensor)
         [[ 1.5   0.25  0.25]
@@ -1646,7 +1645,7 @@ class Coords(ndarray):
           on the surface. This index is a sequential one, no matter what the
           shape of the input Coords is.
 
-        >>> import simple
+        >>> from pyformex import simple
         >>> S = simple.sphere().scale(2)
         >>> x = pattern('0123')
         >>> print(x)
@@ -1970,6 +1969,7 @@ class Coords(ndarray):
           [0 0 1]
 
         """
+        from pyformex.lib import misc
         if self.size == 0:
             # allow empty coords sets
             return self, array([], dtype=Int).reshape(self.pshape())
@@ -2351,10 +2351,9 @@ def bbox(objects):
 
     Example:
 
-      >>> from formex import *
-      >>> bbox([Coords([-1.,1.,0.]),Formex('l:5')])
-      Coords([[-1.,  0.,  0.],
-             [ 1.,  1.,  0.]], dtype=float32)
+    >>> bbox([Coords([-1.,1.,0.]),Coords([2,-3])])
+    Coords([[-1., -3.,  0.],
+           [ 2.,  1.,  0.]], dtype=float32)
 
     """
     if not isinstance(objects,list):

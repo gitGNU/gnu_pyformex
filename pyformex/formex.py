@@ -184,6 +184,19 @@ class Formex(Geometry):
     `projectOnCylinder`,
     `rot`,
     `trl`.
+
+    Example:
+
+    >>> print(Formex([[0,1],[2,3]]))
+    {[0.0,1.0,0.0], [2.0,3.0,0.0]}
+    >>> print(Formex('1:0123'))
+    {[0.0,0.0,0.0], [1.0,0.0,0.0], [1.0,1.0,0.0], [0.0,1.0,0.0]}
+    >>> print(Formex('4:0123'))
+    {[0.0,0.0,0.0; 1.0,0.0,0.0; 1.0,1.0,0.0; 0.0,1.0,0.0]}
+    >>> print(Formex('2:0123'))
+    {[0.0,0.0,0.0; 1.0,0.0,0.0], [1.0,1.0,0.0; 0.0,1.0,0.0]}
+    >>> print(Formex('l:1234'))
+    {[0.0,0.0,0.0; 1.0,0.0,0.0], [1.0,0.0,0.0; 1.0,1.0,0.0], [1.0,1.0,0.0; 0.0,1.0,0.0], [0.0,1.0,0.0; 0.0,0.0,0.0]}
     """
 
 
@@ -206,7 +219,8 @@ class Formex(Geometry):
                 d = re.compile("(((?P<base>[^:]*):)?(?P<data>.*))").match(data).groupdict()
                 base, data = d['base'], d['data']
                 if base is None or base == 'l':
-                    data = lpattern(data)
+                    data = Coords.concatenate([origin(), pattern(data)])
+                    data = stack([data[:-1],data[1:]],axis=1)
                 ## removed in 0.9.1
                 ## elif base == 'm':
                 ##     data = mpattern(data)
@@ -1390,103 +1404,6 @@ def interpolate(F,G,div,swap=False,concat=True):
     if swap:
         r = r.swapaxes(0, 1)
     return Formex(r.reshape((-1,) + r.shape[-2:]))
-
-
-def lpattern(s,connect=True):
-    """Return a line segment pattern created from a string.
-
-    This function creates a list of line segments where all points lie on
-    a regular grid with unit step.
-    The first point of the list is [0,0,0]. Each character from the input
-    string is interpreted as a code specifying how to move to the next point.
-    Currently defined are the following codes:
-    1..8 move in the x,y plane
-    9 remains at the same place
-    0 = goto origin [0,0,0]
-    + = go back to origin without creating a line segment
-    When looking at the plane with the x-axis to the right,
-    1 = East, 2 = North, 3 = West, 4 = South, 5 = NE, 6 = NW, 7 = SW, 8 = SE.
-    Adding 16 to the ordinal of the character causes an extra move of +1 in
-    the z-direction. Adding 48 causes an extra move of -1. This means that
-    'ABCDEFGHI', resp. 'abcdefghi', correspond with '123456789' with an extra
-    z +/-= 1. This gives the following schema::
-
-                 z+=1             z unchanged            z -= 1
-
-             F    B    E          6    2    5         f    b    e
-                  |                    |                   |
-                  |                    |                   |
-             C----I----A          3----9----1         c----i----a
-                  |                    |                   |
-                  |                    |                   |
-             G    D    H          7    4    8         g    d    h
-
-    The special character '/' can be put before any character to make the
-    move without inserting an element.
-    The effect of any other character is undefined.
-
-    The resulting list is directly suited to initialize a Formex.
-    """
-    # We do not allow the '+' anymore
-    s = s.replace('+', '/0')
-
-    x = y = z = 0
-    l = []
-    insert = True
-    for c in s:
-        if c == "/":
-            insert = False
-            continue
-        ## if c == "+":
-        ##     x = y = z = 0
-        ##     continue
-        pos = [x, y, z]
-        if c == "0":
-            x = y = z = 0
-        else:
-            i = ord(c)
-            d = i/16
-            if d == 3:
-                pass
-            elif d == 4:
-                z += 1
-            elif d == 6:
-                z -= 1
-            else:
-                raise RuntimeError("Unknown pattern character %c ignored" % c)
-            i %= 16
-            if i == 1:
-                x += 1
-            elif i == 2:
-                y += 1
-            elif i == 3:
-                x -= 1
-            elif i == 4:
-                y -= 1
-            elif i == 5:
-                x += 1
-                y += 1
-            elif i == 6:
-                x -= 1
-                y += 1
-            elif i == 7:
-                x -= 1
-                y -= 1
-            elif i == 8:
-                x += 1
-                y -= 1
-            elif i == 9:
-                pass
-            else:
-                raise RuntimeError("Unknown pattern character %c ignored" % c)
-        if insert:
-            if connect:
-                element = [pos, [x, y, z]]
-            else:
-                element = [[x, y, z]]
-            l.append(element)
-        insert = True
-    return l
 
 
 def pointsAt(F, t):

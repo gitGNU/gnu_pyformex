@@ -29,8 +29,6 @@ external functions in the compiled library.
 """
 from __future__ import print_function
 
-print("loading lib.misc")
-
 # There should be no other imports here than numpy and pyformex
 import pyformex as pf
 import numpy as np
