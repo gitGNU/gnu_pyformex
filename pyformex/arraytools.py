@@ -37,31 +37,10 @@ from numpy import *
 
 from itertools import combinations, permutations
 
-# Define a wrapper function for old versions of numpy
-
-try:
-    unique([1], True)
-except TypeError:
-    from numpy import unique1d as unique
-
-if unique([1], True)[0][0] == 0:
-    # We have the old numy version
-    from pyformex import utils   # We are early on startup: utils not loaded yet
-    utils.warn("warn_old_numpy")
-
-    def unique(a,return_indices=False):
-        """Replacement for numpy's unique1d"""
-        import numpy
-        if return_indices:
-            indices, uniq = numpy.unique1d(a, True)
-            return uniq, indices
-        else:
-            return numpy.unique1d(a)
-
 
 # default float and int types
-Float = float32
-Int = int32
+Float = np.float32
+Int = np.int32
 
 
 def isInt(obj):
@@ -71,7 +50,7 @@ def isInt(obj):
     The type of the object can be either a Python int or a
     numpy integer type.
     """
-    return isinstance(obj, (int, integer))
+    return isinstance(obj, (int, np.integer))
 
 
 def isFloat(obj):
@@ -81,7 +60,7 @@ def isFloat(obj):
     The type of the object can be either a Python float or a
     numpy floating type.
     """
-    return isinstance(obj, (float, floating))
+    return isinstance(obj, (float, np.floating))
 
 
 def isNum(obj):

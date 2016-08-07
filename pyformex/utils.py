@@ -1610,27 +1610,6 @@ def getDocString(scriptfile):
     return ''
 
 
-def numsplit(s):
-    """Split a string in numerical and non-numerical parts.
-
-    Returns a series of substrings of s. The odd items do not contain
-    any digits. Joined together, the substrings restore the original.
-    The even items only contain digits.
-    The number of items is always odd: if the string ends or starts with a
-    digit, the first or last item is an empty string.
-
-    Example:
-
-    >>> print(numsplit("aa11.22bb"))
-    ['aa', '11', '.', '22', 'bb']
-    >>> print(numsplit("11.22bb"))
-    ['', '11', '.', '22', 'bb']
-    >>> print(numsplit("aa11.22"))
-    ['aa', '11', '.', '22', '']
-    """
-    return RE_digits.split(s)
-
-
 def hsorted(l):
     """Sort a list of strings in human order.
 
@@ -1648,6 +1627,28 @@ def hsorted(l):
         s = RE_digits.split(s)+['0']
         return list(zip(s[0::2], [int(i) for i in s[1::2]]))
     return sorted(l, key=human)
+
+
+def numsplit(s):
+    """Split a string in numerical and non-numerical parts.
+
+    Returns a series of substrings of s. The odd items do not contain
+    any digits. The even items only contain digits.
+    Joined together, the substrings restore the original.
+
+    The number of items is always odd: if the string ends or starts with a
+    digit, the first or last item is an empty string.
+
+    Example:
+
+    >>> print(numsplit("aa11.22bb"))
+    ['aa', '11', '.', '22', 'bb']
+    >>> print(numsplit("11.22bb"))
+    ['', '11', '.', '22', 'bb']
+    >>> print(numsplit("aa11.22"))
+    ['aa', '11', '.', '22', '']
+    """
+    return RE_digits.split(s)
 
 
 def splitDigits(s,pos=-1):
