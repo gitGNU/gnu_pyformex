@@ -6,7 +6,7 @@
   geometrical models by sequences of mathematical operations.
   Home page: http://pyformex.org
   Project page:  https://savannah.nongnu.org/projects/pyformex/
-  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
+  Copyright (C) Benedict Verhegghe (benedict.verhegghe@feops.com)
   Distributed under the GNU General Public License version 3 or later.
 
   This program is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@
 HOWTO for pyFormex developers
 =============================
 :Date: |date|
-:Author: benedict.verhegghe@ugent.be
+:Author: benedict.verhegghe@feops.com
 
 .. warning: This document is currently under development!
 
@@ -1004,7 +1004,7 @@ Docstrings
       Be careful!
 
 - Wherever possible add an example of the use of the function. By preference
-  this should be a live example that can be used through the --testmodule
+  this should be a live example that can be used through the --doctest
   framework. This should be structured as follows::
 
     Examples:
@@ -1024,7 +1024,7 @@ Docstrings
   generated (but aligned with the '>>>' below the code line.
   When the module is tested with::
 
-    pyformex --testmodule MODULENAME
+    pyformex --doctest MODULENAME
 
   Python will execute all these code and check that the results match.
   In order to get good quality formatting in both the HTML and PDF versions,
@@ -1119,7 +1119,7 @@ Testing after changes
 
 Be sure to always retest the module after the changes you have made::
 
-  pyformex --testmodule pkg.myfile
+  pyformex --doctest pkg.myfile
 
 
 

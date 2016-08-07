@@ -60,7 +60,7 @@ def _fuse(x, val, flag, sel, tol):
             nexti += 1
 
 
-def nodalSum(val, elems, work, avg):
+def nodalSum(val, elems, work, avg, return_all=False):
     """Compute the nodal sum of values defined on elements.
 
     val   : (nelems,nplex,nval) values at points of elements.
@@ -72,6 +72,7 @@ def nodalSum(val, elems, work, avg):
 
     The summation is done inplace, so there is no return value!
     """
+    raise ImportError("The nodalSum function in the emulation library is missing!")
     nodes = np.unique(elems)
     for i in nodes:
         wi = where(elems==i)

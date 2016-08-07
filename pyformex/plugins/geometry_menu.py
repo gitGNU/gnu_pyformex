@@ -88,7 +88,7 @@ def autoName(clas):
 
 ##################### selection of objects ##########################
 
-# We put these in an init function to allow --testmodule to run without GUI
+# We put these in an init function to allow --doctest to run without GUI
 
 def _init_():
     global selection
