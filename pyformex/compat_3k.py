@@ -67,6 +67,7 @@ def userInput(*args,**kargs):
     return input(*args,**kargs)
 
 
+# Print a string only in Python3
 print3 = print
 
 

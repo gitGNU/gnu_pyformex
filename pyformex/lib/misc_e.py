@@ -29,7 +29,6 @@ external functions in the compiled library.
 """
 from __future__ import print_function
 
-
 # There should be no other imports here than numpy and pyformex
 import pyformex as pf
 import numpy as np
@@ -61,7 +60,7 @@ def _fuse(x, val, flag, sel, tol):
             nexti += 1
 
 
-def nodalSum(val, elems, work, avg):
+def nodalSum(val, elems, work, avg, return_all=False):
     """Compute the nodal sum of values defined on elements.
 
     val   : (nelems,nplex,nval) values at points of elements.
@@ -73,6 +72,7 @@ def nodalSum(val, elems, work, avg):
 
     The summation is done inplace, so there is no return value!
     """
+    raise ImportError("The nodalSum function in the emulation library is missing!")
     nodes = np.unique(elems)
     for i in nodes:
         wi = where(elems==i)
@@ -116,8 +116,6 @@ def splitSquare(pos, val, level):
     """Split a single square
 
     """
-    from pyformex.lib.misc import vertexinterp
-
     pos = pos.astype(np.float32)
 
     # Determine the index into the edge table which

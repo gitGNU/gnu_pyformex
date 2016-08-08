@@ -29,16 +29,12 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import utils, olist, simple, geomtools
-from pyformex.lib.drawgl import glColor
+from pyformex.lib.drawgl_e import glColor
+from pyformex.lib import drawgl
 from pyformex.formex import *
 from pyformex.opengl.colors import *
 
 from OpenGL import GL, GLU
-
-
-import sys
-if sys.hexversion >= 0x03000000:
-    print("DRAWGL MODULE IS %s" % drawgl)
 
 
 def glObjType(nplex):

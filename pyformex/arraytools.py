@@ -31,42 +31,16 @@ array model.
 from __future__ import print_function
 from pyformex import zip
 
+
 import numpy as np
 from numpy import *
 
-import sys
-if sys.hexversion >= 0x02060000:
-    # We have combinations and permutations built in
-    from itertools import combinations, permutations
-else:
-    from pyformex.backports import combinations, permutations
-
-
-# Define a wrapper function for old versions of numpy
-
-try:
-    unique([1], True)
-except TypeError:
-    from numpy import unique1d as unique
-
-if unique([1], True)[0][0] == 0:
-    # We have the old numy version
-    from pyformex import utils   # We are early on startup: utils not loaded yet
-    utils.warn("warn_old_numpy")
-
-    def unique(a,return_indices=False):
-        """Replacement for numpy's unique1d"""
-        import numpy
-        if return_indices:
-            indices, uniq = numpy.unique1d(a, True)
-            return uniq, indices
-        else:
-            return numpy.unique1d(a)
+from itertools import combinations, permutations
 
 
 # default float and int types
-Float = float32
-Int = int32
+Float = np.float32
+Int = np.int32
 
 
 def isInt(obj):
@@ -76,7 +50,7 @@ def isInt(obj):
     The type of the object can be either a Python int or a
     numpy integer type.
     """
-    return isinstance(obj, (int, integer))
+    return isinstance(obj, (int, np.integer))
 
 
 def isFloat(obj):
@@ -86,7 +60,7 @@ def isFloat(obj):
     The type of the object can be either a Python float or a
     numpy floating type.
     """
-    return isinstance(obj, (float, floating))
+    return isinstance(obj, (float, np.floating))
 
 
 def isNum(obj):
@@ -241,7 +215,7 @@ def niceLogSize(f):
     return int(ceil(log10(abs(f))))
 
 
-def niceNumber(f,round=ceil):
+def niceNumber(f,round=np.ceil):
     """Return a nice number close to abs(f).
 
     Parameters:
@@ -257,10 +231,10 @@ def niceNumber(f,round=ceil):
     >>> numbers = [ 0.0837, 0.867, 8.5, 83.7, 93.7]
     >>> [ str(niceNumber(f)) for f in numbers ]
     ['0.09', '0.9', '9.0', '90.0', '100.0']
-    >>> [ str(niceNumber(f,round=floor)) for f in numbers ]
+    >>> [ str(niceNumber(f,round=np.floor)) for f in numbers ]
     ['0.08', '0.8', '8.0', '80.0', '90.0']
-    >>> [ str(niceNumber(f,round=round)) for f in numbers ]
-    ['0.08', '0.9', '9.0', '80.0', '90.0']
+    >>> [ str(niceNumber(f,round=np.round)) for f in numbers ]
+    ['0.08', '0.9', '8.0', '80.0', '90.0']
     """
     fa = abs(f)
     s = "%.1e" % fa

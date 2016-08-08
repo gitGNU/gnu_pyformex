@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/bin/sh
 # $Id$
 ##
 ##  This file is part of pyFormex 1.0.2  (Thu Jun 18 15:35:31 CEST 2015)
@@ -22,48 +22,47 @@
 ##  You should have received a copy of the GNU General Public License
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
-"""pyFormex, a free program for creating and manipulating 3D geometry.
 
-pyFormex is a powerful tool for generating, manipulating, transforming and
-displaying large structural models of 3D geometry.
-Based on a powerful scripting language, pyFormex is exceptionally suited for
-generating parametric models and for the automization of tedious and recurring
-tasks in the handling of geometrical models.
-Built around a fully open architecture pyFormex allows the user to combine the
-program with nearly any other software and to extend the program to suit his
-own needs.
+#
+# pyFormex startup script
+#
+# This scripts allows (and strips) the options:   [ -D ]   [ -2 | -3 ]
+# -D: switch on debugging info for this script
+# -2 | -3: force Python2 or Python3 command interpreter
+# All remaining command line argument are passed to pyFormex.
+#
 
-pyFormex is being developed at the IBiTech, Ghent University, and can be
-distributed under the GNU General Public License, version 3 or later.
-(C) 2004-2012 Benedict Verhegghe (benedict.verhegghe@ugent.be))
-"""
+if [ "$1" = "-D" ]; then
+    ECHO="echo"
+    shift
+else
+    ECHO=":"  # do nothing
+fi
 
-# Get the pyformex dir and put it on the head of sys.path
-# This has to be done *before* importing pyformex, so it
-# can only be done here.
+script=$(readlink -f $0)
+$ECHO "pyFormex start script: $script"
 
-import sys,os
-_bindir = sys.path[0]
+if [ "$1" = "-2" ]; then
+    PYVER=2
+    shift
+elif [ "$1" = "-3" ]; then
+    PYVER=3
+    shift
+else
+    PYVER=
+fi
 
-# In case we execute the pyformex script from inside the
-# pyformex package dir: add the parent to the front of sys.path
-# to pick up the package here instead of from default path
+python="python$PYVER"
+$ECHO "Python interpreter: $python"
 
-if _bindir.endswith('pyformex'):
-    sys.path[0] = os.path.dirname(_bindir)
+startup=$(dirname $script)/startup.py
 
-try:
-    import pyformex
-except:
-    print("Could not import pyformex.")
-    print("This probably means that pyFormex was not properly installed.")
-    raise
+if [ "$ECHO" = "echo" ]; then
+    printf "Executing command: exec $python $startup "
+    printf '"%b" ' "$@"
+    printf '\n'
+fi
 
-# Remember where we got started: save the _bindir inside pyformex
-pyformex.bindir = _bindir
-
-if __name__ == "__main__":
-    from pyformex import main
-    sys.exit(main.run(sys.argv[1:]))
+exec $python $startup "$@"
 
 # End

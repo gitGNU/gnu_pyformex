@@ -171,13 +171,8 @@ def OpenGLFormat(fmt=None):
     if fmt is None:
         fmt = opengl_format
     flags = fmt.openGLVersionFlags()
-    s = [ "OpenGL: %s" % fmt.hasOpenGL() ]
-    try:
-        s.append("OpenGl Version: %s.%s (%x)" % (fmt.majorVersion(), fmt.minorVersion(), flags))
-    except:
-        s.append("OpenGL Version: %0x" % flags)
-        pass
-    s.extend([
+    s = [ "OpenGL: %s" % fmt.hasOpenGL(),
+        "OpenGl Version: %s.%s (%x)" % (fmt.majorVersion(), fmt.minorVersion(), int(flags)),
         "OpenGLOverlays: %s" % fmt.hasOpenGLOverlays(),
         "Double Buffer: %s" % fmt.doubleBuffer(),
         "Depth Buffer: %s" % fmt.depth(),
@@ -191,7 +186,7 @@ def OpenGLFormat(fmt=None):
         "Plane: %s" % fmt.plane(),
         "Multisample Buffers: %s" % fmt.sampleBuffers(),
         ''
-        ])
+        ]
     s.append("\nSupported OpenGL versions:")
     for k, v in OpenGLSupportedVersions(flags):
         s.append("  %s: %s" % (k, v))

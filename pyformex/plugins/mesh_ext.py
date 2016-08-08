@@ -40,27 +40,27 @@ linearElements = [_default_eltype[k].name() for k in _default_eltype] # ['line2'
 
 def elNameLinear(elname):
     """Return the linear element name
-    
+
     E.g. quad8 -> quad4
     """
     i = [elname[:3] == l[:3] for l in linearElements]
     i = where(i)[0][0]
-    return linearElements[i]     
-    
+    return linearElements[i]
+
 def isLinear(self):
     """Return True if the element is a linear element"""
     return self.elName() in linearElements
 
 def convertToLinear(self,fuse=False):
     """Return the linear conversion of the mesh
-    
+
     E.g. if self.elName is quad8 the mesh is converted to quad4
     """
     return self.convert(totype=elNameLinear(self.elName()),fuse=fuse)
 
 def subdivideLinear(self,ndiv,fuse=True):
     """Linear subdivision
-    
+
     A supra-linear mesh is first converted to linear mesh, then subdivided and converted back.
     """
     if isLinear(self):
@@ -77,12 +77,12 @@ def subdivideIsopar(self, ndiv,totype=None,fuse=True):
     A supra-linear mesh is subdivided using the isoparametric transformation.
     The returned mesh is linear if totype is None.
     totype should be the same shape: e.g. a quad cannot be subdivided with tri
-    
+
     The fuse is passed to all functions that have it.
     """
     if totype!=None:
         if elNameLinear(self.elName())!=elNameLinear(totype):
-            raise ValueError, 'you can only change element order in subdivideIsopar'
+            raise ValueError('you can only change element order in subdivideIsopar')
     if isLinear(self):
         M = self.subdivide(*ndiv,fuse=fuse)
         if totype!=None :

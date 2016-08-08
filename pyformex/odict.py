@@ -29,11 +29,7 @@
 """
 from __future__ import print_function
 
-try:
-    from collections import OrderedDict
-except:
-    from pyformex.backports import OrderedDict
-
+from collections import OrderedDict
 
 
 class DDict(dict):

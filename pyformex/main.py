@@ -220,7 +220,28 @@ def apply_config_changes(cfg):
             del cfg[key]
 
 
-def test_module(module):
+def pytest_module(path):
+    """Run the pytests in the specified path.
+
+    module is a pyFormex module dotted path. The leading pyformex.
+    may be omitted. numpy's floating point print precision is set to
+    two decimals, to allow consisten tests independent of machine precision.
+
+    pytest modules are stored in the same hierarchy as the pyformex source
+    modules, but in a parent directory test on the same level as the
+    pyformex directory
+
+    """
+    import pytest
+    # Note that a non-empty fromlist is needed to make the
+    # __import__ function always return the imported module
+    # even if a dotted path is specified
+    testpath = pf.cfg['testdir']
+    print(testpath)
+    pytest.main(testpath)
+
+
+def doctest_module(module):
     """Run the doctests in the module's docstrings.
 
     module is a pyFormex module dotted path. The leading pyformex.
@@ -287,164 +308,167 @@ def run(argv=[]):
 
     """
     # Process options
-    import optparse
-    from optparse import make_option as MO
-    option_list=[
+    import argparse
+    parser = argparse.ArgumentParser(
+        prog = pf.__prog__,
+#        usage = "%(prog)s [<options>] [ [ scriptname [scriptargs] ] ...]",
+        description = pf.Description,
+        epilog = "More info on http://pyformex.org",
+#        formatter = optparse.TitledHelpFormatter(),
+        )
+    MO = parser.add_argument
+    MO("--version",
+       action='version',version = pf.fullVersion())
     MO("--gui",
        action="store_true", dest="gui", default=None,
        help="Start the GUI (this is the default when no scriptname argument is given)",
-       ),
+       )
     MO("--nogui",
        action="store_false", dest="gui", default=None,
        help="Do not start the GUI (this is the default when a scriptname argument is given)",
-       ),
+       )
     MO("--nocanvas",
        action="store_false", dest="canvas", default=True,
        help="Do not add an OpenGL canvas to the GUI (this is for development purposes only!)",
-       ),
+       )
     MO("--interactive",
        action="store_true", dest="interactive", default=False,
        help="Go into interactive mode after processing the command line parameters. This is implied by the --gui option.",
-       ),
-    MO("--uselib",
-       action="store_true", dest="uselib", default=None,
+       )
+    MO("--uselib", action="store_true", dest="uselib", default=None,
        help="Use the pyFormex C lib if available. This is the default.",
-       ),
+       )
     MO("--nouselib",
        action="store_false", dest="uselib", default=None,
        help="Do not use the pyFormex C-lib.",
-       ),
+       )
     MO("--config",
        action="store", dest="config", default=None,
        help="Use file CONFIG for settings. This file is loaded in addition to the normal configuration files and overwrites their settings. Any changes will be saved to this file.",
-       ),
+       )
     MO("--nodefaultconfig",
        action="store_true", dest="nodefaultconfig", default=False,
        help="Skip the default site and user config files. This option can only be used in conjunction with the --config option.",
-       ),
+       )
     MO("--redirect",
        action="store_true", dest="redirect", default=None,
        help="Redirect standard output to the message board (ignored with --nogui)",
-       ),
+       )
     MO("--noredirect",
        action="store_false", dest="redirect",
        help="Do not redirect standard output to the message board.",
-       ),
+       )
     MO("--debug",
        action="store", dest="debug", default='',
        help="Display debugging information to sys.stdout. The value is a comma-separated list of (case-insensitive) strings corresponding with the attributes of the DebugLevels class. The individual values are OR-ed together to produce a final debug value. The special value 'all' can be used to switch on all debug info.",
-       ),
+       )
     MO("--debuglevel",
-       action="store", dest="debuglevel", type="int", default=0,
+       action="store", dest="debuglevel", type=int, default=0,
        help="Display debugging info to sys.stdout. The value is an int with the bits of the requested debug levels set. A value of -1 switches on all debug info. If this option is used, it overrides the --debug option.",
-       ),
+       )
     ## MO("--gl1",
     ##    action="store_false", dest="opengl2", default=True,
     ##    help="Obsolete. Silently ignored.",
-    ##    ),
+    ##    )
     ## MO("--gl2",
     ##    action="store_true", dest="opengl2", default=True,
     ##    help="Obsolete. Silently ignored.",
-    ##    ),
+    ##    )
     MO("--mesa",
        action="store_true", dest="mesa", default=False,
        help="Force the use of software 3D rendering through the mesa libs. The default is to use hardware accelerated rendering whenever possible. This flag can be useful when running pyFormex remotely on another host. The hardware accelerated version will not work over remote X.",
-       ),
+       )
     MO("--dri",
        action="store_true", dest="dri", default=None,
        help="Use Direct Rendering Infrastructure. By default, direct rendering will be used if available.",
-       ),
+       )
     MO("--nodri",
        action="store_false", dest="dri", default=None,
        help="Do not use the Direct Rendering Infrastructure. This may be used to turn off the direc rendering, e.g. to allow better capturing of images and movies.",
-       ),
+       )
     MO("--opengl",
        action="store", dest="opengl", default='2.0',
        help="Force the usage of an OpenGL version. The version should be specified as a string 'a.b'. The default is 2.0",
-       ),
+       )
     MO("--shader",
        action="store", dest="shader", default='',
        help="An extra string to add into the name of the shader programs, located in pyformex/data. The value will be added in before the '.c' extension.",
-       ),
+       )
     MO("--newviewports",
        action="store_true", dest="newviewports", default=False,
        help="Use the new multiple viewport canvas implementation. This is an experimental feature only intended for developers.",
-       ),
+       )
     MO("--testcamera",
        action="store_true", dest="testcamera", default=False,
        help="Print camera settings whenever they change.",
-       ),
+       )
     MO("--memtrack",
        action="store_true", dest="memtrack", default=False,
        help="Track memory for leaks. This is only for developers.",
-       ),
+       )
     MO("--fastnurbs",
        action="store_true", dest="fastnurbs", default=False,
        help="Test C library nurbs drawing: only for developers!",
-       ),
+       )
     MO("--pyside",
        action="store_true", dest="pyside", default=None,
        help="Use the PySide bindings for QT4 libraries",
-       ),
+       )
     MO("--pyqt4",
        action="store_false", dest="pyside", default=None,
        help="Use the PyQt4 bindings for QT4 libraries",
-       ),
+       )
     MO("--oldabq",
        action="store_true", dest="oldabq", default=False,
        help="Use the old fe_abq (from 1.0.0) interface. Default is to use the new one.",
-       ),
+       )
     MO("--unicode",
        action="store_true", dest="unicode", default=False,
        help="Allow unicode filenames. Beware: this is experimental!",
-       ),
+       )
+    MO("args",
+       action="store",  nargs='*',  metavar='FILE',
+       help="pyFormex script files to be executed on startup",
+       )
     MO("--listfiles",
        action="store_true", dest="listfiles", default=False,
        help="List the pyFormex Python source files and exit.",
-       ),
+       )
     MO("--listmodules",
-       action="store", dest="listmodules", default=None,
+       action="append", dest="listmodules", default=None,
        help="List the pyFormex Python modules in the specified subpackage and exit. The default is to list all. Specify 'core' to just list the modules not in any subpackage.",
-       ),
+       )
     MO("--search",
        action="store_true", dest="search", default=False,
        help="Search the pyformex source for a specified pattern and exit. This can optionally be followed by -- followed by options for the grep command and/or '-a' to search all files in the extended search path. The final argument is the pattern to search. '-e' before the pattern will interprete this as an extended regular expression. '-l' option only lists the names of the matching files.",
-       ),
+       )
     MO("--remove",
        action="store_true", dest="remove", default=False,
        help="Remove the pyFormex installation and exit. This option only works when pyFormex was installed from a tarball release using the supplied install procedure. If you install from a distribution package (e.g. Debian), you should use your distribution's package tools to remove pyFormex. If you run pyFormex directly from SVN sources, you should just remove the whole checked out source tree.",
-       ),
+       )
     MO("--whereami",
        action="store_true", dest="whereami", default=False,
        help="Show where the pyformex package is installed and exit.",
-       ),
+       )
     MO("--detect",
        action="store_true", dest="detect", default=False,
        help="Show detected helper software and exit.",
-       ),
-    MO("--testmodule",
-       action="store", dest="testmodule", default=None,
-       help="Run the docstring tests for module TESTMODULE and exit. TESTMODULE is the name of a pyFormex module (Python syntax).",
-       ),
+       )
+    MO("--doctest",
+       action="store", dest="doctest", default=None, metavar='MODULE', nargs='*',
+       help="Run the docstring tests for the specified pyFormex modules and exit. MODULE name is specified in Python syntax, relative to pyformex package (e.g. coords, plugins.curve).",
+       )
+    MO("--pytest",
+       action="store", dest="pytest", default=None, metavar='MODULE', nargs='*',
+       help="Run the pytest tests for the specified pyFormex modules and exit. MODULE name is specified in Python syntax, relative to pyformex package (e.g. coords, plugins.curve).",
+       )
     MO("--docmodule",
-       action="store", dest="docmodule", default=None,
-       help="Print the autogenerated documentation for module DOCMODULE and exit. This is mostly useful during the generation of the pyFormex reference manual, as the produced result still needs to be run through the Sphinx documentation generator. DOCMODULE is the name of a pyFormex module (Python syntax).",
-       ),
-    ]
+       action="store", dest="docmodule", default=None, metavar='MODULE', nargs='*',
+       help="Print the autogenerated documentation for module MODULE and exit. This is mostly useful during the generation of the pyFormex reference manual, as the produced result still needs to be run through the Sphinx documentation generator. MODULE is the name of a pyFormex module (Python syntax).",
+       )
 
-    parser = optparse.OptionParser(
-        usage = "usage: %prog [<options>] [ [ scriptname [scriptargs] ] ...]",
-        version = pf.fullVersion(),
-        description = pf.Description,
-        formatter = optparse.TitledHelpFormatter(),
-        option_list=option_list)
-    del option_list
-
-
-    pf.options, args = parser.parse_args(argv)
-    ## print(pf.options)
-    ## print(args)
-    ## sys.exit()
+    pf.options = parser.parse_args(argv)
+    args = pf.options.args
     pf.print_help = parser.print_help
 
     # Set debug level
@@ -480,13 +504,24 @@ def run(argv=[]):
 
     ########## Process special options which do not start pyFormex #######
 
-    if pf.options.testmodule:
-        for a in pf.options.testmodule.split(','):
-            test_module(a)
+    if pf.options.doctest is not None:
+        for a in pf.options.doctest:
+            doctest_module(a)
         return
 
-    if pf.options.docmodule:
-        for a in pf.options.docmodule.split(','):
+    if pf.options.pytest is not None:
+        print("Running pytests for %s" % pf.options.pytest)
+        if not pf.options.pytest:
+            print
+            pf.options.pytest = [pf.cfg['testdir']]
+        for a in pf.options.pytest:
+            print(a)
+            pytest_module(a)
+
+        return
+
+    if pf.options.docmodule is not None:
+        for a in pf.options.docmodule:
             doc_module(a)
         return
 
@@ -633,10 +668,12 @@ def run(argv=[]):
         return
 
     if pf.options.listmodules:
-        files = utils.moduleList(pf.options.listmodules)
-        print('\n'.join(files))
+        for subpkg in pf.options.listmodules:
+            files = utils.moduleList(subpkg)
+            print('\n'.join(files))
         return
 
+    # Start normal pyformex program (gui or nogui)
 
     # process options that override the config
 
@@ -665,7 +702,7 @@ def run(argv=[]):
     pf.print3("Trying to import the libraries")
     pf.print3(sys.path)
     from pyformex import lib
-    
+
     # If we run from a checked out source repository, we should
     # run the source_clean procedure.
     if pf.installtype in 'SG':

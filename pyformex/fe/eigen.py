@@ -57,6 +57,7 @@ Available functions for solving eigenproblems:
 - lanczos: for large generalized problems
 
 """
+from __future__ import print_function
 
 # Notes with subspace:
 # - size of vector space:  min (2p, p+8) is p eigenvectors required
@@ -96,7 +97,7 @@ def lu_decomp(A,ptol=1.e-20):
     for i in arange(0,n):
         pivot = A[i,i]
         if abs(pivot) < ptol:
-            print 'zero pivot encountered'
+            print('zero pivot encountered')
             break
         for k in arange(i+1,n):
             A[k,i] = A[k,i]/pivot

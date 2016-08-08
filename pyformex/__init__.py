@@ -33,6 +33,7 @@ from __future__ import print_function
 import os, sys
 import time, datetime
 
+__prog__ = "pyformex"
 __version__ = "1.0.2-a6"
 __revision__ = __version__
 
@@ -49,7 +50,8 @@ startup_warnings = ''  # may be overridden in compat_?k below
 #########  Check Python version #############
 
 # intended Python version
-minimal_version = 0x02060000
+# Dropping support for pre 2.7 will help migration to 3.x
+minimal_version = 0x02070000
 target_version = 0x02070000
 future_version = 0x03000000
 

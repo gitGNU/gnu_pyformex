@@ -823,7 +823,7 @@ def fmtShellSection(section, setname):
     out = cmd.out
 
     if section.transverseshearstiffness is not None:
-        out += Command('TRANSVERSE SHEAR STIFFNESS',data=[section.transverseshearstiffness]).out
+        out += Command('TRANSVERSE SHEAR STIFFNESS',data=section.transverseshearstiffness).out
 
     return out
 
@@ -891,7 +891,7 @@ def fmtBeamSection(section, setname):
     out = cmd.out
 
     if section.transverseshearstiffness is not None:
-        out += Command('TRANSVERSE SHEAR STIFFNESS',data=[section.transverseshearstiffness]).out
+        out += Command('TRANSVERSE SHEAR STIFFNESS',data=section.transverseshearstiffness).out
 
     return out
 

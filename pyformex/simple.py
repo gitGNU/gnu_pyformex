@@ -33,6 +33,7 @@ from pyformex import zip
 
 from pyformex.formex import *
 from pyformex import arraytools as at
+import numpy as np
 
 # A collection of Formex string input patterns to construct some simple
 # geometrical shapes
@@ -211,7 +212,7 @@ def circle(a1=2., a2=0., a3=360., r=None, n=None, c=None, eltype='line2'):
     """
     if a2 == 0.0:
         a2 = a1
-    ns = int(round(a3/a2))
+    ns = int(np.round(a3/a2))
     a1 *= pi/180.
     if eltype=='line2':
         F = Formex([[[1., 0., 0.], [cos(a1), sin(a1), 0.]]]).rosette(ns, a2, axis=2, point=[0., 0., 0.])

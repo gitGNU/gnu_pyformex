@@ -31,7 +31,7 @@ import pyformex as pf
 
 import os, sys
 from pyformex.gui import draw
-from pyformex import utils
+from pyformex import utils,software
 import random
 from pyformex.gui import viewport
 from gettext import gettext as _
@@ -86,7 +86,7 @@ def opengl():
 
 def detected():
     """Display the detected software components."""
-    draw.showText(utils.reportSoftware(header="Detected Software"))
+    draw.showText(software.reportSoftware(header="Detected Software"))
 
 def about():
     """Display short information about pyFormex."""

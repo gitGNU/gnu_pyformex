@@ -48,7 +48,7 @@ def defaultShaders():
     vendor = glversion['vendor']
     renderer = glversion['renderer']
     version = glversion['version']
-    vmajor,vminor = glversion['version'].split('.')[:2]
+    vmajor,vminor = version.split('.')[:2]
     fmt = viewport.opengl_format
     major,minor = fmt.majorVersion(), fmt.minorVersion()
     availversion = "%s.%s" % (vmajor,vminor)

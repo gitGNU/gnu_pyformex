@@ -53,8 +53,8 @@ known_modules = {
     'gdcm': ('', '', 'GDCM_VERSION'),
     'gl2ps': ('', '', 'GL2PS_VERSION'),
     'gnuplot': ('Gnuplot',),
-    'ipython': ('IPython',),
-    'ipython-qt': ('IPython.frontend.qt',),
+#    'ipython': ('IPython',),
+#    'ipython-qt': ('IPython.frontend.qt',),
     'matplotlib': (),
     'numpy': (),
     'pil': ('PIL', 'PIL', 'VERSION'),
@@ -91,6 +91,14 @@ known_externals = {
     'units': ('units --version', 'GNU Units version (\S+)'),
     'vmtk': ('vmtk --help', 'Usage(:)\s+vmtk.*'),
     }
+
+
+if sys.hexversion >= 0x03000000:
+    # Some detect commands fail on Python3
+    del known_externals['calculix']
+    del known_externals['postabq']
+    del known_externals['recordmydesktop']
+    del known_externals['vmtk']
 
 # versions of detected modules
 the_version = {

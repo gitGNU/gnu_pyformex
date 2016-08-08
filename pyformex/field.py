@@ -110,6 +110,7 @@ class Field(object):
 
     Example:
 
+    >>> from pyformex.formex import Formex
     >>> M = Formex('4:0123').replic(2).toMesh()
     >>> print(M.coords)
     [[ 0.  0.  0.]

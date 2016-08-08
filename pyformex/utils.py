@@ -1052,7 +1052,7 @@ def diskSpace(path,units=None,ndigits=2):
     return total, used, avail
 
 
-def humanSize(size,units,ndigits=None):
+def humanSize(size,units,ndigits=-1):
     """Convert a number to a human size.
 
     Large numbers are often represented in a more human readable
@@ -1066,8 +1066,8 @@ def humanSize(size,units,ndigits=None):
       be one of k,K,M,G,T,P,E,Z,Y. 'k' and 'K' are equivalent. A second
       character 'i' can be added to use binary (K=1024) prefixes instead of
       decimal (k=1000).
-    - `ndigits`: integer. If specified, the result is rounded to
-      the specified number of digits.
+    - `ndigits`: integer. If >= 0, the result is rounded to
+      the specified number of decimal digits.
 
     Returns: a float value rounded to `ndigits` digits.
 
@@ -1115,7 +1115,7 @@ def tempName(*args,**kargs):
     Example:
 
     >>> tmp = tempName('.txt')
-    >>> open(tmp,'w').write('hallo')
+    >>> s = open(tmp,'w').write('hallo')
     >>> s = open(tmp,'r').read()
     >>> os.remove(tmp)
     >>> print(s)
@@ -1610,27 +1610,6 @@ def getDocString(scriptfile):
     return ''
 
 
-def numsplit(s):
-    """Split a string in numerical and non-numerical parts.
-
-    Returns a series of substrings of s. The odd items do not contain
-    any digits. Joined together, the substrings restore the original.
-    The even items only contain digits.
-    The number of items is always odd: if the string ends or starts with a
-    digit, the first or last item is an empty string.
-
-    Example:
-
-    >>> print(numsplit("aa11.22bb"))
-    ['aa', '11', '.', '22', 'bb']
-    >>> print(numsplit("11.22bb"))
-    ['', '11', '.', '22', 'bb']
-    >>> print(numsplit("aa11.22"))
-    ['aa', '11', '.', '22', '']
-    """
-    return RE_digits.split(s)
-
-
 def hsorted(l):
     """Sort a list of strings in human order.
 
@@ -1648,6 +1627,28 @@ def hsorted(l):
         s = RE_digits.split(s)+['0']
         return list(zip(s[0::2], [int(i) for i in s[1::2]]))
     return sorted(l, key=human)
+
+
+def numsplit(s):
+    """Split a string in numerical and non-numerical parts.
+
+    Returns a series of substrings of s. The odd items do not contain
+    any digits. The even items only contain digits.
+    Joined together, the substrings restore the original.
+
+    The number of items is always odd: if the string ends or starts with a
+    digit, the first or last item is an empty string.
+
+    Example:
+
+    >>> print(numsplit("aa11.22bb"))
+    ['aa', '11', '.', '22', 'bb']
+    >>> print(numsplit("11.22bb"))
+    ['', '11', '.', '22', 'bb']
+    >>> print(numsplit("aa11.22"))
+    ['aa', '11', '.', '22', '']
+    """
+    return RE_digits.split(s)
 
 
 def splitDigits(s,pos=-1):

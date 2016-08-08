@@ -393,10 +393,12 @@ def draw(F,
         if view not in [None, 'cur'] or bbox not in [None, 'last']:
             if view == 'last':
                 view = pf.canvas.drawoptions['view']
-            if bbox == 'auto':
-                bbox = pf.canvas.scene.bbox
-            if bbox == 'last':
-                bbox = None
+            # bbox can be an ndarray, for which '==' would fail
+            if isinstance(bbox,str):
+                if bbox == 'auto':
+                    bbox = pf.canvas.scene.bbox
+                elif bbox == 'last':
+                    bbox = None
 
             pf.canvas.setCamera(bbox, view)
 

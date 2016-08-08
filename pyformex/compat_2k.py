@@ -45,6 +45,7 @@ def userInput(*args,**kargs):
     return raw_input(*args,**kargs)
 
 
+# Print a string only in Python3
 def print3(s):
     pass
 

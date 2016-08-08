@@ -1695,18 +1695,20 @@ Most likely because 'python-scipy' is not installed on your system.""")
             X.insert(0,Coords.concatenate(points))
             # Save left part
             points = L.tolist()
-            k = j
+            k = j    
+            
+        if j >0:
+            points = self.part(0,j).tolist()[:-1]+points
         X.insert(0,Coords.concatenate(points))
+        
         if split:
             return [ BezierSpline(control=x, degree=self.degree, closed=False) for x in X ]
         else:
-            print(X)
             X = Coords.concatenate([X[0]] + [xi[1:] for xi in X[1:]])
-            print(X)
             return BezierSpline(control=X, degree=self.degree, closed=self.closed)
 
 
-    def splitAt(self,t,concat=False):
+    def splitAt(self,t):
         """Split a BezierSpline at parametric values.
 
         Parameters:
@@ -1717,12 +1719,6 @@ Most likely because 'python-scipy' is not installed on your system.""")
           and the decimal part goes from 0 to 1 over the segment.
 
           * Currently there can only be one new point in each segment *
-
-        - `split`: bool: if True, the curve will be split at the newly
-          inserted points, and a list of len(t)+1 open curves will be
-          returned. The default is to return a single curve equivalent
-          with the input, but with more points on the curve (and the
-          corresponding off-curve control points).
 
         Returns a list of len(t)+1 open BezierSplines of the same degree
         as the input.

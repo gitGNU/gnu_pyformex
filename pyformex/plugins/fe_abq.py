@@ -31,8 +31,7 @@ except:
     oldabq = False
 
 if oldabq:
-    from fe_abq_old import *
+    from .fe_abq_old import *
 
 else:
-    from fe_abq_new import *
-
+    from .fe_abq_new import *

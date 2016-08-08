@@ -45,6 +45,8 @@ from pyformex.plugins.curve import BezierSpline
 from pyformex.examples.NurbsCurveExamples import drawNurbs, nurbs_book_examples, createNurbs
 from pyformex import simple
 
+from pyformex.lib import nurbs
+
 
 def showCurve(reverse=False):
     """Select and show a Nurbs curve."""
@@ -61,8 +63,8 @@ def showCurve(reverse=False):
     if reverse:
         N = N.reverse()
     print(N)
-    drawNurbs(N,linewidth=1,color=blue,knotsize=5)
-    zoomAll()
+    drawNurbs(N,color=blue,knotsize=5)
+
 
 
 def showReverse():
@@ -78,7 +80,7 @@ def insertKnot():
     u = eval('[%s]' % res['u'])
     N = N.insertKnots(u)
     print(N)
-    drawNurbs(N,linewidth=5,color=red,knotsize=5)
+    drawNurbs(N,color=red,knotsize=5)
     zoomAll()
 
 
@@ -93,7 +95,7 @@ def removeKnot():
     tol = res['tol']
     N = N.removeKnot(ur,m,tol)
     print(N)
-    drawNurbs(N,linewidth=5,color=blue,knotsize=5)
+    drawNurbs(N,color=blue,knotsize=5)
     zoomAll()
 
 
@@ -106,7 +108,7 @@ def removeAllKnots():
     tol = res['tol']
     N = N.removeAllKnots(tol=tol)
     print(N)
-    drawNurbs(N,linewidth=5,color=blue,knotsize=5)
+    drawNurbs(N,color=blue)
     zoomAll()
 
 
@@ -124,7 +126,7 @@ def elevateDegree():
     else:
         return
     print(N)
-    drawNurbs(N,clear=False,color=cyan,linewidth=5)
+    draw(N,color=cyan,linewidth=3)
     zoomAll()
 
 
@@ -143,6 +145,19 @@ def decompose():
         print(Ci)
         Ci.setProp(i)
         draw(Ci,color=i,linewidth=5)
+
+
+def unclamp():
+    """(Un)Clamp the curve N"""
+    global N,C,dia
+
+    if N.isClamped():
+        N = N.unclamp()
+    else:
+        N = N.clamp()
+    print(N)
+    drawNurbs(N,color=red,linewidth=3,clear=False)
+
 
 
 def projectPoints():
@@ -192,12 +207,11 @@ def run():
         dia.close()
     dia = Dialog([
             _G('Curve Selection',[
-                _I('curv', 'default', choices=['ex%s' % k for k in sorted(nurbs_book_examples.keys())],
+                _I('curv', 'default', choices=utils.hsorted(nurbs_book_examples.keys()),
                    buttons=[('Show Curve',showCurve),('Show Reverse',showReverse)]),
             ]),
             _G('Knot Insertion',[
-                _I('u', 0.5, text='Knot value(s) to insert',tooltip='A single value or a comma separated sequence',
-                   buttons=[('Insert Knot',insertKnot)]),
+                _I('u', 0.5, text='Knot value(s) to insert',                   buttons=[('Insert Knot',insertKnot)]),
             ]),
             _G('Knot Removal',[
                 _I('ur', 0.5, text='Knot value to remove'),
@@ -213,6 +227,8 @@ def run():
             ]),
         ], actions=[
             ('Close',close),
+            ('Decompose',decompose),
+            ('(Un)Clamp',unclamp),
             ('Decompose',decompose),
         ])
     dia.show()

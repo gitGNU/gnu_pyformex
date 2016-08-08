@@ -324,7 +324,7 @@ pubpdf:
 # Test all modules
 # Currently this tests only the core modules
 testall:
-	cd pyformex; for f in *.py; do pyformex --testmodule $${f%.py}; done
+	cd pyformex; for f in *.py; do pyformex --doctest $${f%.py}; done
 
 
 # End
