@@ -49,7 +49,7 @@ from __future__ import print_function
 from pyformex import zip
 
 from pyformex.plugins.properties import *
-from pyformex.plugins.fe import *
+from pyformex.plugins.fe import Model
 from pyformex.mydict import Dict, CDict
 import pyformex as pf
 from datetime import datetime

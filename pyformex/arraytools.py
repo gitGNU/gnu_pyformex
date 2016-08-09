@@ -206,7 +206,9 @@ def arctand2(sin,cos,angle_spec=DEG):
 def niceLogSize(f):
     """Return the smallest integer e such that 10**e > abs(f).
 
-    This returns the number of digits before the decimal point.
+    The returned number, if positive, is also the number of nonzero
+    digits before the decimal point.
+    If negative,it is the number of leading zeros after the decimal point.
 
     >>> print([ niceLogSize(a) for a in [1.3, 35679.23, 0.4, 0.00045676] ])
     [1, 5, 0, -3]

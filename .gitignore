@@ -34,5 +34,6 @@ dist/
 build/
 www/
 test/
+!pyformex/test/
 stats/_sloccount_
 fewgl/

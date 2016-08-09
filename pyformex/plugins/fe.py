@@ -30,10 +30,12 @@ from __future__ import print_function
 from pyformex import zip
 
 import pyformex as pf
-from pyformex.coords import *
-from pyformex.connectivity import *
+from pyformex import arraytools as at
+from pyformex.coords import Coords
+from pyformex.connectivity import Connectivity
 from pyformex.geometry import Geometry
 from pyformex.mesh import Mesh, mergeMeshes
+import numpy as np
 
 
 ######################## Finite Element Model ##########################
@@ -67,7 +69,7 @@ class Model(Geometry):
                 if M.prop is None:
                     M.setProp(0)
             self.coords, self.elems = mergeMeshes(meshes, fuse=fuse)
-            self.prop = concatenate([M.prop for M in meshes])
+            self.prop = np.concatenate([M.prop for M in meshes])
         else:
             if not isinstance(elems, list):
                 elems = [ elems ]
@@ -78,8 +80,8 @@ class Model(Geometry):
         nnodes = [ m.nnodes() for m in meshes ]
         nelems = [ m.nelems() for m in meshes ]
         nplex = [ m.nplex() for m in meshes ]
-        self.cnodes = cumsum([0]+nnodes)
-        self.celems = cumsum([0]+nelems)
+        self.cnodes = np.cumsum([0]+nnodes)
+        self.celems = np.cumsum([0]+nelems)
         print("Finite Element Model")
         print("Number of nodes: %s" % self.coords.shape[0])
         print("Number of elements: %s" % self.celems[-1])
@@ -134,7 +136,7 @@ class Model(Geometry):
     def elemNrs(self,group,elems=None):
         """Return the global element numbers for elements set in group"""
         if elems is None:
-            elems = arange(len(self.elems[group]))
+            elems = np.arange(len(self.elems[group]))
         return self.celems[group] + elems
 
 
@@ -175,25 +177,25 @@ class Model(Geometry):
         """
         nnodes = self.nnodes()
         if old is None and new is None:
-            old = unique(random.randint(0, nnodes-1, nnodes))
-            new = unique(random.randint(0, nnodes-1, nnodes))
+            old = np.unique(random.randint(0, nnodes-1, nnodes))
+            new = np.unique(random.randint(0, nnodes-1, nnodes))
             nn = max(old.size, new.size)
             old = old[:nn]
             new = new[:nn]
         elif old is None:
-            new = asarray(new).reshape(-1)
-            checkUniqueNumbers(new, 0, nnodes)
-            old = arange(new.size)
+            new = np.asarray(new).reshape(-1)
+            at.checkUniqueNumbers(new, 0, nnodes)
+            old = np.arange(new.size)
         elif new is None:
-            old = asarray(old).reshape(-1)
-            checkUniqueNumbers(old, 0, nnodes)
-            new = arange(old.size)
+            old = np.asarray(old).reshape(-1)
+            cat.heckUniqueNumbers(old, 0, nnodes)
+            new = np.arange(old.size)
 
-        all = arange(nnodes)
-        old = concatenate([old, setdiff1d(all, old)])
-        new = concatenate([new, setdiff1d(all, new)])
+        all = np.arange(nnodes)
+        old = np.concatenate([old, setdiff1d(all, old)])
+        new = np.concatenate([new, setdiff1d(all, new)])
         oldnew = old[new]
-        newold = argsort(oldnew)
+        newold = np.argsort(oldnew)
         self.coords = self.coords[oldnew]
         self.elems = [ Connectivity(newold[e], eltype=e.eltype) for e in self.elems ]
         return oldnew, newold
@@ -254,6 +256,7 @@ def mergedModel(meshes,**kargs):
     return Model(*mergeMeshes(meshes,**kargs))
 
 
+# TODO: rename to 'collectRowsByColumnValue' and move to arraytools
 def sortElemsByLoadedFace(ind):
     """Sort a set of face loaded elements by the loaded face local number
 

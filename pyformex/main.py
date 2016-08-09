@@ -220,25 +220,39 @@ def apply_config_changes(cfg):
             del cfg[key]
 
 
-def pytest_module(path):
-    """Run the pytests in the specified path.
+def run_pytest(modules):
+    """Run the pytests for the specified pyFormex modules.
 
-    module is a pyFormex module dotted path. The leading pyformex.
-    may be omitted. numpy's floating point print precision is set to
-    two decimals, to allow consisten tests independent of machine precision.
+    Parameters:
 
-    pytest modules are stored in the same hierarchy as the pyformex source
-    modules, but in a parent directory test on the same level as the
-    pyformex directory
+    - `modules`: a list of pyFormex modules in Python notation,
+      relative to the pyformex package. If an empty list is supplied,
+      all available pytests will be run.
+
+    Test modules are stored under the path `pf.cfg['testdir']`, with the
+    same hierarchy as the pyFormex source modules, and are named
+    `test_MODULE.py`, where MODULE is the corresponding source module.
 
     """
-    import pytest
-    # Note that a non-empty fromlist is needed to make the
-    # __import__ function always return the imported module
-    # even if a dotted path is specified
+    try:
+        import pytest
+    except:
+        print("Can not import pytest")
+        pass
     testpath = pf.cfg['testdir']
-    print(testpath)
-    pytest.main(testpath)
+    if not modules:
+        pytest.main(testpath)
+    else:
+        print("Running pytests for modules %s" % modules)
+        for m in modules:
+            path = m.split('.')
+            path[-1] = 'test_' + path[-1] + '.py'
+            path.insert(0,testpath)
+            path = '/'.join(path)
+            if os.path.exists(path):
+                pytest.main(path)
+            else:
+                print("No such test module: %s" % path)
 
 
 def doctest_module(module):
@@ -504,20 +518,13 @@ def run(argv=[]):
 
     ########## Process special options which do not start pyFormex #######
 
+    if pf.options.pytest is not None:
+        run_pytest(pf.options.pytest)
+        return
+
     if pf.options.doctest is not None:
         for a in pf.options.doctest:
             doctest_module(a)
-        return
-
-    if pf.options.pytest is not None:
-        print("Running pytests for %s" % pf.options.pytest)
-        if not pf.options.pytest:
-            print
-            pf.options.pytest = [pf.cfg['testdir']]
-        for a in pf.options.pytest:
-            print(a)
-            pytest_module(a)
-
         return
 
     if pf.options.docmodule is not None:
