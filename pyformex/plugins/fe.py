@@ -122,7 +122,7 @@ class Model(Geometry):
         Each item contains the element numbers from the given set that
         belong to the corresponding group.
         """
-        elems = unique(elems)
+        elems = np.unique(elems)
         split = []
         n = 0
         for e in self.celems[1:]:
@@ -130,7 +130,7 @@ class Model(Geometry):
             split.append(elems[n:i])
             n = i
 
-        return split, [ asarray(s) - ofs for s, ofs in zip(split, self.celems) ]
+        return split, [ np.asarray(s) - ofs for s, ofs in zip(split, self.celems) ]
 
 
     def elemNrs(self,group,elems=None):
