@@ -1212,21 +1212,22 @@ def fmtOrientation(prop):
     - a: a first point
     - b: a second point
     """
-    out = ''
+    out = '' 
     for p in prop:
-        out += "*ORIENTATION, NAME=%s" % (p.name)
+        cmd = ''
+        cmd += "ORIENTATION, NAME=%s" % (p.name)
         if p.definition is not None:
-            out += ", definition=%s" % p.definition
+            cmd += ", definition=%s" % p.definition
         if p.system is not None:
-            out += ", SYSTEM=%s" % p.system
-        out += "\n"
+            cmd += ", SYSTEM=%s" % p.system
         if p.a is not None:
             data = tuple(p.a)
             if p.b is not None:
                 data += tuple(p.b)
-            out += fmtData1d(data) + '\n'
         else:
-            raise ValueError("Orientation needs at least point a")
+            data=p.data
+        out += fmtKeyword(cmd,options=p.options, data=data, extra=p.extra)
+        
     return out
 
 
@@ -1880,11 +1881,11 @@ def writeDistribution(fil,prop):
     """
 
     nameTable = prop.name+'_TABLE' # automatically create a distribution table name
-    cmd = 'DISTRIBUTION TABLE, NAME=%s\n' %nameTable
+    cmd = 'DISTRIBUTION TABLE, NAME=%s' %nameTable
     fil.write(fmtKeyword(cmd,data=prop.format))
 
-    cmd = 'DISTRIBUTION, NAME=%s, LOCATION=%s, TABLE=%s\n'%(prop.distribution,prop.location,nameTable)
-    fil.write(fmtKeyword(cmd,prop.options,data=prop.table))
+    cmd = 'DISTRIBUTION, NAME=%s, LOCATION=%s, TABLE=%s'%(prop.name,prop.location,nameTable)
+    fil.write(fmtKeyword(cmd,options=prop.options,data=prop.table))
 
 #
 # TODO: should we remove option of specifying nonzero bound values?
