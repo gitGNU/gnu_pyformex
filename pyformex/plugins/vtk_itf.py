@@ -125,7 +125,7 @@ def SetInput(vtkobj,data):
 
 def Update(vtkobj):
     """ Select Update method according to the vtk version. After version 5
-    Update is not needed for vtkObjects, oinly to vtkFilter and vtkAlgortythm classes.
+    Update is not needed for vtkObjects, only to vtkFilter and vtkAlgortythm classes.
 
     Note that this applies only to vtkAlgorithm instances. In all other case
     the use of Update is kept. For this cases this function must not be used.
@@ -133,10 +133,8 @@ def Update(vtkobj):
 
     if vtk.VTK_MAJOR_VERSION <= 5:
         vtkobj.Update()
-    if vtk.VTK_MAJOR_VERSION >= 7 and isinstance(vtkobj, vtk.vtkAlgorithm):
+    if vtk.VTK_MAJOR_VERSION >= 6 and isinstance(vtkobj, vtk.vtkAlgorithm):
         vtkobj.Update()
-
-
     return vtkobj
 
 
@@ -675,7 +673,12 @@ def pointInsideObject(S,P,tol=0.):
     enclosed_pts = vtkSelectEnclosedPoints()
     enclosed_pts = SetInput(enclosed_pts,vpp)
     enclosed_pts.SetTolerance(tol)
-    enclosed_pts.SetSurface(vps)
+    # according to the documentation SetSurfaceData in VTK 7 is only
+    # used in vtkSelectEnclosedPoints. A general function is not needed
+    if vtk.VTK_MAJOR_VERSION <= 5:
+        enclosed_pts.SetSurface(vps)
+    if vtk.VTK_MAJOR_VERSION >= 6:
+        enclosed_pts.SetSurfaceData(vps)
     enclosed_pts.SetCheckSurface(1)
     enclosed_pts = Update(enclosed_pts)
     inside_arr = enclosed_pts.GetOutput().GetPointData().GetArray('SelectedPoints')
