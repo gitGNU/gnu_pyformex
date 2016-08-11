@@ -30,12 +30,13 @@ contents.
 Contents:
 
 :class:`Axes` : a class representing a coordinate system
-:class:`Horse`: a surface model of a horse
+:func:`Horse`: a surface model of a horse
 
 """
 from __future__ import print_function
 
 from pyformex.mesh import Mesh
+from pyformex.trisurface import TriSurface
 from pyformex.coordsys import CoordSys
 from pyformex.olist import List
 
@@ -98,6 +99,10 @@ class Axes(List):
 
         List.__init__(self,L)
 
+
+
+def Horse():
+    return TriSurface.read(getcfg('datadir')+'/horse.off')
 
 
 # End

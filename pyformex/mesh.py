@@ -2178,7 +2178,7 @@ The dir,length are in the same order as in the translate method.""" % (dir, leng
         if edg:
             externals = resize(False, self.ncoords())
             expoints = unique(self.getFreeEntities())
-            if len(expoints) != self.ncoords():
+            if len(expoints) not in [0,self.ncoords() ]:
                 externals[expoints] = True
                 a = adj[externals].ravel()
                 inpoints = delete(arange(self.ncoords()), expoints)

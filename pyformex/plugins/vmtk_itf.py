@@ -204,7 +204,7 @@ def distance2centerlines(S):
 
 
 def remesh(self,elementsizemode='edgelength',edgelength=None,
-           area=None, areaarray=None, aspectratio=None, excludeprop=None, includeprop=None, preserveboundary=False, conformal='border'):
+           area=None, areaarray=None, aspectratio=None, excludeprop=None, includeprop=None, preserveboundary=False, conformal='border',options=''):
     """Remesh a TriSurface.
 
     Returns the remeshed TriSurface. If the TriSurface has property numbers
@@ -293,6 +293,8 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
     if self.prop is not None:
         cmd += ' -entityidsarray prop'
     print("Writing temp file %s" % tmp)
+    cmd += ' %s'%options
+        
     writeVTP(mesh=self, fn=tmp, pointdata=pointdata)
     print("Remeshing with command\n %s" % cmd)
     P = utils.command(cmd)
