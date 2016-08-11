@@ -55,4 +55,29 @@ def test_Model_ngroups():
 def test_Model_mplex():
     assert M.mplex() == [2,3]
 
+def test_Model_splitElems():
+    glob,loc = M.splitElems([1,3,2])
+    assert (glob[0] == [1]).all()
+    assert (glob[1] == [2,3]).all()
+    assert (loc[0] == [1]).all()
+    assert (loc[1] == [0,1]).all()
+
+def test_elemNrs():
+    assert (M.elemNrs(1) == [2,3]).all()
+    assert (M.elemNrs(1,[1,0]) == [3,2]).all()
+
+def test_getElems():
+    g = M.getElems([[0,1],[1]])
+    assert len(g) == 2
+    assert g[0].shape == (2,2)
+    assert g[1].shape == (1,3)
+    assert (g[0] == [[0,1],[1,2]]).all()
+    assert (g[1] == [[1,2,3]]).all()
+
+
+print(__name__)
+if __name__ == "__script__":
+    test_getElems()
+
+
 # End

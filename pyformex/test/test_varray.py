@@ -22,9 +22,9 @@
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
 
-"""Unittests for the pyformex.varray module
+"""Unit tests for the pyformex.varray module
 
-These unittest are based on the pytest framework.
+These unit test are based on the pytest framework.
 
 """
 from __future__ import print_function
@@ -50,24 +50,6 @@ def test_Varray_init():
 def test_Varray_lengths():
     """Test lengths method of Varray"""
     assert (Va.lengths == [1,2,3,2]).all()
-
-
-    # @property
-    # def nrows(self):
-    #     """Return the number of rows in the Varray"""
-    #     return len(self.ind) - 1
-
-
-    # @property
-    # def size(self):
-    #     """Return the total number of elements in the Varray"""
-    #     return self.ind[-1]
-
-
-    # @property
-    # def shape(self):
-    #     """Return a tuple with the number of rows and maximum row length"""
-    #     return (self.nrows, self.width)
 
 
 # End

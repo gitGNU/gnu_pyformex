@@ -117,6 +117,10 @@ class Model(Geometry):
     def splitElems(self, elems):
         """Splits a set of element numbers over the element groups.
 
+        Parameters:
+
+        - `elems`: a list of element numbers in the range 0..self.nelems()
+
         Returns two lists of element sets, the first in global numbering,
         the second in group numbering.
         Each item contains the element numbers from the given set that
@@ -134,7 +138,16 @@ class Model(Geometry):
 
 
     def elemNrs(self,group,elems=None):
-        """Return the global element numbers for elements set in group"""
+        """Return the global element numbers for elements in group
+
+        Parameters:
+
+        - `group`: group number
+        - `elems`: list of local element numbers. If omitted, the list of all
+          the elements in that group is used.
+
+        Returns a list with corresponding global element numbers.
+        """
         if elems is None:
             elems = np.arange(len(self.elems[group]))
         return self.celems[group] + elems
@@ -151,9 +164,6 @@ class Model(Geometry):
         this function returns a list of element arrays matching
         the element groups in self.elems. Some of these arrays may
         be empty.
-
-        It also provide the global and group element numbers, since they
-        had to be calculated anyway.
         """
         return [ e[s] for e, s in zip(self.elems, sets) ]
 

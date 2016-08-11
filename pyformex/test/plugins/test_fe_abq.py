@@ -31,11 +31,22 @@ from __future__ import print_function
 import pyformex as pf
 import numpy as np
 from pyformex.plugins.fe_abq import *
+from pyformex.mydict import CDict
+
 
 
 def test_abqInputNames():
     assert abqInputNames('/aa/bb/job1') == ('job1','/aa/bb/job1.inp')
     assert abqInputNames('/aa/bb/job1.inp') == ('job1','/aa/bb/job1.inp')
     assert abqInputNames('/aa/bb/job1.in') == ('job1.in','/aa/bb/job1.in.inp')
+
+def test_nsetName():
+    assert nsetName(CDict()) == 'Nall'
+    assert nsetName(CDict({'name':'myname'})) == 'myname'
+
+def test_esetName():
+    assert esetName(CDict()) == 'Eall'
+    assert esetName(CDict({'name':'myname'})) == 'myname'
+
 
 # End
