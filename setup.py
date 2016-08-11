@@ -38,7 +38,7 @@ from distutils.core import setup, Extension
 from distutils import filelist
 from distutils.util import get_platform
 
-import os,sys,commands
+import os,sys
 
 # Detect platform
 pypy = hasattr(sys, 'pypy_version_info')
@@ -158,6 +158,7 @@ def run_setup(with_cext):
         'examples/apps.cat',
         'bin/*',
         'data/*',
+        'glsl/*',
         'extra/Makefile',
         'extra/*/*',
         ]
@@ -172,7 +173,7 @@ def run_setup(with_cext):
           description='program to create 3D geometry from Python scripts',
           long_description=long_description,
           author='Benedict Verhegghe',
-          author_email='benedict.verhegghe@ugent.be',
+          author_email='benedict.verhegghe@feops.com',
           url='http://pyformex.org',
           download_url='http://download.savannah.gnu.org/releases/pyformex/pyformex-%s.tar.gz' % __RELEASE__,
           license='GNU General Public License (GPL)',

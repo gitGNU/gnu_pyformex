@@ -40,6 +40,7 @@ else
 fi
 
 script=$(readlink -f $0)
+scriptdir=$(dirname $script)
 $ECHO "pyFormex start script: $script"
 
 if [ "$1" = "-2" ]; then
@@ -55,14 +56,17 @@ fi
 python="python$PYVER"
 $ECHO "Python interpreter: $python"
 
-startup=$(dirname $script)/startup.py
+[ -f "$scriptdir/startup.py" ] && {
+    PYTHONPATH="$scriptdir"
+    $ECHO "PYTHONPATH=$PYTHONPATH"
+}
 
 if [ "$ECHO" = "echo" ]; then
-    printf "Executing command: exec $python $startup "
+    printf "Executing command: exec $python -m pyformex.startup"
     printf '"%b" ' "$@"
     printf '\n'
 fi
 
-exec $python $startup "$@"
+exec $python -m pyformex.startup "$@"
 
 # End

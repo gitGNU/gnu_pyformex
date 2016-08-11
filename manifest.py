@@ -131,7 +131,6 @@ DATA_FILES = listTree(
         'blippok\.ttf',
         'butterfly\.png',
         'fewgl\.js',
-        'fragment_shader.*\.c',
         'hesperia-nieve\.prop',
         'horse\.off',
         'horse\.pgf',
@@ -140,12 +139,15 @@ DATA_FILES = listTree(
         'splines\.pgf',
         'supershape\.txt',
         'teapot\.off',
-        'vertex_shader.*\.c',
         'world\.jpg',
         'xtk_xdat\.gui\.js',
         ],
+    ) + listTree(
+    'pyformex/glsl',listdirs=False,sorted=True,
+    includefiles=[
+        '.*\.c',
+        ],
     )
-
 
 # scripts to install extra programs
 EXTRA_FILES = listTree(
