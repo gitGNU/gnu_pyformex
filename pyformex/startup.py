@@ -37,13 +37,16 @@ pyFormex is being developed at the IBiTech, Ghent University, and can be
 distributed under the GNU General Public License, version 3 or later.
 (C) 2004-2012 Benedict Verhegghe (benedict.verhegghe@ugent.be))
 """
+from __future__ import print_function
 
 # Get the pyformex dir and put it on the head of sys.path
 # This has to be done *before* importing pyformex, so it
 # can only be done here.
 
 import sys,os
+#print(sys.path)
 _bindir = sys.path[0]
+
 
 # In case we execute the pyformex script from inside the
 # pyformex package dir: add the parent to the front of sys.path
@@ -52,6 +55,9 @@ _bindir = sys.path[0]
 if _bindir.endswith('pyformex'):
     sys.path[0] = os.path.dirname(_bindir)
 
+#print("Final path:",sys.path)
+
+
 try:
     import pyformex
 except:
@@ -59,11 +65,11 @@ except:
     print("This probably means that pyFormex was not properly installed.")
     raise
 
-# Remember where we got started: save the _bindir inside pyformex
-pyformex.bindir = _bindir
+# Remember where we got started: save the executable inside pyformex
+pyformex.executable = sys.argv[1]
 
 if __name__ == "__main__":
     from pyformex import main
-    sys.exit(main.run(sys.argv[1:]))
+    sys.exit(main.run(sys.argv[2:]))
 
 # End

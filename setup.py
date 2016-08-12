@@ -27,6 +27,7 @@
 To install pyFormex: python setup.py install --prefix=/usr/local
 To uninstall pyFormex: pyformex --remove
 """
+from __future__ import print_function
 
 #from distutils.command.install import install as _install
 #from distutils.command.install_data import install_data as _install_data
@@ -39,19 +40,20 @@ from distutils import filelist
 from distutils.util import get_platform
 
 import os,sys
+from glob import glob
 
 # Detect platform
 pypy = hasattr(sys, 'pypy_version_info')
 jython = sys.platform.startswith('java')
 py3k = False
-if sys.version_info < (2, 5):
-    raise Exception("pyFormex requires Python 2.5 or higher.")
+if sys.version_info < (2, 7):
+    raise Exception("pyFormex requires Python 2.7 or higher.")
 elif sys.version_info >= (3, 0):
     py3k = True
 
 
 # define the things to include
-from manifest import *
+import manifest
 
 # pyFormex release
 __RELEASE__ = '1.0.2-a6'
@@ -113,6 +115,31 @@ class build_py(_build_py):
         #print(self.build_temp)
 
 
+    # Override to remove the non-maching compat module
+    def find_package_modules(self, package, package_dir):
+        self.check_package(package, package_dir)
+        module_files = glob(os.path.join(package_dir, "*.py"))
+        modules = []
+        setup_script = os.path.abspath(self.distribution.script_name)
+
+        # Remove the nonmatchin compat module
+        if (sys.hexversion) < 0x03000000:
+            remove = 'compat_3k.py'
+        else:
+            remove = 'compat_2k.py'
+        module_files = [m for m in module_files if not m.endswith(remove)]
+        # End removal
+
+        for f in module_files:
+            abs_f = os.path.abspath(f)
+            if abs_f != setup_script:
+                module = os.path.splitext(os.path.basename(f))[0]
+                modules.append((package, module, f))
+            else:
+                self.debug_print("excluding %s" % setup_script)
+        return modules
+
+
 
 class sdist(_sdist):
 
@@ -126,7 +153,7 @@ class sdist(_sdist):
         depends on the user's options.
         """
         self.filelist = filelist.FileList()
-        self.filelist.files = DIST_FILES
+        self.filelist.files = manifest.DIST_FILES
         self.filelist.sort()
         self.filelist.remove_duplicates()
         self.write_manifest()
@@ -134,7 +161,6 @@ class sdist(_sdist):
 
 
 def run_setup(with_cext):
-    global OTHER_DATA
     kargs = {}
     if with_cext:
             kargs['ext_modules'] = ext_modules
@@ -163,7 +189,7 @@ def run_setup(with_cext):
         'extra/*/*',
         ]
 
-    PKG_DATA += [ i[9:] for i in DOC_FILES ]
+    PKG_DATA += [ i[9:] for i in manifest.DOC_FILES ]
     setup(cmdclass={
         'build_py': build_py,
         'sdist':sdist
@@ -190,7 +216,7 @@ def run_setup(with_cext):
               ],
           package_data={ 'pyformex': PKG_DATA },
           scripts=['pyformex/pyformex'],
-          data_files=OTHER_DATA,
+          data_files=manifest.OTHER_DATA,
           classifiers=[
               'Development Status :: 4 - Beta',
               'Environment :: Console',
@@ -250,5 +276,7 @@ run_setup(False)
 
 status_msgs("WARNING: Building without the acceleration library")
 
+if py3k:
+    status_msgs("WARNING: This is an experimental Python3 version of pyFormex.\npyFormex is currently not yet fully functional with Python3.\nThis build is for development purposes only. DO NOT USE!")
 
 # End

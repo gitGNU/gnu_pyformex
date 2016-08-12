@@ -126,7 +126,6 @@ parentdir = os.path.dirname(pyformexdir)
 if os.path.exists(os.path.join(parentdir, '.git')):
     installtype = 'G'
 
-
 ########## import libraries ##############
 
 

@@ -70,7 +70,7 @@ def printcfg(key):
     print("!! cfg[%s] = %s" % (key, pf.cfg[key]))
 
 
-def remove_pyFormex(pyformexdir, bindir):
+def remove_pyFormex(pyformexdir, executable):
     """Remove the pyFormex installation."""
     if pf.installtype == 'D':
         print("It looks like this version of pyFormex was installed from a distribution package. You should use your distribution's package tools to remove the pyFormex installation.")
@@ -87,32 +87,39 @@ This procedure will remove the complete pyFormex installation!
 You should only use this on a pyFormex installed with 'python setup.py install'.
 If you continue, pyFormex will exit and you will not be able to run it again.
 The pyFormex installation is in: %s
-The pyFormex executable script is in: %s
+The pyFormex executable script is: %s
 You will need proper permissions to actually delete the files.
-""" % (pyformexdir, bindir))
+""" % (pyformexdir, executable))
     s = pf.userInput("Are you sure you want to remove pyFormex? yes/NO: ")
     if s == 'yes':
+        bindir = os.path.dirname(executable)
         import glob
-        print("Removing %s" % pyformexdir)
-        utils.removeTree(pyformexdir)
         script = os.path.join(bindir, 'pyformex')
         scripts = glob.glob(script+'-*')
         extra_gts = [ 'gtscoarsen', 'gtsinside', 'gtsrefine', 'gtsset', 'gtssmooth' ]
         extra = [ os.path.join(bindir, p) for p in extra_gts ]
         egginfo = "%s-%s*.egg-info" % (pyformexdir, pf.__version__.replace('~', '_'))
         egginfo = glob.glob(egginfo)
-        datadir = os.path.commonprefix(['/usr/local/share', pyformexdir])
-        datadir = os.path.join(datadir, 'share')
+        prefixdir = os.path.commonprefix(['/usr/local', pyformexdir])
+        print(pyformexdir, prefixdir)
+        datadir = os.path.join(prefixdir, 'share')
         data = utils.prefixFiles(datadir, ['man/man1/pyformex.1',
                                           'applications/pyformex.desktop',
                                           'pixmaps/pyformex-64x64.png',
                                           'pixmaps/pyformex.xpm'])
-        for f in [ script ] + scripts + extra + egginfo + data:
+        other_files = [ script ] + scripts + extra + egginfo + data
+        print("Removing pyformex tree %s" % pyformexdir)
+        print("Removing other files %s" % other_files)
+        utils.removeTree(pyformexdir)
+        for f in other_files:
             if os.path.exists(f):
                 print("Removing %s" % f)
-                os.remove(f)
+                try:
+                    os.remove(f)
+                except:
+                    print("Could not remove %s" % f)
             else:
-                print("Could not remove %s" % f)
+                print("No such file: %s" % f)
 
         print("\nBye, bye! I won't be back until you reinstall me!")
     elif s.startswith('y') or s.startswith('Y'):
@@ -533,7 +540,7 @@ def run(argv=[]):
         return
 
     if pf.options.remove:
-        remove_pyFormex(pf.pyformexdir, pf.bindir)
+        remove_pyFormex(pf.pyformexdir, pf.executable)
         return
 
     if pf.options.whereami: # or pf.options.detect :
@@ -543,7 +550,7 @@ def run(argv=[]):
         print("Detecting installed helper software")
         print(software.reportSoftware())
 
-    pf.debug("pyformex script started from %s" % pf.bindir, pf.DEBUG.INFO)
+    pf.debug("pyformex executable is %s" % pf.executable, pf.DEBUG.INFO)
     pf.debug("I found pyFormex installed in %s " %  pf.pyformexdir, pf.DEBUG.INFO)
     pf.debug("Current Python sys.path: %s" % sys.path, pf.DEBUG.INFO)
     #sys.exit()

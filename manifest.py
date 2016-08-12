@@ -28,6 +28,7 @@
 This script creates the list of files to be included in
 the pyFormex source distribution.
 """
+from __future__ import print_function
 import os,re
 
 def prefixFiles(prefix,files):
@@ -40,8 +41,8 @@ def matchMany(regexps,target):
 
 
 def matchCount(regexps,target):
-    """Return the number of matches of target to  regexps."""
-    return len(filter(None,matchMany(regexps,target)))
+    """Return the number of matches of target to regexps."""
+    return len([ m for m in matchMany(regexps,target) if m ])
 
 
 def matchAny(regexps,target):
@@ -206,7 +207,7 @@ DIST_FILES = [
     listTree('pyformex',listdirs=False,sorted=True,
              includedirs=['gui','plugins','opengl','legacy'],
              includefiles=['.*\.py$','pyformex(rc)?$','pyformex.conf$'],
-             excludefiles=['core.py','curvetools.py','backports.py', 'compat_3k.py'],
+             excludefiles=['core.py','curvetools.py','backports.py'],
              ) + \
     listTree('pyformex/freetype',listdirs=False,sorted=True,
              includedirs=['ft_enums'],
@@ -233,28 +234,34 @@ DIST_FILES = [
 
 
 for i in OTHER_DATA:
-   DIST_FILES += i[1]
+    DIST_FILES += i[1]
+
+
+#print("# files: %s" % len(DIST_FILES))
 
 if __name__ == '__main__':
-   import sys
+    import sys
 
-   todo = sys.argv[1:]
-   if not todo:
-      todo = ['doc','data','dist']
+    todo = sys.argv[1:]
+    if not todo:
+        todo = ['doc','data','dist']
 
-   for a in todo:
-      if a == 'doc':
-         print "=========DOC_FILES========="
-         print '\n'.join(DOC_FILES)
-      elif a == 'data':
-         print "=========DATA_FILES========"
-         print '\n'.join(DATA_FILES)
-      elif a == 'other':
-         print "=========OTHER_DATA========"
-         for i in OTHER_DATA:
-            print '\n'.join(i[1])
-      else:
-         print "=========DIST_FILES========"
-         print '\n'.join(DIST_FILES)
+    #print(todo)
+    #sys.exit()
+
+    for a in todo:
+        if a == 'doc':
+            print("=========DOC_FILES=========")
+            print('\n'.join(DOC_FILES))
+        elif a == 'data':
+            print("=========DATA_FILES========")
+            print('\n'.join(DATA_FILES))
+        elif a == 'other':
+            print("=========OTHER_DATA========")
+            for i in OTHER_DATA:
+                print('\n'.join(i[1]))
+        else:
+            print("=========DIST_FILES========")
+            print('\n'.join(DIST_FILES))
 
 # End

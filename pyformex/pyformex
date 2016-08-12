@@ -57,8 +57,12 @@ python="python$PYVER"
 $ECHO "Python interpreter: $python"
 
 [ -f "$scriptdir/startup.py" ] && {
-    PYTHONPATH="$scriptdir"
-    $ECHO "PYTHONPATH=$PYTHONPATH"
+    # If we are executing the pyformex script from a pyFormex source tree,
+    # make sure we always use the pyformex from that tree.
+    #MYPYTHONPATH="$(dirname $scriptdir)"
+    #[ -n "$PYTHONPATH" ] && MYPYTHONPATH="$MYPYTHONPATH:$PYTHONPATH"
+    #$ECHO "MYPYTHONPATH=$MYPYTHONPATH"
+    exec $python $scriptdir/startup.py "$script" "$@"
 }
 
 if [ "$ECHO" = "echo" ]; then
@@ -67,6 +71,6 @@ if [ "$ECHO" = "echo" ]; then
     printf '\n'
 fi
 
-exec $python -m pyformex.startup "$@"
+exec $python -m pyformex.startup "$script" "$@"
 
 # End
