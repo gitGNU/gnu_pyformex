@@ -171,8 +171,8 @@ class Model(Geometry):
     def renumber(self,old=None,new=None):
         """Renumber a set of nodes.
 
-        old and new are equally sized lists with unique node numbers, each
-        smaller that the number of nodes in the model.
+        old and new are equally sized lists with unique node numbers, all
+        smaller than the number of nodes in the model.
         The old numbers will be renumbered to the new numbers.
         If one of the lists is None, a range with the length of the
         other is used.
@@ -182,7 +182,7 @@ class Model(Geometry):
 
         This function returns a tuple (old,new) with the full renumbering
         vectors used. The first gives the old node numbers of the current
-        numbers, the second gives the new numbers cooresponding with the
+        numbers, the second gives the new numbers corresponding with the
         old ones.
         """
         nnodes = self.nnodes()
@@ -198,7 +198,7 @@ class Model(Geometry):
             old = np.arange(new.size)
         elif new is None:
             old = np.asarray(old).reshape(-1)
-            cat.heckUniqueNumbers(old, 0, nnodes)
+            at.checkUniqueNumbers(old, 0, nnodes)
             new = np.arange(old.size)
 
         all = np.arange(nnodes)
